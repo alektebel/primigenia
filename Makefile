@@ -1,29 +1,54 @@
-# spore — Creature Creator (SDL2 + OpenGL)
-#
-# One binary: the Lochner-style creature creator (Build / Paint / Test). SDL2
-# for the window and input, epoxy for the GL 3.3 core calls, libm for the
-# maths. No engine, no asset pipeline, no Emscripten.
-CC      ?= gcc
-CFLAGS  ?= -std=c11 -Wall -Wextra -O2 -Iinclude $(shell pkg-config --cflags sdl2)
-LDFLAGS ?=
-LIBS    := $(shell pkg-config --libs sdl2) -lepoxy -lm -lGL
+# cpore — top-level build.
+# core/ is the simulation: libc + libm only, no graphics (DESIGN.md Q31, Q50).
+CC      ?= cc
+CFLAGS  ?= -O2 -std=c99 -Wall -Wextra -Wno-unused-parameter -fno-fast-math
+CFLAGS  += -Icore/include -D_POSIX_C_SOURCE=200809L
+LDLIBS   = -lm
+BUILD   := build
 
-CREATOR_SRCS := src/creator_main.c src/bodymesh.c src/creature.c \
-                src/genome.c src/desc.c src/terrain.c
-CREATOR_OBJS := $(CREATOR_SRCS:.c=.o)
+CORE_SRC := $(wildcard core/src/*.c)
+CORE_OBJ := $(CORE_SRC:%.c=$(BUILD)/%.o)
+HDRS     := $(wildcard core/include/cpore/*.h)
 
-.PHONY: all clean run
+.PHONY: all core lib test bench smoke studio clean check-core
+all: core $(BUILD)/cpore_test $(BUILD)/cpore_bench
 
-all: creator
+core: $(BUILD)/libcpore.a $(BUILD)/libcpore.so
+lib: $(BUILD)/libcpore.so
 
-creator: $(CREATOR_OBJS)
-	$(CC) $(LDFLAGS) -o $@ $(CREATOR_OBJS) $(LIBS)
+$(BUILD)/%.o: %.c $(HDRS)
+	@mkdir -p $(dir $@)
+	$(CC) $(CFLAGS) -fPIC -c $< -o $@
 
-src/%.o: src/%.c
-	$(CC) $(CFLAGS) -c -o $@ $<
+$(BUILD)/libcpore.a: $(CORE_OBJ)
+	ar rcs $@ $^
+$(BUILD)/libcpore.so: $(CORE_OBJ)
+	$(CC) -shared -o $@ $^ $(LDLIBS)
 
-run: creator
-	./creator
+$(BUILD)/cpore_test: tests/test_core.c $(HDRS) $(BUILD)/libcpore.a
+	$(CC) $(CFLAGS) $< $(BUILD)/libcpore.a -o $@ $(LDLIBS)
+$(BUILD)/cpore_bench: apps/bench.c $(HDRS) $(BUILD)/libcpore.a
+	$(CC) $(CFLAGS) $< $(BUILD)/libcpore.a -o $@ $(LDLIBS)
+
+test: $(BUILD)/cpore_test check-core
+	./$(BUILD)/cpore_test
+bench: $(BUILD)/cpore_bench
+	./$(BUILD)/cpore_bench
+smoke: lib
+	python3 bindings/python/smoke_test.py
+
+# The core may only depend on libc/libm: fail if any core object pulls in more.
+check-core: $(BUILD)/libcpore.so
+	@! ldd $(BUILD)/libcpore.so | grep -v -E 'linux-vdso|libc\.so|libm\.so|ld-linux' | grep -q '=>' \
+	  || (echo "core links something beyond libc/libm"; exit 1)
+	@! grep -l -E '#include *[<"](SDL|GL|epoxy|X11)' core/src/*.c core/include/cpore/*.h \
+	  || (echo "core includes a graphics header"; exit 1)
+	@echo "core: libc + libm only"
+
+# Transitional: the SDL creature studio until it moves to web/ (DESIGN.md Q49).
+studio:
+	$(MAKE) -C studio-sdl
 
 clean:
-	rm -f $(CREATOR_OBJS) creator
+	rm -rf $(BUILD)
+	$(MAKE) -C studio-sdl clean 2>/dev/null || true

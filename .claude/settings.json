@@ -1,0 +1,14 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo '[cpore] Resuming: read the handoff before anything else:'; sed -n '6,99p' /home/diego/.claude/projects/-home-diego-Desarrollo-cpore/memory/cpore-handoff.md"
+          }
+        ]
+      }
+    ]
+  }
+}

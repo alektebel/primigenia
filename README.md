@@ -1,68 +1,35 @@
-# spore — creature creator
+# cpore
 
-A standalone, single-binary creature creator in C on SDL2 + OpenGL 3.3:
-build a body by dragging its spine, paint it, and test-drive it. The mesh
-technique (skinned cylinder, hemisphere caps, cosine blend-shape inflate) is
-ported from Daniel Lochner's *Creature Creator* — see
-[docs/CREATOR_ATTRIBUTION.md](docs/CREATOR_ATTRIBUTION.md).
+A Spore-like evolution arc (cell → creature → tribe → civ → space) written as a
+deterministic C simulation, built to be an **RL environment and an LLM
+benchmark**: how fast can an agent beat the whole arc? Independent fan-made
+tribute; not affiliated with Maxis or EA.
 
-## Build and run
-
-```
-sudo apt install libsdl2-dev libepoxy-dev
-make
-./creator                          # save/load goes to data/creatures/creator_mvp.creature
-./creator path/to/my.creature      # or choose the file
-
-# offscreen stills (headless; renders a frame and writes a PPM)
-./creator --mode test --shot shot.ppm
-./creator --mode paint --shot paint.ppm
-```
-
-Header-only 3D math, a small part catalogue and a sum-of-sines height field;
-nothing else is linked in.
-
-## Controls
-
-```
-  1 / 2 / 3   Build / Paint / Test
-  LMB drag    the RED (nose) / GREEN (tail) tip — the column curves toward the
-              mouse and grows when you pull past a segment; drag a gold bone
-              to bend it; drag empty space to orbit
-  scroll      inflate the selected bone (neighbour bleed, Lochner-style)
-  = / -       extend / shorten (Shift = front)
-  Tab         part slot       Q / E   cycle part
-  C / P       paint / pattern (Paint mode)
-  [ / ]       select bone
-  WASD        walk (Test mode)   Space  jump
-  R           reset           S       save       L   load
-  Esc         quit
-```
-
-The save file records the whole creature — genome, colours, scale and the
-sculpted spine column — so `L` restores exactly what you built. In **Test**
-the studio hands that same column to the locomotion model and drops you on the
-terrain: walk with `WASD`, jump with `Space`, and orbit with the mouse.
+Status: restoring and reorganising (milestone v0.1, creature stage first). The
+design, every decision and why, is in [docs/DESIGN.md](docs/DESIGN.md).
 
 ## Layout
 
-| file | what |
+| dir | what |
 |---|---|
-| `src/creator_main.c` | the app: SDL window, GL 3.3 renderer, Build/Paint/Test loop |
-| `src/bodymesh.c` | Lochner skinned body mesh from the spine column |
-| `src/creature.c` | locomotion, legs, spine column, weapon/detail anchors |
-| `src/genome.c` | part catalogue, morph tables, genome → creature stats |
-| `src/desc.c` | named-creature descriptor and its text save |
-| `src/terrain.c` | deterministic height field the creature stands on |
-| `include/spore/` | the headers above |
+| `core/` | the simulation, libc + libm only, no graphics (`make check-core` enforces it) |
+| `bindings/python/` | ctypes binding, Gymnasium envs, `Campaign`, the `TextLand` LLM face |
+| `bindings/puffer/` | PufferLib-native binding |
+| `tests/`, `apps/` | C test suite and throughput bench |
+| `studio-sdl/` | transitional SDL2/GL creature studio, moving to `web/` |
+| `art/reference/` | the visual and rules references (`valle-primigenio.html`, `taller-de-criaturas.html`) |
+| `harness/`, `web/` | reference LLM harness and Three.js front end (to come) |
 
-## Status / provenance
+## Build
 
-`creator_main.c`, `creature.c`, `bodymesh.c` and the two original headers are
-the Lochner-ported creator. The support layer they `#include` —
-`spore/math3d.h`, `spore/genome.h`, `spore/terrain.h`, `spore/desc.h` and
-`src/genome.c`, `src/terrain.c`, `src/desc.c` — was never committed and does
-not exist in the project's history, so it has been reconstructed here to make
-the creator build and run. It is deliberately simple: a small part catalogue,
-a sum-of-sines terrain, and a diffable text save. Drop the originals in their
-place if you have them.
+```
+make            # core library, tests, bench
+make test       # C tests + core dependency check
+make smoke      # Python binding smoke test
+make bench      # steps/s
+make studio     # the SDL creature studio (needs libsdl2-dev libepoxy-dev)
+```
+
+The old software renderers were removed (DESIGN.md Q27); their entry points
+are still declared in the headers and will be pruned as each stage is reworked.
+Python bindings for symbols that no longer exist are skipped at load time.

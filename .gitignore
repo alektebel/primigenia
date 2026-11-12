@@ -1,17 +1,6 @@
-# the creator binary and its objects
-/creator
-*.o
-*.a
-*.so
-.cache/
 build/
-
-# saved creatures
-/data/
-
-# odds and ends
-*.png
-*.jpg
-.DS_Store
-spore_save.txt
-/tmp/
+*.o
+studio-sdl/creator
+__pycache__/
+*.egg-info/
+data/creatures/
