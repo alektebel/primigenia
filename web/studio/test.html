@@ -1,0 +1,14 @@
+<!doctype html><meta charset="utf-8"><title>studio test</title>
+<pre id="out">running</pre>
+<iframe id="f" src="index.html" style="width:1000px;height:700px"></iframe>
+<script>
+document.getElementById('f').onload=()=>setTimeout(()=>{const w=document.getElementById('f').contentWindow,S=w.CreatureStudio,r=[];let ok=true;
+ const t=(c,m)=>{r.push((c?'ok   ':'FAIL ')+m);ok=ok&&c};
+ for(const n of ['Cazador','Acorazado','Zancudo','Trepador']){w.document.querySelector(`[data-p="${n}"]`).click();const g=S.genome();S.load(JSON.parse(JSON.stringify(g)));t(JSON.stringify(S.genome())===JSON.stringify(g),'round trip '+n+' (dna '+g.dna+', speed '+g.abilities.speed+', health '+g.abilities.health+')')}
+ for(let i=0;i<20;i++){w.document.getElementById('rand').click();const g=S.genome();S.load(JSON.parse(JSON.stringify(g)));t(JSON.stringify(S.genome())===JSON.stringify(g),'round trip random #'+i+' dna '+g.dna)}
+ const g=S.genome();
+ const bad=(f,m)=>{const x=JSON.parse(JSON.stringify(g));f(x);let e='';try{S.load(x)}catch(err){e=err.message}t(e.length>0,'rejects '+m+(e?' -> '+e.split('\n')[0]:''))};
+ bad(x=>x.body.torso=99,'torso out of range');bad(x=>x.parts=x.parts.filter(p=>p.slot!=='mouth'),'no mouth');bad(x=>x.parts[0].level=7,'level 7');bad(x=>x.schema='x','bad schema');bad(x=>x.skin.colors.base='red','bad colour');
+ t(JSON.stringify(S.genome())===JSON.stringify(g),'rejected loads leave the creature unchanged');
+ document.getElementById('out').textContent=(ok?'ALL OK':'FAILURES')+'\n'+r.join('\n')},3000);
+</script>

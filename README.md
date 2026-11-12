@@ -18,7 +18,8 @@ design, every decision and why, is in [docs/DESIGN.md](docs/DESIGN.md).
 | `tests/`, `apps/` | C test suite and throughput bench |
 | `studio-sdl/` | transitional SDL2/GL creature studio, moving to `web/` |
 | `art/reference/` | the visual and rules references (`valle-primigenio.html`, `taller-de-criaturas.html`) |
-| `harness/`, `web/` | reference LLM harness and Three.js front end (to come) |
+| `web/studio/` | the creature studio (Three.js): realistic skin, procedural walk, part levels, abilities, DNA budget, `cpore.creature/1` genome JSON, share links, es/en. `test.html` checks round trips and rejections |
+| `harness/` | reference LLM harness (to come) |
 
 ## Build
 
