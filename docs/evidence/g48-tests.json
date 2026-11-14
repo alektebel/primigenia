@@ -1,0 +1,24 @@
+{
+  "placements": 32,
+  "ids": [
+    "eye_triad",
+    "leg_sprinter",
+    "leg_sucker",
+    "arm_grasper",
+    "tail_paddle",
+    "tail_spike",
+    "wing_glider",
+    "frill_fan",
+    "beak_crusher",
+    "sac_spitter",
+    "arm_smasher",
+    "foot_spring",
+    "foot_hoof",
+    "foot_gecko",
+    "wing_insect",
+    "tail_hammer"
+  ],
+  "legacy": "24 saved GLB ids rendered without migration",
+  "checks": "finite meshes; skin-surface roots; paired reflection; girth/size response; grounded feet; shared membranes; Test animations; unchanged genomes",
+  "errors": []
+}

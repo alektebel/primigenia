@@ -70,8 +70,8 @@ float n3(vec3 x){vec3 i=floor(x),f=fract(x);f=f*f*(3.-2.*f);return mix(mix(mix(h
 vec2 wor(vec3 x){vec3 p=floor(x),f=fract(x);float a=8.,b=8.;for(int k=-1;k<=1;k++)for(int j=-1;j<=1;j++)for(int i=-1;i<=1;i++){vec3 g=vec3(float(i),float(j),float(k));vec3 o=vec3(h3(p+g),h3(p+g+17.3),h3(p+g+41.7));vec3 r=g+o-f;float d=dot(r,r);if(d<a){b=a;a=d;}else if(d<b){b=d;}}return sqrt(vec2(a,b));}
 vec3 pN(vec3 sp,vec3 sn,vec2 dH){vec3 sx=dFdx(sp),sy=dFdy(sp),r1=cross(sy,sn),r2=cross(sn,sx);float det=dot(sx,r1);vec3 g=sign(det)*(dH.x*r1+dH.y*r2);return normalize(abs(det)*sn-g);}
 `;
-function skinMaterial(o={}){const kind=o.kind||'skin',params={...o};delete params.kind;
-  const m=new T.MeshPhysicalMaterial({roughness:.6,metalness:0,clearcoat:.3,clearcoatRoughness:.4,envMapIntensity:.9,...params});m.extensions={derivatives:true};m.customProgramCacheKey=()=>kind;
+function skinMaterial(o={}){const kind=o.kind||'skin',membraneStyle=o.membraneStyle||'',params={...o};delete params.kind;delete params.membraneStyle;
+  const m=new T.MeshPhysicalMaterial({roughness:.6,metalness:0,clearcoat:.3,clearcoatRoughness:.4,envMapIntensity:.9,...params});m.extensions={derivatives:true};m.customProgramCacheKey=()=>kind+membraneStyle;
   m.onBeforeCompile=s=>{Object.assign(s.uniforms,SU);if(kind==='membrane')s.uniforms.uSun={value:SUN};
     s.vertexShader='attribute vec4 skin;varying vec4 vSkin;\n'+s.vertexShader.replace('#include <begin_vertex>','#include <begin_vertex>\nvSkin=skin;');
     const backlight=kind==='membrane'?`vec3 Lw=normalize(mat3(viewMatrix)*uSun);float ndl=dot(normal,Lw);float thru=pow(clamp(-ndl,0.,1.),1.2);float rim=pow(1.-abs(dot(normalize(vViewPosition),normal)),2.4);totalEmissiveRadiance+=sk*(thru*.65+rim*.16);`:'';
@@ -81,8 +81,8 @@ function skinMaterial(o={}){const kind=o.kind||'skin',params={...o};delete param
        else if(uPat>1.5&&uPat<2.5){vec2 w0=wor(rp*1.5);mk=1.-smoothstep(.2,.33,w0.x);}
        else if(uPat>2.5)mk=smoothstep(.5,.72,nn*.66+dd*.12);
        mk*=smoothstep(-.4,.2,dd);vec3 sk=mix(cA,cB,mk);sk=mix(sk,cC,1.-smoothstep(-.85,-.2,dd));sk*=mix(1.,.72,smoothstep(.7,1.,dd));
-       vec2 w1=wor(rp*uScale);float sh=smoothstep(0.,.2,w1.y-w1.x),bp=smoothstep(0.,.45,w1.y-w1.x)*.007+n3(rp*3.)*.015;sk*=mix(.7,1.,sh)*(.9+.2*n3(rp*11.));${kind==='membrane'?'sk=mix(sk,cB,.55+.2*n3(rp*5.5));sk*=.22;':''}diffuseColor.rgb=sk;`)
-     .replace('#include <roughnessmap_fragment>',kind==='membrane'?'#include <roughnessmap_fragment>\nroughnessFactor=.94;':'#include <roughnessmap_fragment>\nroughnessFactor=clamp(mix(.82,.3,uWet)*mix(1.25,.9,sh),.06,1.);')
+       vec2 w1=wor(rp*uScale);float sh=smoothstep(0.,.2,w1.y-w1.x),bp=smoothstep(0.,.45,w1.y-w1.x)*.007+n3(rp*3.)*.015;sk*=mix(.7,1.,sh)*(.9+.2*n3(rp*11.));${kind==='membrane'?(membraneStyle?`sk=mix(sk,cC,.58);${membraneStyle==='insect'?'sk=mix(sk,mix(vec3(.14,.58,.7),vec3(.58,.3,.74),pow(1.-abs(dot(normalize(vNormal),normalize(vViewPosition))),2.)),.42);':''}`:'sk=mix(sk,cB,.35+.15*n3(rp*5.5));sk=mix(sk,cC,.12)*.65;'):''}diffuseColor.rgb=sk;`)
+     .replace('#include <roughnessmap_fragment>',kind==='membrane'?'#include <roughnessmap_fragment>\nroughnessFactor='+ (membraneStyle?params.roughness:.94)+';':'#include <roughnessmap_fragment>\nroughnessFactor=clamp(mix(.82,.3,uWet)*mix(1.25,.9,sh),.06,1.);')
      .replace('#include <normal_fragment_maps>','#include <normal_fragment_maps>\nnormal=pN(-vViewPosition,normal,vec2(dFdx(bp),dFdy(bp)));')
      .replace('#include <emissivemap_fragment>','#include <emissivemap_fragment>\ntotalEmissiveRadiance+=sk*pow(1.-clamp(dot(normalize(vViewPosition),normal),0.,1.),3.)*.5;'+backlight)};
   return m}
@@ -154,6 +154,173 @@ const glbTemplates={},materialSlots=[];
 /* Thin skin: creature colours on both faces, a little see-through, lit from behind.
    Transmission is a full extra scene pass in r128; the backlight term stays in this shader. */
 const membraneM=skinMaterial({kind:'membrane',side:T.DoubleSide,transparent:true,opacity:.82,depthWrite:true,roughness:.94,clearcoat:0,clearcoatRoughness:1,envMapIntensity:.12});
+// Separate thin-tissue finishes keep the accepted frill material unchanged.
+const gliderM=skinMaterial({kind:'membrane',membraneStyle:'glider',side:T.DoubleSide,transparent:true,opacity:.9,roughness:.8,envMapIntensity:.25});
+const insectM=skinMaterial({kind:'membrane',membraneStyle:'insect',side:T.DoubleSide,transparent:true,opacity:.48,depthWrite:false,roughness:.42,clearcoat:.65});
+const sacM=skinMaterial({kind:'membrane',membraneStyle:'sac',side:T.DoubleSide,transparent:true,opacity:.74,roughness:.48});
+/* G48: normalized creator anatomy. +Z is out of the skin; body mounts use
+   +Y up / +Z forward. Scale from the anatomical spine, excluding its end caps. */
+function sweep(points,radii){
+ const path=new T.CatmullRomCurve3(points.map(p=>V(...p))),ps=[],rs=[],n=26;
+ for(let i=0;i<n;i++){const u=i/(n-1),k=u*(radii.length-1),j=Math.min(k|0,radii.length-2);ps.push(path.getPoint(u));rs.push(Math.max(.002,lerp(radii[j],radii[j+1],k-j)))}
+ const d=ps.at(-1).clone().sub(ps[0]),ref=Math.abs(d.x)>Math.abs(d.y)+Math.abs(d.z)?Y:X0;
+ const geo=allocTube(n,12);fillTube(geo,ps,rs,12,ref,false);return geo;
+}
+function tissue(geo,region,parent){
+ const mat={skin:skinM,keratin:boneM,membrane:membraneM,glow:glowM,eye:pupM,iris:irisM}[region];
+ const m=mesh(geo,mat,parent);m.userData.materialRegion=region;
+ if(region==='glow')m.castShadow=m.receiveShadow=false;
+ return m;
+}
+function sail(outline,parent,material=membraneM){
+ // Curved fan with a raised centre: both faces receive the membrane backlight.
+ const curve=new T.CatmullRomCurve3(outline.map(p=>V(...p)),true,'catmullrom',.25),n=48,pos=[...outline.reduce((a,p)=>a.add(V(...p)),V()).multiplyScalar(1/outline.length).add(V(0,.045,0)).toArray()],idx=[];
+ for(let i=0;i<n;i++)pos.push(...curve.getPoint(i/n).toArray());
+ for(let i=0;i<n;i++)idx.push(0,i+1,(i+1)%n+1);
+ const geo=new T.BufferGeometry();geo.setAttribute('position',new T.Float32BufferAttribute(pos,3));geo.setIndex(idx);geo.computeVertexNormals();const m=tissue(geo,'membrane',parent);m.material=material;return m;
+}
+function creatorPart(id,options,make){
+ LIB[id]={p:['size'],responsive:true,...options,make:(p,off,r=.6,context={head:.6,body:.6,height:2,mouthHeight:2.2})=>{
+  const radius=options.bodyMinimum?Math.max(r,context.body*options.bodyMinimum):r,s=p.size*radius/.6,g=make(p,r,s,context);
+  g.traverse(o=>{if(o!==g)o.position.multiplyScalar(s);if(o.isMesh){o.geometry.scale(s,s,s);skinify(o.geometry,off,o.userData.materialRegion==='membrane'?.42:null)}});
+  g.userData.mountRadius=r;g.userData.partScale=s;return g;
+ }};
+}
+creatorPart('beak_crusher',{bite:3,sing:2,mount:'body'},(p)=>{
+ const g=new T.Group(),jaw=new T.Group();g.add(jaw);g.userData.jaw=jaw;
+ // Start at the snout end, with a narrow skin seam and a forward hooked wedge.
+ // Width is capped at the head diameter even when the size control is enlarged.
+ const width=.57/Math.max(1,p.size),length=.6*clamp(.8+.2*p.size,.8,1.2)/p.size;
+ tissue(ell(width,.36/Math.max(1,p.size),.025,0,0,0),'skin',g);
+ const shell=(lower,parent)=>{
+  const pos=[],idx=[],rings=21,sides=24,L=length*(lower?.74:1),edges=[[],[]];
+  for(let i=0;i<rings;i++){
+   const u=i/(rings-1),z=L*u,w=width*Math.pow(1-u,.8),seam=lower?-.075+.035*u:.025+.06*Math.sin(Math.PI*u)-.18*u**5;
+   const h=(lower?.23:.36)*(1-u)*(.9+.5*Math.sin(Math.PI*u))/Math.max(1,p.size);
+   for(let j=0;j<=sides;j++){const a=j/sides*Math.PI;pos.push(w*Math.cos(a),seam+(lower?-1:1)*h*Math.sin(a),z)}
+   edges[0].push([-w,seam,z]);edges[1].push([w,seam,z]);
+  }
+  for(let i=0;i<rings-1;i++)for(let j=0;j<sides;j++){const k=i*(sides+1)+j;idx.push(k,k+1,k+sides+1,k+1,k+sides+2,k+sides+1)}
+  if(lower)for(let i=0;i<idx.length;i+=3)[idx[i+1],idx[i+2]]=[idx[i+2],idx[i+1]];
+  const geo=new T.BufferGeometry();geo.setAttribute('position',new T.Float32BufferAttribute(pos,3));geo.setIndex(idx);geo.computeVertexNormals();
+  const m=tissue(geo,'keratin',parent);m.name=lower?'lower mandible':'upper mandible';m.material=lower?boneM:toothM;
+  for(const edge of edges){const rim=tissue(sweep(edge,[.012,.012,.005]),'keratin',parent);rim.material=beakM;rim.name='cutting edge'}
+  if(!lower){const tip=geo.clone();tip.setIndex(idx.slice(16*sides*6));const m=tissue(tip,'keratin',parent);m.material=beakM;m.name='hook tip'}
+ };
+ shell(false,g);shell(true,jaw);
+ for(const u of [.2,.4,.6]){const w=width*(1-u)*.8;tissue(sweep([[-w,-.065,length*u],[0,-.045,length*u],[w,-.065,length*u]],[.012,.022,.012]),'keratin',jaw)}
+ return g;
+});
+creatorPart('eye_triad',{},()=>{
+ const g=new T.Group();tissue(ell(.48,.18,.15,0,0,.025),'skin',g);
+ for(const x of [-.3,0,.3]){
+  const e=new T.Group();e.position.set(x,0,x===0?.23:.16);g.add(e);
+  tissue(ell(.17,.16,.16),'skin',e);tissue(ell(.11,.11,.045,0,0,.14),'iris',e);tissue(ell(.055,.075,.018,0,0,.18),'eye',e);
+ }
+ return g;
+});
+for(const id of ['wing_glider','wing_insect'])creatorPart(id,{mount:'upright',bodyMinimum:.8},()=>{
+ const g=new T.Group(),wing=new T.Group();g.add(wing);g.userData.wing=wing;
+ tissue(ell(.16,.18,.22),'skin',g);
+ if(id==='wing_glider'){
+  // Five spread fingers, with scalloped trailing webs returning to the flank.
+  const fingers=[[.5,.5,.35],[1.35,.85,.15],[2.25,.9,-.5],[1.85,.6,-1.3],[.9,.25,-1.65]];
+  sail([[0,0,.08],fingers[0],fingers[1],fingers[2],[1.75,.65,-.75],fingers[3],[1.25,.34,-1.15],fingers[4],[.35,.06,-1.2],[0,-.12,-.8]],wing,gliderM);
+  for(const p of fingers)tissue(sweep([[0,0,0],[p[0]*.48,p[1]*.65+.08,p[2]*.48],p],[.045,.032,.009]),'keratin',wing);
+ }else{
+  // Fore- and hindwings fan apart, leaving a visible notch between the sails.
+  const fore=[[0,0,0],[.7,.6,.6],[1.65,.92,.7],[2.25,1,.35],[1.55,.65,.15],[.45,.2,-.05]];
+  const hind=[[0,-.04,-.12],[.5,.1,-.45],[1.3,.4,-.75],[1.7,.48,-1.2],[1.1,.2,-1.35],[.3,-.05,-.65]];
+  sail(fore,wing,insectM);sail(hind,wing,insectM);
+  for(const p of [fore[2],fore[3],fore[4],hind[2],hind[3]]){
+   tissue(sweep([[0,0,0],[p[0]*.5,p[1]*.5,p[2]*.5],p],[.023,.016,.005]),'keratin',wing);
+   tissue(sweep([[p[0]*.45,p[1]*.45,p[2]*.45],[p[0]*.72,p[1]*.7,p[2]*.72+.1],[p[0]*.85,p[1]*.85,p[2]*.85+.14]],[.009,.007,.003]),'keratin',wing);
+  }
+ }
+ return g;
+});
+creatorPart('frill_fan',{},()=>{
+ const g=new T.Group(),fan=new T.Group();g.add(fan);g.userData.sway=fan;
+ tissue(ell(.2,.16,.15),'skin',g);
+ const edge=[];for(let i=0;i<=24;i++){const a=(-110+220*i/24)*Math.PI/180;edge.push([.93*Math.sin(a),-.1,.18+.93*Math.cos(a)])}
+ sail([[0,0,0],...edge],fan);
+ for(const i of [0,6,12,18,24])tissue(sweep([[0,0,0],edge[i].map(v=>v*.5),edge[i]],[.035,.027,.008]),'keratin',fan);
+ return g;
+});
+creatorPart('sac_spitter',{mount:'body'},()=>{
+ const g=new T.Group();tissue(ell(.24,.18,.16,0,-.12,-.06),'skin',g);
+ g.userData.sacs=[];
+ for(const side of [-1,1]){
+  const sac=new T.Group();sac.position.set(side*.5,-.18,-.32);g.add(sac);g.userData.sacs.push(sac);
+  tissue(sweep([[0,-.12,-.06],[side*.3,-.16,-.25],[side*.5,-.18,-.32]],[.14,.12,.1]),'skin',g);
+  const m=tissue(ell(.36,.37,.39),'membrane',sac);m.material=sacM;
+  for(const z of [-.1,.15])tissue(ell(.07,.065,.07,side*.3,.09,z),'glow',sac);
+ }
+ tissue(sweep([[0,-.13,-.04],[0,-.12,.25],[0,-.08,.55]],[.15,.1,.045]),'keratin',g);
+ tissue(ell(.046,.046,.018,0,-.08,.55),'glow',g);return g;
+});
+for(const id of ['arm_grasper','arm_smasher'])creatorPart(id,{mount:'upright',bodyMinimum:.65},(p,r,s,context)=>{
+ const g=new T.Group(),arm=new T.Group();g.add(arm);g.userData.arm=arm;
+ const smash=id==='arm_smasher';
+ if(smash){
+  tissue(ell(.24,.25,.24),'skin',g);
+  // Bent elbow carries the club up in front of the chest, clear of the knees.
+  const club=Math.min(context.body*.34*p.size,context.head*.72)/s;
+  const y=-Math.min(context.body*.12*p.size,context.height*.1)/s,z=.85;
+  tissue(sweep([[0,0,0],[.32,-.24,.08],[.55,-.38,.25]],[.2,.17,.14]),'skin',arm).name='upper arm';
+  tissue(ell(.17,.17,.17,.55,-.38,.25),'skin',arm);
+  tissue(sweep([[.55,-.38,.25],[.65,y-.1,.55],[.6,y,z]],[.14,.13,.12]),'skin',arm).name='forearm';
+  tissue(ell(club,club*.9,club*1.2,.6,y,z+club*.65),'keratin',arm).name='club head';
+  for(const dz of [-.5,.1,.7])tissue(sweep([[.6-club*.8,y+club*.55,z+club*(.65+dz)],[.6,y+club*1.05,z+club*(.65+dz)],[.6+club*.8,y+club*.55,z+club*(.65+dz)]],[.025,.035,.025]),'keratin',arm);
+ }else if(context.mouthHeight-context.height<context.head*1.2){
+  // Low bodies need an exposed shoulder below/outside the wide jaw. The
+  // forearm reaches forward and down; the tall-body grasper below is retained.
+  tissue(sweep([[0,0,0],[.15,-.15,0],[.3,-.3,0]],[.2,.2,.19]),'skin',g);
+  tissue(ell(.23,.22,.23,.3,-.3,0),'skin',g).name='shoulder';
+  arm.position.set(.3,-.3,0);
+  tissue(sweep([[0,0,0],[.35,-.05,.2],[.65,-.15,.45]],[.2,.17,.14]),'skin',arm).name='upper arm';
+  tissue(ell(.17,.17,.17,.65,-.15,.45),'skin',arm);
+  tissue(sweep([[.65,-.15,.45],[.8,-.4,.8],[.7,-.65,1.15]],[.14,.13,.11]),'skin',arm).name='forearm';
+  tissue(ell(.21,.15,.2,.7,-.65,1.2),'skin',arm).name='palm';
+  for(const side of [-1,1])tissue(sweep([[.7+side*.12,-.65,1.25],[.7+side*.29,-.61,1.48],[.7+side*.06,-.61,1.69]],[.085,.06,.004]),'keratin',arm);
+ }else{
+  tissue(ell(.24,.25,.24),'skin',g);
+  const hand=clamp((context.mouthHeight-context.height-context.head*.4)/s,-.26,1.6),elbow=hand*.45-.35;
+  tissue(sweep([[0,0,0],[.32,elbow*.6,.12],[.65,elbow,.35]],[.2,.17,.14]),'skin',arm);
+  tissue(ell(.17,.17,.17,.65,elbow,.35),'skin',arm);
+  tissue(sweep([[.65,elbow,.35],[.75,lerp(elbow,hand,.5),.67],[.38,hand,.98]],[.14,.13,.11]),'skin',arm);
+  tissue(ell(.21,.15,.2,.38,hand,1.03),'skin',arm);
+  for(const side of [-1,1])tissue(sweep([[.38+side*.12,hand,1.08],[.38+side*.29,hand+.04,1.31],[.38+side*.06,hand+.04,1.52]],[.085,.06,.004]),'keratin',arm);
+ }
+ return g;
+});
+for(const id of ['tail_paddle','tail_spike','tail_hammer'])creatorPart(id,{mount:'body',bodyMinimum:1},(p,r,s)=>{
+ const g=new T.Group(),tail=new T.Group();g.add(tail);g.userData.tail=tail;
+ // A tail-radius root merges with the rear 15%; the terminal organ scales
+ // from max spine radius, so a slender tail never reduces it to a dot.
+ tissue(sweep([[0,0,.025],[0,0,-.18],[0,.02,-.45],[0,.03,-.72]],[r*.75/s,.09,.085,.06]),'skin',tail);
+ if(id==='tail_paddle'){
+  sail([[0,.03,-.35],[0,.48,-.67],[0,.52,-1.14],[0,.03,-1.42],[0,-.48,-1.14],[0,-.42,-.67]],tail,gliderM).name='vertical paddle';
+  for(const side of [-1,1])tissue(sweep([[0,.03,-.4],[0,side*.32,-.76],[0,side*.45,-1.13]],[.035,.025,.008]),'keratin',tail);
+ }else if(id==='tail_spike'){
+  tissue(ell(.19,.16,.25,0,.03,-.77),'keratin',tail);
+  for(const x of [-.15,0,.15])tissue(sweep([[x,.07,-.85],[x*1.4,.22,-1.15],[x*1.7,.4,-1.48]],[.065,.045,.003]),'keratin',tail).name='tail barb';
+ }else{
+  tissue(ell(.29,.23,.28,0,.03,-.88),'keratin',tail);
+  for(const side of [-1,1]){
+   tissue(ell(.23,.21,.23,side*.25,.03,-.92),'keratin',tail);
+   tissue(sweep([[side*.36,.07,-.93],[side*.56,.15,-.96]],[.065,.003]),'keratin',tail);
+  }
+  for(const x of [-.26,0,.26])tissue(sweep([[x,.2,-.78],[x,.29,-.93],[x,.19,-1.1]],[.035,.045,.015]),'keratin',tail);
+ }
+ return g;
+});
+for(const [id,foot]of [['leg_sprinter','runner'],['leg_sucker','sucker'],['foot_spring','spring'],['foot_hoof','cloven'],['foot_gecko','gecko']]){
+ creatorPart(id,{fittedLeg:true,foot},p=>{
+  const pose={...p,w:.16},m=legMeshes(pose,[0,0,0],.7,.8),g=new T.Group();m.lo.position.y=-.7;m.ft.position.y=-1.5;g.add(m.up,m.lo,m.ft);return g;
+ });
+}
+
 const convention=partManifest.coordinate_convention;
 if(convention.blender.up!=='+Z'||convention.blender.forward!=='+X'||convention.gltf.up!=='+Y'||convention.gltf.units!=='meters')throw Error('Unsupported part coordinate convention');
 const loader=new T.GLTFLoader();
@@ -206,18 +373,52 @@ for(const entry of partTable.parts){
  if(entry.source==='glb')LIB[entry.id]={cat:entry.category,name:entry.name.es,cost:entry.dna_cost,p:['size'],glb:true,mount:entry.mount,make:(p,off)=>{
    const g=new T.Group();if(!glbTemplates[entry.id])return g;
    glbTemplates[entry.id].children.forEach(src=>{const c=src.clone();c.geometry=src.geometry.clone();c.geometry.scale(p.size,p.size,p.size);const region=src.userData.materialRegion;c.userData.materialRegion=region;skinify(c.geometry,off,region==='membrane'?0.42:null);g.add(c)});return g}};
- if(LIB[entry.id]){LIB[entry.id].category=entry.category;LIB[entry.id].name=entry.name.es;}
+ if(LIB[entry.id]){LIB[entry.id].category=entry.category;LIB[entry.id].name=entry.name.es;LIB[entry.id].cost=entry.dna_cost;}
 }
+function creatorFoot(kind,w,o,lo,ft,b){
+ const add=(geo,region,par=ft)=>{skinify(geo,o,region==='skin'?-.3:null);return tissue(geo,region,par)};
+ if(kind==='cloven'){
+  for(const side of [-1,1]){
+   add(ell(w*.68,w*.65,w*1.15,side*w*.7,w*.65,w*.65),'keratin');
+   add(sweep([[side*w*.7,w*1.4,-w*.2],[side*w*.9,w*.8,-w*.85]],[w*.22,.003]),'keratin');
+  }
+  add(ell(w,w*.7,w*.8,0,w*1.4,0),'skin');return;
+ }
+ add(ell(w*1.25,w*.6,w*1.4,0,w*.6,w*.8),'skin');
+ if(kind==='spring')add(sweep([[w*.6,0,0],[w*.65,-b*.5,-w*.3],[w*.4,-b,w*.1]],[w*.22,w*.18,w*.13]),'keratin',lo);
+ const count=kind==='gecko'?5:kind==='sucker'?4:kind==='spring'?2:3;
+ for(let i=0;i<count;i++){
+  const a=(i-(count-1)/2)*(kind==='gecko'?.48:.42),L=w*(kind==='runner'?3.9:3.3),x=Math.sin(a)*L,z=w*.9+Math.cos(a)*L;
+  add(sweep([[0,w*.55,w*.8],[x*.65,w*.4,z*.7],[x,w*.3,z]],[w*.32,w*.24,w*.15]),'skin');
+  if(kind==='gecko'||kind==='sucker'){
+   add(ell(w*.6,w*.27,w*.78,x,w*.28,z),'skin');
+   for(const dz of [-.35,0,.35])add(sweep([[x-w*.43,w*.49,z+dz*w],[x+w*.43,w*.49,z+dz*w]],[w*.055,w*.055]),'keratin');
+  }else add(sweep([[x,w*.3,z],[x*1.06,w*.18,z+w*.85]],[w*.22,.003]),'keratin');
+ }
+}
+function fittedPose(p,height,r){
+ // Saved /4 GLB legs have size, never IK fields. Derive a rig without editing
+ // that document; the foot target stays on the floor as the spine changes.
+ const s=p.size*r/.6,w=.16*s,rot=p.rot||0,tilt=p.tilt||0;
+ const k=V(.32*s,-height*.48,.34*s+tilt*.3*s).applyAxisAngle(Y,rot),f=V(.35*s,-height+w*.6,.12*s).applyAxisAngle(Y,rot);
+ return {...p,w,k:k.toArray(),f:f.toArray()};
+}
+
 function legMeshes(p,o,a,b){const w=p.w,kind=LIB[p.type].foot,up=new T.Group(),lo=new T.Group(),ft=new T.Group();
   mesh(skinify(new T.CylinderGeometry(w*1.5,w*1.02,a,14,4).translate(0,-a/2,0),o,.15),skinM,up);mesh(skinify(ell(w*1.75,a*.42,w*2,0,-a*.24,0),o,.3),skinM,up);
   mesh(skinify(new T.CylinderGeometry(w,w*.6,b,14,4).translate(0,-b/2,0),o,.05),skinM,lo);mesh(skinify(ell(w*1.08,w*1.08,w*1.08),o,.1),skinM,lo);
-  if(kind==='pezuna'){mesh(new T.CylinderGeometry(w*.72,w*1.05,w*1.1,14).translate(0,w*.55,w*.12),darkM,ft);mesh(skinify(ell(w*.75,w*.55,w*.75,0,w*1.1,0),o,.05),skinM,ft)}
+  if(['runner','sucker','spring','cloven','gecko'].includes(kind))creatorFoot(kind,w,o,lo,ft,b);
+  else if(kind==='pezuna'){mesh(new T.CylinderGeometry(w*.72,w*1.05,w*1.1,14).translate(0,w*.55,w*.12),darkM,ft);mesh(skinify(ell(w*.75,w*.55,w*.75,0,w*1.1,0),o,.05),skinM,ft)}
   else if(kind==='dedos'){mesh(skinify(ell(w*.8,w*.7,w*.8,0,w*.6,0),o,.05),skinM,ft);for(const cx of[-1,0,1,2]){const c=mesh(new T.ConeGeometry(w*.34,w*(cx===2?1.8:3.4),8).rotateX(Math.PI/2).translate(0,0,w*(cx===2?.9:1.7)),beakM,ft);c.position.y=w*.3;c.rotation.y=cx===2?Math.PI:-cx*.6}}
   else{mesh(skinify(ell(w*1.2,w*.62,w*1.8,0,w*.5,w*.75),o,.05),skinM,ft);mesh(skinify(ell(w*.7,w*.7,w*.7,0,w*.6,0),o,.05),skinM,ft);
     for(const cx of[-.75,0,.75]){const c=mesh(new T.ConeGeometry(w*.27,w*.95,8).translate(0,w*.45,0),boneM,ft);c.position.set(cx*w,w*.3,w*(2.25-Math.abs(cx)*.4));c.rotation.set(1.85,0,-cx*.35)}}
   return{up,lo,ft}}
 const hyp=v=>Math.hypot(v[0],v[1],v[2]),legLens=p=>[Math.max(.12,hyp(p.k)),Math.max(.12,hyp([p.f[0]-p.k[0],p.f[1]-p.k[1],p.f[2]-p.k[2]]))];
-const defaults=type=>{const L=LIB[type];return{type,t:L.category==='mouths'?1: L.category==='fins'&&type.startsWith('tail')?.08:L.leg?.5:.62,ang:L.category==='mouths'?0:L.leg?2.1:L.category==='wings'?1.3:L.category==='arms'?1.4:L.category==='legs'?2.1:0,...(L.leg?{w:L.w,k:[...L.k],f:[...L.f]}:{size:1}),...(L.len?{len:L.len}:{}),...(type==='cuerno'?{curve:.5}:{})}};
+function shoulderT(a=.2){
+ const nodes=G.nodes;let i=1;for(let j=2;j<nodes.length-2;j++)if(nodes[j].r>nodes[i].r)i=j;
+ return clamp((NC+i/(nodes.length-1)*(NSP-1))/(NS-1)+a,.3,.8);
+}
+const defaults=type=>{const L=LIB[type];return{type,t:L.category==='mouths'?1:type.startsWith('tail_')?.12:type==='eye_triad'?.92:type==='sac_spitter'?1:type.startsWith('arm_')?shoulderT():['wing_glider','wing_insect'].includes(type)?shoulderT(.14):(L.leg||L.fittedLeg)?.5:.62,ang:L.category==='mouths'||type==='eye_triad'?0:(L.leg||L.fittedLeg)?2.1:L.category==='wings'?1.3:type.startsWith('arm_')?.95:0,...(L.leg?{w:L.w,k:[...L.k],f:[...L.f]}:{size:1}),...(L.len?{len:L.len}:{}),...(type==='cuerno'?{curve:.5}:{})}};
 const PLBL={rot:['Giro',-3.14,3.14],tilt:['Inclinación',-1.3,1.3],size:['Tamaño',.5,2.2],len:['Largo',.3,3.2],curve:['Curva',0,1.3],w:['Grosor',.1,.45]},BUDGET=320;
 
 /* ---------- genoma ---------- */
@@ -248,15 +449,17 @@ function anchor(arr,t,ang,o){const f=clamp(t,0,1)*(NS-1),i=Math.min(f|0,NS-2),k=
   o.p.lerpVectors(arr[i],arr[i+1],k).addScaledVector(fr.s,sa*r).addScaledVector(fr.u,ca*wy*r);
   o.n.copy(fr.s).multiplyScalar(sa).addScaledVector(fr.u,ca).addScaledVector(fr.t,-fr.dr).normalize();o.t.copy(fr.t);o.u.copy(fr.u);return o}
 function clear(g){for(const c of[...g.children]){g.remove(c);c.traverse(o=>{if(o.geometry)o.geometry.dispose()})}}
-const centered=p=>!LIB[p.type].leg&&Math.abs(Math.sin(p.ang))<.14;
+function mountRadius(t){const f=clamp(t*(NS-1),NC,NC+NSP-1),i=Math.min(f|0,NC+NSP-2);return lerp(RAD[i],RAD[i+1],f-i)}
+const hasLeg=p=>LIB[p.type].leg||LIB[p.type].fittedLeg;
+const centered=p=>!hasLeg(p)&&Math.abs(Math.sin(p.ang))<.14;
 function buildParts(freeze){clear(partsG);clear(limbs);objs=[];legs=[];
   /* con patas, la altura del cuerpo es la que marca la columna y cada pata se estira hasta el suelo; sin patas, el cuerpo se posa */
-  if(!freeze){let bottom=1e9;for(let i=0;i<NS;i++)bottom=Math.min(bottom,rest[i].y-RAD[i]);off=G.parts.some(p=>LIB[p.type].leg)?Math.max(0,.03-bottom):.03-bottom}
+  if(!freeze){let bottom=1e9;for(let i=0;i<NS;i++)bottom=Math.min(bottom,rest[i].y-RAD[i]);off=G.parts.some(hasLeg)?Math.max(0,.03-bottom):.03-bottom}
   for(const p of G.parts){const L=LIB[p.type];
     for(const sg of centered(p)?[1]:[1,-1]){anchor(rest,p.t,sg*p.ang,A1);const o=[A1.p.x,A1.p.y,A1.p.z];
-      if(L.leg){const pose={...p,k:[...p.k],f:[...p.f]};pose.f[1]=-(A1.p.y+off)+p.w*.6;pose.k[1]=Math.max(pose.k[1],pose.f[1]+.12);const[a,b]=legLens(pose),m=legMeshes(pose,o,a,b);limbs.add(m.up,m.lo,m.ft);for(const q of[m.up,m.lo,m.ft])q.traverse(x=>x.userData.part=p);
-        legs.push({p,pose,sg,...m,a,b,w:p.w,home:V(),foot:V(),from:V(),sw:false,grp:0,front:false})}
-      else{const g=L.make(p,o);if(!L.glb&&L.category==='mouths'){const inner=new T.Group();inner.position.z=-.3*p.size;inner.add(...g.children.slice());g.add(inner)}g.traverse(x=>x.userData.part=p);partsG.add(g);objs.push({p,sg,g})}}}
+      if(L.leg||L.fittedLeg){const pose=L.fittedLeg?fittedPose(p,A1.p.y+off,mountRadius(p.t)):{...p,k:[...p.k],f:[...p.f]};pose.f[1]=-(A1.p.y+off)+pose.w*.6;pose.k[1]=Math.max(pose.k[1],pose.f[1]+.12);const[a,b]=legLens(pose),m=legMeshes(pose,o,a,b);if(L.fittedLeg)for(const part of [m.up,m.lo,m.ft])part.scale.x=sg;limbs.add(m.up,m.lo,m.ft);for(const q of[m.up,m.lo,m.ft])q.traverse(x=>x.userData.part=p);
+        legs.push({p,pose,sg,...m,a,b,w:pose.w,home:V(),foot:V(),from:V(),sw:false,grp:0,front:false})}
+      else{const g=L.make(p,o,mountRadius(p.t),{head:G.nodes.at(-1).r,body:Math.max(...G.nodes.map(n=>n.r)),height:A1.p.y+off,mouthHeight:G.nodes.at(-1).y+off});if(!L.glb&&!L.responsive&&L.category==='mouths'){const inner=new T.Group();inner.position.z=-.3*p.size;inner.add(...g.children.slice());g.add(inner)}g.traverse(x=>x.userData.part=p);partsG.add(g);objs.push({p,sg,g})}}}
   layout(freeze)}
 function layout(freeze){/* altura del cuerpo, postura de reposo de cada pata y reparto de la zancada */
   let bottom=1e9,low=1e9;for(let i=0;i<NS;i++)bottom=Math.min(bottom,rest[i].y-RAD[i]);
@@ -284,7 +487,7 @@ function drawHandles(){clear(handlesG);spineG=null;if(mode!=='build')return;
 function refresh(full){sampleSpine();fillTube(body.geometry,rest,RAD,RN,null,true,frames);
   const pa=body.geometry.attributes.position.array,sk=body.geometry.attributes.skin;for(let i=0;i<NS;i++)for(let j=0;j<RN;j++){const k=i*RN+j;sk.array.set([pa[k*3],pa[k*3+1],pa[k*3+2],Math.cos(j/RN*6.28318)],k*4)}sk.needsUpdate=true;
   buildParts();rebuildGrowth();drawHandles()}
-function computeStats(){const P=G.parts,has=t=>P.filter(p=>p.type===t).length,m=P.filter(p=>LIB[p.type].category==='mouths'),lg=P.filter(p=>LIB[p.type].leg);
+function computeStats(){const P=G.parts,has=t=>P.filter(p=>p.type===t).length,m=P.filter(p=>LIB[p.type].category==='mouths'),lg=P.filter(hasLeg);
   let vol=0;for(let i=NC;i<NC+NSP-1;i++)vol+=RAD[i]*RAD[i]*rest[i].distanceTo(rest[i+1])*3.14;
   const avg=legs.length?legs.reduce((a,l)=>a+l.a+l.b,0)/legs.length*.95:0,sum=k=>P.reduce((a,p)=>a+(LIB[p.type].category==='mouths'?0:LIB[p.type][k]||0),0);
   stats={dna:P.reduce((a,p)=>a+LIB[p.type].cost,0)+Math.max(0,G.nodes.length-6)*5,
@@ -305,8 +508,13 @@ function update(dt){
   for(let i=0;i<NS;i++){pts[i].copy(rest[i]);if(test){const q=1-i/(NS-1),k=Math.pow(q,1.4);pts[i].x+=Math.sin(w-3.2*q)*amp*(legs.length?k:1)+Math.sin(clock*1.3-2*q)*amp*.5*k}}
   fillTube(body.geometry,pts,RAD,RN,null,true,frames);placeBody(bob);
   const jawA=.06+.04*Math.sin(clock*2.1)+(biteT>0?Math.sin(Math.PI*biteT/.6)*.75:0)+(singT>0?.3+.25*Math.sin(clock*14):0),bl=Math.max(0,Math.sin(clock*1.6))**60;
-  for(const o of objs){anchor(pts,o.p.t,o.sg*o.p.ang,A1);orient(o.g,A1,.015,(o.p.rot||0)*o.sg,o.p.tilt||0,o.p===sel&&o.sg===1);if(LIB[o.p.type].mount==='body'){_m.makeBasis(frames[Math.round(o.p.t*(NS-1))].s,A1.u,A1.t);o.g.quaternion.setFromRotationMatrix(_m);if(o.p.rot)o.g.quaternion.multiply(_q.setFromAxisAngle(ZA,o.p.rot*o.sg));if(o.p.tilt)o.g.quaternion.multiply(_q.setFromAxisAngle(X0,o.p.tilt));o.g.scale.x=o.sg;}const ud=o.g.userData;
-    if(ud.jaw)ud.jaw.rotation.x=jawA;if(ud.pinch)for(const q of ud.pinch)q.rotation.y=q.userData.sx*(.25-jawA*1.1);if(ud.lid)ud.lid.rotation.x=-.3+bl*1.5;if(ud.sway)ud.sway.rotation.x=Math.sin(clock*2.2+o.p.t*9)*.12}
+  for(const o of objs){anchor(pts,o.p.t,o.sg*o.p.ang,A1);orient(o.g,A1,o.p.type.startsWith('tail_')?0:.015,(o.p.rot||0)*o.sg,o.p.tilt||0,o.p===sel&&o.sg===1);if(['body','upright'].includes(LIB[o.p.type].mount)){const upright=LIB[o.p.type].mount==='upright';_m.makeBasis(upright?X0:frames[Math.round(o.p.t*(NS-1))].s,upright?Y:A1.u,upright?ZA:A1.t);o.g.quaternion.setFromRotationMatrix(_m);if(o.p.rot)o.g.quaternion.multiply(_q.setFromAxisAngle(ZA,o.p.rot*o.sg));if(o.p.tilt)o.g.quaternion.multiply(_q.setFromAxisAngle(X0,o.p.tilt));o.g.scale.x=o.sg;}const ud=o.g.userData;
+    if(ud.jaw)ud.jaw.rotation.x=jawA;if(ud.pinch)for(const q of ud.pinch)q.rotation.y=q.userData.sx*(.25-jawA*1.1);if(ud.lid)ud.lid.rotation.x=-.3+bl*1.5;if(ud.sway)ud.sway.rotation.x=Math.sin(clock*2.2+o.p.t*9)*.12;
+    if(ud.wing){ud.wing.rotation.z=(test?.12+Math.sin(clock*(run?8:4))*.32:.12);ud.wing.rotation.y=(test?.12+.1*Math.sin(clock*2):.32)}
+    if(ud.sacs)for(const sac of ud.sacs)sac.scale.setScalar(test?1+.07*Math.sin(clock*3.4):1);
+    if(ud.arm)ud.arm.rotation.x=test?Math.sin(w+o.sg*Math.PI)*.26:0;
+    if(ud.tail)ud.tail.rotation.y=test?Math.sin(clock*2.5)*.2:0;
+  }
   const fwd=_c.set(-Math.sin(theta),0,Math.cos(theta));
   for(const l of legs){const ph=((phase+l.grp*.5)%1+1)%1,H=anchor(pts,l.p.t,l.sg*l.p.ang,A2).p.clone(),K=_u,A=_b;
     if(!test){K.copy(H).add(l.rk).applyMatrix4(creature.matrixWorld);A.copy(H).add(l.rf).applyMatrix4(creature.matrixWorld);H.applyMatrix4(creature.matrixWorld);l.sw=false}
@@ -341,7 +549,7 @@ function hitJoint(){const h=ray.intersectObjects(handlesG.children.filter(c=>c.u
 function hitNode(){if(!spineG)return -1;const h=ray.intersectObjects(spineG.children.filter(c=>c.userData.node!=null),true)[0];return h?h.object.userData.node:-1}
 const overBody=()=>{body.geometry.computeBoundingSphere();return ray.intersectObject(body).length>0};
 function hitPart(){const h=ray.intersectObjects([partsG,limbs],true)[0];return h?h.object.userData.part:null}
-function place(p,h){const was=centered(p);let a=Math.abs(h.ang);if(LIB[p.type].leg){if(Math.abs(Math.sin(a))<.2)a=a<1.57?.2:Math.PI-.2}else if(Math.abs(Math.sin(a))<.14)a=Math.cos(a)>0?0:Math.PI;p.t=clamp(h.t,0,1);p.ang=a;if(was!==centered(p))buildParts();else if(LIB[p.type].leg)buildParts(true)}
+function place(p,h){const was=centered(p);let a=Math.abs(h.ang);if(hasLeg(p)){if(Math.abs(Math.sin(a))<.2)a=a<1.57?.2:Math.PI-.2}else if(Math.abs(Math.sin(a))<.14)a=Math.cos(a)>0?0:Math.PI;p.t=clamp(h.t,0,1);p.ang=a;if(was!==centered(p))buildParts();else if(hasLeg(p))buildParts(true)}
 function snapshot(){return JSON.stringify(G)}
 function save(){try{localStorage.setItem('cpore.creature.v4',snapshot())}catch(e){}if($('json')&&document.activeElement!==$('json'))$('json').value=JSON.stringify(G,null,1);syncHistory()}
 function syncHistory(){$('undo').disabled=hist.length<2;$('redo').disabled=!fut.length}
@@ -380,7 +588,7 @@ gl.addEventListener('pointerdown',e=>{setRay(e);gl.setPointerCapture(e.pointerId
 addEventListener('pointermove',e=>{const inside=setRay(e);
   if(!drag){if(mode==='build'){const n=hitNode();spineOn=e.target===gl&&(n>=0||overBody());if(n!==hoverNode){hoverNode=n;if(spineG)spineG.children.forEach(h=>{if(h.userData.node!=null)h.scale.setScalar(h.userData.node===n?1.3:1)})}gl.style.cursor=n>=0||hitJoint()||(rotH.visible&&ray.intersectObject(rotH)[0])?'move':hitPart()?'pointer':'grab'}return}
   if(drag.k==='cam'){camYaw-=(e.clientX-drag.x)*.006;camPitch=clamp(camPitch+(e.clientY-drag.y)*.004,-.02,1.2);if(Math.abs(e.movementX)+Math.abs(e.movementY)>1)drag.moved=true;drag.x=e.clientX;drag.y=e.clientY}
-  else if(drag.k==='rot'){const pl=new T.Plane().setFromNormalAndCoplanarPoint(selAx.n,_e.copy(selAx.p).add(creature.position)),w=ray.ray.intersectPlane(pl,_a);if(w){w.sub(creature.position).sub(selAx.p);drag.p.rot=Math.atan2(-w.dot(selAx.x),w.dot(selAx.y));const el=$('p-rot');if(el)el.value=drag.p.rot;setHint('Gira la pieza alrededor de su base')}}
+  else if(drag.k==='rot'){const pl=new T.Plane().setFromNormalAndCoplanarPoint(selAx.n,_e.copy(selAx.p).add(creature.position)),w=ray.ray.intersectPlane(pl,_a);if(w){w.sub(creature.position).sub(selAx.p);drag.p.rot=Math.atan2(-w.dot(selAx.x),w.dot(selAx.y));const el=$('p-rot');if(el)el.value=drag.p.rot;if(LIB[drag.p.type].fittedLeg)buildParts(true);setHint('Gira la pieza alrededor de su base')}}
   else if(drag.k==='joint'){const l=legs.find(l=>l.p===drag.p&&l.sg===drag.sg);let wp=null;
     if(drag.j==='f'){const o=ray.ray.origin,d=ray.ray.direction,q=(l.w*.6-o.y)/d.y;if(d.y<-1e-3&&q>0)wp=_a.copy(o).addScaledVector(d,q)}else wp=ray.ray.intersectPlane(drag.plane,_a);
     if(wp&&l){const r=wp.sub(creature.position).sub(l.h0),v=[r.x*drag.sg,r.y,r.z];
@@ -426,7 +634,7 @@ function drawPanel(){let h='';
   if(mode==='test')h+=`<section><h2>Capacidades</h2><div id="caps"></div></section><section><h2>Acciones</h2><div class="chips"><button data-act="bite">Morder</button><button data-act="sing">Cantar</button><button data-act="run" aria-pressed="${run}">${run?'Andar':'Correr'}</button></div><p class="note">La zancada, el reparto de patas y la ondulación del cuerpo salen de las piezas que has puesto.</p></section>`;
   $('panel').innerHTML=h+(mode==='build'?growthPanel():'');drawStats();document.body.dataset.mode=mode;drawHandles();translateUI();syncHistory()}
 const PALS=[['#9a3b28','#2a1414','#e6cfa0'],['#2f8a5a','#12382c','#e9e2a8'],['#3d5fa8','#8a4fb0','#f0e6c8'],['#c9892b','#4a2a12','#f3e3b8'],['#6c7440','#2f3320','#d8cfa6'],['#22313f','#d9a441','#c8d2d8'],['#b84a6a','#3a1830','#f2d9c9']];
-$('panel').addEventListener('input',e=>{const t=e.target;if(t.dataset.pk&&sel){sel[t.dataset.pk]=+t.value;if(!['rot','tilt'].includes(t.dataset.pk))buildParts()}if(t.dataset.sk){G.skin[t.dataset.sk]=+t.value;syncSkin()}if(t.dataset.col){G.skin[t.dataset.col]=t.value;syncSkin()}});
+$('panel').addEventListener('input',e=>{const t=e.target;if(t.dataset.pk&&sel){sel[t.dataset.pk]=+t.value;if(LIB[sel.type].fittedLeg||!['rot','tilt'].includes(t.dataset.pk))buildParts()}if(t.dataset.sk){G.skin[t.dataset.sk]=+t.value;syncSkin()}if(t.dataset.col){G.skin[t.dataset.col]=t.value;syncSkin()}});
 $('panel').addEventListener('change',()=>commit());
 $('panel').addEventListener('click',e=>{const t=e.target.closest('button');if(!t)return;const d=t.dataset;
   if(t.id==='del'&&sel)removePart(sel);if(t.id==='rand'){loadG(randomCreature());commit()}if(d.seed){loadG(SEEDS[d.seed]);commit()}
@@ -439,7 +647,7 @@ const TH=112,thRT=new T.WebGLRenderTarget(TH,TH),thScene=new T.Scene(),thCam=new
 thRT.texture.encoding=T.sRGBEncoding;thScene.environment=scene.environment;thScene.add(new T.HemisphereLight(0xffffff,0x665544,.55));{const d=new T.DirectionalLight(0xfff2e0,1.5);d.position.set(2,4,3);thScene.add(d)}
 function thumbModel(k){if(thModels[k])return thModels[k];const L=LIB[k],p=defaults(k),piv=new T.Group(),inner=new T.Group();
   if(L.leg){const[a,b]=legLens(p),m=legMeshes(p,[0,0,0],a,b),K=V(...p.k),F=V(...p.f);m.up.quaternion.setFromUnitVectors(DOWN,K.clone().normalize());m.lo.position.copy(K);m.lo.quaternion.setFromUnitVectors(DOWN,F.clone().sub(K).normalize());m.ft.position.set(F.x,F.y-p.w*.6,F.z);inner.add(m.up,m.lo,m.ft)}
-  else{inner.add(L.make(p,[0,1,0]));if(!L.glb&&(L.cat==='Armas'||L.cat==='Adornos'||k==='antena'||k==='tallo'))inner.rotation.x=-Math.PI/2}
+  else{inner.add(L.make(p,[0,1,0]));if(!L.glb&&(L.cat==='Armas'||L.cat==='Adornos'||k==='antena'||k==='tallo'||k==='frill_fan'))inner.rotation.x=-Math.PI/2;else if(L.responsive&&(L.category==='wings'||L.category==='fins'))inner.rotation.x=-.65}
   piv.add(inner);piv.updateMatrixWorld(true);const box=new T.Box3().setFromObject(piv);inner.position.sub(box.getCenter(V()));piv.userData.r=box.getSize(V()).length()/2;piv.visible=false;thScene.add(piv);return thModels[k]=piv}
 function renderThumb(k,rot,ctx){const m=thumbModel(k);for(const q in thModels)thModels[q].visible=q===k;m.rotation.y=rot;const d=m.userData.r/Math.sin(.262)*1.08;thCam.position.set(0,d*.32,d);thCam.lookAt(0,0,0);
   renderer.setRenderTarget(thRT);renderer.setClearColor(0x000000,0);renderer.clear();renderer.render(thScene,thCam);renderer.readRenderTargetPixels(thRT,0,0,TH,TH,thBuf);renderer.setRenderTarget(null);renderer.setClearColor(0x000000,1);
@@ -520,7 +728,7 @@ function translateUI(){
  setHint();
 }
 function report(message){$('message').textContent=message}
-function assetBounds(type){const box=new T.Box3().setFromObject(glbTemplates[type]);return {min:box.min.toArray(),max:box.max.toArray()}}
+function assetBounds(type){const model=glbTemplates[type]||LIB[type]?.make(defaults(type),[0,0,0]);if(!model)throw Error('parts.type');const box=new T.Box3().setFromObject(model);if(!glbTemplates[type])model.traverse(o=>o.geometry?.dispose());return {min:box.min.toArray(),max:box.max.toArray()}}
 function shareLink(){const bytes=new TextEncoder().encode(snapshot());let binary='';for(const b of bytes)binary+=String.fromCharCode(b);return location.href.split('#')[0]+'#g='+btoa(binary)}
 function bootDocument(){
  try{const hash=location.hash.slice(1);if(hash.startsWith('g=')){const raw=atob(decodeURIComponent(hash.slice(2)));G=StudioDocument.parse(new TextDecoder('utf-8',{fatal:true}).decode(Uint8Array.from(raw,c=>c.charCodeAt(0))),tableById).genome}

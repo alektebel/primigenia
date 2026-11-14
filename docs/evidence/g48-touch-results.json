@@ -1,0 +1,15 @@
+{
+  "browser": "158.0.8127.18",
+  "renderer": "SwiftShader software WebGL",
+  "viewport": "390x844, DPR 1, touch",
+  "checks": [
+    "390px layout has no horizontal overflow",
+    "touch drag places selected growth on the body",
+    "touch placement is one undo/redo transaction",
+    "tap palette then tap body places a GLB",
+    "explicit orbit tool preserves the document",
+    "mobile Paint and language toggle work",
+    "mobile Test actions return to Build"
+  ],
+  "errors": []
+}

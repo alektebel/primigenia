@@ -5,6 +5,15 @@ const table=require('../web/studio/parts.json');
 const types=Object.fromEntries(table.parts.map(p=>[p.id,p]));
 const sample={schema:'cpore.creature/4',name:'Ñandu 🦎',nodes:[{y:1,z:-2,r:.1},{y:1,z:-1,r:.5},{y:1.5,z:0,r:.6},{y:2,z:1,r:.4}],parts:[{type:'ojo',t:.9,ang:.8,size:1}],skin:{pat:1,cA:'#aabbcc',cB:'#112233',cC:'#ffffff',wet:.3,scale:7},regions:[]};
 assert.deepEqual(D.parse(sample,types).genome,sample);
+// A /4 document saved while all 24 reference parts were GLBs must stay exact.
+const savedGLBs=JSON.parse(fs.readFileSync('tests/fixtures/studio/v4-glb-parts.json'));
+assert.equal(savedGLBs.parts.length,24);
+assert.deepEqual(D.parse(savedGLBs,types),{genome:savedGLBs,warnings:[]});
+for(const id of ['eye_triad','leg_sprinter','leg_sucker','arm_grasper','tail_paddle','tail_spike','wing_glider','frill_fan','beak_crusher','sac_spitter','arm_smasher','foot_spring','foot_hoof','foot_gecko','wing_insect','tail_hammer']){
+ assert.equal(types[id].source,'procedural',id+' uses the creator geometry');
+ assert.equal(types[id].shape_ref,'parts/'+id+'.glb');
+ assert(fs.existsSync('web/studio/'+types[id].shape_ref));
+}
 for(const mutate of [g=>g.schema='bad',g=>g.nodes[0].r=-1,g=>g.parts[0].type='missing',g=>g.parts[0].t=Infinity,g=>g.skin.cA='red',g=>g.nodes[0].x=2,g=>g.regions=null,g=>g.parts=[null],g=>g.parts[0].size=999,g=>g.name='<script>',g=>g.parts[0].mystery=1]){
  const g=structuredClone(sample);mutate(g);assert.throws(()=>D.parse(g,types));
 }

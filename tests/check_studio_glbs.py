@@ -11,8 +11,10 @@ SIZES = {5120: ('b', 1), 5121: ('B', 1), 5122: ('h', 2), 5123: ('H', 2), 5125: (
 WIDTHS = {'SCALAR': 1, 'VEC2': 2, 'VEC3': 3, 'VEC4': 4, 'MAT4': 16}
 count = triangles = 0
 for entry in TABLE['parts']:
-    if entry['source'] != 'glb':
+    if not entry.get('file'):
         continue
+    if entry['source'] == 'procedural':
+        assert entry['shape_ref'] == 'parts/' + entry['file']
     data = (ROOT / 'parts' / entry['file']).read_bytes()
     assert hashlib.sha256(data).hexdigest() == entry['sha256']
     magic, version, length = struct.unpack_from('<III', data)

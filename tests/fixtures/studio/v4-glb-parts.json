@@ -1,0 +1,234 @@
+{
+  "schema": "cpore.creature/4",
+  "name": "G48 saved GLB creature",
+  "nodes": [
+    {
+      "y": 1.8,
+      "z": -2,
+      "r": 0.12
+    },
+    {
+      "y": 1.8,
+      "z": -1,
+      "r": 0.7
+    },
+    {
+      "y": 1.8,
+      "z": 0,
+      "r": 0.75
+    },
+    {
+      "y": 1.8,
+      "z": 1,
+      "r": 0.5
+    },
+    {
+      "y": 1.8,
+      "z": 2,
+      "r": 0.4
+    }
+  ],
+  "parts": [
+    {
+      "type": "eye_stalk",
+      "t": 0.62,
+      "ang": 1.3,
+      "size": 0.85,
+      "rot": 0.2,
+      "tilt": 0.1
+    },
+    {
+      "type": "eye_triad",
+      "t": 0.62,
+      "ang": 1.3,
+      "size": 0.85,
+      "rot": 0.2,
+      "tilt": 0.1
+    },
+    {
+      "type": "jaw_nipper",
+      "t": 1,
+      "ang": 0,
+      "size": 0.85,
+      "rot": 0.2,
+      "tilt": 0.1
+    },
+    {
+      "type": "horn_crown",
+      "t": 0.62,
+      "ang": 1.3,
+      "size": 0.85,
+      "rot": 0.2,
+      "tilt": 0.1
+    },
+    {
+      "type": "shell_plate",
+      "t": 0.62,
+      "ang": 1.3,
+      "size": 0.85,
+      "rot": 0.2,
+      "tilt": 0.1
+    },
+    {
+      "type": "leg_sprinter",
+      "t": 0.62,
+      "ang": 1.3,
+      "size": 0.85,
+      "rot": 0.2,
+      "tilt": 0.1
+    },
+    {
+      "type": "leg_sucker",
+      "t": 0.62,
+      "ang": 1.3,
+      "size": 0.85,
+      "rot": 0.2,
+      "tilt": 0.1
+    },
+    {
+      "type": "arm_grasper",
+      "t": 0.62,
+      "ang": 1.3,
+      "size": 0.85,
+      "rot": 0.2,
+      "tilt": 0.1
+    },
+    {
+      "type": "tail_paddle",
+      "t": 0.62,
+      "ang": 1.3,
+      "size": 0.85,
+      "rot": 0.2,
+      "tilt": 0.1
+    },
+    {
+      "type": "tail_spike",
+      "t": 0.62,
+      "ang": 1.3,
+      "size": 0.85,
+      "rot": 0.2,
+      "tilt": 0.1
+    },
+    {
+      "type": "wing_glider",
+      "t": 0.62,
+      "ang": 1.3,
+      "size": 0.85,
+      "rot": 0.2,
+      "tilt": 0.1
+    },
+    {
+      "type": "frill_fan",
+      "t": 0.62,
+      "ang": 1.3,
+      "size": 0.85,
+      "rot": 0.2,
+      "tilt": 0.1
+    },
+    {
+      "type": "beak_crusher",
+      "t": 1,
+      "ang": 0,
+      "size": 0.85,
+      "rot": 0.2,
+      "tilt": 0.1
+    },
+    {
+      "type": "mandible_shear",
+      "t": 1,
+      "ang": 0,
+      "size": 0.85,
+      "rot": 0.2,
+      "tilt": 0.1
+    },
+    {
+      "type": "snout_trumpet",
+      "t": 1,
+      "ang": 0,
+      "size": 0.85,
+      "rot": 0.2,
+      "tilt": 0.1
+    },
+    {
+      "type": "tongue_spring",
+      "t": 1,
+      "ang": 0,
+      "size": 0.85,
+      "rot": 0.2,
+      "tilt": 0.1
+    },
+    {
+      "type": "sac_spitter",
+      "t": 0.62,
+      "ang": 1.3,
+      "size": 0.85,
+      "rot": 0.2,
+      "tilt": 0.1
+    },
+    {
+      "type": "arm_smasher",
+      "t": 0.62,
+      "ang": 1.3,
+      "size": 0.85,
+      "rot": 0.2,
+      "tilt": 0.1
+    },
+    {
+      "type": "foot_spring",
+      "t": 0.62,
+      "ang": 1.3,
+      "size": 0.85,
+      "rot": 0.2,
+      "tilt": 0.1
+    },
+    {
+      "type": "foot_hoof",
+      "t": 0.62,
+      "ang": 1.3,
+      "size": 0.85,
+      "rot": 0.2,
+      "tilt": 0.1
+    },
+    {
+      "type": "foot_gecko",
+      "t": 0.62,
+      "ang": 1.3,
+      "size": 0.85,
+      "rot": 0.2,
+      "tilt": 0.1
+    },
+    {
+      "type": "lure_lantern",
+      "t": 0.62,
+      "ang": 1.3,
+      "size": 0.85,
+      "rot": 0.2,
+      "tilt": 0.1
+    },
+    {
+      "type": "wing_insect",
+      "t": 0.62,
+      "ang": 1.3,
+      "size": 0.85,
+      "rot": 0.2,
+      "tilt": 0.1
+    },
+    {
+      "type": "tail_hammer",
+      "t": 0.62,
+      "ang": 1.3,
+      "size": 0.85,
+      "rot": 0.2,
+      "tilt": 0.1
+    }
+  ],
+  "skin": {
+    "pat": 1,
+    "cA": "#9a3b28",
+    "cB": "#2a1414",
+    "cC": "#e6cfa0",
+    "wet": 0.3,
+    "scale": 7
+  },
+  "regions": []
+}
