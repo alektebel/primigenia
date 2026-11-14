@@ -70,19 +70,21 @@ float n3(vec3 x){vec3 i=floor(x),f=fract(x);f=f*f*(3.-2.*f);return mix(mix(mix(h
 vec2 wor(vec3 x){vec3 p=floor(x),f=fract(x);float a=8.,b=8.;for(int k=-1;k<=1;k++)for(int j=-1;j<=1;j++)for(int i=-1;i<=1;i++){vec3 g=vec3(float(i),float(j),float(k));vec3 o=vec3(h3(p+g),h3(p+g+17.3),h3(p+g+41.7));vec3 r=g+o-f;float d=dot(r,r);if(d<a){b=a;a=d;}else if(d<b){b=d;}}return sqrt(vec2(a,b));}
 vec3 pN(vec3 sp,vec3 sn,vec2 dH){vec3 sx=dFdx(sp),sy=dFdy(sp),r1=cross(sy,sn),r2=cross(sn,sx);float det=dot(sx,r1);vec3 g=sign(det)*(dH.x*r1+dH.y*r2);return normalize(abs(det)*sn-g);}
 `;
-function skinMaterial(o){const m=new T.MeshPhysicalMaterial({roughness:.6,metalness:0,clearcoat:.3,clearcoatRoughness:.4,envMapIntensity:.9,...o});m.extensions={derivatives:true};m.customProgramCacheKey=()=>'skin';
-  m.onBeforeCompile=s=>{Object.assign(s.uniforms,SU);
+function skinMaterial(o={}){const kind=o.kind||'skin',params={...o};delete params.kind;
+  const m=new T.MeshPhysicalMaterial({roughness:.6,metalness:0,clearcoat:.3,clearcoatRoughness:.4,envMapIntensity:.9,...params});m.extensions={derivatives:true};m.customProgramCacheKey=()=>kind;
+  m.onBeforeCompile=s=>{Object.assign(s.uniforms,SU);if(kind==='membrane')s.uniforms.uSun={value:SUN};
     s.vertexShader='attribute vec4 skin;varying vec4 vSkin;\n'+s.vertexShader.replace('#include <begin_vertex>','#include <begin_vertex>\nvSkin=skin;');
-    s.fragmentShader=SKIN_GLSL+s.fragmentShader
+    const backlight=kind==='membrane'?`vec3 Lw=normalize(mat3(viewMatrix)*uSun);float ndl=dot(normal,Lw);float thru=pow(clamp(-ndl,0.,1.),1.2);float rim=pow(1.-abs(dot(normalize(vViewPosition),normal)),2.4);totalEmissiveRadiance+=sk*(thru*.65+rim*.16);`:'';
+    s.fragmentShader=(kind==='membrane'?'uniform vec3 uSun;\n':'')+SKIN_GLSL+s.fragmentShader
      .replace('#include <color_fragment>',`vec3 rp=vSkin.xyz;float dd=vSkin.w,nn=n3(rp*1.3)+.5*n3(rp*2.9),mk=0.;
        if(uPat>.5&&uPat<1.5)mk=smoothstep(.42,.62,.5+.5*sin(rp.z*4.6+(nn-.75)*3.2));
        else if(uPat>1.5&&uPat<2.5){vec2 w0=wor(rp*1.5);mk=1.-smoothstep(.2,.33,w0.x);}
        else if(uPat>2.5)mk=smoothstep(.5,.72,nn*.66+dd*.12);
        mk*=smoothstep(-.4,.2,dd);vec3 sk=mix(cA,cB,mk);sk=mix(sk,cC,1.-smoothstep(-.85,-.2,dd));sk*=mix(1.,.72,smoothstep(.7,1.,dd));
-       vec2 w1=wor(rp*uScale);float sh=smoothstep(0.,.2,w1.y-w1.x),bp=smoothstep(0.,.45,w1.y-w1.x)*.007+n3(rp*3.)*.015;sk*=mix(.7,1.,sh)*(.9+.2*n3(rp*11.));diffuseColor.rgb=sk;`)
-     .replace('#include <roughnessmap_fragment>','#include <roughnessmap_fragment>\nroughnessFactor=clamp(mix(.82,.3,uWet)*mix(1.25,.9,sh),.06,1.);')
+       vec2 w1=wor(rp*uScale);float sh=smoothstep(0.,.2,w1.y-w1.x),bp=smoothstep(0.,.45,w1.y-w1.x)*.007+n3(rp*3.)*.015;sk*=mix(.7,1.,sh)*(.9+.2*n3(rp*11.));${kind==='membrane'?'sk=mix(sk,cB,.55+.2*n3(rp*5.5));sk*=.22;':''}diffuseColor.rgb=sk;`)
+     .replace('#include <roughnessmap_fragment>',kind==='membrane'?'#include <roughnessmap_fragment>\nroughnessFactor=.94;':'#include <roughnessmap_fragment>\nroughnessFactor=clamp(mix(.82,.3,uWet)*mix(1.25,.9,sh),.06,1.);')
      .replace('#include <normal_fragment_maps>','#include <normal_fragment_maps>\nnormal=pN(-vViewPosition,normal,vec2(dFdx(bp),dFdy(bp)));')
-     .replace('#include <emissivemap_fragment>','#include <emissivemap_fragment>\ntotalEmissiveRadiance+=sk*pow(1.-clamp(dot(normalize(vViewPosition),normal),0.,1.),3.)*.5;')};
+     .replace('#include <emissivemap_fragment>','#include <emissivemap_fragment>\ntotalEmissiveRadiance+=sk*pow(1.-clamp(dot(normalize(vViewPosition),normal),0.,1.),3.)*.5;'+backlight)};
   return m}
 const skinM=skinMaterial({}),skinM2=skinMaterial({side:T.DoubleSide});
 const phys=(c,r,cc)=>new T.MeshPhysicalMaterial({color:lin(c),roughness:r,clearcoat:cc,clearcoatRoughness:.2,envMapIntensity:1});
@@ -148,12 +150,40 @@ const LIB={
    for(let k=0;k<n;k++){const y=(k/(n-1)*2-1)*.8*s,h=s*1.15*Math.pow(Math.max(0,1-(y/(.8*s))**2),.55)*(1+.08*Math.sin(k*2.4));pos.push(0,y,-.05,0,y-h*.25,h);sk.push(o[0],o[1],o[2]+y,.9,o[0],o[1]+h,o[2]+y,.2);if(k<n-1){const q=k*2;idx.push(q,q+1,q+2,q+2,q+1,q+3)}}
    const ge=new T.BufferGeometry();ge.setAttribute('position',new T.Float32BufferAttribute(pos,3));ge.setAttribute('skin',new T.Float32BufferAttribute(sk,4));ge.setIndex(idx);ge.computeVertexNormals();mesh(ge,skinM2,sw);return g}}};
 LIB.excavadora={cat:'Excavar',name:'Garra excavadora',cost:18,p:['size'],make:p=>{const g=new T.Group();mesh(skinify(ell(.26*p.size,.2*p.size,.34*p.size),[0,0,0],.2),skinM,g);for(const x of [-.2,0,.2])mesh(cone(.08*p.size,.8*p.size,.35*p.size).translate(x*p.size,0,0),boneM,g);return g}};
-const glbTemplates={};
-const membraneM=skinMaterial({side:T.DoubleSide,transparent:true,opacity:.66,depthWrite:false});
+const glbTemplates={},materialSlots=[];
+/* Thin skin: creature colours on both faces, a little see-through, lit from behind.
+   Transmission is a full extra scene pass in r128; the backlight term stays in this shader. */
+const membraneM=skinMaterial({kind:'membrane',side:T.DoubleSide,transparent:true,opacity:.82,depthWrite:true,roughness:.94,clearcoat:0,clearcoatRoughness:1,envMapIntensity:.12});
 const convention=partManifest.coordinate_convention;
 if(convention.blender.up!=='+Z'||convention.blender.forward!=='+X'||convention.gltf.up!=='+Y'||convention.gltf.units!=='meters')throw Error('Unsupported part coordinate convention');
 const loader=new T.GLTFLoader();
 let assetFailures=[];
+function slotRegion(entry,meshName,materialName,source){
+ const name=materialName||'',mesh=meshName||'';
+ const emissive=source?.emissive,glowing=!!(emissive&&emissive.r+emissive.g+emissive.b>.25&&(source.emissiveIntensity??1)>=1);
+ if(glowing||/lantern|chartreuse|\bglow\b/i.test(name))return 'glow';
+ if(entry.id==='beak_crusher')return 'keratin';
+ if((entry.category==='wings'||/wing|membrane|fan/i.test(mesh))&&name==='Warm sand underside')return 'membrane';
+ const listed=partTable.material_regions[name];
+ if(typeof listed==='string')return listed;
+ if(/membrane/i.test(name))return 'membrane';
+ if(/iris|obsidian|\beye/i.test(name))return 'eye';
+ if(/keratin|ivory|chitin/i.test(name))return 'keratin';
+ if(/skin|underside/i.test(name))return 'skin';
+ if(/dark/i.test(name))return 'dark';
+ if(entry.category==='wings'||entry.category==='fins')return 'membrane';
+ if(entry.category==='weapons'||entry.category==='digging_claws')return 'keratin';
+ if(entry.category==='senses')return 'eye';
+ return 'skin';
+}
+function regionMaterial(entry,name,region){
+ if(region==='skin')return skinM;
+ if(region==='membrane')return membraneM;
+ if(region==='glow')return glowM;
+ if(region==='eye')return name.includes('iris')?irisM:pupM;
+ if(region==='dark')return darkM;
+ return entry.id.includes('beak')&&!name.includes('Ivory')?beakM:boneM;
+}
 await Promise.all(partTable.parts.filter(p=>p.source==='glb').map(async entry=>{
  try{
   const gltf=await loader.loadAsync('parts/'+entry.file);gltf.scene.updateMatrixWorld(true);
@@ -162,10 +192,12 @@ await Promise.all(partTable.parts.filter(p=>p.source==='glb').map(async entry=>{
     const geo=o.geometry.clone().applyMatrix4(o.matrixWorld).rotateY(-Math.PI/2);
     // The exporter already converts Z-up to Y-up. Keep the anatomical origin.
     if(entry.mount==='radial'&&entry.category!=='mouths'&&entry.id!=='sac_spitter')geo.rotateX(Math.PI/2);
-    const name=o.material.name||'',fallback=entry.category==='wings'||entry.category==='fins'?'membrane':entry.category==='weapons'||entry.category==='digging_claws'?'keratin':entry.category==='senses'?'eye':'skin';
-    const region=entry.id==='beak_crusher'?'keratin':entry.category==='wings'&&name==='Warm sand underside'?'membrane':partTable.material_regions[name]||fallback;
-    const mat=region==='skin'?skinM:region==='membrane'?membraneM:region==='eye'?(name.includes('iris')?irisM:pupM):entry.id.includes('beak')&&!name.includes('Ivory')?beakM:boneM;
-    skinify(geo,[0,0,0],null);const m=mesh(geo,mat,template);m.userData.materialRegion=region;
+    const name=o.material?.name||'',meshName=(o.name||'').replace(/_\d+$/,'');
+    const region=slotRegion(entry,meshName,name,o.material);
+    const mat=regionMaterial(entry,name,region);
+    skinify(geo,[0,0,0],region==='membrane'?0.42:null);const m=mesh(geo,mat,template);m.userData.materialRegion=region;
+    if(region==='glow')m.castShadow=m.receiveShadow=false;
+    materialSlots.push({part:entry.id,category:entry.category,mesh:meshName,material:name||'(unnamed)',region});
   });
   glbTemplates[entry.id]=template;
  }catch(e){assetFailures.push(entry.id);}
@@ -173,7 +205,7 @@ await Promise.all(partTable.parts.filter(p=>p.source==='glb').map(async entry=>{
 for(const entry of partTable.parts){
  if(entry.source==='glb')LIB[entry.id]={cat:entry.category,name:entry.name.es,cost:entry.dna_cost,p:['size'],glb:true,mount:entry.mount,make:(p,off)=>{
    const g=new T.Group();if(!glbTemplates[entry.id])return g;
-   glbTemplates[entry.id].children.forEach(m=>{const c=m.clone();c.geometry=m.geometry.clone();c.geometry.scale(p.size,p.size,p.size);skinify(c.geometry,off,null);g.add(c)});return g}};
+   glbTemplates[entry.id].children.forEach(src=>{const c=src.clone();c.geometry=src.geometry.clone();c.geometry.scale(p.size,p.size,p.size);const region=src.userData.materialRegion;c.userData.materialRegion=region;skinify(c.geometry,off,region==='membrane'?0.42:null);g.add(c)});return g}};
  if(LIB[entry.id]){LIB[entry.id].category=entry.category;LIB[entry.id].name=entry.name.es;}
 }
 function legMeshes(p,o,a,b){const w=p.w,kind=LIB[p.type].foot,up=new T.Group(),lo=new T.Group(),ft=new T.Group();
@@ -378,7 +410,7 @@ addEventListener('keydown',e=>{if(['INPUT','TEXTAREA','SELECT'].includes(e.targe
 /* ---------- interfaz ---------- */
 const PATS=['liso','rayas','manchas','veteado'],HINTS={build:'Pasa el cursor por el cuerpo para ver la columna · arrastra una vértebra para esculpir · rueda sobre ella para engordar',paint:'Arrastra para girar la cámara',test:'Tu criatura camina sola: nada está animado a mano'};
 let flashT=0;function setHint(t){$('hint').textContent=tr(t||HINTS[mode])}function flash(t){setHint(t);clearTimeout(flashT);flashT=setTimeout(setHint,2200);$('meter').classList.add('over');setTimeout(()=>$('meter').classList.remove('over'),600)}
-function syncSkin(){const s=G.skin;SU.cA.value.copy(lin(s.cA));SU.cB.value.copy(lin(s.cB));SU.cC.value.copy(lin(s.cC));SU.uPat.value=s.pat;SU.uWet.value=s.wet;SU.uScale.value=s.scale;skinM.clearcoat=skinM2.clearcoat=membraneM.clearcoat=s.wet*.8;clearTimeout(syncSkin.t);syncSkin.t=setTimeout(()=>typeof drawThumbs==='function'&&drawThumbs(),120)}
+function syncSkin(){const s=G.skin;SU.cA.value.copy(lin(s.cA));SU.cB.value.copy(lin(s.cB));SU.cC.value.copy(lin(s.cC));SU.uPat.value=s.pat;SU.uWet.value=s.wet;SU.uScale.value=s.scale;skinM.clearcoat=skinM2.clearcoat=s.wet*.8;membraneM.clearcoat=s.wet*.12;clearTimeout(syncSkin.t);syncSkin.t=setTimeout(()=>typeof drawThumbs==='function'&&drawThumbs(),120)}
 const pips=n=>'<span class="pips">'+[1,2,3,4,5].map(i=>`<i class="${i<=n?'on':''}"></i>`).join('')+'</span>';
 function drawStats(){$('dna').textContent=`${stats.dna} / ${BUDGET}`;$('meter').firstElementChild.style.width=clamp(stats.dna/BUDGET*100,0,100)+'%';if(!$('caps'))return;
   $('caps').innerHTML=[['Velocidad',stats.vel],['Mordisco',stats.bite],['Canto',stats.sing],['Salud',stats.hp]].map(([n,v])=>`<div class="cap"><span>${tr(n)}</span>${pips(v)}</div>`).join('')+stats.warn.filter(Boolean).map(w=>`<div class="warn">${tr(w)}</div>`).join('')}
@@ -512,7 +544,8 @@ function randomCreature(seed=Math.floor(Math.random()*4294967296)){const rnd=rng
 window.CreatureStudio={genome:()=>StudioDocument.clone(G),load:importGenome,presets:Object.keys(SEEDS),random:seed=>{loadG(randomCreature(seed));commit()},preset:name=>{loadG(SEEDS[name]);commit()},shareLink,
  parts:partTable,ready:true,undo,redo,assetBounds,defaults:type=>StudioDocument.clone(defaults(type)),
  addPart:(type,attachment={})=>{if(!LIB[type])throw Error('parts.type');const p={...defaults(type),...attachment};const next=StudioDocument.clone(G);next.parts.push(p);StudioDocument.validate(next,tableById);G.parts.push(p);sel=p;buildParts();drawPanel();commit();return G.parts.length-1},
- diagnostics:()=>({assetFailures,loadedGLBs:Object.keys(glbTemplates).length,selectedRegionId,growthBuilds,geometryCount:renderer.info.memory.geometries,regions:[...regionViews].map(([id,v])=>({id,builds:v.builds})),cosmetic:true}),
+ diagnostics:()=>({assetFailures,loadedGLBs:Object.keys(glbTemplates).length,selectedRegionId,growthBuilds,geometryCount:renderer.info.memory.geometries,regions:[...regionViews].map(([id,v])=>({id,builds:v.builds})),materialSlots,cosmetic:true}),
+ view:(yaw,pitch,dist)=>{if(yaw!=null)camYaw=yaw;if(pitch!=null)camPitch=pitch;if(dist!=null)camDist=dist;sel=null;selRings.forEach(r=>r.visible=false);frameCam(0,true);renderer.render(scene,camera)},
  projectPoint:(t,ang)=>{anchor(pts,t,ang,A1);const p=creature.localToWorld(A1.p.clone()).project(camera),r=gl.getBoundingClientRect();return [r.left+(p.x+1)*r.width/2,r.top+(1-p.y)*r.height/2]},
  attachmentRoots:()=>{
   update(0);creature.updateMatrixWorld(true);const result=[];
