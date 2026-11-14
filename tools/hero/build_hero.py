@@ -175,6 +175,35 @@ h = patch(h, "vec3 b=mix(vec3(.17,.40,.10),vec3(.33,.55,.13),vT.x),tp=mix(vec3(.
 h = patch(h, "vec3 c=mix(b,tp,vH*vH)*mix(.5,1.,vT.y)*mix(.62,1.12,vL)*mix(.42,1.,vS)+vec3(.12,.13,.03)*max(vT.z,0.)*vH",
           "vec3 c=mix(b,tp,.25+.75*vH)*mix(.5,1.,vT.y)*mix(.62,1.12,vL)*mix(.42,1.,vS)+vec3(.17,.17,.07)*max(vT.z,0.)*vH")
 
+
+# ---- V4: leaf-card canopies on darker blob cores, per-tree hue, backlit glow ----
+LEAF_JS = r"""
+let leafTex=null,leafMat=null;
+function leafTexture(){if(leafTex)return leafTex;const c=document.createElement('canvas');c.width=c.height=128;const x=c.getContext('2d'),r=rngFrom(77);x.fillStyle='#fff';
+  for(let i=0;i<11;i++){const a=r()*6.283,d=8+r()*34,px=64+Math.cos(a)*d,py=64+Math.sin(a)*d;x.save();x.translate(px,py);x.rotate(a+(r()-.5));x.beginPath();x.ellipse(0,0,15+r()*7,7+r()*3,0,0,6.283);x.fill();x.restore()}
+  leafTex=new T.CanvasTexture(c);return leafTex}
+function leafMaterial(){if(leafMat)return leafMat;leafMat=toon({vertexColors:true,map:leafTexture(),alphaTest:.5,side:T.DoubleSide},true);const ob=leafMat.onBeforeCompile;
+  leafMat.onBeforeCompile=s=>{ob(s);s.fragmentShader=s.fragmentShader.replace('float rim=pow(1.-max(dot(normalize(vViewPosition),normal),0.),3.);','float rim=0.;').replace('#include <normal_fragment_begin>',T.ShaderChunk.normal_fragment_begin.split('normal = normal * faceDirection;').join('')).replace('#include <tonemapping_fragment>',
+   '#if NUM_DIR_LIGHTS>0\nfloat bk=pow(max(dot(-normalize(vViewPosition),directionalLights[0].direction),0.),4.);gl_FragColor.rgb+=diffuseColor.rgb*directionalLights[0].color*bk*.22;\n#endif\n#include <tonemapping_fragment>')};
+  leafMat.customProgramCacheKey=()=>'leafw';return leafMat}
+function leafCanopy(blobs){const pos=[],nor=[],uv=[],cl=[],idx=[],r=rngFrom(4242),q=new T.Quaternion(),e=new T.Euler(),v=new T.Vector3(),up=new T.Vector3(0,1,0);
+  for(const[c,sc,hex]of blobs){const base=col(hex),n=Math.round(62*sc[0]);
+    for(let i=0;i<n;i++){let dx=r()*2-1,dy=r()*2-1,dz=r()*2-1;const l=Math.hypot(dx,dy,dz)||1;dx/=l;dy/=l;dz/=l;dy=dy*.8+.2;
+      const rad=.82+r()*.26,p=[c[0]+dx*sc[0]*rad,c[1]+dy*sc[1]*rad,c[2]+dz*sc[2]*rad],sz=1.0+r()*.5;
+      const nn=new T.Vector3(dx/sc[0],dy/sc[1]+.35,dz/sc[2]).normalize();
+      e.set(r()*6.283,r()*6.283,r()*6.283);q.setFromEuler(e);const k=pos.length/3;
+      const ao=.5+.45*Math.max(0,Math.min(1,dy*.5+.5))*rad,tint=.9+r()*.2;
+      for(const[ux,uy]of[[0,0],[1,0],[1,1],[0,1]]){v.set((ux-.5)*sz,(uy-.5)*sz,0).applyQuaternion(q);pos.push(p[0]+v.x,p[1]+v.y,p[2]+v.z);nor.push(nn.x,nn.y,nn.z);uv.push(ux,uy);cl.push(base.r*ao*tint,base.g*ao*tint,base.b*ao)}
+      idx.push(k,k+1,k+2,k,k+2,k+3)}}
+  const g=new T.BufferGeometry();g.setAttribute('position',new T.Float32BufferAttribute(pos,3));g.setAttribute('normal',new T.Float32BufferAttribute(nor,3));g.setAttribute('uv',new T.Float32BufferAttribute(uv,2));g.setAttribute('color',new T.Float32BufferAttribute(cl,3));g.setIndex(idx);return g}
+const hueJit=o=>{const h=Math.sin(o.x*12.9898+o.z*78.233)*43758.5453,f=h-Math.floor(h);return new T.Color().setHSL(.0,0,1).multiplyScalar(1).setRGB(.88+.2*f,.92+.14*Math.sin(f*9),.8+.3*(1-f))};
+"""
+h = patch(h, "function buildScene(){", LEAF_JS + "function buildScene(){")
+BROAD_OLD = "scene.add(scatter(merged([[tr,'#5a4030',[.45,4.4,.45],[0,0,0]],[ico2,'#4f9a2e',[2.9,2.3,2.9],[0,5.4,0],0,1],[ico2,'#62ad38',[2.1,1.8,2.1],[1.7,4.5,.7],0,1],[ico2,'#3f8a2c',[2.2,1.8,2.2],[-1.5,4.6,-.8],0,1],[ico2,'#74bb44',[1.7,1.4,1.7],[.2,6.9,-.4],0,1],[ico2,'#58a334',[1.6,1.3,1.6],[-.4,5,1.7],0,1]]),broad,true,TV()));"
+BROAD_NEW = ("scene.add(scatter(merged([[tr,'#5a4030',[.45,4.4,.45],[0,0,0]],[ico2,'#2f6a22',[2.55,2.0,2.55],[0,5.4,0],0,1],[ico2,'#356f24',[1.85,1.55,1.85],[1.7,4.5,.7],0,1],[ico2,'#2b6420',[1.95,1.55,1.95],[-1.5,4.6,-.8],0,1],[ico2,'#3a7628',[1.5,1.2,1.5],[.2,6.9,-.4],0,1],[ico2,'#336c22',[1.4,1.1,1.4],[-.4,5,1.7],0,1]]),broad,true,TV()));"
+             "{const cm=scatter(leafCanopy([[[0,5.4,0],[2.9,2.3,2.9],'#3f8226'],[[1.7,4.5,.7],[2.1,1.8,2.1],'#4c9430'],[[-1.5,4.6,-.8],[2.2,1.8,2.2],'#367a26'],[[.2,6.9,-.4],[1.7,1.4,1.7],'#5a9e36'],[[-.4,5,1.7],[1.6,1.3,1.6],'#468a2c']]),broad.map(o=>({...o,c:hueJit(o)})),false,leafMaterial());cm.receiveShadow=true;scene.add(cm)}")
+h = patch(h, BROAD_OLD, BROAD_NEW)
+
 OUT.parent.mkdir(parents=True, exist_ok=True)
 OUT.write_text(h, encoding="utf-8")
 print(f"wrote {OUT.relative_to(ROOT)} ({len(h)} bytes)")
