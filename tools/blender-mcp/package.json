@@ -1,0 +1,18 @@
+{
+  "name": "cpore-blender-mcp",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Local MCP bridge for iterative, visual asset design in Blender",
+  "type": "module",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "smoke": "node smoke.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "1.32.2",
+    "zod": "4.6.7"
+  }
+}

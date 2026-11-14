@@ -4,3 +4,5 @@ studio-sdl/creator
 __pycache__/
 *.egg-info/
 data/creatures/
+art/generated/
+node_modules/

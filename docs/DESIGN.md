@@ -74,6 +74,25 @@ only — no assets, names, text or data are taken from it.
 | Q37, Q38 | Fable delivers `art/STYLE.md` + concept sheets with a parameter table per item (hex colours, band thresholds, outline px) and provenance notes. |
 | Q40 | No audio before v0.4; procedural creature voices later. |
 
+### Creator direction, 2026-11-12
+
+The owner's new direction expands the creature creator toward freely authored,
+more realistic creatures with geometry generated while parts are manipulated.
+`art/reference/taller-de-criaturas.html` (identical to the supplied latest
+`taller-de-criaturas(1).html`) is the creature appearance reference. Its physically
+lit skin takes precedence over a toon-only interpretation of Q29/Q45 for
+creature materials. The valley remains the environment reference.
+
+The [functional creator design](CREATURE_VISUAL_PLAN.md) defines direct part
+placement, generated anatomy and detail, artist control, and latency targets.
+Art authoring must be able to exceed the simulation's current fixed part limits;
+entering the game requires an explicit compatible projection and validation.
+This does not change the benchmark's authority over game mechanics. The full
+document, C/WASM integration, generalized rig, and AI generation remain future
+implementation gates. The current web prototype exports `cpore.creature/3`
+with independently editable seeded regions on the torso, neck, and tail, and
+imports legacy `/1` and `/2` documents.
+
 ## 7. Stage rules settled so far
 
 | # | Decision |
@@ -92,3 +111,79 @@ only — no assets, names, text or data are taken from it.
 | Q54 | The v0.1 board uses NAN-hosted models plus reference rows; paid frontier models from v0.4. |
 | Q55 | Static publication on GitHub Pages from `web/`; official results versioned under `results/`; nothing public before v0.4. |
 | Q57 | Order: this document → restore `ca08f0f` on a new branch and reorganise → creature-stage calibration research. |
+
+## 9. Game direction, 2026-11-14 (G1–G41)
+
+A second design session. Its questions are numbered G1–G41 so they do not
+collide with Q1–Q57. Where a G decision changes an earlier one, the earlier
+line is named and the G decision wins.
+
+### Direction and platform
+
+| # | Decision |
+|---|---|
+| G1, G8 | **Game and benchmark together, game-first** ("Spore on steroids"). Supersedes Q1's benchmark-first. Both run on **one deterministic C sim**; there is no separate game sim. |
+| G9, G10 | Develop in the browser (C core → WASM). The desktop app is **Electron** wrapping the same web build (supersedes Q42's Tauri: identical Chromium rendering everywhere). Desktop build comes after the first playable stage. |
+| G33 | A public **creature-stage demo** ships after P7 (browser link + desktop build). Supersedes Q55's "nothing public before v0.4" for the game; the benchmark board stays private until ready. |
+| G34, G39, G41 | Public name **Primigenia** (pending a trademark check on EUIPO/USPTO before P7). "cpore" stays the internal codename and file-format prefix. **Panspermia** is the story frame: life arrives on a meteor (cell-stage opening) and in space you seed other worlds (ties into terraforming). |
+| G7 | Unreal and the Blender genome→mesh factory are parked. Blender is used for authoring parts only. |
+
+### Look
+
+| # | Decision |
+|---|---|
+| G2 | Creatures keep physically lit skin (the taller look) inside the toon BotW world (Q29/Q45), adapted with toon-compatible rim light and haze. Proven first with a **hero shot**: a studio creature in the valley reference. |
+
+### Creator and parts
+
+| # | Decision |
+|---|---|
+| G3, G15 | The Blender GLBs (`art/generated/parts/`) enter the studio as **rigid parts** that take the creature's palette and skin by material region (skin, keratin, membrane, eye; tagged in `sample_parts.py`). Parts that must deform (feet, arms, wings) are later rebuilt as procedural `growth.js` families. |
+| G4 | The C genome is the authority. The web document is a superset that projects onto it, with game entry validated in C. Every part id is either a C part type or flagged cosmetic (grants nothing). |
+| G5 | Meshes are generated in JS (`growth.js`, moved to a worker), not in C. Supersedes Q49. C/WASM is mandatory for the sim and the validator only; meshes are cosmetic. |
+| G14, G20 | Part categories: mouth · eyes · arms/graspers · feet/legs · weapons (horns, spikes, clubs) · wings · fins · digging claws · details (frill, lure, shell, sacs). Each category grants its own kind of ability. **Parts decide movement modes**: legs → ground, fins → swim, wings → glide → fly, digging claws → burrow. Gills (underwater breathing) are scoped but not implemented. |
+| G37, G40 | Parts are **discovered**, then **bought and levelled with DNA**. Sources: killing (a chance to drop one of the victim's parts, higher for rare kills and the epic creature), befriending (the species' signature part, guaranteed but slower), carcasses and fossils (random by biome and depth). Each medium hides its own finds: cliff fossils by gliding or flying, sunken bones by swimming, buried fossils, roots and water by digging. Part cost rises steeply with level. |
+
+### Creature stage
+
+| # | Decision |
+|---|---|
+| G16 | **Tactical real-time combat** on a fixed C tick (~10 Hz). Moves have wind-up, range, cooldown, stamina and a target zone. Depth comes from flanking, height, medium (air, water, ground, underground), counters (charge breaks guard, guard beats bite, spit beats charge) and status effects (stun, bleed, slow), not from reflexes. Humans control the creature directly through the same moves agents call by verb. |
+| G19, G26 | Social play is as deep as combat. Species have **preferences** (song, dance, food gifts, displays) and a drifting mood; moves have timing and combos; rivals can interrupt; trust decays if you ignore a species. Gifts must respect diet (meat to a herbivore is an insult). **Defending a species from a raid** or feeding it builds trust. The Q43 ally (3) / dominate (3) loop stays as the progress rule. |
+| G18 | Strategy layers: a **pack** with orders, **nest raids** against you, **your raids** on others, and **territory** (species defend home ranges). |
+| G23 | **DNA only goes up** (complexity never decreases). Raids take **eggs** (future pack members plus a DNA bonus when they hatch), the **food store** (heals, stamina, gifts) and damage the nest. **Dying costs an egg** (you respawn as a hatchling); with no eggs left the stage is lost. Supersedes Q43's DNA penalty on respawn. |
+| G24 | The **nest site** trades safety for access: open plain (close to food, easy to raid), mountain ledge (chokepoint, far, needs climbing or gliding), dug burrow (hidden, narrow entrance, needs claws), underwater cave (safe from land, needs swimming). Defence = site + guards + time away. |
+| G29, G35 | **Expand and explore.** You bring food to the nest, and the nest hatches young. More burrows mean more eggs, but each one costs digging time, food upkeep and guards. Over-expanding spreads you thin. There is no hard cap. Hatchlings and allies take **roles that run on their own** (forager, guard, nurse, digger), and you can build **defences** (thorn walls, hidden entrances, alarm calls). The skill is a colony that survives while you explore, with defences built early. |
+| G30, G31, G36 | A **Cognition** track bought with DNA competes with body parts. Tiers: 1 follow, attack my target, guard; 2 split the pack into groups from first person ("3 scout there, 2 attack that one"); 3 ambush, flank, waypoints, command befriended species; 4 a sketch of a tactical map. Interaction with developed species stays simple in the creature stage. **Every creature reaches tribe**: progress milestones grow the brain automatically, and DNA spent on Cognition unlocks tiers sooner and more technology later. Skipping Cognition gives stronger individuals with stronger movement abilities and leads to a "brawny" tribe start; investing gives a "cunning" one. |
+| G27, G32 | Digging uses a **network of chambers and tunnels** in the normal terrain, with roots and water as resource nodes along it. Stretch goal (P8): small **soft zones** (sand, soil, snow) that deform for real, Bananza-style, only after performance and determinism are measured. |
+| G17, G22 | Media arrive in phases, each verified on its own: ground, then swim + glide with dive-attacks, then full flight + digging. Supersedes Q43's ground+water-only and Q13's deferral. |
+
+### Later stages and players
+
+| # | Decision |
+|---|---|
+| G21 | **Tribe and civ are one RTS** in C (units, pathfinding, fog of war, economy, buildings, orders), differing only in units, technology, strategy and scale, on the creature stage's terrain. Creature movement, pathfinding, combat and pack orders are built as its base. Detailed rules still get their own session (Q56). |
+| G28 | Creature-stage habits become tribe traits (burrowers → underground dwellings, swimmers → fishing and canoes, raiders → warriors, befrienders → domesticated allies). Starting choices carry through every stage, including terraforming. |
+| G38 | For other kinds of players: **sandbox mode** (no raids or hunger), a **field journal** (species, parts, fossils, completion), and **creature sharing** (links exist now; a public gallery whose creatures appear as wildlife in other worlds comes after the demo). |
+| G11 | The "steroids": creator freedom, LLM-driven rivals (through the benchmark verbs), BotW-grade visuals; then a living ecosystem and real depth per stage. |
+
+### Phases (G25)
+
+Each phase ends with automated tests, a playable browser demo, and a screenshot
+or video the owner approves.
+
+| Phase | Content |
+|---|---|
+| P0 | Commit current work; hero shot (physical creature in the toon valley) |
+| P1 | The GLB parts in the studio: categories, material regions, slots |
+| P2 | C core on a fixed tick: movement, combat moves, stamina, determinism tests, canaries |
+| P3 | WASM build + web stage: walk the valley as your studio creature, fight one species |
+| P4 | Social depth, Q43 loop, part discovery and DNA, editing mid-game |
+| P5 | Nest, eggs, food runs, roles, defences, pack orders, raids in both directions |
+| P6 | Swimming (water food, underwater caves), glide with dive-attacks |
+| P7 | Electron desktop build; public creature demo (name checked) |
+| P8 | Digging and tunnels, full flight, territory, epic creature; stretch: soft zones |
+| P9 | LLM rivals and the benchmark board |
+
+Creature-stage calibration research (Q22) runs in the background with NAN
+models and review, without blocking phases.

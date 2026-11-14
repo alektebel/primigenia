@@ -10,7 +10,7 @@ CORE_SRC := $(wildcard core/src/*.c)
 CORE_OBJ := $(CORE_SRC:%.c=$(BUILD)/%.o)
 HDRS     := $(wildcard core/include/cpore/*.h)
 
-.PHONY: all core lib test bench smoke studio clean check-core
+.PHONY: all core lib test bench smoke studio blender blender-mcp-setup blender-mcp-smoke blender-sample-parts clean check-core
 all: core $(BUILD)/cpore_test $(BUILD)/cpore_bench
 
 core: $(BUILD)/libcpore.a $(BUILD)/libcpore.so
@@ -48,6 +48,18 @@ check-core: $(BUILD)/libcpore.so
 # Transitional: the SDL creature studio until it moves to web/ (DESIGN.md Q49).
 studio:
 	$(MAKE) -C studio-sdl
+
+blender-mcp-setup:
+	npm ci --prefix tools/blender-mcp
+
+blender:
+	CPORE_PROJECT_ROOT=$(CURDIR) blender --python tools/blender-mcp/addon.py
+
+blender-mcp-smoke:
+	npm --prefix tools/blender-mcp run smoke
+
+blender-sample-parts:
+	blender --background --python tools/blender-mcp/sample_parts.py
 
 clean:
 	rm -rf $(BUILD)

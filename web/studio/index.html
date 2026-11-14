@@ -57,20 +57,32 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--paper);outline-
 .lv button[aria-pressed=true]{background:var(--paper);color:var(--ink);border-color:var(--paper);font-weight:600}
 textarea{width:100%;min-height:120px;background:rgba(0,0,0,.35);color:var(--paper);border:1px solid var(--line);border-radius:7px;font:12px ui-monospace,Menlo,monospace;padding:8px}
 #msg{color:var(--moss);font-size:12.5px;min-height:1.2em}
-@media (max-width:820px){body{flex-direction:column;overflow:auto}#stage{flex:none;height:56vh}#bench{width:auto;border-left:0;border-top:1px solid var(--line);overflow:visible}}
+.growth-note{margin:0;color:var(--muted);font-size:12px;line-height:1.5}
+.region-list{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.region-list button{font:inherit;text-align:left;color:var(--paper);background:transparent;border:1px solid var(--line);border-radius:7px;padding:9px;min-height:44px;cursor:pointer}
+.region-list button small{display:block;color:var(--muted);margin-top:3px}
+.region-list button[aria-pressed=true]{border-color:var(--amber);background:rgba(233,161,59,.1)}
+.region-list button:hover{border-color:var(--amber)}
+::selection{background:var(--amber);color:var(--ink)}
+#bench{scrollbar-color:var(--muted) var(--bench)}
+.tools button[aria-pressed=true]{background:var(--amber);border-color:var(--amber);color:var(--ink)}
+.slider{display:flex;align-items:center;gap:8px;min-width:0}.slider output{min-width:3ch;text-align:right;font-size:12px;font-variant-numeric:tabular-nums;color:var(--paper)}
+#gl:focus-visible{outline:2px solid var(--amber);outline-offset:-3px}
+@media (max-width:820px){body{flex-direction:column;overflow:hidden}#stage{flex:none;height:48%}#bench{width:auto;flex:1;min-height:0;border-left:0;border-top:1px solid var(--line);overflow:auto}.seg button,.chips button,.tools button{min-height:44px}input[type=range]{min-height:32px}}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="growth.js"></script>
 </head>
 <body>
-<div id="stage"><canvas id="gl"></canvas><div id="hint" data-i="hint">Arrastra para girar · rueda para acercar</div></div>
+<div id="stage"><canvas id="gl" tabindex="0" aria-label="Vista de la criatura"></canvas><div id="hint">Arrastra para girar · rueda para acercar</div></div>
 <aside id="bench">
   <div class="tools"><button id="undo" data-i="undo">Deshacer</button><button id="redo" data-i="redo">Rehacer</button><button id="lang" aria-label="Language">EN</button></div>
   <h1 data-i="title">Taller de criaturas</h1>
   <p data-i="lede">Piezas de biblioteca, deformación en directo y andar procedural. Ningún movimiento está animado a mano.</p>
   <div class="chips" id="presets"></div>
+  <div id="ui" style="display:grid;gap:16px"></div>
   <section id="dna"><div class="top"><h2 data-i="dna">ADN</h2><span><b id="cost">0</b> / <span id="budget">100</span></span></div><div class="meter"><i id="meter"></i></div><small id="dnanote"></small></section>
   <section><h2 data-i="abilities">Capacidades</h2><div id="stats"></div></section>
-  <div id="ui" style="display:grid;gap:16px"></div>
   <section><h2 data-i="genome">Genoma</h2>
     <div class="tools"><button id="export" data-i="export">Copiar JSON</button><button id="import" data-i="import">Cargar JSON</button><button id="save" data-i="save">Descargar .json</button><button id="shot" data-i="shot">Captura PNG</button><button id="share" data-i="share">Enlace</button></div>
     <textarea id="json" spellcheck="false" aria-label="Genome JSON"></textarea><div id="msg" role="status"></div></section>
@@ -87,12 +99,42 @@ const PRESETS={
  Acorazado:{body:3.6,girth:1.25,neck:.7,tail:3,pairs:2,leg:1.15,legW:.36,head:.7,eye:.18,mouth:'romo',horns:'corona',back:'placas',tailTip:'maza',pat:2,cA:'#6c7440',cB:'#2f3320',cC:'#d8cfa6',wet:.12,scale:5,speed:1.5},
  Zancudo:{body:2.4,girth:.7,neck:3,tail:2.2,pairs:2,leg:3,legW:.17,head:.5,eye:.3,mouth:'pico',horns:'ninguno',back:'vela',tailTip:'lisa',pat:3,cA:'#3d5fa8',cB:'#8a4fb0',cC:'#f0e6c8',wet:.45,scale:9,speed:2.4},
  Trepador:{body:3.8,girth:.7,neck:.8,tail:5,pairs:3,leg:1.05,legW:.2,head:.6,eye:.28,mouth:'romo',horns:'nasal',back:'liso',tailTip:'púas',pat:1,cA:'#2f8a5a',cB:'#12382c',cC:'#e9e2a8',wet:.6,scale:10,speed:2.6}};
-const DEF={arms:'ninguno',armL:.7,lv:{mouth:2,horns:2,back:2,tailTip:2,arms:2}};
+const DEF={arms:'ninguno',armL:.7,growth:'ninguno',growthPos:.6,growthSpan:.55,growthLength:1,growthCurve:.45,growthCount:7,growthBranches:1,growthAngle:.55,growthMirror:1,growthSeed:17,lv:{mouth:2,horns:2,back:2,tailTip:2,arms:2}};
 PRESETS.Cazador.arms='garras';PRESETS.Cazador.armL=.55;PRESETS.Zancudo.arms='manos';PRESETS.Zancudo.armL=.9;
-const fresh=p=>JSON.parse(JSON.stringify({...DEF,...p,lv:{...DEF.lv,...(p.lv||{})}}));
+PRESETS.Coralino={...PRESETS.Acorazado,neck:1.1,horns:'ninguno',back:'liso',tailTip:'lisa',cA:'#54877a',cB:'#233c42',cC:'#e3d7b6',growth:'ramas',growthCount:9,growthBranches:3,growthLength:1.25,growthCurve:.65,growthPos:.6,growthSpan:.75,growthAngle:.55,growthSeed:491};
+PRESETS.Abisal={...PRESETS.Zancudo,neck:1.8,leg:1.8,back:'liso',arms:'ninguno',cA:'#315575',cB:'#152b43',cC:'#b5d0c9',growth:'filamentos',growthCount:10,growthBranches:1,growthLength:1.5,growthCurve:.8,growthPos:.6,growthAngle:.9,growthSeed:118};
+const GROWTH_IDS={ninguno:'none',ramas:'horns',placas:'plates',filamentos:'tendrils'};
+const GROWTH_FIELDS={growthPos:'position',growthSpan:'coverage',growthLength:'length',growthCurve:'curve',growthCount:'count',growthBranches:'branches',growthAngle:'angle',growthMirror:'mirror',growthSeed:'seed',growthSurface:'surface'};
+const regionDefaults={schema:CreatureGrowth.VERSION,family:'horns',seed:17,count:7,length:1,curve:.45,branches:1,position:.6,coverage:.55,angle:.55,mirror:true,surface:'torso'};
+function fresh(p){
+  const f=JSON.parse(JSON.stringify({...DEF,...p,lv:{...DEF.lv,...(p.lv||{})}}));
+  if(!Array.isArray(f.regions)){
+    f.regions=[];
+    if(f.growth!=='ninguno'){
+      const region={id:'region-1',...regionDefaults,family:GROWTH_IDS[f.growth]};
+      for(const[k,field]of Object.entries(GROWTH_FIELDS))if(f[k]!==undefined)region[field]=k==='growthMirror'?!!f[k]:f[k];
+      f.regions.push(region);
+    }
+  }
+  for(const k of Object.keys(f))if(k.startsWith('growth'))delete f[k];
+  return f;
+}
 const P=fresh(PRESETS.Cazador);
+let selectedRegionId=null;
+const selectedRegion=()=>P.regions.find(r=>r.id===selectedRegionId)||null;
+function selectRegion(id){selectedRegionId=P.regions.some(r=>r.id===id)?id:P.regions[0]?.id||null}
+function addRegion(source={}){let n=1;while(P.regions.some(r=>r.id==='region-'+n))n++;const r={...regionDefaults,...source,id:'region-'+n};P.regions.push(r);selectedRegionId=r.id;return r}
+function controlValue(k){const r=selectedRegion();if(k==='growth')return r?Object.keys(GROWTH_IDS).find(x=>GROWTH_IDS[x]===r.family):'ninguno';if(k==='growthMirror')return +(r?.mirror??true);return GROWTH_FIELDS[k]?r?.[GROWTH_FIELDS[k]]??regionDefaults[GROWTH_FIELDS[k]]:P[k]}
+function setControl(k,v){
+  if(k==='growth'){
+    if(v==='ninguno'){P.regions=P.regions.filter(r=>r.id!==selectedRegionId);selectRegion(null)}
+    else{const r=selectedRegion()||addRegion();r.family=GROWTH_IDS[v]}
+  }else if(GROWTH_FIELDS[k]){const r=selectedRegion();if(r)r[GROWTH_FIELDS[k]]=k==='growthMirror'?!!v:v}
+  else P[k]=v;
+}
 const LV=k=>.8+.1*(P.lv[k]||1);
 const UI=[
+ ['Generar detalles',[['growth','Forma',['ninguno','ramas','placas','filamentos']],['growthSurface','Superficie',['torso','neck','tail']],['growthPos','Posición',0,1,.01],['growthSpan','Cobertura',0,1,.01],['growthAngle','Ángulo',-3.14,3.14,.01],['growthLength','Largo',.2,2.4,.05],['growthCount','Cantidad',1,18,1],['growthCurve','Curvatura',-1,1,.05],['growthBranches','Ramas',0,3,1],['growthMirror','Simetría',['Simple','Espejo'],1]]],
  ['Cuerpo',[['body','Torso',1.6,5,.05],['girth','Grosor',.45,1.5,.01],['neck','Cuello',.4,3.4,.05],['tail','Cola',.8,5.5,.05]]],
  ['Patas',[['pairs','Pares',1,3,1],['leg','Largo',.8,3.2,.05],['legW','Grosor',.12,.42,.01],['speed','Paso',0,4.5,.1]]],
  ['Cabeza',[['head','Tamaño',.4,1,.01],['eye','Ojos',.14,.38,.01],['mouth','Boca',['romo','fauces','pico']],['horns','Cuernos',['ninguno','par','nasal','corona']]]],
@@ -200,6 +242,71 @@ const NT=24,NB=20,NN=14,NS=NT+NB+1+NN,RN=22,I0=NT;
 const pts=[...Array(NS)].map(()=>V()),rest=[...Array(NS)].map(()=>V()),frames=[...Array(NS)].map(()=>({s:V(),u:V(),t:V()})),S=new Float32Array(NS),RAD=new Float32Array(NS),Y=V(0,1,0);
 const creature=new T.Group();scene.add(creature);const limbs=new T.Group();scene.add(limbs);
 let body,head,jaw,lids=[],orn=[],sail,legs=[],arms=[],tailOrn=[],theta=0,phase=0,clock=0;const A1=V(),A2=V(),A3=V(),A4=V();
+const growthRoot=new T.Group();scene.add(growthRoot);
+const regionViews=new Map();
+let growthParts=[],growthDirty=true,growthBuilds=0,growthBuildMs=0,editTool='orbit';
+const selectionGeometry=new T.TorusGeometry(1,.055,6,32).rotateX(Math.PI/2);
+const selectionMaterial=new T.MeshBasicMaterial({color:lin('#e9a13b')});
+const selectionMarkers=[1,-1].map(()=>{const ring=new T.Mesh(selectionGeometry,selectionMaterial);ring.visible=false;growthRoot.add(ring);return ring});
+const surfaceRange=surface=>surface==='neck'?[I0+NB,NS-1]:surface==='tail'?[0,I0]:[I0,I0+NB];
+function growthRecipe(r){return{family:r.family,seed:r.seed,count:r.count,length:r.length,curve:r.curve,branches:r.branches}}
+function rebuildGrowth(){
+  growthDirty=false;
+  const ids=new Set(P.regions.map(r=>r.id));
+  for(const[id,view]of regionViews)if(!ids.has(id)){clear(view.group);growthRoot.remove(view.group);regionViews.delete(id)}
+  for(const r of P.regions){
+    let view=regionViews.get(r.id);
+    if(!view){view={group:new T.Group(),parts:[],signature:'',skinKey:'',builds:0};growthRoot.add(view.group);regionViews.set(r.id,view)}
+    const recipe=growthRecipe(r),signature=JSON.stringify([recipe,P.girth]);
+    if(signature===view.signature)continue;
+    view.signature=signature;clear(view.group);view.parts=[];view.skinKey='';
+    const started=performance.now(),generated=CreatureGrowth.generate(recipe);
+    for(const piece of generated.pieces){
+      const geometry=new T.BufferGeometry();geometry.setAttribute('position',new T.BufferAttribute(piece.positions,3));geometry.setAttribute('normal',new T.BufferAttribute(piece.normals,3));geometry.setIndex(new T.BufferAttribute(piece.indices,1));geometry.scale(P.girth,P.girth,P.girth);
+      if(r.family==='tendrils')skinify(geometry,[0,0,piece.offset*P.body],.5);
+      for(const side of[1,-1]){const root=new T.Group();root.userData.regionId=r.id;view.group.add(root);
+        mesh(side===-1&&r.family==='tendrils'?geometry.clone():geometry,r.family==='tendrils'?skinM:boneM,root);
+        const radius=piece.rootRadius*P.girth;
+        mesh(skinify(ell(radius*1.4,radius*.45,radius*1.15),[0,0,piece.offset*P.body],.65),skinM,root);
+        view.parts.push({root,offset:piece.offset,side,radius,regionId:r.id});
+      }
+    }
+    view.buildMs=performance.now()-started;growthBuildMs=view.buildMs;growthBuilds++;view.builds++;
+  }
+  growthParts=[...regionViews.values()].flatMap(v=>v.parts);
+}
+function positionGrowth(){
+  growthRoot.position.copy(creature.position);growthRoot.quaternion.copy(creature.quaternion);
+  for(const r of P.regions){
+    const view=regionViews.get(r.id);if(!view)continue;
+    const skinKey=[r.surface,r.position,r.coverage,r.angle].join(','),reskin=skinKey!==view.skinKey,[start,end]=surfaceRange(r.surface);
+    for(const part of view.parts){
+      part.root.visible=part.side===1||(r.mirror&&Math.abs(r.angle)>.04);
+      const along=(1-r.coverage)*r.position+r.coverage*(part.offset+.5);
+      const f=clamp(start+along*(end-start),start,end),i=Math.floor(f),next=Math.min(i+1,NS-1),fr=frames[Math.round(f)];
+      const angle=r.angle*part.side,s=Math.sin(angle),c=Math.cos(angle),radius=lerp(RAD[i],RAD[next],f-i)*.98;
+      part.root.position.lerpVectors(pts[i],pts[next],f-i).addScaledVector(fr.s,s*radius).addScaledVector(fr.u,c*radius*(c<0?.9:1.06));
+      _m.makeBasis(fr.s,fr.u,fr.t);part.root.quaternion.setFromRotationMatrix(_m).multiply(_q.setFromAxisAngle(Z,-angle));
+      part.root.scale.x=part.side;
+      if(reskin){
+        const tangent=rest[Math.min(i+1,NS-1)].clone().sub(rest[Math.max(0,i-1)]).normalize(),side=Y.clone().cross(tangent).normalize(),up=tangent.clone().cross(side);
+        const base=rest[i].clone().lerp(rest[next],f-i).addScaledVector(side,s*radius).addScaledVector(up,c*radius*(c<0?.9:1.06));
+        const sx=side.clone().multiplyScalar(c).addScaledVector(up,-s).multiplyScalar(part.side),sy=side.clone().multiplyScalar(s).addScaledVector(up,c);
+        for(const child of part.root.children){const skin=child.geometry.getAttribute('skin');if(!skin)continue;const p=child.geometry.getAttribute('position');
+          for(let k=0;k<p.count;k++)skin.setXYZW(k,base.x+sx.x*p.getX(k)+sy.x*p.getY(k)+tangent.x*p.getZ(k),base.y+sx.y*p.getX(k)+sy.y*p.getY(k)+tangent.y*p.getZ(k),base.z+sx.z*p.getX(k)+sy.z*p.getY(k)+tangent.z*p.getZ(k),c);
+          skin.needsUpdate=true;
+        }
+      }
+    }
+    view.skinKey=skinKey;
+  }
+  const selected=regionViews.get(selectedRegionId);
+  selectionMarkers.forEach((ring,i)=>{
+    const part=selected?.parts.filter(p=>p.side===(i===0?1:-1)).reduce((a,b)=>!a||Math.abs(b.offset)<Math.abs(a.offset)?b:a,null);
+    ring.visible=!!part?.root.visible;
+    if(part){ring.position.copy(part.root.position).addScaledVector(Y.clone().applyQuaternion(part.root.quaternion),.035*P.girth);ring.quaternion.copy(part.root.quaternion);ring.scale.setScalar(Math.max(.09*P.girth,part.radius*1.6))}
+  });
+}
 const standH=()=>P.leg*.84+P.girth*.3;
 function computeSpine(out,anim){const Lb=P.body,Ln=P.neck,Lt=P.tail,bip=P.pairs===1,p0=bip?.5:.05,rise=Math.min(1.05,.45+Ln*.22)*(bip?.4:1);
   const dir=i=>{const s=S[i];let pi,yw=0;
@@ -211,8 +318,8 @@ function computeSpine(out,anim){const Lb=P.body,Ln=P.neck,Lt=P.tail,bip=P.pairs=
   for(let i=I0+1;i<NS;i++){dir(i);out[i].copy(out[i-1]).addScaledVector(_t,S[i]-S[i-1])}
   for(let i=I0-1;i>=0;i--){dir(i);out[i].copy(out[i+1]).addScaledVector(_t,-(S[i+1]-S[i]));out[i].y=Math.max(out[i].y,RAD[i]+.04)}}
 function spineAt(arr,s,o){const f=clamp(I0+s/P.body*NB,0,NS-1.001),i=f|0;return o.lerpVectors(arr[i],arr[i+1],f-i)}
-function clear(g){for(const c of[...g.children]){g.remove(c);c.traverse(o=>{if(o.geometry)o.geometry.dispose()})}}
-function build(){
+function clear(g){const geometries=new Set();for(const c of[...g.children]){g.remove(c);c.traverse(o=>{if(o.geometry)geometries.add(o.geometry)})}for(const geometry of geometries)geometry.dispose()}
+function build(resetCamera=false){
   clear(creature);clear(limbs);orn=[];tailOrn=[];lids=[];legs=[];arms=[];sail=null;
   const{body:Lb,neck:Ln,tail:Lt,girth:g,head:hr}=P;
   for(let i=0;i<NT;i++)S[i]=-Lt*(1-i/NT);for(let j=0;j<=NB;j++)S[NT+j]=Lb*j/NB;for(let k=1;k<=NN;k++)S[NT+NB+k]=Lb+Ln*k/NN;
@@ -270,18 +377,22 @@ function build(){
         else{const fg=mesh(skinify(curveTube(u=>V(0,-aw*.2*u*u,aw*1.3*u),aw*.26,6,8,Y),o,0),skinM,hd);fg.position.set(fx,0,aw*.5);fg.rotation.y=(f/(n-1)-.5)*.5}}
       arms.push({s,sx,up,lo,hd,aa,ab,quad:P.pairs>1})}}
   creature.updateMatrixWorld(true);placeBody();for(const l of legs)l.foot.copy(l.home).applyMatrix4(creature.matrixWorld);
-  camDist=4.5+(Lb+Ln+Lt)*.6+P.leg*.9;
+  if(resetCamera)camDist=4.5+(Lb+Ln+Lt)*.6+P.leg*.9;
+  rebuildGrowth();
+  for(const view of regionViews.values())view.skinKey='';
 }
 const _m=new T.Matrix4(),_q=new T.Quaternion(),_q2=new T.Quaternion(),_a=V(),_b=V(),_c=V(),_d=V(),DOWN=V(0,-1,0),Z=V(0,0,1);
 function placeBody(){creature.position.set(Math.sin(theta)*RC,0,Math.cos(theta)*RC);creature.rotation.y=theta+Math.PI/2;creature.updateMatrixWorld(true)}
 const poseAt=(th,loc,o)=>o.copy(loc).applyAxisAngle(Y,th+Math.PI/2).add(_d.set(Math.sin(th)*RC,0,Math.cos(th)*RC));
 function update(dt){
+  if(editTool==='growth'||drag?.kind==='growth')dt=0;
   clock+=dt;grassU.uTime.value=clock;
   const stride=P.leg*1.3,freq=P.speed/stride,k=clamp(P.speed/1.5,0,1),SW=.38;
   theta+=P.speed*dt/RC;phase+=freq*dt;const w=phase*6.28318;
   placeBody();creature.rotation.z=Math.sin(w)*.03*k;creature.updateMatrixWorld(true);
   computeSpine(pts,{t:clock,w,k,bob:Math.sin(w*2)*.035*P.leg*k+Math.sin(clock*1.7)*.012});
   fillTube(body.geometry,pts,RAD,RN,Y,true,frames);
+  positionGrowth();
   /* cabeza */
   const e=pts[NS-1],f=frames[NS-1].t;head.position.copy(e).addScaledVector(f,P.head*.35);head.rotation.set(-(Math.asin(clamp(f.y,-1,1))*.3-.06),Math.atan2(f.x,f.z)*1.25,0,'YXZ');
   const roar=Math.max(0,Math.sin(clock*.9-1))**24;jaw.rotation.x=.07+.05*Math.sin(clock*2.1)+roar*.65;
@@ -320,12 +431,50 @@ function update(dt){
 /* ---------- cámara ---------- */
 let camYaw=2.5,camPitch=.16,camDist=14,drag=null;const tgt=V(RC,1.5,0),want=V();
 function frameCam(dt,snap){spineAt(pts,P.body*.55,want).applyMatrix4(creature.matrixWorld);want.y=standH()*.95+P.neck*.12;if(snap)tgt.copy(want);else tgt.lerp(want,1-Math.pow(.02,dt));
-  const a=camYaw+theta*.0,cp=Math.cos(camPitch);camera.position.set(tgt.x+Math.sin(a)*cp*camDist,Math.max(.35,tgt.y+Math.sin(camPitch)*camDist),tgt.z+Math.cos(a)*cp*camDist);camera.lookAt(tgt);sky.position.copy(camera.position);
+  const a=camYaw+theta*.0,cp=Math.cos(camPitch),dist=camDist*Math.max(1,1.2/camera.aspect);camera.position.set(tgt.x+Math.sin(a)*cp*dist,Math.max(.35,tgt.y+Math.sin(camPitch)*dist),tgt.z+Math.cos(a)*cp*dist);camera.lookAt(tgt);sky.position.copy(camera.position);
   sun.target.position.set(0,0,0)}
 const gl=$('gl');
-gl.addEventListener('pointerdown',e=>{drag=[e.clientX,e.clientY];gl.setPointerCapture(e.pointerId);gl.style.cursor='grabbing'});
-gl.addEventListener('pointermove',e=>{if(drag){camYaw-=(e.clientX-drag[0])*.006;camPitch=clamp(camPitch+(e.clientY-drag[1])*.004,-.02,1.2);drag=[e.clientX,e.clientY]}});
-for(const ev of['pointerup','pointercancel'])gl.addEventListener(ev,()=>{drag=null;gl.style.cursor='grab'});
+const pickRay=new T.Raycaster(),pickPointer=new T.Vector2();
+function castPointer(e){const rect=gl.getBoundingClientRect();pickPointer.set((e.clientX-rect.left)/rect.width*2-1,1-(e.clientY-rect.top)/rect.height*2);pickRay.setFromCamera(pickPointer,camera);scene.updateMatrixWorld(true)}
+function placeGrowth(e){
+  const r=selectedRegion();if(!r)return false;
+  castPointer(e);body.geometry.computeBoundingSphere();const hit=pickRay.intersectObject(body)[0];if(!hit)return false;
+  const local=creature.worldToLocal(hit.point.clone());let best=Infinity,anchor=I0;
+  for(let i=0;i<NS-1;i++){const edge=pts[i+1].clone().sub(pts[i]),u=clamp(local.clone().sub(pts[i]).dot(edge)/edge.lengthSq(),0,1),p=pts[i].clone().addScaledVector(edge,u),distance=p.distanceToSquared(local);if(distance<best){best=distance;anchor=i+u}}
+  const oldSurface=r.surface;r.surface=anchor<I0?'tail':anchor>I0+NB?'neck':'torso';
+  const[start,end]=surfaceRange(r.surface),i=Math.floor(anchor),fr=frames[Math.round(anchor)],center=pts[i].clone().lerp(pts[Math.min(i+1,NS-1)],anchor-i),delta=local.sub(center);
+  r.position=+(r.coverage<.999?clamp(((anchor-start)/(end-start)-r.coverage*.5)/(1-r.coverage),0,1):.5).toFixed(2);r.angle=+clamp(Math.atan2(delta.dot(fr.s),delta.dot(fr.u)),-3.14,3.14).toFixed(2);
+  if(oldSurface!==r.surface)drawUI();
+  for(const key of['growthPos','growthAngle']){const el=$('r-'+key);if(el)el.value=controlValue(key);const out=$('v-'+key);if(out)out.value=controlValue(key)}
+  positionGrowth();drawPanel();return true;
+}
+function syncEditTool(){
+  if(!selectedRegion())editTool='orbit';
+  const active=editTool==='growth',button=$('placeGrowth');if(button)button.setAttribute('aria-pressed',String(active));
+  $('hint').textContent=tr(active?'Arrastra sobre el cuerpo · flechas para mover · Esc para salir':'Selecciona un detalle · arrastra el fondo para girar');
+  gl.style.cursor=active?'crosshair':'grab';gl.setAttribute('aria-label',tr('Vista de la criatura'));
+}
+gl.addEventListener('pointerdown',e=>{
+  if(e.button!==0||drag)return;castPointer(e);
+  body.geometry.computeBoundingSphere();
+  const surfaceHit=pickRay.intersectObject(body)[0];
+  const hit=pickRay.intersectObjects(growthParts.filter(p=>p.root.visible).map(p=>p.root),true).find(h=>!surfaceHit||h.distance<=surfaceHit.distance+.015);
+  const hitId=hit?.object.parent.userData.regionId;
+  if(hitId){selectRegion(hitId);drawUI()}
+  const moving=!!selectedRegion()&&(editTool==='growth'||!!hitId);
+  drag={kind:moving?'growth':'orbit',x:e.clientX,y:e.clientY,startX:e.clientX,startY:e.clientY,moved:false,pointerId:e.pointerId,snapshot:JSON.stringify(P)};
+  if(moving&&editTool==='growth'&&!hitId)placeGrowth(e);
+  gl.setPointerCapture(e.pointerId);gl.focus();gl.style.cursor=moving?'crosshair':'grabbing';
+});
+gl.addEventListener('pointermove',e=>{
+  if(!drag||drag.pointerId!==e.pointerId)return;
+  drag.moved=drag.moved||Math.hypot(e.clientX-drag.startX,e.clientY-drag.startY)>3;
+  if(drag.kind==='growth'){if(drag.moved)placeGrowth(e)}else{camYaw-=(e.clientX-drag.x)*.006;camPitch=clamp(camPitch+(e.clientY-drag.y)*.004,-.02,1.2)}drag.x=e.clientX;drag.y=e.clientY;
+});
+gl.addEventListener('pointerup',e=>{if(drag?.pointerId!==e.pointerId)return;if(drag.kind==='growth')commit();drag=null;syncEditTool()});
+gl.addEventListener('pointercancel',e=>{if(drag?.pointerId!==e.pointerId)return;const before=drag.kind==='growth'?drag.snapshot:null;drag=null;if(before)restore(before);syncEditTool()});
+gl.addEventListener('keydown',e=>{if(editTool!=='growth'||!['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(e.key))return;e.preventDefault();const key=e.key==='ArrowLeft'||e.key==='ArrowRight'?'growthPos':'growthAngle',dir=e.key==='ArrowLeft'||e.key==='ArrowDown'?-1:1;setControl(key,+(key==='growthPos'?clamp(controlValue(key)+dir*.01,0,1):clamp(controlValue(key)+dir*.05,-3.14,3.14)).toFixed(2));drawUI();positionGrowth();commit()});
+addEventListener('keydown',e=>{if(e.key!=='Escape')return;const before=drag?.kind==='growth'?drag.snapshot:null;drag=null;editTool='orbit';if(before)restore(before);syncEditTool()});
 gl.addEventListener('wheel',e=>{camDist=clamp(camDist*(1+e.deltaY*.001),4,60);e.preventDefault()},{passive:false});
 function resize(){const s=$('stage'),w=s.clientWidth||800,h=s.clientHeight||600;renderer.setPixelRatio(Math.min(devicePixelRatio||1,2));renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix()}
 addEventListener('resize',resize);
@@ -348,6 +497,7 @@ const EN={'Taller de criaturas':'Creature workshop','Piezas de biblioteca, defor
   Velocidad:'Speed',Salto:'Jump',Morder:'Bite',Embestir:'Charge',Golpear:'Strike',Cantar:'Sing',Bailar:'Dance',Encanto:'Charm',Posar:'Pose',Salud:'Health',Sigilo:'Stealth',Vista:'Sight',
   'Dentro del presupuesto de la fase final del estadio criatura.':'Within the final creature-stage budget.','Supera el presupuesto: el núcleo rechazará este diseño (no se recorta).':'Over budget: the core will reject this design (it is never trimmed).',
   'Copiado al portapapeles':'Copied to clipboard','Diseño cargado':'Design loaded','Captura descargada':'Snapshot downloaded','Arrastra para girar · rueda para acercar':'Drag to orbit · scroll to zoom',Enlace:'Share link','Semilla':'Seed','Genoma no válido':'Invalid genome','El navegador no ha permitido copiar':'The browser blocked copying'};
+Object.assign(EN,{'Regiones':'Regions','Añadir región':'Add region','Duplicar':'Duplicate','Eliminar':'Delete','Placas':'Plates','Filamentos':'Tendrils','Superficie':'Surface','Cada región conserva su forma, posición y simetría.':'Each region keeps its own shape, position and symmetry.','Selecciona un detalle · arrastra el fondo para girar':'Select a detail · drag the background to orbit','Generar detalles':'Generate details',Forma:'Form',ramas:'horn branches',filamentos:'tendrils',Posición:'Position',Cobertura:'Coverage','Ángulo':'Angle',Cantidad:'Count',Curvatura:'Curvature',Ramas:'Branches',Simetría:'Symmetry',Simple:'Single',Espejo:'Mirror',Coralino:'Coralback',Abisal:'Abyssal','Colocar en el cuerpo':'Place on body','Nueva variante':'New variation','Crea cuernos, placas o filamentos con geometría nueva.':'Grow horns, plates or tendrils with new geometry.','Detalles artísticos; no cambian las capacidades.':'Artistic details; abilities are unchanged.','Arrastra sobre el cuerpo · flechas para mover · Esc para salir':'Drag over the body · arrow keys to move · Esc to exit','Vista de la criatura':'Creature viewport'});
 let lang='es';try{lang=localStorage.getItem('cpore.lang')||'es'}catch(e){}
 const tr=t=>lang==='en'&&EN[t]?EN[t]:t;
 const c5=x=>Math.round(clamp(x,0,5)*10)/10;
@@ -371,47 +521,88 @@ function drawPanel(){const st=abilities();$('stats').innerHTML=st.map(([n,v])=>`
   $('dnanote').textContent=tr(ov?'Supera el presupuesto: el núcleo rechazará este diseño (no se recorta).':'Dentro del presupuesto de la fase final del estadio criatura.');
   if(document.activeElement!==$('json'))$('json').value=JSON.stringify(toGenome(),null,1)}
 function toGenome(){const r=v=>Math.round(v*1000)/1000;
-  return{schema:'cpore.creature/1',body:{torso:r(P.body),girth:r(P.girth),neck:r(P.neck),tail:r(P.tail)},legs:{pairs:P.pairs,length:r(P.leg),width:r(P.legW),stride:r(P.speed)},
+  return{schema:'cpore.creature/3',body:{torso:r(P.body),girth:r(P.girth),neck:r(P.neck),tail:r(P.tail)},legs:{pairs:P.pairs,length:r(P.leg),width:r(P.legW),stride:r(P.speed)},
    head:{size:r(P.head),eyes:r(P.eye)},arms:{length:r(P.armL)},parts:PART_SLOTS.filter(k=>P[k]!==NONE[k]).map(k=>({slot:k,type:IDS[k][P[k]],level:P.lv[k]||1})),
-   skin:{pattern:PAT_IDS[P.pat],colors:{base:P.cA,pattern:P.cB,belly:P.cC},scale:r(P.scale),gloss:r(P.wet)},dna:cost(),abilities:Object.fromEntries(abilities().map(([n,v])=>[EN[n].toLowerCase(),v]))}}
+   skin:{pattern:PAT_IDS[P.pat],colors:{base:P.cA,pattern:P.cB,belly:P.cC},scale:r(P.scale),gloss:r(P.wet)},
+   regions:P.regions.map(x=>({id:x.id,schema:CreatureGrowth.VERSION,...growthRecipe(x),surface:x.surface,position:r(x.position),coverage:r(x.coverage),angle:r(x.angle),mirror:x.mirror})),
+   dna:cost(),abilities:Object.fromEntries(abilities().map(([n,v])=>[EN[n].toLowerCase(),v]))}}
 /* valida contra los rangos del banco; un genoma fuera de rango se rechaza con la lista de errores (DESIGN.md Q11) */
 function fromGenome(g){const err=[],out=fresh({}),R={};for(const[,rows]of UI)for(const[k,,a,b]of rows)if(!Array.isArray(a)&&k!=='colors')R[k]=[a,b];
-  const num=(k,v)=>{if(typeof v!=='number'||!isFinite(v))return err.push(`${k}: not a number`);if(R[k]&&(v<R[k][0]-1e-9||v>R[k][1]+1e-9))return err.push(`${k}: ${v} outside [${R[k][0]}, ${R[k][1]}]`);out[k]=v};
-  if(!g||g.schema!=='cpore.creature/1')err.push('schema must be "cpore.creature/1"');else{
+  const num=(k,v,target=out,field=k)=>{if(typeof v!=='number'||!isFinite(v))return err.push(`${k}: not a number`);if(R[k]&&(v<R[k][0]-1e-9||v>R[k][1]+1e-9))return err.push(`${k}: ${v} outside [${R[k][0]}, ${R[k][1]}]`);target[field]=v};
+  if(!g||!['cpore.creature/1','cpore.creature/2','cpore.creature/3'].includes(g.schema))err.push('schema must be cpore.creature/1, /2 or /3');else{
    num('body',g.body?.torso);num('girth',g.body?.girth);num('neck',g.body?.neck);num('tail',g.body?.tail);num('pairs',g.legs?.pairs);num('leg',g.legs?.length);num('legW',g.legs?.width);num('speed',g.legs?.stride);
    num('head',g.head?.size);num('eye',g.head?.eyes);num('armL',g.arms?.length??.7);num('scale',g.skin?.scale);num('wet',g.skin?.gloss);
+   let sources=[];
+   if(g.schema==='cpore.creature/3'){
+     if(!Array.isArray(g.regions))err.push('regions: expected an array');else if(g.regions.length>64)err.push('regions: this editor supports up to 64 regions');else sources=g.regions;
+   }else if(g.growth!==undefined){sources=[g.growth&&{...g.growth,id:'region-1',surface:'torso'}]}
+   else if(g.schema==='cpore.creature/2')err.push('growth: required in cpore.creature/2');
+   const ids=new Set();
+   for(const x of sources){
+     if(!x||x.schema!==CreatureGrowth.VERSION){err.push('region: unsupported recipe schema');continue}
+     const region={...regionDefaults,id:x.id};
+     if(typeof x.id!=='string'||!/^[-a-zA-Z0-9_]{1,64}$/.test(x.id)||ids.has(x.id))err.push('region.id: expected a unique identifier (1–64 letters, digits, underscores or hyphens)');
+     ids.add(x.id);
+     const legacyNone=g.schema!=='cpore.creature/3'&&x.family==='none';
+     if(!['horns','plates','tendrils'].includes(x.family)&&!legacyNone)err.push('region.family: unknown family');else region.family=x.family;
+     if(!['torso','neck','tail'].includes(x.surface))err.push('region.surface: expected torso, neck or tail');else region.surface=x.surface;
+     for(const[k,field]of Object.entries(GROWTH_FIELDS))if(!['growthMirror','growthSeed','growthSurface'].includes(k))num(k,x[field],region,field);
+     if(!Number.isInteger(x.seed)||x.seed<0||x.seed>4294967295)err.push('region.seed: expected uint32');else region.seed=x.seed;
+     if(!Number.isInteger(x.count)||!Number.isInteger(x.branches))err.push('region: count and branches must be integers');
+     if(typeof x.mirror!=='boolean')err.push('region.mirror: expected boolean');else region.mirror=x.mirror;
+     if(!legacyNone)out.regions.push(region);
+   }
    const pi=PAT_IDS.indexOf(g.skin?.pattern);if(pi<0)err.push('skin.pattern: one of '+PAT_IDS.join(', '));else out.pat=pi;
    for(const q of['base','pattern','belly'])if(!/^#[0-9a-f]{6}$/i.test(g.skin?.colors?.[q]||''))err.push(`skin.colors.${q}: #rrggbb`);
    if(!err.length){out.cA=g.skin.colors.base;out.cB=g.skin.colors.pattern;out.cC=g.skin.colors.belly}
    for(const k of PART_SLOTS)out[k]=NONE[k]??'romo';
-   for(const p of g.parts||[]){const m=IDS[p.slot];if(!m){err.push(`parts: unknown slot ${p.slot}`);continue}
+   const parts=Array.isArray(g.parts)?g.parts:[];if(!Array.isArray(g.parts))err.push('parts: expected an array');
+   for(const p of parts){if(!p||typeof p!=='object'){err.push('parts: expected an object');continue}const m=Object.hasOwn(IDS,p.slot)?IDS[p.slot]:null;if(!m){err.push(`parts: unknown slot ${p.slot}`);continue}
      const v=Object.keys(m).find(x=>m[x]===p.type);if(!v){err.push(`parts.${p.slot}: unknown type ${p.type}`);continue}
      if(!Number.isInteger(p.level)||p.level<1||p.level>5){err.push(`parts.${p.slot}: level 1-5`);continue}out[p.slot]=v;out.lv[p.slot]=p.level}
-   if(!(g.parts||[]).some(p=>p.slot==='mouth'))err.push('parts: a mouth is required')}
+   if(!parts.some(p=>p?.slot==='mouth'))err.push('parts: a mouth is required')}
   if(err.length)throw new Error(err.join('\n'));return out}
-function drawUI(){$('ui').innerHTML=UI.map(([title,rows])=>`<section><h2>${tr(title)}</h2>${rows.map(([k,label,a,b,c])=>
+const surfaceLabel=s=>({torso:'Torso',neck:'Cuello',tail:'Cola'})[s];
+const familyLabel=f=>({horns:'Cuernos',plates:'Placas',tendrils:'Filamentos'})[f];
+function regionPanel(){
+  const active=selectedRegion();
+  return `<div class="region-list" role="group" aria-label="${tr('Regiones')}">${P.regions.map((r,i)=>`<button data-region="${r.id}" aria-pressed="${r.id===selectedRegionId}">${tr(familyLabel(r.family))} ${i+1}<small>${tr(surfaceLabel(r.surface))} · ${tr(r.mirror?'Espejo':'Simple')}</small></button>`).join('')}</div>
+  <div class="tools"><button data-growth-action="add" ${P.regions.length>=64?'disabled':''}>${tr('Añadir región')}</button>${active?`<button data-growth-action="duplicate" ${P.regions.length>=64?'disabled':''}>${tr('Duplicar')}</button><button data-growth-action="delete">${tr('Eliminar')}</button>`:''}</div>
+  ${active?`<div class="tools"><button id="placeGrowth" data-growth-action="place" aria-pressed="${editTool==='growth'}">${tr('Colocar en el cuerpo')}</button><button data-growth-action="vary">${tr('Nueva variante')}</button></div>`:''}`;
+}
+function drawUI(){selectRegion(selectedRegionId);$('ui').innerHTML=UI.map(([title,rows])=>`<section><h2>${tr(title)}</h2>${title==='Generar detalles'?regionPanel():''}${rows.filter(([k])=>title!=='Generar detalles'||k==='growth'||selectedRegion()&&(k!=='growthBranches'||controlValue('growth')!=='placas')).map(([k,label,a,b,c])=>
   k==='colors'?`<div class="row"><span>${tr(label)}</span><div class="colors">${['cA','cB','cC'].map((q,i)=>`<input type="color" id="c-${q}" data-col="${q}" value="${P[q]}" aria-label="${['base','pattern','belly'][i]}">`).join('')}</div></div>`
-  :Array.isArray(a)?`<div class="row"><span>${tr(label)}</span><div><div class="seg">${a.map((o,i)=>`<button id="s-${k}-${i}" data-seg="${k}" data-v="${b?i:o}" aria-pressed="${String(P[k])===String(b?i:o)}">${tr(o)}</button>`).join('')}</div>${PART_SLOTS.includes(k)&&P[k]!==NONE[k]?`<div class="lv" role="group" aria-label="${tr('Nivel')}">${[1,2,3,4,5].map(n=>`<button data-lv="${k}" data-n="${n}" aria-pressed="${P.lv[k]===n}">${n}</button>`).join('')}</div>`:''}</div></div>`
-  :`<div class="row"><label for="r-${k}">${tr(label)}</label><input type="range" id="r-${k}" data-k="${k}" min="${a}" max="${b}" step="${c}" value="${P[k]}"></div>`).join('')}</section>`).join('');
+  :Array.isArray(a)?`<div class="row"><span>${tr(label)}</span><div><div class="seg">${a.map((o,i)=>`<button id="s-${k}-${i}" data-seg="${k}" data-v="${b?i:o}" aria-pressed="${String(controlValue(k))===String(b?i:o)}">${tr(k==='growthSurface'?surfaceLabel(o):o)}</button>`).join('')}</div>${PART_SLOTS.includes(k)&&P[k]!==NONE[k]?`<div class="lv" role="group" aria-label="${tr('Nivel')}">${[1,2,3,4,5].map(n=>`<button data-lv="${k}" data-n="${n}" aria-pressed="${P.lv[k]===n}">${n}</button>`).join('')}</div>`:''}</div></div>`
+  :`<div class="row"><label for="r-${k}">${tr(label)}</label><div class="slider"><input type="range" id="r-${k}" data-k="${k}" min="${a}" max="${b}" step="${c}" value="${controlValue(k)}"><output id="v-${k}" for="r-${k}">${controlValue(k)}</output></div></div>`).join('')}${title==='Generar detalles'?`<p class="growth-note">${tr(selectedRegion()?'Cada región conserva su forma, posición y simetría.':'Crea cuernos, placas o filamentos con geometría nueva.')}</p>${selectedRegion()?`<p class="growth-note">${tr('Semilla')} ${controlValue('growthSeed')} · ${tr('Detalles artísticos; no cambian las capacidades.')}</p>`:''}`:''}</section>`).join('');
   document.querySelectorAll('[data-i]').forEach(el=>{el.dataset.es=el.dataset.es||el.textContent;el.textContent=tr(el.dataset.es)});$('lang').textContent=lang==='es'?'EN':'ES';document.documentElement.lang=lang;
-  $('presets').innerHTML=Object.keys(PRESETS).map(n=>`<button data-p="${n}">${tr(n)}</button>`).join('')+`<button class="go" id="rand">${tr('Al azar')}</button>`;drawPanel()}
+  $('presets').innerHTML=Object.keys(PRESETS).map(n=>`<button data-p="${n}">${tr(n)}</button>`).join('')+`<button class="go" id="rand">${tr('Al azar')}</button>`;drawPanel();syncEditTool()}
 /* historial y autoguardado */
 const hist=[],fut=[];let lastSnap='';
 function commit(){const s=JSON.stringify(P);if(s===lastSnap)return;if(lastSnap)hist.push(lastSnap);if(hist.length>100)hist.shift();fut.length=0;lastSnap=s;try{localStorage.setItem('cpore.creature',s)}catch(e){}tools()}
 function tools(){$('undo').disabled=!hist.length;$('redo').disabled=!fut.length}
-function restore(s){const p=JSON.parse(s);for(const k in P)delete P[k];Object.assign(P,p);lastSnap=s;drawUI();syncSkin();build();try{localStorage.setItem('cpore.creature',s)}catch(e){}tools()}
+let pendingBuild=0;
+function scheduleBuild(){if(!pendingBuild)pendingBuild=requestAnimationFrame(()=>{pendingBuild=0;build()})}
+function flushBuild(resetCamera=false){if(pendingBuild){cancelAnimationFrame(pendingBuild);pendingBuild=0}build(resetCamera)}
+function restore(s){drag=null;const p=JSON.parse(s);for(const k in P)delete P[k];Object.assign(P,p);lastSnap=s;drawUI();syncSkin();flushBuild();try{localStorage.setItem('cpore.creature',s)}catch(e){}tools()}
 $('undo').addEventListener('click',()=>{if(hist.length){fut.push(lastSnap);restore(hist.pop())}});
 $('redo').addEventListener('click',()=>{if(fut.length){hist.push(lastSnap);restore(fut.pop())}});
 addEventListener('keydown',e=>{if(e.target.tagName==='TEXTAREA'||e.target.tagName==='INPUT'&&e.target.type!=='range')return;if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='z'){e.preventDefault();$(e.shiftKey?'redo':'undo').click()}});
 $('lang').addEventListener('click',()=>{lang=lang==='es'?'en':'es';try{localStorage.setItem('cpore.lang',lang)}catch(e){}drawUI()});
 function syncSkin(){SU.cA.value.copy(lin(P.cA));SU.cB.value.copy(lin(P.cB));SU.cC.value.copy(lin(P.cC));SU.uPat.value=P.pat;SU.uWet.value=P.wet;SU.uScale.value=P.scale;skinM.clearcoat=skinM2.clearcoat=P.wet*.8}
-$('ui').addEventListener('input',e=>{const t=e.target;if(t.dataset.k){P[t.dataset.k]=+t.value;if(['wet','scale','speed'].includes(t.dataset.k))syncSkin();else build();drawPanel()}if(t.dataset.col){P[t.dataset.col]=t.value;syncSkin();drawPanel()}});
+$('ui').addEventListener('input',e=>{const t=e.target;if(t.dataset.k){const k=t.dataset.k;setControl(k,+t.value);const out=$('v-'+k);if(out)out.value=controlValue(k);if(k.startsWith('growth'))growthDirty=true;else if(['wet','scale'].includes(k))syncSkin();else if(k!=='speed')scheduleBuild();drawPanel()}if(t.dataset.col){P[t.dataset.col]=t.value;syncSkin();drawPanel()}});
 $('ui').addEventListener('change',commit);
-$('ui').addEventListener('click',e=>{const l=e.target.closest('[data-lv]');if(l){P.lv[l.dataset.lv]=+l.dataset.n;drawUI();build();commit();return}
-  const t=e.target.closest('[data-seg]');if(!t)return;const k=t.dataset.seg;P[k]=k==='pat'?+t.dataset.v:k==='pairs'?+t.dataset.v:t.dataset.v;drawUI();if(k==='pat')syncSkin();else build();commit()});
+$('ui').addEventListener('click',e=>{
+  const regionButton=e.target.closest('[data-region]');if(regionButton){selectRegion(regionButton.dataset.region);drawUI();document.querySelector(`[data-region="${selectedRegionId}"]`)?.focus({preventScroll:true});return}
+  const action=e.target.closest('[data-growth-action]')?.dataset.growthAction;
+  if(action==='add'||action==='duplicate'){if(P.regions.length>=64)return;const source=action==='duplicate'?selectedRegion():{coverage:.25,count:5};if(!source)return;addRegion(source);growthDirty=true;editTool='growth';drawUI();commit();gl.focus({preventScroll:true});return}
+  if(action==='delete'){setControl('growth','ninguno');growthDirty=true;drawUI();commit();document.querySelector('[data-region][aria-pressed=true], [data-growth-action=add]')?.focus({preventScroll:true});return}
+  if(action==='place'){editTool=editTool==='growth'?'orbit':'growth';syncEditTool();if(editTool==='growth')gl.focus();return}
+  if(action==='vary'){setControl('growthSeed',(controlValue('growthSeed')+1)>>>0);growthDirty=true;drawUI();commit();document.querySelector('[data-growth-action=vary]')?.focus({preventScroll:true});return}
+  const l=e.target.closest('[data-lv]');if(l){P.lv[l.dataset.lv]=+l.dataset.n;drawUI();scheduleBuild();commit();return}
+  const t=e.target.closest('[data-seg]');if(!t)return;const k=t.dataset.seg;setControl(k,['pat','pairs','growthMirror'].includes(k)?+t.dataset.v:t.dataset.v);const id=t.id;drawUI();if(k==='pat')syncSkin();else if(k.startsWith('growth'))growthDirty=true;else scheduleBuild();commit();$(id)?.focus({preventScroll:true})});
 /* every value snaps to its slider step, as the UI would, so a genome round-trips exactly */
-const quant=f=>{for(const[,rows]of UI)for(const[k,,a,b,c]of rows)if(!Array.isArray(a)&&k!=='colors'&&typeof f[k]==='number'){const n=Math.round((clamp(f[k],a,b)-a)/c);f[k]=+(a+n*c).toFixed(4)}return f};
-function load(p){const f=quant(fresh(p));for(const k in P)delete P[k];Object.assign(P,f);drawUI();syncSkin();build();commit()}
+const quant=f=>{for(const[,rows]of UI)for(const[k,,a,b,c]of rows)if(!Array.isArray(a)&&k!=='colors'){const targets=GROWTH_FIELDS[k]?f.regions:[f],field=GROWTH_FIELDS[k]||k;for(const target of targets)if(typeof target[field]==='number'){const n=Math.round((clamp(target[field],a,b)-a)/c);target[field]=+(a+n*c).toFixed(4)}}return f};
+function load(p){drag=null;editTool='orbit';const f=quant(fresh(p));for(const k in P)delete P[k];Object.assign(P,f);drawUI();syncSkin();flushBuild(true);commit()}
 const say=t=>{$('msg').textContent=t;clearTimeout(say.t);say.t=setTimeout(()=>$('msg').textContent='',4000)};
 $('presets').addEventListener('click',e=>{const n=e.target.dataset.p;if(n)load(PRESETS[n]);if(e.target.id==='rand'){const seed=(Date.now()^(Math.random()*1e9))>>>0,r=rngFrom(seed),pick=a=>a[r()*a.length|0],pal=pick([['#9a3b28','#2a1414','#e6cfa0'],['#2f8a5a','#12382c','#e9e2a8'],['#3d5fa8','#8a4fb0','#f0e6c8'],['#c9892b','#4a2a12','#f3e3b8'],['#6c7440','#2f3320','#d8cfa6'],['#22313f','#d9a441','#c8d2d8'],['#b84a6a','#3a1830','#f2d9c9']]);
   load({body:1.8+r()*2.6,girth:.55+r()*.8,neck:.5+r()*2.4,tail:1.2+r()*3.8,pairs:1+(r()*3|0),leg:.9+r()*2,legW:.15+r()*.22,head:.45+r()*.4,eye:.16+r()*.18,mouth:pick(['romo','fauces','pico']),horns:pick(['ninguno','par','nasal','corona']),back:pick(['liso','púas','placas','vela']),tailTip:pick(['lisa','maza','púas']),arms:pick(['ninguno','ninguno','garras','manos']),armL:.4+r()*.8,pat:r()*4|0,cA:pal[0],cB:pal[1],cC:pal[2],wet:r()*.7,scale:4+r()*8,speed:1.5+r()*2,
@@ -422,9 +613,10 @@ const dl=(href,name)=>{const a=document.createElement('a');a.href=href;a.downloa
 $('save').addEventListener('click',()=>{const u=URL.createObjectURL(new Blob([JSON.stringify(toGenome(),null,1)],{type:'application/json'}));dl(u,'creature.json');setTimeout(()=>URL.revokeObjectURL(u),2000)});
 $('shot').addEventListener('click',()=>{renderer.render(scene,camera);dl(renderer.domElement.toDataURL('image/png'),'creature.png');say(tr('Captura descargada'))});
 $('share').addEventListener('click',()=>{const u=location.href.split('#')[0]+'#g='+btoa(unescape(encodeURIComponent(JSON.stringify(toGenome()))));navigator.clipboard.writeText(u).then(()=>say(tr('Copiado al portapapeles')),()=>say(tr('El navegador no ha permitido copiar')))});
-window.CreatureStudio={genome:toGenome,load:g=>load(fromGenome(g)),abilities,cost};
+window.CreatureStudio={genome:toGenome,load:g=>load(fromGenome(g)),abilities,cost,
+  diagnostics:()=>({growthBuilds,growthBuildMs,growthPieces:growthParts.length,geometryCount:renderer.info.memory.geometries,camDist,editTool,selectedRegionId,regions:[...regionViews].map(([id,v])=>({id,builds:v.builds,pieces:v.parts.filter(p=>p.root.visible).length,buildMs:v.buildMs}))})};
 
-let last=0;function loop(t){requestAnimationFrame(loop);const dt=Math.min(.05,(t-last)/1000||0);last=t;update(dt);frameCam(dt);renderer.render(scene,camera)}
+let last=0;function loop(t){requestAnimationFrame(loop);const dt=Math.min(.05,(t-last)/1000||0);last=t;if(growthDirty)rebuildGrowth();update(dt);frameCam(dt);renderer.render(scene,camera)}
 resize();{const h=new URLSearchParams(location.hash.slice(1));if(h.get('lang'))lang=h.get('lang')==='en'?'en':'es';
   let start=null;try{start=JSON.parse(localStorage.getItem('cpore.creature'))}catch(e){}
   if(PRESETS[h.get('preset')])start=PRESETS[h.get('preset')];

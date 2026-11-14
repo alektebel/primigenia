@@ -1,0 +1,19 @@
+{
+  "browser": "158.0.8127.18",
+  "renderer": "SwiftShader software WebGL",
+  "checks": [
+    "pointer drag changes surface attachment",
+    "one undo restores entire drag",
+    "redo restores placed growth",
+    "Escape cancels pointer transaction",
+    "repeated variants retain stable geometry allocation count",
+    "plate family rendered",
+    "mobile no horizontal overflow",
+    "mobile creature remains visible while editing lower controls",
+    "no shader or runtime errors",
+    "all existing and extended genome regression checks",
+    "regression page has no runtime errors"
+  ],
+  "errors": [],
+  "regressions": "ALL OK\nok   round trip Cazador (dna 99, speed 3.3, health 2.4)\nok   round trip Acorazado (dna 119, speed 0.7, health 5)\nok   round trip Zancudo (dna 114, speed 4.4, health 2.1)\nok   round trip Trepador (dna 106, speed 1.1, health 2.5)\nok   round trip Coralino (dna 60, speed 0.7, health 5)\nok   round trip Abisal (dna 62, speed 2.8, health 2)\nok   round trip random #0 dna 154\nok   round trip random #1 dna 120\nok   round trip random #2 dna 124\nok   round trip random #3 dna 142\nok   round trip random #4 dna 183\nok   round trip random #5 dna 164\nok   round trip random #6 dna 143\nok   round trip random #7 dna 145\nok   round trip random #8 dna 158\nok   round trip random #9 dna 185\nok   round trip random #10 dna 161\nok   round trip random #11 dna 174\nok   round trip random #12 dna 102\nok   round trip random #13 dna 163\nok   round trip random #14 dna 101\nok   round trip random #15 dna 148\nok   round trip random #16 dna 143\nok   round trip random #17 dna 126\nok   round trip random #18 dna 121\nok   round trip random #19 dna 117\nok   rejects torso out of range -> body: 99 outside [1.6, 5]\nok   rejects no mouth -> parts: a mouth is required\nok   rejects level 7 -> parts.mouth: level 1-5\nok   rejects bad schema -> schema must be \"cpore.creature/1\" or \"cpore.creature/2\"\nok   rejects bad colour -> skin.colors.base: #rrggbb\nok   rejects fractional growth count -> growth: count and branches must be integers\nok   rejects negative growth seed -> growth.seed: expected uint32\nok   rejects unknown growth family -> growth.family: unknown family\nok   rejects v2 without growth recipe -> growth: required in cpore.creature/2\nok   rejected loads leave the creature unchanged\nok   generated horns recipe round trip\nok   generated plates recipe round trip\nok   generated tendrils recipe round trip\nok   legacy genomes migrate without generated details"
+}

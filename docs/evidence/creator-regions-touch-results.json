@@ -1,0 +1,12 @@
+{
+  "browser": "158.0.8127.18",
+  "renderer": "SwiftShader software WebGL",
+  "viewport": "1280x800 with touch events",
+  "checks": [
+    "touching visible neck plates selects their independent region",
+    "viewport selection leaves the saved document unchanged",
+    "touch drag moves only the selected region",
+    "touch drag is a single undo transaction"
+  ],
+  "errors": []
+}
