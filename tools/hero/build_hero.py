@@ -165,6 +165,16 @@ h = patch(h, "vec3 c=mix(b,tp,vH*vH)*mix(.5,1.,vT.y)+vec3(.12,.13,.03)*max(vT.z,
           "vec3 c=mix(b,tp,vH*vH)*mix(.5,1.,vT.y)*mix(.62,1.12,vL)*mix(.42,1.,vS)+vec3(.12,.13,.03)*max(vT.z,0.)*vH+vec3(1.,.78,.45)*vBk*.3*vS;")
 h = patch(h, "window.__heroBuild({T,scene,renderer,camera,groundY,W,SUN,sun});", "window.__heroBuild({T,scene,renderer,camera,groundY,W,SUN,sun,hU});")
 
+
+# ---- BotW-style meadow: thin dense blades, soft root, large colour patches ----
+h = patch(h, "const RG=44,NB=80000,", "const RG=44,NB=200000,")
+h = patch(h, "wd=.2*(.6+rnd)*step(.02,hg);", "wd=.1*(.6+rnd)*step(.02,hg);")
+h = patch(h, "vec3 b=mix(vec3(.17,.40,.10),vec3(.33,.55,.13),vT.x),tp=mix(vec3(.40,.68,.18),vec3(.66,.80,.28),vT.x);",
+          "vec3 b=mix(vec3(.30,.52,.13),vec3(.42,.60,.16),vT.x),tp=mix(vec3(.46,.70,.20),vec3(.70,.78,.30),vT.x);"
+          "float pt=smoothstep(.5,.78,vT.x);b=mix(b,vec3(.50,.55,.20),pt*.6);tp=mix(tp,vec3(.80,.78,.36),pt*.7);")
+h = patch(h, "vec3 c=mix(b,tp,vH*vH)*mix(.5,1.,vT.y)*mix(.62,1.12,vL)*mix(.42,1.,vS)+vec3(.12,.13,.03)*max(vT.z,0.)*vH",
+          "vec3 c=mix(b,tp,.25+.75*vH)*mix(.5,1.,vT.y)*mix(.62,1.12,vL)*mix(.42,1.,vS)+vec3(.17,.17,.07)*max(vT.z,0.)*vH")
+
 OUT.parent.mkdir(parents=True, exist_ok=True)
 OUT.write_text(h, encoding="utf-8")
 print(f"wrote {OUT.relative_to(ROOT)} ({len(h)} bytes)")
