@@ -71,7 +71,8 @@ env.W.p.vis.root.visible=false;
 /* tighter shadow frustum around the hero creature */
 {const sc=env.sun.shadow.camera;sc.left=sc.bottom=-22;sc.right=sc.top=22;sc.updateProjectionMatrix();env.sun.shadow.normalBias=.05;env.sun.shadow.bias=-.0004}
 const CAM={close:[7.5,.10],mid:[13,.16],far:[30,.22]}[HP.cam]||[13,.16];
-window.__heroFrame=dt=>{if(HP.live)update(dt);
+const OCC=env.hU.occ.value,_w=V();function feedOcc(){for(let k=0;k<8;k++){const i=NC+Math.round(k*(NSP-1)/7);_w.copy(pts[i]).applyMatrix4(creature.matrixWorld);OCC[k].set(_w.x,_w.y,_w.z,RAD[i]*1.05)}for(let k=0;k<4;k++){const l=legs[k];if(l){_w.copy(l.ft.position);OCC[8+k].set(_w.x,_w.y,_w.z,l.w*2.2)}else OCC[8+k].set(0,-999,0,0)}env.hU.center.value.set(HERO.x,0,HERO.z)}
+window.__heroFrame=dt=>{if(HP.live)update(dt);feedOcc();
   const c=V(0,0,0);for(let i=0;i<NS;i++)c.add(pts[i]);c.multiplyScalar(1/NS).applyMatrix4(creature.matrixWorld);
   const a=CAZ,cp=Math.cos(CAM[1]),d=CAM[0];const cam=env.camera;cam.fov=42;
   cam.position.set(c.x+Math.sin(a)*cp*d,c.y+Math.sin(CAM[1])*d,c.z+Math.cos(a)*cp*d);
@@ -142,6 +143,27 @@ h = patch(h, "acc+=dt;while(acc>=DT)", "acc+=window.__heroFreeze?0:dt;while(acc>
 h = patch(h, "uTime.value+=frameDt||0;",
           "uTime.value=window.__heroTime!=null?window.__heroTime:uTime.value+(frameDt||0);")
 h = patch(h, "<script>\n(()=>{\nconst T=THREE", CREATURE_MODULE + "<script>\n(()=>{\nconst T=THREE")
+
+
+# ---- V1-V3: grass lit by the terrain normal, shadowed and pushed by the creature, gust bands ----
+h = patch(h, "hU={hmap:{value:null},", "hU={occ:{value:[...Array(12)].map(()=>new T.Vector4())},hmap:{value:null},")
+h = patch(h, "attribute vec3 offset;uniform vec3 center;uniform float uTime;varying float vH;varying vec3 vT;varying float vD;void main(){const float R=44.;",
+          "attribute vec3 offset;uniform vec3 center;uniform float uTime;uniform vec4 occ[12];uniform vec3 sun;varying float vH;varying vec3 vT;varying float vD;varying float vL;varying float vS;varying float vBk;void main(){const float R=44.;")
+h = patch(h, "vec3 p=position;float bend=(.12+.2*gust)*p.y*p.y*hg,wd=.2*(.6+rnd)*step(.02,hg);",
+          "float hx=samp(base+vec2(1.,0.)).r-samp(base-vec2(1.,0.)).r,hz=samp(base+vec2(0.,1.)).r-samp(base-vec2(0.,1.)).r;vec3 gn=normalize(vec3(-hx,2.,-hz));vL=max(dot(gn,sun),0.);"
+          "vec3 gp=vec3(base.x,t.r,base.y);float sh=1.,push=0.;vec2 pd=vec2(0.);"
+          "for(int i=0;i<12;i++){vec3 oc=occ[i].xyz-gp;float r=occ[i].w;if(r<=0.)continue;float tca=dot(oc,sun),d2=dot(oc,oc)-tca*tca;"
+          "sh*=mix(1.,smoothstep(r*r*.5,r*r*1.4,d2),step(0.,tca));vec2 q=base-occ[i].xz;float dq=length(q),inf=(1.-smoothstep(r*.7,r*1.7,dq))*step(occ[i].y-r,t.r+.6);"
+          "push=max(push,inf);pd+=q/(dq+1e-3)*inf;}vS=sh;hg*=1.-.6*push;"
+          "float band=smoothstep(.55,1.,sin(dot(base,vec2(.8,.6))*.045-uTime*1.1));"
+          "vec3 p=position;float bend=(.12+.2*gust+.3*band)*p.y*p.y*hg,wd=.2*(.6+rnd)*step(.02,hg);")
+h = patch(h, "vH=p.y;vT=vec3(t.b,t.a,gust);",
+          "wp.x+=pd.x*p.y*hg*.9;wp.z+=pd.y*p.y*hg*.9;vBk=pow(max(dot(normalize(wp-cameraPosition),sun),0.),4.)*p.y;vH=p.y;vT=vec3(t.b,t.a,gust*.35+band*1.3);")
+h = patch(h, "fragmentShader:`uniform vec3 fogColor;uniform float fogNear,fogFar;varying float vH;varying vec3 vT;varying float vD;void main(){",
+          "fragmentShader:`uniform vec3 fogColor;uniform float fogNear,fogFar;varying float vH;varying vec3 vT;varying float vD;varying float vL;varying float vS;varying float vBk;void main(){")
+h = patch(h, "vec3 c=mix(b,tp,vH*vH)*mix(.5,1.,vT.y)+vec3(.12,.13,.03)*max(vT.z,0.)*vH;",
+          "vec3 c=mix(b,tp,vH*vH)*mix(.5,1.,vT.y)*mix(.62,1.12,vL)*mix(.42,1.,vS)+vec3(.12,.13,.03)*max(vT.z,0.)*vH+vec3(1.,.78,.45)*vBk*.3*vS;")
+h = patch(h, "window.__heroBuild({T,scene,renderer,camera,groundY,W,SUN,sun});", "window.__heroBuild({T,scene,renderer,camera,groundY,W,SUN,sun,hU});")
 
 OUT.parent.mkdir(parents=True, exist_ok=True)
 OUT.write_text(h, encoding="utf-8")
