@@ -70,19 +70,53 @@ refresh(true);update(0);
 env.W.p.vis.root.visible=false;
 /* tighter shadow frustum around the hero creature */
 {const sc=env.sun.shadow.camera;sc.left=sc.bottom=-22;sc.right=sc.top=22;sc.updateProjectionMatrix();env.sun.shadow.normalBias=.05;env.sun.shadow.bias=-.0004}
-const CAM={close:[7.5,.10],mid:[13,.16],far:[30,.22],vista:[175,.48]}[HP.cam]||[13,.16];
+const CAM={close:[7.5,.10],mid:[13,.16],far:[30,.22],vista:[125,.40]}[HP.cam]||[13,.16];
+/* Choose the lowest broad saddle in the actual bowl, looking out from the hero.
+   Average across a 20-degree opening so a narrow notch cannot win the view. */
+let vistaAz=CAZ,vistaHorizon=Infinity;
+if(HP.cam==='vista')for(let k=0;k<96;k++){
+ const a=k*Math.PI*2/96;let horizon=0;
+ for(const da of[-.17,0,.17]){let ridge=0;
+  for(let d=160;d<=460;d+=12){const x=HX-Math.sin(a+da)*d,z=HZ-Math.cos(a+da)*d;
+   if(Math.max(Math.abs(x),Math.abs(z))>318)break;
+   ridge=Math.max(ridge,(env.groundY(x,z)-HERO.y)/d)}horizon+=ridge/3}
+ const cameraGround=env.groundY(HX+Math.sin(a)*115,HZ+Math.cos(a)*115);
+ horizon+=Math.max(0,cameraGround-HERO.y-35)*.01;
+ // Keep both the creature and nest clear of foreground tree crowns.
+ const eye=V(HX+Math.sin(a)*115,HERO.y+3+Math.sin(CAM[1])*CAM[0],HZ+Math.cos(a)*115);
+ for(const target of[V(HX,HERO.y+2,HZ),V(env.W.spawn[0],env.groundY(...env.W.spawn)+1,env.W.spawn[1])]){
+  const dx=eye.x-target.x,dz=eye.z-target.z,len2=dx*dx+dz*dz;
+  for(const o of env.vistaTrees){
+   const t=((o.x-target.x)*dx+(o.z-target.z)*dz)/len2;if(t<=0||t>=1)continue;
+   const y=target.y+t*(eye.y-target.y),r=4*o.s*(o.rk||1)+2;
+   if(y<o.y-1||y>o.y+(o.k===1?14:10)*o.s+1)continue;
+   const distance=Math.hypot(o.x-target.x-t*dx,o.z-target.z-t*dz);
+   horizon+=Math.max(0,1-distance/r)*.4;
+  }
+ }
+ if(horizon<vistaHorizon){vistaHorizon=horizon;vistaAz=a}
+}
 const OCC=env.hU.occ.value,_w=V();function feedOcc(){for(let k=0;k<8;k++){const i=NC+Math.round(k*(NSP-1)/7);_w.copy(pts[i]).applyMatrix4(creature.matrixWorld);OCC[k].set(_w.x,_w.y,_w.z,RAD[i]*1.05)}for(let k=0;k<4;k++){const l=legs[k];if(l){_w.copy(l.ft.position);OCC[8+k].set(_w.x,_w.y,_w.z,l.w*2.2)}else OCC[8+k].set(0,-999,0,0)}env.hU.center.value.set(HERO.x,0,HERO.z)}
 window.__heroFrame=dt=>{if(window.Hero)Hero.frame++;if(HP.live)update(dt);feedOcc();
   const c=V(0,0,0);for(let i=0;i<NS;i++)c.add(pts[i]);c.multiplyScalar(1/NS).applyMatrix4(creature.matrixWorld);
-  const a=CAZ,cp=Math.cos(CAM[1]),d=CAM[0];const cam=env.camera;cam.fov=HP.cam==='vista'?62:42;
+  const a=HP.cam==='vista'?vistaAz:CAZ,cp=Math.cos(CAM[1]),d=CAM[0];const cam=env.camera;cam.fov=HP.cam==='vista'?62:42;
   cam.position.set(c.x+Math.sin(a)*cp*d,c.y+Math.sin(CAM[1])*d,c.z+Math.cos(a)*cp*d);
-  cam.position.y=Math.max(cam.position.y,env.groundY(cam.position.x,cam.position.z)+.6);cam.lookAt(c.x,c.y+(HP.cam==='vista'?60:-.2),c.z);cam.updateProjectionMatrix()};
+  cam.position.y=Math.max(cam.position.y,env.groundY(cam.position.x,cam.position.z)+.6);cam.lookAt(c.x,c.y+(HP.cam==='vista'?36:-.2),c.z);cam.updateProjectionMatrix()};
 /* Capture hooks (tools/hero/capture_grid.cjs). The creature mask is the pixel difference between two renders:
    setCreatureVisible(false) hides the creature's pixels; with keepShadow=true it still casts its shadow and
    parts the grass, so the difference is the body only. setSkyFlat(true) paints the sky dome pure magenta
    (clouds hidden) so sky pixels can be told apart. Both are reversible. */
 const maskedMats=new Set(),skyMagenta=new T.MeshBasicMaterial({color:new T.Color(1,0,1),side:T.BackSide,depthWrite:false,fog:false,toneMapped:false});let skyOrig=null;
 window.Hero={ready:true,frame:0,params:HP,light:window.__heroLight.name,creature:G.name,trees:window.__heroTrees,
+  vista:{azimuth:vistaAz,selectionScore:vistaHorizon},
+  setMountainDebug:env.setMountainDebug,
+  mountainGeometrySamples(){
+    const ray=new T.Raycaster(),bowl=scene.getObjectByName('bowl-terrain'),samples=[];
+    for(const y of[.99,.9,.7,.4,0])for(const x of[-.9,-.6,-.3,0,.3,.6,.9]){
+      ray.setFromCamera(new T.Vector2(x,y),env.camera);const hit=ray.intersectObject(bowl)[0];
+      if(hit)samples.push({ndc:[x,y],height:hit.point.y,distance:hit.distance,position:hit.point.toArray()});
+    }return samples;
+  },
   setCreatureVisible(v,keepShadow){
     for(const m of maskedMats){m.colorWrite=m.depthWrite=true}maskedMats.clear();
     creature.visible=limbs.visible=v||!!keepShadow;
@@ -99,16 +133,16 @@ PRESETS = r"""
 /* One ACES pipeline (G46). Golden hour is the look (G47); the others are checks.
    Fog/sky colours are display-space values, as in both references. */
 (()=>{const q=new URLSearchParams(location.search),P={
- golden:{exp:1.0,air:{density:.00135,falloff:240,cool:[.61,.75,.88],warm:[.96,.80,.61]},sun:[-.62,.28,-.72],sunC:'#ffd2a0',sunI:3.1,hemi:['#bfe0ff','#6f8a4a',.5],fog:[.86,.88,.88],
+ golden:{exp:1.0,air:{density:.00052,start:140,falloff:240,cool:[.36,.59,.86],warm:[.96,.73,.44]},sun:[-.62,.28,-.72],sunC:'#ffd2a0',sunI:3.1,hemi:['#bfe0ff','#6f8a4a',.5],fog:[.86,.88,.88],
    sky:{hz:[.95,.84,.70],mid:[.55,.72,.92],top:[.16,.42,.82],glow:[1,.62,.3],disc:3},
    envHz:[.9,.55,.3],envMid:[.32,.42,.62],envTop:[.08,.16,.4],envGd:[.12,.09,.06],envSun:[14,8,3.5],ramp:[54,54,83,83,108,108],grass:[1.04,.95,.80]},
- noon:{exp:1.0,air:{density:.00115,falloff:260,cool:[.67,.81,.94],warm:[.90,.91,.86]},sun:[-.4,.85,-.35],sunC:'#fff2dc',sunI:3.0,hemi:['#bfe0ff','#6f8a4a',.6],fog:[.78,.90,.96],
+ noon:{exp:1.0,air:{density:.00048,start:140,falloff:260,cool:[.43,.65,.91],warm:[.90,.88,.72]},sun:[-.4,.85,-.35],sunC:'#fff2dc',sunI:3.0,hemi:['#bfe0ff','#6f8a4a',.6],fog:[.78,.90,.96],
    sky:{hz:[.78,.90,.96],mid:[.45,.66,.90],top:[.16,.42,.82],glow:[1,.85,.6],disc:3},
    envHz:[.7,.8,.9],envMid:[.4,.55,.8],envTop:[.15,.3,.7],envGd:[.15,.17,.1],envSun:[16,15,13],ramp:[54,54,83,83,108,108],grass:[1,1,1]},
- overcast:{exp:1.1,air:{density:.00185,falloff:210,cool:[.69,.75,.82],warm:[.81,.82,.80]},sun:[-.3,.8,-.4],sunC:'#e8eef2',sunI:.8,hemi:['#d3dbe2','#6a7060',1.7],fog:[.74,.77,.80],
+ overcast:{exp:1.1,air:{density:.00085,start:110,falloff:210,cool:[.54,.65,.79],warm:[.81,.79,.69]},sun:[-.3,.8,-.4],sunC:'#e8eef2',sunI:.8,hemi:['#d3dbe2','#6a7060',1.7],fog:[.74,.77,.80],
    sky:{hz:[.76,.79,.82],mid:[.66,.69,.73],top:[.55,.58,.63],glow:[.2,.2,.2],disc:0},
    envHz:[.6,.62,.65],envMid:[.55,.57,.6],envTop:[.5,.52,.56],envGd:[.12,.12,.1],envSun:[1.5,1.5,1.5],ramp:[54,54,83,83,108,108],grass:[.78,.82,.84]},
- night:{exp:1.25,air:{density:.0014,falloff:240,cool:[.075,.105,.19],warm:[.16,.18,.28]},sun:[.4,.55,.3],sunC:'#9fb4ff',sunI:.7,hemi:['#2a3a60','#151a20',.6],fog:[.07,.09,.16],
+ night:{exp:1.25,air:{density:.0006,start:120,falloff:240,cool:[.055,.09,.19],warm:[.16,.18,.28]},sun:[.4,.55,.3],sunC:'#9fb4ff',sunI:.7,hemi:['#2a3a60','#151a20',.6],fog:[.07,.09,.16],
    sky:{hz:[.10,.13,.22],mid:[.05,.07,.15],top:[.02,.03,.08],glow:[.3,.35,.5],disc:1.2},
    envHz:[.06,.08,.14],envMid:[.04,.05,.1],envTop:[.02,.02,.06],envGd:[.02,.02,.02],envSun:[2,2.3,3],ramp:[54,54,83,83,108,108],grass:[.16,.2,.32]}};
  const name=P[q.get('t')]?q.get('t'):'golden',L=Object.assign({name},P[name]);if(q.get('exp'))L.exp=+q.get('exp');
@@ -174,7 +208,7 @@ h = patch(h, "fragmentShader:`uniform vec3 fogColor;uniform float fogNear,fogFar
           "fragmentShader:`uniform vec3 fogColor;uniform float fogNear,fogFar;varying float vH;varying vec3 vT;varying float vD;varying float vL;varying float vS;varying float vBk;void main(){")
 h = patch(h, "vec3 c=mix(b,tp,vH*vH)*mix(.5,1.,vT.y)+vec3(.12,.13,.03)*max(vT.z,0.)*vH;",
           "vec3 c=mix(b,tp,vH*vH)*mix(.5,1.,vT.y)*mix(.62,1.12,vL)*mix(.42,1.,vS)+vec3(.12,.13,.03)*max(vT.z,0.)*vH+vec3(1.,.78,.45)*vBk*.3*vS;")
-h = patch(h, "window.__heroBuild({T,scene,renderer,camera,groundY,W,SUN,sun});", "window.__heroBuild({T,scene,renderer,camera,groundY,W,SUN,sun,hU,sky,clouds});")
+h = patch(h, "window.__heroBuild({T,scene,renderer,camera,groundY,W,SUN,sun});", "window.__heroBuild({T,scene,renderer,camera,groundY,W,SUN,sun,hU,sky,clouds,setMountainDebug,vistaTrees:[...broad,...conif]});")
 
 
 # ---- BotW-style meadow: thin dense blades, soft root, large colour patches ----
@@ -252,9 +286,10 @@ vec3 aerial(vec3 c,vec3 wp){
  // Three samples of the exponential height density along the view ray.
  vec3 heights=max(vec3(cameraPosition.y,mix(cameraPosition.y,wp.y,.5),wp.y),vec3(0.));
  vec3 rho=exp(-heights/${HL.air.falloff.toFixed(1)});
- float optical=max(d-24.,0.)*${HL.air.density.toFixed(6)}*dot(rho,vec3(.1667,.6666,.1667));
- float sunward=pow(max(dot(dir,${glv(HL.sun)}),0.),6.);
- vec3 haze=mix(${glv(HL.air.cool)},${glv(HL.air.warm)},sunward*.75);
+ float path=max(d-${HL.air.start.toFixed(1)},0.);
+ float optical=path*(1.-exp(-path/240.))*${HL.air.density.toFixed(6)}*dot(rho,vec3(.1667,.6666,.1667));
+ float sunward=pow(max(dot(dir,normalize(${glv(HL.sun)})),0.),3.);
+ vec3 haze=mix(${glv(HL.air.cool)},${glv(HL.air.warm)},sunward);
  return mix(c,haze,1.-exp(-optical));
 }
 `;
@@ -294,9 +329,9 @@ float meadowShadow(vec3 wp){
 function landMaterial(material){
  material.onBeforeCompile=s=>{
   Object.assign(s.uniforms,hU);
-  s.vertexShader='varying vec3 vLandPosition,vLandNormal;\n'+s.vertexShader.replace('#include <begin_vertex>',
-   '#include <begin_vertex>\nvLandPosition=position;vLandNormal=normal;');
-  s.fragmentShader='varying vec3 vLandPosition,vLandNormal;\nuniform float uTime;\n'+SAMP+MEADOW+s.fragmentShader;
+  s.vertexShader='attribute float cavity;varying float vCavity;varying vec3 vLandPosition,vLandNormal;\n'+s.vertexShader.replace('#include <begin_vertex>',
+   '#include <begin_vertex>\nvLandPosition=position;vLandNormal=normal;vCavity=cavity;');
+  s.fragmentShader='varying float vCavity;varying vec3 vLandPosition,vLandNormal;\nuniform float uTime;\n'+SAMP+MEADOW+s.fragmentShader;
   const output='gl_FragColor = vec4( outgoingLight, diffuseColor.a );';
   if(!s.fragmentShader.includes(output))throw new Error('land shader output target changed');
   s.fragmentShader=s.fragmentShader.replace(output,`
@@ -305,26 +340,59 @@ function landMaterial(material){
    bool backdrop=max(abs(wp.x),abs(wp.z))>S*.5;
    if(backdrop)field=vec4(wp.y,0.,landNoise(wp.xz*.008),1.);
    float wave=meadowWave(wp.xz,uTime);
-   vec3 meadow=meadowColor(field,light,wave,wp.xz)*mix(.42,1.,meadowShadow(wp));
+   // A shaded, saturated base beneath the brighter blade mid-tone.
+   vec3 meadow=meadowColor(field,light,wave,wp.xz)*vec3(.60,.68,.54)*mix(.42,1.,meadowShadow(wp));
    float grain=landNoise(wp.xz*.17);
-   float strata=smoothstep(.32,.60,fract(wp.y*.105+landNoise(wp.xz*.035)*1.7));
-   float gully=landNoise(wp.xz*.065+sin(wp.y*.016)*.4);
-   vec3 rock=mix(vec3(.14,.155,.18),vec3(.30,.325,.35),strata*.10+grain*.25+gully*.35);
-   rock*=mix(vec3(.78,.88,1.12),vec3(1.20,1.10,.90),smoothstep(.18,.52,light));
-   rock*=landRamp(light)*mix(.58,1.,smoothstep(.38,.78,gn.y));
+   float mineral=landNoise(wp.xz*.023),erosion=landNoise(wp.xz*.081);
+   float steep=1.-smoothstep(.48,.76,gn.y);
+   float strata=sin(wp.y*(.075+.035*landNoise(wp.xz*.012))+erosion*6.+mineral*8.);
+   strata*=steep*smoothstep(.40,.72,landNoise(wp.xz*.044));
+   vec3 rock=mix(vec3(.17,.18,.19),vec3(.30,.225,.13),smoothstep(.25,.78,mineral));
+   rock=mix(rock,vec3(.19,.135,.085),smoothstep(.57,.87,erosion)*.4);
+   rock*=1.+strata*.045+(grain-.5)*.16+(landNoise(wp.xz*.63+wp.y*.04)-.5)*.10;
+   float rockLight=.36+.56*smoothstep(.12,.22,light)+.48*smoothstep(.50,.60,light);
+   rock*=mix(vec3(.78,.88,1.12),vec3(1.22,1.08,.86),smoothstep(.18,.52,light))*rockLight;
+   rock*=mix(1.,.64,vCavity);
+   // Scree collects on ledges, turf grows on gentle faces below the snow line.
+   float ledge=smoothstep(.70,.90,gn.y);
+   rock=mix(rock,vec3(.27,.23,.16)*rockLight,ledge*erosion*.24);
    float snow=smoothstep(120.,145.,wp.y+(grain-.5)*28.)*smoothstep(.48,.80,gn.y);
    if(backdrop)snow=smoothstep(480.,680.,wp.y+(grain-.5)*100.)*smoothstep(.34,.72,gn.y);
    rock=mix(rock,vec3(.73,.84,.91)*landRamp(light),snow);
    rock*=${glv(HL.grass)};
    // Alpine turf on gentle low slopes; the actual blade mask has priority.
-   float turf=(1.-smoothstep(45.,90.,wp.y))*smoothstep(.68,.88,gn.y);
+   float turf=(1.-smoothstep(58.,118.,wp.y))*smoothstep(.74,.94,gn.y)*(1.-snow);
    vec3 land=mix(rock,meadow,turf);
    float shore=smoothstep(.7,2.4,wp.y);
    outgoingLight=mix(outgoingLight,land,backdrop?1.:shore);
    outgoingLight=mix(outgoingLight,meadow,field.g);
    ${output}`);
  };
- material.customProgramCacheKey=()=>'land-v8';return material;
+ material.customProgramCacheKey=()=>'land-v9';return material;
+}
+// Debug colors bypass tone mapping, encoding and fog. R = N.L, G = cavity,
+// B = bowl rock eligibility. Other scene objects remain depth occluders in black.
+const mountainSaved=new Map(),mountainBlack=new T.MeshBasicMaterial({color:0,side:T.DoubleSide,fog:false,toneMapped:false}),
+ mountainSkyBlack=new T.MeshBasicMaterial({color:0,side:T.DoubleSide,depthWrite:false,fog:false,toneMapped:false}),
+ mountainDebug=new T.ShaderMaterial({side:T.DoubleSide,toneMapped:false,fog:false,uniforms:{sun:{value:SUN},minMountainDistance:{value:0}},
+ vertexShader:'attribute float cavity;varying vec3 wp,gn;varying float cv;void main(){wp=position;gn=normal;cv=cavity;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}',
+ fragmentShader:SAMP+MEADOW+`uniform float minMountainDistance;varying vec3 wp,gn;varying float cv;
+  void main(){
+   vec3 n=normalize(gn);float d=distance(cameraPosition,wp),grain=landNoise(wp.xz*.17);
+   float snow=smoothstep(120.,145.,wp.y+(grain-.5)*28.)*smoothstep(.48,.80,n.y);
+   float turf=(1.-smoothstep(58.,118.,wp.y))*smoothstep(.74,.94,n.y)*(1.-snow);
+   float eligible=step(20.,wp.y)*step(minMountainDistance,d)*(1.-step(500.,d))*(1.-step(.02,snow))*(1.-step(.10,turf))*(1.-step(.05,samp(wp.xz).g));
+   gl_FragColor=vec4(max(dot(n,sun),0.),cv,eligible,1.);
+  }`});
+function setMountainDebug(enabled,minDistance=150){
+ if(!enabled){for(const[o,s]of mountainSaved){o.material=s.material;o.visible=s.visible}mountainSaved.clear();return}
+ if(mountainSaved.size)return;
+ Object.assign(mountainDebug.uniforms,hU);mountainDebug.uniforms.minMountainDistance.value=minDistance;
+ scene.traverse(o=>{if(!o.material)return;mountainSaved.set(o,{material:o.material,visible:o.visible});
+  if(o.name==='bowl-terrain')o.material=mountainDebug;
+  else if(o.name==='meadow-252k')o.visible=false;
+  else o.material=o===sky?mountainSkyBlack:mountainBlack;
+ });
 }
 function distantRanges(){
  // Render-only ring meshes: independent of the gameplay surface and its RNG.
@@ -340,7 +408,7 @@ function distantRanges(){
   for(let row=0;row<3;row++)for(let i=0;i<segments;i++){
    const k=row*(segments+1)+i,b=k+segments+1;indices.push(k,b,k+1,b,b+1,k+1);
   }
-  const g=new T.BufferGeometry();g.setAttribute('position',new T.Float32BufferAttribute(positions,3));g.setIndex(indices);g.computeVertexNormals();
+  const g=new T.BufferGeometry();g.setAttribute('position',new T.Float32BufferAttribute(positions,3));g.setAttribute('cavity',new T.Float32BufferAttribute(new Float32Array(positions.length/3),1));g.setIndex(indices);g.computeVertexNormals();
   const m=new T.Mesh(g,landMaterial(new T.MeshStandardMaterial({roughness:1,side:T.DoubleSide})));m.name='distant-range-'+layer;scene.add(m);
  }
 }
@@ -350,7 +418,20 @@ h = patch(h, 'const camera=new T.PerspectiveCamera(60,1,.5,3000);',
           'const camera=new T.PerspectiveCamera(60,1,.5,8000);')
 h = patch(h, 'new T.SphereGeometry(2000,24,16)', 'new T.SphereGeometry(6000,24,16)')
 terrain_hook = between(h, '  if(!low)terrain.material.onBeforeCompile=', '\n\n  scene.add(new T.HemisphereLight')
-h = patch(h, terrain_hook, '  if(!low)landMaterial(terrain.material);')
+h = patch(h, terrain_hook, "  terrain.name='bowl-terrain';if(!low)landMaterial(terrain.material);")
+# Positive heightfield Laplacian marks concave gullies. Cache it once per vertex,
+# at two scales to retain broad erosion as well as small crevices.
+h = patch(h, "  tg.setAttribute('color',new T.BufferAttribute(C,3));", r"""
+  tg.setAttribute('color',new T.BufferAttribute(C,3));
+  const cavity=new Float32Array(P.count);
+  if(!low)for(let i=0;i<P.count;i++){
+   const x=P.getX(i),z=P.getZ(i),y=P.getY(i);let curvature=0;
+   for(const r of[cs*2,cs*5]){
+    const lap=(height(x-r,z)+height(x+r,z)+height(x,z-r)+height(x,z+r)-4*y)/(r*r);
+    curvature+=Math.max(0,lap)*r*.5;
+   }cavity[i]=sstep(.025,.26,curvature);
+  }
+  tg.setAttribute('cavity',new T.BufferAttribute(cavity,1));""")
 h = patch(h, '    sky.renderOrder=-1;scene.add(sky)}',
           '    sky.renderOrder=-1;scene.add(sky);distantRanges()}')
 # Clouds also receive the shared atmosphere. The sky dome itself is the endpoint.
@@ -363,17 +444,17 @@ h = patch(h, 'float f=smoothstep(fogNear,fogFar,distance(cameraPosition,vW));gl_
 h = patch(h, 'fogNear:{value:110},fogFar:{value:760}', 'aerialDensity:{value:HL.air.density}')
 h = patch(h, 'uniform float fogNear,fogFar;', '', count=2)
 
-GRASS_V8 = r"""
-    // 25k eight-blade tufts near the hero + 13k four-blade tufts in the sparse LOD.
+GRASS_V9 = r"""
+    // Smooth radial bias concentrates near tufts without a density ring.
     // Separate seeded stream avoids changing any existing scatter.
     const nearCount=200000,farCount=52000,NB=nearCount+farCount,gr=rngFrom(W.seed+8808);
     const off=new Float32Array(NB*4),clump=new Float32Array(NB);
     let cx=0,cz=0,ch=0;
     for(let i=0;i<NB;i++){
      const lod=i>=nearCount,n=lod?4:8,j=lod?i-nearCount:i;
-     if(j%n===0){const a=gr()*Math.PI*2,r=lod?Math.sqrt(34*34+gr()*(140*140-34*34)):Math.sqrt(gr())*44;
+     if(j%n===0){const a=gr()*Math.PI*2,u=gr(),r=lod?Math.sqrt(34*34+u*(140*140-34*34)):44*Math.pow(u,.72);
       cx=Math.cos(a)*r;cz=Math.sin(a)*r;ch=gr();}
-     const a=gr()*Math.PI*2,r=Math.sqrt(gr())*(lod?.52:.19);
+     const a=gr()*Math.PI*2,r=Math.sqrt(gr())*(lod?.52:.25);
      off.set([cx+Math.cos(a)*r,cz+Math.sin(a)*r,gr(),lod?1:0],i*4);clump[i]=ch;
     }
     const bg=new T.InstancedBufferGeometry();
@@ -383,12 +464,12 @@ GRASS_V8 = r"""
     const gm=new T.Mesh(bg,new T.ShaderMaterial({side:T.DoubleSide,uniforms:hU,
      vertexShader:SAMP+MEADOW+`
       attribute vec4 offset;attribute float clump;uniform float uTime;
-      varying vec3 vGrassWorld;varying vec4 vField;varying vec4 vBlade;
+      varying vec3 vGrassWorld;varying vec4 vField;varying vec4 vBlade;varying float vTuft;
       void main(){
        float lod=offset.w;vec2 base=center.xz+offset.xy;vec4 t=samp(base);
        float d=length(offset.xy),fade=lod>.5?(1.-smoothstep(110.,140.,d))*smoothstep(30.,48.,d):1.-smoothstep(30.,44.,d);
        float rolling=.65+.55*sin(base.x*.033+sin(base.y*.027))*.5+t.b*.4;
-       float hg=(.22+.55*clump)*rolling*mix(1.,.66,lod)*t.g*fade;
+       float hg=mix(.48+.75*clump,.30+.40*clump,lod)*rolling*t.g*fade;
        float hx=samp(base+vec2(1.,0.)).r-samp(base-vec2(1.,0.)).r,hz=samp(base+vec2(0.,1.)).r-samp(base-vec2(0.,1.)).r;
        float light=max(dot(normalize(vec3(-hx,2.,-hz)),sun),0.);
        vec3 gp=vec3(base.x,t.r,base.y);float sh=1.,push=0.;vec2 pd=vec2(0.);
@@ -402,18 +483,19 @@ GRASS_V8 = r"""
        hg*=1.-.6*push;
        float wave=meadowWave(base,uTime),gust=sin(base.x*.12+base.y*.09+uTime*1.6);
        vec3 p=position;float ang=offset.z*44.,bend=(.10+.15*gust+.3*wave)*p.y*p.y*hg;
-       float wd=mix(.055,.25,lod)*(.65+offset.z*.6)*fade*step(.008,hg);
+       float wd=mix(.12,.25,lod)*(.65+offset.z*.6)*fade*step(.008,hg);
        vec3 wp=vec3(base.x+p.x*cos(ang)*wd+bend*.85,t.r-.025+p.y*hg,base.y+p.x*sin(ang)*wd+bend*.5);
        wp.xz+=pd*p.y*hg*.9;
        float back=pow(max(dot(normalize(wp-cameraPosition),sun),0.),4.);
-       vGrassWorld=wp;vField=t;vBlade=vec4(p.y,light,sh,back);
+       vGrassWorld=wp;vField=t;vBlade=vec4(p.y,light,sh,back);vTuft=clump;
        gl_Position=projectionMatrix*viewMatrix*vec4(wp,1.);
       }`,
      fragmentShader:MEADOW+AERIAL+`
-      uniform float uTime;varying vec3 vGrassWorld;varying vec4 vField,vBlade;
+      uniform float uTime;varying vec3 vGrassWorld;varying vec4 vField,vBlade;varying float vTuft;
       void main(){
        float h=vBlade.x,wave=meadowWave(vGrassWorld.xz,uTime);
        vec3 c=meadowColor(vField,vBlade.y,wave,vGrassWorld.xz);
+       c*=mix(vec3(.85,.92,.74),vec3(1.10,1.04,.96),vTuft);
        c*=mix(.70,1.42,smoothstep(0.,1.,h))*mix(.42,1.,vBlade.z);
        c+=vec3(.14,.20,.035)*pow(h,2.)*vBlade.w*vBlade.z;
        gl_FragColor=vec4(c,1.);
@@ -424,7 +506,7 @@ GRASS_V8 = r"""
     gm.frustumCulled=false;gm.name='meadow-252k';scene.add(gm);
 """
 grass_block = between(h, '    const RG=44,NB=200000,', '\n  }\n  /* nidos */')
-h = patch(h, grass_block, GRASS_V8.rstrip())
+h = patch(h, grass_block, GRASS_V9.rstrip())
 
 # These functions are gameplay contracts: all landscape additions are cosmetic.
 for start, end in [("function height(x,z){", "\nconst walkable="),
