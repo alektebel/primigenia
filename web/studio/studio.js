@@ -186,23 +186,29 @@ function creatorPart(id,options,make){
   g.userData.mountRadius=r;g.userData.partScale=s;return g;
  }};
 }
-creatorPart('beak_crusher',{bite:3,sing:2,mount:'body'},()=>{
+creatorPart('beak_crusher',{bite:3,sing:2,mount:'body'},(p)=>{
  const g=new T.Group(),jaw=new T.Group();g.add(jaw);g.userData.jaw=jaw;
- // The origin is the snout's rounded tip. Wrap back to its full cross-section.
- tissue(ell(.61,.59,.09,0,0,-.56),'skin',g);
+ // Start at the snout end, with a narrow skin seam and a forward hooked wedge.
+ // Width is capped at the head diameter even when the size control is enlarged.
+ const width=.57/Math.max(1,p.size),length=.6*clamp(.8+.2*p.size,.8,1.2)/p.size;
+ tissue(ell(width,.36/Math.max(1,p.size),.025,0,0,0),'skin',g);
  const shell=(lower,parent)=>{
-  const pos=[],idx=[],rings=18,sides=24;
+  const pos=[],idx=[],rings=21,sides=24,L=length*(lower?.74:1),edges=[[],[]];
   for(let i=0;i<rings;i++){
-   const u=i/(rings-1),z=lerp(-.6,lower?.075:.15,u),section=Math.sqrt(Math.max(0,1-u*u)),w=.63*section+.004,h=(lower?.58:.67)*section;
-   for(let j=0;j<=sides;j++){const a=j/sides*Math.PI;pos.push(w*Math.cos(a),(lower?-1:1)*h*Math.sin(a)+(lower?-.035:.015),z)}
+   const u=i/(rings-1),z=L*u,w=width*Math.pow(1-u,.8),seam=lower?-.075+.035*u:.025+.06*Math.sin(Math.PI*u)-.18*u**5;
+   const h=(lower?.23:.36)*(1-u)*(.9+.5*Math.sin(Math.PI*u))/Math.max(1,p.size);
+   for(let j=0;j<=sides;j++){const a=j/sides*Math.PI;pos.push(w*Math.cos(a),seam+(lower?-1:1)*h*Math.sin(a),z)}
+   edges[0].push([-w,seam,z]);edges[1].push([w,seam,z]);
   }
   for(let i=0;i<rings-1;i++)for(let j=0;j<sides;j++){const k=i*(sides+1)+j;idx.push(k,k+1,k+sides+1,k+1,k+sides+2,k+sides+1)}
   if(lower)for(let i=0;i<idx.length;i+=3)[idx[i+1],idx[i+2]]=[idx[i+2],idx[i+1]];
-  const geo=new T.BufferGeometry();geo.setAttribute('position',new T.Float32BufferAttribute(pos,3));geo.setIndex(idx);geo.computeVertexNormals();tissue(geo,'keratin',parent);
+  const geo=new T.BufferGeometry();geo.setAttribute('position',new T.Float32BufferAttribute(pos,3));geo.setIndex(idx);geo.computeVertexNormals();
+  const m=tissue(geo,'keratin',parent);m.name=lower?'lower mandible':'upper mandible';m.material=lower?boneM:toothM;
+  for(const edge of edges){const rim=tissue(sweep(edge,[.012,.012,.005]),'keratin',parent);rim.material=beakM;rim.name='cutting edge'}
+  if(!lower){const tip=geo.clone();tip.setIndex(idx.slice(16*sides*6));const m=tissue(tip,'keratin',parent);m.material=beakM;m.name='hook tip'}
  };
  shell(false,g);shell(true,jaw);
- for(const z of [-.4,-.23,-.07]){const w=.45*(-z+.2);tissue(sweep([[-w,-.035,z],[0,-.015,z],[w,-.035,z]],[.018,.026,.018]),'keratin',jaw)}
- jaw.position.z=-.56;jaw.children.forEach(m=>m.geometry.translate(0,0,.56));
+ for(const u of [.2,.4,.6]){const w=width*(1-u)*.8;tissue(sweep([[-w,-.065,length*u],[0,-.045,length*u],[w,-.065,length*u]],[.012,.022,.012]),'keratin',jaw)}
  return g;
 });
 creatorPart('eye_triad',{},()=>{
@@ -256,17 +262,29 @@ creatorPart('sac_spitter',{mount:'body'},()=>{
 for(const id of ['arm_grasper','arm_smasher'])creatorPart(id,{mount:'upright',bodyMinimum:.65},(p,r,s,context)=>{
  const g=new T.Group(),arm=new T.Group();g.add(arm);g.userData.arm=arm;
  const smash=id==='arm_smasher';
- tissue(ell(.24,.25,.24),'skin',g);
  if(smash){
-  // Resting club sits near knee height; even large size settings clear the floor.
-  const drop=Math.min(context.height*.5*p.size,context.height-.5)/s;
-  const club=Math.min(.3,context.head*.78/s),y=-Math.max(.35,drop-club);
-  tissue(sweep([[0,0,0],[.16,y*.4,0],[.25,y*.7,.08]],[.2,.17,.14]),'skin',arm);
-  tissue(ell(.17,.17,.17,.25,y*.7,.08),'skin',arm);
-  tissue(sweep([[.25,y*.7,.08],[.35,y*.95,.25],[.4,y,.4]],[.14,.13,.12]),'skin',arm);
-  tissue(ell(club,club*.9,club*1.2,.4,y,.4+club*.65),'keratin',arm);
-  for(const z of [-.5,.1,.7])tissue(sweep([[.4-club*.8,y+club*.55,.4+club*(.65+z)],[.4,y+club*1.05,.4+club*(.65+z)],[.4+club*.8,y+club*.55,.4+club*(.65+z)]],[.025,.035,.025]),'keratin',arm);
+  tissue(ell(.24,.25,.24),'skin',g);
+  // Bent elbow carries the club up in front of the chest, clear of the knees.
+  const club=Math.min(context.body*.34*p.size,context.head*.72)/s;
+  const y=-Math.min(context.body*.12*p.size,context.height*.1)/s,z=.85;
+  tissue(sweep([[0,0,0],[.32,-.24,.08],[.55,-.38,.25]],[.2,.17,.14]),'skin',arm).name='upper arm';
+  tissue(ell(.17,.17,.17,.55,-.38,.25),'skin',arm);
+  tissue(sweep([[.55,-.38,.25],[.65,y-.1,.55],[.6,y,z]],[.14,.13,.12]),'skin',arm).name='forearm';
+  tissue(ell(club,club*.9,club*1.2,.6,y,z+club*.65),'keratin',arm).name='club head';
+  for(const dz of [-.5,.1,.7])tissue(sweep([[.6-club*.8,y+club*.55,z+club*(.65+dz)],[.6,y+club*1.05,z+club*(.65+dz)],[.6+club*.8,y+club*.55,z+club*(.65+dz)]],[.025,.035,.025]),'keratin',arm);
+ }else if(context.mouthHeight-context.height<context.head*1.2){
+  // Low bodies need an exposed shoulder below/outside the wide jaw. The
+  // forearm reaches forward and down; the tall-body grasper below is retained.
+  tissue(sweep([[0,0,0],[.15,-.15,0],[.3,-.3,0]],[.2,.2,.19]),'skin',g);
+  tissue(ell(.23,.22,.23,.3,-.3,0),'skin',g).name='shoulder';
+  arm.position.set(.3,-.3,0);
+  tissue(sweep([[0,0,0],[.35,-.05,.2],[.65,-.15,.45]],[.2,.17,.14]),'skin',arm).name='upper arm';
+  tissue(ell(.17,.17,.17,.65,-.15,.45),'skin',arm);
+  tissue(sweep([[.65,-.15,.45],[.8,-.4,.8],[.7,-.65,1.15]],[.14,.13,.11]),'skin',arm).name='forearm';
+  tissue(ell(.21,.15,.2,.7,-.65,1.2),'skin',arm).name='palm';
+  for(const side of [-1,1])tissue(sweep([[.7+side*.12,-.65,1.25],[.7+side*.29,-.61,1.48],[.7+side*.06,-.61,1.69]],[.085,.06,.004]),'keratin',arm);
  }else{
+  tissue(ell(.24,.25,.24),'skin',g);
   const hand=clamp((context.mouthHeight-context.height-context.head*.4)/s,-.26,1.6),elbow=hand*.45-.35;
   tissue(sweep([[0,0,0],[.32,elbow*.6,.12],[.65,elbow,.35]],[.2,.17,.14]),'skin',arm);
   tissue(ell(.17,.17,.17,.65,elbow,.35),'skin',arm);
@@ -276,23 +294,24 @@ for(const id of ['arm_grasper','arm_smasher'])creatorPart(id,{mount:'upright',bo
  }
  return g;
 });
-for(const id of ['tail_paddle','tail_spike','tail_hammer'])creatorPart(id,{mount:'body'},()=>{
+for(const id of ['tail_paddle','tail_spike','tail_hammer'])creatorPart(id,{mount:'body',bodyMinimum:1},(p,r,s)=>{
  const g=new T.Group(),tail=new T.Group();g.add(tail);g.userData.tail=tail;
- // Continue the terminal cap at t=0, with a radius-matched muscular root.
- tissue(sweep([[0,0,0],[0,.03,-.5],[0,.15,-1.6],[0,.35,-3.4]],[.04,.22,.48,.32]),'skin',tail);
+ // A tail-radius root merges with the rear 15%; the terminal organ scales
+ // from max spine radius, so a slender tail never reduces it to a dot.
+ tissue(sweep([[0,0,.025],[0,0,-.18],[0,.02,-.45],[0,.03,-.72]],[r*.75/s,.09,.085,.06]),'skin',tail);
  if(id==='tail_paddle'){
-  sail([[0,.35,-2.8],[1.8,.42,-3.8],[2.1,.4,-5.3],[0,.3,-6],[-2.1,.4,-5.3],[-1.8,.42,-3.8]],tail,gliderM);
-  for(const side of [-1,1])tissue(sweep([[0,.4,-2.9],[side*1.1,.46,-4],[side*1.85,.43,-5.3]],[.1,.075,.025]),'keratin',tail);
+  sail([[0,.03,-.35],[0,.48,-.67],[0,.52,-1.14],[0,.03,-1.42],[0,-.48,-1.14],[0,-.42,-.67]],tail,gliderM).name='vertical paddle';
+  for(const side of [-1,1])tissue(sweep([[0,.03,-.4],[0,side*.32,-.76],[0,side*.45,-1.13]],[.035,.025,.008]),'keratin',tail);
  }else if(id==='tail_spike'){
-  tissue(ell(.72,.63,.75,0,.4,-3.7),'keratin',tail);
-  for(const x of [-.55,0,.55])tissue(sweep([[x,.45,-3.9],[x*1.3,.8,-4.8],[x*1.4,1.3,-5.8]],[.24,.16,.009]),'keratin',tail);
+  tissue(ell(.19,.16,.25,0,.03,-.77),'keratin',tail);
+  for(const x of [-.15,0,.15])tissue(sweep([[x,.07,-.85],[x*1.4,.22,-1.15],[x*1.7,.4,-1.48]],[.065,.045,.003]),'keratin',tail).name='tail barb';
  }else{
-  tissue(ell(1.1,.85,1.05,0,.5,-4.2),'keratin',tail);
+  tissue(ell(.29,.23,.28,0,.03,-.88),'keratin',tail);
   for(const side of [-1,1]){
-   tissue(ell(.9,.78,.85,side*.95,.5,-4.35),'keratin',tail);
-   tissue(sweep([[side*1.35,.65,-4.4],[side*2.2,.95,-4.5]],[.24,.008]),'keratin',tail);
+   tissue(ell(.23,.21,.23,side*.25,.03,-.92),'keratin',tail);
+   tissue(sweep([[side*.36,.07,-.93],[side*.56,.15,-.96]],[.065,.003]),'keratin',tail);
   }
-  for(const x of [-1,0,1])tissue(sweep([[x,1.05,-4],[x,1.45,-4.5]],[.16,.008]),'keratin',tail);
+  for(const x of [-.26,0,.26])tissue(sweep([[x,.2,-.78],[x,.29,-.93],[x,.19,-1.1]],[.035,.045,.015]),'keratin',tail);
  }
  return g;
 });
@@ -399,7 +418,7 @@ function shoulderT(a=.2){
  const nodes=G.nodes;let i=1;for(let j=2;j<nodes.length-2;j++)if(nodes[j].r>nodes[i].r)i=j;
  return clamp((NC+i/(nodes.length-1)*(NSP-1))/(NS-1)+a,.3,.8);
 }
-const defaults=type=>{const L=LIB[type];return{type,t:L.category==='mouths'?1:type.startsWith('tail_')?0:type==='eye_triad'?.92:type==='sac_spitter'?1:type.startsWith('arm_')?shoulderT():['wing_glider','wing_insect'].includes(type)?shoulderT(.14):(L.leg||L.fittedLeg)?.5:.62,ang:L.category==='mouths'||type==='eye_triad'?0:(L.leg||L.fittedLeg)?2.1:L.category==='wings'?1.3:type.startsWith('arm_')?.95:0,...(L.leg?{w:L.w,k:[...L.k],f:[...L.f]}:{size:1}),...(L.len?{len:L.len}:{}),...(type==='cuerno'?{curve:.5}:{})}};
+const defaults=type=>{const L=LIB[type];return{type,t:L.category==='mouths'?1:type.startsWith('tail_')?.12:type==='eye_triad'?.92:type==='sac_spitter'?1:type.startsWith('arm_')?shoulderT():['wing_glider','wing_insect'].includes(type)?shoulderT(.14):(L.leg||L.fittedLeg)?.5:.62,ang:L.category==='mouths'||type==='eye_triad'?0:(L.leg||L.fittedLeg)?2.1:L.category==='wings'?1.3:type.startsWith('arm_')?.95:0,...(L.leg?{w:L.w,k:[...L.k],f:[...L.f]}:{size:1}),...(L.len?{len:L.len}:{}),...(type==='cuerno'?{curve:.5}:{})}};
 const PLBL={rot:['Giro',-3.14,3.14],tilt:['Inclinación',-1.3,1.3],size:['Tamaño',.5,2.2],len:['Largo',.3,3.2],curve:['Curva',0,1.3],w:['Grosor',.1,.45]},BUDGET=320;
 
 /* ---------- genoma ---------- */
