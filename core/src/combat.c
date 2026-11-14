@@ -84,7 +84,7 @@ const char *cp_combat_move_name(int m)
 }
 const char *cp_combat_verb_name(int v)
 {
-    static const char *n[CB_V_COUNT] = { "idle", "approach", "attack", "guard", "dodge", "flee" };
+    static const char *n[CB_V_COUNT] = { "idle", "approach", "attack", "guard", "dodge", "flee", "move" };
     return (v >= 0 && v < CB_V_COUNT) ? n[v] : "?";
 }
 const char *cp_combat_order_error(int code)
@@ -361,6 +361,10 @@ int cp_combat_order(CpCombatWorld *w, int id, const CpCombatAction *a)
     case CB_V_GUARD:
         if (!cp_combat_move_available(c, CB_GUARD)) return CB_ERR_UNAVAILABLE;
         break;
+    case CB_V_MOVE:
+        if (a->dir < 0 || a->dir > 7) return CB_ERR_BAD_DIR;
+        dir = a->dir;
+        break;
     case CB_V_DODGE:
         if (a->dir < 0 || a->dir > 7) return CB_ERR_BAD_DIR;
         if (!cp_combat_move_available(c, CB_DODGE)) return CB_ERR_UNAVAILABLE;
@@ -574,6 +578,17 @@ static void plan(CpCombatWorld *w, int i, Disp *d)
     switch (c->verb) {
     case CB_V_IDLE:
         return;
+    case CB_V_MOVE: {
+        /* Absolute directions use literals, independent of browser trig. */
+        static const float dirs[8][2] = {
+            {1,0}, {0.70710678f,-0.70710678f}, {0,-1}, {-0.70710678f,-0.70710678f},
+            {-1,0}, {-0.70710678f,0.70710678f}, {0,1}, {0.70710678f,0.70710678f}
+        };
+        ux = dirs[(int)c->verb_dir][0]; uy = dirs[(int)c->verb_dir][1];
+        turn_toward(c, ux, uy);
+        walk(w, i, d, ux, uy, walk_speed(c));
+        return;
+    }
     case CB_V_APPROACH: {
         const CpCombatCreature *t = &w->c[(int)c->verb_target];
         if (!t->alive) { c->verb = CB_V_IDLE; return; }

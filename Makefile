@@ -88,3 +88,25 @@ blender-sample-parts:
 clean:
 	rm -rf $(BUILD)
 	$(MAKE) -C studio-sdl clean 2>/dev/null || true
+
+# P3a: Emscripten stays optional; native `make test` never invokes it.
+# Run each recipe in bash so an installed SDK can supply emcc when absent on PATH.
+WASM_SRC := core/src/combat.c core/src/rng.c apps/combat_bots.c
+WASM_FLAGS := -O2 -std=c99 -Wall -Wextra -fno-fast-math -ffp-contract=off -Icore/include -Iapps
+EMCC_RUN = bash -c 'if ! command -v emcc >/dev/null 2>&1; then \
+  if test -f "$$HOME/emsdk/emsdk_env.sh"; then source "$$HOME/emsdk/emsdk_env.sh" >/dev/null 2>&1; fi; \
+  fi; command -v emcc >/dev/null 2>&1 || { echo "Emscripten not found: put emcc on PATH or install ~/emsdk/emsdk_env.sh" >&2; exit 1; }; exec emcc "$$@"' --
+WASM_EXPORTS := '[_cb_layout,_cb_setup,_cb_reset,_cb_order,_cb_step,_cb_tick,_cb_count,_cb_states,_cb_event_count,_cb_events,_cb_hash,_cb_preview,_cb_bot_init,_cb_bot_decide]'
+
+.PHONY: wasm wasm-parity
+wasm: $(BUILD)/wasm/cpore_combat.mjs $(BUILD)/wasm/cpore_combat.wasm
+$(BUILD)/wasm/cpore_combat.mjs $(BUILD)/wasm/cpore_combat.wasm &: $(WASM_SRC) apps/wasm_api.c apps/combat_bots.h $(HDRS) Makefile
+	@mkdir -p $(dir $@)
+	$(EMCC_RUN) $(WASM_FLAGS) $(WASM_SRC) apps/wasm_api.c --no-entry -sMODULARIZE=1 -sEXPORT_ES6=1 -sENVIRONMENT=web,node -sEXPORTED_FUNCTIONS=$(WASM_EXPORTS) -sEXPORTED_RUNTIME_METHODS=HEAP8,HEAPU8,HEAPU32 -o $(BUILD)/wasm/cpore_combat.mjs
+$(BUILD)/wasm/%.cjs $(BUILD)/wasm/%.wasm &: tests/%.c $(WASM_SRC) apps/combat_bots.h $(HDRS) Makefile
+	@mkdir -p $(dir $@)
+	$(EMCC_RUN) $(WASM_FLAGS) $< $(WASM_SRC) -sENVIRONMENT=node -sNODERAWFS=1 -o $(BUILD)/wasm/$*.cjs
+$(BUILD)/combat_parity: tests/combat_parity.c apps/combat_bots.h $(BUILD)/apps/combat_bots.o $(HDRS) $(BUILD)/libcpore.a
+	$(CC) $(CFLAGS) -Iapps $< $(BUILD)/apps/combat_bots.o $(BUILD)/libcpore.a -o $@ $(LDLIBS)
+wasm-parity: $(BUILD)/wasm/combat_golden.cjs $(BUILD)/wasm/combat_golden.wasm $(BUILD)/wasm/combat_parity.cjs $(BUILD)/wasm/combat_parity.wasm $(BUILD)/combat_parity
+	nice -n 10 python3 tests/test_wasm_parity.py
