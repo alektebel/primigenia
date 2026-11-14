@@ -95,8 +95,9 @@ enum {
     CB_EFF_AVOID = 1,   /* hit avoided; defender pays `stamina` (flat) or is hit
                            normally if it cannot pay                           */
     CB_EFF_NEGATE,      /* damage x mult (0 negates); defender pays damage x
-                           `stamina` / guard factor, or the guard breaks         */
-    CB_EFF_REDUCE,      /* damage x mult, status suppressed; same stamina rule   */
+                           `stamina` / guard factor, or the guard breaks; on success
+                           release defence and stagger attacker `ticks`         */
+    CB_EFF_REDUCE,      /* damage x mult, status suppressed; same block/riposte rule */
     CB_EFF_BREAK,       /* damage x mult, defender's move cancelled, defender
                            pays `stamina` flat (to 0) and is staggered `ticks`   */
     CB_EFF_INTERRUPT    /* damage x mult, defender's move cancelled, defender
@@ -109,7 +110,7 @@ typedef struct {
     int8_t   attack, defend;     /* move ids; attack may be -1 (wildcard)       */
     uint8_t  phases;             /* mask of CB_PH_BIT(defender phase)           */
     uint8_t  effect;             /* CB_EFF_*                                    */
-    uint8_t  ticks;              /* stagger length                              */
+    uint8_t  ticks;              /* stagger: attacker on block, else defender    */
     float    max_gap;            /* 0 = no limit                                */
     float    mult;               /* damage multiplier                           */
     float    stamina;            /* see CB_EFF_*                                */

@@ -91,7 +91,8 @@ static void counters(void)
         w.c[1].dash_x = w.c[1].dash_y = 0; /* test avoidance, independent of displacement */
         float stamina = w.c[1].stamina;
         cp_combat_step(&w);
-        CHECK(w.c[1].hp == 100 && w.c[1].dodged == 1 && w.c[1].stamina == stamina - 6,
+        CHECK(w.c[1].hp == 100 && w.c[1].dodged == 1 &&
+              w.c[1].stamina == stamina - CP_COMBAT_COUNTERS[0].stamina,
               "active dodge avoids each offensive move and pays per hit");
     }
     w = pair(1.6f);
@@ -130,6 +131,92 @@ static void counters(void)
     cp_combat_test_hit_variance(0);
 }
 
+/* A funded frontal block releases guard; application tick plus a complete
+ * fast attack is the shortest stagger that forbids an attacker response. */
+static void ripostes(void)
+{
+    for (int move = 0; move < CB_MOVE_COUNT; move++) {
+        if (move != CB_BITE && move != CB_TAIL_STRIKE) continue;
+        CpCombatWorld w = pair(1.6f);
+        phase(&w.c[0], move, CB_PH_ACTIVE);
+        phase(&w.c[1], CB_GUARD, CB_PH_ACTIVE);
+        cp_combat_step(&w);
+        int window = 1 + CP_COMBAT_MOVES[CB_BITE].windup + CP_COMBAT_MOVES[CB_BITE].active;
+        CHECK(w.c[0].move == CB_MOVE_NONE && w.c[0].plen == window &&
+              w.c[0].ptick == 1 && w.c[1].phase == CB_PH_IDLE,
+              "successful block releases guard and staggers for exactly one fast move");
+        cp_combat_attack(&w, 1, 0, CB_BITE);
+        for (int t = 0; t < window-1; t++) {
+            CHECK(cp_combat_helpless(&w.c[0]), "attacker cannot act before riposte lands");
+            cp_combat_attack(&w, 0, 1, CB_BITE);
+            cp_combat_step(&w);
+        }
+        CHECK(w.c[0].hp < 100 && w.c[1].hits == 1 && w.c[0].phase == CB_PH_IDLE,
+              "bite riposte lands on final stagger tick, without extra lockout");
+        w = pair(1.6f);
+        phase(&w.c[0], move, CB_PH_ACTIVE);
+        phase(&w.c[1], CB_GUARD, CB_PH_ACTIVE); w.c[1].stamina = 0;
+        cp_combat_step(&w);
+        CHECK(w.c[0].move == move, "exhausted block grants no riposte stagger");
+    }
+}
+
+static void spacing(void)
+{
+    for (int kind = BOT_GREEDY; kind <= BOT_COUNTER; kind++) {
+        CpCombatWorld w = pair(3.5f);
+        w.c[0].prof.mouth = w.c[0].prof.charge = w.c[0].prof.tail = 0;
+        CpBot b; bot_init(&b, kind, 42);
+        CpCombatAction a;
+        CHECK(bot_decide(&b, &w, 0, 1, &a) && a.verb == CB_V_FLEE,
+              "ranged picker steps back when its best attack needs space");
+        cp_combat_order(&w, 0, &a);
+        float x = w.c[0].x;
+        cp_combat_step(&w);
+        CHECK(w.c[0].x < x, "ranged spacing moves away through public orders");
+        w = pair(6.0f);
+        w.c[0].prof.mouth = w.c[0].prof.charge = w.c[0].prof.tail = 0;
+        CHECK(bot_decide(&b, &w, 0, 1, &a) && a.verb == CB_V_ATTACK && a.move == CB_SPIT,
+              "ranged picker fires once spacing is established");
+        w = pair(7.0f);
+        w.c[0].prof.mouth = w.c[0].prof.charge = w.c[0].prof.tail = 0;
+        bot_init(&b, kind, 42);
+        CpBot chase; bot_init(&chase, BOT_SPAM, 43); chase.spam_move = CB_BITE;
+        for (int t = 0; t < 25; t++) {
+            if (bot_decide(&b, &w, 0, 1, &a)) cp_combat_order(&w, 0, &a);
+            if (bot_decide(&chase, &w, 1, 0, &a)) cp_combat_order(&w, 1, &a);
+            cp_combat_step(&w);
+        }
+        CHECK(w.c[0].hits > 0, "spacing commits to a shot while turning instead of oscillating");
+
+    }
+}
+
+static void ranged_exchanges(void)
+{
+    CpCombatProfile p; cp_combat_profile_default(&p);
+    p.mouth = p.charge = p.spit = p.tail = p.guard = 3;
+    p.hp = 100000;
+    for (int far = 0; far <= 1; far++) {
+        double margin = 0;
+        for (int s = 0; s < 80; s++) {
+            CpCombatSetup setup;
+            duel_setup(&setup, 1000u + (uint32_t)(s/2), &p, &p, far ? 7.0f : 1.6f);
+            CpBot b0, b1; CpDuelResult r;
+            bot_init(&b0, BOT_SPAM, (uint32_t)s);
+            bot_init(&b1, BOT_SPAM, (uint32_t)s+7777u);
+            b0.spam_move = s%2 ? CB_BITE : CB_SPIT; b0.delay = (s/2)%4;
+            b1.spam_move = s%2 ? CB_SPIT : CB_BITE; b1.delay = (s/8)%7;
+            duel_run(&setup, &b0, &b1, 120, NULL, 0, NULL, NULL, &r);
+            margin += r.dealt[s%2] - r.dealt[1-s%2];
+        }
+        printf("  spit exchange %.1f m: mean damage margin %+.2f HP (80 paired-seat duels)\n",
+               far ? 7.0 : 1.6, margin/80);
+        CHECK(far ? margin > 0 : margin < 0,
+              "spaced spit wins at range; bite wins the close exchange");
+    }
+}
+
 /* Two attackers exchange ids, retaining their physical positions and profiles. */
 static CpCombatWorld focus(int swap, int defence, float stamina, float hp)
 {
@@ -157,7 +244,8 @@ static void simultaneous(void)
               "focus fire credits every landed hit on a lethal tick");
         CHECK(w.c[0].kills == 1 && w.c[1].kills == 0 && !w.c[2].alive,
               "lowest id landing damage owns the lethal tick");
-        CHECK(w.c[2].dmg_taken == 11.0f + 11.0f*1.6f,
+        CHECK(w.c[2].dmg_taken == cp_combat_move_damage(&w.c[0].prof, CB_BITE) +
+              cp_combat_move_damage(&w.c[1].prof, CB_BITE),
               "focus damage is unchanged when attackers swap ids");
         w = focus(swap, -1, 100, 20);
         cp_combat_step(&w);
@@ -165,25 +253,25 @@ static void simultaneous(void)
               "lowest id gets lethal-tick credit even when its own hit was nonlethal");
         w = focus(swap, -1, 100, 100);
         cp_combat_step(&w);
-        CHECK(w.c[2].bleed_t == 14 && w.c[2].bleed_src == 0,
+        CHECK(w.c[2].bleed_t == CP_COMBAT_MOVES[CB_BITE].status_ticks-1 && w.c[2].bleed_src == 0,
               "equal-duration bleed cannot steal the extending hit's credit");
         w = focus(swap, -1, 100, 100); w.c[2].bleed_t = 20; w.c[2].bleed_src = 0;
         cp_combat_step(&w);
         CHECK(w.c[2].bleed_t == 19 && w.c[2].bleed_src == 0,
               "shorter bleed cannot replace an existing source");
-        w = focus(swap, CB_DODGE, 6, 100);
+        w = focus(swap, CB_DODGE, CP_COMBAT_COUNTERS[0].stamina, 100);
         cp_combat_step(&w);
         CHECK(w.c[0].hits == 0 && w.c[1].hits == 1 && w.c[2].dodged == 1 &&
-              w.c[2].stamina == 0 && w.c[2].stamina_spent == 6,
+              w.c[2].stamina == 0 && w.c[2].stamina_spent == CP_COMBAT_COUNTERS[0].stamina,
               "scarce dodge pays the lower-id hit only, from snapshot stamina");
-        w = focus(swap, CB_GUARD, 6, 100);
+        w = focus(swap, CB_GUARD, 1.5f, 100);
         cp_combat_step(&w);
         CHECK(w.c[0].hits == 0 && w.c[1].hits == 1 && w.c[2].blocked == 1 &&
-              w.c[2].stamina == 0 && w.c[2].stamina_spent == 6 && w.c[2].stun_t == 5,
+              w.c[2].stamina == 0 && w.c[2].stamina_spent == 1.5f && w.c[2].stun_t == 5,
               "scarce guard records one block then one exhausted break");
         w = focus(swap, CB_DODGE, 100, 100);
         cp_combat_step(&w);
-        CHECK(w.c[2].hp == 100 && w.c[2].dodged == 2 && w.c[2].stamina_spent == 12,
+        CHECK(w.c[2].hp == 100 && w.c[2].dodged == 2 && w.c[2].stamina_spent == 2*CP_COMBAT_COUNTERS[0].stamina,
               "ample dodge has identical outcomes with attacker ids swapped");
         w = focus(swap, -1, 100, 1);
         w.c[0].x += 0.3f; w.c[1].x += 0.3f; /* inside charge contact gap */
@@ -483,7 +571,7 @@ static void canaries(void)
 int main(void)
 {
     puts("cpore combat tests");
-    counters(); simultaneous(); bot_counters(); edges_and_verbs(); geometry_and_setup(); determinism(); canaries();
+    counters(); ripostes(); spacing(); ranged_exchanges(); simultaneous(); bot_counters(); edges_and_verbs(); geometry_and_setup(); determinism(); canaries();
     printf("combat: %d failure(s)\n", fails);
     return fails ? 1 : 0;
 }

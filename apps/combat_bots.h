@@ -23,6 +23,7 @@ typedef struct {
     int      delay;          /* ticks to wait before the first order                */
     int      reaction;       /* BOT_COUNTER: sees a wind-up once it is this many
                                 ticks old (default 2, i.e. 200 ms)                  */
+    int      ranged_commit;  /* keep a selected shot through its turn/approach     */
     int      timer;          /* BOT_RANDOM: ticks until the next re-roll            */
 } CpBot;
 

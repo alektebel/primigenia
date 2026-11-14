@@ -85,13 +85,13 @@ static int best_attack(const CpCombatWorld *w, int self, int foe)
     return best;
 }
 
-static int rule_effect(int attack, int defend)
+static const CpCombatCounter *counter_rule(int attack, int defend)
 {
     for (int k = 0; k < CP_COMBAT_N_COUNTERS; k++) {
         const CpCombatCounter *r = &CP_COMBAT_COUNTERS[k];
-        if ((r->attack == attack || r->attack < 0) && r->defend == defend) return r->effect;
+        if ((r->attack == attack || r->attack < 0) && r->defend == defend) return r;
     }
-    return 0;
+    return NULL;
 }
 
 static int act_attack(CpCombatAction *o, int foe, int m)
@@ -100,7 +100,39 @@ static int act_attack(CpCombatAction *o, int foe, int m)
     return 1;
 }
 
-static int greedy(const CpCombatWorld *w, int self, int foe, CpCombatAction *out)
+/* A ranged commitment needs room for the enemy's approach during wind-up.
+ * Flee is re-evaluated each observation, so this is a short step back rather
+ * than an unconditional run to the arena wall. Sidestep along walls to
+ * recover space. Move data supplies the desired gap; no build identities. */
+static int spaced_attack(CpBot *b, const CpCombatWorld *w, int self, int foe, int m, CpCombatAction *out)
+{
+    const CpCombatCreature *me = &w->c[self];
+    const CpCombatMove *mv = &CP_COMBAT_MOVES[m];
+    if ((mv->flags & CB_F_RANGED) && me->phase == CB_PH_IDLE && !b->ranged_commit) {
+        CpCombatPreview p; cp_combat_preview(w, self, m, foe, &p);
+        float dx = me->x - w->c[foe].x, dy = me->y - w->c[foe].y;
+        float room = wall_room(me->x, me->y);
+        int away_wall = (me->x <= CB_RADIUS+0.5f && dx < 0) ||
+            (me->x >= CB_ARENA_W-CB_RADIUS-0.5f && dx > 0) ||
+            (me->y <= CB_RADIUS+0.5f && dy < 0) ||
+            (me->y >= CB_ARENA_H-CB_RADIUS-0.5f && dy > 0);
+        if (p.gap < mv->reach * 0.85f) {
+            if (away_wall || room <= CB_RADIUS) {
+                if (me->stamina >= cp_combat_move_stamina(&me->prof, CB_DODGE)) {
+                    *out = (CpCombatAction){CB_V_DODGE, 0, 0, (int8_t)dodge_dir(w, self)};
+                    return 1;
+                }
+            } else {
+                *out = (CpCombatAction){CB_V_FLEE, 0, (int8_t)foe, 0};
+                return 1;
+            }
+        }
+    }
+    b->ranged_commit = !!(mv->flags & CB_F_RANGED);
+    return act_attack(out, foe, m);
+}
+
+static int greedy(CpBot *b, const CpCombatWorld *w, int self, int foe, CpCombatAction *out)
 {
     int m = best_attack(w, self, foe);
     if (m < 0) {                                  /* nothing affordable or useful: rest, closing in */
@@ -111,7 +143,7 @@ static int greedy(const CpCombatWorld *w, int self, int foe, CpCombatAction *out
                 me->stamina < cp_combat_move_stamina(&me->prof, k)) { out->verb = CB_V_IDLE; break; }
         return 1;
     }
-    return act_attack(out, foe, m);
+    return spaced_attack(b, w, self, foe, m, out);
 }
 
 /* The opponent's wind-up, if it is aimed at me, in reach, and has been visible
@@ -146,25 +178,23 @@ static int counter(CpBot *b, const CpCombatWorld *w, int self, int foe, CpCombat
                 float v = 0.0f;
                 if (mr->flags & CB_F_SELF) {                 /* guard / dodge: timed to cover the first active tick */
                     if (rem < (int)mr->windup || rem > (int)mr->windup + (int)mr->active - 1) continue;
-                    int eff = rule_effect(fm, r);
+                    const CpCombatCounter *rule = counter_rule(fm, r);
+                    int eff = rule ? rule->effect : 0;
                     float extra = 0.0f;
-                    if (eff == CB_EFF_AVOID) { v = 2.5f; extra = 6.0f; }
+                    if (eff == CB_EFF_AVOID) { v = 2.5f; extra = rule->stamina; }
                     else if (eff == CB_EFF_NEGATE) v = 3.0f;
                     else if (eff == CB_EFF_REDUCE) v = 3.0f;
                     else continue;                           /* no benefit, or worse (charge breaks guard) */
                     if (me->stamina < cost + extra) continue;
                 } else {                                     /* an attack that interrupts the wind-up */
-                    int eff = rule_effect(r, fm);
+                    const CpCombatCounter *rule = counter_rule(r, fm);
+                    int eff = rule ? rule->effect : 0;
                     if (eff != CB_EFF_INTERRUPT && eff != CB_EFF_BREAK) continue;
                     CpCombatPreview p;
                     cp_combat_preview(w, self, r, foe, &p);
                     int lag = p.in_arc ? 0 : 1;
                     /* Bite may interrupt spit's active frame; spit must arrive
                      * strictly before charge becomes active. Honour each row. */
-                    const CpCombatCounter *rule = NULL;
-                    for (int k = 0; k < CP_COMBAT_N_COUNTERS; k++)
-                        if (CP_COMBAT_COUNTERS[k].attack == r && CP_COMBAT_COUNTERS[k].defend == fm)
-                            { rule = &CP_COMBAT_COUNTERS[k]; break; }
                     int same_tick = rule && (rule->phases & CB_PH_BIT(CB_PH_ACTIVE));
                     if (!p.in_reach || (rule && rule->max_gap > 0 && p.gap > rule->max_gap) ||
                         (int)mr->windup + lag > rem - (same_tick ? 0 : 1)) continue;
@@ -197,7 +227,7 @@ static int counter(CpBot *b, const CpCombatWorld *w, int self, int foe, CpCombat
     }
     /* a busy creature keeps its plan */
     if (me->phase != CB_PH_IDLE) return 0;
-    return greedy(w, self, foe, out);
+    return greedy(b, w, self, foe, out);
 }
 
 static int random_bot(CpBot *b, const CpCombatWorld *w, int self, int foe, CpCombatAction *out)
@@ -232,20 +262,33 @@ int bot_decide(CpBot *b, const CpCombatWorld *w, int self, int foe, CpCombatActi
     const CpCombatCreature *me = &w->c[self];
     if (!me->alive || foe < 0 || !w->c[foe].alive) return 0;
     if (w->tick < b->delay) return 0;
+    if (b->kind != BOT_RANDOM && me->phase != CB_PH_IDLE) {
+        b->ranged_commit = 0;
+        return 0;
+    }
     switch (b->kind) {
     case BOT_IDLE:    return 0;
     case BOT_RANDOM:  return random_bot(b, w, self, foe, out);
-    case BOT_GREEDY:  return greedy(w, self, foe, out);
+    case BOT_GREEDY:  return greedy(b, w, self, foe, out);
     case BOT_COUNTER: return counter(b, w, self, foe, out);
     case BOT_SPAM:
         memset(out, 0, sizeof(*out));
         if (b->spam_move == CB_GUARD || b->spam_move == CB_DODGE) {
             /* Holding guard / repeatedly dodging: reissue each tick. The
              * core completes committed moves before starting the next. */
-            if (b->spam_move == CB_GUARD) { out->verb = CB_V_GUARD; return 1; }
+            if (b->spam_move == CB_GUARD) {
+                /* Guard policy includes its earned fast riposte, through the
+                 * same public orders as a player. Never invent guard damage. */
+                if (me->phase == CB_PH_IDLE && cp_combat_helpless(&w->c[foe])) {
+                    CpCombatPreview p; cp_combat_preview(w, self, CB_BITE, foe, &p);
+                    if (p.in_reach && p.in_arc && cp_combat_move_available(me, CB_BITE))
+                        return act_attack(out, foe, CB_BITE);
+                }
+                out->verb = CB_V_GUARD; return 1;
+            }
             out->verb = CB_V_DODGE; out->dir = (int8_t)dodge_dir(w, self); return 1;
         }
-        return act_attack(out, foe, b->spam_move);
+        return spaced_attack(b, w, self, foe, b->spam_move, out);
     }
     return 0;
 }
