@@ -842,6 +842,7 @@ static void resolve_hits(CpCombatWorld *w)
                     d->blocked++;
                     ev_add(w, CB_EV_BLOCKED, h->atk, h->def, h->move, dmg);
                 } else {                            /* guard gives out */
+                    d->stamina_spent += d->stamina;
                     d->stamina = 0.0f; d->since_spend = 0;
                     broke = 1;
                     ev_add(w, CB_EV_GUARD_BROKEN, h->atk, h->def, h->move, 0.0f);

@@ -101,9 +101,10 @@ static void counters(void)
 
     w = pair(1.6f);
     phase(&w.c[0], CB_BITE, CB_PH_ACTIVE);
-    phase(&w.c[1], CB_GUARD, CB_PH_ACTIVE); w.c[1].stamina = 0;
+    phase(&w.c[1], CB_GUARD, CB_PH_ACTIVE); w.c[1].stamina = 1;
     cp_combat_step(&w);
-    CHECK(w.c[1].hp < 100 && event(&w, CB_EV_GUARD_BROKEN) && w.c[1].stun_t,
+    CHECK(w.c[1].hp < 100 && event(&w, CB_EV_GUARD_BROKEN) && w.c[1].stun_t &&
+          w.c[1].stamina == 0 && w.c[1].stamina_spent == 1,
           "exhausted guard breaks instead of granting free defence");
 
     w = pair(1.6f);
