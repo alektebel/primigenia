@@ -54,7 +54,7 @@ window.__heroBuild=function(env){
 const T=env.T,scene=env.scene,V=(x,y,z)=>new T.Vector3(x,y,z),$=id=>document.getElementById(id);
 const lerp=(a,b,t)=>a+(b-a)*t,clamp=(x,a,b)=>Math.min(b,Math.max(a,x)),sstep=(a,b,x)=>{x=clamp((x-a)/(b-a),0,1);return x*x*(3-2*x)};
 const lin=h=>new T.Color(h).convertSRGBToLinear();
-const CX=0,RC=7,HP=window.__heroParams,HX=env.W.p.x+Math.sin(env.W.p.a)*10,HZ=env.W.p.z+Math.cos(env.W.p.a)*10,HERO={x:HX,z:HZ,y:env.groundY(HX,HZ),yaw:env.W.p.a};
+const CX=0,RC=7,HP=window.__heroParams,HX=env.W.p.x+Math.sin(env.W.p.a)*10,HZ=env.W.p.z+Math.cos(env.W.p.a)*10,SAZ=Math.atan2(env.SUN.x,env.SUN.z),CAZ=SAZ+(+(new URLSearchParams(location.search).get('sunside')||1.1)),HERO={x:HX,z:HZ,y:env.groundY(HX,HZ),yaw:CAZ-HP.yaw};
 let mode='hero',sel=null,drag=null;const drawStats=()=>{};
 """ + materials_geometry_lib + seeds + "let G=JSON.parse(JSON.stringify(SEEDS[HP.creature]||SEEDS.Merodeador));\n" + creature + r"""
 /* environment light for the physical materials only: the toon world keeps its own */
@@ -73,7 +73,7 @@ env.W.p.vis.root.visible=false;
 const CAM={close:[7.5,.10],mid:[13,.16],far:[30,.22]}[HP.cam]||[13,.16];
 window.__heroFrame=dt=>{if(HP.live)update(dt);
   const c=V(0,0,0);for(let i=0;i<NS;i++)c.add(pts[i]);c.multiplyScalar(1/NS).applyMatrix4(creature.matrixWorld);
-  const a=HERO.yaw+HP.yaw,cp=Math.cos(CAM[1]),d=CAM[0];const cam=env.camera;cam.fov=42;
+  const a=CAZ,cp=Math.cos(CAM[1]),d=CAM[0];const cam=env.camera;cam.fov=42;
   cam.position.set(c.x+Math.sin(a)*cp*d,c.y+Math.sin(CAM[1])*d,c.z+Math.cos(a)*cp*d);
   cam.position.y=Math.max(cam.position.y,env.groundY(cam.position.x,cam.position.z)+.6);cam.lookAt(c.x,c.y-.2,c.z);cam.updateProjectionMatrix()};
 window.Hero={ready:true,params:HP,light:window.__heroLight.name,creature:G.name,
@@ -89,18 +89,18 @@ PRESETS = r"""
 /* One ACES pipeline (G46). Golden hour is the look (G47); the others are checks.
    Fog/sky colours are display-space values, as in both references. */
 (()=>{const q=new URLSearchParams(location.search),P={
- golden:{exp:1.05,sun:[-.62,.3,-.72],sunC:'#ffcf9a',sunI:3.1,hemi:['#9db8e8','#5a4630',.45],fog:[.93,.74,.56],
-   sky:{hz:[.93,.74,.56],mid:[.50,.60,.78],top:[.17,.30,.58],glow:[1,.62,.28],disc:3},
-   envHz:[.9,.55,.3],envMid:[.32,.42,.62],envTop:[.08,.16,.4],envGd:[.12,.09,.06],envSun:[14,8,3.5],ramp:[40,40,75,75,110,110],grass:[1.06,.86,.64]},
+ golden:{exp:1.0,sun:[-.62,.28,-.72],sunC:'#ffd2a0',sunI:3.1,hemi:['#bfe0ff','#6f8a4a',.5],fog:[.86,.88,.88],
+   sky:{hz:[.95,.84,.70],mid:[.55,.72,.92],top:[.16,.42,.82],glow:[1,.62,.3],disc:3},
+   envHz:[.9,.55,.3],envMid:[.32,.42,.62],envTop:[.08,.16,.4],envGd:[.12,.09,.06],envSun:[14,8,3.5],ramp:[54,54,83,83,108,108],grass:[1.04,.95,.80]},
  noon:{exp:1.0,sun:[-.4,.85,-.35],sunC:'#fff2dc',sunI:3.0,hemi:['#bfe0ff','#6f8a4a',.6],fog:[.78,.90,.96],
    sky:{hz:[.78,.90,.96],mid:[.45,.66,.90],top:[.16,.42,.82],glow:[1,.85,.6],disc:3},
-   envHz:[.7,.8,.9],envMid:[.4,.55,.8],envTop:[.15,.3,.7],envGd:[.15,.17,.1],envSun:[16,15,13],ramp:[40,40,75,75,110,110],grass:[1,1,1]},
+   envHz:[.7,.8,.9],envMid:[.4,.55,.8],envTop:[.15,.3,.7],envGd:[.15,.17,.1],envSun:[16,15,13],ramp:[54,54,83,83,108,108],grass:[1,1,1]},
  overcast:{exp:1.1,sun:[-.3,.8,-.4],sunC:'#e8eef2',sunI:.8,hemi:['#d3dbe2','#6a7060',1.7],fog:[.74,.77,.80],
    sky:{hz:[.76,.79,.82],mid:[.66,.69,.73],top:[.55,.58,.63],glow:[.2,.2,.2],disc:0},
-   envHz:[.6,.62,.65],envMid:[.55,.57,.6],envTop:[.5,.52,.56],envGd:[.12,.12,.1],envSun:[1.5,1.5,1.5],ramp:[40,40,75,75,110,110],grass:[.78,.82,.84]},
+   envHz:[.6,.62,.65],envMid:[.55,.57,.6],envTop:[.5,.52,.56],envGd:[.12,.12,.1],envSun:[1.5,1.5,1.5],ramp:[54,54,83,83,108,108],grass:[.78,.82,.84]},
  night:{exp:1.25,sun:[.4,.55,.3],sunC:'#9fb4ff',sunI:.7,hemi:['#2a3a60','#151a20',.6],fog:[.07,.09,.16],
    sky:{hz:[.10,.13,.22],mid:[.05,.07,.15],top:[.02,.03,.08],glow:[.3,.35,.5],disc:1.2},
-   envHz:[.06,.08,.14],envMid:[.04,.05,.1],envTop:[.02,.02,.06],envGd:[.02,.02,.02],envSun:[2,2.3,3],ramp:[40,40,75,75,110,110],grass:[.16,.2,.32]}};
+   envHz:[.06,.08,.14],envMid:[.04,.05,.1],envTop:[.02,.02,.06],envGd:[.02,.02,.02],envSun:[2,2.3,3],ramp:[54,54,83,83,108,108],grass:[.16,.2,.32]}};
  const name=P[q.get('t')]?q.get('t'):'golden',L=Object.assign({name},P[name]);if(q.get('exp'))L.exp=+q.get('exp');
  const v=a=>'vec3('+a.map(x=>(+x).toFixed(3)).join(',')+')',s=L.sky;
  L.skyGLSL='vec3 c=mix('+v(s.hz)+','+v(s.mid)+',smoothstep(0.,.28,h));c=mix(c,'+v(s.top)+',smoothstep(.2,.95,h));float s=max(dot(n,sun),0.);c+='+v(s.glow)+'*pow(s,7.)*.55+vec3(1.,.97,.9)*smoothstep(.9988,.9995,s)*'+(+s.disc).toFixed(2)+';';
