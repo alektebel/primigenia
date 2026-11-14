@@ -70,8 +70,8 @@ float n3(vec3 x){vec3 i=floor(x),f=fract(x);f=f*f*(3.-2.*f);return mix(mix(mix(h
 vec2 wor(vec3 x){vec3 p=floor(x),f=fract(x);float a=8.,b=8.;for(int k=-1;k<=1;k++)for(int j=-1;j<=1;j++)for(int i=-1;i<=1;i++){vec3 g=vec3(float(i),float(j),float(k));vec3 o=vec3(h3(p+g),h3(p+g+17.3),h3(p+g+41.7));vec3 r=g+o-f;float d=dot(r,r);if(d<a){b=a;a=d;}else if(d<b){b=d;}}return sqrt(vec2(a,b));}
 vec3 pN(vec3 sp,vec3 sn,vec2 dH){vec3 sx=dFdx(sp),sy=dFdy(sp),r1=cross(sy,sn),r2=cross(sn,sx);float det=dot(sx,r1);vec3 g=sign(det)*(dH.x*r1+dH.y*r2);return normalize(abs(det)*sn-g);}
 `;
-function skinMaterial(o={}){const kind=o.kind||'skin',params={...o};delete params.kind;
-  const m=new T.MeshPhysicalMaterial({roughness:.6,metalness:0,clearcoat:.3,clearcoatRoughness:.4,envMapIntensity:.9,...params});m.extensions={derivatives:true};m.customProgramCacheKey=()=>kind;
+function skinMaterial(o={}){const kind=o.kind||'skin',membraneStyle=o.membraneStyle||'',params={...o};delete params.kind;delete params.membraneStyle;
+  const m=new T.MeshPhysicalMaterial({roughness:.6,metalness:0,clearcoat:.3,clearcoatRoughness:.4,envMapIntensity:.9,...params});m.extensions={derivatives:true};m.customProgramCacheKey=()=>kind+membraneStyle;
   m.onBeforeCompile=s=>{Object.assign(s.uniforms,SU);if(kind==='membrane')s.uniforms.uSun={value:SUN};
     s.vertexShader='attribute vec4 skin;varying vec4 vSkin;\n'+s.vertexShader.replace('#include <begin_vertex>','#include <begin_vertex>\nvSkin=skin;');
     const backlight=kind==='membrane'?`vec3 Lw=normalize(mat3(viewMatrix)*uSun);float ndl=dot(normal,Lw);float thru=pow(clamp(-ndl,0.,1.),1.2);float rim=pow(1.-abs(dot(normalize(vViewPosition),normal)),2.4);totalEmissiveRadiance+=sk*(thru*.65+rim*.16);`:'';
@@ -81,8 +81,8 @@ function skinMaterial(o={}){const kind=o.kind||'skin',params={...o};delete param
        else if(uPat>1.5&&uPat<2.5){vec2 w0=wor(rp*1.5);mk=1.-smoothstep(.2,.33,w0.x);}
        else if(uPat>2.5)mk=smoothstep(.5,.72,nn*.66+dd*.12);
        mk*=smoothstep(-.4,.2,dd);vec3 sk=mix(cA,cB,mk);sk=mix(sk,cC,1.-smoothstep(-.85,-.2,dd));sk*=mix(1.,.72,smoothstep(.7,1.,dd));
-       vec2 w1=wor(rp*uScale);float sh=smoothstep(0.,.2,w1.y-w1.x),bp=smoothstep(0.,.45,w1.y-w1.x)*.007+n3(rp*3.)*.015;sk*=mix(.7,1.,sh)*(.9+.2*n3(rp*11.));${kind==='membrane'?'sk=mix(sk,cB,.35+.15*n3(rp*5.5));sk=mix(sk,cC,.12)*.65;':''}diffuseColor.rgb=sk;`)
-     .replace('#include <roughnessmap_fragment>',kind==='membrane'?'#include <roughnessmap_fragment>\nroughnessFactor=.94;':'#include <roughnessmap_fragment>\nroughnessFactor=clamp(mix(.82,.3,uWet)*mix(1.25,.9,sh),.06,1.);')
+       vec2 w1=wor(rp*uScale);float sh=smoothstep(0.,.2,w1.y-w1.x),bp=smoothstep(0.,.45,w1.y-w1.x)*.007+n3(rp*3.)*.015;sk*=mix(.7,1.,sh)*(.9+.2*n3(rp*11.));${kind==='membrane'?(membraneStyle?`sk=mix(sk,cC,.58);${membraneStyle==='insect'?'sk=mix(sk,mix(vec3(.14,.58,.7),vec3(.58,.3,.74),pow(1.-abs(dot(normalize(vNormal),normalize(vViewPosition))),2.)),.42);':''}`:'sk=mix(sk,cB,.35+.15*n3(rp*5.5));sk=mix(sk,cC,.12)*.65;'):''}diffuseColor.rgb=sk;`)
+     .replace('#include <roughnessmap_fragment>',kind==='membrane'?'#include <roughnessmap_fragment>\nroughnessFactor='+ (membraneStyle?params.roughness:.94)+';':'#include <roughnessmap_fragment>\nroughnessFactor=clamp(mix(.82,.3,uWet)*mix(1.25,.9,sh),.06,1.);')
      .replace('#include <normal_fragment_maps>','#include <normal_fragment_maps>\nnormal=pN(-vViewPosition,normal,vec2(dFdx(bp),dFdy(bp)));')
      .replace('#include <emissivemap_fragment>','#include <emissivemap_fragment>\ntotalEmissiveRadiance+=sk*pow(1.-clamp(dot(normalize(vViewPosition),normal),0.,1.),3.)*.5;'+backlight)};
   return m}
@@ -154,6 +154,10 @@ const glbTemplates={},materialSlots=[];
 /* Thin skin: creature colours on both faces, a little see-through, lit from behind.
    Transmission is a full extra scene pass in r128; the backlight term stays in this shader. */
 const membraneM=skinMaterial({kind:'membrane',side:T.DoubleSide,transparent:true,opacity:.82,depthWrite:true,roughness:.94,clearcoat:0,clearcoatRoughness:1,envMapIntensity:.12});
+// Separate thin-tissue finishes keep the accepted frill material unchanged.
+const gliderM=skinMaterial({kind:'membrane',membraneStyle:'glider',side:T.DoubleSide,transparent:true,opacity:.9,roughness:.8,envMapIntensity:.25});
+const insectM=skinMaterial({kind:'membrane',membraneStyle:'insect',side:T.DoubleSide,transparent:true,opacity:.48,depthWrite:false,roughness:.42,clearcoat:.65});
+const sacM=skinMaterial({kind:'membrane',membraneStyle:'sac',side:T.DoubleSide,transparent:true,opacity:.74,roughness:.48});
 /* G48: normalized creator anatomy. +Z is out of the skin; body mounts use
    +Y up / +Z forward. Scale from the anatomical spine, excluding its end caps. */
 function sweep(points,radii){
@@ -168,27 +172,37 @@ function tissue(geo,region,parent){
  if(region==='glow')m.castShadow=m.receiveShadow=false;
  return m;
 }
-function sail(outline,parent){
+function sail(outline,parent,material=membraneM){
  // Curved fan with a raised centre: both faces receive the membrane backlight.
  const curve=new T.CatmullRomCurve3(outline.map(p=>V(...p)),true,'catmullrom',.25),n=48,pos=[...outline.reduce((a,p)=>a.add(V(...p)),V()).multiplyScalar(1/outline.length).add(V(0,.045,0)).toArray()],idx=[];
  for(let i=0;i<n;i++)pos.push(...curve.getPoint(i/n).toArray());
  for(let i=0;i<n;i++)idx.push(0,i+1,(i+1)%n+1);
- const geo=new T.BufferGeometry();geo.setAttribute('position',new T.Float32BufferAttribute(pos,3));geo.setIndex(idx);geo.computeVertexNormals();return tissue(geo,'membrane',parent);
+ const geo=new T.BufferGeometry();geo.setAttribute('position',new T.Float32BufferAttribute(pos,3));geo.setIndex(idx);geo.computeVertexNormals();const m=tissue(geo,'membrane',parent);m.material=material;return m;
 }
 function creatorPart(id,options,make){
- LIB[id]={p:['size'],responsive:true,...options,make:(p,off,r=.6)=>{
-  const g=make(p),s=p.size*r/.6;
+ LIB[id]={p:['size'],responsive:true,...options,make:(p,off,r=.6,context={head:.6,body:.6,height:2,mouthHeight:2.2})=>{
+  const radius=options.bodyMinimum?Math.max(r,context.body*options.bodyMinimum):r,s=p.size*radius/.6,g=make(p,r,s,context);
   g.traverse(o=>{if(o!==g)o.position.multiplyScalar(s);if(o.isMesh){o.geometry.scale(s,s,s);skinify(o.geometry,off,o.userData.materialRegion==='membrane'?.42:null)}});
   g.userData.mountRadius=r;g.userData.partScale=s;return g;
  }};
 }
-creatorPart('beak_crusher',{bite:3,sing:2},()=>{
+creatorPart('beak_crusher',{bite:3,sing:2,mount:'body'},()=>{
  const g=new T.Group(),jaw=new T.Group();g.add(jaw);g.userData.jaw=jaw;
- tissue(ell(.34,.29,.18,0,0,.04),'skin',g);
- tissue(sweep([[0,.14,0],[0,.22,.3],[0,.14,.65],[0,-.06,.8]],[.29,.3,.18,.008]).scale(1,.72,1),'keratin',g);
- jaw.position.set(0,-.12,.02);
- tissue(sweep([[0,0,0],[0,-.08,.32],[0,-.02,.67]],[.25,.23,.008]).scale(1,.48,1),'keratin',jaw);
- for(const z of [.22,.38,.54])tissue(sweep([[-.2,.015,z],[0,.035,z],[.2,.015,z]],[.024,.03,.024]),'keratin',jaw);
+ // The origin is the snout's rounded tip. Wrap back to its full cross-section.
+ tissue(ell(.61,.59,.09,0,0,-.56),'skin',g);
+ const shell=(lower,parent)=>{
+  const pos=[],idx=[],rings=18,sides=24;
+  for(let i=0;i<rings;i++){
+   const u=i/(rings-1),z=lerp(-.6,lower?.075:.15,u),section=Math.sqrt(Math.max(0,1-u*u)),w=.63*section+.004,h=(lower?.58:.67)*section;
+   for(let j=0;j<=sides;j++){const a=j/sides*Math.PI;pos.push(w*Math.cos(a),(lower?-1:1)*h*Math.sin(a)+(lower?-.035:.015),z)}
+  }
+  for(let i=0;i<rings-1;i++)for(let j=0;j<sides;j++){const k=i*(sides+1)+j;idx.push(k,k+1,k+sides+1,k+1,k+sides+2,k+sides+1)}
+  if(lower)for(let i=0;i<idx.length;i+=3)[idx[i+1],idx[i+2]]=[idx[i+2],idx[i+1]];
+  const geo=new T.BufferGeometry();geo.setAttribute('position',new T.Float32BufferAttribute(pos,3));geo.setIndex(idx);geo.computeVertexNormals();tissue(geo,'keratin',parent);
+ };
+ shell(false,g);shell(true,jaw);
+ for(const z of [-.4,-.23,-.07]){const w=.45*(-z+.2);tissue(sweep([[-w,-.035,z],[0,-.015,z],[w,-.035,z]],[.018,.026,.018]),'keratin',jaw)}
+ jaw.position.z=-.56;jaw.children.forEach(m=>m.geometry.translate(0,0,.56));
  return g;
 });
 creatorPart('eye_triad',{},()=>{
@@ -199,17 +213,24 @@ creatorPart('eye_triad',{},()=>{
  }
  return g;
 });
-for(const id of ['wing_glider','wing_insect'])creatorPart(id,{mount:'body'},()=>{
+for(const id of ['wing_glider','wing_insect'])creatorPart(id,{mount:'upright',bodyMinimum:.8},()=>{
  const g=new T.Group(),wing=new T.Group();g.add(wing);g.userData.wing=wing;
  tissue(ell(.16,.18,.22),'skin',g);
- const upper=id==='wing_glider'?[[0,0,0],[.65,.17,.43],[1.55,.2,.18],[2.25,.12,-.48],[1.25,.02,-.92],[.38,0,-.72]]:[[0,0,0],[.55,.15,.38],[1.4,.22,.3],[2.2,.18,-.12],[1.5,.05,-.48],[.48,0,-.42]];
- sail(upper,wing);
- const fingers=id==='wing_glider'?upper.slice(1):[upper[2],upper[3],upper[4]];
- if(id==='wing_insect'){
-  const lower=[[0,-.04,-.03],[.42,.04,-.3],[1.25,.06,-.72],[1.55,.03,-.88],[1.2,-.02,-.2],[.4,0,.12]];
-  sail(lower,wing);fingers.push(lower[2],lower[3]);
+ if(id==='wing_glider'){
+  // Five spread fingers, with scalloped trailing webs returning to the flank.
+  const fingers=[[.5,.5,.35],[1.35,.85,.15],[2.25,.9,-.5],[1.85,.6,-1.3],[.9,.25,-1.65]];
+  sail([[0,0,.08],fingers[0],fingers[1],fingers[2],[1.75,.65,-.75],fingers[3],[1.25,.34,-1.15],fingers[4],[.35,.06,-1.2],[0,-.12,-.8]],wing,gliderM);
+  for(const p of fingers)tissue(sweep([[0,0,0],[p[0]*.48,p[1]*.65+.08,p[2]*.48],p],[.045,.032,.009]),'keratin',wing);
+ }else{
+  // Fore- and hindwings fan apart, leaving a visible notch between the sails.
+  const fore=[[0,0,0],[.7,.6,.6],[1.65,.92,.7],[2.25,1,.35],[1.55,.65,.15],[.45,.2,-.05]];
+  const hind=[[0,-.04,-.12],[.5,.1,-.45],[1.3,.4,-.75],[1.7,.48,-1.2],[1.1,.2,-1.35],[.3,-.05,-.65]];
+  sail(fore,wing,insectM);sail(hind,wing,insectM);
+  for(const p of [fore[2],fore[3],fore[4],hind[2],hind[3]]){
+   tissue(sweep([[0,0,0],[p[0]*.5,p[1]*.5,p[2]*.5],p],[.023,.016,.005]),'keratin',wing);
+   tissue(sweep([[p[0]*.45,p[1]*.45,p[2]*.45],[p[0]*.72,p[1]*.7,p[2]*.72+.1],[p[0]*.85,p[1]*.85,p[2]*.85+.14]],[.009,.007,.003]),'keratin',wing);
+  }
  }
- for(const p of fingers)tissue(sweep([[0,0,0],[p[0]*.48,p[1]+.07,p[2]*.48],p],[.048,.034,.009]),'keratin',wing);
  return g;
 });
 creatorPart('frill_fan',{},()=>{
@@ -220,46 +241,58 @@ creatorPart('frill_fan',{},()=>{
  for(const i of [0,6,12,18,24])tissue(sweep([[0,0,0],edge[i].map(v=>v*.5),edge[i]],[.035,.027,.008]),'keratin',fan);
  return g;
 });
-creatorPart('sac_spitter',{},()=>{
- const g=new T.Group();tissue(ell(.31,.2,.18,0,0,0),'skin',g);
+creatorPart('sac_spitter',{mount:'body'},()=>{
+ const g=new T.Group();tissue(ell(.24,.18,.16,0,-.12,-.06),'skin',g);
  g.userData.sacs=[];
  for(const side of [-1,1]){
-  const sac=new T.Group();sac.position.set(side*.24,0,.22);g.add(sac);g.userData.sacs.push(sac);
-  tissue(ell(.25,.26,.3),'membrane',sac);tissue(ell(.065,.06,.075,side*.16,.15,.13),'glow',sac);
+  const sac=new T.Group();sac.position.set(side*.5,-.18,-.32);g.add(sac);g.userData.sacs.push(sac);
+  tissue(sweep([[0,-.12,-.06],[side*.3,-.16,-.25],[side*.5,-.18,-.32]],[.14,.12,.1]),'skin',g);
+  const m=tissue(ell(.36,.37,.39),'membrane',sac);m.material=sacM;
+  for(const z of [-.1,.15])tissue(ell(.07,.065,.07,side*.3,.09,z),'glow',sac);
  }
- tissue(sweep([[0,0,.02],[0,0,.4],[0,.06,.75]],[.18,.12,.055]),'keratin',g);
- tissue(ell(.05,.05,.018,0,.06,.75),'glow',g);return g;
+ tissue(sweep([[0,-.13,-.04],[0,-.12,.25],[0,-.08,.55]],[.15,.1,.045]),'keratin',g);
+ tissue(ell(.046,.046,.018,0,-.08,.55),'glow',g);return g;
 });
-for(const id of ['arm_grasper','arm_smasher'])creatorPart(id,{mount:'body'},()=>{
+for(const id of ['arm_grasper','arm_smasher'])creatorPart(id,{mount:'upright',bodyMinimum:.65},(p,r,s,context)=>{
  const g=new T.Group(),arm=new T.Group();g.add(arm);g.userData.arm=arm;
- const smash=id==='arm_smasher',region=smash?'keratin':'skin';
+ const smash=id==='arm_smasher';
  tissue(ell(.24,.25,.24),'skin',g);
- tissue(sweep([[0,0,0],[.23,-.32,.05],[.38,-.7,.12]],[.22,.19,.15]),region,arm);
- tissue(ell(.19,.18,.18,.38,-.7,.12),region,arm);
- tissue(sweep([[.38,-.7,.12],[.46,-.96,.35],[.55,-1.04,.68]],[.16,.14,.12]),region,arm);
  if(smash){
-  tissue(ell(.32,.3,.44,.56,-1.02,.91),'keratin',arm);
-  for(const z of [.7,.91,1.12])tissue(sweep([[.32,-.83,z],[.56,-.73,z],[.8,-.83,z]],[.035,.04,.035]),'keratin',arm);
+  // Resting club sits near knee height; even large size settings clear the floor.
+  const drop=Math.min(context.height*.5*p.size,context.height-.5)/s;
+  const club=Math.min(.3,context.head*.78/s),y=-Math.max(.35,drop-club);
+  tissue(sweep([[0,0,0],[.16,y*.4,0],[.25,y*.7,.08]],[.2,.17,.14]),'skin',arm);
+  tissue(ell(.17,.17,.17,.25,y*.7,.08),'skin',arm);
+  tissue(sweep([[.25,y*.7,.08],[.35,y*.95,.25],[.4,y,.4]],[.14,.13,.12]),'skin',arm);
+  tissue(ell(club,club*.9,club*1.2,.4,y,.4+club*.65),'keratin',arm);
+  for(const z of [-.5,.1,.7])tissue(sweep([[.4-club*.8,y+club*.55,.4+club*(.65+z)],[.4,y+club*1.05,.4+club*(.65+z)],[.4+club*.8,y+club*.55,.4+club*(.65+z)]],[.025,.035,.025]),'keratin',arm);
  }else{
-  tissue(ell(.23,.16,.23,.55,-1.04,.73),'skin',arm);
-  for(const side of [-1,1])tissue(sweep([[.55+side*.12,-1.04,.78],[.55+side*.3,-1.02,1.06],[.55+side*.07,-1.02,1.3]],[.09,.065,.004]),'keratin',arm);
+  const hand=clamp((context.mouthHeight-context.height-context.head*.4)/s,-.26,1.6),elbow=hand*.45-.35;
+  tissue(sweep([[0,0,0],[.32,elbow*.6,.12],[.65,elbow,.35]],[.2,.17,.14]),'skin',arm);
+  tissue(ell(.17,.17,.17,.65,elbow,.35),'skin',arm);
+  tissue(sweep([[.65,elbow,.35],[.75,lerp(elbow,hand,.5),.67],[.38,hand,.98]],[.14,.13,.11]),'skin',arm);
+  tissue(ell(.21,.15,.2,.38,hand,1.03),'skin',arm);
+  for(const side of [-1,1])tissue(sweep([[.38+side*.12,hand,1.08],[.38+side*.29,hand+.04,1.31],[.38+side*.06,hand+.04,1.52]],[.085,.06,.004]),'keratin',arm);
  }
  return g;
 });
 for(const id of ['tail_paddle','tail_spike','tail_hammer'])creatorPart(id,{mount:'body'},()=>{
  const g=new T.Group(),tail=new T.Group();g.add(tail);g.userData.tail=tail;
- tissue(ell(.19,.17,.18),'skin',g);
- tissue(sweep([[0,0,0],[0,.03,-.7],[0,.15,-1.3]],[.19,.14,.09]),'skin',tail);
+ // Continue the terminal cap at t=0, with a radius-matched muscular root.
+ tissue(sweep([[0,0,0],[0,.03,-.5],[0,.15,-1.6],[0,.35,-3.4]],[.04,.22,.48,.32]),'skin',tail);
  if(id==='tail_paddle'){
-  sail([[0,.15,-.95],[.53,.17,-1.32],[.55,.15,-1.8],[0,.12,-2.03],[-.55,.15,-1.8],[-.53,.17,-1.32]],tail);
-  for(const side of [-1,1])tissue(sweep([[0,.18,-1],[side*.3,.19,-1.4],[side*.48,.16,-1.8]],[.035,.025,.009]),'keratin',tail);
+  sail([[0,.35,-2.8],[1.8,.42,-3.8],[2.1,.4,-5.3],[0,.3,-6],[-2.1,.4,-5.3],[-1.8,.42,-3.8]],tail,gliderM);
+  for(const side of [-1,1])tissue(sweep([[0,.4,-2.9],[side*1.1,.46,-4],[side*1.85,.43,-5.3]],[.1,.075,.025]),'keratin',tail);
  }else if(id==='tail_spike'){
-  tissue(ell(.23,.2,.24,0,.18,-1.37),'keratin',tail);
-  for(const x of [-.18,0,.18])tissue(sweep([[x,.2,-1.4],[x*1.3,.32,-1.65],[x*1.4,.48,-1.92]],[.08,.055,.003]),'keratin',tail);
+  tissue(ell(.72,.63,.75,0,.4,-3.7),'keratin',tail);
+  for(const x of [-.55,0,.55])tissue(sweep([[x,.45,-3.9],[x*1.3,.8,-4.8],[x*1.4,1.3,-5.8]],[.24,.16,.009]),'keratin',tail);
  }else{
-  tissue(ell(.35,.3,.36,0,.2,-1.5),'keratin',tail);
-  for(const side of [-1,1])tissue(ell(.3,.26,.29,side*.3,.2,-1.54),'keratin',tail);
-  for(const x of [-.35,0,.35])tissue(sweep([[x,.4,-1.4],[x,.53,-1.6]],[.065,.004]),'keratin',tail);
+  tissue(ell(1.1,.85,1.05,0,.5,-4.2),'keratin',tail);
+  for(const side of [-1,1]){
+   tissue(ell(.9,.78,.85,side*.95,.5,-4.35),'keratin',tail);
+   tissue(sweep([[side*1.35,.65,-4.4],[side*2.2,.95,-4.5]],[.24,.008]),'keratin',tail);
+  }
+  for(const x of [-1,0,1])tissue(sweep([[x,1.05,-4],[x,1.45,-4.5]],[.16,.008]),'keratin',tail);
  }
  return g;
 });
@@ -362,7 +395,11 @@ function legMeshes(p,o,a,b){const w=p.w,kind=LIB[p.type].foot,up=new T.Group(),l
     for(const cx of[-.75,0,.75]){const c=mesh(new T.ConeGeometry(w*.27,w*.95,8).translate(0,w*.45,0),boneM,ft);c.position.set(cx*w,w*.3,w*(2.25-Math.abs(cx)*.4));c.rotation.set(1.85,0,-cx*.35)}}
   return{up,lo,ft}}
 const hyp=v=>Math.hypot(v[0],v[1],v[2]),legLens=p=>[Math.max(.12,hyp(p.k)),Math.max(.12,hyp([p.f[0]-p.k[0],p.f[1]-p.k[1],p.f[2]-p.k[2]]))];
-const defaults=type=>{const L=LIB[type];return{type,t:L.category==='mouths'?1:type.startsWith('tail_')?.18:type==='eye_triad'?.92:type==='sac_spitter'?.85:(L.leg||L.fittedLeg)?.5:.62,ang:L.category==='mouths'||type==='eye_triad'?0:(L.leg||L.fittedLeg)?2.1:L.category==='wings'?1.3:type.startsWith('arm_')?1.4:type==='sac_spitter'?1:0,...(L.leg?{w:L.w,k:[...L.k],f:[...L.f]}:{size:1}),...(L.len?{len:L.len}:{}),...(type==='cuerno'?{curve:.5}:{})}};
+function shoulderT(a=.2){
+ const nodes=G.nodes;let i=1;for(let j=2;j<nodes.length-2;j++)if(nodes[j].r>nodes[i].r)i=j;
+ return clamp((NC+i/(nodes.length-1)*(NSP-1))/(NS-1)+a,.3,.8);
+}
+const defaults=type=>{const L=LIB[type];return{type,t:L.category==='mouths'?1:type.startsWith('tail_')?0:type==='eye_triad'?.92:type==='sac_spitter'?1:type.startsWith('arm_')?shoulderT():['wing_glider','wing_insect'].includes(type)?shoulderT(.14):(L.leg||L.fittedLeg)?.5:.62,ang:L.category==='mouths'||type==='eye_triad'?0:(L.leg||L.fittedLeg)?2.1:L.category==='wings'?1.3:type.startsWith('arm_')?.95:0,...(L.leg?{w:L.w,k:[...L.k],f:[...L.f]}:{size:1}),...(L.len?{len:L.len}:{}),...(type==='cuerno'?{curve:.5}:{})}};
 const PLBL={rot:['Giro',-3.14,3.14],tilt:['Inclinación',-1.3,1.3],size:['Tamaño',.5,2.2],len:['Largo',.3,3.2],curve:['Curva',0,1.3],w:['Grosor',.1,.45]},BUDGET=320;
 
 /* ---------- genoma ---------- */
@@ -403,7 +440,7 @@ function buildParts(freeze){clear(partsG);clear(limbs);objs=[];legs=[];
     for(const sg of centered(p)?[1]:[1,-1]){anchor(rest,p.t,sg*p.ang,A1);const o=[A1.p.x,A1.p.y,A1.p.z];
       if(L.leg||L.fittedLeg){const pose=L.fittedLeg?fittedPose(p,A1.p.y+off,mountRadius(p.t)):{...p,k:[...p.k],f:[...p.f]};pose.f[1]=-(A1.p.y+off)+pose.w*.6;pose.k[1]=Math.max(pose.k[1],pose.f[1]+.12);const[a,b]=legLens(pose),m=legMeshes(pose,o,a,b);if(L.fittedLeg)for(const part of [m.up,m.lo,m.ft])part.scale.x=sg;limbs.add(m.up,m.lo,m.ft);for(const q of[m.up,m.lo,m.ft])q.traverse(x=>x.userData.part=p);
         legs.push({p,pose,sg,...m,a,b,w:pose.w,home:V(),foot:V(),from:V(),sw:false,grp:0,front:false})}
-      else{const g=L.make(p,o,mountRadius(p.t));if(!L.glb&&!L.responsive&&L.category==='mouths'){const inner=new T.Group();inner.position.z=-.3*p.size;inner.add(...g.children.slice());g.add(inner)}g.traverse(x=>x.userData.part=p);partsG.add(g);objs.push({p,sg,g})}}}
+      else{const g=L.make(p,o,mountRadius(p.t),{head:G.nodes.at(-1).r,body:Math.max(...G.nodes.map(n=>n.r)),height:A1.p.y+off,mouthHeight:G.nodes.at(-1).y+off});if(!L.glb&&!L.responsive&&L.category==='mouths'){const inner=new T.Group();inner.position.z=-.3*p.size;inner.add(...g.children.slice());g.add(inner)}g.traverse(x=>x.userData.part=p);partsG.add(g);objs.push({p,sg,g})}}}
   layout(freeze)}
 function layout(freeze){/* altura del cuerpo, postura de reposo de cada pata y reparto de la zancada */
   let bottom=1e9,low=1e9;for(let i=0;i<NS;i++)bottom=Math.min(bottom,rest[i].y-RAD[i]);
@@ -452,7 +489,7 @@ function update(dt){
   for(let i=0;i<NS;i++){pts[i].copy(rest[i]);if(test){const q=1-i/(NS-1),k=Math.pow(q,1.4);pts[i].x+=Math.sin(w-3.2*q)*amp*(legs.length?k:1)+Math.sin(clock*1.3-2*q)*amp*.5*k}}
   fillTube(body.geometry,pts,RAD,RN,null,true,frames);placeBody(bob);
   const jawA=.06+.04*Math.sin(clock*2.1)+(biteT>0?Math.sin(Math.PI*biteT/.6)*.75:0)+(singT>0?.3+.25*Math.sin(clock*14):0),bl=Math.max(0,Math.sin(clock*1.6))**60;
-  for(const o of objs){anchor(pts,o.p.t,o.sg*o.p.ang,A1);orient(o.g,A1,.015,(o.p.rot||0)*o.sg,o.p.tilt||0,o.p===sel&&o.sg===1);if(LIB[o.p.type].mount==='body'){_m.makeBasis(frames[Math.round(o.p.t*(NS-1))].s,A1.u,A1.t);o.g.quaternion.setFromRotationMatrix(_m);if(o.p.rot)o.g.quaternion.multiply(_q.setFromAxisAngle(ZA,o.p.rot*o.sg));if(o.p.tilt)o.g.quaternion.multiply(_q.setFromAxisAngle(X0,o.p.tilt));o.g.scale.x=o.sg;}const ud=o.g.userData;
+  for(const o of objs){anchor(pts,o.p.t,o.sg*o.p.ang,A1);orient(o.g,A1,o.p.type.startsWith('tail_')?0:.015,(o.p.rot||0)*o.sg,o.p.tilt||0,o.p===sel&&o.sg===1);if(['body','upright'].includes(LIB[o.p.type].mount)){const upright=LIB[o.p.type].mount==='upright';_m.makeBasis(upright?X0:frames[Math.round(o.p.t*(NS-1))].s,upright?Y:A1.u,upright?ZA:A1.t);o.g.quaternion.setFromRotationMatrix(_m);if(o.p.rot)o.g.quaternion.multiply(_q.setFromAxisAngle(ZA,o.p.rot*o.sg));if(o.p.tilt)o.g.quaternion.multiply(_q.setFromAxisAngle(X0,o.p.tilt));o.g.scale.x=o.sg;}const ud=o.g.userData;
     if(ud.jaw)ud.jaw.rotation.x=jawA;if(ud.pinch)for(const q of ud.pinch)q.rotation.y=q.userData.sx*(.25-jawA*1.1);if(ud.lid)ud.lid.rotation.x=-.3+bl*1.5;if(ud.sway)ud.sway.rotation.x=Math.sin(clock*2.2+o.p.t*9)*.12;
     if(ud.wing){ud.wing.rotation.z=(test?.12+Math.sin(clock*(run?8:4))*.32:.12);ud.wing.rotation.y=(test?.12+.1*Math.sin(clock*2):.32)}
     if(ud.sacs)for(const sac of ud.sacs)sac.scale.setScalar(test?1+.07*Math.sin(clock*3.4):1);
