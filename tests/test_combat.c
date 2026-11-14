@@ -568,10 +568,47 @@ static void canaries(void)
     }
 }
 
+static void directional_movement(void)
+{
+    const int sx[8] = {1,1,0,-1,-1,-1,0,1};
+    const int sy[8] = {0,-1,-1,-1,0,1,1,1};
+    for (int dir = 0; dir < 8; dir++) {
+        CpCombatWorld w = pair(20);
+        CpCombatAction a = {CB_V_MOVE, 0, -1, (int8_t)dir};
+        float x = w.c[0].x, y = w.c[0].y;
+        CHECK(cp_combat_order(&w, 0, &a) == CB_OK, "absolute movement order accepted");
+        uint64_t ordered = cp_combat_hash(&w);
+        CHECK(cp_combat_order(&w, 0, &a) == CB_OK && cp_combat_hash(&w) == ordered,
+              "repeated movement is a no-op");
+        cp_combat_step(&w);
+        float dx = w.c[0].x-x, dy = w.c[0].y-y;
+        CHECK((dx > 0) - (dx < 0) == sx[dir] && (dy > 0) - (dy < 0) == sy[dir],
+              "movement uses absolute clockwise octants");
+        CHECK(fabsf(sqrtf(dx*dx+dy*dy) - 0.4f) < 0.00001f,
+              "diagonals walk at the same speed as axes");
+        a.dir = 8;
+        uint64_t before = cp_combat_hash(&w);
+        CHECK(cp_combat_order(&w, 0, &a) == CB_ERR_BAD_DIR && cp_combat_hash(&w) == before,
+              "invalid movement direction leaves state unchanged");
+        cp_combat_idle(&w, 0); x = w.c[0].x; y = w.c[0].y;
+        cp_combat_step(&w);
+        CHECK(w.c[0].x == x && w.c[0].y == y, "idle stops directional walking");
+    }
+    CpCombatWorld w = pair(20);
+    CpCombatAction a = {CB_V_MOVE, 0, -1, 0};
+    w.c[0].medium = CB_WATER; w.c[0].slow_t = 3;
+    float x = w.c[0].x;
+    cp_combat_order(&w, 0, &a); cp_combat_step(&w);
+    CHECK(fabsf(w.c[0].x-x - 0.12f) < 0.00001f, "movement shares water and slow scaling");
+    phase(&w.c[0], CB_BITE, CB_PH_WINDUP); x = w.c[0].x;
+    cp_combat_step(&w);
+    CHECK(w.c[0].x == x, "movement waits for a committed move to finish");
+}
+
 int main(void)
 {
     puts("cpore combat tests");
-    counters(); ripostes(); spacing(); ranged_exchanges(); simultaneous(); bot_counters(); edges_and_verbs(); geometry_and_setup(); determinism(); canaries();
+    directional_movement(); counters(); ripostes(); spacing(); ranged_exchanges(); simultaneous(); bot_counters(); edges_and_verbs(); geometry_and_setup(); determinism(); canaries();
     printf("combat: %d failure(s)\n", fails);
     return fails ? 1 : 0;
 }

@@ -1,0 +1,69 @@
+{
+  "creature": {
+    "schema": "cpore.creature/4",
+    "name": "biter",
+    "nodes": [
+      {
+        "y": 1,
+        "z": 0,
+        "r": 0.4
+      },
+      {
+        "y": 1,
+        "z": 1,
+        "r": 0.4
+      },
+      {
+        "y": 1,
+        "z": 2,
+        "r": 0.4
+      },
+      {
+        "y": 1,
+        "z": 3,
+        "r": 0.4
+      }
+    ],
+    "parts": [
+      {
+        "type": "fauces",
+        "t": 0.5,
+        "ang": 0,
+        "size": 1
+      },
+      {
+        "type": "cuerno",
+        "t": 0.5,
+        "ang": 0,
+        "size": 1,
+        "len": 1,
+        "curve": 0.5
+      },
+      {
+        "type": "tail_spike",
+        "t": 0.5,
+        "ang": 0,
+        "size": 1
+      }
+    ],
+    "skin": {
+      "pat": 0,
+      "cA": "#abcdef",
+      "cB": "#123456",
+      "cC": "#fedcba",
+      "wet": 0.5,
+      "scale": 6
+    },
+    "regions": []
+  },
+  "expected": {
+    "mouth": 2,
+    "charge": 1,
+    "spit": 0,
+    "tail": 1,
+    "guard": 0,
+    "hp": 100,
+    "stamina": 100,
+    "speed": 4
+  }
+}

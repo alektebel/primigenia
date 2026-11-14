@@ -143,6 +143,7 @@ enum {
     CB_V_DODGE,      /* dir: 0 forward, then clockwise in 45 deg steps (2 = right,
                         4 = back, 6 = left)                                       */
     CB_V_FLEE,       /* target: sprint away until far, or CB_FLEE_TICKS elapsed   */
+    CB_V_MOVE,       /* dir: world-space octant: +x, +x/-y, -y, ...; walk until replaced */
     CB_V_COUNT
 };
 
