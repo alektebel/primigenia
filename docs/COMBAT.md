@@ -119,12 +119,26 @@ slots, events and the cached hash are excluded. Altering a hit-stream state
 changes the hash. Terrain generation cannot consume the spawn or hit stream.
 
 Core arithmetic avoids transcendental library calls (cones use a polynomial);
-only libc/libm is linked. The Makefile retains C99, `-fno-fast-math` and
-`-ffp-contract=off`. Native tests compare every one of 10,000 tick hashes on
-seeds 0, 1, 42, 987654321 and 4294967295: an eight-creature mixed-medium bot run
-against two independent replays of its exact action log. High HP keeps combat
-active across the full trajectory. Tests also cover hash padding/outputs,
-geometry, phase boundaries, verb completion/queueing, stamina and death.
+only libc/libm is linked. The Makefile appends `-fno-fast-math` and
+`-ffp-contract=off` with `override`, after user-supplied CFLAGS. Unit tests
+compare 10,000 hashes against two replays of bot-generated logs for seeds
+0, 1, 42, 987654321 and 4294967295.
+
+`tests/golden/combat-<seed>.log` additionally stores five fixed action logs;
+the adjacent `.hashes` files store all 10,000 expected per-tick hashes.
+`tests/combat_golden.c` defines their eight-creature, mixed-medium, seeded-hill
+setup, with 100,000 HP to keep combat running. Log files start with the seed,
+then `tick id verb move target dir`. No-op orders were removed during capture,
+with all original per-tick hashes checked unchanged. Golden comparisons use
+only these committed orders, independently of future bot-policy changes.
+`make test` launches a fresh production-linked replay process for each file
+and compares every tick via `tests/test_combat_golden.py`. It never regenerates
+fixtures. Unit tests also cover hash padding/outputs and RNG state.
+
+Intentional replay contract changes require review and explicit regeneration:
+`./build/combat_golden --record SEED tests/golden/combat-SEED.log tests/golden/combat-SEED.hashes`.
+Do not regenerate to hide an unexplained regression. These are native regression
+fixtures, not evidence of native/WASM equality.
 
 **TODO — native/WASM parity:** `emcc` is unavailable here; no SDK was downloaded.
 Compile the same module with contraction/fast-math disabled and compare all

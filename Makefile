@@ -44,10 +44,14 @@ $(BUILD)/combat_tourney: apps/combat_tourney.c apps/combat_bots.h $(BUILD)/apps/
 $(BUILD)/combat_tourney_test: tests/test_combat_tourney.c apps/combat_tourney.c apps/combat_bots.h $(BUILD)/apps/combat_bots.o $(HDRS) $(BUILD)/libcpore.a
 	$(CC) $(CFLAGS) -Iapps $< $(BUILD)/apps/combat_bots.o $(BUILD)/libcpore.a -o $@ $(LDLIBS)
 
-test: $(BUILD)/cpore_test $(BUILD)/combat_test $(BUILD)/combat_tourney_test check-core
+$(BUILD)/combat_golden: tests/combat_golden.c apps/combat_bots.h $(BUILD)/apps/combat_bots.o $(HDRS) $(BUILD)/libcpore.a
+	$(CC) $(CFLAGS) -Iapps $< $(BUILD)/apps/combat_bots.o $(BUILD)/libcpore.a -o $@ $(LDLIBS)
+
+test: $(BUILD)/cpore_test $(BUILD)/combat_test $(BUILD)/combat_tourney_test $(BUILD)/combat_golden check-core
 	./$(BUILD)/cpore_test
 	./$(BUILD)/combat_test
 	./$(BUILD)/combat_tourney_test
+	python3 tests/test_combat_golden.py ./$(BUILD)/combat_golden
 tourney: $(BUILD)/combat_tourney
 	./$(BUILD)/combat_tourney
 bench: $(BUILD)/cpore_bench
