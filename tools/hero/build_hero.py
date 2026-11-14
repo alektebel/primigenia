@@ -200,9 +200,35 @@ const hueJit=o=>{const h=Math.sin(o.x*12.9898+o.z*78.233)*43758.5453,f=h-Math.fl
 """
 h = patch(h, "function buildScene(){", LEAF_JS + "function buildScene(){")
 BROAD_OLD = "scene.add(scatter(merged([[tr,'#5a4030',[.45,4.4,.45],[0,0,0]],[ico2,'#4f9a2e',[2.9,2.3,2.9],[0,5.4,0],0,1],[ico2,'#62ad38',[2.1,1.8,2.1],[1.7,4.5,.7],0,1],[ico2,'#3f8a2c',[2.2,1.8,2.2],[-1.5,4.6,-.8],0,1],[ico2,'#74bb44',[1.7,1.4,1.7],[.2,6.9,-.4],0,1],[ico2,'#58a334',[1.6,1.3,1.6],[-.4,5,1.7],0,1]]),broad,true,TV()));"
-BROAD_NEW = ("scene.add(scatter(merged([[tr,'#5a4030',[.45,4.4,.45],[0,0,0]],[ico2,'#2f6a22',[2.55,2.0,2.55],[0,5.4,0],0,1],[ico2,'#356f24',[1.85,1.55,1.85],[1.7,4.5,.7],0,1],[ico2,'#2b6420',[1.95,1.55,1.95],[-1.5,4.6,-.8],0,1],[ico2,'#3a7628',[1.5,1.2,1.5],[.2,6.9,-.4],0,1],[ico2,'#336c22',[1.4,1.1,1.4],[-.4,5,1.7],0,1]]),broad,true,TV()));"
-             "{const cm=scatter(leafCanopy([[[0,5.4,0],[2.9,2.3,2.9],'#3f8226'],[[1.7,4.5,.7],[2.1,1.8,2.1],'#4c9430'],[[-1.5,4.6,-.8],[2.2,1.8,2.2],'#367a26'],[[.2,6.9,-.4],[1.7,1.4,1.7],'#5a9e36'],[[-.4,5,1.7],[1.6,1.3,1.6],'#468a2c']]),broad.map(o=>({...o,c:hueJit(o)})),false,leafMaterial());cm.receiveShadow=true;scene.add(cm)}")
+# V5: three broadleaf shapes (round, poplar, gnarled), chosen per tree from a hash of its position.
+# The hash is pure arithmetic on x,z: it never touches the valley's dr() stream, so nothing else moves.
+TREES_JS = r"""
+{const cn0=new T.ConeGeometry(1,1,6).translate(0,.5,0),
+ /* flared base: n buttress cones start inside the trunk and run outward and slightly down into the soil */
+ roots=(n,r0,len,thick,hex,a0)=>{const o=[];for(let i=0;i<n;i++){const a=a0+i*6.283/n+(i%2)*.35,j=((i*7)%5)/4;o.push([cn0,hex,[thick*(.8+.4*j),len*(.8+.4*(1-j)),thick],[Math.cos(a)*r0,.6,Math.sin(a)*r0],[0,-a,-1.8]])}return o},
+ /* blob = [centre, radii, core colour, leaf colour, card density]; a dark ico core carries the leaf cards */
+ mk=(trunk,blobs)=>({core:merged([...trunk,...blobs.map(([c,s,ch])=>[ico2,ch,s.map(v=>v*.88),c,0,1])]),leaves:leafCanopy(blobs.map(([c,s,,lh,d])=>[c,s,lh,d]))}),
+ KINDS=[
+  {sc:1,rk:1,...mk([[tr,'#5a4030',[.45,4.4,.45],[0,0,0]],...roots(5,.22,1.7,.4,'#4d3626',.3)],
+   [[[0,5.4,0],[2.9,2.3,2.9],'#2f6a22','#3f8226'],[[1.7,4.5,.7],[2.1,1.8,2.1],'#356f24','#4c9430'],[[-1.5,4.6,-.8],[2.2,1.8,2.2],'#2b6420','#367a26'],[[.2,6.9,-.4],[1.7,1.4,1.7],'#3a7628','#5a9e36'],[[-.4,5,1.7],[1.6,1.3,1.6],'#336c22','#468a2c']])},
+  /* tall narrow poplar: slim straight trunk, stacked columnar blobs */
+  {sc:.8,rk:.55,...mk([[tr,'#6a5a48',[.26,5.4,.26],[0,0,0]],...roots(4,.14,1.1,.26,'#55483a',1.1)],
+   [[[0,6.2,0],[1.35,2.4,1.35],'#2c6322','#3f8a2a',1.7],[[.15,8.4,-.1],[1.25,2.5,1.25],'#2f6a24','#4a9632',1.7],[[-.1,10.6,.1],[1.0,2.2,1.0],'#336f26','#559f38',1.7],[[.1,12.4,0],[.65,1.6,.65],'#3a7a2a','#68ae42',1.7],[[.6,5.4,.4],[.95,1.5,.95],'#285c20','#37802a',1.5],[[-.6,5,-.4],[.95,1.4,.95],'#285c20','#3a842c',1.5]])},
+  /* wide low gnarled tree: thick leaning trunk, two limbs, flat spreading canopy */
+  {sc:.85,rk:1.3,...mk([[tr,'#4a3626',[.8,3.8,.8],[0,0,0],[0,0,-.3]],[tr,'#4a3626',[.42,2.7,.42],[.55,2.4,.1],[0,0,.85]],[tr,'#4a3626',[.38,2.3,.38],[.7,2.9,.2],[.8,0,0]],...roots(6,.4,2.6,.75,'#42301f',.2)],
+   [[[1.1,4.5,.1],[3.4,1.15,3.1],'#2d6422','#3e7f27',1.1],[[-1.9,4.6,.6],[2.7,1.0,2.5],'#32692a','#487f2e',1.1],[[.7,4.9,2.2],[2.6,1.0,2.4],'#2b6220','#3b7a26',1.1],[[2.4,4.2,-1.9],[2.3,.9,2.2],'#336e26','#4d8e30',1.1],[[-.5,5.2,-1.3],[2.4,.9,2.3],'#2f6824','#52943a',1.1]])}],
+ kindOf=o=>{const q=Math.sin(o.x*37.719+o.z*11.131)*24634.6345,f=q-Math.floor(q);return f<.4?0:f<.7?1:2};
+ for(const o of broad){o.k=kindOf(o);o.s*=KINDS[o.k].sc;o.rk=KINDS[o.k].rk}
+ KINDS.forEach((K,k)=>{const its=broad.filter(o=>o.k===k);
+  /* poplar cores do not cast shadow-map shadows: low golden sun stretches them into thin lines that the grass
+     (which only sees the height-map tree shadow) cannot receive, so they read as mown stripes on the meadow */
+  scene.add(scatter(K.core,its,k!==1,TV()));
+  const cm=scatter(K.leaves,its.map(o=>({...o,c:hueJit(o)})),false,leafMaterial());cm.receiveShadow=true;scene.add(cm)});
+ window.__heroTrees=KINDS.map((K,k)=>broad.filter(o=>o.k===k).length)}
+"""
+BROAD_NEW = TREES_JS
 h = patch(h, BROAD_OLD, BROAD_NEW)
+h = patch(h, "for(const o of[...broad,...conif]){const r=3.6*o.s,cx=", "for(const o of[...broad,...conif]){const r=3.6*o.s*(o.rk||1),cx=")
 
 OUT.parent.mkdir(parents=True, exist_ok=True)
 OUT.write_text(h, encoding="utf-8")
