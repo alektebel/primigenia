@@ -1,0 +1,19 @@
+{
+  "browser": "158.0.8127.18",
+  "renderer": "SwiftShader software WebGL",
+  "camera": {
+    "yaw": 0.35,
+    "pitch": 0.6,
+    "distances": [
+      9,
+      9
+    ]
+  },
+  "parts": [
+    "tail_paddle",
+    "wing_glider",
+    "frill_fan",
+    "wing_insect"
+  ],
+  "errors": []
+}

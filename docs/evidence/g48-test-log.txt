@@ -1,0 +1,246 @@
+make test
+cc -O2 -std=c99 -Wall -Wextra -Wno-unused-parameter -fno-fast-math -Icore/include -D_POSIX_C_SOURCE=200809L -fno-fast-math -ffp-contract=off -fPIC -c core/src/aqua.c -o build/core/src/aqua.o
+cc -O2 -std=c99 -Wall -Wextra -Wno-unused-parameter -fno-fast-math -Icore/include -D_POSIX_C_SOURCE=200809L -fno-fast-math -ffp-contract=off -fPIC -c core/src/aqua_env.c -o build/core/src/aqua_env.o
+cc -O2 -std=c99 -Wall -Wextra -Wno-unused-parameter -fno-fast-math -Icore/include -D_POSIX_C_SOURCE=200809L -fno-fast-math -ffp-contract=off -fPIC -c core/src/aqua_genome.c -o build/core/src/aqua_genome.o
+cc -O2 -std=c99 -Wall -Wextra -Wno-unused-parameter -fno-fast-math -Icore/include -D_POSIX_C_SOURCE=200809L -fno-fast-math -ffp-contract=off -fPIC -c core/src/civ.c -o build/core/src/civ.o
+cc -O2 -std=c99 -Wall -Wextra -Wno-unused-parameter -fno-fast-math -Icore/include -D_POSIX_C_SOURCE=200809L -fno-fast-math -ffp-contract=off -fPIC -c core/src/civ_env.c -o build/core/src/civ_env.o
+cc -O2 -std=c99 -Wall -Wextra -Wno-unused-parameter -fno-fast-math -Icore/include -D_POSIX_C_SOURCE=200809L -fno-fast-math -ffp-contract=off -fPIC -c core/src/codex.c -o build/core/src/codex.o
+cc -O2 -std=c99 -Wall -Wextra -Wno-unused-parameter -fno-fast-math -Icore/include -D_POSIX_C_SOURCE=200809L -fno-fast-math -ffp-contract=off -fPIC -c core/src/combat.c -o build/core/src/combat.o
+cc -O2 -std=c99 -Wall -Wextra -Wno-unused-parameter -fno-fast-math -Icore/include -D_POSIX_C_SOURCE=200809L -fno-fast-math -ffp-contract=off -fPIC -c core/src/env.c -o build/core/src/env.o
+cc -O2 -std=c99 -Wall -Wextra -Wno-unused-parameter -fno-fast-math -Icore/include -D_POSIX_C_SOURCE=200809L -fno-fast-math -ffp-contract=off -fPIC -c core/src/genome.c -o build/core/src/genome.o
+cc -O2 -std=c99 -Wall -Wextra -Wno-unused-parameter -fno-fast-math -Icore/include -D_POSIX_C_SOURCE=200809L -fno-fast-math -ffp-contract=off -fPIC -c core/src/genome_codec.c -o build/core/src/genome_codec.o
+cc -O2 -std=c99 -Wall -Wextra -Wno-unused-parameter -fno-fast-math -Icore/include -D_POSIX_C_SOURCE=200809L -fno-fast-math -ffp-contract=off -fPIC -c core/src/land.c -o build/core/src/land.o
+cc -O2 -std=c99 -Wall -Wextra -Wno-unused-parameter -fno-fast-math -Icore/include -D_POSIX_C_SOURCE=200809L -fno-fast-math -ffp-contract=off -fPIC -c core/src/land_env.c -o build/core/src/land_env.o
+cc -O2 -std=c99 -Wall -Wextra -Wno-unused-parameter -fno-fast-math -Icore/include -D_POSIX_C_SOURCE=200809L -fno-fast-math -ffp-contract=off -fPIC -c core/src/land_genome.c -o build/core/src/land_genome.o
+cc -O2 -std=c99 -Wall -Wextra -Wno-unused-parameter -fno-fast-math -Icore/include -D_POSIX_C_SOURCE=200809L -fno-fast-math -ffp-contract=off -fPIC -c core/src/lineage.c -o build/core/src/lineage.o
+cc -O2 -std=c99 -Wall -Wextra -Wno-unused-parameter -fno-fast-math -Icore/include -D_POSIX_C_SOURCE=200809L -fno-fast-math -ffp-contract=off -fPIC -c core/src/policy.c -o build/core/src/policy.o
+cc -O2 -std=c99 -Wall -Wextra -Wno-unused-parameter -fno-fast-math -Icore/include -D_POSIX_C_SOURCE=200809L -fno-fast-math -ffp-contract=off -fPIC -c core/src/rng.c -o build/core/src/rng.o
+cc -O2 -std=c99 -Wall -Wextra -Wno-unused-parameter -fno-fast-math -Icore/include -D_POSIX_C_SOURCE=200809L -fno-fast-math -ffp-contract=off -fPIC -c core/src/space.c -o build/core/src/space.o
+cc -O2 -std=c99 -Wall -Wextra -Wno-unused-parameter -fno-fast-math -Icore/include -D_POSIX_C_SOURCE=200809L -fno-fast-math -ffp-contract=off -fPIC -c core/src/space_env.c -o build/core/src/space_env.o
+cc -O2 -std=c99 -Wall -Wextra -Wno-unused-parameter -fno-fast-math -Icore/include -D_POSIX_C_SOURCE=200809L -fno-fast-math -ffp-contract=off -fPIC -c core/src/tribe.c -o build/core/src/tribe.o
+cc -O2 -std=c99 -Wall -Wextra -Wno-unused-parameter -fno-fast-math -Icore/include -D_POSIX_C_SOURCE=200809L -fno-fast-math -ffp-contract=off -fPIC -c core/src/vec.c -o build/core/src/vec.o
+cc -O2 -std=c99 -Wall -Wextra -Wno-unused-parameter -fno-fast-math -Icore/include -D_POSIX_C_SOURCE=200809L -fno-fast-math -ffp-contract=off -fPIC -c core/src/world.c -o build/core/src/world.o
+ar rcs build/libcpore.a build/core/src/aqua.o build/core/src/aqua_env.o build/core/src/aqua_genome.o build/core/src/civ.o build/core/src/civ_env.o build/core/src/codex.o build/core/src/combat.o build/core/src/env.o build/core/src/genome.o build/core/src/genome_codec.o build/core/src/land.o build/core/src/land_env.o build/core/src/land_genome.o build/core/src/lineage.o build/core/src/policy.o build/core/src/rng.o build/core/src/space.o build/core/src/space_env.o build/core/src/tribe.o build/core/src/vec.o build/core/src/world.o
+cc -O2 -std=c99 -Wall -Wextra -Wno-unused-parameter -fno-fast-math -Icore/include -D_POSIX_C_SOURCE=200809L -fno-fast-math -ffp-contract=off tests/test_core.c build/libcpore.a -o build/cpore_test -lm
+cc -O2 -std=c99 -Wall -Wextra -Wno-unused-parameter -fno-fast-math -Icore/include -D_POSIX_C_SOURCE=200809L -fno-fast-math -ffp-contract=off -Iapps -c apps/combat_bots.c -o build/apps/combat_bots.o
+cc -O2 -std=c99 -Wall -Wextra -Wno-unused-parameter -fno-fast-math -Icore/include -D_POSIX_C_SOURCE=200809L -fno-fast-math -ffp-contract=off -DCP_COMBAT_TEST -Iapps tests/test_combat.c core/src/combat.c build/apps/combat_bots.o build/libcpore.a -o build/combat_test -lm
+cc -O2 -std=c99 -Wall -Wextra -Wno-unused-parameter -fno-fast-math -Icore/include -D_POSIX_C_SOURCE=200809L -fno-fast-math -ffp-contract=off -Iapps tests/test_combat_tourney.c build/apps/combat_bots.o build/libcpore.a -o build/combat_tourney_test -lm
+cc -O2 -std=c99 -Wall -Wextra -Wno-unused-parameter -fno-fast-math -Icore/include -D_POSIX_C_SOURCE=200809L -fno-fast-math -ffp-contract=off -Iapps tests/combat_golden.c build/apps/combat_bots.o build/libcpore.a -o build/combat_golden -lm
+cc -shared -o build/libcpore.so build/core/src/aqua.o build/core/src/aqua_env.o build/core/src/aqua_genome.o build/core/src/civ.o build/core/src/civ_env.o build/core/src/codex.o build/core/src/combat.o build/core/src/env.o build/core/src/genome.o build/core/src/genome_codec.o build/core/src/land.o build/core/src/land_env.o build/core/src/land_genome.o build/core/src/lineage.o build/core/src/policy.o build/core/src/rng.o build/core/src/space.o build/core/src/space_env.o build/core/src/tribe.o build/core/src/vec.o build/core/src/world.o -lm
+core: libc + libm only
+./build/cpore_test
+cpore core tests
+  ok    identical seeds produce identical trajectories
+  ok    different seeds diverge
+  ok    restore reproduces the branch exactly
+  ok    observations are finite and in range under random genomes
+  ok    no build ever exceeds its generation's DNA budget
+  ok    no build ends up unable to eat
+  ok    no genome slot holds an out-of-range part type
+  ok    design head decodes to a legal genome for any policy output
+        spike forward: dealt 600 taken 624 | spike aft: dealt 0 taken 760
+  ok    a spike damages only what it is pointing at
+  ok    a spike facing the attacker also absorbs the hit
+        jet aft thrust 165 | jet forward thrust 0
+  ok    only a jet's rearward component contributes thrust
+        cell sightings over 1200 steps - blind: 1479 | two eyes: 2881
+  ok    two eyes see substantially more of the pool than none
+        gen 1 parts: 3 -> gen 4 parts: 12 (3 design events)
+  ok    the editor opens at least once per run
+  ok    later generations are more complex
+  ok    the live genome respects its generation's budget
+  ok    every episode reaches a terminal state
+
+cpore aquatic-stage tests
+  ok    aquatic: identical seeds produce identical trajectories
+  ok    aquatic: restore reproduces the branch exactly
+  ok    aquatic: observations are finite and in range
+  ok    aquatic: 6000 rounds of mutation never break the budget
+  ok    aquatic: mutation never produces an animal with no mouth
+        jaw forward: dealt 13770 | jaw astern: dealt 0 (13769.9x)
+  ok    aquatic: a jaw bites what it points at, and little else
+        over 5 oceans: mean generation 6.1, mouths +0.94, tails +0.49
+  ok    aquatic: several generations turn over per episode
+  ok    aquatic: selection raises the population's mouth count
+  ok    aquatic: selection raises the population's tail count
+
+-- land --
+        terrain y range -120 .. 56 over 400 probes, 400/400 differ by seed
+  ok    land: terrain is a pure function of position
+  ok    land: a different seed grows a different world
+  ok    land: the world has real relief, not a plain
+  ok    land: terrain normals are unit length and point at the sky
+  ok    land: the same seed replays exactly
+  ok    land: restore reproduces the future exactly
+        200/200 random builds stand clear of their own widest segment
+  ok    land: every body plan stands clear of the ground
+  ok    land: normalise never exceeds the generation budget
+  ok    land: every normalised genome keeps a mouth
+  ok    land: every normalised genome keeps a way to move
+  ok    land: the observation writes exactly CP4_OBS_DIM floats
+  ok    land: the day reaches both midnight and noon
+  ok    land: the light changes smoothly, not in steps
+        eyes see 640 by day and 269 at night; ears 260 and 510
+  ok    land: eyes beat ears in daylight
+  ok    land: ears beat eyes after dark
+        a song is worth +1.0000 standing per listener at first and +0.0000 by the fourth round (fatigue peaked 1.00)
+  ok    land: a species hears you sing
+  ok    land: repeating a display tires an audience
+  ok    land: the same song is worth less the fourth time
+        being attacked: wary 0.99, guard 0.99; left alone it fades to 0.00
+  ok    land: being attacked makes a species wary
+  ok    land: striking from behind teaches it to face you
+  ok    land: wariness fades - it is a mood, not a grudge
+        biggest single biome share 52%, fertility spans 0.16..1.15
+  ok    land: every biome occurs somewhere
+  ok    land: no seed is one biome wearing a hat
+  ok    land: biomes are regions, not noise
+  ok    land: a biome changes what grows, not just the colour
+        grazer    ground 94%  water  4%  air  0%  under  0%
+        predator  ground 87%  water 11%  air  0%  under  0%
+        charmer   ground 93%  water  5%  air  0%  under  0%
+        swimmer   ground  0%  water 96%  air  2%  under  0%
+        flyer     ground 85%  water  7%  air  6%  under  0%
+        burrower  ground 66%  water  6%  air  0%  under 26%
+        ate 189 kelp and 26 tubers, built 25 nests, hatched 3, found 147
+  ok    land: a finned build spends its life in the water
+  ok    land: a winged build actually uses the sky
+  ok    land: a clawed build actually lives underground
+  ok    land: the water feeds what lives in it
+  ok    land: the soil feeds what lives in it
+  ok    land: the player can build a nest
+  ok    land: a nest hatches followers
+  ok    land: new species are met by going somewhere
+  ok    land: no part, no medium - swim, fly and dig are gates
+        walked 7800 units from the start and the world came with it
+  ok    land: the animal can leave the starting region
+  ok    land: observations stay finite however far you go
+  ok    land: the world streams along with the player
+        grazer   reached half the meter 4/6, songs  89, kills  0
+        predator reached half the meter 4/6, songs   0, kills 18
+        charmer  reached half the meter 4/6, songs  77, kills  0
+  ok    land: the grazing build is viable
+  ok    land: the predator build is viable
+  ok    land: the charmer build is viable
+  ok    land: the charmer wins by impressing, not by eating
+  ok    land: the predator wins by eating, not by impressing
+        over 5 worlds: mean generation 6.1, feeding +1.04
+  ok    land: generations turn over inside an episode
+  ok    land: selection raises the population's ability to feed itself
+
+-- civilisation --
+        12 cities and 12 spice on the stage-3 heightfield
+  ok    civ: the map fills with cities
+  ok    civ: every city stands on the same world's dry land
+  ok    civ: cities are places, not one blob
+  ok    civ: the same seed replays exactly
+  ok    civ: restore reproduces the future exactly
+  ok    civ: observations are finite and in range
+        force  took 106 cities over 6 seeds, mean pop held 50
+        trade  took  53 cities over 6 seeds, mean pop held 80
+        faith  took  25 cities over 6 seeds, mean pop held 60
+  ok    civ: cities can be taken by force
+  ok    civ: cities can be bought
+  ok    civ: cities can be converted
+        predator -> M1.44 E1.05 R0.80 | charmer -> M0.80 E1.04 R1.42
+  ok    civ: a predator arrives as a military power
+  ok    civ: a charmer arrives as a missionary power
+  ok    civ: every episode reaches a terminal state
+  ok    civ: the city ledger matches the cities on the map
+  ok    lineage: every stage it writes is inside that stage's budget
+  ok    lineage: diet survives three changes of medium
+  ok    lineage: what a creature was good at is still what it is good at
+  ok    lineage: no stage repaints a colour it cannot see
+  ok    lineage: a body becomes the doctrine it earned
+  ok    lineage: legacy lands in the same range civ already accepts
+
+-- tribe --
+  ok    tribe: the same seed replays exactly
+  ok    tribe: restore reproduces the future exactly
+  ok    tribe: observations are finite and in range
+  ok    tribe: every episode reaches a terminal state
+        charm: 10 allied (328 gifts) | raid: 19 razed (678 raids)
+  ok    tribe: gifts befriend neighbours
+  ok    tribe: raids eliminate neighbours
+  ok    tribe: imported genomes found rival tribes
+
+-- vec --
+  ok    vec: cell batch lanes match single envs exactly
+  ok    vec: land batch lanes match single envs exactly
+
+-- codec --
+  ok    codec: cell share codes round-trip and reject corruption
+  ok    codec: land share codes round-trip byte-exact
+
+-- codex --
+  ok    codex: first sightings fire, repeats count, it caps
+
+-- redesign --
+  ok    redesign: the live cell rebuilds toward the style in budget
+
+-- space --
+  ok    space: the same seed replays exactly
+  ok    space: restore reproduces the future exactly
+  ok    space: observations are finite and in range
+  ok    space: every episode reaches a terminal state
+  ok    space: a settling species can win by settling
+  ok    space: a trading species can win by buying loyalty
+  ok    space: a warlike species can win by conquest
+  ok    space: the settler actually settles
+  ok    space: the trader actually trades
+  ok    space: the warlord actually conquers
+  ok    space: a warlike nation arrives a conquering power
+  ok    space: a devout nation arrives a settling power
+  ok    space: the homeworld is the campaign planet, addressable
+
+all tests passed
+./build/combat_test
+cpore combat tests
+  spit exchange 1.6 m: mean damage margin -11.91 HP (80 paired-seat duels)
+  spit exchange 7.0 m: mean damage margin +19.19 HP (80 paired-seat duels)
+  counter execution (reaction delays 0..3; 1 = executed):
+    row 0: 1 1 1 0
+    row 1: 1 1 1 1
+    row 2: 1 1 1 0
+    row 3: 1 1 1 0
+    row 4: 1 1 1 1
+    row 5: 1 1 1 1
+  canary greedy : idle wins 0 draws 0/2000, random wins 75 draws 9/2000, smart wins 1916/2000
+  canary counter: idle wins 0 draws 0/2000, random wins 26 draws 2/2000, smart wins 1972/2000
+combat: 0 failure(s)
+./build/combat_tourney_test
+combat tournament arithmetic: passed (balance acceptance runs via make tourney)
+python3 tests/test_combat_golden.py ./build/combat_golden
+golden seed 0: 10,000 tick hashes match in a fresh process
+golden seed 1: 10,000 tick hashes match in a fresh process
+golden seed 42: 10,000 tick hashes match in a fresh process
+golden seed 987654321: 10,000 tick hashes match in a fresh process
+golden seed 4294967295: 10,000 tick hashes match in a fresh process
+
+
+node tests/studio_interaction.cjs
+PASS 467 contracts; 138 part/preset placements; maximum root distance 0.015263874882649525
+PASS catalog loading; starting gestures
+PASS growth/history gestures
+PASS palette, modes and sharing
+PASS pointer, keyboard, history, regions, palette, modes, language and Unicode sharing
+
+
+node tests/studio_touch.cjs; node tests/studio_procedural_parts.cjs; headless web/studio/test.html
+PASS 390px layout has no horizontal overflow; touch drag places selected growth on the body; touch placement is one undo/redo transaction; tap palette then tap body places a GLB; explicit orbit tool preserves the document; mobile Paint and language toggle work; mobile Test actions return to Build
+PASS {
+  placements: 32,
+  ids: [
+    'eye_triad',    'leg_sprinter',
+    'leg_sucker',   'arm_grasper',
+    'tail_paddle',  'tail_spike',
+    'wing_glider',  'frill_fan',
+    'beak_crusher', 'sac_spitter',
+    'arm_smasher',  'foot_spring',
+    'foot_hoof',    'foot_gecko',
+    'wing_insect',  'tail_hammer'
+  ],
+  legacy: '24 saved GLB ids rendered without migration',
+  checks: 'finite meshes; skin-surface roots; paired reflection; girth/size response; grounded feet; shared membranes; Test animations; unchanged genomes'
+}
+PASS test.html: 461 checks; 138 placements

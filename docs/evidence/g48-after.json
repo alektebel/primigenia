@@ -1,0 +1,39 @@
+{
+  "browser": "158.0.8127.18",
+  "renderer": "SwiftShader software WebGL",
+  "camera": {
+    "yaw": 1.1,
+    "pitch": 0.23,
+    "distances": [
+      11,
+      10.5
+    ]
+  },
+  "parts": [
+    "eye_stalk",
+    "eye_triad",
+    "jaw_nipper",
+    "horn_crown",
+    "shell_plate",
+    "leg_sprinter",
+    "leg_sucker",
+    "arm_grasper",
+    "tail_paddle",
+    "tail_spike",
+    "wing_glider",
+    "frill_fan",
+    "beak_crusher",
+    "mandible_shear",
+    "snout_trumpet",
+    "tongue_spring",
+    "sac_spitter",
+    "arm_smasher",
+    "foot_spring",
+    "foot_hoof",
+    "foot_gecko",
+    "lure_lantern",
+    "wing_insect",
+    "tail_hammer"
+  ],
+  "errors": []
+}
