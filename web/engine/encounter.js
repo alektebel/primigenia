@@ -50,7 +50,16 @@ export class Encounter {
   }
   advance(delta, intent = {}) {
     if (!Number.isFinite(delta) || delta < 0) throw new RangeError('frame delta must be finite and nonnegative');
+    const before = this.accumulator, startTick = this.tick;
     this.accumulator += delta;
+    try { this.runTicks(intent); } catch (error) {
+      // A rejected intent must not bank its frame time for the next call.
+      this.accumulator = Math.max(0, before - (this.tick - startTick) * DT);
+      throw error;
+    }
+    return this.current;
+  }
+  runTicks(intent) {
     // Never drop elapsed ticks. Callers pause by not advancing, rather than
     // clamping frame delta. A timeline sampler supplies the same tick inputs
     // even when one frame spans multiple ticks.
@@ -64,7 +73,6 @@ export class Encounter {
       this.current = this.combat.states();
       this.accumulator = Math.max(0, this.accumulator - DT);
     }
-    return this.current;
   }
   exportLog() {
     const s = this.setup;

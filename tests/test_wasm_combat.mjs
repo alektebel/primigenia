@@ -31,7 +31,9 @@ assert.throws(() => profileFromStudio({ ...cosmetic, schema: 'bad' }, manifest),
 assert.throws(() => profileFromStudio({ ...cosmetic, parts: [{ type: 'missing' }] }, manifest), /part/);
 
 let goldenTicks = 0;
-for (const file of readdirSync(new URL('./golden/', import.meta.url)).filter(x => x.endsWith('.log'))) {
+const goldenLogs = readdirSync(new URL('./golden/', import.meta.url)).filter(x => x.endsWith('.log'));
+assert.ok(goldenLogs.length >= 5, `expected the 5 committed golden logs, found ${goldenLogs.length}`);
+for (const file of goldenLogs) {
   const [seed, ...lines] = read(`./golden/${file}`).trim().split('\n');
   const expected = read(`./golden/${file.replace('.log', '.hashes')}`).trim().split('\n');
   engine.reset({ seed: Number(seed), flat: false, creatures: Array.from({ length: 8 }, (_, i) => ({
@@ -49,7 +51,7 @@ for (const file of readdirSync(new URL('./golden/', import.meta.url)).filter(x =
   }
   assert.equal(j, log.length);
 }
-console.log(`JS golden replays: 5 logs, ${goldenTicks} matching tick hashes`);
+console.log(`JS golden replays: ${goldenLogs.length} logs, ${goldenTicks} matching tick hashes`);
 
 const other = await Combat.create();
 engine.reset(pair(100000)); other.reset(pair(100000));
@@ -129,11 +131,16 @@ assert.equal(held.log.at(-1).dir, 0);
 held.advance(.1, { dodge: false, attack: null });
 assert.equal(held.log.at(-1).verb, VERB.IDLE);
 assert.throws(() => held.advance(.1, { move: [NaN, 0] }), /vector/);
+const tickBefore = held.tick;
+held.advance(.1, { move: [1, 0] });
+assert.equal(held.tick, tickBefore + 1, 'a rejected intent must not leave its frame delta in the accumulator');
 
 // Input is a time-indexed timeline: tick-boundary sampling cannot depend on render FPS.
+const OCTANTS = [[1, 0], [1, -1], [0, -1], [-1, -1], [-1, 0], [-1, 1], [0, 1], [1, 1]];
 const sequence = time => {
   const second = Math.floor(time + 1e-8) % 10;
-  if (second < 2) return { move: [1, -1] };
+  // Cycle through all eight octants so every CB_V_MOVE direction is hash-compared natively.
+  if (second < 2) return { move: OCTANTS[Math.floor(time * 4 + 1e-8) % 8] };
   if (second < 4) return { attack: MOVE.SPIT };
   if (second === 4) return { guard: true };
   if (second === 5) return { dodge: 2 };

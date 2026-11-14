@@ -8,6 +8,7 @@ def run(*args):
 
 
 logs = sorted(Path('tests/golden').glob('*.log'))
+assert len(logs) >= 5, f'expected the 5 committed golden logs, found {len(logs)}'
 golden_ticks = 0
 for log in logs:
     expected = log.with_suffix('.hashes').read_text()

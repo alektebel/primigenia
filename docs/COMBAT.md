@@ -721,3 +721,5 @@ counter        1.000     0.983     0.682     0.506
 
 tourney checks FAILED
 ```
+
+Known, accepted: the diagonal `CB_V_MOVE` octants use the float32 literal 0.70710678, whose squared length is 1 − 2⁻²⁴, so diagonal walking covers 0.399999988 m per tick instead of 0.4. Both compilers use the same literal, so parity is unaffected.
