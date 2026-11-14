@@ -230,3 +230,25 @@ the payoff matrix has no dominant move, no build exceeds the agreed win-rate
 ceiling in a scripted-bot tournament (random, greedy, counter-picker) with
 Elo, idle and random canaries never win, and a short human playtest clip is
 recorded.
+
+### Lighting for the hero shot (G46–G47)
+
+| # | Decision |
+|---|---|
+| G46 | One lighting pipeline for everything: **ACES Filmic** tone mapping. The valley's toon world is retuned for ACES (light about 2.5×, the 3-band ramp recomputed so the bands survive the curve) rather than giving materials separate tone mapping. Measured references: valley = no tone mapping, sun `#fff0d2` 1.2, hemi 0.72, blue fog 110–760; creator = ACES 1.05, sun `#ffcf9a` 3.1 low, hemi 0.35 + PMREM environment, amber fog 35–560. |
+| G47 | The look is judged at **golden hour**; noon, overcast and night stay in the test grid. |
+
+## 10. The world (W1–W10, 2026-11-14)
+
+| # | Decision |
+|---|---|
+| W1 | The creature stage is **one large island, ~2–3 km across**. The sea is its natural edge (Q43's bounded region), and the start valley lies at its heart. |
+| W2 | First island: **5 biomes** done well: meadow valley (start), forest, savanna/desert, alpine (rock and snow), coast and shallow sea. Each has its own species, food, parts and fossils. Jungle, taiga and tundra/ice (already in `cp4_biome`) come later. |
+| W3 | **Mountains are vertical gameplay**: climbable faces gated by climbing parts, ledge nest sites (G24), glide launch points, summit fossils, passes as chokepoints between territories. |
+| W4 | **2–4 offshore islets**, reachable only by swimming or gliding, with endemic species and parts. One is home to the epic creature. |
+| W5 | **Natural caves** (cliff and underwater entrances) use the same chamber-and-tunnel network as dug burrows (G27). They are dark, which makes light-producing parts useful, and have their own fauna and fossils. |
+| W6 | The island is **procedural in C from a seed** (deterministic), with guarantees checked automatically: start valley, mountain range, coast, N islets, M caves, every biome present, every place reachable with some combination of parts. Plus one **curated seed** for the demo and the hero shot. |
+| W7 | Water by depth: rivers, lakes and sea now. **Shallow** needs fins (food, underwater caves); **deep** needs gills (reefs, trenches, rare fossils; scoped for later, G20). **Waterfalls** are obstacles or shortcuts. |
+| W8 | Day/night now (Q43), with nocturnal predators and raids. Weather later (fog limits sight, rain hides scent). Seasons (migration, scarcity) arrive with the living ecosystem (G11). |
+| W9 | **One planet for every stage**: the island is a region of it; tribe starts there, civ spreads over the continent, space sees the sphere (Q45), and terraforming changes these biomes. |
+| W10 | **Landmarks** visible from far away in every biome (rock spire, giant tree, smoking volcano, sea arch), for navigation without a map. The start valley's landmark is the **panspermia meteor crater**. |
