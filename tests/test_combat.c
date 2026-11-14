@@ -38,6 +38,7 @@ static void steps(CpCombatWorld *w, int n)
 
 static void counters(void)
 {
+    cp_combat_test_hit_variance(1);
     CpCombatWorld w = pair(1.6f);
     phase(&w.c[0], CB_BITE, CB_PH_ACTIVE);
     phase(&w.c[1], CB_GUARD, CB_PH_ACTIVE);
@@ -49,14 +50,15 @@ static void counters(void)
     phase(&w.c[0], CB_TAIL_STRIKE, CB_PH_ACTIVE);
     phase(&w.c[1], CB_GUARD, CB_PH_ACTIVE);
     cp_combat_step(&w);
-    CHECK(w.c[1].dmg_taken > 4 && w.c[1].dmg_taken < 6 && !w.c[1].slow_t,
+    CHECK(w.c[1].dmg_taken == cp_combat_move_damage(&w.c[0].prof, CB_TAIL_STRIKE)*0.4f && !w.c[1].slow_t,
           "guard reduces tail damage to 40% and suppresses slow");
 
     w = pair(1.6f);
     phase(&w.c[0], CB_CHARGE, CB_PH_ACTIVE);
     phase(&w.c[1], CB_GUARD, CB_PH_ACTIVE);
     cp_combat_step(&w);
-    CHECK(event(&w, CB_EV_GUARD_BROKEN) && w.c[1].hp < 100 &&
+    CHECK(event(&w, CB_EV_GUARD_BROKEN) &&
+          w.c[1].dmg_taken == cp_combat_move_damage(&w.c[0].prof, CB_CHARGE)*0.6f &&
           w.c[1].move == CB_MOVE_NONE && cp_combat_helpless(&w.c[1]),
           "charge contacts a nearby target and breaks guard");
 
@@ -114,13 +116,73 @@ static void counters(void)
     cp_combat_preview(&w, 0, CB_BITE, 1, &p);
     CHECK(p.flank == 1.5f && p.counter == 1, "back attack bypasses frontal guard and gains flank bonus");
     cp_combat_step(&w);
-    CHECK(w.c[1].hp < 100 && !w.c[1].blocked, "back attack actually lands");
+    CHECK(w.c[1].dmg_taken == cp_combat_move_damage(&w.c[0].prof, CB_BITE)*1.5f && !w.c[1].blocked, "back hit deals exactly 1.5x damage");
     w = pair(1.6f); w.c[1].fx = 0; w.c[1].fy = 1;
     cp_combat_preview(&w, 0, CB_BITE, 1, &p);
     CHECK(p.flank == 1.25f, "side attack gains 25% damage");
     w.n_hills = 1; w.hill[0] = (CpCombatHill){w.c[0].x, w.c[0].y, 1, 3};
     cp_combat_preview(&w, 0, CB_BITE, 1, &p);
     CHECK(p.height == 1.25f, "height bonus caps at 25%");
+    w.c[1].fx = -1; w.c[1].fy = 0;
+    phase(&w.c[0], CB_BITE, CB_PH_ACTIVE); cp_combat_step(&w);
+    CHECK(w.c[1].dmg_taken == cp_combat_move_damage(&w.c[0].prof, CB_BITE)*1.25f,
+          "actual height damage caps at exactly 1.25x");
+    cp_combat_test_hit_variance(0);
+}
+
+/* Two attackers exchange ids, retaining their physical positions and profiles. */
+static CpCombatWorld focus(int swap, int defence, float stamina, float hp)
+{
+    CpCombatWorld w = pair(1.6f);
+    w.n = 3; w.c[2] = w.c[1];
+    w.c[0].y -= 0.65f;
+    w.c[1] = w.c[0]; w.c[1].y += 1.3f;
+    w.c[2].stamina = stamina; w.c[2].hp = hp;
+    w.c[0].prof.mouth = 1; w.c[1].prof.mouth = 4;
+    if (swap) { CpCombatCreature t = w.c[0]; w.c[0] = w.c[1]; w.c[1] = t; }
+    phase(&w.c[0], CB_BITE, CB_PH_ACTIVE);
+    phase(&w.c[1], CB_BITE, CB_PH_ACTIVE);
+    if (defence >= 0) phase(&w.c[2], defence, CB_PH_ACTIVE);
+    w.c[2].dash_x = w.c[2].dash_y = 0;
+    return w;
+}
+
+static void simultaneous(void)
+{
+    cp_combat_test_hit_variance(1);
+    for (int swap = 0; swap < 2; swap++) {
+        CpCombatWorld w = focus(swap, -1, 100, 1);
+        cp_combat_step(&w);
+        CHECK(w.c[0].hits == 1 && w.c[1].hits == 1 && w.c[2].hits_taken == 2,
+              "focus fire credits every landed hit on a lethal tick");
+        CHECK(w.c[0].kills == 1 && w.c[1].kills == 0 && !w.c[2].alive,
+              "lowest id landing damage owns the lethal tick");
+        CHECK(w.c[2].dmg_taken == 11.0f + 11.0f*1.6f,
+              "focus damage is unchanged when attackers swap ids");
+        w = focus(swap, -1, 100, 100);
+        cp_combat_step(&w);
+        CHECK(w.c[2].bleed_t == 14 && w.c[2].bleed_src == 0,
+              "equal-duration bleed cannot steal the extending hit's credit");
+        w = focus(swap, -1, 100, 100); w.c[2].bleed_t = 20; w.c[2].bleed_src = 0;
+        cp_combat_step(&w);
+        CHECK(w.c[2].bleed_t == 19 && w.c[2].bleed_src == 0,
+              "shorter bleed cannot replace an existing source");
+        w = focus(swap, CB_DODGE, 6, 100);
+        cp_combat_step(&w);
+        CHECK(w.c[0].hits == 0 && w.c[1].hits == 1 && w.c[2].dodged == 1 &&
+              w.c[2].stamina == 0 && w.c[2].stamina_spent == 6,
+              "scarce dodge pays the lower-id hit only, from snapshot stamina");
+        w = focus(swap, CB_GUARD, 6, 100);
+        cp_combat_step(&w);
+        CHECK(w.c[0].hits == 0 && w.c[1].hits == 1 && w.c[2].blocked == 1 &&
+              w.c[2].stamina == 0 && w.c[2].stamina_spent == 6 && w.c[2].stun_t == 5,
+              "scarce guard records one block then one exhausted break");
+        w = focus(swap, CB_GUARD, 100, 100);
+        cp_combat_step(&w);
+        CHECK(w.c[2].hp == 100 && w.c[2].blocked == 2,
+              "ample guard has identical outcomes with attacker ids swapped");
+    }
+    cp_combat_test_hit_variance(0);
 }
 
 static void edges_and_verbs(void)
@@ -199,7 +261,14 @@ static void edges_and_verbs(void)
 
 static void geometry_and_setup(void)
 {
-    CpCombatWorld w = pair(1.6f);
+    CpCombatWorld w = pair(1.5f);
+    w.c[1].y += 0.30f;
+    CpCombatPreview preview;
+    cp_combat_preview(&w, 0, CB_SPIT, 1, &preview);
+    CHECK(preview.in_arc, "preview includes hit cone lateral slack");
+    phase(&w.c[0], CB_SPIT, CB_PH_ACTIVE); cp_combat_step(&w);
+    CHECK(w.c[1].hp < 100, "preview slack agrees with actual spit hit");
+    w = pair(1.6f);
     uint64_t h = cp_combat_hash(&w);
     memset(&w.c[2], 0xa5, sizeof w.c[2]);
     w.c[0].dash_y = -0.0f;
@@ -324,7 +393,7 @@ static void canaries(void)
 int main(void)
 {
     puts("cpore combat tests");
-    counters(); edges_and_verbs(); geometry_and_setup(); determinism(); canaries();
+    counters(); simultaneous(); edges_and_verbs(); geometry_and_setup(); determinism(); canaries();
     printf("combat: %d failure(s)\n", fails);
     return fails ? 1 : 0;
 }

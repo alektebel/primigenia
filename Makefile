@@ -2,9 +2,9 @@
 # core/ is the simulation: libc + libm only, no graphics (DESIGN.md Q31, Q50).
 CC      ?= cc
 CFLAGS  ?= -O2 -std=c99 -Wall -Wextra -Wno-unused-parameter -fno-fast-math
-CFLAGS  += -Icore/include -D_POSIX_C_SOURCE=200809L
+override CFLAGS += -Icore/include -D_POSIX_C_SOURCE=200809L
 # Determinism (DESIGN.md Q24, G25/P2): no fused multiply-add contraction anywhere.
-CFLAGS  += -ffp-contract=off
+override CFLAGS += -fno-fast-math -ffp-contract=off
 LDLIBS   = -lm
 BUILD   := build
 
@@ -36,8 +36,8 @@ $(BUILD)/cpore_bench: apps/bench.c $(HDRS) $(BUILD)/libcpore.a
 $(BUILD)/apps/combat_bots.o: apps/combat_bots.c apps/combat_bots.h $(HDRS)
 	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -Iapps -c $< -o $@
-$(BUILD)/combat_test: tests/test_combat.c apps/combat_bots.h $(BUILD)/apps/combat_bots.o $(HDRS) $(BUILD)/libcpore.a
-	$(CC) $(CFLAGS) -Iapps $< $(BUILD)/apps/combat_bots.o $(BUILD)/libcpore.a -o $@ $(LDLIBS)
+$(BUILD)/combat_test: tests/test_combat.c core/src/combat.c apps/combat_bots.h $(BUILD)/apps/combat_bots.o $(HDRS) $(BUILD)/libcpore.a
+	$(CC) $(CFLAGS) -DCP_COMBAT_TEST -Iapps $< core/src/combat.c $(BUILD)/apps/combat_bots.o $(BUILD)/libcpore.a -o $@ $(LDLIBS)
 $(BUILD)/combat_tourney: apps/combat_tourney.c apps/combat_bots.h $(BUILD)/apps/combat_bots.o $(HDRS) $(BUILD)/libcpore.a
 	$(CC) $(CFLAGS) -Iapps $< $(BUILD)/apps/combat_bots.o $(BUILD)/libcpore.a -o $@ $(LDLIBS)
 

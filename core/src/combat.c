@@ -8,6 +8,11 @@
  * transcendentals), so the result is bit-reproducible wherever IEEE-754
  * single precision without contraction is. */
 
+#ifdef CP_COMBAT_TEST
+static int test_fixed_variance;
+void cp_combat_test_hit_variance(int enabled) { test_fixed_variance = enabled; }
+#endif
+
 /* ------------------------------------------------------------------ *
  * Tuning constants that are not per-move data.
  * ------------------------------------------------------------------ */
@@ -692,7 +697,7 @@ void cp_combat_preview(const CpCombatWorld *w, int atk, int move, int tgt, CpCom
     float dist = dir_to(a, d, &ux, &uy);
     out->gap = dist - CB_RADIUS;
     out->in_reach = out->gap <= m->reach;
-    out->in_arc = (a->fx * ux + a->fy * uy) >= cb_cos(m->arc * 0.5f);
+    out->in_arc = in_cone(a, ux, uy, dist, m->arc);
     HitEval e = eval_hit(w, a, d, move, out->gap);
     out->flank = e.flank; out->height = e.height;
     if (e.rule) {
@@ -705,7 +710,14 @@ void cp_combat_preview(const CpCombatWorld *w, int atk, int move, int tgt, CpCom
 /* ------------------------------------------------------------------ *
  * The tick.
  * ------------------------------------------------------------------ */
-typedef struct { uint8_t atk, def; int8_t move; float gap; HitEval ev; } Hit;
+typedef struct {
+    uint8_t atk, def;
+    int8_t move;
+    float gap;
+    HitEval ev;
+    float damage, payment;
+    uint8_t spent, avoided, blocked, broke, interrupted, status;
+} Hit;
 
 static void separate(CpCombatWorld *w)
 {
@@ -782,8 +794,10 @@ static void apply_status(CpCombatWorld *w, int atk, int def, const CpCombatMove 
         ev_add(w, CB_EV_STUNNED, atk, def, -1, (float)m->status_ticks);
         break;
     case CB_ST_BLEED:
-        if (d->bleed_t < m->status_ticks) d->bleed_t = m->status_ticks;
-        d->bleed_src = (int8_t)atk;
+        if (d->bleed_t < m->status_ticks) {
+            d->bleed_t = m->status_ticks;
+            d->bleed_src = (int8_t)atk;
+        }
         break;
     case CB_ST_SLOW:  if (d->slow_t  < m->status_ticks) d->slow_t  = m->status_ticks; break;
     }
@@ -795,39 +809,44 @@ static void resolve_hits(CpCombatWorld *w)
     int nh = gather_hits(w, hits);
     if (!nh) return;
 
-    /* pass 1: evaluate every hit against the state at the start of resolution,
-     * so all hits of a tick are simultaneous and order-independent */
+    /* Counter/flank/height and cancellations all read the same snapshot.
+     * gather_hits orders hits by ascending attacker id, then defender id. */
     uint8_t cancelled[CB_MAX_CREATURES] = { 0 };
+    float stamina[CB_MAX_CREATURES];
+    int killer[CB_MAX_CREATURES];
+    for (int i = 0; i < w->n; i++) { stamina[i] = w->c[i].stamina; killer[i] = -1; }
     for (int k = 0; k < nh; k++) {
         Hit *h = &hits[k];
-        const CpCombatCreature *a = &w->c[h->atk], *d = &w->c[h->def];
-        h->ev = eval_hit(w, a, d, h->move, h->gap);
+        h->ev = eval_hit(w, &w->c[h->atk], &w->c[h->def], h->move, h->gap);
         if (h->ev.rule && h->ev.rule->effect == CB_EFF_INTERRUPT) cancelled[h->def] = 1;
-        w->c[h->atk].hit_mask |= (uint8_t)(1u << h->def);
     }
 
-    /* pass 2: apply */
+    /* Record every outcome before mutating creatures. Defence is paid from a
+     * copy, in attacker-id order; even an exhausted guard remains the snapshot
+     * guard for later hits. Variance consumes one draw per uncancelled hit. */
     for (int k = 0; k < nh; k++) {
-        const Hit *h = &hits[k];
+        Hit *h = &hits[k];
+        h->damage = h->payment = 0;
+        h->spent = h->avoided = h->blocked = h->broke = h->interrupted = 0;
+        h->status = 1;
         if (cancelled[h->atk]) continue;
-        CpCombatCreature *a = &w->c[h->atk], *d = &w->c[h->def];
-        const CpCombatMove *m = &CP_COMBAT_MOVES[h->move];
+        const CpCombatCreature *a = &w->c[h->atk], *d = &w->c[h->def];
         float var = cp_rng_range(&w->rng[CB_RNG_HIT], CB_VAR_LO, CB_VAR_HI);
-        if (!d->alive) continue;
-
+#ifdef CP_COMBAT_TEST
+        if (test_fixed_variance) var = 1.0f;
+#endif
         float base = cp_combat_move_damage(&a->prof, h->move) * h->ev.flank * h->ev.height * var;
-        float dmg = base;
-        int status = 1, broke = 0, interrupted = 0;
+        h->damage = base;
+        float *pool = &stamina[h->def];
         const CpCombatCounter *r = h->ev.rule;
-
         if (r && r->effect == CB_EFF_AVOID) {
-            if (d->stamina >= r->stamina) {
-                d->stamina -= r->stamina; d->stamina_spent += r->stamina; d->since_spend = 0;
-                d->dodged++;
-                ev_add(w, CB_EV_DODGED, h->atk, h->def, h->move, 0.0f);
+            if (*pool >= r->stamina) {
+                h->payment = r->stamina; h->spent = h->avoided = 1;
+                h->damage = 0; h->status = 0;
+                *pool -= h->payment;
                 continue;
             }
-            r = h->ev.alt;                         /* cannot pay: hit lands normally */
+            r = h->ev.alt;
         }
         if (r) {
             switch (r->effect) {
@@ -835,47 +854,69 @@ static void resolve_hits(CpCombatWorld *w)
             case CB_EFF_REDUCE: {
                 float gl = 1.0f + CB_GUARD_LEVEL_K * (float)(d->prof.guard > 0 ? d->prof.guard - 1 : 0);
                 float cost = base * r->stamina / gl;
-                if (d->stamina >= cost) {
-                    d->stamina -= cost; d->stamina_spent += cost; d->since_spend = 0;
-                    dmg = base * r->mult;
-                    status = 0;
-                    d->blocked++;
-                    ev_add(w, CB_EV_BLOCKED, h->atk, h->def, h->move, dmg);
-                } else {                            /* guard gives out */
-                    d->stamina_spent += d->stamina;
-                    d->stamina = 0.0f; d->since_spend = 0;
-                    broke = 1;
-                    ev_add(w, CB_EV_GUARD_BROKEN, h->atk, h->def, h->move, 0.0f);
+                h->spent = 1;
+                if (*pool >= cost) {
+                    h->payment = cost;
+                    h->damage = base * r->mult;
+                    h->status = 0; h->blocked = 1;
+                } else {
+                    h->payment = *pool; h->broke = 1;
                 }
                 break;
             }
             case CB_EFF_BREAK:
-                dmg = base * r->mult;
-                d->stamina_spent += cb_clampf(r->stamina, 0.0f, d->stamina);
-                d->stamina = cb_maxf(0.0f, d->stamina - r->stamina);
-                d->since_spend = 0;
-                interrupted = r->ticks ? r->ticks : 1;
-                ev_add(w, CB_EV_GUARD_BROKEN, h->atk, h->def, h->move, 0.0f);
+                h->damage = base * r->mult;
+                h->payment = cb_clampf(r->stamina, 0.0f, *pool);
+                h->spent = h->broke = 1;
+                h->interrupted = r->ticks ? r->ticks : 1;
                 break;
             case CB_EFF_INTERRUPT:
-                dmg = base * r->mult;
-                interrupted = r->ticks ? r->ticks : 1;
-                ev_add(w, CB_EV_INTERRUPTED, h->atk, h->def, h->move, 0.0f);
+                h->damage = base * r->mult;
+                h->interrupted = r->ticks ? r->ticks : 1;
                 break;
             default: break;
             }
         }
-        if (broke) { stagger(d, 0); d->stun_t = CB_GUARD_BREAK_STUN; }
-        if (interrupted) { stagger(d, interrupted); d->interrupted++; }
+        *pool -= h->payment;
+    }
 
-        if (dmg > 0.0f) {
-            d->hp -= dmg;
-            d->dmg_taken += dmg; d->hits_taken++;
-            a->dmg_dealt += dmg; a->hits++;
-            ev_add(w, CB_EV_HIT, h->atk, h->def, h->move, dmg);
+    /* Apply every recorded hit, including overkill and status on a target
+     * whose HP crossed zero earlier in this pass. Death happens only below. */
+    for (int k = 0; k < nh; k++) {
+        const Hit *h = &hits[k];
+        CpCombatCreature *a = &w->c[h->atk], *d = &w->c[h->def];
+        a->hit_mask |= (uint8_t)(1u << h->def);
+        if (cancelled[h->atk]) continue;
+        d->stamina -= h->payment; d->stamina_spent += h->payment;
+        if (h->spent) d->since_spend = 0;
+        if (h->avoided) {
+            d->dodged++;
+            ev_add(w, CB_EV_DODGED, h->atk, h->def, h->move, 0);
         }
-        if (status) apply_status(w, h->atk, h->def, m);
-        if (d->hp <= 0.0f) kill(w, h->def, h->atk);
+        if (h->blocked) {
+            d->blocked++;
+            ev_add(w, CB_EV_BLOCKED, h->atk, h->def, h->move, h->damage);
+        }
+        if (h->broke) {
+            ev_add(w, CB_EV_GUARD_BROKEN, h->atk, h->def, h->move, 0);
+            if (!h->interrupted) { stagger(d, 0); d->stun_t = CB_GUARD_BREAK_STUN; }
+        }
+        if (h->interrupted) {
+            if (!h->broke) ev_add(w, CB_EV_INTERRUPTED, h->atk, h->def, h->move, 0);
+            stagger(d, h->interrupted); d->interrupted++;
+        }
+        if (h->damage > 0) {
+            d->hp -= h->damage;
+            d->dmg_taken += h->damage; d->hits_taken++;
+            a->dmg_dealt += h->damage; a->hits++;
+            if (killer[h->def] < 0) killer[h->def] = h->atk;
+            ev_add(w, CB_EV_HIT, h->atk, h->def, h->move, h->damage);
+        }
+        if (h->status) apply_status(w, h->atk, h->def, &CP_COMBAT_MOVES[h->move]);
+    }
+    for (int i = 0; i < w->n; i++) {
+        w->c[i].stamina = stamina[i];
+        if (w->c[i].hp <= 0) kill(w, i, killer[i]);
     }
 }
 

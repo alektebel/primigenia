@@ -51,13 +51,15 @@ frontal cone, so flanking bypasses them.
 
 The guard factor is `1 + 0.15 * (guard_level - 1)`. An exhausted block fails,
 sets stamina to zero and stuns for 6 ticks. Active dodge is checked first.
+The test-only `CP_COMBAT_TEST` build exposes `cp_combat_test_hit_variance`: enabling it fixes the damage roll at exactly 1.0 while still consuming the normal RNG draw. It is absent from production libraries and tournament builds. Exact damage tests cover charge 60%, tail 40%, rear 1.5× and the height cap.
+
 The tests exercise every row independently, including stamina failure paths,
 rear guard bypass and the same-tick bite/spit interruption.
 
 Side hits gain 25% damage and rear hits 50%. Height advantage adds 10% per
 metre, capped at 25%; being lower does not subtract damage. Damage variance is
 uniform from 0.9 to 1.1 using only the hit RNG stream. Bleed deals 0.6 HP/tick
-and refreshes its timer without stacking. Slow halves walking speed. Water
+and refreshes its timer without stacking. Its source changes only when a hit extends the timer; equal-duration hits retain the first extending source. Slow halves walking speed. Water
 multiplies walking speed by 0.6, halves permitted dash travel and blocks charge.
 This is the minimal medium support for P2, not the swimming system of P6.
 
@@ -86,7 +88,7 @@ Each `cp_combat_step` executes the following fixed sequence:
 1. Apply existing bleed damage and deaths.
 2. Plan verbs for living, unstunned creatures in the idle phase: turn, walk or start a move.
 3. Apply active dashes and all planned displacements; clamp to the 40×40 m arena and separate bodies (radius 0.6 m).
-4. Gather hits and snapshot counter/flank/height evaluations. Mark explicit interrupt cancellations, then resolve damage/statuses/deaths. Committed attacks can trade lethal hits; explicit interruption cancels the interrupted creature's same-tick hit.
+4. Gather hits and snapshot counter/flank/height evaluations. Mark explicit interrupt cancellations. Record each surviving hit's damage, status and defensive payment before applying outcomes. Dodge/guard payments consume a stamina copy in ascending attacker id (then defender id); scarce defence therefore favours the lower attacker id. Apply every landed hit, including full damage credit and status after another hit has crossed zero HP. Resolve each death once after the pass: the lowest-id attacker that landed positive damage on this tick gets the kill. Committed attacks can trade lethal hits; explicit interruption cancels the interrupted creature's same-tick hit.
 5. Advance phases and decrement status timers; regenerate stamina where permitted. Increment the world tick and calculate its canonical hash.
 
 A wind-up of W means the first hit frame is W ticks after the launch tick;

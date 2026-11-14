@@ -307,6 +307,11 @@ typedef struct {
 void  cp_combat_preview(const CpCombatWorld *w, int atk, int move, int tgt,
                         CpCombatPreview *out);
 
+#ifdef CP_COMBAT_TEST
+/* Unit tests only: fix damage variance at 1.0; still consume the hit RNG draw. */
+void cp_combat_test_hit_variance(int enabled);
+#endif
+
 const char *cp_combat_move_name(int move);
 const char *cp_combat_verb_name(int verb);
 
