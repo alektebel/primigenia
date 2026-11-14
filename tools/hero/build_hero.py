@@ -7,7 +7,7 @@ into one ACES pipeline with four time-of-day presets, and grafts the creature
 code of art/reference/creador-de-criaturas.html onto it. Every patch asserts
 that its target text exists, so a changed reference fails loudly.
 
-URL parameters: t=golden|noon|overcast|night, cam=close|mid|far,
+URL parameters: t=golden|noon|overcast|night, cam=close|mid|far|vista,
 creature=Merodeador|Zancuda|Babosa, exp=<exposure override>, live=1 (animate).
 """
 import pathlib
@@ -70,13 +70,13 @@ refresh(true);update(0);
 env.W.p.vis.root.visible=false;
 /* tighter shadow frustum around the hero creature */
 {const sc=env.sun.shadow.camera;sc.left=sc.bottom=-22;sc.right=sc.top=22;sc.updateProjectionMatrix();env.sun.shadow.normalBias=.05;env.sun.shadow.bias=-.0004}
-const CAM={close:[7.5,.10],mid:[13,.16],far:[30,.22]}[HP.cam]||[13,.16];
+const CAM={close:[7.5,.10],mid:[13,.16],far:[30,.22],vista:[175,.48]}[HP.cam]||[13,.16];
 const OCC=env.hU.occ.value,_w=V();function feedOcc(){for(let k=0;k<8;k++){const i=NC+Math.round(k*(NSP-1)/7);_w.copy(pts[i]).applyMatrix4(creature.matrixWorld);OCC[k].set(_w.x,_w.y,_w.z,RAD[i]*1.05)}for(let k=0;k<4;k++){const l=legs[k];if(l){_w.copy(l.ft.position);OCC[8+k].set(_w.x,_w.y,_w.z,l.w*2.2)}else OCC[8+k].set(0,-999,0,0)}env.hU.center.value.set(HERO.x,0,HERO.z)}
 window.__heroFrame=dt=>{if(window.Hero)Hero.frame++;if(HP.live)update(dt);feedOcc();
   const c=V(0,0,0);for(let i=0;i<NS;i++)c.add(pts[i]);c.multiplyScalar(1/NS).applyMatrix4(creature.matrixWorld);
-  const a=CAZ,cp=Math.cos(CAM[1]),d=CAM[0];const cam=env.camera;cam.fov=42;
+  const a=CAZ,cp=Math.cos(CAM[1]),d=CAM[0];const cam=env.camera;cam.fov=HP.cam==='vista'?62:42;
   cam.position.set(c.x+Math.sin(a)*cp*d,c.y+Math.sin(CAM[1])*d,c.z+Math.cos(a)*cp*d);
-  cam.position.y=Math.max(cam.position.y,env.groundY(cam.position.x,cam.position.z)+.6);cam.lookAt(c.x,c.y-.2,c.z);cam.updateProjectionMatrix()};
+  cam.position.y=Math.max(cam.position.y,env.groundY(cam.position.x,cam.position.z)+.6);cam.lookAt(c.x,c.y+(HP.cam==='vista'?60:-.2),c.z);cam.updateProjectionMatrix()};
 /* Capture hooks (tools/hero/capture_grid.cjs). The creature mask is the pixel difference between two renders:
    setCreatureVisible(false) hides the creature's pixels; with keepShadow=true it still casts its shadow and
    parts the grass, so the difference is the body only. setSkyFlat(true) paints the sky dome pure magenta
@@ -99,16 +99,16 @@ PRESETS = r"""
 /* One ACES pipeline (G46). Golden hour is the look (G47); the others are checks.
    Fog/sky colours are display-space values, as in both references. */
 (()=>{const q=new URLSearchParams(location.search),P={
- golden:{exp:1.0,sun:[-.62,.28,-.72],sunC:'#ffd2a0',sunI:3.1,hemi:['#bfe0ff','#6f8a4a',.5],fog:[.86,.88,.88],
+ golden:{exp:1.0,air:{density:.00135,falloff:240,cool:[.61,.75,.88],warm:[.96,.80,.61]},sun:[-.62,.28,-.72],sunC:'#ffd2a0',sunI:3.1,hemi:['#bfe0ff','#6f8a4a',.5],fog:[.86,.88,.88],
    sky:{hz:[.95,.84,.70],mid:[.55,.72,.92],top:[.16,.42,.82],glow:[1,.62,.3],disc:3},
    envHz:[.9,.55,.3],envMid:[.32,.42,.62],envTop:[.08,.16,.4],envGd:[.12,.09,.06],envSun:[14,8,3.5],ramp:[54,54,83,83,108,108],grass:[1.04,.95,.80]},
- noon:{exp:1.0,sun:[-.4,.85,-.35],sunC:'#fff2dc',sunI:3.0,hemi:['#bfe0ff','#6f8a4a',.6],fog:[.78,.90,.96],
+ noon:{exp:1.0,air:{density:.00115,falloff:260,cool:[.67,.81,.94],warm:[.90,.91,.86]},sun:[-.4,.85,-.35],sunC:'#fff2dc',sunI:3.0,hemi:['#bfe0ff','#6f8a4a',.6],fog:[.78,.90,.96],
    sky:{hz:[.78,.90,.96],mid:[.45,.66,.90],top:[.16,.42,.82],glow:[1,.85,.6],disc:3},
    envHz:[.7,.8,.9],envMid:[.4,.55,.8],envTop:[.15,.3,.7],envGd:[.15,.17,.1],envSun:[16,15,13],ramp:[54,54,83,83,108,108],grass:[1,1,1]},
- overcast:{exp:1.1,sun:[-.3,.8,-.4],sunC:'#e8eef2',sunI:.8,hemi:['#d3dbe2','#6a7060',1.7],fog:[.74,.77,.80],
+ overcast:{exp:1.1,air:{density:.00185,falloff:210,cool:[.69,.75,.82],warm:[.81,.82,.80]},sun:[-.3,.8,-.4],sunC:'#e8eef2',sunI:.8,hemi:['#d3dbe2','#6a7060',1.7],fog:[.74,.77,.80],
    sky:{hz:[.76,.79,.82],mid:[.66,.69,.73],top:[.55,.58,.63],glow:[.2,.2,.2],disc:0},
    envHz:[.6,.62,.65],envMid:[.55,.57,.6],envTop:[.5,.52,.56],envGd:[.12,.12,.1],envSun:[1.5,1.5,1.5],ramp:[54,54,83,83,108,108],grass:[.78,.82,.84]},
- night:{exp:1.25,sun:[.4,.55,.3],sunC:'#9fb4ff',sunI:.7,hemi:['#2a3a60','#151a20',.6],fog:[.07,.09,.16],
+ night:{exp:1.25,air:{density:.0014,falloff:240,cool:[.075,.105,.19],warm:[.16,.18,.28]},sun:[.4,.55,.3],sunC:'#9fb4ff',sunI:.7,hemi:['#2a3a60','#151a20',.6],fog:[.07,.09,.16],
    sky:{hz:[.10,.13,.22],mid:[.05,.07,.15],top:[.02,.03,.08],glow:[.3,.35,.5],disc:1.2},
    envHz:[.06,.08,.14],envMid:[.04,.05,.1],envTop:[.02,.02,.06],envGd:[.02,.02,.02],envSun:[2,2.3,3],ramp:[54,54,83,83,108,108],grass:[.16,.2,.32]}};
  const name=P[q.get('t')]?q.get('t'):'golden',L=Object.assign({name},P[name]);if(q.get('exp'))L.exp=+q.get('exp');
@@ -240,6 +240,197 @@ TREES_JS = r"""
 BROAD_NEW = TREES_JS
 h = patch(h, BROAD_OLD, BROAD_NEW)
 h = patch(h, "for(const o of[...broad,...conif]){const r=3.6*o.s,cx=", "for(const o of[...broad,...conif]){const r=3.6*o.s*(o.rk||1),cx=")
+
+# ---- V8: a continuous meadow, alpine relief and height-aware aerial perspective ----
+# GLSL is assembled once here and shared by the ground, blades, water and all
+# built-in materials. No height(), groundY(), scatter or simulation changes.
+LAND_JS = r"""
+const glv=a=>'vec3('+a.map(x=>Number(x).toFixed(4)).join(',')+')';
+const AERIAL=`
+vec3 aerial(vec3 c,vec3 wp){
+ vec3 ray=wp-cameraPosition;float d=length(ray);vec3 dir=ray/max(d,.001);
+ // Three samples of the exponential height density along the view ray.
+ vec3 heights=max(vec3(cameraPosition.y,mix(cameraPosition.y,wp.y,.5),wp.y),vec3(0.));
+ vec3 rho=exp(-heights/${HL.air.falloff.toFixed(1)});
+ float optical=max(d-24.,0.)*${HL.air.density.toFixed(6)}*dot(rho,vec3(.1667,.6666,.1667));
+ float sunward=pow(max(dot(dir,${glv(HL.sun)}),0.),6.);
+ vec3 haze=mix(${glv(HL.air.cool)},${glv(HL.air.warm)},sunward*.75);
+ return mix(c,haze,1.-exp(-optical));
+}
+`;
+T.ShaderChunk.fog_pars_vertex='#ifdef USE_FOG\nvarying vec3 vAerialPosition;\n#endif';
+T.ShaderChunk.fog_vertex=`#ifdef USE_FOG
+ vec4 aerialLocal=vec4(transformed,1.);
+ #ifdef USE_INSTANCING
+ aerialLocal=instanceMatrix*aerialLocal;
+ #endif
+ vAerialPosition=(modelMatrix*aerialLocal).xyz;
+#endif`;
+T.ShaderChunk.fog_pars_fragment='#ifdef USE_FOG\nvarying vec3 vAerialPosition;\n'+AERIAL+'\n#endif';
+T.ShaderChunk.fog_fragment='#ifdef USE_FOG\ngl_FragColor.rgb=aerial(gl_FragColor.rgb,vAerialPosition);\n#endif';
+const MEADOW=`
+uniform vec3 sun,center;uniform vec4 occ[12];
+float landHash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
+float landNoise(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);
+ return mix(mix(landHash(i),landHash(i+vec2(1.,0.)),f.x),mix(landHash(i+vec2(0.,1.)),landHash(i+1.),f.x),f.y);}
+float meadowWave(vec2 p,float time){return smoothstep(.45,.98,sin(dot(p,vec2(.8,.6))*.085-time*1.1));}
+float landRamp(float light){return .60+.25*smoothstep(.18,.25,light)+.23*smoothstep(.53,.61,light);}
+// Linear light, followed by the same ACES + sRGB chunks for every surface.
+// t.b is the exact CPU fbm patch field stored in the shared height map.
+vec3 meadowColor(vec4 t,float light,float wave,vec2 xz){
+ vec3 c=mix(vec3(.115,.265,.037),vec3(.235,.390,.075),smoothstep(.22,.80,t.b));
+ c*=mix(.56,1.,t.a)*landRamp(light)*${glv(HL.grass)};
+ return c*(.78+.30*landNoise(xz*.19)+.14*landNoise(xz*.63))*(1.+wave*.12);
+}
+float meadowShadow(vec3 wp){
+ if(distance(wp.xz,center.xz)>24.)return 1.;
+ float sh=1.;for(int i=0;i<12;i++){
+  vec3 oc=occ[i].xyz-wp;float r=occ[i].w;if(r<=0.)continue;
+  float tca=dot(oc,sun),d2=dot(oc,oc)-tca*tca;
+  sh*=mix(1.,smoothstep(r*r*.5,r*r*1.4,d2),step(0.,tca));
+ }return sh;
+}
+`;
+function landMaterial(material){
+ material.onBeforeCompile=s=>{
+  Object.assign(s.uniforms,hU);
+  s.vertexShader='varying vec3 vLandPosition,vLandNormal;\n'+s.vertexShader.replace('#include <begin_vertex>',
+   '#include <begin_vertex>\nvLandPosition=position;vLandNormal=normal;');
+  s.fragmentShader='varying vec3 vLandPosition,vLandNormal;\nuniform float uTime;\n'+SAMP+MEADOW+s.fragmentShader;
+  const output='gl_FragColor = vec4( outgoingLight, diffuseColor.a );';
+  if(!s.fragmentShader.includes(output))throw new Error('land shader output target changed');
+  s.fragmentShader=s.fragmentShader.replace(output,`
+   vec3 wp=vLandPosition,gn=normalize(vLandNormal);float light=max(dot(gn,sun),0.);
+   vec4 field=samp(wp.xz);
+   bool backdrop=max(abs(wp.x),abs(wp.z))>S*.5;
+   if(backdrop)field=vec4(wp.y,0.,landNoise(wp.xz*.008),1.);
+   float wave=meadowWave(wp.xz,uTime);
+   vec3 meadow=meadowColor(field,light,wave,wp.xz)*mix(.42,1.,meadowShadow(wp));
+   float grain=landNoise(wp.xz*.17);
+   float strata=smoothstep(.32,.60,fract(wp.y*.105+landNoise(wp.xz*.035)*1.7));
+   float gully=landNoise(wp.xz*.065+sin(wp.y*.016)*.4);
+   vec3 rock=mix(vec3(.14,.155,.18),vec3(.30,.325,.35),strata*.10+grain*.25+gully*.35);
+   rock*=mix(vec3(.78,.88,1.12),vec3(1.20,1.10,.90),smoothstep(.18,.52,light));
+   rock*=landRamp(light)*mix(.58,1.,smoothstep(.38,.78,gn.y));
+   float snow=smoothstep(120.,145.,wp.y+(grain-.5)*28.)*smoothstep(.48,.80,gn.y);
+   if(backdrop)snow=smoothstep(480.,680.,wp.y+(grain-.5)*100.)*smoothstep(.34,.72,gn.y);
+   rock=mix(rock,vec3(.73,.84,.91)*landRamp(light),snow);
+   rock*=${glv(HL.grass)};
+   // Alpine turf on gentle low slopes; the actual blade mask has priority.
+   float turf=(1.-smoothstep(45.,90.,wp.y))*smoothstep(.68,.88,gn.y);
+   vec3 land=mix(rock,meadow,turf);
+   float shore=smoothstep(.7,2.4,wp.y);
+   outgoingLight=mix(outgoingLight,land,backdrop?1.:shore);
+   outgoingLight=mix(outgoingLight,meadow,field.g);
+   ${output}`);
+ };
+ material.customProgramCacheKey=()=>'land-v8';return material;
+}
+function distantRanges(){
+ // Render-only ring meshes: independent of the gameplay surface and its RNG.
+ for(let layer=0;layer<3;layer++){
+  const radius=[900,1550,2450][layer],segments=384,positions=[],indices=[];
+  for(let row=0;row<4;row++)for(let i=0;i<=segments;i++){
+   const a=i/segments*Math.PI*2,phase=a+layer*1.73;
+   const ridge=1.-Math.abs(Math.sin(phase*5.+.5)*.55+Math.sin(phase*13.+1.7)*.29+Math.sin(phase*29.)*.16);
+   const crown=Math.pow(ridge,2.3),peak=radius*(.17+crown*.20)+layer*50;
+   const r=radius*[.75,.89,1.,1.17][row],y=[-70,peak*.46,peak,-35][row];
+   positions.push(Math.sin(a)*r,y,Math.cos(a)*r);
+  }
+  for(let row=0;row<3;row++)for(let i=0;i<segments;i++){
+   const k=row*(segments+1)+i,b=k+segments+1;indices.push(k,b,k+1,b,b+1,k+1);
+  }
+  const g=new T.BufferGeometry();g.setAttribute('position',new T.Float32BufferAttribute(positions,3));g.setIndex(indices);g.computeVertexNormals();
+  const m=new T.Mesh(g,landMaterial(new T.MeshStandardMaterial({roughness:1,side:T.DoubleSide})));m.name='distant-range-'+layer;scene.add(m);
+ }
+}
+"""
+h = patch(h, 'function buildScene(){', LAND_JS + '\nfunction buildScene(){')
+h = patch(h, 'const camera=new T.PerspectiveCamera(60,1,.5,3000);',
+          'const camera=new T.PerspectiveCamera(60,1,.5,8000);')
+h = patch(h, 'new T.SphereGeometry(2000,24,16)', 'new T.SphereGeometry(6000,24,16)')
+terrain_hook = between(h, '  if(!low)terrain.material.onBeforeCompile=', '\n\n  scene.add(new T.HemisphereLight')
+h = patch(h, terrain_hook, '  if(!low)landMaterial(terrain.material);')
+h = patch(h, '    sky.renderOrder=-1;scene.add(sky)}',
+          '    sky.renderOrder=-1;scene.add(sky);distantRanges()}')
+# Clouds also receive the shared atmosphere. The sky dome itself is the endpoint.
+h = patch(h, "const cm=toon({color:col('#ffffff'),fog:false});",
+          "const cm=toon({color:col('#ffffff'),fog:true});")
+h = patch(h, 'fragmentShader:SAMP+`varying vec3 vW;', 'fragmentShader:SAMP+AERIAL+`varying vec3 vW;')
+h = patch(h, 'float f=smoothstep(fogNear,fogFar,distance(cameraPosition,vW));gl_FragColor=vec4(mix(c,fogColor,f),a);',
+          'gl_FragColor=vec4(c,a);\n#include <tonemapping_fragment>\n#include <encodings_fragment>\ngl_FragColor.rgb=aerial(gl_FragColor.rgb,vW);')
+# Remove obsolete linear-fog uniforms; scene.fog only enables the shared chunks.
+h = patch(h, 'fogNear:{value:110},fogFar:{value:760}', 'aerialDensity:{value:HL.air.density}')
+h = patch(h, 'uniform float fogNear,fogFar;', '', count=2)
+
+GRASS_V8 = r"""
+    // 25k eight-blade tufts near the hero + 13k four-blade tufts in the sparse LOD.
+    // Separate seeded stream avoids changing any existing scatter.
+    const nearCount=200000,farCount=52000,NB=nearCount+farCount,gr=rngFrom(W.seed+8808);
+    const off=new Float32Array(NB*4),clump=new Float32Array(NB);
+    let cx=0,cz=0,ch=0;
+    for(let i=0;i<NB;i++){
+     const lod=i>=nearCount,n=lod?4:8,j=lod?i-nearCount:i;
+     if(j%n===0){const a=gr()*Math.PI*2,r=lod?Math.sqrt(34*34+gr()*(140*140-34*34)):Math.sqrt(gr())*44;
+      cx=Math.cos(a)*r;cz=Math.sin(a)*r;ch=gr();}
+     const a=gr()*Math.PI*2,r=Math.sqrt(gr())*(lod?.52:.19);
+     off.set([cx+Math.cos(a)*r,cz+Math.sin(a)*r,gr(),lod?1:0],i*4);clump[i]=ch;
+    }
+    const bg=new T.InstancedBufferGeometry();
+    bg.setAttribute('position',new T.Float32BufferAttribute([-.5,0,0,.5,0,0,-.23,.55,0,.23,.55,0,0,1,0],3));
+    bg.setIndex([0,1,2,2,1,3,2,3,4]);bg.setAttribute('offset',new T.InstancedBufferAttribute(off,4));
+    bg.setAttribute('clump',new T.InstancedBufferAttribute(clump,1));bg.instanceCount=NB;
+    const gm=new T.Mesh(bg,new T.ShaderMaterial({side:T.DoubleSide,uniforms:hU,
+     vertexShader:SAMP+MEADOW+`
+      attribute vec4 offset;attribute float clump;uniform float uTime;
+      varying vec3 vGrassWorld;varying vec4 vField;varying vec4 vBlade;
+      void main(){
+       float lod=offset.w;vec2 base=center.xz+offset.xy;vec4 t=samp(base);
+       float d=length(offset.xy),fade=lod>.5?(1.-smoothstep(110.,140.,d))*smoothstep(30.,48.,d):1.-smoothstep(30.,44.,d);
+       float rolling=.65+.55*sin(base.x*.033+sin(base.y*.027))*.5+t.b*.4;
+       float hg=(.22+.55*clump)*rolling*mix(1.,.66,lod)*t.g*fade;
+       float hx=samp(base+vec2(1.,0.)).r-samp(base-vec2(1.,0.)).r,hz=samp(base+vec2(0.,1.)).r-samp(base-vec2(0.,1.)).r;
+       float light=max(dot(normalize(vec3(-hx,2.,-hz)),sun),0.);
+       vec3 gp=vec3(base.x,t.r,base.y);float sh=1.,push=0.;vec2 pd=vec2(0.);
+       if(lod<.5)for(int i=0;i<12;i++){
+        vec3 oc=occ[i].xyz-gp;float r=occ[i].w;if(r<=0.)continue;
+        float tca=dot(oc,sun),d2=dot(oc,oc)-tca*tca;
+        sh*=mix(1.,smoothstep(r*r*.5,r*r*1.4,d2),step(0.,tca));
+        vec2 q=base-occ[i].xz;float dq=length(q),inf=(1.-smoothstep(r*.7,r*1.7,dq))*step(occ[i].y-r,t.r+.6);
+        push=max(push,inf);pd+=q/(dq+.001)*inf;
+       }
+       hg*=1.-.6*push;
+       float wave=meadowWave(base,uTime),gust=sin(base.x*.12+base.y*.09+uTime*1.6);
+       vec3 p=position;float ang=offset.z*44.,bend=(.10+.15*gust+.3*wave)*p.y*p.y*hg;
+       float wd=mix(.055,.25,lod)*(.65+offset.z*.6)*fade*step(.008,hg);
+       vec3 wp=vec3(base.x+p.x*cos(ang)*wd+bend*.85,t.r-.025+p.y*hg,base.y+p.x*sin(ang)*wd+bend*.5);
+       wp.xz+=pd*p.y*hg*.9;
+       float back=pow(max(dot(normalize(wp-cameraPosition),sun),0.),4.);
+       vGrassWorld=wp;vField=t;vBlade=vec4(p.y,light,sh,back);
+       gl_Position=projectionMatrix*viewMatrix*vec4(wp,1.);
+      }`,
+     fragmentShader:MEADOW+AERIAL+`
+      uniform float uTime;varying vec3 vGrassWorld;varying vec4 vField,vBlade;
+      void main(){
+       float h=vBlade.x,wave=meadowWave(vGrassWorld.xz,uTime);
+       vec3 c=meadowColor(vField,vBlade.y,wave,vGrassWorld.xz);
+       c*=mix(.70,1.42,smoothstep(0.,1.,h))*mix(.42,1.,vBlade.z);
+       c+=vec3(.14,.20,.035)*pow(h,2.)*vBlade.w*vBlade.z;
+       gl_FragColor=vec4(c,1.);
+       #include <tonemapping_fragment>
+       #include <encodings_fragment>
+       gl_FragColor.rgb=aerial(gl_FragColor.rgb,vGrassWorld);
+      }`}));
+    gm.frustumCulled=false;gm.name='meadow-252k';scene.add(gm);
+"""
+grass_block = between(h, '    const RG=44,NB=200000,', '\n  }\n  /* nidos */')
+h = patch(h, grass_block, GRASS_V8.rstrip())
+
+# These functions are gameplay contracts: all landscape additions are cosmetic.
+for start, end in [("function height(x,z){", "\nconst walkable="),
+                   ("function groundY(x,z){", "\nfunction terrainColor(")]:
+    if between(h, start, end) != between(VALLEY, start, end):
+        sys.exit(f"gameplay terrain changed: {start}")
 
 OUT.parent.mkdir(parents=True, exist_ok=True)
 OUT.write_text(h, encoding="utf-8")
