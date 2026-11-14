@@ -237,6 +237,7 @@ recorded.
 |---|---|
 | G46 | One lighting pipeline for everything: **ACES Filmic** tone mapping. The valley's toon world is retuned for ACES (light about 2.5×, the 3-band ramp recomputed so the bands survive the curve) rather than giving materials separate tone mapping. Measured references: valley = no tone mapping, sun `#fff0d2` 1.2, hemi 0.72, blue fog 110–760; creator = ACES 1.05, sun `#ffcf9a` 3.1 low, hemi 0.35 + PMREM environment, amber fog 35–560. |
 | G47 | The look is judged at **golden hour**; noon, overcast and night stay in the test grid. |
+| G48 | Imported Blender parts that fit badly on creator creatures (wrong scale, floating, flat dark or thin; e.g. beak, wings, sacs, arms, tail paddle, frill) are **rebuilt as procedural parts** in the creator's own style (shared skin, keratin, membrane and glow materials; sized and attached to the spine surface like the creator's parts). Each GLB stays in the repo as the shape reference; part ids stay the same so saved creatures still load. (2026-11-14) |
 
 ## 10. The world (W1–W10, 2026-11-14)
 
