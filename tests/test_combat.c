@@ -1,1 +1,259 @@
-int main(void){return 0;}
+#include "combat_bots.h"
+
+#include <math.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+static int fails;
+#define CHECK(c, msg) do { if (!(c)) { printf("  FAIL  %s (line %d)\n", msg, __LINE__); fails++; } } while (0)
+
+static CpCombatWorld pair(float dist)
+{
+    CpCombatProfile p;
+    CpCombatSetup s;
+    CpCombatWorld w;
+    cp_combat_profile_default(&p);
+    duel_setup(&s, 42, &p, &p, dist);
+    cp_combat_reset(&w, &s);
+    return w;
+}
+
+/* Pin phases to isolate each resolution rule from bot/timing decisions. */
+static void phase(CpCombatCreature *c, int move, int ph)
+{
+    c->move = (int8_t)move; c->phase = (uint8_t)ph;
+    c->ptick = 0; c->plen = 100; c->hit_mask = 0;
+    c->dash_x = c->fx; c->dash_y = c->fy;
+}
+static int event(const CpCombatWorld *w, int type)
+{
+    for (int i = 0; i < w->n_ev; i++) if (w->ev[i].type == type) return 1;
+    return 0;
+}
+static void steps(CpCombatWorld *w, int n)
+{
+    while (n-- > 0) cp_combat_step(w);
+}
+
+static void counters(void)
+{
+    CpCombatWorld w = pair(1.6f);
+    phase(&w.c[0], CB_BITE, CB_PH_ACTIVE);
+    phase(&w.c[1], CB_GUARD, CB_PH_ACTIVE);
+    cp_combat_step(&w);
+    CHECK(w.c[1].hp == 100 && w.c[1].bleed_t == 0 && w.c[1].blocked == 1,
+          "guard negates bite and its bleed");
+
+    w = pair(1.6f);
+    phase(&w.c[0], CB_TAIL_STRIKE, CB_PH_ACTIVE);
+    phase(&w.c[1], CB_GUARD, CB_PH_ACTIVE);
+    cp_combat_step(&w);
+    CHECK(w.c[1].dmg_taken > 4 && w.c[1].dmg_taken < 6 && !w.c[1].slow_t,
+          "guard reduces tail damage to 40% and suppresses slow");
+
+    w = pair(1.6f);
+    phase(&w.c[0], CB_CHARGE, CB_PH_ACTIVE);
+    phase(&w.c[1], CB_GUARD, CB_PH_ACTIVE);
+    cp_combat_step(&w);
+    CHECK(event(&w, CB_EV_GUARD_BROKEN) && w.c[1].hp < 100 &&
+          w.c[1].move == CB_MOVE_NONE && cp_combat_helpless(&w.c[1]),
+          "charge contacts a nearby target and breaks guard");
+
+    w = pair(5);
+    phase(&w.c[0], CB_SPIT, CB_PH_ACTIVE);
+    phase(&w.c[1], CB_CHARGE, CB_PH_WINDUP);
+    cp_combat_step(&w);
+    CHECK(w.c[1].move == CB_MOVE_NONE && w.c[1].interrupted == 1 &&
+          w.c[1].slow_t && event(&w, CB_EV_INTERRUPTED), "spit interrupts charge wind-up");
+
+    w = pair(1.6f);
+    phase(&w.c[0], CB_BITE, CB_PH_ACTIVE);
+    phase(&w.c[1], CB_SPIT, CB_PH_ACTIVE);
+    cp_combat_step(&w);
+    CHECK(w.c[0].hp == 100 && w.c[1].hp < 100 && w.c[1].interrupted == 1,
+          "bite interrupts simultaneous spit hit at close range");
+
+    w = pair(1.6f);
+    cp_combat_attack(&w, 0, 1, CB_BITE);
+    cp_combat_attack(&w, 1, 0, CB_SPIT);
+    steps(&w, CP_COMBAT_MOVES[CB_BITE].windup + 1);
+    CHECK(w.c[0].hp == 100 && w.c[1].interrupted == 1,
+          "bite started alongside spit wins the close-range race");
+
+    for (int m = 0; m < CB_MOVE_COUNT; m++) {
+        if (CP_COMBAT_MOVES[m].flags & CB_F_SELF) continue;
+        w = pair(1.6f);
+        phase(&w.c[0], m, CB_PH_ACTIVE);
+        phase(&w.c[1], CB_DODGE, CB_PH_ACTIVE);
+        w.c[1].dash_x = w.c[1].dash_y = 0; /* test avoidance, independent of displacement */
+        float stamina = w.c[1].stamina;
+        cp_combat_step(&w);
+        CHECK(w.c[1].hp == 100 && w.c[1].dodged == 1 && w.c[1].stamina == stamina - 6,
+              "active dodge avoids each offensive move and pays per hit");
+    }
+    w = pair(1.6f);
+    phase(&w.c[0], CB_BITE, CB_PH_ACTIVE);
+    phase(&w.c[1], CB_DODGE, CB_PH_ACTIVE);
+    w.c[1].dash_x = w.c[1].dash_y = 0; w.c[1].stamina = 0;
+    cp_combat_step(&w);
+    CHECK(w.c[1].hp < 100 && !w.c[1].dodged, "exhausted dodge cannot avoid a hit");
+
+    w = pair(1.6f);
+    phase(&w.c[0], CB_BITE, CB_PH_ACTIVE);
+    phase(&w.c[1], CB_GUARD, CB_PH_ACTIVE); w.c[1].stamina = 0;
+    cp_combat_step(&w);
+    CHECK(w.c[1].hp < 100 && event(&w, CB_EV_GUARD_BROKEN) && w.c[1].stun_t,
+          "exhausted guard breaks instead of granting free defence");
+
+    w = pair(1.6f);
+    phase(&w.c[0], CB_BITE, CB_PH_ACTIVE);
+    phase(&w.c[1], CB_GUARD, CB_PH_ACTIVE); w.c[1].fx = 1;
+    CpCombatPreview p;
+    cp_combat_preview(&w, 0, CB_BITE, 1, &p);
+    CHECK(p.flank == 1.5f && p.counter == 1, "back attack bypasses frontal guard and gains flank bonus");
+    cp_combat_step(&w);
+    CHECK(w.c[1].hp < 100 && !w.c[1].blocked, "back attack actually lands");
+    w = pair(1.6f); w.c[1].fx = 0; w.c[1].fy = 1;
+    cp_combat_preview(&w, 0, CB_BITE, 1, &p);
+    CHECK(p.flank == 1.25f, "side attack gains 25% damage");
+    w.n_hills = 1; w.hill[0] = (CpCombatHill){w.c[0].x, w.c[0].y, 1, 3};
+    cp_combat_preview(&w, 0, CB_BITE, 1, &p);
+    CHECK(p.height == 1.25f, "height bonus caps at 25%");
+}
+
+static void edges_and_verbs(void)
+{
+    CpCombatWorld w = pair(1.6f);
+    float cost = cp_combat_move_stamina(&w.c[0].prof, CB_BITE);
+    w.c[0].stamina = cost - 0.01f; w.c[0].since_spend = 0;
+    cp_combat_attack(&w, 0, 1, CB_BITE); cp_combat_step(&w);
+    CHECK(w.c[0].move == CB_MOVE_NONE && event(&w, CB_EV_NO_STAMINA), "unaffordable move waits without spending");
+    w.c[0].stamina = cost; cp_combat_step(&w);
+    CHECK(w.c[0].move == CB_BITE && w.c[0].stamina == 0, "exact stamina starts move once");
+    float spent = w.c[0].stamina_spent;
+    cp_combat_attack(&w, 0, 1, CB_BITE);
+    steps(&w, CP_COMBAT_MOVES[CB_BITE].windup + CP_COMBAT_MOVES[CB_BITE].active + CP_COMBAT_MOVES[CB_BITE].recovery);
+    CHECK(w.c[0].phase == CB_PH_IDLE && w.c[0].verb == CB_V_IDLE && w.c[0].stamina_spent == spent,
+          "attack completes once; identical repeated order never restarts wind-up");
+    steps(&w, 200);
+    CHECK(w.c[0].stamina == w.c[0].prof.stamina, "idle regenerates stamina to its cap");
+
+    w = pair(10); cp_combat_approach(&w, 0, 1); steps(&w, 60);
+    CHECK(w.c[0].verb == CB_V_IDLE && w.c[1].x - w.c[0].x <= 2*CB_RADIUS + CB_APPROACH_GAP,
+          "approach persists until near target, then completes");
+    cp_combat_flee(&w, 0, 1); steps(&w, CB_FLEE_TICKS + 1);
+    CHECK(w.c[0].verb == CB_V_IDLE && w.c[0].stamina_spent > 0, "flee completes by distance or timeout and costs stamina");
+    for (int m = CB_GUARD; m <= CB_DODGE; m += CB_DODGE - CB_GUARD) {
+        w = pair(10);
+        if (m == CB_GUARD) cp_combat_guard(&w, 0); else cp_combat_dodge(&w, 0, 2);
+        steps(&w, CP_COMBAT_MOVES[m].windup + CP_COMBAT_MOVES[m].active + CP_COMBAT_MOVES[m].recovery);
+        CHECK(w.c[0].verb == CB_V_IDLE && w.c[0].move == CB_MOVE_NONE, "defensive verb completes after recovery");
+    }
+    w = pair(1.6f); cp_combat_attack(&w, 0, 1, CB_BITE); cp_combat_step(&w);
+    cp_combat_flee(&w, 0, 1); steps(&w, 30);
+    CHECK(w.c[0].x < 15 && w.c[0].hits == 1, "new verb queues behind committed move without repeating it");
+
+    w = pair(1.6f); w.c[1].hp = 1;
+    phase(&w.c[0], CB_BITE, CB_PH_ACTIVE); cp_combat_step(&w);
+    CHECK(!w.c[1].alive && w.c[1].hp == 0 && w.c[0].kills == 1 && w.c[1].died_tick == 0,
+          "lethal damage clamps hp, clears move and credits death once");
+    CHECK(cp_combat_guard(&w, 1) == CB_ERR_DEAD && cp_combat_attack(&w, 0, 1, CB_BITE) == CB_ERR_BAD_TARGET,
+          "dead creatures cannot act or be ordered as targets");
+    steps(&w, 100);
+    CHECK(w.c[0].kills == 1 && !w.c[1].bleed_t && w.c[1].stamina == 100, "dead state stays inert");
+    w = pair(1.6f); w.c[1].hp = 0.5f; w.c[1].bleed_t = 1; w.c[1].bleed_src = 0;
+    cp_combat_step(&w);
+    CHECK(!w.c[1].alive && w.c[0].kills == 1, "bleed can kill before planning");
+    w = pair(1.6f); w.c[0].hp = w.c[1].hp = 1;
+    phase(&w.c[0], CB_BITE, CB_PH_ACTIVE); phase(&w.c[1], CB_BITE, CB_PH_ACTIVE);
+    cp_combat_step(&w);
+    CHECK(cp_combat_alive_count(&w) == 0, "simultaneous lethal attacks trade kills");
+
+    w = pair(10);
+    uint64_t h = cp_combat_hash(&w);
+    CpCombatAction bad[] = {{255,0,0,0}, {CB_V_ATTACK, CB_GUARD,1,0}, {CB_V_ATTACK,99,1,0},
+                            {CB_V_ATTACK,CB_BITE,0,0}, {CB_V_DODGE,0,0,8}};
+    for (size_t i = 0; i < sizeof bad / sizeof bad[0]; i++) {
+        CHECK(cp_combat_order(&w, 0, &bad[i]) < 0 && cp_combat_hash(&w) == h, "invalid order leaves state untouched");
+    }
+    CHECK(cp_combat_guard(&w, -1) == CB_ERR_BAD_ID, "invalid creature id rejected");
+    w.c[0].prof.mouth = 0;
+    CHECK(cp_combat_attack(&w, 0, 1, CB_BITE) == CB_ERR_UNAVAILABLE && cp_combat_move_damage(&w.c[0].prof, CB_BITE) == 0,
+          "missing part gates its move");
+    w.c[0].medium = CB_WATER;
+    CHECK(cp_combat_attack(&w, 0, 1, CB_CHARGE) == CB_ERR_UNAVAILABLE, "water blocks charge");
+    cp_combat_approach(&w, 0, 1); float x = w.c[0].x; cp_combat_step(&w);
+    CHECK(fabsf(w.c[0].x - x - 4*CB_DT*0.6f) < 1e-5f, "water slows walking");
+    w = pair(10); w.c[0].slow_t = 5; cp_combat_approach(&w, 0, 1); x = w.c[0].x;
+    cp_combat_step(&w);
+    CHECK(fabsf(w.c[0].x - x - 4*CB_DT*0.5f) < 1e-5f, "slow status slows walking");
+}
+
+static void determinism(void)
+{
+    enum { TICKS = 10000, LOG_CAP = CB_MAX_CREATURES*TICKS };
+    uint64_t *a = malloc(TICKS*sizeof(*a)), *b = malloc(TICKS*sizeof(*b));
+    CpCombatLogEntry *log = malloc(LOG_CAP*sizeof(*log));
+    if (!a || !b || !log) { fprintf(stderr, "allocation failed\n"); exit(2); }
+    const uint32_t seeds[] = {0, 1, 42, 987654321u, UINT32_MAX};
+    for (size_t k = 0; k < sizeof seeds / sizeof seeds[0]; k++) {
+        CpCombatSetup s = {0}; s.seed = seeds[k]; s.n = CB_MAX_CREATURES;
+        CpBot bots[CB_MAX_CREATURES];
+        for (int i = 0; i < s.n; i++) {
+            cp_combat_profile_default(&s.c[i].prof);
+            s.c[i].prof.hp = 100000; /* exercise combat throughout the full 10k ticks */
+            s.c[i].x = s.c[i].y = -1; s.c[i].team = (uint8_t)(i%2);
+            s.c[i].medium = (uint8_t)(i%3 == 0);
+            bot_init(&bots[i], i%3 + BOT_RANDOM, seeds[k] + (uint32_t)i);
+        }
+        CpCombatWorld end;
+        int nl = 0;
+        bots_run(&s, bots, TICKS, 0, log, LOG_CAP, &nl, a, &end);
+        uint64_t h = cp_combat_replay(&s, log, nl, TICKS, b);
+        CHECK(end.tick == TICKS && nl > 100 && nl < LOG_CAP && h == end.hash && memcmp(a,b,TICKS*sizeof(*a)) == 0,
+              "10,000 per-tick hashes match replay from identical seed and action log");
+        cp_combat_replay(&s, log, nl, TICKS, a);
+        CHECK(memcmp(a,b,TICKS*sizeof(*a)) == 0, "second independent replay matches every tick");
+        uint64_t canonical = cp_combat_hash(&end);
+        end.ev[0].amount += 99; end.n_ev = 0; end.hash = 0;
+        end.c[0].y = end.c[0].y; /* outputs and unused slots must not affect hash */
+        memset(&end.c[end.n], 0, (CB_MAX_CREATURES-end.n)*sizeof end.c[0]);
+        CHECK(cp_combat_hash(&end) == canonical, "derived event buffers and cached hash are excluded");
+        end.rng[CB_RNG_HIT].s[0] ^= 1;
+        CHECK(cp_combat_hash(&end) != canonical, "RNG state participates in canonical hash");
+    }
+    free(a); free(b); free(log);
+}
+
+static void canaries(void)
+{
+    /* Both seat orders, all ordered builds, 40 seeds: 8,000 duels. */
+    for (int smart = BOT_GREEDY; smart <= BOT_COUNTER; smart++) {
+        int idle_wins = 0, random_wins = 0, smart_wins = 0, n = 0;
+        for (int pa = 0; pa < N_PROFILES; pa++) for (int pb = 0; pb < N_PROFILES; pb++)
+            for (int seed = 0; seed < 40; seed++) for (int seat = 0; seat < 2; seat++) {
+                CpCombatSetup s; CpBot bots[2]; CpDuelResult r;
+                uint32_t key = 200000u + (uint32_t)(seed + 40*(pb + N_PROFILES*pa));
+                duel_setup(&s, key, &PROFILES[pa], &PROFILES[pb], 12);
+                bot_init(&bots[seat], smart, key); bot_init(&bots[1-seat], BOT_IDLE, key+1);
+                duel_run(&s, &bots[0], &bots[1], 900, NULL, 0, NULL, NULL, &r);
+                idle_wins += r.winner == 1-seat;
+                bot_init(&bots[seat], smart, key); bot_init(&bots[1-seat], BOT_RANDOM, key+1);
+                duel_run(&s, &bots[0], &bots[1], 900, NULL, 0, NULL, NULL, &r);
+                random_wins += r.winner == 1-seat; smart_wins += r.winner == seat; n++;
+            }
+        printf("  canary %-7s: idle wins %d/%d, random wins %d/%d, smart wins %d/%d\n",
+               bot_name(smart), idle_wins,n,random_wins,n,smart_wins,n);
+        CHECK(idle_wins == 0, "idle never wins against scripted bots");
+        CHECK(random_wins*20 < n && smart_wins*20 > n*19, "random wins <5%, scripted bot wins >95%");
+    }
+}
+
+int main(void)
+{
+    puts("cpore combat tests");
+    counters(); edges_and_verbs(); determinism(); canaries();
+    printf("combat: %d failure(s)\n", fails);
+    return fails ? 1 : 0;
+}
