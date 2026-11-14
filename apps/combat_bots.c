@@ -5,14 +5,13 @@
 const char *const PROFILE_NAME[N_PROFILES] = {
     "brawler", "spitter", "tank", "skirmisher", "allrounder"
 };
-/* HP pools calibrated against the field after fixing move timing and greedy
- * scoring: high mouth levels buy damage at the expense of durability; the
- * tank keeps the largest pool. Parts, stamina pools and speeds are unchanged.
+/* Published archetypes: shared baseline health/endurance; only the armoured
+ * tank buys +20 HP for -0.6 m/s. No per-build calibration to tournament scores.
  *                          mouth charge spit tail guard   hp     stamina speed */
 const CpCombatProfile PROFILES[N_PROFILES] = {
-    /* brawler    */ { 4, 3, 0, 1, 1,   91.0f,  90.0f, 3.8f },
-    /* spitter    */ { 2, 0, 4, 0, 1,   107.0f, 110.0f, 4.2f },
-    /* tank       */ { 2, 1, 0, 3, 4,  115.0f, 100.0f, 3.4f },
+    /* brawler    */ { 4, 3, 0, 1, 1,   100.0f, 100.0f, 3.8f },
+    /* spitter    */ { 2, 0, 4, 0, 1,   100.0f, 100.0f, 4.2f },
+    /* tank       */ { 2, 1, 0, 3, 4,  120.0f, 100.0f, 3.4f },
     /* skirmisher */ { 3, 0, 2, 2, 0,   100.0f, 100.0f, 4.6f },
     /* allrounder */ { 3, 2, 2, 2, 2,  100.0f, 100.0f, 4.0f },
 };
@@ -56,6 +55,13 @@ static int dodge_dir(const CpCombatWorld *w, int self)
     return wp >= wq ? 2 : 6;
 }
 
+int bot_bleed_gain(int new_timer, int remaining_ticks)
+{
+    if (new_timer <= remaining_ticks) return 0;
+    int gain = (new_timer - 1) - remaining_ticks;
+    return gain > 0 ? gain : 0;
+}
+
 /* Best expected damage per committed tick, including unstacked bleed. */
 static int best_attack(const CpCombatWorld *w, int self, int foe)
 {
@@ -71,7 +77,7 @@ static int best_attack(const CpCombatWorld *w, int self, int foe)
         /* Bleed cannot stack; credit only ticks not already pending. */
         if (mv->status == CB_ST_BLEED && p.counter > 0 &&
             w->c[foe].bleed_t < mv->status_ticks)
-            damage += 0.6f * (mv->status_ticks - w->c[foe].bleed_t);
+            damage += 0.6f * bot_bleed_gain(mv->status_ticks, w->c[foe].bleed_t);
         float s = damage / (float)(mv->windup + mv->active + mv->recovery);
         s *= p.in_reach ? (p.in_arc ? 1.0f : 0.9f) : 0.4f;
         if (s > best_s) { best_s = s; best = m; }
@@ -144,7 +150,7 @@ static int counter(CpBot *b, const CpCombatWorld *w, int self, int foe, CpCombat
                     float extra = 0.0f;
                     if (eff == CB_EFF_AVOID) { v = 2.5f; extra = 6.0f; }
                     else if (eff == CB_EFF_NEGATE) v = 3.0f;
-                    else if (eff == CB_EFF_REDUCE) v = 1.5f;
+                    else if (eff == CB_EFF_REDUCE) v = 3.0f;
                     else continue;                           /* no benefit, or worse (charge breaks guard) */
                     if (me->stamina < cost + extra) continue;
                 } else {                                     /* an attack that interrupts the wind-up */
@@ -153,7 +159,15 @@ static int counter(CpBot *b, const CpCombatWorld *w, int self, int foe, CpCombat
                     CpCombatPreview p;
                     cp_combat_preview(w, self, r, foe, &p);
                     int lag = p.in_arc ? 0 : 1;
-                    if (!p.in_reach || (int)mr->windup + lag > rem - 1) continue;
+                    /* Bite may interrupt spit's active frame; spit must arrive
+                     * strictly before charge becomes active. Honour each row. */
+                    const CpCombatCounter *rule = NULL;
+                    for (int k = 0; k < CP_COMBAT_N_COUNTERS; k++)
+                        if (CP_COMBAT_COUNTERS[k].attack == r && CP_COMBAT_COUNTERS[k].defend == fm)
+                            { rule = &CP_COMBAT_COUNTERS[k]; break; }
+                    int same_tick = rule && (rule->phases & CB_PH_BIT(CB_PH_ACTIVE));
+                    if (!p.in_reach || (rule && rule->max_gap > 0 && p.gap > rule->max_gap) ||
+                        (int)mr->windup + lag > rem - (same_tick ? 0 : 1)) continue;
                     if (me->stamina < cost) continue;
                     v = 3.2f;
                 }
@@ -168,6 +182,18 @@ static int counter(CpBot *b, const CpCombatWorld *w, int self, int foe, CpCombat
                 return act_attack(out, foe, best);
             }
         }
+    }
+    /* Guard is a visible defensive commitment rather than an incoming hit.
+     * Charge must make contact while guard is still active. */
+    if (me->phase == CB_PH_IDLE && !me->stun_t && f->move == CB_GUARD && f->phase == CB_PH_ACTIVE &&
+        CP_COMBAT_MOVES[CB_GUARD].windup + f->ptick >= b->reaction &&
+        cp_combat_move_available(me, CB_CHARGE)) {
+        CpCombatPreview p; cp_combat_preview(w, self, CB_CHARGE, foe, &p);
+        int lag = p.in_arc ? 0 : 1;
+        if (p.in_reach && p.effect == CB_EFF_BREAK &&
+            CP_COMBAT_MOVES[CB_CHARGE].windup + lag < f->plen - f->ptick &&
+            me->stamina >= cp_combat_move_stamina(&me->prof, CB_CHARGE))
+            return act_attack(out, foe, CB_CHARGE);
     }
     /* a busy creature keeps its plan */
     if (me->phase != CB_PH_IDLE) return 0;
@@ -214,12 +240,8 @@ int bot_decide(CpBot *b, const CpCombatWorld *w, int self, int foe, CpCombatActi
     case BOT_SPAM:
         memset(out, 0, sizeof(*out));
         if (b->spam_move == CB_GUARD || b->spam_move == CB_DODGE) {
-            /* a defensive move is reactive: held until a wind-up shows, then timed to cover its first
-             * active frame (same latency as the counter-picker). Repeating it blindly proves nothing. */
-            const CpCombatMove *m = &CP_COMBAT_MOVES[b->spam_move];
-            int rem;
-            if (!incoming(b, w, self, foe, &rem)) return 0;
-            if (rem < (int)m->windup || rem > (int)m->windup + (int)m->active - 1) return 0;
+            /* Holding guard / repeatedly dodging: reissue each tick. The
+             * core completes committed moves before starting the next. */
             if (b->spam_move == CB_GUARD) { out->verb = CB_V_GUARD; return 1; }
             out->verb = CB_V_DODGE; out->dir = (int8_t)dodge_dir(w, self); return 1;
         }

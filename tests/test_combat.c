@@ -185,6 +185,76 @@ static void simultaneous(void)
     cp_combat_test_hit_variance(0);
 }
 
+static void bot_counters(void)
+{
+    puts("  counter execution (reaction delays 0..3; 1 = executed):");
+    for (int row = 0; row < CP_COMBAT_N_COUNTERS; row++) {
+        const CpCombatCounter *r = &CP_COMBAT_COUNTERS[row];
+        printf("    row %d:", row);
+        for (int delay = 0; delay <= 3; delay++) {
+            /* Dodge's wildcard is tested against every offensive move below. */
+            int first = r->attack < 0 ? 0 : r->attack;
+            int last = r->attack < 0 ? CB_MOVE_COUNT-1 : r->attack;
+            int all = 1;
+            for (int attack = first; attack <= last; attack++) {
+                if (CP_COMBAT_MOVES[attack].flags & CB_F_SELF) continue;
+                int response = (r->effect == CB_EFF_BREAK || r->effect == CB_EFF_INTERRUPT) ? attack : r->defend;
+                int threat = response == attack ? r->defend : attack;
+                CpCombatWorld w = pair(1.6f);
+                CpBot bot; bot_init(&bot, BOT_COUNTER, 42); bot.reaction = delay;
+                /* Isolate this row's equipment; every action still goes through
+                 * bot_decide/order/step, starting from a real observed wind-up. */
+                w.c[1].prof.mouth = w.c[1].prof.charge = w.c[1].prof.spit = w.c[1].prof.tail = w.c[1].prof.guard = 0;
+                if (response == CB_BITE) w.c[1].prof.mouth = 2;
+                if (response == CB_CHARGE) w.c[1].prof.charge = 2;
+                if (response == CB_SPIT) w.c[1].prof.spit = 2;
+                if (response == CB_GUARD) w.c[1].prof.guard = 2;
+                if (threat == CB_GUARD) cp_combat_guard(&w, 0);
+                else cp_combat_attack(&w, 0, 1, threat);
+                int executed = 0;
+                for (int t = 0; t < 35; t++) {
+                    /* Keep the reactor free until its observation delay, then
+                     * let the actual picker choose; no forced active phases. */
+                    if (t >= (delay > 0 ? delay : 1)) {
+                        CpCombatAction act;
+                        if (bot_decide(&bot, &w, 1, 0, &act)) cp_combat_order(&w, 1, &act);
+                    }
+                    int evading = w.c[0].phase == CB_PH_ACTIVE && w.c[1].move == CB_DODGE && w.c[1].phase == CB_PH_ACTIVE;
+                    cp_combat_step(&w);
+                    /* A real dodge can also move entirely outside the hit
+                     * cone. Both displacement and the avoid row are valid. */
+                    if (response == CB_DODGE && evading && w.c[1].dmg_taken == 0) executed = 1;
+                    for (int e = 0; e < w.n_ev; e++) {
+                        const CpCombatEvent *ev = &w.ev[e];
+                        if (response == CB_DODGE) executed |= ev->type == CB_EV_DODGED && ev->b == 1;
+                        else if (response == CB_GUARD) executed |= ev->type == CB_EV_BLOCKED && ev->b == 1;
+                        else executed |= ev->a == 1 && ev->b == 0 && ev->move == response &&
+                            ev->type == (r->effect == CB_EFF_BREAK ? CB_EV_GUARD_BROKEN : CB_EV_INTERRUPTED);
+                    }
+                    if (w.c[0].hits || w.c[0].interrupted || executed) break;
+                }
+                if (row == 0) CHECK(executed == (delay <= 2 || attack == CB_CHARGE || attack == CB_SPIT),
+                    "dodge execution window is checked for each offensive move");
+                all &= executed;
+            }
+            printf(" %d", all);
+            int expected = (row == 0 || row == 2 || row == 3) ? delay <= 2 : 1;
+            CHECK(all == expected, "counter row execution matches its documented reaction window");
+        }
+        puts("");
+    }
+    CHECK(bot_bleed_gain(15, 0) == 14 && bot_bleed_gain(15, 5) == 9 &&
+          bot_bleed_gain(15, 15) == 0 && bot_bleed_gain(15, 20) == 0,
+          "greedy counts only newly added future bleed damage ticks");
+    CpCombatWorld w = pair(10);
+    for (int m = CB_GUARD; m <= CB_DODGE; m += CB_DODGE-CB_GUARD) {
+        CpBot b; bot_init(&b, BOT_SPAM, 42); b.spam_move = m;
+        CpCombatAction act;
+        CHECK(bot_decide(&b, &w, 0, 1, &act) && act.verb == (m == CB_GUARD ? CB_V_GUARD : CB_V_DODGE),
+              "fixed defensive policy repeats without an incoming wind-up");
+    }
+}
+
 static void edges_and_verbs(void)
 {
     CpCombatWorld w = pair(1.6f);
@@ -370,7 +440,7 @@ static void canaries(void)
 {
     /* Both seat orders, all ordered builds, 40 seeds: 8,000 duels. */
     for (int smart = BOT_GREEDY; smart <= BOT_COUNTER; smart++) {
-        int idle_wins = 0, random_wins = 0, smart_wins = 0, n = 0;
+        int idle_wins = 0, idle_draws = 0, random_wins = 0, random_draws = 0, smart_wins = 0, n = 0;
         for (int pa = 0; pa < N_PROFILES; pa++) for (int pb = 0; pb < N_PROFILES; pb++)
             for (int seed = 0; seed < 40; seed++) for (int seat = 0; seat < 2; seat++) {
                 CpCombatSetup s; CpBot bots[2]; CpDuelResult r;
@@ -378,22 +448,22 @@ static void canaries(void)
                 duel_setup(&s, key, &PROFILES[pa], &PROFILES[pb], 12);
                 bot_init(&bots[seat], smart, key); bot_init(&bots[1-seat], BOT_IDLE, key+1);
                 duel_run(&s, &bots[0], &bots[1], 900, NULL, 0, NULL, NULL, &r);
-                idle_wins += r.winner == 1-seat;
+                idle_wins += r.winner == 1-seat; idle_draws += r.winner == -1;
                 bot_init(&bots[seat], smart, key); bot_init(&bots[1-seat], BOT_RANDOM, key+1);
                 duel_run(&s, &bots[0], &bots[1], 900, NULL, 0, NULL, NULL, &r);
-                random_wins += r.winner == 1-seat; smart_wins += r.winner == seat; n++;
+                random_wins += r.winner == 1-seat; random_draws += r.winner == -1; smart_wins += r.winner == seat; n++;
             }
-        printf("  canary %-7s: idle wins %d/%d, random wins %d/%d, smart wins %d/%d\n",
-               bot_name(smart), idle_wins,n,random_wins,n,smart_wins,n);
-        CHECK(idle_wins == 0, "idle never wins against scripted bots");
-        CHECK(random_wins*20 < n && smart_wins*20 > n*19, "random wins <5%, scripted bot wins >95%");
+        printf("  canary %-7s: idle wins %d draws %d/%d, random wins %d draws %d/%d, smart wins %d/%d\n",
+               bot_name(smart), idle_wins,idle_draws,n,random_wins,random_draws,n,smart_wins,n);
+        CHECK(idle_wins == 0 && idle_draws == 0, "idle loses every duel on either seat; draws fail");
+        CHECK((2*random_wins + random_draws)*10 < n && smart_wins*20 > n*19, "random wins <5%, scripted bot wins >95%");
     }
 }
 
 int main(void)
 {
     puts("cpore combat tests");
-    counters(); simultaneous(); edges_and_verbs(); geometry_and_setup(); determinism(); canaries();
+    counters(); simultaneous(); bot_counters(); edges_and_verbs(); geometry_and_setup(); determinism(); canaries();
     printf("combat: %d failure(s)\n", fails);
     return fails ? 1 : 0;
 }

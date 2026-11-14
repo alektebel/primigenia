@@ -15,9 +15,9 @@ reach is its total travel distance. Arcs are full cone widths in radians.
 | Move | Wind-up | Active | Recovery | Reach m | Arc rad | Stamina | Damage | Status (ticks) | Flags / required part |
 |---|---:|---:|---:|---:|---:|---:|---:|---|---|
 | bite | 3 | 1 | 3 | 1.8 | 1.00 | 9 | 11 | bleed (15) | mouth |
-| charge | 7 | 5 | 4 | 5.0 | 0.70 | 18 | 17 | stun (6) | dash, ground only / charge |
-| guard | 1 | 10 | 2 | 0 | 2.40 | 5 | 0 | none | self, frontal guard / guard |
-| spit | 4 | 1 | 5 | 6.0 | 0.25 | 12 | 8 | slow (8) | ranged / spit |
+| charge | 10 | 5 | 4 | 5.0 | 0.70 | 18 | 17 | stun (6) | dash, ground only / charge |
+| guard | 1 | 14 | 2 | 0 | 2.40 | 5 | 0 | none | self, frontal guard / guard |
+| spit | 6 | 1 | 5 | 6.0 | 0.25 | 12 | 8 | slow (8) | ranged / spit |
 | tail_strike | 3 | 2 | 4 | 2.2 | 2.40 | 10 | 10 | slow (15) | sweep / tail |
 | dodge | 1 | 2 | 3 | 2.2 | 0 | 8 | 0 | none | self, directional dash, evade / always available |
 
@@ -134,177 +134,65 @@ WASM parity. The design's browser integration and short human playtest clip
 also remain unverified; no browser or visual-completion claim is made by P2's
 C tests.
 
-## Diagnosis and tuning
+## Profiles and timing rationale
 
-The failing WIP had several interacting problems:
-
-- Charge travelled 5/3 = 1.67 m per active frame, exceeding the 1.2 m body diameter. A nearby target could be crossed before the post-movement cone/contact check. Five active frames reduce each step to 1 m; a regression test starts charge against guard at 1.6 m centre distance.
-- Greedy ranked raw hit damage, so the brawler repeatedly chose an expensive charge even where a bite had better damage per committed tick. It now divides expected damage (including unstacked nominal bleed) by wind-up + active + recovery, preserving the existing reach/aim discount and affordability check.
-- Bite's four-tick wind-up lost to spit's three-tick wind-up at close range. Bite is now three, spit four. Charge's seven leaves time for spit after the counter-picker's two-tick reaction delay. Counter rules themselves are unchanged.
-- Spit's 25-tick slow exceeded its nine-tick cycle, providing continuous closing denial. Six-metre reach, eight damage and eight-tick slow give melee a closing opportunity. The supplied bots do not kite: spit dominance here came from opening range/status advantage and repeated charge interrupts, not a retreat policy.
-- Charge cost/damage fell from 24/22 to 18/17 and recovery from seven to four, making it a closing/guard-breaking commitment rather than the default damage choice. Bite damage/bleed, guard, tail and dodge data stayed intact. Shortening guard was tested and rejected: the original duration preserves its resource advantage over dodge against bite.
-- After removing ranged dominance, unequal body pools exposed tank/melee dominance. HP was calibrated against the field alongside the timing changes; no part levels, speeds, stamina pools, counter rules or resolution branches were changed to privilege a named build. Tank still has the largest pool; the brawler pays durability for its high mouth level.
-
-Additional edge tests found two bookkeeping/API defects: integer convenience
-helpers could truncate invalid values into legal moves/directions/targets, and
-a failed guard drained its remaining stamina without adding that amount to
-`stamina_spent`. Both now have regressions and generic fixes. The latter keeps
-the printed resource utility consistent with actual stamina loss.
-
-The final scripted profiles are data in `apps/combat_bots.c`:
+The published baseline is 100 HP and 100 stamina. Brawler, spitter, skirmisher
+and allrounder share those pools: their differences come from equipment and
+movement, rather than hidden durability compensation. The armoured tank has
+120 HP and 3.4 m/s speed: 20% more health for 15% less speed than the 4 m/s
+baseline. Brawler moves at 3.8 m/s with heavy mouth/charge equipment; spitter
+at 4.2, skirmisher at 4.6 with no guard, and the generalist at 4.0. These are
+round, readable archetype choices, fixed before measuring the revised gate.
+They are not calibrated HP pools. Part budgets are not equal; this tournament
+measures these reference archetypes, not every possible genome.
 
 | Build | Mouth | Charge | Spit | Tail | Guard | HP | Stamina | Speed m/s |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|
-| brawler | 4 | 3 | 0 | 1 | 1 | 91 | 90 | 3.8 |
-| spitter | 2 | 0 | 4 | 0 | 1 | 107 | 110 | 4.2 |
-| tank | 2 | 1 | 0 | 3 | 4 | 115 | 100 | 3.4 |
+| brawler | 4 | 3 | 0 | 1 | 1 | 100 | 100 | 3.8 |
+| spitter | 2 | 0 | 4 | 0 | 1 | 100 | 100 | 4.2 |
+| tank | 2 | 1 | 0 | 3 | 4 | 120 | 100 | 3.4 |
 | skirmisher | 3 | 0 | 2 | 2 | 0 | 100 | 100 | 4.6 |
 | allrounder | 3 | 2 | 2 | 2 | 2 | 100 | 100 | 4.0 |
 
-## Tournament protocol and measured results
+Wind-ups follow the counter table over reaction delays 0..3, rather than a
+single bot setting. Bots observe between ticks, so delay 0 and 1 both first
+see a launched move at tick 1. Bite's 3-tick wind-up can meet spit's 6-tick
+wind-up even at delay 3: bite interrupts an active spit, cancelling its
+same-tick hit. Spit's 6 ticks fit strictly before charge's 10-tick wind-up at
+delay 3. Guard lasts 14 active ticks, enough to visibly commit and be broken
+by charge at all four delays. Charge's five active frames move 1 m/frame,
+below the 1.2 m body diameter, so contact cannot step over a nearby defender.
+The remaining move values retain the reviewed baseline.
 
-`make tourney` runs the default `./build/combat_tourney` (40 seeds/cell,
-400 payoff duels/cell). The original protocol and 65% ceiling are retained:
-16,000 strategy duels over every ordered strategy/profile pair, two creatures
-facing each other 12 m apart on flat ground, 900-tick cap. A timeout compares
-remaining HP fractions, drawing within one percentage point. Draws score 0.5;
-printed “win rates” are scores, so the ceiling includes half-credit draws and
-is checked separately for greedy and counter, not just their mean.
-
-Payoffs use 14,400 twelve-second duels, 7 m starts, neutral level-3 profiles,
-100,000 HP, 100 stamina and deterministic start-delay offsets. Offensive spam
-repeats one move; guard/dodge spam reacts to a visible wind-up with a two-tick
-reaction delay. The headline utility is **damage margin minus stamina-spend
-margin**, at the WIP's unchanged 1 HP/stamina coefficient. Raw HP margins are
-also printed: pure defensive moves never gain HP damage, so raw pairwise
-dominance over them remains visible. The headline matrix has no pairwise weak
-dominance at the printed tolerance; this is a finite-protocol measurement,
-not a claim of universal balance. Different delay schedules and hit draws
-mean the sampled matrix is not forced to be exactly antisymmetric.
-
-Greedy uses the expected damage rate described above. Counter-picker responds
-from an idle phase to visible wind-ups with table-derived interrupts or timed
-defences, otherwise using greedy. Random chooses legal attacks or movement/
-defence/rest without an opponent model. Idle issues nothing. Bots act through
-the public order API and their RNG is outside the core state/action replay.
-Elo is a Bradley–Terry fit anchored at mean 1000, with one half-win pseudo-game
-per pair to keep perfect records finite.
-
-The following is the complete default output, verbatim, from the final native
-build on 2026-11-14 (GCC 16.2.1, x86-64 Linux):
+The bot tests launch real orders, observe the resulting state, call the picker
+and step until contact. They isolate the equipment needed by each row; the
+full tournament uses the complete profile equipment and default delay 2.
+A dodge can avoid through displacement as well as the avoid rule; pinned
+active-phase unit tests separately assert the avoid payment for every attack.
+This table is printed by the unit test (row order is `CP_COMBAT_COUNTERS`):
 
 ```text
-cpore combat tourney  (tick 10 Hz, seeds/cell 40, payoff duels/cell 400)
-
-== Move-vs-move payoff, 400 duels per cell: two creatures repeating one move, 7 m apart,
-   random start offsets, 12 s; neutral builds (all parts L3, hp 100000 so nobody dies)
-
--- raw: row's damage dealt minus column's (hp)
-row \ col           bite      charge       guard        spit tail_strike       dodge    row mean
-bite               -0.37      100.11        0.00      282.60      110.59        0.00       82.16
-charge           -100.54        0.02       85.70      -77.10       44.16       89.34        6.93
-guard               0.00      -85.70        0.00     -107.30      -60.06        0.00      -42.18
-spit             -277.06       76.66      112.01       -0.14      -37.48        0.00      -21.00
-tail_strike      -110.73      -44.25       61.61       40.60       -0.29        0.00       -8.84
-dodge               0.00      -89.34        0.00        0.00        0.00        0.00      -14.89
-
--- resource-adjusted (headline): raw minus 1.0 hp per stamina point the row spent, plus the same for the column
-row \ col           bite      charge       guard        spit tail_strike       dodge    row mean
-bite               -0.37       78.51      -38.50      314.50       96.68      -33.60       69.54
-charge            -78.94        0.02      112.10     -105.90       63.30        7.74       -0.28
-guard              38.50     -112.10        0.00       -4.46       -3.87        0.00      -13.66
-spit             -309.46      104.70       10.01       -0.14      -49.48      -64.00      -51.40
-tail_strike       -96.82      -63.81        7.16       52.60       -0.29       16.00      -14.19
-dodge              34.72       -7.74        0.00       66.24      -11.24        0.00       13.66
-
-== Dominance check (tolerance 2*SE + 0.5 hp)
--- raw matrix (informational: defensive rows are bounded by 0 here)
-   bite weakly dominates guard
-   bite weakly dominates dodge
--- resource-adjusted matrix (the check)
-   no move weakly dominates any other
-   equilibrium mix (regret matching, 200k iters), game value 0.04:  bite 6%  charge 28%  guard 0%  spit 0%  tail_strike 0%  dodge 65%
-  PASS  no move weakly dominates another (resource-adjusted payoff)
-
-== Strategy round robin: 5 profiles x 5 profiles x 40 seeds per ordered pair, both sides, 900-tick cap
-   score of row against column (win = 1, draw = 0.5), pooled over all profile pairings
-
-row \ col       idle    random    greedy   counter
-idle           0.500     0.000     0.000     0.000
-random         1.000     0.494     0.004     0.009
-greedy         1.000     0.998     0.501     0.427
-counter        1.000     0.995     0.573     0.512
-
-== Elo (strategies; max-likelihood fit with one pseudo-game per pair, mean 1000)
-   counter       1788
-   greedy        1739
-   random         863
-   idle          -389
-
-== Strategy dominance (score vs each opponent, tolerance 0.02)
-   random weakly dominates idle
-   greedy weakly dominates idle
-   greedy weakly dominates random
-   counter weakly dominates idle
-   counter weakly dominates random
-   counter weakly dominates greedy
-   counter weakly dominates every other strategy (a strict skill ladder, as intended for the reference rows)
-
-== Canaries and ladder
-  PASS  greedy and counter beat idle (>99%)
-  PASS  greedy and counter beat random (>95%)
-  PASS  random beats idle
-  PASS  idle never scores against an active bot (0%)
-  PASS  random rarely beats greedy or counter (<5%)
-   idle  vs greedy 0.0000  vs counter 0.0000 | random vs greedy 0.0040  vs counter 0.0090
-   greedy vs counter: greedy scores 0.427
-
-== Builds: profile win rate, same strategy on both sides (profile vs the other four)
-   profile        greedy  counter     mean
-   brawler         0.431    0.631    0.531
-   spitter         0.634    0.141    0.388
-   tank            0.359    0.588    0.473
-   skirmisher      0.497    0.641    0.569
-   allrounder      0.572    0.547    0.559
-
-   build-vs-build score (row beats column), greedy and counter pooled
-                    brawler     spitter        tank  skirmisher  allrounder
-   brawler                -       0.556       0.494       0.506       0.569
-   spitter            0.419           -       0.500       0.525       0.106
-   tank               0.506       0.525           -       0.163       0.700
-   skirmisher         0.469       0.519       0.819           -       0.469
-   allrounder         0.438       0.887       0.375       0.537           -
-
-== Elo (builds, greedy and counter mirror matches pooled)
-   brawler         1021
-   spitter          934
-   tank             980
-   skirmisher      1038
-   allrounder      1028
-  PASS  no build exceeds the 65% win-rate ceiling (worst 64.1%)
-
-tourney checks passed
+  counter execution (reaction delays 0..3; 1 = executed):
+    row 0: 1 1 1 0
+    row 1: 1 1 1 1
+    row 2: 1 1 1 0
+    row 3: 1 1 1 0
+    row 4: 1 1 1 1
+    row 5: 1 1 1 1
 ```
 
-## Verification
+Row 0 is dodge against **every** offensive move: bite/tail require delay <=2;
+spit/charge permit all four delays. Rows 2/3 (guard vs bite/tail) likewise
+require <=2. Row 1 is charge breaking guard; rows 4/5 are spit interrupting
+charge and bite interrupting spit. Those three rows work at every tested
+delay. The picker honours the active-phase exception for bite and the
+close-range constraint; guard reduction is preferred over dodge for tail.
+Out-of-range, facing, commitment, equipment and stamina can still prevent a
+counter; these timing windows assume an idle, aligned, funded reactor at
+1.6 m. They are not a guarantee from every world state.
 
-All checks below ran on the final code. `make test` now includes the original
-core suite, the combat executable **and** the default tournament so balance
-acceptance is enforced on later changes.
-
-| Check | Measured result |
-|---|---|
-| `make test` | Passed: old core suite, combat suite, default tournament. |
-| `make check-core` | Passed: libc/libm only, no graphics headers. |
-| `./build/combat_tourney 200 800` | Passed: 80,000 strategy duels + 28,800 payoff duels; worst build score 61.8%; random scores 0.0042 vs greedy and 0.0069 vs counter; idle scores 0 against both. |
-| Independent test canaries | Per scripted bot: 2,000 idle + 2,000 random duels, both seats and every ordered profile pair. Idle wins 0/2,000 against each; random wins 6/2,000 against greedy and 12/2,000 against counter. |
-| GCC AddressSanitizer + UndefinedBehaviorSanitizer | Full combat suite passed with `-O1 -g -fsanitize=address,undefined -fno-omit-frame-pointer`. |
-| GCC/gcov coverage (`-O0 -g --coverage`) | `combat.c`: 96.46% of 621 executable lines; 94.41% of branches executed, 83.24% taken at least once. |
-
-Instrumentation builds compiled `tests/test_combat.c`, `apps/combat_bots.c`,
-`core/src/combat.c` and `core/src/rng.c` directly with C99, no fast-math and
-contraction disabled; their output/artifacts were kept under `/tmp`. The larger
-tournament changes the deterministic seed schedule as well as increasing its
-size; it was checked after tuning, rather than replacing the default protocol.
-Native/WASM parity and the human playtest remain the open acceptance checks
-listed above.
+Greedy scores expected damage per committed tick. It credits only
+`max(0, (new_timer - 1) - remaining_damage_ticks)` future bleed ticks, and only
+when the timer grows. Counter-picker falls back to greedy when it cannot
+counter. Random picks legal attacks, movement, defence or rest without an
+opponent model. Idle issues no orders.
