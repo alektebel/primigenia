@@ -72,14 +72,23 @@ env.W.p.vis.root.visible=false;
 {const sc=env.sun.shadow.camera;sc.left=sc.bottom=-22;sc.right=sc.top=22;sc.updateProjectionMatrix();env.sun.shadow.normalBias=.05;env.sun.shadow.bias=-.0004}
 const CAM={close:[7.5,.10],mid:[13,.16],far:[30,.22]}[HP.cam]||[13,.16];
 const OCC=env.hU.occ.value,_w=V();function feedOcc(){for(let k=0;k<8;k++){const i=NC+Math.round(k*(NSP-1)/7);_w.copy(pts[i]).applyMatrix4(creature.matrixWorld);OCC[k].set(_w.x,_w.y,_w.z,RAD[i]*1.05)}for(let k=0;k<4;k++){const l=legs[k];if(l){_w.copy(l.ft.position);OCC[8+k].set(_w.x,_w.y,_w.z,l.w*2.2)}else OCC[8+k].set(0,-999,0,0)}env.hU.center.value.set(HERO.x,0,HERO.z)}
-window.__heroFrame=dt=>{if(HP.live)update(dt);feedOcc();
+window.__heroFrame=dt=>{if(window.Hero)Hero.frame++;if(HP.live)update(dt);feedOcc();
   const c=V(0,0,0);for(let i=0;i<NS;i++)c.add(pts[i]);c.multiplyScalar(1/NS).applyMatrix4(creature.matrixWorld);
   const a=CAZ,cp=Math.cos(CAM[1]),d=CAM[0];const cam=env.camera;cam.fov=42;
   cam.position.set(c.x+Math.sin(a)*cp*d,c.y+Math.sin(CAM[1])*d,c.z+Math.cos(a)*cp*d);
   cam.position.y=Math.max(cam.position.y,env.groundY(cam.position.x,cam.position.z)+.6);cam.lookAt(c.x,c.y-.2,c.z);cam.updateProjectionMatrix()};
-window.Hero={ready:true,params:HP,light:window.__heroLight.name,creature:G.name,
-  luminance(){/* creature vs environment mask is built by the capture script from two renders */return null},
-  setCreatureVisible(v){creature.visible=v;limbs.visible=v}};
+/* Capture hooks (tools/hero/capture_grid.cjs). The creature mask is the pixel difference between two renders:
+   setCreatureVisible(false) hides the creature's pixels; with keepShadow=true it still casts its shadow and
+   parts the grass, so the difference is the body only. setSkyFlat(true) paints the sky dome pure magenta
+   (clouds hidden) so sky pixels can be told apart. Both are reversible. */
+const maskedMats=new Set(),skyMagenta=new T.MeshBasicMaterial({color:new T.Color(1,0,1),side:T.BackSide,depthWrite:false,fog:false,toneMapped:false});let skyOrig=null;
+window.Hero={ready:true,frame:0,params:HP,light:window.__heroLight.name,creature:G.name,trees:window.__heroTrees,
+  setCreatureVisible(v,keepShadow){
+    for(const m of maskedMats){m.colorWrite=m.depthWrite=true}maskedMats.clear();
+    creature.visible=limbs.visible=v||!!keepShadow;
+    if(!v&&keepShadow)for(const root of[creature,limbs])root.traverse(o=>{if(!o.material)return;for(const m of[].concat(o.material)){m.colorWrite=m.depthWrite=false;maskedMats.add(m)}})},
+  setSkyFlat(v){if(v&&!skyOrig){skyOrig=env.sky.material;env.sky.material=skyMagenta}else if(!v&&skyOrig){env.sky.material=skyOrig;skyOrig=null}
+    for(const c of env.clouds)c.visible=!v}};
 };
 </script>
 """
@@ -139,6 +148,8 @@ h = patch(h, "W.p.vis=buildCreature(W.p.g,low);scene.add(W.p.vis.root);",
           "if(window.__heroBuild&&!low)window.__heroBuild({T,scene,renderer,camera,groundY,W,SUN,sun});")
 h = patch(h, "  renderer.render(scene,camera);\n}\n\n/* ---------- HUD",
           "  if(window.__heroFrame&&!low)window.__heroFrame(frameDt||0);renderer.render(scene,camera);\n}\n\n/* ---------- HUD")
+h = patch(h, "for(const c of clouds){c.position.x+=(frameDt||0)*3;",
+          "for(const c of clouds){c.position.x+=(window.__heroTime!=null?0:frameDt||0)*3;")
 h = patch(h, "acc+=dt;while(acc>=DT)", "acc+=window.__heroFreeze?0:dt;while(acc>=DT)")
 h = patch(h, "uTime.value+=frameDt||0;",
           "uTime.value=window.__heroTime!=null?window.__heroTime:uTime.value+(frameDt||0);")
@@ -163,7 +174,7 @@ h = patch(h, "fragmentShader:`uniform vec3 fogColor;uniform float fogNear,fogFar
           "fragmentShader:`uniform vec3 fogColor;uniform float fogNear,fogFar;varying float vH;varying vec3 vT;varying float vD;varying float vL;varying float vS;varying float vBk;void main(){")
 h = patch(h, "vec3 c=mix(b,tp,vH*vH)*mix(.5,1.,vT.y)+vec3(.12,.13,.03)*max(vT.z,0.)*vH;",
           "vec3 c=mix(b,tp,vH*vH)*mix(.5,1.,vT.y)*mix(.62,1.12,vL)*mix(.42,1.,vS)+vec3(.12,.13,.03)*max(vT.z,0.)*vH+vec3(1.,.78,.45)*vBk*.3*vS;")
-h = patch(h, "window.__heroBuild({T,scene,renderer,camera,groundY,W,SUN,sun});", "window.__heroBuild({T,scene,renderer,camera,groundY,W,SUN,sun,hU});")
+h = patch(h, "window.__heroBuild({T,scene,renderer,camera,groundY,W,SUN,sun});", "window.__heroBuild({T,scene,renderer,camera,groundY,W,SUN,sun,hU,sky,clouds});")
 
 
 # ---- BotW-style meadow: thin dense blades, soft root, large colour patches ----
@@ -187,7 +198,7 @@ function leafMaterial(){if(leafMat)return leafMat;leafMat=toon({vertexColors:tru
    '#if NUM_DIR_LIGHTS>0\nfloat bk=pow(max(dot(-normalize(vViewPosition),directionalLights[0].direction),0.),4.);gl_FragColor.rgb+=diffuseColor.rgb*directionalLights[0].color*bk*.22;\n#endif\n#include <tonemapping_fragment>')};
   leafMat.customProgramCacheKey=()=>'leafw';return leafMat}
 function leafCanopy(blobs){const pos=[],nor=[],uv=[],cl=[],idx=[],r=rngFrom(4242),q=new T.Quaternion(),e=new T.Euler(),v=new T.Vector3(),up=new T.Vector3(0,1,0);
-  for(const[c,sc,hex]of blobs){const base=col(hex),n=Math.round(62*sc[0]);
+  for(const[c,sc,hex,dn]of blobs){const base=col(hex),n=Math.round(62*sc[0]*(dn||1));
     for(let i=0;i<n;i++){let dx=r()*2-1,dy=r()*2-1,dz=r()*2-1;const l=Math.hypot(dx,dy,dz)||1;dx/=l;dy/=l;dz/=l;dy=dy*.8+.2;
       const rad=.82+r()*.26,p=[c[0]+dx*sc[0]*rad,c[1]+dy*sc[1]*rad,c[2]+dz*sc[2]*rad],sz=1.0+r()*.5;
       const nn=new T.Vector3(dx/sc[0],dy/sc[1]+.35,dz/sc[2]).normalize();
