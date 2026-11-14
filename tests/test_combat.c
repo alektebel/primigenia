@@ -178,6 +178,12 @@ static void edges_and_verbs(void)
         CHECK(cp_combat_order(&w, 0, &bad[i]) < 0 && cp_combat_hash(&w) == h, "invalid order leaves state untouched");
     }
     CHECK(cp_combat_guard(&w, -1) == CB_ERR_BAD_ID, "invalid creature id rejected");
+    CHECK(cp_combat_attack(&w, 0, 1, 256) == CB_ERR_BAD_MOVE &&
+          cp_combat_dodge(&w, 0, 256) == CB_ERR_BAD_DIR &&
+          cp_combat_approach(&w, 1, 256) == CB_ERR_BAD_TARGET &&
+          cp_combat_flee(&w, 1, 256) == CB_ERR_BAD_TARGET &&
+          cp_combat_attack(&w, 1, 256, CB_BITE) == CB_ERR_BAD_TARGET,
+          "integer verb helpers reject values before narrowing to action bytes");
     w.c[0].prof.mouth = 0;
     CHECK(cp_combat_attack(&w, 0, 1, CB_BITE) == CB_ERR_UNAVAILABLE && cp_combat_move_damage(&w.c[0].prof, CB_BITE) == 0,
           "missing part gates its move");
@@ -188,6 +194,68 @@ static void edges_and_verbs(void)
     w = pair(10); w.c[0].slow_t = 5; cp_combat_approach(&w, 0, 1); x = w.c[0].x;
     cp_combat_step(&w);
     CHECK(fabsf(w.c[0].x - x - 4*CB_DT*0.5f) < 1e-5f, "slow status slows walking");
+}
+
+static void geometry_and_setup(void)
+{
+    CpCombatWorld w = pair(1.6f);
+    uint64_t h = cp_combat_hash(&w);
+    memset(&w.c[2], 0xa5, sizeof w.c[2]);
+    w.c[0].dash_y = -0.0f;
+    CHECK(cp_combat_hash(&w) == h, "unused creatures and signed zero do not affect canonical hash");
+    w = pair(1.6f);
+    phase(&w.c[0], CB_BITE, CB_PH_ACTIVE);
+    cp_combat_step(&w); float hp = w.c[1].hp;
+    cp_combat_step(&w);
+    CHECK(w.c[1].hp > hp - 1 && w.c[0].hits == 1, "one move hits each creature only once, then bleed ticks");
+
+    w = pair(1.6f); w.n = 4;
+    w.c[2] = w.c[1]; w.c[2].y += 0.7f;
+    w.c[3] = w.c[1]; w.c[3].y -= 0.7f; w.c[3].team = 0;
+    phase(&w.c[0], CB_TAIL_STRIKE, CB_PH_ACTIVE); cp_combat_step(&w);
+    CHECK(w.c[1].hp < 100 && w.c[2].hp < 100 && w.c[3].hp == 100,
+          "tail sweep hits multiple enemies but never teammates");
+    w = pair(4); w.n = 3; w.c[2] = w.c[1]; w.c[2].x += 1.5f;
+    phase(&w.c[0], CB_SPIT, CB_PH_ACTIVE); cp_combat_step(&w);
+    CHECK(w.c[1].hp < 100 && w.c[2].hp == 100, "spit hits nearest enemy on its ray only");
+    w = pair(3); phase(&w.c[0], CB_BITE, CB_PH_ACTIVE); cp_combat_step(&w);
+    CHECK(w.c[1].hp == 100, "out-of-reach bite misses");
+    w = pair(1.6f); w.c[0].fx = -1;
+    phase(&w.c[0], CB_BITE, CB_PH_ACTIVE); cp_combat_step(&w);
+    CHECK(w.c[1].hp == 100, "attack outside facing cone misses");
+    w = pair(1.6f); phase(&w.c[0], CB_BITE, CB_PH_ACTIVE);
+    phase(&w.c[1], CB_DODGE, CB_PH_WINDUP); cp_combat_step(&w);
+    CHECK(w.c[1].hp < 100 && !w.c[1].dodged, "dodge wind-up is vulnerable");
+
+    for (int move = 0; move < CB_MOVE_COUNT; move++) {
+        const CpCombatMove *m = &CP_COMBAT_MOVES[move];
+        w = pair(1.6f);
+        if (move == CB_GUARD) cp_combat_guard(&w, 0);
+        else if (move == CB_DODGE) cp_combat_dodge(&w, 0, 0);
+        else cp_combat_attack(&w, 0, 1, move);
+        cp_combat_step(&w);
+        CHECK(w.c[0].phase == (m->windup == 1 ? CB_PH_ACTIVE : CB_PH_WINDUP) && cp_combat_ticks_to_active(&w.c[0]) == m->windup - 1,
+              "move begins in wind-up with exact remaining tick count");
+        steps(&w, m->windup - 1);
+        CHECK(w.c[0].phase == CB_PH_ACTIVE && w.c[1].hp == 100, "wind-up never hits before first active frame");
+        steps(&w, m->active);
+        CHECK(w.c[0].phase == CB_PH_RECOVERY && cp_combat_ticks_to_active(&w.c[0]) == -1,
+              "active frame count leads to recovery");
+        steps(&w, m->recovery);
+        CHECK(w.c[0].move == CB_MOVE_NONE && w.c[0].verb == CB_V_IDLE,
+              "each move completes at wind-up + active + recovery ticks");
+    }
+    CpCombatSetup s = {0}; s.n = 99; s.flat = 1;
+    for (int i = 0; i < CB_MAX_CREATURES; i++) {
+        s.c[i].prof = (CpCombatProfile){255,255,255,255,255, -5, -1, 100};
+        s.c[i].x = 100; s.c[i].y = 100;
+    }
+    cp_combat_reset(&w, &s);
+    CHECK(w.n == CB_MAX_CREATURES && w.c[0].prof.mouth == 5 && w.c[0].hp == 1 &&
+          w.c[0].stamina == 1 && w.c[0].prof.speed == 12 && w.c[0].fx == 1 &&
+          w.c[0].x == CB_ARENA_W - CB_RADIUS, "setup clamps count, profile, position and zero facing");
+    s.n = -1; cp_combat_reset(&w, &s); cp_combat_step(&w);
+    CHECK(w.n == 0 && cp_combat_alive_count(&w) == 0, "empty arena steps safely");
 }
 
 static void determinism(void)
@@ -217,8 +285,10 @@ static void determinism(void)
         CHECK(memcmp(a,b,TICKS*sizeof(*a)) == 0, "second independent replay matches every tick");
         uint64_t canonical = cp_combat_hash(&end);
         end.ev[0].amount += 99; end.n_ev = 0; end.hash = 0;
-        end.c[0].y = end.c[0].y; /* outputs and unused slots must not affect hash */
-        memset(&end.c[end.n], 0, (CB_MAX_CREATURES-end.n)*sizeof end.c[0]);
+        /* Deliberately dirty profile padding: canonical fields still match. */
+        unsigned char *prof = (unsigned char *)&end.c[0].prof;
+        for (size_t j = offsetof(CpCombatProfile, guard) + sizeof(end.c[0].prof.guard);
+             j < offsetof(CpCombatProfile, hp); j++) prof[j] ^= 0xff;
         CHECK(cp_combat_hash(&end) == canonical, "derived event buffers and cached hash are excluded");
         end.rng[CB_RNG_HIT].s[0] ^= 1;
         CHECK(cp_combat_hash(&end) != canonical, "RNG state participates in canonical hash");
@@ -253,7 +323,7 @@ static void canaries(void)
 int main(void)
 {
     puts("cpore combat tests");
-    counters(); edges_and_verbs(); determinism(); canaries();
+    counters(); edges_and_verbs(); geometry_and_setup(); determinism(); canaries();
     printf("combat: %d failure(s)\n", fails);
     return fails ? 1 : 0;
 }

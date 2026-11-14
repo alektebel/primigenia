@@ -375,18 +375,44 @@ int cp_combat_order(CpCombatWorld *w, int id, const CpCombatAction *a)
     return CB_OK;
 }
 
+/* Preserve invalid integer values as an invalid sentinel before storing the
+ * byte-sized action fields; e.g. move 256 must not wrap into CB_BITE. */
+static int8_t target_id(int target)
+{
+    return (int8_t)(target >= 0 && target < CB_MAX_CREATURES ? target : -1);
+}
+
 int cp_combat_approach(CpCombatWorld *w, int id, int t)
-{ CpCombatAction a = { CB_V_APPROACH, 0, (int8_t)t, 0 }; return cp_combat_order(w, id, &a); }
+{
+    CpCombatAction a = { CB_V_APPROACH, 0, target_id(t), 0 };
+    return cp_combat_order(w, id, &a);
+}
 int cp_combat_attack(CpCombatWorld *w, int id, int t, int m)
-{ CpCombatAction a = { CB_V_ATTACK, (int8_t)m, (int8_t)t, 0 }; return cp_combat_order(w, id, &a); }
+{
+    CpCombatAction a = { CB_V_ATTACK,
+        (int8_t)(m >= 0 && m < CB_MOVE_COUNT ? m : -1), target_id(t), 0 };
+    return cp_combat_order(w, id, &a);
+}
 int cp_combat_guard(CpCombatWorld *w, int id)
-{ CpCombatAction a = { CB_V_GUARD, 0, 0, 0 }; return cp_combat_order(w, id, &a); }
+{
+    CpCombatAction a = { CB_V_GUARD, 0, 0, 0 };
+    return cp_combat_order(w, id, &a);
+}
 int cp_combat_dodge(CpCombatWorld *w, int id, int d)
-{ CpCombatAction a = { CB_V_DODGE, 0, 0, (int8_t)d }; return cp_combat_order(w, id, &a); }
+{
+    CpCombatAction a = { CB_V_DODGE, 0, 0, (int8_t)(d >= 0 && d < 8 ? d : -1) };
+    return cp_combat_order(w, id, &a);
+}
 int cp_combat_flee(CpCombatWorld *w, int id, int t)
-{ CpCombatAction a = { CB_V_FLEE, 0, (int8_t)t, 0 }; return cp_combat_order(w, id, &a); }
+{
+    CpCombatAction a = { CB_V_FLEE, 0, target_id(t), 0 };
+    return cp_combat_order(w, id, &a);
+}
 int cp_combat_idle(CpCombatWorld *w, int id)
-{ CpCombatAction a = { CB_V_IDLE, 0, 0, 0 }; return cp_combat_order(w, id, &a); }
+{
+    CpCombatAction a = { CB_V_IDLE, 0, 0, 0 };
+    return cp_combat_order(w, id, &a);
+}
 
 /* ------------------------------------------------------------------ *
  * Internals.

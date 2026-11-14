@@ -283,7 +283,7 @@ static void report_strategies(int seeds)
     check(rate(&strat[2][0]) > 0.99 && rate(&strat[3][0]) > 0.99, "greedy and counter beat idle (>99%)");
     check(rate(&strat[2][1]) > 0.95 && rate(&strat[3][1]) > 0.95, "greedy and counter beat random (>95%)");
     check(rate(&strat[1][0]) > 0.5, "random beats idle");
-    check(rate(&strat[0][2]) < 0.01 && rate(&strat[0][3]) < 0.01, "idle never beats greedy or counter (<1%)");
+    check(rate(&strat[0][1]) == 0.0 && rate(&strat[0][2]) == 0.0 && rate(&strat[0][3]) == 0.0, "idle never scores against an active bot (0%)");
     check(rate(&strat[1][2]) < 0.05 && rate(&strat[1][3]) < 0.05, "random rarely beats greedy or counter (<5%)");
     printf("   idle  vs greedy %.4f  vs counter %.4f | random vs greedy %.4f  vs counter %.4f\n",
            rate(&strat[0][2]), rate(&strat[0][3]), rate(&strat[1][2]), rate(&strat[1][3]));
