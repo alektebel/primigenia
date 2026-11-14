@@ -35,6 +35,12 @@ int main(void)
         assert(!idle_loses_both(active));
         memset(strat, 0, sizeof strat);
     }
+    compute_payoff(4);
+    for (int a = 0; a < CB_MOVE_COUNT; a++) for (int b = 0; b < CB_MOVE_COUNT; b++) {
+        assert(fabs(payoff[a][b] + payoff[b][a]) < 1e-9);
+        assert(fabs(payr[a][b] + payr[b][a]) < 1e-9);
+        if (a == b) assert(payoff_se[a][b] == 0 && payr_se[a][b] == 0);
+    }
     puts("combat tournament arithmetic: passed (balance acceptance runs via make tourney)");
     return 0;
 }

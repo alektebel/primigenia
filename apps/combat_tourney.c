@@ -58,6 +58,7 @@ static void compute_payoff(int duels)
     for (int a = 0; a < CB_MOVE_COUNT; a++)
         for (int b = 0; b < CB_MOVE_COUNT; b++) {
             double sum = 0.0, sq = 0.0, sumr = 0.0, sqr = 0.0;
+            double pair_v = 0, pair_r = 0;
             for (int s = 0; s < duels; s++) {
                 CpCombatSetup su;
                 duel_setup(&su, 1000u + (uint32_t)(s/2), &p, &p, 7.0f);
@@ -69,14 +70,21 @@ static void compute_payoff(int duels)
                 int row = s%2, col = 1-row;
                 double v = (double)r.dealt[row] - (double)r.dealt[col];
                 double vr = v - stamina_value * ((double)r.spent[row] - (double)r.spent[col]);
-                sum += v; sq += v * v; sumr += vr; sqr += vr * vr;
+                if (s%2 == 0) { pair_v = v; pair_r = vr; }
+                else {
+                    /* The two seats share a seed. Estimate uncertainty from
+                     * independent paired scenarios, not individual seats. */
+                    double pv = (pair_v + v)*0.5, pr = (pair_r + vr)*0.5;
+                    sum += pv; sq += pv*pv; sumr += pr; sqr += pr*pr;
+                }
             }
-            double m = sum / duels, var = sq / duels - m * m;
+            int pairs = duels/2;
+            double m = sum / pairs, var = sq / pairs - m * m;
             payoff[a][b] = m;
-            payoff_se[a][b] = sqrt((var > 0 ? var : 0) / duels);
-            double mr = sumr / duels, varr = sqr / duels - mr * mr;
+            payoff_se[a][b] = pairs > 1 ? sqrt((var > 0 ? var : 0) / (pairs-1)) : 0;
+            double mr = sumr / pairs, varr = sqr / pairs - mr * mr;
             payr[a][b] = mr;
-            payr_se[a][b] = sqrt((varr > 0 ? varr : 0) / duels);
+            payr_se[a][b] = pairs > 1 ? sqrt((varr > 0 ? varr : 0) / (pairs-1)) : 0;
         }
 }
 

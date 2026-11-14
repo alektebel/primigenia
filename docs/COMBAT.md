@@ -243,6 +243,8 @@ Guard is held/reissued, dodge repeated; each completes recovery and restarts
 through the same public order API. Deterministic start offsets are paired
 with reversed seats (odd requested sample counts round up to a complete
 pair). This makes the payoff matrices antisymmetric, including their diagonal.
+Standard errors use the independent seat-pair means, with sample variance
+across pairs; the two correlated seats are not counted as independent samples.
 Raw payoff is damage dealt minus damage received. Resource payoff subtracts
 stamina-spend margin times a move-table-derived coefficient:
 

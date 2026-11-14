@@ -177,6 +177,22 @@ static void simultaneous(void)
         CHECK(w.c[0].hits == 0 && w.c[1].hits == 1 && w.c[2].blocked == 1 &&
               w.c[2].stamina == 0 && w.c[2].stamina_spent == 6 && w.c[2].stun_t == 5,
               "scarce guard records one block then one exhausted break");
+        w = focus(swap, CB_DODGE, 100, 100);
+        cp_combat_step(&w);
+        CHECK(w.c[2].hp == 100 && w.c[2].dodged == 2 && w.c[2].stamina_spent == 12,
+              "ample dodge has identical outcomes with attacker ids swapped");
+        w = focus(swap, -1, 100, 1);
+        w.c[0].x += 0.3f; w.c[1].x += 0.3f; /* inside charge contact gap */
+        float dx = w.c[2].x-w.c[1].x, dy = w.c[2].y-w.c[1].y;
+        float dist = sqrtf(dx*dx+dy*dy);
+        w.c[1].fx = dx/dist; w.c[1].fy = dy/dist;
+        phase(&w.c[1], CB_CHARGE, CB_PH_ACTIVE);
+        w.c[1].dash_x = w.c[1].dash_y = 0;
+        cp_combat_step(&w);
+        int deaths = 0;
+        for (int e = 0; e < w.n_ev; e++) deaths += w.ev[e].type == CB_EV_DEATH;
+        CHECK(w.c[1].hits == 1 && event(&w, CB_EV_STUNNED) && deaths == 1,
+              "later lethal-tick hit still applies status before the single death pass");
         w = focus(swap, CB_GUARD, 100, 100);
         cp_combat_step(&w);
         CHECK(w.c[2].hp == 100 && w.c[2].blocked == 2,
