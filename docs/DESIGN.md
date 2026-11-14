@@ -174,8 +174,8 @@ or video the owner approves.
 
 | Phase | Content |
 |---|---|
-| P0 | Commit current work; hero shot (physical creature in the toon valley) |
-| P1 | The GLB parts in the studio: categories, material regions, slots |
+| P0 | Commit current work; hero shot (a creator creature, physically lit, in the toon valley) |
+| P1 | The owner's creator becomes the studio (G42) and the GLB parts fill its palette (G43) |
 | P2 | C core on a fixed tick: movement, combat moves, stamina, determinism tests, canaries |
 | P3 | WASM build + web stage: walk the valley as your studio creature, fight one species |
 | P4 | Social depth, Q43 loop, part discovery and DNA, editing mid-game |
@@ -187,3 +187,46 @@ or video the owner approves.
 
 Creature-stage calibration research (Q22) runs in the background with NAN
 models and review, without blocking phases.
+
+### The owner's creator becomes the studio (G42–G45)
+
+| # | Decision |
+|---|---|
+| G42 | `art/reference/creador-de-criaturas.html` (the owner's demo, byte-identical to `~/Descargas/Creador de criaturas.html` of 2026-11-14) becomes the base of `web/studio/`, replacing the slider studio. It has direct spine sculpting, drag-and-drop parts with 3D thumbnails, IK legs, a gait derived from the parts, and Build / Paint / Test modes. Ported onto it from the old studio: redo, the `cpore.creature` JSON (new version with migrations), share links, es/en, the growth regions as an extra tool, and the tests. |
+| G43 | Palette categories: mouths · senses · legs · arms · weapons · wings · fins · digging claws · details. The demo's animated procedural parts (IK legs, jawed mouths, blinking eyes) stay; the Blender GLBs fill the gaps (arms, wings, sacs, lure, tail club…). |
+| G44 | Until after P1 the spine bends only in its vertical plane, with mirrored symmetry. Sideways bends, branching (extra heads or tails) and asymmetry follow CREATURE_VISUAL_PLAN later. |
+| G45 | The P0 hero shot uses a creature from the new creator. |
+
+### Acceptance criteria for P0–P2 (deepened)
+
+Browser captures use software WebGL (SwiftShader); frame-rate claims are
+measured by the owner in a normal browser. Every measurement names the browser
+and settings.
+
+**P0, hero shot.** Extract the actual renderer, light, tone-mapping and ramp
+settings from `valle-primigenio.html` and `creador-de-criaturas.html`, and
+define one shared lighting pipeline (colour space, tone mapping, exposure, sun)
+for the toon world and the physically lit creature. Ground the creature with
+contact shadow and grass occlusion. Render a fixed-seed grid (golden hour,
+noon, overcast, night × close, mid, far). Accept when the creature's
+luminance and saturation sit inside the environment's measured range, golden
+images are stored, and a same-camera side-by-side with the reference has owner
+approval plus a blind "does it belong?" check.
+
+**P1, creator and parts.** A versioned part manifest (units, Blender→glTF axis
+conversion verified through the exporter, attachment frame, named material
+slots, polygon budget, LOD). All GLBs pass `gltf-validator` with zero errors and
+match orientation in the Khronos Sample Viewer. Slot materials are replaced by
+the creature's skin, keratin, membrane or eye material. An automated test
+places every part on every preset with no floating or buried roots; the JSON
+round-trips hash-identically; every projected genome passes the C validator or
+is flagged cosmetic.
+
+**P2, combat core.** Move data (wind-up, active and recovery ticks, reach,
+stamina) and a counter matrix are tables, not code. Fixed 10 Hz tick,
+per-tick state hash, per-subsystem RNG, no fast-math, `-ffp-contract=off`.
+Accept when native and WASM hashes match over 10,000 ticks on every dev seed,
+the payoff matrix has no dominant move, no build exceeds the agreed win-rate
+ceiling in a scripted-bot tournament (random, greedy, counter-picker) with
+Elo, idle and random canaries never win, and a short human playtest clip is
+recorded.
