@@ -1,0 +1,110 @@
+{
+  "browser": "158.0.8127.18",
+  "renderer": "SwiftShader software WebGL",
+  "fieldOfView": 50,
+  "camera": [
+    {
+      "name": "front ¾",
+      "yaw": 0.5,
+      "pitch": 0.18,
+      "distance": 7
+    },
+    {
+      "name": "side",
+      "yaw": 1.57,
+      "pitch": 0.18,
+      "distance": 8
+    },
+    {
+      "name": "rear ¾",
+      "yaw": 2.6,
+      "pitch": 0.18,
+      "distance": 8
+    }
+  ],
+  "parts": [
+    "eye_triad",
+    "leg_sprinter",
+    "leg_sucker",
+    "arm_grasper",
+    "tail_paddle",
+    "tail_spike",
+    "wing_glider",
+    "frill_fan",
+    "beak_crusher",
+    "sac_spitter",
+    "arm_smasher",
+    "foot_spring",
+    "foot_hoof",
+    "foot_gecko",
+    "wing_insect",
+    "tail_hammer"
+  ],
+  "references": [
+    {
+      "id": "eye_triad",
+      "file": "eye_triad.glb"
+    },
+    {
+      "id": "leg_sprinter",
+      "file": "leg_sprinter.glb"
+    },
+    {
+      "id": "leg_sucker",
+      "file": "leg_sucker.glb"
+    },
+    {
+      "id": "arm_grasper",
+      "file": "arm_grasper.glb"
+    },
+    {
+      "id": "tail_paddle",
+      "file": "tail_paddle.glb"
+    },
+    {
+      "id": "tail_spike",
+      "file": "tail_spike.glb"
+    },
+    {
+      "id": "wing_glider",
+      "file": "wing_glider.glb"
+    },
+    {
+      "id": "frill_fan",
+      "file": "frill_fan.glb"
+    },
+    {
+      "id": "beak_crusher",
+      "file": "beak_crusher.glb"
+    },
+    {
+      "id": "sac_spitter",
+      "file": "sac_spitter.glb"
+    },
+    {
+      "id": "arm_smasher",
+      "file": "arm_smasher.glb"
+    },
+    {
+      "id": "foot_spring",
+      "file": "foot_spring.glb"
+    },
+    {
+      "id": "foot_hoof",
+      "file": "foot_hoof.glb"
+    },
+    {
+      "id": "foot_gecko",
+      "file": "foot_gecko.glb"
+    },
+    {
+      "id": "wing_insect",
+      "file": "wing_insect.glb"
+    },
+    {
+      "id": "tail_hammer",
+      "file": "tail_hammer.glb"
+    }
+  ],
+  "errors": []
+}
