@@ -1,0 +1,929 @@
+{
+  "schema": "cpore.studio-parts/1",
+  "projection": "cosmetic: no C validator is connected; c_type is a candidate mapping only; illustrative abilities grant nothing",
+  "categories": [
+    "mouths",
+    "senses",
+    "legs",
+    "arms",
+    "weapons",
+    "wings",
+    "fins",
+    "digging_claws",
+    "details"
+  ],
+  "export_transform": "Blender export_yup=True: (x,y,z) -> glTF (x,z,-y); glTF -> studio: rotate Y by -pi/2. Node transforms retained. Radial mounts then rotate X by pi/2 except mouths.",
+  "material_regions": {
+    "method": "inferred from descriptive material names; category fallback for unnamed slots",
+    "Tidal teal skin": "skin",
+    "Warm sand underside": "skin",
+    "Plum keratin": "keratin",
+    "Ivory teeth and claws": "keratin",
+    "Obsidian eyes": "eye",
+    "Golden iris": "eye",
+    "Coral membrane": "membrane",
+    "Cobalt chitin": "keratin",
+    "Lantern chartreuse": "eye"
+  },
+  "parts": [
+    {
+      "id": "fauces",
+      "category": "mouths",
+      "name": {
+        "es": "Fauces",
+        "en": "Jaws"
+      },
+      "dna_cost": 25,
+      "source": "procedural",
+      "c_type": "CP4_MOUTH_C",
+      "cosmetic": true,
+      "illustrative_abilities": []
+    },
+    {
+      "id": "romo",
+      "category": "mouths",
+      "name": {
+        "es": "Hocico",
+        "en": "Blunt snout"
+      },
+      "dna_cost": 15,
+      "source": "procedural",
+      "c_type": "CP4_MOUTH_G",
+      "cosmetic": true,
+      "illustrative_abilities": []
+    },
+    {
+      "id": "pico",
+      "category": "mouths",
+      "name": {
+        "es": "Pico",
+        "en": "Beak"
+      },
+      "dna_cost": 20,
+      "source": "procedural",
+      "c_type": "CP4_MOUTH_O",
+      "cosmetic": true,
+      "illustrative_abilities": []
+    },
+    {
+      "id": "ojo",
+      "category": "senses",
+      "name": {
+        "es": "Ojo",
+        "en": "Eye"
+      },
+      "dna_cost": 5,
+      "source": "procedural",
+      "c_type": "CP4_EYE",
+      "cosmetic": true,
+      "illustrative_abilities": []
+    },
+    {
+      "id": "tallo",
+      "category": "senses",
+      "name": {
+        "es": "Ojo en tallo",
+        "en": "Stalk eye"
+      },
+      "dna_cost": 10,
+      "source": "procedural",
+      "c_type": "CP4_EYE",
+      "cosmetic": true,
+      "illustrative_abilities": []
+    },
+    {
+      "id": "antena",
+      "category": "senses",
+      "name": {
+        "es": "Antena",
+        "en": "Antenna"
+      },
+      "dna_cost": 10,
+      "source": "procedural",
+      "c_type": null,
+      "cosmetic": true,
+      "illustrative_abilities": []
+    },
+    {
+      "id": "trompa",
+      "category": "mouths",
+      "name": {
+        "es": "Trompa",
+        "en": "Trunk"
+      },
+      "dna_cost": 15,
+      "source": "procedural",
+      "c_type": null,
+      "cosmetic": true,
+      "illustrative_abilities": []
+    },
+    {
+      "id": "pinzas",
+      "category": "mouths",
+      "name": {
+        "es": "Pinzas",
+        "en": "Pincers"
+      },
+      "dna_cost": 25,
+      "source": "procedural",
+      "c_type": null,
+      "cosmetic": true,
+      "illustrative_abilities": []
+    },
+    {
+      "id": "oreja",
+      "category": "senses",
+      "name": {
+        "es": "Oreja",
+        "en": "Ear"
+      },
+      "dna_cost": 5,
+      "source": "procedural",
+      "c_type": "CP4_EAR",
+      "cosmetic": true,
+      "illustrative_abilities": []
+    },
+    {
+      "id": "pata",
+      "category": "legs",
+      "name": {
+        "es": "Pata con garras",
+        "en": "Clawed leg"
+      },
+      "dna_cost": 25,
+      "source": "procedural",
+      "c_type": "CP4_LEG",
+      "cosmetic": true,
+      "illustrative_abilities": []
+    },
+    {
+      "id": "zanca",
+      "category": "legs",
+      "name": {
+        "es": "Zanca",
+        "en": "Stilt leg"
+      },
+      "dna_cost": 25,
+      "source": "procedural",
+      "c_type": "CP4_LEG",
+      "cosmetic": true,
+      "illustrative_abilities": []
+    },
+    {
+      "id": "pezuna",
+      "category": "legs",
+      "name": {
+        "es": "Pata de pezuña",
+        "en": "Hoofed leg"
+      },
+      "dna_cost": 20,
+      "source": "procedural",
+      "c_type": "CP4_LEG",
+      "cosmetic": true,
+      "illustrative_abilities": []
+    },
+    {
+      "id": "asta",
+      "category": "weapons",
+      "name": {
+        "es": "Asta",
+        "en": "Antler"
+      },
+      "dna_cost": 18,
+      "source": "procedural",
+      "c_type": "CP4_HORN",
+      "cosmetic": true,
+      "illustrative_abilities": []
+    },
+    {
+      "id": "aguijon",
+      "category": "weapons",
+      "name": {
+        "es": "Aguijón",
+        "en": "Stinger"
+      },
+      "dna_cost": 18,
+      "source": "procedural",
+      "c_type": null,
+      "cosmetic": true,
+      "illustrative_abilities": []
+    },
+    {
+      "id": "cuerno",
+      "category": "weapons",
+      "name": {
+        "es": "Cuerno",
+        "en": "Horn"
+      },
+      "dna_cost": 15,
+      "source": "procedural",
+      "c_type": "CP4_HORN",
+      "cosmetic": true,
+      "illustrative_abilities": []
+    },
+    {
+      "id": "pua",
+      "category": "weapons",
+      "name": {
+        "es": "Púa",
+        "en": "Spike"
+      },
+      "dna_cost": 8,
+      "source": "procedural",
+      "c_type": "CP4_HORN",
+      "cosmetic": true,
+      "illustrative_abilities": []
+    },
+    {
+      "id": "maza",
+      "category": "weapons",
+      "name": {
+        "es": "Maza",
+        "en": "Club"
+      },
+      "dna_cost": 20,
+      "source": "procedural",
+      "c_type": null,
+      "cosmetic": true,
+      "illustrative_abilities": []
+    },
+    {
+      "id": "placa",
+      "category": "details",
+      "name": {
+        "es": "Placa",
+        "en": "Plate"
+      },
+      "dna_cost": 10,
+      "source": "procedural",
+      "c_type": "CP4_PLATE",
+      "cosmetic": true,
+      "illustrative_abilities": []
+    },
+    {
+      "id": "cresta",
+      "category": "details",
+      "name": {
+        "es": "Cresta",
+        "en": "Crest"
+      },
+      "dna_cost": 10,
+      "source": "procedural",
+      "c_type": "CP4_PLUME",
+      "cosmetic": true,
+      "illustrative_abilities": []
+    },
+    {
+      "id": "bulbo",
+      "category": "details",
+      "name": {
+        "es": "Bulbo luminoso",
+        "en": "Light bulb"
+      },
+      "dna_cost": 12,
+      "source": "procedural",
+      "c_type": null,
+      "cosmetic": true,
+      "illustrative_abilities": []
+    },
+    {
+      "id": "aleta",
+      "category": "fins",
+      "name": {
+        "es": "Aleta",
+        "en": "Fin"
+      },
+      "dna_cost": 12,
+      "source": "procedural",
+      "c_type": "CP4_FIN",
+      "cosmetic": true,
+      "illustrative_abilities": []
+    },
+    {
+      "id": "excavadora",
+      "category": "digging_claws",
+      "name": {
+        "es": "Garra excavadora",
+        "en": "Digging claw"
+      },
+      "dna_cost": 18,
+      "source": "procedural",
+      "c_type": "CP4_DIGGER",
+      "cosmetic": true,
+      "illustrative_abilities": [
+        "burrow"
+      ]
+    },
+    {
+      "id": "eye_stalk",
+      "category": "senses",
+      "name": {
+        "es": "Ojo pedunculado",
+        "en": "Raised eye"
+      },
+      "dna_cost": 16,
+      "source": "glb",
+      "file": "eye_stalk.glb",
+      "sha256": "217a4cfce0826322f35bbfff985c4b4474e1249f6c45cd94f3df5c182c150d95",
+      "c_type": "CP4_EYE",
+      "cosmetic": true,
+      "illustrative_abilities": [
+        "perception"
+      ],
+      "attachment": "head socket",
+      "mount": "radial",
+      "lods": [
+        {
+          "file": "eye_stalk.glb",
+          "source_polygons": 1116
+        }
+      ]
+    },
+    {
+      "id": "eye_triad",
+      "category": "senses",
+      "name": {
+        "es": "Tríada ocular",
+        "en": "Eye triad"
+      },
+      "dna_cost": 16,
+      "source": "glb",
+      "file": "eye_triad.glb",
+      "sha256": "d27c10040b83ca198c6da3608dd5002f261a628e4d878dd1a4d62742d0ad99e8",
+      "c_type": "CP4_EYE",
+      "cosmetic": true,
+      "illustrative_abilities": [
+        "perception",
+        "wide gaze"
+      ],
+      "attachment": "forehead",
+      "mount": "radial",
+      "lods": [
+        {
+          "file": "eye_triad.glb",
+          "source_polygons": 3248
+        }
+      ]
+    },
+    {
+      "id": "jaw_nipper",
+      "category": "mouths",
+      "name": {
+        "es": "Mandíbula pinzadora",
+        "en": "Nipping jaw"
+      },
+      "dna_cost": 16,
+      "source": "glb",
+      "file": "jaw_nipper.glb",
+      "sha256": "b793674fd31ebcdbf983289b9234fa919852b24918878259f74aec124a724ce5",
+      "c_type": "CP4_MOUTH_C",
+      "cosmetic": true,
+      "illustrative_abilities": [
+        "bite"
+      ],
+      "attachment": "head front",
+      "mount": "radial",
+      "lods": [
+        {
+          "file": "jaw_nipper.glb",
+          "source_polygons": 1976
+        }
+      ]
+    },
+    {
+      "id": "horn_crown",
+      "category": "weapons",
+      "name": {
+        "es": "Corona ósea",
+        "en": "Horn crown"
+      },
+      "dna_cost": 16,
+      "source": "glb",
+      "file": "horn_crown.glb",
+      "sha256": "0e741500a96c7bbcf4ddb9ca91157be77b49c47b212e7e0cf446909aa57cb299",
+      "c_type": "CP4_HORN",
+      "cosmetic": true,
+      "illustrative_abilities": [
+        "charge"
+      ],
+      "attachment": "head or spine",
+      "mount": "radial",
+      "lods": [
+        {
+          "file": "horn_crown.glb",
+          "source_polygons": 792
+        }
+      ]
+    },
+    {
+      "id": "shell_plate",
+      "category": "details",
+      "name": {
+        "es": "Escudo dorsal",
+        "en": "Dorsal shield"
+      },
+      "dna_cost": 16,
+      "source": "glb",
+      "file": "shell_plate.glb",
+      "sha256": "0e334325b8706a294019b862252fb91671d9a3323ff1c91de05f80cf16586e6e",
+      "c_type": "CP4_PLATE",
+      "cosmetic": true,
+      "illustrative_abilities": [
+        "armor"
+      ],
+      "attachment": "dorsal spine",
+      "mount": "radial",
+      "lods": [
+        {
+          "file": "shell_plate.glb",
+          "source_polygons": 996
+        }
+      ]
+    },
+    {
+      "id": "leg_sprinter",
+      "category": "legs",
+      "name": {
+        "es": "Pata velocista",
+        "en": "Sprint leg"
+      },
+      "dna_cost": 16,
+      "source": "glb",
+      "file": "leg_sprinter.glb",
+      "sha256": "ae03a44e4c422e2c3cce347a6c0632b337ea0ff0be5464911e00ea34f0261f98",
+      "c_type": "CP4_LEG",
+      "cosmetic": true,
+      "illustrative_abilities": [
+        "sprint"
+      ],
+      "attachment": "hip; extends -Z",
+      "mount": "body",
+      "lods": [
+        {
+          "file": "leg_sprinter.glb",
+          "source_polygons": 1190
+        }
+      ]
+    },
+    {
+      "id": "leg_sucker",
+      "category": "legs",
+      "name": {
+        "es": "Pata ventosa",
+        "en": "Suction leg"
+      },
+      "dna_cost": 16,
+      "source": "glb",
+      "file": "leg_sucker.glb",
+      "sha256": "ae715824798e551f30a0004131701a0834738e55c974dfd32fb2a7f3c37c2bde",
+      "c_type": "CP4_LEG",
+      "cosmetic": true,
+      "illustrative_abilities": [
+        "climb",
+        "swim"
+      ],
+      "attachment": "hip; extends -Z",
+      "mount": "body",
+      "lods": [
+        {
+          "file": "leg_sucker.glb",
+          "source_polygons": 1464
+        }
+      ]
+    },
+    {
+      "id": "arm_grasper",
+      "category": "arms",
+      "name": {
+        "es": "Brazo prensil",
+        "en": "Grasping arm"
+      },
+      "dna_cost": 24,
+      "source": "glb",
+      "file": "arm_grasper.glb",
+      "sha256": "dbb31c02adbf26a9e708742894680df60b8634ff6b5da8414528bb3634e34d0f",
+      "c_type": "CP4_ARM",
+      "cosmetic": true,
+      "illustrative_abilities": [
+        "grasp"
+      ],
+      "attachment": "shoulder; extends -Z and +X",
+      "mount": "body",
+      "lods": [
+        {
+          "file": "arm_grasper.glb",
+          "source_polygons": 1368
+        }
+      ]
+    },
+    {
+      "id": "tail_paddle",
+      "category": "fins",
+      "name": {
+        "es": "Cola remo",
+        "en": "Paddle tail"
+      },
+      "dna_cost": 16,
+      "source": "glb",
+      "file": "tail_paddle.glb",
+      "sha256": "fa2ce5bac3a992cb6808f074fa2cb9e91764f4afba652f3e95ee9a5ec54a288b",
+      "c_type": "CP4_FIN",
+      "cosmetic": true,
+      "illustrative_abilities": [
+        "swim"
+      ],
+      "attachment": "rear spine; extends -X",
+      "mount": "body",
+      "lods": [
+        {
+          "file": "tail_paddle.glb",
+          "source_polygons": 1116
+        }
+      ]
+    },
+    {
+      "id": "tail_spike",
+      "category": "weapons",
+      "name": {
+        "es": "Cola espinosa",
+        "en": "Barbed tail"
+      },
+      "dna_cost": 16,
+      "source": "glb",
+      "file": "tail_spike.glb",
+      "sha256": "227712bde3c1d667c7ec41c7654be8075ac23d6c15f814abe65267bdd64b4e46",
+      "c_type": "CP4_TAIL",
+      "cosmetic": true,
+      "illustrative_abilities": [
+        "counterattack"
+      ],
+      "attachment": "rear spine; extends -X",
+      "mount": "body",
+      "lods": [
+        {
+          "file": "tail_spike.glb",
+          "source_polygons": 948
+        }
+      ]
+    },
+    {
+      "id": "wing_glider",
+      "category": "wings",
+      "name": {
+        "es": "Ala planeadora",
+        "en": "Gliding wing"
+      },
+      "dna_cost": 24,
+      "source": "glb",
+      "file": "wing_glider.glb",
+      "sha256": "8e84dd0fc8f2001df98d1266005bae51591d297e6279988f4959ba35f0741042",
+      "c_type": "CP4_WING",
+      "cosmetic": true,
+      "illustrative_abilities": [
+        "glide"
+      ],
+      "attachment": "right shoulder; mirror for left",
+      "mount": "body",
+      "lods": [
+        {
+          "file": "wing_glider.glb",
+          "source_polygons": 901
+        }
+      ]
+    },
+    {
+      "id": "frill_fan",
+      "category": "details",
+      "name": {
+        "es": "Abanico cervical",
+        "en": "Neck frill"
+      },
+      "dna_cost": 16,
+      "source": "glb",
+      "file": "frill_fan.glb",
+      "sha256": "8426674be63842c2112362ca6598748c7b6dd8878e373905fac44ea23bb5c7d0",
+      "c_type": "CP4_PLUME",
+      "cosmetic": true,
+      "illustrative_abilities": [
+        "display"
+      ],
+      "attachment": "neck; fan lies in YZ plane",
+      "mount": "body",
+      "lods": [
+        {
+          "file": "frill_fan.glb",
+          "source_polygons": 901
+        }
+      ]
+    },
+    {
+      "id": "beak_crusher",
+      "category": "mouths",
+      "name": {
+        "es": "Pico triturador",
+        "en": "Crushing beak"
+      },
+      "dna_cost": 16,
+      "source": "glb",
+      "file": "beak_crusher.glb",
+      "sha256": "bad5fdfec5a5ebfbbb9ff4a722c06bc3f2116a049ee444c9c98a14c9b6b53e55",
+      "c_type": "CP4_MOUTH_O",
+      "cosmetic": true,
+      "illustrative_abilities": [
+        "bite",
+        "sing"
+      ],
+      "attachment": "head front",
+      "mount": "radial",
+      "lods": [
+        {
+          "file": "beak_crusher.glb",
+          "source_polygons": 648
+        }
+      ]
+    },
+    {
+      "id": "mandible_shear",
+      "category": "mouths",
+      "name": {
+        "es": "Mandíbula tijera",
+        "en": "Shearing mandible"
+      },
+      "dna_cost": 16,
+      "source": "glb",
+      "file": "mandible_shear.glb",
+      "sha256": "3e977e544e730c45c5b734866dccb4e36b2b073247dd710efbac0a52e908c313",
+      "c_type": "CP4_MOUTH_C",
+      "cosmetic": true,
+      "illustrative_abilities": [
+        "bite",
+        "strike"
+      ],
+      "attachment": "head front",
+      "mount": "radial",
+      "lods": [
+        {
+          "file": "mandible_shear.glb",
+          "source_polygons": 1068
+        }
+      ]
+    },
+    {
+      "id": "snout_trumpet",
+      "category": "mouths",
+      "name": {
+        "es": "Hocico trompeta",
+        "en": "Trumpet snout"
+      },
+      "dna_cost": 16,
+      "source": "glb",
+      "file": "snout_trumpet.glb",
+      "sha256": "a40d945968d3c1e5149249398a585f7557a0d05d54ddc0e4cd3c367677ed2cc5",
+      "c_type": "CP4_MOUTH_C",
+      "cosmetic": true,
+      "illustrative_abilities": [
+        "sing",
+        "charm"
+      ],
+      "attachment": "head front",
+      "mount": "radial",
+      "lods": [
+        {
+          "file": "snout_trumpet.glb",
+          "source_polygons": 1463
+        }
+      ]
+    },
+    {
+      "id": "tongue_spring",
+      "category": "mouths",
+      "name": {
+        "es": "Lengua elástica",
+        "en": "Spring tongue"
+      },
+      "dna_cost": 16,
+      "source": "glb",
+      "file": "tongue_spring.glb",
+      "sha256": "0e7dc67b3624afdc8cbba392e44275478a4c554ccdd3741767b69ab471e48b9e",
+      "c_type": null,
+      "cosmetic": true,
+      "illustrative_abilities": [
+        "ranged capture"
+      ],
+      "attachment": "head front",
+      "mount": "radial",
+      "lods": [
+        {
+          "file": "tongue_spring.glb",
+          "source_polygons": 1524
+        }
+      ]
+    },
+    {
+      "id": "sac_spitter",
+      "category": "weapons",
+      "name": {
+        "es": "Sacos escupidores",
+        "en": "Spitter sacs"
+      },
+      "dna_cost": 16,
+      "source": "glb",
+      "file": "sac_spitter.glb",
+      "sha256": "38860cdad19ed89da01c8161dcf0f85dcd03c60cff27f24bee0b494948a14356",
+      "c_type": null,
+      "cosmetic": true,
+      "illustrative_abilities": [
+        "ranged spit"
+      ],
+      "attachment": "cheek or head front",
+      "mount": "radial",
+      "lods": [
+        {
+          "file": "sac_spitter.glb",
+          "source_polygons": 1122
+        }
+      ]
+    },
+    {
+      "id": "arm_smasher",
+      "category": "arms",
+      "name": {
+        "es": "Brazo maza",
+        "en": "Smashing arm"
+      },
+      "dna_cost": 24,
+      "source": "glb",
+      "file": "arm_smasher.glb",
+      "sha256": "8e044b9267afdb9419c18e148d88f875f4854e0077401e5588e5bccad3c08cb8",
+      "c_type": "CP4_ARM",
+      "cosmetic": true,
+      "illustrative_abilities": [
+        "strike"
+      ],
+      "attachment": "shoulder; extends -Z and +X",
+      "mount": "body",
+      "lods": [
+        {
+          "file": "arm_smasher.glb",
+          "source_polygons": 1158
+        }
+      ]
+    },
+    {
+      "id": "foot_spring",
+      "category": "legs",
+      "name": {
+        "es": "Pata saltadora",
+        "en": "Spring leg"
+      },
+      "dna_cost": 16,
+      "source": "glb",
+      "file": "foot_spring.glb",
+      "sha256": "46b021b5e69d4191a1c2afd44c44082db643ad8f84239efd4f0add33d204b4d2",
+      "c_type": "CP4_LEG",
+      "cosmetic": true,
+      "illustrative_abilities": [
+        "jump",
+        "sprint",
+        "dance"
+      ],
+      "attachment": "hip; extends -Z",
+      "mount": "body",
+      "lods": [
+        {
+          "file": "foot_spring.glb",
+          "source_polygons": 1274
+        }
+      ]
+    },
+    {
+      "id": "foot_hoof",
+      "category": "legs",
+      "name": {
+        "es": "Pezuña hendida",
+        "en": "Cloven hoof"
+      },
+      "dna_cost": 16,
+      "source": "glb",
+      "file": "foot_hoof.glb",
+      "sha256": "83f96ae23796d2768cc55299a93b9822843c6194a2072f94355178605f149669",
+      "c_type": "CP4_LEG",
+      "cosmetic": true,
+      "illustrative_abilities": [
+        "charge",
+        "dance"
+      ],
+      "attachment": "hip; extends -Z",
+      "mount": "body",
+      "lods": [
+        {
+          "file": "foot_hoof.glb",
+          "source_polygons": 1000
+        }
+      ]
+    },
+    {
+      "id": "foot_gecko",
+      "category": "legs",
+      "name": {
+        "es": "Pie adherente",
+        "en": "Adhesive foot"
+      },
+      "dna_cost": 16,
+      "source": "glb",
+      "file": "foot_gecko.glb",
+      "sha256": "48e85b6b4bced986b2d0174a7e5355329e7555a05b3166d318b53743829173c2",
+      "c_type": "CP4_LEG",
+      "cosmetic": true,
+      "illustrative_abilities": [
+        "climb",
+        "sneak"
+      ],
+      "attachment": "hip; extends -Z",
+      "mount": "body",
+      "lods": [
+        {
+          "file": "foot_gecko.glb",
+          "source_polygons": 3598
+        }
+      ]
+    },
+    {
+      "id": "lure_lantern",
+      "category": "senses",
+      "name": {
+        "es": "Señuelo linterna",
+        "en": "Lantern lure"
+      },
+      "dna_cost": 16,
+      "source": "glb",
+      "file": "lure_lantern.glb",
+      "sha256": "5e3231b1c11d89e8b8c546747daf0265f80d842994c0ac464674cf8bffab2a06",
+      "c_type": null,
+      "cosmetic": true,
+      "illustrative_abilities": [
+        "charm",
+        "perception"
+      ],
+      "attachment": "forehead",
+      "mount": "radial",
+      "lods": [
+        {
+          "file": "lure_lantern.glb",
+          "source_polygons": 886
+        }
+      ]
+    },
+    {
+      "id": "wing_insect",
+      "category": "wings",
+      "name": {
+        "es": "Ala de insecto",
+        "en": "Insect wing"
+      },
+      "dna_cost": 24,
+      "source": "glb",
+      "file": "wing_insect.glb",
+      "sha256": "e09c7ed89ba7b68fa0be66a3b7c08f3c85305f12c53027297e48e946bf41e856",
+      "c_type": "CP4_WING",
+      "cosmetic": true,
+      "illustrative_abilities": [
+        "glide"
+      ],
+      "attachment": "right shoulder; mirror for left",
+      "mount": "body",
+      "lods": [
+        {
+          "file": "wing_insect.glb",
+          "source_polygons": 1134
+        }
+      ]
+    },
+    {
+      "id": "tail_hammer",
+      "category": "weapons",
+      "name": {
+        "es": "Cola martillo",
+        "en": "Hammer tail"
+      },
+      "dna_cost": 16,
+      "source": "glb",
+      "file": "tail_hammer.glb",
+      "sha256": "22e70f89024899fbd17a1fe00f549fc2bea92c0e6f83d41721bb732be0bf993f",
+      "c_type": "CP4_TAIL",
+      "cosmetic": true,
+      "illustrative_abilities": [
+        "strike",
+        "defense"
+      ],
+      "attachment": "rear spine; extends -X",
+      "mount": "body",
+      "lods": [
+        {
+          "file": "tail_hammer.glb",
+          "source_polygons": 1176
+        }
+      ]
+    }
+  ]
+}
