@@ -17,4 +17,11 @@ for(const version of [1,2,3]){
  assert.deepEqual(D.parse(genome,types).genome,genome,'migration round trip');
  const invalid=structuredClone(legacy);invalid.body.torso=99;assert.throws(()=>D.parse(invalid,types));
 }
+
+
+const region={schema:'cpore.growth/1',family:'horns',seed:17,count:7,length:1,curve:.45,branches:1,surface:'torso',position:.6,coverage:.4,angle:.55,mirror:true,id:'region-1'};
+for(const mutate of [r=>delete r.count,r=>r.id=undefined,r=>r.family='none',r=>r.surface='head',r=>r.mirror=1,r=>r.seed=-1,r=>r.count=1.5]){const g=structuredClone(sample);g.regions=[structuredClone(region)];mutate(g.regions[0]);assert.throws(()=>D.parse(g,types))}
+const duplicate=structuredClone(sample);duplicate.regions=[region,region];assert.throws(()=>D.parse(duplicate,types));
+const v2=JSON.parse(fs.readFileSync('tests/fixtures/studio/v2.json'));v2.growth.family='none';assert.equal(D.parse(v2,types).genome.regions.length,0);delete v2.growth.schema;assert.throws(()=>D.parse(v2,types));
+assert.throws(()=>D.parse('{broken',types));assert.throws(()=>D.parse(null,types));
 console.log('Studio document validation and /1 /2 /3 migration contracts passed');

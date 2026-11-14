@@ -18,7 +18,7 @@ design, every decision and why, is in [docs/DESIGN.md](docs/DESIGN.md).
 | `tests/`, `apps/` | C test suite and throughput bench |
 | `studio-sdl/` | transitional SDL2/GL creature studio, moving to `web/` |
 | `art/reference/` | the visual and rules references (`valle-primigenio.html`, `taller-de-criaturas.html`) |
-| `web/studio/` | the creature studio (Three.js): reference skin and walk, independent horn/plate/tendril regions with surface placement, seeded variants, undo/redo, genome JSON, share links, es/en. `test.html` checks round trips and rejections |
+| `web/studio/` | Primigenia creator: sculptable spine, Build/Paint/Test, 3D part palette, procedural IK legs, 24 Blender GLBs, growth regions, undo/redo, JSON, sharing, es/en |
 | `harness/` | reference LLM harness (to come) |
 
 The [functional design](docs/CREATURE_VISUAL_PLAN.md) specifies the full
@@ -27,25 +27,60 @@ latency requirements. The current regional growth generator is its first
 working increment; blended anatomy and AI generation are still pending.
 
 To use the studio, serve the repository with `python3 -m http.server 8765` and
-open `http://localhost:8765/web/studio/`. Choose **Coralino** or **Abisal** for
-generated examples, or choose a family under **Generar detalles**. Use
-**Añadir región** to combine families. Select a region in the list or on the
-creature; **Colocar en el cuerpo** attaches it to the torso, neck, or tail. Each
-region has its own shape, seed, coverage, and symmetry. **Duplicar**, **Eliminar**,
-and placement are undoable. Arrow keys move the selected region, Escape cancels
-a drag, and **Nueva variante** changes its seed. Geometry is generated locally;
-placement reuses existing meshes and shape edits rebuild only the changed region.
-JSON and share links use `cpore.creature/3`, with imports from versions 1 and 2. Artistic growth does not change the gameplay ability values.
+open `http://localhost:8765/web/studio/`. The owner's
+`art/reference/creador-de-criaturas.html` is the base; references stay untouched.
+**Build / Paint / Test** keep spine sculpting, patterned skin, jaw/eye animation,
+and a gait derived from the procedural legs. Hover over the body to reveal the
+spine; drag a vertebra or scroll over it to change its radius.
 
-Run `node tests/test_growth.cjs` for deterministic geometry checks and a CPU
-generation benchmark. Open `/web/studio/test.html` for genome regression checks.
-For pointer, keyboard, history, memory, and mobile browser checks, install the
-optional runner with `npm install --prefix /tmp/cpore-browser playwright`, then
-`node /tmp/cpore-browser/node_modules/playwright/cli.js install chromium`. With
-the server running, use `NODE_PATH=/tmp/cpore-browser/node_modules node tests/studio_interaction.cjs`.
-For viewport selection and touch dragging, also run
-`NODE_PATH=/tmp/cpore-browser/node_modules node tests/studio_touch.cjs`.
-Screenshots and the reports go to `/tmp/cpore-studio-evidence/`.
+The nine palette categories contain the original procedural parts, a procedural
+digging claw, and all 24 original Blender GLBs. Drag a thumbnail onto the body,
+or select it and click/tap the body. Enter activates a focused palette item;
+arrow keys move the selected part. GLBs remain rigid, including imported limbs
+and wings. Their material slots adopt the creature's skin, bone/beak, translucent
+membrane and eye materials. The copied assets and manifest live in
+`web/studio/parts/`; no Blender scene is shipped. The versioned `parts.json`
+records costs, categories, illustrative abilities, candidate C types, material
+inference and cosmetic status. All designs are currently **cosmetic**, with no
+C validation or gameplay abilities granted.
+
+In **Build**, **Regions** adds independent horn, plate and tendril recipes on
+torso, neck or tail. Add, duplicate, delete, vary and place regions; arrow keys
+move the selected region. **Orbit** provides an explicit camera tool for touch.
+Escape cancels a gesture. Undo/redo preserve exact designs and seeds; placement
+reuses growth geometry. Spine edits stay in the vertical plane with mirrored
+parts, as scoped for P1.
+
+JSON downloads, file/pasted imports and Unicode share links use
+`cpore.creature/4`: `nodes`, `parts`, `skin`, `name`, `regions`. `/1`, `/2` and `/3`
+imports preserve the source document and report body/slot approximations,
+legacy motion and level differences, and discarded gameplay estimates. Invalid
+imports leave the creature and history unchanged. The studio autosaves `/4`.
+Three.js r128 comes from cdnjs; cdnjs does not distribute its examples, so the
+official matching GLTFLoader is vendored with its license. Fonts and Three.js
+still need network access.
+
+Run the checks without installing anything:
+
+```bash
+node tests/test_growth.cjs
+node tests/test_studio_genome.cjs
+python3 tests/check_studio_glbs.py
+export NODE_PATH=/tmp/claude-1000/-home-diego-Desarrollo-cpore/52130491-4ef1-4633-b55d-8ccffceb2b8f/scratchpad/node_modules
+nice -n 10 node tests/studio_interaction.cjs
+nice -n 10 node tests/studio_touch.cjs
+```
+
+Browser tests require the local server and the installed Chromium at
+`~/.cache/ms-playwright/chromium-1254/chrome-linux64/chrome`, using only the
+specified SwiftShader arguments. They check all presets and 20 seeded random
+creatures, every catalog part on every preset, migrations, atomic rejection,
+mouse/keyboard/touch interactions, modes, history, language and sharing.
+`/web/studio/test.html` runs the document and placement contracts interactively.
+Evidence goes to `docs/evidence/studio-v4-*`. No offline Khronos validator was
+found; the Python script checks GLB structure and buffers, **not full glTF
+conformance**. Khronos Sample Viewer comparison and owner visual acceptance
+remain unverified; see [P1 evidence](docs/evidence/studio-v4-validation.md).
 
 ## Build
 

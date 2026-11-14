@@ -10,7 +10,7 @@ let lang=localStorage.getItem('cpore.lang')==='en'?'en':'es',editTool='sculpt',s
 const EN=StudioI18n.en;for(const entry of partTable.parts)EN[entry.name.es]=entry.name.en;
 const ABILITY_ES={perception:'Percepción','wide gaze':'Visión amplia',bite:'Mordisco',charge:'Embestida',armor:'Armadura',sprint:'Carrera',climb:'Escalada',swim:'Natación',grasp:'Agarre',counterattack:'Contraataque',glide:'Planeo',display:'Exhibición',sing:'Canto',charm:'Encanto',strike:'Golpe','ranged capture':'Captura a distancia','ranged spit':'Escupitajo',jump:'Salto',dance:'Baile',sneak:'Sigilo',defense:'Defensa',burrow:'Excavación'};
 for(const [en,es]of Object.entries(ABILITY_ES))if(!EN[es])EN[es]=en;
-const tr=t=>lang==='en'?(EN[t]||t):(StudioI18n.es[t]||t);
+const tr=t=>t.startsWith('migration.extra:')?(lang==='en'?'Preserved without conversion: ':'Se conserva sin migrar: ')+t.slice(16):lang==='en'?(EN[t]||t):(StudioI18n.es[t]||t);
 /* ---------- render y escena ---------- */
 const renderer=new T.WebGLRenderer({canvas:$('gl'),antialias:true});
 renderer.outputEncoding=T.sRGBEncoding;renderer.toneMapping=T.ACESFilmicToneMapping;renderer.toneMappingExposure=1.05;
@@ -273,7 +273,7 @@ function update(dt){
   for(let i=0;i<NS;i++){pts[i].copy(rest[i]);if(test){const q=1-i/(NS-1),k=Math.pow(q,1.4);pts[i].x+=Math.sin(w-3.2*q)*amp*(legs.length?k:1)+Math.sin(clock*1.3-2*q)*amp*.5*k}}
   fillTube(body.geometry,pts,RAD,RN,null,true,frames);placeBody(bob);
   const jawA=.06+.04*Math.sin(clock*2.1)+(biteT>0?Math.sin(Math.PI*biteT/.6)*.75:0)+(singT>0?.3+.25*Math.sin(clock*14):0),bl=Math.max(0,Math.sin(clock*1.6))**60;
-  for(const o of objs){anchor(pts,o.p.t,o.sg*o.p.ang,A1);orient(o.g,A1,.015,(o.p.rot||0)*o.sg,o.p.tilt||0,o.p===sel&&o.sg===1);if(LIB[o.p.type].mount==='body'){_m.makeBasis(frames[Math.round(o.p.t*(NS-1))].s,A1.u,A1.t);o.g.quaternion.setFromRotationMatrix(_m);o.g.scale.x=o.sg;}const ud=o.g.userData;
+  for(const o of objs){anchor(pts,o.p.t,o.sg*o.p.ang,A1);orient(o.g,A1,.015,(o.p.rot||0)*o.sg,o.p.tilt||0,o.p===sel&&o.sg===1);if(LIB[o.p.type].mount==='body'){_m.makeBasis(frames[Math.round(o.p.t*(NS-1))].s,A1.u,A1.t);o.g.quaternion.setFromRotationMatrix(_m);if(o.p.rot)o.g.quaternion.multiply(_q.setFromAxisAngle(ZA,o.p.rot*o.sg));if(o.p.tilt)o.g.quaternion.multiply(_q.setFromAxisAngle(X0,o.p.tilt));o.g.scale.x=o.sg;}const ud=o.g.userData;
     if(ud.jaw)ud.jaw.rotation.x=jawA;if(ud.pinch)for(const q of ud.pinch)q.rotation.y=q.userData.sx*(.25-jawA*1.1);if(ud.lid)ud.lid.rotation.x=-.3+bl*1.5;if(ud.sway)ud.sway.rotation.x=Math.sin(clock*2.2+o.p.t*9)*.12}
   const fwd=_c.set(-Math.sin(theta),0,Math.cos(theta));
   for(const l of legs){const ph=((phase+l.grp*.5)%1+1)%1,H=anchor(pts,l.p.t,l.sg*l.p.ang,A2).p.clone(),K=_u,A=_b;
@@ -311,7 +311,7 @@ const overBody=()=>{body.geometry.computeBoundingSphere();return ray.intersectOb
 function hitPart(){const h=ray.intersectObjects([partsG,limbs],true)[0];return h?h.object.userData.part:null}
 function place(p,h){const was=centered(p);let a=Math.abs(h.ang);if(LIB[p.type].leg){if(Math.abs(Math.sin(a))<.2)a=a<1.57?.2:Math.PI-.2}else if(Math.abs(Math.sin(a))<.14)a=Math.cos(a)>0?0:Math.PI;p.t=clamp(h.t,0,1);p.ang=a;if(was!==centered(p))buildParts();else if(LIB[p.type].leg)buildParts(true)}
 function snapshot(){return JSON.stringify(G)}
-function save(){try{localStorage.setItem('cpore.creature.v4',snapshot())}catch(e){}syncHistory()}
+function save(){try{localStorage.setItem('cpore.creature.v4',snapshot())}catch(e){}if($('json')&&document.activeElement!==$('json'))$('json').value=JSON.stringify(G,null,1);syncHistory()}
 function syncHistory(){$('undo').disabled=hist.length<2;$('redo').disabled=!fut.length}
 function commit(){const next=snapshot();if(hist.at(-1)===next)return;hist.push(next);if(hist.length>100)hist.shift();fut=[];save()}
 function loadG(g,keep){G=JSON.parse(typeof g==='string'?g:JSON.stringify(g));$('name').value=G.name||'';sel=null;selectedRegionId=G.regions.some(r=>r.id===selectedRegionId)?selectedRegionId:G.regions[0]?.id||null;theta=0;phase=0;refresh(true);syncSkin();drawPanel();if(!keep){const len=rest[NS-1].distanceTo(rest[0]);camDist=5+len*1.15}}
@@ -320,7 +320,7 @@ function redo(){if(!fut.length)return;const next=fut.pop();hist.push(next);loadG
 function importGenome(input){const result=StudioDocument.parse(input,tableById);loadG(result.genome,true);commit();report(result.warnings.length?result.warnings.map(w=>tr(w)).join(' · '):tr('Diseño cargado'));return result}
 function removePart(p){G.parts=G.parts.filter(q=>q!==p);if(sel===p)sel=null;buildParts();drawPanel();commit()}
 function newPart(type){return defaults(type)}
-function moveNode(i,y,z){const N=G.nodes,n=N[i];_a.set(0,y,z);for(const j of[i-1,i+1]){if(j<0||j>=N.length)continue;_b.set(0,N[j].y,N[j].z);const d=_a.distanceTo(_b);if(d<.3||d>1.95)_a.sub(_b).setLength(clamp(d,.3,1.95)).add(_b)}n.y=Math.max(_a.y,n.r+.1);n.z=_a.z;
+function moveNode(i,y,z){const N=G.nodes,n=N[i];_a.set(0,y,z);for(const j of[i-1,i+1]){if(j<0||j>=N.length)continue;_b.set(0,N[j].y,N[j].z);const d=_a.distanceTo(_b);if(d<.3||d>1.95)_a.sub(_b).setLength(clamp(d,.3,1.95)).add(_b)}n.y=clamp(_a.y,n.r+.1,20);n.z=clamp(_a.z,-30,30);
   const end=i===0||i===N.length-1;if(end){const j=i===0?1:N.length-2,m=N[j],d=Math.hypot(n.y-m.y,n.z-m.z);
     if(d>1.5&&N.length<14){N.splice(i===0?1:N.length-1,0,{y:(n.y+m.y)/2,z:(n.z+m.z)/2,r:(n.r+m.r)/2});if(i!==0)drag.node=N.length-1}
     else if(d<.34&&N.length>4){const k=i===0?2:N.length-3,q=N[k];if(Math.hypot(n.y-q.y,n.z-q.z)<1.45){N.splice(j,1);if(i!==0)drag.node=N.length-1}}}
@@ -381,7 +381,7 @@ let flashT=0;function setHint(t){$('hint').textContent=tr(t||HINTS[mode])}functi
 function syncSkin(){const s=G.skin;SU.cA.value.copy(lin(s.cA));SU.cB.value.copy(lin(s.cB));SU.cC.value.copy(lin(s.cC));SU.uPat.value=s.pat;SU.uWet.value=s.wet;SU.uScale.value=s.scale;skinM.clearcoat=skinM2.clearcoat=membraneM.clearcoat=s.wet*.8;clearTimeout(syncSkin.t);syncSkin.t=setTimeout(()=>typeof drawThumbs==='function'&&drawThumbs(),120)}
 const pips=n=>'<span class="pips">'+[1,2,3,4,5].map(i=>`<i class="${i<=n?'on':''}"></i>`).join('')+'</span>';
 function drawStats(){$('dna').textContent=`${stats.dna} / ${BUDGET}`;$('meter').firstElementChild.style.width=clamp(stats.dna/BUDGET*100,0,100)+'%';if(!$('caps'))return;
-  $('caps').innerHTML=[['Velocidad',stats.vel],['Mordisco',stats.bite],['Canto',stats.sing],['Salud',stats.hp]].map(([n,v])=>`<div class="cap"><span>${n}</span>${pips(v)}</div>`).join('')+stats.warn.filter(Boolean).map(w=>`<div class="warn">${w}</div>`).join('')}
+  $('caps').innerHTML=[['Velocidad',stats.vel],['Mordisco',stats.bite],['Canto',stats.sing],['Salud',stats.hp]].map(([n,v])=>`<div class="cap"><span>${tr(n)}</span>${pips(v)}</div>`).join('')+stats.warn.filter(Boolean).map(w=>`<div class="warn">${tr(w)}</div>`).join('')}
 function drawPanel(){let h='';
   if(mode==='build'){h+=`<section><h2>Capacidades</h2><div id="caps"></div></section>`;
     if(sel){const L=LIB[sel.type];h+=`<section><h2>${tr(L.name)}</h2>${(L.leg?L.p:[...L.p,'rot','tilt']).map(k=>`<div class="row"><label for="p-${k}">${PLBL[k][0]}</label><input type="range" id="p-${k}" data-pk="${k}" min="${PLBL[k][1]}" max="${PLBL[k][2]}" step=".01" value="${sel[k]||0}"></div>`).join('')}${L.leg?'':'<p class="note">Arrastra la cuenta verde para girar la pieza.</p>'}${L.leg?'<p class="note">El pie se desliza por el suelo y la rodilla es libre. Sube o baja el cuerpo con las vértebras: las patas se estiran para seguir apoyadas.</p>':''}<div class="chips"><button id="del">Quitar pieza</button></div></section>`}
@@ -482,7 +482,8 @@ function translateUI(){
  for(const b of document.querySelectorAll('[data-part]')){const p=tableById[b.dataset.part];b.querySelector('span').textContent=p.name[lang];b.setAttribute('aria-label',`${p.name[lang]}, ${p.dna_cost} ${tr('ADN')}`);b.title=tr('Cosmético')+(p.illustrative_abilities.length?' · '+p.illustrative_abilities.map(a=>lang==='es'?(ABILITY_ES[a]||a):a).join(', '):'');}
  for(const b of document.querySelectorAll('[data-cat]')){b.setAttribute('aria-label',tr(CAT_NAMES[b.dataset.cat]));b.title=tr(CAT_NAMES[b.dataset.cat])}
  $('catname').textContent=tr(CAT_NAMES[activeCat]);$('lang').textContent=lang==='es'?'EN':'ES';$('lang').setAttribute('aria-label',lang==='es'?'Switch to English':'Cambiar a español');
- $('documents').innerHTML=`<h2>${tr('Guardar y compartir')}</h2><div class="chips"><button data-doc="download">${tr('Descargar JSON')}</button><button data-doc="share">${tr('Enlace')}</button><button data-doc="file">${tr('Importar JSON')}</button></div><label for="json">JSON</label><textarea id="json" spellcheck="false">${JSON.stringify(G,null,1).replace(/</g,'&lt;')}</textarea><div class="chips"><button data-doc="load">${tr('Cargar JSON')}</button></div><input type="file" id="import-file" accept=".json,application/json" hidden><p class="note">${tr('Vista artística · capacidades ilustrativas · sin validar en C')}</p>`;
+ $('documents').innerHTML=`<h2>${tr('Guardar y compartir')}</h2><div class="chips"><button data-doc="download">${tr('Descargar JSON')}</button><button data-doc="share">${tr('Enlace')}</button><button data-doc="file">${tr('Importar JSON')}</button></div><label for="json">JSON</label><textarea id="json" spellcheck="false"></textarea><div class="chips"><button data-doc="load">${tr('Cargar JSON')}</button></div><input type="file" id="import-file" accept=".json,application/json" hidden><p class="note">${tr('Vista artística · capacidades ilustrativas · sin validar en C')}</p>`;
+ $('json').value=JSON.stringify(G,null,1);
  const text=$('message').textContent;for(const [es,en]of Object.entries(EN)){if(text.startsWith(es+':'))$('message').textContent=tr(es)+text.slice(es.length);if(text.startsWith(en+':'))$('message').textContent=tr(es)+text.slice(en.length)}
  setHint();
 }

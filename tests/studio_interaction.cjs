@@ -1,115 +1,47 @@
 const {chromium}=require('playwright');
 const assert=require('node:assert/strict');
-const fs=require('node:fs');
-const path=require('node:path');
-// Optional development dependency: npm install --prefix /tmp/cpore-browser playwright
-// Run with the repository served at CPORE_STUDIO_URL (default localhost:8765).
+const fs=require('node:fs');const path=require('node:path');
 const base=process.env.CPORE_STUDIO_URL||'http://127.0.0.1:8765';
-const artifacts=process.env.CPORE_ARTIFACT_DIR||'/tmp/cpore-studio-evidence';
+const artifacts=process.env.CPORE_ARTIFACT_DIR||path.resolve('docs/evidence');
 fs.mkdirSync(artifacts,{recursive:true});
-(async()=>{
- const browser=await chromium.launch({headless:true,args:['--use-gl=angle','--use-angle=swiftshader','--enable-unsafe-swiftshader']});
- let page=await browser.newPage({viewport:{width:1280,height:800}});const errors=[],checks=[];
- const watch=p=>{p.on('pageerror',e=>errors.push(e.message));p.on('console',m=>{if(m.type()==='error'&&!m.text().includes('favicon'))errors.push(m.text())})};watch(page);
- const check=(c,n)=>{assert(c,n);checks.push(n);console.log('PASS',n)};
- const settle=()=>page.evaluate(()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r))));
- await page.goto(base+'/web/studio/index.html#preset=Coralino',{waitUntil:'domcontentloaded'});
- await page.waitForFunction(()=>!!window.CreatureStudio);
- await page.evaluate(()=>{const g=CreatureStudio.genome();g.legs.stride=0;CreatureStudio.load(g)});await settle();
- await page.locator('#placeGrowth').click();
- const before=await page.evaluate(()=>JSON.stringify(CreatureStudio.genome()));
- let point=null,changed;
- for(const [x,y]of [[420,380],[480,360],[380,410],[500,420],[350,380]]){
-   await page.mouse.move(x,y);await page.mouse.down();await page.mouse.move(x+35,y-10,{steps:3});await page.mouse.up();
-   changed=await page.evaluate(()=>JSON.stringify(CreatureStudio.genome()));
-   if(before!==changed){point=[x,y];break}
- }
- check(!!point,'pointer drag changes surface attachment');
- await page.locator('#undo').click();await settle();
- check(await page.evaluate(()=>JSON.stringify(CreatureStudio.genome()))===before,'one undo restores entire drag');
- await page.locator('#redo').click();await settle();
- check(await page.evaluate(()=>JSON.stringify(CreatureStudio.genome()))===changed,'redo restores placed growth');
- await page.mouse.move(...point);await page.mouse.down();await page.mouse.move(point[0]+20,point[1]-10);
- await page.keyboard.press('Escape');await page.mouse.up();await settle();
- check(await page.evaluate(()=>JSON.stringify(CreatureStudio.genome()))===changed,'Escape cancels pointer transaction');
- const start=await page.evaluate(()=>CreatureStudio.diagnostics().geometryCount);
- for(let i=0;i<8;i++){await page.locator('[data-growth-action="vary"]').click();await settle()}
- check(await page.evaluate(()=>CreatureStudio.diagnostics().geometryCount)===start,'repeated variants retain stable geometry allocation count');
- // Independent region authoring: UI selection does not mutate the document.
- const initialRegion=await page.evaluate(()=>CreatureStudio.genome().regions[0]);
- await page.locator('[data-growth-action="add"]').click();await settle();
- const secondId=await page.evaluate(()=>CreatureStudio.diagnostics().selectedRegionId);
- check(await page.evaluate(()=>CreatureStudio.genome().regions.length)===2,'add creates a second independent region');
- await page.locator('#s-growth-2').click();
- await page.locator('#s-growthSurface-1').click();
- const slider=async(id,value)=>{await page.locator('#r-'+id).fill(String(value));await page.locator('#r-'+id).dispatchEvent('change');await settle()};
- await slider('growthLength',.65);await slider('growthCount',4);await slider('growthAngle',.9);
- check(await page.evaluate(first=>JSON.stringify(CreatureStudio.genome().regions[0])===JSON.stringify(first),initialRegion),'second region edits preserve the first recipe');
- const multi=await page.evaluate(()=>JSON.stringify(CreatureStudio.genome()));
- await page.locator(`[data-region="${initialRegion.id}"]`).click();await settle();
- check(await page.evaluate(()=>JSON.stringify(CreatureStudio.genome()))===multi,'selection is editor state and does not change saved design');
- const builds=await page.evaluate(()=>CreatureStudio.diagnostics());
- await page.locator('[data-growth-action="vary"]').click();await settle();
- const afterVariant=await page.evaluate(()=>CreatureStudio.diagnostics());
- check(afterVariant.growthBuilds===builds.growthBuilds+1&&afterVariant.regions.find(r=>r.id===secondId).builds===builds.regions.find(r=>r.id===secondId).builds,'only the changed region regenerates geometry');
- const buildCount=afterVariant.growthBuilds;
- await slider('growthPos',.45);await slider('growthAngle',.65);
- check(await page.evaluate(()=>CreatureStudio.diagnostics().growthBuilds)===buildCount,'surface placement reuses all region geometry');
- const beforeDuplicate=await page.evaluate(()=>JSON.stringify(CreatureStudio.genome()));
- await page.locator('[data-growth-action="duplicate"]').click();await settle();
- const duplicate=await page.evaluate(()=>CreatureStudio.genome());
- const {id:originalId,...originalShape}=duplicate.regions[0],{id:copyId,...copyShape}=duplicate.regions[2];
- check(copyId!==originalId&&JSON.stringify(originalShape)===JSON.stringify(copyShape),'duplicate preserves shape with a new stable id');
- await page.locator('#undo').click();await settle();
- check(await page.evaluate(()=>JSON.stringify(CreatureStudio.genome()))===beforeDuplicate,'undo removes only the duplicate');
- await page.locator('#redo').click();await settle();
- check(await page.evaluate(()=>JSON.stringify(CreatureStudio.genome()))===JSON.stringify(duplicate),'redo restores the same duplicate id and recipe');
- await page.locator(`[data-region="${copyId}"]`).click();
- await page.locator('[data-growth-action="delete"]').click();await settle();
- check(await page.evaluate(()=>JSON.stringify(CreatureStudio.genome()))===beforeDuplicate,'delete removes only the selected region');
- await page.locator('#undo').click();await settle();
- check(await page.evaluate(()=>JSON.stringify(CreatureStudio.genome()))===JSON.stringify(duplicate),'delete undo restores all region recipes');
- await page.locator('#redo').click();await settle();
- await page.locator(`[data-region="${secondId}"]`).click();
- await page.locator('#s-growthMirror-0').click();await settle();
- check(await page.evaluate(id=>{const g=CreatureStudio.genome();return g.regions[0].mirror&&!g.regions.find(r=>r.id===id).mirror},secondId),'symmetry changes only the selected region');
- if(await page.locator('#placeGrowth').getAttribute('aria-pressed')!=='true')await page.locator('#placeGrowth').click();
- await page.locator('#gl').focus();const beforeKey=await page.evaluate(()=>JSON.stringify(CreatureStudio.genome()));
- await page.keyboard.press('ArrowRight');await settle();
- check(await page.evaluate(()=>JSON.stringify(CreatureStudio.genome()))!==beforeKey,'keyboard placement edits the selected region');
- await page.locator('#undo').click();await settle();
- check(await page.evaluate(()=>JSON.stringify(CreatureStudio.genome()))===beforeKey,'keyboard placement is undoable');
- const savedMulti=await page.evaluate(()=>CreatureStudio.genome());
- await page.evaluate(g=>CreatureStudio.load(g),savedMulti);await settle();
- check(await page.evaluate(()=>JSON.stringify(CreatureStudio.genome()))===JSON.stringify(savedMulti),'multiple regions reload exactly');
- await page.locator('[data-p="Coralino"]').click();await settle();
- await page.locator('#s-growth-2').click();await settle();
- check(await page.evaluate(()=>CreatureStudio.genome().regions[0].family)==='plates','plate family rendered');
- await page.locator('[data-p="Abisal"]').click();await settle();
- check(await page.evaluate(()=>CreatureStudio.genome().regions[0].family)==='tendrils','tendril family rendered');
- // Capture a fresh desktop context after the interaction stress sequence.
- await page.close();page=await browser.newPage({viewport:{width:1280,height:800}});watch(page);
- await page.goto(base+'/web/studio/index.html#g='+Buffer.from(JSON.stringify(savedMulti)).toString('base64'),{waitUntil:'domcontentloaded'});
- await page.waitForFunction(()=>!!window.CreatureStudio);await settle();
- await page.screenshot({timeout:120000,path:path.join(artifacts,'regions-desktop.png')});console.log('Regions captured');
- // Independent contexts also verify mobile startup and avoid a software-WebGL
- // capture failure observed when resizing a long-running desktop context.
- const mobileGenome=savedMulti;
- await page.close();page=await browser.newPage({viewport:{width:390,height:844}});watch(page);
- await page.goto(base+'/web/studio/index.html#g='+Buffer.from(JSON.stringify(mobileGenome)).toString('base64'),{waitUntil:'domcontentloaded'});
- await page.waitForFunction(()=>!!window.CreatureStudio);await settle();
- check(await page.evaluate(()=>JSON.stringify(CreatureStudio.genome()))===JSON.stringify(mobileGenome),'shared multi-region document survives mobile startup');
- await page.locator('#bench').evaluate(el=>el.scrollTop=0);
- check(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'mobile no horizontal overflow');
- await page.locator('#r-growthLength').evaluate(el=>el.scrollIntoView());
- check(await page.locator('#gl').evaluate(el=>{const r=el.getBoundingClientRect();return r.top>=0&&r.bottom<=innerHeight}),'mobile creature remains visible while editing lower controls');
- await page.locator('#bench').evaluate(el=>el.scrollTop=0);
- await page.screenshot({timeout:120000,path:path.join(artifacts,'regions-mobile.png')});console.log('Mobile captured');
- check(errors.length===0,'no shader or runtime errors');
- await page.goto(base+'/web/studio/test.html',{waitUntil:'domcontentloaded'});
- await page.waitForFunction(()=>document.querySelector('#out').textContent!=='running',null,{timeout:60000});
- const result=await page.locator('#out').innerText();check(result.startsWith('ALL OK'),'all existing and extended genome regression checks');
- check(errors.length===0,'regression page has no runtime errors');
- fs.writeFileSync(path.join(artifacts,'results.json'),JSON.stringify({browser:browser.version(),renderer:'SwiftShader software WebGL',checks,errors,regressions:result},null,2));
- await browser.close();
-})().catch(e=>{console.error(e);process.exit(1)});
+const launch={headless:true,executablePath:process.env.HOME+'/.cache/ms-playwright/chromium-1254/chrome-linux64/chrome',args:['--use-angle=swiftshader','--enable-unsafe-swiftshader']};
+(async()=>{const browser=await chromium.launch(launch);const errors=[];try{
+ const page=await browser.newPage({viewport:{width:1280,height:800}});page.on('pageerror',e=>errors.push(e.message));
+ await page.goto(base+'/web/studio/#preset=Merodeador');await page.waitForFunction(()=>window.CreatureStudio?.ready,{timeout:90000});
+ const diagnostics=await page.evaluate(()=>CreatureStudio.diagnostics());assert.equal(diagnostics.loadedGLBs,24);assert.deepEqual(diagnostics.assetFailures,[]);
+ await page.addScriptTag({url:base+'/web/studio/contracts.js'});
+ const fixtures=[1,2,3].map(v=>JSON.parse(fs.readFileSync(`tests/fixtures/studio/v${v}.json`)));
+ const result=await page.evaluate(fixtures=>studioContracts(CreatureStudio,fixtures),fixtures);console.log('PASS',result.checks.length,'contracts;',result.placements,'part/preset placements; maximum root distance',result.maxRootDistance);
+ await page.evaluate(()=>CreatureStudio.preset('Merodeador'));
+ const snap=()=>page.evaluate(()=>JSON.stringify(CreatureStudio.genome()));
+ console.log('PASS catalog loading; starting gestures');
+ const before=await snap();await page.locator('#name').fill('Prueba Ñ 🦎 &lt;');await page.locator('#name').blur();const renamed=await snap();assert.notEqual(renamed,before);assert.equal(JSON.stringify(JSON.parse(await page.locator('#json').inputValue())),renamed);
+ await page.locator('#undo').click();assert.equal(await snap(),before);await page.locator('#redo').click();assert.equal(await snap(),renamed);
+ await page.locator('[data-growth-action=add]').click();const initial=await snap();
+ await page.locator('[data-growth-action=duplicate]').click();const duplicate=await snap();assert.equal(JSON.parse(duplicate).regions.length,2);
+ await page.locator('#undo').click();assert.equal(await snap(),initial);await page.locator('#redo').click();assert.equal(await snap(),duplicate);
+ await page.locator('[data-region=region-2]').click();await page.locator('[data-growth-action=delete]').click();assert.equal(await snap(),initial);await page.locator('#undo').click();assert.equal(await snap(),duplicate);
+ const first=JSON.parse(duplicate).regions[0];await page.locator('[data-region=region-2]').click();await page.locator('#growth-family').selectOption('tendrils');await page.locator('#growth-family').dispatchEvent('input');await page.locator('#growth-family').dispatchEvent('change');
+ assert.deepEqual(JSON.parse(await snap()).regions[0],first);
+ const builds=await page.evaluate(()=>CreatureStudio.diagnostics().growthBuilds);await page.locator('#growth-position').fill('.4');await page.locator('#growth-position').dispatchEvent('change');assert.equal(await page.evaluate(()=>CreatureStudio.diagnostics().growthBuilds),builds);
+ await page.locator('#gl').focus();const preKey=await snap();await page.keyboard.press('ArrowRight');assert.notEqual(await snap(),preKey);await page.keyboard.press('Control+z');assert.equal(await snap(),preKey);await page.keyboard.press('Control+Shift+z');assert.notEqual(await snap(),preKey);
+ // A real mouse gesture uses projected body coordinates, then Escape restores the transaction.
+ const point=await page.evaluate(()=>CreatureStudio.projectPoint(.6,1.4));const preDrag=await snap();await page.mouse.move(...point);await page.mouse.down();await page.mouse.move(point[0]+15,point[1]-5,{steps:3});await page.mouse.up();const dragged=await snap();assert.notEqual(dragged,preDrag);
+ await page.locator('#undo').click();assert.equal(await snap(),preDrag);await page.locator('#redo').click();assert.equal(await snap(),dragged);
+ await page.mouse.move(...point);await page.mouse.down();await page.mouse.move(point[0]+20,point[1]-10);await page.keyboard.press('Escape');await page.mouse.up();assert.equal(await snap(),dragged);
+ console.log('PASS growth/history gestures');
+ // Palette drag and click-to-place are separate supported paths.
+ await page.locator('[data-tool=sculpt]').click();await page.locator('[data-cat=arms]').click();
+ const start=await page.locator('[data-part=arm_grasper]').boundingBox();const target=await page.evaluate(()=>CreatureStudio.projectPoint(.65,1.4));
+ await page.mouse.move(start.x+start.width/2,start.y+start.height/2);await page.mouse.down();await page.mouse.move(...target,{steps:4});await page.mouse.up();assert(JSON.parse(await snap()).parts.some(p=>p.type==='arm_grasper'));
+ const placed=await snap();await page.locator('#undo').click();assert.notEqual(await snap(),placed);await page.locator('#redo').click();assert.equal(await snap(),placed);
+ await page.locator('#lang').click();assert.equal(await page.locator('html').getAttribute('lang'),'en');assert.equal(await page.locator('[data-mode=paint]').innerText(),'Paint');await page.locator('[data-mode=paint]').click();assert.equal(await page.locator('#panel h2').first().innerText(),'SKIN');
+ await page.locator('[data-mode=test]').click();await page.locator('[data-act=run]').click();await page.locator('[data-mode=build]').click();
+ const shared=await page.evaluate(()=>CreatureStudio.shareLink()),sharedGenome=await snap();await page.goto(shared);await page.waitForFunction(()=>window.CreatureStudio?.ready,{timeout:90000});assert.equal(await snap(),sharedGenome);
+ console.log('PASS palette, modes and sharing');
+ // Evidence: one desktop composition shows the imported arm, wing and material regions.
+ await page.evaluate(()=>{CreatureStudio.preset('Merodeador');CreatureStudio.addPart('wing_glider',{t:.57,ang:1.1,size:1});CreatureStudio.addPart('arm_grasper',{t:.78,ang:1.6,size:.85});CreatureStudio.addPart('lure_lantern',{t:.92,ang:0,size:.65});});
+ await page.locator('[data-cat=wings]').click();await page.screenshot({path:path.join(artifacts,'studio-v4-desktop.png'),timeout:90000});
+ assert.deepEqual(errors,[]);
+ fs.writeFileSync(path.join(artifacts,'studio-v4-results.json'),JSON.stringify({browser:browser.version(),renderer:'SwiftShader software WebGL',viewport:'1280x800',...result,errors},null,2)+'\n');console.log('PASS pointer, keyboard, history, regions, palette, modes, language and Unicode sharing');
+ }finally{await browser.close()}})().catch(e=>{console.error(e);process.exitCode=1});

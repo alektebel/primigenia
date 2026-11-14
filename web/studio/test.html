@@ -1,22 +1,8 @@
-<!doctype html><meta charset="utf-8"><title>studio test</title>
-<pre id="out">running</pre>
-<iframe id="f" src="index.html" style="width:1000px;height:700px"></iframe>
+<!doctype html><html lang="en"><meta charset="utf-8"><title>Primigenia studio contracts</title>
+<pre id="out">Running document, placement and rejection contracts…</pre>
+<iframe title="Studio under test" id="f" src="index.html" style="width:1000px;height:700px"></iframe>
+<script src="contracts.js"></script>
 <script>
-document.getElementById('f').onload=()=>setTimeout(()=>{const w=document.getElementById('f').contentWindow,S=w.CreatureStudio,r=[];let ok=true;
- const t=(c,m)=>{r.push((c?'ok   ':'FAIL ')+m);ok=ok&&c};
- for(const n of ['Cazador','Acorazado','Zancudo','Trepador','Coralino','Abisal']){w.document.querySelector(`[data-p="${n}"]`).click();const g=S.genome();S.load(JSON.parse(JSON.stringify(g)));t(JSON.stringify(S.genome())===JSON.stringify(g),'round trip '+n+' (dna '+g.dna+', speed '+g.abilities.speed+', health '+g.abilities.health+')')}
- for(let i=0;i<20;i++){w.document.getElementById('rand').click();const g=S.genome();S.load(JSON.parse(JSON.stringify(g)));t(JSON.stringify(S.genome())===JSON.stringify(g),'round trip random #'+i+' dna '+g.dna)}
- w.document.querySelector('[data-p=Coralino]').click();const g=S.genome();
- const bad=(f,m)=>{const x=JSON.parse(JSON.stringify(g));f(x);let e='';try{S.load(x)}catch(err){e=err.message}t(e.length>0,'rejects '+m+(e?' -> '+e.split('\n')[0]:''))};
- bad(x=>x.body.torso=99,'torso out of range');bad(x=>x.parts=x.parts.filter(p=>p.slot!=='mouth'),'no mouth');bad(x=>x.parts[0].level=7,'level 7');bad(x=>x.schema='x','bad schema');bad(x=>x.skin.colors.base='red','bad colour');
- bad(x=>x.regions[0].count=1.5,'fractional growth count');bad(x=>x.regions[0].seed=-1,'negative growth seed');bad(x=>x.regions[0].family='x','unknown growth family');bad(x=>delete x.regions,'v3 without regions');bad(x=>x.regions=null,'null regions');bad(x=>x.regions.push({...x.regions[0]}),'duplicate region ids');bad(x=>x.regions[0].id='<img>','unsafe region id');bad(x=>x.regions[0].surface='head','unsupported surface');bad(x=>x.regions[0].mirror=1,'nonboolean symmetry');bad(x=>x.regions[0].position=NaN,'nonfinite attachment');bad(x=>x.parts=[null],'malformed part');bad(x=>x.regions=Array.from({length:65},(_,i)=>({...x.regions[0],id:'region-'+i})),'editor region resource limit');
- t(JSON.stringify(S.genome())===JSON.stringify(g),'rejected loads leave the creature unchanged');
- for(const family of ['horns','plates','tendrils']){const x=JSON.parse(JSON.stringify(g));x.regions[0].family=family;x.regions[0].seed=123;x.regions[0].count=12;x.regions[0].branches=3;S.load(x);t(JSON.stringify(S.genome())===JSON.stringify(x),'generated '+family+' recipe round trip')}
- const multi=JSON.parse(JSON.stringify(g));multi.regions.push({...multi.regions[0],id:'neck-plates',surface:'neck',family:'plates',count:4,length:.4,mirror:false},{...multi.regions[0],id:'tail-fronds',surface:'tail',family:'tendrils',count:5});S.load(multi);t(JSON.stringify(S.genome())===JSON.stringify(multi),'multiple families and surfaces preserve independent recipes and ids');
- const empty=JSON.parse(JSON.stringify(g));empty.regions=[];S.load(empty);t(S.genome().regions.length===0,'empty art document round trip');
- const legacy=JSON.parse(JSON.stringify(g));legacy.schema='cpore.creature/1';delete legacy.regions;S.load(legacy);t(S.genome().regions.length===0&&S.genome().schema==='cpore.creature/3','v1 migrates without generated details');
- legacy.schema='cpore.creature/2';legacy.growth={...g.regions[0]};delete legacy.growth.id;delete legacy.growth.surface;S.load(legacy);t(JSON.stringify(S.genome())===JSON.stringify(g),'v2 preserves single growth recipe as stable torso region');
- legacy.growth.family='none';S.load(legacy);t(S.genome().regions.length===0,'v2 with no growth migrates to empty region list');
- delete legacy.growth;let rejected=false;try{S.load(legacy)}catch(e){rejected=true}t(rejected,'v2 still requires a growth recipe');
- document.getElementById('out').textContent=(ok?'ALL OK':'FAILURES')+'\n'+r.join('\n')},3000);
-</script>
+const f=document.getElementById('f');
+const timer=setInterval(async()=>{if(!f.contentWindow.CreatureStudio?.ready)return;clearInterval(timer);try{const result=await studioContracts(f.contentWindow.CreatureStudio);document.getElementById('out').textContent='ALL OK\n'+JSON.stringify(result,null,2)}catch(e){document.getElementById('out').textContent='FAIL '+e.stack}},200);
+</script></html>
