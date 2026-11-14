@@ -2,7 +2,9 @@
 # core/ is the simulation: libc + libm only, no graphics (DESIGN.md Q31, Q50).
 CC      ?= cc
 CFLAGS  ?= -O2 -std=c99 -Wall -Wextra -Wno-unused-parameter -fno-fast-math
-CFLAGS  += -Icore/include -D_POSIX_C_SOURCE=200809L
+override CFLAGS += -Icore/include -D_POSIX_C_SOURCE=200809L
+# Determinism (DESIGN.md Q24, G25/P2): no fused multiply-add contraction anywhere.
+override CFLAGS += -fno-fast-math -ffp-contract=off
 LDLIBS   = -lm
 BUILD   := build
 
@@ -10,8 +12,8 @@ CORE_SRC := $(wildcard core/src/*.c)
 CORE_OBJ := $(CORE_SRC:%.c=$(BUILD)/%.o)
 HDRS     := $(wildcard core/include/cpore/*.h)
 
-.PHONY: all core lib test bench smoke studio blender blender-mcp-setup blender-mcp-smoke blender-sample-parts clean check-core
-all: core $(BUILD)/cpore_test $(BUILD)/cpore_bench
+.PHONY: all core lib test bench tourney smoke studio blender blender-mcp-setup blender-mcp-smoke blender-sample-parts clean check-core
+all: core $(BUILD)/cpore_test $(BUILD)/cpore_bench $(BUILD)/combat_test $(BUILD)/combat_tourney
 
 core: $(BUILD)/libcpore.a $(BUILD)/libcpore.so
 lib: $(BUILD)/libcpore.so
@@ -30,8 +32,30 @@ $(BUILD)/cpore_test: tests/test_core.c $(HDRS) $(BUILD)/libcpore.a
 $(BUILD)/cpore_bench: apps/bench.c $(HDRS) $(BUILD)/libcpore.a
 	$(CC) $(CFLAGS) $< $(BUILD)/libcpore.a -o $@ $(LDLIBS)
 
-test: $(BUILD)/cpore_test check-core
+# Combat (P2): bots and the duel runner live in apps/ and are shared by the tests and the tourney.
+$(BUILD)/apps/combat_bots.o: apps/combat_bots.c apps/combat_bots.h $(HDRS)
+	@mkdir -p $(dir $@)
+	$(CC) $(CFLAGS) -Iapps -c $< -o $@
+$(BUILD)/combat_test: tests/test_combat.c core/src/combat.c apps/combat_bots.h $(BUILD)/apps/combat_bots.o $(HDRS) $(BUILD)/libcpore.a
+	$(CC) $(CFLAGS) -DCP_COMBAT_TEST -Iapps $< core/src/combat.c $(BUILD)/apps/combat_bots.o $(BUILD)/libcpore.a -o $@ $(LDLIBS)
+$(BUILD)/combat_tourney: apps/combat_tourney.c apps/combat_bots.h $(BUILD)/apps/combat_bots.o $(HDRS) $(BUILD)/libcpore.a
+	$(CC) $(CFLAGS) -Iapps $< $(BUILD)/apps/combat_bots.o $(BUILD)/libcpore.a -o $@ $(LDLIBS)
+
+$(BUILD)/combat_tourney_test: tests/test_combat_tourney.c apps/combat_tourney.c apps/combat_bots.h $(BUILD)/apps/combat_bots.o $(HDRS) $(BUILD)/libcpore.a
+	$(CC) $(CFLAGS) -Iapps $< $(BUILD)/apps/combat_bots.o $(BUILD)/libcpore.a -o $@ $(LDLIBS)
+
+$(BUILD)/combat_golden: tests/combat_golden.c apps/combat_bots.h $(BUILD)/apps/combat_bots.o $(HDRS) $(BUILD)/libcpore.a
+	$(CC) $(CFLAGS) -Iapps $< $(BUILD)/apps/combat_bots.o $(BUILD)/libcpore.a -o $@ $(LDLIBS)
+
+# Correctness regressions. Balance acceptance remains a separate failing gate:
+# run make tourney as well before claiming P2 acceptance.
+test: $(BUILD)/cpore_test $(BUILD)/combat_test $(BUILD)/combat_tourney_test $(BUILD)/combat_golden check-core
 	./$(BUILD)/cpore_test
+	./$(BUILD)/combat_test
+	./$(BUILD)/combat_tourney_test
+	python3 tests/test_combat_golden.py ./$(BUILD)/combat_golden
+tourney: $(BUILD)/combat_tourney
+	./$(BUILD)/combat_tourney
 bench: $(BUILD)/cpore_bench
 	./$(BUILD)/cpore_bench
 smoke: lib
