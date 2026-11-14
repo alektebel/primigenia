@@ -196,3 +196,49 @@ Greedy scores expected damage per committed tick. It credits only
 when the timer grows. Counter-picker falls back to greedy when it cannot
 counter. Random picks legal attacks, movement, defence or rest without an
 opponent model. Idle issues no orders.
+
+## Tournament protocol and measured results
+
+`make tourney` runs 40 seeds per ordered strategy/profile cell and 400 payoff
+duels per move cell. Acceptance is still open: the revised tournament may fail
+and exits 1 on failure. `make test` checks simulation correctness, canaries,
+and acceptance arithmetic with synthetic fixtures; it does not claim that
+balance acceptance has passed. Both commands must be checked before merging.
+This separation lets correctness remain green while exposing design failures.
+
+The strategy protocol runs 16,000 duels over idle/random/greedy/counter and all
+ordered build pairs, 12 m apart, with a 900-tick cap. Death wins; at timeout,
+HP fraction wins only by more than one percentage point, otherwise a draw.
+Draws score 0.5. Both seats are checked for idle (any draw fails) and random
+(score <5% against greedy/counter, including draws). Draw counts are printed.
+The random canary remains a measured <5% tolerance, not a claim of zero wins;
+DESIGN.md's stronger literal never-win wording is not established.
+
+Build scores pool **all nine** random/greedy/counter strategy pairings with
+equal weight and both seat perspectives. The 65% ceiling applies to each
+build's mean against the other four builds. The additional 90% sanity cap
+applies to each ordered build pair pooled over the same nine strategy pairs.
+The nine unpooled pairwise tables are diagnostic: a smart strategy crushing
+random is not itself a build imbalance. Same-build cells are printed but
+excluded from field means and the pair cap. Every played active duel enters
+both build perspectives, so pooled pair rates are complementary.
+
+The payoff protocol runs 14,400 duels of 120 ticks, 7 m starts, all parts at
+level 3, 100 stamina, 4 m/s and 100,000 HP to measure uncensored damage.
+Guard is held/reissued, dodge repeated; each completes recovery and restarts
+through the same public order API. Deterministic start offsets are paired
+with reversed seats (odd requested sample counts round up to a complete
+pair). This makes the payoff matrices antisymmetric, including their diagonal.
+Raw payoff is damage dealt minus damage received. Resource payoff subtracts
+stamina-spend margin times a move-table-derived coefficient:
+
+`mean(offensive L3 total nominal HP / start cost) = 1.312500 HP/stamina`.
+
+Bite contributes `(15.4 + 14*0.6)/10.8`, charge `23.8/21.6`, spit
+`11.2/14.4`, tail `14/12`. The mean values a generic offensive stamina point;
+it is a diagnostic exchange rate, not an exact value of stamina in every
+state. Both raw and resource matrices must independently have no weakly
+dominating row at tolerance `2*max(SE_a, SE_b) + 0.5 HP`. Neither gate can
+substitute for the other. Both print an equilibrium mix from 200,000 regret
+matching iterations. Elo uses a Bradley–Terry fit (mean 1000, one half-win
+pseudo-game per pair); Elo is descriptive and does not alter any gate.
