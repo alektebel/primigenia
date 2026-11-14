@@ -1,0 +1,387 @@
+{
+  "browser": {
+    "browser": "Chromium 158.0.8127.18",
+    "executable": "/home/diego/.cache/ms-playwright/chromium-1254/chrome-linux64/chrome",
+    "args": [
+      "--use-angle=swiftshader",
+      "--enable-unsafe-swiftshader"
+    ],
+    "viewport": "1280x800",
+    "deviceScaleFactor": 1,
+    "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+    "page": "web/hero/index.html?t=<t>&cam=<cam> (creature Merodeador, fixed seed, scene frozen)",
+    "luminance": "Rec.709 weights on sRGB-decoded (linear) 8-bit values",
+    "saturation": "HSV S of the 8-bit sRGB value",
+    "creature_mask": "|A-B| >= 1 on any channel, A = frame, B = same frame with creature pixels hidden (shadow kept)",
+    "sky_mask": "pixels that are pure magenta when the sky dome is painted magenta and clouds hidden",
+    "environment": "all pixels that are neither creature nor sky",
+    "pass_rule": "creature lum_mean within environment [lum_p10, lum_p90] AND |creature sat_mean - environment sat_mean| <= 0.15; skip these two checks only for vista masks < 512 pixels; zero console errors always; golden-mid grass hue 65..100 degrees"
+  },
+  "baseline": "v8-baseline.json",
+  "hue_before": {
+    "pixels": 88600,
+    "mean_hue_degrees": 70.49554342972507,
+    "rois": [
+      [
+        80,
+        520,
+        390,
+        720
+      ],
+      [
+        1000,
+        500,
+        1190,
+        640
+      ]
+    ],
+    "method": "Arithmetic HSV hue mean in fixed meadow ROIs; S >= 0.2, V >= 0.15, creature excluded; no hue filter"
+  },
+  "hue_after": {
+    "pixels": 88600,
+    "mean_hue_degrees": 77.04483383045702,
+    "rois": [
+      [
+        80,
+        520,
+        390,
+        720
+      ],
+      [
+        1000,
+        500,
+        1190,
+        640
+      ]
+    ],
+    "method": "Arithmetic HSV hue mean in fixed meadow ROIs; S >= 0.2, V >= 0.15, creature excluded; no hue filter"
+  },
+  "capture_time_comparisons": [
+    {
+      "name": "golden-close",
+      "before_seconds": 52.597,
+      "after_seconds": 58.119,
+      "ratio": 1.1049869764435234
+    },
+    {
+      "name": "noon-close",
+      "before_seconds": 52.589,
+      "after_seconds": 64.565,
+      "ratio": 1.227728232139801
+    },
+    {
+      "name": "overcast-close",
+      "before_seconds": 54.159,
+      "after_seconds": 69.65,
+      "ratio": 1.286028176295722
+    },
+    {
+      "name": "night-close",
+      "before_seconds": 58.548,
+      "after_seconds": 73.313,
+      "ratio": 1.2521862403497985
+    },
+    {
+      "name": "golden-mid",
+      "before_seconds": 54.189,
+      "after_seconds": 75.914,
+      "ratio": 1.4009116241303585
+    },
+    {
+      "name": "noon-mid",
+      "before_seconds": 64.368,
+      "after_seconds": 65.174,
+      "ratio": 1.0125217499378576
+    },
+    {
+      "name": "overcast-mid",
+      "before_seconds": 52.703,
+      "after_seconds": 69.912,
+      "ratio": 1.326527901637478
+    },
+    {
+      "name": "night-mid",
+      "before_seconds": 53.429,
+      "after_seconds": 72.335,
+      "ratio": 1.3538527765820059
+    },
+    {
+      "name": "golden-far",
+      "before_seconds": 54.355,
+      "after_seconds": 79.901,
+      "ratio": 1.4699843620642075
+    },
+    {
+      "name": "noon-far",
+      "before_seconds": 56.158,
+      "after_seconds": 70.678,
+      "ratio": 1.2585562163894726
+    },
+    {
+      "name": "overcast-far",
+      "before_seconds": 59.581,
+      "after_seconds": 74.108,
+      "ratio": 1.2438193383796847
+    },
+    {
+      "name": "night-far",
+      "before_seconds": 59.829,
+      "after_seconds": 70.925,
+      "ratio": 1.185461899747614
+    }
+  ],
+  "timing_scope": "Original committed v7 full grid versus final v8 full grid, matching the 12 existing frames in the same order; same browser, viewport, SwiftShader, warmup, three renders, decodes and masks. Wall time, not FPS.",
+  "all_frames_pass": true,
+  "console_errors": 0,
+  "frames": 16,
+  "fresh_subset_v8": {
+    "generated": "2026-11-14T23:18:08.519Z",
+    "settings": {
+      "browser": "Chromium 158.0.8127.18",
+      "executable": "/home/diego/.cache/ms-playwright/chromium-1254/chrome-linux64/chrome",
+      "args": [
+        "--use-angle=swiftshader",
+        "--enable-unsafe-swiftshader"
+      ],
+      "viewport": "1280x800",
+      "deviceScaleFactor": 1,
+      "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+      "page": "web/hero/index.html?t=<t>&cam=<cam> (creature Merodeador, fixed seed, scene frozen)",
+      "luminance": "Rec.709 weights on sRGB-decoded (linear) 8-bit values",
+      "saturation": "HSV S of the 8-bit sRGB value",
+      "creature_mask": "|A-B| >= 1 on any channel, A = frame, B = same frame with creature pixels hidden (shadow kept)",
+      "sky_mask": "pixels that are pure magenta when the sky dome is painted magenta and clouds hidden",
+      "environment": "all pixels that are neither creature nor sky",
+      "pass_rule": "creature lum_mean within environment [lum_p10, lum_p90] AND |creature sat_mean - environment sat_mean| <= 0.15; skip these two checks only for vista masks < 512 pixels; zero console errors always; golden-mid grass hue 65..100 degrees"
+    },
+    "frames": [
+      {
+        "name": "golden-mid",
+        "t": "golden",
+        "cam": "mid",
+        "creature": {
+          "pixels": 55300,
+          "lum_mean": 0.21025829756479678,
+          "lum_p10": 0.011755606159567833,
+          "lum_p50": 0.16319487988948822,
+          "lum_p90": 0.47457554936408997,
+          "sat_mean": 0.5807411920090654
+        },
+        "environment": {
+          "pixels": 968700,
+          "lum_mean": 0.27731033785729187,
+          "lum_p10": 0.08929940313100815,
+          "lum_p50": 0.2938193380832672,
+          "lum_p90": 0.38056501746177673,
+          "sat_mean": 0.5398060628108172
+        },
+        "sky_pixels": 0,
+        "mask_threshold": 1,
+        "noise": null,
+        "console_errors": [],
+        "seconds": 76.708,
+        "grass_hsv": {
+          "pixels": 88600,
+          "mean_hue_degrees": 77.04483383045702,
+          "rois": [
+            [
+              80,
+              520,
+              390,
+              720
+            ],
+            [
+              1000,
+              500,
+              1190,
+              640
+            ]
+          ],
+          "method": "Arithmetic HSV hue mean in fixed meadow ROIs; S >= 0.2, V >= 0.15, creature excluded; no hue filter"
+        },
+        "pass": {
+          "lum": true,
+          "sat": true,
+          "sat_delta": 0.040935129198248155,
+          "all": true,
+          "console": true,
+          "grass_hue": true
+        }
+      },
+      {
+        "name": "golden-far",
+        "t": "golden",
+        "cam": "far",
+        "creature": {
+          "pixels": 10955,
+          "lum_mean": 0.20098263749047268,
+          "lum_p10": 0.010954804718494415,
+          "lum_p50": 0.15323695540428162,
+          "lum_p90": 0.451066792011261,
+          "sat_mean": 0.5762467823950691
+        },
+        "environment": {
+          "pixels": 1013045,
+          "lum_mean": 0.28486066894910084,
+          "lum_p10": 0.11978931725025177,
+          "lum_p50": 0.2965092957019806,
+          "lum_p90": 0.38056501746177673,
+          "sat_mean": 0.5296532101851175
+        },
+        "sky_pixels": 0,
+        "mask_threshold": 1,
+        "noise": null,
+        "console_errors": [],
+        "seconds": 81.286,
+        "pass": {
+          "lum": true,
+          "sat": true,
+          "sat_delta": 0.04659357220995164,
+          "all": true,
+          "console": true
+        }
+      }
+    ]
+  },
+  "initial_fresh_v7_vs_late_v8": [
+    {
+      "name": "golden-mid",
+      "initial_v7_seconds": 46.186,
+      "late_v8_seconds": 76.708
+    },
+    {
+      "name": "golden-far",
+      "initial_v7_seconds": 48.603,
+      "late_v8_seconds": 81.286
+    }
+  ],
+  "fresh_subset_v7_recheck": {
+    "generated": "2026-11-14T23:20:19.255Z",
+    "settings": {
+      "browser": "Chromium 158.0.8127.18",
+      "executable": "/home/diego/.cache/ms-playwright/chromium-1254/chrome-linux64/chrome",
+      "args": [
+        "--use-angle=swiftshader",
+        "--enable-unsafe-swiftshader"
+      ],
+      "viewport": "1280x800",
+      "deviceScaleFactor": 1,
+      "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+      "page": "/tmp/p0-land-v7.html?t=<t>&cam=<cam> (creature Merodeador, fixed seed, scene frozen)",
+      "luminance": "Rec.709 weights on sRGB-decoded (linear) 8-bit values",
+      "saturation": "HSV S of the 8-bit sRGB value",
+      "creature_mask": "|A-B| >= 1 on any channel, A = frame, B = same frame with creature pixels hidden (shadow kept)",
+      "sky_mask": "pixels that are pure magenta when the sky dome is painted magenta and clouds hidden",
+      "environment": "all pixels that are neither creature nor sky",
+      "pass_rule": "creature lum_mean within environment [lum_p10, lum_p90] AND |creature sat_mean - environment sat_mean| <= 0.15; skip these two checks only for vista masks < 512 pixels; zero console errors always; golden-mid grass hue 65..100 degrees"
+    },
+    "frames": [
+      {
+        "name": "golden-mid",
+        "t": "golden",
+        "cam": "mid",
+        "creature": {
+          "pixels": 54137,
+          "lum_mean": 0.210672613013586,
+          "lum_p10": 0.01265788171440363,
+          "lum_p50": 0.1618865579366684,
+          "lum_p90": 0.4752029776573181,
+          "sat_mean": 0.5829071788990847
+        },
+        "environment": {
+          "pixels": 969863,
+          "lum_mean": 0.24939401494047264,
+          "lum_p10": 0.06887407600879669,
+          "lum_p50": 0.19609545171260834,
+          "lum_p90": 0.5662381052970886,
+          "sat_mean": 0.6421909455703476
+        },
+        "sky_pixels": 0,
+        "mask_threshold": 1,
+        "noise": null,
+        "console_errors": [],
+        "seconds": 61.337,
+        "grass_hsv": {
+          "pixels": 88600,
+          "mean_hue_degrees": 70.49554342972507,
+          "rois": [
+            [
+              80,
+              520,
+              390,
+              720
+            ],
+            [
+              1000,
+              500,
+              1190,
+              640
+            ]
+          ],
+          "method": "Arithmetic HSV hue mean in fixed meadow ROIs; S >= 0.2, V >= 0.15, creature excluded; no hue filter"
+        },
+        "pass": {
+          "lum": true,
+          "sat": true,
+          "sat_delta": -0.059283766671262894,
+          "all": true,
+          "console": true,
+          "grass_hue": true
+        }
+      },
+      {
+        "name": "golden-far",
+        "t": "golden",
+        "cam": "far",
+        "creature": {
+          "pixels": 10704,
+          "lum_mean": 0.19795432942906535,
+          "lum_p10": 0.010950485244393349,
+          "lum_p50": 0.14319193363189697,
+          "lum_p90": 0.45156967639923096,
+          "sat_mean": 0.5932967032365061
+        },
+        "environment": {
+          "pixels": 1013296,
+          "lum_mean": 0.2508276717910412,
+          "lum_p10": 0.0904192328453064,
+          "lum_p50": 0.19682611525058746,
+          "lum_p90": 0.5200319886207581,
+          "sat_mean": 0.6425239099737245
+        },
+        "sky_pixels": 0,
+        "mask_threshold": 1,
+        "noise": null,
+        "console_errors": [],
+        "seconds": 59.21,
+        "pass": {
+          "lum": true,
+          "sat": true,
+          "sat_delta": -0.049227206737218476,
+          "all": true,
+          "console": true
+        }
+      }
+    ]
+  },
+  "adjacent_subset_comparisons": [
+    {
+      "name": "golden-mid",
+      "v7_seconds": 61.337,
+      "v8_seconds": 76.708,
+      "ratio": 1.2505991489639205
+    },
+    {
+      "name": "golden-far",
+      "v7_seconds": 59.21,
+      "v8_seconds": 81.286,
+      "ratio": 1.3728424252660023
+    }
+  ],
+  "v7_recheck_source": {
+    "git": "3a07527^:web/hero/index.html",
+    "sha256": "2c1f5f412470fb3ae3bd77cb9d239c28a50b2097ab6bec7cf385ff79af1f6c34",
+    "pixels_match_initial_baseline": true
+  },
+  "adjacent_subset_context": "Late v8 subset followed immediately by unchanged v7 subset, same two frames and browser/settings/niceness. Both v7 frames are byte-identical to the original baseline, and both v8 frames are byte-identical to the final grid. Initial v7 subset timing varied substantially; this does not prove the cause of the variance."
+}

@@ -1,5 +1,5 @@
 {
- "generated": "2026-11-14T17:51:58.189Z",
+ "generated": "2026-11-14T23:15:05.532Z",
  "settings": {
   "browser": "Chromium 158.0.8127.18",
   "executable": "/home/diego/.cache/ms-playwright/chromium-1254/chrome-linux64/chrome",
@@ -16,7 +16,7 @@
   "creature_mask": "|A-B| >= 1 on any channel, A = frame, B = same frame with creature pixels hidden (shadow kept)",
   "sky_mask": "pixels that are pure magenta when the sky dome is painted magenta and clouds hidden",
   "environment": "all pixels that are neither creature nor sky",
-  "pass_rule": "creature lum_mean within environment [lum_p10, lum_p90] AND |creature sat_mean - environment sat_mean| <= 0.15"
+  "pass_rule": "creature lum_mean within environment [lum_p10, lum_p90] AND |creature sat_mean - environment sat_mean| <= 0.15; skip these two checks only for vista masks < 512 pixels; zero console errors always; golden-mid grass hue 65..100 degrees"
  },
  "frames": [
   {
@@ -24,31 +24,32 @@
    "t": "golden",
    "cam": "close",
    "creature": {
-    "pixels": 159880,
-    "lum_mean": 0.21789070093795987,
-    "lum_p10": 0.01494288258254528,
-    "lum_p50": 0.17955729365348816,
-    "lum_p90": 0.47863444685935974,
-    "sat_mean": 0.5822751147772907
+    "pixels": 162927,
+    "lum_mean": 0.21677603656307862,
+    "lum_p10": 0.013890601694583893,
+    "lum_p50": 0.17864546179771423,
+    "lum_p90": 0.47769591212272644,
+    "sat_mean": 0.5805110267986792
    },
    "environment": {
-    "pixels": 864120,
-    "lum_mean": 0.2484829682582224,
-    "lum_p10": 0.05741573125123978,
-    "lum_p50": 0.19219379127025604,
-    "lum_p90": 0.6063522696495056,
-    "sat_mean": 0.6346408551600007
+    "pixels": 861073,
+    "lum_mean": 0.26706195968715546,
+    "lum_p10": 0.08798424154520035,
+    "lum_p50": 0.2909683585166931,
+    "lum_p90": 0.3746384382247925,
+    "sat_mean": 0.5226263699191778
    },
    "sky_pixels": 0,
    "mask_threshold": 1,
    "noise": null,
    "console_errors": [],
-   "seconds": 52.597,
+   "seconds": 58.119,
    "pass": {
     "lum": true,
     "sat": true,
-    "sat_delta": -0.052365740382710024,
-    "all": true
+    "sat_delta": 0.057884656879501395,
+    "all": true,
+    "console": true
    }
   },
   {
@@ -56,31 +57,32 @@
    "t": "noon",
    "cam": "close",
    "creature": {
-    "pixels": 160317,
-    "lum_mean": 0.24401848767762327,
-    "lum_p10": 0.03912341967225075,
+    "pixels": 163314,
+    "lum_mean": 0.2438752263511272,
+    "lum_p10": 0.03887442126870155,
     "lum_p50": 0.21082964539527893,
-    "lum_p90": 0.49636363983154297,
-    "sat_mean": 0.45087740544275484
+    "lum_p90": 0.4952554702758789,
+    "sat_mean": 0.4498132105417352
    },
    "environment": {
-    "pixels": 863683,
-    "lum_mean": 0.409521121361412,
-    "lum_p10": 0.08772017806768417,
-    "lum_p50": 0.40739771723747253,
-    "lum_p90": 0.7112681865692139,
-    "sat_mean": 0.5428445109622057
+    "pixels": 860686,
+    "lum_mean": 0.33112119732013634,
+    "lum_p10": 0.10246799886226654,
+    "lum_p50": 0.36129048466682434,
+    "lum_p90": 0.4697202742099762,
+    "sat_mean": 0.4749684985300138
    },
    "sky_pixels": 0,
    "mask_threshold": 1,
    "noise": null,
    "console_errors": [],
-   "seconds": 52.589,
+   "seconds": 64.565,
    "pass": {
     "lum": true,
     "sat": true,
-    "sat_delta": -0.09196710551945081,
-    "all": true
+    "sat_delta": -0.025155287988278652,
+    "all": true,
+    "console": true
    }
   },
   {
@@ -88,31 +90,32 @@
    "t": "overcast",
    "cam": "close",
    "creature": {
-    "pixels": 159988,
-    "lum_mean": 0.19884462540654246,
-    "lum_p10": 0.028544798493385315,
-    "lum_p50": 0.16830632090568542,
-    "lum_p90": 0.40382593870162964,
-    "sat_mean": 0.5010455978875509
+    "pixels": 162726,
+    "lum_mean": 0.19936985473400767,
+    "lum_p10": 0.028167560696601868,
+    "lum_p50": 0.16809630393981934,
+    "lum_p90": 0.406666100025177,
+    "sat_mean": 0.499834033335064
    },
    "environment": {
-    "pixels": 864012,
-    "lum_mean": 0.3412923278885174,
-    "lum_p10": 0.11763103306293488,
-    "lum_p50": 0.27894827723503113,
-    "lum_p90": 0.5954126119613647,
-    "sat_mean": 0.5230038276978924
+    "pixels": 861274,
+    "lum_mean": 0.3228856340617003,
+    "lum_p10": 0.1521441787481308,
+    "lum_p50": 0.33366379141807556,
+    "lum_p90": 0.4323689639568329,
+    "sat_mean": 0.4432047186610361
    },
    "sky_pixels": 0,
    "mask_threshold": 1,
    "noise": null,
    "console_errors": [],
-   "seconds": 54.159,
+   "seconds": 69.65,
    "pass": {
     "lum": true,
     "sat": true,
-    "sat_delta": -0.021958229810341567,
-    "all": true
+    "sat_delta": 0.056629314674027875,
+    "all": true,
+    "console": true
    }
   },
   {
@@ -120,31 +123,32 @@
    "t": "night",
    "cam": "close",
    "creature": {
-    "pixels": 159460,
-    "lum_mean": 0.02931024346524468,
-    "lum_p10": 0.0020248880609869957,
-    "lum_p50": 0.014117904007434845,
-    "lum_p90": 0.06196186691522598,
-    "sat_mean": 0.5904065603688672
+    "pixels": 162788,
+    "lum_mean": 0.029365821146637834,
+    "lum_p10": 0.0019465471850708127,
+    "lum_p50": 0.014177009463310242,
+    "lum_p90": 0.06215040013194084,
+    "sat_mean": 0.5955745297348958
    },
    "environment": {
-    "pixels": 864540,
-    "lum_mean": 0.040461284021990174,
-    "lum_p10": 0.007561992388218641,
-    "lum_p50": 0.01571468822658062,
-    "lum_p90": 0.09759784489870071,
-    "sat_mean": 0.5084084556855321
+    "pixels": 861212,
+    "lum_mean": 0.05163246833870794,
+    "lum_p10": 0.010634614154696465,
+    "lum_p50": 0.05149905011057854,
+    "lum_p90": 0.0876617282629013,
+    "sat_mean": 0.5919616638872495
    },
    "sky_pixels": 0,
    "mask_threshold": 1,
    "noise": null,
    "console_errors": [],
-   "seconds": 58.548,
+   "seconds": 73.313,
    "pass": {
     "lum": true,
     "sat": true,
-    "sat_delta": 0.08199810468333513,
-    "all": true
+    "sat_delta": 0.003612865847646307,
+    "all": true,
+    "console": true
    }
   },
   {
@@ -152,31 +156,52 @@
    "t": "golden",
    "cam": "mid",
    "creature": {
-    "pixels": 54137,
-    "lum_mean": 0.210672613013586,
-    "lum_p10": 0.01265788171440363,
-    "lum_p50": 0.1618865579366684,
-    "lum_p90": 0.4752029776573181,
-    "sat_mean": 0.5829071788990847
+    "pixels": 55300,
+    "lum_mean": 0.21025829756479678,
+    "lum_p10": 0.011755606159567833,
+    "lum_p50": 0.16319487988948822,
+    "lum_p90": 0.47457554936408997,
+    "sat_mean": 0.5807411920090654
    },
    "environment": {
-    "pixels": 969863,
-    "lum_mean": 0.24939401494047264,
-    "lum_p10": 0.06887407600879669,
-    "lum_p50": 0.19609545171260834,
-    "lum_p90": 0.5662381052970886,
-    "sat_mean": 0.6421909455703476
+    "pixels": 968700,
+    "lum_mean": 0.27731033785729187,
+    "lum_p10": 0.08929940313100815,
+    "lum_p50": 0.2938193380832672,
+    "lum_p90": 0.38056501746177673,
+    "sat_mean": 0.5398060628108172
    },
    "sky_pixels": 0,
    "mask_threshold": 1,
    "noise": null,
    "console_errors": [],
-   "seconds": 54.189,
+   "seconds": 75.914,
+   "grass_hsv": {
+    "pixels": 88600,
+    "mean_hue_degrees": 77.04483383045702,
+    "rois": [
+     [
+      80,
+      520,
+      390,
+      720
+     ],
+     [
+      1000,
+      500,
+      1190,
+      640
+     ]
+    ],
+    "method": "Arithmetic HSV hue mean in fixed meadow ROIs; S >= 0.2, V >= 0.15, creature excluded; no hue filter"
+   },
    "pass": {
     "lum": true,
     "sat": true,
-    "sat_delta": -0.059283766671262894,
-    "all": true
+    "sat_delta": 0.040935129198248155,
+    "all": true,
+    "console": true,
+    "grass_hue": true
    }
   },
   {
@@ -184,31 +209,32 @@
    "t": "noon",
    "cam": "mid",
    "creature": {
-    "pixels": 54126,
-    "lum_mean": 0.24617496893705448,
-    "lum_p10": 0.037964917719364166,
-    "lum_p50": 0.2118876725435257,
-    "lum_p90": 0.502986490726471,
-    "sat_mean": 0.4486981769218849
+    "pixels": 55419,
+    "lum_mean": 0.24708743366050473,
+    "lum_p10": 0.03799961134791374,
+    "lum_p50": 0.2130134403705597,
+    "lum_p90": 0.5041760206222534,
+    "sat_mean": 0.44642485594510545
    },
    "environment": {
-    "pixels": 969874,
-    "lum_mean": 0.42732726076142685,
-    "lum_p10": 0.11968892812728882,
-    "lum_p50": 0.41873711347579956,
-    "lum_p90": 0.7053325772285461,
-    "sat_mean": 0.5391655290045524
+    "pixels": 968581,
+    "lum_mean": 0.3553887179019688,
+    "lum_p10": 0.1334804892539978,
+    "lum_p50": 0.3772628605365753,
+    "lum_p90": 0.4813668131828308,
+    "sat_mean": 0.47593675504657873
    },
    "sky_pixels": 0,
    "mask_threshold": 1,
    "noise": null,
    "console_errors": [],
-   "seconds": 64.368,
+   "seconds": 65.174,
    "pass": {
     "lum": true,
     "sat": true,
-    "sat_delta": -0.09046735208266748,
-    "all": true
+    "sat_delta": -0.029511899101473282,
+    "all": true,
+    "console": true
    }
   },
   {
@@ -216,31 +242,32 @@
    "t": "overcast",
    "cam": "mid",
    "creature": {
-    "pixels": 54113,
-    "lum_mean": 0.19872931126553187,
-    "lum_p10": 0.02757968381047249,
-    "lum_p50": 0.16629332304000854,
-    "lum_p90": 0.4067744314670563,
-    "sat_mean": 0.49979601656369876
+    "pixels": 55199,
+    "lum_mean": 0.19930557300133223,
+    "lum_p10": 0.027002040296792984,
+    "lum_p50": 0.16649918258190155,
+    "lum_p90": 0.41179972887039185,
+    "sat_mean": 0.49842402977984906
    },
    "environment": {
-    "pixels": 969887,
-    "lum_mean": 0.34040539853019236,
-    "lum_p10": 0.12029164284467697,
-    "lum_p50": 0.28016164898872375,
-    "lum_p90": 0.5928620100021362,
-    "sat_mean": 0.5321853630682585
+    "pixels": 968801,
+    "lum_mean": 0.3289832261455929,
+    "lum_p10": 0.14270825684070587,
+    "lum_p50": 0.3441711962223053,
+    "lum_p90": 0.4377953112125397,
+    "sat_mean": 0.45671128335322764
    },
    "sky_pixels": 0,
    "mask_threshold": 1,
    "noise": null,
    "console_errors": [],
-   "seconds": 52.703,
+   "seconds": 69.912,
    "pass": {
     "lum": true,
     "sat": true,
-    "sat_delta": -0.03238934650455971,
-    "all": true
+    "sat_delta": 0.04171274642662143,
+    "all": true,
+    "console": true
    }
   },
   {
@@ -248,31 +275,32 @@
    "t": "night",
    "cam": "mid",
    "creature": {
-    "pixels": 54053,
-    "lum_mean": 0.029610342949115992,
-    "lum_p10": 0.001952526974491775,
-    "lum_p50": 0.014370005577802658,
-    "lum_p90": 0.0608978271484375,
-    "sat_mean": 0.5860342927599421
+    "pixels": 55417,
+    "lum_mean": 0.030190525633159125,
+    "lum_p10": 0.00188201735727489,
+    "lum_p50": 0.01473169680684805,
+    "lum_p90": 0.06280335038900375,
+    "sat_mean": 0.5941666336681575
    },
    "environment": {
-    "pixels": 969947,
-    "lum_mean": 0.0401569355401287,
-    "lum_p10": 0.009661282412707806,
-    "lum_p50": 0.015678327530622482,
-    "lum_p90": 0.09705259650945663,
-    "sat_mean": 0.5126471546718038
+    "pixels": 968583,
+    "lum_mean": 0.055065347294483556,
+    "lum_p10": 0.010656528174877167,
+    "lum_p50": 0.06013932824134827,
+    "lum_p90": 0.0876617282629013,
+    "sat_mean": 0.5919866317275616
    },
    "sky_pixels": 0,
    "mask_threshold": 1,
    "noise": null,
    "console_errors": [],
-   "seconds": 53.429,
+   "seconds": 72.335,
    "pass": {
     "lum": true,
     "sat": true,
-    "sat_delta": 0.07338713808813835,
-    "all": true
+    "sat_delta": 0.002180001940595866,
+    "all": true,
+    "console": true
    }
   },
   {
@@ -280,31 +308,32 @@
    "t": "golden",
    "cam": "far",
    "creature": {
-    "pixels": 10704,
-    "lum_mean": 0.19795432942906535,
-    "lum_p10": 0.010950485244393349,
-    "lum_p50": 0.14319193363189697,
-    "lum_p90": 0.45156967639923096,
-    "sat_mean": 0.5932967032365061
+    "pixels": 10955,
+    "lum_mean": 0.20098263749047268,
+    "lum_p10": 0.010954804718494415,
+    "lum_p50": 0.15323695540428162,
+    "lum_p90": 0.451066792011261,
+    "sat_mean": 0.5762467823950691
    },
    "environment": {
-    "pixels": 1013296,
-    "lum_mean": 0.2508276717910412,
-    "lum_p10": 0.0904192328453064,
-    "lum_p50": 0.19682611525058746,
-    "lum_p90": 0.5200319886207581,
-    "sat_mean": 0.6425239099737245
+    "pixels": 1013045,
+    "lum_mean": 0.28486066894910084,
+    "lum_p10": 0.11978931725025177,
+    "lum_p50": 0.2965092957019806,
+    "lum_p90": 0.38056501746177673,
+    "sat_mean": 0.5296532101851175
    },
    "sky_pixels": 0,
    "mask_threshold": 1,
    "noise": null,
    "console_errors": [],
-   "seconds": 54.355,
+   "seconds": 79.901,
    "pass": {
     "lum": true,
     "sat": true,
-    "sat_delta": -0.049227206737218476,
-    "all": true
+    "sat_delta": 0.04659357220995164,
+    "all": true,
+    "console": true
    }
   },
   {
@@ -312,31 +341,32 @@
    "t": "noon",
    "cam": "far",
    "creature": {
-    "pixels": 10683,
-    "lum_mean": 0.24528184334369285,
-    "lum_p10": 0.03974355384707451,
-    "lum_p50": 0.21596850454807281,
-    "lum_p90": 0.4922153055667877,
-    "sat_mean": 0.455932215541529
+    "pixels": 10968,
+    "lum_mean": 0.2463162722926393,
+    "lum_p10": 0.04084986075758934,
+    "lum_p50": 0.21759220957756042,
+    "lum_p90": 0.49131810665130615,
+    "sat_mean": 0.44406520901668184
    },
    "environment": {
-    "pixels": 1013317,
-    "lum_mean": 0.4451863020626073,
-    "lum_p10": 0.16767555475234985,
-    "lum_p50": 0.4283703863620758,
-    "lum_p90": 0.6946425437927246,
-    "sat_mean": 0.532502741743304
+    "pixels": 1013032,
+    "lum_mean": 0.3665698652012427,
+    "lum_p10": 0.18581745028495789,
+    "lum_p50": 0.37866950035095215,
+    "lum_p90": 0.4779853820800781,
+    "sat_mean": 0.46272889940860495
    },
    "sky_pixels": 0,
    "mask_threshold": 1,
    "noise": null,
    "console_errors": [],
-   "seconds": 56.158,
+   "seconds": 70.678,
    "pass": {
     "lum": true,
     "sat": true,
-    "sat_delta": -0.07657052620177501,
-    "all": true
+    "sat_delta": -0.018663690391923116,
+    "all": true,
+    "console": true
    }
   },
   {
@@ -344,31 +374,32 @@
    "t": "overcast",
    "cam": "far",
    "creature": {
-    "pixels": 10690,
-    "lum_mean": 0.19341894640670995,
-    "lum_p10": 0.02601047232747078,
-    "lum_p50": 0.1650456041097641,
-    "lum_p90": 0.3893282115459442,
-    "sat_mean": 0.5087277654042455
+    "pixels": 10949,
+    "lum_mean": 0.19729217365260637,
+    "lum_p10": 0.027178602293133736,
+    "lum_p50": 0.16809630393981934,
+    "lum_p90": 0.40487098693847656,
+    "sat_mean": 0.4951892782385505
    },
    "environment": {
-    "pixels": 1013310,
-    "lum_mean": 0.34740110573964605,
-    "lum_p10": 0.15839622914791107,
-    "lum_p50": 0.2862030267715454,
-    "lum_p90": 0.5835333466529846,
-    "sat_mean": 0.5364362488092892
+    "pixels": 1013051,
+    "lum_mean": 0.33818297762936766,
+    "lum_p10": 0.18718275427818298,
+    "lum_p50": 0.3472997546195984,
+    "lum_p90": 0.4377953112125397,
+    "sat_mean": 0.4529290382757256
    },
    "sky_pixels": 0,
    "mask_threshold": 1,
    "noise": null,
    "console_errors": [],
-   "seconds": 59.581,
+   "seconds": 74.108,
    "pass": {
     "lum": true,
     "sat": true,
-    "sat_delta": -0.027708483405043727,
-    "all": true
+    "sat_delta": 0.04226023996282491,
+    "all": true,
+    "console": true
    }
   },
   {
@@ -376,31 +407,168 @@
    "t": "night",
    "cam": "far",
    "creature": {
-    "pixels": 10738,
-    "lum_mean": 0.0291122560706817,
-    "lum_p10": 0.0020722884219139814,
-    "lum_p50": 0.014326064847409725,
-    "lum_p90": 0.05941293388605118,
-    "sat_mean": 0.5779651297991968
+    "pixels": 10980,
+    "lum_mean": 0.03011513929913035,
+    "lum_p10": 0.0020029733423143625,
+    "lum_p50": 0.015358773991465569,
+    "lum_p90": 0.06210022419691086,
+    "sat_mean": 0.5841525644674996
    },
    "environment": {
-    "pixels": 1013262,
-    "lum_mean": 0.0429313476077837,
+    "pixels": 1013020,
+    "lum_mean": 0.05223626218156499,
     "lum_p10": 0.007148632314056158,
-    "lum_p50": 0.015558009967207909,
-    "lum_p90": 0.09865164011716843,
-    "sat_mean": 0.5467083780585134
+    "lum_p50": 0.05427822470664978,
+    "lum_p90": 0.08564377576112747,
+    "sat_mean": 0.6114114795017995
    },
    "sky_pixels": 0,
    "mask_threshold": 1,
    "noise": null,
    "console_errors": [],
-   "seconds": 59.829,
+   "seconds": 70.925,
    "pass": {
     "lum": true,
     "sat": true,
-    "sat_delta": 0.03125675174068343,
-    "all": true
+    "sat_delta": -0.02725891503429989,
+    "all": true,
+    "console": true
+   }
+  },
+  {
+   "name": "golden-vista",
+   "t": "golden",
+   "cam": "vista",
+   "creature": {
+    "pixels": 198,
+    "lum_mean": 0.19944559317188384,
+    "lum_p10": 0.04677813500165939,
+    "lum_p50": 0.19421981275081635,
+    "lum_p90": 0.35533425211906433,
+    "sat_mean": 0.4174066743556939
+   },
+   "environment": {
+    "pixels": 892779,
+    "lum_mean": 0.278371671345594,
+    "lum_p10": 0.15199606120586395,
+    "lum_p50": 0.2651810646057129,
+    "lum_p90": 0.40487140417099,
+    "sat_mean": 0.26803367512314275
+   },
+   "sky_pixels": 131023,
+   "mask_threshold": 1,
+   "noise": null,
+   "console_errors": [],
+   "seconds": 71.457,
+   "pass": {
+    "lum": null,
+    "sat": null,
+    "all": true,
+    "creature_checks_skipped": true,
+    "reason": "vista creature mask < 512 pixels; color statistics unreliable",
+    "console": true
+   }
+  },
+  {
+   "name": "noon-vista",
+   "t": "noon",
+   "cam": "vista",
+   "creature": {
+    "pixels": 201,
+    "lum_mean": 0.26916521400224963,
+    "lum_p10": 0.08604047447443008,
+    "lum_p50": 0.2819863259792328,
+    "lum_p90": 0.4347081184387207,
+    "sat_mean": 0.3530832528203422
+   },
+   "environment": {
+    "pixels": 906554,
+    "lum_mean": 0.3497332712267327,
+    "lum_p10": 0.2105373591184616,
+    "lum_p50": 0.33571094274520874,
+    "lum_p90": 0.493449330329895,
+    "sat_mean": 0.26029690720181436
+   },
+   "sky_pixels": 117245,
+   "mask_threshold": 1,
+   "noise": null,
+   "console_errors": [],
+   "seconds": 66.626,
+   "pass": {
+    "lum": null,
+    "sat": null,
+    "all": true,
+    "creature_checks_skipped": true,
+    "reason": "vista creature mask < 512 pixels; color statistics unreliable",
+    "console": true
+   }
+  },
+  {
+   "name": "overcast-vista",
+   "t": "overcast",
+   "cam": "vista",
+   "creature": {
+    "pixels": 198,
+    "lum_mean": 0.22976417480137126,
+    "lum_p10": 0.07069605588912964,
+    "lum_p50": 0.23077453672885895,
+    "lum_p90": 0.3781645596027374,
+    "sat_mean": 0.36335945616622783
+   },
+   "environment": {
+    "pixels": 892727,
+    "lum_mean": 0.32889623044651195,
+    "lum_p10": 0.2143140435218811,
+    "lum_p50": 0.3120250701904297,
+    "lum_p90": 0.4545292854309082,
+    "sat_mean": 0.22894789661026718
+   },
+   "sky_pixels": 131075,
+   "mask_threshold": 1,
+   "noise": null,
+   "console_errors": [],
+   "seconds": 69.906,
+   "pass": {
+    "lum": null,
+    "sat": null,
+    "all": true,
+    "creature_checks_skipped": true,
+    "reason": "vista creature mask < 512 pixels; color statistics unreliable",
+    "console": true
+   }
+  },
+  {
+   "name": "night-vista",
+   "t": "night",
+   "cam": "vista",
+   "creature": {
+    "pixels": 199,
+    "lum_mean": 0.0245964906542348,
+    "lum_p10": 0.004496007692068815,
+    "lum_p50": 0.01886536180973053,
+    "lum_p90": 0.04784022271633148,
+    "sat_mean": 0.48412530191113357
+   },
+   "environment": {
+    "pixels": 909452,
+    "lum_mean": 0.037289301489414554,
+    "lum_p10": 0.008412334136664867,
+    "lum_p50": 0.022767581045627594,
+    "lum_p90": 0.07335659861564636,
+    "sat_mean": 0.5300414423844199
+   },
+   "sky_pixels": 114349,
+   "mask_threshold": 1,
+   "noise": null,
+   "console_errors": [],
+   "seconds": 73.036,
+   "pass": {
+    "lum": null,
+    "sat": null,
+    "all": true,
+    "creature_checks_skipped": true,
+    "reason": "vista creature mask < 512 pixels; color statistics unreliable",
+    "console": true
    }
   }
  ]
