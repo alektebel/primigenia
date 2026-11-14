@@ -238,6 +238,12 @@ recorded.
 | G46 | One lighting pipeline for everything: **ACES Filmic** tone mapping. The valley's toon world is retuned for ACES (light about 2.5×, the 3-band ramp recomputed so the bands survive the curve) rather than giving materials separate tone mapping. Measured references: valley = no tone mapping, sun `#fff0d2` 1.2, hemi 0.72, blue fog 110–760; creator = ACES 1.05, sun `#ffcf9a` 3.1 low, hemi 0.35 + PMREM environment, amber fog 35–560. |
 | G47 | The look is judged at **golden hour**; noon, overcast and night stay in the test grid. |
 | G48 | Imported Blender parts that fit badly on creator creatures (wrong scale, floating, flat dark or thin; e.g. beak, wings, sacs, arms, tail paddle, frill) are **rebuilt as procedural parts** in the creator's own style (shared skin, keratin, membrane and glow materials; sized and attached to the spine surface like the creator's parts). Each GLB stays in the repo as the shape reference; part ids stay the same so saved creatures still load. (2026-11-14) |
+| G49 | **Parts evolve in tiers** (e.g. claw → hooked → serrated). A tier is bought with DNA but unlocks only after a usage milestone with that part (fights won with it, tunnels dug, distance glided): you evolve what you use. (2026-11-15) |
+| G50 | **Secret moves are recipes**: at least two parts plus one diet condition, never a single part. Each one spends a resource meter that the diet refills (calcium from carcasses, fuel from resin plants). Examples: bone spines (back spines + carnivore jaw + carcasses → piercing projectiles), thrown claws (digging claws + spring arm; the claw regrows), fire breath (spit sac + volcano resin plant → fuel). (2026-11-15) |
+| G51 | Recipes are **hinted, not random**: some wild species already use the move, and fossils/carcasses of creatures that had it carry clues. Once discovered, a recipe is recorded in the codex. Finding a recipe by observation is also a benchmark task for agents. (2026-11-15) |
+| G52 | **Fire changes the world**: it burns grass, scares creatures and cooks food, so fire spread is simulated deterministically in C. It arrives with the volcano biome. (2026-11-15) |
+| G53 | Secret moves enter the same counter matrix and must pass the same tourney gates as every move: none may dominate; they win by surprise and are limited by their resource cost. (2026-11-15) |
+| G54 | Schedule: P4 brings part tiers, the recipe system and the first secret move (bone spines); P6 the aquatic ones (e.g. ink jet); P8 fire breath and thrown claws. (2026-11-15) |
 
 ## 10. The world (W1–W10, 2026-11-14)
 
