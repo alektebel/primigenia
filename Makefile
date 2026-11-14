@@ -110,3 +110,7 @@ $(BUILD)/combat_parity: tests/combat_parity.c apps/combat_bots.h $(BUILD)/apps/c
 	$(CC) $(CFLAGS) -Iapps $< $(BUILD)/apps/combat_bots.o $(BUILD)/libcpore.a -o $@ $(LDLIBS)
 wasm-parity: $(BUILD)/wasm/combat_golden.cjs $(BUILD)/wasm/combat_golden.wasm $(BUILD)/wasm/combat_parity.cjs $(BUILD)/wasm/combat_parity.wasm $(BUILD)/combat_parity
 	nice -n 10 python3 tests/test_wasm_parity.py
+
+.PHONY: wasm-test
+wasm-test: wasm wasm-parity
+	nice -n 10 node tests/test_wasm_combat.mjs

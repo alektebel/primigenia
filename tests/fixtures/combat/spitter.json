@@ -1,0 +1,67 @@
+{
+  "creature": {
+    "schema": "cpore.creature/4",
+    "name": "spitter",
+    "nodes": [
+      {
+        "y": 1,
+        "z": 0,
+        "r": 0.4
+      },
+      {
+        "y": 1,
+        "z": 1,
+        "r": 0.4
+      },
+      {
+        "y": 1,
+        "z": 2,
+        "r": 0.4
+      },
+      {
+        "y": 1,
+        "z": 3,
+        "r": 0.4
+      }
+    ],
+    "parts": [
+      {
+        "type": "romo",
+        "t": 0.5,
+        "ang": 0,
+        "size": 1
+      },
+      {
+        "type": "pico",
+        "t": 0.5,
+        "ang": 0,
+        "size": 1
+      },
+      {
+        "type": "sac_spitter",
+        "t": 0.5,
+        "ang": 0,
+        "size": 1
+      }
+    ],
+    "skin": {
+      "pat": 0,
+      "cA": "#abcdef",
+      "cB": "#123456",
+      "cC": "#fedcba",
+      "wet": 0.5,
+      "scale": 6
+    },
+    "regions": []
+  },
+  "expected": {
+    "mouth": 1,
+    "charge": 0,
+    "spit": 3,
+    "tail": 0,
+    "guard": 0,
+    "hp": 100,
+    "stamina": 100,
+    "speed": 4
+  }
+}
