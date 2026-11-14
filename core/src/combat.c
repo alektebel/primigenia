@@ -36,12 +36,16 @@
 
 /* ------------------------------------------------------------------ *
  * Data: moves.
+ * Bite can punish a simultaneous spit; spit still has time to interrupt a
+ * charge after the bot's two-tick reaction delay. Charge travels 1 m/frame
+ * (less than a body diameter) so a nearby target cannot be stepped over.
+ * Spit's slow expires before the next shot, leaving a closing opportunity.
  * ------------------------------------------------------------------ */
 const CpCombatMove CP_COMBAT_MOVES[CB_MOVE_COUNT] = {
-  { "bite",        4, 1, 3,  1.8f, 1.00f,  9.0f, 11.0f, CB_ST_BLEED, 15, 0,                                       CB_PART_MOUTH  },
-  { "charge",      6, 3, 7,  5.0f, 0.70f, 24.0f, 22.0f, CB_ST_STUN,   6, CB_F_DASH | CB_F_NO_WATER,               CB_PART_CHARGE },
+  { "bite",        3, 1, 3,  1.8f, 1.00f,  9.0f, 11.0f, CB_ST_BLEED, 15, 0,                                       CB_PART_MOUTH  },
+  { "charge",      7, 5, 4,  5.0f, 0.70f, 18.0f, 17.0f, CB_ST_STUN,   6, CB_F_DASH | CB_F_NO_WATER,               CB_PART_CHARGE },
   { "guard",       1,10, 2,  0.0f, 2.40f,  5.0f,  0.0f, CB_ST_NONE,   0, CB_F_SELF | CB_F_GUARD,                  CB_PART_GUARD  },
-  { "spit",        3, 1, 5,  9.0f, 0.25f, 12.0f, 10.0f, CB_ST_SLOW,  25, CB_F_RANGED,                             CB_PART_SPIT   },
+  { "spit",        4, 1, 5,  6.0f, 0.25f, 12.0f,  8.0f, CB_ST_SLOW,   8, CB_F_RANGED,                             CB_PART_SPIT   },
   { "tail_strike", 3, 2, 4,  2.2f, 2.40f, 10.0f, 10.0f, CB_ST_SLOW,  15, CB_F_SWEEP,                              CB_PART_TAIL   },
   { "dodge",       1, 2, 3,  2.2f, 0.00f,  8.0f,  0.0f, CB_ST_NONE,   0, CB_F_SELF | CB_F_DASH | CB_F_DIR | CB_F_EVADE, CB_PART_NONE },
 };

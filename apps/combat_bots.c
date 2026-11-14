@@ -5,12 +5,15 @@
 const char *const PROFILE_NAME[N_PROFILES] = {
     "brawler", "spitter", "tank", "skirmisher", "allrounder"
 };
-/*                          mouth charge spit tail guard   hp     stamina speed */
+/* HP pools calibrated against the field after fixing move timing and greedy
+ * scoring: high mouth levels buy damage at the expense of durability; the
+ * tank keeps the largest pool. Parts, stamina pools and speeds are unchanged.
+ *                          mouth charge spit tail guard   hp     stamina speed */
 const CpCombatProfile PROFILES[N_PROFILES] = {
-    /* brawler    */ { 4, 3, 0, 1, 1,  110.0f,  90.0f, 3.8f },
-    /* spitter    */ { 2, 0, 4, 0, 1,   90.0f, 110.0f, 4.2f },
-    /* tank       */ { 2, 1, 0, 3, 4,  130.0f, 100.0f, 3.4f },
-    /* skirmisher */ { 3, 0, 2, 2, 0,   95.0f, 100.0f, 4.6f },
+    /* brawler    */ { 4, 3, 0, 1, 1,   91.0f,  90.0f, 3.8f },
+    /* spitter    */ { 2, 0, 4, 0, 1,   107.0f, 110.0f, 4.2f },
+    /* tank       */ { 2, 1, 0, 3, 4,  115.0f, 100.0f, 3.4f },
+    /* skirmisher */ { 3, 0, 2, 2, 0,   100.0f, 100.0f, 4.6f },
     /* allrounder */ { 3, 2, 2, 2, 2,  100.0f, 100.0f, 4.0f },
 };
 
@@ -53,7 +56,7 @@ static int dodge_dir(const CpCombatWorld *w, int self)
     return wp >= wq ? 2 : 6;
 }
 
-/* best attack by expected damage now; returns the move or -1 */
+/* Best expected damage per committed tick, including unstacked bleed. */
 static int best_attack(const CpCombatWorld *w, int self, int foe)
 {
     const CpCombatCreature *me = &w->c[self];
@@ -63,7 +66,14 @@ static int best_attack(const CpCombatWorld *w, int self, int foe)
         if (me->stamina < cp_combat_move_stamina(&me->prof, m)) continue;
         CpCombatPreview p;
         cp_combat_preview(w, self, m, foe, &p);
-        float s = p.damage * (p.in_reach ? (p.in_arc ? 1.0f : 0.9f) : 0.4f);
+        const CpCombatMove *mv = &CP_COMBAT_MOVES[m];
+        float damage = p.damage;
+        /* Bleed cannot stack; credit only ticks not already pending. */
+        if (mv->status == CB_ST_BLEED && p.counter > 0 &&
+            w->c[foe].bleed_t < mv->status_ticks)
+            damage += 0.6f * (mv->status_ticks - w->c[foe].bleed_t);
+        float s = damage / (float)(mv->windup + mv->active + mv->recovery);
+        s *= p.in_reach ? (p.in_arc ? 1.0f : 0.9f) : 0.4f;
         if (s > best_s) { best_s = s; best = m; }
     }
     return best;

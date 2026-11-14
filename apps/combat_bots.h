@@ -10,7 +10,7 @@
 enum {
     BOT_IDLE = 0,      /* does nothing                                              */
     BOT_RANDOM,        /* random verb, random legal move, re-rolled every few ticks */
-    BOT_GREEDY,        /* the move with the best expected damage right now          */
+    BOT_GREEDY,        /* best expected damage per committed tick          */
     BOT_COUNTER,       /* answers the opponent's current wind-up with its counter   */
     BOT_SPAM,          /* repeats one fixed move (for the payoff matrix)            */
     BOT_KIND_COUNT
