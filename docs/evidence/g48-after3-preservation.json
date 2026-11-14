@@ -1,0 +1,150 @@
+{
+  "baseline": "3e23db9",
+  "sourceChecks": [
+    {
+      "name": "shared materials",
+      "byteIdentical": true,
+      "sha256": "1f7b0c4a065054a40fc42160cd7e2981f90c4779148755da3864cd21b21793e7"
+    },
+    {
+      "name": "shared creator scaling",
+      "byteIdentical": true,
+      "sha256": "d44727862a8f42ca2ee16b10e5fc3e9495613f4fedf59e0acb036d249675c672"
+    },
+    {
+      "name": "eye_triad",
+      "byteIdentical": true,
+      "sha256": "11969a8ed66724545991506c6a0dc1e2b328dc14145a54aee390e8b2ff203689"
+    },
+    {
+      "name": "wing_glider and wing_insect",
+      "byteIdentical": true,
+      "sha256": "164bad7a50b3aff3b2e5761e571f97699014cb7c9b6f1e71609989afab658ff3"
+    },
+    {
+      "name": "frill_fan",
+      "byteIdentical": true,
+      "sha256": "e99ea87f9142763c4fb1463b380024a626c96f9bf3c8043e44810a536208da27"
+    },
+    {
+      "name": "sac_spitter",
+      "byteIdentical": true,
+      "sha256": "028ec34d183723d476d2cccf89491f3d5c6d587926a864f6dd87451f6d412173"
+    },
+    {
+      "name": "Zancuda grasper branch",
+      "byteIdentical": true,
+      "sha256": "757c63b9552ed5b6248f830440e5489dbf1b1da1f150e4eea30e1e32ba0f1455"
+    },
+    {
+      "name": "procedural leg registrations",
+      "byteIdentical": true,
+      "sha256": "d9234c4560bb4527e56bdb7e001f0fda7f7a8cc4910389d156379b4bedc5f214"
+    },
+    {
+      "name": "all foot/leg makers and poses",
+      "byteIdentical": true,
+      "sha256": "55d8a56a44f0462e522fa3bacf9c7edb3e4dc6509de4accc5593252646e506d6"
+    }
+  ],
+  "unchangedWorldBounds": [
+    {
+      "seed": "Merodeador",
+      "id": "sac_spitter",
+      "min": [
+        -0.8120000064373016,
+        2.228536806804501,
+        2.534115973557059
+      ],
+      "max": [
+        0.8120000064373016,
+        3.1194853903988293,
+        3.7908600712452176
+      ]
+    },
+    {
+      "seed": "Merodeador",
+      "id": "wing_glider",
+      "min": [
+        -0.11819831811360404,
+        2.15925593840527,
+        -0.9875735242170107
+      ],
+      "max": [
+        2.8756508651734114,
+        3.565301346196958,
+        1.7563247035546894
+      ]
+    },
+    {
+      "seed": "Merodeador",
+      "id": "wing_insect",
+      "min": [
+        0.050662447618443185,
+        2.15925593840527,
+        -0.5290534912556424
+      ],
+      "max": [
+        2.9881741568626135,
+        3.664092347998909,
+        2.1027579993925265
+      ]
+    },
+    {
+      "seed": "Zancuda",
+      "id": "arm_grasper",
+      "min": [
+        0.11306427524992074,
+        3.30406407090979,
+        0.5989360789838245
+      ],
+      "max": [
+        0.9943930219263657,
+        4.864064073293976,
+        1.9722055773320606
+      ]
+    },
+    {
+      "seed": "Zancuda",
+      "id": "sac_spitter",
+      "min": [
+        -0.5220000296831131,
+        5.017086939189372,
+        1.882208554981714
+      ],
+      "max": [
+        0.5220000296831131,
+        5.63572546232978,
+        2.688859424364493
+      ]
+    },
+    {
+      "seed": "Zancuda",
+      "id": "wing_glider",
+      "min": [
+        -0.09902537428609892,
+        3.0173411021100587,
+        -1.562947373596025
+      ],
+      "max": [
+        2.6645276574092636,
+        4.315229146496296,
+        0.9698816989798269
+      ]
+    },
+    {
+      "seed": "Zancuda",
+      "id": "wing_insect",
+      "min": [
+        0.05684610663660683,
+        3.0173411021100587,
+        -1.1396981552718009
+      ],
+      "max": [
+        2.7683955217569247,
+        4.406420927541016,
+        1.2896662703281114
+      ]
+    }
+  ]
+}
