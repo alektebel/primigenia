@@ -14,7 +14,7 @@
   ],
   "export_transform": "Blender export_yup=True: (x,y,z) -> glTF (x,z,-y); glTF -> studio: rotate Y by -pi/2. Node transforms retained. Radial mounts then rotate X by pi/2 except mouths.",
   "material_regions": {
-    "method": "inferred from descriptive material names; category fallback for unnamed slots",
+    "method": "material name, then emissive glow, then mesh-name exceptions, then category fallback for unnamed slots",
     "Tidal teal skin": "skin",
     "Warm sand underside": "skin",
     "Plum keratin": "keratin",
@@ -23,7 +23,7 @@
     "Golden iris": "eye",
     "Coral membrane": "membrane",
     "Cobalt chitin": "keratin",
-    "Lantern chartreuse": "eye"
+    "Lantern chartreuse": "glow"
   },
   "parts": [
     {
@@ -942,7 +942,8 @@
   },
   "material_overrides": {
     "beak_crusher": "all slots keratin; ivory slots use bone, others beak",
-    "wing_insect/Warm sand underside": "membrane"
+    "wing_insect/Warm sand underside": "membrane (lower sail uses the belly material name)",
+    "Lantern chartreuse": "glow (emissive bulb and sac highlights; shared glowM, not pupil)"
   },
   "polygon_budget": {
     "max_source_polygons": 3598,
