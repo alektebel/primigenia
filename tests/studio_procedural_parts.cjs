@@ -16,7 +16,7 @@ const inspect=`window.__partsTest={step:update,inspect:()=>{
   const ud=o.g.userData,box=new T.Box3().setFromObject(o.g);
   return {type:o.p.type,side:o.sg,vertices,finite,regions,membranes,radius:ud.mountRadius,localSize:localBox.getSize(V()).toArray(),size:box.getSize(V()).toArray(),min:box.min.toArray(),max:box.max.toArray(),jaw:ud.jaw?.rotation.x,wing:ud.wing?.rotation.toArray().slice(0,3),sacs:ud.sacs?.map(s=>s.scale.x),arm:ud.arm?.rotation.x,tail:ud.tail?.rotation.y,sway:ud.sway?.rotation.x};
  });
- return {objects,legs:legs.map(l=>({type:l.p.type,side:l.sg,width:l.w,sole:l.ft.position.y,height:l.a+l.b,finite:[...l.up.position.toArray(),...l.lo.position.toArray(),...l.ft.position.toArray()].every(Number.isFinite)}))};
+ return {objects,legs:legs.map(l=>({type:l.p.type,side:l.sg,width:l.w,knee:l.lo.position.toArray(),foot:l.ft.position.toArray(),sole:l.ft.position.y,height:l.a+l.b,finite:[...l.up.position.toArray(),...l.lo.position.toArray(),...l.ft.position.toArray()].every(Number.isFinite)}))};
 }};`;
 (async()=>{
  const browser=await chromium.launch({headless:true,executablePath:process.env.HOME+'/.cache/ms-playwright/chromium-1254/chrome-linux64/chrome',args:['--use-angle=swiftshader','--enable-unsafe-swiftshader']});
@@ -65,7 +65,13 @@ const inspect=`window.__partsTest={step:update,inspect:()=>{
   // Every replacement remains adjustable through the real selection panel.
   for(const id of result.ids){
    await page.evaluate(id=>{CreatureStudio.preset('Merodeador');CreatureStudio.addPart(id)},id);
-   for(const key of ['size','rot','tilt'])assert.equal(await page.locator('#p-'+key).count(),1,id+' '+key);
+   for(const [key,value]of [['size',1.3],['rot',.41],['tilt',.27]]){
+    assert.equal(await page.locator('#p-'+key).count(),1,id+' '+key);
+    const before=await page.evaluate(()=>{__partsTest.step(0);return __partsTest.inspect()});
+    await page.locator('#p-'+key).fill(String(value));await page.locator('#p-'+key).dispatchEvent('input');
+    const after=await page.evaluate(()=>{__partsTest.step(0);return __partsTest.inspect()});
+    assert.notDeepEqual(after,before,id+' live '+key);
+   }
   }
   assert.deepEqual(errors,[]);
   fs.writeFileSync('docs/evidence/g48-tests.json',JSON.stringify({...result,errors},null,2)+'\n');console.log('PASS',result);

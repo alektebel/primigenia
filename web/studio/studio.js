@@ -493,7 +493,7 @@ function hitJoint(){const h=ray.intersectObjects(handlesG.children.filter(c=>c.u
 function hitNode(){if(!spineG)return -1;const h=ray.intersectObjects(spineG.children.filter(c=>c.userData.node!=null),true)[0];return h?h.object.userData.node:-1}
 const overBody=()=>{body.geometry.computeBoundingSphere();return ray.intersectObject(body).length>0};
 function hitPart(){const h=ray.intersectObjects([partsG,limbs],true)[0];return h?h.object.userData.part:null}
-function place(p,h){const was=centered(p);let a=Math.abs(h.ang);if(LIB[p.type].leg){if(Math.abs(Math.sin(a))<.2)a=a<1.57?.2:Math.PI-.2}else if(Math.abs(Math.sin(a))<.14)a=Math.cos(a)>0?0:Math.PI;p.t=clamp(h.t,0,1);p.ang=a;if(was!==centered(p))buildParts();else if(LIB[p.type].leg)buildParts(true)}
+function place(p,h){const was=centered(p);let a=Math.abs(h.ang);if(hasLeg(p)){if(Math.abs(Math.sin(a))<.2)a=a<1.57?.2:Math.PI-.2}else if(Math.abs(Math.sin(a))<.14)a=Math.cos(a)>0?0:Math.PI;p.t=clamp(h.t,0,1);p.ang=a;if(was!==centered(p))buildParts();else if(hasLeg(p))buildParts(true)}
 function snapshot(){return JSON.stringify(G)}
 function save(){try{localStorage.setItem('cpore.creature.v4',snapshot())}catch(e){}if($('json')&&document.activeElement!==$('json'))$('json').value=JSON.stringify(G,null,1);syncHistory()}
 function syncHistory(){$('undo').disabled=hist.length<2;$('redo').disabled=!fut.length}
@@ -532,7 +532,7 @@ gl.addEventListener('pointerdown',e=>{setRay(e);gl.setPointerCapture(e.pointerId
 addEventListener('pointermove',e=>{const inside=setRay(e);
   if(!drag){if(mode==='build'){const n=hitNode();spineOn=e.target===gl&&(n>=0||overBody());if(n!==hoverNode){hoverNode=n;if(spineG)spineG.children.forEach(h=>{if(h.userData.node!=null)h.scale.setScalar(h.userData.node===n?1.3:1)})}gl.style.cursor=n>=0||hitJoint()||(rotH.visible&&ray.intersectObject(rotH)[0])?'move':hitPart()?'pointer':'grab'}return}
   if(drag.k==='cam'){camYaw-=(e.clientX-drag.x)*.006;camPitch=clamp(camPitch+(e.clientY-drag.y)*.004,-.02,1.2);if(Math.abs(e.movementX)+Math.abs(e.movementY)>1)drag.moved=true;drag.x=e.clientX;drag.y=e.clientY}
-  else if(drag.k==='rot'){const pl=new T.Plane().setFromNormalAndCoplanarPoint(selAx.n,_e.copy(selAx.p).add(creature.position)),w=ray.ray.intersectPlane(pl,_a);if(w){w.sub(creature.position).sub(selAx.p);drag.p.rot=Math.atan2(-w.dot(selAx.x),w.dot(selAx.y));const el=$('p-rot');if(el)el.value=drag.p.rot;setHint('Gira la pieza alrededor de su base')}}
+  else if(drag.k==='rot'){const pl=new T.Plane().setFromNormalAndCoplanarPoint(selAx.n,_e.copy(selAx.p).add(creature.position)),w=ray.ray.intersectPlane(pl,_a);if(w){w.sub(creature.position).sub(selAx.p);drag.p.rot=Math.atan2(-w.dot(selAx.x),w.dot(selAx.y));const el=$('p-rot');if(el)el.value=drag.p.rot;if(LIB[drag.p.type].fittedLeg)buildParts(true);setHint('Gira la pieza alrededor de su base')}}
   else if(drag.k==='joint'){const l=legs.find(l=>l.p===drag.p&&l.sg===drag.sg);let wp=null;
     if(drag.j==='f'){const o=ray.ray.origin,d=ray.ray.direction,q=(l.w*.6-o.y)/d.y;if(d.y<-1e-3&&q>0)wp=_a.copy(o).addScaledVector(d,q)}else wp=ray.ray.intersectPlane(drag.plane,_a);
     if(wp&&l){const r=wp.sub(creature.position).sub(l.h0),v=[r.x*drag.sg,r.y,r.z];
@@ -578,7 +578,7 @@ function drawPanel(){let h='';
   if(mode==='test')h+=`<section><h2>Capacidades</h2><div id="caps"></div></section><section><h2>Acciones</h2><div class="chips"><button data-act="bite">Morder</button><button data-act="sing">Cantar</button><button data-act="run" aria-pressed="${run}">${run?'Andar':'Correr'}</button></div><p class="note">La zancada, el reparto de patas y la ondulación del cuerpo salen de las piezas que has puesto.</p></section>`;
   $('panel').innerHTML=h+(mode==='build'?growthPanel():'');drawStats();document.body.dataset.mode=mode;drawHandles();translateUI();syncHistory()}
 const PALS=[['#9a3b28','#2a1414','#e6cfa0'],['#2f8a5a','#12382c','#e9e2a8'],['#3d5fa8','#8a4fb0','#f0e6c8'],['#c9892b','#4a2a12','#f3e3b8'],['#6c7440','#2f3320','#d8cfa6'],['#22313f','#d9a441','#c8d2d8'],['#b84a6a','#3a1830','#f2d9c9']];
-$('panel').addEventListener('input',e=>{const t=e.target;if(t.dataset.pk&&sel){sel[t.dataset.pk]=+t.value;if(!['rot','tilt'].includes(t.dataset.pk))buildParts()}if(t.dataset.sk){G.skin[t.dataset.sk]=+t.value;syncSkin()}if(t.dataset.col){G.skin[t.dataset.col]=t.value;syncSkin()}});
+$('panel').addEventListener('input',e=>{const t=e.target;if(t.dataset.pk&&sel){sel[t.dataset.pk]=+t.value;if(LIB[sel.type].fittedLeg||!['rot','tilt'].includes(t.dataset.pk))buildParts()}if(t.dataset.sk){G.skin[t.dataset.sk]=+t.value;syncSkin()}if(t.dataset.col){G.skin[t.dataset.col]=t.value;syncSkin()}});
 $('panel').addEventListener('change',()=>commit());
 $('panel').addEventListener('click',e=>{const t=e.target.closest('button');if(!t)return;const d=t.dataset;
   if(t.id==='del'&&sel)removePart(sel);if(t.id==='rand'){loadG(randomCreature());commit()}if(d.seed){loadG(SEEDS[d.seed]);commit()}

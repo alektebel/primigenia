@@ -4,7 +4,7 @@ async function studioContracts(S,fixtures=[]){
  const check=(ok,message)=>{if(!ok)throw Error(message);checks.push(message)};
  const hash=async g=>Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(JSON.stringify(g))))).map(x=>x.toString(16).padStart(2,'0')).join('');
  const roundTrip=async name=>{const g=S.genome(),before=await hash(g);S.load(JSON.stringify(g));check(await hash(S.genome())===before,'hash round trip '+name)};
- for(const [id,axis,direction,limit]of [['jaw_nipper',2,1,.7],['horn_crown',2,1,.4],['lure_lantern',2,1,.8]]){const b=S.assetBounds(id);check(direction>0?b.max[axis]>limit:b.min[axis]<-limit,'exporter orientation '+id)}
+ for(const [id,axis,direction,limit]of [['jaw_nipper',2,1,.7],['leg_sprinter',1,-1,.8],['wing_glider',0,1,1.5],['tail_hammer',2,-1,1],['horn_crown',2,1,.4],['lure_lantern',2,1,.8]]){const b=S.assetBounds(id),source=S.parts.parts.find(p=>p.id===id).source;check(direction>0?b.max[axis]>limit:b.min[axis]<-limit,(source==='glb'?'exporter':'creator')+' orientation '+id)}
  for(const name of S.presets){S.preset(name);await roundTrip(name);
   const base=S.genome();
   for(const entry of S.parts.parts){const g=structuredClone(base);g.parts=[S.defaults(entry.id)];S.load(g);
