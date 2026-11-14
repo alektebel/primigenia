@@ -72,14 +72,23 @@ env.W.p.vis.root.visible=false;
 {const sc=env.sun.shadow.camera;sc.left=sc.bottom=-22;sc.right=sc.top=22;sc.updateProjectionMatrix();env.sun.shadow.normalBias=.05;env.sun.shadow.bias=-.0004}
 const CAM={close:[7.5,.10],mid:[13,.16],far:[30,.22]}[HP.cam]||[13,.16];
 const OCC=env.hU.occ.value,_w=V();function feedOcc(){for(let k=0;k<8;k++){const i=NC+Math.round(k*(NSP-1)/7);_w.copy(pts[i]).applyMatrix4(creature.matrixWorld);OCC[k].set(_w.x,_w.y,_w.z,RAD[i]*1.05)}for(let k=0;k<4;k++){const l=legs[k];if(l){_w.copy(l.ft.position);OCC[8+k].set(_w.x,_w.y,_w.z,l.w*2.2)}else OCC[8+k].set(0,-999,0,0)}env.hU.center.value.set(HERO.x,0,HERO.z)}
-window.__heroFrame=dt=>{if(HP.live)update(dt);feedOcc();
+window.__heroFrame=dt=>{if(window.Hero)Hero.frame++;if(HP.live)update(dt);feedOcc();
   const c=V(0,0,0);for(let i=0;i<NS;i++)c.add(pts[i]);c.multiplyScalar(1/NS).applyMatrix4(creature.matrixWorld);
   const a=CAZ,cp=Math.cos(CAM[1]),d=CAM[0];const cam=env.camera;cam.fov=42;
   cam.position.set(c.x+Math.sin(a)*cp*d,c.y+Math.sin(CAM[1])*d,c.z+Math.cos(a)*cp*d);
   cam.position.y=Math.max(cam.position.y,env.groundY(cam.position.x,cam.position.z)+.6);cam.lookAt(c.x,c.y-.2,c.z);cam.updateProjectionMatrix()};
-window.Hero={ready:true,params:HP,light:window.__heroLight.name,creature:G.name,
-  luminance(){/* creature vs environment mask is built by the capture script from two renders */return null},
-  setCreatureVisible(v){creature.visible=v;limbs.visible=v}};
+/* Capture hooks (tools/hero/capture_grid.cjs). The creature mask is the pixel difference between two renders:
+   setCreatureVisible(false) hides the creature's pixels; with keepShadow=true it still casts its shadow and
+   parts the grass, so the difference is the body only. setSkyFlat(true) paints the sky dome pure magenta
+   (clouds hidden) so sky pixels can be told apart. Both are reversible. */
+const maskedMats=new Set(),skyMagenta=new T.MeshBasicMaterial({color:new T.Color(1,0,1),side:T.BackSide,depthWrite:false,fog:false,toneMapped:false});let skyOrig=null;
+window.Hero={ready:true,frame:0,params:HP,light:window.__heroLight.name,creature:G.name,trees:window.__heroTrees,
+  setCreatureVisible(v,keepShadow){
+    for(const m of maskedMats){m.colorWrite=m.depthWrite=true}maskedMats.clear();
+    creature.visible=limbs.visible=v||!!keepShadow;
+    if(!v&&keepShadow)for(const root of[creature,limbs])root.traverse(o=>{if(!o.material)return;for(const m of[].concat(o.material)){m.colorWrite=m.depthWrite=false;maskedMats.add(m)}})},
+  setSkyFlat(v){if(v&&!skyOrig){skyOrig=env.sky.material;env.sky.material=skyMagenta}else if(!v&&skyOrig){env.sky.material=skyOrig;skyOrig=null}
+    for(const c of env.clouds)c.visible=!v}};
 };
 </script>
 """
@@ -139,6 +148,8 @@ h = patch(h, "W.p.vis=buildCreature(W.p.g,low);scene.add(W.p.vis.root);",
           "if(window.__heroBuild&&!low)window.__heroBuild({T,scene,renderer,camera,groundY,W,SUN,sun});")
 h = patch(h, "  renderer.render(scene,camera);\n}\n\n/* ---------- HUD",
           "  if(window.__heroFrame&&!low)window.__heroFrame(frameDt||0);renderer.render(scene,camera);\n}\n\n/* ---------- HUD")
+h = patch(h, "for(const c of clouds){c.position.x+=(frameDt||0)*3;",
+          "for(const c of clouds){c.position.x+=(window.__heroTime!=null?0:frameDt||0)*3;")
 h = patch(h, "acc+=dt;while(acc>=DT)", "acc+=window.__heroFreeze?0:dt;while(acc>=DT)")
 h = patch(h, "uTime.value+=frameDt||0;",
           "uTime.value=window.__heroTime!=null?window.__heroTime:uTime.value+(frameDt||0);")
@@ -163,7 +174,7 @@ h = patch(h, "fragmentShader:`uniform vec3 fogColor;uniform float fogNear,fogFar
           "fragmentShader:`uniform vec3 fogColor;uniform float fogNear,fogFar;varying float vH;varying vec3 vT;varying float vD;varying float vL;varying float vS;varying float vBk;void main(){")
 h = patch(h, "vec3 c=mix(b,tp,vH*vH)*mix(.5,1.,vT.y)+vec3(.12,.13,.03)*max(vT.z,0.)*vH;",
           "vec3 c=mix(b,tp,vH*vH)*mix(.5,1.,vT.y)*mix(.62,1.12,vL)*mix(.42,1.,vS)+vec3(.12,.13,.03)*max(vT.z,0.)*vH+vec3(1.,.78,.45)*vBk*.3*vS;")
-h = patch(h, "window.__heroBuild({T,scene,renderer,camera,groundY,W,SUN,sun});", "window.__heroBuild({T,scene,renderer,camera,groundY,W,SUN,sun,hU});")
+h = patch(h, "window.__heroBuild({T,scene,renderer,camera,groundY,W,SUN,sun});", "window.__heroBuild({T,scene,renderer,camera,groundY,W,SUN,sun,hU,sky,clouds});")
 
 
 # ---- BotW-style meadow: thin dense blades, soft root, large colour patches ----
@@ -187,7 +198,7 @@ function leafMaterial(){if(leafMat)return leafMat;leafMat=toon({vertexColors:tru
    '#if NUM_DIR_LIGHTS>0\nfloat bk=pow(max(dot(-normalize(vViewPosition),directionalLights[0].direction),0.),4.);gl_FragColor.rgb+=diffuseColor.rgb*directionalLights[0].color*bk*.22;\n#endif\n#include <tonemapping_fragment>')};
   leafMat.customProgramCacheKey=()=>'leafw';return leafMat}
 function leafCanopy(blobs){const pos=[],nor=[],uv=[],cl=[],idx=[],r=rngFrom(4242),q=new T.Quaternion(),e=new T.Euler(),v=new T.Vector3(),up=new T.Vector3(0,1,0);
-  for(const[c,sc,hex]of blobs){const base=col(hex),n=Math.round(62*sc[0]);
+  for(const[c,sc,hex,dn]of blobs){const base=col(hex),n=Math.round(62*sc[0]*(dn||1));
     for(let i=0;i<n;i++){let dx=r()*2-1,dy=r()*2-1,dz=r()*2-1;const l=Math.hypot(dx,dy,dz)||1;dx/=l;dy/=l;dz/=l;dy=dy*.8+.2;
       const rad=.82+r()*.26,p=[c[0]+dx*sc[0]*rad,c[1]+dy*sc[1]*rad,c[2]+dz*sc[2]*rad],sz=1.0+r()*.5;
       const nn=new T.Vector3(dx/sc[0],dy/sc[1]+.35,dz/sc[2]).normalize();
@@ -200,9 +211,35 @@ const hueJit=o=>{const h=Math.sin(o.x*12.9898+o.z*78.233)*43758.5453,f=h-Math.fl
 """
 h = patch(h, "function buildScene(){", LEAF_JS + "function buildScene(){")
 BROAD_OLD = "scene.add(scatter(merged([[tr,'#5a4030',[.45,4.4,.45],[0,0,0]],[ico2,'#4f9a2e',[2.9,2.3,2.9],[0,5.4,0],0,1],[ico2,'#62ad38',[2.1,1.8,2.1],[1.7,4.5,.7],0,1],[ico2,'#3f8a2c',[2.2,1.8,2.2],[-1.5,4.6,-.8],0,1],[ico2,'#74bb44',[1.7,1.4,1.7],[.2,6.9,-.4],0,1],[ico2,'#58a334',[1.6,1.3,1.6],[-.4,5,1.7],0,1]]),broad,true,TV()));"
-BROAD_NEW = ("scene.add(scatter(merged([[tr,'#5a4030',[.45,4.4,.45],[0,0,0]],[ico2,'#2f6a22',[2.55,2.0,2.55],[0,5.4,0],0,1],[ico2,'#356f24',[1.85,1.55,1.85],[1.7,4.5,.7],0,1],[ico2,'#2b6420',[1.95,1.55,1.95],[-1.5,4.6,-.8],0,1],[ico2,'#3a7628',[1.5,1.2,1.5],[.2,6.9,-.4],0,1],[ico2,'#336c22',[1.4,1.1,1.4],[-.4,5,1.7],0,1]]),broad,true,TV()));"
-             "{const cm=scatter(leafCanopy([[[0,5.4,0],[2.9,2.3,2.9],'#3f8226'],[[1.7,4.5,.7],[2.1,1.8,2.1],'#4c9430'],[[-1.5,4.6,-.8],[2.2,1.8,2.2],'#367a26'],[[.2,6.9,-.4],[1.7,1.4,1.7],'#5a9e36'],[[-.4,5,1.7],[1.6,1.3,1.6],'#468a2c']]),broad.map(o=>({...o,c:hueJit(o)})),false,leafMaterial());cm.receiveShadow=true;scene.add(cm)}")
+# V5: three broadleaf shapes (round, poplar, gnarled), chosen per tree from a hash of its position.
+# The hash is pure arithmetic on x,z: it never touches the valley's dr() stream, so nothing else moves.
+TREES_JS = r"""
+{const cn0=new T.ConeGeometry(1,1,6).translate(0,.5,0),
+ /* flared base: n buttress cones start inside the trunk and run outward and slightly down into the soil */
+ roots=(n,r0,len,thick,hex,a0)=>{const o=[];for(let i=0;i<n;i++){const a=a0+i*6.283/n+(i%2)*.35,j=((i*7)%5)/4;o.push([cn0,hex,[thick*(.8+.4*j),len*(.8+.4*(1-j)),thick],[Math.cos(a)*r0,.6,Math.sin(a)*r0],[0,-a,-1.8]])}return o},
+ /* blob = [centre, radii, core colour, leaf colour, card density]; a dark ico core carries the leaf cards */
+ mk=(trunk,blobs)=>({core:merged([...trunk,...blobs.map(([c,s,ch])=>[ico2,ch,s.map(v=>v*.88),c,0,1])]),leaves:leafCanopy(blobs.map(([c,s,,lh,d])=>[c,s,lh,d]))}),
+ KINDS=[
+  {sc:1,rk:1,...mk([[tr,'#5a4030',[.45,4.4,.45],[0,0,0]],...roots(5,.22,1.7,.4,'#4d3626',.3)],
+   [[[0,5.4,0],[2.9,2.3,2.9],'#2f6a22','#3f8226'],[[1.7,4.5,.7],[2.1,1.8,2.1],'#356f24','#4c9430'],[[-1.5,4.6,-.8],[2.2,1.8,2.2],'#2b6420','#367a26'],[[.2,6.9,-.4],[1.7,1.4,1.7],'#3a7628','#5a9e36'],[[-.4,5,1.7],[1.6,1.3,1.6],'#336c22','#468a2c']])},
+  /* tall narrow poplar: slim straight trunk, stacked columnar blobs */
+  {sc:.8,rk:.55,...mk([[tr,'#6a5a48',[.26,5.4,.26],[0,0,0]],...roots(4,.14,1.1,.26,'#55483a',1.1)],
+   [[[0,6.2,0],[1.35,2.4,1.35],'#2c6322','#3f8a2a',1.7],[[.15,8.4,-.1],[1.25,2.5,1.25],'#2f6a24','#4a9632',1.7],[[-.1,10.6,.1],[1.0,2.2,1.0],'#336f26','#559f38',1.7],[[.1,12.4,0],[.65,1.6,.65],'#3a7a2a','#68ae42',1.7],[[.6,5.4,.4],[.95,1.5,.95],'#285c20','#37802a',1.5],[[-.6,5,-.4],[.95,1.4,.95],'#285c20','#3a842c',1.5]])},
+  /* wide low gnarled tree: thick leaning trunk, two limbs, flat spreading canopy */
+  {sc:.85,rk:1.3,...mk([[tr,'#4a3626',[.8,3.8,.8],[0,0,0],[0,0,-.3]],[tr,'#4a3626',[.42,2.7,.42],[.55,2.4,.1],[0,0,.85]],[tr,'#4a3626',[.38,2.3,.38],[.7,2.9,.2],[.8,0,0]],...roots(6,.4,2.6,.75,'#42301f',.2)],
+   [[[1.1,4.5,.1],[3.4,1.15,3.1],'#2d6422','#3e7f27',1.1],[[-1.9,4.6,.6],[2.7,1.0,2.5],'#32692a','#487f2e',1.1],[[.7,4.9,2.2],[2.6,1.0,2.4],'#2b6220','#3b7a26',1.1],[[2.4,4.2,-1.9],[2.3,.9,2.2],'#336e26','#4d8e30',1.1],[[-.5,5.2,-1.3],[2.4,.9,2.3],'#2f6824','#52943a',1.1]])}],
+ kindOf=o=>{const q=Math.sin(o.x*37.719+o.z*11.131)*24634.6345,f=q-Math.floor(q);return f<.4?0:f<.7?1:2};
+ for(const o of broad){o.k=kindOf(o);o.s*=KINDS[o.k].sc;o.rk=KINDS[o.k].rk}
+ KINDS.forEach((K,k)=>{const its=broad.filter(o=>o.k===k);
+  /* poplar cores do not cast shadow-map shadows: low golden sun stretches them into thin lines that the grass
+     (which only sees the height-map tree shadow) cannot receive, so they read as mown stripes on the meadow */
+  scene.add(scatter(K.core,its,k!==1,TV()));
+  const cm=scatter(K.leaves,its.map(o=>({...o,c:hueJit(o)})),false,leafMaterial());cm.receiveShadow=true;scene.add(cm)});
+ window.__heroTrees=KINDS.map((K,k)=>broad.filter(o=>o.k===k).length)}
+"""
+BROAD_NEW = TREES_JS
 h = patch(h, BROAD_OLD, BROAD_NEW)
+h = patch(h, "for(const o of[...broad,...conif]){const r=3.6*o.s,cx=", "for(const o of[...broad,...conif]){const r=3.6*o.s*(o.rk||1),cx=")
 
 OUT.parent.mkdir(parents=True, exist_ok=True)
 OUT.write_text(h, encoding="utf-8")
