@@ -1,0 +1,53 @@
+{
+  "schema": "cpore.creature/1",
+  "body": {
+    "torso": 2.6,
+    "girth": 0.78,
+    "neck": 1.1,
+    "tail": 4.2
+  },
+  "legs": {
+    "pairs": 1,
+    "length": 2.3,
+    "width": 0.24,
+    "stride": 3
+  },
+  "head": {
+    "size": 0.74,
+    "eyes": 0.24
+  },
+  "arms": {
+    "length": 0.55
+  },
+  "parts": [
+    {
+      "slot": "mouth",
+      "type": "jaws",
+      "level": 2
+    },
+    {
+      "slot": "arms",
+      "type": "claws",
+      "level": 2
+    },
+    {
+      "slot": "back",
+      "type": "spikes",
+      "level": 2
+    }
+  ],
+  "skin": {
+    "pattern": "stripes",
+    "colors": {
+      "base": "#9a3b28",
+      "pattern": "#2a1414",
+      "belly": "#e6cfa0"
+    },
+    "scale": 7,
+    "gloss": 0.3
+  },
+  "dna": 90,
+  "abilities": {
+    "speed": 2
+  }
+}

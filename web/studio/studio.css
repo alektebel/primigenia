@@ -1,0 +1,30 @@
+/* Preserve the owner's full-scene workbench; extend it for nine categories and touch. */
+#tabs{display:grid;grid-template-columns:repeat(5,1fr);gap:3px}
+#tabs button{width:36px;height:36px}
+#toolbar{margin:0 0 14px}
+button:disabled{opacity:.4;cursor:default}
+textarea,select{font:inherit;color:var(--paper);background:#10202b;border:1px solid var(--line);border-radius:8px;padding:7px;max-width:100%;min-width:0}
+textarea{width:100%;height:110px;font:12px ui-monospace,monospace;resize:vertical}
+#message{color:var(--amber);line-height:1.5;overflow-wrap:anywhere}
+#right{scrollbar-color:var(--muted) var(--ink)}
+#palette{scrollbar-color:var(--muted) var(--ink)}
+::selection{background:var(--amber);color:var(--ink)}
+#gl:focus-visible{outline:2px solid var(--amber);outline-offset:-3px}
+#documents{margin-top:16px}
+#documents .chips button{min-height:36px}
+@media(max-width:900px){
+ #stage{height:55vh;min-height:360px;position:sticky;top:0;z-index:2}
+ #modes{top:10px;white-space:nowrap}
+ #modes button{padding:6px 14px}
+ #hint{bottom:10px;min-width:0;width:90%;font-size:12px;border-radius:14px}
+ #left{display:flex;padding:12px;max-height:330px!important}
+ #tabs{display:flex;justify-content:space-between;gap:2px}
+ #tabs button{width:34px;height:34px;flex-shrink:0}
+ #palette{display:flex;overflow-x:auto;gap:6px;padding-bottom:8px;min-height:128px}
+ #palette button{min-width:100px;flex:none}
+ #palette button:hover{transform:none}
+ #right{padding:14px}
+ .chips button,.seg button{min-height:40px}
+ #dnabox{margin:10px}
+}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}

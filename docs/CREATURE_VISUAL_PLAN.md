@@ -265,49 +265,40 @@ an unrelated simpler shape.
 
 ## Current evidence, conflicts, and delivery
 
-The current studio has the reference renderer, procedural walking, one fixed
-body chain, a small library, local history, JSON, sharing, and es/en. Shape edits
-are coalesced per frame and preserve zoom. Web and C genomes differ. Studio
-ability values are JavaScript estimates, not evidence of C validation.
+P1 now starts from the owner's `art/reference/creador-de-criaturas.html` (G42),
+replacing the older slider studio. The reference files remain byte-identical.
+The creator retains the reference's full-scene workbench, physically lit skin,
+Build/Paint/Test modes, spine sculpting, procedural mouths and eyes, IK legs,
+and part-driven walking. The vertical spine and mirrored parts are the P1 scope
+(G44); body branches and general asymmetry remain future work.
 
-DESIGN.md Q1 remains benchmark-first for the simulation. This request broadens
-the creator's artistic freedom. The creator must exceed present C part limits
-while retaining an explicit validated game projection. Q42 establishes web
-first; Q49's shared C/WASM generation remains the runtime target. A JavaScript
-prototype does not complete that port.
+G1 supersedes the earlier benchmark-first direction; game and benchmark share
+one deterministic C simulation. G5 supersedes Q49: authoring meshes are generated
+in JavaScript; C/WASM remains required for simulation and validation. The studio
+currently has **no connected C validator**. Its entire game projection is flagged
+cosmetic. Candidate C type mappings and illustrative ability names in
+`parts.json` do not grant gameplay abilities.
 
 | Gate | Required proof | Current state |
 | --- | --- | --- |
-| Reference and functional design | Rendered reference; gestures, generation, states, document, latency specified | Reference visually inspected; contract here |
-| Generative edit loop | Place/slide generated parts, change topology, undo/reload exact result | Independent torso/neck/tail regions with horn branches, plates, tendrils; add/select/duplicate/delete, cached geometry and exact history |
-| Coherent anatomy | Blended roots, multiple branches, artist pins preserved | Not implemented |
-| Artistic control | Regional variants, masks, locks, symmetry breaks, layered materials | Independent seeds, recipes, placement and symmetry implemented; masks, locks and material layers pending |
-| AI participation | Actual model output, fitting, accept/reject, provenance, stale protection | Model choice and integration pending |
-| Living creature | Supported plans animate with contacts/limits after edits | Reference gait only |
-| Shared document and game | Full art round trip, C validation, same creature in game | Not implemented |
-| Performance and recovery | Device traces, touch editing, memory, recoverable failures | Not measured end to end |
+| Reference and functional design | Rendered reference; gestures, generation, states, document, latency specified | Owner's G42 creator copied as the base; desktop/mobile software-WebGL evidence recorded in `evidence/studio-v4-*`; owner acceptance pending |
+| Generative edit loop | Place/slide generated parts, change topology, undo/reload exact result | Spine sculpting; 46 palette entries including 24 rigid GLBs; independent torso/neck/tail horn, plate and tendril regions; duplicate/delete/vary/place and exact undo/redo |
+| Coherent anatomy | Blended roots, multiple branches, artist pins preserved | Attachment roots tested against actual body triangles for every part/preset; unified tissue, branches and pins pending |
+| Artistic control | Regional variants, masks, locks, symmetry breaks, layered materials | Independent regional seeds/recipes and symmetry; patterned skin shared by GLBs; masks, locks and material layers pending |
+| AI participation | Actual model output, fitting, accept/reject, provenance, stale protection | No AI provider connected |
+| Living creature | Supported plans animate with contacts/limits after edits | Reference procedural IK legs, jaws, blinking and part-derived gait retained; imported GLBs remain rigid and do not gain IK/deformation |
+| Shared document and game | Full art round trip, C validation, same creature in game | `/4` nodes/parts/skin/name/regions round trips; `/1`–`/3` migration with reports and original preservation; Unicode sharing; C validation and game entry pending, all designs cosmetic |
+| Performance and recovery | Device traces, touch editing, memory, recoverable failures | Atomic invalid-import rejection, gesture cancellation, desktop mouse/keyboard and mobile touch checks; end-to-end latency and memory stress budgets not established |
 
-The next anatomy work is blended shoulders/hips, imported-part attachment,
-and generalized limbs. These are increments toward the full creator, not
-substitutes for its wider artistic control and AI requirements.
+The regional loop stays in `web/studio/growth.js` and the studio. Geometry is
+cached per recipe: moving a root, changing coverage or symmetry reuses buffers;
+changing a family, seed or shape rebuilds that region. Deleted regions dispose
+geometry. There are three bounded families and a 64-region resource guard,
+not a gameplay DNA restriction or measured performance promise.
 
-The local loop lives in `web/studio/growth.js` and the studio. It generates
-new mesh topology, preserves seeded variants, supports direct root dragging and
-keyboard placement, and keeps surface patterns anchored. The November 13 update
-adds independently editable regions on the torso, neck and tail. Selecting a
-region changes editor state only. Duplicating preserves its recipe and seed
-under a new stable ID; adding, duplicating, deleting, and dragging are reversible
-transactions. The inspector controls the selected region and amber root markers
-identify it on the creature.
-
-Each region owns a geometry cache. Position, surface, coverage, angle and symmetry
-reuse mesh buffers. Shape changes regenerate only that region; girth changes
-regenerate all regions because the generated mesh scale depends on body girth.
-Region deletion disposes its buffers. The current authoring guard allows up to
-64 regions; this is an editor resource limit, not a gameplay DNA restriction or
-a validated performance promise at that count.
-
-The web document now exports `cpore.creature/3` with a `regions` array:
+The document exports `cpore.creature/4` with the creator's `nodes`, surface-placed
+`parts`, `skin`, `name` and seeded `regions`. Region recipes retain the `/3`
+shape:
 
 ```js
 {
@@ -319,18 +310,35 @@ The web document now exports `cpore.creature/3` with a `regions` array:
 }
 ```
 
-IDs must be unique. Version 1 imports migrate without growth; version 2's
-single recipe becomes `region-1` on the torso, or an empty region list for
-`family: "none"`. Invalid imports leave the design unchanged. The schema version
-changes so older clients reject new designs instead of silently losing regions.
-Selection is not serialized into the art document.
+IDs are unique. `/1` migrates without growth; `/2` migrates its single growth
+recipe to a torso region (or no regions for `none`); `/3` preserves its region
+list. Old body/head sliders and part slots are approximated as a vertical spine
+and surface parts. Legacy stride, arm length, levels and ability estimates are
+not exact equivalents: the import reports these differences and stores the
+original in `migration.source`. Invalid imports change neither the design nor
+history. Selection and camera are editor state, outside the document.
 
-The prototype still has three bounded families and a fixed body chain. Roots
-have overlapping skin collars rather than unified tissue. There is no AI
-provider, generalized anatomy graph, regional painting, or imported-part editor
-in the studio. The separate Blender library has 24 GLBs and source-space
-attachment metadata; future importing must convert the glTF coordinates,
-retain provenance, and distinguish fixed mesh assets from editable recipes.
+All 24 Blender GLBs and the original `cpore.visual-parts/1` manifest are copied
+into `web/studio/parts/`. `parts.json` (`cpore.studio-parts/1`) supplies the nine
+G43 categories, DNA costs, illustrative abilities, candidate C types, explicit
+cosmetic status, hashes, material mapping, attachment mounting and one source
+LOD per asset. No reduced LODs are generated. No `catalog.blend` is shipped.
+
+The manifest's Blender +Z-up/+X-forward and `export_yup=True` produce glTF
+`(x,z,-y)`. The loader retains exported node transforms, then rotates glTF
+−90° about Y into studio +Z-forward/+Y-up. Radial parts are additionally mounted
+along the surface normal; body-mounted limbs/wings retain the spine frame and
+mirror across its plane. The assets have descriptive material names, without
+explicit region tags: skin/keratin/membrane/eye regions are inferred from these
+names, anatomical overrides for beaks and wing sails, and category fallback.
+Skin gets the reference pattern shader, membrane a translucent variant,
+keratin the reference bone/beak material and eyes the reference eye materials.
+
+[Validation details and limits](evidence/studio-v4-validation.md) record the
+actual commands, checks, screenshots, validator fallback and visual inspection.
+There is no neural generation, unified root tissue, generalized rig, regional
+painting, external asset importer or GLB creature export yet. This is the P1
+catalog integration, not completion of the wider authoring design.
 
 ## Research basis and open choices
 
