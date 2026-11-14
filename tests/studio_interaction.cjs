@@ -8,7 +8,7 @@ const launch={headless:true,executablePath:process.env.HOME+'/.cache/ms-playwrig
 (async()=>{const browser=await chromium.launch(launch);const errors=[];try{
  const page=await browser.newPage({viewport:{width:1280,height:800}});page.on('pageerror',e=>errors.push(e.message));
  await page.goto(base+'/web/studio/#preset=Merodeador');await page.waitForFunction(()=>window.CreatureStudio?.ready,{timeout:90000});
- const diagnostics=await page.evaluate(()=>CreatureStudio.diagnostics());assert.equal(diagnostics.loadedGLBs,24);assert.deepEqual(diagnostics.assetFailures,[]);
+ const diagnostics=await page.evaluate(()=>CreatureStudio.diagnostics());assert.equal(diagnostics.loadedGLBs,require('../web/studio/parts.json').parts.filter(p=>p.source==='glb').length);assert.deepEqual(diagnostics.assetFailures,[]);
  await page.addScriptTag({url:base+'/web/studio/contracts.js'});
  const fixtures=[1,2,3].map(v=>JSON.parse(fs.readFileSync(`tests/fixtures/studio/v${v}.json`)));
  const result=await page.evaluate(fixtures=>studioContracts(CreatureStudio,fixtures),fixtures);console.log('PASS',result.checks.length,'contracts;',result.placements,'part/preset placements; maximum root distance',result.maxRootDistance);

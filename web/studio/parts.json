@@ -347,7 +347,7 @@
         "en": "Eye triad"
       },
       "dna_cost": 16,
-      "source": "glb",
+      "source": "procedural",
       "file": "eye_triad.glb",
       "sha256": "d27c10040b83ca198c6da3608dd5002f261a628e4d878dd1a4d62742d0ad99e8",
       "c_type": "CP4_EYE",
@@ -363,7 +363,8 @@
           "file": "eye_triad.glb",
           "source_polygons": 3248
         }
-      ]
+      ],
+      "shape_ref": "parts/eye_triad.glb"
     },
     {
       "id": "jaw_nipper",
@@ -448,7 +449,7 @@
         "en": "Sprint leg"
       },
       "dna_cost": 16,
-      "source": "glb",
+      "source": "procedural",
       "file": "leg_sprinter.glb",
       "sha256": "ae03a44e4c422e2c3cce347a6c0632b337ea0ff0be5464911e00ea34f0261f98",
       "c_type": "CP4_LEG",
@@ -463,7 +464,8 @@
           "file": "leg_sprinter.glb",
           "source_polygons": 1190
         }
-      ]
+      ],
+      "shape_ref": "parts/leg_sprinter.glb"
     },
     {
       "id": "leg_sucker",
@@ -473,7 +475,7 @@
         "en": "Suction leg"
       },
       "dna_cost": 16,
-      "source": "glb",
+      "source": "procedural",
       "file": "leg_sucker.glb",
       "sha256": "ae715824798e551f30a0004131701a0834738e55c974dfd32fb2a7f3c37c2bde",
       "c_type": "CP4_LEG",
@@ -489,7 +491,8 @@
           "file": "leg_sucker.glb",
           "source_polygons": 1464
         }
-      ]
+      ],
+      "shape_ref": "parts/leg_sucker.glb"
     },
     {
       "id": "arm_grasper",
@@ -499,7 +502,7 @@
         "en": "Grasping arm"
       },
       "dna_cost": 24,
-      "source": "glb",
+      "source": "procedural",
       "file": "arm_grasper.glb",
       "sha256": "dbb31c02adbf26a9e708742894680df60b8634ff6b5da8414528bb3634e34d0f",
       "c_type": "CP4_ARM",
@@ -514,7 +517,8 @@
           "file": "arm_grasper.glb",
           "source_polygons": 1368
         }
-      ]
+      ],
+      "shape_ref": "parts/arm_grasper.glb"
     },
     {
       "id": "tail_paddle",
@@ -524,7 +528,7 @@
         "en": "Paddle tail"
       },
       "dna_cost": 16,
-      "source": "glb",
+      "source": "procedural",
       "file": "tail_paddle.glb",
       "sha256": "fa2ce5bac3a992cb6808f074fa2cb9e91764f4afba652f3e95ee9a5ec54a288b",
       "c_type": "CP4_FIN",
@@ -539,7 +543,8 @@
           "file": "tail_paddle.glb",
           "source_polygons": 1116
         }
-      ]
+      ],
+      "shape_ref": "parts/tail_paddle.glb"
     },
     {
       "id": "tail_spike",
@@ -549,7 +554,7 @@
         "en": "Barbed tail"
       },
       "dna_cost": 16,
-      "source": "glb",
+      "source": "procedural",
       "file": "tail_spike.glb",
       "sha256": "227712bde3c1d667c7ec41c7654be8075ac23d6c15f814abe65267bdd64b4e46",
       "c_type": "CP4_TAIL",
@@ -564,7 +569,8 @@
           "file": "tail_spike.glb",
           "source_polygons": 948
         }
-      ]
+      ],
+      "shape_ref": "parts/tail_spike.glb"
     },
     {
       "id": "wing_glider",
@@ -574,7 +580,7 @@
         "en": "Gliding wing"
       },
       "dna_cost": 24,
-      "source": "glb",
+      "source": "procedural",
       "file": "wing_glider.glb",
       "sha256": "8e84dd0fc8f2001df98d1266005bae51591d297e6279988f4959ba35f0741042",
       "c_type": "CP4_WING",
@@ -589,7 +595,8 @@
           "file": "wing_glider.glb",
           "source_polygons": 901
         }
-      ]
+      ],
+      "shape_ref": "parts/wing_glider.glb"
     },
     {
       "id": "frill_fan",
@@ -599,7 +606,7 @@
         "en": "Neck frill"
       },
       "dna_cost": 16,
-      "source": "glb",
+      "source": "procedural",
       "file": "frill_fan.glb",
       "sha256": "8426674be63842c2112362ca6598748c7b6dd8878e373905fac44ea23bb5c7d0",
       "c_type": "CP4_PLUME",
@@ -614,7 +621,8 @@
           "file": "frill_fan.glb",
           "source_polygons": 901
         }
-      ]
+      ],
+      "shape_ref": "parts/frill_fan.glb"
     },
     {
       "id": "beak_crusher",
@@ -624,7 +632,7 @@
         "en": "Crushing beak"
       },
       "dna_cost": 16,
-      "source": "glb",
+      "source": "procedural",
       "file": "beak_crusher.glb",
       "sha256": "bad5fdfec5a5ebfbbb9ff4a722c06bc3f2116a049ee444c9c98a14c9b6b53e55",
       "c_type": "CP4_MOUTH_O",
@@ -640,7 +648,8 @@
           "file": "beak_crusher.glb",
           "source_polygons": 648
         }
-      ]
+      ],
+      "shape_ref": "parts/beak_crusher.glb"
     },
     {
       "id": "mandible_shear",
@@ -727,7 +736,7 @@
         "en": "Spitter sacs"
       },
       "dna_cost": 16,
-      "source": "glb",
+      "source": "procedural",
       "file": "sac_spitter.glb",
       "sha256": "38860cdad19ed89da01c8161dcf0f85dcd03c60cff27f24bee0b494948a14356",
       "c_type": null,
@@ -742,7 +751,8 @@
           "file": "sac_spitter.glb",
           "source_polygons": 1122
         }
-      ]
+      ],
+      "shape_ref": "parts/sac_spitter.glb"
     },
     {
       "id": "arm_smasher",
@@ -752,7 +762,7 @@
         "en": "Smashing arm"
       },
       "dna_cost": 24,
-      "source": "glb",
+      "source": "procedural",
       "file": "arm_smasher.glb",
       "sha256": "8e044b9267afdb9419c18e148d88f875f4854e0077401e5588e5bccad3c08cb8",
       "c_type": "CP4_ARM",
@@ -767,7 +777,8 @@
           "file": "arm_smasher.glb",
           "source_polygons": 1158
         }
-      ]
+      ],
+      "shape_ref": "parts/arm_smasher.glb"
     },
     {
       "id": "foot_spring",
@@ -777,7 +788,7 @@
         "en": "Spring leg"
       },
       "dna_cost": 16,
-      "source": "glb",
+      "source": "procedural",
       "file": "foot_spring.glb",
       "sha256": "46b021b5e69d4191a1c2afd44c44082db643ad8f84239efd4f0add33d204b4d2",
       "c_type": "CP4_LEG",
@@ -794,7 +805,8 @@
           "file": "foot_spring.glb",
           "source_polygons": 1274
         }
-      ]
+      ],
+      "shape_ref": "parts/foot_spring.glb"
     },
     {
       "id": "foot_hoof",
@@ -804,7 +816,7 @@
         "en": "Cloven hoof"
       },
       "dna_cost": 16,
-      "source": "glb",
+      "source": "procedural",
       "file": "foot_hoof.glb",
       "sha256": "83f96ae23796d2768cc55299a93b9822843c6194a2072f94355178605f149669",
       "c_type": "CP4_LEG",
@@ -820,7 +832,8 @@
           "file": "foot_hoof.glb",
           "source_polygons": 1000
         }
-      ]
+      ],
+      "shape_ref": "parts/foot_hoof.glb"
     },
     {
       "id": "foot_gecko",
@@ -830,7 +843,7 @@
         "en": "Adhesive foot"
       },
       "dna_cost": 16,
-      "source": "glb",
+      "source": "procedural",
       "file": "foot_gecko.glb",
       "sha256": "48e85b6b4bced986b2d0174a7e5355329e7555a05b3166d318b53743829173c2",
       "c_type": "CP4_LEG",
@@ -846,7 +859,8 @@
           "file": "foot_gecko.glb",
           "source_polygons": 3598
         }
-      ]
+      ],
+      "shape_ref": "parts/foot_gecko.glb"
     },
     {
       "id": "lure_lantern",
@@ -882,7 +896,7 @@
         "en": "Insect wing"
       },
       "dna_cost": 24,
-      "source": "glb",
+      "source": "procedural",
       "file": "wing_insect.glb",
       "sha256": "e09c7ed89ba7b68fa0be66a3b7c08f3c85305f12c53027297e48e946bf41e856",
       "c_type": "CP4_WING",
@@ -897,7 +911,8 @@
           "file": "wing_insect.glb",
           "source_polygons": 1134
         }
-      ]
+      ],
+      "shape_ref": "parts/wing_insect.glb"
     },
     {
       "id": "tail_hammer",
@@ -907,7 +922,7 @@
         "en": "Hammer tail"
       },
       "dna_cost": 16,
-      "source": "glb",
+      "source": "procedural",
       "file": "tail_hammer.glb",
       "sha256": "22e70f89024899fbd17a1fe00f549fc2bea92c0e6f83d41721bb732be0bf993f",
       "c_type": "CP4_TAIL",
@@ -923,7 +938,8 @@
           "file": "tail_hammer.glb",
           "source_polygons": 1176
         }
-      ]
+      ],
+      "shape_ref": "parts/tail_hammer.glb"
     }
   ],
   "attachment_frame": {
