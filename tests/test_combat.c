@@ -159,6 +159,10 @@ static void simultaneous(void)
               "lowest id landing damage owns the lethal tick");
         CHECK(w.c[2].dmg_taken == 11.0f + 11.0f*1.6f,
               "focus damage is unchanged when attackers swap ids");
+        w = focus(swap, -1, 100, 20);
+        cp_combat_step(&w);
+        CHECK(!w.c[2].alive && w.c[0].kills == 1 && w.c[1].kills == 0 && w.c[1].hits == 1,
+              "lowest id gets lethal-tick credit even when its own hit was nonlethal");
         w = focus(swap, -1, 100, 100);
         cp_combat_step(&w);
         CHECK(w.c[2].bleed_t == 14 && w.c[2].bleed_src == 0,

@@ -47,6 +47,8 @@ $(BUILD)/combat_tourney_test: tests/test_combat_tourney.c apps/combat_tourney.c 
 $(BUILD)/combat_golden: tests/combat_golden.c apps/combat_bots.h $(BUILD)/apps/combat_bots.o $(HDRS) $(BUILD)/libcpore.a
 	$(CC) $(CFLAGS) -Iapps $< $(BUILD)/apps/combat_bots.o $(BUILD)/libcpore.a -o $@ $(LDLIBS)
 
+# Correctness regressions. Balance acceptance remains a separate failing gate:
+# run make tourney as well before claiming P2 acceptance.
 test: $(BUILD)/cpore_test $(BUILD)/combat_test $(BUILD)/combat_tourney_test $(BUILD)/combat_golden check-core
 	./$(BUILD)/cpore_test
 	./$(BUILD)/combat_test

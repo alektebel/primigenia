@@ -6,6 +6,11 @@ The old land stage is unchanged. Pack orders, nest/egg consequences and Cognitio
 integration belong to later phases (G18/G23/G36); this module supplies their
 movement/combat foundation, not those stage systems.
 
+**Review status:** correctness regressions pass, but combat balance acceptance
+still fails. The default tournament reports a 68.5% brawler field mean and
+dominance in both payoff matrices. P2 is not merge-ready; native/WASM parity
+and the human playtest are also pending.
+
 ## Move data
 
 `CP_COMBAT_MOVES` is the authority. One tick is 0.1 seconds. Costs and damage
@@ -258,3 +263,199 @@ dominating row at tolerance `2*max(SE_a, SE_b) + 0.5 HP`. Neither gate can
 substitute for the other. Both print an equilibrium mix from 200,000 regret
 matching iterations. Elo uses a Bradley–Terry fit (mean 1000, one half-win
 pseudo-game per pair); Elo is descriptive and does not alter any gate.
+
+### Final native tournament output
+
+The complete default output below is verbatim from GCC 16.2.1 on x86-64 Linux,
+2026-11-14. `./build/combat_tourney` exits 1 (`make tourney` exits nonzero).
+There are three acceptance failures: raw dominance, resource dominance and
+brawler's 68.5% field mean. The worst pooled build pair is 74.4%, below 90%.
+The unpooled strategy tables also show 100% cells; those remain visible and
+are not claimed to pass a per-strategy build-pair cap. No HP pools or special
+resolution branches were adjusted after seeing these results.
+
+```text
+cpore combat tourney  (tick 10 Hz, seeds/cell 40, payoff duels/cell 400)
+
+== Move-vs-move payoff, 400 duels per cell: two creatures repeating one move, 7 m apart,
+   paired seats and start offsets, 12 s; neutral builds (all parts L3, hp 100000 so nobody dies)
+
+-- raw: row's damage dealt minus column's (hp)
+row \ col           bite      charge       guard        spit tail_strike       dodge    row mean
+bite                0.00      127.47       58.69      282.71      110.63       40.59      103.35
+charge           -127.47        0.00       74.63      -66.01      -43.70       98.13      -10.74
+guard             -58.69      -74.63        0.00      -98.51      -80.33        0.00      -52.03
+spit             -282.71       66.01       98.51        0.00      -52.37        1.60      -28.16
+tail_strike      -110.63       43.70       80.33       52.37        0.00      117.31       30.51
+dodge             -40.59      -98.13        0.00       -1.60     -117.31        0.00      -42.94
+
+-- resource-adjusted: raw minus 1.312500 hp per stamina point the row spent, plus the same for the column
+row \ col           bite      charge       guard        spit tail_strike       dodge    row mean
+bite                0.00      104.08      -11.67      316.44       92.38       61.75       93.83
+charge           -104.08        0.00       66.87      -94.36      -24.80      120.72       -5.94
+guard              11.67      -66.87        0.00       14.85       -0.07      132.26       15.31
+spit             -316.44       94.36      -14.85        0.00      -49.22       20.50      -44.28
+tail_strike       -92.38       24.80        0.07       49.22        0.00      139.29       20.17
+dodge             -61.75     -120.72     -132.26      -20.50     -139.29        0.00      -79.09
+
+== Dominance check (tolerance 2*SE + 0.5 hp)
+-- raw matrix (acceptance gate)
+   bite weakly dominates guard
+   bite weakly dominates dodge
+   tail_strike weakly dominates charge
+-- resource-adjusted matrix (acceptance gate)
+   bite weakly dominates spit
+   bite weakly dominates dodge
+   guard weakly dominates dodge
+   raw equilibrium mix (regret matching, 200k iters), game value -0.00:  bite 100.0%  charge 0.0%  guard 0.0%  spit 0.0%  tail_strike 0.0%  dodge 0.0%
+   resource equilibrium mix (regret matching, 200k iters), game value -0.00:  bite 36.9%  charge 6.4%  guard 56.7%  spit 0.0%  tail_strike 0.0%  dodge 0.0%
+  FAIL  no move weakly dominates another (raw damage payoff)
+  FAIL  no move weakly dominates another (resource-adjusted payoff)
+
+== Strategy round robin: 5 profiles x 5 profiles x 40 seeds per ordered pair, both sides, 900-tick cap
+   score of row against column (win = 1, draw = 0.5), pooled over all profile pairings
+
+row \ col       idle    random    greedy   counter
+idle           0.500     0.000     0.000     0.000
+random         1.000     0.488     0.001     0.001
+greedy         1.000     0.998     0.513     0.494
+counter        1.000     0.998     0.492     0.499
+
+== Elo (strategies; max-likelihood fit with one pseudo-game per pair, mean 1000)
+   greedy        1848
+   counter       1847
+   random         778
+   idle          -472
+
+== Canaries (both seats; draw = half a score, reported separately)
+  PASS  idle scores zero vs random on BOTH seats (draws fail)
+   idle left vs random  score 0.0000 draws 0/1000; idle right score 0.0000 draws 0/1000
+  PASS  idle scores zero vs greedy on BOTH seats (draws fail)
+   idle left vs greedy  score 0.0000 draws 0/1000; idle right score 0.0000 draws 0/1000
+  PASS  idle scores zero vs counter on BOTH seats (draws fail)
+   idle left vs counter score 0.0000 draws 0/1000; idle right score 0.0000 draws 0/1000
+  PASS  random scores <5% vs greedy on BOTH seats
+   random left vs greedy  score 0.0010 draws 0/1000; random right score 0.0020 draws 0/1000
+  PASS  random scores <5% vs counter on BOTH seats
+   random left vs counter score 0.0010 draws 0/1000; random right score 0.0025 draws 1/1000
+
+== Full build pairwise tables (row score; both seats pooled, draws = 0.5)
+
+   random vs random
+   row / col        brawler     spitter        tank  skirmisher  allrounder
+   brawler            0.500       0.487       0.381       0.281       0.562
+   spitter            0.512       0.500       0.550       0.325       0.631
+   tank               0.619       0.450       0.500       0.438       0.738
+   skirmisher         0.719       0.675       0.562       0.500       0.787
+   allrounder         0.438       0.369       0.263       0.212       0.500
+
+   random vs greedy
+   row / col        brawler     spitter        tank  skirmisher  allrounder
+   brawler            0.013       0.000       0.000       0.000       0.000
+   spitter            0.000       0.000       0.000       0.000       0.000
+   tank               0.000       0.000       0.000       0.000       0.000
+   skirmisher         0.000       0.000       0.000       0.000       0.025
+   allrounder         0.000       0.000       0.000       0.000       0.000
+
+   random vs counter
+   row / col        brawler     spitter        tank  skirmisher  allrounder
+   brawler            0.000       0.000       0.000       0.013       0.000
+   spitter            0.000       0.013       0.000       0.000       0.000
+   tank               0.000       0.000       0.000       0.000       0.013
+   skirmisher         0.000       0.006       0.000       0.000       0.000
+   allrounder         0.000       0.000       0.000       0.000       0.000
+
+   greedy vs random
+   row / col        brawler     spitter        tank  skirmisher  allrounder
+   brawler            0.988       1.000       1.000       1.000       1.000
+   spitter            1.000       1.000       1.000       1.000       1.000
+   tank               1.000       1.000       1.000       1.000       1.000
+   skirmisher         1.000       1.000       1.000       1.000       1.000
+   allrounder         1.000       1.000       1.000       0.975       1.000
+
+   greedy vs greedy
+   row / col        brawler     spitter        tank  skirmisher  allrounder
+   brawler            0.500       1.000       0.713       1.000       1.000
+   spitter            0.000       0.500       0.000       0.225       0.200
+   tank               0.287       1.000       0.500       0.494       0.994
+   skirmisher         0.000       0.775       0.506       0.500       0.419
+   allrounder         0.000       0.800       0.006       0.581       0.500
+
+   greedy vs counter
+   row / col        brawler     spitter        tank  skirmisher  allrounder
+   brawler            0.512       1.000       0.713       1.000       1.000
+   spitter            0.000       0.500       0.000       0.231       0.225
+   tank               0.237       1.000       0.487       0.556       0.994
+   skirmisher         0.000       0.762       0.550       0.450       0.487
+   allrounder         0.000       0.781       0.025       0.531       0.481
+
+   counter vs random
+   row / col        brawler     spitter        tank  skirmisher  allrounder
+   brawler            1.000       1.000       1.000       1.000       1.000
+   spitter            1.000       0.988       1.000       0.994       1.000
+   tank               1.000       1.000       1.000       1.000       1.000
+   skirmisher         0.988       1.000       1.000       1.000       1.000
+   allrounder         1.000       1.000       0.988       1.000       1.000
+
+   counter vs greedy
+   row / col        brawler     spitter        tank  skirmisher  allrounder
+   brawler            0.487       1.000       0.762       1.000       1.000
+   spitter            0.000       0.500       0.000       0.237       0.219
+   tank               0.287       1.000       0.512       0.450       0.975
+   skirmisher         0.000       0.769       0.444       0.550       0.469
+   allrounder         0.000       0.775       0.006       0.512       0.519
+
+   counter vs counter
+   row / col        brawler     spitter        tank  skirmisher  allrounder
+   brawler            0.500       1.000       0.756       1.000       1.000
+   spitter            0.000       0.500       0.000       0.219       0.194
+   tank               0.244       1.000       0.500       0.419       0.988
+   skirmisher         0.000       0.781       0.581       0.500       0.512
+   allrounder         0.000       0.806       0.013       0.487       0.500
+
+== Build scores pooled over ALL nine strategy pairings
+   row / col        brawler     spitter        tank  skirmisher  allrounder  field mean
+   brawler            0.500       0.721       0.592       0.699       0.729       0.685
+   spitter            0.279       0.500       0.283       0.359       0.385       0.327
+   tank               0.408       0.717       0.500       0.484       0.744       0.588
+   skirmisher         0.301       0.641       0.516       0.500       0.522       0.495
+   allrounder         0.271       0.615       0.256       0.478       0.500       0.405
+
+== Elo (builds, all strategy pairings, both seats)
+   brawler         1111
+   spitter          897
+   tank            1052
+   skirmisher       997
+   allrounder       944
+  FAIL  no build field mean exceeds 65% (worst 68.5%)
+  PASS  no pooled build pair exceeds 90% (worst 74.4%)
+
+tourney checks FAILED
+```
+
+## Verification and open acceptance work
+
+| Command / check | Final result |
+|---|---|
+| `nice -n 10 make test` | Passed: existing core suite, combat regressions, tournament arithmetic and all five cross-process golden comparisons. Balance acceptance is separate and still fails. |
+| `make check-core` | Passed: libc/libm only; no graphics headers. |
+| `nice -n 10 make tourney` | Failed acceptance: both dominance checks and the 65% field ceiling. All canaries and the 90% pooled pair cap passed. Full output above. |
+| ASan + UBSan, combat tests | Passed with `-O1 -g -fsanitize=address,undefined -fno-omit-frame-pointer`, C99, test-only variance hook and deterministic FP flags. |
+| GCC/gcov, combat tests | `combat.c`: 96.55% of 638 lines; 94.62% of branches executed, 83.86% taken at least once. |
+| Independent `-O0` native golden replay | All five logs matched all 50,000 committed hashes. Default production build is `-O2`. |
+| Golden mutation probe | A temporary build omitting HP from the hash failed at seed 0, tick 0 (expected `e02d490b5e2b2b44`, got `afe6616001b52490`). No mutated source was committed. |
+| CFLAGS override dry run | `make -Bn CFLAGS='-O3 -ffast-math -ffp-contract=fast' build/core/src/combat.o` ends the compiler flags with `-fno-fast-math -ffp-contract=off`. |
+
+The independent canary unit runs use every ordered build pair and both seats,
+40 seeds each. These are their final printed counts:
+
+```text
+  canary greedy : idle wins 0 draws 0/2000, random wins 4 draws 2/2000, smart wins 1994/2000
+  canary counter: idle wins 0 draws 0/2000, random wins 4 draws 2/2000, smart wins 1994/2000
+```
+
+Open work: address the measured balance failures through explicit combat design,
+verify native/WASM parity on the stored logs when the toolchain is available,
+and record the required human playtest. `emcc` is absent; no SDK or system
+packages were installed. No browser test or human playtest was performed.
+A green correctness suite does not complete P2 acceptance.
