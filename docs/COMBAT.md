@@ -11,8 +11,8 @@ Guard earns a real riposte, spaced spit beats bite from 7 m, and the maximum
 build field mean is now 62.4% (brawler 50.9%). Both matrices still have one
 weak-dominance relation, and each equilibrium uses only three moves. This is
 the best configuration retained from this pass, not P2 acceptance or proof that
-the requested targets are impossible. Native/WASM parity and the human playtest
-remain pending.
+the requested targets are impossible. Native/WASM parity is verified by P3a below; the human playtest
+remains pending.
 
 ## Move data
 
@@ -150,8 +150,8 @@ fixtures. Unit tests also cover hash padding/outputs and RNG state.
 
 Intentional replay contract changes require review and explicit regeneration:
 `./build/combat_golden --record SEED tests/golden/combat-SEED.log tests/golden/combat-SEED.hashes`.
-Do not regenerate to hide an unexplained regression. These are native regression
-fixtures, not evidence of native/WASM equality.
+Do not regenerate to hide an unexplained regression. The fixtures also anchor
+the WASM and JS checks described below; they were not changed for P3a.
 
 This balance pass deliberately refreshed **only the five `.hashes` files**,
 using the existing fixed `.log` orders with the production-linked replay:
@@ -163,13 +163,209 @@ damage, statuses and ripostes then change later states. Action logs remain
 byte-identical; new bot policies are exercised separately by generated-log
 replay tests. `make test` passed after this explicit refresh.
 
-**TODO — native/WASM parity:** `emcc` is unavailable here; no SDK was downloaded.
-Compile the same module with contraction/fast-math disabled and compare all
-10,000 per-tick hashes on every dev seed using the same setups/action logs.
-Native repeatability and the chosen arithmetic are prerequisites, not proof of
-WASM parity. The design's browser integration and short human playtest clip
-also remain unverified; no browser or visual-completion claim is made by P2's
-C tests.
+## WASM build and parity (P3a)
+
+Run from the repository root (Node, Python 3, a native C compiler and an existing
+Emscripten SDK are required):
+
+```sh
+make wasm          # build/wasm/cpore_combat.mjs + cpore_combat.wasm
+make wasm-parity   # C goldens in Node/WASM + native/WASM bot duels
+make wasm-test     # parity plus the JS wrapper/profile/encounter tests
+make test          # native-only; does not look for or invoke emcc
+```
+
+If `emcc` is absent from PATH, each WASM recipe sources
+`~/emsdk/emsdk_env.sh` when present, otherwise prints an actionable error.
+No SDK is downloaded. The module compiles only `core/src/combat.c`, `rng.c`,
+`apps/combat_bots.c` and `apps/wasm_api.c`, with `-O2 -std=c99
+-fno-fast-math -ffp-contract=off`. There are no SIMD flags. `MODULARIZE`,
+`EXPORT_ES6`, `ENVIRONMENT=web,node` and an explicit export list make one
+isolated world per module instance. Generated outputs stay under ignored
+`build/wasm/`; missing companion `.wasm` files trigger rebuilding.
+
+Verified with Emscripten 7.0.0 and Node 26.13.0 on Linux:
+
+| Check | Exact coverage | Result |
+|---|---|---|
+| C golden runner compiled for WASM | Five committed logs × 10,000 ticks = **50,000 hashes** | Byte-identical to committed `.hashes` |
+| Native vs WASM bot duels | **200 duels, 22,432 tick hashes** | Byte-identical streams, including duel lengths |
+| Goldens through JS wrapper | Five logs, **50,000 tick hashes** | All match |
+| Two independent JS/WASM instances | **600 ticks**, including seeded random-bot decisions | Hashes, states and events match |
+| Encounter frame rates and native replay | **60 seconds at 60 and 37 FPS**, 600 ticks each | Identical orders and every hash; exported log matches native |
+
+Duel coverage is all **25 ordered pairings** of idle, random, greedy, counter,
+and spam, across **two profile sets** (default/default and spitter/tank), and
+four seeds (0, 1, 42, 4294967295). Duels stop on death or after 600 ticks.
+Spam uses bite/charge in set 0 and spit/guard in set 1. The runner prints
+counts, so changed bot policies cannot silently inherit these measurements.
+`tests/test_wasm_parity.py` compares full output, not just final hashes.
+
+`tests/test_wasm_combat.mjs` also validates fixture documents with the existing
+studio validator, checks every exported ABI size/offset, rejects malformed
+inputs, exercises every directional octant, and checks that walking waits
+behind committed moves. Node's coverage runner measured 100% lines/functions
+and >90% branches in each of the three engine modules:
+
+```sh
+node --test --experimental-test-coverage --test-coverage-exclude='build/**' \
+  --test-coverage-exclude='web/studio/**' tests/test_wasm_combat.mjs
+```
+
+A headless Chromium 1254 smoke test served the repository over HTTP, imported
+the ES modules, fetched WASM, and advanced an encounter ten ticks successfully.
+It used only the required SwiftShader arguments. This is a module-loading
+check; the walkable page and visual/human playtest remain P3b work. Existing
+P2 balance failures remain open; parity does not establish balance acceptance.
+
+### JS wrapper and C ABI
+
+`web/engine/cpcombat.js` has no bundler or dependencies. Serve the repository
+root over HTTP; its default dynamic import resolves to
+`build/wasm/cpore_combat.mjs`, whose `.wasm` sits alongside it. Example:
+
+```js
+import { Combat, defaultProfile, VERB, MOVE } from './web/engine/cpcombat.js';
+const combat = await Combat.create();
+combat.reset({ seed: 42, flat: true, creatures: [
+  { profile: defaultProfile(), x: 17, y: 20, fx: 1, team: 0 },
+  { profile: defaultProfile(), x: 23, y: 20, fx: -1, team: 1 },
+] });
+combat.order(0, { verb: VERB.ATTACK, move: MOVE.BITE, target: 1 });
+const hashHex = combat.step(); // fixed-width, lowercase 16-digit hash
+```
+
+`Combat.create(options)` forwards Emscripten options (including `locateFile`
+or `wasmBinary` for other hosting arrangements). Each call creates separate
+WASM memory. `reset` accepts 1–8 spawns, explicit seed, optional `flat`, and
+profiles defaulting to the C baseline. Missing coordinates use seeded spawn;
+missing facing is (0,0), normalized by C to +x. JS checks finite values and
+integer levels before copying a complete setup into WASM. C applies its normal
+profile/position clamps. `step`, `order`, `states`, `events`, `hash`, `preview`,
+`botInit` and `botDecision` call the same C simulation and policy code as native.
+Order rejection returns the existing negative C error code.
+
+`apps/wasm_api.c` owns static storage: world, setup, bots, action and output
+buffers. It allocates nothing. `cb_setup()` exposes `CpCombatSetup` memory;
+`cb_reset()` validates it. `cb_layout()` exports ABI version 1, the setup,
+spawn, profile and action sizes and every consumed offset, output strides,
+limits, tick frequency and arena dimensions. `Combat` asserts all 36 metadata
+values against `LAYOUT` before touching memory; a stale build fails on load.
+The setup is 332 bytes, spawn 40, profile 20 and action 4. No JS code reads
+padded world structs or serializes their raw bytes.
+
+`stateView()` borrows a `Float32Array` with 17 values per creature:
+`x,y,fx,fy,hp,stamina,move,phase,ptick,plen,stun,bleed,slow,alive,medium,team,verb`.
+`eventView()` borrows five floats per event: `type,a,b,move,amount` (up to 64).
+`states()` and `events()` return independent objects suitable for snapshots.
+Borrowed buffers are scratch space; copy to retain them across queries.
+`cb_hash()` exposes low/high u32 words; the wrapper preserves all 64 bits as
+hex, without converting through a JS Number. `preview()` supplies cone origin,
+facing, reach and full arc, plus the core's gap, reach/arc checks, flank,
+height, counter, damage and effect. `botDecision()` returns a copied action or
+null; it advances only that bot's policy state and does not issue the order.
+
+## Studio parts to combat profile
+
+`web/engine/profile.js` exports `profileFromStudio(creature, manifest)` and
+one authoritative `PART_RULES` table. Pass the `cpore.creature/4` document
+already validated by `web/studio/genome.js`, plus the parsed
+`web/studio/parts.json`. Unknown ids/schemas are rejected. Rules match
+**both `c_type` and category**, so new ids with the same semantics need no
+new code. Each authored part contributes once (implicit mirrored geometry
+contributes no extra level), summing each level and clamping it to 5.
+Version 4 has no purchased-level field: size, length, mesh bounds, skin,
+spine dimensions, legacy migration payload and procedural growth regions
+are ignored. No floating-point geometry enters the projection.
+
+| Manifest c_type | Category | Integer contribution per authored part |
+|---|---|---|
+| CP4_MOUTH_C | mouths | mouth +2 |
+| CP4_MOUTH_O | mouths | mouth +1, spit +1 |
+| CP4_MOUTH_G | mouths | spit +2 |
+| CP4_HORN | weapons | charge +1 |
+| CP4_TAIL | weapons | tail +1 |
+| CP4_PLATE | details | guard +1 |
+| Anything else, including null | any | none |
+
+The combat baseline is zero part levels, 100 HP, 100 stamina, 4 m/s.
+After clamping, each guard level adds 5 HP. All arithmetic for this mapping
+is integer arithmetic. Carnivore mouths specialize in bite; grazer mouths
+project to ranged spit; omnivore mouths split between them. These are explicit
+P3a combat rules, not abilities inferred from visual resemblance.
+
+The manifest currently labels its mappings as candidates and its studio
+output as cosmetic pending full C genome validation. This function projects
+those **C-typed candidates into the existing C combat-profile struct only**;
+it does not claim to validate a complete creature genome for game entry.
+Parts with null C types (e.g. `sac_spitter`, `maza`, `tongue_spring`) grant
+nothing; illustrative abilities are never read. Adding an ability for one
+requires a C type and an explicit projection rule, rather than a mesh-name
+exception. The fixtures under `tests/fixtures/combat/` pin a biter, spitter
+and capped guard profile. Full C genome admission remains a separate gate
+under DESIGN.md G4; the encounter accepts a combat setup, not a genome.
+
+## Encounter controller contract
+
+`web/engine/encounter.js` is rendering-free and has no DOM, clock or random
+source. Construct `Encounter(combat, {point:{x,z}, setup, player:0, enemy:1,
+enemyBot:3})` with exactly two distinct creature ids. The point is the arena
+centre in valley metres. `toValley({x,y})` maps arena coordinates to
+`{x: point.x+x-20, z: point.z+y-20}`; `toArena` is its inverse. There is no
+rotation, scaling, terrain mutation or teleporting simulation state in JS.
+The arena remains the core's local 40×40 metres.
+
+Call `advance(deltaSeconds, intent)` each frame. A held intent has optional
+`move:[x,y]` in arena/valley XZ, `attack:MOVE`, `guard`, `dodge:0..7` (or true
+for forward), and `flee`. Priority is flee, dodge, guard, attack, movement,
+then idle. A move vector is quantized into eight absolute clockwise octants:
+0=+x, 2=-y, 4=-x, 6=+y. Magnitude is ignored; zero stops. `CB_V_MOVE` is
+appended as verb 6 and stores the octant in the existing action `dir`, so
+movement participates in the canonical hash and native log replay. It uses
+the core's normal turning, terrain/water/slow speed, movement, collisions and
+stamina recovery. It waits behind committed moves and stun. Existing verb
+numbers, golden actions and hash serialization remain unchanged. Dodge
+continues to use its existing facing-relative directions.
+
+The accumulator advances at exactly 10 Hz and never drops ticks, even for a
+long frame. Finite nonnegative deltas are required; pause by withholding
+`advance`, rather than injecting elapsed pause time. For prerecorded input,
+pass a sampler `(tickTimeSeconds, tick) => intent` instead of a held object.
+It is sampled at `tick/10` before each tick, so the same timeline remains
+identical even when a frame crosses several tick boundaries. Live held
+objects apply to all ticks consumed by that frame; input transition times
+must be captured in a timeline if exact cross-FPS playback is required.
+This distinction avoids promising that differently sampled live input is
+identical. The 60/37 FPS test uses the same time-indexed script and compares
+all accepted orders and hashes.
+
+For each tick the player order is applied first, then the C enemy bot observes
+and optionally orders, then C steps. `lastOrderError` exposes a rejected player
+order. `previous` and `current` are independent tick-state snapshots; render
+between them using `alpha` in [0,1), giving the usual one-tick interpolation
+latency. UI code may query core previews/events separately. The controller
+continues ticking inert dead creatures until its caller stops advancing;
+it implements no respawn, nest or other stage consequences.
+
+`log` records every accepted player and bot order (including accepted no-ops),
+in tick/application order. `hashes` records every resulting tick hash.
+`exportLog()` returns this text format with the original complete setup:
+
+```text
+CPORE_COMBAT_LOG 1
+seed n flat ticks
+mouth charge spit tail guard hp stamina speed x y fx fy medium team
+... one spawn line per creature ...
+tick id verb move target dir
+... accepted actions in application order ...
+```
+
+Replay with `build/combat_parity --replay encounter.log`; it parses the setup
+and calls `cp_combat_replay`, printing one hash per tick. The test harness
+supports up to 10,000 ticks and 80,000 orders; it does not reconstruct or run
+bots during replay. Save the engine commit/version alongside logs, as with
+the existing golden format. The renderer and walkable stage belong to P3b;
+no files in `web/hero/`, `tools/hero/`, `art/reference/` or DESIGN.md changed.
 
 ## Profiles and timing rationale
 
