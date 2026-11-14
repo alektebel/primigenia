@@ -925,5 +925,27 @@
         }
       ]
     }
-  ]
+  ],
+  "attachment_frame": {
+    "origin": [
+      0,
+      0,
+      0
+    ],
+    "studio_forward": "+Z",
+    "studio_up": "+Y",
+    "mounts": {
+      "radial": "local +Z points along body surface normal",
+      "body": "source anatomy retains spine forward/up; mirror across local X"
+    },
+    "root_tolerance_studio_units": 0.045
+  },
+  "material_overrides": {
+    "beak_crusher": "all slots keratin; ivory slots use bone, others beak",
+    "wing_insect/Warm sand underside": "membrane"
+  },
+  "polygon_budget": {
+    "max_source_polygons": 3598,
+    "reduced_lods": false
+  }
 }

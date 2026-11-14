@@ -9,7 +9,9 @@ const StudioDocument = (() => {
   const keys=(o,allowed,path)=>{object(o,path);for(const k of Object.keys(o))if(!allowed.includes(k))fail(path+'.'+k)};
   function region(r) {
     keys(r,['id','schema','family','seed','count','length','curve','branches','surface','position','coverage','angle','mirror'],'regions');
-    if(!/^[-\w]{1,64}$/.test(r.id)||r.schema!==Growth.VERSION||!['torso','neck','tail'].includes(r.surface)||typeof r.mirror!=='boolean')fail('regions');
+    if(typeof r.id!=='string'||!/^[-\w]{1,64}$/.test(r.id)||r.schema!==Growth.VERSION||!['torso','neck','tail'].includes(r.surface)||typeof r.mirror!=='boolean')fail('regions');
+    if(!['horns','plates','tendrils'].includes(r.family))fail('regions.family');
+    for(const [k,min,max]of [['seed',0,4294967295],['count',1,18],['length',.2,2.4],['curve',-1,1],['branches',0,3]])number(r[k],min,max,'regions.'+k);
     Growth.validate(r);number(r.position,0,1,'regions.position');number(r.coverage,0,1,'regions.coverage');number(r.angle,-Math.PI,Math.PI,'regions.angle');
     return clone(r);
   }
@@ -53,7 +55,10 @@ const StudioDocument = (() => {
     const pattern=['plain','stripes','spots','marbled'].indexOf(s.pattern);if(pattern<0)fail('skin.pattern');object(s.colors,'skin.colors');
     let regions=[];
     if(v===3){if(!Array.isArray(g.regions))fail('regions');regions=g.regions.map(region)}
-    if(v===2){object(g.growth,'growth');if(g.growth.family!=='none')regions=[region({...g.growth,id:'region-1',surface:'torso'})]}
+    if(v===2){object(g.growth,'growth');const r=region({...g.growth,family:g.growth.family==='none'?'horns':g.growth.family,id:'region-1',surface:'torso'});if(g.growth.family!=='none')regions=[r]}
+    if(v===1&&g.growth!==undefined)warnings.push('migration.extra:growth');
+    if(v!==3&&g.regions!==undefined)warnings.push('migration.extra:regions');
+    for(const [path,source,allowed]of [['body',b,['torso','girth','neck','tail']],['legs',l,['pairs','length','width','stride']],['head',h,['size','eyes']],['arms',g.arms||{},['length']],['skin',s,['pattern','colors','scale','gloss']]])for(const key of Object.keys(source))if(!allowed.includes(key))warnings.push('migration.extra:'+path+'.'+key);
     for(const k of Object.keys(g))if(!['schema','body','legs','head','arms','parts','skin','regions','growth','dna','abilities','name'].includes(k))warnings.push('migration.extra:'+k);
     return {schema:'cpore.creature/4',name:g.name||'Migrada',nodes,parts,skin:{pat:pattern,cA:s.colors.base,cB:s.colors.pattern,cC:s.colors.belly,wet:s.gloss,scale:s.scale},regions,migration:{from:v,warnings,source:clone(g)}};
   }
