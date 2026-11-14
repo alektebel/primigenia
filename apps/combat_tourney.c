@@ -161,10 +161,20 @@ static int dominance(double (*P)[CB_MOVE_COUNT], double (*SE)[CB_MOVE_COUNT])
     return any;
 }
 
+/* Ignore regret-matching initialization dust: a move must hold at least
+ * one percent of the average strategy to count toward the four-move gate. */
+static int equilibrium_support(const double mix[CB_MOVE_COUNT])
+{
+    int n = 0;
+    for (int m = 0; m < CB_MOVE_COUNT; m++) n += mix[m] >= 0.01;
+    return n;
+}
+
 static void report_payoff(int duels)
 {
-    printf("== Move-vs-move payoff, %d duels per cell: two creatures repeating one move, 7 m apart,\n", duels);
-    printf("   paired seats and start offsets, 12 s; neutral builds (all parts L3, hp 100000 so nobody dies)\n\n");
+    printf("== Move-vs-move payoff, %d duels per cell: move policies, 7 m apart,\n", duels);
+    printf("   paired seats and start offsets, 12 s; neutral builds (all parts L3, hp 100000 so nobody dies)\n");
+    printf("   guard takes an earned bite riposte; ranged moves retreat and sidestep walls; dodge repeats\n\n");
     printf("-- raw: row's damage dealt minus column's (hp)\n");
     print_matrix(payoff);
     printf("\n-- resource-adjusted: raw minus %.6f hp per stamina point the row spent, plus the same for the column\n",
@@ -182,6 +192,11 @@ static void report_payoff(int duels)
         printf("   %s equilibrium mix (regret matching, 200k iters), game value %.2f:", r ? "resource" : "raw", value);
         for (int a = 0; a < CB_MOVE_COUNT; a++) printf("  %s %.1f%%", cp_combat_move_name(a), mix[a] * 100.0);
         printf("\n");
+        int support = equilibrium_support(mix);
+        char msg[160];
+        snprintf(msg, sizeof msg, "%s equilibrium uses >=4 moves at >=1%% weight (observed %d/6)",
+                 r ? "resource" : "raw", support);
+        check(support >= 4, msg);
     }
     check(!raw_dominant, "no move weakly dominates another (raw damage payoff)");
     check(!resource_dominant, "no move weakly dominates another (resource-adjusted payoff)");

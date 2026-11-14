@@ -6,6 +6,12 @@
 
 int main(void)
 {
+    /* Solver initialization leaves tiny weights on unused moves. Those do
+     * not establish a meaningful mixed strategy. */
+    double mix[CB_MOVE_COUNT] = {0.34, 0.33, 0.329999, 0.000001, 0, 0};
+    assert(equilibrium_support(mix) == 3);
+    mix[0] = 0.25; mix[1] = 0.25; mix[2] = 0.25; mix[3] = 0.25;
+    assert(equilibrium_support(mix) == 4);
     double P[CB_MOVE_COUNT][CB_MOVE_COUNT] = {{0}}, se[CB_MOVE_COUNT][CB_MOVE_COUNT] = {{0}};
     P[0][0] = 2;
     assert(dominates(P, se, 0, 1));
