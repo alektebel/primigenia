@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /* P0 acceptance grid (docs/DESIGN.md §9): time of day x camera, creature vs environment metrics.
 
-   For every t in golden,noon,overcast,night and cam in close,mid,far it loads
+   For every t in golden,noon,overcast,night and cam in close,mid,far,vista it loads
    web/hero/index.html?t=..&cam=.. in headless Chromium with SOFTWARE WebGL (SwiftShader) and takes:
      A  the frame as rendered;
      B  the same frame after Hero.setCreatureVisible(false, true): creature pixels hidden, its shadow and
@@ -14,7 +14,8 @@
        --out DIR        output dir (default docs/evidence/hero/grid)
        --only t:cam,..  subset, e.g. golden:mid,night:far
        --selftest       also take a second render of A to measure render noise (reported, not used)
-       --thr N          creature mask threshold on max channel |A-B| in 0..255 (default 1: any change >=2 levels)
+       --thr N          creature mask threshold on max channel |A-B| in 0..255 (default 1: any change)
+       --measure-hue PNG  measure the fixed golden-mid meadow ROIs without launching a browser
 */
 const {chromium} = require('playwright');
 const fs = require('fs'), path = require('path'), cp = require('child_process');
@@ -24,7 +25,7 @@ const arg = (k, d) => { const i = process.argv.indexOf(k); return i < 0 ? d : (p
 const OUT = path.resolve(arg('--out', path.join(ROOT, 'docs/evidence/hero/grid')));
 const THR = +arg('--thr', 1);
 const SELFTEST = process.argv.includes('--selftest');
-const TIMES = ['golden', 'noon', 'overcast', 'night'], CAMS = ['close', 'mid', 'far'];
+const TIMES = ['golden', 'noon', 'overcast', 'night'], CAMS = ['close', 'mid', 'far', 'vista'];
 const ONLY = arg('--only', null);
 const W = 1280, H = 800;
 const CHROME = process.env.HOME + '/.cache/ms-playwright/chromium-1254/chrome-linux64/chrome';
@@ -62,6 +63,22 @@ function stats(A, idx) {
   return {pixels: n, lum_mean: sy / n, lum_p10: p(.1), lum_p50: p(.5), lum_p90: p(.9), sat_mean: ss / n};
 }
 
+// Fixed meadow ROIs, visually checked in the v7 golden-mid baseline. No hue
+// selection: warm straw counts too. Exclude creature and low-chroma/dark pixels.
+function grassHue(A, creature) {
+  const exclude = new Set(creature), rois = [[80, 520, 390, 720], [1000, 500, 1190, 640]];
+  let sum = 0, pixels = 0;
+  for (const [x0, y0, x1, y1] of rois) for (let y = y0; y < y1; y++) for (let x = x0; x < x1; x++) {
+    const i = y * W + x; if (exclude.has(i)) continue;
+    const [r, g, b] = A.subarray(i * 3, i * 3 + 3), mx = Math.max(r, g, b), mn = Math.min(r, g, b), d = mx - mn;
+    if (mx < .15 * 255 || d / mx < .2) continue;
+    let h = mx === r ? ((g - b) / d) % 6 : mx === g ? (b - r) / d + 2 : (r - g) / d + 4;
+    h *= 60; if (h < 0) h += 360; sum += h; pixels++;
+  }
+  return {pixels, mean_hue_degrees: pixels ? sum / pixels : null, rois,
+    method: 'Arithmetic HSV hue mean in fixed meadow ROIs; S >= 0.2, V >= 0.15, creature excluded; no hue filter'};
+}
+
 async function waitFrames(page, n) {
   const f0 = await page.evaluate(() => Hero.frame);
   await page.waitForFunction(([f, k]) => Hero.frame >= f + k, [f0, n], {timeout: 120000});
@@ -70,6 +87,8 @@ async function waitFrames(page, n) {
 async function shoot(page, file) { await page.screenshot({path: file}); }
 
 (async () => {
+  const hueFile = arg('--measure-hue', null);
+  if (hueFile) { console.log(JSON.stringify(grassHue(decode(hueFile), []), null, 2)); return; }
   fs.mkdirSync(OUT, {recursive: true});
   const wanted = ONLY ? new Set(ONLY.split(',')) : null;
   const jobs = [];
@@ -83,8 +102,9 @@ async function shoot(page, file) { await page.screenshot({path: file}); }
       const name = `${t}-${cam}`, t0 = Date.now();
       const page = await browser.newPage({viewport: {width: W, height: H}, deviceScaleFactor: 1});
       const errs = [];
-      page.on('pageerror', e => errs.push(e.message));
-      page.on('console', m => { if (m.type() === 'error') errs.push(m.text()); });
+      page.on('crash', () => errs.push('Chromium page crashed'));
+      page.on('pageerror', e => { errs.push(e.message); console.error(name + ': ' + e.message); });
+      page.on('console', m => { if (m.type() === 'error') { errs.push(m.text()); console.error(name + ': ' + m.text().slice(0, 1200)); } });
       try {
         await page.goto('file://' + path.join(ROOT, `web/hero/index.html?t=${t}&cam=${cam}`));
         await page.waitForFunction(() => window.Hero && window.Hero.ready, null, {timeout: 120000});
@@ -119,15 +139,30 @@ async function shoot(page, file) { await page.screenshot({path: file}); }
         encodeGray(viz, path.join(OUT, name + '.mask.png'));
         const creature = stats(A, cre), environment = stats(A, env);
         const rec = {name, t, cam, creature, environment, sky_pixels: sky.length, mask_threshold: THR, noise, console_errors: errs.slice(0, 5), seconds: (Date.now() - t0) / 1000};
-        if (!creature.pixels) { rec.pass = {lum: false, sat: false, all: false, reason: 'no creature pixels found'}; }
+        if (t === 'golden' && cam === 'mid') rec.grass_hsv = grassHue(A, cre);
+        if (cam === 'vista' && creature.pixels < 512) {
+          rec.pass = {lum: null, sat: null, all: true, creature_checks_skipped: true, reason: 'vista creature mask < 512 pixels; color statistics unreliable'};
+        } else if (!creature.pixels) { rec.pass = {lum: false, sat: false, all: false, reason: 'no creature pixels found'}; }
         else {
           const lum = creature.lum_mean >= environment.lum_p10 && creature.lum_mean <= environment.lum_p90;
           const dsat = creature.sat_mean - environment.sat_mean;
           const sat = Math.abs(dsat) <= .15;
           rec.pass = {lum, sat, sat_delta: dsat, all: lum && sat};
         }
+        rec.pass.console = errs.length === 0;
+        rec.pass.all = rec.pass.all && rec.pass.console;
+        if (rec.grass_hsv) {
+          rec.pass.grass_hue = rec.grass_hsv.mean_hue_degrees >= 65 && rec.grass_hsv.mean_hue_degrees <= 100;
+          rec.pass.all = rec.pass.all && rec.pass.grass_hue;
+        }
         frames.push(rec);
         console.log(`${name}: creature ${creature.pixels}px lum ${creature.lum_mean?.toFixed(4)} vs env p10-p90 ${environment.lum_p10?.toFixed(4)}-${environment.lum_p90?.toFixed(4)}; sat ${creature.sat_mean?.toFixed(3)} vs ${environment.sat_mean?.toFixed(3)} -> ${rec.pass.all ? 'PASS' : 'FAIL'} (${rec.seconds}s)${noise ? ' noise ' + JSON.stringify(noise) : ''}`);
+      } catch (e) {
+        const state = await page.evaluate(() => ({ready: window.Hero?.ready, frame: window.Hero?.frame,
+          canvas: [...document.querySelectorAll('canvas')].map(c => [c.id, c.width, c.height]),
+          visibility: document.visibilityState})).catch(error => ({unavailable: error.message}));
+        fs.writeFileSync(path.join(OUT, name + '.failure.json'), JSON.stringify({name, error: e.stack, console_errors: errs, state}, null, 2));
+        throw e;
       } finally { await page.close(); }
     }
   } finally { await browser.close(); }
@@ -138,7 +173,7 @@ async function shoot(page, file) { await page.screenshot({path: file}); }
     creature_mask: `|A-B| >= ${THR} on any channel, A = frame, B = same frame with creature pixels hidden (shadow kept)`,
     sky_mask: 'pixels that are pure magenta when the sky dome is painted magenta and clouds hidden',
     environment: 'all pixels that are neither creature nor sky',
-    pass_rule: 'creature lum_mean within environment [lum_p10, lum_p90] AND |creature sat_mean - environment sat_mean| <= 0.15'},
+    pass_rule: 'creature lum_mean within environment [lum_p10, lum_p90] AND |creature sat_mean - environment sat_mean| <= 0.15; skip these two checks only for vista masks < 512 pixels; zero console errors always; golden-mid grass hue 65..100 degrees'},
     frames};
   fs.writeFileSync(path.join(OUT, 'metrics.json'), JSON.stringify(metrics, null, 1));
 
@@ -147,20 +182,25 @@ async function shoot(page, file) { await page.screenshot({path: file}); }
     const order = []; for (const cam of CAMS) for (const t of TIMES) order.push(frames.find(f => f.t === t && f.cam === cam));
     const margs = [];
     for (const f of order) margs.push('-label', `${f.t} / ${f.cam}  ${f.pass.all ? 'PASS' : 'FAIL'}`, path.join(OUT, f.name + '.png'));
-    const r = cp.spawnSync('montage', [...margs, '-tile', '4x3', '-geometry', '640x400+4+4', '-background', '#151515', '-fill', 'white', '-pointsize', '18', path.join(OUT, 'grid.png')], {stdio: 'inherit'});
-    if (r.status !== 0) console.error('montage failed');
+    const r = cp.spawnSync('montage', [...margs, '-tile', '4x4', '-geometry', '640x400+4+4', '-background', '#151515', '-fill', 'white', '-pointsize', '18', path.join(OUT, 'grid.png')], {stdio: 'inherit'});
+    if (r.status !== 0) throw new Error('montage failed');
   }
 
   const f3 = x => x === undefined ? 'n/a' : x.toFixed(3), f4 = x => x === undefined ? 'n/a' : x.toFixed(4);
-  let md = `# P0 acceptance grid\n\nGenerated by \`tools/hero/capture_grid.cjs\` (${metrics.generated}). Metrics in \`metrics.json\`; contact sheet \`grid.png\` (columns: golden, noon, overcast, night; rows: close, mid, far); per-frame masks \`*.mask.png\` (white = creature, grey = sky, black = environment).\n\n`;
+  let md = `# P0 acceptance grid\n\nGenerated by \`tools/hero/capture_grid.cjs\` (${metrics.generated}). Metrics in \`metrics.json\`; contact sheet \`grid.png\` (columns: golden, noon, overcast, night; rows: close, mid, far, vista); per-frame masks \`*.mask.png\` (white = creature, grey = sky, black = environment).\n\n`;
   md += `## Settings\n\n- Browser: ${meta.browser} (headless, \`${meta.executable.replace(process.env.HOME, '~')}\`)\n- Launch args: \`${ARGS.join(' ')}\` (software WebGL only, no GPU flags)\n- Renderer reported by WebGL: \`${meta.renderer}\`\n- Viewport: ${W}x${H}, deviceScaleFactor 1, canvas antialias on, \`preserveDrawingBuffer\`\n- Page: \`web/hero/index.html?t=<t>&cam=<cam>\`, creature Merodeador, fixed seed, scene frozen (no sim clock, grass/water time fixed at 3, clouds not drifting)\n- Creature mask: |A-B| >= ${THR} on any 8-bit channel; A = frame, B = same frame after \`Hero.setCreatureVisible(false, true)\` (creature pixels hidden, shadow and grass occlusion kept)\n- Sky mask: pixels that are pure magenta in a third render with the sky dome painted magenta and clouds hidden\n- Environment: every pixel that is neither creature nor sky\n- Luminance: Rec.709 weights on sRGB-decoded values (linear Y, 0..1); saturation: HSV S of the 8-bit sRGB value\n- Pass rule (not tuned): creature mean luminance within the environment p10..p90, **and** creature mean saturation within +-0.15 of the environment mean saturation\n\n`;
   md += `## Results\n\n| t | cam | creature px | creature Y mean | env Y p10 / p50 / p90 | Y in range | creature S | env S | dS | S ok | result |\n|---|---|---|---|---|---|---|---|---|---|---|\n`;
   for (const f of frames) {
     const c = f.creature, e = f.environment;
-    md += `| ${f.t} | ${f.cam} | ${c.pixels} | ${f4(c.lum_mean)} | ${f4(e.lum_p10)} / ${f4(e.lum_p50)} / ${f4(e.lum_p90)} | ${f.pass.lum ? 'yes' : 'no'} | ${f3(c.sat_mean)} | ${f3(e.sat_mean)} | ${f.pass.sat_delta === undefined ? 'n/a' : (f.pass.sat_delta >= 0 ? '+' : '') + f3(f.pass.sat_delta)} | ${f.pass.sat ? 'yes' : 'no'} | **${f.pass.all ? 'PASS' : 'FAIL'}** |\n`;
+    md += `| ${f.t} | ${f.cam} | ${c.pixels} | ${f4(c.lum_mean)} | ${f4(e.lum_p10)} / ${f4(e.lum_p50)} / ${f4(e.lum_p90)} | ${f.pass.lum === null ? 'skip' : f.pass.lum ? 'yes' : 'no'} | ${f3(c.sat_mean)} | ${f3(e.sat_mean)} | ${f.pass.sat_delta === undefined ? 'n/a' : (f.pass.sat_delta >= 0 ? '+' : '') + f3(f.pass.sat_delta)} | ${f.pass.sat === null ? 'skip' : f.pass.sat ? 'yes' : 'no'} | **${f.pass.all ? 'PASS' : 'FAIL'}** |\n`;
   }
   const np = frames.filter(f => f.pass.all).length;
   md += `\n${np} of ${frames.length} frames pass.\n`;
+  md += '\nVista skips creature luminance/saturation checks only when the body mask has fewer than 512 pixels. Environment metrics and console checks always apply. Other cameras keep the original rules.\n';
+  const goldenMid = frames.find(f => f.name === 'golden-mid');
+  if (goldenMid) md += `\nGolden-mid grass hue: ${goldenMid.grass_hsv.mean_hue_degrees.toFixed(2)} degrees HSV (${goldenMid.grass_hsv.pixels} pixels). ${goldenMid.grass_hsv.method}. ROIs: ${JSON.stringify(goldenMid.grass_hsv.rois)}. Required range: 65–100 degrees.\n`;
+  md += '\nCapture time per frame (seconds; includes page load, warmup, three renders, PNG decoding and masks): ' + frames.map(f => `${f.name} ${f.seconds.toFixed(2)}`).join('; ') + '.\n';
   fs.writeFileSync(path.join(OUT, 'README.md'), md);
   console.log(`${np}/${frames.length} pass; wrote ${path.relative(ROOT, OUT)}/metrics.json README.md${full ? ' grid.png' : ''}`);
+  if (np !== frames.length) process.exitCode = 1;
 })().catch(e => { console.error(e); process.exit(1); });
