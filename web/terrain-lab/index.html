@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Terrain lab · Primigenia</title>
+<link rel="stylesheet" href="terrain.css">
+</head>
+<body>
+<header><h1>Primigenia <span>/ Terrain lab</span></h1><a href="../../docs/TERRAIN.md">Generator notes</a></header>
+<main>
+  <section class="landscape" aria-label="Terrain preview">
+    <div class="viewbar"><label for="shading">Surface</label><select id="shading"><option value="materials">Ground materials</option><option value="height">Altitude</option><option value="slope">Slope</option><option value="flow">Flow accumulation</option><option value="sediment">Deposited sediment</option></select><button id="reset" type="button">Reset camera</button></div>
+    <div id="vista"><canvas id="scene" aria-label="Three dimensional mountain ring. Drag to orbit; scroll to zoom." tabindex="0"></canvas><p id="hint">Drag to orbit · scroll or + / − to zoom · arrow keys to rotate</p></div>
+    <div class="readout"><span id="summary">Preparing the terrain generator…</span><code id="hash">—</code></div>
+  </section>
+  <aside>
+    <form id="controls">
+      <h2>Grow a landscape</h2><p class="intro">A sheltered valley, a mountain ring, and water finding its way down.</p>
+      <div class="pair"><label>World seed<input id="seed" type="number" min="0" max="4294967295" step="1" value="1" required></label><label>Map size<select id="resolution"><option value="256">256 × 256</option><option value="512">512 × 512</option><option value="1024" selected>1024 × 1024</option></select></label></div>
+      <label for="warp">Domain warp <output id="warp-value">280 m</output></label><input id="warp" type="range" min="0" max="600" step="20" value="280">
+      <label for="ridge">Ridge weight <output id="ridge-value">0.72</output></label><input id="ridge" type="range" min="0" max="1" step="0.02" value="0.72">
+      <label for="droplets">Water droplets <output id="droplets-value">70,000</output></label><input id="droplets" type="range" min="0" max="200000" step="5000" value="70000">
+      <label for="erosion">Erosion strength <output id="erosion-value">0.32</output></label><input id="erosion" type="range" min="0" max="0.8" step="0.02" value="0.32">
+      <label for="thermal">Thermal passes <output id="thermal-value">5</output></label><input id="thermal" type="range" min="0" max="20" step="1" value="5">
+      <label class="check"><input id="base" type="checkbox"> Base only (before erosion)</label>
+      <button id="generate" type="submit">Generate landscape</button>
+      <progress id="progress" max="100" value="0" aria-label="Generation progress"></progress>
+      <p id="status" role="status" aria-live="polite">Loading WebAssembly…</p>
+    </form>
+    <figure><figcaption><span>Hillshade · 2 km square</span><label class="check"><input id="drainage" type="checkbox" checked> Drainage</label></figcaption><canvas id="map" width="512" height="512" aria-label="Terrain hillshade with blue drainage channels"></canvas><p class="map-key">Blue: contributing area ≥ 8,000 m². North is up.</p></figure>
+  </aside>
+</main>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script type="module" src="lab.mjs"></script>
+</body>
+</html>
