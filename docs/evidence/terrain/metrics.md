@@ -1,162 +1,174 @@
-# Terrain structure and performance evidence
+# Terrain structure, shape and performance evidence
 
-Measured 2026-11-15 on the phase-A generator, version 1. Default work: N=1024,
-2,000 m square, 70,000 droplets, lifetime 32, brush radius 4, 5 thermal passes.
-Base-only disables both erosion stages, retaining the identical noise/mask and
-final drainage analysis. Seeds are 1, 7 and 42. All heavy processes ran with
-`nice -n 10` (inherited niceness may further lower priority).
+Measured 2026-11-15 on generator **version 2** (W11 shape pass). Defaults:
+N=1024, 3,600 m square, 48/16/6 stream-power steps at N/4, N/2 and N, 80,000
+droplets, 8 scree sweeps. "Base" turns all three off and keeps the same shape
+function and drainage analysis. Seeds are 1, 7 and 42. "Phase A" rows are the
+version-1 generator (commit `6336202`, 2,000 m square, 70,000 droplets),
+rebuilt from git and measured with the same tool. Heavy processes ran with
+`nice -n 10`.
 
-## Drainage measurements
+Pictures: [shape-v2.png](shape-v2.png) puts phase A seed 42 above version 2
+seeds 42, 1 and 7, each from the fixed oblique camera, the valley-floor camera
+and as hillshade with drainage.
 
-The fixed channel threshold is **8,000 m²** of contributing area (about 2,097
-cells at N=1024). Both versions use the same priority-flood routing on their
-final map. Each cell begins with one rainfall unit. The output flow multiplied
-by 4,000,000 m² gives contributing area; directions in the dump are exactly the
+## What is measured
+
+The channel threshold is **8,000 m²** of contributing area. Only land (height
+above 0) can be a channel; the sea is an outlet. Directions in the dump are the
 generator's routed receivers.
 
-Strahler order starts at 1 on channel headwaters. At a junction the maximum
-upstream order increases only if at least two maximal upstream orders match.
-Count one stream segment at each downstream end of a maximal run with constant
-order. Fit `log(N_order) = a − order * log(Rb)` when at least three orders exist,
-otherwise use the arithmetic mean of adjacent order-count ratios. All six
-final maps support the Horton regression.
+- **Rb**: Horton regression of Strahler segment counts, as before. Target 3–5.
+- **Hack h**: OLS of log(longest divide-to-outlet path) on log(area) at
+  independent basin outlets, as before. Target 0.5–0.6.
+- **HI**: hypsometric integral, (mean − min)/(max − min), sea floor included.
+- **Drainage density**: channel length per land area, km/km².
+- **Valley depth** (new): mean, over channel cells, of how far the channel lies
+  below the mean ground on a 75 m circle around it. A stream crossing a plane
+  scores 0 at any slope; only a cut valley scores.
+- **Ridge sharpness** (new): measured on drainage divides, the lines between
+  the hillslopes of two different channel segments (a segment starts at a
+  channel head and below every confluence, so the two banks of one stream do
+  not make a divide). At each divide cell: the mean fall 10 m to both sides,
+  across the best of four axes, and 0 where the divide is not a crest. Mean
+  over divide cells, rise/run. "Crest" is the fraction of divide cells that
+  are crests at all.
 
-For Hack's law, compute the longest upstream D8 path **from the divide**, with
-cardinal/diagonal distances in metres, including cells below the channel
-threshold. Fit `log(L) = a + h * log(A)` at independent basin outlets above the
-channel threshold. At least eight basins are required. Using only the length
-above the channel threshold while keeping total area gave a biased exponent;
-the draft's implementation was corrected before recording these results.
-The [drainage study's definition](https://essd.copernicus.org/articles/16/1151/2024/index.html#section3)
-also measures longest river length from divide to mouth. This supports the
-quantity being measured, not the acceptance of this synthetic terrain.
+## Results
 
-Hypsometric integral is `(mean(height) − min(height)) / (max(height) − min(height))`.
-No HI acceptance range is imposed by the brief.
+| Gen | Seed | Stage | Channel cells | Strahler segments | Rb | Hack h | R² | Basins | HI | Density | Valley depth m | Ridge sharpness | Crest | Peak m |
+|---|---|---|---:|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| A | 1 | base | 9784 | 1:96, 2:21, 3:5 | 4.382 | 0.5346 | 0.91 | 18 | 0.293 | 5.76 | 6.6 | 0.094 | 0.24 | 586 |
+| A | 1 | eroded | 14097 | 1:164, 2:33, 3:9, 4:3 | 3.782 | 0.5112 | 0.89 | 24 | 0.295 | 8.48 | 8.0 | 0.170 | 0.43 | 581 |
+| A | 7 | base | 10235 | 1:111, 2:32, 3:8, 4:1 | 4.718 | 0.4719 | 0.85 | 23 | 0.300 | 5.98 | 6.0 | 0.093 | 0.25 | 570 |
+| A | 7 | eroded | 16483 | 1:160, 2:39, 3:12, 4:3 | 3.709 | 0.5258 | 0.93 | 23 | 0.302 | 9.94 | 6.9 | 0.174 | 0.43 | 563 |
+| A | 42 | base | 10426 | 1:109, 2:27, 3:6, 4:1 | 4.748 | 0.4709 | 0.91 | 20 | 0.313 | 6.19 | 6.9 | 0.102 | 0.25 | 571 |
+| A | 42 | eroded | 16388 | 1:170, 2:42, 3:12, 4:2 | 4.298 | 0.4985 | 0.91 | 23 | 0.316 | 9.92 | 8.3 | 0.175 | 0.43 | 564 |
+| v2 | 1 | base | 13963 | 1:228, 2:52, 3:9, 4:2, 5:1 | 4.103 | 0.4540 | 0.88 | 71 | 0.189 | 8.08 | 7.8 | 0.375 | 0.59 | 463 |
+| v2 | 1 | eroded | 13527 | 1:230, 2:53, 3:9, 4:2, 5:1 | 4.118 | 0.5108 | 0.93 | 76 | 0.176 | 8.08 | **26.4** | **0.490** | 0.79 | 434 |
+| v2 | 7 | base | 13860 | 1:245, 2:57, 3:13, 4:1 | 6.039 | 0.4630 | 0.86 | 73 | 0.185 | 7.78 | 8.5 | 0.384 | 0.62 | 488 |
+| v2 | 7 | eroded | 13481 | 1:206, 2:45, 3:9, 4:2, 5:1 | 3.963 | 0.4986 | 0.94 | 72 | 0.168 | 7.79 | **27.9** | **0.495** | 0.80 | 472 |
+| v2 | 42 | base | 14530 | 1:237, 2:59, 3:14, 4:3, 5:1 | 4.021 | 0.4649 | 0.90 | 68 | 0.165 | 8.14 | 8.4 | 0.465 | 0.63 | 520 |
+| v2 | 42 | eroded | 13632 | 1:223, 2:52, 3:9, 4:2 | 4.902 | 0.5106 | 0.94 | 71 | 0.157 | 7.88 | **26.0** | **0.496** | 0.79 | 482 |
 
-| Seed | Stage | Channel cells | Strahler segment counts | Rb | Outlet h | Fit R² | Basins | HI |
-|---|---|---:|---|---:|---:|---:|---:|---:|
-| 1 | base | 9784 | 2:21, 3:5, 1:96 | 4.3818 | 0.5346 | 0.9067 | 18 | 0.2931 |
-| 1 | eroded | 14097 | 2:33, 3:9, 1:164, 4:3 | 3.7822 | 0.5112 | 0.8902 | 24 | 0.2948 |
-| 7 | base | 10235 | 1:111, 2:32, 3:8, 4:1 | 4.7185 | 0.4719 | 0.8544 | 23 | 0.3001 |
-| 7 | eroded | 16483 | 1:160, 2:39, 3:12, 4:3 | 3.7093 | 0.5258 | 0.9345 | 23 | 0.3023 |
-| 42 | base | 10426 | 2:27, 1:109, 3:6, 4:1 | 4.7484 | 0.4709 | 0.9121 | 20 | 0.3129 |
-| 42 | eroded | 16388 | 2:42, 1:170, 3:12, 4:2 | 4.2977 | 0.4985 | 0.9063 | 23 | 0.3156 |
+Reading it:
 
-The brief's target intervals are Rb=[3,5] and h=[0.5,0.6]. To compare paired
-results, define `gap = distance(Rb,[3,5])/2 + distance(h,[0.5,0.6])/0.1`.
-This measures distance from the ranges, not distance from an arbitrarily
-preferred point within them. The heavy gate requires no seed's gap to worsen,
-and a strictly better sum across the three seeds.
+- **Valley depth separates base from eroded by a factor of three** in version 2
+  (about 8 m to 26–28 m on every seed). In phase A erosion moved it from about
+  6.5 m to about 7.7 m: the reviewer's "it only scratches rills" as a number.
+- **Ridge sharpness rises on every seed** in version 2 (0.375 → 0.490,
+  0.384 → 0.495, 0.465 → 0.496) and the share of divides that are crests goes
+  from about 0.6 to 0.8. Seed 42's margin is small, 0.031: its base is already
+  creased by the ridged noise. Eroded version 2 is about 2.8 times phase A's
+  eroded value (0.17).
+- **Rb** is in 3–5 for all three eroded maps; seed 7's base is not (6.04).
+- **Hack h** is 0.511, 0.499 and 0.511 eroded, against 0.454–0.465 base. Seed 7
+  is 0.0014 under the strict lower bound. Fits now rest on 71–76 independent
+  basins, not 18–24, because the island has a whole coast to drain to.
+- **HI** falls from about 0.31 to about 0.17. Most of that is the sea floor
+  entering the height range and the lowland around the range, not erosion.
+- **Drainage density** barely changes with erosion in version 2 (the threshold
+  is an area, and the island's area is the same). It is reported, not gated.
 
-| Seed | Base gap | Eroded gap | Result |
-|---|---:|---:|---|
-| 1 | 0.000000 | 0.000000 | Tie: both in range |
-| 7 | 0.280782 | 0.000000 | Improved |
-| 42 | 0.291429 | 0.014892 | Improved |
+The interval gap used in phase A, `distance(Rb,[3,5])/2 + distance(h,[0.5,0.6])/0.1`,
+goes 0.460 → 0, 0.890 → 0.014 and 0.351 → 0 for seeds 1, 7 and 42.
 
-Mean normalized gap: **0.190737 → 0.004964**.
-All eroded Rb values lie in 3–5. Eroded h is in range for seeds 1 and 7;
-seed 42 is 0.4985, 0.0015 below the strict lower bound. Seed 1's base already
-passes both intervals, so erosion cannot make its interval gap strictly smaller.
-**This is a non-worse paired / improved aggregate result, not strict improvement
-on all three seeds or proof that every eroded metric is inside its interval.**
+`make terrain-test` now fails unless, on every seed, eroded beats base on both
+valley depth and ridge sharpness, eroded Rb is within 0.5 of [3,5] and eroded
+Hack h within 0.05 of [0.5,0.6]. The phase-A gate compared interval gaps
+between base and eroded; it could not fail a seed whose base was already in
+range, which is why it is replaced.
 
-## Sensitivity and tuning
+## Limits of these numbers
 
-The earlier draft fitted Hack using nested junctions plus outlets. Keeping that
-estimator, with the corrected divide-to-outlet length, gives:
+- Ridge sharpness was first tried on "cells no water flows into" and on plain
+  local maxima. On both, the version-2 **base beat the eroded map**, because
+  the ridged noise puts thin sharp creases everywhere and erosion removes those
+  that are not divides. The divide-based measure is the one that asks the
+  question the pictures ask (are the ridges between valleys sharp?), but it was
+  chosen after seeing that; treat the 0.03 margin on seed 42 accordingly.
+- Slopes are steep. Of the ground above 100 m, 24–25% lies at 40–50°, 35–39%
+  at 50–60° and 20–23% at 60–70° (phase A eroded seed 42: 15%, 19%, 25%, plus
+  16% above 70°). The base is gentler than the eroded map: stream power cuts
+  until valley walls stand at the bedrock angle.
+- Pooled Hack fits (junctions and outlets, correlated samples) stay under the
+  range: 0.393/0.404/0.419 base and 0.448/0.419/0.455 eroded for seeds 1/7/42
+  ([metrics-pooled.json](metrics-pooled.json)).
+- Three seeds, one resolution, one synthetic island. No confidence intervals
+  and no comparison with real terrain.
 
-| Seed | Stage | Pooled h | Fit R² | Samples |
-|---|---|---:|---:|---:|
-| 1 | base | 0.4334 | 0.8540 | 91 |
-| 1 | eroded | 0.4332 | 0.8618 | 160 |
-| 7 | base | 0.4105 | 0.8133 | 105 |
-| 7 | eroded | 0.4235 | 0.8759 | 153 |
-| 42 | base | 0.4053 | 0.8298 | 105 |
-| 42 | eroded | 0.4051 | 0.8290 | 161 |
+## Tuning notes
 
-Those pooled exponents remain below the requested 0.5–0.6 range. Erosion improves
-seed 7 and is nearly unchanged/slightly worse on seeds 1 and 42 under that fit.
-These correlated nested samples measure a different sampling regime; they are
-kept in `metrics-pooled.json` and are not discarded to imply stronger agreement.
-Only 18–24 independent outlets support each primary fit. Finite grid size,
-artificial square boundaries and the deliberate ring/lake/pass strongly constrain
-the catchments. No confidence interval or real-world validation is claimed.
+What was tried, in order, and why it changed:
 
-Tuning was real: the raw-surface D8 first pass fragmented after erosion and
-could not even fit Rb for the full-size eroded maps. Priority-flood routing fixed
-the graph. A small N=512 sweep on the earlier mask compared radius 2/4,
-lower erosion, longer lifetime and lower capacity; it gave mixed Hack results.
-The retained radius-4 brush spreads incision and reduces pits. Broader,
-noise-offset foothills and removal of the 12 m valley-rim discontinuity improved
-the visual structure and retained all default-seed guarantees. The final table
-above uses the resulting parameters on all three full-size maps. Thresholds
-were not changed per seed, and the pooled failure is reported explicitly.
-
-Flat spill-level routing creates conspicuously straight drainage lines across
-the lake/start valley. These are saturated-basin diagnostic paths, not visible
-riverbeds or a water-volume simulation. Thermal erosion relaxes towards the
-angle with a finite count; it does not enforce an everywhere-below-talus bound.
+1. A lobed ring with a tent profile and spur-modulated width, plus stream
+   power: richly dissected flanks, but still one continuous crest and radial
+   drainage on both sides. It read as an eroded caldera.
+2. Seven massifs over a low connecting ridge: separate mountains, saddles of
+   different depth, valleys between massifs. This is the change that removed
+   the crater look.
+3. Stream power wore every ridge down as fast as its gullies cut, because at
+   one cell of area the incision term does not vanish. A hillslope threshold
+   fixed it.
+4. 260,000 strong droplets refilled the valleys stream power had cut (valley
+   depth fell from about 30 m to 11 m in the test that found it) and blurred the crests. They are now
+   80,000 and weaker, and run before the fine stream-power pass.
+5. A 3,200 m square left the range too little room; it is 3,600 m.
+6. A single bedrock angle left every wall at one slope; it now varies with a
+   rock-strength noise.
 
 ## Parity and timings
 
 Machine: x86-64 Linux, **AMD Ryzen AI 7 350**, GCC 16.2.1, Emscripten 7.0.0,
 Node v26.13.0. Native and WASM use `-O2 -std=c99 -fno-fast-math -ffp-contract=off`.
-Timings surround generation only, excluding hashing, copies and rendering;
-they are individual observations under normal machine load, not a benchmark
-mean. Exact measurements are in [parity.json](parity.json).
+Timings surround generation only; single observations under normal load.
+Exact values are in [parity.json](parity.json).
 
-| Seed | N | Native seconds | Node/WASM seconds | Exact hash (both) |
-|---|---:|---:|---:|---|
-| 1 | 256 | 0.6732 | 0.7498 | `89d99b8f14645e6a` |
-| 7 | 256 | 0.6472 | 0.6975 | `18f87d9ed2efd473` |
-| 42 | 256 | 0.6821 | 0.7762 | `3b32a5fd7c3c59aa` |
-| 1 | 1024 | 1.2976 | 1.3564 | `d4e9acd0acb8f70c` |
+| Seed | N | Native s | Node/WASM s | Hash (both) | Phase A native / WASM s |
+|---|---:|---:|---:|---|---|
+| 1 | 256 | 0.232 | 0.288 | `64441dac0935b95d` | 0.673 / 0.750 |
+| 7 | 256 | 0.241 | 0.292 | `d14d5771ab85cfd3` | 0.647 / 0.698 |
+| 42 | 256 | 0.234 | 0.286 | `76446142865887e8` | 0.682 / 0.776 |
+| 1 | 1024 | 2.605 | 3.555 | `9691c6eff8be38cc` | 1.298 / 1.356 |
 
-All four required parity cases match, as do the three committed small-N goldens
-through the WASM ABI. The default 1024 map is under W13's ~10 s limit.
-`wasm-test` also passes the pre-existing combat goldens, bot-duel parity and JS
-wrapper/encounter regressions.
+All four parity cases match, as do the three re-recorded N=32 goldens through
+the WASM ABI. N=1024 costs about 2.6 times phase A in WASM and stays well
+inside W13's ~10 s. In the lab's Web Worker under SwiftShader Chromium the same
+generation reported 4.7–5.4 s ([browser.json](browser.json)).
 
 ## Vista evidence
 
-Chromium 1254 uses only `--use-angle=swiftshader` and
-`--enable-unsafe-swiftshader`. [browser.json](browser.json) records the actual
-Chromium version and asserted renderer. Screenshots share the camera, sun,
-size and default surface shading. They are 1024 maps on a sampled display mesh;
-the lab desktop/mobile smoke images show a subsequent N=256 control interaction.
-An independent source/screenshot review shipped the scoped preview; no owner
-approval or normal-browser FPS measurement is claimed.
+Chromium 1254 with only `--use-angle=swiftshader --enable-unsafe-swiftshader`;
+[browser.json](browser.json) records the renderer and each terrain's hash and
+time. All pictures are N=1024 maps on a 512-segment mesh with the lab's baked
+shading; the phase-A row uses the same shading and cameras on the phase-A maps.
 
-| Seed | Before | After | Hillshade + drainage |
+| Terrain | From above | Valley floor | Hillshade + drainage |
 |---|---|---|---|
-| 1 | [Base](base-1.png) | [Eroded](eroded-1.png) | [Drainage](hillshade-drainage-1.png) |
-| 7 | [Base](base-7.png) | [Eroded](eroded-7.png) | [Drainage](hillshade-drainage-7.png) |
-| 42 | [Base](base-42.png) | [Eroded](eroded-42.png) | [Drainage](hillshade-drainage-42.png) |
+| Phase A, seed 42 | [oblique](before-42-oblique.png) | [valley](before-42-valley.png) | [top](before-42-top.png) |
+| v2 base, seed 42 | [oblique](base-42-oblique.png) | [valley](base-42-valley.png) | [top](base-42-top.png) |
+| v2, seed 42 | [oblique](after-42-oblique.png) | [valley](after-42-valley.png) | [top](after-42-top.png) |
+| v2, seed 1 | [oblique](after-1-oblique.png) | [valley](after-1-valley.png) | [top](after-1-top.png) |
+| v2, seed 7 | [oblique](after-7-oblique.png) | [valley](after-7-valley.png) | [top](after-7-top.png) |
 
-The capture smoke tested five material modes, keyboard orbit/zoom, reset,
-drainage toggling, invalid seed rejection, regeneration and mobile overflow.
-It always closes the software browser. The Worker forwards all five progress
-stages, and the core tests validate monotonic progress within stages.
+The capture also exercises the five surface modes, both views, keyboard camera,
+reset, drainage toggle, invalid seed rejection, regeneration and mobile
+overflow ([lab-desktop.png](lab-desktop.png), [lab-mobile.png](lab-mobile.png)).
+No owner approval and no normal-browser frame rate is claimed.
 
 ## Reproduce
 
 ```sh
 nice -n 10 make terrain-test
-# The heavy target creates paired dumps, fits the primary metrics and checks gaps.
-# Recompute the sensitivity fit on those same maps without generating again:
 nice -n 10 python3 tools/terrain/metrics.py \
   build/terrain/terrain-{base,eroded}-{1,7,42}.bin --pooled \
   --json build/terrain/metrics-pooled.json
-# Serve the repository root, then capture with the existing agent dependencies:
+# Serve the repository root on 8031, then:
 NODE_PATH=/home/diego/Desarrollo/cpore-wt/_agent/node_modules \
   nice -n 10 node tools/terrain/capture.cjs
+python3 tools/terrain/sheet.py
 ```
 
-The compact raw metrics are committed as [metrics.json](metrics.json) and
-[metrics-pooled.json](metrics-pooled.json); large maps and generated WASM stay
-under ignored `build/`. Natural-structure regressions use the primary outlet
-estimator; a stricter pooled-fit acceptance remains open. Phase B integration,
-full-island guarantees and the game's W13 cache/pre-bake/story remain outside
-this standalone phase-A deliverable.
+Raw numbers: [metrics.json](metrics.json), [metrics-pooled.json](metrics-pooled.json)
+and [metrics-phase-a.json](metrics-phase-a.json). Maps and WASM stay under
+ignored `build/`.

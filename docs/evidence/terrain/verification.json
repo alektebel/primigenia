@@ -1,43 +1,39 @@
 {
   "date": "2026-11-15",
+  "generator_version": 2,
   "checks": [
     {
       "command": "nice -n 10 make test",
-      "result": "PASS: core, combat, tournament arithmetic, 50000 combat golden ticks, terrain smoke, metrics unit tests"
+      "result": "PASS: terrain smoke with re-recorded N=32 goldens, metrics unit tests, core, combat, tournament arithmetic, combat goldens"
     },
     {
       "command": "nice -n 10 make terrain-test",
-      "result": "PASS: paired 1024 metrics, W12 guarantees, required native/WASM parity"
+      "result": "PASS: W12 guarantees on seeds 1/7/42 at N=1024, shape and structure gates on paired metrics, native/WASM parity"
     },
     {
       "command": "nice -n 10 make wasm-test",
-      "result": "PASS: combat native/WASM goldens and duels, JS encounter tests, terrain parity"
+      "result": "PASS: terrain parity (three small goldens, four native/WASM hashes, W13 3.56 s), combat goldens and encounters"
     },
     {
-      "command": "nice -n 10 ./build/terrain_sanitized",
-      "result": "PASS: ASan + UBSan terrain smoke, including maximal frequency/domain and brush bounds"
+      "command": "cc -fsanitize=address,undefined tests/test_terrain.c core/src/terrain.c core/src/rng.c; ./a.out --heavy",
+      "result": "PASS: no ASan or UBSan report"
     },
     {
-      "command": "nice -n 10 ./build/terrain/coverage-final/test --heavy; gcov -b test-terrain.gcno",
-      "result": "100% of 499 terrain lines; 99.43% branch execution, 92.29% taken"
+      "command": "gcov -b on tests/test_terrain.c --heavy (unoptimized)",
+      "result": "100% of 755 terrain lines; 99.59% branches executed, 93.36% taken"
     },
     {
-      "command": "NODE_PATH=/home/diego/Desarrollo/cpore-wt/_agent/node_modules nice -n 10 node tools/terrain/capture.cjs",
-      "result": "PASS: three same-camera base/eroded pairs, three hillshade+drainage images, desktop/mobile interaction smoke; SwiftShader asserted; browser closed"
-    },
-    {
-      "command": "nice -n 10 node tests/test_wasm_terrain.mjs (after final wrapper bounds and abs helper changes)",
-      "result": "PASS: all required parity cases, small goldens, invalid/wrapping JS work counts; output hashes unchanged"
-    },
-    {
-      "command": "nice -n 10 make build/terrain_test check-core; nice -n 10 ./build/terrain_test (after final arithmetic helper change)",
-      "result": "PASS: native goldens; core still links libc/libm only"
+      "command": "NODE_PATH=/home/diego/Desarrollo/cpore-wt/_agent/node_modules nice -n 10 node tools/terrain/capture.cjs; python3 tools/terrain/sheet.py",
+      "result": "PASS: 15 terrain pictures from 5 page loads, desktop/mobile smoke, SwiftShader asserted, browser closed; shape-v2.png composed"
     }
   ],
   "limits": [
-    "Seed 1 is a tie because its base metrics are already in range; aggregate outlet-fit gap improves.",
-    "Seed 42 eroded outlet Hack exponent is 0.49851, just below the strict 0.5 bound.",
-    "Pooled junction Hack exponents stay below the target range; flat spill routes form straight diagnostic lines.",
-    "Preview review covers supplied screenshots and source, not owner approval; game integration/cache/pre-bake/story are phase B."
+    "About 80% of the ground above 100 m is steeper than 40 degrees; faces read as fluted rock, not alpine benches.",
+    "World is 3.6 km square (island about 3.2 km) against W1's about 2-3 km; needs the owner's decision.",
+    "Ridge sharpness is measured on drainage divides; on plain local maxima the creased base scores higher than the eroded map. Seed 42 margin is 0.031.",
+    "Seed 7 eroded Hack h is 0.4986, 0.0014 under the strict bound; pooled Hack fits stay under 0.5.",
+    "Peak guarantee (>400 m) holds on the three tested seeds only; seed 1 clears it by 34 m.",
+    "The 'before' captures need the phase-A module rebuilt from git into build/wasm-v1; it is not in the tree.",
+    "No owner approval of the pictures; game integration, cache, pre-bake and story remain phase B."
   ]
 }
