@@ -1,0 +1,84 @@
+{
+ "generated": "2026-11-15T20:03:46.335Z",
+ "seed": "20261115",
+ "viewport": "1280x800",
+ "browser": "Chromium 158.0.8127.18",
+ "args": [
+  "--use-angle=swiftshader",
+  "--enable-unsafe-swiftshader"
+ ],
+ "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+ "shots": [
+  {
+   "shot": "lineup",
+   "seed": 20261115,
+   "layout": "lineup",
+   "propTris": 1160,
+   "propDrawCalls": 8,
+   "shardTris": [
+    14,
+    14,
+    22,
+    42,
+    18
+   ],
+   "sceneTris": 3675,
+   "sceneDrawCalls": 11,
+   "camera": {
+    "az": -1.3306832804062267,
+    "el": 0.11,
+    "dist": 7.6
+   },
+   "errors": [
+    "Failed to load resource: the server responded with a status of 404 (File not found)"
+   ],
+   "seconds": 3.066
+  },
+  {
+   "shot": "scene",
+   "seed": 20261115,
+   "layout": "scene",
+   "propTris": 1160,
+   "propDrawCalls": 8,
+   "shardTris": [
+    14,
+    14,
+    22,
+    42,
+    18
+   ],
+   "sceneTris": 3675,
+   "sceneDrawCalls": 11,
+   "camera": {
+    "az": -1.3306832804062267,
+    "el": 0.26,
+    "dist": 16
+   },
+   "errors": [],
+   "seconds": 2.678
+  },
+  {
+   "shot": "far",
+   "seed": 20261115,
+   "layout": "scene",
+   "propTris": 1160,
+   "propDrawCalls": 8,
+   "shardTris": [
+    14,
+    14,
+    22,
+    42,
+    18
+   ],
+   "sceneTris": 3675,
+   "sceneDrawCalls": 11,
+   "camera": {
+    "az": -1.0806832804062267,
+    "el": 0.17,
+    "dist": 32
+   },
+   "errors": [],
+   "seconds": 2.991
+  }
+ ]
+}

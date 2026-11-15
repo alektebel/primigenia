@@ -1,0 +1,418 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Primigenia — panspermia meteor shards &amp; crater</title>
+<style>
+  html,body{margin:0;height:100%;background:#0d0f14;overflow:hidden;font:13px/1.45 ui-monospace,Menlo,Consolas,monospace;color:#e8e2d6}
+  canvas{display:block;width:100%;height:100%}
+  #hud{position:fixed;left:12px;top:10px;padding:8px 10px;background:rgba(12,14,20,.62);border:1px solid rgba(232,226,214,.16);border-radius:4px;pointer-events:none;max-width:46ch}
+  #hud b{color:#f0c070;font-weight:600}
+  #hud .dim{color:#9a9382}
+  #help{position:fixed;left:12px;bottom:10px;padding:6px 9px;background:rgba(12,14,20,.5);border:1px solid rgba(232,226,214,.12);border-radius:4px;color:#9a9382;pointer-events:none}
+  #err{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);max-width:70ch;padding:16px;background:#1a1013;border:1px solid #7a3030;color:#f0c0c0;display:none;white-space:pre-wrap}
+</style>
+</head>
+<body>
+<canvas id="gl"></canvas>
+<div id="hud"></div>
+<div id="help">drag orbit · wheel zoom · shift-drag pan · ?shot=… · ?seed=…</div>
+<div id="err"></div>
+
+<script type="importmap">
+{"imports":{"three":"https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.module.js"}}
+</script>
+<script type="module">
+import * as THREE from 'three';
+import {
+  STYLE, buildMeteorShard, buildCraterKit, buildMeteorProps, makeGroundMaterial,
+  craterHeight, glyphAtlas, countTriangles, countDrawCalls,
+} from './meteor.js';
+
+const q = new URLSearchParams(location.search);
+const SEED = (q.get('seed') !== null ? +q.get('seed') : 20261115) | 0;
+const SHOT = q.get('shot') || 'scene';
+const CRATER_R = 7.5, CRATER_D = 1.15;
+
+const hud = document.getElementById('hud');
+const errBox = document.getElementById('err');
+function fail(e) {
+  errBox.style.display = 'block';
+  errBox.textContent = String(e && e.stack || e);
+  console.error(e);
+  window.Meteor = Object.assign(window.Meteor || {}, { ready: false, error: String(e) });
+}
+
+/* ------------------------------------------------------------------ *
+ * The valley's atmosphere: one ACES pipeline, the shared aerial fog and
+ * the palette C golden light (tools/hero/build_hero.py, PRESETS.golden).
+ * ------------------------------------------------------------------ */
+const SUN = new THREE.Vector3(...STYLE.sun).normalize();
+const AERIAL = `
+vec3 aerial(vec3 c,vec3 wp){
+  vec3 ray=wp-cameraPosition;float d=length(ray);vec3 dir=ray/max(d,.001);
+  vec3 heights=max(vec3(cameraPosition.y,mix(cameraPosition.y,wp.y,.5),wp.y),vec3(0.));
+  vec3 rho=exp(-heights/240.);
+  float path=max(d-140.,0.);
+  float optical=path*(1.-exp(-path/240.))*.00052*dot(rho,vec3(.1667,.6666,.1667));
+  float sunward=pow(max(dot(dir,normalize(vec3(-.62,.28,-.72))),0.),3.);
+  vec3 haze=mix(vec3(.34,.58,.88),vec3(.96,.74,.46),sunward);
+  return mix(c,haze,1.-exp(-optical));
+}
+`;
+THREE.ShaderChunk.fog_pars_vertex = '#ifdef USE_FOG\nvarying vec3 vAerialPosition;\n#endif';
+THREE.ShaderChunk.fog_vertex = `#ifdef USE_FOG
+  vec4 aerialLocal=vec4(transformed,1.);
+  #ifdef USE_INSTANCING
+    aerialLocal=instanceMatrix*aerialLocal;
+  #endif
+  vAerialPosition=(modelMatrix*aerialLocal).xyz;
+#endif`;
+THREE.ShaderChunk.fog_pars_fragment = '#ifdef USE_FOG\nvarying vec3 vAerialPosition;\n' + AERIAL + '\n#endif';
+THREE.ShaderChunk.fog_fragment = '#ifdef USE_FOG\ngl_FragColor.rgb=aerial(gl_FragColor.rgb,vAerialPosition);\n#endif';
+
+const canvas = document.getElementById('gl');
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+renderer.setPixelRatio(1);
+renderer.outputEncoding = THREE.sRGBEncoding;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.0;
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+const scene = new THREE.Scene();
+scene.fog = new THREE.Fog(new THREE.Color(0.86, 0.88, 0.88), 110, 760);
+
+const camera = new THREE.PerspectiveCamera(45, 1, 0.3, 4000);
+
+/* palette C golden light */
+const sun = new THREE.DirectionalLight(new THREE.Color(STYLE.sunColor), 3.2);
+sun.castShadow = true;
+sun.shadow.mapSize.set(2048, 2048);
+sun.shadow.bias = -0.0006;
+sun.shadow.normalBias = 0.4;
+{
+  const sc = sun.shadow.camera;
+  sc.left = sc.bottom = -40; sc.right = sc.top = 40; sc.near = 1; sc.far = 220;
+  sc.updateProjectionMatrix();
+}
+scene.add(sun, sun.target);
+scene.add(new THREE.HemisphereLight(new THREE.Color(STYLE.hemiSky), new THREE.Color(STYLE.hemiGround), 0.5));
+
+/* sky dome (palette C golden gradient + sun disc) */
+{
+  const m = new THREE.ShaderMaterial({
+    side: THREE.BackSide, depthWrite: false, fog: false,
+    uniforms: {
+      sun: { value: SUN },
+      hz: { value: new THREE.Vector3(0.95, 0.84, 0.70) },
+      mid: { value: new THREE.Vector3(0.52, 0.70, 0.93) },
+      top: { value: new THREE.Vector3(0.13, 0.39, 0.84) },
+      glow: { value: new THREE.Vector3(1, 0.62, 0.30) },
+    },
+    vertexShader: 'varying vec3 vW;void main(){vW=position;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}',
+    fragmentShader: `uniform vec3 sun,hz,mid,top,glow;varying vec3 vW;
+      void main(){
+        vec3 n=normalize(vW);float h=n.y;
+        vec3 c=mix(hz,mid,smoothstep(0.,.28,h));c=mix(c,top,smoothstep(.2,.95,h));
+        float s=max(dot(n,sun),0.);
+        c+=glow*pow(s,7.)*.55+vec3(1.,.97,.9)*smoothstep(.9988,.9995,s)*3.;
+        gl_FragColor=vec4(c,1.);
+        #include <tonemapping_fragment>
+        #include <encodings_fragment>
+      }`,
+  });
+  const sky = new THREE.Mesh(new THREE.SphereGeometry(2200, 24, 16), m);
+  sky.renderOrder = -1;
+  scene.add(sky);
+}
+
+/* ------------------------------------------------------------------ *
+ * Meadow ground with the crater hole.  The bowl and the ground share the
+ * ground material, so the depression is meadow, not a grey disc.
+ * ------------------------------------------------------------------ */
+const groundMat = makeGroundMaterial(THREE, {
+  sun: STYLE.sun, crater: [0, 0], craterRadius: CRATER_R, key: 'preview-ground',
+});
+{
+  const SEG = 64, rings = 14, rIn = CRATER_R, rOut = 150;
+  const pos = [], idx = [], uv = [];
+  for (let i = 0; i <= rings; i++) {
+    const t = i / rings;
+    const rad = rIn + (rOut - rIn) * Math.pow(t, 2.1);
+    for (let j = 0; j <= SEG; j++) {
+      const a = (j / SEG) * Math.PI * 2;
+      pos.push(Math.cos(a) * rad, 0, Math.sin(a) * rad);
+      uv.push(Math.cos(a) * rad * 0.05, Math.sin(a) * rad * 0.05);
+    }
+  }
+  for (let i = 0; i < rings; i++) {
+    for (let j = 0; j < SEG; j++) {
+      const a = i * (SEG + 1) + j, b = a + 1, c = a + SEG + 1, d = c + 1;
+      idx.push(a, b, c, b, d, c);
+    }
+  }
+  const g = new THREE.BufferGeometry();
+  g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+  g.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2));
+  g.setIndex(idx);
+  g.computeVertexNormals();
+  const ground = new THREE.Mesh(g, groundMat);
+  ground.name = 'meadow';
+  ground.receiveShadow = true;
+  scene.add(ground);
+}
+
+/* grass: the same blade colours and light terms as the hero's meadow */
+function grass(count, radiusMin, radiusMax) {
+  const geo = new THREE.InstancedBufferGeometry();
+  geo.setAttribute('position', new THREE.Float32BufferAttribute(
+    [-0.5, 0, 0, 0.5, 0, 0, -0.23, 0.55, 0, 0.23, 0.55, 0, 0, 1, 0], 3));
+  geo.setIndex([0, 1, 2, 2, 1, 3, 2, 3, 4]);
+  const off = new Float32Array(count * 4);
+  let seed = 1337;
+  const rnd = () => { seed = (seed * 1664525 + 1013904223) >>> 0; return seed / 4294967296; };
+  for (let i = 0; i < count; i++) {
+    const a = rnd() * Math.PI * 2;
+    // the meadow starts in a ragged edge around the crater, not in a ring
+    const rad = Math.max(radiusMin + (rnd() - 0.5) * 3.2, radiusMin) + Math.sqrt(rnd()) * (radiusMax - radiusMin);
+    off.set([Math.cos(a) * rad, Math.sin(a) * rad, rnd(), 0], i * 4);
+  }
+  geo.setAttribute('offset', new THREE.InstancedBufferAttribute(off, 4));
+  geo.instanceCount = count;
+  const mat = new THREE.ShaderMaterial({
+    side: THREE.DoubleSide,
+    uniforms: { uTime: { value: 0 } },
+    vertexShader: `attribute vec4 offset;uniform float uTime;varying float vH;varying float vR;varying vec3 vW;
+      void main(){
+        float rnd=offset.z;
+        float d=length(offset.xy);
+        float fade=1.-smoothstep(34.,52.,d);           // the meadow thins out with distance
+        float h=(0.24+rnd*0.20)*fade;
+        vec3 p=position;float ang=rnd*6.283;
+        float gust=sin(offset.x*.12+offset.y*.09+uTime*1.6);
+        float wave=smoothstep(.45,.98,sin(dot(offset.xy,vec2(.8,.6))*.085-uTime*1.1));
+        float bend=(.10+.15*gust+.3*wave)*p.y*p.y;
+        float wd=.075*(.65+rnd*.6);
+        vec3 wp=vec3(offset.x+p.x*cos(ang)*wd+bend*.85,p.y*h,offset.y+p.x*sin(ang)*wd+bend*.5);
+        vW=wp;vH=p.y;vR=rnd;
+        gl_Position=projectionMatrix*viewMatrix*vec4(wp,1.);
+      }`,
+    fragmentShader: AERIAL + `uniform float uTime;varying float vH;varying float vR;varying vec3 vW;
+      void main(){
+        vec3 b=mix(vec3(.30,.52,.13),vec3(.42,.60,.16),vR);
+        vec3 tp=mix(vec3(.46,.70,.20),vec3(.70,.78,.30),vR);
+        float pt=smoothstep(.5,.78,vR);b=mix(b,vec3(.50,.55,.20),pt*.6);tp=mix(tp,vec3(.80,.78,.36),pt*.7);
+        vec3 c=mix(b,tp,.25+.75*vH);
+        float gust=sin(vW.x*.12+vW.z*.09+uTime*1.6);
+        c+=vec3(.17,.17,.07)*max(gust,0.)*vH;
+        gl_FragColor=vec4(c,1.);
+        #include <tonemapping_fragment>
+        #include <encodings_fragment>
+        gl_FragColor.rgb=aerial(gl_FragColor.rgb,vW);
+      }`,
+  });
+  const m = new THREE.Mesh(geo, mat);
+  m.frustumCulled = false;
+  m.name = 'grass';
+  scene.add(m);
+  return m;
+}
+
+/* ------------------------------------------------------------------ *
+ * Props
+ * ------------------------------------------------------------------ */
+const props = new THREE.Group();
+props.name = 'props';
+scene.add(props);
+
+let layout = 'scene';
+const shards = [];
+const kit = buildCraterKit(THREE, SEED, {
+  radius: CRATER_R, depth: CRATER_D, segments: 64, rings: 9, ground: groundMat, bowl: true,
+});
+props.add(kit);
+
+const atlas = glyphAtlas(THREE, SEED);
+for (let i = 0; i < 5; i++) {
+  const shard = buildMeteorShard(THREE, SEED, i, { atlas });
+  props.add(shard);
+  shards.push(shard);
+}
+
+function layoutScene() {
+  layout = 'scene';
+  const r = mulberry(SEED ^ 0x5eed);
+  shards.forEach((s, i) => {
+    const a = (i / 5) * Math.PI * 2 + 0.55 + (r() - 0.5) * 0.5;
+    const rad = CRATER_R * 1.35 * (0.72 + r() * 0.5);
+    const inCrater = i < 2;
+    const y = inCrater ? craterHeight(CRATER_R, CRATER_D, rad) + 0.12 : -0.10;
+    s.position.set(Math.cos(a) * rad, y, Math.sin(a) * rad);
+    // the carved face is turned towards the middle of the crater, so a player
+    // walking in reads the glyph
+    const gn = s.userData.glyphNormal;
+    const face = Math.atan2(gn[0], gn[1]);
+    s.rotation.set((r() - 0.5) * 0.35, -a + Math.PI * 0.5 - face + (r() - 0.5) * 0.5, (r() - 0.5) * 0.3);
+    s.visible = true;
+  });
+  kit.visible = true;
+}
+function layoutLineup() {
+  layout = 'lineup';
+  const r = mulberry(SEED ^ 0x77);
+  // the gallery stands on open meadow, clear of the crater, in a row across
+  // the view; every shard turns its carved face to the camera
+  const dirX = Math.cos(cam.az), dirZ = -Math.sin(cam.az);
+  const faceX = -Math.sin(cam.az), faceZ = -Math.cos(cam.az);
+  shards.forEach((s, i) => {
+    const t = (i - 2) * 2.05;
+    s.position.set(LINEUP_AT.x + dirX * t, 0, LINEUP_AT.z + dirZ * t);
+    const gn = s.userData.glyphNormal;
+    const face = Math.atan2(gn[0], gn[1]);
+    s.rotation.set((r() - 0.5) * 0.16, Math.atan2(faceX, faceZ) - face + (r() - 0.5) * 0.30, (r() - 0.5) * 0.18);
+    s.visible = true;
+  });
+  kit.visible = false;
+}
+function mulberry(seed) {
+  let s = seed | 0;
+  return function () {
+    s |= 0; s = s + 0x6D2B79F5 | 0;
+    let t = Math.imul(s ^ s >>> 15, 1 | s);
+    t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+    return ((t ^ t >>> 14) >>> 0) / 4294967296;
+  };
+}
+
+/* ------------------------------------------------------------------ *
+ * Orbit camera + shot presets
+ * ------------------------------------------------------------------ */
+const cam = { az: -1.33, el: 0.30, dist: 15, target: new THREE.Vector3(0, 0.4, 0), fov: 45 };
+/* the hero's golden camera stands 1.1 rad off the sun, so the valley light is
+ * a three-quarter key; the same offset is used here. */
+const SUN_AZ = Math.atan2(SUN.x, SUN.z);
+const LINEUP_AT = new THREE.Vector3(0, 0, 26);   // open meadow, clear of the crater
+const SHOTS = {
+  lineup: { layout: 'lineup', az: SUN_AZ + 1.1, el: 0.11, dist: 7.6, target: [0, 0.60, 0], fov: 42 },
+  scene: { layout: 'scene', az: SUN_AZ + 1.1, el: 0.26, dist: 16, target: [0, 0.3, 0], fov: 45 },
+  far: { layout: 'scene', az: SUN_AZ + 1.35, el: 0.17, dist: 32, target: [0, 0.6, 0], fov: 45 },
+  core: { layout: 'scene', az: SUN_AZ + 1.5, el: 0.13, dist: 4.8, target: [0, 0.25, 0], fov: 40 },
+  shard0: { layout: 'lineup', index: 0, el: 0.08, dist: 2.6, fov: 38 },
+  shard1: { layout: 'lineup', index: 1, el: 0.08, dist: 2.6, fov: 38 },
+  shard2: { layout: 'lineup', index: 2, el: 0.09, dist: 2.4, fov: 38 },
+  shard3: { layout: 'lineup', index: 3, el: 0.08, dist: 2.4, fov: 38 },
+  shard4: { layout: 'lineup', index: 4, el: 0.09, dist: 2.6, fov: 38 },
+};
+function applyShot(name) {
+  const s = SHOTS[name] || SHOTS.scene;
+  cam.az = s.az != null ? s.az : SUN_AZ + 1.1;
+  cam.el = s.el; cam.dist = s.dist;
+  cam.fov = s.fov;
+  if (s.layout === 'lineup') {
+    layoutLineup();
+    cam.target.set(LINEUP_AT.x, s.target[1], LINEUP_AT.z);
+  } else {
+    layoutScene();
+    cam.target.set(s.target[0], s.target[1], s.target[2]);
+  }
+  if (s.index != null) {
+    const sh = shards[s.index];
+    cam.target.set(sh.position.x, sh.position.y + 0.42, sh.position.z);
+    // three-quarter view of the carved face (the lineup already turned it
+    // towards the camera, so a small offset is enough)
+    cam.az = SUN_AZ + 1.1 + 0.45;
+  }
+}
+
+function updateCamera() {
+  const cp = Math.cos(cam.el), sp = Math.sin(cam.el);
+  camera.position.set(
+    cam.target.x + Math.sin(cam.az) * cp * cam.dist,
+    cam.target.y + sp * cam.dist,
+    cam.target.z + Math.cos(cam.az) * cp * cam.dist);
+  camera.lookAt(cam.target);
+  if (camera.fov !== cam.fov) { camera.fov = cam.fov; camera.updateProjectionMatrix(); }
+}
+
+/* pointer orbit */
+{
+  let drag = null;
+  canvas.addEventListener('pointerdown', (e) => {
+    drag = { x: e.clientX, y: e.clientY, pan: e.shiftKey };
+    canvas.setPointerCapture(e.pointerId);
+  });
+  canvas.addEventListener('pointermove', (e) => {
+    if (!drag) return;
+    const dx = e.clientX - drag.x, dy = e.clientY - drag.y;
+    drag.x = e.clientX; drag.y = e.clientY;
+    if (drag.pan) {
+      const s = cam.dist * 0.0016;
+      cam.target.x -= Math.cos(cam.az) * dx * s;
+      cam.target.z += Math.sin(cam.az) * dx * s;
+      cam.target.y += dy * s;
+    } else {
+      cam.az -= dx * 0.006;
+      cam.el = Math.max(-0.2, Math.min(1.35, cam.el + dy * 0.005));
+    }
+  });
+  const end = () => { drag = null; };
+  canvas.addEventListener('pointerup', end);
+  canvas.addEventListener('pointercancel', end);
+  canvas.addEventListener('wheel', (e) => {
+    e.preventDefault();
+    cam.dist = Math.max(1.2, Math.min(120, cam.dist * (1 + Math.sign(e.deltaY) * 0.08)));
+  }, { passive: false });
+}
+
+/* ------------------------------------------------------------------ *
+ * Boot
+ * ------------------------------------------------------------------ */
+let grassMesh = null;
+try {
+  applyShot(SHOT);
+  grassMesh = grass(24000, CRATER_R + 0.35, 56);
+  sun.position.copy(SUN).multiplyScalar(120);
+  sun.target.position.set(0, 0, 0);
+  sun.target.updateMatrixWorld();
+  updateCamera();
+  window.Meteor = {
+    ready: true, shot: SHOT, seed: SEED, layout: () => layout,
+    scene, camera, renderer,
+    stats: () => ({
+      shot: SHOT, seed: SEED, layout,
+      propTris: countTriangles(props),
+      propDrawCalls: countDrawCalls(props),
+      shardTris: shards.map(s => s.userData.tris),
+      sceneTris: countTriangles(scene),
+      sceneDrawCalls: countDrawCalls(scene),
+      camera: { az: cam.az, el: cam.el, dist: cam.dist },
+    }),
+  };
+  hud.innerHTML = `<b>meteor props</b> · shot <b>${SHOT}</b> · seed ${SEED}<br>` +
+    `<span class="dim">${layout} · ${countTriangles(props)} tris · ${countDrawCalls(props)} draw calls</span>`;
+} catch (e) { fail(e); }
+
+function resize() {
+  const w = window.innerWidth, h = window.innerHeight;
+  renderer.setSize(w, h, false);
+  camera.aspect = w / h;
+  camera.updateProjectionMatrix();
+}
+window.addEventListener('resize', resize);
+resize();
+
+let last = performance.now();
+function frame(now) {
+  const dt = Math.min(0.05, (now - last) / 1000);
+  last = now;
+  if (grassMesh) grassMesh.material.uniforms.uTime.value += dt;
+  updateCamera();
+  renderer.render(scene, camera);
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>
