@@ -38,7 +38,9 @@ enum {
     CP_TERR_ERR_BUFFER = -8
 };
 
-/* Progress stages. done/total grow inside a stage and reset at the next. */
+/* Progress stages. done/total grow inside a stage and reset at the next.
+ * BASE is the shape and the coarse stream-power passes (N/4, N/2), HYDRAULIC
+ * the droplets, THERMAL the fine stream-power pass and the scree sweeps. */
 enum {
     CP_TERR_STAGE_BASE = 0,
     CP_TERR_STAGE_HYDRAULIC = 1,

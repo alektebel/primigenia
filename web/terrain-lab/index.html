@@ -19,10 +19,10 @@
       <h2>Grow a landscape</h2><p class="intro">A sheltered valley, the range around it, and water finding its way to the sea.</p>
       <div class="pair"><label>World seed<input id="seed" type="number" min="0" max="4294967295" step="1" value="1" required></label><label>Map size<select id="resolution"><option value="256">256 × 256</option><option value="512">512 × 512</option><option value="1024" selected>1024 × 1024</option></select></label></div>
       <label for="warp">Domain warp <output id="warp-value">240 m</output></label><input id="warp" type="range" min="0" max="600" step="20" value="240">
-      <label for="ridge">Ridge weight <output id="ridge-value">0.72</output></label><input id="ridge" type="range" min="0" max="1" step="0.02" value="0.72">
+      <label for="ridge">Ridge weight <output id="ridge-value">0.6</output></label><input id="ridge" type="range" min="0" max="1" step="0.02" value="0.6">
       <label for="stream">River-cutting steps <output id="stream-value">48</output></label><input id="stream" type="range" min="0" max="96" step="8" value="48">
-      <label for="droplets">Water droplets <output id="droplets-value">260,000</output></label><input id="droplets" type="range" min="0" max="600000" step="20000" value="260000">
-      <label for="erosion">Droplet erosion <output id="erosion-value">0.45</output></label><input id="erosion" type="range" min="0" max="0.8" step="0.05" value="0.45">
+      <label for="droplets">Water droplets <output id="droplets-value">80,000</output></label><input id="droplets" type="range" min="0" max="400000" step="20000" value="80000">
+      <label for="erosion">Droplet erosion <output id="erosion-value">0.3</output></label><input id="erosion" type="range" min="0" max="0.8" step="0.05" value="0.3">
       <label for="thermal">Scree passes <output id="thermal-value">8</output></label><input id="thermal" type="range" min="0" max="20" step="1" value="8">
       <label class="check"><input id="base" type="checkbox"> Base only (before erosion)</label>
       <button id="generate" type="submit">Generate landscape</button>

@@ -210,23 +210,23 @@ void cp_terrain_params_default(CpTerrainParams *p)
     memset(p, 0, sizeof *p);
     p->seed = 1u;
     p->n = 1024;
-    p->octaves = 6;
+    p->octaves = 5;
     /* Fixed counts, not a time budget. stream_iters is the N/4 count; N/2 runs
      * a third of it and N an eighth. About a quarter droplet per cell at 1024². */
     p->stream_iters = 48;
-    p->droplets = 260000;
+    p->droplets = 80000;
     p->lifetime = 64;
     p->radius = 2;
     p->thermal_iters = 8;
     p->size_m = 3600.f;
     p->frequency = 1.f / 760.f;
     p->warp_m = 240.f;
-    p->ridge_weight = 0.72f;
+    p->ridge_weight = 0.60f;
     p->valley_radius_m = 300.f;
     p->valley_floor_m = 42.f;
     p->ring_inner_m = 340.f;
     p->ring_outer_m = 1500.f;
-    p->ring_height_m = 640.f;
+    p->ring_height_m = 470.f;
     p->pass_x = 1.f;
     p->pass_y = 0.15f;
     p->pass_half_m = 90.f;
@@ -239,12 +239,12 @@ void cp_terrain_params_default(CpTerrainParams *p)
     p->lake_y_m = 70.f;
     p->lake_radius_m = 68.f;
     p->lake_depth_m = 34.f;
-    p->stream_k = 0.06f;
-    p->cliff_deg = 50.f;
+    p->stream_k = 0.07f;
+    p->cliff_deg = 62.f;
     p->inertia = 0.30f;
-    p->capacity = 6.f;
+    p->capacity = 2.5f;
     p->deposition = 0.25f;
-    p->erosion = 0.45f;
+    p->erosion = 0.30f;
     p->evaporation = 0.045f;
     p->gravity = 4.f;
     p->min_slope = 0.01f;
@@ -303,18 +303,19 @@ static void notify(CpTerrainProgressFn fn, void *user, int stage, int done, int 
     if (fn) fn(stage, done, total, user);
 }
 
-/* Stage 0 spans every level's base fill and stream-power pass. Its counter
- * is one unit per base chunk and one per stream iteration. */
+/* A stage that spans several passes. Stage 0 is every level's base fill and
+ * the coarse stream-power passes, one unit per base chunk and per step.
+ * Stage 2 is the fine stream-power pass and the scree sweeps after it. */
 typedef struct {
     CpTerrainProgressFn fn;
     void *user;
-    int done, total;
+    int stage, done, total;
 } Shape;
 
 static void shape_tick(Shape *s)
 {
     if (s->done < s->total) s->done++;
-    notify(s->fn, s->user, CP_TERR_STAGE_BASE, s->done, s->total);
+    notify(s->fn, s->user, s->stage, s->done, s->total);
 }
 
 /* ---- base ---------------------------------------------------------------- */
@@ -385,7 +386,7 @@ static void base_ctx(const CpTerrainParams *p, BaseCtx *c)
         w = (p->ring_outer_m - p->ring_inner_m) * (0.36f + 0.14f * hash01(k, 6, s));
         m->inv_w = 1.f / maxf(w, 1.f);
         m->inv_l = 1.f / maxf(w * stretch, 1.f);
-        m->h = 0.52f + 0.48f * hash01(k, 7, s);
+        m->h = 0.60f + 0.40f * hash01(k, 7, s);
     }
 }
 
@@ -448,6 +449,12 @@ static float base_height(const CpTerrainParams *p, const BaseCtx *c, float x, fl
         float a = (ex * m->ax + ey * m->ay) * m->inv_l;
         float b = (-ex * m->ay + ey * m->ax) * m->inv_w;
         float q = sqrtf(a * a + b * b);
+        /* Arêtes: the flanks reach further along a few directions from the
+         * summit and fall short between them, which leaves cirque hollows. */
+        if (q < 1.6f && q > 1.0e-4f) {
+            float iq = 2.1f / q;
+            q *= 1.20f - 0.34f * spur(a * iq + 13.f * (float)k, b * iq + 7.f, p->seed ^ 0x62A9D9EDu);
+        }
         /* Concave flanks that steepen to the summit and meet the ground
          * without a kink. */
         if (q < 1.f) peaks = maxf(peaks, m->h * (1.f - q) * (1.f - q) * (1.f + 0.5f * q));
@@ -494,13 +501,13 @@ static float base_height(const CpTerrainParams *p, const BaseCtx *c, float x, fl
         float rd = ridged(sx, sy, p->octaves, p->seed ^ 0x510E527Fu);
         float hills = fbm(sx * 2.3f, sy * 2.3f, p->octaves, p->seed ^ 0x51F0EDE5u);
         float quiet = smoothstep(vr * 0.3f, vr * 1.1f, r0);
-        float detail = 0.16f + 2.0f * rd;
+        float detail = 0.42f + 1.35f * rd;
         float outer = smoothstep(0.35f, 1.0f, d > 0.f ? t : 0.f);
         float rd2 = ridged(sx * 1.7f + 5.3f, sy * 1.7f + 9.1f, p->octaves, p->seed ^ 0xBB67AE85u);
         h = ground;
         h += crest_h * (1.f - p->ridge_weight + p->ridge_weight * detail);
         /* Ribs on the faces, where the damped octaves above leave them bare. */
-        h += clampf(crest_h * (1.f / 220.f), 0.f, 1.f) * 60.f * rd2;
+        h += clampf(crest_h * (1.f / 220.f), 0.f, 1.f) * 45.f * rd2;
         /* Lower ranges and hills beyond the main one, so the outer land is
          * not a plain. They fade to the coast with the ground. */
         h += outer * (30.f + 190.f * rd2 * rd2 * (0.6f + 0.8f * massif));
@@ -622,8 +629,7 @@ static void thermal_sweep(int n, float cell, float diag, float talus,
     }
 }
 
-static void thermal(const CpTerrainParams *p, float *height, float *sed,
-                    CpTerrainProgressFn fn, void *user)
+static void thermal(const CpTerrainParams *p, float *height, float *sed, Shape *shape)
 {
     const int n = p->n;
     const float cell = p->size_m / (float)n;
@@ -631,7 +637,7 @@ static void thermal(const CpTerrainParams *p, float *height, float *sed,
     const float talus = tan_deg(p->talus_deg);
     for (int iter = 0; iter < p->thermal_iters; iter++) {
         thermal_sweep(n, cell, diag, talus, height, sed, iter & 1, NULL);
-        notify(fn, user, CP_TERR_STAGE_THERMAL, iter + 1, p->thermal_iters);
+        shape_tick(shape);
     }
 }
 
@@ -811,7 +817,7 @@ static void stream_power(const CpTerrainParams *p, int n, float *h, float *sed,
              * channel: it wears at a fraction of the rate, or every ridge
              * would melt at the speed its gullies cut. */
             sa = sqrtf(flow[i] * area);
-            sa = sa > 40.f ? sa - 35.f : sa * 0.125f;
+            sa = sa > 40.f ? sa - 39.f : sa * 0.025f;
             f = p->stream_k * sa * scale /
                 ((di == 1 || di == -1 || di == n || di == -n) ? cell : diag);
             h[i] = (hi + f * hr) / (1.f + f);
@@ -1094,7 +1100,7 @@ int cp_terrain_generate(const CpTerrainParams *p, CpTerrain *out,
     int n, n1, n2, use1, use2, nn;
     const float *prev_delta = NULL, *prev_sed = NULL;
     int prev_n = 0;
-    Shape shape;
+    Shape shape, settle;
     if (rc != CP_TERR_OK) return rc;
     if (!out || !out->height || !out->flow || !out->sediment) return CP_TERR_ERR_BUFFER;
     if (!ws || !ws->scratch || !ws->recv || !ws->ups || !ws->queue) return CP_TERR_ERR_BUFFER;
@@ -1109,8 +1115,12 @@ int cp_terrain_generate(const CpTerrainParams *p, CpTerrain *out,
     out->size_m = p->size_m;
     shape.fn = fn;
     shape.user = user;
+    shape.stage = CP_TERR_STAGE_BASE;
     shape.done = 0;
-    shape.total = 8 + level_iters(p, 0);
+    shape.total = 8;
+    settle = shape;
+    settle.stage = CP_TERR_STAGE_THERMAL;
+    settle.total = level_iters(p, 0) + p->thermal_iters;
     if (use1) shape.total += 8 + level_iters(p, 1);
     if (use2) shape.total += 8 + level_iters(p, 2);
 
@@ -1153,15 +1163,15 @@ int cp_terrain_generate(const CpTerrainParams *p, CpTerrain *out,
     } else {
         memset(out->sediment, 0, sizeof(float) * (size_t)nn);
     }
-    stream_power(p, n, out->height, out->sediment, out->flow, ws->scratch, ws,
-                 level_iters(p, 0), &shape);
     shape.done = shape.total - 1;
     shape_tick(&shape);
-
+    /* Droplets go before the fine stream pass, not after: they leave dams
+     * of dumped load in the valleys, and the rivers have to cut them. */
     if (p->droplets > 0)
         hydraulic(p, out->height, out->sediment, ws->scratch, fn, user);
-    if (p->thermal_iters > 0)
-        thermal(p, out->height, out->sediment, fn, user);
+    stream_power(p, n, out->height, out->sediment, out->flow, ws->scratch, ws,
+                 level_iters(p, 0), &settle);
+    thermal(p, out->height, out->sediment, &settle);
     flow_accum(out->height, n, p->size_m, p->seed, out->flow, ws->scratch,
                ws->recv, ws->ups, ws->queue, fn, user);
     notify(fn, user, CP_TERR_STAGE_DONE, 1, 1);

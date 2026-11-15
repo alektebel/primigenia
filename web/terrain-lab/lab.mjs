@@ -17,10 +17,10 @@ const scene=new THREE.Scene();scene.fog=new THREE.Fog(new THREE.Color(...SKY).co
   grad.addColorStop(0,css(ZENITH));grad.addColorStop(.62,css(SKY));grad.addColorStop(1,css(SKY));g.fillStyle=grad;g.fillRect(0,0,4,256);
   scene.background=new THREE.CanvasTexture(c);scene.background.encoding=THREE.sRGBEncoding;
 }
-const camera=new THREE.PerspectiveCamera(40,1,1,40000);
+const camera=new THREE.PerspectiveCamera(40,1,2,40000);
 // Sun from the north-west, 38 degrees up. Map +y is south; three.js z is map y.
 const SUN=(()=>{const v=[-.52,.62,-.59],l=Math.hypot(...v);return v.map(x=>x/l);})();
-const views={orbit:{yaw:.62,pitch:.50,distance:1.32},valley:{yaw:-2.11,pitch:.20}};
+const views={orbit:{yaw:.62,pitch:.50,distance:1.32},valley:{yaw:-2.11,pitch:.13}};
 let view=query.get('view')==='valley'?'valley':'orbit',yaw,pitch,distance;
 function cameraReset(){({yaw,pitch}=views[view]);distance=views.orbit.distance;$('view').value=view;draw();}
 function groundAt(x,z){
@@ -58,14 +58,14 @@ function bakeLight(t){
   // Displayed surface: the ground, or the water standing on it.
   const z=new Float32Array(nn);
   for(let i=0;i<nn;i++){
-    const pond=level[i]-h[i]>WATER_DEPTH&&h[i]>0;water[i]=h[i]<=0&&hasSea?2:pond?1:0;z[i]=pond?level[i]:hasSea&&h[i]<0?0:h[i];
+    const pond=level[i]-h[i]>WATER_DEPTH&&h[i]>0;water[i]=h[i]<=0&&hasSea?2:pond?1:0;z[i]=pond?level[i]:h[i];
   }
   const at=(x,y)=>z[(y<0?0:y>=n?n-1:y)*n+(x<0?0:x>=n?n-1:x)];
   const lx=SUN[0],ly=SUN[2],lh=Math.hypot(lx,ly),sx=lx/lh,sy=ly/lh,rise=SUN[1]/lh;
   const dirs=[];for(let d=0;d<8;d++)dirs.push([Math.cos(d*Math.PI/4),Math.sin(d*Math.PI/4)]);
   for(let y=0;y<n;y++)for(let x=0;x<n;x++){
     const i=y*n+x,z0=z[i];
-    gx[i]=(at(x+1,y)-at(x-1,y))/(2*cell);gy[i]=(at(x,y+1)-at(x,y-1))/(2*cell);
+    if(water[i]!==2){gx[i]=(at(x+1,y)-at(x-1,y))/(2*cell);gy[i]=(at(x,y+1)-at(x,y-1))/(2*cell);}
     let occ=0;
     for(const [dx,dy] of dirs){
       let m=0;for(let s=1,r=1.5;s<=5;s++,r*=2){const e=(at(Math.round(x+dx*r),Math.round(y+dy*r))-z0)/(r*cell);if(e>m)m=e;}
@@ -83,7 +83,7 @@ function bakeLight(t){
   }
   return {gx,gy,ao,sun,water,z,hasSea};
 }
-const C={meadow:[.36,.47,.22],forest:[.17,.28,.15],alp:[.47,.48,.30],rock:[.46,.44,.41],dark:[.33,.32,.31],scree:[.62,.58,.51],
+const C={meadow:[.36,.50,.20],forest:[.17,.30,.14],alp:[.47,.50,.27],rock:[.66,.62,.56],dark:[.42,.40,.39],scree:[.70,.66,.58],
   gravel:[.68,.64,.52],sand:[.78,.73,.58],snow:[.95,.96,.98],river:[.24,.45,.58],lake:[.17,.40,.52],shallow:[.33,.62,.66],deep:[.10,.30,.47]};
 function albedo(i,mode){
   const t=terrain,h=t.height[i],sed=t.sediment[i],area=t.flow[i]*t.size*t.size;
@@ -92,22 +92,23 @@ function albedo(i,mode){
   if(mode==='slope')return mix(mix([.90,.92,.78],[.86,.55,.25],slope/.9),[.35,.12,.14],(slope-.9)/1.2);
   if(mode==='flow')return mix([.90,.90,.82],[.02,.26,.52],Math.log2(1+area/(t.size*t.size)*t.n*t.n)/12);
   if(mode==='sediment')return mix([.22,.30,.28],[.99,.72,.25],Math.sqrt(sed)*.45);
-  if(w===2)return mix(C.shallow,C.deep,-h/14);
+  if(w===2)return mix(C.sand,[.30,.42,.40],-h/10);
   if(w===1)return C.lake;
   // +y is south: positive gy faces north, keeps snow lower and grass thinner.
   const north=Math.max(-1,Math.min(1,gy));
   let c=mix(C.meadow,C.forest,step(.22,.5,slope)*(1-step(170,250,h))*.85);
   c=mix(c,C.alp,step(200,300,h+north*30));
-  c=mix(c,C.rock,step(.80,1.15,slope));
-  c=mix(c,C.rock,step(300,420,h)*.7);
-  c=mix(c,C.dark,step(1.5,2.6,slope)*.6);
+  // Bare rock where it is too steep or too high for turf; banded like bedded stone.
+  const band=.5+.5*Math.sin(h*.55+Math.sin(i*.0137)*1.3),stone=mix(C.dark,C.rock,.35+.65*band);
+  c=mix(c,stone,step(1.05,1.55,slope));
+  c=mix(c,stone,step(270,380,h)*.75);
   // Loose material the generator moved: scree where it lies steep, gravel where it lies flat.
   const loose=step(.25,1.6,sed);
   c=mix(c,C.scree,loose*step(.30,.55,slope)*(1-step(1.0,1.4,slope))*.9);
   c=mix(c,C.gravel,loose*(1-step(.12,.35,slope))*.55);
   c=mix(c,C.sand,1-step(1.5,6,h));
-  const snowline=385-north*55-Math.min(40,sed*12);
-  c=mix(c,C.snow,step(snowline,snowline+55,h)*(1-step(1.1,1.9,slope)));
+  const snowline=325-north*50-Math.min(30,sed*10);
+  c=mix(c,C.snow,step(snowline,snowline+60,h)*(1-step(1.5,2.6,slope)*.85));
   if(area>=CHANNEL_M2)c=mix(c,C.river,.55+.25*step(8e3,2e5,area));
   else c=mix(c,[c[0]*.82,c[1]*.9,c[2]*.84],step(1500,CHANNEL_M2,area)*.6);
   return c;
@@ -115,7 +116,7 @@ function albedo(i,mode){
 function shade(i,c){
   const gx=light.gx[i],gy=light.gy[i],il=1/Math.sqrt(1+gx*gx+gy*gy);
   const lam=Math.max(0,(-gx*SUN[0]+SUN[1]-gy*SUN[2])*il)*light.sun[i],a=light.ao[i];
-  const sky=(.34+.16*il)*a*a,sunl=1.18*lam;
+  const sky=(.32+.14*il)*a*a,sunl=1.0*lam;
   return [c[0]*(sky*.86+sunl*1.0+.05*a),c[1]*(sky*.95+sunl*.95+.05*a),c[2]*(sky*1.12+sunl*.84+.04*a)];
 }
 const toByte=v=>Math.round(255*Math.pow(v<0?0:v>1?1:v,1/2.2));
@@ -144,8 +145,9 @@ function buildMesh(){
   g.setAttribute('position',new THREE.BufferAttribute(positions,3));g.setAttribute('uv',new THREE.BufferAttribute(uvs,2));g.setIndex(new THREE.BufferAttribute(indices,1));
   mesh=new THREE.Mesh(g,new THREE.MeshBasicMaterial({map:groundTexture($('shading').value)}));scene.add(mesh);
   if(light.hasSea){
-    sea=new THREE.Mesh(new THREE.PlaneGeometry(60000,60000),new THREE.MeshBasicMaterial({color:new THREE.Color(.13,.33,.47).convertSRGBToLinear()}));
-    sea.rotation.x=-Math.PI/2;sea.position.y=-.4;scene.add(sea);
+    // The ground runs on under the sea; a translucent sheet at sea level shows the shallows.
+    sea=new THREE.Mesh(new THREE.PlaneGeometry(60000,60000),new THREE.MeshBasicMaterial({color:new THREE.Color(.16,.40,.55).convertSRGBToLinear(),transparent:true,opacity:.86}));
+    sea.rotation.x=-Math.PI/2;scene.add(sea);
   }
   draw();
 }

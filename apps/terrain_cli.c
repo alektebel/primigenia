@@ -88,6 +88,8 @@ static void apply_overrides(CpTerrainParams *p, int argc, char **argv)
     p->stream_k=arg_f(argc,argv,"--stream-k",p->stream_k);
     p->talus_deg=arg_f(argc,argv,"--talus",p->talus_deg);
     p->cliff_deg=arg_f(argc,argv,"--cliff",p->cliff_deg);
+    p->ridge_weight=arg_f(argc,argv,"--ridge",p->ridge_weight);
+    p->octaves=arg_i(argc,argv,"--octaves",p->octaves);
     p->ring_height_m=arg_f(argc,argv,"--relief",p->ring_height_m);
     p->radius=arg_i(argc,argv,"--radius",p->radius);
     p->erosion=arg_f(argc,argv,"--erosion",p->erosion);

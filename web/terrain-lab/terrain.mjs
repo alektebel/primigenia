@@ -1,8 +1,8 @@
 /* Shared rendering-free wrapper for Node parity and the browser Worker.
  * `url` lets the lab load another build of the same ABI (the phase-A module,
  * for before/after evidence); extra arguments to an older ct_config are ignored. */
-export const DEFAULTS = Object.freeze({ seed: 1, n: 1024, stream: 48, droplets: 260000, thermal: 8,
-  warp: 240, ridge: .72, erosion: .45, base: false });
+export const DEFAULTS = Object.freeze({ seed: 1, n: 1024, stream: 48, droplets: 80000, thermal: 8,
+  warp: 240, ridge: .6, erosion: .3, base: false });
 export async function createTerrain(options = {}, url = '../../build/wasm/cpore_terrain.mjs') {
   const createModule = (await import(url)).default;
   const module = await createModule(options);
