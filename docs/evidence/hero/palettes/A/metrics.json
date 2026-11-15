@@ -1,0 +1,436 @@
+{
+ "generated": "2026-11-15T12:19:05.119Z",
+ "settings": {
+  "browser": "Chromium 158.0.8127.18",
+  "executable": "/home/diego/.cache/ms-playwright/chromium-1254/chrome-linux64/chrome",
+  "args": [
+   "--use-angle=swiftshader",
+   "--enable-unsafe-swiftshader"
+  ],
+  "viewport": "1280x800",
+  "deviceScaleFactor": 1,
+  "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+  "page": "web/hero/index.html?t=<t>&cam=<cam> (creature Merodeador, fixed seed, scene frozen)",
+  "luminance": "Rec.709 weights on sRGB-decoded (linear) 8-bit values",
+  "saturation": "HSV S of the 8-bit sRGB value",
+  "creature_mask": "|A-B| >= 1 on any channel, A = frame, B = same frame with creature pixels hidden (shadow kept)",
+  "sky_mask": "pixels that are pure magenta when the sky dome is painted magenta and clouds hidden",
+  "environment": "all pixels that are neither creature nor sky",
+  "mountain_debug": "Golden far/vista fourth render: R=N.L, G=per-vertex curvature cavity, B=eligible bowl rock (height >=20 m, snow <0.02, turf <0.10, blade mask <0.05, distance 150..500 m). No fog, tone mapping or output encoding; other objects black and depth occlude. Geometry samples are CPU ray hits on terrain, without tree occlusion.",
+  "pass_rule": "creature lum_mean within environment [lum_p10, lum_p90] AND |creature sat_mean - environment sat_mean| <= 0.15; skip these two checks only for vista masks < 512 pixels; zero console errors always; vista body >=150 pixels with mean y in the lower third; golden-mid grass hue 65..100 degrees; golden far/vista mountain lit minus shaded mean linear Y >= 0.12 (>=200 pixels/class)"
+ },
+ "frames": [
+  {
+   "name": "golden-mid",
+   "t": "golden",
+   "cam": "mid",
+   "creature": {
+    "pixels": 50187,
+    "lum_mean": 0.21678144258257934,
+    "lum_p10": 0.013915968127548695,
+    "lum_p50": 0.1682799756526947,
+    "lum_p90": 0.49003562331199646,
+    "sat_mean": 0.5497643441087827
+   },
+   "environment": {
+    "pixels": 973813,
+    "lum_mean": 0.23833192309936252,
+    "lum_p10": 0.06226925924420357,
+    "lum_p50": 0.2526164948940277,
+    "lum_p90": 0.3732196092605591,
+    "sat_mean": 0.6159381375459857
+   },
+   "sky_pixels": 0,
+   "mask_threshold": 1,
+   "noise": null,
+   "console_errors": [],
+   "seconds": 61.179,
+   "grass_hsv": {
+    "pixels": 88600,
+    "mean_hue_degrees": 75.16865351461108,
+    "rois": [
+     [
+      80,
+      520,
+      390,
+      720
+     ],
+     [
+      1000,
+      500,
+      1190,
+      640
+     ]
+    ],
+    "method": "Arithmetic HSV hue mean in fixed meadow ROIs; S >= 0.2, V >= 0.15, creature excluded; no hue filter"
+   },
+   "pass": {
+    "lum": true,
+    "sat": true,
+    "sat_delta": -0.06617379343720298,
+    "all": true,
+    "console": true,
+    "grass_hue": true
+   }
+  },
+  {
+   "name": "golden-vista",
+   "t": "golden",
+   "cam": "vista",
+   "creature": {
+    "pixels": 245,
+    "lum_mean": 0.14393996404841075,
+    "lum_p10": 0.00441861804574728,
+    "lum_p50": 0.10807672888040543,
+    "lum_p90": 0.35041379928588867,
+    "sat_mean": 0.5746203652458491
+   },
+   "environment": {
+    "pixels": 920449,
+    "lum_mean": 0.1466959744503614,
+    "lum_p10": 0.026024045422673225,
+    "lum_p50": 0.08841310441493988,
+    "lum_p90": 0.35367217659950256,
+    "sat_mean": 0.5352640220428337
+   },
+   "sky_pixels": 103306,
+   "mask_threshold": 1,
+   "noise": null,
+   "console_errors": [],
+   "seconds": 72.138,
+   "framing": {
+    "creature_y_min": 583,
+    "creature_y_max": 610,
+    "creature_y_mean": 597.7224489795918,
+    "lower_third_starts": 533.3333333333334,
+    "vista": {
+     "azimuth": 5.6286868376817125,
+     "selectionScore": 0.3924599517580219
+    }
+   },
+   "mountain_contrast": {
+    "lit": {
+     "pixels": 142744,
+     "lum_mean": 0.3015386220987896,
+     "lum_p10": 0.21626558899879456,
+     "lum_p50": 0.2941184937953949,
+     "lum_p90": 0.3902606964111328,
+     "sat_mean": 0.176745798575842
+    },
+    "shaded": {
+     "pixels": 173932,
+     "lum_mean": 0.033719101244134346,
+     "lum_p10": 0.01956159994006157,
+     "lum_p50": 0.030001720413565636,
+     "lum_p90": 0.048027973622083664,
+     "sat_mean": 0.44903089366657833
+    },
+    "difference": 0.26781952085465527,
+    "pass": true,
+    "method": "Visible bowl rock, world height >=20 m, snow fraction <0.02, turf fraction <0.10, blade mask <0.05, camera distance [150,500) m. Debug B >= 254, R encodes interpolated large-scale normal N.L; lit >= 0.55, shaded <= 0.20. Mean linear Rec.709 Y sampled from the original fogged beauty frame. At least 200 pixels per class; difference >= 0.12.",
+    "distance_range_m": [
+     150,
+     500
+    ],
+    "geometry_samples": [
+     {
+      "ndc": [
+       -0.9,
+       0.99
+      ],
+      "height": 170.99888819701712,
+      "distance": 350.155268988575,
+      "position": [
+       -72.35372922352173,
+       170.99888819701712,
+       -244.7998067832482
+      ]
+     },
+     {
+      "ndc": [
+       0.9,
+       0.99
+      ],
+      "height": 168.04766866126232,
+      "distance": 341.27400368348196,
+      "position": [
+       251.02578533491544,
+       168.04766866126232,
+       11.514715266318845
+      ]
+     },
+     {
+      "ndc": [
+       -0.9,
+       0.9
+      ],
+      "height": 156.50859474108535,
+      "distance": 339.9649115183288,
+      "position": [
+       -73.06404512335683,
+       156.50859474108535,
+       -238.86143423519803
+      ]
+     },
+     {
+      "ndc": [
+       0.6,
+       0.9
+      ],
+      "height": 176.407871023312,
+      "distance": 362.6168475392873,
+      "position": [
+       250.25484242888467,
+       176.407871023312,
+       -52.47950791142384
+      ]
+     },
+     {
+      "ndc": [
+       0.9,
+       0.9
+      ],
+      "height": 153.47741321984162,
+      "distance": 329.84865840628845,
+      "position": [
+       244.226642920088,
+       153.47741321984162,
+       14.004230557618015
+      ]
+     },
+     {
+      "ndc": [
+       -0.9,
+       0.7
+      ],
+      "height": 124.35387512235846,
+      "distance": 313.43110209752837,
+      "position": [
+       -74.32498315316622,
+       124.35387512235846,
+       -220.03900263571933
+      ]
+     },
+     {
+      "ndc": [
+       0.6,
+       0.7
+      ],
+      "height": 139.0952632182248,
+      "distance": 336.21123328756903,
+      "position": [
+       236.18881627756195,
+       139.0952632182248,
+       -44.38900236652631
+      ]
+     },
+     {
+      "ndc": [
+       0.9,
+       0.7
+      ],
+      "height": 122.4599068203701,
+      "distance": 304.9154879537018,
+      "position": [
+       227.67451430875775,
+       122.4599068203701,
+       19.738194486004815
+      ]
+     },
+     {
+      "ndc": [
+       -0.9,
+       0.4
+      ],
+      "height": 82.45184422025423,
+      "distance": 288.721414736265,
+      "position": [
+       -76.31564443624967,
+       82.45184422025423,
+       -201.73206562573142
+      ]
+     },
+     {
+      "ndc": [
+       -0.6,
+       0.4
+      ],
+      "height": 90.09621849400703,
+      "distance": 322.94583813368433,
+      "position": [
+       -17.50781889559554,
+       90.09621849400703,
+       -232.5515217983201
+      ]
+     },
+     {
+      "ndc": [
+       -0.3,
+       0.4
+      ],
+      "height": 101.29268963595533,
+      "distance": 384.92124918491805,
+      "position": [
+       79.08848260328881,
+       101.29268963595533,
+       -269.6637484453844
+      ]
+     },
+     {
+      "ndc": [
+       0,
+       0.4
+      ],
+      "height": 113.94407451027094,
+      "distance": 471.13794276493053,
+      "position": [
+       222.2464672747866,
+       113.94407451027094,
+       -285.5020176714759
+      ]
+     },
+     {
+      "ndc": [
+       0.3,
+       0.4
+      ],
+      "height": 99.52027808672668,
+      "distance": 370.2964382805415,
+      "position": [
+       232.36287872125854,
+       99.52027808672668,
+       -134.44385501016797
+      ]
+     },
+     {
+      "ndc": [
+       0.6,
+       0.4
+      ],
+      "height": 87.63211641043367,
+      "distance": 300.49998640496403,
+      "position": [
+       212.6193435336761,
+       87.63211641043367,
+       -31.488713809623817
+      ]
+     },
+     {
+      "ndc": [
+       0.9,
+       0.4
+      ],
+      "height": 80.7508000207423,
+      "distance": 271.06038786982447,
+      "position": [
+       201.42263167843078,
+       80.7508000207423,
+       28.28331133900317
+      ]
+     },
+     {
+      "ndc": [
+       -0.9,
+       0
+      ],
+      "height": 33.73406419856304,
+      "distance": 252.62511944794838,
+      "position": [
+       -77.8217148764868,
+       33.73406419856304,
+       -165.97413196891634
+      ]
+     },
+     {
+      "ndc": [
+       -0.6,
+       0
+      ],
+      "height": 29.764773543460187,
+      "distance": 262.4121018039991,
+      "position": [
+       -28.760534045118767,
+       29.764773543460187,
+       -173.76605116958456
+      ]
+     },
+     {
+      "ndc": [
+       -0.3,
+       0
+      ],
+      "height": 23.282430760580997,
+      "distance": 298.2134947702619,
+      "position": [
+       45.53702774724303,
+       23.282430760580997,
+       -190.96121914054163
+      ]
+     },
+     {
+      "ndc": [
+       0,
+       0
+      ],
+      "height": 22.027118951168703,
+      "distance": 298.00364965252004,
+      "position": [
+       118.04011049865684,
+       22.027118951168703,
+       -149.69764950948044
+      ]
+     },
+     {
+      "ndc": [
+       0.3,
+       0
+      ],
+      "height": 25.206274806345604,
+      "distance": 279.9194637937556,
+      "position": [
+       162.0045947938066,
+       25.206274806345604,
+       -79.56958204507248
+      ]
+     },
+     {
+      "ndc": [
+       0.6,
+       0
+      ],
+      "height": 30.381893929362022,
+      "distance": 255.90287303467795,
+      "position": [
+       173.29106121015258,
+       30.381893929362022,
+       -11.66201177345556
+      ]
+     },
+     {
+      "ndc": [
+       0.9,
+       0
+      ],
+      "height": 34.51674895574259,
+      "distance": 243.16872092638772,
+      "position": [
+       175.21873012742006,
+       34.51674895574259,
+       37.15030239605411
+      ]
+     }
+    ]
+   },
+   "pass": {
+    "lum": null,
+    "sat": null,
+    "all": true,
+    "creature_checks_skipped": true,
+    "reason": "vista creature mask < 512 pixels; color statistics unreliable",
+    "console": true,
+    "framing": true,
+    "mountain_contrast": true
+   }
+  }
+ ]
+}

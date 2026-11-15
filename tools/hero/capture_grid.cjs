@@ -14,6 +14,7 @@
      NODE_PATH=<dir with playwright>/node_modules nice -n 10 node tools/hero/capture_grid.cjs [options]
        --out DIR        output dir (default docs/evidence/hero/grid)
        --only t:cam,..  subset, e.g. golden:mid,night:far
+       --pal NAME       palette override (A|B|C), see docs/evidence/hero/palettes.md
        --selftest       also take a second render of A to measure render noise (reported, not used)
        --thr N          creature mask threshold on max channel |A-B| in 0..255 (default 1: any change)
        --measure-hue PNG  measure the fixed golden-mid meadow ROIs without launching a browser
@@ -29,6 +30,7 @@ const THR = +arg('--thr', 1);
 const SELFTEST = process.argv.includes('--selftest');
 const TIMES = ['golden', 'noon', 'overcast', 'night'], CAMS = ['close', 'mid', 'far', 'vista'];
 const ONLY = arg('--only', null);
+const PAL = arg('--pal', null); // palette override, appended to the page URL as &pal=
 const W = 1280, H = 800;
 const CHROME = process.env.HOME + '/.cache/ms-playwright/chromium-1254/chrome-linux64/chrome';
 const ARGS = ['--use-angle=swiftshader', '--enable-unsafe-swiftshader'];
@@ -132,7 +134,7 @@ function mountainContrast(A, D) {
       page.on('pageerror', e => { errs.push(e.message); console.error(name + ': ' + e.message); });
       page.on('console', m => { if (m.type() === 'error') { errs.push(m.text()); console.error(name + ': ' + m.text().slice(0, 1200)); } });
       try {
-        await page.goto('file://' + path.join(ROOT, `web/hero/index.html?t=${t}&cam=${cam}`));
+        await page.goto('file://' + path.join(ROOT, `web/hero/index.html?t=${t}&cam=${cam}${PAL ? '&pal=' + PAL : ''}`));
         await page.waitForFunction(() => window.Hero && window.Hero.ready, null, {timeout: 120000});
         if (!meta.renderer) meta.renderer = await page.evaluate(() => {
           const gl = document.getElementById('gl').getContext('webgl2') || document.getElementById('gl').getContext('webgl');
