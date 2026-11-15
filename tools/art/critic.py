@@ -7,8 +7,8 @@ visual feedback on their renders. OpenAI-compatible chat endpoints only.
     python3 tools/art/critic.py IMAGE.png --rubric RUBRIC.md [--context "what it should show"]
         [--provider cohere|nvidia] [--model NAME]
 
-Keys come from the environment: COHERE_API_KEY (Cohere trial: 1,000 calls/month,
-non-commercial) or NVIDIA_KEY. Standard library only.
+Keys come from the environment: gemini_api (Gemini free tier, Flash models only),
+COHERE_API_KEY (Cohere trial: 1,000 calls/month, non-commercial) or NVIDIA_KEY. Standard library only.
 """
 import argparse
 import base64
@@ -20,6 +20,8 @@ import urllib.request
 PROVIDERS = {
     "cohere": ("https://api.cohere.ai/compatibility/v1/chat/completions", "COHERE_API_KEY", "command-a-vision-07-2025"),
     "nvidia": ("https://integrate.api.nvidia.com/v1/chat/completions", "NVIDIA_KEY", "nvidia/nemotron-3.5-super-vl-120b-a12b"),
+    # Free tier only (owner rule): Flash models. Native API; key in $gemini_api.
+    "gemini": ("https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent", "gemini_api", "gemini-3.8-flash"),
 }
 
 PROMPT = """You are a strict art director for a stylised 3D nature game (toon-shaded world, BotW-like,
@@ -51,6 +53,20 @@ def main():
         img = base64.b64encode(f.read()).decode()
     with open(a.rubric, encoding="utf-8") as f:
         rubric = f.read()
+    if a.provider == "gemini":
+        model = a.model or default_model
+        body = {"contents": [{"parts": [
+            {"text": PROMPT.format(context=a.context, rubric=rubric)},
+            {"inline_data": {"mime_type": "image/png", "data": img}}]}]}
+        req = urllib.request.Request(url.format(model=model), json.dumps(body).encode(), {
+            "x-goog-api-key": key, "Content-Type": "application/json", "User-Agent": "cpore-art-critic"})
+        try:
+            with urllib.request.urlopen(req, timeout=180) as r:
+                out = json.load(r)
+        except urllib.error.HTTPError as e:
+            sys.exit(f"HTTP {e.code}: {e.read()[:500].decode(errors='replace')}")
+        print("".join(p.get("text", "") for p in out["candidates"][0]["content"]["parts"]))
+        return
     body = {
         "model": a.model or default_model,
         "max_tokens": 1500,
