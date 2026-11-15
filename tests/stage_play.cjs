@@ -6,7 +6,9 @@ const fs=require('node:fs'),path=require('node:path'),{execFileSync}=require('no
 const base=process.env.CPORE_STAGE_URL||'http://127.0.0.1:8765';
 const out=path.resolve(process.env.CPORE_STAGE_EVIDENCE||'docs/evidence/stage');fs.mkdirSync(out,{recursive:true});
 const launch={headless:true,executablePath:process.env.HOME+'/.cache/ms-playwright/chromium-1254/chrome-linux64/chrome',args:['--use-angle=swiftshader','--enable-unsafe-swiftshader']};
-const results=[];
+const results=[],evidence=[];
+const enemyGenome=JSON.parse(fs.readFileSync('web/stage/species/garfio.json'));
+const enemyTiers=JSON.parse(fs.readFileSync('web/stage/species/garfio-combat.json'));
 (async()=>{
  const browser=await chromium.launch(launch);
  try{
@@ -24,6 +26,9 @@ const results=[];
    },saved);
    await page.goto(base+'/web/stage/'+(fixture?'?creature='+encodeURIComponent('/tests/fixtures/combat/'+fixture):''));
    await page.waitForFunction(()=>window.Stage?.ready,null,{timeout:90000,polling:100});
+   assert.deepEqual(await page.evaluate(()=>Stage.rigs[1].G),enemyGenome,'wild creature is Garfio');
+   for(const [key,value] of Object.entries(enemyTiers))assert.equal(await page.evaluate(key=>Stage.simulation.enemyProfile[key],key),value,'shared Garfio '+key);
+   assert.equal(await page.locator('#enemy-name').innerText(),'Garfio');
    assert.deepEqual(errors,[]);
    return {page,context,errors};
   }
@@ -40,7 +45,14 @@ const results=[];
     while(s.ticks<900&&!s.outcome){
      window.__frameTime+=1000/fps;__stageRAF(__frameTime);frames++;
      if(until==='windup'&&s.encounter?.current[1].phase===1)break;
-     if(until==='hit'&&s.hits.some(h=>h.amount>0))break;
+     const radii=((s.profile.radiusCm||60)+(s.enemyProfile.radiusCm||60))/100;
+     const gap=Math.hypot(s.player.x-s.enemy.x,s.player.z-s.enemy.z)-radii;
+     if(s.encounter&&gap < -1e-4)throw Error('combat bodies interpenetrate: '+gap);
+     // Capture a recent impact while the interpolated bodies touch, rather
+     // than stopping at the first ranged or long-reach damage event.
+     const a=s.alpha,p=s.previous[0],e=s.previous[1];
+     const visualGap=Math.hypot(p.x+(s.player.x-p.x)*a-e.x-(s.enemy.x-e.x)*a,p.z+(s.player.z-p.z)*a-e.z-(s.enemy.z-e.z)*a)-radii;
+     if(until==='hit'&&s.hits.some(h=>s.ticks*.1-h.time<.4)&&Math.abs(visualGap)<.05)break;
     }
     return {frames,...Stage.snapshot()};
    },{fps,until});
@@ -55,7 +67,8 @@ const results=[];
      const attack=expected.expected.spit?3:0;await setup(page,attack);
      const final=await run(page,fps);
      assert(final.started>0,fixture+' encounter started');assert(final.outcome,fixture+' outcome within 90 seconds');
-     assert(final.player.hp<expected.expected.hp,fixture+' player damaged');assert(final.enemy.hp<100,fixture+' enemy damaged');
+     const enemyMax=await page.evaluate(()=>Stage.simulation.enemyProfile.hp);
+     assert(final.player.hp<expected.expected.hp,fixture+' player damaged');assert(final.enemy.hp<enemyMax,fixture+' enemy damaged');
      const replay=final.completed.at(-1),file=path.join(out,fixture.replace('.json',`-${fps}.log`));fs.writeFileSync(file,replay.log);
      const hashes=execFileSync('build/combat_parity',['--replay',file],{encoding:'utf8'}).trim().split('\n');assert.equal(hashes.at(-1),replay.hash,fixture+' native final hash');
      assert.deepEqual(errors,[]);runs.push(replay);
@@ -76,9 +89,10 @@ const results=[];
    await page.keyboard.press('Escape');const paused=await page.evaluate(()=>Stage.simulation.ticks);
    await page.evaluate(()=>{__frameTime+=1000;__stageRAF(__frameTime)});assert.equal(await page.evaluate(()=>Stage.simulation.ticks),paused);
    await page.keyboard.press('Escape');
-   // Continue with a fixed charge timeline; no enemy stats are edited for evidence.
-   await page.evaluate(()=>{const s=Stage.simulation,dx=s.home.x-s.nest.x,dz=s.home.z-s.nest.z,len=Math.hypot(dx,dz);
-    Stage.setTimeline(time=>time<2.5?{move:[dx/len,dz/len]}:time<5.1?{}:time<5.4?{dodge:2}:{attack:1});
+   // Use the exact competent policy from the 150 headless duels. Enemy stats
+   // and HP are loaded normally; only player inputs drive the evidence.
+   await page.evaluate(async()=>{const {stagePlayerPolicy}=await import('/tests/stage_policy.mjs');
+    Stage.setTimeline(()=>stagePlayerPolicy(Stage.simulation));
    });
    await run(page,30,'windup');
    // Orbit through the real mouse control so both creatures and the cone read clearly.
@@ -88,12 +102,19 @@ const results=[];
    await page.screenshot({path:path.join(out,'fight-windup.png'),timeout:90000});
    await run(page,30,'hit');await page.evaluate(()=>Stage.draw());
    assert(await page.evaluate(()=>Stage.simulation.hits.length>0));
+   const contact=await page.evaluate(()=>{
+    const s=Stage.simulation,[p,e]=Stage.rigs.map(r=>r.creature.position);
+    return {gap:Math.hypot(p.x-e.x,p.z-e.z)-((s.profile.radiusCm||60)+(s.enemyProfile.radiusCm||60))/100,
+     radiiCm:[s.profile.radiusCm,s.enemyProfile.radiusCm],hp:[s.player.hp,s.enemy.hp],tick:s.ticks};
+   });
+   assert(Math.abs(contact.gap)<.05,'evidence bodies touch without penetration: '+JSON.stringify(contact));evidence.push({capture:'fight-hit.png',...contact});
    await page.screenshot({path:path.join(out,'fight-hit.png'),timeout:90000});
    const final=await run(page,30);assert.equal(final.outcome,'victory','honest victory evidence');
    await page.evaluate(()=>{__frameTime+=600;__stageRAF(__frameTime);Stage.draw()});await page.screenshot({path:path.join(out,'victory.png'),timeout:90000});
    assert.match(await page.locator('#status').innerText(),/DNA \+12/);assert(await page.evaluate(()=>Stage.simulation.enemy.dead));
    const log=final.completed.at(-1);fs.writeFileSync(path.join(out,'victory.log'),log.log);
    assert.equal(execFileSync('build/combat_parity',['--replay',path.join(out,'victory.log')],{encoding:'utf8'}).trim().split('\n').at(-1),log.hash);
+   evidence.push({capture:'victory.png',outcome:final.outcome,hp:[final.player.hp,final.enemy.hp],finalHash:log.hash,nativeReplay:true});
    const grounded=await page.evaluate(()=>{
     const rig=Stage.rigs[0],groundY=(x,z)=>.04*x+.025*z;
     for(let i=0;i<12;i++){rig.setWorld({x:i*.2,z:0,yaw:.35,speed:2,groundY,pitch:-.04});rig.update(.1)}
@@ -123,9 +144,15 @@ const results=[];
    await page.locator('[data-key=dodge-right]').tap();
    await page.evaluate(()=>{__frameTime+=150;__stageRAF(__frameTime)});
    assert(await page.evaluate(()=>Stage.simulation.encounter.log.some(a=>a.id===0&&a.verb===4&&a.dir===6)),'touch dodge issues a C order');
+   // Orbit with a real touch drag, then let the unmodified enemy close for
+   // contact. A side view makes the two different bodies readable on mobile.
+   await cdp.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{x:130,y:300,id:2}]});
+   await cdp.send('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:[{x:300,y:310,id:2}]});
+   await cdp.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});
+   await run(page,30,'hit');
    await page.evaluate(()=>Stage.draw());await page.screenshot({path:path.join(out,'mobile-touch.png'),timeout:90000});
    assert.deepEqual(mobile.errors,[]);console.log('PASS 390×844 touch movement, action buttons, saved /4 G48 genome and no overflow');
   }finally{await mobile.context.close()}
-  fs.writeFileSync(path.join(out,'results.json'),JSON.stringify({browser:browser.version(),renderer:'SwiftShader software WebGL',forcedRafRates:[30,73],runs:results},null,2)+'\n');
+  fs.writeFileSync(path.join(out,'results.json'),JSON.stringify({browser:browser.version(),renderer:'SwiftShader software WebGL',forcedRafRates:[30,73],enemy:{genome:enemyGenome.name,tiers:enemyTiers},runs:results,evidence},null,2)+'\n');
  }finally{await browser.close()}
 })().catch(error=>{console.error(error);process.exitCode=1});
