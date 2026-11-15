@@ -125,6 +125,7 @@ stage-test: wasm $(BUILD)/combat_parity stage
 	nice -n 10 node tests/test_stage_sim.mjs
 	nice -n 10 node tests/stage_winnability.mjs
 	nice -n 10 node tests/stage_play.cjs
+	nice -n 10 node tests/stage_polish.cjs
 studio-test:
 	nice -n 10 python3 tests/check_studio_glbs.py
 	nice -n 10 node tests/test_growth.cjs

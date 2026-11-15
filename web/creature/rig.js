@@ -478,7 +478,7 @@ function update(dt){
   for(const l of legs){const ph=world&&sp<.015?SW:((phase+l.grp*.5)%1+1)%1,H=anchor(pts,l.p.t,l.sg*l.p.ang,A2).p.clone(),K=_u,A=_b;
     if(!test){K.copy(H).add(l.rk).applyMatrix4(creature.matrixWorld);A.copy(H).add(l.rf).applyMatrix4(creature.matrixWorld);H.applyMatrix4(creature.matrixWorld);l.sw=false}
     else{if(ph<SW){if(!l.sw){l.sw=true;l.from.copy(l.foot)}poseAt(theta+sp*((SW-ph)/freq+(1-SW)/freq*.5)/RC,l.home,_a);_a.y+=l.hang;const q=ph/SW;l.foot.lerpVectors(l.from,_a,q*q*(3-2*q));l.foot.y=(world?world.groundY(l.foot.x,l.foot.z):0)+l.hang+Math.sin(Math.PI*q)*.2*(l.a+l.b)}
-      else{if(l.sw&&world)world.onFootContact?.(l.foot);l.sw=false;l.foot.y=(world?world.groundY(l.foot.x,l.foot.z):0)+l.hang}
+      else{if(l.sw&&world){l.stanceYaw=world.yaw;world.onFootContact?.(l.foot)}l.sw=false;l.foot.y=(world?world.groundY(l.foot.x,l.foot.z):0)+l.hang}
       H.applyMatrix4(creature.matrixWorld);A.copy(l.foot);A.y+=l.w*.6;const dv=_d.subVectors(A,H);let d=dv.length();dv.normalize();
       // Terrain changes the reach required of a leg. Keep the sole at its
       // ground target and stretch the existing bones only as much as needed;
@@ -488,7 +488,7 @@ function update(dt){
       d=clamp(d,.08,la+lb-.01);const x=(la*la-lb*lb+d*d)/(2*d),h=Math.sqrt(Math.max(la*la-x*x,0));
       const pole=_n.copy(l.pole).applyAxisAngle(Y,facing);pole.addScaledVector(dv,-pole.dot(dv));if(pole.lengthSq()<1e-4)pole.copy(fwd);pole.normalize();K.copy(H).addScaledVector(dv,x).addScaledVector(pole,h);A.copy(H).addScaledVector(dv,d)}
     l.up.position.copy(H);l.up.quaternion.setFromUnitVectors(DOWN,_t.subVectors(K,H).normalize());l.lo.position.copy(K);l.lo.quaternion.setFromUnitVectors(DOWN,_t.subVectors(A,K).normalize());
-    l.ft.position.set(A.x,A.y-l.w*.6,A.z);l.ft.rotation.set(l.sw?-.5*Math.sin(Math.PI*clamp(ph/SW,0,1)):0,facing+l.sg*.18,0,'YXZ')}
+    l.ft.position.set(A.x,A.y-l.w*.6,A.z);l.ft.rotation.set(l.sw?-.5*Math.sin(Math.PI*clamp(ph/SW,0,1)):0,(world&&!l.sw?(l.stanceYaw??facing):facing)+l.sg*.18,0,'YXZ')}
   spineA=lerp(spineA,mode==='build'&&(spineOn||(getDrag()?.k==='node'))?1:0,1-Math.pow(.0004,dt));vertM.opacity=spineA*.96;cordM.opacity=spineA*.85;if(spineG)spineG.visible=spineA>.02;
   positionGrowth();
   const show=mode==='build'&&sel;selRings.forEach((r,i)=>{const sg=i?-1:1;r.visible=!!show&&(i===0||!centered(sel));if(!r.visible)return;anchor(pts,sel.t,sg*sel.ang,A1);r.position.copy(A1.p).addScaledVector(A1.n,.03);r.quaternion.setFromUnitVectors(V(0,0,1),A1.n);r.scale.setScalar(LIB[sel.type].leg?sel.w*2.4:.32*(sel.size||1))});
@@ -550,7 +550,7 @@ get growthBuilds(){return growthBuilds},set growthBuilds(value){growthBuilds=val
   if(!reset){worldTravel+=travel;worldTurn+=Math.atan2(Math.sin(pose.yaw-world.yaw),Math.cos(pose.yaw-world.yaw))}
   else{worldTravel=worldTurn=0}
   world={...pose};mode='test';placeBody();
-  if(reset)for(const l of legs){poseAt(theta,l.home,l.foot);l.foot.y+=l.hang;l.sw=false}
+  if(reset)for(const l of legs){poseAt(theta,l.home,l.foot);l.foot.y+=l.hang;l.sw=false;l.stanceYaw=pose.yaw}
  },
  load(genome){G=structuredClone(genome);sel=null;phase=0;refresh(true);const s=G.skin;SU.cA.value.copy(lin(s.cA));SU.cB.value.copy(lin(s.cB));SU.cC.value.copy(lin(s.cC));SU.uPat.value=s.pat;SU.uWet.value=s.wet;SU.uScale.value=s.scale;skinM.clearcoat=skinM2.clearcoat=s.wet*.8;membraneM.clearcoat=s.wet*.12;update(0)},
 };
