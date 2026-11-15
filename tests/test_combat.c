@@ -358,8 +358,8 @@ static void bot_counters(void)
     for (int m = CB_GUARD; m <= CB_DODGE; m += CB_DODGE-CB_GUARD) {
         CpBot b; bot_init(&b, BOT_SPAM, 42); b.spam_move = m;
         CpCombatAction act;
-        CHECK(bot_decide(&b, &w, 0, 1, &act) && act.verb == (m == CB_GUARD ? CB_V_GUARD : CB_V_DODGE),
-              "fixed defensive policy repeats without an incoming wind-up");
+        CHECK(bot_decide(&b, &w, 0, 1, &act) && act.verb == (m == CB_GUARD ? CB_V_GUARD : CB_V_APPROACH),
+              "guard policy holds; dodge policy keeps contact until a wind-up is visible");
     }
 }
 

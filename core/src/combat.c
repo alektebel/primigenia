@@ -942,6 +942,12 @@ static void resolve_hits(CpCombatWorld *w)
         d->stamina -= h->payment; d->stamina_spent += h->payment;
         if (h->spent) d->since_spend = 0;
         if (h->avoided) {
+            /* AVOID ticks are the whiff stagger: the attacker over-commits
+             * and the evader is released to punish, as with a block below. */
+            if (h->ev.rule->ticks) {
+                stagger(a, h->ev.rule->ticks);
+                if (d->move == h->ev.rule->defend) cancel_move(d);
+            }
             d->dodged++;
             ev_add(w, CB_EV_DODGED, h->atk, h->def, h->move, 0);
         }

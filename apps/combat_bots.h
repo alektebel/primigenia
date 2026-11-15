@@ -29,6 +29,8 @@ typedef struct {
 
 /* New bleed contributes new_timer-1 ticks; existing timer is future damage. */
 int bot_bleed_gain(int new_timer, int remaining_ticks);
+/* Ticks before a creature can next start anything (0 = free now). */
+int bot_locked_ticks(const CpCombatCreature *c);
 const char *bot_name(int kind);
 void bot_init(CpBot *b, int kind, uint32_t seed);
 /* Returns 1 and fills *out if the bot wants to (re)issue a standing order. */
