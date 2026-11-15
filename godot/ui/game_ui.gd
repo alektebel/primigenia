@@ -33,14 +33,14 @@ func _init() -> void:
 
 func _ready() -> void:
 	root = Control.new()
-	root.set_anchors_preset(Control.PRESET_FULL_RECT)
+	root.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	root.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	root.theme = Palette.make_theme()
 	add_child(root)
 	hud = Hud.new()
 	root.add_child(hud)
 	card = Card.new()
-	card.set_anchors_preset(Control.PRESET_TOP_RIGHT)
+	card.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT)
 	card.grow_horizontal = Control.GROW_DIRECTION_BEGIN
 	card.offset_right = -28
 	card.offset_top = 80

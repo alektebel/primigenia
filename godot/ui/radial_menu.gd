@@ -8,8 +8,8 @@ const Modes := preload("res://ui/modes.gd")
 signal chosen(mode: StringName)
 signal closed
 
-const R_IN := 46.0
-const R_OUT := 118.0
+const R_IN := 56.0
+const R_OUT := 160.0
 ## North, east, south, west.
 const ORDER: Array[StringName] = [Modes.ATTACK, Modes.BEFRIEND, Modes.OBSERVE, Modes.INTIMIDATE]
 
@@ -19,7 +19,7 @@ var hover := -1
 
 func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_STOP
-	set_anchors_preset(Control.PRESET_FULL_RECT)
+	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	visible = false
 	focus_mode = Control.FOCUS_ALL
 
@@ -107,8 +107,8 @@ func _draw() -> void:
 		var ts := font.get_string_size(title, HORIZONTAL_ALIGNMENT_LEFT, -1, 17)
 		draw_string(font, c + Vector2(-ts.x / 2.0, 2), title, HORIZONTAL_ALIGNMENT_LEFT, -1, 17, Palette.TEXT)
 		var hint: String = Modes.HINTS[ORDER[i]]
-		var hs := font.get_string_size(hint, HORIZONTAL_ALIGNMENT_LEFT, -1, 11)
-		draw_string(font, c + Vector2(-hs.x / 2.0, 19), hint, HORIZONTAL_ALIGNMENT_LEFT, -1, 11, Palette.MUTED)
+		var hs := font.get_string_size(hint, HORIZONTAL_ALIGNMENT_LEFT, -1, 10)
+		draw_string(font, c + Vector2(-hs.x / 2.0, 19), hint, HORIZONTAL_ALIGNMENT_LEFT, -1, 10, Palette.MUTED)
 	draw_circle(centre, R_IN - 6, Color(Palette.PANEL_SOLID, 0.95))
 	var ct := Modes.title(current)
 	var cs := font.get_string_size(ct, HORIZONTAL_ALIGNMENT_LEFT, -1, 13)

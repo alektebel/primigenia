@@ -32,19 +32,19 @@ var _flash_tween: Tween
 var move_row: HBoxContainer
 
 func _ready() -> void:
-	set_anchors_preset(Control.PRESET_FULL_RECT)
+	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_build()
 
 func _build() -> void:
 	flash_rect = Panel.new()
-	flash_rect.set_anchors_preset(Control.PRESET_FULL_RECT)
+	flash_rect.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	flash_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	flash_rect.modulate.a = 0.0
 	add_child(flash_rect)
 	# Header
 	var head := HBoxContainer.new()
-	head.set_anchors_preset(Control.PRESET_TOP_WIDE)
+	head.set_anchors_and_offsets_preset(Control.PRESET_TOP_WIDE)
 	head.offset_left = 28
 	head.offset_right = -28
 	head.offset_top = 22
@@ -69,7 +69,7 @@ func _build() -> void:
 	add_child(head)
 	# DNA toasts (top-right under header)
 	dna_box = VBoxContainer.new()
-	dna_box.set_anchors_preset(Control.PRESET_TOP_RIGHT)
+	dna_box.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT)
 	dna_box.offset_left = -220
 	dna_box.offset_right = -28
 	dna_box.offset_top = 80
@@ -78,7 +78,7 @@ func _build() -> void:
 	# Player vitals
 	var vit := PanelContainer.new()
 	vit.add_theme_stylebox_override("panel", Palette.box(Palette.PANEL, 16, Palette.BORDER, 12))
-	vit.set_anchors_preset(Control.PRESET_BOTTOM_LEFT)
+	vit.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_LEFT)
 	vit.offset_left = 28
 	vit.offset_bottom = -26
 	vit.offset_top = -100
@@ -106,7 +106,7 @@ func _build() -> void:
 	# Move bar
 	move_row = HBoxContainer.new()
 	move_row.add_theme_constant_override("separation", 7)
-	move_row.set_anchors_preset(Control.PRESET_CENTER_BOTTOM)
+	move_row.set_anchors_and_offsets_preset(Control.PRESET_CENTER_BOTTOM)
 	move_row.grow_horizontal = Control.GROW_DIRECTION_BOTH
 	move_row.grow_vertical = Control.GROW_DIRECTION_BEGIN
 	move_row.offset_bottom = -26
@@ -134,7 +134,7 @@ func _build() -> void:
 	move_row.add_child(dr)
 	# Message toasts (above move bar)
 	toasts = VBoxContainer.new()
-	toasts.set_anchors_preset(Control.PRESET_CENTER_BOTTOM)
+	toasts.set_anchors_and_offsets_preset(Control.PRESET_CENTER_BOTTOM)
 	toasts.grow_horizontal = Control.GROW_DIRECTION_BOTH
 	toasts.grow_vertical = Control.GROW_DIRECTION_BEGIN
 	toasts.offset_bottom = -110
@@ -167,7 +167,7 @@ func _build() -> void:
 	target_panel.visible = false
 	add_child(target_panel)
 	damage_layer = Control.new()
-	damage_layer.set_anchors_preset(Control.PRESET_FULL_RECT)
+	damage_layer.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	damage_layer.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(damage_layer)
 	set_abilities([])

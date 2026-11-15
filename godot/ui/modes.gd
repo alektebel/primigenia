@@ -11,9 +11,9 @@ const ALL: Array[StringName] = [ATTACK, BEFRIEND, OBSERVE, INTIMIDATE]
 const TITLES := {ATTACK: "Attack", BEFRIEND: "Befriend", OBSERVE: "Observe", INTIMIDATE: "Intimidate"}
 const HINTS := {
 	ATTACK: "Combat moves",
-	BEFRIEND: "Sing, dance, charm, pose",
+	BEFRIEND: "Sing, dance, charm",
 	OBSERVE: "Stay near, unseen",
-	INTIMIDATE: "Roar and display",
+	INTIMIDATE: "Roar, display",
 }
 ## C-core verb each mode maps to (agent face).
 const VERBS := {ATTACK: "attack", BEFRIEND: "befriend", OBSERVE: "observe", INTIMIDATE: "intimidate"}
