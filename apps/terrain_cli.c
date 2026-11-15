@@ -87,6 +87,10 @@ static void apply_overrides(CpTerrainParams *p, int argc, char **argv)
     p->gentle_bases=arg_f(argc,argv,"--gentle-bases",p->gentle_bases);
     p->layout_variety=arg_f(argc,argv,"--layout-variety",p->layout_variety);
     p->cliff_bands=arg_f(argc,argv,"--cliff-bands",p->cliff_bands);
+    p->sea_cliffs=arg_f(argc,argv,"--sea-cliffs",p->sea_cliffs);
+    p->hard_rock=arg_f(argc,argv,"--hard-rock",p->hard_rock);
+    p->volcano=arg_f(argc,argv,"--volcano",p->volcano);
+    p->caves=arg_f(argc,argv,"--caves",p->caves);
     p->stream_iters = stream;
     p->stream_k=arg_f(argc,argv,"--stream-k",p->stream_k);
     p->talus_deg=arg_f(argc,argv,"--talus",p->talus_deg);
@@ -114,6 +118,8 @@ static int run_gen(const CpTerrainParams *p, CpTerrain *t, CpTerrainWorkspace *w
 
 static void setup(const CpTerrainParams *p, CpTerrain *t, CpTerrainWorkspace *ws)
 {
+    memset(t,0,sizeof *t);
+    t->material=calloc((size_t)p->n*p->n,1);if(!t->material)die("out of memory");
     t->height = falloc(p->n);
     t->flow = falloc(p->n);
     t->sediment = falloc(p->n);
@@ -280,6 +286,18 @@ int main(int argc, char **argv)
     }
     t.n = p.n;
     t.size_m = p.size_m;
+    if (!strcmp(cmd,"features")) {
+        int counts[6]={0};for(int i=0;i<p.n*p.n;i++)counts[t.material[i]]++;
+        printf("{\"seed\":%u,\"volcano\":[%.6f,%.6f,%.6f,%.6f],\"materials\":[%d,%d,%d,%d,%d,%d],\"caves\":[",
+               p.seed,t.volcano_x_m,t.volcano_y_m,t.volcano_radius_m,t.crater_radius_m,
+               counts[0],counts[1],counts[2],counts[3],counts[4],counts[5]);
+        for(int i=0;i<t.cave_count;i++) {
+            const CpTerrainCave *v=&t.caves[i];
+            printf("%s{\"position\":[%.6f,%.6f,%.6f],\"facing\":[%.6f,%.6f],\"size\":[%.6f,%.6f,%.6f],\"waterfall\":%u}",
+                   i?",":"",v->x_m,v->y_m,v->z_m,v->facing_x,v->facing_y,v->width_m,v->height_m,v->depth_m,v->waterfall);
+        }
+        puts("]}");return 0;
+    }
     if (!strcmp(cmd, "hash")) {
         printf("%016" PRIx64 " %.4f\n", cp_terrain_hash(&t), sec);
         return 0;

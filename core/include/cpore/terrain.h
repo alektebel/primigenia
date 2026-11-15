@@ -95,8 +95,26 @@ typedef struct CpTerrainParams {
     float gentle_bases;     /* 0 = v2 heights; 1 = gentle lowland remap */
     float layout_variety;   /* 0 = v2 seven slots; 1 = seeded 6..8, extra jitter */
     float cliff_bands;      /* 0 = off; 1 = subtle high, steep bedrock bands */
+    float sea_cliffs;       /* 0 = beaches as v2; 1 = seeded rocky coastal sectors */
+    float hard_rock;        /* 0 = v2 resistance; 1 = resistant high strata */
+    float volcano;          /* 0 = original massif; 1 = one stratovolcano */
+    float caves;            /* 0 = no entrances/notches; 1 = seeded entrances */
     float cliff_deg;        /* bedrock: the sweep inside stream power */
 } CpTerrainParams;
+
+enum {
+    CP_TERR_MAT_MEADOW = 0, CP_TERR_MAT_ROCK = 1, CP_TERR_MAT_SCREE = 2,
+    CP_TERR_MAT_VOLCANIC = 3, CP_TERR_MAT_SAND = 4, CP_TERR_MAT_SNOW = 5
+};
+#define CP_TERRAIN_CAVES_MAX 6
+/* Map x/y in metres, z altitude; facing is the outward horizontal unit vector.
+ * A notch is only a heightfield hint. Passage/chamber meshes belong to rendering. */
+typedef struct CpTerrainCave {
+    float x_m, y_m, z_m;
+    float facing_x, facing_y;
+    float width_m, height_m, depth_m;
+    uint32_t waterfall;
+} CpTerrainCave;
 
 typedef struct CpTerrain {
     int n;
@@ -104,6 +122,10 @@ typedef struct CpTerrain {
     float *height;          /* metres, row-major, n*n */
     float *flow;            /* fraction of the map draining through the cell */
     float *sediment;        /* metres deposited by droplets */
+    uint8_t *material;      /* caller-owned n*n bytes, CP_TERR_MAT_* */
+    int cave_count;
+    CpTerrainCave caves[CP_TERRAIN_CAVES_MAX];
+    float volcano_x_m, volcano_y_m, volcano_radius_m, crater_radius_m;
 } CpTerrain;
 
 /* scratch: n*n floats. recv, ups, queue: n*n int32 each.
@@ -136,7 +158,7 @@ void cp_terrain_slope(const float *height, int n, float size_m, float *slope);
 void cp_terrain_directions(const float *height, int n, float size_m, int8_t *dir);
 
 /* FNV-1a 64 over a canonical little-endian dump: version, n, size, then
- * height, flow, sediment. +0 and -0 hash the same. */
+ * height, flow, sediment, material, volcano and cave records. +0 and -0 hash the same. */
 uint64_t cp_terrain_hash(const CpTerrain *t);
 
 #ifdef __cplusplus

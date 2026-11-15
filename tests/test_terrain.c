@@ -9,12 +9,13 @@
 typedef struct { CpTerrain t; CpTerrainWorkspace w; float *mem; } Fixture;
 static Fixture fixture(int n) {
     Fixture f = {0}; size_t nn = (size_t)n*n;
-    f.mem = calloc(nn*7, sizeof(float)); assert(f.mem);
+    f.mem = calloc(nn*8, sizeof(float)); assert(f.mem);
     f.t.height=f.mem; f.t.flow=f.mem+nn; f.t.sediment=f.mem+2*nn;
     f.w.scratch=f.mem+3*nn;
     f.w.recv= (int32_t *)(f.mem+4*nn);
     f.w.ups= (int32_t *)(f.mem+5*nn);
     f.w.queue= (int32_t *)(f.mem+6*nn);
+    f.t.material=(uint8_t *)(f.mem+7*nn);
     return f;
 }
 static void validation(void) {
@@ -38,6 +39,7 @@ static void validation(void) {
     BAD(island_radius_m,0);
     BAD(gentle_bases,-.1f); BAD(gentle_bases,NAN); BAD(gentle_bases,1.1f);
     BAD(layout_variety,-.1f); BAD(layout_variety,INFINITY); BAD(layout_variety,1.1f);
+    BAD(sea_cliffs,NAN); BAD(hard_rock,-1); BAD(volcano,2); BAD(caves,NAN);
     BAD(cliff_bands,-.1f); BAD(cliff_bands,NAN); BAD(cliff_bands,1.1f);
 #undef BAD
     assert(cp_terrain_generate(&p,NULL,NULL,NULL,NULL)==CP_TERR_ERR_BUFFER);
@@ -90,7 +92,7 @@ static void small(void) {
     CpTerrain invalid=f.t; invalid.n=INT32_MAX; assert(cp_terrain_hash(&invalid)==0);
     cp_terrain_params_default(NULL);
     /* Hydraulic transport conserves terrain mass when the terminal load settles. */
-    p.gentle_bases=0; p.cliff_bands=0;
+    p.gentle_bases=0; p.cliff_bands=0; p.caves=0;
     p.seed=1; p.thermal_iters=0; p.droplets=0; p.stream_iters=0;
     assert(cp_terrain_generate(&p,&f.t,&f.w,NULL,NULL)==0);
     double mass0=0,mass1=0;
@@ -203,6 +205,7 @@ static void deltas(void) {
     CpTerrainParams p; cp_terrain_params_default(&p);
     p.n=256; p.stream_iters=0; p.droplets=0; p.thermal_iters=0; p.seed=42;
     p.gentle_bases=p.layout_variety=p.cliff_bands=0;
+    p.sea_cliffs=p.hard_rock=p.volcano=p.caves=0;
     Fixture a=fixture(p.n),b=fixture(p.n);
     assert(cp_terrain_generate(&p,&a.t,&a.w,NULL,NULL)==0);
     for(int delta=0;delta<3;delta++) {
@@ -223,8 +226,44 @@ static void deltas(void) {
     }
     free(a.mem); free(b.mem);
 }
+/* The public output is enough for renderers; no mesh/tunnel dependency. */
+static void geology(void) {
+    CpTerrainParams p; cp_terrain_params_default(&p); p.n=256;
+    Fixture a=fixture(p.n),b=fixture(p.n);
+    assert(cp_terrain_generate(&p,&a.t,&a.w,NULL,NULL)==0);
+    assert(a.t.cave_count>=3 && a.t.cave_count<=6);
+    int materials[6]={0};
+    for(int i=0;i<p.n*p.n;i++) { assert(a.t.material[i]<=5); materials[a.t.material[i]]++; }
+    assert(materials[CP_TERR_MAT_VOLCANIC]>100);
+    assert(materials[CP_TERR_MAT_MEADOW]>100 && materials[CP_TERR_MAT_SAND]>100);
+    /* Summit bowl is lower than its surrounding rim. */
+    int vx=(int)((a.t.volcano_x_m/p.size_m+.5f)*p.n);
+    int vy=(int)((a.t.volcano_y_m/p.size_m+.5f)*p.n);
+    float crater=a.t.height[vy*p.n+vx],rim=crater;
+    for(int y=vy-5;y<=vy+5;y++) for(int x=vx-5;x<=vx+5;x++)
+        if(x>=0 && y>=0 && x<p.n && y<p.n && a.t.height[y*p.n+x]>rim) rim=a.t.height[y*p.n+x];
+    assert(rim>crater+15.f);
+    for(int c=0;c<a.t.cave_count;c++) {
+        const CpTerrainCave *v=&a.t.caves[c];
+        assert(isfinite(v->x_m) && isfinite(v->y_m) && v->z_m>0);
+        assert(fabsf(v->facing_x*v->facing_x+v->facing_y*v->facing_y-1.f)<1e-5f);
+        assert(v->width_m>=4 && v->height_m>=3);
+    }
+    p.caves=0;
+    assert(cp_terrain_generate(&p,&b.t,&b.w,NULL,NULL)==0);
+    assert(b.t.cave_count==0);
+    int changed=0;
+    for(int i=0;i<p.n*p.n;i++) {
+        assert(a.t.height[i]<=b.t.height[i]); changed+=a.t.height[i]!=b.t.height[i];
+    }
+    assert(changed>0 && changed<500);
+    p.volcano=0;
+    assert(cp_terrain_generate(&p,&b.t,&b.w,NULL,NULL)==0);
+    for(int i=0;i<p.n*p.n;i++) assert(b.t.material[i]!=CP_TERR_MAT_VOLCANIC);
+    free(a.mem);free(b.mem);
+}
 int main(int argc,char **argv) {
-    validation(); helpers(); deltas(); small();
+    validation(); helpers(); deltas(); geology(); small();
     if(argc>1 && !strcmp(argv[1],"--heavy")) guarantees();
     puts("terrain: PASS"); return 0;
 }
