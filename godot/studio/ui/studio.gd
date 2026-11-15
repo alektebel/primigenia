@@ -60,7 +60,7 @@ func _init(db: RefCounted = null, view_node: Node3D = null) -> void:
 	view = view_node
 
 func _ready() -> void:
-	set_anchors_preset(Control.PRESET_FULL_RECT)
+	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	theme = ThemeFactory.make()
 	i18n = I18n.new()
 	i18n.parts = parts_db
@@ -91,7 +91,7 @@ func _process(dt: float) -> void:
 func _build_stage() -> void:
 	stage = SubViewportContainer.new()
 	stage.stretch = true
-	stage.set_anchors_preset(Control.PRESET_FULL_RECT)
+	stage.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	stage.mouse_filter = Control.MOUSE_FILTER_STOP
 	stage.gui_input.connect(_stage_input)
 	stage.mouse_exited.connect(func(): _set_hover(-1))
@@ -121,7 +121,7 @@ func _build_stage() -> void:
 		view = PlaceholderView.new(parts_db)
 	viewport.add_child(view)
 	overlay = Control.new()
-	overlay.set_anchors_preset(Control.PRESET_FULL_RECT)
+	overlay.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	overlay.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	overlay.draw.connect(_draw_overlay)
 	add_child(overlay)
@@ -167,6 +167,8 @@ func _on_model_changed(live: bool) -> void:
 		_queue_rebuild()
 
 func _on_selection_changed() -> void:
+	if overlay:
+		overlay.queue_redraw()
 	view.set_selection(model.selected)
 	_queue_rebuild()
 
@@ -187,7 +189,7 @@ func _build_hud() -> void:
 		hud.queue_free()
 		hud = null
 	hud = Control.new()
-	hud.set_anchors_preset(Control.PRESET_FULL_RECT)
+	hud.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	hud.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(hud)
 	_build_top_bar()
@@ -345,7 +347,7 @@ func _make_part_button(id: String, category: String) -> Button:
 	b.tooltip_text = i18n.part_name(id)
 	b.toggle_mode = false
 	var v := VBoxContainer.new()
-	v.set_anchors_preset(Control.PRESET_FULL_RECT)
+	v.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	v.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	v.alignment = BoxContainer.ALIGNMENT_CENTER
 	b.add_child(v)
@@ -421,7 +423,7 @@ func _note(text: String) -> Label:
 	var l := Label.new()
 	l.text = text
 	l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	l.custom_minimum_size = Vector2(230, 0)
+	l.custom_minimum_size = Vector2(226, 0)
 	l.add_theme_color_override("font_color", ThemeFactory.MUTED)
 	l.add_theme_font_size_override("font_size", 12)
 	return l
@@ -434,7 +436,7 @@ func _slider_row(label: String, value: float, lo: float, hi: float, step: float,
 	var s := HSlider.new()
 	s.min_value = lo; s.max_value = hi; s.step = step
 	s.set_value_no_signal(value)
-	s.custom_minimum_size = Vector2(230, 20)
+	s.custom_minimum_size = Vector2(226, 20)
 	s.drag_started.connect(func(): model.begin(); _slider_tx = true)
 	s.value_changed.connect(on_change)
 	s.drag_ended.connect(func(_c): if _slider_tx: _slider_tx = false; model.end())
@@ -477,7 +479,7 @@ func _panel_build() -> void:
 		panel_box.add_child(_note(T("Toca una pieza de la criatura para ajustarla. Arrástrala fuera del cuerpo para quitarla.")))
 	panel_box.add_child(HSeparator.new())
 	panel_box.add_child(_h2(T("Columna")))
-	var nrow := HBoxContainer.new()
+	var nrow := VBoxContainer.new()
 	var addb := Button.new()
 	addb.text = "+ " + T("Añadir vértebra")
 	addb.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -572,6 +574,7 @@ func set_mode(m: String) -> void:
 	_cancel_drag()
 	_pending_type = ""
 	model.set_mode(m)
+	overlay.queue_redraw()
 	for k in mode_buttons:
 		mode_buttons[k].set_pressed_no_signal(k == m)
 	_set_hint("")
