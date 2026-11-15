@@ -38,7 +38,7 @@ for event in ['keydown', 'keyup', 'pointerdown', 'pointermove', 'pointerup', 'wh
     h = h.replace("addEventListener('"+event+"',", "addEventListener('reference-"+event+"',")
 h = patch(h, '</body>', '''<div id="play-ui">
  <header id="play-header"><div><b>Primigenia</b><span>THE FIRST VALLEY</span></div><nav><a href="../studio/">Studio ↗</a><button id="pause" aria-label="Pause game">Pause</button></nav></header>
- <div id="enemy-hud" class="vitals" hidden><div><b>Wild Merodeador</b><span id="enemy-phase">Watching</span></div><meter id="enemy-hp" min="0" max="100" value="100" aria-label="Enemy health"></meter><meter id="enemy-stamina" min="0" max="100" value="100" aria-label="Enemy stamina"></meter></div>
+ <div id="enemy-hud" class="vitals" hidden><div><b id="enemy-name">Garfio</b><span id="enemy-phase">Watching</span></div><meter id="enemy-hp" min="0" max="100" value="100" aria-label="Enemy health"></meter><meter id="enemy-stamina" min="0" max="100" value="100" aria-label="Enemy stamina"></meter></div>
  <div id="status" role="status" aria-live="polite">Opening the valley…</div>
  <div id="player-hud" class="vitals"><div><b id="creature-name">Your creature</b><span id="player-health">100</span></div><meter id="player-hp" min="0" max="100" value="100" aria-label="Your health"></meter><meter id="player-stamina" min="0" max="100" value="100" aria-label="Your stamina"></meter></div>
  <div id="actions" role="group" aria-label="Combat actions"></div>

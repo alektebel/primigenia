@@ -147,7 +147,8 @@ async function boot(){
  try{if(fixture){const loaded=await json(new URL(fixture,location.href));creature=StudioDocument.parse(loaded.creature||loaded,types).genome}
   else {const saved=localStorage.getItem('cpore.creature.v4');if(saved)creature=StudioDocument.parse(saved,types).genome}
  }catch(error){if(fixture)throw error;message('Saved creature could not be read. Exploring as Merodeador.')}
- rigs[0].load(creature);rigs[1].load(rigs[1].SEEDS.Merodeador);
+ const enemy = StudioDocument.parse(await json('species/garfio.json'), types).genome;
+ rigs[0].load(creature);rigs[1].load(enemy);$('enemy-name').textContent=enemy.name;
  const nest={x:W.spawn[0],z:W.spawn[1]};
  // Put one wild species on a dry route near the real nest, clear of trunks/rocks.
  let home=null;
