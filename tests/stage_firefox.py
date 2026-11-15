@@ -35,9 +35,15 @@ class Marionette:
     def __init__(self, sock): self.sock, self.seq = sock, 0; self.read()
     def read(self):
         header = b''
-        while not header.endswith(b':'): header += self.sock.recv(1)
+        while not header.endswith(b':'):
+            chunk=self.sock.recv(1)
+            if not chunk: raise ConnectionError('Firefox closed the Marionette connection')
+            header += chunk
         body = b''
-        while len(body) < int(header[:-1]): body += self.sock.recv(int(header[:-1])-len(body))
+        while len(body) < int(header[:-1]):
+            chunk=self.sock.recv(int(header[:-1])-len(body))
+            if not chunk: raise ConnectionError('Firefox closed the Marionette response')
+            body += chunk
         return json.loads(body)
     def call(self, name, args=None):
         self.seq += 1

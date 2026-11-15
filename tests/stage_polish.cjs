@@ -54,8 +54,8 @@ const out=path.resolve(process.env.CPORE_STAGE_POLISH_EVIDENCE||(process.env.CPO
   const cameraAfter=await page.evaluate(()=>Stage.cameraState());assert(Math.abs(cameraAfter.yaw-cameraBefore.yaw)>.2);
   await page.mouse.down({button:'middle'});await page.mouse.move(930,460);await page.mouse.up({button:'middle'});
   assert.notEqual((await page.evaluate(()=>Stage.cameraState())).yaw,cameraAfter.yaw);
-  await page.mouse.wheel(0,10000);assert.equal((await page.evaluate(()=>Stage.cameraState())).distance,30);
-  await page.mouse.wheel(0,-10000);assert.equal((await page.evaluate(()=>Stage.cameraState())).distance,8);
+  await page.mouse.wheel(0,10000);assert.equal((await page.evaluate(()=>Stage.cameraState())).distance,cameraBefore.maxDistance);
+  await page.mouse.wheel(0,-10000);assert.equal((await page.evaluate(()=>Stage.cameraState())).distance,cameraBefore.minDistance);
   await page.mouse.wheel(0,900);
   // Test real shared rig IK/foot meshes on a curving slope, without rendering.
   const feet=await page.evaluate(()=>{

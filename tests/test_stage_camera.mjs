@@ -25,5 +25,6 @@ const feedback=new FightFeedback();feedback.tick({events:[{type:1,b:1}],ticks:1}
 assert(feedback.frozen);assert(feedback.flash(1).strength>0);assert(feedback.shake>0);
 feedback.update(1/60);assert(feedback.frozen);feedback.update(1/60);assert(feedback.frozen);feedback.update(1/60);assert(!feedback.frozen);
 feedback.tick({events:[{type:2,b:0},{type:4,b:1}],ticks:2});assert.equal(feedback.flash(0).kind,'guard');assert.equal(feedback.flash(1).kind,'dodge');
+feedback.tick({events:[{type:2,b:0},{type:1,b:0}],ticks:3});assert.equal(feedback.flash(0).kind,'guard','partial blocks retain the success flash');
 feedback.update(1);assert.equal(feedback.flash(0).strength,0);assert.equal(feedback.shake,0);
 console.log('PASS chase composition, scale, follow, zoom, terrain, fight return, move tells and impact feedback');

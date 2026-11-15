@@ -10,10 +10,11 @@ export const moveTell=move=>tells[move]||tells[0];
 export class FightFeedback {
  constructor(){this.time=0;this.stopUntil=0;this.shakeUntil=0;this.flashes=[];this.labels=[]}
  tick(sim){
+  const guarded=new Set(sim.events.filter(event=>event.type===2).map(event=>event.b));
   for(const event of sim.events){
    const kind=event.type===1?'hit':event.type===2?'guard':event.type===4?'dodge':null;
    if(!kind)continue;
-   this.flashes[event.b]={kind,until:this.time+.28};
+   this.flashes[event.b]={kind:kind==='hit'&&guarded.has(event.b)?'guard':kind,until:this.time+.28};
    if(kind==='hit'){this.stopUntil=this.time+.045;this.shakeUntil=this.time+.18}
    else this.labels.push({id:event.b,kind,text:kind==='guard'?'GUARDED':'DODGED',until:this.time+.8});
   }

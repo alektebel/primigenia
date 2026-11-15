@@ -17,7 +17,7 @@ let pointer,audio,chase,feedback=new FightFeedback(),selected=false,marker,selec
 let lastTap={},sim,rigs,env,shownOutcome=null,toastUntil=0;
 function message(text){$('status').textContent=text}
 async function json(path){const response=await fetch(path);if(!response.ok)throw Error(`Could not load ${path} (${response.status})`);return response.json()}
-function worldVector(x,z){const {yaw}=chase;return [x*Math.cos(yaw)+z*Math.sin(yaw),-x*Math.sin(yaw)+z*Math.cos(yaw)]}
+function worldVector(x,z){const yaw=chase.viewYaw;return [x*Math.cos(yaw)+z*Math.sin(yaw),-x*Math.sin(yaw)+z*Math.cos(yaw)]}
 function input(){
  const gamepad=navigator.getGamepads?.()[0];
  if(gamepad){const x=Math.abs(gamepad.axes[2]||0)>.15?gamepad.axes[2]:0,y=Math.abs(gamepad.axes[3]||0)>.15?gamepad.axes[3]:0;if(x||y)chase.orbit(x*13,y*10)}
@@ -122,9 +122,8 @@ function poseRig(rig,entity,previous,dt,index){
   for(const o of rig.objs){const u=o.g.userData;if(u.arm)u.arm.rotation.x+=pulse*4;if(u.tail&&state.move===MOVE.TAIL)u.tail.rotation.y+=Math.sin(progress*Math.PI)*1.1;if(u.sacs&&state.move===MOVE.SPIT)for(const sac of u.sacs)sac.scale.setScalar(1+Math.abs(pulse)*1.5)}
  }else rig.creature.userData.windup=null;
  if(index===1&&entity.dead){rig.creature.rotation.z=1.4;rig.creature.updateMatrixWorld(true);rig.body.geometry.computeBoundingBox();const bounds=new env.T.Box3().setFromObject(rig.body).union(new env.T.Box3().setFromObject(rig.partsG)),bottom=bounds.min.y;rig.creature.position.y+=env.groundY(x,z)+.04-bottom;rig.limbs.visible=false}
- const flash=feedback.flash(index),color=flash.kind==='guard'?[.2,.65,1]:flash.kind==='dodge'?[.35,1,.8]:[1,.25,.08];
- for(const mat of [rig.skinM,rig.skinM2,rig.boneM])mat.emissive.setRGB(...color.map(c=>c*flash.strength));
 }
+function flashRig(rig,index){const flash=feedback.flash(index),color=flash.kind==='guard'?[.2,.65,1]:flash.kind==='dodge'?[.35,1,.8]:[1,.25,.08];for(const mat of [rig.skinM,rig.skinM2,rig.boneM])mat.emissive.setRGB(...color.map(c=>c*flash.strength))}
 function hud(){
  for(const [prefix,p,profile]of [['player',sim.player,sim.profile],['enemy',sim.enemy,sim.enemyProfile]]){
   for(const [field,max]of [['hp',profile.hp],['stamina',profile.stamina]]){const el=$(`${prefix}-${field}`);el.max=max;el.value=Math.max(0,p[field])}
@@ -141,6 +140,7 @@ function hud(){
 function pose(dt=0){rigs.forEach((rig,i)=>poseRig(rig,i?sim.enemy:sim.player,sim.previous[i],sim.paused?0:dt,i))}
 function draw(dt=0){
  if(!feedback.frozen)pose(dt);
+ rigs.forEach(flashRig);
  const {T,camera,groundY,renderer,scene,sun,SUN,hU,sky}=env,p=rigs[0].creature.position;
  const enemyPosition=rigs[1].creature.position;
  const shot=chase.update({player:{...sim.player,x:p.x,z:p.z},enemy:{x:enemyPosition.x,z:enemyPosition.z},fighting:!!sim.encounter,groundY,dt:sim.paused?0:dt,aspect:camera.aspect});
