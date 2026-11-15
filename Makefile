@@ -49,8 +49,9 @@ $(BUILD)/combat_golden: tests/combat_golden.c apps/combat_bots.h $(BUILD)/apps/c
 
 # Correctness regressions. Balance acceptance remains a separate failing gate:
 # run make tourney as well before claiming P2 acceptance.
-test: $(BUILD)/terrain_test $(BUILD)/cpore_test $(BUILD)/combat_test $(BUILD)/combat_tourney_test $(BUILD)/combat_golden check-core
+test: $(BUILD)/world_test $(BUILD)/terrain_test $(BUILD)/cpore_test $(BUILD)/combat_test $(BUILD)/combat_tourney_test $(BUILD)/combat_golden check-core
 	nice -n 10 ./$(BUILD)/terrain_test
+	./$(BUILD)/world_test
 	python3 tests/test_terrain_metrics.py
 	./$(BUILD)/cpore_test
 	./$(BUILD)/combat_test
@@ -163,3 +164,14 @@ wasm-test: terrain-parity
 terrain-metrics: $(BUILD)/terrain_cli
 	nice -n 10 python3 tools/terrain/metrics.py --cli $(BUILD)/terrain_cli --n 1024 --seeds 1,7,42 --workdir $(BUILD)/terrain --json $(BUILD)/terrain/metrics.json --check
 terrain-test: terrain-metrics
+
+# G56: world simulation (the cell-stage world.c retains its historical name).
+$(BUILD)/libcpore.a $(BUILD)/libcpore.so: $(BUILD)/apps/combat_bots.o
+$(BUILD)/world_test: tests/test_world.c $(HDRS) $(BUILD)/libcpore.a
+	$(CC) $(CFLAGS) $< $(BUILD)/libcpore.a -o $@ $(LDLIBS)
+WORLD_SRC := core/src/stage_world.c $(WASM_SRC)
+WORLD_EXPORTS := '[_cw_version,_cw_config,_cw_profile,_cw_spawn,_cw_obstacle,_cw_reset,_cw_height,_cw_ground,_cw_step,_cw_hash,_cw_meta,_cw_entities,_cw_orders,_cw_observe,_cb_layout,_cb_tick,_cb_count,_cb_states,_cb_event_count,_cb_events,_cb_hash,_cb_preview]'
+wasm: $(BUILD)/wasm/cpore_world.mjs $(BUILD)/wasm/cpore_world.wasm
+$(BUILD)/wasm/cpore_world.mjs $(BUILD)/wasm/cpore_world.wasm &: $(WORLD_SRC) apps/world_wasm_api.c apps/wasm_api.c apps/combat_bots.h $(HDRS) Makefile
+	@mkdir -p $(dir $@)
+	$(EMCC_RUN) $(WASM_FLAGS) $(WORLD_SRC) apps/world_wasm_api.c --no-entry -sMODULARIZE=1 -sEXPORT_ES6=1 -sENVIRONMENT=web,node -sEXPORTED_FUNCTIONS=$(WORLD_EXPORTS) -sEXPORTED_RUNTIME_METHODS=HEAP8,HEAPU8,HEAPU32,UTF8ToString -o $(BUILD)/wasm/cpore_world.mjs

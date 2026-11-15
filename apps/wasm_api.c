@@ -5,7 +5,9 @@
 #include <stddef.h>
 #include <math.h>
 
-static CpCombatWorld world;
+static CpCombatWorld standalone_world;
+static CpCombatWorld *combat_world = &standalone_world;
+#define world (*combat_world)
 static CpCombatSetup setup;
 static CpBot bots[CB_MAX_CREATURES];
 static CpCombatAction action;
