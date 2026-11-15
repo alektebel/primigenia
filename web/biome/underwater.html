@@ -58,21 +58,22 @@ canvas{display:block;position:absolute;inset:0;width:100%;height:100%}
     <button aria-pressed="true" data-preset="shallow">Shallow (3 m)</button>
     <button aria-pressed="false" data-preset="deep">Deep (15 m)</button>
     <button aria-pressed="false" data-preset="surface">Surface from below</button>
+    <button aria-pressed="false" data-preset="kelp-forest">Kelp forest</button>
   </div>
 
   <div id="info">
     <h2>Depth Profile</h2>
     <div class="stat"><span>Water level</span><span id="stat-level">3.0 m</span></div>
     <div class="stat"><span>Camera depth</span><span id="stat-depth">0.0 m</span></div>
-    <div class="stat"><span>Effects</span><span id="stat-effects">all</span></div>
+    <div class="stat"><span>Fog density</span><span id="stat-fog">0.030</span></div>
   </div>
 
   <div id="controls">
     <h2>Controls</h2>
-    <label>Caustics <input type="range" id="ctrl-caustics" min="0" max="1" step="0.01" value="1"><span class="val" id="val-caustics">1.0</span></label>
-    <label>Shafts <input type="range" id="ctrl-shafts" min="0" max="1" step="0.01" value="0.8"><span class="val" id="val-shafts">0.8</span></label>
+    <label>Caustics <input type="range" id="ctrl-caustics" min="0" max="2" step="0.01" value="1"><span class="val" id="val-caustics">1.0</span></label>
+    <label>Shafts <input type="range" id="ctrl-shafts" min="0" max="1" step="0.01" value="1"><span class="val" id="val-shafts">1.0</span></label>
     <label>Kelp <input type="range" id="ctrl-kelp" min="0" max="1" step="0.01" value="1"><span class="val" id="val-kelp">1.0</span></label>
-    <label>Time <input type="range" id="ctrl-time" min="0" max="100" step="0.1" value="0"><span class="val" id="val-time">0</span></label>
+    <label>Time <input type="range" id="ctrl-time" min="0" max="100" step="0.1" value="0"><span class="val" id="val-time">auto</span></label>
   </div>
 
   <div id="depth">0.0<small>m depth</small></div>
@@ -81,7 +82,7 @@ canvas{display:block;position:absolute;inset:0;width:100%;height:100%}
     <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> swim<br>
     <kbd>Q</kbd>/<kbd>E</kbd> descend/ascend<br>
     <kbd>Shift</kbd> fast swim<br>
-    <kbd>1</kbd><kbd>2</kbd><kbd>3</kbd> presets<br>
+    <kbd>1</kbd>–<kbd>4</kbd> presets<br>
     <kbd>R</kbd> reset camera<br>
     <kbd>G</kbd> toggle grid<br>
     <kbd>F</kbd> capture PNG
@@ -94,7 +95,11 @@ canvas{display:block;position:absolute;inset:0;width:100%;height:100%}
 
   /* ── Three.js setup ─────────────────────────────────────────────── */
   const canvas = document.getElementById("gl");
-  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false });
+  /* Force a WebGL1 context: three's WebGL2 GLSL3 conversion of ShaderMaterial
+     varyings renders garbage (solid red) under SwiftShader in this build. */
+  const gl1 = canvas.getContext("webgl", { antialias: true, alpha: false })
+           || canvas.getContext("experimental-webgl", { antialias: true, alpha: false });
+  const renderer = new THREE.WebGLRenderer({ canvas, context: gl1 });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.outputEncoding = THREE.sRGBEncoding;
@@ -102,29 +107,28 @@ canvas{display:block;position:absolute;inset:0;width:100%;height:100%}
   renderer.toneMappingExposure = 1.0;
 
   const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(65, window.innerWidth / window.innerHeight, 0.5, 3000);
+  const camera = new THREE.PerspectiveCamera(65, window.innerWidth / window.innerHeight, 0.1, 3000);
 
-  /* ── Lighting (golden-hour ACES, matching valley palette C) ──────── */
-  const sun = new THREE.DirectionalLight(0xffd6a0, 3.2);
+  /* ── Lighting ───────────────────────────────────────────────────── */
+  const sun = new THREE.DirectionalLight(0xffe0b0, 3.5);
   sun.position.set(-50, 80, -60);
   scene.add(sun, sun.target);
 
-  const hemi = new THREE.HemisphereLight(0xa8ccf8, 0x6a6a5c, 0.5);
+  const hemi = new THREE.HemisphereLight(0x88b8c8, 0x3a4a48, 0.6);
   scene.add(hemi);
 
-  /* ── Background ─────────────────────────────────────────────────── */
-  scene.background = new THREE.Color(0.15, 0.25, 0.35);
+  /* ── Background: always the underwater fog colour (never the sky).
+        Looking sideways you see water colour; the sky only exists through
+        the Snell window in the surface shader. ──────────────────────── */
+  scene.background = new THREE.Color(0.13, 0.45, 0.52);
 
-  /* ── Fog (matches valley style) ─────────────────────────────────── */
-  const fogColor = new THREE.Color(0.65, 0.82, 0.88);
-  const fogNear = 30, fogFar = 300;
-  scene.fog = new THREE.Fog(0xc7e6f5, 110, 760);
-
-  /* ── Simple heightmap sampler ───────────────────────────────────── */
+  /* ── Sea floor heightmap: dunes + a slope toward deeper water ───── */
   function heightmap(x, z) {
-    /* Gently rolling sea floor */
-    const n = Math.sin(x*0.1)*Math.cos(z*0.08)*2 + Math.sin(x*0.3+z*0.2)*0.5;
-    return -1 + n; /* mostly around -1m with small variation */
+    const dunes = Math.sin(x * 0.045) * Math.cos(z * 0.05) * 2.0
+                + Math.sin(x * 0.11 + z * 0.07) * 0.9
+                + Math.sin(x * 0.27) * Math.cos(z * 0.23) * 0.35;
+    const slope = x * 0.022 + z * 0.012;   /* gentle large-scale tilt */
+    return -2 + dunes + slope;
   }
 
   /* ── Underwater biome module ────────────────────────────────────── */
@@ -135,26 +139,25 @@ canvas{display:block;position:absolute;inset:0;width:100%;height:100%}
     renderer,
     camera,
     sun,
-    fogColor,
-    fogNear,
-    fogFar,
+    floorY: -2,
   });
+  window.__biome = biome;   /* debug hook */
 
   /* ── Camera (swim + orbit) ──────────────────────────────────────── */
   const camState = {
-    pos: new THREE.Vector3(0, 1.5, 8),
-    yaw: 0,        /* horizontal angle */
-    pitch: -0.1,   /* vertical angle, negative = looking down */
+    pos: new THREE.Vector3(6.5, 1.3, 9),
+    yaw: 0.29,
+    pitch: -0.17,
   };
 
   const keys = {};
   window.addEventListener("keydown", e => {
     keys[e.code] = true;
     if (["KeyW","KeyA","KeyS","KeyD","KeyQ","KeyE","ShiftLeft","ShiftRight"].includes(e.code)) e.preventDefault();
-    /* presets */
     if (e.code === "Digit1") setPreset("shallow");
     if (e.code === "Digit2") setPreset("deep");
     if (e.code === "Digit3") setPreset("surface");
+    if (e.code === "Digit4") setPreset("kelp-forest");
     if (e.code === "KeyR") resetCamera();
   });
   window.addEventListener("keyup", e => { keys[e.code] = false; });
@@ -173,9 +176,10 @@ canvas{display:block;position:absolute;inset:0;width:100%;height:100%}
   canvas.addEventListener("contextmenu", e => e.preventDefault());
 
   function resetCamera() {
-    camState.pos.set(0, 1.5, 8);
-    camState.yaw = 0;
-    camState.pitch = -0.1;
+    const p = presets[currentPreset];
+    camState.pos.copy(p.camPos);
+    camState.yaw = p.camYaw;
+    camState.pitch = p.camPitch;
   }
 
   function updateCamera(dt) {
@@ -199,10 +203,9 @@ canvas{display:block;position:absolute;inset:0;width:100%;height:100%}
       -Math.cos(camState.yaw) * Math.cos(camState.pitch)
     );
     camera.lookAt(camera.position.clone().add(dir));
-    camera.rotation.z = 0; /* keep head upright */
   }
 
-  /* ── Grid helper ────────────────────────────────────────────────── */
+  /* ── Grid helper (debug) ────────────────────────────────────────── */
   let grid = new THREE.GridHelper(200, 80, 0x335566, 0x224455);
   grid.material.transparent = true;
   grid.material.opacity = 0.3;
@@ -212,84 +215,86 @@ canvas{display:block;position:absolute;inset:0;width:100%;height:100%}
 
   /* ── Controls ───────────────────────────────────────────────────── */
   const sliders = {
-    caustics: { el: document.getElementById("ctrl-caustics"), val: document.getElementById("val-caustics"), key: "caustics" },
-    shafts: { el: document.getElementById("ctrl-shafts"), val: document.getElementById("val-shafts"), key: "shafts" },
-    kelp: { el: document.getElementById("ctrl-kelp"), val: document.getElementById("val-kelp"), key: "kelp" },
-    time: { el: document.getElementById("ctrl-time"), val: document.getElementById("val-time"), key: "time" },
+    caustics: { el: document.getElementById("ctrl-caustics"), val: document.getElementById("val-caustics") },
+    shafts: { el: document.getElementById("ctrl-shafts"), val: document.getElementById("val-shafts") },
+    kelp: { el: document.getElementById("ctrl-kelp"), val: document.getElementById("val-kelp") },
+    time: { el: document.getElementById("ctrl-time"), val: document.getElementById("val-time") },
   };
 
   Object.values(sliders).forEach(s => {
     s.el.addEventListener("input", () => {
       const v = parseFloat(s.el.value);
-      s.val.textContent = v.toFixed(2);
-      if (s.key === "caustics") {
-        /* Toggles additive blending for caustics overlay */
-        if (biome._caustics && biome._caustics.mesh.material) {
-          biome._caustics.mesh.material.blending = v > 0.01 ? THREE.AdditiveBlending : THREE.NoBlending;
-          biome._caustics.mesh.material.needsUpdate = true;
-        }
-      }
-      if (s.key === "shafts") {
-        (biome._shafts || []).forEach(sh => { if (sh.uniforms) sh.uniforms.uOpacity.value = v; });
-      }
-      if (s.key === "kelp") {
-        if (biome._kelp && biome._kelp.mesh) biome._kelp.mesh.visible = v > 0.01;
-      }
-      if (s.key === "time") {
-        if (v > 0.1) {
-          manualTime = true;
-          (biome._allUniforms || []).forEach(u => { if (u && u.uTime) u.uTime.value = v; });
-          (biome._shafts || []).forEach(sh => { if (sh.uniforms && sh.uniforms.uTime) sh.uniforms.uTime.value = v; });
-          if (biome._fish && biome._fish.uniforms && biome._fish.uniforms.uTime) biome._fish.uniforms.uTime.value = v;
-          if (biome._particles && biome._particles.uniforms && biome._particles.uniforms.uTime) biome._particles.uniforms.uTime.value = v;
-        } else {
-          manualTime = false;
-        }
+      if (s !== sliders.time) s.val.textContent = v.toFixed(2);
+      if (s === sliders.caustics) biome.setCaustics(v);
+      if (s === sliders.shafts) biome.setShafts(v);
+      if (s === sliders.kelp) { if (biome._kelp) biome._kelp.visible = v > 0.01; }
+      if (s === sliders.time) {
+        if (v > 0.1) { manualTime = true; manualTimeValue = v; s.val.textContent = v.toFixed(1); }
+        else { manualTime = false; s.val.textContent = "auto"; }
       }
     });
   });
 
   /* ── Presets ────────────────────────────────────────────────────── */
   const presets = {
-    shallow: { waterLevel: 3, camPos: new THREE.Vector3(0, 1.5, 6), camYaw: 0, camPitch: -0.15,
-               skyColor: new THREE.Color(0.08, 0.18, 0.32), fogColor: new THREE.Color(0.15, 0.35, 0.45),
-               fogNear: 20, fogFar: 120, exposure: 1.1, sunI: 3.5 },
-    deep: { waterLevel: 15, camPos: new THREE.Vector3(0, 8, 6), camYaw: 0.2, camPitch: -0.1,
-            skyColor: new THREE.Color(0.05, 0.10, 0.20), fogColor: new THREE.Color(0.04, 0.10, 0.22),
-            fogNear: 5, fogFar: 50, exposure: 0.85, sunI: 0.5 },
-    surface: { waterLevel: 3, camPos: new THREE.Vector3(0, 2.5, 4), camYaw: 0, camPitch: 0.5,
-               skyColor: new THREE.Color(0.35, 0.55, 0.72), fogColor: new THREE.Color(0.55, 0.75, 0.85),
-               fogNear: 30, fogFar: 150, exposure: 1.0, sunI: 3.2 },
+    shallow: {
+      waterLevel: 3,
+      camPos: new THREE.Vector3(4, 1.2, 7),
+      camYaw: -0.35,
+      camPitch: -0.12,
+      atmo: { density: 0.032, shallow: new THREE.Color(0.14, 0.48, 0.56), deep: new THREE.Color(0.02, 0.14, 0.22) },
+      exposure: 1.2, sunI: 3.5,
+    },
+    deep: {
+      waterLevel: 15,
+      camPos: new THREE.Vector3(3, 5.0, 10),
+      camYaw: 0.20,
+      camPitch: -0.05,
+      atmo: { density: 0.065, shallow: new THREE.Color(0.05, 0.22, 0.34), deep: new THREE.Color(0.006, 0.04, 0.09) },
+      exposure: 0.9, sunI: 1.4,
+    },
+    surface: {
+      waterLevel: 3,
+      camPos: new THREE.Vector3(0, 1.2, 1.5),
+      camYaw: 0.10,
+      camPitch: 0.72,
+      atmo: { density: 0.028, shallow: new THREE.Color(0.14, 0.48, 0.56), deep: new THREE.Color(0.02, 0.14, 0.22) },
+      exposure: 1.05, sunI: 3.2,
+    },
+    "kelp-forest": {
+      waterLevel: 8,
+      camPos: new THREE.Vector3(2, 1.5, 8),
+      camYaw: -0.10,
+      camPitch: 0.20,
+      atmo: { density: 0.048, shallow: new THREE.Color(0.09, 0.36, 0.44), deep: new THREE.Color(0.015, 0.10, 0.16) },
+      exposure: 1.0, sunI: 2.4,
+    },
   };
 
   let currentPreset = "shallow";
+  const bgColor = new THREE.Color();
 
   function applyPreset(name) {
     const p = presets[name];
     if (!p) return;
     biome.setWaterLevel(p.waterLevel);
+    biome.setAtmosphere(p.atmo);
     camState.pos.copy(p.camPos);
     camState.yaw = p.camYaw;
     camState.pitch = p.camPitch;
-    scene.background = p.skyColor;
-    scene.fog.color.copy(p.fogColor);
-    scene.fog.near = p.fogNear;
-    scene.fog.far = p.fogFar;
     renderer.toneMappingExposure = p.exposure;
     sun.intensity = p.sunI;
     currentPreset = name;
 
-    /* Update button states */
     document.querySelectorAll("#topbar button").forEach(btn => {
       btn.setAttribute("aria-pressed", btn.dataset.preset === name ? "true" : "false");
     });
 
+    document.getElementById("stat-fog").textContent = p.atmo.density.toFixed(3);
     updateStats();
   }
 
-  function setPreset(name) {
-    applyPreset(name);
-  }
+  function setPreset(name) { applyPreset(name); }
 
   document.querySelectorAll("#topbar button").forEach(btn => {
     btn.addEventListener("click", () => setPreset(btn.dataset.preset));
@@ -300,8 +305,15 @@ canvas{display:block;position:absolute;inset:0;width:100%;height:100%}
     const depth = Math.max(0, p.waterLevel - camState.pos.y).toFixed(1);
     document.getElementById("stat-level").textContent = p.waterLevel.toFixed(1) + " m";
     document.getElementById("stat-depth").textContent = depth + " m";
-    document.getElementById("stat-effects").textContent = "all";
     document.getElementById("depth").innerHTML = depth + "<small>m depth</small>";
+  }
+
+  /* ── Background follows camera depth (continuous absorption) ────── */
+  function updateBackground() {
+    const p = presets[currentPreset];
+    const t = Math.min(Math.max((p.waterLevel - camera.position.y) / 22, 0), 1);
+    bgColor.copy(p.atmo.shallow).lerp(p.atmo.deep, t);
+    scene.background = bgColor;
   }
 
   /* ── Resize ─────────────────────────────────────────────────────── */
@@ -326,7 +338,6 @@ canvas{display:block;position:absolute;inset:0;width:100%;height:100%}
 
   window.addEventListener("keydown", e => {
     if (e.code === "KeyF") {
-      canvas.captureStream(0).getVideoTracks()[0]?.requestFrame(); /* ensure frame */
       renderer.render(scene, camera);
       setTimeout(() => window.capturePNG("underwater_" + currentPreset + ".png"), 100);
     }
@@ -335,8 +346,9 @@ canvas{display:block;position:absolute;inset:0;width:100%;height:100%}
 
   /* ── Animation loop ─────────────────────────────────────────────── */
   let prevTime = performance.now();
-  let time = 0;
+  let time = 10.0;              /* start with caustics/kelp mid-animation */
   let manualTime = false;
+  let manualTimeValue = 0;
 
   function frame() {
     requestAnimationFrame(frame);
@@ -346,39 +358,21 @@ canvas{display:block;position:absolute;inset:0;width:100%;height:100%}
     if (!manualTime) time += dt;
 
     updateCamera(dt);
-    biome.update(time);
+    biome.update(manualTime ? manualTimeValue : time);
     updateStats();
-
-    /* Update time uniforms (auto or manual) */
-    if (!manualTime) {
-      (biome._allUniforms || []).forEach(u => { if (u && u.uTime) u.uTime.value = time; });
-      (biome._shafts || []).forEach(s => { if (s.uniforms && s.uniforms.uTime) s.uniforms.uTime.value = time; });
-      if (biome._fish && biome._fish.uniforms) biome._fish.uniforms.uTime.value = time;
-      if (biome._particles && biome._particles.uniforms) biome._particles.uniforms.uTime.value = time;
-    }
+    updateBackground();
 
     renderer.render(scene, camera);
   }
 
   /* ── Start ──────────────────────────────────────────────────────── */
-  /* Move camera to a good framing position for shallow preset */
-  camState.pos.set(-5, 1.5, 8);
-  camState.yaw = 0.4;
-  camState.pitch = -0.15;
-
-  /* Set time slider to auto */
-  sliders.time.el.value = 0;
-  sliders.time.val.textContent = 'auto';
-
   applyPreset("shallow");
 
-  /* Hide loading */
   setTimeout(() => document.getElementById("loading").classList.add("hidden"), 300);
 
   requestAnimationFrame(frame);
 
 })();
-</script>
 </script>
 </body>
 </html>
