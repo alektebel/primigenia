@@ -12,7 +12,7 @@ CORE_SRC := $(wildcard core/src/*.c)
 CORE_OBJ := $(CORE_SRC:%.c=$(BUILD)/%.o)
 HDRS     := $(wildcard core/include/cpore/*.h)
 
-.PHONY: all core lib test bench tourney smoke studio blender blender-mcp-setup blender-mcp-smoke blender-sample-parts clean check-core
+.PHONY: all core lib test bench tourney smoke studio blender blender-mcp-setup blender-mcp-smoke blender-sample-parts clean check-core serve play check
 all: $(BUILD)/world_cli core $(BUILD)/cpore_test $(BUILD)/cpore_bench $(BUILD)/combat_test $(BUILD)/combat_tourney
 
 core: $(BUILD)/libcpore.a $(BUILD)/libcpore.so
@@ -193,3 +193,70 @@ world-coverage: $(BUILD)/libcpore.a
 	nice -n 10 ./$(BUILD)/world-coverage/unit
 	@for seed in 1 42 987654321; do nice -n 10 ./$(BUILD)/world-coverage/cli --replay tests/golden/world-$$seed.log >/dev/null || exit 1; done
 	cd $(BUILD)/world-coverage && gcov -b -c stage_world.gcno
+
+# ── convenience targets ──────────────────────────────────────────────
+SERVE_PORT ?= 8765
+
+.PHONY: serve
+serve:
+	python3 -m http.server 8090 --bind 127.0.0.1
+
+.PHONY: play
+play:
+	@echo "Open these URLs in your browser:"
+	@echo "  http://127.0.0.1:8090/web/studio/"
+	@echo "  http://127.0.0.1:8090/web/stage/"
+	@echo "  http://127.0.0.1:8090/web/terrain-lab/"
+
+# Helper that runs a recipe, guaranteeing the background server dies.
+#  $1 = port to check
+define start_server
+	@_pid=0; \
+	if _p=$$(python3 -c 'import socket; s=socket.socket(); s.settimeout(0.5); r=s.connect_ex(("127.0.0.1",$1)); s.close(); print(r)' 2>/dev/null) && [ "$$_p" = "0" ]; then \
+	  echo "Port $1 already in use — skipping server (tests that need it will fail)"; \
+	else \
+	  python3 -m http.server $1 --bind 127.0.0.1 >/dev/null 2>&1 & _pid=$$!; \
+	  echo "Started http server on port $1 (PID $$_pid)"; \
+	fi; \
+	echo "$$_pid"
+endef
+
+# Full verification pipeline: C tests → WASM → terrain → studio → stage (browser).
+# Runs with nice -n 10; stops the server afterwards even on failure.
+.PHONY: check
+check:
+	@echo "=== make check ==="
+	@echo ""
+	@echo "--- preflight: playwright? ---"
+	@if [ ! -d "$$(echo $(NODE_PATH) 2>/dev/null)/playwright" ] && \
+	   ! python3 -c 'import playwright' 2>/dev/null && \
+	   ! node -e 'require("playwright")' 2>/dev/null; then \
+	  echo "ERROR: playwright not found in NODE_PATH."; \
+	  echo "  export NODE_PATH=/path/to/node_modules"; \
+	  echo "  (or install playwright first)"; \
+	  exit 1; \
+	fi
+	@echo ""
+	@echo "--- 1/5 make test (C unit tests) ---"
+	@nice -n 10 make test
+	@echo ""
+	@echo "--- 2/5 make wasm-test (WASM parity + browser test) ---"
+	@nice -n 10 make wasm-test
+	@echo ""
+	@echo "--- 3/5 make terrain-test (terrain + WASM) ---"
+	@nice -n 10 make terrain-test
+	@echo ""
+	@echo "--- 4-5/5 make studio-test + make stage-test (browser; one shared server on $(SERVE_PORT)) ---"
+	@mkdir -p $(BUILD)/studio-tests
+	@set -e; _pid=""; \
+	if python3 -c 'import socket,sys; s=socket.socket(); sys.exit(0 if s.connect_ex(("127.0.0.1",$(SERVE_PORT)))==0 else 1)'; then \
+	  echo "Port $(SERVE_PORT) already serving; reusing it"; \
+	else \
+	  setsid python3 -m http.server $(SERVE_PORT) --bind 127.0.0.1 >$(BUILD)/check-server.log 2>&1 & _pid=$$!; \
+	  for i in $$(seq 50); do python3 -c 'import socket,sys; s=socket.socket(); sys.exit(0 if s.connect_ex(("127.0.0.1",$(SERVE_PORT)))==0 else 1)' && break; sleep 0.2; done; \
+	  echo "Started http server on port $(SERVE_PORT) (PID $$_pid)"; \
+	fi; \
+	trap '[ -n "$$_pid" ] && kill $$_pid 2>/dev/null || true' EXIT; \
+	nice -n 10 $(MAKE) studio-test; \
+	nice -n 10 $(MAKE) stage-test
+	@echo "=== make check done ==="
