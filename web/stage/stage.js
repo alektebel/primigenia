@@ -6,6 +6,7 @@ import {pointerControls} from './pointer.js';
 import {StageAudio} from './audio.js';
 import {ChaseCamera} from './camera.js';
 import {FightFeedback,moveTell} from './feedback.js';
+import {waitForEnvironment} from './boot.js';
 
 const $=id=>document.getElementById(id),clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 const mix=(a,b,t)=>a+(b-a)*t;
@@ -141,7 +142,8 @@ function pose(dt=0){rigs.forEach((rig,i)=>poseRig(rig,i?sim.enemy:sim.player,sim
 function draw(dt=0){
  if(!feedback.frozen)pose(dt);
  const {T,camera,groundY,renderer,scene,sun,SUN,hU,sky}=env,p=rigs[0].creature.position;
- const shot=chase.update({player:{...sim.player,x:p.x,z:p.z},enemy:sim.enemy,fighting:!!sim.encounter,groundY,dt:sim.paused?0:dt,aspect:camera.aspect});
+ const enemyPosition=rigs[1].creature.position;
+ const shot=chase.update({player:{...sim.player,x:p.x,z:p.z},enemy:{x:enemyPosition.x,z:enemyPosition.z},fighting:!!sim.encounter,groundY,dt:sim.paused?0:dt,aspect:camera.aspect});
  camera.fov=48;camera.position.set(shot.position.x,shot.position.y,shot.position.z);
  const shake=matchMedia('(prefers-reduced-motion: reduce)').matches?0:feedback.shake*chase.height*.025;
  camera.position.x+=Math.sin(feedback.time*173)*shake;camera.position.y+=Math.sin(feedback.time*137)*shake*.6;
@@ -161,9 +163,7 @@ function draw(dt=0){
 }
 let enemyHeight=3;
 async function boot(){
- env=window.__stageEnvironment;
- if(!env){await new Promise(resolve=>addEventListener('load',resolve,{once:true}));env=window.__stageEnvironment}
- if(!env)throw Error('Valley environment unavailable');
+ env=await waitForEnvironment();
  env.groundY=(x,z)=>window.__stageWorld.ground(x,z);
  const {T,scene,SUN,W,groundY,obstacles}=env;
  W.p.vis.root.visible=false;for(const npc of W.npcs){npc.vis.root.visible=false;npc.mark.g.visible=false}

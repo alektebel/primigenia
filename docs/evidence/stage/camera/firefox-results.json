@@ -1,0 +1,8 @@
+{
+  "ready": true,
+  "env": true,
+  "status": "Your nest is behind you. Something is moving in the meadow.",
+  "errors": [],
+  "browser": "159.0",
+  "delayedWasmSeconds": 2
+}

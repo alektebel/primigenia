@@ -1,0 +1,8 @@
+{
+  "ready": false,
+  "env": false,
+  "status": "The valley could not open. Valley environment unavailable\nReload, or return to Studio.",
+  "errors": [],
+  "browser": "159.0",
+  "delayedWasmSeconds": 2
+}
