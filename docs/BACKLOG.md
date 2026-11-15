@@ -11,13 +11,13 @@ approves the look, movement, fights and the P4 loop.
 
 | # | Item | Decisions | State |
 |---|---|---|---|
-| 1 | Stage fixes: distinct enemy (Garfio), per-creature body radius in C, a winnable fight (35–80 %) | P3 | in progress |
-| 2 | Grass anchored to the world (it slid with the camera); overcast shadows; noon sky | P0 | in progress |
-| 3 | Palette: the owner picks A (BotW) / B (Spore) / C (current+), then it is applied to hero, stage and terrain | owner playtest | variants in progress |
-| 4 | Stage polish: Spore-like movement (click/hold to follow the pointer, WASD, any direction, continuous heading in C), natural locomotion (acceleration, curved turns, stride locked to distance, lean, head look), basic CC0 audio with credits | G57, G59 | implemented; automated checks pass, owner playtest pending |
-| 5 | Eroded terrain generator in C (phase A: generator, parity, Horton/Hack checks, terrain lab) | W11, W13 | in progress |
+| 1 | Stage fixes: distinct enemy (Garfio), per-creature body radius in C, a winnable fight (35–80 %) | P3 | merged (7e34932) |
+| 2 | Grass anchored to the world (it slid with the camera); overcast shadows; noon sky | P0 | merged (d611d9f) |
+| 3 | Palette: the owner picks A (BotW) / B (Spore) / C (current+), then it is applied to hero, stage and terrain | owner playtest | variants merged (d6fefb2), owner to pick |
+| 4 | Stage polish: Spore-like movement (click/hold to follow the pointer, WASD, any direction, continuous heading in C), natural locomotion (acceleration, curved turns, stride locked to distance, lean, head look), basic CC0 audio with credits | G57, G59 | merged (8cc987f); owner playtest pending |
+| 5 | Eroded terrain generator in C (phase A: generator, parity, Horton/Hack checks, terrain lab) | W11, W13 | merged (6336202); shape quality pass (W11-A2) in progress |
 | 6 | Eroded terrain in the valley and stage (phase B): props re-placed, W12 guarantees, LOD for far mountains, Worker + IndexedDB cache, pre-baked curated seed | W11–W13 | queued |
-| 7 | P2 move-level tourney gates pass (prerequisite for P4) | G55, P2 | queued |
+| 7 | P2 move-level tourney gates pass (prerequisite for P4) | G55, P2 | in progress |
 | 8 | P4: world simulation in C (movement, perception, species, social), social depth, DNA (two meters), part discovery, tiers, recipes, bone spines, mid-game editing at a minimal nest | P4.md, G49–G56 | queued |
 
 ## 2. After the MVP (the tail)
