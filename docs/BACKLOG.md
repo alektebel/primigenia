@@ -17,6 +17,7 @@ approves the look, movement, fights and the P4 loop.
 | 4 | Stage polish: Spore-like pointer movement, continuous heading in C, natural locomotion, CC0 audio | G57, G59 | done (8cc987f); owner playtest pending |
 | 5 | Eroded terrain generator in C, v2 shape (island, massifs, stream-power erosion) | W11, W13, W14 | done (3757e28) |
 | 5b | Alpine style (gentle bases, cliff bands, cirques, fans, varied layouts, hummocky floor) | W15 | in progress (codex) |
+| 5c | **Core-loop feel first (G72)**: a lower, closer third-person camera with the horizon visible; fight readability (enemy wind-up, hits, dodges); fix the Firefox "valley could not open" error | G70, G72 | next |
 | 6 | Terrain into the valley and stage (phase B): props re-placed, W12 guarantees, LOD far mountains, Worker + IndexedDB cache, pre-baked curated seed, C world height from the generator | W11–W13, G56 | next after 5b |
 | 7 | P2 move-level tourney gates pass (prerequisite for P4) | G55 | in progress (codex) |
 | 8a | P4 foundation: world simulation in C, agent observation and verbs | G56 | done (77ef7f5) |
@@ -27,6 +28,8 @@ approves the look, movement, fights and the P4 loop.
 | 9 | Minor tasks on free models: `make check` + README, Python world binding, calibration research, vista grass-disc fix | Q22, Q9/Q10 | in progress |
 | 9b | Underwater biome art (G64) and the MVP batch of easter eggs (G65), art by parallel qwen3.6 agents (G66) | G64–G66 | in progress |
 | 10 | MVP review: owner plays ~10 minutes, side-by-side palette C vs A, final fixes | G58 | last |
+
+Discovery budget (G71): ~80 % core loop, ~20 % discovery; something new every 10–15 min; a deep secret move every 45–60 min; 6–8 deep secret moves for the whole creature stage (MVP: bone spines + rock armour, plus 5 shards and the nocturnal creature).
 
 ## 2. After the MVP (the tail)
 
