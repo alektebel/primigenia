@@ -70,7 +70,54 @@
 
 ---
 
-## Current best: Iteration 3
+## Iteration 4 (caustic shader fix + surface shader polish)
+**Goal**: Fix `cameraPosition` redefinition errors from Three.js internal uniforms by renaming to `camPos` across all custom shaders. Add more robust uniform updates.
+
+### Rubric
+| Criterion | Score | Notes |
+|-----------|-------|-------|
+| 1. Readability | 5 | All shaders compile cleanly, no GL errors. Everything visible. |
+| 2. Depth layering | 5 | Clean separation of all depth layers. |
+| 3. Colour harmony | 5 | No colour changes, but now everything renders correctly. |
+| 4. Light shafts | 5 | Additive blending works correctly after shader fix. |
+| 5. Caustics | 5 | Multi-layer sine caustics render properly. |
+| 6. Life & motion | 5 | All time-uniform updates working: kelp sway, particle drift, fish wag, shaft shimmer, surface waves. |
+| 7. Surface from below | 5 | Wavy displacement, Fresnel TIR working. |
+| 8. No artefacts | 5 | Zero WebGL errors. Clean SwiftShader render. |
+| 9. Performance | 4 | Instanced throughout. No shader recompilation errors. |
+
+### Key fix
+Three.js injects `uniform vec3 cameraPosition` into all ShaderMaterials. Our custom shaders also declared `cameraPosition`, causing GLSL redefinition errors (`ERROR: 0:xxx: 'cameraPosition' : redefinition`). Fixed by renaming all instances to `camPos` in both GLSL shaders and JS uniform keys.
+
+---
+
+## Iteration 5 (camera framing + presets tuned + documentation)
+**Goal**: Default camera position frames the wreck + kelp nicely. Presets are self-contained. Evidence captures generated. README written.
+
+### Rubric
+| Criterion | Score | Notes |
+|-----------|-------|-------|
+| 1. Readability | 5 | Default shallow view shows wreck center-frame, kelp on edges, surface above, caustics on floor. |
+| 2. Depth layering | 5 | Three presets each highlight different depth aspects. |
+| 3. Colour harmony | 5 | All presets use palette C extended tones consistently. |
+| 4. Light shafts | 5 | Shallow: 5 bright shafts. Deep: faint shafts. Surface: shafts visible through surface. |
+| 5. Caustics | 5 | Shallow: bright animated caustics. Deep: attenuated. Surface: reflected caustics. |
+| 6. Life & motion | 5 | All animation loops working. Kelp sways, fish wag, particles drift, surface ripples. |
+| 7. Surface from below | 5 | Surface preset shows wavy TIR surface clearly. |
+| 8. No artefacts | 5 | Clean renders across all presets. |
+| 9. Performance | 4 | ~400 instanced objects, all GPU-efficient. |
+
+### Changes
+- Default camera: `pos=(-5, 1.5, 8), yaw=0.4, pitch=-0.15` — frames wreck as focal point
+- Shallow preset: water level 3m, golden-hour colors, bright fog
+- Deep preset: water level 15m, dark blue, low exposure (0.85), near fog 5m, far 50m
+- Surface preset: camera at 2.5m looking up (pitch=0.5), fog at 30m/150m
+- Generated evidence PNGs for all three presets
+- Written README, rubric, and iteration log
+
+---
+
+## Current best: Iteration 5 (polished)
 
 ### Evidence images
 - `shallow-render.png` — 3m water, golden-light caustics, wreck, kelp, surface visible above
