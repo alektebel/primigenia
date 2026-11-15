@@ -3,8 +3,10 @@
 From the repository root:
 
 ```sh
-make wasm && python3 -m http.server
-# Open http://localhost:8000/web/stage/
+source ~/emsdk/emsdk_env.sh
+nice -n 10 make wasm stage
+nice -n 10 python3 -m http.server 8765 --bind 127.0.0.1
+# Open http://127.0.0.1:8765/web/stage/
 ```
 
 The checked-in stage is generated with `make stage`. Its builder imports the
@@ -33,8 +35,8 @@ and engages at 5.5 m. Its orders come from the C greedy bot. Its shared
 bite is disabled, so its jaw remains anatomical while it fights with horn and
 tail. Other stats come from the normal studio projection (100 stamina, 4 m/s).
 Only this enemy profile was tuned; player projection and core moves are unchanged.
-A kill leaves a grounded carcass
-and displays **DNA +12** as a placeholder: no currency is stored or awarded.
+A kill leaves a grounded carcass and displays **DNA +12** as a placeholder:
+no currency is stored or awarded.
 Death fades out and respawns at the nest with restored health/stamina and no
 penalty. Fleeing sends the enemy home. Free roaming uses radius collision,
 slope-adjusted speed and a deep-water cutoff; the fight uses the unchanged
@@ -92,9 +94,9 @@ The desktop victory sequence uses that same competent policy in another real
 duel. Enemy stats and health are never edited for captures. The impact capture
 asserts that the interpolated body envelopes touch within 5 cm; browser runs
 also reject C body penetration. Contact radii, gap, HP and tick are recorded
-in `results.json`. The
-mobile check loads a saved /4 creature containing the G48 parts and drives a
-real touch stick and action button at 390×844. Keyboard movement, pause and
+in `results.json`. The mobile check loads a saved /4 creature containing the
+G48 parts and drives a real touch stick, action buttons and camera orbit at
+390×844. Keyboard movement, pause and
 viewport overflow are checked. Unit tests cover sprint, water, obstacles,
 death/respawn, boundary escape/return and frame independence. Native and WASM
 suites, studio document/growth/interaction/touch/G48 tests, and byte-identical

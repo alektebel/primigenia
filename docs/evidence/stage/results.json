@@ -5,17 +5,25 @@
     30,
     73
   ],
+  "enemy": {
+    "genome": "Garfio",
+    "tiers": {
+      "mouth": 0,
+      "charge": 3,
+      "hp": 195
+    }
+  },
   "runs": [
     {
       "fixture": "biter.json",
       "fps": 30,
       "outcome": "death",
-      "ticks": 70,
+      "ticks": 86,
       "hp": [
         0,
-        55.32575607299805
+        119.25886535644531
       ],
-      "finalHash": "a5a40236156cef3f",
+      "finalHash": "59675a7b9e513dbf",
       "nativeReplay": true,
       "errors": []
     },
@@ -23,12 +31,12 @@
       "fixture": "biter.json",
       "fps": 73,
       "outcome": "death",
-      "ticks": 70,
+      "ticks": 86,
       "hp": [
         0,
-        55.32575607299805
+        119.25886535644531
       ],
-      "finalHash": "a5a40236156cef3f",
+      "finalHash": "59675a7b9e513dbf",
       "nativeReplay": true,
       "errors": []
     },
@@ -36,12 +44,12 @@
       "fixture": "guard.json",
       "fps": 30,
       "outcome": "death",
-      "ticks": 109,
+      "ticks": 148,
       "hp": [
         0,
-        73.69488525390625
+        83.65864562988281
       ],
-      "finalHash": "8a3d8c94225c71f1",
+      "finalHash": "942c6f296cbdc091",
       "nativeReplay": true,
       "errors": []
     },
@@ -49,12 +57,12 @@
       "fixture": "guard.json",
       "fps": 73,
       "outcome": "death",
-      "ticks": 109,
+      "ticks": 148,
       "hp": [
         0,
-        73.69488525390625
+        83.65864562988281
       ],
-      "finalHash": "8a3d8c94225c71f1",
+      "finalHash": "942c6f296cbdc091",
       "nativeReplay": true,
       "errors": []
     },
@@ -62,12 +70,12 @@
       "fixture": "spitter.json",
       "fps": 30,
       "outcome": "death",
-      "ticks": 102,
+      "ticks": 134,
       "hp": [
         0,
-        63.17284393310547
+        58.322914123535156
       ],
-      "finalHash": "697e6872f9226e12",
+      "finalHash": "27275222877dcd9c",
       "nativeReplay": true,
       "errors": []
     },
@@ -75,14 +83,39 @@
       "fixture": "spitter.json",
       "fps": 73,
       "outcome": "death",
-      "ticks": 102,
+      "ticks": 134,
       "hp": [
         0,
-        63.17284393310547
+        58.322914123535156
       ],
-      "finalHash": "697e6872f9226e12",
+      "finalHash": "27275222877dcd9c",
       "nativeReplay": true,
       "errors": []
+    }
+  ],
+  "evidence": [
+    {
+      "capture": "fight-hit.png",
+      "gap": 5.422861111270549e-7,
+      "radiiCm": [
+        300,
+        120
+      ],
+      "hp": [
+        100,
+        140.76785278320312
+      ],
+      "tick": 58
+    },
+    {
+      "capture": "victory.png",
+      "outcome": "victory",
+      "hp": [
+        69.00784301757812,
+        0
+      ],
+      "finalHash": "3205ce38d967e7c9",
+      "nativeReplay": true
     }
   ]
 }
