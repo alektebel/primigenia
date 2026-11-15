@@ -29,80 +29,59 @@ export function rng(seed) {
 
 const lerp = (a, b, t) => a + (b - a) * t;
 const clamp = (x, lo, hi) => Math.min(hi, Math.max(lo, x));
-const sstep = (a, b, x) => { x = clamp((x - a) / (b - a), 0, 1); return x * x * (3 - 2 * x); };
+const sstep = (a, b, x) => { x = clamp((x - a) / (b - a), 0, 1); return x * x * (3 - 2 * x) };
+let _T = null;
 
-function col(hex) {
-  return new T.Color(hex).convertSRGBToLinear();
+/* Set the THREE.js constructor reference (call from the HTML before using). */
+export function setThree(T) { _T = T; }
+
+/* Shared gradient map texture (created once). */
+let _gradTex = null;
+function getGradTex() {
+  if (_gradTex) return _gradTex;
+  _gradTex = new _T.DataTexture(new Uint8Array([46, 46, 82, 82, 112, 112]), 6, 1, _T.LuminanceFormat);
+  _gradTex.minFilter = _gradTex.magFilter = _T.NearestFilter;
+  _gradTex.needsUpdate = true;
+  return _gradTex;
 }
 
-/* Create a toon material matching the valley's gradient ramp. */
+/* Create a toon-style material matching the valley's aesthetic.
+ * MeshStandardMaterial with the right color, roughness, and lighting
+ * achieves the BotW-like look. */
 function toon(o) {
-  const gradTex = (() => {
-    const t = new T.DataTexture(new Uint8Array([46, 46, 82, 82, 112, 112]), 6, 1, T.LuminanceFormat);
-    t.minFilter = t.magFilter = T.NearestFilter;
-    t.needsUpdate = true;
-    return t;
-  })();
-  const m = new T.MeshToonMaterial({ gradientMap: gradTex, ...o });
-  m.onBeforeCompile = (s) => {
-    s.fragmentShader = s.fragmentShader.replace(
-      '#include <tonemapping_fragment>',
-      'float rim=pow(1.-max(dot(normalize(vViewPosition),normal),0.),3.);' +
-      'gl_FragColor.rgb+=rim*vec3(.5,.66,.8)*.28;\n#include <tonemapping_fragment>'
-    );
-  };
-  return m;
-}
-
-/* Leaf-card material (backlit glow, no rim — for leafy canopies). */
-function leafMaterial(hex) {
-  return toon({ color: col(hex), vertexColors: true, side: T.DoubleSide, alphaTest: 0.3 });
+  return new _T.MeshStandardMaterial({ color: o.color || 0xffffff, roughness: 0.85, metalness: 0, ...o });
 }
 
 /* ---- Simple geometry helpers ---- */
 function ell(sx, sy, sz) {
-  const g = new T.SphereGeometry(1, 12, 8);
+  const g = new _T.SphereGeometry(1, 12, 8);
   g.scale(sx, sy, sz);
   return g;
 }
 
-function con(r, h) {
-  return new T.ConeGeometry(r, h, 8);
-}
-
-function cyl(rT, rB, h, seg) {
-  return new T.CylinderGeometry(rT, rB, h, seg || 8);
-}
-
-function box(w, h, d) {
-  return new T.BoxGeometry(w, h, d);
-}
+function cyl(rT, rB, h, seg) { return new _T.CylinderGeometry(rT, rB, h, seg || 8); }
 
 /* ---- Berry Bush (G2: herbivore plant — berries) ---- */
 export function berryBush(T, seed, params = {}) {
+  _T = T;
   const { size = 1, full = true } = params;
   const rnd = rng(seed ^ 0x4B7F);
-  const group = new T.Object3D();
-
+  const group = new _T.Group();
   const s = size;
+
   const woodM = toon({ color: col('#5a3a22') });
   const leafM = toon({ color: col('#4a7a2a') });
-  const berryM = full ? toon({ color: col('#7a2040') }) : toon({ color: col('#8a3050') }).clone();
-  berryM.color.multiplyScalar(full ? 1 : 0.5);
 
   // Main trunk
-  const trunk = new T.Mesh(cyl(0.08 * s, 0.12 * s, 0.6 * s, 8), woodM);
-  trunk.position.y = 0.3 * s;
-  group.add(trunk);
+  group.add(Object.assign(new _T.Mesh(cyl(0.08*s, 0.12*s, 0.6*s, 8), woodM), { position: new _T.Vector3(0, 0.3*s, 0) }));
 
-  // Main branches (3–4, branching upward)
+  // Main branches (3–4)
   const branchCount = 3 + Math.round(rnd() * 2);
   for (let i = 0; i < branchCount; i++) {
     const a = (i / branchCount) * Math.PI * 2 + rnd() * 0.5;
     const len = (0.3 + rnd() * 0.25) * s;
-    const up = 0.15 + rnd() * 0.25;
-    const branch = new T.Mesh(cyl(0.03 * s, 0.05 * s, len, 6), woodM);
-    branch.position.set(Math.cos(a) * 0.15 * s, (0.4 + up) * s, Math.sin(a) * 0.15 * s);
+    const branch = new _T.Mesh(cyl(0.03*s, 0.05*s, len, 6), woodM);
+    branch.position.set(Math.cos(a) * 0.15*s, (0.4 + 0.15 + rnd() * 0.15) * s, Math.sin(a) * 0.15*s);
     branch.rotation.z = Math.cos(a) * 0.6;
     branch.rotation.x = Math.sin(a) * 0.6;
     group.add(branch);
@@ -112,24 +91,22 @@ export function berryBush(T, seed, params = {}) {
   const clusterCount = full ? 6 : 3;
   for (let i = 0; i < clusterCount; i++) {
     const a = (i / clusterCount) * Math.PI * 2 + rnd() * 0.8;
-    const r = 0.15 + rnd() * 0.1;
     const cx = Math.cos(a) * (0.35 + rnd() * 0.15) * s;
     const cy = (0.55 + rnd() * 0.15) * s;
     const cz = Math.sin(a) * (0.35 + rnd() * 0.15) * s;
     const sc = (0.15 + rnd() * 0.1) * s;
-    const cluster = new T.Mesh(ell(sc * 1.2, sc * 0.7, sc * 1.2), leafM);
-    cluster.position.set(cx, cy, cz);
-    group.add(cluster);
+    group.add(Object.assign(new _T.Mesh(ell(sc*1.2, sc*0.7, sc*1.2), leafM), { position: new _T.Vector3(cx, cy, cz) }));
   }
 
   // Berry clusters
   if (full) {
     const berryCount = 18 + Math.round(rnd() * 8);
-    const berryGeo = ell(0.02 * s, 0.02 * s, 0.02 * s);
-    const berryMesh = new T.InstancedMesh(berryGeo, berryM, berryCount);
-    const d = new T.Object3D();
+    const berryGeo = ell(0.02*s, 0.02*s, 0.02*s);
+    const berryM = toon({ color: col('#7a2040') });
+    const berryMesh = new _T.InstancedMesh(berryGeo, berryM, berryCount);
+    const d = new _T.Object3D();
     let ci = 0;
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < 5 && ci < berryCount; i++) {
       const a = (i / 5) * Math.PI * 2;
       const br = 0.28 * s;
       for (let j = 0; j < 4 && ci < berryCount; j++) {
@@ -145,15 +122,15 @@ export function berryBush(T, seed, params = {}) {
     group.add(berryMesh);
   }
 
-  // Depleted: add a few "eaten" stubs if full → depleted
+  // Depleted: stubs where berries were eaten
   if (!full) {
     const stubCount = 5 + Math.round(rnd() * 3);
-    const stubGeo = ell(0.01 * s, 0.01 * s, 0.01 * s);
-    const stubMesh = new T.InstancedMesh(stubGeo, toon({ color: col('#4a5a30') }), stubCount);
-    const d = new T.Object3D();
+    const stubM = toon({ color: col('#4a5a30') });
+    const stubMesh = new _T.InstancedMesh(ell(0.01*s, 0.01*s, 0.01*s), stubM, stubCount);
+    const d = new _T.Object3D();
     for (let i = 0; i < stubCount; i++) {
       const a = rnd() * Math.PI * 2;
-      d.position.set(Math.cos(a) * 0.25 * s, (0.5 + rnd() * 0.15) * s, Math.sin(a) * 0.25 * s);
+      d.position.set(Math.cos(a) * 0.25*s, (0.5 + rnd() * 0.15) * s, Math.sin(a) * 0.25*s);
       d.updateMatrix();
       stubMesh.setMatrixAt(i, d.matrix);
     }
@@ -167,14 +144,12 @@ export function berryBush(T, seed, params = {}) {
 
 /* ---- Tuber Leaves (G2: herbivore plant — broad leaves, tuber underground) ---- */
 export function tuberLeaves(T, seed, params = {}) {
+  _T = T;
   const { size = 1, full = true } = params;
   const rnd = rng(seed ^ 0xA3D1);
-  const group = new T.Object3D();
-
+  const group = new _T.Group();
   const s = size;
-  const leafM = full
-    ? toon({ color: col('#3a8830') })
-    : toon({ color: col('#5a7040') });
+  const leafM = full ? toon({ color: col('#3a8830') }) : toon({ color: col('#5a7040') });
 
   // Broad leaf cluster (5–7 leaves radiating from center)
   const leafCount = full ? 7 : 4;
@@ -182,7 +157,8 @@ export function tuberLeaves(T, seed, params = {}) {
     const a = (i / leafCount) * Math.PI * 2 + rnd() * 0.4;
     const len = (0.25 + rnd() * 0.1) * s;
     const width = (0.1 + rnd() * 0.06) * s;
-    // Leaf blade: a flat elongated shape
+
+    // Leaf blade: flat elongated shape
     const pos = [], nor = [], uv = [], idx = [];
     const segs = 6;
     for (let j = 0; j <= segs; j++) {
@@ -197,39 +173,33 @@ export function tuberLeaves(T, seed, params = {}) {
         idx.push(b, b + 2, b + 1, b + 1, b + 2, b + 3);
       }
     }
-    const geo = new T.BufferGeometry();
-    geo.setAttribute('position', new T.Float32BufferAttribute(pos, 3));
-    geo.setAttribute('normal', new T.Float32BufferAttribute(nor, 3));
-    geo.setAttribute('uv', new T.Float32BufferAttribute(uv, 2));
+    const geo = new _T.BufferGeometry();
+    geo.setAttribute('position', new _T.Float32BufferAttribute(pos, 3));
+    geo.setAttribute('normal', new _T.Float32BufferAttribute(nor, 3));
+    geo.setAttribute('uv', new _T.Float32BufferAttribute(uv, 2));
     geo.setIndex(idx);
     geo.computeVertexNormals();
 
-    const leaf = new T.Mesh(geo, leafM);
-    leaf.position.set(
-      Math.cos(a) * len * 0.2,
-      (0.04 + rnd() * 0.03) * s,
-      Math.sin(a) * len * 0.2
-    );
+    const leaf = new _T.Mesh(geo, leafM);
+    leaf.position.set(Math.cos(a) * len * 0.2, (0.04 + rnd() * 0.03) * s, Math.sin(a) * len * 0.2);
     leaf.rotation.y = a + Math.PI / 2;
     leaf.rotation.z = -0.25 - rnd() * 0.2;
-    leaf.scale.set(1, 1, 1);
     group.add(leaf);
 
-    // Leaf midrib (slight bump)
-    const midrib = new T.Mesh(cyl(0.003 * s, 0.005 * s, len * 0.85, 4), toon({ color: col('#2a6a20') }));
+    // Leaf midrib bump
+    const midrib = new _T.Mesh(cyl(0.003*s, 0.005*s, len * 0.85, 4), toon({ color: col('#2a6a20') }));
     midrib.position.copy(leaf.position);
-    midrib.rotation.y = leaf.rotation.y;
-    midrib.rotation.z = leaf.rotation.z;
+    midrib.rotation.copy(leaf.rotation);
     midrib.position.y += 0.002 * s;
     group.add(midrib);
   }
 
-  // Small ground-level grass tufts around the base
+  // Small grass tufts around the base
   for (let i = 0; i < 6; i++) {
     const a = rnd() * Math.PI * 2;
     const r = 0.15 + rnd() * 0.15;
     const h = (0.06 + rnd() * 0.06) * s;
-    const tuft = new T.Mesh(con(0.015 * s, h, 5), toon({ color: col('#4a7a30') }));
+    const tuft = new _T.Mesh(new _T.ConeGeometry(0.015*s, h, 5), toon({ color: col('#4a7a30') }));
     tuft.position.set(Math.cos(a) * r * s, h * 0.4, Math.sin(a) * r * s);
     tuft.rotation.x = (rnd() - 0.5) * 0.3;
     tuft.rotation.z = (rnd() - 0.5) * 0.3;
@@ -241,44 +211,36 @@ export function tuberLeaves(T, seed, params = {}) {
 
 /* ---- Fruiting Stalk (G2: tall herbivore food — tall fruiting plant) ---- */
 export function fruitingStalk(T, seed, params = {}) {
+  _T = T;
   const { height = 1.5, full = true } = params;
   const rnd = rng(seed ^ 0xC7E2);
-  const group = new T.Object3D();
-
+  const group = new _T.Group();
   const s = 1;
-  const stalkM = full ? toon({ color: col('#5a8030') }) : toon({ color: col('#7a8a50') });
-  const fruitM = full ? toon({ color: col('#d08030') }) : toon({ color: col('#c09060') });
-
-  // Main stalk (tall thin cylinder)
   const stalkH = height * s;
-  const stalk = new T.Mesh(cyl(0.02 * s, 0.035 * s, stalkH, 8), stalkM);
-  stalk.position.y = stalkH / 2;
-  group.add(stalk);
 
-  // Stalk bumps/ridges for detail
+  const stalkM = full ? toon({ color: col('#5a8030') }) : toon({ color: col('#7a8a50') });
+
+  // Main stalk
+  group.add(Object.assign(new _T.Mesh(cyl(0.02*s, 0.035*s, stalkH, 8), stalkM), { position: new _T.Vector3(0, stalkH / 2, 0) }));
+
+  // Ridge details along the stalk
   const ridgeCount = 8 + Math.round(rnd() * 4);
   for (let i = 0; i < ridgeCount; i++) {
     const t = 0.15 + (i / ridgeCount) * 0.8;
-    const ridge = new T.Mesh(ell(0.045 * s, 0.008 * s, 0.045 * s), stalkM);
+    const ridge = new _T.Mesh(ell(0.045*s, 0.008*s, 0.045*s), stalkM);
     ridge.position.y = t * stalkH;
     ridge.rotation.x = Math.PI / 2;
     group.add(ridge);
   }
 
-  // Leaves along the stalk (small blade-like leaves)
+  // Small leaf blades along the stalk
   const leafCount = 4 + Math.round(rnd() * 3);
   for (let i = 0; i < leafCount; i++) {
     const t = 0.3 + (i / leafCount) * 0.55;
     const a = rnd() * Math.PI * 2;
-    const ly = t * stalkH;
     const lLen = (0.12 + rnd() * 0.08) * s;
-    const leafGeo = box(0.02 * s, 0.005 * s, lLen);
-    const leaf = new T.Mesh(leafGeo, toon({ color: col('#4a8030') }));
-    leaf.position.set(
-      Math.cos(a) * 0.03 * s,
-      ly,
-      Math.sin(a) * 0.03 * s
-    );
+    const leaf = new _T.Mesh(new _T.BoxGeometry(0.02*s, 0.005*s, lLen), toon({ color: col('#4a8030') }));
+    leaf.position.set(Math.cos(a) * 0.03*s, t * stalkH, Math.sin(a) * 0.03*s);
     leaf.rotation.y = a;
     leaf.rotation.z = 0.4;
     group.add(leaf);
@@ -287,20 +249,16 @@ export function fruitingStalk(T, seed, params = {}) {
   // Fruit cluster at the top
   if (full) {
     const fruitCount = 8 + Math.round(rnd() * 5);
-    const fruitGeo = ell(0.035 * s, 0.03 * s, 0.035 * s);
-    const fruitMesh = new T.InstancedMesh(fruitGeo, fruitM, fruitCount);
-    const d = new T.Object3D();
+    const fruitM = toon({ color: col('#d08030') });
+    const fruitMesh = new _T.InstancedMesh(ell(0.035*s, 0.03*s, 0.035*s), fruitM, fruitCount);
+    const d = new _T.Object3D();
     let fi = 0;
-    for (let i = 0; i < 3; i++) {
+    for (let i = 0; i < 3 && fi < fruitCount; i++) {
       const a = (i / 3) * Math.PI * 2 + rnd() * 0.5;
       for (let j = 0; j < 3 && fi < fruitCount; j++) {
         const fa = a + (j - 1) * 0.5;
         const fr = 0.04 + rnd() * 0.03;
-        d.position.set(
-          Math.cos(fa) * fr * s,
-          (0.85 + rnd() * 0.1) * stalkH,
-          Math.sin(fa) * fr * s
-        );
+        d.position.set(Math.cos(fa) * fr*s, (0.85 + rnd() * 0.1) * stalkH, Math.sin(fa) * fr*s);
         d.scale.setScalar(0.7 + rnd() * 0.5);
         d.updateMatrix();
         fruitMesh.setMatrixAt(fi++, d.matrix);
@@ -310,10 +268,8 @@ export function fruitingStalk(T, seed, params = {}) {
     fruitMesh.frustumCulled = false;
     group.add(fruitMesh);
 
-    // Stalk top (spike)
-    const tip = new T.Mesh(con(0.015 * s, 0.08 * s, 6), stalkM);
-    tip.position.y = stalkH + 0.04 * s;
-    group.add(tip);
+    // Stalk tip
+    group.add(Object.assign(new _T.Mesh(new _T.ConeGeometry(0.015*s, 0.08*s, 6), stalkM), { position: new _T.Vector3(0, stalkH + 0.04*s, 0) }));
   }
 
   return group;
@@ -321,66 +277,50 @@ export function fruitingStalk(T, seed, params = {}) {
 
 /* ---- Flower Patches (instanced, 4 types) ---- */
 export function flowerPatches(T, seed, params = {}) {
+  _T = T;
   const { count = 30, flowerType = 0, full = true } = params;
   const rnd = rng(seed ^ 0x1F9A + flowerType * 1000);
 
-  // Flower type definitions: petal color, center color, petal count
   const types = [
-    { petals: 5, petalColor: '#e84080', centerColor: '#d0c040', stemColor: '#3a7030', size: 0.04 },  // pink
-    { petals: 5, petalColor: '#6070e8', centerColor: '#d0c040', stemColor: '#3a7030', size: 0.035 }, // blue
-    { petals: 6, petalColor: '#e8a030', centerColor: '#602020', stemColor: '#3a7030', size: 0.05 },  // orange
-    { petals: 4, petalColor: '#c060e0', centerColor: '#e0e040', stemColor: '#3a7030', size: 0.03 },  // purple
+    { petals: 5, petalColor: '#e84080', centerColor: '#d0c040', stemColor: '#3a7030', size: 0.04 },
+    { petals: 5, petalColor: '#6070e8', centerColor: '#d0c040', stemColor: '#3a7030', size: 0.035 },
+    { petals: 6, petalColor: '#e8a030', centerColor: '#602020', stemColor: '#3a7030', size: 0.05 },
+    { petals: 4, petalColor: '#c060e0', centerColor: '#e0e040', stemColor: '#3a7030', size: 0.03 },
   ];
   const ft = types[flowerType] || types[0];
 
-  // Stem geometry (single thin cylinder)
   const stemGeo = cyl(0.002, 0.003, 0.08, 4);
   const stemMat = toon({ color: col(ft.stemColor) });
-
-  // Petal geometry (flat ellipsoids)
   const petalGeo = ell(0.012, 0.001, 0.006);
   const petalMat = toon({ color: col(ft.petalColor) });
-
-  // Center geometry
   const centerGeo = ell(0.008, 0.003, 0.008);
   const centerMat = toon({ color: col(ft.centerColor) });
 
-  // Build instanced groups per component type
-  // Stems: one InstancedMesh per stem per flower
-  const stemMesh = new T.InstancedMesh(stemGeo, stemMat, count);
-  const petalMesh = new T.InstancedMesh(petalGeo, petalMat, count * ft.petals);
-  const centerMesh = new T.InstancedMesh(centerGeo, centerMat, count);
+  const stemMesh = new _T.InstancedMesh(stemGeo, stemMat, count);
+  const petalMesh = new _T.InstancedMesh(petalGeo, petalMat, count * ft.petals);
+  const centerMesh = new _T.InstancedMesh(centerGeo, centerMat, count);
 
-  const d = new T.Object3D();
+  const d = new _T.Object3D();
   let si = 0, pi = 0, ci = 0;
 
   for (let i = 0; i < count; i++) {
     const x = (rnd() - 0.5) * 8;
     const z = (rnd() - 0.5) * 6;
-    const h = (0.06 + rnd() * 0.06);
+    const h = 0.06 + rnd() * 0.06;
 
     // Stem
     d.position.set(x, h / 2, z);
-    d.scale.set(1, 1, 1);
-    d.rotation.set(
-      (rnd() - 0.5) * 0.15,
-      rnd() * Math.PI * 2,
-      (rnd() - 0.5) * 0.15
-    );
+    d.rotation.set((rnd() - 0.5) * 0.15, rnd() * Math.PI * 2, (rnd() - 0.5) * 0.15);
     d.updateMatrix();
     stemMesh.setMatrixAt(si++, d.matrix);
 
-    // Petals around the top
+    // Petals
     const topY = h + 0.005;
     for (let p = 0; p < ft.petals; p++) {
       const a = (p / ft.petals) * Math.PI * 2;
       const pr = ft.size * 0.6;
-      d.position.set(
-        x + Math.cos(a) * pr,
-        topY,
-        z + Math.sin(a) * pr
-      );
-      d.scale.set(full ? 1 : 0.5, 1, 1);
+      d.position.set(x + Math.cos(a) * pr, topY, z + Math.sin(a) * pr);
+      d.scale.setScalar(full ? 1 : 0.5);
       d.rotation.set(Math.PI / 2, a, 0);
       d.updateMatrix();
       petalMesh.setMatrixAt(pi++, d.matrix);
@@ -388,7 +328,7 @@ export function flowerPatches(T, seed, params = {}) {
 
     // Center
     d.position.set(x, topY + 0.001, z);
-    d.scale.set(full ? 1 : 0.5, 1, 1);
+    d.scale.setScalar(full ? 1 : 0.5);
     d.updateMatrix();
     centerMesh.setMatrixAt(ci++, d.matrix);
   }
@@ -396,81 +336,61 @@ export function flowerPatches(T, seed, params = {}) {
   stemMesh.instanceMatrix.needsUpdate = true;
   petalMesh.instanceMatrix.needsUpdate = true;
   centerMesh.instanceMatrix.needsUpdate = true;
+  [stemMesh, petalMesh, centerMesh].forEach(m => { m.frustumCulled = false; });
 
-  stemMesh.frustumCulled = false;
-  petalMesh.frustumCulled = false;
-  centerMesh.frustumCulled = false;
-
-  const group = new T.Object3D();
+  const group = new _T.Group();
   group.add(stemMesh, petalMesh, centerMesh);
   return group;
 }
 
-/* ---- Moss Patches (instanced, low irregular ground cover) ---- */
+/* ---- Moss Patches (instanced) ---- */
 export function mossPatches(T, seed, params = {}) {
+  _T = T;
   const { count = 40 } = params;
   const rnd = rng(seed ^ 0x3E7B);
 
-  // Moss: irregular blob shapes on the ground
   const mossGeo = ell(1, 0.04, 1);
-  const mossColors = ['#3a6a20', '#4a7a2a', '#5a7a30', '#4a6030', '#3a5a20'];
-
-  const mossMesh = new T.InstancedMesh(mossGeo, toon({ color: col('#4a7025') }), count);
-  const d = new T.Object3D();
+  const mossMat = toon({ color: col('#4a7025') });
+  const mossMesh = new _T.InstancedMesh(mossGeo, mossMat, count);
+  const d = new _T.Object3D();
 
   for (let i = 0; i < count; i++) {
     const x = (rnd() - 0.5) * 8;
     const z = (rnd() - 0.5) * 6;
     const sc = 0.15 + rnd() * 0.35;
-    const sx = sc * (0.8 + rnd() * 0.6);
-    const sz = sc * (0.8 + rnd() * 0.6);
-
     d.position.set(x, 0.02, z);
-    d.scale.set(sx, 0.5 + rnd() * 0.5, sz);
+    d.scale.set(sc * (0.8 + rnd() * 0.6), 0.5 + rnd() * 0.5, sc * (0.8 + rnd() * 0.6));
     d.rotation.set(0, rnd() * Math.PI * 2, 0);
     d.updateMatrix();
     mossMesh.setMatrixAt(i, d.matrix);
   }
-
   mossMesh.instanceMatrix.needsUpdate = true;
   mossMesh.frustumCulled = false;
-
   return mossMesh;
 }
 
-/* ---- Fern Patches (instanced, frond shapes) ---- */
+/* ---- Fern Patches (instanced) ---- */
 export function fernPatches(T, seed, params = {}) {
+  _T = T;
   const { count = 25 } = params;
   const rnd = rng(seed ^ 0x5D2C);
 
-  // Fern: a frond made from multiple flat triangles arranged in a fan
   function makeFernGeometry() {
     const pos = [], idx = [];
-    const segments = 5;
     const leaflets = 4;
-    // Each frond: a central stem with leaflets branching off
     const stemH = 0.15;
-
     for (let i = 0; i < leaflets; i++) {
       const t = (i + 1) / (leaflets + 1);
       const y = t * stemH;
       const lLen = (1 - t * 0.5) * 0.12;
-
       for (const side of [-1, 1]) {
         const base = pos.length / 3;
-        // Leaflet: two triangles forming a leaf shape
-        pos.push(
-          side * 0.005, y, 0,       // stem
-          side * lLen * 0.5, y + 0.01, 0.01,  // tip
-          side * lLen * 0.3, y - 0.01, 0.005   // side
-        );
-        idx.push(base, base + 1, base + 2);
-        idx.push(base, base + 2, base + 3);
+        pos.push(side * 0.005, y, 0, side * lLen * 0.5, y + 0.01, 0.01, side * lLen * 0.3, y - 0.01, 0.005);
+        idx.push(base, base + 1, base + 2, base, base + 2, base + 3);
       }
     }
-
-    const geo = new T.BufferGeometry();
-    geo.setAttribute('position', new T.Float32BufferAttribute(pos, 3));
+    const geo = new _T.BufferGeometry();
+    geo.setAttribute('position', new _T.Float32BufferAttribute(pos, 3));
     geo.setIndex(idx);
     geo.computeVertexNormals();
     return geo;
@@ -478,55 +398,42 @@ export function fernPatches(T, seed, params = {}) {
 
   const fernGeo = makeFernGeometry();
   const fernMat = toon({ color: col('#2a6a18') });
-
-  const fernMesh = new T.InstancedMesh(fernGeo, fernMat, count);
-  const d = new T.Object3D();
+  const fernMesh = new _T.InstancedMesh(fernGeo, fernMat, count);
+  const d = new _T.Object3D();
 
   for (let i = 0; i < count; i++) {
     const x = (rnd() - 0.5) * 8;
     const z = (rnd() - 0.5) * 6;
     const sc = 0.8 + rnd() * 1.0;
-
     d.position.set(x, 0.02, z);
-    d.scale.set(sc, sc, sc);
+    d.scale.setScalar(sc);
     d.rotation.set(0, rnd() * Math.PI * 2, (rnd() - 0.5) * 0.3);
     d.updateMatrix();
     fernMesh.setMatrixAt(i, d.matrix);
   }
-
   fernMesh.instanceMatrix.needsUpdate = true;
   fernMesh.frustumCulled = false;
-
   return fernMesh;
 }
 
-/* ---- Clover Patches (instanced, 3-leaf clusters) ---- */
+/* ---- Clover Patches (instanced) ---- */
 export function cloverPatches(T, seed, params = {}) {
+  _T = T;
   const { count = 35 } = params;
   const rnd = rng(seed ^ 0x7F4E);
 
-  // Clover: 3 small leaflets around a center, plus a stem
   function makeCloverGeometry() {
     const pos = [], idx = [];
-    // 3 leaflets
     for (let l = 0; l < 3; l++) {
       const a = (l / 3) * Math.PI * 2 - Math.PI / 2;
-      const cx = Math.cos(a) * 0.015;
-      const cz = Math.sin(a) * 0.015;
+      const cx = Math.cos(a) * 0.015, cz = Math.sin(a) * 0.015;
       const lw = 0.018, lh = 0.025;
-
       const base = pos.length / 3;
-      pos.push(
-        cx, 0.005, cz,                    // stem end
-        cx + Math.sin(a) * lw, 0.015, cz + Math.cos(a) * lw,  // side
-        cx, 0.005 + lh, cz,              // tip
-        cx - Math.sin(a) * lw, 0.015, cz - Math.cos(a) * lw   // other side
-      );
+      pos.push(cx, 0.005, cz, cx + Math.sin(a) * lw, 0.015, cz + Math.cos(a) * lw, cx, 0.005 + lh, cz, cx - Math.sin(a) * lw, 0.015, cz - Math.cos(a) * lw);
       idx.push(base, base + 1, base + 2, base, base + 2, base + 3);
     }
-
-    const geo = new T.BufferGeometry();
-    geo.setAttribute('position', new T.Float32BufferAttribute(pos, 3));
+    const geo = new _T.BufferGeometry();
+    geo.setAttribute('position', new _T.Float32BufferAttribute(pos, 3));
     geo.setIndex(idx);
     geo.computeVertexNormals();
     return geo;
@@ -534,34 +441,46 @@ export function cloverPatches(T, seed, params = {}) {
 
   const cloverGeo = makeCloverGeometry();
   const cloverMat = toon({ color: col('#3a8020') });
-
-  const cloverMesh = new T.InstancedMesh(cloverGeo, cloverMat, count);
-  const d = new T.Object3D();
+  const cloverMesh = new _T.InstancedMesh(cloverGeo, cloverMat, count);
+  const d = new _T.Object3D();
 
   for (let i = 0; i < count; i++) {
     const x = (rnd() - 0.5) * 8;
     const z = (rnd() - 0.5) * 6;
     const sc = 0.7 + rnd() * 0.8;
-
     d.position.set(x, 0.005, z);
-    d.scale.set(sc, sc, sc);
+    d.scale.setScalar(sc);
     d.rotation.set(0, rnd() * Math.PI * 2, 0);
     d.updateMatrix();
     cloverMesh.setMatrixAt(i, d.matrix);
   }
-
   cloverMesh.instanceMatrix.needsUpdate = true;
   cloverMesh.frustumCulled = false;
-
   return cloverMesh;
+}
+
+/* ---- Label sprite helper ---- */
+export function makeLabel(T, text, x, y, z) {
+  const canvas = document.createElement('canvas');
+  canvas.width = 128; canvas.height = 32;
+  const ctx = canvas.getContext('2d');
+  ctx.fillStyle = 'rgba(255,255,255,0.85)';
+  ctx.font = '14px system-ui, sans-serif';
+  ctx.fillText(text, 4, 22);
+  const tex = new T.CanvasTexture(canvas);
+  const mat = new T.SpriteMaterial({ map: tex, transparent: true, depthTest: false });
+  const sprite = new T.Sprite(mat);
+  sprite.position.set(x, y, z);
+  sprite.scale.set(1.2, 0.3, 1);
+  return sprite;
 }
 
 /* ---- Builder: creates all food props in one group ---- */
 export function foodScene(T, seed, params = {}) {
-  const group = new T.Object3D();
-  const rnd = rng(seed);
+  _T = T;
+  const group = new _T.Group();
 
-  // Place food plants at specific positions
+  // Food plants
   group.add(
     (() => { const p = berryBush(T, seed + 1, { size: 0.8, full: true }); p.position.set(-2, 0, -1.5); return p; })()
   );
@@ -575,7 +494,7 @@ export function foodScene(T, seed, params = {}) {
     (() => { const p = fruitingStalk(T, seed + 4, { height: 1.2, full: true }); p.position.set(1.5, 0, 1); return p; })()
   );
 
-  // Place instanced ground cover
+  // Ground cover
   group.add(
     (() => { const p = flowerPatches(T, seed + 10, { count: 20, flowerType: 0 }); p.position.set(-3, 0, -2); return p; })()
   );
