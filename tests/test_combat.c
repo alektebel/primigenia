@@ -100,7 +100,7 @@ static void counters(void)
               "funded avoidance releases dodge and grants a five-tick punish stagger");
         CHECK(w.c[1].hp == 100 && w.c[1].dodged == 1 &&
               w.c[1].stamina == stamina - CP_COMBAT_COUNTERS[1].stamina,
-              "active dodge avoids each offensive move and pays per hit");
+              "funded active dodge avoids non-sweep attacks and pays per hit");
     }
     w = pair(1.6f);
     phase(&w.c[0], CB_BITE, CB_PH_ACTIVE);
@@ -386,14 +386,15 @@ static void defensive_policies(void)
         cp_combat_order(&w, 0, &a); steps(&w, 4);
         CHECK(w.c[0].hits == 1 && w.c[1].phase == CB_PH_IDLE,
               "real defensive bite lands on the final helpless frame");
-        for (int scenario = 0; scenario < 4; scenario++) {
+        for (int scenario = 0; scenario < 5; scenario++) {
             w = pair(scenario == 2 ? 5 : 1.6f);
             phase(&w.c[1], CB_MOVE_NONE, CB_PH_RECOVERY); w.c[1].plen = 4;
             if (scenario == 0) w.c[1].plen = 3;
             if (scenario == 1) w.c[0].fx = -1;
             if (scenario == 3) w.c[0].stamina = 0;
+            if (scenario == 4) w.c[0].stun_t = 1;
             CHECK(bot_decide(&b, &w, 0, 1, &a) && a.verb != CB_V_ATTACK,
-                  "punish refuses short window, turn, walk-in or unfunded attack");
+                  "punish refuses short window, turn, walk-in, unfunded or stunned attack");
         }
     }
     CpBot b; bot_init(&b, BOT_SPAM, 42); b.spam_move = CB_DODGE;

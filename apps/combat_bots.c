@@ -154,7 +154,7 @@ static int punish(const CpCombatWorld *w, int self, int foe, CpCombatAction *out
 {
     const CpCombatCreature *me = &w->c[self], *f = &w->c[foe];
     const CpCombatMove *mv = &CP_COMBAT_MOVES[CB_BITE];
-    if (!cp_combat_move_available(me, CB_BITE) ||
+    if (me->stun_t || !cp_combat_move_available(me, CB_BITE) ||
         me->stamina < cp_combat_move_stamina(&me->prof, CB_BITE)) return 0;
     CpCombatPreview p; cp_combat_preview(w, self, CB_BITE, foe, &p);
     /* Do not estimate walk/turn time: launch only from actual attack-start
@@ -204,7 +204,7 @@ static int incoming(const CpBot *b, const CpCombatWorld *w, int self, int foe, i
 static int dodge_incoming(const CpBot *b, const CpCombatWorld *w, int self, int foe, int *rem)
 {
     const CpCombatCreature *f = &w->c[foe];
-    if (!offensive(f->move)) return 0;
+    if (w->c[self].stun_t || !offensive(f->move)) return 0;
     const CpCombatMove *m = &CP_COMBAT_MOVES[f->move];
     if (!(m->flags & CB_F_DASH)) return incoming(b, w, self, foe, rem);
     if (f->phase != CB_PH_WINDUP && f->phase != CB_PH_ACTIVE) return 0;

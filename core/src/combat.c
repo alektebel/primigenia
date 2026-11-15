@@ -46,7 +46,7 @@ void cp_combat_test_hit_variance(int enabled) { test_fixed_variance = enabled; }
  * 14 active ticks allow charge to break it after those same delays.
  * Charge travels 1 m/frame, below a body diameter. Successful block ticks
  * include their application tick plus bite wind-up/active: 1 + 3 + 1 = 5.
- * Balance rationale and the remaining failing gates are in docs/COMBAT.md.
+ * Balance rationale and acceptance evidence are in docs/COMBAT.md.
  * ------------------------------------------------------------------ */
 const CpCombatMove CP_COMBAT_MOVES[CB_MOVE_COUNT] = {
   { "bite",        3, 1, 2,  1.8f, 1.00f,  9.0f, 11.0f, CB_ST_BLEED,  8, 0,                                       CB_PART_MOUTH  },
@@ -58,8 +58,8 @@ const CpCombatMove CP_COMBAT_MOVES[CB_MOVE_COUNT] = {
 };
 
 /* ------------------------------------------------------------------ *
- * Data: the counter matrix. First matching row wins, so the dodge row is
- * first: an active dodge outranks everything else about the defender.
+ * Data: the counter matrix. First matching row wins. A tail sweep catches
+ * active dodge before the wildcard avoidance rule is considered.
  * ------------------------------------------------------------------ */
 const CpCombatCounter CP_COMBAT_COUNTERS[] = {
   { CB_TAIL_STRIKE,CB_DODGE,  CB_PH_BIT(CB_PH_ACTIVE),                 CB_EFF_INTERRUPT, 3,  0.0f, 1.0f,  0.0f },

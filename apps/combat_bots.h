@@ -12,7 +12,7 @@ enum {
     BOT_RANDOM,        /* random verb, random legal move, re-rolled every few ticks */
     BOT_GREEDY,        /* best expected damage per committed tick          */
     BOT_COUNTER,       /* answers the opponent's current wind-up with its counter   */
-    BOT_SPAM,          /* repeats one fixed move (for the payoff matrix)            */
+    BOT_SPAM,          /* fixed attack, or defence plus a safe punish (payoff matrix)            */
     BOT_KIND_COUNT
 };
 
@@ -21,7 +21,7 @@ typedef struct {
     CpRng    rng;
     int      spam_move;      /* BOT_SPAM                                            */
     int      delay;          /* ticks to wait before the first order                */
-    int      reaction;       /* BOT_COUNTER: sees a wind-up once it is this many
+    int      reaction;       /* COUNTER/SPAM: sees a wind-up once it is this many
                                 ticks old (default 2, i.e. 200 ms)                  */
     int      ranged_commit;  /* keep a selected shot through its turn/approach     */
     int      timer;          /* BOT_RANDOM: ticks until the next re-roll            */
