@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Primigenia — Underwater Biome</title>
+<style>
+:root{--ink:#080c0a;--panel:rgba(10,20,18,.82);--paper:#e8e4d8;--muted:#7a8a78;--leaf:#6aaf40;--water:#3a9ec0;--line:rgba(200,210,200,.12)}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden;background:var(--ink);font-family:'Fredoka','Trebuchet MS',system-ui,sans-serif;color:var(--paper)}
+canvas{display:block;position:absolute;inset:0;width:100%;height:100%}
+
+/* HUD overlay */
+#hud{position:absolute;inset:0;pointer-events:none;z-index:2}
+
+/* Top bar */
+#topbar{position:absolute;top:12px;left:50%;transform:translateX(-50%);display:flex;gap:4px;pointer-events:auto}
+#topbar button{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:6px 14px;font:inherit;font-size:13px;color:var(--muted);cursor:pointer;backdrop-filter:blur(6px);transition:all .15s}
+#topbar button:hover{color:var(--paper);border-color:rgba(200,210,200,.25)}
+#topbar button[aria-pressed="true"]{background:rgba(100,180,120,.2);color:var(--paper);border-color:var(--leaf)}
+
+/* Info card */
+#info{position:absolute;top:12px;left:12px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 14px;backdrop-filter:blur(8px);pointer-events:auto;min-width:180px;font-size:13px}
+#info h2{font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+#info .stat{display:flex;justify-content:space-between;margin-bottom:3px}
+#info .stat span:last-child{color:var(--paper);font-variant-numeric:tabular-nums}
+
+/* Controls */
+#controls{position:absolute;bottom:12px;left:12px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 14px;backdrop-filter:blur(8px);pointer-events:auto;min-width:200px;font-size:13px}
+#controls h2{font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+#controls label{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+#controls input[type=range]{flex:1;accent-color:var(--water)}
+#controls .val{min-width:36px;text-align:right;font-variant-numeric:tabular-nums}
+
+/* Keys hint */
+#keys{position:absolute;bottom:12px;right:12px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:10px 14px;backdrop-filter:blur(8px);font-size:12px;color:var(--muted);line-height:1.8;pointer-events:auto}
+#keys kbd{background:rgba(255,255,255,.08);border:1px solid var(--line);border-radius:4px;padding:1px 6px;font-family:ui-monospace,monospace;font-size:11px;color:var(--paper)}
+
+/* Depth indicator */
+#depth{position:absolute;right:12px;bottom:120px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:10px 14px;backdrop-filter:blur(8px);pointer-events:auto;font-size:22px;font-weight:600;font-variant-numeric:tabular-nums;min-width:80px;text-align:center}
+#depth small{display:block;font-size:11px;font-weight:400;color:var(--muted)}
+
+/* Loading */
+#loading{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:var(--ink);z-index:10;transition:opacity .5s}
+#loading.hidden{opacity:0;pointer-events:none}
+#loading span{font-size:16px;color:var(--muted)}
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="web/biome/underwater.js"></script>
+</head>
+<body>
+<canvas id="gl"></canvas>
+
+<div id="loading"><span>Loading underwater biome…</span></div>
+
+<div id="hud">
+  <div id="topbar" role="group" aria-label="Preset">
+    <button aria-pressed="true" data-preset="shallow">Shallow (3 m)</button>
+    <button aria-pressed="false" data-preset="deep">Deep (15 m)</button>
+    <button aria-pressed="false" data-preset="surface">Surface from below</button>
+  </div>
+
+  <div id="info">
+    <h2>Depth Profile</h2>
+    <div class="stat"><span>Water level</span><span id="stat-level">3.0 m</span></div>
+    <div class="stat"><span>Camera depth</span><span id="stat-depth">0.0 m</span></div>
+    <div class="stat"><span>Effects</span><span id="stat-effects">all</span></div>
+  </div>
+
+  <div id="controls">
+    <h2>Controls</h2>
+    <label>Caustics <input type="range" id="ctrl-caustics" min="0" max="1" step="0.01" value="1"><span class="val" id="val-caustics">1.0</span></label>
+    <label>Shafts <input type="range" id="ctrl-shafts" min="0" max="1" step="0.01" value="0.8"><span class="val" id="val-shafts">0.8</span></label>
+    <label>Kelp <input type="range" id="ctrl-kelp" min="0" max="1" step="0.01" value="1"><span class="val" id="val-kelp">1.0</span></label>
+    <label>Time <input type="range" id="ctrl-time" min="0" max="100" step="0.1" value="0"><span class="val" id="val-time">0</span></label>
+  </div>
+
+  <div id="depth">0.0<small>m depth</small></div>
+
+  <div id="keys">
+    <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> swim<br>
+    <kbd>Q</kbd>/<kbd>E</kbd> descend/ascend<br>
+    <kbd>Shift</kbd> fast swim<br>
+    <kbd>1</kbd><kbd>2</kbd><kbd>3</kbd> presets<br>
+    <kbd>R</kbd> reset camera<br>
+    <kbd>G</kbd> toggle grid<br>
+    <kbd>F</kbd> capture PNG
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ── Three.js setup ─────────────────────────────────────────────── */
+  const canvas = document.getElementById("gl");
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.outputEncoding = THREE.sRGBEncoding;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.0;
+
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(65, window.innerWidth / window.innerHeight, 0.5, 3000);
+
+  /* ── Lighting (golden-hour ACES, matching valley palette C) ──────── */
+  const sun = new THREE.DirectionalLight(0xffd6a0, 3.2);
+  sun.position.set(-50, 80, -60);
+  scene.add(sun, sun.target);
+
+  const hemi = new THREE.HemisphereLight(0xa8ccf8, 0x6a6a5c, 0.5);
+  scene.add(hemi);
+
+  /* ── Background ─────────────────────────────────────────────────── */
+  scene.background = new THREE.Color(0.15, 0.25, 0.35);
+
+  /* ── Fog (matches valley style) ─────────────────────────────────── */
+  const fogColor = new THREE.Color(0.65, 0.82, 0.88);
+  const fogNear = 30, fogFar = 300;
+  scene.fog = new THREE.Fog(0xc7e6f5, 110, 760);
+
+  /* ── Simple heightmap sampler ───────────────────────────────────── */
+  function heightmap(x, z) {
+    /* Gently rolling sea floor */
+    const n = Math.sin(x*0.1)*Math.cos(z*0.08)*2 + Math.sin(x*0.3+z*0.2)*0.5;
+    return -1 + n; /* mostly around -1m with small variation */
+  }
+
+  /* ── Underwater biome module ────────────────────────────────────── */
+  const biome = new UnderwaterBiome({
+    scene,
+    waterLevel: 3,
+    heightmap,
+    renderer,
+    camera,
+    sun,
+    fogColor,
+    fogNear,
+    fogFar,
+  });
+
+  /* ── Camera (swim + orbit) ──────────────────────────────────────── */
+  const camState = {
+    pos: new THREE.Vector3(0, 1.5, 8),
+    yaw: 0,        /* horizontal angle */
+    pitch: -0.1,   /* vertical angle, negative = looking down */
+  };
+
+  const keys = {};
+  window.addEventListener("keydown", e => {
+    keys[e.code] = true;
+    if (["KeyW","KeyA","KeyS","KeyD","KeyQ","KeyE","ShiftLeft","ShiftRight"].includes(e.code)) e.preventDefault();
+    /* presets */
+    if (e.code === "Digit1") setPreset("shallow");
+    if (e.code === "Digit2") setPreset("deep");
+    if (e.code === "Digit3") setPreset("surface");
+    if (e.code === "KeyR") resetCamera();
+  });
+  window.addEventListener("keyup", e => { keys[e.code] = false; });
+
+  let orbiting = false, lastMX = 0, lastMY = 0;
+  canvas.addEventListener("mousedown", e => { if (e.button === 2) { orbiting = true; lastMX = e.clientX; lastMY = e.clientY; }});
+  window.addEventListener("mouseup", () => { orbiting = false; });
+  window.addEventListener("mousemove", e => {
+    if (!orbiting) return;
+    camState.yaw -= (e.clientX - lastMX) * 0.005;
+    camState.pitch -= (e.clientY - lastMY) * 0.005;
+    camState.pitch = Math.max(-Math.PI * 0.45, Math.min(Math.PI * 0.45, camState.pitch));
+    lastMX = e.clientX; lastMY = e.clientY;
+  });
+
+  canvas.addEventListener("contextmenu", e => e.preventDefault());
+
+  function resetCamera() {
+    camState.pos.set(0, 1.5, 8);
+    camState.yaw = 0;
+    camState.pitch = -0.1;
+  }
+
+  function updateCamera(dt) {
+    const fast = keys["ShiftLeft"] || keys["ShiftRight"] ? 2.5 : 1;
+    const speed = 4 * fast * dt;
+
+    const forward = new THREE.Vector3(-Math.sin(camState.yaw), 0, -Math.cos(camState.yaw));
+    const right = new THREE.Vector3(Math.cos(camState.yaw), 0, -Math.sin(camState.yaw));
+
+    if (keys["KeyW"]) camState.pos.addScaledVector(forward, speed);
+    if (keys["KeyS"]) camState.pos.addScaledVector(forward, -speed);
+    if (keys["KeyA"]) camState.pos.addScaledVector(right, -speed);
+    if (keys["KeyD"]) camState.pos.addScaledVector(right, speed);
+    if (keys["KeyQ"]) camState.pos.y -= speed;
+    if (keys["KeyE"]) camState.pos.y += speed;
+
+    camera.position.copy(camState.pos);
+    const dir = new THREE.Vector3(
+      -Math.sin(camState.yaw) * Math.cos(camState.pitch),
+      Math.sin(camState.pitch),
+      -Math.cos(camState.yaw) * Math.cos(camState.pitch)
+    );
+    camera.lookAt(camera.position.clone().add(dir));
+    camera.rotation.z = 0; /* keep head upright */
+  }
+
+  /* ── Grid helper ────────────────────────────────────────────────── */
+  let grid = new THREE.GridHelper(200, 80, 0x335566, 0x224455);
+  grid.material.transparent = true;
+  grid.material.opacity = 0.3;
+  grid.position.y = -2;
+  grid.visible = false;
+  scene.add(grid);
+
+  /* ── Controls ───────────────────────────────────────────────────── */
+  const sliders = {
+    caustics: { el: document.getElementById("ctrl-caustics"), val: document.getElementById("val-caustics"), key: "caustics" },
+    shafts: { el: document.getElementById("ctrl-shafts"), val: document.getElementById("val-shafts"), key: "shafts" },
+    kelp: { el: document.getElementById("ctrl-kelp"), val: document.getElementById("val-kelp"), key: "kelp" },
+    time: { el: document.getElementById("ctrl-time"), val: document.getElementById("val-time"), key: "time" },
+  };
+
+  Object.values(sliders).forEach(s => {
+    s.el.addEventListener("input", () => {
+      const v = parseFloat(s.el.value);
+      s.val.textContent = v.toFixed(2);
+      if (s.key === "caustics") {
+        biome._caustics.uniforms.uOpacity = biome._caustics.uniforms.uOpacity || { value: 1 };
+        biome._caustics.uniforms.uOpacity.value = v;
+        if (biome._caustics.mesh.material) {
+          biome._caustics.mesh.material.blending = v > 0.01 ? THREE.AdditiveBlending : THREE.NoBlending;
+        }
+      }
+      if (s.key === "shafts") {
+        biome._shafts.forEach(sh => { sh.uniforms.uOpacity.value = v; });
+      }
+      if (s.key === "kelp") {
+        if (biome._kelp && biome._kelp.mesh) biome._kelp.mesh.visible = v > 0.01;
+      }
+      if (s.key === "time") {
+        biome._allUniforms.forEach(u => { if (u.uTime) u.uTime.value = v; });
+      }
+    });
+  });
+
+  /* ── Presets ────────────────────────────────────────────────────── */
+  const presets = {
+    shallow: { waterLevel: 3, camPos: new THREE.Vector3(0, 1.5, 6), camYaw: 0, camPitch: -0.15,
+               skyColor: new THREE.Color(0.65, 0.82, 0.92), fogColor: new THREE.Color(0.78, 0.88, 0.88),
+               fogNear: 20, fogFar: 120, exposure: 1.0, sunI: 3.2 },
+    deep: { waterLevel: 15, camPos: new THREE.Vector3(0, 8, 6), camYaw: 0.2, camPitch: -0.1,
+            skyColor: new THREE.Color(0.05, 0.10, 0.20), fogColor: new THREE.Color(0.04, 0.10, 0.22),
+            fogNear: 5, fogFar: 50, exposure: 0.85, sunI: 0.5 },
+    surface: { waterLevel: 3, camPos: new THREE.Vector3(0, 2.5, 4), camYaw: 0, camPitch: 0.5,
+               skyColor: new THREE.Color(0.35, 0.55, 0.72), fogColor: new THREE.Color(0.55, 0.75, 0.85),
+               fogNear: 30, fogFar: 150, exposure: 1.0, sunI: 3.2 },
+  };
+
+  let currentPreset = "shallow";
+
+  function applyPreset(name) {
+    const p = presets[name];
+    if (!p) return;
+    biome.setWaterLevel(p.waterLevel);
+    camState.pos.copy(p.camPos);
+    camState.yaw = p.camYaw;
+    camState.pitch = p.camPitch;
+    scene.background = p.skyColor;
+    scene.fog.color.copy(p.fogColor);
+    scene.fog.near = p.fogNear;
+    scene.fog.far = p.fogFar;
+    renderer.toneMappingExposure = p.exposure;
+    sun.intensity = p.sunI;
+    currentPreset = name;
+
+    /* Update button states */
+    document.querySelectorAll("#topbar button").forEach(btn => {
+      btn.setAttribute("aria-pressed", btn.dataset.preset === name ? "true" : "false");
+    });
+
+    updateStats();
+  }
+
+  function setPreset(name) {
+    applyPreset(name);
+  }
+
+  document.querySelectorAll("#topbar button").forEach(btn => {
+    btn.addEventListener("click", () => setPreset(btn.dataset.preset));
+  });
+
+  function updateStats() {
+    const p = presets[currentPreset];
+    const depth = Math.max(0, p.waterLevel - camState.pos.y).toFixed(1);
+    document.getElementById("stat-level").textContent = p.waterLevel.toFixed(1) + " m";
+    document.getElementById("stat-depth").textContent = depth + " m";
+    document.getElementById("stat-effects").textContent = "all";
+    document.getElementById("depth").innerHTML = depth + "<small>m depth</small>";
+  }
+
+  /* ── Resize ─────────────────────────────────────────────────────── */
+  window.addEventListener("resize", () => {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+  });
+
+  /* ── Capture ────────────────────────────────────────────────────── */
+  window.capturePNG = function(filename) {
+    renderer.render(scene, camera);
+    canvas.toBlob(blob => {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename || "underwater.png";
+      a.click();
+      URL.revokeObjectURL(url);
+    }, "image/png");
+  };
+
+  window.addEventListener("keydown", e => {
+    if (e.code === "KeyF") {
+      canvas.captureStream(0).getVideoTracks()[0]?.requestFrame(); /* ensure frame */
+      renderer.render(scene, camera);
+      setTimeout(() => window.capturePNG("underwater_" + currentPreset + ".png"), 100);
+    }
+    if (e.code === "KeyG") grid.visible = !grid.visible;
+  });
+
+  /* ── Animation loop ─────────────────────────────────────────────── */
+  let prevTime = performance.now();
+  let time = 0;
+
+  function frame() {
+    requestAnimationFrame(frame);
+    const now = performance.now();
+    const dt = Math.min((now - prevTime) / 1000, 0.05);
+    prevTime = now;
+    time += dt;
+
+    updateCamera(dt);
+    biome.update(time);
+    updateStats();
+
+    /* Update time slider if not manually overridden */
+    if (!keys["KeyT"]) {
+      biome._allUniforms.forEach(u => { if (u.uTime && sliders.time.el.value < 0.1) u.uTime.value = time; });
+      biome._shafts.forEach(s => { s.uniforms.uTime.value = time; });
+      if (biome._fish && biome._fish.uniforms) biome._fish.uniforms.uTime.value = time;
+    }
+
+    renderer.render(scene, camera);
+  }
+
+  /* ── Start ──────────────────────────────────────────────────────── */
+  applyPreset("shallow");
+
+  /* Hide loading */
+  setTimeout(() => document.getElementById("loading").classList.add("hidden"), 300);
+
+  requestAnimationFrame(frame);
+
+})();
+</script>
+</body>
+</html>
