@@ -4,7 +4,7 @@ const assert=require('node:assert/strict');
 const fs=require('node:fs');
 const base=process.env.CPORE_STUDIO_URL||'http://127.0.0.1:8765';
 const fixture=JSON.parse(fs.readFileSync('tests/fixtures/studio/v4-glb-parts.json'));
-const inspect=`window.__partsTest={step:update,inspect:()=>{
+const inspect=`window.__partsTest={step:update,inspect:()=>{const {objs,legs}=rig;
  creature.updateMatrixWorld(true);limbs.updateMatrixWorld(true);
  const objects=objs.map(o=>{
   let finite=true,vertices=0,regions={},meshes=[],membranes=[],localBox=new T.Box3(),inverse=o.g.matrixWorld.clone().invert();
