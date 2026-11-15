@@ -35,7 +35,10 @@ extern "C" {
 #define CB_MAX_EVENTS     64            /* per tick; extra events are dropped  */
 #define CB_ARENA_W        40.0f         /* arena is [0,W] x [0,H] metres       */
 #define CB_ARENA_H        40.0f
-#define CB_RADIUS         0.6f          /* body radius, all creatures          */
+#define CB_RADIUS         0.6f          /* default body radius, metres         */
+#define CB_RADIUS_CM      60            /* same default, integer centimetres   */
+#define CB_RADIUS_CM_MIN  40            /* clamp for a non-default radius      */
+#define CB_RADIUS_CM_MAX  400
 #define CB_PART_MAX_LEVEL 5
 
 /* ---- moves (data table, see CP_COMBAT_MOVES) ---- */
@@ -126,7 +129,19 @@ enum { CB_PH_IDLE = 0, CB_PH_WINDUP, CB_PH_ACTIVE, CB_PH_RECOVERY };
 typedef struct {
     uint8_t mouth, charge, spit, tail, guard;   /* part levels 0..5            */
     float   hp, stamina, speed;                 /* base hp, stamina pool, m/s  */
+    /* Centimetres. 0 and CB_RADIUS_CM both mean the literal CB_RADIUS.
+     * The canonical hash writes this field only when it is neither, so
+     * default-radius worlds stay bit-identical to the golden logs.
+     * 60*0.01f is not bit-identical to 0.6f; do not recompute the default. */
+    uint16_t radius_cm;
 } CpCombatProfile;
+
+/* Resolved metres. Default values return the CB_RADIUS literal. */
+static inline float cp_combat_body_radius(const CpCombatProfile *p)
+{
+    if (!p || p->radius_cm == 0 || p->radius_cm == CB_RADIUS_CM) return CB_RADIUS;
+    return (float)p->radius_cm * 0.01f;
+}
 
 void  cp_combat_profile_default(CpCombatProfile *p);   /* all parts 2, 100/100/4 */
 int   cp_combat_part_level(const CpCombatProfile *p, int part);

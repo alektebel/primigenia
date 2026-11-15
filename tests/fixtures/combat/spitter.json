@@ -62,6 +62,7 @@
     "guard": 0,
     "hp": 100,
     "stamina": 100,
-    "speed": 4
+    "speed": 4,
+    "radiusCm": 150
   }
 }

@@ -8,8 +8,8 @@ const copy=p=>({...p});
 // Both roaming and encounters sample a single time-indexed input at 10 Hz;
 // display frames only consume the accumulator and interpolate snapshots.
 export class StageSimulation {
-  constructor({combat,profile,enemyProfile,nest,home,groundY,obstacles=[],onTick=()=>{}}) {
-    Object.assign(this,{combat,profile,enemyProfile,nest:copy(nest),home:copy(home),groundY,obstacles,onTick});
+  constructor({combat,profile,enemyProfile,nest,home,groundY,obstacles=[],seed=42,onTick=()=>{}}) {
+    Object.assign(this,{combat,profile,enemyProfile,nest:copy(nest),home:copy(home),groundY,obstacles,seed:seed>>>0,onTick});
     this.player={...nest,yaw:0,hp:profile.hp,stamina:profile.stamina,speed:0};
     this.enemy={...home,yaw:Math.PI,hp:enemyProfile.hp,stamina:enemyProfile.stamina,speed:0,dead:false};
     this.previous=[copy(this.player),copy(this.enemy)];
@@ -41,7 +41,7 @@ export class StageSimulation {
     const point={x:(this.player.x+this.enemy.x)/2,z:(this.player.z+this.enemy.z)/2};
     const spawn=(entity,profile,team,foe)=>({profile:{...profile,hp:entity.hp,stamina:entity.stamina},
       x:entity.x-point.x+20,y:entity.z-point.z+20,fx:foe.x-entity.x,fy:foe.z-entity.z,team});
-    this.encounter=new Encounter(this.combat,{point,enemyBot:2,setup:{seed:42,flat:true,creatures:[
+    this.encounter=new Encounter(this.combat,{point,enemyBot:2,setup:{seed:this.seed,flat:true,creatures:[
       spawn(this.player,this.profile,0,this.enemy),spawn(this.enemy,this.enemyProfile,1,this.player)]}});
     this.started++;this.outcome=null;this.hits=[];
   }
@@ -68,7 +68,8 @@ export class StageSimulation {
     else if(!encounter.current[1].alive)this.finish('victory');
     else {
       const p=encounter.current[0];
-      if(Math.min(p.x,p.y,40-p.x,40-p.y)<.85&&distance(this.player,this.enemy)>8)this.finish('fled');
+      const radius=this.profile.radiusCm?this.profile.radiusCm/100:0.6;
+      if(Math.min(p.x,p.y,40-p.x,40-p.y)<radius+0.25&&distance(this.player,this.enemy)>8)this.finish('fled');
     }
   }
   tick(intent){

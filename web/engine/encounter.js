@@ -80,7 +80,7 @@ export class Encounter {
     s.creatures.forEach((c, i) => {
       const p = { ...defaultProfile(), ...c.profile };
       lines.push([p.mouth, p.charge, p.spit, p.tail, p.guard, p.hp, p.stamina, p.speed,
-        c.x ?? -1, c.y ?? -1, c.fx ?? 0, c.fy ?? 0, c.medium ?? 0, c.team ?? i].join(' '));
+        c.x ?? -1, c.y ?? -1, c.fx ?? 0, c.fy ?? 0, c.medium ?? 0, c.team ?? i, p.radiusCm ?? 0].join(' '));
     });
     for (const a of this.log) lines.push([a.tick, a.id, a.verb, a.move, a.target, a.dir].join(' '));
     return lines.join('\n') + '\n';

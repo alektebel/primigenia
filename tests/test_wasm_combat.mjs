@@ -19,6 +19,25 @@ const pair = (hp = 100) => ({ seed: 42, flat: true, creatures: [
 const engine = await Combat.create();
 assert.equal(engine.module._cb_layout(0), LAYOUT.length);
 for (let i = 0; i < LAYOUT.length; i++) assert.equal(engine.module._cb_layout(i + 1), LAYOUT[i], `ABI field ${i}`);
+{
+  const spec = radiusCm => ({ seed: 7, flat: true, creatures: [
+    { profile: { ...defaultProfile(), radiusCm }, x: 18, y: 20, fx: 1, team: 0 },
+    { profile: { ...defaultProfile(), radiusCm }, x: 22, y: 20, fx: -1, team: 1 },
+  ] });
+  const other = await Combat.create();
+  engine.reset(spec(0)); other.reset(spec(60));
+  assert.equal(engine.hash(), other.hash(), '60 cm matches the omitted default radius');
+  engine.step(); other.step();
+  assert.equal(engine.hash(), other.hash(), 'default and 60 cm stay identical for one tick');
+  engine.reset({ seed: 3, flat: true, creatures: [
+    { profile: { ...defaultProfile(), radiusCm: 150 }, x: 20, y: 20, team: 0 },
+    { profile: { ...defaultProfile(), radiusCm: 150 }, x: 21, y: 20, fx: -1, team: 1 },
+  ] });
+  const before = engine.hash();
+  engine.step();
+  assert.notEqual(engine.hash(), before);
+  assert.ok(Math.abs(engine.states()[1].x - engine.states()[0].x - 3) < 0.02, '150 cm bodies separate to 3 m');
+}
 assert.throws(() => engine.assertLayout({ ...engine.module, _cb_layout: () => 999 }), /layout/);
 for (const file of readdirSync(new URL('./fixtures/combat/', import.meta.url))) {
   const fixture = JSON.parse(read(`./fixtures/combat/${file}`));

@@ -495,7 +495,7 @@ static void geometry_and_setup(void)
     }
     CpCombatSetup s = {0}; s.n = 99; s.flat = 1;
     for (int i = 0; i < CB_MAX_CREATURES; i++) {
-        s.c[i].prof = (CpCombatProfile){255,255,255,255,255, -5, -1, 100};
+        s.c[i].prof = (CpCombatProfile){255,255,255,255,255, -5, -1, 100, 0};
         s.c[i].x = 100; s.c[i].y = 100;
     }
     cp_combat_reset(&w, &s);
@@ -605,10 +605,49 @@ static void directional_movement(void)
     CHECK(w.c[0].x == x, "movement waits for a committed move to finish");
 }
 
+static void body_radius(void)
+{
+    CpCombatSetup s = {0};
+    CpCombatWorld a, b;
+    s.seed = 9; s.n = 2; s.flat = 1;
+    cp_combat_profile_default(&s.c[0].prof);
+    cp_combat_profile_default(&s.c[1].prof);
+    s.c[0].x = 16; s.c[0].y = 20; s.c[0].fx = 1;
+    s.c[1].x = 24; s.c[1].y = 20; s.c[1].fx = -1; s.c[1].team = 1;
+    cp_combat_reset(&a, &s);
+    s.c[0].prof.radius_cm = CB_RADIUS_CM; s.c[1].prof.radius_cm = CB_RADIUS_CM;
+    cp_combat_reset(&b, &s);
+    CHECK(cp_combat_hash(&a) == cp_combat_hash(&b), "60 cm is the default radius and is omitted from the hash");
+    cp_combat_attack(&a, 0, 1, CB_BITE); cp_combat_attack(&b, 0, 1, CB_BITE);
+    for (int i = 0; i < 30; i++) { cp_combat_step(&a); cp_combat_step(&b); }
+    CHECK(a.c[0].x == b.c[0].x && a.c[1].hp == b.c[1].hp && cp_combat_hash(&a) == cp_combat_hash(&b),
+          "explicit 60 cm stays bit-identical to the default through a fight");
+
+    s.c[0].prof.radius_cm = 150; s.c[1].prof.radius_cm = 150;
+    s.c[0].x = 20; s.c[0].y = 20; s.c[1].x = 21; s.c[1].y = 20;
+    cp_combat_reset(&a, &s);
+    uint64_t overlapped = cp_combat_hash(&a);
+    cp_combat_step(&a);
+    float dx = a.c[1].x - a.c[0].x;
+    CHECK(fabsf(dx - 3.0f) < 0.001f, "150 cm bodies separate to 3 m");
+    CHECK(cp_combat_hash(&a) != overlapped, "a non-default radius changes the canonical hash");
+
+    s.c[0].x = 0.1f; s.c[0].y = 20; s.c[1].x = 30; s.c[1].y = 20;
+    cp_combat_reset(&a, &s);
+    CHECK(fabsf(a.c[0].x - 1.5f) < 0.001f, "spawn clamp uses the creature radius");
+    s.c[0].prof.radius_cm = 0; s.c[1].prof.radius_cm = 0; s.c[0].x = 0.1f;
+    cp_combat_reset(&a, &s);
+    CHECK(fabsf(a.c[0].x - CB_RADIUS) < 0.0001f, "default radius keeps the 0.6 m arena clamp");
+    s.c[0].prof.radius_cm = 1; s.c[1].prof.radius_cm = 900;
+    cp_combat_reset(&a, &s);
+    CHECK(a.c[0].prof.radius_cm == CB_RADIUS_CM_MIN && a.c[1].prof.radius_cm == CB_RADIUS_CM_MAX,
+          "non-default radii clamp to 40..400 cm");
+}
+
 int main(void)
 {
     puts("cpore combat tests");
-    directional_movement(); counters(); ripostes(); spacing(); ranged_exchanges(); simultaneous(); bot_counters(); edges_and_verbs(); geometry_and_setup(); determinism(); canaries();
+    directional_movement(); counters(); ripostes(); spacing(); ranged_exchanges(); simultaneous(); bot_counters(); edges_and_verbs(); geometry_and_setup(); body_radius(); determinism(); canaries();
     printf("combat: %d failure(s)\n", fails);
     return fails ? 1 : 0;
 }
