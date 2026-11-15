@@ -62,6 +62,7 @@ const CpCombatMove CP_COMBAT_MOVES[CB_MOVE_COUNT] = {
  * first: an active dodge outranks everything else about the defender.
  * ------------------------------------------------------------------ */
 const CpCombatCounter CP_COMBAT_COUNTERS[] = {
+  { CB_TAIL_STRIKE,CB_DODGE,  CB_PH_BIT(CB_PH_ACTIVE),                 CB_EFF_INTERRUPT, 3,  0.0f, 1.0f,  0.0f },
   { -1,            CB_DODGE,  CB_PH_BIT(CB_PH_ACTIVE),                 CB_EFF_AVOID,     0,  0.0f, 0.0f,  2.0f },
   { CB_CHARGE,     CB_GUARD,  CB_PH_BIT(CB_PH_ACTIVE),                 CB_EFF_BREAK,     5,  0.0f, 0.6f, 20.0f },
   { CB_BITE,       CB_GUARD,  CB_PH_BIT(CB_PH_ACTIVE),                 CB_EFF_NEGATE,    5,  0.0f, 0.0f,  0.10f },

@@ -30,18 +30,21 @@ static void check(int ok, const char *msg)
 /* ---------------- payoff matrix: fixed move vs fixed move ---------------- */
 /* Mean level-3 offensive HP (including a fresh bleed's future ticks) bought
  * per start-stamina point. Derived from move data, never fitted to dominance. */
+static int price_mode = 1;
 static double stamina_value;
 static double move_stamina_value(const CpCombatProfile *p)
 {
-    double total = 0; int n = 0;
+    double total = 0, least = 0; int n = 0;
     for (int m = 0; m < CB_MOVE_COUNT; m++) {
         if (CP_COMBAT_MOVES[m].flags & CB_F_SELF) continue;
         double damage = cp_combat_move_damage(p, m);
         if (CP_COMBAT_MOVES[m].status == CB_ST_BLEED)
             damage += 0.6 * (CP_COMBAT_MOVES[m].status_ticks - 1);
-        total += damage / cp_combat_move_stamina(p, m); n++;
+        double rate = damage / cp_combat_move_stamina(p, m);
+        if (!n || rate < least) least = rate;
+        total += rate; n++;
     }
-    return total / n;
+    return price_mode ? least : total / n;
 }
 static double payoff[CB_MOVE_COUNT][CB_MOVE_COUNT];     /* raw hp margin            */
 static double payoff_se[CB_MOVE_COUNT][CB_MOVE_COUNT];
@@ -65,6 +68,9 @@ static void compute_payoff(int duels)
                 CpBot b0, b1;
                 bot_init(&b0, BOT_SPAM, (uint32_t)s); b0.spam_move = s%2 ? b : a; b0.delay = (s/2) % 4;
                 bot_init(&b1, BOT_SPAM, (uint32_t)s + 7777u); b1.spam_move = s%2 ? a : b; b1.delay = (s/8) % 7;
+                /* Timed reads are averaged over reaction delays 0..3, the
+                 * span the wind-ups are budgeted for; both seats share one. */
+                b0.reaction = b1.reaction = (s/8) % 4;
                 CpDuelResult r;
                 duel_run(&su, &b0, &b1, 120, NULL, 0, NULL, NULL, &r);
                 int row = s%2, col = 1-row;
