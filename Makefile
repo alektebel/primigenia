@@ -262,3 +262,8 @@ check:
 	nice -n 10 $(MAKE) studio-test; \
 	nice -n 10 $(MAKE) stage-test
 	@echo "=== make check done ==="
+
+# Godot UI + audio headless tests (M3).
+godot-ui-test:
+	nice -n 10 godot --headless --path godot --script res://tests/ui_test.gd
+.PHONY: godot-ui-test

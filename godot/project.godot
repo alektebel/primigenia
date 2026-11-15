@@ -1,0 +1,12 @@
+; Minimal project for the UI/audio tests (the final project.godot comes from M0).
+config_version=5
+
+[application]
+config/name="Primigenia UI test"
+config/features=PackedStringArray("4.7")
+
+[audio]
+buses/default_bus_layout="res://audio/default_bus_layout.tres"
+
+[rendering]
+renderer/rendering_method="gl_compatibility"
