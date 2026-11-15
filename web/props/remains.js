@@ -13,10 +13,6 @@
  * API — all builder functions take (T, seed, params) and return THREE.Object3D.
  */
 
-export { buildFreshCarcass, buildPickedCarcass,
-         buildSkullFossil, buildRibcageFossil, buildSpineFossil,
-         buildAllCarcasses, buildAllFossils };
-
 /* ---------- helpers (internal) ---------- */
 
 function rngFrom(seed) {
@@ -36,24 +32,26 @@ var _gradTex = null;
 
 function toonMat(opts, T) {
   opts = opts || {};
-  _gradTex = _gradTex || function () {
-    var t = new T.DataTexture(
-      new Uint8Array([46, 46, 82, 82, 112, 112]), 6, 1, T.LuminanceFormat);
-    t.minFilter = t.magFilter = T.NearestFilter;
-    t.needsUpdate = true;
-    return t;
-  }();
-  var m = new T.MeshToonMaterial({ gradientMap: _gradTex });
-  for (var k in opts) { if (opts.hasOwnProperty(k)) m[k] = opts[k]; }
+  try {
+    _gradTex = _gradTex || function () {
+      var t = new T.DataTexture(
+        new Uint8Array([46, 46, 82, 82, 112, 112]), 6, 1, T.LuminanceFormat);
+      t.minFilter = t.magFilter = T.NearestFilter;
+      t.needsUpdate = true;
+      return t;
+    }();
+  } catch (e) { /* DataTexture not available; plain color used */ }
+
+  var m = new T.MeshStandardMaterial({
+    color: opts.color || 0xffffff,
+    roughness: opts.roughness !== undefined ? opts.roughness : 0.7,
+    metalness: opts.metalness !== undefined ? opts.metalness : 0,
+  });
+  if (_gradTex) {
+    m = new T.MeshToonMaterial({ color: opts.color || 0xffffff });
+    m.gradientMap = _gradTex;
+  }
   m.customProgramCacheKey = function () { return 'remains'; };
-  m.onBeforeCompile = function (s) {
-    s.fragmentShader = s.fragmentShader.replace(
-      '#include <tonemapping_fragment>',
-      'float rim=pow(1.-max(dot(normalize(vViewPosition),normal),0.),3.);'
-      + 'gl_FragColor.rgb+=rim*vec3(.5,.66,.8)*.28;'
-      + '\n#include <tonemapping_fragment>'
-    );
-  };
   return m;
 }
 
@@ -151,40 +149,27 @@ function buildSilhouette(T, seed, params) {
 
 /* ===================== CARCASSES ===================== */
 
+/* Create a carcass material from a hex color string.
+   MeshLambertMaterial works well with SwiftShader and responds to lights. */
+function carcassMaterial(T, hex, opts) {
+  opts = opts || {};
+  var m = new T.MeshLambertMaterial({
+    color: new T.Color(hex),
+  });
+  m.customProgramCacheKey = function () { return 'carcass'; };
+  return m;
+}
+
 /**
  * Build a fresh carcass: dead creature with skin intact.
  * The body is slumped on the ground, colour matches the creature palette.
- *
- * @param {THREE} T — Three.js instance
- * @param {number} seed
- * @param {object} [params]
- * @param {string} [params.cA='#884433'] — skin colour A
- * @param {string} [params.cB='#221111'] — skin colour B
- * @param {string} [params.cC='#ccaa88'] — skin colour C
- * @param {number} [params.bodyLen=2.2]
- * @param {number} [params.bodyRad=0.55]
- * @returns {THREE.Object3D}
  */
 export function buildFreshCarcass(T, seed, params) {
   params = params || {};
-  var skinMatA = new T.MeshPhysicalMaterial({
-    color: new T.Color(params.cA || '#884433'),
-    roughness: 0.65, metalness: 0,
-    clearcoat: 0.15, clearcoatRoughness: 0.5,
-  });
-  var skinMatB = new T.MeshPhysicalMaterial({
-    color: new T.Color(params.cB || '#221111'),
-    roughness: 0.7, metalness: 0,
-    clearcoat: 0.1, clearcoatRoughness: 0.6,
-  });
-  var skinMatC = new T.MeshPhysicalMaterial({
-    color: new T.Color(params.cC || '#ccaa88'),
-    roughness: 0.6, metalness: 0,
-    clearcoat: 0.05, clearcoatRoughness: 0.7,
-  });
-  var eyeMat = new T.MeshPhysicalMaterial({
-    color: 0x1a1210, roughness: 0.3, metalness: 0,
-  });
+  var skinMatA = carcassMaterial(T, params.cA || '#884433', { roughness: 0.65, clearcoat: 0.15, clearcoatRoughness: 0.5 });
+  var skinMatB = carcassMaterial(T, params.cB || '#221111', { roughness: 0.7, clearcoat: 0.1, clearcoatRoughness: 0.6 });
+  var skinMatC = carcassMaterial(T, params.cC || '#ccaa88', { roughness: 0.6, clearcoat: 0.05, clearcoatRoughness: 0.7 });
+  var eyeMat = carcassMaterial(T, '#1a1210', { roughness: 0.3 });
 
   var sil = buildSilhouette(T, seed, params);
 
@@ -213,13 +198,6 @@ export function buildFreshCarcass(T, seed, params) {
 /**
  * Build a picked-over carcass: skeleton with exposed ribs, spine, leg bones.
  * Flesh mostly gone — a few tattered strips remain.
- *
- * @param {THREE} T
- * @param {number} seed
- * @param {object} [params]
- * @param {number} [params.bodyLen=2.2]
- * @param {number} [params.bodyRad=0.55]
- * @returns {THREE.Object3D}
  */
 export function buildPickedCarcass(T, seed, params) {
   params = params || {};
@@ -229,14 +207,8 @@ export function buildPickedCarcass(T, seed, params) {
   var g = new T.Group();
   g.name = 'pickedCarcass';
 
-  var boneMat = new T.MeshPhysicalMaterial({
-    color: new T.Color('#bfae8a'),
-    roughness: 0.5, metalness: 0, clearcoat: 0.25,
-  });
-  var meatMat = new T.MeshPhysicalMaterial({
-    color: new T.Color('#6b3a2a'),
-    roughness: 0.8, metalness: 0,
-  });
+  var boneMat = carcassMaterial(T, '#bfae8a', { roughness: 0.5 });
+  var meatMat = carcassMaterial(T, '#6b3a2a', { roughness: 0.8 });
 
   /* --- spine: curved tube along body axis --- */
   var spinePts = [];
@@ -251,7 +223,6 @@ export function buildPickedCarcass(T, seed, params) {
   var spineCurve = new T.CatmullRomCurve3(spinePts);
   var spineGeo = new T.TubeGeometry(spineCurve, 12, bodyRad * 0.1, 8, false);
   var spine = new T.Mesh(spineGeo, boneMat);
-  spine.castShadow = true;
   g.add(spine);
 
   /* --- ribs: paired arcs from spine to sides --- */
@@ -275,7 +246,6 @@ export function buildPickedCarcass(T, seed, params) {
     var rGeo = new T.TubeGeometry(
       new T.CatmullRomCurve3(rPts), 6, 0.025, 6, false);
     var ribR = new T.Mesh(rGeo, boneMat);
-    ribR.castShadow = true;
     g.add(ribR);
 
     /* Left rib */
@@ -292,30 +262,25 @@ export function buildPickedCarcass(T, seed, params) {
     var lGeo = new T.TubeGeometry(
       new T.CatmullRomCurve3(lPts), 6, 0.025, 6, false);
     var ribL = new T.Mesh(lGeo, boneMat);
-    ribL.castShadow = true;
     g.add(ribL);
   }
 
-  /* --- skull --- */
+  /* --- skull: boxy shape --- */
   var skullGeo = new T.BoxGeometry(0.5, 0.35, 0.4, 2, 2, 2);
   var skull = new T.Mesh(skullGeo, boneMat);
   skull.position.set(bodyLen * 0.45, bodyRad * 0.35 + 0.25, 0);
-  skull.castShadow = true;
   g.add(skull);
 
   /* Jaw */
   var jawGeo = new T.BoxGeometry(0.35, 0.12, 0.3, 2, 1, 2);
   var jaw = new T.Mesh(jawGeo, boneMat);
   jaw.position.set(bodyLen * 0.45 + 0.2, bodyRad * 0.35 + 0.08, 0);
-  jaw.castShadow = true;
   g.add(jaw);
 
   /* Teeth (small cones along the jaw edge) */
+  var toothMat = carcassMaterial(T, '#f7f1df', { roughness: 0.28 });
   for (var ti = -2; ti <= 2; ti++) {
     var toothGeo = new T.ConeGeometry(0.02, 0.08, 6);
-    var toothMat = new T.MeshPhysicalMaterial({
-      color: 0xf7f1df, roughness: 0.28, metalness: 0,
-    });
     var tooth = new T.Mesh(toothGeo, toothMat);
     tooth.position.set(bodyLen * 0.45 + 0.2 + ti * 0.06,
                        bodyRad * 0.35 + 0.18, ti * 0.06);
@@ -333,13 +298,11 @@ export function buildPickedCarcass(T, seed, params) {
     var femurGeo = new T.CylinderGeometry(0.04, 0.035, bodyRad * 1.2, 6);
     var femur = new T.Mesh(femurGeo, boneMat);
     femur.position.set(legDefs[li].x, -bodyRad * 0.3, legDefs[li].z);
-    femur.castShadow = true;
     g.add(femur);
 
     var tibiaGeo = new T.CylinderGeometry(0.03, 0.025, bodyRad * 1.4, 6);
     var tibia = new T.Mesh(tibiaGeo, boneMat);
     tibia.position.set(legDefs[li].x + 0.08, -bodyRad * 1.0, legDefs[li].z);
-    tibia.castShadow = true;
     g.add(tibia);
   }
 
@@ -378,38 +341,18 @@ function rockColorForBiome(biome) {
   }
 }
 
-/** Build a low-poly rock geometry (half-ellipsoid, randomised). */
+/** Build a low-poly rock geometry (randomised icosahedron). */
 function buildRock(T, size, seed, biome) {
   var r = rngFrom(seed);
-  var verts = [];
-  var n = 20 + Math.floor(r() * 8);
-
-  for (var i = 0; i < n; i++) {
-    var theta = r() * Math.PI * 2;
-    var phi = Math.acos(2 * r() - 1);
-    var rad = size * (0.7 + r() * 0.3);
-    verts.push(
-      rad * Math.sin(phi) * Math.cos(theta),
-      Math.max(0, rad * Math.cos(phi)) * 0.4,
-      rad * Math.sin(phi) * Math.sin(theta)
-    );
+  /* Use an icosahedron with random vertex perturbation for organic shape */
+  var geo = new T.IcosahedronGeometry(size * 0.5, 1);
+  var pos = geo.attributes.position.array;
+  for (var i = 0; i < pos.length; i += 3) {
+    var variation = r() * 0.25;
+    pos[i]     += (r() - 0.5) * variation * size;
+    pos[i + 1] += (r() - 0.5) * variation * size * 0.35;  // flatten vertically
+    pos[i + 2] += (r() - 0.5) * variation * size;
   }
-  /* Bottom point */
-  verts.push(0, -size * 0.35, 0);
-
-  var idx = [];
-  var topVerts = n - 1;
-  for (var i2 = 0; i2 < topVerts; i2++) {
-    var next = (i2 + 1) % topVerts;
-    idx.push(i2, next, topVerts);
-  }
-  for (var i3 = 0; i3 < topVerts; i3++) {
-    idx.push(i3, topVerts, (i3 + 1) % topVerts);
-  }
-
-  var geo = new T.BufferGeometry();
-  geo.setAttribute('position', new T.Float32BufferAttribute(verts, 3));
-  geo.setIndex(idx);
   geo.computeVertexNormals();
 
   var mat = toonMat({ color: new T.Color(rockColorForBiome(biome)) }, T);
@@ -418,14 +361,6 @@ function buildRock(T, size, seed, biome) {
 
 /**
  * Build a fossil skull half-buried in rock.
- * Readable from 5 m: skull shape is clear.
- * Readable from 30 m: a pale skull protruding from a rock lump.
- *
- * @param {THREE} T
- * @param {number} seed
- * @param {object} [params]
- * @param {string} [params.biome='meadow'] — 'meadow' | 'alpine' | 'beach'
- * @returns {THREE.Object3D}
  */
 export function buildSkullFossil(T, seed, params) {
   params = params || {};
@@ -439,8 +374,6 @@ export function buildSkullFossil(T, seed, params) {
   var rock = buildRock(T, 1.0, seed, biome);
   var rockMesh = new T.Mesh(rock.geo, rock.mat);
   rockMesh.position.y = -0.2;
-  rockMesh.receiveShadow = true;
-  rockMesh.castShadow = false;
   g.add(rockMesh);
 
   /* Skull dome */
@@ -449,7 +382,6 @@ export function buildSkullFossil(T, seed, params) {
   var skullMat = toonMat({ color: new T.Color(boneCol) }, T);
   var skull = new T.Mesh(skullGeo, skullMat);
   skull.position.set(0, 0.15, 0.15);
-  skull.castShadow = true;
   g.add(skull);
 
   /* Snout */
@@ -457,7 +389,6 @@ export function buildSkullFossil(T, seed, params) {
   jawGeo.scale(1, 0.6, 0.7);
   var jaw = new T.Mesh(jawGeo, skullMat);
   jaw.position.set(0.15, -0.05, 0.28);
-  jaw.castShadow = true;
   g.add(jaw);
 
   /* Eye sockets (dark) */
@@ -489,14 +420,6 @@ export function buildSkullFossil(T, seed, params) {
 
 /**
  * Build a fossil ribcage half-buried in rock.
- * The ribs arc outward and downward, half-buried, showing the creature's
- * torso shape. Readable at 5 m as a ribcage, at 30 m as an oval shape.
- *
- * @param {THREE} T
- * @param {number} seed
- * @param {object} [params]
- * @param {string} [params.biome='meadow']
- * @returns {THREE.Object3D}
  */
 export function buildRibcageFossil(T, seed, params) {
   params = params || {};
@@ -510,8 +433,6 @@ export function buildRibcageFossil(T, seed, params) {
   var rock = buildRock(T, 0.8, seed, biome);
   var rockMesh = new T.Mesh(rock.geo, rock.mat);
   rockMesh.position.y = -0.25;
-  rockMesh.receiveShadow = true;
-  rockMesh.castShadow = false;
   g.add(rockMesh);
 
   /* Central spine fragment */
@@ -520,7 +441,6 @@ export function buildRibcageFossil(T, seed, params) {
   var spine = new T.Mesh(spineGeo, spineMat);
   spine.position.set(0, 0.05, 0);
   spine.rotation.z = Math.PI / 2;
-  spine.castShadow = true;
   g.add(spine);
 
   /* Rib pairs: 6 pairs curving from spine to sides */
@@ -539,7 +459,6 @@ export function buildRibcageFossil(T, seed, params) {
       ]), 6, 0.02, 6, false
     );
     var ribR = new T.Mesh(rGeo, spineMat);
-    ribR.castShadow = true;
     g.add(ribR);
 
     /* Left rib */
@@ -551,7 +470,6 @@ export function buildRibcageFossil(T, seed, params) {
       ]), 6, 0.02, 6, false
     );
     var ribL = new T.Mesh(lGeo, spineMat);
-    ribL.castShadow = true;
     g.add(ribL);
   }
 
@@ -573,14 +491,6 @@ export function buildRibcageFossil(T, seed, params) {
 /**
  * Build a fossil spine half-buried in rock.
  * A curved row of vertebrae emerging from the rock at an angle.
- * Readable at 5 m as a spine fragment, at 30 m as a line of white dots
- * protruding from the ground.
- *
- * @param {THREE} T
- * @param {number} seed
- * @param {object} [params]
- * @param {string} [params.biome='meadow']
- * @returns {THREE.Object3D}
  */
 export function buildSpineFossil(T, seed, params) {
   params = params || {};
@@ -595,8 +505,6 @@ export function buildSpineFossil(T, seed, params) {
   var rockMesh = new T.Mesh(rock.geo, rock.mat);
   rockMesh.position.y = -0.3;
   rockMesh.scale.y = 0.5;
-  rockMesh.receiveShadow = true;
-  rockMesh.castShadow = false;
   g.add(rockMesh);
 
   /* Spine curve: emerges from rock at an angle */
@@ -617,7 +525,6 @@ export function buildSpineFossil(T, seed, params) {
     vertGeo.scale(1.3, 0.8, 1.0);
     var vert = new T.Mesh(vertGeo, boneMat);
     vert.position.set(x, y, z);
-    vert.castShadow = true;
     g.add(vert);
 
     /* Inter-vertebral disc */
