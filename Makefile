@@ -49,7 +49,8 @@ $(BUILD)/combat_golden: tests/combat_golden.c apps/combat_bots.h $(BUILD)/apps/c
 
 # Correctness regressions. Balance acceptance remains a separate failing gate:
 # run make tourney as well before claiming P2 acceptance.
-test: $(BUILD)/cpore_test $(BUILD)/combat_test $(BUILD)/combat_tourney_test $(BUILD)/combat_golden check-core
+test: $(BUILD)/terrain_test $(BUILD)/cpore_test $(BUILD)/combat_test $(BUILD)/combat_tourney_test $(BUILD)/combat_golden check-core
+	nice -n 10 ./$(BUILD)/terrain_test
 	./$(BUILD)/cpore_test
 	./$(BUILD)/combat_test
 	./$(BUILD)/combat_tourney_test
@@ -114,3 +115,14 @@ wasm-parity: $(BUILD)/wasm/combat_golden.cjs $(BUILD)/wasm/combat_golden.wasm $(
 .PHONY: wasm-test
 wasm-test: wasm wasm-parity
 	nice -n 10 node tests/test_wasm_combat.mjs
+
+# W11: native smoke remains small; 1024 guarantees and parity are opt-in.
+TERRAIN_SRC := core/src/terrain.c core/src/rng.c
+$(BUILD)/terrain_cli: apps/terrain_cli.c $(HDRS) $(BUILD)/libcpore.a
+	$(CC) $(CFLAGS) $< $(BUILD)/libcpore.a -o $@ $(LDLIBS)
+$(BUILD)/terrain_test: tests/test_terrain.c $(HDRS) $(BUILD)/libcpore.a
+	$(CC) $(CFLAGS) $< $(BUILD)/libcpore.a -o $@ $(LDLIBS)
+.PHONY: terrain-test
+# Never regenerate committed goldens during tests.
+terrain-test: $(BUILD)/terrain_test $(BUILD)/terrain_cli
+	nice -n 10 ./$(BUILD)/terrain_test --heavy
