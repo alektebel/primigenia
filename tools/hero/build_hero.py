@@ -10,7 +10,7 @@ that its target text exists, so a changed reference fails loudly.
 URL parameters: t=golden|noon|overcast|night, cam=close|mid|far|vista,
 creature=Merodeador|Zancuda|Babosa, exp=<exposure override>, live=1 (animate),
 pal=A|B|C (colour palette override on top of the golden preset, see docs/evidence/hero/palettes.md;
-without pal the output is byte-for-byte the golden look).
+golden defaults to pal=C (G63); pal=current gives the previous golden look).
 """
 import pathlib
 import re
@@ -178,7 +178,8 @@ PRESETS = r"""
     tuft0:[.82,.90,.78],tuft1:[1.04,1.02,.98],bladeLo:.52,bladeHi:1.28,
     r0:[.15,.165,.19],r1:[.28,.215,.14],snow:[.78,.88,.95],rockShade:[.68,.84,1.20],rockLit:[1.30,1.10,.84]}}};
  L.land=Object.assign({},LAND0);L.pal=null;
- {const pv=q.get('pal');if(pv&&PAL[pv]){const dm=(a,b)=>{for(const k in b)a[k]=b[k]&&typeof b[k]==='object'&&!Array.isArray(b[k])?dm(a[k]||(a[k]={}),b[k]):b[k];return a};
+ /* Owner choice 2026-11-15 (G63): Current+ (C) is the default golden palette; pal=current gives the old look. */
+ {const pv=q.get('pal')||(name==='golden'?'C':null);if(pv&&PAL[pv]){const dm=(a,b)=>{for(const k in b)a[k]=b[k]&&typeof b[k]==='object'&&!Array.isArray(b[k])?dm(a[k]||(a[k]={}),b[k]):b[k];return a};
   dm(L,PAL[pv].light);Object.assign(L.land,PAL[pv].land);L.pal=pv}}
  const v=a=>'vec3('+a.map(x=>(+x).toFixed(3)).join(',')+')',s=L.sky;
  L.shK=(+(1-.58*(L.shade==null?1:L.shade)).toFixed(3));

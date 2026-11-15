@@ -252,6 +252,7 @@ recorded.
 | G60 | The public demo ships on **itch.io**: a playable web build plus Electron downloads (Windows, Linux, macOS). Steam later if it works. (2026-11-15) |
 | G61 | Saves are **local only** (IndexedDB in the browser, a file in Electron) in the versioned `cpore` format, with creature export/import as a file. No accounts or cloud for now. (2026-11-15) |
 | G62 | Trademark check, first pass 2026-11-15 (web search only): no video game or registered mark named "Primigenia" found; a similar name exists in tabletop games (the Argentine RPG *Pampa Primigenia*, label Primigenia Austral, 2024). A formal search in EUIPO/TMview and USPTO is still required before P7. The beak_crusher is accepted for now and redone when P4 tiers arrive. (2026-11-15) |
+| G63 | Palette: the owner picked **C "Current+"** (current hues, stronger value contrast, less lime, warm light / cool shade) as the default golden look (2026-11-15). A "BotW" stays available as `pal=A` for a side-by-side review when the MVP round is finished; `pal=current` gives the previous look. |
 
 ## 10. The world (W1–W10, 2026-11-14)
 
