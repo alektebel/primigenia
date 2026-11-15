@@ -166,3 +166,143 @@ measured; owner visual approval remains pending.
 Visual approval remains the owner's judgement. The backdrop is a cosmetic
 hero-shot treatment, not implementation of the W1/W6 island generator. Wind
 is frozen at t=3 for evidence; the same wave field animates with `live=1`.
+
+## V9 — lush meadow, clear bowl relief and a valley-facing vista
+
+This section supersedes the v8 implementation and acceptance results above.
+The current [grid](grid/README.md) is v9. Original v8 frames and metrics remain
+in commit `0f23d02`; its [comparison](comparison-v8.png) and
+[measurements](v8-measurements.json) are preserved.
+
+### Changes
+
+- Keep 200,000 near blades and 52,000 far blades, with the existing 140 m
+  outer fade. A smooth radial bias (`r = 44 * u^0.72`) concentrates near tufts
+  without a density boundary. Near height is now
+  `(0.48 + 0.75 * clump) * rolling * grassMask * fade` metres; near width is
+  0.12 m before seed scaling. Eight-blade tufts vary in height and colour;
+  near blades bend around the creature. The golden views show grass reaching
+  its knees and obscuring most of the nearby ground.
+- Ground uses the shared patch/wind/light colour multiplied by linear
+  `(0.60, 0.68, 0.54)`. Its green channel is reduced less than red/blue, giving
+  a darker, more saturated base beneath blade mid-tones. Beyond the blades,
+  the same fbm patches, procedural detail, tree shade and animated wind waves
+  remain. No circular bright base is introduced.
+- Golden fog begins at 140 m, with density 0.00052 instead of 0.00135.
+  Optical depth ramps in as `path * (1 - exp(-path / 240))`, with exponential
+  height density integrated at three points along the ray. It scatters toward
+  blue away from the normalized sun direction and toward warm amber sunward.
+  The other presets receive the same delayed, reduced-density treatment.
+  All surfaces retain the shared ACES/sRGB pipeline.
+- Bowl rock mixes ochre, grey and brown mineral patches. Subtle strata vary
+  their spacing, use noise to break their phase and coverage, and fade from
+  steep faces onto ledges. A two-scale positive heightfield Laplacian is
+  computed once per terrain vertex, stored as `cavity`, and darkens concave
+  gullies. The large terrain normal drives three light levels; scree and turf
+  collect on gentle slopes and ledges. Snow thresholds and colours stay as in
+  v8, as do the three backdrop meshes.
+- Vista searches 96 directions for a broad low saddle, samples across a
+  20-degree opening, and penalizes trees obscuring the creature or nest.
+  Distance is 125 m, elevation 0.40 rad, FOV 62 degrees; the look target is
+  36 m above the creature centre. The creature and nest remain in the lower
+  third, with the bowl saddle and layered ranges above them. Other camera
+  positions are unchanged.
+
+### Measured acceptance
+
+**16/16 frames pass, with zero page/console errors.** The full 16-frame grid
+completed in one final run. All four vista frames pass the framing check
+(≥150 body pixels, mean body y in the lower third).
+
+Golden-mid meadow hue: **74.69°** over
+88,600 pixels, using the unchanged meadow rectangles and thresholds
+(required 65–100°).
+
+| Frame | Lit pixels | Lit mean Y | Shaded pixels | Shaded mean Y | Difference | Required |
+|---|---:|---:|---:|---:|---:|---:|
+| golden-far | 56,369 | 0.2816 | 2,934 | 0.0632 | **0.2185** | ≥0.12 |
+| golden-vista | 142,744 | 0.2892 | 173,932 | 0.0382 | **0.2511** | ≥0.12 |
+
+Golden-vista body: 245 pixels, mean y **597.7**,
+extent y 583–610 (lower third begins at y 533.3). The nest
+is visible below it in the beauty frame. Raw masks and both normal/cavity
+passes are saved with the grid.
+
+Mountain classification uses a fourth render for golden-far and golden-vista.
+The bowl shader outputs raw `R = max(N·L, 0)`, `G = cavity`, `B = eligibility`,
+with tone mapping, output encoding and fog bypassed. Eligibility requires
+world height ≥20 m, camera distance 150–500 m, snow fraction <0.02, turf
+fraction <0.10 and blade mask <0.05, using the same normals, height map and
+snow/turf equations as the beauty shader. The far camera keeps its original
+framing and samples the visible lower rock faces, whose upper-row ray hits
+are roughly 200–230 m away and 37–42 m high. Other objects render black as
+depth occluders (leaf cards conservatively occlude their full geometry); grass
+is hidden because it occupies lower terrain.
+Backdrop ranges are excluded. Pixels with blue ≥254 are classified as lit at
+N·L ≥0.55 and shaded at N·L ≤0.20; intermediate light values are excluded.
+At least 200 pixels per class are required. Linear Rec.709 luminance is sampled
+from the **original fogged beauty frame**, so this checks surviving image
+contrast, including material, exposure and atmosphere, rather than an unfogged
+lighting value. The N·L classification thresholds were fixed before measuring
+the final material. Two initial far-view masks selected no pixels: both
+required height ≥45 m (the first also capped it at 120 m), excluding the
+lower mountain faces in this framing. The final mask lowers the elevation cutoff to 20 m, follows the exposed rock
+material and retains the 150–500 m distance restriction for both views. CPU
+terrain ray-hit samples in the metrics make the visible geometry auditable.
+A diagnostic far check first tested the material mask without the minimum
+distance; a final far check restored 150 m before the complete grid.
+
+[comparison-v9.png](comparison-v9.png) has v7 / v8 / v9 columns and golden-mid /
+golden-far / golden-vista rows. V7 has no vista camera; that cell says so.
+`tools/hero/compare_landscape.py` reads full-size v7 and v8 images directly
+from `3a07527^` and `0f23d02`, avoiding new baseline browser renders. Source
+image SHA-256 hashes, contrast measurements, framing, hue and capture times
+are in [v9-measurements.json](v9-measurements.json).
+
+### Commands, scope and limitations
+
+```bash
+HERO_NODE_PATH=/tmp/claude-1000/-home-diego-Desarrollo-cpore/52130491-4ef1-4633-b55d-8ccffceb2b8f/scratchpad/node_modules
+nice -n 10 python3 tools/hero/build_hero.py
+nice -n 10 python3 -m py_compile tools/hero/build_hero.py tools/hero/compare_landscape.py
+node --check tools/hero/capture_grid.cjs
+git diff --check
+# Two golden-only iteration sets and two far-only mask checks, in /tmp:
+NODE_PATH="$HERO_NODE_PATH" nice -n 10 node tools/hero/capture_grid.cjs \
+  --only golden:mid,golden:far,golden:vista --out /tmp/p0-land-v9-iteration1
+NODE_PATH="$HERO_NODE_PATH" nice -n 10 node tools/hero/capture_grid.cjs \
+  --only golden:mid,golden:far,golden:vista --out /tmp/p0-land-v9-iteration2
+NODE_PATH="$HERO_NODE_PATH" nice -n 10 node tools/hero/capture_grid.cjs \
+  --only golden:far --out /tmp/p0-land-v9-far-check
+NODE_PATH="$HERO_NODE_PATH" nice -n 10 node tools/hero/capture_grid.cjs \
+  --only golden:far --out /tmp/p0-land-v9-far-final
+# Run the complete grid once, after golden views pass:
+NODE_PATH="$HERO_NODE_PATH" nice -n 10 node tools/hero/capture_grid.cjs
+nice -n 10 python3 tools/hero/compare_landscape.py
+# Reproduce mountain measurements without another browser render:
+NODE_PATH="$HERO_NODE_PATH" nice -n 10 node tools/hero/capture_grid.cjs \
+  --measure-mountain docs/evidence/hero/grid/golden-far.png \
+  --debug-pass docs/evidence/hero/grid/golden-far.mountain-debug.png
+```
+
+Build, Python/JavaScript syntax, generated inline-script parsing and whitespace
+checks pass. A second build produced an identical SHA-256. The generator
+asserts exact preservation of `height()` and `groundY()`, and all three tracked
+files under `art/reference/` match HEAD byte for byte. Final golden-mid,
+golden-far and golden-vista beauty images match the last full golden iteration
+byte for byte. Offline remeasurement of both mountain beauty/debug pairs
+reproduces the recorded differences and passes. No unrelated game test suite
+or hardware FPS benchmark was run.
+
+Browser and heavy image processes use `nice -n 10` and inherit that niceness.
+Chromium is the brief's `chromium-1254/chrome-linux64/chrome`, with exactly
+`--use-angle=swiftshader` and `--enable-unsafe-swiftshader` as explicit launch
+arguments, 1280×800, scale 1. Pages and browsers close in `finally`. Golden
+far/vista take an extra debug render and CPU terrain ray checks, which
+increase their capture cost.
+Timings are wall-clock capture costs under uncontrolled machine load; no
+interactive frame-rate claim or controlled performance comparison is made.
+
+Owner visual approval and normal-browser performance remain unverified.
+This work changes only the cosmetic hero scene and its evidence tooling;
+it does not implement the C island generator or alter gameplay terrain.
