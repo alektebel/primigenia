@@ -34,11 +34,9 @@ body { background: #2a3a20; color: #ccc; font-family: system-ui, sans-serif; ove
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
 /* ---- Helper: create object with position ---- */
-window.onerror = function(msg, url, line, col, err) { try { console.error("GLOBAL_ERROR:", msg, "line:", line, "err:", err ? err.stack : "no stack"); } catch(e) {} return false; };
 function pos(obj, x, y, z) { obj.position.set(x, y, z); return obj; }
 function scale(obj, x, y, z) { obj.scale.set(x, y, z); return obj; }
 function rot(obj, x, y, z) { obj.rotation.set(x, y, z); return obj; }
-window._posError = function(obj, x, y, z) { if (!obj) { console.error("pos() called with undefined!", x, y, z); new Error().stack.split("\n").slice(2,5).forEach(l => console.error("  at " + l)); } };
 
 /* ---- Inline food module ---- */
 function makeRng(seed) {
@@ -52,7 +50,7 @@ function makeRng(seed) {
 }
 
 function makeToon(hex, roughness) {
-  return new THREE.MeshStandardMaterial({ color: new THREE.Color(hex), roughness: roughness || 0.85, metalness: 0 });
+  return new THREE.MeshStandardMaterial({ color: new THREE.Color(hex), roughness: roughness || 0.8, metalness: 0 });
 }
 
 function makeEll(sx, sy, sz) {
@@ -66,8 +64,8 @@ function makeBerryBush(seed, size, full) {
   const rnd = makeRng(seed ^ 0x4B7F);
   const s = size || 1;
   const group = new THREE.Group();
-  const woodM = makeToon('#5a3a22', 0.9);
-  const leafM = makeToon('#4a7a2a', 0.8);
+  const woodM = makeToon('#4a2a15', 0.85);
+  const leafM = makeToon('#2a6a1a', 0.8);
 
   // Trunk
   const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.08*s, 0.12*s, 0.6*s, 8), woodM);
@@ -98,7 +96,7 @@ function makeBerryBush(seed, size, full) {
   if (full) {
     const berryCount = 18 + Math.round(rnd() * 8);
     const berryGeo = makeEll(0.02*s, 0.02*s, 0.02*s);
-    const berryMat = makeToon('#7a2040', 0.7);
+    const berryMat = makeToon('#6a1535', 0.65);
     const berryMesh = new THREE.InstancedMesh(berryGeo, berryMat, berryCount);
     const d = new THREE.Object3D();
     let ci = 0;
@@ -142,8 +140,8 @@ function makeTuberLeaves(seed, size, full) {
   const rnd = makeRng(seed ^ 0xA3D1);
   const s = size || 1;
   const group = new THREE.Group();
-  const leafM = full ? makeToon('#3a8830', 0.8) : makeToon('#5a7040', 0.8);
-  const midribM = makeToon('#2a6a20', 0.7);
+  const leafM = full ? makeToon('#3a8a2a', 0.75) : makeToon('#5a6a30', 0.85);
+  const midribM = makeToon('#1a5a15', 0.75);
 
   const lc = full ? 7 : 4;
   for (let i = 0; i < lc; i++) {
@@ -177,7 +175,7 @@ function makeTuberLeaves(seed, size, full) {
   // Grass tufts
   for (let i = 0; i < 6; i++) {
     const a = rnd() * Math.PI * 2, r = 0.15 + rnd() * 0.15, h = (0.06 + rnd() * 0.06) * s;
-    const tuft = new THREE.Mesh(new THREE.ConeGeometry(0.015*s, h, 5), makeToon('#4a7a30', 0.85));
+    const tuft = new THREE.Mesh(new THREE.ConeGeometry(0.015*s, h, 5), makeToon('#3a7020', 0.8));
     group.add(
       pos(tuft, Math.cos(a) * r * s, h * 0.4, Math.sin(a) * r * s),
       rot(tuft, (rnd()-0.5)*0.3, 0, (rnd()-0.5)*0.3)
@@ -192,7 +190,7 @@ function makeFruitingStalk(seed, height, full) {
   const rnd = makeRng(seed ^ 0xC7E2);
   const s = 1, stalkH = (height || 1.5) * s;
   const group = new THREE.Group();
-  const stalkM = full ? makeToon('#5a8030', 0.8) : makeToon('#7a8a50', 0.8);
+  const stalkM = full ? makeToon('#3a7020', 0.75) : makeToon('#6a7a30', 0.85);
 
   const stalk = new THREE.Mesh(new THREE.CylinderGeometry(0.02*s, 0.035*s, stalkH, 8), stalkM);
   group.add(pos(stalk, 0, stalkH/2, 0));
@@ -209,14 +207,14 @@ function makeFruitingStalk(seed, height, full) {
   const lcc = 4 + Math.round(rnd() * 3);
   for (let i = 0; i < lcc; i++) {
     const t = 0.3 + (i / lcc) * 0.55, a = rnd() * Math.PI * 2, lLen = (0.12 + rnd() * 0.08) * s;
-    const leaf = new THREE.Mesh(new THREE.BoxGeometry(0.02*s, 0.005*s, lLen), makeToon('#4a8030', 0.8));
+    const leaf = new THREE.Mesh(new THREE.BoxGeometry(0.02*s, 0.005*s, lLen), makeToon('#2a6018', 0.75));
     group.add(pos(leaf, Math.cos(a)*0.03*s, t*stalkH, Math.sin(a)*0.03*s), rot(leaf, 0, a, 0.4));
   }
 
   // Fruit cluster at top
   if (full) {
     const fruitCount = 8 + Math.round(rnd() * 5);
-    const fruitMat = makeToon('#d08030', 0.7);
+    const fruitMat = makeToon('#c06020', 0.65);
     const fruitMesh = new THREE.InstancedMesh(makeEll(0.035*s, 0.03*s, 0.035*s), fruitMat, fruitCount);
     const d = new THREE.Object3D();
     let fi = 0;
@@ -244,10 +242,10 @@ function makeFlowerPatches(seed, count, flowerType, full) {
   const rnd = makeRng(seed ^ 0x1F9A + (flowerType || 0) * 1000);
   count = count || 30;
   const types = [
-    { petals: 5, petalColor: '#e84080', centerColor: '#d0c040', stemColor: '#3a7030', size: 0.04 },
-    { petals: 5, petalColor: '#6070e8', centerColor: '#d0c040', stemColor: '#3a7030', size: 0.035 },
-    { petals: 6, petalColor: '#e8a030', centerColor: '#602020', stemColor: '#3a7030', size: 0.05 },
-    { petals: 4, petalColor: '#c060e0', centerColor: '#e0e040', stemColor: '#3a7030', size: 0.03 },
+    { petals: 5, petalColor: '#d02060', centerColor: '#c0a020', stemColor: '#2a6a1a', size: 0.04 },
+    { petals: 5, petalColor: '#3050d0', centerColor: '#c0a020', stemColor: '#2a6a1a', size: 0.035 },
+    { petals: 6, petalColor: '#d07020', centerColor: '#501515', stemColor: '#2a6a1a', size: 0.05 },
+    { petals: 4, petalColor: '#a030c0', centerColor: '#d0d020', stemColor: '#2a6a1a', size: 0.03 },
   ];
   const ft = types[flowerType] || types[0];
   const fullScale = full !== false ? 1 : 0.5;
@@ -303,7 +301,7 @@ function makeMossPatches(seed, count) {
   const rnd = makeRng(seed ^ 0x3E7B);
   count = count || 40;
   const mossGeo = makeEll(1, 0.04, 1);
-  const mossMat = makeToon('#4a7025', 0.9);
+  const mossMat = makeToon('#2a5a15', 0.85);
   const mossMesh = new THREE.InstancedMesh(mossGeo, mossMat, count);
   const d = new THREE.Object3D();
 
@@ -344,7 +342,7 @@ function makeFernPatches(seed, count) {
   }
 
   const fernGeo = makeFernGeo();
-  const fernMat = makeToon('#2a6a18', 0.8);
+  const fernMat = makeToon('#1a5a0a', 0.8);
   const fernMesh = new THREE.InstancedMesh(fernGeo, fernMat, count);
   const d = new THREE.Object3D();
   for (let i = 0; i < count; i++) {
@@ -387,7 +385,7 @@ function makeCloverPatches(seed, count) {
   }
 
   const cloverGeo = makeCloverGeo();
-  const cloverMat = makeToon('#3a8020', 0.8);
+  const cloverMat = makeToon('#3a7020', 0.8);
   const cloverMesh = new THREE.InstancedMesh(cloverGeo, cloverMat, count);
   const d = new THREE.Object3D();
   for (let i = 0; i < count; i++) {
@@ -421,7 +419,7 @@ function makeLabel(text, x, y, z) {
 
 /* ---- Three.js Scene Setup ---- */
 const T = THREE;
-console.log("1: creating renderer"); const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('view'), antialias: true, preserveDrawingBuffer: true });
+const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('view'), antialias: true, preserveDrawingBuffer: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 renderer.outputEncoding = THREE.sRGBEncoding;
@@ -431,19 +429,28 @@ renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 document.body.appendChild(renderer.domElement);
 
-console.log("2: creating scene"); const scene = new THREE.Scene();
-scene.background = new THREE.Color(0x5a7a4a);
-scene.fog = new THREE.Fog(0x8a9a7a, 20, 60);
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x8a9a7a);
+scene.fog = new THREE.Fog(0x9aa88a, 25, 70);
 
-console.log("3: creating camera"); const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 200);
-console.log("3.5: camera pos"); camera.position.set(5, 4, 7); camera.lookAt(0, 0.5, 0);
+const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 200);
+camera.position.set(5, 4, 7); camera.lookAt(0, 0.5, 0);
 
 
-console.log("4: lighting"); /* ---- Lighting ---- */
+/* ---- Lighting ---- */
 const SUN = new THREE.Vector3(-0.62, 0.28, -0.72).normalize();
-const sun = new THREE.DirectionalLight(0xffd2a0, 3.1);
+const sun = new THREE.DirectionalLight(0xffd4a4, 4.0);
 sun.position.copy(SUN.clone().multiplyScalar(10));
 sun.castShadow = true;
+sun.shadow.camera.near = 0.5;
+sun.shadow.camera.far = 50;
+sun.shadow.camera.left = -15;
+sun.shadow.camera.right = 15;
+sun.shadow.camera.top = 15;
+sun.shadow.camera.bottom = -15;
+sun.shadow.mapSize.width = 1024;
+sun.shadow.mapSize.height = 1024;
+sun.shadow.bias = -0.0005;
 sun.shadow.mapSize.width = 1024;
 sun.shadow.mapSize.height = 1024;
 sun.shadow.camera.left = -12; sun.shadow.camera.right = 12;
@@ -451,10 +458,11 @@ sun.shadow.camera.top = 12; sun.shadow.camera.bottom = -12;
 sun.shadow.camera.near = 1; sun.shadow.camera.far = 30;
 scene.add(sun);
 
-const hemi = new THREE.HemisphereLight(0xbfe0ff, 0x6f8a4a, 0.5);
+const hemi = new THREE.HemisphereLight(0xc8d8f0, 0x5a7a3a, 0.7);
+const ambient = new THREE.AmbientLight(0x404040, 0.3); scene.add(ambient);
 scene.add(hemi);
 
-console.log("5: ground"); /* ---- Ground ---- */
+/* ---- Ground ---- */
 const groundGeo = new THREE.PlaneGeometry(24, 18, 48, 36);
 const posAttr = groundGeo.attributes.position;
 for (let i = 0; i < posAttr.count; i++) {
@@ -462,13 +470,13 @@ for (let i = 0; i < posAttr.count; i++) {
   posAttr.setZ(i, (Math.sin(x*0.5)*0.08 + Math.cos(y*0.4)*0.06) * 0.3);
 }
 groundGeo.computeVertexNormals();
-const groundMat = new THREE.MeshStandardMaterial({ color: 0x4a7030, roughness: 0.9 });
+const groundMat = new THREE.MeshStandardMaterial({ color: 0x4a6a30, roughness: 0.85 });
 const ground = new THREE.Mesh(groundGeo, groundMat);
 ground.rotation.x = -Math.PI / 2;
 ground.receiveShadow = true;
 scene.add(ground);
 
-console.log("6: grass"); /* ---- Background grass ---- */
+/* ---- Background grass ---- */
 const bladeCount = 8000;
 const bladeGeo = new THREE.PlaneGeometry(0.02, 0.25, 1, 3);
 const bPos = bladeGeo.attributes.position;
@@ -476,7 +484,7 @@ for (let i = 0; i < bPos.count; i++) {
   if (bPos.getY(i) > 0) bPos.setX(bPos.getX(i) * 0.5);
 }
 bladeGeo.computeVertexNormals();
-const bladeMat = new THREE.MeshBasicMaterial({ color: 0x5a8030, side: THREE.DoubleSide });
+const bladeMat = new THREE.MeshBasicMaterial({ color: 0x4a7a2a, side: THREE.DoubleSide });
 const bladeMesh = new THREE.InstancedMesh(bladeGeo, bladeMat, bladeCount);
 const bd = new THREE.Object3D();
 for (let i = 0; i < bladeCount; i++) {
@@ -491,12 +499,12 @@ bladeMesh.frustumCulled = false;
 scene.add(bladeMesh);
 
 /* ---- Plant placement ---- */
-console.log("7: before SEED"); let SEED = 42;
+let SEED = 42;
 let showDepleted = true;
 const plantsGroup = new THREE.Group();
-scene.add(plantsGroup);
+scene.add(plantsGroup); sun.target = plantsGroup;
 
-console.log("8: before buildScene function"); function buildScene() {
+function buildScene() {
   // Clear
   while (plantsGroup.children.length) plantsGroup.remove(plantsGroup.children[0]);
 
@@ -563,7 +571,7 @@ console.log("8: before buildScene function"); function buildScene() {
     ' | triangles: ' + renderer.info.render.triangles;
 }
 
-console.log("9: calling buildScene()"); buildScene(); console.log("10: after buildScene()")
+buildScene(); console.log("10: after buildScene()")
 
 /* ---- Grid capture for screenshot ---- */
 const gridCams = [
@@ -642,13 +650,7 @@ function animate() {
 animate();
 
 // Print stats
-setTimeout(() => {
-  console.log('=== Food Props Stats ===');
-  console.log('Draw calls:', renderer.info.render.calls);
-  console.log('Triangles:', renderer.info.render.triangles);
-  console.log('Geometries:', renderer.info.memory.geometries);
-  console.log('Textures:', renderer.info.memory.textures);
-}, 1000);
+
 </script>
 </body>
 </html>
