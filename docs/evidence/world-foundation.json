@@ -1,0 +1,123 @@
+{
+  "implementation_commit": "1e74cbb2a17bfd649fcb4a306d337a7efa3ddfd6",
+  "platform": "x86-64 Linux",
+  "compiler": "cc (GCC) 16.2.1 20260810",
+  "node": "v26.13.0",
+  "browser": "158.0.8127.18",
+  "renderer": "SwiftShader software WebGL",
+  "checks": {
+    "make test": {
+      "result": "pass",
+      "log": "build/world-make-test.log"
+    },
+    "make wasm-test": {
+      "result": "pass",
+      "log": "build/world-wasm-test.log"
+    },
+    "make stage-test": {
+      "result": "pass",
+      "log": "build/world-stage-test.log"
+    },
+    "make studio-test": {
+      "result": "pass",
+      "log": "build/world-studio-test.log"
+    },
+    "make world-coverage": {
+      "result": "pass",
+      "log": "build/world-coverage.log"
+    },
+    "ASan + UBSan world unit tests": {
+      "result": "pass",
+      "log": "build/world-sanitizers/results.log"
+    }
+  },
+  "world_parity": {
+    "golden_seeds": [
+      1,
+      42,
+      987654321
+    ],
+    "ticks_per_golden": 3000,
+    "random_runs": 100,
+    "ticks_per_random_run": 3000,
+    "independent_wasm_instances": true,
+    "display_rates": [
+      30,
+      73
+    ]
+  },
+  "browser_world_replays": {
+    "biter-30-world.log": {
+      "ticks": 68,
+      "final_world_hash": "13d365a01be3cf9e",
+      "browser_every_tick_assertion": "passed in stage_play.cjs"
+    },
+    "biter-73-world.log": {
+      "ticks": 68,
+      "final_world_hash": "13d365a01be3cf9e",
+      "browser_every_tick_assertion": "passed in stage_play.cjs"
+    },
+    "guard-30-world.log": {
+      "ticks": 107,
+      "final_world_hash": "9b99b54fc005113b",
+      "browser_every_tick_assertion": "passed in stage_play.cjs"
+    },
+    "guard-73-world.log": {
+      "ticks": 107,
+      "final_world_hash": "9b99b54fc005113b",
+      "browser_every_tick_assertion": "passed in stage_play.cjs"
+    },
+    "spitter-30-world.log": {
+      "ticks": 84,
+      "final_world_hash": "1405169cdc2f1fe7",
+      "browser_every_tick_assertion": "passed in stage_play.cjs"
+    },
+    "spitter-73-world.log": {
+      "ticks": 84,
+      "final_world_hash": "1405169cdc2f1fe7",
+      "browser_every_tick_assertion": "passed in stage_play.cjs"
+    }
+  },
+  "stage_winnability": {
+    "seeds_per_fixture": 50,
+    "biter_wins": 39,
+    "guard_wins": 37,
+    "spitter_wins": 30,
+    "gate_percent": [
+      35,
+      80
+    ]
+  },
+  "coverage": {
+    "module": "core/src/stage_world.c",
+    "lines_percent": 99.51,
+    "lines": 615,
+    "branches_executed_percent": 98.97,
+    "branches": 585,
+    "branches_taken_percent": 91.97,
+    "method": "GCC -O0 --coverage; world unit tests plus three committed native world replays"
+  },
+  "analytic_height_comparison": {
+    "samples": 961,
+    "maximum_error_m": 0.004203,
+    "limit_m": 0.01,
+    "reference": "web/hero/index.html, seed 7"
+  },
+  "cli_scripted_episode": {
+    "ticks": 300,
+    "observations": 30,
+    "final_hash": "fea38e617bd5fa91"
+  },
+  "protected_paths_unchanged_from": "39e2a0a",
+  "protected_paths": [
+    "web/hero",
+    "art/reference",
+    "core/src/combat.c",
+    "apps/combat_bots.c"
+  ],
+  "hero_index_sha256": "82d2ef6d93a46d6baf0e5263f29c3ea1467152364a4617b7a7a42cfa2dd53856",
+  "open_issues": [
+    "Existing P2 tournament balance gates remain outside this task and are unchanged; G55 merge gate still applies.",
+    "No human playtest or hardware FPS measurement was performed."
+  ]
+}

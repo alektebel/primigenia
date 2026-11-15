@@ -13,7 +13,7 @@ CORE_OBJ := $(CORE_SRC:%.c=$(BUILD)/%.o)
 HDRS     := $(wildcard core/include/cpore/*.h)
 
 .PHONY: all core lib test bench tourney smoke studio blender blender-mcp-setup blender-mcp-smoke blender-sample-parts clean check-core
-all: core $(BUILD)/cpore_test $(BUILD)/cpore_bench $(BUILD)/combat_test $(BUILD)/combat_tourney
+all: $(BUILD)/world_cli core $(BUILD)/cpore_test $(BUILD)/cpore_bench $(BUILD)/combat_test $(BUILD)/combat_tourney
 
 core: $(BUILD)/libcpore.a $(BUILD)/libcpore.so
 lib: $(BUILD)/libcpore.so
@@ -35,7 +35,7 @@ $(BUILD)/cpore_bench: apps/bench.c $(HDRS) $(BUILD)/libcpore.a
 # Combat (P2): bots and the duel runner live in apps/ and are shared by the tests and the tourney.
 $(BUILD)/apps/combat_bots.o: apps/combat_bots.c apps/combat_bots.h $(HDRS)
 	@mkdir -p $(dir $@)
-	$(CC) $(CFLAGS) -Iapps -c $< -o $@
+	$(CC) $(CFLAGS) -fPIC -Iapps -c $< -o $@
 $(BUILD)/combat_test: tests/test_combat.c core/src/combat.c apps/combat_bots.h $(BUILD)/apps/combat_bots.o $(HDRS) $(BUILD)/libcpore.a
 	$(CC) $(CFLAGS) -DCP_COMBAT_TEST -Iapps $< core/src/combat.c $(BUILD)/apps/combat_bots.o $(BUILD)/libcpore.a -o $@ $(LDLIBS)
 $(BUILD)/combat_tourney: apps/combat_tourney.c apps/combat_bots.h $(BUILD)/apps/combat_bots.o $(HDRS) $(BUILD)/libcpore.a
@@ -49,8 +49,9 @@ $(BUILD)/combat_golden: tests/combat_golden.c apps/combat_bots.h $(BUILD)/apps/c
 
 # Correctness regressions. Balance acceptance remains a separate failing gate:
 # run make tourney as well before claiming P2 acceptance.
-test: $(BUILD)/terrain_test $(BUILD)/cpore_test $(BUILD)/combat_test $(BUILD)/combat_tourney_test $(BUILD)/combat_golden check-core
+test: $(BUILD)/world_test $(BUILD)/terrain_test $(BUILD)/cpore_test $(BUILD)/combat_test $(BUILD)/combat_tourney_test $(BUILD)/combat_golden check-core
 	nice -n 10 ./$(BUILD)/terrain_test
+	./$(BUILD)/world_test
 	python3 tests/test_terrain_metrics.py
 	./$(BUILD)/cpore_test
 	./$(BUILD)/combat_test
@@ -163,3 +164,32 @@ wasm-test: terrain-parity
 terrain-metrics: $(BUILD)/terrain_cli
 	nice -n 10 python3 tools/terrain/metrics.py --cli $(BUILD)/terrain_cli --n 1024 --seeds 1,7,42 --workdir $(BUILD)/terrain --json $(BUILD)/terrain/metrics.json --check
 terrain-test: terrain-metrics
+
+# G56: world simulation (the cell-stage world.c retains its historical name).
+$(BUILD)/libcpore.a $(BUILD)/libcpore.so: $(BUILD)/apps/combat_bots.o
+$(BUILD)/world_test: tests/test_world.c $(HDRS) $(BUILD)/libcpore.a
+	$(CC) $(CFLAGS) $< $(BUILD)/libcpore.a -o $@ $(LDLIBS)
+WORLD_SRC := core/src/stage_world.c $(WASM_SRC)
+WORLD_EXPORTS := '[_cw_version,_cw_config,_cw_profile,_cw_spawn,_cw_obstacle,_cw_reset,_cw_height,_cw_ground,_cw_step,_cw_hash,_cw_meta,_cw_entities,_cw_orders,_cw_observe,_cb_layout,_cb_tick,_cb_count,_cb_states,_cb_event_count,_cb_events,_cb_hash,_cb_preview]'
+wasm: $(BUILD)/wasm/cpore_world.mjs $(BUILD)/wasm/cpore_world.wasm
+$(BUILD)/wasm/cpore_world.mjs $(BUILD)/wasm/cpore_world.wasm &: $(WORLD_SRC) apps/world_wasm_api.c apps/wasm_api.c apps/combat_bots.h $(HDRS) Makefile
+	@mkdir -p $(dir $@)
+	$(EMCC_RUN) $(WASM_FLAGS) $(WORLD_SRC) apps/world_wasm_api.c --no-entry -sMODULARIZE=1 -sEXPORT_ES6=1 -sENVIRONMENT=web,node -sEXPORTED_FUNCTIONS=$(WORLD_EXPORTS) -sEXPORTED_RUNTIME_METHODS=HEAP8,HEAPU8,HEAPU32,UTF8ToString -o $(BUILD)/wasm/cpore_world.mjs
+$(BUILD)/world_cli: apps/world_cli.c $(HDRS) $(BUILD)/libcpore.a
+	$(CC) $(CFLAGS) $< $(BUILD)/libcpore.a -o $@ $(LDLIBS)
+world-test: $(BUILD)/world_test $(BUILD)/world_cli wasm
+	nice -n 10 ./$(BUILD)/world_test
+	nice -n 10 node tests/test_wasm_world.mjs
+wasm-test: world-test
+stage-test: $(BUILD)/world_cli
+
+.PHONY: world-test world-coverage
+world-coverage: $(BUILD)/libcpore.a
+	@mkdir -p $(BUILD)/world-coverage
+	python3 -c 'from pathlib import Path; [p.unlink() for p in Path("$(BUILD)/world-coverage").glob("*.gcda")]'
+	nice -n 10 $(CC) $(CFLAGS) -O0 --coverage -c $(CURDIR)/core/src/stage_world.c -o $(BUILD)/world-coverage/stage_world.o
+	nice -n 10 $(CC) $(CFLAGS) -O0 --coverage tests/test_world.c $(BUILD)/world-coverage/stage_world.o $(BUILD)/libcpore.a -o $(BUILD)/world-coverage/unit $(LDLIBS)
+	nice -n 10 $(CC) $(CFLAGS) -O0 --coverage apps/world_cli.c $(BUILD)/world-coverage/stage_world.o $(BUILD)/libcpore.a -o $(BUILD)/world-coverage/cli $(LDLIBS)
+	nice -n 10 ./$(BUILD)/world-coverage/unit
+	@for seed in 1 42 987654321; do nice -n 10 ./$(BUILD)/world-coverage/cli --replay tests/golden/world-$$seed.log >/dev/null || exit 1; done
+	cd $(BUILD)/world-coverage && gcov -b -c stage_world.gcno

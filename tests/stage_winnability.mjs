@@ -2,7 +2,7 @@
  * Uses the stage simulation and the C/WASM core. No browser. */
 import { readFileSync } from 'node:fs';
 import assert from 'node:assert/strict';
-import { Combat } from '../web/engine/cpcombat.js';
+import { World } from '../web/engine/cpworld.js';
 import { profileFromStudio } from '../web/engine/profile.js';
 import { StageSimulation } from '../web/stage/simulation.js';
 import { stagePlayerPolicy } from './stage_policy.mjs';
@@ -12,12 +12,12 @@ const enemyProfile = {
   ...profileFromStudio(JSON.parse(readFileSync('web/stage/species/garfio.json', 'utf8')), manifest),
   ...JSON.parse(readFileSync('web/stage/species/garfio-combat.json', 'utf8')),
 };
-const combat = await Combat.create();
+const world = await World.create();
 
 function fight(profile, seed) {
   const sim = new StageSimulation({
-    combat, profile, enemyProfile, seed,
-    nest: { x: 0, z: 0 }, home: { x: 0, z: 12 }, groundY: () => 2,
+    world, profile, enemyProfile, seed,
+    nest: { x: 0, z: 0 }, home: { x: 0, z: 12 }, terrain: 1,
   });
   for (let t = 0; t < 900 && !sim.outcome; t++) sim.advance(0.1, () => stagePlayerPolicy(sim));
   return sim.outcome;

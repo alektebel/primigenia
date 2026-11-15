@@ -1,7 +1,7 @@
 /* Input acceptance and planted-foot measurement. Render only evidence frames. */
 const {chromium}=require('playwright');
 const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path');
-const out=path.resolve('docs/evidence/stage/polish');fs.mkdirSync(out,{recursive:true});
+const out=path.resolve(process.env.CPORE_STAGE_POLISH_EVIDENCE||'docs/evidence/stage/polish');fs.mkdirSync(out,{recursive:true});
 (async()=>{
  const browser=await chromium.launch({headless:true,executablePath:process.env.HOME+'/.cache/ms-playwright/chromium-1254/chrome-linux64/chrome',args:['--use-angle=swiftshader','--enable-unsafe-swiftshader']});
  try{
@@ -15,6 +15,9 @@ const out=path.resolve('docs/evidence/stage/polish');fs.mkdirSync(out,{recursive
   const project=point=>page.evaluate(point=>{const p=new Stage.env.T.Vector3(point.x,Stage.env.groundY(point.x,point.z),point.z).project(Stage.env.camera);return {x:(p.x+1)*innerWidth/2,y:(1-p.y)*innerHeight/2}},point);
   const advance=seconds=>page.evaluate(seconds=>{for(let i=0;i<Math.round(seconds*30);i++)Stage.frame(1/30)},seconds);
   const start=await page.evaluate(()=>Stage.snapshot());
+  // Keep the pointer journey independent of the new 28 m predator sight.
+  // Reset through the C setup API; natural hostility is tested in stage_play.
+  await page.evaluate(()=>{const s=Stage.simulation;window.__polishSetup=structuredClone(s.world.setup);s.world.reset({...s.world.setup,wild:[{...s.world.setup.wild[0],x:150,z:150,home:{x:150,z:150}}]});s.sync();s.previous=[{...s.player},{...s.enemy}];});
   // Walk a short clear part of the real nest-to-home route (away from aggro).
   const target={x:start.nest.x+(start.home.x-start.nest.x)*.22,z:start.nest.z+(start.home.z-start.nest.z)*.22};
   const screen=await project(target);await page.mouse.click(screen.x,screen.y);
@@ -31,7 +34,7 @@ const out=path.resolve('docs/evidence/stage/polish');fs.mkdirSync(out,{recursive
   assert(Math.hypot(heldA.x-heldB.x,heldA.z-heldB.z)>.5,'hold follows a moving pointer');
   const following=await page.evaluate(()=>({...Stage.simulation.player}));assert(Math.hypot(following.x-arrived.x,following.z-arrived.z)>.5);
   // Select using an actual ray into Garfio's visible anatomy.
-  await page.evaluate(()=>{Stage.simulation.destination=null;Stage.draw()});
+  await page.evaluate(()=>{const s=Stage.simulation;s.world.reset(window.__polishSetup);s.encounter=null;s.sync();s.destination=null;s.pendingAttack=null;s.previous=[{...s.player},{...s.enemy}];Stage.draw()});
   const enemyScreen=await page.evaluate(()=>{const r=Stage.rigs[1],p=r.pts[Math.floor(r.NS*.6)].clone().applyMatrix4(r.creature.matrixWorld).project(Stage.env.camera);return {x:(p.x+1)*innerWidth/2,y:(1-p.y)*innerHeight/2}});
   await page.mouse.click(enemyScreen.x,enemyScreen.y);assert(await page.evaluate(()=>Stage.selected),'enemy selected');
   await page.evaluate(()=>Stage.draw());await page.screenshot({path:path.join(out,'selection-ring.png'),timeout:90000});
@@ -67,7 +70,7 @@ const out=path.resolve('docs/evidence/stage/polish');fs.mkdirSync(out,{recursive
   });
   assert(feet.samples>100&&feet.contacts>0);assert(feet.maxStanceDisplacement<.03,JSON.stringify(feet));assert.equal(feet.phaseAtStop,feet.phaseAfterStationary,'phase follows displacement, not time');
   // Six rendered frames of actual free-roam curved movement on the real valley.
-  await page.evaluate(()=>{const s=Stage.simulation;s.encounter=null;s.enemy.dead=true;s.outcome=null;s.respawn=0;s.destination=null;s.pendingAttack=null;Object.assign(s.player,s.nest,{speed:0,yaw:0,hp:s.profile.hp});s.previous=[{...s.player},{...s.enemy}];Stage.setTimeline(t=>({move:[Math.sin(t*.6),Math.cos(t*.6)]}))});
+  await page.evaluate(()=>{const s=Stage.simulation;s.destination=null;s.pendingAttack=null;s.world.reset({...s.world.setup,wild:[{...s.world.setup.wild[0],x:150,z:150,home:{x:150,z:150}}]});s.encounter=null;s.sync();s.previous=[{...s.player},{...s.enemy}];Stage.setTimeline(t=>({move:[Math.sin(t*.6),Math.cos(t*.6)]}))});
   const curve=[];
   for(let i=0;i<6;i++){await page.evaluate(()=>{for(let f=0;f<12;f++){Stage.frame(1/30);Stage.pose(1/30)}Stage.draw(0)});curve.push(await page.evaluate(()=>({...Stage.simulation.player})));await page.screenshot({path:path.join(out,`curve-${i+1}.png`),timeout:90000})}
   assert.deepEqual(errors,[]);

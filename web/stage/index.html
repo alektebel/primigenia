@@ -208,7 +208,11 @@ SporeBench.state()   // verdad terreno</pre>
 <script src="../studio/genome.js"></script>
 <script>window.__heroBuild=env=>window.__stageEnvironment=env;</script>
 <script type="module" src="stage.js"></script>
-<script>
+<script type="module">
+import {World} from '../engine/cpworld.js';
+const stageWorld=await World.create();
+stageWorld.reset({seed:42});
+window.__stageWorld=stageWorld;
 (()=>{
 const T=THREE,$=id=>document.getElementById(id),HL=window.__heroLight;
 const DT=1/60,S=640,HALF=S/2,BW=768,BH=480;
@@ -224,14 +228,7 @@ function vnoise(x,y){const xi=Math.floor(x),yi=Math.floor(y),xf=x-xi,yf=y-yi,u=x
   return lerp(lerp(h(xi,yi),h(xi+1,yi),u),lerp(h(xi,yi+1),h(xi+1,yi+1),u),v)}
 function fbm(x,y,o){let a=.5,f=1,s=0,n=0;for(let i=0;i<o;i++){s+=a*vnoise(x*f,y*f);n+=a;a*=.5;f*=2.03}return s/n}
 const LAKE=[70,-55];
-function height(x,z){
-  const d=Math.hypot(x,z),r=d/HALF;
-  let h=(fbm(x*.006+10,z*.006+10,4)-.5)*30+4;
-  const c=Math.exp(-d*d/1600)*.8;h=h*(1-c)+3*c;
-  const lx=x-LAKE[0],lz=z-LAKE[1];h-=12*Math.exp(-(lx*lx+lz*lz)/1500);
-  const m=sstep(.42,.9,r),rid=1-Math.abs(fbm(x*.004+50,z*.004+50,5)*2-1);
-  return h+m*(25+rid*rid*150)+m*m*30;
-}
+function height(x,z){return stageWorld.height(x,z)}
 const walkable=(x,z)=>{const h=height(x,z);return h>-.7&&h<32&&Math.hypot(x,z)<HALF*.62};
 function findLand(x,z){for(let r=0;r<90;r+=4)for(let k=0;k<8;k++){const a=k*Math.PI/4,px=x+Math.sin(a)*r,pz=z+Math.cos(a)*r,h=height(px,pz);if(h>1.8&&h<20)return[px,pz]}return[x,z]}
 
@@ -269,103 +266,7 @@ function newGame(seed){
   let tries=0;while(W.bushes.length<16&&tries++<600){const a=rng()*6.283,r=14+rng()*115,x=sx+Math.sin(a)*r,z=sz+Math.cos(a)*r,h=height(x,z);
     if(h>1.6&&h<22&&!W.bushes.some(b=>Math.hypot(b.x-x,b.z-z)<14))W.bushes.push({x,z,fruit:3,regrow:0})}
 }
-function nearest(list,x,z,f){let b=null,bd=1e9;for(const o of list){if(f&&!f(o))continue;const d=Math.hypot(o.x-x,o.z-z);if(d<bd){bd=d;b=o}}return b?{o:b,d:bd}:null}
-function addDNA(n){W.dna=Math.max(0,W.dna+n);
-  if(W.dna>=100&&!W.free){W.dna=100;W.over='win'}
-  else if(W.dna>=W.nextEvo){W.pending=true}}
-function evolve(k){if(!W.pending||k<1||k>3)return false;const p=W.p;
-  if(k===1){p.dmg+=8;p.g.horns=1;p.g.snout='carn';say('Mandíbula y cuernos: muerdes más fuerte','Evolved: jaw (+8 damage)')}
-  if(k===2){p.spd+=2.5;p.g.leg*=1.4;say('Patas largas: corres más','Evolved: legs (+speed)')}
-  if(k===3){W.charm++;p.g.crest=1;p.g.fin=1;say('Cresta vistosa: haces amigos antes','Evolved: crest (friends need one song less)')}
-  p.max+=15;p.hp=Math.min(p.max,p.hp+30);W.pending=false;W.nextEvo=W.nextEvo===30?60:1e9;p.rebuild=true;return true}
-function packAggro(c){for(const o of W.npcs)if(o.sp===c.sp&&!o.dead&&Math.hypot(o.x-c.x,o.z-c.z)<45)o.aggro=18}
-function doAct(act){const p=W.p;if(p.cd>0||p.hp<=0)return;
-  if(act==='eat'){
-    const b=nearest(W.bushes,p.x,p.z,b=>b.fruit>0),m=nearest(W.npcs,p.x,p.z,c=>c.dead&&c.meat>0);
-    if(m&&m.d<4.5+radius(m.o)){m.o.meat--;p.food=Math.min(100,p.food+40);p.eatT=.6;p.cd=.7;addDNA(3);say('Carne: +40 hambre, +3 ADN','Ate meat: +40 food, +3 DNA')}
-    else if(b&&b.d<5.5){b.o.fruit--;b.o.regrow=45;p.food=Math.min(100,p.food+25);p.eatT=.6;p.cd=.7;addDNA(1);say('Fruta: +25 hambre, +1 ADN','Ate fruit: +25 food, +1 DNA')}
-    else say('No hay nada que comer aquí','Nothing to eat in reach')}
-  if(act==='attack'){p.atkT=.35;p.cd=.55;
-    const t=nearest(W.npcs,p.x,p.z,c=>!c.dead&&Math.hypot(c.x-p.x,c.z-p.z)<3.4+radius(c)&&(Math.sin(p.a)*(c.x-p.x)+Math.cos(p.a)*(c.z-p.z))>0);
-    if(!t){say('Muerdes el aire','Bite missed: no target in front');return}
-    const c=t.o,sp=c.sp;c.hp-=p.dmg;c.hitT=.15;W.fx.push({k:'hit',x:c.x,z:c.z,h:radius(c)});
-    if(c.friend>=need(sp)){sp.friends=Math.max(0,sp.friends-1)}c.friend=0;
-    if(sp.ally){sp.ally=false;sp.done=null}
-    packAggro(c);
-    if(c.hp<=0){c.dead=true;c.deadT=0;c.meat=2;sp.kills++;let g=sp.id==='coloso'?40:6,en=`Killed ${sp.name}: +${g} DNA`,es=`${sp.name} abatido: +${g} ADN`;
-      if(sp.kills===3&&!sp.done){sp.done='hunted';g+=20;es=`Has dominado a los ${sp.name}s: +${g} ADN`;en=`${sp.name} pack dominated: +${g} DNA`}
-      say(es,en);addDNA(g)}
-    else say(`Muerdes a ${sp.name} (${Math.ceil(c.hp)} de vida)`,`Bit ${sp.name}: ${Math.ceil(c.hp)} hp left`)}
-  if(act==='social'){p.socT=1;p.cd=1.2;W.fx.push({k:'note',x:p.x,z:p.z,h:3});
-    const t=nearest(W.npcs,p.x,p.z,c=>!c.dead);
-    if(!t||t.d>8+radius(t.o)){say('Cantas, pero nadie te oye','Sang: nobody in range');return}
-    const c=t.o,sp=c.sp,nd=need(sp);
-    if(c.hostile){say(`${sp.name} está furioso, no escucha`,`${sp.name} is hostile and ignores the song`);return}
-    if(sp.id==='coloso'){say('El Coloso ignora tu canto','The Coloso ignores the song');return}
-    if(c.friend>=nd){say(`${sp.name} ya es tu amigo`,`This ${sp.name} is already a friend`);return}
-    c.friend++;c.socT=1.2;
-    if(c.friend>=nd){sp.friends++;let g=8,es=`Nuevo amigo ${sp.name}: +8 ADN`,en=`Befriended a ${sp.name}: +8 DNA`;
-      if(sp.friends===3&&!sp.done){sp.done='ally';sp.ally=true;g+=20;es=`Los ${sp.name}s son tus aliados: +${g} ADN`;en=`${sp.name} pack allied: +${g} DNA`}
-      say(es,en);addDNA(g)}
-    else say(`${sp.name} te escucha (${c.friend}/${nd})`,`${sp.name} listens (${c.friend}/${nd})`)}
-}
-function turnTo(a,t,m){let d=((t-a+Math.PI)%6.2832+6.2832)%6.2832-Math.PI;return a+clamp(d,-m,m)}
-function tick(inp){
-  const p=W.p;if(W.over||W.pending)return;W.time+=DT;W.ticks++;
-  const rng=W.rng;
-  if(p.hp>0){
-    p.cd-=DT;p.atkT=Math.max(0,p.atkT-DT);p.socT=Math.max(0,p.socT-DT);p.eatT=Math.max(0,p.eatT-DT);p.hitT=Math.max(0,p.hitT-DT);
-    p.a+=inp.turn*2.5*DT;
-    const mv=(p.socT>0||p.eatT>0)?0:inp.move,sp=p.spd*(mv<0?.5:1)*mv,nx=p.x+Math.sin(p.a)*sp*DT,nz=p.z+Math.cos(p.a)*sp*DT;
-    if(walkable(nx,nz)){p.x=nx;p.z=nz}else if(walkable(nx,p.z))p.x=nx;else if(walkable(p.x,nz))p.z=nz;
-    p.walk=lerp(p.walk,Math.abs(mv),.2);p.phase+=Math.abs(sp)*DT*3/Math.sqrt(p.g.leg+.3);
-    if(inp.act)doAct(inp.act);
-    p.food=Math.max(0,p.food-.45*DT);
-    if(p.food<=0)p.hp-=2*DT;else if(W.time-p.lastHit>4&&p.food>25)p.hp=Math.min(p.max,p.hp+1.5*DT);
-    if(p.hp<=0)killPlayer(p.food<=0?'Has muerto de hambre':'Te han derribado',p.food<=0?'You starved':'You were killed');
-  }else{p.deadT+=DT;if(!W.over&&(W.respawn-=DT)<=0){p.hp=p.max;p.food=60;p.x=W.spawn[0];p.z=W.spawn[1];p.dead=false;p.deadT=0;for(const c of W.npcs)c.aggro=0;addDNA(-10);say('Renaces en tu nido: −10 ADN','Respawned')}}
-  for(const b of W.bushes)if(b.fruit<3&&(b.regrow-=DT)<=0){b.fruit++;b.regrow=45}
-  for(const c of W.npcs){
-    if(c.dead){c.deadT+=DT;continue}
-    c.cd-=DT;c.atkT=Math.max(0,c.atkT-DT);c.socT=Math.max(0,c.socT-DT);c.aggro=Math.max(0,c.aggro-DT);c.hitT=Math.max(0,c.hitT-DT);
-    const sp=c.sp,dx=p.x-c.x,dz=p.z-c.z,d=Math.hypot(dx,dz),hd=Math.hypot(c.x-c.hx,c.z-c.hz),r=radius(c);
-    const ally=sp.ally||c.friend>=need(sp);
-    let hostile=p.hp>0&&(c.aggro>0||(!ally&&((sp.temper===2&&d<28)||(sp.temper===1&&d<8+r))));
-    const flee=sp.temper===0&&c.aggro>0&&c.hp<c.max*.5;
-    if(hostile&&!flee&&hd>75){hostile=false;c.aggro=0}
-    c.hostile=hostile;
-    let tx=0,tz=0,speed=0;
-    if(hostile&&flee){tx=c.x-dx;tz=c.z-dz;speed=sp.spd}
-    else if(hostile){const reach=2.2+r;
-      if(d>reach){tx=p.x;tz=p.z;speed=sp.spd}
-      else{c.a=turnTo(c.a,Math.atan2(dx,dz),6*DT);if(c.cd<=0){c.cd=1.1;c.atkT=.35;p.hp-=sp.dmg;p.hitT=.15;p.lastHit=W.time;say(`${sp.name} te muerde: −${sp.dmg} vida`,`${sp.name} bit you: -${sp.dmg} hp`);
-        if(p.hp<=0)killPlayer('Te han derribado','You were killed')}}}
-    else if(c.socT>0){c.a=turnTo(c.a,Math.atan2(dx,dz),5*DT)}
-    else{c.wt-=DT;
-      if(c.wt<=0||Math.hypot(c.tx-c.x,c.tz-c.z)<1.5){const a=rng()*6.283,rr=rng()*sp.roam;c.tx=c.hx+Math.sin(a)*rr;c.tz=c.hz+Math.cos(a)*rr;c.wt=4+rng()*6;c.idle=rng()<.45?1+rng()*3:0}
-      if(c.idle>0)c.idle-=DT;else{tx=c.tx;tz=c.tz;speed=sp.spd*.4}}
-    let moved=0;
-    if(speed>0){c.a=turnTo(c.a,Math.atan2(tx-c.x,tz-c.z),4*DT);const nx=c.x+Math.sin(c.a)*speed*DT,nz=c.z+Math.cos(c.a)*speed*DT;
-      if(walkable(nx,nz)){c.x=nx;c.z=nz;moved=speed/sp.spd}else c.wt=0}
-    const dd=Math.hypot(p.x-c.x,p.z-c.z),min=r+1.3;
-    if(dd<min&&dd>.01&&p.hp>0){const k=(min-dd)/dd,nx=c.x-(p.x-c.x)*k,nz=c.z-(p.z-c.z)*k;if(walkable(nx,nz)){c.x=nx;c.z=nz}}
-    c.walk=lerp(c.walk,moved,.15);c.phase+=speed*moved*DT*3/Math.sqrt(c.g.leg*c.g.size+.3);
-  }
-}
-function killPlayer(es,en){const p=W.p;p.hp=0;p.dead=true;p.deadT=0;say(es,en);if(low)W.over='dead';else W.respawn=2.5}
-function nearInfo(){const p=W.p;
-  if(W.over)return{es:'',en:`EPISODE OVER: ${W.over.toUpperCase()}  |  final score (DNA) ${Math.floor(W.dna)}`};
-  if(W.pending)return{es:'',en:'EVOLVE NOW: evolve_1 jaw (+damage) | evolve_2 legs (+speed) | evolve_3 crest (easier friends)'};
-  const m=nearest(W.npcs,p.x,p.z,c=>c.dead&&c.meat>0),b=nearest(W.bushes,p.x,p.z,b=>b.fruit>0),t=nearest(W.npcs,p.x,p.z,c=>!c.dead);
-  const es=[],en=[];
-  if(m&&m.d<4.5+radius(m.o)){es.push('<kbd>E</kbd> comer carne');en.push('MEAT in reach [eat]')}
-  else if(b&&b.d<5.5){es.push('<kbd>E</kbd> comer fruta');en.push('FRUIT in reach [eat]')}
-  if(t&&t.d<14+radius(t.o)){const c=t.o,sp=c.sp,nd=need(sp),rel=c.hostile?'hostile':(sp.ally||c.friend>=nd)?'friend':'neutral',relEs={hostile:'hostil',friend:'amigo',neutral:'neutral'}[rel];
-    let e=`${sp.name} (${relEs})`,n=`${sp.name} ${rel} hp ${Math.ceil(c.hp)}/${c.max} dist ${t.d.toFixed(0)}`;
-    if(t.d<8+radius(c)&&rel==='neutral'&&sp.id!=='coloso'){e+=` · <kbd>R</kbd> cantar ${c.friend}/${nd}`;n+=` [socialize ${c.friend}/${nd}]`}
-    if(t.d<3.4+radius(c)){e+=' · <kbd>F</kbd> morder';n+=' [attack if facing]'}
-    es.push(e);en.push(n)}
-  return{es:es.join(' &nbsp; '),en:en.join('  |  ')}}
+function nearInfo(){return {es:'',en:''}}
 
 /* ---------- geometría ---------- */
 const geoC={},matC={};
@@ -868,53 +769,8 @@ function resize(){const v=$('view');if(low){renderer.setPixelRatio(1);renderer.s
   else{const w=v.clientWidth||800,h=v.clientHeight||600;renderer.setPixelRatio(Math.min(devicePixelRatio||1,2));renderer.setSize(w,h,false);camera.aspect=w/h}dirty=true}
 function start(seed){newGame(seed);buildScene();camPos=null;camYaw=0;resize();say(low?'':'Explora el valle: canta para hacer amigos o caza para dominar',low?'Reach 100 DNA: befriend (socialize) or hunt (attack) creatures, eat to survive':'');render(0);drawHUD()}
 function setMode(lo){low=lo;document.body.classList.toggle('bench',lo);$('m-pretty').setAttribute('aria-pressed',!lo);$('m-bench').setAttribute('aria-pressed',lo);try{history.replaceState(null,'',lo?'#benchmark':'#naturalista')}catch(e){}start(+$('seed').value||7)}
-function frame(t){requestAnimationFrame(frame);const dt=Math.max(0,(t-last)/1000||0);last=t;
-  if(low){if(dirty){render(0);drawHUD();dirty=false}return}
-  acc+=window.__heroFreeze?0:dt;while(acc>=DT){tick({move:(keys.w||keys.arrowup?1:0)-(keys.s||keys.arrowdown?1:0),turn:(keys.a||keys.arrowleft?1:0)-(keys.d||keys.arrowright?1:0),act:queued});queued=null;acc-=DT}
-  render(dt);drawHUD()}
-const ACTIONS=['forward','back','turn_left','turn_right','eat','attack','socialize','noop','evolve_1','evolve_2','evolve_3'];
-function benchStep(action){
-  if(!ACTIONS.includes(action))throw new Error('unknown action '+action);
-  if(W.over)return result(0);
-  const d0=W.dna;W.steps++;
-  if(action.startsWith('evolve_'))evolve(+action.slice(7));
-  else if(!W.pending){const inp={move:action==='forward'?1:action==='back'?-1:0,turn:action==='turn_left'?1:action==='turn_right'?-1:0,act:{eat:'eat',attack:'attack',socialize:'social'}[action]||null};
-    for(let i=0;i<opts.stepTicks&&!W.over&&!W.pending;i++){tick(inp);inp.act=null}}
-  if(!W.over&&W.steps>=opts.maxSteps)W.over='timeout';
-  dirty=true;return result(W.dna-d0)}
-const result=r=>({reward:r,dna:Math.floor(W.dna),done:!!W.over,outcome:W.over,step:W.steps});
-window.SporeBench={actions:ACTIONS,
-  reset(o={}){opts={maxSteps:o.maxSteps||600,stepTicks:o.stepTicks||30};if(!low){low=true;document.body.classList.add('bench');$('m-pretty').setAttribute('aria-pressed',false);$('m-bench').setAttribute('aria-pressed',true)}$('seed').value=o.seed??7;start(o.seed??7);return result(0)},
-  step:benchStep,
-  teleport(x,z,heading){const p=W.p;[p.x,p.z]=findLand(x,z);if(heading!=null)p.a=heading;camPos=null;dirty=true},
-  observe(){render(0);drawBenchHUD();dirty=false;const c=document.createElement('canvas');c.width=BW;c.height=BH;const x=c.getContext('2d');x.drawImage(renderer.domElement,0,0,BW,BH);x.drawImage($('hudc'),0,0);return c.toDataURL('image/png')},
-  state(){const p=W.p;return{seed:W.seed,step:W.steps,time:+W.time.toFixed(2),dna:W.dna,outcome:W.over,pendingEvolution:W.pending,player:{x:p.x,z:p.z,heading:p.a,hp:p.hp,maxHp:p.max,food:p.food,damage:p.dmg,speed:p.spd},
-    species:W.sp.map(s=>({id:s.id,friends:s.friends,kills:s.kills,status:s.done})),creatures:W.npcs.map(c=>({species:c.sp.id,x:c.x,z:c.z,hp:c.hp,dead:c.dead,hostile:c.hostile,songs:c.friend})),bushes:W.bushes.map(b=>({x:b.x,z:b.z,fruit:b.fruit}))}}};
-
-addEventListener('reference-keydown',e=>{if(e.target.tagName==='INPUT')return;const k=e.key.toLowerCase();
-  if(low){const a={w:'forward',arrowup:'forward',s:'back',arrowdown:'back',a:'turn_left',arrowleft:'turn_left',d:'turn_right',arrowright:'turn_right',e:'eat',f:'attack',r:'socialize',' ':'noop',1:'evolve_1',2:'evolve_2',3:'evolve_3'}[k];if(a){e.preventDefault();show(benchStep(a))}return}
-  keys[k]=true;if(k==='e')queued='eat';if(k==='f'||k===' ')queued='attack';if(k==='r')queued='social';if(W.pending&&'123'.includes(k))evolve(+k);if(k.startsWith('arrow')||k===' ')e.preventDefault()});
-addEventListener('reference-keyup',e=>keys[e.key.toLowerCase()]=false);
-addEventListener('blur',()=>{for(const k in keys)keys[k]=false});
+function frame(t){requestAnimationFrame(frame);const dt=Math.max(0,(t-last)/1000||0);last=t;render(dt)}
 addEventListener('resize',resize);
-let drag=null;const gl=$('gl');
-gl.addEventListener('reference-pointerdown',e=>{if(!low){drag=[e.clientX,e.clientY];gl.setPointerCapture(e.pointerId)}});
-gl.addEventListener('reference-pointermove',e=>{if(drag){camYaw-=(e.clientX-drag[0])*.006;camPitch=clamp(camPitch+(e.clientY-drag[1])*.004,.05,1.2);drag=[e.clientX,e.clientY]}});
-gl.addEventListener('reference-pointerup',()=>drag=null);gl.addEventListener('pointercancel',()=>drag=null);
-gl.addEventListener('reference-wheel',e=>{if(!low){camDist=clamp(camDist+e.deltaY*.02,8,45);e.preventDefault()}},{passive:false});
-document.querySelectorAll('#pad button').forEach(b=>{const k=b.dataset.k;b.addEventListener('reference-pointerdown',e=>{e.preventDefault();keys[k]=true;if(k==='e')queued='eat';if(k==='f')queued='attack';if(k==='r')queued='social'});['pointerup','pointerleave','pointercancel'].forEach(ev=>b.addEventListener(ev,()=>keys[k]=false))});
-document.querySelectorAll('[data-evo]').forEach(b=>b.addEventListener('click',()=>evolve(+b.dataset.evo)));
-$('again').addEventListener('click',()=>start((W.seed%1000)+1));
-$('keep').addEventListener('click',()=>{W.over=null;W.free=true});
-$('m-pretty').addEventListener('click',()=>setMode(false));$('m-bench').addEventListener('click',()=>setMode(true));
-const show=r=>{$('out').textContent=typeof r==='string'?r:JSON.stringify(r)};
-$('acts').innerHTML=ACTIONS.map(a=>`<button data-a="${a}">${a}</button>`).join('');
-$('acts').addEventListener('click',e=>{const a=e.target.dataset.a;if(a)show(benchStep(a))});
-$('reset').addEventListener('click',()=>show(SporeBench.reset({seed:+$('seed').value||7,maxSteps:opts.maxSteps})));
-const copy=(txt,label)=>navigator.clipboard.writeText(txt).then(()=>show(label+' copiado ('+txt.length+' caracteres)'),()=>show('El navegador no ha permitido copiar'));
-$('cp-img').addEventListener('click',()=>copy(SporeBench.observe(),'PNG'));
-$('cp-state').addEventListener('click',()=>copy(JSON.stringify(SporeBench.state()),'Estado'));
-
 setMode(false);requestAnimationFrame(frame);
 })();
 </script>

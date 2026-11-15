@@ -7,7 +7,7 @@ def run(*args):
     return subprocess.check_output(args, text=True)
 
 
-logs = sorted(Path('tests/golden').glob('*.log'))
+logs = sorted(Path('tests/golden').glob('combat-*.log'))
 assert len(logs) >= 5, f'expected the 5 committed golden logs, found {len(logs)}'
 golden_ticks = 0
 for log in logs:

@@ -25,6 +25,17 @@ h = patch(h, '<script>\n(()=>{\nconst T=THREE', '''<link rel="stylesheet" href="
 <script>
 (()=>{
 const T=THREE''')
+# The stage mesh samples the C analytic source. The reviewed hero is untouched.
+h = patch(h, '<script>\n(()=>{\nconst T=THREE', """<script type="module">
+import {World} from '../engine/cpworld.js';
+const stageWorld=await World.create();
+stageWorld.reset({seed:42});
+window.__stageWorld=stageWorld;
+(()=>{
+const T=THREE""")
+start=h.index('function height(x,z){')
+end=h.index('\nconst walkable=',start)
+h=h[:start]+'function height(x,z){return stageWorld.height(x,z)}'+h[end:]
 h = patch(h, 'vistaTrees:[...broad,...conif]', 'vistaTrees:[...broad,...conif],obstacles:[...broad.map(o=>({...o,r:o.s*.75})),...conif.map(o=>({...o,r:o.s*.6})),...rocks.map(o=>({...o,r:o.s}))]')
 # Preserve the landscape and terrain code, bypass the reference game's simulation,
 # camera, keyboard handlers and HUD. Stage owns the display and input clocks.
@@ -55,6 +66,18 @@ h = patch(h, '</body>', '''<div id="play-ui">
  </fieldset><button id="resume">Return to the valley</button><a href="../studio/">Open Studio ↗</a></div>
 </div>
 </body>''')
+# Keep only reference scene setup/rendering. Remove its old rules and agent
+# controls so there is no second simulation, including hidden NPC updates.
+start=h.index('function nearest(')
+end=h.index('/* ---------- geometría ---------- */',start)
+h=h[:start]+"function nearInfo(){return {es:'',en:''}}\n\n"+h[end:]
+start=h.index('function frame(t){')
+end=h.index('const ACTIONS=',start)
+h=h[:start]+"""function frame(t){requestAnimationFrame(frame);const dt=Math.max(0,(t-last)/1000||0);last=t;render(dt)}
+"""+h[end:]
+start=h.index('const ACTIONS=')
+end=h.index('setMode(false);requestAnimationFrame(frame);',start)
+h=h[:start]+"addEventListener('resize',resize);\n"+h[end:]
 output = ROOT / 'web/stage/index.html'
 output.parent.mkdir(parents=True, exist_ok=True)
 output.write_text(h, encoding='utf-8')

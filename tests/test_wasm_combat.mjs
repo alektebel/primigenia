@@ -50,7 +50,7 @@ assert.throws(() => profileFromStudio({ ...cosmetic, schema: 'bad' }, manifest),
 assert.throws(() => profileFromStudio({ ...cosmetic, parts: [{ type: 'missing' }] }, manifest), /part/);
 
 let goldenTicks = 0;
-const goldenLogs = readdirSync(new URL('./golden/', import.meta.url)).filter(x => x.endsWith('.log'));
+const goldenLogs = readdirSync(new URL('./golden/', import.meta.url)).filter(x => x.startsWith('combat-') && x.endsWith('.log'));
 assert.ok(goldenLogs.length >= 5, `expected the 5 committed golden logs, found ${goldenLogs.length}`);
 for (const file of goldenLogs) {
   const [seed, ...lines] = read(`./golden/${file}`).trim().split('\n');
