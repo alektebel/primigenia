@@ -246,6 +246,10 @@ uint64_t cp_combat_hash(const CpCombatWorld *w)
         fu8(&f, (uint8_t)c->bleed_src);
         fu8(&f, c->verb); fu8(&f, c->verb_move); fu8(&f, c->verb_started);
         fu8(&f, (uint8_t)c->verb_target); fu8(&f, (uint8_t)c->verb_dir); fu8(&f, c->verb_ticks);
+        if (c->verb == CB_V_MOVE && c->verb_dir == -1) {
+            fu8(&f, (uint16_t)c->heading_x); fu8(&f, (uint16_t)c->heading_x >> 8);
+            fu8(&f, (uint16_t)c->heading_y); fu8(&f, (uint16_t)c->heading_y >> 8);
+        }
         ff(&f, c->dmg_dealt); ff(&f, c->dmg_taken); ff(&f, c->stamina_spent);
         fu32(&f, (uint32_t)c->hits); fu32(&f, (uint32_t)c->hits_taken);
         fu32(&f, (uint32_t)c->blocked); fu32(&f, (uint32_t)c->dodged);
@@ -357,6 +361,7 @@ int cp_combat_order(CpCombatWorld *w, int id, const CpCombatAction *a)
     if (a->verb >= CB_V_COUNT) return CB_ERR_BAD_VERB;
 
     int target = -1, move = 0, dir = 0;
+    int16_t hx = 0, hy = 0;
     switch (a->verb) {
     case CB_V_IDLE: break;
     case CB_V_APPROACH:
@@ -376,7 +381,10 @@ int cp_combat_order(CpCombatWorld *w, int id, const CpCombatAction *a)
         if (!cp_combat_move_available(c, CB_GUARD)) return CB_ERR_UNAVAILABLE;
         break;
     case CB_V_MOVE:
-        if (a->dir < 0 || a->dir > 7) return CB_ERR_BAD_DIR;
+        if (a->dir == -1) {
+            hx = a->heading_x; hy = a->heading_y;
+            if (!hx && !hy) return CB_ERR_BAD_DIR;
+        } else if (a->dir < 0 || a->dir > 7) return CB_ERR_BAD_DIR;
         dir = a->dir;
         break;
     case CB_V_DODGE:
@@ -388,13 +396,14 @@ int cp_combat_order(CpCombatWorld *w, int id, const CpCombatAction *a)
 
     /* identical standing order: nothing to do (lets agents repeat it per tick) */
     if (c->verb == a->verb && c->verb_target == target && c->verb_move == (uint8_t)move &&
-        c->verb_dir == dir && a->verb != CB_V_IDLE)
+        c->verb_dir == dir && c->heading_x == hx && c->heading_y == hy && a->verb != CB_V_IDLE)
         return CB_OK;
 
     c->verb = a->verb;
     c->verb_target = (int8_t)target;
     c->verb_move = (uint8_t)move;
     c->verb_dir = (int8_t)dir;
+    c->heading_x = hx; c->heading_y = hy;
     c->verb_started = 0;
     c->verb_ticks = (a->verb == CB_V_FLEE) ? CB_FLEE_TICKS : 0;
     return CB_OK;
@@ -598,7 +607,11 @@ static void plan(CpCombatWorld *w, int i, Disp *d)
             {1,0}, {0.70710678f,-0.70710678f}, {0,-1}, {-0.70710678f,-0.70710678f},
             {-1,0}, {-0.70710678f,0.70710678f}, {0,1}, {0.70710678f,0.70710678f}
         };
-        ux = dirs[(int)c->verb_dir][0]; uy = dirs[(int)c->verb_dir][1];
+        if (c->verb_dir == -1) {
+            ux = (float)c->heading_x; uy = (float)c->heading_y;
+            float length = sqrtf(ux * ux + uy * uy);
+            ux /= length; uy /= length;
+        } else { ux = dirs[(int)c->verb_dir][0]; uy = dirs[(int)c->verb_dir][1]; }
         turn_toward(c, ux, uy);
         walk(w, i, d, ux, uy, walk_speed(c));
         return;

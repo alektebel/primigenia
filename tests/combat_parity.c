@@ -36,13 +36,36 @@ static int duels(void)
     printf("counts %d %d\n", count, ticks);
     return 0;
 }
+/* Random signed int16 headings, repeated orders, queued moves and replay. */
+static int headings(void)
+{
+    CpCombatSetup s = {0}; s.seed=42; s.n=1; s.flat=1;
+    cp_combat_profile_default(&s.c[0].prof); s.c[0].x=s.c[0].y=20;
+    CpCombatWorld w; cp_combat_reset(&w,&s);
+    CpRng rng; cp_rng_seed(&rng,314159);
+    for (int t=0;t<MAX_TICKS;t++) {
+        int16_t x=(int16_t)cp_rng_u32(&rng), y=(int16_t)cp_rng_u32(&rng);
+        if (!x && !y) x=1;
+        CpCombatAction a={CB_V_MOVE,0,-1,-1,x,y};
+        entries[t]=(CpCombatLogEntry){t,0,a};
+        if (cp_combat_order(&w,0,&a)!=CB_OK) return 3;
+        hashes[t]=cp_combat_step(&w);
+    }
+    static uint64_t replayed[MAX_TICKS];
+    cp_combat_replay(&s,entries,MAX_TICKS,MAX_TICKS,replayed);
+    for (int t=0;t<MAX_TICKS;t++) {
+        if (replayed[t]!=hashes[t]) return 4;
+        printf("%016" PRIx64 "\n",hashes[t]);
+    }
+    return 0;
+}
 static int replay(const char *path)
 {
     FILE *f = fopen(path, "r");
     if (!f) { perror(path); return 2; }
     CpCombatSetup s = {0};
     int version, flat, ticks;
-    if (fscanf(f, "CPORE_COMBAT_LOG %d", &version) != 1 || version != 1 ||
+    if (fscanf(f, "CPORE_COMBAT_LOG %d", &version) != 1 || (version != 1 && version != 2) ||
         fscanf(f, "%" SCNu32 " %d %d %d", &s.seed, &s.n, &flat, &ticks) != 4 ||
         s.n < 1 || s.n > CB_MAX_CREATURES || flat < 0 || flat > 1 || ticks < 0 || ticks > MAX_TICKS) goto bad;
     s.flat = (uint8_t)flat;
@@ -60,12 +83,15 @@ static int replay(const char *path)
         c->prof.radius_cm = (uint16_t)radius_cm;
         c->medium = (uint8_t)medium; c->team = (uint8_t)team;
     }
-    int n = 0, fields, tick, id, verb, move, target, dir;
+    int n = 0, fields, tick, id, verb, move, target, dir, hx=0, hy=0;
     while ((fields = fscanf(f, "%d %d %d %d %d %d", &tick, &id, &verb, &move, &target, &dir)) == 6) {
+        if (version == 2 && fscanf(f, "%d %d", &hx, &hy) != 2) goto bad;
+        if (hx < -32768 || hx > 32767 || hy < -32768 || hy > 32767) goto bad;
         if (n == LOG_CAP || tick < 0 || tick >= ticks || (n && tick < entries[n-1].tick) ||
             id < 0 || id >= s.n || verb < 0 || verb >= CB_V_COUNT || move < -1 || move >= CB_MOVE_COUNT ||
-            target < -1 || target >= s.n || dir < 0 || dir > 7) goto bad;
-        entries[n++] = (CpCombatLogEntry){tick, (uint8_t)id, {(uint8_t)verb, (int8_t)move, (int8_t)target, (int8_t)dir}};
+            target < -1 || target >= s.n || dir < (version == 2 && verb == CB_V_MOVE ? -1 : 0) || dir > 7 ||
+            (dir == -1 && !hx && !hy)) goto bad;
+        entries[n++] = (CpCombatLogEntry){tick, (uint8_t)id, {(uint8_t)verb, (int8_t)move, (int8_t)target, (int8_t)dir, (int16_t)hx, (int16_t)hy}};
     }
     if (fields != EOF || ferror(f)) goto bad;
     fclose(f);
@@ -77,6 +103,7 @@ bad:
 }
 int main(int argc, char **argv)
 {
+    if (argc == 2 && !strcmp(argv[1], "--headings")) return headings();
     if (argc == 2 && !strcmp(argv[1], "--duels")) return duels();
     if (argc == 3 && !strcmp(argv[1], "--replay")) return replay(argv[2]);
     fprintf(stderr, "usage: combat_parity --duels | --replay LOG\n"); return 2;

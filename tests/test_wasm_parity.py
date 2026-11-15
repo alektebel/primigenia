@@ -25,3 +25,6 @@ assert counts[0] == 'counts' and int(counts[1]) >= 200
 assert sum(line.startswith('duel ') for line in native.splitlines()) == 200
 print(f'Bot parity: {counts[1]} duels, {counts[2]} matching tick hashes; '
       '25 ordered bot pairings × 2 profile sets × 4 seeds')
+
+assert run('build/combat_parity','--headings') == run('node','build/wasm/combat_parity.cjs','--headings')
+print('Heading parity: 10,000 random int16 vectors and identical native/WASM replays')

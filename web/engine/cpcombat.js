@@ -1,8 +1,8 @@
 /* Plain ES module; serve the repository root so ../../build/wasm is available.
  * All typed views are borrowed scratch buffers. Copy before the next query. */
 export const LAYOUT = Object.freeze([
-  1, 364, 0, 4, 8, 12, 44, 0, 24, 28, 32, 36, 40, 41,
-  24, 0, 1, 2, 3, 4, 8, 12, 16, 20, 4, 0, 1, 2, 3, 17, 5, 14, 8, 64, 10, 40, 40,
+  2, 364, 0, 4, 8, 12, 44, 0, 24, 28, 32, 36, 40, 41,
+  24, 0, 1, 2, 3, 4, 8, 12, 16, 20, 8, 0, 1, 2, 3, 17, 5, 14, 8, 64, 10, 40, 40, 4, 6,
 ]);
 export const MOVE = Object.freeze({ BITE: 0, CHARGE: 1, GUARD: 2, SPIT: 3, TAIL: 4, DODGE: 5 });
 export const VERB = Object.freeze({ IDLE: 0, APPROACH: 1, ATTACK: 2, GUARD: 3, DODGE: 4, FLEE: 5, MOVE: 6 });
@@ -55,10 +55,11 @@ export class Combat {
   }
   get tick() { return this.module._cb_tick(); }
   get count() { return this.module._cb_count(); }
-  order(id, { verb, move = 0, target = -1, dir = 0 }) {
+  order(id, { verb, move = 0, target = -1, dir = 0, hx = 0, hy = 0 }) {
     integer(id, 0, this.count - 1, 'id');
     for (const [key, value] of Object.entries({ verb, move, target, dir })) integer(value, -2147483648, 2147483647, key);
-    return this.module._cb_order(id, verb, move, target, dir);
+    integer(hx,-32768,32767,'hx'); integer(hy,-32768,32767,'hy');
+    return this.module._cb_order(id, verb, move, target, dir, hx, hy);
   }
   step() { this.module._cb_step(); return this.hash(); }
   hash() {

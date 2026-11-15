@@ -19,7 +19,7 @@ static uint32_t hash_words[2];
 int cb_layout(int index)
 {
     const int values[] = {
-        1, sizeof(CpCombatSetup), OFF(CpCombatSetup, seed), OFF(CpCombatSetup, n),
+        2, sizeof(CpCombatSetup), OFF(CpCombatSetup, seed), OFF(CpCombatSetup, n),
         OFF(CpCombatSetup, flat), OFF(CpCombatSetup, c), sizeof(CpCombatSpawn),
         OFF(CpCombatSpawn, prof), OFF(CpCombatSpawn, x), OFF(CpCombatSpawn, y),
         OFF(CpCombatSpawn, fx), OFF(CpCombatSpawn, fy), OFF(CpCombatSpawn, medium),
@@ -30,7 +30,7 @@ int cb_layout(int index)
         sizeof(CpCombatAction), OFF(CpCombatAction, verb), OFF(CpCombatAction, move),
         OFF(CpCombatAction, target), OFF(CpCombatAction, dir),
         STATE_FLOATS, EVENT_FLOATS, PREVIEW_FLOATS, CB_MAX_CREATURES, CB_MAX_EVENTS,
-        CB_HZ, (int)CB_ARENA_W, (int)CB_ARENA_H
+        CB_HZ, (int)CB_ARENA_W, (int)CB_ARENA_H, OFF(CpCombatAction, heading_x), OFF(CpCombatAction, heading_y)
     };
     int n = (int)(sizeof(values) / sizeof(values[0]));
     return index == 0 ? n : (index > 0 && index <= n ? values[index-1] : -1);
@@ -49,13 +49,14 @@ int cb_reset(void)
     for (int i = 0; i < world.n; i++) bot_init(&bots[i], BOT_IDLE, setup.seed + (uint32_t)i);
     return 0;
 }
-int cb_order(int id, int verb, int move, int target, int dir)
+int cb_order(int id, int verb, int move, int target, int dir, int hx, int hy)
 {
     if (verb < 0 || verb >= CB_V_COUNT) return CB_ERR_BAD_VERB;
+    if (hx < -32768 || hx > 32767 || hy < -32768 || hy > 32767) return CB_ERR_BAD_DIR;
     /* Keep invalid integers invalid rather than allowing byte truncation. */
     CpCombatAction a = {(uint8_t)verb, (int8_t)(move >= -1 && move < CB_MOVE_COUNT ? move : -1),
         (int8_t)(target >= 0 && target < CB_MAX_CREATURES ? target : -1),
-        (int8_t)(dir >= 0 && dir < 8 ? dir : -1)};
+        (int8_t)(dir >= -1 && dir < 8 ? dir : -2), (int16_t)hx, (int16_t)hy};
     return cp_combat_order(&world, id, &a);
 }
 void cb_step(void) { cp_combat_step(&world); }

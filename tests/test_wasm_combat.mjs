@@ -126,13 +126,14 @@ assert.equal(profileFromStudio(ignored, manifest).charge, 0);
 const newRules = { schema: 'cpore.creature/4', parts: [{ type: 'new-mouth' }] };
 assert.equal(profileFromStudio(newRules, { parts: [{ id: 'new-mouth', c_type: 'CP4_MOUTH_C', category: 'mouths' }] }).mouth, 2);
 
-// Eight directional intents move in the documented absolute octants; zero
+// Continuous directional intents preserve their quantised heading; zero
 // stops, and a committed attack cannot be cancelled by a move order.
 for (const [i, move] of [[1, 0], [1, -1], [0, -1], [-1, -1], [-1, 0], [-1, 1], [0, 1], [1, 1]].entries()) {
   const e = new Encounter(engine, { point: { x: 0, z: 0 }, setup: pair(), enemyBot: 0 });
   const start = e.current[0];
   e.advance(.1, { move });
-  assert.equal(e.log[0].dir, i);
+  assert.equal(e.log[0].dir, -1);
+  assert.deepEqual([e.log[0].hx,e.log[0].hy],move.map(v=>v*32767));
   assert.equal(Math.sign(e.current[0].x - start.x), Math.sign(move[0]));
   assert.equal(Math.sign(e.current[0].y - start.y), Math.sign(move[1]));
   e.advance(.1, {});
@@ -159,7 +160,7 @@ const OCTANTS = [[1, 0], [1, -1], [0, -1], [-1, -1], [-1, 0], [-1, 1], [0, 1], [
 const sequence = time => {
   const second = Math.floor(time + 1e-8) % 10;
   // Cycle through all eight octants so every CB_V_MOVE direction is hash-compared natively.
-  if (second < 2) return { move: OCTANTS[Math.floor(time * 4 + 1e-8) % 8] };
+  if (second < 2) return { move: [Math.sin(time*7.39),Math.cos(time*3.17)] };
   if (second < 4) return { attack: MOVE.SPIT };
   if (second === 4) return { guard: true };
   if (second === 5) return { dodge: 2 };
@@ -189,3 +190,17 @@ try {
   assert.deepEqual(native, runs[0].hashes);
 } finally { rmSync(dir, { recursive: true }); }
 console.log('Instances: 600 identical ticks; encounters: 60 seconds at 60/37 FPS, 600 identical ticks and native replay');
+
+// Arbitrary headings keep distinct ratios and reject invalid vectors atomically.
+for (const move of [[.13,.97],[-.731,.299],[1e300,-1e300],[1e-300,0]]) {
+  const e = new Encounter(engine, {point:{x:0,z:0}, setup:pair(), enemyBot:0});
+  e.advance(.1,{move});
+  const a=e.log[0]; assert.equal(a.dir,-1);
+  assert(Math.hypot(a.hx,a.hy)>0);
+  const norm=Math.max(...move.map(Math.abs));
+  assert.deepEqual([a.hx,a.hy],move.map(v=>Math.round(v/norm*32767)));
+}
+engine.reset(pair()); const unchanged=engine.hash();
+assert.equal(engine.order(0,{verb:VERB.MOVE,dir:-1,hx:0,hy:0}),-7);
+assert.equal(engine.hash(),unchanged);
+assert.throws(()=>engine.order(0,{verb:VERB.MOVE,dir:-1,hx:32768,hy:1}),/hx/);
