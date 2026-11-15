@@ -71,7 +71,7 @@ uniform float uTime;
 uniform vec3 uSunDir;
 uniform vec3 uFogColor;
 uniform float fogNear, fogFar;
-uniform vec3 cameraPosition;
+uniform vec3 camPos;
 uniform vec3 uCausticBright, uCausticDim;
 uniform vec3 uShaftWarm, uShaftCool;
 uniform float uWaterLevel;
@@ -90,7 +90,6 @@ vec3 hash(vec3 p){
 }
 
 float causticField(vec2 p, float t){
-  /* Multiple layered sine waves travelling at different speeds/angles */
   float c = 0.0;
   for(int i = 0; i < 5; i++){
     float fi = float(i);
@@ -105,31 +104,26 @@ float causticField(vec2 p, float t){
 float causticPattern(vec2 uv, float t){
   vec2 p = uv * 12.0;
   float c = causticField(p, t);
-  /* Focus energy: square it, add a second layer at higher freq */
   float c2 = causticField(p*1.5 + vec2(t*0.05), t);
   c = c*c*1.2 + c2*0.4;
-  /* Smooth threshold to get bright spots */
   c = pow(clamp(c, 0.0, 1.0), 1.5);
   return c;
 }
 
 void main(){
-  vec3 dir = vWorldPos - cameraPosition;
+  vec3 dir = vWorldPos - camPos;
   float depth = length(dir);
 
-  /* Caustic brightness falls off with distance from surface projection */
   vec2 uv = vWorldPos.xz;
   float depthBelowSurface = uWaterLevel - vWorldPos.y;
   float depthFade = 1.0 - smoothstep(0.0, 15.0, depthBelowSurface);
 
   float caustic = causticPattern(uv, uTime) * depthFade;
 
-  /* Blend warm shaft light where caustics are strong */
   vec3 causticColor = mix(uCausticDim, uCausticBright, caustic);
   float shaftInfluence = smoothstep(0.3, 0.7, caustic);
   causticColor = mix(causticColor, uShaftWarm, shaftInfluence * 0.5);
 
-  /* Fog blend */
   float fogF = smoothstep(fogNear, fogFar, depth);
   vec3 c = mix(causticColor, uFogColor, fogF);
 
@@ -172,7 +166,7 @@ void main(){
   const fragmentShader = `
 uniform float uTime;
 uniform vec3 uSunDir;
-uniform vec3 cameraPosition;
+uniform vec3 camPos;
 uniform vec3 uWaterShallow;
 uniform vec3 uWaterMid;
 uniform vec3 uShaftWarm;
@@ -182,7 +176,7 @@ varying vec3 vNormal;
 
 void main(){
   vec3 normal = normalize(vNormal);
-  vec3 viewDir = normalize(cameraPosition - vWorldPos);
+  vec3 viewDir = normalize(camPos - vWorldPos);
 
   /* Fresnel — strong reflection when looking up at grazing angle */
   float fresnel = pow(1.0 - max(dot(viewDir, normal), 0.0), 4.0);
@@ -192,7 +186,7 @@ void main(){
   float tir = smoothstep(0.0, 0.3, tilt) * 0.5; /* only below surface */
 
   /* Base water colour (lighter near camera) */
-  float depthFade = smoothstep(0.0, 5.0, cameraPosition.y - vWorldPos.y);
+  float depthFade = smoothstep(0.0, 5.0, camPos.y - vWorldPos.y);
   vec3 waterColor = mix(uWaterShallow, uWaterMid, depthFade);
 
   /* Sun glitter on surface */
@@ -247,7 +241,7 @@ void main(){
   const fragmentShader = `
 uniform vec3 uFogColor;
 uniform float fogNear, fogFar;
-uniform vec3 cameraPosition;
+uniform vec3 camPos;
 uniform float uWaterLevel;
 
 varying float vHeight;
@@ -259,7 +253,7 @@ void main(){
   vec3 c = mix(vColor * 0.7, vColor, vHeight);
 
   /* Fog */
-  vec3 dir = vWorldPos - cameraPosition;
+  vec3 dir = vWorldPos - camPos;
   float depth = length(dir);
   float fogF = smoothstep(fogNear, fogFar, depth);
   c = mix(c, uFogColor, fogF);
@@ -293,7 +287,7 @@ void main(){
   const fragmentShader = `
 uniform vec3 uFogColor;
 uniform float fogNear, fogFar;
-uniform vec3 cameraPosition;
+uniform vec3 camPos;
 uniform vec3 sun;
 
 varying vec3 vColor;
@@ -311,7 +305,7 @@ void main(){
   c += vec3(0.15, 0.05, 0.03);
 
   /* Fog */
-  float depth = length(vWorldPos - cameraPosition);
+  float depth = length(vWorldPos - camPos);
   float fogF = smoothstep(fogNear, fogFar, depth);
   c = mix(c, uFogColor, fogF);
 
@@ -344,14 +338,14 @@ void main(){
   const fragmentShader = `
 uniform vec3 uFogColor;
 uniform float fogNear, fogFar;
-uniform vec3 cameraPosition;
+uniform vec3 camPos;
 
 varying float vHeight;
 varying vec3 vWorldPos;
 
 void main(){
   vec3 c = vec3(0.08, 0.20, 0.06) * (0.6 + 0.4 * vHeight);
-  float depth = length(vWorldPos - cameraPosition);
+  float depth = length(vWorldPos - camPos);
   float fogF = smoothstep(fogNear, fogFar, depth);
   c = mix(c, uFogColor, fogF);
   gl_FragColor = vec4(c, 0.85);
@@ -403,7 +397,7 @@ void main(){
   const fragmentShader = `
 uniform vec3 uFogColor;
 uniform float fogNear, fogFar;
-uniform vec3 cameraPosition;
+uniform vec3 camPos;
 uniform vec3 uFishBody, uFishFin;
 
 varying vec3 vFishWorld;
@@ -422,7 +416,7 @@ void main(){
   }
 
   /* Fog */
-  float depth = length(vFishWorld - cameraPosition);
+  float depth = length(vFishWorld - camPos);
   float fogF = smoothstep(fogNear, fogFar, depth);
   c = mix(c, uFogColor, fogF);
 
@@ -468,7 +462,7 @@ void main(){
   const fragmentShader = `
 uniform vec3 uParticleColor;
 uniform vec3 uFogColor;
-uniform vec3 cameraPosition;
+uniform vec3 camPos;
 
 varying float vAlpha;
 
@@ -537,7 +531,7 @@ void main(){
   const fragmentShader = `
 uniform vec3 uFogColor;
 uniform float fogNear, fogFar;
-uniform vec3 cameraPosition;
+uniform vec3 camPos;
 uniform vec3 sun;
 uniform vec3 uWreckColor;
 
@@ -555,7 +549,7 @@ void main(){
   if(vNormal.y > 0.5) c += vec3(0.04, 0.08, 0.02);
 
   /* Fog */
-  float depth = length(vWorldPos - cameraPosition);
+  float depth = length(vWorldPos - camPos);
   float fogF = smoothstep(fogNear, fogFar, depth);
   c = mix(c, uFogColor, fogF);
 
@@ -582,7 +576,7 @@ void main(){
 uniform float uTime;
 uniform vec3 uFogColor;
 uniform float fogNear, fogFar;
-uniform vec3 cameraPosition;
+uniform vec3 camPos;
 uniform vec3 uSandColor, uSandBright;
 uniform vec3 uCausticBright, uCausticDim;
 uniform vec3 sun;
@@ -618,7 +612,7 @@ void main(){
   sand *= (0.15 + light * 0.5) + causticOverlay;
 
   /* Fog */
-  float depth = length(vWorldPos - cameraPosition);
+  float depth = length(vWorldPos - camPos);
   float fogF = smoothstep(fogNear, fogFar, depth);
   sand = mix(sand, uFogColor, fogF);
 
@@ -905,7 +899,7 @@ class UnderwaterBiome {
       uFogColor: { value: this.fogColor.clone() },
       fogNear: { value: this.fogNear },
       fogFar: { value: this.fogFar },
-      cameraPosition: { value: new THREE.Vector3() },
+      camPos: { value: new THREE.Vector3() },
       uSandColor: { value: new THREE.Color(...this._pal.sand) },
       uSandBright: { value: new THREE.Color(...this._pal.sandBright) },
       uCausticBright: { value: new THREE.Color(...this._pal.causticBright) },
@@ -939,7 +933,7 @@ class UnderwaterBiome {
       uFogColor: { value: this.fogColor.clone() },
       fogNear: { value: this.fogNear },
       fogFar: { value: this.fogFar },
-      cameraPosition: { value: new THREE.Vector3() },
+      camPos: { value: new THREE.Vector3() },
       uCausticBright: { value: new THREE.Color(...this._pal.causticBright) },
       uCausticDim: { value: new THREE.Color(...this._pal.causticDim) },
       uShaftWarm: { value: new THREE.Color(...this._pal.shaftWarm) },
@@ -973,7 +967,7 @@ class UnderwaterBiome {
     const uniforms = {
       uTime: { value: 0 },
       uSunDir: { value: new THREE.Vector3() },
-      cameraPosition: { value: new THREE.Vector3() },
+      camPos: { value: new THREE.Vector3() },
       uWaterShallow: { value: new THREE.Color(...this._pal.waterShallow) },
       uWaterMid: { value: new THREE.Color(...this._pal.waterMid) },
       uShaftWarm: { value: new THREE.Color(...this._pal.shaftWarm) },
@@ -1097,7 +1091,7 @@ class UnderwaterBiome {
       uFogColor: { value: this.fogColor.clone() },
       fogNear: { value: this.fogNear },
       fogFar: { value: this.fogFar },
-      cameraPosition: { value: new THREE.Vector3() },
+      camPos: { value: new THREE.Vector3() },
       uWaterLevel: { value: this.waterLevel },
     };
 
@@ -1173,7 +1167,7 @@ class UnderwaterBiome {
       uFogColor: { value: this.fogColor.clone() },
       fogNear: { value: this.fogNear },
       fogFar: { value: this.fogFar },
-      cameraPosition: { value: new THREE.Vector3() },
+      camPos: { value: new THREE.Vector3() },
       sun: { value: new THREE.Vector3() },
     };
 
@@ -1226,7 +1220,7 @@ class UnderwaterBiome {
       uFogColor: { value: this.fogColor.clone() },
       fogNear: { value: this.fogNear },
       fogFar: { value: this.fogFar },
-      cameraPosition: { value: new THREE.Vector3() },
+      camPos: { value: new THREE.Vector3() },
       uRockColor: { value: new THREE.Color(...this._pal.rockUW) },
       sun: { value: new THREE.Vector3() },
     };
@@ -1288,7 +1282,7 @@ class UnderwaterBiome {
       uFogColor: { value: this.fogColor.clone() },
       fogNear: { value: this.fogNear },
       fogFar: { value: this.fogFar },
-      cameraPosition: { value: new THREE.Vector3() },
+      camPos: { value: new THREE.Vector3() },
     };
 
     const sh = seaGrassShader();
@@ -1358,7 +1352,7 @@ class UnderwaterBiome {
       uFogColor: { value: this.fogColor.clone() },
       fogNear: { value: this.fogNear },
       fogFar: { value: this.fogFar },
-      cameraPosition: { value: new THREE.Vector3() },
+      camPos: { value: new THREE.Vector3() },
       uFishBody: { value: new THREE.Color(...this._pal.fishBody) },
       uFishFin: { value: new THREE.Color(...this._pal.fishFin) },
     };
@@ -1408,7 +1402,7 @@ class UnderwaterBiome {
       uTime: { value: 0 },
       uParticleColor: { value: new THREE.Color(...this._pal.particle) },
       uFogColor: { value: this.fogColor.clone() },
-      cameraPosition: { value: new THREE.Vector3() },
+      camPos: { value: new THREE.Vector3() },
     };
 
     const sh = particleShader();
@@ -1435,7 +1429,7 @@ class UnderwaterBiome {
       uFogColor: { value: this.fogColor.clone() },
       fogNear: { value: this.fogNear },
       fogFar: { value: this.fogFar },
-      cameraPosition: { value: new THREE.Vector3() },
+      camPos: { value: new THREE.Vector3() },
       sun: { value: new THREE.Vector3() },
       uWreckColor: { value: new THREE.Color(0.22, 0.18, 0.14) },
     };
@@ -1492,24 +1486,23 @@ class UnderwaterBiome {
     if (!this.enabled) return;
 
     /* Update all time uniforms */
-    this._allUniforms.forEach(u => { if (u.uTime) u.uTime.value = time; });
-    this._shafts.forEach(s => { s.uniforms.uTime.value = time; });
-    if (this._fish && this._fish.uniforms) this._fish.uniforms.uTime.value = time;
+    this._allUniforms.forEach(u => { if (u && u.uTime && u.uTime.value !== undefined) u.uTime.value = time; });
+    (this._shafts || []).forEach(s => { if (s.uniforms && s.uniforms.uTime) s.uniforms.uTime.value = time; });
+    if (this._fish && this._fish.uniforms && this._fish.uniforms.uTime) this._fish.uniforms.uTime.value = time;
+    if (this._particles && this._particles.uniforms && this._particles.uniforms.uTime) this._particles.uniforms.uTime.value = time;
 
     /* Update camera position uniforms */
     const camPos = this.camera.position;
-    this._allUniforms.forEach(u => { if (u.cameraPosition) u.cameraPosition.value.copy(camPos); });
+    this._allUniforms.forEach(u => { if (u && u.camPos && u.camPos.value !== undefined) u.camPos.value.copy(camPos); });
 
     /* Update sun direction */
-    const sunDir = new THREE.Vector3();
+    const sunDir = new THREE.Vector3(-0.6, 0.8, -0.4).normalize();
     if (this.sun && this.sun.target) {
       sunDir.subVectors(this.sun.target.position, this.sun.position).normalize();
-    } else {
-      sunDir.set(-0.6, 0.8, -0.4).normalize();
     }
-    this._caustics.uniforms.uSunDir.value.copy(sunDir);
-    if (this._surface.uniforms.uSunDir) this._surface.uniforms.uSunDir.value.copy(sunDir);
-    this._allUniforms.forEach(u => { if (u.sun) u.sun.value.copy(sunDir); });
+    if (this._caustics && this._caustics.uniforms && this._caustics.uniforms.uSunDir) this._caustics.uniforms.uSunDir.value.copy(sunDir);
+    if (this._surface && this._surface.uniforms && this._surface.uniforms.uSunDir) this._surface.uniforms.uSunDir.value.copy(sunDir);
+    this._allUniforms.forEach(u => { if (u && u.sun && u.sun.value !== undefined) u.sun.value.copy(sunDir); });
   }
 
   /* ── API ────────────────────────────────────────────────────────────── */
@@ -1536,7 +1529,9 @@ class UnderwaterBiome {
     this.waterLevel = level;
     if (this._surface) {
       this._surface.mesh.position.y = level;
-      this._surface.uniforms.uWaterLevel.value = level;
+    }
+    if (this._caustics && this._caustics.uniforms && this._caustics.uniforms.uWaterLevel) {
+      this._caustics.uniforms.uWaterLevel.value = level;
     }
   }
 

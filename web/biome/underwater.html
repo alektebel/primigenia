@@ -45,8 +45,8 @@ canvas{display:block;position:absolute;inset:0;width:100%;height:100%}
 #loading.hidden{opacity:0;pointer-events:none}
 #loading span{font-size:16px;color:var(--muted)}
 </style>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-<script src="web/biome/underwater.js"></script>
+<script src="three.min.js"></script>
+<script src="underwater.js"></script>
 </head>
 <body>
 <canvas id="gl"></canvas>
@@ -223,20 +223,28 @@ canvas{display:block;position:absolute;inset:0;width:100%;height:100%}
       const v = parseFloat(s.el.value);
       s.val.textContent = v.toFixed(2);
       if (s.key === "caustics") {
-        biome._caustics.uniforms.uOpacity = biome._caustics.uniforms.uOpacity || { value: 1 };
-        biome._caustics.uniforms.uOpacity.value = v;
-        if (biome._caustics.mesh.material) {
+        /* Toggles additive blending for caustics overlay */
+        if (biome._caustics && biome._caustics.mesh.material) {
           biome._caustics.mesh.material.blending = v > 0.01 ? THREE.AdditiveBlending : THREE.NoBlending;
+          biome._caustics.mesh.material.needsUpdate = true;
         }
       }
       if (s.key === "shafts") {
-        biome._shafts.forEach(sh => { sh.uniforms.uOpacity.value = v; });
+        (biome._shafts || []).forEach(sh => { if (sh.uniforms) sh.uniforms.uOpacity.value = v; });
       }
       if (s.key === "kelp") {
         if (biome._kelp && biome._kelp.mesh) biome._kelp.mesh.visible = v > 0.01;
       }
       if (s.key === "time") {
-        biome._allUniforms.forEach(u => { if (u.uTime) u.uTime.value = v; });
+        if (v > 0.1) {
+          manualTime = true;
+          (biome._allUniforms || []).forEach(u => { if (u && u.uTime) u.uTime.value = v; });
+          (biome._shafts || []).forEach(sh => { if (sh.uniforms && sh.uniforms.uTime) sh.uniforms.uTime.value = v; });
+          if (biome._fish && biome._fish.uniforms && biome._fish.uniforms.uTime) biome._fish.uniforms.uTime.value = v;
+          if (biome._particles && biome._particles.uniforms && biome._particles.uniforms.uTime) biome._particles.uniforms.uTime.value = v;
+        } else {
+          manualTime = false;
+        }
       }
     });
   });
@@ -328,29 +336,40 @@ canvas{display:block;position:absolute;inset:0;width:100%;height:100%}
   /* ── Animation loop ─────────────────────────────────────────────── */
   let prevTime = performance.now();
   let time = 0;
+  let manualTime = false;
 
   function frame() {
     requestAnimationFrame(frame);
     const now = performance.now();
     const dt = Math.min((now - prevTime) / 1000, 0.05);
     prevTime = now;
-    time += dt;
+    if (!manualTime) time += dt;
 
     updateCamera(dt);
     biome.update(time);
     updateStats();
 
-    /* Update time slider if not manually overridden */
-    if (!keys["KeyT"]) {
-      biome._allUniforms.forEach(u => { if (u.uTime && sliders.time.el.value < 0.1) u.uTime.value = time; });
-      biome._shafts.forEach(s => { s.uniforms.uTime.value = time; });
+    /* Update time uniforms (auto or manual) */
+    if (!manualTime) {
+      (biome._allUniforms || []).forEach(u => { if (u && u.uTime) u.uTime.value = time; });
+      (biome._shafts || []).forEach(s => { if (s.uniforms && s.uniforms.uTime) s.uniforms.uTime.value = time; });
       if (biome._fish && biome._fish.uniforms) biome._fish.uniforms.uTime.value = time;
+      if (biome._particles && biome._particles.uniforms) biome._particles.uniforms.uTime.value = time;
     }
 
     renderer.render(scene, camera);
   }
 
   /* ── Start ──────────────────────────────────────────────────────── */
+  /* Move camera to a good framing position for shallow preset */
+  camState.pos.set(-5, 1.5, 8);
+  camState.yaw = 0.4;
+  camState.pitch = -0.15;
+
+  /* Set time slider to auto */
+  sliders.time.el.value = 0;
+  sliders.time.val.textContent = 'auto';
+
   applyPreset("shallow");
 
   /* Hide loading */
@@ -359,6 +378,7 @@ canvas{display:block;position:absolute;inset:0;width:100%;height:100%}
   requestAnimationFrame(frame);
 
 })();
+</script>
 </script>
 </body>
 </html>
