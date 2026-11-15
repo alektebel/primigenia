@@ -1,0 +1,40 @@
+python3 tools/stage/build_stage.py
+wrote web/stage/index.html (81452 bytes)
+python3 tests/test_stage_build.py
+wrote web/stage/index.html (81452 bytes)
+.
+----------------------------------------------------------------------
+Ran 1 test in 0.020s
+
+OK
+nice -n 10 node tests/test_stage_sim.mjs
+PASS stage collision, water, sprint, pause, natural encounter/outcome and 30/73 FPS log equality
+PASS death/respawn and boundary flee/return home
+PASS smooth locomotion, destination arrival and approach-to-attack
+nice -n 10 node tests/stage_winnability.mjs
+enemy {
+  mouth: 2,
+  charge: 0,
+  spit: 2,
+  tail: 2,
+  guard: 0,
+  hp: 90,
+  stamina: 20,
+  speed: 5.5,
+  radiusCm: 50
+}
+biter.json player 2/1/0/1/0 hp 100 r 150: 21/50 = 42.0% ({"victory":21,"death":29,"fled":0,"none":0}) OK
+guard.json player 1/0/1/0/5 hp 125 r 150: 29/50 = 58.0% ({"victory":29,"death":21,"fled":0,"none":0}) OK
+spitter.json player 1/0/3/0/0 hp 100 r 150: 38/50 = 76.0% ({"victory":38,"death":12,"fled":0,"none":0}) OK
+PASS winnability 35–80% on every fixture
+nice -n 10 node tests/stage_play.cjs
+PASS biter.json 30 FPS: victory, HP 33.3/0.0, native aa01b1277dea6622
+PASS biter.json 73 FPS: victory, HP 33.3/0.0, native aa01b1277dea6622
+PASS guard.json 30 FPS: victory, HP 4.1/0.0, native 92352b55fa5355a8
+PASS guard.json 73 FPS: victory, HP 4.1/0.0, native 92352b55fa5355a8
+PASS spitter.json 30 FPS: death, HP 0.0/0.6, native e57c2842949ae4bf
+PASS spitter.json 73 FPS: death, HP 0.0/0.6, native e57c2842949ae4bf
+PASS golden exploration, windup, hit and natural victory evidence; keyboard and pause
+PASS 390×844 touch movement, action buttons, saved /4 G48 genome and no overflow
+nice -n 10 node tests/stage_polish.cjs
+PASS pointer click/hold, selection/approach/attack, planted feet, gesture audio graph and pause volumes

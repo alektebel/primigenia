@@ -646,6 +646,36 @@ difficulty. The browser polish test also honours the same optional
 `CPORE_STAGE_URL` and `CPORE_STAGE_EVIDENCE` settings as the stage play test,
 allowing isolated local runs without overwriting reviewed screenshots.
 
+### Continuation verification (2026-11-15)
+
+After reviewing and committing the remaining species/test changes, all required
+commands exited 0 on this branch, without merging main:
+
+| Command | Result |
+|---|---|
+| `nice -n 10 make test` | Native correctness, tournament arithmetic, canaries and all 50,000 fixed golden hashes pass. |
+| `nice -n 10 make tourney` | Byte-identical to the committed default stdout: no weak dominance, 5/6 support in each game, worst field 62.3%, worst pair 72.2%. |
+| `nice -n 10 ./build/combat_tourney 160 1600 3000000` | Byte-identical to the committed held-out stdout, including every matrix cell and standard error. |
+| `source ~/emsdk/emsdk_env.sh; nice -n 10 make wasm-test` | Combat goldens, 200 bot duels, 10,000 headings, JS encounters and terrain parity pass. |
+| `NODE_PATH=/home/diego/Desarrollo/cpore-wt/_agent/node_modules CPORE_STAGE_EVIDENCE=build/p2-stage-verification nice -n 10 make stage-test` | Stage build/simulation, all 150 winnability duels, browser play/native replays and polish checks pass. |
+
+The stage run used `nice -n 10 python3 -m http.server 8765 --bind 127.0.0.1`
+from this repository root. Its full stdout is in
+[p2-stage.txt](evidence/combat/p2-stage.txt). Playwright launched the required
+`chromium-1254/chrome-linux64/chrome` executable, which reports browser version
+158.0.8127.18, with only the requested SwiftShader launch arguments. Browser
+contexts and processes closed after the tests. Three fixtures have identical
+logs/hashes at 30 and 73 simulated rAF FPS and replay successfully in native C;
+desktop victory, 390×844 touch controls, click/hold, selection, planted feet,
+audio and pause settings pass. These are deterministic software-rendered
+checks, not real-time performance measurements or a human playtest.
+
+New screenshots and logs remain under `build/p2-stage-verification/`; the
+previously reviewed stage evidence was not overwritten. `art/reference/` and
+the five fixed `.log` fixtures remain byte-identical to the pre-branch base.
+The owner playtest/clip is still outstanding; this task establishes the
+automated P2 balance prerequisite only.
+
 ### Final default tournament output
 
 GCC 16.2.1, x86-64 Linux, 2026-11-15. `make tourney` exits 0.
