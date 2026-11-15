@@ -52,7 +52,7 @@ static void compute_payoff(int duels)
 {
     CpCombatProfile p;                     /* neutral: every part level 3 */
     p.mouth = p.charge = p.spit = p.tail = p.guard = 3;
-    p.hp = 100000.0f; p.stamina = 100.0f; p.speed = 4.0f;     /* nobody dies: pure damage margin */
+    p.hp = 100000.0f; p.stamina = 100.0f; p.speed = 4.0f; p.radius_cm = 0; /* default radius */
 
     stamina_value = move_stamina_value(&p);
     for (int a = 0; a < CB_MOVE_COUNT; a++)

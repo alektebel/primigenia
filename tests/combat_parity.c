@@ -48,14 +48,16 @@ static int replay(const char *path)
     s.flat = (uint8_t)flat;
     for (int i = 0; i < s.n; i++) {
         CpCombatSpawn *c = &s.c[i];
-        int mouth, charge, spit, tail, guard, medium, team;
-        if (fscanf(f, "%d %d %d %d %d %f %f %f %f %f %f %f %d %d",
+        int mouth, charge, spit, tail, guard, medium, team, radius_cm;
+        if (fscanf(f, "%d %d %d %d %d %f %f %f %f %f %f %f %d %d %d",
             &mouth, &charge, &spit, &tail, &guard, &c->prof.hp, &c->prof.stamina,
-            &c->prof.speed, &c->x, &c->y, &c->fx, &c->fy, &medium, &team) != 14 ||
+            &c->prof.speed, &c->x, &c->y, &c->fx, &c->fy, &medium, &team, &radius_cm) != 15 ||
             mouth < 0 || mouth > 5 || charge < 0 || charge > 5 || spit < 0 || spit > 5 ||
-            tail < 0 || tail > 5 || guard < 0 || guard > 5 || medium < 0 || medium > 1 || team < 0 || team > 255) goto bad;
+            tail < 0 || tail > 5 || guard < 0 || guard > 5 || medium < 0 || medium > 1 ||
+            team < 0 || team > 255 || radius_cm < 0 || radius_cm > 65535) goto bad;
         c->prof.mouth = (uint8_t)mouth; c->prof.charge = (uint8_t)charge; c->prof.spit = (uint8_t)spit;
         c->prof.tail = (uint8_t)tail; c->prof.guard = (uint8_t)guard;
+        c->prof.radius_cm = (uint16_t)radius_cm;
         c->medium = (uint8_t)medium; c->team = (uint8_t)team;
     }
     int n = 0, fields, tick, id, verb, move, target, dir;

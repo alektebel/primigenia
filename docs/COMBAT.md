@@ -100,7 +100,7 @@ Each `cp_combat_step` executes the following fixed sequence:
 
 1. Apply existing bleed damage and deaths.
 2. Plan verbs for living, unstunned creatures in the idle phase: turn, walk or start a move.
-3. Apply active dashes and all planned displacements; clamp to the 40×40 m arena and separate bodies (radius 0.6 m).
+3. Apply active dashes and all planned displacements; clamp each body to the 40×40 m arena by its own radius and separate bodies by the sum of their radii. The default radius is 0.6 m.
 4. Gather hits and snapshot counter/flank/height evaluations. Mark explicit interrupt cancellations. Record each surviving hit's damage, status and defensive payment before applying outcomes. Dodge/guard payments consume a stamina copy in ascending attacker id (then defender id); scarce defence therefore favours the lower attacker id. Apply every landed hit, including full damage credit and status after another hit has crossed zero HP. Resolve each death once after the pass: the lowest-id attacker that landed positive damage on this tick gets the kill. Committed attacks can trade lethal hits; explicit interruption cancels the interrupted creature's same-tick hit.
 5. Advance phases and decrement status timers; regenerate stamina where permitted. Increment the world tick and calculate its canonical hash.
 
@@ -130,6 +130,17 @@ profiles, positions, phases, timers, orders and bookkeeping. Floats hash their
 32-bit representations with signed zero canonicalized to zero. Padding, unused
 slots, events and the cached hash are excluded. Altering a hit-stream state
 changes the hash. Terrain generation cannot consume the spawn or hit stream.
+
+Each profile carries `radius_cm`, an integer body radius in centimetres. Zero
+and 60 both mean the literal `CB_RADIUS` (0.6 m). `60 * 0.01f` is not
+bit-identical to that constant, so the default path uses the literal. The
+canonical hash appends the centimetres as two little-endian bytes only when
+the field is neither 0 nor 60. Default-radius profiles therefore keep the five
+golden logs and their 50,000 hashes bit-identical. Any other value is clamped
+to 40–400 cm and is part of the hash. Separation and flee-done use the sum of
+the two radii. Reach and the centre-to-surface gap use the target's radius.
+Dash contact uses the sum. Arena clamps use each creature's own radius, so a
+larger body can still reach the boundary and flee.
 
 Core arithmetic avoids transcendental library calls (cones use a polynomial);
 only libc/libm is linked. The Makefile appends `-fno-fast-math` and
@@ -249,9 +260,10 @@ Order rejection returns the existing negative C error code.
 buffers. It allocates nothing. `cb_setup()` exposes `CpCombatSetup` memory;
 `cb_reset()` validates it. `cb_layout()` exports ABI version 1, the setup,
 spawn, profile and action sizes and every consumed offset, output strides,
-limits, tick frequency and arena dimensions. `Combat` asserts all 36 metadata
+limits, tick frequency and arena dimensions. `Combat` asserts all 37 metadata
 values against `LAYOUT` before touching memory; a stale build fails on load.
-The setup is 332 bytes, spawn 40, profile 20 and action 4. No JS code reads
+The setup is 364 bytes, spawn 44, profile 24 and action 4. The extra profile
+bytes are `radius_cm` (uint16 at offset 20). No JS code reads
 padded world structs or serializes their raw bytes.
 
 `stateView()` borrows a `Float32Array` with 17 values per creature:
@@ -274,9 +286,10 @@ already validated by `web/studio/genome.js`, plus the parsed
 **both `c_type` and category**, so new ids with the same semantics need no
 new code. Each authored part contributes once (implicit mirrored geometry
 contributes no extra level), summing each level and clamping it to 5.
-Version 4 has no purchased-level field: size, length, mesh bounds, skin,
-spine dimensions, legacy migration payload and procedural growth regions
-are ignored. No floating-point geometry enters the projection.
+Version 4 has no purchased-level field. Size, length, mesh bounds, skin,
+legacy migration payload and procedural growth regions do not change part
+levels. Spine nodes are read only for the quantised body radius below.
+Part levels stay integer arithmetic; the radius reaches C as centimetres.
 
 | Manifest c_type | Category | Integer contribution per authored part |
 |---|---|---|
@@ -288,9 +301,13 @@ are ignored. No floating-point geometry enters the projection.
 | CP4_PLATE | details | guard +1 |
 | Anything else, including null | any | none |
 
-The combat baseline is zero part levels, 100 HP, 100 stamina, 4 m/s.
-After clamping, each guard level adds 5 HP. All arithmetic for this mapping
-is integer arithmetic. Carnivore mouths specialize in bite; grazer mouths
+The combat baseline is zero part levels, 100 HP, 100 stamina, 4 m/s and the
+default body radius. After clamping, each guard level adds 5 HP. Part-level
+arithmetic is integer arithmetic. `bodyRadiusCm` takes half the horizontal
+footprint: the larger of the spine's forward span (`max z − min z`) and its
+widest cross-section (`2 × max node radius`). That length is quantised to
+centimetres and clamped to 40–400. Exactly 60 cm is stored as 0, which C
+treats as the default and omits from the hash. Carnivore mouths specialize in bite; grazer mouths
 project to ranged spit; omnivore mouths split between them. These are explicit
 P3a combat rules, not abilities inferred from visual resemblance.
 
@@ -354,7 +371,7 @@ in tick/application order. `hashes` records every resulting tick hash.
 ```text
 CPORE_COMBAT_LOG 1
 seed n flat ticks
-mouth charge spit tail guard hp stamina speed x y fx fy medium team
+mouth charge spit tail guard hp stamina speed x y fx fy medium team radius_cm
 ... one spawn line per creature ...
 tick id verb move target dir
 ... accepted actions in application order ...

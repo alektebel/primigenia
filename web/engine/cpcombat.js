@@ -1,8 +1,8 @@
 /* Plain ES module; serve the repository root so ../../build/wasm is available.
  * All typed views are borrowed scratch buffers. Copy before the next query. */
 export const LAYOUT = Object.freeze([
-  1, 332, 0, 4, 8, 12, 40, 0, 20, 24, 28, 32, 36, 37,
-  20, 0, 1, 2, 3, 4, 8, 12, 16, 4, 0, 1, 2, 3, 17, 5, 14, 8, 64, 10, 40, 40,
+  1, 364, 0, 4, 8, 12, 44, 0, 24, 28, 32, 36, 40, 41,
+  24, 0, 1, 2, 3, 4, 8, 12, 16, 20, 4, 0, 1, 2, 3, 17, 5, 14, 8, 64, 10, 40, 40,
 ]);
 export const MOVE = Object.freeze({ BITE: 0, CHARGE: 1, GUARD: 2, SPIT: 3, TAIL: 4, DODGE: 5 });
 export const VERB = Object.freeze({ IDLE: 0, APPROACH: 1, ATTACK: 2, GUARD: 3, DODGE: 4, FLEE: 5, MOVE: 6 });
@@ -18,7 +18,7 @@ const finite = (x, name) => {
   if (!Number.isFinite(x) || !Number.isFinite(Math.fround(x))) throw new RangeError(name);
   return x;
 };
-export const defaultProfile = () => ({ mouth: 2, charge: 2, spit: 2, tail: 2, guard: 2, hp: 100, stamina: 100, speed: 4 });
+export const defaultProfile = () => ({ mouth: 2, charge: 2, spit: 2, tail: 2, guard: 2, hp: 100, stamina: 100, speed: 4, radiusCm: 0 });
 
 export class Combat {
   static async create(options = {}) {
@@ -37,16 +37,17 @@ export class Combat {
     // Build locally first: validation failure never partially mutates WASM setup.
     const bytes = new Uint8Array(LAYOUT[1]);
     const view = new DataView(bytes.buffer);
-    view.setUint32(0, setup.seed, true); view.setInt32(4, setup.creatures.length, true);
-    view.setUint8(8, setup.flat ? 1 : 0);
+    view.setUint32(LAYOUT[2], setup.seed, true); view.setInt32(LAYOUT[3], setup.creatures.length, true);
+    view.setUint8(LAYOUT[4], setup.flat ? 1 : 0);
     setup.creatures.forEach((c, i) => {
-      const base = 12 + i * 40;
+      const base = LAYOUT[5] + i * LAYOUT[6];
       const p = { ...defaultProfile(), ...c.profile };
-      ['mouth', 'charge', 'spit', 'tail', 'guard'].forEach((k, j) => view.setUint8(base + j, integer(p[k], 0, 5, k)));
-      ['hp', 'stamina', 'speed'].forEach((k, j) => view.setFloat32(base + 8 + j * 4, finite(p[k], k), true));
-      [c.x ?? -1, c.y ?? -1, c.fx ?? 0, c.fy ?? 0].forEach((v, j) => view.setFloat32(base + 20 + j * 4, finite(v, 'spawn'), true));
-      view.setUint8(base + 36, integer(c.medium ?? 0, 0, 1, 'medium'));
-      view.setUint8(base + 37, integer(c.team ?? i, 0, 255, 'team'));
+      ['mouth', 'charge', 'spit', 'tail', 'guard'].forEach((k, j) => view.setUint8(base + LAYOUT[15] + j, integer(p[k], 0, 5, k)));
+      ['hp', 'stamina', 'speed'].forEach((k, j) => view.setFloat32(base + LAYOUT[20] + j * 4, finite(p[k], k), true));
+      view.setUint16(base + LAYOUT[23], integer(p.radiusCm ?? 0, 0, 65535, 'radiusCm'), true);
+      [c.x ?? -1, c.y ?? -1, c.fx ?? 0, c.fy ?? 0].forEach((v, j) => view.setFloat32(base + LAYOUT[8] + j * 4, finite(v, 'spawn'), true));
+      view.setUint8(base + LAYOUT[12], integer(c.medium ?? 0, 0, 1, 'medium'));
+      view.setUint8(base + LAYOUT[13], integer(c.team ?? i, 0, 255, 'team'));
     });
     this.module.HEAPU8.set(bytes, this.module._cb_setup());
     if (this.module._cb_reset() !== 0) throw new Error('invalid combat setup');

@@ -1,0 +1,27 @@
+{
+  "baseline": {
+    "ref": "merge-base HEAD p3a-wasm",
+    "commit": "12722e33bbfaf49e05d48e8a6ef78e81fc394010"
+  },
+  "currentCoreCommit": "35f1636",
+  "command": "nice -n 10 make tourney",
+  "applicationExitCode": 1,
+  "makeExitCode": 2,
+  "comparison": "entire tournament stdout byte-identical",
+  "sha256": "fe656c1d0f0163ad0ea4369e70dcfbedd1b42a1cbe03fb1d7a201994218a1a1b",
+  "compiler": "cc (GCC) 16.2.1 20260810",
+  "fieldMeansPercent": {
+    "brawler": 50.9,
+    "spitter": 62.4,
+    "tank": 43.6,
+    "skirmisher": 45.7,
+    "allrounder": 47.4
+  },
+  "worstPooledPairPercent": 73.5,
+  "knownFailingGates": [
+    "raw dominance",
+    "resource dominance",
+    "raw equilibrium support",
+    "resource equilibrium support"
+  ]
+}

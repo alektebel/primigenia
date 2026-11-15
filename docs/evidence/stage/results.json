@@ -1,0 +1,121 @@
+{
+  "browser": "158.0.8127.18",
+  "renderer": "SwiftShader software WebGL",
+  "forcedRafRates": [
+    30,
+    73
+  ],
+  "enemy": {
+    "genome": "Garfio",
+    "tiers": {
+      "mouth": 0,
+      "charge": 3,
+      "hp": 195
+    }
+  },
+  "runs": [
+    {
+      "fixture": "biter.json",
+      "fps": 30,
+      "outcome": "death",
+      "ticks": 86,
+      "hp": [
+        0,
+        119.25886535644531
+      ],
+      "finalHash": "59675a7b9e513dbf",
+      "nativeReplay": true,
+      "errors": []
+    },
+    {
+      "fixture": "biter.json",
+      "fps": 73,
+      "outcome": "death",
+      "ticks": 86,
+      "hp": [
+        0,
+        119.25886535644531
+      ],
+      "finalHash": "59675a7b9e513dbf",
+      "nativeReplay": true,
+      "errors": []
+    },
+    {
+      "fixture": "guard.json",
+      "fps": 30,
+      "outcome": "death",
+      "ticks": 148,
+      "hp": [
+        0,
+        83.65864562988281
+      ],
+      "finalHash": "942c6f296cbdc091",
+      "nativeReplay": true,
+      "errors": []
+    },
+    {
+      "fixture": "guard.json",
+      "fps": 73,
+      "outcome": "death",
+      "ticks": 148,
+      "hp": [
+        0,
+        83.65864562988281
+      ],
+      "finalHash": "942c6f296cbdc091",
+      "nativeReplay": true,
+      "errors": []
+    },
+    {
+      "fixture": "spitter.json",
+      "fps": 30,
+      "outcome": "death",
+      "ticks": 134,
+      "hp": [
+        0,
+        58.322914123535156
+      ],
+      "finalHash": "27275222877dcd9c",
+      "nativeReplay": true,
+      "errors": []
+    },
+    {
+      "fixture": "spitter.json",
+      "fps": 73,
+      "outcome": "death",
+      "ticks": 134,
+      "hp": [
+        0,
+        58.322914123535156
+      ],
+      "finalHash": "27275222877dcd9c",
+      "nativeReplay": true,
+      "errors": []
+    }
+  ],
+  "evidence": [
+    {
+      "capture": "fight-hit.png",
+      "gap": 5.422861111270549e-7,
+      "radiiCm": [
+        300,
+        120
+      ],
+      "hp": [
+        100,
+        140.76785278320312
+      ],
+      "tick": 58
+    },
+    {
+      "capture": "victory.png",
+      "outcome": "victory",
+      "hp": [
+        69.00784301757812,
+        0
+      ],
+      "finalHash": "3205ce38d967e7c9",
+      "nativeReplay": true
+    }
+  ]
+}

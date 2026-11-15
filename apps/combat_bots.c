@@ -9,11 +9,11 @@ const char *const PROFILE_NAME[N_PROFILES] = {
  * tank buys +20 HP for -0.6 m/s. No per-build calibration to tournament scores.
  *                          mouth charge spit tail guard   hp     stamina speed */
 const CpCombatProfile PROFILES[N_PROFILES] = {
-    /* brawler    */ { 4, 3, 0, 1, 1,   100.0f, 100.0f, 3.8f },
-    /* spitter    */ { 2, 0, 4, 0, 1,   100.0f, 100.0f, 4.2f },
-    /* tank       */ { 2, 1, 0, 3, 4,  120.0f, 100.0f, 3.4f },
-    /* skirmisher */ { 3, 0, 2, 2, 0,   100.0f, 100.0f, 4.6f },
-    /* allrounder */ { 3, 2, 2, 2, 2,  100.0f, 100.0f, 4.0f },
+    /* brawler    */ { 4, 3, 0, 1, 1,   100.0f, 100.0f, 3.8f, 0 },
+    /* spitter    */ { 2, 0, 4, 0, 1,   100.0f, 100.0f, 4.2f, 0 },
+    /* tank       */ { 2, 1, 0, 3, 4,  120.0f, 100.0f, 3.4f, 0 },
+    /* skirmisher */ { 3, 0, 2, 2, 0,   100.0f, 100.0f, 4.6f, 0 },
+    /* allrounder */ { 3, 2, 2, 2, 2,  100.0f, 100.0f, 4.0f, 0 },
 };
 
 const char *bot_name(int kind)
@@ -112,12 +112,13 @@ static int spaced_attack(CpBot *b, const CpCombatWorld *w, int self, int foe, in
         CpCombatPreview p; cp_combat_preview(w, self, m, foe, &p);
         float dx = me->x - w->c[foe].x, dy = me->y - w->c[foe].y;
         float room = wall_room(me->x, me->y);
-        int away_wall = (me->x <= CB_RADIUS+0.5f && dx < 0) ||
-            (me->x >= CB_ARENA_W-CB_RADIUS-0.5f && dx > 0) ||
-            (me->y <= CB_RADIUS+0.5f && dy < 0) ||
-            (me->y >= CB_ARENA_H-CB_RADIUS-0.5f && dy > 0);
+        float rad = cp_combat_body_radius(&me->prof);
+        int away_wall = (me->x <= rad+0.5f && dx < 0) ||
+            (me->x >= CB_ARENA_W-rad-0.5f && dx > 0) ||
+            (me->y <= rad+0.5f && dy < 0) ||
+            (me->y >= CB_ARENA_H-rad-0.5f && dy > 0);
         if (p.gap < mv->reach * 0.85f) {
-            if (away_wall || room <= CB_RADIUS) {
+            if (away_wall || room <= rad) {
                 if (me->stamina >= cp_combat_move_stamina(&me->prof, CB_DODGE)) {
                     *out = (CpCombatAction){CB_V_DODGE, 0, 0, (int8_t)dodge_dir(w, self)};
                     return 1;

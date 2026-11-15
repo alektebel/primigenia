@@ -121,6 +121,7 @@ void cp_combat_profile_default(CpCombatProfile *p)
 {
     p->mouth = p->charge = p->spit = p->tail = p->guard = 2;
     p->hp = 100.0f; p->stamina = 100.0f; p->speed = 4.0f;
+    p->radius_cm = 0;   /* CB_RADIUS; omitted from the canonical hash */
 }
 
 int cp_combat_part_level(const CpCombatProfile *p, int part)
@@ -230,6 +231,13 @@ uint64_t cp_combat_hash(const CpCombatWorld *w)
         fu8(&f, c->prof.mouth); fu8(&f, c->prof.charge); fu8(&f, c->prof.spit);
         fu8(&f, c->prof.tail); fu8(&f, c->prof.guard);
         ff(&f, c->prof.hp); ff(&f, c->prof.stamina); ff(&f, c->prof.speed);
+        /* Radius is little-endian centimetres, and only when it is not the
+         * default. 0 and 60 both resolve to the CB_RADIUS literal, so writing
+         * either byte would change every golden hash without changing physics. */
+        if (c->prof.radius_cm != 0 && c->prof.radius_cm != CB_RADIUS_CM) {
+            fu8(&f, (uint8_t)c->prof.radius_cm);
+            fu8(&f, (uint8_t)(c->prof.radius_cm >> 8));
+        }
         ff(&f, c->x); ff(&f, c->y); ff(&f, c->fx); ff(&f, c->fy);
         ff(&f, c->hp); ff(&f, c->stamina);
         fu8(&f, (uint8_t)c->move); fu8(&f, c->phase); fu8(&f, c->ptick); fu8(&f, c->plen);
@@ -268,6 +276,11 @@ static void clamp_prof(CpCombatProfile *p)
     p->hp      = cb_clampf(p->hp, 1.0f, 100000.0f);
     p->stamina = cb_clampf(p->stamina, 1.0f, 100000.0f);
     p->speed   = cb_clampf(p->speed, 0.5f, 12.0f);
+    /* 0 stays 0 so the hash can omit the default. Any other value is centimetres. */
+    if (p->radius_cm != 0) {
+        if (p->radius_cm < CB_RADIUS_CM_MIN) p->radius_cm = CB_RADIUS_CM_MIN;
+        if (p->radius_cm > CB_RADIUS_CM_MAX) p->radius_cm = CB_RADIUS_CM_MAX;
+    }
 }
 
 void cp_combat_reset(CpCombatWorld *w, const CpCombatSetup *s)
@@ -317,8 +330,9 @@ void cp_combat_reset(CpCombatWorld *w, const CpCombatSetup *s)
             c->fx = cp_rng_range(r, -1.0f, 1.0f);
             c->fy = cp_rng_range(r, -1.0f, 1.0f);
         }
-        c->x = cb_clampf(c->x, CB_RADIUS, CB_ARENA_W - CB_RADIUS);
-        c->y = cb_clampf(c->y, CB_RADIUS, CB_ARENA_H - CB_RADIUS);
+        float rad = cp_combat_body_radius(&c->prof);
+        c->x = cb_clampf(c->x, rad, CB_ARENA_W - rad);
+        c->y = cb_clampf(c->y, rad, CB_ARENA_H - rad);
         norm_or(&c->fx, &c->fy, 1.0f, 0.0f);
         c->hp = c->prof.hp;
         c->stamina = c->prof.stamina;
@@ -593,7 +607,9 @@ static void plan(CpCombatWorld *w, int i, Disp *d)
         const CpCombatCreature *t = &w->c[(int)c->verb_target];
         if (!t->alive) { c->verb = CB_V_IDLE; return; }
         dist = dir_to(c, t, &ux, &uy);
-        if (dist - 2.0f * CB_RADIUS <= CB_APPROACH_GAP) { c->verb = CB_V_IDLE; return; }
+        if (dist - (cp_combat_body_radius(&c->prof) + cp_combat_body_radius(&t->prof)) <= CB_APPROACH_GAP) {
+            c->verb = CB_V_IDLE; return;
+        }
         turn_toward(c, ux, uy);
         walk(w, i, d, ux, uy, walk_speed(c));
         return;
@@ -604,7 +620,7 @@ static void plan(CpCombatWorld *w, int i, Disp *d)
         if (!t->alive || !cp_combat_move_available(c, mv)) { c->verb = CB_V_IDLE; return; }
         const CpCombatMove *m = &CP_COMBAT_MOVES[mv];
         dist = dir_to(c, t, &ux, &uy);
-        float gap = dist - CB_RADIUS;
+        float gap = dist - cp_combat_body_radius(&t->prof);
         if (gap <= m->reach * 0.92f) {
             int aligned = (c->fx * ux + c->fy * uy) >= cb_cos(m->arc * 0.25f);
             if (!aligned) { turn_toward(c, ux, uy); return; }
@@ -628,7 +644,9 @@ static void plan(CpCombatWorld *w, int i, Disp *d)
         const CpCombatCreature *t = &w->c[(int)c->verb_target];
         if (!t->alive || c->verb_ticks == 0) { c->verb = CB_V_IDLE; return; }
         dist = dir_to(c, t, &ux, &uy);
-        if (dist - 2.0f * CB_RADIUS > CB_FLEE_DONE_GAP) { c->verb = CB_V_IDLE; return; }
+        if (dist - (cp_combat_body_radius(&c->prof) + cp_combat_body_radius(&t->prof)) > CB_FLEE_DONE_GAP) {
+            c->verb = CB_V_IDLE; return;
+        }
         c->verb_ticks--;
         ux = -ux; uy = -uy;
         turn_toward(c, ux, uy);
@@ -712,7 +730,7 @@ void cp_combat_preview(const CpCombatWorld *w, int atk, int move, int tgt, CpCom
     const CpCombatMove *m = &CP_COMBAT_MOVES[move];
     float ux, uy;
     float dist = dir_to(a, d, &ux, &uy);
-    out->gap = dist - CB_RADIUS;
+    out->gap = dist - cp_combat_body_radius(&d->prof);
     out->in_reach = out->gap <= m->reach;
     out->in_arc = in_cone(a, ux, uy, dist, m->arc);
     HitEval e = eval_hit(w, a, d, move, out->gap);
@@ -745,7 +763,8 @@ static void separate(CpCombatWorld *w)
                 if (!w->c[j].alive) continue;
                 CpCombatCreature *a = &w->c[i], *b = &w->c[j];
                 float dx = b->x - a->x, dy = b->y - a->y;
-                float d2 = dx * dx + dy * dy, min = 2.0f * CB_RADIUS;
+                float d2 = dx * dx + dy * dy;
+                float min = cp_combat_body_radius(&a->prof) + cp_combat_body_radius(&b->prof);
                 if (d2 >= min * min) continue;
                 float nx, ny, d;
                 if (d2 < 1e-10f) { nx = 1.0f; ny = 0.0f; d = 0.0f; }
@@ -757,8 +776,9 @@ static void separate(CpCombatWorld *w)
         }
         for (int i = 0; i < w->n; i++) {
             CpCombatCreature *c = &w->c[i];
-            c->x = cb_clampf(c->x, CB_RADIUS, CB_ARENA_W - CB_RADIUS);
-            c->y = cb_clampf(c->y, CB_RADIUS, CB_ARENA_H - CB_RADIUS);
+            float rad = cp_combat_body_radius(&c->prof);
+            c->x = cb_clampf(c->x, rad, CB_ARENA_W - rad);
+            c->y = cb_clampf(c->y, rad, CB_ARENA_H - rad);
         }
     }
 }
@@ -780,10 +800,12 @@ static int gather_hits(const CpCombatWorld *w, Hit *hits)
             if (a->hit_mask & (1u << j)) continue;
             float ux, uy;
             float dist = dir_to(a, t, &ux, &uy);
-            float gap = dist - CB_RADIUS;
+            float gap = dist - cp_combat_body_radius(&t->prof);
             int ok;
-            if (m->flags & CB_F_DASH) ok = dist - 2.0f * CB_RADIUS <= CB_CONTACT_GAP;
-            else                      ok = gap <= m->reach;
+            if (m->flags & CB_F_DASH)
+                ok = dist - (cp_combat_body_radius(&a->prof) + cp_combat_body_radius(&t->prof)) <= CB_CONTACT_GAP;
+            else
+                ok = gap <= m->reach;
             if (!ok || !in_cone(a, ux, uy, dist, m->arc)) continue;
             if (m->flags & CB_F_SWEEP) {
                 Hit *h = &hits[nh++];
@@ -794,7 +816,7 @@ static int gather_hits(const CpCombatWorld *w, Hit *hits)
             const CpCombatCreature *t = &w->c[best];
             Hit *h = &hits[nh++];
             h->atk = (uint8_t)i; h->def = (uint8_t)best; h->move = a->move;
-            h->gap = sqrtf((t->x - a->x) * (t->x - a->x) + (t->y - a->y) * (t->y - a->y)) - CB_RADIUS;
+            h->gap = sqrtf((t->x - a->x) * (t->x - a->x) + (t->y - a->y) * (t->y - a->y)) - cp_combat_body_radius(&t->prof);
         }
     }
     return nh;
@@ -978,8 +1000,9 @@ uint64_t cp_combat_step(CpCombatWorld *w)
     for (int i = 0; i < w->n; i++) {
         CpCombatCreature *c = &w->c[i];
         if (!c->alive) continue;
-        c->x = cb_clampf(c->x + disp[i].dx, CB_RADIUS, CB_ARENA_W - CB_RADIUS);
-        c->y = cb_clampf(c->y + disp[i].dy, CB_RADIUS, CB_ARENA_H - CB_RADIUS);
+        float rad = cp_combat_body_radius(&c->prof);
+        c->x = cb_clampf(c->x + disp[i].dx, rad, CB_ARENA_W - rad);
+        c->y = cb_clampf(c->y + disp[i].dy, rad, CB_ARENA_H - rad);
     }
     separate(w);
 

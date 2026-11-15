@@ -26,7 +26,7 @@ int cb_layout(int index)
         OFF(CpCombatSpawn, team), sizeof(CpCombatProfile),
         OFF(CpCombatProfile, mouth), OFF(CpCombatProfile, charge), OFF(CpCombatProfile, spit),
         OFF(CpCombatProfile, tail), OFF(CpCombatProfile, guard), OFF(CpCombatProfile, hp),
-        OFF(CpCombatProfile, stamina), OFF(CpCombatProfile, speed),
+        OFF(CpCombatProfile, stamina), OFF(CpCombatProfile, speed), OFF(CpCombatProfile, radius_cm),
         sizeof(CpCombatAction), OFF(CpCombatAction, verb), OFF(CpCombatAction, move),
         OFF(CpCombatAction, target), OFF(CpCombatAction, dir),
         STATE_FLOATS, EVENT_FLOATS, PREVIEW_FLOATS, CB_MAX_CREATURES, CB_MAX_EVENTS,
