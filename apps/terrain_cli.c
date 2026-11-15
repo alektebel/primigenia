@@ -225,7 +225,7 @@ static int write_dump(const char *path, const CpTerrainParams *p, const CpTerrai
     FILE *f = fopen(path, "wb");
     int8_t *dir;
     uint32_t version = CP_TERRAIN_VERSION;
-    uint32_t flags = (p->droplets == 0 && p->thermal_iters == 0 && p->stream_iters == 0) ? 1u : 0u;
+    uint32_t flags = (p->droplets == 0 && p->thermal_iters == 0 && p->stream_iters == 0) ? 3u : 2u;
     int nn = p->n * p->n;
     char magic[8] = {'C', 'P', 'T', 'E', 'R', '1', '0', '\0'};
     if (!f) { perror(path); return 2; }
@@ -252,9 +252,19 @@ static int write_dump(const char *path, const CpTerrainParams *p, const CpTerrai
         free(dir);
         return 2;
     }
-    fclose(f);
+    /* Version 3 feature extension (flags bit 1); no struct padding on disk. */
+    int failed=fwrite(t->material,1,(size_t)nn,f)!=(size_t)nn;
+    const float landmark[]={t->volcano_x_m,t->volcano_y_m,t->volcano_radius_m,t->crater_radius_m};
+    uint32_t count=(uint32_t)t->cave_count;
+    failed|=fwrite(landmark,4,4,f)!=4 || fwrite(&count,4,1,f)!=1;
+    for(int i=0;i<t->cave_count;i++) {
+        const CpTerrainCave *v=&t->caves[i];
+        const float fields[]={v->x_m,v->y_m,v->z_m,v->facing_x,v->facing_y,v->width_m,v->height_m,v->depth_m};
+        failed|=fwrite(fields,4,8,f)!=8 || fwrite(&v->waterfall,4,1,f)!=1;
+    }
+    failed|=fclose(f)!=0;
     free(dir);
-    return 0;
+    return failed?2:0;
 }
 
 int main(int argc, char **argv)

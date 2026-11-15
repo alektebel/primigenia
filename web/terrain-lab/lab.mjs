@@ -1,7 +1,7 @@
 const $=id=>document.getElementById(id);
 const stages=['Raising the range and cutting its valleys','Rain is carving the gullies','Loose stone is settling into scree','Tracing the drainage network','Landscape ready'];
 const query=new URLSearchParams(location.search);
-let terrain,light,mesh,sea,busy=false,readyResolve;
+let terrain,light,mesh,sea,caveMarkers,busy=false,readyResolve;
 window.terrainReady=new Promise(resolve=>{readyResolve=resolve;});
 const worker=new Worker(new URL('./worker.mjs',import.meta.url),{type:'module'});
 window.addEventListener('error',event=>failure(event.message));
@@ -85,9 +85,11 @@ function bakeLight(t){
 }
 const C={meadow:[.36,.50,.20],forest:[.17,.30,.14],alp:[.47,.50,.27],rock:[.66,.62,.56],dark:[.42,.40,.39],scree:[.70,.66,.58],
   gravel:[.68,.64,.52],sand:[.78,.73,.58],snow:[.95,.96,.98],river:[.24,.45,.58],lake:[.17,.40,.52],shallow:[.33,.62,.66],deep:[.10,.30,.47]};
+const MATERIAL_COLORS=[[.36,.50,.20],[.48,.44,.40],[.72,.60,.44],[.18,.15,.20],[.88,.76,.48],[.94,.96,1]];
 function albedo(i,mode){
   const t=terrain,h=t.height[i],sed=t.sediment[i],area=t.flow[i]*t.size*t.size;
   const gx=light.gx[i],gy=light.gy[i],slope=Math.hypot(gx,gy),w=light.water[i];
+  if(mode==='classification')return w===2?C.deep:w===1?C.lake:MATERIAL_COLORS[t.material?.[i]??0];
   if(mode==='height')return w===2?C.deep:mix(mix([.20,.38,.24],[.86,.80,.55],h/260),[.98,.97,.95],(h-260)/300);
   if(mode==='slope')return mix(mix([.90,.92,.78],[.86,.55,.25],slope/.9),[.35,.12,.14],(slope-.9)/1.2);
   if(mode==='flow')return mix([.90,.90,.82],[.02,.26,.52],Math.log2(1+area/(t.size*t.size)*t.n*t.n)/12);
@@ -112,6 +114,7 @@ function albedo(i,mode){
   c=mix(c,C.sand,1-step(1.5,6,h));
   const snowline=325-north*50-Math.min(30,sed*10);
   c=mix(c,C.snow,step(snowline,snowline+60,h)*(1-step(1.5,2.6,slope)*.85));
+  if(t.material?.[i]===3)c=mix([.20,.18,.18],[.32,.27,.25],step(.5,1.5,slope));
   if(area>=CHANNEL_M2)c=mix(c,C.river,.55+.25*step(8e3,2e5,area));
   else c=mix(c,[c[0]*.82,c[1]*.9,c[2]*.84],step(1500,CHANNEL_M2,area)*.6);
   return c;
@@ -125,14 +128,15 @@ function shade(i,c){
 const toByte=v=>Math.round(255*Math.pow(v<0?0:v>1?1:v,1/2.2));
 function groundTexture(mode){
   const {n}=terrain,data=new Uint8Array(n*n*4);
-  for(let i=0;i<n*n;i++){const c=shade(i,albedo(i,mode));data[i*4]=toByte(c[0]);data[i*4+1]=toByte(c[1]);data[i*4+2]=toByte(c[2]);data[i*4+3]=255;}
+  for(let i=0;i<n*n;i++){const c=mode==='classification'?albedo(i,mode):shade(i,albedo(i,mode));data[i*4]=toByte(c[0]);data[i*4+1]=toByte(c[1]);data[i*4+2]=toByte(c[2]);data[i*4+3]=255;}
   const tex=new THREE.DataTexture(data,n,n,THREE.RGBAFormat);tex.encoding=THREE.sRGBEncoding;tex.magFilter=THREE.LinearFilter;
   tex.minFilter=THREE.LinearMipmapLinearFilter;tex.generateMipmaps=true;tex.anisotropy=renderer.capabilities.getMaxAnisotropy();tex.needsUpdate=true;return tex;
 }
 function recolor(){
-  if(!mesh)return;const old=mesh.material.map;mesh.material.map=groundTexture($('shading').value);mesh.material.needsUpdate=true;if(old)old.dispose();draw();
+  if(!mesh)return;const old=mesh.material.map;mesh.material.map=groundTexture($('shading').value);mesh.material.needsUpdate=true;if(old)old.dispose();hillshade();draw();
 }
 function buildMesh(){
+  if(caveMarkers){scene.remove(caveMarkers);caveMarkers.traverse(o=>{o.geometry?.dispose();o.material?.map?.dispose();o.material?.dispose();});}
   if(mesh){scene.remove(mesh);mesh.geometry.dispose();mesh.material.map?.dispose();mesh.material.dispose();}
   if(sea){scene.remove(sea);sea.geometry.dispose();sea.material.dispose();sea=null;}
   const {n,size}=terrain;
@@ -152,6 +156,17 @@ function buildMesh(){
     sea=new THREE.Mesh(new THREE.PlaneGeometry(60000,60000),new THREE.MeshBasicMaterial({color:new THREE.Color(.16,.40,.55).convertSRGBToLinear(),transparent:true,opacity:.86}));
     sea.rotation.x=-Math.PI/2;scene.add(sea);
   }
+  caveMarkers=new THREE.Group();
+  for(const [i,v] of (terrain.entrances||[]).entries()) {
+    const label=document.createElement('canvas');label.width=64;label.height=64;
+    const ctx=label.getContext('2d');ctx.fillStyle=v.waterfall?'#44dcff':'#fff3ad';
+    ctx.beginPath();ctx.arc(32,32,26,0,Math.PI*2);ctx.fill();ctx.strokeStyle='#16251d';ctx.lineWidth=4;ctx.stroke();
+    ctx.fillStyle='#16251d';ctx.font='bold 36px sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(String(i+1),32,33);
+    const tex=new THREE.CanvasTexture(label);
+    const marker=new THREE.Sprite(new THREE.SpriteMaterial({map:tex,depthTest:false}));
+    marker.position.set(v.position[0],v.position[2]+18,v.position[1]);marker.scale.set(42,42,1);marker.renderOrder=2;caveMarkers.add(marker);
+  }
+  scene.add(caveMarkers);
   draw();
 }
 function hillshade(){
@@ -162,7 +177,8 @@ function hillshade(){
     const sx=Math.min(n-1,Math.floor(x*n/w)),sy=Math.min(n-1,Math.floor(y*n/w));
     let r=0,g=0,b=0,f=0,wet=0,count=0;
     for(let dy=0;dy<k;dy++)for(let dx=0;dx<k;dx++){
-      const i=Math.min(n-1,sy+dy)*n+Math.min(n-1,sx+dx),c=shade(i,light.water[i]===2?[.42,.60,.72]:light.water[i]===1?[.30,.52,.66]:[.80,.79,.73]);
+      const i=Math.min(n-1,sy+dy)*n+Math.min(n-1,sx+dx);
+      const c=$('shading').value==='classification'?albedo(i,'classification'):shade(i,light.water[i]===2?[.42,.60,.72]:light.water[i]===1?[.30,.52,.66]:[.80,.79,.73]);
       r+=c[0];g+=c[1];b+=c[2];count++;if(light.water[i])wet++;else f=Math.max(f,terrain.flow[i]);
     }
     let c=[r/count,g/count,b/count];
@@ -172,6 +188,12 @@ function hillshade(){
     img.data.set([toByte(c[0]),toByte(c[1]),toByte(c[2]),255],(y*w+x)*4);
   }
   ctx.putImageData(img,0,0);
+  for(const [i,v] of (terrain.entrances||[]).entries()) {
+    const x=(v.position[0]/size+.5)*w,y=(v.position[1]/size+.5)*w,r=Math.max(7,w/90);
+    ctx.lineWidth=2;ctx.strokeStyle='#12241c';ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(x+v.facing[0]*r*2.5,y+v.facing[1]*r*2.5);ctx.stroke();
+    ctx.fillStyle=v.waterfall?'#44dcff':'#fff3ad';ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fill();ctx.stroke();
+    ctx.fillStyle='#12241c';ctx.font=`bold ${r*1.5}px sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(String(i+1),x,y);
+  }
 }
 function failure(message){busy=false;$('generate').disabled=false;document.body.dataset.error='true';$('status').textContent=`${message} Adjust the parameters or reload to try again.`;}
 worker.onerror=event=>failure(event.message||'The terrain worker could not start.');
@@ -187,8 +209,10 @@ worker.onmessage=({data})=>{
     const km=(data.size/1000).toLocaleString('en-US',{maximumFractionDigits:1});
     $('status').textContent=`${data.base?'Base only':'Eroded'} · generated in ${data.seconds.toFixed(2)} s in a Web Worker`;
     $('summary').textContent=`Seed ${data.seed} · ${data.n} × ${data.n} · ${km} km · generator v${data.version}`;$('hash').textContent=data.hash;
-    $('map-title').textContent=`Hillshade · ${km} km square`;
-    window.terrainResult={seed:data.seed,n:data.n,hash:data.hash,seconds:data.seconds,base:data.base,version:data.version,size:data.size};readyResolve(window.terrainResult);
+    $('map-title').textContent=`Terrain map · ${km} km square`;
+    $('cave-key').textContent=`${data.entrances.length} entrances · numbered circles and outward lines; cyan = behind a waterfall. `+data.entrances.map((v,i)=>`${i+1}: ${v.size[0].toFixed(1)} × ${v.size[1].toFixed(1)} m${v.waterfall?' (waterfall)':''}`).join(' · ');
+    window.terrainResult={seed:data.seed,n:data.n,hash:data.hash,seconds:data.seconds,base:data.base,version:data.version,size:data.size,entrances:data.entrances,landmark:data.landmark,
+      materialCounts:data.material?Array.from({length:6},(_,id)=>data.material.reduce((a,v)=>a+(v===id),0)):null};readyResolve(window.terrainResult);
     window.dispatchEvent(new CustomEvent('terrain-ready',{detail:window.terrainResult}));
   }
 };
@@ -198,6 +222,7 @@ $('controls').addEventListener('submit',event=>{
   event.preventDefault();if(busy||!$('controls').reportValidity())return;
   busy=true;document.body.dataset.error='false';$('generate').disabled=true;$('status').textContent='A world is taking shape…';$('progress').value=0;
   worker.postMessage({engine:['v1','v2'].includes(query.get('engine'))?query.get('engine'):'current',seed:Number($('seed').value),n:Number($('resolution').value),base:$('base').checked,
+    coast:Number($('coast').checked),rock:Number($('rock').checked),volcano:Number($('volcano').checked),caves:Number($('caves').checked),
     gentle:Number(query.get('gentle')??1),variety:Number(query.get('variety')??1),bands:Number(query.get('bands')??1),
     warp:Number($('warp').value),ridge:Number($('ridge').value),stream:Number($('stream').value),droplets:Number($('droplets').value),erosion:Number($('erosion').value),thermal:Number($('thermal').value)});
 });
@@ -222,4 +247,6 @@ window.addEventListener('pagehide',()=>{worker.terminate();renderer.dispose();},
 // seed, n, base=1, view=valley, map=<pixels>, mesh=<segments>, engine=v1 (phase-A module, if built).
 if(query.has('seed'))$('seed').value=query.get('seed');if(query.has('n'))$('resolution').value=query.get('n');
 if(query.has('map')){const px=Math.max(64,Math.min(2048,Number(query.get('map'))||512));$('map').width=px;$('map').height=px;}
+for(const id of ['coast','rock','volcano','caves'])if(query.has(id))$(id).checked=query.get(id)!=='0';
+if(query.has('shading'))$('shading').value=query.get('shading');
 $('base').checked=query.get('base')==='1';cameraReset();$('controls').requestSubmit();

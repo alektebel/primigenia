@@ -36,6 +36,16 @@ class Metrics(unittest.TestCase):
             for bad in (b'bad',blob[:-1],blob+b'?',blob[:8]+struct.pack('<I',99)+blob[12:],blob[:-1]+b'\x08'):
                 p.write_bytes(bad)
                 with self.assertRaises(ValueError):m.load_dump(p)
+    def test_feature_dump(self):
+        header=struct.pack('<8sIIifI',b'CPTER10\0',3,1,8,8.,2)
+        old=header+struct.pack('<192f',*([1.]*192))+struct.pack('<64b',*([-1]*64))
+        features=bytes([0]*63+[3])+struct.pack('<4fI',100,200,600,62,1)+struct.pack('<8fI',100,200,40,1,0,6,4,3,1)
+        with tempfile.TemporaryDirectory() as tmp:
+            p=Path(tmp)/'map.bin';p.write_bytes(old+features)
+            t=m.load_dump(p);self.assertEqual(t['material'][-1],3);self.assertEqual(t['caves'][0][-1],1)
+            for data in ((old+features)[:-1],old+bytes([6])+features[1:],old+features+b'?'):
+                p.write_bytes(data)
+                with self.assertRaises(ValueError):m.load_dump(p)
     def test_distance(self):
         self.assertEqual(m.dist_range(.4,.5,.6),.5-.4)
         self.assertEqual(m.dist_range(4,3,5),0)

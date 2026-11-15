@@ -39,13 +39,22 @@ for(const seed of seeds)jobs.push({name:`after-${seed}`,seed});
       await page.locator('#scene').screenshot({path:`${out}/${job.name}-valley.png`});
       const png=await page.evaluate(()=>document.getElementById('map').toDataURL('image/png'));
       fs.writeFileSync(`${out}/${job.name}-top.png`,Buffer.from(png.split(',')[1],'base64'));
+      if(!job.engine && !job.base && job.seed===42) {
+        assert.ok(result.entrances.length>=3 && result.entrances.length<=6);
+        assert.ok(result.materialCounts[3]>100);
+        await page.selectOption('#view','orbit');await page.selectOption('#shading','classification');
+        await page.screenshot({path:`${out}/lab-material-caves.png`,fullPage:true});
+        const material=await page.evaluate(()=>document.getElementById('map').toDataURL('image/png'));
+        fs.writeFileSync(`${out}/material-caves-42.png`,Buffer.from(material.split(',')[1],'base64'));
+        await page.selectOption('#shading','materials');
+      }
       results.push({name:job.name,...result});console.log(job.name,result);
     }
     const gl=await page.evaluate(()=>{const gl=document.getElementById('scene').getContext('webgl2');const dbg=gl.getExtension('WEBGL_debug_renderer_info');return gl.getParameter(dbg.UNMASKED_RENDERER_WEBGL);});
     assert.match(gl,/SwiftShader/i);
     if(!flag('--no-smoke')) {
       // Surface modes, both views, keyboard camera, drainage switch, validation and regeneration.
-      for(const mode of ['height','slope','flow','sediment','materials'])await page.selectOption('#shading',mode);
+      for(const mode of ['height','slope','flow','sediment','classification','materials'])await page.selectOption('#shading',mode);
       await page.selectOption('#view','orbit');
       await page.locator('#scene').focus();await page.keyboard.press('ArrowLeft');await page.keyboard.press('+');
       await page.click('#reset');await page.uncheck('#drainage');await page.check('#drainage');
@@ -59,9 +68,9 @@ for(const seed of seeds)jobs.push({name:`after-${seed}`,seed});
       await page.screenshot({path:`${out}/lab-mobile.png`,fullPage:true});
       assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);
       fs.writeFileSync(`${out}/browser.json`,JSON.stringify({browser:browser.version(),renderer:gl,errors,terrains:results,
-        captures:jobs.length*3+2,interactions:'all five surface modes, both views, keyboard camera, reset, drainage, invalid seed, regeneration, mobile overflow'},null,2)+'\n');
+        captures:jobs.length*3+2+2,interactions:'all six surface modes, both views, keyboard camera, reset, drainage, invalid seed, regeneration, mobile overflow'},null,2)+'\n');
     }
-    if(flag('--no-smoke'))fs.writeFileSync(`${out}/browser.json`,JSON.stringify({browser:browser.version(),renderer:gl,errors,terrains:results,captures:jobs.length*3},null,2)+'\n');
+    if(flag('--no-smoke'))fs.writeFileSync(`${out}/browser.json`,JSON.stringify({browser:browser.version(),renderer:gl,errors,terrains:results,captures:jobs.length*3+2},null,2)+'\n');
     assert.deepEqual(errors,[]);
     console.log('Terrain browser capture: PASS; '+gl);
   }finally{await browser.close();}
