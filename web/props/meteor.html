@@ -33,7 +33,7 @@ import {
 const q = new URLSearchParams(location.search);
 const SEED = (q.get('seed') !== null ? +q.get('seed') : 20261115) | 0;
 const SHOT = q.get('shot') || 'scene';
-const CRATER_R = 7.5, CRATER_D = 1.15;
+const CRATER_R = 7.5, CRATER_D = 1.15, CRATER_SEGMENTS = 64;
 
 const hud = document.getElementById('hud');
 const errBox = document.getElementById('err');
@@ -229,10 +229,35 @@ scene.add(props);
 
 let layout = 'scene';
 const shards = [];
-const kit = buildCraterKit(THREE, SEED, {
-  radius: CRATER_R, depth: CRATER_D, segments: 64, rings: 9, ground: groundMat, bowl: true,
+/* ------------------------------------------------------------------ *
+  * Crater kit
+  * ------------------------------------------------------------------ */
+  const craterGroup = new THREE.Group();
+  craterGroup.name = 'meteor-crater';
+
+  // Fill the crater interior so the meadow doesn't show fog through.
+  // Uses the meadow ground material with crater uniforms baked in.
+  // The disc extends slightly past the crater radius to cover the seam.
+  {
+    const bowlGeo = new THREE.CircleGeometry(CRATER_R * 1.01, CRATER_SEGMENTS);
+    bowlGeo.rotateX(-Math.PI / 2);
+    const bowlMesh = new THREE.Mesh(bowlGeo, groundMat);
+    bowlMesh.name = 'crater-floor';
+    bowlMesh.receiveShadow = true;
+    // polygonOffset to push it slightly forward (closer to camera) at glTF depth
+    bowlMesh.material.polygonOffset = true;
+    bowlMesh.material.polygonOffsetFactor = 1.0;
+    bowlMesh.material.polygonOffsetUnits = 1.0;
+    bowlMesh.position.y = 0;  // exactly on meadow; polygonOffset handles depth
+    craterGroup.add(bowlMesh);
+  }
+
+  const kit = buildCraterKit(THREE, SEED, {
+  radius: CRATER_R, depth: CRATER_D, ground: groundMat,
+  surfacePatches: 0, bowl: false,
 });
-props.add(kit);
+craterGroup.add(kit);
+props.add(craterGroup);
 
 const atlas = glyphAtlas(THREE, SEED);
 for (let i = 0; i < 5; i++) {
@@ -312,10 +337,10 @@ function applyShot(name) {
   cam.fov = s.fov;
   if (s.layout === 'lineup') {
     layoutLineup();
-    cam.target.set(LINEUP_AT.x, s.target[1], LINEUP_AT.z);
+    cam.target.set(LINEUP_AT.x, s.index != null ? 0 : (s.target ? s.target[1] : 0.60), LINEUP_AT.z);
   } else {
     layoutScene();
-    cam.target.set(s.target[0], s.target[1], s.target[2]);
+    cam.target.set(s.target ? s.target[0] : 0, s.target ? s.target[1] : 0.3, s.target ? s.target[2] : 0);
   }
   if (s.index != null) {
     const sh = shards[s.index];

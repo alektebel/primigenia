@@ -686,15 +686,18 @@ function rockField(THREE, seed, opts) {
 }
 
 /** The depression itself: a radial bowl that meets the meadow at y = 0.
- * Uses DoubleSide so the underside reads as shadow (a real hollow). */
-function craterBowl(THREE, radius, depth, segments, rings, material) {
-  const pos = [], idx = [], uv = [];
+ * `posAttr` is an optional shared position attribute; if provided the bowl
+ * reuses it (avoids double geometry creation).  When placed on bare terrain
+ * the material's vertex colours create the scorched gradient; on meadow the
+ * bowl is placed at y=-0.01 so the meadow ground occludes the seam. */
+function craterBowl(THREE, radius, depth, segments, rings, material, posAttr) {
+  const pos = posAttr ? null : [], idx = [], uv = [];
   for (let i = 0; i <= rings; i++) {
     const t = i / rings, rad = radius * t;
     for (let j = 0; j <= segments; j++) {
       const a = (j / segments) * TAU;
       const x = Math.cos(a) * rad, z = Math.sin(a) * rad;
-      pos.push(x, craterHeight(radius, depth, rad), z);
+      if (!posAttr) pos.push(x, craterHeight(radius, depth, rad) - 0.01, z);
       uv.push(x * 0.1, z * 0.1);
     }
   }
@@ -705,30 +708,18 @@ function craterBowl(THREE, radius, depth, segments, rings, material) {
     }
   }
   const g = new THREE.BufferGeometry();
-  g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+  if (posAttr) {
+    g.setAttribute('position', posAttr);
+  } else {
+    g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+  }
   g.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2));
   g.setIndex(idx);
   g.computeVertexNormals();
   const mesh = new THREE.Mesh(g, material);
   mesh.name = 'crater-bowl';
-  mesh.material.side = THREE.DoubleSide;
   mesh.receiveShadow = true;
   return mesh;
-}
-
-/** A soft, scorched patch of ground (the impact's spatter). */
-function scorchTexture(THREE) {
-  const c = makeCanvas(128, 128);
-  const x = c.getContext('2d');
-  const g = x.createRadialGradient(64, 64, 4, 64, 64, 62);
-  g.addColorStop(0, 'rgba(255,255,255,1)');
-  g.addColorStop(0.55, 'rgba(255,255,255,0.85)');
-  g.addColorStop(1, 'rgba(255,255,255,0)');
-  x.fillStyle = g;
-  x.fillRect(0, 0, 128, 128);
-  const t = new THREE.CanvasTexture(c);
-  t.encoding = THREE.sRGBEncoding;
-  return t;
 }
 
 /**
@@ -738,8 +729,7 @@ function scorchTexture(THREE) {
 export function buildCraterKit(THREE, seed, params = {}) {
   const {
     radius = 7.5, depth = 1.15, segments = 32, rings = 9,
-    rimRocks = 24, floorRocks = 12, surfacePatches = 16,
-    glassPatches = 7, scorchPatches = 9,
+    rimRocks = 24, floorRocks = 12, surfacePatches = 10,
     bowl = false, ground = null, key = 'crater',
   } = params;
   const group = new THREE.Group();
@@ -748,11 +738,49 @@ export function buildCraterKit(THREE, seed, params = {}) {
 
   const groundMat = ground || makeGroundMaterial(THREE, { crater: [0, 0], craterRadius: radius, key });
 
-  // One shallow bowl for the depression — merges with meadow via same material.
-  // The bowl geometry is placed *below* y=0 so it reads as a depression,
-  // with the ground material already containing the scorched-ring logic.
+  // Bowl fills the crater hole so the sky doesn't show through.
+  // Uses a scorched-color toon material with vertex colours from dark (centre)
+  // to meadow-g1 (rim), creating the scorched gradient without needing the full
+  // ground shader.  The bowl geometry is placed 1 cm below the meadow so the
+  // meadow ground occludes the rim seam cleanly.
   if (bowl) {
-    const b = craterBowl(THREE, radius, depth * 0.65, segments, rings, groundMat);
+    const bowlMat = new THREE.MeshToonMaterial({
+      gradientMap: rampTexture(THREE),
+      vertexColors: true, flatShading: true, side: THREE.FrontSide,
+    });
+    // generate positions and vertex colours in one pass
+    const N = (segments + 1) * (rings + 1);
+    const posArr = new Float32Array(N * 3);
+    const colArr = new Float32Array(N * 3);
+    for (let i = 0; i <= rings; i++) {
+      const t = i / rings, rad = radius * t;
+      for (let j = 0; j <= segments; j++) {
+        const idx2 = i * (segments + 1) + j;
+        const a = (j / segments) * TAU;
+        const x = Math.cos(a) * rad, z = Math.sin(a) * rad;
+        posArr[idx2 * 3] = x;
+        posArr[idx2 * 3 + 1] = craterHeight(radius, depth * 0.55, rad) - 0.01;
+        posArr[idx2 * 3 + 2] = z;
+        const vc = [lerp(STYLE.scorch[0], STYLE.g1[0], Math.pow(t, 0.4)), lerp(STYLE.scorch[1], STYLE.g1[1], Math.pow(t, 0.4)), lerp(STYLE.scorch[2], STYLE.g1[2], Math.pow(t, 0.4))];
+        colArr[idx2 * 3] = vc[0]; colArr[idx2 * 3 + 1] = vc[1]; colArr[idx2 * 3 + 2] = vc[2];
+      }
+    }
+    const bGeo = new THREE.BufferGeometry();
+    bGeo.setAttribute('position', new THREE.Float32BufferAttribute(posArr, 3));
+    bGeo.setAttribute('color', new THREE.Float32BufferAttribute(colArr, 3));
+    bGeo.setIndex((() => {
+      const idx3 = [];
+      for (let i = 0; i < rings; i++)
+        for (let j = 0; j < segments; j++) {
+          const a = i * (segments + 1) + j, b = a + 1, c = a + segments + 1, d = c + 1;
+          idx3.push(a, b, c, b, d, c);
+        }
+      return idx3;
+    })());
+    bGeo.computeVertexNormals();
+    const b = new THREE.Mesh(bGeo, bowlMat);
+    b.name = 'crater-bowl';
+    b.receiveShadow = true;
     group.add(b);
   }
 
@@ -765,67 +793,17 @@ export function buildCraterKit(THREE, seed, params = {}) {
   });
   group.add(rocks);
 
-  // Fused glass: the impact melted the ground into dark sheets.
-  // Separate from scorched so we can use different geometry counts.
-  {
-    const g = new THREE.CircleGeometry(1, 9);
-    g.rotateX(-Math.PI / 2);
-    const n = g.attributes.position.count;
-    g.setAttribute('color', new THREE.Float32BufferAttribute(new Float32Array(n * 3).fill(1), 3));
-    const glassMat = makeToonMaterial(THREE, {
-      color: STYLE.glass, vertexColors: true, key: 'glass2', rim: 0.03,
-      transparent: true, opacity: 0.50, depthWrite: false,
-      polygonOffset: true, polygonOffsetFactor: -3, polygonOffsetUnits: -3,
-    });
-    const glassMesh = new THREE.InstancedMesh(g, glassMat, glassPatches);
-    glassMesh.name = 'crater-glass';
-    glassMesh.receiveShadow = true;
-    const d = new THREE.Object3D();
-    for (let i = 0; i < glassPatches; i++) {
-      const a = r() * TAU, rad = radius * (0.12 + r() * 0.62);
-      const s = 0.35 + r() * 1.25;
-      d.position.set(Math.cos(a) * rad, craterHeight(radius, depth, rad) + 0.015 + r() * 0.02, Math.sin(a) * rad);
-      d.rotation.set(0, r() * TAU, 0);
-      d.scale.set(s * (0.7 + r() * 0.8), 1, s * (0.5 + r() * 0.7));
-      d.updateMatrix();
-      glassMesh.setMatrixAt(i, d.matrix);
-      const tint = 0.55 + r() * 0.5;
-      glassMesh.setColorAt(i, new THREE.Color(tint, tint * 0.92, tint * 1.02));
-    }
-    glassMesh.instanceMatrix.needsUpdate = true;
-    if (glassMesh.instanceColor) glassMesh.instanceColor.needsUpdate = true;
-    group.add(glassMesh);
-  }
-
-  // Scorched spatter: a thin overlay that bakes dark colour into the meadow.
-  {
-    const g = new THREE.CircleGeometry(1, 14);
-    g.rotateX(-Math.PI / 2);
-    const n = g.attributes.position.count;
-    g.setAttribute('color', new THREE.Float32BufferAttribute(new Float32Array(n * 3).fill(1), 3));
-    const scorchMat = makeToonMaterial(THREE, {
-      color: STYLE.scorch, vertexColors: true, key: 'scorch2', rim: 0.02,
-      transparent: true, opacity: 0.65, depthWrite: false,
-      polygonOffset: true, polygonOffsetFactor: -4, polygonOffsetUnits: -4,
-    });
-    const scorchMesh = new THREE.InstancedMesh(g, scorchMat, scorchPatches);
-    scorchMesh.name = 'crater-scorch';
-    scorchMesh.receiveShadow = true;
-    const d = new THREE.Object3D();
-    for (let i = 0; i < scorchPatches; i++) {
-      const a = r() * TAU, rad = radius * (0.1 + Math.sqrt(r()) * 0.95);
-      const s = 0.4 + r() * 1.1;
-      d.position.set(Math.cos(a) * rad, craterHeight(radius, depth, rad) + 0.02, Math.sin(a) * rad);
-      d.rotation.set(0, r() * TAU, 0);
-      d.scale.set(s, 1, s * (0.6 + r() * 0.7));
-      d.updateMatrix();
-      scorchMesh.setMatrixAt(i, d.matrix);
-      const tint = 0.65 + r() * 0.5;
-      scorchMesh.setColorAt(i, new THREE.Color(tint * 0.55, tint * 0.42, tint * 0.30));
-    }
-    scorchMesh.instanceMatrix.needsUpdate = true;
-    if (scorchMesh.instanceColor) scorchMesh.instanceColor.needsUpdate = true;
-    group.add(scorchMesh);
+  // A bowl fills the crater hole so the sky/fog doesn't show through.
+  // Uses the meadow ground material (which has the scorched ring baked into its shader)
+  // but placed at y=-0.01 so the meadow ground at radius=7.5m covers the seam.
+  if (bowl) {
+    const bowlGeo = new THREE.RingGeometry(0, radius * 0.97, segments, rings);
+    bowlGeo.rotateX(-Math.PI / 2);
+    const bowlMesh = new THREE.Mesh(bowlGeo, groundMat);
+    bowlMesh.name = 'crater-bowl';
+    bowlMesh.receiveShadow = true;
+    bowlMesh.position.y = -0.01;
+    group.add(bowlMesh);
   }
 
   // the half buried meteor core: the reason the valley has a crater
