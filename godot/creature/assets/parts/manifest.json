@@ -1,0 +1,444 @@
+{
+  "schema": "cpore.visual-parts/1",
+  "description": "Sample visual meshes only; suggested abilities are illustrative and not simulation genome data.",
+  "geometry": "Original procedural meshes; no imported game assets",
+  "provenance": "docs/PART_INSPIRATION.md",
+  "collections": {
+    "foundations": [
+      "eye_stalk",
+      "eye_triad",
+      "jaw_nipper",
+      "horn_crown",
+      "shell_plate",
+      "leg_sprinter",
+      "leg_sucker",
+      "arm_grasper",
+      "tail_paddle",
+      "tail_spike",
+      "wing_glider",
+      "frill_fan"
+    ],
+    "researched": [
+      "beak_crusher",
+      "mandible_shear",
+      "snout_trumpet",
+      "tongue_spring",
+      "sac_spitter",
+      "arm_smasher",
+      "foot_spring",
+      "foot_hoof",
+      "foot_gecko",
+      "lure_lantern",
+      "wing_insect",
+      "tail_hammer"
+    ]
+  },
+  "coordinate_convention": {
+    "blender": {
+      "up": "+Z",
+      "forward": "+X",
+      "origin": "anatomical attachment point"
+    },
+    "gltf": {
+      "up": "+Y",
+      "units": "meters"
+    }
+  },
+  "parts": [
+    {
+      "id": "eye_stalk",
+      "category": "sensory",
+      "file": "eye_stalk.glb",
+      "suggested_abilities": [
+        "perception"
+      ],
+      "attachment": "head socket",
+      "dimensions_m": [
+        0.46,
+        0.5437,
+        1.0883
+      ],
+      "vertices": 1058,
+      "polygons": 1116
+    },
+    {
+      "id": "eye_triad",
+      "category": "sensory",
+      "file": "eye_triad.glb",
+      "suggested_abilities": [
+        "perception",
+        "wide gaze"
+      ],
+      "attachment": "forehead",
+      "dimensions_m": [
+        0.753,
+        1.278,
+        0.59
+      ],
+      "vertices": 3028,
+      "polygons": 3248
+    },
+    {
+      "id": "jaw_nipper",
+      "category": "mouth",
+      "file": "jaw_nipper.glb",
+      "suggested_abilities": [
+        "bite"
+      ],
+      "attachment": "head front",
+      "dimensions_m": [
+        1.0389,
+        0.7992,
+        0.73
+      ],
+      "vertices": 2004,
+      "polygons": 1976
+    },
+    {
+      "id": "horn_crown",
+      "category": "offense",
+      "file": "horn_crown.glb",
+      "suggested_abilities": [
+        "charge"
+      ],
+      "attachment": "head or spine",
+      "dimensions_m": [
+        1.003,
+        0.4569,
+        1.1172
+      ],
+      "vertices": 840,
+      "polygons": 792
+    },
+    {
+      "id": "shell_plate",
+      "category": "defense",
+      "file": "shell_plate.glb",
+      "suggested_abilities": [
+        "armor"
+      ],
+      "attachment": "dorsal spine",
+      "dimensions_m": [
+        1.4388,
+        1.4872,
+        0.7413
+      ],
+      "vertices": 1014,
+      "polygons": 996
+    },
+    {
+      "id": "leg_sprinter",
+      "category": "locomotion",
+      "file": "leg_sprinter.glb",
+      "suggested_abilities": [
+        "sprint"
+      ],
+      "attachment": "hip; extends -Z",
+      "dimensions_m": [
+        0.4372,
+        1.4269,
+        1.4321
+      ],
+      "vertices": 1180,
+      "polygons": 1190
+    },
+    {
+      "id": "leg_sucker",
+      "category": "locomotion",
+      "file": "leg_sucker.glb",
+      "suggested_abilities": [
+        "climb",
+        "swim"
+      ],
+      "attachment": "hip; extends -Z",
+      "dimensions_m": [
+        0.6755,
+        1.298,
+        0.9514
+      ],
+      "vertices": 1468,
+      "polygons": 1464
+    },
+    {
+      "id": "arm_grasper",
+      "category": "manipulation",
+      "file": "arm_grasper.glb",
+      "suggested_abilities": [
+        "grasp"
+      ],
+      "attachment": "shoulder; extends -Z and +X",
+      "dimensions_m": [
+        0.5326,
+        0.9101,
+        1.1995
+      ],
+      "vertices": 1372,
+      "polygons": 1368
+    },
+    {
+      "id": "tail_paddle",
+      "category": "locomotion",
+      "file": "tail_paddle.glb",
+      "suggested_abilities": [
+        "swim"
+      ],
+      "attachment": "rear spine; extends -X",
+      "dimensions_m": [
+        1.2366,
+        0.497,
+        1.8184
+      ],
+      "vertices": 1096,
+      "polygons": 1116
+    },
+    {
+      "id": "tail_spike",
+      "category": "defense",
+      "file": "tail_spike.glb",
+      "suggested_abilities": [
+        "counterattack"
+      ],
+      "attachment": "rear spine; extends -X",
+      "dimensions_m": [
+        0.4657,
+        0.7606,
+        1.745
+      ],
+      "vertices": 966,
+      "polygons": 948
+    },
+    {
+      "id": "wing_glider",
+      "category": "locomotion",
+      "file": "wing_glider.glb",
+      "suggested_abilities": [
+        "glide"
+      ],
+      "attachment": "right shoulder; mirror for left",
+      "dimensions_m": [
+        1.3984,
+        2.3003,
+        0.3094
+      ],
+      "vertices": 943,
+      "polygons": 901
+    },
+    {
+      "id": "frill_fan",
+      "category": "social",
+      "file": "frill_fan.glb",
+      "suggested_abilities": [
+        "display"
+      ],
+      "attachment": "neck; fan lies in YZ plane",
+      "dimensions_m": [
+        0.1627,
+        1.9029,
+        1.2937
+      ],
+      "vertices": 931,
+      "polygons": 901
+    },
+    {
+      "id": "beak_crusher",
+      "category": "mouth",
+      "file": "beak_crusher.glb",
+      "suggested_abilities": [
+        "bite",
+        "sing"
+      ],
+      "attachment": "head front",
+      "dimensions_m": [
+        0.96,
+        0.5,
+        1.0991
+      ],
+      "vertices": 686,
+      "polygons": 648
+    },
+    {
+      "id": "mandible_shear",
+      "category": "mouth",
+      "file": "mandible_shear.glb",
+      "suggested_abilities": [
+        "bite",
+        "strike"
+      ],
+      "attachment": "head front",
+      "dimensions_m": [
+        1.1742,
+        1.1366,
+        0.54
+      ],
+      "vertices": 1090,
+      "polygons": 1068
+    },
+    {
+      "id": "snout_trumpet",
+      "category": "mouth",
+      "file": "snout_trumpet.glb",
+      "suggested_abilities": [
+        "sing",
+        "charm"
+      ],
+      "attachment": "head front",
+      "dimensions_m": [
+        1.1084,
+        0.7579,
+        0.934
+      ],
+      "vertices": 1431,
+      "polygons": 1463
+    },
+    {
+      "id": "tongue_spring",
+      "category": "mouth",
+      "file": "tongue_spring.glb",
+      "suggested_abilities": [
+        "ranged capture"
+      ],
+      "attachment": "head front",
+      "dimensions_m": [
+        1.9188,
+        0.8,
+        0.56
+      ],
+      "vertices": 1446,
+      "polygons": 1524
+    },
+    {
+      "id": "sac_spitter",
+      "category": "weapon",
+      "file": "sac_spitter.glb",
+      "suggested_abilities": [
+        "ranged spit"
+      ],
+      "attachment": "cheek or head front",
+      "dimensions_m": [
+        1.245,
+        1.18,
+        0.68
+      ],
+      "vertices": 1046,
+      "polygons": 1122
+    },
+    {
+      "id": "arm_smasher",
+      "category": "weapon",
+      "file": "arm_smasher.glb",
+      "suggested_abilities": [
+        "strike"
+      ],
+      "attachment": "shoulder; extends -Z and +X",
+      "dimensions_m": [
+        0.62,
+        1.5642,
+        0.8992
+      ],
+      "vertices": 1148,
+      "polygons": 1158
+    },
+    {
+      "id": "foot_spring",
+      "category": "foot",
+      "file": "foot_spring.glb",
+      "suggested_abilities": [
+        "jump",
+        "sprint",
+        "dance"
+      ],
+      "attachment": "hip; extends -Z",
+      "dimensions_m": [
+        0.4556,
+        1.829,
+        1.2769
+      ],
+      "vertices": 1264,
+      "polygons": 1274
+    },
+    {
+      "id": "foot_hoof",
+      "category": "foot",
+      "file": "foot_hoof.glb",
+      "suggested_abilities": [
+        "charge",
+        "dance"
+      ],
+      "attachment": "hip; extends -Z",
+      "dimensions_m": [
+        0.55,
+        0.6972,
+        1.1341
+      ],
+      "vertices": 970,
+      "polygons": 1000
+    },
+    {
+      "id": "foot_gecko",
+      "category": "foot",
+      "file": "foot_gecko.glb",
+      "suggested_abilities": [
+        "climb",
+        "sneak"
+      ],
+      "attachment": "hip; extends -Z",
+      "dimensions_m": [
+        1.2678,
+        1.1232,
+        0.7604
+      ],
+      "vertices": 3614,
+      "polygons": 3598
+    },
+    {
+      "id": "lure_lantern",
+      "category": "sensory",
+      "file": "lure_lantern.glb",
+      "suggested_abilities": [
+        "charm",
+        "perception"
+      ],
+      "attachment": "forehead",
+      "dimensions_m": [
+        1.0036,
+        0.44,
+        1.2307
+      ],
+      "vertices": 898,
+      "polygons": 886
+    },
+    {
+      "id": "wing_insect",
+      "category": "detail",
+      "file": "wing_insect.glb",
+      "suggested_abilities": [
+        "glide"
+      ],
+      "attachment": "right shoulder; mirror for left",
+      "dimensions_m": [
+        1.2687,
+        2.2166,
+        0.2175
+      ],
+      "vertices": 1166,
+      "polygons": 1134
+    },
+    {
+      "id": "tail_hammer",
+      "category": "weapon",
+      "file": "tail_hammer.glb",
+      "suggested_abilities": [
+        "strike",
+        "defense"
+      ],
+      "attachment": "rear spine; extends -X",
+      "dimensions_m": [
+        1.9189,
+        1.5019,
+        0.9487
+      ],
+      "vertices": 1132,
+      "polygons": 1176
+    }
+  ]
+}
