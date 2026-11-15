@@ -1,0 +1,25 @@
+........                                                                 [100%]
+=============================== warnings summary ===============================
+tools/idol/test_mesh.py: 48 warnings
+  /home/diego/Desarrollo/cpore-wt/_agent/idol-venv/lib/python3.12/site-packages/skimage/measure/_marching_cubes_lewiner.py:237: DeprecationWarning: Setting the shape on a NumPy array has been deprecated in NumPy 2.5.
+  As an alternative, you can create a new view using np.reshape (with copy=False if needed).
+    ar.shape = shape
+
+tools/idol/test_mesh.py::test_anisotropic_opacity_surface_is_closed
+tools/idol/test_mesh.py::test_rotation_changes_surface_orientation
+tools/idol/test_mesh.py::test_glb_both_styles_and_regions
+  /home/diego/Desarrollo/cpore-wt/_agent/idol-venv/lib/python3.12/site-packages/skimage/measure/_marching_cubes_lewiner.py:213: DeprecationWarning: Setting the shape on a NumPy array has been deprecated in NumPy 2.5.
+  As an alternative, you can create a new view using np.reshape (with copy=False if needed).
+    faces.shape = -1, 3
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+================================ tests coverage ================================
+_______________ coverage: platform linux, python 3.12.14-final-0 _______________
+
+Name                 Stmts   Miss  Cover   Missing
+--------------------------------------------------
+tools/idol/mesh.py     143     15    90%   55, 74, 104, 167-178
+--------------------------------------------------
+TOTAL                  143     15    90%
+Required test coverage of 80% reached. Total coverage: 89.51%
+8 passed, 51 warnings in 0.73s
