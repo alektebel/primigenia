@@ -126,3 +126,14 @@ $(BUILD)/terrain_test: tests/test_terrain.c $(HDRS) $(BUILD)/libcpore.a
 # Never regenerate committed goldens during tests.
 terrain-test: $(BUILD)/terrain_test $(BUILD)/terrain_cli
 	nice -n 10 ./$(BUILD)/terrain_test --heavy
+
+TERRAIN_EXPORTS := '[_ct_config,_ct_generate,_ct_map,_ct_hash,_ct_version]'
+wasm: $(BUILD)/wasm/cpore_terrain.mjs $(BUILD)/wasm/cpore_terrain.wasm
+$(BUILD)/wasm/cpore_terrain.mjs $(BUILD)/wasm/cpore_terrain.wasm &: $(TERRAIN_SRC) apps/terrain_wasm_api.c $(HDRS) Makefile
+	@mkdir -p $(dir $@)
+	$(EMCC_RUN) $(WASM_FLAGS) $(TERRAIN_SRC) apps/terrain_wasm_api.c --no-entry -sMODULARIZE=1 -sEXPORT_ES6=1 -sENVIRONMENT=web,worker,node -sINITIAL_MEMORY=50331648 -sEXPORTED_FUNCTIONS=$(TERRAIN_EXPORTS) -sEXPORTED_RUNTIME_METHODS=HEAPF32,HEAPU32 -o $(BUILD)/wasm/cpore_terrain.mjs
+.PHONY: terrain-parity
+terrain-parity: $(BUILD)/terrain_cli $(BUILD)/wasm/cpore_terrain.mjs $(BUILD)/wasm/cpore_terrain.wasm
+	nice -n 10 node tests/test_wasm_terrain.mjs
+terrain-test: terrain-parity
+wasm-test: terrain-parity
