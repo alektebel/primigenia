@@ -97,6 +97,38 @@ pre{margin:0;background:rgba(0,0,0,.35);border:1px solid var(--line);border-radi
    sky:{hz:[.10,.13,.22],mid:[.05,.07,.15],top:[.02,.03,.08],glow:[.3,.35,.5],disc:1.2},
    envHz:[.06,.08,.14],envMid:[.04,.05,.1],envTop:[.02,.02,.06],envGd:[.02,.02,.02],envSun:[2,2.3,3],ramp:[54,54,83,83,108,108],grass:[.16,.2,.32]}};
  const name=P[q.get('t')]?q.get('t'):'golden',L=Object.assign({name},P[name]);if(q.get('exp'))L.exp=+q.get('exp');
+
+ /* Palette override (pal=A|B|C). `light` is deep-merged over the preset; `land` feeds the shared ground/blade/rock
+    GLSL. LAND0 holds today's values; optional keys (patchY, patchB, lit, shade, sTint, tip, sand) emit no code
+    when absent, so the default shader maths is unchanged. Colours are linear unless they are hex strings. */
+ const LAND0={g0:[.115,.265,.037],g1:[.235,.390,.075],tuft0:[.85,.92,.74],tuft1:[1.10,1.04,.96],bladeLo:.70,bladeHi:1.42,
+  r0:[.17,.18,.19],r1:[.30,.225,.13],r2:[.19,.135,.085],scree:[.27,.23,.16],snow:[.73,.84,.91],rockShade:[.78,.88,1.12],rockLit:[1.22,1.08,.86]};
+ const PAL={
+  A:{light:{sunC:'#ffd9a2',sunI:3.2,hemi:['#9ec2ff','#4c4a7a',.55],fog:[.62,.74,.90],grass:[1.0,.97,.90],ramp:[44,44,82,82,112,112],
+    air:{density:.00060,start:130,falloff:240,cool:[.30,.52,.92],warm:[.98,.76,.52]},
+    sky:{hz:[.96,.82,.68],mid:[.42,.66,.95],top:[.09,.33,.80],glow:[1,.66,.34],disc:3},
+    envMid:[.28,.40,.70],envTop:[.06,.14,.45]},
+   land:{g0:[.028,.140,.038],g1:[.080,.250,.050],patchY:[.34,.42,.05,.70],patchB:[.025,.27,.16,.55],
+    lit:[1.14,1.04,.86],shade:[.76,.86,1.20],sTint:[.74,.80,1.34],tip:[1.16,1.10,.84],
+    tuft0:[.80,.95,.80],tuft1:[1.08,1.02,.92],bladeLo:.50,bladeHi:1.22,
+    r0:[.15,.185,.24],r1:[.25,.225,.215],r2:[.17,.14,.13],scree:[.25,.235,.21],snow:[.97,.98,1.0],rockShade:[.60,.78,1.28],rockLit:[1.38,1.12,.78],sand:[1,.95,.9]}},
+  B:{light:{sunC:'#fff0cc',sunI:3.3,hemi:['#a6d8ff','#c9a272',.70],fog:[.70,.86,1.0],grass:[1.0,1.0,.92],ramp:[38,38,86,86,120,120],
+    air:{density:.00044,start:150,falloff:260,cool:[.40,.68,1.0],warm:[1,.82,.60]},
+    sky:{hz:[.78,.92,1.0],mid:[.28,.60,1.0],top:[.03,.28,.95],glow:[1,.80,.50],disc:3},
+    envMid:[.26,.46,.80],envTop:[.04,.16,.60]},
+   land:{g0:[.010,.215,.070],g1:[.040,.370,.110],patchY:[.30,.56,.08,.35],patchB:[.02,.46,.30,.30],
+    lit:[1.10,1.05,.90],shade:[.80,.90,1.16],sTint:[.76,.86,1.20],tip:[1.10,1.16,.90],
+    tuft0:[.85,1.0,.85],tuft1:[1.10,1.08,.92],bladeLo:.62,bladeHi:1.22,
+    r0:[.36,.20,.13],r1:[.50,.32,.11],r2:[.36,.12,.24],scree:[.46,.34,.19],snow:[1,1,1],rockShade:[.72,.70,1.18],rockLit:[1.30,1.12,.82],sand:[1.1,1.0,.8]}},
+  C:{light:{sunC:'#ffd6a0',sunI:3.2,hemi:['#a8ccf8','#6a6a5c',.5],grass:[1.03,.96,.86],ramp:[46,46,82,82,112,112],
+    air:{cool:[.34,.58,.88],warm:[.96,.74,.46]},
+    sky:{hz:[.95,.84,.70],mid:[.52,.70,.93],top:[.13,.39,.84],glow:[1,.62,.3],disc:3}},
+   land:{g0:[.090,.225,.040],g1:[.185,.335,.075],lit:[1.10,1.03,.90],shade:[.86,.92,1.10],sTint:[.80,.86,1.14],
+    tuft0:[.82,.90,.78],tuft1:[1.04,1.02,.98],bladeLo:.52,bladeHi:1.28,
+    r0:[.15,.165,.19],r1:[.28,.215,.14],snow:[.78,.88,.95],rockShade:[.68,.84,1.20],rockLit:[1.30,1.10,.84]}}};
+ L.land=Object.assign({},LAND0);L.pal=null;
+ {const pv=q.get('pal');if(pv&&PAL[pv]){const dm=(a,b)=>{for(const k in b)a[k]=b[k]&&typeof b[k]==='object'&&!Array.isArray(b[k])?dm(a[k]||(a[k]={}),b[k]):b[k];return a};
+  dm(L,PAL[pv].light);Object.assign(L.land,PAL[pv].land);L.pal=pv}}
  const v=a=>'vec3('+a.map(x=>(+x).toFixed(3)).join(',')+')',s=L.sky;
  L.shK=(+(1-.58*(L.shade==null?1:L.shade)).toFixed(3));
  L.skyGLSL='vec3 c=mix('+v(s.hz)+','+v(s.mid)+',smoothstep(0.,.28,h));c=mix(c,'+v(s.top)+',smoothstep(.2,.95,h));float s=max(dot(n,sun),0.);c+='+v(s.glow)+'*pow(s,7.)*.55+vec3(1.,.97,.9)*smoothstep(.9988,.9995,s)*'+(+s.disc).toFixed(2)+';';
@@ -707,7 +739,14 @@ function leafCanopy(blobs){const pos=[],nor=[],uv=[],cl=[],idx=[],r=rngFrom(4242
   const g=new T.BufferGeometry();g.setAttribute('position',new T.Float32BufferAttribute(pos,3));g.setAttribute('normal',new T.Float32BufferAttribute(nor,3));g.setAttribute('uv',new T.Float32BufferAttribute(uv,2));g.setAttribute('color',new T.Float32BufferAttribute(cl,3));g.setIndex(idx);return g}
 const hueJit=o=>{const h=Math.sin(o.x*12.9898+o.z*78.233)*43758.5453,f=h-Math.floor(h);return new T.Color().setHSL(.0,0,1).multiplyScalar(1).setRGB(.88+.2*f,.92+.14*Math.sin(f*9),.8+.3*(1-f))};
 
-const glv=a=>'vec3('+a.map(x=>Number(x).toFixed(4)).join(',')+')';
+const glv=a=>'vec3('+a.map(x=>Number(x).toFixed(4)).join(',')+')',gf=x=>Number(x).toFixed(4),LD=HL.land;
+const LD_PATCH=(LD.patchY?'c=mix(c,'+glv(LD.patchY.slice(0,3))+','+gf(LD.patchY[3])+'*smoothstep(.52,.78,landNoise(xz*.013+vec2(11.,3.))));':'')
+ +(LD.patchB?'c=mix(c,'+glv(LD.patchB.slice(0,3))+','+gf(LD.patchB[3])+'*smoothstep(.52,.78,landNoise(xz*.011+vec2(53.,29.))));':''),
+ LD_LIGHT=LD.lit&&LD.shade?'c*=mix('+glv(LD.shade)+','+glv(LD.lit)+',smoothstep(.15,.6,light));':'',
+ LD_BLADE_TIP=LD.tip?'c*=mix(vec3(1.),'+glv(LD.tip)+',h);':'',
+ LD_BLADE_SH=LD.sTint?'c*=mix('+glv(LD.sTint)+',vec3(1.),vBlade.z);':'',
+ LD_GROUND_SH=LD.sTint?'meadow*=mix('+glv(LD.sTint)+',vec3(1.),msh);':'',
+ LD_SAND=LD.sand?'*'+glv(LD.sand):'';
 const AERIAL=`
 vec3 aerial(vec3 c,vec3 wp){
  vec3 ray=wp-cameraPosition;float d=length(ray);vec3 dir=ray/max(d,.001);
@@ -741,8 +780,10 @@ float landRamp(float light){return .60+.25*smoothstep(.18,.25,light)+.23*smooths
 // Linear light, followed by the same ACES + sRGB chunks for every surface.
 // t.b is the exact CPU fbm patch field stored in the shared height map.
 vec3 meadowColor(vec4 t,float light,float wave,vec2 xz){
- vec3 c=mix(vec3(.115,.265,.037),vec3(.235,.390,.075),smoothstep(.22,.80,t.b));
+ vec3 c=mix(${glv(LD.g0)},${glv(LD.g1)},smoothstep(.22,.80,t.b));
+ ${LD_PATCH}
  c*=mix(.56,1.,t.a)*landRamp(light)*${glv(HL.grass)};
+ ${LD_LIGHT}
  return c*(.78+.30*landNoise(xz*.19)+.14*landNoise(xz*.63))*(1.+wave*.12);
 }
 float meadowShadow(vec3 wp){
@@ -769,34 +810,34 @@ function landMaterial(material){
    if(backdrop)field=vec4(wp.y,0.,landNoise(wp.xz*.008),1.);
    float wave=meadowWave(wp.xz,uTime);
    // A shaded, saturated base beneath the brighter blade mid-tone.
-   vec3 meadow=meadowColor(field,light,wave,wp.xz)*vec3(.60,.68,.54)*mix(${HL.shK},1.,meadowShadow(wp));
+   float msh=meadowShadow(wp);vec3 meadow=meadowColor(field,light,wave,wp.xz)*vec3(.60,.68,.54)*mix(${HL.shK},1.,msh);${LD_GROUND_SH}
    float grain=landNoise(wp.xz*.17);
    float mineral=landNoise(wp.xz*.023),erosion=landNoise(wp.xz*.081);
    float steep=1.-smoothstep(.48,.76,gn.y);
    float strata=sin(wp.y*(.075+.035*landNoise(wp.xz*.012))+erosion*6.+mineral*8.);
    strata*=steep*smoothstep(.40,.72,landNoise(wp.xz*.044));
-   vec3 rock=mix(vec3(.17,.18,.19),vec3(.30,.225,.13),smoothstep(.25,.78,mineral));
-   rock=mix(rock,vec3(.19,.135,.085),smoothstep(.57,.87,erosion)*.4);
+   vec3 rock=mix(${glv(LD.r0)},${glv(LD.r1)},smoothstep(.25,.78,mineral));
+   rock=mix(rock,${glv(LD.r2)},smoothstep(.57,.87,erosion)*.4);
    rock*=1.+strata*.045+(grain-.5)*.16+(landNoise(wp.xz*.63+wp.y*.04)-.5)*.10;
    float rockLight=.36+.56*smoothstep(.12,.22,light)+.48*smoothstep(.50,.60,light);
-   rock*=mix(vec3(.78,.88,1.12),vec3(1.22,1.08,.86),smoothstep(.18,.52,light))*rockLight;
+   rock*=mix(${glv(LD.rockShade)},${glv(LD.rockLit)},smoothstep(.18,.52,light))*rockLight;
    rock*=mix(1.,.64,vCavity);
    // Scree collects on ledges, turf grows on gentle faces below the snow line.
    float ledge=smoothstep(.70,.90,gn.y);
-   rock=mix(rock,vec3(.27,.23,.16)*rockLight,ledge*erosion*.24);
+   rock=mix(rock,${glv(LD.scree)}*rockLight,ledge*erosion*.24);
    float snow=smoothstep(120.,145.,wp.y+(grain-.5)*28.)*smoothstep(.48,.80,gn.y);
    if(backdrop)snow=smoothstep(480.,680.,wp.y+(grain-.5)*100.)*smoothstep(.34,.72,gn.y);
-   rock=mix(rock,vec3(.73,.84,.91)*landRamp(light),snow);
+   rock=mix(rock,${glv(LD.snow)}*landRamp(light),snow);
    rock*=${glv(HL.grass)};
    // Alpine turf on gentle low slopes; the actual blade mask has priority.
    float turf=(1.-smoothstep(58.,118.,wp.y))*smoothstep(.74,.94,gn.y)*(1.-snow);
    vec3 land=mix(rock,meadow,turf);
    float shore=smoothstep(.7,2.4,wp.y);
-   outgoingLight=mix(outgoingLight,land,backdrop?1.:shore);
+   outgoingLight=mix(outgoingLight${LD_SAND},land,backdrop?1.:shore);
    outgoingLight=mix(outgoingLight,meadow,field.g);
    ${output}`);
  };
- material.customProgramCacheKey=()=>'land-v9';return material;
+ material.customProgramCacheKey=()=>'land-v9'+(HL.pal||'');return material;
 }
 // Debug colors bypass tone mapping, encoding and fog. R = N.L, G = cavity,
 // B = bowl rock eligibility. Other scene objects remain depth occluders in black.
@@ -1001,8 +1042,9 @@ gl_FragColor.rgb=aerial(gl_FragColor.rgb,vW);}`}));scene.add(water);
       void main(){
        float h=vBlade.x,wave=meadowWave(vGrassWorld.xz,uTime);
        vec3 c=meadowColor(vField,vBlade.y,wave,vGrassWorld.xz);
-       c*=mix(vec3(.85,.92,.74),vec3(1.10,1.04,.96),vTuft);
-       c*=mix(.70,1.42,smoothstep(0.,1.,h))*mix(${HL.shK},1.,vBlade.z);
+       c*=mix(${glv(LD.tuft0)},${glv(LD.tuft1)},vTuft);
+       c*=mix(${gf(LD.bladeLo)},${gf(LD.bladeHi)},smoothstep(0.,1.,h))*mix(${HL.shK},1.,vBlade.z);
+       ${LD_BLADE_TIP}${LD_BLADE_SH}
        c+=vec3(.14,.20,.035)*pow(h,2.)*vBlade.w*vBlade.z;
        gl_FragColor=vec4(c,1.);
        #include <tonemapping_fragment>
