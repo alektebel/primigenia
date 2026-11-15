@@ -64,6 +64,7 @@ except ImportError:                                    # pragma: no cover
     _PUFFER_EXPORTS = []
 from .campaign import Campaign, STAGES
 from .textgym import TextLand
+from .world import StageWorld, input_from_mapping, parse_world_log
 
 __all__ = ["CporeEnv", "AquaEnv", "aqua_genome", "aqua_genome_from_code",
            "cell_genome_from_code",
@@ -77,4 +78,5 @@ __all__ = ["CporeEnv", "AquaEnv", "aqua_genome", "aqua_genome_from_code",
            "PART", "PART_NAMES", "PART_COST", "GEN_BUDGET", "CELL_STYLES", "STATUS",
            "VIS", "VIS_STYLES", "DEFAULT_VIS", "LAND_VIS",
            "FRONT", "RIGHT", "BACK", "LEFT",
-           "Campaign", "STAGES", "TextLand"] + _PUFFER_EXPORTS
+           "Campaign", "STAGES", "TextLand",
+           "StageWorld", "input_from_mapping", "parse_world_log"] + _PUFFER_EXPORTS
