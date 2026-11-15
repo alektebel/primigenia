@@ -103,6 +103,18 @@ suites, studio document/growth/interaction/touch/G48 tests, and byte-identical
 hero regeneration are separate gates. The unchanged hero grid is retained;
 its full image grid is not rerendered for this task.
 
+Final checks for this pass: `make test`, `make wasm-test`, `make stage-test`
+and `make studio-test` all pass. Studio verification includes 470 contracts,
+138 part/preset placements, interaction, touch and G48 geometry/animation.
+Its range-input test now fills canonical `0.4` instead of `.4`, which
+Playwright rejected after browser normalization; the assertion is unchanged.
+An initial studio process received SIGTERM (sender unknown); the isolated
+rerun exposed that input error, and the complete suite passed after the fix.
+`python3 tools/hero/build_hero.py` regenerated `web/hero/index.html`
+byte-identically (SHA-256
+`672e4c1da9a867b03a5761deff836bbdbf5b167fe3f5eb23cd5340e223cdd00a`).
+No files under `art/reference/` changed.
+
 - `explore.png`: golden valley and the default studio seed.
 - `fight-windup.png`: a C windup and its terrain-following preview cone.
 - `fight-hit.png`: a real HP loss, hit flash and damage numbers.
