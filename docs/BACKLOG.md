@@ -25,6 +25,7 @@ approves the look, movement, fights and the P4 loop.
 | 8d | P4 parts: discovery (drops with pity, carcasses, fossils), start inventory, tiers by DNA plus usage, mid-game editing at a minimal nest | P4.md, G37, G49, Q-2/5/6/10/11/19 | queued |
 | 8e | P4 recipes and the first secret move, bone spines (new `espinas_dorsales` part, calcium meter, clues), through the same tourney gates | P4.md, G50–G53, Q-12/13/15/16 | queued (needs 7) |
 | 9 | Minor tasks on free models: `make check` + README, Python world binding, calibration research, vista grass-disc fix | Q22, Q9/Q10 | in progress |
+| 9b | Underwater biome art (G64) and the MVP batch of easter eggs (G65), art by parallel qwen3.6 agents (G66) | G64–G66 | in progress |
 | 10 | MVP review: owner plays ~10 minutes, side-by-side palette C vs A, final fixes | G58 | last |
 
 ## 2. After the MVP (the tail)
@@ -48,6 +49,7 @@ Prepared once the MVP is approved, roughly in this order.
 - One planet for every stage (W9); terraforming that depends on starting choices.
 
 ### Later stages and versions
+- Civ/space: capture ancient ruins of an earlier civilization; ruined planets (G67).
 - Cell stage and the bridge (v0.2), tribe + civ as one RTS in C (v0.3), space (v0.4) (Q8, Q23, G21, G28, Q56), each with its own design session.
 - Procedural creature voices (Q40, G59).
 
