@@ -33,7 +33,7 @@
       <progress id="progress" max="100" value="0" aria-label="Generation progress"></progress>
       <p id="status" role="status" aria-live="polite">Loading WebAssembly…</p>
     </form>
-    <p id="material-key" class="map-key">Material IDs: 0 meadow · 1 rock · 2 scree · 3 volcanic · 4 sand · 5 snow. Water is shown separately.</p>
+    <div id="material-key" class="map-key" aria-label="Material map legend"><span><i aria-hidden="true" style="background:rgb(160, 186, 123)"></i>0 meadow</span> <span><i aria-hidden="true" style="background:rgb(183, 176, 168)"></i>1 rock</span> <span><i aria-hidden="true" style="background:rgb(220, 202, 176)"></i>2 scree</span> <span><i aria-hidden="true" style="background:rgb(117, 108, 123)"></i>3 volcanic</span> <span><i aria-hidden="true" style="background:rgb(241, 225, 183)"></i>4 sand</span> <span><i aria-hidden="true" style="background:rgb(248, 250, 255)"></i>5 snow</span></div>
     <p id="cave-key" class="map-key">Numbered circles mark cave entrances; cyan marks an entrance behind a waterfall. Lines point outward.</p>
     <figure><figcaption><span id="map-title">Hillshade</span><label class="check"><input id="drainage" type="checkbox" checked> Drainage</label></figcaption><canvas id="map" width="512" height="512" aria-label="Terrain hillshade with blue drainage channels"></canvas><p class="map-key">Blue lines: contributing area ≥ 8,000 m². Blue fill: lake or sea. North is up.</p></figure>
   </aside>

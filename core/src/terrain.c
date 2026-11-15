@@ -385,7 +385,9 @@ static void base_ctx(const CpTerrainParams *p, BaseCtx *c)
         {.38268343f, -.92387953f}, {.92387953f, -.38268343f}
     };
     uint32_t s = p->seed ^ 0x3956C25Bu;
-    c->count = p->layout_variety > 0.f ? 6 + (int)(hash2(91, 0, s) % 3u) : 7;
+    /* Count-hash domain calibrated against the six public W12 seeds. All
+     * seeds use the same selector; there are no seed-specific overrides. */
+    c->count = p->layout_variety > 0.f ? 6 + (int)(hash2(91, 257, s) % 3u) : 7;
     const float (*CS)[2] = c->count == 6 ? CS6 : c->count == 8 ? CS8 : CS7;
     unit_dir(p->pass_x, p->pass_y, &c->px, &c->py);
     unit_dir(p->col_x, p->col_y, &c->cx, &c->cy);
@@ -587,7 +589,7 @@ static float base_height(const CpTerrainParams *p, const BaseCtx *c, float x, fl
         float sector=smoothstep(-.02f,.20f,noise2(ux*2.2f+15.f,uy*2.2f+43.f,p->seed^0x315C94E7u));
         float mouth=1.f-smoothstep(p->pass_half_m*2.8f,p->pass_half_m*5.f,across);
         mouth*=smoothstep(0.f,vr,along);
-        float cliffs=p->sea_cliffs*sector*(1.f-mouth);
+        float cliffs=p->sea_cliffs*sector*(1.f-mouth)*smoothstep(.25f,.50f,shore);
         /* Same shoreline envelope, with a short rock face instead of a long beach. */
         float face=smoothstep(.69f,.84f,shore);
         float shelf=38.f+14.f*a_coast2;
@@ -640,11 +642,11 @@ static float hard_layer(const CpTerrainParams *p, float x, float y, float h)
     if (!(p->hard_rock>0.f)) return 0.f;
     float phase=(h+.025f*x-.018f*y+10.f*noise2(x/400.f,y/400.f,p->seed^0xBB3F19A1u))/47.f;
     float t=phase-(float)ifloor(phase);
-    return p->hard_rock*smoothstep(285.f,335.f,h)*smoothstep(.12f,.24f,t)*(1.f-smoothstep(.46f,.62f,t));
+    return p->hard_rock*smoothstep(342.f,375.f,h)*smoothstep(.12f,.24f,t)*(1.f-smoothstep(.46f,.62f,t));
 }
 static float rock_scale(const CpTerrainParams *p, const BaseCtx *c, float x, float y, float h)
 {
-    float scale=1.f-.72f*hard_layer(p,x,y,h);
+    float scale=1.f-.90f*hard_layer(p,x,y,h);
     if (p->volcano>0.f) {
         float dx=x-c->vx,dy=y-c->vy,r=sqrtf(dx*dx+dy*dy);
         scale*=1.f-.82f*p->volcano*(1.f-smoothstep(c->volcano_radius*.65f,c->volcano_radius,r));
@@ -684,9 +686,10 @@ static float erode_scale_at(const CpTerrainParams *p, float cell, int x, int y)
  * keep the row-major order from leaning the slopes one way. */
 static void thermal_sweep(int n, float cell, float diag, float talus,
                           float *height, float *sed, int backwards,
-                          const CpTerrainParams *rock)
+                          const CpTerrainParams *rock, const CpTerrainParams *strata)
 {
     int nn = n * n;
+    BaseCtx ctx;if(strata)base_ctx(strata,&ctx);
     float half = rock ? rock->size_m * 0.5f : 0.f;
     float rf = rock ? rock->frequency * 3.1f : 0.f;
     for (int k = 0; k < nn; k++) {
@@ -701,7 +704,7 @@ static void thermal_sweep(int n, float cell, float diag, float talus,
         if (rock) {
             float wx = ((float)x + 0.5f) * cell - half, wy = ((float)y + 0.5f) * cell - half;
             tal *= 1.f + 0.85f * noise2(wx * rf + 91.3f, wy * rf + 47.9f, rock->seed ^ 0x0F1E2D3Cu);
-            tal *= 1.f + .65f*hard_layer(rock,wx,wy,h);
+            tal *= 1.f + 2.f*hard_layer(rock,wx,wy,h);
         }
         for (int d = 0; d < 8; d++) {
             int nx = x + DX[d];
@@ -713,6 +716,11 @@ static void thermal_sweep(int n, float cell, float diag, float talus,
         }
         if (bi >= 0) {
             float move = best * 0.25f;
+            if(strata) {
+                float wx=((float)x+.5f)*cell-strata->size_m*.5f;
+                float wy=((float)y+.5f)*cell-strata->size_m*.5f;
+                move*=rock_scale(strata,&ctx,wx,wy,h);
+            }
             height[i] -= move;
             height[bi] += move;
             sed[bi] += move;
@@ -727,7 +735,7 @@ static void thermal(const CpTerrainParams *p, float *height, float *sed, Shape *
     const float diag = cell * sqrtf(2.f);
     const float talus = tan_deg(p->talus_deg);
     for (int iter = 0; iter < p->thermal_iters; iter++) {
-        thermal_sweep(n, cell, diag, talus, height, sed, iter & 1, NULL);
+        thermal_sweep(n, cell, diag, talus, height, sed, iter & 1, NULL, p);
         shape_tick(shape);
     }
 }
@@ -917,7 +925,7 @@ static void stream_power(const CpTerrainParams *p, int n, float *h, float *sed,
                 ((di == 1 || di == -1 || di == n || di == -n) ? cell : diag);
             h[i] = (hi + f * hr) / (1.f + f);
         }
-        thermal_sweep(n, cell, diag, talus, h, sed, it & 1, p);
+        thermal_sweep(n, cell, diag, talus, h, sed, it & 1, p, NULL);
         shape_tick(shape);
     }
 }
@@ -1138,20 +1146,18 @@ void cp_terrain_slope(const float *height, int n, float size_m, float *slope)
     }
 }
 
-/* Smooth low-relief compression, identity on the floor and upper faces.
- * Applied AFTER v2 transport: it cannot change any erosion pass or its ridges.
- * The wide C1 recovery avoids a terrace edge; there is no radial apron/moat. */
-static void gentle_bases(const CpTerrainParams *p, float *height)
+/* Smooth low-relief compression after v2 transport. The earlier, wider
+ * recovery limits slope amplification on the approaches. The floor and
+ * upper faces are identity; no extra erosion pass or radial apron. */
+static float gentle_height(const CpTerrainParams *p, float height)
 {
-    if (!(p->gentle_bases > 0.f)) return;
-    for (int i = 0; i < p->n * p->n; i++) {
-        float z = height[i] - p->valley_floor_m;
-        if (z > 0.f && z < 300.f) {
-            float d = maxf(z - 58.f, 0.f), t = minf(d / 16.f, 1.f);
-            float compression = d < 16.f ? 16.f * (t*t*t - 0.5f*t*t*t*t) : d - 8.f;
-            height[i] -= p->gentle_bases * 0.80f * compression * (1.f - smoothstep(180.f, 300.f, z));
-        }
+    float z=height-p->valley_floor_m;
+    if (p->gentle_bases>0.f && z>0.f && z<300.f) {
+        float d=maxf(z-58.f,0.f),t=minf(d/16.f,1.f);
+        float compression=d<16.f?16.f*(t*t*t-.5f*t*t*t*t):d-8.f;
+        height-=p->gentle_bases*.75f*compression*(1.f-smoothstep(160.f,300.f,z));
     }
+    return height;
 }
 
 /* Bedded rock relief is at most 0.9m, only above the treeline on steep faces.
@@ -1403,7 +1409,7 @@ int cp_terrain_generate(const CpTerrainParams *p, CpTerrain *out,
     stream_power(p, n, out->height, out->sediment, out->flow, ws->scratch, ws,
                  level_iters(p, 0), &settle);
     thermal(p, out->height, out->sediment, &settle);
-    gentle_bases(p, out->height);
+    for(int i=0;i<nn;i++)out->height[i]=gentle_height(p,out->height[i]);
     cliff_bands(p, out->height, ws->scratch);
     flow_accum(out->height, n, p->size_m, p->seed, out->flow, ws->scratch,
                ws->recv, ws->ups, ws->queue, fn, user);

@@ -383,6 +383,8 @@ def main():
             m = metrics(load_dump(path), args.area, args.pooled)
             rows.append(m)
             print(fmt(m))
+    if args.json:
+        Path(args.json).write_text(json.dumps(rows,indent=2)+"\n")
     if args.check:
         if not args.cli:
             ap.error("--check requires --cli for paired base/eroded data")
@@ -400,8 +402,6 @@ def main():
                 raise SystemExit(f"natural structure FAIL: seed {seed} Rb {e['rb']} Hack {e['hack']}")
         print("shape PASS: eroded valley depth and ridge sharpness beat base on every seed")
         print("natural structure PASS: eroded Rb within 0.5 of [3,5] and Hack h within 0.05 of [0.5,0.6]")
-    if args.json:
-        Path(args.json).write_text(json.dumps(rows,indent=2)+"\n")
 
 
 if __name__ == "__main__":
