@@ -76,6 +76,10 @@ int cp_stage_can_walk(const CpStageWorld *w,float x,float z,float nx,float nz,fl
 /* Stable ids: player 0, wild 1..n, nest 1000, obstacles 2000+i. */
 int cp_stage_order(CpStageWorld *w,const CpStageInput *input);
 int cp_stage_command(CpStageWorld *w,const char *command);
+const char *cp_stage_order_error(int code);
+typedef struct { uint32_t tick; CpStageInput input; } CpStageLogEntry;
+uint64_t cp_stage_replay(const CpStageSetup *setup,const CpStageLogEntry *log,
+                         int count,uint32_t ticks,uint64_t *hashes);
 uint64_t cp_stage_step(CpStageWorld *w,const CpStageInput *input);
 uint64_t cp_stage_hash(const CpStageWorld *w);
 /* Returns bytes excluding NUL, or -1 on insufficient capacity. */

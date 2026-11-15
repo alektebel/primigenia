@@ -15,6 +15,9 @@ const out=path.resolve(process.env.CPORE_STAGE_POLISH_EVIDENCE||'docs/evidence/s
   const project=point=>page.evaluate(point=>{const p=new Stage.env.T.Vector3(point.x,Stage.env.groundY(point.x,point.z),point.z).project(Stage.env.camera);return {x:(p.x+1)*innerWidth/2,y:(1-p.y)*innerHeight/2}},point);
   const advance=seconds=>page.evaluate(seconds=>{for(let i=0;i<Math.round(seconds*30);i++)Stage.frame(1/30)},seconds);
   const start=await page.evaluate(()=>Stage.snapshot());
+  // Keep the pointer journey independent of the new 28 m predator sight.
+  // Reset through the C setup API; natural hostility is tested in stage_play.
+  await page.evaluate(()=>{const s=Stage.simulation;window.__polishSetup=structuredClone(s.world.setup);s.world.reset({...s.world.setup,wild:[{...s.world.setup.wild[0],x:150,z:150,home:{x:150,z:150}}]});s.sync();s.previous=[{...s.player},{...s.enemy}];});
   // Walk a short clear part of the real nest-to-home route (away from aggro).
   const target={x:start.nest.x+(start.home.x-start.nest.x)*.22,z:start.nest.z+(start.home.z-start.nest.z)*.22};
   const screen=await project(target);await page.mouse.click(screen.x,screen.y);
@@ -31,7 +34,7 @@ const out=path.resolve(process.env.CPORE_STAGE_POLISH_EVIDENCE||'docs/evidence/s
   assert(Math.hypot(heldA.x-heldB.x,heldA.z-heldB.z)>.5,'hold follows a moving pointer');
   const following=await page.evaluate(()=>({...Stage.simulation.player}));assert(Math.hypot(following.x-arrived.x,following.z-arrived.z)>.5);
   // Select using an actual ray into Garfio's visible anatomy.
-  await page.evaluate(()=>{Stage.simulation.destination=null;Stage.draw()});
+  await page.evaluate(()=>{const s=Stage.simulation;s.world.reset(window.__polishSetup);s.encounter=null;s.sync();s.destination=null;s.pendingAttack=null;s.previous=[{...s.player},{...s.enemy}];Stage.draw()});
   const enemyScreen=await page.evaluate(()=>{const r=Stage.rigs[1],p=r.pts[Math.floor(r.NS*.6)].clone().applyMatrix4(r.creature.matrixWorld).project(Stage.env.camera);return {x:(p.x+1)*innerWidth/2,y:(1-p.y)*innerHeight/2}});
   await page.mouse.click(enemyScreen.x,enemyScreen.y);assert(await page.evaluate(()=>Stage.selected),'enemy selected');
   await page.evaluate(()=>Stage.draw());await page.screenshot({path:path.join(out,'selection-ring.png'),timeout:90000});

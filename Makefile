@@ -13,7 +13,7 @@ CORE_OBJ := $(CORE_SRC:%.c=$(BUILD)/%.o)
 HDRS     := $(wildcard core/include/cpore/*.h)
 
 .PHONY: all core lib test bench tourney smoke studio blender blender-mcp-setup blender-mcp-smoke blender-sample-parts clean check-core
-all: core $(BUILD)/cpore_test $(BUILD)/cpore_bench $(BUILD)/combat_test $(BUILD)/combat_tourney
+all: $(BUILD)/world_cli core $(BUILD)/cpore_test $(BUILD)/cpore_bench $(BUILD)/combat_test $(BUILD)/combat_tourney
 
 core: $(BUILD)/libcpore.a $(BUILD)/libcpore.so
 lib: $(BUILD)/libcpore.so
@@ -182,3 +182,14 @@ world-test: $(BUILD)/world_test $(BUILD)/world_cli wasm
 	nice -n 10 node tests/test_wasm_world.mjs
 wasm-test: world-test
 stage-test: $(BUILD)/world_cli
+
+.PHONY: world-test world-coverage
+world-coverage: $(BUILD)/libcpore.a
+	@mkdir -p $(BUILD)/world-coverage
+	python3 -c 'from pathlib import Path; [p.unlink() for p in Path("$(BUILD)/world-coverage").glob("*.gcda")]'
+	nice -n 10 $(CC) $(CFLAGS) -O0 --coverage -c $(CURDIR)/core/src/stage_world.c -o $(BUILD)/world-coverage/stage_world.o
+	nice -n 10 $(CC) $(CFLAGS) -O0 --coverage tests/test_world.c $(BUILD)/world-coverage/stage_world.o $(BUILD)/libcpore.a -o $(BUILD)/world-coverage/unit $(LDLIBS)
+	nice -n 10 $(CC) $(CFLAGS) -O0 --coverage apps/world_cli.c $(BUILD)/world-coverage/stage_world.o $(BUILD)/libcpore.a -o $(BUILD)/world-coverage/cli $(LDLIBS)
+	nice -n 10 ./$(BUILD)/world-coverage/unit
+	@for seed in 1 42 987654321; do nice -n 10 ./$(BUILD)/world-coverage/cli --replay tests/golden/world-$$seed.log >/dev/null || exit 1; done
+	cd $(BUILD)/world-coverage && gcov -b -c stage_world.gcno
