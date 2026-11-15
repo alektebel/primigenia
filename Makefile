@@ -262,3 +262,14 @@ check:
 	nice -n 10 $(MAKE) studio-test; \
 	nice -n 10 $(MAKE) stage-test
 	@echo "=== make check done ==="
+
+# Godot creature module (M1a, godot/creature). Headless tests; the import step
+# refreshes Godot's class_name cache. Evidence renders use software GL only.
+GODOT ?= godot
+.PHONY: godot-creature-test godot-creature-evidence
+godot-creature-test:
+	nice -n 10 $(GODOT) --headless --path godot --import >/dev/null 2>&1 || true
+	nice -n 10 $(GODOT) --headless --path godot --script res://creature/tests/test_creature.gd
+godot-creature-evidence:
+	nice -n 10 $(GODOT) --headless --path godot --import >/dev/null 2>&1 || true
+	LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 xvfb-run -a $(GODOT) --rendering-driver opengl3 --max-fps 15 --path godot --script res://creature/tools/render_evidence.gd

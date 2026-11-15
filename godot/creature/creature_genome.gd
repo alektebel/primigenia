@@ -115,7 +115,7 @@ func _region(r):
 			return null
 	var grown := CreatureGrowth.validate(r)
 	if not grown["ok"]:
-		_fail("growth")
+		_fail(grown["error"])
 		return null
 	if not _number(r.get("position"), 0, 1, "regions.position"):
 		return null
