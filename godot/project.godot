@@ -1,0 +1,12 @@
+; Minimal project so the locomotion tests run on branch g-loco.
+; The real project.godot comes from the M0 foundation branch (godot-m0);
+; godot/locomotion needs no project settings of its own.
+config_version=5
+
+[application]
+config/name="Primigenia"
+config/features=PackedStringArray("4.7", "GL Compatibility")
+
+[rendering]
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"
