@@ -4,6 +4,15 @@ Order of work as of 2026-11-15. Decisions live in `docs/DESIGN.md` (G, W, Q
 numbers); `docs/P4.md` is the P4 spec of record. Every item ends with tests,
 evidence and the owner's approval, as in G25.
 
+## 0. Engine migration to Godot 4, desktop (G76)
+
+| # | Step | State |
+|---|---|---|
+| M0 | Godot project + GDExtension over the C core (terrain, world, combat); the island from the generator with on-disk cache; terrain materials, sea, sky and fog; grass; your creature from a genome (spine + legs + IK); Spore-style chase camera; click/WASD driving the C world | in progress |
+| M1 | Creature builder parity with the studio (all parts, materials, growth), locomotion from morphology (G73) | next |
+| M2 | The creator/studio rebuilt in Godot (Build/Paint/Test) | after M1 |
+| M3 | Stage parity: encounters, HUD, audio, G75 interaction, tests; then the MVP items below continue in Godot | after M2 |
+
 ## 1. First MVP: a creature-stage slice you can play and enjoy
 
 The MVP is done when the owner plays the valley for ~10 minutes (G58) and
