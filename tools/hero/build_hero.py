@@ -69,7 +69,7 @@ const s=G.skin;SU.cA.value.copy(lin(s.cA));SU.cB.value.copy(lin(s.cB));SU.cC.val
 refresh(true);update(0);
 env.W.p.vis.root.visible=false;
 /* tighter shadow frustum around the hero creature */
-{const sc=env.sun.shadow.camera;sc.left=sc.bottom=-22;sc.right=sc.top=22;sc.updateProjectionMatrix();env.sun.shadow.normalBias=.05;env.sun.shadow.bias=-.0004}
+{const sc=env.sun.shadow.camera;sc.left=sc.bottom=-22;sc.right=sc.top=22;sc.updateProjectionMatrix();env.sun.shadow.normalBias=.05;if(window.__heroLight.shR)env.sun.shadow.radius=window.__heroLight.shR;env.sun.shadow.bias=-.0004}
 const CAM={close:[7.5,.10],mid:[13,.16],far:[30,.22],vista:[125,.40]}[HP.cam]||[13,.16];
 /* Choose the lowest broad saddle in the actual bowl, looking out from the hero.
    Average across a 20-degree opening so a narrow notch cannot win the view. */
@@ -96,7 +96,7 @@ if(HP.cam==='vista')for(let k=0;k<96;k++){
  }
  if(horizon<vistaHorizon){vistaHorizon=horizon;vistaAz=a}
 }
-const OCC=env.hU.occ.value,_w=V();function feedOcc(){for(let k=0;k<8;k++){const i=NC+Math.round(k*(NSP-1)/7);_w.copy(pts[i]).applyMatrix4(creature.matrixWorld);OCC[k].set(_w.x,_w.y,_w.z,RAD[i]*1.05)}for(let k=0;k<4;k++){const l=legs[k];if(l){_w.copy(l.ft.position);OCC[8+k].set(_w.x,_w.y,_w.z,l.w*2.2)}else OCC[8+k].set(0,-999,0,0)}env.hU.center.value.set(HERO.x,0,HERO.z)}
+const OCC=env.hU.occ.value,_w=V();function feedOcc(){for(let k=0;k<8;k++){const i=NC+Math.round(k*(NSP-1)/7);_w.copy(pts[i]).applyMatrix4(creature.matrixWorld);OCC[k].set(_w.x,_w.y,_w.z,RAD[i]*1.05)}for(let k=0;k<4;k++){const l=legs[k];if(l){_w.copy(l.ft.position);OCC[8+k].set(_w.x,_w.y,_w.z,l.w*2.2)}else OCC[8+k].set(0,-999,0,0)}env.hU.center.value.set(HERO.x+(window.__heroCenterShift||0),0,HERO.z)}
 window.__heroFrame=dt=>{if(window.Hero)Hero.frame++;if(HP.live)update(dt);feedOcc();
   const c=V(0,0,0);for(let i=0;i<NS;i++)c.add(pts[i]);c.multiplyScalar(1/NS).applyMatrix4(creature.matrixWorld);
   const a=HP.cam==='vista'?vistaAz:CAZ,cp=Math.cos(CAM[1]),d=CAM[0];const cam=env.camera;cam.fov=HP.cam==='vista'?62:42;
@@ -137,9 +137,9 @@ PRESETS = r"""
    sky:{hz:[.95,.84,.70],mid:[.55,.72,.92],top:[.16,.42,.82],glow:[1,.62,.3],disc:3},
    envHz:[.9,.55,.3],envMid:[.32,.42,.62],envTop:[.08,.16,.4],envGd:[.12,.09,.06],envSun:[14,8,3.5],ramp:[54,54,83,83,108,108],grass:[1.04,.95,.80]},
  noon:{exp:1.0,air:{density:.00048,start:140,falloff:260,cool:[.43,.65,.91],warm:[.90,.88,.72]},sun:[-.4,.85,-.35],sunC:'#fff2dc',sunI:3.0,hemi:['#bfe0ff','#6f8a4a',.6],fog:[.78,.90,.96],
-   sky:{hz:[.78,.90,.96],mid:[.45,.66,.90],top:[.16,.42,.82],glow:[1,.85,.6],disc:3},
+   sky:{hz:[.78,.90,.96],mid:[.34,.58,.92],top:[.07,.27,.74],glow:[1,.85,.6],disc:3},
    envHz:[.7,.8,.9],envMid:[.4,.55,.8],envTop:[.15,.3,.7],envGd:[.15,.17,.1],envSun:[16,15,13],ramp:[54,54,83,83,108,108],grass:[1,1,1]},
- overcast:{exp:1.1,air:{density:.00085,start:110,falloff:210,cool:[.54,.65,.79],warm:[.81,.79,.69]},sun:[-.3,.8,-.4],sunC:'#e8eef2',sunI:.8,hemi:['#d3dbe2','#6a7060',1.7],fog:[.74,.77,.80],
+ overcast:{exp:1.1,air:{density:.00085,start:110,falloff:210,cool:[.54,.65,.79],warm:[.81,.79,.69]},sun:[-.3,.8,-.4],sunC:'#e8eef2',sunI:.35,hemi:['#d3dbe2','#6a7060',2.2],fog:[.74,.77,.80],shade:.3,pcf:1,shR:7,
    sky:{hz:[.76,.79,.82],mid:[.66,.69,.73],top:[.55,.58,.63],glow:[.2,.2,.2],disc:0},
    envHz:[.6,.62,.65],envMid:[.55,.57,.6],envTop:[.5,.52,.56],envGd:[.12,.12,.1],envSun:[1.5,1.5,1.5],ramp:[54,54,83,83,108,108],grass:[.78,.82,.84]},
  night:{exp:1.25,air:{density:.0006,start:120,falloff:240,cool:[.055,.09,.19],warm:[.16,.18,.28]},sun:[.4,.55,.3],sunC:'#9fb4ff',sunI:.7,hemi:['#2a3a60','#151a20',.6],fog:[.07,.09,.16],
@@ -147,6 +147,7 @@ PRESETS = r"""
    envHz:[.06,.08,.14],envMid:[.04,.05,.1],envTop:[.02,.02,.06],envGd:[.02,.02,.02],envSun:[2,2.3,3],ramp:[54,54,83,83,108,108],grass:[.16,.2,.32]}};
  const name=P[q.get('t')]?q.get('t'):'golden',L=Object.assign({name},P[name]);if(q.get('exp'))L.exp=+q.get('exp');
  const v=a=>'vec3('+a.map(x=>(+x).toFixed(3)).join(',')+')',s=L.sky;
+ L.shK=(+(1-.58*(L.shade==null?1:L.shade)).toFixed(3));
  L.skyGLSL='vec3 c=mix('+v(s.hz)+','+v(s.mid)+',smoothstep(0.,.28,h));c=mix(c,'+v(s.top)+',smoothstep(.2,.95,h));float s=max(dot(n,sun),0.);c+='+v(s.glow)+'*pow(s,7.)*.55+vec3(1.,.97,.9)*smoothstep(.9988,.9995,s)*'+(+s.disc).toFixed(2)+';';
  window.__heroLight=L;
  window.__heroParams={creature:q.get('creature')||'Merodeador',cam:q.get('cam')||'mid',yaw:+(q.get('yaw')||2.2),live:q.get('live')==='1'};
@@ -163,7 +164,7 @@ h = patch(h, '<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/
 h = patch(h, "const T=THREE,$=id=>document.getElementById(id);",
           "const T=THREE,$=id=>document.getElementById(id),HL=window.__heroLight;")
 h = patch(h, "renderer.outputEncoding=T.sRGBEncoding;renderer.shadowMap.type=T.PCFSoftShadowMap;",
-          "renderer.outputEncoding=T.sRGBEncoding;renderer.shadowMap.type=T.PCFSoftShadowMap;"
+          "renderer.outputEncoding=T.sRGBEncoding;renderer.shadowMap.type=HL.pcf?T.PCFShadowMap:T.PCFSoftShadowMap;"
           "renderer.toneMapping=T.ACESFilmicToneMapping;renderer.toneMappingExposure=HL.exp;")
 h = patch(h, "const SUN=new T.Vector3(-.55,.5,-.5).normalize();", "const SUN=new T.Vector3(...HL.sun).normalize();")
 h = patch(h, "new Uint8Array([120,120,185,185,240,255])", "new Uint8Array(HL.ramp)")
@@ -207,7 +208,7 @@ h = patch(h, "vH=p.y;vT=vec3(t.b,t.a,gust);",
 h = patch(h, "fragmentShader:`uniform vec3 fogColor;uniform float fogNear,fogFar;varying float vH;varying vec3 vT;varying float vD;void main(){",
           "fragmentShader:`uniform vec3 fogColor;uniform float fogNear,fogFar;varying float vH;varying vec3 vT;varying float vD;varying float vL;varying float vS;varying float vBk;void main(){")
 h = patch(h, "vec3 c=mix(b,tp,vH*vH)*mix(.5,1.,vT.y)+vec3(.12,.13,.03)*max(vT.z,0.)*vH;",
-          "vec3 c=mix(b,tp,vH*vH)*mix(.5,1.,vT.y)*mix(.62,1.12,vL)*mix(.42,1.,vS)+vec3(.12,.13,.03)*max(vT.z,0.)*vH+vec3(1.,.78,.45)*vBk*.3*vS;")
+          "vec3 c=mix(b,tp,vH*vH)*mix(.5,1.,vT.y)*mix(.62,1.12,vL)*mix(${HL.shK},1.,vS)+vec3(.12,.13,.03)*max(vT.z,0.)*vH+vec3(1.,.78,.45)*vBk*.3*vS;")
 h = patch(h, "window.__heroBuild({T,scene,renderer,camera,groundY,W,SUN,sun});", "window.__heroBuild({T,scene,renderer,camera,groundY,W,SUN,sun,hU,sky,clouds,setMountainDebug,vistaTrees:[...broad,...conif]});")
 
 
@@ -217,8 +218,8 @@ h = patch(h, "wd=.2*(.6+rnd)*step(.02,hg);", "wd=.1*(.6+rnd)*step(.02,hg);")
 h = patch(h, "vec3 b=mix(vec3(.17,.40,.10),vec3(.33,.55,.13),vT.x),tp=mix(vec3(.40,.68,.18),vec3(.66,.80,.28),vT.x);",
           "vec3 b=mix(vec3(.30,.52,.13),vec3(.42,.60,.16),vT.x),tp=mix(vec3(.46,.70,.20),vec3(.70,.78,.30),vT.x);"
           "float pt=smoothstep(.5,.78,vT.x);b=mix(b,vec3(.50,.55,.20),pt*.6);tp=mix(tp,vec3(.80,.78,.36),pt*.7);")
-h = patch(h, "vec3 c=mix(b,tp,vH*vH)*mix(.5,1.,vT.y)*mix(.62,1.12,vL)*mix(.42,1.,vS)+vec3(.12,.13,.03)*max(vT.z,0.)*vH",
-          "vec3 c=mix(b,tp,.25+.75*vH)*mix(.5,1.,vT.y)*mix(.62,1.12,vL)*mix(.42,1.,vS)+vec3(.17,.17,.07)*max(vT.z,0.)*vH")
+h = patch(h, "vec3 c=mix(b,tp,vH*vH)*mix(.5,1.,vT.y)*mix(.62,1.12,vL)*mix(${HL.shK},1.,vS)+vec3(.12,.13,.03)*max(vT.z,0.)*vH",
+          "vec3 c=mix(b,tp,.25+.75*vH)*mix(.5,1.,vT.y)*mix(.62,1.12,vL)*mix(${HL.shK},1.,vS)+vec3(.17,.17,.07)*max(vT.z,0.)*vH")
 
 
 # ---- V4: leaf-card canopies on darker blob cores, per-tree hue, backlit glow ----
@@ -341,7 +342,7 @@ function landMaterial(material){
    if(backdrop)field=vec4(wp.y,0.,landNoise(wp.xz*.008),1.);
    float wave=meadowWave(wp.xz,uTime);
    // A shaded, saturated base beneath the brighter blade mid-tone.
-   vec3 meadow=meadowColor(field,light,wave,wp.xz)*vec3(.60,.68,.54)*mix(.42,1.,meadowShadow(wp));
+   vec3 meadow=meadowColor(field,light,wave,wp.xz)*vec3(.60,.68,.54)*mix(${HL.shK},1.,meadowShadow(wp));
    float grain=landNoise(wp.xz*.17);
    float mineral=landNoise(wp.xz*.023),erosion=landNoise(wp.xz*.081);
    float steep=1.-smoothstep(.48,.76,gn.y);
@@ -466,8 +467,10 @@ GRASS_V9 = r"""
       attribute vec4 offset;attribute float clump;uniform float uTime;
       varying vec3 vGrassWorld;varying vec4 vField;varying vec4 vBlade;varying float vTuft;
       void main(){
-       float lod=offset.w;vec2 base=center.xz+offset.xy;vec4 t=samp(base);
-       float d=length(offset.xy),fade=lod>.5?(1.-smoothstep(110.,140.,d))*smoothstep(30.,48.,d):1.-smoothstep(30.,44.,d);
+       float lod=offset.w;
+       // World-anchored blades: wrap each offset toroidally onto a world grid of period 2R around center.
+       float R=lod>.5?140.:44.;vec2 o=offset.xy,base=o+floor((center.xz-o)/(2.*R)+.5)*(2.*R);vec4 t=samp(base);
+       float d=length(base-center.xz),fade=lod>.5?(1.-smoothstep(110.,140.,d))*smoothstep(30.,48.,d):1.-smoothstep(30.,44.,d);
        float rolling=.65+.55*sin(base.x*.033+sin(base.y*.027))*.5+t.b*.4;
        float hg=mix(.48+.75*clump,.30+.40*clump,lod)*rolling*t.g*fade;
        float hx=samp(base+vec2(1.,0.)).r-samp(base-vec2(1.,0.)).r,hz=samp(base+vec2(0.,1.)).r-samp(base-vec2(0.,1.)).r;
@@ -496,7 +499,7 @@ GRASS_V9 = r"""
        float h=vBlade.x,wave=meadowWave(vGrassWorld.xz,uTime);
        vec3 c=meadowColor(vField,vBlade.y,wave,vGrassWorld.xz);
        c*=mix(vec3(.85,.92,.74),vec3(1.10,1.04,.96),vTuft);
-       c*=mix(.70,1.42,smoothstep(0.,1.,h))*mix(.42,1.,vBlade.z);
+       c*=mix(.70,1.42,smoothstep(0.,1.,h))*mix(${HL.shK},1.,vBlade.z);
        c+=vec3(.14,.20,.035)*pow(h,2.)*vBlade.w*vBlade.z;
        gl_FragColor=vec4(c,1.);
        #include <tonemapping_fragment>
