@@ -1,0 +1,106 @@
+{
+  "generated": "2026-11-15",
+  "source": "Copernicus DEM 10m DSM COG (AWS S3)",
+  "note": "GLO-30 data replaced by 10m DSM COG. Tiles decompress to 2,097,152 int16 big-endian values covering ~36km x 36km area.",
+  "tiles": {
+    "N47_00_E011_00": {
+      "name": "central_alps",
+      "description": "Central Alps (Matterhorn region)",
+      "file_size": 41548999,
+      "decompressed_size": 4194304,
+      "values": 2097152,
+      "format": "int16 big-endian",
+      "stats": {
+        "valid": 1866614,
+        "valid_pct": 89.0,
+        "zero": 1785583,
+        "zero_pct": 85.1,
+        "mean": 89.8,
+        "min": 0,
+        "max": 8000,
+        "p25": 0,
+        "p50": 0,
+        "p75": 0,
+        "p90": 0,
+        "p95": 0,
+        "p99": 3134,
+        "above_100m_pct": 3.6,
+        "above_500m_pct": 3.1,
+        "above_1000m_pct": 2.4
+      }
+    },
+    "N43_00_W005_00": {
+      "name": "picos_europa",
+      "description": "Picos de Europa, Spain",
+      "file_size": 18931451,
+      "decompressed_size": 4194304,
+      "values": 2097152,
+      "format": "int16 big-endian",
+      "stats": {
+        "valid": 1997352,
+        "valid_pct": 95.2,
+        "zero": 1965008,
+        "zero_pct": 93.7,
+        "mean": 43.0,
+        "min": 0,
+        "max": 7999,
+        "p25": 0,
+        "p50": 0,
+        "p75": 0,
+        "p90": 0,
+        "p95": 0,
+        "p99": 1290,
+        "above_100m_pct": 1.5,
+        "above_500m_pct": 1.3,
+        "above_1000m_pct": 1.1
+      }
+    },
+    "N28_00_W017_00": {
+      "name": "tenerife",
+      "description": "Tenerife, Canary Islands",
+      "file_size": 8892541,
+      "decompressed_size": 4194304,
+      "values": 2097152,
+      "format": "int16 big-endian",
+      "stats": {
+        "valid": 2051131,
+        "valid_pct": 97.8,
+        "zero": 2035252,
+        "zero_pct": 97.0,
+        "mean": 17.2,
+        "min": 0,
+        "max": 8000,
+        "p25": 0,
+        "p50": 0,
+        "p75": 0,
+        "p90": 0,
+        "p95": 0,
+        "p99": 0,
+        "above_100m_pct": 0.7,
+        "above_500m_pct": 0.6,
+        "above_1000m_pct": 0.4
+      }
+    }
+  },
+  "generator_stats": {
+    "1": {"h": "[-24.00, 434.46]", "mean": 56.78, "land": 0.555, "hmax": 434.46, "hmin": -24.00, "valley_flat_pct": 100.0, "lake_bottom": 11.87, "spill": 43.03, "holds": 31.16, "river_gap_sill": 41.88, "col_sill": 166.55},
+    "7": {"h": "[-24.00, 472.47]", "mean": 59.37, "land": 0.573, "hmax": 472.47, "hmin": -24.00, "valley_flat_pct": 100.0, "lake_bottom": 11.01, "spill": 42.90, "holds": 31.89, "river_gap_sill": 41.88, "col_sill": 183.93},
+    "42": {"h": "[-24.00, 481.56]", "mean": 55.38, "land": 0.576, "hmax": 481.56, "hmin": -24.00, "valley_flat_pct": 100.0, "lake_bottom": 14.85, "spill": 44.28, "holds": 29.43, "river_gap_sill": 41.84, "col_sill": 155.87},
+    "99": {"h": "[-24.00, 411.72]", "mean": 49.10, "land": 0.533, "hmax": 411.72, "hmin": -24.00, "valley_flat_pct": 100.0, "lake_bottom": 12.69, "spill": 43.60, "holds": 30.91, "river_gap_sill": 41.93, "col_sill": 154.99},
+    "1234": {"h": "[-24.00, 411.64]", "mean": 54.08, "land": 0.546, "hmax": 411.64, "hmin": -24.00, "valley_flat_pct": 100.0, "lake_bottom": 12.90, "spill": 43.81, "holds": 30.91, "river_gap_sill": 42.21, "col_sill": 194.40},
+    "31337": {"h": "[-24.00, 454.76]", "mean": 59.50, "land": 0.563, "hmax": 454.76, "hmin": -24.00, "valley_flat_pct": 100.0, "lake_bottom": 12.01, "spill": 43.41, "holds": 31.40, "river_gap_sill": 41.78, "col_sill": 169.82}
+  },
+  "comparison": {
+    "generator_mean": 55.7,
+    "generator_max": 481.56,
+    "generator_land": 0.558,
+    "alps_mean": 89.8,
+    "alps_max": 8000,
+    "alps_p99": 3134,
+    "picos_mean": 43.0,
+    "picos_max": 7999,
+    "picos_p99": 1290,
+    "tenerife_mean": 17.2,
+    "tenerife_max": 8000
+  }
+}
