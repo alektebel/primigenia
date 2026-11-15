@@ -96,7 +96,8 @@ extern const CpCombatMove CP_COMBAT_MOVES[CB_MOVE_COUNT];
  * attacker is inside the defender's shielded cone. */
 enum {
     CB_EFF_AVOID = 1,   /* hit avoided; defender pays `stamina` (flat) or is hit
-                           normally if it cannot pay                           */
+                           normally if it cannot pay; on success release defence
+                           and stagger attacker `ticks`                         */
     CB_EFF_NEGATE,      /* damage x mult (0 negates); defender pays damage x
                            `stamina` / guard factor, or the guard breaks; on success
                            release defence and stagger attacker `ticks`         */
@@ -113,7 +114,7 @@ typedef struct {
     int8_t   attack, defend;     /* move ids; attack may be -1 (wildcard)       */
     uint8_t  phases;             /* mask of CB_PH_BIT(defender phase)           */
     uint8_t  effect;             /* CB_EFF_*                                    */
-    uint8_t  ticks;              /* stagger: attacker on block, else defender    */
+    uint8_t  ticks;              /* stagger: attacker on block/avoid, else defender    */
     float    max_gap;            /* 0 = no limit                                */
     float    mult;               /* damage multiplier                           */
     float    stamina;            /* see CB_EFF_*                                */

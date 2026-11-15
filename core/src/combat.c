@@ -46,26 +46,27 @@ void cp_combat_test_hit_variance(int enabled) { test_fixed_variance = enabled; }
  * 14 active ticks allow charge to break it after those same delays.
  * Charge travels 1 m/frame, below a body diameter. Successful block ticks
  * include their application tick plus bite wind-up/active: 1 + 3 + 1 = 5.
- * Balance rationale and the remaining failing gates are in docs/COMBAT.md.
+ * Balance rationale and acceptance evidence are in docs/COMBAT.md.
  * ------------------------------------------------------------------ */
 const CpCombatMove CP_COMBAT_MOVES[CB_MOVE_COUNT] = {
-  { "bite",        3, 1, 2,  1.8f, 1.00f,  9.0f, 10.0f, CB_ST_BLEED,  8, 0,                                       CB_PART_MOUTH  },
-  { "charge",     10, 5, 2,  5.0f, 0.70f, 18.0f, 34.0f, CB_ST_STUN,   6, CB_F_DASH | CB_F_NO_WATER,               CB_PART_CHARGE },
+  { "bite",        3, 1, 2,  1.8f, 1.00f,  9.0f, 11.0f, CB_ST_BLEED,  8, 0,                                       CB_PART_MOUTH  },
+  { "charge",     10, 5, 2,  5.0f, 0.70f, 18.0f, 30.0f, CB_ST_STUN,   6, CB_F_DASH | CB_F_NO_WATER,               CB_PART_CHARGE },
   { "guard",       1,14, 2,  0.0f, 2.40f,  1.0f,  0.0f, CB_ST_NONE,   0, CB_F_SELF | CB_F_GUARD,                  CB_PART_GUARD  },
-  { "spit",        6, 1, 4,  6.0f, 0.25f, 12.0f, 14.0f, CB_ST_SLOW,  12, CB_F_RANGED,                             CB_PART_SPIT   },
-  { "tail_strike", 3, 2, 4,  2.2f, 1.60f, 10.0f, 16.0f, CB_ST_SLOW,  15, CB_F_SWEEP,                              CB_PART_TAIL   },
-  { "dodge",       1, 3, 2,  2.2f, 0.00f,  3.0f,  0.0f, CB_ST_NONE,   0, CB_F_SELF | CB_F_DASH | CB_F_DIR | CB_F_EVADE, CB_PART_NONE },
+  { "spit",        6, 1, 4,  6.0f, 0.25f, 12.0f, 13.0f, CB_ST_SLOW,  20, CB_F_RANGED,                             CB_PART_SPIT   },
+  { "tail_strike", 3, 2, 4,  2.2f, 1.60f, 10.0f, 17.0f, CB_ST_SLOW,  15, CB_F_SWEEP,                              CB_PART_TAIL   },
+  { "dodge",       1, 3, 2,  2.2f, 0.00f, 20.0f,  0.0f, CB_ST_NONE,   0, CB_F_SELF | CB_F_DASH | CB_F_DIR | CB_F_EVADE, CB_PART_NONE },
 };
 
 /* ------------------------------------------------------------------ *
- * Data: the counter matrix. First matching row wins, so the dodge row is
- * first: an active dodge outranks everything else about the defender.
+ * Data: the counter matrix. First matching row wins. A tail sweep catches
+ * active dodge before the wildcard avoidance rule is considered.
  * ------------------------------------------------------------------ */
 const CpCombatCounter CP_COMBAT_COUNTERS[] = {
-  { -1,            CB_DODGE,  CB_PH_BIT(CB_PH_ACTIVE),                 CB_EFF_AVOID,     0,  0.0f, 0.0f,  2.0f },
+  { CB_TAIL_STRIKE,CB_DODGE,  CB_PH_BIT(CB_PH_ACTIVE),                 CB_EFF_INTERRUPT, 3,  0.0f, 1.0f,  0.0f },
+  { -1,            CB_DODGE,  CB_PH_BIT(CB_PH_ACTIVE),                 CB_EFF_AVOID,     5,  0.0f, 0.0f,  2.0f },
   { CB_CHARGE,     CB_GUARD,  CB_PH_BIT(CB_PH_ACTIVE),                 CB_EFF_BREAK,     5,  0.0f, 0.6f, 20.0f },
   { CB_BITE,       CB_GUARD,  CB_PH_BIT(CB_PH_ACTIVE),                 CB_EFF_NEGATE,    5,  0.0f, 0.0f,  0.10f },
-  { CB_TAIL_STRIKE,CB_GUARD,  CB_PH_BIT(CB_PH_ACTIVE),                 CB_EFF_REDUCE,    5,  0.0f, 0.4f,  0.10f },
+  { CB_TAIL_STRIKE,CB_GUARD,  CB_PH_BIT(CB_PH_ACTIVE),                 CB_EFF_REDUCE,    5,  0.0f, 0.25f,  0.10f },
   { CB_SPIT,       CB_CHARGE, CB_PH_BIT(CB_PH_WINDUP),                 CB_EFF_INTERRUPT, 6,  0.0f, 1.0f,  0.0f },
   { CB_BITE,       CB_SPIT,   CB_PH_BIT(CB_PH_WINDUP) | CB_PH_BIT(CB_PH_ACTIVE),
                                                                       CB_EFF_INTERRUPT, 4,  2.0f, 1.25f, 0.0f },
@@ -942,6 +943,12 @@ static void resolve_hits(CpCombatWorld *w)
         d->stamina -= h->payment; d->stamina_spent += h->payment;
         if (h->spent) d->since_spend = 0;
         if (h->avoided) {
+            /* AVOID ticks are the whiff stagger: the attacker over-commits
+             * and the evader is released to punish, as with a block below. */
+            if (h->ev.rule->ticks) {
+                stagger(a, h->ev.rule->ticks);
+                if (d->move == h->ev.rule->defend) cancel_move(d);
+            }
             d->dodged++;
             ev_add(w, CB_EV_DODGED, h->atk, h->def, h->move, 0);
         }

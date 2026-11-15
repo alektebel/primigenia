@@ -1,6 +1,7 @@
 #include "combat_bots.h"
 
 #include <string.h>
+#include <math.h>
 
 const char *const PROFILE_NAME[N_PROFILES] = {
     "brawler", "spitter", "tank", "skirmisher", "allrounder"
@@ -133,6 +134,42 @@ static int spaced_attack(CpBot *b, const CpCombatWorld *w, int self, int foe, in
     return act_attack(out, foe, m);
 }
 
+int bot_locked_ticks(const CpCombatCreature *c)
+{
+    int lock = 0;
+    if (c->phase != CB_PH_IDLE) {
+        lock = (int)c->plen - (int)c->ptick;
+        if (c->move != CB_MOVE_NONE) {
+            const CpCombatMove *m = &CP_COMBAT_MOVES[c->move];
+            if (c->phase == CB_PH_WINDUP) lock += m->active + m->recovery;
+            else if (c->phase == CB_PH_ACTIVE) lock += m->recovery;
+        }
+    }
+    return lock > (int)c->stun_t ? lock : (int)c->stun_t;
+}
+
+/* A guaranteed punish: the fastest mouth attack, launched only when the foe
+ * stays locked through walk-in, turn, wind-up and the hit frame. */
+static int punish(const CpCombatWorld *w, int self, int foe, CpCombatAction *out)
+{
+    const CpCombatCreature *me = &w->c[self], *f = &w->c[foe];
+    const CpCombatMove *mv = &CP_COMBAT_MOVES[CB_BITE];
+    if (me->stun_t || !cp_combat_move_available(me, CB_BITE) ||
+        me->stamina < cp_combat_move_stamina(&me->prof, CB_BITE)) return 0;
+    CpCombatPreview p; cp_combat_preview(w, self, CB_BITE, foe, &p);
+    /* Do not estimate walk/turn time: launch only from actual attack-start
+     * geometry, against a stationary helpless target. */
+    float dx = f->x-me->x, dy = f->y-me->y;
+    float dist = sqrtf(dx*dx + dy*dy);
+    if (p.gap > mv->reach * 0.92f ||
+        me->fx*dx + me->fy*dy < 0.97f*dist) return 0;
+    int need = (int)mv->windup + (int)mv->active;
+    /* A pending hit frame or a standing defence can still answer. */
+    if (cp_combat_ticks_to_active(f) >= 0 || p.counter < 1.0f) return 0;
+    if (bot_locked_ticks(f) < need) return 0;
+    return act_attack(out, foe, CB_BITE);
+}
+
 static int greedy(CpBot *b, const CpCombatWorld *w, int self, int foe, CpCombatAction *out)
 {
     int m = best_attack(w, self, foe);
@@ -158,6 +195,29 @@ static int incoming(const CpBot *b, const CpCombatWorld *w, int self, int foe, i
     cp_combat_preview(w, foe, f->move, self, &thr);
     if (thr.gap > CP_COMBAT_MOVES[f->move].reach * 1.15f || !thr.in_arc) return 0;
     *rem = cp_combat_ticks_to_active(f);
+    return 1;
+}
+
+/* Dash threats hit on contact rather than on the first active frame.
+ * Estimate that frame for a stationary reactor; a short forward evade then
+ * keeps contact within the active window instead of reading the launch. */
+static int dodge_incoming(const CpBot *b, const CpCombatWorld *w, int self, int foe, int *rem)
+{
+    const CpCombatCreature *f = &w->c[foe];
+    if (w->c[self].stun_t || !offensive(f->move)) return 0;
+    const CpCombatMove *m = &CP_COMBAT_MOVES[f->move];
+    if (!(m->flags & CB_F_DASH)) return incoming(b, w, self, foe, rem);
+    if (f->phase != CB_PH_WINDUP && f->phase != CB_PH_ACTIVE) return 0;
+    if (f->phase == CB_PH_WINDUP && f->ptick < b->reaction) return 0;
+    CpCombatPreview p; cp_combat_preview(w, foe, f->move, self, &p);
+    if (!p.in_arc) return 0;
+    float over = p.gap - cp_combat_body_radius(&f->prof) - 0.35f;
+    float step = m->reach / m->active;
+    if (f->medium == CB_WATER) step *= 0.5f;
+    int travel = over > 0 ? (int)(over / step) : 0;
+    int left = m->active - (f->phase == CB_PH_ACTIVE ? f->ptick : 0);
+    if (travel >= left) return 0;
+    *rem = (f->phase == CB_PH_WINDUP ? f->plen-f->ptick : 0) + travel;
     return 1;
 }
 
@@ -274,20 +334,32 @@ int bot_decide(CpBot *b, const CpCombatWorld *w, int self, int foe, CpCombatActi
     case BOT_COUNTER: return counter(b, w, self, foe, out);
     case BOT_SPAM:
         memset(out, 0, sizeof(*out));
-        if (b->spam_move == CB_GUARD || b->spam_move == CB_DODGE) {
-            /* Holding guard / repeatedly dodging: reissue each tick. The
-             * core completes committed moves before starting the next. */
-            if (b->spam_move == CB_GUARD) {
-                /* Guard policy includes its earned fast riposte, through the
-                 * same public orders as a player. Never invent guard damage. */
-                if (me->phase == CB_PH_IDLE && cp_combat_helpless(&w->c[foe])) {
-                    CpCombatPreview p; cp_combat_preview(w, self, CB_BITE, foe, &p);
-                    if (p.in_reach && p.in_arc && cp_combat_move_available(me, CB_BITE))
-                        return act_attack(out, foe, CB_BITE);
+        if (CP_COMBAT_MOVES[b->spam_move].flags & CB_F_SELF) {
+            /* Defensive commitment: the defence plus the punish it earns.
+             * It never gambles: it strikes only when the foe is provably
+             * unable to answer before the bite lands, through the same
+             * public orders as a player. Never invent defensive damage. */
+            if (punish(w, self, foe, out)) return 1;
+            if (CP_COMBAT_MOVES[b->spam_move].flags & CB_F_GUARD) {
+                CpCombatPreview p; cp_combat_preview(w, self, CB_BITE, foe, &p);
+                if (p.gap <= CP_COMBAT_MOVES[CB_BITE].reach * 0.92f && p.in_arc) {
+                    out->verb = CB_V_GUARD; return 1;
                 }
-                out->verb = CB_V_GUARD; return 1;
+                out->verb = CB_V_APPROACH; out->target = (int8_t)foe; return 1;
             }
-            out->verb = CB_V_DODGE; out->dir = (int8_t)dodge_dir(w, self); return 1;
+            /* Evasion is a timed read: stay close, dodge a visible wind-up
+             * that the table says can be avoided, otherwise keep contact. */
+            int rem;
+            const CpCombatMove *dm = &CP_COMBAT_MOVES[b->spam_move];
+            if (dodge_incoming(b, w, self, foe, &rem) &&
+                rem >= (int)dm->windup && rem <= (int)dm->windup + (int)dm->active - 1) {
+                const CpCombatCounter *rule = counter_rule(w->c[foe].move, b->spam_move);
+                if (rule && rule->effect == CB_EFF_AVOID &&
+                    me->stamina >= cp_combat_move_stamina(&me->prof, b->spam_move) + rule->stamina) {
+                    out->verb = CB_V_DODGE; out->dir = 0; return 1;
+                }
+            }
+            out->verb = CB_V_APPROACH; out->target = (int8_t)foe; return 1;
         }
         return spaced_attack(b, w, self, foe, b->spam_move, out);
     }

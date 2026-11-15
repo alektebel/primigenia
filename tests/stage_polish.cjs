@@ -1,7 +1,8 @@
 /* Input acceptance and planted-foot measurement. Render only evidence frames. */
 const {chromium}=require('playwright');
 const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path');
-const out=path.resolve(process.env.CPORE_STAGE_POLISH_EVIDENCE||'docs/evidence/stage/polish');fs.mkdirSync(out,{recursive:true});
+const base=process.env.CPORE_STAGE_URL||'http://127.0.0.1:8765';
+const out=path.resolve(process.env.CPORE_STAGE_POLISH_EVIDENCE||(process.env.CPORE_STAGE_EVIDENCE?path.join(process.env.CPORE_STAGE_EVIDENCE,'polish'):'docs/evidence/stage/polish'));fs.mkdirSync(out,{recursive:true});
 (async()=>{
  const browser=await chromium.launch({headless:true,executablePath:process.env.HOME+'/.cache/ms-playwright/chromium-1254/chrome-linux64/chrome',args:['--use-angle=swiftshader','--enable-unsafe-swiftshader']});
  try{
@@ -9,7 +10,7 @@ const out=path.resolve(process.env.CPORE_STAGE_POLISH_EVIDENCE||'docs/evidence/s
   const page=await context.newPage(),errors=[];
   page.on('pageerror',e=>errors.push(e.message));page.on('console',m=>{if(m.type()==='error')errors.push(m.text())});
   await page.addInitScript(()=>{window.__stageTesting=true;requestAnimationFrame=callback=>{window.__stageRAF=callback;return 1}});
-  await page.goto('http://127.0.0.1:8765/web/stage/');
+  await page.goto(`${base}/web/stage/`);
   await page.waitForFunction(()=>window.Stage?.ready,null,{timeout:90000,polling:100});
   assert.equal(await page.evaluate(()=>Stage.audio.context),null,'no audio context before a gesture');
   const project=point=>page.evaluate(point=>{const p=new Stage.env.T.Vector3(point.x,Stage.env.groundY(point.x,point.z),point.z).project(Stage.env.camera);return {x:(p.x+1)*innerWidth/2,y:(1-p.y)*innerHeight/2}},point);
@@ -79,7 +80,7 @@ const out=path.resolve(process.env.CPORE_STAGE_POLISH_EVIDENCE||'docs/evidence/s
   const mobileContext=await browser.newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true});
   const mobile=await mobileContext.newPage();mobile.on('pageerror',e=>errors.push(e.message));
   await mobile.addInitScript(()=>{window.__stageTesting=true;requestAnimationFrame=callback=>{window.__stageRAF=callback;return 1}});
-  await mobile.goto('http://127.0.0.1:8765/web/stage/');await mobile.waitForFunction(()=>window.Stage?.ready,null,{timeout:90000,polling:100});
+  await mobile.goto(`${base}/web/stage/`);await mobile.waitForFunction(()=>window.Stage?.ready,null,{timeout:90000,polling:100});
   const tapTarget=await mobile.evaluate(()=>{const s=Stage.simulation,p=new Stage.env.T.Vector3(s.nest.x+(s.home.x-s.nest.x)*.18,0,s.nest.z+(s.home.z-s.nest.z)*.18);p.y=Stage.env.groundY(p.x,p.z);p.project(Stage.env.camera);return {x:(p.x+1)*innerWidth/2,y:(1-p.y)*innerHeight/2}});
   await mobile.touchscreen.tap(tapTarget.x,tapTarget.y);assert(await mobile.evaluate(()=>!!Stage.simulation.destination));
   const cdp=await mobileContext.newCDPSession(mobile);
