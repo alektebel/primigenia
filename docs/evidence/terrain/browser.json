@@ -1,0 +1,7 @@
+{
+  "browser": "158.0.8127.18",
+  "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+  "errors": [],
+  "captures": 9,
+  "interactions": "all five surface modes, keyboard camera, reset, drainage, invalid seed, regeneration, mobile overflow"
+}

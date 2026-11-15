@@ -1,0 +1,35 @@
+{
+  "node": "v26.13.0",
+  "platform": "linux",
+  "arch": "x64",
+  "rows": [
+    {
+      "seed": 1,
+      "n": 256,
+      "hash": "89d99b8f14645e6a",
+      "native_seconds": 0.6732,
+      "wasm_seconds": 0.7497812380000001
+    },
+    {
+      "seed": 7,
+      "n": 256,
+      "hash": "18f87d9ed2efd473",
+      "native_seconds": 0.6472,
+      "wasm_seconds": 0.6974940569999999
+    },
+    {
+      "seed": 42,
+      "n": 256,
+      "hash": "3b32a5fd7c3c59aa",
+      "native_seconds": 0.6821,
+      "wasm_seconds": 0.776158579
+    },
+    {
+      "seed": 1,
+      "n": 1024,
+      "hash": "d4e9acd0acb8f70c",
+      "native_seconds": 1.2976,
+      "wasm_seconds": 1.3564349520000005
+    }
+  ]
+}

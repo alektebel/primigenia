@@ -1,0 +1,43 @@
+{
+  "date": "2026-11-15",
+  "checks": [
+    {
+      "command": "nice -n 10 make test",
+      "result": "PASS: core, combat, tournament arithmetic, 50000 combat golden ticks, terrain smoke, metrics unit tests"
+    },
+    {
+      "command": "nice -n 10 make terrain-test",
+      "result": "PASS: paired 1024 metrics, W12 guarantees, required native/WASM parity"
+    },
+    {
+      "command": "nice -n 10 make wasm-test",
+      "result": "PASS: combat native/WASM goldens and duels, JS encounter tests, terrain parity"
+    },
+    {
+      "command": "nice -n 10 ./build/terrain_sanitized",
+      "result": "PASS: ASan + UBSan terrain smoke, including maximal frequency/domain and brush bounds"
+    },
+    {
+      "command": "nice -n 10 ./build/terrain/coverage-final/test --heavy; gcov -b test-terrain.gcno",
+      "result": "100% of 499 terrain lines; 99.43% branch execution, 92.29% taken"
+    },
+    {
+      "command": "NODE_PATH=/home/diego/Desarrollo/cpore-wt/_agent/node_modules nice -n 10 node tools/terrain/capture.cjs",
+      "result": "PASS: three same-camera base/eroded pairs, three hillshade+drainage images, desktop/mobile interaction smoke; SwiftShader asserted; browser closed"
+    },
+    {
+      "command": "nice -n 10 node tests/test_wasm_terrain.mjs (after final wrapper bounds and abs helper changes)",
+      "result": "PASS: all required parity cases, small goldens, invalid/wrapping JS work counts; output hashes unchanged"
+    },
+    {
+      "command": "nice -n 10 make build/terrain_test check-core; nice -n 10 ./build/terrain_test (after final arithmetic helper change)",
+      "result": "PASS: native goldens; core still links libc/libm only"
+    }
+  ],
+  "limits": [
+    "Seed 1 is a tie because its base metrics are already in range; aggregate outlet-fit gap improves.",
+    "Seed 42 eroded outlet Hack exponent is 0.49851, just below the strict 0.5 bound.",
+    "Pooled junction Hack exponents stay below the target range; flat spill routes form straight diagnostic lines.",
+    "Preview review covers supplied screenshots and source, not owner approval; game integration/cache/pre-bake/story are phase B."
+  ]
+}

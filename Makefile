@@ -49,7 +49,9 @@ $(BUILD)/combat_golden: tests/combat_golden.c apps/combat_bots.h $(BUILD)/apps/c
 
 # Correctness regressions. Balance acceptance remains a separate failing gate:
 # run make tourney as well before claiming P2 acceptance.
-test: $(BUILD)/cpore_test $(BUILD)/combat_test $(BUILD)/combat_tourney_test $(BUILD)/combat_golden check-core
+test: $(BUILD)/terrain_test $(BUILD)/cpore_test $(BUILD)/combat_test $(BUILD)/combat_tourney_test $(BUILD)/combat_golden check-core
+	nice -n 10 ./$(BUILD)/terrain_test
+	python3 tests/test_terrain_metrics.py
 	./$(BUILD)/cpore_test
 	./$(BUILD)/combat_test
 	./$(BUILD)/combat_tourney_test
@@ -133,3 +135,30 @@ studio-test:
 	CPORE_ARTIFACT_DIR=$(BUILD)/studio-tests nice -n 10 node tests/studio_interaction.cjs
 	CPORE_ARTIFACT_DIR=$(BUILD)/studio-tests nice -n 10 node tests/studio_touch.cjs
 	G48_TEST_OUTPUT=$(BUILD)/studio-tests/g48-tests.json nice -n 10 node tests/studio_procedural_parts.cjs
+
+# W11: native smoke remains small; 1024 guarantees and parity are opt-in.
+TERRAIN_SRC := core/src/terrain.c core/src/rng.c
+$(BUILD)/terrain_cli: apps/terrain_cli.c $(HDRS) $(BUILD)/libcpore.a
+	$(CC) $(CFLAGS) $< $(BUILD)/libcpore.a -o $@ $(LDLIBS)
+$(BUILD)/terrain_test: tests/test_terrain.c $(HDRS) $(BUILD)/libcpore.a
+	$(CC) $(CFLAGS) $< $(BUILD)/libcpore.a -o $@ $(LDLIBS)
+.PHONY: terrain-test
+# Never regenerate committed goldens during tests.
+terrain-test: $(BUILD)/terrain_test $(BUILD)/terrain_cli
+	nice -n 10 ./$(BUILD)/terrain_test --heavy
+
+TERRAIN_EXPORTS := '[_ct_config,_ct_generate,_ct_map,_ct_hash,_ct_version]'
+wasm: $(BUILD)/wasm/cpore_terrain.mjs $(BUILD)/wasm/cpore_terrain.wasm
+$(BUILD)/wasm/cpore_terrain.mjs $(BUILD)/wasm/cpore_terrain.wasm &: $(TERRAIN_SRC) apps/terrain_wasm_api.c $(HDRS) Makefile
+	@mkdir -p $(dir $@)
+	$(EMCC_RUN) $(WASM_FLAGS) $(TERRAIN_SRC) apps/terrain_wasm_api.c --no-entry -sMODULARIZE=1 -sEXPORT_ES6=1 -sENVIRONMENT=web,worker,node -sINITIAL_MEMORY=50331648 -sEXPORTED_FUNCTIONS=$(TERRAIN_EXPORTS) -sEXPORTED_RUNTIME_METHODS=HEAPF32,HEAPU32 -o $(BUILD)/wasm/cpore_terrain.mjs
+.PHONY: terrain-parity
+terrain-parity: $(BUILD)/terrain_cli $(BUILD)/wasm/cpore_terrain.mjs $(BUILD)/wasm/cpore_terrain.wasm
+	nice -n 10 node tests/test_wasm_terrain.mjs
+terrain-test: terrain-parity
+wasm-test: terrain-parity
+
+.PHONY: terrain-metrics
+terrain-metrics: $(BUILD)/terrain_cli
+	nice -n 10 python3 tools/terrain/metrics.py --cli $(BUILD)/terrain_cli --n 1024 --seeds 1,7,42 --workdir $(BUILD)/terrain --json $(BUILD)/terrain/metrics.json --check
+terrain-test: terrain-metrics
