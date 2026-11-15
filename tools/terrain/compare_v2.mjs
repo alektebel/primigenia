@@ -8,7 +8,8 @@ import { createTerrain } from '../../web/terrain-lab/terrain.mjs';
 
 const original = await createTerrain({}, '../../build/wasm-v2/cpore_terrain.mjs');
 const current = await createTerrain();
-const seed = 42, n = 256;
+// Optional positional arguments: output.json seed n.
+const seed = Number(process.argv[3] ?? 42), n = Number(process.argv[4] ?? 256);
 const switches = ['gentle-bases', 'layout-variety', 'cliff-bands', 'sea-cliffs', 'hard-rock', 'volcano', 'caves'];
 mkdirSync('build/terrain', { recursive: true });
 const path = 'build/terrain/v2-disabled.bin';

@@ -9,10 +9,11 @@ from pathlib import Path
 from PIL import Image, ImageDraw, ImageFont
 
 root = Path(sys.argv[1] if len(sys.argv) > 1 else "docs/evidence/terrain")
+label = sys.argv[3] if len(sys.argv)>3 else 'v2+'
 rows = [("v2-42", "Before: version 2, seed 42 (3.6 km square)"),
-        ("after-42", "After: version 3 (v2+), seed 42 (3.6 km square)"),
-        ("after-1", "After: version 3 (v2+), seed 1"),
-        ("after-7", "After: version 3 (v2+), seed 7")]
+        ("after-42", f"After: version 3 ({label}), seed 42 (3.6 km square)"),
+        ("after-1", f"After: version 3 ({label}), seed 1"),
+        ("after-7", f"After: version 3 ({label}), seed 7")]
 H, PAD, LABEL = 520, 10, 34
 font = None
 for path in ("/usr/share/fonts/TTF/DejaVuSans.ttf", "/usr/share/fonts/noto/NotoSans-Regular.ttf"):
@@ -27,13 +28,20 @@ for name, title in rows:
         if view != "top":                       # trim the lab's hint label
             im = im.crop((0, 0, im.width, im.height - 60))
         cells.append(im.resize((round(im.width * H / im.height), H), Image.LANCZOS))
-    strips.append((title, cells))
+    strips.append((title + "  ·  from above  ·  from the valley floor  ·  hillshade + drainage", cells))
+if (root / 'sea-cliff-42-close.png').exists() and (root / 'cave-42-close.png').exists():
+    cells=[]
+    for kind in ('sea-cliff', 'cave'):
+        im=Image.open(root / f'{kind}-42-close.png').convert('RGB')
+        im=im.crop((0,0,im.width,im.height-60))
+        cells.append(im.resize((round(im.width*H/im.height),H),Image.LANCZOS))
+    strips.append(('Seed 42 details: sea cliff (left) · cave entrance floor notch (right; no tunnel mesh)',cells))
 width = max(sum(c.width for c in cells) + PAD * (len(cells) + 1) for _, cells in strips)
 sheet = Image.new("RGB", (width, len(strips) * (H + LABEL + PAD) + PAD), "#f5f2e9")
 draw = ImageDraw.Draw(sheet)
 y = PAD
 for title, cells in strips:
-    draw.text((PAD, y + 4), title + "  ·  from above  ·  from the valley floor  ·  hillshade + drainage",
+    draw.text((PAD, y + 4), title,
               fill="#263d35", font=font)
     x = PAD
     for cell in cells:

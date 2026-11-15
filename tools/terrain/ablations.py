@@ -15,15 +15,18 @@ def main():
     ap.add_argument('--seed', type=int, default=42)
     ap.add_argument('--n', type=int, default=1024)
     ap.add_argument('--out', default='build/terrain/ablations.json')
+    ap.add_argument('--workdir', default='build/terrain/ablations', help='scratch directory for binary maps')
     ap.add_argument('--v2cc', action='store_true', help='measure cliffs/strata separately, together, and with caves')
     args = ap.parse_args()
     dest = Path(args.out)
     dest.parent.mkdir(parents=True, exist_ok=True)
+    workdir = Path(args.workdir)
+    workdir.mkdir(parents=True, exist_ok=True)
     baseline = None
     rows = []
     variants = (None, 'cliff-bands', 'sea-cliffs', 'hard-rock', 'cliffs-strata', 'cliffs-strata-caves') if args.v2cc else (None, *SWITCHES)
     for enabled in variants:
-        path = dest.parent / f'ablation-{enabled or "v2"}.bin'
+        path = workdir / f'ablation-{enabled or "v2"}.bin'
         cmd = [args.cli, 'dump', '--seed', str(args.seed), '--n', str(args.n), '--out', str(path)]
         active = {'cliff-bands', 'sea-cliffs', 'hard-rock'} if enabled in ('cliffs-strata', 'cliffs-strata-caves') else {enabled}
         if enabled == 'cliffs-strata-caves':

@@ -1,10 +1,13 @@
 # Eroded terrain (W11–W18, generator version 3)
 
-This is **v2+**, a bounded extension of the v2 generator in
+The default is **v2 + cliffs + caves** (W20 owner choice in the task brief), using the v2+ generator in
 `core/include/cpore/terrain.h` and `core/src/terrain.c`. It retains v2's massif
 construction, multiscale stream power, droplets and scree sweeps. Seven
 independent switches add gentle approaches, layout variety, high-face detail,
 sea cliffs, resistant strata, one stratovolcano and cave entrances.
+Gentle approaches, layout variety and the volcano now default to **0**;
+high-face bands, sea cliffs, resistant strata and caves remain **1**.
+No generation algorithm changed for this default selection.
 
 The island is about 3.2 km across in a **3.6 km square** (W14). The default seed
 is **1**. Sea level is 0 m, the start valley's reference floor 42 m. The lake,
@@ -12,11 +15,13 @@ river gap and high col remain guaranteed on seeds **1, 7, 42, 99, 1234, 31337**.
 Game integration, cache/loading-screen integration, smoke and cave meshes are
 later work; the standalone terrain lab consumes this generator's actual maps.
 
-The comparison sheet is [v2 versus v2+](evidence/terrain/shape-v2plus.png): seed
-42 in the same three views, followed by v2+ seeds 1 and 7. The
-[material and cave view](evidence/terrain/v2plus/lab-material-caves.png) shows the
-C material classes and numbered entrances. [Measured acceptance and limits](evidence/terrain/v2plus/metrics.md)
-include exact values, runtime parity and independent ablations. The original
+The comparison sheet is [v2 versus v2 + cliffs + caves](evidence/terrain/shape-v2cc.png): seed
+42 in the same three views as the [previous v2+ sheet](evidence/terrain/shape-v2plus.png),
+followed by seeds 1 and 7 and sea-cliff/cave-notch close views. The
+[material and cave view](evidence/terrain/v2cc/lab-material-caves.png) shows the
+C material classes and numbered entrances. [Measured acceptance and limits](evidence/terrain/v2cc/metrics.md)
+include exact values, runtime parity and independent ablations. **The unchanged
+Rb gate fails on seed 31337 (5.9713 > 5.5); `make terrain-test` remains red.** The original
 [v2 sheet](evidence/terrain/shape-v2.png) and [v2 measurements](evidence/terrain/metrics.md)
 remain historical evidence.
 
@@ -31,6 +36,8 @@ nice -n 10 build/terrain_cli stats --seed 42 --n 1024
 nice -n 10 build/terrain_cli features --seed 42 --n 1024
 nice -n 10 build/terrain_cli dump --seed 42 --n 1024 --out build/map.bin
 nice -n 10 python3 tools/terrain/ablations.py
+nice -n 10 python3 tools/terrain/ablations.py --v2cc --out build/terrain/v2cc-ablations.json
+nice -n 10 ./build/terrain_test --heavy --gentle
 nice -n 10 python3 -m http.server 8031 --bind 127.0.0.1
 ```
 
@@ -89,7 +96,9 @@ this is the paired comparison used by the structure gates.
    above 100 m, then recovers over relief 160–300 m above the reference floor.
    It changes no erosion pass and introduces no radial apron. Lowland slope
    acceptance samples **all land between 42 and 192 m**, using central
-   differences, and requires a median of 15–30° on every development seed.
+   differences, and requires a median of 15–30° on every development seed
+   only when `gentle_bases > 0`. Run `build/terrain_test --heavy --gentle`
+   to check that optional configuration; it is not the default acceptance.
 7. **Subtle high bands.** Up to 0.9 m of relief, only above 302 m and on faces
    steeper than 40°, with full strength above 332 m and 55°. There is no
    mid-height cosmetic band. These are separate from resistant geological
@@ -118,18 +127,18 @@ changes because v3 includes the new output schema.
 
 `cp_terrain_params_default` initializes everything; `cp_terrain_generate`
 validates before touching the buffers. The seven switch strengths are finite
-floats in [0,1], defaulting to 1. The layout count changes discretely when
+floats in [0,1]. The layout count changes discretely when
 variety is enabled; the geometric strengths interpolate.
 
-| C parameter | CLI option | JS request / lab query |
-|---|---|---|
-| `gentle_bases` | `--gentle-bases` | `gentle` |
-| `layout_variety` | `--layout-variety` | `variety` |
-| `cliff_bands` | `--cliff-bands` | `bands` |
-| `sea_cliffs` | `--sea-cliffs` | `coast` |
-| `hard_rock` | `--hard-rock` | `rock` |
-| `volcano` | `--volcano` | `volcano` |
-| `caves` | `--caves` | `caves` |
+| C parameter | CLI option | JS request / lab query | Default |
+|---|---|---|---:|
+| `gentle_bases` | `--gentle-bases` | `gentle` | 0 |
+| `layout_variety` | `--layout-variety` | `variety` | 0 |
+| `cliff_bands` | `--cliff-bands` | `bands` | 1 |
+| `sea_cliffs` | `--sea-cliffs` | `coast` | 1 |
+| `hard_rock` | `--hard-rock` | `rock` | 1 |
+| `volcano` | `--volcano` | `volcano` | 0 |
+| `caves` | `--caves` | `caves` | 1 |
 
 The lab's last four queries are boolean, e.g. `?seed=42&volcano=0&caves=0`.
 Other capture queries include `n`, `base=1`, `view=valley`, `map=<pixels>`,
@@ -207,6 +216,8 @@ depth and ridge sharpness on every seed. The **unchanged** natural-structure
 gate targets Rb 3–5 and Hack 0.5–0.6, with its existing tolerances of 0.5 and
 0.05 respectively. Actual values, including Hack values below 0.5, are reported
 in the evidence; a passing tolerance is not a claim of strict target coverage.
+The all-switches-off parity test also pins height/flow/sediment bytes against
+original v2 fixtures, independently of v3's expanded output hash schema.
 
 Browser evidence uses headless Chromium 1254, only
 `--use-angle=swiftshader --enable-unsafe-swiftshader`, and asserts SwiftShader.
@@ -215,8 +226,9 @@ browser in `finally`. No normal-browser frame rate or owner approval is claimed.
 
 ```sh
 NODE_PATH=/home/diego/Desarrollo/cpore-wt/_agent/node_modules \
-  nice -n 10 node tools/terrain/capture.cjs --out docs/evidence/terrain/v2plus --no-base
-nice -n 10 python3 tools/terrain/sheet.py docs/evidence/terrain/v2plus docs/evidence/terrain/shape-v2plus.png
+  nice -n 10 node tools/terrain/capture.cjs --out docs/evidence/terrain/v2cc --no-base --details
+nice -n 10 python3 tools/terrain/sheet.py docs/evidence/terrain/v2cc docs/evidence/terrain/shape-v2cc.png 'v2 + cliffs + caves'
+nice -n 10 node tools/terrain/compare_v2.mjs build/terrain/v2-disabled.json
 ```
 
 For the comparison row, extract `core/src/terrain.c`, its header, `cpore.h`,

@@ -1,0 +1,63 @@
+{
+  "node": "v26.13.0",
+  "platform": "linux",
+  "arch": "x64",
+  "rows": [
+    {
+      "seed": 1,
+      "n": 256,
+      "hash": "b255c92a5b85e43d",
+      "native_seconds": 0.2751,
+      "wasm_seconds": 0.33036120700000005
+    },
+    {
+      "seed": 7,
+      "n": 256,
+      "hash": "adc7c973cbc3dcdf",
+      "native_seconds": 0.28,
+      "wasm_seconds": 0.332687944
+    },
+    {
+      "seed": 42,
+      "n": 256,
+      "hash": "572d8a0f9a1fd889",
+      "native_seconds": 0.2803,
+      "wasm_seconds": 0.33075765899999987
+    },
+    {
+      "seed": 99,
+      "n": 256,
+      "hash": "e03a1d647ecc4c58",
+      "native_seconds": 0.2733,
+      "wasm_seconds": 0.31857524599999987
+    },
+    {
+      "seed": 1234,
+      "n": 256,
+      "hash": "ea0bcd4c82538aa2",
+      "native_seconds": 0.2855,
+      "wasm_seconds": 0.3243270929999999
+    },
+    {
+      "seed": 31337,
+      "n": 256,
+      "hash": "c71b16838d4d02ee",
+      "native_seconds": 0.2828,
+      "wasm_seconds": 0.33019338200000037
+    },
+    {
+      "seed": 1,
+      "n": 1024,
+      "hash": "281193d8ad044e09",
+      "native_seconds": 3.3097,
+      "wasm_seconds": 4.317907525000001
+    },
+    {
+      "seed": 42,
+      "n": 1024,
+      "hash": "e74f19ff5262a9eb",
+      "native_seconds": 3.3858,
+      "wasm_seconds": 4.334665794
+    }
+  ]
+}
