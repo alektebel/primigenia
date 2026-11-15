@@ -61,8 +61,9 @@ tourney: $(BUILD)/combat_tourney
 	./$(BUILD)/combat_tourney
 bench: $(BUILD)/cpore_bench
 	./$(BUILD)/cpore_bench
-smoke: lib
+smoke: lib $(BUILD)/world_cli
 	python3 bindings/python/smoke_test.py
+	python3 bindings/python/world_smoke.py
 
 # The core may only depend on libc/libm: fail if any core object pulls in more.
 check-core: $(BUILD)/libcpore.so
