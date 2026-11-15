@@ -244,6 +244,7 @@ recorded.
 | G52 | **Fire changes the world**: it burns grass, scares creatures and cooks food, so fire spread is simulated deterministically in C. It arrives with the volcano biome. (2026-11-15) |
 | G53 | Secret moves enter the same counter matrix and must pass the same tourney gates as every move: none may dominate; they win by surprise and are limited by their resource cost. (2026-11-15) |
 | G54 | Schedule: P4 brings part tiers, the recipe system and the first secret move (bone spines); P6 the aquatic ones (e.g. ink jet); P8 fire breath and thrown claws. (2026-11-15) |
+| G55 | `docs/P4.md` open questions Q-1 to Q-20 approved as recommended (2026-11-15), including: two DNA meters (total only rises, balance is spent), tier = form and level = power, part drops 20% (35% Garfio) with pity on the 4th dry kill, start inventory pico/pata/ojo, recipes locked until 2 clues, a new `espinas_dorsales` part (`CP4_BACKSPINE`) for the spine volley, and **P2's move-level tourney gates must pass before P4 merges**. P4.md is the spec of record for P4. |
 
 ## 10. The world (W1–W10, 2026-11-14)
 
