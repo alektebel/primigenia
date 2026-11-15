@@ -540,6 +540,34 @@ excludes tiny positive weights from the solver's uniform initialization;
 counting that dust as a six-move equilibrium would be misleading. Elo uses a
 Bradley–Terry fit (mean 1000, one half-win pseudo-game per pair); Elo is descriptive and does not alter any gate.
 
+### Structural diagnosis (P2-gates, before tuning)
+
+The inherited failures have two distinct causes. A repeated non-damaging
+verb is not a complete strategy in a damage game: blind dodge cannot have a
+positive raw payoff, so an offensive row can dominate it. A defensive move
+must be measured with the attack opportunity it actually earns, paid through
+the public API, not with invented block/evade damage. Holding guard outside
+bite range also wastes a successful block's short punish window. Policies
+should close to punish range and use a visible defensive read before taking
+an affordable, aligned bite during a genuinely helpless window. All offensive
+policies retain their own selected attack and ranged spacing.
+
+The table also needs a costed counter to that defensive read: tail sweeps
+catch active dodge, while other funded avoids may release the defender and
+stagger an overcommitted attacker. This creates a possible cycle through
+guard > bite, charge > guard, spit > charge, dodge > spit, tail > dodge;
+measurements must establish the actual cycle and support, not assume it.
+In an antisymmetric game, generic nondegenerate support is odd, so the
+unchanged four-move threshold practically asks for five viable policies.
+
+Review of 7a3204b: retain the generic AVOID ticks mechanism and real punish
+idea, but verify its boundaries and correct approach/turn assumptions.
+Review of 05c7d5c: restore the published **mean** stamina coefficient; the
+unjustified minimum exchange rate is rejected. Retain reaction delays 0..3
+as an explicit scenario factor and test tail's dodge exception independently.
+Dominance tolerance, regret iterations/support, build caps and canaries stay
+unchanged. Fixed action logs are not policy training data and remain intact.
+
 ### Remaining balance conflict
 
 The previous default was pure bite in raw damage, with brawler at 68.5%.

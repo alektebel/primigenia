@@ -30,21 +30,19 @@ static void check(int ok, const char *msg)
 /* ---------------- payoff matrix: fixed move vs fixed move ---------------- */
 /* Mean level-3 offensive HP (including a fresh bleed's future ticks) bought
  * per start-stamina point. Derived from move data, never fitted to dominance. */
-static int price_mode = 1;
 static double stamina_value;
 static double move_stamina_value(const CpCombatProfile *p)
 {
-    double total = 0, least = 0; int n = 0;
+    double total = 0; int n = 0;
     for (int m = 0; m < CB_MOVE_COUNT; m++) {
         if (CP_COMBAT_MOVES[m].flags & CB_F_SELF) continue;
         double damage = cp_combat_move_damage(p, m);
         if (CP_COMBAT_MOVES[m].status == CB_ST_BLEED)
             damage += 0.6 * (CP_COMBAT_MOVES[m].status_ticks - 1);
         double rate = damage / cp_combat_move_stamina(p, m);
-        if (!n || rate < least) least = rate;
         total += rate; n++;
     }
-    return price_mode ? least : total / n;
+    return total / n;
 }
 static double payoff[CB_MOVE_COUNT][CB_MOVE_COUNT];     /* raw hp margin            */
 static double payoff_se[CB_MOVE_COUNT][CB_MOVE_COUNT];
