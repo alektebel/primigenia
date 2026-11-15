@@ -8,6 +8,14 @@ log(main-stream length) on log(drainage area) at independent basin outlets.
 A second pooled fit at junctions + outlets is reported as a sensitivity check.
 Hypsometric integral is (mean - min) / (max - min).
 
+Two shape measures separate an eroded range from a noise surface:
+valley depth is the mean, over channel cells, of how far the channel lies
+below the mean ground on a 75 m circle around it; ridge sharpness is the
+mean, over drainage-divide cells, of the fall to both sides 10 m from the
+divide (rise/run, 0 where the divide is not a crest).
+Drainage density is channel length per land area. Only land (height > 0)
+counts; the sea is an outlet, not a channel.
+
 Channel cells are those whose D8 contributing area exceeds --area m².
 Directions are the generator's, stored in the dump, so the tree matches
 the flow map.
@@ -32,7 +40,7 @@ def load_dump(path):
     magic, version, seed, n, size, flags = struct.unpack_from("<8sIIifI", blob, 0)
     if magic != b"CPTER10\x00":
         raise ValueError(f"{path}: bad magic {magic!r}")
-    if version!=1 or not 8<=n<=2048 or not math.isfinite(size) or size<=0 or flags not in (0,1):
+    if version not in (1,2) or not 8<=n<=2048 or not math.isfinite(size) or size<=0 or flags not in (0,1):
         raise ValueError(f"{path}: invalid terrain header")
     nn = n * n
     off = 28
@@ -77,7 +85,7 @@ def metrics(dump, area_m2, pooled=False):
     flow = dump["flow"]
     dirs = dump["dir"]
     min_cells = max(1.0, area_m2 / cell_area)
-    channel = [flow[i] * nn >= min_cells for i in range(nn)]
+    channel = [flow[i] * nn >= min_cells and height[i] > 0.0 for i in range(nn)]
 
     preds = [[] for _ in range(nn)]
     recv = [-1] * nn
@@ -192,12 +200,94 @@ def metrics(dump, area_m2, pooled=False):
     hmean = sum(height) / nn
     hypo = (hmean - hmin) / (hmax - hmin) if hmax > hmin else 0.0
     n_channel = sum(1 for c in channel if c)
+    land = sum(1 for v in height if v > 0.0)
+
+    # Drainage density: channel length over land area, km per km2.
+    length = 0.0
+    for i in range(nn):
+        if channel[i] and recv[i] >= 0:
+            length += cell * (math.sqrt(2.0) if abs(recv[i] - i) not in (1, n) else 1.0)
+    density = (length / 1000.0) / (land * cell_area / 1.0e6) if land else 0.0
+
+    # Valley depth: how far a channel lies below the ground around it. The
+    # mean height on a 75 m circle, minus the channel. A stream crossing a
+    # plane scores 0 at any slope; only a cut valley scores.
+    ring = [(int(round(math.cos(k * math.pi / 8.0) * 75.0 / cell)),
+             int(round(math.sin(k * math.pi / 8.0) * 75.0 / cell))) for k in range(16)]
+    depth_sum, depth_n = 0.0, 0
+    for i in range(nn):
+        if not channel[i]:
+            continue
+        x, y = i % n, i // n
+        total, count = 0.0, 0
+        for dx, dy in ring:
+            xx, yy = x + dx, y + dy
+            if 0 <= xx < n and 0 <= yy < n:
+                total += height[yy * n + xx]
+                count += 1
+        if count:
+            depth_sum += total / count - height[i]
+            depth_n += 1
+    valley_depth = depth_sum / depth_n if depth_n else 0.0
+
+    # Ridge sharpness, measured on the drainage divides: the lines between
+    # the hillslopes of two different channel segments. A new segment starts
+    # at a channel head and below every confluence, so the two banks of one
+    # stream share a label and its valley line is not a divide. At each
+    # divide cell take the mean fall 10 m to both sides, across the best of
+    # four axes, and 0 where the divide is not a crest at all. Reported as
+    # the mean over divide cells, rise/run.
+    reach = [-1] * nn
+    next_seg = 0
+    for i in queue:                       # sources first
+        if not channel[i]:
+            continue
+        ups = [p for p in preds[i] if channel[p]]
+        if len(ups) == 1:
+            reach[i] = reach[ups[0]]
+        else:
+            reach[i] = next_seg
+            next_seg += 1
+    label = [-1] * nn
+    for i in reversed(queue):             # outlets first
+        if channel[i]:
+            label[i] = reach[i]
+        elif recv[i] >= 0:
+            label[i] = label[recv[i]]
+    k = max(1, int(round(10.0 / cell)))
+    fall_sum, divides, crests = 0.0, 0, 0
+    for y in range(k, n - k):
+        for x in range(k, n - k):
+            i = y * n + x
+            if channel[i] or height[i] <= 0.0 or label[i] < 0:
+                continue
+            east, south = i + 1, i + n
+            if not ((not channel[east] and label[east] >= 0 and label[east] != label[i]) or
+                    (not channel[south] and label[south] >= 0 and label[south] != label[i])):
+                continue
+            best = 0.0
+            for dx, dy in ((1, 0), (0, 1), (1, 1), (1, -1)):
+                a = height[(y + dy * k) * n + x + dx * k]
+                b = height[(y - dy * k) * n + x - dx * k]
+                if a < height[i] and b < height[i]:
+                    run = k * cell * (math.sqrt(2.0) if dx and dy else 1.0)
+                    best = max(best, (2.0 * height[i] - a - b) / (2.0 * run))
+            divides += 1
+            fall_sum += best
+            if best > 0.0:
+                crests += 1
+    ridge_sharpness = fall_sum / divides if divides else 0.0
+    crest_fraction = crests / divides if divides else 0.0
+
     return {
         "n": n, "size": size, "seed": dump["seed"], "flags": dump["flags"],
         "area_m2": area_m2, "min_cells": min_cells, "hack_sampling": "pooled" if pooled else "outlets",
         "channel_cells": n_channel, "segments": seg, "ratios": ratios,
         "rb": rb, "rb_how": rb_how, "hack": hack, "hack_r2": hack_r2, "hack_n": len(points),
         "hypsometric": hypo, "hmin": hmin, "hmax": hmax, "hmean": hmean,
+        "land_fraction": land / nn, "drainage_density_km": density,
+        "valley_depth_m": valley_depth, "ridge_sharpness": ridge_sharpness, "ridge_cells": divides,
+        "divide_crest_fraction": crest_fraction,
     }
 
 
@@ -220,13 +310,14 @@ def fmt(m):
         f"seed {m['seed']} n {m['n']} channels {m['channel_cells']} "
         f"orders [{seg}] Rb {rb} ({m['rb_how']}) "
         f"h {hack} r2 {r2} (n={m['hack_n']}) HI {m['hypsometric']:.3f} "
-        f"height [{m['hmin']:.1f}, {m['hmax']:.1f}]"
+        f"height [{m['hmin']:.1f}, {m['hmax']:.1f}] "
+        f"density {m['drainage_density_km']:.2f} km/km2 valley depth {m['valley_depth_m']:.1f} m "
+        f"ridge sharpness {m['ridge_sharpness']:.3f} (n={m['ridge_cells']}, crest {m['divide_crest_fraction']:.2f})"
     )
 
 
-def generate(cli, seed, n, droplets, thermal, path):
-    cmd = [cli, "dump", "--seed", str(seed), "--n", str(n),
-           "--droplets", str(droplets), "--thermal", str(thermal), "--out", path]
+def generate(cli, seed, n, base, path):
+    cmd = [cli, "dump", "--seed", str(seed), "--n", str(n), "--out", path] + (["--base"] if base else [])
     subprocess.check_call(["nice", "-n", "10", *cmd])
 
 
@@ -234,23 +325,21 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("dumps", nargs="*")
     ap.add_argument("--pooled", action="store_true", help="sensitivity fit using nested junctions + outlets")
-    ap.add_argument("--check", action="store_true", help="require eroded metric gaps no worse for each seed and better in aggregate")
+    ap.add_argument("--check", action="store_true", help="require eroded to beat base on valley depth and ridge sharpness, and eroded Rb/Hack near their natural ranges")
     ap.add_argument("--json", help="write machine-readable metrics to this file")
     ap.add_argument("--area", type=float, default=8000.0, help="channel threshold, m^2")
     ap.add_argument("--cli")
     ap.add_argument("--seeds", default="1,7,42")
     ap.add_argument("--n", type=int, default=1024)
-    ap.add_argument("--droplets", type=int, default=70000)
-    ap.add_argument("--thermal", type=int, default=5)
     ap.add_argument("--workdir", default="/tmp")
     args = ap.parse_args()
     rows = []
     if args.cli:
         Path(args.workdir).mkdir(parents=True,exist_ok=True)
         for seed in [int(s) for s in args.seeds.split(",") if s]:
-            for kind, drops, thermal in (("base", 0, 0), ("eroded", args.droplets, args.thermal)):
+            for kind in ("base", "eroded"):
                 path = f"{args.workdir}/terrain-{kind}-{seed}.bin"
-                generate(args.cli, seed, args.n, drops, thermal, path)
+                generate(args.cli, seed, args.n, kind == "base", path)
                 m = metrics(load_dump(path), args.area, args.pooled)
                 m["kind"] = kind
                 rows.append(m)
@@ -279,18 +368,20 @@ def main():
     if args.check:
         if not args.cli:
             ap.error("--check requires --cli for paired base/eroded data")
-        improvements=[]
-        for seed,pair in by.items():
-            def gap(m):
-                a,b=dist_range(m["rb"],3,5),dist_range(m["hack"],.5,.6)
-                return math.inf if a is None or b is None else a/2+b/.1
-            before,after=gap(pair["base"]),gap(pair["eroded"])
-            if not math.isfinite(after) or after>before+1e-6:
-                raise SystemExit(f"natural structure FAIL: seed {seed} gap {before:.6f} -> {after:.6f}")
-            improvements.append(before-after)
-        if not improvements or sum(improvements)<=0:
-            raise SystemExit("natural structure FAIL: no aggregate improvement")
-        print("natural structure PASS: paired gaps non-worse; aggregate gap improved (outlet Hack fit)")
+        # Shape: erosion has to cut real valleys and leave sharper divides, on
+        # every seed. Structure: the eroded network has to sit in the natural
+        # ranges, to a stated tolerance; the base is reported, not required
+        # to be worse, because a base already in range cannot be beaten.
+        for seed, pair in by.items():
+            b, e = pair["base"], pair["eroded"]
+            for key in ("valley_depth_m", "ridge_sharpness"):
+                if not e[key] > b[key]:
+                    raise SystemExit(f"shape FAIL: seed {seed} {key} {b[key]:.4f} -> {e[key]:.4f}")
+            gap_rb, gap_h = dist_range(e["rb"], 3, 5), dist_range(e["hack"], .5, .6)
+            if gap_rb is None or gap_h is None or gap_rb > 0.5 or gap_h > 0.05:
+                raise SystemExit(f"natural structure FAIL: seed {seed} Rb {e['rb']} Hack {e['hack']}")
+        print("shape PASS: eroded valley depth and ridge sharpness beat base on every seed")
+        print("natural structure PASS: eroded Rb within 0.5 of [3,5] and Hack h within 0.05 of [0.5,0.6]")
     if args.json:
         Path(args.json).write_text(json.dumps(rows,indent=2)+"\n")
 

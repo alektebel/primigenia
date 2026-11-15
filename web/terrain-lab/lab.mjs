@@ -1,6 +1,7 @@
 const $=id=>document.getElementById(id);
-const stages=['Shaping the valley and mountain ring','Water is carving the gullies','Loose stone is settling','Tracing the drainage network','Landscape ready'];
-let terrain,mesh,lake,busy=false,readyResolve;
+const stages=['Raising the range and cutting its valleys','Rain is carving the gullies','Loose stone is settling into scree','Tracing the drainage network','Landscape ready'];
+const query=new URLSearchParams(location.search);
+let terrain,light,mesh,sea,busy=false,readyResolve;
 window.terrainReady=new Promise(resolve=>{readyResolve=resolve;});
 const worker=new Worker(new URL('./worker.mjs',import.meta.url),{type:'module'});
 window.addEventListener('error',event=>failure(event.message));
@@ -8,82 +9,164 @@ const THREE=window.THREE;
 if (!THREE) throw Error('Three.js did not load. Check the network and reload.');
 const renderer=new THREE.WebGLRenderer({canvas:$('scene'),antialias:true,preserveDrawingBuffer:true});
 renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));renderer.outputEncoding=THREE.sRGBEncoding;
-renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.05;
-const scene=new THREE.Scene();scene.background=new THREE.Color('#cbd9d4');scene.fog=new THREE.Fog('#cbd9d4',3000,6500);
-const camera=new THREE.PerspectiveCamera(43,1,1,10000);
-scene.add(new THREE.HemisphereLight('#e3efff','#546349',1.6));
-const sun=new THREE.DirectionalLight('#ffdfad',2.8);sun.position.set(-1000,1500,700);scene.add(sun);
-let yaw=.65,pitch=.78,distance=2700;
-function cameraReset(){yaw=.65;pitch=.78;distance=2700;draw();}
+const SKY=[.72,.81,.90],ZENITH=[.36,.56,.82];
+const scene=new THREE.Scene();scene.fog=new THREE.Fog(new THREE.Color(...SKY).convertSRGBToLinear(),2500,16000);
+{ // Sky: a vertical gradient. Lighting is baked into the ground texture, so the scene needs no lamps.
+  const c=document.createElement('canvas');c.width=4;c.height=256;const g=c.getContext('2d'),grad=g.createLinearGradient(0,0,0,256);
+  const css=v=>`rgb(${v.map(x=>Math.round(x*255)).join(',')})`;
+  grad.addColorStop(0,css(ZENITH));grad.addColorStop(.62,css(SKY));grad.addColorStop(1,css(SKY));g.fillStyle=grad;g.fillRect(0,0,4,256);
+  scene.background=new THREE.CanvasTexture(c);scene.background.encoding=THREE.sRGBEncoding;
+}
+const camera=new THREE.PerspectiveCamera(40,1,2,40000);
+// Sun from the north-west, 38 degrees up. Map +y is south; three.js z is map y.
+const SUN=(()=>{const v=[-.52,.62,-.59],l=Math.hypot(...v);return v.map(x=>x/l);})();
+const views={orbit:{yaw:.62,pitch:.50,distance:1.32},valley:{yaw:-2.11,pitch:.13}};
+let view=query.get('view')==='valley'?'valley':'orbit',yaw,pitch,distance;
+function cameraReset(){({yaw,pitch}=views[view]);distance=views.orbit.distance;$('view').value=view;draw();}
+function groundAt(x,z){
+  if(!terrain)return 0;const {n,size,height}=terrain;
+  const i=Math.max(0,Math.min(n-1,Math.floor((x/size+.5)*n))),j=Math.max(0,Math.min(n-1,Math.floor((z/size+.5)*n)));return height[j*n+i];
+}
 function draw(){
   const box=$('vista').getBoundingClientRect();renderer.setSize(box.width,box.height,false);
-  camera.aspect=box.width/box.height;camera.updateProjectionMatrix();
-  const fit=distance*Math.max(1,1/camera.aspect);
-  camera.position.set(Math.sin(yaw)*Math.cos(pitch)*fit,150+Math.sin(pitch)*fit,Math.cos(yaw)*Math.cos(pitch)*fit);
-  camera.lookAt(0,150,0);renderer.render(scene,camera);
+  camera.aspect=box.width/box.height;const size=terrain?terrain.size:3200;
+  if(view==='valley'){
+    // Standing on the valley floor, eye 2.2 m up, looking at the range.
+    const ex=60,ez=40,ey=groundAt(ex,ez)+2.2;camera.fov=62;camera.position.set(ex,ey,ez);
+    camera.lookAt(ex+Math.sin(yaw)*Math.cos(pitch)*100,ey+Math.sin(pitch)*100,ez+Math.cos(yaw)*Math.cos(pitch)*100);
+  }else{
+    const fit=distance*size*Math.max(1,1/camera.aspect);camera.fov=40;
+    camera.position.set(Math.sin(yaw)*Math.cos(pitch)*fit,60+Math.sin(pitch)*fit,Math.cos(yaw)*Math.cos(pitch)*fit);camera.lookAt(0,60,0);
+  }
+  camera.updateProjectionMatrix();renderer.render(scene,camera);
 }
 new ResizeObserver(draw).observe($('vista'));
-const palette={grass:[.39,.48,.28],rock:[.44,.44,.39],scree:[.63,.54,.37],wet:[.19,.32,.29],snow:[.9,.94,.92]};
-function blend(a,b,t){t=Math.max(0,Math.min(1,t));return a.map((x,i)=>x+(b[i]-x)*t);}
-function sample(i){
-  const {height:h,n,size}=terrain,x=i%n,y=Math.floor(i/n),cell=size/n;
-  const gx=(h[y*n+Math.min(n-1,x+1)]-h[y*n+Math.max(0,x-1)])/(cell*(x===0||x===n-1?1:2));
-  const gy=(h[Math.min(n-1,y+1)*n+x]-h[Math.max(0,y-1)*n+x])/(cell*(y===0||y===n-1?1:2));
-  return {gx,gy,slope:Math.hypot(gx,gy)};
+
+/* ---- shading -------------------------------------------------------------
+ * Everything the eye judges is computed from the generator's maps at full
+ * resolution: slope and aspect, ambient occlusion and the sun's cast shadow
+ * from the height field, then ground materials from height, slope, aspect,
+ * flow and sediment. The result is one texture; the mesh only carries shape. */
+const mix=(a,b,t)=>{t=t<0?0:t>1?1:t;return [a[0]+(b[0]-a[0])*t,a[1]+(b[1]-a[1])*t,a[2]+(b[2]-a[2])*t];};
+const step=(a,b,x)=>{const t=Math.max(0,Math.min(1,(x-a)/(b-a)));return t*t*(3-2*t);};
+const WATER_DEPTH=.5,CHANNEL_M2=8000;
+function bakeLight(t){
+  const {n,size,height:h,level}=t,cell=size/n,nn=n*n;
+  const gx=new Float32Array(nn),gy=new Float32Array(nn),ao=new Float32Array(nn),sun=new Float32Array(nn),water=new Uint8Array(nn);
+  let hmin=Infinity;for(let i=0;i<nn;i++)if(h[i]<hmin)hmin=h[i];
+  const hasSea=hmin<=0;
+  // Displayed surface: the ground, or the water standing on it.
+  const z=new Float32Array(nn);
+  for(let i=0;i<nn;i++){
+    const pond=level[i]-h[i]>WATER_DEPTH&&h[i]>0;water[i]=h[i]<=0&&hasSea?2:pond?1:0;z[i]=pond?level[i]:h[i];
+  }
+  const at=(x,y)=>z[(y<0?0:y>=n?n-1:y)*n+(x<0?0:x>=n?n-1:x)];
+  const lx=SUN[0],ly=SUN[2],lh=Math.hypot(lx,ly),sx=lx/lh,sy=ly/lh,rise=SUN[1]/lh;
+  const dirs=[];for(let d=0;d<8;d++)dirs.push([Math.cos(d*Math.PI/4),Math.sin(d*Math.PI/4)]);
+  for(let y=0;y<n;y++)for(let x=0;x<n;x++){
+    const i=y*n+x,z0=z[i];
+    if(water[i]!==2){gx[i]=(at(x+1,y)-at(x-1,y))/(2*cell);gy[i]=(at(x,y+1)-at(x,y-1))/(2*cell);}
+    let occ=0;
+    for(const [dx,dy] of dirs){
+      let m=0;for(let s=1,r=1.5;s<=5;s++,r*=2){const e=(at(Math.round(x+dx*r),Math.round(y+dy*r))-z0)/(r*cell);if(e>m)m=e;}
+      occ+=m/Math.sqrt(1+m*m);
+    }
+    ao[i]=1-occ/8;
+    // Cast shadow: walk toward the sun; lit unless the ground rises above the ray.
+    let lit=1;
+    for(let s=1,r=1.5;s<70;s++,r+=1+s*.08){
+      const px=x+sx*r,py=y+sy*r;if(px<0||py<0||px>n-1||py>n-1)break;
+      const over=at(Math.round(px),Math.round(py))-(z0+rise*r*cell);
+      if(over>0){lit=Math.min(lit,Math.max(0,1-over/(1.5+r*cell*.03)));if(lit===0)break;}
+    }
+    sun[i]=lit;
+  }
+  return {gx,gy,ao,sun,water,z,hasSea};
 }
-function groundColor(i,mode){
-  const h=terrain.height[i],flow=terrain.flow[i],sed=terrain.sediment[i],{slope,gy}=sample(i);
-  if(mode==='height')return blend([.17,.35,.24],[.97,.9,.67],h/600);
-  if(mode==='slope')return blend([.83,.87,.66],[.42,.22,.16],slope/1.4);
-  if(mode==='flow')return blend([.86,.88,.77],[.02,.30,.50],Math.log2(1+flow*terrain.n*terrain.n)/11);
-  if(mode==='sediment')return blend([.24,.33,.29],[.98,.68,.24],Math.sqrt(sed)*.8);
-  let c=blend(palette.grass,palette.rock,(slope-.3)/.55);
-  c=blend(c,palette.scree,Math.min(.85,sed*.2)*Math.max(0,1-slope));
-  c=blend(c,palette.wet,Math.min(.7,flow*160)*(1-Math.min(1,slope)));
-  // +y in the map points south; positive gy faces north and retains snow.
-  const snow=(h-420+Math.max(-1,Math.min(1,gy))*35)/90;
-  return blend(c,palette.snow,Math.max(0,snow)*Math.max(0,1-slope*.6));
+const C={meadow:[.36,.50,.20],forest:[.17,.30,.14],alp:[.47,.50,.27],rock:[.66,.62,.56],dark:[.42,.40,.39],scree:[.70,.66,.58],
+  gravel:[.68,.64,.52],sand:[.78,.73,.58],snow:[.95,.96,.98],river:[.24,.45,.58],lake:[.17,.40,.52],shallow:[.33,.62,.66],deep:[.10,.30,.47]};
+function albedo(i,mode){
+  const t=terrain,h=t.height[i],sed=t.sediment[i],area=t.flow[i]*t.size*t.size;
+  const gx=light.gx[i],gy=light.gy[i],slope=Math.hypot(gx,gy),w=light.water[i];
+  if(mode==='height')return w===2?C.deep:mix(mix([.20,.38,.24],[.86,.80,.55],h/260),[.98,.97,.95],(h-260)/300);
+  if(mode==='slope')return mix(mix([.90,.92,.78],[.86,.55,.25],slope/.9),[.35,.12,.14],(slope-.9)/1.2);
+  if(mode==='flow')return mix([.90,.90,.82],[.02,.26,.52],Math.log2(1+area/(t.size*t.size)*t.n*t.n)/12);
+  if(mode==='sediment')return mix([.22,.30,.28],[.99,.72,.25],Math.sqrt(sed)*.45);
+  if(w===2)return mix(C.sand,[.30,.42,.40],-h/10);
+  if(w===1)return C.lake;
+  // +y is south: positive gy faces north, keeps snow lower and grass thinner.
+  const north=Math.max(-1,Math.min(1,gy));
+  let c=mix(C.meadow,C.forest,step(.22,.5,slope)*(1-step(170,250,h))*.85);
+  c=mix(c,C.alp,step(200,300,h+north*30));
+  // Bare rock where it is too steep or too high for turf; banded like bedded stone.
+  const band=.5+.5*Math.sin(h*.55+Math.sin(i*.0137)*1.3),stone=mix(C.dark,C.rock,.35+.65*band);
+  c=mix(c,stone,step(1.05,1.55,slope));
+  c=mix(c,stone,step(270,380,h)*.75);
+  // Loose material the generator moved: scree where it lies steep, gravel where it lies flat.
+  const loose=step(.25,1.6,sed);
+  c=mix(c,C.scree,loose*step(.30,.55,slope)*(1-step(1.0,1.4,slope))*.9);
+  c=mix(c,C.gravel,loose*(1-step(.12,.35,slope))*.55);
+  c=mix(c,C.sand,1-step(1.5,6,h));
+  const snowline=325-north*50-Math.min(30,sed*10);
+  c=mix(c,C.snow,step(snowline,snowline+60,h)*(1-step(1.5,2.6,slope)*.85));
+  if(area>=CHANNEL_M2)c=mix(c,C.river,.55+.25*step(8e3,2e5,area));
+  else c=mix(c,[c[0]*.82,c[1]*.9,c[2]*.84],step(1500,CHANNEL_M2,area)*.6);
+  return c;
+}
+function shade(i,c){
+  const gx=light.gx[i],gy=light.gy[i],il=1/Math.sqrt(1+gx*gx+gy*gy);
+  const lam=Math.max(0,(-gx*SUN[0]+SUN[1]-gy*SUN[2])*il)*light.sun[i],a=light.ao[i];
+  const sky=(.32+.14*il)*a*a,sunl=1.0*lam;
+  return [c[0]*(sky*.86+sunl*1.0+.05*a),c[1]*(sky*.95+sunl*.95+.05*a),c[2]*(sky*1.12+sunl*.84+.04*a)];
+}
+const toByte=v=>Math.round(255*Math.pow(v<0?0:v>1?1:v,1/2.2));
+function groundTexture(mode){
+  const {n}=terrain,data=new Uint8Array(n*n*4);
+  for(let i=0;i<n*n;i++){const c=shade(i,albedo(i,mode));data[i*4]=toByte(c[0]);data[i*4+1]=toByte(c[1]);data[i*4+2]=toByte(c[2]);data[i*4+3]=255;}
+  const tex=new THREE.DataTexture(data,n,n,THREE.RGBAFormat);tex.encoding=THREE.sRGBEncoding;tex.magFilter=THREE.LinearFilter;
+  tex.minFilter=THREE.LinearMipmapLinearFilter;tex.generateMipmaps=true;tex.anisotropy=renderer.capabilities.getMaxAnisotropy();tex.needsUpdate=true;return tex;
 }
 function recolor(){
-  if(!mesh)return;
-  const colors=mesh.geometry.attributes.color,source=mesh.userData.source,c=new THREE.Color();
-  for(let j=0;j<source.length;j++){
-    const rgb=groundColor(source[j],$('shading').value);c.setRGB(...rgb).convertSRGBToLinear();colors.setXYZ(j,c.r,c.g,c.b);
-  }
-  colors.needsUpdate=true;draw();
+  if(!mesh)return;const old=mesh.material.map;mesh.material.map=groundTexture($('shading').value);mesh.material.needsUpdate=true;if(old)old.dispose();draw();
 }
 function buildMesh(){
-  if(mesh){scene.remove(mesh);mesh.geometry.dispose();mesh.material.dispose();}
-  if(lake){scene.remove(lake);lake.geometry.dispose();lake.material.dispose();}
-  const {n,height,size}=terrain;
-  // Fixed 256²-cell preview mesh. Full maps drive shading and hillshade.
-  const segments=Math.min(n-1,distance>3800?128:256),v=segments+1;
-  const g=new THREE.BufferGeometry(),positions=new Float32Array(v*v*3),colors=new Float32Array(v*v*3),indices=[],source=[];
+  if(mesh){scene.remove(mesh);mesh.geometry.dispose();mesh.material.map?.dispose();mesh.material.dispose();}
+  if(sea){scene.remove(sea);sea.geometry.dispose();sea.material.dispose();sea=null;}
+  const {n,size}=terrain;
+  // The mesh carries shape only; ?mesh=N overrides the 512-segment default.
+  const segments=Math.min(n-1,Number(query.get('mesh'))||512),v=segments+1;
+  const g=new THREE.BufferGeometry(),positions=new Float32Array(v*v*3),uvs=new Float32Array(v*v*2),indices=new Uint32Array(segments*segments*6);
+  let k=0;
   for(let y=0;y<v;y++)for(let x=0;x<v;x++){
     const sx=Math.round(x*(n-1)/segments),sy=Math.round(y*(n-1)/segments),i=sy*n+sx,j=y*v+x;
-    positions.set([(sx+.5)*size/n-size/2,height[i],(sy+.5)*size/n-size/2],j*3);source.push(i);
-    if(x<segments&&y<segments){indices.push(j,j+v,j+1,j+1,j+v,j+v+1);}
+    positions.set([(sx+.5)*size/n-size/2,light.z[i],(sy+.5)*size/n-size/2],j*3);uvs.set([(sx+.5)/n,(sy+.5)/n],j*2);
+    if(x<segments&&y<segments){indices.set([j,j+v,j+1,j+1,j+v,j+v+1],k);k+=6;}
   }
-  g.setAttribute('position',new THREE.BufferAttribute(positions,3));g.setAttribute('color',new THREE.BufferAttribute(colors,3));g.setIndex(indices);g.computeVertexNormals();
-  mesh=new THREE.Mesh(g,new THREE.MeshStandardMaterial({vertexColors:true,roughness:1}));mesh.userData.source=source;mesh.userData.far=distance>3800;scene.add(mesh);
-  lake=new THREE.Mesh(new THREE.CircleGeometry(42,48),new THREE.MeshStandardMaterial({color:'#397e8a',roughness:.32,metalness:.12}));
-  lake.rotation.x=-Math.PI/2;lake.position.set(-150,26,70);scene.add(lake);recolor();
+  g.setAttribute('position',new THREE.BufferAttribute(positions,3));g.setAttribute('uv',new THREE.BufferAttribute(uvs,2));g.setIndex(new THREE.BufferAttribute(indices,1));
+  mesh=new THREE.Mesh(g,new THREE.MeshBasicMaterial({map:groundTexture($('shading').value)}));scene.add(mesh);
+  if(light.hasSea){
+    // The ground runs on under the sea; a translucent sheet at sea level shows the shallows.
+    sea=new THREE.Mesh(new THREE.PlaneGeometry(60000,60000),new THREE.MeshBasicMaterial({color:new THREE.Color(.16,.40,.55).convertSRGBToLinear(),transparent:true,opacity:.86}));
+    sea.rotation.x=-Math.PI/2;scene.add(sea);
+  }
+  draw();
 }
 function hillshade(){
   if(!terrain)return;
-  const canvas=$('map'),ctx=canvas.getContext('2d'),w=canvas.width,img=ctx.createImageData(w,w),{n}=terrain;
+  const canvas=$('map'),ctx=canvas.getContext('2d'),w=canvas.width,img=ctx.createImageData(w,w),{n,size}=terrain,k=Math.max(1,Math.round(n/w));
+  const drainage=$('drainage').checked;
   for(let y=0;y<w;y++)for(let x=0;x<w;x++){
-    const sx=Math.min(n-1,Math.floor(x*n/w)),sy=Math.min(n-1,Math.floor(y*n/w)),i=sy*n+sx,{gx,gy}=sample(i);
-    const light=Math.max(0,(-gx*-.58+1*.70-gy*.41)/Math.sqrt(1+gx*gx+gy*gy));
-    let c=blend([.26,.34,.26],[.9,.89,.74],.22+.78*light);
-    if(terrain.height[i]<26)c=[.22,.48,.55];
-    if($('drainage').checked){
-      // Preserve narrow channels when downsampling, rather than missing every other pixel.
-      let f=0;const step=Math.max(1,Math.ceil(n/w));
-      for(let dy=0;dy<step;dy++)for(let dx=0;dx<step;dx++)f=Math.max(f,terrain.flow[Math.min(n-1,sy+dy)*n+Math.min(n-1,sx+dx)]);
-      if(f*terrain.size*terrain.size>=8000)c=[.04,.34,.55];
+    const sx=Math.min(n-1,Math.floor(x*n/w)),sy=Math.min(n-1,Math.floor(y*n/w));
+    let r=0,g=0,b=0,f=0,wet=0,count=0;
+    for(let dy=0;dy<k;dy++)for(let dx=0;dx<k;dx++){
+      const i=Math.min(n-1,sy+dy)*n+Math.min(n-1,sx+dx),c=shade(i,light.water[i]===2?[.42,.60,.72]:light.water[i]===1?[.30,.52,.66]:[.80,.79,.73]);
+      r+=c[0];g+=c[1];b+=c[2];count++;if(light.water[i])wet++;else f=Math.max(f,terrain.flow[i]);
     }
-    img.data.set([...c.map(v=>Math.round(v*255)),255],(y*w+x)*4);
+    let c=[r/count,g/count,b/count];
+    // Channels keep their line when downsampled, and are not drawn across standing water.
+    const area=f*size*size;
+    if(drainage&&area>=CHANNEL_M2&&wet<count)c=mix(c,[.02,.24,.60],.62+.3*step(8e3,3e5,area));
+    img.data.set([toByte(c[0]),toByte(c[1]),toByte(c[2]),255],(y*w+x)*4);
   }
   ctx.putImageData(img,0,0);
 }
@@ -91,37 +174,48 @@ function failure(message){busy=false;$('generate').disabled=false;document.body.
 worker.onerror=event=>failure(event.message||'The terrain worker could not start.');
 worker.onmessage=({data})=>{
   if(data.type==='error'){failure(data.message);return;}
-  if(data.type==='progress'){$('status').textContent=stages[data.stage];$('progress').value=Math.min(100,(data.stage+data.done/data.total)*25);return;}
+  if(data.type==='progress'){
+    // Stage 0 is every level's base and stream-power pass: most of the work.
+    const from=[0,45,85,92,100][data.stage],to=[45,85,92,100,100][data.stage];
+    $('status').textContent=stages[data.stage];$('progress').value=from+(to-from)*data.done/data.total;return;
+  }
   if(data.type==='terrain'){
-    terrain=data;buildMesh();hillshade();busy=false;$('generate').disabled=false;$('progress').value=100;
+    terrain=data;light=bakeLight(terrain);buildMesh();hillshade();busy=false;$('generate').disabled=false;$('progress').value=100;
+    const km=(data.size/1000).toLocaleString('en-US',{maximumFractionDigits:1});
     $('status').textContent=`${data.base?'Base only':'Eroded'} · generated in ${data.seconds.toFixed(2)} s in a Web Worker`;
-    $('summary').textContent=`Seed ${data.seed} · ${data.n} × ${data.n} · 2 km · generator v${data.version}`;$('hash').textContent=data.hash;
-    window.terrainResult={seed:data.seed,n:data.n,hash:data.hash,seconds:data.seconds,base:data.base};readyResolve(window.terrainResult);
+    $('summary').textContent=`Seed ${data.seed} · ${data.n} × ${data.n} · ${km} km · generator v${data.version}`;$('hash').textContent=data.hash;
+    $('map-title').textContent=`Hillshade · ${km} km square`;
+    window.terrainResult={seed:data.seed,n:data.n,hash:data.hash,seconds:data.seconds,base:data.base,version:data.version,size:data.size};readyResolve(window.terrainResult);
     window.dispatchEvent(new CustomEvent('terrain-ready',{detail:window.terrainResult}));
   }
 };
-for(const id of ['warp','ridge','droplets','erosion','thermal'])$(id).addEventListener('input',()=>{$(`${id}-value`).value=Number($(id).value).toLocaleString('en-US')+(id==='warp'?' m':'');});
+const unit={warp:' m'};
+for(const id of ['warp','ridge','stream','droplets','erosion','thermal'])$(id).addEventListener('input',()=>{$(`${id}-value`).value=Number($(id).value).toLocaleString('en-US')+(unit[id]||'');});
 $('controls').addEventListener('submit',event=>{
   event.preventDefault();if(busy||!$('controls').reportValidity())return;
   busy=true;document.body.dataset.error='false';$('generate').disabled=true;$('status').textContent='A world is taking shape…';$('progress').value=0;
-  worker.postMessage({seed:Number($('seed').value),n:Number($('resolution').value),base:$('base').checked,
-    warp:Number($('warp').value),ridge:Number($('ridge').value),droplets:Number($('droplets').value),erosion:Number($('erosion').value),thermal:Number($('thermal').value)});
+  worker.postMessage({engine:query.get('engine')==='v1'?'v1':'current',seed:Number($('seed').value),n:Number($('resolution').value),base:$('base').checked,
+    warp:Number($('warp').value),ridge:Number($('ridge').value),stream:Number($('stream').value),droplets:Number($('droplets').value),erosion:Number($('erosion').value),thermal:Number($('thermal').value)});
 });
 $('shading').addEventListener('change',recolor);$('drainage').addEventListener('change',hillshade);$('reset').addEventListener('click',cameraReset);
+$('view').addEventListener('change',()=>{view=$('view').value;cameraReset();});
 let drag;
 $('scene').addEventListener('pointerdown',e=>{drag=[e.clientX,e.clientY];$('scene').setPointerCapture(e.pointerId);});
 $('scene').addEventListener('pointerup',()=>{drag=null;});$('scene').addEventListener('pointercancel',()=>{drag=null;});
-$('scene').addEventListener('pointermove',e=>{if(!drag)return;yaw-=(e.clientX-drag[0])*.005;pitch=Math.max(.15,Math.min(1.5,pitch+(e.clientY-drag[1])*.005));drag=[e.clientX,e.clientY];draw();});
-function zoom(factor){distance=Math.max(750,Math.min(5800,distance*factor));if(mesh&&mesh.userData.far!==(distance>3800))buildMesh();draw();}
+const pitchLimit=()=>view==='valley'?[-.3,1.2]:[.08,1.5];
+function turn(dy,dp){yaw+=dy;const [lo,hi]=pitchLimit();pitch=Math.max(lo,Math.min(hi,pitch+dp));}
+$('scene').addEventListener('pointermove',e=>{if(!drag)return;const s=view==='valley'?-.003:.005;turn(-(e.clientX-drag[0])*s,(e.clientY-drag[1])*s);drag=[e.clientX,e.clientY];draw();});
+function zoom(factor){distance=Math.max(.3,Math.min(2.6,distance*factor));draw();}
 $('scene').addEventListener('wheel',e=>{e.preventDefault();zoom(Math.exp(e.deltaY*.001));},{passive:false});
 $('scene').addEventListener('keydown',e=>{
   if(!['ArrowLeft','ArrowRight','ArrowUp','ArrowDown','+','=','-'].includes(e.key))return;e.preventDefault();
-  if(e.key==='ArrowLeft')yaw-=.08;if(e.key==='ArrowRight')yaw+=.08;
-  if(e.key==='ArrowUp')pitch=Math.min(1.5,pitch+.06);if(e.key==='ArrowDown')pitch=Math.max(.15,pitch-.06);
+  if(e.key==='ArrowLeft')turn(-.08,0);if(e.key==='ArrowRight')turn(.08,0);
+  if(e.key==='ArrowUp')turn(0,.06);if(e.key==='ArrowDown')turn(0,-.06);
   if(e.key==='+'||e.key==='=')zoom(.9);if(e.key==='-')zoom(1.1);draw();
 });
 window.addEventListener('pagehide',()=>{worker.terminate();renderer.dispose();},{once:true});
 // Query parameters are also the capture interface: no second terrain implementation.
-const query=new URLSearchParams(location.search);
+// seed, n, base=1, view=valley, map=<pixels>, mesh=<segments>, engine=v1 (phase-A module, if built).
 if(query.has('seed'))$('seed').value=query.get('seed');if(query.has('n'))$('resolution').value=query.get('n');
-$('base').checked=query.get('base')==='1';draw();$('controls').requestSubmit();
+if(query.has('map')){const px=Math.max(64,Math.min(2048,Number(query.get('map'))||512));$('map').width=px;$('map').height=px;}
+$('base').checked=query.get('base')==='1';cameraReset();$('controls').requestSubmit();

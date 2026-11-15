@@ -148,7 +148,7 @@ $(BUILD)/terrain_test: tests/test_terrain.c $(HDRS) $(BUILD)/libcpore.a
 terrain-test: $(BUILD)/terrain_test $(BUILD)/terrain_cli
 	nice -n 10 ./$(BUILD)/terrain_test --heavy
 
-TERRAIN_EXPORTS := '[_ct_config,_ct_generate,_ct_map,_ct_hash,_ct_version]'
+TERRAIN_EXPORTS := '[_ct_config,_ct_generate,_ct_map,_ct_hash,_ct_version,_ct_size]'
 wasm: $(BUILD)/wasm/cpore_terrain.mjs $(BUILD)/wasm/cpore_terrain.wasm
 $(BUILD)/wasm/cpore_terrain.mjs $(BUILD)/wasm/cpore_terrain.wasm &: $(TERRAIN_SRC) apps/terrain_wasm_api.c $(HDRS) Makefile
 	@mkdir -p $(dir $@)

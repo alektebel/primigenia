@@ -1,8 +1,5 @@
-File '/home/diego/Desarrollo/cpore-wt/w11-terrain/core/src/terrain.c'
-Lines executed:100.00% of 499
-Branches executed:99.43% of 350
-Taken at least once:92.29% of 350
-Calls executed:100.00% of 115
-Creating 'terrain.c.gcov'
-
-Lines executed:100.00% of 499
+File '../../../core/src/terrain.c'
+Líneas ejecutadas:100.00% de 755
+Ramificaciones ejecutadas:99.59% de 482
+Se visitaron al menos una vez:93.36% de 482
+Llamadas ejecutadas:100.00% de 202
