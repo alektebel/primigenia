@@ -1,7 +1,7 @@
 /* Input acceptance and planted-foot measurement. Render only evidence frames. */
 const {chromium}=require('playwright');
 const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path');
-const out=path.resolve('docs/evidence/stage/polish');fs.mkdirSync(out,{recursive:true});
+const out=path.resolve(process.env.CPORE_STAGE_POLISH_EVIDENCE||'docs/evidence/stage/polish');fs.mkdirSync(out,{recursive:true});
 (async()=>{
  const browser=await chromium.launch({headless:true,executablePath:process.env.HOME+'/.cache/ms-playwright/chromium-1254/chrome-linux64/chrome',args:['--use-angle=swiftshader','--enable-unsafe-swiftshader']});
  try{
@@ -67,7 +67,7 @@ const out=path.resolve('docs/evidence/stage/polish');fs.mkdirSync(out,{recursive
   });
   assert(feet.samples>100&&feet.contacts>0);assert(feet.maxStanceDisplacement<.03,JSON.stringify(feet));assert.equal(feet.phaseAtStop,feet.phaseAfterStationary,'phase follows displacement, not time');
   // Six rendered frames of actual free-roam curved movement on the real valley.
-  await page.evaluate(()=>{const s=Stage.simulation;s.encounter=null;s.enemy.dead=true;s.outcome=null;s.respawn=0;s.destination=null;s.pendingAttack=null;Object.assign(s.player,s.nest,{speed:0,yaw:0,hp:s.profile.hp});s.previous=[{...s.player},{...s.enemy}];Stage.setTimeline(t=>({move:[Math.sin(t*.6),Math.cos(t*.6)]}))});
+  await page.evaluate(()=>{const s=Stage.simulation;s.destination=null;s.pendingAttack=null;s.world.reset({...s.world.setup,wild:[{...s.world.setup.wild[0],x:150,z:150,home:{x:150,z:150}}]});s.encounter=null;s.sync();s.previous=[{...s.player},{...s.enemy}];Stage.setTimeline(t=>({move:[Math.sin(t*.6),Math.cos(t*.6)]}))});
   const curve=[];
   for(let i=0;i<6;i++){await page.evaluate(()=>{for(let f=0;f<12;f++){Stage.frame(1/30);Stage.pose(1/30)}Stage.draw(0)});curve.push(await page.evaluate(()=>({...Stage.simulation.player})));await page.screenshot({path:path.join(out,`curve-${i+1}.png`),timeout:90000})}
   assert.deepEqual(errors,[]);

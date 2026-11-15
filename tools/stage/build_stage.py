@@ -25,6 +25,17 @@ h = patch(h, '<script>\n(()=>{\nconst T=THREE', '''<link rel="stylesheet" href="
 <script>
 (()=>{
 const T=THREE''')
+# The stage mesh samples the C analytic source. The reviewed hero is untouched.
+h = patch(h, '<script>\n(()=>{\nconst T=THREE', """<script type="module">
+import {World} from '../engine/cpworld.js';
+const stageWorld=await World.create();
+stageWorld.reset({seed:42});
+window.__stageWorld=stageWorld;
+(()=>{
+const T=THREE""")
+start=h.index('function height(x,z){')
+end=h.index('\nconst walkable=',start)
+h=h[:start]+'function height(x,z){return stageWorld.height(x,z)}'+h[end:]
 h = patch(h, 'vistaTrees:[...broad,...conif]', 'vistaTrees:[...broad,...conif],obstacles:[...broad.map(o=>({...o,r:o.s*.75})),...conif.map(o=>({...o,r:o.s*.6})),...rocks.map(o=>({...o,r:o.s}))]')
 # Preserve the landscape and terrain code, bypass the reference game's simulation,
 # camera, keyboard handlers and HUD. Stage owns the display and input clocks.

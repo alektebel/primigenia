@@ -71,7 +71,10 @@ const enemyTiers=JSON.parse(fs.readFileSync('web/stage/species/garfio-combat.jso
      assert(final.player.hp<expected.expected.hp,fixture+' player damaged');assert(final.enemy.hp<enemyMax,fixture+' enemy damaged');
      const replay=final.completed.at(-1),file=path.join(out,fixture.replace('.json',`-${fps}.log`));fs.writeFileSync(file,replay.log);
      const hashes=execFileSync('build/combat_parity',['--replay',file],{encoding:'utf8'}).trim().split('\n');assert.equal(hashes.at(-1),replay.hash,fixture+' native final hash');
-     assert.deepEqual(errors,[]);runs.push(replay);
+     const worldReplay=await page.evaluate(()=>({log:Stage.simulation.exportLog(),hashes:Stage.simulation.hashes}));
+     const worldFile=path.join(out,fixture.replace('.json',`-${fps}-world.log`));fs.writeFileSync(worldFile,worldReplay.log);
+     assert.deepEqual(execFileSync('build/world_cli',['--replay',worldFile],{encoding:'utf8',maxBuffer:2e6}).trim().split('\n'),worldReplay.hashes,'recorded browser world replays natively every tick');
+     assert.deepEqual(errors,[]);runs.push({...replay,worldLog:worldReplay.log,worldHash:worldReplay.hashes.at(-1)});
      results.push({fixture,fps,outcome:final.outcome,ticks:final.ticks,hp:[final.player.hp,final.enemy.hp],finalHash:replay.hash,nativeReplay:true,errors});
      console.log(`PASS ${fixture} ${fps} FPS: ${final.outcome}, HP ${final.player.hp.toFixed(1)}/${final.enemy.hp.toFixed(1)}, native ${replay.hash}`);
     }finally{await context.close()}

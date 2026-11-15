@@ -1,6 +1,7 @@
 /* The existing combat ABI views the encounter owned by CpStageWorld. */
 #include "wasm_api.c"
 #include "cpore/world.h"
+#include <string.h>
 static CpStageWorld stage;
 static CpStageSetup stage_setup;
 static float metadata[24],entities[(CP_STAGE_MAX_WILD+1)*18];

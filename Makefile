@@ -35,7 +35,7 @@ $(BUILD)/cpore_bench: apps/bench.c $(HDRS) $(BUILD)/libcpore.a
 # Combat (P2): bots and the duel runner live in apps/ and are shared by the tests and the tourney.
 $(BUILD)/apps/combat_bots.o: apps/combat_bots.c apps/combat_bots.h $(HDRS)
 	@mkdir -p $(dir $@)
-	$(CC) $(CFLAGS) -Iapps -c $< -o $@
+	$(CC) $(CFLAGS) -fPIC -Iapps -c $< -o $@
 $(BUILD)/combat_test: tests/test_combat.c core/src/combat.c apps/combat_bots.h $(BUILD)/apps/combat_bots.o $(HDRS) $(BUILD)/libcpore.a
 	$(CC) $(CFLAGS) -DCP_COMBAT_TEST -Iapps $< core/src/combat.c $(BUILD)/apps/combat_bots.o $(BUILD)/libcpore.a -o $@ $(LDLIBS)
 $(BUILD)/combat_tourney: apps/combat_tourney.c apps/combat_bots.h $(BUILD)/apps/combat_bots.o $(HDRS) $(BUILD)/libcpore.a
@@ -175,3 +175,10 @@ wasm: $(BUILD)/wasm/cpore_world.mjs $(BUILD)/wasm/cpore_world.wasm
 $(BUILD)/wasm/cpore_world.mjs $(BUILD)/wasm/cpore_world.wasm &: $(WORLD_SRC) apps/world_wasm_api.c apps/wasm_api.c apps/combat_bots.h $(HDRS) Makefile
 	@mkdir -p $(dir $@)
 	$(EMCC_RUN) $(WASM_FLAGS) $(WORLD_SRC) apps/world_wasm_api.c --no-entry -sMODULARIZE=1 -sEXPORT_ES6=1 -sENVIRONMENT=web,node -sEXPORTED_FUNCTIONS=$(WORLD_EXPORTS) -sEXPORTED_RUNTIME_METHODS=HEAP8,HEAPU8,HEAPU32,UTF8ToString -o $(BUILD)/wasm/cpore_world.mjs
+$(BUILD)/world_cli: apps/world_cli.c $(HDRS) $(BUILD)/libcpore.a
+	$(CC) $(CFLAGS) $< $(BUILD)/libcpore.a -o $@ $(LDLIBS)
+world-test: $(BUILD)/world_test $(BUILD)/world_cli wasm
+	nice -n 10 ./$(BUILD)/world_test
+	nice -n 10 node tests/test_wasm_world.mjs
+wasm-test: world-test
+stage-test: $(BUILD)/world_cli

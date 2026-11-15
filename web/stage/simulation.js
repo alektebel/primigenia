@@ -1,133 +1,50 @@
-import {Encounter} from '../engine/encounter.js';
-
-export const STEP = .1;
-const distance=(a,b)=>Math.hypot(a.x-b.x,a.z-b.z);
+import {Encounter,heading} from '../engine/encounter.js';
+import {WORLD_VERB as V} from '../engine/cpworld.js';
+export const STEP=.1;
 const copy=p=>({...p});
-
-// P3 roaming is JS. Every fight order and state transition remains in C/WASM.
-// Both roaming and encounters sample a single time-indexed input at 10 Hz;
-// display frames only consume the accumulator and interpolate snapshots.
+/* Display adapter: all state transitions happen in cw_step, once per 100 ms. */
 export class StageSimulation {
-  constructor({combat,profile,enemyProfile,nest,home,groundY,obstacles=[],seed=42,onTick=()=>{}}) {
-    Object.assign(this,{combat,profile,enemyProfile,nest:copy(nest),home:copy(home),groundY,obstacles,seed:seed>>>0,onTick});
-    this.player={...nest,yaw:0,hp:profile.hp,stamina:profile.stamina,speed:0};
-    this.enemy={...home,yaw:Math.PI,hp:enemyProfile.hp,stamina:enemyProfile.stamina,speed:0,dead:false};
-    this.previous=[copy(this.player),copy(this.enemy)];
-    this.accumulator=0;this.ticks=0;this.started=0;this.paused=false;
-    this.encounter=null;this.lastEncounter=null;this.outcome=null;this.respawn=0;this.cooldown=0;this.returning=false;
-    this.hits=[];this.completed=[];this.destination=null;this.pendingAttack=null;this.events=[];
+ constructor({world,profile,enemyProfile,nest,home,obstacles=[],seed=42,terrain=0,water,flatHeight=2,onTick=()=>{}}){
+  if(!world)throw Error('StageSimulation requires a C World');
+  Object.assign(this,{world,combat:world.combat,profile,enemyProfile,nest:copy(nest),home:copy(home),seed:seed>>>0,onTick});
+  world.reset({seed:this.seed,terrain,profile,nest,flatHeight,water,obstacles,wild:[{...home,home,species:3,bot:2,profile:enemyProfile}]});
+  this.accumulator=0;this.paused=false;this.encounter=null;this.lastEncounter=null;this.completed=[];this.hits=[];this.events=[];this.log=[];this.hashes=[];
+  this.destination=null;this.pendingAttack=null;this.sync();this.previous=[copy(this.player),copy(this.enemy)];
+ }
+ get alpha(){return this.accumulator/STEP}
+ sync(){const s=this.world.snapshot();this.state=s;this.player=s.entities[0];this.enemy=s.entities[1];Object.assign(this,{ticks:s.tick,clock:s.clock,started:s.started,outcome:s.outcome,respawn:s.respawn,cooldown:s.cooldown,returning:this.enemy.returning});}
+ action(intent){
+  const vector=heading(intent.move??[0,0]);
+  if(vector){this.destination=null;this.pendingAttack=null;}
+  if(intent.attack!==undefined&&intent.attack!==null&&!this.enemy.dead){this.pendingAttack=intent.attack;this.destination=null;}
+  if(intent.flee)return {verb:V.FLEE};
+  if(intent.dodge!==undefined&&intent.dodge!==false)return {verb:V.DODGE,dir:intent.dodge===true?0:intent.dodge};
+  if(intent.guard)return {verb:V.GUARD};
+  if(this.pendingAttack!==null)return {verb:V.ATTACK,target:1,move:this.pendingAttack};
+  if(vector)return {verb:V.HEADING,hx:vector.hx,hz:vector.hy,sprint:!!intent.sprint};
+  if(this.destination)return {verb:V.GO,...this.destination,sprint:!!intent.sprint};
+  return {verb:V.WAIT};
+ }
+ beginEncounter(){
+  // Encounter is used solely as a snapshot/log container; C already reset it.
+  const e=Object.create(Encounter.prototype);Object.assign(e,{combat:this.combat,point:this.state.point,player:0,enemy:1,accumulator:0,log:[],hashes:[],lastOrderError:0});
+  const states=this.combat.states();e.setup={seed:this.seed,flat:true,creatures:states.map((c,i)=>({profile:{...(i?this.enemyProfile:this.profile),hp:c.hp,stamina:c.stamina},x:c.x,y:c.y,fx:c.fx,fy:c.fy,team:i}))};e.current=states;e.previous=structuredClone(states);this.encounter=e;this.hits=[];
+ }
+ tick(intent={}){
+  this.previous=[copy(this.player),copy(this.enemy)];const old=this.state,action=this.action(intent),result=this.world.step(action);this.log.push({tick:this.ticks,...action});this.hashes.push(result.hash);this.sync();
+  if(this.destination&&this.state.order.verb!==V.GO)this.destination=null;
+  if(this.started>old.started)this.beginEncounter();
+  const e=this.encounter;
+  this.events=this.combat.events();
+  if(e&&this.combat.tick>e.hashes.length){
+   e.previous=e.current;e.current=this.combat.states();e.hashes.push(this.combat.hash());this.world.orders().forEach((a,i)=>{if(this.state.accepted[i])e.log.push(a)});
+   e.current.forEach((c,i)=>{const target=i?this.enemy:this.player;Object.assign(target,{phase:c.phase,move:c.move,ptick:c.ptick,plen:c.plen});const damage=this.previous[i].hp-c.hp;if(damage>0)this.hits.push({id:i,amount:damage,time:this.ticks*STEP,x:target.x,z:target.z});});
   }
-  get alpha(){return this.accumulator/STEP}
-  canWalk(from,to,radius=.7){
-    if(Math.max(Math.abs(to.x),Math.abs(to.z))>195)return false;
-    // Water is at y=0 in the valley. Ground deeper than 0.7 m is inaccessible.
-    if(this.groundY(to.x,to.z)<-.7)return false;
-    const rise=Math.abs(this.groundY(to.x,to.z)-this.groundY(from.x,from.z));
-    if(rise>distance(from,to)*1.2+.04)return false;
-    return !this.obstacles.some(o=>distance(o,to)<o.r+radius);
-  }
-  walk(entity,vector,speed){
-    const length=Math.hypot(...vector),oldSpeed=entity.speed||0;
-    let desired=length?Math.atan2(vector[0],vector[1]):entity.yaw;
-    let turn=Math.atan2(Math.sin(desired-entity.yaw),Math.cos(desired-entity.yaw));
-    if(Math.abs(turn)>Math.PI*2/3)entity.pivot=true;
-    if(entity.pivot&&Math.abs(turn)<.2)entity.pivot=false;
-    const limit=(entity.pivot?9:3.8)*STEP;
-    entity.yaw+=Math.max(-limit,Math.min(limit,turn));
-    const wanted=entity.pivot?0:speed*Math.min(1,length);
-    // Exponential ease for acceleration, stronger braking near a destination.
-    let velocity=oldSpeed+(wanted-oldSpeed)*(1-Math.exp(-(wanted>oldSpeed?6:10)*STEP));
-    if(velocity<.015)velocity=0;
-    const dx=Math.sin(entity.yaw),dz=Math.cos(entity.yaw);
-    const slope=Math.abs(this.groundY(entity.x+dx,entity.z+dz)-this.groundY(entity.x,entity.z));
-    const step=velocity*STEP/(1+slope*.65),from=copy(entity),to={x:entity.x+dx*step,z:entity.z+dz*step};
-    if(this.canWalk(from,to))Object.assign(entity,to);
-    else for(const axis of ['x','z']){const slide={x:entity.x,z:entity.z,[axis]:to[axis]};if(this.canWalk(entity,slide))Object.assign(entity,slide)}
-    entity.speed=distance(from,entity)/STEP;
-    entity.acceleration=(entity.speed-oldSpeed)/STEP;
-    entity.turnRate=Math.max(-limit,Math.min(limit,turn))/STEP;
-  }
-
-  startEncounter(){
-    const point={x:(this.player.x+this.enemy.x)/2,z:(this.player.z+this.enemy.z)/2};
-    const spawn=(entity,profile,team,foe)=>({profile:{...profile,hp:entity.hp,stamina:entity.stamina},
-      x:entity.x-point.x+20,y:entity.z-point.z+20,fx:foe.x-entity.x,fy:foe.z-entity.z,team});
-    this.encounter=new Encounter(this.combat,{point,enemyBot:2,setup:{seed:this.seed,flat:true,creatures:[
-      spawn(this.player,this.profile,0,this.enemy),spawn(this.enemy,this.enemyProfile,1,this.player)]}});
-    this.started++;this.outcome=null;this.hits=[];
-  }
-  finish(outcome){
-    this.pendingAttack=null;this.destination=null;this.outcome=outcome;this.lastEncounter=this.encounter;
-    this.completed.push({outcome,log:this.encounter.exportLog(),hash:this.encounter.hashes.at(-1)});
-    this.encounter=null;this.cooldown=8;this.player.speed=0;this.enemy.speed=0;
-    if(outcome==='victory'){this.enemy.dead=true;this.enemy.speed=0}
-    else {this.returning=true;if(outcome==='death')this.respawn=2}
-  }
-  fight(intent){
-    const encounter=this.encounter;
-    // Sprint uses C's stamina-paying flee verb while near the opponent.
-    // Once separated, directional walking carries the player over the boundary.
-    const sprint=intent.sprint&&Math.hypot(...(intent.move||[0,0]))>0&&distance(this.player,this.enemy)<15.2;
-    encounter.advance(STEP,sprint?{flee:true}:intent);
-    this.events=this.combat.events();
-    encounter.current.forEach((c,i)=>{
-      const target=i?this.enemy:this.player,old=copy(target),p=encounter.toValley(c);
-      Object.assign(target,p,{hp:c.hp,stamina:c.stamina,yaw:Math.atan2(c.fx,c.fy),phase:c.phase,move:c.move,ptick:c.ptick,plen:c.plen});
-      target.speed=distance(target,old)/STEP;
-      target.acceleration=(target.speed-old.speed)/STEP;
-      target.turnRate=Math.atan2(Math.sin(target.yaw-old.yaw),Math.cos(target.yaw-old.yaw))/STEP;
-      const damage=old.hp-c.hp;if(damage>0)this.hits.push({id:i,amount:damage,time:this.ticks*STEP,x:p.x,z:p.z});
-    });
-    if(!encounter.current[0].alive)this.finish('death');
-    else if(!encounter.current[1].alive)this.finish('victory');
-    else {
-      const p=encounter.current[0];
-      const radius=this.profile.radiusCm?this.profile.radiusCm/100:0.6;
-      if(Math.min(p.x,p.y,40-p.x,40-p.y)<radius+0.25&&distance(this.player,this.enemy)>8)this.finish('fled');
-    }
-  }
-  tick(intent){
-    this.previous=[copy(this.player),copy(this.enemy)];
-    this.events=[];
-    const manual=Math.hypot(...(intent.move||[0,0]))>0;
-    if(manual){this.destination=null;this.pendingAttack=null}
-    if(intent.attack!==undefined&&intent.attack!==null&&!this.enemy.dead){this.pendingAttack=intent.attack;this.destination=null}
-    if(this.pendingAttack!==null)intent={...intent,attack:this.pendingAttack};
-    if(this.encounter){
-      if(this.destination&&!manual){const d=distance(this.player,this.destination);if(d<.3)this.destination=null;
-        intent={...intent,move:this.destination?[this.destination.x-this.player.x,this.destination.z-this.player.z]:[0,0]}}
-      this.fight(intent);
-    }
-    else if(this.respawn>0){
-      this.respawn=Math.max(0,this.respawn-STEP);
-      if(this.respawn<1e-8){Object.assign(this.player,this.nest,{hp:this.profile.hp,stamina:this.profile.stamina,speed:0});this.respawn=0}
-    }else{
-      let vector=intent.move||[0,0],remaining=Infinity;
-      const target=this.pendingAttack!==null?this.enemy:this.destination;
-      if(target){
-        remaining=distance(this.player,target);
-        if(remaining<.16){this.destination=null;vector=[0,0]}
-        else vector=[target.x-this.player.x,target.z-this.player.z];
-      }
-      const moving=Math.hypot(...vector)>0,sprint=intent.sprint&&moving&&this.player.stamina>2;
-      const speed=Math.min(this.profile.speed*(sprint?1.7:1),Math.sqrt(Math.max(0,remaining-.08)*12));
-      this.walk(this.player,vector,speed);
-      this.player.stamina=Math.max(0,Math.min(this.profile.stamina,this.player.stamina+(sprint?-14:10)*STEP));
-      this.cooldown=Math.max(0,this.cooldown-STEP);
-      if(!this.enemy.dead){
-        const target=this.returning?this.home:distance(this.enemy,this.player)<15&&this.cooldown<=0?this.player:
-          {x:this.home.x+Math.sin(this.ticks*.025)*3,z:this.home.z+Math.cos(this.ticks*.025)*2};
-        this.walk(this.enemy,[target.x-this.enemy.x,target.z-this.enemy.z],distance(target,this.enemy)>.4?2.8:0);
-        if(this.returning&&distance(this.enemy,this.home)<.6)this.returning=false;
-        if(!this.returning&&this.cooldown<=0&&distance(this.player,this.enemy)<5.5)this.startEncounter();
-      }
-    }
-    this.ticks++;this.onTick(this);
-  }
-  advance(delta,sample=()=>({})){
-    if(!Number.isFinite(delta)||delta<0)throw new RangeError('stage delta');
-    if(this.paused)return;
-    this.accumulator+=delta;
-    while(this.accumulator+1e-9>=STEP){this.tick(sample(this.ticks*STEP,this.ticks)||{});this.accumulator=Math.max(0,this.accumulator-STEP)}
-  }
+  if(e&&this.state.active<0){this.lastEncounter=e;this.completed.push({outcome:this.outcome,log:e.exportLog(),hash:e.hashes.at(-1)});this.encounter=null;this.destination=null;this.pendingAttack=null;}
+  this.onTick(this);
+ }
+ advance(delta,sample=()=>({})){if(!Number.isFinite(delta)||delta<0)throw RangeError('stage delta');if(this.paused)return;this.accumulator+=delta;
+  while(this.accumulator+1e-9>=STEP){this.tick(sample(this.ticks*STEP,this.ticks)||{});this.accumulator=Math.max(0,this.accumulator-STEP)}
+ }
+ exportLog(){const lines=[this.world.exportSetup().trimEnd(),String(this.ticks)];for(const a of this.log)lines.push([a.verb??0,a.target??0,a.move??0,a.dir??0,a.sprint?1:0,a.hx??0,a.hz??0,Math.fround(a.x??0),Math.fround(a.z??0)].join(' '));return lines.join('\n')+'\n';}
 }

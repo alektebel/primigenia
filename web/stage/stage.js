@@ -1,5 +1,5 @@
 import {createCreatureRig} from '../creature/rig.js';
-import {Combat,MOVE} from '../engine/cpcombat.js';
+import {MOVE} from '../engine/cpcombat.js';
 import {profileFromStudio} from '../engine/profile.js';
 import {StageSimulation} from './simulation.js';
 import {pointerControls} from './pointer.js';
@@ -157,9 +157,10 @@ async function boot(){
  env=window.__stageEnvironment;
  if(!env){await new Promise(resolve=>addEventListener('load',resolve,{once:true}));env=window.__stageEnvironment}
  if(!env)throw Error('Valley environment unavailable');
+ env.groundY=(x,z)=>window.__stageWorld.ground(x,z);
  const {T,scene,SUN,W,groundY,obstacles}=env;
  W.p.vis.root.visible=false;for(const npc of W.npcs){npc.vis.root.visible=false;npc.mark.g.visible=false}
- const [partTable,partManifest,combat,enemyTiers]=await Promise.all([json('../studio/parts.json'),json('../studio/parts/manifest.json'),Combat.create(),json('species/garfio-combat.json')]);
+ const [partTable,partManifest,enemyTiers]=await Promise.all([json('../studio/parts.json'),json('../studio/parts/manifest.json'),json('species/garfio-combat.json')]);
  rigs=[];for(let i=0;i<2;i++)rigs.push(await createCreatureRig({T,scene,SUN,partTable,partManifest}));
  if(rigs.some(r=>r.assetFailures.length))throw Error('Creature parts could not be loaded');
  const types=Object.fromEntries(partTable.parts.map(p=>[p.id,p]));let creature=rigs[0].SEEDS.Merodeador;
@@ -178,8 +179,8 @@ async function boot(){
  if(!home)throw Error('No dry creature route near the nest');
  // This wild species fights with its horn and tail. Its author-defined tiers
  // and HP are separate from the studio document; body radius still follows it.
- sim=new StageSimulation({combat,profile:profileFromStudio(creature,partTable),enemyProfile:{...profileFromStudio(rigs[1].G,partTable),...enemyTiers},nest,home,groundY,obstacles});
- yaw=Math.atan2(nest.x-home.x,nest.z-home.z);sim.player.yaw=yaw+Math.PI;
+ sim=new StageSimulation({world:window.__stageWorld,profile:profileFromStudio(creature,partTable),enemyProfile:{...profileFromStudio(rigs[1].G,partTable),...enemyTiers},nest,home,groundY,obstacles});
+ yaw=Math.atan2(nest.x-home.x,nest.z-home.z);
  audio=new StageAudio();sim.onTick=s=>audio.tick(s);controls();audio.bindMenu($);lightEnvironment();marker=makeGroundMesh('#e9cf87',.9);selection=makeGroundMesh('#f5c86d',.9);arena=makeGroundMesh('#efd49c',.42);cone=makeGroundMesh('#ee9b51',.36);
  $('creature-name').textContent=creature.name;message('Your nest is behind you. Something is moving in the meadow.');
  window.Stage={ready:true,simulation:sim,rigs,env,

@@ -208,7 +208,11 @@ SporeBench.state()   // verdad terreno</pre>
 <script src="../studio/genome.js"></script>
 <script>window.__heroBuild=env=>window.__stageEnvironment=env;</script>
 <script type="module" src="stage.js"></script>
-<script>
+<script type="module">
+import {World} from '../engine/cpworld.js';
+const stageWorld=await World.create();
+stageWorld.reset({seed:42});
+window.__stageWorld=stageWorld;
 (()=>{
 const T=THREE,$=id=>document.getElementById(id),HL=window.__heroLight;
 const DT=1/60,S=640,HALF=S/2,BW=768,BH=480;
@@ -224,14 +228,7 @@ function vnoise(x,y){const xi=Math.floor(x),yi=Math.floor(y),xf=x-xi,yf=y-yi,u=x
   return lerp(lerp(h(xi,yi),h(xi+1,yi),u),lerp(h(xi,yi+1),h(xi+1,yi+1),u),v)}
 function fbm(x,y,o){let a=.5,f=1,s=0,n=0;for(let i=0;i<o;i++){s+=a*vnoise(x*f,y*f);n+=a;a*=.5;f*=2.03}return s/n}
 const LAKE=[70,-55];
-function height(x,z){
-  const d=Math.hypot(x,z),r=d/HALF;
-  let h=(fbm(x*.006+10,z*.006+10,4)-.5)*30+4;
-  const c=Math.exp(-d*d/1600)*.8;h=h*(1-c)+3*c;
-  const lx=x-LAKE[0],lz=z-LAKE[1];h-=12*Math.exp(-(lx*lx+lz*lz)/1500);
-  const m=sstep(.42,.9,r),rid=1-Math.abs(fbm(x*.004+50,z*.004+50,5)*2-1);
-  return h+m*(25+rid*rid*150)+m*m*30;
-}
+function height(x,z){return stageWorld.height(x,z)}
 const walkable=(x,z)=>{const h=height(x,z);return h>-.7&&h<32&&Math.hypot(x,z)<HALF*.62};
 function findLand(x,z){for(let r=0;r<90;r+=4)for(let k=0;k<8;k++){const a=k*Math.PI/4,px=x+Math.sin(a)*r,pz=z+Math.cos(a)*r,h=height(px,pz);if(h>1.8&&h<20)return[px,pz]}return[x,z]}
 
