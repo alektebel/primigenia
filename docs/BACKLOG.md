@@ -18,7 +18,6 @@ approves the look, movement, fights and the P4 loop.
 | 5 | Eroded terrain generator in C, v2 shape (island, massifs, stream-power erosion) | W11, W13, W14 | done (3757e28) |
 | 5b | Alpine style (gentle bases, cliff bands, cirques, fans, varied layouts, hummocky floor) | W15 | in progress (codex) |
 | 5c | **Core-loop feel first (G72)**: a lower, closer third-person camera with the horizon visible; fight readability (enemy wind-up, hits, dodges); fix the Firefox "valley could not open" error | G70, G72 | next |
-| 5d | Simulated island genesis: lava-flow volcano construction, crumbling (landslides, flank collapses, caldera), then the v2 erosion (W19) | W19 | after the v2+ round |
 | 6 | Terrain into the valley and stage (phase B): props re-placed, W12 guarantees, LOD far mountains, Worker + IndexedDB cache, pre-baked curated seed, C world height from the generator | W11–W13, G56 | next after 5b |
 | 7 | P2 move-level tourney gates pass (prerequisite for P4) | G55 | in progress (codex) |
 | 8a | P4 foundation: world simulation in C, agent observation and verbs | G56 | done (77ef7f5) |
@@ -47,6 +46,7 @@ Prepared once the MVP is approved, roughly in this order.
 - Sandbox mode, field journal, photo mode for other kinds of players (G38).
 
 ### The world
+- **Simulated island genesis** (W19, future feature): lava-flow volcano construction, crumbling (landslides, flank collapses, caldera), then the v2 erosion; the material map comes from that history.
 - The full island: 2–3 km, five biomes, offshore islets, caves sharing the tunnel network, landmarks including the meteor crater (W1–W5, W10), generated from a seed by the W11 generator with W6 guarantees.
 - Fire simulation and a volcano biome (G52; W2 lists no volcano biome yet, only a landmark: decide when fire is designed).
 - Weather (fog, rain) and seasons with migration (W8); living ecosystem (G11).
