@@ -246,32 +246,17 @@ check:
 	@echo "--- 3/5 make terrain-test (terrain + WASM) ---"
 	@nice -n 10 make terrain-test
 	@echo ""
-	@echo "--- 4/5 make studio-test (studio unit + browser) ---"
+	@echo "--- 4-5/5 make studio-test + make stage-test (browser; one shared server on $(SERVE_PORT)) ---"
 	@mkdir -p $(BUILD)/studio-tests
-	@_port=$$(( $(SERVE_PORT) )); \
-	if _p=$$(python3 -c 'import socket; s=socket.socket(); s.settimeout(0.5); r=s.connect_ex(("127.0.0.1",$$_port)); s.close(); print(r)' 2>/dev/null) && [ "$$_p" = "0" ]; then \
-	  echo "Port $$_port already in use — server not started"; \
-	  _pid=""; \
+	@set -e; _pid=""; \
+	if python3 -c 'import socket,sys; s=socket.socket(); sys.exit(0 if s.connect_ex(("127.0.0.1",$(SERVE_PORT)))==0 else 1)'; then \
+	  echo "Port $(SERVE_PORT) already serving; reusing it"; \
 	else \
-	  python3 -m http.server $$_port --bind 127.0.0.1 >/dev/null 2>&1 & _pid=$$!; \
-	  echo "Started http server on port $$_port (PID $$_pid)"; \
+	  setsid python3 -m http.server $(SERVE_PORT) --bind 127.0.0.1 >$(BUILD)/check-server.log 2>&1 & _pid=$$!; \
+	  for i in $$(seq 50); do python3 -c 'import socket,sys; s=socket.socket(); sys.exit(0 if s.connect_ex(("127.0.0.1",$(SERVE_PORT)))==0 else 1)' && break; sleep 0.2; done; \
+	  echo "Started http server on port $(SERVE_PORT) (PID $$_pid)"; \
 	fi; \
-	nice -n 10 make studio-test; _rc=$$?; \
-	if [ -n "$$_pid" ] && [ "$$_pid" != "" ]; then kill $$_pid 2>/dev/null; wait $$_pid 2>/dev/null; true; fi; \
-	exit $$_rc
-	@echo ""
-	@echo "--- 5/5 make stage-test (stage browser acceptance) ---"
-	@mkdir -p $(BUILD)/studio-tests
-	@_port=$$(( $(SERVE_PORT) )); \
-	if _p=$$(python3 -c 'import socket; s=socket.socket(); s.settimeout(0.5); r=s.connect_ex(("127.0.0.1",$$_port)); s.close(); print(r)' 2>/dev/null) && [ "$$_p" = "0" ]; then \
-	  echo "Port $$_port already in use — server not started"; \
-	  _pid=""; \
-	else \
-	  python3 -m http.server $$_port --bind 127.0.0.1 >/dev/null 2>&1 & _pid=$$!; \
-	  echo "Started http server on port $$_port (PID $$_pid)"; \
-	fi; \
-	nice -n 10 make stage-test; _rc=$$?; \
-	if [ -n "$$_pid" ] && [ "$$_pid" != "" ]; then kill $$_pid 2>/dev/null; wait $$_pid 2>/dev/null; true; fi; \
-	exit $$_rc
-	@echo ""
+	trap '[ -n "$$_pid" ] && kill $$_pid 2>/dev/null || true' EXIT; \
+	nice -n 10 $(MAKE) studio-test; \
+	nice -n 10 $(MAKE) stage-test
 	@echo "=== make check done ==="
