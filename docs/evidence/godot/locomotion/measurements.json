@@ -1,0 +1,803 @@
+{
+  "body_dynamics": {
+    "accel pitch deg": {
+      "biped (forward lean +)": 10.75,
+      "light_quadruped (nose up -)": -8.7
+    },
+    "biped 20% climb": {
+      "pitch_deg": -2.86,
+      "stride_flat_m": 1.172,
+      "stride_uphill_m": 0.888
+    },
+    "biped bank deg at 0.8 rad/s": -9.33,
+    "biped run Fr1.5": {
+      "com_excursion_mm": 51.1,
+      "com_flight_minus_stance_mm": 26.4
+    },
+    "biped walk Fr0.25": {
+      "com_excursion_mm": 31.5,
+      "com_single_minus_double_mm": 16.8
+    },
+    "cadence_hz": {
+      "heavy_quadruped Fr0.25": 0.935,
+      "light_quadruped 1 m/s": 1.488,
+      "light_quadruped Fr0.25": 1.517,
+      "same body 8x mass 1 m/s": 1.331
+    },
+    "heavy_quadruped 20% climb": {
+      "pitch_deg": -11.3,
+      "stride_flat_m": 1.527,
+      "stride_uphill_m": 1.157
+    },
+    "hexapod 20% climb": {
+      "pitch_deg": -11.31,
+      "stride_flat_m": 0.307,
+      "stride_uphill_m": 0.233
+    },
+    "horizontal_biped run Fr1.5": {
+      "com_excursion_mm": 62.8,
+      "com_flight_minus_stance_mm": 32.5
+    },
+    "horizontal_biped walk Fr0.25": {
+      "com_excursion_mm": 37.3,
+      "com_single_minus_double_mm": 17.9
+    },
+    "light_quadruped 20% climb": {
+      "pitch_deg": -11.29,
+      "stride_flat_m": 0.647,
+      "stride_uphill_m": 0.491
+    },
+    "light_quadruped bank deg at 0.8 rad/s": -6.81,
+    "light_quadruped pitch range deg": {
+      "gallop": 4.07,
+      "trot": 0.0
+    },
+    "theropod left turn 0.9 rad/s": {
+      "neck_yaw_deg": 18.05,
+      "tail_half_response_ms": 333.0,
+      "tail_yaw_deg": -16.88
+    },
+    "wader run Fr1.5": {
+      "com_excursion_mm": 50.6,
+      "com_flight_minus_stance_mm": 26.5
+    },
+    "wader walk Fr0.25": {
+      "com_excursion_mm": 32.6,
+      "com_single_minus_double_mm": 17.2
+    }
+  },
+  "checks": 156,
+  "failures": 0,
+  "foot_slide_mm": {
+    "biped": {
+      "10 Hz world ticks": 0.0,
+      "circle": 0.0,
+      "downhill 20%": 0.0,
+      "fast": 0.0,
+      "rough ground": 0.0,
+      "slalom at speed": 0.0,
+      "slow walk": 0.0,
+      "start-stop": 0.0,
+      "steps": 324,
+      "top speed": 0.0,
+      "uphill 20%": 0.0,
+      "walk": 0.0
+    },
+    "heavy_quadruped": {
+      "10 Hz world ticks": 0.0,
+      "circle": 0.0,
+      "downhill 20%": 0.0,
+      "fast": 0.0,
+      "rough ground": 0.0,
+      "slalom at speed": 0.0,
+      "slow walk": 0.0,
+      "start-stop": 0.0,
+      "steps": 474,
+      "top speed": 0.0,
+      "uphill 20%": 0.0,
+      "walk": 0.0
+    },
+    "hexapod": {
+      "10 Hz world ticks": 0.0,
+      "circle": 0.0,
+      "downhill 20%": 0.0,
+      "fast": 0.0,
+      "rough ground": 0.0,
+      "slalom at speed": 0.0,
+      "slow walk": 0.0,
+      "start-stop": 0.0,
+      "steps": 1728,
+      "top speed": 0.0,
+      "uphill 20%": 0.0,
+      "walk": 0.0
+    },
+    "horizontal_biped": {
+      "10 Hz world ticks": 0.0,
+      "circle": 0.0,
+      "downhill 20%": 0.0,
+      "fast": 0.0,
+      "rough ground": 0.0,
+      "slalom at speed": 0.0,
+      "slow walk": 0.0,
+      "start-stop": 0.0,
+      "steps": 291,
+      "top speed": 0.0,
+      "uphill 20%": 0.0,
+      "walk": 0.0
+    },
+    "light_quadruped": {
+      "10 Hz world ticks": 0.0,
+      "circle": 0.0,
+      "downhill 20%": 0.0,
+      "fast": 0.0,
+      "rough ground": 0.0,
+      "slalom at speed": 0.0,
+      "slow walk": 0.0,
+      "start-stop": 0.0,
+      "steps": 901,
+      "top speed": 0.0,
+      "uphill 20%": 0.0,
+      "walk": 0.0
+    },
+    "wader": {
+      "10 Hz world ticks": 0.0,
+      "circle": 0.0,
+      "downhill 20%": 0.0,
+      "fast": 0.0,
+      "rough ground": 0.0,
+      "slalom at speed": 0.0,
+      "slow walk": 0.0,
+      "start-stop": 0.0,
+      "steps": 336,
+      "top speed": 0.0,
+      "uphill 20%": 0.0,
+      "walk": 0.0
+    }
+  },
+  "footfalls": {
+    "biped@Fr0.25": {
+      "airborne_pct": 0.0,
+      "cadence_hz": 1.159,
+      "duty_measured": [
+        0.592,
+        0.615
+      ],
+      "gait": "walk",
+      "period_from_alexander_s": 0.863,
+      "stride_m": 1.253,
+      "stride_period_s": 0.863,
+      "touchdown_phase": [
+        0.0,
+        0.498
+      ]
+    },
+    "biped@Fr1.50": {
+      "airborne_pct": 25.8,
+      "cadence_hz": 1.659,
+      "duty_measured": [
+        0.379,
+        0.363
+      ],
+      "gait": "run",
+      "period_from_alexander_s": 0.603,
+      "stride_m": 2.145,
+      "stride_period_s": 0.603,
+      "touchdown_phase": [
+        0.0,
+        0.502
+      ]
+    },
+    "heavy_quadruped@Fr0.10": {
+      "airborne_pct": 0.0,
+      "cadence_hz": 0.778,
+      "duty_measured": [
+        0.721,
+        0.69,
+        0.71,
+        0.725
+      ],
+      "gait": "walk",
+      "period_from_alexander_s": 1.285,
+      "stride_m": 1.241,
+      "stride_period_s": 1.287,
+      "touchdown_phase": [
+        0.0,
+        0.5,
+        0.253,
+        0.746
+      ]
+    },
+    "heavy_quadruped@Fr0.80": {
+      "airborne_pct": 0.0,
+      "cadence_hz": 1.179,
+      "duty_measured": [
+        0.488,
+        0.456,
+        0.463,
+        0.477
+      ],
+      "gait": "amble",
+      "period_from_alexander_s": 0.848,
+      "stride_m": 2.315,
+      "stride_period_s": 0.848,
+      "touchdown_phase": [
+        0.0,
+        0.502,
+        0.202,
+        0.701
+      ]
+    },
+    "hexapod@Fr0.30": {
+      "airborne_pct": 0.0,
+      "cadence_hz": 2.162,
+      "duty_measured": [
+        0.59,
+        0.585,
+        0.585,
+        0.59,
+        0.59,
+        0.585
+      ],
+      "gait": "tripod",
+      "period_from_alexander_s": 0.463,
+      "stride_m": 0.347,
+      "stride_period_s": 0.463,
+      "touchdown_phase": [
+        0.0,
+        0.502,
+        0.502,
+        0.0,
+        0.0,
+        0.502
+      ]
+    },
+    "horizontal_biped@Fr0.25": {
+      "airborne_pct": 0.0,
+      "cadence_hz": 1.042,
+      "duty_measured": [
+        0.615,
+        0.598
+      ],
+      "gait": "walk",
+      "period_from_alexander_s": 0.96,
+      "stride_m": 1.458,
+      "stride_period_s": 0.96,
+      "touchdown_phase": [
+        0.0,
+        0.499
+      ]
+    },
+    "horizontal_biped@Fr1.50": {
+      "airborne_pct": 26.3,
+      "cadence_hz": 1.491,
+      "duty_measured": [
+        0.363,
+        0.375
+      ],
+      "gait": "run",
+      "period_from_alexander_s": 0.671,
+      "stride_m": 2.495,
+      "stride_period_s": 0.671,
+      "touchdown_phase": [
+        0.0,
+        0.497
+      ]
+    },
+    "light_quadruped@Fr0.10": {
+      "airborne_pct": 0.0,
+      "cadence_hz": 1.263,
+      "duty_measured": [
+        0.717,
+        0.708,
+        0.702,
+        0.719
+      ],
+      "gait": "walk",
+      "period_from_alexander_s": 0.792,
+      "stride_m": 0.526,
+      "stride_period_s": 0.791,
+      "touchdown_phase": [
+        0.0,
+        0.496,
+        0.253,
+        0.747
+      ]
+    },
+    "light_quadruped@Fr1.20": {
+      "airborne_pct": 22.5,
+      "cadence_hz": 2.077,
+      "duty_measured": [
+        0.39,
+        0.385,
+        0.385,
+        0.39
+      ],
+      "gait": "trot",
+      "period_from_alexander_s": 0.482,
+      "stride_m": 1.108,
+      "stride_period_s": 0.482,
+      "touchdown_phase": [
+        0.0,
+        0.501,
+        0.501,
+        0.0
+      ]
+    },
+    "light_quadruped@Fr5.00": {
+      "airborne_pct": 33.3,
+      "cadence_hz": 2.847,
+      "duty_measured": [
+        0.244,
+        0.244,
+        0.244,
+        0.242
+      ],
+      "gait": "gallop",
+      "period_from_alexander_s": 0.351,
+      "stride_m": 1.65,
+      "stride_period_s": 0.352,
+      "touchdown_phase": [
+        0.0,
+        0.899,
+        0.318,
+        0.2
+      ]
+    },
+    "wader@Fr0.10": {
+      "airborne_pct": 0.0,
+      "cadence_hz": 0.974,
+      "duty_measured": [
+        0.731,
+        0.702
+      ],
+      "gait": "walk",
+      "period_from_alexander_s": 1.027,
+      "stride_m": 0.988,
+      "stride_period_s": 1.025,
+      "touchdown_phase": [
+        0.0,
+        0.502
+      ]
+    },
+    "wader@Fr1.50": {
+      "airborne_pct": 25.6,
+      "cadence_hz": 1.674,
+      "duty_measured": [
+        0.388,
+        0.356
+      ],
+      "gait": "run",
+      "period_from_alexander_s": 0.597,
+      "stride_m": 2.226,
+      "stride_period_s": 0.597,
+      "touchdown_phase": [
+        0.0,
+        0.502
+      ]
+    }
+  },
+  "morphology": {
+    "biped": {
+      "com": [
+        0.0,
+        1.0457,
+        0.0085
+      ],
+      "graviportal": false,
+      "hip_height_m": 0.86,
+      "inertia_pitch_yaw_roll": [
+        10.627,
+        1.028,
+        11.201
+      ],
+      "legs": 2,
+      "mass_kg": 74.5,
+      "plan": "upright_biped",
+      "robustness": 0.51
+    },
+    "heavy_quadruped": {
+      "com": [
+        0.0,
+        1.2087,
+        -0.0253
+      ],
+      "graviportal": true,
+      "hip_height_m": 0.95,
+      "inertia_pitch_yaw_roll": [
+        2203.613,
+        2126.818,
+        418.27
+      ],
+      "legs": 4,
+      "mass_kg": 2571.8,
+      "plan": "quadruped",
+      "robustness": 13.18
+    },
+    "hexapod": {
+      "com": [
+        0.0,
+        0.2092,
+        -0.0232
+      ],
+      "graviportal": false,
+      "hip_height_m": 0.191,
+      "inertia_pitch_yaw_roll": [
+        1.006,
+        1.037,
+        0.194
+      ],
+      "legs": 6,
+      "mass_kg": 25.9,
+      "plan": "multi",
+      "robustness": 13.01
+    },
+    "horizontal_biped": {
+      "com": [
+        0.0,
+        1.0054,
+        0.1482
+      ],
+      "graviportal": false,
+      "hip_height_m": 0.94,
+      "inertia_pitch_yaw_roll": [
+        85.77,
+        74.206,
+        18.938
+      ],
+      "legs": 2,
+      "mass_kg": 271.5,
+      "plan": "horizontal_biped",
+      "robustness": 1.43
+    },
+    "legless": {
+      "com": [
+        0.0,
+        0.05,
+        -0.0746
+      ],
+      "graviportal": false,
+      "hip_height_m": 0.05,
+      "inertia_pitch_yaw_roll": [
+        2.515,
+        2.515,
+        0.01
+      ],
+      "legs": 0,
+      "mass_kg": 10.8,
+      "plan": "legless",
+      "robustness": 1.0
+    },
+    "light_quadruped": {
+      "com": [
+        0.0,
+        0.5006,
+        0.0477
+      ],
+      "graviportal": false,
+      "hip_height_m": 0.45,
+      "inertia_pitch_yaw_roll": [
+        2.62,
+        2.282,
+        0.487
+      ],
+      "legs": 4,
+      "mass_kg": 29.0,
+      "plan": "quadruped",
+      "robustness": 1.26
+    },
+    "wader": {
+      "com": [
+        0.0,
+        1.002,
+        0.0356
+      ],
+      "graviportal": false,
+      "hip_height_m": 0.944,
+      "inertia_pitch_yaw_roll": [
+        4.488,
+        0.676,
+        3.931
+      ],
+      "legs": 2,
+      "mass_kg": 23.4,
+      "plan": "horizontal_biped",
+      "robustness": 0.12
+    }
+  },
+  "speed_proposal": {
+    "biped": {
+      "accel_time": 2.15,
+      "ease_per_tick": 0.089,
+      "froude_at_max": 6.887,
+      "hirt_unscaled": 17.58,
+      "max_accel": 3.545,
+      "max_speed": 7.622,
+      "max_turn_per_tick": 0.38,
+      "max_turn_rate": 3.8,
+      "roam_speed": 4.484
+    },
+    "heavy_quadruped": {
+      "accel_time": 1.879,
+      "ease_per_tick": 0.101,
+      "froude_at_max": 0.912,
+      "hirt_unscaled": 9.793,
+      "max_accel": 1.552,
+      "max_speed": 2.916,
+      "max_turn_per_tick": 0.152,
+      "max_turn_rate": 1.522,
+      "roam_speed": 1.715
+    },
+    "hexapod": {
+      "accel_time": 0.879,
+      "ease_per_tick": 0.204,
+      "froude_at_max": 4.779,
+      "hirt_unscaled": 15.786,
+      "max_accel": 3.405,
+      "max_speed": 2.992,
+      "max_turn_per_tick": 0.38,
+      "max_turn_rate": 3.8,
+      "roam_speed": 1.76
+    },
+    "horizontal_biped": {
+      "accel_time": 2.617,
+      "ease_per_tick": 0.074,
+      "froude_at_max": 6.867,
+      "hirt_unscaled": 16.222,
+      "max_accel": 3.041,
+      "max_speed": 7.958,
+      "max_turn_per_tick": 0.235,
+      "max_turn_rate": 2.346,
+      "roam_speed": 4.681
+    },
+    "legless": {
+      "accel_time": 0.341,
+      "ease_per_tick": 0.444,
+      "froude_at_max": 5.144,
+      "hirt_unscaled": 13.079,
+      "max_accel": 4.638,
+      "max_speed": 1.583,
+      "max_turn_per_tick": 0.206,
+      "max_turn_rate": 2.064,
+      "roam_speed": 0.931
+    },
+    "light_quadruped": {
+      "accel_time": 2.621,
+      "ease_per_tick": 0.073,
+      "froude_at_max": 19.794,
+      "hirt_unscaled": 16.084,
+      "max_accel": 3.567,
+      "max_speed": 9.348,
+      "max_turn_per_tick": 0.286,
+      "max_turn_rate": 2.861,
+      "roam_speed": 5.499
+    },
+    "wader": {
+      "accel_time": 2.37,
+      "ease_per_tick": 0.081,
+      "froude_at_max": 10.802,
+      "hirt_unscaled": 15.499,
+      "max_accel": 4.22,
+      "max_speed": 10.002,
+      "max_turn_per_tick": 0.38,
+      "max_turn_rate": 3.8,
+      "roam_speed": 5.883
+    }
+  },
+  "stability": {
+    "biped@Fr0.05 (dynamic, not gated)": {
+      "duty": 0.806,
+      "gait": "walk",
+      "inside_pct": 41.88
+    },
+    "heavy_quadruped@Fr0.03": {
+      "duty": 0.88,
+      "gait": "walk",
+      "inside_pct": 100.0,
+      "inside_pct_point_feet": 100.0,
+      "min_feet_down": 3,
+      "worst_margin_m": 0.1564
+    },
+    "heavy_quadruped@Fr0.06": {
+      "duty": 0.78,
+      "gait": "walk",
+      "inside_pct": 100.0,
+      "inside_pct_point_feet": 92.22,
+      "min_feet_down": 3,
+      "worst_margin_m": 0.0809
+    },
+    "heavy_quadruped@Fr0.25 (dynamic, not gated)": {
+      "duty": 0.603,
+      "gait": "walk",
+      "inside_pct": 70.63
+    },
+    "hexapod@Fr0.05": {
+      "duty": 0.806,
+      "gait": "tripod",
+      "inside_pct": 100.0,
+      "inside_pct_point_feet": 100.0,
+      "min_feet_down": 3,
+      "worst_margin_m": 0.118
+    },
+    "hexapod@Fr0.25": {
+      "duty": 0.603,
+      "gait": "tripod",
+      "inside_pct": 100.0,
+      "inside_pct_point_feet": 100.0,
+      "min_feet_down": 3,
+      "worst_margin_m": 0.063
+    },
+    "hexapod@Fr1.00": {
+      "duty": 0.5,
+      "gait": "tripod",
+      "inside_pct": 100.0,
+      "inside_pct_point_feet": 100.0,
+      "min_feet_down": 3,
+      "worst_margin_m": 0.0198
+    },
+    "horizontal_biped@Fr0.05 (dynamic, not gated)": {
+      "duty": 0.806,
+      "gait": "walk",
+      "inside_pct": 44.58
+    },
+    "light_quadruped@Fr0.03": {
+      "duty": 0.88,
+      "gait": "walk",
+      "inside_pct": 100.0,
+      "inside_pct_point_feet": 100.0,
+      "min_feet_down": 3,
+      "worst_margin_m": 0.0304
+    },
+    "light_quadruped@Fr0.06": {
+      "duty": 0.78,
+      "gait": "walk",
+      "inside_pct": 100.0,
+      "inside_pct_point_feet": 94.03,
+      "min_feet_down": 3,
+      "worst_margin_m": 0.012
+    },
+    "light_quadruped@Fr0.25 (dynamic, not gated)": {
+      "duty": 0.603,
+      "gait": "walk",
+      "inside_pct": 61.88
+    },
+    "wader@Fr0.05 (dynamic, not gated)": {
+      "duty": 0.806,
+      "gait": "walk",
+      "inside_pct": 89.38
+    }
+  },
+  "swing": {
+    "biped": {
+      "lift_fast_mm": 94.6,
+      "lift_slow_mm": 48.2,
+      "min_clearance_over_ridges_mm": 0.0,
+      "ridge_height_mm": 103.2
+    },
+    "heavy_quadruped": {
+      "lift_fast_mm": 73.1,
+      "lift_slow_mm": 38.0,
+      "min_clearance_over_ridges_mm": 0.0,
+      "ridge_height_mm": 114.0
+    },
+    "hexapod": {
+      "lift_fast_mm": 23.1,
+      "lift_slow_mm": 11.8,
+      "min_clearance_over_ridges_mm": 0.0,
+      "ridge_height_mm": 22.9
+    },
+    "horizontal_biped": {
+      "lift_fast_mm": 103.4,
+      "lift_slow_mm": 52.6,
+      "min_clearance_over_ridges_mm": 0.0,
+      "ridge_height_mm": 112.8
+    },
+    "light_quadruped": {
+      "lift_fast_mm": 44.5,
+      "lift_slow_mm": 22.7,
+      "min_clearance_over_ridges_mm": 0.0,
+      "ridge_height_mm": 54.0
+    },
+    "wader": {
+      "lift_fast_mm": 129.8,
+      "lift_slow_mm": 66.1,
+      "min_clearance_over_ridges_mm": 0.0,
+      "ridge_height_mm": 113.3
+    }
+  },
+  "transitions": {
+    "biped": [
+      {
+        "error": 0.05,
+        "from": "walk",
+        "froude": 0.55,
+        "target": 0.5,
+        "to": "run"
+      },
+      {
+        "error": -0.05,
+        "from": "run",
+        "froude": 0.45,
+        "target": 0.5,
+        "to": "walk"
+      }
+    ],
+    "heavy_quadruped": [
+      {
+        "error": 0.05,
+        "from": "walk",
+        "froude": 0.55,
+        "target": 0.5,
+        "to": "amble"
+      },
+      {
+        "error": -0.05,
+        "from": "amble",
+        "froude": 0.45,
+        "target": 0.5,
+        "to": "walk"
+      }
+    ],
+    "horizontal_biped": [
+      {
+        "error": 0.05,
+        "from": "walk",
+        "froude": 0.55,
+        "target": 0.5,
+        "to": "run"
+      },
+      {
+        "error": -0.05,
+        "from": "run",
+        "froude": 0.45,
+        "target": 0.5,
+        "to": "walk"
+      }
+    ],
+    "light_quadruped": [
+      {
+        "error": 0.05,
+        "from": "walk",
+        "froude": 0.55,
+        "target": 0.5,
+        "to": "trot"
+      },
+      {
+        "error": 0.051,
+        "from": "trot",
+        "froude": 2.551,
+        "target": 2.5,
+        "to": "gallop"
+      },
+      {
+        "error": -0.051,
+        "from": "gallop",
+        "froude": 2.449,
+        "target": 2.5,
+        "to": "trot"
+      },
+      {
+        "error": -0.05,
+        "from": "trot",
+        "froude": 0.45,
+        "target": 0.5,
+        "to": "walk"
+      }
+    ],
+    "wader": [
+      {
+        "error": 0.05,
+        "from": "walk",
+        "froude": 0.55,
+        "target": 0.5,
+        "to": "run"
+      },
+      {
+        "error": -0.05,
+        "from": "run",
+        "froude": 0.45,
+        "target": 0.5,
+        "to": "walk"
+      }
+    ]
+  }
+}

@@ -68,6 +68,8 @@ var _neck_y := Vector2.ZERO
 var _tail_p := Vector2.ZERO
 var _tail_y := Vector2.ZERO
 var _drop := 0.0
+var _f_avg := 1.0
+var _t_avg := 0.0
 var _wave_phase := 0.0
 var _omega := 10.0
 var _zeta := 0.8
@@ -94,7 +96,7 @@ func setup(morphology, ground_fn: Callable = Callable()) -> void:
 	bounce = 0.0
 	_legs = []
 	for i in range(morph.legs.size()):
-		_legs.append({"theta": float(_off[i]), "swing": false, "th0": 0.0, "th1": 1.0,
+		_legs.append({"theta": -float(_off[i]), "swing": false, "th0": 0.0, "th1": 1.0,
 			"foot": Vector3.ZERO, "from": Vector3.ZERO, "target": Vector3.ZERO, "g_to": 0.0,
 			"lift": 0.0, "load": 1.0, "s": 0.5, "u": 0.0, "force": false, "err": 0.0, "rate": 0.0})
 	_ready_ok = false
@@ -130,13 +132,15 @@ func reset(pos: Vector3, yaw: float) -> void:
 		var l: Dictionary = _legs[i]
 		l.foot = f
 		l.swing = false
-		l.theta = float(_off[i])
+		l.theta = -float(_off[i])
 		l.force = false
 		l.g_to = f.y - m.ankle
 	for s in ["_b", "_c", "_sx", "_sz", "_y", "_p", "_lean", "_bank", "_neck_p", "_neck_y", "_tail_p", "_tail_y"]:
 		set(s, Vector2.ZERO)
 	_a = Vector2(_gy(pos.x, pos.z), 0.0)
 	_drop = 0.0
+	_f_avg = 1.0
+	_t_avg = 0.0
 	_ready_ok = true
 	_sub(1e-4, _pos, yaw, Vector3.ZERO, true)
 
@@ -235,7 +239,7 @@ func _sub(h: float, p: Vector3, yaw: float, v: Vector3, settle: bool) -> void:
 	for i in range(_legs.size()):
 		var l: Dictionary = _legs[i]
 		var m: Dictionary = morph.legs[i]
-		var rate: float = f_eff * clamp(1.0 + 3.0 * _wrap(phase + _off[i] - l.theta), 0.5, 1.8)
+		var rate: float = f_eff * clamp(1.0 + 3.0 * _wrap(phase - _off[i] - l.theta), 0.5, 1.8)
 		l.theta += rate * h
 		l.rate = rate
 		var home_l := Vector3(m.home.x, 0.0, m.home.z)
@@ -346,6 +350,7 @@ func _sub(h: float, p: Vector3, yaw: float, v: Vector3, settle: bool) -> void:
 			var m: Dictionary = morph.legs[i]
 			var e: float = l.g_to
 			var w := 0.12
+			var at: Vector3 = basis.inverse() * (l.target - p) if l.swing else basis.inverse() * (l.foot - p)
 			if not l.swing:
 				# inverted pendulum about the neutral stance: the hip rides an arc
 				# of radius rest_h over the planted foot
@@ -355,16 +360,18 @@ func _sub(h: float, p: Vector3, yaw: float, v: Vector3, settle: bool) -> void:
 				var vault: float = sqrt(max(lp * lp - d * d, 0.0)) - lp
 				e = l.foot.y - m.ankle + (1.0 - bounce) * vault_gain * vault * _moving
 				w += m.share * l.load * nl
-				var fl: Vector3 = basis.inverse() * (l.foot - p)
 				var wl: float = m.share * l.load
-				cx += fl.x * wl
-				cz += fl.z * wl
+				cx += at.x * wl
+				cz += at.z * wl
 				cw += wl
 				var force: float = m.share * (PI / (2.0 * max(duty, 0.05))) * sin(PI * l.s)
 				f_sum += force
 				tq += force * (m.hip.z - morph.com.z)
-			var z: float = m.hip.z
-			var x: float = m.hip.x
+			# the plane is fitted at the feet's neutral positions; a foot away
+			# from neutral is brought back along the local terrain slope
+			var z: float = m.home.z
+			var x: float = m.home.x
+			e -= _slope_f * (at.z - z) + _slope_l * (at.x - x)
 			sw += w; swz += w * z; swx += w * x; swzz += w * z * z; swxx += w * x * x; swzx += w * z * x
 			swe += w * e; swze += w * z * e; swxe += w * x * e
 		var lb: float = 0.02 * sw * morph.body_length * morph.body_length
@@ -399,9 +406,14 @@ func _sub(h: float, p: Vector3, yaw: float, v: Vector3, settle: bool) -> void:
 	var drive := bounce * _moving
 	var zc: float = clamp(_zeta * 0.7, 0.4, 1.0)
 	var den := 1.0 + 2.0 * zc * wc * h + wc * wc * h * h
-	_y.y = (_y.y + h * (drive * G * (f_sum - 1.0) - wc * wc * _y.x)) / den
+	# only the fluctuation of the leg forces about their running mean moves the
+	# body: in a steady gait that mean is body weight (f_sum = 1)
+	var kf := _lp(1.0 / max(f_eff, f_nat), h)
+	_f_avg = lerpf(_f_avg, f_sum, kf)
+	_t_avg = lerpf(_t_avg, tq, kf)
+	_y.y = (_y.y + h * (drive * G * (f_sum - _f_avg) - wc * wc * _y.x)) / den
 	_y.x = clamp(_y.x + _y.y * h, -0.3 * _ref_h, 0.3 * _ref_h)
-	_p.y = (_p.y + h * (drive * leg_axis_torque * morph.mass * G * tq / morph.inertia.x - wc * wc * _p.x)) / den
+	_p.y = (_p.y + h * (drive * leg_axis_torque * morph.mass * G * (tq - _t_avg) / morph.inertia.x - wc * wc * _p.x)) / den
 	_p.x = clamp(_p.x + _p.y * h, -0.22, 0.22)
 	# --- 12. lean from acceleration, bank from turning
 	var a_fwd := _acc.dot(fwd)
@@ -446,8 +458,7 @@ func _sub(h: float, p: Vector3, yaw: float, v: Vector3, settle: bool) -> void:
 			var need: float = dyv - sqrt(max(lmax * lmax - dh * dh, 0.0))
 			if need > 0.06 * _ref_h or dh > lmax:
 				l.force = true
-				need = min(need, 0.06 * _ref_h)
-			drop = max(drop, need)
+			drop = max(drop, min(need, 0.6 * _ref_h))
 	_drop = max(drop, _drop * exp(-h / 0.12))
 	root.origin.y -= _drop
 	# --- 15. girdles, neck and tail
