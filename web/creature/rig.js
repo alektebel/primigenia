@@ -468,11 +468,17 @@ function update(dt){
     if(ud.tail)ud.tail.rotation.y=test?Math.sin(clock*2.5)*.2:0;
   }
   const facing=world?world.yaw:-theta,fwd=_c.set(Math.sin(facing),0,Math.cos(facing));
-  for(const l of legs){const ph=((phase+l.grp*.5)%1+1)%1,H=anchor(pts,l.p.t,l.sg*l.p.ang,A2).p.clone(),K=_u,A=_b;
+  for(const l of legs){if(world&&sp<.001){poseAt(theta,l.home,l.foot);l.foot.y+=l.hang;l.sw=false}const ph=world&&sp<.001?SW:((phase+l.grp*.5)%1+1)%1,H=anchor(pts,l.p.t,l.sg*l.p.ang,A2).p.clone(),K=_u,A=_b;
     if(!test){K.copy(H).add(l.rk).applyMatrix4(creature.matrixWorld);A.copy(H).add(l.rf).applyMatrix4(creature.matrixWorld);H.applyMatrix4(creature.matrixWorld);l.sw=false}
     else{if(ph<SW){if(!l.sw){l.sw=true;l.from.copy(l.foot)}poseAt(theta+sp*((SW-ph)/freq+(1-SW)/freq*.5)/RC,l.home,_a);_a.y+=l.hang;const q=ph/SW;l.foot.lerpVectors(l.from,_a,q*q*(3-2*q));l.foot.y=(world?world.groundY(l.foot.x,l.foot.z):0)+l.hang+Math.sin(Math.PI*q)*.2*(l.a+l.b)}
       else{l.sw=false;l.foot.y=(world?world.groundY(l.foot.x,l.foot.z):0)+l.hang}
-      H.applyMatrix4(creature.matrixWorld);A.copy(l.foot);A.y+=l.w*.6;const dv=_d.subVectors(A,H);let d=dv.length();dv.normalize();d=clamp(d,.08,l.a+l.b-.01);const x=(l.a*l.a-l.b*l.b+d*d)/(2*d),h=Math.sqrt(Math.max(l.a*l.a-x*x,0));
+      H.applyMatrix4(creature.matrixWorld);A.copy(l.foot);A.y+=l.w*.6;const dv=_d.subVectors(A,H);let d=dv.length();dv.normalize();
+      // Terrain changes the reach required of a leg. Keep the sole at its
+      // ground target and stretch the existing bones only as much as needed;
+      // the flat studio path retains its original lengths and transforms.
+      const extension=world?Math.max(1,(d+.01)/(l.a+l.b)):1,la=l.a*extension,lb=l.b*extension;
+      if(world)l.up.scale.y=l.lo.scale.y=extension;
+      d=clamp(d,.08,la+lb-.01);const x=(la*la-lb*lb+d*d)/(2*d),h=Math.sqrt(Math.max(la*la-x*x,0));
       const pole=_n.copy(l.pole).applyAxisAngle(Y,facing);pole.addScaledVector(dv,-pole.dot(dv));if(pole.lengthSq()<1e-4)pole.copy(fwd);pole.normalize();K.copy(H).addScaledVector(dv,x).addScaledVector(pole,h);A.copy(H).addScaledVector(dv,d)}
     l.up.position.copy(H);l.up.quaternion.setFromUnitVectors(DOWN,_t.subVectors(K,H).normalize());l.lo.position.copy(K);l.lo.quaternion.setFromUnitVectors(DOWN,_t.subVectors(A,K).normalize());
     l.ft.position.set(A.x,A.y-l.w*.6,A.z);l.ft.rotation.set(l.sw?-.5*Math.sin(Math.PI*clamp(ph/SW,0,1)):0,facing+l.sg*.18,0,'YXZ')}

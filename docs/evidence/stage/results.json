@@ -1,0 +1,88 @@
+{
+  "browser": "158.0.8127.18",
+  "renderer": "SwiftShader software WebGL",
+  "forcedRafRates": [
+    30,
+    73
+  ],
+  "runs": [
+    {
+      "fixture": "biter.json",
+      "fps": 30,
+      "outcome": "death",
+      "ticks": 70,
+      "hp": [
+        0,
+        55.32575607299805
+      ],
+      "finalHash": "a5a40236156cef3f",
+      "nativeReplay": true,
+      "errors": []
+    },
+    {
+      "fixture": "biter.json",
+      "fps": 73,
+      "outcome": "death",
+      "ticks": 70,
+      "hp": [
+        0,
+        55.32575607299805
+      ],
+      "finalHash": "a5a40236156cef3f",
+      "nativeReplay": true,
+      "errors": []
+    },
+    {
+      "fixture": "guard.json",
+      "fps": 30,
+      "outcome": "death",
+      "ticks": 109,
+      "hp": [
+        0,
+        73.69488525390625
+      ],
+      "finalHash": "8a3d8c94225c71f1",
+      "nativeReplay": true,
+      "errors": []
+    },
+    {
+      "fixture": "guard.json",
+      "fps": 73,
+      "outcome": "death",
+      "ticks": 109,
+      "hp": [
+        0,
+        73.69488525390625
+      ],
+      "finalHash": "8a3d8c94225c71f1",
+      "nativeReplay": true,
+      "errors": []
+    },
+    {
+      "fixture": "spitter.json",
+      "fps": 30,
+      "outcome": "death",
+      "ticks": 102,
+      "hp": [
+        0,
+        63.17284393310547
+      ],
+      "finalHash": "697e6872f9226e12",
+      "nativeReplay": true,
+      "errors": []
+    },
+    {
+      "fixture": "spitter.json",
+      "fps": 73,
+      "outcome": "death",
+      "ticks": 102,
+      "hp": [
+        0,
+        63.17284393310547
+      ],
+      "finalHash": "697e6872f9226e12",
+      "nativeReplay": true,
+      "errors": []
+    }
+  ]
+}

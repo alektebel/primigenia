@@ -114,3 +114,21 @@ wasm-parity: $(BUILD)/wasm/combat_golden.cjs $(BUILD)/wasm/combat_golden.wasm $(
 .PHONY: wasm-test
 wasm-test: wasm wasm-parity
 	nice -n 10 node tests/test_wasm_combat.mjs
+
+# P3b: serve the repo root on port 8765 before the browser acceptance targets.
+# Playwright must already be available (e.g. through NODE_PATH); no install step.
+.PHONY: stage stage-test studio-test
+stage:
+	python3 tools/stage/build_stage.py
+stage-test: wasm $(BUILD)/combat_parity stage
+	python3 tests/test_stage_build.py
+	nice -n 10 node tests/test_stage_sim.mjs
+	nice -n 10 node tests/stage_play.cjs
+studio-test:
+	nice -n 10 python3 tests/check_studio_glbs.py
+	nice -n 10 node tests/test_growth.cjs
+	nice -n 10 node tests/test_studio_genome.cjs
+	@mkdir -p $(BUILD)/studio-tests
+	CPORE_ARTIFACT_DIR=$(BUILD)/studio-tests nice -n 10 node tests/studio_interaction.cjs
+	CPORE_ARTIFACT_DIR=$(BUILD)/studio-tests nice -n 10 node tests/studio_touch.cjs
+	G48_TEST_OUTPUT=$(BUILD)/studio-tests/g48-tests.json nice -n 10 node tests/studio_procedural_parts.cjs
