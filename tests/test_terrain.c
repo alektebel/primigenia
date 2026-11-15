@@ -36,6 +36,9 @@ static void validation(void) {
     BAD(stream_iters,-1); BAD(stream_iters,257); BAD(stream_k,-1); BAD(stream_k,NAN);
     BAD(cliff_deg,90); BAD(col_x,INFINITY); BAD(col_y,NAN); BAD(col_height_m,1e19f);
     BAD(island_radius_m,0);
+    BAD(gentle_bases,-.1f); BAD(gentle_bases,NAN); BAD(gentle_bases,1.1f);
+    BAD(layout_variety,-.1f); BAD(layout_variety,INFINITY); BAD(layout_variety,1.1f);
+    BAD(cliff_bands,-.1f); BAD(cliff_bands,NAN); BAD(cliff_bands,1.1f);
 #undef BAD
     assert(cp_terrain_generate(&p,NULL,NULL,NULL,NULL)==CP_TERR_ERR_BUFFER);
     Fixture f=fixture(8); p.n=8;
@@ -87,6 +90,7 @@ static void small(void) {
     CpTerrain invalid=f.t; invalid.n=INT32_MAX; assert(cp_terrain_hash(&invalid)==0);
     cp_terrain_params_default(NULL);
     /* Hydraulic transport conserves terrain mass when the terminal load settles. */
+    p.gentle_bases=0; p.cliff_bands=0;
     p.seed=1; p.thermal_iters=0; p.droplets=0; p.stream_iters=0;
     assert(cp_terrain_generate(&p,&f.t,&f.w,NULL,NULL)==0);
     double mass0=0,mass1=0;
@@ -151,13 +155,16 @@ static int escapes(Fixture *f,const CpTerrainParams *p,int start,float level,int
     }
     return 0;
 }
-/* W12 on the three evidence seeds: a flat start, a lake that holds water, a
+static int float_cmp(const void *a,const void *b) {
+    float x=*(const float *)a,y=*(const float *)b; return (x>y)-(x<y);
+}
+/* W12 on the six evidence seeds: a flat start, a lake that holds water, a
  * river gap that drains the valley without a climb, a real col (a second way
  * out, high but not a wall), and peaks. */
 static void guarantees(void) {
-    const uint32_t seeds[]={1,7,42};
+    const uint32_t seeds[]={1,7,42,99,1234,31337};
     CpTerrainParams p; cp_terrain_params_default(&p); Fixture f=fixture(p.n);
-    for(int k=0;k<3;k++) {
+    for(int k=0;k<6;k++) {
         p.seed=seeds[k];
         assert(cp_terrain_generate(&p,&f.t,&f.w,NULL,NULL)==0);
         cp_terrain_slope(f.t.height,p.n,p.size_m,f.w.scratch);
@@ -169,6 +176,16 @@ static void guarantees(void) {
             if(f.t.height[i]>peak) peak=f.t.height[i];
         }
         assert(flat>=.9f*total); assert(peak>400.f);
+        /* W15: median on land between the 42m floor and 192m, central
+         * differences, with no sampling of only the protected start floor. */
+        int low=0;
+        for(int i=0;i<p.n*p.n;i++)
+            if(f.t.height[i]>p.valley_floor_m && f.t.height[i]<p.valley_floor_m+150.f)
+                f.t.flow[low++]=f.w.scratch[i];
+        assert(low>1000); qsort(f.t.flow,low,sizeof(float),float_cmp);
+        float median=f.t.flow[low/2];
+        printf("W15 seed %u: lowland median %.2f degrees (%d cells)\n",p.seed,atanf(median)*57.2957795f,low);
+        assert(median>=.26794919f && median<=.57735027f);
         int lx=(int)((p.lake_x_m/p.size_m+.5f)*p.n);
         int ly=(int)((p.lake_y_m/p.size_m+.5f)*p.n);
         float bottom=f.t.height[ly*p.n+lx],start=f.t.height[centre];
@@ -180,8 +197,33 @@ static void guarantees(void) {
     }
     free(f.mem);
 }
+/* Postprocessing must preserve the upper faces and protected floor byte for
+ * byte; the layout switch alone must change geometry on the same seed. */
+static void deltas(void) {
+    CpTerrainParams p; cp_terrain_params_default(&p);
+    p.n=128; p.droplets=500; p.seed=42;
+    p.gentle_bases=p.layout_variety=p.cliff_bands=0;
+    Fixture a=fixture(p.n),b=fixture(p.n);
+    assert(cp_terrain_generate(&p,&a.t,&a.w,NULL,NULL)==0);
+    for(int delta=0;delta<3;delta++) {
+        p.gentle_bases=delta==0; p.layout_variety=delta==1; p.cliff_bands=delta==2;
+        assert(cp_terrain_generate(&p,&b.t,&b.w,NULL,NULL)==0);
+        cp_terrain_slope(a.t.height,p.n,p.size_m,a.w.scratch);
+        int changes=0;
+        for(int i=0;i<p.n*p.n;i++) {
+            float h=a.t.height[i];
+            changes+=h!=b.t.height[i];
+            if(delta==0 && (h<=p.valley_floor_m || h>=p.valley_floor_m+300.f))
+                assert(h==b.t.height[i]);
+            if(delta==2 && (h<=p.valley_floor_m+260.f || a.w.scratch[i]<=.83909963f))
+                assert(h==b.t.height[i]);
+        }
+        assert(changes>0);
+    }
+    free(a.mem); free(b.mem);
+}
 int main(int argc,char **argv) {
-    validation(); helpers(); small();
+    validation(); helpers(); deltas(); small();
     if(argc>1 && !strcmp(argv[1],"--heavy")) guarantees();
     puts("terrain: PASS"); return 0;
 }
