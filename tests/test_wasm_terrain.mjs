@@ -8,7 +8,7 @@ const engine = await createTerrain({ onTerrainProgress: (stage, done, total) => 
 } });
 assert.equal(engine.module._ct_generate(), -8);
 assert.equal(engine.module._ct_map(7), 0);
-for (const options of [{seed:-1},{seed:2**32},{n:2048},{n:NaN},{droplets:-1},{thermal:.5},{warp:NaN},{ridge:2}]) {
+for (const options of [{seed:-1},{seed:2**32},{n:2048},{n:NaN},{droplets:-1},{thermal:.5},{droplets:2**32+70000},{thermal:2**32+5},{warp:NaN},{ridge:2}]) {
   assert.throws(() => engine.generate(options));
 }
 for (const seed of [1,7,42]) {

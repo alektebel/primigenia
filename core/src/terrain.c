@@ -45,6 +45,8 @@ static float clampf(float x, float a, float b)
     return x;
 }
 
+static float absf(float x) { return x < 0.f ? -x : x; }
+
 static float minf(float a, float b) { return a < b ? a : b; }
 static float maxf(float a, float b) { return a > b ? a : b; }
 
@@ -143,7 +145,7 @@ static float ridged(float x, float y, int oct, uint32_t seed)
         float s;
         n *= 1.7f;
         n = clampf(n, -1.f, 1.f);
-        s = 1.f - fabsf(n);
+        s = 1.f - absf(n);
         s = s * s * weight;
         weight = clampf(s * 2.f, 0.f, 1.f);
         sum += s * amp;
@@ -264,7 +266,7 @@ static void fill_base(const CpTerrainParams *p, float *height, CpTerrainProgress
             float y = ((float)j + 0.5f) * cell - half;
             float r = sqrtf(x * x + y * y);
             float along = x * px + y * py;
-            float across = fabsf(x * (-py) + y * px);
+            float across = absf(x * (-py) + y * px);
             float valley = 1.f - smoothstep(p->valley_radius_m * 0.45f, p->valley_radius_m, r);
             /* Irregular, broad foothills: the ring locates mountains without
              * imposing a circular cliff. Keep the guaranteed floor unwarped. */

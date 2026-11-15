@@ -8,7 +8,8 @@ export async function createTerrain(options = {}) {
       warp = 280, ridge = .72, erosion = .32, base = false } = {}) {
       if (!Number.isInteger(seed) || seed < 0 || seed > 0xffffffff) throw Error('Seed must be an integer from 0 to 4294967295.');
       if (!Number.isInteger(n) || n < 8 || n > 1024) throw Error('Map size must be an integer from 8 to 1024.');
-      if (!Number.isInteger(droplets) || !Number.isInteger(thermal) ||
+      if (!Number.isInteger(droplets) || droplets < 0 || droplets > 2000000 ||
+          !Number.isInteger(thermal) || thermal < 0 || thermal > 48 ||
           ![warp, ridge, erosion].every(Number.isFinite)) throw Error('Terrain parameters must be finite; work counts must be integers.');
       const rc = module._ct_config(seed, n, base ? 0 : droplets, base ? 0 : thermal, warp, ridge, erosion);
       if (rc) throw Error(`Invalid terrain parameters (${rc}).`);
