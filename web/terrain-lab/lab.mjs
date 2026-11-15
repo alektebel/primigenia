@@ -249,4 +249,9 @@ if(query.has('seed'))$('seed').value=query.get('seed');if(query.has('n'))$('reso
 if(query.has('map')){const px=Math.max(64,Math.min(2048,Number(query.get('map'))||512));$('map').width=px;$('map').height=px;}
 for(const id of ['coast','rock','volcano','caves'])if(query.has(id))$(id).checked=query.get(id)!=='0';
 if(query.has('shading'))$('shading').value=query.get('shading');
+if(['v1','v2'].includes(query.get('engine'))) {
+  for(const id of ['coast','rock','volcano','caves']){$(id).checked=false;$(id).disabled=true;}
+  $('shading').querySelector('[value=classification]').disabled=true;
+  if($('shading').value==='classification')$('shading').value='materials';
+}
 $('base').checked=query.get('base')==='1';cameraReset();$('controls').requestSubmit();

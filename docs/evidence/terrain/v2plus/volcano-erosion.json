@@ -1,0 +1,18 @@
+{
+  "seed": 42,
+  "n": 1024,
+  "rows": [
+    {
+      "region": "volcanic",
+      "definition": "base height >150 m, classified volcanic vs other land",
+      "cells": 27534,
+      "mean_height_loss_m": 8.031507468651329
+    },
+    {
+      "region": "other massifs",
+      "definition": "base height >150 m, classified volcanic vs other land",
+      "cells": 84898,
+      "mean_height_loss_m": 32.57131309377175
+    }
+  ]
+}

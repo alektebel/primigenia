@@ -1,0 +1,68 @@
+bash -c 'if ! command -v emcc >/dev/null 2>&1; then if test -f "$HOME/emsdk/emsdk_env.sh"; then source "$HOME/emsdk/emsdk_env.sh" >/dev/null 2>&1; fi; fi; command -v emcc >/dev/null 2>&1 || { echo "Emscripten not found: put emcc on PATH or install ~/emsdk/emsdk_env.sh" >&2; exit 1; }; exec emcc "$@"' -- -O2 -std=c99 -Wall -Wextra -fno-fast-math -ffp-contract=off -Icore/include -Iapps core/src/terrain.c core/src/rng.c apps/terrain_wasm_api.c --no-entry -sMODULARIZE=1 -sEXPORT_ES6=1 -sENVIRONMENT=web,worker,node -sINITIAL_MEMORY=50331648 -sEXPORTED_FUNCTIONS='[_ct_config,_ct_deltas,_ct_features,_ct_material,_ct_cave_count,_ct_caves,_ct_volcano,_ct_generate,_ct_map,_ct_hash,_ct_version,_ct_size]' -sEXPORTED_RUNTIME_METHODS=HEAPF32,HEAPU32,HEAPU8 -o build/wasm/cpore_terrain.mjs
+nice -n 10 node tests/test_wasm_terrain.mjs
+seed 1 N=256: a02879db8b11a32f; native 0.2810s, WASM 0.3351s
+seed 7 N=256: c1f5758e35cc09ac; native 0.2936s, WASM 0.3513s
+seed 42 N=256: d9e8d7171dca242a; native 0.2885s, WASM 0.3390s
+seed 99 N=256: 09896b545ac40800; native 0.2765s, WASM 0.3261s
+seed 1234 N=256: 8a3db238bc676c86; native 0.2791s, WASM 0.3316s
+seed 31337 N=256: 82799391da6e9a96; native 0.2809s, WASM 0.3333s
+seed 1 N=1024: 87a5f980d12a378f; native 3.3528s, WASM 5.4712s
+seed 42 N=1024: 7406dde36f3b5f14; native 3.4347s, WASM 4.4869s
+terrain WASM: small goldens + eight native/WASM hashes and independent deltas match; W13 PASS
+nice -n 10 python3 tools/terrain/metrics.py --cli build/terrain_cli --n 1024 --seeds 1,7,42,99,1234,31337 --workdir build/terrain --json build/terrain/metrics.json --check
+seconds 0.7383 hash d39e7051a321ff80
+seconds 3.3463 hash 87a5f980d12a378f
+seconds 0.7659 hash f46f5378ebb5891e
+seconds 3.4035 hash 475c9ee2688fb0cf
+seconds 0.7405 hash 068bce82582c1aca
+seconds 3.4735 hash 7406dde36f3b5f14
+seconds 0.7315 hash 1b29e49493b1c048
+seconds 3.3919 hash 54e4d15c4aeaed61
+seconds 0.7321 hash 14980460625fb4a8
+seconds 3.4847 hash 9b4e4b1a9e9024bb
+seconds 0.7448 hash 380c6eabbfec5103
+seconds 3.4598 hash 692f3068aac2bf46
+base    seed 1 n 1024 channels 12961 orders [1:232 2:45 3:10 4:1] Rb 5.956 (horton) h 0.437 r2 0.89 (n=60) HI 0.139 height [-24.0, 552.9] density 7.41 km/km2 valley depth 6.0 m ridge sharpness 0.292 (n=35811, crest 0.55)
+eroded  seed 1 n 1024 channels 13714 orders [1:243 2:54 3:12 4:2 5:1] Rb 4.171 (horton) h 0.509 r2 0.95 (n=64) HI 0.126 height [-24.0, 552.9] density 8.12 km/km2 valley depth 19.1 m ridge sharpness 0.349 (n=36150, crest 0.73)
+base    seed 7 n 1024 channels 13631 orders [1:237 2:55 3:13 4:2 5:1] Rb 4.158 (horton) h 0.410 r2 0.83 (n=59) HI 0.142 height [-24.0, 552.0] density 7.63 km/km2 valley depth 5.5 m ridge sharpness 0.288 (n=36031, crest 0.59)
+eroded  seed 7 n 1024 channels 14073 orders [1:240 2:54 3:14 4:2 5:1] Rb 4.161 (horton) h 0.480 r2 0.90 (n=63) HI 0.130 height [-24.0, 552.0] density 8.09 km/km2 valley depth 18.9 m ridge sharpness 0.344 (n=35999, crest 0.73)
+base    seed 42 n 1024 channels 14557 orders [1:235 2:59 3:12 4:1] Rb 6.032 (horton) h 0.442 r2 0.89 (n=51) HI 0.144 height [-24.0, 552.6] density 8.02 km/km2 valley depth 7.2 m ridge sharpness 0.386 (n=37460, crest 0.57)
+eroded  seed 42 n 1024 channels 14387 orders [1:236 2:50 3:11 4:2] Rb 4.868 (horton) h 0.494 r2 0.94 (n=59) HI 0.131 height [-24.0, 552.6] density 8.18 km/km2 valley depth 19.1 m ridge sharpness 0.391 (n=35313, crest 0.74)
+base    seed 99 n 1024 channels 12698 orders [1:223 2:52 3:15 4:1] Rb 5.734 (horton) h 0.461 r2 0.89 (n=60) HI 0.128 height [-24.0, 554.5] density 7.60 km/km2 valley depth 5.8 m ridge sharpness 0.299 (n=35060, crest 0.57)
+eroded  seed 99 n 1024 channels 13442 orders [1:233 2:44 3:11 4:3 5:1] Rb 3.891 (horton) h 0.482 r2 0.87 (n=63) HI 0.117 height [-24.0, 554.5] density 8.27 km/km2 valley depth 18.4 m ridge sharpness 0.359 (n=34319, crest 0.75)
+base    seed 1234 n 1024 channels 13876 orders [1:231 2:52 3:13 4:2 5:1] Rb 4.114 (horton) h 0.405 r2 0.83 (n=60) HI 0.138 height [-24.0, 550.8] density 8.07 km/km2 valley depth 6.4 m ridge sharpness 0.388 (n=35659, crest 0.58)
+eroded  seed 1234 n 1024 channels 13453 orders [1:226 2:49 3:11 4:2 5:1] Rb 4.071 (horton) h 0.463 r2 0.89 (n=55) HI 0.125 height [-24.0, 550.8] density 8.09 km/km2 valley depth 18.7 m ridge sharpness 0.410 (n=34702, crest 0.75)
+base    seed 31337 n 1024 channels 13608 orders [1:240 2:60 3:14 4:2 5:1] Rb 4.205 (horton) h 0.433 r2 0.85 (n=62) HI 0.136 height [-24.0, 551.7] density 7.68 km/km2 valley depth 5.3 m ridge sharpness 0.282 (n=37201, crest 0.54)
+eroded  seed 31337 n 1024 channels 14031 orders [1:249 2:57 3:13 4:2 5:1] Rb 4.214 (horton) h 0.482 r2 0.92 (n=61) HI 0.124 height [-24.0, 551.7] density 8.20 km/km2 valley depth 17.3 m ridge sharpness 0.337 (n=36163, crest 0.74)
+
+seed 1 normalised distance base 1.1060098690898446 eroded 0.0 (Rb gap 0.956177707985959 -> 0.0, h gap 0.0627921015096865 -> 0.0)
+seed 7 normalised distance base 0.9046415272440833 eroded 0.19915023704090817 (Rb gap 0.0 -> 0.0, h gap 0.09046415272440833 -> 0.019915023704090817)
+seed 42 normalised distance base 1.0917110705608302 eroded 0.060601980500034625 (Rb gap 1.0323625518856785 -> 0.0, h gap 0.0575529794617991 -> 0.0060601980500034625)
+seed 99 normalised distance base 0.7612797081384951 eroded 0.1751635932654022 (Rb gap 0.7343298046502706 -> 0.0, h gap 0.03941148058133598 -> 0.01751635932654022)
+seed 1234 normalised distance base 0.9476419265215119 eroded 0.36518923908481327 (Rb gap 0.0 -> 0.0, h gap 0.09476419265215119 -> 0.03651892390848133)
+seed 31337 normalised distance base 0.6678041438274557 eroded 0.17666226733589196 (Rb gap 0.0 -> 0.0, h gap 0.06678041438274557 -> 0.017666226733589196)
+shape PASS: eroded valley depth and ridge sharpness beat base on every seed
+natural structure PASS: eroded Rb within 0.5 of [3,5] and Hack h within 0.05 of [0.5,0.6]
+nice -n 10 ./build/terrain_test --heavy
+delta 0: 19171 changed cells
+delta 1: 33247 changed cells
+delta 2: 1302 changed cells
+W16–W18 seed 1: 17989 coastal face cells; 7688 beach cells; 4 caves (1 waterfall); volcanic 106031 cells
+W15 seed 1: lowland median 27.15 degrees (403399 cells)
+W12 seed 1: 100.00% flat within 90m; lake holds >=10m; river gap <= start+5m; col between 100 and 300m; peak 552.95m
+W16–W18 seed 7: 19953 coastal face cells; 5797 beach cells; 5 caves (1 waterfall); volcanic 100398 cells
+W15 seed 7: lowland median 26.38 degrees (435525 cells)
+W12 seed 7: 100.00% flat within 90m; lake holds >=10m; river gap <= start+5m; col between 100 and 300m; peak 551.95m
+W16–W18 seed 42: 20523 coastal face cells; 6570 beach cells; 6 caves (1 waterfall); volcanic 100638 cells
+W15 seed 42: lowland median 28.08 degrees (411034 cells)
+W12 seed 42: 100.00% flat within 90m; lake holds >=10m; river gap <= start+5m; col between 100 and 300m; peak 552.56m
+W16–W18 seed 99: 19084 coastal face cells; 7623 beach cells; 4 caves (1 waterfall); volcanic 111546 cells
+W15 seed 99: lowland median 28.13 degrees (391131 cells)
+W12 seed 99: 100.00% flat within 90m; lake holds >=10m; river gap <= start+5m; col between 100 and 300m; peak 554.48m
+W16–W18 seed 1234: 19320 coastal face cells; 5508 beach cells; 4 caves (1 waterfall); volcanic 106175 cells
+W15 seed 1234: lowland median 28.38 degrees (390511 cells)
+W12 seed 1234: 100.00% flat within 90m; lake holds >=10m; river gap <= start+5m; col between 100 and 300m; peak 550.84m
+W16–W18 seed 31337: 19996 coastal face cells; 5660 beach cells; 5 caves (1 waterfall); volcanic 99467 cells
+W15 seed 31337: lowland median 25.32 degrees (412413 cells)
+W12 seed 31337: 100.00% flat within 90m; lake holds >=10m; river gap <= start+5m; col between 100 and 300m; peak 551.65m
+terrain: PASS

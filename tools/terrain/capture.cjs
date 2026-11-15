@@ -27,7 +27,7 @@ for(const seed of seeds)jobs.push({name:`after-${seed}`,seed});
     const page=await browser.newPage({viewport:{width:1440,height:1040},deviceScaleFactor:1});
     const errors=[];page.on('pageerror',error=>errors.push(error.message));
     fs.mkdirSync(out,{recursive:true});
-    const results=[];
+    const results=[];let featureCaptures=0;
     for(const job of jobs) {
       await page.goto(`${url}?seed=${job.seed}&n=1024&map=1024&base=${job.base||0}${job.engine?`&engine=${job.engine}`:''}`);
       await page.waitForFunction(()=>window.terrainResult||document.body.dataset.error==='true',{timeout:120000});
@@ -40,6 +40,7 @@ for(const seed of seeds)jobs.push({name:`after-${seed}`,seed});
       const png=await page.evaluate(()=>document.getElementById('map').toDataURL('image/png'));
       fs.writeFileSync(`${out}/${job.name}-top.png`,Buffer.from(png.split(',')[1],'base64'));
       if(!job.engine && !job.base && job.seed===42) {
+        featureCaptures=2;
         assert.ok(result.entrances.length>=3 && result.entrances.length<=6);
         assert.ok(result.materialCounts[3]>100);
         await page.selectOption('#view','orbit');await page.selectOption('#shading','classification');
@@ -61,16 +62,19 @@ for(const seed of seeds)jobs.push({name:`after-${seed}`,seed});
       await page.fill('#seed','-1');await page.click('#generate');
       assert.equal(await page.locator('#seed').evaluate(el=>el.validity.valid),false);
       await page.fill('#seed','7');await page.selectOption('#resolution','256');
+      await page.uncheck('#volcano');await page.uncheck('#caves');
       await page.click('#generate');await page.waitForFunction(()=>window.terrainResult?.seed===7&&window.terrainResult?.n===256);
+      const disabled=await page.evaluate(()=>window.terrainResult);
+      assert.equal(disabled.materialCounts[3],0);assert.equal(disabled.entrances.length,0);
       assert.equal(await page.locator('#generate').isEnabled(),true);
       await page.screenshot({path:`${out}/lab-desktop.png`,fullPage:true});
       await page.setViewportSize({width:390,height:844});
       await page.screenshot({path:`${out}/lab-mobile.png`,fullPage:true});
       assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);
       fs.writeFileSync(`${out}/browser.json`,JSON.stringify({browser:browser.version(),renderer:gl,errors,terrains:results,
-        captures:jobs.length*3+2+2,interactions:'all six surface modes, both views, keyboard camera, reset, drainage, invalid seed, regeneration, mobile overflow'},null,2)+'\n');
+        captures:jobs.length*3+featureCaptures+2,interactions:'all six surface modes, both views, keyboard camera, reset, drainage, invalid seed, regeneration with volcano/caves disabled, mobile overflow'},null,2)+'\n');
     }
-    if(flag('--no-smoke'))fs.writeFileSync(`${out}/browser.json`,JSON.stringify({browser:browser.version(),renderer:gl,errors,terrains:results,captures:jobs.length*3+2},null,2)+'\n');
+    if(flag('--no-smoke'))fs.writeFileSync(`${out}/browser.json`,JSON.stringify({browser:browser.version(),renderer:gl,errors,terrains:results,captures:jobs.length*3+featureCaptures},null,2)+'\n');
     assert.deepEqual(errors,[]);
     console.log('Terrain browser capture: PASS; '+gl);
   }finally{await browser.close();}

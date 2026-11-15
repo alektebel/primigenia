@@ -1,0 +1,31 @@
+bash -c 'if ! command -v emcc >/dev/null 2>&1; then if test -f "$HOME/emsdk/emsdk_env.sh"; then source "$HOME/emsdk/emsdk_env.sh" >/dev/null 2>&1; fi; fi; command -v emcc >/dev/null 2>&1 || { echo "Emscripten not found: put emcc on PATH or install ~/emsdk/emsdk_env.sh" >&2; exit 1; }; exec emcc "$@"' -- -O2 -std=c99 -Wall -Wextra -fno-fast-math -ffp-contract=off -Icore/include -Iapps core/src/combat.c core/src/rng.c apps/combat_bots.c apps/wasm_api.c --no-entry -sMODULARIZE=1 -sEXPORT_ES6=1 -sENVIRONMENT=web,node -sEXPORTED_FUNCTIONS='[_cb_layout,_cb_setup,_cb_reset,_cb_order,_cb_step,_cb_tick,_cb_count,_cb_states,_cb_event_count,_cb_events,_cb_hash,_cb_preview,_cb_bot_init,_cb_bot_decide]' -sEXPORTED_RUNTIME_METHODS=HEAP8,HEAPU8,HEAPU32 -o build/wasm/cpore_combat.mjs
+bash -c 'if ! command -v emcc >/dev/null 2>&1; then if test -f "$HOME/emsdk/emsdk_env.sh"; then source "$HOME/emsdk/emsdk_env.sh" >/dev/null 2>&1; fi; fi; command -v emcc >/dev/null 2>&1 || { echo "Emscripten not found: put emcc on PATH or install ~/emsdk/emsdk_env.sh" >&2; exit 1; }; exec emcc "$@"' -- -O2 -std=c99 -Wall -Wextra -fno-fast-math -ffp-contract=off -Icore/include -Iapps core/src/stage_world.c core/src/combat.c core/src/rng.c apps/combat_bots.c apps/world_wasm_api.c --no-entry -sMODULARIZE=1 -sEXPORT_ES6=1 -sENVIRONMENT=web,node -sEXPORTED_FUNCTIONS='[_cw_version,_cw_config,_cw_profile,_cw_spawn,_cw_obstacle,_cw_reset,_cw_height,_cw_ground,_cw_step,_cw_hash,_cw_meta,_cw_entities,_cw_orders,_cw_observe,_cb_layout,_cb_tick,_cb_count,_cb_states,_cb_event_count,_cb_events,_cb_hash,_cb_preview]' -sEXPORTED_RUNTIME_METHODS=HEAP8,HEAPU8,HEAPU32,UTF8ToString -o build/wasm/cpore_world.mjs
+bash -c 'if ! command -v emcc >/dev/null 2>&1; then if test -f "$HOME/emsdk/emsdk_env.sh"; then source "$HOME/emsdk/emsdk_env.sh" >/dev/null 2>&1; fi; fi; command -v emcc >/dev/null 2>&1 || { echo "Emscripten not found: put emcc on PATH or install ~/emsdk/emsdk_env.sh" >&2; exit 1; }; exec emcc "$@"' -- -O2 -std=c99 -Wall -Wextra -fno-fast-math -ffp-contract=off -Icore/include -Iapps tests/combat_golden.c core/src/combat.c core/src/rng.c apps/combat_bots.c -sENVIRONMENT=node -sNODERAWFS=1 -o build/wasm/combat_golden.cjs
+bash -c 'if ! command -v emcc >/dev/null 2>&1; then if test -f "$HOME/emsdk/emsdk_env.sh"; then source "$HOME/emsdk/emsdk_env.sh" >/dev/null 2>&1; fi; fi; command -v emcc >/dev/null 2>&1 || { echo "Emscripten not found: put emcc on PATH or install ~/emsdk/emsdk_env.sh" >&2; exit 1; }; exec emcc "$@"' -- -O2 -std=c99 -Wall -Wextra -fno-fast-math -ffp-contract=off -Icore/include -Iapps tests/combat_parity.c core/src/combat.c core/src/rng.c apps/combat_bots.c -sENVIRONMENT=node -sNODERAWFS=1 -o build/wasm/combat_parity.cjs
+cc -O2 -std=c99 -Wall -Wextra -Wno-unused-parameter -fno-fast-math -Icore/include -D_POSIX_C_SOURCE=200809L -fno-fast-math -ffp-contract=off -Iapps tests/combat_parity.c build/apps/combat_bots.o build/libcpore.a -o build/combat_parity -lm
+nice -n 10 python3 tests/test_wasm_parity.py
+WASM goldens: 5 logs, 50000 matching tick hashes
+Bot parity: 200 duels, 25520 matching tick hashes; 25 ordered bot pairings × 2 profile sets × 4 seeds
+Heading parity: 10,000 random int16 vectors and identical native/WASM replays
+nice -n 10 node tests/test_wasm_terrain.mjs
+seed 1 N=256: a02879db8b11a32f; native 0.2895s, WASM 0.3339s
+seed 7 N=256: c1f5758e35cc09ac; native 0.2977s, WASM 0.3496s
+seed 42 N=256: d9e8d7171dca242a; native 0.2893s, WASM 0.3384s
+seed 99 N=256: 09896b545ac40800; native 0.2733s, WASM 0.3306s
+seed 1234 N=256: 8a3db238bc676c86; native 0.2775s, WASM 0.3312s
+seed 31337 N=256: 82799391da6e9a96; native 0.2824s, WASM 0.3456s
+seed 1 N=1024: 87a5f980d12a378f; native 3.3491s, WASM 4.3869s
+seed 42 N=1024: 7406dde36f3b5f14; native 3.4334s, WASM 4.6448s
+terrain WASM: small goldens + eight native/WASM hashes and independent deltas match; W13 PASS
+cc -O2 -std=c99 -Wall -Wextra -Wno-unused-parameter -fno-fast-math -Icore/include -D_POSIX_C_SOURCE=200809L -fno-fast-math -ffp-contract=off apps/world_cli.c build/libcpore.a -o build/world_cli -lm
+nice -n 10 ./build/world_test
+PASS world movement, collision, arrival, atomic rejection, replay and observation
+nice -n 10 node tests/test_wasm_world.mjs
+analytic C port: max height error 0.004203 m on 961 valley samples
+world golden 1: 2 encounters, 3,000 hashes
+world golden 42: 3 encounters, 3,000 hashes
+world golden 987654321: 2 encounters, 3,000 hashes
+PASS world: 3 committed 3,000-tick goldens; 100 random 3,000-tick native/WASM runs; independent instances; observations; full 30/73 FPS native replay
+nice -n 10 node tests/test_wasm_combat.mjs
+JS golden replays: 5 logs, 50000 matching tick hashes
+Instances: 600 identical ticks; encounters: 60 seconds at 60/37 FPS, 600 identical ticks and native replay

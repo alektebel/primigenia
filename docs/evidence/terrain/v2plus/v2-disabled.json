@@ -1,0 +1,12 @@
+{
+  "seed": 42,
+  "n": 256,
+  "comparison": "Original v2 WASM vs native v3 with all seven switches disabled",
+  "maps": [
+    "height",
+    "flow",
+    "sediment"
+  ],
+  "samplesCompared": 196608,
+  "differences": 0
+}

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Compose docs/evidence/terrain/shape-v2plus.png from the capture script's pictures.
 
-Rows: phase A seed 42 (before), then version 2 seeds 42, 1 and 7 (after).
+Rows: original v2 seed 42, then v2+ seeds 42, 1 and 7.
 Columns: fixed oblique camera, valley-floor camera, hillshade + drainage.
 """
 import sys
@@ -40,5 +40,6 @@ for title, cells in strips:
         sheet.paste(cell, (x, y + LABEL))
         x += cell.width + PAD
     y += H + LABEL + PAD
-sheet.save(root / "shape-v2plus.png", optimize=True)
-print(root / "shape-v2plus.png", sheet.size)
+destination = Path(sys.argv[2]) if len(sys.argv)>2 else root / "shape-v2plus.png"
+sheet.save(destination, optimize=True)
+print(destination, sheet.size)
