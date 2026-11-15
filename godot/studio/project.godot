@@ -1,0 +1,14 @@
+; Standalone test project for the studio (G76 M2). The integrated project.godot comes from M0.
+config_version=5
+
+[application]
+config/name="Primigenia Studio"
+run/main_scene="res://ui/studio.tscn"
+
+[display]
+window/size/viewport_width=1440
+window/size/viewport_height=860
+
+[rendering]
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"

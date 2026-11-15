@@ -262,3 +262,10 @@ check:
 	nice -n 10 $(MAKE) studio-test; \
 	nice -n 10 $(MAKE) stage-test
 	@echo "=== make check done ==="
+
+# G76 M2: Godot studio headless tests, then the web validator cross-check on what Godot wrote.
+.PHONY: godot-studio-test
+godot-studio-test:
+	@mkdir -p $(BUILD)/studio-godot
+	nice -n 10 godot --headless --path godot/studio --script res://tests/test_studio.gd
+	node godot/studio/tests/node_check.js
