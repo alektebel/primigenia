@@ -302,7 +302,7 @@ export function glyphAtlas(THREE, seed) {
   sx.strokeStyle = '#000';
   sx.lineCap = 'round';
   sx.lineJoin = 'round';
-  sx.lineWidth = 11;
+  sx.lineWidth = 14;
   const kinds = ['spine', 'zigzag', 'dome', 'cross', 'ring', 'spiral'];
   kinds.forEach((kind, cell) => {
     const cx = (cell % ATLAS_COLS) * CELL, cy = Math.floor(cell / ATLAS_COLS) * CELL;
@@ -539,7 +539,7 @@ function shardMaterial(THREE, atlas, glow, opts = {}) {
     color: linColor(THREE, STYLE.shard),
     map: atlas.map,
     normalMap: atlas.normalMap,
-    normalScale: new THREE.Vector2(2.8, 2.8),
+    normalScale: new THREE.Vector2(3.6, 3.6),
     emissive: linColor(THREE, STYLE.glow),
     emissiveMap: atlas.emissiveMap,
     emissiveIntensity: glow,
@@ -632,11 +632,13 @@ function rockGeometry(THREE, seed) {
   return g;
 }
 
-/** Instanced scattered rocks (the rim ring and the crater floor debris). */
+/** Instanced scattered rocks: the rim ring and the crater floor debris, merged
+ * into a single draw call by using one geometry and two size ranges. */
 function rockField(THREE, seed, opts) {
   const {
     count, radius, depth, ring = true, sizeMin = 0.45, sizeMax = 1.6,
     color = STYLE.r0, key = 'rock', name = 'rocks', tilt = 0.5,
+    innerMin = 0, innerMax = 0, innerCount = 0,
   } = opts;
   const r = rng(seed);
   const geo = rockGeometry(THREE, seed ^ 0x51ed);
@@ -650,13 +652,28 @@ function rockField(THREE, seed, opts) {
   mesh.castShadow = true;
   mesh.receiveShadow = true;
   const d = new THREE.Object3D();
-  for (let i = 0; i < count; i++) {
+  // rim ring rocks (outer)
+  for (let i = 0; i < count - innerCount; i++) {
     const a = (i / count) * TAU + (r() - 0.5) * (TAU / count) * 1.8;
-    const rad = ring ? radius * (0.90 + r() * 0.12) : radius * Math.sqrt(r()) * 0.92;
+    const rad = radius * (0.90 + r() * 0.12);
     const s = sizeMin + r() * (sizeMax - sizeMin);
-    const y = ring ? craterHeight(radius, depth, rad) + s * 0.10 : craterHeight(radius, depth, rad) + s * 0.05;
+    const y = craterHeight(radius, depth, rad) + s * 0.10;
     d.position.set(Math.cos(a) * rad, y, Math.sin(a) * rad);
     d.rotation.set((r() - 0.5) * tilt, r() * TAU, (r() - 0.5) * tilt);
+    d.scale.set(s * (0.9 + r() * 0.5), s * (0.45 + r() * 0.45), s * (0.9 + r() * 0.5));
+    d.updateMatrix();
+    mesh.setMatrixAt(i, d.matrix);
+    const tint = 0.55 + r() * 0.7;
+    mesh.setColorAt(i, new THREE.Color(tint * (0.95 + r() * 0.15), tint * (0.93 + r() * 0.12), tint * (0.92 + r() * 0.12)));
+  }
+  // inner/debris rocks (floor)
+  for (let i = count - innerCount; i < count; i++) {
+    const a = r() * TAU;
+    const rad = radius * Math.sqrt(r()) * 0.72;
+    const s = innerMin + r() * (innerMax - innerMin);
+    const y = craterHeight(radius, depth, rad) + s * 0.05;
+    d.position.set(Math.cos(a) * rad, y, Math.sin(a) * rad);
+    d.rotation.set((r() - 0.5) * (tilt * 1.3), r() * TAU, (r() - 0.5) * (tilt * 1.3));
     d.scale.set(s * (0.9 + r() * 0.5), s * (0.45 + r() * 0.45), s * (0.9 + r() * 0.5));
     d.updateMatrix();
     mesh.setMatrixAt(i, d.matrix);
@@ -719,8 +736,8 @@ function scorchTexture(THREE) {
 export function buildCraterKit(THREE, seed, params = {}) {
   const {
     radius = 7.5, depth = 1.15, segments = 32, rings = 9,
-    rimRocks = 30, floorRocks = 16, glassPatches = 11, scorchPatches = 9,
-    bowl = true, ground = null, key = 'crater',
+    rimRocks = 24, floorRocks = 12, surfacePatches = 16,
+    bowl = false, ground = null, key = 'crater',
   } = params;
   const group = new THREE.Group();
   group.name = 'meteor-crater';
@@ -728,80 +745,61 @@ export function buildCraterKit(THREE, seed, params = {}) {
 
   const groundMat = ground || makeGroundMaterial(THREE, { crater: [0, 0], craterRadius: radius, key });
 
+  // One shallow bowl for the depression — merges with meadow via same material
   if (bowl) {
     const b = craterBowl(THREE, radius, depth, segments, rings, groundMat);
     group.add(b);
   }
 
-  // shattered rim ring: the landmark has to read from far away
-  const rim = rockField(THREE, seed ^ 0x11, {
-    count: rimRocks, radius, depth, ring: true, sizeMin: 0.35, sizeMax: 0.95,
-    color: STYLE.rimRock, key: 'rim', name: 'crater-rim-rocks', tilt: 0.8,
+  // Rim + debris in a single draw call (instanced)
+  const rocks = rockField(THREE, seed ^ 0x11, {
+    count: rimRocks + floorRocks, radius, depth,
+    sizeMin: 0.35, sizeMax: 0.95, innerMin: 0.16, innerMax: 0.55, innerCount: floorRocks,
+    color: STYLE.rimRock, key: 'rocks', name: 'crater-rocks', tilt: 0.8,
   });
-  group.add(rim);
+  group.add(rocks);
 
-  // debris on the crater floor
-  const floor = rockField(THREE, seed ^ 0x22, {
-    count: floorRocks, radius: radius * 0.72, depth, ring: false, sizeMin: 0.16, sizeMax: 0.55,
-    color: STYLE.r0, key: 'debris', name: 'crater-floor-rocks', tilt: 0.9,
-  });
-  group.add(floor);
-
-  // fused glass: the impact melted the ground into dark sheets
+  // Fused glass + scorched patches merged into one instanced mesh (same circle geometry,
+  // different scales and vertex colours separate glass from scorched).
   {
     const g = new THREE.CircleGeometry(1, 9);
     g.rotateX(-Math.PI / 2);
     const n = g.attributes.position.count;
     g.setAttribute('color', new THREE.Float32BufferAttribute(new Float32Array(n * 3).fill(1), 3));
     const mat = makeToonMaterial(THREE, {
-      color: STYLE.glass, vertexColors: true, key: 'glass', rim: 0.05, transparent: true, opacity: 0.78,
-      depthWrite: false, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -2,
-    });
-    const mesh = new THREE.InstancedMesh(g, mat, glassPatches);
-    mesh.name = 'crater-glass';
-    mesh.receiveShadow = true;
-    const d = new THREE.Object3D();
-    for (let i = 0; i < glassPatches; i++) {
-      const a = r() * TAU, rad = radius * (0.12 + r() * 0.62);
-      const s = 0.35 + r() * 1.25;
-      d.position.set(Math.cos(a) * rad, craterHeight(radius, depth, rad) + 0.015 + r() * 0.02, Math.sin(a) * rad);
-      d.rotation.set(0, r() * TAU, 0);
-      d.scale.set(s * (0.7 + r() * 0.8), 1, s * (0.5 + r() * 0.7));
-      d.updateMatrix();
-      mesh.setMatrixAt(i, d.matrix);
-      const tint = 0.6 + r() * 0.8;
-      mesh.setColorAt(i, new THREE.Color(tint, tint * 0.96, tint * 1.05));
-    }
-    mesh.instanceMatrix.needsUpdate = true;
-    if (mesh.instanceColor) mesh.instanceColor.needsUpdate = true;
-    group.add(mesh);
-  }
-
-  // scorched spatter on the ground
-  {
-    const g = new THREE.CircleGeometry(1, 14);
-    g.rotateX(-Math.PI / 2);
-    const n = g.attributes.position.count;
-    g.setAttribute('color', new THREE.Float32BufferAttribute(new Float32Array(n * 3).fill(1), 3));
-    const mat = makeToonMaterial(THREE, {
-      color: STYLE.scorch, vertexColors: true, key: 'scorch', rim: 0.04,
-      map: scorchTexture(THREE), transparent: true, depthWrite: false,
+      color: STYLE.glass, vertexColors: true, key: 'surface', rim: 0.04,
+      transparent: true, opacity: 0.72, depthWrite: false,
       polygonOffset: true, polygonOffsetFactor: -3, polygonOffsetUnits: -3,
     });
-    const mesh = new THREE.InstancedMesh(g, mat, scorchPatches);
-    mesh.name = 'crater-scorch';
+    const mesh = new THREE.InstancedMesh(g, mat, surfacePatches);
+    mesh.name = 'crater-surface';
     mesh.receiveShadow = true;
     const d = new THREE.Object3D();
-    for (let i = 0; i < scorchPatches; i++) {
-      const a = r() * TAU, rad = radius * (0.1 + Math.sqrt(r()) * 0.95);
-      const s = 0.4 + r() * 1.1;
-      d.position.set(Math.cos(a) * rad, craterHeight(radius, depth, rad) + 0.02, Math.sin(a) * rad);
+    for (let i = 0; i < surfacePatches; i++) {
+      const a = r() * TAU;
+      const isGlass = i < 7;
+      const rad = isGlass
+        ? radius * (0.12 + r() * 0.62)
+        : radius * (0.1 + Math.sqrt(r()) * 0.95);
+      const s = isGlass
+        ? 0.35 + r() * 1.25
+        : 0.4 + r() * 1.1;
+      d.position.set(Math.cos(a) * rad, craterHeight(radius, depth, rad) + (isGlass ? 0.015 : 0.02) + r() * 0.02, Math.sin(a) * rad);
       d.rotation.set(0, r() * TAU, 0);
-      d.scale.set(s, 1, s * (0.6 + r() * 0.7));
+      d.scale.set(
+        s * (isGlass ? 0.7 + r() * 0.8 : 1),
+        1,
+        s * (isGlass ? 0.5 + r() * 0.7 : 0.6 + r() * 0.7)
+      );
       d.updateMatrix();
       mesh.setMatrixAt(i, d.matrix);
-      const tint = 0.7 + r() * 0.6;
-      mesh.setColorAt(i, new THREE.Color(tint, tint * 0.95, tint * 0.9));
+      if (isGlass) {
+        const tint = 0.6 + r() * 0.8;
+        mesh.setColorAt(i, new THREE.Color(tint, tint * 0.96, tint * 1.05));
+      } else {
+        const tint = 0.7 + r() * 0.6;
+        mesh.setColorAt(i, new THREE.Color(tint * 0.45, tint * 0.35, tint * 0.25));
+      }
     }
     mesh.instanceMatrix.needsUpdate = true;
     if (mesh.instanceColor) mesh.instanceColor.needsUpdate = true;
