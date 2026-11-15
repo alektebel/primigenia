@@ -11,14 +11,21 @@ approves the look, movement, fights and the P4 loop.
 
 | # | Item | Decisions | State |
 |---|---|---|---|
-| 1 | Stage fixes: distinct enemy (Garfio), per-creature body radius in C, a winnable fight (35–80 %) | P3 | merged (7e34932) |
-| 2 | Grass anchored to the world (it slid with the camera); overcast shadows; noon sky | P0 | merged (d611d9f) |
-| 3 | Palette: the owner picks A (BotW) / B (Spore) / C (current+), then it is applied to hero, stage and terrain | owner playtest | variants merged (d6fefb2), owner to pick |
-| 4 | Stage polish: Spore-like movement (click/hold to follow the pointer, WASD, any direction, continuous heading in C), natural locomotion (acceleration, curved turns, stride locked to distance, lean, head look), basic CC0 audio with credits | G57, G59 | merged (8cc987f); owner playtest pending |
-| 5 | Eroded terrain generator in C (phase A: generator, parity, Horton/Hack checks, terrain lab) | W11, W13 | merged (6336202); shape quality pass (W11-A2) in progress |
-| 6 | Eroded terrain in the valley and stage (phase B): props re-placed, W12 guarantees, LOD for far mountains, Worker + IndexedDB cache, pre-baked curated seed | W11–W13 | queued |
-| 7 | P2 move-level tourney gates pass (prerequisite for P4) | G55, P2 | in progress |
-| 8 | P4: world simulation in C (movement, perception, species, social), social depth, DNA (two meters), part discovery, tiers, recipes, bone spines, mid-game editing at a minimal nest | P4.md, G49–G56 | queued |
+| 1 | Stage fixes: distinct enemy (Garfio), per-creature body radius in C, a winnable fight (35–80 %) | P3 | done (7e34932) |
+| 2 | Grass anchored to the world; soft overcast shadows; deeper noon sky | P0 | done (d611d9f) |
+| 3 | Palette: owner picked C "Current+"; A kept for a side-by-side at the end of the round | G63 | done (a1d9a8f) |
+| 4 | Stage polish: Spore-like pointer movement, continuous heading in C, natural locomotion, CC0 audio | G57, G59 | done (8cc987f); owner playtest pending |
+| 5 | Eroded terrain generator in C, v2 shape (island, massifs, stream-power erosion) | W11, W13, W14 | done (3757e28) |
+| 5b | Alpine style (gentle bases, cliff bands, cirques, fans, varied layouts, hummocky floor) | W15 | in progress (codex) |
+| 6 | Terrain into the valley and stage (phase B): props re-placed, W12 guarantees, LOD far mountains, Worker + IndexedDB cache, pre-baked curated seed, C world height from the generator | W11–W13, G56 | next after 5b |
+| 7 | P2 move-level tourney gates pass (prerequisite for P4) | G55 | in progress (codex) |
+| 8a | P4 foundation: world simulation in C, agent observation and verbs | G56 | done (77ef7f5) |
+| 8b | P4 social: befriending skills (sing, dance, charm, pose, gifts by diet), trust and bonds, defending a creature from a raid | P4.md, Q-3/4/17 | queued |
+| 8c | P4 DNA: two meters (total only rises, balance is spent), awards for befriending, kills, carcasses, exploration; progress = species resolved / 4 | P4.md, G23, Q-1/8 | queued |
+| 8d | P4 parts: discovery (drops with pity, carcasses, fossils), start inventory, tiers by DNA plus usage, mid-game editing at a minimal nest | P4.md, G37, G49, Q-2/5/6/10/11/19 | queued |
+| 8e | P4 recipes and the first secret move, bone spines (new `espinas_dorsales` part, calcium meter, clues), through the same tourney gates | P4.md, G50–G53, Q-12/13/15/16 | queued (needs 7) |
+| 9 | Minor tasks on free models: `make check` + README, Python world binding, calibration research, vista grass-disc fix | Q22, Q9/Q10 | in progress |
+| 10 | MVP review: owner plays ~10 minutes, side-by-side palette C vs A, final fixes | G58 | last |
 
 ## 2. After the MVP (the tail)
 
