@@ -139,7 +139,7 @@ async function boot(){
  if(!env)throw Error('Valley environment unavailable');
  const {T,scene,SUN,W,groundY,obstacles}=env;
  W.p.vis.root.visible=false;for(const npc of W.npcs){npc.vis.root.visible=false;npc.mark.g.visible=false}
- const [partTable,partManifest,combat]=await Promise.all([json('../studio/parts.json'),json('../studio/parts/manifest.json'),Combat.create()]);
+ const [partTable,partManifest,combat,enemyTiers]=await Promise.all([json('../studio/parts.json'),json('../studio/parts/manifest.json'),Combat.create(),json('species/garfio-combat.json')]);
  rigs=[];for(let i=0;i<2;i++)rigs.push(await createCreatureRig({T,scene,SUN,partTable,partManifest}));
  if(rigs.some(r=>r.assetFailures.length))throw Error('Creature parts could not be loaded');
  const types=Object.fromEntries(partTable.parts.map(p=>[p.id,p]));let creature=rigs[0].SEEDS.Merodeador;
@@ -156,7 +156,9 @@ async function boot(){
   if(Array.from({length:21},(_,i)=>({x:mix(nest.x,point.x,i/20),z:mix(nest.z,point.z,i/20)})).every(p=>groundY(p.x,p.z)>.5&&!obstacles.some(o=>Math.hypot(o.x-p.x,o.z-p.z)<o.r+1.3)))home=point;
  }
  if(!home)throw Error('No dry creature route near the nest');
- sim=new StageSimulation({combat,profile:profileFromStudio(creature,partTable),enemyProfile:profileFromStudio(rigs[1].G,partTable),nest,home,groundY,obstacles});
+ // This wild species fights with its horn and tail. Its author-defined tiers
+ // and HP are separate from the studio document; body radius still follows it.
+ sim=new StageSimulation({combat,profile:profileFromStudio(creature,partTable),enemyProfile:{...profileFromStudio(rigs[1].G,partTable),...enemyTiers},nest,home,groundY,obstacles});
  yaw=Math.atan2(nest.x-home.x,nest.z-home.z);sim.player.yaw=yaw+Math.PI;
  controls();lightEnvironment();arena=makeGroundMesh('#efd49c',.42);cone=makeGroundMesh('#ee9b51',.36);
  $('creature-name').textContent=creature.name;message('Your nest is behind you. Something is moving in the meadow.');
