@@ -4,7 +4,8 @@
 #include <emscripten.h>
 #include <stdint.h>
 #define MAX_N 1024
-static float arena[7 * MAX_N * MAX_N];
+static float arena[4 * MAX_N * MAX_N];
+static int32_t indices[3 * MAX_N * MAX_N];
 static CpTerrainParams params;
 static CpTerrain terrain;
 static CpTerrainWorkspace workspace;
@@ -28,9 +29,9 @@ int ct_config(uint32_t seed, int n, int droplets, int thermal,
     int nn=n*n;
     terrain.height=arena; terrain.flow=arena+nn; terrain.sediment=arena+2*nn;
     workspace.scratch=arena+3*nn;
-    workspace.recv=(int32_t *)(arena+4*nn);
-    workspace.ups=(int32_t *)(arena+5*nn);
-    workspace.queue=(int32_t *)(arena+6*nn);
+    workspace.recv=indices;
+    workspace.ups=indices+nn;
+    workspace.queue=indices+2*nn;
     configured=1; return 0;
 }
 int ct_generate(void) {

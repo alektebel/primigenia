@@ -51,6 +51,7 @@ $(BUILD)/combat_golden: tests/combat_golden.c apps/combat_bots.h $(BUILD)/apps/c
 # run make tourney as well before claiming P2 acceptance.
 test: $(BUILD)/terrain_test $(BUILD)/cpore_test $(BUILD)/combat_test $(BUILD)/combat_tourney_test $(BUILD)/combat_golden check-core
 	nice -n 10 ./$(BUILD)/terrain_test
+	python3 tests/test_terrain_metrics.py
 	./$(BUILD)/cpore_test
 	./$(BUILD)/combat_test
 	./$(BUILD)/combat_tourney_test
@@ -137,3 +138,8 @@ terrain-parity: $(BUILD)/terrain_cli $(BUILD)/wasm/cpore_terrain.mjs $(BUILD)/wa
 	nice -n 10 node tests/test_wasm_terrain.mjs
 terrain-test: terrain-parity
 wasm-test: terrain-parity
+
+.PHONY: terrain-metrics
+terrain-metrics: $(BUILD)/terrain_cli
+	nice -n 10 python3 tools/terrain/metrics.py --cli $(BUILD)/terrain_cli --n 1024 --seeds 1,7,42 --workdir $(BUILD)/terrain --json $(BUILD)/terrain/metrics.json --check
+terrain-test: terrain-metrics

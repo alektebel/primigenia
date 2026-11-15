@@ -61,6 +61,14 @@ static const char *arg_s(int argc, char **argv, const char *key)
     return NULL;
 }
 
+static float arg_f(int argc,char **argv,const char *key,float fallback)
+{
+    const char *value=arg_s(argc,argv,key); if(!value) return fallback;
+    char *end; errno=0; float v=strtof(value,&end);
+    if(errno || *end || !*value || !isfinite(v)) die("invalid float option");
+    return v;
+}
+
 static void apply_overrides(CpTerrainParams *p, int argc, char **argv)
 {
     int n = arg_i(argc, argv, "--n", p->n);
@@ -75,6 +83,9 @@ static void apply_overrides(CpTerrainParams *p, int argc, char **argv)
     }
     int life = arg_i(argc, argv, "--lifetime", p->lifetime);
     if (has(argc, argv, "--base")) { drops = 0; thermal = 0; }
+    p->radius=arg_i(argc,argv,"--radius",p->radius);
+    p->erosion=arg_f(argc,argv,"--erosion",p->erosion);
+    p->capacity=arg_f(argc,argv,"--capacity",p->capacity);
     p->n = n;
     p->droplets = drops;
     p->thermal_iters = thermal;
@@ -216,7 +227,7 @@ static void stats(const CpTerrain *t, const CpTerrainParams *p)
     free(slope);
 }
 
-static int write_dump(const char *path, const CpTerrainParams *p, const CpTerrain *t)
+static int write_dump(const char *path, const CpTerrainParams *p, const CpTerrain *t, const CpTerrainWorkspace *ws)
 {
     FILE *f = fopen(path, "wb");
     int8_t *dir;
@@ -227,7 +238,12 @@ static int write_dump(const char *path, const CpTerrainParams *p, const CpTerrai
     if (!f) { perror(path); return 2; }
     dir = malloc((size_t)nn);
     if (!dir) die("out of memory");
-    cp_terrain_directions(t->height, t->n, t->size_m, dir);
+    const int dx[8]={1,1,0,-1,-1,-1,0,1},dy[8]={0,1,1,1,0,-1,-1,-1};
+    for(int i=0;i<nn;i++) {
+        dir[i]=-1;
+        if(ws->recv[i]>=0) for(int d=0;d<8;d++)
+            if(ws->recv[i]==i+dy[d]*p->n+dx[d]) {dir[i]=(int8_t)d;break;}
+    }
     if (fwrite(magic, 1, 8, f) != 8 ||
         fwrite(&version, 4, 1, f) != 1 ||
         fwrite(&p->seed, 4, 1, f) != 1 ||
@@ -294,7 +310,7 @@ int main(int argc, char **argv)
         const char *path = arg_s(argc, argv, "--out");
         if (!path) die("dump needs --out");
         printf("seconds %.4f hash %016" PRIx64 "\n", sec, cp_terrain_hash(&t));
-        return write_dump(path, &p, &t);
+        return write_dump(path, &p, &t, &ws);
     }
     die("unknown command");
     return 2;

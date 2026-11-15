@@ -164,7 +164,7 @@ void cp_terrain_params_default(CpTerrainParams *p)
     /* About one droplet per 16 cells at 1024². Fixed count, not a time budget. */
     p->droplets = 70000;
     p->lifetime = 32;
-    p->radius = 2;
+    p->radius = 4;
     p->thermal_iters = 5;
     p->size_m = 2000.f;
     p->frequency = 1.7f / 2000.f;
@@ -266,8 +266,13 @@ static void fill_base(const CpTerrainParams *p, float *height, CpTerrainProgress
             float along = x * px + y * py;
             float across = fabsf(x * (-py) + y * px);
             float valley = 1.f - smoothstep(p->valley_radius_m * 0.45f, p->valley_radius_m, r);
-            float ring_in = smoothstep(p->ring_inner_m * 0.82f, p->ring_inner_m * 1.05f, r);
-            float ring_out = 1.f - smoothstep(p->ring_outer_m * 0.92f, p->ring_outer_m * 1.08f, r);
+            /* Irregular, broad foothills: the ring locates mountains without
+             * imposing a circular cliff. Keep the guaranteed floor unwarped. */
+            float mask_noise = noise2((x+8192.f)*p->frequency*.7f,
+                                       (y+8192.f)*p->frequency*.7f, p->seed^0x19B39A21u);
+            float mountain_r = r + mask_noise * 180.f;
+            float ring_in = smoothstep(p->valley_radius_m*.75f, p->ring_inner_m*1.35f, mountain_r);
+            float ring_out = 1.f - smoothstep(p->ring_outer_m*.85f, p->ring_outer_m*1.12f, mountain_r);
             float ring = ring_in * ring_out;
             /* Corridor, not a cosine lobe: the notch has to cross the whole
              * ring thickness or the outer shoulder stays a wall. */
@@ -281,18 +286,15 @@ static void fill_base(const CpTerrainParams *p, float *height, CpTerrainProgress
             float lr = sqrtf(lx * lx + ly * ly);
             float lake = 1.f - smoothstep(p->lake_radius_m * 0.2f, p->lake_radius_m, lr);
 
-            float u = 0.f;
-            if (r < p->valley_radius_m) {
-                float t = r / p->valley_radius_m;
-                u = t * t;
-            }
+            float u = clampf(r / p->valley_radius_m, 0.f, 1.f);
+            u *= u;
             /* Gentle parabolic bowl: at the valley rim the slope is
              * 2*12/radius, about 4.6 degrees for the default 300 m. */
             /* A low plinth, not a smooth cone. Peak height comes from the
              * ridged noise below, so valleys can run across the slope and
              * actually join instead of falling straight downhill. */
             float macro = p->valley_floor_m + 12.f * u;
-            macro += smoothstep(p->valley_radius_m, p->ring_inner_m, r) * 70.f;
+            macro += smoothstep(p->valley_radius_m, p->ring_inner_m*1.3f, r) * 45.f;
             macro += ring * p->ring_height_m * 0.16f;
             {
                 float outside = smoothstep(p->ring_outer_m * 0.9f, p->ring_outer_m * 1.2f, r);
@@ -582,43 +584,81 @@ void cp_terrain_directions(const float *height, int n, float size_m, int8_t *dir
             dir[y * n + x] = (int8_t)steepest(height, n, cell, diag, x, y);
 }
 
-static void flow_accum(const float *height, int n, float size_m, float *flow,
-                       int32_t *recv, int32_t *ups, int32_t *queue)
+/* Priority-flood depression routing. The physical surface is untouched.
+ * Filled water levels live in scratch; parent pointers route equal-level flats
+ * toward the spill. Heap ties use cell index, and parents always precede their
+ * children. A strict descent or a flat parent therefore cannot form a cycle. */
+static int heap_less(int a, int b, const float *level)
 {
-    float cell = size_m / (float)n;
-    float diag = cell * sqrtf(2.f);
-    int nn = n * n;
-    int qn = 0;
-    for (int i = 0; i < nn; i++) {
-        flow[i] = 1.f;
-        ups[i] = 0;
-        recv[i] = -1;
+    return level[a] < level[b] || (level[a] == level[b] && a < b);
+}
+static void heap_push(int *heap, int *count, int cell, const float *level)
+{
+    int j=(*count)++;
+    while(j>0) {
+        int parent=(j-1)/2;
+        if(!heap_less(cell,heap[parent],level)) break;
+        heap[j]=heap[parent]; j=parent;
     }
-    for (int y = 0; y < n; y++) {
-        for (int x = 0; x < n; x++) {
-            int d = steepest(height, n, cell, diag, x, y);
-            int i = y * n + x;
-            if (d >= 0) {
-                int r = (y + DY[d]) * n + (x + DX[d]);
-                recv[i] = r;
-                ups[r]++;
-            }
+    heap[j]=cell;
+}
+static int heap_pop(int *heap, int *count, const float *level)
+{
+    int result=heap[0],last=heap[--*count],j=0;
+    while(j*2+1<*count) {
+        int child=j*2+1;
+        if(child+1<*count && heap_less(heap[child+1],heap[child],level)) child++;
+        if(!heap_less(heap[child],last,level)) break;
+        heap[j]=heap[child]; j=child;
+    }
+    if(*count) heap[j]=last;
+    return result;
+}
+static void flow_accum(const float *height, int n, float size_m, float *flow,
+                       float *level, int32_t *recv, int32_t *ups, int32_t *queue,
+                       CpTerrainProgressFn fn, void *user)
+{
+    float cell=size_m/(float)n,diag=cell*sqrtf(2.f);
+    int nn=n*n,heap_count=0,qn=0,popped=0;
+    memset(ups,0,(size_t)nn*sizeof *ups);
+    notify(fn,user,CP_TERR_STAGE_FLOW,0,2*nn);
+    for(int y=0;y<n;y++) for(int x=0;x<n;x++) {
+        int i=y*n+x; recv[i]=-1; level[i]=height[i]; flow[i]=1.f;
+        if(x==0 || y==0 || x==n-1 || y==n-1) {
+            ups[i]=1; heap_push(queue,&heap_count,i,level);
         }
     }
-    for (int i = 0; i < nn; i++)
-        if (ups[i] == 0) queue[qn++] = i;
-    for (int qh = 0; qh < qn; qh++) {
-        int i = queue[qh];
-        int r = recv[i];
-        if (r >= 0) {
-            flow[r] += flow[i];
-            if (--ups[r] == 0) queue[qn++] = r;
+    while(heap_count) {
+        int i=heap_pop(queue,&heap_count,level),x=i%n,y=i/n;
+        for(int d=0;d<8;d++) {
+            int nx=x+DX[d],ny=y+DY[d];
+            if((unsigned)nx>=(unsigned)n || (unsigned)ny>=(unsigned)n) continue;
+            int j=ny*n+nx; if(ups[j]) continue;
+            ups[j]=1; recv[j]=i;
+            level[j]=maxf(height[j],level[i]);
+            heap_push(queue,&heap_count,j,level);
         }
+        if((++popped % 8192)==0) notify(fn,user,CP_TERR_STAGE_FLOW,popped,2*nn);
     }
-    {
-        float inv = 1.f / (float)nn;
-        for (int i = 0; i < nn; i++) flow[i] *= inv;
+    memset(ups,0,(size_t)nn*sizeof *ups);
+    for(int y=0;y<n;y++) for(int x=0;x<n;x++) {
+        int i=y*n+x;
+        int d=steepest(level,n,cell,diag,x,y);
+        if(d>=0) recv[i]=(y+DY[d])*n+x+DX[d];
+        if(recv[i]>=0) ups[recv[i]]++;
     }
+    for(int i=0;i<nn;i++) if(ups[i]==0) queue[qn++]=i;
+    for(int qh=0;qh<qn;qh++) {
+        int i=queue[qh],r=recv[i];
+        if(r>=0) {
+            flow[r]+=flow[i];
+            if(--ups[r]==0) queue[qn++]=r;
+        }
+        if((qh % 8192)==0) notify(fn,user,CP_TERR_STAGE_FLOW,nn+qh,2*nn);
+    }
+    float inv=1.f/(float)nn;
+    for(int i=0;i<nn;i++) flow[i]*=inv;
+    notify(fn,user,CP_TERR_STAGE_FLOW,2*nn,2*nn);
 }
 
 void cp_terrain_slope(const float *height, int n, float size_m, float *slope)
@@ -664,7 +704,7 @@ uint64_t cp_terrain_hash(const CpTerrain *t)
 {
     uint64_t h = 14695981039346656037ull;
     int nn;
-    if (!t || !t->height || !t->flow || !t->sediment || t->n < 1) return 0;
+    if (!t || !t->height || !t->flow || !t->sediment || t->n < 1 || t->n > CP_TERRAIN_N_MAX) return 0;
     nn = t->n * t->n;
     fnv_u32(&h, (uint32_t)CP_TERRAIN_VERSION);
     fnv_u32(&h, (uint32_t)t->n);
@@ -693,9 +733,7 @@ int cp_terrain_generate(const CpTerrainParams *p, CpTerrain *out,
         memset(out->sediment, 0, sizeof(float) * (size_t)p->n * (size_t)p->n);
     if (p->thermal_iters > 0)
         thermal(p, out->height, ws->scratch, fn, user);
-    notify(fn, user, CP_TERR_STAGE_FLOW, 0, 1);
-    flow_accum(out->height, p->n, p->size_m, out->flow, ws->recv, ws->ups, ws->queue);
-    notify(fn, user, CP_TERR_STAGE_FLOW, 1, 1);
+    flow_accum(out->height, p->n, p->size_m, out->flow, ws->scratch, ws->recv, ws->ups, ws->queue, fn, user);
     notify(fn, user, CP_TERR_STAGE_DONE, 1, 1);
     return CP_TERR_OK;
 }

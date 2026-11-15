@@ -81,9 +81,38 @@ static void small(void) {
     f.t.height[0]=0; uint64_t h=cp_terrain_hash(&f.t); f.t.height[0]=-0.f;
     assert(h==cp_terrain_hash(&f.t)); f.t.flow[0]+=.01f; assert(h!=cp_terrain_hash(&f.t));
     assert(cp_terrain_hash(NULL)==0);
+    CpTerrain invalid=f.t; invalid.n=INT32_MAX; assert(cp_terrain_hash(&invalid)==0);
+    cp_terrain_params_default(NULL);
+    /* Hydraulic transport conserves terrain mass when the terminal load settles. */
+    p.seed=1; p.thermal_iters=0; p.droplets=0;
+    assert(cp_terrain_generate(&p,&f.t,&f.w,NULL,NULL)==0);
+    double mass0=0,mass1=0;
+    for(int i=0;i<p.n*p.n;i++)mass0+=f.t.height[i];
+    p.droplets=300;
+    assert(cp_terrain_generate(&p,&f.t,&f.w,NULL,NULL)==0);
+    for(int i=0;i<p.n*p.n;i++)mass1+=f.t.height[i];
+    assert(fabs(mass1-mass0)<.01);
+    /* A filled routing surface leaves the physical lake intact and reaches
+     * all cells in a DAG; the integer queue has each cell exactly once. */
+    for(int i=0;i<p.n*p.n;i++)f.w.ups[i]=0;
+    for(int i=0;i<p.n*p.n;i++) {
+        int cell=f.w.queue[i]; assert(cell>=0 && cell<p.n*p.n);
+        assert(f.w.ups[cell]++==0);
+        if(f.w.recv[cell]>=0)assert(f.w.scratch[cell]>=f.w.scratch[f.w.recv[cell]]);
+    }
+    /* Thermal relaxation conserves mass as well. */
+    p.droplets=0; p.thermal_iters=8;
+    assert(cp_terrain_generate(&p,&f.t,&f.w,NULL,NULL)==0);
+    mass1=0;for(int i=0;i<p.n*p.n;i++)mass1+=f.t.height[i];
+    assert(fabs(mass1-mass0)<.02);
     p.n=8; p.droplets=0; p.thermal_iters=0; p.pass_x=0; p.pass_y=0;
     assert(cp_terrain_generate(&p,&f.t,&f.w,NULL,NULL)==0);
     for(int i=0;i<64;i++) assert(f.t.sediment[i]==0);
+    p.size_m=100000.f;p.frequency=.5f;p.warp_m=200000.f;p.octaves=8;
+    p.pass_x=10000.f;p.pass_y=-10000.f;p.radius=8;p.droplets=10;
+    p.lifetime=128;p.thermal_iters=1;p.talus_deg=55;
+    assert(cp_terrain_generate(&p,&f.t,&f.w,NULL,NULL)==0);
+    for(int i=0;i<64;i++)assert(isfinite(f.t.height[i]));
     free(f.mem);
 }
 /* Actual connected sublevel sets, not just a low sample on the pass or rim. */

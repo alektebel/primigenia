@@ -2,7 +2,7 @@
  *
  * One seed produces one height field: a domain-warped ridged base shaped by a
  * mountain mask (start valley, ring, lake, pass), then a fixed number of
- * hydraulic droplets and thermal-erosion passes, then D8 flow accumulation.
+ * hydraulic droplets and thermal-erosion passes, then depression-routed D8 flow accumulation.
  * The hot path is + - * / and sqrtf only, compiled -fno-fast-math
  * -ffp-contract=off, so native and WASM hash the same bytes.
  *
@@ -97,7 +97,8 @@ typedef struct CpTerrain {
 
 /* scratch: n*n floats. recv, ups, queue: n*n int32 each.
  * Each buffer has at least n*n elements, is suitably aligned, and must not
- * overlap any other buffer. scratch is reserved for erosion preprocessing.
+ * overlap any other buffer. scratch holds depression-filled water levels.
+ * After generation recv holds flow receivers (-1 = boundary outlet).
  * The caller must size buffers; C cannot infer their capacity.
  * All callbacks run synchronously on the calling thread. */
 typedef struct CpTerrainWorkspace {
@@ -117,7 +118,8 @@ int  cp_terrain_generate(const CpTerrainParams *p, CpTerrain *out,
 /* Rise/run. Edges use a one-sided difference. */
 void cp_terrain_slope(const float *height, int n, float size_m, float *slope);
 
-/* D8 receiver. dir[i] is -1 (sink) or 0..7:
+/* Raw (unfilled) D8 receiver helper; generation uses priority-flood routing
+ * instead, exposed as workspace.recv. D8 receiver. dir[i] is -1 (sink) or 0..7:
  *   0 +x, 1 +x+y, 2 +y, 3 -x+y, 4 -x, 5 -x-y, 6 -y, 7 +x-y.
  * Ties keep the lowest index. Slope uses cell and cell*sqrt(2). */
 void cp_terrain_directions(const float *height, int n, float size_m, int8_t *dir);
