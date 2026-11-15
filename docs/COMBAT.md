@@ -540,6 +540,29 @@ excludes tiny positive weights from the solver's uniform initialization;
 counting that dust as a six-move equilibrium would be misleading. Elo uses a
 Bradley–Terry fit (mean 1000, one half-win pseudo-game per pair); Elo is descriptive and does not alter any gate.
 
+### P2-gates rule revision (2026-11-15)
+
+The current candidate changes bite damage 10 → 11, charge damage 34 → 30,
+spit damage 14 → 13 and slow 12 → 20 ticks, tail damage 16 → 17,
+guard's tail multiplier 0.40 → 0.25, dodge start cost 3 → 20, and funded
+avoid stagger 0 → 5 ticks. Tail catches active dodge and interrupts for
+3 ticks (the inherited WIP row, now covered by tests). The offensive damage
+adjustments give fast bite a place against the sweep without letting charge
+suppress that role. Longer spit slow preserves its ranged exchange while
+reducing its build field strength. Guard's better tail mitigation pays for
+closing to follow-up range. Dodge's 20-point commitment prevents its cheap
+resource savings from dominating damage; its existing distance and six-tick
+duration stay intact. A successful funded avoid earns the same minimal
+five-tick punish window as a block; failed avoidance earns nothing.
+
+These are deliberate replay-affecting changes. The five fixed action logs
+will remain byte-identical; only their hash expectations will be regenerated
+after rule validation. Hash serialization, arithmetic, RNG streams and
+native/WASM determinism requirements are unchanged. Default and offset
+1,000,000 runs pass all tournament gates; offset 1,000,000 is now development
+data because an earlier candidate failed its build cap. A fresh offset will
+be checked after freezing the table. Stage calibration is still pending.
+
 ### Structural diagnosis (P2-gates, before tuning)
 
 The inherited failures have two distinct causes. A repeated non-damaging

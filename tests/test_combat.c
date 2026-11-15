@@ -50,8 +50,8 @@ static void counters(void)
     phase(&w.c[0], CB_TAIL_STRIKE, CB_PH_ACTIVE);
     phase(&w.c[1], CB_GUARD, CB_PH_ACTIVE);
     cp_combat_step(&w);
-    CHECK(w.c[1].dmg_taken == cp_combat_move_damage(&w.c[0].prof, CB_TAIL_STRIKE)*0.4f && !w.c[1].slow_t,
-          "guard reduces tail damage to 40% and suppresses slow");
+    CHECK(w.c[1].dmg_taken == cp_combat_move_damage(&w.c[0].prof, CB_TAIL_STRIKE)*0.25f && !w.c[1].slow_t,
+          "guard reduces tail damage to 25% and suppresses slow");
 
     w = pair(1.6f);
     phase(&w.c[0], CB_CHARGE, CB_PH_ACTIVE);
@@ -91,8 +91,15 @@ static void counters(void)
         w.c[1].dash_x = w.c[1].dash_y = 0; /* test avoidance, independent of displacement */
         float stamina = w.c[1].stamina;
         cp_combat_step(&w);
+        if (m == CB_TAIL_STRIKE) {
+            CHECK(w.c[1].hp < 100 && !w.c[1].dodged && w.c[1].interrupted == 1 &&
+                  w.c[1].stamina == stamina, "tail catches active dodge without avoidance payment");
+            continue;
+        }
+        CHECK(w.c[0].move == CB_MOVE_NONE && w.c[0].plen == 5 && w.c[1].phase == CB_PH_IDLE,
+              "funded avoidance releases dodge and grants a five-tick punish stagger");
         CHECK(w.c[1].hp == 100 && w.c[1].dodged == 1 &&
-              w.c[1].stamina == stamina - CP_COMBAT_COUNTERS[0].stamina,
+              w.c[1].stamina == stamina - CP_COMBAT_COUNTERS[1].stamina,
               "active dodge avoids each offensive move and pays per hit");
     }
     w = pair(1.6f);
@@ -259,19 +266,19 @@ static void simultaneous(void)
         cp_combat_step(&w);
         CHECK(w.c[2].bleed_t == 19 && w.c[2].bleed_src == 0,
               "shorter bleed cannot replace an existing source");
-        w = focus(swap, CB_DODGE, CP_COMBAT_COUNTERS[0].stamina, 100);
+        w = focus(swap, CB_DODGE, CP_COMBAT_COUNTERS[1].stamina, 100);
         cp_combat_step(&w);
         CHECK(w.c[0].hits == 0 && w.c[1].hits == 1 && w.c[2].dodged == 1 &&
-              w.c[2].stamina == 0 && w.c[2].stamina_spent == CP_COMBAT_COUNTERS[0].stamina,
+              w.c[2].stamina == 0 && w.c[2].stamina_spent == CP_COMBAT_COUNTERS[1].stamina,
               "scarce dodge pays the lower-id hit only, from snapshot stamina");
-        w = focus(swap, CB_GUARD, 1.5f, 100);
+        w = focus(swap, CB_GUARD, 2.0f, 100);
         cp_combat_step(&w);
         CHECK(w.c[0].hits == 0 && w.c[1].hits == 1 && w.c[2].blocked == 1 &&
-              w.c[2].stamina == 0 && w.c[2].stamina_spent == 1.5f && w.c[2].stun_t == 5,
+              w.c[2].stamina == 0 && w.c[2].stamina_spent == 2.0f && w.c[2].stun_t == 5,
               "scarce guard records one block then one exhausted break");
         w = focus(swap, CB_DODGE, 100, 100);
         cp_combat_step(&w);
-        CHECK(w.c[2].hp == 100 && w.c[2].dodged == 2 && w.c[2].stamina_spent == 2*CP_COMBAT_COUNTERS[0].stamina,
+        CHECK(w.c[2].hp == 100 && w.c[2].dodged == 2 && w.c[2].stamina_spent == 2*CP_COMBAT_COUNTERS[1].stamina,
               "ample dodge has identical outcomes with attacker ids swapped");
         w = focus(swap, -1, 100, 1);
         w.c[0].x += 0.3f; w.c[1].x += 0.3f; /* inside charge contact gap */
@@ -306,6 +313,7 @@ static void bot_counters(void)
             int all = 1;
             for (int attack = first; attack <= last; attack++) {
                 if (CP_COMBAT_MOVES[attack].flags & CB_F_SELF) continue;
+                if (r->attack < 0 && attack == CB_TAIL_STRIKE) continue;
                 int response = (r->effect == CB_EFF_BREAK || r->effect == CB_EFF_INTERRUPT) ? attack : r->defend;
                 int threat = response == attack ? r->defend : attack;
                 CpCombatWorld w = pair(1.6f);
@@ -316,8 +324,10 @@ static void bot_counters(void)
                 if (response == CB_BITE) w.c[1].prof.mouth = 2;
                 if (response == CB_CHARGE) w.c[1].prof.charge = 2;
                 if (response == CB_SPIT) w.c[1].prof.spit = 2;
+                if (response == CB_TAIL_STRIKE) w.c[1].prof.tail = 2;
                 if (response == CB_GUARD) w.c[1].prof.guard = 2;
-                if (threat == CB_GUARD) cp_combat_guard(&w, 0);
+                if (threat == CB_DODGE) cp_combat_dodge(&w, 0, 0);
+                else if (threat == CB_GUARD) cp_combat_guard(&w, 0);
                 else cp_combat_attack(&w, 0, 1, threat);
                 int executed = 0;
                 for (int t = 0; t < 35; t++) {
@@ -341,12 +351,12 @@ static void bot_counters(void)
                     }
                     if (w.c[0].hits || w.c[0].interrupted || executed) break;
                 }
-                if (row == 0) CHECK(executed == (delay <= 2 || attack == CB_CHARGE || attack == CB_SPIT),
+                if (r->effect == CB_EFF_AVOID) CHECK(executed == (delay <= 2 || attack == CB_CHARGE || attack == CB_SPIT),
                     "dodge execution window is checked for each offensive move");
                 all &= executed;
             }
             printf(" %d", all);
-            int expected = (row == 0 || row == 2 || row == 3) ? delay <= 2 : 1;
+            int expected = r->defend == CB_DODGE && r->attack == CB_TAIL_STRIKE ? 0 : (r->effect == CB_EFF_AVOID || r->effect == CB_EFF_NEGATE || r->effect == CB_EFF_REDUCE) ? delay <= 2 : 1;
             CHECK(all == expected, "counter row execution matches its documented reaction window");
         }
         puts("");
@@ -358,9 +368,42 @@ static void bot_counters(void)
     for (int m = CB_GUARD; m <= CB_DODGE; m += CB_DODGE-CB_GUARD) {
         CpBot b; bot_init(&b, BOT_SPAM, 42); b.spam_move = m;
         CpCombatAction act;
-        CHECK(bot_decide(&b, &w, 0, 1, &act) && act.verb == (m == CB_GUARD ? CB_V_GUARD : CB_V_APPROACH),
-              "guard policy holds; dodge policy keeps contact until a wind-up is visible");
+        CHECK(bot_decide(&b, &w, 0, 1, &act) && act.verb == CB_V_APPROACH,
+              "defensive policies close to punish range before committing");
     }
+}
+
+static void defensive_policies(void)
+{
+    for (int m = CB_GUARD; m <= CB_DODGE; m += CB_DODGE-CB_GUARD) {
+        CpBot b; bot_init(&b, BOT_SPAM, 42); b.spam_move = m;
+        CpCombatAction a;
+        CpCombatWorld w = pair(1.6f);
+        phase(&w.c[1], CB_MOVE_NONE, CB_PH_RECOVERY);
+        w.c[1].plen = 4;
+        CHECK(bot_decide(&b, &w, 0, 1, &a) && a.verb == CB_V_ATTACK && a.move == CB_BITE,
+              "defensive policy takes an aligned funded punish at the exact four-tick boundary");
+        cp_combat_order(&w, 0, &a); steps(&w, 4);
+        CHECK(w.c[0].hits == 1 && w.c[1].phase == CB_PH_IDLE,
+              "real defensive bite lands on the final helpless frame");
+        for (int scenario = 0; scenario < 4; scenario++) {
+            w = pair(scenario == 2 ? 5 : 1.6f);
+            phase(&w.c[1], CB_MOVE_NONE, CB_PH_RECOVERY); w.c[1].plen = 4;
+            if (scenario == 0) w.c[1].plen = 3;
+            if (scenario == 1) w.c[0].fx = -1;
+            if (scenario == 3) w.c[0].stamina = 0;
+            CHECK(bot_decide(&b, &w, 0, 1, &a) && a.verb != CB_V_ATTACK,
+                  "punish refuses short window, turn, walk-in or unfunded attack");
+        }
+    }
+    CpBot b; bot_init(&b, BOT_SPAM, 42); b.spam_move = CB_DODGE;
+    CpCombatAction a; CpCombatWorld w = pair(4.6f);
+    phase(&w.c[1], CB_CHARGE, CB_PH_ACTIVE); w.c[1].plen = 5;
+    CHECK(bot_decide(&b, &w, 0, 1, &a) && a.verb == CB_V_DODGE,
+          "dodge reads contact during an active charge, after its wind-up has ended");
+    phase(&w.c[1], CB_TAIL_STRIKE, CB_PH_WINDUP);
+    CHECK(bot_decide(&b, &w, 0, 1, &a) && a.verb != CB_V_DODGE,
+          "dodge policy respects the tail exception rather than claiming an avoid");
 }
 
 static void edges_and_verbs(void)
@@ -647,7 +690,7 @@ static void body_radius(void)
 int main(void)
 {
     puts("cpore combat tests");
-    directional_movement(); counters(); ripostes(); spacing(); ranged_exchanges(); simultaneous(); bot_counters(); edges_and_verbs(); geometry_and_setup(); body_radius(); determinism(); canaries();
+    directional_movement(); counters(); ripostes(); spacing(); ranged_exchanges(); simultaneous(); bot_counters(); defensive_policies(); edges_and_verbs(); geometry_and_setup(); body_radius(); determinism(); canaries();
     printf("combat: %d failure(s)\n", fails);
     return fails ? 1 : 0;
 }
