@@ -6,13 +6,13 @@ The old land stage is unchanged. Pack orders, nest/egg consequences and Cognitio
 integration belong to later phases (G18/G23/G36); this module supplies their
 movement/combat foundation, not those stage systems.
 
-**Review status:** correctness regressions pass; balance acceptance still fails.
-Guard earns a real riposte, spaced spit beats bite from 7 m, and the maximum
-build field mean is now 62.4% (brawler 50.9%). Both matrices still have one
-weak-dominance relation, and each equilibrium uses only three moves. This is
-the best configuration retained from this pass, not P2 acceptance or proof that
-the requested targets are impossible. Native/WASM parity is verified by P3a below; the human playtest
-remains pending.
+**Review status (2026-11-15):** move-level balance acceptance passes on the
+fixed development set and a fresh held-out set with four times the samples.
+Both raw and resource games have five moves above 1% equilibrium weight and
+no weak dominance. All tournament canaries and the 65%/90% build caps pass.
+Native correctness and WASM parity pass. Stage calibration is documented below.
+This establishes the P2 move-level prerequisite for G53/G55, not the pending
+human playtest or the later pack/nest/Cognition systems.
 
 ## Move data
 
@@ -22,12 +22,12 @@ reach is its total travel distance. Arcs are full cone widths in radians.
 
 | Move | Wind-up | Active | Recovery | Reach m | Arc rad | Stamina | Damage | Status (ticks) | Flags / required part |
 |---|---:|---:|---:|---:|---:|---:|---:|---|---|
-| bite | 3 | 1 | 2 | 1.8 | 1.00 | 9 | 10 | bleed (8) | mouth |
-| charge | 10 | 5 | 2 | 5.0 | 0.70 | 18 | 34 | stun (6) | dash, ground only / charge |
+| bite | 3 | 1 | 2 | 1.8 | 1.00 | 9 | 11 | bleed (8) | mouth |
+| charge | 10 | 5 | 2 | 5.0 | 0.70 | 18 | 30 | stun (6) | dash, ground only / charge |
 | guard | 1 | 14 | 2 | 0 | 2.40 | 1 | 0 | none | self, frontal guard / guard |
-| spit | 6 | 1 | 4 | 6.0 | 0.25 | 12 | 14 | slow (12) | ranged / spit |
-| tail_strike | 3 | 2 | 4 | 2.2 | 1.60 | 10 | 16 | slow (15) | sweep / tail |
-| dodge | 1 | 3 | 2 | 2.2 | 0 | 3 | 0 | none | self, directional dash, evade / always available |
+| spit | 6 | 1 | 4 | 6.0 | 0.25 | 12 | 13 | slow (20) | ranged / spit |
+| tail_strike | 3 | 2 | 4 | 2.2 | 1.60 | 10 | 17 | slow (15) | sweep / tail |
+| dodge | 1 | 3 | 2 | 2.2 | 0 | 20 | 0 | none | self, directional dash, evade / always available |
 
 Parts have levels 0–5. Level 0 removes the associated move. For level L >= 1,
 damage is `base * (1 + 0.20 * (L - 1))` and start cost is
@@ -50,20 +50,21 @@ frontal cone, so flanking bypasses them.
 
 | Incoming move | Defender move / phase | Result |
 |---|---|---|
-| any attack | dodge / active | Avoid the hit and status, paying 2 additional stamina per avoided hit. If unaffordable, the hit lands normally. |
+| tail_strike | dodge / active | Catch the dodge: full damage and slow, interrupt its move/order, stagger for 3 ticks. |
+| any other attack | dodge / active | Avoid the hit and status, paying 2 additional stamina per avoided hit. Release dodge and stagger the attacker for 5 ticks. If unaffordable, the hit lands normally and earns no stagger. |
 | charge | guard / active | Break guard, deal 60% damage, drain up to 20 stamina, stagger for 5 ticks; charge's stun also applies. |
 | bite | guard / active | Negate damage and bleed; block cost is incoming damage × 0.10 / guard factor. On success release guard and stagger the attacker for 5 ticks. |
-| tail_strike | guard / active | Deal 40% damage, suppress slow; block cost is incoming damage × 0.10 / guard factor. On success release guard and stagger the attacker for 5 ticks. |
+| tail_strike | guard / active | Deal 25% damage, suppress slow; block cost is incoming damage × 0.10 / guard factor. On success release guard and stagger the attacker for 5 ticks. |
 | spit | charge / wind-up | Interrupt charge and its order, deal normal damage/slow, stagger for 6 ticks. |
 | bite | spit / wind-up or active, centre-to-surface gap <= 2 m | Interrupt spit (including its same-tick hit), deal 125% damage and bleed, stagger for 4 ticks. |
 
 The guard factor is `1 + 0.15 * (guard_level - 1)`. An exhausted block fails,
-sets stamina to zero and stuns for 6 ticks. Active dodge is checked first.
-The test-only `CP_COMBAT_TEST` build exposes `cp_combat_test_hit_variance`: enabling it fixes the damage roll at exactly 1.0 while still consuming the normal RNG draw. It is absent from production libraries and tournament builds. Exact damage tests cover charge 60%, tail 40%, rear 1.5× and the height cap.
+sets stamina to zero and stuns for 6 ticks. The tail exception is checked before wildcard avoidance.
+The test-only `CP_COMBAT_TEST` build exposes `cp_combat_test_hit_variance`: enabling it fixes the damage roll at exactly 1.0 while still consuming the normal RNG draw. It is absent from production libraries and tournament builds. Exact damage tests cover charge 60%, tail 25%, rear 1.5× and the height cap.
 
 The tests exercise every row independently, including stamina failure paths,
-rear guard bypass and the same-tick bite/spit interruption. Block ripostes use
-`NEGATE`/`REDUCE` rows' existing `ticks` field: a nonzero value staggers the
+rear guard bypass and the same-tick bite/spit interruption. Block and funded-avoid ripostes use
+`NEGATE`/`REDUCE`/`AVOID` rows' existing `ticks` field: a nonzero value staggers the
 attacker and releases the defender. This generic effect adds no move-id branch
 or new status. Unfunded or rear blocks earn no stagger. All hits and defence
 payments still use the shared snapshot; releasing guard does not remove other
@@ -164,15 +165,17 @@ Intentional replay contract changes require review and explicit regeneration:
 Do not regenerate to hide an unexplained regression. The fixtures also anchor
 the WASM and JS checks described below; they were not changed for P3a.
 
-This balance pass deliberately refreshed **only the five `.hashes` files**,
-using the existing fixed `.log` orders with the production-linked replay:
+The earlier balance pass changed 49,979 hashes while retaining the fixed
+orders. This P2-gates revision deliberately changes **49,961 of 50,000 hashes**
+again, because the move/counter rules below change combat outcomes. Before
+refresh, `make test` failed at seed 0 tick 9: expected `b4b6fa8b5481e0cb`,
+observed `fe0f781de76d693a`. All earlier ticks for that seed still matched.
+Only the five `.hashes` files were refreshed using the production-linked runner:
 `./build/combat_golden tests/golden/combat-SEED.log > tests/golden/combat-SEED.hashes`.
-49,979 of the 50,000 hashes changed. The pre-refresh test failed at seed 0, tick 0:
-`e02d490b5e2b2b44` became `221cf685db942e91`; that log raises guard at tick 0,
-so the new start cost immediately changes hashed stamina. Move durations,
-damage, statuses and ripostes then change later states. Action logs remain
-byte-identical; new bot policies are exercised separately by generated-log
-replay tests. `make test` passed after this explicit refresh.
+The five `.log` files remain byte-identical. This is a deliberate rules revision,
+not a new hash layout, arithmetic contract or hidden fixture regeneration.
+`make test` checks them in fresh processes; `make wasm-test` independently
+checks every hash in WASM and through the JS wrapper.
 
 ## WASM build and parity (P3a)
 
@@ -195,12 +198,12 @@ No SDK is downloaded. The module compiles only `core/src/combat.c`, `rng.c`,
 isolated world per module instance. Generated outputs stay under ignored
 `build/wasm/`; missing companion `.wasm` files trigger rebuilding.
 
-Verified with Emscripten 7.0.0 and Node 26.13.0 on Linux:
+Rechecked for the final P2-gates rules with Emscripten 7.0.0 and Node 26.13.0 on Linux:
 
 | Check | Exact coverage | Result |
 |---|---|---|
 | C golden runner compiled for WASM | Five committed logs × 10,000 ticks = **50,000 hashes** | Byte-identical to committed `.hashes` |
-| Native vs WASM bot duels | **200 duels, 22,432 tick hashes** | Byte-identical streams, including duel lengths |
+| Native vs WASM bot duels | **200 duels, 25,520 tick hashes** | Byte-identical streams, including duel lengths |
 | Goldens through JS wrapper | Five logs, **50,000 tick hashes** | All match |
 | Two independent JS/WASM instances | **600 ticks**, including seeded random-bot decisions | Hashes, states and events match |
 | Encounter frame rates and native replay | **60 seconds at 60 and 37 FPS**, 600 ticks each | Identical orders and every hash; exported log matches native |
@@ -226,8 +229,8 @@ node --test --experimental-test-coverage --test-coverage-exclude='build/**' \
 A headless Chromium 1254 smoke test served the repository over HTTP, imported
 the ES modules, fetched WASM, and advanced an encounter ten ticks successfully.
 It used only the required SwiftShader arguments. This is a module-loading
-check; the walkable page and visual/human playtest remain P3b work. Existing
-P2 balance failures remain open; parity does not establish balance acceptance.
+check; the walkable page and visual/human playtest remain P3b work. Balance acceptance is established separately by the tournament below; parity
+checks determinism rather than balance.
 
 ### JS wrapper and C ABI
 
@@ -414,155 +417,6 @@ measures these reference archetypes, not every possible genome.
 | skirmisher | 3 | 0 | 2 | 2 | 0 | 100 | 100 | 4.6 |
 | allrounder | 3 | 2 | 2 | 2 | 2 | 100 | 100 | 4.0 |
 
-Wind-ups follow the counter table over reaction delays 0..3, rather than a
-single bot setting. Bots observe between ticks, so delay 0 and 1 both first
-see a launched move at tick 1. Bite's 3-tick wind-up can meet spit's 6-tick
-wind-up even at delay 3: bite interrupts an active spit, cancelling its
-same-tick hit. Spit's 6 ticks fit strictly before charge's 10-tick wind-up at
-delay 3. Guard lasts 14 active ticks, enough to visibly commit and be broken
-by charge at all four delays. Charge's five active frames move 1 m/frame,
-below the 1.2 m body diameter, so contact cannot step over a nearby defender.
-The table above contains the balance pass changes. Every numerical change
-from the previous committed table is accounted for here:
-
-| Data | Previous → retained | Reason |
-|---|---|---|
-| bite damage; bleed | 11 → 10 HP; 15 → 8 ticks | Reduce the unconditional bite/bleed throughput that produced a pure-bite raw equilibrium. An 8-tick bleed supplies seven future ticks and still rewards landing a fast punish. |
-| bite recovery | 3 → 2 ticks | After a riposte it can raise guard for the next 3-tick bite wind-up, rather than being hit while still committed to recovery. Wind-up/active stay 3/1. |
-| block stagger | 0 → 5 ticks on bite and tail rows | Application tick + bite wind-up + active = `1 + 3 + 1`. A guarder launches on the following tick and hits on the last helpless tick; the attacker becomes free immediately afterward. Four ticks would allow it to act on the hit tick. Tests assert both boundaries; no extra safety padding. Reach, facing and stamina still constrain the follow-up. |
-| guard start; block coefficients | 5 → 1 stamina; bite 0.35 → 0.10, tail 0.30 → 0.10 | Raising, blocking and then paying for an actual bite formerly exhausted guard before the attacker. Make the defensive commitment affordable without making blocks free. Exhaustion and charge's 20-point break drain remain meaningful. |
-| spit damage; slow; recovery | 8 → 14 HP; 8 → 12 ticks; 5 → 4 ticks | Pay for a long ranged wind-up with a stronger hit and time to retreat after contact. Twelve slow ticks cover its remaining recovery and an initial spacing step; the shorter recovery frees the spitter before the gap collapses. Bite still interrupts it at close range. |
-| charge damage; recovery | 17 → 34 HP; 4 → 2 ticks | Reward a successful, long telegraphed commitment and make breaking guard consequential. Its 10-tick wind-up, contact travel and vulnerability to spit remain; the retained matrix has charge beating guard but losing to spit. |
-| tail damage; arc | 10 → 16 HP; 2.40 → 1.60 rad | Give the slower sweep competitive contact damage against bite and spit, while allowing lateral movement to escape its narrower cone. It retains greater reach and a wider arc than bite, two active frames, slow and multi-target hits. |
-| dodge active; recovery; start; avoidance payment | 2 → 3 ticks; 3 → 2 ticks; 8 → 3 stamina; 6 → 2 stamina/hit | Keep the six-tick commitment, shift one frame into evasion, and reduce the double start/avoid tax. Counter-picker reads the payment from the rule table. This improves practical defence but overvalues dodge against bite in the resource matrix; that failure is reported. |
-
-No profile equipment, speed, HP or stamina pool changed. Values were tested
-against the same protocol and thresholds; they are not conditional on seed,
-profile identity or tournament cell.
-
-The bot tests launch real orders, observe the resulting state, call the picker
-and step until contact. They isolate the equipment needed by each row; the
-full tournament uses the complete profile equipment and default delay 2.
-A dodge can avoid through displacement as well as the avoid rule; pinned
-active-phase unit tests separately assert the avoid payment for every attack.
-This table is printed by the unit test (row order is `CP_COMBAT_COUNTERS`):
-
-```text
-  counter execution (reaction delays 0..3; 1 = executed):
-    row 0: 1 1 1 0
-    row 1: 1 1 1 1
-    row 2: 1 1 1 0
-    row 3: 1 1 1 0
-    row 4: 1 1 1 1
-    row 5: 1 1 1 1
-```
-
-Row 0 is dodge against **every** offensive move: bite/tail require delay <=2;
-spit/charge permit all four delays. Rows 2/3 (guard vs bite/tail) likewise
-require <=2. Row 1 is charge breaking guard; rows 4/5 are spit interrupting
-charge and bite interrupting spit. Those three rows work at every tested
-delay. The picker honours the active-phase exception for bite and the
-close-range constraint; guard reduction is preferred over dodge for tail.
-Out-of-range, facing, commitment, equipment and stamina can still prevent a
-counter; these timing windows assume an idle, aligned, funded reactor at
-1.6 m. They are not a guarantee from every world state.
-
-Greedy scores expected damage per committed tick. It credits only
-`max(0, (new_timer - 1) - remaining_damage_ticks)` future bleed ticks, and only
-when the timer grows. Counter-picker falls back to greedy when it cannot
-counter. Random picks legal attacks, movement, defence or rest without an
-opponent model. Idle issues no orders.
-
-Greedy and counter fallback step back with `flee` when a selected ranged move
-has less than 85% of its reach in space (5.1 m for spit); they re-evaluate each
-idle tick and use a sideways dodge toward room at a wall (0.5 m margin outside
-body radius). This leaves a band below the public attack launch threshold of
-92% reach. A selected shot stays committed through turning/approach until it
-launches, avoiding retreat/turn oscillation while the enemy walks closer.
-Busy smart/fixed policies retain their current move. These policies use only
-public orders and no build identity. Tests verify retreat, firing, and a shot
-against a real chase; 80 paired-seat exchanges give spit -11.91 HP at 1.6 m
-and +19.19 HP at 7 m. The full payoff protocol below gives +18.30 HP at 7 m.
-
-## Tournament protocol and measured results
-
-`make tourney` runs 40 seeds per ordered strategy/profile cell and 400 payoff
-duels per move cell. Acceptance is still open: the revised tournament may fail
-and exits 1 on failure. `make test` checks simulation correctness, canaries,
-and acceptance arithmetic with synthetic fixtures; it does not claim that
-balance acceptance has passed. Both commands must be checked before merging.
-This separation lets correctness remain green while exposing design failures.
-
-The strategy protocol runs 16,000 duels over idle/random/greedy/counter and all
-ordered build pairs, 12 m apart, with a 900-tick cap. Death wins; at timeout,
-HP fraction wins only by more than one percentage point, otherwise a draw.
-Draws score 0.5. Both seats are checked for idle (any draw fails) and random
-(score <5% against greedy/counter, including draws). Draw counts are printed.
-The random canary remains a measured <5% tolerance, not a claim of zero wins;
-DESIGN.md's stronger literal never-win wording is not established.
-
-Build scores pool **all nine** random/greedy/counter strategy pairings with
-equal weight and both seat perspectives. The 65% ceiling applies to each
-build's mean against the other four builds. The additional 90% sanity cap
-applies to each ordered build pair pooled over the same nine strategy pairs.
-The nine unpooled pairwise tables are diagnostic: a smart strategy crushing
-random is not itself a build imbalance. Same-build cells are printed but
-excluded from field means and the pair cap. Every played active duel enters
-both build perspectives, so pooled pair rates are complementary.
-
-The payoff protocol runs 14,400 duels of 120 ticks, 7 m starts, all parts at
-level 3, 100 stamina, 4 m/s and 100,000 HP to measure uncensored damage.
-These are **move policies**, not isolated one-shot move damage. Guard is
-held/reissued and takes an in-reach, aligned bite when its block has left the
-enemy helpless. That bite pays its normal stamina and completes recovery.
-Dodge repeats. Offensive policies repeat their selected move, with the same
-spacing helper used by greedy/counter for ranged moves. All of this uses the
-public order API, including finite-arena walls; no damage is credited merely
-for blocking or retreating. Deterministic start offsets are paired
-with reversed seats (odd requested sample counts round up to a complete
-pair). This makes the payoff matrices antisymmetric, including their diagonal.
-Standard errors use the independent seat-pair means, with sample variance
-across pairs; the two correlated seats are not counted as independent samples.
-Raw payoff is damage dealt minus damage received. Resource payoff subtracts
-stamina-spend margin times a move-table-derived coefficient:
-
-`mean(offensive L3 total nominal HP / start cost) = 1.779167 HP/stamina`.
-
-Bite contributes `(14 + 7*0.6)/10.8`, charge `47.6/21.6`, spit
-`19.6/14.4`, tail `22.4/12`. The mean values a generic offensive stamina point;
-it is a diagnostic exchange rate, not an exact value of stamina in every
-state. Both raw and resource matrices must independently have no weakly
-dominating row at tolerance `2*max(SE_a, SE_b) + 0.5 HP`. Neither gate can
-substitute for the other. Both print an equilibrium mix from 200,000 regret
-matching iterations. Each mix also has an explicit gate requiring at least
-four moves with >=1% weight. This conservative numerical support threshold
-excludes tiny positive weights from the solver's uniform initialization;
-counting that dust as a six-move equilibrium would be misleading. Elo uses a
-Bradley–Terry fit (mean 1000, one half-win pseudo-game per pair); Elo is descriptive and does not alter any gate.
-
-### P2-gates rule revision (2026-11-15)
-
-The current candidate changes bite damage 10 → 11, charge damage 34 → 30,
-spit damage 14 → 13 and slow 12 → 20 ticks, tail damage 16 → 17,
-guard's tail multiplier 0.40 → 0.25, dodge start cost 3 → 20, and funded
-avoid stagger 0 → 5 ticks. Tail catches active dodge and interrupts for
-3 ticks (the inherited WIP row, now covered by tests). The offensive damage
-adjustments give fast bite a place against the sweep without letting charge
-suppress that role. Longer spit slow preserves its ranged exchange while
-reducing its build field strength. Guard's better tail mitigation pays for
-closing to follow-up range. Dodge's 20-point commitment prevents its cheap
-resource savings from dominating damage; its existing distance and six-tick
-duration stay intact. A successful funded avoid earns the same minimal
-five-tick punish window as a block; failed avoidance earns nothing.
-
-These are deliberate replay-affecting changes. The five fixed action logs
-will remain byte-identical; only their hash expectations will be regenerated
-after rule validation. Hash serialization, arithmetic, RNG streams and
-native/WASM determinism requirements are unchanged. Default and offset
-1,000,000 runs pass all tournament gates; offset 1,000,000 is now development
-data because an earlier candidate failed its build cap. A fresh offset will
-be checked after freezing the table. Stage calibration is still pending.
-
 ### Structural diagnosis (P2-gates, before tuning)
 
 The inherited failures have two distinct causes. A repeated non-damaging
@@ -591,108 +445,257 @@ as an explicit scenario factor and test tail's dodge exception independently.
 Dominance tolerance, regret iterations/support, build caps and canaries stay
 unchanged. Fixed action logs are not policy training data and remain intact.
 
-### Remaining balance conflict
+Wind-ups retain the 0..3-tick reaction budget: bite can interrupt spit's
+same-tick active hit, spit can interrupt charge before its active phase, and
+charge can visibly commit to break a 14-tick guard. Dash travel remains
+1 m per active frame. Neither move data nor profiles have seed-, build-identity-
+or matrix-cell-specific exceptions.
 
-The previous default was pure bite in raw damage, with brawler at 68.5%.
-The retained result implements G16's guard advantage (+138.80 raw HP against
-bite) and ranged spit (+18.30 against bite, +127.06 against charge), with
-brawler down to 50.9%, worst field mean 62.4%, worst pooled pair 73.5%, and
-all measured canaries passing. Acceptance nevertheless remains **failed**:
+### Final rule changes and reasoning
 
-- Raw: spit weakly dominates dodge. Repeated dodge deals no damage and still
-  takes 75.14 HP from tail; spit's small loss to tail (-8.57) does not give
-  dodge a column that defeats that dominance relation within the stated tolerance.
-- Resource: dodge weakly dominates bite. In particular, their tail columns
-  are +36.77 versus -46.24 HP after stamina adjustment. Cheap evasion saves
-  enough stamina to outweigh bite's damage in this diagnostic exchange rate.
-- Raw mix: charge 3.9%, spit 38.6%, tail 57.5%; resource mix: charge 34.1%,
-  guard 10.0%, dodge 55.9%. Both have three substantial weights, not four.
-  Guard beats bite but a held guard still loses heavily to an uncontested
-  ranged policy; it does not enter the raw mix just because the riposte works.
+Relative to the table before this branch (39e2a0a):
 
-A reproduced comparison with the final bots removes both dominance relations
-by changing only charge damage 34 → 26, tail damage 16 → 14, dodge active
-3 → 2, dodge start cost 3 → 5, and avoidance payment 2 → 1. The full default
-run then puts spitter at 73.2%, with worst pooled pair 75.5% and three moves
-in each mix. Other defensive timing/cost trials produced pure-spit raw mixes
-or failed the random canary. The retained table prioritizes functional
-counter/range behaviour, passing canaries, both build caps and mixed rather
-than pure outcomes. This is a measured unresolved tradeoff within this pass,
-not an exhaustive search or a mathematical impossibility claim. The dominance
-and support gates remain enabled and failing; no tables, samples or HP pools
-were hidden or substituted to claim acceptance.
+| Data | Before → final | Role and cost |
+|---|---|---|
+| bite damage | 10 → 11 HP | A fast punish also competes with the slower sweep. Guard still negates it; bleed remains eight ticks. |
+| charge damage | 34 → 30 HP | Breaking guard remains consequential, while charge no longer suppresses bite's role. Wind-up, stun, travel and stamina stay unchanged. |
+| spit damage; slow | 14 → 13 HP; 12 → 20 ticks | Reduce spitter's field strength while preserving room to retreat between shots and the existing ranged exchange regression. |
+| tail damage; guard multiplier | 16 → 17 HP; 0.40 → 0.25 | Sweep punishes evasion, but funded frontal guard earns a positive raw tail matchup after paying for its follow-up. |
+| tail vs active dodge | avoid → full hit, 3-tick interrupt | A sweep catches evasion, so defensive reads have a counter. The existing ordered rule mechanism implements this. |
+| dodge start; funded avoid stagger | 3 → 20 stamina; 0 → 5 ticks | Dodge is a real resource commitment. Funded avoidance releases dodge and grants application tick + bite wind-up + hit = five ticks, exactly the existing block punish budget. The per-hit payment, distance and duration stay unchanged. |
 
-### Native verification
+No reference build equipment, HP, stamina pool or speed changed. Twenty-point
+dodge prevents cheap evasion savings from dominating the resource game. Trials
+moving its cost onto avoided hits left three-move games. Increasing start cost
+alone passed the tournament but broke the ranged regression; that candidate
+was rejected. Longer spit slow preserves its range role, while the small
+attack/guard adjustments establish the final measured cycle. At 7 m, spit now
+beats bite by +15.83 HP in the existing 80-duel regression; at 1.6 m it loses
+by -65.46 HP. Both signs remain asserted.
 
-- `make test`: passed, including all counter windows, exact riposte boundaries,
-  close/ranged exchanges, canaries, generated-log replays and the five fixed
-  10,000-tick golden comparisons.
-- `make check-core`: passed (libc/libm only).
-- `make tourney`: failed honestly with the four checks shown below.
-- GCC `-O0 --coverage` combat test run and `gcov -b -c`: core lines 96.57%,
-  branches taken 84.90%; bot lines 98.25%, branches taken 87.54%.
-- The final application stdout is checked byte-for-byte against this document.
-  Fixed `.log` files and `art/reference/` have no changes. No WASM or human
-  playtest verification is claimed.
+The five-tick avoid/block stagger is minimal: after its application tick, a
+bite launched on the next tick hits on the last helpless frame. Failed or
+unfunded defence earns no release or stagger. Tail's catch is anticipatory:
+reacting with a three-tick tail only after observing a one-tick dodge cannot
+guarantee active-phase contact. Its reactive execution row is zero at every
+delay; pinned active-phase tests separately verify full damage, slow and
+interruption. Other execution rows are avoid 1/1/1/0 (bite; charge/spit allow
+all four delays), charge/guard 1/1/1/1, bite/guard and tail/guard 1/1/1/0,
+spit/charge and bite/spit 1/1/1/1.
 
-### Final native tournament output
+### Policy game and uncertainty
 
-The complete default application stdout below is verbatim from GCC 16.2.1 on
-x86-64 Linux, 2026-11-14. `./build/combat_tourney` exits 1 (`make tourney`
-exits nonzero). Four checks fail: both dominance checks and both support
-checks. All nine strategy/build tables, draw counts and canaries are retained.
+Literal repeated non-damaging verbs cannot value defence in a damage matrix:
+a dodge-only row is nonpositive against every row. The gate therefore compares
+**implementable move policies**, including defence's actual continuation.
+Guard closes to bite launch range, raises guard, then bites only during a safe
+window. Dodge approaches, reads an avoidable visible threat, evades forward,
+then takes the same funded bite opportunity. It does not dodge the tail
+exception. Its dash read estimates contact during charge's active travel,
+rather than assuming the first active frame hits a distant target.
+
+A defensive bite requires current launch reach, close alignment, enough
+stamina, no pending enemy hit or active counter, and at least four remaining
+locked ticks. Approximate walk/turn estimates were removed from the inherited
+policy: they did not guarantee the promised punish. The bite uses public
+orders, ordinary damage/bleed and stamina, and completes recovery. A visible
+recovery window can also be punished. No artificial damage or score is awarded
+for blocking, dodging or waiting. Offensive policies repeat their chosen
+attack with shared ranged spacing. This measures real continuations, rather
+than relabelling stamina savings as damage, and applies equally to G53's
+future moves. Tests cover exact safe boundaries, refusal of short windows,
+walk-in, turn or unfunded bites, scarce simultaneous payments and rear bypass.
+
+`make tourney` runs 400 duels per ordered move cell (14,400 total), 120 ticks
+at 7 m, all parts L3, 100 stamina, 4 m/s and 100,000 HP to avoid damage censoring.
+Each independent scenario has two reversed seats at one seed, with start lags
+cycling 0..3 and 0..6, and both reaction delays cycling 0..3. Odd duel counts
+round up to complete a pair. Standard errors use sample variance of independent
+**seat-pair means**; correlated seats are not independent observations.
+Antisymmetry, including zero diagonal, is regression-tested.
+
+Raw payoff is damage dealt minus received. Resource payoff subtracts the
+row's stamina-spend margin times the unchanged mean offensive exchange formula:
+
+`K = ((15.4 + 7*0.6)/10.8 + 42/21.6 + 18.2/14.4 + 23.8/12) / 4`
+`  = 1.751620 HP/stamina` (printed from float32 move data).
+
+This is a nominal L3 damage/start-cost exchange rate, not an exact value of
+stamina in every state. It is never fitted to dominance or the solver.
+Both games independently require no weak dominance at
+`2*max(SE_a, SE_b) + 0.5 HP`. Each uses 200,000 regret-matching iterations
+and requires >=4 moves at >=1% weight, excluding initialization dust.
+A synthetic five-action cycle checks the solver independently of measured
+balance. Dodge beats spit in raw play and enters the resource mix; tail beats
+dodge in both games and enters the raw mix. These finite policy games do not
+prove balance across every genome, starting distance or possible strategy.
+
+The field protocol remains all 16 ordered idle/random/greedy/counter pairs,
+all 25 ordered build pairs, 40 seeds per cell (16,000 duels), 12 m starts and
+a 900-tick cap. Death wins; timeout HP fraction needs more than a one-percentage-
+point lead, otherwise a draw scores 0.5. Idle must score zero on both seats
+(draws fail). Random must score <5% on both seats against greedy and counter.
+This measured tolerance does not establish DESIGN.md's stronger literal
+never-win wording. Correctness tests also use their existing independent seeds.
+
+All nine random/greedy/counter pairings enter build pooling with equal weight
+and both build perspectives. Same-build cells are diagnostic; field means
+against the other four builds must be <=65%, every pooled ordered pair <=90%.
+Elo is descriptive: Bradley–Terry fit, mean 1000, one half-win pseudo-game per
+pair. No acceptance threshold changed. Future P4 B1–B3 inherit these games,
+tolerance, stamina formula and support gate; B4/B7 inherit both build caps,
+B5/B6 add surprise/resource checks and B8 prints Elo. This pass does not claim
+that the future seven-move gates already pass.
+
+### Held-out confirmation
+
+An earlier offset-1,000,000 validation exposed a 65.5% field mean and, after
+an intermediate damage change, a 5.2% random canary score. That set became
+development data. After committing the final combat table, the fresh run was:
+
+```sh
+nice -n 10 ./build/combat_tourney 160 1600 3000000
+```
+
+Offset 3,000,000 was unused in tuning. It supplies 64,000 field duels and
+57,600 payoff duels, four times each default sample count. Payoff seeds are
+3,001,000..3,001,799; field seeds 3,005,001..3,069,000. Default payoff seeds
+are 1,000..1,199 and field seeds 5,001..21,000. Start/reaction factors, duration,
+policies and all gates are identical. Full stdout is committed in
+[p2-heldout.txt](evidence/combat/p2-heldout.txt).
+
+| Check | Default | Fresh held-out |
+|---|---:|---:|
+| Raw dominance relations | 0 | 0 |
+| Resource dominance relations | 0 | 0 |
+| Raw support at >=1% | 5/6 | 5/6 |
+| Resource support at >=1% | 5/6 | 5/6 |
+| Worst field mean | 62.3% | 62.1% |
+| Worst pooled pair | 72.2% | 73.3% |
+| Worst random score vs greedy, either seat | 4.45% | 4.10% |
+| Worst random score vs counter, either seat | 1.45% | 1.34% |
+| Idle wins or draws vs active bots | 0 | 0 |
+
+Held-out mixes in move order bite/charge/guard/spit/tail/dodge:
+raw **1.6/8.3/2.4/23.8/63.9/0.0%**;
+resource **17.8/29.9/11.5/11.1/0.0/29.7%**.
+Both pass the unchanged support and dominance rules. Held-out matrices and
+standard errors:
+
+```text
+-- raw: row's damage dealt minus column's (hp)
+row \ col           bite      charge       guard        spit tail_strike       dodge    row mean
+bite                0.00       -2.01     -136.58      -14.25       10.65      106.69       -5.92
+charge              2.01        0.00      151.51     -117.49       37.94        0.00       12.33
+guard             136.58     -151.51        0.00      -90.54       49.14        0.00       -9.39
+spit               14.25      117.49       90.54        0.00      -19.20      -57.05       24.34
+tail_strike       -10.65      -37.94      -49.14       19.20        0.00       49.31       -4.87
+dodge            -106.69        0.00        0.00       57.05      -49.31        0.00      -16.49
+
+-- resource-adjusted: raw minus 1.751620 hp per stamina point the row spent, plus the same for the column
+row \ col           bite      charge       guard        spit tail_strike       dodge    row mean
+bite                0.00      -46.70     -178.61       65.97      -41.24       91.77      -18.13
+charge             46.70        0.00      131.25     -165.69       63.16      -16.82        9.77
+guard             178.61     -131.25        0.00      106.79       91.01      -14.71       38.41
+spit              -65.97      165.69     -106.79        0.00     -110.45      -85.97      -33.91
+tail_strike        41.24      -63.16      -91.01      110.45        0.00       26.19        3.95
+dodge             -91.77       16.82       14.71       85.97      -26.19        0.00       -0.08
+
+-- raw standard errors (independent seat-pair means)
+row \ col           bite      charge       guard        spit tail_strike       dodge    row mean
+bite                0.00        0.24        0.15        0.76        0.28        3.40        0.81
+charge              0.24        0.00        0.12        1.05        0.24        0.00        0.28
+guard               0.15        0.12        0.00        0.12        0.22        0.00        0.10
+spit                0.76        1.05        0.12        0.00        1.48        0.29        0.62
+tail_strike         0.28        0.24        0.22        1.48        0.00        0.19        0.40
+dodge               3.40        0.00        0.00        0.29        0.19        0.00        0.65
+
+-- resource standard errors (independent seat-pair means)
+row \ col           bite      charge       guard        spit tail_strike       dodge    row mean
+bite                0.00        0.38        0.17        0.83        0.30        2.14        0.64
+charge              0.38        0.00        0.13        1.46        0.24        0.00        0.37
+guard               0.17        0.13        0.00        0.35        0.25        0.00        0.15
+spit                0.83        1.46        0.35        0.00        1.41        0.22        0.71
+tail_strike         0.30        0.24        0.25        1.41        0.00        0.19        0.40
+dodge               2.14        0.00        0.00        0.22        0.19        0.00        0.43
+```
+
+### Final default tournament output
+
+GCC 16.2.1, x86-64 Linux, 2026-11-15. `make tourney` exits 0.
+Full stdout is also in [p2-default.txt](evidence/combat/p2-default.txt).
 
 ```text
 cpore combat tourney  (tick 10 Hz, seeds/cell 40, payoff duels/cell 400)
 
+seed offset 0 (payoff base 1000; field base 5000)
+
 == Move-vs-move payoff, 400 duels per cell: move policies, 7 m apart,
    paired seats and start offsets, 12 s; neutral builds (all parts L3, hp 100000 so nobody dies)
-   guard takes an earned bite riposte; ranged moves retreat and sidestep walls; dodge repeats
+   guard closes and blocks; dodge reads contact; both take funded bite punishes; ranged moves space
 
 -- raw: row's damage dealt minus column's (hp)
 row \ col           bite      charge       guard        spit tail_strike       dodge    row mean
-bite                0.00      -54.68     -138.80      -18.30        6.46        0.00      -34.22
-charge             54.68        0.00      175.61     -127.06       83.84       95.87       47.16
-guard             138.80     -175.61        0.00     -176.49     -104.83        0.00      -53.02
-spit               18.30      127.06      176.49        0.00       -8.57        0.00       52.22
-tail_strike        -6.46      -83.84      104.83        8.57        0.00       75.14       16.37
-dodge               0.00      -95.87        0.00        0.00      -75.14        0.00      -28.50
+bite                0.00       -2.81     -136.44      -14.50       11.01      104.94       -6.30
+charge              2.81        0.00      151.24     -117.28       37.63        0.00       12.40
+guard             136.44     -151.24        0.00      -90.55       49.25        0.00       -9.35
+spit               14.50      117.28       90.55        0.00      -19.07      -56.88       24.40
+tail_strike       -11.01      -37.63      -49.25       19.07        0.00       48.95       -4.98
+dodge            -104.94        0.00        0.00       56.88      -48.95        0.00      -16.17
 
--- resource-adjusted: raw minus 1.779167 hp per stamina point the row spent, plus the same for the column
+-- resource-adjusted: raw minus 1.751620 hp per stamina point the row spent, plus the same for the column
 row \ col           bite      charge       guard        spit tail_strike       dodge    row mean
-bite                0.00     -100.22     -165.55       -7.85      -46.24     -152.74      -78.77
-charge            100.22        0.00      149.32     -180.94      109.46      -26.37       25.28
-guard             165.55     -149.32        0.00       38.70       85.37       90.99       38.55
-spit                7.85      180.94      -38.70        0.00      -58.05     -125.30       -5.54
-tail_strike        46.24     -109.46      -85.37       58.05        0.00      -36.77      -21.22
-dodge             152.74       26.37      -90.99      125.30       36.77        0.00       41.70
+bite                0.00      -47.64     -178.51       65.72      -40.88       93.26      -18.01
+charge             47.64        0.00      130.99     -165.48       62.85      -16.82        9.86
+guard             178.51     -130.99        0.00      106.89       90.75      -14.71       38.41
+spit              -65.72      165.48     -106.89        0.00     -110.32      -85.83      -33.88
+tail_strike        40.88      -62.85      -90.75      110.32        0.00       25.83        3.91
+dodge             -93.26       16.82       14.71       85.83      -25.83        0.00       -0.29
+
+-- raw standard errors (independent seat-pair means)
+row \ col           bite      charge       guard        spit tail_strike       dodge    row mean
+bite                0.00        0.43        0.35        1.49        0.57        6.69        1.59
+charge              0.43        0.00        0.26        2.12        0.52        0.00        0.55
+guard               0.35        0.26        0.00        0.24        0.41        0.00        0.21
+spit                1.49        2.12        0.24        0.00        2.99        0.59        1.24
+tail_strike         0.57        0.52        0.41        2.99        0.00        0.41        0.82
+dodge               6.69        0.00        0.00        0.59        0.41        0.00        1.28
+
+-- resource standard errors (independent seat-pair means)
+row \ col           bite      charge       guard        spit tail_strike       dodge    row mean
+bite                0.00        0.81        0.39        1.64        0.61        4.27        1.29
+charge              0.81        0.00        0.27        2.94        0.52        0.00        0.76
+guard               0.39        0.27        0.00        0.70        0.46        0.00        0.30
+spit                1.64        2.94        0.70        0.00        2.84        0.45        1.43
+tail_strike         0.61        0.52        0.46        2.84        0.00        0.41        0.81
+dodge               4.27        0.00        0.00        0.45        0.41        0.00        0.85
 
 == Dominance check (tolerance 2*SE + 0.5 hp)
 -- raw matrix (acceptance gate)
-   spit weakly dominates dodge
+   no move weakly dominates any other
 -- resource-adjusted matrix (acceptance gate)
-   dodge weakly dominates bite
-   raw equilibrium mix (regret matching, 200k iters), game value 0.00:  bite 0.0%  charge 3.9%  guard 0.0%  spit 38.6%  tail_strike 57.5%  dodge 0.0%
-  FAIL  raw equilibrium uses >=4 moves at >=1% weight (observed 3/6)
-   resource equilibrium mix (regret matching, 200k iters), game value -0.00:  bite 0.0%  charge 34.1%  guard 10.0%  spit 0.0%  tail_strike 0.0%  dodge 55.9%
-  FAIL  resource equilibrium uses >=4 moves at >=1% weight (observed 3/6)
-  FAIL  no move weakly dominates another (raw damage payoff)
-  FAIL  no move weakly dominates another (resource-adjusted payoff)
+   no move weakly dominates any other
+   raw equilibrium mix (regret matching, 200k iters), game value 0.00:  bite 1.8%  charge 8.0%  guard 2.7%  spit 24.1%  tail_strike 63.3%  dodge 0.0%
+  PASS  raw equilibrium uses >=4 moves at >=1% weight (observed 5/6)
+   resource equilibrium mix (regret matching, 200k iters), game value 0.00:  bite 17.6%  charge 29.9%  guard 11.7%  spit 11.3%  tail_strike 0.0%  dodge 29.5%
+  PASS  resource equilibrium uses >=4 moves at >=1% weight (observed 5/6)
+  PASS  no move weakly dominates another (raw damage payoff)
+  PASS  no move weakly dominates another (resource-adjusted payoff)
 
 == Strategy round robin: 5 profiles x 5 profiles x 40 seeds per ordered pair, both sides, 900-tick cap
    score of row against column (win = 1, draw = 0.5), pooled over all profile pairings
 
 row \ col       idle    random    greedy   counter
 idle           0.500     0.000     0.000     0.000
-random         1.000     0.485     0.032     0.015
-greedy         1.000     0.963     0.504     0.313
-counter        1.000     0.983     0.682     0.506
+random         1.000     0.462     0.044     0.015
+greedy         1.000     0.959     0.503     0.312
+counter        1.000     0.987     0.684     0.507
 
 == Elo (strategies; max-likelihood fit with one pseudo-game per pair, mean 1000)
-   counter       1702
-   greedy        1568
-   random         994
-   idle          -265
+   counter       1696
+   greedy        1557
+   random        1003
+   idle          -257
 
 == Canaries (both seats; draw = half a score, reported separately)
   PASS  idle scores zero vs random on BOTH seats (draws fail)
@@ -702,102 +705,100 @@ counter        1.000     0.983     0.682     0.506
   PASS  idle scores zero vs counter on BOTH seats (draws fail)
    idle left vs counter score 0.0000 draws 0/1000; idle right score 0.0000 draws 0/1000
   PASS  random scores <5% vs greedy on BOTH seats
-   random left vs greedy  score 0.0320 draws 6/1000; random right score 0.0375 draws 5/1000
+   random left vs greedy  score 0.0445 draws 5/1000; random right score 0.0415 draws 3/1000
   PASS  random scores <5% vs counter on BOTH seats
-   random left vs counter score 0.0155 draws 1/1000; random right score 0.0175 draws 3/1000
+   random left vs counter score 0.0145 draws 3/1000; random right score 0.0130 draws 2/1000
 
 == Full build pairwise tables (row score; both seats pooled, draws = 0.5)
 
    random vs random
    row / col        brawler     spitter        tank  skirmisher  allrounder
-   brawler            0.500       0.519       0.425       0.394       0.450
-   spitter            0.481       0.500       0.469       0.381       0.525
-   tank               0.575       0.531       0.500       0.463       0.550
-   skirmisher         0.606       0.619       0.537       0.500       0.688
-   allrounder         0.550       0.475       0.450       0.312       0.500
+   brawler            0.500       0.613       0.406       0.512       0.469
+   spitter            0.388       0.500       0.500       0.362       0.450
+   tank               0.594       0.500       0.500       0.569       0.669
+   skirmisher         0.487       0.637       0.431       0.500       0.644
+   allrounder         0.531       0.550       0.331       0.356       0.500
 
    random vs greedy
    row / col        brawler     spitter        tank  skirmisher  allrounder
-   brawler            0.025       0.013       0.019       0.062       0.037
-   spitter            0.075       0.025       0.013       0.081       0.062
-   tank               0.056       0.037       0.013       0.050       0.050
-   skirmisher         0.050       0.025       0.025       0.000       0.037
-   allrounder         0.019       0.000       0.000       0.056       0.037
+   brawler            0.025       0.037       0.019       0.212       0.037
+   spitter            0.075       0.006       0.013       0.119       0.025
+   tank               0.013       0.000       0.000       0.131       0.050
+   skirmisher         0.025       0.013       0.013       0.025       0.025
+   allrounder         0.019       0.037       0.000       0.138       0.019
 
    random vs counter
    row / col        brawler     spitter        tank  skirmisher  allrounder
-   brawler            0.019       0.013       0.031       0.013       0.025
-   spitter            0.037       0.000       0.025       0.013       0.025
-   tank               0.050       0.000       0.006       0.000       0.037
-   skirmisher         0.025       0.013       0.000       0.000       0.050
-   allrounder         0.019       0.000       0.000       0.000       0.013
+   brawler            0.006       0.000       0.037       0.031       0.037
+   spitter            0.013       0.031       0.000       0.031       0.000
+   tank               0.025       0.025       0.000       0.000       0.013
+   skirmisher         0.025       0.000       0.000       0.000       0.050
+   allrounder         0.000       0.000       0.000       0.000       0.019
 
    greedy vs random
    row / col        brawler     spitter        tank  skirmisher  allrounder
-   brawler            0.975       0.925       0.944       0.950       0.981
-   spitter            0.988       0.975       0.963       0.975       1.000
-   tank               0.981       0.988       0.988       0.975       1.000
-   skirmisher         0.938       0.919       0.950       1.000       0.944
-   allrounder         0.963       0.938       0.950       0.963       0.963
+   brawler            0.975       0.925       0.988       0.975       0.981
+   spitter            0.963       0.994       1.000       0.988       0.963
+   tank               0.981       0.988       1.000       0.988       1.000
+   skirmisher         0.787       0.881       0.869       0.975       0.863
+   allrounder         0.963       0.975       0.950       0.975       0.981
 
    greedy vs greedy
    row / col        brawler     spitter        tank  skirmisher  allrounder
-   brawler            0.500       0.000       0.938       0.000       0.381
+   brawler            0.500       0.000       0.975       1.000       0.381
    spitter            1.000       0.500       1.000       1.000       1.000
-   tank               0.062       0.000       0.500       0.000       0.000
-   skirmisher         1.000       0.000       1.000       0.500       0.550
-   allrounder         0.619       0.000       1.000       0.450       0.500
+   tank               0.025       0.000       0.500       1.000       0.013
+   skirmisher         0.000       0.000       0.000       0.500       0.500
+   allrounder         0.619       0.000       0.988       0.500       0.500
 
    greedy vs counter
    row / col        brawler     spitter        tank  skirmisher  allrounder
-   brawler            0.506       0.000       0.925       0.000       0.406
-   spitter            0.188       0.500       0.000       1.000       1.000
-   tank               0.150       0.000       0.494       0.000       0.000
-   skirmisher         0.031       0.000       0.000       0.506       0.512
-   allrounder         0.631       0.000       0.000       0.581       0.450
+   brawler            0.500       0.000       0.963       0.000       0.400
+   spitter            0.212       0.500       0.000       1.000       1.000
+   tank               0.062       0.000       0.500       0.000       0.013
+   skirmisher         0.000       0.000       0.000       0.500       0.500
+   allrounder         0.694       0.000       0.000       0.500       0.500
 
    counter vs random
    row / col        brawler     spitter        tank  skirmisher  allrounder
-   brawler            0.981       0.963       0.950       0.975       0.981
-   spitter            0.988       1.000       1.000       0.988       1.000
-   tank               0.969       0.975       0.994       1.000       1.000
-   skirmisher         0.988       0.988       1.000       1.000       1.000
-   allrounder         0.975       0.975       0.963       0.950       0.988
+   brawler            0.994       0.988       0.975       0.975       1.000
+   spitter            1.000       0.969       0.975       1.000       1.000
+   tank               0.963       1.000       1.000       1.000       1.000
+   skirmisher         0.969       0.969       1.000       1.000       1.000
+   allrounder         0.963       1.000       0.988       0.950       0.981
 
    counter vs greedy
    row / col        brawler     spitter        tank  skirmisher  allrounder
-   brawler            0.494       0.812       0.850       0.969       0.369
+   brawler            0.500       0.787       0.938       1.000       0.306
    spitter            1.000       0.500       1.000       1.000       1.000
-   tank               0.075       1.000       0.506       1.000       1.000
-   skirmisher         1.000       0.000       1.000       0.494       0.419
-   allrounder         0.594       0.000       1.000       0.487       0.550
+   tank               0.037       1.000       0.500       1.000       1.000
+   skirmisher         1.000       0.000       1.000       0.500       0.500
+   allrounder         0.600       0.000       0.988       0.500       0.500
 
    counter vs counter
    row / col        brawler     spitter        tank  skirmisher  allrounder
-   brawler            0.500       0.819       0.887       0.906       0.394
-   spitter            0.181       0.500       0.000       1.000       1.000
-   tank               0.113       1.000       0.500       1.000       0.000
-   skirmisher         0.094       0.000       0.000       0.500       0.463
-   allrounder         0.606       0.000       1.000       0.537       0.500
+   brawler            0.500       0.662       0.938       0.000       0.381
+   spitter            0.338       0.500       0.000       1.000       1.000
+   tank               0.062       1.000       0.500       0.000       0.025
+   skirmisher         1.000       0.000       1.000       0.500       0.500
+   allrounder         0.619       0.000       0.975       0.500       0.500
 
 == Build scores pooled over ALL nine strategy pairings
    row / col        brawler     spitter        tank  skirmisher  allrounder  field mean
-   brawler            0.500       0.451       0.663       0.474       0.447       0.509
-   spitter            0.549       0.500       0.497       0.715       0.735       0.624
-   tank               0.337       0.503       0.500       0.499       0.404       0.436
-   skirmisher         0.526       0.285       0.501       0.500       0.518       0.457
-   allrounder         0.553       0.265       0.596       0.482       0.500       0.474
+   brawler            0.500       0.446       0.693       0.523       0.444       0.526
+   spitter            0.554       0.500       0.499       0.722       0.715       0.623
+   tank               0.307       0.501       0.500       0.521       0.420       0.437
+   skirmisher         0.477       0.278       0.479       0.500       0.509       0.436
+   allrounder         0.556       0.285       0.580       0.491       0.500       0.478
 
 == Elo (builds, all strategy pairings, both seats)
-   brawler         1005
+   brawler         1015
    spitter         1070
-   tank             964
-   skirmisher       976
-   allrounder       985
-  PASS  no build field mean exceeds 65% (worst 62.4%)
-  PASS  no pooled build pair exceeds 90% (worst 73.5%)
+   tank             965
+   skirmisher       964
+   allrounder       987
+  PASS  no build field mean exceeds 65% (worst 62.3%)
+  PASS  no pooled build pair exceeds 90% (worst 72.2%)
 
-tourney checks FAILED
+tourney checks passed
 ```
-
-Legacy replay only: the diagonal `CB_V_MOVE` octants use the float32 literal 0.70710678, whose squared length is 1 − 2⁻²⁴, so diagonal walking covers 0.399999988 m per tick instead of 0.4. Both compilers use the same literal, so parity is unaffected.
