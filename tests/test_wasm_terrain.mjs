@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
+import { createHash } from 'node:crypto';
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { createTerrain } from '../web/terrain-lab/terrain.mjs';
 const progress = [];
@@ -47,6 +48,20 @@ for (const [coast,rock,volcano,caves] of [[0,0,0,0],[1,0,0,0],[0,1,0,0],[0,0,1,0
     '--sea-cliffs',String(coast),'--hard-rock',String(rock),'--volcano',String(volcano),'--caves',String(caves)],{encoding:'utf8'}).trim().split(/\s+/);
   assert.equal(engine.generate({seed:42,n:128,coast,rock,volcano,caves}).hash,native[0]);
 }
+// Map bytes from original v2 (0386bb8), independent of v3's hash schema.
+const baseline = JSON.parse(readFileSync('tests/golden/terrain-v2-maps.json', 'utf8'));
+const unchanged = engine.generate({seed:baseline.seed,n:baseline.n,gentle:0,variety:0,bands:0,coast:0,rock:0,volcano:0,caves:0});
+mkdirSync('build/terrain',{recursive:true});
+const baselinePath = 'build/terrain/v2-regression.bin';
+execFileSync('nice', ['-n','10','build/terrain_cli','dump','--seed',String(baseline.seed),'--n',String(baseline.n),'--out',baselinePath,
+  ...['gentle-bases','layout-variety','cliff-bands','sea-cliffs','hard-rock','volcano','caves'].flatMap(name=>['--'+name,'0'])]);
+const baselineNative = readFileSync(baselinePath), mapBytes = baseline.n*baseline.n*4;
+for (const [i,name] of ['height','flow','sediment'].entries()) {
+  const bytes = Buffer.from(unchanged[name].buffer, unchanged[name].byteOffset, mapBytes);
+  assert.equal(createHash('sha256').update(bytes).digest('hex'),baseline.sha256[name],`original v2 ${name}`);
+  assert.ok(bytes.equals(baselineNative.subarray(28+i*mapBytes,28+(i+1)*mapBytes)),`native v2 ${name}`);
+}
+console.log('original v2: all 196,608 height/flow/sediment samples match byte-for-byte, native and WASM');
 assert.ok(progress.includes(0) && progress.includes(1) && progress.includes(2) && progress.includes(3) && progress.includes(4));
 assert.ok(rows.at(-1).wasm_seconds<=10,'W13: default 1024 generation exceeds 10 seconds');
 assert.equal(engine.module._ct_map(7),0);
