@@ -58,8 +58,11 @@ const PAL = {
   particle:     [0.72, 0.82, 0.80],
 };
 
-/* ── GLSL shared chunk (uniforms + exponential underwater fog) ───────── */
+/* ── GLSL shared chunk (precision + uniforms + exponential underwater fog) ─*/
 const UW_COMMON = `
+precision mediump float;
+precision mediump int;
+
 uniform float uTime;
 uniform vec3  camPos;
 uniform vec3  uSunDir;      /* unit vector pointing TOWARD the sun (upward) */
