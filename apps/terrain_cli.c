@@ -84,6 +84,9 @@ static void apply_overrides(CpTerrainParams *p, int argc, char **argv)
     int life = arg_i(argc, argv, "--lifetime", p->lifetime);
     int stream = arg_i(argc, argv, "--stream", p->stream_iters);
     if (has(argc, argv, "--base")) { drops = 0; thermal = 0; stream = 0; }
+    p->gentle_bases=arg_f(argc,argv,"--gentle-bases",p->gentle_bases);
+    p->layout_variety=arg_f(argc,argv,"--layout-variety",p->layout_variety);
+    p->cliff_bands=arg_f(argc,argv,"--cliff-bands",p->cliff_bands);
     p->stream_iters = stream;
     p->stream_k=arg_f(argc,argv,"--stream-k",p->stream_k);
     p->talus_deg=arg_f(argc,argv,"--talus",p->talus_deg);

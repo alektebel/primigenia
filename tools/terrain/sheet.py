@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Compose docs/evidence/terrain/shape-v2.png from the capture script's pictures.
+"""Compose docs/evidence/terrain/shape-v2plus.png from the capture script's pictures.
 
 Rows: phase A seed 42 (before), then version 2 seeds 42, 1 and 7 (after).
 Columns: fixed oblique camera, valley-floor camera, hillshade + drainage.
@@ -9,10 +9,10 @@ from pathlib import Path
 from PIL import Image, ImageDraw, ImageFont
 
 root = Path(sys.argv[1] if len(sys.argv) > 1 else "docs/evidence/terrain")
-rows = [("before-42", "Before: phase A, seed 42 (2 km square)"),
-        ("after-42", "After: version 2, seed 42 (3.6 km square)"),
-        ("after-1", "After: version 2, seed 1"),
-        ("after-7", "After: version 2, seed 7")]
+rows = [("v2-42", "Before: version 2, seed 42 (3.6 km square)"),
+        ("after-42", "After: version 3 (v2+), seed 42 (3.6 km square)"),
+        ("after-1", "After: version 3 (v2+), seed 1"),
+        ("after-7", "After: version 3 (v2+), seed 7")]
 H, PAD, LABEL = 520, 10, 34
 font = None
 for path in ("/usr/share/fonts/TTF/DejaVuSans.ttf", "/usr/share/fonts/noto/NotoSans-Regular.ttf"):
@@ -40,5 +40,5 @@ for title, cells in strips:
         sheet.paste(cell, (x, y + LABEL))
         x += cell.width + PAD
     y += H + LABEL + PAD
-sheet.save(root / "shape-v2.png", optimize=True)
-print(root / "shape-v2.png", sheet.size)
+sheet.save(root / "shape-v2plus.png", optimize=True)
+print(root / "shape-v2plus.png", sheet.size)

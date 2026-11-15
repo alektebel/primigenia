@@ -21,7 +21,7 @@ extern "C" {
 #endif
 
 /* Bump when the bytes for a seed change. Cached worlds key on this (W13). */
-#define CP_TERRAIN_VERSION 2
+#define CP_TERRAIN_VERSION 3
 
 #define CP_TERRAIN_N_MIN   8
 #define CP_TERRAIN_N_MAX   2048
@@ -92,6 +92,9 @@ typedef struct CpTerrainParams {
     float gravity;
     float min_slope;        /* minimum downhill slope used for capacity */
     float talus_deg;        /* loose material: the final thermal passes */
+    float gentle_bases;     /* 0 = v2 heights; 1 = gentle lowland remap */
+    float layout_variety;   /* 0 = v2 seven slots; 1 = seeded 6..8, extra jitter */
+    float cliff_bands;      /* 0 = off; 1 = subtle high, steep bedrock bands */
     float cliff_deg;        /* bedrock: the sweep inside stream power */
 } CpTerrainParams;
 

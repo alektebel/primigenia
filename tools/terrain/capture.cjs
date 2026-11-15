@@ -16,7 +16,7 @@ const url=process.env.TERRAIN_URL||'http://127.0.0.1:8031/web/terrain-lab/';
 const args=process.argv.slice(2),flag=name=>args.includes(name),value=(name,fallback)=>args.includes(name)?args[args.indexOf(name)+1]:fallback;
 const out=value('--out','docs/evidence/terrain'),seeds=value('--seeds','42,1,7').split(',').map(Number);
 const jobs=[];
-if(!flag('--no-before')&&fs.existsSync('build/wasm-v1/cpore_terrain.mjs'))jobs.push({name:'before-42',seed:42,engine:'v1'});
+if(!flag('--no-before')&&fs.existsSync('build/wasm-v2/cpore_terrain.mjs'))jobs.push({name:'v2-42',seed:42,engine:'v2'});
 if(!flag('--no-base'))jobs.push({name:`base-${seeds[0]}`,seed:seeds[0],base:1});
 for(const seed of seeds)jobs.push({name:`after-${seed}`,seed});
 (async()=>{
@@ -33,7 +33,7 @@ for(const seed of seeds)jobs.push({name:`after-${seed}`,seed});
       await page.waitForFunction(()=>window.terrainResult||document.body.dataset.error==='true',{timeout:120000});
       const result=await page.evaluate(()=>window.terrainResult);
       assert.ok(result,await page.locator('#status').textContent());
-      assert.equal(result.seed,job.seed);assert.equal(result.base,Boolean(job.base));assert.equal(result.version,job.engine?1:2);
+      assert.equal(result.seed,job.seed);assert.equal(result.base,Boolean(job.base));assert.equal(result.version,job.engine?2:3);
       await page.locator('#scene').screenshot({path:`${out}/${job.name}-oblique.png`});
       await page.selectOption('#view','valley');
       await page.locator('#scene').screenshot({path:`${out}/${job.name}-valley.png`});
@@ -61,6 +61,7 @@ for(const seed of seeds)jobs.push({name:`after-${seed}`,seed});
       fs.writeFileSync(`${out}/browser.json`,JSON.stringify({browser:browser.version(),renderer:gl,errors,terrains:results,
         captures:jobs.length*3+2,interactions:'all five surface modes, both views, keyboard camera, reset, drainage, invalid seed, regeneration, mobile overflow'},null,2)+'\n');
     }
+    if(flag('--no-smoke'))fs.writeFileSync(`${out}/browser.json`,JSON.stringify({browser:browser.version(),renderer:gl,errors,terrains:results,captures:jobs.length*3},null,2)+'\n');
     assert.deepEqual(errors,[]);
     console.log('Terrain browser capture: PASS; '+gl);
   }finally{await browser.close();}

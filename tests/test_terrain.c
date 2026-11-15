@@ -201,7 +201,7 @@ static void guarantees(void) {
  * byte; the layout switch alone must change geometry on the same seed. */
 static void deltas(void) {
     CpTerrainParams p; cp_terrain_params_default(&p);
-    p.n=128; p.droplets=500; p.seed=42;
+    p.n=256; p.stream_iters=0; p.droplets=0; p.thermal_iters=0; p.seed=42;
     p.gentle_bases=p.layout_variety=p.cliff_bands=0;
     Fixture a=fixture(p.n),b=fixture(p.n);
     assert(cp_terrain_generate(&p,&a.t,&a.w,NULL,NULL)==0);
@@ -218,6 +218,7 @@ static void deltas(void) {
             if(delta==2 && (h<=p.valley_floor_m+260.f || a.w.scratch[i]<=.83909963f))
                 assert(h==b.t.height[i]);
         }
+        printf("delta %d: %d changed cells\n",delta,changes);
         assert(changes>0);
     }
     free(a.mem); free(b.mem);

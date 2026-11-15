@@ -249,6 +249,9 @@ void cp_terrain_params_default(CpTerrainParams *p)
     p->gravity = 4.f;
     p->min_slope = 0.01f;
     p->talus_deg = 38.f;
+    p->gentle_bases = 1.f;
+    p->layout_variety = 1.f;
+    p->cliff_bands = 1.f;
 }
 
 static int in_range(float x, float a, float b)
@@ -295,6 +298,9 @@ int cp_terrain_validate(const CpTerrainParams *p)
     if (!in_range(p->min_slope, 0.f, 1.f)) return CP_TERR_ERR_RANGE;
     if (!in_range(p->talus_deg, 5.f, 55.f)) return CP_TERR_ERR_RANGE;
     if (!in_range(p->cliff_deg, 5.f, 75.f)) return CP_TERR_ERR_RANGE;
+    if (!in_range(p->gentle_bases, 0.f, 1.f)) return CP_TERR_ERR_RANGE;
+    if (!in_range(p->layout_variety, 0.f, 1.f)) return CP_TERR_ERR_RANGE;
+    if (!in_range(p->cliff_bands, 0.f, 1.f)) return CP_TERR_ERR_RANGE;
     return CP_TERR_OK;
 }
 
@@ -337,13 +343,14 @@ static void unit_dir(float x, float y, float *ux, float *uy)
 
 /* A massif: a peak with a long axis, so the range is a chain of separate
  * mountains with saddles between them rather than one wall of even height. */
-#define MASSIFS 7
+#define MASSIFS 8
 typedef struct { float x, y, ax, ay, inv_w, inv_l, h; } Massif;
 
 typedef struct {
     float px, py, cx, cy;       /* river-gap and col directions, unit */
     float crest0;               /* mean crest radius */
     float ox, oy;               /* island centre, off the valley centre */
+    int count;
     Massif m[MASSIFS];
 } BaseCtx;
 
@@ -357,24 +364,36 @@ static float hash01(int a, int b, uint32_t seed)
  * literals; the jitter is a rotation by a normalised (1, j), so no trig. */
 static void base_ctx(const CpTerrainParams *p, BaseCtx *c)
 {
-    static const float CS[MASSIFS][2] = {
+    static const float CS7[7][2] = {
         { 0.90096885f,  0.43388376f}, { 0.22252093f,  0.97492790f},
         {-0.62348980f,  0.78183150f}, {-1.f,          0.f},
         {-0.62348980f, -0.78183150f}, { 0.22252093f, -0.97492790f},
         { 0.90096885f, -0.43388376f}
     };
+    static const float CS6[6][2] = {
+        { .86602540f, .5f}, {0.f, 1.f}, {-.86602540f, .5f},
+        {-.86602540f, -.5f}, {0.f, -1.f}, {.86602540f, -.5f}
+    };
+    static const float CS8[8][2] = {
+        {.92387953f, .38268343f}, {.38268343f, .92387953f},
+        {-.38268343f, .92387953f}, {-.92387953f, .38268343f},
+        {-.92387953f, -.38268343f}, {-.38268343f, -.92387953f},
+        {.38268343f, -.92387953f}, {.92387953f, -.38268343f}
+    };
     uint32_t s = p->seed ^ 0x3956C25Bu;
+    c->count = p->layout_variety > 0.f ? 6 + (int)(hash2(91, 0, s) % 3u) : 7;
+    const float (*CS)[2] = c->count == 6 ? CS6 : c->count == 8 ? CS8 : CS7;
     unit_dir(p->pass_x, p->pass_y, &c->px, &c->py);
     unit_dir(p->col_x, p->col_y, &c->cx, &c->cy);
     c->crest0 = p->ring_inner_m + 0.46f * (p->ring_outer_m - p->ring_inner_m);
     c->ox = (hash01(90, 1, s) - 0.5f) * 0.14f * p->island_radius_m - c->px * 0.05f * p->island_radius_m;
     c->oy = (hash01(90, 2, s) - 0.5f) * 0.14f * p->island_radius_m - c->py * 0.05f * p->island_radius_m;
-    for (int k = 0; k < MASSIFS; k++) {
+    for (int k = 0; k < c->count; k++) {
         Massif *m = &c->m[k];
         float dx = c->px * CS[k][0] - c->py * CS[k][1];
         float dy = c->px * CS[k][1] + c->py * CS[k][0];
         float jc, js, t, rad, w, stretch;
-        unit_dir(1.f, (hash01(k, 1, s) - 0.5f) * 0.40f, &jc, &js);
+        unit_dir(1.f, (hash01(k, 1, s) - 0.5f) * (0.40f + 0.50f * p->layout_variety), &jc, &js);
         t = dx * jc - dy * js;
         dy = dx * js + dy * jc;
         dx = t;
@@ -384,6 +403,7 @@ static void base_ctx(const CpTerrainParams *p, BaseCtx *c)
         unit_dir(hash01(k, 3, s) - 0.5f, hash01(k, 4, s) - 0.5f, &m->ax, &m->ay);
         stretch = 1.1f + 0.9f * hash01(k, 5, s);
         w = (p->ring_outer_m - p->ring_inner_m) * (0.36f + 0.14f * hash01(k, 6, s));
+        w *= 1.f + p->layout_variety * 0.30f * (hash01(k, 8, s) - 0.5f);
         m->inv_w = 1.f / maxf(w, 1.f);
         m->inv_l = 1.f / maxf(w * stretch, 1.f);
         m->h = 0.60f + 0.40f * hash01(k, 7, s);
@@ -443,7 +463,7 @@ static float base_height(const CpTerrainParams *p, const BaseCtx *c, float x, fl
     /* A broad crown, not a tent: the ridged field inside it decides where
      * the crests run, so they wander, double up and leave peaks off the line. */
     env = t < 1.f ? (1.f - t * t) * (1.f - 0.35f * t) : 0.f;
-    for (int k = 0; k < MASSIFS; k++) {
+    for (int k = 0; k < c->count; k++) {
         const Massif *m = &c->m[k];
         float ex = X - m->x, ey = Y - m->y;
         float a = (ex * m->ax + ey * m->ay) * m->inv_l;
@@ -1040,6 +1060,44 @@ void cp_terrain_slope(const float *height, int n, float size_m, float *slope)
     }
 }
 
+/* Smooth low-relief compression, identity on the floor and upper faces.
+ * Applied AFTER v2 transport: it cannot change any erosion pass or its ridges.
+ * The wide C1 recovery avoids a terrace edge; there is no radial apron/moat. */
+static void gentle_bases(const CpTerrainParams *p, float *height)
+{
+    if (!(p->gentle_bases > 0.f)) return;
+    for (int i = 0; i < p->n * p->n; i++) {
+        float z = height[i] - p->valley_floor_m;
+        if (z > 0.f && z < 300.f) {
+            float d = maxf(z - 58.f, 0.f), t = minf(d / 16.f, 1.f);
+            float compression = d < 16.f ? 16.f * (t*t*t - 0.5f*t*t*t*t) : d - 8.f;
+            height[i] -= p->gentle_bases * 0.80f * compression * (1.f - smoothstep(180.f, 300.f, z));
+        }
+    }
+}
+
+/* Bedded rock relief is at most 0.9m, only above the treeline on steep faces.
+ * A snapshot of slope keeps the eligibility independent of traversal order.
+ * A polynomial periodic fold avoids libm trig in canonical maps. */
+static void cliff_bands(const CpTerrainParams *p, float *height, float *slope)
+{
+    if (!(p->cliff_bands > 0.f)) return;
+    cp_terrain_slope(height, p->n, p->size_m, slope);
+    float cell = p->size_m / (float)p->n;
+    for (int y = 0; y < p->n; y++) for (int x = 0; x < p->n; x++) {
+        int i = y * p->n + x;
+        float h = height[i];
+        float mask = smoothstep(p->valley_floor_m + 260.f, p->valley_floor_m + 290.f, h)
+                   * smoothstep(0.83909963f, 1.42814801f, slope[i]);
+        if (mask > 0.f) {
+            float wx = ((float)x + 0.5f) * cell, wy = ((float)y + 0.5f) * cell;
+            float phase = (h + 7.f * noise2(wx / 240.f, wy / 240.f, p->seed ^ 0x7E15AB31u)) / 34.f;
+            float t = phase - (float)ifloor(phase);
+            height[i] -= p->cliff_bands * mask * 0.9f * 16.f * t * t * (1.f - t) * (1.f - t);
+        }
+    }
+}
+
 /* ---- hash ---------------------------------------------------------------- */
 
 static void fnv_byte(uint64_t *h, uint8_t b)
@@ -1172,6 +1230,8 @@ int cp_terrain_generate(const CpTerrainParams *p, CpTerrain *out,
     stream_power(p, n, out->height, out->sediment, out->flow, ws->scratch, ws,
                  level_iters(p, 0), &settle);
     thermal(p, out->height, out->sediment, &settle);
+    gentle_bases(p, out->height);
+    cliff_bands(p, out->height, ws->scratch);
     flow_accum(out->height, n, p->size_m, p->seed, out->flow, ws->scratch,
                ws->recv, ws->ups, ws->queue, fn, user);
     notify(fn, user, CP_TERR_STAGE_DONE, 1, 1);

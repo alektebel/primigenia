@@ -99,7 +99,10 @@ function albedo(i,mode){
   let c=mix(C.meadow,C.forest,step(.22,.5,slope)*(1-step(170,250,h))*.85);
   c=mix(c,C.alp,step(200,300,h+north*30));
   // Bare rock where it is too steep or too high for turf; banded like bedded stone.
-  const band=.5+.5*Math.sin(h*.55+Math.sin(i*.0137)*1.3),stone=mix(C.dark,C.rock,.35+.65*band);
+  const band=.5+.5*Math.sin(h*.55+Math.sin(i*.0137)*1.3);
+  const highFace=step(302,332,h)*step(.8391,1.4281,slope)*(t.bands??1);
+  const tone=t.version<3 ? .35+.65*band : .675+.12*(band-.5)*highFace;
+  const stone=mix(C.dark,C.rock,tone);
   c=mix(c,stone,step(1.05,1.55,slope));
   c=mix(c,stone,step(270,380,h)*.75);
   // Loose material the generator moved: scree where it lies steep, gravel where it lies flat.
@@ -194,7 +197,8 @@ for(const id of ['warp','ridge','stream','droplets','erosion','thermal'])$(id).a
 $('controls').addEventListener('submit',event=>{
   event.preventDefault();if(busy||!$('controls').reportValidity())return;
   busy=true;document.body.dataset.error='false';$('generate').disabled=true;$('status').textContent='A world is taking shape…';$('progress').value=0;
-  worker.postMessage({engine:query.get('engine')==='v1'?'v1':'current',seed:Number($('seed').value),n:Number($('resolution').value),base:$('base').checked,
+  worker.postMessage({engine:['v1','v2'].includes(query.get('engine'))?query.get('engine'):'current',seed:Number($('seed').value),n:Number($('resolution').value),base:$('base').checked,
+    gentle:Number(query.get('gentle')??1),variety:Number(query.get('variety')??1),bands:Number(query.get('bands')??1),
     warp:Number($('warp').value),ridge:Number($('ridge').value),stream:Number($('stream').value),droplets:Number($('droplets').value),erosion:Number($('erosion').value),thermal:Number($('thermal').value)});
 });
 $('shading').addEventListener('change',recolor);$('drainage').addEventListener('change',hillshade);$('reset').addEventListener('click',cameraReset);

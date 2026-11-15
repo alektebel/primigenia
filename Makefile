@@ -151,7 +151,7 @@ $(BUILD)/terrain_test: tests/test_terrain.c $(HDRS) $(BUILD)/libcpore.a
 terrain-test: $(BUILD)/terrain_test $(BUILD)/terrain_cli
 	nice -n 10 ./$(BUILD)/terrain_test --heavy
 
-TERRAIN_EXPORTS := '[_ct_config,_ct_generate,_ct_map,_ct_hash,_ct_version,_ct_size]'
+TERRAIN_EXPORTS := '[_ct_config,_ct_deltas,_ct_generate,_ct_map,_ct_hash,_ct_version,_ct_size]'
 wasm: $(BUILD)/wasm/cpore_terrain.mjs $(BUILD)/wasm/cpore_terrain.wasm
 $(BUILD)/wasm/cpore_terrain.mjs $(BUILD)/wasm/cpore_terrain.wasm &: $(TERRAIN_SRC) apps/terrain_wasm_api.c $(HDRS) Makefile
 	@mkdir -p $(dir $@)
@@ -164,7 +164,7 @@ wasm-test: terrain-parity
 
 .PHONY: terrain-metrics
 terrain-metrics: $(BUILD)/terrain_cli
-	nice -n 10 python3 tools/terrain/metrics.py --cli $(BUILD)/terrain_cli --n 1024 --seeds 1,7,42 --workdir $(BUILD)/terrain --json $(BUILD)/terrain/metrics.json --check
+	nice -n 10 python3 tools/terrain/metrics.py --cli $(BUILD)/terrain_cli --n 1024 --seeds 1,7,42,99,1234,31337 --workdir $(BUILD)/terrain --json $(BUILD)/terrain/metrics.json --check
 terrain-test: terrain-metrics
 
 # G56: world simulation (the cell-stage world.c retains its historical name).

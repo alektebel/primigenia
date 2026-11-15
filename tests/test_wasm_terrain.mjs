@@ -8,7 +8,7 @@ const engine = await createTerrain({ onTerrainProgress: (stage, done, total) => 
 } });
 assert.equal(engine.module._ct_generate(), -8);
 assert.equal(engine.module._ct_map(7), 0);
-for (const options of [{seed:-1},{seed:2**32},{n:2048},{n:NaN},{droplets:-1},{thermal:.5},{droplets:2**32+70000},{thermal:2**32+5},{stream:-1},{stream:2**32+48},{stream:1.5},{warp:NaN},{ridge:2}]) {
+for (const options of [{seed:-1},{seed:2**32},{n:2048},{n:NaN},{droplets:-1},{thermal:.5},{droplets:2**32+70000},{thermal:2**32+5},{stream:-1},{stream:2**32+48},{stream:1.5},{warp:NaN},{ridge:2},{gentle:NaN},{variety:-1},{bands:2}]) {
   assert.throws(() => engine.generate(options));
 }
 for (const seed of [1,7,42]) {
@@ -16,20 +16,25 @@ for (const seed of [1,7,42]) {
   assert.equal(t.hash,readFileSync(`tests/golden/terrain-${seed}.hash`,'utf8').trim());
 }
 const rows = [];
-for (const [seed,n] of [[1,256],[7,256],[42,256],[1,1024]]) {
-  const native=execFileSync('build/terrain_cli',['hash','--seed',String(seed),'--n',String(n)],{encoding:'utf8'}).trim().split(/\s+/);
+for (const [seed,n] of [[1,256],[7,256],[42,256],[99,256],[1234,256],[31337,256],[1,1024],[42,1024]]) {
+  const native=execFileSync('nice',['-n','10','build/terrain_cli','hash','--seed',String(seed),'--n',String(n)],{encoding:'utf8'}).trim().split(/\s+/);
   const t=engine.generate({seed,n});
   assert.equal(t.hash,native[0],`seed ${seed} N=${n}`);
   assert.equal(t.height.length,n*n);
   for (const map of [t.height,t.flow,t.sediment,t.level]) assert.ok(map.every(Number.isFinite));
-  assert.equal(t.size,3600);assert.equal(t.version,2);
+  assert.equal(t.size,3600);assert.equal(t.version,3);
   assert.ok(t.level.every((v,i)=>t.height[i]<=0||v>=t.height[i]),'water level under the ground');
   console.log(`seed ${seed} N=${n}: ${t.hash}; native ${native[1]}s, WASM ${t.seconds.toFixed(4)}s`);
   rows.push({seed,n,hash:t.hash,native_seconds:Number(native[1]),wasm_seconds:t.seconds});
+}
+for (const [gentle,variety,bands] of [[0,0,0],[1,0,0],[0,1,0],[0,0,1],[.5,.5,.5]]) {
+  const native=execFileSync('nice',['-n','10','build/terrain_cli','hash','--seed','42','--n','128',
+    '--gentle-bases',String(gentle),'--layout-variety',String(variety),'--cliff-bands',String(bands)],{encoding:'utf8'}).trim().split(/\s+/);
+  assert.equal(engine.generate({seed:42,n:128,gentle,variety,bands}).hash,native[0]);
 }
 assert.ok(progress.includes(0) && progress.includes(1) && progress.includes(2) && progress.includes(3) && progress.includes(4));
 assert.ok(rows.at(-1).wasm_seconds<=10,'W13: default 1024 generation exceeds 10 seconds');
 assert.equal(engine.module._ct_map(7),0);
 mkdirSync('build/terrain',{recursive:true});
 writeFileSync('build/terrain/parity.json',JSON.stringify({node:process.version,platform:process.platform,arch:process.arch,rows},null,2)+'\n');
-console.log('terrain WASM: small goldens + four native/WASM hashes match; W13 PASS');
+console.log('terrain WASM: small goldens + eight native/WASM hashes and independent deltas match; W13 PASS');

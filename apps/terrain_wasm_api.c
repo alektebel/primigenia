@@ -34,6 +34,14 @@ int ct_config(uint32_t seed, int n, int droplets, int thermal,
     workspace.queue=indices+2*nn;
     configured=1; return 0;
 }
+/* Separate entry point preserves ct_config's existing argument defaults. */
+int ct_deltas(float gentle, float variety, float bands) {
+    if (!configured) return CP_TERR_ERR_BUFFER;
+    params.gentle_bases=gentle; params.layout_variety=variety; params.cliff_bands=bands;
+    int rc=cp_terrain_validate(&params);
+    if (rc) configured=0;
+    return rc;
+}
 int ct_generate(void) {
     if(!configured) return CP_TERR_ERR_BUFFER;
     return cp_terrain_generate(&params,&terrain,&workspace,progress,0);

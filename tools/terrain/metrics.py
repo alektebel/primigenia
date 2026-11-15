@@ -40,7 +40,7 @@ def load_dump(path):
     magic, version, seed, n, size, flags = struct.unpack_from("<8sIIifI", blob, 0)
     if magic != b"CPTER10\x00":
         raise ValueError(f"{path}: bad magic {magic!r}")
-    if version not in (1,2) or not 8<=n<=2048 or not math.isfinite(size) or size<=0 or flags not in (0,1):
+    if version not in (1,2,3) or not 8<=n<=2048 or not math.isfinite(size) or size<=0 or flags not in (0,1):
         raise ValueError(f"{path}: invalid terrain header")
     nn = n * n
     off = 28
