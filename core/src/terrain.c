@@ -1197,6 +1197,10 @@ static void cave_entrances(const CpTerrainParams *p, CpTerrain *t, const CpTerra
         for (int y=2;y<n-2;y++) for (int x=2;x<n-2;x++) {
             int i=y*n+x,r=ws->recv[i]; float h=t->height[i];
             if (h<12.f || ws->scratch[i]-h>.5f || erode_scale_at(p,cell,x,y)<.99f) continue;
+            /* Central slope can be steep on the uphill side of a flat toe.
+             * Leave a downhill outlet below the entire notch, so carving
+             * cannot turn a dry entrance into a little standing pool. */
+            if(r<0 || h-t->height[r]<maxf(4.f,cell*.35f))continue;
             float gx=(t->height[i+1]-t->height[i-1])/(2.f*cell);
             float gy=(t->height[i+n]-t->height[i-n])/(2.f*cell);
             if (gx*gx+gy*gy<.81f) continue;
