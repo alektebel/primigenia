@@ -18,12 +18,12 @@
       "fixture": "biter.json",
       "fps": 30,
       "outcome": "death",
-      "ticks": 79,
+      "ticks": 68,
       "hp": [
         0,
         119.25886535644531
       ],
-      "finalHash": "ab2892459a569274",
+      "finalHash": "35060319aa5c8441",
       "nativeReplay": true,
       "errors": []
     },
@@ -31,12 +31,12 @@
       "fixture": "biter.json",
       "fps": 73,
       "outcome": "death",
-      "ticks": 79,
+      "ticks": 68,
       "hp": [
         0,
         119.25886535644531
       ],
-      "finalHash": "ab2892459a569274",
+      "finalHash": "35060319aa5c8441",
       "nativeReplay": true,
       "errors": []
     },
@@ -44,12 +44,12 @@
       "fixture": "guard.json",
       "fps": 30,
       "outcome": "death",
-      "ticks": 152,
+      "ticks": 107,
       "hp": [
         0,
-        83.65864562988281
+        139.1764373779297
       ],
-      "finalHash": "69fc5f9385ed0efd",
+      "finalHash": "fae13d4b7c2a5f15",
       "nativeReplay": true,
       "errors": []
     },
@@ -57,12 +57,12 @@
       "fixture": "guard.json",
       "fps": 73,
       "outcome": "death",
-      "ticks": 152,
+      "ticks": 107,
       "hp": [
         0,
-        83.65864562988281
+        139.1764373779297
       ],
-      "finalHash": "69fc5f9385ed0efd",
+      "finalHash": "fae13d4b7c2a5f15",
       "nativeReplay": true,
       "errors": []
     },
@@ -70,12 +70,12 @@
       "fixture": "spitter.json",
       "fps": 30,
       "outcome": "death",
-      "ticks": 138,
+      "ticks": 84,
       "hp": [
         0,
-        58.322914123535156
+        156.2715606689453
       ],
-      "finalHash": "c94f52bd2ea70955",
+      "finalHash": "1a8dceaba6e38075",
       "nativeReplay": true,
       "errors": []
     },
@@ -83,12 +83,12 @@
       "fixture": "spitter.json",
       "fps": 73,
       "outcome": "death",
-      "ticks": 138,
+      "ticks": 84,
       "hp": [
         0,
-        58.322914123535156
+        156.2715606689453
       ],
-      "finalHash": "c94f52bd2ea70955",
+      "finalHash": "1a8dceaba6e38075",
       "nativeReplay": true,
       "errors": []
     }
@@ -96,7 +96,7 @@
   "evidence": [
     {
       "capture": "fight-hit.png",
-      "gap": 0.0000010758631630025661,
+      "gap": -2.597907426959978e-7,
       "radiiCm": [
         300,
         120
@@ -105,7 +105,7 @@
         100,
         140.76785278320312
       ],
-      "tick": 61
+      "tick": 50
     },
     {
       "capture": "victory.png",
@@ -114,7 +114,7 @@
         69.00784301757812,
         0
       ],
-      "finalHash": "16f2f8425cfdeb62",
+      "finalHash": "7484974ed2515df6",
       "nativeReplay": true
     }
   ]
