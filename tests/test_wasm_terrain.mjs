@@ -8,7 +8,7 @@ const engine = await createTerrain({ onTerrainProgress: (stage, done, total) => 
 } });
 assert.equal(engine.module._ct_generate(), -8);
 assert.equal(engine.module._ct_map(7), 0);
-for (const options of [{seed:-1},{seed:2**32},{n:2048},{n:NaN},{droplets:-1},{thermal:.5},{droplets:2**32+70000},{thermal:2**32+5},{warp:NaN},{ridge:2}]) {
+for (const options of [{seed:-1},{seed:2**32},{n:2048},{n:NaN},{droplets:-1},{thermal:.5},{droplets:2**32+70000},{thermal:2**32+5},{stream:-1},{stream:2**32+48},{stream:1.5},{warp:NaN},{ridge:2}]) {
   assert.throws(() => engine.generate(options));
 }
 for (const seed of [1,7,42]) {
@@ -21,7 +21,9 @@ for (const [seed,n] of [[1,256],[7,256],[42,256],[1,1024]]) {
   const t=engine.generate({seed,n});
   assert.equal(t.hash,native[0],`seed ${seed} N=${n}`);
   assert.equal(t.height.length,n*n);
-  for (const map of [t.height,t.flow,t.sediment]) assert.ok(map.every(Number.isFinite));
+  for (const map of [t.height,t.flow,t.sediment,t.level]) assert.ok(map.every(Number.isFinite));
+  assert.equal(t.size,3200);assert.equal(t.version,2);
+  assert.ok(t.level.every((v,i)=>t.height[i]<=0||v>=t.height[i]),'water level under the ground');
   console.log(`seed ${seed} N=${n}: ${t.hash}; native ${native[1]}s, WASM ${t.seconds.toFixed(4)}s`);
   rows.push({seed,n,hash:t.hash,native_seconds:Number(native[1]),wasm_seconds:t.seconds});
 }

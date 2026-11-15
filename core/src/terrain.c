@@ -226,7 +226,7 @@ void cp_terrain_params_default(CpTerrainParams *p)
     p->valley_floor_m = 42.f;
     p->ring_inner_m = 340.f;
     p->ring_outer_m = 1180.f;
-    p->ring_height_m = 700.f;
+    p->ring_height_m = 640.f;
     p->pass_x = 1.f;
     p->pass_y = 0.15f;
     p->pass_half_m = 90.f;
@@ -240,7 +240,7 @@ void cp_terrain_params_default(CpTerrainParams *p)
     p->lake_radius_m = 68.f;
     p->lake_depth_m = 34.f;
     p->stream_k = 0.06f;
-    p->cliff_deg = 56.f;
+    p->cliff_deg = 64.f;
     p->inertia = 0.30f;
     p->capacity = 6.f;
     p->deposition = 0.25f;
@@ -294,7 +294,7 @@ int cp_terrain_validate(const CpTerrainParams *p)
     if (!in_range(p->gravity, 0.f, 64.f)) return CP_TERR_ERR_RANGE;
     if (!in_range(p->min_slope, 0.f, 1.f)) return CP_TERR_ERR_RANGE;
     if (!in_range(p->talus_deg, 5.f, 55.f)) return CP_TERR_ERR_RANGE;
-    if (!in_range(p->cliff_deg, 5.f, 70.f)) return CP_TERR_ERR_RANGE;
+    if (!in_range(p->cliff_deg, 5.f, 75.f)) return CP_TERR_ERR_RANGE;
     return CP_TERR_OK;
 }
 

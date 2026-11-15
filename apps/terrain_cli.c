@@ -87,6 +87,8 @@ static void apply_overrides(CpTerrainParams *p, int argc, char **argv)
     p->stream_iters = stream;
     p->stream_k=arg_f(argc,argv,"--stream-k",p->stream_k);
     p->talus_deg=arg_f(argc,argv,"--talus",p->talus_deg);
+    p->cliff_deg=arg_f(argc,argv,"--cliff",p->cliff_deg);
+    p->ring_height_m=arg_f(argc,argv,"--relief",p->ring_height_m);
     p->radius=arg_i(argc,argv,"--radius",p->radius);
     p->erosion=arg_f(argc,argv,"--erosion",p->erosion);
     p->capacity=arg_f(argc,argv,"--capacity",p->capacity);
@@ -116,19 +118,64 @@ static void setup(const CpTerrainParams *p, CpTerrain *t, CpTerrainWorkspace *ws
     ws->queue = ialloc(p->n);
 }
 
+/* Lowest water level at which a four-connected flood from `start` reaches
+ * the sea or the map edge, to 0.25 m. With `block_gap` the river-gap corridor
+ * is closed, so the answer is the lowest other way out: the col. */
+static int escapes(const CpTerrain *t, const CpTerrainParams *p, int start, float level,
+                   int block_gap, uint8_t *seen, int *q)
+{
+    int n = t->n, qh = 0, qt = 0;
+    float cell = t->size_m / (float)n, half = t->size_m * 0.5f;
+    float plen = sqrtf(p->pass_x * p->pass_x + p->pass_y * p->pass_y);
+    float px = plen > 1e-6f ? p->pass_x / plen : 1.f;
+    float py = plen > 1e-6f ? p->pass_y / plen : 0.f;
+    memset(seen, 0, (size_t)n * (size_t)n);
+    q[qt++] = start; seen[start] = 1;
+    while (qh < qt) {
+        int c = q[qh++], x = c % n, y = c / n;
+        if (x == 0 || y == 0 || x == n - 1 || y == n - 1 || t->height[c] <= 0.f) return 1;
+        for (int d = 0; d < 4; d++) {
+            int nx = x + (d == 0) - (d == 1), ny = y + (d == 2) - (d == 3), ni = ny * n + nx;
+            if (seen[ni] || t->height[ni] > level) continue;
+            if (block_gap) {
+                float wx = ((float)nx + 0.5f) * cell - half, wy = ((float)ny + 0.5f) * cell - half;
+                if (wx * px + wy * py > 0.f && fabsf(-wx * py + wy * px) < 450.f) continue;
+            }
+            seen[ni] = 1; q[qt++] = ni;
+        }
+    }
+    return 0;
+}
+
+static float sill(const CpTerrain *t, const CpTerrainParams *p, int start, int block_gap,
+                  uint8_t *seen, int *q)
+{
+    float lo = t->height[start], hi = 4000.f;
+    if (escapes(t, p, start, lo, block_gap, seen, q)) return lo;
+    while (hi - lo > 0.25f) {
+        float mid = 0.5f * (lo + hi);
+        if (escapes(t, p, start, mid, block_gap, seen, q)) hi = mid; else lo = mid;
+    }
+    return hi;
+}
+
 static void stats(const CpTerrain *t, const CpTerrainParams *p)
 {
     int n = t->n;
     float cell = t->size_m / (float)n;
     float half = t->size_m * 0.5f;
     float *slope = falloc(n);
+    uint8_t *seen = calloc((size_t)n * (size_t)n, 1);
+    int *q = malloc(sizeof(int) * (size_t)n * (size_t)n);
     double sum = 0.0;
     float hmin = t->height[0], hmax = t->height[0];
-    int flat_n = 0, flat_ok = 0;
-    float lake_in = 1.0e9f, lake_rim = 1.0e9f;
-    float pass_max = -1.0e9f, ring_max = -1.0e9f;
+    int flat_n = 0, flat_ok = 0, land = 0;
     const float tan10 = 0.17632698f;
     const float flat_r = 90.f;
+    int centre = (n / 2) * n + n / 2;
+    int lx = (int)((p->lake_x_m / p->size_m + 0.5f) * (float)n);
+    int ly = (int)((p->lake_y_m / p->size_m + 0.5f) * (float)n);
+    if (!seen || !q) die("out of memory");
     cp_terrain_slope(t->height, n, t->size_m, slope);
     for (int j = 0; j < n; j++) {
         for (int i = 0; i < n; i++) {
@@ -136,98 +183,29 @@ static void stats(const CpTerrain *t, const CpTerrainParams *p)
             float h = t->height[k];
             float x = ((float)i + 0.5f) * cell - half;
             float y = ((float)j + 0.5f) * cell - half;
-            float r = sqrtf(x * x + y * y);
-            float lx = x - p->lake_x_m;
-            float ly = y - p->lake_y_m;
-            float lr = sqrtf(lx * lx + ly * ly);
             sum += h;
             if (h < hmin) hmin = h;
             if (h > hmax) hmax = h;
-            if (r <= flat_r) {
+            if (h > 0.f) land++;
+            if (x * x + y * y <= flat_r * flat_r) {
                 flat_n++;
                 if (slope[k] < tan10) flat_ok++;
             }
-            if (lr <= p->lake_radius_m * 0.4f && h < lake_in) lake_in = h;
-            if (lr >= p->lake_radius_m * 0.9f && lr <= p->lake_radius_m * 1.15f && h < lake_rim)
-                lake_rim = h;
-            if (r >= p->ring_inner_m && r <= p->ring_outer_m) {
-                if (h > ring_max) ring_max = h;
-            }
         }
     }
-    /* Pass corridor along the normalised default-or-param direction. */
-    {
-        float plen = sqrtf(p->pass_x * p->pass_x + p->pass_y * p->pass_y);
-        float px = plen > 1e-6f ? p->pass_x / plen : 1.f;
-        float py = plen > 1e-6f ? p->pass_y / plen : 0.f;
-        for (int j = 0; j < n; j++) {
-            for (int i = 0; i < n; i++) {
-                float x = ((float)i + 0.5f) * cell - half;
-                float y = ((float)j + 0.5f) * cell - half;
-                float r = sqrtf(x * x + y * y);
-                float along = x * px + y * py;
-                float across = fabsf(-py * x + px * y);
-                if (along > 0.f && across < p->pass_half_m &&
-                    r >= p->ring_inner_m * 0.95f && r <= p->ring_outer_m) {
-                    float h = t->height[j * n + i];
-                    if (h > pass_max) pass_max = h;
-                }
-            }
-        }
+    printf("n %d seed %" PRIu32 " h[%.2f, %.2f] mean %.2f land %.3f\n",
+           n, p->seed, hmin, hmax, sum / (double)n / (double)n, (double)land / (double)n / (double)n);
+    printf("valley_flat %d/%d (%.3f) within %.0fm slope<10deg, start %.2f m\n",
+           flat_ok, flat_n, flat_n ? (double)flat_ok / (double)flat_n : 0.0, flat_r, t->height[centre]);
+    if ((unsigned)lx < (unsigned)n && (unsigned)ly < (unsigned)n) {
+        float bottom = t->height[ly * n + lx];
+        float spill = sill(t, p, ly * n + lx, 0, seen, q);
+        printf("lake bottom %.2f spill %.2f holds %.2f\n", bottom, spill, spill - bottom);
     }
-    printf("n %d seed %" PRIu32 " h[%.2f, %.2f] mean %.2f\n",
-           n, p->seed, hmin, hmax, sum / (double)n / (double)n);
-    printf("valley_flat %d/%d (%.3f) within %.0fm slope<10deg\n",
-           flat_ok, flat_n, flat_n ? (double)flat_ok / (double)flat_n : 0.0, flat_r);
-    printf("lake_inner %.2f rim %.2f hold %.2f\n", lake_in, lake_rim, lake_rim - lake_in);
-    printf("pass_max %.2f ring_max %.2f\n", pass_max, ring_max);
-    {
-        float plen = sqrtf(p->pass_x * p->pass_x + p->pass_y * p->pass_y);
-        float px = plen > 1e-6f ? p->pass_x / plen : 1.f;
-        float py = plen > 1e-6f ? p->pass_y / plen : 0.f;
-        float saddle = -1.0e9f;
-        int reached = 0;
-        uint8_t *seen = calloc((size_t)n * (size_t)n, 1);
-        int *q = malloc(sizeof(int) * (size_t)n * (size_t)n);
-        int qh = 0, qt = 0;
-        if (!seen || !q) die("out of memory");
-        for (int j = 0; j < n; j++) {
-            for (int i = 0; i < n; i++) {
-                float x = ((float)i + 0.5f) * cell - half;
-                float y = ((float)j + 0.5f) * cell - half;
-                float r = sqrtf(x * x + y * y);
-                float along = x * px + y * py;
-                float across = fabsf(-py * x + px * y);
-                if (along > 0.f && across < p->pass_half_m * 0.35f &&
-                    r >= p->ring_inner_m && r <= p->ring_outer_m) {
-                    float h = t->height[j * n + i];
-                    if (h > saddle) saddle = h;
-                }
-            }
-        }
-        q[qt++] = (n / 2) * n + (n / 2);
-        seen[(n / 2) * n + (n / 2)] = 1;
-        while (qh < qt) {
-            int c = q[qh++];
-            int x = c % n, y = c / n;
-            float wx = ((float)x + 0.5f) * cell - half;
-            float wy = ((float)y + 0.5f) * cell - half;
-            if (sqrtf(wx * wx + wy * wy) > p->ring_outer_m) { reached = 1; break; }
-            for (int d = 0; d < 8; d++) {
-                int nx = x + (d == 0 || d == 1 || d == 7) - (d == 3 || d == 4 || d == 5);
-                int ny = y + (d == 1 || d == 2 || d == 3) - (d == 5 || d == 6 || d == 7);
-                int ni;
-                if ((unsigned)nx >= (unsigned)n || (unsigned)ny >= (unsigned)n) continue;
-                ni = ny * n + nx;
-                if (seen[ni] || t->height[ni] > 200.f) continue;
-                seen[ni] = 1;
-                q[qt++] = ni;
-            }
-        }
-        printf("saddle %.2f pass_reachable %d\n", saddle, reached);
-        free(seen);
-        free(q);
-    }
+    printf("river_gap_sill %.2f col_sill %.2f (lowest way from the start to the sea, with and without the gap)\n",
+           sill(t, p, centre, 0, seen, q), sill(t, p, centre, 1, seen, q));
+    free(seen);
+    free(q);
     free(slope);
 }
 
@@ -278,7 +256,7 @@ int main(int argc, char **argv)
     const char *cmd;
     if (argc < 2) {
         fprintf(stderr,
-                "usage: terrain_cli hash|time|dump|stats --seed N --n N [--droplets N] [--thermal N] [--base] [--out PATH]\n");
+                "usage: terrain_cli hash|time|dump|stats --seed N --n N [--stream N] [--droplets N] [--thermal N] [--base] [--out PATH]\n");
         return 2;
     }
     cmd = argv[1];

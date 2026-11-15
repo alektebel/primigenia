@@ -18,12 +18,12 @@ static void progress(int stage, int done, int total, void *user) {
     (void)user; terrain_progress(stage, done, total);
 }
 int ct_config(uint32_t seed, int n, int droplets, int thermal,
-              float warp, float ridge, float erosion) {
+              float warp, float ridge, float erosion, int stream) {
     configured=0;
     cp_terrain_params_default(&params);
     params.seed=seed; params.n=n;
     if(n>MAX_N) return CP_TERR_ERR_N;
-    params.droplets=droplets; params.thermal_iters=thermal;
+    params.droplets=droplets; params.thermal_iters=thermal; params.stream_iters=stream;
     params.warp_m=warp; params.ridge_weight=ridge; params.erosion=erosion;
     int rc=cp_terrain_validate(&params); if(rc) return rc;
     int nn=n*n;
@@ -40,8 +40,11 @@ int ct_generate(void) {
 }
 float *ct_map(int layer) {
     if(!configured) return 0;
-    return layer==0 ? terrain.height : layer==1 ? terrain.flow : layer==2 ? terrain.sediment : 0;
+    /* Layer 3 is the routing water level: above the ground where a basin holds a lake. */
+    return layer==0 ? terrain.height : layer==1 ? terrain.flow : layer==2 ? terrain.sediment :
+           layer==3 ? workspace.scratch : 0;
 }
+float ct_size(void) { return configured ? params.size_m : 0.f; }
 uint32_t *ct_hash(void) {
     uint64_t h=configured ? cp_terrain_hash(&terrain) : 0;
     hash_words[0]=(uint32_t)h; hash_words[1]=(uint32_t)(h>>32); return hash_words;
