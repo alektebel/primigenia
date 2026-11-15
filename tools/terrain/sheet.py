@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""Compose docs/evidence/terrain/shape-v2.png from the capture script's pictures.
+"""Compose docs/evidence/terrain/shape-v2plus.png from the capture script's pictures.
 
-Rows: phase A seed 42 (before), then version 2 seeds 42, 1 and 7 (after).
+Rows: original v2 seed 42, then v2+ seeds 42, 1 and 7.
 Columns: fixed oblique camera, valley-floor camera, hillshade + drainage.
 """
 import sys
@@ -9,10 +9,11 @@ from pathlib import Path
 from PIL import Image, ImageDraw, ImageFont
 
 root = Path(sys.argv[1] if len(sys.argv) > 1 else "docs/evidence/terrain")
-rows = [("before-42", "Before: phase A, seed 42 (2 km square)"),
-        ("after-42", "After: version 2, seed 42 (3.6 km square)"),
-        ("after-1", "After: version 2, seed 1"),
-        ("after-7", "After: version 2, seed 7")]
+label = sys.argv[3] if len(sys.argv)>3 else 'v2+'
+rows = [("v2-42", "Before: version 2, seed 42 (3.6 km square)"),
+        ("after-42", f"After: version 3 ({label}), seed 42 (3.6 km square)"),
+        ("after-1", f"After: version 3 ({label}), seed 1"),
+        ("after-7", f"After: version 3 ({label}), seed 7")]
 H, PAD, LABEL = 520, 10, 34
 font = None
 for path in ("/usr/share/fonts/TTF/DejaVuSans.ttf", "/usr/share/fonts/noto/NotoSans-Regular.ttf"):
@@ -27,18 +28,26 @@ for name, title in rows:
         if view != "top":                       # trim the lab's hint label
             im = im.crop((0, 0, im.width, im.height - 60))
         cells.append(im.resize((round(im.width * H / im.height), H), Image.LANCZOS))
-    strips.append((title, cells))
+    strips.append((title + "  ·  from above  ·  from the valley floor  ·  hillshade + drainage", cells))
+if (root / 'sea-cliff-42-close.png').exists() and (root / 'cave-42-close.png').exists():
+    cells=[]
+    for kind in ('sea-cliff', 'cave'):
+        im=Image.open(root / f'{kind}-42-close.png').convert('RGB')
+        im=im.crop((0,0,im.width,im.height-60))
+        cells.append(im.resize((round(im.width*H/im.height),H),Image.LANCZOS))
+    strips.append(('Seed 42 details: sea cliff (left) · cave entrance floor notch (right; no tunnel mesh)',cells))
 width = max(sum(c.width for c in cells) + PAD * (len(cells) + 1) for _, cells in strips)
 sheet = Image.new("RGB", (width, len(strips) * (H + LABEL + PAD) + PAD), "#f5f2e9")
 draw = ImageDraw.Draw(sheet)
 y = PAD
 for title, cells in strips:
-    draw.text((PAD, y + 4), title + "  ·  from above  ·  from the valley floor  ·  hillshade + drainage",
+    draw.text((PAD, y + 4), title,
               fill="#263d35", font=font)
     x = PAD
     for cell in cells:
         sheet.paste(cell, (x, y + LABEL))
         x += cell.width + PAD
     y += H + LABEL + PAD
-sheet.save(root / "shape-v2.png", optimize=True)
-print(root / "shape-v2.png", sheet.size)
+destination = Path(sys.argv[2]) if len(sys.argv)>2 else root / "shape-v2plus.png"
+sheet.save(destination, optimize=True)
+print(destination, sheet.size)

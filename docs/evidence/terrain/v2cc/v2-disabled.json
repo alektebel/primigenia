@@ -1,0 +1,18 @@
+{
+  "source_commit": "0386bb8",
+  "seed": 42,
+  "n": 256,
+  "maps": [
+    "height",
+    "flow",
+    "sediment"
+  ],
+  "sha256": {
+    "height": "4775e764ef9e9810a7c4669e03adaecdad5fae431fde58f0b3c4490ef2fd081f",
+    "flow": "9b22aec0d2ac44ddf94f202b08ab0f72f5298c3965a1577bd7bce4d7d5652ae9",
+    "sediment": "1e055f33011e8319236b47dbc1e27af8685268a1b8720a16d79c4d8507d1bb9e"
+  },
+  "samplesCompared": 196608,
+  "differences": 0,
+  "comparison": "Original v2 WASM == all-switches-off v3 WASM == native, byte-for-byte"
+}

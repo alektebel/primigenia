@@ -1,0 +1,28 @@
+cc -O2 -std=c99 -Wall -Wextra -Wno-unused-parameter -fno-fast-math -Icore/include -D_POSIX_C_SOURCE=200809L -fno-fast-math -ffp-contract=off -Iapps tests/combat_parity.c build/apps/combat_bots.o build/libcpore.a -o build/combat_parity -lm
+nice -n 10 python3 tests/test_wasm_parity.py
+WASM goldens: 5 logs, 50000 matching tick hashes
+Bot parity: 200 duels, 25520 matching tick hashes; 25 ordered bot pairings × 2 profile sets × 4 seeds
+Heading parity: 10,000 random int16 vectors and identical native/WASM replays
+nice -n 10 node tests/test_wasm_terrain.mjs
+seed 1 N=256: b255c92a5b85e43d; native 0.2751s, WASM 0.3304s
+seed 7 N=256: adc7c973cbc3dcdf; native 0.2800s, WASM 0.3327s
+seed 42 N=256: 572d8a0f9a1fd889; native 0.2803s, WASM 0.3308s
+seed 99 N=256: e03a1d647ecc4c58; native 0.2733s, WASM 0.3186s
+seed 1234 N=256: ea0bcd4c82538aa2; native 0.2855s, WASM 0.3243s
+seed 31337 N=256: c71b16838d4d02ee; native 0.2828s, WASM 0.3302s
+seed 1 N=1024: 281193d8ad044e09; native 3.3097s, WASM 4.3179s
+seed 42 N=1024: e74f19ff5262a9eb; native 3.3858s, WASM 4.3347s
+original v2: all 196,608 height/flow/sediment samples match byte-for-byte, native and WASM
+terrain WASM: small goldens + eight native/WASM hashes and independent deltas match; W13 PASS
+cc -O2 -std=c99 -Wall -Wextra -Wno-unused-parameter -fno-fast-math -Icore/include -D_POSIX_C_SOURCE=200809L -fno-fast-math -ffp-contract=off apps/world_cli.c build/libcpore.a -o build/world_cli -lm
+nice -n 10 ./build/world_test
+PASS world movement, collision, arrival, atomic rejection, replay and observation
+nice -n 10 node tests/test_wasm_world.mjs
+analytic C port: max height error 0.004203 m on 961 valley samples
+world golden 1: 2 encounters, 3,000 hashes
+world golden 42: 3 encounters, 3,000 hashes
+world golden 987654321: 2 encounters, 3,000 hashes
+PASS world: 3 committed 3,000-tick goldens; 100 random 3,000-tick native/WASM runs; independent instances; observations; full 30/73 FPS native replay
+nice -n 10 node tests/test_wasm_combat.mjs
+JS golden replays: 5 logs, 50000 matching tick hashes
+Instances: 600 identical ticks; encounters: 60 seconds at 60/37 FPS, 600 identical ticks and native replay

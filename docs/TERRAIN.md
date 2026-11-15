@@ -1,242 +1,244 @@
-# Eroded terrain (W11–W13, generator version 2)
+# Eroded terrain (W11–W18, generator version 3)
 
-The standalone generator is `core/include/cpore/terrain.h` and
-`core/src/terrain.c`. From a seed it produces a 3.6 km square holding one
-island: a flat start valley with a lake, a chain of massifs around it, a river
-gap that drains the valley to the sea, cols between the massifs, and a coast.
-The default seed is **1**. Phase A supplied the engineering (determinism,
-parity, tests); this version reshapes the range and its erosion, because the
-phase-A result read as a crater wall with scratched slopes. Game integration
-still belongs to phase B. It does not replace the old land-stage height function.
+The default is **v2 + cliffs + caves** (W20 owner choice in the task brief), using the v2+ generator in
+`core/include/cpore/terrain.h` and `core/src/terrain.c`. It retains v2's massif
+construction, multiscale stream power, droplets and scree sweeps. Seven
+independent switches add gentle approaches, layout variety, high-face detail,
+sea cliffs, resistant strata, one stratovolcano and cave entrances.
+Gentle approaches, layout variety and the volcano now default to **0**;
+high-face bands, sea cliffs, resistant strata and caves remain **1**.
+No generation algorithm changed for this default selection.
 
-Before and after, three views each: [evidence/terrain/shape-v2.png](evidence/terrain/shape-v2.png).
+The island is about 3.2 km across in a **3.6 km square** (W14). The default seed
+is **1**. Sea level is 0 m, the start valley's reference floor 42 m. The lake,
+river gap and high col remain guaranteed on seeds **1, 7, 42, 99, 1234, 31337**.
+Game integration, cache/loading-screen integration, smoke and cave meshes are
+later work; the standalone terrain lab consumes this generator's actual maps.
+
+The comparison sheet is [v2 versus v2 + cliffs + caves](evidence/terrain/shape-v2cc.png): seed
+42 in the same three views as the [previous v2+ sheet](evidence/terrain/shape-v2plus.png),
+followed by seeds 1 and 7 and sea-cliff/cave-notch close views. The
+[material and cave view](evidence/terrain/v2cc/lab-material-caves.png) shows the
+C material classes and numbered entrances. [Measured acceptance and limits](evidence/terrain/v2cc/metrics.md)
+include exact values, runtime parity and independent ablations. **The unchanged
+Rb gate fails on seed 31337 (5.9713 > 5.5); `make terrain-test` remains red.** The original
+[v2 sheet](evidence/terrain/shape-v2.png) and [v2 measurements](evidence/terrain/metrics.md)
+remain historical evidence.
 
 ## Run
 
-From the repository root:
-
 ```sh
-nice -n 10 make test            # native regression suite; terrain smoke is N=32
-nice -n 10 make terrain-test    # 1024 guarantees on seeds 1/7/42, paired metrics, WASM parity
-nice -n 10 make wasm            # combat + terrain ES modules and companion WASM
-nice -n 10 make wasm-test       # existing combat checks plus terrain parity
-nice -n 10 make build/terrain_cli
-nice -n 10 build/terrain_cli stats --seed 1 --n 1024
-nice -n 10 build/terrain_cli dump --seed 7 --n 1024 --out build/map.bin
-nice -n 10 build/terrain_cli hash --seed 1 --n 256 --base
+nice -n 10 make test
+source ~/emsdk/emsdk_env.sh
+nice -n 10 make terrain-test
+nice -n 10 make wasm-test
+nice -n 10 build/terrain_cli stats --seed 42 --n 1024
+nice -n 10 build/terrain_cli features --seed 42 --n 1024
+nice -n 10 build/terrain_cli dump --seed 42 --n 1024 --out build/map.bin
+nice -n 10 python3 tools/terrain/ablations.py
+nice -n 10 python3 tools/terrain/ablations.py --v2cc --out build/terrain/v2cc-ablations.json
+nice -n 10 ./build/terrain_test --heavy --gentle
 nice -n 10 python3 -m http.server 8031 --bind 127.0.0.1
 ```
 
-Open `http://127.0.0.1:8031/web/terrain-lab/`. It imports
-`build/wasm/cpore_terrain.mjs` from a module Worker; serve the repository root,
-not just `web/`. Three.js r128 uses the same CDN as the existing studio, so
-loading the preview requires network access for that script. No Node package
-installation is needed. If `emcc` is absent from PATH, Make sources
-`~/emsdk/emsdk_env.sh`; no SDK is downloaded.
+Open `http://127.0.0.1:8031/web/terrain-lab/`. Serve the repository root, because
+the module Worker imports `build/wasm/cpore_terrain.mjs`. Three.js r128 uses the
+existing CDN. No packages or SDKs need installing. The lab provides natural
+materials, the categorical C material map, altitude, slope, flow and sediment,
+plus orbit and valley-floor cameras. The material legend names each class;
+numbered circles mark caves, outward lines show their facing, and cyan marks
+the waterfall entrance. Four checkboxes independently toggle W16–W18 features.
 
-`stats` prints the height range, land fraction, the start-floor check, the
-lake's bottom and spill level, and two sills found by flooding: the lowest
-level at which water from the start reaches the sea (the river gap), and the
-same with the gap corridor closed (the lowest col).
+`stats` reports height, flat start-floor fraction, lake bottom and spill, and
+connected escape sills with and without the river corridor. `features` prints
+JSON with the volcano's position/radii, six material counts and cave records.
+`--base` disables all erosion work and keeps the selected landform switches;
+this is the paired comparison used by the structure gates.
 
-## Pipeline
+## Pipeline and bounded changes
 
-1. **Base shape.** Sea level is 0 m. No angle is ever computed: the unit vector
-   to a point, scaled, samples 2D gradient noise on a circle, which is a smooth
-   periodic function of direction without trig. Those angular fields move a low
-   connecting ridge in and out, widen and narrow its flanks (spurs with bays
-   between), and shape the coast. On top stand **seven massifs** in hashed slots
-   measured from the river gap, each with its own radius, height, long axis and
-   arête spurs; saddles form where two meet, at different depths. A corridor
-   along the pass direction is the **river gap**: its floor starts just under
-   the valley floor and falls to the sea, so the valley drains instead of being
-   a closed bowl. One **col** is lowered on purpose in the `col_x, col_y`
-   direction. Lower ridges and hills fill the land between the range and the
-   coast. Detail is a ridged multifractal whose octaves are damped by the
-   gradient summed so far (Musgrave's fold with Quílez's derivative trick), so
-   detail sits on crests and floors and the flanks stay clean. The start floor
-   and the lake bowl are unwarped.
-2. **Stream power, coarse to fine.** `dh/dt = −K·√A·S`, solved implicitly from
-   the outlets upstream ([Braun & Willett 2013](https://doi.org/10.1016/j.geomorph.2012.10.008)),
-   which is stable at any K. Incision grows with drainage area, so trunks deepen
-   and branch headward; droplets with a short life cannot gather a valley
-   network. It runs `stream_iters` steps at N/4, a third of that at N/2 and an
-   eighth at N. The base is analytic, so each level samples it afresh and adds
-   the coarser level's height change and sediment, resampled; fine noise is
-   never lost to a blurry upsample. Below about 1,600 m² of catchment the ground
-   counts as hillslope and wears at 2.5% of the rate, so crests are not ground
-   down while their gullies cut. Closed pits fill by half per step and are
-   recorded as sediment. A talus sweep at the **bedrock angle** follows every
-   step; that angle varies with a rock-strength noise (hard bands hold cliffs).
-   The start floor and the lake bowl are exempt.
-3. **Droplets** ([Beyer 2015](https://www.firespark.de/resources/downloads/implementation%20of%20a%20methode%20for%20hydraulic%20erosion.pdf)),
-   80,000 at N. They run before the fine stream-power pass and add gullies too
-   small for it. Evaporation is set so a droplet sheds its load gradually over
-   its life; whatever is left at the end is spread over the brush, not dumped in
-   one cell. A droplet that reaches the sea stops there. The fine stream-power
-   pass then cuts the dams the deposits leave in the valleys.
-4. **Scree.** Fixed sweeps at the loose-material angle move a quarter of the
-   largest excess to the steepest D8 neighbour, alternating direction. What
-   arrives is added to the sediment map. Finite sweeps approach the angle; they
-   do not cap slope.
-5. **Drainage.** Priority flood with an epsilon gradient
-   ([Barnes et al.](https://github.com/r-barnes/Barnes2013-Depressions), the
-   improved +ε variant): each cell is at least 1 mm above the cell that flooded
-   it, so every cell but an outlet has a strictly lower neighbour and D8 on the
-   water level cannot stall or cycle. Outlets are the map edge and every cell at
-   or under the sea. Routing reads height plus a hashed jitter of up to 4% of a
-   cell, which changes nothing on a slope and breaks ties on floors, so channels
-   there wander and join instead of running in parallel lines. The physical
-   height keeps its lake. The same routing is used inside stream power.
+1. **v2 shape.** Ridged, domain-warped gradient noise shapes the connecting
+   range, the individually elongated massifs and their arête spurs, the
+   unwarped start floor and lake bowl, a river corridor, a deliberately lowered
+   col and a noisy coast. With `layout_variety=0` it uses the original seven
+   slots and their original jitter and sizes. At 1, a common seeded hash
+   selects **6–8** slots, increases angular jitter and varies widths. The count
+   hash domain was calibrated on the six public development seeds (counts
+   6/7/8/7/8/6); it contains no per-seed branches. This does not prove drainage
+   acceptance on unseen seeds.
+2. **Sea cliffs (W16).** Selected angular sectors replace the long beach
+   transition with a roughly 38 m rock shelf and short face. The mask only acts
+   within the coastal transition; it cannot raise inland lake/valley floors.
+   Other sectors retain beaches, and the river-mouth corridor is exempt.
+3. **One volcano (W17).** One slot, selected away from the promised exits,
+   replaces its massif with a smooth, concave radial cone, a 62 m summit
+   crater and old lava ribs that run outward toward the coast. Other massifs
+   retain v2's construction. The crater may hold a small lake. The flanks
+   undergo the same erosion passes at reduced strength (18% in the inner
+   cone), so barrancos form without removing the landmark. The small crater
+   bowl is protected from pit infill. No active lava/fire is simulated.
+4. **Stream power.** The original implicit `dh/dt = −K·sqrt(A)·S` solver runs
+   48/16/6 steps at N/4, N/2 and N, resampling height change and sediment while
+   sampling the analytic base afresh at each scale. Below about 1,600 m² of
+   catchment, hillslope wear is 2.5% of channel wear. Pits half fill per step;
+   the start floor and lake are protected. A bedrock sweep follows each step.
+   **Resistant strata (W16)** are gently dipping, spatially perturbed layers
+   above 342 m, strongest above 375 m. They reduce incision and droplet wear
+   by up to 90%, allow steeper bedrock and resist the final scree transport.
+   Soft layers still erode; the interfaces leave steps and high cliff faces.
+5. **Droplets and scree.** The original 80,000 droplets run before the fine
+   stream-power pass. Lifetime, inertia, brush, capacity, deposition and
+   evaporation are unchanged. Fixed scree sweeps move a quarter of the largest
+   excess to the steepest D8 neighbour; resistant rock scales this transport.
+   Transport conserves mass; stream-power incision exports material.
+6. **Gentle approaches (W15).** A smooth C1 hypsometric remap follows erosion.
+   It is identity below 100 m and above 342 m. Compression grows smoothly
+   above 100 m, then recovers over relief 160–300 m above the reference floor.
+   It changes no erosion pass and introduces no radial apron. Lowland slope
+   acceptance samples **all land between 42 and 192 m**, using central
+   differences, and requires a median of 15–30° on every development seed
+   only when `gentle_bases > 0`. Run `build/terrain_test --heavy --gentle`
+   to check that optional configuration; it is not the default acceptance.
+7. **Subtle high bands.** Up to 0.9 m of relief, only above 302 m and on faces
+   steeper than 40°, with full strength above 332 m and 55°. There is no
+   mid-height cosmetic band. These are separate from resistant geological
+   strata, which affect erosion itself.
+8. **Drainage and caves (W18).** Original priority-flood routing with an epsilon
+   gradient preserves physical lake bowls and produces an acyclic D8 network.
+   Cave placement then chooses **3–6** separated steep, dry sites at production
+   resolutions. A qualifying waterfall (river area ≥8,000 m² and a receiver
+   drop >max(4 m, 0.8 cell)) reserves the first entrance. Every site must also
+   retain a downhill outlet below its carved floor. The other sites are
+   chosen by a deterministic ranking, with 180 m separation. Small notches
+   lower only a few nearby height samples; routing is recomputed afterward.
+   Cave records describe their final floor positions. There are **no tunnels
+   or chamber meshes** in this output. N<64 omits entrances rather than
+   inventing sites on a grid too coarse to describe them.
+9. **Material classification.** The final height, slope, aspect, sediment and
+   volcanic footprint produce the material map. Water remains a separate
+   surface inferred from height/routing level.
 
-Hydraulic and thermal transport conserve the height sum; stream power does not
-(detachment-limited: what it cuts leaves the map), and tests check each.
+All work is fixed by parameters, never by a time budget. Counts of droplets,
+stream steps and thermal sweeps remain v2's. With **all seven switches set to
+0**, height, flow and sediment retain v2's bytes; the versioned hash still
+changes because v3 includes the new output schema.
 
-## Parameters and units
+## Parameters and output
 
-`cp_terrain_params_default(&p)` initializes every parameter. Set overrides,
-then call `cp_terrain_validate` or `cp_terrain_generate`, which validates again.
+`cp_terrain_params_default` initializes everything; `cp_terrain_generate`
+validates before touching the buffers. The seven switch strengths are finite
+floats in [0,1]. The layout count changes discretely when
+variety is enabled; the geometric strengths interpolate.
 
-| Group | Default |
+| C parameter | CLI option | JS request / lab query | Default |
+|---|---|---|---:|
+| `gentle_bases` | `--gentle-bases` | `gentle` | 0 |
+| `layout_variety` | `--layout-variety` | `variety` | 0 |
+| `cliff_bands` | `--cliff-bands` | `bands` | 1 |
+| `sea_cliffs` | `--sea-cliffs` | `coast` | 1 |
+| `hard_rock` | `--hard-rock` | `rock` | 1 |
+| `volcano` | `--volcano` | `volcano` | 0 |
+| `caves` | `--caves` | `caves` | 1 |
+
+The lab's last four queries are boolean, e.g. `?seed=42&volcano=0&caves=0`.
+Other capture queries include `n`, `base=1`, `view=valley`, `map=<pixels>`,
+`mesh=<segments>` and `shading=classification`.
+
+Other defaults remain v2's: N=1024, 5 octaves, 760 m noise wavelength, 240 m
+warp, ridge weight 0.60, valley radius 300 m, range feet 340–1500 m, relief
+parameter 470 m, coast radius 1600 m, lake at (−150,70) m with radius 68 m,
+stream K·dt 0.07, bedrock angle 62°, 80,000 droplets of lifetime 64 and brush
+radius 2, and 8 scree sweeps at 38°. The CLI retains the work/noise/erosion
+options documented in its source, including `--stream`, `--droplets`,
+`--thermal`, `--lifetime`, `--radius`, `--erosion`, `--capacity`, `--stream-k`,
+`--talus`, `--cliff`, `--relief`, `--ridge` and `--octaves`.
+
+`CpTerrain` owns no allocation: callers supply three N² float maps (`height`,
+`flow`, `sediment`) and **one N² byte `material` map**. Its fixed output fields
+hold the volcano's world x/y, cone/crater radii, `cave_count` and at most six
+`CpTerrainCave` records. Each cave has x/y position, z altitude, outward unit
+facing x/y, width/height/depth in metres and a uint32 waterfall flag.
+Notches are heightfield hints; renderers can later attach short cave meshes.
+
+| Material ID | Class |
 |---|---|
-| Seed / N / world width | 1 / 1024 / 3600 m (cell 3.52 m) |
-| Noise | 5 octaves; lowest octave 760 m; warp 240 m; ridge weight 0.60 |
-| Valley | radius 300 m; reference floor 42 m |
-| Range | inner foot 340 m; outer foot 1500 m; relief parameter 470 m |
-| River gap | direction (1, 0.15); half-width 90 m; floor 26 m at the crest line |
-| Col | direction (−0.55, −0.83); crest height 230 m |
-| Coast | mean radius 1600 m; the square edge is always sea |
-| Lake | centre (−150, 70) m; radius 68 m; depth parameter 34 m |
-| Stream power | 48 steps at N/4 (16 at N/2, 6 at N); K·dt 0.07; bedrock angle 62° |
-| Droplets | 80,000; lifetime 64; brush radius 2 cells |
-| Droplet dynamics | inertia 0.30; capacity 2.5; deposition 0.25; erosion 0.30 |
-| Water / speed | evaporation 0.045; gravity 4; minimum capacity slope 0.01 |
-| Scree | 8 sweeps; talus 38° |
+| 0 | Meadow / turf |
+| 1 | Rock |
+| 2 | Scree |
+| 3 | Volcanic rock, including old flows |
+| 4 | Sand |
+| 5 | Snow |
 
-Heights and sediment are float32 metres above sea level, flow is the fraction of
-map area contributing to a cell, slope is rise/run. Sediment is cumulative
-**deposition**: pit fill and talus from the stream-power passes (resampled from
-the coarse levels), droplet deposits and scree. Later erosion may remove
-material already counted.
+The volcanic footprint retains ID 3 on its high cone so renderers can identify
+its dark rock. Other massifs use aspect-dependent snow. The material map does
+not encode water depth; sample height and routing level for that.
 
-Coordinates sample cell centres: `((i + 0.5) * size_m / N) - size_m / 2`.
-Map +y is south; north is up in the hillshade. Work counts are absolute and
-part of a world's identity, as is N; a small map is not a downsample of a large
-one. Grids under 64 cells skip the N/4 level and under 32 the N/2 level.
+Workspace remains one N² float scratch map and three N² int32 arrays. Total
+map/workspace storage is **29 N² bytes (29 MiB at N=1024)**, plus the small
+fixed records. There is no malloc in core. N is 8–2048; the standalone WASM
+arena caps it at 1024. Coordinates sample cell centres,
+`((index + 0.5) * size_m / N) - size_m / 2`; map +y is south and north is up.
+Sediment measures cumulative deposition, not the amount still present.
 
-N is 8–2048; the standalone WASM ABI caps N at 1024 to bound its static arena.
-The CLI accepts `--stream`, `--droplets`, `--thermal`, `--lifetime`, `--radius`,
-`--erosion`, `--capacity`, `--stream-k`, `--talus`, `--cliff`, `--relief`,
-`--ridge`, `--octaves`, `--base` and `--out`. `--base` turns off stream power,
-droplets and scree.
+Progress callbacks retain stages 0 base/coarse streams, 1 droplets, 2 fine
+streams/scree, 3 routing, 4 done. All run synchronously on the calling thread.
 
-## C ownership and progress
+## ABI, dumps and determinism
 
-Allocate three non-overlapping N² float arrays for `CpTerrain` (`height`, `flow`,
-`sediment`), one N² float scratch array and three N² int32 arrays for
-`CpTerrainWorkspace` (`recv`, `ups`, `queue`). Core uses **no malloc**: the
-coarse levels live inside those same buffers. Total storage is 28 N² bytes:
-**28 MiB at N=1024**. After generation `scratch` holds the routing water level
-(above the ground where a basin holds a lake), `recv` the receivers and `queue`
-all cells in topological order.
+The WASM API retains `ct_config`, `ct_deltas`, `ct_generate`, `ct_map` (0 height,
+1 flow, 2 sediment, 3 routing water level), `ct_hash`, `ct_size`, `ct_version`.
+It adds `ct_features(coast,rock,volcano,caves)`, `ct_material` (byte pointer),
+`ct_cave_count`, `ct_caves` and `ct_volcano` (four float32 values). A cave record
+is eight float32 values followed by one uint32 flag (36 bytes). The wrapper
+returns copied typed arrays, `entrances` objects and a `landmark` array; Worker
+transfers preserve the byte material map. Configuration precedes generation.
 
-The optional callback receives `(stage, done, total, user)` synchronously.
-Stage 0 is the base and the coarse stream-power passes, 1 the droplets, 2 the
-fine stream-power pass and the scree sweeps, 3 the drainage, 4 done. `done` is
-monotone within a stage. Zero-work stages may be skipped.
+The CLI dump keeps the `CPTER10\0` header and original height/flow/sediment/D8
+payload. Version 3 flags bit 1 signals a feature extension: N² material bytes,
+four float32 landmark values, a uint32 cave count, then that many 36-byte cave
+records. Bit 0 still identifies a base-only terrain. The metrics reader
+accepts old v1/v2/early-v3 dumps and validates the feature extension.
 
-The WASM ABI is `ct_config(seed, n, droplets, thermal, warp, ridge, erosion,
-stream)`, `ct_generate`, `ct_map(layer)` (0 height, 1 flow, 2 sediment, 3 water
-level), `ct_hash`, `ct_version` and `ct_size`.
+Official parity remains x86-64 Linux versus WASM, `-O2 -std=c99 -fno-fast-math
+-ffp-contract=off`. Canonical generation uses arithmetic, sqrtf, integer hashing
+and polynomial fades; no libm trigonometry enters the maps. The FNV-1a hash
+serializes version **3**, N, world size, height, flow, sediment, material bytes,
+landmark fields and live cave records, explicitly little-endian. Signed zero
+is canonicalized, pointers/padding/unused cave slots are excluded. The three
+N=32 goldens were deliberately re-recorded; tests never regenerate them.
 
-## Determinism and hashes
+## Verification and evidence
 
-Official scope matches combat: x86-64 Linux and WASM, both `-O2 -std=c99
--fno-fast-math -ffp-contract=off`. The only floating-point arithmetic feeding
-output is `+ - * / sqrtf` with comparisons, integer hashing and polynomial
-fades. The seven slot directions are literal cos/sin constants; their jitter is
-a rotation by a normalised `(1, j)`. The two angles are converted once with a
-polynomial tangent. Counts are fixed. A dedicated `CpRng` seeded with
-`seed ^ 0xE501D35D` drives the droplets.
+`make terrain-test` runs six-seed N=1024 guarantees, paired base/eroded metrics,
+three small goldens, native/WASM parity at N=256 on all six seeds and N=1024 on
+1 and 42, plus separate switch combinations. Erosion must improve both valley
+depth and ridge sharpness on every seed. The **unchanged** natural-structure
+gate targets Rb 3–5 and Hack 0.5–0.6, with its existing tolerances of 0.5 and
+0.05 respectively. Actual values, including Hack values below 0.5, are reported
+in the evidence; a passing tolerance is not a claim of strict target coverage.
+The all-switches-off parity test also pins height/flow/sediment bytes against
+original v2 fixtures, independently of v3's expanded output hash schema.
 
-`cp_terrain_hash` is FNV-1a 64 over version, N, size, then height, flow and
-sediment, little-endian, with −0 canonicalized. **The generator version is 2.**
-Every byte changed from version 1, so the three `tests/golden/terrain-*.hash`
-fixtures (seeds 1/7/42, N=32, 300 droplets, 3 scree sweeps, other defaults) were
-re-recorded on purpose for this version. Tests read them; they never regenerate
-them.
-
-## Verification and timings
-
-`make terrain-test` checks, on seeds 1, 7 and 42 at N=1024:
-
-| Guarantee | Threshold | Measured (1 / 7 / 42) |
-|---|---|---|
-| Start floor | ≥90% of cells within 90 m of the centre have slope <10° | 100% each |
-| Lake | Centre <30 m; its sublevel set at centre +10 m reaches neither sea nor edge | holds 30.9 / 31.9 / 29.7 m |
-| River gap | A connected path from the start to the sea never rises above start +5 m | sill 41.9 m each (the start itself) |
-| Col | With the gap closed, the sea is unreachable under 100 m and reachable under 300 m | lowest col 163 / 180 / 152 m |
-| Peaks | Maximum height >400 m | 434 / 472 / 482 m |
-
-These prove terrain properties, not creature pathfinding. Seed 1's peak clears
-the 400 m line by 34 m; other seeds are not checked.
-
-Native/WASM parity compares the three small goldens, seeds 1/7/42 at N=256 and
-seed 1 at N=1024: all match. Seed 1 at N=1024 took **2.61 s native and 3.56 s in
-Node/WASM** (phase A: 1.30 s and 1.36 s), inside W13's ~10 s. ASan/UBSan pass on
-the full suite; gcov measures 100% of 755 lines, 99.59% of branches executed and
-93.36% taken. See [the metrics report](evidence/terrain/metrics.md).
-
-Screenshots come from the lab through the agent Playwright install:
+Browser evidence uses headless Chromium 1254, only
+`--use-angle=swiftshader --enable-unsafe-swiftshader`, and asserts SwiftShader.
+Run browser/heavy processes with `nice -n 10`; the capture script closes its
+browser in `finally`. No normal-browser frame rate or owner approval is claimed.
 
 ```sh
-# Keep the server above running, then:
 NODE_PATH=/home/diego/Desarrollo/cpore-wt/_agent/node_modules \
-  nice -n 10 node tools/terrain/capture.cjs
-python3 tools/terrain/sheet.py          # composes shape-v2.png
+  nice -n 10 node tools/terrain/capture.cjs --out docs/evidence/terrain/v2cc --no-base --details
+nice -n 10 python3 tools/terrain/sheet.py docs/evidence/terrain/v2cc docs/evidence/terrain/shape-v2cc.png 'v2 + cliffs + caves'
+nice -n 10 node tools/terrain/compare_v2.mjs build/terrain/v2-disabled.json
 ```
 
-The capture script uses only Chromium 1254 with `--use-angle=swiftshader
---enable-unsafe-swiftshader`, asserts SwiftShader, takes three pictures per
-terrain from one page load, and always closes the browser. The "before" row
-needs the phase-A module, which is not kept in the tree: check out
-`core/src/terrain.c`, `core/include/cpore/terrain.h` and
-`apps/terrain_wasm_api.c` from commit `6336202` into a scratch directory and
-build them with the Makefile's terrain `emcc` line into `build/wasm-v1/`.
-Without it the script skips that row.
+For the comparison row, extract `core/src/terrain.c`, its header, `cpore.h`,
+`rng.c` and `apps/terrain_wasm_api.c` from **0386bb8** into ignored scratch
+storage and compile the terrain WASM exports into `build/wasm-v2/`. Read files
+with `git show`; do not check out or merge another branch. The sheet tool
+accepts a source directory and optional destination path.
 
-## The lab
-
-Lighting is baked from the maps at full resolution into one texture: slope and
-aspect, ambient occlusion and the sun's cast shadow from the height field, then
-materials (meadow, forest on moderate low slopes, alpine turf, banded rock where
-steep or high, scree where sediment lies steep, gravel where it lies flat, sand
-at the shore, snow by altitude, slope and aspect, rivers by contributing area).
-Standing water is where the routing level is more than 0.5 m above the ground;
-channels are not drawn across it. Views: from above (orbit) and from the valley
-floor (eye 2.2 m up). Query parameters `seed`, `n`, `base=1`, `view=valley`,
-`map=<pixels>`, `mesh=<segments>` and `engine=v1` drive captures.
-
-## Remaining scope and known weaknesses
-
-- **Slopes are steep.** Of the ground above 100 m, about 60% stands between
-  40° and 60° and another 20% above 60° (central differences, three seeds). Stream power cuts until walls reach the bedrock angle,
-  and 430–480 m peaks inside a 3.6 km square leave no room for gentler ones.
-  The faces read as steep fluted rock, not as alpine benches and meadows.
-- **World size is 3.6 km, island about 3.2 km.** W1 says about 2–3 km. At 2 km
-  the range could only be a wall. This needs the owner's decision.
-- **Massif faces seen from the valley are smooth.** Ribs and gullies are there
-  in the hillshade but faint at eye level; there are no cliff bands or cirque
-  headwalls.
-- **Fans are modest.** Scree aprons show at slope feet; clear alluvial fans at
-  valley mouths do not.
-- **The seven-slot layout is recognisable** across seeds from above: a wheel of
-  massifs with radial valleys. Outer land is spurs and foothills, not separate
-  ranges.
-- Routing on the start floor is still D8: channels there are plausible lines,
-  not riverbeds, and the floor itself is nearly featureless.
-- Three seeds are a small set. Pooled Hack fits stay under 0.5.
-
-Phase B still needs terrain placement in the game, creature traversal and
-material/LOD integration. Whole-island biomes, islets, caves, the W13 cache,
-pre-bake and loading story are not part of this work.
+Remaining limits: six seeds are calibration evidence, not a proof for all
+uint32 seeds; high rock walls retain v2's steep character; D8 floor channels
+are routing rather than fully carved riverbeds; cave notches cannot represent
+overhangs; renderers still need cave interiors and volcanic smoke. Islets,
+whole-island biome/game placement and W13 caching belong to later integration.

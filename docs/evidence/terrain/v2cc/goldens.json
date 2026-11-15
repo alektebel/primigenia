@@ -1,0 +1,20 @@
+{
+  "reason": "W20: gentle_bases=0, layout_variety=0, volcano=0; cliff_bands/sea_cliffs/hard_rock/caves stay 1. Same algorithms and N=32, droplets=300, thermal=3 fixture.",
+  "rows": [
+    {
+      "seed": 1,
+      "old": "34c3f794ca52de3b",
+      "new": "f7ab8c601cac01b7"
+    },
+    {
+      "seed": 7,
+      "old": "e9ae81defe2f3d80",
+      "new": "35602f06c1b7cdd8"
+    },
+    {
+      "seed": 42,
+      "old": "336f283bede6bbce",
+      "new": "85e954425a916fa5"
+    }
+  ]
+}

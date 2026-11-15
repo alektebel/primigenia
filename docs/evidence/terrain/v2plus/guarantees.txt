@@ -1,0 +1,22 @@
+delta 0: 19171 changed cells
+delta 1: 33247 changed cells
+delta 2: 1302 changed cells
+W16–W18 seed 1: 17989 coastal face cells; 7688 beach cells; 4 caves (1 waterfall); volcanic 106031 cells
+W15 seed 1: lowland median 27.15 degrees (403399 cells)
+W12 seed 1: 100.00% flat within 90m; lake holds >=10m; river gap <= start+5m; col between 100 and 300m; peak 552.95m
+W16–W18 seed 7: 19953 coastal face cells; 5797 beach cells; 5 caves (1 waterfall); volcanic 100398 cells
+W15 seed 7: lowland median 26.38 degrees (435525 cells)
+W12 seed 7: 100.00% flat within 90m; lake holds >=10m; river gap <= start+5m; col between 100 and 300m; peak 551.95m
+W16–W18 seed 42: 20523 coastal face cells; 6570 beach cells; 6 caves (1 waterfall); volcanic 100638 cells
+W15 seed 42: lowland median 28.08 degrees (411034 cells)
+W12 seed 42: 100.00% flat within 90m; lake holds >=10m; river gap <= start+5m; col between 100 and 300m; peak 552.56m
+W16–W18 seed 99: 19084 coastal face cells; 7623 beach cells; 4 caves (1 waterfall); volcanic 111546 cells
+W15 seed 99: lowland median 28.13 degrees (391131 cells)
+W12 seed 99: 100.00% flat within 90m; lake holds >=10m; river gap <= start+5m; col between 100 and 300m; peak 554.48m
+W16–W18 seed 1234: 19320 coastal face cells; 5508 beach cells; 4 caves (1 waterfall); volcanic 106175 cells
+W15 seed 1234: lowland median 28.38 degrees (390511 cells)
+W12 seed 1234: 100.00% flat within 90m; lake holds >=10m; river gap <= start+5m; col between 100 and 300m; peak 550.84m
+W16–W18 seed 31337: 19996 coastal face cells; 5660 beach cells; 5 caves (1 waterfall); volcanic 99467 cells
+W15 seed 31337: lowland median 25.32 degrees (412413 cells)
+W12 seed 31337: 100.00% flat within 90m; lake holds >=10m; river gap <= start+5m; col between 100 and 300m; peak 551.65m
+terrain: PASS

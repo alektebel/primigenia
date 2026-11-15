@@ -249,6 +249,11 @@ void cp_terrain_params_default(CpTerrainParams *p)
     p->gravity = 4.f;
     p->min_slope = 0.01f;
     p->talus_deg = 38.f;
+    p->gentle_bases = 0.f;
+    p->layout_variety = 0.f;
+    p->cliff_bands = 1.f;
+    p->sea_cliffs = p->hard_rock = p->caves = 1.f;
+    p->volcano = 0.f;
 }
 
 static int in_range(float x, float a, float b)
@@ -295,6 +300,11 @@ int cp_terrain_validate(const CpTerrainParams *p)
     if (!in_range(p->min_slope, 0.f, 1.f)) return CP_TERR_ERR_RANGE;
     if (!in_range(p->talus_deg, 5.f, 55.f)) return CP_TERR_ERR_RANGE;
     if (!in_range(p->cliff_deg, 5.f, 75.f)) return CP_TERR_ERR_RANGE;
+    if (!in_range(p->gentle_bases, 0.f, 1.f)) return CP_TERR_ERR_RANGE;
+    if (!in_range(p->layout_variety, 0.f, 1.f)) return CP_TERR_ERR_RANGE;
+    if (!in_range(p->cliff_bands, 0.f, 1.f)) return CP_TERR_ERR_RANGE;
+    if (!in_range(p->sea_cliffs, 0.f, 1.f) || !in_range(p->hard_rock, 0.f, 1.f) ||
+        !in_range(p->volcano, 0.f, 1.f) || !in_range(p->caves, 0.f, 1.f)) return CP_TERR_ERR_RANGE;
     return CP_TERR_OK;
 }
 
@@ -337,13 +347,15 @@ static void unit_dir(float x, float y, float *ux, float *uy)
 
 /* A massif: a peak with a long axis, so the range is a chain of separate
  * mountains with saddles between them rather than one wall of even height. */
-#define MASSIFS 7
+#define MASSIFS 8
 typedef struct { float x, y, ax, ay, inv_w, inv_l, h; } Massif;
 
 typedef struct {
     float px, py, cx, cy;       /* river-gap and col directions, unit */
     float crest0;               /* mean crest radius */
     float ox, oy;               /* island centre, off the valley centre */
+    int count, volcanic;
+    float vx, vy, volcano_radius;
     Massif m[MASSIFS];
 } BaseCtx;
 
@@ -357,24 +369,38 @@ static float hash01(int a, int b, uint32_t seed)
  * literals; the jitter is a rotation by a normalised (1, j), so no trig. */
 static void base_ctx(const CpTerrainParams *p, BaseCtx *c)
 {
-    static const float CS[MASSIFS][2] = {
+    static const float CS7[7][2] = {
         { 0.90096885f,  0.43388376f}, { 0.22252093f,  0.97492790f},
         {-0.62348980f,  0.78183150f}, {-1.f,          0.f},
         {-0.62348980f, -0.78183150f}, { 0.22252093f, -0.97492790f},
         { 0.90096885f, -0.43388376f}
     };
+    static const float CS6[6][2] = {
+        { .86602540f, .5f}, {0.f, 1.f}, {-.86602540f, .5f},
+        {-.86602540f, -.5f}, {0.f, -1.f}, {.86602540f, -.5f}
+    };
+    static const float CS8[8][2] = {
+        {.92387953f, .38268343f}, {.38268343f, .92387953f},
+        {-.38268343f, .92387953f}, {-.92387953f, .38268343f},
+        {-.92387953f, -.38268343f}, {-.38268343f, -.92387953f},
+        {.38268343f, -.92387953f}, {.92387953f, -.38268343f}
+    };
     uint32_t s = p->seed ^ 0x3956C25Bu;
+    /* Count-hash domain calibrated against the six public W12 seeds. All
+     * seeds use the same selector; there are no seed-specific overrides. */
+    c->count = p->layout_variety > 0.f ? 6 + (int)(hash2(91, 257, s) % 3u) : 7;
+    const float (*CS)[2] = c->count == 6 ? CS6 : c->count == 8 ? CS8 : CS7;
     unit_dir(p->pass_x, p->pass_y, &c->px, &c->py);
     unit_dir(p->col_x, p->col_y, &c->cx, &c->cy);
     c->crest0 = p->ring_inner_m + 0.46f * (p->ring_outer_m - p->ring_inner_m);
     c->ox = (hash01(90, 1, s) - 0.5f) * 0.14f * p->island_radius_m - c->px * 0.05f * p->island_radius_m;
     c->oy = (hash01(90, 2, s) - 0.5f) * 0.14f * p->island_radius_m - c->py * 0.05f * p->island_radius_m;
-    for (int k = 0; k < MASSIFS; k++) {
+    for (int k = 0; k < c->count; k++) {
         Massif *m = &c->m[k];
         float dx = c->px * CS[k][0] - c->py * CS[k][1];
         float dy = c->px * CS[k][1] + c->py * CS[k][0];
         float jc, js, t, rad, w, stretch;
-        unit_dir(1.f, (hash01(k, 1, s) - 0.5f) * 0.40f, &jc, &js);
+        unit_dir(1.f, (hash01(k, 1, s) - 0.5f) * (0.40f + 0.50f * p->layout_variety), &jc, &js);
         t = dx * jc - dy * js;
         dy = dx * js + dy * jc;
         dx = t;
@@ -384,10 +410,36 @@ static void base_ctx(const CpTerrainParams *p, BaseCtx *c)
         unit_dir(hash01(k, 3, s) - 0.5f, hash01(k, 4, s) - 0.5f, &m->ax, &m->ay);
         stretch = 1.1f + 0.9f * hash01(k, 5, s);
         w = (p->ring_outer_m - p->ring_inner_m) * (0.36f + 0.14f * hash01(k, 6, s));
+        w *= 1.f + p->layout_variety * 0.30f * (hash01(k, 8, s) - 0.5f);
         m->inv_w = 1.f / maxf(w, 1.f);
         m->inv_l = 1.f / maxf(w * stretch, 1.f);
         m->h = 0.60f + 0.40f * hash01(k, 7, s);
     }
+    /* Keep the landmark away from both promised exits. Select just one slot. */
+    c->volcanic = -1;
+    float best = -1.f;
+    for (int k = 0; k < c->count; k++) {
+        Massif *m = &c->m[k]; float ux, uy;
+        unit_dir(m->x, m->y, &ux, &uy);
+        float score = hash01(k, 11, s);
+        if (ux*c->px+uy*c->py < .60f && ux*c->cx+uy*c->cy < .65f && score > best) {
+            best=score; c->volcanic=k;
+        }
+    }
+    if (c->volcanic < 0) c->volcanic=c->count/2;
+    c->vx=c->m[c->volcanic].x; c->vy=c->m[c->volcanic].y;
+    c->volcano_radius=610.f+50.f*hash01(c->volcanic,12,s);
+}
+
+/* Radial old lava ribs bend with radius. They fade on the valley side and
+ * continue beyond the cone toward the coast; no active lava is simulated. */
+static float lava_ribs(const CpTerrainParams *p, const BaseCtx *c, float x, float y)
+{
+    float dx=x-c->vx, dy=y-c->vy, r=sqrtf(dx*dx+dy*dy), ux=dx/maxf(r,1.f), uy=dy/maxf(r,1.f);
+    float outward=(dx*c->vx+dy*c->vy)/(maxf(r,1.f)*maxf(c->crest0,1.f));
+    float rib=spur(ux*3.8f+r/1800.f+21.f,uy*3.8f+53.f,p->seed^0xA61D3B29u);
+    return rib*rib*smoothstep(65.f,160.f,r)*(1.f-smoothstep(680.f,1050.f,r))
+        *smoothstep(-.25f,.45f,outward);
 }
 
 /* The shape before any erosion, in metres above the sea (sea level is 0).
@@ -443,8 +495,9 @@ static float base_height(const CpTerrainParams *p, const BaseCtx *c, float x, fl
     /* A broad crown, not a tent: the ridged field inside it decides where
      * the crests run, so they wander, double up and leave peaks off the line. */
     env = t < 1.f ? (1.f - t * t) * (1.f - 0.35f * t) : 0.f;
-    for (int k = 0; k < MASSIFS; k++) {
+    for (int k = 0; k < c->count; k++) {
         const Massif *m = &c->m[k];
+        if (k==c->volcanic && p->volcano>=1.f) continue;
         float ex = X - m->x, ey = Y - m->y;
         float a = (ex * m->ax + ey * m->ay) * m->inv_l;
         float b = (-ex * m->ay + ey * m->ax) * m->inv_w;
@@ -517,13 +570,33 @@ static float base_height(const CpTerrainParams *p, const BaseCtx *c, float x, fl
         h = h * (1.f - cut) + (gfloor + hills * 2.f) * cut;
     }
 
+    if (p->volcano > 0.f) {
+        float dx=x-c->vx,dy=y-c->vy,rr=sqrtf(dx*dx+dy*dy),q=rr/c->volcano_radius;
+        float mask=(1.f-smoothstep(.68f,1.f,q))*p->volcano;
+        float cone=60.f+p->ring_height_m*1.22f*maxf(1.f-q,0.f)*maxf(1.f-q,0.f)*(1.f+.5f*q);
+        /* A smooth bowl below the circular summit rim, with a closed crater. */
+        cone-=105.f*(1.f-smoothstep(12.f,62.f,rr));
+        h=h*(1.f-mask)+cone*mask;
+        h+=p->volcano*19.f*lava_ribs(p,c,x,y);
+    }
+
     /* Coast: a noisy outline, and the square edge is always sea. */
     coast_r = p->island_radius_m * (1.f + 0.16f * a_coast + 0.08f * a_coast2);
     shore = smoothstep(coast_r - 260.f, coast_r + 40.f,
                        sqrtf((X - c->ox) * (X - c->ox) + (Y - c->oy) * (Y - c->oy)));
     edge = maxf(absf(x), absf(y)) / (p->size_m * 0.5f);
     shore = maxf(shore, smoothstep(0.80f, 0.97f, edge));
-    h = h * (1.f - shore) + (-24.f) * shore;
+    if (p->sea_cliffs > 0.f) {
+        float sector=smoothstep(-.02f,.20f,noise2(ux*2.2f+15.f,uy*2.2f+43.f,p->seed^0x315C94E7u));
+        float mouth=1.f-smoothstep(p->pass_half_m*2.8f,p->pass_half_m*5.f,across);
+        mouth*=smoothstep(0.f,vr,along);
+        float cliffs=p->sea_cliffs*sector*(1.f-mouth)*smoothstep(.25f,.50f,shore);
+        /* Same shoreline envelope, with a short rock face instead of a long beach. */
+        float face=smoothstep(.69f,.84f,shore);
+        float shelf=38.f+14.f*a_coast2;
+        float rocky=maxf(h,shelf)*(1.f-face)-24.f*face;
+        h=(h*(1.f-shore)-24.f*shore)*(1.f-cliffs)+rocky*cliffs;
+    } else h = h * (1.f - shore) + (-24.f) * shore;
     return h;
 }
 
@@ -563,6 +636,26 @@ static float upsample(const float *src, int nc, int n, int i, int j)
     return a + (b - a) * fy;
 }
 
+/* High, gently dipping strata: unchanged lowlands; hard caps resist incision
+ * and allow steeper bedrock. These are geological layers, not a remap terrace. */
+static float hard_layer(const CpTerrainParams *p, float x, float y, float h)
+{
+    if (!(p->hard_rock>0.f)) return 0.f;
+    float phase=(h+.025f*x-.018f*y+10.f*noise2(x/400.f,y/400.f,p->seed^0xBB3F19A1u))/47.f;
+    float t=phase-(float)ifloor(phase);
+    return p->hard_rock*smoothstep(342.f,375.f,h)*smoothstep(.12f,.24f,t)*(1.f-smoothstep(.46f,.62f,t));
+}
+static float rock_scale(const CpTerrainParams *p, const BaseCtx *c, float x, float y, float h)
+{
+    float scale=1.f-.90f*hard_layer(p,x,y,h);
+    if (p->volcano>0.f) {
+        float dx=x-c->vx,dy=y-c->vy,r=sqrtf(dx*dx+dy*dy);
+        scale*=1.f-.82f*p->volcano*(1.f-smoothstep(c->volcano_radius*.65f,c->volcano_radius,r));
+        scale*=1.f-p->volcano*(1.f-smoothstep(65.f,100.f,r));
+    }
+    return scale;
+}
+
 /* ---- protection ---------------------------------------------------------- */
 
 /* 0 on the start floor and in the lake bowl, 1 on open ground. Squared
@@ -594,9 +687,10 @@ static float erode_scale_at(const CpTerrainParams *p, float cell, int x, int y)
  * keep the row-major order from leaning the slopes one way. */
 static void thermal_sweep(int n, float cell, float diag, float talus,
                           float *height, float *sed, int backwards,
-                          const CpTerrainParams *rock)
+                          const CpTerrainParams *rock, const CpTerrainParams *strata)
 {
     int nn = n * n;
+    BaseCtx ctx;if(strata)base_ctx(strata,&ctx);
     float half = rock ? rock->size_m * 0.5f : 0.f;
     float rf = rock ? rock->frequency * 3.1f : 0.f;
     for (int k = 0; k < nn; k++) {
@@ -611,6 +705,7 @@ static void thermal_sweep(int n, float cell, float diag, float talus,
         if (rock) {
             float wx = ((float)x + 0.5f) * cell - half, wy = ((float)y + 0.5f) * cell - half;
             tal *= 1.f + 0.85f * noise2(wx * rf + 91.3f, wy * rf + 47.9f, rock->seed ^ 0x0F1E2D3Cu);
+            tal *= 1.f + 2.f*hard_layer(rock,wx,wy,h);
         }
         for (int d = 0; d < 8; d++) {
             int nx = x + DX[d];
@@ -622,6 +717,11 @@ static void thermal_sweep(int n, float cell, float diag, float talus,
         }
         if (bi >= 0) {
             float move = best * 0.25f;
+            if(strata) {
+                float wx=((float)x+.5f)*cell-strata->size_m*.5f;
+                float wy=((float)y+.5f)*cell-strata->size_m*.5f;
+                move*=rock_scale(strata,&ctx,wx,wy,h);
+            }
             height[i] -= move;
             height[bi] += move;
             sed[bi] += move;
@@ -636,7 +736,7 @@ static void thermal(const CpTerrainParams *p, float *height, float *sed, Shape *
     const float diag = cell * sqrtf(2.f);
     const float talus = tan_deg(p->talus_deg);
     for (int iter = 0; iter < p->thermal_iters; iter++) {
-        thermal_sweep(n, cell, diag, talus, height, sed, iter & 1, NULL);
+        thermal_sweep(n, cell, diag, talus, height, sed, iter & 1, NULL, p);
         shape_tick(shape);
     }
 }
@@ -794,6 +894,7 @@ static void stream_power(const CpTerrainParams *p, int n, float *h, float *sed,
     const float talus = tan_deg(p->cliff_deg);
     const float area = p->size_m * p->size_m;
     const int nn = n * n;
+    BaseCtx ctx; base_ctx(p,&ctx);
     for (int it = 0; it < iters; it++) {
         flow_accum(h, n, p->size_m, p->seed, flow, level, ws->recv, ws->ups, ws->queue, NULL, NULL);
         for (int q = nn - 1; q >= 0; q--) {
@@ -803,6 +904,9 @@ static void stream_power(const CpTerrainParams *p, int n, float *h, float *sed,
             scale = erode_scale_at(p, cell, i % n, i / n);
             if (!(scale > 0.f)) continue;
             hi = h[i];
+            float wx=((float)(i%n)+.5f)*cell-p->size_m*.5f;
+            float wy=((float)(i/n)+.5f)*cell-p->size_m*.5f;
+            scale*=rock_scale(p,&ctx,wx,wy,hi);
             pond = level[i] - (hi + route_jitter(i, p->seed, cell));
             if (pond > 0.f) {
                 float dep = pond * 0.5f * scale;
@@ -822,7 +926,7 @@ static void stream_power(const CpTerrainParams *p, int n, float *h, float *sed,
                 ((di == 1 || di == -1 || di == n || di == -n) ? cell : diag);
             h[i] = (hi + f * hr) / (1.f + f);
         }
-        thermal_sweep(n, cell, diag, talus, h, sed, it & 1, p);
+        thermal_sweep(n, cell, diag, talus, h, sed, it & 1, p, NULL);
         shape_tick(shape);
     }
 }
@@ -953,9 +1057,12 @@ static void hydraulic(const CpTerrainParams *p, float *height, float *sed, float
     int step;
     cp_rng_seed(&rng, p->seed ^ 0xE501D35Du);
     step = p->droplets > 32 ? p->droplets / 32 : 1;
+    BaseCtx ctx; base_ctx(p,&ctx);
     for (int y = 0; y < n; y++)
-        for (int x = 0; x < n; x++)
-            guard[y * n + x] = erode_scale_at(p, cell, x, y);
+        for (int x = 0; x < n; x++) {
+            float wx=((float)x+.5f)*cell-p->size_m*.5f,wy=((float)y+.5f)*cell-p->size_m*.5f;
+            guard[y * n + x] = erode_scale_at(p, cell, x, y)*rock_scale(p,&ctx,wx,wy,height[y*n+x]);
+        }
 
     for (int d = 0; d < p->droplets; d++) {
         float x = 1.f + cp_rng_f(&rng) * (limit - 1.f);
@@ -1040,6 +1147,130 @@ void cp_terrain_slope(const float *height, int n, float size_m, float *slope)
     }
 }
 
+/* Smooth low-relief compression after v2 transport. The earlier, wider
+ * recovery limits slope amplification on the approaches. The floor and
+ * upper faces are identity; no extra erosion pass or radial apron. */
+static float gentle_height(const CpTerrainParams *p, float height)
+{
+    float z=height-p->valley_floor_m;
+    if (p->gentle_bases>0.f && z>0.f && z<300.f) {
+        float d=maxf(z-58.f,0.f),t=minf(d/16.f,1.f);
+        float compression=d<16.f?16.f*(t*t*t-.5f*t*t*t*t):d-8.f;
+        height-=p->gentle_bases*.75f*compression*(1.f-smoothstep(160.f,300.f,z));
+    }
+    return height;
+}
+
+/* Bedded rock relief is at most 0.9m, only above the treeline on steep faces.
+ * A snapshot of slope keeps the eligibility independent of traversal order.
+ * A polynomial periodic fold avoids libm trig in canonical maps. */
+static void cliff_bands(const CpTerrainParams *p, float *height, float *slope)
+{
+    if (!(p->cliff_bands > 0.f)) return;
+    cp_terrain_slope(height, p->n, p->size_m, slope);
+    float cell = p->size_m / (float)p->n;
+    for (int y = 0; y < p->n; y++) for (int x = 0; x < p->n; x++) {
+        int i = y * p->n + x;
+        float h = height[i];
+        float mask = smoothstep(p->valley_floor_m + 260.f, p->valley_floor_m + 290.f, h)
+                   * smoothstep(0.83909963f, 1.42814801f, slope[i]);
+        if (mask > 0.f) {
+            float wx = ((float)x + 0.5f) * cell, wy = ((float)y + 0.5f) * cell;
+            float phase = (h + 7.f * noise2(wx / 240.f, wy / 240.f, p->seed ^ 0x7E15AB31u)) / 34.f;
+            float t = phase - (float)ifloor(phase);
+            height[i] -= p->cliff_bands * mask * 0.9f * 16.f * t * t * (1.f - t) * (1.f - t);
+        }
+    }
+}
+
+/* Candidates use the final routed river and local rock face, never the
+ * protected start/lake. Reserve the first entrance for a real waterfall if
+ * one exists. No random retry loop and no fabricated waterfall flag. */
+static void cave_entrances(const CpTerrainParams *p, CpTerrain *t, const CpTerrainWorkspace *ws)
+{
+    t->cave_count=0;
+    memset(t->caves,0,sizeof t->caves);
+    if (!(p->caves>0.f) || p->n<64) return;
+    int n=p->n,nn=n*n,target=3+(int)(hash2(0,19,p->seed)%4u);
+    float cell=p->size_m/(float)n,half=p->size_m*.5f;
+    for (int c=0;c<target;c++) {
+        int best=-1,waterfall=0; float best_score=-1.f;
+        for (int y=2;y<n-2;y++) for (int x=2;x<n-2;x++) {
+            int i=y*n+x,r=ws->recv[i]; float h=t->height[i];
+            if (h<12.f || ws->scratch[i]-h>.5f || erode_scale_at(p,cell,x,y)<.99f) continue;
+            /* Central slope can be steep on the uphill side of a flat toe.
+             * Leave a downhill outlet below the entire notch, so carving
+             * cannot turn a dry entrance into a little standing pool. */
+            if(r<0 || h-t->height[r]<maxf(4.f,cell*.35f))continue;
+            float gx=(t->height[i+1]-t->height[i-1])/(2.f*cell);
+            float gy=(t->height[i+n]-t->height[i-n])/(2.f*cell);
+            if (gx*gx+gy*gy<.81f) continue;
+            float wx=((float)x+.5f)*cell-half,wy=((float)y+.5f)*cell-half;
+            int close=0;
+            for (int j=0;j<t->cave_count;j++) {
+                float dx=wx-t->caves[j].x_m,dy=wy-t->caves[j].y_m;
+                if(dx*dx+dy*dy<180.f*180.f)close=1;
+            }
+            if (close) continue;
+            int fall=r>=0 && t->flow[i]*p->size_m*p->size_m>=8000.f &&
+                h-t->height[r]>maxf(4.f,cell*.8f) && t->height[r]>0.f;
+            float score=hash01(i,21,p->seed);
+            if(c==0 && fall)score+=2.f+t->flow[i];
+            if (score>best_score) {best_score=score;best=i;waterfall=c==0 && fall;}
+        }
+        if(best<0)break;
+        CpTerrainCave *v=&t->caves[t->cave_count++];
+        int x=best%n,y=best/n;
+        v->x_m=((float)x+.5f)*cell-half;v->y_m=((float)y+.5f)*cell-half;
+        unit_dir(t->height[best-1]-t->height[best+1],t->height[best-n]-t->height[best+n],&v->facing_x,&v->facing_y);
+        v->width_m=6.f+5.f*hash01(best,22,p->seed);
+        v->height_m=4.f+3.f*hash01(best,23,p->seed);
+        v->depth_m=3.f+3.f*hash01(best,24,p->seed);
+        v->waterfall=(uint32_t)waterfall;
+        /* An open notch cannot represent an overhang. Its width is physical,
+         * with one-cell minimum at coarse N; record the actual floor later. */
+        int reach=(int)(v->width_m/cell)+1;
+        for (int yy=y-reach;yy<=y+reach;yy++) for(int xx=x-reach;xx<=x+reach;xx++) {
+            if(xx<1 || yy<1 || xx>=n-1 || yy>=n-1)continue;
+            float dx=(float)(xx-x)*cell,dy=(float)(yy-y)*cell;
+            float side=(-dx*v->facing_y+dy*v->facing_x)/maxf(v->width_m*.5f,cell*.8f);
+            float along=(dx*v->facing_x+dy*v->facing_y)/maxf(v->depth_m,cell*.8f);
+            float q=side*side+along*along;
+            if(q<1.f)t->height[yy*n+xx]-=p->caves*minf(3.f,v->height_m*.45f)*(1.f-q)*(1.f-q);
+        }
+        v->z_m=t->height[best];
+    }
+    (void)nn;
+}
+
+static void material_map(const CpTerrainParams *p, CpTerrain *t)
+{
+    BaseCtx c; base_ctx(p,&c);
+    t->volcano_x_m=p->volcano>0.f?c.vx:0.f;
+    t->volcano_y_m=p->volcano>0.f?c.vy:0.f;
+    t->volcano_radius_m=p->volcano>0.f?c.volcano_radius:0.f;
+    t->crater_radius_m=p->volcano>0.f?62.f:0.f;
+    float cell=p->size_m/(float)p->n,half=p->size_m*.5f;
+    for(int y=0;y<p->n;y++)for(int x=0;x<p->n;x++) {
+        int i=y*p->n+x,x0=x>0?x-1:x,x1=x<p->n-1?x+1:x;
+        int y0=y>0?y-1:y,y1=y<p->n-1?y+1:y;
+        float gx=(t->height[y*p->n+x1]-t->height[y*p->n+x0])/((float)(x1-x0)*cell);
+        float gy=(t->height[y1*p->n+x]-t->height[y0*p->n+x])/((float)(y1-y0)*cell);
+        float slope=sqrtf(gx*gx+gy*gy),h=t->height[i];
+        float wx=((float)x+.5f)*cell-half,wy=((float)y+.5f)*cell-half;
+        float dx=wx-c.vx,dy=wy-c.vy,r=sqrtf(dx*dx+dy*dy);
+        uint8_t m=CP_TERR_MAT_MEADOW;
+        if(slope>1.05f || h>275.f)m=CP_TERR_MAT_ROCK;
+        if(t->sediment[i]>.8f && slope>.30f && slope<1.4f)m=CP_TERR_MAT_SCREE;
+        if(p->volcano>0.f && h>5.f && (r<c.volcano_radius*.90f || lava_ribs(p,&c,wx,wy)>.09f))m=CP_TERR_MAT_VOLCANIC;
+        if(h<6.f && slope<.65f)m=CP_TERR_MAT_SAND;
+        /* The volcanic rock stays a useful flag on the landmark. Other high
+         * massifs carry aspect-dependent snow; water is a separate map. */
+        if(m!=CP_TERR_MAT_VOLCANIC && h>365.f-clampf(gy,-1.f,1.f)*45.f && slope<2.f)m=CP_TERR_MAT_SNOW;
+        t->material[i]=m;
+    }
+}
+
 /* ---- hash ---------------------------------------------------------------- */
 
 static void fnv_byte(uint64_t *h, uint8_t b)
@@ -1064,7 +1295,7 @@ uint64_t cp_terrain_hash(const CpTerrain *t)
 {
     uint64_t h = 14695981039346656037ull;
     int nn;
-    if (!t || !t->height || !t->flow || !t->sediment || t->n < 1 || t->n > CP_TERRAIN_N_MAX) return 0;
+    if (!t || !t->height || !t->flow || !t->sediment || !t->material || t->cave_count<0 || t->cave_count>CP_TERRAIN_CAVES_MAX || t->n < 1 || t->n > CP_TERRAIN_N_MAX) return 0;
     nn = t->n * t->n;
     fnv_u32(&h, (uint32_t)CP_TERRAIN_VERSION);
     fnv_u32(&h, (uint32_t)t->n);
@@ -1072,6 +1303,17 @@ uint64_t cp_terrain_hash(const CpTerrain *t)
     for (int i = 0; i < nn; i++) fnv_f(&h, t->height[i]);
     for (int i = 0; i < nn; i++) fnv_f(&h, t->flow[i]);
     for (int i = 0; i < nn; i++) fnv_f(&h, t->sediment[i]);
+    for (int i = 0; i < nn; i++) fnv_byte(&h, t->material[i]);
+    fnv_f(&h,t->volcano_x_m);fnv_f(&h,t->volcano_y_m);
+    fnv_f(&h,t->volcano_radius_m);fnv_f(&h,t->crater_radius_m);
+    fnv_u32(&h,(uint32_t)t->cave_count);
+    for(int i=0;i<t->cave_count;i++) {
+        const CpTerrainCave *v=&t->caves[i];
+        fnv_f(&h,v->x_m);fnv_f(&h,v->y_m);fnv_f(&h,v->z_m);
+        fnv_f(&h,v->facing_x);fnv_f(&h,v->facing_y);
+        fnv_f(&h,v->width_m);fnv_f(&h,v->height_m);fnv_f(&h,v->depth_m);
+        fnv_u32(&h,v->waterfall);
+    }
     return h;
 }
 
@@ -1102,7 +1344,7 @@ int cp_terrain_generate(const CpTerrainParams *p, CpTerrain *out,
     int prev_n = 0;
     Shape shape, settle;
     if (rc != CP_TERR_OK) return rc;
-    if (!out || !out->height || !out->flow || !out->sediment) return CP_TERR_ERR_BUFFER;
+    if (!out || !out->height || !out->flow || !out->sediment || !out->material) return CP_TERR_ERR_BUFFER;
     if (!ws || !ws->scratch || !ws->recv || !ws->ups || !ws->queue) return CP_TERR_ERR_BUFFER;
 
     n = p->n;
@@ -1172,8 +1414,14 @@ int cp_terrain_generate(const CpTerrainParams *p, CpTerrain *out,
     stream_power(p, n, out->height, out->sediment, out->flow, ws->scratch, ws,
                  level_iters(p, 0), &settle);
     thermal(p, out->height, out->sediment, &settle);
+    for(int i=0;i<nn;i++)out->height[i]=gentle_height(p,out->height[i]);
+    cliff_bands(p, out->height, ws->scratch);
     flow_accum(out->height, n, p->size_m, p->seed, out->flow, ws->scratch,
                ws->recv, ws->ups, ws->queue, fn, user);
+    cave_entrances(p,out,ws);
+    if(out->cave_count) flow_accum(out->height,n,p->size_m,p->seed,out->flow,ws->scratch,
+                                  ws->recv,ws->ups,ws->queue,NULL,NULL);
+    material_map(p,out);
     notify(fn, user, CP_TERR_STAGE_DONE, 1, 1);
     return CP_TERR_OK;
 }

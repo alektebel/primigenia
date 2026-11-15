@@ -40,11 +40,29 @@ def load_dump(path):
     magic, version, seed, n, size, flags = struct.unpack_from("<8sIIifI", blob, 0)
     if magic != b"CPTER10\x00":
         raise ValueError(f"{path}: bad magic {magic!r}")
-    if version not in (1,2) or not 8<=n<=2048 or not math.isfinite(size) or size<=0 or flags not in (0,1):
+    if version not in (1,2,3) or not 8<=n<=2048 or not math.isfinite(size) or size<=0 or flags not in (0,1,2,3) or (version<3 and flags&2):
         raise ValueError(f"{path}: invalid terrain header")
     nn = n * n
     off = 28
     need = off + nn * 4 * 3 + nn
+    feature_data={}
+    if flags&2:
+        if len(blob)<need+nn+20:
+            raise ValueError(f"{path}: incomplete terrain features")
+        material=list(blob[need:need+nn]);landmark=struct.unpack_from('<4f',blob,need+nn)
+        count,=struct.unpack_from('<I',blob,need+nn+16)
+        if count>6 or any(v>5 for v in material) or not all(math.isfinite(v) for v in landmark):
+            raise ValueError(f"{path}: invalid terrain features")
+        feature_data={'material':material,'volcano':landmark,'caves':[]}
+        start=need+nn+20
+        if len(blob)!=start+36*count:
+            raise ValueError(f"{path}: invalid cave data length")
+        for i in range(count):
+            v=struct.unpack_from('<8fI',blob,start+36*i)
+            if not all(math.isfinite(x) for x in v[:8]) or v[8]>1 or min(v[5:8])<=0:
+                raise ValueError(f"{path}: invalid cave record")
+            feature_data['caves'].append(v)
+        need=start+36*count
     if len(blob) != need:
         raise ValueError(f"{path}: expected {need} bytes, got {len(blob)}")
     height = struct.unpack_from(f"<{nn}f", blob, off)
@@ -61,7 +79,7 @@ def load_dump(path):
             raise ValueError(f"{path}: invalid flow direction at {i}")
     return {
         "version": version, "seed": seed, "n": n, "size": size, "flags": flags,
-        "height": height, "flow": flow, "sediment": sediment, "dir": dirs,
+        "height": height, "flow": flow, "sediment": sediment, "dir": dirs, **feature_data,
     }
 
 
@@ -365,6 +383,8 @@ def main():
             m = metrics(load_dump(path), args.area, args.pooled)
             rows.append(m)
             print(fmt(m))
+    if args.json:
+        Path(args.json).write_text(json.dumps(rows,indent=2)+"\n")
     if args.check:
         if not args.cli:
             ap.error("--check requires --cli for paired base/eroded data")
@@ -382,8 +402,6 @@ def main():
                 raise SystemExit(f"natural structure FAIL: seed {seed} Rb {e['rb']} Hack {e['hack']}")
         print("shape PASS: eroded valley depth and ridge sharpness beat base on every seed")
         print("natural structure PASS: eroded Rb within 0.5 of [3,5] and Hack h within 0.05 of [0.5,0.6]")
-    if args.json:
-        Path(args.json).write_text(json.dumps(rows,indent=2)+"\n")
 
 
 if __name__ == "__main__":

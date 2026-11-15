@@ -9,12 +9,13 @@
 typedef struct { CpTerrain t; CpTerrainWorkspace w; float *mem; } Fixture;
 static Fixture fixture(int n) {
     Fixture f = {0}; size_t nn = (size_t)n*n;
-    f.mem = calloc(nn*7, sizeof(float)); assert(f.mem);
+    f.mem = calloc(nn*8, sizeof(float)); assert(f.mem);
     f.t.height=f.mem; f.t.flow=f.mem+nn; f.t.sediment=f.mem+2*nn;
     f.w.scratch=f.mem+3*nn;
     f.w.recv= (int32_t *)(f.mem+4*nn);
     f.w.ups= (int32_t *)(f.mem+5*nn);
     f.w.queue= (int32_t *)(f.mem+6*nn);
+    f.t.material=(uint8_t *)(f.mem+7*nn);
     return f;
 }
 static void validation(void) {
@@ -36,6 +37,10 @@ static void validation(void) {
     BAD(stream_iters,-1); BAD(stream_iters,257); BAD(stream_k,-1); BAD(stream_k,NAN);
     BAD(cliff_deg,90); BAD(col_x,INFINITY); BAD(col_y,NAN); BAD(col_height_m,1e19f);
     BAD(island_radius_m,0);
+    BAD(gentle_bases,-.1f); BAD(gentle_bases,NAN); BAD(gentle_bases,1.1f);
+    BAD(layout_variety,-.1f); BAD(layout_variety,INFINITY); BAD(layout_variety,1.1f);
+    BAD(sea_cliffs,NAN); BAD(hard_rock,-1); BAD(volcano,2); BAD(caves,NAN);
+    BAD(cliff_bands,-.1f); BAD(cliff_bands,NAN); BAD(cliff_bands,1.1f);
 #undef BAD
     assert(cp_terrain_generate(&p,NULL,NULL,NULL,NULL)==CP_TERR_ERR_BUFFER);
     Fixture f=fixture(8); p.n=8;
@@ -83,10 +88,13 @@ static void small(void) {
     /* Hash explicit bytes, canonicalize signed zero, exclude pointers/padding. */
     f.t.height[0]=0; uint64_t h=cp_terrain_hash(&f.t); f.t.height[0]=-0.f;
     assert(h==cp_terrain_hash(&f.t)); f.t.flow[0]+=.01f; assert(h!=cp_terrain_hash(&f.t));
+    h=cp_terrain_hash(&f.t);f.t.material[0]^=1;assert(h!=cp_terrain_hash(&f.t));f.t.material[0]^=1;
+    f.t.volcano_x_m+=1;assert(h!=cp_terrain_hash(&f.t));f.t.volcano_x_m-=1;
     assert(cp_terrain_hash(NULL)==0);
     CpTerrain invalid=f.t; invalid.n=INT32_MAX; assert(cp_terrain_hash(&invalid)==0);
     cp_terrain_params_default(NULL);
     /* Hydraulic transport conserves terrain mass when the terminal load settles. */
+    p.gentle_bases=0; p.cliff_bands=0; p.caves=0;
     p.seed=1; p.thermal_iters=0; p.droplets=0; p.stream_iters=0;
     assert(cp_terrain_generate(&p,&f.t,&f.w,NULL,NULL)==0);
     double mass0=0,mass1=0;
@@ -151,15 +159,54 @@ static int escapes(Fixture *f,const CpTerrainParams *p,int start,float level,int
     }
     return 0;
 }
-/* W12 on the three evidence seeds: a flat start, a lake that holds water, a
+static int float_cmp(const void *a,const void *b) {
+    float x=*(const float *)a,y=*(const float *)b; return (x>y)-(x<y);
+}
+/* W12 on the six evidence seeds: a flat start, a lake that holds water, a
  * river gap that drains the valley without a climb, a real col (a second way
  * out, high but not a wall), and peaks. */
-static void guarantees(void) {
-    const uint32_t seeds[]={1,7,42};
-    CpTerrainParams p; cp_terrain_params_default(&p); Fixture f=fixture(p.n);
-    for(int k=0;k<3;k++) {
+static void feature_guarantees(Fixture *f,const CpTerrainParams *p) {
+    CpTerrain *t=&f->t;int n=t->n;
+    assert(t->cave_count>=3 && t->cave_count<=6);
+    int counts[6]={0},cliffs=0,beach=0,falls=0;
+    float cave_area[CP_TERRAIN_CAVES_MAX];
+    for(int c=0;c<t->cave_count;c++) {
+        int x=(int)((t->caves[c].x_m/t->size_m+.5f)*n),y=(int)((t->caves[c].y_m/t->size_m+.5f)*n);
+        cave_area[c]=t->flow[y*n+x]*t->size_m*t->size_m;
+    }
+    cp_terrain_slope(t->height,n,t->size_m,t->flow);
+    for(int i=0;i<n*n;i++) {
+        assert(t->material[i]<=5);counts[t->material[i]]++;
+        if(t->height[i]>2 && t->height[i]<40 && t->flow[i]>1.f)cliffs++;
+        if(t->height[i]>0 && t->height[i]<6 && t->flow[i]<.3f)beach++;
+    }
+    for(int i=0;i<6;i++) {
+        if(i==CP_TERR_MAT_VOLCANIC && p->volcano==0) assert(counts[i]==0);
+        else assert(counts[i]>0);
+    }
+    assert(cliffs>50 && beach>50);
+    for(int c=0;c<t->cave_count;c++) {
+        const CpTerrainCave *v=&t->caves[c];
+        int x=(int)((v->x_m/t->size_m+.5f)*n),y=(int)((v->y_m/t->size_m+.5f)*n),i=y*n+x;
+        assert(x>0 && y>0 && x<n-1 && y<n-1);
+        assert(v->z_m==t->height[i] && v->z_m>0);
+        assert(f->w.scratch[i]-v->z_m<.5f); /* Not inside a standing lake. */
+        assert(t->flow[i]>.8f);
+        if(v->waterfall) {assert(cave_area[c]>=8000.f);assert(f->w.recv[i]>=0);assert(t->height[i]>t->height[f->w.recv[i]]+1.f);falls++;}
+    }
+    assert(falls<=1);
+    printf("W16–W18 seed %u: %d coastal face cells; %d beach cells; %d caves (%d waterfall); volcanic %d cells\n",
+           p->seed,cliffs,beach,t->cave_count,falls,counts[3]);
+}
+static void guarantees(int gentle) {
+    const uint32_t seeds[]={1,7,42,99,1234,31337};
+    CpTerrainParams p; cp_terrain_params_default(&p);
+    if(gentle) p.gentle_bases=1;
+    Fixture f=fixture(p.n);
+    for(int k=0;k<6;k++) {
         p.seed=seeds[k];
         assert(cp_terrain_generate(&p,&f.t,&f.w,NULL,NULL)==0);
+        feature_guarantees(&f,&p);
         cp_terrain_slope(f.t.height,p.n,p.size_m,f.w.scratch);
         int total=0,flat=0,centre=(p.n/2)*p.n+p.n/2; float peak=-1e9f;
         for(int y=0;y<p.n;y++) for(int x=0;x<p.n;x++) {
@@ -169,6 +216,18 @@ static void guarantees(void) {
             if(f.t.height[i]>peak) peak=f.t.height[i];
         }
         assert(flat>=.9f*total); assert(peak>400.f);
+        /* W15: median on land between the 42m floor and 192m, central
+         * differences, with no sampling of only the protected start floor. */
+        if(p.gentle_bases>0) {
+            int low=0;
+            for(int i=0;i<p.n*p.n;i++)
+                if(f.t.height[i]>p.valley_floor_m && f.t.height[i]<p.valley_floor_m+150.f)
+                    f.t.flow[low++]=f.w.scratch[i];
+            assert(low>1000); qsort(f.t.flow,low,sizeof(float),float_cmp);
+            float median=f.t.flow[low/2];
+            printf("W15 seed %u: lowland median %.2f degrees (%d cells)\n",p.seed,atanf(median)*57.2957795f,low);
+            assert(median>=.26794919f && median<=.57735027f);
+        }
         int lx=(int)((p.lake_x_m/p.size_m+.5f)*p.n);
         int ly=(int)((p.lake_y_m/p.size_m+.5f)*p.n);
         float bottom=f.t.height[ly*p.n+lx],start=f.t.height[centre];
@@ -180,8 +239,96 @@ static void guarantees(void) {
     }
     free(f.mem);
 }
+/* Postprocessing must preserve the upper faces and protected floor byte for
+ * byte; the layout switch alone must change geometry on the same seed. */
+static void deltas(void) {
+    CpTerrainParams p; cp_terrain_params_default(&p);
+    p.n=256; p.stream_iters=0; p.droplets=0; p.thermal_iters=0; p.seed=42;
+    p.gentle_bases=p.layout_variety=p.cliff_bands=0;
+    p.sea_cliffs=p.hard_rock=p.volcano=p.caves=0;
+    Fixture a=fixture(p.n),b=fixture(p.n);
+    assert(cp_terrain_generate(&p,&a.t,&a.w,NULL,NULL)==0);
+    for(int delta=0;delta<3;delta++) {
+        p.gentle_bases=delta==0; p.layout_variety=delta==1; p.cliff_bands=delta==2;
+        assert(cp_terrain_generate(&p,&b.t,&b.w,NULL,NULL)==0);
+        cp_terrain_slope(a.t.height,p.n,p.size_m,a.w.scratch);
+        int changes=0;
+        for(int i=0;i<p.n*p.n;i++) {
+            float h=a.t.height[i];
+            changes+=h!=b.t.height[i];
+            if(delta==0 && (h<=p.valley_floor_m || h>=p.valley_floor_m+300.f))
+                assert(h==b.t.height[i]);
+            if(delta==2 && (h<=p.valley_floor_m+260.f || a.w.scratch[i]<=.83909963f))
+                assert(h==b.t.height[i]);
+        }
+        printf("delta %d: %d changed cells\n",delta,changes);
+        assert(changes>0);
+    }
+    free(a.mem); free(b.mem);
+}
+/* The public output is enough for renderers; no mesh/tunnel dependency. */
+static void geology(void) {
+    CpTerrainParams p; cp_terrain_params_default(&p); p.n=256; p.volcano=1;
+    Fixture a=fixture(p.n),b=fixture(p.n);
+    assert(cp_terrain_generate(&p,&a.t,&a.w,NULL,NULL)==0);
+    assert(a.t.cave_count>=3 && a.t.cave_count<=6);
+    int materials[6]={0};
+    for(int i=0;i<p.n*p.n;i++) { assert(a.t.material[i]<=5); materials[a.t.material[i]]++; }
+    assert(materials[CP_TERR_MAT_VOLCANIC]>100);
+    assert(materials[CP_TERR_MAT_MEADOW]>100 && materials[CP_TERR_MAT_SAND]>100);
+    /* Summit bowl is lower than its surrounding rim. */
+    int vx=(int)((a.t.volcano_x_m/p.size_m+.5f)*p.n);
+    int vy=(int)((a.t.volcano_y_m/p.size_m+.5f)*p.n);
+    float crater=a.t.height[vy*p.n+vx],rim=crater;
+    for(int y=vy-5;y<=vy+5;y++) for(int x=vx-5;x<=vx+5;x++)
+        if(x>=0 && y>=0 && x<p.n && y<p.n && a.t.height[y*p.n+x]>rim) rim=a.t.height[y*p.n+x];
+    assert(rim>crater+15.f);
+    for(int c=0;c<a.t.cave_count;c++) {
+        const CpTerrainCave *v=&a.t.caves[c];
+        assert(isfinite(v->x_m) && isfinite(v->y_m) && v->z_m>0);
+        assert(fabsf(v->facing_x*v->facing_x+v->facing_y*v->facing_y-1.f)<1e-5f);
+        assert(v->width_m>=4 && v->height_m>=3);
+    }
+    p.caves=0;
+    assert(cp_terrain_generate(&p,&b.t,&b.w,NULL,NULL)==0);
+    assert(b.t.cave_count==0);
+    int changed=0;
+    for(int i=0;i<p.n*p.n;i++) {
+        assert(a.t.height[i]<=b.t.height[i]); changed+=a.t.height[i]!=b.t.height[i];
+    }
+    assert(changed>0 && changed<500);
+    p.volcano=0;
+    assert(cp_terrain_generate(&p,&b.t,&b.w,NULL,NULL)==0);
+    for(int i=0;i<p.n*p.n;i++) assert(b.t.material[i]!=CP_TERR_MAT_VOLCANIC);
+    free(a.mem);free(b.mem);
+}
+static void independent_features(void) {
+    CpTerrainParams p;cp_terrain_params_default(&p);p.n=256;p.seed=42;
+    p.gentle_bases=p.layout_variety=p.cliff_bands=0;
+    p.sea_cliffs=p.hard_rock=p.volcano=p.caves=0;
+    Fixture a=fixture(p.n),b=fixture(p.n);
+    p.stream_iters=p.droplets=p.thermal_iters=0;
+    assert(cp_terrain_generate(&p,&a.t,&a.w,NULL,NULL)==0);
+    p.sea_cliffs=1;
+    assert(cp_terrain_generate(&p,&b.t,&b.w,NULL,NULL)==0);
+    int changes=0;
+    for(int y=0;y<p.n;y++)for(int x=0;x<p.n;x++) {
+        int i=y*p.n+x;float wx=(x+.5f)*p.size_m/p.n-p.size_m*.5f,wy=(y+.5f)*p.size_m/p.n-p.size_m*.5f;
+        if(wx*wx+wy*wy<800.f*800.f)assert(a.t.height[i]==b.t.height[i]);
+        changes+=a.t.height[i]!=b.t.height[i];
+    }
+    assert(changes>100);
+    p.sea_cliffs=0;p.stream_iters=48;p.droplets=3000;p.thermal_iters=8;
+    assert(cp_terrain_generate(&p,&a.t,&a.w,NULL,NULL)==0);
+    p.hard_rock=1;
+    assert(cp_terrain_generate(&p,&b.t,&b.w,NULL,NULL)==0);
+    double sum=0;
+    for(int i=0;i<p.n*p.n;i++)sum+=b.t.height[i]-a.t.height[i];
+    assert(sum>0); /* Resistant layers leave more rock after the same work. */
+    free(a.mem);free(b.mem);
+}
 int main(int argc,char **argv) {
-    validation(); helpers(); small();
-    if(argc>1 && !strcmp(argv[1],"--heavy")) guarantees();
+    validation(); helpers(); deltas(); geology(); independent_features(); small();
+    if(argc>1 && !strcmp(argv[1],"--heavy")) guarantees(argc>2 && !strcmp(argv[2],"--gentle"));
     puts("terrain: PASS"); return 0;
 }

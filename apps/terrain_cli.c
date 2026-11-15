@@ -84,6 +84,13 @@ static void apply_overrides(CpTerrainParams *p, int argc, char **argv)
     int life = arg_i(argc, argv, "--lifetime", p->lifetime);
     int stream = arg_i(argc, argv, "--stream", p->stream_iters);
     if (has(argc, argv, "--base")) { drops = 0; thermal = 0; stream = 0; }
+    p->gentle_bases=arg_f(argc,argv,"--gentle-bases",p->gentle_bases);
+    p->layout_variety=arg_f(argc,argv,"--layout-variety",p->layout_variety);
+    p->cliff_bands=arg_f(argc,argv,"--cliff-bands",p->cliff_bands);
+    p->sea_cliffs=arg_f(argc,argv,"--sea-cliffs",p->sea_cliffs);
+    p->hard_rock=arg_f(argc,argv,"--hard-rock",p->hard_rock);
+    p->volcano=arg_f(argc,argv,"--volcano",p->volcano);
+    p->caves=arg_f(argc,argv,"--caves",p->caves);
     p->stream_iters = stream;
     p->stream_k=arg_f(argc,argv,"--stream-k",p->stream_k);
     p->talus_deg=arg_f(argc,argv,"--talus",p->talus_deg);
@@ -111,6 +118,8 @@ static int run_gen(const CpTerrainParams *p, CpTerrain *t, CpTerrainWorkspace *w
 
 static void setup(const CpTerrainParams *p, CpTerrain *t, CpTerrainWorkspace *ws)
 {
+    memset(t,0,sizeof *t);
+    t->material=calloc((size_t)p->n*p->n,1);if(!t->material)die("out of memory");
     t->height = falloc(p->n);
     t->flow = falloc(p->n);
     t->sediment = falloc(p->n);
@@ -216,7 +225,7 @@ static int write_dump(const char *path, const CpTerrainParams *p, const CpTerrai
     FILE *f = fopen(path, "wb");
     int8_t *dir;
     uint32_t version = CP_TERRAIN_VERSION;
-    uint32_t flags = (p->droplets == 0 && p->thermal_iters == 0 && p->stream_iters == 0) ? 1u : 0u;
+    uint32_t flags = (p->droplets == 0 && p->thermal_iters == 0 && p->stream_iters == 0) ? 3u : 2u;
     int nn = p->n * p->n;
     char magic[8] = {'C', 'P', 'T', 'E', 'R', '1', '0', '\0'};
     if (!f) { perror(path); return 2; }
@@ -243,9 +252,19 @@ static int write_dump(const char *path, const CpTerrainParams *p, const CpTerrai
         free(dir);
         return 2;
     }
-    fclose(f);
+    /* Version 3 feature extension (flags bit 1); no struct padding on disk. */
+    int failed=fwrite(t->material,1,(size_t)nn,f)!=(size_t)nn;
+    const float landmark[]={t->volcano_x_m,t->volcano_y_m,t->volcano_radius_m,t->crater_radius_m};
+    uint32_t count=(uint32_t)t->cave_count;
+    failed|=fwrite(landmark,4,4,f)!=4 || fwrite(&count,4,1,f)!=1;
+    for(int i=0;i<t->cave_count;i++) {
+        const CpTerrainCave *v=&t->caves[i];
+        const float fields[]={v->x_m,v->y_m,v->z_m,v->facing_x,v->facing_y,v->width_m,v->height_m,v->depth_m};
+        failed|=fwrite(fields,4,8,f)!=8 || fwrite(&v->waterfall,4,1,f)!=1;
+    }
+    failed|=fclose(f)!=0;
     free(dir);
-    return 0;
+    return failed?2:0;
 }
 
 int main(int argc, char **argv)
@@ -277,6 +296,18 @@ int main(int argc, char **argv)
     }
     t.n = p.n;
     t.size_m = p.size_m;
+    if (!strcmp(cmd,"features")) {
+        int counts[6]={0};for(int i=0;i<p.n*p.n;i++)counts[t.material[i]]++;
+        printf("{\"seed\":%u,\"volcano\":[%.6f,%.6f,%.6f,%.6f],\"materials\":[%d,%d,%d,%d,%d,%d],\"caves\":[",
+               p.seed,t.volcano_x_m,t.volcano_y_m,t.volcano_radius_m,t.crater_radius_m,
+               counts[0],counts[1],counts[2],counts[3],counts[4],counts[5]);
+        for(int i=0;i<t.cave_count;i++) {
+            const CpTerrainCave *v=&t.caves[i];
+            printf("%s{\"position\":[%.6f,%.6f,%.6f],\"facing\":[%.6f,%.6f],\"size\":[%.6f,%.6f,%.6f],\"waterfall\":%u}",
+                   i?",":"",v->x_m,v->y_m,v->z_m,v->facing_x,v->facing_y,v->width_m,v->height_m,v->depth_m,v->waterfall);
+        }
+        puts("]}");return 0;
+    }
     if (!strcmp(cmd, "hash")) {
         printf("%016" PRIx64 " %.4f\n", cp_terrain_hash(&t), sec);
         return 0;
