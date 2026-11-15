@@ -21,7 +21,7 @@ extern "C" {
 #endif
 
 /* Bump when the bytes for a seed change. Cached worlds key on this (W13). */
-#define CP_TERRAIN_VERSION 1
+#define CP_TERRAIN_VERSION 2
 
 #define CP_TERRAIN_N_MIN   8
 #define CP_TERRAIN_N_MAX   2048
@@ -58,6 +58,7 @@ typedef struct CpTerrainParams {
     uint32_t seed;
     int n;
     int octaves;
+    int stream_iters;       /* stream-power steps at N/4; N/2 runs /3, N runs /8 */
     int droplets;
     int lifetime;
     int radius;             /* brush radius in cells, 1..8 */
@@ -71,12 +72,16 @@ typedef struct CpTerrainParams {
     float ring_inner_m;
     float ring_outer_m;
     float ring_height_m;
-    float pass_x, pass_y;   /* gap direction; normalised, (0,0) means +x */
+    float pass_x, pass_y;   /* river-gap direction; normalised, (0,0) means +x */
     float pass_half_m;
-    float pass_height_m;
+    float pass_height_m;    /* gap floor where it crosses the crest line */
+    float col_x, col_y;     /* direction of the promised high col */
+    float col_height_m;     /* crest height at the col */
+    float island_radius_m;  /* mean coast radius; the square edge is always sea */
     float lake_x_m, lake_y_m;
     float lake_radius_m;
     float lake_depth_m;
+    float stream_k;         /* K*dt of one stream-power step, per sqrt(m2) of area */
     float inertia;
     float capacity;
     float deposition;
@@ -84,7 +89,8 @@ typedef struct CpTerrainParams {
     float evaporation;
     float gravity;
     float min_slope;        /* minimum downhill slope used for capacity */
-    float talus_deg;
+    float talus_deg;        /* loose material: the final thermal passes */
+    float cliff_deg;        /* bedrock: the sweep inside stream power */
 } CpTerrainParams;
 
 typedef struct CpTerrain {

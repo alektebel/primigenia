@@ -82,7 +82,11 @@ static void apply_overrides(CpTerrainParams *p, int argc, char **argv)
         seed=(uint32_t)v;
     }
     int life = arg_i(argc, argv, "--lifetime", p->lifetime);
-    if (has(argc, argv, "--base")) { drops = 0; thermal = 0; }
+    int stream = arg_i(argc, argv, "--stream", p->stream_iters);
+    if (has(argc, argv, "--base")) { drops = 0; thermal = 0; stream = 0; }
+    p->stream_iters = stream;
+    p->stream_k=arg_f(argc,argv,"--stream-k",p->stream_k);
+    p->talus_deg=arg_f(argc,argv,"--talus",p->talus_deg);
     p->radius=arg_i(argc,argv,"--radius",p->radius);
     p->erosion=arg_f(argc,argv,"--erosion",p->erosion);
     p->capacity=arg_f(argc,argv,"--capacity",p->capacity);
@@ -232,7 +236,7 @@ static int write_dump(const char *path, const CpTerrainParams *p, const CpTerrai
     FILE *f = fopen(path, "wb");
     int8_t *dir;
     uint32_t version = CP_TERRAIN_VERSION;
-    uint32_t flags = (p->droplets == 0 && p->thermal_iters == 0) ? 1u : 0u;
+    uint32_t flags = (p->droplets == 0 && p->thermal_iters == 0 && p->stream_iters == 0) ? 1u : 0u;
     int nn = p->n * p->n;
     char magic[8] = {'C', 'P', 'T', 'E', 'R', '1', '0', '\0'};
     if (!f) { perror(path); return 2; }
