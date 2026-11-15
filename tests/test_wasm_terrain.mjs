@@ -23,7 +23,7 @@ for (const [seed,n] of [[1,256],[7,256],[42,256],[99,256],[1234,256],[31337,256]
   assert.equal(t.height.length,n*n);
   for (const map of [t.height,t.flow,t.sediment,t.level]) assert.ok(map.every(Number.isFinite));
   assert.ok(t.material instanceof Uint8Array);assert.equal(t.material.length,n*n);
-  assert.ok(t.material.every(v=>v<=5));assert.ok(t.material.includes(3));
+  assert.ok(t.material.every(v=>v<=5));assert.ok(!t.material.includes(3));
   assert.ok(t.entrances.length>=3 && t.entrances.length<=6);
   const features=JSON.parse(execFileSync('nice',['-n','10','build/terrain_cli','features','--seed',String(seed),'--n',String(n)],{encoding:'utf8'}));
   assert.deepEqual(t.material.reduce((a,v)=>(a[v]++,a),[0,0,0,0,0,0]),features.materials);

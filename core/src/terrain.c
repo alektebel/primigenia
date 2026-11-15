@@ -249,10 +249,11 @@ void cp_terrain_params_default(CpTerrainParams *p)
     p->gravity = 4.f;
     p->min_slope = 0.01f;
     p->talus_deg = 38.f;
-    p->gentle_bases = 1.f;
-    p->layout_variety = 1.f;
+    p->gentle_bases = 0.f;
+    p->layout_variety = 0.f;
     p->cliff_bands = 1.f;
-    p->sea_cliffs = p->hard_rock = p->volcano = p->caves = 1.f;
+    p->sea_cliffs = p->hard_rock = p->caves = 1.f;
+    p->volcano = 0.f;
 }
 
 static int in_range(float x, float a, float b)

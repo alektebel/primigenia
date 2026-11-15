@@ -180,7 +180,10 @@ static void feature_guarantees(Fixture *f,const CpTerrainParams *p) {
         if(t->height[i]>2 && t->height[i]<40 && t->flow[i]>1.f)cliffs++;
         if(t->height[i]>0 && t->height[i]<6 && t->flow[i]<.3f)beach++;
     }
-    for(int i=0;i<6;i++)assert(counts[i]>0);
+    for(int i=0;i<6;i++) {
+        if(i==CP_TERR_MAT_VOLCANIC && p->volcano==0) assert(counts[i]==0);
+        else assert(counts[i]>0);
+    }
     assert(cliffs>50 && beach>50);
     for(int c=0;c<t->cave_count;c++) {
         const CpTerrainCave *v=&t->caves[c];
@@ -195,9 +198,11 @@ static void feature_guarantees(Fixture *f,const CpTerrainParams *p) {
     printf("W16–W18 seed %u: %d coastal face cells; %d beach cells; %d caves (%d waterfall); volcanic %d cells\n",
            p->seed,cliffs,beach,t->cave_count,falls,counts[3]);
 }
-static void guarantees(void) {
+static void guarantees(int gentle) {
     const uint32_t seeds[]={1,7,42,99,1234,31337};
-    CpTerrainParams p; cp_terrain_params_default(&p); Fixture f=fixture(p.n);
+    CpTerrainParams p; cp_terrain_params_default(&p);
+    if(gentle) p.gentle_bases=1;
+    Fixture f=fixture(p.n);
     for(int k=0;k<6;k++) {
         p.seed=seeds[k];
         assert(cp_terrain_generate(&p,&f.t,&f.w,NULL,NULL)==0);
@@ -213,14 +218,16 @@ static void guarantees(void) {
         assert(flat>=.9f*total); assert(peak>400.f);
         /* W15: median on land between the 42m floor and 192m, central
          * differences, with no sampling of only the protected start floor. */
-        int low=0;
-        for(int i=0;i<p.n*p.n;i++)
-            if(f.t.height[i]>p.valley_floor_m && f.t.height[i]<p.valley_floor_m+150.f)
-                f.t.flow[low++]=f.w.scratch[i];
-        assert(low>1000); qsort(f.t.flow,low,sizeof(float),float_cmp);
-        float median=f.t.flow[low/2];
-        printf("W15 seed %u: lowland median %.2f degrees (%d cells)\n",p.seed,atanf(median)*57.2957795f,low);
-        assert(median>=.26794919f && median<=.57735027f);
+        if(p.gentle_bases>0) {
+            int low=0;
+            for(int i=0;i<p.n*p.n;i++)
+                if(f.t.height[i]>p.valley_floor_m && f.t.height[i]<p.valley_floor_m+150.f)
+                    f.t.flow[low++]=f.w.scratch[i];
+            assert(low>1000); qsort(f.t.flow,low,sizeof(float),float_cmp);
+            float median=f.t.flow[low/2];
+            printf("W15 seed %u: lowland median %.2f degrees (%d cells)\n",p.seed,atanf(median)*57.2957795f,low);
+            assert(median>=.26794919f && median<=.57735027f);
+        }
         int lx=(int)((p.lake_x_m/p.size_m+.5f)*p.n);
         int ly=(int)((p.lake_y_m/p.size_m+.5f)*p.n);
         float bottom=f.t.height[ly*p.n+lx],start=f.t.height[centre];
@@ -261,7 +268,7 @@ static void deltas(void) {
 }
 /* The public output is enough for renderers; no mesh/tunnel dependency. */
 static void geology(void) {
-    CpTerrainParams p; cp_terrain_params_default(&p); p.n=256;
+    CpTerrainParams p; cp_terrain_params_default(&p); p.n=256; p.volcano=1;
     Fixture a=fixture(p.n),b=fixture(p.n);
     assert(cp_terrain_generate(&p,&a.t,&a.w,NULL,NULL)==0);
     assert(a.t.cave_count>=3 && a.t.cave_count<=6);
@@ -322,6 +329,6 @@ static void independent_features(void) {
 }
 int main(int argc,char **argv) {
     validation(); helpers(); deltas(); geology(); independent_features(); small();
-    if(argc>1 && !strcmp(argv[1],"--heavy")) guarantees();
+    if(argc>1 && !strcmp(argv[1],"--heavy")) guarantees(argc>2 && !strcmp(argv[2],"--gentle"));
     puts("terrain: PASS"); return 0;
 }

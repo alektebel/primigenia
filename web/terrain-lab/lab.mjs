@@ -1,3 +1,4 @@
+import { DEFAULTS } from './terrain.mjs';
 const $=id=>document.getElementById(id);
 const stages=['Raising the range and cutting its valleys','Rain is carving the gullies','Loose stone is settling into scree','Tracing the drainage network','Landscape ready'];
 const query=new URLSearchParams(location.search);
@@ -223,7 +224,7 @@ $('controls').addEventListener('submit',event=>{
   busy=true;document.body.dataset.error='false';$('generate').disabled=true;$('status').textContent='A world is taking shape…';$('progress').value=0;
   worker.postMessage({engine:['v1','v2'].includes(query.get('engine'))?query.get('engine'):'current',seed:Number($('seed').value),n:Number($('resolution').value),base:$('base').checked,
     coast:Number($('coast').checked),rock:Number($('rock').checked),volcano:Number($('volcano').checked),caves:Number($('caves').checked),
-    gentle:Number(query.get('gentle')??1),variety:Number(query.get('variety')??1),bands:Number(query.get('bands')??1),
+    gentle:Number(query.get('gentle')??DEFAULTS.gentle),variety:Number(query.get('variety')??DEFAULTS.variety),bands:Number(query.get('bands')??DEFAULTS.bands),
     warp:Number($('warp').value),ridge:Number($('ridge').value),stream:Number($('stream').value),droplets:Number($('droplets').value),erosion:Number($('erosion').value),thermal:Number($('thermal').value)});
 });
 $('shading').addEventListener('change',recolor);$('drainage').addEventListener('change',hillshade);$('reset').addEventListener('click',cameraReset);

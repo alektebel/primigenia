@@ -2,7 +2,7 @@
  * `url` lets the lab load another build of the same ABI (the phase-A module,
  * for before/after evidence); extra arguments to an older ct_config are ignored. */
 export const DEFAULTS = Object.freeze({ seed: 1, n: 1024, stream: 48, droplets: 80000, thermal: 8,
-  warp: 240, ridge: .6, erosion: .3, base: false, gentle: 1, variety: 1, bands: 1, coast: 1, rock: 1, volcano: 1, caves: 1 });
+  warp: 240, ridge: .6, erosion: .3, base: false, gentle: 0, variety: 0, bands: 1, coast: 1, rock: 1, volcano: 0, caves: 1 });
 export async function createTerrain(options = {}, url = '../../build/wasm/cpore_terrain.mjs') {
   const createModule = (await import(url)).default;
   const module = await createModule(options);
