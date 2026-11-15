@@ -23,3 +23,13 @@ assert.equal(s.outcome,'death');const deathLog=s.lastEncounter.exportLog();s.adv
 s=create();for(let t=0;t<900&&!s.outcome;t++)s.advance(.1,time=>time<2?{move:[0,1]}:time<4?{guard:true}:{move:[1,0],sprint:true});
 assert.equal(s.outcome,'fled');const fleeHome={...s.home};s.advance(15,()=>({move:[1,0]}));assert(Math.hypot(s.enemy.x-fleeHome.x,s.enemy.z-fleeHome.z)<4);
 console.log('PASS death/respawn and boundary flee/return home');
+// Smooth acceleration/braking, continuous turns, target arrival and action approach.
+s=create();s.enemy.dead=true;
+s.tick({move:[.3,1]});const firstSpeed=s.player.speed;assert(firstSpeed>0&&firstSpeed<profile.speed);
+for(let i=0;i<15;i++)s.tick({move:[.3,1]});
+const fast=s.player.speed;s.tick({});assert(s.player.speed>0&&s.player.speed<fast,'braking has a curve');
+const yaw=s.player.yaw;s.tick({move:[1,0]});assert(Math.abs(s.player.yaw-yaw)<.7,'limited turning speed');
+s=create();s.enemy.dead=true;s.destination={x:5,z:6};
+s.advance(6);assert(Math.hypot(s.player.x-5,s.player.z-6)<.25,'click destination reached');
+s=create();s.advance(90,()=>({attack:0}));assert(s.started>0&&s.outcome,'selected action approaches and fights');
+console.log('PASS smooth locomotion, destination arrival and approach-to-attack');

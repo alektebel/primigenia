@@ -21,12 +21,21 @@ is the seed. Both the stage and studio import `web/creature/rig.js`: materials,
 G48 anatomy, growth regions, attachment frames, IK and gait have one source.
 The studio link returns to the editor; reload the stage after editing.
 
-WASD/arrows move relative to the orbit camera; drag the scene or use the right
-gamepad stick to orbit. Shift sprints using stamina. Move keys 1–4 follow the
-available profile moves, Space guards when armour is equipped, Q/E or a double
-tap dodges. On touch, use the left stick, Sprint and the action buttons. Escape,
-P or the pause button pauses. To flee, run past the arena's gold boundary and
-separate from the enemy; Sprint uses C's stamina-paying flee verb in combat.
+Click the ground to walk there; hold the left button to follow the pointer.
+Click Garfio to select it, then press an available move (1–4 or a button) to
+approach and attack. WASD/arrows or the left stick move relative to the camera;
+Shift sprints using stamina. Right/middle drag or the right gamepad stick
+orbits, the wheel zooms, and the camera eases behind walking after an orbit
+holdoff. Space guards when armour is equipped; Q/E or a double tap dodges.
+On touch, tap/hold to walk, drag two fingers to orbit and pinch to zoom; the
+virtual stick, Sprint and action buttons remain available. Escape, P or Pause
+opens the pause menu, including master, music/ambience, sound-effects and mute
+controls. Audio starts after a user gesture; sources and edits are credited in
+`assets/audio/CREDITS.md`. To flee, cross the arena boundary and separate;
+Sprint uses C's stamina-paying flee verb in combat.
+
+See [polish/README.md](polish/README.md) for the G57/G59 movement/audio checks,
+foot-plant measurements and six-frame curved-walk strip.
 
 The wild **Garfio** is a separate red, crested, hooked-arm species, authored in
 `web/stage/species/garfio.json`. It roams around its home, notices within 15 m
@@ -83,7 +92,7 @@ Seeds 0–49, flat ground and a 90-second cap give:
 | Player fixture | Wins / 50 | Win rate | Deaths | Timeouts / escapes |
 |---|---:|---:|---:|---:|
 | biter | 39 | 78% | 11 | 0 / 0 |
-| guard | 21 | 42% | 29 | 0 / 0 |
+| guard | 37 | 74% | 13 | 0 / 0 |
 | spitter | 30 | 60% | 20 | 0 / 0 |
 
 Every fixture must stay within **35–80%** player wins. Run it alone with

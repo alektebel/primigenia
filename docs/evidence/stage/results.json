@@ -18,12 +18,12 @@
       "fixture": "biter.json",
       "fps": 30,
       "outcome": "death",
-      "ticks": 86,
+      "ticks": 79,
       "hp": [
         0,
         119.25886535644531
       ],
-      "finalHash": "59675a7b9e513dbf",
+      "finalHash": "ab2892459a569274",
       "nativeReplay": true,
       "errors": []
     },
@@ -31,12 +31,12 @@
       "fixture": "biter.json",
       "fps": 73,
       "outcome": "death",
-      "ticks": 86,
+      "ticks": 79,
       "hp": [
         0,
         119.25886535644531
       ],
-      "finalHash": "59675a7b9e513dbf",
+      "finalHash": "ab2892459a569274",
       "nativeReplay": true,
       "errors": []
     },
@@ -44,12 +44,12 @@
       "fixture": "guard.json",
       "fps": 30,
       "outcome": "death",
-      "ticks": 148,
+      "ticks": 152,
       "hp": [
         0,
         83.65864562988281
       ],
-      "finalHash": "942c6f296cbdc091",
+      "finalHash": "69fc5f9385ed0efd",
       "nativeReplay": true,
       "errors": []
     },
@@ -57,12 +57,12 @@
       "fixture": "guard.json",
       "fps": 73,
       "outcome": "death",
-      "ticks": 148,
+      "ticks": 152,
       "hp": [
         0,
         83.65864562988281
       ],
-      "finalHash": "942c6f296cbdc091",
+      "finalHash": "69fc5f9385ed0efd",
       "nativeReplay": true,
       "errors": []
     },
@@ -70,12 +70,12 @@
       "fixture": "spitter.json",
       "fps": 30,
       "outcome": "death",
-      "ticks": 134,
+      "ticks": 138,
       "hp": [
         0,
         58.322914123535156
       ],
-      "finalHash": "27275222877dcd9c",
+      "finalHash": "c94f52bd2ea70955",
       "nativeReplay": true,
       "errors": []
     },
@@ -83,12 +83,12 @@
       "fixture": "spitter.json",
       "fps": 73,
       "outcome": "death",
-      "ticks": 134,
+      "ticks": 138,
       "hp": [
         0,
         58.322914123535156
       ],
-      "finalHash": "27275222877dcd9c",
+      "finalHash": "c94f52bd2ea70955",
       "nativeReplay": true,
       "errors": []
     }
@@ -96,7 +96,7 @@
   "evidence": [
     {
       "capture": "fight-hit.png",
-      "gap": 5.422861111270549e-7,
+      "gap": 0.0000010758631630025661,
       "radiiCm": [
         300,
         120
@@ -105,7 +105,7 @@
         100,
         140.76785278320312
       ],
-      "tick": 58
+      "tick": 61
     },
     {
       "capture": "victory.png",
@@ -114,7 +114,7 @@
         69.00784301757812,
         0
       ],
-      "finalHash": "3205ce38d967e7c9",
+      "finalHash": "16f2f8425cfdeb62",
       "nativeReplay": true
     }
   ]

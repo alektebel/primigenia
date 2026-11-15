@@ -214,7 +214,7 @@ counts, so changed bot policies cannot silently inherit these measurements.
 
 `tests/test_wasm_combat.mjs` also validates fixture documents with the existing
 studio validator, checks every exported ABI size/offset, rejects malformed
-inputs, exercises every directional octant, and checks that walking waits
+inputs, exercises arbitrary continuous headings, and checks that walking waits
 behind committed moves. Node's coverage runner measured 100% lines/functions
 and >90% branches in each of the three engine modules:
 
@@ -258,11 +258,11 @@ Order rejection returns the existing negative C error code.
 
 `apps/wasm_api.c` owns static storage: world, setup, bots, action and output
 buffers. It allocates nothing. `cb_setup()` exposes `CpCombatSetup` memory;
-`cb_reset()` validates it. `cb_layout()` exports ABI version 1, the setup,
+`cb_reset()` validates it. `cb_layout()` exports ABI version 2, the setup,
 spawn, profile and action sizes and every consumed offset, output strides,
-limits, tick frequency and arena dimensions. `Combat` asserts all 37 metadata
+limits, tick frequency and arena dimensions. `Combat` asserts all 39 metadata
 values against `LAYOUT` before touching memory; a stale build fails on load.
-The setup is 364 bytes, spawn 44, profile 24 and action 4. The extra profile
+The setup is 364 bytes, spawn 44, profile 24 and action 8. The extra profile
 bytes are `radius_cm` (uint16 at offset 20). No JS code reads
 padded world structs or serializes their raw bytes.
 
@@ -335,14 +335,23 @@ The arena remains the core's local 40×40 metres.
 Call `advance(deltaSeconds, intent)` each frame. A held intent has optional
 `move:[x,y]` in arena/valley XZ, `attack:MOVE`, `guard`, `dodge:0..7` (or true
 for forward), and `flee`. Priority is flee, dodge, guard, attack, movement,
-then idle. A move vector is quantized into eight absolute clockwise octants:
-0=+x, 2=-y, 4=-x, 6=+y. Magnitude is ignored; zero stops. `CB_V_MOVE` is
-appended as verb 6 and stores the octant in the existing action `dir`, so
-movement participates in the canonical hash and native log replay. It uses
-the core's normal turning, terrain/water/slow speed, movement, collisions and
-stamina recovery. It waits behind committed moves and stun. Existing verb
-numbers, golden actions and hash serialization remain unchanged. Dodge
-continues to use its existing facing-relative directions.
+then idle. A move vector is scaled by its largest absolute component and rounded
+into signed int16 components (`hx`, `hy`, range -32767..32767); zero stops.
+`CB_V_MOVE` (verb 6) uses `dir=-1` with `heading_x/y`. C normalises the
+vector using `sqrtf(x*x+y*y)` under the same no-fast-math/no-contraction flags
+as every other combat operation. No browser trig enters C. The standing order
+hash appends the two int16 components, little endian, **only while a vector
+MOVE is used**. Other orders clear them. Legacy `dir=0..7` remains a replay
+compatibility path, using the original literals and serialization. The five
+fixed logs and their 50,000 hashes are unchanged. Dodge still uses its existing
+facing-relative octants. Movement waits behind committed moves and stun and
+uses normal terrain/water/slow speed, collisions and stamina recovery.
+
+The action ABI appends int16 heading fields at offsets 4 and 6; `cb_order`
+accepts `(id,verb,move,target,dir,hx,hy)` and validates before narrowing.
+10,000 seeded random signed int16 headings compare every native/WASM tick,
+including full replay equality. The JS 60/37 Hz timeline also uses arbitrary
+headings and replays its complete exported log in native C.
 
 The accumulator advances at exactly 10 Hz and never drops ticks, even for a
 long frame. Finite nonnegative deltas are required; pause by withholding
@@ -369,14 +378,15 @@ in tick/application order. `hashes` records every resulting tick hash.
 `exportLog()` returns this text format with the original complete setup:
 
 ```text
-CPORE_COMBAT_LOG 1
+CPORE_COMBAT_LOG 2
 seed n flat ticks
 mouth charge spit tail guard hp stamina speed x y fx fy medium team radius_cm
 ... one spawn line per creature ...
-tick id verb move target dir
+tick id verb move target dir hx hy
 ... accepted actions in application order ...
 ```
 
+Version 1 logs (six action columns) remain accepted; version 2 has eight.
 Replay with `build/combat_parity --replay encounter.log`; it parses the setup
 and calls `cp_combat_replay`, printing one hash per tick. The test harness
 supports up to 10,000 ticks and 80,000 orders; it does not reconstruct or run
@@ -739,4 +749,4 @@ counter        1.000     0.983     0.682     0.506
 tourney checks FAILED
 ```
 
-Known, accepted: the diagonal `CB_V_MOVE` octants use the float32 literal 0.70710678, whose squared length is 1 − 2⁻²⁴, so diagonal walking covers 0.399999988 m per tick instead of 0.4. Both compilers use the same literal, so parity is unaffected.
+Legacy replay only: the diagonal `CB_V_MOVE` octants use the float32 literal 0.70710678, whose squared length is 1 − 2⁻²⁴, so diagonal walking covers 0.399999988 m per tick instead of 0.4. Both compilers use the same literal, so parity is unaffected.

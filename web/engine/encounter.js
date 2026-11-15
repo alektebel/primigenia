@@ -4,14 +4,11 @@ export const CB_ARENA_W = 40;
 export const CB_ARENA_H = 40;
 const DT = 1 / CB_HZ;
 
-// Quantize to eight absolute octants without trig. +arena y maps to +valley z.
-function direction([x, y]) {
-  if (!Number.isFinite(x) || !Number.isFinite(y)) throw new RangeError('move vector');
-  if (x === 0 && y === 0) return null;
-  const ax = Math.abs(x), ay = Math.abs(y), boundary = 0.41421356237309503;
-  if (ay <= ax * boundary) return x > 0 ? 0 : 4;
-  if (ax <= ay * boundary) return y > 0 ? 6 : 2;
-  return x > 0 ? (y > 0 ? 7 : 1) : (y > 0 ? 5 : 3);
+// Scale by the largest component first: finite subnormal/huge inputs are safe.
+export function heading([x,y]) {
+  if (!Number.isFinite(x)||!Number.isFinite(y)) throw new RangeError('move vector');
+  const scale=Math.max(Math.abs(x),Math.abs(y));
+  return scale?{hx:Math.round(x/scale*32767),hy:Math.round(y/scale*32767)}:null;
 }
 export class Encounter {
   constructor(combat, { point, setup, player = 0, enemy = 1, enemyBot = 3, enemySpamMove = MOVE.BITE }) {
@@ -39,11 +36,11 @@ export class Encounter {
     if (intent.dodge !== undefined && intent.dodge !== false) return { verb: VERB.DODGE, dir: intent.dodge === true ? 0 : intent.dodge };
     if (intent.guard) return { verb: VERB.GUARD };
     if (intent.attack !== undefined && intent.attack !== null) return { verb: VERB.ATTACK, move: intent.attack, target: this.enemy };
-    const dir = direction(intent.move ?? [0, 0]);
-    return dir === null ? { verb: VERB.IDLE } : { verb: VERB.MOVE, dir };
+    const vector = heading(intent.move ?? [0, 0]);
+    return vector === null ? { verb: VERB.IDLE } : { verb: VERB.MOVE, dir:-1, ...vector };
   }
   issue(id, action) {
-    const full = { verb: action.verb, move: action.move ?? 0, target: action.target ?? -1, dir: action.dir ?? 0 };
+    const full = { verb: action.verb, move: action.move ?? 0, target: action.target ?? -1, dir: action.dir ?? 0, hx:action.hx??0, hy:action.hy??0 };
     const result = this.combat.order(id, full);
     if (result === 0) this.log.push({ tick: this.tick, id, ...full });
     return result;
@@ -76,13 +73,13 @@ export class Encounter {
   }
   exportLog() {
     const s = this.setup;
-    const lines = ['CPORE_COMBAT_LOG 1', `${s.seed} ${s.creatures.length} ${s.flat ? 1 : 0} ${this.tick}`];
+    const lines = ['CPORE_COMBAT_LOG 2', `${s.seed} ${s.creatures.length} ${s.flat ? 1 : 0} ${this.tick}`];
     s.creatures.forEach((c, i) => {
       const p = { ...defaultProfile(), ...c.profile };
       lines.push([p.mouth, p.charge, p.spit, p.tail, p.guard, p.hp, p.stamina, p.speed,
         c.x ?? -1, c.y ?? -1, c.fx ?? 0, c.fy ?? 0, c.medium ?? 0, c.team ?? i, p.radiusCm ?? 0].join(' '));
     });
-    for (const a of this.log) lines.push([a.tick, a.id, a.verb, a.move, a.target, a.dir].join(' '));
+    for (const a of this.log) lines.push([a.tick, a.id, a.verb, a.move, a.target, a.dir, a.hx, a.hy].join(' '));
     return lines.join('\n') + '\n';
   }
 }

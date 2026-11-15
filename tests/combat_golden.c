@@ -64,7 +64,7 @@ int main(int argc, char **argv)
             if (n == CAP || tick < 0 || tick >= TICKS || (n && tick < log_entries[n-1].tick) ||
                 id < 0 || id >= CB_MAX_CREATURES || verb < 0 || verb >= CB_V_COUNT ||
                 move < -1 || move >= CB_MOVE_COUNT || target < -1 || target >= CB_MAX_CREATURES || dir < 0 || dir > 7) return 2;
-            log_entries[n++] = (CpCombatLogEntry){tick, (uint8_t)id, {(uint8_t)verb, (int8_t)move, (int8_t)target, (int8_t)dir}};
+            log_entries[n++] = (CpCombatLogEntry){tick, (uint8_t)id, {(uint8_t)verb, (int8_t)move, (int8_t)target, (int8_t)dir, 0, 0}};
         }
         if (fields != EOF || ferror(f) || !n) return 2;
         fclose(f);

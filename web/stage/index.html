@@ -924,11 +924,17 @@ setMode(false);requestAnimationFrame(frame);
  <div id="status" role="status" aria-live="polite">Opening the valley…</div>
  <div id="player-hud" class="vitals"><div><b id="creature-name">Your creature</b><span id="player-health">100</span></div><meter id="player-hp" min="0" max="100" value="100" aria-label="Your health"></meter><meter id="player-stamina" min="0" max="100" value="100" aria-label="Your stamina"></meter></div>
  <div id="actions" role="group" aria-label="Combat actions"></div>
- <p id="controls">WASD / arrows · Shift sprint · Drag to orbit<br>1–4 moves · Space guard · Q / E dodge · Run to the edge to flee</p>
+ <p id="controls">Click / hold to walk · WASD / arrows · Shift sprint<br>Right / middle drag to orbit · Wheel zoom<br>Select a creature · 1–4 moves · Space guard · Q / E dodge</p>
  <div id="stick" aria-label="Movement stick"><i></i></div><button id="sprint" class="touch-button">Sprint</button>
+ <div id="selected-name" hidden>Garfio</div>
  <div id="damage" aria-hidden="true"></div>
  <div id="fade"></div>
- <div id="pause-panel" hidden role="dialog" aria-modal="true" aria-labelledby="pause-title"><h1 id="pause-title">The valley can wait.</h1><p>Explore as your studio creature. Watch the wild creature’s windup, then choose your move.</p><button id="resume">Return to the valley</button><a href="../studio/">Open Studio ↗</a></div>
+ <div id="pause-panel" hidden role="dialog" aria-modal="true" aria-labelledby="pause-title"><h1 id="pause-title">The valley can wait.</h1><p>Explore as your studio creature. Watch the wild creature’s windup, then choose your move.</p><fieldset id="audio-settings"><legend>Audio</legend>
+ <label for="volume-master">Master</label><input id="volume-master" type="range" min="0" max="1" step="0.05">
+ <label for="volume-music">Music / ambience</label><input id="volume-music" type="range" min="0" max="1" step="0.05">
+ <label for="volume-sfx">Sound effects</label><input id="volume-sfx" type="range" min="0" max="1" step="0.05">
+ <label for="audio-mute">Mute all audio</label><input id="audio-mute" type="checkbox">
+ </fieldset><button id="resume">Return to the valley</button><a href="../studio/">Open Studio ↗</a></div>
 </div>
 </body>
 </html>

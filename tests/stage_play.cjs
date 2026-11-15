@@ -144,10 +144,10 @@ const enemyTiers=JSON.parse(fs.readFileSync('web/stage/species/garfio-combat.jso
    await page.locator('[data-key=dodge-right]').tap();
    await page.evaluate(()=>{__frameTime+=150;__stageRAF(__frameTime)});
    assert(await page.evaluate(()=>Stage.simulation.encounter.log.some(a=>a.id===0&&a.verb===4&&a.dir===6)),'touch dodge issues a C order');
-   // Orbit with a real touch drag, then let the unmodified enemy close for
+   // Orbit with a real two-finger touch drag, then let the unmodified enemy close for
    // contact. A side view makes the two different bodies readable on mobile.
-   await cdp.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{x:130,y:300,id:2}]});
-   await cdp.send('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:[{x:300,y:310,id:2}]});
+   await cdp.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{x:130,y:300,id:2},{x:230,y:300,id:3}]});
+   await cdp.send('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:[{x:250,y:310,id:2},{x:350,y:310,id:3}]});
    await cdp.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});
    await run(page,30,'hit');
    await page.evaluate(()=>Stage.draw());await page.screenshot({path:path.join(out,'mobile-touch.png'),timeout:90000});

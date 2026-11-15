@@ -158,7 +158,7 @@ enum {
     CB_V_DODGE,      /* dir: 0 forward, then clockwise in 45 deg steps (2 = right,
                         4 = back, 6 = left)                                       */
     CB_V_FLEE,       /* target: sprint away until far, or CB_FLEE_TICKS elapsed   */
-    CB_V_MOVE,       /* dir: world-space octant: +x, +x/-y, -y, ...; walk until replaced */
+    CB_V_MOVE,       /* dir=-1: quantised heading_x/y; 0..7: legacy replay octants */
     CB_V_COUNT
 };
 
@@ -167,6 +167,7 @@ typedef struct {
     int8_t  move;     /* attack                                                   */
     int8_t  target;   /* creature id                                              */
     int8_t  dir;      /* dodge                                                    */
+    int16_t heading_x, heading_y; /* MOVE with dir=-1; nonzero vector */
 } CpCombatAction;
 
 /* order() return codes (readable text via cp_combat_order_error) */
@@ -211,6 +212,7 @@ typedef struct {
     uint8_t  verb, verb_move, verb_started;
     int8_t   verb_target, verb_dir;
     uint8_t  verb_ticks;
+    int16_t heading_x, heading_y; /* hashed only for vector MOVE */
 
     /* bookkeeping (hashed; the tourney reads these) */
     float    dmg_dealt, dmg_taken, stamina_spent;

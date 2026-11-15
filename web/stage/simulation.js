@@ -15,7 +15,7 @@ export class StageSimulation {
     this.previous=[copy(this.player),copy(this.enemy)];
     this.accumulator=0;this.ticks=0;this.started=0;this.paused=false;
     this.encounter=null;this.lastEncounter=null;this.outcome=null;this.respawn=0;this.cooldown=0;this.returning=false;
-    this.hits=[];this.completed=[];
+    this.hits=[];this.completed=[];this.destination=null;this.pendingAttack=null;this.events=[];
   }
   get alpha(){return this.accumulator/STEP}
   canWalk(from,to,radius=.7){
@@ -27,16 +27,27 @@ export class StageSimulation {
     return !this.obstacles.some(o=>distance(o,to)<o.r+radius);
   }
   walk(entity,vector,speed){
-    const length=Math.hypot(...vector);entity.speed=0;if(!length)return;
-    const dx=vector[0]/length,dz=vector[1]/length;
+    const length=Math.hypot(...vector),oldSpeed=entity.speed||0;
+    let desired=length?Math.atan2(vector[0],vector[1]):entity.yaw;
+    let turn=Math.atan2(Math.sin(desired-entity.yaw),Math.cos(desired-entity.yaw));
+    if(Math.abs(turn)>Math.PI*2/3)entity.pivot=true;
+    if(entity.pivot&&Math.abs(turn)<.2)entity.pivot=false;
+    const limit=(entity.pivot?9:3.8)*STEP;
+    entity.yaw+=Math.max(-limit,Math.min(limit,turn));
+    const wanted=entity.pivot?0:speed*Math.min(1,length);
+    // Exponential ease for acceleration, stronger braking near a destination.
+    let velocity=oldSpeed+(wanted-oldSpeed)*(1-Math.exp(-(wanted>oldSpeed?6:10)*STEP));
+    if(velocity<.015)velocity=0;
+    const dx=Math.sin(entity.yaw),dz=Math.cos(entity.yaw);
     const slope=Math.abs(this.groundY(entity.x+dx,entity.z+dz)-this.groundY(entity.x,entity.z));
-    const step=speed*STEP/(1+slope*.65),from=copy(entity),to={x:entity.x+dx*step,z:entity.z+dz*step};
-    // Slide along a simple radius collision instead of sticking to a corner.
+    const step=velocity*STEP/(1+slope*.65),from=copy(entity),to={x:entity.x+dx*step,z:entity.z+dz*step};
     if(this.canWalk(from,to))Object.assign(entity,to);
     else for(const axis of ['x','z']){const slide={x:entity.x,z:entity.z,[axis]:to[axis]};if(this.canWalk(entity,slide))Object.assign(entity,slide)}
     entity.speed=distance(from,entity)/STEP;
-    if(entity.speed)entity.yaw=Math.atan2(dx,dz);
+    entity.acceleration=(entity.speed-oldSpeed)/STEP;
+    entity.turnRate=Math.max(-limit,Math.min(limit,turn))/STEP;
   }
+
   startEncounter(){
     const point={x:(this.player.x+this.enemy.x)/2,z:(this.player.z+this.enemy.z)/2};
     const spawn=(entity,profile,team,foe)=>({profile:{...profile,hp:entity.hp,stamina:entity.stamina},
@@ -46,7 +57,7 @@ export class StageSimulation {
     this.started++;this.outcome=null;this.hits=[];
   }
   finish(outcome){
-    this.outcome=outcome;this.lastEncounter=this.encounter;
+    this.pendingAttack=null;this.destination=null;this.outcome=outcome;this.lastEncounter=this.encounter;
     this.completed.push({outcome,log:this.encounter.exportLog(),hash:this.encounter.hashes.at(-1)});
     this.encounter=null;this.cooldown=8;this.player.speed=0;this.enemy.speed=0;
     if(outcome==='victory'){this.enemy.dead=true;this.enemy.speed=0}
@@ -58,10 +69,13 @@ export class StageSimulation {
     // Once separated, directional walking carries the player over the boundary.
     const sprint=intent.sprint&&Math.hypot(...(intent.move||[0,0]))>0&&distance(this.player,this.enemy)<15.2;
     encounter.advance(STEP,sprint?{flee:true}:intent);
+    this.events=this.combat.events();
     encounter.current.forEach((c,i)=>{
       const target=i?this.enemy:this.player,old=copy(target),p=encounter.toValley(c);
       Object.assign(target,p,{hp:c.hp,stamina:c.stamina,yaw:Math.atan2(c.fx,c.fy),phase:c.phase,move:c.move,ptick:c.ptick,plen:c.plen});
       target.speed=distance(target,old)/STEP;
+      target.acceleration=(target.speed-old.speed)/STEP;
+      target.turnRate=Math.atan2(Math.sin(target.yaw-old.yaw),Math.cos(target.yaw-old.yaw))/STEP;
       const damage=old.hp-c.hp;if(damage>0)this.hits.push({id:i,amount:damage,time:this.ticks*STEP,x:p.x,z:p.z});
     });
     if(!encounter.current[0].alive)this.finish('death');
@@ -74,13 +88,30 @@ export class StageSimulation {
   }
   tick(intent){
     this.previous=[copy(this.player),copy(this.enemy)];
-    if(this.encounter)this.fight(intent);
+    this.events=[];
+    const manual=Math.hypot(...(intent.move||[0,0]))>0;
+    if(manual){this.destination=null;this.pendingAttack=null}
+    if(intent.attack!==undefined&&intent.attack!==null&&!this.enemy.dead){this.pendingAttack=intent.attack;this.destination=null}
+    if(this.pendingAttack!==null)intent={...intent,attack:this.pendingAttack};
+    if(this.encounter){
+      if(this.destination&&!manual){const d=distance(this.player,this.destination);if(d<.3)this.destination=null;
+        intent={...intent,move:this.destination?[this.destination.x-this.player.x,this.destination.z-this.player.z]:[0,0]}}
+      this.fight(intent);
+    }
     else if(this.respawn>0){
       this.respawn=Math.max(0,this.respawn-STEP);
       if(this.respawn<1e-8){Object.assign(this.player,this.nest,{hp:this.profile.hp,stamina:this.profile.stamina,speed:0});this.respawn=0}
     }else{
-      const moving=Math.hypot(...(intent.move||[0,0]))>0,sprint=intent.sprint&&moving&&this.player.stamina>2;
-      this.walk(this.player,intent.move||[0,0],this.profile.speed*(sprint?1.7:1));
+      let vector=intent.move||[0,0],remaining=Infinity;
+      const target=this.pendingAttack!==null?this.enemy:this.destination;
+      if(target){
+        remaining=distance(this.player,target);
+        if(remaining<.16){this.destination=null;vector=[0,0]}
+        else vector=[target.x-this.player.x,target.z-this.player.z];
+      }
+      const moving=Math.hypot(...vector)>0,sprint=intent.sprint&&moving&&this.player.stamina>2;
+      const speed=Math.min(this.profile.speed*(sprint?1.7:1),Math.sqrt(Math.max(0,remaining-.08)*12));
+      this.walk(this.player,vector,speed);
       this.player.stamina=Math.max(0,Math.min(this.profile.stamina,this.player.stamina+(sprint?-14:10)*STEP));
       this.cooldown=Math.max(0,this.cooldown-STEP);
       if(!this.enemy.dead){
