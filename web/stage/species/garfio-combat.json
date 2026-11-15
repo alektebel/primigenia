@@ -2,8 +2,8 @@
   "mouth": 2,
   "charge": 0,
   "spit": 2,
-  "tail": 2,
-  "hp": 90,
+  "tail": 0,
+  "hp": 91,
   "stamina": 20,
   "speed": 5.5
 }
