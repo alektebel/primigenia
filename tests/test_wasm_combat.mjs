@@ -194,13 +194,19 @@ console.log('Instances: 600 identical ticks; encounters: 60 seconds at 60/37 FPS
 // Arbitrary headings keep distinct ratios and reject invalid vectors atomically.
 for (const move of [[.13,.97],[-.731,.299],[1e300,-1e300],[1e-300,0]]) {
   const e = new Encounter(engine, {point:{x:0,z:0}, setup:pair(), enemyBot:0});
-  e.advance(.1,{move});
+  const before=e.current[0];e.advance(.1,{move});
   const a=e.log[0]; assert.equal(a.dir,-1);
   assert(Math.hypot(a.hx,a.hy)>0);
   const norm=Math.max(...move.map(Math.abs));
   assert.deepEqual([a.hx,a.hy],move.map(v=>Math.round(v/norm*32767)));
+  const length=Math.hypot(a.hx,a.hy);
+  assert(Math.abs(e.current[0].x-before.x-a.hx/length*.4)<2e-6);
+  assert(Math.abs(e.current[0].y-before.y-a.hy/length*.4)<2e-6);
 }
 engine.reset(pair()); const unchanged=engine.hash();
 assert.equal(engine.order(0,{verb:VERB.MOVE,dir:-1,hx:0,hy:0}),-7);
 assert.equal(engine.hash(),unchanged);
 assert.throws(()=>engine.order(0,{verb:VERB.MOVE,dir:-1,hx:32768,hy:1}),/hx/);
+
+engine.order(0,{verb:VERB.MOVE,dir:-1,hx:13,hy:97});const vectorHash=engine.hash();
+engine.order(0,{verb:VERB.MOVE,dir:-1,hx:14,hy:97});assert.notEqual(engine.hash(),vectorHash,'heading participates in canonical hash');

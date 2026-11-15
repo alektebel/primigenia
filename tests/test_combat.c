@@ -413,8 +413,8 @@ static void edges_and_verbs(void)
 
     w = pair(10);
     uint64_t h = cp_combat_hash(&w);
-    CpCombatAction bad[] = {{255,0,0,0}, {CB_V_ATTACK, CB_GUARD,1,0}, {CB_V_ATTACK,99,1,0},
-                            {CB_V_ATTACK,CB_BITE,0,0}, {CB_V_DODGE,0,0,8}};
+    CpCombatAction bad[] = {{255,0,0,0,0,0}, {CB_V_ATTACK, CB_GUARD,1,0,0,0}, {CB_V_ATTACK,99,1,0,0,0},
+                            {CB_V_ATTACK,CB_BITE,0,0,0,0}, {CB_V_DODGE,0,0,8,0,0}};
     for (size_t i = 0; i < sizeof bad / sizeof bad[0]; i++) {
         CHECK(cp_combat_order(&w, 0, &bad[i]) < 0 && cp_combat_hash(&w) == h, "invalid order leaves state untouched");
     }
@@ -574,7 +574,7 @@ static void directional_movement(void)
     const int sy[8] = {0,-1,-1,-1,0,1,1,1};
     for (int dir = 0; dir < 8; dir++) {
         CpCombatWorld w = pair(20);
-        CpCombatAction a = {CB_V_MOVE, 0, -1, (int8_t)dir};
+        CpCombatAction a = {CB_V_MOVE, 0, -1, (int8_t)dir, 0, 0 };
         float x = w.c[0].x, y = w.c[0].y;
         CHECK(cp_combat_order(&w, 0, &a) == CB_OK, "absolute movement order accepted");
         uint64_t ordered = cp_combat_hash(&w);
@@ -595,7 +595,7 @@ static void directional_movement(void)
         CHECK(w.c[0].x == x && w.c[0].y == y, "idle stops directional walking");
     }
     CpCombatWorld w = pair(20);
-    CpCombatAction a = {CB_V_MOVE, 0, -1, 0};
+    CpCombatAction a = {CB_V_MOVE, 0, -1, 0, 0, 0 };
     w.c[0].medium = CB_WATER; w.c[0].slow_t = 3;
     float x = w.c[0].x;
     cp_combat_order(&w, 0, &a); cp_combat_step(&w);

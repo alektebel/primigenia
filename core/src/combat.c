@@ -418,33 +418,33 @@ static int8_t target_id(int target)
 
 int cp_combat_approach(CpCombatWorld *w, int id, int t)
 {
-    CpCombatAction a = { CB_V_APPROACH, 0, target_id(t), 0 };
+    CpCombatAction a = { CB_V_APPROACH, 0, target_id(t), 0, 0, 0 };
     return cp_combat_order(w, id, &a);
 }
 int cp_combat_attack(CpCombatWorld *w, int id, int t, int m)
 {
     CpCombatAction a = { CB_V_ATTACK,
-        (int8_t)(m >= 0 && m < CB_MOVE_COUNT ? m : -1), target_id(t), 0 };
+        (int8_t)(m >= 0 && m < CB_MOVE_COUNT ? m : -1), target_id(t), 0, 0, 0 };
     return cp_combat_order(w, id, &a);
 }
 int cp_combat_guard(CpCombatWorld *w, int id)
 {
-    CpCombatAction a = { CB_V_GUARD, 0, 0, 0 };
+    CpCombatAction a = { CB_V_GUARD, 0, 0, 0, 0, 0 };
     return cp_combat_order(w, id, &a);
 }
 int cp_combat_dodge(CpCombatWorld *w, int id, int d)
 {
-    CpCombatAction a = { CB_V_DODGE, 0, 0, (int8_t)(d >= 0 && d < 8 ? d : -1) };
+    CpCombatAction a = { CB_V_DODGE, 0, 0, (int8_t)(d >= 0 && d < 8 ? d : -1), 0, 0 };
     return cp_combat_order(w, id, &a);
 }
 int cp_combat_flee(CpCombatWorld *w, int id, int t)
 {
-    CpCombatAction a = { CB_V_FLEE, 0, target_id(t), 0 };
+    CpCombatAction a = { CB_V_FLEE, 0, target_id(t), 0, 0, 0 };
     return cp_combat_order(w, id, &a);
 }
 int cp_combat_idle(CpCombatWorld *w, int id)
 {
-    CpCombatAction a = { CB_V_IDLE, 0, 0, 0 };
+    CpCombatAction a = { CB_V_IDLE, 0, 0, 0, 0, 0 };
     return cp_combat_order(w, id, &a);
 }
 
