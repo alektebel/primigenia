@@ -41,9 +41,12 @@ const PAL = {
   coralBase:   [0.55, 0.18, 0.14],
   coralAccent: [0.82, 0.35, 0.22],
   coralYellow: [0.85, 0.65, 0.12],
+  coralPink:   [0.82, 0.30, 0.55],
+  coralOrange: [0.90, 0.50, 0.15],
+  coralPurple: [0.55, 0.20, 0.60],
   rockUW:      [0.12, 0.15, 0.18],
-  sand:        [0.55, 0.48, 0.35],
-  sandBright:  [0.72, 0.65, 0.48],
+  sand:        [0.78, 0.68, 0.48],   /* warm pale beige sand */
+  sandBright:  [0.92, 0.85, 0.68],   /* bright sunlit sand */
   fishBody:    [0.60, 0.72, 0.85],
   fishFin:     [0.80, 0.55, 0.30],
   particle:    [0.70, 0.82, 0.78],
@@ -364,9 +367,11 @@ attribute float fishSize;
 attribute float fishSchool;
 attribute vec3 fishTarget;
 attribute float fishPhase;
+attribute vec3 fishColor;
 varying vec3 vFishWorld;
 varying float vFishSize;
 varying float vFishIdx;
+varying vec3 vFishCol;
 
 /* Simple 3D noise for boid wandering */
 vec3 noise3(vec3 p){
@@ -378,6 +383,7 @@ vec3 noise3(vec3 p){
 void main(){
   vFishIdx = fishIdx;
   vFishSize = fishSize;
+  vFishCol = fishColor;
 
   /* Boid target with wandering */
   float t = uTime * 0.15;
@@ -398,16 +404,16 @@ void main(){
 uniform vec3 uFogColor;
 uniform float fogNear, fogFar;
 uniform vec3 camPos;
-uniform vec3 uFishBody, uFishFin;
 
 varying vec3 vFishWorld;
 varying float vFishSize;
 varying float vFishIdx;
+varying vec3 vFishCol;
 
 void main(){
-  /* Simple gradient along body */
-  float gradient = fract(vFishIdx * 0.618033988);
-  vec3 c = mix(uFishBody, uFishFin, gradient * 0.5);
+  /* Body shading - slight gradient */
+  float bodyShade = 0.85 + 0.15 * fract(vFishIdx * 0.618033988);
+  vec3 c = vFishCol * bodyShade;
 
   /* Eye */
   float eye = smoothstep(0.15, 0.18, vFishWorld.x) * smoothstep(-0.05, -0.02, vFishWorld.x);
@@ -579,7 +585,8 @@ uniform float fogNear, fogFar;
 uniform vec3 camPos;
 uniform vec3 uSandColor, uSandBright;
 uniform vec3 uCausticBright, uCausticDim;
-uniform vec3 sun;
+uniform vec3 sunDir;
+uniform float waterLevel;
 
 varying vec2 vUv;
 varying vec3 vWorldPos;
@@ -588,35 +595,44 @@ varying vec3 vNormal;
 ${SAMP}
 
 void main(){
-  /* Ripple texture */
-  vec2 uv = vWorldPos.xz * 2.0;
-  float ripple = sin(uv.x*4.0 + sin(uv.y*2.0)*0.5) * 0.5 + 0.5;
-  ripple *= sin(uv.y*3.0 + cos(uv.x*1.5)*0.3) * 0.5 + 0.5;
+  vec2 uv = vWorldPos.xz;
 
-  vec3 sand = mix(uSandColor, uSandBright, ripple * 0.3);
+  /* Ripple pattern */
+  float ripple = sin(uv.x*3.0 + sin(uv.y*2.0)*0.8)*0.5+0.5;
+  ripple *= sin(uv.y*2.5 + cos(uv.x*1.5)*0.5)*0.5+0.5;
 
-  /* Light normal for specular */
-  vec3 lightNormal = normalize(vNormal + vec3(
-    sin(uv.x*8.0 + uTime*0.3)*0.03,
-    1.0,
-    cos(uv.y*6.0 + uTime*0.2)*0.03
-  ));
-  float light = max(dot(lightNormal, normalize(sun)), 0.0);
+  /* Pebble speckle */
+  float pebble = vn(uv * 20.0 + 100.0);
+  pebble = step(0.85, pebble); /* sparse dark pebbles */
+  float shell = step(0.97, vn(uv * 35.0 + 200.0)); /* sparse white shells */
 
-  /* Caustic overlay */
-  float depthBelowSurface = 10.0 - vWorldPos.y;
-  float depthFade = 1.0 - smoothstep(0.0, 12.0, depthBelowSurface);
-  float causticNoise = vn(uv * 3.0 + uTime * 0.4);
-  vec3 causticOverlay = mix(uCausticDim, uCausticBright, causticNoise) * depthFade * 0.25;
+  vec3 sandBase = mix(uSandColor, uSandBright, ripple * 0.25);
+  sandBase = mix(sandBase, vec3(0.35, 0.30, 0.20), pebble * 0.3);
+  sandBase = mix(sandBase, vec3(0.92, 0.88, 0.75), shell * 0.5);
 
-  sand *= (0.15 + light * 0.5) + causticOverlay;
+  /* Animated caustic net (bright wavy pattern) */
+  float depthBelowSurface = waterLevel - vWorldPos.y;
+  float depthFade = 1.0 - smoothstep(0.0, 8.0, depthBelowSurface);
+  float c1 = sin(uv.x*0.8 + uTime*0.6 + sin(uv.y*0.5 + uTime*0.3)*2.0)*0.5+0.5;
+  float c2 = sin(uv.y*0.9 + uTime*0.5 + sin(uv.x*0.4 + uTime*0.2)*2.0)*0.5+0.5;
+  float causticNet = c1 * c2 * depthFade;
+  vec3 causticColor = mix(uCausticDim, uCausticBright, causticNet) * 0.6;
+
+  /* Sun lighting */
+  vec3 sunNorm = normalize(sunDir);
+  float sunAngle = max(dot(normalize(vNormal), sunNorm), 0.0);
+  float diff = 0.25 + sunAngle * 0.75; /* 0.25 ambient + 0.75 diffuse */
+  float spec = pow(max(dot(reflect(-sunNorm, normalize(vNormal)),
+    normalize(vec3(camPos - vWorldPos))), 0.0), 32.0) * 0.15;
+
+  vec3 lit = sandBase * diff + causticColor + vec3(spec);
 
   /* Fog */
   float depth = length(vWorldPos - camPos);
   float fogF = smoothstep(fogNear, fogFar, depth);
-  sand = mix(sand, uFogColor, fogF);
+  lit = mix(lit, uFogColor, fogF);
 
-  gl_FragColor = vec4(sand, 1.0);
+  gl_FragColor = vec4(lit, 1.0);
 }`;
 
   return { vertexShader, fragmentShader };
@@ -624,25 +640,34 @@ void main(){
 
 /* ── instanced geometry builders ──────────────────────────────────────── */
 
-/** Build a kelp frond: vertical blade that tapers to a point. */
-function buildKelpBlade() {
-  const segH = 8;
+/** Build a thick kelp frond with leaves, quadratic sway from base to tip. */
+function buildKelpBlade(segsH) {
+  segsH = segsH || 16;
   const positions = [];
   const normals = [];
   const uvs = [];
-  for (let i = 0; i <= segH; i++) {
-    const t = i / segH;
-    const y = t * 3.0;
-    const w = (1.0 - t * 0.85) * 0.12;
-    const z = t * 0.02; /* slight curve */
-    const u = 0, v = t;
+  for (let i = 0; i <= segsH; i++) {
+    const t = i / segsH;
+    const y = t * 1.0; /* base unit height, scaled in instance */
+    const w = (1.0 - t * 0.5) * 0.25; /* wider blade, 0.5m at base, 0.25m at tip */
+    const z = t * t * 0.08; /* slight S-curve */
+    /* Main blade face */
     positions.push(-w, y, z, w, y, z);
-    const nx = -1, nz = 0.07;
-    normals.push(nx, 0, nz, -nx, 0, -nz);
-    uvs.push(u, v, u + 0.01, v);
+    normals.push(-1, 0, 0.07, 1, 0, -0.07);
+    uvs.push(0, t, 1, t);
+    /* Leaf attachments (small leaf buds along the frond) */
+    if (i > 2 && i < segsH - 2 && i % 3 === 0) {
+      const leafW = w * 0.6 * (1.0 - Math.abs(i / segsH - 0.6));
+      const li = positions.length / 3;
+      positions.push(-w, y, z, -w - leafW, y + 0.15, z + 0.05);
+      positions.push(w, y, z, w + leafW, y + 0.12, z - 0.03);
+      normals.push(0, 0.3, -1, 0, 0.3, -1);
+      uvs.push(0, t, 0, t + 0.15);
+      uvs.push(1, t, 1, t + 0.12);
+    }
   }
   const indices = [];
-  for (let i = 0; i < segH; i++) {
+  for (let i = 0; i < segsH; i++) {
     const a = i * 2, b = a + 1, c = a + 2, d = a + 3;
     indices.push(a, c, b, b, c, d);
   }
@@ -755,45 +780,52 @@ function buildSeaGrassBlade() {
   ]);
 }
 
-/** Build a simple wreck (ship hull + mast fragment). */
+/** Build a recognisable shipwreck (hull ribs, broken planks, mast stump, tilted, half-buried). */
 function buildWreck() {
-  const group = [];
-  /* Hull: curved bottom plate */
-  const hullLen = 4, hullW = 1.2, hullH = 0.8;
-  const segs = 8, rings = 4;
-  for (let r = 0; r < rings; r++) {
-    const t = r / (rings - 1);
-    const y = t * hullH;
-    const w = hullW * (1 - t * 0.5) * Math.cos(t * Math.PI * 0.5);
-    for (let s = 0; s < segs; s++) {
-      const a0 = (s / segs) * Math.PI * 2;
-      const a1 = ((s + 1) / segs) * Math.PI * 2;
-      const r0 = w * 0.5, r1 = w * 0.5;
-      const k = group.length / 3;
-      group.push(Math.cos(a0)*r0, y, Math.sin(a0)*r0,
-                 Math.cos(a1)*r0, y, Math.sin(a1)*r0,
-                 Math.cos(a0)*r1, y+0.05, Math.sin(a0)*r1);
-      group.push(Math.cos(a0)*r1, y+0.05, Math.sin(a0)*r1,
-                 Math.cos(a1)*r0, y, Math.sin(a1)*r0,
-                 Math.cos(a1)*r1, y+0.05, Math.sin(a1)*r1);
-    }
+  const verts = [];
+  const addBox = (cx, cy, cz, w, h, d) => {
+    /* 8 vertices for a box, using the simple addBox helper pattern */
+    const hw = w/2, hh = h/2, hd = d/2;
+    const vi = verts.length / 3;
+    /* Front face */
+    verts.push(cx-hw, cy-hh, cz+hd, cx+hw, cy-hh, cz+hd, cx+hw, cy+hh, cz+hd, cx-hw, cy+hh, cz+hd);
+    /* Back face */
+    verts.push(cx+hw, cy-hh, cz-hd, cx-hw, cy-hh, cz-hd, cx-hw, cy+hh, cz-hd, cx+hw, cy+hh, cz-hd);
+    /* Top */
+    verts.push(cx-hw, cy+hh, cz+hd, cx+hw, cy+hh, cz+hd, cx+hw, cy+hh, cz-hd, cx-hw, cy+hh, cz-hd);
+    /* Bottom */
+    verts.push(cx-hw, cy-hh, cz-hd, cx+hw, cy-hh, cz-hd, cx+hw, cy-hh, cz+hd, cx-hw, cy-hh, cz+hd);
+    /* Right */
+    verts.push(cx+hw, cy-hh, cz+hd, cx+hw, cy-hh, cz-hd, cx+hw, cy+hh, cz-hd, cx+hw, cy+hh, cz+hd);
+    /* Left */
+    verts.push(cx-hw, cy-hh, cz-hd, cx-hw, cy-hh, cz+hd, cx-hw, cy+hh, cz+hd, cx-hw, cy+hh, cz-hd);
+  };
+  /* Hull ribs — vertical curved frames, tilted to the side */
+  const ribCount = 8;
+  for (let i = 0; i < ribCount; i++) {
+    const t = i / (ribCount - 1);
+    const x = (t - 0.5) * 5; /* spread along length */
+    const y = t * 1.5 - 0.3; /* height */
+    const ribW = 0.6 * (1 - Math.abs(t - 0.5) * 1.2);
+    addBox(x, y, 0, ribW, 0.06, 0.06);
   }
-  /* Mast fragment */
-  for (let r = 0; r < 6; r++) {
-    const t = r / 5;
-    const y = t * 3;
-    const rad = 0.04 * (1 - t * 0.2);
-    const a0 = 0, a1 = Math.PI * 0.5;
-    const k = group.length / 3;
-    group.push(Math.cos(a0)*rad, y, Math.sin(a0)*rad,
-               Math.cos(a1)*rad, y, Math.sin(a1)*rad,
-               Math.cos(a0)*rad, y+0.5, Math.sin(a0)*rad);
-    group.push(Math.cos(a0)*rad, y+0.5, Math.sin(a0)*rad,
-               Math.cos(a1)*rad, y, Math.sin(a1)*rad,
-               Math.cos(a1)*rad, y+0.5, Math.sin(a1)*rad);
-  }
+  /* Keel (bottom backbone) */
+  addBox(0, -0.4, 0, 5.5, 0.1, 0.15);
+  /* Broken planks (scattered along bottom) */
+  addBox(-1.5, -0.35, 0.4, 1.2, 0.04, 0.2);
+  addBox(1.8, -0.3, 0.3, 0.8, 0.04, 0.15);
+  addBox(0.3, -0.35, -0.5, 1.0, 0.04, 0.12);
+  /* Mast stump (broken vertical piece, tilted) */
+  addBox(-1.5, 1.0, 0.1, 0.1, 2.0, 0.1);
+  /* Crossbeam fragment */
+  addBox(-1.5, 1.8, 0.3, 0.8, 0.06, 0.06);
+  /* Encrustation blobs on top surfaces */
+  addBox(-0.5, 0.3, 0.08, 0.3, 0.08, 0.08);
+  addBox(1.0, 0.25, 0.06, 0.2, 0.06, 0.06);
+  addBox(0.2, 0.35, -0.1, 0.25, 0.07, 0.07);
+
   const geo = new THREE.BufferGeometry();
-  geo.setAttribute('position', new THREE.Float32BufferAttribute(group, 3));
+  geo.setAttribute('position', new THREE.Float32BufferAttribute(verts, 3));
   geo.computeVertexNormals();
   return geo;
 }
@@ -904,7 +936,8 @@ class UnderwaterBiome {
       uSandBright: { value: new THREE.Color(...this._pal.sandBright) },
       uCausticBright: { value: new THREE.Color(...this._pal.causticBright) },
       uCausticDim: { value: new THREE.Color(...this._pal.causticDim) },
-      sun: { value: new THREE.Vector3() },
+      sunDir: { value: new THREE.Vector3() },
+      waterLevel: { value: this.waterLevel },
     };
 
     const sh = seaFloorShader();
@@ -1037,28 +1070,50 @@ class UnderwaterBiome {
   }
 
   /* ── kelp ───────────────────────────────────────────────────────────── */
-  _buildKelp(count = 120) {
-    const baseGeo = buildKelpBlade();
+  _buildKelp(count = 200) {
+    const baseGeo = buildKelpBlade(16);
     const positions = [];
     const colors = [];
     const dr = (() => { let s = 77; return () => { s = (s * 16807) % 2147483647; return (s-1)/2147483646; }; })();
 
+    /* Place kelp in clumps: random clump centers, then scatter plants around each */
+    const clumpCount = 18;
+    const clumpCenters = [];
+    for (let c = 0; c < clumpCount; c++) {
+      clumpCenters.push({
+        x: (dr() - 0.5) * 100,
+        z: (dr() - 0.5) * 100,
+      });
+    }
+
     for (let i = 0; i < count; i++) {
-      const x = (dr() - 0.5) * 120;
-      const z = (dr() - 0.5) * 120;
-      const h = this.heightmap(x, z);
+      /* Pick a clump at random */
+      const clump = clumpCenters[Math.floor(dr() * clumpCount)];
+      const cx = clump.x + (dr() - 0.5) * 8; /* tight clump spread */
+      const cz = clump.z + (dr() - 0.5) * 8;
+      const h = this.heightmap(cx, cz);
       const y = Math.min(h, this.waterLevel - 0.5);
       const depth = this.waterLevel - y;
 
       /* Only place kelp on the sea floor within a reasonable depth */
-      if (depth > 15 || depth < 1) continue;
+      if (depth > 12 || depth < 0.5) continue;
 
-      positions.push({ x, y: y + 0.3, z, s: 0.8 + dr() * 0.6 });
-      const shade = 1.0 - depth * 0.03;
+      /* Height: 3-8m tall */
+      const height = 3.0 + dr() * 5.0;
+      positions.push({
+        x: cx,
+        y: y + 0.1,
+        z: cz,
+        s: 0.7 + dr() * 0.8,
+        height,
+      });
+      /* Olive-green with depth variation */
+      const shade = 1.0 - depth * 0.04;
+      /* Thicker, more visible green */
       colors.push(
-        this._pal.kelpDark[0] * shade + this._pal.kelpLight[0] * (1 - shade) * 0.5,
-        this._pal.kelpDark[1] * shade + this._pal.kelpLight[1] * (1 - shade) * 0.5,
-        this._pal.kelpDark[2] * shade + this._pal.kelpLight[2] * (1 - shade) * 0.5
+        this._pal.kelpDark[0] * shade + this._pal.kelpLight[0] * 0.8 + 0.15,
+        this._pal.kelpDark[1] * shade + this._pal.kelpLight[1] * 0.8 + 0.20,
+        this._pal.kelpDark[2] * shade + this._pal.kelpLight[2] * 0.5 + 0.05
       );
     }
 
@@ -1073,7 +1128,7 @@ class UnderwaterBiome {
       offsets[i * 3] = p.x;
       offsets[i * 3 + 1] = p.y;
       offsets[i * 3 + 2] = p.z;
-      heights[i] = 3.0;
+      heights[i] = p.height || 3.0;
       kelpIndices[i] = i;
       kelpColors[i * 3] = colors[i * 3];
       kelpColors[i * 3 + 1] = colors[i * 3 + 1];
@@ -1114,7 +1169,7 @@ class UnderwaterBiome {
   }
 
   /* ── coral clusters ─────────────────────────────────────────────────── */
-  _buildCoral(count = 40) {
+  _buildCoral(count = 60) {
     const baseGeo = buildCoralShape();
     const positions = [];
     const dr = (() => { let s = 313; return () => { s = (s * 16807) % 2147483647; return (s-1)/2147483646; }; })();
@@ -1122,7 +1177,10 @@ class UnderwaterBiome {
     const coralTypes = [
       { base: new THREE.Color(...this._pal.coralBase), accent: new THREE.Color(...this._pal.coralAccent) },
       { base: new THREE.Color(...this._pal.coralBase), accent: new THREE.Color(...this._pal.coralYellow) },
-      { base: new THREE.Color(0.45, 0.15, 0.20), accent: new THREE.Color(...this._pal.coralAccent) },
+      { base: new THREE.Color(...this._pal.coralBase), accent: new THREE.Color(...this._pal.coralPink) },
+      { base: new THREE.Color(0.55, 0.35, 0.15), accent: new THREE.Color(...this._pal.coralOrange) },
+      { base: new THREE.Color(0.35, 0.15, 0.45), accent: new THREE.Color(...this._pal.coralPurple) },
+      { base: new THREE.Color(...this._pal.coralPink), accent: new THREE.Color(0.95, 0.60, 0.75) },
     ];
 
     for (let i = 0; i < count; i++) {
@@ -1304,24 +1362,37 @@ class UnderwaterBiome {
   }
 
   /* ── fish schools (boids, instanced) ────────────────────────────────── */
-  _buildFish(count = 80, schoolCount = 4) {
+  _buildFish(count = 150, schoolCount = 3) {
     const baseGeo = buildFishMesh();
     const positions = [];
+    const colors = [];
     const dr = (() => { let s = 2557; return () => { s = (s * 16807) % 2147483647; return (s-1)/2147483646; }; })();
+
+    /* Silver, blue, yellow color palette */
+    const fishColors = [
+      new THREE.Color(0.75, 0.78, 0.82), /* silver */
+      new THREE.Color(0.45, 0.60, 0.85), /* blue */
+      new THREE.Color(0.85, 0.75, 0.30), /* yellow */
+      new THREE.Color(0.65, 0.72, 0.88), /* light blue */
+      new THREE.Color(0.82, 0.70, 0.55), /* golden silver */
+    ];
 
     for (let i = 0; i < count; i++) {
       const school = i % schoolCount;
-      const cx = (school - schoolCount / 2) * 12;
-      const cz = (school - schoolCount / 2) * 8;
+      const cx = (school - schoolCount / 2) * 15;
+      const cz = (school - schoolCount / 2) * 10;
+      const fishColor = fishColors[Math.floor(dr() * fishColors.length)];
       positions.push({
-        x: cx + (dr() - 0.5) * 10,
+        x: cx + (dr() - 0.5) * 12,
         y: this.waterLevel - 2 - dr() * (this.waterLevel - 5),
-        z: cz + (dr() - 0.5) * 10,
-        s: 0.5 + dr() * 0.5,
+        z: cz + (dr() - 0.5) * 12,
+        s: 0.6 + dr() * 0.8,
         idx: i,
         school,
         phase: dr() * 100,
+        color: fishColor,
       });
+      colors.push(fishColor.r, fishColor.g, fishColor.b);
     }
 
     const offsets = new Float32Array(positions.length * 3);
@@ -1329,6 +1400,7 @@ class UnderwaterBiome {
     const fishSize = new Float32Array(positions.length);
     const fishSchool = new Float32Array(positions.length);
     const fishPhase = new Float32Array(positions.length);
+    const fishColorsArr = new Float32Array(positions.length * 3);
 
     positions.forEach((p, i) => {
       offsets[i * 3] = p.x;
@@ -1338,6 +1410,9 @@ class UnderwaterBiome {
       fishSize[i] = p.s;
       fishSchool[i] = p.school;
       fishPhase[i] = p.phase;
+      fishColorsArr[i * 3] = p.color.r;
+      fishColorsArr[i * 3 + 1] = p.color.g;
+      fishColorsArr[i * 3 + 2] = p.color.b;
     });
 
     const geo = baseGeo.clone();
@@ -1346,6 +1421,7 @@ class UnderwaterBiome {
     geo.setAttribute('fishSize', new THREE.InstancedBufferAttribute(fishSize, 1));
     geo.setAttribute('fishSchool', new THREE.InstancedBufferAttribute(fishSchool, 1));
     geo.setAttribute('fishPhase', new THREE.InstancedBufferAttribute(fishPhase, 1));
+    geo.setAttribute('fishColor', new THREE.InstancedBufferAttribute(fishColorsArr, 3));
 
     const uniforms = {
       uTime: { value: 0 },
@@ -1353,8 +1429,6 @@ class UnderwaterBiome {
       fogNear: { value: this.fogNear },
       fogFar: { value: this.fogFar },
       camPos: { value: new THREE.Vector3() },
-      uFishBody: { value: new THREE.Color(...this._pal.fishBody) },
-      uFishFin: { value: new THREE.Color(...this._pal.fishFin) },
     };
 
     const sh = fishShader();
