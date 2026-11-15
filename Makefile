@@ -47,7 +47,7 @@ $(BUILD)/combat_tourney_test: tests/test_combat_tourney.c apps/combat_tourney.c 
 $(BUILD)/combat_golden: tests/combat_golden.c apps/combat_bots.h $(BUILD)/apps/combat_bots.o $(HDRS) $(BUILD)/libcpore.a
 	$(CC) $(CFLAGS) -Iapps $< $(BUILD)/apps/combat_bots.o $(BUILD)/libcpore.a -o $@ $(LDLIBS)
 
-# Correctness regressions. Balance acceptance remains a separate failing gate:
+# Correctness regressions. Balance acceptance is a separate measured gate:
 # run make tourney as well before claiming P2 acceptance.
 test: $(BUILD)/terrain_test $(BUILD)/cpore_test $(BUILD)/combat_test $(BUILD)/combat_tourney_test $(BUILD)/combat_golden check-core
 	nice -n 10 ./$(BUILD)/terrain_test
@@ -118,6 +118,7 @@ wasm-test: wasm wasm-parity
 	nice -n 10 node tests/test_wasm_combat.mjs
 
 # P3b: serve the repo root on port 8765 before the browser acceptance targets.
+# CPORE_STAGE_URL may select a private server; CPORE_STAGE_EVIDENCE redirects artifacts.
 # Playwright must already be available (e.g. through NODE_PATH); no install step.
 .PHONY: stage stage-test studio-test
 stage:

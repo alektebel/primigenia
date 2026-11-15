@@ -1,5 +1,9 @@
 {
-  "mouth": 0,
-  "charge": 3,
-  "hp": 195
+  "mouth": 2,
+  "charge": 0,
+  "spit": 2,
+  "tail": 2,
+  "hp": 90,
+  "stamina": 20,
+  "speed": 5.5
 }

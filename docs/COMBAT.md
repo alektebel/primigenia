@@ -620,6 +620,32 @@ tail_strike         0.30        0.24        0.25        1.41        0.00        
 dodge               2.14        0.00        0.00        0.22        0.19        0.00        0.43
 ```
 
+### Stage calibration
+
+The changed combat rules require recalibrating only Garfio's species data;
+the three player fixtures, their projections, the scripted player policy and
+the 35–80% acceptance window stay unchanged. Garfio is now a small, fast
+predator: mouth/spit/tail L2, no charge or guard, 90 HP, 20 stamina and
+5.5 m/s. Its short stamina pool permits individual attacks but forces pauses
+between commitments. The studio geometry is uniformly scaled by 5/12,
+including leg offsets and part dimensions, so its visible body and projected
+50 cm collision radius agree rather than hiding a radius override.
+
+`nice -n 10 node tests/stage_winnability.mjs` runs the actual stage simulation
+and C/WASM combat over the unchanged seeds 0..49 for each player fixture:
+
+| Player fixture | Victories / 50 | Win rate | Deaths | Unfinished / fled |
+|---|---:|---:|---:|---:|
+| biter | 21 | 42% | 29 | 0 / 0 |
+| guard | 29 | 58% | 21 | 0 / 0 |
+| spitter | 38 | 76% | 12 | 0 / 0 |
+
+Every fixture remains within the required window and every fight finishes
+within 900 ticks. This calibrates the fixed scripted policy, not human
+difficulty. The browser polish test also honours the same optional
+`CPORE_STAGE_URL` and `CPORE_STAGE_EVIDENCE` settings as the stage play test,
+allowing isolated local runs without overwriting reviewed screenshots.
+
 ### Final default tournament output
 
 GCC 16.2.1, x86-64 Linux, 2026-11-15. `make tourney` exits 0.
