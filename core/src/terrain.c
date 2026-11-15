@@ -218,14 +218,14 @@ void cp_terrain_params_default(CpTerrainParams *p)
     p->lifetime = 64;
     p->radius = 2;
     p->thermal_iters = 8;
-    p->size_m = 3200.f;
+    p->size_m = 3600.f;
     p->frequency = 1.f / 760.f;
     p->warp_m = 240.f;
     p->ridge_weight = 0.72f;
     p->valley_radius_m = 300.f;
     p->valley_floor_m = 42.f;
     p->ring_inner_m = 340.f;
-    p->ring_outer_m = 1180.f;
+    p->ring_outer_m = 1500.f;
     p->ring_height_m = 640.f;
     p->pass_x = 1.f;
     p->pass_y = 0.15f;
@@ -234,13 +234,13 @@ void cp_terrain_params_default(CpTerrainParams *p)
     p->col_x = -0.55f;
     p->col_y = -0.83f;
     p->col_height_m = 230.f;
-    p->island_radius_m = 1420.f;
+    p->island_radius_m = 1600.f;
     p->lake_x_m = -150.f;
     p->lake_y_m = 70.f;
     p->lake_radius_m = 68.f;
     p->lake_depth_m = 34.f;
     p->stream_k = 0.06f;
-    p->cliff_deg = 64.f;
+    p->cliff_deg = 50.f;
     p->inertia = 0.30f;
     p->capacity = 6.f;
     p->deposition = 0.25f;
@@ -377,12 +377,12 @@ static void base_ctx(const CpTerrainParams *p, BaseCtx *c)
         t = dx * jc - dy * js;
         dy = dx * js + dy * jc;
         dx = t;
-        rad = c->crest0 * (1.0f + 0.26f * hash01(k, 2, s));
+        rad = c->crest0 * (0.94f + 0.22f * hash01(k, 2, s));
         m->x = dx * rad;
         m->y = dy * rad;
         unit_dir(hash01(k, 3, s) - 0.5f, hash01(k, 4, s) - 0.5f, &m->ax, &m->ay);
         stretch = 1.1f + 0.9f * hash01(k, 5, s);
-        w = (p->ring_outer_m - p->ring_inner_m) * (0.42f + 0.16f * hash01(k, 6, s));
+        w = (p->ring_outer_m - p->ring_inner_m) * (0.36f + 0.14f * hash01(k, 6, s));
         m->inv_w = 1.f / maxf(w, 1.f);
         m->inv_l = 1.f / maxf(w * stretch, 1.f);
         m->h = 0.52f + 0.48f * hash01(k, 7, s);
@@ -603,7 +603,7 @@ static void thermal_sweep(int n, float cell, float diag, float talus,
          * soft ones lie back. Without it every wall rests at one angle. */
         if (rock) {
             float wx = ((float)x + 0.5f) * cell - half, wy = ((float)y + 0.5f) * cell - half;
-            tal *= 1.f + 0.75f * noise2(wx * rf + 91.3f, wy * rf + 47.9f, rock->seed ^ 0x0F1E2D3Cu);
+            tal *= 1.f + 0.85f * noise2(wx * rf + 91.3f, wy * rf + 47.9f, rock->seed ^ 0x0F1E2D3Cu);
         }
         for (int d = 0; d < 8; d++) {
             int nx = x + DX[d];
@@ -807,11 +807,11 @@ static void stream_power(const CpTerrainParams *p, int n, float *h, float *sed,
             hr = h[r];
             if (!(hr < hi)) continue;
             di = r - i;
-            /* Below about 600 m2 of catchment the ground is hillslope, not
+            /* Below about 1600 m2 of catchment the ground is hillslope, not
              * channel: it wears at a fraction of the rate, or every ridge
              * would melt at the speed its gullies cut. */
             sa = sqrtf(flow[i] * area);
-            sa = sa > 18.f ? sa - 15.f : sa * (1.f / 6.f);
+            sa = sa > 40.f ? sa - 35.f : sa * 0.125f;
             f = p->stream_k * sa * scale /
                 ((di == 1 || di == -1 || di == n || di == -n) ? cell : diag);
             h[i] = (hi + f * hr) / (1.f + f);

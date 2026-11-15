@@ -22,7 +22,7 @@ for (const [seed,n] of [[1,256],[7,256],[42,256],[1,1024]]) {
   assert.equal(t.hash,native[0],`seed ${seed} N=${n}`);
   assert.equal(t.height.length,n*n);
   for (const map of [t.height,t.flow,t.sediment,t.level]) assert.ok(map.every(Number.isFinite));
-  assert.equal(t.size,3200);assert.equal(t.version,2);
+  assert.equal(t.size,3600);assert.equal(t.version,2);
   assert.ok(t.level.every((v,i)=>t.height[i]<=0||v>=t.height[i]),'water level under the ground');
   console.log(`seed ${seed} N=${n}: ${t.hash}; native ${native[1]}s, WASM ${t.seconds.toFixed(4)}s`);
   rows.push({seed,n,hash:t.hash,native_seconds:Number(native[1]),wasm_seconds:t.seconds});
