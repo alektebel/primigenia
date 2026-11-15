@@ -681,10 +681,8 @@ gl_FragColor.rgb=aerial(gl_FragColor.rgb,vW);}`}));scene.add(water);
        vec3 c=meadowColor(vField,vBlade.y,wave,vGrassWorld.xz);
        // Fade the blade-colour accent (tuft variation) toward meadow ground colour
        // so the near-grass ring blends invisibly at high-elevation views.
-       // The 30-80m band fades both blade height and color multiplier.
-       float tH=length(vGrassWorld.xz-center.xz)>44.?1.:length(vGrassWorld.xz-center.xz)<30.?1.:(80.-length(vGrassWorld.xz-center.xz))/30.;
-       vec3 tHf=mix(${glv(LD.tuft0)},${glv(LD.tuft1)},vTuft);
-        c*=mix(tHf,vec3(1.),1.-tH);
+       float tH=length(vGrassWorld.xz-center.xz)>44.?1.:length(vGrassWorld.xz-center.xz)<30.?1.:(60.-length(vGrassWorld.xz-center.xz))/30.;
+       c*=mix(${glv(LD.tuft0)},${glv(LD.tuft1)},vTuft*tH+.5*(1.-tH));
        c*=mix(${gf(LD.bladeLo)},${gf(LD.bladeHi)},smoothstep(0.,1.,h))*mix(${HL.shK},1.,vBlade.z);
        ${LD_BLADE_TIP}${LD_BLADE_SH}
        c+=vec3(.14,.20,.035)*pow(h,2.)*vBlade.w*vBlade.z;

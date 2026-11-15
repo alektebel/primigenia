@@ -514,9 +514,9 @@ GRASS_V9 = r"""
        float lod=offset.w;
        // World-anchored blades: wrap each offset toroidally onto a world grid of period 2R around center.
        float R=lod>.5?140.:44.;vec2 o=offset.xy,base=o+floor((center.xz-o)/(2.*R)+.5)*(2.*R);vec4 t=samp(base);
-       float d=length(base-center.xz),fade=lod>.5?(1.-smoothstep(110.,140.,d))*smoothstep(30.,48.,d):1.-smoothstep(30.,60.,d);
+       float d=length(base-center.xz),fade=lod>.5?(1.-smoothstep(110.,140.,d))*smoothstep(30.,48.,d):1.-smoothstep(30.,80.,d);
        // Smooth height fade over the wider band so tall blades at the edge look like short stubble.
-       float tH=lod>.5?smoothstep(30.,48.,d):smoothstep(30.,60.,d);
+       float tH=lod>.5?smoothstep(30.,48.,d):smoothstep(30.,80.,d);
        float rolling=.65+.55*sin(base.x*.033+sin(base.y*.027))*.5+t.b*.4;
        float hg=mix(.48+.75*clump,.30+.40*clump,lod)*rolling*t.g*fade*tH;
        float hx=samp(base+vec2(1.,0.)).r-samp(base-vec2(1.,0.)).r,hz=samp(base+vec2(0.,1.)).r-samp(base-vec2(0.,1.)).r;
