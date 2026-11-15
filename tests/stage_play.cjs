@@ -54,6 +54,7 @@ const enemyTiers=JSON.parse(fs.readFileSync('web/stage/species/garfio-combat.jso
      const visualGap=Math.hypot(p.x+(s.player.x-p.x)*a-e.x-(s.enemy.x-e.x)*a,p.z+(s.player.z-p.z)*a-e.z-(s.enemy.z-e.z)*a)-radii;
      if(until==='hit'&&s.hits.some(h=>s.ticks*.1-h.time<.4)&&Math.abs(visualGap)<.05)break;
     }
+    if(Stage.env.W.ticks!==0)throw Error('legacy JS simulation must remain frozen');
     return {frames,...Stage.snapshot()};
    },{fps,until});
   }

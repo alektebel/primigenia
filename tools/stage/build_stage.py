@@ -66,6 +66,18 @@ h = patch(h, '</body>', '''<div id="play-ui">
  </fieldset><button id="resume">Return to the valley</button><a href="../studio/">Open Studio ↗</a></div>
 </div>
 </body>''')
+# Keep only reference scene setup/rendering. Remove its old rules and agent
+# controls so there is no second simulation, including hidden NPC updates.
+start=h.index('function nearest(')
+end=h.index('/* ---------- geometría ---------- */',start)
+h=h[:start]+"function nearInfo(){return {es:'',en:''}}\n\n"+h[end:]
+start=h.index('function frame(t){')
+end=h.index('const ACTIONS=',start)
+h=h[:start]+"""function frame(t){requestAnimationFrame(frame);const dt=Math.max(0,(t-last)/1000||0);last=t;render(dt)}
+"""+h[end:]
+start=h.index('const ACTIONS=')
+end=h.index('setMode(false);requestAnimationFrame(frame);',start)
+h=h[:start]+"addEventListener('resize',resize);\n"+h[end:]
 output = ROOT / 'web/stage/index.html'
 output.parent.mkdir(parents=True, exist_ok=True)
 output.write_text(h, encoding='utf-8')
