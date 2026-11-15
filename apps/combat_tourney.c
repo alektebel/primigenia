@@ -1,6 +1,6 @@
 /* Scripted-bot tournament for the combat core (DESIGN.md P2 acceptance).
  *
- *   combat_tourney [seeds_per_cell] [payoff_duels]
+ *   combat_tourney [seeds_per_cell] [payoff_duels] [seed_offset]
  *
  * Prints: the move-vs-move payoff matrix, a weak-dominance check on it, the
  * strategy round-robin with an Elo table, the build (profile) win rates and
@@ -21,6 +21,7 @@ static const int STRAT[NS] = { BOT_IDLE, BOT_RANDOM, BOT_GREEDY, BOT_COUNTER };
 #define START_DIST    12.0f
 
 static int fails = 0;
+static uint32_t seed_offset;
 static void check(int ok, const char *msg)
 {
     printf("  %s  %s\n", ok ? "PASS" : "FAIL", msg);
@@ -62,7 +63,7 @@ static void compute_payoff(int duels)
             double pair_v = 0, pair_r = 0;
             for (int s = 0; s < duels; s++) {
                 CpCombatSetup su;
-                duel_setup(&su, 1000u + (uint32_t)(s/2), &p, &p, 7.0f);
+                duel_setup(&su, seed_offset + 1000u + (uint32_t)(s/2), &p, &p, 7.0f);
                 CpBot b0, b1;
                 bot_init(&b0, BOT_SPAM, (uint32_t)s); b0.spam_move = s%2 ? b : a; b0.delay = (s/2) % 4;
                 bot_init(&b1, BOT_SPAM, (uint32_t)s + 7777u); b1.spam_move = s%2 ? a : b; b1.delay = (s/8) % 7;
@@ -178,12 +179,17 @@ static void report_payoff(int duels)
 {
     printf("== Move-vs-move payoff, %d duels per cell: move policies, 7 m apart,\n", duels);
     printf("   paired seats and start offsets, 12 s; neutral builds (all parts L3, hp 100000 so nobody dies)\n");
-    printf("   guard takes an earned bite riposte; ranged moves retreat and sidestep walls; dodge repeats\n\n");
+    printf("   guard closes and blocks; dodge reads contact; both take funded bite punishes; ranged moves space\n\n");
     printf("-- raw: row's damage dealt minus column's (hp)\n");
     print_matrix(payoff);
     printf("\n-- resource-adjusted: raw minus %.6f hp per stamina point the row spent, plus the same for the column\n",
            stamina_value);
     print_matrix(payr);
+
+    printf("\n-- raw standard errors (independent seat-pair means)\n");
+    print_matrix(payoff_se);
+    printf("\n-- resource standard errors (independent seat-pair means)\n");
+    print_matrix(payr_se);
 
     printf("\n== Dominance check (tolerance 2*SE + 0.5 hp)\n");
     printf("-- raw matrix (acceptance gate)\n");
@@ -238,7 +244,7 @@ static void play(int sa, int sb, int pa, int pb, uint32_t seed, double *score_a)
 
 static void round_robin(int seeds)
 {
-    uint32_t seed = 5000;
+    uint32_t seed = seed_offset + 5000u;
     for (int sa = 0; sa < NS; sa++)
         for (int sb = 0; sb < NS; sb++)
             for (int pa = 0; pa < N_PROFILES; pa++)
@@ -406,6 +412,16 @@ int main(int argc, char **argv)
     if (duels < 2) duels = 2;
     if (duels % 2) duels++; /* complete the seat pair */
     printf("cpore combat tourney  (tick %d Hz, seeds/cell %d, payoff duels/cell %d)\n\n", CB_HZ, seeds, duels);
+    if (argc > 3) {
+        char *end;
+        unsigned long parsed = strtoul(argv[3], &end, 10);
+        if (!argv[3][0] || argv[3][0] == '-' || *end || parsed > UINT32_MAX) {
+            fputs("seed_offset must be a uint32 integer\n", stderr); return 2;
+        }
+        seed_offset = (uint32_t)parsed;
+    }
+    printf("seed offset %u (payoff base %u; field base %u)\n\n",
+           seed_offset, seed_offset+1000u, seed_offset+5000u);
     compute_payoff(duels);
     report_payoff(duels);
     round_robin(seeds);

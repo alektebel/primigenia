@@ -17,6 +17,23 @@ int main(void)
     assert(dominates(P, se, 0, 1));
     P[0][1] = -2;
     assert(!dominates(P, se, 0, 1));
+    se[0][0] = 1;
+    P[0][1] = 0;
+    assert(!dominates(P, se, 0, 1)); /* 2 HP is inside 2*SE + 0.5 */
+    P[0][0] = 3;
+    assert(dominates(P, se, 0, 1));
+    P[0][1] = -3; se[1][1] = 2;
+    assert(dominates(P, se, 0, 1)); /* use the larger row's SE */
+    /* A known five-action cycle, plus a dominated sixth action, must have
+     * real five-move support rather than solver initialization dust. */
+    for (int i = 0; i < 5; i++) for (int j = 0; j < 5; j++)
+        P[i][j] = i == j ? 0 : ((j-i+5)%5 <= 2 ? 1 : -1);
+    for (int i = 0; i < 5; i++) { P[i][5] = 2; P[5][i] = -2; }
+    P[5][5] = 0;
+    double value;
+    solve_game(P, &value, mix);
+    assert(equilibrium_support(mix) == 5 && fabs(value) < 1e-9);
+    for (int i = 0; i < 5; i++) assert(fabs(mix[i]-0.2) < 0.001);
     /* Every strategy pair, including random and cross-strategy, enters the
      * build tally; inverse seats count as the same build comparison. */
     for (int a = 1; a < NS; a++) for (int b = 1; b < NS; b++) record_build(a,b,0,1,1);
@@ -41,7 +58,13 @@ int main(void)
         assert(!idle_loses_both(active));
         memset(strat, 0, sizeof strat);
     }
+    seed_offset = 2000000u;
     compute_payoff(4);
+    CpCombatProfile p; cp_combat_profile_default(&p);
+    p.mouth = p.charge = p.spit = p.tail = p.guard = 3;
+    double expected = ((15.4+4.2)/10.8 + 42.0/21.6 + 18.2/14.4 + 23.8/12.0)/4;
+    assert(fabs(move_stamina_value(&p)-expected) < 1e-6);
+
     for (int a = 0; a < CB_MOVE_COUNT; a++) for (int b = 0; b < CB_MOVE_COUNT; b++) {
         assert(fabs(payoff[a][b] + payoff[b][a]) < 1e-9);
         assert(fabs(payr[a][b] + payr[b][a]) < 1e-9);
