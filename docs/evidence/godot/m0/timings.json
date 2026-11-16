@@ -1,0 +1,8 @@
+{
+  "cache_hit_load_ms": 39,
+  "generate_and_store_ms": 3684,
+  "island_build_ms": 1018,
+  "note": "software GL (llvmpipe); grass 60000 blades for evidence; generation timed on a worker thread",
+  "rendering_info_total_primitives": 258772,
+  "triangles_far_view": 37824
+}
