@@ -336,3 +336,6 @@ godot-rock-bench-sw: godot
 	@mkdir -p $(ROCK_OUT)
 	LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 1800 xvfb-run -a -s "-screen 0 1280x720x24" $(GODOT) --rendering-driver opengl3 --resolution 1280x720 --path godot \
 	  --script res://game/tests/bench_terrain.gd -- $(ROCK_OUT) $(TIER) 40 10 60000
+godot-rock-stretch-test: godot
+	LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 600 xvfb-run -a -s "-screen 0 1280x720x24" $(GODOT) --rendering-driver opengl3 --max-fps 15 --path godot \
+	  --script res://game/tests/rock_stretch_test.gd
