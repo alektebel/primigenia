@@ -1,19 +1,35 @@
 extends Node3D
-# The island scene: sky/environment, sun, terrain chunks, water, grass, actors, camera.
-# Built in code from Game.data (set by the boot flow before this scene loads).
+# The island scene: sky/environment, sun, terrain chunks, water, grass, the 10 Hz stage world,
+# creatures, chase camera and controls. Built in code from Game.data (set by the boot flow).
 
 const Look := preload("res://game/island/look.gd")
 const EnvironmentFactory := preload("res://game/island/environment.gd")
 const TerrainChunks := preload("res://game/island/terrain_chunks.gd")
 const Water := preload("res://game/island/water.gd")
 const Grass := preload("res://game/island/grass.gd")
+const StageWorld := preload("res://game/stage/stage_world.gd")
+const StageSetup := preload("res://game/stage/stage_setup.gd")
+const Profile := preload("res://game/stage/profile.gd")
+const PlayerInput := preload("res://game/player/player_input.gd")
+const Pointer := preload("res://game/player/pointer.gd")
+const ChaseCamera := preload("res://game/player/chase_camera.gd")
+const ActorHost := preload("res://game/actors/actor_host.gd")
 
 var terrain_chunks: Node3D
 var world_env: WorldEnvironment
 var sun: DirectionalLight3D
 var water: Node3D
 var grass: MultiMeshInstance3D
-var debug_camera: Camera3D
+var camera: Camera3D
+var debug_camera: Camera3D       # alias of camera (tests and evidence move it directly)
+var stage: Node
+var player_input
+var chase
+var hosts := {}                  # entity id -> ActorHost
+var chase_enabled := true
+var player_pos := Vector3.INF
+var occluders_enabled := true
+var _mouse_held := false
 
 func _ready() -> void:
 	build()
@@ -39,19 +55,127 @@ func build() -> void:
 	add_child(grass)
 	grass.build(data, int(Game.settings.grass))
 	print("grass built in %d ms (%d blades)" % [Time.get_ticks_msec() - t0, int(Game.settings.grass)])
-	debug_camera = Camera3D.new()
-	debug_camera.name = "DebugCamera"
-	debug_camera.fov = 48.0
-	debug_camera.near = 0.25
-	debug_camera.far = 12000.0
-	add_child(debug_camera)
-	debug_camera.current = true
-	Game.camera = debug_camera
+	camera = Camera3D.new()
+	camera.name = "Camera"
+	camera.fov = 48.0
+	camera.near = 0.25
+	camera.far = 12000.0
+	add_child(camera)
+	camera.current = true
+	debug_camera = camera
+	Game.camera = camera
+	_build_stage()
 	set_process(true)
 	Game.island_ready.emit()
 
-func _process(_delta: float) -> void:
-	if grass != null and Game.camera != null:
-		grass.set_center(Game.camera.global_position if player_pos == Vector3.INF else player_pos)
+func _build_stage() -> void:
+	var manifest := Profile.load_json("res://game/data/parts.json")
+	var genome: Dictionary = Game.player_genome()
+	var pr := Profile.from_studio(genome, manifest)
+	if not pr.ok:
+		push_error("player genome has no combat profile: %s" % pr.error)
+		return
+	var garfio_profile := StageSetup.garfio_profile(manifest)
+	var setup := StageSetup.build(Game.data, int(Game.settings.seed), pr.profile, garfio_profile, bool(Game.settings.wild))
+	stage = StageWorld.new()
+	stage.name = "Stage"
+	add_child(stage)
+	var ground := Callable(Game, "ground")
+	stage.ground_fn = ground
+	player_input = PlayerInput.new()
+	player_input.blocked = Callable(Game, "movement_blocked")
+	stage.input_provider = player_input.sample
+	stage.after_tick = player_input.after_tick
+	if stage.reset(setup) != 0:
+		push_error("the C world rejected the island setup")
+		return
+	stage.ticked.connect(func(state: Dictionary) -> void: Game.world_ticked.emit(state))
+	stage.combat_events.connect(func(events: Array) -> void: Game.combat_events.emit(events))
+	Game.stage = stage
+	var player_host := ActorHost.new()
+	player_host.name = "Player"
+	add_child(player_host)
+	player_host.setup(genome, 0, setup.player, ground)
+	hosts[0] = player_host
+	for i in setup.wild.size():
+		var h := ActorHost.new()
+		h.name = "Wild%d" % (i + 1)
+		add_child(h)
+		h.setup(Profile.load_json("res://game/data/garfio.json"), i + 1, setup.wild[i].profile, ground)
+		hosts[i + 1] = h
+	var yaw := PI
+	if setup.wild.size() > 0:
+		yaw = atan2(setup.nest.x - setup.wild[0].home_x, setup.nest.y - setup.wild[0].home_z)
+	chase = ChaseCamera.new(player_host.height(), yaw, ground)
+	_update_actors(0.0)
+	_update_camera(0.0)
 
-var player_pos := Vector3.INF   # set by the actor code; until then grass follows the camera
+func _update_actors(dt: float) -> void:
+	for id in hosts:
+		hosts[id].update(dt, stage.sample(id))
+	var p: Dictionary = stage.sample(0)
+	player_pos = p.pos
+	var occ := []
+	if occluders_enabled:
+		for id in hosts:
+			if id == 0 or (hosts[id].global_position - player_pos).length() < 40.0:
+				occ.append_array(hosts[id].occluders())
+	while occ.size() > 12:
+		occ.pop_back()
+	while occ.size() < 12:
+		occ.append(Vector4(0, -999, 0, 0))
+	terrain_chunks.apply_occluders(player_pos, occ)
+	grass.apply_occluders(player_pos, occ)
+	grass.set_center(player_pos)
+
+func _update_camera(dt: float) -> void:
+	if not chase_enabled or chase == null:
+		return
+	var p: Dictionary = stage.sample(0)
+	var state: Dictionary = stage.cur
+	var fighting: bool = state.active >= 0
+	var enemy = null
+	if fighting:
+		var e: Dictionary = state.entities[state.active + 1]
+		enemy = {"x": e.x, "z": e.z}
+	var vp := get_viewport().get_visible_rect().size
+	var r: Dictionary = chase.update({"x": p.pos.x, "z": p.pos.z, "yaw": p.yaw, "speed": p.speed}, enemy, fighting, dt, vp.x / maxf(vp.y, 1.0))
+	camera.position = r.position
+	camera.look_at(r.target)
+	player_input.view_yaw = chase.view_yaw
+
+func _process(delta: float) -> void:
+	if stage == null:
+		return
+	_update_actors(delta)
+	_update_camera(delta)
+	if _mouse_held and not Game.movement_blocked():
+		_click_ground(false)
+
+func _unhandled_input(event: InputEvent) -> void:
+	if stage == null or chase == null:
+		return
+	if event is InputEventMouseMotion and Input.is_action_pressed("camera_orbit"):
+		chase.orbit(event.relative.x, event.relative.y)
+	elif event.is_action_pressed("zoom_in"):
+		chase.zoom(-1.0)
+	elif event.is_action_pressed("zoom_out"):
+		chase.zoom(1.0)
+	elif event.is_action_pressed("walk_to"):
+		_mouse_held = true
+		_click_ground(true)
+	elif event.is_action_released("walk_to"):
+		_mouse_held = false
+
+func _click_ground(allow_pick: bool) -> void:
+	var mouse := get_viewport().get_mouse_position()
+	var ground := Callable(Game, "ground")
+	if allow_pick:
+		var picked := Pointer.pick_entity(camera.project_ray_origin(mouse), camera.project_ray_normal(mouse), stage.cur.entities, ground)
+		if not picked.is_empty():
+			player_input.clear_destination()
+			Game.creature_clicked.emit(picked.id, picked.pos)
+			return
+	var hit = Pointer.ground_hit(camera, mouse, ground)
+	if hit != null:
+		player_input.set_destination(Vector2(hit.x, hit.z))

@@ -58,3 +58,52 @@ func goto_studio() -> void:
 		get_tree().change_scene_to_file(path)
 	else:
 		push_warning("studio module not present")
+
+# Player genome source: --genome=<path> after "--", else the newest user://studio/*.json that
+# parses, else the bundled Merodeador.
+func player_genome() -> Dictionary:
+	for arg in OS.get_cmdline_user_args():
+		if arg.begins_with("--genome="):
+			var g := _read_genome(arg.substr(9))
+			if not g.is_empty():
+				return g
+	var newest := ""
+	var newest_time := 0
+	var dir := DirAccess.open("user://studio")
+	if dir != null:
+		for f in dir.get_files():
+			if f.get_extension() == "json":
+				var t := FileAccess.get_modified_time("user://studio/" + f)
+				if t > newest_time and not _read_genome("user://studio/" + f).is_empty():
+					newest = "user://studio/" + f
+					newest_time = t
+	if newest != "":
+		return _read_genome(newest)
+	return _read_genome("res://game/data/merodeador.json")
+
+func _read_genome(path: String) -> Dictionary:
+	var text := FileAccess.get_file_as_string(path)
+	var v = JSON.parse_string(text)
+	if typeof(v) != TYPE_DICTIONARY:
+		push_warning("genome %s: not a JSON object" % path)
+		return {}
+	var creature_script := "res://creature/creature.gd"
+	if ResourceLoader.exists(creature_script):
+		var script = load(creature_script)
+		if script != null and script.has_method("parse_genome"):
+			var parsed = script.parse_genome(text)
+			if typeof(parsed) == TYPE_DICTIONARY and parsed.get("ok", false):
+				return parsed.get("genome", v)
+			push_warning("genome %s rejected by the creature module" % path)
+			return {}
+	if v.get("schema", "") != "cpore.creature/4" or typeof(v.get("nodes")) != TYPE_ARRAY or v.nodes.size() < 2 \
+			or typeof(v.get("parts")) != TYPE_ARRAY or v.parts.size() > 256:
+		push_warning("genome %s: failed the minimal checks" % path)
+		return {}
+	for n in v.nodes:
+		if typeof(n) != TYPE_DICTIONARY or not (n.has("y") and n.has("z") and n.has("r")):
+			return {}
+		for k in ["y", "z", "r"]:
+			if not is_finite(float(n[k])):
+				return {}
+	return v
