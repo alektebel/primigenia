@@ -13,6 +13,8 @@ const TESTS := [
 	"res://game/tests/test_grass.gd",
 	"res://game/tests/test_profile.gd",
 	"res://game/tests/test_session.gd",
+	"res://game/tests/test_input.gd",
+	"res://game/tests/test_camera.gd",
 	"res://game/tests/test_cache.gd",
 ]
 
@@ -49,7 +51,7 @@ func _initialize() -> void:
 	for path in TESTS:
 		current = path.get_file()
 		var script = load(path)
-		if script == null:
+		if script == null or not script.can_instantiate():
 			check(false, "cannot load " + path)
 			continue
 		var started := Time.get_ticks_msec()
