@@ -108,8 +108,8 @@ Fr, speed and duty), `measurements.json`. The legless body has no clip (no plan 
   hips rise 3-4 cm above rest height when walking starts; vertical acceleration is still 1.5-4.8 g
   in several walks (compass-gait cusps at touchdown). Heavy slow walk 4.8 g.
 - No lead change or canter, no slow metachronal gait for hexapods, no pelvic list or lateral
-  sway proper, heads do not bob like a wading bird's, the hexapod and the legless body have no
-  clip or toe-off.
+  sway proper, heads do not bob like a wading bird's, the legless body has no
+  clip.
 - Spine bend yaw gain 0.085 is tuned to land in the 3-12 degree range, not measured on animals.
 - The rig adapter's bone sign conventions (tail pitch, neck pitch) and the lateral spine offset are
   taken from the capsule rig and are **unverified on the real skeleton**; only a fake object with the
