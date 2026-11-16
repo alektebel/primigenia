@@ -305,3 +305,6 @@ godot-creature-test:
 godot-creature-evidence:
 	nice -n 10 timeout 600 $(GODOT) --headless --path godot --import >/dev/null 2>&1 || true
 	LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 xvfb-run -a $(GODOT) --rendering-driver opengl3 --max-fps 15 --path godot --script res://creature/tools/render_evidence.gd
+.PHONY: godot-loco-test
+godot-loco-test:
+	cd godot && timeout 300 nice -n 10 timeout 600 $(GODOT) --headless --path . --script locomotion/test/run_tests.gd
