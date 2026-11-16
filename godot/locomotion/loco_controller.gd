@@ -15,6 +15,7 @@ extends RefCounted
 const Gait = preload("loco_gait.gd")
 const G := 9.81
 const MAX_DT := 1.0 / 90.0
+const STRAIGHT := 0.985         # longest a leg is allowed to get, as a share of its length
 
 signal footfall(leg: int, position: Vector3)
 signal liftoff(leg: int, position: Vector3)
@@ -36,7 +37,7 @@ var time := 0.0
 var pose := {}
 
 # --- tunables (dimensionless)
-var vault_gain := 0.6           # share of the rigid-leg pendulum arc the hips follow
+var vault_gain := 1.0           # share of the rigid-leg pendulum arc the hips follow
 var leg_axis_torque := 0.25     # share of leg force that pitches the body
 var bank_gain := 0.7
 var stability_gain := 0.9
@@ -69,6 +70,7 @@ var _tail_p := Vector2.ZERO
 var _tail_y := Vector2.ZERO
 var _drop := 0.0
 var _f_avg := 1.0
+var _y_amp := 0.0
 var _t_avg := 0.0
 var _wave_phase := 0.0
 var _omega := 10.0
@@ -199,27 +201,39 @@ func _sub(h: float, p: Vector3, yaw: float, v: Vector3, settle: bool) -> void:
 		_off = Gait.offsets(gait, morph)
 		gait_changed.emit(old, gait, fr)
 	var legless: bool = _legs.is_empty()
+	var f_nat_c := 0.25 * sqrt(G / _ref_h)
 	var duty_t := Gait.duty(gait, fr)
 	var stride_t := Gait.stride_length(gait, fr, _ref_h) * _stride_mult
 	# slopes: shorter strides uphill (more) and downhill (less)
 	stride_t *= 1.0 / (1.0 + 1.6 * grade) if grade > 0.0 else 1.0 / (1.0 - 0.6 * grade)
 	var bounce_t := Gait.bounce(gait)
-	# reach: crouch to lengthen the step, then clip the stride to what the legs allow
-	var crouch_max := 0.12 + 0.06 * bounce_t
+	# Reach. A walking leg stays straight and the hip vaults over it (step 8),
+	# so only the leg angle limits the stride. A bouncing gait needs the hips
+	# low enough for a straight leg to reach touchdown and lift-off: crouch,
+	# then clip the stride to what the legs allow.
+	var crouch_max := 0.18
 	var crouch_t := 0.0
+	_y_amp = max(abs(_y.x), _y_amp * exp(-h * max(cadence, f_nat_c)))
 	for i in range(_legs.size()):
 		var m: Dictionary = morph.legs[i]
-		var lr: float = 0.985 * m.length
-		var off: float = Vector2(m.home.x - m.hip.x, m.home.z - m.hip.z).length()
-		var d_req: float = off + 0.5 * duty_t * stride_t / 0.92
-		var need: float = 1.0 - sqrt(max(lr * lr - d_req * d_req, 0.0)) / m.rest_h
+		var lr: float = STRAIGHT * m.length
+		var off_x: float = abs(m.home.x - m.hip.x)     # sprawl
+		var off: float = abs(m.home.z - m.hip.z)       # feet carried ahead of or behind the hip
+		var d_lim: float = sqrt(max(0.36 * lr * lr - off_x * off_x, 0.0)) - off
+		var d_half: float = 0.5 * duty_t * stride_t / 0.92
+		if d_half > d_lim:
+			stride_t = max(2.0 * 0.92 * d_lim, 0.1 * _ref_h) / duty_t
+			d_half = 0.5 * duty_t * stride_t / 0.92
+		var d_req: float = sqrt(off_x * off_x + (off + d_half) * (off + d_half))
+		var need: float = bounce_t * (1.0 - (sqrt(max(lr * lr - d_req * d_req, 0.0)) - _y_amp) / m.rest_h)
 		if need > crouch_max:
-			var hh: float = m.rest_h * (1.0 - crouch_max)
-			var d_max: float = sqrt(max(lr * lr - hh * hh, 0.0))
-			stride_t = min(stride_t, max(2.0 * 0.92 * (d_max - off), 0.1 * _ref_h) / duty_t)
+			var hh: float = m.rest_h * (1.0 - crouch_max / max(bounce_t, 0.05)) + _y_amp
+			var d_max: float = sqrt(max(lr * lr - hh * hh - off_x * off_x, 0.0))
+			if d_max - off < d_half:
+				stride_t = max(2.0 * 0.92 * (d_max - off), 0.1 * _ref_h) / duty_t
 			need = crouch_max
 		crouch_t = max(crouch_t, need)
-	var f_nat := 0.25 * sqrt(G / _ref_h)
+	var f_nat := f_nat_c
 	var kg := 1.0 if settle else _lp(0.35 / max(cadence, f_nat), h)
 	duty = lerpf(duty, duty_t, kg)
 	bounce = lerpf(bounce, bounce_t, kg)
@@ -277,7 +291,7 @@ func _sub(h: float, p: Vector3, yaw: float, v: Vector3, settle: bool) -> void:
 			# keep the touchdown inside the leg's reach from where the hip will be
 			var hip_td: Vector3 = hip_now + v * t_td
 			var lr: float = 0.97 * m.length
-			var hh: float = m.rest_h * (1.0 - crouch)
+			var hh: float = m.rest_h * (1.0 - crouch) - (1.0 - bounce) * 0.1 * m.rest_h
 			var d_max: float = sqrt(max(lr * lr - hh * hh, 0.0))
 			var dv := Vector2(target.x - hip_td.x, target.z - hip_td.z)
 			if dv.length() > d_max:
@@ -352,13 +366,16 @@ func _sub(h: float, p: Vector3, yaw: float, v: Vector3, settle: bool) -> void:
 			var w := 0.12
 			var at: Vector3 = basis.inverse() * (l.target - p) if l.swing else basis.inverse() * (l.foot - p)
 			if not l.swing:
-				# inverted pendulum about the neutral stance: the hip rides an arc
-				# of radius rest_h over the planted foot
-				var hn: Vector3 = p + basis * Vector3(m.home.x, 0.0, m.home.z)
-				var d: float = Vector2(l.foot.x - hn.x, l.foot.z - hn.z).length()
-				var lp: float = m.rest_h
-				var vault: float = sqrt(max(lp * lp - d * d, 0.0)) - lp
-				e = l.foot.y - m.ankle + (1.0 - bounce) * vault_gain * vault * _moving
+				# inverted pendulum: the hip rides an arc whose radius is the
+				# straight leg, so a walking stance leg stays extended
+				# (sprawled legs are not pendulums: they vault less)
+				var hn: Vector3 = p + basis * Vector3(m.hip.x, 0.0, m.hip.z)
+				var lp: float = STRAIGHT * m.length
+				var d: float = min(Vector2(l.foot.x - hn.x, l.foot.z - hn.z).length(), 0.95 * lp)
+				var d0: float = min(Vector2(m.home.x - m.hip.x, m.home.z - m.hip.z).length(), 0.95 * lp)
+				var erect: float = 1.0 - clamp(abs(m.home.x - m.hip.x) / (0.5 * lp), 0.0, 1.0)
+				var vault: float = sqrt(lp * lp - d * d) - sqrt(lp * lp - d0 * d0)
+				e = l.foot.y - m.ankle + (1.0 - bounce) * vault_gain * erect * vault
 				w += m.share * l.load * nl
 				var wl: float = m.share * l.load
 				cx += at.x * wl
@@ -451,12 +468,12 @@ func _sub(h: float, p: Vector3, yaw: float, v: Vector3, settle: bool) -> void:
 			continue
 		var m: Dictionary = morph.legs[i]
 		var hw: Vector3 = root * m.hip
-		var lmax: float = 0.99 * m.length
+		var lmax: float = 0.995 * m.length
 		var dh := Vector2(hw.x - l.foot.x, hw.z - l.foot.z).length()
 		var dyv: float = hw.y - l.foot.y
 		if dh * dh + dyv * dyv > lmax * lmax:
 			var need: float = dyv - sqrt(max(lmax * lmax - dh * dh, 0.0))
-			if need > 0.06 * _ref_h or dh > lmax:
+			if need > 0.3 * _ref_h or dh > 0.9 * lmax:
 				l.force = true
 			drop = max(drop, min(need, 0.6 * _ref_h))
 	_drop = max(drop, _drop * exp(-h / 0.12))

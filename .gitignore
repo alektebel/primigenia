@@ -6,3 +6,4 @@ __pycache__/
 data/creatures/
 art/generated/
 node_modules/
+godot/.godot/
