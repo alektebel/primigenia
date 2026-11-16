@@ -236,6 +236,15 @@ func place_part(i: int, t: float, ang: float) -> void:
 	_touch()
 	end()
 
+## Leg knee ("k") or foot ("f") position relative to the hip (web joint handles).
+func set_leg_joint(i: int, key: String, value: Array) -> void:
+	if key != "k" and key != "f":
+		return
+	begin()
+	doc["parts"][i][key] = value
+	_touch()
+	end()
+
 func nudge_part(i: int, dt: float, dang: float) -> void:
 	begin()
 	var p: Dictionary = doc["parts"][i]

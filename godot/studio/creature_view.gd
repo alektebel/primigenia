@@ -53,3 +53,4 @@ func body_position() -> Vector3: return Vector3.ZERO
 func stats() -> Dictionary: return {}
 func trigger(_action: String) -> void: pass
 func set_run(_on: bool) -> void: pass
+func is_playing() -> bool: return false

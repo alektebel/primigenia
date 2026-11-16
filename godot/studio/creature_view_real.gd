@@ -467,7 +467,8 @@ func hide_part(i: int, hidden: bool) -> void:
 
 func _apply_hidden() -> void:
 	for e in creature.parts:
-		e.node.visible = e.index != _hidden_part
+		if e.get("node") != null:
+			e.node.visible = e.index != _hidden_part
 	for l in creature.legs:
 		for n in [l.upper, l.lower, l.foot]:
 			n.visible = l.part_index != _hidden_part
@@ -711,3 +712,7 @@ func trigger(action: String) -> void:
 
 func set_run(on: bool) -> void:
 	_run = on
+
+## View-space surface point at (t, ang): where a part would be placed (also used by tests and evidence).
+func part_anchor_at(t: float, ang: float) -> Vector3:
+	return creature.anchor(t, ang).p
