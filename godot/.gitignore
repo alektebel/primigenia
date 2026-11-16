@@ -1,4 +1,6 @@
 .godot/
 bin/
-*.os
-.sconsign*
+extension/*.os
+extension/*.o
+extension/.sconsign*.dblite
+*.tmp
