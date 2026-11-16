@@ -200,7 +200,16 @@ func _test_seeds_and_fixtures() -> void:
 	check(c.stats["dna"] == 25 + 5 + 15 + 25 + 25 + 8 * 3 + 2 * 5, "Merodeador dna cost %d" % c.stats["dna"])
 	check(c.ground_offset == 0.0, "legged creature keeps its spine height")
 	c.load_genome(Creature.seeds()["Babosa"])
-	check(abs(c.ground_offset - (.03 - (.5 - .15 * 0 - 0))) < 2 or c.ground_offset > 0, "legless creature rests on the ground")
+	var bottom := _ring_bottom(c)
+	check(c.legs.size() == 0 and abs(c.ground_offset - (.03 - bottom)) < 1e-6, "Babosa (legless) ground_offset = .03 - bottom (%f vs %f)" % [c.ground_offset, .03 - bottom])
+	check(c.stats["dna"] == 15 + 10 + 20 + 10 + 10, "Babosa dna cost %d" % c.stats["dna"])
+	c.load_genome(Creature.seeds()["Zancuda"])
+	bottom = _ring_bottom(c)
+	check(c.legs.size() > 0 and c.ground_offset == maxf(0.0, .03 - bottom), "Zancuda (legged) ground_offset = max(0, .03 - bottom) (%f)" % c.ground_offset)
+	check(c.stats["dna"] == 20 + 5 + 25 + 12 + 10 + 10 + 2 * 5, "Zancuda dna cost %d" % c.stats["dna"])
+	c.load_genome(Creature.seeds()["Merodeador"])
+	bottom = _ring_bottom(c)
+	check(c.ground_offset == maxf(0.0, .03 - bottom), "Merodeador ground_offset = max(0, .03 - bottom) (%f)" % c.ground_offset)
 	for f in ["v1.json", "v2.json", "v3.json", "v4-glb-parts.json"]:
 		var text := FileAccess.get_file_as_string(_abs(FIXTURES + f))
 		var r := c.load_genome(text)
@@ -212,6 +221,13 @@ func _test_seeds_and_fixtures() -> void:
 	c.load_genome(FileAccess.get_file_as_string(_abs(FIXTURES + "v3.json")))
 	check(c.growth.size() == 18, "v3 growth: 9 horns mirrored (got %d)" % c.growth.size())
 	c.queue_free()
+
+
+func _ring_bottom(c: Creature) -> float:
+	var b := INF
+	for i in Creature.NS:
+		b = minf(b, c.rest[i].y - c.rad[i])
+	return b
 
 
 func _test_every_part() -> void:
@@ -277,10 +293,17 @@ func _test_rig() -> void:
 	var md := c.mass_data()
 	check(md["segments"].size() == Creature.NS - 1 and md["volume"] > 0 and md["parts"].size() == 12 and md["legs"].size() == 4, "mass data")
 	# IK: the rest foot target reproduces the rest ankle; a nearer target bends the knee.
+	var reach_exact := 0
+	var reach_clamped := 0
 	for l in c.legs:
 		var rest_ankle: Vector3 = l.ankle
 		l.solve()
-		check(l.ankle.distance_to(rest_ankle) < .02 or rest_ankle.distance_to(l.hip) > l.total_length() - .011, "IK reaches the rest target (%f)" % l.ankle.distance_to(rest_ankle))
+		if rest_ankle.distance_to(l.hip) <= l.total_length() - .011:
+			reach_exact += 1
+			check(l.ankle.distance_to(rest_ankle) < .02, "IK reaches the rest target (%f)" % l.ankle.distance_to(rest_ankle))
+		else:
+			reach_clamped += 1
+			check(l.hip.distance_to(l.ankle) <= l.total_length(), "IK clamps an over-long rest target")
 		check(abs(l.hip.distance_to(l.knee) - l.upper_length) < 1e-3 and abs(l.knee.distance_to(l.ankle) - l.lower_length) < 1e-3, "IK keeps bone lengths")
 		l.foot_target = c.transform * (l.hip + Vector3(0, -l.total_length() * .6, .2))
 		l.solve()
@@ -289,6 +312,7 @@ func _test_rig() -> void:
 		l.foot_target = c.transform * (l.hip + Vector3(0, -50, 0))
 		var ratio: float = l.solve()
 		check(ratio <= 1.0 and l.hip.distance_to(l.ankle) <= l.total_length(), "IK clamps an out-of-reach target")
+	print("IK rest branches: %d exact, %d clamped" % [reach_exact, reach_clamped])
 	# Bending the neck moves the head parts with it (BoneAttachment3D).
 	var eye: Dictionary = c.parts.filter(func(e): return e["type"] == "ojo")[0]
 	var before: Vector3 = eye["node"].global_position
