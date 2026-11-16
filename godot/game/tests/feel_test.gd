@@ -241,6 +241,9 @@ func scenario(name: String, duration: float, keys_fn: Callable, head_fn: Callabl
 	var lag_sum := 0.0
 	var lag_n := 0
 	var slide_max := 0.0
+	var slide_ctl := 0.0
+	var hip_err := 0.0
+	var ctl_start: Array = []
 	var stance_start: Array = []        # per leg: Vector3 or null
 	var path: Array = []
 	var speeds: Array = []
@@ -261,6 +264,7 @@ func scenario(name: String, duration: float, keys_fn: Callable, head_fn: Callabl
 		stage.advance(FRAME)
 		var sm: Dictionary = stage.sample(0)
 		host.update(FRAME, sm)
+		await process_frame          # the skeleton (and the hip attachments) update once per frame, as in the game
 		var r: Dictionary = cam.update({"x": sm.pos.x, "z": sm.pos.z, "yaw": sm.yaw, "speed": sm.speed, "vx": sm.vel.x, "vz": sm.vel.z}, null, false, FRAME, 1.78)
 		input.view_yaw = cam.view_yaw
 		if fi > 0:
@@ -295,10 +299,23 @@ func scenario(name: String, duration: float, keys_fn: Callable, head_fn: Callabl
 		if ctl != null and ctl.pose.has("contact"):
 			var any := false
 			var legs: Array = host.body.legs
+			var lids: Array = host.driver.desc.leg_ids
+			for j in lids.size():
+				hip_err = maxf(hip_err, (legs[lids[j]].hip_global() - (ctl.pose.hips[j] as Vector3)).length())
 			if stance_start.size() != legs.size():
 				stance_start.resize(legs.size())
 			for i in legs.size():
 				var flat: bool = ctl.pose.contact[i] and ctl.pose.foot_pitch[i] < 0.01
+				if ctl_start.size() != legs.size():
+					ctl_start.resize(legs.size())
+				if flat:
+					var cp: Vector3 = ctl.pose.feet[i]
+					if ctl_start[i] == null:
+						ctl_start[i] = cp
+					else:
+						slide_ctl = maxf(slide_ctl, Vector2(cp.x - ctl_start[i].x, cp.z - ctl_start[i].z).length())
+				else:
+					ctl_start[i] = null
 				if flat:
 					any = true
 					var gp: Vector3 = legs[i].foot.global_position
@@ -329,6 +346,8 @@ func scenario(name: String, duration: float, keys_fn: Callable, head_fn: Callabl
 	m["frames_no_planted_foot"] = no_foot
 	m["max_roll_deg"] = max_roll
 	m["slide_mm"] = slide_max * 1000.0
+	m["hip_mismatch_mm"] = hip_err * 1000.0
+	m["slide_controller_mm"] = slide_ctl * 1000.0
 	m["gait_changes"] = gaits[0]
 	m["vel_jump_max"] = max_vel_jump
 	m["path"] = path

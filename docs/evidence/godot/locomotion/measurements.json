@@ -54,8 +54,8 @@
     },
     "theropod left turn 0.9 rad/s": {
       "neck_yaw_deg": 18.05,
-      "tail_half_response_ms": 400.0,
-      "tail_yaw_deg": -17.24
+      "tail_half_response_ms": 367.0,
+      "tail_yaw_deg": -13.0
     },
     "wader run Fr1.5": {
       "com_excursion_mm": 45.0,
@@ -92,7 +92,7 @@
       "slalom at speed": 0.0,
       "slow walk": 0.0,
       "start-stop": 0.0,
-      "steps": 476,
+      "steps": 475,
       "top speed": 0.0,
       "uphill 20%": 0.0,
       "walk": 0.0

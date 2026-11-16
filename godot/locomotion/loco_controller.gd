@@ -528,6 +528,7 @@ func _sub(h: float, p: Vector3, yaw: float, v: Vector3, settle: bool) -> void:
 	var root := Transform3D(basis, origin) * Transform3D(Basis(), piv) * Transform3D(rot, Vector3.ZERO) * Transform3D(Basis(), -piv)
 	# --- 14a. girdles: each pair of hips turns toward its leading foot, the
 	# spine bends between stations (rigs read pose.hips and spine_at())
+	var kappa: float = _yawrate / max(_speed_f, 0.5)          # path curvature, 1/m
 	for k in range(morph.stations.size()):
 		var st: Dictionary = morph.stations[k]
 		var zl := 0.0; var zr := 0.0; var nl2 := 0; var nr := 0
@@ -540,6 +541,9 @@ func _sub(h: float, p: Vector3, yaw: float, v: Vector3, settle: bool) -> void:
 		var yw := 0.0
 		if nl2 > 0 and nr > 0:
 			yw = -girdle_gain * atan2(zl / nl2 - zr / nr, max(morph.track_width, 0.05) * 2.0)
+		# the spine follows the path: stations ahead of the centre of mass yaw into the turn and those
+		# behind yaw out of it, so a long body bends along the arc instead of swinging like a door
+		yw += clamp(kappa * (float(st.z) - morph.com.z), -0.35, 0.35)
 		_st_yaw[k] = lerpf(_st_yaw[k], yw, _lp(0.04, h))
 	for k in range(morph.stations.size()):
 		_st_x[k] = _spine_x(morph.stations[k].z)
