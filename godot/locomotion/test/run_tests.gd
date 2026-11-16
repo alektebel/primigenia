@@ -9,6 +9,9 @@ const Bodies = preload("bodies.gd")
 const Morph = preload("../loco_morphology.gd")
 const Gait = preload("../loco_gait.gd")
 const Support = preload("../loco_support.gd")
+const Adapter = preload("../loco_rig_adapter.gd")
+const Ctl = preload("../loco_controller.gd")
+const Fake = preload("fake_creature.gd")
 
 const PLANS := ["biped", "horizontal_biped", "light_quadruped", "heavy_quadruped", "hexapod", "wader"]
 const SLIDE_LIMIT := 0.02
@@ -41,6 +44,7 @@ func _init() -> void:
 	test_robustness()
 	test_proposal()
 	test_quality()
+	test_adapter()
 	out["checks"] = checks
 	out["failures"] = fails
 	var path := ProjectSettings.globalize_path("res://").path_join("../docs/evidence/godot/locomotion/measurements.json")
@@ -594,3 +598,88 @@ func test_quality() -> void:
 		check(rng_deg > 3.0 and rng_deg < 12.0, "%s pelvis yaw range %.1f degrees in a lateral-sequence walk (3 to 12)" % [name, rng_deg])
 	table["pelvis_yaw_range_deg_Fr0.25"] = gy
 	out["quality"] = table
+
+# ---------------------------------------------------------------- rig adapter
+func test_adapter() -> void:
+	print("rig adapter against a fake creature with the real rig's field names")
+	var unit := 0.25
+	var body: Dictionary = Bodies.get_body("light_quadruped")
+	var fake = Fake.new()
+	fake.build(body, unit, "pezuna")
+	# a hanging leg must be left out
+	var hang = Fake.FakeLeg.new()
+	hang.hang = 0.5
+	hang.hip = Vector3(0.0, 2.0, 0.0)
+	fake.legs.append(hang)
+	var desc: Dictionary = Adapter.loco_describe(fake, unit)
+	check(desc.problems.is_empty(), "contract points 1-6 hold for the fake rig: %s" % str(desc.problems))
+	check(desc.legs.size() == 4 and desc.leg_ids == [0, 1, 2, 3], "4. the hanging leg is left out (%d legs described)" % desc.legs.size())
+	var m = Morph.analyse(desc)
+	var ref = Morph.analyse(body)
+	check(abs(m.hip_height - ref.hip_height) < 0.05 * ref.hip_height and m.plan == &"quadruped", "1. units: hip height %.3f m (reference %.3f), plan %s" % [m.hip_height, ref.hip_height, m.plan])
+	check(fake.spine_reset == 1, "describe puts the spine at rest first")
+	var ank_ok := true
+	for i in range(m.legs.size()):
+		var w: float = 2.0 * body.legs[i].radius
+		if abs(m.legs[i].ankle - Adapter.SOLE * w) > 1e-6:
+			ank_ok = false
+	check(ank_ok, "3. the controller's ankle height equals the rig's sole offset (0.6 x leg width)")
+	# 2. axes: a mirrored rig is caught
+	var mirrored = Fake.new()
+	mirrored.build(body, unit, "pezuna")
+	for l in mirrored.legs:
+		l.side = -l.side
+	var d2: Dictionary = Adapter.loco_describe(mirrored, unit)
+	check(d2.problems.any(func(x): return x.begins_with("2.")), "2. a mirrored rig (side opposite to hip x) is reported")
+	var flipped = Fake.new()
+	flipped.build(body, unit, "pezuna")
+	flipped.rest.reverse()
+	check(Adapter.loco_describe(flipped, unit).problems.any(func(x): return x.begins_with("2.")), "2. a rig whose head points to -Z is reported")
+	# 1. wrong unit
+	check(not Adapter.loco_describe(fake, 100.0).problems.is_empty(), "1. a wrong unit (100 m per rig unit) is reported")
+	# 6. unknown foot name
+	var weird = Fake.new()
+	weird.build(body, unit, "tentacle")
+	check(Adapter.loco_describe(weird, unit).problems.any(func(x): return x.begins_with("6.")), "6. an unknown foot name is reported")
+	var names_ok := true
+	for k in ["garra", "dedos", "pezuna", "runner", "sucker", "spring", "cloven", "gecko"]:
+		if not Morph.FOOT.has(k):
+			names_ok = false
+	check(names_ok, "6. all eight rig foot names map to the FOOT table")
+	# 5. part masses: provisional table
+	var hv = Fake.new()
+	hv.build(Bodies.get_body("heavy_quadruped"), 0.5, "garra")
+	var dh: Dictionary = Adapter.loco_describe(hv, 0.5)
+	check(dh.parts.size() == 1 and abs(dh.parts[0].mass - 1000.0 * 0.02 * pow(0.5, 3)) < 1e-6, "5. a horn of size 1 rig unit weighs density x 0.02 x size^3 = %.2f kg (provisional table)" % dh.parts[0].mass)
+	# apply: run the controller on the described body and drive the fake
+	var ctl = Ctl.new(m, func(_x, _z): return 0.0)
+	var pos := Vector3.ZERO
+	var worst := 0.0
+	var bad_target := false
+	var nan := false
+	var flat: Callable = func(_x, _z): return 0.0
+	var v: float = sqrt(0.8 * 9.81 * m.hip_height)
+	for k in range(600):
+		pos += Vector3(0, 0, v / 60.0)
+		ctl.step(1.0 / 60.0, pos, 0.0, Vector3(0, 0, v))
+		var res: Dictionary = Adapter.loco_apply(fake, ctl.pose, desc, flat)
+		if k > 120:
+			worst = max(worst, res.max_sole_error)
+		for j in range(4):
+			var l = fake.legs[j]
+			var expect: Vector3 = (ctl.pose.feet[j] as Vector3) - Vector3.UP * (Adapter.SOLE * l.width * unit)
+			if l.foot_target.distance_to(expect) > 1e-6:
+				bad_target = true
+			if not is_finite(l.foot_target.x):
+				nan = true
+	check(not bad_target and not nan, "apply writes foot_target = ankle - 0.6 x width (sole) for every walking leg")
+	check(worst < Adapter.SOLE_TOLERANCE, "3. planted soles stay within %.1f mm of the ground over a trot (%.2f mm)" % [Adapter.SOLE_TOLERANCE * 1000.0, worst * 1000.0])
+	check(fake.legs[0].solved > 0 and fake.legs[4].solved > 0 and fake.legs[4].foot_target == Vector3.ZERO, "solve_legs runs; the hanging leg's target is untouched")
+	var gt: Transform3D = fake.transform
+	check(abs(gt.basis.get_scale().x - unit) < 1e-6 and gt.origin.distance_to(ctl.pose.root.origin) < 1e-6, "the creature node gets the root transform scaled by unit")
+	var bent := false
+	for q in fake.skeleton.pose:
+		if q.get_angle() > 1e-4:
+			bent = true
+	check(bent, "spine bones receive girdle, tail and neck rotations")
+	fake.queue_free()

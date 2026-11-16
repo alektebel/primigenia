@@ -1,0 +1,204 @@
+extends RefCounted
+## Adapter between the creature rig (branch g-creature, `Creature` and
+## `CreatureLegChain`) and the locomotion controller. Pure static functions;
+## the rig is passed as a Variant, so this file does not depend on
+## `class_name Creature` and tests can feed it a fake object with the same
+## fields. Integration with the real rig is a later task and has NOT been run.
+##
+##   var desc := Adapter.loco_describe(creature, unit)   # unit: metres per rig unit
+##   assert(desc.problems.is_empty())
+##   var loco := Ctl.new(Morph.analyse(desc), ground_fn)
+##   ...each frame:
+##   loco.step(delta, pos, yaw, vel)
+##   Adapter.loco_apply(creature, loco.pose, desc)
+##
+## Fields read from the rig (see docs/godot/CREATURE.md on g-creature):
+## Creature: rest, rad, ground_offset, tail_bones, neck_bones, skeleton,
+## parts[{type, category, side, t, ang, size}], anchor(t, ang), legs,
+## maker.meta(type).foot, bone_rest_global(bone), reset_spine_pose(), solve_legs().
+## CreatureLegChain: hip_local(), upper_length, lower_length, width, side,
+## type, home, hang, hip_bone, foot_target, foot_yaw, foot_pitch.
+
+const Morph = preload("loco_morphology.gd")
+
+## Provisional part masses: mass = density * k * size^3 (size in metres).
+## Not measured; replace when the part catalogue has masses.
+const K_CATEGORY := {"horns": 0.02, "horn": 0.02, "shell": 0.08, "shells": 0.08, "plates": 0.08, "wings": 0.01, "fins": 0.01,
+	"sensory": 0.005, "senses": 0.005, "mouths": 0.03, "weapons": 0.04, "digging_claws": 0.04, "arms": 0.03, "tails": 0.03}
+const K_TYPE := {"cuerno": 0.02, "horn_crown": 0.02, "placa": 0.08, "shell_plate": 0.08, "aleta": 0.01, "wing_glider": 0.01, "wing_insect": 0.01}
+const K_DEFAULT := 0.02
+const SOLE := 0.6                   # the rig's sole sits width * SOLE under the ankle
+const HANG_LIMIT := 0.001           # rig units; above it a leg hangs and is left out
+const SOLE_TOLERANCE := 0.002       # m
+
+static func _kind(creature, leg) -> String:
+	if creature.get("maker") != null:
+		var meta: Dictionary = creature.maker.meta(leg.type)
+		return str(meta.get("foot", "garra"))
+	return "garra"
+
+static func region_for(t: float, last: bool) -> String:
+	if last:
+		return "head"
+	if t < 0.35:
+		return "tail"
+	if t >= 0.68:
+		return "neck"
+	return "trunk"
+
+## Body description for LocoMorphology, in metres, rest space (+Z forward, +X
+## left, ground y = 0). `unit` = metres per rig unit. Returns the dictionary
+## plus `unit`, `leg_ids` (rig leg index of each described leg) and `problems`
+## (empty when the six contract points hold).
+static func loco_describe(creature, unit: float, density := 1000.0) -> Dictionary:
+	var problems: Array = []
+	if creature.has_method("reset_spine_pose"):
+		creature.reset_spine_pose()
+	var spine: Array = []
+	var n: int = creature.rest.size()
+	var go: float = creature.ground_offset
+	var i := 0
+	while i < n:
+		var last: bool = i + 4 >= n
+		var idx := n - 1 if last else i
+		var t := float(idx) / float(max(n - 1, 1))
+		var p: Vector3 = (creature.rest[idx] + Vector3(0.0, go, 0.0)) * unit
+		spine.append({"pos": p, "radius": float(creature.rad[idx]) * unit, "region": region_for(t, idx == n - 1)})
+		if last:
+			break
+		i += 4
+	var legs: Array = []
+	var leg_ids: Array = []
+	var kinds_ok := true
+	for k in range(creature.legs.size()):
+		var l = creature.legs[k]
+		if l.hang > HANG_LIMIT:
+			continue                                # 4. hanging legs are not walking legs
+		var kind := _kind(creature, l)
+		var fi: Dictionary = Morph.FOOT.get(kind, {})
+		if fi.is_empty():
+			problems.append("6. foot kind '%s' is not in the FOOT table" % kind)
+			kinds_ok = false
+			fi = Morph.FOOT["paw"]
+		var hip: Vector3 = l.hip_local() * unit
+		var w: float = l.width * unit
+		# 3. the controller's ankle is ankle_fraction * foot_size above the ground;
+		# the rig's sole is SOLE * width under the ankle: make them the same height
+		var foot_size: float = SOLE * w / fi.ankle
+		legs.append({"hip": hip, "upper": l.upper_length * unit, "lower": l.lower_length * unit, "radius": w * 0.5,
+			"foot": kind, "foot_size": foot_size, "foot_rest": l.home * unit, "side": l.side})
+		leg_ids.append(k)
+		# 2. axes: side +1 is +X (left); a mirrored mesh would show up here
+		if abs(hip.x) > 1e-4 and sign(hip.x) != float(l.side):
+			problems.append("2. leg %d has side %d but hip x %.3f: the rig is mirrored" % [k, l.side, hip.x])
+		# 3. at rest the sole must be on the ground
+		if abs(float(l.hang)) * unit > SOLE_TOLERANCE:
+			problems.append("3. leg %d rest sole is %.1f mm off the ground" % [k, l.hang * unit * 1000.0])
+	var parts: Array = []
+	for e in creature.parts:
+		var cat: String = str(e.get("category", ""))
+		if cat == "legs":
+			continue
+		var kc: float = K_TYPE.get(str(e.get("type", "")), K_CATEGORY.get(cat, K_DEFAULT))
+		var size: float = float(e.get("size", 1.0)) * unit
+		var anchor: Dictionary = creature.anchor(float(e.get("t", 0.5)), float(e.get("side", 1)) * float(e.get("ang", 0.0)))
+		parts.append({"pos": (anchor.p + Vector3(0.0, go, 0.0)) * unit, "mass": density * kc * size * size * size, "category": cat})
+	var desc := {"spine": spine, "legs": legs, "parts": parts, "density": density, "unit": unit, "leg_ids": leg_ids}
+	# 2. forward is +Z: the head end of the spine is ahead of the tail end
+	if spine.size() >= 2 and spine[-1].pos.z <= spine[0].pos.z:
+		problems.append("2. the head is not in front of the tail along +Z")
+	# 1. units
+	var m = Morph.analyse(desc)
+	if not (m.hip_height > 0.02 and m.hip_height < 5.0) and not legs.is_empty():
+		problems.append("1. hip height %.3f m is outside 0.02..5 m: wrong `unit` (%.4f m per rig unit)?" % [m.hip_height, unit])
+	if unit <= 0.0:
+		problems.append("1. unit must be positive")
+	if not kinds_ok:
+		pass
+	desc["problems"] = problems
+	return desc
+
+static func _yaw_of(v: Vector3) -> float:
+	return atan2(v.x, v.z)
+
+## Writes a LocoController pose into the rig and solves the legs.
+## Returns {max_sole_error} (metres) for the planted legs when `ground` is given.
+static func loco_apply(creature, pose: Dictionary, desc: Dictionary, ground: Callable = Callable()) -> Dictionary:
+	var unit: float = desc.unit
+	var root: Transform3D = pose.root
+	creature.global_transform = Transform3D(root.basis * Basis.from_scale(Vector3.ONE * unit), root.origin)
+	var heading := _yaw_of(root.basis.z)
+	var ids: Array = desc.leg_ids
+	for j in range(ids.size()):
+		var l = creature.legs[ids[j]]
+		var contact: bool = pose.contact[j]
+		var up: float = SOLE * l.width * unit
+		l.foot_target = (pose.feet[j] as Vector3) - Vector3.UP * up
+		if contact:
+			l.foot_pitch = pose.foot_pitch[j]             # heel raised = toe down = +X rotation
+			l.foot_yaw = _yaw_of(pose.foot_dir[j])
+		else:
+			l.foot_pitch = -0.5 * sin(PI * pose.swing_u[j])  # rig.js: toe up during swing
+			l.foot_yaw = heading
+	_bend_spine(creature, pose, desc)
+	creature.solve_legs()
+	var err := 0.0
+	if ground.is_valid():
+		for j in range(ids.size()):
+			if pose.contact[j]:
+				var l = creature.legs[ids[j]]
+				var p: Vector3 = l.foot_target
+				err = max(err, abs(p.y - float(ground.call(p.x, p.z))))
+	return {"max_sole_error": err}
+
+## Spine bones: absolute yaw / pitch per bone (girdle bend, tail, neck,
+## undulation), converted to local rotations about each bone's Y (lateral) and
+## X (pitch) axes relative to its parent. Signs follow capsule_rig.gd
+## (tail tip up = +X rotation, nose up = -X rotation); they are UNVERIFIED on
+## the real skeleton.
+static func _bend_spine(creature, pose: Dictionary, desc: Dictionary) -> void:
+	var sk = creature.skeleton
+	if sk == null:
+		return
+	var unit: float = desc.unit
+	var nb: int = sk.get_bone_count()
+	var yaw_abs := PackedFloat32Array()
+	var pit_abs := PackedFloat32Array()
+	yaw_abs.resize(nb)
+	pit_abs.resize(nb)
+	var tail_k := {}
+	for a in range(creature.tail_bones.size()):
+		tail_k[creature.tail_bones[a]] = 1.0 - float(a) / max(creature.tail_bones.size(), 1)      # tip first
+	var neck_k := {}
+	for a in range(creature.neck_bones.size()):
+		neck_k[creature.neck_bones[a]] = float(a + 1) / max(creature.neck_bones.size(), 1)
+	var spine_at: Callable = pose.spine_at
+	var wave: Dictionary = pose.get("wave", {})
+	var wl: float = max(float(desc.get("spine", [{}])[-1].get("pos", Vector3.ZERO).z - desc.get("spine", [{}])[0].get("pos", Vector3.ZERO).z), 1e-3)
+	for b in range(nb):
+		var z: float = (creature.bone_rest_global(b) as Transform3D).origin.z * unit
+		var yw: float = spine_at.call(z).yaw
+		if not wave.is_empty() and wave.get("amp", 0.0) > 0.0:
+			var u := clampf((z - desc.spine[0].pos.z) / wl, 0.0, 1.0)
+			var du := 0.01
+			var f1 := _wave(wave, clampf(u + du, 0.0, 1.0))
+			var f0 := _wave(wave, clampf(u - du, 0.0, 1.0))
+			yw += atan((f1 - f0) / (2.0 * du * wl))
+		var pt := 0.0
+		if tail_k.has(b):
+			yw += pose.tail.yaw * tail_k[b]
+			pt += pose.tail.pitch * tail_k[b]
+		if neck_k.has(b):
+			yw += pose.neck.yaw * neck_k[b]
+			pt -= pose.neck.pitch * neck_k[b]
+		yaw_abs[b] = yw
+		pit_abs[b] = pt
+	for b in range(nb):
+		var par: int = sk.get_bone_parent(b)
+		var dy: float = yaw_abs[b] - (yaw_abs[par] if par >= 0 else 0.0)
+		var dp: float = pit_abs[b] - (pit_abs[par] if par >= 0 else 0.0)
+		var rest_q: Quaternion = (sk.get_bone_rest(b) as Transform3D).basis.get_rotation_quaternion()
+		sk.set_bone_pose_rotation(b, rest_q * Quaternion(Vector3.UP, dy) * Quaternion(Vector3.RIGHT, dp))
+
+static func _wave(w: Dictionary, u: float) -> float:
+	return w.amp * (0.4 + 0.6 * (1.0 - u)) * sin(TAU * (w.waves * u + w.phase))
