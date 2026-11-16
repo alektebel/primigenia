@@ -83,7 +83,7 @@ func _measure() -> void:
 		max_vert_acc = max(max_vert_acc, abs(_y_hist[2] - 2.0 * _y_hist[1] + _y_hist[0]) / (_dt * _dt) / 9.81)
 	for i in range(morph.legs.size()):
 		var m: Dictionary = morph.legs[i]
-		var hip: Vector3 = root * m.hip
+		var hip: Vector3 = p.hips[i]
 		var target: Vector3 = p.feet[i]
 		var sol := IK.two_bone(hip, target, m.upper, m.lower, root.basis.z)
 		var st: Dictionary = _stance[i]
@@ -123,7 +123,7 @@ func _measure() -> void:
 		frames.append({"t": t, "contact": p.contact.duplicate(), "n": n_contact, "margin": margin,
 			"com_y": com.y - float(ground.call(com.x, com.z)), "root_y": root.origin.y, "gait": p.gait, "fr": p.froude,
 			"pitch": p.pitch, "roll": p.roll, "duty": p.duty, "cadence": p.cadence, "stride": p.stride,
-			"neck": p.neck.duplicate(), "tail": p.tail.duplicate(), "com": com, "bounce": p.bounce})
+			"st_yaw0": (p.station_yaw[0] if p.station_yaw.size() > 0 else 0.0), "neck": p.neck.duplicate(), "tail": p.tail.duplicate(), "com": com, "bounce": p.bounce})
 
 func max_ankle_travel(t_from := 0.0) -> float:
 	var s := 0.0

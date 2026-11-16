@@ -41,6 +41,7 @@ var vault_gain := 1.0           # share of the rigid-leg pendulum arc the hips f
 var leg_axis_torque := 0.25     # share of leg force that pitches the body
 var bank_gain := 0.7
 var stability_gain := 0.9
+var girdle_gain := 0.085         # girdle yaw per radian of leading-foot offset
 
 var _legs: Array = []
 var _off := PackedFloat32Array()
@@ -69,6 +70,9 @@ var _neck_y := Vector2.ZERO
 var _tail_p := Vector2.ZERO
 var _tail_y := Vector2.ZERO
 var _drop := 0.0
+var _hip_loc: Array = []          # hips in body space after the girdle yaw
+var _st_yaw := PackedFloat32Array()
+var _st_x := PackedFloat32Array()
 var forced_lifts := 0           # lift-offs caused by the reach guard (quality metric)
 var _f_avg := 1.0
 var _y_amp := 0.0
@@ -103,6 +107,14 @@ func setup(morphology, ground_fn: Callable = Callable()) -> void:
 			"foot": Vector3.ZERO, "from": Vector3.ZERO, "target": Vector3.ZERO, "g_to": 0.0,
 			"lift": 0.0, "load": 1.0, "s": 0.5, "u": 0.0, "force": false, "err": 0.0, "rate": 0.0, "t_td": 0.0,
 			"phi": 0.0, "dir": Vector3.BACK * -1.0, "ball": Vector3.ZERO})
+	_hip_loc = []
+	for m in morph.legs:
+		_hip_loc.append(m.hip)
+	_st_yaw = PackedFloat32Array()
+	_st_x = PackedFloat32Array()
+	for _s in morph.stations:
+		_st_yaw.append(0.0)
+		_st_x.append(0.0)
 	_ready_ok = false
 
 func _gy(x: float, z: float) -> float:
@@ -146,6 +158,11 @@ func reset(pos: Vector3, yaw: float) -> void:
 		set(s, Vector2.ZERO)
 	_a = Vector2(_gy(pos.x, pos.z), 0.0)
 	_drop = 0.0
+	for k in range(_st_yaw.size()):
+		_st_yaw[k] = 0.0
+		_st_x[k] = 0.0
+	for k in range(_hip_loc.size()):
+		_hip_loc[k] = morph.legs[k].hip
 	_f_avg = 1.0
 	_t_avg = 0.0
 	_ready_ok = true
@@ -264,7 +281,7 @@ func _sub(h: float, p: Vector3, yaw: float, v: Vector3, settle: bool) -> void:
 		l.rate = rate
 		var home_l := Vector3(m.home.x, 0.0, m.home.z)
 		var home_now: Vector3 = p + basis * home_l
-		var hip_now: Vector3 = root_prev * m.hip
+		var hip_now: Vector3 = root_prev * (_hip_loc[i] as Vector3)
 		hip_w.append(hip_now)
 		var frac: float = l.theta - floor(l.theta)
 		if not l.swing:
@@ -395,7 +412,7 @@ func _sub(h: float, p: Vector3, yaw: float, v: Vector3, settle: bool) -> void:
 				# by then for the leg to reach, so the cap fades in over the late swing
 				var ramp_s: float = smoothstep(0.5, 1.0, l.u)
 				if ramp_s > 0.0:
-					var hn_s: Vector3 = p + basis * Vector3(m.hip.x, 0.0, m.hip.z) + left * _sx.x + fwd * _sz.x + v * l.t_td
+					var hn_s: Vector3 = p + basis * Vector3(_hip_loc[i].x, 0.0, _hip_loc[i].z) + left * _sx.x + fwd * _sz.x + v * l.t_td
 					var lp_s: float = STRAIGHT * m.length
 					var d_s: float = min(Vector2(l.target.x - hn_s.x, l.target.z - hn_s.z).length(), 0.95 * lp_s)
 					caps[i] = l.g_to + sqrt(lp_s * lp_s - d_s * d_s) - m.rest_h
@@ -403,7 +420,7 @@ func _sub(h: float, p: Vector3, yaw: float, v: Vector3, settle: bool) -> void:
 			if not l.swing:
 				# inverted pendulum: the hip may not be higher than a straight leg
 				# allows (sprawled legs are not pendulums: they vault less)
-				var hn: Vector3 = p + basis * Vector3(m.hip.x, 0.0, m.hip.z) + left * _sx.x + fwd * _sz.x
+				var hn: Vector3 = p + basis * Vector3(_hip_loc[i].x, 0.0, _hip_loc[i].z) + left * _sx.x + fwd * _sz.x
 				var lp: float = STRAIGHT * m.length
 				var d: float = min(Vector2(l.foot.x - hn.x, l.foot.z - hn.z).length(), 0.95 * lp)
 				var erect: float = 1.0 - clamp(abs(m.home.x - m.hip.x) / (0.5 * lp), 0.0, 1.0)
@@ -506,6 +523,28 @@ func _sub(h: float, p: Vector3, yaw: float, v: Vector3, settle: bool) -> void:
 	var origin: Vector3 = p + left * (_sx.x - morph.com.y * sin(_bank.x) * 0.5) + fwd * _sz.x + Vector3.UP * height
 	var rot := Basis(Vector3.RIGHT, pitch) * Basis(Vector3.BACK, roll)
 	var root := Transform3D(basis, origin) * Transform3D(Basis(), piv) * Transform3D(rot, Vector3.ZERO) * Transform3D(Basis(), -piv)
+	# --- 14a. girdles: each pair of hips turns toward its leading foot, the
+	# spine bends between stations (rigs read pose.hips and spine_at())
+	for k in range(morph.stations.size()):
+		var st: Dictionary = morph.stations[k]
+		var zl := 0.0; var zr := 0.0; var nl2 := 0; var nr := 0
+		for idx in st.legs:
+			var fl: Vector3 = basis.inverse() * (_legs[idx].foot - p)
+			if morph.legs[idx].side >= 0:
+				zl += fl.z; nl2 += 1
+			else:
+				zr += fl.z; nr += 1
+		var yw := 0.0
+		if nl2 > 0 and nr > 0:
+			yw = -girdle_gain * atan2(zl / nl2 - zr / nr, max(morph.track_width, 0.05) * 2.0)
+		_st_yaw[k] = lerpf(_st_yaw[k], yw, _lp(0.04, h))
+	for k in range(morph.stations.size()):
+		_st_x[k] = _spine_x(morph.stations[k].z)
+	for i in range(_legs.size()):
+		var ms: Dictionary = morph.legs[i]
+		var zs: float = morph.stations[ms.station].z
+		var dloc: Vector3 = Basis(Vector3.UP, _st_yaw[ms.station]) * (ms.hip - Vector3(0.0, 0.0, zs))
+		_hip_loc[i] = Vector3(_st_x[ms.station], 0.0, zs) + dloc
 	# --- 14. legs must reach: pull the body down, lift a foot that cannot
 	var drop := 0.0
 	for i in range(_legs.size()):
@@ -513,7 +552,7 @@ func _sub(h: float, p: Vector3, yaw: float, v: Vector3, settle: bool) -> void:
 		if l.swing:
 			continue
 		var m: Dictionary = morph.legs[i]
-		var hw: Vector3 = root * m.hip
+		var hw: Vector3 = root * (_hip_loc[i] as Vector3)
 		var lmax: float = 0.995 * m.length
 		# heel-off: raise the heel just as far as the leg needs to reach the ball
 		var phi_need := 0.0
@@ -541,21 +580,8 @@ func _sub(h: float, p: Vector3, yaw: float, v: Vector3, settle: bool) -> void:
 			drop = max(drop, min(need, 0.6 * _ref_h))
 	_drop = max(drop, _drop * exp(-h / 0.12))
 	root.origin.y -= _drop
-	# --- 15. girdles, neck and tail
-	var st_yaw := PackedFloat32Array()
-	for s in morph.stations:
-		var zl := 0.0; var zr := 0.0; var nl2 := 0; var nr := 0
-		for idx in s.legs:
-			var fl: Vector3 = basis.inverse() * (_legs[idx].foot - p)
-			if morph.legs[idx].side >= 0:
-				zl += fl.z; nl2 += 1
-			else:
-				zr += fl.z; nr += 1
-		var yw := 0.0
-		if nl2 > 0 and nr > 0:
-			# the girdle turns toward the leading foot: left foot ahead -> yaw to the right
-			yw = -0.3 * atan2(zl / nl2 - zr / nr, max(morph.track_width, 0.05) * 2.0)
-		st_yaw.append(yw)
+	# --- 15. neck and tail
+	var st_yaw := _st_yaw
 	var hind_yaw: float = st_yaw[0] if st_yaw.size() > 0 else 0.0
 	var vy := _y.y + _a.y
 	var nose_up := slope_b - bt
@@ -593,7 +619,7 @@ func _sub(h: float, p: Vector3, yaw: float, v: Vector3, settle: bool) -> void:
 		swing_u.append(l.u if l.swing else 0.0)
 	pose = {
 		"root": root, "feet": feet, "foot_pitch": foot_pitch, "contact_point": contact_point, "foot_dir": foot_dir, "contact": contact, "swing_u": swing_u,
-		"station_yaw": st_yaw,
+		"station_yaw": st_yaw.duplicate(), "station_z": _station_z(), "hips": _hips_world(root), "spine_at": spine_at,
 		"neck": {"pitch": _neck_p.x, "yaw": _neck_y.x, "roll": -0.8 * roll},
 		"tail": {"pitch": _tail_p.x, "yaw": _tail_y.x},
 		"wave": {"amp": wave_amp, "phase": _wave_phase, "waves": 1.5},
@@ -601,6 +627,49 @@ func _sub(h: float, p: Vector3, yaw: float, v: Vector3, settle: bool) -> void:
 		"cadence": cadence, "stride": stride, "speed": _speed_f,
 		"pitch": pitch, "roll": roll, "bounce": _y.x,
 	}
+
+func _station_z() -> PackedFloat32Array:
+	var out := PackedFloat32Array()
+	for st in morph.stations:
+		out.append(st.z)
+	return out
+
+func _hips_world(root: Transform3D) -> PackedVector3Array:
+	var out := PackedVector3Array()
+	for h in _hip_loc:
+		out.append(root * (h as Vector3))
+	return out
+
+## Girdle yaw (about body +Y) of the spine at fore-aft position z: linear
+## between stations, constant beyond the first and last.
+func _yaw_at(z: float) -> float:
+	var n := _st_yaw.size()
+	if n == 0:
+		return 0.0
+	if z <= morph.stations[0].z:
+		return _st_yaw[0]
+	for k in range(n - 1):
+		var z0: float = morph.stations[k].z
+		var z1: float = morph.stations[k + 1].z
+		if z <= z1:
+			return lerpf(_st_yaw[k], _st_yaw[k + 1], (z - z0) / max(z1 - z0, 1e-6))
+	return _st_yaw[n - 1]
+
+## Lateral offset of the bent spine at z (the spine passes through x = 0 at
+## the centre of mass).
+func _spine_x(z: float) -> float:
+	var z0: float = morph.com.z
+	var n := 12
+	var acc := 0.0
+	var dz := (z - z0) / n
+	for k in range(n):
+		acc += sin(_yaw_at(z0 + (k + 0.5) * dz)) * dz
+	return acc
+
+## Spine frame at fore-aft position z (rest space): {x, yaw}. Rigs bend their
+## trunk with it; the hips in `pose.hips` already assume the same bend.
+func spine_at(z: float) -> Dictionary:
+	return {"x": _spine_x(z), "yaw": _yaw_at(z)}
 
 ## Ankle of a planted leg with the heel raised by `phi` (radians), turning
 ## about the ball of the foot, which stays where it touched down.

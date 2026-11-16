@@ -577,4 +577,20 @@ func test_quality() -> void:
 		if name == "biped":
 			check(sr.ctl.crouch < 0.10 and sr.max_slide() < SLIDE_LIMIT, "biped run at Fr 1.5 crouches %.1f%% of hip height (was 11.8%% without toe-off)" % (sr.ctl.crouch * 100.0))
 	table["run_Fr1.5"] = run_row
+	# girdle yaw in a lateral-sequence walk
+	var gy := {}
+	for name in ["biped", "horizontal_biped", "light_quadruped", "heavy_quadruped", "wader"]:
+		var sg = Sim.new(Bodies.get_body(name))
+		sg.run(12.0, func(_t): return sg.speed_for_froude(0.25))
+		var lo := INF
+		var hi := -INF
+		for f in sg.frames:
+			if f.t > 4.0:
+				lo = min(lo, f.st_yaw0)
+				hi = max(hi, f.st_yaw0)
+		var rng_deg := rad_to_deg(hi - lo)
+		gy[name] = r(rng_deg, 2)
+		print("  note  %s walk Fr 0.25: pelvis yaw range %.1f deg" % [name, rng_deg])
+		check(rng_deg > 3.0 and rng_deg < 12.0, "%s pelvis yaw range %.1f degrees in a lateral-sequence walk (3 to 12)" % [name, rng_deg])
+	table["pelvis_yaw_range_deg_Fr0.25"] = gy
 	out["quality"] = table

@@ -127,16 +127,21 @@ func loco_apply(pose: Dictionary) -> void:
 	last_trunk = clamp(last_trunk, 0, n - 1)
 	for i in range(n):
 		var p: Vector3 = spine[i].pos
+		var bend: Dictionary = pose.spine_at.call(p.z)
+		if i >= first_trunk and i <= last_trunk:
+			p.x += bend.x
 		if i < first_trunk:
 			var base: Vector3 = spine[first_trunk].pos
+			var base_bent: Vector3 = base + Vector3(pose.spine_at.call(base.z).x, 0.0, 0.0)
 			var k := float(first_trunk - i) / first_trunk
 			var rot := Basis(Vector3.UP, pose.tail.yaw * k) * Basis(Vector3.RIGHT, pose.tail.pitch * k)
-			p = base + rot * (p - base)
+			p = base_bent + rot * (p - base)
 		elif i > last_trunk:
 			var base2: Vector3 = spine[last_trunk].pos
+			var base2_bent: Vector3 = base2 + Vector3(pose.spine_at.call(base2.z).x, 0.0, 0.0)
 			var k2 := float(i - last_trunk) / (n - 1 - last_trunk)
 			var rot2 := Basis(Vector3.UP, pose.neck.yaw * k2) * Basis(Vector3.RIGHT, -pose.neck.pitch * k2)
-			p = base2 + rot2 * (p - base2)
+			p = base2_bent + rot2 * (p - base2)
 		if wave_fn.is_valid():
 			p.x += wave_fn.call(morph.spine_u[i])
 		pts.append(root * p)
@@ -146,7 +151,7 @@ func loco_apply(pose: Dictionary) -> void:
 			_between(_segs[i], pts[i], pts[i + 1])
 	for i in range(_legs.size()):
 		var m: Dictionary = morph.legs[i]
-		var hip: Vector3 = root * m.hip
+		var hip: Vector3 = pose.hips[i]
 		# knees forward for hind legs and bipeds, elbows back for fore legs, up for sprawled legs
 		var pole: Vector3 = root.basis.z
 		if morph.plan == &"multi":
