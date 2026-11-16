@@ -286,3 +286,7 @@ godot-evidence: godot
 	LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 1800 xvfb-run -a -s "-screen 0 1280x720x24" \
 	  $(GODOT) --rendering-driver opengl3 --max-fps 15 --resolution 1280x720 --path godot \
 	  --script res://game/tests/m0_evidence.gd -- $(CURDIR)/docs/evidence/godot/m0
+# Godot UI + audio headless tests (M3).
+godot-ui-test:
+	nice -n 10 timeout 600 $(GODOT) --headless --path godot --script res://tests/ui_test.gd
+.PHONY: godot-ui-test
