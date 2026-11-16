@@ -115,6 +115,7 @@ func _run() -> void:
 	await calibrate_tonemap()
 	await round_trip()
 	await sky_test()
+	await island_checks()
 	write_json()
 	print("render tests: %d checks, %d failures" % [checks, failures])
 	quit(1 if failures else 0)
@@ -160,6 +161,87 @@ func _measure(values: Array, expected: Array, exposure: float, white: float) -> 
 		var ex: Vector3 = expected[k]
 		worst = maxf(worst, maxf(absf(px.r - ex.x), maxf(absf(px.g - ex.y), absf(px.b - ex.z))))
 	return {"exposure": exposure, "white": white, "err": worst}
+
+# ---- 4. island: contact shadow, water vs land, no cracks ----------------------------------
+func window_luma(img: Image, p: Vector2, r: int = 3) -> float:
+	var sum := 0.0
+	var n := 0
+	for dy in range(-r, r + 1):
+		for dx in range(-r, r + 1):
+			var c := img.get_pixel(clampi(int(p.x) + dx, 0, img.get_width() - 1), clampi(int(p.y) + dy, 0, img.get_height() - 1))
+			sum += 0.2126 * c.r + 0.7152 * c.g + 0.0722 * c.b
+			n += 1
+	return sum / n
+
+func island_checks() -> void:
+	for c in world_root.get_children():
+		c.queue_free()
+	await process_frame
+	var game = root.get_node("Game")
+	var rig = load("res://game/tests/island_rig.gd")
+	game.settings.wild = false
+	var island = rig.load_island(self, 1, 8000)
+	for i in 30:
+		await process_frame
+	await RenderingServer.frame_post_draw
+	var player: Vector3 = island.player_pos
+	var sun_h := Vector2(Look.sun_dir().x, Look.sun_dir().z).normalized()
+	var shade_pt := player + Vector3(-sun_h.x, 0, -sun_h.y) * 5.0
+	var lit_pt := player + Vector3(sun_h.x, 0, sun_h.y) * 3.0
+	shade_pt.y = game.ground(shade_pt.x, shade_pt.z)
+	lit_pt.y = game.ground(lit_pt.x, lit_pt.z)
+	var img := await capture()
+	var a := window_luma(img, island.camera.unproject_position(shade_pt))
+	var b := window_luma(img, island.camera.unproject_position(lit_pt))
+	print("contact shadow: shaded %.3f vs lit %.3f" % [a, b])
+	check(a < b * 0.92, "the ground on the sun-opposite side of the creature is darker than 3 m away on the sun side")
+	island.occluders_enabled = false
+	for i in 3:
+		await process_frame
+	island._update_actors(0.0)
+	img = await capture()
+	var a2 := window_luma(img, island.camera.unproject_position(shade_pt))
+	print("contact shadow off: %.3f" % a2)
+	check(a2 > a * 1.05, "without occluders the same ground is brighter")
+	results["contact_shadow"] = {"shaded": a, "lit": b, "shaded_without_occluders": a2}
+
+	# Land is not water: the valley seen from above is green, not blue.
+	island.chase_enabled = false
+	island.camera.position = Vector3(0, 400, 0.01)
+	island.camera.look_at(Vector3(0, 42, 0), Vector3(0, 0, -1))
+	island.terrain_chunks.update_lods(island.camera.global_position, true)
+	img = await capture()
+	var land_pt := Vector3(30, game.ground(30, 30), 30)
+	var land_px: Vector2 = island.camera.unproject_position(land_pt)
+	var c := img.get_pixel(int(land_px.x), int(land_px.y))
+	check(c.g > c.b and c.g > c.r * 0.9, "land at the valley centre is not covered by water (pixel %s)" % c)
+	results["land_pixel"] = [c.r, c.g, c.b]
+
+	# No cracks: with the water hidden, a top-down view at LOD 4 shows no sky pixels in the island square.
+	island.water.visible = false
+	island.grass.visible = false
+	for ch in island.terrain_chunks.chunks:
+		ch.lod = 4
+		ch.node.mesh = island.terrain_chunks.lod_meshes[4]
+	island.terrain_chunks.set_process(false)
+	island.camera.position = Vector3(0, 4600, 0.01)
+	island.camera.look_at(Vector3(0, 0, 0), Vector3(0, 0, -1))
+	img = await capture()
+	var sky := Look.SKY_HZ
+	var sky_px := 0
+	var total := 0
+	var half := 1700.0 / (4600.0 * tan(deg_to_rad(24.0))) * 0.5 * img.get_height()   # px half-size of 1700 m
+	for y in range(int(img.get_height() / 2 - half), int(img.get_height() / 2 + half), 3):
+		for x in range(int(img.get_width() / 2 - half), int(img.get_width() / 2 + half), 3):
+			var p := img.get_pixel(x, y)
+			total += 1
+			if absf(p.r - sky.x) < 0.012 and absf(p.g - sky.y) < 0.012 and absf(p.b - sky.z) < 0.012:
+				sky_px += 1
+	print("cracks: %d sky pixels of %d inside the island square" % [sky_px, total])
+	check(sky_px == 0, "no sky shows through the terrain at LOD 4 (%d of %d)" % [sky_px, total])
+	results["cracks"] = {"sky_pixels": sky_px, "sampled": total}
+	island.queue_free()
+	await process_frame
 
 func write_json() -> void:
 	var dir := ProjectSettings.globalize_path("res://").path_join("../docs/evidence/godot/m0").simplify_path()
