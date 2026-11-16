@@ -7,6 +7,7 @@ signal world_ticked(state: Dictionary)
 signal combat_events(events: Array)
 signal creature_clicked(id: int, world_pos: Vector3)
 
+const TerrainData := preload("res://game/island/terrain_data.gd")
 const SETTINGS_PATH := "user://settings.cfg"
 
 var settings: Dictionary = {"seed": 1, "grass": 252000, "quality": "high", "wild": true}
@@ -33,6 +34,11 @@ func save_settings() -> void:
 	for key in settings.keys():
 		cfg.set_value("game", key, settings[key])
 	cfg.save(SETTINGS_PATH)
+
+func set_island(entry: Dictionary) -> void:
+	terrain = entry
+	data = TerrainData.new()
+	data.setup(entry)
 
 func ground(x: float, z: float) -> float:
 	return data.ground(x, z) if data != null else 0.0

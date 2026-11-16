@@ -80,3 +80,16 @@ func run(t) -> void:
 	t.check(TerrainCache.load_entry(p, DIR).is_empty(), "garbage file is a miss")
 	_clean()
 	t.check(not DirAccess.dir_exists_absolute(_abs(DIR)), "test directory removed")
+
+	# Loading-screen progress is monotonic over a stage sequence.
+	var Loading := preload("res://game/loading/loading_screen.gd")
+	var last := -1.0
+	var mono := true
+	for stage in 5:
+		for step in 11:
+			var frac: float = Loading.overall_fraction(stage, step, 10)
+			if frac < last - 1e-9:
+				mono = false
+			last = frac
+	t.check(mono and last <= 1.0 and last > 0.9, "overall progress fraction is monotonic and ends near 1")
+	t.check(absf(Loading.STAGE_WEIGHT.reduce(func(a, b): return a + b) - 1.0) < 0.002, "stage weights sum to 1")
