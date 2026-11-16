@@ -1,7 +1,7 @@
 class_name CreaturePreview
 extends RefCounted
 ## Evidence-only preview stage: studio-like golden-hour light (rig.js SUN,
-## warm sun, sky ambient, ACES exposure 1.05) and a grass floor, rendered in
+## warm sun, sky ambient, ACES, exposure matched to three.js) and a grass floor, rendered in
 ## a SubViewport. Not part of the runtime API (the stage owns real lighting).
 
 const SUN := Vector3(-.62, .3, -.72)
@@ -37,7 +37,9 @@ func _init(tree: SceneTree, size: Vector2i) -> void:
 	env.ambient_light_energy = .75
 	env.reflected_light_source = Environment.REFLECTION_SOURCE_SKY
 	env.tonemap_mode = Environment.TONE_MAPPER_ACES
-	env.tonemap_exposure = 1.05
+	# three.js r128 ACESFilmic divides the exposure by 0.6; Godot's ACES does not.
+	# 1.4 was matched by eye against the hero reference (studio uses 1.05).
+	env.tonemap_exposure = float(OS.get_environment("CREATURE_EXPOSURE")) if OS.get_environment("CREATURE_EXPOSURE") != "" else 1.4
 	var we := WorldEnvironment.new()
 	we.environment = env
 	world_root.add_child(we)
@@ -46,16 +48,18 @@ func _init(tree: SceneTree, size: Vector2i) -> void:
 	sun.light_color = Color("#ffcf9a")
 	sun.light_energy = 2.2
 	sun.shadow_enabled = true
-	sun.directional_shadow_max_distance = 40
+	sun.directional_shadow_max_distance = 25
+	sun.shadow_bias = .03
+	sun.shadow_normal_bias = .6
 	world_root.add_child(sun)
 	sun.look_at_from_position(SUN.normalized() * 50, Vector3.ZERO)
 
 	var ground := MeshInstance3D.new()
 	var plane := PlaneMesh.new()
-	plane.size = Vector2(80, 80)
+	plane.size = Vector2(600, 600)
 	ground.mesh = plane
 	var gm := StandardMaterial3D.new()
-	gm.albedo_color = Color("#5f8a35")
+	gm.albedo_color = Color("#3b5526")
 	gm.roughness = 1
 	ground.material_override = gm
 	world_root.add_child(ground)
