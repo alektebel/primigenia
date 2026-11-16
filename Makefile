@@ -317,3 +317,22 @@ godot-wire-evidence: godot
 	@mkdir -p docs/evidence/godot/wire
 	LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 1200 xvfb-run -a $(GODOT) --rendering-driver opengl3 --max-fps 15 --resolution 1280x720 --path godot \
 	  --script res://game/tests/wire_evidence.gd -- $(CURDIR)/docs/evidence/godot/wire
+
+# Rock and terrain material (docs/godot/PLAN-rock.md). Evidence frames use software GL; the benchmark does NOT: the owner
+# runs it on the real GPU (make godot-rock-bench TIER=auto). Read it as mean/p95 frame ms per view (docs/godot/ROCK.md).
+.PHONY: godot-rock-evidence godot-rock-bench godot-rock-stretch-test
+ROCK_OUT ?= $(CURDIR)/docs/evidence/godot/rock/after
+TIER ?= auto
+godot-rock-evidence: godot
+	@mkdir -p $(ROCK_OUT)
+	LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 1200 xvfb-run -a -s "-screen 0 1280x720x24" $(GODOT) --rendering-driver opengl3 --max-fps 15 --resolution 1280x720 --path godot \
+	  --script res://game/tests/rock_evidence.gd -- $(ROCK_OUT)
+godot-rock-bench: godot
+	@mkdir -p $(CURDIR)/docs/evidence/godot/rock
+	nice -n 5 timeout 1800 $(GODOT) --path godot --resolution 1920x1080 --script res://game/tests/bench_terrain.gd -- $(CURDIR)/docs/evidence/godot/rock $(TIER)
+# Same benchmark under llvmpipe, only for a relative new/old ratio (a few frames; never a GPU number).
+.PHONY: godot-rock-bench-sw
+godot-rock-bench-sw: godot
+	@mkdir -p $(ROCK_OUT)
+	LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 1800 xvfb-run -a -s "-screen 0 1280x720x24" $(GODOT) --rendering-driver opengl3 --resolution 1280x720 --path godot \
+	  --script res://game/tests/bench_terrain.gd -- $(ROCK_OUT) $(TIER) 40 10 60000
