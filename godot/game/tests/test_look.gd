@@ -33,5 +33,6 @@ func run(t) -> void:
 	for k in skies:
 		var v: Vector3 = skies[k]
 		t.check(_near(sky[k], v), k + " matches")
+	t.check(_near(inc.HORIZON_HZ, Look.SKY_HZ) and _near(inc.HORIZON_GLOW, Look.SKY_GLOW), "the horizon colour of the sea fade equals the sky's")
 	t.check(absf(sd.length() - 1.0) < 1e-9, "sun direction is normalised")
 	t.check(absf(Look.TONEMAP_EXPOSURE - 0.926) < 1e-9 and absf(Look.TONEMAP_WHITE - 15.4) < 1e-9, "calibrated tone-map constants")

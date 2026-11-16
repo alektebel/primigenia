@@ -14,6 +14,7 @@ const PlayerInput := preload("res://game/player/player_input.gd")
 const Pointer := preload("res://game/player/pointer.gd")
 const ChaseCamera := preload("res://game/player/chase_camera.gd")
 const ActorHost := preload("res://game/actors/actor_host.gd")
+const StageUI := preload("res://game/stage/stage_ui.gd")
 
 var terrain_chunks: Node3D
 var world_env: WorldEnvironment
@@ -25,9 +26,11 @@ var debug_camera: Camera3D       # alias of camera (tests and evidence move it d
 var stage: Node
 var player_input
 var chase
+var stage_ui
 var hosts := {}                  # entity id -> ActorHost
 var chase_enabled := true
 var player_pos := Vector3.INF
+var last_click := Vector2.ZERO     # screen position of the last click that picked a creature (the radial opens there)
 var occluders_enabled := true
 var _mouse_held := false
 
@@ -107,6 +110,13 @@ func _build_stage() -> void:
 	if setup.wild.size() > 0:
 		yaw = atan2(setup.nest.x - setup.wild[0].home_x, setup.nest.y - setup.wild[0].home_z)
 	chase = ChaseCamera.new(player_host.height(), yaw, ground)
+	stage_ui = StageUI.new()
+	stage_ui.name = "StageUI"
+	add_child(stage_ui)
+	stage_ui.setup(self, str(genome.get("name", "Merodeador")))
+	for h in hosts.values():
+		h.footfall.connect(stage_ui.on_footfall)
+	stage_ui.ui.menu_requested.connect(Game.goto_menu)
 	_update_actors(0.0)
 	_update_camera(0.0)
 
@@ -150,7 +160,7 @@ func _process(delta: float) -> void:
 	_update_actors(delta)
 	_update_camera(delta)
 	if _mouse_held and not Game.movement_blocked():
-		_click_ground(false)
+		_click_ground(false, get_viewport().get_mouse_position())
 
 func _unhandled_input(event: InputEvent) -> void:
 	if stage == null or chase == null:
@@ -163,17 +173,17 @@ func _unhandled_input(event: InputEvent) -> void:
 		chase.zoom(1.0)
 	elif event.is_action_pressed("walk_to"):
 		_mouse_held = true
-		_click_ground(true)
+		_click_ground(true, (event as InputEventMouseButton).position if event is InputEventMouseButton else get_viewport().get_mouse_position())
 	elif event.is_action_released("walk_to"):
 		_mouse_held = false
 
-func _click_ground(allow_pick: bool) -> void:
-	var mouse := get_viewport().get_mouse_position()
+func _click_ground(allow_pick: bool, mouse: Vector2) -> void:
 	var ground := Callable(Game, "ground")
 	if allow_pick:
 		var picked := Pointer.pick_entity(camera.project_ray_origin(mouse), camera.project_ray_normal(mouse), stage.cur.entities, ground)
 		if not picked.is_empty():
 			player_input.clear_destination()
+			last_click = mouse
 			Game.creature_clicked.emit(picked.id, picked.pos)
 			return
 	var hit = Pointer.ground_hit(camera, mouse, ground)

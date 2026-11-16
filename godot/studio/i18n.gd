@@ -16,6 +16,7 @@ const EN := {
 	"Guardar y compartir": "Save and share", "Guardar": "Save", "Cargar": "Load", "Importar JSON": "Import JSON", "Exportar JSON": "Export JSON",
 	"Nueva": "New", "Diseño cargado": "Design loaded", "Genoma no válido": "Invalid genome", "Guardado": "Saved",
 	"Añadir vértebra": "Add vertebra", "Quitar vértebra": "Remove vertebra", "Columna": "Spine", "Criatura": "Creature",
+	"Menú": "Menu", "Guarda con Ctrl+S; Jugar usa la última criatura guardada": "Save with Ctrl+S; Play uses the last saved creature",
 	"Reproducir": "Play", "Parar": "Stop", "Animación": "Animation",
 	"Toca una pieza de la criatura para ajustarla. Arrástrala fuera del cuerpo para quitarla.": "Tap a part on the creature to adjust it. Drag it outside the body to remove it.",
 	"Pasa el cursor por el cuerpo para ver la columna · arrastra una vértebra para esculpir · rueda sobre ella para engordar": "Hover over the body to see the spine · drag a vertebra to sculpt · scroll over it to thicken",

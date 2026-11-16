@@ -10,8 +10,10 @@ const Genome := preload("../genome.gd")
 const Thumbs := preload("../thumbnails.gd")
 const ThemeFactory := preload("theme_factory.gd")
 const PlaceholderView := preload("../placeholder/placeholder_view.gd")
+const RealView := preload("../creature_view_real.gd")
 
 signal creature_saved(path: String)
+signal exit_requested
 
 var model: RefCounted
 var parts_db: RefCounted
@@ -64,7 +66,8 @@ func _ready() -> void:
 	theme = ThemeFactory.make()
 	i18n = I18n.new()
 	i18n.parts = parts_db
-	storage = Storage.new()
+	var game := get_node_or_null("/root/Game")
+	storage = Storage.new(str(game.studio_dir) if game != null and "studio_dir" in game else "user://studio")
 	model = Model.new(parts_db)
 	model.changed.connect(_on_model_changed)
 	model.selection_changed.connect(_on_selection_changed)
@@ -118,7 +121,7 @@ func _build_stage() -> void:
 	camera.current = true
 	viewport.add_child(camera)
 	if view == null:
-		view = PlaceholderView.new(parts_db)
+		view = RealView.make_default(parts_db)
 	viewport.add_child(view)
 	overlay = Control.new()
 	overlay.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -130,6 +133,12 @@ func _build_stage() -> void:
 	_ghost.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_ghost.add_theme_color_override("font_color", ThemeFactory.AMBER)
 	add_child(_ghost)
+
+func _on_exit() -> void:
+	exit_requested.emit()
+	var game := get_node_or_null("/root/Game")
+	if game != null and game.has_method("goto_menu"):
+		game.goto_menu()
 
 func frame_creature() -> void:
 	var pts: PackedVector3Array = view.spine_node_positions()
@@ -247,6 +256,11 @@ func _build_top_bar() -> void:
 	var lrow := HBoxContainer.new()
 	lrow.add_theme_constant_override("separation", 6)
 	left.add_child(lrow)
+	var menu_btn := Button.new()
+	menu_btn.text = "← " + T("Menú")
+	menu_btn.tooltip_text = T("Guarda con Ctrl+S; Jugar usa la última criatura guardada")
+	menu_btn.pressed.connect(_on_exit)
+	lrow.add_child(menu_btn)
 	name_edit = LineEdit.new()
 	name_edit.custom_minimum_size = Vector2(150, 0)
 	name_edit.placeholder_text = T("Ponle nombre")

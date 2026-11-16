@@ -8,6 +8,15 @@ const SUN_ENERGY := 3.2
 const HEMI_SKY := Color(0.659, 0.8, 0.973)      # #a8ccf8
 const HEMI_GROUND := Color(0.416, 0.416, 0.361) # #6a6a5c
 const HEMI_ENERGY := 0.5
+# Lit materials (the creatures) are the only things the world's light and ambient reach (terrain, water, grass
+# and sky are unshaded shaders with the numbers above baked in). g-creature tuned them in a preview with sun
+# #ffcf9a energy 2.2, ambient 0.75 and ACES at exposure 1.4 with white 1; the world tone map is the calibrated
+# 0.926 / white 15.4, which at mid tones needs about twice the light for the same display colour
+# (see docs/godot/WIRE.md, docs/evidence/godot/wire/exposure.png).
+const CREATURE_SUN_COLOR := Color(1.0, 0.812, 0.604)   # #ffcf9a, sRGB bytes of the preview sun
+const CREATURE_SUN_ENERGY := 4.4
+const CREATURE_AMBIENT_COLOR := Color(0.62, 0.75, 0.92)
+const CREATURE_AMBIENT_ENERGY := 1.5
 const GRASS := Vector3(1.03, 0.96, 0.86)
 const SH_K := 0.42                               # 1 - 0.58 * 1
 const AIR_DENSITY := 0.00052

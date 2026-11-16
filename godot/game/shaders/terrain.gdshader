@@ -46,7 +46,8 @@ void fragment() {
 	vec3 land = w_meadow * meadow + w_rock * rock_c + w[2] * scree_c + w[3] * volc_c + w[4] * sand_c + w[5] * snow_c;
 	land = mix(land, meadow, sb.g);
 	land *= mix(vec3(1.0), WET_TINT, smoothstep(0.0, 0.4, wet) * 0.6);
-	land = mix(land, CHANNEL * landRamp(light), smoothstep(0.4, 0.6, wet) * 0.55);
+	// River channels: only a faint dark-green trace through the meadow (the hero shows none), not a blue strip.
+	land = mix(land, CHANNEL * landRamp(light), smoothstep(0.4, 0.6, wet) * 0.1);
 	ALBEDO = scene_out(land, wp, CAMERA_POSITION_WORLD);
 	if (lod_debug > 0.5) {
 		ALBEDO = godot_albedo(mix(land, lod_color, 0.7));   // no haze: LOD colours stay readable

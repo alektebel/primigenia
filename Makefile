@@ -308,3 +308,12 @@ godot-creature-evidence:
 .PHONY: godot-loco-test
 godot-loco-test:
 	cd godot && timeout 300 nice -n 10 timeout 600 $(GODOT) --headless --path . --script locomotion/test/run_tests.gd
+
+# The whole game, headless: main -> menu -> Play -> encounter, rig contract, studio -> save -> Play (godot/game/tests/play_test.gd).
+.PHONY: godot-play-test godot-wire-evidence
+godot-play-test: godot
+	nice -n 10 timeout 900 $(GODOT) --headless --fixed-fps 60 --path godot --script res://game/tests/play_test.gd
+godot-wire-evidence: godot
+	@mkdir -p docs/evidence/godot/wire
+	LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 1200 xvfb-run -a $(GODOT) --rendering-driver opengl3 --max-fps 15 --resolution 1280x720 --path godot \
+	  --script res://game/tests/wire_evidence.gd -- $(CURDIR)/docs/evidence/godot/wire

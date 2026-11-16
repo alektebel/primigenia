@@ -1,14 +1,25 @@
 extends RefCounted
-# Chooses how a creature node follows the C world's pose. With g-loco present it drives the G73
-# controller (UNTESTED on this branch: the module lives elsewhere); with a real g-creature but no
-# loco it glides in rest pose and plants feet on the ground; with the placeholder it just walks.
+# Chooses how a creature node follows the C world's pose. With a real creature (g-creature) and
+# g-loco it drives the G73 controller through the rig adapter: the controller gets the interpolated
+# world position, heading and velocity, and the adapter writes the Creature's transform, legs and
+# spine. Without loco a real creature glides in rest pose with its feet planted on the ground; the
+# M0 placeholder just walks.
+
+const UNIT := 1.0           # metres per rig unit (web/stage drew the rig at scale 1)
+const LOCO_PATHS := ["res://locomotion/loco_controller.gd", "res://locomotion/loco_morphology.gd", "res://locomotion/loco_rig_adapter.gd"]
+
+
+signal footfall(leg: int, position: Vector3)
 
 var host: Node3D
 var body: Node3D            # placeholder or real creature
 var is_placeholder := true
 var controller = null
 var adapter = null
+var desc: Dictionary = {}
+var problems: Array = []    # contract problems reported by loco_describe
 var _ground: Callable
+var _started := false
 
 func setup(host_node: Node3D, body_node: Node3D, placeholder: bool, ground: Callable) -> void:
 	host = host_node
@@ -19,18 +30,23 @@ func setup(host_node: Node3D, body_node: Node3D, placeholder: bool, ground: Call
 		_try_loco()
 
 func _try_loco() -> void:
-	var paths := ["res://locomotion/loco_controller.gd", "res://locomotion/loco_morphology.gd", "res://locomotion/loco_rig_adapter.gd"]
-	for p in paths:
+	for p in LOCO_PATHS:
 		if not ResourceLoader.exists(p):
 			return
-	var ctl_script = load(paths[0])
-	var morph_script = load(paths[1])
-	var adapter_script = load(paths[2])
-	if ctl_script == null or morph_script == null or adapter_script == null:
+	if not (body.has_method("reset_spine_pose") and "rest" in body and "legs" in body):
+		return          # not the real rig (a fake module in tests)
+	var ctl_script = load(LOCO_PATHS[0])
+	var morph_script = load(LOCO_PATHS[1])
+	adapter = load(LOCO_PATHS[2])
+	if ctl_script == null or morph_script == null or adapter == null:
+		adapter = null
 		return
-	adapter = adapter_script
-	if adapter.has_method("loco_describe") and morph_script.has_method("analyse"):
-		controller = ctl_script.new(morph_script.analyse(adapter.loco_describe(body)), _ground)
+	desc = adapter.loco_describe(body, UNIT)
+	problems = desc.problems
+	if not problems.is_empty():
+		push_warning("loco rig contract: %s" % [problems])
+	controller = ctl_script.new(morph_script.analyse(desc), _ground)
+	controller.footfall.connect(func(leg: int, pos: Vector3) -> void: footfall.emit(leg, pos))
 
 # s: StageWorld.sample() -> {pos, yaw, speed, vel}
 func update(dt: float, s: Dictionary) -> void:
@@ -41,8 +57,11 @@ func update(dt: float, s: Dictionary) -> void:
 			body.animate(dt, s.speed)
 		return
 	if controller != null and adapter != null:
+		if not _started:
+			controller.reset(s.pos, s.yaw)
+			_started = true
 		controller.step(dt, s.pos, s.yaw, s.vel)
-		adapter.loco_apply(body, controller.pose)
+		adapter.loco_apply(body, controller.pose, desc)
 		return
 	# Rest-pose glide: plant each foot under its rest sole and solve the legs.
 	if body.has_method("pose_legs_rest"):

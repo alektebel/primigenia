@@ -16,6 +16,7 @@ var data = null          # TerrainData
 var stage = null         # StageWorld while the island runs
 var camera: Camera3D = null
 var modal_open := false  # set by UI modules (radial, pause)
+var studio_dir := "user://studio"   # where the studio saves and Play looks for the newest creature (tests point it elsewhere)
 
 func _ready() -> void:
 	load_settings()
@@ -49,6 +50,9 @@ func movement_blocked() -> bool:
 	var vp := get_viewport()
 	return vp != null and vp.gui_get_focus_owner() != null
 
+func goto_menu() -> void:
+	get_tree().change_scene_to_file("res://game/menu/main_menu.tscn")
+
 func goto_island() -> void:
 	get_tree().change_scene_to_file("res://game/island/island.tscn")
 
@@ -59,7 +63,7 @@ func goto_studio() -> void:
 	else:
 		push_warning("studio module not present")
 
-# Player genome source: --genome=<path> after "--", else the newest user://studio/*.json that
+# Player genome source: --genome=<path> after "--", else the newest studio_dir/*.json (user://studio) that
 # parses, else the bundled Merodeador.
 func player_genome() -> Dictionary:
 	for arg in OS.get_cmdline_user_args():
@@ -69,13 +73,13 @@ func player_genome() -> Dictionary:
 				return g
 	var newest := ""
 	var newest_time := 0
-	var dir := DirAccess.open("user://studio")
+	var dir := DirAccess.open(studio_dir)
 	if dir != null:
 		for f in dir.get_files():
 			if f.get_extension() == "json":
-				var t := FileAccess.get_modified_time("user://studio/" + f)
-				if t > newest_time and not _read_genome("user://studio/" + f).is_empty():
-					newest = "user://studio/" + f
+				var t := FileAccess.get_modified_time(studio_dir.path_join(f))
+				if t > newest_time and not _read_genome(studio_dir.path_join(f)).is_empty():
+					newest = studio_dir.path_join(f)
 					newest_time = t
 	if newest != "":
 		return _read_genome(newest)
