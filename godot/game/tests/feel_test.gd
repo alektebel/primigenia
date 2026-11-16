@@ -247,6 +247,8 @@ func scenario(name: String, duration: float, keys_fn: Callable, head_fn: Callabl
 	var lags: Array = []
 	var prev_vel := Vector3.ZERO
 	var max_vel_jump := 0.0
+	var c_rate_max := 0.0
+	var steady_jump := 0.0
 	var t_yaw: Array = []
 	for fi in frames:
 		var t := fi * FRAME
@@ -254,7 +256,7 @@ func scenario(name: String, duration: float, keys_fn: Callable, head_fn: Callabl
 		var k: Dictionary = keys_fn.call(t, run)
 		for kk in k:
 			keys[kk] = k[kk]
-		ov.head = head_fn.call(t) if head_fn.is_valid() else null
+		ov.head = head_fn.call(t, stage) if head_fn.is_valid() else null
 		input.view_yaw = cam.view_yaw
 		stage.advance(FRAME)
 		var sm: Dictionary = stage.sample(0)
@@ -268,6 +270,8 @@ func scenario(name: String, duration: float, keys_fn: Callable, head_fn: Callabl
 			body_travel += absf(dy)
 			if fi > 1:
 				max_rate_jump = maxf(max_rate_jump, absf(rate - prev_rate))
+				if t > 4.0:
+					steady_jump = maxf(steady_jump, absf(rate - prev_rate))
 			prev_rate = rate
 			var dc := wrapf(cam.yaw - prev_cam, -PI, PI)
 			var crate := dc / FRAME
@@ -276,6 +280,7 @@ func scenario(name: String, duration: float, keys_fn: Callable, head_fn: Callabl
 			cam_acc_max = maxf(cam_acc_max, absf(crate - prev_cam_rate) / FRAME)
 			prev_cam_rate = crate
 			max_vel_jump = maxf(max_vel_jump, (sm.vel - prev_vel).length())
+		c_rate_max = maxf(c_rate_max, absf(stage.cur.entities[0].turn_rate))
 		prev_yaw = sm.yaw
 		prev_cam = cam.yaw
 		prev_vel = sm.vel
@@ -314,6 +319,8 @@ func scenario(name: String, duration: float, keys_fn: Callable, head_fn: Callabl
 	m["body_yaw_rate_max_deg"] = rad_to_deg(max_body)
 	m["body_yaw_travel_deg"] = rad_to_deg(body_travel)
 	m["yaw_rate_jump_max_deg"] = rad_to_deg(max_rate_jump)
+	m["yaw_rate_jump_steady_deg"] = rad_to_deg(steady_jump)
+	m["c_turn_rate_max_deg"] = rad_to_deg(c_rate_max)
 	m["cam_yaw_travel_deg"] = rad_to_deg(cam_travel)
 	m["cam_yaw_rate_max_deg"] = rad_to_deg(cam_max)
 	m["cam_yaw_acc_max"] = cam_acc_max
@@ -371,7 +378,12 @@ func measure_pipeline() -> void:
 			var s0: Dictionary = r.ctx.stage.cur.entities[0]
 			r.ctx.input.set_destination(Vector2(s0.x - s0.fx * 20.0, s0.z - s0.fz * 20.0))
 		return no_keys())
-	sc["fig8"] = await scenario("fig8", 10.0, func(_t, _r): return no_keys(), func(t): return Vector2(cos(1.2 * t), cos(2.4 * t)))
+	sc["fig8"] = await scenario("fig8", 10.0, func(_t, _r): return no_keys(), func(t, _s): return Vector2(cos(1.2 * t), cos(2.4 * t)))
+	sc["circle"] = await scenario("circle", 8.0, func(_t, _r): return no_keys(), func(t, st):
+		var e: Dictionary = st.cur.entities[0]
+		if t < 2.0:
+			return Vector2(e.fx, e.fz)
+		return Vector2(-e.fz, e.fx))
 	# straightness of S after the reversal completes (t >= 3.5 s .. 6 s)
 	var sp: Array = sc.S.path
 	sc.S["lateral_dev_after_reversal"] = lateral_deviation(sp.slice(int(3.5 / FRAME)))
@@ -458,3 +470,11 @@ class Gates:
 		t.check(sc.S.body_yaw_travel_deg <= 200.0, "S held: body yaw travel <= 200 deg (%.0f)" % sc.S.body_yaw_travel_deg)
 		t.check(sc.S.lateral_dev_after_reversal < 0.5, "S held: straight path after the reversal, deviation %.2f m < 0.5" % sc.S.lateral_dev_after_reversal)
 		t.check(sc.A.body_yaw_travel_deg <= 100.0, "A held: body yaw travel <= 100 deg (%.0f)" % sc.A.body_yaw_travel_deg)
+		# S4: Hermite interpolation. A steady curve has no yaw-rate jump between frames (a Hermite on a rate
+		# step peaks at 4/3 of the C rate in the one tick where the rate changes, so that bound gates the rest).
+		var circle: Dictionary = sc.circle
+		t.check(circle.yaw_rate_jump_steady_deg <= rad_to_deg(0.5), "steady circle: yaw rate jump between frames <= 0.5 rad/s (%.2f deg/s)" % circle.yaw_rate_jump_steady_deg)
+		for k in sc:
+			var r: float = sc[k].body_yaw_rate_max_deg / maxf(sc[k].c_turn_rate_max_deg, 1.0)
+			if sc[k].c_turn_rate_max_deg > 1.0:
+				t.check(r <= 1.34, "%s: on-screen yaw rate <= 4/3 of the C rate (%.2f)" % [k, r])
