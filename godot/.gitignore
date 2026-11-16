@@ -1,0 +1,6 @@
+.godot/
+bin/
+extension/*.os
+extension/*.o
+extension/.sconsign*.dblite
+*.tmp

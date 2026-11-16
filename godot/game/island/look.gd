@@ -1,0 +1,56 @@
+extends RefCounted
+# Palette C "Current+" (G63): every number of the look, from tools/hero/build_hero.py
+# (golden preset + PAL.C + LAND0). Shaders hold the same numbers as constants; a test compares.
+
+const SUN_DIR := Vector3(-0.62, 0.28, -0.72)   # towards the sun, normalised by sun_dir()
+const SUN_COLOR := Color(1.0, 0.839, 0.627)     # #ffd6a0 raw (three r128 used hex unconverted)
+const SUN_ENERGY := 3.2
+const HEMI_SKY := Color(0.659, 0.8, 0.973)      # #a8ccf8
+const HEMI_GROUND := Color(0.416, 0.416, 0.361) # #6a6a5c
+const HEMI_ENERGY := 0.5
+const GRASS := Vector3(1.03, 0.96, 0.86)
+const SH_K := 0.42                               # 1 - 0.58 * 1
+const AIR_DENSITY := 0.00052
+const AIR_START := 140.0
+const AIR_FALLOFF := 240.0
+const AIR_COOL := Vector3(0.34, 0.58, 0.88)
+const AIR_WARM := Vector3(0.96, 0.74, 0.46)
+const SKY_HZ := Vector3(0.95, 0.84, 0.70)
+const SKY_MID := Vector3(0.52, 0.70, 0.93)
+const SKY_TOP := Vector3(0.13, 0.39, 0.84)
+const SKY_GLOW := Vector3(1.0, 0.62, 0.3)
+const SKY_DISC := 3.0
+const G0 := Vector3(0.090, 0.225, 0.040)
+const G1 := Vector3(0.185, 0.335, 0.075)
+const LIT := Vector3(1.10, 1.03, 0.90)
+const SHADE := Vector3(0.86, 0.92, 1.10)
+const S_TINT := Vector3(0.80, 0.86, 1.14)
+const TUFT0 := Vector3(0.82, 0.90, 0.78)
+const TUFT1 := Vector3(1.04, 1.02, 0.98)
+const BLADE_LO := 0.52
+const BLADE_HI := 1.28
+const R0 := Vector3(0.15, 0.165, 0.19)
+const R1 := Vector3(0.28, 0.215, 0.14)
+const R2 := Vector3(0.19, 0.135, 0.085)
+const SCREE := Vector3(0.27, 0.23, 0.16)
+const SNOW := Vector3(0.78, 0.88, 0.95)
+const ROCK_SHADE := Vector3(0.68, 0.84, 1.20)
+const ROCK_LIT := Vector3(1.30, 1.10, 0.84)
+# PROPOSED by the implementer (not in palette C): owner to approve, see docs/godot/M0.md.
+const SAND := Vector3(0.42, 0.37, 0.25)
+const VOLCANIC_R0 := Vector3(0.075, 0.07, 0.075)
+const VOLCANIC_R1 := Vector3(0.13, 0.10, 0.085)
+const WET_TINT := Vector3(0.82, 0.90, 0.84)
+const CHANNEL := Vector3(0.035, 0.09, 0.13)
+
+# Godot's ACES (compatibility renderer) calibrated to three.js ACESFilmic at exposure 1:
+# see docs/evidence/godot/m0/calibration.json (written by make godot-render-test).
+const TONEMAP_EXPOSURE := 0.926
+const TONEMAP_WHITE := 15.4
+
+static func sun_dir() -> Vector3:
+	return SUN_DIR.normalized()
+
+# Linear colour with the same bytes three.js used for a hex value (no sRGB conversion).
+static func raw(c: Vector3) -> Color:
+	return Color(c.x, c.y, c.z)

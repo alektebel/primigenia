@@ -1,0 +1,38 @@
+extends RefCounted
+# WorldEnvironment resource + sun for the island look (see 4.5 of the M0 plan).
+
+const Look := preload("res://game/island/look.gd")
+const SKY_SHADER := preload("res://game/shaders/sky.gdshader")
+
+static func make_environment(exposure: float = Look.TONEMAP_EXPOSURE, white: float = Look.TONEMAP_WHITE) -> Environment:
+	var env := Environment.new()
+	var sky := Sky.new()
+	var mat := ShaderMaterial.new()
+	mat.shader = SKY_SHADER
+	sky.sky_material = mat
+	env.background_mode = Environment.BG_SKY
+	env.sky = sky
+	env.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
+	env.ambient_light_color = Look.HEMI_SKY
+	env.ambient_light_energy = Look.HEMI_ENERGY
+	env.reflected_light_source = Environment.REFLECTION_SOURCE_SKY
+	env.tonemap_mode = Environment.TONE_MAPPER_ACES
+	env.tonemap_exposure = exposure
+	env.tonemap_white = white
+	env.fog_enabled = false
+	env.glow_enabled = false
+	env.ssao_enabled = false
+	env.ssr_enabled = false
+	env.adjustment_enabled = false
+	return env
+
+static func make_sun() -> DirectionalLight3D:
+	var sun := DirectionalLight3D.new()
+	sun.name = "Sun"
+	# Light travels along -SUN_DIR; Godot lights point along their -Z axis.
+	sun.transform = Transform3D(Basis.looking_at(-Look.sun_dir(), Vector3.UP), Vector3.ZERO)
+	# Hex values were used raw by three r128: store sRGB bytes so Godot linearises them back.
+	sun.light_color = Look.SUN_COLOR.linear_to_srgb()
+	sun.light_energy = Look.SUN_ENERGY
+	sun.shadow_enabled = true
+	return sun

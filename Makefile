@@ -262,3 +262,27 @@ check:
 	nice -n 10 $(MAKE) studio-test; \
 	nice -n 10 $(MAKE) stage-test
 	@echo "=== make check done ==="
+
+# ---- Godot desktop frontend (G76). Dependencies live outside the repository. ----
+GODOT ?= godot
+GODOT_CPP ?= /home/diego/Desarrollo/cpore-wt/_agent/godot-cpp
+SCONS ?= /home/diego/Desarrollo/cpore-wt/_agent/godot-venv/bin/scons
+GODOT_JOBS ?= 4
+GODOT_TARGET ?= template_debug
+.PHONY: godot godot-test godot-render-test godot-evidence
+godot: $(BUILD)/libcpore.a
+	GODOT_CPP=$(GODOT_CPP) nice -n 10 $(SCONS) -C godot/extension -j$(GODOT_JOBS) \
+	  target=$(GODOT_TARGET) build_profile=$(CURDIR)/godot/extension/build_profile.json
+	@mkdir -p godot/.godot
+	@test -s godot/.godot/extension_list.cfg || echo 'res://cpore.gdextension' > godot/.godot/extension_list.cfg
+	nice -n 10 timeout 600 $(GODOT) --headless --path godot --import
+godot-test: godot $(BUILD)/terrain_cli $(BUILD)/world_cli
+	nice -n 10 timeout 900 $(GODOT) --headless --path godot --script res://game/tests/run_m0_tests.gd
+godot-render-test: godot
+	LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 900 xvfb-run -a -s "-screen 0 1280x720x24" \
+	  $(GODOT) --rendering-driver opengl3 --max-fps 15 --resolution 1280x720 --path godot \
+	  --script res://game/tests/render_tests.gd
+godot-evidence: godot
+	LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 1800 xvfb-run -a -s "-screen 0 1280x720x24" \
+	  $(GODOT) --rendering-driver opengl3 --max-fps 15 --resolution 1280x720 --path godot \
+	  --script res://game/tests/m0_evidence.gd -- $(CURDIR)/docs/evidence/godot/m0

@@ -1,0 +1,12 @@
+import os
+
+cpp = os.environ.get("GODOT_CPP", "/home/diego/Desarrollo/cpore-wt/_agent/godot-cpp")
+env = SConscript(os.path.join(cpp, "SConstruct"), {"api_version": "4.7"})
+env.Append(CPPPATH=["../../core/include"])
+# Glue only. The simulation is the prebuilt build/libcpore.a (C99, -fno-fast-math
+# -ffp-contract=off from the Makefile); these flags keep the glue honest too.
+env.Append(CCFLAGS=["-fno-fast-math", "-ffp-contract=off"])
+env.Append(LIBS=[env.File("../../build/libcpore.a"), "m"])
+library = env.SharedLibrary(
+    "../bin/libcpore{}{}".format(env["suffix"], env["SHLIBSUFFIX"]), Glob("*.cpp"))
+Default(library)
