@@ -65,6 +65,15 @@ to sculpt, wheel over it to thicken; drag empty space, or right/middle button, t
 Keys: Ctrl+Z / Ctrl+Y, Delete, arrows (move the selected part), Esc, **Ctrl+S save**, Ctrl+O import. "Probar" > play
 walks the creature in a circle with the locomotion module. "Menu" returns to the main menu.
 
+## How it feels
+
+Jog 5.2 m/s, sprint 8.84 m/s (Shift, about 7 s of stamina), 90 % of top speed in 0.4 s (0.6 s sprinting). Turns are curves:
+a 1.6 m circle at jog, 2.7 m at sprint; a reversal at jog takes 1 s (it brakes, pivots, runs again). WASD keeps the camera
+frame of the moment the keys changed, so a held S or A runs straight and the camera does not whirl; the camera follows at
+most 100 deg/s and never swings while you run toward it. Settings (`Game.settings`, `user://settings.cfg`):
+`controls/strafe_latch` (true), `controls/tank` (false: A/D turn, W forward, S reverse), `camera/kick` (false).
+Measurements and the before and after table: [docs/godot/FEEL.md](../docs/godot/FEEL.md); `make godot-feel-test`, `make godot-feel-evidence`.
+
 ## Make targets
 
 | Target | What |
