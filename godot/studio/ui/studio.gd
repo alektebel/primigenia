@@ -11,6 +11,7 @@ const Thumbs := preload("../thumbnails.gd")
 const ThemeFactory := preload("theme_factory.gd")
 const PlaceholderView := preload("../placeholder/placeholder_view.gd")
 const RealView := preload("../creature_view_real.gd")
+const Env := preload("../studio_env.gd")
 
 signal creature_saved(path: String)
 signal exit_requested
@@ -21,6 +22,7 @@ var i18n: RefCounted
 var storage: RefCounted
 var view: Node3D                      # creature_view.gd interface
 var camera: Camera3D
+var env_node: Node3D
 var viewport: SubViewport
 var stage: SubViewportContainer
 var overlay: Control
@@ -103,19 +105,8 @@ func _build_stage() -> void:
 	viewport.own_world_3d = true
 	viewport.handle_input_locally = false
 	stage.add_child(viewport)
-	var env := WorldEnvironment.new()
-	var e := Environment.new()
-	e.background_mode = Environment.BG_COLOR
-	e.background_color = Color("1b3446")
-	e.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
-	e.ambient_light_color = Color("a9c4d0")
-	e.ambient_light_energy = .7
-	env.environment = e
-	viewport.add_child(env)
-	var sun := DirectionalLight3D.new()
-	sun.rotation_degrees = Vector3(-50, 35, 0)
-	sun.light_color = Color("ffe2b8")
-	viewport.add_child(sun)
+	env_node = Env.new()
+	viewport.add_child(env_node)
 	camera = Camera3D.new()
 	camera.fov = 42
 	camera.current = true
