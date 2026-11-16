@@ -30,6 +30,7 @@ func _run() -> void:
 	_test_growth_parity()
 	_test_seeds_and_fixtures()
 	_test_growth_placement()
+	_test_build_robustness()
 	_test_every_part()
 	_test_rig()
 	print("creature tests: %d checks, %d failures (%d ms)" % [checks, failures.size(), Time.get_ticks_msec() - t0])
@@ -286,6 +287,50 @@ func _test_growth_placement() -> void:
 	c.load_genome(FileAccess.get_file_as_string(_abs(FIXTURES + "v3.json")))
 	check(c.growth.filter(func(e): return e["side"] == -1).size() == 9, "v3 has 9 mirrored roots")
 	print("growth placement max error " + str(maxerr))
+	c.queue_free()
+
+
+func _count_nodes(n: Node) -> int:
+	var k := 1
+	for ch in n.get_children():
+		k += _count_nodes(ch)
+	return k
+
+
+func _test_build_robustness() -> void:
+	var c := Creature.new()
+	root.add_child(c)
+	var timings := {}
+	for name in Creature.seeds():
+		var g: Dictionary = Creature.seeds()[name]
+		var ms := []
+		for i in 5:
+			var t0 := Time.get_ticks_usec()
+			c.build(g)
+			ms.append((Time.get_ticks_usec() - t0) / 1000.0)
+		ms.sort()
+		timings[name] = ms[2]
+		print("build time %s: median %.1f ms (min %.1f, max %.1f, 5 builds)" % [name, ms[2], ms[0], ms[4]])
+		check(ms[2] > 0.0, name + " timing measured")
+	# Rebuilding the same creature must not leak or duplicate nodes.
+	c.build(Creature.seeds()["Merodeador"])
+	var nodes0 := _count_nodes(c)
+	var kids0 := c.get_child_count()
+	var legs0 := c.legs.size()
+	var parts0 := c.parts.size()
+	c.build(Creature.seeds()["Merodeador"])
+	check(_count_nodes(c) == nodes0 and c.get_child_count() == kids0, "rebuild keeps node count stable (%d -> %d)" % [nodes0, _count_nodes(c)])
+	check(c.legs.size() == legs0 and c.parts.size() == parts0, "rebuild keeps legs and parts")
+	var orphans0 := Performance.get_monitor(Performance.OBJECT_ORPHAN_NODE_COUNT)
+	for i in 3:
+		c.build(Creature.seeds()["Merodeador"])
+	check(Performance.get_monitor(Performance.OBJECT_ORPHAN_NODE_COUNT) <= orphans0, "rebuild leaves no orphan nodes")
+	# Bad input leaves the previous creature untouched.
+	var vol0 := c.body_volume()
+	for bad in ["{", "", "[]", "{\"schema\": \"nope\"}", 42, null]:
+		var r := c.load_genome(bad)
+		check(not r["ok"] and str(r["error"]) != "", "bad input %s rejected (%s)" % [str(bad).left(20), r["error"]])
+		check(c.parts.size() == parts0 and c.legs.size() == legs0 and _count_nodes(c) == nodes0 and c.body_volume() == vol0, "bad input leaves the creature intact")
 	c.queue_free()
 
 
