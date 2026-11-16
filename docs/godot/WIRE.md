@@ -19,6 +19,11 @@ limits are in `godot/README.md`; tests: `make godot-play-test` plus the five mod
 | studio (`studio/ui/studio.tscn`) | `creature_view_real.gd` (godot/creature) satisfying `creature_view.gd` | `studio.gd` calls `make_default()`, the placeholder view is the fallback when `res://creature` is absent (the studio's own test project) |
 | menu | Play = island, Creator = studio, studio saves `Game.studio_dir`, `Game.player_genome()` reads it | `game/menu/main_menu.gd` |
 
+Input frame (PLAN-feel): `PlayerInput` latches `view_yaw` when the pressed key combination changes (`frame_yaw`), so a
+held direction is a straight run; `island.gd` sets `strafe_latch`, `tank`, the creature's heading and position each frame,
+re-latches after a mouse orbit, and passes `intent_yaw()` for the player's `sample.intent` (the controller turns head
+and shoulders toward it). `StageWorld.sample()` is a Hermite interpolation (`speed` is `|vel|`, the C speed is `speed_c`).
+
 Orders follow `web/stage/simulation.js action()`: an attack stays pending and is re-issued every tick (the C verb only
 lasts while re-issued) until movement keys, a click-to-walk, the target's death or the end of the fight; guard and dodge
 last one tick. Choosing Attack in the radial starts the attack with the first move (Bite).

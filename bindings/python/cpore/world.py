@@ -202,7 +202,7 @@ def parse_world_log(path: str) -> tuple[CpStageSetup, list[CpStageLogEntry], int
     """Parse a CPORE_WORLD_LOG file (same format as build/world_cli --replay)."""
     with open(path, encoding="utf-8") as f:
         head = f.readline().split()
-        if len(head) != 2 or head[0] != "CPORE_WORLD_LOG" or int(head[1]) != 1:
+        if len(head) != 2 or head[0] != "CPORE_WORLD_LOG" or int(head[1]) != 2:
             raise ValueError("not a world-1 replay log")
         tok = []
         for line in f:

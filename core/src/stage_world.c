@@ -249,17 +249,40 @@ static void start(CpStageWorld *w,int index){
     w->started++;
     w->outcome=0;
 }
-/* Polynomial turn: rotate a unit vector by at most .38 radians (.9 while
- * pivoting). Small-angle sin/cos give a bounded deterministic angular speed. */
-static void walk(CpStageWorld *w,CpStageCreature *c,float dx,float dz,float speed){
-    float n=length(dx,dz),ox=c->x,oz=c->z,old=c->speed,turn=0;
+const CpStageMotion CP_STAGE_MOTION={
+    1.3f,1.7f,.6f,15.f,20.f,.6f,1.1f,1.5f,4.5f,11.8f,.3f,2.f,7.f,.4f
+};
+/* Stage locomotion (CP_STAGE_VERSION 2, PLAN-feel). Speed eases toward the wanted speed with an
+ * acceleration and a braking cap; the yaw rate is limited by body size (turn0), by lateral grip at
+ * speed, and by a slow pivot used only from near rest. Turn: rotate a unit vector by at most
+ * `limit` radians with small-angle polynomials, so the angular speed is bounded and deterministic
+ * (only + - * / and sqrtf, identical natively and in WASM). */
+static void walk(CpStageWorld *w,CpStageCreature *c,float dx,float dz,float speed,float jog){
+    const CpStageMotion *m=&CP_STAGE_MOTION;
+    float n=length(dx,dz),ox=c->x,oz=c->z,old=c->speed,turn=0,r=cp_combat_body_radius(&c->profile);
+    float dot=1,cross=0;
     if(n>.00001f){
         dx/=n;
         dz/=n;
-        float dot=c->fx*dx+c->fz*dz,cross=c->fz*dx-c->fx*dz;
-        if(dot<-.5f)c->pivot=1;
-        if(c->pivot&&dot>.98f)c->pivot=0;
-        float limit=c->pivot?.9f:.38f,co=1-limit*limit/2+limit*limit*limit*limit/24;
+        dot=c->fx*dx+c->fz*dz;
+        cross=c->fz*dx-c->fx*dz;
+    }
+    float turn0=clamp(m->turn_k*sqrtf(9.81f/r),m->turn_min,m->turn_max),pivot_v=m->pivot_k*jog;
+    if(n>.00001f&&!c->pivot&&dot<-.5f&&old<=pivot_v)c->pivot=1;
+    if(c->pivot&&(dot>.5f||n<=.00001f))c->pivot=0;
+    float wt=speed*clamp(n,0,1);
+    if(c->pivot)wt=0;
+    else if(n>.00001f&&dot>=0)wt*=(1-m->turn_slow)+m->turn_slow*dot;
+    else if(n>.00001f)wt*=(1-m->turn_slow)*clamp(1+2*dot,0,1);  /* behind: plant and brake, continuous at 90 degrees */
+    float dv=(wt-old)*m->ease;
+    dv=clamp(dv,-m->brake*.1f,m->accel*.1f);
+    float v=old+dv;
+    if(v<.015f&&wt<.015f)v=0;
+    if(n>.00001f){
+        float rate=turn0;
+        if(c->pivot)rate=clamp(m->pivot_mul*turn0,3,m->pivot_max);
+        else if(v>.001f&&m->grip/v<rate)rate=m->grip/v;
+        float limit=rate*.1f,co=1-limit*limit/2+limit*limit*limit*limit/24;
         if(dot>=co){
             turn=cross;
             c->fx=dx;
@@ -277,11 +300,8 @@ static void walk(CpStageWorld *w,CpStageCreature *c,float dx,float dz,float spee
         c->fx/=norm;
         c->fz/=norm;
     }
-    float wanted=c->pivot?0:speed*clamp(n,0,1),v=old+(wanted-old)*(wanted>old?.45118836f:.63212055f);
-    if(v<.015f)v=0;
     float slope=ab(cp_stage_ground(w,c->x+c->fx,c->z+c->fz)-cp_stage_ground(w,c->x,c->z));
     float step=v*.1f/(1+slope*.65f),nx=c->x+c->fx*step,nz=c->z+c->fz*step;
-    float r=cp_combat_body_radius(&c->profile);
     if(cp_stage_can_walk(w,c->x,c->z,nx,nz,r)){
         c->x=nx;
         c->z=nz;
@@ -446,9 +466,9 @@ static void wild_tick(CpStageWorld *w,int skip,int engage){
             tx=e->x+(e->x-w->player.x);
             tz=e->z+(e->z-w->player.z);
         }
-        float espeed=e->profile.speed*.7f;
+        float jog=e->profile.speed*CP_STAGE_MOTION.wild_k*CP_STAGE_MOTION.jog_k,espeed=jog;
         if(length(tx-e->x,tz-e->z)<.4f)espeed=0;
-        walk(w,e,tx-e->x,tz-e->z,espeed);
+        walk(w,e,tx-e->x,tz-e->z,espeed,jog);
         if(e->returning&&length(e->x-e->home_x,e->z-e->home_z)<.6f)e->returning=0;
         int targeted=(w->order.verb==CP_STAGE_ATTACK&&w->order.target==i+1);
         if(engage&&w->active<0&&!e->returning&&!w->cooldown_ticks&&(hostile||targeted)&&dist(&w->player,e)<5.5f)start(w,i);
@@ -517,9 +537,9 @@ uint64_t cp_stage_step(CpStageWorld *w,const CpStageInput *input){
             }
         }
         int sprint=(a->sprint||a->verb==CP_STAGE_FLEE)&&length(dx,dz)>0&&w->player.stamina>2;
-        float speed=w->player.profile.speed*(sprint?1.7f:1),stop=sqrtf(clamp(remaining-.08f,0,10000)*12);
+        float jog=w->player.profile.speed*CP_STAGE_MOTION.jog_k,speed=sprint?jog*CP_STAGE_MOTION.sprint_k:jog,stop=sqrtf(clamp(remaining-.08f,0,10000)*12);
         if(stop<speed)speed=stop;
-        walk(w,&w->player,dx,dz,speed);
+        walk(w,&w->player,dx,dz,speed,jog);
         w->player.stamina=clamp(w->player.stamina+(sprint?-1.4f:1),0,w->player.profile.stamina);
         if(w->cooldown_ticks>0)w->cooldown_ticks--;
     }

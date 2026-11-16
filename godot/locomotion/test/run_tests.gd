@@ -41,6 +41,7 @@ func _init() -> void:
 	test_body_dynamics()
 	test_swing()
 	test_stop_and_turn_in_place()
+	test_feel_turning()
 	test_robustness()
 	test_proposal()
 	test_quality()
@@ -373,7 +374,8 @@ func test_body_dynamics() -> void:
 		var v: float = s.speed_for_froude(1.0)
 		s.run(6.0, func(_t): return v, func(_t): return 0.8)
 		var roll := _mean(s.frames, "roll", func(f): return f.t > 3.0)
-		var expect: float = -atan(v * 0.8 / 9.81) * s.ctl.bank_gain
+		var bk: float = float(s.ctl.BANK_K[s.ctl.morph.plan]) * s.ctl.bank_gain / 0.7
+		var expect: float = clampf(-atan(v * 0.8 / 9.81) * bk, -float(s.ctl.BANK_MAX[s.ctl.morph.plan]), float(s.ctl.BANK_MAX[s.ctl.morph.plan]))
 		check(roll < -0.02 and abs(roll - expect) < 0.5 * abs(expect), "%s banks into a left turn: roll %.1f degrees (model %.1f)" % [name, rad_to_deg(roll), rad_to_deg(expect)])
 		var s2 = Sim.new(Bodies.get_body(name))
 		s2.run(6.0, func(_t): return v, func(_t): return -0.8)
@@ -506,6 +508,34 @@ func test_stop_and_turn_in_place() -> void:
 		var s2 = Sim.new(Bodies.get_body(name))
 		s2.run(6.0, func(_t): return 0.0, func(_t): return 1.0)
 		check(s2.steps.size() >= s2.morph.legs.size() and s2.max_slide() < SLIDE_LIMIT, "%s turns on the spot by stepping (%d steps, slide %.2f mm)" % [name, s2.steps.size(), s2.max_slide() * 1000.0])
+
+# ---------------------------------------------------------------- feel: pivot and curved run (PLAN-feel S5)
+func test_feel_turning() -> void:
+	print("pivot, bank and the bending spine")
+	var table := {}
+	for name in PLANS:
+		var s = Sim.new(Bodies.get_body(name))
+		s.run(5.0, func(_t): return 0.0, func(_t): return 4.0)
+		var bare := 0
+		var roll := 0.0
+		for f in s.frames:
+			if f.t > 1.0:
+				if f.n == 0:
+					bare += 1
+				roll = max(roll, abs(f.roll))
+		var bmax: float = Ctl.BANK_MAX[s.morph.plan]
+		check(bare == 0, "%s pivots at 4 rad/s with a foot always down (%d bare frames)" % [name, bare])
+		check(s.max_slide(1.0) < 0.005, "%s pivot: planted-ball slide %.2f mm" % [name, s.max_slide(1.0) * 1000.0])
+		check(roll <= bmax + 0.03, "%s pivot: roll %.1f degrees within the bank limit %.1f" % [name, rad_to_deg(roll), rad_to_deg(bmax)])
+		# curved run: the spine ends turn the way the body turns
+		var c = Sim.new(Bodies.get_body(name))
+		var v: float = c.speed_for_froude(0.5)
+		c.run(5.0, func(_t): return v, func(_t): return 0.6)
+		var sy: PackedFloat32Array = c.ctl.pose.station_yaw
+		var ends: float = sy[sy.size() - 1] - sy[0] if sy.size() >= 2 else 0.0
+		check(sy.size() < 2 or ends > 0.02, "%s curved run: front stations yaw into the left turn (%.1f degrees end to end)" % [name, rad_to_deg(ends)])
+		table[name] = {"pivot_roll_deg": r(rad_to_deg(roll), 2), "spine_end_to_end_deg": r(rad_to_deg(ends), 2)}
+	out["feel_turning"] = table
 
 # ---------------------------------------------------------------- robustness
 func test_robustness() -> void:
