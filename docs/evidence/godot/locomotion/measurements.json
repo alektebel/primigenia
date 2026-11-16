@@ -9,7 +9,7 @@
       "stride_flat_m": 1.149,
       "stride_uphill_m": 0.871
     },
-    "biped bank deg at 0.8 rad/s": -9.18,
+    "biped bank deg at 0.8 rad/s": -7.87,
     "biped run Fr1.5": {
       "com_excursion_mm": 46.0,
       "com_flight_minus_stance_mm": 19.3
@@ -47,7 +47,7 @@
       "stride_flat_m": 0.648,
       "stride_uphill_m": 0.491
     },
-    "light_quadruped bank deg at 0.8 rad/s": -6.77,
+    "light_quadruped bank deg at 0.8 rad/s": -3.38,
     "light_quadruped pitch range deg": {
       "gallop": 4.23,
       "trot": 0.02

@@ -373,7 +373,8 @@ func test_body_dynamics() -> void:
 		var v: float = s.speed_for_froude(1.0)
 		s.run(6.0, func(_t): return v, func(_t): return 0.8)
 		var roll := _mean(s.frames, "roll", func(f): return f.t > 3.0)
-		var expect: float = -atan(v * 0.8 / 9.81) * s.ctl.bank_gain
+		var bk: float = float(s.ctl.BANK_K[s.ctl.morph.plan]) * s.ctl.bank_gain / 0.7
+		var expect: float = clampf(-atan(v * 0.8 / 9.81) * bk, -float(s.ctl.BANK_MAX[s.ctl.morph.plan]), float(s.ctl.BANK_MAX[s.ctl.morph.plan]))
 		check(roll < -0.02 and abs(roll - expect) < 0.5 * abs(expect), "%s banks into a left turn: roll %.1f degrees (model %.1f)" % [name, rad_to_deg(roll), rad_to_deg(expect)])
 		var s2 = Sim.new(Bodies.get_body(name))
 		s2.run(6.0, func(_t): return v, func(_t): return -0.8)

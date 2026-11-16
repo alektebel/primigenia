@@ -15,6 +15,8 @@ extends RefCounted
 const Gait = preload("loco_gait.gd")
 const G := 9.81
 const MAX_DT := 1.0 / 90.0
+const BANK_K := {&"quadruped": 0.35, &"horizontal_biped": 0.5, &"upright_biped": 0.6, &"multi": 0.2, &"legless": 0.0, &"monopod": 0.4}
+const BANK_MAX := {&"quadruped": 0.20, &"multi": 0.20, &"horizontal_biped": 0.30, &"upright_biped": 0.30, &"monopod": 0.30, &"legless": 0.0}
 const STRAIGHT := 0.985         # longest a leg is allowed to get, as a share of its length
 
 signal footfall(leg: int, position: Vector3)
@@ -39,7 +41,7 @@ var pose := {}
 # --- tunables (dimensionless)
 var vault_gain := 1.0           # share of the rigid-leg pendulum arc the hips follow
 var leg_axis_torque := 0.25     # share of leg force that pitches the body
-var bank_gain := 0.7
+var bank_gain := 0.7            # scale of the per-plan bank_k (0.7 = the table as written)
 var stability_gain := 0.9
 var girdle_gain := 0.085         # girdle yaw per radian of leading-foot offset
 
@@ -508,8 +510,9 @@ func _sub(h: float, p: Vector3, yaw: float, v: Vector3, settle: bool) -> void:
 				wb = max(morph.stations[-1].z - morph.stations[0].z, 0.1)
 			lean_t = 0.6 * a_fwd * morph.com.y / (G * wb)
 	lean_t = clamp(lean_t, -0.25, 0.25)
-	var bank_k: float = bank_gain * (0.4 if morph.plan == &"multi" or legless else 1.0)
-	var bank_t: float = clamp(-atan(_speed_f * _yawrate / G) * bank_k, -0.4, 0.4)
+	var bank_k: float = float(BANK_K.get(morph.plan, 0.35)) * bank_gain / 0.7
+	var bank_max: float = float(BANK_MAX.get(morph.plan, 0.2))
+	var bank_t: float = clamp(-atan(_speed_f * _yawrate / G) * bank_k, -bank_max, bank_max)
 	_lean = _spring(_lean, lean_t, _omega * 0.4, 1.0, h)
 	_bank = _spring(_bank, bank_t, _omega * 0.4, 1.0, h)
 	# --- 13. compose the body transform
