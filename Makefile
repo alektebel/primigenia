@@ -322,3 +322,8 @@ godot-wire-evidence: godot
 .PHONY: godot-feel-test godot-feel-evidence
 godot-feel-test: godot
 	nice -n 10 timeout 600 $(GODOT) --headless --fixed-fps 60 --path godot --script res://game/tests/feel_test.gd -- $(CURDIR)/docs/evidence/godot/feel
+godot-feel-evidence: godot
+	@mkdir -p docs/evidence/godot/feel
+	LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 900 xvfb-run -a -s "-screen 0 1280x720x24" \
+	  $(GODOT) --rendering-driver opengl3 --fixed-fps 30 --resolution 1280x720 --path godot \
+	  --script res://game/tests/feel_evidence.gd -- $(CURDIR)/docs/evidence/godot/feel
