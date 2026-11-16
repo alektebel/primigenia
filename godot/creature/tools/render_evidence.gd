@@ -6,6 +6,7 @@ extends SceneTree
 ##   merodeador_vs_threejs.png  three.js hero (golden-mid) | Godot, same seed
 ##   g48_tail_hammer_compare.png g48-after3 tail_hammer row (top) | Godot (bottom)
 ##   seeds.png                  Godot Merodeador, Zancuda, Babosa
+##   growth.png                 v3 horns, Zancuda plates/tendrils/horns
 ##   parts_contact_sheet.png    all 46 parts on Merodeador (eyes and legs kept)
 
 const OUT := "res://../docs/evidence/godot/creature/"
@@ -127,6 +128,17 @@ func _comparisons(seeds: Dictionary) -> void:
 	c.build(_strip(seeds["Zancuda"], ["ojo", "zanca"]))
 	var z2: Image = await _shot(c, 1.57, .18, 8.0, 50, "Godot Zancuda (eyes + legs)")
 	_sheet([zref, z2, z1], 3, size).save_png(_abs(OUT + "zancuda_vs_threejs.png"))
+
+	# 5. Growth: v3 fixture (9 mirrored horns, torso) and Zancuda with plates (torso),
+	# tendrils (neck) and horns (tail), same recipe as the placement test.
+	var gcells := []
+	c.load_genome(FileAccess.get_file_as_string(_abs("res://../tests/fixtures/studio/v3.json")))
+	gcells.append(await _shot(c, .9, .2, 8.0, 50, "v3 fixture: 9 horns, mirrored, torso"))
+	var gdoc: Dictionary = load("res://creature/tests/test_creature.gd").growth_doc(seeds["Zancuda"])
+	c.load_genome(gdoc)
+	gcells.append(await _shot(c, .9, .2, 9.5, 50, "Zancuda: plates torso, tendrils neck, horns tail"))
+	gcells.append(await _shot(c, 2.4, .2, 9.5, 50, "same, other flank"))
+	_sheet(gcells, 3, size).save_png(_abs(OUT + "growth.png"))
 
 
 

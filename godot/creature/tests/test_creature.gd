@@ -29,6 +29,7 @@ func _run() -> void:
 	_test_genome_parity()
 	_test_growth_parity()
 	_test_seeds_and_fixtures()
+	_test_growth_placement()
 	_test_every_part()
 	_test_rig()
 	print("creature tests: %d checks, %d failures (%d ms)" % [checks, failures.size(), Time.get_ticks_msec() - t0])
@@ -228,6 +229,64 @@ func _ring_bottom(c: Creature) -> float:
 	for i in Creature.NS:
 		b = minf(b, c.rest[i].y - c.rad[i])
 	return b
+
+
+static func growth_doc(c_seed: Dictionary) -> Dictionary:
+	var g: Dictionary = c_seed.duplicate(true)
+	var base := {"schema": "cpore.growth/1", "seed": 17, "count": 7, "length": 1.0, "curve": .45, "branches": 1,
+		"position": .6, "coverage": .4, "angle": .55, "mirror": true}
+	var specs := [["plates", "torso", true], ["tendrils", "neck", true], ["horns", "tail", false]]
+	var regions := []
+	for i in specs.size():
+		var r := base.duplicate()
+		r["id"] = "region-%d" % (i + 1)
+		r["family"] = specs[i][0]
+		r["surface"] = specs[i][1]
+		r["mirror"] = specs[i][2]
+		regions.append(r)
+	g["regions"] = regions
+	return g
+
+
+func _test_growth_placement() -> void:
+	var c := Creature.new()
+	root.add_child(c)
+	var r := c.load_genome(growth_doc(Creature.seeds()["Zancuda"]))
+	check(r["ok"], "growth doc parses (%s)" % r["error"])
+	var by_id := {}
+	for rg in c.genome["regions"]:
+		by_id[rg["id"]] = rg
+	var sides := {}
+	var maxerr := 0.0
+	for e in c.growth:
+		var rg: Dictionary = by_id[e["region_id"]]
+		var rr := Creature.region_range(rg["surface"])
+		check(e["t"] >= rr.x - 1e-6 and e["t"] <= rr.y + 1e-6, "growth %s t %.3f inside %s range" % [e["region_id"], e["t"], rg["surface"]])
+		var A := c.anchor(e["t"], float(rg["angle"]) * e["side"])
+		var want: Vector3 = A["p"] - A["n"] * .01
+		var got: Vector3 = c.skeleton.get_bone_global_rest(e["bone"]) * e["node"].position
+		maxerr = maxf(maxerr, got.distance_to(want))
+		check(got.distance_to(want) < 1e-4, "growth root on the surface (%f)" % got.distance_to(want))
+		var key: String = e["region_id"]
+		sides[key] = sides.get(key, []) + [e["side"]]
+		var mat: Material = e["node"].get_child(0).material_override
+		check(mat == (c.materials.skin if e["family"] == "tendrils" else c.materials.bone), "growth %s material" % e["family"])
+	for id in by_id:
+		var rg: Dictionary = by_id[id]
+		var s: Array = sides.get(id, [])
+		check(not s.is_empty(), "region %s produced pieces" % id)
+		check(s.has(-1) == (rg["mirror"] and abs(float(rg["angle"])) > .04), "region %s mirrored roots only when mirror && |angle| > .04" % id)
+		check(s.count(1) == s.count(-1) or not s.has(-1), "region %s has paired sides" % id)
+	# A near-zero angle never mirrors, even with mirror = true.
+	var g := growth_doc(Creature.seeds()["Zancuda"])
+	g["regions"][0]["angle"] = .02
+	c.load_genome(g)
+	check(c.growth.filter(func(e): return e["region_id"] == "region-1" and e["side"] == -1).is_empty(), "angle .02 does not mirror")
+	# v3 fixture: 9 horns mirrored on the torso.
+	c.load_genome(FileAccess.get_file_as_string(_abs(FIXTURES + "v3.json")))
+	check(c.growth.filter(func(e): return e["side"] == -1).size() == 9, "v3 has 9 mirrored roots")
+	print("growth placement max error " + str(maxerr))
+	c.queue_free()
 
 
 func _test_every_part() -> void:
