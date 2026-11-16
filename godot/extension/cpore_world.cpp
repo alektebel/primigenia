@@ -1,0 +1,342 @@
+// Stage world glue: Variant <-> C structs only. The simulation is cp_stage_*.
+#include "cpore_world.h"
+#include "convert.h"
+#include <godot_cpp/variant/vector2.hpp>
+#include <godot_cpp/variant/vector3.hpp>
+#include <cstring>
+
+using namespace godot;
+
+namespace {
+
+const char *const PROFILE_INTS[] = {"mouth", "charge", "spit", "tail", "guard"};
+
+Dictionary profile_to_dict(const CpCombatProfile &p) {
+    Dictionary d;
+    d["mouth"] = int(p.mouth); d["charge"] = int(p.charge); d["spit"] = int(p.spit);
+    d["tail"] = int(p.tail); d["guard"] = int(p.guard);
+    d["hp"] = double(p.hp); d["stamina"] = double(p.stamina); d["speed"] = double(p.speed);
+    d["radius_cm"] = int(p.radius_cm);
+    return d;
+}
+
+// Missing keys keep the value already in `p`. Wrong types or ranges fail.
+bool profile_from_dict(const Variant &v, CpCombatProfile &p) {
+    if (v.get_type() != Variant::DICTIONARY) return false;
+    const Dictionary d = v;
+    uint8_t *levels[] = {&p.mouth, &p.charge, &p.spit, &p.tail, &p.guard};
+    for (int i = 0; i < 5; ++i) {
+        if (!d.has(PROFILE_INTS[i])) continue;
+        int64_t n;
+        if (!cpore::to_int(d[PROFILE_INTS[i]], 0, 255, n)) return false;  // range (<= 5) is checked by cp_stage_reset
+        *levels[i] = uint8_t(n);
+    }
+    if (d.has("hp") && !cpore::to_float(d["hp"], p.hp)) return false;
+    if (d.has("stamina") && !cpore::to_float(d["stamina"], p.stamina)) return false;
+    if (d.has("speed") && !cpore::to_float(d["speed"], p.speed)) return false;
+    if (d.has("radius_cm")) {
+        int64_t n;
+        if (!cpore::to_int(d["radius_cm"], 0, 65535, n)) return false;
+        p.radius_cm = uint16_t(n);
+    }
+    return true;
+}
+
+Dictionary setup_to_dict(const CpStageSetup &s) {
+    Dictionary d;
+    d["seed"] = int64_t(s.seed); d["terrain_seed"] = int64_t(s.terrain_seed);
+    d["terrain"] = int(s.terrain);
+    d["nest"] = Vector2(s.nest_x, s.nest_z);
+    d["flat_height"] = double(s.flat_height);
+    d["water"] = Vector3(s.water_x, s.water_z, s.water_radius);
+    d["player"] = profile_to_dict(s.player);
+    Array wild;
+    for (int i = 0; i < s.n; ++i) {
+        const CpStageSpawn &c = s.wild[i];
+        Dictionary w;
+        w["x"] = double(c.x); w["z"] = double(c.z);
+        w["home_x"] = double(c.home_x); w["home_z"] = double(c.home_z);
+        w["species"] = int(c.species); w["bot"] = int(c.bot);
+        w["profile"] = profile_to_dict(c.profile);
+        wild.append(w);
+    }
+    d["wild"] = wild;
+    Array obstacles;
+    for (int i = 0; i < s.n_obstacles; ++i) {
+        const CpStageObstacle &o = s.obstacles[i];
+        Dictionary od;
+        od["x"] = double(o.x); od["z"] = double(o.z); od["r"] = double(o.r); od["type"] = int(o.type);
+        obstacles.append(od);
+    }
+    d["obstacles"] = obstacles;
+    return d;
+}
+
+bool vec2_from(const Variant &v, float &x, float &z) {
+    if (v.get_type() != Variant::VECTOR2) return false;
+    const Vector2 p = v;
+    x = p.x; z = p.y;
+    return std::isfinite(x) && std::isfinite(z);
+}
+
+// Fills `s` from the dictionary over `defaults`. Returns false on any type/shape error.
+bool setup_from_dict(const Dictionary &d, CpStageSetup &s) {
+    static const char *const known[] = {"seed", "terrain_seed", "terrain", "nest", "flat_height",
+                                        "water", "player", "wild", "obstacles"};
+    const Array keys = d.keys();
+    for (int i = 0; i < keys.size(); ++i) {
+        bool ok = false;
+        if (keys[i].get_type() == Variant::STRING || keys[i].get_type() == Variant::STRING_NAME) {
+            const String k = keys[i];
+            for (const char *name : known) if (k == name) ok = true;
+        }
+        if (!ok) return false;
+    }
+    int64_t n;
+    if (d.has("seed")) { if (!cpore::to_int(d["seed"], 0, 4294967295LL, n)) return false; s.seed = uint32_t(n); }
+    if (d.has("terrain_seed")) { if (!cpore::to_int(d["terrain_seed"], 0, 4294967295LL, n)) return false; s.terrain_seed = uint32_t(n); }
+    if (d.has("terrain")) { if (!cpore::to_int(d["terrain"], -2147483648LL, 2147483647LL, n)) return false; s.terrain = int(n); }
+    if (d.has("nest") && !vec2_from(d["nest"], s.nest_x, s.nest_z)) return false;
+    if (d.has("flat_height") && !cpore::to_float(d["flat_height"], s.flat_height)) return false;
+    if (d.has("water")) {
+        if (d["water"].get_type() != Variant::VECTOR3) return false;
+        const Vector3 w = d["water"];
+        s.water_x = w.x; s.water_z = w.y; s.water_radius = w.z;
+    }
+    if (d.has("player") && !profile_from_dict(d["player"], s.player)) return false;
+    if (d.has("wild")) {
+        if (d["wild"].get_type() != Variant::ARRAY) return false;
+        const Array wild = d["wild"];
+        if (wild.size() > CP_STAGE_MAX_WILD) return false;
+        s.n = wild.size();
+        for (int i = 0; i < s.n; ++i) {
+            if (wild[i].get_type() != Variant::DICTIONARY) return false;
+            const Dictionary w = wild[i];
+            CpStageSpawn c;
+            std::memset(&c, 0, sizeof c);
+            c.bot = -1;
+            c.profile = s.player;
+            if (w.has("x") && !cpore::to_float(w["x"], c.x)) return false;
+            if (w.has("z") && !cpore::to_float(w["z"], c.z)) return false;
+            c.home_x = c.x; c.home_z = c.z;
+            if (w.has("home_x") && !cpore::to_float(w["home_x"], c.home_x)) return false;
+            if (w.has("home_z") && !cpore::to_float(w["home_z"], c.home_z)) return false;
+            if (w.has("species")) { if (!cpore::to_int(w["species"], -2147483648LL, 2147483647LL, n)) return false; c.species = int(n); }
+            if (w.has("bot")) { if (!cpore::to_int(w["bot"], -2147483648LL, 2147483647LL, n)) return false; c.bot = int(n); }
+            if (c.species >= 0 && c.species < 4) c.profile = CP_STAGE_SPECIES[c.species].profile;
+            if (w.has("profile") && !profile_from_dict(w["profile"], c.profile)) return false;
+            s.wild[i] = c;
+        }
+    }
+    if (d.has("obstacles")) {
+        if (d["obstacles"].get_type() != Variant::ARRAY) return false;
+        const Array obs = d["obstacles"];
+        if (obs.size() > CP_STAGE_MAX_OBSTACLES) return false;
+        s.n_obstacles = obs.size();
+        for (int i = 0; i < s.n_obstacles; ++i) {
+            if (obs[i].get_type() != Variant::DICTIONARY) return false;
+            const Dictionary o = obs[i];
+            CpStageObstacle c{};
+            if (o.has("x") && !cpore::to_float(o["x"], c.x)) return false;
+            if (o.has("z") && !cpore::to_float(o["z"], c.z)) return false;
+            if (o.has("r") && !cpore::to_float(o["r"], c.r)) return false;
+            if (o.has("type")) { if (!cpore::to_int(o["type"], -2147483648LL, 2147483647LL, n)) return false; c.type = int(n); }
+            s.obstacles[i] = c;
+        }
+    }
+    return true;
+}
+
+Dictionary order_to_dict(const CpStageInput &i) {
+    Dictionary d;
+    d["verb"] = int(i.verb); d["target"] = int(i.target); d["move"] = int(i.move);
+    d["dir"] = int(i.dir); d["sprint"] = int(i.sprint);
+    d["hx"] = int(i.hx); d["hz"] = int(i.hz);
+    d["x"] = double(i.x); d["z"] = double(i.z);
+    return d;
+}
+
+// Returns false if a field has the wrong type or a value that does not fit.
+bool input_from_dict(const Dictionary &d, CpStageInput &in) {
+    std::memset(&in, 0, sizeof in);
+    int64_t n;
+    struct IntField { const char *key; int32_t *out; };
+    const IntField fields[] = {{"verb", &in.verb}, {"target", &in.target}, {"move", &in.move}, {"dir", &in.dir}};
+    for (const IntField &f : fields) {
+        if (!d.has(f.key)) continue;
+        if (!cpore::to_int(d[f.key], -2147483648LL, 2147483647LL, n)) return false;
+        *f.out = int32_t(n);
+    }
+    if (d.has("sprint")) {
+        int b;
+        if (d["sprint"].get_type() == Variant::BOOL) b = bool(d["sprint"]) ? 1 : 0;
+        else if (!cpore::to_int(d["sprint"], -2147483648LL, 2147483647LL, n)) return false;
+        else b = int(n);
+        in.sprint = b;
+    }
+    if (d.has("hx")) { if (!cpore::to_int(d["hx"], -32768, 32767, n)) return false; in.hx = int16_t(n); }
+    if (d.has("hz")) { if (!cpore::to_int(d["hz"], -32768, 32767, n)) return false; in.hz = int16_t(n); }
+    if (d.has("x") && !cpore::to_float(d["x"], in.x)) return false;
+    if (d.has("z") && !cpore::to_float(d["z"], in.z)) return false;
+    return true;
+}
+
+Dictionary entity(const CpStageCreature &c, int id) {
+    Dictionary d;
+    d["id"] = id;
+    d["x"] = double(c.x); d["z"] = double(c.z); d["fx"] = double(c.fx); d["fz"] = double(c.fz);
+    d["hp"] = double(c.hp); d["stamina"] = double(c.stamina);
+    d["speed"] = double(c.speed); d["acceleration"] = double(c.acceleration); d["turn_rate"] = double(c.turn_rate);
+    d["home_x"] = double(c.home_x); d["home_z"] = double(c.home_z);
+    d["goal_x"] = double(c.goal_x); d["goal_z"] = double(c.goal_z);
+    d["species"] = int(c.species); d["dead"] = bool(c.dead); d["pivot"] = int(c.pivot);
+    d["returning"] = bool(c.returning); d["roam_ticks"] = int(c.roam_ticks);
+    d["hp_max"] = double(c.profile.hp); d["stamina_max"] = double(c.profile.stamina);
+    d["radius_cm"] = int(c.profile.radius_cm);
+    return d;
+}
+
+}  // namespace
+
+CporeWorld::CporeWorld() {
+    world.reset(new CpStageWorld());
+    observe_buffer.resize(256 * 1024);
+    CpStageSetup s;
+    cp_stage_setup_default(&s, 42);
+    cp_stage_reset(world.get(), &s);
+}
+
+void CporeWorld::_bind_methods() {
+    ClassDB::bind_static_method("CporeWorld", D_METHOD("version"), &CporeWorld::version);
+    ClassDB::bind_static_method("CporeWorld", D_METHOD("default_setup", "seed"), &CporeWorld::default_setup);
+    ClassDB::bind_static_method("CporeWorld", D_METHOD("default_profile"), &CporeWorld::default_profile);
+    ClassDB::bind_static_method("CporeWorld", D_METHOD("species"), &CporeWorld::species);
+    ClassDB::bind_static_method("CporeWorld", D_METHOD("order_error", "code"), &CporeWorld::order_error);
+    ClassDB::bind_method(D_METHOD("reset", "setup"), &CporeWorld::reset);
+    ClassDB::bind_method(D_METHOD("get_setup"), &CporeWorld::get_setup);
+    ClassDB::bind_method(D_METHOD("step", "input"), &CporeWorld::step);
+    ClassDB::bind_method(D_METHOD("command", "text"), &CporeWorld::command);
+    ClassDB::bind_method(D_METHOD("order", "input"), &CporeWorld::order);
+    ClassDB::bind_method(D_METHOD("state"), &CporeWorld::state);
+    ClassDB::bind_method(D_METHOD("observe"), &CporeWorld::observe);
+    ClassDB::bind_method(D_METHOD("hash"), &CporeWorld::hash);
+    ClassDB::bind_method(D_METHOD("height", "x", "z"), &CporeWorld::height);
+    ClassDB::bind_method(D_METHOD("ground", "x", "z"), &CporeWorld::ground);
+    ClassDB::bind_method(D_METHOD("can_walk", "x", "z", "nx", "nz", "radius"), &CporeWorld::can_walk);
+}
+
+int CporeWorld::version() { return CP_STAGE_VERSION; }
+
+Dictionary CporeWorld::default_setup(int64_t seed) {
+    CpStageSetup s;
+    cp_stage_setup_default(&s, uint32_t(seed));
+    return setup_to_dict(s);
+}
+
+Dictionary CporeWorld::default_profile() {
+    CpCombatProfile p;
+    cp_combat_profile_default(&p);
+    return profile_to_dict(p);
+}
+
+Array CporeWorld::species() {
+    Array a;
+    for (int i = 0; i < 4; ++i) {
+        const CpStageSpecies &s = CP_STAGE_SPECIES[i];
+        Dictionary d;
+        d["id"] = i; d["name"] = String(s.name);
+        d["speed"] = double(s.speed); d["sight"] = double(s.sight); d["roam"] = double(s.roam);
+        d["hostile"] = double(s.hostile); d["temperament"] = int(s.temperament);
+        d["profile"] = profile_to_dict(s.profile);
+        a.append(d);
+    }
+    return a;
+}
+
+int CporeWorld::reset(const Dictionary &setup) {
+    int64_t seed = 42;
+    if (setup.has("seed") && !cpore::to_int(setup["seed"], 0, 4294967295LL, seed)) return -1;
+    CpStageSetup s;
+    cp_stage_setup_default(&s, uint32_t(seed));
+    if (!setup_from_dict(setup, s)) return -1;
+    // cp_stage_reset validates before it touches the world, so a failure keeps the old state.
+    return cp_stage_reset(world.get(), &s);
+}
+
+Dictionary CporeWorld::get_setup() const { return setup_to_dict(world->setup); }
+
+String CporeWorld::step(const Dictionary &input) {
+    CpStageInput in;
+    if (!input_from_dict(input, in)) return String();
+    return cpore::hash_text(cp_stage_step(world.get(), &in));
+}
+
+int CporeWorld::command(const String &text) { return cp_stage_command(world.get(), text.utf8().get_data()); }
+
+int CporeWorld::order(const Dictionary &input) {
+    CpStageInput in;
+    if (!input_from_dict(input, in)) return -1;
+    return cp_stage_order(world.get(), &in);
+}
+
+String CporeWorld::order_error(int code) { return String(cp_stage_order_error(code)); }
+
+Dictionary CporeWorld::state() const {
+    const CpStageWorld &w = *world;
+    Dictionary d;
+    d["tick"] = int64_t(w.tick); d["clock"] = int64_t(w.clock);
+    d["hash"] = cpore::hash_text(cp_stage_hash(&w));
+    d["active"] = int(w.active); d["started"] = int(w.started); d["outcome"] = int(w.outcome);
+    d["respawn_ticks"] = int(w.respawn_ticks); d["cooldown_ticks"] = int(w.cooldown_ticks);
+    d["error"] = int(w.last_error);
+    d["arena"] = Vector2(w.arena_x, w.arena_z);
+    d["order"] = order_to_dict(w.order);
+    Array accepted;
+    accepted.append(int(w.accepted[0])); accepted.append(int(w.accepted[1]));
+    d["accepted"] = accepted;
+    Array entities;
+    entities.append(entity(w.player, 0));
+    for (int i = 0; i < w.setup.n; ++i) entities.append(entity(w.wild[i], i + 1));
+    d["entities"] = entities;
+    Dictionary combat;
+    combat["tick"] = int(w.combat.tick);
+    Array fighters;
+    if (w.active >= 0) {
+        for (int i = 0; i < w.combat.n; ++i) {
+            const CpCombatCreature &c = w.combat.c[i];
+            Dictionary f;
+            f["world_id"] = i == 0 ? 0 : w.active + 1;
+            f["x"] = double(w.arena_x + c.x - 20); f["z"] = double(w.arena_z + c.y - 20);
+            f["fx"] = double(c.fx); f["fz"] = double(c.fy);
+            f["hp"] = double(c.hp); f["stamina"] = double(c.stamina);
+            f["move"] = int(c.move); f["phase"] = int(c.phase);
+            f["phase_tick"] = int(c.ptick); f["phase_length"] = int(c.plen);
+            fighters.append(f);
+        }
+    }
+    combat["fighters"] = fighters;
+    Array events;
+    for (int i = 0; i < w.combat.n_ev; ++i) {
+        const CpCombatEvent &e = w.combat.ev[i];
+        Dictionary ev;
+        ev["type"] = int(e.type); ev["a"] = int(e.a); ev["b"] = int(e.b);
+        ev["move"] = int(e.move); ev["amount"] = double(e.amount);
+        events.append(ev);
+    }
+    combat["events"] = events;
+    d["combat"] = combat;
+    return d;
+}
+
+String CporeWorld::observe() {
+    const int n = cp_stage_observe(world.get(), observe_buffer.data(), observe_buffer.size());
+    if (n < 0) return String();
+    return String::utf8(observe_buffer.data(), n);
+}
+
+String CporeWorld::hash() const { return cpore::hash_text(cp_stage_hash(world.get())); }
+double CporeWorld::height(double x, double z) const { return cp_stage_height(world.get(), float(x), float(z)); }
+double CporeWorld::ground(double x, double z) const { return cp_stage_ground(world.get(), float(x), float(z)); }
+bool CporeWorld::can_walk(double x, double z, double nx, double nz, double radius) const {
+    return cp_stage_can_walk(world.get(), float(x), float(z), float(nx), float(nz), float(radius)) != 0;
+}
