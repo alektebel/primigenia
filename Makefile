@@ -290,3 +290,9 @@ godot-evidence: godot
 godot-ui-test:
 	nice -n 10 timeout 600 $(GODOT) --headless --path godot --script res://tests/ui_test.gd
 .PHONY: godot-ui-test
+# G76 M2: Godot studio headless tests, then the web validator cross-check on what Godot wrote.
+.PHONY: godot-studio-test
+godot-studio-test:
+	@mkdir -p $(BUILD)/studio-godot
+	nice -n 10 timeout 600 $(GODOT) --headless --path godot/studio --script res://tests/test_studio.gd
+	node godot/studio/tests/node_check.js

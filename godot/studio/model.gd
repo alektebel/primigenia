@@ -1,0 +1,350 @@
+extends RefCounted
+## Studio document model: every UI action goes through here, so headless tests drive the same code.
+## History is a list of canonical JSON snapshots; an edit is a transaction (begin/end), so a drag is ONE undo step.
+
+const Genome := preload("genome.gd")
+const PartsDB := preload("parts_db.gd")
+
+signal changed(live: bool)       # document changed (live=true while a transaction is open)
+signal selection_changed
+signal history_changed
+signal message(text: String)
+
+const MAX_HISTORY := 100
+const MAX_NODES_EDIT := 14   # same cap as the web studio's end-of-spine growth
+
+var parts_db: RefCounted
+var doc: Dictionary = {}
+var selected := -1
+var mode := "build"          # build | paint | test
+var playing := false
+var _hist: Array = []
+var _fut: Array = []
+var _depth := 0
+var _tx_start := ""
+var dirty := false
+
+const SEEDS := {
+	"Merodeador": {"name": "Merodeador", "nodes": [{"y": 1.6, "z": -3.3, "r": .06}, {"y": 1.7, "z": -2.4, "r": .2}, {"y": 1.85, "z": -1.5, "r": .4}, {"y": 2.0, "z": -.6, "r": .7}, {"y": 2.05, "z": .4, "r": .78}, {"y": 2.15, "z": 1.3, "r": .62}, {"y": 2.5, "z": 2.0, "r": .46}, {"y": 2.75, "z": 2.7, "r": .56}],
+		"parts": [{"type": "fauces", "t": 1, "ang": 0, "size": 1.15}, {"type": "ojo", "t": .9, "ang": .95, "size": 1}, {"type": "cuerno", "t": .87, "ang": .4, "size": 1, "len": .9, "curve": .6}, {"type": "pata", "t": .44, "ang": 2.1, "w": .23, "k": [.3, -.55, .4], "f": [.4, -1.35, -.05]}, {"type": "pata", "t": .7, "ang": 2.1, "w": .2, "k": [.25, -.7, -.3], "f": [.35, -1.45, .05]}, {"type": "pua", "t": .5, "ang": 0, "size": 1, "len": .5}, {"type": "pua", "t": .58, "ang": 0, "size": 1, "len": .6}, {"type": "pua", "t": .66, "ang": 0, "size": 1, "len": .5}],
+		"skin": {"pat": 1, "cA": "#9a3b28", "cB": "#2a1414", "cC": "#e6cfa0", "wet": .3, "scale": 7}},
+	"Zancuda": {"name": "Zancuda", "nodes": [{"y": 2.8, "z": -1.9, "r": .08}, {"y": 2.9, "z": -1.1, "r": .35}, {"y": 2.9, "z": -.2, "r": .72}, {"y": 3.0, "z": .6, "r": .6}, {"y": 3.6, "z": 1.1, "r": .3}, {"y": 4.4, "z": 1.25, "r": .24}, {"y": 5.1, "z": 1.5, "r": .26}, {"y": 5.35, "z": 2.0, "r": .36}],
+		"parts": [{"type": "pico", "t": 1, "ang": 0, "size": 1}, {"type": "ojo", "t": .92, "ang": 1.1, "size": 1.25}, {"type": "zanca", "t": .4, "ang": 2.2, "w": .14, "k": [.1, -1.05, .45], "f": [.18, -2.2, .05]}, {"type": "aleta", "t": .42, "ang": 0, "size": 1.3}, {"type": "antena", "t": .9, "ang": .35, "size": 1, "len": .9}, {"type": "cresta", "t": .93, "ang": 0, "size": .9}],
+		"skin": {"pat": 3, "cA": "#3d5fa8", "cB": "#8a4fb0", "cC": "#f0e6c8", "wet": .45, "scale": 9}},
+	"Babosa": {"name": "Babosa", "nodes": [{"y": .5, "z": -2, "r": .15}, {"y": .6, "z": -1.1, "r": .5}, {"y": .7, "z": -.1, "r": .72}, {"y": .8, "z": .9, "r": .66}, {"y": 1.2, "z": 1.6, "r": .5}, {"y": 1.5, "z": 2.1, "r": .5}],
+		"parts": [{"type": "romo", "t": 1, "ang": 0, "size": 1.2}, {"type": "tallo", "t": .88, "ang": .5, "size": 1.2, "len": .8}, {"type": "maza", "t": 0, "ang": 0, "size": .9}, {"type": "placa", "t": .4, "ang": 0, "size": 1}, {"type": "placa", "t": .55, "ang": 0, "size": 1.1}],
+		"skin": {"pat": 2, "cA": "#5d8a3a", "cB": "#203818", "cC": "#e9e2a8", "wet": .7, "scale": 11}},
+}
+const PALETTES := [["#9a3b28", "#2a1414", "#e6cfa0"], ["#2f8a5a", "#12382c", "#e9e2a8"], ["#3d5fa8", "#8a4fb0", "#f0e6c8"], ["#c9892b", "#4a2a12", "#f3e3b8"], ["#6c7440", "#2f3320", "#d8cfa6"], ["#22313f", "#d9a441", "#c8d2d8"], ["#b84a6a", "#3a1830", "#f2d9c9"]]
+const PATTERNS := ["liso", "rayas", "manchas", "veteado"]
+
+func _init(db: RefCounted = null) -> void:
+	parts_db = db if db else PartsDB.new()
+	new_from_seed("Merodeador", false)
+
+static func seed_doc(seed_name: String) -> Dictionary:
+	var d: Dictionary = SEEDS[seed_name].duplicate(true)
+	d["schema"] = Genome.SCHEMA
+	d["regions"] = []
+	return d
+
+## Canonical text of a document (ints and floats are not distinguished, as in JSON itself).
+static func snapshot_of(d: Dictionary) -> String:
+	return JSON.stringify(JSON.parse_string(JSON.stringify(d)), "", true)
+
+func snapshot() -> String:
+	return snapshot_of(doc)
+
+# ---------------------------------------------------------------- history
+func begin() -> void:
+	if _depth == 0:
+		_tx_start = snapshot()
+	_depth += 1
+
+func end() -> void:
+	_depth -= 1
+	if _depth > 0:
+		return
+	_depth = 0
+	var now := snapshot()
+	if now == _tx_start:
+		return
+	_hist.append(_tx_start)   # state before the edit
+	if _hist.size() > MAX_HISTORY:
+		_hist.pop_front()
+	_fut.clear()
+	dirty = true
+	history_changed.emit()
+	changed.emit(false)
+
+## Abort an open transaction (Escape during a drag), restoring the starting state.
+func cancel() -> void:
+	if _depth == 0:
+		return
+	_depth = 0
+	doc = JSON.parse_string(_tx_start)
+	_clamp_selection()
+	changed.emit(false)
+
+func can_undo() -> bool:
+	return _hist.size() > 0
+
+func can_redo() -> bool:
+	return _fut.size() > 0
+
+func undo() -> bool:
+	if _hist.is_empty():
+		return false
+	_fut.append(snapshot())
+	doc = JSON.parse_string(_hist.pop_back())
+	_after_restore()
+	return true
+
+func redo() -> bool:
+	if _fut.is_empty():
+		return false
+	_hist.append(snapshot())
+	doc = JSON.parse_string(_fut.pop_back())
+	_after_restore()
+	return true
+
+func _after_restore() -> void:
+	dirty = true
+	_clamp_selection()
+	history_changed.emit()
+	changed.emit(false)
+
+func _clamp_selection() -> void:
+	if selected >= doc["parts"].size():
+		selected = -1
+		selection_changed.emit()
+
+func clear_history() -> void:
+	_hist.clear()
+	_fut.clear()
+	history_changed.emit()
+
+func _touch() -> void:
+	changed.emit(_depth > 0)
+
+# ---------------------------------------------------------------- document
+func new_from_seed(seed_name: String, record := true) -> void:
+	_replace(seed_doc(seed_name), record)
+
+func _replace(d: Dictionary, record: bool) -> void:
+	begin()
+	doc = d
+	selected = -1
+	selection_changed.emit()
+	end()
+	if not record:
+		clear_history()
+		dirty = false
+		changed.emit(false)
+
+## Import any /1../4 document through the validator. Returns {ok, error, warnings}.
+func import_doc(input) -> Dictionary:
+	var res := Genome.parse(input, parts_db.by_id)
+	if res["ok"]:
+		_replace(res["genome"], true)
+	return res
+
+func get_doc() -> Dictionary:
+	return doc.duplicate(true)
+
+func validate() -> Dictionary:
+	return Genome.validate(doc, parts_db.by_id)
+
+func to_json() -> String:
+	return JSON.stringify(doc, " ", true)
+
+func set_name_(n: String) -> void:
+	begin()
+	doc["name"] = n.substr(0, 80)
+	end()
+
+func select(i: int) -> void:
+	if i == selected:
+		return
+	selected = i
+	selection_changed.emit()
+
+func set_mode(m: String) -> void:
+	mode = m
+	if m != "build":
+		select(-1)
+	if m != "test":
+		playing = false
+	changed.emit(false)
+
+func set_playing(p: bool) -> void:
+	playing = p and mode == "test"
+	changed.emit(false)
+
+# ---------------------------------------------------------------- parts
+const LEG_MIN_SIN := .2
+const MID_MIN_SIN := .14
+
+## Web `place` rule: abs(ang), keep legs off the midline and mid parts snapped to it.
+func _fit_ang(type: String, ang: float) -> float:
+	var a := absf(ang)
+	if parts_db.is_lateral(type):
+		if absf(sin(a)) < LEG_MIN_SIN:
+			a = .2 if a < 1.57 else PI - .2
+	elif absf(sin(a)) < MID_MIN_SIN:
+		a = 0.0 if cos(a) > 0 else PI
+	return a
+
+func add_part(type: String, t := -1.0, ang := NAN, params := {}) -> int:
+	if not parts_db.has(type) or doc["parts"].size() >= 256:
+		return -1
+	begin()
+	var p: Dictionary = parts_db.defaults(type)
+	if t >= 0.0:
+		p["t"] = clampf(t, 0.0, 1.0)
+	if not is_nan(ang):
+		p["ang"] = _fit_ang(type, ang)
+	for k in params:
+		p[k] = params[k]
+	doc["parts"].append(p)
+	selected = doc["parts"].size() - 1
+	selection_changed.emit()
+	_touch()
+	end()
+	return selected
+
+func remove_part(i: int) -> bool:
+	if i < 0 or i >= doc["parts"].size():
+		return false
+	begin()
+	doc["parts"].remove_at(i)
+	if selected == i:
+		selected = -1
+		selection_changed.emit()
+	elif selected > i:
+		selected -= 1
+		selection_changed.emit()
+	_touch()
+	end()
+	return true
+
+func place_part(i: int, t: float, ang: float) -> void:
+	begin()
+	var p: Dictionary = doc["parts"][i]
+	p["t"] = clampf(t, 0.0, 1.0)
+	p["ang"] = _fit_ang(p["type"], ang)
+	_touch()
+	end()
+
+func nudge_part(i: int, dt: float, dang: float) -> void:
+	begin()
+	var p: Dictionary = doc["parts"][i]
+	p["t"] = clampf(p["t"] + dt, 0.0, 1.0)
+	p["ang"] = clampf(p["ang"] + dang, 0.0, PI)
+	_touch()
+	end()
+
+func set_param(i: int, key: String, value: float) -> void:
+	if not PartsDB.RANGES.has(key):
+		return
+	begin()
+	var p: Dictionary = doc["parts"][i]
+	var r: Array = PartsDB.RANGES[key]
+	p[key] = clampf(value, r[0], r[1])
+	_touch()
+	end()
+
+# ---------------------------------------------------------------- spine
+## Port of moveNode(): neighbour distance clamp .3..1.95, grows or shrinks the end vertebrae.
+## Returns the index of the node being dragged (it changes when a vertebra is added at an end).
+func move_node(i: int, y: float, z: float) -> int:
+	begin()
+	var out := _move_node(i, y, z)
+	end()
+	return out
+
+func _move_node(i: int, y: float, z: float) -> int:
+	var N: Array = doc["nodes"]
+	var n: Dictionary = N[i]
+	var a := Vector2(y, z)
+	for j in [i - 1, i + 1]:
+		if j < 0 or j >= N.size():
+			continue
+		var b := Vector2(N[j]["y"], N[j]["z"])
+		var d := a.distance_to(b)
+		if d < .3 or d > 1.95:
+			a = b + (a - b).normalized() * clampf(d, .3, 1.95)
+	n["y"] = clampf(a.x, n["r"] + .1, 20.0)
+	n["z"] = clampf(a.y, -30.0, 30.0)
+	var out := i
+	var is_end: bool = i == 0 or i == N.size() - 1
+	if is_end:
+		var j := 1 if i == 0 else N.size() - 2
+		var m: Dictionary = N[j]
+		var d := Vector2(n["y"] - m["y"], n["z"] - m["z"]).length()
+		if d > 1.5 and N.size() < MAX_NODES_EDIT:
+			N.insert(1 if i == 0 else N.size() - 1, {"y": (n["y"] + m["y"]) / 2, "z": (n["z"] + m["z"]) / 2, "r": (n["r"] + m["r"]) / 2})
+			if i != 0:
+				out = N.size() - 1
+		elif d < .34 and N.size() > 4:
+			var k := 2 if i == 0 else N.size() - 3
+			var q: Dictionary = N[k]
+			if Vector2(n["y"] - q["y"], n["z"] - q["z"]).length() < 1.45:
+				N.remove_at(j)
+				if i != 0:
+					out = N.size() - 1
+	_touch()
+	return out
+
+func set_node_radius(i: int, r: float) -> void:
+	begin()
+	doc["nodes"][i]["r"] = clampf(r, .05, 1.7)
+	_touch()
+	end()
+
+func can_add_vertebra() -> bool:
+	return doc["nodes"].size() < 32
+
+func can_remove_vertebra() -> bool:
+	return doc["nodes"].size() > 4
+
+## Insert a vertebra after node i (midpoint of segment i..i+1).
+func add_vertebra(i: int) -> bool:
+	var N: Array = doc["nodes"]
+	if not can_add_vertebra() or i < 0 or i >= N.size() - 1:
+		return false
+	begin()
+	var a: Dictionary = N[i]; var b: Dictionary = N[i + 1]
+	N.insert(i + 1, {"y": (a["y"] + b["y"]) / 2, "z": (a["z"] + b["z"]) / 2, "r": (a["r"] + b["r"]) / 2})
+	_touch()
+	end()
+	return true
+
+func remove_vertebra(i: int) -> bool:
+	var N: Array = doc["nodes"]
+	if not can_remove_vertebra() or i < 0 or i >= N.size():
+		return false
+	begin()
+	N.remove_at(i)
+	_touch()
+	end()
+	return true
+
+# ---------------------------------------------------------------- paint
+func set_skin(key: String, value) -> void:
+	begin()
+	var s: Dictionary = doc["skin"]
+	match key:
+		"pat": s[key] = clampi(int(value), 0, 3)
+		"wet": s[key] = clampf(value, 0.0, 1.0)
+		"scale": s[key] = clampf(value, 3.0, 14.0)
+		"cA", "cB", "cC": s[key] = str(value).to_lower()
+	_touch()
+	end()
+
+func apply_palette(i: int) -> void:
+	begin()
+	var p: Array = PALETTES[i]
+	doc["skin"]["cA"] = p[0]; doc["skin"]["cB"] = p[1]; doc["skin"]["cC"] = p[2]
+	_touch()
+	end()
