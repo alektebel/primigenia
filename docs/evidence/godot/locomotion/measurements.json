@@ -66,8 +66,34 @@
       "com_single_minus_double_mm": 38.0
     }
   },
-  "checks": 192,
+  "checks": 216,
   "failures": 0,
+  "feel_turning": {
+    "biped": {
+      "pivot_roll_deg": 1.38,
+      "spine_end_to_end_deg": 0.0
+    },
+    "heavy_quadruped": {
+      "pivot_roll_deg": 1.43,
+      "spine_end_to_end_deg": 26.38
+    },
+    "hexapod": {
+      "pivot_roll_deg": 0.5,
+      "spine_end_to_end_deg": 14.22
+    },
+    "horizontal_biped": {
+      "pivot_roll_deg": 2.46,
+      "spine_end_to_end_deg": 0.0
+    },
+    "light_quadruped": {
+      "pivot_roll_deg": 7.27,
+      "spine_end_to_end_deg": 20.76
+    },
+    "wader": {
+      "pivot_roll_deg": 0.86,
+      "spine_end_to_end_deg": 0.0
+    }
+  },
   "foot_slide_mm": {
     "biped": {
       "10 Hz world ticks": 0.0,
@@ -106,7 +132,7 @@
       "slalom at speed": 0.0,
       "slow walk": 0.0,
       "start-stop": 0.0,
-      "steps": 2412,
+      "steps": 2411,
       "top speed": 0.0,
       "uphill 20%": 0.0,
       "walk": 0.0
@@ -134,7 +160,7 @@
       "slalom at speed": 0.0,
       "slow walk": 0.0,
       "start-stop": 0.0,
-      "steps": 899,
+      "steps": 901,
       "top speed": 0.0,
       "uphill 20%": 0.0,
       "walk": 0.0
@@ -327,7 +353,7 @@
       "airborne_pct": 33.3,
       "cadence_hz": 2.847,
       "duty_measured": [
-        0.244,
+        0.242,
         0.244,
         0.244,
         0.242

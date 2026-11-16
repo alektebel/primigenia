@@ -123,7 +123,10 @@ func _build_stage() -> void:
 
 func _update_actors(dt: float) -> void:
 	for id in hosts:
-		hosts[id].update(dt, stage.sample(id))
+		var sm: Dictionary = stage.sample(id)
+		if id == 0:
+			sm["intent"] = player_input.intent_yaw()      # head and shoulders lead the body
+		hosts[id].update(dt, sm)
 	var p: Dictionary = stage.sample(0)
 	player_pos = p.pos
 	var occ := []

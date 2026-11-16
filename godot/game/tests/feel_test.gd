@@ -236,6 +236,8 @@ func scenario(name: String, duration: float, keys_fn: Callable, head_fn: Callabl
 	var prev_cam_rate := 0.0
 	var max_roll := 0.0
 	var no_foot := 0
+	var no_contact := 0
+	var neck_t := -1.0          # first time after t = 2 s that the head has turned 0.05 rad
 	var max_speed := 0.0
 	var max_rate_jump := 0.0
 	var lag_sum := 0.0
@@ -263,6 +265,7 @@ func scenario(name: String, duration: float, keys_fn: Callable, head_fn: Callabl
 		input.view_yaw = cam.view_yaw
 		stage.advance(FRAME)
 		var sm: Dictionary = stage.sample(0)
+		sm["intent"] = atan2(ov.head.x, ov.head.y) if ov.head != null else input.intent_yaw()
 		host.update(FRAME, sm)
 		await process_frame          # the skeleton (and the hip attachments) update once per frame, as in the game
 		var r: Dictionary = cam.update({"x": sm.pos.x, "z": sm.pos.z, "yaw": sm.yaw, "speed": sm.speed, "vx": sm.vel.x, "vz": sm.vel.z}, null, false, FRAME, 1.78)
@@ -294,10 +297,13 @@ func scenario(name: String, duration: float, keys_fn: Callable, head_fn: Callabl
 		lags.append(lag)
 		path.append(Vector2(sm.pos.x, sm.pos.z))
 		t_yaw.append(sm.yaw)
+		if ctl != null and t >= 2.0 and neck_t < 0.0 and absf(ctl.pose.neck.yaw) > 0.05:
+			neck_t = t - 2.0
 		if ctl != null and ctl.pose.has("roll"):
 			max_roll = maxf(max_roll, absf(rad_to_deg(ctl.pose.roll)))
 		if ctl != null and ctl.pose.has("contact"):
 			var any := false
+			var any_contact := false
 			var legs: Array = host.body.legs
 			var lids: Array = host.driver.desc.leg_ids
 			for j in lids.size():
@@ -306,6 +312,8 @@ func scenario(name: String, duration: float, keys_fn: Callable, head_fn: Callabl
 				stance_start.resize(legs.size())
 			for i in legs.size():
 				var flat: bool = ctl.pose.contact[i] and ctl.pose.foot_pitch[i] < 0.01
+				if ctl.pose.contact[i]:
+					any_contact = true
 				if ctl_start.size() != legs.size():
 					ctl_start.resize(legs.size())
 				if flat:
@@ -325,6 +333,8 @@ func scenario(name: String, duration: float, keys_fn: Callable, head_fn: Callabl
 						slide_max = maxf(slide_max, Vector2(gp.x - stance_start[i].x, gp.z - stance_start[i].z).length())
 				else:
 					stance_start[i] = null
+			if not any_contact and fi > 60:
+				no_contact += 1
 			if not any and fi > 60:
 				no_foot += 1
 	# camera lag: mean while the creature runs near its top speed
@@ -344,6 +354,8 @@ func scenario(name: String, duration: float, keys_fn: Callable, head_fn: Callabl
 	m["cam_lag_steady"] = lag_sum / maxf(lag_n, 1)
 	m["cam_lag_max"] = lags.max() if not lags.is_empty() else 0.0
 	m["frames_no_planted_foot"] = no_foot
+	m["frames_no_contact"] = no_contact
+	m["head_reaction_s"] = neck_t
 	m["max_roll_deg"] = max_roll
 	m["slide_mm"] = slide_max * 1000.0
 	m["hip_mismatch_mm"] = hip_err * 1000.0
@@ -497,3 +509,12 @@ class Gates:
 			var r: float = sc[k].body_yaw_rate_max_deg / maxf(sc[k].c_turn_rate_max_deg, 1.0)
 			if sc[k].c_turn_rate_max_deg > 1.0:
 				t.check(r <= 1.34, "%s: on-screen yaw rate <= 4/3 of the C rate (%.2f)" % [k, r])
+		# S5: locomotion turning
+		for k in sc:
+			t.check(sc[k].slide_mm < 20.0, "%s: planted-sole slide %.1f mm < 20" % [k, sc[k].slide_mm])
+			t.check(sc[k].max_roll_deg <= 12.5, "%s: roll %.1f deg <= 12.5 (quadruped bank limit 11.5 plus slope)" % [k, sc[k].max_roll_deg])
+			t.check(sc[k].frames_no_contact == 0, "%s: a foot is always in contact" % k)
+		for k in ["S", "click_behind"]:
+			t.check(sc[k].frames_no_planted_foot <= 8, "%s: frames without a flat planted foot %d <= 8 (was 55 and 25 on the base commit)" % [k, sc[k].frames_no_planted_foot])
+		t.check(sc.fig8.gait_changes <= 4, "figure eight: gait changes %d <= 2 per lobe" % sc.fig8.gait_changes)
+		t.check(sc.S.head_reaction_s <= 0.1, "the head starts turning at once: %.3f s to 0.05 rad after the key press" % sc.S.head_reaction_s)
