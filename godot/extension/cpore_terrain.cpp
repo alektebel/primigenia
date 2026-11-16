@@ -6,6 +6,7 @@
 #include <godot_cpp/variant/packed_float32_array.hpp>
 #include <godot_cpp/variant/vector3.hpp>
 #include <godot_cpp/variant/vector4.hpp>
+#include <algorithm>
 #include <vector>
 extern "C" {
 #include "cpore/terrain.h"
@@ -50,6 +51,7 @@ void CporeTerrain::_bind_methods() {
     ClassDB::bind_static_method("CporeTerrain", D_METHOD("defaults"), &CporeTerrain::defaults);
     ClassDB::bind_static_method("CporeTerrain", D_METHOD("validate", "params"), &CporeTerrain::validate);
     ClassDB::bind_static_method("CporeTerrain", D_METHOD("hash", "data"), &CporeTerrain::hash);
+    ClassDB::bind_static_method("CporeTerrain", D_METHOD("surface_maps", "data"), &CporeTerrain::surface_maps);
     ClassDB::bind_method(D_METHOD("generate", "params"), &CporeTerrain::generate);
     ClassDB::bind_method(D_METHOD("progress"), &CporeTerrain::progress);
 }
@@ -182,4 +184,91 @@ String CporeTerrain::hash(const Dictionary &data) {
     Vector4 v = data["volcano"];
     t.volcano_x_m = v.x; t.volcano_y_m = v.y; t.volcano_radius_m = v.z; t.crater_radius_m = v.w;
     return cpore::hash_text(cp_terrain_hash(&t));
+}
+
+namespace {
+float smoothstep(float a, float b, float x) {
+    float t = (x - a) / (b - a);
+    t = t < 0.f ? 0.f : (t > 1.f ? 1.f : t);
+    return t * t * (3.f - 2.f * t);
+}
+uint8_t byte01(float v) {
+    v = v < 0.f ? 0.f : (v > 1.f ? 1.f : v);
+    return uint8_t(std::floor(v * 255.f + 0.5f));
+}
+}  // namespace
+
+// Presentation maps only (not part of the deterministic simulation): material id, grass mask,
+// cavity and wetness packed as RGBA8, plus per-chunk height bounds for culling boxes.
+Dictionary CporeTerrain::surface_maps(const Dictionary &data) {
+    Dictionary out;
+    int64_t n;
+    float size_m;
+    if (!data.has("n") || !data.has("size_m") || !data.has("height") || !data.has("flow") || !data.has("material") || !data.has("water_level")) return out;
+    if (!cpore::to_int(data["n"], CP_TERRAIN_N_MIN, CP_TERRAIN_N_MAX, n) || !cpore::to_float(data["size_m"], size_m)) return out;
+    if (data["height"].get_type() != Variant::PACKED_FLOAT32_ARRAY || data["flow"].get_type() != Variant::PACKED_FLOAT32_ARRAY ||
+        data["water_level"].get_type() != Variant::PACKED_FLOAT32_ARRAY || data["material"].get_type() != Variant::PACKED_BYTE_ARRAY)
+        return out;
+    const PackedFloat32Array height = data["height"], flow = data["flow"], level = data["water_level"];
+    const PackedByteArray material = data["material"];
+    const int64_t count = n * n;
+    if (height.size() != count || flow.size() != count || level.size() != count || material.size() != count) return out;
+    const float *H = height.ptr();
+    const float *F = flow.ptr();
+    const float *L = level.ptr();
+    const uint8_t *M = material.ptr();
+    const int N = int(n);
+    const float cell = size_m / float(N);
+    auto at = [&](int i, int j) { i = i < 0 ? 0 : (i >= N ? N - 1 : i); j = j < 0 ? 0 : (j >= N ? N - 1 : j); return H[j * N + i]; };
+    PackedByteArray surface;
+    surface.resize(count * 4);
+    uint8_t *S = surface.ptrw();
+    const float lo = std::log10(1500.f), hi = std::log10(2.0e5f);
+    for (int j = 0; j < N; ++j) {
+        for (int i = 0; i < N; ++i) {
+            const int k = j * N + i;
+            const float h = H[k];
+            const float gx = (at(i + 1, j) - at(i - 1, j)) / (2.f * cell);
+            const float gy = (at(i, j + 1) - at(i, j - 1)) / (2.f * cell);
+            const float ny = 1.f / std::sqrt(1.f + gx * gx + gy * gy);
+            const bool pond = (L[k] - h > 0.5f) && h > 0.f;
+            float grass = 0.f;
+            if (M[k] == CP_TERR_MAT_MEADOW && !pond) grass = smoothstep(.72f, .86f, ny) * smoothstep(1.2f, 2.2f, h);
+            float curv = 0.f;
+            const int radii[2] = {2, 5};
+            for (int r : radii) {
+                const float rm = float(r) * cell;
+                const float lap = (at(i - r, j) + at(i + r, j) + at(i, j - r) + at(i, j + r) - 4.f * h) / (rm * rm);
+                curv += std::max(0.f, lap) * rm * 0.5f;
+            }
+            const float cavity = smoothstep(.025f, .26f, curv);
+            const float area = F[k] * size_m * size_m;
+            float wet = (std::log10(std::max(area, 1.f)) - lo) / (hi - lo);
+            wet = wet < 0.f ? 0.f : (wet > 1.f ? 1.f : wet);
+            uint8_t *px = S + size_t(k) * 4;
+            px[0] = M[k]; px[1] = byte01(grass); px[2] = byte01(cavity); px[3] = byte01(wet);
+        }
+    }
+    const int chunk = 64;
+    const int cps = (N + chunk - 1) / chunk;
+    PackedFloat32Array bounds;
+    bounds.resize(cps * cps * 2);
+    float *B = bounds.ptrw();
+    for (int cj = 0; cj < cps; ++cj) {
+        for (int ci = 0; ci < cps; ++ci) {
+            float mn = 1e30f, mx = -1e30f;
+            for (int b = 0; b <= chunk; ++b) {
+                for (int a = 0; a <= chunk; ++a) {
+                    const float v = at(ci * chunk + a, cj * chunk + b);
+                    mn = std::min(mn, v); mx = std::max(mx, v);
+                }
+            }
+            B[(cj * cps + ci) * 2] = mn;
+            B[(cj * cps + ci) * 2 + 1] = mx;
+        }
+    }
+    out["surface"] = surface;
+    out["chunk_bounds"] = bounds;
+    out["chunks_per_side"] = cps;
+    return out;
 }

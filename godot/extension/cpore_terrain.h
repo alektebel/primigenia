@@ -19,4 +19,6 @@ public:
     godot::Dictionary generate(const godot::Dictionary &params);
     godot::Dictionary progress() const;
     static godot::String hash(const godot::Dictionary &data);
+    // Derived render maps (see docs/godot/M0.md): {surface: RGBA8 n*n*4, chunk_bounds: min/max per 64-cell chunk}.
+    static godot::Dictionary surface_maps(const godot::Dictionary &data);
 };

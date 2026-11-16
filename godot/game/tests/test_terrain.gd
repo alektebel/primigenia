@@ -33,6 +33,8 @@ func run(t) -> void:
 			if level[k] < h[k]:
 				below += 1
 		t.eq(below, 0, "water_level >= height everywhere %s" % [c])
+		if c[1] == 1024:
+			t.shared["big"] = r
 		if c[0] == 42:
 			t.eq(CporeTerrain.hash(r), r.hash, "hash() recomputes the generated hash")
 			var bytes: PackedFloat32Array = r.height.duplicate()

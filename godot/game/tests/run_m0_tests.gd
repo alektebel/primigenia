@@ -6,11 +6,14 @@ const TESTS := [
 	"res://game/tests/test_terrain.gd",
 	"res://game/tests/test_world.gd",
 	"res://game/tests/test_project.gd",
+	"res://game/tests/test_ground.gd",
+	"res://game/tests/test_cache.gd",
 ]
 
 var checks := 0
 var failures := 0
 var current := ""
+var shared := {}  # data handed from one test to the next
 
 func check(ok: bool, what: String) -> bool:
 	checks += 1
