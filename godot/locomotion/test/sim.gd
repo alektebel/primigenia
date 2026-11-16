@@ -95,10 +95,18 @@ func _measure() -> void:
 				var ci: float = clamp((m.upper * m.upper + m.lower * m.lower - dd * dd) / (2.0 * m.upper * m.lower), -1.0, 1.0)
 				knee_mid.append(180.0 - rad_to_deg(acos(ci)))
 			max_stretch = max(max_stretch, sol.stretch)
+			# the point that must stay put is the ball of the foot, rebuilt from the
+			# IK-solved ankle and the heel-off angle the rig is told; the IK
+			# residual (ankle not reached) is added on top
+			var phi: float = p.foot_pitch[i]
+			var dirv: Vector3 = p.foot_dir[i]
+			var ball: Vector3 = sol.foot - dirv * (-m.toe * cos(phi) + m.ankle * sin(phi)) - Vector3.UP * (m.toe * sin(phi) + m.ankle * cos(phi))
+			var resid: float = (sol.foot as Vector3).distance_to(target)
 			if st.is_empty():
-				_stance[i] = {"leg": i, "t0": t, "p0": sol.foot, "q0": target, "slide": 0.0, "drift": 0.0}
+				_stance[i] = {"leg": i, "t0": t, "p0": ball, "a0": sol.foot, "q0": target, "slide": resid, "drift": 0.0, "ankle": 0.0}
 			else:
-				st.slide = max(st.slide, (sol.foot as Vector3).distance_to(st.p0))
+				st.slide = max(st.slide, ball.distance_to(st.p0) + resid)
+				st.ankle = max(st.ankle, (sol.foot as Vector3).distance_to(st.a0))
 				st.drift = max(st.drift, target.distance_to(st.q0))
 		else:
 			if not st.is_empty():
@@ -116,6 +124,13 @@ func _measure() -> void:
 			"com_y": com.y - float(ground.call(com.x, com.z)), "root_y": root.origin.y, "gait": p.gait, "fr": p.froude,
 			"pitch": p.pitch, "roll": p.roll, "duty": p.duty, "cadence": p.cadence, "stride": p.stride,
 			"neck": p.neck.duplicate(), "tail": p.tail.duplicate(), "com": com, "bounce": p.bounce})
+
+func max_ankle_travel(t_from := 0.0) -> float:
+	var s := 0.0
+	for st in steps:
+		if st.t0 >= t_from:
+			s = max(s, st.ankle)
+	return s
 
 func max_slide(t_from := 0.0) -> float:
 	var s := 0.0

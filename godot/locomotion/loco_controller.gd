@@ -101,7 +101,8 @@ func setup(morphology, ground_fn: Callable = Callable()) -> void:
 	for i in range(morph.legs.size()):
 		_legs.append({"theta": -float(_off[i]), "swing": false, "th0": 0.0, "th1": 1.0,
 			"foot": Vector3.ZERO, "from": Vector3.ZERO, "target": Vector3.ZERO, "g_to": 0.0,
-			"lift": 0.0, "load": 1.0, "s": 0.5, "u": 0.0, "force": false, "err": 0.0, "rate": 0.0, "t_td": 0.0})
+			"lift": 0.0, "load": 1.0, "s": 0.5, "u": 0.0, "force": false, "err": 0.0, "rate": 0.0, "t_td": 0.0,
+			"phi": 0.0, "dir": Vector3.BACK * -1.0, "ball": Vector3.ZERO})
 	_ready_ok = false
 
 func _gy(x: float, z: float) -> float:
@@ -138,6 +139,9 @@ func reset(pos: Vector3, yaw: float) -> void:
 		l.theta = -float(_off[i])
 		l.force = false
 		l.g_to = f.y - m.ankle
+		l.phi = 0.0
+		l.dir = basis.z
+		l.ball = Vector3(f.x, l.g_to, f.z) + basis.z * m.toe
 	for s in ["_b", "_c", "_sx", "_sz", "_y", "_p", "_lean", "_bank", "_neck_p", "_neck_y", "_tail_p", "_tail_y"]:
 		set(s, Vector2.ZERO)
 	_a = Vector2(_gy(pos.x, pos.z), 0.0)
@@ -218,6 +222,7 @@ func _sub(h: float, p: Vector3, yaw: float, v: Vector3, settle: bool) -> void:
 	for i in range(_legs.size()):
 		var m: Dictionary = morph.legs[i]
 		var lr: float = STRAIGHT * m.length
+		var lr_e: float = lr + 0.6 * m.toe     # toe-off adds reach
 		var off_x: float = abs(m.home.x - m.hip.x)     # sprawl
 		var off: float = abs(m.home.z - m.hip.z)       # feet carried ahead of or behind the hip
 		var d_lim: float = sqrt(max(0.36 * lr * lr - off_x * off_x, 0.0)) - off
@@ -226,10 +231,10 @@ func _sub(h: float, p: Vector3, yaw: float, v: Vector3, settle: bool) -> void:
 			stride_t = max(2.0 * 0.92 * d_lim, 0.1 * _ref_h) / duty_t
 			d_half = 0.5 * duty_t * stride_t / 0.92
 		var d_req: float = sqrt(off_x * off_x + (off + d_half) * (off + d_half))
-		var need: float = bounce_t * (1.0 - (sqrt(max(lr * lr - d_req * d_req, 0.0)) - _y_amp) / m.rest_h)
+		var need: float = bounce_t * (1.0 - (sqrt(max(lr_e * lr_e - d_req * d_req, 0.0)) - _y_amp) / m.rest_h)
 		if need > crouch_max:
 			var hh: float = m.rest_h * (1.0 - crouch_max / max(bounce_t, 0.05)) + _y_amp
-			var d_max: float = sqrt(max(lr * lr - hh * hh - off_x * off_x, 0.0))
+			var d_max: float = sqrt(max(lr_e * lr_e - hh * hh - off_x * off_x, 0.0))
 			if d_max - off < d_half:
 				stride_t = max(2.0 * 0.92 * (d_max - off), 0.1 * _ref_h) / duty_t
 			need = crouch_max
@@ -275,7 +280,9 @@ func _sub(h: float, p: Vector3, yaw: float, v: Vector3, settle: bool) -> void:
 				l.swing = true
 				l.th0 = l.theta
 				l.th1 = floor(l.theta) + 1.0
-				l.from = l.foot
+				l.from = _ankle_at(l, m, l.phi)
+				l.foot = l.from
+				l.phi = 0.0
 				l.lift = 0.0
 				l.u = 0.0
 				liftoff.emit(i, l.foot)
@@ -334,6 +341,9 @@ func _sub(h: float, p: Vector3, yaw: float, v: Vector3, settle: bool) -> void:
 				l.swing = false
 				l.foot = target
 				l.err = 0.0
+				l.phi = 0.0
+				l.dir = Vector3(basis.z.x, 0.0, basis.z.z)
+				l.ball = Vector3(target.x, l.g_to, target.z) + l.dir * m.toe
 				footfall.emit(i, target)
 		# load taken by this leg (ramps in after touchdown, out before lift-off)
 		if l.swing:
@@ -505,8 +515,25 @@ func _sub(h: float, p: Vector3, yaw: float, v: Vector3, settle: bool) -> void:
 		var m: Dictionary = morph.legs[i]
 		var hw: Vector3 = root * m.hip
 		var lmax: float = 0.995 * m.length
-		var dh := Vector2(hw.x - l.foot.x, hw.z - l.foot.z).length()
-		var dyv: float = hw.y - l.foot.y
+		# heel-off: raise the heel just as far as the leg needs to reach the ball
+		var phi_need := 0.0
+		if hw.distance_to(_ankle_at(l, m, 0.0)) > lmax:
+			var lo := 0.0
+			var hi := deg_to_rad(60.0)
+			if hw.distance_to(_ankle_at(l, m, hi)) > lmax:
+				phi_need = hi
+			else:
+				for _k in range(8):
+					var mid := 0.5 * (lo + hi)
+					if hw.distance_to(_ankle_at(l, m, mid)) > lmax:
+						lo = mid
+					else:
+						hi = mid
+				phi_need = hi
+		l.phi = max(phi_need, l.phi * exp(-h / 0.03))
+		var ank: Vector3 = _ankle_at(l, m, l.phi)
+		var dh := Vector2(hw.x - ank.x, hw.z - ank.z).length()
+		var dyv: float = hw.y - ank.y
 		if dh * dh + dyv * dyv > lmax * lmax:
 			var need: float = dyv - sqrt(max(lmax * lmax - dh * dh, 0.0))
 			if need > 0.3 * _ref_h or dh > 0.9 * lmax:
@@ -553,12 +580,19 @@ func _sub(h: float, p: Vector3, yaw: float, v: Vector3, settle: bool) -> void:
 	var feet := PackedVector3Array()
 	var contact: Array = []
 	var swing_u := PackedFloat32Array()
-	for l in _legs:
-		feet.append(l.foot)
+	var foot_pitch := PackedFloat32Array()
+	var contact_point := PackedVector3Array()
+	var foot_dir := PackedVector3Array()
+	for i in range(_legs.size()):
+		var l: Dictionary = _legs[i]
+		feet.append(l.foot if l.swing else _ankle_at(l, morph.legs[i], l.phi))
+		foot_pitch.append(0.0 if l.swing else l.phi)
+		contact_point.append(l.ball)
+		foot_dir.append(l.dir)
 		contact.append(not l.swing)
 		swing_u.append(l.u if l.swing else 0.0)
 	pose = {
-		"root": root, "feet": feet, "contact": contact, "swing_u": swing_u,
+		"root": root, "feet": feet, "foot_pitch": foot_pitch, "contact_point": contact_point, "foot_dir": foot_dir, "contact": contact, "swing_u": swing_u,
 		"station_yaw": st_yaw,
 		"neck": {"pitch": _neck_p.x, "yaw": _neck_y.x, "roll": -0.8 * roll},
 		"tail": {"pitch": _tail_p.x, "yaw": _tail_y.x},
@@ -567,6 +601,17 @@ func _sub(h: float, p: Vector3, yaw: float, v: Vector3, settle: bool) -> void:
 		"cadence": cadence, "stride": stride, "speed": _speed_f,
 		"pitch": pitch, "roll": roll, "bounce": _y.x,
 	}
+
+## Ankle of a planted leg with the heel raised by `phi` (radians), turning
+## about the ball of the foot, which stays where it touched down.
+func _ankle_at(l: Dictionary, m: Dictionary, phi: float) -> Vector3:
+	if phi <= 0.0 and l.swing:
+		return l.foot
+	var c := cos(phi)
+	var sn := sin(phi)
+	var back: float = -m.toe * c + m.ankle * sn
+	var up: float = m.toe * sn + m.ankle * c
+	return l.ball + l.dir * back + Vector3.UP * up
 
 ## Smallest change (da, db, dc) of the hip plane that puts every hip under its
 ## pendulum cap (Gauss-Seidel passes over the legs, smooth minimum).

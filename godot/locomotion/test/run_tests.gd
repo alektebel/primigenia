@@ -566,4 +566,15 @@ func test_quality() -> void:
 		print("  note  %s walk Fr 0.12 pitch range %.2f deg" % [name, pr])
 		table[name]["pitch_range_deg_Fr0.12"] = r(pr, 2)
 		check(pr > 0.3 and pr < 4.0, "%s walk rocks with the pendulum constraint: pitch range %.2f degrees at Fr 0.12" % [name, pr])
+	# toe-off: crouch needed in a run, and how far the ankle travels while the ball stays put
+	var run_row := {}
+	for name in ["biped", "horizontal_biped", "wader", "light_quadruped"]:
+		var sr = Sim.new(Bodies.get_body(name))
+		sr.keep_frames = false
+		sr.run(10.0, func(_t): return sr.speed_for_froude(1.5))
+		run_row[name] = {"gait": str(sr.ctl.gait), "crouch": r(sr.ctl.crouch, 4), "ankle_travel_mm": r(sr.max_ankle_travel() * 1000.0, 1), "slide_mm": r(sr.max_slide() * 1000.0, 2)}
+		print("  note  %s Fr 1.5 (%s): crouch %.3f of hip height, ankle travel %.0f mm, ball slide %.2f mm" % [name, sr.ctl.gait, sr.ctl.crouch, sr.max_ankle_travel() * 1000.0, sr.max_slide() * 1000.0])
+		if name == "biped":
+			check(sr.ctl.crouch < 0.10 and sr.max_slide() < SLIDE_LIMIT, "biped run at Fr 1.5 crouches %.1f%% of hip height (was 11.8%% without toe-off)" % (sr.ctl.crouch * 100.0))
+	table["run_Fr1.5"] = run_row
 	out["quality"] = table

@@ -197,7 +197,7 @@ func _analyse_legs(raw: Array) -> void:
 		legs.append({
 			"index": i, "hip": hip, "upper": float(l.upper), "lower": float(l.lower),
 			"length": total, "rest_len": (rest - hip).length(), "rest_h": hip.y - ankle,
-			"side": side, "station": 0, "foot": kind, "foot_radius": fs * 0.5,
+			"side": side, "station": 0, "foot": kind, "foot_radius": fs * 0.5, "toe": 0.8 * fs * 0.5,
 			"ankle": ankle, "home": rest, "share": 0.0, "lift": float(fi.lift),
 			"grip": float(fi.grip), "radius": float(l.get("radius", 0.05)),
 		})
