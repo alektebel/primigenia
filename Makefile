@@ -8,6 +8,18 @@ override CFLAGS += -fno-fast-math -ffp-contract=off
 LDLIBS   = -lm
 BUILD   := build
 
+# G76: optional desktop frontend. Dependencies live outside the repository.
+GODOT ?= godot
+GODOT_CPP ?= /home/diego/Desarrollo/cpore-wt/_agent/godot-cpp
+SCONS ?= /home/diego/Desarrollo/cpore-wt/_agent/godot-venv/bin/scons
+GODOT_JOBS ?= 2
+.PHONY: godot godot-test
+godot: $(BUILD)/libcpore.a
+	GODOT_CPP=$(GODOT_CPP) nice -n 10 $(SCONS) -C godot/extension -j$(GODOT_JOBS) target=template_debug build_profile=$(CURDIR)/godot/extension/build_profile.json
+	nice -n 10 $(GODOT) --headless --path godot --editor --import --quit
+godot-test: godot $(BUILD)/terrain_cli
+	nice -n 10 $(GODOT) --headless --path godot --script res://tests/test_extension.gd
+
 CORE_SRC := $(wildcard core/src/*.c)
 CORE_OBJ := $(CORE_SRC:%.c=$(BUILD)/%.o)
 HDRS     := $(wildcard core/include/cpore/*.h)
