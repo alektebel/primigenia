@@ -317,3 +317,8 @@ godot-wire-evidence: godot
 	@mkdir -p docs/evidence/godot/wire
 	LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 1200 xvfb-run -a $(GODOT) --rendering-driver opengl3 --max-fps 15 --resolution 1280x720 --path godot \
 	  --script res://game/tests/wire_evidence.gd -- $(CURDIR)/docs/evidence/godot/wire
+
+# PLAN-feel: how the creature feels to steer (C motion rule + the real Godot pipeline), writes docs/evidence/godot/feel/measurements.json.
+.PHONY: godot-feel-test godot-feel-evidence
+godot-feel-test: godot
+	nice -n 10 timeout 600 $(GODOT) --headless --fixed-fps 60 --path godot --script res://game/tests/feel_test.gd -- $(CURDIR)/docs/evidence/godot/feel
