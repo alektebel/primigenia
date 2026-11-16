@@ -5,10 +5,12 @@ extends Node3D
 const Look := preload("res://game/island/look.gd")
 const EnvironmentFactory := preload("res://game/island/environment.gd")
 const TerrainChunks := preload("res://game/island/terrain_chunks.gd")
+const Water := preload("res://game/island/water.gd")
 
 var terrain_chunks: Node3D
 var world_env: WorldEnvironment
 var sun: DirectionalLight3D
+var water: Node3D
 var debug_camera: Camera3D
 
 func _ready() -> void:
@@ -25,6 +27,10 @@ func build() -> void:
 	terrain_chunks.name = "Terrain"
 	add_child(terrain_chunks)
 	terrain_chunks.build(data)
+	water = Water.new()
+	water.name = "Water"
+	add_child(water)
+	water.build(data)
 	debug_camera = Camera3D.new()
 	debug_camera.name = "DebugCamera"
 	debug_camera.fov = 48.0
