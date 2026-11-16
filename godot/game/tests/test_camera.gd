@@ -29,15 +29,73 @@ func run(t) -> void:
 	t.check(screen_y < 1.0 / 3.0, "the horizon sits in the upper third (%.2f of the height from the top)" % screen_y)
 	t.check(screen_y > 0.1, "and is not at the very top (%.2f)" % screen_y)
 
-	# Auto-follow: after 0.4 s of steady motion with a 90 degree offset the yaw closes 1 - 1/e.
+	# Auto-follow (PLAN-feel S6): a rate cap, an acceleration cap, an engage delay, no swing towards the camera.
 	var c2 = ChaseCamera.new(h, 0.0, flat)
-	var mover = {"x": 0.0, "z": 0.0, "yaw": 0.0, "speed": 5.0}
-	var start = c2.yaw
-	var want = wrapf(mover.yaw + PI - start, -PI, PI)
-	for i in 8:
+	var mover = {"x": 0.0, "z": 0.0, "yaw": PI / 2.0, "speed": 5.0, "vx": 5.0, "vz": 0.0}
+	var prev_w := 0.0
+	var max_rate := 0.0
+	var max_acc := 0.0
+	var prev_yaw: float = c2.yaw
+	for i in 120:
+		mover.x += 5.0 * 0.05
 		c2.update(mover, null, false, 0.05)
-	var closed: float = (c2.yaw - start) / want
-	t.check(absf(closed - (1.0 - exp(-1.0))) < 0.02, "yaw closes %.3f of the gap in 0.4 s (expected 0.632)" % closed)
+		var w: float = (c2.yaw - prev_yaw) / 0.05
+		max_rate = maxf(max_rate, absf(w))
+		max_acc = maxf(max_acc, absf(w - prev_w) / 0.05)
+		prev_w = w
+		prev_yaw = c2.yaw
+	var goal := wrapf(mover.yaw + PI - c2.yaw, -PI, PI)
+	t.check(absf(goal) < 0.05, "the yaw settles behind the creature after 6 s (error %.3f rad)" % goal)
+	t.check(max_rate <= 1.75, "auto-follow yaw rate stays under 100 deg/s (max %.1f deg/s)" % rad_to_deg(max_rate))
+	t.check(max_acc <= 6.0 + 1e-3, "auto-follow angular acceleration <= 6 rad/s2 (max %.2f)" % max_acc)
+	# Running towards the camera does not swing it.
+	var c2b = ChaseCamera.new(h, 0.0, flat)
+	var toward = {"x": 0.0, "z": 0.0, "yaw": 0.0, "speed": 5.0, "vx": 0.0, "vz": 0.0}
+	for i in 80:
+		c2b.update(toward, null, false, 0.05)
+	t.eq(c2b.yaw, 0.0, "a creature running towards the camera does not swing it")
+	# A tap (heading turns fast and comes back) does not swing it either: the heading must hold for a quarter second.
+	var c2c = ChaseCamera.new(h, PI, flat)
+	var tap = {"x": 0.0, "z": 0.0, "yaw": 0.0, "speed": 5.0, "vx": 0.0, "vz": 5.0}
+	for i in 20:
+		c2c.update(tap, null, false, 0.05)
+	var y_before: float = c2c.yaw
+	for i in 6:
+		tap.yaw += 0.15
+		c2c.update(tap, null, false, 0.05)
+	t.check(absf(wrapf(c2c.yaw - y_before, -PI, PI)) < deg_to_rad(5.0), "a 0.3 s tap of a turn key moves the camera less than 5 degrees (%.1f)" % rad_to_deg(absf(wrapf(c2c.yaw - y_before, -PI, PI))))
+	# No swing while the creature pivots.
+	var c2d = ChaseCamera.new(h, PI, flat)
+	var piv = {"x": 0.0, "z": 0.0, "yaw": 0.0, "speed": 5.0, "vx": 0.0, "vz": 5.0}
+	for i in 20:
+		c2d.update(piv, null, false, 0.05)
+	var yd: float = c2d.yaw
+	for i in 20:
+		piv.yaw += 0.2
+		c2d.update(piv, null, false, 0.05)
+	t.check(absf(wrapf(c2d.yaw - yd, -PI, PI)) < deg_to_rad(5.0), "a pivoting creature (4 rad/s) does not swing the camera")
+	# A scripted reversal: the camera yaw rate never exceeds the cap.
+	var c2e = ChaseCamera.new(h, PI, flat)
+	var rev = {"x": 0.0, "z": 0.0, "yaw": 0.0, "speed": 5.0, "vx": 0.0, "vz": 5.0}
+	var worst := 0.0
+	var py: float = c2e.yaw
+	for i in 200:
+		rev.yaw = 0.0 if i < 40 else PI * minf(1.0, (i - 40) / 8.0)      # facing flips in 0.4 s
+		if i >= 60:
+			rev.yaw = PI
+		c2e.update(rev, null, false, 1.0 / 60.0)
+		worst = maxf(worst, absf(wrapf(c2e.yaw - py, -PI, PI)) * 60.0)
+		py = c2e.yaw
+	t.check(worst <= 1.75, "reversal: camera yaw rate <= 100 deg/s (max %.1f deg/s)" % rad_to_deg(worst))
+	# The look-at point leads the creature: no steady lag at sprint speed.
+	var c2f = ChaseCamera.new(h, PI, flat)
+	var run = {"x": 0.0, "z": 0.0, "yaw": 0.0, "speed": 8.84, "vx": 0.0, "vz": 8.84}
+	var lag := 0.0
+	for i in 240:
+		run.z += 8.84 / 60.0
+		var rr: Dictionary = c2f.update(run, null, false, 1.0 / 60.0)
+		lag = Vector2(rr.target.x - run.x, rr.target.z - run.z).length()
+	t.check(lag < 0.05, "steady target lag at 8.84 m/s is %.3f m (< 0.05)" % lag)
 	# Orbit gives a manual grace during which auto-follow is off.
 	var c3 = ChaseCamera.new(h, 0.0, flat)
 	c3.orbit(10.0, 0.0)

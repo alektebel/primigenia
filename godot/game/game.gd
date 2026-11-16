@@ -14,7 +14,7 @@ const SETTINGS_PATH := "user://settings.cfg"
 # straight); off = the live camera (a held S circles). controls/tank: Spore-style steering, A/D turn the
 # creature, W forward, S reverse (overrides the latch).
 var settings: Dictionary = {"seed": 1, "grass": 252000, "quality": "high", "wild": true,
-	"controls/strafe_latch": true, "controls/tank": false}
+	"controls/strafe_latch": true, "controls/tank": false, "camera/kick": false}
 var terrain: Dictionary = {}
 var data = null          # TerrainData
 var stage = null         # StageWorld while the island runs

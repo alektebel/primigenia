@@ -153,7 +153,9 @@ func _update_camera(dt: float) -> void:
 		var e: Dictionary = state.entities[state.active + 1]
 		enemy = {"x": e.x, "z": e.z}
 	var vp := get_viewport().get_visible_rect().size
-	var r: Dictionary = chase.update({"x": p.pos.x, "z": p.pos.z, "yaw": p.yaw, "speed": p.speed}, enemy, fighting, dt, vp.x / maxf(vp.y, 1.0))
+	chase.kick = bool(Game.settings.get("camera/kick", false))
+	var r: Dictionary = chase.update({"x": p.pos.x, "z": p.pos.z, "yaw": p.yaw, "speed": p.speed, "vx": p.vel.x, "vz": p.vel.z}, enemy, fighting, dt, vp.x / maxf(vp.y, 1.0))
+	camera.fov = 48.0 + float(r.fov_add)
 	camera.position = r.position
 	camera.look_at(r.target)
 	player_input.view_yaw = chase.view_yaw

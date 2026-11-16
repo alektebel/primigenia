@@ -410,6 +410,7 @@ func measure_pipeline() -> void:
 			r.ctx.input.set_destination(Vector2(s0.x - s0.fx * 20.0, s0.z - s0.fz * 20.0))
 		return no_keys())
 	sc["fig8"] = await scenario("fig8", 10.0, func(_t, _r): return no_keys(), func(t, _s): return Vector2(cos(1.2 * t), cos(2.4 * t)))
+	sc["sprint"] = await scenario("sprint", 5.0, func(t, _r): return key("forward", true))
 	sc["circle"] = await scenario("circle", 8.0, func(_t, _r): return no_keys(), func(t, st):
 		var e: Dictionary = st.cur.entities[0]
 		if t < 2.0:
@@ -518,3 +519,10 @@ class Gates:
 			t.check(sc[k].frames_no_planted_foot <= 8, "%s: frames without a flat planted foot %d <= 8 (was 55 and 25 on the base commit)" % [k, sc[k].frames_no_planted_foot])
 		t.check(sc.fig8.gait_changes <= 4, "figure eight: gait changes %d <= 2 per lobe" % sc.fig8.gait_changes)
 		t.check(sc.S.head_reaction_s <= 0.1, "the head starts turning at once: %.3f s to 0.05 rad after the key press" % sc.S.head_reaction_s)
+		# S6: the camera
+		for k in sc:
+			t.check(sc[k].cam_yaw_rate_max_deg <= 100.0, "%s: camera yaw rate %.1f deg/s <= 100" % [k, sc[k].cam_yaw_rate_max_deg])
+			t.check(sc[k].cam_yaw_acc_max <= 6.0 + 0.05, "%s: camera yaw acceleration %.2f rad/s2 <= 6" % [k, sc[k].cam_yaw_acc_max])
+			t.check(sc[k].cam_lag_max <= 1.0, "%s: camera target lag %.2f m <= 1.0 even in transients" % [k, sc[k].cam_lag_max])
+		t.check(sc.S.cam_yaw_travel_deg <= 200.0, "S held: camera yaw travel %.0f deg <= 200" % sc.S.cam_yaw_travel_deg)
+		t.check(sc.sprint.max_speed >= 8.7 and sc.sprint.cam_lag_steady <= 0.5, "sprint %.2f m/s: steady camera lag %.3f m <= 0.5" % [sc.sprint.max_speed, sc.sprint.cam_lag_steady])
