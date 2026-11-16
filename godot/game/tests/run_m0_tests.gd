@@ -7,6 +7,7 @@ const TESTS := [
 	"res://game/tests/test_world.gd",
 	"res://game/tests/test_project.gd",
 	"res://game/tests/test_ground.gd",
+	"res://game/tests/test_look.gd",
 	"res://game/tests/test_cache.gd",
 ]
 
