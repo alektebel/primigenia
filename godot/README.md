@@ -93,7 +93,7 @@ Interfaces and what is verified: `docs/godot/M0.md`, `CREATURE.md`, `LOCOMOTION.
 * **Only combat exists in the world.** Befriend, Observe and Intimidate show their moves but only tell you they are not
   in this build; the C stage has verbs for attack, guard and dodge only. Species card fields other than name and
   temperament (diet, relationship, likes) are placeholders.
-* **Balance is the C core's:** the Merodeador usually loses to Garfio's ranged spit unless you Charge first.
+* **Balance is the C core's:** in the scripted play test Garfio's ranged spit hurt the Merodeador first and a Charge then won; there is no flee key yet.
 * One wild creature (Garfio); no trees, rocks, flowers or clouds (hero extras); no pre-baked island in the repository
   (the first run generates it in about 3.4 s and caches it in `~/.local/share/primigenia/terrain/`).
 * Studio: the creature view rebuilds the whole creature after each edit (about 15 ms); the part thumbnails are
