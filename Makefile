@@ -262,3 +262,7 @@ check:
 	nice -n 10 $(MAKE) studio-test; \
 	nice -n 10 $(MAKE) stage-test
 	@echo "=== make check done ==="
+
+.PHONY: godot-loco-test
+godot-loco-test:
+	cd godot && timeout 300 nice -n 10 godot --headless --path . --script locomotion/test/run_tests.gd
