@@ -23,6 +23,11 @@ var nan_seen := false
 var max_stretch := 0.0
 var min_clearance := INF        # swing foot height above ground (should never be negative)
 var max_swing_lift := 0.0
+var max_drop := 0.0             # largest reach-guard drop / hip height
+var max_vert_acc := 0.0         # largest |d2 root.y / dt2| in g (second difference)
+var knee_mid: Array = []        # knee flexion (deg) per leg samples at mid-stance
+var _y_hist: Array = []
+var _dt := 1.0 / 60.0
 
 func _init(body: Dictionary, ground_fn: Callable = Callable()) -> void:
 	morph = Morph.analyse(body)
@@ -38,6 +43,7 @@ func speed_for_froude(f: float) -> float:
 ## speed_fn(t) -> m/s, yawrate_fn(t) -> rad/s. `tick` > 0 emulates the C
 ## world: the pose is sampled at that period and interpolated linearly.
 func run(duration: float, speed_fn: Callable, yawrate_fn: Callable = Callable(), dt := 1.0 / 60.0, tick := 0.0) -> void:
+	_dt = dt
 	var n := int(round(duration / dt))
 	var tick_a := pos
 	var tick_b := pos
@@ -69,6 +75,12 @@ func _measure() -> void:
 	if not (is_finite(root.origin.x) and is_finite(root.origin.y) and is_finite(root.basis.x.x) and is_finite(p.neck.pitch) and is_finite(p.tail.yaw)):
 		nan_seen = true
 	var n_contact := 0
+	max_drop = max(max_drop, float(ctl._drop) / morph.hip_height) if t > 2.0 else max_drop
+	_y_hist.append(root.origin.y)
+	if _y_hist.size() > 3:
+		_y_hist.pop_front()
+	if _y_hist.size() == 3 and t > 2.0:
+		max_vert_acc = max(max_vert_acc, abs(_y_hist[2] - 2.0 * _y_hist[1] + _y_hist[0]) / (_dt * _dt) / 9.81)
 	for i in range(morph.legs.size()):
 		var m: Dictionary = morph.legs[i]
 		var hip: Vector3 = root * m.hip
@@ -77,6 +89,11 @@ func _measure() -> void:
 		var st: Dictionary = _stance[i]
 		if p.contact[i]:
 			n_contact += 1
+			var ls: float = ctl._legs[i].s
+			if ls > 0.4 and ls < 0.6 and t > 2.0:
+				var dd: float = hip.distance_to(target)
+				var ci: float = clamp((m.upper * m.upper + m.lower * m.lower - dd * dd) / (2.0 * m.upper * m.lower), -1.0, 1.0)
+				knee_mid.append(180.0 - rad_to_deg(acos(ci)))
 			max_stretch = max(max_stretch, sol.stretch)
 			if st.is_empty():
 				_stance[i] = {"leg": i, "t0": t, "p0": sol.foot, "q0": target, "slide": 0.0, "drift": 0.0}
@@ -160,3 +177,9 @@ func footfalls(t_from: float, ref := 0) -> Dictionary:
 				acc += Vector2(cos(a), sin(a))
 		ph.append(fposmod(acc.angle() / TAU, 1.0) if acc.length() > 0.0 else -1.0)
 	return {"period": period, "phase": ph, "duty": du}
+
+func knee_mean() -> float:
+	var a := 0.0
+	for k in knee_mid:
+		a += k
+	return a / max(knee_mid.size(), 1)

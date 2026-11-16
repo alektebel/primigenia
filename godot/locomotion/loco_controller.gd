@@ -69,6 +69,7 @@ var _neck_y := Vector2.ZERO
 var _tail_p := Vector2.ZERO
 var _tail_y := Vector2.ZERO
 var _drop := 0.0
+var forced_lifts := 0           # lift-offs caused by the reach guard (quality metric)
 var _f_avg := 1.0
 var _y_amp := 0.0
 var _t_avg := 0.0
@@ -100,7 +101,7 @@ func setup(morphology, ground_fn: Callable = Callable()) -> void:
 	for i in range(morph.legs.size()):
 		_legs.append({"theta": -float(_off[i]), "swing": false, "th0": 0.0, "th1": 1.0,
 			"foot": Vector3.ZERO, "from": Vector3.ZERO, "target": Vector3.ZERO, "g_to": 0.0,
-			"lift": 0.0, "load": 1.0, "s": 0.5, "u": 0.0, "force": false, "err": 0.0, "rate": 0.0})
+			"lift": 0.0, "load": 1.0, "s": 0.5, "u": 0.0, "force": false, "err": 0.0, "rate": 0.0, "t_td": 0.0})
 	_ready_ok = false
 
 func _gy(x: float, z: float) -> float:
@@ -282,6 +283,7 @@ func _sub(h: float, p: Vector3, yaw: float, v: Vector3, settle: bool) -> void:
 			var u: float = clamp((l.theta - l.th0) / max(l.th1 - l.th0, 1e-5), 0.0, 1.0)
 			l.u = u
 			var t_td: float = (1.0 - u) * (l.th1 - l.th0) / max(rate, 1e-4)
+			l.t_td = t_td
 			var t_mid: float = t_td
 			if moving:
 				t_mid += 0.5 * duty / max(f_eff, 1e-4)
@@ -291,7 +293,12 @@ func _sub(h: float, p: Vector3, yaw: float, v: Vector3, settle: bool) -> void:
 			# keep the touchdown inside the leg's reach from where the hip will be
 			var hip_td: Vector3 = hip_now + v * t_td
 			var lr: float = 0.97 * m.length
-			var hh: float = m.rest_h * (1.0 - crouch) - (1.0 - bounce) * 0.1 * m.rest_h
+			# hip height at touchdown: rest height less the crouch, less the
+			# pendulum sag of a straight leg half a step from vertical
+			var lstr: float = STRAIGHT * m.length
+			var half_step: float = 0.5 * duty * stride
+			var vault_td: float = (lstr - sqrt(max(lstr * lstr - half_step * half_step, 0.0))) * (1.0 - bounce)
+			var hh: float = max(m.rest_h * (1.0 - crouch) - vault_td, 0.5 * m.rest_h)
 			var d_max: float = sqrt(max(lr * lr - hh * hh, 0.0))
 			var dv := Vector2(target.x - hip_td.x, target.z - hip_td.z)
 			if dv.length() > d_max:
@@ -359,23 +366,42 @@ func _sub(h: float, p: Vector3, yaw: float, v: Vector3, settle: bool) -> void:
 		var sw := 0.0; var swz := 0.0; var swx := 0.0; var swzz := 0.0; var swxx := 0.0; var swzx := 0.0
 		var swe := 0.0; var swze := 0.0; var swxe := 0.0
 		var nl := float(_legs.size())
+		var caps := PackedFloat32Array()      # highest the plane may be at each hip (NAN: free)
+		var scs := PackedFloat32Array()
+		caps.resize(_legs.size())
+		scs.resize(_legs.size())
 		for i in range(_legs.size()):
 			var l: Dictionary = _legs[i]
 			var m: Dictionary = morph.legs[i]
 			var e: float = l.g_to
-			var w := 0.12
+			var w := 0.12 if not l.swing else 0.04
 			var at: Vector3 = basis.inverse() * (l.target - p) if l.swing else basis.inverse() * (l.foot - p)
+			caps[i] = NAN
+			scs[i] = 0.0
+			var cap_e := 0.0
+			var walk_w := 0.0
+			if l.swing:
+				# a swinging leg anticipates its touchdown: the hip has to be low enough
+				# by then for the leg to reach, so the cap fades in over the late swing
+				var ramp_s: float = smoothstep(0.5, 1.0, l.u)
+				if ramp_s > 0.0:
+					var hn_s: Vector3 = p + basis * Vector3(m.hip.x, 0.0, m.hip.z) + left * _sx.x + fwd * _sz.x + v * l.t_td
+					var lp_s: float = STRAIGHT * m.length
+					var d_s: float = min(Vector2(l.target.x - hn_s.x, l.target.z - hn_s.z).length(), 0.95 * lp_s)
+					caps[i] = l.g_to + sqrt(lp_s * lp_s - d_s * d_s) - m.rest_h
+					scs[i] = ramp_s
 			if not l.swing:
-				# inverted pendulum: the hip rides an arc whose radius is the
-				# straight leg, so a walking stance leg stays extended
-				# (sprawled legs are not pendulums: they vault less)
-				var hn: Vector3 = p + basis * Vector3(m.hip.x, 0.0, m.hip.z)
+				# inverted pendulum: the hip may not be higher than a straight leg
+				# allows (sprawled legs are not pendulums: they vault less)
+				var hn: Vector3 = p + basis * Vector3(m.hip.x, 0.0, m.hip.z) + left * _sx.x + fwd * _sz.x
 				var lp: float = STRAIGHT * m.length
 				var d: float = min(Vector2(l.foot.x - hn.x, l.foot.z - hn.z).length(), 0.95 * lp)
-				var d0: float = min(Vector2(m.home.x - m.hip.x, m.home.z - m.hip.z).length(), 0.95 * lp)
 				var erect: float = 1.0 - clamp(abs(m.home.x - m.hip.x) / (0.5 * lp), 0.0, 1.0)
-				var vault: float = sqrt(lp * lp - d * d) - sqrt(lp * lp - d0 * d0)
-				e = l.foot.y - m.ankle + (1.0 - bounce) * vault_gain * erect * vault
+				cap_e = sqrt(lp * lp - d * d) - m.rest_h
+				e = l.foot.y - m.ankle
+				caps[i] = e + cap_e
+				scs[i] = (1.0 - bounce) * erect + bounce
+				walk_w = (1.0 - bounce) * vault_gain * erect
 				w += m.share * l.load * nl
 				var wl: float = m.share * l.load
 				cx += at.x * wl
@@ -389,6 +415,9 @@ func _sub(h: float, p: Vector3, yaw: float, v: Vector3, settle: bool) -> void:
 			var z: float = m.home.z
 			var x: float = m.home.x
 			e -= _slope_f * (at.z - z) + _slope_l * (at.x - x)
+			# a walking leg is held straight: the hip is lifted to the pendulum
+			# height, so the stance knee stays nearly extended at mid-stance
+			e += walk_w * cap_e
 			sw += w; swz += w * z; swx += w * x; swzz += w * z * z; swxx += w * x * x; swzx += w * z * x
 			swe += w * e; swze += w * z * e; swxe += w * x * e
 		var lb: float = 0.02 * sw * morph.body_length * morph.body_length
@@ -396,15 +425,22 @@ func _sub(h: float, p: Vector3, yaw: float, v: Vector3, settle: bool) -> void:
 		var mat := Basis(Vector3(sw, swz, swx), Vector3(swz, swzz + lb, swzx), Vector3(swx, swzx, swxx + lc))
 		if abs(mat.determinant()) > 1e-12:
 			var sol: Vector3 = mat.inverse() * Vector3(swe, swze + lb * bt, swxe + lc * ct)
-			a_t = sol.x
-			b_t = clamp(sol.y, -1.2, 1.2)
-			c_t = clamp(sol.z, -0.6, 0.6)
+			var dd := _cap_fix(Vector3(sol.x, sol.y, sol.z), caps, scs, _y.x - crouch * _ref_h)
+			var da: float = dd.x
+			var db: float = dd.y
+			var dc: float = dd.z
+			a_t = sol.x + da
+			b_t = clamp(sol.y + db, -1.2, 1.2)
+			c_t = clamp(sol.z + dc, -0.6, 0.6)
 	if settle:
 		_a = Vector2(a_t, 0.0); _b = Vector2(b_t, 0.0); _c = Vector2(c_t, 0.0)
 	else:
 		_a = _spring(_a, a_t, _omega, _zeta, h)
 		_b = _spring(_b, b_t, _omega, _zeta, h)
 		_c = _spring(_c, c_t, _omega * 0.7, _zeta, h)
+	var a_o: float = _a.x
+	var b_o: float = _b.x
+	var c_o: float = _c.x
 	# --- 10. balance: shift the centre of mass toward the loaded feet when slow
 	var tx := 0.0
 	var tz := 0.0
@@ -450,11 +486,11 @@ func _sub(h: float, p: Vector3, yaw: float, v: Vector3, settle: bool) -> void:
 	_lean = _spring(_lean, lean_t, _omega * 0.4, 1.0, h)
 	_bank = _spring(_bank, bank_t, _omega * 0.4, 1.0, h)
 	# --- 13. compose the body transform
-	var slope_b := _b.x + _p.x + _lean.x
+	var slope_b := b_o + _p.x + _lean.x
 	var pitch := -atan(slope_b)                    # rotation about +X (left)
-	var roll := atan(_c.x) + _bank.x               # rotation about +Z (forward)
+	var roll := atan(c_o) + _bank.x               # rotation about +Z (forward)
 	var piv := Vector3(0.0, morph.com.y, morph.com.z)
-	var height: float = _a.x + _b.x * morph.com.z + _y.x - crouch * _ref_h
+	var height: float = a_o + b_o * morph.com.z + _y.x - crouch * _ref_h
 	if legless:
 		height = _a.x
 	var origin: Vector3 = p + left * (_sx.x - morph.com.y * sin(_bank.x) * 0.5) + fwd * _sz.x + Vector3.UP * height
@@ -531,6 +567,29 @@ func _sub(h: float, p: Vector3, yaw: float, v: Vector3, settle: bool) -> void:
 		"cadence": cadence, "stride": stride, "speed": _speed_f,
 		"pitch": pitch, "roll": roll, "bounce": _y.x,
 	}
+
+## Smallest change (da, db, dc) of the hip plane that puts every hip under its
+## pendulum cap (Gauss-Seidel passes over the legs, smooth minimum).
+func _cap_fix(base: Vector3, caps: PackedFloat32Array, scs: PackedFloat32Array, lift_off: float) -> Vector3:
+	var da := 0.0
+	var db := 0.0
+	var dc := 0.0
+	var sz_: float = max(morph.body_length * morph.body_length * 0.25, 1e-4)
+	var sx_: float = max(morph.track_width * morph.track_width, 1e-4)
+	var wsm: float = 0.01 * _ref_h
+	for _pass in range(8):
+		for i in range(_legs.size()):
+			if is_nan(caps[i]):
+				continue
+			var zi: float = morph.legs[i].hip.z
+			var xi: float = morph.legs[i].hip.x
+			var viol: float = (base.x + da) + (base.y + db) * zi + (base.z + dc) * xi + lift_off - caps[i]
+			var sp: float = viol if viol > 30.0 * wsm else wsm * log(1.0 + exp(viol / wsm))
+			var kk: float = scs[i] * sp / (1.0 + zi * zi / sz_ + xi * xi / sx_)
+			da -= kk
+			db -= kk * zi / sz_
+			dc -= kk * xi / sx_
+	return Vector3(da, db, dc)
 
 ## Lateral offset (metres, +left) of the spine at arc coordinate u (0 tail tip,
 ## 1 head) for legless undulation. Zero for legged bodies.

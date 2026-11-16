@@ -40,6 +40,7 @@ func _init() -> void:
 	test_stop_and_turn_in_place()
 	test_robustness()
 	test_proposal()
+	test_quality()
 	out["checks"] = checks
 	out["failures"] = fails
 	var path := ProjectSettings.globalize_path("res://").path_join("../docs/evidence/godot/locomotion/measurements.json")
@@ -537,3 +538,32 @@ func test_proposal() -> void:
 	check(p["heavy_quadruped"].max_accel < p["light_quadruped"].max_accel and p["heavy_quadruped"].max_turn_rate < p["light_quadruped"].max_turn_rate, "the heavy body accelerates and turns slower")
 	check(p["horizontal_biped"].max_speed > p["biped"].max_speed, "the horizontal biped outruns the upright one")
 	out["speed_proposal"] = table
+
+# ---------------------------------------------------------------- quality
+## Body-motion quality (plan step 2). Printed and recorded; gated only where
+## the current model passes with margin.
+func test_quality() -> void:
+	print("motion quality")
+	var table := {}
+	for name in PLANS:
+		var row := {}
+		for sc in [["slow walk", 0.05], ["walk", 0.25]]:
+			var s = Sim.new(Bodies.get_body(name))
+			s.keep_frames = false
+			s.run(14.0, func(_t): return s.speed_for_froude(sc[1]))
+			row[sc[0]] = {"max_drop": r(s.max_drop, 4), "max_vert_acc_g": r(s.max_vert_acc, 3), "forced_lifts": s.ctl.forced_lifts,
+				"stance_knee_deg": r(s.knee_mean(), 1)}
+			print("  note  %-17s %-9s max_drop %.4f  max |vert acc| %.2f g  knee at mid-stance %.1f deg  forced lifts %d" % [name, sc[0], s.max_drop, s.max_vert_acc, s.knee_mean(), s.ctl.forced_lifts])
+		table[name] = row
+		check(row["walk"].max_drop < 0.03 and row["slow walk"].max_drop < (0.05 if name == "heavy_quadruped" else 0.03),
+			"%s: reach-guard drop %.1f%% / %.1f%% of hip height (walk / slow walk)" % [name, row["walk"].max_drop * 100.0, row["slow walk"].max_drop * 100.0])
+		check(row["walk"].forced_lifts == 0 and row["slow walk"].forced_lifts == 0, "%s: no lift-off forced by the reach guard in steady walks" % name)
+	# pitch from the pendulum constraint: a walking quadruped's body rocks a little
+	for name in ["light_quadruped", "heavy_quadruped"]:
+		var sq = Sim.new(Bodies.get_body(name))
+		sq.run(12.0, func(_t): return sq.speed_for_froude(0.12))
+		var pr := rad_to_deg(_range(sq.frames, "pitch", 4.0))
+		print("  note  %s walk Fr 0.12 pitch range %.2f deg" % [name, pr])
+		table[name]["pitch_range_deg_Fr0.12"] = r(pr, 2)
+		check(pr > 0.3 and pr < 4.0, "%s walk rocks with the pendulum constraint: pitch range %.2f degrees at Fr 0.12" % [name, pr])
+	out["quality"] = table

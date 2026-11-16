@@ -2,21 +2,21 @@
   "body_dynamics": {
     "accel pitch deg": {
       "biped (forward lean +)": 10.76,
-      "light_quadruped (nose up -)": -8.74
+      "light_quadruped (nose up -)": -8.37
     },
     "biped 20% climb": {
       "pitch_deg": -2.86,
       "stride_flat_m": 1.149,
       "stride_uphill_m": 0.871
     },
-    "biped bank deg at 0.8 rad/s": -9.22,
+    "biped bank deg at 0.8 rad/s": -9.11,
     "biped run Fr1.5": {
-      "com_excursion_mm": 50.3,
-      "com_flight_minus_stance_mm": 26.0
+      "com_excursion_mm": 49.1,
+      "com_flight_minus_stance_mm": 24.0
     },
     "biped walk Fr0.25": {
-      "com_excursion_mm": 59.8,
-      "com_single_minus_double_mm": 36.2
+      "com_excursion_mm": 69.6,
+      "com_single_minus_double_mm": 37.2
     },
     "cadence_hz": {
       "heavy_quadruped Fr0.25": 0.935,
@@ -25,7 +25,7 @@
       "same body 8x mass 1 m/s": 1.331
     },
     "heavy_quadruped 20% climb": {
-      "pitch_deg": -11.25,
+      "pitch_deg": -11.23,
       "stride_flat_m": 1.527,
       "stride_uphill_m": 1.157
     },
@@ -35,21 +35,21 @@
       "stride_uphill_m": 0.233
     },
     "horizontal_biped run Fr1.5": {
-      "com_excursion_mm": 44.4,
-      "com_flight_minus_stance_mm": 23.1
+      "com_excursion_mm": 44.3,
+      "com_flight_minus_stance_mm": 22.0
     },
     "horizontal_biped walk Fr0.25": {
-      "com_excursion_mm": 72.7,
-      "com_single_minus_double_mm": 46.5
+      "com_excursion_mm": 72.8,
+      "com_single_minus_double_mm": 39.0
     },
     "light_quadruped 20% climb": {
-      "pitch_deg": -11.29,
+      "pitch_deg": -11.3,
       "stride_flat_m": 0.648,
       "stride_uphill_m": 0.491
     },
-    "light_quadruped bank deg at 0.8 rad/s": -6.81,
+    "light_quadruped bank deg at 0.8 rad/s": -6.68,
     "light_quadruped pitch range deg": {
-      "gallop": 4.07,
+      "gallop": 4.11,
       "trot": 0.0
     },
     "theropod left turn 0.9 rad/s": {
@@ -58,15 +58,15 @@
       "tail_yaw_deg": -16.1
     },
     "wader run Fr1.5": {
-      "com_excursion_mm": 50.6,
-      "com_flight_minus_stance_mm": 26.5
+      "com_excursion_mm": 48.8,
+      "com_flight_minus_stance_mm": 23.8
     },
     "wader walk Fr0.25": {
-      "com_excursion_mm": 73.3,
-      "com_single_minus_double_mm": 51.9
+      "com_excursion_mm": 69.8,
+      "com_single_minus_double_mm": 39.3
     }
   },
-  "checks": 156,
+  "checks": 170,
   "failures": 0,
   "foot_slide_mm": {
     "biped": {
@@ -504,6 +504,94 @@
       "robustness": 0.12
     }
   },
+  "quality": {
+    "biped": {
+      "slow walk": {
+        "forced_lifts": 0,
+        "max_drop": 0.0,
+        "max_vert_acc_g": 2.141,
+        "stance_knee_deg": 33.5
+      },
+      "walk": {
+        "forced_lifts": 0,
+        "max_drop": 0.0,
+        "max_vert_acc_g": 2.71,
+        "stance_knee_deg": 33.0
+      }
+    },
+    "heavy_quadruped": {
+      "pitch_range_deg_Fr0.12": 2.79,
+      "slow walk": {
+        "forced_lifts": 0,
+        "max_drop": 0.0403,
+        "max_vert_acc_g": 4.969,
+        "stance_knee_deg": 45.8
+      },
+      "walk": {
+        "forced_lifts": 0,
+        "max_drop": 0.0142,
+        "max_vert_acc_g": 4.877,
+        "stance_knee_deg": 47.5
+      }
+    },
+    "hexapod": {
+      "slow walk": {
+        "forced_lifts": 0,
+        "max_drop": 0.0,
+        "max_vert_acc_g": 0.102,
+        "stance_knee_deg": 100.1
+      },
+      "walk": {
+        "forced_lifts": 0,
+        "max_drop": 0.0,
+        "max_vert_acc_g": 0.189,
+        "stance_knee_deg": 99.5
+      }
+    },
+    "horizontal_biped": {
+      "slow walk": {
+        "forced_lifts": 0,
+        "max_drop": 0.0,
+        "max_vert_acc_g": 1.947,
+        "stance_knee_deg": 34.5
+      },
+      "walk": {
+        "forced_lifts": 0,
+        "max_drop": 0.0,
+        "max_vert_acc_g": 1.823,
+        "stance_knee_deg": 34.3
+      }
+    },
+    "light_quadruped": {
+      "pitch_range_deg_Fr0.12": 3.48,
+      "slow walk": {
+        "forced_lifts": 0,
+        "max_drop": 0.0,
+        "max_vert_acc_g": 2.504,
+        "stance_knee_deg": 38.6
+      },
+      "walk": {
+        "forced_lifts": 0,
+        "max_drop": 0.0,
+        "max_vert_acc_g": 1.587,
+        "stance_knee_deg": 42.6
+      }
+    },
+    "wader": {
+      "slow walk": {
+        "forced_lifts": 0,
+        "max_drop": 0.0,
+        "max_vert_acc_g": 1.767,
+        "stance_knee_deg": 33.1
+      },
+      "walk": {
+        "forced_lifts": 0,
+        "max_drop": 0.0,
+        "max_vert_acc_g": 4.407,
+        "stance_knee_deg": 32.0
+      }
+    }
+  },
   "speed_proposal": {
     "biped": {
       "accel_time": 2.032,
@@ -595,20 +683,20 @@
       "inside_pct": 100.0,
       "inside_pct_point_feet": 100.0,
       "min_feet_down": 3,
-      "worst_margin_m": 0.1599
+      "worst_margin_m": 0.1672
     },
     "heavy_quadruped@Fr0.06": {
       "duty": 0.78,
       "gait": "walk",
       "inside_pct": 100.0,
-      "inside_pct_point_feet": 94.31,
+      "inside_pct_point_feet": 94.44,
       "min_feet_down": 3,
-      "worst_margin_m": 0.1001
+      "worst_margin_m": 0.101
     },
     "heavy_quadruped@Fr0.25 (dynamic, not gated)": {
       "duty": 0.603,
       "gait": "walk",
-      "inside_pct": 63.96
+      "inside_pct": 70.63
     },
     "hexapod@Fr0.05": {
       "duty": 0.806,
@@ -637,7 +725,7 @@
     "horizontal_biped@Fr0.05 (dynamic, not gated)": {
       "duty": 0.806,
       "gait": "walk",
-      "inside_pct": 22.29
+      "inside_pct": 7.08
     },
     "light_quadruped@Fr0.03": {
       "duty": 0.88,
@@ -645,15 +733,15 @@
       "inside_pct": 100.0,
       "inside_pct_point_feet": 100.0,
       "min_feet_down": 3,
-      "worst_margin_m": 0.0303
+      "worst_margin_m": 0.0302
     },
     "light_quadruped@Fr0.06": {
       "duty": 0.78,
       "gait": "walk",
       "inside_pct": 100.0,
-      "inside_pct_point_feet": 94.03,
+      "inside_pct_point_feet": 94.31,
       "min_feet_down": 3,
-      "worst_margin_m": 0.0119
+      "worst_margin_m": 0.0126
     },
     "light_quadruped@Fr0.25 (dynamic, not gated)": {
       "duty": 0.603,
@@ -663,7 +751,7 @@
     "wader@Fr0.05 (dynamic, not gated)": {
       "duty": 0.806,
       "gait": "walk",
-      "inside_pct": 89.38
+      "inside_pct": 82.92
     }
   },
   "swing": {
