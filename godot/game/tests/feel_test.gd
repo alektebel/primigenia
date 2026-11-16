@@ -453,3 +453,8 @@ class Gates:
 		t.check(j.reverse_face_time <= 1.0 + 1e-6 and j.reverse_back90_time <= 1.2 + 1e-6, "reversal at jog: facing %.1f s, 90 %% speed back %.1f s" % [j.reverse_face_time, j.reverse_back90_time])
 		t.check(j.reverse_overshoot <= 0.6, "reversal overshoot <= 0.6 m (%.2f)" % j.reverse_overshoot)
 		t.check(j.stop_time <= 0.8 and j.stop_distance <= 0.6, "stop from jog <= 0.8 s and 0.6 m (%.2f s, %.2f m)" % [j.stop_time, j.stop_distance])
+		# S3: the input latch
+		var sc: Dictionary = t.results.scenarios
+		t.check(sc.S.body_yaw_travel_deg <= 200.0, "S held: body yaw travel <= 200 deg (%.0f)" % sc.S.body_yaw_travel_deg)
+		t.check(sc.S.lateral_dev_after_reversal < 0.5, "S held: straight path after the reversal, deviation %.2f m < 0.5" % sc.S.lateral_dev_after_reversal)
+		t.check(sc.A.body_yaw_travel_deg <= 100.0, "A held: body yaw travel <= 100 deg (%.0f)" % sc.A.body_yaw_travel_deg)

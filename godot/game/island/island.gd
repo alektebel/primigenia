@@ -87,6 +87,7 @@ func _build_stage() -> void:
 	stage.ground_fn = ground
 	player_input = PlayerInput.new()
 	player_input.blocked = Callable(Game, "movement_blocked")
+	_sync_controls()
 	stage.input_provider = player_input.sample
 	stage.after_tick = player_input.after_tick
 	if stage.reset(setup) != 0:
@@ -154,9 +155,19 @@ func _update_camera(dt: float) -> void:
 	camera.look_at(r.target)
 	player_input.view_yaw = chase.view_yaw
 
+# Controls settings and the creature's pose into the input (latch frame, tank steering, intent).
+func _sync_controls() -> void:
+	player_input.strafe_latch = bool(Game.settings.get("controls/strafe_latch", true))
+	player_input.tank = bool(Game.settings.get("controls/tank", false))
+	if stage != null and not stage.cur.is_empty():
+		var e: Dictionary = stage.cur.entities[0]
+		player_input.facing_yaw = atan2(e.fx, e.fz)
+		player_input.position = Vector2(e.x, e.z)
+
 func _process(delta: float) -> void:
 	if stage == null:
 		return
+	_sync_controls()
 	_update_actors(delta)
 	_update_camera(delta)
 	if _mouse_held and not Game.movement_blocked():
@@ -167,6 +178,8 @@ func _unhandled_input(event: InputEvent) -> void:
 		return
 	if event is InputEventMouseMotion and Input.is_action_pressed("camera_orbit"):
 		chase.orbit(event.relative.x, event.relative.y)
+		if player_input.frame_yaw != null:
+			player_input.frame_yaw = chase.view_yaw     # steering with the mouse while keys are held
 	elif event.is_action_pressed("zoom_in"):
 		chase.zoom(-1.0)
 	elif event.is_action_pressed("zoom_out"):
