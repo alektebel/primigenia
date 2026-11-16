@@ -1,0 +1,44 @@
+{
+  "merodeador": {
+    "source": "godot/game/data/merodeador.json",
+    "profile": {
+      "mouth": 2,
+      "charge": 4,
+      "spit": 0,
+      "tail": 0,
+      "guard": 0,
+      "hp": 100,
+      "stamina": 100,
+      "speed": 4,
+      "radiusCm": 300
+    }
+  },
+  "garfio": {
+    "source": "web/stage/species/garfio.json",
+    "profile": {
+      "mouth": 2,
+      "charge": 1,
+      "spit": 0,
+      "tail": 1,
+      "guard": 0,
+      "hp": 100,
+      "stamina": 100,
+      "speed": 4,
+      "radiusCm": 50
+    }
+  },
+  "studio_v4_glb_parts": {
+    "source": "tests/fixtures/studio/v4-glb-parts.json",
+    "profile": {
+      "mouth": 5,
+      "charge": 1,
+      "spit": 1,
+      "tail": 2,
+      "guard": 1,
+      "hp": 105,
+      "stamina": 100,
+      "speed": 4,
+      "radiusCm": 200
+    }
+  }
+}
