@@ -32,6 +32,7 @@ var attack_orders: Array = []        # log of orders sent, for tests: {tick, tex
 var last_outcome := 0
 var _pending_attack = null           # {target, move}
 var _oneshot = null                  # CpStageInput dictionary
+var _was_active := false
 var _slope := 0.0
 var _ambience_started := false
 
@@ -95,25 +96,28 @@ func _attack(index: int) -> void:
 	player_input.clear_destination()
 	attack_orders.append({"tick": stage.cur.tick, "order": "attack #%d %s" % [selected_id, move_id]})
 
-# Replaces PlayerInput.sample as the input provider of the stage.
+# Replaces PlayerInput.sample as the input provider of the stage. As in web/stage/simulation.js action():
+# a pending attack is sent every tick (the C verb only lasts while it is re-issued) until movement keys or a
+# click-to-walk replace it, the target dies or the fight ends; guard and dodge are one tick each.
 func provide() -> Dictionary:
 	var s: Dictionary = player_input.sample()
-	if s.verb == 3:   # heading keys cancel a pending attack
+	if s.verb == 3 or s.verb == 2:
 		_pending_attack = null
+	var st: Dictionary = stage.cur
+	var active: bool = st.active >= 0
+	if _was_active and not active:
+		_pending_attack = null
+	_was_active = active
 	if _oneshot != null:
 		var o: Dictionary = _oneshot
 		_oneshot = null
 		return o
 	if _pending_attack != null:
 		var tgt: int = _pending_attack.target
-		var st: Dictionary = stage.cur
-		if tgt >= st.entities.size() or st.entities[tgt].dead or (st.active >= 0 and st.active + 1 != tgt):
+		if tgt >= st.entities.size() or st.entities[tgt].dead or (active and st.active + 1 != tgt):
 			_pending_attack = null
 		else:
-			var o := {"verb": V_ATTACK, "target": tgt, "move": _pending_attack.move}
-			if st.active >= 0:
-				_pending_attack = null      # the fight has started: the order is launched once
-			return o
+			return {"verb": V_ATTACK, "target": tgt, "move": _pending_attack.move}
 	return s
 
 # --- selection ------------------------------------------------------------------
@@ -133,7 +137,7 @@ func info_for(id: int) -> Dictionary:
 func _on_clicked(id: int, _pos: Vector3) -> void:
 	if id <= 0 or id >= stage.cur.entities.size():
 		return
-	ui.select(info_for(id), true, island.get_viewport().get_mouse_position())
+	ui.select(info_for(id), true, island.last_click)
 
 func select_id(id: int, menu_pos: Variant = null) -> void:
 	ui.select(info_for(id), true, menu_pos)

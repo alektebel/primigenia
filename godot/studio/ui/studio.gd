@@ -66,7 +66,8 @@ func _ready() -> void:
 	theme = ThemeFactory.make()
 	i18n = I18n.new()
 	i18n.parts = parts_db
-	storage = Storage.new()
+	var game := get_node_or_null("/root/Game")
+	storage = Storage.new(str(game.studio_dir) if game != null and "studio_dir" in game else "user://studio")
 	model = Model.new(parts_db)
 	model.changed.connect(_on_model_changed)
 	model.selection_changed.connect(_on_selection_changed)

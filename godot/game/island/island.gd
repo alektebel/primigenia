@@ -30,6 +30,7 @@ var stage_ui
 var hosts := {}                  # entity id -> ActorHost
 var chase_enabled := true
 var player_pos := Vector3.INF
+var last_click := Vector2.ZERO     # screen position of the last click that picked a creature (the radial opens there)
 var occluders_enabled := true
 var _mouse_held := false
 
@@ -159,7 +160,7 @@ func _process(delta: float) -> void:
 	_update_actors(delta)
 	_update_camera(delta)
 	if _mouse_held and not Game.movement_blocked():
-		_click_ground(false)
+		_click_ground(false, get_viewport().get_mouse_position())
 
 func _unhandled_input(event: InputEvent) -> void:
 	if stage == null or chase == null:
@@ -172,17 +173,17 @@ func _unhandled_input(event: InputEvent) -> void:
 		chase.zoom(1.0)
 	elif event.is_action_pressed("walk_to"):
 		_mouse_held = true
-		_click_ground(true)
+		_click_ground(true, (event as InputEventMouseButton).position if event is InputEventMouseButton else get_viewport().get_mouse_position())
 	elif event.is_action_released("walk_to"):
 		_mouse_held = false
 
-func _click_ground(allow_pick: bool) -> void:
-	var mouse := get_viewport().get_mouse_position()
+func _click_ground(allow_pick: bool, mouse: Vector2) -> void:
 	var ground := Callable(Game, "ground")
 	if allow_pick:
 		var picked := Pointer.pick_entity(camera.project_ray_origin(mouse), camera.project_ray_normal(mouse), stage.cur.entities, ground)
 		if not picked.is_empty():
 			player_input.clear_destination()
+			last_click = mouse
 			Game.creature_clicked.emit(picked.id, picked.pos)
 			return
 	var hit = Pointer.ground_hit(camera, mouse, ground)
