@@ -49,6 +49,9 @@ func movement_blocked() -> bool:
 	var vp := get_viewport()
 	return vp != null and vp.gui_get_focus_owner() != null
 
+func goto_menu() -> void:
+	get_tree().change_scene_to_file("res://game/menu/main_menu.tscn")
+
 func goto_island() -> void:
 	get_tree().change_scene_to_file("res://game/island/island.tscn")
 

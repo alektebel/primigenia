@@ -32,6 +32,12 @@ void fragment() {
 	if (depth < -0.3) {
 		discard;   // water surface below the ground: never draw it over land
 	}
-	ALBEDO = scene_out(c, wp, CAMERA_POSITION_WORLD);
+	// Far sea fades into the sky's horizon colour: the plane is cut at the camera far plane (12 km) and the
+	// sky below the horizon is that colour, so no hard line shows in the far view.
+	vec3 ray = wp - CAMERA_POSITION_WORLD;
+	float far_t = smoothstep(5000.0, 11500.0, length(ray));
+	vec3 disp = aerial(srgb_encode(tm(c)), wp, CAMERA_POSITION_WORLD);
+	disp = mix(disp, horizon_color(normalize(ray)), far_t);
+	ALBEDO = display_out(disp);
 	ALPHA = alpha;
 }

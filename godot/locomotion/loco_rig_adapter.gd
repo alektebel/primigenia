@@ -30,6 +30,21 @@ const K_DEFAULT := 0.02
 const SOLE := 0.6                   # the rig's sole sits width * SOLE under the ankle
 const HANG_LIMIT := 0.001           # rig units; above it a leg hangs and is left out
 const SOLE_TOLERANCE := 0.002       # m
+const BELLY_GAP := 0.03             # m between the lowest body vertex and the ground for a legless body
+
+## Legless bodies: the rig's `ground_offset` is derived from the ring radii (rig.js `off`), but the built tube
+## is an ellipse that is smaller than the circle at the belly, so the real lowest vertex floats a few cm above
+## the ground (Babosa: 7.5 cm). Returns how far to lower the creature so the lowest body vertex is BELLY_GAP up.
+static func belly_drop(creature) -> float:
+	if creature.legs.size() > 0 or creature.get("body_mesh") == null or creature.body_mesh.mesh == null:
+		return 0.0
+	var mesh: Mesh = creature.body_mesh.mesh
+	if mesh.get_surface_count() == 0:
+		return 0.0
+	var lowest := 1e9
+	for v in (mesh.surface_get_arrays(0)[Mesh.ARRAY_VERTEX] as PackedVector3Array):
+		lowest = min(lowest, v.y)
+	return maxf(0.0, lowest + float(creature.ground_offset) - BELLY_GAP)
 
 static func _kind(creature, leg) -> String:
 	if creature.get("maker") != null:
@@ -103,7 +118,8 @@ static func loco_describe(creature, unit: float, density := 1000.0) -> Dictionar
 		var size: float = float(e.get("size", 1.0)) * unit
 		var anchor: Dictionary = creature.anchor(float(e.get("t", 0.5)), float(e.get("side", 1)) * float(e.get("ang", 0.0)))
 		parts.append({"pos": (anchor.p + Vector3(0.0, go, 0.0)) * unit, "mass": density * kc * size * size * size, "category": cat})
-	var desc := {"spine": spine, "legs": legs, "parts": parts, "density": density, "unit": unit, "leg_ids": leg_ids}
+	var desc := {"spine": spine, "legs": legs, "parts": parts, "density": density, "unit": unit, "leg_ids": leg_ids,
+		"belly_drop": belly_drop(creature) * unit}
 	# 2. forward is +Z: the head end of the spine is ahead of the tail end
 	if spine.size() >= 2 and spine[-1].pos.z <= spine[0].pos.z:
 		problems.append("2. the head is not in front of the tail along +Z")
@@ -126,7 +142,7 @@ static func _yaw_of(v: Vector3) -> float:
 static func loco_apply(creature, pose: Dictionary, desc: Dictionary, ground: Callable = Callable()) -> Dictionary:
 	var unit: float = desc.unit
 	var root: Transform3D = pose.root
-	creature.global_transform = Transform3D(root.basis * Basis.from_scale(Vector3.ONE * unit), root.origin)
+	creature.global_transform = Transform3D(root.basis * Basis.from_scale(Vector3.ONE * unit), root.origin - Vector3.UP * float(desc.get("belly_drop", 0.0)))
 	var heading := _yaw_of(root.basis.z)
 	var ids: Array = desc.leg_ids
 	for j in range(ids.size()):

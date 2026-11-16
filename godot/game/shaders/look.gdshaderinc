@@ -61,6 +61,17 @@ vec3 aerial(vec3 c, vec3 wp, vec3 cam) {
 	return mix(c, haze, 1.0 - exp(-optical));
 }
 
+// Horizon colour of the sky dome (same numbers as SKY_HZ / SKY_GLOW in sky.gdshader, a test compares them), in
+// display space, for a world direction. The sky shows it below the horizon and the far sea fades into it,
+// so there is no seam where the sea plane is cut by the far plane.
+const vec3 HORIZON_HZ = vec3(0.95, 0.84, 0.70);
+const vec3 HORIZON_GLOW = vec3(1.0, 0.62, 0.3);
+vec3 horizon_color(vec3 dir) {
+	vec3 n0 = normalize(vec3(dir.x, 0.0, dir.z) + vec3(1e-6, 0.0, 0.0));
+	float s = max(dot(n0, SUN_DIR), 0.0);
+	return min(HORIZON_HZ + HORIZON_GLOW * pow(s, 7.0) * 0.55, vec3(1.0));
+}
+
 // The Compatibility renderer converts what a shader writes to ALBEDO/COLOR with its own
 // srgb_to_linear polynomial (as if it were an sRGB colour) before it tone-maps. Find the value
 // that this polynomial maps back to the linear colour we want the tone mapper to see.

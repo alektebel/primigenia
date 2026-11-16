@@ -5,6 +5,7 @@ extends Control
 const Palette := preload("res://ui/palette.gd")
 
 signal resume_requested
+signal menu_requested
 signal setting_changed(bus: String, value)
 
 const ROWS := [["master", "Master"], ["music", "Music"], ["sfx", "Sound effects"], ["ambience", "Ambience"]]
@@ -72,6 +73,11 @@ func _ready() -> void:
 	b.custom_minimum_size = Vector2(0, 44)
 	b.pressed.connect(func() -> void: resume_requested.emit())
 	v.add_child(b)
+	var m := Button.new()
+	m.text = "Back to the main menu"
+	m.custom_minimum_size = Vector2(0, 40)
+	m.pressed.connect(func() -> void: menu_requested.emit())
+	v.add_child(m)
 
 func bind_audio(a) -> void:
 	audio = a

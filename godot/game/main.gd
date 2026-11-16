@@ -4,6 +4,13 @@ extends Node
 const TerrainCache := preload("res://game/island/terrain_cache.gd")
 const LoadingScene := preload("res://game/loading/loading_screen.tscn")
 
+# `--play` after "--" skips the menu (evidence and tests); otherwise the menu opens once the island data is ready.
+func _next() -> void:
+	if "--play" in OS.get_cmdline_user_args():
+		Game.goto_island()
+	else:
+		Game.goto_menu()
+
 func _ready() -> void:
 	var params := {"seed": int(Game.settings.seed)}
 	var t0 := Time.get_ticks_msec()
@@ -11,7 +18,7 @@ func _ready() -> void:
 	if not entry.is_empty():
 		print("terrain cache: hit (%d ms)" % (Time.get_ticks_msec() - t0))
 		Game.set_island(entry)
-		Game.goto_island.call_deferred()
+		_next.call_deferred()
 		return
 	print("terrain cache: miss")
 	var screen := LoadingScene.instantiate()
@@ -26,4 +33,4 @@ func _on_generated(entry: Dictionary, t0: int) -> void:
 		return
 	print("terrain cache: generated and stored (%d ms)" % (Time.get_ticks_msec() - t0))
 	Game.set_island(entry)
-	Game.goto_island()
+	_next()

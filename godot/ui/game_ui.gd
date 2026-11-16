@@ -15,6 +15,7 @@ signal guard_pressed
 signal dodge_pressed(dir: int)
 signal selection_changed(creature_id: Variant)
 signal pause_toggled(paused: bool)
+signal menu_requested
 signal ui_click
 
 var mode: StringName = Modes.ATTACK
@@ -57,6 +58,7 @@ func _ready() -> void:
 	hud.pause_clicked.connect(func() -> void: set_paused(true))
 	radial.chosen.connect(func(m: StringName) -> void: set_mode(m))
 	pause_menu.resume_requested.connect(func() -> void: set_paused(false))
+	pause_menu.menu_requested.connect(func() -> void: menu_requested.emit())
 	set_mode(mode)
 
 # --- stage -> UI -------------------------------------------------------------

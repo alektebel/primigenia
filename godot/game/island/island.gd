@@ -14,6 +14,7 @@ const PlayerInput := preload("res://game/player/player_input.gd")
 const Pointer := preload("res://game/player/pointer.gd")
 const ChaseCamera := preload("res://game/player/chase_camera.gd")
 const ActorHost := preload("res://game/actors/actor_host.gd")
+const StageUI := preload("res://game/stage/stage_ui.gd")
 
 var terrain_chunks: Node3D
 var world_env: WorldEnvironment
@@ -25,6 +26,7 @@ var debug_camera: Camera3D       # alias of camera (tests and evidence move it d
 var stage: Node
 var player_input
 var chase
+var stage_ui
 var hosts := {}                  # entity id -> ActorHost
 var chase_enabled := true
 var player_pos := Vector3.INF
@@ -107,6 +109,13 @@ func _build_stage() -> void:
 	if setup.wild.size() > 0:
 		yaw = atan2(setup.nest.x - setup.wild[0].home_x, setup.nest.y - setup.wild[0].home_z)
 	chase = ChaseCamera.new(player_host.height(), yaw, ground)
+	stage_ui = StageUI.new()
+	stage_ui.name = "StageUI"
+	add_child(stage_ui)
+	stage_ui.setup(self, str(genome.get("name", "Merodeador")))
+	for h in hosts.values():
+		h.footfall.connect(stage_ui.on_footfall)
+	stage_ui.ui.menu_requested.connect(Game.goto_menu)
 	_update_actors(0.0)
 	_update_camera(0.0)
 
