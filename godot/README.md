@@ -100,7 +100,7 @@ Every combat action, reaction, stagger, death, and the cosmetic Befriend / Intim
 from each creature's own bones and synced to the C combat phases (`godot/actions/`, docs/godot/ACTIONS.md). Attack from the
 radial (or keys 1-4) and watch the bite, charge, spit and tail strike on both creatures; Guard (Space), Dodge (Q/E), hits,
 stagger, stun and death are drawn too. Befriend (Sing, Dance, Charm, Pose) and Intimidate (Roar, Display) play on the
-player's creature when chosen from the radial's keys (nothing is sent to C). `make godot-actions-test` (321 checks) and
+player's creature when chosen from the radial's keys (nothing is sent to C). `make godot-actions-test` (322 checks) and
 `make godot-actions-evidence` need no GDExtension.
 
 ## Known limits

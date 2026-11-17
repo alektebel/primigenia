@@ -40,7 +40,7 @@ Copy a file in `data/`, change `id`, `class`, `driver` (`c_move` with `move`, `c
 
 ## Measurements
 
-`make godot-actions-test`: 321 checks, 0 failures (clock, feed, data, body map on 4 real creatures, plumbing, bite end to
+`make godot-actions-test`: 322 checks, 0 failures (clock, feed, data, body map on 4 real creatures, plumbing, bite end to
 end, solver, springs, every combat action on Merodeador, Zancuda, Babosa and Garfio, idle, cosmetic, read-only).
 `make godot-play-test`: 186 checks (was 178), 0 failures, real C world: every C HIT of the session (the player's charges,
 the enemy's bite) is matched by a layer `impact` within 1 frame, the enemy wind-up weight is >= 0.99 after the first 4
