@@ -6,6 +6,7 @@ extends Node
 
 const Legend := preload("res://devtools/legend.gd")
 const TimeControl := preload("res://devtools/time_control.gd")
+const Console := preload("res://devtools/console/console.gd")
 
 ## 1. Dev tools ON in every debug build (the editor and `godot --path godot`); `--dev` forces on in any
 ##    build, `--no-dev` forces off.
@@ -21,6 +22,7 @@ const FEEDBACK_USER_DIR := "user://feedback"
 var enabled := false
 var legend: CanvasLayer
 var time_control: CanvasLayer
+var console: CanvasLayer     # console.console.registry is the command registry (also used by the agent socket)
 
 static func compute_enabled(args: PackedStringArray, debug_build: bool) -> bool:
 	if "--no-dev" in args:
@@ -38,3 +40,6 @@ func _ready() -> void:
 		time_control = TimeControl.new()
 		time_control.name = "TimeControl"
 		add_child(time_control)
+		console = Console.new()
+		console.name = "Console"
+		add_child(console)

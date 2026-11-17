@@ -217,6 +217,7 @@ void CporeWorld::_bind_methods() {
     ClassDB::bind_method(D_METHOD("get_setup"), &CporeWorld::get_setup);
     ClassDB::bind_method(D_METHOD("step", "input"), &CporeWorld::step);
     ClassDB::bind_method(D_METHOD("command", "text"), &CporeWorld::command);
+    ClassDB::bind_method(D_METHOD("command_input", "text"), &CporeWorld::command_input);
     ClassDB::bind_method(D_METHOD("order", "input"), &CporeWorld::order);
     ClassDB::bind_method(D_METHOD("state"), &CporeWorld::state);
     ClassDB::bind_method(D_METHOD("observe"), &CporeWorld::observe);
@@ -296,6 +297,16 @@ String CporeWorld::step(const Dictionary &input) {
 
 int CporeWorld::command(const String &text) { return cp_stage_command(world.get(), text.utf8().get_data()); }
 
+Dictionary CporeWorld::command_input(const String &text) const {
+    std::unique_ptr<CpStageWorld> scratch(new CpStageWorld(*world));
+    scratch->order = CpStageInput{};
+    const int rc = cp_stage_command(scratch.get(), text.utf8().get_data());
+    Dictionary d;
+    d["rc"] = rc;
+    d["input"] = order_to_dict(scratch->order);
+    return d;
+}
+
 int CporeWorld::order(const Dictionary &input) {
     CpStageInput in;
     if (!input_from_dict(input, in)) return -1;
@@ -314,6 +325,7 @@ Dictionary CporeWorld::state() const {
     d["error"] = int(w.last_error);
     d["arena"] = Vector2(w.arena_x, w.arena_z);
     d["order"] = order_to_dict(w.order);
+    d["flags"] = int(w.debug_flags);
     Array accepted;
     accepted.append(int(w.accepted[0])); accepted.append(int(w.accepted[1]));
     d["accepted"] = accepted;

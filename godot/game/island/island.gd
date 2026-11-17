@@ -33,6 +33,7 @@ var player_pos := Vector3.INF
 var last_click := Vector2.ZERO     # screen position of the last click that picked a creature (the radial opens there)
 var occluders_enabled := true
 var _mouse_held := false
+var _garfio_profile: Dictionary = {}   # kept so creatures spawned later (dev console, scenarios) get a body
 
 func _ready() -> void:
 	build()
@@ -79,6 +80,7 @@ func _build_stage() -> void:
 		push_error("player genome has no combat profile: %s" % pr.error)
 		return
 	var garfio_profile := StageSetup.garfio_profile(manifest)
+	_garfio_profile = garfio_profile
 	var setup := StageSetup.build(Game.data, int(Game.settings.seed), pr.profile, garfio_profile, bool(Game.settings.wild))
 	stage = StageWorld.new()
 	stage.name = "Stage"
@@ -121,7 +123,22 @@ func _build_stage() -> void:
 	_update_actors(0.0)
 	_update_camera(0.0)
 
+# Creatures that appear after the build (console spawn, restored scenarios) get a body when their species has one.
+func _sync_hosts() -> void:
+	var es: Array = stage.cur.entities
+	for i in range(1, es.size()):
+		if hosts.has(i) or int(es[i].species) != 3:
+			continue
+		var h := ActorHost.new()
+		h.name = "Wild%d" % i
+		add_child(h)
+		h.setup(Profile.load_json("res://game/data/garfio.json"), i, _garfio_profile, Callable(Game, "ground"))
+		hosts[i] = h
+		if stage_ui != null:
+			h.footfall.connect(stage_ui.on_footfall)
+
 func _update_actors(dt: float) -> void:
+	_sync_hosts()
 	for id in hosts:
 		var sm: Dictionary = stage.sample(id)
 		if id == 0:

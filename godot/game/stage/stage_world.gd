@@ -27,6 +27,7 @@ var start_snapshot := PackedByteArray()     # set when the session started from 
 var snapshot_ring: Array = []               # [{tick, bytes}] every RING_EVERY ticks, RING_KEEP kept (feedback replays)
 var _setup: Dictionary = {}
 var _debug_queue: Array = []
+var _order_queue: Array = []               # console/agent orders for the next tick(s), logged like player input
 
 # D7 time control (PLAN-devtools step 6): presentation only, it changes *when* ticks run, never what they compute.
 var timescale := 1.0
@@ -80,6 +81,20 @@ func restore_from(bytes: PackedByteArray) -> int:
 func queue_debug(op: Dictionary) -> void:
 	_debug_queue.append(op)
 
+# Applies a debug op right now, between ticks: the same effect and log position as queue_debug (the op is
+# logged at the next tick), but the caller gets the result code at once. Returns the rc.
+func debug_now(op: Dictionary) -> int:
+	_apply_debug()
+	var rc: int = world.debug(op)
+	if rc == 0:
+		log_debug.append({"tick": int(cur.tick), "op": op.duplicate()})
+	debug_applied.emit(op, rc)
+	return rc
+
+# Replaces the input of one upcoming tick (FIFO). The input is validated by CporeWorld.step like any other.
+func queue_order(input: Dictionary) -> void:
+	_order_queue.append(input)
+
 func _apply_debug() -> void:
 	var queue := _debug_queue
 	_debug_queue = []
@@ -93,7 +108,9 @@ func step_once() -> void:
 	if not _debug_queue.is_empty():
 		_apply_debug()
 	var input := {}
-	if input_provider.is_valid():
+	if not _order_queue.is_empty():
+		input = _order_queue.pop_front()
+	elif input_provider.is_valid():
 		input = input_provider.call()
 	var h := world.step(input)
 	if h == "":

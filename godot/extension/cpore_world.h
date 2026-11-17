@@ -33,6 +33,8 @@ public:
     godot::Dictionary get_setup() const;
     godot::String step(const godot::Dictionary &input);
     int command(const godot::String &text);
+    // Parses a command text into the input it would order, without touching the world: {rc, input}.
+    godot::Dictionary command_input(const godot::String &text) const;
     int order(const godot::Dictionary &input);
     static godot::String order_error(int code);
     godot::Dictionary state() const;
