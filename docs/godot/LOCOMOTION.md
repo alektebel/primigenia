@@ -134,6 +134,8 @@ trunk bones and calls `solve_legs()`.
 
 ## 6. Speed proposal for the C profile (game tuning, `core/` untouched)
 
+Update (PLAN-feel): C now uses jog = 1.3 x profile.speed and turn0 = 1.1 sqrt(g/r_body); the mass law is not used for speed (see docs/godot/PLAN-feel.md).
+
 ```
 hirt   = 25.5 M^0.26 (1 - exp(-22 M^-0.6)) / 3.6            m/s, M in kg
 v      = 0.55 * hirt * plan_k * limb * foot_k

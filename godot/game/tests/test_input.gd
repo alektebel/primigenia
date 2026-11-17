@@ -9,6 +9,9 @@ static func js_heading(vx: float, vz: float) -> Vector2i:
 	var s := maxf(absf(vx), absf(vz))
 	return Vector2i(int(floor(vx / s * 32767.0 + 0.5)), int(floor(vz / s * 32767.0 + 0.5)))
 
+func no_keys() -> Dictionary:
+	return {"forward": false, "back": false, "left": false, "right": false, "sprint": false}
+
 func run(t) -> void:
 	var rng := RandomNumberGenerator.new()
 	rng.seed = 5
@@ -49,6 +52,63 @@ func run(t) -> void:
 	inp.blocked = func() -> bool: return true
 	s = inp.sample()
 	t.eq([s.verb, s.get("sprint", 0)], [1, 0], "movement_blocked zeroes movement keys")
+
+	# Input latch (PLAN-feel S3): a held key keeps its heading while the view yaw rotates.
+	var lat = PlayerInput.new()
+	var back := {"forward": false, "back": true, "left": false, "right": false, "sprint": false}
+	lat.keys_override = back
+	lat.view_yaw = 0.0
+	var h0: Dictionary = lat.sample()
+	var same := true
+	for i in 40:
+		lat.view_yaw = i * 0.3
+		var hi: Dictionary = lat.sample()
+		same = same and hi.hx == h0.hx and hi.hz == h0.hz
+	t.check(same, "holding back for 40 ticks with a rotating view_yaw gives a constant heading")
+	lat.keys_override = {"forward": true, "back": false, "left": false, "right": false, "sprint": false}
+	lat.view_yaw = 1.0
+	var hw: Dictionary = lat.sample()
+	lat.view_yaw = 2.0
+	lat.keys_override = back
+	var hs: Dictionary = lat.sample()
+	var expect: Vector2i = PlayerInput.heading(PlayerInput.camera_relative(0.0, 1.0, 2.0))
+	t.check(hs.hx == expect.x and hs.hz == expect.y and (hw.hx != hs.hx or hw.hz != hs.hz), "W then S re-latches to the view at the S press")
+	lat.keys_override = no_keys()
+	lat.sample()
+	t.check(lat.frame_yaw == null, "releasing the keys clears the latch")
+	var iy = lat.intent_yaw()
+	t.check(iy == null, "no keys, no destination: no intent")
+	lat.keys_override = back
+	lat.view_yaw = 0.7
+	var iy2 = lat.intent_yaw()
+	t.check(iy2 != null and absf(wrapf(iy2 - 0.7, -PI, PI)) < 1e-6, "intent while keys are held")
+	lat.sample()
+	lat.view_yaw = 2.5
+	var iy3 = lat.intent_yaw()
+	t.check(absf(wrapf(iy3 - iy2, -PI, PI)) < 1e-9, "intent_yaw is pure and follows the latched frame")
+	var live = PlayerInput.new()
+	live.strafe_latch = false
+	live.keys_override = back
+	live.view_yaw = 0.0
+	var l0: Dictionary = live.sample()
+	live.view_yaw = 1.0
+	var l1: Dictionary = live.sample()
+	t.check(l0.hx != l1.hx or l0.hz != l1.hz, "strafe_latch off keeps the old live-camera behaviour")
+	var tk = PlayerInput.new()
+	tk.tank = true
+	tk.facing_yaw = 0.5
+	tk.keys_override = {"forward": true, "back": false, "left": false, "right": false, "sprint": false}
+	var th: Dictionary = tk.sample()
+	var want: Vector2i = PlayerInput.heading(Vector2(sin(0.5), cos(0.5)))
+	t.check(th.hx == want.x and th.hz == want.y, "tank: W goes along the creature's heading")
+	tk.keys_override = {"forward": true, "back": false, "left": true, "right": false, "sprint": false}
+	var tl: Dictionary = tk.sample()
+	var yawl := atan2(float(tl.hx), float(tl.hz))
+	t.check(absf(yawl - 0.5 - 0.22) < 0.01, "tank: A turns the heading left (+yaw) by 0.22 rad per tick (got %.3f)" % yawl)
+	tk.keys_override = {"forward": false, "back": true, "left": false, "right": false, "sprint": false}
+	var tb: Dictionary = tk.sample()
+	var yawb := atan2(float(tb.hx), float(tb.hz))
+	t.check(absf(wrapf(yawb - (0.5 + 0.22 + PI), -PI, PI)) < 0.01, "tank: S reverses")
 
 	# Ray march on a plane and a slope.
 	var plane := func(x: float, z: float) -> float: return 42.0

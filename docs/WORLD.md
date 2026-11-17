@@ -56,11 +56,17 @@ Each `cp_stage_step`:
 `CP_STAGE_CONTINUE` or a NULL input preserves an order. `WAIT` brakes to a
 stop. Headings have signed int16 x/z components and are normalized using
 `sqrtf`; destinations and approach/attack orders steer toward points/entities.
-Turning is limited to approximately 0.38 radians/tick, or 0.9 while pivoting
-for a sharp reversal. Acceleration and braking use fixed exponential-ease
-coefficients. Destination speed reduces with stopping distance. Uphill or
-downhill slope reduces speed. Sprint multiplies roaming speed by 1.7 and
-spends 1.4 stamina/tick; ordinary roaming recovers 1/tick.
+Locomotion (CP_STAGE_VERSION 2, `CP_STAGE_MOTION` in `core/src/stage_world.c`, PLAN-feel): the
+jog speed is 1.3 x `profile.speed`, sprint is 1.7 x jog (stamina rules unchanged), and wild creatures
+roam and chase at 0.6 x jog. Speed eases toward the wanted speed (60 % of the error per tick) with
+acceleration capped at 15 m/s2 and braking at 20 m/s2. The yaw rate is limited by body size,
+`clamp(1.1 sqrt(9.81 / r_body), 1.5, 4.5)` rad/s, and by lateral grip at speed, `11.8 / v`, so a turn
+at speed is a curve; the wanted speed falls to 60 % for a 90 degree turn and to 0 beyond 120 degrees
+(plant and brake). Only below 0.3 x jog does a reversal become a pivot, rotating at twice the turn
+rate (3 to 7 rad/s). Destination speed reduces with stopping distance; uphill or downhill slope reduces
+speed. Everything uses + - * /, `sqrtf` and the existing polynomials, so native and WASM agree. Logs and
+hashes from version 1 are rejected (log header `CPORE_WORLD_LOG 2`).
+Sprint spends 1.4 stamina/tick; ordinary roaming recovers 1/tick.
 
 Movement checks the ±195 m world boundary, terrain slope and ground below
 −0.7 m. Terrain is checked along each displacement at intervals no longer
@@ -155,7 +161,7 @@ state. Consuming a roam draw changes the world hash without changing terrain
 or spawn state. The immutable analytic noise initializer does not consume
 any runtime decision stream.
 
-`CPORE_WORLD_LOG 1` contains the full numeric setup, a tick count, then one
+`CPORE_WORLD_LOG 2` contains the full numeric setup, a tick count, then one
 input row per tick: verb, target, move, dodge direction, sprint, heading x/z,
 destination x/z. It records attempted inputs, including rejected orders.
 Setup and input floats are serialized from their **float32 values**: exporting

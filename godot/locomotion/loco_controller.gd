@@ -15,6 +15,10 @@ extends RefCounted
 const Gait = preload("loco_gait.gd")
 const G := 9.81
 const MAX_DT := 1.0 / 90.0
+const BANK_K := {&"quadruped": 0.35, &"horizontal_biped": 0.5, &"upright_biped": 0.6, &"multi": 0.2, &"legless": 0.0, &"monopod": 0.4}
+const BANK_MAX := {&"quadruped": 0.20, &"multi": 0.20, &"horizontal_biped": 0.30, &"upright_biped": 0.30, &"monopod": 0.30, &"legless": 0.0}
+const GAIT_DWELL := 0.3         # s: shortest time between gait changes
+const FORCE_GAP := 0.0        # s: at most one forced lift-off per gap
 const STRAIGHT := 0.985         # longest a leg is allowed to get, as a share of its length
 
 signal footfall(leg: int, position: Vector3)
@@ -39,7 +43,7 @@ var pose := {}
 # --- tunables (dimensionless)
 var vault_gain := 1.0           # share of the rigid-leg pendulum arc the hips follow
 var leg_axis_torque := 0.25     # share of leg force that pitches the body
-var bank_gain := 0.7
+var bank_gain := 0.7            # scale of the per-plan bank_k (0.7 = the table as written)
 var stability_gain := 0.9
 var girdle_gain := 0.085         # girdle yaw per radian of leading-foot offset
 
@@ -82,6 +86,11 @@ var _omega := 10.0
 var _zeta := 0.8
 var _ref_h := 0.3
 var _stride_mult := 1.0
+var _r_feet := 0.5               # mean horizontal distance of the leg homes from the centre of mass
+var _gait_t := -1.0              # time of the last gait change (dwell)
+var _force_t := -1.0             # time of the last forced lift-off (at most one per 0.05 s)
+var intent_yaw = null            # world yaw the player is asking for (head and shoulders lead the body), or null
+var pivoting := false            # turning on the spot: stepping around, half the legs down
 
 func _init(morphology = null, ground_fn: Callable = Callable()) -> void:
 	if morphology != null:
@@ -108,8 +117,12 @@ func setup(morphology, ground_fn: Callable = Callable()) -> void:
 			"lift": 0.0, "load": 1.0, "s": 0.5, "u": 0.0, "force": false, "err": 0.0, "rate": 0.0, "t_td": 0.0,
 			"phi": 0.0, "dir": Vector3.BACK * -1.0, "ball": Vector3.ZERO})
 	_hip_loc = []
+	_r_feet = 0.0
 	for m in morph.legs:
 		_hip_loc.append(m.hip)
+		_r_feet += Vector2(m.home.x - morph.com.x, m.home.z - morph.com.z).length()
+	_r_feet = _r_feet / max(float(morph.legs.size()), 1.0)
+	_gait_t = -1.0
 	_st_yaw = PackedFloat32Array()
 	_st_x = PackedFloat32Array()
 	for _s in morph.stations:
@@ -130,6 +143,11 @@ static func _spring(s: Vector2, target: float, omega: float, zeta: float, h: flo
 
 static func _lp(tau: float, h: float) -> float:
 	return 1.0 - exp(-h / max(tau, 1e-5))
+
+## The world yaw the player is asking for (null: none). The head and the front of the spine start turning
+## towards it at once, before the C world's heading has followed.
+func set_intent(yaw) -> void:
+	intent_yaw = yaw
 
 ## Place the creature at rest (also used after a teleport).
 func reset(pos: Vector3, yaw: float) -> void:
@@ -205,6 +223,12 @@ func _sub(h: float, p: Vector3, yaw: float, v: Vector3, settle: bool) -> void:
 	fr = Gait.froude(_speed_f, _ref_h)
 	var v_eps := 0.03 * sqrt(G * _ref_h)
 	var moving := _speed_f > v_eps
+	# plant and pivot: a fast turn on the spot steps around on the lowest gait with half the legs down
+	var v_rot := absf(_yawrate) * _r_feet
+	pivoting = not _legs.is_empty() and absf(_yawrate) > 1.2 and _speed_f < 0.25 * sqrt(G * _ref_h)
+	if pivoting:
+		moving = true
+	var fr_g := Gait.froude(maxf(_speed_f, v_rot), _ref_h) if pivoting else fr
 	_moving = lerpf(_moving, 1.0 if moving else 0.0, _lp(0.15, h))
 	# --- 2. terrain under the body
 	var ell: float = max(0.35 * morph.body_length, 0.5 * _ref_h)
@@ -216,19 +240,22 @@ func _sub(h: float, p: Vector3, yaw: float, v: Vector3, settle: bool) -> void:
 	var dir := v / speed if speed > 1e-4 else fwd
 	var grade := _slope_f * dir.dot(fwd) + _slope_l * dir.dot(left)
 	# --- 3. gait and timing
-	var g := Gait.select(morph, gait, fr)
-	if g != gait:
+	var g := Gait.select(morph, gait, 0.0 if pivoting else fr)
+	if g != gait and time - _gait_t >= GAIT_DWELL:
 		var old := gait
 		gait = g
+		_gait_t = time
 		_off = Gait.offsets(gait, morph)
 		gait_changed.emit(old, gait, fr)
 	var legless: bool = _legs.is_empty()
 	var f_nat_c := 0.25 * sqrt(G / _ref_h)
-	var duty_t := Gait.duty(gait, fr)
-	var stride_t := Gait.stride_length(gait, fr, _ref_h) * _stride_mult
+	var duty_t := Gait.duty(gait, fr_g)
+	var stride_t := Gait.stride_length(gait, fr_g, _ref_h) * _stride_mult
 	# slopes: shorter strides uphill (more) and downhill (less)
 	stride_t *= 1.0 / (1.0 + 1.6 * grade) if grade > 0.0 else 1.0 / (1.0 - 0.6 * grade)
 	var bounce_t := Gait.bounce(gait)
+	var guard := duty_t >= 0.5          # walking gaits keep at least half the legs down
+	var need_stance := maxi(1, int(ceil(_legs.size() / 2.0)))
 	# Reach. A walking leg stays straight and the hip vaults over it (step 8),
 	# so only the leg angle limits the stride. A bouncing gait needs the hips
 	# low enough for a straight leg to reach touchdown and lift-off: crouch,
@@ -256,13 +283,15 @@ func _sub(h: float, p: Vector3, yaw: float, v: Vector3, settle: bool) -> void:
 				stride_t = max(2.0 * 0.92 * (d_max - off), 0.1 * _ref_h) / duty_t
 			need = crouch_max
 		crouch_t = max(crouch_t, need)
+	if pivoting:
+		crouch_t = min(crouch_t + 0.05, crouch_max)
 	var f_nat := f_nat_c
 	var kg := 1.0 if settle else _lp(0.35 / max(cadence, f_nat), h)
 	duty = lerpf(duty, duty_t, kg)
 	bounce = lerpf(bounce, bounce_t, kg)
 	crouch = lerpf(crouch, crouch_t, kg)
 	stride = stride_t if settle else lerpf(stride, stride_t, _lp(0.15, h))
-	cadence = _speed_f / max(stride, 1e-4)
+	cadence = (maxf(_speed_f, v_rot) if pivoting else _speed_f) / max(stride, 1e-4)
 	# --- 4. clock: keep stepping while a foot is in the air or out of place
 	var need_fix := false
 	for l in _legs:
@@ -288,11 +317,25 @@ func _sub(h: float, p: Vector3, yaw: float, v: Vector3, settle: bool) -> void:
 			l.err = Vector2(l.foot.x - home_now.x, l.foot.z - home_now.z).length()
 			var in_window: bool = frac >= duty and frac < duty + 0.4 * (1.0 - duty)
 			var want: bool = moving or l.err > 0.12 * _ref_h
+			var forced := false
 			if l.force and (moving or l.err > 0.05 * _ref_h):
-				l.theta = floor(l.theta) + duty
-				in_window = true
-				want = true
-			l.force = false
+				if time - _force_t >= FORCE_GAP:
+					l.theta = floor(l.theta) + duty
+					in_window = true
+					want = true
+					forced = true
+					_force_t = time
+					l.force = false
+				# else: keep the request, one forced lift per FORCE_GAP
+			else:
+				l.force = false
+			if in_window and want and guard and not forced:
+				var down := 0
+				for j in range(_legs.size()):
+					if j != i and not _legs[j].swing:
+						down += 1
+				if down < need_stance:
+					in_window = false           # deferred: it lifts in a later substep, when others are down
 			if in_window and want:
 				l.swing = true
 				l.th0 = l.theta
@@ -312,7 +355,7 @@ func _sub(h: float, p: Vector3, yaw: float, v: Vector3, settle: bool) -> void:
 			if moving:
 				t_mid += 0.5 * duty / max(f_eff, 1e-4)
 			t_mid = min(t_mid, 2.0)
-			var yaw_p: float = yaw + clamp(_yawrate * t_mid, -0.9, 0.9)
+			var yaw_p: float = yaw + clamp(_yawrate * t_mid, -1.2, 1.2)
 			var target: Vector3 = p + v * t_mid + Basis(Vector3.UP, yaw_p) * home_l
 			# keep the touchdown inside the leg's reach from where the hip will be
 			var hip_td: Vector3 = hip_now + v * t_td
@@ -508,8 +551,9 @@ func _sub(h: float, p: Vector3, yaw: float, v: Vector3, settle: bool) -> void:
 				wb = max(morph.stations[-1].z - morph.stations[0].z, 0.1)
 			lean_t = 0.6 * a_fwd * morph.com.y / (G * wb)
 	lean_t = clamp(lean_t, -0.25, 0.25)
-	var bank_k: float = bank_gain * (0.4 if morph.plan == &"multi" or legless else 1.0)
-	var bank_t: float = clamp(-atan(_speed_f * _yawrate / G) * bank_k, -0.4, 0.4)
+	var bank_k: float = float(BANK_K.get(morph.plan, 0.35)) * bank_gain / 0.7
+	var bank_max: float = float(BANK_MAX.get(morph.plan, 0.2))
+	var bank_t: float = clamp(-atan(_speed_f * _yawrate / G) * bank_k, -bank_max, bank_max)
 	_lean = _spring(_lean, lean_t, _omega * 0.4, 1.0, h)
 	_bank = _spring(_bank, bank_t, _omega * 0.4, 1.0, h)
 	# --- 13. compose the body transform
@@ -525,6 +569,8 @@ func _sub(h: float, p: Vector3, yaw: float, v: Vector3, settle: bool) -> void:
 	var root := Transform3D(basis, origin) * Transform3D(Basis(), piv) * Transform3D(rot, Vector3.ZERO) * Transform3D(Basis(), -piv)
 	# --- 14a. girdles: each pair of hips turns toward its leading foot, the
 	# spine bends between stations (rigs read pose.hips and spine_at())
+	var kappa: float = _yawrate / max(_speed_f, 0.5)          # path curvature, 1/m
+	var d_int: float = wrapf(float(intent_yaw) - yaw, -PI, PI) if intent_yaw != null else 0.0
 	for k in range(morph.stations.size()):
 		var st: Dictionary = morph.stations[k]
 		var zl := 0.0; var zr := 0.0; var nl2 := 0; var nr := 0
@@ -537,6 +583,11 @@ func _sub(h: float, p: Vector3, yaw: float, v: Vector3, settle: bool) -> void:
 		var yw := 0.0
 		if nl2 > 0 and nr > 0:
 			yw = -girdle_gain * atan2(zl / nl2 - zr / nr, max(morph.track_width, 0.05) * 2.0)
+		# the spine follows the path: stations ahead of the centre of mass yaw into the turn and those
+		# behind yaw out of it, so a long body bends along the arc instead of swinging like a door
+		yw += clamp(kappa * (float(st.z) - morph.com.z), -0.35, 0.35)
+		if intent_yaw != null and float(st.z) > morph.com.z:
+			yw += clamp(0.25 * d_int, -0.3, 0.3) * (float(st.z) - morph.com.z) / (0.5 * max(morph.body_length, 0.1))
 		_st_yaw[k] = lerpf(_st_yaw[k], yw, _lp(0.04, h))
 	for k in range(morph.stations.size()):
 		_st_x[k] = _spine_x(morph.stations[k].z)
@@ -595,7 +646,7 @@ func _sub(h: float, p: Vector3, yaw: float, v: Vector3, settle: bool) -> void:
 	var wn: float = clamp(2.2 * sqrt(G / nk), 4.0, 30.0)
 	var stretch: float = -0.25 * min(1.0, fr / 2.0) if morph.plan != &"upright_biped" else 0.0
 	_neck_p = _spring(_neck_p, clamp(-0.7 * (slope_b - bt * 0.5) - 0.8 * vy / (nk * wn) + stretch, -0.8, 0.8), wn, 0.7, h)
-	_neck_y = _spring(_neck_y, clamp(0.35 * _yawrate, -0.6, 0.6), wn, 0.8, h)
+	_neck_y = _spring(_neck_y, clamp(0.35 * _yawrate, -0.6, 0.6) + (clamp(0.6 * d_int, -0.6, 0.6) if intent_yaw != null else 0.0), wn, 0.8, h)
 	# --- 16. undulation for legless bodies
 	var wave_amp := 0.0
 	if legless:

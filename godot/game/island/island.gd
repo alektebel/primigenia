@@ -87,6 +87,7 @@ func _build_stage() -> void:
 	stage.ground_fn = ground
 	player_input = PlayerInput.new()
 	player_input.blocked = Callable(Game, "movement_blocked")
+	_sync_controls()
 	stage.input_provider = player_input.sample
 	stage.after_tick = player_input.after_tick
 	if stage.reset(setup) != 0:
@@ -122,7 +123,10 @@ func _build_stage() -> void:
 
 func _update_actors(dt: float) -> void:
 	for id in hosts:
-		hosts[id].update(dt, stage.sample(id))
+		var sm: Dictionary = stage.sample(id)
+		if id == 0:
+			sm["intent"] = player_input.intent_yaw()      # head and shoulders lead the body
+		hosts[id].update(dt, sm)
 	var p: Dictionary = stage.sample(0)
 	player_pos = p.pos
 	var occ := []
@@ -149,14 +153,26 @@ func _update_camera(dt: float) -> void:
 		var e: Dictionary = state.entities[state.active + 1]
 		enemy = {"x": e.x, "z": e.z}
 	var vp := get_viewport().get_visible_rect().size
-	var r: Dictionary = chase.update({"x": p.pos.x, "z": p.pos.z, "yaw": p.yaw, "speed": p.speed}, enemy, fighting, dt, vp.x / maxf(vp.y, 1.0))
+	chase.kick = bool(Game.settings.get("camera/kick", false))
+	var r: Dictionary = chase.update({"x": p.pos.x, "z": p.pos.z, "yaw": p.yaw, "speed": p.speed, "vx": p.vel.x, "vz": p.vel.z}, enemy, fighting, dt, vp.x / maxf(vp.y, 1.0))
+	camera.fov = 48.0 + float(r.fov_add)
 	camera.position = r.position
 	camera.look_at(r.target)
 	player_input.view_yaw = chase.view_yaw
 
+# Controls settings and the creature's pose into the input (latch frame, tank steering, intent).
+func _sync_controls() -> void:
+	player_input.strafe_latch = bool(Game.settings.get("controls/strafe_latch", true))
+	player_input.tank = bool(Game.settings.get("controls/tank", false))
+	if stage != null and not stage.cur.is_empty():
+		var e: Dictionary = stage.cur.entities[0]
+		player_input.facing_yaw = atan2(e.fx, e.fz)
+		player_input.position = Vector2(e.x, e.z)
+
 func _process(delta: float) -> void:
 	if stage == null:
 		return
+	_sync_controls()
 	_update_actors(delta)
 	_update_camera(delta)
 	if _mouse_held and not Game.movement_blocked():
@@ -167,6 +183,8 @@ func _unhandled_input(event: InputEvent) -> void:
 		return
 	if event is InputEventMouseMotion and Input.is_action_pressed("camera_orbit"):
 		chase.orbit(event.relative.x, event.relative.y)
+		if player_input.frame_yaw != null:
+			player_input.frame_yaw = chase.view_yaw     # steering with the mouse while keys are held
 	elif event.is_action_pressed("zoom_in"):
 		chase.zoom(-1.0)
 	elif event.is_action_pressed("zoom_out"):

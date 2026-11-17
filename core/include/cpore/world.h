@@ -2,7 +2,7 @@
 #ifndef CPORE_WORLD_H
 #define CPORE_WORLD_H
 #include "cpore/combat.h"
-#define CP_STAGE_VERSION 1
+#define CP_STAGE_VERSION 2
 #define CP_STAGE_MAX_WILD 24
 #define CP_STAGE_MAX_OBSTACLES 1024
 #define CP_STAGE_DAY_TICKS 12000
@@ -22,6 +22,17 @@ typedef struct {
     CpCombatProfile profile;
 } CpStageSpecies;
 extern const CpStageSpecies CP_STAGE_SPECIES[4];
+/* Stage locomotion (PLAN-feel, version 2). jog = profile.speed*jog_k, sprint = jog*sprint_k, wild = speed*wild_k*jog_k. */
+typedef struct {
+    float jog_k,sprint_k,wild_k;
+    float accel,brake;               /* m/s2 caps on the per-tick speed change */
+    float ease;                      /* share of the remaining speed error closed per tick */
+    float turn_k,turn_min,turn_max;  /* turn0 = clamp(turn_k*sqrt(9.81/r_body), turn_min, turn_max) rad/s */
+    float grip;                      /* lateral limit, m/s2: yaw rate <= grip/v */
+    float pivot_k,pivot_mul,pivot_max; /* pivot only below pivot_k*jog; rate clamp(pivot_mul*turn0, 3, pivot_max) */
+    float turn_slow;                 /* wanted *= (1-turn_slow)+turn_slow*max(dot,0) */
+} CpStageMotion;
+extern const CpStageMotion CP_STAGE_MOTION;
 typedef struct {
     float x,z,home_x,home_z;
     int32_t species,bot; /* -1 uses the temperament's standard bot */
