@@ -12,7 +12,7 @@ ROOT = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)),
 sys.path.insert(0, os.path.join(ROOT, "bindings", "python"))
 from cpore.world import StageWorld  # noqa: E402
 
-BOUND = 330.0            # terrain spans +-320 (stage_world.c terrain sampling)
+BOUND = 195.5            # cp_stage_can_walk rejects |x|,|z| > 195
 MAX_STEP = 3.0           # max plausible displacement per 10 Hz tick
 KNOWN_VERBS = {"go", "heading", "flee", "go_nest", "wait", "approach", "attack"}
 MOVE_VERBS = {"go", "heading", "flee", "go_nest", "approach"}
@@ -106,7 +106,7 @@ class Episode:
             if own[k] < -1e-3 or own[k] > own[mx] + 1e-3:
                 self.bug("range", f"{k}={own[k]} outside [0,{own[mx]}]")
         if abs(own["x"]) > BOUND or abs(own["z"]) > BOUND:
-            self.bug("out_of_bounds", f"position ({own['x']:.1f},{own['z']:.1f}) beyond +-{BOUND}")
+            self.bug("out_of_bounds", f"position ({own['x']:.1f},{own['z']:.1f}) beyond the walkable +-195")
         fl = math.hypot(*own["facing"])
         if abs(fl - 1) > 0.02 and fl != 0:
             self.bug("range", f"facing length {fl:.3f}")
@@ -231,12 +231,14 @@ class Episode:
         if d < 0.05:
             self.still_turns += 1
             obst = [n for n in o["nearby"] if n["type"] in ("rock", "tree") and n["distance"] < 4]
+            edge = max(abs(o["own"]["x"]), abs(o["own"]["z"])) > 190
             if self.still_turns == 1 and cmd == self.order[1]:
                 self.bug("no_effect", f"'{c.split()[0]}' accepted but no movement in a full turn",
                          cmd=c, near_obstacles=len(obst))
             if self.still_turns >= 3:
-                self.bug("stuck", f"no movement for {self.still_turns * self.tpt} ticks under '{c.split()[0]}' "
-                         f"(obstacles within 4: {len(obst)})", cmd=c, near_obstacles=len(obst))
+                self.bug("stuck", f"no movement for 3+ turns under '{c.split()[0]}' "
+                         f"({'at the +-195 world edge' if edge else 'no obstacle within 4: invisible terrain barrier (slope/water)' if not obst else 'obstacle within 4'})",
+                         cmd=c, near_obstacles=len(obst), edge=edge)
         else:
             self.still_turns = 0
 
