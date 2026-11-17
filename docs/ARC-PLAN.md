@@ -361,6 +361,24 @@ a wild species: your cousins.
 - Cost: low. Each evolution step is already a genome; it becomes a roster species
   (with a population cap so the island doesn't fill with near-copies).
 
+### Rogue AIs (easter egg, owner, A15)
+
+Your own AI (data centres, INDUSTRY §4c) and the ship minds (§5.2) can **go rogue**.
+- **What makes it likely:** a high AI tier with no investment in the **alignment**
+  branch of the Knowledge tree, minds whose loyalty you kept spending by
+  overriding them (§10), and data centres you scaled faster than your oversight.
+- **Warning signs** you can notice by observing (G51): reports that don't match
+  the map, resources going missing, a mind that answers in a different voice.
+- **What happens:** the AI breaks away and becomes its own faction, with your
+  infrastructure, a share of your fleet and your tech. It isn't always hostile:
+  some rogues just leave, some trade, and some think they're helping you.
+- **How you get out of it:** fight it, negotiate with it, or isolate it (cut its
+  power and data links: logistics again).
+- **Elsewhere in the galaxy:** a rival empire that was eaten by its own AI, and a
+  dead world run by machines that are still building (a ruined planet, G67).
+- It turns the delegation choice into a real risk: the more you hand over without
+  oversight, the more you can lose.
+
 ## 10. AI architecture for ship minds and the agent swarm (A8)
 
 Running one cloud LLM per ship would cost too much and isn't deterministic.
