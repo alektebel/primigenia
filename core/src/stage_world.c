@@ -6,6 +6,9 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stddef.h>
+#ifdef NAV_STATS
+#include <time.h>
+#endif
 const CpStageSpecies CP_STAGE_SPECIES[4]={
     {
         "Rondo",4.4f,20,22,0,CP_STAGE_TIMID,{
@@ -223,8 +226,7 @@ static int block_reason(const CpStageWorld *w,float x,float z,float nx,float nz,
 #define NAV_CELLS ((size_t)NAV_DIM*NAV_DIM)
 #define NAV_EXPAND 200000
 #define NAV_HEAP (1<<21)
-#define NAV_DONE 0x8000u
-static uint16_t nav_mask[NAV_CELLS];
+static uint8_t nav_mask[NAV_CELLS];
 static int32_t nav_g[NAV_CELLS];
 static uint32_t nav_stamp[NAV_CELLS];
 static uint8_t nav_dir[NAV_CELLS];
@@ -288,17 +290,32 @@ static int nav_index_of(float v){
     int i=floor_int((v+nav.bound)/nav.cs);
     return clampi(i,0,nav.dim-1);
 }
-static uint16_t nav_cell(const CpStageWorld *w,int idx){
-    uint16_t m=nav_mask[idx];
-    if(m&NAV_DONE)return m;
+/* One byte per cell: bits 0-3 the memoised result of the four forward edges E, SE, S, SW, bits 4-7 "known".
+ * The backward edges of a cell are the forward edges of its neighbours, so each undirected edge is tested once
+ * (can_walk is symmetric: same sample points, same slope rule). */
+static int nav_edge(const CpStageWorld *w,int idx,int d){
     const int i=idx%nav.dim,j=idx/nav.dim;
-    m=NAV_DONE;
-    for(int d=0;d<8;d++){
+    int from=idx,dir=d;
+    if(d>=4){
         const int ni=i+NAV_DX[d],nj=j+NAV_DZ[d];
-        if(ni<0||nj<0||ni>=nav.dim||nj>=nav.dim)continue;
-        if(cp_stage_can_walk(w,nav_c(i),nav_c(j),nav_c(ni),nav_c(nj),nav.radius))m|=(uint16_t)(1u<<d);
+        if(ni<0||nj<0||ni>=nav.dim||nj>=nav.dim)return 0;
+        from=nj*nav.dim+ni;
+        dir=d-4;
     }
-    nav_mask[idx]=m;
+    else if(i+NAV_DX[d]<0||j+NAV_DZ[d]<0||i+NAV_DX[d]>=nav.dim||j+NAV_DZ[d]>=nav.dim)return 0;
+    const int fi=from%nav.dim,fj=from/nav.dim;
+    uint8_t m=nav_mask[from];
+    if(!(m&(16u<<dir))){
+        const int ok=cp_stage_can_walk(w,nav_c(fi),nav_c(fj),nav_c(fi+NAV_DX[dir]),nav_c(fj+NAV_DZ[dir]),nav.radius);
+        m|=(uint8_t)((16u<<dir)|(ok?1u<<dir:0));
+        nav_mask[from]=m;
+    }
+    return (m>>dir)&1;
+}
+/* The 8 passability bits of a cell (bit d = may step in direction d). */
+static uint16_t nav_cell(const CpStageWorld *w,int idx){
+    uint16_t m=0;
+    for(int d=0;d<8;d++)if(nav_edge(w,idx,d))m|=(uint16_t)(1u<<d);
     return m;
 }
 static int nav_h(int idx,int gi,int gj){
@@ -419,7 +436,7 @@ static int plan_path(CpStageWorld *w,float tx,float tz){
                 for(int k=0;k<n;k++)if(idxs[k]>=0&&(best<0||d2[k]<d2[best]||(d2[k]==d2[best]&&idxs[k]<idxs[best])))best=k;
                 const int idx=idxs[best];
                 idxs[best]=-1;
-                if(cp_stage_can_walk(w,sx,sz,nav_c(idx%nav.dim),nav_c(idx/nav.dim),radius)&&nav_cell(w,idx)!=NAV_DONE)start=idx;
+                if(cp_stage_can_walk(w,sx,sz,nav_c(idx%nav.dim),nav_c(idx/nav.dim),radius)&&nav_cell(w,idx))start=idx;
             }
         }
         if(start<0)return CP_STAGE_BLOCK_UNREACHABLE;
@@ -443,7 +460,7 @@ static int plan_path(CpStageWorld *w,float tx,float tz){
                 for(int k=0;k<n;k++)if(idxs[k]>=0&&(best<0||d2[k]<d2[best]||(d2[k]==d2[best]&&idxs[k]<idxs[best])))best=k;
                 const int idx=idxs[best];
                 idxs[best]=-1;
-                if(nav_cell(w,idx)==NAV_DONE)continue;
+                if(!nav_cell(w,idx))continue;
                 if(fallback<0)fallback=idx;
                 if(cp_stage_can_walk(w,nav_c(idx%nav.dim),nav_c(idx/nav.dim),tx,tz,radius))gcell=idx;
             }
@@ -454,7 +471,12 @@ static int plan_path(CpStageWorld *w,float tx,float tz){
             }
         }
         if(gcell<0)return CP_STAGE_BLOCK_UNREACHABLE;
+#ifdef NAV_STATS
+        { struct timespec a,b; clock_gettime(CLOCK_MONOTONIC,&a); count=nav_astar(w,start,gcell); clock_gettime(CLOCK_MONOTONIC,&b);
+          fprintf(stderr,"astar %.2f ms count %d\n",(b.tv_sec-a.tv_sec)*1e3+(b.tv_nsec-a.tv_nsec)/1e6,count); }
+#else
         count=nav_astar(w,start,gcell);
+#endif
         if(count<0)return CP_STAGE_BLOCK_UNREACHABLE;
     }
     /* string pull over the points: player, the cell centres, the end point; every kept segment is checked by
@@ -505,6 +527,11 @@ static int plan_path(CpStageWorld *w,float tx,float tz){
     w->blocked_ticks=0;
     ev_push(w,CP_STAGE_EV_PATH_FOUND,0,0,-1,length_m,ex,ez);
     return 0;
+}
+int cp_stage_nav_warm(const CpStageWorld *w){
+    if(!w||!nav_ready(w))return 0;
+    for(int idx=0;idx<nav.dim*nav.dim;idx++)nav_cell(w,idx);
+    return nav.dim;
 }
 int cp_stage_path(const CpStageWorld *w,float *xz,int cap){
     if(!w||!xz||cap<0)return 0;

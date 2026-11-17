@@ -131,6 +131,9 @@ const char *cp_stage_order_error(int code);   /* -4 = unreachable (no walkable r
 int cp_stage_path(const CpStageWorld *w,float *xz,int cap);
 /* The walkable grid cell size used by the planner for the attached field (0 when none / nav disabled). */
 float cp_stage_nav_cell(const CpStageWorld *w);
+/* Fills the whole walk grid now (about a second on the 3600 m island) so that no later GO pays for it; returns the grid
+ * size or 0 when there is no field. Optional: the grid also fills lazily as the planner expands cells. */
+int cp_stage_nav_warm(const CpStageWorld *w);
 /* Marks every event so far as seen (the Python binding does this after each observe()). */
 void cp_stage_ack_events(CpStageWorld *w);
 typedef struct { uint32_t tick; CpStageInput input; } CpStageLogEntry;
