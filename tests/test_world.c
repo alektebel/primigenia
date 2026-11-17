@@ -3,6 +3,7 @@
 #include <math.h>
 #include <stdio.h>
 #include <string.h>
+#include <stddef.h>
 static CpStageWorld w, other;
 static CpStageSetup setup;
 static void reset(void) {
@@ -337,6 +338,133 @@ static void motion_law(void) {
     assert(sp/rate>=1.4f);
     printf("world motion law: jog %.2f sprint %.2f, circle radius %.2f m\n",jog,jog*m->sprint_k,sp/rate);
 }
+/* ---- golden logs + snapshot / restore (PLAN-devtools step 3) ---- */
+#define GOLDEN_TICKS 3000
+static CpStageInput golden_in[GOLDEN_TICKS];
+static uint64_t golden_hash[GOLDEN_TICKS];
+static int profile_read(FILE *f,CpCombatProfile *p){
+    unsigned a,b,c,d,e,r;
+    if(fscanf(f,"%u%u%u%u%u%f%f%f%u",&a,&b,&c,&d,&e,&p->hp,&p->stamina,&p->speed,&r)!=9)return -1;
+    p->mouth=a;p->charge=b;p->spit=c;p->tail=d;p->guard=e;p->radius_cm=r;
+    return 0;
+}
+/* Same container as apps/world_cli.c replay(): v2 header, setup, then one input per tick. */
+static void load_golden(unsigned seed,CpStageSetup *su){
+    char path[96];
+    snprintf(path,sizeof path,"tests/golden/world-%u.log",seed);
+    FILE *f=fopen(path,"r");
+    assert(f);
+    char magic[32];int version,ticks;
+    assert(fscanf(f,"%31s%d",magic,&version)==2&&!strcmp(magic,"CPORE_WORLD_LOG")&&version==2);
+    memset(su,0,sizeof *su);
+    assert(fscanf(f,"%u%u%d%f%f%f%f%f%f%d%d",&su->seed,&su->terrain_seed,&su->terrain,&su->nest_x,&su->nest_z,&su->flat_height,&su->water_x,&su->water_z,&su->water_radius,&su->n,&su->n_obstacles)==11);
+    assert(profile_read(f,&su->player)==0);
+    for(int i=0;i<su->n;i++){
+        CpStageSpawn *c=&su->wild[i];
+        assert(fscanf(f,"%f%f%f%f%d%d",&c->x,&c->z,&c->home_x,&c->home_z,&c->species,&c->bot)==6&&profile_read(f,&c->profile)==0);
+    }
+    for(int i=0;i<su->n_obstacles;i++){
+        CpStageObstacle *o=&su->obstacles[i];
+        assert(fscanf(f,"%f%f%f%d",&o->x,&o->z,&o->r,&o->type)==4);
+    }
+    assert(fscanf(f,"%d",&ticks)==1&&ticks==GOLDEN_TICKS);
+    for(int i=0;i<ticks;i++){
+        CpStageInput *a=&golden_in[i];int hx,hz;
+        memset(a,0,sizeof *a);
+        assert(fscanf(f,"%d%d%d%d%d%d%d%f%f",&a->verb,&a->target,&a->move,&a->dir,&a->sprint,&hx,&hz,&a->x,&a->z)==9);
+        a->hx=hx;a->hz=hz;
+    }
+    fclose(f);
+    snprintf(path,sizeof path,"tests/golden/world-%u.hashes",seed);
+    f=fopen(path,"r");
+    assert(f);
+    for(int i=0;i<GOLDEN_TICKS;i++){
+        unsigned long long h;
+        assert(fscanf(f,"%16llx",&h)==1);
+        golden_hash[i]=h;
+    }
+    fclose(f);
+}
+static CpStageWorld snap_a,snap_b;
+static void snapshots(void){
+    assert(cp_stage_world_size()==sizeof(CpStageWorld));
+    assert(cp_stage_snapshot_size()==48+offsetof(CpStageWorld,field));
+    static uint8_t blob[1<<16],again[1<<16];
+    const unsigned seeds[]={1,42,987654321};
+    for(unsigned si=0;si<3;si++){
+        CpStageSetup su;
+        load_golden(seeds[si],&su);
+        /* (a) the committed golden hashes still hold */
+        assert(cp_stage_reset(&snap_a,&su)==0);
+        int fight_tick=-1;
+        for(int i=0;i<GOLDEN_TICKS;i++){
+            assert(cp_stage_step(&snap_a,&golden_in[i])==golden_hash[i]);
+            if(fight_tick<0&&snap_a.active>=0)fight_tick=i;
+        }
+        assert(fight_tick>=0);
+        const int at[]={0,1,777,fight_tick+5};
+        for(unsigned k=0;k<sizeof at/sizeof *at;k++){
+            assert(cp_stage_reset(&snap_a,&su)==0);
+            for(int i=0;i<at[k];i++)cp_stage_step(&snap_a,&golden_in[i]);
+            int n=cp_stage_snapshot(&snap_a,blob,sizeof blob);
+            assert(n==(int)cp_stage_snapshot_size());
+            /* (b) restore into a dirty world and keep going: every tick hash and the final observation match */
+            memset(&snap_b,0x5a,sizeof snap_b);
+            assert(cp_stage_restore(&snap_b,blob,(size_t)n,NULL)==CP_STAGE_SNAP_OK);
+            assert(cp_stage_hash(&snap_b)==cp_stage_hash(&snap_a));
+            /* (c) a snapshot of a restored world is the same bytes */
+            assert(cp_stage_snapshot(&snap_b,again,sizeof again)==n&&!memcmp(blob,again,(size_t)n));
+            for(int i=at[k];i<GOLDEN_TICKS;i++){
+                uint64_t h=cp_stage_step(&snap_b,&golden_in[i]);
+                assert(h==golden_hash[i]);
+                assert(h==cp_stage_step(&snap_a,&golden_in[i]));
+            }
+            char oa[8192],ob[8192];
+            assert(cp_stage_observe(&snap_a,oa,sizeof oa)>0&&cp_stage_observe(&snap_b,ob,sizeof ob)>0&&!strcmp(oa,ob));
+        }
+    }
+    /* (d) every error code */
+    reset();
+    for(int i=0;i<50;i++)cp_stage_step(&w,NULL);
+    int n=cp_stage_snapshot(&w,blob,sizeof blob);
+    assert(n>0);
+    const uint64_t before=cp_stage_hash(&snap_b);
+    uint8_t bad[1<<16];
+    memcpy(bad,blob,(size_t)n);bad[0]='X';
+    assert(cp_stage_restore(&snap_b,bad,(size_t)n,NULL)==CP_STAGE_SNAP_ERR_MAGIC);
+    memcpy(bad,blob,(size_t)n);bad[8]=2;
+    assert(cp_stage_restore(&snap_b,bad,(size_t)n,NULL)==CP_STAGE_SNAP_ERR_FORMAT);
+    memcpy(bad,blob,(size_t)n);bad[12]=CP_STAGE_VERSION+1;
+    assert(cp_stage_restore(&snap_b,bad,(size_t)n,NULL)==CP_STAGE_SNAP_ERR_ENGINE);
+    memcpy(bad,blob,(size_t)n);bad[16]^=1;
+    assert(cp_stage_restore(&snap_b,bad,(size_t)n,NULL)==CP_STAGE_SNAP_ERR_LAYOUT);
+    assert(cp_stage_restore(&snap_b,blob,(size_t)n-1,NULL)==CP_STAGE_SNAP_ERR_SIZE);
+    assert(cp_stage_restore(&snap_b,blob,20,NULL)==CP_STAGE_SNAP_ERR_MAGIC);
+    memcpy(bad,blob,(size_t)n);bad[24]^=1;
+    assert(cp_stage_restore(&snap_b,bad,(size_t)n,NULL)==CP_STAGE_SNAP_ERR_SIZE);
+    memcpy(bad,blob,(size_t)n);bad[32]=1; /* header claims an island field; none given */
+    assert(cp_stage_restore(&snap_b,bad,(size_t)n,NULL)==CP_STAGE_SNAP_ERR_FIELD);
+    memcpy(bad,blob,(size_t)n);bad[48+offsetof(CpStageWorld,tick)]^=0x40;
+    assert(cp_stage_restore(&snap_b,bad,(size_t)n,NULL)==CP_STAGE_SNAP_ERR_HASH);
+    assert(cp_stage_hash(&snap_b)==before); /* failed restores leave the world untouched */
+    assert(cp_stage_snapshot(&w,blob,10)==CP_STAGE_SNAP_ERR_SIZE);
+    for(int c=CP_STAGE_SNAP_ERR_HASH;c<CP_STAGE_SNAP_OK;c++)assert(strlen(cp_stage_snapshot_error(c))>3);
+    assert(strstr(cp_stage_snapshot_error(CP_STAGE_SNAP_ERR_ENGINE),"engine version"));
+    /* DT0 state is hashed only when it differs from the default */
+    reset();
+    const uint64_t plain=cp_stage_hash(&w);
+    w.motion.jog_k*=1.5f;
+    assert(cp_stage_hash(&w)!=plain);
+    w.motion=CP_STAGE_MOTION;
+    assert(cp_stage_hash(&w)==plain);
+    w.debug_flags=1;
+    assert(cp_stage_hash(&w)!=plain);
+    w.debug_flags=0;
+    assert(cp_stage_hash(&w)==plain&&w.field==NULL&&w.field_hash==0);
+    /* the layout fingerprint is stable inside one build */
+    assert(cp_stage_layout()==cp_stage_layout()&&cp_stage_layout()!=0);
+    puts("PASS golden logs, snapshot/restore round trips, snapshot errors and hash compatibility");
+}
 int main(void) {
     validation();
     motion_law();
@@ -345,6 +473,7 @@ int main(void) {
     multiple_creatures();
     agent_contract();
     numeric_boundaries();
+    snapshots();
     reset();
     CpStageInput a={
         0

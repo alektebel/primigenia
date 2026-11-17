@@ -5,6 +5,7 @@
 #include <stdarg.h>
 #include <string.h>
 #include <stdlib.h>
+#include <stddef.h>
 const CpStageSpecies CP_STAGE_SPECIES[4]={
     {
         "Rondo",4.4f,20,22,0,CP_STAGE_TIMID,{
@@ -176,7 +177,12 @@ int cp_stage_reset(CpStageWorld *w,const CpStageSetup *s){
     }
     /* Copy first so resetting from &world.setup is supported. */
     CpStageSetup copy=*s;
+    /* The attached field survives reset only in FIELD mode (the caller attaches it first); other modes
+     * never read it, and dropping it keeps a world from a previous FIELD run from leaking its pointer. */
+    const CpStageField *field=copy.terrain==CP_STAGE_FIELD?w->field:NULL;
     memset(w,0,sizeof *w);
+    w->field=field;
+    w->motion=CP_STAGE_MOTION;
     w->setup=copy;
     w->active=-1;
     cp_rng_seed(&w->spawn_rng,copy.seed^0x53504157u);
@@ -258,7 +264,7 @@ const CpStageMotion CP_STAGE_MOTION={
  * `limit` radians with small-angle polynomials, so the angular speed is bounded and deterministic
  * (only + - * / and sqrtf, identical natively and in WASM). */
 static void walk(CpStageWorld *w,CpStageCreature *c,float dx,float dz,float speed,float jog){
-    const CpStageMotion *m=&CP_STAGE_MOTION;
+    const CpStageMotion *m=&w->motion;
     float n=length(dx,dz),ox=c->x,oz=c->z,old=c->speed,turn=0,r=cp_combat_body_radius(&c->profile);
     float dot=1,cross=0;
     if(n>.00001f){
@@ -466,7 +472,7 @@ static void wild_tick(CpStageWorld *w,int skip,int engage){
             tx=e->x+(e->x-w->player.x);
             tz=e->z+(e->z-w->player.z);
         }
-        float jog=e->profile.speed*CP_STAGE_MOTION.wild_k*CP_STAGE_MOTION.jog_k,espeed=jog;
+        float jog=e->profile.speed*w->motion.wild_k*w->motion.jog_k,espeed=jog;
         if(length(tx-e->x,tz-e->z)<.4f)espeed=0;
         walk(w,e,tx-e->x,tz-e->z,espeed,jog);
         if(e->returning&&length(e->x-e->home_x,e->z-e->home_z)<.6f)e->returning=0;
@@ -537,7 +543,7 @@ uint64_t cp_stage_step(CpStageWorld *w,const CpStageInput *input){
             }
         }
         int sprint=(a->sprint||a->verb==CP_STAGE_FLEE)&&length(dx,dz)>0&&w->player.stamina>2;
-        float jog=w->player.profile.speed*CP_STAGE_MOTION.jog_k,speed=sprint?jog*CP_STAGE_MOTION.sprint_k:jog,stop=sqrtf(clamp(remaining-.08f,0,10000)*12);
+        float jog=w->player.profile.speed*w->motion.jog_k,speed=sprint?jog*w->motion.sprint_k:jog,stop=sqrtf(clamp(remaining-.08f,0,10000)*12);
         if(stop<speed)speed=stop;
         walk(w,&w->player,dx,dz,speed,jog);
         w->player.stamina=clamp(w->player.stamina+(sprint?-1.4f:1),0,w->player.profile.stamina);
@@ -659,6 +665,17 @@ uint64_t cp_stage_hash(const CpStageWorld *w){
         uint64_t combat=cp_combat_hash(&w->combat);
         u32(&h,(uint32_t)combat);
         u32(&h,(uint32_t)(combat>>32));
+    }
+    /* DT0 state is folded in only when it differs from the default, so the committed golden logs and
+     * every analytic/flat run keep their hashes. */
+    if(memcmp(&w->motion,&CP_STAGE_MOTION,sizeof w->motion)){
+        const float *m=(const float *)&w->motion;
+        for(unsigned i=0;i<sizeof w->motion/sizeof *m;i++)fl(&h,m[i]);
+    }
+    if(w->debug_flags)u32(&h,(uint32_t)w->debug_flags);
+    if(s->terrain==CP_STAGE_FIELD){
+        u32(&h,(uint32_t)w->field_hash);
+        u32(&h,(uint32_t)(w->field_hash>>32));
     }
     return h;
 }
@@ -793,4 +810,127 @@ int cp_stage_observe(const CpStageWorld *w,char *out,size_t cap){
     ADD("],\"summary\":\"Explore the valley; creature ids are stable.\"}");
 #undef ADD
     return failed?-1:(int)used;
+}
+/* ---- snapshot / restore (PLAN-devtools step 3) ------------------------------------------------
+ * Raw copy of the POD world (no pointers, no heap) up to `field`, so a restored world is bit-identical,
+ * RNG streams and derived outputs included. Guarded by a layout fingerprint instead of assumed portable. */
+#define SNAP_HEADER 48u
+#define SNAP_PAYLOAD (offsetof(CpStageWorld,field))
+static void lay(uint64_t *h,size_t v){
+    for(int i=0;i<8;i++){
+        *h^=(uint8_t)((uint64_t)v>>(8*i));
+        *h*=1099511628211ULL;
+    }
+}
+#define LAY(T,m) do{lay(&h,offsetof(T,m));lay(&h,sizeof(((T*)0)->m));}while(0)
+uint64_t cp_stage_layout(void){
+    uint64_t h=14695981039346656037ULL;
+    lay(&h,sizeof(CpStageWorld));lay(&h,sizeof(CpStageSetup));lay(&h,sizeof(CpStageCreature));
+    lay(&h,sizeof(CpCombatWorld));lay(&h,sizeof(CpCombatCreature));lay(&h,sizeof(CpStageBot));
+    lay(&h,sizeof(CpStageMotion));lay(&h,sizeof(CpStageInput));lay(&h,sizeof(CpStageSpawn));
+    lay(&h,sizeof(CpStageObstacle));lay(&h,sizeof(CpCombatProfile));lay(&h,sizeof(CpRng));
+    lay(&h,sizeof(CpCombatHill));lay(&h,sizeof(CpCombatEvent));lay(&h,sizeof(CpCombatAction));
+    LAY(CpStageWorld,setup);LAY(CpStageWorld,spawn_rng);LAY(CpStageWorld,roam_rng);LAY(CpStageWorld,noise);
+    LAY(CpStageWorld,tick);LAY(CpStageWorld,clock);LAY(CpStageWorld,player);LAY(CpStageWorld,wild);
+    LAY(CpStageWorld,order);LAY(CpStageWorld,active);LAY(CpStageWorld,started);LAY(CpStageWorld,outcome);
+    LAY(CpStageWorld,respawn_ticks);LAY(CpStageWorld,cooldown_ticks);LAY(CpStageWorld,arena_x);
+    LAY(CpStageWorld,arena_z);LAY(CpStageWorld,combat);LAY(CpStageWorld,bot);LAY(CpStageWorld,combat_orders);
+    LAY(CpStageWorld,accepted);LAY(CpStageWorld,last_error);LAY(CpStageWorld,hash);LAY(CpStageWorld,motion);
+    LAY(CpStageWorld,debug_flags);LAY(CpStageWorld,reserved);LAY(CpStageWorld,field_hash);LAY(CpStageWorld,field);
+    LAY(CpStageSetup,seed);LAY(CpStageSetup,terrain_seed);LAY(CpStageSetup,terrain);LAY(CpStageSetup,n);
+    LAY(CpStageSetup,n_obstacles);LAY(CpStageSetup,nest_x);LAY(CpStageSetup,nest_z);LAY(CpStageSetup,flat_height);
+    LAY(CpStageSetup,water_x);LAY(CpStageSetup,water_z);LAY(CpStageSetup,water_radius);LAY(CpStageSetup,player);
+    LAY(CpStageSetup,wild);LAY(CpStageSetup,obstacles);
+    LAY(CpStageCreature,x);LAY(CpStageCreature,z);LAY(CpStageCreature,fx);LAY(CpStageCreature,fz);
+    LAY(CpStageCreature,hp);LAY(CpStageCreature,stamina);LAY(CpStageCreature,speed);LAY(CpStageCreature,acceleration);
+    LAY(CpStageCreature,turn_rate);LAY(CpStageCreature,home_x);LAY(CpStageCreature,home_z);LAY(CpStageCreature,goal_x);
+    LAY(CpStageCreature,goal_z);LAY(CpStageCreature,species);LAY(CpStageCreature,dead);LAY(CpStageCreature,pivot);
+    LAY(CpStageCreature,returning);LAY(CpStageCreature,roam_ticks);LAY(CpStageCreature,profile);
+    LAY(CpCombatWorld,rng);LAY(CpCombatWorld,seed);LAY(CpCombatWorld,tick);LAY(CpCombatWorld,n);LAY(CpCombatWorld,hill);
+    LAY(CpCombatWorld,n_hills);LAY(CpCombatWorld,c);LAY(CpCombatWorld,ev);LAY(CpCombatWorld,n_ev);LAY(CpCombatWorld,hash);
+    LAY(CpCombatCreature,alive);LAY(CpCombatCreature,medium);LAY(CpCombatCreature,team);LAY(CpCombatCreature,prof);
+    LAY(CpCombatCreature,x);LAY(CpCombatCreature,y);LAY(CpCombatCreature,fx);LAY(CpCombatCreature,fy);
+    LAY(CpCombatCreature,hp);LAY(CpCombatCreature,stamina);LAY(CpCombatCreature,move);LAY(CpCombatCreature,phase);
+    LAY(CpCombatCreature,ptick);LAY(CpCombatCreature,plen);LAY(CpCombatCreature,hit_mask);LAY(CpCombatCreature,dash_x);
+    LAY(CpCombatCreature,dash_y);LAY(CpCombatCreature,stun_t);LAY(CpCombatCreature,bleed_t);LAY(CpCombatCreature,slow_t);
+    LAY(CpCombatCreature,since_spend);LAY(CpCombatCreature,bleed_src);LAY(CpCombatCreature,verb);
+    LAY(CpCombatCreature,verb_move);LAY(CpCombatCreature,verb_started);LAY(CpCombatCreature,verb_target);
+    LAY(CpCombatCreature,verb_dir);LAY(CpCombatCreature,verb_ticks);LAY(CpCombatCreature,heading_x);
+    LAY(CpCombatCreature,heading_y);LAY(CpCombatCreature,dmg_dealt);LAY(CpCombatCreature,dmg_taken);
+    LAY(CpCombatCreature,stamina_spent);LAY(CpCombatCreature,hits);LAY(CpCombatCreature,hits_taken);
+    LAY(CpCombatCreature,blocked);LAY(CpCombatCreature,dodged);LAY(CpCombatCreature,interrupted);
+    LAY(CpCombatCreature,kills);LAY(CpCombatCreature,died_tick);
+    LAY(CpStageBot,rng);LAY(CpStageBot,kind);LAY(CpStageBot,spam_move);LAY(CpStageBot,delay);
+    LAY(CpStageBot,reaction);LAY(CpStageBot,ranged_commit);LAY(CpStageBot,timer);
+    LAY(CpStageMotion,jog_k);LAY(CpStageMotion,sprint_k);LAY(CpStageMotion,wild_k);LAY(CpStageMotion,accel);
+    LAY(CpStageMotion,brake);LAY(CpStageMotion,ease);LAY(CpStageMotion,turn_k);LAY(CpStageMotion,turn_min);
+    LAY(CpStageMotion,turn_max);LAY(CpStageMotion,grip);LAY(CpStageMotion,pivot_k);LAY(CpStageMotion,pivot_mul);
+    LAY(CpStageMotion,pivot_max);LAY(CpStageMotion,turn_slow);
+    return h;
+}
+size_t cp_stage_world_size(void){
+    return sizeof(CpStageWorld);
+}
+size_t cp_stage_snapshot_size(void){
+    return SNAP_HEADER+SNAP_PAYLOAD;
+}
+static void put32(uint8_t *p,uint32_t v){
+    for(int i=0;i<4;i++)p[i]=(uint8_t)(v>>(8*i));
+}
+static void put64(uint8_t *p,uint64_t v){
+    for(int i=0;i<8;i++)p[i]=(uint8_t)(v>>(8*i));
+}
+static uint32_t get32(const uint8_t *p){
+    return (uint32_t)p[0]|(uint32_t)p[1]<<8|(uint32_t)p[2]<<16|(uint32_t)p[3]<<24;
+}
+static uint64_t get64(const uint8_t *p){
+    return (uint64_t)get32(p)|(uint64_t)get32(p+4)<<32;
+}
+int cp_stage_snapshot(const CpStageWorld *w,uint8_t *out,size_t cap){
+    if(!w||!out||cap<SNAP_HEADER+SNAP_PAYLOAD)return CP_STAGE_SNAP_ERR_SIZE;
+    memcpy(out,"CPSTAGE",8);
+    put32(out+8,CP_STAGE_SNAPSHOT_VERSION);
+    put32(out+12,CP_STAGE_VERSION);
+    put64(out+16,cp_stage_layout());
+    put32(out+24,(uint32_t)SNAP_PAYLOAD);
+    put32(out+28,0);
+    put64(out+32,w->field_hash);
+    put64(out+40,cp_stage_hash(w));
+    memcpy(out+SNAP_HEADER,w,SNAP_PAYLOAD);
+    return (int)(SNAP_HEADER+SNAP_PAYLOAD);
+}
+int cp_stage_restore(CpStageWorld *w,const uint8_t *in,size_t len,const CpStageField *field){
+    if(!w||!in||len<SNAP_HEADER||memcmp(in,"CPSTAGE",8))return CP_STAGE_SNAP_ERR_MAGIC;
+    if(get32(in+8)!=CP_STAGE_SNAPSHOT_VERSION)return CP_STAGE_SNAP_ERR_FORMAT;
+    if(get32(in+12)!=CP_STAGE_VERSION)return CP_STAGE_SNAP_ERR_ENGINE;
+    if(get64(in+16)!=cp_stage_layout())return CP_STAGE_SNAP_ERR_LAYOUT;
+    if(get32(in+24)!=SNAP_PAYLOAD||get32(in+28)!=0||len!=SNAP_HEADER+SNAP_PAYLOAD)return CP_STAGE_SNAP_ERR_SIZE;
+    const uint64_t field_hash=get64(in+32);
+    if(field_hash&&(!field||field->hash!=field_hash))return CP_STAGE_SNAP_ERR_FIELD;
+    CpStageWorld temp;
+    memset(&temp,0,sizeof temp);
+    memcpy(&temp,in+SNAP_HEADER,SNAP_PAYLOAD);
+    temp.field=field_hash?field:NULL;
+    if(temp.field_hash!=field_hash||cp_stage_hash(&temp)!=get64(in+40))return CP_STAGE_SNAP_ERR_HASH;
+    temp.hash=get64(in+40);
+    *w=temp;
+    return CP_STAGE_SNAP_OK;
+}
+const char *cp_stage_snapshot_error(int code){
+    switch(code){
+        case CP_STAGE_SNAP_OK:return "ok";
+        case CP_STAGE_SNAP_ERR_MAGIC:return "not a world snapshot (wrong magic)";
+        case CP_STAGE_SNAP_ERR_FORMAT:return "snapshot format is newer or older than this build reads";
+        case CP_STAGE_SNAP_ERR_ENGINE:return "snapshot was made by another engine version (CP_STAGE_VERSION); rebuild it from the scenario recipe";
+        case CP_STAGE_SNAP_ERR_LAYOUT:return "snapshot memory layout differs from this build (different struct layout); rebuild it from the scenario recipe";
+        case CP_STAGE_SNAP_ERR_SIZE:return "snapshot has the wrong size or a buffer is too small";
+        case CP_STAGE_SNAP_ERR_FIELD:return "snapshot needs the island field it was made on (field missing or its hash differs)";
+        case CP_STAGE_SNAP_ERR_HASH:return "snapshot is corrupt (state hash mismatch)";
+        default:return "unknown snapshot error";
+    }
+}
+int cp_stage_attach_field(CpStageWorld *w,const CpStageField *f){
+    if(!w)return -1;
+    w->field=f;
+    return 0;
 }
