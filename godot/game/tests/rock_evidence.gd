@@ -54,6 +54,20 @@ func _run() -> void:
 			await debug_frame(island, 8, out_dir.path_join("flicker_b.png"))
 			await debug_frame(island, 6, out_dir.path_join("flicker_mask.png"))
 			island.camera.global_position -= island.camera.global_transform.basis.x * 0.25
+	if extra.contains("topdown"):
+		# Orthographic top-down frames (0.2 m per pixel) of the material weights before (11) and after (10) the height blend, and the snow masks
+		# before (7) and after (6) the gate, around the lit cliff, for the boundary width and snow metrics.
+		var c: Dictionary = Views.find_cliff(game.data, true)
+		var cam: Camera3D = island.camera
+		island.chase_enabled = false
+		cam.projection = Camera3D.PROJECTION_ORTHOGONAL
+		cam.keep_aspect = Camera3D.KEEP_HEIGHT
+		cam.size = 144.0
+		cam.far = 3000.0
+		cam.position = Vector3(c.x, 800.0, c.z)
+		cam.rotation_degrees = Vector3(-90, 0, 0)
+		for m in [10, 11]:
+			await debug_frame(island, m, out_dir.path_join("topdown_mode%d.png" % m))
 	quit()
 
 # One frame of a debug mode on a black background with a linear tone map (values are read back as written).

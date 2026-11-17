@@ -7,6 +7,8 @@ extends SceneTree
 #   steepsnow <mask>...                  share of snow pixels (G) lying on faces steeper than 55 degrees (B)
 #   cells <relief_cells.json> <png>...   luminance at the gully and ridge cells (9x9) against the 81x81 area around them
 #   reliefstat <mode9> <mask> <png>...   mean luminance of rock pixels on concave, convex and flat relief (curvature maps from mode 9)
+#   boundary <png>...                    mean width (m) of the rock/scree transition in a top-down weights frame (mode 10 or 11, 0.2 m/px)
+#   greendiff <before> <after>           mean absolute difference of the meadow-green pixels (chase frame), in 1/255
 #   flicker <bandsA> <bandsB> <mask>     share of rock pixels (whole 11x11 neighbourhood in the mask) whose ramp band has no match
 #                                        within 5 px in the frame taken after a 0.25 m camera move (mode 8 images)
 #   bands <png> [x0 w y0 y1]             peaks of the row-averaged luminance profile inside a box (strata check)
@@ -32,7 +34,7 @@ func _initialize() -> void:
 				for y in m.get_height():
 					for x in m.get_width():
 						var c := m.get_pixel(x, y)
-						if c.g > 0.5:
+						if c.g > 0.5 and c.r < 0.5:      # not the white HUD text
 							snow += 1
 							if c.b > 0.5:
 								steep += 1
@@ -54,7 +56,7 @@ func _initialize() -> void:
 				var cnt := [0, 0, 0]
 				for y in img.get_height():
 					for x in img.get_width():
-						if mk.get_pixel(x, y).r < 0.5:
+						if mk.get_pixel(x, y).r < 0.5 or mk.get_pixel(x, y).g > 0.5:
 							continue
 						var r9 := m9.get_pixel(x, y)
 						var l := luma(img.get_pixel(x, y))
@@ -66,6 +68,23 @@ func _initialize() -> void:
 						sums[k] += l
 						cnt[k] += 1
 				print("%s rock px lum: flat %.3f (%d)  concave %.3f (%d)  convex %.3f (%d)  concave/flat %.2f  convex/flat %.2f" % [f.get_base_dir().get_file(), sums[0] / maxf(cnt[0], 1), cnt[0], sums[1] / maxf(cnt[1], 1), cnt[1], sums[2] / maxf(cnt[2], 1), cnt[2], sums[1] / maxf(cnt[1], 1) / (sums[0] / maxf(cnt[0], 1)), sums[2] / maxf(cnt[2], 1) / (sums[0] / maxf(cnt[0], 1))])
+		"boundary":
+			for f in a.slice(1):
+				boundary(f, 0.2)
+		"greendiff":
+			var gb := Image.load_from_file(a[1])
+			var ga := Image.load_from_file(a[2])
+			var sd := Vector3.ZERO
+			var mx := 0.0
+			var gn := 0
+			for y in range(80, gb.get_height() - 90):
+				for x in gb.get_width():
+					var cb := gb.get_pixel(x, y)
+					if cb.g > cb.r * 1.25 and cb.g > cb.b * 1.4:
+						var ca := ga.get_pixel(x, y)
+						sd += Vector3(absf(ca.r - cb.r), absf(ca.g - cb.g), absf(ca.b - cb.b))
+						gn += 1
+			print("green (meadow) pixels %d  mean abs diff (/255) %s" % [gn, str((sd / maxf(gn, 1) * 255.0).snappedf(0.01))])
 		"flicker":
 			flicker(a[1], a[2], a[3])
 		"bands":
@@ -139,7 +158,7 @@ static func rockdiff(before: String, after: String, mask: String) -> void:
 	var n := 0
 	for y in m.get_height():
 		for x in m.get_width():
-			if m.get_pixel(x, y).r > 0.5:
+			if m.get_pixel(x, y).r > 0.5 and m.get_pixel(x, y).g < 0.5:
 				var cb := b.get_pixel(x, y)
 				var ca := a.get_pixel(x, y)
 				sb += Vector3(cb.r, cb.g, cb.b)
@@ -202,7 +221,7 @@ static func flicker(pa: String, pb: String, pm: String) -> void:
 			var inside := true
 			for dy in [-r, 0, r]:
 				for dx in [-r, 0, r]:
-					if m.get_pixel(x + dx, y + dy).r < 0.5:
+					if m.get_pixel(x + dx, y + dy).r < 0.5 or m.get_pixel(x + dx, y + dy).g > 0.5:
 						inside = false
 			if not inside:
 				continue
@@ -232,3 +251,30 @@ static func cell_lum(img: Image, c: Dictionary, r: int) -> float:
 			s += luma(img.get_pixel(x, y))
 			n += 1
 	return s / n
+
+# R is the rock weight, G the scree weight. The rock/scree border is where the rock-vs-scree share crosses 0.5; the width is the
+# number of pixels with a share between 0.1 and 0.9 per metre of border, over pixels where rock + scree > 0.9.
+static func boundary(path: String, m_per_px: float) -> void:
+	var img := Image.load_from_file(path)
+	var w := img.get_width()
+	var h := img.get_height()
+	var share := PackedFloat32Array()
+	share.resize(w * h)
+	for y in h:
+		for x in w:
+			var c := img.get_pixel(x, y)
+			share[y * w + x] = c.r / (c.r + c.g) if c.r + c.g > 0.9 else -1.0
+	var mid := 0
+	var edge := 0
+	for y in range(1, h - 1):
+		for x in range(1, w - 1):
+			var s := share[y * w + x]
+			if s < 0.0:
+				continue
+			if s > 0.1 and s < 0.9:
+				mid += 1
+			var right := share[y * w + x + 1]
+			var down := share[(y + 1) * w + x]
+			if (right >= 0.0 and (s > 0.5) != (right > 0.5)) or (down >= 0.0 and (s > 0.5) != (down > 0.5)):
+				edge += 1
+	print("%s rock/scree border %.0f m, transition area %.0f m2, mean width %.2f m" % [path.get_file(), edge * m_per_px, mid * m_per_px * m_per_px, mid * m_per_px * m_per_px / maxf(edge * m_per_px, 0.1)])

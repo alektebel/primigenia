@@ -77,6 +77,17 @@ const float SCREE_FAN_LIGHT = 1.08;
 const float SCREE_FINE_TILE = 2.65;
 const float SCREE_TOE_SLOPE = 0.866;
 
+// Height blend and snow placement (section 4).
+const float ROCK_BLEND_BIAS = 0.5;       // weight of the texture heights against the generator's cell weights
+const float ROCK_BLEND_DEPTH = 0.18;
+const float SNOW_FACE_LO = 0.55;         // detail normal y: snow rests on facets flatter than about 55 degrees
+const float SNOW_FACE_HI = 0.75;
+const float SNOW_MACRO_LO = 0.54;       // and the macro face itself must be flatter than about 55 degrees (cos 55 = 0.574)
+const float SNOW_MACRO_HI = 0.58;
+const float SNOW_LINE_Y = 365.0;         // the classifier's snow line (core/src/terrain.c): 365 - 45 * aspect
+const float SNOW_LINE_ASPECT = 45.0;
+const float SNOW_DUST = 0.8;
+
 uniform vec3 rock_normal_gain = vec3(1.0);   // per layer (macro, meso, micro) multiplier of the normal strengths; tests set it
 
 struct RockTex {
@@ -260,4 +271,44 @@ vec3 scree_shade(vec3 rock_c, ScreeTex s, float light, float fw, float fan) {
 	vec3 base = SCREE * rock_light_step(light, fw) * GRASS * mix(1.0, SCREE_FAN_LIGHT, fan);
 	base *= (1.0 + (s.height - 0.5) * SCREE_VALUE) * mix(1.0 - SCREE_GAP_DARK, 1.0, s.open);
 	return min(mix(rock_c, base, SCREE_ROCK_MIX), vec3(ROCK_MAX));
+}
+
+// Height blend of the six material weights (meadow, rock, scree, volcanic, sand, snow): w' = max(w + 0.5 H - max(w + 0.5 H) +
+// 0.18, 0), so rock pokes through scree and scree fills cracks, with boundaries as sharp as the sheet's cracks instead of a
+// 3.5 m ramp. Only materials present in the cell take part. Then the snow gate: snow only rests where the DETAIL normal is
+// flatter than about 55 degrees, the rest falls back to rock, and rock near the classifier's line is dusted on up-facing
+// ledges. `plate` is the macro height 0..1, `grass` the grass mask.
+void rock_blend(inout float w[6], float plate, float grass, vec3 nd, vec3 gn, vec3 wp, bool blend) {
+	if (blend) {
+		float hh[6];
+		hh[0] = 0.5 + 0.5 * grass;
+		hh[1] = plate;
+		hh[2] = 1.0 - plate;
+		hh[3] = 0.5;
+		hh[4] = 0.5;
+		hh[5] = 0.5;
+		float hw[6];
+		float m = -10.0;
+		for (int i = 0; i < 6; i++) {
+			hw[i] = w[i] > 0.001 ? w[i] + ROCK_BLEND_BIAS * hh[i] : -10.0;
+			m = max(m, hw[i]);
+		}
+		float sum = 0.0;
+		for (int i = 0; i < 6; i++) {
+			w[i] = max(hw[i] - m + ROCK_BLEND_DEPTH, 0.0);
+			sum += w[i];
+		}
+		for (int i = 0; i < 6; i++) {
+			w[i] /= max(sum, 1e-4);
+		}
+	}
+	float gate = smoothstep(SNOW_FACE_LO, SNOW_FACE_HI, nd.y) * smoothstep(SNOW_MACRO_LO, SNOW_MACRO_HI, gn.y);
+	float fall = w[5] * (1.0 - gate);
+	w[5] -= fall;
+	w[1] += fall;
+	float gy = clamp(-gn.z / max(gn.y, 0.05), -1.0, 1.0);
+	float line = SNOW_LINE_Y - gy * SNOW_LINE_ASPECT;
+	float dust = w[1] * smoothstep(line - 30.0, line + 5.0, wp.y + 20.0 * (plate - 0.5)) * smoothstep(0.80, 0.92, nd.y) * SNOW_DUST;
+	w[1] -= dust;
+	w[5] += dust;
 }

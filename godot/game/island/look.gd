@@ -107,6 +107,15 @@ const ROCK_FLOOR_DARK := 0.15
 const SCREE_FAN_LIGHT := 1.08
 const SCREE_FINE_TILE := 2.65
 const SCREE_TOE_SLOPE := 0.866
+const ROCK_BLEND_BIAS := 0.5
+const ROCK_BLEND_DEPTH := 0.18
+const SNOW_FACE_LO := 0.55
+const SNOW_FACE_HI := 0.75
+const SNOW_MACRO_LO := 0.54
+const SNOW_MACRO_HI := 0.58
+const SNOW_LINE_Y := 365.0
+const SNOW_LINE_ASPECT := 45.0
+const SNOW_DUST := 0.8
 
 # Godot's ACES (compatibility renderer) calibrated to three.js ACESFilmic at exposure 1:
 # see docs/evidence/godot/m0/calibration.json (written by make godot-render-test).
