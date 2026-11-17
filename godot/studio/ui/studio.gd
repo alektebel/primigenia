@@ -77,6 +77,11 @@ var _spine_hover := false
 var _drop_fx := {}                    # {point: Vector3 (view space), t: seconds}
 var _flash_dna := 0.0
 var _girth_fx := 0.0
+var palette_card: PanelContainer
+var dna_label: Label
+var dna_fill: ColorRect
+var dna_track: Control
+const DNA_BUDGET := 320                # rig.js BUDGET
 
 func _init(db: RefCounted = null, view_node: Node3D = null) -> void:
 	parts_db = db if db else PartsDB.new()
@@ -223,6 +228,7 @@ func _apply_model() -> void:
 # =================================================================== model events
 func _on_model_changed(live: bool) -> void:
 	_apply_model()
+	_update_dna()
 	if name_edit and not name_edit.has_focus():
 		name_edit.text = str(model.doc.get("name", ""))
 	if not live:
@@ -358,9 +364,11 @@ func _build_palette() -> void:
 	card.offset_left = 14; card.offset_top = 66
 	card.offset_right = 262
 	card.set_anchors_preset(Control.PRESET_LEFT_WIDE)
-	card.offset_bottom = -52
+	card.offset_bottom = -92
 	card.name = "PaletteCard"
+	palette_card = card
 	hud.add_child(card)
+	_build_dna_card()
 	var col := VBoxContainer.new()
 	col.add_theme_constant_override("separation", 6)
 	card.add_child(col)
@@ -414,6 +422,54 @@ func _build_palette() -> void:
 			grid.add_child(_make_part_button(id, c))
 	cat_title.text = i18n.category(current_category)
 	_request_category(current_category)
+
+## DNA budget card under the palette (web #dna / #meter): "129 / 320" and a bar that flashes red when over budget.
+func _build_dna_card() -> void:
+	var card := PanelContainer.new()
+	card.name = "DnaCard"
+	card.set_anchors_preset(Control.PRESET_BOTTOM_LEFT)
+	card.offset_left = 14; card.offset_right = 262
+	card.offset_top = -84; card.offset_bottom = -16
+	card.grow_vertical = Control.GROW_DIRECTION_BEGIN
+	hud.add_child(card)
+	var col := VBoxContainer.new()
+	col.add_theme_constant_override("separation", 6)
+	card.add_child(col)
+	var row := HBoxContainer.new()
+	col.add_child(row)
+	var t := _h2("ADN")
+	t.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	row.add_child(t)
+	dna_label = Label.new()
+	dna_label.name = "DnaLabel"
+	dna_label.add_theme_font_size_override("font_size", 17)
+	row.add_child(dna_label)
+	dna_track = Control.new()
+	dna_track.custom_minimum_size = Vector2(0, 10)
+	var bg := ColorRect.new()
+	bg.color = Color(1, 1, 1, .12)
+	bg.set_anchors_preset(Control.PRESET_FULL_RECT)
+	dna_track.add_child(bg)
+	dna_fill = ColorRect.new()
+	dna_fill.name = "DnaFill"
+	dna_fill.color = ThemeFactory.AMBER
+	dna_fill.set_anchors_preset(Control.PRESET_FULL_RECT)
+	dna_fill.anchor_right = 0.0
+	dna_track.add_child(dna_fill)
+	col.add_child(dna_track)
+	_update_dna()
+
+func dna_value() -> int:
+	var st: Dictionary = view.stats() if view != null and view.has_method("stats") else {}
+	return int(st.get("dna", 0))
+
+func _update_dna() -> void:
+	if dna_label == null:
+		return
+	var v := dna_value()
+	dna_label.text = "%d / %d" % [v, DNA_BUDGET]
+	dna_fill.anchor_right = clampf(float(v) / DNA_BUDGET, 0.0, 1.0)
+	dna_fill.color = ThemeFactory.AMBER if v <= DNA_BUDGET else Color("e0533d")
 
 func _thumb_tex(id: String, category: String) -> Texture2D:
 	if baker != null and baker.has_texture(id):
@@ -595,7 +651,37 @@ func _rebuild_panel() -> void:
 		"test": _panel_test()
 	_sync_history()
 
+## Capabilities (web #caps): 1..5 pips per stat, plus the warnings from the part set.
+func _caps_section() -> void:
+	var st: Dictionary = view.stats() if view.has_method("stats") else {}
+	if st.is_empty():
+		return
+	panel_box.add_child(_h2(T("Capacidades")))
+	for pair in [["Velocidad", "vel"], ["Mordisco", "bite"], ["Canto", "sing"], ["Salud", "hp"]]:
+		var row := HBoxContainer.new()
+		var l := Label.new()
+		l.text = T(pair[0])
+		l.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		row.add_child(l)
+		var pips := HBoxContainer.new()
+		pips.name = "Pips_" + pair[1]
+		pips.add_theme_constant_override("separation", 3)
+		for i in 5:
+			var d := ColorRect.new()
+			d.custom_minimum_size = Vector2(16, 8)
+			d.color = Color("8fd14f") if i < int(st.get(pair[1], 0)) else Color(1, 1, 1, .12)
+			d.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+			pips.add_child(d)
+		row.add_child(pips)
+		panel_box.add_child(row)
+	for w in st.get("warn", []):
+		var wl := _note(T(String(w)))
+		wl.add_theme_color_override("font_color", Color("e8a23a"))
+		panel_box.add_child(wl)
+	panel_box.add_child(HSeparator.new())
+
 func _panel_build() -> void:
+	_caps_section()
 	var sel: int = model.selected
 	if sel >= 0 and sel < model.doc["parts"].size():
 		var p: Dictionary = model.doc["parts"][sel]
@@ -640,7 +726,105 @@ func _panel_build() -> void:
 		b.text = s
 		b.pressed.connect(func(): model.new_from_seed(s); frame_creature())
 		chips.add_child(b)
+	var rb := Button.new()
+	rb.text = T("Al azar")
+	rb.name = "RandomButton"
+	rb.pressed.connect(func(): model.new_random(); frame_creature())
+	chips.add_child(rb)
+	var cb := Button.new()
+	cb.text = T("Copiar genoma")
+	cb.name = "CopyButton"
+	cb.pressed.connect(copy_genome)
+	chips.add_child(cb)
 	panel_box.add_child(chips)
+	panel_box.add_child(HSeparator.new())
+	_regions_section()
+
+func copy_genome() -> void:
+	DisplayServer.clipboard_set(JSON.stringify(model.doc))
+	_flash(T("Genoma copiado"))
+
+const REGION_FAMILIES := [["horns", "Cuernos"], ["plates", "Placas"], ["tendrils", "Filamentos"]]
+const REGION_SURFACES := [["torso", "Torso"], ["neck", "Cuello"], ["tail", "Cola"]]
+const REGION_SLIDERS := [["position", "Posición", 0.0, 1.0, .01], ["coverage", "Cobertura", 0.0, 1.0, .01],
+	["angle", "Ángulo", -3.14, 3.14, .01], ["length", "Largo", .2, 2.4, .05], ["count", "Cantidad", 1, 18, 1],
+	["curve", "Curvatura", -1.0, 1.0, .05], ["branches", "Ramas", 0, 3, 1]]
+
+## Growth regions (web growthPanel): horns, plates and tendrils laid on the body; cosmetic only.
+func _regions_section() -> void:
+	panel_box.add_child(_h2(T("Regiones")))
+	var regs: Array = model.doc["regions"]
+	var chips := HFlowContainer.new()
+	for i in regs.size():
+		var b := Button.new()
+		b.name = "Region_%d" % i
+		var fam := "Cuernos"
+		for f in REGION_FAMILIES:
+			if f[0] == regs[i]["family"]:
+				fam = f[1]
+		b.text = "%s %d" % [T(fam), i + 1]
+		b.toggle_mode = true
+		b.button_pressed = i == model.selected_region
+		b.pressed.connect(func(): model.selected_region = i; model.selected = -1; model.selection_changed.emit())
+		chips.add_child(b)
+	panel_box.add_child(chips)
+	var acts := HFlowContainer.new()
+	var add := Button.new()
+	add.name = "AddRegion"
+	add.text = T("Añadir región")
+	add.disabled = regs.size() >= Model.MAX_REGIONS
+	add.pressed.connect(func(): model.add_region(false))
+	acts.add_child(add)
+	var r_ok: bool = model.selected_region >= 0 and model.selected_region < regs.size()
+	if r_ok:
+		var dup := Button.new()
+		dup.text = T("Duplicar")
+		dup.name = "DuplicateRegion"
+		dup.disabled = regs.size() >= Model.MAX_REGIONS
+		dup.pressed.connect(func(): model.add_region(true))
+		acts.add_child(dup)
+		var del := Button.new()
+		del.text = T("Eliminar")
+		del.name = "DeleteRegion"
+		del.pressed.connect(func(): model.delete_region())
+		acts.add_child(del)
+	panel_box.add_child(acts)
+	if r_ok:
+		var r: Dictionary = regs[model.selected_region]
+		for pair in [["family", REGION_FAMILIES, "Forma"], ["surface", REGION_SURFACES, "Superficie"]]:
+			var row := HBoxContainer.new()
+			var l := Label.new()
+			l.text = T(pair[2])
+			l.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+			row.add_child(l)
+			var ob := OptionButton.new()
+			ob.name = "Opt_" + pair[0]
+			var sel_i := 0
+			for j in pair[1].size():
+				ob.add_item(T(pair[1][j][1]), j)
+				if pair[1][j][0] == r[pair[0]]:
+					sel_i = j
+			ob.select(sel_i)
+			var key: String = pair[0]
+			var opts: Array = pair[1]
+			ob.item_selected.connect(func(j): model.set_region(key, opts[j][0]))
+			row.add_child(ob)
+			panel_box.add_child(row)
+		for sp in REGION_SLIDERS:
+			var key: String = sp[0]
+			panel_box.add_child(_slider_row(T(sp[1]), float(r[key]), sp[2], sp[3], sp[4], func(v): model.set_region(key, v)))
+		var mir := CheckBox.new()
+		mir.text = T("Espejo")
+		mir.button_pressed = bool(r["mirror"])
+		mir.toggled.connect(func(on): model.set_region("mirror", on))
+		panel_box.add_child(mir)
+		panel_box.add_child(_note("%s: %d" % [T("Semilla"), int(r["seed"])]))
+		var vary := Button.new()
+		vary.text = T("Nueva variante")
+		vary.name = "VaryRegion"
+		vary.pressed.connect(func(): model.vary_region())
+		panel_box.add_child(vary)
+	panel_box.add_child(_note(T("Detalles artísticos; no cambian las capacidades.")))
 
 func _panel_paint() -> void:
 	var s: Dictionary = model.doc["skin"]
@@ -705,10 +889,39 @@ func _panel_test() -> void:
 	play.custom_minimum_size = Vector2(0, 38)
 	play.pressed.connect(toggle_play)
 	panel_box.add_child(play)
+	panel_box.add_child(HSeparator.new())
+	_caps_section()
+	panel_box.add_child(_h2(T("Acciones")))
+	var acts := HFlowContainer.new()
+	for a in [["bite", "Morder"], ["sing", "Cantar"]]:
+		var ab := Button.new()
+		ab.name = "Act_" + a[0]
+		ab.text = T(a[1])
+		var act: String = a[0]
+		ab.pressed.connect(func(): do_action(act))
+		acts.add_child(ab)
+	var run := Button.new()
+	run.name = "Act_run"
+	run.toggle_mode = true
+	run.button_pressed = _run
+	run.text = T("Andar") if _run else T("Correr")
+	run.pressed.connect(toggle_run)
+	acts.add_child(run)
+	panel_box.add_child(acts)
 	panel_box.add_child(_note(T("Tu criatura camina sola: nada está animado a mano")))
 	panel_box.add_child(_note(T("Cosmético")))
 
 # =================================================================== actions (shared by UI, keys and tests)
+var _run := false
+
+func do_action(a: String) -> void:
+	view.trigger(a)
+
+func toggle_run() -> void:
+	_run = not _run
+	view.set_run(_run)
+	_queue_rebuild()
+
 func set_mode(m: String) -> void:
 	_cancel_drag()
 	_pending_type = ""
@@ -717,6 +930,9 @@ func set_mode(m: String) -> void:
 	for k in mode_buttons:
 		mode_buttons[k].set_pressed_no_signal(k == m)
 	_set_hint("")
+	if palette_card != null:               # the palette only works while building
+		palette_card.modulate = Color.WHITE if m == "build" else Color(1, 1, 1, .4)
+		palette_card.mouse_filter = Control.MOUSE_FILTER_STOP if m == "build" else Control.MOUSE_FILTER_IGNORE
 	_queue_rebuild()
 
 func set_lang(l: String) -> void:
