@@ -264,10 +264,12 @@ func _build_hud() -> void:
 	_build_palette()
 	_build_right_panel()
 	hint_label = Label.new()
-	hint_label.set_anchors_preset(Control.PRESET_CENTER_BOTTOM)
-	hint_label.grow_horizontal = Control.GROW_DIRECTION_BOTH
+	hint_label.set_anchors_preset(Control.PRESET_BOTTOM_WIDE)   # between the DNA card and the right panel
 	hint_label.grow_vertical = Control.GROW_DIRECTION_BEGIN
+	hint_label.offset_left = 276; hint_label.offset_right = -290
 	hint_label.offset_bottom = -16
+	hint_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	hint_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	hint_label.add_theme_color_override("font_color", ThemeFactory.MUTED)
 	hint_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	hud.add_child(hint_label)
@@ -668,7 +670,7 @@ func _caps_section() -> void:
 		pips.add_theme_constant_override("separation", 3)
 		for i in 5:
 			var d := ColorRect.new()
-			d.custom_minimum_size = Vector2(16, 8)
+			d.custom_minimum_size = Vector2(14, 8)
 			d.color = Color("8fd14f") if i < int(st.get(pair[1], 0)) else Color(1, 1, 1, .12)
 			d.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 			pips.add_child(d)
