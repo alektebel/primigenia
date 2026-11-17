@@ -33,6 +33,7 @@ func _ready() -> void:
 		printerr("AGENT_ERROR cannot listen on 127.0.0.1:%d (error %d)" % [port, err])
 		get_tree().quit(2)
 		return
+	Game.island_ready.connect(_check_ready)   # pause the stage the moment the island exists, before it ticks
 	Feedback.install_logger()
 	_log_seen = Feedback.log_ring.lines.size() if Feedback.log_ring != null else 0
 

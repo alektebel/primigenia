@@ -105,6 +105,9 @@ func replay_recipe(parsed: Dictionary) -> int:
 			di += 1
 		queue_order(inp)
 		step_once()
+	while di < dbg.size() and int(dbg[di].tick) == int(cur.tick):    # ops at the final tick (e.g. a scenario made at tick 0)
+		debug_now(dbg[di].op)
+		di += 1
 	return 0
 
 # Replaces the input of one upcoming tick (FIFO). The input is validated by CporeWorld.step like any other.

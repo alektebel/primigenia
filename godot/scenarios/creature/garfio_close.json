@@ -1,0 +1,214 @@
+{
+	"camera": {},
+	"created": "2026-11-17T15:20:47",
+	"engine": {
+		"build": "unknown",
+		"layout": "9feb6873d681fdad",
+		"snapshot_version": 1,
+		"stage_version": 2
+	},
+	"format": "primigenia.scenario/1",
+	"genome": {
+		"name": "Merodeador",
+		"nodes": [
+			{
+				"r": 0.06,
+				"y": 1.6,
+				"z": -3.3
+			},
+			{
+				"r": 0.2,
+				"y": 1.7,
+				"z": -2.4
+			},
+			{
+				"r": 0.4,
+				"y": 1.85,
+				"z": -1.5
+			},
+			{
+				"r": 0.7,
+				"y": 2.0,
+				"z": -0.6
+			},
+			{
+				"r": 0.78,
+				"y": 2.05,
+				"z": 0.4
+			},
+			{
+				"r": 0.62,
+				"y": 2.15,
+				"z": 1.3
+			},
+			{
+				"r": 0.46,
+				"y": 2.5,
+				"z": 2.0
+			},
+			{
+				"r": 0.56,
+				"y": 2.75,
+				"z": 2.7
+			}
+		],
+		"parts": [
+			{
+				"ang": 0.0,
+				"size": 1.15,
+				"t": 1.0,
+				"type": "fauces"
+			},
+			{
+				"ang": 0.95,
+				"size": 1.0,
+				"t": 0.9,
+				"type": "ojo"
+			},
+			{
+				"ang": 0.4,
+				"curve": 0.6,
+				"len": 0.9,
+				"size": 1.0,
+				"t": 0.87,
+				"type": "cuerno"
+			},
+			{
+				"ang": 2.1,
+				"f": [
+					0.4,
+					-1.35,
+					-0.05
+				],
+				"k": [
+					0.3,
+					-0.55,
+					0.4
+				],
+				"t": 0.44,
+				"type": "pata",
+				"w": 0.23
+			},
+			{
+				"ang": 2.1,
+				"f": [
+					0.35,
+					-1.45,
+					0.05
+				],
+				"k": [
+					0.25,
+					-0.7,
+					-0.3
+				],
+				"t": 0.7,
+				"type": "pata",
+				"w": 0.2
+			},
+			{
+				"ang": 0.0,
+				"len": 0.5,
+				"size": 1.0,
+				"t": 0.5,
+				"type": "pua"
+			},
+			{
+				"ang": 0.0,
+				"len": 0.6,
+				"size": 1.0,
+				"t": 0.58,
+				"type": "pua"
+			},
+			{
+				"ang": 0.0,
+				"len": 0.5,
+				"size": 1.0,
+				"t": 0.66,
+				"type": "pua"
+			}
+		],
+		"regions": [],
+		"schema": "cpore.creature/4",
+		"skin": {
+			"cA": "#9a3b28",
+			"cB": "#2a1414",
+			"cC": "#e6cfa0",
+			"pat": 1.0,
+			"scale": 7.0,
+			"wet": 0.3
+		}
+	},
+	"hash": "a65b35e8298ebb25",
+	"island": {
+		"seed": 1,
+		"terrain_hash": "281193d8ad044e09",
+		"terrain_version": 3
+	},
+	"kind": "scenario",
+	"lineage": {
+		"format": "cpore.lineage/0",
+		"traits": []
+	},
+	"name": "garfio_close",
+	"note": "The player is 8 m from Garfio, not fighting yet. Good for the first exchange and for combat tuning.",
+	"recipe": "garfio_close.log",
+	"setup": {
+		"flat_height": 2.0,
+		"nest": [
+			0.0,
+			0.0
+		],
+		"obstacles": [],
+		"player": {
+			"charge": 4,
+			"guard": 0,
+			"hp": 100.0,
+			"mouth": 2,
+			"radius_cm": 300,
+			"speed": 4.0,
+			"spit": 0,
+			"stamina": 100.0,
+			"tail": 0
+		},
+		"seed": 1,
+		"terrain": 2,
+		"terrain_seed": 7,
+		"water": [
+			0.0,
+			0.0,
+			0.0
+		],
+		"wild": [
+			{
+				"bot": -1,
+				"home_x": 0.0,
+				"home_z": 60.0,
+				"profile": {
+					"charge": 0,
+					"guard": 0,
+					"hp": 90.0,
+					"mouth": 2,
+					"radius_cm": 50,
+					"speed": 5.5,
+					"spit": 2,
+					"stamina": 20.0,
+					"tail": 2
+				},
+				"species": 3,
+				"x": 0.0,
+				"z": 60.0
+			}
+		]
+	},
+	"stage": "creature",
+	"state": "garfio_close.cpstate",
+	"tick": 0,
+	"time": {
+		"paused": false,
+		"timescale": 1.0
+	},
+	"tuning": {},
+	"wild_bodies": {
+		"1": "res://game/data/garfio.json"
+	}
+}
