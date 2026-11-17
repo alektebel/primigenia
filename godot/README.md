@@ -87,6 +87,13 @@ Measurements and the before and after table: [docs/godot/FEEL.md](../docs/godot/
 
 `make test` (core tests) is independent and unchanged.
 
+## Dev tools (DT0)
+
+`godot/devtools/` (details: `docs/godot/DEVTOOLS.md`): F1 key legend (all builds); in debug builds the console (the key left of 1, or
+F12), F2 sites and bookmarks (Ctrl+B), F3 tuning panel and F4 A/B swap, F5/F6 quick save and scenario picker, F8 feedback bundle,
+P / `.` / `[` / `]` time control. `--dev` / `--no-dev` override. `godot --path godot -- --scenario creature/garfio_close` starts from
+a scenario; `-- --agent` opens the local agent socket. Tests: `make godot-devtools-test godot-agent-test godot-heights-test`.
+
 ## Layout
 
 `extension/` C++ glue over the C core; `game/` foundation, island, stage bridge, `stage/stage_ui.gd` (HUD and audio glue),

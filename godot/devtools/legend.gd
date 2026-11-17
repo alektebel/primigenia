@@ -95,6 +95,7 @@ var sheet: PanelContainer
 var header_extra := ""          # e.g. the tuning chip of step 10
 var _corner_box: VBoxContainer
 var _sheet_box: VBoxContainer
+var _cols: HBoxContainer
 var _held_at := -1.0
 var _sig := ""
 
@@ -125,8 +126,11 @@ func _ready() -> void:
 	sheet.grow_horizontal = Control.GROW_DIRECTION_BOTH
 	sheet.grow_vertical = Control.GROW_DIRECTION_BOTH
 	sheet.visible = false
-	_sheet_box = VBoxContainer.new()
-	sheet.add_child(_sheet_box)
+	var outer := VBoxContainer.new()
+	sheet.add_child(outer)
+	_sheet_box = outer
+	_cols = HBoxContainer.new()
+	_cols.add_theme_constant_override("separation", 28)
 	root.add_child(sheet)
 	_refresh()
 
@@ -180,19 +184,32 @@ func _refresh() -> void:
 		if not by_group.has(r.group):
 			by_group[r.group] = []
 		by_group[r.group].append(r)
-	var order: Array = spec().get("groups", [])
-	for g in order:
+	_cols = HBoxContainer.new()
+	_cols.add_theme_constant_override("separation", 28)
+	_sheet_box.add_child(_cols)
+	var columns: Array = [VBoxContainer.new(), VBoxContainer.new()]
+	for col in columns:
+		_cols.add_child(col)
+	var filled := 0
+	var half := (all.size() + by_group.size()) / 2
+	var col_i := 0
+	for g in spec().get("groups", []):
 		if not by_group.has(g):
 			continue
-		_sheet_box.add_child(_row_label(g, Palette.LEAF, 14))
+		if filled >= half and col_i == 0:
+			col_i = 1
+		var col: VBoxContainer = columns[col_i]
+		col.add_child(_row_label(g, Palette.LEAF, 14))
+		filled += 1
 		for r in by_group[g]:
 			var h := HBoxContainer.new()
 			var k := _row_label(r.keys, Palette.GOLD if r.context == ctx else Palette.MUTED, 13)
-			k.custom_minimum_size = Vector2(150, 0)
+			k.custom_minimum_size = Vector2(120, 0)
 			h.add_child(k)
 			var lab: String = r.label + ("" if r.context == ctx else "  (%s)" % r.context)
 			h.add_child(_row_label(lab, Palette.TEXT if r.context == ctx else Palette.MUTED, 13))
-			_sheet_box.add_child(h)
+			col.add_child(h)
+			filled += 1
 
 func _process(_dt: float) -> void:
 	var sig := "%s|%s|%s" % [context(), _dev(), header_extra]

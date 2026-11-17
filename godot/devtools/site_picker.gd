@@ -3,6 +3,7 @@ extends CanvasLayer
 ## Ctrl+B stores a bookmark at the player (ignored while a modal is open). Thumbnails are DT1.
 
 const Palette := preload("res://ui/palette.gd")
+const Scenario := preload("res://devtools/scenario.gd")
 
 var sites          # Sites instance
 var registry       # console registry (tp goes through it, so the picker and the console agree)
@@ -10,6 +11,8 @@ var panel: PanelContainer
 var search: LineEdit
 var list: ItemList
 var is_open := false
+var scenario_mode := false     # F6: the same widget lists scenarios; Enter loads one
+var title_label: Label
 var _rows: Array = []
 
 func _init() -> void:
@@ -27,6 +30,7 @@ func _ready() -> void:
 	panel.add_child(box)
 	var title := Label.new()
 	title.text = "Go to"
+	title_label = title
 	title.add_theme_color_override("font_color", Palette.GOLD)
 	box.add_child(title)
 	search = LineEdit.new()
@@ -48,6 +52,15 @@ func _player_xz() -> Vector2:
 
 func refresh() -> void:
 	list.clear()
+	if scenario_mode:
+		_rows = []
+		for n in Scenario.list_names():
+			if search.text.strip_edges() == "" or n.to_lower().contains(search.text.to_lower()):
+				_rows.append({"site": {"id": n, "name": n, "kind": "scenario"}})
+				list.add_item(n)
+		if list.item_count > 0:
+			list.select(0)
+		return
 	if sites == null:
 		return
 	var revealed: bool = registry != null and registry.flags.get("reveal", false)
@@ -73,6 +86,12 @@ func refresh() -> void:
 	if list.item_count > 0:
 		list.select(0)
 
+func open_scenarios() -> void:
+	scenario_mode = true
+	title_label.text = "Load scenario"
+	search.placeholder_text = "search scenarios"
+	open()
+
 func open() -> void:
 	is_open = true
 	panel.visible = true
@@ -82,6 +101,9 @@ func open() -> void:
 	search.grab_focus()
 
 func close() -> void:
+	scenario_mode = false
+	title_label.text = "Go to"
+	search.placeholder_text = "search sites (crater, cave, bookmark...)"
 	is_open = false
 	panel.visible = false
 	Game.console_open = false
@@ -92,6 +114,17 @@ func go() -> void:
 	if sel.is_empty():
 		return
 	var s: Dictionary = _rows[sel[0]].site
+	if scenario_mode:
+		var parsed := Scenario.read(s.id)
+		var scene := get_tree().current_scene
+		var err: String = parsed.error if not parsed.ok else scene.load_scenario(parsed)
+		if err != "":
+			push_warning(err)
+			var gui = scene.get("stage_ui")
+			if gui != null:
+				gui.ui.show_message(err, "warn")
+		close()
+		return
 	if registry != null:
 		var res: Dictionary = registry.execute("tp %s" % s.id)
 		if not res.ok:
@@ -122,6 +155,12 @@ func _input(e: InputEvent) -> void:
 		elif sites != null:
 			open()
 		get_viewport().set_input_as_handled()
+	elif e.is_action_pressed("dev_quickload") and not Game.console_open and not is_open:
+		open_scenarios()
+		get_viewport().set_input_as_handled()
+	elif e.is_action_pressed("dev_quicksave") and not Game.console_open and not is_open:
+		quick_save()
+		get_viewport().set_input_as_handled()
 	elif is_open and e.keycode == KEY_ESCAPE:
 		close()
 		get_viewport().set_input_as_handled()
@@ -134,3 +173,15 @@ func _input(e: InputEvent) -> void:
 	elif e.is_action_pressed("dev_bookmark") and not Game.modal_open and not Game.console_open:
 		bookmark_here()
 		get_viewport().set_input_as_handled()
+
+## F5: saves quick-<time> next to the curated scenarios when running from the source tree, else under user://scenarios.
+func quick_save() -> void:
+	var scene := get_tree().current_scene
+	if scene == null or not scene.has_method("save_scenario"):
+		return
+	var stamp := Time.get_datetime_string_from_system(false).replace("-", "").replace(":", "").replace("T", "-")
+	var dir := Scenario.DEV_DIR + "/creature" if DirAccess.dir_exists_absolute(ProjectSettings.globalize_path(Scenario.DEV_DIR)) else Scenario.USER_DIR
+	var err: String = scene.save_scenario("%s/quick-%s" % [dir, stamp], "scenario", "quick save")
+	var gui = scene.get("stage_ui")
+	if gui != null:
+		gui.ui.show_message("saved quick-%s" % stamp if err == "" else err, "info" if err == "" else "warn")
