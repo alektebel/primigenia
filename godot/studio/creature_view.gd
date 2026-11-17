@@ -33,3 +33,24 @@ func set_selection(_index: int) -> void: pass
 func set_spine_visible(_on: bool) -> void: pass
 ## Test mode hook: start/stop the creature's locomotion/animation.
 func set_playing(_on: bool) -> void: pass
+
+# ---- parity additions (STUDIO-PARITY.md); every one has a harmless default so the placeholder keeps working.
+func set_hover_node(_i: int) -> void: pass
+func set_active_node(_i: int) -> void: pass
+func set_hover_part(_i: int) -> void: pass
+func hide_part(_i: int, _hidden: bool) -> void: pass
+func pulse_part(_i: int) -> void: pass
+func set_bead_hot(_on: bool) -> void: pass
+## View-space position of the rotation bead (Vector3.ZERO when unknown).
+func rot_handle_pos(_i: int) -> Vector3: return Vector3.ZERO
+## New `rot` for a ray dragged over the part's surface plane (NAN when unknown).
+func rot_from_ray(_i: int, _o: Vector3, _d: Vector3) -> float: return NAN
+## [{joint: "k"|"f", side, pos, hip}] for a selected leg.
+func leg_handles(_i: int) -> Array: return []
+func leg_drag(_i: int, _joint: String, _side: int, _o: Vector3, _d: Vector3, _cam_fwd: Vector3) -> Dictionary: return {}
+func floor_y() -> float: return 0.0
+func body_position() -> Vector3: return Vector3.ZERO
+func stats() -> Dictionary: return {}
+func trigger(_action: String) -> void: pass
+func set_run(_on: bool) -> void: pass
+func is_playing() -> bool: return false

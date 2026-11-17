@@ -18,14 +18,32 @@ var _doc_key := ""
 var _selected := -1
 var _spine_on := true
 var _playing := false
-var _handles: Node3D
-var _ground: MeshInstance3D
+var _handles: Node3D                  # vertebrae + cords (spine overlay)
+var _verts: Array = []                # Node3D per vertebra
+var _vert_mats: Array = []            # StandardMaterial3D shared by all vertebra meshes, cord material
+var _cord_mat: StandardMaterial3D
+var _vert_mat: StandardMaterial3D
+var _spine_alpha := 0.0
+var _hover_node := -1
+var _active_node := -1
+var _hover_part := -1
+var _hover_mat: StandardMaterial3D
+var _sel_group: Node3D                # selection rings, rotation bead, leg handles
+var _rings: Array = []
+var _rot_bead: MeshInstance3D
+var _bead_hot := false
+var _leg_group: Node3D
+var _hidden_part := -1
+var _pulses := {}                     # part index -> seconds left
+var _sel_time := 0.0
 var _highlight: StandardMaterial3D
 var _tri := {}                        # MeshInstance3D instance id -> TriangleMesh (cleared on rebuild)
 var _ctl = null
 var _adapter = null
 var _desc := {}
 var _time := 0.0
+var _actions := {}
+var _run := false
 
 ## The real view when the creature module is present, else the placeholder.
 static func make_default(db: RefCounted = null) -> Node3D:
@@ -45,17 +63,29 @@ func _init(_db: RefCounted = null) -> void:
 	_highlight.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 	_highlight.albedo_color = Color(1.0, 0.75, 0.29, 0.38)
 	_highlight.no_depth_test = true
-	_ground = MeshInstance3D.new()
-	var cm := CylinderMesh.new()
-	cm.top_radius = 9.0
-	cm.bottom_radius = 9.0
-	cm.height = 0.05
-	_ground.mesh = cm
-	var gm := StandardMaterial3D.new()
-	gm.albedo_color = Color("2b3a2f")
-	gm.roughness = 1.0
-	_ground.material_override = gm
-	add_child(_ground)
+	_hover_mat = StandardMaterial3D.new()
+	_hover_mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	_hover_mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	_hover_mat.albedo_color = Color(1.0, 0.85, 0.5, 0.2)
+	_hover_mat.no_depth_test = true
+	_vert_mat = StandardMaterial3D.new()
+	_vert_mat.albedo_color = Color("eadfc2", 0.0)
+	_vert_mat.emission_enabled = true
+	_vert_mat.emission = Color("4a3c24")
+	_vert_mat.roughness = .5
+	_vert_mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	_vert_mat.no_depth_test = true
+	_vert_mat.render_priority = 15
+	_cord_mat = StandardMaterial3D.new()
+	_cord_mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	_cord_mat.albedo_color = Color("ffc04a", 0.0)
+	_cord_mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	_cord_mat.no_depth_test = true
+	_cord_mat.render_priority = 14
+	_sel_group = Node3D.new()
+	_sel_group.name = "SelectionHandles"
+	add_child(_sel_group)
+	_build_sel_nodes()
 
 # ------------------------------------------------------------------ interface
 func set_genome(doc: Dictionary) -> void:
@@ -73,6 +103,8 @@ func set_genome(doc: Dictionary) -> void:
 	_place()
 	_build_handles()
 	_apply_selection()
+	_update_sel_nodes()
+	_apply_hidden()
 	if _playing:
 		_start_loco()
 	genome_applied.emit()
@@ -164,7 +196,8 @@ func hit_node(origin: Vector3, dir: Vector3) -> int:
 		var c := to_global(pts[i])
 		var oc := o - c
 		var b := oc.dot(d)
-		var disc := b * b - (oc.dot(oc) - 0.04)
+		var rr := maxf(.2, _vert_radius(i) + .06) if i < genome.nodes.size() else .2
+		var disc := b * b - (oc.dot(oc) - rr * rr)
 		if disc < 0.0:
 			continue
 		var s := -b - sqrt(disc)
@@ -182,17 +215,17 @@ func part_anchor(index: int) -> Dictionary:
 
 func set_selection(index: int) -> void:
 	_selected = index
+	_sel_time = 0.0
 	_apply_selection()
+	_update_sel_nodes()
 
 func set_spine_visible(on: bool) -> void:
 	_spine_on = on
-	_handles.visible = on and not _playing
 
 func set_playing(on: bool) -> void:
 	if on == _playing:
 		return
 	_playing = on
-	_handles.visible = _spine_on and not on
 	if on:
 		_start_loco()
 	else:
@@ -200,29 +233,76 @@ func set_playing(on: bool) -> void:
 		_place()
 		creature.reset_spine_pose()
 		creature.pose_legs_rest()
+	_update_sel_nodes()
 
 # ------------------------------------------------------------------ internals
 func _place() -> void:
 	creature.transform = Transform3D(Basis(), Vector3(0.0, -creature.ground_offset, 0.0))
-	_ground.position = Vector3(0, -creature.ground_offset - 0.03, 1)
+
+func _vert_radius(i: int) -> float:
+	return .06 + float(genome.nodes[i].r) * .24
 
 func _build_handles() -> void:
 	for c in _handles.get_children():
 		c.queue_free()
-	var m := StandardMaterial3D.new()
-	m.albedo_color = Color("ffc04a")
-	m.no_depth_test = true
-	m.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-	for p in spine_node_positions():
-		var h := MeshInstance3D.new()
-		var s := SphereMesh.new()
-		s.radius = 0.12
-		s.height = 0.24
-		h.mesh = s
-		h.material_override = m
-		h.position = p
-		_handles.add_child(h)
-	_handles.visible = _spine_on and not _playing
+	_verts.clear()
+	var N: Array = genome.get("nodes", [])
+	for i in N.size():
+		var n = N[i]
+		var a = N[maxi(i - 1, 0)]
+		var b = N[mini(i + 1, N.size() - 1)]
+		var t := Vector3(0, float(b.y) - float(a.y), float(b.z) - float(a.z)).normalized()
+		var r := _vert_radius(i)
+		var g := Node3D.new()
+		g.position = Vector3(0, n.y, n.z)
+		g.basis = Basis(Quaternion(Vector3.UP, t)) if t.dot(Vector3.UP) > -0.999 else Basis(Vector3.RIGHT, PI)
+		_vert_part(g, r, r, .13, 0.0)
+		_vert_part(g, r * 1.12, r * 1.12, .025, .065)
+		_vert_part(g, r * 1.12, r * 1.12, .025, -.065)
+		var sp := _vert_part(g, .0, .04 + r * .14, .1 + r * .75, 0.0)
+		sp.rotation.x = -PI / 2
+		sp.position = Vector3(0, 0, -(r + .05 + r * .37))
+		for sx in [-1.0, 1.0]:
+			var sc := _vert_part(g, .0, .03 + r * .1, .06 + r * .5, 0.0)
+			sc.rotation.z = -sx * PI / 2
+			sc.position = Vector3(sx * (r + .03 + r * .25), 0, 0)
+		_handles.add_child(g)
+		_verts.append(g)
+		if i > 0:
+			var q = N[i - 1]
+			var d := Vector2(float(n.y) - float(q.y), float(n.z) - float(q.z)).length()
+			var cm := CylinderMesh.new()
+			cm.top_radius = .028
+			cm.bottom_radius = .028
+			cm.height = maxf(d, .001)
+			cm.radial_segments = 8
+			cm.rings = 1
+			var c := MeshInstance3D.new()
+			c.mesh = cm
+			c.material_override = _cord_mat
+			c.position = Vector3(0, (float(n.y) + float(q.y)) / 2, (float(n.z) + float(q.z)) / 2)
+			var dir := Vector3(0, float(n.y) - float(q.y), float(n.z) - float(q.z)).normalized()
+			if dir.length() > .5:
+				c.basis = Basis(Quaternion(Vector3.UP, dir)) if dir.dot(Vector3.UP) > -0.999 else Basis(Vector3.RIGHT, PI)
+			c.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+			_handles.add_child(c)
+	_handles.visible = _spine_alpha > .02 and not _playing
+
+## A cylinder / cone piece of a vertebra: bottom radius, top radius, height. (top 0 = cone apex up.)
+func _vert_part(parent: Node3D, top: float, bottom: float, h: float, y: float) -> MeshInstance3D:
+	var cm := CylinderMesh.new()
+	cm.top_radius = top
+	cm.bottom_radius = bottom
+	cm.height = h
+	cm.radial_segments = 16
+	cm.rings = 1
+	var m := MeshInstance3D.new()
+	m.mesh = cm
+	m.material_override = _vert_mat
+	m.position.y = y
+	m.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	parent.add_child(m)
+	return m
 
 func _part_meshes(index: int) -> Array:
 	var out := []
@@ -246,6 +326,9 @@ func _meshes_under(n: Node) -> Array:
 func _apply_selection() -> void:
 	for mi in creature.mesh_instances():
 		(mi as MeshInstance3D).material_overlay = null
+	if _hover_part >= 0 and _hover_part != _selected:
+		for mi in _part_meshes(_hover_part):
+			(mi as MeshInstance3D).material_overlay = _hover_mat
 	if _selected >= 0:
 		for mi in _part_meshes(_selected):
 			(mi as MeshInstance3D).material_overlay = _highlight
@@ -298,19 +381,338 @@ func _start_loco() -> void:
 	_ctl = load(LOCO[0]).new(morph.analyse(_desc), func(_x: float, _z: float) -> float: return -creature.ground_offset)
 	_time = 0.0
 	_loco_step(0.0)
-	_ctl.reset(Vector3(3.0, -creature.ground_offset, 0.0), PI * 0.5)
+	_ctl.reset(Vector3(PATH_C.x + PATH_R, -creature.ground_offset, 0.0), 0.0)
+
+const PATH_C := Vector2(-7.0, 0.0)
+const PATH_R := 7.0
 
 func _loco_step(dt: float) -> void:
 	_time += dt
-	var r := 3.2
 	var speed := clampf(float(_ctl.morph.hip_height) * 1.4, 0.6, 4.0) if _ctl.morph.legs.size() > 0 else 0.8
-	var w := speed / r
+	if _run:
+		speed *= 1.8
+	var w := speed / PATH_R
 	var a := _time * w
-	var pos := Vector3(cos(a) * r, -creature.ground_offset, sin(a) * r * 0.6)
-	var vel := Vector3(-sin(a) * r * w, 0.0, cos(a) * r * 0.6 * w)
+	var pos := Vector3(PATH_C.x + cos(a) * PATH_R, -creature.ground_offset, PATH_C.y + sin(a) * PATH_R)
+	var vel := Vector3(-sin(a) * PATH_R * w, 0.0, cos(a) * PATH_R * w)
 	_ctl.step(maxf(dt, 1e-4), pos, atan2(vel.x, vel.z), vel)
 	_adapter.loco_apply(creature, _ctl.pose, _desc)
+	_tick_actions(dt)
+
+## Bite swings the jaw hooks, sing pulses the sacs (hooks from creature.animation_hooks()).
+func _tick_actions(dt: float) -> void:
+	for k in _actions.keys():
+		_actions[k] -= dt
+		if _actions[k] <= 0.0:
+			_actions.erase(k)
+	var bite: float = sin(clampf(float(_actions.get("bite", 0.0)) / 1.2, 0.0, 1.0) * PI) * .6
+	var sing: float = sin(clampf(float(_actions.get("sing", 0.0)) / 1.2, 0.0, 1.0) * PI)
+	for e in creature.animation_hooks():
+		for hk in e.hooks:
+			var node = e.hooks[hk] if e.hooks is Dictionary else null
+			if node is Node3D:
+				if hk == "jaw":
+					(node as Node3D).rotation.x = bite
+				elif hk == "sacs":
+					(node as Node3D).scale = Vector3.ONE * (1.0 + .35 * sing)
+
+func action_active(a: String) -> bool:
+	return _actions.has(a)
 
 func _process(dt: float) -> void:
 	if _playing and _ctl != null:
 		_loco_step(minf(dt, 0.1))
+	_tick_spine(dt)
+	_tick_selection(dt)
+	_tick_pulses(dt)
+
+# ------------------------------------------------------------------ spine overlay (fade, hover)
+func set_hover_node(i: int) -> void:
+	_hover_node = i
+
+func set_active_node(i: int) -> void:
+	_active_node = i
+
+func _tick_spine(dt: float) -> void:
+	var want := 1.0 if (_spine_on and not _playing) or _active_node >= 0 else 0.0
+	_spine_alpha = lerpf(_spine_alpha, want, 1.0 - pow(.0004, dt))
+	_vert_mat.albedo_color.a = _spine_alpha * .96
+	_cord_mat.albedo_color.a = _spine_alpha * .85
+	_handles.visible = _spine_alpha > .02 and not _playing
+	for i in _verts.size():
+		var target := 1.3 if (i == _hover_node or i == _active_node) else 1.0
+		var g: Node3D = _verts[i]
+		g.scale = g.scale.lerp(Vector3.ONE * target, 1.0 - pow(.001, dt))
+
+func spine_alpha() -> float:
+	return _spine_alpha
+
+func hovered_node() -> int:
+	return _hover_node
+
+func vertebra_scale(i: int) -> float:
+	return (_verts[i] as Node3D).scale.x if i >= 0 and i < _verts.size() else 0.0
+
+# ------------------------------------------------------------------ hover highlight, drag helpers
+func set_hover_part(i: int) -> void:
+	if i == _hover_part:
+		return
+	_hover_part = i
+	_apply_selection()
+
+## Hide (true) or show a part while it is dragged off the body.
+func hide_part(i: int, hidden: bool) -> void:
+	_hidden_part = i if hidden else -1
+	_apply_hidden()
+
+func _apply_hidden() -> void:
+	for e in creature.parts:
+		if e.get("node") != null:
+			e.node.visible = e.index != _hidden_part
+	for l in creature.legs:
+		for n in [l.upper, l.lower, l.foot]:
+			n.visible = l.part_index != _hidden_part
+
+func is_part_hidden(i: int) -> bool:
+	return _hidden_part == i
+
+## Drop animation: the part pops (scale overshoot) for a moment.
+func pulse_part(i: int) -> void:
+	_pulses[i] = .45
+
+func _tick_pulses(dt: float) -> void:
+	for i in _pulses.keys():
+		_pulses[i] -= dt
+		var k: float = clampf(_pulses[i] / .45, 0.0, 1.0)
+		var sc := 1.0 + .28 * sin(k * PI) * k
+		for e in creature.parts:
+			if e.index == i:
+				(e.node as Node3D).scale = Vector3.ONE * sc
+		if _pulses[i] <= 0.0:
+			_pulses.erase(i)
+			for e in creature.parts:
+				if e.index == i:
+					(e.node as Node3D).scale = Vector3.ONE
+
+func pulsing(i: int) -> bool:
+	return _pulses.has(i)
+
+# ------------------------------------------------------------------ selection rings, rotation bead, leg handles
+func _build_sel_nodes() -> void:
+	var rm := StandardMaterial3D.new()
+	rm.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	rm.albedo_color = Color("ffc04a", .95)
+	rm.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	rm.no_depth_test = true
+	rm.render_priority = 20
+	for k in 2:
+		var tm := TorusMesh.new()
+		tm.inner_radius = .965
+		tm.outer_radius = 1.035
+		tm.rings = 40
+		tm.ring_segments = 8
+		var r := MeshInstance3D.new()
+		r.mesh = tm
+		r.material_override = rm
+		r.visible = false
+		r.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		_sel_group.add_child(r)
+		_rings.append(r)
+	var bm := StandardMaterial3D.new()
+	bm.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	bm.albedo_color = Color("9fd45c")
+	bm.no_depth_test = true
+	bm.render_priority = 22
+	var sm := SphereMesh.new()
+	sm.radius = .1
+	sm.height = .2
+	_rot_bead = MeshInstance3D.new()
+	_rot_bead.mesh = sm
+	_rot_bead.material_override = bm
+	_rot_bead.visible = false
+	_rot_bead.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	_sel_group.add_child(_rot_bead)
+	_leg_group = Node3D.new()
+	_sel_group.add_child(_leg_group)
+
+func _is_leg(type: String) -> bool:
+	return creature.maker != null and creature.maker.is_leg(type)
+
+## Surface frame at a part's anchor (same maths as rig.js orient()): {p, n, x, y}.
+func surface_axes(index: int, side := 1) -> Dictionary:
+	if index < 0 or index >= genome.get("parts", []).size():
+		return {}
+	var p: Dictionary = genome.parts[index]
+	var A: Dictionary = creature.anchor(float(p.t), side * float(p.ang))
+	var n: Vector3 = A.n
+	var u: Vector3 = A.u
+	var b: Vector3 = u - n * n.dot(u) + A.t * n.dot(u)
+	b -= n * b.dot(n)
+	if b.length_squared() < 1e-4:
+		b = A.t
+	b = b.normalized()
+	return {"p": A.p, "n": n, "x": b.cross(n), "y": b}
+
+func _update_sel_nodes() -> void:
+	for r in _rings:
+		(r as Node3D).visible = false
+	_rot_bead.visible = false
+	for c in _leg_group.get_children():
+		c.queue_free()
+	if _selected < 0 or _selected >= genome.get("parts", []).size() or _playing:
+		return
+	var p: Dictionary = genome.parts[_selected]
+	var leg := _is_leg(p.type)
+	var centered := not leg and absf(sin(float(p.ang))) < .14
+	for i in 2:
+		var sg := 1 if i == 0 else -1
+		var r: MeshInstance3D = _rings[i]
+		r.visible = i == 0 or not centered
+		if not r.visible:
+			continue
+		var ax := surface_axes(_selected, sg)
+		var sc: float = float(p.get("w", .2)) * 2.4 if leg else .32 * float(p.get("size", 1.0))
+		var yv: Vector3 = ax.n
+		var q := Quaternion(Vector3.UP, yv) if yv.dot(Vector3.UP) > -0.999 else Quaternion(Vector3.RIGHT, PI)
+		r.transform = Transform3D(Basis(q).scaled(Vector3.ONE * sc), ax.p + ax.n * .03)
+	if not leg:
+		_rot_bead.visible = true
+		_rot_bead.position = rot_handle_pos(_selected)
+	else:
+		_build_leg_handles()
+
+func _tick_selection(dt: float) -> void:
+	_sel_time += dt
+	if _rot_bead.visible:
+		var s := 1.4 if _bead_hot else 1.0
+		_rot_bead.scale = _rot_bead.scale.lerp(Vector3.ONE * s, 1.0 - pow(.001, dt))
+
+func set_bead_hot(on: bool) -> void:
+	_bead_hot = on
+
+## View-space position of the green rotation bead for part `index` ({} part => Vector3.ZERO).
+func rot_handle_pos(index: int) -> Vector3:
+	var ax := surface_axes(index)
+	if ax.is_empty():
+		return Vector3.ZERO
+	var p: Dictionary = genome.parts[index]
+	var rr := .32 * float(p.get("size", 1.0))
+	var a := float(p.get("rot", 0.0))
+	return ax.p + ax.x * (-sin(a) * rr) + ax.y * (cos(a) * rr) + ax.n * .03
+
+## New `rot` for a ray dragged on the part's surface plane (NAN when the ray misses it).
+func rot_from_ray(index: int, origin: Vector3, dir: Vector3) -> float:
+	var ax := surface_axes(index)
+	if ax.is_empty():
+		return NAN
+	var pl := Plane(ax.n, (ax.p as Vector3).dot(ax.n))
+	var hit = pl.intersects_ray(origin, dir)
+	if hit == null:
+		return NAN
+	var w: Vector3 = hit - ax.p
+	return atan2(-w.dot(ax.x), w.dot(ax.y))
+
+func _joint_mat(c: Color) -> StandardMaterial3D:
+	var m := StandardMaterial3D.new()
+	m.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	m.albedo_color = c
+	m.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	m.no_depth_test = true
+	m.render_priority = 17
+	return m
+
+## Knee and foot handles of the selected leg, both sides: [{joint: "k"|"f", side, pos, hip}].
+func leg_handles(index: int) -> Array:
+	var out := []
+	if index < 0 or index >= genome.get("parts", []).size():
+		return out
+	for l in creature.legs:
+		if l.part_index != index:
+			continue
+		var hip: Vector3 = creature.anchor(float(genome.parts[index].t), l.side * float(genome.parts[index].ang)).p
+		out.append({"joint": "k", "side": l.side, "pos": hip + l.rest_knee, "hip": hip})
+		out.append({"joint": "f", "side": l.side, "pos": hip + l.rest_foot, "hip": hip})
+	return out
+
+func _build_leg_handles() -> void:
+	var m := _joint_mat(Color("6fd3ff", .95))
+	var hs := leg_handles(_selected)
+	var by_side := {}
+	for h in hs:
+		var sm := SphereMesh.new()
+		sm.radius = .13
+		sm.height = .26
+		var mi := MeshInstance3D.new()
+		mi.mesh = sm
+		mi.material_override = m
+		mi.position = h.pos
+		mi.name = "Joint_%s_%d" % [h.joint, h.side]
+		mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		_leg_group.add_child(mi)
+		by_side[h.side] = by_side.get(h.side, [h.hip])
+		by_side[h.side].append(h.pos)
+	for side in by_side:
+		var im := ImmediateMesh.new()
+		im.surface_begin(Mesh.PRIMITIVE_LINE_STRIP)
+		for pt in by_side[side]:
+			im.surface_add_vertex(pt)
+		im.surface_end()
+		var lm := _joint_mat(Color("6fd3ff", .75))
+		var line := MeshInstance3D.new()
+		line.mesh = im
+		line.material_override = lm
+		line.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		_leg_group.add_child(line)
+
+## Ray drag of a leg joint. Returns {} or {key: "k"|"f", value: [x, y, z]} to store in the part (web joint drag rules).
+func leg_drag(index: int, joint: String, side: int, origin: Vector3, dir: Vector3, cam_forward: Vector3) -> Dictionary:
+	var hs := leg_handles(index)
+	for h in hs:
+		if h.joint != joint or h.side != side:
+			continue
+		var p: Dictionary = genome.parts[index]
+		var wp = null
+		if joint == "f":
+			var plane_y: float = -creature.ground_offset + float(p.get("w", .2)) * .6
+			if dir.y < -1e-3:
+				wp = Plane(Vector3.UP, plane_y).intersects_ray(origin, dir)
+		else:
+			wp = Plane(cam_forward, (h.pos as Vector3).dot(cam_forward)).intersects_ray(origin, dir)
+		if wp == null:
+			return {}
+		var r: Vector3 = wp - h.hip
+		var v := [r.x * side, r.y, r.z]
+		if joint == "k":
+			if Vector3(v[0], v[1], v[2]).length() > .15:
+				return {"key": "k", "value": v}
+		elif Vector2(v[0], v[2]).length() < 6.0:
+			return {"key": "f", "value": [v[0], float(p.f[1]), v[2]]}
+		return {}
+	return {}
+
+# ------------------------------------------------------------------ misc for the shell
+func floor_y() -> float:
+	return -creature.ground_offset
+
+## Creature body position in view space (it walks along the path in Test mode).
+func body_position() -> Vector3:
+	if _playing and _ctl != null:
+		return creature.position + Vector3(0, creature.ground_offset, 0)
+	return Vector3.ZERO
+
+func is_playing() -> bool:
+	return _playing
+
+func stats() -> Dictionary:
+	return creature.stats
+
+## Test mode actions: bite (jaw), sing (puffing sacs) timers, run toggle.
+func trigger(action: String) -> void:
+	_actions[action] = 1.2
+
+func set_run(on: bool) -> void:
+	_run = on
+
+## View-space surface point at (t, ang): where a part would be placed (also used by tests and evidence).
+func part_anchor_at(t: float, ang: float) -> Vector3:
+	return creature.anchor(t, ang).p

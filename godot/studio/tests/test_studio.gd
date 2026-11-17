@@ -38,6 +38,7 @@ func _init() -> void:
 	test_roundtrip_and_storage()
 	test_placeholder_view()
 	await test_ui()
+	await test_parity_panels()
 	print("studio tests: %d checks, %d failures" % [checks, fails])
 	quit(1 if fails else 0)
 
@@ -348,5 +349,64 @@ func test_ui() -> void:
 	ui.set_lang("es")
 	await process_frame
 	ok(ui.mode_button_text("build") == "Construir", "spanish labels")
+	ui.queue_free()
+	await process_frame
+
+func test_parity_panels() -> void:
+	# model: random creature and growth regions validate through the web-compatible validator
+	for sd in [1, 2, 3, 12345]:
+		var rd: Dictionary = Model.random_doc(sd)
+		ok(Genome.parse(JSON.stringify(rd), db.by_id)["ok"], "random creature %d validates" % sd)
+	ok(norm(Model.random_doc(7)) == norm(Model.random_doc(7)), "random creature is deterministic per seed")
+	ok(norm(Model.random_doc(7)) != norm(Model.random_doc(8)), "random creature differs per seed")
+	var m := Model.new(db)
+	ok(m.doc["regions"].size() == 0 and m.selected_region == -1, "no regions at start")
+	var base := m.snapshot()
+	ok(m.add_region(false) == 0 and m.doc["regions"].size() == 1, "add region")
+	m.set_region("family", "plates"); m.set_region("count", 40); m.set_region("angle", 9.0); m.set_region("surface", "tail")
+	var r: Dictionary = m.doc["regions"][0]
+	ok(r["family"] == "plates" and r["count"] == 18 and absf(r["angle"] - PI) < .001 and r["surface"] == "tail", "region params clamp")
+	ok(m.add_region(true) == 1 and m.doc["regions"][1]["family"] == "plates" and m.doc["regions"][1]["id"] == "region-2", "duplicate region gets a new id")
+	m.vary_region()
+	ok(m.doc["regions"][1]["seed"] == 18, "new variant bumps the seed")
+	ok(Genome.parse(JSON.stringify(m.doc), db.by_id)["ok"], "document with regions validates")
+	m.delete_region()
+	ok(m.doc["regions"].size() == 1 and m.selected_region == 0, "delete region")
+	while m.can_undo():
+		m.undo()
+	ok(m.snapshot() == base, "region edits undo back to the start")
+	# UI: DNA meter, capabilities, regions, test actions, palette dimming
+	var ui = preload("../ui/studio.gd").new()
+	root.add_child(ui)
+	await process_frame
+	await process_frame
+	ok(ui.dna_label != null and ui.dna_label.text.ends_with("/ 320"), "DNA meter shows the budget (%s)" % ui.dna_label.text)
+	var dna0: int = ui.dna_value()
+	ui.drop_part_at_t("cuerno", .6, .5)
+	await process_frame
+	ok(ui.dna_value() > dna0 or not ("stats" in ui.view and ui.view.stats().has("dna")), "DNA grows when a part is added")
+	var has_caps: bool = not ui.view.stats().is_empty()
+	if has_caps:
+		await process_frame
+		ok(ui.panel_box.find_child("Pips_vel", true, false) != null, "capabilities pips in the build panel")
+	ok(ui.panel_box.find_child("AddRegion", true, false) != null, "regions panel in build mode")
+	ui.panel_box.find_child("AddRegion", true, false).pressed.emit()
+	await process_frame
+	await process_frame
+	ok(ui.model.doc["regions"].size() == 1 and ui.panel_box.find_child("Opt_family", true, false) != null, "adding a region shows its controls")
+	ok(ui.view.get_genome()["regions"].size() == 1, "view receives the region")
+	ui.panel_box.find_child("RandomButton", true, false).pressed.emit()
+	await process_frame
+	ok(ui.model.doc["name"].begins_with("Creature "), "Random button makes a random creature")
+	ui.set_mode("test")
+	await process_frame
+	await process_frame
+	ok(ui.panel_box.find_child("Act_bite", true, false) != null and ui.panel_box.find_child("Act_sing", true, false) != null, "bite and sing buttons in test mode")
+	ui.toggle_run()
+	ok(ui._run, "run toggle")
+	ui.do_action("bite")
+	ok(ui.palette_card.modulate.a < 1.0 and ui.palette_card.mouse_filter == Control.MOUSE_FILTER_IGNORE, "palette dims outside build mode")
+	ui.set_mode("build")
+	ok(ui.palette_card.modulate.a == 1.0, "palette back in build mode")
 	ui.queue_free()
 	await process_frame

@@ -23,6 +23,7 @@ var _fut: Array = []
 var _depth := 0
 var _tx_start := ""
 var dirty := false
+var selected_region := -1             # index into doc.regions (UI state, not in the history)
 
 const SEEDS := {
 	"Merodeador": {"name": "Merodeador", "nodes": [{"y": 1.6, "z": -3.3, "r": .06}, {"y": 1.7, "z": -2.4, "r": .2}, {"y": 1.85, "z": -1.5, "r": .4}, {"y": 2.0, "z": -.6, "r": .7}, {"y": 2.05, "z": .4, "r": .78}, {"y": 2.15, "z": 1.3, "r": .62}, {"y": 2.5, "z": 2.0, "r": .46}, {"y": 2.75, "z": 2.7, "r": .56}],
@@ -36,6 +37,9 @@ const SEEDS := {
 		"skin": {"pat": 2, "cA": "#5d8a3a", "cB": "#203818", "cC": "#e9e2a8", "wet": .7, "scale": 11}},
 }
 const PALETTES := [["#9a3b28", "#2a1414", "#e6cfa0"], ["#2f8a5a", "#12382c", "#e9e2a8"], ["#3d5fa8", "#8a4fb0", "#f0e6c8"], ["#c9892b", "#4a2a12", "#f3e3b8"], ["#6c7440", "#2f3320", "#d8cfa6"], ["#22313f", "#d9a441", "#c8d2d8"], ["#b84a6a", "#3a1830", "#f2d9c9"]]
+const REGION_DEFAULTS := {"schema": "cpore.growth/1", "family": "horns", "seed": 17, "count": 7, "length": 1.0, "curve": .45, "branches": 1,
+	"surface": "torso", "position": .6, "coverage": .4, "angle": .55, "mirror": true}
+const MAX_REGIONS := 64
 const PATTERNS := ["liso", "rayas", "manchas", "veteado"]
 
 func _init(db: RefCounted = null) -> void:
@@ -135,6 +139,7 @@ func _replace(d: Dictionary, record: bool) -> void:
 	begin()
 	doc = d
 	selected = -1
+	selected_region = 0 if d.get("regions", []).size() > 0 else -1
 	selection_changed.emit()
 	end()
 	if not record:
@@ -233,6 +238,15 @@ func place_part(i: int, t: float, ang: float) -> void:
 	var p: Dictionary = doc["parts"][i]
 	p["t"] = clampf(t, 0.0, 1.0)
 	p["ang"] = _fit_ang(p["type"], ang)
+	_touch()
+	end()
+
+## Leg knee ("k") or foot ("f") position relative to the hip (web joint handles).
+func set_leg_joint(i: int, key: String, value: Array) -> void:
+	if key != "k" and key != "f":
+		return
+	begin()
+	doc["parts"][i][key] = value
 	_touch()
 	end()
 
@@ -348,3 +362,75 @@ func apply_palette(i: int) -> void:
 	doc["skin"]["cA"] = p[0]; doc["skin"]["cB"] = p[1]; doc["skin"]["cC"] = p[2]
 	_touch()
 	end()
+
+# ---------------------------------------------------------------- growth regions (web growthPanel)
+func _next_region_id() -> String:
+	var n := 1
+	while doc["regions"].any(func(r): return r["id"] == "region-%d" % n):
+		n += 1
+	return "region-%d" % n
+
+func add_region(duplicate := false) -> int:
+	if doc["regions"].size() >= MAX_REGIONS:
+		return -1
+	begin()
+	var r: Dictionary = (doc["regions"][selected_region] if duplicate and selected_region >= 0 else REGION_DEFAULTS).duplicate(true)
+	r["id"] = _next_region_id()
+	doc["regions"].append(r)
+	selected_region = doc["regions"].size() - 1
+	selected = -1
+	selection_changed.emit()
+	_touch()
+	end()
+	return selected_region
+
+func delete_region() -> void:
+	if selected_region < 0 or selected_region >= doc["regions"].size():
+		return
+	begin()
+	doc["regions"].remove_at(selected_region)
+	selected_region = mini(selected_region, doc["regions"].size() - 1)
+	_touch()
+	end()
+
+func set_region(key: String, value) -> void:
+	if selected_region < 0 or selected_region >= doc["regions"].size():
+		return
+	begin()
+	var r: Dictionary = doc["regions"][selected_region]
+	match key:
+		"family", "surface": r[key] = str(value)
+		"mirror": r[key] = bool(value)
+		"count": r[key] = clampi(int(value), 1, 18)
+		"branches": r[key] = clampi(int(value), 0, 3)
+		"length": r[key] = clampf(value, .2, 2.4)
+		"curve": r[key] = clampf(value, -1.0, 1.0)
+		"position", "coverage": r[key] = clampf(value, 0.0, 1.0)
+		"angle": r[key] = clampf(value, -PI, PI)
+	_touch()
+	end()
+
+func vary_region() -> void:
+	if selected_region >= 0 and selected_region < doc["regions"].size():
+		begin()
+		doc["regions"][selected_region]["seed"] = (int(doc["regions"][selected_region]["seed"]) + 1) % 4294967296
+		_touch()
+		end()
+
+# ---------------------------------------------------------------- random creature (web randomCreature)
+static func random_doc(seed_value: int) -> Dictionary:
+	var rng := RandomNumberGenerator.new()
+	rng.seed = seed_value
+	var names := SEEDS.keys()
+	var d := seed_doc(names[seed_value % names.size()])
+	d["name"] = "Creature %d" % seed_value
+	for n in d["nodes"]:
+		n["r"] = clampf(float(n["r"]) * (.8 + rng.randf() * .4), .05, 1.7)
+		n["y"] = float(n["y"]) + rng.randf() * .15
+	d["skin"]["pat"] = rng.randi() % 4
+	return d
+
+func new_random(seed_value := -1) -> void:
+	if seed_value < 0:
+		seed_value = randi()
+	_replace(random_doc(seed_value), true)

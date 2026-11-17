@@ -11,6 +11,8 @@ const Thumbs := preload("../thumbnails.gd")
 const ThemeFactory := preload("theme_factory.gd")
 const PlaceholderView := preload("../placeholder/placeholder_view.gd")
 const RealView := preload("../creature_view_real.gd")
+const Env := preload("../studio_env.gd")
+const Baker := preload("../thumb_baker.gd")
 
 signal creature_saved(path: String)
 signal exit_requested
@@ -21,6 +23,12 @@ var i18n: RefCounted
 var storage: RefCounted
 var view: Node3D                      # creature_view.gd interface
 var camera: Camera3D
+var env_node: Node3D
+var baker: Node
+var cat_title: Label
+var part_thumbs := {}                 # part id -> TextureRect
+var _hover_part_id := ""
+var _click_sound: AudioStreamPlayer
 var viewport: SubViewport
 var stage: SubViewportContainer
 var overlay: Control
@@ -38,10 +46,19 @@ var thumbnails := {}                  # part id -> Texture2D
 var current_category := "mouths"
 var lang := "es"
 
-var _yaw := 1.15
-var _pitch := .22
-var _dist := 11.0
-var _target := Vector3(0, 2.0, 0)
+var _yaw := 2.2                       # web studio defaults (camYaw 2.2, camPitch .14)
+var _pitch := .14
+var _dist := 13.0
+var _dist_goal := 13.0
+var _target := Vector3(0, 2.0, 0)     # smoothed camera target
+var _target_goal := Vector3(0, 2.0, 0)
+var _spine_mid := Vector3(0, 2.0, 0)
+var _theta := 0.0                     # heading of the creature on the Test path (camera follows)
+var _idle := 0.0                      # seconds since the last user input
+const IDLE_ROTATE_AFTER := 6.0
+const IDLE_ROTATE_SPEED := .18
+const DIST_MIN := 3.0
+const DIST_MAX := 60.0
 var _drag := {}
 var _pending_type := ""
 var _hover_node := -1
@@ -55,7 +72,16 @@ var _file_dialog: FileDialog
 var _file_menu: PopupMenu
 var _load_menu: PopupMenu
 var _file_mode := ""
-var _ghost: Label
+var _ghost: TextureRect
+var _spine_hover := false
+var _drop_fx := {}                    # {point: Vector3 (view space), t: seconds}
+var _flash_dna := 0.0
+var _girth_fx := 0.0
+var palette_card: PanelContainer
+var dna_label: Label
+var dna_fill: ColorRect
+var dna_track: Control
+const DNA_BUDGET := 320                # rig.js BUDGET
 
 func _init(db: RefCounted = null, view_node: Node3D = null) -> void:
 	parts_db = db if db else PartsDB.new()
@@ -73,6 +99,7 @@ func _ready() -> void:
 	model.selection_changed.connect(_on_selection_changed)
 	model.history_changed.connect(_sync_history)
 	_build_stage()
+	_build_baker()
 	_build_hud()
 	_wheel_timer = Timer.new()
 	_wheel_timer.one_shot = true
@@ -87,7 +114,28 @@ func _process(dt: float) -> void:
 		_flash_timer -= dt
 		if _flash_timer <= 0.0:
 			_set_hint("")
-	if overlay and (model.selected >= 0 or not _drag.is_empty() or _pending_type != ""):
+	_idle += dt
+	if not _drop_fx.is_empty():
+		_drop_fx["t"] += dt
+		if _drop_fx["t"] > .5:
+			_drop_fx = {}
+	_girth_fx = maxf(0.0, _girth_fx - dt)
+	if view.is_playing() if view.has_method("is_playing") else false:
+		var bp: Vector3 = view.body_position()
+		_theta = atan2(bp.z, bp.x - Env.PATH_CENTER.x)
+		_target_goal = _spine_mid + Vector3(bp.x, 0, bp.z)
+	else:
+		_theta = 0.0
+		_target_goal = _spine_mid
+	if _idle > IDLE_ROTATE_AFTER and _drag.is_empty() and model.mode != "test":
+		_yaw += IDLE_ROTATE_SPEED * dt
+	var k := 1.0 - pow(.01, dt)
+	_target = _target.lerp(_target_goal, k)
+	_dist = lerpf(_dist, _dist_goal, 1.0 - pow(.002, dt))
+	_place_camera()
+	if env_node != null and env_node.has_method("set_floor"):
+		env_node.set_floor(view.floor_y())
+	if overlay:
 		overlay.queue_redraw()
 
 # =================================================================== stage
@@ -103,19 +151,8 @@ func _build_stage() -> void:
 	viewport.own_world_3d = true
 	viewport.handle_input_locally = false
 	stage.add_child(viewport)
-	var env := WorldEnvironment.new()
-	var e := Environment.new()
-	e.background_mode = Environment.BG_COLOR
-	e.background_color = Color("1b3446")
-	e.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
-	e.ambient_light_color = Color("a9c4d0")
-	e.ambient_light_energy = .7
-	env.environment = e
-	viewport.add_child(env)
-	var sun := DirectionalLight3D.new()
-	sun.rotation_degrees = Vector3(-50, 35, 0)
-	sun.light_color = Color("ffe2b8")
-	viewport.add_child(sun)
+	env_node = Env.new()
+	viewport.add_child(env_node)
 	camera = Camera3D.new()
 	camera.fov = 42
 	camera.current = true
@@ -128,11 +165,26 @@ func _build_stage() -> void:
 	overlay.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	overlay.draw.connect(_draw_overlay)
 	add_child(overlay)
-	_ghost = Label.new()
+	_ghost = TextureRect.new()             # thumbnail that follows the cursor until the part touches the body
 	_ghost.visible = false
+	_ghost.custom_minimum_size = Vector2(104, 104)
+	_ghost.size = Vector2(104, 104)
+	_ghost.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	_ghost.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	_ghost.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_ghost.add_theme_color_override("font_color", ThemeFactory.AMBER)
+	_ghost.z_index = 50
 	add_child(_ghost)
+	_click_sound = AudioStreamPlayer.new()
+	_click_sound.volume_db = -8.0
+	if ResourceLoader.exists("res://audio/sounds/click.ogg"):
+		_click_sound.stream = load("res://audio/sounds/click.ogg")
+	add_child(_click_sound)
+
+func _build_baker() -> void:
+	var cr = view.get("creature") if view != null else null
+	baker = Baker.new(cr)
+	baker.baked.connect(_on_thumb_baked)
+	add_child(baker)
 
 func _on_exit() -> void:
 	exit_requested.emit()
@@ -143,13 +195,19 @@ func _on_exit() -> void:
 func frame_creature() -> void:
 	var pts: PackedVector3Array = view.spine_node_positions()
 	if pts.size() >= 2:
-		_target = pts[pts.size() >> 1]
-		_dist = clampf(5.0 + pts[0].distance_to(pts[pts.size() - 1]) * 1.15, 6.0, 40.0)
+		_spine_mid = pts[pts.size() >> 1]
+		_dist_goal = clampf(5.0 + pts[0].distance_to(pts[pts.size() - 1]) * 1.15, 6.0, 40.0)
+	_target_goal = _spine_mid
+	_target = _target_goal
+	_dist = _dist_goal
 	_place_camera()
 
 func _place_camera() -> void:
 	var cp := cos(_pitch)
-	camera.position = _target + Vector3(sin(_yaw) * cp, sin(_pitch), cos(_yaw) * cp) * _dist
+	var a := _yaw - _theta
+	var floor_y: float = view.floor_y()
+	camera.position = _target + Vector3(sin(a) * cp, sin(_pitch), cos(a) * cp) * _dist
+	camera.position.y = maxf(camera.position.y, floor_y + .3)
 	camera.look_at(_target, Vector3.UP)
 	if overlay:
 		overlay.queue_redraw()
@@ -164,12 +222,13 @@ func _hit_body(pos: Vector2) -> Dictionary:
 func _apply_model() -> void:
 	view.set_genome(model.doc)
 	view.set_selection(model.selected)
-	view.set_spine_visible(model.mode == "build")
+	view.set_spine_visible(model.mode == "build" and _spine_hover)
 	view.set_playing(model.playing)
 
 # =================================================================== model events
 func _on_model_changed(live: bool) -> void:
 	_apply_model()
+	_update_dna()
 	if name_edit and not name_edit.has_focus():
 		name_edit.text = str(model.doc.get("name", ""))
 	if not live:
@@ -205,10 +264,12 @@ func _build_hud() -> void:
 	_build_palette()
 	_build_right_panel()
 	hint_label = Label.new()
-	hint_label.set_anchors_preset(Control.PRESET_CENTER_BOTTOM)
-	hint_label.grow_horizontal = Control.GROW_DIRECTION_BOTH
+	hint_label.set_anchors_preset(Control.PRESET_BOTTOM_WIDE)   # between the DNA card and the right panel
 	hint_label.grow_vertical = Control.GROW_DIRECTION_BEGIN
+	hint_label.offset_left = 276; hint_label.offset_right = -290
 	hint_label.offset_bottom = -16
+	hint_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	hint_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	hint_label.add_theme_color_override("font_color", ThemeFactory.MUTED)
 	hint_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	hud.add_child(hint_label)
@@ -305,23 +366,27 @@ func _build_palette() -> void:
 	card.offset_left = 14; card.offset_top = 66
 	card.offset_right = 262
 	card.set_anchors_preset(Control.PRESET_LEFT_WIDE)
-	card.offset_bottom = -52
+	card.offset_bottom = -92
+	card.name = "PaletteCard"
+	palette_card = card
 	hud.add_child(card)
+	_build_dna_card()
 	var col := VBoxContainer.new()
 	col.add_theme_constant_override("separation", 6)
 	card.add_child(col)
-	var title := Label.new()
-	title.text = T("Piezas").to_upper() if false else "—"
-	title.add_theme_color_override("font_color", ThemeFactory.AMBER)
-	col.add_child(title)
 	var tabs := GridContainer.new()
-	tabs.columns = 3
-	tabs.add_theme_constant_override("h_separation", 4)
-	tabs.add_theme_constant_override("v_separation", 4)
+	tabs.columns = 5
+	tabs.add_theme_constant_override("h_separation", 5)
+	tabs.add_theme_constant_override("v_separation", 5)
 	col.add_child(tabs)
+	cat_title = Label.new()
+	cat_title.name = "CategoryTitle"
+	cat_title.add_theme_font_size_override("font_size", 20)
+	col.add_child(cat_title)
 	category_tabs.clear()
 	category_grids.clear()
 	palette_buttons.clear()
+	part_thumbs.clear()
 	var group := ButtonGroup.new()
 	var scroll := ScrollContainer.new()
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
@@ -332,13 +397,19 @@ func _build_palette() -> void:
 	scroll.add_child(holder)
 	for c in parts_db.categories:
 		var tb := Button.new()
-		tb.text = i18n.category(c)
+		tb.name = "Tab_" + c
 		tb.toggle_mode = true
 		tb.button_group = group
 		tb.button_pressed = c == current_category
-		tb.add_theme_font_size_override("font_size", 12)
-		tb.custom_minimum_size = Vector2(0, 30)
-		tb.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		tb.tooltip_text = i18n.category(c)
+		tb.custom_minimum_size = Vector2(38, 38)
+		tb.icon = _thumb_tex(parts_db.ids_in(c)[0], c)
+		tb.expand_icon = true
+		tb.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		tb.add_theme_stylebox_override("normal", ThemeFactory.box(Color(1, 1, 1, .07), Color(0, 0, 0, 0), 19))
+		tb.add_theme_stylebox_override("hover", ThemeFactory.box(Color(1, 1, 1, .16), Color(0, 0, 0, 0), 19))
+		tb.add_theme_stylebox_override("pressed", ThemeFactory.box(Color(ThemeFactory.AMBER, .18), ThemeFactory.AMBER, 19, 2))
+		tb.add_theme_stylebox_override("hover_pressed", ThemeFactory.box(Color(ThemeFactory.AMBER, .26), ThemeFactory.AMBER, 19, 2))
 		tb.pressed.connect(select_category.bind(c))
 		tabs.add_child(tb)
 		category_tabs[c] = tb
@@ -351,30 +422,95 @@ func _build_palette() -> void:
 		category_grids[c] = grid
 		for id in parts_db.ids_in(c):
 			grid.add_child(_make_part_button(id, c))
-	title.text = i18n.category(current_category).to_upper()
-	title.name = "CategoryTitle"
+	cat_title.text = i18n.category(current_category)
+	_request_category(current_category)
+
+## DNA budget card under the palette (web #dna / #meter): "129 / 320" and a bar that flashes red when over budget.
+func _build_dna_card() -> void:
+	var card := PanelContainer.new()
+	card.name = "DnaCard"
+	card.set_anchors_preset(Control.PRESET_BOTTOM_LEFT)
+	card.offset_left = 14; card.offset_right = 262
+	card.offset_top = -84; card.offset_bottom = -16
+	card.grow_vertical = Control.GROW_DIRECTION_BEGIN
+	hud.add_child(card)
+	var col := VBoxContainer.new()
+	col.add_theme_constant_override("separation", 6)
+	card.add_child(col)
+	var row := HBoxContainer.new()
+	col.add_child(row)
+	var t := _h2("ADN")
+	t.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	row.add_child(t)
+	dna_label = Label.new()
+	dna_label.name = "DnaLabel"
+	dna_label.add_theme_font_size_override("font_size", 17)
+	row.add_child(dna_label)
+	dna_track = Control.new()
+	dna_track.custom_minimum_size = Vector2(0, 10)
+	var bg := ColorRect.new()
+	bg.color = Color(1, 1, 1, .12)
+	bg.set_anchors_preset(Control.PRESET_FULL_RECT)
+	dna_track.add_child(bg)
+	dna_fill = ColorRect.new()
+	dna_fill.name = "DnaFill"
+	dna_fill.color = ThemeFactory.AMBER
+	dna_fill.set_anchors_preset(Control.PRESET_FULL_RECT)
+	dna_fill.anchor_right = 0.0
+	dna_track.add_child(dna_fill)
+	col.add_child(dna_track)
+	_update_dna()
+
+func dna_value() -> int:
+	var st: Dictionary = view.stats() if view != null and view.has_method("stats") else {}
+	return int(st.get("dna", 0))
+
+func _update_dna() -> void:
+	if dna_label == null:
+		return
+	var v := dna_value()
+	dna_label.text = "%d / %d" % [v, DNA_BUDGET]
+	dna_fill.anchor_right = clampf(float(v) / DNA_BUDGET, 0.0, 1.0)
+	dna_fill.color = ThemeFactory.AMBER if v <= DNA_BUDGET else Color("e0533d")
+
+func _thumb_tex(id: String, category: String) -> Texture2D:
+	if baker != null and baker.has_texture(id):
+		return baker.textures[id]
+	if not thumbnails.has(id):
+		thumbnails[id] = Thumbs.make(id, category)
+	return thumbnails[id]
+
+func _part_tooltip(id: String) -> String:
+	var info: Dictionary = parts_db.by_id[id]
+	var t: String = i18n.part_name(id) + "  ·  " + str(info.get("dna_cost", 0)) + " " + T("ADN")
+	var ab: Array = info.get("illustrative_abilities", [])
+	t += "\n" + T("Cosmético") + ((" · " + ", ".join(ab.map(func(a): return T(str(a))))) if not ab.is_empty() else "")
+	return t
 
 func _make_part_button(id: String, category: String) -> Button:
 	var b := Button.new()
-	b.custom_minimum_size = Vector2(104, 98)
+	b.name = "Part_" + id
+	b.custom_minimum_size = Vector2(104, 112)
 	b.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	b.tooltip_text = i18n.part_name(id)
+	b.tooltip_text = _part_tooltip(id)
 	b.toggle_mode = false
+	b.add_theme_stylebox_override("normal", ThemeFactory.box(Color(.44, .83, 1.0, .08), Color(0, 0, 0, 0), 16, 2))
+	b.add_theme_stylebox_override("hover", ThemeFactory.box(Color(.44, .83, 1.0, .16), ThemeFactory.AMBER, 16, 2))
+	b.add_theme_stylebox_override("pressed", ThemeFactory.box(Color(1, 1, 1, .12), ThemeFactory.AMBER, 16, 2))
 	var v := VBoxContainer.new()
 	v.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	v.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	v.alignment = BoxContainer.ALIGNMENT_CENTER
+	v.add_theme_constant_override("separation", 0)
 	b.add_child(v)
 	var tex := TextureRect.new()          # thumbnail slot
 	tex.name = "Thumb"
-	tex.custom_minimum_size = Vector2(64, 64)
+	tex.custom_minimum_size = Vector2(80, 80)
 	tex.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	tex.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	tex.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	tex.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
-	if not thumbnails.has(id):
-		thumbnails[id] = Thumbs.make(id, category)
-	tex.texture = thumbnails[id]
+	tex.texture = _thumb_tex(id, category)
 	v.add_child(tex)
 	var lab := Label.new()
 	lab.text = i18n.part_name(id)
@@ -383,15 +519,62 @@ func _make_part_button(id: String, category: String) -> Button:
 	lab.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	lab.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	v.add_child(lab)
+	var badge := Label.new()               # DNA cost pill
+	badge.name = "Cost"
+	badge.text = str(int(parts_db.by_id[id].get("dna_cost", 0)))
+	badge.add_theme_font_size_override("font_size", 11)
+	badge.add_theme_color_override("font_color", ThemeFactory.INK)
+	badge.add_theme_stylebox_override("normal", ThemeFactory.box(ThemeFactory.AMBER, Color(0, 0, 0, 0), 9))
+	badge.set_anchors_preset(Control.PRESET_TOP_RIGHT)
+	badge.position = Vector2(70, 5)
+	badge.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	b.add_child(badge)
 	b.gui_input.connect(_palette_input.bind(id))
+	b.mouse_entered.connect(_palette_hover.bind(id, true))
+	b.mouse_exited.connect(_palette_hover.bind(id, false))
 	palette_buttons[id] = b
+	part_thumbs[id] = tex
 	return b
+
+## Hover: the thumbnail turns live (spinning) and the button grows a little, as in the web palette.
+func _palette_hover(id: String, on: bool) -> void:
+	var b: Button = palette_buttons.get(id)
+	if b == null:
+		return
+	b.pivot_offset = b.size / 2.0
+	var tw := b.create_tween()
+	tw.tween_property(b, "scale", Vector2.ONE * (1.06 if on else 1.0), .12)
+	if on:
+		_hover_part_id = id
+		if baker != null:
+			baker.start_hover(id)
+			if baker.enabled:
+				part_thumbs[id].texture = baker.hover_texture
+	elif _hover_part_id == id:
+		_hover_part_id = ""
+		if baker != null:
+			baker.stop_hover()
+		part_thumbs[id].texture = _thumb_tex(id, parts_db.by_id[id]["category"])
+
+func _request_category(c: String) -> void:
+	if baker != null and baker.enabled:
+		baker.request_front(parts_db.ids_in(c))
+		for k in parts_db.categories:
+			for id in parts_db.ids_in(k):
+				baker.request(id)
+
+func _on_thumb_baked(id: String) -> void:
+	var cat: String = parts_db.by_id[id]["category"]
+	if part_thumbs.has(id) and _hover_part_id != id:
+		part_thumbs[id].texture = baker.textures[id]
+	if category_tabs.has(cat) and parts_db.ids_in(cat)[0] == id:
+		category_tabs[cat].icon = baker.textures[id]
 
 ## Integration hook: replace a placeholder thumbnail with a real render.
 func set_thumbnail(id: String, tex: Texture2D) -> void:
 	thumbnails[id] = tex
-	if palette_buttons.has(id):
-		palette_buttons[id].get_node("VBoxContainer/Thumb").texture = tex if false else tex
+	if part_thumbs.has(id):
+		part_thumbs[id].texture = tex
 
 func palette_button_count() -> int:
 	return palette_buttons.size()
@@ -407,9 +590,9 @@ func select_category(c: String) -> void:
 	for k in category_grids:
 		category_grids[k].visible = k == c
 		category_tabs[k].set_pressed_no_signal(k == c)
-	var t := hud.find_child("CategoryTitle", true, false)
-	if t:
-		t.text = i18n.category(c).to_upper()
+	if cat_title:
+		cat_title.text = i18n.category(c)
+	_request_category(c)
 
 # =================================================================== right panel
 func _build_right_panel() -> void:
@@ -470,7 +653,37 @@ func _rebuild_panel() -> void:
 		"test": _panel_test()
 	_sync_history()
 
+## Capabilities (web #caps): 1..5 pips per stat, plus the warnings from the part set.
+func _caps_section() -> void:
+	var st: Dictionary = view.stats() if view.has_method("stats") else {}
+	if st.is_empty():
+		return
+	panel_box.add_child(_h2(T("Capacidades")))
+	for pair in [["Velocidad", "vel"], ["Mordisco", "bite"], ["Canto", "sing"], ["Salud", "hp"]]:
+		var row := HBoxContainer.new()
+		var l := Label.new()
+		l.text = T(pair[0])
+		l.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		row.add_child(l)
+		var pips := HBoxContainer.new()
+		pips.name = "Pips_" + pair[1]
+		pips.add_theme_constant_override("separation", 3)
+		for i in 5:
+			var d := ColorRect.new()
+			d.custom_minimum_size = Vector2(14, 8)
+			d.color = Color("8fd14f") if i < int(st.get(pair[1], 0)) else Color(1, 1, 1, .12)
+			d.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+			pips.add_child(d)
+		row.add_child(pips)
+		panel_box.add_child(row)
+	for w in st.get("warn", []):
+		var wl := _note(T(String(w)))
+		wl.add_theme_color_override("font_color", Color("e8a23a"))
+		panel_box.add_child(wl)
+	panel_box.add_child(HSeparator.new())
+
 func _panel_build() -> void:
+	_caps_section()
 	var sel: int = model.selected
 	if sel >= 0 and sel < model.doc["parts"].size():
 		var p: Dictionary = model.doc["parts"][sel]
@@ -515,7 +728,105 @@ func _panel_build() -> void:
 		b.text = s
 		b.pressed.connect(func(): model.new_from_seed(s); frame_creature())
 		chips.add_child(b)
+	var rb := Button.new()
+	rb.text = T("Al azar")
+	rb.name = "RandomButton"
+	rb.pressed.connect(func(): model.new_random(); frame_creature())
+	chips.add_child(rb)
+	var cb := Button.new()
+	cb.text = T("Copiar genoma")
+	cb.name = "CopyButton"
+	cb.pressed.connect(copy_genome)
+	chips.add_child(cb)
 	panel_box.add_child(chips)
+	panel_box.add_child(HSeparator.new())
+	_regions_section()
+
+func copy_genome() -> void:
+	DisplayServer.clipboard_set(JSON.stringify(model.doc))
+	_flash(T("Genoma copiado"))
+
+const REGION_FAMILIES := [["horns", "Cuernos"], ["plates", "Placas"], ["tendrils", "Filamentos"]]
+const REGION_SURFACES := [["torso", "Torso"], ["neck", "Cuello"], ["tail", "Cola"]]
+const REGION_SLIDERS := [["position", "Posición", 0.0, 1.0, .01], ["coverage", "Cobertura", 0.0, 1.0, .01],
+	["angle", "Ángulo", -3.14, 3.14, .01], ["length", "Largo", .2, 2.4, .05], ["count", "Cantidad", 1, 18, 1],
+	["curve", "Curvatura", -1.0, 1.0, .05], ["branches", "Ramas", 0, 3, 1]]
+
+## Growth regions (web growthPanel): horns, plates and tendrils laid on the body; cosmetic only.
+func _regions_section() -> void:
+	panel_box.add_child(_h2(T("Regiones")))
+	var regs: Array = model.doc["regions"]
+	var chips := HFlowContainer.new()
+	for i in regs.size():
+		var b := Button.new()
+		b.name = "Region_%d" % i
+		var fam := "Cuernos"
+		for f in REGION_FAMILIES:
+			if f[0] == regs[i]["family"]:
+				fam = f[1]
+		b.text = "%s %d" % [T(fam), i + 1]
+		b.toggle_mode = true
+		b.button_pressed = i == model.selected_region
+		b.pressed.connect(func(): model.selected_region = i; model.selected = -1; model.selection_changed.emit())
+		chips.add_child(b)
+	panel_box.add_child(chips)
+	var acts := HFlowContainer.new()
+	var add := Button.new()
+	add.name = "AddRegion"
+	add.text = T("Añadir región")
+	add.disabled = regs.size() >= Model.MAX_REGIONS
+	add.pressed.connect(func(): model.add_region(false))
+	acts.add_child(add)
+	var r_ok: bool = model.selected_region >= 0 and model.selected_region < regs.size()
+	if r_ok:
+		var dup := Button.new()
+		dup.text = T("Duplicar")
+		dup.name = "DuplicateRegion"
+		dup.disabled = regs.size() >= Model.MAX_REGIONS
+		dup.pressed.connect(func(): model.add_region(true))
+		acts.add_child(dup)
+		var del := Button.new()
+		del.text = T("Eliminar")
+		del.name = "DeleteRegion"
+		del.pressed.connect(func(): model.delete_region())
+		acts.add_child(del)
+	panel_box.add_child(acts)
+	if r_ok:
+		var r: Dictionary = regs[model.selected_region]
+		for pair in [["family", REGION_FAMILIES, "Forma"], ["surface", REGION_SURFACES, "Superficie"]]:
+			var row := HBoxContainer.new()
+			var l := Label.new()
+			l.text = T(pair[2])
+			l.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+			row.add_child(l)
+			var ob := OptionButton.new()
+			ob.name = "Opt_" + pair[0]
+			var sel_i := 0
+			for j in pair[1].size():
+				ob.add_item(T(pair[1][j][1]), j)
+				if pair[1][j][0] == r[pair[0]]:
+					sel_i = j
+			ob.select(sel_i)
+			var key: String = pair[0]
+			var opts: Array = pair[1]
+			ob.item_selected.connect(func(j): model.set_region(key, opts[j][0]))
+			row.add_child(ob)
+			panel_box.add_child(row)
+		for sp in REGION_SLIDERS:
+			var key: String = sp[0]
+			panel_box.add_child(_slider_row(T(sp[1]), float(r[key]), sp[2], sp[3], sp[4], func(v): model.set_region(key, v)))
+		var mir := CheckBox.new()
+		mir.text = T("Espejo")
+		mir.button_pressed = bool(r["mirror"])
+		mir.toggled.connect(func(on): model.set_region("mirror", on))
+		panel_box.add_child(mir)
+		panel_box.add_child(_note("%s: %d" % [T("Semilla"), int(r["seed"])]))
+		var vary := Button.new()
+		vary.text = T("Nueva variante")
+		vary.name = "VaryRegion"
+		vary.pressed.connect(func(): model.vary_region())
+		panel_box.add_child(vary)
+	panel_box.add_child(_note(T("Detalles artísticos; no cambian las capacidades.")))
 
 func _panel_paint() -> void:
 	var s: Dictionary = model.doc["skin"]
@@ -580,10 +891,39 @@ func _panel_test() -> void:
 	play.custom_minimum_size = Vector2(0, 38)
 	play.pressed.connect(toggle_play)
 	panel_box.add_child(play)
+	panel_box.add_child(HSeparator.new())
+	_caps_section()
+	panel_box.add_child(_h2(T("Acciones")))
+	var acts := HFlowContainer.new()
+	for a in [["bite", "Morder"], ["sing", "Cantar"]]:
+		var ab := Button.new()
+		ab.name = "Act_" + a[0]
+		ab.text = T(a[1])
+		var act: String = a[0]
+		ab.pressed.connect(func(): do_action(act))
+		acts.add_child(ab)
+	var run := Button.new()
+	run.name = "Act_run"
+	run.toggle_mode = true
+	run.button_pressed = _run
+	run.text = T("Andar") if _run else T("Correr")
+	run.pressed.connect(toggle_run)
+	acts.add_child(run)
+	panel_box.add_child(acts)
 	panel_box.add_child(_note(T("Tu criatura camina sola: nada está animado a mano")))
 	panel_box.add_child(_note(T("Cosmético")))
 
 # =================================================================== actions (shared by UI, keys and tests)
+var _run := false
+
+func do_action(a: String) -> void:
+	view.trigger(a)
+
+func toggle_run() -> void:
+	_run = not _run
+	view.set_run(_run)
+	_queue_rebuild()
+
 func set_mode(m: String) -> void:
 	_cancel_drag()
 	_pending_type = ""
@@ -592,6 +932,9 @@ func set_mode(m: String) -> void:
 	for k in mode_buttons:
 		mode_buttons[k].set_pressed_no_signal(k == m)
 	_set_hint("")
+	if palette_card != null:               # the palette only works while building
+		palette_card.modulate = Color.WHITE if m == "build" else Color(1, 1, 1, .4)
+		palette_card.mouse_filter = Control.MOUSE_FILTER_STOP if m == "build" else Control.MOUSE_FILTER_IGNORE
 	_queue_rebuild()
 
 func set_lang(l: String) -> void:
@@ -692,6 +1035,12 @@ func _flash(t: String) -> void:
 # =================================================================== input
 func _set_hover(n: int) -> void:
 	_hover_node = n
+	if n < 0:
+		_spine_hover = false
+		view.set_hover_node(-1)
+		view.set_hover_part(-1)
+		view.set_bead_hot(false)
+		view.set_spine_visible(false)
 
 func _unhandled_key_input(e: InputEvent) -> void:
 	if not (e is InputEventKey) or not e.pressed:
@@ -733,12 +1082,14 @@ func _unhandled_key_input(e: InputEvent) -> void:
 				get_viewport().set_input_as_handled()
 
 func _input(e: InputEvent) -> void:
+	if e is InputEventMouseButton or e is InputEventKey:
+		_idle = 0.0
 	# palette drags end anywhere on screen
 	if _drag.get("kind", "") == "new":
 		if e is InputEventMouseMotion:
 			_mouse = e.position
-			_ghost.position = e.position + Vector2(14, 10)
-			overlay.queue_redraw()
+			if _drag["moved"]:
+				_update_new_drag(e.position)
 		elif e is InputEventMouseButton and e.button_index == MOUSE_BUTTON_LEFT and not e.pressed:
 			_finish_new_drag(e.position)
 
@@ -747,30 +1098,65 @@ func _palette_input(e: InputEvent, id: String) -> void:
 		return
 	if e is InputEventMouseButton and e.button_index == MOUSE_BUTTON_LEFT and e.pressed:
 		_cancel_drag()
-		_drag = {"kind": "new", "type": id, "start": get_viewport().get_mouse_position(), "moved": false}
+		_drag = {"kind": "new", "type": id, "start": get_viewport().get_mouse_position(), "moved": false, "idx": -1, "tx": false, "over": false}
 		_pending_type = ""
-		_ghost.text = i18n.part_name(id)
+		_ghost.texture = _thumb_tex(id, parts_db.by_id[id]["category"])
+		_ghost.modulate = Color.WHITE
 		_ghost.visible = true
-		_ghost.position = get_viewport().get_mouse_position() + Vector2(14, 10)
+		_ghost.position = get_viewport().get_mouse_position() - Vector2(52, 52)
 		_set_hint("Llévala hasta el cuerpo de la criatura")
+		_click()
 	elif e is InputEventMouseMotion and _drag.get("kind", "") == "new":
-		if (get_viewport().get_mouse_position() - _drag["start"]).length() > 6.0:
+		if not _drag["moved"] and (get_viewport().get_mouse_position() - _drag["start"]).length() > 6.0:
 			_drag["moved"] = true
+			_update_new_drag(get_viewport().get_mouse_position())
+
+## While a palette part is dragged: over the body the real part is in the document and follows the cursor
+## (snapped, real orientation, mirrored); off the body only the thumbnail ghost follows.
+func _update_new_drag(gpos: Vector2) -> void:
+	var d := _drag
+	var local := gpos - stage.global_position
+	var inside := Rect2(Vector2.ZERO, stage.size).has_point(local) and not _over_hud(gpos)
+	var h := _hit_body(local) if inside else {}
+	d["over"] = not h.is_empty()
+	if d["over"]:
+		if d["idx"] < 0:
+			model.begin()
+			d["tx"] = true
+			d["idx"] = model.add_part(d["type"], h["t"], h["ang"])
+		else:
+			model.place_part(d["idx"], h["t"], h["ang"])
+		d["point"] = h["point"]
+	elif d["idx"] >= 0:
+		model.remove_part(d["idx"])
+		d["idx"] = -1
+	_ghost.visible = not d["over"]
+	_ghost.position = gpos - Vector2(52, 52)
+	_ghost.modulate = Color.WHITE if inside else Color(1, .55, .5, .9)
+	_set_hint("Suelta para colocar" if d["over"] else "Llévala hasta el cuerpo de la criatura")
+	overlay.queue_redraw()
 
 func _finish_new_drag(pos: Vector2) -> void:
 	var d := _drag
 	_drag = {}
 	_ghost.visible = false
-	var local := pos - stage.global_position
 	if not d["moved"]:
 		_pending_type = d["type"]          # click: then click the body to place
 		_flash(T("Toca el cuerpo para colocar"))
 	else:
-		var h := _hit_body(local) if Rect2(Vector2.ZERO, stage.size).has_point(local) and not _over_hud(pos) else {}
-		if not h.is_empty():
-			model.add_part(d["type"], h["t"], h["ang"])
+		if d["idx"] >= 0:
+			model.end()
+			_dropped(d["idx"], d.get("point", Vector3.ZERO))
+		elif d["tx"]:
+			model.cancel()
 		_set_hint("")
 	overlay.queue_redraw()
+
+## Drop feedback: the part pops, a ring spreads on the surface, a click.
+func _dropped(idx: int, point: Vector3) -> void:
+	view.pulse_part(idx)
+	_drop_fx = {"point": point, "t": 0.0}
+	_click()
 
 func _over_hud(global_pos: Vector2) -> bool:
 	for c in hud.get_children():
@@ -781,6 +1167,9 @@ func _over_hud(global_pos: Vector2) -> bool:
 func _cancel_drag() -> void:
 	if _drag.get("tx", false):
 		model.cancel()
+	if _drag.get("kind", "") == "part":
+		view.hide_part(-1, false)
+	view.set_active_node(-1)
 	_drag = {}
 	if _ghost:
 		_ghost.visible = false
@@ -788,6 +1177,7 @@ func _cancel_drag() -> void:
 		_close_wheel_tx()
 
 func _stage_input(e: InputEvent) -> void:
+	_idle = 0.0
 	if e is InputEventMouseMotion:
 		_mouse = e.position
 		_stage_motion(e)
@@ -803,8 +1193,8 @@ func _stage_input(e: InputEvent) -> void:
 			_stage_wheel(1.0 if e.button_index == MOUSE_BUTTON_WHEEL_UP else -1.0, e.position)
 
 func _handles() -> Dictionary:
-	# screen-space handles for the selected part: {c: centre, rot: Vector2, tilt: Vector2 or null}
-	if model.mode != "build" or model.selected < 0 or model.selected >= model.doc["parts"].size():
+	# screen-space handles for the selected part: {c: centre, rot: Vector2 (3D bead projected), tilt: Vector2 or null, joints: [...]}
+	if model.mode != "build" or model.selected < 0 or model.selected >= model.doc["parts"].size() or model.playing:
 		return {}
 	var a: Dictionary = view.part_anchor(model.selected)
 	if a.is_empty() or camera.is_position_behind(a["pos"]):
@@ -813,9 +1203,23 @@ func _handles() -> Dictionary:
 	var c := camera.unproject_position(a["pos"])
 	var out := {"c": c}
 	if not parts_db.is_leg(p["type"]):
-		out["rot"] = c + Vector2(cos(p.get("rot", 0.0)), -sin(p.get("rot", 0.0))) * 52.0
+		var bp: Vector3 = view.rot_handle_pos(model.selected)
+		if bp != Vector3.ZERO and not camera.is_position_behind(bp):
+			out["rot"] = camera.unproject_position(bp)
+		else:
+			out["rot"] = c + Vector2(cos(p.get("rot", 0.0)), -sin(p.get("rot", 0.0))) * 52.0
 		out["tilt"] = c + Vector2(-64.0, -p.get("tilt", 0.0) * 40.0)
+	else:
+		var js := []
+		for h in view.leg_handles(model.selected):
+			if not camera.is_position_behind(h.pos):
+				js.append({"joint": h.joint, "side": h.side, "screen": camera.unproject_position(h.pos)})
+		out["joints"] = js
 	return out
+
+func _click() -> void:
+	if _click_sound != null and _click_sound.stream != null:
+		_click_sound.play()
 
 func _stage_press(e: InputEventMouseButton) -> void:
 	_cancel_drag()
@@ -826,13 +1230,16 @@ func _stage_press(e: InputEventMouseButton) -> void:
 	if _pending_type != "":
 		var h := _hit_body(pos)
 		if not h.is_empty():
-			model.add_part(_pending_type, h["t"], h["ang"])
-		_pending_type = ""
-		_set_hint("")
+			var idx: int = model.add_part(_pending_type, h["t"], h["ang"])
+			_dropped(idx, h["point"])
+			_pending_type = ""
+			_set_hint("")
+		else:
+			_flash(T("Llévala hasta el cuerpo de la criatura"))
 		return
 	var hs := _handles()
 	if not hs.is_empty():
-		if hs.has("rot") and pos.distance_to(hs["rot"]) < 11.0:
+		if hs.has("rot") and pos.distance_to(hs["rot"]) < 14.0:
 			model.begin()
 			_drag = {"kind": "rot", "tx": true}
 			return
@@ -840,11 +1247,18 @@ func _stage_press(e: InputEventMouseButton) -> void:
 			model.begin()
 			_drag = {"kind": "tilt", "tx": true, "origin": hs["c"]}
 			return
+		for j in hs.get("joints", []):
+			if pos.distance_to(j["screen"]) < 14.0:
+				model.begin()
+				_drag = {"kind": "joint", "tx": true, "joint": j["joint"], "side": j["side"]}
+				return
 	var r := _stage_ray(pos)
 	var n: int = view.hit_node(r[0], r[1])
 	if n >= 0:
 		model.begin()
 		_drag = {"kind": "node", "node": n, "tx": true}
+		view.set_active_node(n)
+		_set_hint("Suelta para fijar")
 		return
 	var pi: int = view.hit_part(r[0], r[1])
 	if pi >= 0:
@@ -858,17 +1272,33 @@ func _stage_motion(e: InputEventMouseMotion) -> void:
 	var k: String = _drag.get("kind", "")
 	match k:
 		"":
-			if model.mode == "build" and not _over_hud(e.global_position):
+			var over_hud := _over_hud(e.global_position)
+			if model.mode == "build" and not over_hud:
 				var r := _stage_ray(pos)
 				var n: int = view.hit_node(r[0], r[1])
-				if n != _hover_node:
-					_hover_node = n
-				stage.mouse_default_cursor_shape = Control.CURSOR_MOVE if n >= 0 else (Control.CURSOR_POINTING_HAND if view.hit_part(r[0], r[1]) >= 0 else Control.CURSOR_ARROW)
+				var hs := _handles()
+				var bead: bool = hs.has("rot") and pos.distance_to(hs["rot"]) < 14.0
+				var joint := false
+				for j in hs.get("joints", []):
+					joint = joint or pos.distance_to(j["screen"]) < 14.0
+				var pi: int = -1 if (n >= 0 or bead or joint) else view.hit_part(r[0], r[1])
+				var over_body: bool = n >= 0 or not view.hit_body(r[0], r[1]).is_empty()
+				_hover_node = n
+				view.set_hover_node(n)
+				view.set_hover_part(pi)
+				view.set_bead_hot(bead)
+				_spine_hover = over_body
+				view.set_spine_visible(_spine_hover)
+				if _pending_type != "":
+					stage.mouse_default_cursor_shape = Control.CURSOR_CAN_DROP if not view.hit_body(r[0], r[1]).is_empty() else Control.CURSOR_FORBIDDEN
+				else:
+					stage.mouse_default_cursor_shape = Control.CURSOR_MOVE if (n >= 0 or bead or joint) else (Control.CURSOR_POINTING_HAND if pi >= 0 else Control.CURSOR_DRAG)
+			elif model.mode != "build":
+				stage.mouse_default_cursor_shape = Control.CURSOR_DRAG
 		"cam":
 			_yaw -= e.relative.x * .006
 			_pitch = clampf(_pitch + e.relative.y * .004, -.02, 1.2)
 			_drag["moved"] = true
-			_place_camera()
 		"node":
 			var o: Vector3 = _stage_ray(pos)[0]
 			var d: Vector3 = _stage_ray(pos)[1]
@@ -876,6 +1306,7 @@ func _stage_motion(e: InputEventMouseMotion) -> void:
 				var s := -o.x / d.x
 				if s > 0.0:
 					_drag["node"] = model.move_node(_drag["node"], o.y + d.y * s, o.z + d.z * s)
+					view.set_active_node(_drag["node"])
 		"part":
 			if not _drag["moved"] and pos.distance_to(_drag["start"]) < 5.0:
 				return
@@ -887,32 +1318,53 @@ func _stage_motion(e: InputEventMouseMotion) -> void:
 			_drag["over"] = not h.is_empty()
 			if _drag["over"]:
 				model.place_part(_drag["part"], h["t"], h["ang"])
+				_drag["point"] = h["point"]
+			# off the body the part is hidden and its thumbnail (tinted red = will be removed) follows the cursor
+			view.hide_part(_drag["part"], not _drag["over"])
+			_ghost.visible = not _drag["over"]
+			if _ghost.visible:
+				_ghost.texture = _thumb_tex(model.doc["parts"][_drag["part"]]["type"], "")
+				_ghost.modulate = Color(1, .55, .5, .9)
+				_ghost.position = get_viewport().get_mouse_position() - Vector2(52, 52)
 			_set_hint("Suelta para colocar" if _drag["over"] else "Suelta fuera del cuerpo para quitar la pieza")
 		"rot":
-			var hs := _handles()
-			if hs.has("c"):
-				var d: Vector2 = pos - hs["c"]
-				model.set_param(model.selected, "rot", atan2(-d.y, d.x))
+			var r2 := _stage_ray(pos)
+			var a: float = view.rot_from_ray(model.selected, r2[0], r2[1])
+			if not is_nan(a):
+				model.set_param(model.selected, "rot", a)
+			_set_hint("Gira la pieza alrededor de su base")
 		"tilt":
 			model.set_param(model.selected, "tilt", -(pos.y - _drag["origin"].y) / 40.0)
+		"joint":
+			var r3 := _stage_ray(pos)
+			var res: Dictionary = view.leg_drag(model.selected, _drag["joint"], _drag["side"], r3[0], r3[1], -camera.global_transform.basis.z)
+			if not res.is_empty():
+				model.set_leg_joint(model.selected, res["key"], res["value"])
+			_set_hint("El pie se desliza por el suelo" if _drag["joint"] == "f" else "Suelta para fijar la rodilla")
 
 func _stage_release(_e: InputEventMouseButton) -> void:
 	var d := _drag
 	_drag = {}
+	_ghost.visible = false
 	match d.get("kind", ""):
 		"cam":
 			if not d["moved"] and model.mode == "build":
 				model.select(-1)
 		"part":
 			if d["moved"]:
+				view.hide_part(-1, false)
 				if d.get("over", true):
 					model.end()
+					_dropped(d["part"], d.get("point", Vector3.ZERO))
 				else:
 					model.remove_part(d["part"])
 					model.end()
+					_click()
 				_set_hint("")
-		"node", "rot", "tilt":
+		"node", "rot", "tilt", "joint":
 			model.end()
+			view.set_active_node(-1)
+			_set_hint("")
 	overlay.queue_redraw()
 
 func _stage_wheel(dir: float, pos: Vector2) -> void:
@@ -921,6 +1373,7 @@ func _stage_wheel(dir: float, pos: Vector2) -> void:
 		var n: int = view.hit_node(r[0], r[1])
 		if n >= 0:
 			_wheel_tx()
+			_girth_fx = .6
 			model.set_node_radius(n, model.doc["nodes"][n]["r"] * (1.0 + dir * .08))
 			return
 		var pi: int = view.hit_part(r[0], r[1])
@@ -928,8 +1381,7 @@ func _stage_wheel(dir: float, pos: Vector2) -> void:
 			_wheel_tx()
 			model.set_param(pi, "size", model.doc["parts"][pi]["size"] * (1.0 + dir * .06))
 			return
-	_dist = clampf(_dist * (1.0 - dir * .08), 3.0, 60.0)
-	_place_camera()
+	_dist_goal = clampf(_dist_goal * (1.0 - dir * .08), DIST_MIN, DIST_MAX)
 
 func _wheel_tx() -> void:
 	if not _wheel_open:
@@ -946,20 +1398,32 @@ func _close_wheel_tx() -> void:
 func _draw_overlay() -> void:
 	var off := stage.global_position - overlay.global_position
 	var hs := _handles()
-	if not hs.is_empty():
-		var c: Vector2 = hs["c"] + off
-		overlay.draw_arc(c, 15, 0, TAU, 32, ThemeFactory.AMBER, 2.5, true)
-		overlay.draw_circle(c, 3, ThemeFactory.AMBER)
-		if hs.has("rot"):
-			overlay.draw_arc(c, 52, 0, TAU, 48, Color(ThemeFactory.MOSS, .35), 1.5, true)
-			overlay.draw_line(c, hs["rot"] + off, Color(ThemeFactory.MOSS, .6), 1.5)
-			overlay.draw_circle(hs["rot"] + off, 8, ThemeFactory.MOSS)
-			var tc: Vector2 = hs["c"] + off + Vector2(-64, 0)
-			overlay.draw_line(tc + Vector2(0, -52), tc + Vector2(0, 52), Color(ThemeFactory.SKY, .35), 1.5)
-			overlay.draw_circle(hs["tilt"] + off, 8, ThemeFactory.SKY)
-	if _drag.get("kind", "") == "new" and _drag["moved"] or _pending_type != "":
-		var pos := (_mouse - stage.global_position) if _drag.get("kind", "") == "new" else _mouse
+	if hs.has("tilt"):
+		# blue tilt slider (Godot-only; the web studio has a slider for it)
+		var tc: Vector2 = hs["c"] + off + Vector2(-64, 0)
+		overlay.draw_line(tc + Vector2(0, -52), tc + Vector2(0, 52), Color(ThemeFactory.SKY, .35), 1.5)
+		overlay.draw_circle(hs["tilt"] + off, 8, ThemeFactory.SKY)
+	# placement marker: green ring when the cursor is on the body (valid), red when it is not
+	var placing: bool = (_drag.get("kind", "") == "new" and _drag["moved"]) or _pending_type != ""
+	if placing:
+		var pos := (_mouse - stage.global_position)
 		var h := _hit_body(pos)
 		if not h.is_empty():
 			var sp := camera.unproject_position(h["point"]) + off
 			overlay.draw_arc(sp, 14, 0, TAU, 32, ThemeFactory.MOSS, 3.0, true)
+		elif _pending_type != "":
+			overlay.draw_arc(pos + off, 12, 0, TAU, 24, ThemeFactory.DANGER, 2.5, true)
+	if not _drop_fx.is_empty():
+		var t: float = _drop_fx["t"]
+		var p3: Vector3 = _drop_fx["point"]
+		if t < .5 and not camera.is_position_behind(p3):
+			var sp2 := camera.unproject_position(p3) + off
+			overlay.draw_arc(sp2, 10 + t * 70.0, 0, TAU, 40, Color(ThemeFactory.AMBER, 1.0 - t / .5), 3.0, true)
+	if _girth_fx > 0.0 and _hover_node >= 0:
+		var pts: PackedVector3Array = view.spine_node_positions()
+		if _hover_node < pts.size() and not camera.is_position_behind(pts[_hover_node]):
+			var rr: float = model.doc["nodes"][_hover_node]["r"]
+			var sp3 := camera.unproject_position(pts[_hover_node]) + off
+			var edge := camera.unproject_position(pts[_hover_node] + camera.global_transform.basis.x * rr) + off
+			overlay.draw_arc(sp3, sp3.distance_to(edge), 0, TAU, 48, Color(ThemeFactory.AMBER, clampf(_girth_fx / .6, 0.0, 1.0)), 2.5, true)
+
