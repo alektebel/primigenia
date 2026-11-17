@@ -333,6 +333,34 @@ lore file (§5.3).
 | Industry | the capsule dig; a lost-expedition story; the first flight from a flyer lineage |
 | Space | the archive world, the tentacled honour-species, the black sphere (Excession node), ruined planets, the makers' world, the space-adapted creature's payoff |
 
+## 9b. Two lineage ideas (owner, A12–A13)
+
+### Shortcut to the stars (secret path, A12)
+
+As in *Children of Time*: a lineage that is **void-adapted** and has learned to
+**artificially select other species** (befriender + Cognition tier 4 + a secret
+recipe) can skip from the end of Creature **straight to Space**.
+- Instead of factories, it uses **grown technology**: living ships, silk-spun
+  orbital rings, engineered organisms as tools and weapons.
+- It starts Space small (a few living ships, no industrial base) but with a
+  **pristine planet** (health 100) and a biotech branch of the Knowledge tree.
+- It's a deep secret (G71): very hard to find, discoverable by observation.
+- Skipped stages are **not** counted as won for the benchmark score. It's
+  a different way to play, not a shortcut on the board.
+- Cost: it reuses Space, with a biotech skin and tech branch. Build it after Space works.
+
+### Your ancestors stay in the world (A13)
+
+Every time you evolve (save in the studio), the **previous form stays behind** as
+a wild species: your cousins.
+- They keep living, eating and slowly drifting on their own (simple evolution of the old genome).
+- They're related to you: more trust when befriending, some recognition of your calls.
+- The field journal (G38) shows a **family tree** with every ancestor and where its line lives now.
+- In Band, cousin species are the first ones you domesticate. In Space, seeded
+  worlds can start from any branch of the tree.
+- Cost: low. Each evolution step is already a genome; it becomes a roster species
+  (with a population cap so the island doesn't fill with near-copies).
+
 ## 10. AI architecture for ship minds and the agent swarm (A8)
 
 Running one cloud LLM per ship would cost too much and isn't deterministic.
