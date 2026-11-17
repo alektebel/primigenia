@@ -447,7 +447,7 @@ static void snapshots(void){
     uint8_t bad[1<<16];
     memcpy(bad,blob,(size_t)n);bad[0]='X';
     assert(cp_stage_restore(&snap_b,bad,(size_t)n,NULL)==CP_STAGE_SNAP_ERR_MAGIC);
-    memcpy(bad,blob,(size_t)n);bad[8]=2;
+    memcpy(bad,blob,(size_t)n);bad[8]=CP_STAGE_SNAPSHOT_VERSION+1;
     assert(cp_stage_restore(&snap_b,bad,(size_t)n,NULL)==CP_STAGE_SNAP_ERR_FORMAT);
     memcpy(bad,blob,(size_t)n);bad[12]=CP_STAGE_VERSION+1;
     assert(cp_stage_restore(&snap_b,bad,(size_t)n,NULL)==CP_STAGE_SNAP_ERR_ENGINE);

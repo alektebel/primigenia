@@ -181,6 +181,345 @@ int cp_stage_can_walk(const CpStageWorld *w,float x,float z,float nx,float nz,fl
     }
     return 1;
 }
+/* --- C1-nav: events, block reasons, the walk grid and the GO planner (docs/godot/NAV.md) ---------------- */
+static void ev_push(CpStageWorld *w,int type,int by,int target,int move,float value,float x,float z){
+    w->events[w->ev_total%CP_STAGE_MAX_EVENTS]=(CpStageEvent){w->tick,type,by,target,move,value,x,z};
+    w->ev_total++;
+}
+void cp_stage_ack_events(CpStageWorld *w){
+    if(w)w->ev_acked=w->ev_total;
+}
+/* Why cp_stage_can_walk refuses the straight move: the same checks, in the same order, naming the first failure. */
+static int block_reason(const CpStageWorld *w,float x,float z,float nx,float nz,float radius){
+    const float bound=cp_stage_bound(w);
+    if(!isfinite(nx)||!isfinite(nz)||ab(nx)>bound||ab(nz)>bound)return CP_STAGE_BLOCK_EDGE;
+    const int field=w->setup.terrain==CP_STAGE_FIELD;
+    const float dx=nx-x,dz=nz-z,distance=length(dx,dz);
+    const int steps=(int)(distance/.25f)+1;
+    float previous=cp_stage_ground(w,x,z);
+    for(int i=1;i<=steps;i++){
+        const float t=(float)i/steps,height=cp_stage_ground(w,x+dx*t,z+dz*t);
+        if(field?cp_stage_water_depth(w,x+dx*t,z+dz*t)>.7f:height<-.7f)return CP_STAGE_BLOCK_WATER;
+        if(ab(height-previous)>distance/steps*1.2f+.04f)return CP_STAGE_BLOCK_CLIFF;
+        previous=height;
+    }
+    for(int i=0;i<w->setup.n_obstacles;i++){
+        const CpStageObstacle *o=&w->setup.obstacles[i];
+        const float t=distance>0?clamp(((o->x-x)*dx+(o->z-z)*dz)/(distance*distance),0,1):0;
+        if(length(x+dx*t-o->x,z+dz*t-o->z)<o->r+radius)return CP_STAGE_BLOCK_OBSTACLE;
+    }
+    return CP_STAGE_BLOCK_CLIFF;
+}
+/* The walk grid: cells of ~4 m over the walkable square, 8 passability bits per cell computed with
+ * cp_stage_can_walk between cell centres for the player's body radius. It is a pure function of the attached
+ * field, the obstacles and the radius, so it lives in static derived storage (not in the world, not in the
+ * snapshot, not hashed) and is filled lazily, one cell the first time the search expands it. A signature of its
+ * inputs decides when it is thrown away. */
+#if defined(__EMSCRIPTEN__)
+#define NAV_DIM 1
+#else
+#define NAV_DIM 1024
+#endif
+#define NAV_CELLS ((size_t)NAV_DIM*NAV_DIM)
+#define NAV_EXPAND 200000
+#define NAV_HEAP (1<<21)
+#define NAV_DONE 0x8000u
+static uint16_t nav_mask[NAV_CELLS];
+static int32_t nav_g[NAV_CELLS];
+static uint32_t nav_stamp[NAV_CELLS];
+static uint8_t nav_dir[NAV_CELLS];
+static uint64_t nav_heap[NAV_HEAP];
+static int32_t nav_cells[NAV_EXPAND+2];
+static struct {
+    uint64_t sig;
+    int dim,valid;
+    float cs,bound,radius;
+    uint32_t gen;
+} nav;
+static const int NAV_DX[8]={1,1,0,-1,-1,-1,0,1},NAV_DZ[8]={0,1,1,1,0,-1,-1,-1};
+static void sig_u32(uint64_t *h,uint32_t v){
+    for(int i=0;i<4;i++){
+        *h^=(uint8_t)(v>>(8*i));
+        *h*=1099511628211ULL;
+    }
+}
+static void sig_fl(uint64_t *h,float v){
+    uint32_t bits=0;
+    memcpy(&bits,&v,4);
+    sig_u32(h,bits);
+}
+static int nav_ready(const CpStageWorld *w){
+    if(NAV_DIM<4||w->setup.terrain!=CP_STAGE_FIELD||!field_ok(w->field))return 0;
+    const float radius=cp_combat_body_radius(&w->player.profile),bound=cp_stage_bound(w);
+    uint64_t h=14695981039346656037ULL;
+    sig_u32(&h,(uint32_t)w->field->hash);
+    sig_u32(&h,(uint32_t)(w->field->hash>>32));
+    sig_u32(&h,(uint32_t)w->field->n);
+    sig_fl(&h,w->field->size_m);
+    sig_u32(&h,(uint32_t)(uintptr_t)w->field->height);
+    sig_u32(&h,(uint32_t)((uint64_t)(uintptr_t)w->field->height>>32));
+    sig_fl(&h,radius);
+    sig_u32(&h,(uint32_t)w->setup.n_obstacles);
+    for(int i=0;i<w->setup.n_obstacles;i++){
+        sig_fl(&h,w->setup.obstacles[i].x);
+        sig_fl(&h,w->setup.obstacles[i].z);
+        sig_fl(&h,w->setup.obstacles[i].r);
+    }
+    if(nav.valid&&nav.sig==h)return 1;
+    int dim=(int)(2*bound/4+.999f);
+    if(dim<2)dim=2;
+    if(dim>NAV_DIM)dim=NAV_DIM;
+    nav.sig=h;
+    nav.dim=dim;
+    nav.cs=2*bound/dim;
+    nav.bound=bound;
+    nav.radius=radius;
+    nav.valid=1;
+    memset(nav_mask,0,(size_t)dim*dim*sizeof *nav_mask);
+    return 1;
+}
+float cp_stage_nav_cell(const CpStageWorld *w){
+    return w&&nav_ready(w)?nav.cs:0;
+}
+static float nav_c(int i){
+    return -nav.bound+((float)i+.5f)*nav.cs;
+}
+static int nav_index_of(float v){
+    int i=floor_int((v+nav.bound)/nav.cs);
+    return clampi(i,0,nav.dim-1);
+}
+static uint16_t nav_cell(const CpStageWorld *w,int idx){
+    uint16_t m=nav_mask[idx];
+    if(m&NAV_DONE)return m;
+    const int i=idx%nav.dim,j=idx/nav.dim;
+    m=NAV_DONE;
+    for(int d=0;d<8;d++){
+        const int ni=i+NAV_DX[d],nj=j+NAV_DZ[d];
+        if(ni<0||nj<0||ni>=nav.dim||nj>=nav.dim)continue;
+        if(cp_stage_can_walk(w,nav_c(i),nav_c(j),nav_c(ni),nav_c(nj),nav.radius))m|=(uint16_t)(1u<<d);
+    }
+    nav_mask[idx]=m;
+    return m;
+}
+static int nav_h(int idx,int gi,int gj){
+    const int i=idx%nav.dim,j=idx/nav.dim;
+    const int dx=i>gi?i-gi:gi-i,dz=j>gj?j-gj:gj-j;
+    return 10*(dx>dz?dx:dz)+4*(dx<dz?dx:dz);
+}
+static size_t heap_n;
+static int heap_push(uint64_t key){
+    if(heap_n>=NAV_HEAP)return -1;
+    size_t i=heap_n++;
+    while(i>0){
+        size_t p=(i-1)/2;
+        if(nav_heap[p]<=key)break;
+        nav_heap[i]=nav_heap[p];
+        i=p;
+    }
+    nav_heap[i]=key;
+    return 0;
+}
+static uint64_t heap_pop(void){
+    uint64_t top=nav_heap[0],last=nav_heap[--heap_n];
+    size_t i=0;
+    for(;;){
+        size_t c=2*i+1;
+        if(c>=heap_n)break;
+        if(c+1<heap_n&&nav_heap[c+1]<nav_heap[c])c++;
+        if(nav_heap[c]>=last)break;
+        nav_heap[i]=nav_heap[c];
+        i=c;
+    }
+    if(heap_n)nav_heap[i]=last;
+    return top;
+}
+/* A*: costs 10/14, octile heuristic, ties broken by lowest f, then lowest h, then lowest cell index (the packed
+ * key orders exactly so). Returns the number of cells of the path start..goal in nav_cells, or -1 (no route
+ * within NAV_EXPAND expansions / heap capacity). */
+static int nav_astar(const CpStageWorld *w,int start,int goal){
+    if(++nav.gen==0){
+        memset(nav_stamp,0,NAV_CELLS*sizeof *nav_stamp);
+        nav.gen=1;
+    }
+    const int gi=goal%nav.dim,gj=goal/nav.dim;
+    heap_n=0;
+    nav_stamp[start]=nav.gen;
+    nav_g[start]=0;
+    nav_dir[start]=255;
+    heap_push(((uint64_t)nav_h(start,gi,gj)<<36)|((uint64_t)nav_h(start,gi,gj)<<20)|(uint64_t)start);
+    int expanded=0;
+    while(heap_n){
+        const uint64_t key=heap_pop();
+        const int idx=(int)(key&0xFFFFF);
+        const int h=nav_h(idx,gi,gj);
+        if(nav_stamp[idx]!=nav.gen||(int64_t)(key>>36)!=(int64_t)nav_g[idx]+h)continue;
+        if(idx==goal){
+            int count=0;
+            for(int c=goal;c!=start;){
+                nav_cells[count++]=c;
+                const int d=nav_dir[c];
+                c-=NAV_DZ[d]*nav.dim+NAV_DX[d];
+            }
+            nav_cells[count++]=start;
+            for(int a=0,b=count-1;a<b;a++,b--){
+                int t=nav_cells[a];
+                nav_cells[a]=nav_cells[b];
+                nav_cells[b]=t;
+            }
+            return count;
+        }
+        if(++expanded>NAV_EXPAND)return -1;
+        const uint16_t m=nav_cell(w,idx);
+        const int i=idx%nav.dim,j=idx/nav.dim;
+        for(int d=0;d<8;d++){
+            if(!(m&(1u<<d)))continue;
+            const int n=(j+NAV_DZ[d])*nav.dim+i+NAV_DX[d];
+            const int ng=nav_g[idx]+((d&1)?14:10);
+            if(nav_stamp[n]==nav.gen&&ng>=nav_g[n])continue;
+            nav_stamp[n]=nav.gen;
+            nav_g[n]=ng;
+            nav_dir[n]=(uint8_t)d;
+            uint64_t hn=(uint64_t)nav_h(n,gi,gj);
+            if(hn>65535)hn=65535;
+            if(heap_push((((uint64_t)ng+hn)<<36)|(hn<<20)|(uint64_t)n))return -1;
+        }
+    }
+    return -1;
+}
+static float point_x(int k,int count,float sx,float ex){
+    return k==0?sx:k==count+1?ex:nav_c(nav_cells[k-1]%nav.dim);
+}
+static float point_z(int k,int count,float sz,float ez){
+    return k==0?sz:k==count+1?ez:nav_c(nav_cells[k-1]/nav.dim);
+}
+/* Plans from the player to (tx,tz). 0 = path stored (and an event), CP_STAGE_BLOCK_UNREACHABLE otherwise. */
+static int plan_path(CpStageWorld *w,float tx,float tz){
+    const float radius=cp_combat_body_radius(&w->player.profile),sx=w->player.x,sz=w->player.z;
+    float pp[CP_STAGE_MAX_PATH][2];
+    if(!nav_ready(w)||!isfinite(tx)||!isfinite(tz))return CP_STAGE_BLOCK_UNREACHABLE;
+    float ex=tx,ez=tz;
+    int count=0;
+    if(!cp_stage_can_walk(w,sx,sz,tx,tz,radius)){
+        /* start cell: the nearest cell centre of the 5x5 block the player can walk to */
+        const int ci=nav_index_of(sx),cj=nav_index_of(sz);
+        int start=-1,gcell=-1;
+        {
+            int idxs[25];
+            float d2[25];
+            int n=0;
+            for(int dj=-2;dj<=2;dj++)for(int di=-2;di<=2;di++){
+                const int i=ci+di,j=cj+dj;
+                if(i<0||j<0||i>=nav.dim||j>=nav.dim)continue;
+                const float dx=nav_c(i)-sx,dz=nav_c(j)-sz;
+                idxs[n]=j*nav.dim+i;
+                d2[n++]=dx*dx+dz*dz;
+            }
+            for(int pick=0;pick<n&&start<0;pick++){
+                int best=-1;
+                for(int k=0;k<n;k++)if(idxs[k]>=0&&(best<0||d2[k]<d2[best]||(d2[k]==d2[best]&&idxs[k]<idxs[best])))best=k;
+                const int idx=idxs[best];
+                idxs[best]=-1;
+                if(cp_stage_can_walk(w,sx,sz,nav_c(idx%nav.dim),nav_c(idx/nav.dim),radius)&&nav_cell(w,idx)!=NAV_DONE)start=idx;
+            }
+        }
+        if(start<0)return CP_STAGE_BLOCK_UNREACHABLE;
+        /* goal cell: nearest connected cell within 3 cells (~12 m) from which the target itself is walkable,
+         * else the nearest connected cell (the target is snapped to its centre) */
+        {
+            const int ti=nav_index_of(tx),tj=nav_index_of(tz);
+            int idxs[49];
+            float d2[49];
+            int n=0,fallback=-1;
+            for(int dj=-3;dj<=3;dj++)for(int di=-3;di<=3;di++){
+                const int i=ti+di,j=tj+dj;
+                if(i<0||j<0||i>=nav.dim||j>=nav.dim)continue;
+                const float dx=nav_c(i)-tx,dz=nav_c(j)-tz;
+                if(dx*dx+dz*dz>144.f)continue;
+                idxs[n]=j*nav.dim+i;
+                d2[n++]=dx*dx+dz*dz;
+            }
+            for(int pick=0;pick<n&&gcell<0;pick++){
+                int best=-1;
+                for(int k=0;k<n;k++)if(idxs[k]>=0&&(best<0||d2[k]<d2[best]||(d2[k]==d2[best]&&idxs[k]<idxs[best])))best=k;
+                const int idx=idxs[best];
+                idxs[best]=-1;
+                if(nav_cell(w,idx)==NAV_DONE)continue;
+                if(fallback<0)fallback=idx;
+                if(cp_stage_can_walk(w,nav_c(idx%nav.dim),nav_c(idx/nav.dim),tx,tz,radius))gcell=idx;
+            }
+            if(gcell<0&&fallback>=0){
+                gcell=fallback;
+                ex=nav_c(gcell%nav.dim);
+                ez=nav_c(gcell/nav.dim);
+            }
+        }
+        if(gcell<0)return CP_STAGE_BLOCK_UNREACHABLE;
+        count=nav_astar(w,start,gcell);
+        if(count<0)return CP_STAGE_BLOCK_UNREACHABLE;
+    }
+    /* string pull over the points: player, the cell centres, the end point; every kept segment is checked by
+     * cp_stage_can_walk, found by doubling the reach and then bisecting */
+    const int m=count+2;
+    int anchor=0;
+    float length_m=0,px=sx,pz=sz;
+    int n=0;
+    if(count==0){
+        pp[n][0]=ex;
+        pp[n++][1]=ez;
+        length_m=length(ex-sx,ez-sz);
+    }
+    else while(anchor<m-1&&n<CP_STAGE_MAX_PATH){
+        const float ax=point_x(anchor,count,sx,ex),az=point_z(anchor,count,sz,ez);
+        int lo=anchor+1,hi=-1,t=2;
+        while(lo<m-1){
+            int j=anchor+t;
+            if(j>m-1)j=m-1;
+            if(cp_stage_can_walk(w,ax,az,point_x(j,count,sx,ex),point_z(j,count,sz,ez),radius)){
+                lo=j;
+                t*=2;
+            }
+            else{
+                hi=j;
+                break;
+            }
+        }
+        while(hi>0&&hi-lo>1){
+            const int mid=(lo+hi)/2;
+            if(cp_stage_can_walk(w,ax,az,point_x(mid,count,sx,ex),point_z(mid,count,sz,ez),radius))lo=mid;
+            else hi=mid;
+        }
+        const float bx=point_x(lo,count,sx,ex),bz=point_z(lo,count,sz,ez);
+        pp[n][0]=bx;
+        pp[n++][1]=bz;
+        length_m+=length(bx-px,bz-pz);
+        px=bx;
+        pz=bz;
+        anchor=lo;
+    }
+    memset(w->path,0,sizeof w->path);
+    memcpy(w->path,pp,(size_t)n*sizeof *pp);
+    w->n_path=n;
+    w->path_i=0;
+    w->path_goal_x=ex;
+    w->path_goal_z=ez;
+    w->blocked_ticks=0;
+    ev_push(w,CP_STAGE_EV_PATH_FOUND,0,0,-1,length_m,ex,ez);
+    return 0;
+}
+int cp_stage_path(const CpStageWorld *w,float *xz,int cap){
+    if(!w||!xz||cap<0)return 0;
+    int n=0;
+    for(int i=w->path_i;i<w->n_path&&n<cap;i++,n++){
+        xz[2*n]=w->path[i][0];
+        xz[2*n+1]=w->path[i][1];
+    }
+    return n;
+}
+static void path_clear(CpStageWorld *w){
+    w->n_path=w->path_i=w->blocked_ticks=w->replans=0;
+    w->path_goal_x=w->path_goal_z=0;
+    memset(w->path,0,sizeof w->path);
+}
 static int profile_valid(const CpCombatProfile *p){
     return p->mouth<=5&&p->charge<=5&&p->spit<=5&&p->tail<=5&&p->guard<=5&&isfinite(p->hp)&&p->hp>=1&&p->hp<=100000&&isfinite(p->stamina)&&p->stamina>=1&&p->stamina<=100000&&isfinite(p->speed)&&p->speed>=.5f&&p->speed<=12&&(p->radius_cm==0||(p->radius_cm>=CB_RADIUS_CM_MIN&&p->radius_cm<=CB_RADIUS_CM_MAX));
 }
@@ -292,6 +631,7 @@ static void start(CpStageWorld *w,int index){
         s.c[i].team=(uint8_t)i;
     }
     cp_combat_reset(&w->combat,&s);
+    path_clear(w);
     CpBot b;
     int kind=w->setup.wild[index].bot;
     if(kind<0)kind=CP_STAGE_SPECIES[e->species].temperament==CP_STAGE_TERRITORIAL?BOT_GREEDY:BOT_COUNTER;
@@ -362,11 +702,20 @@ static void walk(CpStageWorld *w,CpStageCreature *c,float dx,float dz,float spee
         if(cp_stage_can_walk(w,c->x,c->z,nx,c->z,r))c->x=nx;
         if(cp_stage_can_walk(w,c->x,c->z,c->x,nz,r))c->z=nz;
     }
+    if(c==&w->player&&step>.02f&&length(c->x-ox,c->z-oz)<step*.5f&&!w->blocked_reason){
+        w->blocked_reason=block_reason(w,ox,oz,nx,nz,r);
+        w->blocked_x=nx;
+        w->blocked_z=nz;
+    }
     c->speed=length(c->x-ox,c->z-oz)*10;
     c->acceleration=(c->speed-old)*10;
     c->turn_rate=turn*10;
 }
-int cp_stage_order(CpStageWorld *w,const CpStageInput *a){
+static int has_threat(const CpStageWorld *w){
+    for(int i=0;i<w->setup.n;i++)if(!w->wild[i].dead&&dist(&w->player,&w->wild[i])<30)return 1;
+    return 0;
+}
+static int order_apply(CpStageWorld *w,const CpStageInput *a){
     if(!w||!a||!isfinite(a->x)||!isfinite(a->z)||a->verb<0||a->verb>CP_STAGE_DODGE||a->sprint<0||a->sprint>1)return -1;
     if(a->verb==CP_STAGE_CONTINUE)return 0;
     if(a->verb==CP_STAGE_GO&&(!isfinite(a->x)||!isfinite(a->z)||ab(a->x)>cp_stage_bound(w)||ab(a->z)>cp_stage_bound(w)))return -1;
@@ -375,8 +724,35 @@ int cp_stage_order(CpStageWorld *w,const CpStageInput *a){
     if(a->verb==CP_STAGE_DODGE&&(a->dir<0||a->dir>7))return -1;
     if(a->verb==CP_STAGE_HEADING&&a->hx==0&&a->hz==0)return -1;
     if(w->active>=0&&(a->verb==CP_STAGE_ATTACK||a->verb==CP_STAGE_APPROACH)&&a->target!=w->active+1)return -2;
+    if(w->setup.terrain==CP_STAGE_FIELD&&w->active<0&&(a->verb==CP_STAGE_GO||a->verb==CP_STAGE_GO_NEST)){
+        /* the same GO again while its path runs keeps the path (clients may repeat the order every frame) */
+        if(w->n_path>0&&w->order.verb==a->verb&&(a->verb==CP_STAGE_GO_NEST||(w->order.x==a->x&&w->order.z==a->z)))return 0;
+        const float tx=a->verb==CP_STAGE_GO?a->x:w->setup.nest_x,tz=a->verb==CP_STAGE_GO?a->z:w->setup.nest_z;
+        if(plan_path(w,tx,tz))return -4;
+        w->replans=0;
+    }
+    else path_clear(w);
     w->order=*a;
     return 0;
+}
+static int reject(CpStageWorld *w,const CpStageInput *a,int rc){
+    w->last_error=rc;
+    ev_push(w,CP_STAGE_EV_ORDER_REJECTED,0,a?a->target:0,a?a->move:-1,(float)rc,a?a->x:0,a?a->z:0);
+    return rc;
+}
+int cp_stage_order(CpStageWorld *w,const CpStageInput *a){
+    const int rc=order_apply(w,a);
+    if(!w||!a||a->verb==CP_STAGE_CONTINUE)return rc;
+    if(rc<0){
+        reject(w,a,rc);
+        if(rc==-4){
+            w->blocked_reason=CP_STAGE_BLOCK_UNREACHABLE;
+            w->blocked_x=a->verb==CP_STAGE_GO?a->x:w->setup.nest_x;
+            w->blocked_z=a->verb==CP_STAGE_GO?a->z:w->setup.nest_z;
+        }
+    }
+    else w->last_error=a->verb==CP_STAGE_FLEE&&w->active<0&&!has_threat(w)?-5:0;
+    return rc;
 }
 static void finish(CpStageWorld *w,int outcome){
     CpStageCreature *e=&w->wild[w->active];
@@ -387,10 +763,19 @@ static void finish(CpStageWorld *w,int outcome){
         0
     };
     w->player.speed=e->speed=0;
-    if(outcome==CP_STAGE_VICTORY)e->dead=1;
+    path_clear(w);
+    const int id=(int)(e-w->wild)+1;
+    if(outcome==CP_STAGE_VICTORY){
+        e->dead=1;
+        ev_push(w,CP_STAGE_EV_KILL,0,id,-1,0,e->x,e->z);
+    }
     else{
         e->returning=1;
-        if(outcome==CP_STAGE_DEATH)w->respawn_ticks=20;
+        if(outcome==CP_STAGE_DEATH){
+            w->respawn_ticks=20;
+            ev_push(w,CP_STAGE_EV_DEATH,id,0,-1,0,w->player.x,w->player.z);
+        }
+        else ev_push(w,CP_STAGE_EV_FLED,0,id,-1,0,w->player.x,w->player.z);
     }
 }
 static void fight(CpStageWorld *w){
@@ -437,8 +822,9 @@ static void fight(CpStageWorld *w){
         }
         default:break;
     }
-    w->last_error=cp_combat_order(&w->combat,0,&a);
-    w->accepted[0]=w->last_error==0;
+    const int combat_rc=cp_combat_order(&w->combat,0,&a);
+    if(combat_rc)w->last_error=combat_rc;
+    w->accepted[0]=combat_rc==0;
     w->combat_orders[0]=a;
     CpBot b=bot_load(&w->bot);
     CpCombatAction enemy={
@@ -461,6 +847,10 @@ static void fight(CpStageWorld *w){
     const float real_hp=w->combat.c[0].hp;
     if(god)w->combat.c[0].hp=real_hp+1000;
     cp_combat_step(&w->combat);
+    for(int i=0;i<w->combat.n_ev;i++){
+        const CpCombatEvent *ev=&w->combat.ev[i];
+        if(ev->type==CB_EV_HIT&&ev->a<2&&ev->b<2)ev_push(w,CP_STAGE_EV_HIT,ev->a?w->active+1:0,ev->b?w->active+1:0,ev->move,ev->amount,0,0);
+    }
     if(god){
         CpCombatCreature *p=&w->combat.c[0];
         float taken=(real_hp+1000)-p->hp;
@@ -479,8 +869,26 @@ static void fight(CpStageWorld *w){
         if(w->setup.terrain==CP_STAGE_FIELD&&!cp_stage_can_walk(w,e->x,e->z,w->arena_x+c->x-20,w->arena_z+c->y-20,cp_combat_body_radius(&e->profile))){
             /* PLAN-heights H2: the arena is flat but the island is not. A move that would cross a cliff, the sea
              * or the bound is refused: the fighter keeps its place and the combat creature is put back with it. */
+            if(i==0){
+                w->blocked_reason=block_reason(w,e->x,e->z,w->arena_x+c->x-20,w->arena_z+c->y-20,cp_combat_body_radius(&e->profile));
+                w->blocked_x=w->arena_x+c->x-20;
+                w->blocked_z=w->arena_z+c->y-20;
+            }
             c->x=e->x-w->arena_x+20;
             c->y=e->z-w->arena_z+20;
+        }
+        else if(w->setup.terrain!=CP_STAGE_FIELD){
+            /* the walkable square is a hard limit in a fight too (agentplay saw 195.7 with a bound of 195) */
+            const float bound=cp_stage_bound(w),wx=w->arena_x+c->x-20,wz=w->arena_z+c->y-20;
+            if(ab(wx)>bound||ab(wz)>bound){
+                if(i==0){
+                    w->blocked_reason=CP_STAGE_BLOCK_EDGE;
+                    w->blocked_x=wx;
+                    w->blocked_z=wz;
+                }
+                c->x=clamp(wx,-bound,bound)-w->arena_x+20;
+                c->y=clamp(wz,-bound,bound)-w->arena_z+20;
+            }
         }
         e->speed=length(w->arena_x+c->x-20-e->x,w->arena_z+c->y-20-e->z)*10;
         e->acceleration=(e->speed-old)*10;
@@ -526,6 +934,11 @@ static void wild_tick(CpStageWorld *w,int skip,int engage){
             e->goal_x=e->home_x+rx*s->roam;
             e->goal_z=e->home_z+rz*s->roam;
             e->roam_ticks=40+(int)(duration%61);
+            if(w->setup.terrain==CP_STAGE_FIELD&&!cp_stage_can_walk(w,e->x,e->z,e->goal_x,e->goal_z,cp_combat_body_radius(&e->profile))){
+                /* only reachable roam goals (a cheap straight check): otherwise stay where it is */
+                e->goal_x=e->x;
+                e->goal_z=e->z;
+            }
             tx=e->goal_x;
             tz=e->goal_z;
         }
@@ -555,10 +968,15 @@ uint64_t cp_stage_step(CpStageWorld *w,const CpStageInput *input){
     int skip=w->active,engage=w->active<0&&w->respawn_ticks==0;
     w->accepted[0]=w->accepted[1]=0;
     w->combat.n_ev=0;
-    w->last_error=input?cp_stage_order(w,input):0;
+    w->blocked_reason=0;
+    w->blocked_x=w->blocked_z=0;
+    /* last_error is the result of the last command and stays until the next one (a step with no input keeps it) */
+    if(input)cp_stage_order(w,input);
+    int following=0;
     if(w->active>=0)fight(w);
     else if(w->respawn_ticks>0){
         if(--w->respawn_ticks==0){
+            ev_push(w,CP_STAGE_EV_RESPAWN,0,0,-1,0,w->setup.nest_x,w->setup.nest_z);
             w->player.x=w->setup.nest_x;
             w->player.z=w->setup.nest_z;
             w->player.hp=w->player.profile.hp;
@@ -574,14 +992,58 @@ uint64_t cp_stage_step(CpStageWorld *w,const CpStageInput *input){
             dz=a->hz/32767.f;
         }
         else if(a->verb==CP_STAGE_GO||a->verb==CP_STAGE_GO_NEST){
-            dx=(a->verb==CP_STAGE_GO?a->x:w->setup.nest_x)-w->player.x;
-            dz=(a->verb==CP_STAGE_GO?a->z:w->setup.nest_z)-w->player.z;
-            remaining=length(dx,dz);
-            if(remaining<.16f){
-                w->order=(CpStageInput){
-                    0
-                };
-                dx=dz=0;
+            const float gx=a->verb==CP_STAGE_GO?a->x:w->setup.nest_x,gz=a->verb==CP_STAGE_GO?a->z:w->setup.nest_z;
+            if(w->n_path>0){
+                /* follow the planned waypoints: take the next one when this one is reached, or when the next one is
+                 * already in a clear line and this one is near (so corners are cut where the ground allows) */
+                const float pr=cp_combat_body_radius(&w->player.profile);
+                while(w->path_i<w->n_path-1){
+                    const float *wp=w->path[w->path_i],*nx=w->path[w->path_i+1];
+                    const float d=length(wp[0]-w->player.x,wp[1]-w->player.z);
+                    if(d<1.5f||(d<8&&cp_stage_can_walk(w,w->player.x,w->player.z,nx[0],nx[1],pr)))w->path_i++;
+                    else break;
+                }
+                const float *wp=w->path[w->path_i];
+                dx=wp[0]-w->player.x;
+                dz=wp[1]-w->player.z;
+                remaining=length(dx,dz);
+                for(int k=w->path_i;k<w->n_path-1;k++)remaining+=length(w->path[k+1][0]-w->path[k][0],w->path[k+1][1]-w->path[k][1]);
+                following=1;
+                if(w->path_i==w->n_path-1&&length(dx,dz)<.16f){
+                    dx=dz=0;
+                    if(length(w->path_goal_x-wp[0],w->path_goal_z-wp[1])>.5f){
+                        /* the stored waypoints ran out before the goal (more than 64 corners): plan the rest */
+                        following=0;
+                        if(plan_path(w,gx,gz)){
+                            ev_push(w,CP_STAGE_EV_PATH_FAILED,0,0,-1,0,gx,gz);
+                            w->last_error=-4;
+                            w->order=(CpStageInput){
+                                0
+                            };
+                            path_clear(w);
+                        }
+                    }
+                    else{
+                        ev_push(w,CP_STAGE_EV_ARRIVED,0,0,-1,0,w->player.x,w->player.z);
+                        w->order=(CpStageInput){
+                            0
+                        };
+                        path_clear(w);
+                        following=0;
+                    }
+                }
+            }
+            else{
+                dx=gx-w->player.x;
+                dz=gz-w->player.z;
+                remaining=length(dx,dz);
+                if(remaining<.16f){
+                    ev_push(w,CP_STAGE_EV_ARRIVED,0,0,-1,0,w->player.x,w->player.z);
+                    w->order=(CpStageInput){
+                        0
+                    };
+                    dx=dz=0;
+                }
             }
         }
         else if(a->verb==CP_STAGE_ATTACK||a->verb==CP_STAGE_APPROACH){
@@ -617,6 +1079,27 @@ uint64_t cp_stage_step(CpStageWorld *w,const CpStageInput *input){
         float jog=w->player.profile.speed*w->motion.jog_k,speed=sprint?jog*w->motion.sprint_k:jog,stop=sqrtf(clamp(remaining-.08f,0,10000)*12);
         if(stop<speed)speed=stop;
         walk(w,&w->player,dx,dz,speed,jog);
+        if(following){
+            if(w->blocked_reason)w->blocked_ticks++;
+            else w->blocked_ticks=0;
+            if(w->blocked_ticks>=10){
+                /* blocked for a second: plan again from where we stand; give up after four tries */
+                const float gx=w->order.verb==CP_STAGE_GO?w->order.x:w->setup.nest_x,gz=w->order.verb==CP_STAGE_GO?w->order.z:w->setup.nest_z;
+                const int tries=w->replans+1;
+                if(tries>4||plan_path(w,gx,gz)){
+                    ev_push(w,CP_STAGE_EV_PATH_FAILED,0,0,-1,0,gx,gz);
+                    w->blocked_reason=CP_STAGE_BLOCK_UNREACHABLE;
+                    w->blocked_x=gx;
+                    w->blocked_z=gz;
+                    w->last_error=-4;
+                    w->order=(CpStageInput){
+                        0
+                    };
+                    path_clear(w);
+                }
+                else w->replans=tries;
+            }
+        }
         w->player.stamina=clamp(w->player.stamina+(sprint?-1.4f:1),0,w->player.profile.stamina);
         if(w->cooldown_ticks>0)w->cooldown_ticks--;
     }
@@ -744,6 +1227,18 @@ uint64_t cp_stage_hash(const CpStageWorld *w){
         for(unsigned i=0;i<sizeof w->motion/sizeof *m;i++)fl(&h,m[i]);
     }
     if(w->debug_flags)u32(&h,(uint32_t)w->debug_flags);
+    if(w->n_path>0){
+        u32(&h,(uint32_t)w->n_path);
+        u32(&h,(uint32_t)w->path_i);
+        u32(&h,(uint32_t)w->blocked_ticks);
+        u32(&h,(uint32_t)w->replans);
+        fl(&h,w->path_goal_x);
+        fl(&h,w->path_goal_z);
+        for(int i=0;i<w->n_path;i++){
+            fl(&h,w->path[i][0]);
+            fl(&h,w->path[i][1]);
+        }
+    }
     if(s->terrain==CP_STAGE_FIELD){
         u32(&h,(uint32_t)w->field_hash);
         u32(&h,(uint32_t)(w->field_hash>>32));
@@ -756,7 +1251,7 @@ int cp_stage_command(CpStageWorld *w,const char *text){
     };
     char extra,move_name[32];
     float deg;
-    if(!text)return -1;
+    if(!w||!text)return -1;
     if(strcmp(text,"wait")==0)a.verb=CP_STAGE_WAIT;
     else if(strcmp(text,"go_nest")==0)a.verb=CP_STAGE_GO_NEST;
     else if(strcmp(text,"flee")==0)a.verb=CP_STAGE_FLEE;
@@ -773,7 +1268,7 @@ int cp_stage_command(CpStageWorld *w,const char *text){
         }
     }
     else if(sscanf(text,"heading %f %c",&deg,&extra)==1){
-        if(!isfinite(deg)||ab(deg)>1000000)return -1;
+        if(!isfinite(deg)||ab(deg)>1000000)return reject(w,&a,-1);
         deg-=(int)(deg/360)*360;
         if(deg<0)deg+=360;
         int quadrant=(int)(deg/90);
@@ -801,7 +1296,8 @@ int cp_stage_command(CpStageWorld *w,const char *text){
         a.hx=(int16_t)(x*32767);
         a.hz=(int16_t)(z*32767);
     }
-    else return -1;
+    else return reject(w,&a,-1);
+    if(a.verb==CP_STAGE_FLEE&&w->active<0&&!has_threat(w))return reject(w,&a,-5);
     return cp_stage_order(w,&a);
 }
 /* JSON formatting is observation only: atan2 is never used by state updates. */
@@ -825,6 +1321,8 @@ const char *cp_stage_order_error(int code){
         case 0:return "ok";
         case -2:return "invalid or unavailable target";
         case -3:return "invalid or unavailable attack move";
+        case -4:return "unreachable";
+        case -5:return "no_threat";
         default:return "invalid command or value";
     }
 }
@@ -861,17 +1359,74 @@ uint64_t cp_stage_replay_ex(const CpStageSetup *setup,const uint8_t *snapshot,si
 uint64_t cp_stage_replay(const CpStageSetup *setup,const CpStageLogEntry *log,int count,uint32_t ticks,uint64_t *hashes){
     return cp_stage_replay_ex(setup,NULL,0,NULL,log,count,NULL,0,ticks,hashes);
 }
+static const char *block_name(int r){
+    switch(r){
+        case CP_STAGE_BLOCK_CLIFF:return "cliff";
+        case CP_STAGE_BLOCK_WATER:return "water";
+        case CP_STAGE_BLOCK_EDGE:return "edge";
+        case CP_STAGE_BLOCK_CREATURE:return "creature";
+        case CP_STAGE_BLOCK_UNREACHABLE:return "unreachable";
+        case CP_STAGE_BLOCK_OBSTACLE:return "obstacle";
+        default:return "none";
+    }
+}
+static const char *creature_state(const CpStageWorld *w,int i){
+    const CpStageCreature *e=&w->wild[i];
+    const CpStageSpecies *s=&CP_STAGE_SPECIES[e->species];
+    if(e->dead)return "carcass";
+    if(e->hp<=0)return "dead";
+    if(w->active==i)return "fighting";
+    const float d=dist(&w->player,e);
+    if(e->returning)return "roam";
+    if(s->temperament!=CP_STAGE_TIMID&&d<s->sight&&!w->cooldown_ticks)return "alert";
+    if(s->temperament==CP_STAGE_TIMID&&d<s->sight*.5f)return "alert";
+    return "roam";
+}
 int cp_stage_observe(const CpStageWorld *w,char *out,size_t cap){
-    if(!out||!cap)return -1;
+    return cp_stage_observe_v(w,out,cap,2);
+}
+int cp_stage_observe_v(const CpStageWorld *w,char *out,size_t cap,int version){
+    if(!out||!cap||(version!=1&&version!=2))return -1;
     size_t used=0;
     int failed=0,comma=0;
 #define ADD(...) append(out,cap,&used,&failed,__VA_ARGS__)
-    ADD("{\"schema\":\"world-1\",\"tick\":%u,\"clock\":{\"tick\":%u,\"day_ticks\":%d},\"own\":{\"id\":0,\"x\":%.6f,\"z\":%.6f,\"hp\":%.6f,\"stamina\":%.6f,\"hp_max\":%.6f,\"stamina_max\":%.6f,\"speed\":%.6f,\"facing\":[%.6f,%.6f]},\"last_error\":\"%s\",\"nearby\":[",w->tick,w->clock,CP_STAGE_DAY_TICKS,w->player.x,w->player.z,w->player.hp,w->player.stamina,w->player.profile.hp,w->player.profile.stamina,w->player.speed,w->player.fx,w->player.fz,cp_stage_order_error(w->last_error));
+    ADD("{\"schema\":\"world-%d\",\"tick\":%u,\"clock\":{\"tick\":%u,\"day_ticks\":%d},",version,w->tick,w->clock,CP_STAGE_DAY_TICKS);
+    if(version==2)ADD("\"world\":{\"bound\":%.6f,\"units\":\"metres; x and z are the ground plane; heading 0 = +z and 90 = +x (clockwise seen from above with +z up); bearing is relative to your facing, positive = clockwise (to your right), 0 = dead ahead, +-180 = behind\",\"nest\":{\"x\":%.6f,\"z\":%.6f},\"tick_hz\":10},",cp_stage_bound(w),w->setup.nest_x,w->setup.nest_z);
+    ADD("\"own\":{\"id\":0,\"x\":%.6f,\"z\":%.6f,\"hp\":%.6f,\"stamina\":%.6f,\"hp_max\":%.6f,\"stamina_max\":%.6f,\"speed\":%.6f,\"facing\":[%.6f,%.6f]},\"last_error\":\"%s\",",w->player.x,w->player.z,w->player.hp,w->player.stamina,w->player.profile.hp,w->player.profile.stamina,w->player.speed,w->player.fx,w->player.fz,cp_stage_order_error(w->last_error));
+    if(version==2){
+        if(w->blocked_reason)ADD("\"blocked\":{\"reason\":\"%s\",\"x\":%.6f,\"z\":%.6f},",block_name(w->blocked_reason),w->blocked_x,w->blocked_z);
+        else ADD("\"blocked\":null,");
+        uint32_t first=w->ev_acked;
+        if(w->ev_total-first>CP_STAGE_MAX_EVENTS)first=w->ev_total-CP_STAGE_MAX_EVENTS;
+        ADD("\"events_dropped\":%u,\"events\":[",first-w->ev_acked);
+        for(uint32_t k=first;k<w->ev_total;k++){
+            const CpStageEvent *e=&w->events[k%CP_STAGE_MAX_EVENTS];
+            const char *sep=k>first?",":"";
+            switch(e->type){
+                case CP_STAGE_EV_HIT:ADD("%s{\"tick\":%u,\"type\":\"hit\",\"by\":%d,\"target\":%d,\"move\":\"%s\",\"damage\":%.3f}",sep,e->tick,e->by,e->target,e->move>=0&&e->move<CB_MOVE_COUNT?cp_combat_move_name(e->move):"none",e->value);break;
+                case CP_STAGE_EV_KILL:ADD("%s{\"tick\":%u,\"type\":\"kill\",\"target\":%d}",sep,e->tick,e->target);break;
+                case CP_STAGE_EV_DEATH:ADD("%s{\"tick\":%u,\"type\":\"death\",\"by\":%d}",sep,e->tick,e->by);break;
+                case CP_STAGE_EV_RESPAWN:ADD("%s{\"tick\":%u,\"type\":\"respawn\",\"x\":%.3f,\"z\":%.3f}",sep,e->tick,e->x,e->z);break;
+                case CP_STAGE_EV_ORDER_REJECTED:ADD("%s{\"tick\":%u,\"type\":\"order_rejected\",\"error\":\"%s\"}",sep,e->tick,cp_stage_order_error((int)e->value));break;
+                case CP_STAGE_EV_PATH_FOUND:ADD("%s{\"tick\":%u,\"type\":\"path_found\",\"length\":%.1f,\"x\":%.3f,\"z\":%.3f}",sep,e->tick,e->value,e->x,e->z);break;
+                case CP_STAGE_EV_ARRIVED:ADD("%s{\"tick\":%u,\"type\":\"arrived\",\"x\":%.3f,\"z\":%.3f}",sep,e->tick,e->x,e->z);break;
+                case CP_STAGE_EV_FLED:ADD("%s{\"tick\":%u,\"type\":\"fled\",\"target\":%d}",sep,e->tick,e->target);break;
+                case CP_STAGE_EV_PATH_FAILED:ADD("%s{\"tick\":%u,\"type\":\"path_failed\",\"x\":%.3f,\"z\":%.3f}",sep,e->tick,e->x,e->z);break;
+                default:ADD("%s{\"tick\":%u,\"type\":\"unknown\"}",sep,e->tick);break;
+            }
+        }
+        ADD("],");
+    }
+    ADD("\"nearby\":[");
     for(int i=0;i<w->setup.n;i++){
         const CpStageCreature *e=&w->wild[i];
         float d=dist(&w->player,e);
         if(d>40)continue;
-        ADD("%s{\"id\":%d,\"type\":\"%s\",\"species\":\"%s\",\"distance\":%.6f,\"bearing\":%.6f}",comma?",":"",i+1,e->dead?"carcass":"creature",CP_STAGE_SPECIES[e->species].name,d,bearing(&w->player,e->x,e->z));
+        if(version==2){
+            const char *state=creature_state(w,i);
+            ADD("%s{\"id\":%d,\"type\":\"%s\",\"species\":\"%s\",\"distance\":%.6f,\"bearing\":%.6f,\"hp\":%.6f,\"hp_max\":%.6f,\"state\":\"%s\",\"in_fight\":%s}",comma?",":"",i+1,e->dead?"carcass":"creature",CP_STAGE_SPECIES[e->species].name,d,bearing(&w->player,e->x,e->z),e->hp,e->profile.hp,state,w->active==i?"true":"false");
+        }
+        else ADD("%s{\"id\":%d,\"type\":\"%s\",\"species\":\"%s\",\"distance\":%.6f,\"bearing\":%.6f}",comma?",":"",i+1,e->dead?"carcass":"creature",CP_STAGE_SPECIES[e->species].name,d,bearing(&w->player,e->x,e->z));
         comma=1;
     }
     float d=length(w->setup.nest_x-w->player.x,w->setup.nest_z-w->player.z);
@@ -1025,7 +1580,10 @@ uint64_t cp_stage_layout(void){
     LAY(CpStageWorld,respawn_ticks);LAY(CpStageWorld,cooldown_ticks);LAY(CpStageWorld,arena_x);
     LAY(CpStageWorld,arena_z);LAY(CpStageWorld,combat);LAY(CpStageWorld,bot);LAY(CpStageWorld,combat_orders);
     LAY(CpStageWorld,accepted);LAY(CpStageWorld,last_error);LAY(CpStageWorld,hash);LAY(CpStageWorld,motion);
-    LAY(CpStageWorld,debug_flags);LAY(CpStageWorld,reserved);LAY(CpStageWorld,field_hash);LAY(CpStageWorld,field);
+    LAY(CpStageWorld,debug_flags);LAY(CpStageWorld,reserved);LAY(CpStageWorld,field_hash);LAY(CpStageWorld,path);LAY(CpStageWorld,n_path);LAY(CpStageWorld,path_i);
+    LAY(CpStageWorld,blocked_ticks);LAY(CpStageWorld,replans);LAY(CpStageWorld,path_goal_x);LAY(CpStageWorld,path_goal_z);
+    LAY(CpStageWorld,blocked_reason);LAY(CpStageWorld,blocked_x);LAY(CpStageWorld,blocked_z);LAY(CpStageWorld,ev_total);
+    LAY(CpStageWorld,ev_acked);LAY(CpStageWorld,events);LAY(CpStageWorld,field);lay(&h,sizeof(CpStageEvent));
     LAY(CpStageSetup,seed);LAY(CpStageSetup,terrain_seed);LAY(CpStageSetup,terrain);LAY(CpStageSetup,n);
     LAY(CpStageSetup,n_obstacles);LAY(CpStageSetup,nest_x);LAY(CpStageSetup,nest_z);LAY(CpStageSetup,flat_height);
     LAY(CpStageSetup,water_x);LAY(CpStageSetup,water_z);LAY(CpStageSetup,water_radius);LAY(CpStageSetup,player);
@@ -1120,6 +1678,7 @@ const char *cp_stage_snapshot_error(int code){
 }
 int cp_stage_attach_field(CpStageWorld *w,const CpStageField *f){
     if(!w||(f&&!field_ok(f)))return -1;
+    if(w->field!=f)path_clear(w);
     w->field=f;
     return 0;
 }

@@ -7,7 +7,9 @@
 #define CP_STAGE_MAX_OBSTACLES 1024
 #define CP_STAGE_DAY_TICKS 12000
 #define CP_STAGE_DT .1f
-#define CP_STAGE_SNAPSHOT_VERSION 1
+#define CP_STAGE_SNAPSHOT_VERSION 2
+#define CP_STAGE_MAX_PATH 64      /* waypoints kept by the planner (docs/godot/NAV.md) */
+#define CP_STAGE_MAX_EVENTS 64    /* event ring since the last observe */
 
 enum { CP_STAGE_ANALYTIC, CP_STAGE_FLAT, CP_STAGE_FIELD }; /* FIELD: the generated island, needs cp_stage_attach_field() before reset */
 enum { CP_STAGE_TIMID, CP_STAGE_TERRITORIAL, CP_STAGE_AGGRESSIVE };
@@ -72,6 +74,16 @@ typedef struct CpStageField {
     const float *water_level;        /* n*n depression-filled level, may be NULL */
     uint64_t hash;                   /* cp_terrain_hash of the generated terrain */
 } CpStageField;
+/* Events since the last cp_stage_ack_events(): what the agent could not see from positions alone. */
+enum { CP_STAGE_EV_HIT=1, CP_STAGE_EV_KILL, CP_STAGE_EV_DEATH, CP_STAGE_EV_RESPAWN, CP_STAGE_EV_ORDER_REJECTED,
+       CP_STAGE_EV_PATH_FOUND, CP_STAGE_EV_ARRIVED, CP_STAGE_EV_FLED, CP_STAGE_EV_PATH_FAILED };
+enum { CP_STAGE_BLOCK_NONE, CP_STAGE_BLOCK_CLIFF, CP_STAGE_BLOCK_WATER, CP_STAGE_BLOCK_EDGE,
+       CP_STAGE_BLOCK_CREATURE, CP_STAGE_BLOCK_UNREACHABLE, CP_STAGE_BLOCK_OBSTACLE };
+typedef struct {
+    uint32_t tick;
+    int32_t type,by,target,move;   /* by/target: 0 = player, 1..n = wild creature id; move = combat move index or -1 */
+    float value,x,z;               /* damage (HIT), path length in metres (PATH_FOUND), error code (ORDER_REJECTED) */
+} CpStageEvent;
 typedef struct {
     CpStageSetup setup;
     CpRng spawn_rng,roam_rng;
@@ -92,6 +104,14 @@ typedef struct {
     CpStageMotion motion;            /* per-world copy of CP_STAGE_MOTION, changed by debug PARAM ops */
     int32_t debug_flags,reserved;    /* CP_STAGE_FLAG_* ; reserved keeps the layout explicit */
     uint64_t field_hash;             /* hash of the attached field, 0 outside FIELD mode */
+    /* C1-nav: the GO / GO_NEST path (hashed while n_path>0) and derived observation outputs (not hashed). */
+    float path[CP_STAGE_MAX_PATH][2];/* waypoints, the last is where the order ends */
+    int32_t n_path,path_i,blocked_ticks,replans;
+    float path_goal_x,path_goal_z;   /* the unsnapped target of the planned order */
+    int32_t blocked_reason;          /* CP_STAGE_BLOCK_* of the last step, derived */
+    float blocked_x,blocked_z;
+    uint32_t ev_total,ev_acked;      /* events pushed / already shown to the agent; ring index = n % CP_STAGE_MAX_EVENTS */
+    CpStageEvent events[CP_STAGE_MAX_EVENTS];
     const CpStageField *field;       /* not owned, not in the snapshot, set by cp_stage_attach_field */
 } CpStageWorld;
 void cp_stage_setup_default(CpStageSetup *s,uint32_t seed);
@@ -106,7 +126,13 @@ int cp_stage_can_walk(const CpStageWorld *w,float x,float z,float nx,float nz,fl
 /* Stable ids: player 0, wild 1..n, nest 1000, obstacles 2000+i. */
 int cp_stage_order(CpStageWorld *w,const CpStageInput *input);
 int cp_stage_command(CpStageWorld *w,const char *command);
-const char *cp_stage_order_error(int code);
+const char *cp_stage_order_error(int code);   /* -4 = unreachable (no walkable route within the search limit) */
+/* The current GO path: copies up to cap (x,z) pairs of the remaining waypoints (path_i..n_path), returns how many. */
+int cp_stage_path(const CpStageWorld *w,float *xz,int cap);
+/* The walkable grid cell size used by the planner for the attached field (0 when none / nav disabled). */
+float cp_stage_nav_cell(const CpStageWorld *w);
+/* Marks every event so far as seen (the Python binding does this after each observe()). */
+void cp_stage_ack_events(CpStageWorld *w);
 typedef struct { uint32_t tick; CpStageInput input; } CpStageLogEntry;
 uint64_t cp_stage_replay(const CpStageSetup *setup,const CpStageLogEntry *log,
                          int count,uint32_t ticks,uint64_t *hashes);
@@ -132,7 +158,8 @@ uint64_t cp_stage_replay_ex(const CpStageSetup *setup,const uint8_t *snapshot,si
 uint64_t cp_stage_step(CpStageWorld *w,const CpStageInput *input);
 uint64_t cp_stage_hash(const CpStageWorld *w);
 /* Returns bytes excluding NUL, or -1 on insufficient capacity. */
-int cp_stage_observe(const CpStageWorld *w,char *out,size_t cap);
+int cp_stage_observe(const CpStageWorld *w,char *out,size_t cap);   /* schema "world-2" */
+int cp_stage_observe_v(const CpStageWorld *w,char *out,size_t cap,int version);   /* 1 = the old "world-1" text, 2 = world-2 */
 /* --- snapshot / restore (PLAN-devtools step 3) ---
  * A snapshot is a 48-byte little-endian header ("CPSTAGE\0", snapshot version, CP_STAGE_VERSION, layout
  * fingerprint, payload bytes, 0, field hash, state hash) followed by a raw copy of the POD world up to
