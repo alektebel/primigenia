@@ -168,7 +168,7 @@ static func _keys(ks: Array, w: float, a: float, r: float, settle: float) -> Arr
 		out.append([tau, float(k[2]), k[3] if k.size() > 3 else "lin"])
 	return out
 
-static func ease(kind: String, u: float) -> float:
+static func ease_fn(kind: String, u: float) -> float:
 	u = clampf(u, 0.0, 1.0)
 	match kind:
 		"in": return u * u
@@ -199,7 +199,7 @@ static func curve(keys: Array, tau: float, default := 0.0) -> float:
 					var win := minf(0.2, span)
 					u = clampf((tau - (k1[0] - win)) / win, 0.0, 1.0)
 					return lerpf(k0[1], k1[1], u)
-			return lerpf(k0[1], k1[1], ease(k1[2], u))
+			return lerpf(k0[1], k1[1], ease_fn(k1[2], u))
 	return keys[n - 1][1]
 
 ## clocks: {time: seconds since the instance started, grid_shift: ticks, hit: bool, side: float}
@@ -214,8 +214,9 @@ static func sample(t: Dictionary, tau: float, clocks: Dictionary) -> float:
 		var p: float
 		match osc.get("clock", "time"):
 			"tick": p = tau * hz
+			"breath": p = clocks.get("breath", clocks.get("time", 0.0)) * hz
 			"beat": p = float(clocks.get("beat_t", tau)) / 12.0 * hz
-			"grid": p = (tau - clocks.get("grid_shift", 0.0)) / 3.0 * hz
+			"grid": p = (tau - float(clocks.get("grid_origin", 0.0)) - float(clocks.get("grid_shift", 0.0))) / 3.0 * hz
 			_: p = clocks.get("time", 0.0) * hz
 		p += float(osc.get("phase", 0.0))
 		var o: float

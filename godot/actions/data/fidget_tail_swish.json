@@ -1,0 +1,56 @@
+{
+ "schema": "cpore.action/1",
+ "id": "fidget_tail_swish",
+ "class": "idle",
+ "driver": {
+  "kind": "idle"
+ },
+ "ticks": {
+  "w": 0,
+  "a": 12,
+  "r": 0
+ },
+ "settle": 0.3,
+ "priority": 10,
+ "fade": {
+  "in": 0.05,
+  "out": 0.12,
+  "cancel": 0.08
+ },
+ "legs": "plant",
+ "side": 1,
+ "tracks": [
+  {
+   "ch": "tail.yaw",
+   "osc": {
+    "clock": "tick",
+    "hz": 0.4,
+    "amp": 0.7,
+    "shape": "sin"
+   },
+   "env": [
+    [
+     "a",
+     0,
+     0
+    ],
+    [
+     "a",
+     0.15,
+     1
+    ],
+    [
+     "a",
+     0.85,
+     1
+    ],
+    [
+     "a",
+     1,
+     0
+    ]
+   ]
+  }
+ ],
+ "weight": 1.0
+}

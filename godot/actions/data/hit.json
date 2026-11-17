@@ -1,0 +1,65 @@
+{
+ "schema": "cpore.action/1",
+ "id": "hit",
+ "class": "reaction",
+ "driver": {
+  "kind": "c_event",
+  "event": "hit"
+ },
+ "ticks": {
+  "w": 0,
+  "a": 1,
+  "r": 0
+ },
+ "settle": 0.0,
+ "priority": 20,
+ "fade": {
+  "in": 0.0,
+  "out": 0.05,
+  "cancel": 0.05
+ },
+ "legs": "free",
+ "side": 1,
+ "tracks": [
+  {
+   "ch": "lids",
+   "keys": [
+    [
+     "a",
+     0,
+     1.0
+    ],
+    [
+     "a",
+     0.8,
+     1.0
+    ],
+    [
+     "a",
+     1,
+     0
+    ]
+   ]
+  },
+  {
+   "ch": "jaw.open",
+   "keys": [
+    [
+     "a",
+     0,
+     0.4
+    ],
+    [
+     "a",
+     0.8,
+     0.4
+    ],
+    [
+     "a",
+     1,
+     0
+    ]
+   ]
+  }
+ ]
+}

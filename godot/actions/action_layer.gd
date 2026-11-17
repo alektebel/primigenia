@@ -27,6 +27,7 @@ var inst: Array = []         # live instances
 var time := 0.0
 var debug := {}
 var enabled := true
+var idle_on := true          # tests switch the idle layer (breathing, look-around, fidgets) off
 var rng := RandomNumberGenerator.new()
 var _pending: Array = []     # cosmetic triggers waiting for the next tick boundary
 var _last_tick := -1
@@ -160,13 +161,13 @@ func _weight(i: Dictionary) -> float:
 
 func _start(act: Dictionary, kind: String, args := {}) -> Dictionary:
 	# priority: a running instance of higher priority in the action slot keeps the slot
-	var slot_action := kind in ["c_move", "c_state", "cosmetic"]
+	var slot_action := kind in ["c_move", "c_move_end", "c_state", "cosmetic"]
 	if slot_action:
 		for o in inst:
-			if o.kind in ["c_move", "c_state", "cosmetic"] and not o.fading and o.act.priority > act.priority:
+			if o.kind in ["c_move", "c_move_end", "c_state", "cosmetic"] and not o.fading and o.act.priority > act.priority:
 				return {}
 		for o in inst:
-			if o.kind in ["c_move", "c_state", "cosmetic"] and not o.fading:
+			if o.kind in ["c_move", "c_move_end", "c_state", "cosmetic"] and not o.fading:
 				_fade(o, _fade_len(o, "cancel", 0.08))
 	var i := _new_inst(act, kind)
 	i.side = _side_for(act, args)
@@ -237,9 +238,9 @@ func update(dt: float, ctx: Dictionary) -> void:
 				i.removed = true
 		if i.kind == "c_move" and not i.ending:
 			pass
-		elif i.kind in ["cosmetic", "oneshot", "c_state"] or i.ending:
+		elif i.id != "idle_base" and i.kind != "stance":
 			i.tau += dt / Clock.DT / i.tscale
-			if i.kind != "idle_base" and not i.act.hold:
+			if not i.act.hold:
 				var l: Dictionary = Clock.locate(i.tau, i.act.w, i.act.a, i.act.r, i.act.settle)
 				if l.done and not i.fading:
 					_fade(i, _fade_len(i, "out", 0.12))
@@ -420,7 +421,7 @@ func _idle_update(dt: float, sig: Dictionary) -> void:
 	for i in inst:
 		if i.id != "idle_base" and i.kind != "idle":
 			busy = true
-	if busy or sig.get("in_fight", false):
+	if busy or sig.get("in_fight", false) or not idle_on:
 		_idle_t = 0.0
 	else:
 		_idle_t += dt
@@ -448,8 +449,8 @@ func _idle_update(dt: float, sig: Dictionary) -> void:
 func _clocks(i: Dictionary) -> Dictionary:
 	var t: float = i.age
 	if i.id == "idle_base":
-		t = time * clampf(0.8 / sqrt(map.height + 0.5), 0.2, 1.2)
-	return {"time": t, "grid_shift": i.grid_shift, "hit": i.hit, "beat_t": fposmod(float(_ctx.get("tick", 0)) + float(_ctx.get("alpha", 0.0)) - float(_ctx.get("beat_phase", 0)), 12.0)}
+		t = time
+	return {"time": t, "breath": time * clampf(0.8 / sqrt(map.height + 0.5), 0.2, 1.2), "grid_shift": i.grid_shift, "grid_origin": i.act.w, "hit": i.hit, "beat_t": fposmod(float(_ctx.get("tick", 0)) + float(_ctx.get("alpha", 0.0)) - float(_ctx.get("beat_phase", 0)), 12.0)}
 
 func _eval(pose: Dictionary) -> Dictionary:
 	var ch := {}
@@ -469,6 +470,8 @@ func _eval(pose: Dictionary) -> Dictionary:
 		if w <= 0.0005:
 			continue
 		var idle_base: bool = i.id == "idle_base"
+		if idle_base and not idle_on:
+			continue
 		var k := 1.0
 		if idle_base:
 			k = (1.0 - clampf(ch["still"], 0.0, 1.0)) * (1.0 - 0.7 * busy)
@@ -500,7 +503,7 @@ func _eval(pose: Dictionary) -> Dictionary:
 		var fr := clampf((_still_time - 0.3) / 0.1, 0.0, 1.0)
 		ch["still"] += _weight(ob) * fr
 	# idle look-around and weight shift (scaled by 1 - moving, busy and still)
-	var idle_k := (1.0 - clampf(ch["still"], 0.0, 1.0)) * (1.0 - busy)
+	var idle_k := (1.0 - clampf(ch["still"], 0.0, 1.0)) * (1.0 - busy) * (1.0 if idle_on else 0.0)
 	var mv := smoothstep(0.02, 0.15, float(pose.get("froude", 0.0)))
 	ch["head.yaw"] += _look.yaw * idle_k * (1.0 - mv)
 	ch["head.pitch"] += _look.pitch * idle_k * (1.0 - mv)
@@ -605,6 +608,7 @@ func apply(pose: Dictionary, dt: float) -> void:
 	for chn in e.goals:
 		var gp = _goal_point(e.goals[chn][1], pose)
 		goals[chn] = gp
+	pose["ground_y"] = (_ctx.get("pos", Vector3.ZERO) as Vector3).y
 	var solved: Dictionary = solver.apply(pose, out, goals, dt, e.moving * e.plant_w, 1.0)
 	if solver.debug.has("mouth"):
 		_mouth_world = (pose.root as Transform3D) * ((solver.debug.mouth as Vector3) + Vector3(0.0, solver.go, 0.0))

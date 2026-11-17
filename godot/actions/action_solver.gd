@@ -12,6 +12,7 @@ var extra_lunge := 0.0              # metres the body adds when the neck cannot 
 var rdy := PackedFloat32Array()     # reach (CCD) deltas, warm start
 var rdp := PackedFloat32Array()
 var debug := {}
+var _prev_err := 0.0
 
 func setup(body_map, ground_offset: float) -> void:
 	map = body_map
@@ -38,6 +39,9 @@ func apply(pose: Dictionary, ch: Dictionary, goals: Dictionary, dt: float, movin
 	var lift_m: float = ch["root.lift"] * map.height
 	lift_m = maxf(lift_m, -(map.belly_clear - 0.03))
 	var rq := Quaternion(UP, ch["root.yaw"]) * Quaternion(Vector3.RIGHT, -ch["root.pitch"]) * Quaternion(Vector3.BACK, ch["root.roll"])
+	if map.has_cap("legless"):
+		var pmax := asin(clampf(0.1 / maxf(0.5 * map.length, 0.2), 0.0, 0.5))
+		rq = Quaternion(UP, ch["root.yaw"]) * Quaternion(Vector3.RIGHT, -clampf(ch["root.pitch"], -pmax, pmax)) * Quaternion(Vector3.BACK, clampf(ch["root.roll"], -1.5, 1.5))
 	var lunge_m: float = ch["root.lunge"] * map.lunge_cap + extra_lunge
 	var trans := Vector3(ch["root.side"] * map.side_cap * ts, 0.0, lunge_m * ts)
 	lift_m *= maxf(ts, 0.35)
@@ -65,7 +69,14 @@ func apply(pose: Dictionary, ch: Dictionary, goals: Dictionary, dt: float, movin
 	var reach_goal = to_local.call(goals.get("head.reach"))
 	_reach(float(ch["head.reach"]), reach_goal, dy, dp, dr, dt)
 	_tail(ch, dy, dp)
-	_ground_clear(dy, dp)
+	_ground_clear(dy, dp, R1, float(pose.get("ground_y", 0.0)))
+	for i in map.head_chain.size():
+		var hb: int = map.head_chain[i]
+		var lm: float = 1.15 * map.head_limit[i]
+		dy[hb] = clampf(dy[hb], -lm, lm)
+		dp[hb] = clampf(dp[hb], -lm, lm)
+	_rate_limit(dy, dp, dr, dt)
+	debug["mouth"] = map.mouth_point(map.fk(dy, dp, dr))
 	return {"bone_dy": dy, "bone_dp": dp, "bone_dr": dr, "root_delta": Rd, "k": k}
 
 func _guard(pose: Dictionary, R0: Transform3D, piv: Vector3, rq: Quaternion, trans: Vector3, B: Basis, lift: float, dt: float) -> float:
@@ -200,7 +211,12 @@ func _reach(v: float, goal, dy: PackedFloat32Array, dp: PackedFloat32Array, dr: 
 	for b in hc:
 		dy[b] += rdy[b]
 		dp[b] += rdp[b]
+	var err0: float = map.mouth_point(map.fk(dy, dp, dr)).distance_to(P)
+	var settled: bool = err0 < 0.01 or absf(err0 - _prev_err) < 0.0003     # converged or stuck on a limit: stay still (no CCD creep)
+	_prev_err = err0
 	for _it in 3:
+		if settled:
+			break
 		for i in range(hc.size() - 1, -1, -1):
 			var b: int = hc[i]
 			var lim: float = map.head_limit[i]
@@ -240,7 +256,7 @@ func _reach(v: float, goal, dy: PackedFloat32Array, dp: PackedFloat32Array, dr: 
 	debug["reach_got"] = got
 	debug["reach_want"] = t_want
 
-func _ground_clear(dy: PackedFloat32Array, dp: PackedFloat32Array) -> void:
+func _ground_clear(dy: PackedFloat32Array, dp: PackedFloat32Array, R1: Transform3D, ground_y: float) -> void:
 	for _pass in 2:
 		var g: Array = map.fk(dy, dp, _zeros())
 		for chain_kind in 2:
@@ -248,9 +264,26 @@ func _ground_clear(dy: PackedFloat32Array, dp: PackedFloat32Array) -> void:
 			for i in range(1, chain.size()):
 				var b: int = chain[i]
 				var prev: int = chain[i - 1]
-				var low: float = (g[b] as Transform3D).origin.y + go - map.radius[b]
-				if low < 0.01:
+				var wp: Vector3 = R1 * ((g[b] as Transform3D).origin + Vector3(0.0, go, 0.0))
+				var low: float = wp.y - ground_y - map.radius[b]
+				var floor_c := minf(0.01, map.rest_low[b])
+				if low < floor_c:
 					var seg: float = ((g[b] as Transform3D).origin - (g[prev] as Transform3D).origin).length()
-					var a := asin(clampf((0.01 - low) / maxf(seg, 0.05), 0.0, 0.5))
+					var a := asin(clampf((floor_c - low) / maxf(seg, 0.05), 0.0, 0.5))
 					dp[prev] += -a if chain_kind == 0 else a
 
+const MAX_RATE := 16.0       # rad/s per bone: a snap of the data is spread over a few frames, never a pop
+var _last_dy := PackedFloat32Array()
+var _last_dp := PackedFloat32Array()
+var _last_dr := PackedFloat32Array()
+
+func _rate_limit(dy: PackedFloat32Array, dp: PackedFloat32Array, dr: PackedFloat32Array, dt: float) -> void:
+	if _last_dy.size() != map.n:
+		_last_dy = dy.duplicate(); _last_dp = dp.duplicate(); _last_dr = dr.duplicate()
+		return
+	var step := MAX_RATE * maxf(dt, 1e-3)
+	for b in map.n:
+		dy[b] = _last_dy[b] + clampf(dy[b] - _last_dy[b], -step, step)
+		dp[b] = _last_dp[b] + clampf(dp[b] - _last_dp[b], -step, step)
+		dr[b] = _last_dr[b] + clampf(dr[b] - _last_dr[b], -step, step)
+	_last_dy = dy.duplicate(); _last_dp = dp.duplicate(); _last_dr = dr.duplicate()

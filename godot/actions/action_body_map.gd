@@ -35,6 +35,7 @@ var reach_fwd := 0.5
 var reach_back := 0.3
 var leg_len := PackedFloat32Array()      # per described leg: upper + lower (the controller's, with its margin)
 var neck_len := 0.0
+var rest_low := PackedFloat32Array()     # per bone: clearance of the rest pose (y - radius, creature space)
 
 static func from_rig(c, desc: Dictionary, morph = null) -> RefCounted:
 	var m: RefCounted = load("res://actions/action_body_map.gd").new()
@@ -52,6 +53,9 @@ func _build(c, desc: Dictionary, morph) -> void:
 		rest_global.append(c.bone_rest_global(b))
 		radius[b] = float(c.rad[c.bone_ring[b]]) * float(desc.unit)
 	root_bone = c.root_bone
+	rest_low.resize(n)
+	for b in n:
+		rest_low[b] = (rest_global[b] as Transform3D).origin.y + float(c.ground_offset) - radius[b]
 	_order()
 	var legs: Array = c.legs
 	var hip_bones := []
@@ -140,7 +144,7 @@ func _build(c, desc: Dictionary, morph) -> void:
 	neck_len = _chain_len([front] + head_chain) if head_chain.size() > 0 else 0.0
 	reach_fwd = 0.45 * neck_len
 	reach_back = 0.5 * reach_fwd
-	if legged and neck_len > 1.2 and neck_len > 0.6 * height:
+	if legged and neck_len > 1.2 and neck_len > 1.25 * height:
 		caps.append("long_neck")
 
 func _order() -> void:

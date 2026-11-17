@@ -327,3 +327,13 @@ godot-feel-evidence: godot
 	LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 900 xvfb-run -a -s "-screen 0 1280x720x24" \
 	  $(GODOT) --rendering-driver opengl3 --fixed-fps 30 --resolution 1280x720 --path godot \
 	  --script res://game/tests/feel_evidence.gd -- $(CURDIR)/docs/evidence/godot/feel
+
+# Procedural action animation (G77, godot/actions): headless tests with a scripted feed (no GDExtension needed).
+.PHONY: godot-actions-test godot-actions-evidence
+godot-actions-test:
+	nice -n 10 timeout 600 $(GODOT) --headless --path godot --import >/dev/null 2>&1 || true
+	cd godot && nice -n 10 timeout 900 $(GODOT) --headless --path . --script actions/test/run_tests.gd
+godot-actions-evidence:
+	@mkdir -p docs/evidence/godot/actions
+	cd godot && LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 1200 xvfb-run -a $(GODOT) --rendering-driver opengl3 --resolution 1280x720 --path . \
+	  --script actions/test/capture.gd -- out=$(CURDIR)/docs/evidence/godot/actions $(ARGS)

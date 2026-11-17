@@ -1,0 +1,77 @@
+{
+ "schema": "cpore.action/1",
+ "id": "combat_ready",
+ "class": "reaction",
+ "driver": {
+  "kind": "c_state",
+  "state": "fighter_idle"
+ },
+ "ticks": {
+  "w": 0,
+  "a": 1,
+  "r": 0
+ },
+ "settle": 0.0,
+ "priority": 30,
+ "fade": {
+  "in": 0.2,
+  "out": 0.25,
+  "cancel": 0.1
+ },
+ "legs": "plant",
+ "side": 1,
+ "tracks": [
+  {
+   "ch": "root.lift",
+   "keys": [
+    [
+     "hold",
+     0,
+     -0.05
+    ]
+   ]
+  },
+  {
+   "ch": "head.aim",
+   "keys": [
+    [
+     "hold",
+     0,
+     1.0
+    ]
+   ],
+   "goal": "target_head"
+  },
+  {
+   "ch": "tail.pitch",
+   "keys": [
+    [
+     "hold",
+     0,
+     0.2
+    ]
+   ],
+   "kin": 0
+  },
+  {
+   "ch": "jaw.open",
+   "keys": [
+    [
+     "hold",
+     0,
+     0.1
+    ]
+   ]
+  },
+  {
+   "ch": "root.side",
+   "osc": {
+    "clock": "time",
+    "hz": 0.67,
+    "amp": 0.06,
+    "shape": "sin"
+   }
+  }
+ ],
+ "hold": true
+}
