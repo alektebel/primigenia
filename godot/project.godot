@@ -24,6 +24,7 @@ buses/default_bus_layout="res://audio/default_bus_layout.tres"
 
 Game="*res://game/game.gd"
 Audio="*res://audio/audio_manager.gd"
+Dev="*res://devtools/dev.gd"
 
 [display]
 
