@@ -13,6 +13,7 @@ const TuningPanel := preload("res://devtools/tuning/panel.gd")
 const Feedback := preload("res://devtools/feedback.gd")
 const AgentServer := preload("res://devtools/agent/agent_server.gd")
 const SitePicker := preload("res://devtools/site_picker.gd")
+const PathOverlay := preload("res://devtools/path_overlay.gd")
 
 ## 1. Dev tools ON in every debug build (the editor and `godot --path godot`); `--dev` forces on in any
 ##    build, `--no-dev` forces off.
@@ -83,6 +84,10 @@ func _on_island_ready() -> void:
 	sites.list = Sites.for_island(Game.data, Game.terrain.get("params", {}), Game.stage.world.get_setup())
 	sites.load_bookmarks()
 	console.registry.services["sites"] = sites
+	if console.registry.services.get("path_overlay") == null:
+		var po := PathOverlay.new()
+		add_child(po)
+		console.registry.services["path_overlay"] = po
 	tuning.bind_sim(Game.stage)
 	tuning.bind_island(get_tree().current_scene)
 	picker.sites = sites

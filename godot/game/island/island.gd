@@ -141,6 +141,7 @@ func _build_stage() -> void:
 	if stage.reset(setup) != 0:
 		push_error("the C world rejected the island setup")
 		return
+	stage.world.nav_warm()    # fill the GO walk grid now (about 0.6 s), so no click pays for it later
 	stage.ticked.connect(func(state: Dictionary) -> void: Game.world_ticked.emit(state))
 	stage.combat_events.connect(func(events: Array) -> void: Game.combat_events.emit(events))
 	Game.stage = stage

@@ -74,6 +74,8 @@ static func register_all(r) -> void:
 	r.register("hash", "", "state hash of the C world", func(a): return _with_stage(r, func(st): return ok(st.world.hash())))
 	r.register("tick", "", "world tick", func(a): return _with_stage(r, func(st): return ok(str(st.world.state().tick))))
 	r.register("obs", "", "the observation text the agents get", func(a): return _with_stage(r, func(st): return ok(st.world.observe())))
+	r.register("overlay", "path [on|off]", "debug overlays (off by default): path = the planned GO route drawn on the ground",
+		func(a): return _overlay(r, a), {"complete": func(i, p, t): return ["path"] if i == 0 else (["on", "off"] if i == 1 else [])})
 	r.register("clear", "", "clear the console", func(a): return {"ok": true, "out": "", "error": "", "clear": true}, {"dev": false})
 
 static func _with_stage(r, fn: Callable) -> Dictionary:
@@ -241,6 +243,20 @@ static func _step(r, a: PackedStringArray) -> Dictionary:
 			n = a[0].to_int()
 		st.step_ticks(n)
 		return ok("tick %d" % int(st.cur.tick)))
+
+static func _overlay(r, a: PackedStringArray) -> Dictionary:
+	if a.size() < 1 or a[0] != "path":
+		return fail("usage: overlay path [on|off]")
+	var o = r.services.get("path_overlay")
+	if o == null:
+		return fail("the path overlay needs the island running")
+	var on: bool = not o.enabled
+	if a.size() > 1:
+		if a[1] != "on" and a[1] != "off":
+			return fail("usage: overlay path [on|off]")
+		on = a[1] == "on"
+	o.set_enabled(on)
+	return ok("path overlay %s" % ("on" if on else "off"))
 
 static func _flag(r, a: PackedStringArray, bit: int, off_means_set: bool) -> Dictionary:
 	return _with_stage(r, func(st):

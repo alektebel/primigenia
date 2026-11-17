@@ -224,7 +224,7 @@ static int block_reason(const CpStageWorld *w,float x,float z,float nx,float nz,
 #define NAV_DIM 1024
 #endif
 #define NAV_CELLS ((size_t)NAV_DIM*NAV_DIM)
-#define NAV_EXPAND 200000
+#define NAV_EXPAND 120000
 #define NAV_HEAP (1<<21)
 static uint8_t nav_mask[NAV_CELLS];
 static int32_t nav_g[NAV_CELLS];
@@ -353,6 +353,9 @@ static uint64_t heap_pop(void){
 /* A*: costs 10/14, octile heuristic, ties broken by lowest f, then lowest h, then lowest cell index (the packed
  * key orders exactly so). Returns the number of cells of the path start..goal in nav_cells, or -1 (no route
  * within NAV_EXPAND expansions / heap capacity). */
+#ifdef NAV_STATS
+static int nav_expanded_last;
+#endif
 static int nav_astar(const CpStageWorld *w,int start,int goal){
     if(++nav.gen==0){
         memset(nav_stamp,0,NAV_CELLS*sizeof *nav_stamp);
@@ -371,6 +374,9 @@ static int nav_astar(const CpStageWorld *w,int start,int goal){
         const int h=nav_h(idx,gi,gj);
         if(nav_stamp[idx]!=nav.gen||(int64_t)(key>>36)!=(int64_t)nav_g[idx]+h)continue;
         if(idx==goal){
+#ifdef NAV_STATS
+            nav_expanded_last=expanded;
+#endif
             int count=0;
             for(int c=goal;c!=start;){
                 nav_cells[count++]=c;
@@ -473,7 +479,7 @@ static int plan_path(CpStageWorld *w,float tx,float tz){
         if(gcell<0)return CP_STAGE_BLOCK_UNREACHABLE;
 #ifdef NAV_STATS
         { struct timespec a,b; clock_gettime(CLOCK_MONOTONIC,&a); count=nav_astar(w,start,gcell); clock_gettime(CLOCK_MONOTONIC,&b);
-          fprintf(stderr,"astar %.2f ms count %d\n",(b.tv_sec-a.tv_sec)*1e3+(b.tv_nsec-a.tv_nsec)/1e6,count); }
+          fprintf(stderr,"astar %.2f ms count %d expanded %d\n",(b.tv_sec-a.tv_sec)*1e3+(b.tv_nsec-a.tv_nsec)/1e6,count,nav_expanded_last); }
 #else
         count=nav_astar(w,start,gcell);
 #endif

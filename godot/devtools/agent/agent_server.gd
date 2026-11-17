@@ -113,6 +113,7 @@ func _handle(line: String) -> void:
 func _obs() -> Dictionary:
 	var st = Game.stage
 	var o = JSON.parse_string(st.world.observe())
+	st.world.ack_events()   # the events in this observation are now seen; the next one lists only what follows
 	var d: Dictionary = o if typeof(o) == TYPE_DICTIONARY else {}
 	var s: Dictionary = st.cur
 	d["tick"] = int(s.tick)

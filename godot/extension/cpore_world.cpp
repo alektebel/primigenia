@@ -239,6 +239,10 @@ void CporeWorld::_bind_methods() {
     ClassDB::bind_method(D_METHOD("field_info"), &CporeWorld::field_info);
     ClassDB::bind_method(D_METHOD("water_depth", "x", "z"), &CporeWorld::water_depth);
     ClassDB::bind_method(D_METHOD("bound"), &CporeWorld::bound);
+    ClassDB::bind_method(D_METHOD("path"), &CporeWorld::path);
+    ClassDB::bind_method(D_METHOD("nav_warm"), &CporeWorld::nav_warm);
+    ClassDB::bind_method(D_METHOD("nav_cell"), &CporeWorld::nav_cell);
+    ClassDB::bind_method(D_METHOD("ack_events"), &CporeWorld::ack_events);
     ClassDB::bind_method(D_METHOD("last_error"), &CporeWorld::last_error);
 }
 
@@ -488,3 +492,13 @@ void CporeWorld::clear_field() {
 Dictionary CporeWorld::field_info() const { return field_meta; }
 double CporeWorld::water_depth(double x, double z) const { return cp_stage_water_depth(world.get(), float(x), float(z)); }
 double CporeWorld::bound() const { return cp_stage_bound(world.get()); }
+PackedVector2Array CporeWorld::path() const {
+    PackedVector2Array out;
+    float xz[2 * CP_STAGE_MAX_PATH];
+    const int n = cp_stage_path(world.get(), xz, CP_STAGE_MAX_PATH);
+    for (int i = 0; i < n; ++i) out.push_back(Vector2(xz[2 * i], xz[2 * i + 1]));
+    return out;
+}
+int CporeWorld::nav_warm() const { return cp_stage_nav_warm(world.get()); }
+double CporeWorld::nav_cell() const { return cp_stage_nav_cell(world.get()); }
+void CporeWorld::ack_events() { cp_stage_ack_events(world.get()); }

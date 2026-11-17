@@ -25,7 +25,7 @@ def main():
     with GodotAgent(a.godot, scenario="creature/garfio_close", port=a.port) as g:
         check(g.ready["protocol"] == 1, "AGENT_READY protocol 1 (build %s)" % g.ready["build"])
         o = g.send("observe")
-        check(o["ok"] and o["obs"]["schema"] == "world-1" and o["tick"] == 0 and not o["obs"]["fighting"], "observe at the scenario's tick 0, not fighting")
+        check(o["ok"] and o["obs"]["schema"] == "world-2" and o["tick"] == 0 and not o["obs"]["fighting"], "observe at the scenario's tick 0, not fighting")
         near = [n for n in o["obs"]["nearby"] if n.get("type") == "creature"]
         check(len(near) == 1 and 6 < near[0]["distance"] < 10, "Garfio is about 8 m away (%s)" % (near[0]["distance"] if near else None))
         r = g.send("console", text="god on")

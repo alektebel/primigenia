@@ -61,7 +61,7 @@ func run(t) -> void:
 
 	# Observation, commands, validation.
 	var o = JSON.parse_string(a.observe())
-	t.check(o is Dictionary and o.get("schema", "") == "world-1", "observe() is world-1 JSON")
+	t.check(o is Dictionary and o.get("schema", "") == "world-2", "observe() is world-2 JSON")
 	var before: String = a.hash()
 	t.check(a.command("invalid verb") != 0, "invalid command rejected")
 	t.eq(a.hash(), before, "invalid command leaves the hash unchanged")
