@@ -11,6 +11,7 @@ const Sites := preload("res://devtools/sites.gd")
 const TuningRegistry := preload("res://devtools/tuning/registry.gd")
 const TuningPanel := preload("res://devtools/tuning/panel.gd")
 const Feedback := preload("res://devtools/feedback.gd")
+const AgentServer := preload("res://devtools/agent/agent_server.gd")
 const SitePicker := preload("res://devtools/site_picker.gd")
 
 ## 1. Dev tools ON in every debug build (the editor and `godot --path godot`); `--dev` forces on in any
@@ -28,6 +29,7 @@ var enabled := false
 var legend: CanvasLayer
 var time_control: CanvasLayer
 var picker: CanvasLayer
+var agent: Node               # AgentServer when started with --agent
 var feedback: CanvasLayer
 var tuning                    # TuningRegistry (entries appear when the island is ready)
 var tuning_panel: CanvasLayer
@@ -67,6 +69,10 @@ func _ready() -> void:
 		tuning_panel.name = "TuningPanel"
 		tuning_panel.tuning = tuning
 		add_child(tuning_panel)
+		if "--agent" in OS.get_cmdline_user_args():
+			agent = AgentServer.new()
+			agent.name = "AgentServer"
+			add_child(agent)
 		Game.island_ready.connect(_on_island_ready)
 
 func _on_island_ready() -> void:

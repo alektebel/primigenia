@@ -105,9 +105,14 @@ func _build_stage() -> void:
 		return
 	var garfio_profile := StageSetup.garfio_profile(manifest)
 	_garfio_profile = garfio_profile
-	var setup := StageSetup.build(Game.data, int(Game.settings.seed), pr.profile, garfio_profile, bool(Game.settings.wild))
 	stage = StageWorld.new()
 	stage.name = "Stage"
+	# The C world walks on the generated heights (PLAN-heights): attach them before anything resets it.
+	if stage.world.set_field(Game.terrain) != 0:
+		push_error("the island field was rejected: %s" % stage.world.last_error())
+		return
+	stage.world.reset({"terrain": 2})     # a probe state so StageSetup can ask the C walk rule
+	var setup := StageSetup.build(Game.data, int(Game.settings.seed), pr.profile, garfio_profile, bool(Game.settings.wild), stage.world)
 	stage.process_priority = -10     # the world ticks before the actors read it (action timing, G77)
 	add_child(stage)
 	_nest = setup.nest
@@ -118,6 +123,7 @@ func _build_stage() -> void:
 	player_input.blocked = Callable(Game, "movement_blocked")
 	_sync_controls()
 	stage.input_provider = player_input.sample
+	player_input.limit = stage.world.bound() - 0.1
 	stage.after_tick = player_input.after_tick
 	if stage.reset(setup) != 0:
 		push_error("the C world rejected the island setup")

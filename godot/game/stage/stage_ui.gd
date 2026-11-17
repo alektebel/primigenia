@@ -12,7 +12,6 @@ extends Node
 
 const GameUI := preload("res://ui/game_ui.gd")
 const Modes := preload("res://ui/modes.gd")
-const FLAT_HEIGHT := 42.0
 const V_WAIT := 1
 const V_ATTACK := 5
 const V_GUARD := 8
@@ -241,7 +240,7 @@ func _process(_dt: float) -> void:
 	var n: Vector3 = Game.data.normal(pos.x, pos.z)
 	_slope = sqrt(maxf(1.0 - n.y * n.y, 0.0)) / maxf(n.y, 0.05)
 	var speed: float = stage.cur.entities[0].speed
-	audio.update_ambience(pos, pos.y - FLAT_HEIGHT + 5.0, _slope, speed)
+	audio.update_ambience(pos, pos.y - float(Game.terrain.get("params", {}).get("valley_floor_m", 42.0)) + 5.0, _slope, speed)
 
 func on_footfall(id: int, pos: Vector3, speed: float) -> void:
 	var audio = get_tree().root.get_node_or_null("Audio")

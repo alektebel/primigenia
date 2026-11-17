@@ -418,6 +418,8 @@ func _actions_end(island, st: Dictionary) -> void:
 	var replay_ok := true
 	if parsed.ok:
 		var w2 = CporeWorld.new()
+		if not parsed.field.is_empty():
+			w2.set_field(game.terrain)
 		w2.reset(parsed.setup)
 		if game.stage.start_snapshot.size() > 0:     # the session began from a loaded save
 			w2.restore(game.stage.start_snapshot)

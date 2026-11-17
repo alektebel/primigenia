@@ -17,7 +17,7 @@ func _scenario_arg() -> String:
 
 # `--play` after "--" skips the menu (evidence and tests); otherwise the menu opens once the island data is ready.
 func _next() -> void:
-	if "--play" in OS.get_cmdline_user_args() or not Game.pending_scenario.is_empty():
+	if "--play" in OS.get_cmdline_user_args() or "--agent" in OS.get_cmdline_user_args() or not Game.pending_scenario.is_empty():
 		Game.goto_island()
 	else:
 		Game.goto_menu()

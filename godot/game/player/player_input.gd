@@ -5,7 +5,7 @@ extends RefCounted
 const VERB_WAIT := 1
 const VERB_GO := 2
 const VERB_HEADING := 3
-const LIMIT := 194.9
+var limit := 194.9             # destinations are clamped to +-limit (the island sets it to the C world's bound - 0.1)
 
 var view_yaw := 0.0          # camera yaw, set by the chase camera each frame
 var destination = null       # Vector2 (x, z) or null
@@ -49,7 +49,7 @@ func _read_keys() -> Dictionary:
 	}
 
 func set_destination(p: Vector2) -> void:
-	destination = Vector2(clampf(p.x, -LIMIT, LIMIT), clampf(p.y, -LIMIT, LIMIT))
+	destination = Vector2(clampf(p.x, -limit, limit), clampf(p.y, -limit, limit))
 
 func clear_destination() -> void:
 	destination = null

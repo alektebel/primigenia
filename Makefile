@@ -300,6 +300,10 @@ godot-devtools-evidence: godot
 	@mkdir -p docs/evidence/godot/devtools
 	LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 600 xvfb-run -a $(GODOT) --rendering-driver opengl3 --max-fps 15 \
 	  --resolution 1280x720 --path godot --script res://devtools/tests/evidence.gd -- $(CURDIR)/docs/evidence/godot/devtools
+godot-heights-test: godot
+	@mkdir -p docs/evidence/godot/heights
+	nice -n 10 timeout 600 $(GODOT) --headless --path godot --script res://game/tests/test_heights.gd -- $(CURDIR)/docs/evidence/godot/heights
+.PHONY: godot-heights-test
 godot-agent-test: godot
 	nice -n 10 timeout 300 python3 godot/devtools/agent/test_agent.py --godot $(GODOT)
 # G76 M2: Godot studio headless tests, then the web validator cross-check on what Godot wrote.
