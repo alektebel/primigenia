@@ -463,6 +463,12 @@ static void fight(CpStageWorld *w){
         CpStageCreature *e=entities[i];
         CpCombatCreature *c=&w->combat.c[i];
         float old=e->speed;
+        if(w->setup.terrain==CP_STAGE_FIELD&&!cp_stage_can_walk(w,e->x,e->z,w->arena_x+c->x-20,w->arena_z+c->y-20,cp_combat_body_radius(&e->profile))){
+            /* PLAN-heights H2: the arena is flat but the island is not. A move that would cross a cliff, the sea
+             * or the bound is refused: the fighter keeps its place and the combat creature is put back with it. */
+            c->x=e->x-w->arena_x+20;
+            c->y=e->z-w->arena_z+20;
+        }
         e->speed=length(w->arena_x+c->x-20-e->x,w->arena_z+c->y-20-e->z)*10;
         e->acceleration=(e->speed-old)*10;
         e->turn_rate=(e->fz*c->fx-e->fx*c->fy)*10;

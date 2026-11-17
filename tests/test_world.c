@@ -615,6 +615,43 @@ static void field_mode(void){
     assert(cp_stage_reset(&w,&setup)==0&&w.field==NULL&&w.field_hash==0);
     puts("PASS field mode: ground formula, slope, wall, pond, sea, bound, determinism, snapshot");
 }
+/* H2: fights on the island stop at the edge. */
+static void field_fight(void){
+    field_build(1);
+    field_world(40,28,1);
+    setup.wild[0].x=setup.wild[0].home_x=40;
+    setup.wild[0].z=setup.wild[0].home_z=24;
+    setup.wild[0].species=3;
+    assert(cp_stage_reset(&w,&setup)==0);
+    CpStageInput into={.verb=CP_STAGE_HEADING,.hx=0,.hz=32767};
+    int fight_ticks=0;
+    float pz_max=-1000;
+    for(int i=0;i<80;i++){
+        float px=w.player.x,pz=w.player.z,ex=w.wild[0].x,ez=w.wild[0].z;
+        int was=w.active>=0;
+        cp_stage_step(&w,&into);
+        if(!(was&&w.active>=0))continue;   /* only ticks that began and ended inside the fight */
+        fight_ticks++;
+        const CpStageCreature *c[2]={&w.player,&w.wild[0]};
+        const float ox[2]={px,ex},oz[2]={pz,ez};
+        for(int k=0;k<2;k++){
+            assert((c[k]->x==ox[k]&&c[k]->z==oz[k])||cp_stage_can_walk(&w,ox[k],oz[k],c[k]->x,c[k]->z,cp_combat_body_radius(&c[k]->profile)));
+            assert(fabsf(c[k]->x-(w.arena_x+w.combat.c[k].x-20))<1e-4f&&fabsf(c[k]->z-(w.arena_z+w.combat.c[k].y-20))<1e-4f);
+            assert(cp_stage_water_depth(&w,c[k]->x,c[k]->z)<=.7f&&cp_stage_ground(&w,c[k]->x,c[k]->z)<13);
+        }
+        if(w.player.z>pz_max)pz_max=w.player.z;
+    }
+    assert(fight_ticks>=20&&pz_max<cc(40)-.5f);   /* the player pressed into the wall for the whole fight and never crossed it */
+    /* the same push on flat ground does go through (so the clamp is what stopped it) */
+    cp_stage_setup_default(&setup,42);
+    setup.terrain=CP_STAGE_FLAT;setup.flat_height=10;setup.nest_x=40;setup.nest_z=28;
+    setup.wild[0].x=setup.wild[0].home_x=40;setup.wild[0].z=setup.wild[0].home_z=24;
+    assert(cp_stage_reset(&w,&setup)==0);
+    float far=0;
+    for(int i=0;i<80;i++){cp_stage_step(&w,&into);if(w.player.z>far)far=w.player.z;}
+    assert(far>cc(40));
+    puts("PASS field fights stop at cliffs and water");
+}
 int main(void) {
     validation();
     motion_law();
@@ -625,6 +662,7 @@ int main(void) {
     numeric_boundaries();
     snapshots();
     field_mode();
+    field_fight();
     reset();
     CpStageInput a={
         0
