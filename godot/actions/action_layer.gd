@@ -43,6 +43,8 @@ var _next_fidget := 8.0
 var _look := {"yaw": 0.0, "pitch": 0.0, "ty": 0.0, "tp": 0.0, "side": 0.0, "ts": 0.0, "next": 1.0, "next_s": 4.0}
 var _still_time := 0.0
 var _last_hit_dir := 1.0
+var _last_hit_amount := 12.0
+var _pull := {}               # visual grip of a bite on THIS creature: {t, len, dir (body frame), amp}; C owns positions
 var _mouth_world := Vector3.ZERO
 var _out := {}               # last channel result
 var last_act: Dictionary = {}
@@ -71,7 +73,7 @@ func _start_base() -> void:
 
 func _new_inst(act: Dictionary, kind: String) -> Dictionary:
 	return {"id": act.id, "act": act, "kind": kind, "age": 0.0, "tau": 0.0, "tscale": 1.0, "ending": false, "fading": false, "fade_t": 0.0,
-		"fade_len": 0.12, "side": 1.0, "hit": false, "hit_time": 0.0, "grid_shift": 0.0, "fired": {}, "move": -1, "e_seen": 0, "removed": false}
+		"fade_len": 0.12, "amp": 1.0, "side": 1.0, "hit": false, "hit_time": 0.0, "grid_shift": 0.0, "fired": {}, "move": -1, "e_seen": 0, "removed": false}
 
 # ---------------------------------------------------------------------------------------------
 # public
@@ -85,17 +87,25 @@ func trigger(id: String, args := {}) -> bool:
 	return true
 
 ## Impulse reactions (2.2): dir = unit vector from the attacker to this creature in its body frame (x left, z forward).
-func react(kind: String, dir: Vector3, amount: float) -> void:
+func react(kind: String, dir: Vector3, amount: float, move := -1) -> void:
 	var m := clampf(amount / 20.0, 0.3, 1.5)
 	match kind:
 		"hit":
-			springs.kick("root.side", 2.5 * m * dir.x)
-			springs.kick("root.lunge", 2.5 * m * dir.z)
-			springs.kick("root.roll", -1.5 * m * dir.x)
-			springs.kick("root.pitch", -1.0 * m * dir.z)
-			springs.kick("head.yaw", -5.0 * m * dir.x)
-			springs.kick("tail.yaw", 4.0 * m * dir.x)
-			_start_oneshot("hit")
+			# a clear hit reaction, scaled by damage: the body recoils away from the hit, the head snaps back,
+			# a 2-3 frame squash (root.lift spring dip) and a brief stumble (the loco legs follow the recoil)
+			var k := 1.0 if move != 1 else 1.5     # a charge hits harder than its damage says
+			springs.kick("root.side", 4.0 * k * m * dir.x)
+			springs.kick("root.lunge", 5.0 * k * m * dir.z)
+			springs.kick("root.roll", -2.5 * k * m * dir.x)
+			springs.kick("root.pitch", -2.5 * k * m * dir.z)
+			springs.kick("root.lift", -3.0 * m)
+			springs.kick("head.yaw", -6.0 * m * dir.x)
+			springs.kick("head.pitch", 5.0 * m)
+			springs.kick("tail.yaw", 5.0 * m * dir.x)
+			_start_oneshot("hit", clampf(0.6 + 0.5 * m, 0.6, 1.4))
+			if move == 0:
+				# the bite holds on: after the first jolt the creature is tugged toward the biter and shaken
+				_pull = {"t": 0.0, "len": 0.3, "dir": dir, "amp": clampf(m, 0.5, 1.2)}
 		"block":
 			springs.kick("root.lunge", -3.0)
 			springs.kick("head.pitch", -2.0)
@@ -120,6 +130,7 @@ func weight_of(id: String) -> float:
 func clear() -> void:
 	inst.clear()
 	springs.clear()
+	_pull = {}
 	_pending.clear()
 	solver.rdy.fill(0.0)
 	solver.rdp.fill(0.0)
@@ -178,9 +189,10 @@ func _start(act: Dictionary, kind: String, args := {}) -> Dictionary:
 	inst.append(i)
 	return i
 
-func _start_oneshot(id: String) -> void:
+func _start_oneshot(id: String, amp := 1.0) -> void:
 	if actions.has(id):
 		var i := _new_inst(actions[id], "oneshot")
+		i.amp = amp
 		inst.append(i)
 
 func _side_for(act: Dictionary, args: Dictionary) -> float:
@@ -230,6 +242,10 @@ func update(dt: float, ctx: Dictionary) -> void:
 	_handle_stances(sig, ctx)
 	_idle_update(dt, sig)
 	# advance
+	if not _pull.is_empty():
+		_pull.t += dt
+		if _pull.t >= _pull.len:
+			_pull = {}
 	var keep: Array = []
 	for i in inst:
 		i.age += dt
@@ -320,6 +336,7 @@ func _handle_state(dt: float, sig: Dictionary, ctx: Dictionary) -> void:
 				if o.kind in ["c_move", "c_move_end", "cosmetic"]:
 					_fade(o, 0.08)
 			var s := _new_inst(actions.stagger, "c_state")
+			s.amp = clampf(_last_hit_amount / 12.0, 0.6, 1.6)
 			s.tscale = maxf(float(sig.stagger_len), 1.0) / maxf(actions.stagger.a, 1.0)
 			s.age = 0.0
 			inst.append(s)
@@ -351,10 +368,14 @@ func _on_event(ev: Dictionary, ctx: Dictionary) -> void:
 				var cm := _find("c_move")
 				if not cm.is_empty():
 					cm.hit = true
+					cm.hit_tau = cm.tau
+				if int(ev.move) == 1:
+					_start_oneshot("strike")      # the charge lands: squash and rebound of the attacker
 				_force_impact()
 			if ev.b == me:
 				_last_hit_dir = -signf(dir_local.x) if dir_local.x != 0.0 else 1.0
-				react("hit", dir_local, ev.amount)
+				_last_hit_amount = float(ev.amount)
+				react("hit", dir_local, ev.amount, int(ev.move))
 				for o in inst:
 					if o.kind == "cosmetic":
 						_fade(o, 0.08)
@@ -500,7 +521,7 @@ func _eval(pose: Dictionary) -> Dictionary:
 				plant_w = maxf(plant_w, w)
 		var clocks := _clocks(i)
 		for t in i.act.tracks:
-			var v := Data.sample(t, i.tau, clocks)
+			var v: float = Data.sample(t, i.tau, clocks) * float(i.amp)
 			if t.signed:
 				v *= i.side
 			if t.alternate and i.side < 0.0:
@@ -515,6 +536,19 @@ func _eval(pose: Dictionary) -> Dictionary:
 					m_tail = maxf(m_tail, w * mk)
 				elif t.ch.begins_with("head.") or t.ch.begins_with("neck."):
 					m_head = maxf(m_head, w * mk)
+	# the grip of a bite on this creature (visual only): pulled toward the biter, shaken, then let go
+	if not _pull.is_empty():
+		var pt: float = _pull.t
+		var pl: float = _pull.len
+		var env := smoothstep(0.0, 0.06, pt) * (1.0 - smoothstep(pl - 0.12, pl, pt))
+		var d: Vector3 = _pull.dir
+		var amp: float = _pull.amp
+		var shake := sin(TAU * 11.0 * pt) * env
+		ch["root.lunge"] += -d.z * 0.35 * amp * env + 0.04 * amp * shake
+		ch["root.side"] += -d.x * 0.35 * amp * env + 0.05 * amp * shake
+		ch["head.yaw"] += 0.25 * amp * shake
+		ch["root.roll"] += 0.05 * amp * sin(TAU * 11.0 * pt + 1.0) * env
+		busy = maxf(busy, env)
 	# observe: freeze after stopping for 0.3 s
 	var ob := _find_id("observe")
 	if not ob.is_empty():

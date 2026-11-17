@@ -9,6 +9,7 @@ const Feed := preload("res://actions/action_feed.gd")
 const Springs := preload("res://actions/action_springs.gd")
 const H := preload("res://actions/test/harness.gd")
 const Scripted := preload("res://actions/test/scripted_feed.gd")
+const FxScript := preload("res://actions/action_fx.gd")
 const Adapter := preload("res://locomotion/loco_rig_adapter.gd")
 
 class ErrorLog extends Logger:
@@ -53,6 +54,7 @@ func _run() -> void:
 	await _t_solver()
 	_t_springs()
 	await _t_all_actions()
+	await _t_round2()
 	await _t_idle()
 	await _t_cosmetic()
 	_t_readonly()
@@ -181,8 +183,8 @@ func _t_data() -> void:
 	var bite: Dictionary = raw.bite
 	var jaw: Dictionary = {}
 	for t in Data.compile(bite).tracks:
-		if t.ch == "jaw.open":
-			jaw = t
+		if t.ch == "jaw.open" and jaw.is_empty():
+			jaw = t                       # the first one: the ungated jaw (round 2 added a gated release after it)
 	var cb := Data.compile(bite)
 	check(Data.sample(jaw, 0.35 * 3, {}) >= 0.99 and Data.sample(jaw, 3.0, {}) >= 0.99, "jaw is fully open from w:0.35 to a:0")
 	check(Data.sample(jaw, 3.0 + 0.25, {}) <= 0.031 and Data.sample(jaw, 3.5, {}) <= 0.05, "jaw is shut from a:0.25")
@@ -602,6 +604,161 @@ func _bone_ok(h) -> Array:
 	for b in m.head_chain + m.tail_chain:
 		low = minf(low, (sk.global_transform * sk.get_bone_global_pose(b).origin).y - m.radius[b])
 	return [worst, low]
+
+# ---------------------------------------------------------------------------------------------
+# round 2: hit reaction, roar, bite grip, charge run-up
+# ---------------------------------------------------------------------------------------------
+## Runs `frames` frames and returns {min/max of the channel `ch`} of the layer output.
+func _range(h, ch: String, frames: int, extra := Callable()) -> Vector2:
+	var lo := 1e9
+	var hi := -1e9
+	for i in frames:
+		h.frame(1.0 / 60.0)
+		if extra.is_valid():
+			extra.call(h)
+		var v: float = h.layer._out.get(ch, 0.0)
+		lo = minf(lo, v)
+		hi = maxf(hi, v)
+	return Vector2(lo, hi)
+
+func _t_round2() -> void:
+	print("-- round 2")
+	var h = _build("Merodeador")
+	h.layer.idle_on = false
+	h.run(0.8)
+	# 1. hit reaction: recoil, head snap, squash, scaled by damage
+	var peaks := {}
+	for dmg in [6.0, 20.0]:
+		h.sf.event(1, 1, 0, 1, dmg)
+		h.sf.interrupt(0, 6)
+		var lunge := Vector2(1e9, -1e9)
+		var lift := Vector2(1e9, -1e9)
+		var pitch := Vector2(1e9, -1e9)
+		for i in 30:
+			h.frame(1.0 / 60.0)
+			var o: Dictionary = h.layer._out
+			lunge.x = minf(lunge.x, o["root.lunge"]); lift.x = minf(lift.x, o["root.lift"])
+			pitch.y = maxf(pitch.y, o["head.pitch"])
+			if i < 12:
+				lift.y = i
+		peaks[dmg] = [lunge.x, lift.x, pitch.y]
+		h.run(1.5)
+	check(peaks[20.0][0] < -0.5, "hit: the body recoils away (root.lunge min %.2f)" % peaks[20.0][0])
+	check(peaks[20.0][1] < -0.08, "hit: a squash dips the body (root.lift min %.2f)" % peaks[20.0][1])
+	check(peaks[20.0][2] > 0.3, "hit: the head snaps back (head.pitch max %.2f)" % peaks[20.0][2])
+	check(absf(peaks[20.0][0]) > 1.25 * absf(peaks[6.0][0]), "hit: recoil scales with damage (%.2f vs %.2f)" % [peaks[20.0][0], peaks[6.0][0]])
+	# 2. roar: head up and back, jaw wide and held, no forward lunge
+	h.layer.trigger("roar")
+	var reach := _range(h, "head.reach", 0)
+	var rr := {"reach_max": -1e9, "pitch_min": 1e9, "jaw_min": 1e9, "lunge_max": -1e9, "inflate": 0.0}
+	var t_roar := 0.0
+	for i in 200:
+		h.frame(1.0 / 60.0)
+		var tau := -1.0
+		for n in h.layer.inst:
+			if n.id == "roar" and not n.fading:
+				tau = n.tau
+		if tau >= 3.5 and tau <= 10.0:       # inside the active window, past the fade-in
+			var o: Dictionary = h.layer._out
+			rr.reach_max = maxf(rr.reach_max, o["head.reach"])
+			rr.pitch_min = minf(rr.pitch_min, o["head.pitch"])
+			rr.jaw_min = minf(rr.jaw_min, o["jaw.open"])
+			rr.lunge_max = maxf(rr.lunge_max, o["root.lunge"])
+			rr.inflate = maxf(rr.inflate, o["body.inflate"])
+	check(rr.reach_max <= 0.02, "roar: no forward reach in the active phase (%.2f)" % rr.reach_max)
+	check(rr.pitch_min >= 0.45, "roar: head held up (head.pitch min %.2f)" % rr.pitch_min)
+	check(rr.jaw_min >= 0.9, "roar: jaw wide and held (%.2f)" % rr.jaw_min)
+	check(rr.lunge_max <= 0.0, "roar: no forward lunge, a slight rear back (%.2f)" % rr.lunge_max)
+	check(rr.inflate > 0.05, "roar: chest and neck expand (%.2f)" % rr.inflate)
+	var holder := Node3D.new()
+	root.add_child(holder)
+	var rings := FxScript.roar_ring(holder, Vector3.ZERO, 3.0, Color.WHITE, true)
+	FxScript.ring_pose(rings[0], 0.5)
+	check(rings.size() == 2 and rings[0].scale.x > 0.5 and (rings[0].material_override as StandardMaterial3D).albedo_color.a > 0.05, "roar: a visible pulse ring expands")
+	holder.queue_free()
+	h.run(2.0)
+	# 3. bite grip: a connecting bite holds the jaw shut and the head on the target through the recovery
+	var res := {}
+	for hit in [false, true]:
+		h.run(1.0)
+		h.sf.begin(0, 0)
+		if hit:
+			# the event of the tick that carries the HIT: the first active tick
+			var armed := true
+			while armed:
+				var f: Dictionary = h.sf.fighters[0]
+				if f.phase == 1 and f.ptick == f.plen - 1:
+					h.sf.event(1, 0, 1, 0, 9.0)
+					armed = false
+				else:
+					h.frame(1.0 / 60.0)
+		var jaw_hold := -1e9
+		var reach_r := -1e9
+		var tug_lo := 1e9
+		var tug_hi := -1e9
+		for i in 60:
+			h.frame(1.0 / 60.0)
+			var tau := -1.0
+			for n in h.layer.inst:
+				if n.id == "bite" and not n.fading:
+					tau = n.tau
+			var o: Dictionary = h.layer._out
+			if tau >= 3.3 and tau <= 4.4:      # a:0.3 .. r:0.2
+				jaw_hold = maxf(jaw_hold, o["jaw.open"])
+			if tau >= 4.6 and tau <= 4.9:      # r:0.3 .. r:0.45: still holding
+				reach_r = maxf(reach_r, o["head.reach"])
+			if tau >= 3.1 and tau <= 5.0:
+				tug_lo = minf(tug_lo, o["head.pitch"] + o["head.yaw"])
+				tug_hi = maxf(tug_hi, o["head.pitch"] + o["head.yaw"])
+		res[hit] = {"jaw": jaw_hold, "reach": reach_r, "tug": tug_hi - tug_lo}
+		h.run(1.0)
+	check(res[true].jaw <= 0.1, "bite grip: jaw closed on the target through active and early recovery (%.2f)" % res[true].jaw)
+	check(res[true].reach > res[false].reach + 0.1, "bite grip: the head stays on the target in the recovery (%.2f vs miss %.2f)" % [res[true].reach, res[false].reach])
+	check(res[true].tug > res[false].tug + 0.1, "bite grip: the head tugs (%.2f vs miss %.2f)" % [res[true].tug, res[false].tug])
+	# the victim is pulled a little (visual only) and then let go
+	var v = _build("Zancuda")
+	v.layer.idle_on = false
+	v.run(0.8)
+	v.layer.react("hit", Vector3(0, 0, -1), 9.0, 0)
+	var pull := _range(v, "root.lunge", 12)
+	check(pull.y > 0.1, "bite grip: the bitten creature is pulled toward the biter (root.lunge max %.2f)" % pull.y)
+	v.run(1.5)
+	check(v.layer._pull.is_empty() and absf(v.layer._out["root.lunge"]) < 0.03, "bite grip: the pull is released (%.3f)" % v.layer._out["root.lunge"])
+	v.free_all()
+	# 4. charge: run-up shape, then squash on impact
+	h.run(1.0)
+	h.sf.begin(0, 1)
+	var dash := {"lunge": -1e9, "pitch": 1e9, "rpitch": 1e9}
+	for i in 100:
+		h.frame(1.0 / 60.0)
+		var tau := -1.0
+		for n in h.layer.inst:
+			if n.id == "charge" and not n.fading:
+				tau = n.tau
+		if tau >= 10.6 and tau <= 14.5:
+			var o: Dictionary = h.layer._out
+			dash.lunge = maxf(dash.lunge, o["root.lunge"])
+			dash.pitch = minf(dash.pitch, o["head.pitch"])
+			dash.rpitch = minf(dash.rpitch, o["root.pitch"])
+	check(dash.lunge >= 0.4, "charge: the body stretches forward in the dash (root.lunge %.2f)" % dash.lunge)
+	check(dash.pitch <= -0.7, "charge: head low in the dash (%.2f)" % dash.pitch)
+	check(dash.rpitch <= -0.18, "charge: body pitched into the run (%.2f)" % dash.rpitch)
+	h.run(1.5)
+	h.sf.begin(0, 1)
+	var struck := false
+	var lift_min := 1e9
+	var armed2 := true
+	for i in 140:
+		var f: Dictionary = h.sf.fighters[0]
+		if armed2 and f.phase == 2 and f.ptick == 1:
+			h.sf.event(1, 0, 1, 1, 18.0)
+			armed2 = false
+		h.frame(1.0 / 60.0)
+		if h.layer.weight_of("strike") > 0.5:
+			struck = true
+			lift_min = minf(lift_min, h.layer._out["root.lift"])
+	check(struck and lift_min < -0.12, "charge: the impact squashes the attacker (strike oneshot, root.lift min %.2f)" % lift_min)
+	h.free_all()
 
 func _t_all_actions() -> void:
 	print("-- all combat actions")
