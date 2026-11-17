@@ -5,14 +5,14 @@
   "actions": {
     "move_forward": {"label": "Move", "also": ["move_left", "move_back", "move_right"], "group": "Move", "contexts": ["walk", "fight"], "corner": ["walk"]},
     "sprint": {"label": "Sprint", "group": "Move", "contexts": ["walk", "fight"]},
-    "walk_to": {"label": "Walk to / pick a creature", "group": "Move", "contexts": ["walk", "fight"], "corner": ["walk"]},
+    "walk_to": {"label": "Move there / pick a creature", "group": "Move", "contexts": ["walk", "fight"], "corner": ["walk"]},
     "move_left": {"label": "Left", "group": "Move", "contexts": ["walk", "fight"], "hidden": true},
     "move_back": {"label": "Back", "group": "Move", "contexts": ["walk", "fight"], "hidden": true},
     "move_right": {"label": "Right", "group": "Move", "contexts": ["walk", "fight"], "hidden": true},
-    "camera_orbit": {"label": "Orbit camera (hold + drag)", "group": "Camera", "contexts": ["walk", "fight"], "corner": ["walk"]},
+    "camera_orbit": {"label": "Orbit camera", "group": "Camera", "contexts": ["walk", "fight"], "corner": ["walk"], "hidden": true},
     "camera_reset": {"label": "Reset camera behind the creature", "group": "Camera", "contexts": ["walk", "fight"]},
-    "zoom_in": {"label": "Zoom in", "group": "Camera", "contexts": ["walk", "fight"]},
-    "zoom_out": {"label": "Zoom out", "group": "Camera", "contexts": ["walk", "fight"]},
+    "zoom_in": {"label": "Zoom in", "group": "Camera", "contexts": ["walk", "fight"], "hidden": true},
+    "zoom_out": {"label": "Zoom out", "group": "Camera", "contexts": ["walk", "fight"], "hidden": true},
     "ability_1": {"label": "Move 1", "group": "Fight", "contexts": ["walk", "fight"], "corner": ["fight"]},
     "ability_2": {"label": "Move 2", "group": "Fight", "contexts": ["walk", "fight"]},
     "ability_3": {"label": "Move 3", "group": "Fight", "contexts": ["walk", "fight"]},
@@ -40,6 +40,13 @@
     "time_slower": {"label": "Slower", "group": "Time", "dev": true, "contexts": ["walk", "fight"]},
     "time_faster": {"label": "Faster", "group": "Time", "dev": true, "contexts": ["walk", "fight"]}
   },
+  "gestures": [
+    {"label": "Orbit camera", "keys": "Left drag", "group": "Camera", "contexts": ["walk", "fight"], "corner": ["walk"]},
+    {"label": "Orbit camera", "keys": "Right / Middle drag", "group": "Camera", "contexts": ["walk", "fight"]},
+    {"label": "Zoom near / far", "keys": "Wheel", "group": "Camera", "contexts": ["walk", "fight"], "corner": ["walk"]},
+    {"label": "Reset camera", "keys": "Middle click", "group": "Camera", "contexts": ["walk", "fight"]},
+    {"label": "Zoom down to it (map view icons)", "keys": "Double-click icon", "group": "Camera", "contexts": ["walk", "fight"]}
+  ],
   "fixed": [
     {"label": "Undo", "keys": "Ctrl+Z", "group": "Studio", "contexts": ["studio"]},
     {"label": "Redo", "keys": "Ctrl+Y", "group": "Studio", "contexts": ["studio"]},

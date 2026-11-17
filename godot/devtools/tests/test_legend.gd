@@ -2,6 +2,7 @@ extends RefCounted
 # Step 2: the key legend is generated from the InputMap.
 
 const Legend := preload("res://devtools/legend.gd")
+const TestInputMap := preload("res://devtools/tests/test_inputmap.gd")
 
 static func sig(ev: InputEventKey) -> String:
 	return "%d|%s%s%s" % [ev.physical_keycode, ev.ctrl_pressed, ev.alt_pressed, ev.shift_pressed]
@@ -31,6 +32,32 @@ func run(t) -> void:
 					var s := sig(ev)
 					t.check(not seen.has(s) or seen[s] == a, "context %s: %s and %s do not share %s" % [ctx, a, seen.get(s, ""), Legend.event_text(ev)])
 					seen[s] = a
+	# Readable key labels (one mapping function), headless names are the physical-key names.
+	for pair in [["QuoteLeft", "`"], ["BracketLeft", "["], ["BracketRight", "]"], ["Period", "."], ["Escape", "Esc"], ["W", "W"], ["F12", "F12"], ["Home", "Home"]]:
+		t.eq(Legend.pretty_key_name(pair[0]), pair[1], "key name %s reads %s" % pair)
+	t.eq(Legend.key_text(KEY_QUOTELEFT, false), "`", "physical QuoteLeft reads ` without a layout")
+	t.eq(Legend.key_text(KEY_BRACKETLEFT, false), "[", "physical BracketLeft reads [")
+	t.eq(Legend.key_text(KEY_BRACKETRIGHT, false), "]", "physical BracketRight reads ]")
+	t.eq(Legend.key_text(KEY_PERIOD, false), ".", "physical Period reads .")
+	t.eq(Legend.key_text(KEY_ESCAPE, false), "Esc", "physical Escape reads Esc")
+	t.eq(Legend.event_text(TestInputMap.key(KEY_ESCAPE)), "Esc", "event text of Escape")
+	for a in actions:
+		if InputMap.has_action(a):
+			var txt := Legend.action_text(a)
+			for bad in ["QuoteLeft", "BracketLeft", "BracketRight", "Period", "Escape"]:
+				t.check(not txt.contains(bad), "legend text of %s has no enum name (%s)" % [a, txt])
+	var mb := InputEventMouseButton.new()
+	mb.button_index = MOUSE_BUTTON_LEFT
+	t.eq(Legend.event_text(mb), "Left click", "left mouse button reads Left click")
+	mb.button_index = MOUSE_BUTTON_RIGHT
+	t.eq(Legend.event_text(mb), "Right click", "right mouse button reads Right click")
+	# Mouse gestures are listed for walk and fight.
+	for ctx in [&"walk", &"fight"]:
+		var gk := Legend.rows(ctx, false).filter(func(r): return r.get("gesture", false)).map(func(r): return r.keys)
+		for want in ["Left drag", "Right / Middle drag", "Wheel", "Middle click"]:
+			t.check(gk.has(want), "%s legend lists the gesture %s" % [ctx, want])
+	t.check(Legend.rows(&"walk", false).any(func(r): return r.keys == "Left click"), "left click (move) is listed")
+	t.check(Legend.rows(&"walk", false).any(func(r): return r.action == "camera_reset" and r.keys.contains("Home")), "Home resets the camera")
 	# Context switch changes the corner hint.
 	var game = t.root.get_node("Game")
 	var walk := Legend.corner_rows(game.legend_context(), true)

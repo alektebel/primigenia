@@ -16,15 +16,34 @@ static func spec() -> Dictionary:
 		_spec = v if v is Dictionary else {}
 	return _spec
 
+## Readable names for Godot's key-name strings (OS.get_keycode_string gives enum names for punctuation).
+const KEY_NAMES := {
+	"QuoteLeft": "`", "BracketLeft": "[", "BracketRight": "]", "Period": ".", "Comma": ",", "Minus": "-",
+	"Equal": "=", "Slash": "/", "BackSlash": "\\", "Semicolon": ";", "Apostrophe": "'", "Escape": "Esc",
+	"Space": "Space", "PageUp": "PgUp", "PageDown": "PgDn", "BackSpace": "Backspace", "Delete": "Del",
+	"Insert": "Ins", "Enter": "Enter", "Tab": "Tab", "Left": "Left arrow", "Right": "Right arrow",
+	"Up": "Up arrow", "Down": "Down arrow", "Shift": "Shift", "Ctrl": "Ctrl", "Alt": "Alt", "Meta": "Meta",
+}
+
+## One mapping function: Godot key-name string -> label shown to the player.
+static func pretty_key_name(name: String) -> String:
+	return KEY_NAMES.get(name, name)
+
+## Label of a physical key: the glyph printed on the user's layout when the display server knows it
+## ("º" on a Spanish keyboard for the key left of 1), else the readable name of the physical key.
+static func key_text(physical: int, layout_aware := true) -> String:
+	var code: int = physical
+	if layout_aware and DisplayServer.get_name() != "headless":
+		var lab := DisplayServer.keyboard_get_label_from_physical(physical)
+		if lab != KEY_NONE:
+			code = lab
+	return pretty_key_name(OS.get_keycode_string(code))
+
 ## "Ctrl+B", "W", "Left click" ... for one event.
 static func event_text(ev: InputEvent) -> String:
 	if ev is InputEventKey:
-		var code: Key = ev.physical_keycode if ev.physical_keycode != 0 else ev.keycode
-		if ev.physical_keycode != 0 and DisplayServer.get_name() != "headless":
-			var lab := DisplayServer.keyboard_get_label_from_physical(ev.physical_keycode)
-			if lab != KEY_NONE:
-				code = lab
-		var name := OS.get_keycode_string(code)
+		var code: int = ev.physical_keycode if ev.physical_keycode != 0 else ev.keycode
+		var name := key_text(code, ev.physical_keycode != 0)
 		var pre := ""
 		if ev.ctrl_pressed:
 			pre += "Ctrl+"
@@ -78,6 +97,11 @@ static func rows(context: StringName, dev_enabled: bool) -> Array:
 	for f in s.get("fixed", []):
 		if context in f.get("contexts", []):
 			out.append({"label": f.label, "keys": f.keys, "group": f.group, "action": "", "corner": false, "dev": false, "fixed": true})
+	# Mouse gestures: not InputMap actions (drag thresholds, wheel, double click), listed from the spec.
+	for g in s.get("gestures", []):
+		if context in g.get("contexts", []):
+			out.append({"label": g.label, "keys": g.keys, "group": g.group, "action": "", "corner": context in g.get("corner", []),
+				"dev": false, "fixed": false, "gesture": true})
 	return out
 
 static func corner_rows(context: StringName, dev_enabled: bool) -> Array:
