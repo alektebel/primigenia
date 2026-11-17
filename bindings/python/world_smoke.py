@@ -77,8 +77,17 @@ def main():
     a_hashes, a_final, obs = run_episode(42, SHORT)
     b_hashes, b_final, _ = run_episode(42, SHORT)
     check(a_hashes == b_hashes, "short episode is deterministic (hash sequence)")
-    check(obs.get("schema") == "world-1" and "legal_verbs" in obs,
-          f"observe() returns world-1 JSON (tick {obs.get('tick')})")
+    check(obs.get("schema") == "world-2" and "legal_verbs" in obs and obs["world"]["bound"] == 195.0,
+          f"observe() returns world-2 JSON (tick {obs.get('tick')})")
+    w1 = StageWorld(seed=42)
+    check(w1.observe(schema=1).get("schema") == "world-1", "observe(schema=1) still gives the world-1 text")
+    check(w1.command("dance") < 0 and w1.observe()["last_error"] != "ok", "a rejected text command shows in observe().last_error")
+    w1.step(None)
+    w1.step(None)
+    check(w1.observe()["last_error"] != "ok", "last_error survives steps with no input")
+    check(any(e["type"] == "order_rejected" for e in w1.observe(ack=False)["events"]) is False,
+          "events are listed once: the second observe() starts empty")
+    check(w1.path() == [], "path() is empty outside FIELD mode")
 
     cli_hashes, cli_final, _ = run_episode(42, CLI_SCRIPT)
     cli_hashes2, cli_final2, _ = run_episode(42, CLI_SCRIPT)

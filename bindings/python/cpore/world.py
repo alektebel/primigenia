@@ -1,4 +1,4 @@
-"""ctypes binding for the P4 creature world (CpStageWorld / cp_stage_*)."""
+"""ctypes binding for the P4 creature world (CpStageWorld / cp_stage_*). observe() returns schema world-2."""
 
 from __future__ import annotations
 
@@ -141,6 +141,12 @@ def _bind_stage(lib):
         ctypes.POINTER(c_uint64),
     ]
     lib.cp_stage_replay.restype = c_uint64
+    lib.cp_stage_ack_events.argtypes = [c_void_p]
+    lib.cp_stage_ack_events.restype = None
+    lib.cp_stage_path.argtypes = [c_void_p, ctypes.POINTER(c_float), c_int32]
+    lib.cp_stage_path.restype = c_int32
+    lib.cp_stage_observe_v.argtypes = [c_void_p, c_char_p, c_size_t, c_int32]
+    lib.cp_stage_observe_v.restype = c_int32
     lib.cp_stage_world_size.argtypes = []
     lib.cp_stage_world_size.restype = c_size_t
     _WORLD_BYTES = int(lib.cp_stage_world_size())
@@ -306,12 +312,23 @@ class StageWorld:
     def hash(self) -> int:
         return int(self._lib.cp_stage_hash(self._world))
 
-    def observe(self, bufsize: int = 65536) -> dict:
+    def observe(self, bufsize: int = 65536, *, schema: int = 2, ack: bool = True) -> dict:
+        """The observation (schema "world-2"; schema=1 gives the old "world-1" text). With ack=True the events
+        in it count as seen: the next observe() lists only what happened after this one."""
         buf = ctypes.create_string_buffer(bufsize)
-        n = int(self._lib.cp_stage_observe(self._world, buf, bufsize))
+        n = int(self._lib.cp_stage_observe_v(self._world, buf, bufsize, schema))
         if n < 0:
             raise RuntimeError("cp_stage_observe buffer too small")
+        if ack:
+            self._lib.cp_stage_ack_events(self._world)
         return json.loads(buf.value[:n].decode())
+
+    def path(self, cap: int = 64) -> list[tuple[float, float]]:
+        """The waypoints of the running GO / GO_NEST path (x, z), nearest first; [] without a path
+        (always [] outside FIELD mode, where GO walks a straight line)."""
+        buf = (c_float * (2 * cap))()
+        n = int(self._lib.cp_stage_path(self._world, buf, cap))
+        return [(float(buf[2 * i]), float(buf[2 * i + 1])) for i in range(n)]
 
     @staticmethod
     def order_error(code: int) -> str:

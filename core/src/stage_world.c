@@ -1469,7 +1469,9 @@ int cp_stage_observe_v(const CpStageWorld *w,char *out,size_t cap,int version){
             comma=1;
         }
     }
-    ADD("],\"legal_verbs\":[\"go\",\"heading\",\"flee\",\"go_nest\",\"wait\"");
+    ADD("],\"legal_verbs\":[\"go\",\"heading\"");
+    if(version==1||w->active>=0||has_threat(w))ADD(",\"flee\"");   /* world-2 lists flee only when there is something to flee from */
+    ADD(",\"go_nest\",\"wait\"");
     int target=0,attacks=0;
     for(int i=0;i<w->setup.n;i++)if(!w->wild[i].dead&&(w->active<0||w->active==i))target=1;
     for(int i=0;i<CB_MOVE_COUNT;i++)if(!(CP_COMBAT_MOVES[i].flags&CB_F_SELF)&&cp_combat_part_level(&w->player.profile,CP_COMBAT_MOVES[i].part)>0)attacks++;
