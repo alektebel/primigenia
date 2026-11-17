@@ -5,6 +5,8 @@ extends SceneTree
 #                                        at the centre, where the cliff views look)
 #   rockdiff <before> <after> <mask>     mean RGB over the mask's rock pixels (R > 0.5): before, after, difference in 1/255
 #   steepsnow <mask>...                  share of snow pixels (G) lying on faces steeper than 55 degrees (B)
+#   flicker <bandsA> <bandsB> <mask>     share of rock pixels (whole 11x11 neighbourhood in the mask) whose ramp band has no match
+#                                        within 5 px in the frame taken after a 0.25 m camera move (mode 8 images)
 #   bands <png>                          peaks of the luminance profile along a vertical line at the centre (strata check)
 
 func _initialize() -> void:
@@ -33,6 +35,8 @@ func _initialize() -> void:
 							if c.b > 0.5:
 								steep += 1
 				print("%s snow px %d, on steep faces %d (%.1f%%)" % [f.get_file(), snow, steep, 100.0 * steep / maxf(snow, 1)])
+		"flicker":
+			flicker(a[1], a[2], a[3])
 		"bands":
 			print("%s peaks %d" % [a[1].get_file(), bands(a[1])])
 	quit()
@@ -135,3 +139,37 @@ static func bands(path: String) -> int:
 		if sm[y] > sm[y - 6] + 0.012 and sm[y] > sm[y + 6] + 0.012 and sm[y] >= sm[y - 1] and sm[y] > sm[y + 1]:
 			peaks += 1
 	return peaks
+
+static func flicker(pa: String, pb: String, pm: String) -> void:
+	var a := Image.load_from_file(pa)
+	var b := Image.load_from_file(pb)
+	var m := Image.load_from_file(pm)
+	var w := a.get_width()
+	var h := a.get_height()
+	var tested := 0
+	var bad := 0
+	var r := 5
+	for y in range(r, h - r, 2):
+		for x in range(r, w - r, 2):
+			var inside := true
+			for dy in [-r, 0, r]:
+				for dx in [-r, 0, r]:
+					if m.get_pixel(x + dx, y + dy).r < 0.5:
+						inside = false
+			if not inside:
+				continue
+			var ca := a.get_pixel(x, y)
+			var key := Vector3(roundf(ca.r), roundf(ca.g), roundf(ca.b))
+			var found := false
+			for dy in range(-r, r + 1):
+				for dx in range(-r, r + 1):
+					var cb := b.get_pixel(x + dx, y + dy)
+					if Vector3(roundf(cb.r), roundf(cb.g), roundf(cb.b)) == key:
+						found = true
+						break
+				if found:
+					break
+			tested += 1
+			if not found:
+				bad += 1
+	print("flicker: %d of %d rock pixels (%.2f%%) changed ramp band beyond a 5 px shift" % [bad, tested, 100.0 * bad / maxf(tested, 1)])

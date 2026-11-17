@@ -78,6 +78,11 @@ const ROCK_TOP_LIGHT := 0.10
 const SCREE_VALUE := 0.35
 const SCREE_GAP_DARK := 0.28
 const SCREE_ROCK_MIX := 0.85
+const ROCK_N_MACRO := 0.55
+const ROCK_N_MESO := 0.45
+const ROCK_N_MICRO := 0.35
+const SCREE_N := 0.5
+const ROCK_MAX := 1.09
 
 # Godot's ACES (compatibility renderer) calibrated to three.js ACESFilmic at exposure 1:
 # see docs/evidence/godot/m0/calibration.json (written by make godot-render-test).

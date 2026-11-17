@@ -14,7 +14,8 @@ func _run() -> void:
 	var out_dir: String = args[0] if args.size() > 0 else "/tmp/rock-evidence"
 	var views: PackedStringArray = (args[1] if args.size() > 1 else ",".join(Views.VIEWS)).split(",")
 	var grass: int = int(args[2]) if args.size() > 2 else 60000
-	var masks: bool = args.size() > 3 and args[3] == "masks"
+	var masks: bool = args.size() > 3 and args[3].contains("masks")
+	var flicker: bool = args.size() > 3 and args[3].contains("flicker")
 	DirAccess.make_dir_recursive_absolute(out_dir)
 	root.size = Vector2i(1280, 720)
 	var game = root.get_node("Game")
@@ -39,22 +40,32 @@ func _run() -> void:
 		root.get_texture().get_image().save_png(out_dir.path_join(v + ".png"))
 		print("wrote ", v)
 		if masks and v != "chase":
-			# Debug mode 6 on a black background, linear tone map: R rock cell, G snow, B face steeper than 55 degrees.
-			var env: Environment = island.world_env.environment
-			var saved := [env.background_mode, env.tonemap_mode, env.tonemap_exposure]
-			env.background_mode = Environment.BG_COLOR
-			env.background_color = Color.BLACK
-			env.tonemap_mode = Environment.TONE_MAPPER_LINEAR
-			env.tonemap_exposure = 1.0
-			island.water.visible = false
-			island.terrain_chunks.set_rock_debug(6)
-			for i in 3:
-				await process_frame
-			await RenderingServer.frame_post_draw
-			root.get_texture().get_image().save_png(out_dir.path_join("mask_" + v + ".png"))
-			island.terrain_chunks.set_rock_debug(0)
-			island.water.visible = true
-			env.background_mode = saved[0]
-			env.tonemap_mode = saved[1]
-			env.tonemap_exposure = saved[2]
+			await debug_frame(island, 6, out_dir.path_join("mask_" + v + ".png"))
+		if flicker and v == "cliff_lit":
+			# Two frames of the ramp bands (mode 8), the camera moved 0.25 m sideways, for the flicker metric.
+			await debug_frame(island, 8, out_dir.path_join("flicker_a.png"))
+			island.camera.global_position += island.camera.global_transform.basis.x * 0.25
+			await debug_frame(island, 8, out_dir.path_join("flicker_b.png"))
+			await debug_frame(island, 6, out_dir.path_join("flicker_mask.png"))
+			island.camera.global_position -= island.camera.global_transform.basis.x * 0.25
 	quit()
+
+# One frame of a debug mode on a black background with a linear tone map (values are read back as written).
+func debug_frame(island: Node3D, mode: int, path: String) -> void:
+	var env: Environment = island.world_env.environment
+	var saved := [env.background_mode, env.tonemap_mode, env.tonemap_exposure]
+	env.background_mode = Environment.BG_COLOR
+	env.background_color = Color.BLACK
+	env.tonemap_mode = Environment.TONE_MAPPER_LINEAR
+	env.tonemap_exposure = 1.0
+	island.water.visible = false
+	island.terrain_chunks.set_rock_debug(mode)
+	for i in 3:
+		await process_frame
+	await RenderingServer.frame_post_draw
+	root.get_texture().get_image().save_png(path)
+	island.terrain_chunks.set_rock_debug(0)
+	island.water.visible = true
+	env.background_mode = saved[0]
+	env.tonemap_mode = saved[1]
+	env.tonemap_exposure = saved[2]

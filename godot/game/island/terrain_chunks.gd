@@ -148,6 +148,12 @@ func build(terrain_data) -> void:
 static func _lod_color(lod: int) -> Vector3:
 	return [Vector3(0.9, 0.2, 0.2), Vector3(0.95, 0.65, 0.15), Vector3(0.9, 0.9, 0.2), Vector3(0.2, 0.75, 0.3), Vector3(0.25, 0.45, 0.95)][lod]
 
+# Sets one shader uniform on every terrain material (tests, tuning).
+func set_uniform(name: String, value) -> void:
+	for lod in materials.size():
+		for m in materials[lod]:
+			m.set_shader_parameter(name, value)
+
 func set_rock_debug(mode: int) -> void:
 	for lod in materials.size():
 		for m in materials[lod]:

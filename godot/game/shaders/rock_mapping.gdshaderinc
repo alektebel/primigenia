@@ -65,6 +65,22 @@ vec4 map_tex(sampler2D t, MapCtx c, float inv_tile, vec2 off) {
 	return map_tex_blur(t, c, inv_tile, off, 1.0);
 }
 
+// Colour sample and tilt in one pass (one fetch per projection). `tilt` is the blended world-space -grad h.
+vec4 map_tex_tilt(sampler2D t, MapCtx c, float inv_tile, vec2 off, out vec3 tilt) {
+	vec4 s = vec4(0.0);
+	tilt = vec3(0.0);
+	for (int k = 0; k < 3; k++) {
+		if (c.w[k] > 0.0005) {
+			vec4 v = textureGrad(t, map_uv(c.p, k) * inv_tile + off, map_uv(c.dpx, k) * inv_tile, map_uv(c.dpy, k) * inv_tile);
+			vec2 d = v.rg * 2.0 - 1.0;
+			vec3 tl = k == 0 ? vec3(0.0, -d.y, d.x) : (k == 1 ? vec3(d.x, 0.0, d.y) : vec3(d.x, -d.y, 0.0));
+			s += c.w[k] * v;
+			tilt += c.w[k] * tl;
+		}
+	}
+	return s;
+}
+
 // World-space tilt (-grad h) from a decoded detail normal d = (-dh/du, -dh/dv), per projection, blended.
 // Height h is displacement along the face normal, so the same formula holds on both faces of an axis.
 vec3 map_tilt(sampler2D t, MapCtx c, float inv_tile, vec2 off) {

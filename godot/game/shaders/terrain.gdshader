@@ -9,8 +9,8 @@ render_mode unshaded, cull_back;
 uniform vec3 lod_color = vec3(0.0);
 uniform float lod_debug : hint_range(0.0, 1.0) = 0.0;
 // 0 off, 1 = 4 m grid through the active mapping (R, G sawtooth of u, v; B checker), 2 = mapping weights,
-// 3 = relief channels, 4 = light only (unclamped), 5 = legacy planar xz grid (the old mapping, for the stretch test),
-// 6 = masks (R rock, G snow, B steeper than 55 degrees).
+// 3 = relief channels, 4 = rock light with the detail normal (unclamped), 5 = legacy planar xz grid (the old mapping, for the stretch test),
+// 6 = masks (R rock, G snow, B steeper than 55 degrees), 8 = ramp bands of the rock light (flicker test).
 uniform int rock_debug = 0;
 
 varying vec3 wp;
@@ -35,7 +35,13 @@ void fragment() {
 		} else if (rock_debug == 3) {
 			dbg = surface_bilinear(xz).rgb;
 		} else if (rock_debug == 4) {
-			dbg = vec3(dot(gn, SUN_DIR) * 0.5 + 0.5);
+			RockTex rt4 = rock_sample(map_ctx(wp, gn), distance(wp, CAMERA_POSITION_WORLD));
+			dbg = vec3(dot(normalize(gn + rt4.tilt), SUN_DIR) * 0.5 + 0.5);
+		} else if (rock_debug == 8) {
+			// Ramp bands of the rock light (the toon steps), for the flicker test: R above 0.17, G above 0.55, B lit mask.
+			RockTex rt8 = rock_sample(map_ctx(wp, gn), distance(wp, CAMERA_POSITION_WORLD));
+			float l8 = max(dot(normalize(gn + rt8.tilt), SUN_DIR), 0.0);
+			dbg = vec3(step(0.17, l8), step(0.55, l8), step(0.35, l8));
 		} else if (rock_debug == 6) {
 			// Masks for the evidence metrics: R rock cell, G snow, B face steeper than 55 degrees.
 			float w6[6];
@@ -69,10 +75,17 @@ void fragment() {
 		vec3 volc_c = vec3(0.0);
 		if (w_rock + w[2] + w[3] > 0.001) {
 			RockTex rt = rock_sample(mc, dist);
-			rock_c = rock_shade(R0, R1, rt, light, steep, cavity) * GRASS;
-			scree_c = scree_shade(rock_c, rt, mc, light, dist);
+			float fw;
+			float rl = rock_light(gn, rt.tilt, fw);
+			rock_c = rock_shade(R0, R1, rt, rl, fw, steep, cavity) * GRASS;
+			if (w[2] > 0.001) {
+				ScreeTex st = scree_sample(mc, rt, dist);
+				float sfw;
+				float sl = rock_light(gn, st.tilt, sfw);
+				scree_c = scree_shade(rock_c, st, sl, sfw);
+			}
 			if (w[3] > 0.001) {
-				volc_c = rock_shade(VOLCANIC_R0, VOLCANIC_R1, rt, light, steep, cavity) * GRASS;
+				volc_c = rock_shade(VOLCANIC_R0, VOLCANIC_R1, rt, rl, fw, steep, cavity) * GRASS;
 			}
 		}
 		vec3 sand_c = SAND * landRamp(light) * GRASS;

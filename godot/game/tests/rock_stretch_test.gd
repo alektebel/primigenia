@@ -188,6 +188,7 @@ func _run() -> void:
 		check(down[k] >= 0.85 and down[k] <= 1.10, "downslope ratio in [0.85, 1.10] at azimuth %d (got %.3f)" % [k * 45, down[k]])
 		check(contour[k] >= 0.68, "contour ratio >= 0.68 at azimuth %d (got %.3f)" % [k * 45, contour[k]])
 		check(absf(legacy[k] - 0.5) <= 0.05, "legacy planar mapping measures 0.50 +- 0.05 downslope at azimuth %d (got %.3f)" % [k * 45, legacy[k]])
+	await sign_test()
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path("res://../docs/evidence/godot/rock"))
 	var f := FileAccess.open(ProjectSettings.globalize_path("res://../docs/evidence/godot/rock/stretch%s.json" % ("-" + tier if tier != "" else "")), FileAccess.WRITE)
 	f.store_string(JSON.stringify(out, "\t"))
@@ -197,3 +198,65 @@ func _run() -> void:
 		img5.save_png(ProjectSettings.globalize_path("res://../docs/evidence/godot/rock/stretch_mode5_legacy.png"))
 	print("rock stretch test: %d checks, %d failures" % [checks, failures])
 	quit(1 if failures else 0)
+
+# Synthetic detail sheet: one raised horizontal ridge at v = 0.5 (Gaussian, sigma 0.06 of the tile), R/G = -grad h, A = 1.
+static func ridge_texture() -> ImageTexture:
+	var n := 512
+	var img := Image.create(n, n, false, Image.FORMAT_RGBA8)
+	var h := PackedFloat32Array()
+	h.resize(n)
+	for y in n:
+		var v := (y + 0.5) / n - 0.5
+		h[y] = exp(-pow(v / 0.06, 2.0))
+	for y in n:
+		var g := (h[(y + 1) % n] - h[(y + n - 1) % n]) * 0.5
+		var dy := clampf(-g * 100.0, -1.0, 1.0)
+		for x in n:
+			img.set_pixel(x, y, Color(0.5, 0.5 + 0.5 * dy, h[y], 1.0))
+	img.generate_mipmaps()
+	return ImageTexture.create_from_image(img)
+
+# PLAN-rock step 4, sign test: on the cone, mode 4 (rock light with the detail normal) must brighten the up-facing side of the
+# ridge, or darken it, exactly as the geometry says. For a face whose normal has elevation theta, a sun of elevation el and
+# c = cos(angle between the face azimuth and the sun azimuth), d(light)/d(theta) = -sin(theta) cos(el) c + cos(theta) sin(el):
+# tilting the normal up brightens faces turned away from the sun and darkens faces turned to it (the plan's "up-facing side is
+# brighter at all azimuths" holds only for the first kind, so the check is the sign of this derivative).
+func sign_test() -> void:
+	chunks.set_uniform("rock_tex", ridge_texture())
+	chunks.set_uniform("rock_normal_gain", Vector3(1, 0, 0))
+	var img4 := await capture(4)
+	var sun: Vector3 = preload("res://game/island/look.gd").sun_dir()
+	var sun_az := atan2(sun.z, sun.x)
+	var theta := deg_to_rad(90.0 - SLOPE)
+	var el := asin(sun.y)
+	var period := 41.0
+	var tan60 := tan(deg_to_rad(SLOPE))
+	var diffs := []
+	var preds := []
+	for k in 8:
+		var az := k * PI / 4.0
+		var up := 0.0
+		var dn := 0.0
+		var nu := 0
+		var nd := 0
+		for pt in radial(az, 35.0, 95.0):
+			var r: float = pt.length()
+			var ph := fposmod((R_CONE - r) * tan60, period)
+			var v := sample(img4, pt.x, pt.y, 0)
+			if ph > 20.5 + 3.0 and ph < 20.5 + 6.5:
+				up += v
+				nu += 1
+			elif ph > 20.5 - 6.5 and ph < 20.5 - 3.0:
+				dn += v
+				nd += 1
+		var c := cos(az - sun_az)
+		var pred := -sin(theta) * cos(el) * c + cos(theta) * sin(el)
+		diffs.append((up / maxf(nu, 1) - dn / maxf(nd, 1)))
+		preds.append(pred)
+		if absf(pred) > 0.08:
+			check(diffs[k] * pred > 0.0 and absf(diffs[k]) > 0.004, "ridge sign: up-facing side %s than down-facing at azimuth %d (diff %.3f, predicted %.2f)" % ["brighter" if pred > 0.0 else "darker", k * 45, diffs[k], pred])
+	out["sign_test_up_minus_down"] = diffs
+	out["sign_test_predicted"] = preds
+	print("ridge up-down light  ", diffs.map(func(v): return snappedf(v, 0.001)))
+	print("predicted derivative ", preds.map(func(v): return snappedf(v, 0.01)))
+	img4.save_png(ProjectSettings.globalize_path("res://../docs/evidence/godot/rock/sign_test_mode4.png"))

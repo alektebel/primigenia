@@ -47,3 +47,6 @@ func run(t) -> void:
 		else:
 			t.check(false, k + " is missing from look.gd")
 	t.check(seen >= 20, "the rock constants were compared (%d)" % seen)
+	# The rock ceiling is 1.2 x the brightest channel of the lit snow (no new HDR maximum).
+	var snow_lit: Vector3 = Look.SNOW * (0.6 + 0.25 + 0.23) * Look.GRASS
+	t.check(Look.ROCK_MAX <= 1.2 * maxf(snow_lit.x, maxf(snow_lit.y, snow_lit.z)) + 1e-6, "ROCK_MAX <= 1.2 x lit snow (%.3f)" % Look.ROCK_MAX)
