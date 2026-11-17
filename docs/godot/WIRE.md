@@ -81,3 +81,5 @@ studio 800, creature 1456, locomotion 192.
 * Studio Test mode walks in a circle of about 3 m radius; very large creatures leave the frame.
 * Studio hit-testing uses the built meshes (`TriangleMesh`), the mirrored copies count as the same part; the vertebra
   handles are spheres of 0.2 radius as in the placeholder.
+
+Rock and terrain material (mountain look, quality tiers, optional sun shadows): see `docs/godot/ROCK.md`.

@@ -56,9 +56,9 @@
     ]
   },
   "contact_shadow": {
-    "lit": 0.32529076193422,
-    "shaded": 0.12397386573899,
-    "shaded_without_occluders": 0.319371610626366
+    "lit": 0.310116501133995,
+    "shaded": 0.138911359945449,
+    "shaded_without_occluders": 0.292987090390282
   },
   "cracks": {
     "sampled": 39601,

@@ -58,6 +58,17 @@ var action_signals: Dictionary = {}   # last frame's per-entity signals (tests r
 func _ready() -> void:
 	build()
 
+# PLAN-rock step 9 switch (Game.settings.sun_shadows, off by default): terrain, scree, meadow and grass go dark in terrain shadows.
+func set_sun_shadows(on: bool) -> void:
+	if on:
+		var ms: int = data_for_shadows().apply_sun_shadows(Look.sun_dir())
+		print("sun shadows baked in %d ms" % ms)
+	terrain_chunks.set_uniform("rock_shadows", 1.0 if on else 0.0)
+	grass.set_sun_shadows(on)
+
+func data_for_shadows():
+	return Game.data
+
 func build() -> void:
 	var data = Game.data
 	world_env = WorldEnvironment.new()
@@ -78,6 +89,8 @@ func build() -> void:
 	grass.name = "Grass"
 	add_child(grass)
 	grass.build(data, int(Game.settings.grass))
+	if Game.settings.get("sun_shadows", false):
+		set_sun_shadows(true)
 	print("grass built in %d ms (%d blades)" % [Time.get_ticks_msec() - t0, int(Game.settings.grass)])
 	camera = Camera3D.new()
 	camera.name = "Camera"

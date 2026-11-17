@@ -77,6 +77,7 @@ func build(data, total: int) -> void:
 	material.set_shader_parameter("height_tex", data.height_tex)
 	material.set_shader_parameter("level_tex", data.level_tex)
 	material.set_shader_parameter("surface_tex", data.surface_tex)
+	material.set_shader_parameter("relief_tex", data.relief_tex)
 	material.set_shader_parameter("MAP_N", data.n)
 	material.set_shader_parameter("MAP_CELL", data.cell)
 	material.set_shader_parameter("MAP_HALF", data.half)
@@ -87,6 +88,10 @@ func build(data, total: int) -> void:
 	material_override = material
 	cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	custom_aabb = AABB(Vector3(-2000, -100, -2000), Vector3(4000, 900, 4000))
+
+# Baked sun shadows (PLAN-rock step 9, off by default): grass in shadowed slopes goes dark like the terrain under it.
+func set_sun_shadows(on: bool) -> void:
+	material.set_shader_parameter("rock_shadows", 1.0 if on else 0.0)
 
 func set_center(p: Vector3) -> void:
 	material.set_shader_parameter("center", p)

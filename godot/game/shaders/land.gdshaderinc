@@ -80,16 +80,3 @@ float occluder_shadow(vec3 wp) {
 	}
 	return sh;
 }
-
-vec3 rock_color(vec3 a0, vec3 a1, vec2 xz, vec3 wp, float light, float steep, float cavity) {
-	float grain = landNoise(xz * 0.17);
-	float mineral = landNoise(xz * 0.023);
-	float erosion = landNoise(xz * 0.081);
-	float strata = sin(wp.y * (0.075 + 0.035 * landNoise(xz * 0.012)) + erosion * 6.0 + mineral * 8.0) * steep * smoothstep(0.4, 0.72, landNoise(xz * 0.044));
-	float rock_light = 0.36 + 0.56 * smoothstep(0.12, 0.22, light) + 0.48 * smoothstep(0.5, 0.6, light);
-	vec3 r = mix(a0, a1, smoothstep(0.25, 0.78, mineral));
-	r = mix(r, R2, smoothstep(0.57, 0.87, erosion) * 0.4);
-	r *= 1.0 + strata * 0.045 + (grain - 0.5) * 0.16 + (landNoise(xz * 0.63 + wp.y * 0.04) - 0.5) * 0.1;
-	r *= mix(ROCK_SHADE, ROCK_LIT, smoothstep(0.18, 0.52, light)) * rock_light;
-	return r * mix(1.0, 0.64, cavity);
-}

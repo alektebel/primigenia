@@ -36,3 +36,19 @@ func run(t) -> void:
 	t.check(_near(inc.HORIZON_HZ, Look.SKY_HZ) and _near(inc.HORIZON_GLOW, Look.SKY_GLOW), "the horizon colour of the sea fade equals the sky's")
 	t.check(absf(sd.length() - 1.0) < 1e-9, "sun direction is normalised")
 	t.check(absf(Look.TONEMAP_EXPOSURE - 0.926) < 1e-9 and absf(Look.TONEMAP_WHITE - 15.4) < 1e-9, "calibrated tone-map constants")
+	# Rock constants (rock.gdshaderinc) mirror look.gd.
+	var rock := _consts("res://game/shaders/rock.gdshaderinc")
+	var script: GDScript = Look
+	var seen := 0
+	t.check(_near(rock.ROCK_RIM_TINT, Look.SKY_MID), "ROCK_RIM_TINT is the sky's SKY_MID")
+	rock.erase("ROCK_RIM_TINT")
+	for k in rock:
+		if script.get_script_constant_map().has(k):
+			seen += 1
+			t.check(absf(float(rock[k][0]) - float(script.get_script_constant_map()[k])) < 1e-6, k + " matches look.gd")
+		else:
+			t.check(false, k + " is missing from look.gd")
+	t.check(seen >= 20, "the rock constants were compared (%d)" % seen)
+	# The rock ceiling is 1.2 x the brightest channel of the lit snow (no new HDR maximum).
+	var snow_lit: Vector3 = Look.SNOW * (0.6 + 0.25 + 0.23) * Look.GRASS
+	t.check(Look.ROCK_MAX <= 1.2 * maxf(snow_lit.x, maxf(snow_lit.y, snow_lit.z)) + 1e-6, "ROCK_MAX <= 1.2 x lit snow (%.3f)" % Look.ROCK_MAX)

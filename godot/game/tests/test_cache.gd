@@ -2,6 +2,7 @@ extends RefCounted
 # TerrainCache: miss then hit; corruption paths regenerate; the key encodes the versions.
 
 const TerrainCache := preload("res://game/island/terrain_cache.gd")
+const TerrainData := preload("res://game/island/terrain_data.gd")
 const DIR := "user://m0-tests"
 
 func _params(extra: Dictionary = {}) -> Dictionary:
@@ -38,7 +39,7 @@ func run(t) -> void:
 	print("  cache miss %d ms, hit %d ms (n=128)" % [first.ms, second.ms])
 
 	var path := TerrainCache.cache_path(p, DIR)
-	t.check(path.contains("-t%d-" % CporeTerrain.version()) and path.contains("-r1-") and path.contains("island-21-"),
+	t.check(path.contains("-t%d-" % CporeTerrain.version()) and path.contains("-r%d-" % TerrainData.RENDER_PREP_VERSION) and path.contains("island-21-"),
 		"key contains seed, generator version and render prep version: " + path)
 	t.check(TerrainCache.cache_path(_params({"erosion": 0.2}), DIR) != path, "changed erosion gives a different path")
 	t.eq(TerrainCache.cache_path({"n": 128, "seed": 21}, DIR), path, "partial params resolve to the same key")
@@ -72,6 +73,17 @@ func run(t) -> void:
 	TerrainCache.save_entry(p, tampered, DIR)
 	t.check(TerrainCache.load_entry(p, DIR).is_empty(), "modified height fails the hash check")
 	t.eq(TerrainCache.get_or_build(p, DIR).hit, false, "tampered file regenerates")
+
+	# An entry from before the relief map (render prep 1, no "relief") is a clean miss under the new key.
+	var old: Dictionary = TerrainCache.load_entry(p, DIR)
+	t.check(not old.is_empty(), "valid entry loads before the old-version check")
+	t.check(old.has("relief") and old.relief.size() == old.n * old.n * 4, "entries carry the relief map (render prep %d)" % TerrainData.RENDER_PREP_VERSION)
+	var no_relief := old.duplicate()
+	no_relief.erase("relief")
+	no_relief.render_prep = 1
+	TerrainCache.save_entry(p, no_relief, DIR)
+	t.check(TerrainCache.load_entry(p, DIR).is_empty(), "an entry without relief (render prep 1) is a miss, not a crash")
+	t.eq(TerrainCache.get_or_build(p, DIR).hit, false, "and regenerates with relief")
 
 	# Garbage file.
 	var g := FileAccess.open(path, FileAccess.WRITE)
