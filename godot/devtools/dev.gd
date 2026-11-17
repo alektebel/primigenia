@@ -7,6 +7,8 @@ extends Node
 const Legend := preload("res://devtools/legend.gd")
 const TimeControl := preload("res://devtools/time_control.gd")
 const Console := preload("res://devtools/console/console.gd")
+const Sites := preload("res://devtools/sites.gd")
+const SitePicker := preload("res://devtools/site_picker.gd")
 
 ## 1. Dev tools ON in every debug build (the editor and `godot --path godot`); `--dev` forces on in any
 ##    build, `--no-dev` forces off.
@@ -22,6 +24,8 @@ const FEEDBACK_USER_DIR := "user://feedback"
 var enabled := false
 var legend: CanvasLayer
 var time_control: CanvasLayer
+var picker: CanvasLayer
+var sites                     # Sites for the running island (built when it is ready)
 var console: CanvasLayer     # console.console.registry is the command registry (also used by the agent socket)
 
 static func compute_enabled(args: PackedStringArray, debug_build: bool) -> bool:
@@ -43,3 +47,19 @@ func _ready() -> void:
 		console = Console.new()
 		console.name = "Console"
 		add_child(console)
+		picker = SitePicker.new()
+		picker.name = "SitePicker"
+		picker.registry = console.registry if console.registry != null else null
+		add_child(picker)
+		Game.island_ready.connect(_on_island_ready)
+
+func _on_island_ready() -> void:
+	if Game.data == null or Game.stage == null:
+		return
+	sites = Sites.new()
+	sites.seed_id = int(Game.settings.seed)
+	sites.list = Sites.for_island(Game.data, Game.terrain.get("params", {}), Game.stage.world.get_setup())
+	sites.load_bookmarks()
+	console.registry.services["sites"] = sites
+	picker.sites = sites
+	picker.registry = console.registry
