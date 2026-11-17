@@ -8,6 +8,8 @@ const Legend := preload("res://devtools/legend.gd")
 const TimeControl := preload("res://devtools/time_control.gd")
 const Console := preload("res://devtools/console/console.gd")
 const Sites := preload("res://devtools/sites.gd")
+const TuningRegistry := preload("res://devtools/tuning/registry.gd")
+const TuningPanel := preload("res://devtools/tuning/panel.gd")
 const SitePicker := preload("res://devtools/site_picker.gd")
 
 ## 1. Dev tools ON in every debug build (the editor and `godot --path godot`); `--dev` forces on in any
@@ -25,6 +27,8 @@ var enabled := false
 var legend: CanvasLayer
 var time_control: CanvasLayer
 var picker: CanvasLayer
+var tuning                    # TuningRegistry (entries appear when the island is ready)
+var tuning_panel: CanvasLayer
 var sites                     # Sites for the running island (built when it is ready)
 var console: CanvasLayer     # console.console.registry is the command registry (also used by the agent socket)
 
@@ -51,6 +55,12 @@ func _ready() -> void:
 		picker.name = "SitePicker"
 		picker.registry = console.registry if console.registry != null else null
 		add_child(picker)
+		tuning = TuningRegistry.new()
+		tuning.register_commands(console.registry)
+		tuning_panel = TuningPanel.new()
+		tuning_panel.name = "TuningPanel"
+		tuning_panel.tuning = tuning
+		add_child(tuning_panel)
 		Game.island_ready.connect(_on_island_ready)
 
 func _on_island_ready() -> void:
@@ -61,5 +71,15 @@ func _on_island_ready() -> void:
 	sites.list = Sites.for_island(Game.data, Game.terrain.get("params", {}), Game.stage.world.get_setup())
 	sites.load_bookmarks()
 	console.registry.services["sites"] = sites
+	tuning.bind_sim(Game.stage)
+	tuning.bind_island(get_tree().current_scene)
 	picker.sites = sites
 	picker.registry = console.registry
+
+## Both A/B slots and the active one, recorded by scenarios and feedback bundles.
+func tuning_state() -> Dictionary:
+	return tuning.state() if tuning != null else {}
+
+func _process(_dt: float) -> void:
+	if enabled and tuning != null and legend != null:
+		legend.header_extra = tuning.chip()

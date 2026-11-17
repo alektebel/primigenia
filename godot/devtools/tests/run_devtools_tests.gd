@@ -11,6 +11,7 @@ const TESTS := [
 	"res://devtools/tests/test_console.gd",
 	"res://devtools/tests/test_scenario.gd",
 	"res://devtools/tests/test_sites.gd",
+	"res://devtools/tests/test_tuning.gd",
 ]
 
 var checks := 0

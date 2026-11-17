@@ -39,16 +39,16 @@ var fight_blend := 0.0
 var view_yaw: float
 var ground: Callable
 # Calm follow (PLAN-feel S6)
-const LEAD := 0.12             # s: the look-at point leads the creature by this much of its velocity
-const POS_TAU := 0.12          # s: first-order follow of the look-at point
-const VEL_TAU := 0.15          # s: low-pass of the creature's velocity
-const YAW_TAU := 0.5           # s: the yaw closes 1/e of its error in this time...
-const YAW_MAX := 1.74          # rad/s: ...but never faster than this (100 deg/s)
-const YAW_ACC := 6.0           # rad/s2: angular acceleration limit
-const AWAY_MAX := 1.9199       # rad (110 deg): follow only when running away from or across the camera
-const PIVOT_RATE := 2.5        # rad/s: no swing while the creature pivots
-const ENGAGE_TIME := 0.25      # s: the heading must have been steady (within 20 deg) over this time
-const ENGAGE_TOL := 0.3491     # rad (20 deg)
+var LEAD := 0.12             # s: the look-at point leads the creature by this much of its velocity
+var POS_TAU := 0.12          # s: first-order follow of the look-at point
+var VEL_TAU := 0.15          # s: low-pass of the creature's velocity
+var YAW_TAU := 0.5           # s: the yaw closes 1/e of its error in this time...
+var YAW_MAX := 1.74          # rad/s: ...but never faster than this (100 deg/s)
+var YAW_ACC := 6.0           # rad/s2: angular acceleration limit
+var AWAY_MAX := 1.9199       # rad (110 deg): follow only when running away from or across the camera
+var PIVOT_RATE := 2.5        # rad/s: no swing while the creature pivots
+var ENGAGE_TIME := 0.25      # s: the heading must have been steady (within 20 deg) over this time
+var ENGAGE_TOL := 0.3491     # rad (20 deg)
 var kick := false              # optional speed cues (settings camera/kick): wider fov and boom near sprint speed
 var top_speed := 8.84
 var fov_add := 0.0
