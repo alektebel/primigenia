@@ -13,7 +13,7 @@ const SETTINGS_PATH := "user://settings.cfg"
 # controls/strafe_latch: WASD is relative to the camera as it was when the keys changed (a held S or A runs
 # straight); off = the live camera (a held S circles). controls/tank: Spore-style steering, A/D turn the
 # creature, W forward, S reverse (overrides the latch).
-var settings: Dictionary = {"seed": 1, "grass": 252000, "quality": "high", "wild": true,
+var settings: Dictionary = {"seed": 1, "grass": 252000, "quality": "auto", "sun_shadows": false, "wild": true,
 	"controls/strafe_latch": true, "controls/tank": false, "camera/kick": false}
 var terrain: Dictionary = {}
 var data = null          # TerrainData

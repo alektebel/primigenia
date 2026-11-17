@@ -73,6 +73,8 @@ func _run() -> void:
 	game.studio_dir = studio_dir
 	root.size = Vector2i(1280, 720)
 	game.settings.grass = 3000
+	for a in OS.get_cmdline_user_args():
+		game.settings.quality = a      # make godot-play-test QUALITY=low|medium|high|auto forces the rock tier
 	game.settings.wild = true
 	await _rig_contract()
 	await _stage()

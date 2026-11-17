@@ -5,6 +5,19 @@ const Chunks := preload("res://game/island/terrain_chunks.gd")
 const TerrainData := preload("res://game/island/terrain_data.gd")
 
 func run(t) -> void:
+	# Rock quality tiers (PLAN-rock step 8): explicit settings win, "auto" reads the adapter.
+	t.eq(Chunks.resolve_tier("low", "NVIDIA GeForce RTX 4090"), 1, "quality low is tier 1")
+	t.eq(Chunks.resolve_tier("medium", "NVIDIA GeForce RTX 4090"), 2, "quality medium is tier 2")
+	t.eq(Chunks.resolve_tier("high", "llvmpipe (LLVM 23.1.4, 256 bits)"), 3, "quality high is tier 3")
+	for a in ["AMD Radeon(TM) 860M Graphics", "AMD Radeon 780M", "AMD Radeon Graphics (radeonsi, gfx1150, LLVM 23.1.4, DRM 3.64)", "Intel(R) UHD Graphics 630", "Intel(R) Arc(TM) Graphics", "Intel Iris Xe Graphics", "llvmpipe (LLVM 23.1.4, 256 bits)", "SwiftShader"]:
+		t.eq(Chunks.resolve_tier("auto", a), 2, "auto on integrated or software GPU '%s' is medium" % a)
+	for a in ["NVIDIA GeForce RTX 4070 Laptop GPU", "AMD Radeon RX 7900 XTX (radeonsi, navi31)", "AMD Radeon RX 7600M XT", "Apple M2"]:
+		t.eq(Chunks.resolve_tier("auto", a), 3, "auto on discrete GPU '%s' is high" % a)
+	t.eq(Chunks.resolve_tier("bogus", "NVIDIA GeForce RTX 4090"), 3, "an unknown setting behaves as auto")
+	for n in ["low", "medium", "high"]:
+		var sh: Shader = load("res://game/shaders/terrain_%s.gdshader" % n)
+		t.check(sh != null and sh.code.contains("#define ROCK_TIER") and sh.code.contains("terrain_body.gdshaderinc"), "terrain_%s.gdshader is a tier variant of the body" % n)
+	t.check(not (load("res://game/shaders/terrain_high.gdshader") as Shader).code.contains("cull_disabled"), "the grid shader culls back faces (only the skirt copy does not)")
 	t.eq(Chunks.lod_for(260.0, 0), 0, "260 m stays LOD 0 (hysteresis)")
 	t.eq(Chunks.lod_for(276.0, 0), 1, "276 m from LOD 0 goes to LOD 1")
 	t.eq(Chunks.lod_for(1000.0, 0), 2, "1 km is LOD 2")

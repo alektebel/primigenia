@@ -3,7 +3,12 @@ extends Node3D
 # instanced in a cps x cps grid of 64-cell chunks. The vertex shader reads the height texture.
 
 const TerrainData := preload("res://game/island/terrain_data.gd")
-const TERRAIN_SHADER := preload("res://game/shaders/terrain.gdshader")
+# Rock quality tiers (docs/godot/PLAN-rock.md section 6): compile-time variants, only the one in use is compiled.
+const TIER_SHADERS := [
+	preload("res://game/shaders/terrain_low.gdshader"),
+	preload("res://game/shaders/terrain_medium.gdshader"),
+	preload("res://game/shaders/terrain_high.gdshader"),
+]
 const ROCK_TEX := preload("res://game/textures/rock_detail.png")
 const SCREE_TEX := preload("res://game/textures/scree_detail.png")
 
@@ -19,9 +24,31 @@ var lod_meshes: Array = []        # ArrayMesh per LOD (surface 0: grid, surface 
 var materials: Array = []         # [lod] -> [grid material, skirt material]
 var chunks: Array = []            # {node, lod, center: Vector3(aabb centre), aabb: AABB}
 var lod_debug := false
+var tier := 2                    # 1 low, 2 medium, 3 high (rock detail), resolved from Game.settings.quality
 var _last_update_pos := Vector3(1e9, 1e9, 1e9)
 var _timer := 0.0
 var _skirt_shader: Shader
+
+# Tier (1 low, 2 medium, 3 high) for a quality setting ("low", "medium", "high" or "auto") and a video adapter name. "auto" picks
+# medium on integrated and software GPUs (Radeon 7xxM/8xxM and "Radeon Graphics", Intel, llvmpipe, SwiftShader) and high otherwise.
+static func resolve_tier(quality: String, adapter: String) -> int:
+	match quality:
+		"low":
+			return 1
+		"medium":
+			return 2
+		"high":
+			return 3
+	var a := adapter.to_lower()
+	var re := RegEx.new()
+	re.compile("radeon(\\(tm\\))? ?(graphics|[78]\\d\\dm)")
+	if re.search(a) != null or a.contains("intel") or a.contains("llvmpipe") or a.contains("swiftshader") or a.contains("software"):
+		return 2
+	return 3
+
+func _quality() -> String:
+	var game = get_tree().root.get_node_or_null("Game") if is_inside_tree() else null
+	return String(game.settings.get("quality", "auto")) if game != null else "auto"
 
 # Pure function for tests: LOD for a distance given the current LOD (hysteresis of 10 %).
 static func lod_for(distance: float, current: int) -> int:
@@ -102,12 +129,16 @@ static func build_lod_mesh(step: int, cell: float) -> ArrayMesh:
 func build(terrain_data) -> void:
 	data = terrain_data
 	var cps: int = data.chunks_per_side
+	tier = resolve_tier(_quality(), RenderingServer.get_video_adapter_name())
+	var shader: Shader = TIER_SHADERS[tier - 1]
+	if tier == 3 and is_inside_tree():
+		get_viewport().anisotropic_filtering_level = Viewport.ANISOTROPY_4X      # the High tier's detail samplers
 	_skirt_shader = Shader.new()
-	_skirt_shader.code = TERRAIN_SHADER.code.replace("cull_back", "cull_disabled")
+	_skirt_shader.code = shader.code.replace("cull_back", "cull_disabled")
 	for lod in STEPS.size():
 		var mesh := build_lod_mesh(STEPS[lod], data.cell)
 		var grid_mat := ShaderMaterial.new()
-		grid_mat.shader = TERRAIN_SHADER
+		grid_mat.shader = shader
 		var skirt_mat := ShaderMaterial.new()
 		skirt_mat.shader = _skirt_shader
 		for m in [grid_mat, skirt_mat]:

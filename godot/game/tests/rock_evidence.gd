@@ -54,6 +54,17 @@ func _run() -> void:
 			await debug_frame(island, 8, out_dir.path_join("flicker_b.png"))
 			await debug_frame(island, 6, out_dir.path_join("flicker_mask.png"))
 			island.camera.global_position -= island.camera.global_transform.basis.x * 0.25
+	if extra.contains("shadows"):
+		# A/B for the owner (PLAN-rock step 9): the same views with the baked sun shadows on, written as <view>_shadows.png.
+		island.set_sun_shadows(true)
+		for v in views:
+			Views.apply(island, game.data, v)
+			island.grass.visible = (v == "chase")
+			for i in 4:
+				await process_frame
+			await RenderingServer.frame_post_draw
+			root.get_texture().get_image().save_png(out_dir.path_join(v + "_shadows.png"))
+			print("wrote ", v, " (shadows)")
 	if extra.contains("topdown"):
 		# Orthographic top-down frames (0.2 m per pixel) of the material weights before (11) and after (10) the height blend, and the snow masks
 		# before (7) and after (6) the gate, around the lit cliff, for the boundary width and snow metrics.

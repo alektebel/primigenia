@@ -56,6 +56,19 @@ func setup(entry: Dictionary, build_textures: bool = true) -> void:
 		surface_tex = _tex(Image.FORMAT_RGBA8, surface)
 		relief_tex = _tex(Image.FORMAT_RGBA8, relief)
 
+# PLAN-rock step 9 (optional, off by default): bakes the sun visibility into relief.A and refreshes the texture in place (materials keep
+# their reference). Not cached: ~0.3 s at 1024. Returns the bake time in ms, or -1 when the input is invalid.
+func apply_sun_shadows(sun: Vector3) -> int:
+	var t0 := Time.get_ticks_msec()
+	var vis: PackedByteArray = CporeTerrain.sun_visibility({"n": n, "size_m": size_m, "height": height}, sun)
+	if vis.size() != n * n:
+		return -1
+	for k in n * n:
+		relief[k * 4 + 3] = vis[k]
+	if relief_tex != null:
+		relief_tex.update(Image.create_from_data(n, n, false, Image.FORMAT_RGBA8, relief))
+	return Time.get_ticks_msec() - t0
+
 func _tex(format: Image.Format, bytes: PackedByteArray) -> ImageTexture:
 	return ImageTexture.create_from_image(Image.create_from_data(n, n, false, format, bytes))
 

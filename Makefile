@@ -311,8 +311,9 @@ godot-loco-test:
 
 # The whole game, headless: main -> menu -> Play -> encounter, rig contract, studio -> save -> Play (godot/game/tests/play_test.gd).
 .PHONY: godot-play-test godot-wire-evidence
+QUALITY ?=
 godot-play-test: godot
-	nice -n 10 timeout 900 $(GODOT) --headless --fixed-fps 60 --path godot --script res://game/tests/play_test.gd
+	nice -n 10 timeout 900 $(GODOT) --headless --fixed-fps 60 --path godot --script res://game/tests/play_test.gd $(if $(QUALITY),-- $(QUALITY),)
 godot-wire-evidence: godot
 	@mkdir -p docs/evidence/godot/wire
 	LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 1200 xvfb-run -a $(GODOT) --rendering-driver opengl3 --max-fps 15 --resolution 1280x720 --path godot \
@@ -339,9 +340,12 @@ godot-rock-bench-sw: godot
 	@mkdir -p $(ROCK_OUT)
 	LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 1800 xvfb-run -a -s "-screen 0 1280x720x24" $(GODOT) --rendering-driver opengl3 --resolution 1280x720 --path godot \
 	  --script res://game/tests/bench_terrain.gd -- $(ROCK_OUT) $(TIER) 40 10 60000
+# The stretch, sign and strata tests, once per quality tier (low, medium, high).
 godot-rock-stretch-test: godot
-	LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 600 xvfb-run -a -s "-screen 0 1280x720x24" $(GODOT) --rendering-driver opengl3 --max-fps 15 --path godot \
-	  --script res://game/tests/rock_stretch_test.gd
+	for t in low medium high; do \
+	  LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 600 xvfb-run -a -s "-screen 0 1280x720x24" $(GODOT) --rendering-driver opengl3 --max-fps 15 --path godot \
+	    --script res://game/tests/rock_stretch_test.gd -- $$t || exit 1; \
+	done
 
 # PLAN-feel: how the creature feels to steer (C motion rule + the real Godot pipeline), writes docs/evidence/godot/feel/measurements.json.
 .PHONY: godot-feel-test godot-feel-evidence

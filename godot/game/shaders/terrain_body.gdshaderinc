@@ -1,5 +1,4 @@
-shader_type spatial;
-render_mode unshaded, cull_back;
+// Body of the terrain shaders (included by terrain_low/medium/high.gdshader, which set shader_type, render_mode and ROCK_TIER).
 // GPU-displaced geomipmapped terrain: flat grid chunks, heights from height_tex.
 #include "res://game/shaders/land.gdshaderinc"
 #include "res://game/shaders/terrain_maps.gdshaderinc"
@@ -102,9 +101,11 @@ void fragment() {
 		}
 		ALBEDO = min(dbg * 0.97, vec3(0.97));   // raw: read it under a linear tone map (the stretch test does)
 	} else {
-		float light = max(dot(gn, SUN_DIR), 0.0);
+		vec4 rl = texture(relief_tex, (xz + MAP_HALF) / (MAP_CELL * float(MAP_N)));
+		float vis = mix(1.0, rl.a, rock_shadows);   // baked terrain shadow (step 9), 1 when the switch is off
+		float light = max(dot(gn, SUN_DIR), 0.0) * vis;
 		float wave = meadowWave(xz, TIME);
-		float msh = occluder_shadow(wp);
+		float msh = min(occluder_shadow(wp), vis);
 		vec4 sb = surface_bilinear(xz);   // G grass, B cavity, A wetness
 		float cavity = sb.b;
 		float wet = sb.a;
@@ -114,26 +115,29 @@ void fragment() {
 		float w[6];
 		RockTex rt;
 		bool have_rock = terrain_weights(gn, steep, wet, sb.g, dist, mc, xz, true, w, rt);
-		vec3 meadow = meadowColor(tone(xz), 1.0, light, wave, xz) * vec3(0.6, 0.68, 0.54) * mix(SH_K, 1.0, msh);
-		meadow *= mix(S_TINT, vec3(1.0), msh);
+		// Meadow colour only where something reads it (the meadow weight, the grass mask or a fan toe): far mountains skip it.
+		vec3 meadow = vec3(0.0);
+		if (w[0] + sb.g > 0.001) {
+			meadow = meadowColor(tone(xz), 1.0, light, wave, xz) * vec3(0.6, 0.68, 0.54) * mix(SH_K, 1.0, msh);
+			meadow *= mix(S_TINT, vec3(1.0), msh);
+		}
 		float turf_slope = smoothstep(0.74, 0.94, gn.y);
 		float w_meadow = w[0] * turf_slope;
 		float w_rock = w[1] + w[0] * (1.0 - turf_slope);
 		vec3 rock_c = vec3(0.0);
 		vec3 scree_c = vec3(0.0);
 		vec3 volc_c = vec3(0.0);
-		vec4 rl = texture(relief_tex, (xz + MAP_HALF) / (MAP_CELL * float(MAP_N)));
 		float fan = smoothstep(0.25, 0.75, rl.b);
 		float snow_light = light;
 		if (have_rock) {
 			float fw;
-			float rlight = rock_light(gn, rt.tilt, fw);
+			float rlight = rock_light(gn, rt.tilt, fw) * vis;
 			snow_light = rlight;
 			rock_c = rock_shade(R0, R1, rt, rlight, fw, steep, cavity, wp, 1.0, true, rl, wet) * GRASS;
 			if (w[2] > 0.001) {
 				ScreeTex st = scree_sample(mc, rt, dist, fan);
 				float sfw;
-				float sl = rock_light(gn, st.tilt, sfw);
+				float sl = rock_light(gn, st.tilt, sfw) * vis;
 				scree_c = scree_shade(rock_c, st, sl, sfw, fan);
 			}
 			if (w[3] > 0.001) {

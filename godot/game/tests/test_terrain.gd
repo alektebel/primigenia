@@ -14,6 +14,7 @@ func run(t) -> void:
 	t.eq(CporeTerrain.version(), 3, "terrain version")
 	t.eq(CporeTerrain.validate(d), 0, "defaults validate")
 	run_relief(t)
+	run_sun(t)
 
 	var cli: String = t.build_path("terrain_cli")
 	var cases := [[42, 64], [7, 128], [1234, 128], [1, 1024]]
@@ -144,3 +145,24 @@ func run_relief(t) -> void:
 	t.check(mono and prev > 150, "B is monotone in sediment and reaches %d" % prev)
 	var bad: Dictionary = CporeTerrain.surface_maps({"n": n, "size_m": size, "height": PackedFloat32Array()})
 	t.check(bad.is_empty(), "surface_maps refuses input without sediment")
+
+# PLAN-rock step 9: baked sun visibility (off by default in the game).
+func run_sun(t) -> void:
+	var n := 128
+	var size := 128.0 * 3.5
+	var sun := Vector3(-0.62, 0.28, -0.72).normalized()
+	var flat: PackedByteArray = CporeTerrain.sun_visibility(_relief_input(n, size, func(_x, _z): return 50.0, func(_x, _z): return 0.0), sun)
+	t.eq(flat.size(), n * n, "sun_visibility has n*n bytes")
+	var mn := 255
+	for b in flat:
+		mn = mini(mn, b)
+	t.check(mn >= 250, "flat ground is fully lit (min %d)" % mn)
+	# A 60 m wall across x at x = 0 (z-independent): the sun comes from -x, so cells just east of it are shadowed, west lit.
+	var s2 := Vector3(-0.9, 0.3, 0.0).normalized()
+	var wall: PackedByteArray = CporeTerrain.sun_visibility(_relief_input(n, size, func(x, _z): return 60.0 if x > -4.0 and x < 4.0 else 0.0, func(_x, _z): return 0.0), s2)
+	var cell := size / n
+	var at := func(x: float) -> int: return wall[(n / 2) * n + clampi(floori((x + size * 0.5) / cell), 0, n - 1)]
+	t.check(at.call(-60.0) > 240, "west of the wall (sun side) is lit (%d)" % at.call(-60.0))
+	t.check(at.call(40.0) < 40, "40 m behind the wall is in shadow (%d)" % at.call(40.0))
+	t.check(at.call(200.0) > 200, "far behind the wall the shadow has ended (%d)" % at.call(200.0))
+	t.check(CporeTerrain.sun_visibility({"n": n}, sun).is_empty(), "invalid input gives an empty array")

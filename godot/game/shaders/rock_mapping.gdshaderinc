@@ -31,7 +31,7 @@ vec2 map_uv(vec3 p, int axis) {
 vec3 map_weights(vec3 n) {
 	vec3 a = abs(n);
 #ifdef MAP_TRIPLANAR
-	vec3 w = pow(a, vec3(MAP_SHARP * 0.5));
+	vec3 w = pow(a, vec3(MAP_SHARP));
 #else
 	// Only the two largest components can exceed 1/sqrt(3), so this is the biplanar pair without sorting.
 	vec3 w = pow(clamp((a - MAP_ORTHO) / (1.0 - MAP_ORTHO), 0.0, 1.0), vec3(MAP_SHARP / 8.0));
@@ -114,11 +114,22 @@ vec3 map_apply_tilt(vec3 n, vec3 tilt, float strength) {
 // Debug: R = fract(u / size), G = fract(v / size), B = checker, blended through the active mapping.
 vec3 map_checker(MapCtx c, float size) {
 	vec3 s = vec3(0.0);
+#ifdef MAP_TRIPLANAR
+	// A blend of three sawtooths is not a texel density: show the dominant projection only (the stretch test reads this).
+	float top = max(c.w.x, max(c.w.y, c.w.z));
+#endif
 	for (int k = 0; k < 3; k++) {
+#ifdef MAP_TRIPLANAR
+		if (c.w[k] >= top) {
+#else
 		if (c.w[k] > 0.0005) {
+#endif
 			vec2 uv = map_uv(c.p, k) / size;
 			s += c.w[k] * vec3(fract(uv.x), fract(uv.y), mod(floor(uv.x) + floor(uv.y), 2.0));
 		}
 	}
+#ifdef MAP_TRIPLANAR
+	s /= top;
+#endif
 	return s;
 }

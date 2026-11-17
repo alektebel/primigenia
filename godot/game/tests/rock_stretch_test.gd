@@ -172,7 +172,8 @@ func _run() -> void:
 	var s60 := sin(deg_to_rad(SLOPE))
 	var c60 := cos(deg_to_rad(SLOPE))
 	for k in 8:
-		var az := k * PI / 4.0
+		# Triplanar's debug checker shows the dominant axis, which flips at exact 45 degree ties: the High tier is read 7 degrees off.
+		var az := k * PI / 4.0 + (deg_to_rad(7.0) if tier == "high" else 0.0)
 		var cs := absf(cos(az)) + absf(sin(az))
 		var ls := (95.0 - 35.0) / c60                       # surface length of the radial line
 		down.append(tv(img1, radial(az, 35.0, 95.0), 1) / (ls / GRID))

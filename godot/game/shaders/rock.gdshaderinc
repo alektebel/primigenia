@@ -8,8 +8,14 @@
 #define ROCK_TIER 2
 #endif
 
+// Anisotropic filtering only in the High tier (it is the costly part of a textureGrad on a grazing face).
+#if ROCK_TIER >= 3
 uniform sampler2D rock_tex : filter_linear_mipmap_anisotropic, repeat_enable;    // RG -grad h, B height, A crack occlusion
 uniform sampler2D scree_tex : filter_linear_mipmap_anisotropic, repeat_enable;
+#else
+uniform sampler2D rock_tex : filter_linear_mipmap, repeat_enable;
+uniform sampler2D scree_tex : filter_linear_mipmap, repeat_enable;
+#endif
 uniform sampler2D relief_tex : filter_linear, repeat_disable;   // R fine curvature, G broad curvature (> 0.5 concave), B sediment, A sun
 
 // World metres per texture tile. Non-integer ratios, so layers never line up.
@@ -87,6 +93,8 @@ const float SNOW_MACRO_HI = 0.58;
 const float SNOW_LINE_Y = 365.0;         // the classifier's snow line (core/src/terrain.c): 365 - 45 * aspect
 const float SNOW_LINE_ASPECT = 45.0;
 const float SNOW_DUST = 0.8;
+
+uniform float rock_shadows = 0.0;   // 1 = apply the baked sun visibility in relief.A (step 9, off by default)
 
 uniform vec3 rock_normal_gain = vec3(1.0);   // per layer (macro, meso, micro) multiplier of the normal strengths; tests set it
 

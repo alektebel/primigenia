@@ -52,6 +52,7 @@ void CporeTerrain::_bind_methods() {
     ClassDB::bind_static_method("CporeTerrain", D_METHOD("validate", "params"), &CporeTerrain::validate);
     ClassDB::bind_static_method("CporeTerrain", D_METHOD("hash", "data"), &CporeTerrain::hash);
     ClassDB::bind_static_method("CporeTerrain", D_METHOD("surface_maps", "data"), &CporeTerrain::surface_maps);
+    ClassDB::bind_static_method("CporeTerrain", D_METHOD("sun_visibility", "data", "sun"), &CporeTerrain::sun_visibility);
     ClassDB::bind_method(D_METHOD("generate", "params"), &CporeTerrain::generate);
     ClassDB::bind_method(D_METHOD("progress"), &CporeTerrain::progress);
 }
@@ -297,5 +298,85 @@ Dictionary CporeTerrain::surface_maps(const Dictionary &data) {
     out["relief"] = relief;
     out["chunk_bounds"] = bounds;
     out["chunks_per_side"] = cps;
+    return out;
+}
+
+// Sun visibility (PLAN-rock step 9). A ray from every second cell towards the sun, stepped at a growing stride; the visibility is
+// the smallest clearance over the terrain relative to a penumbra that widens with distance (soft shadows), 0 inside a shadow.
+PackedByteArray CporeTerrain::sun_visibility(const Dictionary &data, const Vector3 &sun) {
+    PackedByteArray out;
+    int64_t n;
+    float size_m;
+    if (!data.has("n") || !data.has("size_m") || !data.has("height")) return out;
+    if (!cpore::to_int(data["n"], CP_TERRAIN_N_MIN, CP_TERRAIN_N_MAX, n) || !cpore::to_float(data["size_m"], size_m)) return out;
+    if (data["height"].get_type() != Variant::PACKED_FLOAT32_ARRAY) return out;
+    const PackedFloat32Array height = data["height"];
+    if (height.size() != n * n) return out;
+    const int N = int(n);
+    const float cell = size_m / float(N);
+    out.resize(n * n);
+    uint8_t *O = out.ptrw();
+    const float hl = std::sqrt(sun.x * sun.x + sun.z * sun.z);
+    if (hl < 1e-4f || sun.y <= 0.f || N < 8) {
+        for (int64_t k = 0; k < n * n; ++k) O[k] = 255;
+        return out;
+    }
+    const float dx = sun.x / hl, dz = sun.z / hl, slope = sun.y / hl;
+    const float *H = height.ptr();
+    float max_h = -1e30f;
+    for (int64_t k = 0; k < n * n; ++k) max_h = std::max(max_h, H[k]);
+    auto sample = [&](float fx, float fz) {   // bilinear height at cell indices (fractional)
+        fx = std::max(0.f, std::min(float(N - 1), fx));
+        fz = std::max(0.f, std::min(float(N - 1), fz));
+        const int i = std::min(int(fx), N - 2), j = std::min(int(fz), N - 2);
+        const float u = fx - float(i), v = fz - float(j);
+        const float *r = H + size_t(j) * N + i;
+        const float a = r[0] + (r[1] - r[0]) * u;
+        const float b = r[N] + (r[N + 1] - r[N]) * u;
+        return a + (b - a) * v;
+    };
+    const int M = N / 2;
+    std::vector<float> coarse(size_t(M) * M, 1.f), tmp(size_t(M) * M, 1.f);
+    for (int b = 0; b < M; ++b) {
+        for (int a = 0; a < M; ++a) {
+            const float fx = float(a * 2), fz = float(b * 2);   // cell indices of the ray origin
+            const float h0 = sample(fx, fz) + 0.3f;
+            float vis = 1.f;
+            float d = cell;   // metres along the horizontal sun direction
+            while (vis > 0.f) {
+                const float px = fx + dx * d / cell, pz = fz + dz * d / cell;
+                if (px < 0.f || pz < 0.f || px > float(N - 1) || pz > float(N - 1)) break;
+                const float ray = h0 + slope * d;
+                if (ray > max_h) break;
+                const float clear = ray - sample(px, pz);
+                const float pen = 0.5f + 0.08f * d;
+                const float c = clear / pen;
+                vis = std::min(vis, c < 0.f ? 0.f : (c > 1.f ? 1.f : c));
+                d += cell * (1.f + d / 600.f);
+            }
+            coarse[size_t(b) * M + a] = vis;
+        }
+    }
+    for (int b = 0; b < M; ++b) {   // 3x3 box blur
+        for (int a = 0; a < M; ++a) {
+            float s = 0.f;
+            for (int q = -1; q <= 1; ++q)
+                for (int p = -1; p <= 1; ++p) s += coarse[size_t(std::max(0, std::min(M - 1, b + q))) * M + std::max(0, std::min(M - 1, a + p))];
+            tmp[size_t(b) * M + a] = s / 9.f;
+        }
+    }
+    for (int j = 0; j < N; ++j) {   // bilinear upsample to the full grid
+        const float v = std::max(0.f, std::min(float(M - 1), float(j) * 0.5f));
+        const int j0 = std::min(int(v), M - 2);
+        const float fv = v - float(j0);
+        for (int i = 0; i < N; ++i) {
+            const float u = std::max(0.f, std::min(float(M - 1), float(i) * 0.5f));
+            const int i0 = std::min(int(u), M - 2);
+            const float fu = u - float(i0);
+            const float *r = &tmp[size_t(j0) * M + i0];
+            const float top = r[0] + (r[1] - r[0]) * fu, bot = r[M] + (r[M + 1] - r[M]) * fu;
+            O[size_t(j) * N + i] = byte01(top + (bot - top) * fv);
+        }
+    }
     return out;
 }

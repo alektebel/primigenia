@@ -6,6 +6,8 @@ render_mode unshaded, cull_disabled, world_vertex_coords;
 #include "res://game/shaders/terrain_maps.gdshaderinc"
 
 uniform vec3 center = vec3(0.0);
+uniform sampler2D relief_tex : filter_linear, repeat_disable;   // A: baked sun visibility (PLAN-rock step 9)
+uniform float rock_shadows = 0.0;                               // 0 off (the default), 1 on
 
 varying vec3 v_base;     // x, ground y, z of the blade root
 varying float v_h;       // 0 root .. 1 tip
@@ -29,7 +31,9 @@ void vertex() {
 	float ground = ground_tri(base) - 0.025;
 	vec3 gn = ground_normal(base);
 	float light = max(dot(gn, SUN_DIR), 0.0);
-	float sh = 1.0;
+	float vis = mix(1.0, texture(relief_tex, (base + MAP_HALF) / (MAP_CELL * float(MAP_N))).a, rock_shadows);
+	light *= vis;
+	float sh = vis;
 	vec2 push = vec2(0.0);
 	if (lod < 0.5) {
 		sh = occluder_shadow(vec3(base.x, ground, base.y));

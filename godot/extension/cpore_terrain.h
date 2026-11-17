@@ -21,4 +21,8 @@ public:
     static godot::String hash(const godot::Dictionary &data);
     // Derived render maps (see docs/godot/M0.md): {surface: RGBA8 n*n*4, chunk_bounds: min/max per 64-cell chunk}.
     static godot::Dictionary surface_maps(const godot::Dictionary &data);
+    // Optional baked sun visibility (PLAN-rock step 9, off by default): n*n bytes, 255 lit .. 0 shadowed, for a sun direction given as
+    // the vector towards the sun in Godot world axes (x east, y up, z south). Ray-marched at half resolution, blurred 3x3, upsampled.
+    // Presentation only: not part of the terrain hash, not cached. Returns an empty array for invalid input.
+    static godot::PackedByteArray sun_visibility(const godot::Dictionary &data, const godot::Vector3 &sun);
 };
