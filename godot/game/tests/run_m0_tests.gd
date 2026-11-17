@@ -18,6 +18,7 @@ const TESTS := [
 	"res://game/tests/test_camera.gd",
 	"res://game/tests/test_actors.gd",
 	"res://game/tests/test_cache.gd",
+	"res://game/tests/test_rock_detail.gd",
 ]
 
 var checks := 0
