@@ -349,13 +349,15 @@ static int profile_read(FILE *f,CpCombatProfile *p){
     return 0;
 }
 /* Same container as apps/world_cli.c replay(): v2 header, setup, then one input per tick. */
-static void load_golden(unsigned seed,CpStageSetup *su){
+static CpStageDebugEntry golden_dbg[64];
+static int golden_ndbg;
+static void load_golden_stem(const char *stem,CpStageSetup *su){
     char path[96];
-    snprintf(path,sizeof path,"tests/golden/world-%u.log",seed);
+    snprintf(path,sizeof path,"tests/golden/%s.log",stem);
     FILE *f=fopen(path,"r");
     assert(f);
     char magic[32];int version,ticks;
-    assert(fscanf(f,"%31s%d",magic,&version)==2&&!strcmp(magic,"CPORE_WORLD_LOG")&&version==2);
+    assert(fscanf(f,"%31s%d",magic,&version)==2&&!strcmp(magic,"CPORE_WORLD_LOG")&&(version==2||version==3));
     memset(su,0,sizeof *su);
     assert(fscanf(f,"%u%u%d%f%f%f%f%f%f%d%d",&su->seed,&su->terrain_seed,&su->terrain,&su->nest_x,&su->nest_z,&su->flat_height,&su->water_x,&su->water_z,&su->water_radius,&su->n,&su->n_obstacles)==11);
     assert(profile_read(f,&su->player)==0);
@@ -374,8 +376,16 @@ static void load_golden(unsigned seed,CpStageSetup *su){
         assert(fscanf(f,"%d%d%d%d%d%d%d%f%f",&a->verb,&a->target,&a->move,&a->dir,&a->sprint,&hx,&hz,&a->x,&a->z)==9);
         a->hx=hx;a->hz=hz;
     }
+    golden_ndbg=0;
+    if(version==3){
+        assert(fscanf(f,"%d",&golden_ndbg)==1&&golden_ndbg>=0&&golden_ndbg<=64);
+        for(int i=0;i<golden_ndbg;i++){
+            CpStageDebugEntry *e=&golden_dbg[i];
+            assert(fscanf(f,"%u%d%d%d%f%f%f",&e->tick,&e->d.op,&e->d.id,&e->d.a,&e->d.x,&e->d.z,&e->d.v)==7);
+        }
+    }
     fclose(f);
-    snprintf(path,sizeof path,"tests/golden/world-%u.hashes",seed);
+    snprintf(path,sizeof path,"tests/golden/%s.hashes",stem);
     f=fopen(path,"r");
     assert(f);
     for(int i=0;i<GOLDEN_TICKS;i++){
@@ -384,6 +394,11 @@ static void load_golden(unsigned seed,CpStageSetup *su){
         golden_hash[i]=h;
     }
     fclose(f);
+}
+static void load_golden(unsigned seed,CpStageSetup *su){
+    char stem[48];
+    snprintf(stem,sizeof stem,"world-%u",seed);
+    load_golden_stem(stem,su);
 }
 static CpStageWorld snap_a,snap_b;
 static void snapshots(void){
@@ -652,6 +667,141 @@ static void field_fight(void){
     assert(far>cc(40));
     puts("PASS field fights stop at cliffs and water");
 }
+/* ---- debug ops (PLAN-devtools step 4) ---- */
+static void dbg_op(int op,int id,int a,float x,float z,float v,int expect){
+    CpStageDebug d={op,id,a,x,z,v};
+    const uint64_t before=cp_stage_hash(&w);
+    const int rc=cp_stage_debug(&w,&d);
+    assert(rc==expect);
+    if(expect<0){
+        assert(cp_stage_hash(&w)==before);   /* a rejected op changes nothing */
+        assert(strlen(cp_stage_debug_error(rc))>4);
+    }
+    else assert(w.hash==cp_stage_hash(&w));
+}
+static void debug_ops(void){
+    reset();   /* FLAT, nest 0,0, one Garfio at (0,18), no water circle */
+    setup.n=1;setup.water_x=60;setup.water_z=60;setup.water_radius=5;
+    assert(cp_stage_reset(&w,&setup)==0);
+    /* teleport */
+    dbg_op(CP_STAGE_DBG_TELEPORT,0,0,30,-20,0,0);
+    assert(w.player.x==30&&w.player.z==-20&&w.player.speed==0);
+    dbg_op(CP_STAGE_DBG_TELEPORT,1,0,-40,10,0,0);
+    assert(w.wild[0].x==-40&&w.wild[0].goal_x==-40&&w.wild[0].goal_z==10);
+    dbg_op(CP_STAGE_DBG_TELEPORT,2,0,0,0,0,-1);            /* no such creature */
+    dbg_op(CP_STAGE_DBG_TELEPORT,0,0,NAN,0,0,-1);
+    dbg_op(CP_STAGE_DBG_TELEPORT,0,0,196,0,0,-4);          /* outside the bound */
+    dbg_op(CP_STAGE_DBG_TELEPORT,0,0,60,60,0,-4);          /* inside the water circle */
+    dbg_op(99,0,0,0,0,0,-1);
+    /* spawn: no RNG draw, full world rejects */
+    const CpRng spawn_before=w.spawn_rng,roam_before=w.roam_rng;
+    dbg_op(CP_STAGE_DBG_SPAWN,0,3,10,10,0,0);
+    assert(w.setup.n==2&&w.wild[1].species==3&&w.wild[1].home_x==10&&w.wild[1].roam_ticks==40&&w.setup.wild[1].bot==-1);
+    assert(!memcmp(&spawn_before,&w.spawn_rng,sizeof spawn_before)&&!memcmp(&roam_before,&w.roam_rng,sizeof roam_before));
+    dbg_op(CP_STAGE_DBG_SPAWN,0,4,10,10,0,-1);
+    dbg_op(CP_STAGE_DBG_SPAWN,0,0,1000,0,0,-4);
+    while(w.setup.n<CP_STAGE_MAX_WILD)dbg_op(CP_STAGE_DBG_SPAWN,0,0,-100,-100,0,0);
+    dbg_op(CP_STAGE_DBG_SPAWN,0,0,-100,-100,0,-3);
+    /* kill, heal, clock, flags, param */
+    dbg_op(CP_STAGE_DBG_KILL,2,0,0,0,0,0);
+    assert(w.wild[1].dead);
+    dbg_op(CP_STAGE_DBG_KILL,0,0,0,0,0,-1);
+    dbg_op(CP_STAGE_DBG_KILL,25,0,0,0,0,-1);
+    w.player.hp=10;w.player.stamina=3;
+    dbg_op(CP_STAGE_DBG_HEAL,0,0,50,-1,0,0);
+    assert(w.player.hp==50&&w.player.stamina==w.player.profile.stamina);
+    dbg_op(CP_STAGE_DBG_HEAL,0,0,1e9f,10,0,0);
+    assert(w.player.hp==w.player.profile.hp&&w.player.stamina==10);
+    dbg_op(CP_STAGE_DBG_HEAL,0,0,0,10,0,-1);
+    dbg_op(CP_STAGE_DBG_HEAL,2,0,10,10,0,-1);               /* the dead are not healed */
+    dbg_op(CP_STAGE_DBG_CLOCK,0,5000,0,0,0,0);
+    assert(w.clock==5000);
+    dbg_op(CP_STAGE_DBG_CLOCK,0,CP_STAGE_DAY_TICKS,0,0,0,-1);
+    dbg_op(CP_STAGE_DBG_FLAGS,0,4,0,0,0,-1);
+    dbg_op(CP_STAGE_DBG_FLAGS,0,3,0,0,0,0);
+    assert(w.debug_flags==3);
+    dbg_op(CP_STAGE_DBG_FLAGS,0,0,0,0,0,0);
+    assert(CP_STAGE_PARAM_COUNT==14&&!strcmp(CP_STAGE_PARAMS[0].name,"jog_k"));
+    for(int i=0;i<CP_STAGE_PARAM_COUNT;i++){
+        const float def=*(const float *)((const char *)&CP_STAGE_MOTION+CP_STAGE_PARAMS[i].offset);
+        assert(def>=CP_STAGE_PARAMS[i].min&&def<=CP_STAGE_PARAMS[i].max&&!strcmp(CP_STAGE_PARAMS[i].group,"movement"));
+    }
+    dbg_op(CP_STAGE_DBG_PARAM,0,0,0,0,100,0);
+    assert(w.motion.jog_k==CP_STAGE_PARAMS[0].max);
+    dbg_op(CP_STAGE_DBG_PARAM,0,CP_STAGE_PARAM_COUNT,0,0,1,-1);
+    dbg_op(CP_STAGE_DBG_PARAM,0,0,0,0,NAN,-1);
+    /* during a fight: the fighters cannot be teleported or killed, but can be healed */
+    reset();
+    setup.wild[0].z=setup.wild[0].home_z=4;
+    assert(cp_stage_reset(&w,&setup)==0);
+    cp_stage_step(&w,NULL);
+    assert(w.active==0);
+    dbg_op(CP_STAGE_DBG_TELEPORT,0,0,5,5,0,-2);
+    dbg_op(CP_STAGE_DBG_TELEPORT,1,0,5,5,0,-2);
+    dbg_op(CP_STAGE_DBG_KILL,1,0,0,0,0,-2);
+    w.combat.c[0].hp=5;
+    dbg_op(CP_STAGE_DBG_HEAL,0,0,60,-1,0,0);
+    assert(w.combat.c[0].hp==60&&w.player.hp==60);
+    /* GOD survives a fight it would lose, and AI_OFF freezes the wild */
+    uint64_t plain_hash=0,god_hash=0;
+    for(int god=0;god<2;god++){
+        reset();
+        setup.wild[0].z=setup.wild[0].home_z=4;
+        assert(cp_stage_reset(&w,&setup)==0);
+        if(god)dbg_op(CP_STAGE_DBG_FLAGS,0,CP_STAGE_FLAG_GOD,0,0,0,0);
+        cp_stage_step(&w,NULL);
+        w.combat.c[0].hp=.1f;
+        w.combat.c[0].bleed_t=2;
+        for(int i=0;i<30;i++)cp_stage_step(&w,NULL);
+        if(god){
+            assert(w.outcome!=CP_STAGE_DEATH&&w.player.hp>=1&&w.respawn_ticks==0);
+            god_hash=cp_stage_hash(&w);
+        }
+        else{
+            assert(w.outcome==CP_STAGE_DEATH);
+            plain_hash=cp_stage_hash(&w);
+        }
+    }
+    assert(god_hash!=plain_hash);
+    reset();
+    setup.wild[0].species=0;setup.wild[0].z=setup.wild[0].home_z=30;
+    assert(cp_stage_reset(&w,&setup)==0);
+    other=w;
+    dbg_op(CP_STAGE_DBG_FLAGS,0,CP_STAGE_FLAG_AI_OFF,0,0,0,0);
+    const float ex=w.wild[0].x,ez=w.wild[0].z;
+    for(int i=0;i<100;i++){cp_stage_step(&w,NULL);cp_stage_step(&other,NULL);}
+    assert(w.wild[0].x==ex&&w.wild[0].z==ez);
+    assert(other.wild[0].x!=ex||other.wild[0].z!=ez);   /* with the AI on it roams */
+    /* the new golden log: the replay_ex path reproduces the hashes world_cli printed, and a snapshot start does too */
+    CpStageSetup su;
+    load_golden_stem("world-debug-42",&su);
+    assert(golden_ndbg==10);
+    CpStageLogEntry log[GOLDEN_TICKS];
+    for(int i=0;i<GOLDEN_TICKS;i++)log[i]=(CpStageLogEntry){(uint32_t)i,golden_in[i]};
+    static uint64_t hashes[GOLDEN_TICKS];
+    assert(cp_stage_replay_ex(&su,NULL,0,NULL,log,GOLDEN_TICKS,golden_dbg,golden_ndbg,GOLDEN_TICKS,hashes)!=0);
+    for(int i=0;i<GOLDEN_TICKS;i++)assert(hashes[i]==golden_hash[i]);
+    /* live run with the same ops applied through cp_stage_debug between steps equals the replay */
+    assert(cp_stage_reset(&w,&su)==0);
+    int cur=0;
+    for(int i=0;i<GOLDEN_TICKS;i++){
+        while(cur<golden_ndbg&&golden_dbg[cur].tick==(uint32_t)i)assert(cp_stage_debug(&w,&golden_dbg[cur++].d)==0);
+        assert(cp_stage_step(&w,&log[i].input)==hashes[i]);
+        if(i==1499){   /* snapshot mid-run, continue from it with the remaining ops */
+            static uint8_t blob[1<<16];
+            int n=cp_stage_snapshot(&w,blob,sizeof blob);
+            assert(n>0);
+            CpStageLogEntry tail[GOLDEN_TICKS];int nt=0;
+            CpStageDebugEntry dtail[16];int nd=0;
+            for(int k=1500;k<GOLDEN_TICKS;k++)tail[nt++]=log[k];
+            for(int k=0;k<golden_ndbg;k++)if(golden_dbg[k].tick>=1500)dtail[nd++]=golden_dbg[k];
+            static uint64_t h2[GOLDEN_TICKS];
+            assert(cp_stage_replay_ex(NULL,blob,(size_t)n,NULL,tail,nt,dtail,nd,1500,h2)!=0);
+            for(int k=0;k<1500;k++)assert(h2[k]==hashes[1500+k]);
+        }
+    }
+    puts("PASS debug ops, god, ai off, param, replay_ex and the world-debug-42 golden");
+}
 int main(void) {
     validation();
     motion_law();
@@ -663,6 +813,7 @@ int main(void) {
     snapshots();
     field_mode();
     field_fight();
+    debug_ops();
     reset();
     CpStageInput a={
         0

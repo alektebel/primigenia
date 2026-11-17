@@ -455,7 +455,20 @@ static void fight(CpStageWorld *w){
         w->accepted[1]=cp_combat_order(&w->combat,1,&enemy)==0;
         w->combat_orders[1]=enemy;
     }
+    /* Debug GOD: the player cannot die. A hit cannot be undone once cp_combat_step kills, so the player gets a
+     * 1000 hp buffer for the tick and what the tick took is subtracted afterwards (hp floors at 1). */
+    const int god=(w->debug_flags&CP_STAGE_FLAG_GOD)!=0;
+    const float real_hp=w->combat.c[0].hp;
+    if(god)w->combat.c[0].hp=real_hp+1000;
     cp_combat_step(&w->combat);
+    if(god){
+        CpCombatCreature *p=&w->combat.c[0];
+        float taken=(real_hp+1000)-p->hp;
+        p->hp=real_hp-taken;
+        if(p->hp<1)p->hp=1;
+        p->stamina=w->player.profile.stamina;
+        p->alive=1;
+    }
     CpStageCreature *entities[2]={
         &w->player,&w->wild[w->active]
     };
@@ -494,6 +507,12 @@ static void wild_tick(CpStageWorld *w,int skip,int engage){
     for(int i=0;i<w->setup.n;i++){
         CpStageCreature *e=&w->wild[i];
         if(e->dead||i==skip)continue;
+        if(w->debug_flags&CP_STAGE_FLAG_AI_OFF){
+            /* Debug AI_OFF: the wild neither walk, roam (no RNG draw) nor attack; the player can still start a fight. */
+            int targeted=(w->order.verb==CP_STAGE_ATTACK&&w->order.target==i+1);
+            if(engage&&w->active<0&&!e->returning&&!w->cooldown_ticks&&targeted&&dist(&w->player,e)<5.5f)start(w,i);
+            continue;
+        }
         const CpStageSpecies *s=&CP_STAGE_SPECIES[e->species];
         float d=dist(e,&w->player),tx=e->goal_x,tz=e->goal_z;
         if(--e->roam_ticks<=0){
@@ -809,18 +828,38 @@ const char *cp_stage_order_error(int code){
         default:return "invalid command or value";
     }
 }
-uint64_t cp_stage_replay(const CpStageSetup *setup,const CpStageLogEntry *log,int count,uint32_t ticks,uint64_t *hashes){
-    if(count<0||(count&&!log))return 0;
-    for(int i=0;i<count;i++)if(log[i].tick>=ticks||(i&&log[i].tick<log[i-1].tick))return 0;
+/* Per tick, in this order: debug ops of the tick, then the order input of the tick, then the step.
+ * Log and debug entries carry absolute world ticks (== replay index when starting from a setup). */
+uint64_t cp_stage_replay_ex(const CpStageSetup *setup,const uint8_t *snapshot,size_t snap_len,const CpStageField *field,
+                            const CpStageLogEntry *log,int count,const CpStageDebugEntry *dbg,int dbg_count,
+                            uint32_t ticks,uint64_t *hashes){
+    if(count<0||(count&&!log)||dbg_count<0||(dbg_count&&!dbg))return 0;
     CpStageWorld replay;
-    if(cp_stage_reset(&replay,setup))return 0;
-    int cursor=0;
-    for(uint32_t tick=0;tick<ticks;tick++){
+    memset(&replay,0,sizeof replay);
+    uint32_t first=0;
+    if(snapshot){
+        if(cp_stage_restore(&replay,snapshot,snap_len,field))return 0;
+        first=replay.tick;
+    }
+    else{
+        if(!setup)return 0;
+        if(field&&cp_stage_attach_field(&replay,field))return 0;
+        if(cp_stage_reset(&replay,setup))return 0;
+    }
+    for(int i=0;i<count;i++)if(log[i].tick<first||log[i].tick-first>=ticks||(i&&log[i].tick<log[i-1].tick))return 0;
+    for(int i=0;i<dbg_count;i++)if(dbg[i].tick<first||dbg[i].tick-first>=ticks||(i&&dbg[i].tick<dbg[i-1].tick))return 0;
+    int cursor=0,dcursor=0;
+    for(uint32_t k=0;k<ticks;k++){
+        const uint32_t tick=first+k;
+        while(dcursor<dbg_count&&dbg[dcursor].tick==tick)cp_stage_debug(&replay,&dbg[dcursor++].d);
         while(cursor<count&&log[cursor].tick==tick)cp_stage_order(&replay,&log[cursor++].input);
         uint64_t hash=cp_stage_step(&replay,NULL);
-        if(hashes)hashes[tick]=hash;
+        if(hashes)hashes[k]=hash;
     }
     return cp_stage_hash(&replay);
+}
+uint64_t cp_stage_replay(const CpStageSetup *setup,const CpStageLogEntry *log,int count,uint32_t ticks,uint64_t *hashes){
+    return cp_stage_replay_ex(setup,NULL,0,NULL,log,count,NULL,0,ticks,hashes);
 }
 int cp_stage_observe(const CpStageWorld *w,char *out,size_t cap){
     if(!out||!cap)return -1;
@@ -862,6 +901,104 @@ int cp_stage_observe(const CpStageWorld *w,char *out,size_t cap){
     ADD("],\"summary\":\"Explore the valley; creature ids are stable.\"}");
 #undef ADD
     return failed?-1:(int)used;
+}
+
+/* ---- debug ops (PLAN-devtools step 4) -----------------------------------------------------------
+ * Everything the dev tools change in the simulation goes through here (and the per-tick log), so a
+ * session with teleports, spawns and tuning replays bit for bit. Rejected ops change nothing. */
+#define MOTION_PARAM(field,lo,hi) {#field,"movement",offsetof(CpStageMotion,field),lo,hi}
+const CpStageParam CP_STAGE_PARAMS[]={
+    MOTION_PARAM(jog_k,.3f,5.f),MOTION_PARAM(sprint_k,1.f,4.f),MOTION_PARAM(wild_k,.1f,3.f),
+    MOTION_PARAM(accel,2.f,60.f),MOTION_PARAM(brake,2.f,60.f),MOTION_PARAM(ease,.05f,1.f),
+    MOTION_PARAM(turn_k,.2f,3.f),MOTION_PARAM(turn_min,.5f,10.f),MOTION_PARAM(turn_max,.5f,10.f),
+    MOTION_PARAM(grip,3.f,50.f),MOTION_PARAM(pivot_k,.05f,1.f),MOTION_PARAM(pivot_mul,.5f,8.f),
+    MOTION_PARAM(pivot_max,2.f,20.f),MOTION_PARAM(turn_slow,0.f,1.f)
+};
+const int CP_STAGE_PARAM_COUNT=(int)(sizeof CP_STAGE_PARAMS/sizeof *CP_STAGE_PARAMS);
+static int spot_ok(const CpStageWorld *w,float x,float z,float radius){
+    if(!isfinite(x)||!isfinite(z)||ab(x)>cp_stage_bound(w)||ab(z)>cp_stage_bound(w))return 0;
+    if(w->setup.terrain==CP_STAGE_FIELD?cp_stage_water_depth(w,x,z)>.7f:cp_stage_ground(w,x,z)<-.7f)return 0;
+    for(int i=0;i<w->setup.n_obstacles;i++){
+        const CpStageObstacle *o=&w->setup.obstacles[i];
+        if(length(x-o->x,z-o->z)<o->r+radius)return 0;
+    }
+    return 1;
+}
+const char *cp_stage_debug_error(int code){
+    switch(code){
+        case 0:return "ok";
+        case -2:return "not during a fight";
+        case -3:return "the world is full (24 creatures)";
+        case -4:return "that spot is outside the island, in deep water or inside an obstacle";
+        default:return "invalid debug op or value";
+    }
+}
+int cp_stage_debug(CpStageWorld *w,const CpStageDebug *d){
+    if(!w||!d)return -1;
+    int rc=0;
+    switch(d->op){
+        case CP_STAGE_DBG_TELEPORT:{
+            if(d->id<0||d->id>w->setup.n||!isfinite(d->x)||!isfinite(d->z))return -1;
+            CpStageCreature *c=d->id?&w->wild[d->id-1]:&w->player;
+            if(w->active>=0&&(d->id==0||d->id==w->active+1))return -2;
+            if(!spot_ok(w,d->x,d->z,cp_combat_body_radius(&c->profile)))return -4;
+            c->x=d->x;
+            c->z=d->z;
+            c->speed=c->acceleration=c->turn_rate=0;
+            if(d->id)c->goal_x=d->x,c->goal_z=d->z;
+            break;
+        }
+        case CP_STAGE_DBG_SPAWN:{
+            if(d->a<0||d->a>3||!isfinite(d->x)||!isfinite(d->z))return -1;
+            if(w->setup.n>=CP_STAGE_MAX_WILD)return -3;
+            const CpStageSpecies *sp=&CP_STAGE_SPECIES[d->a];
+            if(!spot_ok(w,d->x,d->z,cp_combat_body_radius(&sp->profile)))return -4;
+            const int n=w->setup.n;
+            w->setup.wild[n]=(CpStageSpawn){.x=d->x,.z=d->z,.home_x=d->x,.home_z=d->z,.species=d->a,.bot=-1,.profile=sp->profile};
+            creature(&w->wild[n],d->x,d->z,d->a,&sp->profile);
+            w->wild[n].fz=-1;
+            w->wild[n].roam_ticks=40; /* no RNG draw: the other streams stay untouched */
+            w->setup.n=n+1;
+            break;
+        }
+        case CP_STAGE_DBG_KILL:
+            if(d->id<1||d->id>w->setup.n)return -1;
+            if(w->active==d->id-1)return -2;
+            w->wild[d->id-1].dead=1;
+            break;
+        case CP_STAGE_DBG_HEAL:{
+            if(d->id<0||d->id>w->setup.n||!isfinite(d->x)||!isfinite(d->z)||d->x==0)return -1;
+            CpStageCreature *c=d->id?&w->wild[d->id-1]:&w->player;
+            if(d->id&&c->dead)return -1;
+            const float hp=d->x<0?c->profile.hp:d->x>c->profile.hp?c->profile.hp:d->x;
+            const float st=d->z<0?c->profile.stamina:d->z>c->profile.stamina?c->profile.stamina:d->z;
+            c->hp=hp;
+            c->stamina=st;
+            if(w->active>=0&&(d->id==0||d->id==w->active+1)){
+                CpCombatCreature *cc=&w->combat.c[d->id?1:0];
+                cc->hp=hp;
+                cc->stamina=st;
+            }
+            break;
+        }
+        case CP_STAGE_DBG_CLOCK:
+            if(d->a<0||d->a>=CP_STAGE_DAY_TICKS)return -1;
+            w->clock=(uint32_t)d->a;
+            break;
+        case CP_STAGE_DBG_FLAGS:
+            if(d->a<0||(d->a&~(CP_STAGE_FLAG_GOD|CP_STAGE_FLAG_AI_OFF)))return -1;
+            w->debug_flags=d->a;
+            break;
+        case CP_STAGE_DBG_PARAM:{
+            if(d->a<0||d->a>=CP_STAGE_PARAM_COUNT||!isfinite(d->v))return -1;
+            const CpStageParam *p=&CP_STAGE_PARAMS[d->a];
+            *(float *)((char *)&w->motion+p->offset)=clamp(d->v,p->min,p->max);
+            break;
+        }
+        default:return -1;
+    }
+    w->hash=cp_stage_hash(w);
+    return rc;
 }
 /* ---- snapshot / restore (PLAN-devtools step 3) ------------------------------------------------
  * Raw copy of the POD world (no pointers, no heap) up to `field`, so a restored world is bit-identical,

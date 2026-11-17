@@ -110,6 +110,25 @@ const char *cp_stage_order_error(int code);
 typedef struct { uint32_t tick; CpStageInput input; } CpStageLogEntry;
 uint64_t cp_stage_replay(const CpStageSetup *setup,const CpStageLogEntry *log,
                          int count,uint32_t ticks,uint64_t *hashes);
+/* --- debug ops (PLAN-devtools step 4): the only way the dev tools change the simulation --- */
+enum { CP_STAGE_DBG_TELEPORT=1, CP_STAGE_DBG_SPAWN, CP_STAGE_DBG_KILL, CP_STAGE_DBG_HEAL,
+       CP_STAGE_DBG_CLOCK, CP_STAGE_DBG_FLAGS, CP_STAGE_DBG_PARAM };
+enum { CP_STAGE_FLAG_GOD=1, CP_STAGE_FLAG_AI_OFF=2 };
+/* TELEPORT id x z | SPAWN a=species x z | KILL id | HEAL id x=hp z=stamina (negative = max) | CLOCK a=tick |
+ * FLAGS a=mask | PARAM a=index into CP_STAGE_PARAMS v=value (clamped). id 0 = player, 1..n = wild. */
+typedef struct { int32_t op,id,a; float x,z,v; } CpStageDebug;
+typedef struct { uint32_t tick; CpStageDebug d; } CpStageDebugEntry;
+/* 0 on success, <0 and nothing changed otherwise (text: cp_stage_debug_error). Recomputes w->hash. */
+int cp_stage_debug(CpStageWorld *w,const CpStageDebug *d);
+const char *cp_stage_debug_error(int code);
+typedef struct { const char *name,*group; size_t offset; float min,max; } CpStageParam;
+extern const CpStageParam CP_STAGE_PARAMS[];
+extern const int CP_STAGE_PARAM_COUNT;
+/* Replay from a setup (snapshot NULL) or from a snapshot, with orders and debug ops; entries carry absolute
+ * world ticks. Per tick: debug ops, then the order input, then the step. */
+uint64_t cp_stage_replay_ex(const CpStageSetup *setup,const uint8_t *snapshot,size_t snap_len,const CpStageField *field,
+                            const CpStageLogEntry *log,int count,const CpStageDebugEntry *dbg,int dbg_count,
+                            uint32_t ticks,uint64_t *hashes);
 uint64_t cp_stage_step(CpStageWorld *w,const CpStageInput *input);
 uint64_t cp_stage_hash(const CpStageWorld *w);
 /* Returns bytes excluding NUL, or -1 on insufficient capacity. */
