@@ -210,6 +210,8 @@ func _on_pause(paused: bool) -> void:
 
 func _process(_dt: float) -> void:
 	Game.modal_open = ui.radial.visible or ui.paused
+	Game.radial_open = ui.radial.visible
+	Game.paused_ui = ui.paused
 	var audio = get_tree().root.get_node_or_null("Audio")
 	if audio == null or island.player_pos == Vector3.INF:
 		return

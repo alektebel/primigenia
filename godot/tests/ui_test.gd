@@ -132,6 +132,7 @@ func test_ui_flow() -> void:
 	ok(ui.mode == Modes.ATTACK and not ui.radial.visible, "radial chooses attack")
 	var key := InputEventKey.new()
 	key.keycode = KEY_2
+	key.physical_keycode = KEY_2   # the InputMap actions match physical keys
 	key.pressed = true
 	ui._unhandled_input(key)
 	ok(presses == ["charge"], "key 2 presses ability 2 (%s)" % [presses])

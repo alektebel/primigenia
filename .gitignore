@@ -7,3 +7,5 @@ data/creatures/
 art/generated/
 node_modules/
 godot/.godot/
+feedback/
+godot/devtools/build.txt

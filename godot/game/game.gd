@@ -20,6 +20,9 @@ var data = null          # TerrainData
 var stage = null         # StageWorld while the island runs
 var camera: Camera3D = null
 var modal_open := false  # set by UI modules (radial, pause)
+var radial_open := false # set with modal_open by StageUI, for the key legend context
+var paused_ui := false
+var console_open := false # the dev console (devtools/console) sets this while it has the keyboard
 var studio_dir := "user://studio"   # where the studio saves and Play looks for the newest creature (tests point it elsewhere)
 
 func _ready() -> void:
@@ -49,10 +52,25 @@ func ground(x: float, z: float) -> float:
 	return data.ground(x, z) if data != null else 0.0
 
 func movement_blocked() -> bool:
-	if modal_open:
+	if modal_open or console_open:
 		return true
 	var vp := get_viewport()
 	return vp != null and vp.gui_get_focus_owner() != null
+
+# Which key context is active (first match wins), for the key legend (devtools/legend.gd).
+func legend_context() -> StringName:
+	if console_open:
+		return &"console"
+	if radial_open:
+		return &"radial"
+	if paused_ui:
+		return &"paused"
+	if stage != null and stage.cur is Dictionary and int(stage.cur.get("active", -1)) >= 0:
+		return &"fight"
+	var scene := get_tree().current_scene if is_inside_tree() else null
+	if scene != null and scene.scene_file_path.contains("/studio/"):
+		return &"studio"
+	return &"walk"
 
 func goto_menu() -> void:
 	get_tree().change_scene_to_file("res://game/menu/main_menu.tscn")

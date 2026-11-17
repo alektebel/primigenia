@@ -290,6 +290,16 @@ godot-evidence: godot
 godot-ui-test:
 	nice -n 10 timeout 600 $(GODOT) --headless --path godot --script res://tests/ui_test.gd
 .PHONY: godot-ui-test
+# DT0 dev tools (PLAN-devtools): headless unit tests, evidence screenshots, agent socket test.
+.PHONY: godot-devtools-test godot-devtools-evidence godot-agent-test
+godot-devtools-test: godot
+	nice -n 10 timeout 600 $(GODOT) --headless --fixed-fps 60 --path godot --script res://devtools/tests/run_devtools_tests.gd
+godot-devtools-evidence: godot
+	@mkdir -p docs/evidence/godot/devtools
+	LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 600 xvfb-run -a $(GODOT) --rendering-driver opengl3 --max-fps 15 \
+	  --resolution 1280x720 --path godot --script res://devtools/tests/evidence.gd -- $(CURDIR)/docs/evidence/godot/devtools
+godot-agent-test: godot
+	nice -n 10 timeout 300 python3 godot/devtools/agent/test_agent.py --godot $(GODOT)
 # G76 M2: Godot studio headless tests, then the web validator cross-check on what Godot wrote.
 .PHONY: godot-studio-test
 godot-studio-test:
