@@ -1,6 +1,6 @@
 # One camera, from the creature's eyes to the whole island
 
-Status: **spec, 2026-11-17** (A18). The owner wants Spore's mouse camera plus
+Status: **spec, 2026-11-17** (A18). The Spore captures live outside the repo in `~/Desarrollo/cpore-refs/spore-captures/` (never commit them). The owner wants Spore's mouse camera plus
 Planetary Annihilation's continuous zoom: scroll to go near and far, drag to
 orbit around the creature. Mechanics reference only (Q4): no assets or UI copied.
 
