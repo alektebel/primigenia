@@ -12,7 +12,6 @@ extends Node
 
 const GameUI := preload("res://ui/game_ui.gd")
 const Modes := preload("res://ui/modes.gd")
-const FLAT_HEIGHT := 42.0
 const V_WAIT := 1
 const V_ATTACK := 5
 const V_GUARD := 8
@@ -58,6 +57,8 @@ func setup(island_node: Node3D, name_text: String) -> void:
 		selected_id = -1 if id == null else int(id)
 		island.selected_id = selected_id)
 	ui.pause_toggled.connect(_on_pause)
+	ui.save_requested.connect(func() -> void: _toast(island.save_game(), "Game saved."))
+	ui.load_requested.connect(func() -> void: _toast(island.load_game(), "Game loaded."))
 	Game.creature_clicked.connect(_on_clicked)
 	Game.world_ticked.connect(_on_tick)
 	Game.combat_events.connect(_on_events)
@@ -212,6 +213,14 @@ func _on_events(events: Array) -> void:
 		if audio != null:
 			audio.combat_event(int(ev.type), at, radius)
 
+# err "" = success: show `ok_text`; otherwise the error sentence as a warning.
+func _toast(err: String, ok_text: String) -> void:
+	if err == "":
+		ui.show_message(ok_text, "info")
+		ui.set_paused(false)
+	else:
+		ui.show_message(err, "warn")
+
 func _on_pause(paused: bool) -> void:
 	stage.process_mode = Node.PROCESS_MODE_DISABLED if paused else Node.PROCESS_MODE_INHERIT
 
@@ -219,6 +228,8 @@ func _on_pause(paused: bool) -> void:
 
 func _process(_dt: float) -> void:
 	Game.modal_open = ui.radial.visible or ui.paused
+	Game.radial_open = ui.radial.visible
+	Game.paused_ui = ui.paused
 	var audio = get_tree().root.get_node_or_null("Audio")
 	if audio == null or island.player_pos == Vector3.INF:
 		return
@@ -229,7 +240,7 @@ func _process(_dt: float) -> void:
 	var n: Vector3 = Game.data.normal(pos.x, pos.z)
 	_slope = sqrt(maxf(1.0 - n.y * n.y, 0.0)) / maxf(n.y, 0.05)
 	var speed: float = stage.cur.entities[0].speed
-	audio.update_ambience(pos, pos.y - FLAT_HEIGHT + 5.0, _slope, speed)
+	audio.update_ambience(pos, pos.y - float(Game.terrain.get("params", {}).get("valley_floor_m", 42.0)) + 5.0, _slope, speed)
 
 func on_footfall(id: int, pos: Vector3, speed: float) -> void:
 	var audio = get_tree().root.get_node_or_null("Audio")

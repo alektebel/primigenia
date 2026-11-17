@@ -49,9 +49,11 @@ $(BUILD)/combat_golden: tests/combat_golden.c apps/combat_bots.h $(BUILD)/apps/c
 
 # Correctness regressions. Balance acceptance is a separate measured gate:
 # run make tourney as well before claiming P2 acceptance.
-test: $(BUILD)/world_test $(BUILD)/terrain_test $(BUILD)/cpore_test $(BUILD)/combat_test $(BUILD)/combat_tourney_test $(BUILD)/combat_golden check-core
+test: $(BUILD)/world_cli $(BUILD)/world_test $(BUILD)/terrain_test $(BUILD)/cpore_test $(BUILD)/combat_test $(BUILD)/combat_tourney_test $(BUILD)/combat_golden check-core
 	nice -n 10 ./$(BUILD)/terrain_test
 	./$(BUILD)/world_test
+	@for g in world-1 world-42 world-987654321 world-debug-42 world-field-1; do ./$(BUILD)/world_cli --replay tests/golden/$$g.log | diff -q - tests/golden/$$g.hashes >/dev/null || { echo "world_cli replay of $$g differs from its .hashes"; exit 1; }; done; echo "world_cli replays match the golden hashes"
+	@sed "s/ b255c92a5b85e43d/ b255c92a5b85e43e/" tests/golden/world-field-1.log > $(BUILD)/world-field-bad.log; ! ./$(BUILD)/world_cli --replay $(BUILD)/world-field-bad.log 2>$(BUILD)/world-field-bad.err >/dev/null && grep -q "terrain hash mismatch" $(BUILD)/world-field-bad.err && echo "a field log with an edited hash is refused"
 	python3 tests/test_terrain_metrics.py
 	./$(BUILD)/cpore_test
 	./$(BUILD)/combat_test
@@ -290,6 +292,20 @@ godot-evidence: godot
 godot-ui-test:
 	nice -n 10 timeout 600 $(GODOT) --headless --path godot --script res://tests/ui_test.gd
 .PHONY: godot-ui-test
+# DT0 dev tools (PLAN-devtools): headless unit tests, evidence screenshots, agent socket test.
+.PHONY: godot-devtools-test godot-devtools-evidence godot-agent-test
+godot-devtools-test: godot
+	nice -n 10 timeout 600 $(GODOT) --headless --fixed-fps 60 --path godot --script res://devtools/tests/run_devtools_tests.gd
+godot-devtools-evidence: godot
+	@mkdir -p docs/evidence/godot/devtools
+	LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 600 xvfb-run -a $(GODOT) --rendering-driver opengl3 --max-fps 15 \
+	  --resolution 1280x720 --path godot --script res://devtools/tests/evidence.gd -- $(CURDIR)/docs/evidence/godot/devtools
+godot-heights-test: godot
+	@mkdir -p docs/evidence/godot/heights
+	nice -n 10 timeout 600 $(GODOT) --headless --path godot --script res://game/tests/test_heights.gd -- $(CURDIR)/docs/evidence/godot/heights
+.PHONY: godot-heights-test
+godot-agent-test: godot
+	nice -n 10 timeout 300 python3 godot/devtools/agent/test_agent.py --godot $(GODOT)
 # G76 M2: Godot studio headless tests, then the web validator cross-check on what Godot wrote.
 .PHONY: godot-studio-test
 godot-studio-test:

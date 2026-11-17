@@ -7,8 +7,9 @@
 #define CP_STAGE_MAX_OBSTACLES 1024
 #define CP_STAGE_DAY_TICKS 12000
 #define CP_STAGE_DT .1f
+#define CP_STAGE_SNAPSHOT_VERSION 1
 
-enum { CP_STAGE_ANALYTIC, CP_STAGE_FLAT };
+enum { CP_STAGE_ANALYTIC, CP_STAGE_FLAT, CP_STAGE_FIELD }; /* FIELD: the generated island, needs cp_stage_attach_field() before reset */
 enum { CP_STAGE_TIMID, CP_STAGE_TERRITORIAL, CP_STAGE_AGGRESSIVE };
 enum { CP_STAGE_CONTINUE, CP_STAGE_WAIT, CP_STAGE_GO, CP_STAGE_HEADING,
        CP_STAGE_APPROACH, CP_STAGE_ATTACK, CP_STAGE_FLEE, CP_STAGE_GO_NEST,
@@ -63,6 +64,14 @@ typedef struct {
     CpRng rng;
     int32_t kind,spam_move,delay,reaction,ranged_commit,timer;
 } CpStageBot;
+/* Generated island heights handed to the world by pointer (PLAN-heights H1). Not owned by C. */
+typedef struct CpStageField {
+    int32_t n;
+    float size_m,cell,half;          /* cell = size_m/n, half = size_m/2 */
+    const float *height;             /* n*n metres, row-major j*n+i (z rows, x columns) */
+    const float *water_level;        /* n*n depression-filled level, may be NULL */
+    uint64_t hash;                   /* cp_terrain_hash of the generated terrain */
+} CpStageField;
 typedef struct {
     CpStageSetup setup;
     CpRng spawn_rng,roam_rng;
@@ -78,11 +87,21 @@ typedef struct {
     CpCombatAction combat_orders[2];
     int32_t accepted[2],last_error;
     uint64_t hash;
+    /* DT0 additions (PLAN-devtools step 3). Part of the snapshot payload, except `field`, which MUST stay
+     * the last member: the payload is offsetof(CpStageWorld,field) bytes. */
+    CpStageMotion motion;            /* per-world copy of CP_STAGE_MOTION, changed by debug PARAM ops */
+    int32_t debug_flags,reserved;    /* CP_STAGE_FLAG_* ; reserved keeps the layout explicit */
+    uint64_t field_hash;             /* hash of the attached field, 0 outside FIELD mode */
+    const CpStageField *field;       /* not owned, not in the snapshot, set by cp_stage_attach_field */
 } CpStageWorld;
 void cp_stage_setup_default(CpStageSetup *s,uint32_t seed);
 int cp_stage_reset(CpStageWorld *w,const CpStageSetup *s);
 float cp_stage_height(const CpStageWorld *w,float x,float z);
 float cp_stage_ground(const CpStageWorld *w,float x,float z);
+/* Standing water depth at (x,z) in metres (0 on dry land); walking is blocked deeper than 0.7 m. */
+float cp_stage_water_depth(const CpStageWorld *w,float x,float z);
+/* Half-extent of the walkable square: 195 m for ANALYTIC/FLAT, half-2*cell for FIELD. */
+float cp_stage_bound(const CpStageWorld *w);
 int cp_stage_can_walk(const CpStageWorld *w,float x,float z,float nx,float nz,float radius);
 /* Stable ids: player 0, wild 1..n, nest 1000, obstacles 2000+i. */
 int cp_stage_order(CpStageWorld *w,const CpStageInput *input);
@@ -91,8 +110,43 @@ const char *cp_stage_order_error(int code);
 typedef struct { uint32_t tick; CpStageInput input; } CpStageLogEntry;
 uint64_t cp_stage_replay(const CpStageSetup *setup,const CpStageLogEntry *log,
                          int count,uint32_t ticks,uint64_t *hashes);
+/* --- debug ops (PLAN-devtools step 4): the only way the dev tools change the simulation --- */
+enum { CP_STAGE_DBG_TELEPORT=1, CP_STAGE_DBG_SPAWN, CP_STAGE_DBG_KILL, CP_STAGE_DBG_HEAL,
+       CP_STAGE_DBG_CLOCK, CP_STAGE_DBG_FLAGS, CP_STAGE_DBG_PARAM };
+enum { CP_STAGE_FLAG_GOD=1, CP_STAGE_FLAG_AI_OFF=2 };
+/* TELEPORT id x z | SPAWN a=species x z | KILL id | HEAL id x=hp z=stamina (negative = max) | CLOCK a=tick |
+ * FLAGS a=mask | PARAM a=index into CP_STAGE_PARAMS v=value (clamped). id 0 = player, 1..n = wild. */
+typedef struct { int32_t op,id,a; float x,z,v; } CpStageDebug;
+typedef struct { uint32_t tick; CpStageDebug d; } CpStageDebugEntry;
+/* 0 on success, <0 and nothing changed otherwise (text: cp_stage_debug_error). Recomputes w->hash. */
+int cp_stage_debug(CpStageWorld *w,const CpStageDebug *d);
+const char *cp_stage_debug_error(int code);
+typedef struct { const char *name,*group; size_t offset; float min,max; } CpStageParam;
+extern const CpStageParam CP_STAGE_PARAMS[];
+extern const int CP_STAGE_PARAM_COUNT;
+/* Replay from a setup (snapshot NULL) or from a snapshot, with orders and debug ops; entries carry absolute
+ * world ticks. Per tick: debug ops, then the order input, then the step. */
+uint64_t cp_stage_replay_ex(const CpStageSetup *setup,const uint8_t *snapshot,size_t snap_len,const CpStageField *field,
+                            const CpStageLogEntry *log,int count,const CpStageDebugEntry *dbg,int dbg_count,
+                            uint32_t ticks,uint64_t *hashes);
 uint64_t cp_stage_step(CpStageWorld *w,const CpStageInput *input);
 uint64_t cp_stage_hash(const CpStageWorld *w);
 /* Returns bytes excluding NUL, or -1 on insufficient capacity. */
 int cp_stage_observe(const CpStageWorld *w,char *out,size_t cap);
+/* --- snapshot / restore (PLAN-devtools step 3) ---
+ * A snapshot is a 48-byte little-endian header ("CPSTAGE\0", snapshot version, CP_STAGE_VERSION, layout
+ * fingerprint, payload bytes, 0, field hash, state hash) followed by a raw copy of the POD world up to
+ * (not including) `field`. Restore validates everything in the order of the error codes below and leaves the
+ * world untouched on failure. */
+enum { CP_STAGE_SNAP_OK=0, CP_STAGE_SNAP_ERR_MAGIC=-1, CP_STAGE_SNAP_ERR_FORMAT=-2,
+       CP_STAGE_SNAP_ERR_ENGINE=-3, CP_STAGE_SNAP_ERR_LAYOUT=-4, CP_STAGE_SNAP_ERR_SIZE=-5,
+       CP_STAGE_SNAP_ERR_FIELD=-6, CP_STAGE_SNAP_ERR_HASH=-7 };
+size_t cp_stage_world_size(void);
+size_t cp_stage_snapshot_size(void);
+uint64_t cp_stage_layout(void);
+int cp_stage_snapshot(const CpStageWorld *w,uint8_t *out,size_t cap);   /* bytes written, or ERR_SIZE */
+int cp_stage_restore(CpStageWorld *w,const uint8_t *in,size_t len,const CpStageField *field);
+const char *cp_stage_snapshot_error(int code);
+/* Attaches (or with NULL detaches) the island heights. Call before cp_stage_reset in FIELD mode. */
+int cp_stage_attach_field(CpStageWorld *w,const CpStageField *f);
 #endif

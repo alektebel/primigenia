@@ -1,28 +1,25 @@
 extends RefCounted
-# CporeWorld setup for the island. M0 gap (documented): the C world has only analytic and flat
-# height sources and a hard +-195 m bound, so it runs FLAT at the valley floor height; island
-# heights are visual only (BACKLOG 6 wires the generated heightfield into C).
+# CporeWorld setup for the island (PLAN-heights H5): terrain 2 = the generated heightfield, read by the C
+# world through CporeWorld.set_field(); ponds and the sea come from the field, the bound is half - 2 cells.
 
 const Profile := preload("res://game/stage/profile.gd")
 
-const FLAT_HEIGHT := 42.0          # valley_floor_m
-const BOUND := 195.0
+const BOUND := 195.0               # the valley the nest and the encounter are searched in
 const GARFIO_DISTANCE := 60.0
 
 # data: TerrainData. player_profile / garfio_profile: CporeWorld profile dictionaries.
-static func build(data, seed: int, player_profile: Dictionary, garfio_profile: Dictionary, with_wild: bool = true) -> Dictionary:
+# probe: a CporeWorld with the field attached and reset into terrain 2, so Garfio's path is also checked with the C walk rule.
+static func build(data, seed: int, player_profile: Dictionary, garfio_profile: Dictionary, with_wild: bool = true, probe = null) -> Dictionary:
 	var setup: Dictionary = CporeWorld.default_setup(seed)
-	setup.terrain = 1
-	setup.flat_height = FLAT_HEIGHT
-	var water := water_circle(data)
-	var nest := find_nest(data, water)
+	setup.terrain = 2
+	var nest := find_nest(data)
 	setup.nest = nest
-	setup.water = water
+	setup.water = Vector3.ZERO
 	setup.player = player_profile
 	setup.wild = []
 	setup.obstacles = []
 	if with_wild:
-		var home = find_home(data, nest)
+		var home = find_home(data, nest, probe)
 		if home != null:
 			var h: Vector2 = home
 			setup.wild = [{"x": h.x, "z": h.y, "home_x": h.x, "home_z": h.y, "species": 3, "bot": -1, "profile": garfio_profile}]
@@ -47,49 +44,8 @@ static func find_nest(data, water: Vector3 = Vector3.ZERO) -> Vector2:
 				return Vector2(x, z)
 	return Vector2.ZERO
 
-# The C world knows one water circle. Use the largest connected pond (4-neighbour) inside the
-# playable square: its centroid and equivalent radius; radius 0 if there is none. (All ponds
-# together would give a circle covering half the valley.)
-static func water_circle(data) -> Vector3:
-	var lo := maxi(0, floori((-BOUND + data.half) / data.cell))
-	var hi := mini(data.n - 1, floori((BOUND + data.half) / data.cell))
-	var span := hi - lo + 1
-	var seen := PackedByteArray()
-	seen.resize(span * span)
-	var best_count := 0
-	var best := Vector2.ZERO
-	for j0 in range(lo, hi + 1):
-		for i0 in range(lo, hi + 1):
-			if seen[(j0 - lo) * span + (i0 - lo)] == 1 or not _pond_in(data, i0, j0):
-				continue
-			var stack := [Vector2i(i0, j0)]
-			seen[(j0 - lo) * span + (i0 - lo)] = 1
-			var count := 0
-			var sum := Vector2.ZERO
-			while not stack.is_empty():
-				var c: Vector2i = stack.pop_back()
-				count += 1
-				sum += Vector2(data.cell_center(c.x), data.cell_center(c.y))
-				for d in [Vector2i(1, 0), Vector2i(-1, 0), Vector2i(0, 1), Vector2i(0, -1)]:
-					var q: Vector2i = c + d
-					if q.x < lo or q.y < lo or q.x > hi or q.y > hi:
-						continue
-					var si := (q.y - lo) * span + (q.x - lo)
-					if seen[si] == 0 and _pond_in(data, q.x, q.y):
-						seen[si] = 1
-						stack.append(q)
-			if count > best_count:
-				best_count = count
-				best = sum / count
-	if best_count == 0:
-		return Vector3.ZERO
-	return Vector3(best.x, best.y, sqrt(best_count * data.cell * data.cell / PI))
-
-static func _pond_in(data, i: int, j: int) -> bool:
-	return absf(data.cell_center(i)) <= BOUND and absf(data.cell_center(j)) <= BOUND and data.is_pond(j * data.n + i)
-
 # First of 64 directions at 60 m whose straight path from the nest is dry and gentle.
-static func find_home(data, nest: Vector2):
+static func find_home(data, nest: Vector2, probe = null):
 	for k in 64:
 		var a := k * TAU / 64.0
 		var target := nest + Vector2(sin(a), cos(a)) * GARFIO_DISTANCE
@@ -101,7 +57,7 @@ static func find_home(data, nest: Vector2):
 			if not dry(data, p.x, p.y) or data.normal(p.x, p.y).y <= 0.8:
 				ok = false
 				break
-		if ok:
+		if ok and (probe == null or probe.can_walk(nest.x, nest.y, target.x, target.y, 0.6)):
 			return target
 	return null
 

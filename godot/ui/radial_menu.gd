@@ -12,6 +12,8 @@ const R_IN := 56.0
 const R_OUT := 160.0
 ## North, east, south, west.
 const ORDER: Array[StringName] = [Modes.ATTACK, Modes.BEFRIEND, Modes.OBSERVE, Modes.INTIMIDATE]
+## InputMap actions of the four modes, in ORDER (A, B, O, I).
+const ACTIONS: Array[StringName] = [&"radial_attack", &"radial_befriend", &"radial_observe", &"radial_intimidate"]
 
 var centre := Vector2.ZERO
 var current: StringName = Modes.ATTACK
@@ -67,10 +69,16 @@ func _gui_input(e: InputEvent) -> void:
 			close()
 		accept_event()
 	elif e is InputEventKey and e.pressed:
-		var map := {KEY_A: 0, KEY_B: 1, KEY_O: 2, KEY_I: 3}
-		if map.has(e.keycode):
-			choose(map[e.keycode])
-		elif e.keycode == KEY_ESCAPE:
+		# Ctrl/Alt/Meta combos belong to other bindings (Ctrl+B is the dev bookmark, not Befriend).
+		if e.ctrl_pressed or e.alt_pressed or e.meta_pressed:
+			return
+		var found := false
+		for i in ACTIONS.size():
+			if e.is_action_pressed(ACTIONS[i]):
+				choose(i)
+				found = true
+				break
+		if not found and e.is_action_pressed("pause_menu"):
 			close()
 		accept_event()
 

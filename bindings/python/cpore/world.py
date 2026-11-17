@@ -10,8 +10,9 @@ from ctypes import (c_byte, c_float, c_int16, c_int32, c_size_t, c_uint8,
 
 from .env import lib as _core_lib
 
-# Layout sizes from the native headers (64-bit LP64).
-_WORLD_BYTES = 22328
+# Layout sizes from the native headers (64-bit LP64). CpStageWorld grows with the engine, so its size
+# is asked from the library (cp_stage_world_size) when the stage API is bound.
+_WORLD_BYTES = 0
 _SETUP_BYTES = 17604
 
 CP_STAGE_CONTINUE = 0
@@ -114,7 +115,7 @@ assert ctypes.sizeof(CpStageLogEntry) == 36
 
 
 def _bind_stage(lib):
-    global _STAGE_BOUND
+    global _STAGE_BOUND, _WORLD_BYTES
     if _STAGE_BOUND:
         return lib
     lib.cp_stage_setup_default.argtypes = [ctypes.POINTER(CpStageSetup), c_uint32]
@@ -140,6 +141,9 @@ def _bind_stage(lib):
         ctypes.POINTER(c_uint64),
     ]
     lib.cp_stage_replay.restype = c_uint64
+    lib.cp_stage_world_size.argtypes = []
+    lib.cp_stage_world_size.restype = c_size_t
+    _WORLD_BYTES = int(lib.cp_stage_world_size())
     _STAGE_BOUND = True
     return lib
 

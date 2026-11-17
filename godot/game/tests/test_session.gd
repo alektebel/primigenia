@@ -19,10 +19,14 @@ func run(t) -> void:
 	var genome: Dictionary = Profile.load_json("res://game/data/merodeador.json")
 	var player: Dictionary = Profile.from_studio(genome, manifest).profile
 	var garfio: Dictionary = StageSetup.garfio_profile(manifest)
-	var setup: Dictionary = StageSetup.build(data, 7, player, garfio)
+	var probe = CporeWorld.new()
+	t.eq(probe.set_field(entry), 0, "the island field attaches")
+	probe.reset({"terrain": 2})
+	var setup: Dictionary = StageSetup.build(data, 7, player, garfio, true, probe)
+	t.eq(setup.terrain, 2, "the island setup uses the generated heightfield (terrain 2)")
 	print("  setup nest ", setup.nest, " water ", setup.water, " wild ", setup.wild.size())
 	t.check(StageSetup.dry(data, setup.nest.x, setup.nest.y) and StageSetup.clear_of_water(setup.nest.x, setup.nest.y, setup.water), "the nest is dry meadow outside the water circle")
-	t.check(absf(setup.water.x) <= 195.0 and absf(setup.water.y) <= 195.0, "water circle centre inside the +-195 m area")
+	t.eq(setup.water, Vector3.ZERO, "no water circle: ponds and sea come from the field")
 	t.eq(setup.wild.size(), 1, "one wild creature")
 	if setup.wild.size() == 1:
 		var home := Vector2(setup.wild[0].home_x, setup.wild[0].home_z)
@@ -31,6 +35,7 @@ func run(t) -> void:
 	t.eq(no_wild.wild.size(), 0, "wild = false removes Garfio")
 
 	var sw = StageWorld.new()
+	t.eq(sw.world.set_field(entry), 0, "field attached to the stage world")
 	t.eq(sw.reset(setup), 0, "reset with the island setup")
 	var frame := [0]
 	sw.input_provider = func() -> Dictionary:

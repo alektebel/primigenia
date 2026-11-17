@@ -16,6 +16,8 @@ signal dodge_pressed(dir: int)
 signal selection_changed(creature_id: Variant)
 signal pause_toggled(paused: bool)
 signal menu_requested
+signal save_requested
+signal load_requested
 signal ui_click
 
 var mode: StringName = Modes.ATTACK
@@ -59,6 +61,8 @@ func _ready() -> void:
 	radial.chosen.connect(func(m: StringName) -> void: set_mode(m))
 	pause_menu.resume_requested.connect(func() -> void: set_paused(false))
 	pause_menu.menu_requested.connect(func() -> void: menu_requested.emit())
+	pause_menu.save_requested.connect(func() -> void: save_requested.emit())
+	pause_menu.load_requested.connect(func() -> void: load_requested.emit())
 	set_mode(mode)
 
 # --- stage -> UI -------------------------------------------------------------
@@ -158,7 +162,7 @@ func _press(i: int) -> void:
 func _unhandled_input(e: InputEvent) -> void:
 	if not (e is InputEventKey) or not e.pressed or e.echo:
 		return
-	if e.keycode == KEY_ESCAPE:
+	if e.is_action_pressed("pause_menu"):
 		if radial.visible:
 			radial.close()
 		else:
@@ -167,15 +171,16 @@ func _unhandled_input(e: InputEvent) -> void:
 		return
 	if paused:
 		return
-	match e.keycode:
-		KEY_1, KEY_2, KEY_3, KEY_4:
-			_press(e.keycode - KEY_1)
-		KEY_SPACE:
-			guard_pressed.emit()
-		KEY_Q:
-			dodge_pressed.emit(-1)
-		KEY_E:
-			dodge_pressed.emit(1)
-		KEY_TAB:
-			if not selected.is_empty():
-				open_radial()
+	for i in 4:
+		if e.is_action_pressed("ability_%d" % (i + 1)):
+			_press(i)
+			return
+	if e.is_action_pressed("guard"):
+		guard_pressed.emit()
+	elif e.is_action_pressed("dodge_left"):
+		dodge_pressed.emit(-1)
+	elif e.is_action_pressed("dodge_right"):
+		dodge_pressed.emit(1)
+	elif e.is_action_pressed("radial_reopen"):
+		if not selected.is_empty():
+			open_radial()

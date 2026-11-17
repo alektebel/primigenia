@@ -270,6 +270,33 @@ func _stage() -> void:
 	check(lowest > -0.03, "feet are on Game.ground (lowest %.1f mm relative)" % (lowest * 1000.0))
 	check(absf(player.position.y - game.ground(player.position.x, player.position.z)) < 0.05, "the actor stands on Game.ground")
 
+	print("== pause menu: save game / load game")
+	var Scenario = load("res://devtools/scenario.gd")
+	Scenario.save_dir = "user://play-test/saves"
+	_clean(Scenario.save_dir)
+	var gui = island.stage_ui.ui
+	gui.set_paused(true)
+	check(gui.pause_menu.load_button.disabled, "Load game is disabled while the slot is empty")
+	var hash_saved: String = game.stage.world.hash()
+	var tick_saved: int = game.stage.cur.tick
+	gui.pause_menu.save_button.pressed.emit()
+	check(FileAccess.file_exists(Scenario.save_dir + "/slot1.json") and FileAccess.file_exists(Scenario.save_dir + "/slot1.cpstate"), "Save game writes the slot")
+	check(not gui.paused, "saving returns to the game")
+	island.player_input.keys_override = {"forward": true, "back": false, "left": false, "right": false, "sprint": true}
+	await sim_ticks(40)
+	island.player_input.keys_override = {"forward": false, "back": false, "left": false, "right": false, "sprint": false}
+	check(game.stage.world.hash() != hash_saved, "the world moved on after saving")
+	gui.set_paused(true)
+	check(not gui.pause_menu.load_button.disabled, "Load game is enabled once the slot exists")
+	gui.pause_menu.load_button.pressed.emit()
+	check(game.stage.world.hash() == hash_saved and game.stage.cur.tick == tick_saved, "Load game restores the saved state (tick %d)" % game.stage.cur.tick)
+	check(not gui.paused, "loading returns to the game")
+	await frames(2)
+	check(absf(island.player_pos.x - game.stage.cur.entities[0].x) < 3.0, "the actor follows the restored creature")
+	_clean(Scenario.save_dir)
+	DirAccess.remove_absolute(ProjectSettings.globalize_path("user://play-test/saves"))
+	Scenario.save_dir = "user://saves"
+
 	print("== camera: left drag orbits, a click does not")
 	var yaw_before: float = island.chase.yaw
 	island.player_input.clear_destination()
@@ -393,9 +420,18 @@ func _actions_end(island, st: Dictionary) -> void:
 	var replay_ok := true
 	if parsed.ok:
 		var w2 = CporeWorld.new()
+		if not parsed.field.is_empty():
+			w2.set_field(game.terrain)
 		w2.reset(parsed.setup)
+		if game.stage.start_snapshot.size() > 0:     # the session began from a loaded save
+			w2.restore(game.stage.start_snapshot)
 		var hs: PackedStringArray = game.stage.hashes
+		var dbg: Array = parsed.get("debug", [])
+		var di := 0
 		for i in mini(parsed.inputs.size(), hs.size()):
+			while di < dbg.size() and int(dbg[di].tick) == int(w2.state().tick):
+				w2.debug(dbg[di].op)
+				di += 1
 			if w2.step(parsed.inputs[i]) != hs[i]:
 				replay_ok = false
 				break

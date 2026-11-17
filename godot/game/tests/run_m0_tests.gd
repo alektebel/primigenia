@@ -5,6 +5,7 @@ extends SceneTree
 const TESTS := [
 	"res://game/tests/test_terrain.gd",
 	"res://game/tests/test_world.gd",
+	"res://game/tests/test_field.gd",
 	"res://game/tests/test_project.gd",
 	"res://game/tests/test_ground.gd",
 	"res://game/tests/test_look.gd",

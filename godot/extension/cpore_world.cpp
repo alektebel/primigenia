@@ -4,6 +4,7 @@
 #include <godot_cpp/variant/vector2.hpp>
 #include <godot_cpp/variant/vector3.hpp>
 #include <cstring>
+#include <cstdlib>
 
 using namespace godot;
 
@@ -216,6 +217,7 @@ void CporeWorld::_bind_methods() {
     ClassDB::bind_method(D_METHOD("get_setup"), &CporeWorld::get_setup);
     ClassDB::bind_method(D_METHOD("step", "input"), &CporeWorld::step);
     ClassDB::bind_method(D_METHOD("command", "text"), &CporeWorld::command);
+    ClassDB::bind_method(D_METHOD("command_input", "text"), &CporeWorld::command_input);
     ClassDB::bind_method(D_METHOD("order", "input"), &CporeWorld::order);
     ClassDB::bind_method(D_METHOD("state"), &CporeWorld::state);
     ClassDB::bind_method(D_METHOD("observe"), &CporeWorld::observe);
@@ -223,6 +225,21 @@ void CporeWorld::_bind_methods() {
     ClassDB::bind_method(D_METHOD("height", "x", "z"), &CporeWorld::height);
     ClassDB::bind_method(D_METHOD("ground", "x", "z"), &CporeWorld::ground);
     ClassDB::bind_method(D_METHOD("can_walk", "x", "z", "nx", "nz", "radius"), &CporeWorld::can_walk);
+    ClassDB::bind_method(D_METHOD("snapshot"), &CporeWorld::snapshot);
+    ClassDB::bind_method(D_METHOD("restore", "bytes"), &CporeWorld::restore);
+    ClassDB::bind_static_method("CporeWorld", D_METHOD("snapshot_error", "code"), &CporeWorld::snapshot_error);
+    ClassDB::bind_method(D_METHOD("debug", "op"), &CporeWorld::debug);
+    ClassDB::bind_static_method("CporeWorld", D_METHOD("debug_error", "code"), &CporeWorld::debug_error);
+    ClassDB::bind_static_method("CporeWorld", D_METHOD("params"), &CporeWorld::params);
+    ClassDB::bind_method(D_METHOD("param", "index"), &CporeWorld::param);
+    ClassDB::bind_method(D_METHOD("layout"), &CporeWorld::layout);
+    ClassDB::bind_method(D_METHOD("set_field", "entry"), &CporeWorld::set_field);
+    ClassDB::bind_method(D_METHOD("clear_field"), &CporeWorld::clear_field);
+    ClassDB::bind_method(D_METHOD("has_field"), &CporeWorld::has_field);
+    ClassDB::bind_method(D_METHOD("field_info"), &CporeWorld::field_info);
+    ClassDB::bind_method(D_METHOD("water_depth", "x", "z"), &CporeWorld::water_depth);
+    ClassDB::bind_method(D_METHOD("bound"), &CporeWorld::bound);
+    ClassDB::bind_method(D_METHOD("last_error"), &CporeWorld::last_error);
 }
 
 int CporeWorld::version() { return CP_STAGE_VERSION; }
@@ -259,8 +276,15 @@ int CporeWorld::reset(const Dictionary &setup) {
     CpStageSetup s;
     cp_stage_setup_default(&s, uint32_t(seed));
     if (!setup_from_dict(setup, s)) return -1;
+    error_text = "";
+    if (s.terrain == CP_STAGE_FIELD && !field_attached) {
+        error_text = "terrain 2 needs set_field() first";
+        return -1;
+    }
     // cp_stage_reset validates before it touches the world, so a failure keeps the old state.
-    return cp_stage_reset(world.get(), &s);
+    const int rc = cp_stage_reset(world.get(), &s);
+    if (rc) error_text = "the stage setup was rejected (a value is out of range or outside the playable bound)";
+    return rc;
 }
 
 Dictionary CporeWorld::get_setup() const { return setup_to_dict(world->setup); }
@@ -272,6 +296,16 @@ String CporeWorld::step(const Dictionary &input) {
 }
 
 int CporeWorld::command(const String &text) { return cp_stage_command(world.get(), text.utf8().get_data()); }
+
+Dictionary CporeWorld::command_input(const String &text) const {
+    std::unique_ptr<CpStageWorld> scratch(new CpStageWorld(*world));
+    scratch->order = CpStageInput{};
+    const int rc = cp_stage_command(scratch.get(), text.utf8().get_data());
+    Dictionary d;
+    d["rc"] = rc;
+    d["input"] = order_to_dict(scratch->order);
+    return d;
+}
 
 int CporeWorld::order(const Dictionary &input) {
     CpStageInput in;
@@ -291,6 +325,7 @@ Dictionary CporeWorld::state() const {
     d["error"] = int(w.last_error);
     d["arena"] = Vector2(w.arena_x, w.arena_z);
     d["order"] = order_to_dict(w.order);
+    d["flags"] = int(w.debug_flags);
     Array accepted;
     accepted.append(int(w.accepted[0])); accepted.append(int(w.accepted[1]));
     d["accepted"] = accepted;
@@ -340,3 +375,116 @@ double CporeWorld::ground(double x, double z) const { return cp_stage_ground(wor
 bool CporeWorld::can_walk(double x, double z, double nx, double nz, double radius) const {
     return cp_stage_can_walk(world.get(), float(x), float(z), float(nx), float(nz), float(radius)) != 0;
 }
+
+// --- snapshot / restore, debug ops, parameters (PLAN-devtools step 5) ---------------------------------
+
+PackedByteArray CporeWorld::snapshot() const {
+    PackedByteArray out;
+    out.resize(int64_t(cp_stage_snapshot_size()));
+    const int n = cp_stage_snapshot(world.get(), out.ptrw(), size_t(out.size()));
+    if (n < 0) out.clear();
+    return out;
+}
+
+int CporeWorld::restore(const PackedByteArray &bytes) {
+    const int rc = cp_stage_restore(world.get(), bytes.ptr(), size_t(bytes.size()), field_attached ? &field : nullptr);
+    error_text = rc ? String(cp_stage_snapshot_error(rc)) : String();
+    return rc;
+}
+
+String CporeWorld::snapshot_error(int code) { return String(cp_stage_snapshot_error(code)); }
+
+int CporeWorld::debug(const Dictionary &op) {
+    CpStageDebug d{};
+    int64_t n;
+    struct IntField { const char *key; int32_t *out; };
+    const IntField fields[] = {{"op", &d.op}, {"id", &d.id}, {"a", &d.a}};
+    for (const IntField &f : fields) {
+        if (!op.has(f.key)) continue;
+        if (!cpore::to_int(op[f.key], -2147483648LL, 2147483647LL, n)) return -1;
+        *f.out = int32_t(n);
+    }
+    if (op.has("x") && !cpore::to_float(op["x"], d.x)) return -1;
+    if (op.has("z") && !cpore::to_float(op["z"], d.z)) return -1;
+    if (op.has("v") && !cpore::to_float(op["v"], d.v)) return -1;
+    return cp_stage_debug(world.get(), &d);
+}
+
+String CporeWorld::debug_error(int code) { return String(cp_stage_debug_error(code)); }
+
+Array CporeWorld::params() {
+    Array a;
+    for (int i = 0; i < CP_STAGE_PARAM_COUNT; ++i) {
+        const CpStageParam &p = CP_STAGE_PARAMS[i];
+        Dictionary d;
+        d["index"] = i; d["name"] = String(p.name); d["group"] = String(p.group);
+        d["min"] = double(p.min); d["max"] = double(p.max);
+        d["default"] = double(*reinterpret_cast<const float *>(reinterpret_cast<const char *>(&CP_STAGE_MOTION) + p.offset));
+        a.append(d);
+    }
+    return a;
+}
+
+double CporeWorld::param(int index) const {
+    if (index < 0 || index >= CP_STAGE_PARAM_COUNT) return 0.0;
+    return double(*reinterpret_cast<const float *>(reinterpret_cast<const char *>(&world->motion) + CP_STAGE_PARAMS[index].offset));
+}
+
+String CporeWorld::layout() const { return cpore::hash_text(cp_stage_layout()); }
+
+// --- the island field (PLAN-heights H4) -------------------------------------------------------------
+
+int CporeWorld::set_field(const Dictionary &entry) {
+    error_text = "";
+    int64_t n;
+    float size_m;
+    if (!entry.has("n") || !cpore::to_int(entry["n"], 2, 4096, n) || !entry.has("size_m") || !cpore::to_float(entry["size_m"], size_m) ||
+        !(size_m > 0.0f) || !entry.has("height") || entry["height"].get_type() != Variant::PACKED_FLOAT32_ARRAY ||
+        !entry.has("hash") || entry["hash"].get_type() != Variant::STRING) {
+        error_text = "set_field: the terrain entry needs n, size_m, height (PackedFloat32Array) and hash";
+        return -1;
+    }
+    const PackedFloat32Array height = entry["height"];
+    PackedFloat32Array level;
+    if (entry.has("water_level") && entry["water_level"].get_type() == Variant::PACKED_FLOAT32_ARRAY) level = entry["water_level"];
+    const int64_t count = n * n;
+    if (height.size() != count || (level.size() != 0 && level.size() != count)) {
+        error_text = "set_field: height and water_level need n*n floats";
+        return -1;
+    }
+    const String hash_hex = entry["hash"];
+    const CharString hash_utf8 = hash_hex.utf8();
+    field_height = height;   // reference-counted copies: the buffers stay put while we hold them
+    field_level = level;
+    field.n = int32_t(n);
+    field.size_m = size_m;
+    field.cell = size_m / float(n);
+    field.half = size_m * 0.5f;
+    field.height = field_height.ptr();
+    field.water_level = field_level.size() ? field_level.ptr() : nullptr;
+    field.hash = std::strtoull(hash_utf8.get_data(), nullptr, 16);
+    if (cp_stage_attach_field(world.get(), &field)) {
+        error_text = "set_field: the field was rejected";
+        field_attached = false;
+        return -1;
+    }
+    field_attached = true;
+    field_meta = Dictionary();
+    field_meta["n"] = int64_t(n);
+    field_meta["size_m"] = double(size_m);
+    field_meta["hash"] = hash_hex;
+    field_meta["seed"] = entry.has("seed") ? int64_t(entry["seed"]) : int64_t(0);
+    return 0;
+}
+
+void CporeWorld::clear_field() {
+    cp_stage_attach_field(world.get(), nullptr);
+    field_attached = false;
+    field_height = PackedFloat32Array();
+    field_level = PackedFloat32Array();
+    field_meta = Dictionary();
+}
+
+Dictionary CporeWorld::field_info() const { return field_meta; }
+double CporeWorld::water_depth(double x, double z) const { return cp_stage_water_depth(world.get(), float(x), float(z)); }
+double CporeWorld::bound() const { return cp_stage_bound(world.get()); }
