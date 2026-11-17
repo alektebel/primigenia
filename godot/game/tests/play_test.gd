@@ -267,6 +267,22 @@ func _stage() -> void:
 	check(lowest > -0.03, "feet are on Game.ground (lowest %.1f mm relative)" % (lowest * 1000.0))
 	check(absf(player.position.y - game.ground(player.position.x, player.position.z)) < 0.05, "the actor stands on Game.ground")
 
+	print("== camera: left drag orbits, a click does not")
+	var yaw_before: float = island.chase.yaw
+	island.player_input.clear_destination()
+	await _drag(Vector2(640, 500), Vector2(720, 500))
+	await frames(2)
+	check(island.chase.yaw != yaw_before, "a left drag orbits the camera (yaw %.3f -> %.3f)" % [yaw_before, island.chase.yaw])
+	check(island.player_input.destination == null, "a left drag does not set a destination")
+	island.chase.reset_behind()
+	var z_before: float = island.chase.z_target
+	var zin := InputEventMouseButton.new()
+	zin.button_index = MOUSE_BUTTON_WHEEL_DOWN
+	zin.pressed = true
+	root.push_input(zin)
+	check(island.chase.z_target > z_before, "the wheel zooms out (z target %.2f -> %.2f)" % [z_before, island.chase.z_target])
+	island.chase.set_zoom(island.chase.Z_CHASE)
+
 	print("== select Garfio, radial, Attack")
 	if game.stage.cur.active >= 0:
 		print("  (Garfio already started a fight on its own)")
@@ -329,6 +345,25 @@ func _click(pos: Vector2) -> void:
 		e.pressed = pressed
 		e.button_mask = MOUSE_BUTTON_MASK_LEFT if pressed else 0
 		root.push_input(e)
+
+func _drag(a: Vector2, b: Vector2) -> void:
+	var e := InputEventMouseButton.new()
+	e.position = a
+	e.button_index = MOUSE_BUTTON_LEFT
+	e.pressed = true
+	e.button_mask = MOUSE_BUTTON_MASK_LEFT
+	root.push_input(e)
+	for i in 5:
+		var m := InputEventMouseMotion.new()
+		m.position = a.lerp(b, (i + 1) / 5.0)
+		m.relative = (b - a) / 5.0
+		m.button_mask = MOUSE_BUTTON_MASK_LEFT
+		root.push_input(m)
+	var u := InputEventMouseButton.new()
+	u.position = b
+	u.button_index = MOUSE_BUTTON_LEFT
+	u.pressed = false
+	root.push_input(u)
 
 func _key(code: Key) -> void:
 	for pressed in [true, false]:

@@ -2,10 +2,12 @@ extends RefCounted
 # Ground picking by ray marching (port of web/stage/pointer.js groundHit) and creature picking.
 
 # origin/dir in world space; ground: Callable(x, z) -> float. Returns Vector3 or null.
-static func march(origin: Vector3, dir: Vector3, ground: Callable) -> Variant:
+# max_range > 900 (the strategic map) grows the step with the distance (1 % of it), so a 3 km ray stays cheap.
+static func march(origin: Vector3, dir: Vector3, ground: Callable, max_range: float = 900.0) -> Variant:
 	var prev_t := 0.0
-	for step in range(1, 901):
-		var t := float(step)
+	var t := 0.0
+	while t < max_range:
+		t += 1.0 if max_range <= 900.0 else maxf(1.0, t * 0.01)
 		var p := origin + dir * t
 		if p.y <= ground.call(p.x, p.z):
 			var lo := prev_t
@@ -22,8 +24,8 @@ static func march(origin: Vector3, dir: Vector3, ground: Callable) -> Variant:
 		prev_t = t
 	return null
 
-static func ground_hit(camera: Camera3D, screen_pos: Vector2, ground: Callable) -> Variant:
-	return march(camera.project_ray_origin(screen_pos), camera.project_ray_normal(screen_pos), ground)
+static func ground_hit(camera: Camera3D, screen_pos: Vector2, ground: Callable, max_range: float = 900.0) -> Variant:
+	return march(camera.project_ray_origin(screen_pos), camera.project_ray_normal(screen_pos), ground, max_range)
 
 # Nearest living entity whose body sphere the ray crosses before it reaches the ground.
 # entities: Array of {id, x, z, dead, radius_cm}; returns {id, pos} or {} (id -1).
