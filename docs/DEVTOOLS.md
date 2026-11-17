@@ -33,7 +33,7 @@ benchmark starts.
 | D5 | **Feedback key** | Saves a screenshot, the last 60 s of replay, the scenario at that point, the tuning diff, the build hash and a typed note to `feedback/<time>/`. Claude or an agent loads it and sees exactly what happened | F8 |
 | D6 | **Replay scrubber** | A timeline over any replay: pause, rewind, step one tick, jump. **"Take control from here"** branches a new game from any moment (possible because the C sim is deterministic) | F9 |
 | D7 | **Time control** | Pause, step a tick, slow motion, fast-forward ×10 / ×100 (seasons in Band, years in Realm and Space) | Pause, [ ] |
-| D8 | **Overlays** | Toggle visual debug layers: navigation, AI intents and target lines, combat phases and hitboxes, locomotion (feet, support polygon, gait), C vs rendered positions, fog, trust between species, economic flows (later), performance | F10 cycles, console `overlay <name>` |
+| D8 | **Overlays** | Toggle visual debug layers: navigation, AI intents and target lines, combat phases and hitboxes, locomotion (feet, support polygon, gait), C vs rendered positions, fog, trust between species, economic flows (later), performance | F10 cycles, console `overlay <name>` (first one built: `overlay path`, the planned GO route, off by default) |
 | D9 | **Free camera** | Detach the camera and fly anywhere; snap back | F7 |
 | D10 | **Lineage editor** | Pick the traits you've earned (aquatic, void-adapted, silk…), then start any stage with them. That's how carry-forward between stages gets tested without playing the whole arc | console `lineage` |
 | D11 | **Stage jump** | Start any stage from its standard start state (Q7), with any lineage | main menu (dev builds) |

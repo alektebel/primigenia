@@ -102,13 +102,13 @@ flat combat collision model; landscape collision applies to roaming.
 The clock wraps every 12,000 ticks (20 simulated minutes). It is state only;
 no nocturnal effects are added here. Egg/hatchling consequences, social
 skills, DNA, raids, discovery, tiers and recipes remain subsequent P4 work.
-There is direct steering and sliding, not global pathfinding around obstacles.
+In ANALYTIC and FLAT terrain there is direct steering and sliding, not global pathfinding around obstacles. In FIELD terrain (the generated island) GO / GO_NEST plan a route over a walk grid (A*), see `docs/godot/NAV.md`.
 
 ## Agent API
 
 Stable ids: player **0**, wild creatures **1..n**, nest **1000**, obstacles
 **2000+i**. Ids do not recycle after a kill. `cp_stage_observe` builds bounded
-JSON (`world-1`); insufficient output capacity returns −1. It exposes own
+JSON (`world-2`, `cp_stage_observe_v(...,1)` gives the old `world-1` text); insufficient output capacity returns −1. World-2 adds a `world` block (bound, units, nest, tick rate), `blocked`, `events` and creature hp/state; see `docs/godot/NAV.md`. It exposes own
 position/facing, HP and stamina pools, speed, clock, command error, nearby
 entities within 40 m (id/type/species/distance/relative bearing), legal verb
 names, available attack moves and a short English summary. Bearing is in

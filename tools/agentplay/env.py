@@ -12,17 +12,24 @@ ROOT = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)),
 sys.path.insert(0, os.path.join(ROOT, "bindings", "python"))
 from cpore.world import StageWorld  # noqa: E402
 
-BOUND = 195.5            # cp_stage_can_walk rejects |x|,|z| > 195
+BOUND = 195.0            # walkable half-extent; world-2 states it in obs["world"]["bound"], this is the fallback
 MAX_STEP = 3.0           # max plausible displacement per 10 Hz tick
 KNOWN_VERBS = {"go", "heading", "flee", "go_nest", "wait", "approach", "attack"}
 MOVE_VERBS = {"go", "heading", "flee", "go_nest", "approach"}
-TOP_KEYS = ["schema", "tick", "clock", "own", "last_error", "nearby", "legal_verbs", "attack_moves", "summary"]
+SCHEMA = "world-2"
+TOP_KEYS = ["schema", "tick", "clock", "world", "own", "last_error", "blocked", "events_dropped", "events",
+            "nearby", "legal_verbs", "attack_moves", "summary"]
+WORLD_KEYS = ["bound", "units", "nest", "tick_hz"]
+BLOCK_REASONS = {"cliff", "water", "edge", "creature", "unreachable", "obstacle"}
+EVENT_TYPES = {"hit", "kill", "death", "respawn", "order_rejected", "path_found", "arrived", "fled", "path_failed"}
+CREATURE_STATES = {"roam", "alert", "fighting", "carcass", "dead"}
+CREATURE_KEYS = ["id", "type", "species", "distance", "bearing", "hp", "hp_max", "state", "in_fight"]
 OWN_KEYS = ["id", "x", "z", "hp", "stamina", "hp_max", "stamina_max", "speed", "facing"]
 NEAR_TYPES = {"creature", "carcass", "nest", "rock", "tree"}
 KNOWN_ERRORS = {"ok", "invalid command or value", "invalid or unavailable target",
-                "invalid or unavailable attack move"}
+                "invalid or unavailable attack move", "unreachable", "no_threat"}
 ERR_TEXT = {0: "ok", -1: "invalid command or value", -2: "invalid or unavailable target",
-            -3: "invalid or unavailable attack move"}
+            -3: "invalid or unavailable attack move", -4: "unreachable", -5: "no_threat"}
 
 
 def clone_world(w: StageWorld) -> StageWorld:
@@ -60,6 +67,9 @@ class Episode:
         self.verb_stats: dict[str, dict] = {}
         self.seen_iface: set[str] = set()
         self.max_hp_dropped = 0.0
+        self.turn_blocked: list[str] = []      # blocked reasons reported by the ticks of the current turn
+        self.blocked_turns = 0
+        self.event_counts: dict[str, int] = {}
 
     # ---- bug recording -------------------------------------------------
     def bug(self, kind: str, detail: str, **ctx):
@@ -71,9 +81,9 @@ class Episode:
                           "seed": self.seed, "ticks_per_turn": self.tpt,
                           "repro": [[i, c] for i, c in enumerate(self.ops) if c is not None], **ctx})
 
-    def _observe(self, where: str):
+    def _observe(self, where: str, ack: bool = True):
         try:
-            return self.w.observe()
+            return self.w.observe(ack=ack)
         except Exception as e:  # noqa: BLE001
             self.obs = getattr(self, "obs", {})
             self.bug("observe_exception", f"{type(e).__name__}: {e} ({where})")
@@ -95,8 +105,21 @@ class Episode:
                 for i, x in enumerate(v):
                     walk(x, f"{path}[{i}]")
         walk(o, "obs")
-        if o.get("schema") != "world-1" or list(o.keys()) != TOP_KEYS:
+        if o.get("schema") != SCHEMA or list(o.keys()) != TOP_KEYS:
             self.bug("schema_drift", f"top-level keys {list(o.keys())}")
+        world = o.get("world", {})
+        if list(world.keys()) != WORLD_KEYS:
+            self.bug("schema_drift", f"world keys {list(world.keys())}")
+        bound = float(world.get("bound", BOUND))
+        blk = o.get("blocked")
+        if blk is not None:
+            if not isinstance(blk, dict) or blk.get("reason") not in BLOCK_REASONS or "x" not in blk or "z" not in blk:
+                self.bug("schema_drift", f"bad blocked entry {blk}")
+            else:
+                self.turn_blocked.append(blk["reason"])
+        for e in o.get("events", []):
+            if e.get("type") not in EVENT_TYPES or not isinstance(e.get("tick"), int):
+                self.bug("schema_drift", f"bad event {e}")
         own = o["own"]
         if list(own.keys()) != OWN_KEYS:
             self.bug("schema_drift", f"own keys {list(own.keys())}")
@@ -105,8 +128,8 @@ class Episode:
         for k, mx in (("hp", "hp_max"), ("stamina", "stamina_max")):
             if own[k] < -1e-3 or own[k] > own[mx] + 1e-3:
                 self.bug("range", f"{k}={own[k]} outside [0,{own[mx]}]")
-        if abs(own["x"]) > BOUND or abs(own["z"]) > BOUND:
-            self.bug("out_of_bounds", f"player walks beyond the +-195 walkable limit on axis {'x' if abs(own['x']) > BOUND else 'z'} (first seen at {own['x']:.1f},{own['z']:.1f})")
+        if abs(own["x"]) > bound + 1e-3 or abs(own["z"]) > bound + 1e-3:
+            self.bug("out_of_bounds", f"player walks beyond the +-{bound:g} walkable limit on axis {'x' if abs(own['x']) > bound else 'z'} (first seen at {own['x']:.1f},{own['z']:.1f})")
         fl = math.hypot(*own["facing"])
         if abs(fl - 1) > 0.02 and fl != 0:
             self.bug("range", f"facing length {fl:.3f}")
@@ -130,6 +153,10 @@ class Episode:
         for n in o["nearby"]:
             if n["type"] not in NEAR_TYPES or n["distance"] < 0 or abs(n["bearing"]) > 180.01:
                 self.bug("schema_drift", f"bad nearby entry {n}")
+            if n["type"] in ("creature", "carcass"):
+                if list(n.keys()) != CREATURE_KEYS or n["state"] not in CREATURE_STATES \
+                        or not -1e-3 <= n["hp"] <= n["hp_max"] + 1e-3 or n["in_fight"] != (n["state"] == "fighting"):
+                    self.bug("schema_drift", f"bad creature entry {n}")
             if n["type"] == "carcass" and n["id"] not in self.wins:
                 self.wins.add(n["id"])
         if o["last_error"] not in KNOWN_ERRORS:
@@ -175,13 +202,18 @@ class Episode:
                 if code == 0:
                     self.order = (verb, cmd)
             self.ops.append(cmd)
+            self.turn_blocked = []
             for i in range(self.tpt):
                 p = self.obs
                 self.tick_hashes.append(self.w.step(None))
-                o = self._observe("tick")
+                o = self._observe("tick", ack=(i == self.tpt - 1))   # the agent sees every event of the turn
                 self.obs = o
                 if o and p:
                     self.check_tick(p, o)
+            for e in self.obs.get("events", []):
+                self.event_counts[e["type"]] = self.event_counts.get(e["type"], 0) + 1
+                if e["type"] in ("kill", "death", "fled", "path_failed", "arrived"):
+                    self.order = None      # the world ends the standing order here and says so in the events
         except Exception as e:  # noqa: BLE001
             self.ops_exc = True
             self.bug("binding_exception", f"{type(e).__name__}: {e}", trace=traceback.format_exc()[-400:])
@@ -207,7 +239,7 @@ class Episode:
 
     def check_effect(self, pre, o, cmd, code, d):
         near_c = min([n["distance"] for n in o["nearby"] if n["type"] == "creature"] + [999])
-        fight_zone = near_c < 7 or o["own"]["hp"] < pre["own"]["hp"] or pre["own"]["hp"] <= 0
+        fight_zone = near_c < 7 or any(n.get("in_fight") for n in o["nearby"]) or o["own"]["hp"] < pre["own"]["hp"] or pre["own"]["hp"] <= 0
         if not self.order or fight_zone:
             self.still_turns = 0
             return
@@ -222,11 +254,18 @@ class Episode:
                 pending = False
         if v in ("wait", "attack", "approach"):
             pending = False
+        if v == "flee" and near_c >= 30:
+            pending = False        # flee runs until nothing is within 30 m, then the order is done
         if not pending or v not in MOVE_VERBS:
             self.still_turns = 0
             return
         if d < 0.05 and v == "flee":
             self.bug("silent_noop", "'flee' with no threat is accepted ('ok') but does nothing", cmd=c)
+            return
+        if d < 0.05 and self.turn_blocked:
+            # the world said why it did not move (blocked.reason): not a silent failure
+            self.blocked_turns += 1
+            self.still_turns = 0
             return
         if d < 0.05:
             self.still_turns += 1

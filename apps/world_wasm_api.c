@@ -103,6 +103,6 @@ int *cw_orders(void){
     return rows;
 }
 char *cw_observe(void){
-    if(cp_stage_observe(&stage,observation,sizeof observation)<0)return NULL;
+    if(cp_stage_observe_v(&stage,observation,sizeof observation,1)<0)return NULL;
     return observation;
 }

@@ -17,7 +17,7 @@ Lock-step: the stage never advances by itself while the agent mode is on; only `
 | `{"cmd":"verify"}` | replays the session log from its start in a fresh world: `{"ok":true,"match":true,"ticks":n}` |
 | `{"cmd":"quit"}` | ok, then the process exits 0 |
 
-`obs` is `cp_stage_observe` (the same text the Python binding's `StageWorld.observe()` returns) plus `tick`, `fighting`,
+`obs` is `cp_stage_observe` (schema `world-2`; every `observe` command also acknowledges the events it lists, so the next one shows only what happened after it; the same text the Python binding's `StageWorld.observe()` returns) plus `tick`, `fighting`,
 `player_rendered {x,y,z}` and `legend_context`.
 
 Pushed events: `{"event":"error","source":"engine|c_input","text":..}` (engine log errors) and

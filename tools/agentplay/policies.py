@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import json
 import random
+import zlib
 import re
 
 from llm import chat, LLMError
@@ -22,16 +23,23 @@ PERSONAS = {
                 "what information you wish you had.",
 }
 
-SYSTEM = """You control one creature in a 2D valley (x,z in world units, 10 ticks per second, each of your turns lasts about 2 seconds). Each turn you get a JSON observation and answer with ONE command.
+SYSTEM = """You control one creature in a valley (metres; 10 ticks per second, each of your turns lasts about 2 seconds). Each turn you get a JSON observation (schema world-2) and answer with ONE command.
 Commands (one per turn; the last accepted order keeps running until you give a new one):
-  go X Z            walk to coordinates
-  heading DEG       walk in a direction (degrees, 0 = north/+z)
+  go X Z            walk to coordinates (routes around cliffs and water; "unreachable" if there is no way)
+  heading DEG       walk in a direction (degrees: 0 = +z, 90 = +x, clockwise seen from above)
   approach #ID      walk toward creature ID
   attack #ID MOVE   attack creature ID with a move from attack_moves (name or number)
-  flee              run away from danger
+  flee              run away from the nearest creature (error no_threat if none is within 30 m)
   go_nest           return to the nest (safe place)
   wait              stand still
-Only verbs in legal_verbs are available. Reply format:
+Only verbs in legal_verbs are available. Observation fields:
+  world: bound (you can walk within +-bound on x and z), units, nest {x,z}, tick_hz
+  own: x, z, hp, stamina (and their maxima), speed, facing (unit vector)
+  last_error: result of your last command ("ok" or why it was rejected); it stays until your next command
+  blocked: null, or {reason: cliff|water|edge|obstacle|creature|unreachable, x, z} when you were stopped during the last tick
+  events: what happened since your last turn: hit {by,target,move,damage}, kill, death, respawn, order_rejected, path_found, arrived, fled, path_failed (ids: 0 = you, 1.. = creatures); a kill, death or fled event also ends your standing order
+  nearby: creatures and carcasses (id, species, distance, bearing in degrees relative to your facing, positive = clockwise/right, hp, hp_max, state roam|alert|fighting|carcass|dead, in_fight), the nest, rocks and trees within 40 m
+Reply format:
 ACTION: <one command>
 NOTE: <optional short memory for yourself, max 200 chars>
 {persona}"""
@@ -80,7 +88,7 @@ def _clean(s: str) -> str:
 class ScriptedPolicy:
     def __init__(self, persona, seed):
         self.persona = persona
-        self.rng = random.Random(seed * 7919 + hash(persona) % 1000)
+        self.rng = random.Random(seed * 7919 + zlib.crc32(persona.encode()) % 1000)   # not hash(): str hashes change per process
         self.i = 0
         self.dir = self.rng.uniform(0, 360)
 

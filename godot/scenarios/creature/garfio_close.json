@@ -1,10 +1,10 @@
 {
 	"camera": {},
-	"created": "2026-11-17T15:20:47",
+	"created": "2026-11-17T16:52:10",
 	"engine": {
 		"build": "unknown",
-		"layout": "9feb6873d681fdad",
-		"snapshot_version": 1,
+		"layout": "defb7945f1809d32",
+		"snapshot_version": 2,
 		"stage_version": 2
 	},
 	"format": "primigenia.scenario/1",

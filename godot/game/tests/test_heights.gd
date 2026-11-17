@@ -117,10 +117,10 @@ func _grid(nest: Vector2) -> void:
 				blocked += 1
 			elif res.result == "stuck":
 				stuck += 1
-	# A GO order walks a straight line and slides along obstacles; it does not path-find. The plan's gate (<= 4 of 20
-	# unreachable) therefore reports instead of failing: crossing the mountain ring needs path-finding (C1/C2).
-	print("  NOTE: %d of 20 straight-line GO targets were blocked (plan gate 4); path-finding is a later decision" % blocked)
-	check(blocked <= 12, "no more than 12 of 20 targets are blocked by cliffs or water (%d blocked)" % blocked)
+	# C1-nav: GO plans a route over the walk grid (A*), so the plan's gate (<= 4 of 20 unreachable) holds; before it,
+	# 10 of 20 straight-line orders stopped at cliffs.
+	print("  %d of 20 GO targets were not reached (plan gate 4, C1-nav target 2)" % blocked)
+	check(blocked <= 2, "at least 18 of 20 targets are reached (%d not reached)" % blocked)
 	check(stuck <= 1, "at most one run wanders without progress (%d)" % stuck)
 	evidence["grid"] = {"blocked": blocked, "stuck": stuck, "runs": rows}
 
@@ -144,7 +144,12 @@ func _go(sw, target: Vector2) -> Dictionary:
 		sw.step_once()
 		var e: Dictionary = sw.cur.entities[0]
 		var left := Vector2(e.x, e.z).distance_to(target)
-		if left < 2.0 or int(sw.cur.order.verb) != 2:
+		if int(sw.cur.order.verb) != 2:
+			# the order ended: arrived, or never started (the world answered unreachable)
+			if left < 4.0:
+				return {"result": "arrived", "reason": "", "ticks": i, "left": left}
+			return {"result": "blocked", "reason": "unreachable: %s" % CporeWorld.order_error(int(sw.cur.error)) if i == 0 else "order ended", "ticks": i, "left": left}
+		if left < 2.0:
 			return {"result": "arrived", "reason": "", "ticks": i, "left": left}
 		if float(e.speed) < 0.5:
 			still += 1

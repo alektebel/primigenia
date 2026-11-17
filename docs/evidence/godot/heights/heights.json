@@ -6,91 +6,91 @@
 		"steepest_deg": 49.7
 	},
 	"grid": {
-		"blocked": 10,
+		"blocked": 0,
 		"runs": [
 			{
 				"grid": [
 					0,
 					0
 				],
-				"left_m": 1.8,
+				"left_m": 1.7,
 				"reason": "",
 				"result": "arrived",
 				"target": [
 					-934.1,
 					-1148.5
 				],
-				"ticks": 3820
+				"ticks": 3764
 			},
 			{
 				"grid": [
 					1,
 					0
 				],
-				"left_m": 335.8,
-				"reason": "slope",
-				"result": "blocked",
+				"left_m": 1.9,
+				"reason": "",
+				"result": "arrived",
 				"target": [
 					-641.5,
 					-1308.5
 				],
-				"ticks": 2984
+				"ticks": 4028
 			},
 			{
 				"grid": [
 					2,
 					0
 				],
-				"left_m": 744.7,
-				"reason": "slope",
-				"result": "blocked",
+				"left_m": 1.7,
+				"reason": "",
+				"result": "arrived",
 				"target": [
 					-24.0,
 					-1300.0
 				],
-				"ticks": 1448
+				"ticks": 3975
 			},
 			{
 				"grid": [
 					3,
 					0
 				],
-				"left_m": 878.4,
-				"reason": "slope",
-				"result": "blocked",
+				"left_m": 1.6,
+				"reason": "",
+				"result": "arrived",
 				"target": [
 					650.0,
 					-1252.0
 				],
-				"ticks": 1223
+				"ticks": 4304
 			},
 			{
 				"grid": [
 					4,
 					0
 				],
-				"left_m": 1.6,
+				"left_m": 1.7,
 				"reason": "",
 				"result": "arrived",
 				"target": [
 					1070.9,
 					-1070.9
 				],
-				"ticks": 4848
+				"ticks": 4488
 			},
 			{
 				"grid": [
 					0,
 					1
 				],
-				"left_m": 769.9,
-				"reason": "slope",
-				"result": "blocked",
+				"left_m": 1.6,
+				"reason": "",
+				"result": "arrived",
 				"target": [
 					-1322.2,
 					-424.1
 				],
-				"ticks": 1342
+				"ticks": 3990
 			},
 			{
 				"grid": [
@@ -125,42 +125,42 @@
 					3,
 					1
 				],
-				"left_m": 1.8,
+				"left_m": 1.6,
 				"reason": "",
 				"result": "arrived",
 				"target": [
 					650.0,
 					-373.3
 				],
-				"ticks": 2287
+				"ticks": 2191
 			},
 			{
 				"grid": [
 					4,
 					1
 				],
-				"left_m": 829.6,
-				"reason": "slope",
-				"result": "blocked",
+				"left_m": 1.7,
+				"reason": "",
+				"result": "arrived",
 				"target": [
 					1300.0,
 					-433.3
 				],
-				"ticks": 1476
+				"ticks": 4125
 			},
 			{
 				"grid": [
 					0,
 					2
 				],
-				"left_m": 1264.8,
-				"reason": "water",
-				"result": "blocked",
+				"left_m": 2.0,
+				"reason": "",
+				"result": "arrived",
 				"target": [
 					-1300.0,
 					433.3
 				],
-				"ticks": 281
+				"ticks": 3656
 			},
 			{
 				"grid": [
@@ -174,7 +174,7 @@
 					-650.0,
 					433.3
 				],
-				"ticks": 2215
+				"ticks": 1931
 			},
 			{
 				"grid": [
@@ -195,14 +195,14 @@
 					3,
 					2
 				],
-				"left_m": 171.3,
-				"reason": "slope",
-				"result": "blocked",
+				"left_m": 2.0,
+				"reason": "",
+				"result": "arrived",
 				"target": [
 					683.3,
 					419.6
 				],
-				"ticks": 1546
+				"ticks": 2676
 			},
 			{
 				"grid": [
@@ -216,83 +216,83 @@
 					1304.6,
 					444.4
 				],
-				"ticks": 4106
+				"ticks": 4158
 			},
 			{
 				"grid": [
 					0,
 					3
 				],
-				"left_m": 1.9,
+				"left_m": 2.0,
 				"reason": "",
 				"result": "arrived",
 				"target": [
 					-712.4,
 					1056.6
 				],
-				"ticks": 4322
+				"ticks": 3835
 			},
 			{
 				"grid": [
 					1,
 					3
 				],
-				"left_m": 255.2,
-				"reason": "slope",
-				"result": "blocked",
+				"left_m": 1.9,
+				"reason": "",
+				"result": "arrived",
 				"target": [
 					-631.6,
 					1255.7
 				],
-				"ticks": 3150
+				"ticks": 4127
 			},
 			{
 				"grid": [
 					2,
 					3
 				],
-				"left_m": 648.6,
-				"reason": "no progress in 1200 ticks",
-				"result": "stuck",
+				"left_m": 1.9,
+				"reason": "",
+				"result": "arrived",
 				"target": [
 					32.1,
 					1377.6
 				],
-				"ticks": 3118
+				"ticks": 4701
 			},
 			{
 				"grid": [
 					3,
 					3
 				],
-				"left_m": 566.1,
-				"reason": "slope",
-				"result": "blocked",
+				"left_m": 1.7,
+				"reason": "",
+				"result": "arrived",
 				"target": [
 					662.0,
 					1300.0
 				],
-				"ticks": 3173
+				"ticks": 4729
 			},
 			{
 				"grid": [
 					4,
 					3
 				],
-				"left_m": 861.9,
-				"reason": "slope",
-				"result": "blocked",
+				"left_m": 1.9,
+				"reason": "",
+				"result": "arrived",
 				"target": [
 					1139.3,
 					912.0
 				],
-				"ticks": 1962
+				"ticks": 4838
 			}
 		],
-		"stuck": 1
+		"stuck": 0
 	},
 	"timing_us_per_step": {
-		"field": 6.7,
+		"field": 7.2,
 		"flat": 5.2,
 		"note": "measured through the GDScript call, so it includes marshalling",
 		"steps": 10000,

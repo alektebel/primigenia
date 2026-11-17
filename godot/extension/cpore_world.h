@@ -3,6 +3,7 @@
 #include <godot_cpp/core/class_db.hpp>
 #include <godot_cpp/variant/packed_byte_array.hpp>
 #include <godot_cpp/variant/packed_float32_array.hpp>
+#include <godot_cpp/variant/packed_vector2_array.hpp>
 #include <memory>
 #include <vector>
 extern "C" {
@@ -59,5 +60,10 @@ public:
     godot::Dictionary field_info() const;
     double water_depth(double x, double z) const;
     double bound() const;
+    // C1-nav: the running GO path as (x,z) points, nearest first (empty without one); the nav grid; event bookkeeping.
+    godot::PackedVector2Array path() const;
+    int nav_warm() const;
+    double nav_cell() const;
+    void ack_events();
     godot::String last_error() const { return error_text; }
 };

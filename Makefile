@@ -49,9 +49,10 @@ $(BUILD)/combat_golden: tests/combat_golden.c apps/combat_bots.h $(BUILD)/apps/c
 
 # Correctness regressions. Balance acceptance is a separate measured gate:
 # run make tourney as well before claiming P2 acceptance.
-test: $(BUILD)/world_cli $(BUILD)/world_test $(BUILD)/terrain_test $(BUILD)/cpore_test $(BUILD)/combat_test $(BUILD)/combat_tourney_test $(BUILD)/combat_golden check-core
+test: $(BUILD)/world_cli $(BUILD)/world_test $(BUILD)/terrain_test $(BUILD)/cpore_test $(BUILD)/combat_test $(BUILD)/combat_tourney_test $(BUILD)/combat_golden check-core $(BUILD)/nav_test
 	nice -n 10 ./$(BUILD)/terrain_test
 	./$(BUILD)/world_test
+	nice -n 10 ./$(BUILD)/nav_test
 	@for g in world-1 world-42 world-987654321 world-debug-42 world-field-1; do ./$(BUILD)/world_cli --replay tests/golden/$$g.log | diff -q - tests/golden/$$g.hashes >/dev/null || { echo "world_cli replay of $$g differs from its .hashes"; exit 1; }; done; echo "world_cli replays match the golden hashes"
 	@sed "s/ b255c92a5b85e43d/ b255c92a5b85e43e/" tests/golden/world-field-1.log > $(BUILD)/world-field-bad.log; ! ./$(BUILD)/world_cli --replay $(BUILD)/world-field-bad.log 2>$(BUILD)/world-field-bad.err >/dev/null && grep -q "terrain hash mismatch" $(BUILD)/world-field-bad.err && echo "a field log with an edited hash is refused"
 	python3 tests/test_terrain_metrics.py
@@ -390,3 +391,10 @@ godot-actions-evidence:
 	@mkdir -p docs/evidence/godot/actions
 	cd godot && LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 1200 xvfb-run -a $(GODOT) --rendering-driver opengl3 --resolution 1280x720 --path . \
 	  --script actions/test/capture.gd -- out=$(CURDIR)/docs/evidence/godot/actions $(ARGS)
+
+# C1-nav: GO pathfinding on the generated island (20 seeded far targets, planner timing, determinism).
+$(BUILD)/nav_test: tests/test_nav.c $(HDRS) $(BUILD)/libcpore.a
+	$(CC) $(CFLAGS) -O2 $< $(BUILD)/libcpore.a -o $@ $(LDLIBS)
+.PHONY: nav-test
+nav-test: $(BUILD)/nav_test
+	nice -n 10 ./$(BUILD)/nav_test

@@ -447,7 +447,7 @@ static void snapshots(void){
     uint8_t bad[1<<16];
     memcpy(bad,blob,(size_t)n);bad[0]='X';
     assert(cp_stage_restore(&snap_b,bad,(size_t)n,NULL)==CP_STAGE_SNAP_ERR_MAGIC);
-    memcpy(bad,blob,(size_t)n);bad[8]=2;
+    memcpy(bad,blob,(size_t)n);bad[8]=CP_STAGE_SNAPSHOT_VERSION+1;
     assert(cp_stage_restore(&snap_b,bad,(size_t)n,NULL)==CP_STAGE_SNAP_ERR_FORMAT);
     memcpy(bad,blob,(size_t)n);bad[12]=CP_STAGE_VERSION+1;
     assert(cp_stage_restore(&snap_b,bad,(size_t)n,NULL)==CP_STAGE_SNAP_ERR_ENGINE);
@@ -802,6 +802,66 @@ static void debug_ops(void){
     }
     puts("PASS debug ops, god, ai off, param, replay_ex and the world-debug-42 golden");
 }
+/* ---- C1-nav: last_error, events, blocked, no_threat, the walkable-square clamp in fights, world-1 text ---- */
+static void nav_contract(void) {
+    char obs[16384];
+    reset();
+    assert(cp_stage_command(&w,"bogus")<0);
+    assert(w.last_error==-1);
+    cp_stage_step(&w,NULL);cp_stage_step(&w,NULL);
+    assert(w.last_error==-1);                       /* a step with no input keeps the last error */
+    assert(cp_stage_observe(&w,obs,sizeof obs)>0 && strstr(obs,"\"schema\":\"world-2\"") && strstr(obs,"\"last_error\":\"invalid command or value\""));
+    assert(strstr(obs,"\"blocked\":null") && strstr(obs,"\"order_rejected\"") && strstr(obs,"\"world\":{\"bound\":195.000000"));
+    cp_stage_ack_events(&w);
+    assert(cp_stage_observe(&w,obs,sizeof obs)>0 && strstr(obs,"\"events\":[]"));
+    assert(cp_stage_command(&w,"wait")==0 && w.last_error==0);
+    assert(cp_stage_observe_v(&w,obs,sizeof obs,1)>0 && strstr(obs,"world-1") && !strstr(obs,"events") && !strstr(obs,"in_fight"));
+    assert(cp_stage_observe_v(&w,obs,sizeof obs,3)<0);
+    /* flee with no creature within 30 m: rejected by the text API, accepted but flagged by the struct API */
+    setup.wild[0].x=setup.wild[0].home_x=120;
+    assert(cp_stage_reset(&w,&setup)==0);
+    assert(cp_stage_command(&w,"flee")==-5 && w.last_error==-5 && !strcmp(cp_stage_order_error(-5),"no_threat"));
+    CpStageInput f={.verb=CP_STAGE_FLEE};
+    assert(cp_stage_order(&w,&f)==0 && w.last_error==-5);
+    /* blocked: walking east into the edge of the square names the reason and never passes the bound */
+    reset();
+    setup.nest_x=194;
+    setup.wild[0].x=setup.wild[0].home_x=-100;
+    assert(cp_stage_reset(&w,&setup)==0);
+    assert(cp_stage_command(&w,"heading 90")==0);
+    int seen=0;
+    for(int i=0;i<60;i++){
+        cp_stage_step(&w,NULL);
+        assert(fabsf(w.player.x)<=195.f);
+        if(w.blocked_reason==CP_STAGE_BLOCK_EDGE)seen=1;
+    }
+    assert(seen);
+    assert(cp_stage_observe(&w,obs,sizeof obs)>0 && strstr(obs,"\"blocked\":{\"reason\":\"edge\""));
+    /* a fight: hit events with who/what/how much, then a kill, and the nearby entry shows hp and state */
+    reset();
+    setup.wild[0].z=setup.wild[0].home_z=4;
+    assert(cp_stage_reset(&w,&setup)==0);
+    cp_stage_step(&w,NULL);
+    assert(w.active==0);
+    assert(cp_stage_observe(&w,obs,sizeof obs)>0 && strstr(obs,"\"state\":\"fighting\"") && strstr(obs,"\"in_fight\":true") && strstr(obs,"\"hp_max\""));
+    CpStageInput a={.verb=CP_STAGE_ATTACK,.target=1,.move=0};
+    int hits=0;
+    for(int i=0;i<200&&w.outcome==CP_STAGE_NONE;i++)cp_stage_step(&w,&a);
+    for(uint32_t k=0;k<w.ev_total&&k<CP_STAGE_MAX_EVENTS;k++)hits+=w.events[k].type==CP_STAGE_EV_HIT;
+    assert(hits>0&&w.outcome!=CP_STAGE_NONE);
+    assert(cp_stage_observe(&w,obs,sizeof obs)>0 && strstr(obs,"\"type\":\"hit\"") && (strstr(obs,"\"type\":\"kill\"")||strstr(obs,"\"type\":\"death\"")));
+    /* fighters at the edge of the square are held inside it (agentplay saw 195.7) */
+    reset();
+    setup.nest_x=194;
+    setup.wild[0].x=setup.wild[0].home_x=194;
+    setup.wild[0].z=setup.wild[0].home_z=3;
+    assert(cp_stage_reset(&w,&setup)==0);
+    a=(CpStageInput){.verb=CP_STAGE_HEADING,.hx=32767};
+    for(int i=0;i<200;i++){
+        cp_stage_step(&w,&a);
+        assert(fabsf(w.player.x)<=195.001f&&fabsf(w.wild[0].x)<=195.001f);
+    }
+}
 int main(void) {
     validation();
     motion_law();
@@ -814,6 +874,7 @@ int main(void) {
     field_mode();
     field_fight();
     debug_ops();
+    nav_contract();
     reset();
     CpStageInput a={
         0

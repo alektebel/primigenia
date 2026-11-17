@@ -28,6 +28,19 @@ func run(t) -> void:
 	t.check(not bad.ok and bad.error.contains("unknown command"), "unknown command: %s" % bad.error)
 	t.check(r.execute("help").out.contains("spawn"), "help lists spawn")
 	t.check(r.execute("help tp").out.contains("teleport"), "help <cmd>")
+	# C1-nav: `overlay path` toggles a presentation node; it needs the island, and it is off by default
+	t.check(r.execute("help").out.contains("overlay"), "help lists overlay")
+	var no_island: Dictionary = r.execute("overlay path")
+	t.check(not no_island.ok and no_island.error.contains("island"), "overlay path without the island says so: %s" % no_island.error)
+	var overlay = preload("res://devtools/path_overlay.gd").new()
+	t.check(not overlay.enabled, "the path overlay is off by default")
+	r.services["path_overlay"] = overlay
+	t.check(r.execute("overlay path on").ok and overlay.enabled, "overlay path on")
+	t.check(r.execute("overlay path").ok and not overlay.enabled, "overlay path toggles")
+	t.check(not r.execute("overlay nope").ok, "overlay <unknown> is refused")
+	overlay.free()
+	r.services.erase("path_overlay")
+	t.check(sw.world.path().is_empty() and sw.world.nav_cell() == 0.0, "no path and no nav grid outside the island field")
 	r.dev_enabled = false
 	t.check(not r.execute("tp 1 1").ok and r.execute("help").ok, "dev commands are refused when dev tools are off")
 	t.check(r.complete("t").has("help") == false and not r.complete("").has("tp"), "dev commands do not complete when off")
