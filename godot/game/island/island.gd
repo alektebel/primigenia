@@ -15,6 +15,7 @@ const Pointer := preload("res://game/player/pointer.gd")
 const ChaseCamera := preload("res://game/player/chase_camera.gd")
 const ActorHost := preload("res://game/actors/actor_host.gd")
 const StageUI := preload("res://game/stage/stage_ui.gd")
+const Scenario := preload("res://devtools/scenario.gd")
 
 var terrain_chunks: Node3D
 var world_env: WorldEnvironment
@@ -33,6 +34,7 @@ var player_pos := Vector3.INF
 var last_click := Vector2.ZERO     # screen position of the last click that picked a creature (the radial opens there)
 var occluders_enabled := true
 var _mouse_held := false
+var _genome: Dictionary = {}
 var _garfio_profile: Dictionary = {}   # kept so creatures spawned later (dev console, scenarios) get a body
 
 func _ready() -> void:
@@ -75,6 +77,7 @@ func build() -> void:
 func _build_stage() -> void:
 	var manifest := Profile.load_json("res://game/data/parts.json")
 	var genome: Dictionary = Game.player_genome()
+	_genome = genome
 	var pr := Profile.from_studio(genome, manifest)
 	if not pr.ok:
 		push_error("player genome has no combat profile: %s" % pr.error)
@@ -122,6 +125,84 @@ func _build_stage() -> void:
 	stage_ui.ui.menu_requested.connect(Game.goto_menu)
 	_update_actors(0.0)
 	_update_camera(0.0)
+	if not Game.pending_scenario.is_empty():
+		var parsed: Dictionary = Game.pending_scenario
+		Game.pending_scenario = {}
+		var err := load_scenario(parsed)
+		if err != "":
+			Game.startup_error = err
+			push_error(err)
+
+# --- scenarios and saves (devtools/scenario.gd) ------------------------------------------------------
+
+func camera_state() -> Dictionary:
+	var out := {}
+	if chase != null:
+		for k in ["yaw", "pitch", "distance", "orbit_pitch"]:
+			var v = chase.get(k)
+			if v != null:
+				out[k] = v
+	return out
+
+func scenario_ctx() -> Dictionary:
+	var isl := {}
+	if stage.world.has_field():
+		var info: Dictionary = stage.world.field_info()
+		isl = {"seed": info.seed, "terrain_version": CporeTerrain.version(), "terrain_hash": info.hash}
+	var ctx := {"genome": _genome, "island": isl, "camera": camera_state()}
+	var dev = get_tree().root.get_node_or_null("Dev")
+	if dev != null and dev.has_method("tuning_state"):
+		ctx["tuning"] = dev.tuning_state()
+	return ctx
+
+func save_scenario(path: String, kind: String, note: String) -> String:
+	return Scenario.save(stage, scenario_ctx(), path, kind, note)
+
+func save_game() -> String:
+	return Scenario.save(stage, scenario_ctx(), "%s/%s" % [Scenario.save_dir, Scenario.SAVE_SLOT], "save", "")
+
+func load_game() -> String:
+	var parsed := Scenario.read("%s/%s" % [Scenario.save_dir, Scenario.SAVE_SLOT])
+	if not parsed.ok:
+		return parsed.error
+	return load_scenario(parsed)
+
+# Applies a read() scenario to the running island. Returns "" or one readable sentence.
+func load_scenario(parsed: Dictionary) -> String:
+	var res := Scenario.load_into(parsed, stage, scenario_ctx())
+	if not res.ok:
+		return res.error
+	var d: Dictionary = parsed.dict
+	var genome: Dictionary = d.get("genome", {})
+	var setup: Dictionary = stage.world.get_setup()
+	if not genome.is_empty() and genome != _genome:
+		_genome = genome
+		hosts[0].queue_free()
+		var h := ActorHost.new()
+		h.name = "Player"
+		add_child(h)
+		h.setup(genome, 0, setup.player, Callable(Game, "ground"))
+		hosts[0] = h
+		if stage_ui != null:
+			h.footfall.connect(stage_ui.on_footfall)
+	for id in hosts.keys():
+		if id > 0 and (id >= stage.cur.entities.size() or int(stage.cur.entities[id].species) != 3):
+			hosts[id].queue_free()
+			hosts.erase(id)
+	_sync_hosts()
+	if player_input != null:
+		player_input.clear_destination()
+	if stage_ui != null:
+		stage_ui.ui.clear_selection()
+	if chase != null:
+		for k in d.get("camera", {}):
+			if chase.get(k) != null:
+				chase.set(k, d.camera[k])
+	_update_actors(0.0)
+	_update_camera(0.0)
+	if res.get("note", "") != "" and stage_ui != null:
+		stage_ui.ui.show_message(res.note, "warn")
+	return ""
 
 # Creatures that appear after the build (console spawn, restored scenarios) get a body when their species has one.
 func _sync_hosts() -> void:

@@ -54,6 +54,8 @@ func setup(island_node: Node3D, name_text: String) -> void:
 	ui.dodge_pressed.connect(func(d: int) -> void: _send({"verb": V_DODGE, "dir": DODGE_LEFT if d < 0 else DODGE_RIGHT}, "dodge"))
 	ui.selection_changed.connect(func(id) -> void: selected_id = -1 if id == null else int(id))
 	ui.pause_toggled.connect(_on_pause)
+	ui.save_requested.connect(func() -> void: _toast(island.save_game(), "Game saved."))
+	ui.load_requested.connect(func() -> void: _toast(island.load_game(), "Game loaded."))
 	Game.creature_clicked.connect(_on_clicked)
 	Game.world_ticked.connect(_on_tick)
 	Game.combat_events.connect(_on_events)
@@ -202,6 +204,14 @@ func _on_events(events: Array) -> void:
 					ui.flash("dodge")
 		if audio != null:
 			audio.combat_event(int(ev.type), at, radius)
+
+# err "" = success: show `ok_text`; otherwise the error sentence as a warning.
+func _toast(err: String, ok_text: String) -> void:
+	if err == "":
+		ui.show_message(ok_text, "info")
+		ui.set_paused(false)
+	else:
+		ui.show_message(err, "warn")
 
 func _on_pause(paused: bool) -> void:
 	stage.process_mode = Node.PROCESS_MODE_DISABLED if paused else Node.PROCESS_MODE_INHERIT

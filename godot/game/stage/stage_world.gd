@@ -91,6 +91,22 @@ func debug_now(op: Dictionary) -> int:
 	debug_applied.emit(op, rc)
 	return rc
 
+# Rebuilds a session from a parsed v3 log (WorldLog.parse): reset, then every logged tick with its debug ops
+# and input. The field (if any) must already be attached. Returns the reset's rc (0 = replayed).
+func replay_recipe(parsed: Dictionary) -> int:
+	var rc := reset(parsed.setup)
+	if rc != 0:
+		return rc
+	var dbg: Array = parsed.get("debug", [])
+	var di := 0
+	for inp in parsed.inputs:
+		while di < dbg.size() and int(dbg[di].tick) == int(cur.tick):
+			debug_now(dbg[di].op)
+			di += 1
+		queue_order(inp)
+		step_once()
+	return 0
+
 # Replaces the input of one upcoming tick (FIFO). The input is validated by CporeWorld.step like any other.
 func queue_order(input: Dictionary) -> void:
 	_order_queue.append(input)

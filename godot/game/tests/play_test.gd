@@ -267,6 +267,33 @@ func _stage() -> void:
 	check(lowest > -0.03, "feet are on Game.ground (lowest %.1f mm relative)" % (lowest * 1000.0))
 	check(absf(player.position.y - game.ground(player.position.x, player.position.z)) < 0.05, "the actor stands on Game.ground")
 
+	print("== pause menu: save game / load game")
+	var Scenario = load("res://devtools/scenario.gd")
+	Scenario.save_dir = "user://play-test/saves"
+	_clean(Scenario.save_dir)
+	var gui = island.stage_ui.ui
+	gui.set_paused(true)
+	check(gui.pause_menu.load_button.disabled, "Load game is disabled while the slot is empty")
+	var hash_saved: String = game.stage.world.hash()
+	var tick_saved: int = game.stage.cur.tick
+	gui.pause_menu.save_button.pressed.emit()
+	check(FileAccess.file_exists(Scenario.save_dir + "/slot1.json") and FileAccess.file_exists(Scenario.save_dir + "/slot1.cpstate"), "Save game writes the slot")
+	check(not gui.paused, "saving returns to the game")
+	island.player_input.keys_override = {"forward": true, "back": false, "left": false, "right": false, "sprint": true}
+	await sim_ticks(40)
+	island.player_input.keys_override = {"forward": false, "back": false, "left": false, "right": false, "sprint": false}
+	check(game.stage.world.hash() != hash_saved, "the world moved on after saving")
+	gui.set_paused(true)
+	check(not gui.pause_menu.load_button.disabled, "Load game is enabled once the slot exists")
+	gui.pause_menu.load_button.pressed.emit()
+	check(game.stage.world.hash() == hash_saved and game.stage.cur.tick == tick_saved, "Load game restores the saved state (tick %d)" % game.stage.cur.tick)
+	check(not gui.paused, "loading returns to the game")
+	await frames(2)
+	check(absf(island.player_pos.x - game.stage.cur.entities[0].x) < 3.0, "the actor follows the restored creature")
+	_clean(Scenario.save_dir)
+	DirAccess.remove_absolute(ProjectSettings.globalize_path("user://play-test/saves"))
+	Scenario.save_dir = "user://saves"
+
 	print("== select Garfio, radial, Attack")
 	if game.stage.cur.active >= 0:
 		print("  (Garfio already started a fight on its own)")

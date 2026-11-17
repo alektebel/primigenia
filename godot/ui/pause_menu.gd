@@ -3,14 +3,19 @@ extends Control
 ## bind_audio(audio_manager) wires the sliders to the audio system (which persists them).
 
 const Palette := preload("res://ui/palette.gd")
+const Scenario := preload("res://devtools/scenario.gd")
 
 signal resume_requested
 signal menu_requested
+signal save_requested
+signal load_requested
 signal setting_changed(bus: String, value)
 
 const ROWS := [["master", "Master"], ["music", "Music"], ["sfx", "Sound effects"], ["ambience", "Ambience"]]
 var sliders: Dictionary = {}
 var mute_box: Button
+var save_button: Button
+var load_button: Button
 var audio
 
 func _ready() -> void:
@@ -68,6 +73,21 @@ func _ready() -> void:
 		mute_box.text = "Mute all audio: " + ("on" if on else "off")
 		_put("mute", on))
 	v.add_child(mute_box)
+	var sl := HBoxContainer.new()
+	sl.add_theme_constant_override("separation", 10)
+	save_button = Button.new()
+	save_button.text = "Save game"
+	save_button.custom_minimum_size = Vector2(0, 40)
+	save_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	save_button.pressed.connect(func() -> void: save_requested.emit())
+	sl.add_child(save_button)
+	load_button = Button.new()
+	load_button.text = "Load game"
+	load_button.custom_minimum_size = Vector2(0, 40)
+	load_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	load_button.pressed.connect(func() -> void: load_requested.emit())
+	sl.add_child(load_button)
+	v.add_child(sl)
 	var b := Button.new()
 	b.text = "Return to the valley"
 	b.custom_minimum_size = Vector2(0, 44)
@@ -83,7 +103,12 @@ func bind_audio(a) -> void:
 	audio = a
 	refresh()
 
+func slot_exists() -> bool:
+	return FileAccess.file_exists("%s/%s.json" % [Scenario.save_dir, Scenario.SAVE_SLOT])
+
 func refresh() -> void:
+	if load_button:
+		load_button.disabled = not slot_exists()
 	for bus in sliders:
 		sliders[bus].set_value_no_signal(_val(bus))
 	if mute_box:

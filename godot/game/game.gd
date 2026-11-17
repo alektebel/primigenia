@@ -23,6 +23,8 @@ var modal_open := false  # set by UI modules (radial, pause)
 var radial_open := false # set with modal_open by StageUI, for the key legend context
 var paused_ui := false
 var console_open := false # the dev console (devtools/console) sets this while it has the keyboard
+var pending_scenario: Dictionary = {}   # a read() scenario (devtools/scenario.gd) the island applies once it is built
+var startup_error := ""                 # set when a --scenario could not be loaded (read by the agent server and tests)
 var studio_dir := "user://studio"   # where the studio saves and Play looks for the newest creature (tests point it elsewhere)
 
 func _ready() -> void:
@@ -88,6 +90,9 @@ func goto_studio() -> void:
 # Player genome source: --genome=<path> after "--", else the newest studio_dir/*.json (user://studio) that
 # parses, else the bundled Merodeador.
 func player_genome() -> Dictionary:
+	var sc_genome: Dictionary = pending_scenario.get("dict", {}).get("genome", {})
+	if not sc_genome.is_empty():
+		return sc_genome
 	for arg in OS.get_cmdline_user_args():
 		if arg.begins_with("--genome="):
 			var g := _read_genome(arg.substr(9))
