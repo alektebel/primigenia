@@ -9,6 +9,7 @@ const Morph := preload("res://locomotion/loco_morphology.gd")
 const Ctl := preload("res://locomotion/loco_controller.gd")
 const Adapter := preload("res://locomotion/loco_rig_adapter.gd")
 const Profile := preload("res://game/stage/profile.gd")
+const WorldLog := preload("res://game/stage/world_log.gd")
 
 class ErrorLog extends Logger:
 	var errors: Array = []
@@ -267,6 +268,7 @@ func _stage() -> void:
 	check(lowest > -0.03, "feet are on Game.ground (lowest %.1f mm relative)" % (lowest * 1000.0))
 	check(absf(player.position.y - game.ground(player.position.x, player.position.z)) < 0.05, "the actor stands on Game.ground")
 
+	var act_state: Dictionary = _actions_begin(island)
 	print("== select Garfio, radial, Attack")
 	if game.stage.cur.active >= 0:
 		print("  (Garfio already started a fight on its own)")
@@ -308,6 +310,88 @@ func _stage() -> void:
 	check(root.get_node("Audio").played.get("hit", 0) + root.get_node("Audio").played.get("block", 0) + root.get_node("Audio").played.get("dodge", 0) + root.get_node("Audio").played.get("hurt", 0) > 0, "combat sounds played")
 	await _frame_png("fight")
 	game.world_ticked.disconnect(watch)
+	await _actions_end(island, act_state)
+
+# ------------------------------------------------------------------------------------------------
+# G77: the procedural action layer on the real stage and the real C world
+# ------------------------------------------------------------------------------------------------
+func _actions_begin(island) -> Dictionary:
+	print("== actions (G77): recording")
+	var p = island.hosts[0]
+	var w = island.hosts[1]
+	check(p.driver.layer != null and w.driver.layer != null, "both creatures have an action layer (%s, %s)" % [p.driver.layer != null, w.driver.layer != null])
+	check(island.stage.process_priority < 0, "the world ticks before the actors read it (process_priority %d)" % island.stage.process_priority)
+	var st := {"impacts": {0: [], 1: []}, "hits": {0: [], 1: []}, "wind": {"n": 0, "bad": 0, "seen": 0}, "ids": {}}
+	p.driver.layer.action_event.connect(func(n: String, _d: Dictionary) -> void:
+		if n == "impact": st.impacts[0].append(Engine.get_process_frames()))
+	w.driver.layer.action_event.connect(func(n: String, _d: Dictionary) -> void:
+		if n == "impact": st.impacts[1].append(Engine.get_process_frames()))
+	game.combat_events.connect(func(evs: Array) -> void:
+		for e in evs:
+			if int(e.type) == 1:
+				st.hits[int(e.a)].append(Engine.get_process_frames()))
+	var names := ["bite", "charge", "guard", "spit", "tail_strike", "dodge"]
+	st["cb"] = func() -> void:
+		for id in p.driver.layer.current_ids():
+			st.ids[id] = true
+		for id in w.driver.layer.current_ids():
+			st.ids[id] = true
+		var f1: Variant = null
+		for f in game.stage.cur.combat.fighters:
+			if int(f.world_id) != 0:
+				f1 = f
+		if f1 == null or int(f1.phase) != 1 or int(f1.move) < 0:
+			st.wind.n = 0
+			return
+		st.wind.n += 1
+		st.wind.seen += 1
+		if st.wind.n > 4 and w.driver.layer.weight_of(names[int(f1.move)]) < 0.99:
+			st.wind.bad += 1
+	process_frame.connect(st.cb)
+	return st
+
+func _actions_end(island, st: Dictionary) -> void:
+	process_frame.disconnect(st.cb)
+	print("== actions (G77): checks")
+	var n_player: int = st.hits[0].size()
+	var n_enemy: int = st.hits[1].size()
+	check(n_player >= 2, "the player's attacks landed %d times, the enemy's %d" % [n_player, n_enemy])
+	var worst := 0
+	var matched := 0
+	for kind in [0, 1]:
+		for hf in st.hits[kind]:
+			var best := 1000000
+			for i in st.impacts[kind]:
+				best = mini(best, absi(int(i) - int(hf)))
+			if best <= 1:
+				matched += 1
+			worst = maxi(worst, best)
+	check(matched == n_player + n_enemy, "every C HIT is matched by a layer impact within 1 frame (%d of %d, worst %d frames)" % [matched, n_player + n_enemy, worst])
+	check(st.wind.seen > 0 and st.wind.bad == 0, "during an enemy wind-up the action weight is >= 0.99 after the first 4 frames (%d frames seen, %d bad)" % [st.wind.seen, st.wind.bad])
+	var played: Array = st.ids.keys()
+	check(played.has("bite") or played.has("charge"), "the player's attacks played their actions (%s)" % [played])
+	# the layer reads the world and never writes it: replay the whole session's inputs in a fresh C world
+	var parsed: Dictionary = WorldLog.parse(game.stage.export_log())
+	var replay_ok := true
+	if parsed.ok:
+		var w2 = CporeWorld.new()
+		w2.reset(parsed.setup)
+		var hs: PackedStringArray = game.stage.hashes
+		for i in mini(parsed.inputs.size(), hs.size()):
+			if w2.step(parsed.inputs[i]) != hs[i]:
+				replay_ok = false
+				break
+	else:
+		replay_ok = false
+	check(replay_ok, "determinism: replaying the session log in a fresh C world gives the same hashes with the action layer on")
+	# a cosmetic action from the abilities goes nowhere near C
+	var n_log: int = game.stage.log_inputs.size()
+	island.hosts[0].layer().trigger("roar")
+	await frames(40)
+	var new_verbs := {}
+	for i in game.stage.log_inputs.slice(n_log):
+		new_verbs[int(i.get("verb", 0))] = true
+	check(new_verbs.size() <= 2 and not new_verbs.has(10) and not new_verbs.has(11), "a cosmetic roar sends no new verb to C (%s)" % [new_verbs.keys()])
 
 func _watch_tick(state: Dictionary, ui) -> void:
 	min_player_hp = minf(min_player_hp, state.entities[0].hp)

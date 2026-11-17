@@ -27,6 +27,7 @@ var inst: Array = []         # live instances
 var time := 0.0
 var debug := {}
 var enabled := true
+var light := false            # far actors: no CCD reach, no aim
 var idle_on := true          # tests switch the idle layer (breathing, look-around, fidgets) off
 var rng := RandomNumberGenerator.new()
 var _pending: Array = []     # cosmetic triggers waiting for the next tick boundary
@@ -78,7 +79,7 @@ func _new_inst(act: Dictionary, kind: String) -> Dictionary:
 
 ## Cosmetic start (social, intimidate, observe one-shots). Quantised to the next C tick. Returns false if unknown.
 func trigger(id: String, args := {}) -> bool:
-	if not actions.has(id):
+	if not actions.has(id) or actions[id].driver.kind != "cosmetic":
 		return false
 	_pending.append([id, args])
 	return true
@@ -291,6 +292,9 @@ func _handle_state(dt: float, sig: Dictionary, ctx: Dictionary) -> void:
 		if cm.is_empty() or cm.move != mv or "start" in marks:
 			if not cm.is_empty():
 				_fade(cm, _fade_len(cm, "cancel", 0.08))
+			for o in inst:
+				if o.id in ["stun", "stagger"]:
+					_fade(o, 0.08)          # C lets a creature act again: its stun (whose length C does not tell) is over
 			if actions.has(name):
 				var i := _start(actions[name], "c_move")
 				if not i.is_empty():
@@ -347,6 +351,7 @@ func _on_event(ev: Dictionary, ctx: Dictionary) -> void:
 				var cm := _find("c_move")
 				if not cm.is_empty():
 					cm.hit = true
+				_force_impact()
 			if ev.b == me:
 				_last_hit_dir = -signf(dir_local.x) if dir_local.x != 0.0 else 1.0
 				react("hit", dir_local, ev.amount)
@@ -363,6 +368,19 @@ func _on_event(ev: Dictionary, ctx: Dictionary) -> void:
 			if ev.b == me and actions.has("stun"):
 				var s := _new_inst(actions.stun, "c_state")
 				inst.append(s)
+
+## C says this creature hit something. Normally the instance reaches tau = W in the same frame; when C cancelled the
+## move in the very tick it hit (a clash), the impact is still delivered, once, to whatever instance has not fired it.
+func _force_impact() -> void:
+	for k in range(inst.size() - 1, -1, -1):
+		var i: Dictionary = inst[k]
+		if i.move < 0:
+			continue
+		for idx in i.act.events.size():
+			if i.act.events[idx].emit == "impact" and not i.fired.has(idx):
+				i.fired[idx] = true
+				action_event.emit("impact", {"id": i.id, "entity": entity_id, "tau": i.tau, "forced": true})
+		return
 
 func _start_cosmetic(id: String, args: Dictionary, tick: int, ctx: Dictionary) -> void:
 	var act: Dictionary = actions[id]
@@ -609,6 +627,9 @@ func apply(pose: Dictionary, dt: float) -> void:
 		var gp = _goal_point(e.goals[chn][1], pose)
 		goals[chn] = gp
 	pose["ground_y"] = (_ctx.get("pos", Vector3.ZERO) as Vector3).y
+	if light:
+		out["head.reach"] = 0.0
+		out["head.aim"] = 0.0
 	var solved: Dictionary = solver.apply(pose, out, goals, dt, e.moving * e.plant_w, 1.0)
 	if solver.debug.has("mouth"):
 		_mouth_world = (pose.root as Transform3D) * ((solver.debug.mouth as Vector3) + Vector3(0.0, solver.go, 0.0))

@@ -15,6 +15,7 @@ const Pointer := preload("res://game/player/pointer.gd")
 const ChaseCamera := preload("res://game/player/chase_camera.gd")
 const ActorHost := preload("res://game/actors/actor_host.gd")
 const StageUI := preload("res://game/stage/stage_ui.gd")
+const ActionFeed := preload("res://actions/action_feed.gd")
 
 var terrain_chunks: Node3D
 var world_env: WorldEnvironment
@@ -33,6 +34,11 @@ var player_pos := Vector3.INF
 var last_click := Vector2.ZERO     # screen position of the last click that picked a creature (the radial opens there)
 var occluders_enabled := true
 var _mouse_held := false
+var action_feed := ActionFeed.new()   # C state -> action signals (read only)
+var dodge_hint := {"dir": 0, "until": 0}     # the player's dodge key, for the dodge animation's side
+var ui_mode := &""
+var selected_id := -1
+var action_signals: Dictionary = {}   # last frame's per-entity signals (tests read it)
 
 func _ready() -> void:
 	build()
@@ -82,6 +88,7 @@ func _build_stage() -> void:
 	var setup := StageSetup.build(Game.data, int(Game.settings.seed), pr.profile, garfio_profile, bool(Game.settings.wild))
 	stage = StageWorld.new()
 	stage.name = "Stage"
+	stage.process_priority = -10     # the world ticks before the actors read it (action timing, G77)
 	add_child(stage)
 	var ground := Callable(Game, "ground")
 	stage.ground_fn = ground
@@ -122,11 +129,32 @@ func _build_stage() -> void:
 	_update_camera(0.0)
 
 func _update_actors(dt: float) -> void:
+	action_signals = action_feed.read(stage.prev, stage.cur, stage.alpha())
+	var tick: int = int(stage.cur.combat.tick)
+	var alpha: float = stage.alpha()
+	var p0: Vector3 = stage.sample(0).pos
 	for id in hosts:
 		var sm: Dictionary = stage.sample(id)
 		if id == 0:
 			sm["intent"] = player_input.intent_yaw()      # head and shoulders lead the body
-		hosts[id].update(dt, sm)
+		var d: float = (sm.pos as Vector3).distance_to(p0)
+		var sig: Dictionary = action_signals.get(id, {})
+		var ctx := {"sig": sig, "tick": tick, "alpha": alpha, "beat_phase": (7 * id) % 12, "lod": 0 if d < 40.0 else (1 if d < 80.0 else 2), "mode": "", "attend": false}
+		var tid: int = int(sig.get("target_id", -1))
+		if tid < 0 and id == 0 and selected_id > 0:
+			tid = selected_id
+		if tid >= 0 and hosts.has(tid) and tid != id:
+			var th: Node3D = hosts[tid]
+			var ts: Dictionary = stage.sample(tid)
+			var ent: Dictionary = stage.cur.entities[tid]
+			ctx["target"] = {"id": tid, "pos": ts.pos, "radius": float(ent.get("radius_cm", 60)) * 0.01, "height": th.height(), "spheres": th.occluders() if d < 40.0 else []}
+		if id == 0:
+			ctx["dodge_dir"] = int(dodge_hint.dir) if Time.get_ticks_msec() < int(dodge_hint.until) else 0
+			if ui_mode == &"observe" and selected_id > 0:
+				ctx["mode"] = "observe"
+		elif ui_mode == &"befriend" and id == selected_id and not bool(sig.get("in_fight", false)) and d < 12.0:
+			ctx["attend"] = true
+		hosts[id].update(dt, sm, ctx)
 	var p: Dictionary = stage.sample(0)
 	player_pos = p.pos
 	var occ := []
