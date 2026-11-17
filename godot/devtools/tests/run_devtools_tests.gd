@@ -7,6 +7,7 @@ extends SceneTree
 const TESTS := [
 	"res://devtools/tests/test_inputmap.gd",
 	"res://devtools/tests/test_legend.gd",
+	"res://devtools/tests/test_time.gd",
 ]
 
 var checks := 0

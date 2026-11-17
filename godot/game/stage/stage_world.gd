@@ -28,6 +28,12 @@ var snapshot_ring: Array = []               # [{tick, bytes}] every RING_EVERY t
 var _setup: Dictionary = {}
 var _debug_queue: Array = []
 
+# D7 time control (PLAN-devtools step 6): presentation only, it changes *when* ticks run, never what they compute.
+var timescale := 1.0
+var paused := false
+var max_steps_per_frame := 60
+var achieved_scale := 1.0     # simulated seconds per real second in the last frame (< timescale when capped)
+
 const RING_EVERY := 100
 const RING_KEEP := 8
 
@@ -108,15 +114,28 @@ func step_once() -> void:
 	if after_tick.is_valid():
 		after_tick.call(cur)
 
-# Called every frame with the frame time; steps as many 0.1 s ticks as have accumulated.
+# Called every frame with the frame time; steps as many 0.1 s ticks as have accumulated (times timescale),
+# at most max_steps_per_frame. Paused adds nothing. Returns the ticks stepped.
 func advance(delta: float) -> int:
-	acc += minf(delta, 0.25)
+	if paused:
+		achieved_scale = 0.0
+		return 0
+	acc += minf(delta, 0.25) * timescale
 	var steps := 0
-	while acc + 1e-9 >= DT:
+	while acc + 1e-9 >= DT and steps < max_steps_per_frame:
 		step_once()
 		acc = maxf(0.0, acc - DT)
 		steps += 1
+	if acc + 1e-9 >= DT:
+		acc = fmod(acc, DT)   # the backlog beyond the cap is dropped, not carried
+	achieved_scale = steps * DT / maxf(delta, 1e-6)
 	return steps
+
+# Steps n ticks now, paused or not (the `.` key while paused, the agent's lock-step).
+func step_ticks(n: int) -> int:
+	for i in n:
+		step_once()
+	return n
 
 func alpha() -> float:
 	return clampf(acc / DT, 0.0, 1.0)

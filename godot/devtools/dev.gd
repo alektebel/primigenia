@@ -5,6 +5,7 @@ extends Node
 ## Owner-question defaults live in the constants below so they are easy to change in one place.
 
 const Legend := preload("res://devtools/legend.gd")
+const TimeControl := preload("res://devtools/time_control.gd")
 
 ## 1. Dev tools ON in every debug build (the editor and `godot --path godot`); `--dev` forces on in any
 ##    build, `--no-dev` forces off.
@@ -19,6 +20,7 @@ const FEEDBACK_USER_DIR := "user://feedback"
 
 var enabled := false
 var legend: CanvasLayer
+var time_control: CanvasLayer
 
 static func compute_enabled(args: PackedStringArray, debug_build: bool) -> bool:
 	if "--no-dev" in args:
@@ -32,3 +34,7 @@ func _ready() -> void:
 	legend = Legend.new()
 	legend.name = "Legend"
 	add_child(legend)
+	if enabled:
+		time_control = TimeControl.new()
+		time_control.name = "TimeControl"
+		add_child(time_control)
