@@ -14,7 +14,11 @@ func _init() -> void:
 	await _frames(90)                      # thumbnails bake one per frame
 	_shot(out.path_join("godot-idle.png"))
 	ui.select_category("weapons")
-	await _frames(6)
+	for i in 400:                          # software rendering bakes ~1 thumbnail per 2 frames
+		if ui.baker.has_texture("asta") and ui.baker.has_texture("pua"):
+			break
+		await _frames(1)
+	await _frames(10)
 	var id := "asta"
 	ui._palette_hover(id, true)
 	var b: Control = ui.palette_buttons[id]

@@ -59,8 +59,8 @@ func _make_world(mode: int, px := SIZE * 2) -> Dictionary:
 	sun.look_at_from_position(Vector3(2, 4, 3), Vector3.ZERO)
 	var cam := Camera3D.new()
 	cam.fov = 30
-	cam.current = true
 	vp.add_child(cam)
+	cam.current = true
 	var pivot := Node3D.new()
 	vp.add_child(pivot)
 	return {"vp": vp, "cam": cam, "pivot": pivot, "shown": ""}
@@ -110,6 +110,7 @@ func model_for(id: String, slot := "bake") -> Dictionary:
 		inner.add_child(maker.make(p, Vector3(0, 1, 0)))
 		if m.get("responsive", false) and m.get("category", "") in ["wings", "fins"]:
 			inner.rotation.x = -.65
+	maker.finalize(pivot)                 # meshes are built from the geometry once the part tree is final
 	var acc := [null]
 	_aabb_of(pivot, Transform3D.IDENTITY, acc)
 	var bb: AABB = acc[0] if acc[0] != null else AABB(Vector3(-.3, -.3, -.3), Vector3(.6, .6, .6))
