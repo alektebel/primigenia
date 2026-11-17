@@ -15,6 +15,7 @@ func _run() -> void:
 	var views: PackedStringArray = (args[1] if args.size() > 1 else ",".join(Views.VIEWS)).split(",")
 	var grass: int = int(args[2]) if args.size() > 2 else 60000
 	var masks: bool = args.size() > 3 and args[3].contains("masks")
+	var extra: String = args[3] if args.size() > 3 else ""
 	var flicker: bool = args.size() > 3 and args[3].contains("flicker")
 	DirAccess.make_dir_recursive_absolute(out_dir)
 	root.size = Vector2i(1280, 720)
@@ -41,6 +42,9 @@ func _run() -> void:
 		print("wrote ", v)
 		if masks and v != "chase":
 			await debug_frame(island, 6, out_dir.path_join("mask_" + v + ".png"))
+		for m in range(1, 10):
+			if extra.contains("m%d" % m) and v != "chase":
+				await debug_frame(island, m, out_dir.path_join("mode%d_%s.png" % [m, v]))
 		if flicker and v == "cliff_lit":
 			# Two frames of the ramp bands (mode 8), the camera moved 0.25 m sideways, for the flicker metric.
 			await debug_frame(island, 8, out_dir.path_join("flicker_a.png"))

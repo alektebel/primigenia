@@ -9,7 +9,7 @@ render_mode unshaded, cull_back;
 uniform vec3 lod_color = vec3(0.0);
 uniform float lod_debug : hint_range(0.0, 1.0) = 0.0;
 // 0 off, 1 = 4 m grid through the active mapping (R, G sawtooth of u, v; B checker), 2 = mapping weights,
-// 3 = relief channels, 4 = rock light with the detail normal (unclamped), 5 = legacy planar xz grid (the old mapping, for the stretch test),
+// 3 = strata (R cap rock, G bedding faces, B bedding phase), 4 = rock light with the detail normal (unclamped), 5 = legacy planar xz grid (the old mapping, for the stretch test),
 // 6 = masks (R rock, G snow, B steeper than 55 degrees), 8 = ramp bands of the rock light (flicker test).
 uniform int rock_debug = 0;
 
@@ -33,7 +33,9 @@ void fragment() {
 		} else if (rock_debug == 2) {
 			dbg = map_weights(gn);
 		} else if (rock_debug == 3) {
-			dbg = surface_bilinear(xz).rgb;
+			// Strata: R cap rock, G bedding visibility (faces the mask leaves bare are 0), B fract(bedding phase).
+			RockTex rt3 = rock_sample(map_ctx(wp, gn), distance(wp, CAMERA_POSITION_WORLD));
+			dbg = vec3(rock_cap(wp), rock_bed_faces(wp), fract(rock_bed_phase(wp, rt3, 1.0)));
 		} else if (rock_debug == 4) {
 			RockTex rt4 = rock_sample(map_ctx(wp, gn), distance(wp, CAMERA_POSITION_WORLD));
 			dbg = vec3(dot(normalize(gn + rt4.tilt), SUN_DIR) * 0.5 + 0.5);
@@ -77,7 +79,7 @@ void fragment() {
 			RockTex rt = rock_sample(mc, dist);
 			float fw;
 			float rl = rock_light(gn, rt.tilt, fw);
-			rock_c = rock_shade(R0, R1, rt, rl, fw, steep, cavity) * GRASS;
+			rock_c = rock_shade(R0, R1, rt, rl, fw, steep, cavity, wp, 1.0, true) * GRASS;
 			if (w[2] > 0.001) {
 				ScreeTex st = scree_sample(mc, rt, dist);
 				float sfw;
@@ -85,7 +87,7 @@ void fragment() {
 				scree_c = scree_shade(rock_c, st, sl, sfw);
 			}
 			if (w[3] > 0.001) {
-				volc_c = rock_shade(VOLCANIC_R0, VOLCANIC_R1, rt, rl, fw, steep, cavity) * GRASS;
+				volc_c = rock_shade(VOLCANIC_R0, VOLCANIC_R1, rt, rl, fw, steep, cavity, wp, 2.0, false) * GRASS;
 			}
 		}
 		vec3 sand_c = SAND * landRamp(light) * GRASS;

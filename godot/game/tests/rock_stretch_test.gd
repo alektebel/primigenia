@@ -77,7 +77,7 @@ static func cone_height(x: float, z: float) -> float:
 func _initialize() -> void:
 	_run.call_deferred()
 
-func build_scene(entry: Dictionary) -> void:
+func build_scene(entry: Dictionary, cam_y: float = 400.0) -> void:
 	var td := TerrainData.new()
 	td.setup(entry)
 	sv = SubViewport.new()
@@ -94,14 +94,14 @@ func build_scene(entry: Dictionary) -> void:
 	sv.add_child(chunks)
 	chunks.set_process(false)
 	chunks.build(td)
-	chunks.update_lods(Vector3(0, 150, 0), true)
+	chunks.update_lods(Vector3(0, cam_y - 250.0, 0), true)
 	var cam := Camera3D.new()
 	cam.projection = Camera3D.PROJECTION_ORTHOGONAL
 	cam.keep_aspect = Camera3D.KEEP_HEIGHT
 	cam.size = PX * SCALE
 	cam.near = 1.0
-	cam.far = 600.0
-	cam.position = Vector3(0, 400, 0)
+	cam.far = cam_y + 300.0
+	cam.position = Vector3(0, cam_y, 0)
 	cam.rotation_degrees = Vector3(-90, 0, 0)    # image up = -z, image right = +x
 	sv.add_child(cam)
 	cam.current = true
@@ -189,6 +189,7 @@ func _run() -> void:
 		check(contour[k] >= 0.68, "contour ratio >= 0.68 at azimuth %d (got %.3f)" % [k * 45, contour[k]])
 		check(absf(legacy[k] - 0.5) <= 0.05, "legacy planar mapping measures 0.50 +- 0.05 downslope at azimuth %d (got %.3f)" % [k * 45, legacy[k]])
 	await sign_test()
+	await strata_test()
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path("res://../docs/evidence/godot/rock"))
 	var f := FileAccess.open(ProjectSettings.globalize_path("res://../docs/evidence/godot/rock/stretch%s.json" % ("-" + tier if tier != "" else "")), FileAccess.WRITE)
 	f.store_string(JSON.stringify(out, "\t"))
@@ -260,3 +261,62 @@ func sign_test() -> void:
 	print("ridge up-down light  ", diffs.map(func(v): return snappedf(v, 0.001)))
 	print("predicted derivative ", preds.map(func(v): return snappedf(v, 0.01)))
 	img4.save_png(ProjectSettings.globalize_path("res://../docs/evidence/godot/rock/sign_test_mode4.png"))
+
+# GDScript replica of the shader's cap-rock mask (rock.gdshaderinc: rockHash, rockNoise, rock_cap).
+static func fract_(x: float) -> float:
+	return x - floorf(x)
+
+static func rock_hash(p: Vector2) -> float:
+	var a := Vector3(fract_(p.x * 0.1031), fract_(p.y * 0.1031), fract_(p.x * 0.1031))
+	var d := a.dot(Vector3(a.y, a.z, a.x) + Vector3(33.33, 33.33, 33.33))
+	a += Vector3(d, d, d)
+	return fract_((a.x + a.y) * a.z)
+
+static func rock_noise(p: Vector2) -> float:
+	var i := p.floor()
+	var f := p - i
+	f = f * f * (Vector2(3, 3) - 2.0 * f)
+	return lerpf(lerpf(rock_hash(i), rock_hash(i + Vector2(1, 0)), f.x), lerpf(rock_hash(i + Vector2(0, 1)), rock_hash(i + Vector2(1, 1)), f.x), f.y)
+
+static func cap_phase(p: Vector3) -> float:
+	return (p.y + 0.025 * p.x - 0.018 * p.z + 10.0 * rock_noise(Vector2(p.x, p.z) / 400.0)) / 47.0
+
+static func cap_mask(p: Vector3) -> float:
+	var t := fract_(cap_phase(p))
+	return smoothstep(0.10, 0.14, t) * (1.0 - smoothstep(0.60, 0.64, t)) * smoothstep(342.0, 375.0, p.y)
+
+# PLAN-rock step 5: debug mode 3 (R = cap rock) over a cone lifted to 350 m must agree with the GDScript replica of the phase.
+func strata_test() -> void:
+	sv.queue_free()
+	await process_frame
+	var lift := 350.0
+	build_scene(cone_entry(func(x, z): return lift + cone_height(x, z)), 1000.0)
+	var img3 := await capture(3)
+	var agree := 0
+	var total := 0
+	var ones := 0
+	var fixed := []
+	for iz in range(-100, 101, 7):
+		for ix in range(-100, 101, 7):
+			var x := float(ix)
+			var z := float(iz)
+			var y := lift + cone_height(x, z)
+			var m := cap_mask(Vector3(x, y, z))
+			if m > 0.02 and m < 0.98:
+				continue      # on a band edge, where fp32 and double may differ by a pixel
+			var got := sample(img3, x, z, 0)
+			total += 1
+			ones += 1 if m > 0.5 else 0
+			if (got > 0.5) == (m > 0.5):
+				agree += 1
+			if fixed.size() < 5:
+				fixed.append([snappedf(x, 0.1), snappedf(z, 0.1), snappedf(y, 0.1), m, snappedf(got, 0.01)])
+	print("cap rock replica: %d of %d sample points agree (%d on the band); first five (x, z, y, replica, shader): %s" % [agree, total, ones, str(fixed)])
+	check(ones > 50 and ones < total - 50, "the cap band covers part of the sample (%d on)" % ones)
+	check(total >= 100 and agree >= total * 97 / 100, "mode 3 cap rock matches the GDScript phase at >= 97%% of %d points (got %d)" % [total, agree])
+	var lit := 0
+	for p in 40:
+		lit += 1 if cap_mask(Vector3(p * 13.7 - 200.0, 360.0 + p * 11.3, p * 9.1 - 150.0)) > 0.5 else 0
+	check(lit > 5 and lit < 35, "the replica's cap band is neither empty nor everywhere (%d of 40)" % lit)
+	out["cap_rock_agreement"] = [agree, total]
+	img3.save_png(ProjectSettings.globalize_path("res://../docs/evidence/godot/rock/strata_mode3.png"))

@@ -83,6 +83,20 @@ const ROCK_N_MESO := 0.45
 const ROCK_N_MICRO := 0.35
 const SCREE_N := 0.5
 const ROCK_MAX := 1.09
+const ROCK_CAP_PERIOD := 47.0
+const ROCK_CAP_DIP_X := 0.025
+const ROCK_CAP_DIP_Z := -0.018
+const ROCK_CAP_WOBBLE := 10.0
+const ROCK_CAP_Y0 := 342.0
+const ROCK_CAP_Y1 := 375.0
+const ROCK_CAP_MIX := 0.35
+const ROCK_CAP_AO := 0.5
+const ROCK_BED_PERIOD := 7.3
+const ROCK_BED_VALUE := 0.14
+const ROCK_BED_WOBBLE := 0.5
+const ROCK_BED_PLATE := 2.5
+const ROCK_BED_LEDGE := 0.06
+const ROCK_BED_FACES := 0.3
 
 # Godot's ACES (compatibility renderer) calibrated to three.js ACESFilmic at exposure 1:
 # see docs/evidence/godot/m0/calibration.json (written by make godot-render-test).

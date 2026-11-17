@@ -7,7 +7,7 @@ extends SceneTree
 #   steepsnow <mask>...                  share of snow pixels (G) lying on faces steeper than 55 degrees (B)
 #   flicker <bandsA> <bandsB> <mask>     share of rock pixels (whole 11x11 neighbourhood in the mask) whose ramp band has no match
 #                                        within 5 px in the frame taken after a 0.25 m camera move (mode 8 images)
-#   bands <png>                          peaks of the luminance profile along a vertical line at the centre (strata check)
+#   bands <png> [x0 w y0 y1]             peaks of the row-averaged luminance profile inside a box (strata check)
 
 func _initialize() -> void:
 	var a := OS.get_cmdline_user_args()
@@ -38,7 +38,10 @@ func _initialize() -> void:
 		"flicker":
 			flicker(a[1], a[2], a[3])
 		"bands":
-			print("%s peaks %d" % [a[1].get_file(), bands(a[1])])
+			var box := [440, 600, 100, 620]
+			if a.size() >= 6:
+				box = [int(a[2]), int(a[3]), int(a[4]), int(a[5])]
+			print("%s peaks %d" % [a[1].get_file(), bands(a[1], box[0], box[1], box[2], box[3])])
 	quit()
 
 static func luma(c: Color) -> float:
@@ -116,28 +119,42 @@ static func rockdiff(before: String, after: String, mask: String) -> void:
 	var d := (sa - sb) * 255.0
 	print("rock px %d  before %s  after %s  diff(/255) %.1f %.1f %.1f" % [n, str((sb * 255).round()), str((sa * 255).round()), d.x, d.y, d.z])
 
-static func bands(path: String) -> int:
+# Luminance averaged over the box columns (so facets and cracks cancel and only horizontal structure stays), 5 row smoothing, then
+# local maxima that stand 0.008 above the profile 20 rows up and down. Counts the bands crossing a 40 m tall window.
+static func bands(path: String, x0: int, wid: int, y_lo: int, y_hi: int) -> int:
 	var img := Image.load_from_file(path)
-	var x := img.get_width() / 2
 	var prof := []
 	for y in img.get_height():
 		var s := 0.0
-		for dx in range(-2, 3):
-			s += luma(img.get_pixel(x + dx, y))
-		prof.append(s / 5.0)
+		for x in range(x0, x0 + wid, 3):
+			s += luma(img.get_pixel(x, y))
+		prof.append(s / float(wid / 3))
 	var sm := []
 	for y in prof.size():
 		var s := 0.0
 		var c := 0
-		for k in range(-3, 4):
+		for k in range(-2, 3):
 			if y + k >= 0 and y + k < prof.size():
 				s += prof[y + k]
 				c += 1
 		sm.append(s / c)
+	# High-pass: minus the 61-row mean, so the slow lit/shade and patch gradients drop out and only band-sized structure stays.
+	var hp := []
+	for y in sm.size():
+		var s := 0.0
+		var c := 0
+		for k in range(-30, 31):
+			if y + k >= 0 and y + k < sm.size():
+				s += sm[y + k]
+				c += 1
+		hp.append(sm[y] - s / c)
 	var peaks := 0
-	for y in range(8, sm.size() - 8):
-		if sm[y] > sm[y - 6] + 0.012 and sm[y] > sm[y + 6] + 0.012 and sm[y] >= sm[y - 1] and sm[y] > sm[y + 1]:
+	var y := y_lo + 10
+	while y < y_hi - 10:
+		if hp[y] > 0.006 and hp[y] >= hp[y - 1] and hp[y] > hp[y + 1] and hp[y] > hp[y - 8] and hp[y] > hp[y + 8]:
 			peaks += 1
+			y += 12
+		y += 1
 	return peaks
 
 static func flicker(pa: String, pb: String, pm: String) -> void:
