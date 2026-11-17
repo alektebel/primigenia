@@ -135,7 +135,7 @@ def report(groups, args):
     bugs = collections.OrderedDict()
     for s in allsum:
         for b in s.get("bugs", []):
-            key = (b["kind"], b["detail"][:40] if b["kind"] not in ("stuck", "no_effect") else b["detail"].split("'")[1] + ("/edge" if "edge" in b["detail"] else "") if "'" in b["detail"] else "")
+            key = (b["kind"], b["detail"][:52] if b["kind"] not in ("stuck", "no_effect") else b["detail"].split("'")[1] + ("/edge" if "edge" in b["detail"] else "") if "'" in b["detail"] else "")
             e = bugs.setdefault(key, {"b": b, "n": 0, "eps": []})
             e["n"] += 1
             e["eps"].append(s["id"])
@@ -225,7 +225,7 @@ AUTO_NOTES = ["", "Observations on the interface itself (from reading the observ
 LIMITS = ["", "## Limits of this harness", "",
           "- Creature stage only, one wild creature type fight at a time; walkable bounds (+-195) are inferred from `cp_stage_can_walk`, not exported.",
           "- Stuck/no-effect checks are heuristic and skipped near creatures (< 7 units) because combat roots the player.",
-          "- Usability themes are keyword buckets over free text from a small model, so counts are indicative only.",
+          "- The end-of-episode usability question only sees the notes and counters, not the observations, so some answers are about the prompt/harness rather than the game (e.g. chaos persona); treat the ranking as indicative. Theme buckets are keyword-based over free text from a small model, so counts are indicative only.",
           "- Extension to the Godot game: see the end of this file."]
 
 

@@ -106,7 +106,7 @@ class Episode:
             if own[k] < -1e-3 or own[k] > own[mx] + 1e-3:
                 self.bug("range", f"{k}={own[k]} outside [0,{own[mx]}]")
         if abs(own["x"]) > BOUND or abs(own["z"]) > BOUND:
-            self.bug("out_of_bounds", f"position ({own['x']:.1f},{own['z']:.1f}) beyond the walkable +-195")
+            self.bug("out_of_bounds", f"player walks beyond the +-195 walkable limit on axis {'x' if abs(own['x']) > BOUND else 'z'} (first seen at {own['x']:.1f},{own['z']:.1f})")
         fl = math.hypot(*own["facing"])
         if abs(fl - 1) > 0.02 and fl != 0:
             self.bug("range", f"facing length {fl:.3f}")
