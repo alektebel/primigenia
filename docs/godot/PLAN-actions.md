@@ -138,6 +138,46 @@ reach from the attacker's **centre** to the target's surface. The drawn Merodead
 2.7 m ahead of its centre. So "bring the mouth to the target" cannot be taken literally: goals
 are a **direction plus a clamped distance** (section 1.4.3), never an exact contact point.
 
+### 0.6 Corrections after merging the F1 feel pass (implementer, branch `g-actions`)
+
+Re-verified against the merged code (`claude/v0.1-restore` at `9845216`) and the real rig:
+
+1. **0.1 positions are not lerped any more.** `StageWorld.sample()` is a C1 cubic Hermite through the 10 Hz ticks
+   (`pprev`, one-sided tangents, Fritsch-Carlson yaw), its `speed` is `|vel|` and the C speed is `speed_c`; fight start,
+   fight end and teleports fall back to a straight line. `alpha()`, `prev`/`cur` and the event addressing are as written, so
+   the action clock (0.2) is unchanged. A dash (charge, dodge) is therefore drawn on a smooth curve, not a chord.
+2. **0.3 holds, with additions.** The adapter already had `pose.spine_at`, `pose.station_yaw`, `pose.hips` that include the
+   bend along the path, a bank roll inside `pose.root`, `pose.froude`, `controller.set_intent()` (head and shoulders lead the
+   body) and `_drop` baked into `pose.root`. The action layer adds its **local bone deltas on top** of that loop
+   (`pose.act.bone_dy/dp/dr`, verified bit-identical when empty: 0 rad / 0 m over 2 s of walking) and the root delta after
+   `controller.step`. `pose.neck`/`pose.tail` of loco are scaled by `1 - mask * weight` while a combat action runs.
+3. **0.4 numbers.** `Creature.seeds()` has three bodies only (Merodeador, Zancuda, Babosa); Garfio is
+   `game/data/garfio.json` (loaded by the harness). Measured chains (joints strictly beyond the leg anchors, tip bones
+   included): Merodeador head 6, tail 8; Zancuda head 11, tail 6; Babosa head 10, tail 8 (legless: anchors at the root).
+   `long_neck` is `neck_len > 1.2 m and > 1.25 x hip height` (Merodeador neck 2.1 m on 1.96 m: no; Zancuda 3.6 m: yes);
+   Babosa is `legless`, not `long_neck`.
+4. **1.4.3 reach capacity.** `reach_fwd` is estimated as `0.45 x neck length` (a straight chain cannot travel forward by
+   bending; the rest of a far reach is the body lunge, which the reach guard cuts: a standing Merodeador gets `k = 0.64` of
+   `root.lunge = 1`).
+5. **1.5 reach guard.** The limit per leg is `max(0.985 L, current hip-to-foot distance + 1 mm)`, because the controller
+   itself may already stand at `0.995 L`.
+6. **1.4.3 CCD additions.** A 1 cm dead band and a "stuck on a limit" test stop the warm-started solve from creeping, a
+   per-bone rate limit of 16 rad/s turns a `snap` key into a few frames (no pops), a world-space ground clearance replaces
+   the creature-local one (a pitched body dips its head), and joints are clamped to 1.15 x limit after clearance.
+7. **1.7 additions.** A HIT whose attacker's move C cancelled in the same tick (a clash) still fires `impact` once
+   (`_force_impact`); a stun or stagger instance ends when C lets the creature act again (C does not tell the stun length
+   without 10b). `trigger()` only accepts `cosmetic` actions.
+8. **Step 5.2 (capsule rig) was not done**: the capsule rig is not used by the evidence or the tests (they use the real
+   rig); `layer.apply(pose, dt)` takes `dt`.
+9. **Step 8 / 6 thresholds.** Return to the loco-only pose is measured 2 s after the end (head springs: omega 6, zeta 0.8
+   leave 1.5e-3 rad at 1 s); the weight test uses 0.07 s instead of "4 frames" (the fade is in seconds); rotation speeds
+   are measured with `2 atan2(|xyz|, w)` because `Quaternion.angle_to` loses precision for tiny angles.
+10. **Rhythm accents** sit at integer phases of the `grid` clock (`phase` 0.5 for `abs`, 0.25 for `sin`) and the clock
+    needs `grid_origin = w`.
+11. **Not implemented:** step 13 (scripted stepper, `legs.gesture`, hop, pivot), the track option `lag`, the capsule-rig
+    drawing, the 7-body test set (the four real creatures are tested), the clips and `bodies_*.png` sheets, step 10b.
+    `legs: gesture|hop|pivot|brace` are accepted and behave as `plant`.
+
 ---
 
 ## 1. Architecture

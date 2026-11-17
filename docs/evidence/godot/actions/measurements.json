@@ -1,0 +1,182 @@
+{
+  "bite/Babosa": {
+    "max_bone_speed": 20.6864029024071,
+    "max_joint_share": 0.0,
+    "max_slide_mm": 0.0,
+    "min_k": 1.0
+  },
+  "bite/Merodeador": {
+    "max_bone_speed": 15.3706704504077,
+    "max_joint_share": 0.0,
+    "max_slide_mm": 0.000322727117918475,
+    "min_k": 0.625
+  },
+  "bite/Zancuda": {
+    "max_bone_speed": 22.5937948219473,
+    "max_joint_share": 0.0,
+    "max_slide_mm": 0.00025331974029541,
+    "min_k": 1.0
+  },
+  "charge/Babosa": {
+    "max_bone_speed": 3.93578808602512,
+    "max_joint_share": 0.0,
+    "max_slide_mm": 0.0,
+    "min_k": 1.0
+  },
+  "charge/Merodeador": {
+    "max_bone_speed": 8.02985539301415,
+    "max_joint_share": 0.0,
+    "max_slide_mm": 0.0,
+    "min_k": 1.0
+  },
+  "charge/Zancuda": {
+    "max_bone_speed": 2.78056905142536,
+    "max_joint_share": 0.0,
+    "max_slide_mm": 0.0,
+    "min_k": 1.0
+  },
+  "death/Babosa": {
+    "max_bone_speed": 2.02615700758648,
+    "max_joint_share": 0.0,
+    "max_slide_mm": 0.0,
+    "min_k": 1.0
+  },
+  "death/Merodeador": {
+    "max_bone_speed": 3.41753287918189,
+    "max_joint_share": 0.0,
+    "max_slide_mm": 0.0,
+    "min_k": 1.0
+  },
+  "death/Zancuda": {
+    "max_bone_speed": 2.95961599382468,
+    "max_joint_share": 0.0,
+    "max_slide_mm": 0.0,
+    "min_k": 1.0
+  },
+  "dodge/Babosa": {
+    "max_bone_speed": 2.85554107549124,
+    "max_joint_share": 0.0,
+    "max_slide_mm": 0.0,
+    "min_k": 1.0
+  },
+  "dodge/Merodeador": {
+    "max_bone_speed": 3.4380722628914,
+    "max_joint_share": 0.0,
+    "max_slide_mm": 0.0,
+    "min_k": 1.0
+  },
+  "dodge/Zancuda": {
+    "max_bone_speed": 3.00100769784181,
+    "max_joint_share": 0.0,
+    "max_slide_mm": 0.0,
+    "min_k": 0.265625
+  },
+  "guard/Babosa": {
+    "max_bone_speed": 16.0000124967609,
+    "max_joint_share": 0.0,
+    "max_slide_mm": 0.0,
+    "min_k": 1.0
+  },
+  "guard/Merodeador": {
+    "max_bone_speed": 13.931527524008,
+    "max_joint_share": 0.0,
+    "max_slide_mm": 0.000372547646065868,
+    "min_k": 1.0
+  },
+  "guard/Zancuda": {
+    "max_bone_speed": 13.7389291577596,
+    "max_joint_share": 0.0,
+    "max_slide_mm": 0.000233240072589069,
+    "min_k": 1.0
+  },
+  "roar/Babosa": {
+    "max_bone_speed": 16.0000303488806,
+    "max_joint_share": 0.0,
+    "max_slide_mm": 0.0,
+    "min_k": 1.0
+  },
+  "roar/Merodeador": {
+    "max_bone_speed": 16.0002468245,
+    "max_joint_share": 0.0,
+    "max_slide_mm": 0.000271614283064991,
+    "min_k": 1.0
+  },
+  "roar/Zancuda": {
+    "max_bone_speed": 22.5937872926142,
+    "max_joint_share": 0.0,
+    "max_slide_mm": 0.000188403731726794,
+    "min_k": 1.0
+  },
+  "sing/Babosa": {
+    "max_bone_speed": 6.063295987329,
+    "max_joint_share": 0.0,
+    "max_slide_mm": 0.0,
+    "min_k": 1.0
+  },
+  "sing/Merodeador": {
+    "max_bone_speed": 2.45158170850133,
+    "max_joint_share": 0.0,
+    "max_slide_mm": 0.000181433492230099,
+    "min_k": 0.5
+  },
+  "sing/Zancuda": {
+    "max_bone_speed": 3.8887786696044,
+    "max_joint_share": 0.0,
+    "max_slide_mm": 0.000198065535528258,
+    "min_k": 0.609375
+  },
+  "spit/Babosa": {
+    "max_bone_speed": 22.5937921444424,
+    "max_joint_share": 0.0,
+    "max_slide_mm": 0.0,
+    "min_k": 1.0
+  },
+  "spit/Merodeador": {
+    "max_bone_speed": 22.5937913088707,
+    "max_joint_share": 0.0,
+    "max_slide_mm": 0.000168751952855928,
+    "min_k": 1.0
+  },
+  "spit/Zancuda": {
+    "max_bone_speed": 22.59378511829,
+    "max_joint_share": 0.0,
+    "max_slide_mm": 0.000245756240246919,
+    "min_k": 1.0
+  },
+  "stagger/Babosa": {
+    "max_bone_speed": 2.82979077875975,
+    "max_joint_share": 0.0,
+    "max_slide_mm": 0.0,
+    "min_k": 1.0
+  },
+  "stagger/Merodeador": {
+    "max_bone_speed": 3.03009986016283,
+    "max_joint_share": 0.0,
+    "max_slide_mm": 0.0,
+    "min_k": 1.0
+  },
+  "stagger/Zancuda": {
+    "max_bone_speed": 2.38985449822381,
+    "max_joint_share": 0.0,
+    "max_slide_mm": 0.0,
+    "min_k": 1.0
+  },
+  "tail_strike/Babosa": {
+    "max_bone_speed": 16.0040333754781,
+    "max_joint_share": 0.0,
+    "max_slide_mm": 0.0,
+    "min_k": 1.0
+  },
+  "tail_strike/Merodeador": {
+    "max_bone_speed": 10.3166797812482,
+    "max_joint_share": 0.0,
+    "max_slide_mm": 0.000399996281430504,
+    "min_k": 0.4375
+  },
+  "tail_strike/Zancuda": {
+    "max_bone_speed": 12.4588126268734,
+    "max_joint_share": 0.0,
+    "max_slide_mm": 0.000248811772962654,
+    "min_k": 1.0
+  }
+}

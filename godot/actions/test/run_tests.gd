@@ -21,7 +21,7 @@ var checks := 0
 var failures := 0
 var log := ErrorLog.new()
 var raw := {}
-const BODIES := ["Merodeador", "Zancuda", "Babosa"]
+const BODIES := ["Merodeador", "Zancuda", "Babosa", "Garfio"]
 
 ## Angle between two rotations without the acos precision loss of Quaternion.angle_to for tiny angles.
 static func qang(a: Quaternion, b: Quaternion) -> float:
@@ -55,6 +55,7 @@ func _run() -> void:
 	await _t_all_actions()
 	await _t_idle()
 	await _t_cosmetic()
+	_t_readonly()
 	check(log.errors.is_empty(), "no engine errors (%d)" % log.errors.size())
 	for e in log.errors.slice(0, 5):
 		printerr("  engine error: ", e)
@@ -894,3 +895,19 @@ func _t_cosmetic() -> void:
 	check(true, "cosmetic triggers only read the world state")
 	h3.free_all()
 	await process_frame
+
+# ---------------------------------------------------------------------------------------------
+# section 4: the layer only reads the world
+# ---------------------------------------------------------------------------------------------
+func _t_readonly() -> void:
+	print("-- read only")
+	var bad := []
+	var d := DirAccess.open("res://actions")
+	for f in d.get_files():
+		if not f.ends_with(".gd"):
+			continue
+		var txt := FileAccess.get_file_as_string("res://actions/" + f)
+		for tok in ["step_once", "world.step", "world.order", "world.reset", "input_provider", "log_inputs", "player_input", "host.position", "host.basis", "CporeWorld"]:
+			if txt.find(tok) >= 0:
+				bad.append("%s: %s" % [f, tok])
+	check(bad.is_empty(), "no action module writes the world, the input or the host pose (%s)" % [bad])

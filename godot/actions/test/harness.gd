@@ -21,6 +21,7 @@ var layer
 var feed
 var sf
 var dist := 4.0
+var target_h := 1.2
 var acc := 0.0
 var sim_t := 0.0
 var sig: Dictionary = {}
@@ -41,7 +42,11 @@ func build(parent: Node, seed_name: String, raw: Dictionary) -> void:
 	_raw = raw
 	c = Creature.new()
 	parent.add_child(c)
-	c.load_genome(Creature.seeds()[seed_name])
+	var seeds: Dictionary = Creature.seeds()
+	if seeds.has(seed_name):
+		c.load_genome(seeds[seed_name])
+	else:
+		c.load_genome(JSON.parse_string(FileAccess.get_file_as_string("res://game/data/%s.json" % seed_name.to_lower())))
 	desc = Adapter.loco_describe(c, 1.0)
 	morph = Morph.analyse(desc)
 	ctl = Ctl.new(morph, func(_x, _z): return 0.0)
@@ -59,7 +64,7 @@ func build(parent: Node, seed_name: String, raw: Dictionary) -> void:
 	sf.face = [Vector2(0, 1), Vector2(0, -1)]
 
 func ctx() -> Dictionary:
-	var tgt := {"id": 1, "pos": Vector3(0, 0, dist), "radius": 0.6, "height": 1.2}
+	var tgt := {"id": 1, "pos": Vector3(0, 0, dist), "radius": 0.6, "height": target_h}
 	var d := {"sig": sig.get(0, {}), "tick": sf.tick, "alpha": acc / 0.1, "pos": pos, "yaw": yaw, "speed": speed_override, "vel": vel, "target": tgt, "beat_phase": 0, "mode": ""}
 	d.merge(ctx_extra, true)
 	return d

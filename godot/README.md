@@ -94,6 +94,15 @@ Measurements and the before and after table: [docs/godot/FEEL.md](../docs/godot/
 `ui/`, `audio/` HUD, radial menu, sounds; `studio/` the editor (`creature_view_real.gd` backs it with `creature/`).
 Interfaces and what is verified: `docs/godot/M0.md`, `CREATURE.md`, `LOCOMOTION.md`, `UI.md`, `STUDIO.md`, `WIRE.md`.
 
+## Procedural actions (G77)
+
+Every combat action, reaction, stagger, death, and the cosmetic Befriend / Intimidate / Observe moves are built at runtime
+from each creature's own bones and synced to the C combat phases (`godot/actions/`, docs/godot/ACTIONS.md). Attack from the
+radial (or keys 1-4) and watch the bite, charge, spit and tail strike on both creatures; Guard (Space), Dodge (Q/E), hits,
+stagger, stun and death are drawn too. Befriend (Sing, Dance, Charm, Pose) and Intimidate (Roar, Display) play on the
+player's creature when chosen from the radial's keys (nothing is sent to C). `make godot-actions-test` (321 checks) and
+`make godot-actions-evidence` need no GDExtension.
+
 ## Known limits
 
 * **The C world is flat.** Its heights are analytic and it only knows a +-195 m square around the start valley (valley
