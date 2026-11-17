@@ -6,6 +6,7 @@ extends RefCounted
 # M0 placeholder just walks.
 
 const UNIT := 1.0           # metres per rig unit (web/stage drew the rig at scale 1)
+const ACTION_PATHS := ["res://actions/action_layer.gd", "res://actions/action_body_map.gd", "res://actions/action_data.gd", "res://actions/action_rig.gd", "res://actions/action_fx.gd"]
 const LOCO_PATHS := ["res://locomotion/loco_controller.gd", "res://locomotion/loco_morphology.gd", "res://locomotion/loco_rig_adapter.gd"]
 
 
@@ -20,6 +21,14 @@ var desc: Dictionary = {}
 var problems: Array = []    # contract problems reported by loco_describe
 var _ground: Callable
 var _started := false
+## Procedural action animation (godot/actions). Off = the pure locomotion pose; the world is never affected either way.
+var actions_enabled := true
+var layer = null
+var map = null
+var _rig_script = null
+var _fx_script = null
+var _acting_before := false
+static var _raw_actions: Dictionary = {}
 
 func setup(host_node: Node3D, body_node: Node3D, placeholder: bool, ground: Callable) -> void:
 	host = host_node
@@ -47,9 +56,40 @@ func _try_loco() -> void:
 		push_warning("loco rig contract: %s" % [problems])
 	controller = ctl_script.new(morph_script.analyse(desc), _ground)
 	controller.footfall.connect(func(leg: int, pos: Vector3) -> void: footfall.emit(leg, pos))
+	_try_actions()
+
+func _try_actions() -> void:
+	for p in ACTION_PATHS:
+		if not ResourceLoader.exists(p):
+			return
+	var data = load(ACTION_PATHS[2])
+	if _raw_actions.is_empty():
+		_raw_actions = data.load_all("res://actions/data")
+	if _raw_actions.is_empty():
+		return
+	map = load(ACTION_PATHS[1]).from_rig(body, desc, controller.morph)
+	layer = load(ACTION_PATHS[0]).new()
+	layer.setup(map, _raw_actions, body, host.entity_id if "entity_id" in host else 0)
+	_rig_script = load(ACTION_PATHS[3])
+	_fx_script = load(ACTION_PATHS[4])
+	layer.action_event.connect(_on_action_event)
+
+func _on_action_event(ev: String, data: Dictionary) -> void:
+	if ev == "spit_release" and layer != null and host.is_inside_tree():
+		var from: Vector3 = layer._mouth_world
+		var tgt: Dictionary = layer._ctx.get("target", {})
+		if tgt.is_empty():
+			return
+		var to: Variant = layer._goal_point("target_surface", controller.pose)
+		if to == null:
+			return
+		var act: Dictionary = layer.actions.get("spit", {})
+		var flight := maxf(0.05, (float(act.get("w", 6.0)) - float(data.get("tau", 0.0))) * 0.1)
+		_fx_script.spit_blob(host.get_parent(), from, to, flight, map.height * 0.5 if map != null else 1.0)
 
 # s: StageWorld.sample() -> {pos, yaw, speed, vel}, optionally intent (the world yaw the player asks for)
-func update(dt: float, s: Dictionary) -> void:
+# ctx (optional): what the action layer reads, see actions/action_layer.gd
+func update(dt: float, s: Dictionary, ctx: Dictionary = {}) -> void:
 	host.position = s.pos
 	host.basis = Basis(Vector3.UP, s.yaw)
 	if is_placeholder:
@@ -62,7 +102,22 @@ func update(dt: float, s: Dictionary) -> void:
 			_started = true
 		controller.set_intent(s.get("intent", null))
 		controller.step(dt, s.pos, s.yaw, s.vel)
+		var acting: bool = actions_enabled and layer != null and int(ctx.get("lod", 0)) < 2
+		if acting:
+			var c2: Dictionary = ctx.duplicate()
+			c2["pos"] = s.pos
+			c2["yaw"] = s.yaw
+			c2["speed"] = s.speed
+			c2["vel"] = s.vel
+			layer.light = int(ctx.get("lod", 0)) >= 1
+			layer.update(dt, c2)
+			layer.apply(controller.pose, dt)
 		adapter.loco_apply(body, controller.pose, desc)
+		if acting:
+			_rig_script.apply_parts(body, controller.pose.act)
+		elif layer != null and _acting_before:
+			_rig_script.reset(body)
+		_acting_before = acting
 		return
 	# Rest-pose glide: plant each foot under its rest sole and solve the legs.
 	if body.has_method("pose_legs_rest"):

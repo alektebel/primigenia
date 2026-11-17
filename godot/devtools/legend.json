@@ -10,6 +10,7 @@
     "move_back": {"label": "Back", "group": "Move", "contexts": ["walk", "fight"], "hidden": true},
     "move_right": {"label": "Right", "group": "Move", "contexts": ["walk", "fight"], "hidden": true},
     "camera_orbit": {"label": "Orbit camera (hold + drag)", "group": "Camera", "contexts": ["walk", "fight"], "corner": ["walk"]},
+    "camera_reset": {"label": "Reset camera behind the creature", "group": "Camera", "contexts": ["walk", "fight"]},
     "zoom_in": {"label": "Zoom in", "group": "Camera", "contexts": ["walk", "fight"]},
     "zoom_out": {"label": "Zoom out", "group": "Camera", "contexts": ["walk", "fight"]},
     "ability_1": {"label": "Move 1", "group": "Fight", "contexts": ["walk", "fight"], "corner": ["fight"]},

@@ -60,9 +60,16 @@ func height() -> float:
 
 var _speed := 0.0
 
-func update(dt: float, s: Dictionary) -> void:
+func update(dt: float, s: Dictionary, ctx: Dictionary = {}) -> void:
 	_speed = s.speed
-	driver.update(dt, s)
+	driver.update(dt, s, ctx)
+
+func layer():
+	return driver.layer
+
+## World position of the mouth tip as the action solver last placed it (Vector3.ZERO without an action layer).
+func mouth_world() -> Vector3:
+	return driver.layer._mouth_world if driver.layer != null else Vector3.ZERO
 
 # Up to 12 occluder spheres (x, y, z, r) in world space for the contact shadow.
 func occluders() -> Array:

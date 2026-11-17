@@ -2,7 +2,7 @@ extends RefCounted
 # Project wiring: input actions, autoload, main scene.
 
 const ACTIONS := ["move_forward", "move_back", "move_left", "move_right", "sprint", "walk_to",
-	"camera_orbit", "zoom_in", "zoom_out"]
+	"camera_orbit", "camera_reset", "zoom_in", "zoom_out"]
 
 func run(t) -> void:
 	for a in ACTIONS:

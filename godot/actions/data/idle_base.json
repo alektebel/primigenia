@@ -1,0 +1,63 @@
+{
+ "schema": "cpore.action/1",
+ "id": "idle_base",
+ "class": "idle",
+ "driver": {
+  "kind": "idle"
+ },
+ "ticks": {
+  "w": 0,
+  "a": 1,
+  "r": 0
+ },
+ "settle": 0.0,
+ "priority": 0,
+ "fade": {
+  "in": 0.0,
+  "out": 0.0,
+  "cancel": 0.0
+ },
+ "legs": "plant",
+ "side": 1,
+ "tracks": [
+  {
+   "ch": "body.inflate",
+   "osc": {
+    "clock": "breath",
+    "hz": 0.5,
+    "amp": 0.012,
+    "shape": "sin"
+   },
+   "kin": 0.0
+  },
+  {
+   "ch": "root.lift",
+   "osc": {
+    "clock": "breath",
+    "hz": 0.5,
+    "amp": 0.004,
+    "shape": "sin"
+   },
+   "kin": 0.0
+  },
+  {
+   "ch": "lids",
+   "osc": {
+    "clock": "time",
+    "hz": 0.2546,
+    "amp": 1.0,
+    "shape": "blink"
+   }
+  },
+  {
+   "ch": "jaw.open",
+   "osc": {
+    "clock": "time",
+    "hz": 0.334,
+    "amp": 0.05,
+    "shape": "sin"
+   }
+  }
+ ],
+ "hold": true
+}

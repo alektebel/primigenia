@@ -212,12 +212,18 @@ static func _bend_spine(creature, pose: Dictionary, desc: Dictionary) -> void:
 			pt -= pose.neck.pitch * neck_k[b]
 		yaw_abs[b] = yw
 		pit_abs[b] = pt
+	var act: Dictionary = pose.get("act", {})        # action layer (godot/actions): local bone deltas added on top
 	for b in range(nb):
 		var par: int = sk.get_bone_parent(b)
 		var dy: float = yaw_abs[b] - (yaw_abs[par] if par >= 0 else 0.0)
 		var dp: float = pit_abs[b] - (pit_abs[par] if par >= 0 else 0.0)
 		var rest_q: Quaternion = (sk.get_bone_rest(b) as Transform3D).basis.get_rotation_quaternion()
-		sk.set_bone_pose_rotation(b, rest_q * Quaternion(Vector3.UP, dy) * Quaternion(Vector3.RIGHT, dp))
+		if not act.is_empty():
+			dy += act.bone_dy[b]
+			dp += act.bone_dp[b]
+			sk.set_bone_pose_rotation(b, rest_q * Quaternion(Vector3.UP, dy) * Quaternion(Vector3.RIGHT, dp) * Quaternion(Vector3.BACK, act.bone_dr[b]))
+		else:
+			sk.set_bone_pose_rotation(b, rest_q * Quaternion(Vector3.UP, dy) * Quaternion(Vector3.RIGHT, dp))
 
 static func _wave(w: Dictionary, u: float) -> float:
 	return w.amp * (0.4 + 0.6 * (1.0 - u)) * sin(TAU * (w.waves * u + w.phase))

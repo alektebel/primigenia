@@ -1,0 +1,88 @@
+{
+ "schema": "cpore.action/1",
+ "id": "fidget_sniff",
+ "class": "idle",
+ "driver": {
+  "kind": "idle"
+ },
+ "ticks": {
+  "w": 0,
+  "a": 15,
+  "r": 0
+ },
+ "settle": 0.3,
+ "priority": 10,
+ "fade": {
+  "in": 0.05,
+  "out": 0.12,
+  "cancel": 0.08
+ },
+ "legs": "plant",
+ "side": 1,
+ "tracks": [
+  {
+   "ch": "head.reach",
+   "keys": [
+    [
+     "a",
+     0,
+     0
+    ],
+    [
+     "a",
+     0.2,
+     0.8,
+     "out"
+    ],
+    [
+     "a",
+     0.8,
+     0.8
+    ],
+    [
+     "a",
+     1,
+     0,
+     "inout"
+    ]
+   ],
+   "goal": "ground_front"
+  },
+  {
+   "ch": "jaw.open",
+   "keys": [
+    [
+     "a",
+     0.3,
+     0
+    ],
+    [
+     "a",
+     0.4,
+     0.15
+    ],
+    [
+     "a",
+     0.5,
+     0
+    ],
+    [
+     "a",
+     0.6,
+     0.15
+    ],
+    [
+     "a",
+     0.7,
+     0
+    ],
+    [
+     "a",
+     1,
+     0
+    ]
+   ]
+  }
+ ],
+ "weight": 1.0
+}

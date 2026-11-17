@@ -12,10 +12,17 @@ const StageSetup := preload("res://game/stage/stage_setup.gd")
 const Profile := preload("res://game/stage/profile.gd")
 const PlayerInput := preload("res://game/player/player_input.gd")
 const Pointer := preload("res://game/player/pointer.gd")
+const Gesture := preload("res://game/player/pointer_gesture.gd")
 const ChaseCamera := preload("res://game/player/chase_camera.gd")
 const ActorHost := preload("res://game/actors/actor_host.gd")
 const StageUI := preload("res://game/stage/stage_ui.gd")
 const Scenario := preload("res://devtools/scenario.gd")
+const StrategicIcons := preload("res://game/island/strategic_icons.gd")
+
+const FAR_GRASS_Z := 0.6          # zoom above which grass, shadows and models are switched off
+const MODEL_OFF_Z := 0.85
+const DEN_SEEN := 60.0
+const ActionFeed := preload("res://actions/action_feed.gd")
 
 var terrain_chunks: Node3D
 var world_env: WorldEnvironment
@@ -33,9 +40,23 @@ var chase_enabled := true
 var player_pos := Vector3.INF
 var last_click := Vector2.ZERO     # screen position of the last click that picked a creature (the radial opens there)
 var occluders_enabled := true
+var icons: CanvasLayer
+var pois_fn: Callable            # sites hook for the strategic map (see strategic_icons.gd; D2 registry plugs in here)
 var _mouse_held := false
 var _genome: Dictionary = {}
 var _garfio_profile: Dictionary = {}   # kept so creatures spawned later (dev console, scenarios) get a body
+var gesture := Gesture.new()       # the left button: click, hold or orbit drag
+var _orbit_btn := 0               # right/middle button held (1 = right, 2 = middle)
+var _mid_travel := 0.0
+var _far := false
+var _nest := Vector2.ZERO
+var _den = null
+var _den_seen := false
+var action_feed := ActionFeed.new()   # C state -> action signals (read only)
+var dodge_hint := {"dir": 0, "until": 0}     # the player's dodge key, for the dodge animation's side
+var ui_mode := &""
+var selected_id := -1
+var action_signals: Dictionary = {}   # last frame's per-entity signals (tests read it)
 
 func _ready() -> void:
 	build()
@@ -87,7 +108,10 @@ func _build_stage() -> void:
 	var setup := StageSetup.build(Game.data, int(Game.settings.seed), pr.profile, garfio_profile, bool(Game.settings.wild))
 	stage = StageWorld.new()
 	stage.name = "Stage"
+	stage.process_priority = -10     # the world ticks before the actors read it (action timing, G77)
 	add_child(stage)
+	_nest = setup.nest
+	_den = Vector2(setup.wild[0].home_x, setup.wild[0].home_z) if setup.wild.size() > 0 else null
 	var ground := Callable(Game, "ground")
 	stage.ground_fn = ground
 	player_input = PlayerInput.new()
@@ -116,6 +140,14 @@ func _build_stage() -> void:
 	if setup.wild.size() > 0:
 		yaw = atan2(setup.nest.x - setup.wild[0].home_x, setup.nest.y - setup.wild[0].home_z)
 	chase = ChaseCamera.new(player_host.height(), yaw, ground)
+	chase.strategic_distance = Game.data.size_m * 0.85
+	chase.free_orbit = bool(Game.settings.get("camera/free_orbit", false))
+	icons = StrategicIcons.new()
+	icons.camera = camera
+	icons.ground_fn = ground
+	icons.pois_fn = pois_fn if pois_fn.is_valid() else _default_pois
+	icons.actors_fn = _icon_actors
+	add_child(icons)
 	stage_ui = StageUI.new()
 	stage_ui.name = "StageUI"
 	add_child(stage_ui)
@@ -138,7 +170,7 @@ func _build_stage() -> void:
 func camera_state() -> Dictionary:
 	var out := {}
 	if chase != null:
-		for k in ["yaw", "pitch", "distance", "orbit_pitch"]:
+		for k in ["yaw", "pitch", "distance", "orbit_pitch", "z_target"]:
 			var v = chase.get(k)
 			if v != null:
 				out[k] = v
@@ -220,11 +252,32 @@ func _sync_hosts() -> void:
 
 func _update_actors(dt: float) -> void:
 	_sync_hosts()
+	action_signals = action_feed.read(stage.prev, stage.cur, stage.alpha())
+	var tick: int = int(stage.cur.combat.tick)
+	var alpha: float = stage.alpha()
+	var p0: Vector3 = stage.sample(0).pos
 	for id in hosts:
 		var sm: Dictionary = stage.sample(id)
 		if id == 0:
 			sm["intent"] = player_input.intent_yaw()      # head and shoulders lead the body
-		hosts[id].update(dt, sm)
+		var d: float = (sm.pos as Vector3).distance_to(p0)
+		var sig: Dictionary = action_signals.get(id, {})
+		var ctx := {"sig": sig, "tick": tick, "alpha": alpha, "beat_phase": (7 * id) % 12, "lod": 0 if d < 40.0 else (1 if d < 80.0 else 2), "mode": "", "attend": false}
+		var tid: int = int(sig.get("target_id", -1))
+		if tid < 0 and id == 0 and selected_id > 0:
+			tid = selected_id
+		if tid >= 0 and hosts.has(tid) and tid != id:
+			var th: Node3D = hosts[tid]
+			var ts: Dictionary = stage.sample(tid)
+			var ent: Dictionary = stage.cur.entities[tid]
+			ctx["target"] = {"id": tid, "pos": ts.pos, "radius": float(ent.get("radius_cm", 60)) * 0.01, "height": th.height(), "spheres": th.occluders() if d < 40.0 else []}
+		if id == 0:
+			ctx["dodge_dir"] = int(dodge_hint.dir) if Time.get_ticks_msec() < int(dodge_hint.until) else 0
+			if ui_mode == &"observe" and selected_id > 0:
+				ctx["mode"] = "observe"
+		elif ui_mode == &"befriend" and id == selected_id and not bool(sig.get("in_fight", false)) and d < 12.0:
+			ctx["attend"] = true
+		hosts[id].update(dt, sm, ctx)
 	var p: Dictionary = stage.sample(0)
 	player_pos = p.pos
 	var occ := []
@@ -254,9 +307,46 @@ func _update_camera(dt: float) -> void:
 	chase.kick = bool(Game.settings.get("camera/kick", false))
 	var r: Dictionary = chase.update({"x": p.pos.x, "z": p.pos.z, "yaw": p.yaw, "speed": p.speed, "vx": p.vel.x, "vz": p.vel.z}, enemy, fighting, dt, vp.x / maxf(vp.y, 1.0))
 	camera.fov = 48.0 + float(r.fov_add)
+	camera.near = clampf(float(r.distance) * 0.012, 0.25, 40.0)       # keep the depth buffer precise at 3 km
 	camera.position = r.position
 	camera.look_at(r.target)
 	player_input.view_yaw = chase.view_yaw
+	_apply_zoom_budget(chase.z)
+	icons.update_alpha(chase.icon_alpha())
+
+# Cheap far zoom: grass, sun shadows and creature models are off where they cannot be seen (icons replace models).
+func _apply_zoom_budget(zz: float) -> void:
+	var far := zz >= FAR_GRASS_Z
+	if far != _far:
+		_far = far
+		grass.visible = not far
+		sun.shadow_enabled = not far
+	var models := zz < MODEL_OFF_Z
+	for h in hosts.values():
+		if h.visible != models:
+			h.visible = models
+
+# Default sites for the strategic map: the nest, and the den of the wild species (a `?` until the player has come
+# within DEN_SEEN metres). The sites registry (D2) replaces this through `pois_fn` (see strategic_icons.gd).
+func _default_pois() -> Array:
+	var out: Array = [{"id": "nest", "kind": "nest", "pos": _nest, "discovered": true, "label": "Nest"}]
+	if _den != null:
+		if not _den_seen and Vector2(player_pos.x, player_pos.z).distance_to(_den) < DEN_SEEN:
+			_den_seen = true
+		out.append({"id": "den", "kind": "den", "pos": _den, "discovered": _den_seen, "label": "Den"})
+	return out
+
+func _icon_actors() -> Array:
+	var out: Array = []
+	if stage == null or stage.cur.is_empty():
+		return out
+	for id in hosts:
+		var e: Dictionary = stage.cur.entities[id]
+		if e.get("dead", false):
+			continue
+		var smp: Dictionary = stage.sample(id)
+		out.append({"id": id, "kind": "player" if id == 0 else "creature", "pos": smp.pos, "yaw": smp.yaw})
+	return out
 
 # Controls settings and the creature's pose into the input (latch frame, tank steering, intent).
 func _sync_controls() -> void:
@@ -273,25 +363,73 @@ func _process(delta: float) -> void:
 	_sync_controls()
 	_update_actors(delta)
 	_update_camera(delta)
+	gesture.tick(delta)
+	_mouse_held = gesture.holding
 	if _mouse_held and not Game.movement_blocked():
 		_click_ground(false, get_viewport().get_mouse_position())
 
+# Mouse (docs/godot/CAMERA-ZOOM.md section 1): wheel zooms along the one curve; a left press that moves more than
+# DRAG_PX is an orbit drag, otherwise it is a click (acted on at release) or, held, steers towards the mouse; right and
+# middle drag orbit; a middle click or Home puts the camera back behind the creature.
 func _unhandled_input(event: InputEvent) -> void:
 	if stage == null or chase == null:
 		return
-	if event is InputEventMouseMotion and Input.is_action_pressed("camera_orbit"):
-		chase.orbit(event.relative.x, event.relative.y)
-		if player_input.frame_yaw != null:
-			player_input.frame_yaw = chase.view_yaw     # steering with the mouse while keys are held
+	if event is InputEventMouseMotion:
+		_on_motion(event as InputEventMouseMotion)
 	elif event.is_action_pressed("zoom_in"):
 		chase.zoom(-1.0)
 	elif event.is_action_pressed("zoom_out"):
 		chase.zoom(1.0)
-	elif event.is_action_pressed("walk_to"):
-		_mouse_held = true
-		_click_ground(true, (event as InputEventMouseButton).position if event is InputEventMouseButton else get_viewport().get_mouse_position())
-	elif event.is_action_released("walk_to"):
-		_mouse_held = false
+	elif event.is_action_pressed("camera_reset"):
+		chase.reset_behind()
+	elif event is InputEventMouseButton:
+		_on_button(event as InputEventMouseButton)
+
+func _on_button(e: InputEventMouseButton) -> void:
+	if e.button_index == MOUSE_BUTTON_LEFT:
+		if e.pressed:
+			gesture.press(e.position, e.double_click)
+		else:
+			var kind := gesture.release()
+			chase.orbit_active = _orbit_btn != 0
+			if kind == "click":
+				_click(gesture.press_pos, gesture.double)
+			_mouse_held = false
+	elif e.button_index == MOUSE_BUTTON_RIGHT or e.button_index == MOUSE_BUTTON_MIDDLE:
+		var bit := 1 if e.button_index == MOUSE_BUTTON_RIGHT else 2
+		if e.pressed:
+			_orbit_btn |= bit
+			_mid_travel = 0.0
+			chase.orbit_active = true
+		else:
+			_orbit_btn &= ~bit
+			chase.orbit_active = _orbit_btn != 0 or gesture.dragging
+			if e.button_index == MOUSE_BUTTON_MIDDLE and _mid_travel < Gesture.DRAG_PX:
+				chase.reset_behind()
+
+func _on_motion(e: InputEventMouseMotion) -> void:
+	var orbiting := _orbit_btn != 0 or gesture.motion(e.position)
+	if _orbit_btn != 0:
+		_mid_travel += e.relative.length()
+	if orbiting:
+		chase.orbit_active = true
+		chase.orbit(e.relative.x, e.relative.y)
+		if player_input.frame_yaw != null:
+			player_input.frame_yaw = chase.view_yaw     # steering with the mouse while keys are held
+
+# A click: a strategic icon (select; double-click zooms back down), a creature, or the ground (walk there).
+func _click(pos: Vector2, double: bool) -> void:
+	if icons != null and icons.alpha >= 0.3:
+		var it: Dictionary = icons.pick(pos)
+		if not it.is_empty():
+			if double:
+				chase.set_zoom(chase.Z_CHASE)
+			last_click = pos
+			Game.creature_clicked.emit(it.id, it.pos)
+			return
+		if double:
+			chase.set_zoom(chase.Z_CHASE)
+	_click_ground(true, pos)
 
 func _click_ground(allow_pick: bool, mouse: Vector2) -> void:
 	var ground := Callable(Game, "ground")
@@ -302,6 +440,6 @@ func _click_ground(allow_pick: bool, mouse: Vector2) -> void:
 			last_click = mouse
 			Game.creature_clicked.emit(picked.id, picked.pos)
 			return
-	var hit = Pointer.ground_hit(camera, mouse, ground)
+	var hit = Pointer.ground_hit(camera, mouse, ground, maxf(900.0, chase.distance * 2.0))
 	if hit != null:
 		player_input.set_destination(Vector2(hit.x, hit.z))

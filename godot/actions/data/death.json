@@ -1,0 +1,193 @@
+{
+ "schema": "cpore.action/1",
+ "id": "death",
+ "class": "reaction",
+ "driver": {
+  "kind": "c_state",
+  "state": "dead"
+ },
+ "ticks": {
+  "w": 0,
+  "a": 6,
+  "r": 0
+ },
+ "settle": 0.2,
+ "priority": 100,
+ "fade": {
+  "in": 0.03,
+  "out": 0.2,
+  "cancel": 0.08
+ },
+ "legs": "free",
+ "side": "away_hit",
+ "tracks": [
+  {
+   "ch": "root.lift",
+   "keys": [
+    [
+     "a",
+     0,
+     0
+    ],
+    [
+     "a",
+     1,
+     -9.0,
+     "in"
+    ]
+   ]
+  },
+  {
+   "ch": "root.roll",
+   "keys": [
+    [
+     "a",
+     0.3,
+     0
+    ],
+    [
+     "a",
+     1,
+     1.2,
+     "inout"
+    ]
+   ],
+   "signed": true
+  },
+  {
+   "ch": "head.pitch",
+   "keys": [
+    [
+     "a",
+     0,
+     0
+    ],
+    [
+     "a",
+     1,
+     -0.6,
+     "out"
+    ]
+   ]
+  },
+  {
+   "ch": "neck.coil",
+   "keys": [
+    [
+     "a",
+     0,
+     0
+    ],
+    [
+     "a",
+     1,
+     -0.3
+    ]
+   ]
+  },
+  {
+   "ch": "tail.stiff",
+   "keys": [
+    [
+     "a",
+     0,
+     0.2
+    ],
+    [
+     "a",
+     1,
+     0.2
+    ]
+   ]
+  },
+  {
+   "ch": "jaw.open",
+   "keys": [
+    [
+     "a",
+     0,
+     0
+    ],
+    [
+     "a",
+     1,
+     0.35
+    ]
+   ]
+  },
+  {
+   "ch": "lids",
+   "keys": [
+    [
+     "a",
+     0,
+     0
+    ],
+    [
+     "a",
+     0.6,
+     1.0
+    ]
+   ]
+  },
+  {
+   "ch": "display",
+   "keys": [
+    [
+     "a",
+     0,
+     0
+    ],
+    [
+     "a",
+     1,
+     0
+    ]
+   ]
+  },
+  {
+   "ch": "still",
+   "keys": [
+    [
+     "a",
+     0.7,
+     0
+    ],
+    [
+     "a",
+     1,
+     1.0
+    ]
+   ]
+  }
+ ],
+ "variants": [
+  {
+   "when": {
+    "has": [
+     "legless"
+    ]
+   },
+   "set": [
+    {
+     "ch": "root.roll",
+     "keys": [
+      [
+       "a",
+       0.3,
+       0
+      ],
+      [
+       "a",
+       1,
+       1.4,
+       "inout"
+      ]
+     ],
+     "signed": true
+    }
+   ]
+  }
+ ],
+ "hold": true
+}

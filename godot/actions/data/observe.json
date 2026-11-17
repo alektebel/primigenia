@@ -1,0 +1,147 @@
+{
+ "schema": "cpore.action/1",
+ "id": "observe",
+ "class": "observe",
+ "driver": {
+  "kind": "stance"
+ },
+ "ticks": {
+  "w": 0,
+  "a": 1,
+  "r": 0
+ },
+ "settle": 0.0,
+ "priority": 30,
+ "fade": {
+  "in": 0.3,
+  "out": 0.3,
+  "cancel": 0.15
+ },
+ "legs": "plant",
+ "side": 1,
+ "tracks": [
+  {
+   "ch": "root.lift",
+   "keys": [
+    [
+     "hold",
+     0,
+     -0.25
+    ]
+   ]
+  },
+  {
+   "ch": "head.reach",
+   "keys": [
+    [
+     "hold",
+     0,
+     0.4
+    ]
+   ],
+   "goal": "target_head"
+  },
+  {
+   "ch": "head.pitch",
+   "keys": [
+    [
+     "hold",
+     0,
+     -0.3
+    ]
+   ]
+  },
+  {
+   "ch": "tail.pitch",
+   "keys": [
+    [
+     "hold",
+     0,
+     -0.3
+    ]
+   ],
+   "kin": 0
+  },
+  {
+   "ch": "tail.stiff",
+   "keys": [
+    [
+     "hold",
+     0,
+     2.0
+    ]
+   ]
+  },
+  {
+   "ch": "display",
+   "keys": [
+    [
+     "hold",
+     0,
+     -0.3
+    ]
+   ]
+  },
+  {
+   "ch": "lids",
+   "keys": [
+    [
+     "hold",
+     0,
+     0.4
+    ]
+   ]
+  }
+ ],
+ "variants": [
+  {
+   "when": {
+    "has": [
+     "legless"
+    ]
+   },
+   "set": [
+    {
+     "ch": "body.inflate",
+     "keys": [
+      [
+       "hold",
+       0,
+       -0.04
+      ]
+     ]
+    },
+    {
+     "ch": "root.lift",
+     "keys": [
+      [
+       "hold",
+       0,
+       0
+      ]
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "has": [
+     "long_neck"
+    ]
+   },
+   "set": [
+    {
+     "ch": "neck.coil",
+     "keys": [
+      [
+       "hold",
+       0,
+       0.8
+      ]
+     ]
+    }
+   ]
+  }
+ ],
+ "hold": true
+}

@@ -17,6 +17,8 @@ limits are in `godot/README.md`; tests: `make godot-play-test` plus the five mod
 | player height above the valley floor, slope, speed | `Audio.update_ambience` | `stage_ui.gd`, every frame |
 | `Audio` autoload (`audio/audio_manager.gd`), bus layout | kept in `project.godot` | |
 | studio (`studio/ui/studio.tscn`) | `creature_view_real.gd` (godot/creature) satisfying `creature_view.gd` | `studio.gd` calls `make_default()`, the placeholder view is the fallback when `res://creature` is absent (the studio's own test project) |
+| world state, `combat.events` | `ActionFeed.read` -> per-entity signal -> `ActionLayer` (`creature.skeleton` deltas through `pose.act`, part hooks through `ActionRig`) | `game/island/island.gd` `_update_actors` builds the ctx; `actor_driver.gd` runs `layer.update/apply`; the stage ticks first (`process_priority -10`) |
+| Befriend / Intimidate abilities (no C verb yet) | `layer.trigger(id)` on the player's host (cosmetic, quantised to the next tick) | `stage_ui.gd` `_on_ability` |
 | menu | Play = island, Creator = studio, studio saves `Game.studio_dir`, `Game.player_genome()` reads it | `game/menu/main_menu.gd` |
 
 Input frame (PLAN-feel): `PlayerInput` latches `view_yaw` when the pressed key combination changes (`frame_yaw`), so a
