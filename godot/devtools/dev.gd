@@ -10,6 +10,7 @@ const Console := preload("res://devtools/console/console.gd")
 const Sites := preload("res://devtools/sites.gd")
 const TuningRegistry := preload("res://devtools/tuning/registry.gd")
 const TuningPanel := preload("res://devtools/tuning/panel.gd")
+const Feedback := preload("res://devtools/feedback.gd")
 const SitePicker := preload("res://devtools/site_picker.gd")
 
 ## 1. Dev tools ON in every debug build (the editor and `godot --path godot`); `--dev` forces on in any
@@ -27,6 +28,7 @@ var enabled := false
 var legend: CanvasLayer
 var time_control: CanvasLayer
 var picker: CanvasLayer
+var feedback: CanvasLayer
 var tuning                    # TuningRegistry (entries appear when the island is ready)
 var tuning_panel: CanvasLayer
 var sites                     # Sites for the running island (built when it is ready)
@@ -45,6 +47,10 @@ func _ready() -> void:
 	legend.name = "Legend"
 	add_child(legend)
 	if enabled:
+		Feedback.install_logger()
+		feedback = Feedback.new()
+		feedback.name = "Feedback"
+		add_child(feedback)
 		time_control = TimeControl.new()
 		time_control.name = "TimeControl"
 		add_child(time_control)
