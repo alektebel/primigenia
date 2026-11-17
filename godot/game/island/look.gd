@@ -52,6 +52,33 @@ const VOLCANIC_R1 := Vector3(0.13, 0.10, 0.085)
 const WET_TINT := Vector3(0.82, 0.90, 0.84)
 const CHANNEL := Vector3(0.035, 0.09, 0.13)
 
+# Rock and scree material (docs/godot/PLAN-rock.md): proposed by the implementer, pending owner approval, see docs/godot/ROCK.md.
+# Mirrors of shaders/rock.gdshaderinc, compared by test_look.gd.
+const ROCK_TILE_MINERAL := 263.0
+const ROCK_TILE_MACRO := 41.0
+const ROCK_TILE_MESO := 9.7
+const ROCK_TILE_MICRO := 2.3
+const SCREE_TILE := 6.1
+const ROCK_MESO_NEAR := 120.0
+const ROCK_MESO_FAR := 380.0
+const ROCK_MESO_FAR_HIGH := 500.0
+const ROCK_MICRO_NEAR := 25.0
+const ROCK_MICRO_FAR := 70.0
+const SCREE_NEAR := 150.0
+const SCREE_FAR := 450.0
+const ROCK_MINERAL_BLUR := 14.0
+const ROCK_MINERAL_GAIN := 2.2
+const ROCK_MINERAL_BIAS := -0.06
+const ROCK_MACRO_SHIFT := 0.37
+const ROCK_PLATE_VALUE := 0.22
+const ROCK_AO_MID := 0.22
+const ROCK_AO_DEEP := 0.16
+const ROCK_AO_TINT := 0.62
+const ROCK_TOP_LIGHT := 0.10
+const SCREE_VALUE := 0.35
+const SCREE_GAP_DARK := 0.28
+const SCREE_ROCK_MIX := 0.85
+
 # Godot's ACES (compatibility renderer) calibrated to three.js ACESFilmic at exposure 1:
 # see docs/evidence/godot/m0/calibration.json (written by make godot-render-test).
 const TONEMAP_EXPOSURE := 0.926

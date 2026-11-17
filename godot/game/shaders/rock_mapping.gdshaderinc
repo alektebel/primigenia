@@ -50,14 +50,19 @@ MapCtx map_ctx(vec3 p, vec3 n) {
 
 // Blended sample of one layer. Derivatives come from the continuous world position, so there is no mip seam where the
 // dominant axis changes, and the call is safe inside non-uniform branches (distance fades).
-vec4 map_tex(sampler2D t, MapCtx c, float inv_tile, vec2 off) {
+// `blur` scales the gradients (a higher mip, for broad low-contrast patches); 1 is the exact footprint.
+vec4 map_tex_blur(sampler2D t, MapCtx c, float inv_tile, vec2 off, float blur) {
 	vec4 s = vec4(0.0);
 	for (int k = 0; k < 3; k++) {
 		if (c.w[k] > 0.0005) {
-			s += c.w[k] * textureGrad(t, map_uv(c.p, k) * inv_tile + off, map_uv(c.dpx, k) * inv_tile, map_uv(c.dpy, k) * inv_tile);
+			s += c.w[k] * textureGrad(t, map_uv(c.p, k) * inv_tile + off, map_uv(c.dpx, k) * inv_tile * blur, map_uv(c.dpy, k) * inv_tile * blur);
 		}
 	}
 	return s;
+}
+
+vec4 map_tex(sampler2D t, MapCtx c, float inv_tile, vec2 off) {
+	return map_tex_blur(t, c, inv_tile, off, 1.0);
 }
 
 // World-space tilt (-grad h) from a decoded detail normal d = (-dh/du, -dh/dv), per projection, blended.

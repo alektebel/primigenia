@@ -36,3 +36,14 @@ func run(t) -> void:
 	t.check(_near(inc.HORIZON_HZ, Look.SKY_HZ) and _near(inc.HORIZON_GLOW, Look.SKY_GLOW), "the horizon colour of the sea fade equals the sky's")
 	t.check(absf(sd.length() - 1.0) < 1e-9, "sun direction is normalised")
 	t.check(absf(Look.TONEMAP_EXPOSURE - 0.926) < 1e-9 and absf(Look.TONEMAP_WHITE - 15.4) < 1e-9, "calibrated tone-map constants")
+	# Rock constants (rock.gdshaderinc) mirror look.gd.
+	var rock := _consts("res://game/shaders/rock.gdshaderinc")
+	var script: GDScript = Look
+	var seen := 0
+	for k in rock:
+		if script.get_script_constant_map().has(k):
+			seen += 1
+			t.check(absf(float(rock[k][0]) - float(script.get_script_constant_map()[k])) < 1e-6, k + " matches look.gd")
+		else:
+			t.check(false, k + " is missing from look.gd")
+	t.check(seen >= 20, "the rock constants were compared (%d)" % seen)

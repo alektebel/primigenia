@@ -82,11 +82,11 @@ static func smooth(a: float, b: float, x: float) -> float:
 	return t * t * (3.0 - 2.0 * t)
 
 # Maps the 1st..99th percentile of a field to ~0.04..0.96 (so the histogram spans at least 0.1..0.9) and clamps.
-static func normalise(f: PackedFloat32Array) -> void:
+static func normalise(f: PackedFloat32Array, hi_q: float = 0.99) -> void:
 	var s := f.duplicate()
 	s.sort()
 	var lo: float = s[int(s.size() * 0.01)]
-	var hi: float = s[int(s.size() * 0.99)]
+	var hi: float = s[int(s.size() * hi_q)]
 	for i in f.size():
 		f[i] = clampf(0.04 + 0.92 * (f[i] - lo) / maxf(hi - lo, 1e-6), 0.0, 1.0)
 
@@ -140,6 +140,9 @@ static func bake_rock() -> Image:
 			var vo := voronoi(wu, wv, 9, 15, 11, 0.9)
 			var edge := vo.y - vo.x
 			var cr := 1.0 - smooth(0.0, 0.16, edge)
+			# A second, larger set of faults so the plate size varies (blocks of blocks).
+			var vo2 := voronoi(wu, wv, 4, 6, 57, 0.95)
+			cr = maxf(cr, 1.0 - smooth(0.0, 0.10, vo2.y - vo2.x))
 			var plate := vo.z * 0.6 + smooth(0.0, 0.5, edge) * 0.4
 			# Bedding: anisotropic fbm, 3 periods across and 14 down (long along u).
 			var bed := fbm(u, v, 3, 14, 3, 21)
@@ -167,18 +170,19 @@ static func bake_scree() -> Image:
 		for x in n:
 			var u := (x + 0.5) / n
 			var v := (y + 0.5) / n
-			var big := voronoi(u, v, 6, 6, 101, 0.85)
-			var small := voronoi(u, v, 17, 17, 202, 0.85)
+			var big := voronoi(u, v, 6, 6, 101, 1.0)
+			var small := voronoi(u, v, 14, 14, 202, 1.0)
+			var patch := smooth(0.3, 0.7, fbm(u, v, 3, 3, 2, 404))      # stones come in patches, sand between
 			# Rounded stones: dome profile from F1; the gaps between them are sand (low).
 			var stone_b := 1.0 - smooth(0.12, 0.62, big.x)
 			var stone_s := 1.0 - smooth(0.15, 0.62, small.x)
 			var gap_b := smooth(0.0, 0.2, big.y - big.x)
 			var gap_s := smooth(0.0, 0.2, small.y - small.x)
-			var height := 0.65 * stone_b * (0.55 + 0.45 * big.z) * gap_b + 0.3 * stone_s * (0.6 + 0.4 * small.z) * gap_s
+			var height := (0.65 * stone_b * (0.2 + 0.8 * big.z) * gap_b + 0.3 * stone_s * (0.3 + 0.7 * small.z) * gap_s) * (0.4 + 0.6 * patch)
 			height += 0.05 * fbm(u, v, 24, 24, 2, 303)
 			h[y * n + x] = height
 			ao[y * n + x] = 0.35 + 0.65 * minf(gap_b, 1.0) * (0.4 + 0.6 * minf(1.0, gap_s + 0.3))
-	normalise(h)
+	normalise(h, 0.95)   # sparse stones: the top 5 % clip so the histogram still spans 0.1..0.9
 	return pack(h, ao, n, 5.0)
 
 func _initialize() -> void:

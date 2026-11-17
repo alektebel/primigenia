@@ -4,6 +4,8 @@ extends Node3D
 
 const TerrainData := preload("res://game/island/terrain_data.gd")
 const TERRAIN_SHADER := preload("res://game/shaders/terrain.gdshader")
+const ROCK_TEX := preload("res://game/textures/rock_detail.png")
+const SCREE_TEX := preload("res://game/textures/scree_detail.png")
 
 const CHUNK := TerrainData.CHUNK_CELLS
 const STEPS := [1, 2, 4, 8, 16]
@@ -112,6 +114,8 @@ func build(terrain_data) -> void:
 			m.set_shader_parameter("height_tex", data.height_tex)
 			m.set_shader_parameter("level_tex", data.level_tex)
 			m.set_shader_parameter("surface_tex", data.surface_tex)
+			m.set_shader_parameter("rock_tex", ROCK_TEX)
+			m.set_shader_parameter("scree_tex", SCREE_TEX)
 			m.set_shader_parameter("MAP_N", data.n)
 			m.set_shader_parameter("MAP_CELL", data.cell)
 			m.set_shader_parameter("MAP_HALF", data.half)

@@ -4,11 +4,13 @@ render_mode unshaded, cull_back;
 #include "res://game/shaders/land.gdshaderinc"
 #include "res://game/shaders/terrain_maps.gdshaderinc"
 #include "res://game/shaders/rock_mapping.gdshaderinc"
+#include "res://game/shaders/rock.gdshaderinc"
 
 uniform vec3 lod_color = vec3(0.0);
 uniform float lod_debug : hint_range(0.0, 1.0) = 0.0;
 // 0 off, 1 = 4 m grid through the active mapping (R, G sawtooth of u, v; B checker), 2 = mapping weights,
-// 3 = relief channels, 4 = light only (unclamped), 5 = legacy planar xz grid (the old mapping, for the stretch test).
+// 3 = relief channels, 4 = light only (unclamped), 5 = legacy planar xz grid (the old mapping, for the stretch test),
+// 6 = masks (R rock, G snow, B steeper than 55 degrees).
 uniform int rock_debug = 0;
 
 varying vec3 wp;
@@ -34,6 +36,11 @@ void fragment() {
 			dbg = surface_bilinear(xz).rgb;
 		} else if (rock_debug == 4) {
 			dbg = vec3(dot(gn, SUN_DIR) * 0.5 + 0.5);
+		} else if (rock_debug == 6) {
+			// Masks for the evidence metrics: R rock cell, G snow, B face steeper than 55 degrees.
+			float w6[6];
+			material_weights(xz, w6);
+			dbg = vec3(step(0.5, w6[1]), step(0.5, w6[5]), step(gn.y, 0.5736));
 		} else {
 			vec2 g = xz / 4.0;
 			dbg = vec3(fract(g.x), fract(g.y), mod(floor(g.x) + floor(g.y), 2.0));
@@ -43,26 +50,34 @@ void fragment() {
 		float light = max(dot(gn, SUN_DIR), 0.0);
 		float wave = meadowWave(xz, TIME);
 		float msh = occluder_shadow(wp);
-		vec2 jitter = (vec2(landNoise(xz * 0.11), landNoise(xz * 0.11 + 17.0)) - 0.5) * MAP_CELL * 0.8;
 		vec4 sb = surface_bilinear(xz);   // G grass, B cavity, A wetness
 		float cavity = sb.b;
 		float wet = sb.a;
 		float w[6];
-		material_weights(xz + jitter, w);
+		material_weights(xz, w);
 
+		float dist = distance(wp, CAMERA_POSITION_WORLD);
+		MapCtx mc = map_ctx(wp, gn);
 		vec3 meadow = meadowColor(tone(xz), 1.0, light, wave, xz) * vec3(0.6, 0.68, 0.54) * mix(SH_K, 1.0, msh);
 		meadow *= mix(S_TINT, vec3(1.0), msh);
 		float steep = 1.0 - smoothstep(0.48, 0.76, gn.y);
-		vec3 rock_c = rock_color(R0, R1, xz, wp, light, steep, cavity) * GRASS;
-		float rock_light = 0.36 + 0.56 * smoothstep(0.12, 0.22, light) + 0.48 * smoothstep(0.5, 0.6, light);
-		vec3 scree_c = mix(rock_c, SCREE * rock_light * GRASS, 0.85);
-		vec3 volc_c = rock_color(VOLCANIC_R0, VOLCANIC_R1, xz, wp, light, steep, cavity) * GRASS;
-		vec3 sand_c = SAND * landRamp(light) * GRASS;
-		vec3 snow_c = SNOW * landRamp(light) * GRASS;
-
 		float turf_slope = smoothstep(0.74, 0.94, gn.y);
 		float w_meadow = w[0] * turf_slope;
 		float w_rock = w[1] + w[0] * (1.0 - turf_slope);
+		vec3 rock_c = vec3(0.0);
+		vec3 scree_c = vec3(0.0);
+		vec3 volc_c = vec3(0.0);
+		if (w_rock + w[2] + w[3] > 0.001) {
+			RockTex rt = rock_sample(mc, dist);
+			rock_c = rock_shade(R0, R1, rt, light, steep, cavity) * GRASS;
+			scree_c = scree_shade(rock_c, rt, mc, light, dist);
+			if (w[3] > 0.001) {
+				volc_c = rock_shade(VOLCANIC_R0, VOLCANIC_R1, rt, light, steep, cavity) * GRASS;
+			}
+		}
+		vec3 sand_c = SAND * landRamp(light) * GRASS;
+		vec3 snow_c = SNOW * landRamp(light) * GRASS;
+
 		vec3 land = w_meadow * meadow + w_rock * rock_c + w[2] * scree_c + w[3] * volc_c + w[4] * sand_c + w[5] * snow_c;
 		land = mix(land, meadow, sb.g);
 		land *= mix(vec3(1.0), WET_TINT, smoothstep(0.0, 0.4, wet) * 0.6);
