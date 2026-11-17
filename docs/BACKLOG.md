@@ -1,5 +1,7 @@
 # Backlog
 
+> **2026-11-17: the creature stage's plan of record is now `docs/CREATURE-ROADMAP.md` (phases C0–C9).** This file keeps per-item state only. Electron, P7-as-web and web-first lines below are superseded by G76 (Godot desktop). Risks: `docs/RISKS-CREATURE.md`.
+
 Order of work as of 2026-11-15. Decisions live in `docs/DESIGN.md` (G, W, Q
 numbers); `docs/P4.md` is the P4 spec of record. Every item ends with tests,
 evidence and the owner's approval, as in G25.
