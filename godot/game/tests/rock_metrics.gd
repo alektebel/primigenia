@@ -5,6 +5,8 @@ extends SceneTree
 #                                        at the centre, where the cliff views look)
 #   rockdiff <before> <after> <mask>     mean RGB over the mask's rock pixels (R > 0.5): before, after, difference in 1/255
 #   steepsnow <mask>...                  share of snow pixels (G) lying on faces steeper than 55 degrees (B)
+#   cells <relief_cells.json> <png>...   luminance at the gully and ridge cells (9x9) against the 81x81 area around them
+#   reliefstat <mode9> <mask> <png>...   mean luminance of rock pixels on concave, convex and flat relief (curvature maps from mode 9)
 #   flicker <bandsA> <bandsB> <mask>     share of rock pixels (whole 11x11 neighbourhood in the mask) whose ramp band has no match
 #                                        within 5 px in the frame taken after a 0.25 m camera move (mode 8 images)
 #   bands <png> [x0 w y0 y1]             peaks of the row-averaged luminance profile inside a box (strata check)
@@ -35,6 +37,35 @@ func _initialize() -> void:
 							if c.b > 0.5:
 								steep += 1
 				print("%s snow px %d, on steep faces %d (%.1f%%)" % [f.get_file(), snow, steep, 100.0 * steep / maxf(snow, 1)])
+		"cells":
+			var js = JSON.parse_string(FileAccess.get_file_as_string(a[1]))
+			for f in a.slice(2):
+				var img := Image.load_from_file(f)
+				var line := f.get_base_dir().get_file() + "/" + f.get_file()
+				for key in ["gully", "ridge"]:
+					line += "  %s lum %.3f (area mean %.3f, ratio %.2f)" % [key, cell_lum(img, js[key], 4), cell_lum(img, js[key], 40), cell_lum(img, js[key], 4) / maxf(cell_lum(img, js[key], 40), 1e-4)]
+				print(line)
+		"reliefstat":
+			var m9 := Image.load_from_file(a[1])
+			var mk := Image.load_from_file(a[2])
+			for f in a.slice(3):
+				var img := Image.load_from_file(f)
+				var sums := [0.0, 0.0, 0.0]
+				var cnt := [0, 0, 0]
+				for y in img.get_height():
+					for x in img.get_width():
+						if mk.get_pixel(x, y).r < 0.5:
+							continue
+						var r9 := m9.get_pixel(x, y)
+						var l := luma(img.get_pixel(x, y))
+						var k := 0
+						if r9.r > 0.62 or r9.g > 0.62:
+							k = 1
+						elif r9.r < 0.38 or r9.g < 0.38:
+							k = 2
+						sums[k] += l
+						cnt[k] += 1
+				print("%s rock px lum: flat %.3f (%d)  concave %.3f (%d)  convex %.3f (%d)  concave/flat %.2f  convex/flat %.2f" % [f.get_base_dir().get_file(), sums[0] / maxf(cnt[0], 1), cnt[0], sums[1] / maxf(cnt[1], 1), cnt[1], sums[2] / maxf(cnt[2], 1), cnt[2], sums[1] / maxf(cnt[1], 1) / (sums[0] / maxf(cnt[0], 1)), sums[2] / maxf(cnt[2], 1) / (sums[0] / maxf(cnt[0], 1))])
 		"flicker":
 			flicker(a[1], a[2], a[3])
 		"bands":
@@ -190,3 +221,14 @@ static func flicker(pa: String, pb: String, pm: String) -> void:
 			if not found:
 				bad += 1
 	print("flicker: %d of %d rock pixels (%.2f%%) changed ramp band beyond a 5 px shift" % [bad, tested, 100.0 * bad / maxf(tested, 1)])
+
+static func cell_lum(img: Image, c: Dictionary, r: int) -> float:
+	var s := 0.0
+	var n := 0
+	for dy in range(-r, r + 1):
+		for dx in range(-r, r + 1):
+			var x := clampi(int(c.sx) + dx, 0, img.get_width() - 1)
+			var y := clampi(int(c.sy) + dy, 0, img.get_height() - 1)
+			s += luma(img.get_pixel(x, y))
+			n += 1
+	return s / n

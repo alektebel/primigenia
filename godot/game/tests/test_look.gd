@@ -40,6 +40,8 @@ func run(t) -> void:
 	var rock := _consts("res://game/shaders/rock.gdshaderinc")
 	var script: GDScript = Look
 	var seen := 0
+	t.check(_near(rock.ROCK_RIM_TINT, Look.SKY_MID), "ROCK_RIM_TINT is the sky's SKY_MID")
+	rock.erase("ROCK_RIM_TINT")
 	for k in rock:
 		if script.get_script_constant_map().has(k):
 			seen += 1

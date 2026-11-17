@@ -61,6 +61,17 @@ vec4 map_tex_blur(sampler2D t, MapCtx c, float inv_tile, vec2 off, float blur) {
 	return s;
 }
 
+// Anisotropic tile (u and v scaled apart), for streaks stretched down a face.
+vec4 map_tex_aniso(sampler2D t, MapCtx c, vec2 inv_tile, vec2 off) {
+	vec4 s = vec4(0.0);
+	for (int k = 0; k < 3; k++) {
+		if (c.w[k] > 0.0005) {
+			s += c.w[k] * textureGrad(t, map_uv(c.p, k) * inv_tile + off, map_uv(c.dpx, k) * inv_tile, map_uv(c.dpy, k) * inv_tile);
+		}
+	}
+	return s;
+}
+
 vec4 map_tex(sampler2D t, MapCtx c, float inv_tile, vec2 off) {
 	return map_tex_blur(t, c, inv_tile, off, 1.0);
 }

@@ -199,23 +199,29 @@ uint8_t byte01(float v) {
 }  // namespace
 
 // Presentation maps only (not part of the deterministic simulation): material id, grass mask,
-// cavity and wetness packed as RGBA8, plus per-chunk height bounds for culling boxes.
+// cavity and wetness packed as RGBA8 ("surface"), per-chunk height bounds for culling boxes ("chunk_bounds"), and
+// "relief" (RGBA8, PLAN-rock section 4): R fine signed curvature (laplacian at 1 and 2 cells), G broad signed curvature
+// (5 and 10 cells), both 0.5 + 0.5 * clamp(k / 0.26, -1, 1) with > 0.5 concave (gullies) and < 0.5 convex (ridges);
+// B sediment, clamp(log10(1 + sed) / log10(201), 0, 1); A sun visibility, 255 (lit) until the baked shadows (step 9).
+// Presentation only: it adds nothing to the terrain hash.
 Dictionary CporeTerrain::surface_maps(const Dictionary &data) {
     Dictionary out;
     int64_t n;
     float size_m;
-    if (!data.has("n") || !data.has("size_m") || !data.has("height") || !data.has("flow") || !data.has("material") || !data.has("water_level")) return out;
+    if (!data.has("n") || !data.has("size_m") || !data.has("height") || !data.has("flow") || !data.has("material") || !data.has("water_level") || !data.has("sediment")) return out;
     if (!cpore::to_int(data["n"], CP_TERRAIN_N_MIN, CP_TERRAIN_N_MAX, n) || !cpore::to_float(data["size_m"], size_m)) return out;
     if (data["height"].get_type() != Variant::PACKED_FLOAT32_ARRAY || data["flow"].get_type() != Variant::PACKED_FLOAT32_ARRAY ||
-        data["water_level"].get_type() != Variant::PACKED_FLOAT32_ARRAY || data["material"].get_type() != Variant::PACKED_BYTE_ARRAY)
+        data["water_level"].get_type() != Variant::PACKED_FLOAT32_ARRAY || data["material"].get_type() != Variant::PACKED_BYTE_ARRAY ||
+        data["sediment"].get_type() != Variant::PACKED_FLOAT32_ARRAY)
         return out;
-    const PackedFloat32Array height = data["height"], flow = data["flow"], level = data["water_level"];
+    const PackedFloat32Array height = data["height"], flow = data["flow"], level = data["water_level"], sediment = data["sediment"];
     const PackedByteArray material = data["material"];
     const int64_t count = n * n;
-    if (height.size() != count || flow.size() != count || level.size() != count || material.size() != count) return out;
+    if (height.size() != count || flow.size() != count || level.size() != count || material.size() != count || sediment.size() != count) return out;
     const float *H = height.ptr();
     const float *F = flow.ptr();
     const float *L = level.ptr();
+    const float *SD = sediment.ptr();
     const uint8_t *M = material.ptr();
     const int N = int(n);
     const float cell = size_m / float(N);
@@ -223,6 +229,10 @@ Dictionary CporeTerrain::surface_maps(const Dictionary &data) {
     PackedByteArray surface;
     surface.resize(count * 4);
     uint8_t *S = surface.ptrw();
+    PackedByteArray relief;
+    relief.resize(count * 4);
+    uint8_t *RL = relief.ptrw();
+    const float sed_scale = 1.f / std::log10(201.f);
     const float lo = std::log10(1500.f), hi = std::log10(2.0e5f);
     for (int j = 0; j < N; ++j) {
         for (int i = 0; i < N; ++i) {
@@ -242,11 +252,27 @@ Dictionary CporeTerrain::surface_maps(const Dictionary &data) {
                 curv += std::max(0.f, lap) * rm * 0.5f;
             }
             const float cavity = smoothstep(.025f, .26f, curv);
+            float kf = 0.f, kb = 0.f;     // signed curvature, fine (1, 2 cells) and broad (5, 10 cells)
+            const int fine_r[2] = {1, 2}, broad_r[2] = {5, 10};
+            for (int r : fine_r) {
+                const float rm = float(r) * cell;
+                kf += (at(i - r, j) + at(i + r, j) + at(i, j - r) + at(i, j + r) - 4.f * h) / (rm * rm) * rm * 0.5f;
+            }
+            for (int r : broad_r) {
+                const float rm = float(r) * cell;
+                kb += (at(i - r, j) + at(i + r, j) + at(i, j - r) + at(i, j + r) - 4.f * h) / (rm * rm) * rm * 0.5f;
+            }
+            kf = std::max(-1.f, std::min(1.f, kf / .26f));
+            kb = std::max(-1.f, std::min(1.f, kb / .26f));
+            const float sed = std::max(0.f, SD[k]);
             const float area = F[k] * size_m * size_m;
             float wet = (std::log10(std::max(area, 1.f)) - lo) / (hi - lo);
             wet = wet < 0.f ? 0.f : (wet > 1.f ? 1.f : wet);
             uint8_t *px = S + size_t(k) * 4;
             px[0] = M[k]; px[1] = byte01(grass); px[2] = byte01(cavity); px[3] = byte01(wet);
+            uint8_t *rp = RL + size_t(k) * 4;
+            rp[0] = byte01(0.5f + 0.5f * kf); rp[1] = byte01(0.5f + 0.5f * kb);
+            rp[2] = byte01(std::log10(1.f + sed) * sed_scale); rp[3] = 255;
         }
     }
     const int chunk = 64;
@@ -268,6 +294,7 @@ Dictionary CporeTerrain::surface_maps(const Dictionary &data) {
         }
     }
     out["surface"] = surface;
+    out["relief"] = relief;
     out["chunk_bounds"] = bounds;
     out["chunks_per_side"] = cps;
     return out;

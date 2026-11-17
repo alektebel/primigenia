@@ -68,7 +68,7 @@ const SCREE_NEAR := 150.0
 const SCREE_FAR := 450.0
 const ROCK_MINERAL_BLUR := 14.0
 const ROCK_MINERAL_GAIN := 2.2
-const ROCK_MINERAL_BIAS := -0.06
+const ROCK_MINERAL_BIAS := -0.10
 const ROCK_MACRO_SHIFT := 0.37
 const ROCK_PLATE_VALUE := 0.22
 const ROCK_AO_MID := 0.22
@@ -97,6 +97,16 @@ const ROCK_BED_WOBBLE := 0.5
 const ROCK_BED_PLATE := 2.5
 const ROCK_BED_LEDGE := 0.06
 const ROCK_BED_FACES := 0.3
+const ROCK_GULLY_DARK := 0.64
+const ROCK_RIDGE_LIGHT := 0.07
+const ROCK_RIM := 0.025
+const ROCK_WET_DARK := 0.72
+const ROCK_WET_MIN := 0.35
+const ROCK_STREAK_STRETCH := 8.0
+const ROCK_FLOOR_DARK := 0.15
+const SCREE_FAN_LIGHT := 1.08
+const SCREE_FINE_TILE := 2.65
+const SCREE_TOE_SLOPE := 0.866
 
 # Godot's ACES (compatibility renderer) calibrated to three.js ACESFilmic at exposure 1:
 # see docs/evidence/godot/m0/calibration.json (written by make godot-render-test).

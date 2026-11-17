@@ -68,7 +68,10 @@ static func cone_entry(height_fn: Callable) -> Dictionary:
 static func relief_flat() -> PackedByteArray:
 	var r := PackedByteArray()
 	r.resize(N * N * 4)
-	r.fill(128)
+	for k in N * N:
+		r[k * 4] = 128
+		r[k * 4 + 1] = 128
+		r[k * 4 + 3] = 255
 	return r
 
 static func cone_height(x: float, z: float) -> float:

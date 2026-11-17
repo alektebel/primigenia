@@ -10,7 +10,7 @@ uniform vec3 lod_color = vec3(0.0);
 uniform float lod_debug : hint_range(0.0, 1.0) = 0.0;
 // 0 off, 1 = 4 m grid through the active mapping (R, G sawtooth of u, v; B checker), 2 = mapping weights,
 // 3 = strata (R cap rock, G bedding faces, B bedding phase), 4 = rock light with the detail normal (unclamped), 5 = legacy planar xz grid (the old mapping, for the stretch test),
-// 6 = masks (R rock, G snow, B steeper than 55 degrees), 8 = ramp bands of the rock light (flicker test).
+// 6 = masks (R rock, G snow, B steeper than 55 degrees), 8 = ramp bands of the rock light (flicker test), 9 = relief channels.
 uniform int rock_debug = 0;
 
 varying vec3 wp;
@@ -34,14 +34,16 @@ void fragment() {
 			dbg = map_weights(gn);
 		} else if (rock_debug == 3) {
 			// Strata: R cap rock, G bedding visibility (faces the mask leaves bare are 0), B fract(bedding phase).
-			RockTex rt3 = rock_sample(map_ctx(wp, gn), distance(wp, CAMERA_POSITION_WORLD));
+			RockTex rt3 = rock_sample(map_ctx(wp, gn), distance(wp, CAMERA_POSITION_WORLD), 0.0, 0.0);
 			dbg = vec3(rock_cap(wp), rock_bed_faces(wp), fract(rock_bed_phase(wp, rt3, 1.0)));
 		} else if (rock_debug == 4) {
-			RockTex rt4 = rock_sample(map_ctx(wp, gn), distance(wp, CAMERA_POSITION_WORLD));
+			RockTex rt4 = rock_sample(map_ctx(wp, gn), distance(wp, CAMERA_POSITION_WORLD), 0.0, 0.0);
 			dbg = vec3(dot(normalize(gn + rt4.tilt), SUN_DIR) * 0.5 + 0.5);
+		} else if (rock_debug == 9) {
+			dbg = texture(relief_tex, (xz + MAP_HALF) / (MAP_CELL * float(MAP_N))).rgb;   // R fine, G broad curvature, B sediment
 		} else if (rock_debug == 8) {
 			// Ramp bands of the rock light (the toon steps), for the flicker test: R above 0.17, G above 0.55, B lit mask.
-			RockTex rt8 = rock_sample(map_ctx(wp, gn), distance(wp, CAMERA_POSITION_WORLD));
+			RockTex rt8 = rock_sample(map_ctx(wp, gn), distance(wp, CAMERA_POSITION_WORLD), 0.0, 0.0);
 			float l8 = max(dot(normalize(gn + rt8.tilt), SUN_DIR), 0.0);
 			dbg = vec3(step(0.17, l8), step(0.55, l8), step(0.35, l8));
 		} else if (rock_debug == 6) {
@@ -75,26 +77,30 @@ void fragment() {
 		vec3 rock_c = vec3(0.0);
 		vec3 scree_c = vec3(0.0);
 		vec3 volc_c = vec3(0.0);
+		vec4 rl = texture(relief_tex, (xz + MAP_HALF) / (MAP_CELL * float(MAP_N)));
+		float fan = smoothstep(0.25, 0.75, rl.b);
 		if (w_rock + w[2] + w[3] > 0.001) {
-			RockTex rt = rock_sample(mc, dist);
+			RockTex rt = rock_sample(mc, dist, wet, steep);
 			float fw;
-			float rl = rock_light(gn, rt.tilt, fw);
-			rock_c = rock_shade(R0, R1, rt, rl, fw, steep, cavity, wp, 1.0, true) * GRASS;
+			float rlight = rock_light(gn, rt.tilt, fw);
+			rock_c = rock_shade(R0, R1, rt, rlight, fw, steep, cavity, wp, 1.0, true, rl, wet) * GRASS;
 			if (w[2] > 0.001) {
-				ScreeTex st = scree_sample(mc, rt, dist);
+				ScreeTex st = scree_sample(mc, rt, dist, fan);
 				float sfw;
 				float sl = rock_light(gn, st.tilt, sfw);
-				scree_c = scree_shade(rock_c, st, sl, sfw);
+				scree_c = scree_shade(rock_c, st, sl, sfw, fan);
 			}
 			if (w[3] > 0.001) {
-				volc_c = rock_shade(VOLCANIC_R0, VOLCANIC_R1, rt, rl, fw, steep, cavity, wp, 2.0, false) * GRASS;
+				volc_c = rock_shade(VOLCANIC_R0, VOLCANIC_R1, rt, rlight, fw, steep, cavity, wp, 2.0, false, rl, wet) * GRASS;
 			}
 		}
 		vec3 sand_c = SAND * landRamp(light) * GRASS;
 		vec3 snow_c = SNOW * landRamp(light) * GRASS;
 
 		vec3 land = w_meadow * meadow + w_rock * rock_c + w[2] * scree_c + w[3] * volc_c + w[4] * sand_c + w[5] * snow_c;
-		land = mix(land, meadow, sb.g);
+		// Sparse turf creeping onto the toe of a scree fan, only where meadow borders it.
+		float toe = fan * smoothstep(SCREE_TOE_SLOPE - 0.05, SCREE_TOE_SLOPE + 0.04, gn.y) * smoothstep(0.55, 0.7, landNoise(xz * 0.21)) * smoothstep(0.0, 0.25, w[0]) * w[2];
+		land = mix(land, meadow, max(sb.g, toe * 0.7));
 		land *= mix(vec3(1.0), WET_TINT, smoothstep(0.0, 0.4, wet) * 0.6);
 		// River channels: only a faint dark-green trace through the meadow (the hero shows none), not a blue strip.
 		land = mix(land, CHANNEL * landRamp(light), smoothstep(0.4, 0.6, wet) * 0.1);

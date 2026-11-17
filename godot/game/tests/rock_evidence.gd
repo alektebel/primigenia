@@ -42,6 +42,8 @@ func _run() -> void:
 		print("wrote ", v)
 		if masks and v != "chase":
 			await debug_frame(island, 6, out_dir.path_join("mask_" + v + ".png"))
+		if v == "cliff_lit" and extra.contains("cells"):
+			write_cells(island, game.data, out_dir.path_join("relief_cells.json"))
 		for m in range(1, 10):
 			if extra.contains("m%d" % m) and v != "chase":
 				await debug_frame(island, m, out_dir.path_join("mode%d_%s.png" % [m, v]))
@@ -73,3 +75,33 @@ func debug_frame(island: Node3D, mode: int, path: String) -> void:
 	env.background_mode = saved[0]
 	env.tonemap_mode = saved[1]
 	env.tonemap_exposure = saved[2]
+
+# Strongest gully (most concave fine curvature) and ridge (most convex) rock cells within 35 m of the cliff point that face the
+# camera, as screen positions for the luminance comparison (rock_metrics.gd cells).
+func write_cells(island: Node3D, td, path: String) -> void:
+	var c: Dictionary = Views.find_cliff(td, true)
+	var cam: Camera3D = island.camera
+	var best_g := {"v": -1e9}
+	var best_r := {"v": 1e9}
+	for dj in range(-12, 13):
+		for di in range(-12, 13):
+			var i: int = c.i + di
+			var j: int = c.j + dj
+			var k: int = j * td.n + i
+			if td.material[k] != 1:
+				continue
+			var p := Vector3(td.cell_center(i), td.height[k], td.cell_center(j))
+			if cam.is_position_behind(p):
+				continue
+			var sp := cam.unproject_position(p)
+			if sp.x < 40 or sp.x > 1240 or sp.y < 40 or sp.y > 680:
+				continue
+			var rv: float = float(td.relief[k * 4]) - 128.0
+			if rv > best_g.v:
+				best_g = {"v": rv, "x": p.x, "z": p.z, "sx": sp.x, "sy": sp.y}
+			if rv < best_r.v:
+				best_r = {"v": rv, "x": p.x, "z": p.z, "sx": sp.x, "sy": sp.y}
+	var f := FileAccess.open(path, FileAccess.WRITE)
+	f.store_string(JSON.stringify({"gully": best_g, "ridge": best_r}, "\t"))
+	f.close()
+	print("gully cell ", best_g, " ridge cell ", best_r)

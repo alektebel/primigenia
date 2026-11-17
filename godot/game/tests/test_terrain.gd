@@ -13,6 +13,7 @@ func run(t) -> void:
 		t.eq(d[k], 1.0, "W20 default " + k)
 	t.eq(CporeTerrain.version(), 3, "terrain version")
 	t.eq(CporeTerrain.validate(d), 0, "defaults validate")
+	run_relief(t)
 
 	var cli: String = t.build_path("terrain_cli")
 	var cases := [[42, 64], [7, 128], [1234, 128], [1, 1024]]
@@ -84,3 +85,62 @@ func run(t) -> void:
 	t.eq(pr.stage, 4, "progress ends at stage 4")
 	t.eq(pr.running, false, "not running at the end")
 	t.eq(box.r.get("error", -1), 0, "threaded generate ok")
+
+# PLAN-rock step 6: the presentation "relief" map from surface_maps().
+func _relief_input(n: int, size_m: float, hfn: Callable, sed_fn: Callable) -> Dictionary:
+	var h := PackedFloat32Array()
+	var sd := PackedFloat32Array()
+	h.resize(n * n)
+	sd.resize(n * n)
+	var cell := size_m / n
+	for j in n:
+		for i in n:
+			var x := (i + 0.5) * cell - size_m * 0.5
+			var z := (j + 0.5) * cell - size_m * 0.5
+			h[j * n + i] = hfn.call(x, z)
+			sd[j * n + i] = sed_fn.call(x, z)
+	var mat := PackedByteArray()
+	mat.resize(n * n)
+	mat.fill(1)
+	var zeros := PackedFloat32Array()
+	zeros.resize(n * n)
+	return {"n": n, "size_m": size_m, "height": h, "flow": zeros, "water_level": h.duplicate(), "sediment": sd, "material": mat}
+
+func run_relief(t) -> void:
+	var n := 128
+	var size := 128.0 * 3.5
+	var flat: Dictionary = CporeTerrain.surface_maps(_relief_input(n, size, func(_x, _z): return 50.0, func(_x, _z): return 0.0))
+	t.check(flat.has("relief"), "surface_maps returns relief")
+	var rf: PackedByteArray = flat.get("relief", PackedByteArray())
+	t.eq(rf.size(), n * n * 4, "relief has n*n*4 bytes")
+	var worst := 0
+	for k in n * n:
+		worst = maxi(worst, absi(rf[k * 4] - 128))
+		worst = maxi(worst, absi(rf[k * 4 + 1] - 128))
+	t.check(worst <= 1, "R and G read 128 +- 1 on a flat map (worst %d)" % worst)
+	t.eq(rf[3], 255, "A (sun visibility) is 255 until step 9")
+	t.eq(rf[2], 0, "B (sediment) is 0 with no sediment")
+	# A V gully along z (floor at x = 0) next to a ridge along z (crest at x = 120).
+	var vh := func(x, _z): return 0.5 * absf(x) + 15.0 * maxf(0.0, 1.0 - absf(x - 120.0) / 15.0)
+	var m: Dictionary = CporeTerrain.surface_maps(_relief_input(n, size, vh, func(_x, _z): return 0.0))
+	var r: PackedByteArray = m.relief
+	var cell := size / n
+	var at := func(x: float, ch: int) -> int:
+		var i := clampi(floori((x + size * 0.5) / cell), 0, n - 1)
+		return r[(n / 2 * n + i) * 4 + ch]
+	t.check(at.call(0.0, 0) > 128 + 8, "the gully floor reads concave (R %d > 128)" % at.call(0.0, 0))
+	t.check(at.call(0.0, 1) > 128, "the gully floor reads concave at broad scale (G %d)" % at.call(0.0, 1))
+	t.check(at.call(120.0, 0) < 128 - 8, "the ridge crest reads convex (R %d < 128)" % at.call(120.0, 0))
+	# Sediment: B is monotone.
+	var sm: Dictionary = CporeTerrain.surface_maps(_relief_input(n, size, func(_x, _z): return 50.0, func(x, _z): return maxf(0.0, (x + size * 0.5) * 0.5)))
+	var sr: PackedByteArray = sm.relief
+	var mono := true
+	var prev := -1
+	for i in n:
+		var b: int = sr[(n / 2 * n + i) * 4 + 2]
+		if b < prev:
+			mono = false
+		prev = b
+	t.check(mono and prev > 150, "B is monotone in sediment and reaches %d" % prev)
+	var bad: Dictionary = CporeTerrain.surface_maps({"n": n, "size_m": size, "height": PackedFloat32Array()})
+	t.check(bad.is_empty(), "surface_maps refuses input without sediment")

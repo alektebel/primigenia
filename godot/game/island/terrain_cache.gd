@@ -33,7 +33,7 @@ static func _valid(entry: Dictionary, params: Dictionary) -> bool:
 	for key in ["height", "flow", "sediment", "water_level"]:
 		if typeof(entry.get(key)) != TYPE_PACKED_FLOAT32_ARRAY:
 			return false
-	for key in ["material", "surface"]:
+	for key in ["material", "surface", "relief"]:
 		if typeof(entry.get(key)) != TYPE_PACKED_BYTE_ARRAY:
 			return false
 	if typeof(entry.get("chunk_bounds")) != TYPE_PACKED_FLOAT32_ARRAY or typeof(entry.get("caves")) != TYPE_ARRAY:
@@ -44,7 +44,8 @@ static func _valid(entry: Dictionary, params: Dictionary) -> bool:
 		return false
 	var n: int = entry.n
 	if n < 8 or entry.height.size() != n * n or entry.flow.size() != n * n or entry.sediment.size() != n * n \
-			or entry.water_level.size() != n * n or entry.material.size() != n * n or entry.surface.size() != n * n * 4:
+			or entry.water_level.size() != n * n or entry.material.size() != n * n or entry.surface.size() != n * n * 4 \
+			or entry.relief.size() != n * n * 4:
 		return false
 	if entry.get("version") != CporeTerrain.version() or entry.get("render_prep") != TerrainData.RENDER_PREP_VERSION:
 		return false
