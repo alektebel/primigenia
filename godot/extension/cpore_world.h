@@ -1,6 +1,8 @@
 #pragma once
 #include <godot_cpp/classes/ref_counted.hpp>
 #include <godot_cpp/core/class_db.hpp>
+#include <godot_cpp/variant/packed_byte_array.hpp>
+#include <godot_cpp/variant/packed_float32_array.hpp>
 #include <memory>
 #include <vector>
 extern "C" {
@@ -11,6 +13,12 @@ class CporeWorld : public godot::RefCounted {
     GDCLASS(CporeWorld, godot::RefCounted)
     std::unique_ptr<CpStageWorld> world;
     std::vector<char> observe_buffer;
+    // The island heights the C world reads (PLAN-heights H1/H4): held here so the buffers outlive the world's pointer.
+    godot::PackedFloat32Array field_height, field_level;
+    CpStageField field;
+    bool field_attached = false;
+    godot::Dictionary field_meta;
+    godot::String error_text;
 
 protected:
     static void _bind_methods();
@@ -33,4 +41,21 @@ public:
     double height(double x, double z) const;
     double ground(double x, double z) const;
     bool can_walk(double x, double z, double nx, double nz, double radius) const;
+    // Snapshot / restore, debug ops and the motion parameter table (PLAN-devtools step 5).
+    godot::PackedByteArray snapshot() const;
+    int restore(const godot::PackedByteArray &bytes);
+    static godot::String snapshot_error(int code);
+    int debug(const godot::Dictionary &op);
+    static godot::String debug_error(int code);
+    static godot::Array params();
+    double param(int index) const;
+    godot::String layout() const;
+    // The island field (PLAN-heights H4).
+    int set_field(const godot::Dictionary &entry);
+    void clear_field();
+    bool has_field() const { return field_attached; }
+    godot::Dictionary field_info() const;
+    double water_depth(double x, double z) const;
+    double bound() const;
+    godot::String last_error() const { return error_text; }
 };

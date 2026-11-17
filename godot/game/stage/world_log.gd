@@ -1,7 +1,12 @@
 extends RefCounted
-# CPORE_WORLD_LOG 2: the text replay format of apps/world_cli.c (--replay).
-# parse(text) -> {ok, setup, inputs: Array[Dictionary], error}
-# write(setup, inputs) -> String  (setup in the CporeWorld.reset schema, fully resolved)
+# CPORE_WORLD_LOG 2 / 3: the text replay format of apps/world_cli.c (--replay).
+# parse(text) -> {ok, version, setup, inputs: Array[Dictionary], debug: Array[{tick, op}], snapshot: String,
+#                 field: Dictionary ({seed, n, size_m, hash} or empty), error}
+# write(setup, inputs, opts = {}) -> String  (setup in the CporeWorld.reset schema, fully resolved).
+# v3 (PLAN-devtools step 4) is written only when opts has debug ops, a snapshot file name or a field;
+# otherwise the output is the v2 text, byte for byte as before.
+#   opts.debug: Array[{tick, op: {op,id,a,x,z,v}}]   opts.snapshot: file name relative to the log
+#   opts.field: {seed, n, size_m, hash}
 
 const MAGIC := "CPORE_WORLD_LOG"
 const VERSION := 2
@@ -29,9 +34,17 @@ static func _profile_tokens(p: Dictionary) -> String:
 	return "%d %d %d %d %d %s %s %s %d" % [p.mouth, p.charge, p.spit, p.tail, p.guard,
 		num(p.hp), num(p.stamina), num(p.speed), p.radius_cm]
 
-static func write(setup: Dictionary, inputs: Array) -> String:
+static func write(setup: Dictionary, inputs: Array, opts: Dictionary = {}) -> String:
 	var lines := PackedStringArray()
-	lines.append("%s %d" % [MAGIC, VERSION])
+	var debug: Array = opts.get("debug", [])
+	var snapshot: String = opts.get("snapshot", "")
+	var field: Dictionary = opts.get("field", {})
+	var v3 := not debug.is_empty() or snapshot != "" or not field.is_empty()
+	lines.append("%s %d" % [MAGIC, 3 if v3 else VERSION])
+	if snapshot != "":
+		lines.append("snapshot " + snapshot)
+	if not field.is_empty():
+		lines.append("field %d %d %s %s" % [field.seed, field.n, num(field.size_m), field.hash])
 	var nest: Vector2 = setup.nest
 	var water: Vector3 = setup.water
 	lines.append("%d %d %d %s %s %s %s %s %s %d %d" % [setup.seed, setup.terrain_seed, setup.terrain,
@@ -47,6 +60,12 @@ static func write(setup: Dictionary, inputs: Array) -> String:
 	for i in inputs:
 		lines.append("%d %d %d %d %d %d %d %s %s" % [i.get("verb", 0), i.get("target", 0), i.get("move", 0),
 			i.get("dir", 0), int(i.get("sprint", 0)), i.get("hx", 0), i.get("hz", 0), num(i.get("x", 0.0)), num(i.get("z", 0.0))])
+	if v3:
+		lines.append(str(debug.size()))
+		for e in debug:
+			var o: Dictionary = e.op
+			lines.append("%d %d %d %d %s %s %s" % [e.tick, o.get("op", 0), o.get("id", 0), o.get("a", 0),
+				num(o.get("x", 0.0)), num(o.get("z", 0.0)), num(o.get("v", 0.0))])
 	return "\n".join(lines) + "\n"
 
 static func parse(text: String) -> Dictionary:
@@ -55,9 +74,21 @@ static func parse(text: String) -> Dictionary:
 		tok.append(part)
 	var cur := [0]  # lambdas capture ints by value; a one-element array is shared
 	var fail := func(msg: String): return {"ok": false, "error": msg}
-	if tok.size() < 3 or tok[0] != MAGIC or tok[1].to_int() != VERSION:
+	if tok.size() < 3 or tok[0] != MAGIC or (tok[1].to_int() != 2 and tok[1].to_int() != 3):
 		return fail.call("bad header")
+	var version: int = tok[1].to_int()
 	cur[0] = 2
+	var snapshot := ""
+	var field := {}
+	while version == 3 and cur[0] + 1 < tok.size() and (tok[cur[0]] == "snapshot" or tok[cur[0]] == "field"):
+		if tok[cur[0]] == "snapshot":
+			snapshot = tok[cur[0] + 1]
+			cur[0] += 2
+		else:
+			if cur[0] + 4 >= tok.size():
+				return fail.call("bad field line")
+			field = {"seed": tok[cur[0] + 1].to_int(), "n": tok[cur[0] + 2].to_int(), "size_m": tok[cur[0] + 3].to_float(), "hash": tok[cur[0] + 4]}
+			cur[0] += 5
 	var take := func() -> String:
 		var s: String = tok[cur[0]] if cur[0] < tok.size() else "0"
 		cur[0] += 1
@@ -107,7 +138,7 @@ static func parse(text: String) -> Dictionary:
 		obstacles.append(o)
 	setup.obstacles = obstacles
 	var ticks: int = take.call().to_int()
-	if cur[0] > tok.size() or ticks < 0 or tok.size() - cur[0] != ticks * 9:
+	if cur[0] > tok.size() or ticks < 0 or tok.size() - cur[0] < ticks * 9 or (version == 2 and tok.size() - cur[0] != ticks * 9):
 		return fail.call("bad length")
 	var inputs := []
 	for i in ticks:
@@ -122,4 +153,20 @@ static func parse(text: String) -> Dictionary:
 		a.x = take.call().to_float()
 		a.z = take.call().to_float()
 		inputs.append(a)
-	return {"ok": true, "setup": setup, "inputs": inputs, "error": ""}
+	var debug := []
+	if version == 3:
+		var nd: int = take.call().to_int()
+		if nd < 0 or tok.size() - cur[0] != nd * 7:
+			return fail.call("bad debug section")
+		for i in nd:
+			var e := {"tick": take.call().to_int()}
+			var o := {}
+			o.op = take.call().to_int()
+			o.id = take.call().to_int()
+			o.a = take.call().to_int()
+			o.x = take.call().to_float()
+			o.z = take.call().to_float()
+			o.v = take.call().to_float()
+			e.op = o
+			debug.append(e)
+	return {"ok": true, "version": version, "setup": setup, "inputs": inputs, "debug": debug, "snapshot": snapshot, "field": field, "error": ""}

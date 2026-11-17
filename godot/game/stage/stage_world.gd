@@ -7,6 +7,7 @@ const WorldLog := preload("res://game/stage/world_log.gd")
 
 signal ticked(state: Dictionary)
 signal combat_events(events: Array)
+signal debug_applied(op: Dictionary, rc: int)   # a queued debug op ran (rc 0 = accepted; see CporeWorld.debug_error)
 
 const DT := 0.1
 
@@ -20,7 +21,15 @@ var ground_fn: Callable = Callable()        # (x, z) -> float
 var after_tick: Callable = Callable()       # (state) -> void, e.g. clear a finished destination
 var log_inputs: Array = []
 var hashes: PackedStringArray = PackedStringArray()
+var log_debug: Array = []                   # accepted debug ops: [{tick, op}] (tick = world tick they applied at)
+var log_start_tick := 0                     # world tick of log_inputs[0]
+var start_snapshot := PackedByteArray()     # set when the session started from restore_from()
+var snapshot_ring: Array = []               # [{tick, bytes}] every RING_EVERY ticks, RING_KEEP kept (feedback replays)
 var _setup: Dictionary = {}
+var _debug_queue: Array = []
+
+const RING_EVERY := 100
+const RING_KEEP := 8
 
 func reset(setup: Dictionary) -> int:
 	var rc := world.reset(setup)
@@ -33,9 +42,50 @@ func reset(setup: Dictionary) -> int:
 	acc = 0.0
 	log_inputs = []
 	hashes = PackedStringArray()
+	_reset_log(false)
 	return 0
 
+func _reset_log(from_snapshot: bool) -> void:
+	log_debug = []
+	_debug_queue = []
+	snapshot_ring = []
+	log_start_tick = int(cur.tick)
+	if not from_snapshot:
+		start_snapshot = PackedByteArray()
+
+# Restores a snapshot (CporeWorld.snapshot()) and starts a fresh log from it. Returns CporeWorld's restore code.
+func restore_from(bytes: PackedByteArray) -> int:
+	var rc := world.restore(bytes)
+	if rc != 0:
+		return rc
+	_setup = world.get_setup()
+	cur = world.state()
+	prev = cur
+	pprev = cur
+	acc = 0.0
+	log_inputs = []
+	hashes = PackedStringArray()
+	_reset_log(true)
+	start_snapshot = bytes
+	return 0
+
+# Debug ops (teleport, spawn, tuning...) are queued and applied at the start of the next tick, before that
+# tick's input, so the order is the same here, in world_cli and in cp_stage_replay_ex.
+func queue_debug(op: Dictionary) -> void:
+	_debug_queue.append(op)
+
+func _apply_debug() -> void:
+	var queue := _debug_queue
+	_debug_queue = []
+	for op in queue:
+		var rc: int = world.debug(op)
+		if rc == 0:
+			log_debug.append({"tick": int(cur.tick), "op": op.duplicate()})
+		debug_applied.emit(op, rc)
+
 func step_once() -> void:
+	if not _debug_queue.is_empty():
+		_apply_debug()
 	var input := {}
 	if input_provider.is_valid():
 		input = input_provider.call()
@@ -48,6 +98,10 @@ func step_once() -> void:
 	cur = world.state()
 	log_inputs.append(input.duplicate())
 	hashes.append(h)
+	if int(cur.tick) % RING_EVERY == 0:
+		snapshot_ring.append({"tick": int(cur.tick), "bytes": world.snapshot()})
+		if snapshot_ring.size() > RING_KEEP:
+			snapshot_ring.pop_front()
 	ticked.emit(cur)
 	if not cur.combat.events.is_empty():
 		combat_events.emit(cur.combat.events)
@@ -126,5 +180,15 @@ func sample(id: int, a: float = -1.0) -> Dictionary:
 	return {"pos": Vector3(pos2.x, y, pos2.y), "yaw": wrapf(yaw, -PI, PI), "speed": vel2.length(), "speed_c": c.speed,
 		"vel": Vector3(vel2.x, 0.0, vel2.y)}
 
-func export_log() -> String:
-	return WorldLog.write(_setup, log_inputs)
+# The v3 text log of the session. `snapshot_name` is written as the `snapshot` line when the session started
+# from a snapshot (the caller saves start_snapshot next to the log under that name).
+func export_log(snapshot_name: String = "replay_start.cpstate") -> String:
+	var opts := {}
+	if not log_debug.is_empty():
+		opts.debug = log_debug
+	if start_snapshot.size() > 0:
+		opts.snapshot = snapshot_name
+	if world.has_field() and int(_setup.get("terrain", 0)) == 2:
+		var info: Dictionary = world.field_info()
+		opts.field = {"seed": info.seed, "n": info.n, "size_m": info.size_m, "hash": info.hash}
+	return WorldLog.write(_setup, log_inputs, opts)
