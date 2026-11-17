@@ -1,10 +1,10 @@
 extends RefCounted
-# CPORE_WORLD_LOG 1: the text replay format of apps/world_cli.c (--replay).
+# CPORE_WORLD_LOG 2: the text replay format of apps/world_cli.c (--replay).
 # parse(text) -> {ok, setup, inputs: Array[Dictionary], error}
 # write(setup, inputs) -> String  (setup in the CporeWorld.reset schema, fully resolved)
 
 const MAGIC := "CPORE_WORLD_LOG"
-const VERSION := 1
+const VERSION := 2
 
 static func f32(v: float) -> float:
 	return PackedFloat32Array([v])[0]

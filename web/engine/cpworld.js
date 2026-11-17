@@ -1,9 +1,9 @@
-/* World ABI v1. JS owns input encoding and snapshots, never simulation. */
+/* World ABI v2. JS owns input encoding and snapshots, never simulation. */
 import {Combat, defaultProfile} from './cpcombat.js';
 export const WORLD_VERB=Object.freeze({CONTINUE:0,WAIT:1,GO:2,HEADING:3,APPROACH:4,ATTACK:5,FLEE:6,GO_NEST:7,GUARD:8,DODGE:9});
 export class World {
  static async create(options={}){const {default:factory}=await import('../../build/wasm/cpore_world.mjs');return new World(await factory(options));}
- constructor(module){if(module._cw_version()!==1)throw Error('world WASM ABI mismatch');this.module=module;this.combat=new Combat(module);}
+ constructor(module){if(module._cw_version()!==2)throw Error('world WASM ABI mismatch');this.module=module;this.combat=new Combat(module);}
  reset(setup){
   const s=structuredClone(setup),m=this.module,f=Math.fround;
   s.seed??=42;s.terrainSeed??=7;s.terrain??=0;s.nest??={x:0,z:0};s.flatHeight??=2;s.water??={x:0,z:0,r:0};s.obstacles??=[];
@@ -32,7 +32,7 @@ export class World {
  orders(){const m=this.module,a=new Int32Array(m.HEAPU8.buffer,m._cw_orders(),16);return [0,1].map(i=>Object.fromEntries(['tick','id','verb','move','target','dir','hx','hy'].map((k,j)=>[k,a[i*8+j]])))}
  observe(){const pointer=this.module._cw_observe();if(!pointer)throw RangeError('world observation capacity');return JSON.parse(this.module.UTF8ToString(pointer))}
  exportSetup(){const s=this.setup,f=Math.fround,p=p=>[p.mouth,p.charge,p.spit,p.tail,p.guard,f(p.hp),f(p.stamina),f(p.speed),p.radiusCm??0].join(' ');
- const lines=['CPORE_WORLD_LOG 1',[s.seed,s.terrainSeed,s.terrain,f(s.nest.x),f(s.nest.z),f(s.flatHeight),f(s.water.x),f(s.water.z),f(s.water.r),s.wild.length,s.obstacles.length].join(' '),p(s.profile)];
+ const lines=['CPORE_WORLD_LOG 2',[s.seed,s.terrainSeed,s.terrain,f(s.nest.x),f(s.nest.z),f(s.flatHeight),f(s.water.x),f(s.water.z),f(s.water.r),s.wild.length,s.obstacles.length].join(' '),p(s.profile)];
  s.wild.forEach(c=>lines.push([f(c.x),f(c.z),f(c.home?.x??c.x),f(c.home?.z??c.z),c.species??3,c.bot??-1,p({...defaultProfile(),...c.profile})].join(' ')));
  s.obstacles.forEach(o=>lines.push([f(o.x),f(o.z),f(o.r),o.type??0].join(' ')));return lines.join('\n')+'\n';}
 }

@@ -73,7 +73,7 @@ func run(t) -> void:
 	var ce: Dictionary = sw.cur.entities[0]
 	t.check(absf(a.pos.x - pe.x) < 1e-9 and absf(a.pos.z - pe.z) < 1e-9, "alpha 0 is the previous tick")
 	t.check(absf(b.pos.x - ce.x) < 1e-9 and absf(b.pos.z - ce.z) < 1e-9, "alpha 1 is the current tick")
-	t.check(absf(m.pos.x - (pe.x + ce.x) / 2.0) < 1e-9 and absf(m.pos.z - (pe.z + ce.z) / 2.0) < 1e-9, "alpha .5 is the midpoint")
+	t.check(Vector2(m.pos.x - (pe.x + ce.x) / 2.0, m.pos.z - (pe.z + ce.z) / 2.0).length() < 0.15 * Vector2(ce.x - pe.x, ce.z - pe.z).length() + 1e-9, "alpha .5 is near the midpoint (Hermite, C1)")
 	t.eq(m.pos.y, 5.0, "height comes from ground_fn")
 	# The accumulator: 0.25 s steps two ticks and keeps 0.05 s.
 	var before: int = sw.hashes.size()

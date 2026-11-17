@@ -269,8 +269,77 @@ static void numeric_boundaries(void) {
     for(unsigned i=0;i<sizeof bad_input/sizeof *bad_input;i++)assert(cp_stage_order(&w,&bad_input[i])<0);
     assert(cp_stage_order(NULL,&bad_input[0])<0 && cp_stage_order(&w,NULL)<0);
 }
+/* PLAN-feel motion law: jog and sprint response, acceleration caps, curved turns, pivot only near rest. */
+static CpStageInput heading_to(float x,float z,int sprint){
+    CpStageInput a={0};
+    float s=fmaxf(fabsf(x),fabsf(z));
+    a.verb=CP_STAGE_HEADING;a.hx=(int16_t)lroundf(x/s*32767);a.hz=(int16_t)lroundf(z/s*32767);a.sprint=sprint;
+    return a;
+}
+static void motion_law(void) {
+    const CpStageMotion *m=&CP_STAGE_MOTION;
+    for(int sprint=0;sprint<2;sprint++) {
+        reset();setup.n=0;setup.player.radius_cm=340;assert(cp_stage_reset(&w,&setup)==0);
+        float jog=setup.player.speed*m->jog_k,top=sprint?jog*m->sprint_k:jog,old=0,last_dyaw_limit=.7f;
+        int t90=-1;
+        CpStageInput a=heading_to(w.player.fx,w.player.fz,sprint);
+        for(int i=1;i<=40;i++) {
+            cp_stage_step(&w,&a);
+            assert(w.player.speed-old<=m->accel*.1f+1e-3f);
+            if(t90<0&&w.player.speed>=.9f*top)t90=i;
+            old=w.player.speed;
+        }
+        assert(fabsf(w.player.speed-top)<.01f);
+        assert(t90>0&&t90<=(sprint?6:4));
+        assert(!w.player.pivot&&last_dyaw_limit>0);
+    }
+    /* A reversal at full jog is a skid, not a turret spin: the pivot flag stays off while v > pivot_v. */
+    reset();setup.n=0;setup.player.radius_cm=340;assert(cp_stage_reset(&w,&setup)==0);
+    float jog=setup.player.speed*m->jog_k;
+    CpStageInput a=heading_to(w.player.fx,w.player.fz,0);
+    for(int i=0;i<30;i++)cp_stage_step(&w,&a);
+    float fx0=w.player.fx,fz0=w.player.fz;
+    a=heading_to(-fx0,-fz0,0);
+    for(int i=0;i<30;i++) {
+        float pfx=w.player.fx,pfz=w.player.fz,v=w.player.speed;
+        cp_stage_step(&w,&a);
+        if(v>m->pivot_k*jog)assert(!w.player.pivot);
+        float dyaw=acosf(fminf(1,fmaxf(-1,pfx*w.player.fx+pfz*w.player.fz)));
+        assert(dyaw<=.7f+1e-4f);
+    }
+    assert(w.player.fx*fx0+w.player.fz*fz0<-.95f);
+    /* A pivot from near rest reverses within ceil(pi/(rate*.1))+1 ticks. */
+    reset();setup.n=0;setup.player.radius_cm=340;assert(cp_stage_reset(&w,&setup)==0);
+    a=heading_to(w.player.fx,w.player.fz,0);
+    for(int i=0;i<2;i++)cp_stage_step(&w,&a);
+    a=(CpStageInput){.verb=CP_STAGE_WAIT};
+    for(int i=0;i<20&&w.player.speed>0;i++)cp_stage_step(&w,&a);
+    assert(w.player.speed==0);
+    fx0=w.player.fx;fz0=w.player.fz;
+    float r=cp_combat_body_radius(&w.player.profile),turn0=fminf(m->turn_max,fmaxf(m->turn_min,m->turn_k*sqrtf(9.81f/r)));
+    float pr=fminf(m->pivot_max,fmaxf(3,m->pivot_mul*turn0));
+    int ticks=(int)ceilf(3.14159265f/(pr*.1f))+1,ok=0;
+    a=heading_to(-fx0,-fz0,0);
+    for(int i=0;i<ticks;i++)cp_stage_step(&w,&a);
+    ok=w.player.fx*fx0+w.player.fz*fz0<-.98f;
+    assert(ok);
+    /* Radius of a held heading 90 degrees off, at jog, radius_cm 340: at least 1.4 m. */
+    reset();setup.n=0;setup.player.radius_cm=340;assert(cp_stage_reset(&w,&setup)==0);
+    a=heading_to(w.player.fx,w.player.fz,0);
+    for(int i=0;i<30;i++)cp_stage_step(&w,&a);
+    float rate=0,sp=0;
+    for(int i=0;i<30;i++) {
+        float fx=w.player.fx,fz=w.player.fz;
+        a=heading_to(-fz,fx,0);
+        cp_stage_step(&w,&a);
+        if(i>=20){rate+=acosf(fminf(1,fmaxf(-1,fx*w.player.fx+fz*w.player.fz)))/.1f/10;sp+=w.player.speed/10;}
+    }
+    assert(sp/rate>=1.4f);
+    printf("world motion law: jog %.2f sprint %.2f, circle radius %.2f m\n",jog,jog*m->sprint_k,sp/rate);
+}
 int main(void) {
     validation();
+    motion_law();
     terrain_and_hash();
     encounters();
     multiple_creatures();

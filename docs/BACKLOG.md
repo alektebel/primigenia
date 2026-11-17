@@ -6,12 +6,20 @@ evidence and the owner's approval, as in G25.
 
 ## 0. Engine migration to Godot 4, desktop (G76)
 
-| # | Step | State |
-|---|---|---|
-| M0 | Godot project + GDExtension over the C core (terrain, world, combat); the island from the generator with on-disk cache; terrain materials, sea, sky and fog; grass; your creature from a genome (spine + legs + IK); Spore-style chase camera; click/WASD driving the C world | in progress |
-| M1 | Creature builder parity with the studio (all parts, materials, growth), locomotion from morphology (G73) | next |
-| M2 | The creator/studio rebuilt in Godot (Build/Paint/Test) | after M1 |
-| M3 | Stage parity: encounters, HUD, audio, G75 interaction, tests; then the MVP items below continue in Godot | after M2 |
+Process (owner rule, 2026-11-16): Opus or Fable write a plan (`docs/godot/PLAN-*.md`), Sonnet implements it, Claude verifies tests and evidence before merging. Each module documents its interface in `docs/godot/<MODULE>.md` and its evidence in `docs/evidence/godot/<module>/`.
+
+| # | Step | Docs | State |
+|---|---|---|---|
+| M0 | Foundation: GDExtension over the C core, island with on-disk cache, terrain LOD, sky, sea, grass, chase camera, controls | PLAN-m0.md, M0.md | done (merged) |
+| M1a | Creature builder port (body, 46 parts, materials, growth, IK rig) | PLAN-creature.md, CREATURE.md | done (merged) |
+| M1b | Locomotion from morphology (G73) | PLAN-locomotion.md, LOCOMOTION.md | done (merged) |
+| M2 | Studio (creator) in Godot | STUDIO.md | done (merged); parity with the original creator in progress (STUDIO-PARITY.md) |
+| M3 | HUD, G75 card and radial, audio | UI.md | done (merged) |
+| W | Wiring into one playable game, main menu, play test | WIRE.md | done (merged, e9710aa) |
+| F1 | Feel: faster creatures, curved turns, pivots, camera (owner playtest) | PLAN-feel.md | in progress |
+| F2 | Mountain rock material: biplanar mapping, detail, relief, quality tiers | PLAN-rock.md | in progress; baked sun shadows need owner approval |
+| F3 | Procedural action animations (G77): combat, social, intimidate, observe | PLAN-actions.md | planned, implementer queued |
+| F4 | C world uses the generated island heights (the island is visual only beyond ±195 m) | item 6 below | next |
 
 ## 1. First MVP: a creature-stage slice you can play and enjoy
 

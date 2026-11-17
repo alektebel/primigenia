@@ -48,7 +48,7 @@ func _try_loco() -> void:
 	controller = ctl_script.new(morph_script.analyse(desc), _ground)
 	controller.footfall.connect(func(leg: int, pos: Vector3) -> void: footfall.emit(leg, pos))
 
-# s: StageWorld.sample() -> {pos, yaw, speed, vel}
+# s: StageWorld.sample() -> {pos, yaw, speed, vel}, optionally intent (the world yaw the player asks for)
 func update(dt: float, s: Dictionary) -> void:
 	host.position = s.pos
 	host.basis = Basis(Vector3.UP, s.yaw)
@@ -60,6 +60,7 @@ func update(dt: float, s: Dictionary) -> void:
 		if not _started:
 			controller.reset(s.pos, s.yaw)
 			_started = true
+		controller.set_intent(s.get("intent", null))
 		controller.step(dt, s.pos, s.yaw, s.vel)
 		adapter.loco_apply(body, controller.pose, desc)
 		return
