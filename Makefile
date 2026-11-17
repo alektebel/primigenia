@@ -318,6 +318,14 @@ godot-wire-evidence: godot
 	LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 1200 xvfb-run -a $(GODOT) --rendering-driver opengl3 --max-fps 15 --resolution 1280x720 --path godot \
 	  --script res://game/tests/wire_evidence.gd -- $(CURDIR)/docs/evidence/godot/wire
 
+# CAMERA-ZOOM s4 evidence: the z = 0..1 strip and frame times on the real island (software GL).
+.PHONY: godot-camera-evidence
+godot-camera-evidence: godot
+	@mkdir -p docs/evidence/godot/camera
+	LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 900 xvfb-run -a -s "-screen 0 1280x720x24" \
+	  $(GODOT) --rendering-driver opengl3 --resolution 1280x720 --path godot \
+	  --script res://game/tests/camera_evidence.gd -- $(CURDIR)/docs/evidence/godot/camera
+
 # PLAN-feel: how the creature feels to steer (C motion rule + the real Godot pipeline), writes docs/evidence/godot/feel/measurements.json.
 .PHONY: godot-feel-test godot-feel-evidence
 godot-feel-test: godot

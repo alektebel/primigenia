@@ -77,3 +77,33 @@ Numbers come from `make godot-feel-test` (`godot/game/tests/feel_test.gd`), whic
 - Only the Merodeador was measured in the full pipeline (the loco test covers every plan for the pivot and the spine).
 - Per-creature speeds (S9) and the tank steering feel are untested by a human.
 - The web stage runs on the same C world and gets the faster rule (`make stage-test` was not run).
+
+## Camera zoom, orbit and strategic map (CAMERA-ZOOM s1, s2, s4)
+
+`chase_camera.gd` keeps the F1 follow (velocity lead, yaw 100 deg/s and 6 rad/s2 caps, no swing towards the camera, tap and
+pivot guards); the zoom is a new parameter `z` on top.
+
+| z | distance | pitch |
+|---|---|---|
+| 0 | 1.8h | 8 deg |
+| 0.15 (default, was 6h / 0.24 rad) | 4h | 15 deg |
+| 0.40 | 12h | 35 deg |
+| 0.70 | 150 m | 55 deg |
+| 1.0 | 0.85 x island size (about 3060 m) | 70 deg, fov -8 |
+
+- Distance is interpolated in log space, pitch linearly; both strictly increase. z eases (tau 0.2 s, cap 1.4 z/s, a full
+  zoom takes about 0.7 s); a wheel notch is 0.04 z, a flick (several notches within 0.25 s) up to 3.5x that. From z 0.75 the
+  look-at point drifts to the island centre; near plane grows with distance (0.25 to 40 m) to keep the depth buffer precise.
+- Orbit: left drag past 6 px (`pointer_gesture.gd`), right or middle drag. The orbit holds while the creature stands still;
+  after 1 s of moving the yaw and pitch ease back behind with the F1 caps (also from the front, unlike plain follow).
+  Setting `camera/free_orbit` disables the return. Home or middle click resets (default zoom, behind). A left press is
+  a click at release (picks or walks), a hold of 0.2 s keeps steering, a drag orbits. Q/E rotation was skipped: they dodge.
+- Strategic icons (`strategic_icons.gd`, CanvasLayer): alpha 0 up to z 0.7, solid by 0.88. Nest, creatures, you (arrow),
+  `?` den until you come within 60 m. Hook for the sites registry (D2): set `island.pois_fn` before `build()` to a Callable
+  returning `{id, kind: nest|den|site|shard, pos: Vector2(x, z), discovered, label}`; `discovered: false` draws a `?`.
+  Clicking a creature icon sends `creature_clicked`; double-click zooms back to the chase band.
+- Far zoom budget: above z 0.6 grass and sun shadows are off, above 0.85 creature models are hidden; terrain LOD is already
+  distance based (about 3 km picks the coarsest LOD). Ground rays march with a growing step for the click at the map.
+- Software GL, 1280x720, llvmpipe (`make godot-camera-evidence`, `docs/evidence/godot/camera/frame_times.json`):
+  z 0: 762 ms, 0.25: 606, 0.5: 400, 0.75: 223, 1.0: 124 ms per frame. Far zoom is the cheapest view; real GPU rates are
+  not measured. Camera CPU at z 1 is under 1 ms (checked in test_camera).

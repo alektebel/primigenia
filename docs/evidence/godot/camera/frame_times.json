@@ -1,0 +1,32 @@
+{
+  "z0.00": {
+    "camera_distance_m": 7.0,
+    "frame_ms": 761.6,
+    "icons": 0,
+    "triangles": 236992
+  },
+  "z0.25": {
+    "camera_distance_m": 24.3,
+    "frame_ms": 606.0,
+    "icons": 0,
+    "triangles": 236992
+  },
+  "z0.50": {
+    "camera_distance_m": 69.1,
+    "frame_ms": 400.1,
+    "icons": 0,
+    "triangles": 223744
+  },
+  "z0.75": {
+    "camera_distance_m": 247.9,
+    "frame_ms": 223.0,
+    "icons": 4,
+    "triangles": 205824
+  },
+  "z1.00": {
+    "camera_distance_m": 3060.0,
+    "frame_ms": 123.7,
+    "icons": 4,
+    "triangles": 22528
+  }
+}

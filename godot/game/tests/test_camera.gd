@@ -218,6 +218,15 @@ func _zoom_curve(t) -> void:
 		if rr.position.y < hills.call(rr.position.x, rr.position.z) + 0.65 - 1e-6:
 			under += 1
 	t.eq(under, 0, "the camera is never below the terrain (200 random points and zooms)")
+	# frame time at z = 1: the camera's own CPU cost (ground probes included) stays well inside a 60 fps frame
+	var cb = ChaseCamera.new(h, 0.0, hills)
+	cb.strategic_distance = 3000.0
+	cb.set_zoom(1.0, true)
+	var t0 := Time.get_ticks_usec()
+	for i in 300:
+		cb.update({"x": 20.0, "z": 30.0, "yaw": 0.0, "speed": 3.0, "vx": 0.0, "vz": 3.0}, null, false, 1.0 / 60.0)
+	var per := (Time.get_ticks_usec() - t0) / 300.0 / 1000.0
+	t.check(per < 1.0, "camera update at z 1 costs %.3f ms (< 1 ms)" % per)
 	# the strategic view looks at the island centre, not at the creature
 	var cs = ChaseCamera.new(h, 0.0, flat)
 	cs.map_center = Vector2(10.0, -20.0)
