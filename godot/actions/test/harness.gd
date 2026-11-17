@@ -72,12 +72,20 @@ func ctx() -> Dictionary:
 ## One rendered frame of dt seconds. The scripted C world ticks every 0.1 s.
 func frame(dt: float) -> void:
 	acc += dt
+	var fresh: Dictionary = {}
 	while acc >= 0.1 - 1e-9:
 		acc -= 0.1
 		sf.step()
 		sig = feed.read(sf.prev, sf.cur, 0.0)
+		fresh = sig
 	var alpha := acc / 0.1
 	sig = feed.read(sf.prev, sf.cur, alpha)
+	# the feed delivers marks and events once, with the first read of a tick: keep them for this frame
+	if not fresh.is_empty():
+		for id in sig:
+			if fresh.has(id):
+				sig[id].events = fresh[id].events
+				sig[id].marks = fresh[id].marks
 	sim_t += dt
 	ctl.step(dt, pos, yaw, vel)
 	if layer_on:

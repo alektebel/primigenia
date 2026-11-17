@@ -13,6 +13,15 @@ var creatures := ["Merodeador", "Zancuda", "Babosa"]
 var cell := Vector2i(288, 216)
 const SAMPLES := [["w", 0.0], ["w", 0.5], ["w", 0.85], ["a", 0.0], ["a", 0.5], ["r", 0.0], ["r", 0.5], ["s", 1.0]]
 const SEG_COLOR := {"w": Color("#e8a735"), "a": Color("#d8432f"), "r": Color("#8a8f98"), "s": Color("#4d8f5a")}
+const Fx := preload("res://actions/action_fx.gd")
+## Round 2: six frames at chosen action times (ticks) for the actions whose motion lives in a few ticks. [tau...]
+const SETS := {
+	"bite": [2.0, 3.0, 3.5, 4.3, 5.2, 7.5],
+	"roar": [0.6, 1.9, 3.4, 5.0, 8.5, 12.5],
+	"stagger": [0.12, 0.45, 1.1, 2.2, 4.5, 7.5],
+	"charge": [6.0, 10.5, 12.0, 13.6, 15.4, 19.5],
+}
+const DASH_SPEED := 10.0       # C: charge reach 5 m over 5 active ticks
 const MOVES := {"bite": 0, "charge": 1, "guard": 2, "spit": 3, "tail_strike": 4, "dodge": 5}
 
 func _initialize() -> void:
@@ -69,7 +78,7 @@ func _run() -> void:
 		tgt.material_override = tm
 		tgt.position = Vector3(0, 0.9, h.dist)
 		prev.world_root.add_child(tgt)
-		rigs[name] = {"prev": prev, "h": h, "label": label, "tgt": tgt}
+		rigs[name] = {"prev": prev, "h": h, "label": label, "tgt": tgt, "dist0": h.dist}
 	for id in action_ids:
 		if not raw.has(id):
 			printerr("unknown action ", id)
@@ -80,9 +89,10 @@ func _run() -> void:
 			var res := await _strip_row(r, id, raw[id])
 			cells.append_array(res.cells)
 			measurements["%s/%s" % [id, name]] = res.meas
-		var img := Image.create(cell.x * SAMPLES.size(), cell.y * creatures.size(), false, Image.FORMAT_RGB8)
+		var ncol: int = SETS[id].size() if SETS.has(id) else SAMPLES.size()
+		var img := Image.create(cell.x * ncol, cell.y * creatures.size(), false, Image.FORMAT_RGB8)
 		for i in cells.size():
-			img.blit_rect(cells[i], Rect2i(Vector2i.ZERO, cell), Vector2i((i % SAMPLES.size()) * cell.x, (i / SAMPLES.size()) * cell.y))
+			img.blit_rect(cells[i], Rect2i(Vector2i.ZERO, cell), Vector2i((i % ncol) * cell.x, (i / ncol) * cell.y))
 		var path := _abs(out_dir).path_join("strip_%s.png" % id)
 		img.save_png(path)
 		print("wrote ", path)
@@ -106,17 +116,29 @@ func _frame_cam(r: Dictionary, id := "") -> void:
 
 func _strip_row(r: Dictionary, id: String, raw_act: Dictionary) -> Dictionary:
 	var h = r.h
+	h.dist = 6.4 if id == "charge" else float(r.dist0)      # a run-up long enough to show the dash
+	h.sf.pos[1] = Vector2(0, h.dist)
+	r.tgt.position.z = h.dist
 	var tk: Dictionary = raw_act.ticks
 	var w: float = tk.w; var a: float = tk.a; var rr: float = tk.r
 	var settle: float = float(raw_act.get("settle", 0.2)) / 0.1
 	_frame_cam(r, id)
 	h.sf.dead[0] = false
 	h.sf.in_fight = raw_act.driver.kind != "cosmetic"
+	h.events.clear()
 	h.layer.clear()
 	h.run(0.8)
 	var times := []
-	for s in SAMPLES:
-		times.append(Clock.seg_time(s[0], s[1], w, a, rr, settle) if s[0] != "s" else w + a + rr + settle * 0.85)
+	var samples: Array = []
+	if SETS.has(id):
+		for tt in SETS[id]:
+			times.append(tt)
+			var loc := Clock.locate(tt, w, a, rr, settle)
+			samples.append([loc.seg, loc.u])
+	else:
+		samples = SAMPLES
+		for s in SAMPLES:
+			times.append(Clock.seg_time(s[0], s[1], w, a, rr, settle) if s[0] != "s" else w + a + rr + settle * 0.85)
 	var cells := []
 	var meas := {"max_bone_speed": 0.0, "max_slide_mm": 0.0, "min_k": 1.0, "max_joint_share": 0.0}
 	var soles0: PackedVector3Array = h.soles()
@@ -127,15 +149,51 @@ func _strip_row(r: Dictionary, id: String, raw_act: Dictionary) -> Dictionary:
 	elif MOVES.has(id):
 		h.sf.begin(0, MOVES[id])
 	elif id == "stagger":
+		h.sf.event(1, 1, 0, 1, 18.0)       # the wild creature hits (a charge)
 		h.sf.interrupt(0, 6)
 	elif id == "death":
 		h.sf.die(0)
 	var idx := 0
 	var guard := 0
+	var hit_sent := false
+	var hit_t := -1.0
+	var stopped := false
+	var tgt: MeshInstance3D = r.tgt
+	var tgt_rest: Vector3 = tgt.position
+	var mouth_z: float = h.map.mouth_point(h.map.rest_global).z
+	var fx_nodes: Array = []
+	var fx_t0 := -1.0
+	var rings_seen := 0
 	var timeout := (w + a + rr + settle) * 0.1 + 1.5
 	var t0: float = h.sim_t
 	while idx < times.size() and h.sim_t - t0 < timeout:
+		var fgt: Dictionary = h.sf.fighters[0]
+		if id == "bite" and not hit_sent and fgt.phase == 1 and fgt.ptick == fgt.plen - 1:
+			h.sf.event(1, 0, 1, 0, 9.0)
+			hit_sent = true
+			hit_t = h.sim_t + 0.05
+		if id == "charge" and fgt.phase == 2 and fgt.move == 1 and not stopped:
+			h.pos.z += DASH_SPEED / 60.0
+			h.sf.pos[0] = Vector2(0, h.pos.z)
+			h.vel = Vector3(0, 0, DASH_SPEED)
+			if h.pos.z + mouth_z >= h.dist - 0.6 - 0.1:
+				stopped = true
+				h.vel = Vector3.ZERO
+				h.sf.event(1, 0, 1, 1, 18.0)
+				hit_t = h.sim_t + 0.05
+		elif id == "charge" and (stopped or fgt.phase != 2):
+			h.vel = h.vel.lerp(Vector3.ZERO, 0.2) if not stopped else Vector3.ZERO
 		h.frame(1.0 / 60.0)
+		_target_fx(tgt, tgt_rest, id, h.sim_t - hit_t if hit_t >= 0.0 else -1.0)
+		if id == "roar":
+			for ev in h.events:
+				if ev[1] == "cry" and rings_seen == 0:
+					rings_seen = 1
+					fx_t0 = ev[0]
+					fx_nodes = Fx.roar_ring(r.prev.world_root, h.pos, 1.6 * h.map.height + 0.8, Color(1.0, 0.86, 0.6), true)
+		if fx_t0 >= 0.0:
+			for k in fx_nodes.size():
+				Fx.ring_pose(fx_nodes[k], clampf((h.sim_t - fx_t0 - 0.12 * k) / 0.55, 0.0, 1.0), k)
 		var tau := -1.0
 		for i in h.layer.inst:
 			if i.id == id and not i.fading:
@@ -151,8 +209,8 @@ func _strip_row(r: Dictionary, id: String, raw_act: Dictionary) -> Dictionary:
 			for q in sl.size():
 				meas.max_slide_mm = maxf(meas.max_slide_mm, sl[q].distance_to(soles0[q]) * 1000.0)
 		while idx < times.size() and tau >= times[idx] - 1e-6:
-			r.label.text = "%s  %s:%.2f  tau %.1f" % [id, SAMPLES[idx][0], SAMPLES[idx][1], tau]
-			var s: Array = SAMPLES[idx]
+			r.label.text = "%s  %s:%.2f  tau %.1f" % [id, samples[idx][0], samples[idx][1], tau]
+			var s: Array = samples[idx]
 			r.label.add_theme_color_override("font_color", SEG_COLOR[s[0]])
 			var img: Image = await r.prev.capture(self, 2)
 			img.convert(Image.FORMAT_RGB8)
@@ -161,12 +219,35 @@ func _strip_row(r: Dictionary, id: String, raw_act: Dictionary) -> Dictionary:
 					img.set_pixel(x, y, SEG_COLOR[s[0]])
 			cells.append(img)
 			idx += 1
-	while cells.size() < SAMPLES.size():
+	while cells.size() < samples.size():
 		var blank := Image.create(cell.x, cell.y, false, Image.FORMAT_RGB8)
 		blank.fill(Color.BLACK)
 		cells.append(blank)
 	h.sf.dead[0] = false
 	h.sf.in_fight = false
+	for n in fx_nodes:
+		n.queue_free()
+	h.pos = Vector3.ZERO
+	h.vel = Vector3.ZERO
+	h.sf.pos[0] = Vector2.ZERO
+	tgt.position = tgt_rest
+	tgt.rotation = Vector3.ZERO
+	tgt.scale = Vector3.ONE
 	h.sf.step()
 	h.run(0.5)
 	return {"cells": cells, "meas": meas}
+
+## Stand-in for the target's own action layer in the strips: the capsule recoils, is pulled and shaken, squashes.
+func _target_fx(tgt: MeshInstance3D, rest: Vector3, id: String, t: float) -> void:
+	if t < 0.0:
+		return
+	if id == "charge":
+		var d := 0.55 * (1.0 - exp(-9.0 * t)) * (1.0 - 0.3 * smoothstep(0.4, 1.2, t))
+		tgt.position = rest + Vector3(0, 0, d)
+		tgt.rotation = Vector3(0.5 * exp(-2.5 * t) * cos(5.0 * t), 0, 0.12 * exp(-2.0 * t) * sin(9.0 * t))
+		var sq := 1.0 - 0.18 * exp(-8.0 * t)
+		tgt.scale = Vector3(1.0 / sqrt(sq), sq, 1.0 / sqrt(sq))
+	elif id == "bite":
+		var env := smoothstep(0.0, 0.06, t) * (1.0 - smoothstep(0.18, 0.3, t))
+		tgt.position = rest + Vector3(0.05 * sin(TAU * 11.0 * t) * env, 0, -0.3 * env)
+		tgt.rotation = Vector3(-0.1 * env, 0, 0.06 * sin(TAU * 11.0 * t + 1.0) * env)

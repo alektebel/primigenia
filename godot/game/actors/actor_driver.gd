@@ -75,6 +75,9 @@ func _try_actions() -> void:
 	layer.action_event.connect(_on_action_event)
 
 func _on_action_event(ev: String, data: Dictionary) -> void:
+	if ev == "cry" and data.get("id", "") == "roar" and layer != null and host.is_inside_tree() and map != null:
+		_fx_script.roar_ring(host.get_parent(), host.global_position, 1.6 * map.height + 0.8)
+		return
 	if ev == "spit_release" and layer != null and host.is_inside_tree():
 		var from: Vector3 = layer._mouth_world
 		var tgt: Dictionary = layer._ctx.get("target", {})

@@ -105,3 +105,46 @@ recoil), tail strike (top view), death.
 * Death is a posed collapse, the corpse does not conform to slopes.
 * Only the four real creatures are tested; the capsule test bodies and the clips (`clip_*.mp4`) were not produced.
 * Everything was judged under software GL and 60 fps headless; the feel in motion on a real GPU is for the owner.
+
+## Round 2 (C1-anim2): hit reaction, roar, bite grip, charge run-up
+
+Owner feedback from the evidence strips. Timings stay tied to the C phases (no C timing touched); everything below is
+GDScript and data (`godot/actions/`).
+
+* **Hit reaction.** `react("hit")` is stronger and scaled by damage: recoil away along the hit direction, head snap back,
+  a 2-3 frame squash (spring dip of `root.lift`) and side/roll wobble; the `hit` one-shot adds a keyed squash and head
+  snap. The `stagger` action was rewritten (recoil to -1.0 of the lunge range, rock back, head thrown up then dropping, a
+  brief stumble from the free legs), and its instance amplitude follows the damage of the HIT that caused it (`amp`,
+  0.6 to 1.6).
+* **Roar.** The active phase no longer reaches at the target: head up and back (`head.pitch` held at 0.6), reach pulled
+  back, a slight rear (`root.pitch` +, `root.lunge` -), jaw held wide, chest inflated, display raised. A pulse
+  (`action_fx.roar_ring`: two expanding ground rings, cosmetic) is spawned by the `cry` event in `actor_driver.gd`.
+* **Bite grip.** On a connecting bite (`hit` flag, set from C's HIT event) the jaw stays shut and the head stays on the
+  target through the active tick and the first half of the recovery, the head tugs (9 Hz pitch and yaw), the body pulls
+  back a little, then the jaw opens on release. The bitten creature is pulled toward the biter and shaken for 0.3 s
+  (`_pull` in the layer, visual only: C owns positions).
+* **Charge.** Run-up: crouch (wind-up), explosive stretch at the start of the active phase (`root.lunge` +0.5,
+  `root.pitch` -0.22, head low at -0.85, tail streaming back), legs at the gallop the loco gives the C displacement
+  (1 m per tick, which is what the strip harness feeds the body), then on C's HIT a new `strike` one-shot squashes and
+  rebounds the attacker, the stretch is cancelled, and the target gets the stronger hit reaction (charge factor 1.5).
+* **Harness fix.** `harness.gd` dropped the marks and events of a tick (the feed delivers them once, with the first read);
+  existing tests ran without them. They now reach the layer, so the hit and bite tests exercise the real path.
+* **Tests** (`_t_round2`, 19 new checks): recoil, squash and head snap values, damage scaling, roar (no forward reach, head
+  held up, jaw held, inflated, ring visible), bite grip against a miss (jaw, head reach, tug), the victim's pull and its
+  release, charge stretch and the strike squash. Counts: actions 341, play 197, devtools 714, M0 533.
+* **Evidence.** `strip_bite.png`, `strip_stagger.png`, `strip_roar.png`, `strip_charge.png` are 6 frames at fixed action
+  times (labels show `tau`), three bodies. The strip target is a capsule that stands in for the other creature's layer
+  (it recoils, squashes, is pulled by the bite). Looked at on Merodeador, Zancuda and Babosa under software GL.
+
+What still looks weak:
+
+* Zancuda's bite grip: the long neck tucks and wobbles into a folded S during the tug rather than holding on, and its
+  mouth does not reach the capsule at the strip's distance. The heron bite was never a bite on a surface.
+* The roar rings are plain thin tori; dust or a distortion would read better. Merodeador's head held up at the end of the
+  roar drops quickly in the recovery.
+* Stagger on Merodeador rears more than the owner may want (head snap amplitude is one number for every body).
+* The victim pull for the bite and the charge stagger of the target are only exercised in tests and with the capsule
+  stand-in; a two-creature fight on screen was not captured. The `measurements.json` table above was not regenerated for
+  these four actions (the bone-speed gate of 25 rad/s is still asserted by the all-actions test).
+* The charge dash in the strip is 10 m/s fed by the harness, not the C world; in the game the same displacement arrives
+  from the C positions.
