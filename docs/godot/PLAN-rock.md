@@ -481,3 +481,9 @@ against `before/`.
   function signatures there; add new functions in `rock*.gdshaderinc`.
 * **Scope creep.** Trees, boulders and cave meshes are not part of this plan. Rock props on scree would help, but they are
   separate work.
+
+---
+
+## Implementation notes
+
+Done as planned except for the deviations listed in `docs/godot/ROCK.md` (modes numbering, sign test, additive bedding wobble, snow gate with macro normal, crossfaded fan tiles, `sun_visibility` as its own function, no `normal_tex`). Hardware numbers are open items for the owner.
