@@ -219,13 +219,16 @@ static int block_reason(const CpStageWorld *w,float x,float z,float nx,float nz,
  * snapshot, not hashed) and is filled lazily, one cell the first time the search expands it. A signature of its
  * inputs decides when it is thrown away. */
 #if defined(__EMSCRIPTEN__)
+/* the web build has no FIELD terrain: the planner is compiled out and costs no memory */
 #define NAV_DIM 1
+#define NAV_EXPAND 8
+#define NAV_HEAP 16
 #else
 #define NAV_DIM 1024
+#define NAV_EXPAND 120000   /* node expansions per search; the largest seen on the island is ~23k */
+#define NAV_HEAP (1<<21)
 #endif
 #define NAV_CELLS ((size_t)NAV_DIM*NAV_DIM)
-#define NAV_EXPAND 120000
-#define NAV_HEAP (1<<21)
 static uint8_t nav_mask[NAV_CELLS];
 static int32_t nav_g[NAV_CELLS];
 static uint32_t nav_stamp[NAV_CELLS];
