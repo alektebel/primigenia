@@ -51,8 +51,12 @@ func setup(island_node: Node3D, name_text: String) -> void:
 	ui.mode_changed.connect(_on_mode)
 	ui.ability_pressed.connect(_on_ability)
 	ui.guard_pressed.connect(func() -> void: _send({"verb": V_GUARD}, "guard"))
-	ui.dodge_pressed.connect(func(d: int) -> void: _send({"verb": V_DODGE, "dir": DODGE_LEFT if d < 0 else DODGE_RIGHT}, "dodge"))
-	ui.selection_changed.connect(func(id) -> void: selected_id = -1 if id == null else int(id))
+	ui.dodge_pressed.connect(func(d: int) -> void:
+		island.dodge_hint = {"dir": d, "until": Time.get_ticks_msec() + 700}      # which way the dodge animation leans
+		_send({"verb": V_DODGE, "dir": DODGE_LEFT if d < 0 else DODGE_RIGHT}, "dodge"))
+	ui.selection_changed.connect(func(id) -> void:
+		selected_id = -1 if id == null else int(id)
+		island.selected_id = selected_id)
 	ui.pause_toggled.connect(_on_pause)
 	Game.creature_clicked.connect(_on_clicked)
 	Game.world_ticked.connect(_on_tick)
@@ -67,6 +71,7 @@ func _send(input: Dictionary, label: String) -> void:
 	attack_orders.append({"tick": stage.cur.tick, "order": label})
 
 func _on_mode(mode: StringName) -> void:
+	island.ui_mode = mode
 	if selected_id <= 0:
 		return
 	if mode == Modes.ATTACK:
@@ -76,6 +81,10 @@ func _on_mode(mode: StringName) -> void:
 
 func _on_ability(index: int, ability: Dictionary) -> void:
 	if ui.mode != Modes.ATTACK:
+		# no C verb yet (WIRE.md): the creature still performs it, cosmetically, in rhythm with the P4 beat
+		var layer = island.hosts[0].layer() if island.hosts.has(0) else null
+		if layer != null:
+			layer.trigger(str(ability.get("id", "")))
 		ui.show_message("%s is not in this build yet." % String(ability.get("name", "")), "info")
 		return
 	if selected_id <= 0 and stage.cur.active >= 0:

@@ -1,0 +1,88 @@
+{
+ "schema": "cpore.action/1",
+ "id": "fidget_shake",
+ "class": "idle",
+ "driver": {
+  "kind": "idle"
+ },
+ "ticks": {
+  "w": 0,
+  "a": 6,
+  "r": 0
+ },
+ "settle": 0.3,
+ "priority": 10,
+ "fade": {
+  "in": 0.05,
+  "out": 0.12,
+  "cancel": 0.08
+ },
+ "legs": "free",
+ "side": 1,
+ "tracks": [
+  {
+   "ch": "root.roll",
+   "osc": {
+    "clock": "time",
+    "hz": 8.0,
+    "amp": 0.08,
+    "shape": "sin"
+   },
+   "env": [
+    [
+     "a",
+     0,
+     1
+    ],
+    [
+     "a",
+     1,
+     0
+    ]
+   ]
+  },
+  {
+   "ch": "head.yaw",
+   "osc": {
+    "clock": "time",
+    "hz": 8.0,
+    "amp": 0.25,
+    "shape": "sin"
+   },
+   "env": [
+    [
+     "a",
+     0,
+     1
+    ],
+    [
+     "a",
+     1,
+     0
+    ]
+   ]
+  },
+  {
+   "ch": "tail.yaw",
+   "osc": {
+    "clock": "time",
+    "hz": 8.0,
+    "amp": 0.5,
+    "shape": "sin"
+   },
+   "env": [
+    [
+     "a",
+     0,
+     1
+    ],
+    [
+     "a",
+     1,
+     0
+    ]
+   ]
+  }
+ ],
+ "weight": 1.0
+}

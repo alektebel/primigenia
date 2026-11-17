@@ -1,0 +1,81 @@
+{
+ "schema": "cpore.action/1",
+ "id": "fidget_stretch",
+ "class": "idle",
+ "driver": {
+  "kind": "idle"
+ },
+ "ticks": {
+  "w": 0,
+  "a": 20,
+  "r": 0
+ },
+ "settle": 0.3,
+ "priority": 10,
+ "fade": {
+  "in": 0.05,
+  "out": 0.12,
+  "cancel": 0.08
+ },
+ "legs": "plant",
+ "side": 1,
+ "tracks": [
+  {
+   "ch": "root.lunge",
+   "keys": [
+    [
+     "a",
+     0,
+     0
+    ],
+    [
+     "a",
+     0.25,
+     -0.6,
+     "out"
+    ],
+    [
+     "a",
+     0.5,
+     0.5,
+     "inout"
+    ],
+    [
+     "a",
+     1,
+     0,
+     "inout"
+    ]
+   ]
+  },
+  {
+   "ch": "root.pitch",
+   "keys": [
+    [
+     "a",
+     0,
+     0
+    ],
+    [
+     "a",
+     0.25,
+     0.15,
+     "out"
+    ],
+    [
+     "a",
+     0.5,
+     -0.1,
+     "inout"
+    ],
+    [
+     "a",
+     1,
+     0,
+     "inout"
+    ]
+   ]
+  }
+ ],
+ "weight": 0.5
+}

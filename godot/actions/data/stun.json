@@ -1,0 +1,115 @@
+{
+ "schema": "cpore.action/1",
+ "id": "stun",
+ "class": "reaction",
+ "driver": {
+  "kind": "c_state",
+  "state": "stun"
+ },
+ "ticks": {
+  "w": 0,
+  "a": 6,
+  "r": 0
+ },
+ "settle": 0.3,
+ "priority": 80,
+ "fade": {
+  "in": 0.05,
+  "out": 0.12,
+  "cancel": 0.08
+ },
+ "legs": "free",
+ "side": 1,
+ "tracks": [
+  {
+   "ch": "head.pitch",
+   "osc": {
+    "clock": "time",
+    "hz": 1.5,
+    "amp": 0.2,
+    "shape": "sin"
+   },
+   "keys": [
+    [
+     "a",
+     0,
+     0
+    ],
+    [
+     "a",
+     1,
+     0
+    ]
+   ]
+  },
+  {
+   "ch": "head.yaw",
+   "osc": {
+    "clock": "time",
+    "hz": 1.5,
+    "amp": 0.2,
+    "shape": "sin"
+   },
+   "keys": [
+    [
+     "a",
+     0,
+     0
+    ],
+    [
+     "a",
+     1,
+     0
+    ]
+   ]
+  },
+  {
+   "ch": "lids",
+   "keys": [
+    [
+     "a",
+     0,
+     0.5
+    ],
+    [
+     "a",
+     1,
+     0.5
+    ]
+   ]
+  },
+  {
+   "ch": "lids",
+   "osc": {
+    "clock": "time",
+    "hz": 6.0,
+    "amp": 0.4,
+    "shape": "sin"
+   }
+  },
+  {
+   "ch": "root.side",
+   "osc": {
+    "clock": "time",
+    "hz": 0.8,
+    "amp": 0.1,
+    "shape": "sin"
+   }
+  },
+  {
+   "ch": "root.lift",
+   "keys": [
+    [
+     "a",
+     0,
+     -0.08
+    ],
+    [
+     "a",
+     1,
+     -0.08
+    ]
+   ]
+  }
+ ]
+}

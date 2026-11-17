@@ -1,0 +1,63 @@
+{
+ "schema": "cpore.action/1",
+ "id": "attend",
+ "class": "observe",
+ "driver": {
+  "kind": "stance"
+ },
+ "ticks": {
+  "w": 0,
+  "a": 1,
+  "r": 0
+ },
+ "settle": 0.0,
+ "priority": 30,
+ "fade": {
+  "in": 0.3,
+  "out": 0.3,
+  "cancel": 0.15
+ },
+ "legs": "plant",
+ "side": 1,
+ "tracks": [
+  {
+   "ch": "head.aim",
+   "keys": [
+    [
+     "hold",
+     0,
+     0.8
+    ]
+   ],
+   "goal": "target_head"
+  },
+  {
+   "ch": "head.pitch",
+   "osc": {
+    "clock": "beat",
+    "hz": 1.0,
+    "amp": -0.12,
+    "shape": "pulse"
+   }
+  },
+  {
+   "ch": "tail.yaw",
+   "osc": {
+    "clock": "beat",
+    "hz": 1.0,
+    "amp": 0.2,
+    "shape": "pulse"
+   }
+  },
+  {
+   "ch": "display",
+   "osc": {
+    "clock": "beat",
+    "hz": 1.0,
+    "amp": 0.3,
+    "shape": "pulse"
+   }
+  }
+ ],
+ "hold": true
+}
