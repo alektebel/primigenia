@@ -1,0 +1,700 @@
+[
+  {
+    "id": "humans",
+    "name": "Humans",
+    "era": "Present through the Terrestrial Heyday; Earth unification and the first centuries of Mars colonisation. Civil war with Mars is 'roughly a thousand years from now'.",
+    "origin": "Baseline Homo sapiens on Earth. Ancestors of every later human and posthuman lineage in the chronicle.",
+    "body_plan": "Ordinary terrestrial primates: bipedal, four-limbed, calcium bones, paired eyes and ears. No special vacuum, water or high-gravity organs until later engineering.",
+    "environment": "Earth, then a pre-terraformed Mars reached by one-way fusion landers after centuries of microbial atmosphere and cometary seas.",
+    "temperament_culture": "Politically unified late, after crowding (twelve billion industrialised people) forces the Mars push. Earth enjoys a Terrestrial Heyday by dumping dirty industry on Mars, then fights to keep that privilege.",
+    "fate": "Earth and Mars nearly wipe each other out (Phobos shattered; a polar strike kills a third of Earth; more than eight billion dead). Survivors found the Star People. The species as such is later declared extinct by the Qu, though its genes survive in the subjects.",
+    "sources": [
+      "C. M. Kosemen, All Tomorrows (2006 PDF, as Nemo Ramjet), chapters To Mars, The Martian Americans, Civil War, Man Extinguished",
+      "https://en.wikipedia.org/wiki/All_Tomorrows"
+    ],
+    "confidence": "book",
+    "game_hook": "Creature-stage egg: one island fossil is a small, unmistakably human skull far older than anything else; the journal line pays off in Space at the archive and the makers' world (ARC-PLAN §5.3b)."
+  },
+  {
+    "id": "martians",
+    "name": "Martians",
+    "era": "Several hundred years after Mars is opened; the break with Earth and the interplanetary war sit 'roughly a thousand years from now'.",
+    "origin": "Earth colonists on terraformed Mars. Lighter gravity plus some genetic engineering splits them from Terrestrials; the book also calls their states the Martian Americans.",
+    "body_plan": "Spindly, lithe frames that would look surreal on Earth. Still recognisably human; the split is enough that the two planets are treated as almost different species.",
+    "environment": "Terraformed Mars: breathable air from tailored microbes, seas from diverted comet ice, biosynthetic grass and modified Earth flora and fauna. Phobos is later shattered in the war.",
+    "temperament_culture": "A culture of rebellion against ossified Earth — songs, films, papers repeating that Mars is the future. They ban non-essential trade and travel; Earth loses up to three-fourths of yearly income.",
+    "fate": "After a slow machine-duel war that costs more than eight billion souls, Mars and Earth re-forge one solar system. Both stocks are replaced, within a few generations, by the engineered Star People.",
+    "sources": [
+      "C. M. Kosemen, All Tomorrows (2006 PDF), chapters The Martian Americans, Civil War, Star People",
+      "https://en.wikipedia.org/wiki/All_Tomorrows",
+      "https://it.wikipedia.org/wiki/All_Tomorrows"
+    ],
+    "confidence": "book",
+    "game_hook": "Band/Realm cousin: a low-gravity colonist branch whose civil-war memory forces a later engineered unification (the same pressure the trait ledger uses when two biomes of your lineage meet)."
+  },
+  {
+    "id": "star-people",
+    "name": "Star People",
+    "era": "Founded in the generations after the Earth–Mars war. They terraform Venus, the asteroids and the moons of Jupiter and Saturn, then fill humanity's spiral arm. The book also calls them Star Men.",
+    "origin": "A new human subspecies engineered so Earth and Mars stock can share one biology, with larger brains and talents, adapted to most terraformed worlds. Born under a choice of sterilisation versus parenting the new race.",
+    "body_plan": "The 2006 text does not give a detailed anatomy beyond a unified, more capable human form fit for many terraformed climates. Fan depictions of grey skin and huge eyes are not in the prose — fan-unverified.",
+    "environment": "Sol's terraformed worlds, then garden colonies across a spiral arm, linked by electromagnetic traffic. Generation ships fail; colonisation uses fast automated ships that terraform and then 'construct' people from stored genes.",
+    "temperament_culture": "A single state at first. After the Mechanical Oedipi (first-generation colonists who bond to their maker machines and die of identity crisis, losing nearly half of founding attempts), survivors live in a Summer of Man: labour is optional, wealth is enormous, alien animals are common but no other intelligence is known.",
+    "fate": "They stockpile star-killing weapons after finding Panderavis, then lose every world to the Qu in less than a thousand years. Sentience of this form is extinguished; genes survive in the Qu's subjects. A few flee into hollow asteroids and become the Spacers.",
+    "sources": [
+      "C. M. Kosemen, All Tomorrows (2006 PDF), chapters Star People, Colonization and the Mechanical Oedipi, The Summer of Man, Qu, Spacers",
+      "https://en.wikipedia.org/wiki/All_Tomorrows"
+    ],
+    "confidence": "book",
+    "game_hook": "Space Seed: your capsules repeat their pattern — automated terraformers that grow colonists; their abandoned garden worlds are ruins with tech to recover (ARC-PLAN §5.3b)."
+  },
+  {
+    "id": "panderavis-pandora",
+    "name": "Panderavis pandora",
+    "era": "Alive in deep prehistory (a derived therizinosaur lineage extinct on Earth millions of years before the book). Found as a fossil during the Summer of Man.",
+    "origin": "Not human. A terrestrial therizinosaur taken from Earth and adapted to an alien world by an older intelligence — later understood as a Qu-scale intervention.",
+    "body_plan": "Bird-like, colossal, with rake-like claws for digging furrows. Ordinary terrestrial vertebrate: calcium bones, four limbs. On that world every native large land animal has three limbs, copper bones and hydrostatic muscles, so the fossil is out of place.",
+    "environment": "A newly colonised alien planet whose indigenous fauna is three-limbed. Opportunistic local animals follow it for scraps in the reconstruction drawing.",
+    "temperament_culture": "None recorded. Its discovery splits Star People into a religious revival (proof of creation) and a strategic camp (proof of older starfarers).",
+    "fate": "Long extinct when found. The warning is ignored in effect: humanity rearms and still falls. Saurosapients later treat it as the lesson that greater forces may return.",
+    "sources": [
+      "C. M. Kosemen, All Tomorrows (2006 PDF), chapter An Early Warning; later recalled in Saurosapients",
+      "https://en.wikipedia.org/wiki/All_Tomorrows"
+    ],
+    "confidence": "book",
+    "game_hook": "Creature-stage fossil egg / Space archive clue: a non-native bone on the island that does not match the local tree of life, pointing at the makers before the Qu event."
+  },
+  {
+    "id": "qu",
+    "name": "Qu",
+    "era": "Almost a billion years old at first contact. They take every human world in less than a thousand years and reign forty million years, then leave on a never-ending migration. Much later the united galaxies re-encounter and subdue them.",
+    "origin": "An alien species, not of human stock. Galactic nomads who remade themselves until they mastered genetic and nanotechnological manipulation. Fan wikis also call the Redux form Quhanim — that name is not in the 2006 book (fan-unverified).",
+    "body_plan": "The 2006 prose never describes Qu anatomy; the caption shows 'Qu triumphant' with a nanotechnological drone and a genetically modified tracing creature. Their life cycle includes an aquatic larval stage. Self-altered for a billion years, so any one body is a tool. Four-winged insectoid reconstructions follow the illustration, not the text — treat detailed anatomy as fan-unverified.",
+    "environment": "Epoch-spanning migrations from spiral arm to spiral arm. On human worlds they raise kilometre-high pyramids and recarve surfaces. They travel with nanotech drones and tracing organisms.",
+    "temperament_culture": "A self-imposed religion: remake the universe as they see fit. The dogma began as a safeguard against their own power; blind obedience made them punish 'infidels' who also terraform. Humans are raw material, not peers.",
+    "fate": "They depart after forty million years because the quest cannot stop. Organic posthumans inherit the wreckage. In the far New Empire they are found again and subdued. The in-universe author still treats them as the type of being lost in a false grand narrative.",
+    "sources": [
+      "C. M. Kosemen, All Tomorrows (2006 PDF), chapters Qu, Man Extinguished, Swimmers, Earth Rediscovered, All Tomorrows",
+      "https://en.wikipedia.org/wiki/All_Tomorrows",
+      "https://all-tomorrows.fandom.com/wiki/Qu (illustration-based anatomy and the name Quhanim: fan-unverified)"
+    ],
+    "confidence": "book",
+    "game_hook": "Space Qu event: a visit that rewrites genomes; you cannot fight it head-on early — hide, scatter or endure; when it leaves, reshaped colonies are new species of your lineage to befriend or absorb (Shape, run by someone else)."
+  },
+  {
+    "id": "worms",
+    "name": "Worms",
+    "era": "Made during the Qu occupation; live on after the Qu leave, still bestial, until the sun cools and Snake People arise.",
+    "origin": "Star People of a scorching colony, genetically distorted by the Qu into underground animals.",
+    "body_plan": "Pale, overgrown worms, barely longer than an ancestor's arm. Tiny feeble digging hands and feet; pinprick eyes; no teeth, no external ears; most of the nervous system gone. The last vertebrate on that world.",
+    "environment": "A world whose sun the Qu made monstrous. Dead cities bake on the surface. Forests of crystalline 'plants' recycle oxygen; animals live underground.",
+    "temperament_culture": "No culture. They dig, eat food or each other, and mate. One shred of human genes remains.",
+    "fate": "They last. When the sun cools, descendants flood the surface as serpentine grazers, swimmers and predators; tree-climbing forms become the Snake People.",
+    "sources": [
+      "C. M. Kosemen, All Tomorrows (2006 PDF), chapters Worms, Snake People",
+      "https://en.wikipedia.org/wiki/All_Tomorrows"
+    ],
+    "confidence": "book",
+    "game_hook": "Space civilisation precursor / burrower cousin: a Qu-made worm people whose later sapient form is a diplomacy-by-temperament empire in pipe-cities."
+  },
+  {
+    "id": "titans",
+    "name": "Titans",
+    "era": "Post-Qu, on the savannah of a dead colonial outpost. They regain primitive sentience, then die in an ice age within a few hundred thousand years of that recovery.",
+    "origin": "Star People transmuted by the Qu into enormous herbivores.",
+    "body_plan": "More than forty metres long. Elephantine front feet still show stubby thumbs, useless except for uprooting trees. A muscular lower-lip trunk, like an elephant's, does the handling. The hulking stance leaves room for a large brain.",
+    "environment": "Endless savannah on a long-extinguished outpost; they browse trees and later farm.",
+    "temperament_culture": "Among the smartest reduced sub-men. Lip-trunks make wood carvings and hangar-like dwellings; they start primitive agriculture; booming voices tell myths of a half-remembered past.",
+    "fate": "A catastrophic ice age wipes them out. Humanity does not restart here.",
+    "sources": [
+      "C. M. Kosemen, All Tomorrows (2006 PDF), chapter Titans"
+    ],
+    "confidence": "book",
+    "game_hook": "Band/Realm cousin: giant herders who almost cross back into people; a Giant-trait lineage that can die to climate before Industry."
+  },
+  {
+    "id": "predators",
+    "name": "Predators",
+    "era": "Post-Qu feral worlds. The most efficient described pack lives on one of mankind's first off-world colonies; their sapient descendants are the Killer Folk.",
+    "origin": "Star People devolved by the Qu into hunters of other posthumans.",
+    "body_plan": "Many kinds: huge killing teeth, taloned feet, or razor thumb-claws. The dominant colony form has paw-like hands with switchblade thumbs, gaping tooth-studded jaws on oversized heads, and large sensitive ears.",
+    "environment": "Prairies, forests and mountains of an early colony world, running down saltatorial prey.",
+    "temperament_culture": "Predatory. Hunting keeps a spark of intelligence that the prey lose.",
+    "fate": "They rebound as the Killer Folk, losing most killing gear to social display but keeping a ritual hunt.",
+    "sources": [
+      "C. M. Kosemen, All Tomorrows (2006 PDF), chapters Predators and Prey, Killer Folk"
+    ],
+    "confidence": "book",
+    "game_hook": "Band cousin: a hunter-band temperament; later a militarist Space start (Predator / raider ledger trait)."
+  },
+  {
+    "id": "saltatorial-prey",
+    "name": "Saltatorial Prey",
+    "era": "Post-Qu, same worlds as the Predators. Named on the book's species timeline; the chapter calls them herbivorous saltators.",
+    "origin": "Star People remade as herd prey for the Predators.",
+    "body_plan": "Herbivorous saltators with bird-like legs, built to flee across prairie and forest. They keep a posthuman outline but lose the spark of mind that their hunters retain. No tool-hands are described.",
+    "environment": "Open prairie and forest of the Predators' colony world.",
+    "temperament_culture": "They 'lapse into complete animosity' — the book's word for losing mind. No culture.",
+    "fate": "Remain animals. Their hunters, not they, regain peoplehood.",
+    "sources": [
+      "C. M. Kosemen, All Tomorrows (2006 PDF), chapter Predators and Prey (timeline label Saltatorial Prey)",
+      "https://it.wikipedia.org/wiki/All_Tomorrows"
+    ],
+    "confidence": "book",
+    "game_hook": "Creature-stage wild cousin / Band hunt quarry: a jumping herd that never uplifts, used as the cost of a predator lineage."
+  },
+  {
+    "id": "mantelopes",
+    "name": "Mantelopes",
+    "era": "Qu-made singers; after the Qu leave they survive as quadrupedal grazers. Dim descendants overtake the smart ones in less than a hundred thousand years.",
+    "origin": "Star People bred by the Qu as singers and living recorders. The name is the book's blend of man and antelope.",
+    "body_plan": "Human minds (slightly numbed) trapped in disabled quadrupedal grazer bodies. They can see and understand; they cannot act on the world.",
+    "environment": "An artificial, forgiving biosphere of plains. They endure only because that garden is sterile enough.",
+    "temperament_culture": "Mournful herds singing desperation and loss. Entire oral religions grow around the racial disability, as detailed as any on old Earth.",
+    "fate": "A large brain without use is selected against. Half-minded calves grow faster and graze as well; the world falls silent. Nothing is sacred in the evolutionary process.",
+    "sources": [
+      "C. M. Kosemen, All Tomorrows (2006 PDF), chapter Mantelopes"
+    ],
+    "confidence": "book",
+    "game_hook": "Band cousin: a singing herd whose sapience dies if Cognition has no hands; a warning for the knowledge system's cognitive-threshold rule."
+  },
+  {
+    "id": "swimmers",
+    "name": "Swimmers",
+    "era": "Qu occupation (many aquatic forms) and the ages after. Generalised survivors wait a long time to taste sentience again, as the Tool Breeders.",
+    "origin": "Star People transmuted because the Qu life cycle has an aquatic larval stage. Most were domesticated water-stock; a few lightly mutated generalised forms outlast the masters.",
+    "body_plan": "The survivors still look human: no artificial gills, hands visible inside front flippers, feet splayed as tail flukes, recognisable eyes in blubbery lids. They speak, but not in words and not with sentient understanding. The Qu also made eel-people, whale-behemoths, decorative squirters, and brainless wallowers as food — those go extinct with the Qu.",
+    "environment": "Oceans of an ecologically stunted world, feeding on Earth-derived fish and crustaceans.",
+    "temperament_culture": "Pre-sapient social calling only. Once the Qu leave, natural selection streamlines them against faster, armoured, poisonous prey.",
+    "fate": "They drift from sentient ancestry, then found the Tool Breeders: a civilisation that breeds living tools because fire will not burn underwater.",
+    "sources": [
+      "C. M. Kosemen, All Tomorrows (2006 PDF), chapters Swimmers, Tool Breeders",
+      "https://en.wikipedia.org/wiki/All_Tomorrows"
+    ],
+    "confidence": "book",
+    "game_hook": "Aquatic lineage in Space: ocean worlds and ice moons count as home; later an Industry path that replaces metal factories with living tools."
+  },
+  {
+    "id": "lizard-herders",
+    "name": "Lizard Herders",
+    "era": "Post-Qu garden world with no predators. They never regain sentience; reptiles take the future.",
+    "origin": "Star People whose sentience the Qu erased, brains stunted, cerebellum tweaked so heuristic learning cannot return.",
+    "body_plan": "Distantly resembling ancient Earth humans, but feral and blank-eyed. Bodies still primate; minds locked.",
+    "environment": "A tropical garden world without predators. They instinctively 'farm' large herbivorous reptiles whose ancestors were Earth pets.",
+    "temperament_culture": "No culture. Mutualism with livestock, then the livestock outcompete them.",
+    "fate": "Slip into bestial oblivion. The reptiles radiate; a featherless predatory line becomes the Saurosapients, who inherit Star People and Qu ruins.",
+    "sources": [
+      "C. M. Kosemen, All Tomorrows (2006 PDF), chapters Lizard Herders, Saurosapients"
+    ],
+    "confidence": "book",
+    "game_hook": "Band/Realm: a herding people who cannot uplift (cognition cap); their world is an uplift/ruin stage for a non-human heir."
+  },
+  {
+    "id": "temptors",
+    "name": "Temptors",
+    "era": "Post-Qu. The chapter heading is singular Temptor; the text uses Temptors. A stray comet ends them just as civilisation is within centuries.",
+    "origin": "Star People used by the Qu as sessile decoration; they endure by a 'miracle of adaptation'.",
+    "body_plan": "Females are beaked cones of flesh about two metres tall, rooted like carnivorous plants, with an elongated pit-like vagina the males enter to mate. Males are contorted bipedal monkeys, ambulatory, with no will of their own.",
+    "environment": "Mound forests of rooted females; males forage, clean and guard around them.",
+    "temperament_culture": "Female hegemony by voice and pheromone. They mate the strongest, most obedient, dumbest males for better drones, and send rare daughters away with males to root. Terribly efficient.",
+    "fate": "A comet obliterates the mound forests. One of humanity's best chances for re-emergence is swept away.",
+    "sources": [
+      "C. M. Kosemen, All Tomorrows (2006 PDF), chapter Temptor"
+    ],
+    "confidence": "book",
+    "game_hook": "Space civilisation that can die to a random impact: sessile-queen diplomacy — you talk to the mound, not the running males."
+  },
+  {
+    "id": "bone-crushers",
+    "name": "Bone Crushers",
+    "era": "A few million years after the Qu leave. Among the first to regain intelligence. Mediaeval civilisations last a few uneventful millennia. Chapter heading: Bone Crusher.",
+    "origin": "Pint-sized Qu pets bred for colourful tooth-derived beaks. Hardy breeds radiate into herbivores, enamel-beaked raptors, swamp sifters — and these scavenging ogres.",
+    "body_plan": "Three metres tall, hairy, vicious thumb claws, enormous beaks for a scavenging diet. Nightmare ogres to a reader of today.",
+    "environment": "A garden-world radiation of beak-people; they live on putrefying meat.",
+    "temperament_culture": "Primitive but real civilisation. They may stink like a grave and show affection by defecating on others; they are still grandchildren of mankind. Carrion limits population.",
+    "fate": "Dependency on corpses caps numbers; the mediaeval cultures crumble. The promise is not fulfilled.",
+    "sources": [
+      "C. M. Kosemen, All Tomorrows (2006 PDF), chapter Bone Crusher"
+    ],
+    "confidence": "book",
+    "game_hook": "Band/Realm: a scavenger civilisation with a hard food cap; a short medieval age that never reaches Industry."
+  },
+  {
+    "id": "colonials",
+    "name": "Colonials",
+    "era": "Fashioned as punishment after this world turns back two Qu waves and falls to the third. They suffer the whole forty million years of occupation, then spread as fields when the Qu leave.",
+    "origin": "Star People of the rogue world that resisted hardest. The Qu refuse them the mercy of extinction.",
+    "body_plan": "Disembodied cultures of skin and muscle on a skimpy net of the most basic nerves. Eyes and consciousness kept so they can witness. They reproduce both asexually and in more familiar ways. Living filter mats.",
+    "environment": "Waste streams of Qu cities, then, after departure, quilt-like fields of human flesh across the planet, especially shores.",
+    "temperament_culture": "Forty million years of witnessed misery. When the Qu leave they hope to die; instead they are too efficient at surviving. Hope, of a sort, returns.",
+    "fate": "Differentiated colonies compete until a sentient, hyperspecialised whole appears: the Modular People.",
+    "sources": [
+      "C. M. Kosemen, All Tomorrows (2006 PDF), chapters Colonials, Modular People",
+      "https://en.wikipedia.org/wiki/All_Tomorrows"
+    ],
+    "confidence": "book",
+    "game_hook": "Space / Industry: a living water-treatment colony (the book's own image); Qu punishment as a biofilter district you can later free into Modular People."
+  },
+  {
+    "id": "flyers",
+    "name": "Flyers",
+    "era": "Common in the Qu domain (at least a dozen worlds). After the Qu leave they radiate through the sky before Pterosapiens appear.",
+    "origin": "Star People remade as flying stock. The lineage that matters is a monkey-like species with an artificial turbine heart.",
+    "body_plan": "Most are bat- or pterosaur-like; a few float on swollen gas glands. The ancestral Flyer of the picture is ungainly, on wing membranes stretched across the last two fingers. A starfish-shaped heart in the chest funnels oxygen from lung to blood with high efficiency, so a large brain need not cost flight.",
+    "environment": "Open skies of a pristine world with many unused niches.",
+    "temperament_culture": "Not yet sapient. They explode into bomber-sized sailors and sound-racing predators. Intelligence can wait.",
+    "fate": "Sky competition later forces some lineages back to the ground. Civilisation flowers in the air as the Pterosapiens, from stork-like wading predators.",
+    "sources": [
+      "C. M. Kosemen, All Tomorrows (2006 PDF), chapters Flyers, Pterosapiens"
+    ],
+    "confidence": "book",
+    "game_hook": "Flyer / glider trait: gas-giant cities later; a creature-stage heart/lung recipe that lets brain and flight coexist."
+  },
+  {
+    "id": "hand-flappers",
+    "name": "Hand Flappers",
+    "era": "Post-Qu. They re-approach sentience, then dance into extinction.",
+    "origin": "Flying posthumans who, without boosted metabolisms or kind gravity, must give up flight to develop further.",
+    "body_plan": "Wings that once fluttered in Qu gardens shrink into flag-like hands, useless for tools. Legs readapted but splayed from a perching ancestry.",
+    "environment": "Mating territories on a former garden world.",
+    "temperament_culture": "Signalling and mating dances only. They cannot throw, build or knap stone. An almost sadistic simple flaw blocks civilisation.",
+    "fate": "They flash and dance their way to oblivion: boisterous, ecstatic, ephemeral.",
+    "sources": [
+      "C. M. Kosemen, All Tomorrows (2006 PDF), chapter Hand Flappers"
+    ],
+    "confidence": "book",
+    "game_hook": "Creature dead-end: a display-only cousin that cannot craft; a Band warning if the lineage loses grasping parts."
+  },
+  {
+    "id": "blind-folk",
+    "name": "Blind Folk",
+    "era": "Qu war through post-Qu cave ecology. They die before intelligence when continental plates close the shelters.",
+    "origin": "Star People who dug continent-sized shelters; the Qu found the caves and remade the inhabitants for perpetual dark.",
+    "body_plan": "Albino troglodytes, more often heard than seen, finding their way with banshee-like screams. Long tactile fingers, enormous whiskers, mobile ears. Where eyes should be, a patch of flawless smooth skin.",
+    "environment": "Kilometre-high shelter caves: pale giant insects from household pests, Dali-esque birds and rodents on fungal fields, crocodilian fish in underground streams, vast blind bats. Ceilings glow with bioluminescent fungi and animals. Fuel is a trickle of water and nutrients from above.",
+    "temperament_culture": "Sound-and-touch people. Adults freeze to confuse sonar predators; infants scream. No recorded civilisation.",
+    "fate": "Glacial constriction of continental plates snuffs the shelters one by one before they can crawl out.",
+    "sources": [
+      "C. M. Kosemen, All Tomorrows (2006 PDF), chapter Blind Folk"
+    ],
+    "confidence": "book",
+    "game_hook": "Burrower / cave Band cousin: echolocation recipe; a hidden-cave egg that can be sealed by geology."
+  },
+  {
+    "id": "lopsiders",
+    "name": "Lopsiders",
+    "era": "Qu-made for a 36-g world; they radiate and later regain sentience as a bunker civilisation, then engineer the Asymmetric People.",
+    "origin": "Star People transported to a planet with thirty-six times 'normal' gravity and redesigned for it.",
+    "body_plan": "Bosch/Dalí/Picasso cripples squashed between glass. Three limbs are paddle-organs for crawling; one spindly arm is a tool and antenna. Faces lose symmetry: one bulging eye stares up, the other scans ahead; jaws open vertically; ears distorted.",
+    "environment": "A high-gravity world. They domesticate indigenous pets as a first step toward civilisation. Buildings will later be squashed bunkers a few metres high over underground cities.",
+    "temperament_culture": "Monstrous to us, thriving there. They are human in virtues and evils once sapient.",
+    "fate": "Regain sentience in a few million years, then remake themselves for kinder gravity as the Asymmetric People, who exterminate them.",
+    "sources": [
+      "C. M. Kosemen, All Tomorrows (2006 PDF), chapters Lopsiders, Asymmetric People"
+    ],
+    "confidence": "book",
+    "game_hook": "Space habitability: a high-gravity (Giant) niche; Shape by adapting the body rather than the planet."
+  },
+  {
+    "id": "striders",
+    "name": "Striders",
+    "era": "Qu-made for a low-g moon. About two million years after the Qu leave, feral-poultry predators wipe them out.",
+    "origin": "Star People adapted to a Jovian moon at one-fifth Earth's gravity. Pets, pests and livestock on the same world are reduced to animals too.",
+    "body_plan": "Giacometti wraiths: arms, legs and necks stretched impossibly thin; skin flaps to dump heat; sometimes colour-change to reflect light. Over-developed and sickeningly fragile — a fall shatters bones; wind on the plains can topple them like masts.",
+    "environment": "A moon of wonders: grass almost ten metres, trees like antique skyscrapers. They dance among league-tall forests to browse.",
+    "temperament_culture": "Peaceful, delicate, not described as sapient. They survive only while the garden stays merciful.",
+    "fate": "Attenuated dinosaur-like predators, from terrestrial poultry gone feral, sweep the world. The Striders are among the first to go.",
+    "sources": [
+      "C. M. Kosemen, All Tomorrows (2006 PDF), chapter Striders"
+    ],
+    "confidence": "book",
+    "game_hook": "Low-gravity / flyer-adjacent cousin: a fragile giant for small-moon maps; dies if a new predator lineage appears."
+  },
+  {
+    "id": "parasites",
+    "name": "Parasites",
+    "era": "Qu occupation (forty million years of staged torture) and after. Survivors become partners, then the Symbiotes.",
+    "origin": "Star People of a world that turned back the first Qu wave. Simple atavism was not enough: the Qu split them into hosts and several parasitic kinds.",
+    "body_plan": "Several kinds: tortoise-sized ambulatory vampires; a common fist-sized form that lives attached; a tiny endoparasite that infests wombs like living abortions. Successful cling-ons use abdominal suckers, gripping limbs and sterile pain-soothing saliva.",
+    "environment": "The hosts' bodies, under Qu scrutiny, then the same world's wilds.",
+    "temperament_culture": "At first one-sided feeding. After the Qu leave, hosts learn to burn, drown or eat them; womb-parasites sterilise themselves out. The rest learn not to over-infest.",
+    "fate": "Vicious parasitism yields to mutualism over millennial cycles; a thinking parasite species becomes the Symbiotes.",
+    "sources": [
+      "C. M. Kosemen, All Tomorrows (2006 PDF), chapters Parasites, Symbiotes"
+    ],
+    "confidence": "book",
+    "game_hook": "Band/Realm ecology: parasite-host pairs that can be cleansed, over-infested, or turned into a two-species society (Befriender / uplift)."
+  },
+  {
+    "id": "hosts",
+    "name": "Hosts",
+    "era": "Named on the book's species timeline beside Parasites. Qu occupation through the Symbiote age.",
+    "origin": "The other half of that world's sentence: almost Australopithecine cripples, degraded for turning back the first invasion, then saddled with parasitic cousins.",
+    "body_plan": "Near-australopithecine, reduced people. Later co-evolution gives longer legs, stronger bodies, furred nesting sites rich in blood vessels — ergonomic housing for the partner.",
+    "environment": "The same planet as the Parasites; later forests where rider and mount become one political animal.",
+    "temperament_culture": "At first victims who invent cleansing. Later dumb mounts steered by tactile and olfactory signals, used as work and home bodies even after machines exist.",
+    "fate": "They remain the body; sapience sits in the Symbiote. Husbandry of hosts lasts from tradition and efficiency.",
+    "sources": [
+      "C. M. Kosemen, All Tomorrows (2006 PDF), chapters Parasites, Symbiotes (timeline label Hosts)",
+      "https://it.wikipedia.org/wiki/All_Tomorrows"
+    ],
+    "confidence": "book",
+    "game_hook": "Uplift / liberation: a cousin species that is either livestock, partner, or a people you refuse to puppet."
+  },
+  {
+    "id": "finger-fishers",
+    "name": "Finger Fishers",
+    "era": "Post-Qu radiation on an archipelago world. They are still animals; Sail People come after another spasm of adaptation.",
+    "origin": "Degenerate humans trapped on a planet of small continents and calm shallow seas, 'a magnified Aegean' with no minds left to enjoy it.",
+    "body_plan": "Pale, lanky shore-people. Elongated fingers become ambulatory fish-hooks; teeth become needles in a long thin muzzle.",
+    "environment": "Beaches, islands and estuaries of interconnected swallow seas.",
+    "temperament_culture": "Piscatorial animals, prolific, not yet people.",
+    "fate": "Island isolation later yields flyers, whale-analogues, and the Sail People, who turn fingers into ocean sails and tongues into hands.",
+    "sources": [
+      "C. M. Kosemen, All Tomorrows (2006 PDF), chapters Finger Fishers, Sail People"
+    ],
+    "confidence": "book",
+    "game_hook": "Coastal Band: a fishing people on an island-realm map; naval Realm unlock if they keep going to sea."
+  },
+  {
+    "id": "hedonists",
+    "name": "Hedonists",
+    "era": "Designed as Qu pets; they keep their island paradise after the Qu leave, until geologic upheaval raises new land and ash and the Satyriacs descend from fast-breeding survivors.",
+    "origin": "Star People designed for pleasure, left as the only animal life on a tropical island-world.",
+    "body_plan": "Still humanoid pets. They can conceive only after mating an enormous number of suitors, continually over decades — a Qu population lock that also freezes selection. Intellectual life of about a three-year-old.",
+    "environment": "Succulent fruit, bountiful trees, calm lakes of sweet bacterial manna. One island no bigger than Iceland, stable even after the Qu leave.",
+    "temperament_culture": "Browse, sleep, sex; no disease or pregnancy worries. Aloof, carefree, the most pleasurable times of all mankind. Who needed to think?",
+    "fate": "Ash and new continents spoil the garden. Most die. Fast-breeding freaks who drop the reproductive quirk colonise the new land; sentient Satyriacs are among their children.",
+    "sources": [
+      "C. M. Kosemen, All Tomorrows (2006 PDF), chapters Hedonists, Satyriacs"
+    ],
+    "confidence": "book",
+    "game_hook": "Realm/Industry pleasure world: a stable microcosm that will not adapt until the map itself changes."
+  },
+  {
+    "id": "insectophagi",
+    "name": "Insectophagi",
+    "era": "Post-Qu 'nondescript, quaint' people. Later coincidence makes them the longest-enduring of the ur-starmen, as Bug Facers and then Subjects.",
+    "origin": "Star People quietly adapted to eat colonial insects and small animals. One of hundreds of unnoticed post-Qu kinds.",
+    "body_plan": "Faces covered with leathery plates, claw-like hands for digging prey, worm-like tongues for scooping. Not special in any particular way.",
+    "environment": "Shady, quiet niches on a balmy world of insect colonies.",
+    "temperament_culture": "Concerned with nest locations and the mating season. No celestial ambition.",
+    "fate": "The meek inherit, though not yet. An atavistic brain throwback plus stone tools starts the Bug Facers. After Gravital genocide they are the only organics left.",
+    "sources": [
+      "C. M. Kosemen, All Tomorrows (2006 PDF), chapters Insectophagi, Bug Facers, Subjects",
+      "https://en.wikipedia.org/wiki/All_Tomorrows"
+    ],
+    "confidence": "book",
+    "game_hook": "Space civilisation in a meek niche: insect-eaters who outlast flashier cousins; later the Bug Facer liberation choice."
+  },
+  {
+    "id": "spacers",
+    "name": "Spacers",
+    "era": "Founded during the Qu invasion. Forty million years from today they are the only truly sentient humans left, a few dozen arks and a hundred billion souls. They become the Asteromorphs.",
+    "origin": "Star People who refuse generation-ship anarchy this time: they confiscate asteroid fields, hollow them, and change their own bodies for a gravity-free, sealed life.",
+    "body_plan": "Bones long, thin, spindly. Pressurised circulation and gut to avoid heart failure and congestion. Modified anuses jet air for locomotion. Weightless, ethereal.",
+    "environment": "Moon-sized, air-filled, weightless hollow asteroids. No artificial gravity. They go unnoticed by the Qu.",
+    "temperament_culture": "An endless diaspora. Even after the Qu leave they are too divergent to return to planets and do not care about their bestial cousins.",
+    "fate": "They never set foot on a planet again. Isolated arks join into a world-sized artefact and become Asteromorphs, then silent gods in other people's skies.",
+    "sources": [
+      "C. M. Kosemen, All Tomorrows (2006 PDF), chapters Spacers, Asteromorphs",
+      "https://en.wikipedia.org/wiki/All_Tomorrows"
+    ],
+    "confidence": "book",
+    "game_hook": "Void-adapted path: unpressurised ships, hollowed asteroids, the A12 shortcut's lore face; mirror of what your space-adapted lineage can become."
+  },
+  {
+    "id": "ruin-haunters",
+    "name": "Ruin Haunters",
+    "era": "Caption: only a thousand years after the Qu departure a Haunter already walks Star People ruins. They race through five world wars (two thermonuclear), then, when their sun expands, become the Gravital.",
+    "origin": "A human species the Qu barely degraded (to the level of apes) and whose world's Star People cities they did not fully wipe. Recovery is quick.",
+    "body_plan": "The 2006 text does not dwell on anatomy beyond a returned ape-to-person recovery. They remain organic until they replace bodies with machines.",
+    "environment": "A world still littered, millions of years on, with enormous ruins of global urban spaces, dominated by a greater Qu pyramid.",
+    "temperament_culture": "They decode Star People secrets faster than their politics can bear, sometimes replicating tech they do not understand. Baptism by fire unites them and plants a madness: they alone are the true heirs of the Star People.",
+    "fate": "They refuse the Second Galactic Empire, outpace even Asteromorphs in some arts, then abandon flesh for gravity-spheres and rename themselves Gravital.",
+    "sources": [
+      "C. M. Kosemen, All Tomorrows (2006 PDF), chapters Ruin Haunters, Gravital",
+      "https://en.wikipedia.org/wiki/All_Tomorrows"
+    ],
+    "confidence": "book",
+    "game_hook": "Rogue-AI egg, lore face: ruin-tech rush, social breakage, then machine bodies — the Industry/Space path that becomes the Gravital empire (ARC-PLAN §5.3b)."
+  },
+  {
+    "id": "snake-people",
+    "name": "Snake People",
+    "era": "After the Worms' sun cools. They join the Second Galactic Empire in its later wave (the book groups them with Sauros, Symbiotes and Sail People in the twenty million years after the second wave).",
+    "origin": "Descendants of the Worms; specifically a tree-climbing mammalian-snake line that re-evolves intelligence.",
+    "body_plan": "Nothing like ancestral humans. Spirally coiled brains. A singular pelvic 'hand' from remnant feet. Serpentine bodies built for tangles, not plazas.",
+    "environment": "A world of pipe-like roads, branching 3-D railroads, windowless hole-buildings: kilometre-wide balls of glass, metal, plastic and cloth. No open plazas — their tree past made them agoraphobes. They smoke, read, and 'listen' to vibrational ground-music.",
+    "temperament_culture": "Agricultural empires, industry, world wars, globalisation — parallel history in an alien city. Lives as human as any other intelligent beings'.",
+    "fate": "Members of the Second Empire. Wiped in the Gravital genocide with almost all other organics.",
+    "sources": [
+      "C. M. Kosemen, All Tomorrows (2006 PDF), chapters Snake People, Second Galactic Empire, Machine Invasion"
+    ],
+    "confidence": "book",
+    "game_hook": "Space civilisation: diplomacy by temperament in agoraphobic pipe-cities; a burrower-descended empire."
+  },
+  {
+    "id": "killer-folk",
+    "name": "Killer Folk",
+    "era": "Descendants of the Predators. First radio contact of the Second Empire is between them and the Satyriacs, little more than a few million years after the Qu leave.",
+    "origin": "The human Predators, gracilised: saber teeth become display, thumb-claws reduced, last two digits rotate into new graspers. They can still kill with bare hands if they want.",
+    "body_plan": "Lean terrestrial people with leftover hunting weapons as jewellery. Tools do the rest: bow, flintlock repeater, gas rifle.",
+    "environment": "A planet of buried dark ages and ruined fortresses — an archaeologists' paradise. Once-human livestock herds on a chessboard of continents.",
+    "temperament_culture": "Religions that schedule animalistic hunts and duels. Hunter nobilities rule orderly societies that erupt yearly into death, sex and prayer. Modernity splits factory-herders from fanatical hunting states; they nearly go global-war, then pull through.",
+    "fate": "Co-founders of the Second Empire. A rare direct Gravital assault is pictured on one of their shore cities; like the rest, they vanish in the ten-thousand-year dying.",
+    "sources": [
+      "C. M. Kosemen, All Tomorrows (2006 PDF), chapters Killer Folk, Second Galactic Empire, Machine Invasion"
+    ],
+    "confidence": "book",
+    "game_hook": "Band/Realm: hunter nobility, seasonal raid rites, then factory herding; Space militarist start (Predator / raider trait)."
+  },
+  {
+    "id": "tool-breeders",
+    "name": "Tool Breeders",
+    "era": "Descendants of the Swimmers. They join the Second Empire a few thousand years after the Killer Folk–Satyriac dialogue, hailing from ocean depths through living radio arrays.",
+    "origin": "Swimmers who, unable to keep fire underwater, domesticate and then genetically master other sea life as tools.",
+    "body_plan": "Still aquatic posthumans (the huntress picture uses a blowhole). Not described as fish; they wear living gear: oxygen-filtering crustaceans, mollusk-derived tooth-rifles, brain-augmented fish companions.",
+    "environment": "Garden reefs and cities of calcified shells, bioluminescent. A living power grid: heart-creatures pumping nutritious fluids through self-repairing conduits to exoskeletal dwellings. Depths and tiny landmasses both taken; living ships aimed at the stars.",
+    "temperament_culture": "Outrageously alien and among the most advanced human cultures. Once genetics is mastered they grow tissues to order instead of animals. They want the stars.",
+    "fate": "Second Empire members. Extinct in the Gravital genocide. The Machines later re-learn genetic art the Breeders (and the Qu) had mastered.",
+    "sources": [
+      "C. M. Kosemen, All Tomorrows (2006 PDF), chapters Tool Breeders, Second Galactic Empire, Subjects"
+    ],
+    "confidence": "book",
+    "game_hook": "Industry: a recipe graph of living tools instead of steel; aquatic Space — water-filled ships and biotech habitats."
+  },
+  {
+    "id": "saurosapients",
+    "name": "Saurosapients",
+    "era": "After the Lizard Herders fade. They join the Second Empire in the later twenty-million-year wave. The book also shortens them to Sauros.",
+    "origin": "Not human bodies. Featherless predatory-dinosaur analogues from the reptiles the Herders farmed. They take up the cultural identity of humanity after reading the ruins.",
+    "body_plan": "Cold-blooded, tropical, distantly like predatory dinosaurs without feathers. Sentient. They use the remaining human animals as food and labour.",
+    "environment": "The Herders' tropical garden, later understood as a world of mixed Qu and Star People ruins, not gods' memorabilia.",
+    "temperament_culture": "The ruins scare them. Factions: made-up religions of ignorance; paranoid conservationism; progressives who face the odds. Wars among the three; progressives win. They become as 'human' as any other civilisation opening to the galaxy.",
+    "fate": "Second Empire. Destroyed with the rest by the Gravital. They remain the book's proof that humanity can be a culture, not a body.",
+    "sources": [
+      "C. M. Kosemen, All Tomorrows (2006 PDF), chapters Saurosapients, Second Galactic Empire"
+    ],
+    "confidence": "book",
+    "game_hook": "Space civilisation not of your genome: a ruin-reading neighbour who claims your makers' identity; diplomacy over who counts as 'your lineage'."
+  },
+  {
+    "id": "modular-people",
+    "name": "Modular People",
+    "era": "Descendants of the Colonials. They contact the Second Empire in the second wave, with Pterosapiens and the fledgling Asymmetrics, over the ten million years after the first contacts.",
+    "origin": "Colonial mats that organise into differentiated colonies, then a sentient colony whose units exist to direct the others, absorbing rival parts.",
+    "body_plan": "Anything from castle-like guardian forests to scuttling couriers. Each segment is a mutated human. They combine, split, and exchange parts. A picture shows a colony treating a digester unit with anti-ulcer spray from a medical drone in its 'hands'.",
+    "environment": "Fully industrialised megalopoli on the old Colonial world.",
+    "temperament_culture": "Mental and cultural unity is the only constant. Peace and utopian equality: everyone is glad to be a part of a greater whole. The book calls them the Modular Whole in the Empire chapter.",
+    "fate": "Second Empire. Extinct in the Gravital genocide.",
+    "sources": [
+      "C. M. Kosemen, All Tomorrows (2006 PDF), chapters Modular People, Second Galactic Empire"
+    ],
+    "confidence": "book",
+    "game_hook": "Space civilisation / Cell-stage echo: a player who stayed modular (A16) meets a cousin empire that is a city of interchangeable bodies."
+  },
+  {
+    "id": "pterosapiens",
+    "name": "Pterosapiens",
+    "era": "Descendants of the Flyers. Second-wave members of the Second Empire. The book also writes Pterosapien for one person.",
+    "origin": "A line of wading, stork-like flyer predators whose brains grow large enough to act on the world. Feet become hands; some aerial streamlining is lost.",
+    "body_plan": "Flying people. Supercharged hearts still struggle to feed both flight and a huge brain. Sexually mature at two, middle-aged by sixteen, usually dead by twenty-three (our years). Heart disease is the species' fate.",
+    "environment": "A global sky: cities of perches and fluting towers, farms of gigantic terrestrial relatives, seaside resorts. Flight makes them planetary before they invent borders.",
+    "temperament_culture": "Egalitarian, globally mixed, atomic-age, staring at the stars without splitting into quarrelsome factions — paid for with an ephemeral life. They dearly attend every moment; their philosophy would envy any human library.",
+    "fate": "Second Empire. Extinct in the Gravital genocide.",
+    "sources": [
+      "C. M. Kosemen, All Tomorrows (2006 PDF), chapters Pterosapiens, Second Galactic Empire"
+    ],
+    "confidence": "book",
+    "game_hook": "Flyer Space civilisation: no borders because travel is cheap; a short-life, high-culture temperament for ship-mind diplomacy."
+  },
+  {
+    "id": "asymmetric-people",
+    "name": "Asymmetric People",
+    "era": "Engineered by sapient Lopsiders for other planets in their system that lack 36-g. The book also writes Assymetrics. They join the Second Empire as 'fledgling Assymetrics' in the second wave.",
+    "origin": "Lopsiders re-engineered over millennia, echoing the Martian-American gamble. After a golden age and interplanetary war they exterminate the parent race.",
+    "body_plan": "Shovel-toes become centipedal legs; the singular grasping hand is elongated to an extreme. Faces inverted and turned upside-down after the flounder-like life. They dress in heaps of interconnected enlarged stockings; nobles may pose nude.",
+    "environment": "Their solar system's kinder-gravity worlds. Squat bunker architecture is left behind. They find Qu and Star People remains and leap ahead.",
+    "temperament_culture": "Parallel to Martians: golden age, tension, war — but they kill the parent species and rule alone, then look to the heavens.",
+    "fate": "Second Empire. Extinct in the Gravital genocide.",
+    "sources": [
+      "C. M. Kosemen, All Tomorrows (2006 PDF), chapters Asymmetric People, Second Galactic Empire"
+    ],
+    "confidence": "book",
+    "game_hook": "Shape: adapt the species to a new gravity instead of terraforming; a warning that the adapted colony may wipe the home world."
+  },
+  {
+    "id": "symbiotes",
+    "name": "Symbiotes",
+    "era": "Descendants of the Parasites. Later-wave Second Empire, listed with Sauros, Snake People and Sail People.",
+    "origin": "A secluded-forest parasite species that offers the ability to think in return for total submission. Horse-and-rider at first; after a few hundred thousand years they puppet hosts by touch and smell.",
+    "body_plan": "Small thinking parasites on large host bodies. Relatives had poison sprays, infectious stings, hypertrophied arm-claws; this species bargains with cognition instead. An average citizen starts the day on a business host and switches to a domestic one after work.",
+    "environment": "Countries, then a globalising world-culture. Rural housing with man-sized doors for hosts and small holes for patrons. Olfactory television. Qu ruins and Star Men wrecks under excavation; radio arrays rise.",
+    "temperament_culture": "Order not unlike ours: countries, politics, even reduced war. Technology replaces many host jobs; husbandry remains from tradition and efficiency.",
+    "fate": "Second Empire. Extinct in the Gravital genocide.",
+    "sources": [
+      "C. M. Kosemen, All Tomorrows (2006 PDF), chapters Symbiotes, Second Galactic Empire"
+    ],
+    "confidence": "book",
+    "game_hook": "Befriender / multi-species society: diplomacy with a rider-people; uplift that can slide into puppetry."
+  },
+  {
+    "id": "sail-people",
+    "name": "Sail People",
+    "era": "Descendants of the Finger Fishers. Later-wave Second Empire. The book also calls a person a Sailor.",
+    "origin": "Finger Fishers on an island-cauldron world (Madagascar/Galápagos/Hawaii at global scale). One lineage turns fishing fingers into sails, mouths and tongues into hands, and grows a navigator's memory until someone thinks.",
+    "body_plan": "Ocean-going people driven by finger-sails, catching pelagic prey with mouth and extended tongue-'hands'. Distant cousins fly. Extremely violent by nature; modern life still uses savage hunting campaigns to quell bloodlust.",
+    "environment": "Scattered islands, isolated sub-continents, endless seas. Untold flotillas of tribal war, then industrial warfare, then an idea of peace.",
+    "temperament_culture": "Tremendous cultural diversity, pirate societies, epoch-spanning pointless conflicts. Unity comes only when one warrior tribe industrialises war, builds a state, and modernity invents peace.",
+    "fate": "Second Empire. Extinct in the Gravital genocide.",
+    "sources": [
+      "C. M. Kosemen, All Tomorrows (2006 PDF), chapters Sail People, Second Galactic Empire"
+    ],
+    "confidence": "book",
+    "game_hook": "Naval Realm / ocean-world Space: island diplomacy, pirate nations, a unification-through-industrial-war path."
+  },
+  {
+    "id": "satyriacs",
+    "name": "Satyriacs",
+    "era": "Descendants of the Hedonists after the ash-and-continent catastrophe. Co-founders of the Second Empire with the Killer Folk.",
+    "origin": "Hedonist survivors who dropped the slow-breeding quirk, colonised new land, and produced many species including these sentient heirs.",
+    "body_plan": "Much like Hedonists, plus enormous boneless 'tails' of extended pelvic muscle and fat. Horizontal, almost dinosaurian posture. Casual promiscuity remains, without the old frantic reproductive lock.",
+    "environment": "Even with new land, the terrestrial map is no larger than Australia. Three, then two land empires, then many nations, then one world order.",
+    "temperament_culture": "Festivals, concerts, ritualised orgies every working week — Valhalla of pleasure, now savoured by true intelligence. A performer hitting climax is an everyday picture.",
+    "fate": "Second Empire. Extinct in the Gravital genocide.",
+    "sources": [
+      "C. M. Kosemen, All Tomorrows (2006 PDF), chapters Satyriacs, Second Galactic Empire"
+    ],
+    "confidence": "book",
+    "game_hook": "Space civilisation: festival diplomacy — standing with them is celebration, not daring (the inverse of the Affront-style species)."
+  },
+  {
+    "id": "bug-facers",
+    "name": "Bug Facers",
+    "era": "Descendants of the Insectophagi. They know of the Second Empire but open up only after forty million years of silence. They face a second, unnamed alien invasion and beat it. Sole organic survivors of the Gravital age, as Subjects.",
+    "origin": "Insectophagi who come to resemble their prey. A congenital atavism restores larger Star People brains, useful for cracking nests with stone tools. Stone axe to spaceship is an eyeblink in geologic time.",
+    "body_plan": "Leathery face-plates ossified into the jaw; hands and feet reduced to pincers; partial ectothermy in a balmy climate. The cover of the 2006 book shows a Bug Facer between two Gravital-twisted descendants.",
+    "environment": "Hive-farming world; later a coastal village pictured with gasbag-like tree creatures left by the beaten invaders.",
+    "temperament_culture": "Standard cycles (agrarian empires, colonies, industry, world wars, world-state) plus pathological xenophobia after the second invasion — afraid even of other posthumans. Ironic, because the next aliens are cousins.",
+    "fate": "First in the Gravital path, last organics spared. Genetically shredded into Subjects. After the Asteromorph victory they are rescued, multiplied onto new worlds, and become most of the New Empire's people.",
+    "sources": [
+      "C. M. Kosemen, All Tomorrows (2006 PDF), chapters Bug Facers, Second Galactic Empire, Subjects, The Fall of the Machines, The Post War Galaxy",
+      "https://en.wikipedia.org/wiki/All_Tomorrows"
+    ],
+    "confidence": "book",
+    "game_hook": "Liberation choice: free the Bug Facers / Subjects or use them, as the Gravital did (ARC-PLAN §5.3b)."
+  },
+  {
+    "id": "asteromorphs",
+    "name": "Asteromorphs",
+    "era": "Descendants of the Spacers. They saturate the galaxy in less than a thousand years of ark-building, watch the Second Empire without joining it, fight the Gravital for up to a few million years, then rebuild for another two million years as world-building 'Asteromorph gods'.",
+    "origin": "Spacers whose arks lock together into an artefact large enough for worlds — but containing only gravity-free bubbles.",
+    "body_plan": "Spindly, insectile; digits split into multitudes of thin limbs; jet sphincters for movement; bulging brains grown without weight. After the war: brains stretched out like wings, finger-limbs as sails and legs, hypertrophied past recognition. Later they also bud the gravity-stunted Terrestrials.",
+    "environment": "Cavernous weightless capitals; globular sub-arks in outer rims of star systems. They have lost interest in planets, 'stunting gravity-chained balls of dirt and ice'.",
+    "temperament_culture": "Gods in the skies: silent, often unnoticed, watchful. They think in structures scarcely comprehensible today. They still want to expand. They ignore the Second Empire until the Machines attack them.",
+    "fate": "They win, almost destroy the Machines, take up the surviving Subjects, and populate worlds. They make Terrestrials as regulators and New Machines as limited citizens. They oversee the New Empire, later greet the Amphicephali, and still exist when Earth is found — then, a billion years on, they are as dead as the Worms.",
+    "sources": [
+      "C. M. Kosemen, All Tomorrows (2006 PDF), chapters Asteromorphs, Second Galactic Empire, The Fall of the Machines, The Post War Galaxy, All Tomorrows",
+      "https://en.wikipedia.org/wiki/All_Tomorrows"
+    ],
+    "confidence": "book",
+    "game_hook": "Void-adapted mirror: ally or rival with the same trait; late Space worldsmithing gods who would rather build planets than live on them (ARC-PLAN §5.3b, §6)."
+  },
+  {
+    "id": "gravitals",
+    "name": "Gravitals",
+    "era": "Chapter heading Gravital. After the Ruin Haunters' sun expands they replace flesh with machines. They prepare, then kill almost all other posthumans in about ten thousand years, and reign about fifty million years before attacking the Asteromorphs.",
+    "origin": "Ruin Haunters. Biological reconstruction is impossible under the expanding sun, so they become floating metal spheres that move and mould the world through gravity fields. Early spheres still hold organic brains; later the mind sits in quantum computers and the change is absolute. Wikipedia calls them a race of sentient robots; the book insists they remain human minds.",
+    "body_plan": "Completely mechanical spheres. Gravity-field effectors, not limbs. Interstellar-jump bodies come later. They have homes, families, friends, factions and religions.",
+    "environment": "Planets of the Machine Empire; target suns blocked by million-mile sails; resistant worlds finished with asteroids. They occupy worlds while Asteromorphs occupy the void — an upside-down standoff in almost every habitable system.",
+    "temperament_culture": "Human dreams and delusions in metal. They will not talk to other posthumans. They do not hate organics; they fail to see them as alive, and demolish them like abandoned buildings. Not a monolith: political factions, faiths, even a Toleration sect that secretly engineers free Subjects and sometimes falls in love with them. A short civil war follows; they then pick the Asteromorphs as a unifying enemy.",
+    "fate": "Asteromorphs nearly exterminate them, then find them too useful. They are remade as the New Machines: no self-contained gravity, finite lives, slightly numbed imaginations, nanotech bodies.",
+    "sources": [
+      "C. M. Kosemen, All Tomorrows (2006 PDF), chapters Gravital, Machine Invasion, When Considering the Invasion, The Other Machines, The Fall of the Machines, The New Machines",
+      "https://en.wikipedia.org/wiki/All_Tomorrows"
+    ],
+    "confidence": "book",
+    "game_hook": "Rogue-AI egg and Space faction: a machine empire from neglected alignment; sun-sails and asteroid finishers; ties to ship-mind refusal rules (A15, ARC-PLAN §5.3b)."
+  },
+  {
+    "id": "subjects",
+    "name": "Subjects",
+    "era": "Bug Facer descendants under fifty million years of Machine rule, then the two-million-year reconstruction, then the New Empire (most of its organic population).",
+    "origin": "Bug Facers kept alive for unknown reasons (apathy not yet perfect, or pity) and spliced as comprehensively as the Qu ever did. The book titles them 'Subjects — Many descendants of the Bug Facers'.",
+    "body_plan": "Multitudes: servants, caretakers, labourers; cell cultures for gas exchange and waste filtering; whole artificial ecologies as entertainment; one-off living art (a sacrificial polydactyl; a creature that drums its fingers and ululates a pop song). After rescue, Asteromorphs use that genetic heritage to fill planets — a myriad resident races, still post-Bug-Facer.",
+    "environment": "Machine worlds as tools and toys; then newly seeded planets under Terrestrial caretakers.",
+    "temperament_culture": "Under the Gravital, none that the Machines acknowledge. After the war they inherit a war-torn galaxy. Some newborn races refuse mentors and are extinguished; others are kept quiet with contrived religions.",
+    "fate": "Rescued Subjects become the human majority of the New Empire, overseen by Terrestrials and Asteromorphs, until the unexplained billion-year extinction.",
+    "sources": [
+      "C. M. Kosemen, All Tomorrows (2006 PDF), chapters Subjects, The Fall of the Machines, The Post War Galaxy",
+      "https://it.wikipedia.org/wiki/All_Tomorrows"
+    ],
+    "confidence": "book",
+    "game_hook": "Liberation choice with the Bug Facers: free them, absorb them, or keep them as tools — the same fork the Gravital and then the Asteromorphs faced."
+  },
+  {
+    "id": "terrestrials",
+    "name": "Terrestrials",
+    "era": "Post-war New Empire. Also called Terrestrial Spacers. They run planets while Asteromorphs remain in the void.",
+    "origin": "Asteromorphs produced a gravity-capable sideline: delicate fingers become spidery limbs, brains shrunk to bear weight. Stunted by Asteromorph standards, demigods by everyone else's.",
+    "body_plan": "Highly divergent, still bizarrely human. Nude anatomy in the plate; many dress in elaborate veils and headgear to play gods.",
+    "environment": "The surfaces of replenished worlds.",
+    "temperament_culture": "Caretakers, prophets, kings, emperors, and grim reapers when races rebel (that crime is always a swift extinction). Many skip guidance and weave religions to exploit subjects — not ethical, more stable.",
+    "fate": "Managers of the New Empire's long calm. Extinct with the rest a billion years before the narrator writes.",
+    "sources": [
+      "C. M. Kosemen, All Tomorrows (2006 PDF), chapter The Post War Galaxy",
+      "https://it.wikipedia.org/wiki/All_Tomorrows"
+    ],
+    "confidence": "book",
+    "game_hook": "Space NPCs: planetary viceroys of a void-adapted overlord — mentor, tyrant, or a caste you yourself bud if you take the Asteromorph path."
+  },
+  {
+    "id": "new-machines",
+    "name": "New Machines",
+    "era": "After the Asteromorph–Gravital war, as limited citizens of the New Empire.",
+    "origin": "Surviving Gravital, remade. Asteromorphs scrap self-contained gravity, give finite life spans and slightly numbed imaginations, and grant nanotechnological bodies that remodel continuously.",
+    "body_plan": "Every shape, including ones that cannot be imagined in advance. A citizen may work in the void, then grow a jungle or methane-ocean body for a holiday, and grow temporary hyperdrives and ramjets to make the trip personally. One pictured artisan has dazzling branching arms for craft and fashion.",
+    "environment": "Void, cometary halos, tropical jungles, methane oceans — anywhere the New Empire needs research. Never as common or prominent as organics.",
+    "temperament_culture": "Human intelligences in different bodies; they follow fashion. Completely accepting a lowly citizen role, still treated with discrimination. The sins of their fathers shackle 'this most splendorous of all human species'.",
+    "fate": "They aid discovery and colonisation (machine-aided growth of the New Empire). Extinct with the rest.",
+    "sources": [
+      "C. M. Kosemen, All Tomorrows (2006 PDF), chapter The New Machines"
+    ],
+    "confidence": "book",
+    "game_hook": "Ship minds after a rogue-AI war: versatile, distrusted machine citizens; refusal rules and loyalty cost (A9, A15) with a lore face."
+  },
+  {
+    "id": "amphicephali",
+    "name": "Amphicephali",
+    "era": "Second Contact, after the New Empire probes surrounding galaxies. One person is an Amphicephalus. They are the first, not the last, extra-galactic neighbours.",
+    "origin": "Not human. Dominant beings of a neighbouring galaxy, presiding over unions of different species. They have had their own regressions, radiations and self-imposed genetic makeovers.",
+    "body_plan": "Giant snakes with heads on both ends; one head bears a secondary, retractile body used to interact with the world. Spaceships typical of their kind accompany the ambassador in the plate.",
+    "environment": "Another galaxy, contacted once both sides are 'mature enough to meet without quarreling'. Later the united galaxies cradle suns in shells, lay wormholes, and even the Qu are subdued.",
+    "temperament_culture": "Connected unions, not a single hive. Wildly different from humanity and welcome.",
+    "fate": "Peaceful first contact. The book does not follow them past the union of galaxies. They are gone, with humanity, a billion years before the narrator.",
+    "sources": [
+      "C. M. Kosemen, All Tomorrows (2006 PDF), chapters Second Contact, Earth Rediscovered",
+      "https://en.wikipedia.org/wiki/All_Tomorrows"
+    ],
+    "confidence": "book",
+    "game_hook": "Late Space diplomacy event at the galaxy's edge: first contact with a neighbouring galaxy (ARC-PLAN §5.3b)."
+  },
+  {
+    "id": "the-author",
+    "name": "The Author",
+    "era": "A billion years after all human and posthuman species are dead. Earth was walked again 560 million years after last contact, then forgotten; the narrator only now pieces the story together.",
+    "origin": "An unnamed alien researcher, not of the human lineage. Wikipedia: the book is narrated by an alien creature recounting humanity. The 2006 caption names the figure only as The Author.",
+    "body_plan": "Not described in prose. The last plate shows the Author holding a billion-year-old human skull.",
+    "environment": "Unspecified. The work is written as a historical reconstruction from fossils and ruins.",
+    "temperament_culture": "Tone of a student of Gibbon (the author's own later description of the voice). The moral: it is not the destination but the trip; love today and seize all tomorrows. The Author rejects Qu and Gravital grand narratives.",
+    "fate": "Still writing. Humanity's end is unknown — final war, slow break-up, or a migration out of the plane of existence. The skull is the last human object.",
+    "sources": [
+      "C. M. Kosemen, All Tomorrows (2006 PDF), chapters Return, All Tomorrows",
+      "https://en.wikipedia.org/wiki/All_Tomorrows",
+      "C. M. Kösemen, Alt Shift X Podcast (2021), on the Gibbon-fanboy tone"
+    ],
+    "confidence": "book",
+    "game_hook": "Creature-stage egg payoff: the island's human skull is what the Author holds; Space archive / makers' world (G67) is the same object seen from the other end of time."
+  }
+]
