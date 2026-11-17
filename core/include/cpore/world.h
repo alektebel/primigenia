@@ -9,7 +9,7 @@
 #define CP_STAGE_DT .1f
 #define CP_STAGE_SNAPSHOT_VERSION 1
 
-enum { CP_STAGE_ANALYTIC, CP_STAGE_FLAT, CP_STAGE_FIELD }; /* FIELD: F4 (PLAN-heights H1); reset rejects it until then */
+enum { CP_STAGE_ANALYTIC, CP_STAGE_FLAT, CP_STAGE_FIELD }; /* FIELD: the generated island, needs cp_stage_attach_field() before reset */
 enum { CP_STAGE_TIMID, CP_STAGE_TERRITORIAL, CP_STAGE_AGGRESSIVE };
 enum { CP_STAGE_CONTINUE, CP_STAGE_WAIT, CP_STAGE_GO, CP_STAGE_HEADING,
        CP_STAGE_APPROACH, CP_STAGE_ATTACK, CP_STAGE_FLEE, CP_STAGE_GO_NEST,
@@ -98,6 +98,10 @@ void cp_stage_setup_default(CpStageSetup *s,uint32_t seed);
 int cp_stage_reset(CpStageWorld *w,const CpStageSetup *s);
 float cp_stage_height(const CpStageWorld *w,float x,float z);
 float cp_stage_ground(const CpStageWorld *w,float x,float z);
+/* Standing water depth at (x,z) in metres (0 on dry land); walking is blocked deeper than 0.7 m. */
+float cp_stage_water_depth(const CpStageWorld *w,float x,float z);
+/* Half-extent of the walkable square: 195 m for ANALYTIC/FLAT, half-2*cell for FIELD. */
+float cp_stage_bound(const CpStageWorld *w);
 int cp_stage_can_walk(const CpStageWorld *w,float x,float z,float nx,float nz,float radius);
 /* Stable ids: player 0, wild 1..n, nest 1000, obstacles 2000+i. */
 int cp_stage_order(CpStageWorld *w,const CpStageInput *input);

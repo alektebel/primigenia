@@ -465,6 +465,156 @@ static void snapshots(void){
     assert(cp_stage_layout()==cp_stage_layout()&&cp_stage_layout()!=0);
     puts("PASS golden logs, snapshot/restore round trips, snapshot errors and hash compatibility");
 }
+/* ---- FIELD mode (PLAN-heights H1): a synthetic 64x64 island, cell 4 m ---- */
+#define FN 64
+#define FCELL 4.f
+static float fh[FN*FN],fl_[FN*FN];
+static CpStageField fld;
+static float cc(int i){ return -128.f+(i+.5f)*FCELL; }
+static void field_build(int kind){
+    memset(fl_,0,sizeof fl_);
+    for(int j=0;j<FN;j++)for(int i=0;i<FN;i++){
+        float h;
+        if(kind==0)h=20+.17632698f*cc(j);               /* 10 degree plane rising with z */
+        else{
+            h=10;
+            if(i>=40&&i<=47&&j>=40)h+=j==40?6.93f:13.86f;   /* ~60 degree wall band across +z */
+            if(i<=9&&j>=44)h=10-2.f*(float)(j-44);          /* sea: shore slope 0.5, dry to -6 */
+            if(i>=20&&i<=23&&j>=20&&j<=23){h=9;fl_[j*FN+i]=12;}  /* pond 3 m deep */
+            else if(fl_[j*FN+i]==0)fl_[j*FN+i]=h;
+        }
+        fh[j*FN+i]=h;
+    }
+    fld=(CpStageField){FN,FN*FCELL,FCELL,FN*FCELL/2,fh,fl_,0x1234abcdULL+kind};
+}
+static float ref_ground(const CpStageField *f,float x,float z){   /* independent copy of the documented formula */
+    float u=(x+f->half)/f->cell-.5f,v=(z+f->half)/f->cell-.5f;
+    int i=(int)floorf(u),j=(int)floorf(v);
+    if(i<0)i=0;
+    if(i>f->n-2)i=f->n-2;
+    if(j<0)j=0;
+    if(j>f->n-2)j=f->n-2;
+    float fu=u-i,fv=v-j;
+    fu=fu<0?0:fu>1?1:fu;fv=fv<0?0:fv>1?1:fv;
+    const float *h=f->height+j*f->n+i;
+    return fu>=fv?h[0]+fu*(h[1]-h[0])+fv*(h[f->n+1]-h[1]):h[0]+fv*(h[f->n]-h[0])+fu*(h[f->n+1]-h[f->n]);
+}
+static void field_world(float nx,float nz,int n_wild){
+    cp_stage_setup_default(&setup,42);
+    setup.terrain=CP_STAGE_FIELD;
+    setup.n=n_wild;
+    setup.nest_x=nx;setup.nest_z=nz;
+    setup.wild[0].x=setup.wild[0].home_x=nx+30;
+    setup.wild[0].z=setup.wild[0].home_z=nz;
+    memset(&w,0,sizeof w);
+    assert(cp_stage_attach_field(&w,&fld)==0);
+    assert(cp_stage_reset(&w,&setup)==0);
+}
+static float walk_dist(float hx,float hz,int ticks){
+    CpStageInput a={.verb=CP_STAGE_HEADING};
+    a.hx=(int16_t)hx;a.hz=(int16_t)hz;
+    float x0=w.player.x,z0=w.player.z;
+    for(int i=0;i<ticks;i++)cp_stage_step(&w,&a);
+    return sqrtf((w.player.x-x0)*(w.player.x-x0)+(w.player.z-z0)*(w.player.z-z0));
+}
+static void field_mode(void){
+    /* reset needs a field */
+    cp_stage_setup_default(&setup,42);
+    setup.terrain=CP_STAGE_FIELD;
+    memset(&w,0,sizeof w);
+    assert(cp_stage_reset(&w,&setup)==-1);
+    field_build(0);
+    assert(cp_stage_attach_field(&w,NULL)==0&&cp_stage_reset(&w,&setup)==-1);
+    CpStageField broken=fld;broken.n=1;
+    assert(cp_stage_attach_field(&w,&broken)<0);
+    broken=fld;broken.height=NULL;assert(cp_stage_attach_field(&w,&broken)<0);
+    /* the plane: ground equals the independent formula bit for bit at 1000 points (and the analytic plane within 1 mm) */
+    field_world(0,-60,1);
+    assert(fabsf(cp_stage_bound(&w)-(128-2*FCELL))<1e-4f);
+    unsigned long s=12345;
+    float worst=0;
+    for(int k=0;k<1000;k++){
+        s=s*6364136223846793005ULL+1442695040888963407ULL;
+        float x=((s>>33)%2800)/10.f-140,z;
+        s=s*6364136223846793005ULL+1442695040888963407ULL;
+        z=((s>>33)%2800)/10.f-140;
+        assert(cp_stage_ground(&w,x,z)==ref_ground(&fld,x,z));
+        assert(cp_stage_height(&w,x,z)==cp_stage_ground(&w,x,z));
+        if(fabsf(x)<120&&fabsf(z)<120){
+            float e=fabsf(cp_stage_ground(&w,x,z)-(20+.17632698f*z));
+            if(e>worst)worst=e;
+        }
+    }
+    assert(worst<1e-3f);
+    assert(isfinite(cp_stage_ground(&w,1e30f,-1e30f))&&isfinite(cp_stage_ground(&w,-1e30f,1e30f)));
+    /* walking uphill (10 degrees) is slower than along the contour by the walk() slope factor */
+    field_world(0,-60,0);
+    walk_dist(32767,0,40);
+    float flat=walk_dist(32767,0,30);
+    field_world(0,-60,0);
+    walk_dist(0,32767,40);
+    float up=walk_dist(0,32767,30);
+    /* walk(): step = v/(1+.65*slope), and the eased speed is the reduced one, so the steady ratio is
+     * (ease/(1-(1-ease)/(1+k)))/(1+k) with k = .65*tan(10 deg) (about .84), not just 1/(1+k) */
+    const float k=.65f*.17632698f,ease=CP_STAGE_MOTION.ease,predicted=(ease/(1-(1-ease)/(1+k)))/(1+k);
+    assert(up<flat&&fabsf(up/flat-predicted)<.015f);
+    /* wall, pond, sea */
+    field_build(1);
+    field_world(40,-20,0);
+    float before=w.player.z;
+    walk_dist(0,32767,120);   /* straight into the wall band at z ~ 34 */
+    assert(w.player.z>before+30&&w.player.z<cc(40)&&cp_stage_ground(&w,w.player.x,w.player.z)<13); /* nibbles at the foot of the ramp, never climbs the 60 degree face */
+    assert(!cp_stage_can_walk(&w,40,cc(39),40,cc(41),.6f));
+    assert(cp_stage_can_walk(&w,40,-20,40,0,.6f));
+    /* pond: shallow depression, blocked only by the water */
+    assert(fabsf(cp_stage_water_depth(&w,cc(21),cc(21))-3)<1e-4f);
+    assert(cp_stage_ground(&w,cc(21),cc(21))==9);
+    assert(!cp_stage_can_walk(&w,cc(21),cc(15),cc(21),cc(21),.6f));
+    assert(cp_stage_can_walk(&w,cc(21),cc(15),cc(21),cc(18),.6f));
+    assert(cp_stage_water_depth(&w,cc(30),cc(30))==0);
+    /* sea: deeper than 0.7 m blocks, wading does not (rows: j=49 -> 0 m, 50 -> -2, shore slope .5) */
+    field_world(-100,cc(40),0);
+    assert(cp_stage_water_depth(&w,cc(5),cc(49))==0&&fabsf(cp_stage_water_depth(&w,cc(5),cc(50))-2)<1e-4f);
+    assert(cp_stage_can_walk(&w,cc(5),cc(44),cc(5),cc(48),.6f));
+    float ground_at=cp_stage_ground(&w,cc(5),cc(49)+1.f);   /* about -0.25 m: wading */
+    assert(ground_at<0&&ground_at>-.7f&&cp_stage_can_walk(&w,cc(5),cc(48),cc(5),cc(49)+1.f,.6f));
+    assert(!cp_stage_can_walk(&w,cc(5),cc(49),cc(5),cc(51),.6f));   /* nearest cell j=51 is 4 m deep */
+    assert(!cp_stage_can_walk(&w,cc(5),cc(45),cc(5),cc(53),.6f));
+    /* bounds: nest and orders outside half-2*cell are rejected */
+    field_build(1);
+    setup.nest_x=121;
+    assert(cp_stage_reset(&w,&setup)<0);
+    field_world(0,0,0);
+    assert(cp_stage_command(&w,"go 119 0")==0&&cp_stage_command(&w,"go 121 0")<0);
+    /* determinism: two identical runs agree; another field hash changes the state hash; flat hashes untouched */
+    field_world(0,-60,1);
+    CpStageWorld second=w;
+    uint64_t h1=0,h2=0;
+    for(int i=0;i<300;i++){
+        CpStageInput a={.verb=CP_STAGE_HEADING,.hx=(int16_t)(i*97-12000),.hz=20000};
+        h1=cp_stage_step(&w,&a);h2=cp_stage_step(&second,&a);
+        assert(h1==h2);
+    }
+    field_world(0,-60,1);
+    uint64_t base=cp_stage_hash(&w);
+    CpStageField other_field=fld;other_field.hash^=1;
+    memset(&second,0,sizeof second);
+    cp_stage_attach_field(&second,&other_field);
+    assert(cp_stage_reset(&second,&setup)==0&&cp_stage_hash(&second)!=base);
+    /* snapshot of a FIELD world needs the field back */
+    static uint8_t blob[1<<16];
+    for(int i=0;i<20;i++)cp_stage_step(&w,NULL);
+    int n=cp_stage_snapshot(&w,blob,sizeof blob);
+    assert(n>0);
+    assert(cp_stage_restore(&second,blob,(size_t)n,NULL)==CP_STAGE_SNAP_ERR_FIELD);
+    assert(cp_stage_restore(&second,blob,(size_t)n,&other_field)==CP_STAGE_SNAP_ERR_FIELD);
+    assert(cp_stage_restore(&second,blob,(size_t)n,&fld)==CP_STAGE_SNAP_OK&&cp_stage_hash(&second)==cp_stage_hash(&w)&&second.field==&fld);
+    for(int i=0;i<50;i++)assert(cp_stage_step(&w,NULL)==cp_stage_step(&second,NULL));
+    /* a world last used in FIELD mode drops the field when reset flat */
+    setup.terrain=CP_STAGE_FLAT;setup.nest_x=setup.nest_z=0;
+    assert(cp_stage_reset(&w,&setup)==0&&w.field==NULL&&w.field_hash==0);
+    puts("PASS field mode: ground formula, slope, wall, pond, sea, bound, determinism, snapshot");
+}
 int main(void) {
     validation();
     motion_law();
@@ -474,6 +624,7 @@ int main(void) {
     agent_contract();
     numeric_boundaries();
     snapshots();
+    field_mode();
     reset();
     CpStageInput a={
         0

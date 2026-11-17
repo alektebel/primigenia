@@ -93,8 +93,50 @@ static float fbm(const CpStageWorld *w,float x,float z,int n){
     }
     return s/total;
 }
+/* --- FIELD mode (PLAN-heights H1): the generated island heights, read through a pointer ---------------
+ * Same surface as godot/game/island/terrain_data.gd ground(): cell-centred samples, two triangles per quad
+ * with the (i+1,j)-(i,j+1) diagonal, clamped at the edge. Only + - * / and floor, so it is deterministic. */
+static int clampi(int x,int a,int b){
+    return x<a?a:x>b?b:x;
+}
+static int field_ok(const CpStageField *f){
+    return f&&f->n>=2&&f->height&&isfinite(f->size_m)&&isfinite(f->cell)&&isfinite(f->half)&&f->cell>0&&f->half>0;
+}
+static float field_ground(const CpStageField *f,float x,float z){
+    const float lim=(float)f->n;
+    float u=clamp((x+f->half)/f->cell-.5f,-1,lim),v=clamp((z+f->half)/f->cell-.5f,-1,lim);
+    int i=clampi(floor_int(u),0,f->n-2),j=clampi(floor_int(v),0,f->n-2);
+    float fu=clamp(u-i,0,1),fv=clamp(v-j,0,1);
+    const float *h=f->height+(size_t)j*f->n+i;
+    return fu>=fv?h[0]+fu*(h[1]-h[0])+fv*(h[f->n+1]-h[1]):h[0]+fv*(h[f->n]-h[0])+fu*(h[f->n+1]-h[f->n]);
+}
+static float bound_of(int terrain,const CpStageField *f){
+    return terrain==CP_STAGE_FIELD&&field_ok(f)?f->half-2*f->cell:195.f;
+}
+float cp_stage_bound(const CpStageWorld *w){
+    return bound_of(w->setup.terrain,w->field);
+}
+/* Depth of standing water at (x,z): sea below 0 m, ponds (depression-filled level well above the ground),
+ * the FLAT circle; 0 on dry land. FIELD uses the nearest cell, like TerrainData.is_pond/is_sea. */
+float cp_stage_water_depth(const CpStageWorld *w,float x,float z){
+    if(!isfinite(x)||!isfinite(z))return 0;
+    if(w->setup.terrain==CP_STAGE_FIELD){
+        const CpStageField *f=w->field;
+        if(!field_ok(f))return 0;
+        const float lim=(float)f->n;
+        int i=clampi(floor_int(clamp((x+f->half)/f->cell,-1,lim)),0,f->n-1),j=clampi(floor_int(clamp((z+f->half)/f->cell,-1,lim)),0,f->n-1);
+        size_t k=(size_t)j*f->n+i;
+        float h=f->height[k];
+        if(h<=0)return -h;
+        if(f->water_level&&f->water_level[k]-h>.5f)return f->water_level[k]-h;
+        return 0;
+    }
+    if(w->setup.terrain==CP_STAGE_FLAT)return length(x-w->setup.water_x,z-w->setup.water_z)<w->setup.water_radius?1.f:0.f;
+    return 0;
+}
 float cp_stage_height(const CpStageWorld *w,float x,float z){
     if(!isfinite(x)||!isfinite(z)||ab(x)>100000||ab(z)>100000)return 0;
+    if(w->setup.terrain==CP_STAGE_FIELD)return field_ok(w->field)?field_ground(w->field,x,z):0;
     if(w->setup.terrain==CP_STAGE_FLAT){
         float d=length(x-w->setup.water_x,z-w->setup.water_z);
         return d<w->setup.water_radius?-1:w->setup.flat_height;
@@ -113,7 +155,7 @@ float cp_stage_height(const CpStageWorld *w,float x,float z){
  * interface without changing movement or perception. */
 float cp_stage_ground(const CpStageWorld *w,float x,float z){
     if(!isfinite(x)||!isfinite(z))return 0;
-    if(w->setup.terrain==CP_STAGE_FLAT)return cp_stage_height(w,x,z);
+    if(w->setup.terrain==CP_STAGE_FLAT||w->setup.terrain==CP_STAGE_FIELD)return cp_stage_height(w,x,z);
     float fx=clamp((x+320)/2.5f,0,255.999f),fz=clamp((z+320)/2.5f,0,255.999f);
     int ix=(int)fx,iz=(int)fz;
     float u=fx-ix,v=fz-iz,px=ix*2.5f-320,pz=iz*2.5f-320;
@@ -122,13 +164,14 @@ float cp_stage_ground(const CpStageWorld *w,float x,float z){
 }
 int cp_stage_can_walk(const CpStageWorld *w,float x,float z,float nx,float nz,float radius){
     if(!isfinite(x)||!isfinite(z)||!isfinite(nx)||!isfinite(nz)||!isfinite(radius)||radius<0)return 0;
-    if(ab(x)>10000||ab(z)>10000||ab(nx)>195||ab(nz)>195)return 0;
+    if(ab(x)>10000||ab(z)>10000||ab(nx)>cp_stage_bound(w)||ab(nz)>cp_stage_bound(w))return 0;
+    const int field=w->setup.terrain==CP_STAGE_FIELD;
     const float dx=nx-x,dz=nz-z,distance=length(dx,dz);
     const int steps=(int)(distance/.25f)+1;
     float previous=cp_stage_ground(w,x,z);
     for(int i=1;i<=steps;i++){
         const float t=(float)i/steps,height=cp_stage_ground(w,x+dx*t,z+dz*t);
-        if(height<-.7f||ab(height-previous)>distance/steps*1.2f+.04f)return 0;
+        if((field?cp_stage_water_depth(w,x+dx*t,z+dz*t)>.7f:height<-.7f)||ab(height-previous)>distance/steps*1.2f+.04f)return 0;
         previous=height;
     }
     for(int i=0;i<w->setup.n_obstacles;i++){
@@ -161,15 +204,17 @@ static void creature(CpStageCreature *c,float x,float z,int species,const CpComb
     c->species=species;
 }
 int cp_stage_reset(CpStageWorld *w,const CpStageSetup *s){
-    if(!w||!s||s->n<0||s->n>CP_STAGE_MAX_WILD||s->n_obstacles<0||s->n_obstacles>CP_STAGE_MAX_OBSTACLES||s->terrain<0||s->terrain>CP_STAGE_FLAT||!profile_valid(&s->player))return -1;
+    if(!w||!s||s->n<0||s->n>CP_STAGE_MAX_WILD||s->n_obstacles<0||s->n_obstacles>CP_STAGE_MAX_OBSTACLES||s->terrain<0||s->terrain>CP_STAGE_FIELD||!profile_valid(&s->player))return -1;
+    if(s->terrain==CP_STAGE_FIELD&&!(w->field&&field_ok(w->field)))return -1; /* FIELD needs cp_stage_attach_field() first */
+    const float bound=bound_of(s->terrain,w->field);
     const float values[]={
         s->nest_x,s->nest_z,s->flat_height,s->water_x,s->water_z,s->water_radius
     };
     for(unsigned i=0;i<sizeof values/sizeof *values;i++)if(!isfinite(values[i])||ab(values[i])>10000)return -1;
-    if(s->water_radius<0||ab(s->nest_x)>195||ab(s->nest_z)>195)return -1;
+    if(s->water_radius<0||ab(s->nest_x)>bound||ab(s->nest_z)>bound)return -1;
     for(int i=0;i<s->n;i++){
         const CpStageSpawn *c=&s->wild[i];
-        if(c->species<0||c->species>3||c->bot< -1||c->bot>=BOT_KIND_COUNT||!profile_valid(&c->profile)||!isfinite(c->x)||!isfinite(c->z)||!isfinite(c->home_x)||!isfinite(c->home_z)||ab(c->x)>195||ab(c->z)>195||ab(c->home_x)>195||ab(c->home_z)>195)return -1;
+        if(c->species<0||c->species>3||c->bot< -1||c->bot>=BOT_KIND_COUNT||!profile_valid(&c->profile)||!isfinite(c->x)||!isfinite(c->z)||!isfinite(c->home_x)||!isfinite(c->home_z)||ab(c->x)>bound||ab(c->z)>bound||ab(c->home_x)>bound||ab(c->home_z)>bound)return -1;
     }
     for(int i=0;i<s->n_obstacles;i++){
         const CpStageObstacle *o=&s->obstacles[i];
@@ -183,6 +228,7 @@ int cp_stage_reset(CpStageWorld *w,const CpStageSetup *s){
     memset(w,0,sizeof *w);
     w->field=field;
     w->motion=CP_STAGE_MOTION;
+    w->field_hash=field?field->hash:0;
     w->setup=copy;
     w->active=-1;
     cp_rng_seed(&w->spawn_rng,copy.seed^0x53504157u);
@@ -323,7 +369,7 @@ static void walk(CpStageWorld *w,CpStageCreature *c,float dx,float dz,float spee
 int cp_stage_order(CpStageWorld *w,const CpStageInput *a){
     if(!w||!a||!isfinite(a->x)||!isfinite(a->z)||a->verb<0||a->verb>CP_STAGE_DODGE||a->sprint<0||a->sprint>1)return -1;
     if(a->verb==CP_STAGE_CONTINUE)return 0;
-    if(a->verb==CP_STAGE_GO&&(!isfinite(a->x)||!isfinite(a->z)||ab(a->x)>195||ab(a->z)>195))return -1;
+    if(a->verb==CP_STAGE_GO&&(!isfinite(a->x)||!isfinite(a->z)||ab(a->x)>cp_stage_bound(w)||ab(a->z)>cp_stage_bound(w)))return -1;
     if((a->verb==CP_STAGE_APPROACH||a->verb==CP_STAGE_ATTACK)&&(a->target<1||a->target>w->setup.n||w->wild[a->target-1].dead))return -2;
     if(a->verb==CP_STAGE_ATTACK&&(a->move<0||a->move>=CB_MOVE_COUNT||(CP_COMBAT_MOVES[a->move].flags&CB_F_SELF)||!cp_combat_part_level(&w->player.profile,CP_COMBAT_MOVES[a->move].part)))return -3;
     if(a->verb==CP_STAGE_DODGE&&(a->dir<0||a->dir>7))return -1;
@@ -930,7 +976,7 @@ const char *cp_stage_snapshot_error(int code){
     }
 }
 int cp_stage_attach_field(CpStageWorld *w,const CpStageField *f){
-    if(!w)return -1;
+    if(!w||(f&&!field_ok(f)))return -1;
     w->field=f;
     return 0;
 }
