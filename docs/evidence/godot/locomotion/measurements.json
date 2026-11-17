@@ -9,7 +9,7 @@
       "stride_flat_m": 1.149,
       "stride_uphill_m": 0.871
     },
-    "biped bank deg at 0.8 rad/s": -9.18,
+    "biped bank deg at 0.8 rad/s": -7.87,
     "biped run Fr1.5": {
       "com_excursion_mm": 46.0,
       "com_flight_minus_stance_mm": 19.3
@@ -47,15 +47,15 @@
       "stride_flat_m": 0.648,
       "stride_uphill_m": 0.491
     },
-    "light_quadruped bank deg at 0.8 rad/s": -6.77,
+    "light_quadruped bank deg at 0.8 rad/s": -3.38,
     "light_quadruped pitch range deg": {
       "gallop": 4.23,
       "trot": 0.02
     },
     "theropod left turn 0.9 rad/s": {
       "neck_yaw_deg": 18.05,
-      "tail_half_response_ms": 400.0,
-      "tail_yaw_deg": -17.24
+      "tail_half_response_ms": 367.0,
+      "tail_yaw_deg": -13.0
     },
     "wader run Fr1.5": {
       "com_excursion_mm": 45.0,
@@ -66,8 +66,34 @@
       "com_single_minus_double_mm": 38.0
     }
   },
-  "checks": 192,
+  "checks": 216,
   "failures": 0,
+  "feel_turning": {
+    "biped": {
+      "pivot_roll_deg": 1.38,
+      "spine_end_to_end_deg": 0.0
+    },
+    "heavy_quadruped": {
+      "pivot_roll_deg": 1.43,
+      "spine_end_to_end_deg": 26.38
+    },
+    "hexapod": {
+      "pivot_roll_deg": 0.5,
+      "spine_end_to_end_deg": 14.22
+    },
+    "horizontal_biped": {
+      "pivot_roll_deg": 2.46,
+      "spine_end_to_end_deg": 0.0
+    },
+    "light_quadruped": {
+      "pivot_roll_deg": 7.27,
+      "spine_end_to_end_deg": 20.76
+    },
+    "wader": {
+      "pivot_roll_deg": 0.86,
+      "spine_end_to_end_deg": 0.0
+    }
+  },
   "foot_slide_mm": {
     "biped": {
       "10 Hz world ticks": 0.0,
@@ -92,7 +118,7 @@
       "slalom at speed": 0.0,
       "slow walk": 0.0,
       "start-stop": 0.0,
-      "steps": 476,
+      "steps": 475,
       "top speed": 0.0,
       "uphill 20%": 0.0,
       "walk": 0.0
@@ -106,7 +132,7 @@
       "slalom at speed": 0.0,
       "slow walk": 0.0,
       "start-stop": 0.0,
-      "steps": 2412,
+      "steps": 2411,
       "top speed": 0.0,
       "uphill 20%": 0.0,
       "walk": 0.0
@@ -134,7 +160,7 @@
       "slalom at speed": 0.0,
       "slow walk": 0.0,
       "start-stop": 0.0,
-      "steps": 899,
+      "steps": 901,
       "top speed": 0.0,
       "uphill 20%": 0.0,
       "walk": 0.0
@@ -327,7 +353,7 @@
       "airborne_pct": 33.3,
       "cadence_hz": 2.847,
       "duty_measured": [
-        0.244,
+        0.242,
         0.244,
         0.244,
         0.242
