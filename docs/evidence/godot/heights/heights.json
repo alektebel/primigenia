@@ -292,8 +292,8 @@
 		"stuck": 1
 	},
 	"timing_us_per_step": {
-		"field": 6.6,
-		"flat": 5.1,
+		"field": 6.7,
+		"flat": 5.2,
 		"note": "measured through the GDScript call, so it includes marshalling",
 		"steps": 10000,
 		"wild": 24
