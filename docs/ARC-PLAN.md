@@ -214,6 +214,35 @@ names can be made at release, with legal advice, by editing one file without
 touching any mechanic. Until then the lore can use the exact names in
 development.
 
+### 5.3b *All Tomorrows* species (owner's decision A19)
+
+The owner wants the species of C. M. Kosemen's *All Tomorrows* (2006, as Nemo
+Ramjet) **as the very species**, under the same rule as §5.3: exact names in
+development, every proper noun and description in the lore file
+(`lore/alltomorrows.<lang>.json`), so a release can swap them without touching
+mechanics. The full, checked catalogue (every species, body plan, home, fate)
+is compiled from the book into that file; the table below is the design hook.
+
+Why they fit: the book is about one lineage split into many by environment and
+by being *reshaped*, which is exactly what our lineage ledger and the Space
+stage's **Shape** verb do. Their themes become mechanics, not just cameos.
+
+| From the book | In the game |
+|---|---|
+| **The Qu** (aliens that remake other species by genetic engineering, then leave) | A Space-stage threat that **rewrites genomes**: a Qu visit turns colonies into new, stranger species of your own lineage. You can't fight it head-on early; you hide, scatter or endure. When it leaves, the reshaped colonies are new species to befriend or absorb (Shape, run by someone else) |
+| **Star People** (engineered for space, colonise the galaxy) | The pattern your **Seed** phase repeats; their abandoned worlds are ruins with tech to recover |
+| **The species the Qu made** (worm-like, insect-eating, the living water-treatment colony and others; some regain sapience) | Encounterable posthuman civilisations, each in its own niche, with diplomacy by temperament (as the Affront-style species). Some are "uplift" targets |
+| **Ruin Haunters → Gravitals** (machine bodies, galactic empire) | The **rogue-AI** egg (§9b) gets a lore face: a species that became machines and expands. Ties to ship minds' refusal rules |
+| **Bug Facers** (reshaped by the Gravitals) | A liberation choice: free them or use them |
+| **Asteromorphs** (escaped into deep space, defeat the Gravitals, make the New Machines) | The **void-adapted** path's mirror (§1): what your own space-adapted lineage can become; a possible ally or rival with the same trait |
+| **Amphicephali** (first contact from a neighbouring galaxy) | A late diplomacy event at the galaxy's edge |
+| **The narrator holding a billion-year-old human skull** | **Creature-stage egg:** one fossil on the island is a small, unmistakably human skull, far older than anything else. The field journal entry is a single line. It pays off in Space (the archive and the makers' world, G67) |
+
+Legal note: the book is a living author's copyrighted work (2025 English
+edition by a publisher). Same as §5.3: names and descriptions live only in the
+lore file, no art is copied, and contacting the author is a release-time
+option (he has been open to fan work).
+
 ### 5.4 End of the arc
 
 There are several wins (as in Realm): reach the galactic core past its guardian

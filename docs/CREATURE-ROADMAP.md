@@ -136,6 +136,7 @@ G70 minute-to-minute loop. Spec: `P4.md`.
 | Nocturnal creature | cheap | C2 |
 | 3 fossils, 1 hidden cave | cheap | C2 |
 | Cousins (your ancestors) | system | C2 |
+| The billion-year-old human skull (*All Tomorrows*, A19) | cheap (one fossil) | C2 |
 | Webs / silk | deep | C3 |
 | Ink jet | deep | C4 |
 | Sunken bones, cliff fossils, waterfall cave | cheap | C4 |
