@@ -33,11 +33,11 @@ Commands (one per turn; the last accepted order keeps running until you give a n
   go_nest           return to the nest (safe place)
   wait              stand still
 Only verbs in legal_verbs are available. Observation fields:
-  world: bound (you can walk within +-bound on x and z), units, nest {x,z}, tick_hz
+  world: bound (you can walk within +-bound on x and z), units, nest {{x,z}}, tick_hz
   own: x, z, hp, stamina (and their maxima), speed, facing (unit vector)
   last_error: result of your last command ("ok" or why it was rejected); it stays until your next command
-  blocked: null, or {reason: cliff|water|edge|obstacle|creature|unreachable, x, z} when you were stopped during the last tick
-  events: what happened since your last turn: hit {by,target,move,damage}, kill, death, respawn, order_rejected, path_found, arrived, fled, path_failed (ids: 0 = you, 1.. = creatures); a kill, death or fled event also ends your standing order
+  blocked: null, or {{reason: cliff|water|edge|obstacle|creature|unreachable, x, z}} when you were stopped during the last tick
+  events: what happened since your last turn: hit {{by,target,move,damage}}, kill, death, respawn, order_rejected, path_found, arrived, fled, path_failed (ids: 0 = you, 1.. = creatures); a kill, death or fled event also ends your standing order
   nearby: creatures and carcasses (id, species, distance, bearing in degrees relative to your facing, positive = clockwise/right, hp, hp_max, state roam|alert|fighting|carcass|dead, in_fight), the nest, rocks and trees within 40 m
 Reply format:
 ACTION: <one command>
