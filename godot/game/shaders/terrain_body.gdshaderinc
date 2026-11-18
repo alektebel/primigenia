@@ -9,7 +9,7 @@ uniform vec3 lod_color = vec3(0.0);
 uniform float lod_debug : hint_range(0.0, 1.0) = 0.0;
 // 0 off, 1 = 4 m grid through the active mapping (R, G sawtooth of u, v; B checker), 2 = mapping weights,
 // 3 = strata (R cap rock, G bedding faces, B bedding phase), 4 = rock light with the detail normal (unclamped), 5 = legacy planar xz grid (the old mapping, for the stretch test),
-// 6 = masks (R rock, G snow, B steeper than 55 degrees), 7 = the same with the pre-blend snow, 10 / 11 = material weights after / before the height blend, 8 = ramp bands of the rock light (flicker test), 9 = relief channels.
+// 12 = erosion maps (R flow, G deposition, B talus apron), 13 = exposure, 6 = masks (R rock, G snow, B steeper than 55 degrees), 7 = the same with the pre-blend snow, 10 / 11 = material weights after / before the height blend, 8 = ramp bands of the rock light (flicker test), 9 = relief channels.
 uniform int rock_debug = 0;
 
 varying vec3 wp;
@@ -36,16 +36,97 @@ void vertex() {
 	wp = (MODEL_MATRIX * vec4(VERTEX, 1.0)).xyz;
 }
 
+// ---- Visual erosion (terrain v5) ----
+// Erosion maps: R flow/wetness (gully water), G droplet deposition (sediment fans), B talus apron (scree), A exposure (> 0.5 convex).
+const float EROSION_FADE_NEAR = 500.0;   // the maps are 1.8 m texels: their effect fades out between these distances
+const float EROSION_FADE_FAR = 1500.0;
+// Eroded fBm (derivative-damped fractal noise, I. Quilez): fine rock relief for the normal only, near the camera.
+const float FBM_AMP = 0.4;              // metres of height of the first octave
+const float FBM_WAVELENGTH = 2.4;
+const float ROCK_WARP = 1.0;             // metres of domain warp of the rock sheets
+const float FBM_NEAR = 22.0;
+const float FBM_FAR = 85.0;
+
+vec4 erosion_maps(vec2 xz, float dist) {
+	float f = 1.0 - smoothstep(EROSION_FADE_NEAR, EROSION_FADE_FAR, dist);
+	vec4 e = texture(vmaps_tex, (xz + MAP_HALF) / (VIS_CELL * float(VIS_N)));
+	return vec4(e.rgb * f, mix(0.5, e.a, f));
+}
+
+vec3 fbm_noised(vec2 p) {
+	vec2 i = floor(p);
+	vec2 f = fract(p);
+	vec2 u = f * f * f * (f * (f * 6.0 - 15.0) + 10.0);
+	vec2 du = 30.0 * f * f * (f * (f - 2.0) + 1.0);
+	float a = rockHash(i);
+	float b = rockHash(i + vec2(1.0, 0.0));
+	float c = rockHash(i + vec2(0.0, 1.0));
+	float d = rockHash(i + vec2(1.0, 1.0));
+	return vec3(a + (b - a) * u.x + (c - a) * u.y + (a - b - c + d) * u.x * u.y, du * (vec2(b - a, c - a) + (a - b - c + d) * u.yx));
+}
+
+// Gradient (per metre) of the eroded fBm over a plane: each octave's slope is damped by the slope already accumulated, so gullies
+// keep smooth floors and ridges stay sharp.
+vec2 fbm_eroded_grad(vec2 p) {
+	vec2 d = vec2(0.0);
+	vec2 g = vec2(0.0);
+	float a = FBM_AMP;
+	float fr = 1.0 / FBM_WAVELENGTH;
+	p *= fr;
+	for (int o = 0; o < 3; o++) {
+		vec3 n = fbm_noised(p);
+		d += (n.yz - vec2(0.0));
+		g += a * fr * (n.yz - 0.0) / (1.0 + dot(d, d));
+		p = mat2(vec2(0.8, 0.6), vec2(-0.6, 0.8)) * p * 2.0 + vec2(3.7, 1.3);
+		a *= 0.5;
+		fr *= 2.0;
+	}
+	return g;
+}
+
+// Tilt to add to the macro normal (triplanar on the face normal gn, faded with distance); zero beyond FBM_FAR.
+vec3 fbm_tilt(vec3 wpos, vec3 gn, float dist) {
+	float f = 1.0 - smoothstep(FBM_NEAR, FBM_FAR, dist);
+	if (f <= 0.0) {
+		return vec3(0.0);
+	}
+	vec3 w = pow(abs(gn), vec3(4.0));
+	w /= w.x + w.y + w.z;
+	vec3 t = vec3(0.0);
+	if (w.y > 0.02) {
+		vec2 g = fbm_eroded_grad(wpos.xz);
+		t += w.y * vec3(-g.x, 0.0, -g.y);
+	}
+	if (w.x > 0.02) {
+		vec2 g = fbm_eroded_grad(wpos.zy + vec2(17.3, 5.1));
+		t += w.x * vec3(0.0, -g.y, -g.x);
+	}
+	if (w.z > 0.02) {
+		vec2 g = fbm_eroded_grad(wpos.xy + vec2(41.7, 23.9));
+		t += w.z * vec3(-g.x, -g.y, 0.0);
+	}
+	return t * f;
+}
+
 // Material weights of the fragment: the generator's bilinear cell weights, the height blend and the snow gate when a rock
 // sample is taken (any rock, scree, volcanic or snow weight, or a steep meadow face). `rt` is valid when it returns true.
-bool terrain_weights(vec3 gn, float steep, float wet, float grass, float dist, MapCtx mc, vec2 xz, bool blend, out float w[6], out RockTex rt) {
-	material_weights(xz, w);
+bool terrain_weights(vec3 gn, float steep, float wet, float grass, float dist, MapCtx mc, vec2 xz, bool blend, vec4 em, out float w[6], out RockTex rt) {
+	// Soften the classification borders (3.5 m cell edges): the lookup is warped by a few metres of low-frequency noise.
+	vec2 warp = vec2(landNoise(xz * 0.17), landNoise(xz * 0.17 + 31.7)) - 0.5;
+	material_weights(xz + warp * 5.0, w);
+	// Scree aprons from the thermal pass: rock below cliffs on stable slopes turns to scree.
+	float apron = smoothstep(0.3, 0.7, em.b) * smoothstep(0.55, 0.7, gn.y);
+	w[2] += w[1] * apron;
+	w[1] -= w[1] * apron;
 	float turf_slope = smoothstep(0.74, 0.94, gn.y);
 	rt = RockTex(0.0, 0.5, 0.5, 1.0, vec3(0.0));
 	if (w[1] + w[2] + w[3] + w[5] + w[0] * (1.0 - turf_slope) <= 0.001) {
 		return false;
 	}
 	rt = rock_sample(mc, dist, wet, steep);
+#if ROCK_TIER >= 2
+	rt.tilt += fbm_tilt(wp, gn, dist) * (w[1] + w[2] + w[3] + w[0] * (1.0 - turf_slope));
+#endif
 	rock_blend(w, rt.plate, grass, normalize(gn + rt.tilt), gn, wp, blend);
 	return true;
 }
@@ -67,6 +148,10 @@ void fragment() {
 		} else if (rock_debug == 4) {
 			RockTex rt4 = rock_sample(map_ctx(wp, gn), distance(wp, CAMERA_POSITION_WORLD), 0.0, 0.0);
 			dbg = vec3(dot(normalize(gn + rt4.tilt), SUN_DIR) * 0.5 + 0.5);
+		} else if (rock_debug == 12) {
+			dbg = erosion_maps(xz, 0.0).rgb;   // R flow, G deposition, B talus apron
+		} else if (rock_debug == 13) {
+			dbg = vec3(erosion_maps(xz, 0.0).a);   // exposure (> 0.5 convex)
 		} else if (rock_debug == 9) {
 			dbg = texture(relief_tex, (xz + MAP_HALF) / (MAP_CELL * float(MAP_N))).rgb;   // R fine, G broad curvature, B sediment
 		} else if (rock_debug == 8) {
@@ -83,7 +168,7 @@ void fragment() {
 			float wt[6];
 			RockTex rtd;
 			float steep6 = 1.0 - smoothstep(0.48, 0.76, gn.y);
-			terrain_weights(gn, steep6, 0.0, surface_bilinear(xz).g, distance(wp, CAMERA_POSITION_WORLD), map_ctx(wp, gn), xz, true, wt, rtd);
+			terrain_weights(gn, steep6, 0.0, surface_bilinear(xz).g, distance(wp, CAMERA_POSITION_WORLD), map_ctx(wp, gn), xz, true, vec4(0.0, 0.0, 0.0, 0.5), wt, rtd);
 			dbg = vec3(r6, step(0.5, wt[5]), step(gn.y, 0.5736));
 		} else if (rock_debug == 7) {
 			// Same masks with the pre-step-7 snow (the cell weight, no gate), for the before/after comparison.
@@ -95,7 +180,7 @@ void fragment() {
 			float wb[6];
 			RockTex rtb;
 			float steepb = 1.0 - smoothstep(0.48, 0.76, gn.y);
-			terrain_weights(gn, steepb, 0.0, surface_bilinear(xz).g, distance(wp, CAMERA_POSITION_WORLD), map_ctx(wp, gn), xz, rock_debug == 10, wb, rtb);
+			terrain_weights(gn, steepb, 0.0, surface_bilinear(xz).g, distance(wp, CAMERA_POSITION_WORLD), map_ctx(wp, gn), xz, rock_debug == 10, vec4(0.0, 0.0, 0.0, 0.5), wb, rtb);
 			float ts = smoothstep(0.74, 0.94, gn.y);
 			dbg = vec3(wb[1] + wb[0] * (1.0 - ts), wb[2], wb[0] * ts);
 		} else if (rock_debug == 9) {
@@ -124,12 +209,21 @@ void fragment() {
 		vec4 sb = surface_bilinear(xz);   // G grass, B cavity, A wetness
 		float cavity = sb.b;
 		float wet = sb.a;
-		float dist = distance(wp, CAMERA_POSITION_WORLD);
+		float dist = dist0;
+		vec4 em = erosion_maps(xz, dist);
+		float exposed = smoothstep(0.56, 0.78, em.a) * (1.0 - smoothstep(0.8, 0.95, gn.y));   // convex, not flat: clean rock on ridges
+		sb.g *= 1.0 - exposed * 0.7;
+		rl.r = clamp(rl.r - (em.a - 0.5) * 0.8, 0.0, 1.0);   // the erosion pass's curvature sharpens the relief cue at 1.8 m
+		float wet_rock = max(wet, em.r * 0.85 * smoothstep(0.35, 0.75, 1.0 - gn.y) * (1.0 - exposed));   // gully water on steep ground
 		MapCtx mc = map_ctx(wp, gn);
+		// Domain warp of the rock mapping: the plate sheets stop reading as a regular honeycomb (same warp at every distance, no swimming).
+		vec3 wq = wp * 0.29;
+		mc.p += (vec3(landNoise(wq.xz + wq.y), landNoise(wq.yz + 7.1), landNoise(wq.xy + 13.3)) - 0.5) * ROCK_WARP
+			+ (vec3(landNoise(wq.xz * 2.7 + 3.0), landNoise(wq.yz * 2.7 + 9.4), landNoise(wq.xy * 2.7 + 21.1)) - 0.5) * (ROCK_WARP * 0.35);
 		float steep = 1.0 - smoothstep(0.48, 0.76, gn.y);
 		float w[6];
 		RockTex rt;
-		bool have_rock = terrain_weights(gn, steep, wet, sb.g, dist, mc, xz, true, w, rt);
+		bool have_rock = terrain_weights(gn, steep, wet_rock, sb.g, dist, mc, xz, true, em, w, rt);
 		// Meadow colour only where something reads it (the meadow weight, the grass mask or a fan toe): far mountains skip it.
 		vec3 meadow = vec3(0.0);
 		if (w[0] + sb.g > 0.001) {
@@ -142,13 +236,13 @@ void fragment() {
 		vec3 rock_c = vec3(0.0);
 		vec3 scree_c = vec3(0.0);
 		vec3 volc_c = vec3(0.0);
-		float fan = smoothstep(0.25, 0.75, rl.b);
+		float fan = max(smoothstep(0.25, 0.75, rl.b), smoothstep(0.35, 0.85, em.g) * smoothstep(0.7, 0.9, gn.y));
 		float snow_light = light;
 		if (have_rock) {
 			float fw;
 			float rlight = rock_light(gn, rt.tilt, fw) * vis;
 			snow_light = rlight;
-			rock_c = rock_shade(R0, R1, rt, rlight, fw, steep, cavity, wp, 1.0, true, rl, wet) * GRASS;
+			rock_c = rock_shade(R0, R1, rt, rlight, fw, steep, cavity, wp, 1.0, true, rl, wet_rock) * GRASS;
 			if (w[2] > 0.001) {
 				ScreeTex st = scree_sample(mc, rt, dist, fan);
 				float sfw;
@@ -156,7 +250,7 @@ void fragment() {
 				scree_c = scree_shade(rock_c, st, sl, sfw, fan);
 			}
 			if (w[3] > 0.001) {
-				volc_c = rock_shade(VOLCANIC_R0, VOLCANIC_R1, rt, rlight, fw, steep, cavity, wp, 2.0, false, rl, wet) * GRASS;
+				volc_c = rock_shade(VOLCANIC_R0, VOLCANIC_R1, rt, rlight, fw, steep, cavity, wp, 2.0, false, rl, wet_rock) * GRASS;
 			}
 		}
 		vec3 sand_c = SAND * landRamp(light) * GRASS;

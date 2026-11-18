@@ -4,6 +4,7 @@ extends SceneTree
 const TerrainCache := preload("res://game/island/terrain_cache.gd")
 const Views := preload("res://game/tests/rock_views.gd")
 const ALL := ["cliff_lit", "cliff_shade", "ridge", "scree", "valley", "coast", "far", "river"]
+const CLOSE := ["close_gully", "close_scree", "close_cliff", "close_bank"]   # terrain v5 close-ups (a person-height camera)
 const Rivers := preload("res://game/island/rivers.gd")
 const Clouds := preload("res://game/island/clouds.gd")
 
@@ -82,7 +83,58 @@ static func camera_for(td, v: String) -> Dictionary:
 			var nrm: Vector3 = td.normal(at2.x, at2.z)
 			var side := Vector3(nrm.x, 0.0, nrm.z).normalized()
 			return {"pos": at2 + side * 45.0 + Vector3(0, 10, 0), "look": at2}
+		"close_gully", "close_scree", "close_cliff":
+			return _close(td, v)
+		"close_bank":
+			var bk := -1
+			var bd := 1e30
+			for k in td.n * td.n:
+				if td.river_class(k) >= 2 and td.height[k] > 20.0 and td.height[k] < 120.0:
+					var d3 := absf(Vector2(td.cell_center(k % td.n), td.cell_center(k / td.n)).length() - 650.0)
+					if d3 < bd:
+						bd = d3
+						bk = k
+			var rp := Vector3(td.cell_center(bk % td.n), td.height[bk], td.cell_center(bk / td.n))
+			var nxk2: int = Rivers.next_cell(td, bk)
+			var dn2 := Vector3(td.cell_center(nxk2 % td.n) - rp.x, 0.0, td.cell_center(nxk2 / td.n) - rp.z).normalized()
+			var side2 := Vector3(-dn2.z, 0.0, dn2.x)
+			var cp := rp + side2 * 14.0
+			return {"pos": Vector3(cp.x, td.visual_ground(cp.x, cp.z) + 2.2, cp.z), "look": rp + dn2 * 6.0 - side2 * 2.0}
 	return {}
+
+# Close-up spots found by rule on the erosion maps: a gully (flow, 25-45 degrees), a scree apron (talus apron) and a cliff (steeper than 55 degrees),
+# nearest to 500 m from the origin. The camera is a few metres above the ground 13 m (cliff: 26 m) away on the downhill side, looking at the spot.
+static func _close(td, v: String) -> Dictionary:
+	var mn: int = td.vn / 2
+	var best := Vector3.INF
+	var bs := -1e30
+	for j in range(8, mn - 8, 3):
+		for i in range(8, mn - 8, 3):
+			var m := (j * mn + i) * 4
+			var x: float = (float(i) * 2.0 + 1.0) * td.vcell - td.half
+			var z: float = (float(j) * 2.0 + 1.0) * td.vcell - td.half
+			var h: float = td.visual_ground(x, z)
+			if h < 60.0 or Vector2(x, z).length() > 1200.0:
+				continue
+			var n: Vector3 = td.normal(x, z)
+			var sl: float = acos(n.y) * 57.2958
+			var score := -1e30
+			if v == "close_gully" and sl > 25.0 and sl < 45.0 and td.material[td.cell_index(x, z)] == 1:
+				score = float(td.vmaps[m])
+			elif v == "close_scree" and sl > 22.0 and sl < 40.0:
+				score = float(td.vmaps[m + 2]) + (50.0 if td.material[td.cell_index(x, z)] == 2 else 0.0)
+			elif v == "close_cliff" and sl > 55.0 and sl < 75.0 and td.material[td.cell_index(x, z)] == 1:
+				score = 100.0 - absf(Vector2(x, z).length() - 500.0) * 0.1 + h * 0.01
+			score -= absf(Vector2(x, z).length() - 500.0) * 0.02
+			if score > bs:
+				bs = score
+				best = Vector3(x, h, z)
+	var nn: Vector3 = td.normal(best.x, best.z)
+	var out := Vector3(nn.x, 0.0, nn.z).normalized()
+	var dist := 26.0 if v == "close_cliff" else 13.0
+	var cx: float = best.x + out.x * dist
+	var cz: float = best.z + out.z * dist
+	return {"pos": Vector3(cx, maxf(td.visual_ground(cx, cz) + 2.5, best.y + (10.0 if v == "close_cliff" else 3.5)), cz), "look": best + Vector3(0, 1.0, 0)}
 
 func _initialize() -> void:
 	_run.call_deferred()
@@ -91,6 +143,8 @@ func _run() -> void:
 	var args := OS.get_cmdline_user_args()
 	var out_dir: String = args[0] if args.size() > 0 else "/tmp/look"
 	var views: PackedStringArray = (args[1] if args.size() > 1 and args[1] != "" else ",".join(ALL)).split(",")
+	if args.size() > 1 and args[1] == "close":
+		views = PackedStringArray(CLOSE)
 	DirAccess.make_dir_recursive_absolute(out_dir)
 	root.size = Vector2i(1280, 720)
 	var game = root.get_node("Game")
