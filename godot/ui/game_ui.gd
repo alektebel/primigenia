@@ -8,6 +8,7 @@ const Hud := preload("res://ui/hud.gd")
 const Card := preload("res://ui/creature_card.gd")
 const Radial := preload("res://ui/radial_menu.gd")
 const Pause := preload("res://ui/pause_menu.gd")
+const LoadoutPanel := preload("res://ui/loadout_panel.gd")
 
 signal mode_changed(mode: StringName)
 signal ability_pressed(index: int, ability: Dictionary)
@@ -19,6 +20,8 @@ signal menu_requested
 signal save_requested
 signal load_requested
 signal ui_click
+signal loadout_requested             # key L / the panel's own close: the stage decides whether the nest allows it
+signal loadout_assign(slot: int, move: int)   # slot 0..3, move id or -1
 
 var mode: StringName = Modes.ATTACK
 var abilities: Array = []
@@ -29,6 +32,8 @@ var hud
 var card
 var radial
 var pause_menu
+var loadout_panel
+var loadout_abilities: Array = []   # the 4 hotbar entries of Attack mode once the stage knows the loadout
 var audio
 
 func _init() -> void:
@@ -54,6 +59,9 @@ func _ready() -> void:
 	root.add_child(radial)
 	pause_menu = Pause.new()
 	root.add_child(pause_menu)
+	loadout_panel = LoadoutPanel.new()
+	root.add_child(loadout_panel)
+	loadout_panel.assign.connect(func(slot: int, move: int) -> void: loadout_assign.emit(slot, move))
 	hud.ability_clicked.connect(func(i: int) -> void: _press(i))
 	hud.guard_clicked.connect(func() -> void: guard_pressed.emit())
 	hud.dodge_clicked.connect(func(d: int) -> void: dodge_pressed.emit(d))
@@ -113,7 +121,7 @@ func set_mode(m, emit: bool = true) -> void:
 		return
 	mode = StringName(m)
 	radial.current = mode
-	set_abilities(Modes.abilities_for(mode))
+	set_abilities(loadout_abilities if mode == Modes.ATTACK and not loadout_abilities.is_empty() else Modes.abilities_for(mode))
 	if emit:
 		mode_changed.emit(mode)
 
@@ -121,6 +129,16 @@ func set_mode(m, emit: bool = true) -> void:
 func set_abilities(list: Array) -> void:
 	abilities = list.slice(0, 4)
 	hud.set_abilities(abilities)
+
+## The hotbar of Attack mode: 4 entries {id, name, move, role, stamina, cooldown, empty?}, in slot order (keys 1-4).
+func set_loadout_abilities(list: Array) -> void:
+	loadout_abilities = list.slice(0, 4)
+	if mode == Modes.ATTACK:
+		set_abilities(loadout_abilities)
+
+## Cooldown fractions (1 = just used, 0 = ready) per hotbar slot.
+func set_cooldowns(fracs: Array) -> void:
+	hud.set_cooldowns(fracs)
 
 func open_radial(pos: Vector2 = Vector2.ZERO) -> void:
 	radial.open_at(pos if pos != Vector2.ZERO else root.size * 0.5, mode)
@@ -170,6 +188,9 @@ func _unhandled_input(e: InputEvent) -> void:
 		get_viewport().set_input_as_handled()
 		return
 	if paused:
+		return
+	if e.is_action_pressed("loadout"):
+		loadout_requested.emit()
 		return
 	for i in 4:
 		if e.is_action_pressed("ability_%d" % (i + 1)):

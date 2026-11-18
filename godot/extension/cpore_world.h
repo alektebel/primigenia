@@ -30,6 +30,7 @@ public:
     static godot::Dictionary default_setup(int64_t seed);
     static godot::Dictionary default_profile();
     static godot::Array species();
+    static godot::Array moves();
     int reset(const godot::Dictionary &setup);
     godot::Dictionary get_setup() const;
     godot::String step(const godot::Dictionary &input);

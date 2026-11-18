@@ -611,6 +611,7 @@ int cp_stage_reset(CpStageWorld *w,const CpStageSetup *s){
     cp_rng_seed(&w->roam_rng,copy.seed^0x524f414du);
     seed_noise(w);
     creature(&w->player,copy.nest_x,copy.nest_z,-1,&copy.player);
+    cp_combat_loadout_default(&w->loadout,&copy.player);
     for(int i=0;i<copy.n;i++){
         const CpStageSpawn *c=&copy.wild[i];
         creature(&w->wild[i],c->x,c->z,c->species,&c->profile);
@@ -658,6 +659,11 @@ static void start(CpStageWorld *w,int index){
         p,e
     };
     for(int i=0;i<2;i++){
+        if(i==0){
+            s.c[0].has_loadout=1;
+            s.c[0].loadout=w->loadout;
+            s.c[0].loadout.known=cp_stage_known_moves(w);
+        }
         s.c[i].prof=c[i]->profile;
         s.c[i].prof.hp=c[i]->hp;
         s.c[i].prof.stamina=c[i]->stamina;
@@ -753,11 +759,26 @@ static int has_threat(const CpStageWorld *w){
     return 0;
 }
 static int order_apply(CpStageWorld *w,const CpStageInput *a){
-    if(!w||!a||!isfinite(a->x)||!isfinite(a->z)||a->verb<0||a->verb>CP_STAGE_DODGE||a->sprint<0||a->sprint>1)return -1;
+    if(!w||!a||!isfinite(a->x)||!isfinite(a->z)||a->verb<0||a->verb>CP_STAGE_LOADOUT||a->sprint<0||a->sprint>1)return -1;
     if(a->verb==CP_STAGE_CONTINUE)return 0;
+    if(a->verb==CP_STAGE_LOADOUT){
+        if(a->target<1||a->target>CB_LOADOUT_SLOTS)return CP_STAGE_ERR_BAD_SLOT;
+        if(a->move!=CB_MOVE_NONE&&(a->move<0||a->move>=CB_MOVE_COUNT||(CP_COMBAT_MOVES[a->move].flags&CB_F_SELF)))return CP_STAGE_ERR_UNKNOWN_MOVE;
+        if(w->active>=0)return CP_STAGE_ERR_IN_FIGHT;
+        if(length(w->player.x-w->setup.nest_x,w->player.z-w->setup.nest_z)>CP_STAGE_NEST_RADIUS)return CP_STAGE_ERR_NOT_AT_NEST;
+        CpCombatLoadout next=w->loadout;
+        next.known=cp_stage_known_moves(w);
+        const int rc=cp_combat_loadout_set(&next,a->target-1,a->move);
+        if(rc)return rc;
+        w->loadout=next;
+        w->hash=cp_stage_hash(w);
+        return 0;
+    }
     if(a->verb==CP_STAGE_GO&&(!isfinite(a->x)||!isfinite(a->z)||ab(a->x)>cp_stage_bound(w)||ab(a->z)>cp_stage_bound(w)))return -1;
     if((a->verb==CP_STAGE_APPROACH||a->verb==CP_STAGE_ATTACK)&&(a->target<1||a->target>w->setup.n||w->wild[a->target-1].dead))return -2;
     if(a->verb==CP_STAGE_ATTACK&&(a->move<0||a->move>=CB_MOVE_COUNT||(CP_COMBAT_MOVES[a->move].flags&CB_F_SELF)||!cp_combat_part_level(&w->player.profile,CP_COMBAT_MOVES[a->move].part)))return -3;
+    if(a->verb==CP_STAGE_ATTACK&&cp_combat_loadout_slot_of(&w->loadout,a->move)<0)return CP_STAGE_ERR_NOT_EQUIPPED;
+    if(a->verb==CP_STAGE_ATTACK&&w->active>=0&&w->combat.c[0].cd[a->move])return CP_STAGE_ERR_ON_COOLDOWN;
     if(a->verb==CP_STAGE_DODGE&&(a->dir<0||a->dir>7))return -1;
     if(a->verb==CP_STAGE_HEADING&&a->hx==0&&a->hz==0)return -1;
     if(w->active>=0&&(a->verb==CP_STAGE_ATTACK||a->verb==CP_STAGE_APPROACH)&&a->target!=w->active+1)return -2;
@@ -1264,6 +1285,10 @@ uint64_t cp_stage_hash(const CpStageWorld *w){
         for(unsigned i=0;i<sizeof w->motion/sizeof *m;i++)fl(&h,m[i]);
     }
     if(w->debug_flags)u32(&h,(uint32_t)w->debug_flags);
+    if(!cp_combat_loadout_is_default(&w->loadout,&w->player.profile)){
+        for(int i=0;i<CB_LOADOUT_SLOTS;i++)u32(&h,(uint32_t)(uint8_t)w->loadout.slot[i]);
+        u32(&h,(uint32_t)(uint8_t)w->loadout.sig_slot);
+    }
     if(w->n_path>0){
         u32(&h,(uint32_t)w->n_path);
         u32(&h,(uint32_t)w->path_i);
@@ -1282,13 +1307,18 @@ uint64_t cp_stage_hash(const CpStageWorld *w){
     }
     return h;
 }
-int cp_stage_command(CpStageWorld *w,const char *text){
+uint16_t cp_stage_known_moves(const CpStageWorld *w){
+    /* hook: learning by observing (A21 section 4) ORs its learned moves in here */
+    return cp_combat_known_default(&w->player.profile);
+}
+static int parse_text(const char *text,CpStageInput *out){
     CpStageInput a={
         0
     };
     char extra,move_name[32];
     float deg;
-    if(!w||!text)return -1;
+    int rc=0;
+    if(!text)return -1;
     if(strcmp(text,"wait")==0)a.verb=CP_STAGE_WAIT;
     else if(strcmp(text,"go_nest")==0)a.verb=CP_STAGE_GO_NEST;
     else if(strcmp(text,"flee")==0)a.verb=CP_STAGE_FLEE;
@@ -1303,10 +1333,22 @@ int cp_stage_command(CpStageWorld *w,const char *text){
             long value=strtol(move_name,&end,10);
             if(*move_name&&!*end&&value>=0&&value<CB_MOVE_COUNT)a.move=(int)value;
         }
-        if(a.move<0)return reject(w,&a,-6);
+        if(a.move<0){rc=-6;goto done;}
+    }
+    else if(sscanf(text,"loadout %d %31s %c",&a.target,move_name,&extra)==2){
+        a.verb=CP_STAGE_LOADOUT;
+        a.move=-2;
+        if(strcasecmp(move_name,"none")==0||strcasecmp(move_name,"empty")==0||strcmp(move_name,"-1")==0)a.move=CB_MOVE_NONE;
+        for(int i=0;i<CB_MOVE_COUNT;i++)if(strcasecmp(move_name,cp_combat_move_name(i))==0)a.move=i;
+        if(a.move==-2){
+            char *end;
+            long value=strtol(move_name,&end,10);
+            if(*move_name&&!*end&&value>=0&&value<CB_MOVE_COUNT)a.move=(int)value;
+        }
+        if(a.move==-2){rc=CP_STAGE_ERR_UNKNOWN_MOVE;goto done;}
     }
     else if(sscanf(text,"heading %f %c",&deg,&extra)==1){
-        if(!isfinite(deg)||ab(deg)>1000000)return reject(w,&a,-1);
+        if(!isfinite(deg)||ab(deg)>1000000){rc=-1;goto done;}
         deg-=(int)(deg/360)*360;
         if(deg<0)deg+=360;
         int quadrant=(int)(deg/90);
@@ -1334,7 +1376,19 @@ int cp_stage_command(CpStageWorld *w,const char *text){
         a.hx=(int16_t)(x*32767);
         a.hz=(int16_t)(z*32767);
     }
-    else return reject(w,&a,-1);
+    else rc=-1;
+done:
+    *out=a;
+    return rc;
+}
+int cp_stage_parse(const char *text,CpStageInput *out){
+    return parse_text(text,out);
+}
+int cp_stage_command(CpStageWorld *w,const char *text){
+    CpStageInput a;
+    if(!w||!text)return -1;
+    const int rc=parse_text(text,&a);
+    if(rc)return reject(w,&a,rc);
     if(a.verb==CP_STAGE_FLEE&&w->active<0&&!has_threat(w))return reject(w,&a,-5);
     return cp_stage_order(w,&a);
 }
@@ -1362,6 +1416,13 @@ const char *cp_stage_order_error(int code){
         case -4:return "unreachable";
         case -5:return "no_threat";
         case -6:return "unknown_move";
+        case CP_STAGE_ERR_ON_COOLDOWN:return "on_cooldown";
+        case CP_STAGE_ERR_NOT_EQUIPPED:return "not_equipped";
+        case CP_STAGE_ERR_BAD_SLOT:return "invalid slot (1..4, and a signature move only fits the signature slot)";
+        case CP_STAGE_ERR_NOT_KNOWN:return "not_known";
+        case CP_STAGE_ERR_UNKNOWN_MOVE:return "unknown_move";
+        case CP_STAGE_ERR_NOT_AT_NEST:return "not_at_nest";
+        case CP_STAGE_ERR_IN_FIGHT:return "in_fight";
         default:return "invalid command or value";
     }
 }
@@ -1430,7 +1491,7 @@ static int attack_move_ok(const CpStageWorld *w,int i){
 }
 /* Usable now: enough stamina, and (in a fight) the fighter is free to start it. */
 static int attack_move_usable(const CpStageWorld *w,int i){
-    if(!attack_move_ok(w,i)||w->player.stamina<cp_combat_move_stamina(&w->player.profile,i))return 0;
+    if(!attack_move_ok(w,i)||cp_combat_loadout_slot_of(&w->loadout,i)<0||(w->active>=0&&w->combat.c[0].cd[i])||w->player.stamina<cp_combat_move_stamina(&w->player.profile,i))return 0;
     if(w->active>=0){
         const CpCombatCreature *c=&w->combat.c[0];
         return cp_combat_move_available(c,i)&&c->move==CB_MOVE_NONE&&c->phase!=CB_PH_RECOVERY&&c->stun_t<=0;
@@ -1509,10 +1570,32 @@ int cp_stage_observe_v(const CpStageWorld *w,char *out,size_t cap,int version){
     ADD(",\"go_nest\",\"wait\"");
     int target=0,attacks=0;
     for(int i=0;i<w->setup.n;i++)if(!w->wild[i].dead&&(w->active<0||w->active==i))target=1;
-    for(int i=0;i<CB_MOVE_COUNT;i++)if(!(CP_COMBAT_MOVES[i].flags&CB_F_SELF)&&cp_combat_part_level(&w->player.profile,CP_COMBAT_MOVES[i].part)>0)attacks++;
+    for(int i=0;i<CB_MOVE_COUNT;i++)if(attack_move_ok(w,i)&&cp_combat_loadout_slot_of(&w->loadout,i)>=0)attacks++;
     if(target)ADD(",\"approach\"");
     if(target&&attacks)ADD(",\"attack\"");
-    ADD("],\"attack_moves\":[");
+    if(version==2&&w->active<0&&length(w->player.x-w->setup.nest_x,w->player.z-w->setup.nest_z)<=CP_STAGE_NEST_RADIUS)ADD(",\"loadout\"");   /* only at the nest, never in a fight */
+    ADD("]");
+    if(version==2){
+        /* A21: the kit. Slots are keys 1..4; guard and dodge are always available and never in a slot. */
+        const int edit=w->active<0&&length(w->player.x-w->setup.nest_x,w->player.z-w->setup.nest_z)<=CP_STAGE_NEST_RADIUS;
+        ADD(",\"loadout\":{\"slots\":[");
+        for(int k=0;k<CB_LOADOUT_SLOTS;k++){
+            const int mv=w->loadout.slot[k];
+            if(mv>=0&&mv<CB_MOVE_COUNT)ADD("%s\"%s\"",k?",":"",cp_combat_move_name(mv));
+            else ADD("%snull",k?",":"");
+        }
+        ADD("],\"signature_slot\":");
+        if(w->loadout.sig_slot>=0)ADD("%d",w->loadout.sig_slot+1);else ADD("null");
+        ADD(",\"can_edit\":%s,\"nest_radius_m\":%.1f},\"known_moves\":[",edit?"true":"false",(double)CP_STAGE_NEST_RADIUS);
+        const uint16_t known=cp_stage_known_moves(w);
+        int kc=0;
+        for(int i=0;i<CB_MOVE_COUNT;i++)if(known&(1u<<i)){
+            ADD("%s\"%s\"",kc?",":"",cp_combat_move_name(i));
+            kc++;
+        }
+        ADD("]");
+    }
+    ADD(",\"attack_moves\":[");
     comma=0;
     int tgt=-1;
     float best=1e30f;
@@ -1522,7 +1605,13 @@ int cp_stage_observe_v(const CpStageWorld *w,char *out,size_t cap,int version){
     }
     for(int i=0;i<CB_MOVE_COUNT;i++)if(attack_move_ok(w,i)){
         const CpCombatMove *m=&CP_COMBAT_MOVES[i];
-        ADD("%s{\"index\":%d,\"id\":%d,\"name\":\"%s\",\"stamina_cost\":%.3f,\"range_m\":%.3f,\"windup_ticks\":%d,\"active_ticks\":%d,\"recover_ticks\":%d,\"usable\":%s,\"target_in_range\":%s}",comma?",":"",i,i,m->name,cp_combat_move_stamina(&w->player.profile,i),m->reach,m->windup,m->active,m->recovery,attack_move_usable(w,i)?"true":"false",tgt<0?"null":attack_move_reaches(w,i,&w->wild[tgt])?"true":"false");
+        if(version==2){
+            const int slot=cp_combat_loadout_slot_of(&w->loadout,i),left=w->active>=0?(int)w->combat.c[0].cd[i]:0;
+            ADD("%s{\"index\":%d,\"id\":%d,\"name\":\"%s\",\"role\":\"%s\",\"stamina_cost\":%.3f,\"range_m\":%.3f,\"windup_ticks\":%d,\"active_ticks\":%d,\"recover_ticks\":%d,\"cooldown_ticks\":%d,\"cooldown_left\":%d,\"equipped\":%s,\"slot\":",comma?",":"",i,i,m->name,cp_combat_role_name(m->role),cp_combat_move_stamina(&w->player.profile,i),m->reach,m->windup,m->active,m->recovery,m->cooldown,left,slot>=0?"true":"false");
+            if(slot>=0)ADD("%d",slot+1);else ADD("null");
+            ADD(",\"usable\":%s,\"target_in_range\":%s}",attack_move_usable(w,i)?"true":"false",tgt<0?"null":attack_move_reaches(w,i,&w->wild[tgt])?"true":"false");
+        }
+        else ADD("%s{\"index\":%d,\"id\":%d,\"name\":\"%s\",\"stamina_cost\":%.3f,\"range_m\":%.3f,\"windup_ticks\":%d,\"active_ticks\":%d,\"recover_ticks\":%d,\"usable\":%s,\"target_in_range\":%s}",comma?",":"",i,i,m->name,cp_combat_move_stamina(&w->player.profile,i),m->reach,m->windup,m->active,m->recovery,attack_move_usable(w,i)?"true":"false",tgt<0?"null":attack_move_reaches(w,i,&w->wild[tgt])?"true":"false");
         comma=1;
     }
     ADD("],\"summary\":\"Explore the valley; creature ids are stable.\"}");
@@ -1655,7 +1744,7 @@ uint64_t cp_stage_layout(void){
     LAY(CpStageWorld,debug_flags);LAY(CpStageWorld,reserved);LAY(CpStageWorld,field_hash);LAY(CpStageWorld,path);LAY(CpStageWorld,n_path);LAY(CpStageWorld,path_i);
     LAY(CpStageWorld,blocked_ticks);LAY(CpStageWorld,replans);LAY(CpStageWorld,path_goal_x);LAY(CpStageWorld,path_goal_z);
     LAY(CpStageWorld,blocked_reason);LAY(CpStageWorld,blocked_x);LAY(CpStageWorld,blocked_z);LAY(CpStageWorld,ev_total);
-    LAY(CpStageWorld,ev_acked);LAY(CpStageWorld,events);LAY(CpStageWorld,field);lay(&h,sizeof(CpStageEvent));
+    LAY(CpStageWorld,ev_acked);LAY(CpStageWorld,events);LAY(CpStageWorld,loadout);LAY(CpStageWorld,field);lay(&h,sizeof(CpStageEvent));
     LAY(CpStageSetup,seed);LAY(CpStageSetup,terrain_seed);LAY(CpStageSetup,terrain);LAY(CpStageSetup,n);
     LAY(CpStageSetup,n_obstacles);LAY(CpStageSetup,nest_x);LAY(CpStageSetup,nest_z);LAY(CpStageSetup,flat_height);
     LAY(CpStageSetup,water_x);LAY(CpStageSetup,water_z);LAY(CpStageSetup,water_radius);LAY(CpStageSetup,player);
@@ -1678,7 +1767,8 @@ uint64_t cp_stage_layout(void){
     LAY(CpCombatCreature,heading_y);LAY(CpCombatCreature,dmg_dealt);LAY(CpCombatCreature,dmg_taken);
     LAY(CpCombatCreature,stamina_spent);LAY(CpCombatCreature,hits);LAY(CpCombatCreature,hits_taken);
     LAY(CpCombatCreature,blocked);LAY(CpCombatCreature,dodged);LAY(CpCombatCreature,interrupted);
-    LAY(CpCombatCreature,kills);LAY(CpCombatCreature,died_tick);
+    LAY(CpCombatCreature,kills);LAY(CpCombatCreature,died_tick);LAY(CpCombatCreature,lo);LAY(CpCombatCreature,cd);
+    LAY(CpCombatLoadout,slot);LAY(CpCombatLoadout,sig_slot);LAY(CpCombatLoadout,pad);LAY(CpCombatLoadout,known);
     LAY(CpStageBot,rng);LAY(CpStageBot,kind);LAY(CpStageBot,spam_move);LAY(CpStageBot,delay);
     LAY(CpStageBot,reaction);LAY(CpStageBot,ranged_commit);LAY(CpStageBot,timer);
     LAY(CpStageMotion,jog_k);LAY(CpStageMotion,sprint_k);LAY(CpStageMotion,wild_k);LAY(CpStageMotion,accel);

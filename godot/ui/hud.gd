@@ -3,6 +3,7 @@ extends Control
 ## enemy marker above the selected creature, wind-up tell, flashes, floating damage.
 
 const Palette := preload("res://ui/palette.gd")
+const Sweep := preload("res://ui/cooldown_sweep.gd")
 
 signal ability_clicked(index: int)
 signal guard_clicked
@@ -15,6 +16,7 @@ var player_hp_text: Label
 var hp_bar: ProgressBar
 var st_bar: ProgressBar
 var slots: Array[Button] = []
+var sweeps: Array = []          # one cooldown sweep per slot button
 var slot_abilities: Array = []
 var guard_btn: Button
 var toasts: VBoxContainer
@@ -118,6 +120,10 @@ func _build() -> void:
 		b.pressed.connect(func() -> void: ability_clicked.emit(idx))
 		move_row.add_child(b)
 		slots.append(b)
+		var sw := Sweep.new()
+		sw.visible = false
+		b.add_child(sw)
+		sweeps.append(sw)
 	var sep := VSeparator.new()
 	move_row.add_child(sep)
 	guard_btn = _slot_button()
@@ -189,21 +195,45 @@ func set_player(pname: String, hp: float, hp_max: float, stamina: float, stamina
 	st_bar.value = clampf(stamina, 0.0, st_bar.max_value)
 	player_hp_text.text = "%d" % ceili(maxf(hp, 0.0))
 
+## Each ability: {id, name, stamina?, enabled?, role?, empty?}. `role` colours the slot border (Palette.ROLE_COLORS);
+## an empty loadout slot ({empty: true}) shows its key and a dash.
 func set_abilities(list: Array) -> void:
 	slot_abilities = list.slice(0, 4)
 	for i in 4:
 		var b := slots[i]
 		if i < slot_abilities.size():
 			var a: Dictionary = slot_abilities[i]
-			b.text = "%d\n%s" % [i + 1, a.get("name", a.get("id", "?"))]
-			b.disabled = not bool(a.get("enabled", true))
-			b.tooltip_text = "Stamina %d" % int(a.get("stamina", 0)) if a.has("stamina") else ""
+			var empty := bool(a.get("empty", false))
+			b.text = "%d\n%s" % [i + 1, "-" if empty else a.get("name", a.get("id", "?"))]
+			b.disabled = empty or not bool(a.get("enabled", true))
+			b.tooltip_text = "Stamina %d" % int(a.get("stamina", 0)) if a.has("stamina") and not empty else ""
 			b.visible = true
 		else:
 			b.text = "%d\n-" % [i + 1]
 			b.disabled = true
 			b.visible = false
+		_style_slot(i)
+		sweeps[i].set_frac(0.0)
 	guard_btn.disabled = false
+
+## fractions 0..1 of the cooldown still to wait, one per slot (1 = just used); missing entries mean ready.
+func set_cooldowns(fracs: Array) -> void:
+	for i in 4:
+		sweeps[i].set_frac(float(fracs[i]) if i < fracs.size() else 0.0)
+
+func _slot_role(i: int) -> String:
+	return str(slot_abilities[i].get("role", "")) if i < slot_abilities.size() else ""
+
+# The role colour is the border of the slot; an empty or role-less slot keeps the theme's border.
+func _style_slot(i: int) -> void:
+	var b := slots[i]
+	var role := _slot_role(i)
+	if role == "":
+		b.remove_theme_stylebox_override("normal")
+		return
+	var st := Palette.box(Palette.PANEL_SOLID, 12, Palette.role_color(role), 8)
+	st.set_border_width_all(2)
+	b.add_theme_stylebox_override("normal", st)
 
 func press_slot(i: int) -> void:
 	if i < 0 or i >= 4:
@@ -212,7 +242,7 @@ func press_slot(i: int) -> void:
 	b.add_theme_stylebox_override("normal", Palette.box(Palette.PANEL_ACTIVE, 12, Palette.GOLD, 8))
 	get_tree().create_timer(0.15).timeout.connect(func() -> void:
 		if is_instance_valid(b):
-			b.remove_theme_stylebox_override("normal"))
+			_style_slot(i))
 
 # --- toasts ------------------------------------------------------------------
 

@@ -17,6 +17,19 @@ const GUARD := Color("8fb8d8")
 const SHADOW := Color("14201880")
 const BACKDROP := Color("101a15d9")
 
+## Move roles (docs/COMBAT-MOVES.md): the colour of a move's slot in the hotbar and the loadout panel.
+const ROLE_COLORS := {
+	"basic": Color("a8c56a"),
+	"engage": Color("e38b6a"),
+	"poke": Color("e5c04f"),
+	"control": Color("b79ae0"),
+	"defence": Color("8fb8d8"),
+	"signature": Color("ff7aa6"),
+}
+
+static func role_color(role: String) -> Color:
+	return ROLE_COLORS.get(role, BORDER_BTN)
+
 static func box(bg: Color = PANEL, radius: int = 14, border: Color = BORDER, pad: int = 12) -> StyleBoxFlat:
 	var s := StyleBoxFlat.new()
 	s.bg_color = bg

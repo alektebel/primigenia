@@ -688,10 +688,97 @@ static void body_radius(void)
           "non-default radii clamp to 40..400 cm");
 }
 
+
+/* A21: loadout, known moves and cooldowns. */
+static void loadout_and_cooldowns(void)
+{
+    CpCombatWorld w = pair(1.5f);
+    CpCombatLoadout *lo = &w.c[0].lo;
+    CHECK(lo->slot[0] == CB_BITE && lo->slot[1] == CB_CHARGE && lo->slot[2] == CB_SPIT && lo->slot[3] == CB_TAIL_STRIKE &&
+          lo->sig_slot == -1, "default loadout is the available attack moves in table order");
+    CHECK(lo->known == ((1u << CB_BITE) | (1u << CB_CHARGE) | (1u << CB_SPIT) | (1u << CB_TAIL_STRIKE)),
+          "known moves are the moves whose part level is above zero");
+    for (int i = 0; i < CB_MOVE_COUNT; i++) CHECK(CP_COMBAT_MOVES[i].cooldown == 0, "every shipped move has cooldown 0");
+    CHECK(CP_COMBAT_MOVES[CB_TAIL_STRIKE].role == CB_ROLE_CONTROL && CP_COMBAT_MOVES[CB_DODGE].role == CB_ROLE_DEFENCE,
+          "moves carry a role");
+
+    uint64_t h0 = cp_combat_hash(&w);
+    CpCombatLoadout copy = *lo;
+    CHECK(cp_combat_loadout_set(&copy, 0, CB_BITE) == CB_OK && cp_combat_loadout_is_default(&copy, &w.c[0].prof),
+          "slotting the move already in that slot keeps the default (and the hash)");
+    CHECK(cp_combat_loadout_set(&copy, 4, CB_BITE) == CB_ERR_BAD_SLOT && cp_combat_loadout_set(&copy, -1, CB_BITE) == CB_ERR_BAD_SLOT,
+          "slot must be 0..3");
+    CHECK(cp_combat_loadout_set(&copy, 0, CB_GUARD) == CB_ERR_UNKNOWN_MOVE && cp_combat_loadout_set(&copy, 0, CB_DODGE) == CB_ERR_UNKNOWN_MOVE &&
+          cp_combat_loadout_set(&copy, 0, 99) == CB_ERR_UNKNOWN_MOVE && cp_combat_loadout_set(&copy, 0, -5) == CB_ERR_UNKNOWN_MOVE,
+          "guard, dodge and unknown ids never go in a slot");
+    copy.known &= (uint16_t)~(1u << CB_SPIT);
+    CHECK(cp_combat_loadout_set(&copy, 0, CB_SPIT) == CB_ERR_NOT_KNOWN, "a move that is not known cannot be slotted");
+    copy.known |= (uint16_t)(1u << CB_SPIT);
+    copy.sig_slot = 3;
+    CHECK(cp_combat_loadout_set(&copy, 3, CB_BITE) == CB_ERR_BAD_SLOT, "the signature slot holds only signature moves");
+
+    /* equipped / not_equipped */
+    CpCombatLoadout before = *lo;
+    CHECK(cp_combat_loadout_set(lo, 1, CB_MOVE_NONE) == CB_OK && lo->slot[1] == CB_MOVE_NONE, "a slot can be emptied");
+    CHECK(cp_combat_attack(&w, 0, 1, CB_CHARGE) == CB_ERR_NOT_EQUIPPED, "an attack with a move outside the loadout is not_equipped");
+    CHECK(w.c[0].verb == CB_V_IDLE, "the rejected attack changed nothing");
+    CHECK(cp_combat_hash(&w) != h0, "a changed loadout changes the hash");
+    CHECK(cp_combat_loadout_set(lo, 3, CB_CHARGE) == CB_OK && lo->slot[3] == CB_CHARGE && lo->slot[1] == CB_MOVE_NONE,
+          "slotting a move into another slot moves it");
+    CHECK(cp_combat_attack(&w, 0, 1, CB_TAIL_STRIKE) == CB_ERR_NOT_EQUIPPED, "the displaced move is not equipped any more");
+    *lo = before;
+    CHECK(cp_combat_hash(&w) == h0, "restoring the default loadout restores the hash");
+    CHECK(cp_combat_attack(&w, 0, 1, CB_CHARGE) == CB_OK, "an equipped move is accepted");
+
+    /* cooldown ticks deterministically */
+    w = pair(1.5f);
+    cp_combat_test_cooldown(CB_BITE, 30);
+    CHECK(cp_combat_attack(&w, 0, 1, CB_BITE) == CB_OK, "a ready move is accepted");
+    int started = -1;
+    for (int t = 0; t < 12 && started < 0; t++) { cp_combat_step(&w); if (w.c[0].cd[CB_BITE]) started = t; }
+    CHECK(started >= 0 && w.c[0].cd[CB_BITE] == 29, "the cooldown starts when the move starts and counts down that tick");
+    CHECK(cp_combat_cooldown_left(&w.c[0], CB_BITE) == 29 && cp_combat_cooldown_left(&w.c[0], CB_SPIT) == 0, "cooldown_left reads the counter");
+    CHECK(cp_combat_attack(&w, 0, 1, CB_BITE) == CB_ERR_ON_COOLDOWN, "a move on cooldown is on_cooldown");
+    CHECK(cp_combat_attack(&w, 0, 1, CB_CHARGE) == CB_OK, "other moves are unaffected by a cooldown");
+    CpCombatWorld fork = w;
+    uint64_t hh = cp_combat_hash(&w);
+    CpCombatWorld fresh = pair(1.5f);
+    CHECK(hh != cp_combat_hash(&fresh), "a running cooldown is part of the hash");
+    for (int t = 0; t < 29; t++) {
+        cp_combat_step(&w);
+        CHECK(w.c[0].cd[CB_BITE] == 28 - t, "cooldown drops by one per tick");
+    }
+    CHECK(w.c[0].cd[CB_BITE] == 0 && cp_combat_attack(&w, 0, 1, CB_BITE) == CB_OK, "the move is accepted again when the counter is 0");
+    for (int t = 0; t < 29; t++) cp_combat_step(&fork);          /* a struct copy mid-cooldown continues identically */
+    CHECK(cp_combat_hash(&fork) != 0 && fork.c[0].cd[CB_BITE] == 0, "a copy made during a cooldown finishes it");
+    /* a standing attack on a recharging move waits instead of firing */
+    w = pair(1.5f);
+    cp_combat_attack(&w, 0, 1, CB_BITE);
+    w.c[0].cd[CB_BITE] = 6; w.c[0].stamina = 100;
+    for (int t = 0; t < 5; t++) cp_combat_step(&w);
+    CHECK(w.c[0].move == CB_MOVE_NONE && w.c[0].verb == CB_V_ATTACK, "a standing attack holds while its move recharges");
+    cp_combat_test_cooldown(CB_BITE, -1);
+    CHECK(CP_COMBAT_MOVES[CB_BITE].cooldown == 0, "the test override leaves the table alone");
+
+    /* determinism with loadout changes in a replay */
+    uint64_t ha[2];
+    for (int run = 0; run < 2; run++) {
+        CpCombatWorld a = pair(6.0f);
+        for (int t = 0; t < 200; t++) {
+            if (t == 3) cp_combat_loadout_set(&a.c[0].lo, 0, CB_MOVE_NONE);
+            if (t == 7) cp_combat_loadout_set(&a.c[0].lo, 1, CB_BITE);
+            if (t % 5 == 0) { cp_combat_attack(&a, 0, 1, t % 2 ? CB_BITE : CB_SPIT); cp_combat_attack(&a, 1, 0, CB_CHARGE); }
+            cp_combat_step(&a);
+        }
+        ha[run] = cp_combat_hash(&a);
+    }
+    CHECK(ha[0] == ha[1], "the same loadout changes and orders replay to the same hash");
+}
+
 int main(void)
 {
     puts("cpore combat tests");
-    directional_movement(); counters(); ripostes(); spacing(); ranged_exchanges(); simultaneous(); bot_counters(); defensive_policies(); edges_and_verbs(); geometry_and_setup(); body_radius(); determinism(); canaries();
+    directional_movement(); counters(); ripostes(); spacing(); ranged_exchanges(); simultaneous(); bot_counters(); defensive_policies(); edges_and_verbs(); geometry_and_setup(); body_radius(); loadout_and_cooldowns(); determinism(); canaries();
     printf("combat: %d failure(s)\n", fails);
     return fails ? 1 : 0;
 }

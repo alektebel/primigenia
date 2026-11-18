@@ -16,8 +16,10 @@ const V_WAIT := 1
 const V_ATTACK := 5
 const V_GUARD := 8
 const V_DODGE := 9
+const V_LOADOUT := 10       # target = slot 1..4, move = move id or -1: instant, only at the nest (C: not_at_nest / in_fight)
 const DODGE_LEFT := 2       # web/stage: Q -> 2, E -> 6
 const DODGE_RIGHT := 6
+const MOVE_IDS := ["bite", "charge", "guard", "spit", "tail_strike", "dodge"]
 const MOVE_NAMES := ["Bite", "Charge", "Guard", "Spit", "Tail strike", "Dodge"]
 
 var ui: CanvasLayer
@@ -33,6 +35,8 @@ var _pending_attack = null           # {target, move}
 var _oneshot = null                  # CpStageInput dictionary
 var _was_active := false
 var _slope := 0.0
+var _moves: Array = []                # CporeWorld.moves(), the C move table
+var _loadout_key := ""                # last loadout state pushed to the hotbar (so it is rebuilt only on change)
 var _ambience_started := false
 
 func setup(island_node: Node3D, name_text: String) -> void:
@@ -41,6 +45,7 @@ func setup(island_node: Node3D, name_text: String) -> void:
 	player_input = island.player_input
 	player_name = name_text
 	species = CporeWorld.species()
+	_moves = CporeWorld.moves()
 	ui = GameUI.new()
 	ui.name = "GameUI"
 	island.add_child(ui)
@@ -56,6 +61,9 @@ func setup(island_node: Node3D, name_text: String) -> void:
 	ui.selection_changed.connect(func(id) -> void:
 		selected_id = -1 if id == null else int(id)
 		island.selected_id = selected_id)
+	ui.loadout_panel.setup(_moves)
+	ui.loadout_panel.assign.connect(assign_loadout)
+	ui.loadout_requested.connect(toggle_loadout_panel)
 	ui.pause_toggled.connect(_on_pause)
 	ui.save_requested.connect(func() -> void: _toast(island.save_game(), "Game saved."))
 	ui.load_requested.connect(func() -> void: _toast(island.load_game(), "Game loaded."))
@@ -95,16 +103,70 @@ func _on_ability(index: int, ability: Dictionary) -> void:
 		return
 	_attack(index)
 
+# Keys 1-4 fire the move in loadout slot `index` (A21), not a fixed move: the hotbar entry carries the C move id.
 func _attack(index: int) -> void:
-	var moves: Array = Modes.abilities_for(Modes.ATTACK)
-	var move_id := str(moves[clampi(index, 0, moves.size() - 1)].id)
-	var move := ["bite", "charge", "guard", "spit", "tail_strike", "dodge"].find(move_id)
+	var list: Array = ui.abilities if not ui.abilities.is_empty() else Modes.abilities_for(Modes.ATTACK)
+	if index < 0 or index >= list.size() or bool(list[index].get("empty", false)):
+		return
+	var move_id := str(list[index].id)
+	var move: int = int(list[index].move) if list[index].has("move") else MOVE_IDS.find(move_id)
+	if move < 0:
+		return
 	var ent: Dictionary = stage.cur.entities[selected_id] if selected_id < stage.cur.entities.size() else {}
 	if ent.is_empty() or ent.dead:
 		return
 	_pending_attack = {"target": selected_id, "move": move}
 	player_input.clear_destination()
 	attack_orders.append({"tick": stage.cur.tick, "order": "attack #%d %s" % [selected_id, move_id]})
+
+# --- loadout (A21) --------------------------------------------------------------
+
+# The order goes to the C world like any other input (one tick, logged and replayed); C answers not_at_nest,
+# in_fight, not_known, unknown_move. `slot` is 0..3 (key - 1), `move` a move id or -1 to empty the slot.
+func assign_loadout(slot: int, move: int) -> void:
+	var lo: Dictionary = stage.cur.loadout
+	if not bool(lo.can_edit):
+		ui.show_message("Go back to your nest to change your moves.", "warn")
+		return
+	stage.queue_order({"verb": V_LOADOUT, "target": slot + 1, "move": move})
+	attack_orders.append({"tick": stage.cur.tick, "order": "loadout %d %s" % [slot + 1, MOVE_IDS[move] if move >= 0 else "none"]})
+
+func toggle_loadout_panel() -> void:
+	var lo: Dictionary = stage.cur.loadout
+	if not ui.loadout_panel.visible and not bool(lo.can_edit):
+		ui.show_message("Go back to your nest to change your moves.", "info")
+		return
+	ui.loadout_panel.refresh(lo)
+	ui.loadout_panel.toggle()
+
+# The hotbar of Attack mode: the slots of the C loadout, each with the role colour and its cooldown sweep.
+func _loadout_abilities(lo: Dictionary) -> Array:
+	var out: Array = []
+	for i in 4:
+		var id := int(lo.slots[i])
+		if id < 0 or id >= _moves.size():
+			out.append({"id": "", "name": "-", "empty": true, "enabled": false, "move": -1})
+			continue
+		var m: Dictionary = _moves[id]
+		var shown := str(Modes.ABILITIES[Modes.ATTACK][0].name)
+		for a in Modes.ABILITIES[Modes.ATTACK]:
+			if a.id == m.name:
+				shown = str(a.name)
+		out.append({"id": str(m.name), "name": shown, "move": id, "role": str(m.role_name), "stamina": int(m.stamina),
+			"cooldown": int(m.cooldown)})
+	return out
+
+func _cooldown_fractions(state: Dictionary, abilities: Array) -> Array:
+	var fracs := []
+	var left: Array = []
+	for f in state.combat.fighters:
+		if int(f.world_id) == 0:
+			left = f.get("cooldowns", [])
+	for a in abilities:
+		var mv := int(a.get("move", -1))
+		var total := int(a.get("cooldown", 0))
+		fracs.append(0.0 if mv < 0 or total <= 0 or mv >= left.size() else clampf(float(left[mv]) / float(total), 0.0, 1.0))
+	return fracs
 
 # Replaces PlayerInput.sample as the input provider of the stage. As in web/stage/simulation.js action():
 # a pending attack is sent every tick (the C verb only lasts while it is re-issued) until movement keys or a
@@ -155,6 +217,16 @@ func select_id(id: int, menu_pos: Variant = null) -> void:
 # --- world -> UI ----------------------------------------------------------------
 
 func _on_tick(state: Dictionary) -> void:
+	var lo: Dictionary = state.get("loadout", {"slots": [0, 1, 3, 4], "known": 0, "can_edit": false})
+	var key := "%s|%d" % [lo.slots, int(lo.known)]
+	if key != _loadout_key:
+		_loadout_key = key
+		ui.set_loadout_abilities(_loadout_abilities(lo))
+	ui.set_cooldowns(_cooldown_fractions(state, ui.loadout_abilities))
+	if ui.loadout_panel.visible:
+		ui.loadout_panel.refresh(lo)
+		if not bool(lo.can_edit):
+			ui.loadout_panel.close_panel()       # a fight started or the player walked away from the nest
 	var p: Dictionary = state.entities[0]
 	ui.set_player(player_name, p.hp, p.hp_max, p.stamina, p.stamina_max)
 	if selected_id > 0 and selected_id < state.entities.size():
@@ -227,7 +299,7 @@ func _on_pause(paused: bool) -> void:
 # --- per frame ------------------------------------------------------------------
 
 func _process(_dt: float) -> void:
-	Game.modal_open = ui.radial.visible or ui.paused
+	Game.modal_open = ui.radial.visible or ui.paused or ui.loadout_panel.visible
 	Game.radial_open = ui.radial.visible
 	Game.paused_ui = ui.paused
 	var audio = get_tree().root.get_node_or_null("Audio")

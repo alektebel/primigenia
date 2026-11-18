@@ -20,6 +20,50 @@ func _registry(sw):
 	return r
 
 func run(t) -> void:
+	_loadout(t)
+	_run_rest(t)
+
+# A21: `loadout <slot> <move>` is an order to C: validated there, in the input log, replayed to the same hash.
+func _loadout(t) -> void:
+	var sw = _world()
+	var r = _registry(sw)
+	t.check(r.execute("help").out.contains("loadout"), "help lists loadout")
+	var h0: String = sw.world.hash()
+	for line in ["loadout", "loadout 1", "loadout 0 bite", "loadout 5 bite", "loadout 1 dance", "loadout 1 guard", "loadout x bite"]:
+		var res: Dictionary = r.execute(line)
+		t.check(not res.ok and res.error != "", "'%s' fails with a sentence (%s)" % [line, res.error])
+	t.check(r.execute("loadout 1 dodge").error.contains("unknown_move"), "dodge is not slottable: unknown_move")
+	t.eq(sw.world.hash(), h0, "failed loadout commands change nothing")
+	t.eq(sw.cur.loadout.slots, [0, 1, 3, 4], "the default loadout is bite, charge, spit, tail_strike")
+	t.check(sw.cur.loadout.can_edit, "the player starts at the nest: the loadout can be edited")
+	t.check(r.execute("loadout 1 tail_strike").ok, "loadout 1 tail_strike")
+	sw.step_ticks(1)
+	t.eq(sw.cur.loadout.slots, [4, 1, 3, -1], "the move went to slot 1 and left slot 4")
+	t.check(r.execute("loadout 2 none").ok and r.execute("loadout 4 0").ok, "none empties, a move index works")
+	sw.step_ticks(2)         # one queued order per tick
+	t.eq(sw.cur.loadout.slots, [4, -1, 3, 0], "none empties a slot and an index fills one")
+	t.eq(int(sw.log_inputs[sw.log_inputs.size() - 1].verb), 10, "the loadout order is in the input log (verb 10)")
+	var attack: Dictionary = r.execute("order attack #1 charge")
+	t.check(not attack.ok and attack.error.contains("not_equipped"), "an unequipped move is not_equipped: %s" % attack.error)
+	# the same session replays to the same hash from its exported log
+	sw.step_ticks(20)
+	var parsed: Dictionary = preload("res://game/stage/world_log.gd").parse(sw.export_log())
+	t.check(parsed.ok, "the log with loadout orders parses")
+	var sw2 = _world()
+	t.eq(sw2.replay_recipe(parsed), 0, "replay_recipe runs")
+	t.eq(sw2.world.hash(), sw.world.hash(), "the replay reaches the same C hash")
+	t.eq(sw2.cur.loadout.slots, [4, -1, 3, 0], "and the same loadout")
+	# away from the nest: not_at_nest, and the order is refused before it is queued
+	t.check(r.execute("tp 60 0").ok, "tp away from the nest")
+	sw.step_ticks(1)
+	t.check(not sw.cur.loadout.can_edit, "far from the nest the loadout cannot be edited")
+	var far: Dictionary = r.execute("loadout 1 bite")
+	t.check(not far.ok and far.error.contains("not_at_nest"), "not_at_nest: %s" % far.error)
+	t.check(r.execute("tp 0 0").ok, "tp back to the nest")
+	sw.step_ticks(1)
+	t.check(r.execute("loadout 1 bite").ok, "at the nest again it is accepted")
+
+func _run_rest(t) -> void:
 	t.eq(Registry.tokenize("tp  \"my site\" 3"), PackedStringArray(["tp", "my site", "3"]), "tokenize keeps quoted tokens")
 	var sw = _world()
 	var r = _registry(sw)

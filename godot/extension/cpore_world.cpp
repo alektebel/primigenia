@@ -212,6 +212,7 @@ void CporeWorld::_bind_methods() {
     ClassDB::bind_static_method("CporeWorld", D_METHOD("default_setup", "seed"), &CporeWorld::default_setup);
     ClassDB::bind_static_method("CporeWorld", D_METHOD("default_profile"), &CporeWorld::default_profile);
     ClassDB::bind_static_method("CporeWorld", D_METHOD("species"), &CporeWorld::species);
+    ClassDB::bind_static_method("CporeWorld", D_METHOD("moves"), &CporeWorld::moves);
     ClassDB::bind_static_method("CporeWorld", D_METHOD("order_error", "code"), &CporeWorld::order_error);
     ClassDB::bind_method(D_METHOD("reset", "setup"), &CporeWorld::reset);
     ClassDB::bind_method(D_METHOD("get_setup"), &CporeWorld::get_setup);
@@ -274,6 +275,22 @@ Array CporeWorld::species() {
     return a;
 }
 
+// The move table (A21): id, name, role (index and name), cooldown in ticks, level-1 stamina, reach, whether it can sit in a slot.
+Array CporeWorld::moves() {
+    Array a;
+    for (int i = 0; i < CB_MOVE_COUNT; ++i) {
+        const CpCombatMove &m = CP_COMBAT_MOVES[i];
+        Dictionary d;
+        d["id"] = i; d["name"] = String(m.name);
+        d["role"] = int(m.role); d["role_name"] = String(cp_combat_role_name(m.role));
+        d["cooldown"] = int(m.cooldown); d["stamina"] = double(m.stamina); d["reach"] = double(m.reach);
+        d["windup"] = int(m.windup); d["active"] = int(m.active); d["recovery"] = int(m.recovery);
+        d["slottable"] = !(m.flags & CB_F_SELF);
+        a.append(d);
+    }
+    return a;
+}
+
 int CporeWorld::reset(const Dictionary &setup) {
     int64_t seed = 42;
     if (setup.has("seed") && !cpore::to_int(setup["seed"], 0, 4294967295LL, seed)) return -1;
@@ -307,7 +324,10 @@ Dictionary CporeWorld::command_input(const String &text) const {
     const int rc = cp_stage_command(scratch.get(), text.utf8().get_data());
     Dictionary d;
     d["rc"] = rc;
-    d["input"] = order_to_dict(scratch->order);
+    CpStageInput parsed;
+    std::memset(&parsed, 0, sizeof parsed);
+    if (cp_stage_parse(text.utf8().get_data(), &parsed) == 0) d["input"] = order_to_dict(parsed);
+    else d["input"] = order_to_dict(scratch->order);
     return d;
 }
 
@@ -330,6 +350,20 @@ Dictionary CporeWorld::state() const {
     d["arena"] = Vector2(w.arena_x, w.arena_z);
     d["order"] = order_to_dict(w.order);
     d["flags"] = int(w.debug_flags);
+    {
+        // The player's kit (A21): slot move ids (-1 = empty), the signature slot (-1 = none), the known-moves
+        // bitmask (1 << move id) and whether a loadout order would be accepted now (at the nest, no fight).
+        Dictionary lo;
+        Array slots;
+        for (int i = 0; i < CB_LOADOUT_SLOTS; ++i) slots.append(int(w.loadout.slot[i]));
+        lo["slots"] = slots;
+        lo["signature_slot"] = int(w.loadout.sig_slot);
+        lo["known"] = int(cp_stage_known_moves(&w));
+        const double dx = double(w.player.x) - double(w.setup.nest_x), dz = double(w.player.z) - double(w.setup.nest_z);
+        lo["can_edit"] = w.active < 0 && dx * dx + dz * dz <= double(CP_STAGE_NEST_RADIUS) * double(CP_STAGE_NEST_RADIUS);
+        lo["nest_radius"] = double(CP_STAGE_NEST_RADIUS);
+        d["loadout"] = lo;
+    }
     Array accepted;
     accepted.append(int(w.accepted[0])); accepted.append(int(w.accepted[1]));
     d["accepted"] = accepted;
@@ -350,6 +384,9 @@ Dictionary CporeWorld::state() const {
             f["hp"] = double(c.hp); f["stamina"] = double(c.stamina);
             f["move"] = int(c.move); f["phase"] = int(c.phase);
             f["phase_tick"] = int(c.ptick); f["phase_length"] = int(c.plen);
+            Array cd;
+            for (int k = 0; k < CB_MOVE_COUNT; ++k) cd.append(int(c.cd[k]));
+            f["cooldowns"] = cd;
             fighters.append(f);
         }
     }
