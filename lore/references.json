@@ -150,5 +150,914 @@
     "x-note": "verified against OpenLibrary (title 1.00); ISBN added",
     "ISBN": "9780691139906",
     "x-checked": "2026-11-18"
+  },
+  {
+    "id": "prsa_2016_nominal",
+    "type": "article-journal",
+    "title": "Nominal values for selected solar and planetary quantities: IAU 2015 Resolution B3",
+    "author": [
+      {
+        "family": "Prša",
+        "given": "Andrej"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2016
+        ]
+      ]
+    },
+    "container-title": "The Astronomical Journal",
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked"
+  },
+  {
+    "id": "sackmann_1993_sun",
+    "type": "article-journal",
+    "title": "Our Sun. III. Present and future",
+    "author": [
+      {
+        "family": "Sackmann",
+        "given": "I.-Juliana"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1993
+        ]
+      ]
+    },
+    "container-title": "The Astrophysical Journal",
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked"
+  },
+  {
+    "id": "kopp_lean_2011_tsi",
+    "type": "article-journal",
+    "title": "A new, lower value of total solar irradiance: Evidence and climate significance",
+    "author": [
+      {
+        "family": "Kopp",
+        "given": "Greg"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2011
+        ]
+      ]
+    },
+    "container-title": "Geophysical Research Letters",
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked"
+  },
+  {
+    "id": "laskar_2004_insolation",
+    "type": "article-journal",
+    "title": "A long-term numerical solution for the insolation quantities of the Earth",
+    "author": [
+      {
+        "family": "Laskar",
+        "given": "Jacques"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2004
+        ]
+      ]
+    },
+    "container-title": "Astronomy and Astrophysics",
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked"
+  },
+  {
+    "id": "petit_luzum_2010_iers",
+    "type": "report",
+    "title": "IERS Conventions (2010)",
+    "author": [
+      {
+        "family": "Petit",
+        "given": "Gérard"
+      },
+      {
+        "family": "Luzum",
+        "given": "Brian"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2010
+        ]
+      ]
+    },
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked"
+  },
+  {
+    "id": "stephenson_morrison_1995_rotation",
+    "type": "article-journal",
+    "title": "Long-term fluctuations in the Earth's rotation: 700 BC to AD 1990",
+    "author": [
+      {
+        "family": "Stephenson",
+        "given": "F. Richard"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1995
+        ]
+      ]
+    },
+    "container-title": "Philosophical Transactions of the Royal Society A",
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked"
+  },
+  {
+    "id": "dickey_1994_lunar",
+    "type": "article-journal",
+    "title": "Lunar laser ranging: a continuing legacy of the Apollo program",
+    "author": [
+      {
+        "family": "Dickey",
+        "given": "J. O."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1994
+        ]
+      ]
+    },
+    "container-title": "Science",
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked"
+  },
+  {
+    "id": "canup_2012_moon",
+    "type": "article-journal",
+    "title": "Forming a Moon with an Earth-like composition via a giant impact",
+    "author": [
+      {
+        "family": "Canup",
+        "given": "Robin M."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2012
+        ]
+      ]
+    },
+    "container-title": "Science",
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked"
+  },
+  {
+    "id": "thebault_2015_igrf",
+    "type": "article-journal",
+    "title": "International Geomagnetic Reference Field: the 12th generation",
+    "author": [
+      {
+        "family": "Thébault",
+        "given": "Erwan"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2015
+        ]
+      ]
+    },
+    "container-title": "Earth, Planets and Space",
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked"
+  },
+  {
+    "id": "noaa_2024_co2",
+    "type": "webpage",
+    "title": "Trends in Atmospheric Carbon Dioxide",
+    "author": [
+      {
+        "family": "NOAA Global Monitoring Laboratory",
+        "given": ""
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2024
+        ]
+      ]
+    },
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked"
+  },
+  {
+    "id": "etheridge_1996_co2",
+    "type": "article-journal",
+    "title": "Natural and anthropogenic changes in atmospheric CO2 over the last 1000 years from air in Antarctic ice and firn",
+    "author": [
+      {
+        "family": "Etheridge",
+        "given": "D. M."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1996
+        ]
+      ]
+    },
+    "container-title": "Journal of Geophysical Research",
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked"
+  },
+  {
+    "id": "us_standard_1976",
+    "type": "report",
+    "title": "U.S. Standard Atmosphere, 1976",
+    "author": [
+      {
+        "family": "NOAA/NASA/USAF",
+        "given": ""
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1976
+        ]
+      ]
+    },
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked"
+  },
+  {
+    "id": "kinsler_2000_acoustics",
+    "type": "book",
+    "title": "Fundamentals of Acoustics",
+    "author": [
+      {
+        "family": "Kinsler",
+        "given": "Lawrence E."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2000
+        ]
+      ]
+    },
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked"
+  },
+  {
+    "id": "kiehl_trenberth_1997_budget",
+    "type": "article-journal",
+    "title": "Earth's annual global mean energy budget",
+    "author": [
+      {
+        "family": "Kiehl",
+        "given": "Jeffrey T."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1997
+        ]
+      ]
+    },
+    "container-title": "Bulletin of the American Meteorological Society",
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked"
+  },
+  {
+    "id": "wmo_2022_ozone",
+    "type": "report",
+    "title": "Scientific Assessment of Ozone Depletion: 2022",
+    "author": [
+      {
+        "family": "World Meteorological Organization",
+        "given": ""
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2022
+        ]
+      ]
+    },
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked"
+  },
+  {
+    "id": "farman_1985_ozone",
+    "type": "article-journal",
+    "title": "Large losses of total ozone in Antarctica reveal seasonal ClOx/NOx interaction",
+    "author": [
+      {
+        "family": "Farman",
+        "given": "J. C."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1985
+        ]
+      ]
+    },
+    "container-title": "Nature",
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked"
+  },
+  {
+    "id": "belcher_2010_flammability",
+    "type": "article-journal",
+    "title": "Baseline intrinsic flammability of Earth's ecosystems estimated from paleoatmospheric oxygen over the past 350 million years",
+    "author": [
+      {
+        "family": "Belcher",
+        "given": "Claire M."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2010
+        ]
+      ]
+    },
+    "container-title": "Proceedings of the National Academy of Sciences",
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked"
+  },
+  {
+    "id": "eakins_sharman_2010_volumes",
+    "type": "report",
+    "title": "Volumes of the World's Oceans from ETOPO1",
+    "author": [
+      {
+        "family": "Eakins",
+        "given": "Barry W."
+      },
+      {
+        "family": "Sharman",
+        "given": "G. F."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2010
+        ]
+      ]
+    },
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked"
+  },
+  {
+    "id": "millero_2008_salinity",
+    "type": "article-journal",
+    "title": "The composition of Standard Seawater and the definition of the Reference-Composition Salinity Scale",
+    "author": [
+      {
+        "family": "Millero",
+        "given": "Frank J."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2008
+        ]
+      ]
+    },
+    "container-title": "Deep-Sea Research I",
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked"
+  },
+  {
+    "id": "orr_2005_acidification",
+    "type": "article-journal",
+    "title": "Anthropogenic ocean acidification over the twenty-first century and its impact on calcifying organisms",
+    "author": [
+      {
+        "family": "Orr",
+        "given": "James C."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2005
+        ]
+      ]
+    },
+    "container-title": "Nature",
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked"
+  },
+  {
+    "id": "egbert_ray_2000_tides",
+    "type": "article-journal",
+    "title": "Significant dissipation of tidal energy in the deep ocean inferred from satellite altimeter data",
+    "author": [
+      {
+        "family": "Egbert",
+        "given": "Gary D."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2000
+        ]
+      ]
+    },
+    "container-title": "Nature",
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked"
+  },
+  {
+    "id": "garrett_1972_fundy",
+    "type": "article-journal",
+    "title": "Tidal resonance in the Bay of Fundy and Gulf of Maine",
+    "author": [
+      {
+        "family": "Garrett",
+        "given": "Christopher"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1972
+        ]
+      ]
+    },
+    "container-title": "Nature",
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked"
+  },
+  {
+    "id": "demets_2010_plate",
+    "type": "article-journal",
+    "title": "Geologically current plate motions",
+    "author": [
+      {
+        "family": "DeMets",
+        "given": "Charles"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2010
+        ]
+      ]
+    },
+    "container-title": "Geophysical Journal International",
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked"
+  },
+  {
+    "id": "davies_davies_2010_heat",
+    "type": "article-journal",
+    "title": "Earth's surface heat flux",
+    "author": [
+      {
+        "family": "Davies",
+        "given": "J. Huw"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2010
+        ]
+      ]
+    },
+    "container-title": "Solid Earth",
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked"
+  },
+  {
+    "id": "walker_1981_thermostat",
+    "type": "article-journal",
+    "title": "A negative feedback mechanism for the long-term stabilization of Earth's surface temperature",
+    "author": [
+      {
+        "family": "Walker",
+        "given": "James C. G."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1981
+        ]
+      ]
+    },
+    "container-title": "Journal of Geophysical Research",
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked"
+  },
+  {
+    "id": "hays_1976_pacemaker",
+    "type": "article-journal",
+    "title": "Variations in the Earth's orbit: Pacemaker of the Ice Ages",
+    "author": [
+      {
+        "family": "Hays",
+        "given": "James D."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1976
+        ]
+      ]
+    },
+    "container-title": "Science",
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked"
+  },
+  {
+    "id": "lambeck_2014_sea_level",
+    "type": "article-journal",
+    "title": "Sea level and global ice volumes from the Last Glacial Maximum to the Holocene",
+    "author": [
+      {
+        "family": "Lambeck",
+        "given": "Kurt"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2014
+        ]
+      ]
+    },
+    "container-title": "Proceedings of the National Academy of Sciences",
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked"
+  },
+  {
+    "id": "alberts_2014_mbc",
+    "type": "book",
+    "title": "Molecular Biology of the Cell",
+    "author": [
+      {
+        "family": "Alberts",
+        "given": "Bruce"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2014
+        ]
+      ]
+    },
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked"
+  },
+  {
+    "id": "mitchell_1961_chemiosmotic",
+    "type": "article-journal",
+    "title": "Coupling of phosphorylation to electron and hydrogen transfer by a chemi-osmotic type of mechanism",
+    "author": [
+      {
+        "family": "Mitchell",
+        "given": "Peter"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1961
+        ]
+      ]
+    },
+    "container-title": "Nature",
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked"
+  },
+  {
+    "id": "lyons_2014_oxygen",
+    "type": "article-journal",
+    "title": "The rise of oxygen in Earth's early ocean and atmosphere",
+    "author": [
+      {
+        "family": "Lyons",
+        "given": "Timothy W."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2014
+        ]
+      ]
+    },
+    "container-title": "Nature",
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked"
+  },
+  {
+    "id": "leakey_hay_1979_laetoli",
+    "type": "article-journal",
+    "title": "Pliocene footprints in the Laetolil Beds at Laetoli, northern Tanzania",
+    "author": [
+      {
+        "family": "Leakey",
+        "given": "Mary D."
+      },
+      {
+        "family": "Hay",
+        "given": "Richard L."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1979
+        ]
+      ]
+    },
+    "container-title": "Nature",
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked"
+  },
+  {
+    "id": "rosenberg_trevathan_1995_obstetric",
+    "type": "article-journal",
+    "title": "Bipedalism and human birth: the obstetrical dilemma revisited",
+    "author": [
+      {
+        "family": "Rosenberg",
+        "given": "Karen"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1995
+        ]
+      ]
+    },
+    "container-title": "Evolutionary Anthropology",
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked"
+  },
+  {
+    "id": "bramble_lieberman_2004_endurance",
+    "type": "article-journal",
+    "title": "Endurance running and the evolution of Homo",
+    "author": [
+      {
+        "family": "Bramble",
+        "given": "Dennis M."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2004
+        ]
+      ]
+    },
+    "container-title": "Nature",
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked"
+  },
+  {
+    "id": "byers_1997_pronghorn",
+    "type": "book",
+    "title": "American Pronghorn: Social Adaptations and the Ghosts of Predators Past",
+    "author": [
+      {
+        "family": "Byers",
+        "given": "John A."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1997
+        ]
+      ]
+    },
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked"
+  },
+  {
+    "id": "napier_1956_prehensile",
+    "type": "article-journal",
+    "title": "The prehensile movements of the human hand",
+    "author": [
+      {
+        "family": "Napier",
+        "given": "J. R."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1956
+        ]
+      ]
+    },
+    "container-title": "Journal of Bone and Joint Surgery (British Volume)",
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked"
+  },
+  {
+    "id": "enard_2002_foxp2",
+    "type": "article-journal",
+    "title": "Molecular evolution of FOXP2, a gene involved in speech and language",
+    "author": [
+      {
+        "family": "Enard",
+        "given": "Wolfgang"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2002
+        ]
+      ]
+    },
+    "container-title": "Nature",
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked"
+  },
+  {
+    "id": "janik_2000_whistles",
+    "type": "article-journal",
+    "title": "Whistle matching in wild bottlenose dolphins (Tursiops truncatus)",
+    "author": [
+      {
+        "family": "Janik",
+        "given": "Vincent M."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2000
+        ]
+      ]
+    },
+    "container-title": "Science",
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked"
+  },
+  {
+    "id": "aiello_wheeler_1995_expensive",
+    "type": "article-journal",
+    "title": "The expensive-tissue hypothesis: the brain and the digestive system in human and primate evolution",
+    "author": [
+      {
+        "family": "Aiello",
+        "given": "Leslie C."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1995
+        ]
+      ]
+    },
+    "container-title": "Current Anthropology",
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked"
+  },
+  {
+    "id": "hrdy_2009_mothers",
+    "type": "book",
+    "title": "Mothers and Others: The Evolutionary Origins of Mutual Understanding",
+    "author": [
+      {
+        "family": "Hrdy",
+        "given": "Sarah Blaffer"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2009
+        ]
+      ]
+    },
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked"
+  },
+  {
+    "id": "wrangham_2009_catching_fire",
+    "type": "book",
+    "title": "Catching Fire: How Cooking Made Us Human",
+    "author": [
+      {
+        "family": "Wrangham",
+        "given": "Richard"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2009
+        ]
+      ]
+    },
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked"
+  },
+  {
+    "id": "zachos_2001_cenozoic",
+    "type": "article-journal",
+    "title": "Trends, rhythms, and aberrations in global climate 65 Ma to present",
+    "author": [
+      {
+        "family": "Zachos",
+        "given": "James"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2001
+        ]
+      ]
+    },
+    "container-title": "Science",
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked"
+  },
+  {
+    "id": "stringer_2016_origin",
+    "type": "article-journal",
+    "title": "The origin and evolution of Homo sapiens",
+    "author": [
+      {
+        "family": "Stringer",
+        "given": "Chris"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2016
+        ]
+      ]
+    },
+    "container-title": "Philosophical Transactions of the Royal Society B",
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked"
+  },
+  {
+    "id": "emery_clayton_2004_corvids",
+    "type": "article-journal",
+    "title": "The mentality of crows: convergent evolution of intelligence in corvids and apes",
+    "author": [
+      {
+        "family": "Emery",
+        "given": "Nathan J."
+      },
+      {
+        "family": "Clayton",
+        "given": "Nicola S."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2004
+        ]
+      ]
+    },
+    "container-title": "Science",
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked"
   }
 ]

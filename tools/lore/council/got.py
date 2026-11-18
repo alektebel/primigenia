@@ -75,6 +75,22 @@ def sname(c): return c.replace(" ", "_").replace("/", "_")
 def chunks(xs, n): return [xs[i:i + n] for i in range(0, len(xs), n)]
 
 
+def normalize(res, names):
+    """Model output -> {creature: [items]}: accepts an object keyed by name, a flat list of chains with a 'creature' field, or a list for a single creature."""
+    if isinstance(res, dict):
+        low = {k.lower(): v for k, v in res.items()}
+        return {c: low.get(c.lower()) for c in names}
+    if isinstance(res, list):
+        if len(names) == 1: return {names[0]: res}
+        out = {c: [] for c in names}
+        for ch in res:
+            if isinstance(ch, dict):
+                for c in names:
+                    if belongs(ch, c): out[c].append(ch); break
+        return out
+    return {c: None for c in names}
+
+
 def listing(names):
     return "\n".join(f"- {n}" + (f": {BRIEF[n]}" if BRIEF.get(n) else "") for n in names)
 
@@ -115,10 +131,9 @@ def aggregate(gen):
         return res or {}
     out = {}
     for bi, r in par(list(range(len(bs))), a).items():
+        nr = normalize(r, bs[bi])
         for c in bs[bi]:
-            v = (r or {}).get(c)
-            if v is None and r:
-                v = next((vv for kk, vv in r.items() if kk.lower() == c.lower()), None)
+            v = nr.get(c)
             out[c] = v if isinstance(v, list) else []
     return out
 
@@ -140,10 +155,9 @@ def score(cs, chains_by, rnd):
                 f"Score each chain of each creature on {JUDGES[j]}\n{json.dumps({c: chains_by[c] for c in miss}, ensure_ascii=False)}\n\n"
                 'Output ONLY a JSON object {creature name: [one item per chain in order: {"trait": str, "score": 1-10, "fix": str (concrete fix, or ""), "analogue": str (real organism/mechanism, or ""), "reference": str (author year title if known, else "")}]}',
                 temp=0.2, max_tokens=8000)))
-            if isinstance(res, list) and len(miss) == 1: res = {miss[0]: res}
+            nr = normalize(res, miss)
             for c in miss:
-                items = (res or {}).get(c)
-                if items is None: items = next((v for k2, v in (res or {}).items() if k2.lower() == c.lower()), None)
+                items = nr.get(c)
                 if isinstance(items, list):
                     json.dump(items, open(os.path.join(OUT, f"3_score_r{rnd}_{sname(c)}_{j}.json"), "w"), indent=1, ensure_ascii=False)
         return {c: (json.load(open(os.path.join(OUT, f"3_score_r{rnd}_{sname(c)}_{j}.json"))) if os.path.exists(os.path.join(OUT, f"3_score_r{rnd}_{sname(c)}_{j}.json")) else None) for c in cs}
