@@ -2,7 +2,7 @@
 #ifndef CPORE_WORLD_H
 #define CPORE_WORLD_H
 #include "cpore/combat.h"
-#define CP_STAGE_VERSION 2
+#define CP_STAGE_VERSION 3
 #define CP_STAGE_MAX_WILD 24
 #define CP_STAGE_MAX_OBSTACLES 1024
 #define CP_STAGE_DAY_TICKS 12000
@@ -39,18 +39,31 @@ typedef struct {
     float grip;                      /* lateral limit, m/s2: yaw rate <= grip/v */
     float pivot_k,pivot_mul,pivot_max; /* pivot only below pivot_k*jog; rate clamp(pivot_mul*turn0, 3, pivot_max) */
     float turn_slow;                 /* wanted *= (1-turn_slow)+turn_slow*max(dot,0) */
+    /* Steering and slopes (core/src/steer.c; docs/godot/LOCOMOTION.md). Radius r in metres, legs 1..8. */
+    float ang_k;                     /* yaw acceleration = ang_k*9.81/r rad/s2 */
+    float grip_mass;                 /* lateral grip /= 1+grip_mass*max(r-0.6,0): big bodies turn wider */
+    float acc_mass;                  /* accel and brake /= 1+acc_mass*max(r-0.6,0) */
+    float creep;                     /* a body that cannot pivot keeps at least this share of its speed in a U-turn */
+    float pivot_r;                   /* only bodies up to this radius (m) turn on the spot */
+    float look_min,look_k;           /* pure-pursuit lookahead = look_min + look_k*speed, metres */
+    float climb_base,climb_legs;     /* grade a body plans and walks at: climb_base + climb_legs*(legs-2)/6, less for big bodies */
+    float stall_mul;                 /* it cannot walk up a grade above climb*stall_mul (speed falls to 0 there) */
+    float slide_mul,slide_k;         /* above grade stall*slide_mul it slides down at slide_k*(excess)+0.4 m/s */
+    float down_gain;                 /* extra speed on a mild downhill (share, at grade 0.2) */
 } CpStageMotion;
 extern const CpStageMotion CP_STAGE_MOTION;
 typedef struct {
     float x,z,home_x,home_z;
     int32_t species,bot; /* -1 uses the temperament's standard bot */
     CpCombatProfile profile;
+    int32_t legs;        /* 0 = 4 */
 } CpStageSpawn;
 typedef struct {
     uint32_t seed,terrain_seed;
     int32_t terrain,n,n_obstacles;
     float nest_x,nest_z,flat_height,water_x,water_z,water_radius;
     CpCombatProfile player;
+    int32_t player_legs; /* 0 = 4 */
     CpStageSpawn wild[CP_STAGE_MAX_WILD];
     CpStageObstacle obstacles[CP_STAGE_MAX_OBSTACLES];
 } CpStageSetup;
@@ -64,6 +77,9 @@ typedef struct {
     float home_x,home_z,goal_x,goal_z;
     int32_t species,dead,pivot,returning,roam_ticks;
     CpCombatProfile profile;
+    /* Steering (CP_STAGE_VERSION 3): yaw rate, legs (0 = 4) and the slide flag are state; grade is derived (not hashed). */
+    float omega,grade;
+    int32_t legs,sliding;
 } CpStageCreature;
 /* Adapter state for the existing public apps/combat_bots.h API. No bot rules
  * are duplicated here; stage_world.c copies these fields to/from CpBot. */
