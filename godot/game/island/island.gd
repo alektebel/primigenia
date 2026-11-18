@@ -140,7 +140,7 @@ func _build_stage() -> void:
 	add_child(stage)
 	_nest = setup.nest
 	_den = Vector2(setup.wild[0].home_x, setup.wild[0].home_z) if setup.wild.size() > 0 else null
-	var ground := Callable(Game, "ground")
+	var ground := Callable(Game, "visual_ground")
 	stage.ground_fn = ground
 	player_input = PlayerInput.new()
 	player_input.blocked = Callable(Game, "movement_blocked")
@@ -244,7 +244,7 @@ func load_scenario(parsed: Dictionary) -> String:
 		var h := ActorHost.new()
 		h.name = "Player"
 		add_child(h)
-		h.setup(genome, 0, setup.player, Callable(Game, "ground"))
+		h.setup(genome, 0, setup.player, Callable(Game, "visual_ground"))
 		hosts[0] = h
 		if stage_ui != null:
 			h.footfall.connect(stage_ui.on_footfall)
@@ -280,7 +280,7 @@ func _sync_hosts() -> void:
 		var h := ActorHost.new()
 		h.name = "Wild%d" % i
 		add_child(h)
-		h.setup(Profile.load_json("res://game/data/garfio.json"), i, _garfio_profile, Callable(Game, "ground"))
+		h.setup(Profile.load_json("res://game/data/garfio.json"), i, _garfio_profile, Callable(Game, "visual_ground"))
 		h.set_meta("base_scale", _species_scale(int(es[i].species)))
 		hosts[i] = h
 		if stage_ui != null:
@@ -480,7 +480,7 @@ func _click(pos: Vector2, double: bool) -> void:
 	_click_ground(true, pos)
 
 func _click_ground(allow_pick: bool, mouse: Vector2, follow: bool = false) -> void:
-	var ground := Callable(Game, "ground")
+	var ground := Callable(Game, "visual_ground")
 	if allow_pick:
 		var picked := Pointer.pick_entity(camera.project_ray_origin(mouse), camera.project_ray_normal(mouse), stage.cur.entities, ground)
 		if not picked.is_empty():
