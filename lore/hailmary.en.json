@@ -1,0 +1,369 @@
+[
+  {
+    "id": "astrophage",
+    "name": "Astrophage",
+    "kind": "microbe",
+    "description": "A single-celled organism that lives on a star's photosphere, eats the full electromagnetic spectrum, and banks the surplus as mass. When it is full it flies to a nearby CO2 world, breeds, and rides a thin infrared beam home. A cell is about the size of a typical animal cell, holds a meal's worth of energy, and can push itself by firing a single infrared wavelength out the back.",
+    "facts": {
+      "diameter": "10 µm",
+      "core_temperature_C": 96.415,
+      "energy_per_cell_MJ": 1.5,
+      "energy_density_J_per_kg": 8.99e16,
+      "cell_max_speed_c": 0.92,
+      "lab_doubling_time_days": 8,
+      "petrova_wavelength_um": 25.984,
+      "breeding_needs": "CO2",
+      "solar_dimming_already_percent": 0.01,
+      "solar_dimming_9yr_percent": 1,
+      "solar_dimming_20yr_percent": 5,
+      "ice_age_horizon_yr": 30
+    },
+    "source": "Andy Weir, Project Hail Mary (2021); https://en.wikipedia.org/wiki/Project_Hail_Mary",
+    "confidence": "book",
+    "game_hook": "Three payoffs (ARC-PLAN §5.3c). Cell (A16): a rare light-eating microbe in the molecular factory. Space resource: the best propulsion fuel on the tech ladder, harvested at infected stars, next to the Bussard ramjet. Space crisis: the home star dims and planet health (A3) falls a little every year until a predator is found — the one threat that reaches worlds you left behind."
+  },
+  {
+    "id": "petrova-line",
+    "name": "Petrova line",
+    "kind": "phenomenon",
+    "description": "A faint, razor-sharp infrared streak from a dimming star to the planet where Astrophage breeds. Named for the astronomer who first saw it, Irina Petrova. It is not heat-glow: every photon is the same wavelength, the exhaust of migrating cells converting stored mass back into light.",
+    "facts": {
+      "wavelength_um": 25.984,
+      "photon_energy_eV": 0.0477,
+      "earth_endpoint": "Venus",
+      "tau_ceti_endpoint": "Adrian (Tau Ceti e)",
+      "erid_endpoint": "Threeworld"
+    },
+    "source": "Andy Weir, Project Hail Mary (2021); https://en.wikipedia.org/wiki/Project_Hail_Mary",
+    "confidence": "book",
+    "game_hook": "Creature-stage egg (ARC-PLAN §5.3c): on clear nights, with the nocturnal creature's eyes, a faint line runs from the setting sun toward the bright evening planet. The journal entry is one line. Seen again in Space, it means the Astrophage crisis has started."
+  },
+  {
+    "id": "astrophage-crisis",
+    "name": "Astrophage crisis",
+    "kind": "crisis",
+    "description": "An exponential dimming of nearby stars as Astrophage coats their surfaces. On Earth it is already a measurable fade; left alone it becomes a terminal ice age inside a human lifetime. Only Tau Ceti stays bright, which is why the expedition goes there. The same plague is eating 40 Eridani.",
+    "facts": {
+      "already_dimmed_percent": 0.01,
+      "dimming_at_year_9_percent": 1,
+      "dimming_at_year_20_percent": 5,
+      "ice_age_horizon_yr": 30,
+      "approx_early_rate_percent_per_year": 0.11,
+      "unaffected_nearby_star": "Tau Ceti"
+    },
+    "source": "Andy Weir, Project Hail Mary (2021); https://en.wikipedia.org/wiki/Project_Hail_Mary",
+    "confidence": "book",
+    "game_hook": "Space crisis (ARC-PLAN §5.3c): home-star luminosity ticks down on a yearly clock and planet health (A3) falls with it, including on worlds already left behind, until a Taumoeba-like predator is found and bred."
+  },
+  {
+    "id": "taumoeba",
+    "name": "Taumoeba",
+    "kind": "microbe",
+    "description": "The Astrophage predator native to Adrian's atmosphere. It wraps a star-eater and digests it, which is why Tau Ceti is not going dark. Wild Taumoeba dies in seconds if it meets free nitrogen, so it cannot live in the breeding air of Venus or Threeworld until it is reshaped.",
+    "facts": {
+      "origin": "Adrian (Tau Ceti e)",
+      "prey": "Astrophage",
+      "nitrogen": "lethal in trace amounts",
+      "venus_breeding_N2_percent": 3.5,
+      "threeworld_breeding_N2_percent": 8,
+      "breeding_air_pressure_atm": 0.02
+    },
+    "source": "Andy Weir, Project Hail Mary (2021); https://en.wikipedia.org/wiki/Project_Hail_Mary",
+    "confidence": "book",
+    "game_hook": "The cure (ARC-PLAN §5.3c): an expedition to a Tau Ceti-like world to find a predator, then a Shape-verb puzzle — breed a microbe that still eats the fuel-plague after it can survive your ships' and planets' air."
+  },
+  {
+    "id": "taumoeba-82-5",
+    "name": "Taumoeba-82.5",
+    "kind": "microbe",
+    "description": "The nitrogen-tolerant strain bred in ten stepped tanks, named for the percent of nitrogen it can live in. Taumoeba-35 is enough for Venus; Taumoeba-80 is enough for Threeworld; 82.5 is the safety margin. The same selection also taught it to worm through xenonite, so it has to be shipped in metal, not in Eridian hull-stuff.",
+    "facts": {
+      "strain_id": "Taumoeba-82.5",
+      "venus_threshold_strain": "Taumoeba-35",
+      "threeworld_threshold_strain": "Taumoeba-80",
+      "tank_N2_step_percent": 0.05,
+      "xenonite": "penetrable by this strain only",
+      "safe_hull": "Eridian steel / metal"
+    },
+    "source": "Andy Weir, Project Hail Mary (2021)",
+    "confidence": "book",
+    "game_hook": "Shape-verb payoff of the Taumoeba expedition (ARC-PLAN §5.3c): the adapted microbe saves two stars and, if you house it in the wrong material, eats your friend's fuel tanks. Breeding success is not free."
+  },
+  {
+    "id": "adrian",
+    "name": "Adrian",
+    "kind": "planet",
+    "description": "The CO2 world on Tau Ceti's Petrova line, catalogue name Tau Ceti e. Grace names it after Rocky's mate. Astrophage breeds in its high air; further down, a whole microbial ecology including Taumoeba keeps the infection from starving the star.",
+    "facts": {
+      "catalogue": "Tau Ceti e",
+      "named_after": "Rocky's mate Adrian",
+      "role": "Astrophage breeding world and Taumoeba home",
+      "atmosphere": "CO2, nitrogen-poor relative to Venus"
+    },
+    "source": "Andy Weir, Project Hail Mary (2021); https://en.wikipedia.org/wiki/Project_Hail_Mary",
+    "confidence": "book",
+    "game_hook": "The Tau Ceti-like expedition target (ARC-PLAN §5.3c): the planet on a Petrova line that still has a predator. Finding it is the first half of the cure; breeding the predator for your own air is the second."
+  },
+  {
+    "id": "threeworld",
+    "name": "Threeworld",
+    "kind": "planet",
+    "description": "The planet where Astrophage breeds in the 40 Eridani system — Erid's Venus. Its breeding-height air holds more nitrogen than Venus, which is why the Eridian strain of the predator has to be tougher than the one Earth needs. The 2026 film never uses this name.",
+    "facts": {
+      "system": "40 Eridani",
+      "role": "Eridian Astrophage breeding world",
+      "breeding_N2_percent": 8,
+      "breeding_air_pressure_atm": 0.02,
+      "film_name": "omitted"
+    },
+    "source": "Andy Weir, Project Hail Mary (2021). Film omission: https://en.wikipedia.org/wiki/Project_Hail_Mary_(film)",
+    "confidence": "book",
+    "game_hook": "The second breeding-ground on the crisis map: saving an Erid-like ally means adapting the predator to a harsher nitrogen mix than your own Venus analogue."
+  },
+  {
+    "id": "venus",
+    "name": "Venus",
+    "kind": "planet",
+    "description": "Earth's Astrophage nursery. Cells charge on the Sun, then migrate here for carbon dioxide, which is why the Petrova line points at the evening planet. Release the nitrogen-tolerant predator into this air and the Sun's infection starves.",
+    "facts": {
+      "role": "Sol Astrophage breeding world",
+      "breeding_N2_percent": 3.5,
+      "breeding_air_pressure_atm": 0.02,
+      "needed_strain": "Taumoeba-35"
+    },
+    "source": "Andy Weir, Project Hail Mary (2021)",
+    "confidence": "book",
+    "game_hook": "The home-system harvest and cure site: infected stars are fuel farms; the breeding planet is also where you drop the predator if you want the dimming to stop."
+  },
+  {
+    "id": "tau-ceti",
+    "name": "Tau Ceti",
+    "kind": "star",
+    "description": "The nearby sun that is not going dark. Its Petrova line still exists, but Taumoeba on Adrian eats enough Astrophage that the star keeps its brightness. That single exception is why both Earth and Erid send ships there.",
+    "facts": {
+      "distance_from_earth_ly": 11.9,
+      "role": "only nearby undimmed star",
+      "petrova_planet": "Adrian"
+    },
+    "source": "Andy Weir, Project Hail Mary (2021); https://en.wikipedia.org/wiki/Project_Hail_Mary",
+    "confidence": "book",
+    "game_hook": "Map marker for the cure expedition: the one star on the local chart whose Petrova line still has a predator. First contact with the Eridians happens here."
+  },
+  {
+    "id": "forty-eridani",
+    "name": "40 Eridani",
+    "kind": "star",
+    "description": "Erid's sun, also infected. The Eridians reach Tau Ceti from here without knowing that light has a speed limit, so they arrive with absurd spare fuel and a crew already dying of a danger they cannot name.",
+    "facts": {
+      "distance_from_earth_ly": 16.3,
+      "eridian_home_planet": "Erid (40 Eridani A b)",
+      "breeding_planet": "Threeworld",
+      "also_dimming": true
+    },
+    "source": "Andy Weir, Project Hail Mary (2021); https://en.wikipedia.org/wiki/Project_Hail_Mary",
+    "confidence": "book",
+    "game_hook": "The friendly empire's threatened home star: the same crisis as yours, on a different clock, which is why they will share fuel and xenonite if you share the predator."
+  },
+  {
+    "id": "erid",
+    "name": "Erid",
+    "kind": "planet",
+    "description": "A heavy, hot, high-pressure ammonia world, first planet of 40 Eridani A. The air is thick enough to drown almost all light, the magnetic field is fierce, and surface life never needed eyes. A human dies here in seconds; an Eridian is at home. Water stays liquid because the pressure is so high.",
+    "facts": {
+      "catalogue": "40 Eridani A b",
+      "surface_gravity_m_s2": 20.48,
+      "surface_gravity_g": 2.09,
+      "surface_pressure_atm": 29,
+      "surface_temperature_C": 210,
+      "atmosphere": "ammonia",
+      "mass_earths": 8.5,
+      "radius_earths": 2,
+      "day_hours": 5.1,
+      "magnetic_field_vs_earth": 25
+    },
+    "source": "Andy Weir, Project Hail Mary (2021). Extra mass/day/field figures as reported from the book by secondary science notes: https://projecthailmary.net/en/erid/",
+    "confidence": "book",
+    "game_hook": "High-pressure heavy world (ARC-PLAN §5.3c / §1): a lineage adapted to this vector can live here without terraforming. Everyone else needs a biodome. Diplomacy with the natives is how you get xenonite and a partner for the Astrophage crisis."
+  },
+  {
+    "id": "eridians",
+    "name": "Eridians",
+    "kind": "species",
+    "description": "Five-legged, rock-shelled, eyeless engineers from Erid. They hear the world in all directions and speak in musical chords from five gas-bladders. Blood is mostly mercury; muscles are steam pistons between a 210 C circuit and a hotter one; they sleep so deeply they must be guarded. They have no word for radiation or light, which is why their first starship crew cooked and why they packed fuel as if light-speed were a suggestion.",
+    "facts": {
+      "limbs": 5,
+      "senses": "echolocation, no vision",
+      "language": "chords; ~6× human information density",
+      "vocal_systems": 5,
+      "comfortable_temperature_C": 210,
+      "hot_blood_C": 305,
+      "comfortable_pressure_atm": 29,
+      "pressure_fatal_below_atm": 19,
+      "surface_gravity_g": 2.09,
+      "blood": "mercury with dissolved metals",
+      "radiation": "unknown to them; mercury blood makes it worse",
+      "relativity": "unknown (no light sense)",
+      "dormancy": "helpless; sleep in shifts",
+      "society": "cooperative engineers; they guard each other in dormancy; space-elevator industry"
+    },
+    "source": "Andy Weir, Project Hail Mary (2021). Some body numbers (pressure floor, hot-blood 305 C, 6× speech density) also in author notes mirrored on https://projecthailmary.fandom.com/wiki/Eridians",
+    "confidence": "book",
+    "game_hook": "Space-stage friendly species (ARC-PLAN §5.3c). Chord language reuses the creature-stage befriend mechanic (sing, rhythm). They can teach xenonite. Their radiation blind spot is the friendship hook: you know something they do not. A heavy, high-pressure lineage can live on their worlds without terraforming."
+  },
+  {
+    "id": "rocky",
+    "name": "Rocky",
+    "kind": "character",
+    "description": "The Eridian engineer Grace meets at Tau Ceti, last survivor of his crew. Grace names him for the rock-like shell; his chord-name is a short phrase about harmony and happiness. He has already spent decades in the system because his people did not know clocks slow down near light-speed. He is the face of the two-species crew.",
+    "facts": {
+      "species": "Eridian",
+      "role": "mechanical engineer, sole survivor",
+      "years_at_tau_ceti_earth": 46,
+      "crew_fate": "radiation sickness",
+      "human_name_reason": "rock-like carapace"
+    },
+    "source": "Andy Weir, Project Hail Mary (2021); https://en.wikipedia.org/wiki/Project_Hail_Mary",
+    "confidence": "book",
+    "game_hook": "Contact portrait for the Eridians (ARC-PLAN §5.3c): the diplomat you befriend with rhythm, who will share fuel and xenonite, and whose ship you may have to turn around and save after the predator mutates."
+  },
+  {
+    "id": "xenonite",
+    "name": "Xenonite",
+    "kind": "material",
+    "description": "An Eridian structural material mixed from two liquids, like an epoxy that sets in both human air and ammonia. Grace's spectrometer reads it as xenon and nothing else his tool can see. A centimetre of the clear kind holds 29 atmospheres of hot ammonia against a cabin, and the tensile strength is enough for a space elevator on a 2 g world. The nitrogen-tolerant Taumoeba can later crawl through it.",
+    "facts": {
+      "apparent_composition": "xenon (to XRF; lighter elements invisible)",
+      "manufacture": "two liquids mixed, epoxy-like",
+      "barrier_thickness_cm": 1,
+      "barrier_delta_P_atm": "29 vs ~0.2",
+      "barrier_delta_T_C": "210 vs ~20",
+      "tensile_strength": "space-elevator class on 2 g",
+      "forms": "transparent, opaque, many textures",
+      "taumoeba_82_5": "can penetrate"
+    },
+    "source": "Andy Weir, Project Hail Mary (2021)",
+    "confidence": "book",
+    "game_hook": "Tech the Eridians can teach (ARC-PLAN §5.3c): hulls, tunnels between unmatched atmospheres, high-g space elevators. Also a late-game catch — an adapted predator may ignore it as a seal."
+  },
+  {
+    "id": "eridian-space-elevator",
+    "name": "Eridian space elevator",
+    "kind": "technology",
+    "description": "How a 2 g ammonia world reaches orbit without wasting Astrophage on a surface launch. Xenonite cable from the equator to a short geosynchronous height, helped by a fast day. The Blip-A is the sort of ship you assemble at the top, not at the bottom.",
+    "facts": {
+      "material": "xenonite",
+      "surface_gravity_g": 2.09,
+      "day_hours": 5.1,
+      "why": "escape velocity too expensive for rockets"
+    },
+    "source": "Andy Weir, Project Hail Mary (2021); secondary notes https://projecthailmary.net/en/erid/",
+    "confidence": "book",
+    "game_hook": "High-g Space unlock: if you have xenonite (or an Eridian ally) you can lift off heavy worlds without a fuel mountain. Ties the material to the §1 heavy-world lineage."
+  },
+  {
+    "id": "hail-mary",
+    "name": "Hail Mary",
+    "kind": "ship",
+    "description": "Earth's one-way Astrophage ship to Tau Ceti. Three crew in coma, a spinning crew drum for 1 g, a lab, and four beetle probes to send the answer home. It was never meant to return; Rocky's spare fuel is what makes a second burn possible. The name is the mission: a last throw while the Sun is still lighting the pitch.",
+    "facts": {
+      "dry_mass_kg": 100000,
+      "fuel_mass_kg": 2000000,
+      "cruise_acceleration_g": 1.5,
+      "destination": "Tau Ceti, 11.9 ly",
+      "ship_time_to_tau_ceti": "4 years 8 months",
+      "earth_time_to_tau_ceti_yr": 13,
+      "crew": "Yao (commander), Ilyukhina (engineer), Grace (science)",
+      "return_probes": 4,
+      "lab_spin_gravity_g": 1.0
+    },
+    "source": "Andy Weir, Project Hail Mary (2021); dry mass 100 t as given in fan/wiki summaries of the book, https://projecthailmary.fandom.com/wiki/Hail_Mary",
+    "confidence": "book",
+    "game_hook": "The player-facing Astrophage ship: one-way unless a friend refuels you. Beetles are the 'send the cure home' button. Time on the ship and time at the home star are not the same clock."
+  },
+  {
+    "id": "spin-drive",
+    "name": "Spin drive",
+    "kind": "technology",
+    "description": "An engine that asks Astrophage to dump stored mass as a Petrova-wavelength beam. The Hail Mary clusters them for 1.5 g of continuous push; the beetles run the same idea at hundreds of g. Because the exhaust is light, the drive is also a lamp, a heater, and, pointed wrong, a weapon.",
+    "facts": {
+      "fuel": "Astrophage",
+      "hail_mary_cruise_g": 1.5,
+      "beetle_acceleration_g": 500,
+      "exhaust": "infrared at 25.984 µm",
+      "hail_mary_drive_count_wiki": 1009,
+      "burn_rate_near_empty_g_per_s": 6
+    },
+    "source": "Andy Weir, Project Hail Mary (2021). Drive count 1009 is wiki: https://projecthailmary.fandom.com/wiki/Hail_Mary",
+    "confidence": "book",
+    "game_hook": "Space propulsion rung (ARC-PLAN §8 / §5.3c): the Astrophage drive sits next to the Bussard ramjet. Fuel is harvested at infected stars; acceleration and trip time become design numbers, not flavour."
+  },
+  {
+    "id": "blip-a",
+    "name": "Blip-A",
+    "kind": "ship",
+    "description": "Rocky's xenonite starship, named from the Hail Mary's radar label for the first unexplained contact. It is larger than the human ship, full of spare Astrophage, and built for 29 atmospheres of 210 C ammonia. Eridian science planned the trip with Newton only, so the tanks are far too big — which is the only reason both crews can go home.",
+    "facts": {
+      "hull": "xenonite",
+      "interior": "ammonia, 29 atm, 210 C",
+      "origin": "40 Eridani / Erid",
+      "planned_trip_yr_newtonian": 6.64,
+      "experienced_trip_yr": 3,
+      "years_waiting_earth": 46,
+      "relativity": "not in the design"
+    },
+    "source": "Andy Weir, Project Hail Mary (2021); https://en.wikipedia.org/wiki/Project_Hail_Mary",
+    "confidence": "book",
+    "game_hook": "The other half of the two-species ship: unmatched atmospheres joined by a xenonite tunnel. If the nitrogen-tolerant predator is stored in xenonite, this hull is the one that fails first."
+  },
+  {
+    "id": "beetles",
+    "name": "Beetles",
+    "kind": "probe",
+    "description": "Four redundant mini-ships in the Hail Mary's nose, named John, Paul, George and Ringo. Each is a spin-drive dart with a computer and a Taumoeba farm, meant to run for Earth at hundreds of g while the crew may never follow. Only one has to arrive.",
+    "facts": {
+      "count": 4,
+      "names": "John, Paul, George, Ringo",
+      "acceleration_g": 500,
+      "cruise_speed_c": 0.93,
+      "probe_time_months": 20,
+      "earth_time_yr": 12,
+      "fuel_kg_wiki": 120
+    },
+    "source": "Andy Weir, Project Hail Mary (2021). Fuel mass 120 kg is secondary/wiki.",
+    "confidence": "book",
+    "game_hook": "The 'send the cure home' action: you can stay and save the ally, or go home, but the beetles can carry the strain either way. Expedition clock and home-star clock split here."
+  },
+  {
+    "id": "two-species-crew",
+    "name": "Two-species crew",
+    "kind": "event",
+    "description": "A human and an Eridian on one joined ship, neither able to breathe the other's air, solving a problem neither species could finish alone. Earth had the biology and knew about radiation and relativity; Erid had the material, the spare fuel, and the engineer. Friendship is the win condition, not a cutscene.",
+    "facts": {
+      "species": "human + Eridian",
+      "shared_site": "Hail Mary with xenonite Eridian tunnels",
+      "human_gifts": "relativity, radiation, Taumoeba breeding",
+      "eridian_gifts": "xenonite, spare Astrophage, engineering",
+      "years_to_confirmed_sol_recovery": 16
+    },
+    "source": "Andy Weir, Project Hail Mary (2021); https://en.wikipedia.org/wiki/Project_Hail_Mary",
+    "confidence": "book",
+    "game_hook": "Co-operation win for the Astrophage crisis (ARC-PLAN §5.3c): two species, one shared ship, neither could do it alone. Diplomacy reuses befriend; turning back to save the other crew is the last fork."
+  },
+  {
+    "id": "film-names",
+    "name": "2026 film naming",
+    "kind": "names",
+    "description": "The Amazon MGM film keeps the book's title and almost every proper noun. It down-cases astrophage and taumoeba in the plot text, gives several humans full names the prose barely uses, adds a few Earth-side people, and never says Threeworld. Use this row only as a swap list, not as likeness or art.",
+    "facts": {
+      "title": "Project Hail Mary (same)",
+      "kept": "Rocky, Adrian (mate and planet), Erid, Eridians, Hail Mary, xenonite, Petrova line, Eva Stratt, Ryland Grace, Tau Ceti, 40 Eridani, Yao, Ilyukhina",
+      "film_full_names": "Yao Li-Jie; Olesya Ilyukhina; Martin Dubois; Annie Shapiro",
+      "film_additions": "Carl (security); Mary (ship computer voice)",
+      "film_omits": "Threeworld",
+      "film_style": "astrophage / taumoeba often uncapitalised"
+    },
+    "source": "https://en.wikipedia.org/wiki/Project_Hail_Mary_(film)",
+    "confidence": "film",
+    "game_hook": "Release switch: if legal advice drops film-adjacent names, this row is the diff. Mechanics must not depend on Carl, Mary, or the extra surnames. No film likeness."
+  }
+]
