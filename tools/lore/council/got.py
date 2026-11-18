@@ -134,6 +134,15 @@ def aggregate(gen):
         nr = normalize(r, bs[bi])
         for c in bs[bi]:
             v = nr.get(c)
+            if not isinstance(v, list) or not v:  # the model dropped this creature: ask for it alone, else fall back to the raw candidates
+                pool_c = [dict(ch, by=k) for k, chs in gen.items() if chs for ch in chs if isinstance(ch, dict) and belongs(ch, c)]
+                if pool_c:
+                    single = cached(f"2_agg_one_{sname(c)}.json", lambda: normalize(jparse(ask(agg, ADV[agg] + "\n\n" + BASE,
+                        f"Candidate chains for {c} from several advisors (field 'by'):\n{json.dumps(pool_c, ensure_ascii=False)}\n\n"
+                        f"AGGREGATE them into the 2-4 best DISTINCT chains for {c} (merge duplicates, drop weak ones, keep references). Add \"from\": [advisor names]. "
+                        f"Output ONLY a JSON array, each: {CHAIN_SCHEMA} plus \"from\".", temp=0.4, max_tokens=8000)), [c]))
+                    v = (single or {}).get(c) if isinstance(single, dict) else None
+                    if not v: v = pool_c[:3]; print("aggregate fallback to raw candidates:", c, flush=True)
             out[c] = v if isinstance(v, list) else []
     return out
 
