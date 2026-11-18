@@ -19,9 +19,3 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-
-Art and other creative assets in this repository are licensed under the
-Creative Commons Attribution 4.0 International licence (CC BY 4.0) unless a
-file or its folder says otherwise. Third-party code keeps its own licence and
-copyright notice; see docs/CREATOR_ATTRIBUTION.md for the MIT-licensed
-Creature Creator mesh port (Copyright 2020 Daniel Lochner).

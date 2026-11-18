@@ -16,7 +16,7 @@
   <img alt="core: C, libc + libm only" src="https://img.shields.io/badge/core-C%20(libc%20%2B%20libm)-555555?style=flat-square&logo=c&logoColor=white">
   <img alt="agents: LLM + RL" src="https://img.shields.io/badge/agents-LLM%20%2B%20RL-e5482f?style=flat-square">
   <a href="LICENSE"><img alt="code: MIT" src="https://img.shields.io/badge/code-MIT-f3c58f?style=flat-square"></a>
-  <img alt="art: CC BY 4.0" src="https://img.shields.io/badge/art-CC%20BY%204.0-f3c58f?style=flat-square">
+  <a href="LICENSE-ART.md"><img alt="art: CC BY 4.0" src="https://img.shields.io/badge/art-CC%20BY%204.0-f3c58f?style=flat-square"></a>
 </p>
 
 An **evolution game** across six stages, **cell → creature → band → realm →
