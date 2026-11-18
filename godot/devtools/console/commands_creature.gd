@@ -76,6 +76,8 @@ static func register_all(r) -> void:
 	r.register("hash", "", "state hash of the C world", func(a): return _with_stage(r, func(st): return ok(st.world.hash())))
 	r.register("tick", "", "world tick", func(a): return _with_stage(r, func(st): return ok(str(st.world.state().tick))))
 	r.register("obs", "", "the observation text the agents get", func(a): return _with_stage(r, func(st): return ok(st.world.observe())))
+	r.register("zoo", "[morphs|all] [course] | exit", "open the locomotion zoo: creatures of different morphologies run a course side by side (morphs: mite trotter hero giant longneck centipede hexapod; courses: figure8 zigzag steps uturn ramps all)",
+		func(a): return _zoo(r, a), {"complete": func(i, p, t): return _zoo_names(i)})
 	r.register("overlay", "path [on|off]", "debug overlays (off by default): path = the planned GO route drawn on the ground",
 		func(a): return _overlay(r, a), {"complete": func(i, p, t): return ["path"] if i == 0 else (["on", "off"] if i == 1 else [])})
 	r.register("clear", "", "clear the console", func(a): return {"ok": true, "out": "", "error": "", "clear": true}, {"dev": false})
@@ -290,6 +292,41 @@ static func _order(r, a: PackedStringArray) -> Dictionary:
 			return fail("%s ('%s')" % [CporeWorld.order_error(int(res.rc)), text])
 		st.queue_order(res.input)
 		return ok("queued for the next tick: %s" % text))
+
+static func _zoo_names(i: int) -> Array:
+	var Genomes = load("res://devtools/zoo/zoo_genomes.gd")
+	var Course = load("res://devtools/zoo/zoo_course.gd")
+	if i == 0:
+		return ["all", "exit"] + Genomes.ids()
+	return Course.NAMES
+
+# zoo [mite,giant,...|all] [course]: the zoo scene replaces the island (the C world of the island is dropped); `zoo exit` or Esc returns.
+static func _zoo(r, a: PackedStringArray) -> Dictionary:
+	var Genomes = load("res://devtools/zoo/zoo_genomes.gd")
+	var Course = load("res://devtools/zoo/zoo_course.gd")
+	var tree: SceneTree = Engine.get_main_loop()
+	if a.size() > 0 and a[0] == "exit":
+		if tree.current_scene == null or tree.current_scene.scene_file_path != "res://devtools/zoo/zoo.tscn":
+			return fail("the zoo is not open")
+		Game.goto_island()
+		return ok("back to the island")
+	var morphs: Array = []
+	if a.size() == 0 or a[0] == "all":
+		morphs = Genomes.DEFAULT_SET.duplicate()
+	else:
+		for m in a[0].split(",", false):
+			if not Genomes.has(m):
+				return fail("unknown morphology '%s' (%s)" % [m, ", ".join(Genomes.ids())])
+			morphs.append(m)
+		if morphs.size() > 8:
+			return fail("at most 8 creatures")
+	var course := "all"
+	if a.size() > 1:
+		if not (a[1] in Course.NAMES):
+			return fail("unknown course '%s' (%s)" % [a[1], ", ".join(Course.NAMES)])
+		course = a[1]
+	Game.goto_zoo(morphs, course)
+	return ok("opening the zoo: %s, course %s (Esc or `zoo exit` to leave)" % [", ".join(morphs), course])
 
 static func _move_names() -> Array:
 	var out := []

@@ -23,6 +23,7 @@ var modal_open := false  # set by UI modules (radial, pause)
 var radial_open := false # set with modal_open by StageUI, for the key legend context
 var paused_ui := false
 var console_open := false # the dev console (devtools/console) sets this while it has the keyboard
+var zoo_args: Dictionary = {}           # {morphs, course} for the locomotion zoo (devtools/zoo), set by the `zoo` console command
 var pending_scenario: Dictionary = {}   # a read() scenario (devtools/scenario.gd) the island applies once it is built
 var startup_error := ""                 # set when a --scenario could not be loaded (read by the agent server and tests)
 var studio_dir := "user://studio"   # where the studio saves and Play looks for the newest creature (tests point it elsewhere)
@@ -79,6 +80,10 @@ func goto_menu() -> void:
 
 func goto_island() -> void:
 	get_tree().change_scene_to_file("res://game/island/island.tscn")
+
+func goto_zoo(morphs: Array = [], course: String = "all") -> void:
+	zoo_args = {"morphs": morphs, "course": course} if not morphs.is_empty() else {"course": course}
+	get_tree().change_scene_to_file("res://devtools/zoo/zoo.tscn")
 
 func goto_studio() -> void:
 	var path := "res://studio/ui/studio.tscn"
