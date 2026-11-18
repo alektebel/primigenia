@@ -36,6 +36,8 @@ float cp_steer_slope(const CpStageMotion *m,const CpSteerBody *b,float grade);
 float cp_steer_tick(const CpStageMotion *m,const CpSteerBody *b,CpSteer *s,float dx,float dz,float wanted,float jog,float slope);
 /* Pure pursuit: the point `look` metres ahead along the polyline (px,pz) -> path[first] -> ... -> path[n-1]. */
 void cp_steer_carrot(const float (*path)[2],int n,int first,float px,float pz,float look,float *ox,float *oz);
+/* Steepest ground gradient (rise/run) any body may end a tick on: tan(51.6 deg), under the 52 degree ceiling the Godot heights test enforces. */
+#define CP_STEER_GRADE_MAX 1.26f
 /* Downhill slide speed (m/s) for a ground gradient magnitude `g`; 0 below the body's slide grade. */
 float cp_steer_slide(const CpStageMotion *m,const CpSteerBody *b,float g);
 float cp_steer_atan2(float y,float x);
