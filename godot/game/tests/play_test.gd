@@ -251,6 +251,40 @@ func _stage() -> void:
 	check(String(ui.hud.player_hp_text.text) == str(ceili(hp_before)), "the HUD shows the player's HP (%s)" % ui.hud.player_hp_text.text)
 	check(ui.hud.player_name.text == player.body.genome.get("name", ""), "the HUD shows the creature's name")
 
+	print("== loadout (A21): the hotbar follows the C loadout; keys 1-4 fire slots; the panel at the nest")
+	var sui = island.stage_ui
+	var lo0: Dictionary = game.stage.cur.loadout
+	# Merodeador has a mouth and horns only: it knows bite and charge (parts decide what a creature can slot)
+	check(lo0.slots == [0, 1, -1, -1] and lo0.can_edit and int(lo0.known) == 0b11, "the player starts at the nest with its default loadout (%s, known %d)" % [lo0.slots, lo0.known])
+	check(ui.abilities.size() == 4 and ui.abilities[0].move == 0 and ui.abilities[1].move == 1 and ui.abilities[2].get("empty", false), "the hotbar carries the C move ids of the slots")
+	check(ui.hud.slots[0].text.contains("Bite") and ui.hud.slots[1].text.contains("Charge") and ui.hud.slots[3].text.contains("-"), "the hotbar shows key and name (%s / %s)" % [ui.hud.slots[0].text.replace("\n", " "), ui.hud.slots[1].text.replace("\n", " ")])
+	sui.assign_loadout(0, 1)                  # charge into slot 1: bite is displaced out of the loadout
+	await sim_ticks(2)
+	check(game.stage.cur.loadout.slots == [1, -1, -1, -1], "a loadout order reached C and moved the move (%s)" % [game.stage.cur.loadout.slots])
+	check(ui.abilities[0].id == "charge" and ui.abilities[1].get("empty", false), "the hotbar rebuilt: slot 1 is the charge, slot 2 empty")
+	sui.assign_loadout(2, 4)                  # tail_strike: this creature has no tail, C says not_known
+	await sim_ticks(1)                        # (the next tick's walking input would overwrite the error)
+	check(game.stage.cur.loadout.slots == [1, -1, -1, -1] and game.stage.world.order_error(int(game.stage.cur.error)) == "not_known", "a move the body cannot do is refused by C (%s)" % game.stage.world.order_error(int(game.stage.cur.error)))
+	sui.selected_id = 1
+	var orders0: int = sui.attack_orders.size()
+	_key(KEY_1)
+	check(sui.attack_orders.size() > orders0 and str(sui.attack_orders.back().order) == "attack #1 charge", "key 1 fires the move in slot 1 (%s)" % [sui.attack_orders.back()])
+	sui._pending_attack = null
+	orders0 = sui.attack_orders.size()
+	_key(KEY_2)
+	check(sui.attack_orders.size() == orders0, "key 2 on an empty slot fires nothing")
+	sui.toggle_loadout_panel()
+	check(ui.loadout_panel.visible and game.modal_open == false, "the panel opens at the nest (key L)")
+	await frames(2)
+	check(game.modal_open, "an open panel blocks movement input (modal_open)")
+	ui.loadout_panel.choose(0, 0)
+	ui.loadout_panel.choose(1, 1)
+	await sim_ticks(3)
+	check(game.stage.cur.loadout.slots == [0, 1, -1, -1], "the panel restored the default through C orders (%s)" % [game.stage.cur.loadout.slots])
+	ui.loadout_panel.close_panel()
+	await frames(2)
+	sui.selected_id = -1
+
 	print("== walk 10 s with scripted input")
 	var start: Vector3 = island.player_pos
 	var played0: int = int(root.get_node("Audio").played.get("step-0", 0)) + int(root.get_node("Audio").played.get("step-1", 0)) + int(root.get_node("Audio").played.get("step-2", 0))

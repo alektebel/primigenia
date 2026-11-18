@@ -6,6 +6,7 @@ const Card := preload("res://ui/creature_card.gd")
 const Mock := preload("res://ui/mock_source.gd")
 const GameUI := preload("res://ui/game_ui.gd")
 const Radial := preload("res://ui/radial_menu.gd")
+const Palette := preload("res://ui/palette.gd")
 const AudioManager := preload("res://audio/audio_manager.gd")
 const Settings := preload("res://audio/audio_settings.gd")
 
@@ -31,6 +32,7 @@ func _initialize() -> void:
 
 func _finish() -> void:
 	await test_ui_flow()
+	await test_loadout_ui()
 	await test_audio_manager()
 	print("ui tests: %d checks, %d failures" % [checks, fails])
 	quit(1 if fails else 0)
@@ -153,6 +155,76 @@ func test_ui_flow() -> void:
 	ui.set_paused(false)
 	ui.clear_selection()
 	ok(not ui.card.visible and not ui.hud.target_panel.visible, "clear selection")
+	ui.queue_free()
+
+func _key_event(code: Key) -> InputEventKey:
+	var key := InputEventKey.new()
+	key.keycode = code
+	key.physical_keycode = code
+	key.pressed = true
+	return key
+
+# A21: keys 1-4 fire the loadout slots (not fixed moves); role colours, cooldown sweep, panel.
+func test_loadout_ui() -> void:
+	var ui := GameUI.new()
+	root.add_child(ui)
+	await process_frame
+	var kit := [
+		{"id": "tail_strike", "name": "Tail", "move": 4, "role": "control", "stamina": 10, "cooldown": 50},
+		{"id": "bite", "name": "Bite", "move": 0, "role": "basic", "stamina": 9, "cooldown": 0},
+		{"id": "", "name": "-", "empty": true, "enabled": false, "move": -1},
+		{"id": "spit", "name": "Spit", "move": 3, "role": "poke", "stamina": 12, "cooldown": 0},
+	]
+	ui.set_loadout_abilities(kit)
+	ok(ids(ui.abilities) == ["tail_strike", "bite", "", "spit"], "Attack mode shows the loadout slots in order (%s)" % [ids(ui.abilities)])
+	var fired := []
+	ui.ability_pressed.connect(func(i, a): fired.append([i, a["id"], a["move"]]))
+	for code in [KEY_1, KEY_2, KEY_3, KEY_4]:
+		ui._unhandled_input(_key_event(code))
+	ok(fired == [[0, "tail_strike", 4], [1, "bite", 0], [3, "spit", 3]], "keys 1-4 fire slots 1-4 and an empty slot fires nothing (%s)" % [fired])
+	ok(ui.hud.slots[0].text == "1\nTail" and ui.hud.slots[2].text == "3\n-" and ui.hud.slots[2].disabled, "the hotbar shows key and name, empty slots a dash")
+	await create_timer(0.3).timeout      # the pressed highlight of the key presses above ends
+	var st: StyleBoxFlat = ui.hud.slots[0].get_theme_stylebox("normal")
+	ok(st.border_color == Palette.role_color("control") and ui.hud.slots[1].get_theme_stylebox("normal").border_color == Palette.role_color("basic"), "slot borders carry the role colour")
+	ok(Palette.role_color("control") != Palette.role_color("poke") and Palette.role_color("basic") != Palette.role_color("engage"), "roles have distinct colours")
+	ui.set_cooldowns([0.5, 0.0, 0.0, 0.0])
+	ok(ui.hud.sweeps[0].visible and is_equal_approx(ui.hud.sweeps[0].frac, 0.5) and not ui.hud.sweeps[1].visible, "the cooldown sweep shows the part still to wait")
+	ui.set_cooldowns([0.0, 0.0, 0.0, 0.0])
+	ok(not ui.hud.sweeps[0].visible, "and hides when the move is ready")
+	ui.set_mode(Modes.BEFRIEND)
+	ok(ids(ui.abilities) == ["sing", "dance", "charm", "pose"] and not ui.hud.sweeps[0].visible, "other modes keep their own abilities")
+	ui.set_mode(Modes.ATTACK)
+	ok(ids(ui.abilities) == ["tail_strike", "bite", "", "spit"], "back to Attack restores the loadout hotbar")
+	# the panel
+	var panel = ui.loadout_panel
+	var moves: Array = CporeWorld.moves()
+	panel.setup(moves)
+	var asked := []
+	ui.loadout_assign.connect(func(slot, move): asked.append([slot, move]))
+	var lo := {"slots": [4, 0, -1, 3], "known": 0b10011, "can_edit": true, "signature_slot": -1, "nest_radius": 12.0}
+	panel.refresh(lo)
+	ok(not panel.visible, "the panel starts closed")
+	var req := []
+	ui.loadout_requested.connect(func(): req.append(true))
+	ui._unhandled_input(_key_event(KEY_L))
+	ok(req.size() == 1, "key L asks for the loadout panel")
+	panel.open_panel()
+	ok(panel.option_buttons.size() == 4 and panel.option_buttons[0].item_count == 1 + 4, "each slot lists empty plus the four attack moves, not guard or dodge")
+	ok(panel.option_buttons[0].selected == 1 + 3 and panel.option_buttons[2].selected == 0, "the lists show the current loadout")
+	ok(not panel.option_buttons[0].disabled and panel.note.text == "", "editable at the nest")
+	ok(panel.option_buttons[0].is_item_disabled(1 + 2) == true and panel.option_buttons[0].is_item_disabled(1) == false, "a move that is not known is disabled in the list")
+	panel.choose(2, 1)
+	ok(asked == [[2, 1]], "choosing a move asks for loadout SLOT MOVE (slot 0-based, move id) (%s)" % [asked])
+	panel.choose(0, -1)
+	ok(asked.back() == [0, -1], "choosing empty asks for -1")
+	asked.clear()
+	panel.refresh(lo)
+	ok(asked.is_empty(), "refreshing the panel from the world sends nothing")
+	lo["can_edit"] = false
+	panel.refresh(lo)
+	ok(panel.option_buttons[0].disabled and panel.note.text.contains("nest"), "away from the nest the panel is read-only and says why")
+	panel.close_panel()
+	ok(not panel.visible, "Done closes the panel")
 	ui.queue_free()
 
 func test_audio_manager() -> void:

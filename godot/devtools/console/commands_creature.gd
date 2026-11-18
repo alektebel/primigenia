@@ -69,6 +69,8 @@ static func register_all(r) -> void:
 		return ok("hidden sites are now listed"))
 	r.register("order", "<text>", "give the player a command text (attack #1 bite, go 10 20, heading 90, flee...)",
 		func(a): return _order(r, a), {"changes_sim": true})
+	r.register("loadout", "<slot 1-4> <move|none>", "put a known move in a hotbar slot (an order to C: only at the nest, never in a fight)",
+		func(a): return _loadout(r, a), {"changes_sim": true, "complete": func(i, p, t): return ["1", "2", "3", "4"] if i == 0 else (_move_names() + ["none"] if i == 1 else [])})
 	r.register("trait", "add <name>", "lineage traits", func(a): return fail("lineage traits arrive with L0 (C2)"))
 	r.register("stage", "<name>", "jump to another stage", func(a): return fail("stage jump is DT2"))
 	r.register("hash", "", "state hash of the C world", func(a): return _with_stage(r, func(st): return ok(st.world.hash())))
@@ -288,3 +290,15 @@ static func _order(r, a: PackedStringArray) -> Dictionary:
 			return fail("%s ('%s')" % [CporeWorld.order_error(int(res.rc)), text])
 		st.queue_order(res.input)
 		return ok("queued for the next tick: %s" % text))
+
+static func _move_names() -> Array:
+	var out := []
+	for m in CporeWorld.moves():
+		if bool(m.slottable):
+			out.append(str(m.name))
+	return out
+
+static func _loadout(r, a: PackedStringArray) -> Dictionary:
+	if a.size() != 2:
+		return fail("usage: loadout <slot 1-4> <move|none>, for example: loadout 1 tail_strike")
+	return _order(r, PackedStringArray(["loadout", a[0], a[1]]))
