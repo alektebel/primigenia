@@ -14,16 +14,25 @@ from cpore.world import StageWorld  # noqa: E402
 
 BOUND = 195.0            # walkable half-extent; world-2 states it in obs["world"]["bound"], this is the fallback
 MAX_STEP = 3.0           # max plausible displacement per 10 Hz tick
-KNOWN_VERBS = {"go", "heading", "flee", "go_nest", "wait", "approach", "attack", "loadout"}
+SOCIAL_VERBS = {"befriend", "gift", "observe", "intimidate", "eat"}
+KNOWN_VERBS = {"go", "heading", "flee", "go_nest", "wait", "approach", "attack", "loadout"} | SOCIAL_VERBS
 MOVE_VERBS = {"go", "heading", "flee", "go_nest", "approach"}
 SCHEMA = "world-2"
 TOP_KEYS = ["schema", "tick", "clock", "world", "own", "last_error", "blocked", "events_dropped", "events",
-            "nearby", "legal_verbs", "loadout", "known_moves", "attack_moves", "summary"]
+            "nearby", "legal_verbs", "loadout", "known_moves", "social", "attack_moves", "summary"]
 WORLD_KEYS = ["bound", "units", "nest", "tick_hz"]
 BLOCK_REASONS = {"cliff", "water", "edge", "creature", "unreachable", "obstacle"}
-EVENT_TYPES = {"hit", "kill", "death", "respawn", "order_rejected", "path_found", "arrived", "fled", "path_failed"}
+EVENT_TYPES = {"hit", "kill", "death", "respawn", "order_rejected", "path_found", "arrived", "fled", "path_failed",
+               "skill", "gift", "bond_made", "bond_broken", "species_resolved", "dna", "observe", "chain_complete", "intimidate",
+               "social_cancelled", "eat"}
 CREATURE_STATES = {"roam", "alert", "fighting", "carcass", "dead"}
 CREATURE_KEYS = ["id", "type", "species", "distance", "bearing", "hp", "hp_max", "state", "in_fight", "attackable"]
+SOCIAL_CREATURE_KEYS = CREATURE_KEYS + ["temper", "diet", "relationship", "trust", "trust_band", "bonded", "mood", "mood_n", "beat_in",
+                                        "hostile", "calm", "leaving", "refuses_social", "known_likes", "known_dislikes"]
+CARCASS_KEYS = CREATURE_KEYS + ["meat", "edible", "species_name"]
+SOCIAL_KEYS = ["dna_total", "dna_balance", "dna_sources", "food", "inventory", "progress", "species", "observe", "skills",
+               "beat_ticks", "rhythm_window", "stagger", "intimidate_cooldown", "action"]
+RELATIONSHIPS = {"stranger", "neutral", "trusted", "ally"}
 MOVE_KEYS = ["index", "id", "name", "role", "stamina_cost", "range_m", "windup_ticks", "active_ticks", "recover_ticks",
              "cooldown_ticks", "cooldown_left", "equipped", "slot", "usable", "target_in_range"]
 LOADOUT_KEYS = ["slots", "signature_slot", "can_edit", "nest_radius_m"]
@@ -33,11 +42,15 @@ NEAR_TYPES = {"creature", "carcass", "nest", "rock", "tree"}
 KNOWN_ERRORS = {"ok", "invalid command or value", "invalid or unavailable target",
                 "invalid or unavailable attack move", "unreachable", "no_threat", "unknown_move",
                 "on_cooldown", "not_equipped", "not_known", "not_at_nest", "in_fight",
-                "invalid slot (1..4, and a signature move only fits the signature slot)"}
+                "invalid slot (1..4, and a signature move only fits the signature slot)",
+                "refuses (hostile, aggressive and not calmed, or in a bad mood)", "no_item", "unknown_skill_or_item",
+                "staggered", "no_stamina", "busy (cooldown)", "cannot_digest (diet)", "full"}
 ERR_TEXT = {0: "ok", -1: "invalid command or value", -2: "invalid or unavailable target",
             -3: "invalid or unavailable attack move", -4: "unreachable", -5: "no_threat", -6: "unknown_move",
             -8: "on_cooldown", -9: "not_equipped", -10: "invalid slot (1..4, and a signature move only fits the signature slot)",
-            -11: "not_known", -12: "unknown_move", -13: "not_at_nest", -14: "in_fight"}
+            -11: "not_known", -12: "unknown_move", -13: "not_at_nest", -14: "in_fight",
+            -15: "refuses (hostile, aggressive and not calmed, or in a bad mood)", -16: "no_item", -17: "unknown_skill_or_item",
+            -18: "staggered", -19: "no_stamina", -20: "busy (cooldown)", -21: "cannot_digest (diet)", -22: "full"}
 
 
 def clone_world(w: StageWorld) -> StageWorld:
@@ -78,6 +91,7 @@ class Episode:
         self.turn_blocked: list[str] = []      # blocked reasons reported by the ticks of the current turn
         self.blocked_turns = 0
         self.event_counts: dict[str, int] = {}
+        self.max_dna_total = 0
 
     # ---- bug recording -------------------------------------------------
     def bug(self, kind: str, detail: str, **ctx):
@@ -162,9 +176,13 @@ class Episode:
             if n["type"] not in NEAR_TYPES or n["distance"] < 0 or abs(n["bearing"]) > 180.01:
                 self.bug("schema_drift", f"bad nearby entry {n}")
             if n["type"] in ("creature", "carcass"):
-                if list(n.keys()) != CREATURE_KEYS or n["state"] not in CREATURE_STATES \
+                want = CARCASS_KEYS if n["type"] == "carcass" else SOCIAL_CREATURE_KEYS
+                if list(n.keys()) != want or n["state"] not in CREATURE_STATES \
                         or not -1e-3 <= n["hp"] <= n["hp_max"] + 1e-3 or n["in_fight"] != (n["state"] == "fighting"):
                     self.bug("schema_drift", f"bad creature entry {n}")
+            if n["type"] == "creature" and (n["relationship"] not in RELATIONSHIPS or not 0 <= n["trust"] <= 100
+                                            or not -50 <= n["mood_n"] <= 50 or not 0 <= n["beat_in"] < 12):
+                self.bug("schema_drift", f"bad social fields {n}")
             if n["type"] == "carcass" and n["id"] not in self.wins:
                 self.wins.add(n["id"])
         lo = o["loadout"]
@@ -184,6 +202,11 @@ class Episode:
                     or m["equipped"] != (slot is not None) or (slot is not None and lo["slots"][slot - 1] != m["name"]) \
                     or not 0 <= m["cooldown_left"] <= m["cooldown_ticks"] or (m["usable"] and not m["equipped"]):
                 self.bug("schema_drift", f"bad attack_moves entry {m}")
+        soc = o["social"]
+        if list(soc.keys()) != SOCIAL_KEYS or soc["dna_total"] < self.max_dna_total or soc["dna_balance"] > soc["dna_total"] \
+                or not 0 <= soc["food"]["meter"] <= soc["food"]["max"]:
+            self.bug("schema_drift", f"bad social block {list(soc.keys())} or dna_total fell ({self.max_dna_total} -> {soc['dna_total']})")
+        self.max_dna_total = max(self.max_dna_total, soc["dna_total"])
         if o["last_error"] not in KNOWN_ERRORS:
             self.bug("schema_drift", f"unknown last_error {o['last_error']!r}")
 
@@ -207,6 +230,9 @@ class Episode:
                     ok = any(clone_world(self.w).command(f"approach #{i}") == 0 for i in range(1, n_wild + 1))
                 elif v == "loadout":
                     ok = clone_world(self.w).command(f"loadout 1 {any_known}") == 0
+                elif v in ("befriend", "gift", "observe", "intimidate", "eat"):
+                    args = {"befriend": [" sing"], "gift": [" plant", " fruit", " meat", " bone"]}.get(v, [""])
+                    ok = any(clone_world(self.w).command(f"{v} #{i}{a}") == 0 for i in range(1, n_wild + 1) for a in args)
                 elif v == "attack":
                     ok = any(clone_world(self.w).command(f"attack #{i} {m}") == 0
                              for i in range(1, n_wild + 1) for m in (moves or ["bite"]))
@@ -280,7 +306,7 @@ class Episode:
             m = re.match(r"go\s+(-?[\d.]+)[ ,]+(-?[\d.]+)", c)
             if m and math.hypot(float(m[1]) - o["own"]["x"], float(m[2]) - o["own"]["z"]) < 1.5:
                 pending = False
-        if v in ("wait", "attack", "approach"):
+        if v in ("wait", "attack", "approach") or v in SOCIAL_VERBS:
             pending = False
         if v == "flee" and near_c >= 30:
             pending = False        # flee runs until nothing is within 30 m, then the order is done

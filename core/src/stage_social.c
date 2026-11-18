@@ -661,19 +661,24 @@ int cp_stage_social_parse(const char *text,CpStageInput *out,int *rc){
     return 1;
 }
 int cp_stage_social_legal(const CpStageWorld *w,int verb){
-    if(w->active>=0)return 0;
-    int any=0;
+    const CpStageSocial *s=&w->social;
+    if(w->active>=0||w->respawn_ticks>0)return 0;
     if(verb==CP_STAGE_EAT){
-        for(int i=0;i<w->setup.n;i++)if(cp_stage_social_carcass_meat(w,i)>0&&dist2(&w->player,&w->wild[i])<40.f)return w->social.diet!=CP_DIET_HERBIVORE&&w->social.food<CP_SOC_FOOD_MAX;
+        for(int i=0;i<w->setup.n;i++)if(cp_stage_social_carcass_meat(w,i)>0)return s->diet!=CP_DIET_HERBIVORE&&s->food<CP_SOC_FOOD_MAX;
         return 0;
     }
-    for(int i=0;i<w->setup.n;i++)if(!is_dead(&w->wild[i]))any=1;
-    if(!any)return 0;
-    if(verb==CP_STAGE_GIFT){
-        for(int k=0;k<CP_ITEM_COUNT;k++)if(w->social.items[k]>0)return 1;
-        return 0;
+    if(verb==CP_STAGE_OBSERVE)return w->setup.n>0;
+    /* the verbs below are listed only when at least one creature would accept them right now (the same checks as the order) */
+    for(int i=0;i<w->setup.n;i++){
+        if(is_dead(&w->wild[i]))continue;
+        if(s->stagger>0)return 0;
+        if(verb==CP_STAGE_BEFRIEND&&!refuses(w,i)&&w->player.stamina>=CP_STAGE_SKILLS[CP_SOC_SING].stamina)return 1;   /* sing is the probe skill */
+        if(verb==CP_STAGE_INTIMIDATE&&s->intimidate_cd<=0&&w->player.stamina>=INT_STAMINA)return 1;
+        if(verb==CP_STAGE_GIFT&&w->player.stamina>=GIFT_STAMINA){
+            for(int k=0;k<CP_ITEM_COUNT;k++)if(s->items[k]>0)return 1;
+        }
     }
-    return 1;
+    return 0;
 }
 
 /* --- observation --- */

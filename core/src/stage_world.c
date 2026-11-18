@@ -1645,7 +1645,9 @@ int cp_stage_observe_v(const CpStageWorld *w,char *out,size_t cap,int version){
     if(target)ADD(",\"approach\"");
     if(target&&attacks)ADD(",\"attack\"");
     if(version==2){
-        if(cp_stage_social_legal(w,CP_STAGE_BEFRIEND))ADD(",\"befriend\",\"observe\",\"intimidate\"");
+        if(cp_stage_social_legal(w,CP_STAGE_BEFRIEND))ADD(",\"befriend\"");
+        if(cp_stage_social_legal(w,CP_STAGE_OBSERVE))ADD(",\"observe\"");
+        if(cp_stage_social_legal(w,CP_STAGE_INTIMIDATE))ADD(",\"intimidate\"");
         if(cp_stage_social_legal(w,CP_STAGE_EAT))ADD(",\"eat\"");
         if(cp_stage_social_legal(w,CP_STAGE_GIFT))ADD(",\"gift\"");
     }
