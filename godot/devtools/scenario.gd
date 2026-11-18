@@ -40,7 +40,7 @@ static func build(stage, ctx: Dictionary, kind: String, scenario_name: String, n
 	var d := {
 		"format": FORMAT,
 		"name": scenario_name, "stage": "creature", "kind": kind, "note": note, "created": iso_now(),
-		"engine": {"stage_version": CporeWorld.version(), "snapshot_version": 2, "layout": w.layout(), "build": ctx.get("build", build_text())},
+		"engine": {"stage_version": CporeWorld.version(), "snapshot_version": 3, "layout": w.layout(), "build": ctx.get("build", build_text())},
 		"island": ctx.get("island", {}),
 		"setup": _jsonable(w.get_setup()),
 		"state": scenario_name.get_file() + ".cpstate", "tick": int(st.tick), "hash": st.hash,
