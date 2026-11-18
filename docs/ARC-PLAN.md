@@ -243,6 +243,28 @@ edition by a publisher). Same as §5.3: names and descriptions live only in the
 lore file, no art is copied, and contacting the author is a release-time
 option (he has been open to fan work).
 
+### 5.3c *Project Hail Mary*: the Eridians and Astrophage (owner's decision A20)
+
+The owner wants Andy Weir's *Project Hail Mary* (2021) as easter eggs, under the
+same rule as §5.3: exact names in development, every proper noun in the lore file
+(`lore/hailmary.<lang>.json`). It fits unusually well, because the book is about
+**a microbe that eats starlight** (our panspermia frame and the cell stage) and
+**an alien engineer species that befriends a human through music** (our befriend
+mechanic).
+
+| From the book | In the game |
+|---|---|
+| **Astrophage** (a microbe that lives on a star's surface, breeds near a planet with CO₂, stores enormous energy as mass, and dims its host star) | Three payoffs. **Cell (A16):** an Astrophage-like light-eating microbe as a rare discovery in the molecular factory. **Space, resource:** the best propulsion fuel in the tech ladder (§8, next to the Bussard ramjet), harvested at infected stars. **Space, crisis:** your home star starts dimming; planet health (A3) falls a little every year until you find the predator. It's the one threat that reaches back into worlds you left behind |
+| **The Petrova line** (the faint infrared line from the star to the planet where Astrophage breeds) | **Creature-stage egg:** on clear nights, with the nocturnal creature's eyes, a faint line runs from the setting sun toward the bright evening planet. The journal entry is one line. Seen again in Space, it means the crisis has started |
+| **Taumoeba** (the Astrophage predator from the planet Adrian) | The cure: an expedition to a Tau Ceti–like world to find and *breed* a predator that survives your ships' conditions. A Shape-verb puzzle (adapt a microbe) |
+| **Erid and the Eridians** (a heavy, hot, high-pressure ammonia world; five-legged, rock-shelled, eyeless engineers who hear the world, speak in musical chords, master xenonite, and don't know radiation exists) | A Space-stage **friendly species**. Their language is chords, so **diplomacy reuses the befriend mechanic** from the creature stage (sing, rhythm): the player who learned to befriend there is good at it here. **Xenonite** is a tech they can teach. Their blind spot (radiation) is the hook: you know something they don't, and helping them is the friendship. A lineage adapted to heavy, high-pressure worlds (§1) can live on Erid-like planets without terraforming |
+| **The two-species crew** (a human and an Eridian solve the problem together) | A co-operation win condition for the Astrophage crisis: two species, one shared ship, neither could do it alone |
+
+Legal note: *Project Hail Mary* is a recent, living franchise (Andy Weir;
+a 2026 film by Amazon MGM Studios). It is riskier than the older works in §5.3.
+Same rule: names and descriptions only in the lore file, no art or likeness
+from the film, and a decision with legal advice at release (C8).
+
 ### 5.4 End of the arc
 
 There are several wins (as in Realm): reach the galactic core past its guardian
@@ -345,7 +367,7 @@ spiders weave it). Same idea for other traits:
 | Tier | Techs |
 |---|---|
 | Near | fusion reactor, space elevator, orbital ring, mass driver, solar sails, asteroid mining |
-| Far | **Bussard ramjet** (scoops interstellar hydrogen as fuel), O'Neill habitats, terraforming engines, genetic adaptation, ship minds |
+| Far | **Bussard ramjet** (scoops interstellar hydrogen as fuel), **Astrophage drive** (§5.3c, lore file), O'Neill habitats, terraforming engines, genetic adaptation, ship minds |
 | Stellar | **Dyson swarm → Dyson sphere** around your star, stellar engine (moves a star), worldsmithing |
 | Exotic | **Penrose process** (draws rotational energy from a black hole), the black sphere's secrets (Excession node) |
 

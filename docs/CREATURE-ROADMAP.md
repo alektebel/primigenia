@@ -137,6 +137,7 @@ G70 minute-to-minute loop. Spec: `P4.md`.
 | 3 fossils, 1 hidden cave | cheap | C2 |
 | Cousins (your ancestors) | system | C2 |
 | The billion-year-old human skull (*All Tomorrows*, A19) | cheap (one fossil) | C2 |
+| The Petrova line in the night sky (*Project Hail Mary*, A20) | cheap (seen with the nocturnal creature) | C5 (with day/night and the nocturnal secret) |
 | Webs / silk | deep | C3 |
 | Ink jet | deep | C4 |
 | Sunken bones, cliff fossils, waterfall cave | cheap | C4 |
