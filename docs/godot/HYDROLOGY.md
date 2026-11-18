@@ -47,5 +47,5 @@ word changed) and `world-field-1.{log,hashes}` (the field now carries the river 
 ## Not done / deferred
 
 * Shallow water does not slow movement: that needs a hook in `stage_world.c` (owned by other branches). The 0.5..0.7 m band is reserved for it.
-* The strategic-zoom icon layer does not draw rivers; the ribbons are visible from the strategic camera (evidence `look/s4/river.png`).
+* The strategic-zoom icon layer does not draw rivers; the ribbons are visible from the strategic camera (evidence `look/s4/river.jpg`).
 * Waterfalls are the steep-drop foam sheet on the draped ribbon; there is no spray particle effect.
