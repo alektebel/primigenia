@@ -68,3 +68,12 @@
 | [Cuarzo-Sangre](cuarzo_sangre.md) | new | draft | 4 | 3 fixable, 1 plausible |
 | [Quemador](quemador.md) | new | draft | 4 | 1 fixable, 3 plausible |
 | [Vidrio-Pulso](vidrio_pulso.md) | new | draft | 4 | 3 fixable, 1 plausible |
+
+## The Star World (Photospheres and Coronae) (`starlife`)
+
+| Creature | Kind | Status | Chains | Verdicts |
+|---|---|---|---|---|
+| [Astrophage](astrophage.md) | easter_egg | draft | 5 | 3 fixable, 2 implausible |
+| [Seda Coronal](seda_coronal.md) | new | draft | 4 | 4 fixable |
+| [Trenza de Fuego](trenza_de_fuego.md) | new | draft | 4 | 4 fixable |
+| [Trenza Magnética](trenza_magnetica.md) | new | draft | 4 | 3 fixable, 1 plausible |

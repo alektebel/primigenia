@@ -1,0 +1,279 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "trenza_magnetica",
+  "name": {
+    "en": "Trenza Magnética"
+  },
+  "world": "starlife",
+  "kind": "new",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "Open coronal loops & active region boundaries (~10⁶ K, low density, flux-shielded cavities)",
+    "diet": "Kinetic/thermal energy from reconnection outflows, relativistic particles, resonant chromospheric lines",
+    "active": "Cyclic (peaks during 11-year magnetic maximum & X-class flare seasons)",
+    "predators": []
+  },
+  "body": "100-meter helical braid of self-organized dusty plasma, lined with radiative lattice skin",
+  "chains": [
+    {
+      "id": "trenza_magnetica.c1",
+      "trait": "Helical body shape absorbs torsional stress",
+      "links": [
+        "Helical morphology distributes rotational strain",
+        "Differential rotation shears magnetic flux tubes across latitudes",
+        "G2V torsional oscillation winds field lines"
+      ],
+      "roots": [
+        "F4",
+        "F17"
+      ],
+      "skill": {
+        "id": "trenza_magnetica.twist_anchor",
+        "name": {
+          "en": "Twist Anchor"
+        },
+        "role": "Control",
+        "effect": "Tangles in a 20m radius, halting enemy movement for 3s",
+        "numbers": {}
+      },
+      "weakness": "Exposed to Alfvénic resonance; high-frequency waves shatter its braid",
+      "observe": [
+        "Spire-like silhouette against a dark spot",
+        "Rotating slowly against the granular flow",
+        "Emitting faint radio-frequency hum"
+      ],
+      "journal": {
+        "en": "It does not swim; it twists."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Treat the braid as a closed magnetic flux tube topped by a dusty-plasma Yukawa helix (metres to tens of metres, not 100 m apex size); Twist Anchor = localized line-tying/tangle that raises Alfvén impedance in a patch, not halting bulk granular flow. Keep larval umbra form (secret) as the only life stage thick enough to couple to granulation.",
+        "fixes": [
+          "Treat the braid as a closed magnetic flux tube topped by a dusty-plasma Yukawa helix (metres to tens of metres, not 100 m apex size); Twist Anchor = localized line-tying/tangle that raises Alfvén impedance in a patch, not halting bulk granular flow. Keep larval umbra form (secret) as the only life stage thick enough to couple to granulation."
+        ],
+        "analogues": [
+          {
+            "organism": "Bacterial flagellum (helical twist for thrust transmission); protein coiled-coils (torsional compliance)—mechanical, not plasma-MHD at stellar scale.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "trenza_magnetica.c2",
+      "trait": "Radiative lattice skin scatters lethal UV flux",
+      "links": [
+        "Structured plasma crystal reflects and redirects photons",
+        "Photospheric/coronal flux exceeds cellular damage threshold",
+        "Stefan-Boltzmann blackbody emission at 5800 K"
+      ],
+      "roots": [
+        "F6",
+        "F18"
+      ],
+      "skill": {
+        "id": "trenza_magnetica.flare_shield",
+        "name": {
+          "en": "Flare Shield"
+        },
+        "role": "Defence",
+        "effect": "Redirects 50% of incoming energy burst, storing it for 5s",
+        "numbers": {}
+      },
+      "weakness": "Lattice gaps close in high-density plasma; suffocates if it dives into the chromosphere",
+      "observe": [
+        "Iridescent sheen refracting sunlight into spectral bands",
+        "Shimmering intensely during quiet sun periods",
+        "Absorbing specific chromospheric emission lines"
+      ],
+      "journal": {
+        "en": "A mirror that eats light."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Relocate primary defence to prominence-foot or spot-penumbra adjacency where condensation raises effective opacity; Flare Shield = redirect thermal line emission and EUV surges along the tube wall for seconds, not 50% of a full X-class bolometric dump. Weakness (chromosphere suffocation) stays—lattice needs coronal-side low density.",
+        "fixes": [
+          "Relocate primary defence to prominence-foot or spot-penumbra adjacency where condensation raises effective opacity; Flare Shield = redirect thermal line emission and EUV surges along the tube wall for seconds, not 50% of a full X-class bolometric dump. Weakness (chromosphere suffocation) stays—lattice needs coronal-side low density."
+        ],
+        "analogues": [
+          {
+            "organism": "Hawaiian bobtail squid (Euprymna scolopes) ventral photophore counter-illumination—controls apparent brightness; structural colour in cephalopod leucophores (photon routing).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "trenza_magnetica.c3",
+      "trait": "Current-loop stomach stores reconnection charge",
+      "links": [
+        "Diamagnetic shielding confines plasma currents",
+        "Reconnection releases sudden kinetic and thermal bursts",
+        "Anti-parallel field lines break and reconnect"
+      ],
+      "roots": [
+        "F12",
+        "F16"
+      ],
+      "skill": {
+        "id": "trenza_magnetica.siphon_burst",
+        "name": {
+          "en": "Siphon Burst"
+        },
+        "role": "Poke",
+        "effect": "Drains 30% of target charge, healing self for 4s",
+        "numbers": {}
+      },
+      "weakness": "Overcharge triggers uncontrolled reconnection; self-cannibalizes if fed too rapidly",
+      "observe": [
+        "Pulsing crimson core visible through its braid",
+        "Brightening synchronously with distant spicules",
+        "Leaving ionized trails that smell of ozone"
+      ],
+      "journal": {
+        "en": "It drinks lightning and waits."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Cap stored energy to a fraction of a nanoflare (~10¹⁸–10²⁰ J game abstraction); Siphon drains target's local current-sheet polarization, not '30% charge' of another organism. Overcharge weakness = forced micro-reconnection dissipating braid helicity—align with F14 decay.",
+        "fixes": [
+          "Cap stored energy to a fraction of a nanoflare (~10¹⁸–10²⁰ J game abstraction); Siphon drains target's local current-sheet polarization, not '30% charge' of another organism. Overcharge weakness = forced micro-reconnection dissipating braid helicity—align with F14 decay."
+        ],
+        "analogues": [
+          {
+            "organism": "Electric eel (Electrophorus) electrocyte arrays—serial lipid-bound charge compartments with slow recharge; jamming avoidance in weakly electric fish (brief pulse storage/release).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "trenza_magnetica.c4",
+      "trait": "Alfvén-wave communication along field lines",
+      "links": [
+        "Transverse MHD waves propagate along closed flux tubes",
+        "Vacuum corona lacks acoustic transmission medium",
+        "Magnetized plasma supports 1000 km/s wave speeds"
+      ],
+      "roots": [
+        "F20"
+      ],
+      "skill": {
+        "id": "trenza_magnetica.field_call",
+        "name": {
+          "en": "Field Call"
+        },
+        "role": "Social",
+        "effect": "Summons 3 allies within 500m along the same flux tube",
+        "numbers": {}
+      },
+      "weakness": "Requires magnetically closed tubes; breaks in open solar wind",
+      "observe": [
+        "Rapid polarization shifts along its length",
+        "Syncing movements with distant magnetic arches",
+        "Creating visible standing wave patterns in local plasma"
+      ],
+      "journal": {
+        "en": "It speaks in magnetic pulses."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Transverse MHD modes on closed loops propagate at ~1000 km/s (F20) with range limited by damping and line tying—consistent with 500 m social range if interpreted as同一 flux tube arc length, not photospheric great-circle distance. Information capacity is low (dispersive, reflective boundaries); territorial species signaling 'flux emergence' fits opportunistic ecology.",
+        "fixes": [
+          "Transverse MHD modes on closed loops propagate at ~1000 km/s (F20) with range limited by damping and line tying—consistent with 500 m social range if interpreted as同一 flux tube arc length, not photospheric great-circle distance. Information capacity is low (dispersive, reflective boundaries); territorial species signaling 'flux emergence' fits opportunistic ecology."
+        ],
+        "analogues": [
+          {
+            "organism": "Weakly electric fish social signaling (pulse timing on shared medium); elephant infrasound along terrain corridors (channel-bound long-range low-BW)—analogy to field-line channeling, not mechanism.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "Astrophage",
+      "kind": "cousin",
+      "note": "(council kind 'Predator / Obligate Symbiont') Harvests their resonant absorption bands; leaves chromospheric trails that seed new colonies."
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-18",
+    "by": [
+      "naturalist/qwen"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-18",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-18"
+    }
+  ],
+  "temperament": "Opportunistic, territorial around flux emergence zones",
+  "secrets": [
+    "Dive into a sunspot umbra to find its larval stage: a tangled knot that feeds on granular convection.",
+    "The braid is actually a living magnetic flux tube; sever it and the colony dissolves into thermal noise."
+  ],
+  "moments": [
+    "When the first X-class flare of the cycle hits, the entire coronal forest ignites in synchronized helical dance, a million magnetic braids flaring in unison before collapsing into quiet current loops."
+  ],
+  "journal": [
+    {
+      "en": "It does not swim; it twists."
+    },
+    {
+      "en": "A mirror that eats light."
+    }
+  ]
+}

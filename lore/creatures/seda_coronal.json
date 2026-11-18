@@ -1,0 +1,280 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "seda_coronal",
+  "name": {
+    "en": "Seda Coronal"
+  },
+  "world": "starlife",
+  "kind": "new",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "Quiescent prominence cavities & chromospheric spicule launch zones (~10⁴–10⁵ K, suspended magnetic arches)",
+    "diet": "Condensed plasma droplets, chromospheric spicule ejecta, residual reconnection heat",
+    "active": "Circadian/seasonal, follows prominence stability cycles and spicule periodicity",
+    "predators": []
+  },
+  "body": "Filamentary ribbon of strongly coupled dusty plasma (Yukawa lattice), anchored by magnetic helicity knots",
+  "chains": [
+    {
+      "id": "seda_coronal.c1",
+      "trait": "Filamentary ribbon body minimizes drag in low-density corona",
+      "links": [
+        "Thin cross-section reduces kinetic friction",
+        "Coronal density drops to 10⁻¹⁵ kg/m³",
+        "Hydrostatic gradient integrated from photosphere upward"
+      ],
+      "roots": [
+        "F5",
+        "F7"
+      ],
+      "skill": {
+        "id": "seda_coronal.wave_glide",
+        "name": {
+          "en": "Wave Glide"
+        },
+        "role": "Basic",
+        "effect": "Rides magnetoacoustic waves for 15m distance, ignoring terrain",
+        "numbers": {}
+      },
+      "weakness": "Broad bodies or dense attachments increase drag; slows it to a crawl in granular upflows",
+      "observe": [
+        "Silken trail of ionized gas",
+        "Gliding smoothly between prominence threads",
+        "Reflecting ambient coronal X-rays"
+      ],
+      "journal": {
+        "en": "It rides the wind that does not blow."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Rename mechanic to MHD surge riding: 15 m displacement along a wave front at magnetoacoustic speed in denser spicule footing, not 'ignoring terrain' in vacuum corona. Weakness: entanglement in granular upflows (F8) when ribbon dips to photosphere—keep.",
+        "fixes": [
+          "Rename mechanic to MHD surge riding: 15 m displacement along a wave front at magnetoacoustic speed in denser spicule footing, not 'ignoring terrain' in vacuum corona. Weakness: entanglement in granular upflows (F8) when ribbon dips to photosphere—keep."
+        ],
+        "analogues": [
+          {
+            "organism": "Solar prominence/filament threads (quiescent structures in magnetic dips); siphonophore stolon minimized cross-section in low-resistance pelagic drift—morphology only.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "seda_coronal.c2",
+      "trait": "Yukawa lattice skin anchors to magnetic flux",
+      "links": [
+        "Repulsive screened Coulomb potentials form ordered crystal",
+        "Strong coupling (Γ > 170) overcomes thermal chaos",
+        "Dusty plasma structures under partial ionization"
+      ],
+      "roots": [
+        "F13",
+        "F11"
+      ],
+      "skill": {
+        "id": "seda_coronal.flux_grip",
+        "name": {
+          "en": "Flux Grip"
+        },
+        "role": "Engage",
+        "effect": "Anchors to a magnetic surface, becoming immune to displacement for 8s",
+        "numbers": {}
+      },
+      "weakness": "Lattice shatters under high-turbulence spicule ejections (5–50 km/s)",
+      "observe": [
+        "Geometric hexagonal shimmer on its surface",
+        "Locking onto invisible field lines",
+        "Vibrating at plasma frequency cutoffs"
+      ],
+      "journal": {
+        "en": "A crystal that clings to invisible rails."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Restrict Flux Grip to prominence feet and cool threads where neutral fraction permits dust persistence; hex shimmer = diagnostic for playable safe zones. Spicule shatter weakness (5–50 km/s, F19) stays—lattice is brittle under directed jet impact.",
+        "fixes": [
+          "Restrict Flux Grip to prominence feet and cool threads where neutral fraction permits dust persistence; hex shimmer = diagnostic for playable safe zones. Spicule shatter weakness (5–50 km/s, F19) stays—lattice is brittle under directed jet impact."
+        ],
+        "analogues": [
+          {
+            "organism": "Laboratory dusty plasma crystal (Morfill group); magnetotactic bacterial chain alignment along field lines—anchor to B, different physics.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "seda_coronal.c3",
+      "trait": "Helicity memory knots store navigational maps",
+      "links": [
+        "Topological knots record past reconnection sites",
+        "Alfvén's theorem preserves field line linkage",
+        "Magnetic helicity is nearly conserved in high-Rm plasma"
+      ],
+      "roots": [
+        "F14",
+        "F10"
+      ],
+      "skill": {
+        "id": "seda_coronal.path_echo",
+        "name": {
+          "en": "Path Echo"
+        },
+        "role": "Passive",
+        "effect": "Reveals hidden safe routes through active regions for 10s",
+        "numbers": {}
+      },
+      "weakness": "Knots unravel during prolonged magnetic reconnection; causes disorientation and random drifting",
+      "observe": [
+        "Slowly rotating core structures",
+        "Pulsing in sync with local magnetic polarity",
+        "Depositing frozen helical plasma droplets"
+      ],
+      "journal": {
+        "en": "It remembers where the sky used to be."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Path Echo reads standing-wave nulls from last micro-reconnection in the arch, not stored charts; fossil helical droplets (secret) are the durable trace. Prolonged reconnection disorientation = helicity cascade per F14—keep.",
+        "fixes": [
+          "Path Echo reads standing-wave nulls from last micro-reconnection in the arch, not stored charts; fossil helical droplets (secret) are the durable trace. Prolonged reconnection disorientation = helicity cascade per F14—keep."
+        ],
+        "analogues": [
+          {
+            "organism": "No close Earth analogue; weak parallel: ant path integration with decay (short halflife); slime mold network 'memory' in extracellular trails—externalized route memory, not knot topology.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "seda_coronal.c4",
+      "trait": "Spicule launch mechanism ejects plasma to feed",
+      "links": [
+        "Ventral current jets amplify local wave amplitude",
+        "Magnetoacoustic wave pressure drives periodic mass ejections",
+        "Chromospheric spicules eject vertical plasma jets"
+      ],
+      "roots": [
+        "F19",
+        "F12"
+      ],
+      "skill": {
+        "id": "seda_coronal.jet_surge",
+        "name": {
+          "en": "Jet Surge"
+        },
+        "role": "Poke",
+        "effect": "Fires a directed plasma burst, knocking back enemies and creating a temporary feeding zone",
+        "numbers": {}
+      },
+      "weakness": "Requires precise timing; misfires waste charge and leave it vulnerable to ambient radiation",
+      "observe": [
+        "Sudden downward lunge followed by a cooled plasma trail",
+        "Expanding ventral magnetic coils",
+        "Harvesting residual heat from launch zones"
+      ],
+      "journal": {
+        "en": "It dives to rise."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Jet Surge = synchronized ventral discharge when natural spicule rise is already imminent (passive trigger on 5–20 min chromospheric clocks), creating a local cool-plasma feeding veil; remove claim of launching spicules de novo. Misfire weakness = wasted helicity knot charge—consistent with F14.",
+        "fixes": [
+          "Jet Surge = synchronized ventral discharge when natural spicule rise is already imminent (passive trigger on 5–20 min chromospheric clocks), creating a local cool-plasma feeding veil; remove claim of launching spicules de novo. Misfire weakness = wasted helicity knot charge—consistent with F14."
+        ],
+        "analogues": [
+          {
+            "organism": "Baleen whale bubble-net (timed collective feeding on existing prey flux)—timing not creation of ocean upwelling; archer fish jet (directed water pulse)—scale mismatch.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "Astrophage",
+      "kind": "cousin",
+      "note": "(council kind 'Commensal Scavenger') Drifts through their feeding trails, harvesting residual spectral absorption and reconnection heat."
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-18",
+    "by": [
+      "naturalist/qwen"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-18",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-18"
+    }
+  ],
+  "temperament": "Docile, migratory, highly cooperative",
+  "secrets": [
+    "Its 'ribbon' is a living magnetic arch; follow the lattice pattern to find undiscovered flux tunnels.",
+    "The helicity knots aren't just maps—they're fossilized reconnection events that store energy for dormant phases."
+  ],
+  "moments": [
+    "At the crest of a prominence arch, thousands of silken ribbons align their Yukawa lattices, turning the entire magnetic cathedral into a single vibrating crystal as the star breathes."
+  ],
+  "journal": [
+    {
+      "en": "It rides the wind that does not blow."
+    },
+    {
+      "en": "A crystal that clings to invisible rails."
+    }
+  ]
+}

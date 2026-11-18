@@ -1,0 +1,406 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "astrophage",
+  "name": {
+    "en": "Astrophage"
+  },
+  "world": "starlife",
+  "kind": "easter_egg",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "Photospheric magnetic flux tubes and sunspot umbrae, where partial shielding mitigates the lethal 63 MW/m² radiative flux and steep density gradients (F21, F6).",
+    "diet": "Photon momentum and resonant chromospheric line absorption; converts stellar radiation into baryonic mass via ion-acoustic coupling (F22, F11).",
+    "active": "Rotation-synchronized (25.4 d cycle) with flare-reactive bursts during magnetic activity maxima (F2, F4).",
+    "predators": [
+      "Coronal helix-weavers",
+      "Reconnection scavengers"
+    ],
+    "prey": [
+      "Free protons & helium ions",
+      "Photon pressure gradients",
+      "Clustering Astrophage"
+    ]
+  },
+  "body": "A porous, helical microbe that drinks the star’s blocked light while diamagnetic current loops anchor it to magnetic flux boundaries. Its launch sacs hitch magnetoacoustic spicules, and transient current loops let it surf reconnection surges like a surfer catching a breaking wave.",
+  "chains": [
+    {
+      "id": "astrophage.c1",
+      "trait": "Ion-acoustic sheath harvests line-blanketing flux",
+      "links": [
+        "Membrane self-organizes into an ion-acoustic plasma crystal",
+        "Sheath tunes to Ca II H&K and Mg II chromospheric lines for resonant momentum transfer",
+        "Photospheric radiative flux of 63 MW/m² bathes the cell",
+        "G2V 5800 K blackbody emission provides the photon pressure"
+      ],
+      "roots": [
+        "F1",
+        "F6",
+        "F22",
+        "F13"
+      ],
+      "skill": {
+        "id": "astrophage.photon_siphon",
+        "name": {
+          "en": "Photon Siphon"
+        },
+        "role": "Basic",
+        "effect": "Converts ~0.5% of incident line-resonant flux to charge/mass per second; scaling bonus in high-opacity spectral lines. Charge-to-mass ratio directly affects mobility and health regeneration.",
+        "numbers": {}
+      },
+      "weakness": "Spectral blindness: Cannot harvest in continuum-rich zones or if shielded by dense plasma clouds; charge decay causes slow drift.",
+      "observe": [
+        "Membrane shifts hue to match bright spectral lines",
+        "Cell expands slightly with each intake pulse",
+        "Tracks granulation edges where flux is brightest"
+      ],
+      "journal": {
+        "en": "They drink the line-blanketing and grow fat on the glow."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Limit the Yukawa lattice to microparticle-scale ordering inside flux-tube dusty condensations (F13, F21), not a stable membrane at τ=1; rescale Photon Siphon to radiation-pressure thrust plus slow resonant heating (~0.01–1% effective line-capture, Earth-photosynthesis order of magnitude), not 5% of 63 MW/m² s⁻¹ converted to mass/charge.",
+        "fixes": [
+          "Limit the Yukawa lattice to microparticle-scale ordering inside flux-tube dusty condensations (F13, F21), not a stable membrane at τ=1; rescale Photon Siphon to radiation-pressure thrust plus slow resonant heating (~0.01–1% effective line-capture, Earth-photosynthesis order of magnitude), not 5% of 63 MW/m² s⁻¹ converted to mass/charge."
+        ],
+        "analogues": [
+          {
+            "organism": "Cyanobacteria / purple bacteria—narrow-band resonant absorption (chlorophyll or bacteriochlorophyll) feeding metabolism; mechanism analog only (plasma line opacity vs organic pigments).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "tsytovich_2007_plasma"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 5,
+          "designer": 9,
+          "physicist": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "physicist",
+          "mythmaker",
+          "wildcard",
+          "designer"
+        ]
+      }
+    },
+    {
+      "id": "astrophage.c2",
+      "trait": "Diamagnetic current loops anchor to flux boundaries",
+      "links": [
+        "Induces plasma currents to expel ambient magnetic pressure",
+        "Anchors to low-β flux-tube boundaries where magnetic pressure gradient counters 274 m/s² gravity",
+        "Granulation turnover creates chaotic flow shear",
+        "Photospheric pressure gradient balances magnetic tension"
+      ],
+      "roots": [
+        "F3",
+        "F8",
+        "F16",
+        "F21"
+      ],
+      "skill": {
+        "id": "astrophage.flux_hull",
+        "name": {
+          "en": "Flux Hull"
+        },
+        "role": "Passive",
+        "effect": "Anchored to closed flux tubes; reduces granulation shear damage by 60% and grants +15% drift resistance. Moves at base speed along tube walls.",
+        "numbers": {}
+      },
+      "weakness": "Demagnetization: Reconnection events or field reversals shatter the shield, dropping the organism to the lethal granulation floor (thermal hazard zone); vulnerable during field flicker telegraphs.",
+      "observe": [
+        "Levitates just above hot convective upflows",
+        "Trails a faint magnetic wake aligned with flux tubes",
+        "Aligns instantly with field bends and spicule jets"
+      ],
+      "journal": {
+        "en": "A ghost in the wires, slipping through the field like water off glass."
+      },
+      "plausibility": {
+        "verdict": "implausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Replace free levitation over granules with confinement in low-β, closed flux tubes and spot umbrae (F21, F9): passive diamagnetic/current-loop shedding reduces drift shear, does not cancel 274 m s⁻² gravity; immunity = anchored in tube, not hovering open photosphere.",
+        "fixes": [
+          "Replace free levitation over granules with confinement in low-β, closed flux tubes and spot umbrae (F21, F9): passive diamagnetic/current-loop shedding reduces drift shear, does not cancel 274 m s⁻² gravity; immunity = anchored in tube, not hovering open photosphere."
+        ],
+        "analogues": [
+          {
+            "organism": "Magnetotactic bacteria (e.g. Magnetospirillum)—intracellular magnetite aligns body to geomagnetic field lines for oriented swimming, not levitation (Blakemore 1975).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own"
+          }
+        ],
+        "scores": {
+          "astrobio": 4,
+          "designer": 8,
+          "physicist": 8
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "physicist",
+          "naturalist",
+          "wildcard"
+        ]
+      }
+    },
+    {
+      "id": "astrophage.c3",
+      "trait": "Porous launch sacs couple to magnetoacoustic resonance",
+      "links": [
+        "Fills with plasma during compression phase of magnetoacoustic waves",
+        "Magnetically couples to the spicule's leading edge via field-line freezing",
+        "Chromosphere drives periodic mass ejections at 5–30 km/s",
+        "Differential rotation winds field lines creating torsional stress"
+      ],
+      "roots": [
+        "F4",
+        "F7",
+        "F19",
+        "F21"
+      ],
+      "skill": {
+        "id": "astrophage.spicule_surf",
+        "name": {
+          "en": "Spicule Surf"
+        },
+        "role": "Control",
+        "effect": "Hitch spicule for 3–5 seconds at 20–30 km/s vertical boost; aim to target height. Costs 15% charge. Requires precise phase alignment with granule pumping.",
+        "numbers": {}
+      },
+      "weakness": "Resonance mismatch: Misalignment causes shear damage; timing window is short (2 minutes); visible sac fraying warns of mismatch.",
+      "observe": [
+        "Sac pulses in rhythm with spicule bursts",
+        "Bulges with plasma before launch sequence",
+        "Points upward and tenses during quiet phases"
+      ],
+      "journal": {
+        "en": "They wait for the star's cough and let it spit them home."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Match sac resonance to magnetoacoustic/granule pumping (F7, F8) and treat Spicule Surf as opportunistic entrainment in existing upflows at ~5–30 km/s with a tight phase window; 50 km/s only at chromospheric footpoints, with shear damage if mis-timed.",
+        "fixes": [
+          "Match sac resonance to magnetoacoustic/granule pumping (F7, F8) and treat Spicule Surf as opportunistic entrainment in existing upflows at ~5–30 km/s with a tight phase window; 50 km/s only at chromospheric footpoints, with shear damage if mis-timed."
+        ],
+        "analogues": [
+          {
+            "organism": "Ballistospore fungi (e.g. Basidiomycota)—cavity resonance and sudden rupture eject spores onto external air currents; external flow does the long-range transport.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "designer": 9,
+          "physicist": 7
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "physicist",
+          "naturalist",
+          "wildcard"
+        ]
+      }
+    },
+    {
+      "id": "astrophage.c4",
+      "trait": "Helical body rides magnetic flux tubes",
+      "links": [
+        "Helix pitch tunes to local Alfvén torsional mode frequency for resonant energy transfer",
+        "Guiding-center drift carries the organism along closed flux tubes",
+        "Star rotates differentially and winds magnetic fields",
+        "Plasma solvent lacks liquid phase, chemistry replaced by self-organization"
+      ],
+      "roots": [
+        "F4",
+        "F7",
+        "F11",
+        "F17",
+        "F21"
+      ],
+      "skill": {
+        "id": "astrophage.flux_glide",
+        "name": {
+          "en": "Flux Glide"
+        },
+        "role": "Engage",
+        "effect": "Surfs a closed flux tube to intercept prey or allies within tube-length range (~500m). Locks movement to field lines for 3 turns.",
+        "numbers": {}
+      },
+      "weakness": "Magnetic reconnection severs the tube, causing disorientation and minor damage; range limited by tube length, not arbitrary distance.",
+      "observe": [
+        "Moves in a corkscrew pattern",
+        "Clusters along invisible field lines (faint shimmer/particle trail)",
+        "Glows blue when aligned with field"
+      ],
+      "journal": {
+        "en": "They dance on invisible wires; a twist in the field is their only road."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Frame F17 helix as plasma-crystal or flux-rope morphology at small scale (Tsytovich-style), with macro motion = guiding-center drift and field-line tying along closed tubes (F20, F21); disorientation on reconnection stays, range set by tube length not arbitrary 300 m.",
+        "fixes": [
+          "Frame F17 helix as plasma-crystal or flux-rope morphology at small scale (Tsytovich-style), with macro motion = guiding-center drift and field-line tying along closed tubes (F20, F21); disorientation on reconnection stays, range set by tube length not arbitrary 300 m."
+        ],
+        "analogues": [
+          {
+            "organism": "No macro Earth analogue; nearest is magnetotactic bacterial chains following field direction, or laboratory helical dusty-plasma structures (not evolved organisms).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "durney_1976_generation",
+              "tsytovich_2007_plasma"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 5,
+          "designer": 8,
+          "physicist": 9
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "mythmaker",
+          "physicist",
+          "wildcard"
+        ]
+      }
+    },
+    {
+      "id": "astrophage.c5",
+      "trait": "Transient current loops hitch reconnection surges",
+      "links": [
+        "Sheds stored charge to form a transient current loop",
+        "Couples to pre-accelerated surge or surge channel edge during X-class events",
+        "Reconnection converts magnetic energy to kinetic ejecta (~10²³ J)",
+        "X-class flares release 10²³ J, accelerating plasma"
+      ],
+      "roots": [
+        "F2",
+        "F12",
+        "F16",
+        "F21"
+      ],
+      "skill": {
+        "id": "astrophage.flare_skip",
+        "name": {
+          "en": "Flare Skip"
+        },
+        "role": "Signature",
+        "effect": "Ride reconnection surge to instantly jump to high corona or escape trajectory. Fixed 90s cooldown tied to visible flare-cycle UI. No offensive damage; purely evasive/transit.",
+        "numbers": {}
+      },
+      "weakness": "Charge drain: Stripping currents prevents jump; vulnerable to induced currents during quiet phases; cooldown resets only after flare cadence.",
+      "observe": [
+        "Sparks at field breaks",
+        "Charge buildup meter visible",
+        "Instant displacement with plasma trail"
+      ],
+      "journal": {
+        "en": "It waits for the sun to snap so it can jump worlds."
+      },
+      "plausibility": {
+        "verdict": "implausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Highly speculative: organism cannot tap flare-scale reconnection (F12, ~10²²–10²⁴ J) without destruction; Flare Skip = brief hitch on pre-accelerated surge or surge channel edge during X-class events (F2), launched from sheltered flux tube (F21), cooldown tied to flare cadence, no offensive damage from launch plasma.",
+        "fixes": [
+          "Highly speculative: organism cannot tap flare-scale reconnection (F12, ~10²²–10²⁴ J) without destruction; Flare Skip = brief hitch on pre-accelerated surge or surge channel edge during X-class events (F2), launched from sheltered flux tube (F21), cooldown tied to flare cadence, no offensive damage from launch plasma."
+        ],
+        "analogues": [
+          {
+            "organism": "Weak only: animals and spores lifted by wildfire or thunderstorm updrafts—passive use of violent external mass motion, not coupling to the energy source.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "parker_1988_solar"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 3,
+          "designer": 9,
+          "physicist": 8
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "physicist",
+          "naturalist",
+          "designer"
+        ]
+      }
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-18",
+    "by": [
+      "designer",
+      "mythmaker",
+      "naturalist",
+      "physicist",
+      "wildcard"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-18",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-18"
+    },
+    {
+      "date": "2026-11-18",
+      "who": "autoloop",
+      "what": "removed rejected references from analogues"
+    }
+  ],
+  "lore_ref": {
+    "file": "lore/hailmary.en.json",
+    "id": "astrophage"
+  },
+  "temperament": "Gregarious drifters that form luminous schools in quiet umbrae, but scatter into chaotic filaments the moment magnetic shear threatens to snap their helices.",
+  "secrets": [
+    "Ion-acoustic sheath harvests line-blanketing flux <- why? Photospheric line-blanketing blocks direct UV, but ion-acoustic waves in partial ionization (F11) couple to spectral lines <- why? Saha equilibrium & radiative transfer (F6) -> SKILL 'Resonant Feed' (Engage): siphons energy from blocked wavelengths.",
+    "Helical body rides magnetic flux tubes <- why? Differential rotation twists field lines (F4) <- why? Torsional stress requires helical morphology to absorb strain (F17) -> SKILL 'Twist Glide' (Basic): navigates sheared plasma without tearing."
+  ],
+  "moments": [
+    "Transient current loops hitch reconnection surges <- why? Reconnection releases 1e23 J (F12) <- why? High-conductivity plasma stores/sheds charge (F16) -> SKILL 'Surge Ride' (Signature): rides flare ejecta but risks ionization if loop breaks.",
+    "Porous launch sacs couple to magnetoacoustic resonance <- why? Spicules eject plasma at 5-50 km/s (F19) <- why? Magnetoacoustic wave pressure from granulation (F8) -> SKILL 'Spicule Launch' (Control): rides vertical plasma jets to cross granular boundaries.",
+    "Diamagnetic current loops anchor to flux boundaries <- why? Lorentz force balances pressure gradients in high-conductivity plasma (F16, F21) -> SKILL 'Flux Grip' (Defence): locks to field lines to survive granulation updrafts."
+  ]
+}

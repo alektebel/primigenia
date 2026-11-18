@@ -3038,5 +3038,398 @@
     },
     "container-title": "Astrobiology",
     "x-checked": "2026-11-18"
+  },
+  {
+    "id": "carroll_ostlie_2017",
+    "type": "book",
+    "title": "An Introduction to Modern Astrophysics (2nd edition)",
+    "author": [
+      {
+        "family": "Carroll",
+        "given": "Bradley W."
+      },
+      {
+        "family": "Ostlie",
+        "given": "Michael A."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2017
+        ]
+      ]
+    },
+    "ISBN": "9781108422161",
+    "x-status": "verified",
+    "x-note": "verified against OpenLibrary (title 1.00); title corrected from 'An Introduction to Modern Astrophysics'; ISBN added",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "priest_2014",
+    "type": "book",
+    "title": "Solar Magnetohydrodynamics",
+    "author": [
+      {
+        "family": "Priest",
+        "given": "Eric R."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2014
+        ]
+      ]
+    },
+    "ISBN": "978-0521861913",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest OpenLibrary hit is 'Solar Magnetohydrodynamics' (Priest, 1984), title similarity 1.00, author match, year off",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "rieutord_rincon_2010",
+    "type": "article-journal",
+    "title": "Living with the Sun: Our Star and Its Heliosphere",
+    "author": [
+      {
+        "family": "Rieutord",
+        "given": "Michel"
+      },
+      {
+        "family": "Rincon",
+        "given": "François"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2010
+        ]
+      ]
+    },
+    "container-title": "Living Reviews in Solar Physics",
+    "DOI": "10.12942/lrsp-2010-2",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'The Sun’s Supergranulation' (Rieutord, 2010, doi 10.12942/lrsp-2010-2), title similarity 0.41, author match, year ok",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "klimchuk_2006",
+    "type": "article-journal",
+    "title": "On Solving the Coronal Heating Problem",
+    "author": [
+      {
+        "family": "Klimchuk",
+        "given": "John A."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2006
+        ]
+      ]
+    },
+    "container-title": "Solar Physics",
+    "DOI": "10.1007/s11207-006-0055-z",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "tsytovich_morfill_2007",
+    "type": "article-journal",
+    "title": "From plasma crystals and helical structures towards inorganic living matter",
+    "author": [
+      {
+        "family": "Tsytovich",
+        "given": "Vladimir N."
+      },
+      {
+        "family": "Morfill",
+        "given": "Gerd E."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2007
+        ]
+      ]
+    },
+    "container-title": "New Journal of Physics",
+    "DOI": "10.1088/1367-2630/9/8/263",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "berger_field_1984",
+    "type": "article-journal",
+    "title": "The Topology of Magnetic Lines and the Conservation of Magnetic Helicity",
+    "author": [
+      {
+        "family": "Berger",
+        "given": "Michael A."
+      },
+      {
+        "family": "Field",
+        "given": "George B."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1984
+        ]
+      ]
+    },
+    "container-title": "Journal of Fluid Mechanics",
+    "DOI": "10.1017/S0022112084001251",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Magnetic Helicity Conservation' (Berger, 2005) title similarity 0.33",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "parkers_1955",
+    "type": "article-journal",
+    "title": "Hydromagnetic dynamo models",
+    "author": [
+      {
+        "family": "Parker",
+        "given": "Edward N."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1955
+        ]
+      ]
+    },
+    "container-title": "The Astrophysical Journal",
+    "DOI": "10.1086/146094",
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked"
+  },
+  {
+    "id": "given_by_lore",
+    "type": "webpage",
+    "title": "Project Hail Mary / Star World Lore Notes",
+    "author": [
+      {
+        "family": "Author",
+        "given": "Lore Keeper"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2024
+        ]
+      ]
+    },
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit '[Grab] Project Hail Mary' (ginanda, 2026) title similarity 0.56",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "tsytovich_2007_plasma",
+    "type": "article-journal",
+    "title": "From plasma crystals and helical structures towards inorganic living matter",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "author": [
+      {
+        "family": "Tsytovich",
+        "given": "V. N."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2007
+        ]
+      ]
+    },
+    "container-title": "New Journal of Physics",
+    "DOI": "10.1088/1367-2630/9/8/263",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "baker_2022_solar",
+    "type": "article-journal",
+    "title": "Solar flares: A review",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Anticipating Solar Flares' (Hudson, 2024) title similarity 0.52",
+    "author": [
+      {
+        "family": "Baker",
+        "given": "D. N."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2022
+        ]
+      ]
+    },
+    "container-title": "Reviews of Modern Physics",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "depontieu_2007_chromospheric",
+    "type": "article-journal",
+    "title": "Chromospheric Spicules",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Numerical Simulation of Chromospheric Spicules Driven by Weakly-Damped Alfvén Waves' (de Pontieu, 1994) title similarity 0.42",
+    "author": [
+      {
+        "family": "De Pontieu",
+        "given": "B."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2007
+        ]
+      ]
+    },
+    "container-title": "Science",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "durney_1976_generation",
+    "type": "article-journal",
+    "title": "On the generation of large-scale toroidal fields by differential rotation",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'On the generation of the large-scale and turbulent magnetic fields in solar-type stars' (Durney, 1993, doi 10.1007/bf00690652), title similarity 0.60, author match, year off",
+    "author": [
+      {
+        "family": "Durney",
+        "given": "B. R."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1976
+        ]
+      ]
+    },
+    "container-title": "Geophysical & Astrophysical Fluid Dynamics",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "landi_1985_solar",
+    "type": "article-journal",
+    "title": "The Solar Transition Region",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Observation of Transition Region Fine Structures with SOHO/SUMER' (Landi, 1999) title similarity 0.46",
+    "author": [
+      {
+        "family": "Landi",
+        "given": "E."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1985
+        ]
+      ]
+    },
+    "container-title": "Annual Review of Astronomy and Astrophysics",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "parker_1988_solar",
+    "type": "article-journal",
+    "title": "Solar Physics: An Introduction",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'The Future of Solar Physics' (Parker, 1985, doi 10.1007/978-94-009-4588-3_30), title similarity 0.65, author match, year off",
+    "author": [
+      {
+        "family": "Parker",
+        "given": "E. N."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1988
+        ]
+      ]
+    },
+    "container-title": "Springer-Verlag",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "thompson_2003_helioseismology",
+    "type": "article-journal",
+    "title": "Helioseismology and solar rotation",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Solar Dynamics, Rotation, Convection and Overshoot' (Hanasoge, 2017) title similarity 0.34",
+    "author": [
+      {
+        "family": "Thompson",
+        "given": "M. J."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2003
+        ]
+      ]
+    },
+    "container-title": "ARA&A",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "wesson_2011_plasma",
+    "type": "article-journal",
+    "title": "Plasma Physics and Controlled Fusion",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Introduction to Plasma Physics' (Wesson, 1996) title similarity 0.42",
+    "author": [
+      {
+        "family": "Wesson",
+        "given": "P."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2011
+        ]
+      ]
+    },
+    "container-title": "IOP Publishing",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "morfill_2007_dusty",
+    "type": "article-journal",
+    "title": "Dusty plasmas: from crystals to complexity",
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked",
+    "author": [
+      {
+        "family": "Morfill",
+        "given": "G. E."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2007
+        ]
+      ]
+    },
+    "container-title": "New Journal of Physics 9, 263"
   }
 ]
