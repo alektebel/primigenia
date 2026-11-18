@@ -7,7 +7,7 @@
 #define CP_STAGE_MAX_OBSTACLES 1024
 #define CP_STAGE_DAY_TICKS 12000
 #define CP_STAGE_DT .1f
-#define CP_STAGE_SNAPSHOT_VERSION 3   /* 3: player loadout (A21) */
+#define CP_STAGE_SNAPSHOT_VERSION 4   /* 3: player loadout (A21); 4: social layer (C2) */
 #define CP_STAGE_MAX_PATH 64      /* waypoints kept by the planner (docs/godot/NAV.md) */
 #define CP_STAGE_MAX_EVENTS 64    /* event ring since the last observe */
 
@@ -16,11 +16,46 @@ enum { CP_STAGE_TIMID, CP_STAGE_TERRITORIAL, CP_STAGE_AGGRESSIVE };
 enum { CP_STAGE_CONTINUE, CP_STAGE_WAIT, CP_STAGE_GO, CP_STAGE_HEADING,
        CP_STAGE_APPROACH, CP_STAGE_ATTACK, CP_STAGE_FLEE, CP_STAGE_GO_NEST,
        CP_STAGE_GUARD, CP_STAGE_DODGE,
-       CP_STAGE_LOADOUT };   /* target = slot 1..4, move = move id or -1 to empty the slot; instant, not a standing order */
+       CP_STAGE_LOADOUT,     /* target = slot 1..4, move = move id or -1 to empty the slot; instant, not a standing order */
+       /* C2 social verbs (docs/P4.md section 2.1, G75). BEFRIEND: target + move = skill (CP_SOC_*); GIFT: target + move = item
+        * (CP_ITEM_*); OBSERVE and INTIMIDATE: target. All are standing orders: the player walks into range, performs it, and the
+        * order ends. Any other order cancels it. */
+       CP_STAGE_BEFRIEND, CP_STAGE_GIFT, CP_STAGE_OBSERVE, CP_STAGE_INTIMIDATE,
+       CP_STAGE_EAT };   /* EAT: target = a carcass; bites every 10 ticks until it is gone, the player is full, or another order cancels it */
 #define CP_STAGE_NEST_RADIUS 12.f   /* metres from the nest within which the loadout can be changed (tunable) */
 /* Stage order codes added by A21 (-1..-6 are older): the loadout and move errors share the combat numbers. */
 enum { CP_STAGE_ERR_ON_COOLDOWN=-8, CP_STAGE_ERR_NOT_EQUIPPED=-9, CP_STAGE_ERR_BAD_SLOT=-10,
-       CP_STAGE_ERR_NOT_KNOWN=-11, CP_STAGE_ERR_UNKNOWN_MOVE=-12, CP_STAGE_ERR_NOT_AT_NEST=-13, CP_STAGE_ERR_IN_FIGHT=-14 };
+       CP_STAGE_ERR_NOT_KNOWN=-11, CP_STAGE_ERR_UNKNOWN_MOVE=-12, CP_STAGE_ERR_NOT_AT_NEST=-13, CP_STAGE_ERR_IN_FIGHT=-14,
+       /* C2 social errors */
+       CP_STAGE_ERR_REFUSES=-15,      /* hostile, aggressive and not calmed, or mood <= -20: the creature ignores social play */
+       CP_STAGE_ERR_NO_ITEM=-16,      /* gift: none of that item carried */
+       CP_STAGE_ERR_BAD_SKILL=-17,    /* unknown skill or item name/id */
+       CP_STAGE_ERR_STAGGERED=-18,    /* a rival heckled you: social actions are blocked for a few ticks */
+       CP_STAGE_ERR_NO_STAMINA=-19,   /* not enough stamina for the skill */
+       CP_STAGE_ERR_BUSY=-20,
+       CP_STAGE_ERR_DIET=-21,         /* eat: this body cannot digest that (a herbivore and meat) */
+       CP_STAGE_ERR_FULL=-22 };      /* eat: the food meter is full */
+enum { CP_DIET_HERBIVORE, CP_DIET_CARNIVORE, CP_DIET_OMNIVORE };
+#define CP_SOC_CARCASS_BITES 4    /* bites in a carcass */
+#define CP_SOC_BITE_TICKS 10      /* ticks per bite */
+#define CP_SOC_BITE_FOOD 12       /* food per bite of meat */
+#define CP_SOC_FOOD_MAX 100
+#define CP_SOC_FOOD_START 70
+#define CP_SOC_FOOD_DECAY 60      /* ticks per food point lost */       /* a social action is already under way / on cooldown (intimidate) */
+enum { CP_SOC_SING, CP_SOC_DANCE, CP_SOC_CHARM, CP_SOC_POSE, CP_SOC_COUNT };
+enum { CP_ITEM_PLANT, CP_ITEM_FRUIT, CP_ITEM_MEAT, CP_ITEM_BONE, CP_ITEM_COUNT };
+enum { CP_REL_STRANGER, CP_REL_NEUTRAL, CP_REL_TRUSTED, CP_REL_ALLY };
+enum { CP_RES_OPEN, CP_RES_ALLY, CP_RES_HUNTED };
+/* Where a DNA award came from (the move field of a DNA event). */
+enum { CP_DNA_KILL, CP_DNA_BOND, CP_DNA_ALLY, CP_DNA_DOMINATE, CP_DNA_CARCASS, CP_DNA_EXPLORE, CP_DNA_SEEN, CP_DNA_SOURCES };
+#define CP_SOC_BOND_TRUST 60      /* trust at which a creature bonds (Q-3) */
+#define CP_SOC_BEAT 12            /* ticks between beats */
+#define CP_SOC_WINDOW 2           /* rhythm window, +- ticks */
+#define CP_SOC_OBSERVE_TICKS 50   /* ticks of unseen watching per revealed clue */
+#define CP_SOC_OBSERVE_RANGE 40.f
+#define CP_SOC_SPECIES 4
+#define CP_SOC_CHAIN_ITEMS 3
+#define CP_SOC_EXPLORE_MAX 40
 enum { CP_STAGE_NONE, CP_STAGE_VICTORY, CP_STAGE_DEATH, CP_STAGE_FLED };
 typedef struct { float x,z,r; int32_t type; } CpStageObstacle;
 typedef struct {
@@ -81,7 +116,10 @@ typedef struct CpStageField {
 } CpStageField;
 /* Events since the last cp_stage_ack_events(): what the agent could not see from positions alone. */
 enum { CP_STAGE_EV_HIT=1, CP_STAGE_EV_KILL, CP_STAGE_EV_DEATH, CP_STAGE_EV_RESPAWN, CP_STAGE_EV_ORDER_REJECTED,
-       CP_STAGE_EV_PATH_FOUND, CP_STAGE_EV_ARRIVED, CP_STAGE_EV_FLED, CP_STAGE_EV_PATH_FAILED };
+       CP_STAGE_EV_PATH_FOUND, CP_STAGE_EV_ARRIVED, CP_STAGE_EV_FLED, CP_STAGE_EV_PATH_FAILED,
+       /* C2 social events: by = 0, target = creature id; move/value/x/z carry the detail (see stage_social.c) */
+       CP_STAGE_EV_SKILL, CP_STAGE_EV_GIFT, CP_STAGE_EV_BOND_MADE, CP_STAGE_EV_BOND_BROKEN, CP_STAGE_EV_SPECIES_RESOLVED,
+       CP_STAGE_EV_DNA, CP_STAGE_EV_OBSERVE, CP_STAGE_EV_CHAIN_DONE, CP_STAGE_EV_INTIMIDATE, CP_STAGE_EV_SOCIAL_CANCELLED, CP_STAGE_EV_EAT };
 enum { CP_STAGE_BLOCK_NONE, CP_STAGE_BLOCK_CLIFF, CP_STAGE_BLOCK_WATER, CP_STAGE_BLOCK_EDGE,
        CP_STAGE_BLOCK_CREATURE, CP_STAGE_BLOCK_UNREACHABLE, CP_STAGE_BLOCK_OBSTACLE };
 typedef struct {
@@ -89,6 +127,37 @@ typedef struct {
     int32_t type,by,target,move;   /* by/target: 0 = player, 1..n = wild creature id; move = combat move index or -1 */
     float value,x,z;               /* damage (HIT), path length in metres (PATH_FOUND), error code (ORDER_REJECTED) */
 } CpStageEvent;
+/* The social layer (C2). Per wild creature, per species and for the player; all integers. It is tracked from tick 0 but
+ * folded into the world hash only once a social verb was accepted (`used`), so a run that never uses one keeps its hash. */
+typedef struct {
+    int16_t trust,mood;              /* trust 0..100, mood -50..50 */
+    uint8_t bonded,ever_bonded,met,combo; /* bonded = the latch (Q-4); ever_bonded pays the bond DNA once; combo 0..2 */
+    int32_t last_contact;            /* tick of the last social contact (decay clock), 0 = never */
+    int32_t calm_ticks,leave_ticks,aggro_ticks; /* calmed by a liked gift; driven off by intimidate; hostile after its pack was attacked */
+    int32_t last_skill,last_skill_tick;  /* combo: the previous skill started on this creature (-1 none) */
+    int32_t hab_tick[CP_SOC_COUNT];  /* habituation: tick+1 of the last use of each skill, 0 = never */
+    uint8_t hab_n[CP_SOC_COUNT];
+    int32_t carcass_seen,eaten;      /* carcass DNA paid (first bite); bites taken from this carcass */
+} CpStageSocialCreature;
+typedef struct {
+    CpRng rng;                       /* the `social` stream: mood jitter, rival heckle, display contest */
+    int32_t used;                    /* a social verb has been accepted: the block below is hashed */
+    int32_t dna_total,dna_balance;   /* total only rises (Q-1); balance is spendable */
+    int32_t items[CP_ITEM_COUNT];
+    int32_t act_verb,act_target,act_arg,act_t,act_len,act_rhythm,act_mult; /* the action under way (verb 0 = none) */
+    int32_t stagger,intimidate_cd;
+    int32_t food,diet;               /* hunger meter 0..100 (no starvation effect yet) and the body's diet (CP_DIET_*, omnivore by default) */
+    int32_t obs_target,obs_ticks;    /* observe: creature watched and ticks on the current clue */
+    int32_t obs_items[CP_SOC_SPECIES]; /* clues revealed per species chain, 0..3 */
+    uint32_t learned;                /* moves learned by observing (bit = 1 << move id) */
+    int32_t kills[CP_SOC_SPECIES],latched[CP_SOC_SPECIES],resolution[CP_SOC_SPECIES],first_met[CP_SOC_SPECIES];
+    uint32_t tested;                 /* preferences tried: bit s*8+k = species s skill k (k<4) or gift k-4, sign in `liked` */
+    uint32_t liked;
+    int32_t dna_by_source[CP_DNA_SOURCES];
+    int32_t n_explored,explored[CP_SOC_EXPLORE_MAX];
+    uint32_t species_seen;
+    CpStageSocialCreature c[CP_STAGE_MAX_WILD];
+} CpStageSocial;
 typedef struct {
     CpStageSetup setup;
     CpRng spawn_rng,roam_rng;
@@ -118,6 +187,7 @@ typedef struct {
     uint32_t ev_total,ev_acked;      /* events pushed / already shown to the agent; ring index = n % CP_STAGE_MAX_EVENTS */
     CpStageEvent events[CP_STAGE_MAX_EVENTS];
     CpCombatLoadout loadout;         /* the player's kit; copied into the fight at its start; hashed when custom */
+    CpStageSocial social;            /* C2: trust, DNA, species progress, observe; hashed once `social.used` */
     const CpStageField *field;       /* not owned, not in the snapshot, set by cp_stage_attach_field */
 } CpStageWorld;
 void cp_stage_setup_default(CpStageSetup *s,uint32_t seed);
@@ -149,6 +219,39 @@ void cp_stage_ack_events(CpStageWorld *w);
 typedef struct { uint32_t tick; CpStageInput input; } CpStageLogEntry;
 uint64_t cp_stage_replay(const CpStageSetup *setup,const CpStageLogEntry *log,
                          int count,uint32_t ticks,uint64_t *hashes);
+/* --- C2 social layer (core/src/stage_social.c) --- */
+typedef struct { const char *name; int windup,active,recovery; float range; float stamina; } CpStageSkill;
+extern const CpStageSkill CP_STAGE_SKILLS[CP_SOC_COUNT];   /* sing, dance, charm, pose */
+extern const char *const CP_STAGE_ITEM_NAMES[CP_ITEM_COUNT];  /* plant, fruit, meat, bone */
+typedef struct { const char *id,*trait; int move; const char *observe[CP_SOC_CHAIN_ITEMS]; } CpStageChain;
+extern const CpStageChain CP_STAGE_CHAINS[CP_SOC_SPECIES];  /* one A22 chain per species; move = combat move id it teaches */
+int cp_stage_social_relationship(const CpStageWorld *w,int index);   /* CP_REL_* of wild creature index 0..n-1 */
+int cp_stage_social_beat_in(const CpStageWorld *w,int index);        /* ticks until that creature's next beat */
+int cp_stage_social_hostile(const CpStageWorld *w,int index);        /* would it attack the player now */
+int cp_stage_social_species_present(const CpStageWorld *w);          /* distinct species in the world */
+int cp_stage_social_species_resolved(const CpStageWorld *w);
+/* Gives items (tests, pickups later) / spends DNA. Spend returns 0 or -1 if the balance is too low; dna_total never changes. */
+int cp_stage_social_give(CpStageWorld *w,int item,int count);
+int cp_stage_social_spend(CpStageWorld *w,int amount);
+int cp_stage_social_set_diet(CpStageWorld *w,int diet);               /* CP_DIET_*; the body's diet (from the genome later) */
+int cp_stage_social_carcass_meat(const CpStageWorld *w,int index);    /* bites left in the dead creature's carcass */
+/* internal hooks used by stage_world.c */
+int cp_stage_social_order_check(CpStageWorld *w,const CpStageInput *a);
+void cp_stage_social_step(CpStageWorld *w);
+void cp_stage_social_on_fight(CpStageWorld *w,int index);
+void cp_stage_social_on_kill(CpStageWorld *w,int index);
+int cp_stage_social_shielded(const CpStageWorld *w,int index);   /* the player is offering a gift: it does not engage */
+int cp_stage_social_pacified(const CpStageWorld *w,int index);   /* bonded, allied, calmed or driven off: not hostile */
+int cp_stage_social_leaving(const CpStageWorld *w,int index);
+uint64_t cp_stage_social_hash(const CpStageWorld *w);
+void cp_stage_social_reset(CpStageWorld *w);
+float cp_stage_social_reach(const CpStageWorld *w,const CpStageInput *a);   /* centre-to-centre distance at which the player stops walking */
+int cp_stage_social_json(const CpStageWorld *w,char *out,size_t cap);                     /* the "social" object of world-2 */
+int cp_stage_social_creature_json(const CpStageWorld *w,int index,char *out,size_t cap);  /* extra fields of a nearby creature, starts with a comma */
+int cp_stage_social_carcass_json(const CpStageWorld *w,int index,char *out,size_t cap);  /* meat/edible of a carcass entry, starts with a comma */
+int cp_stage_social_event_json(const CpStageEvent *e,char *out,size_t cap);               /* bytes, 0 when not a social event */
+int cp_stage_social_parse(const char *text,CpStageInput *out,int *rc);   /* 1 = was a social command (rc is its result), 0 = not one */
+int cp_stage_social_legal(const CpStageWorld *w,int verb);               /* the verb is worth listing in legal_verbs */
 /* --- debug ops (PLAN-devtools step 4): the only way the dev tools change the simulation --- */
 enum { CP_STAGE_DBG_TELEPORT=1, CP_STAGE_DBG_SPAWN, CP_STAGE_DBG_KILL, CP_STAGE_DBG_HEAL,
        CP_STAGE_DBG_CLOCK, CP_STAGE_DBG_FLAGS, CP_STAGE_DBG_PARAM };

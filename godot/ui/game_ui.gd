@@ -12,6 +12,8 @@ const LoadoutPanel := preload("res://ui/loadout_panel.gd")
 
 signal mode_changed(mode: StringName)
 signal ability_pressed(index: int, ability: Dictionary)
+signal gift_pressed
+signal gift_cycle_pressed
 signal guard_pressed
 signal dodge_pressed(dir: int)
 signal selection_changed(creature_id: Variant)
@@ -94,6 +96,9 @@ func select(info: Dictionary, open_menu: bool = true, menu_pos: Variant = null) 
 	card.set_info(info)
 	card.visible = true
 	hud.set_target(info)
+	radial.carcass = int(info.get("carcass_meat", -1)) >= 0
+	var next_mode: StringName = Modes.EAT if radial.carcass else (Modes.ATTACK if mode == Modes.EAT else mode)
+	set_mode(next_mode, next_mode != mode)
 	selection_changed.emit(info.get("id", null))
 	if open_menu:
 		var p: Vector2 = menu_pos if menu_pos is Vector2 else root.size * Vector2(0.42, 0.5)
@@ -109,6 +114,8 @@ func update_target(info: Dictionary) -> void:
 
 func clear_selection() -> void:
 	selected = {}
+	hud.set_rings(false, 0, -1.0, -1.0)
+	radial.carcass = false
 	card.visible = false
 	hud.set_target({})
 	hud.set_windup(-1.0)
@@ -149,8 +156,17 @@ func show_damage(pos, amount: float, on_player: bool = false) -> void:
 func show_message(text: String, kind: String = "info") -> void:
 	hud.show_message(text, kind)
 
-func show_dna(amount: int) -> void:
-	hud.show_dna(amount)
+func show_dna(amount: int, source: String = "") -> void:
+	hud.show_dna(amount, source)
+
+func set_meters(dna_total: int, dna_balance: int, resolved: int, total: int, food: int, food_max: int) -> void:
+	hud.set_meters(dna_total, dna_balance, resolved, total, food, food_max)
+
+func set_rings(beat: bool, beat_in: int, observe: float, trust: float, carcass: bool = false) -> void:
+	hud.set_rings(beat, beat_in, observe, trust, carcass)
+
+func show_float(pos, text: String, color: Color = Palette.LEAF, size_px: int = 22) -> void:
+	hud.show_float(pos, text, color, size_px)
 
 func set_windup(progress: float, label: String = "") -> void:
 	hud.set_windup(progress, label)
@@ -183,11 +199,19 @@ func _unhandled_input(e: InputEvent) -> void:
 	if e.is_action_pressed("pause_menu"):
 		if radial.visible:
 			radial.close()
+		elif not selected.is_empty():
+			clear_selection()          # Esc deselects first; a second Esc opens the pause menu
 		else:
 			set_paused(not paused)
 		get_viewport().set_input_as_handled()
 		return
 	if paused:
+		return
+	if e.is_action_pressed("gift"):
+		gift_pressed.emit()
+		return
+	if e.is_action_pressed("gift_cycle"):
+		gift_cycle_pressed.emit()
 		return
 	if e.is_action_pressed("loadout"):
 		loadout_requested.emit()

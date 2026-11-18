@@ -22,6 +22,10 @@ var _diet: Label
 var _rel_label: Label
 var _pips: Array[Panel] = []
 var _resolved: Label
+var _trust: Label
+var _trust_bar: ProgressBar
+var _mood: Label
+var _beat: Label
 var _likes: Label
 var _note: Label
 
@@ -54,6 +58,11 @@ func _build() -> void:
 		pips.add_child(p)
 		_pips.append(p)
 	v.add_child(pips)
+	_trust = _row(v, "Trust")
+	_trust_bar = Palette.bar(Palette.LEAF, 8)
+	_trust_bar.max_value = 100.0
+	v.add_child(_trust_bar)
+	_mood = _row(v, "Mood")
 	_resolved = _row(v, "Species resolved")
 	_note = Label.new()
 	_note.add_theme_color_override("font_color", Palette.MUTED)
@@ -110,12 +119,36 @@ func set_info(d: Dictionary) -> void:
 	var total := int(d.get("resolved_total", 4))
 	_resolved.text = "%d / %d" % [res, total]
 	_note.text = TEMPERAMENT_NOTES[t]
-	var likes := String(d.get("likes", ""))
-	_likes.text = ("Likes: " + likes) if likes != "" else "Likes: unknown yet. Try observing."
+	var trust := int(d.get("trust", 0))
+	_trust.text = "%d / 100%s" % [trust, "  (bonded)" if bool(d.get("bonded", false)) else ""]
+	_trust_bar.value = clampf(trust, 0, 100)
+	var mood := int(d.get("mood", 0))
+	_mood.text = "%s (%d)" % [("Upset" if mood <= -20 else "Wary" if mood < 0 else "Calm" if mood < 20 else "Joyful"), mood]
+	var likes = d.get("likes", "")
+	var likes_text := ", ".join(likes) if likes is Array else String(likes)
+	var dislikes = d.get("dislikes", [])
+	var dislikes_text := ", ".join(dislikes) if dislikes is Array else String(dislikes)
+	_likes.text = ("Likes: " + likes_text) if likes_text != "" else "Likes: unknown yet. Try a skill or a gift, or observe it."
+	if dislikes_text != "":
+		_likes.text += "\nDislikes: " + dislikes_text
+	if int(d.get("carcass_meat", -1)) >= 0:
+		_note.text = "Remains: %d bites of meat left." % int(d.carcass_meat)
+		for n in [_temper, _diet, _rel_label, _trust, _mood]:
+			n.get_parent().visible = false
+		_trust_bar.visible = false
+		for p in _pips:
+			p.visible = false
+	else:
+		for n in [_temper, _diet, _rel_label, _trust, _mood]:
+			n.get_parent().visible = true
+		_trust_bar.visible = true
+		for p in _pips:
+			p.visible = true
 
 ## Strings currently displayed (used by tests).
 func snapshot() -> Dictionary:
 	return {
 		"species": _species.text, "name": _name.text, "temperament": _temper.text, "diet": _diet.text,
 		"relationship": _rel_label.text, "resolved": _resolved.text, "likes": _likes.text, "note": _note.text,
+		"trust": _trust.text, "mood": _mood.text,
 	}
