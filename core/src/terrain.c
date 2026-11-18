@@ -254,6 +254,7 @@ void cp_terrain_params_default(CpTerrainParams *p)
     p->cliff_bands = 1.f;
     p->sea_cliffs = p->hard_rock = p->caves = 1.f;
     p->volcano = 0.f;
+    p->rivers = 1.f;
 }
 
 static int in_range(float x, float a, float b)
@@ -304,7 +305,8 @@ int cp_terrain_validate(const CpTerrainParams *p)
     if (!in_range(p->layout_variety, 0.f, 1.f)) return CP_TERR_ERR_RANGE;
     if (!in_range(p->cliff_bands, 0.f, 1.f)) return CP_TERR_ERR_RANGE;
     if (!in_range(p->sea_cliffs, 0.f, 1.f) || !in_range(p->hard_rock, 0.f, 1.f) ||
-        !in_range(p->volcano, 0.f, 1.f) || !in_range(p->caves, 0.f, 1.f)) return CP_TERR_ERR_RANGE;
+        !in_range(p->volcano, 0.f, 1.f) || !in_range(p->caves, 0.f, 1.f) ||
+        !in_range(p->rivers, 0.f, 1.f)) return CP_TERR_ERR_RANGE;
     return CP_TERR_OK;
 }
 
@@ -1271,6 +1273,95 @@ static void material_map(const CpTerrainParams *p, CpTerrain *t)
     }
 }
 
+/* ---- rivers (v4) ---------------------------------------------------------- */
+
+/* Drainage area (m2) at which a cell is a stream, a shallow river and a deep river. At 1024 cells these are
+ * about 2,400 / 12,000 / 120,000 cells of catchment: a few main rivers plus the streams that feed them, not every gully. */
+#define RIVER_STREAM_M2  30000.f
+#define RIVER_SHALLOW_M2 150000.f
+#define RIVER_DEEP_M2    1500000.f
+
+static int river_class(float area_m2)
+{
+    if (area_m2 >= RIVER_DEEP_M2) return CP_TERR_RIVER_DEEP;
+    if (area_m2 >= RIVER_SHALLOW_M2) return CP_TERR_RIVER_SHALLOW;
+    if (area_m2 >= RIVER_STREAM_M2) return CP_TERR_RIVER_STREAM;
+    return CP_TERR_RIVER_NONE;
+}
+
+/* Channel half width and incision depth (m) for a drainage area. */
+static void river_profile(float area_m2, float *half_w, float *depth)
+{
+    float s = sqrtf(area_m2);
+    *half_w = 0.5f * (0.8f + 0.01f * s);
+    *depth = 0.25f + 0.0008f * s;
+}
+
+/* Carves the river network into the final heights. The channel bed drops by the incision depth along each river cell
+ * (monotone downstream because depth grows with area), with a smoothstep bank profile of a few cells. Mouths keep
+ * 0.3 m of land so no cell turns into sea, and the lake bowl and its rim fade out so the physical lake and its
+ * spill are untouched. Integer 16.16 cuts in ws->ups keep the max-merge exact. Needs flow from flow_accum. */
+static void carve_rivers(const CpTerrainParams *p, CpTerrain *t, const CpTerrainWorkspace *ws)
+{
+    int n = p->n, nn = n * n;
+    float cell = p->size_m / (float)n, half = p->size_m * .5f;
+    float cell2 = cell * cell, lr0 = p->lake_radius_m * 1.25f, lr1 = p->lake_radius_m * 1.9f;
+    int32_t *cut = ws->ups;
+    memset(cut, 0, (size_t)nn * sizeof *cut);
+    for (int y = 0; y < n; y++) for (int x = 0; x < n; x++) {
+        int i = y * n + x;
+        float area = t->flow[i] * (float)nn * cell2, hw, d;
+        if (area < RIVER_STREAM_M2 || !(t->height[i] > 0.5f)) continue;
+        river_profile(area, &hw, &d);
+        {
+            float lx = ((float)x + .5f) * cell - half - p->lake_x_m, ly = ((float)y + .5f) * cell - half - p->lake_y_m;
+            d *= smoothstep(lr0 * lr0, lr1 * lr1, lx * lx + ly * ly);
+        }
+        if (d < 0.02f) continue;
+        {
+            int rc = (int)((hw + cell) / cell) + 1;
+            if (rc > 6) rc = 6;
+            for (int dy = -rc; dy <= rc; dy++) for (int dx = -rc; dx <= rc; dx++) {
+                int xx = x + dx, yy = y + dy, j;
+                float r, w;
+                int32_t v;
+                if ((unsigned)xx >= (unsigned)n || (unsigned)yy >= (unsigned)n) continue;
+                j = yy * n + xx;
+                r = sqrtf((float)(dx * dx + dy * dy)) * cell;
+                w = 1.f - smoothstep(0.5f * hw, hw + 0.9f * cell, r);
+                v = (int32_t)(d * w * 65536.f);
+                if (v > cut[j]) cut[j] = v;
+            }
+        }
+    }
+    for (int i = 0; i < nn; i++) if (cut[i] > 0) {
+        float lx = ((float)(i % n) + .5f) * cell - half - p->lake_x_m, ly = ((float)(i / n) + .5f) * cell - half - p->lake_y_m;
+        float fade = smoothstep(lr0 * lr0, lr1 * lr1, lx * lx + ly * ly);   /* banks too: the bowl and its rim stay as they were */
+        float h = t->height[i], hn = h - (float)cut[i] * (1.f / 65536.f) * fade, keep = minf(h, 0.3f);
+        t->height[i] = maxf(hn, keep);
+    }
+}
+
+/* After the final routing: classes, and the water the world sees (ws->scratch is the water level map). */
+static void river_water(const CpTerrainParams *p, CpTerrain *t, const CpTerrainWorkspace *ws)
+{
+    int n = p->n, nn = n * n;
+    float cell = p->size_m / (float)n, cell2 = cell * cell;
+    if (t->river) memset(t->river, 0, (size_t)nn);
+    for (int i = 0; i < nn; i++) {
+        int c = river_class(t->flow[i] * (float)nn * cell2);
+        float h = t->height[i], wd;
+        if (c == CP_TERR_RIVER_NONE || !(h > 0.5f) || ws->scratch[i] - h > 0.3f) continue;
+        wd = c == CP_TERR_RIVER_DEEP ? 1.2f : c == CP_TERR_RIVER_SHALLOW ? 0.6f : 0.35f;
+        if (t->river) {
+            int d = 0, r = ws->recv[i];
+            if (r >= 0) for (d = 0; d < 8; d++) if (r == i + DY[d] * n + DX[d]) break;
+            t->river[i] = (uint8_t)(c | ((d < 8 && r >= 0 ? d + 1 : 0) << 2));   /* bits 2..5: receiver direction + 1, 0 = outlet */
+        }
+        ws->scratch[i] = h + wd;
+    }
+}
+
 /* ---- hash ---------------------------------------------------------------- */
 
 static void fnv_byte(uint64_t *h, uint8_t b)
@@ -1304,6 +1395,7 @@ uint64_t cp_terrain_hash(const CpTerrain *t)
     for (int i = 0; i < nn; i++) fnv_f(&h, t->flow[i]);
     for (int i = 0; i < nn; i++) fnv_f(&h, t->sediment[i]);
     for (int i = 0; i < nn; i++) fnv_byte(&h, t->material[i]);
+    if (t->river) for (int i = 0; i < nn; i++) fnv_byte(&h, t->river[i]);
     fnv_f(&h,t->volcano_x_m);fnv_f(&h,t->volcano_y_m);
     fnv_f(&h,t->volcano_radius_m);fnv_f(&h,t->crater_radius_m);
     fnv_u32(&h,(uint32_t)t->cave_count);
@@ -1418,10 +1510,17 @@ int cp_terrain_generate(const CpTerrainParams *p, CpTerrain *out,
     cliff_bands(p, out->height, ws->scratch);
     flow_accum(out->height, n, p->size_m, p->seed, out->flow, ws->scratch,
                ws->recv, ws->ups, ws->queue, fn, user);
+    if (p->rivers > 0.f && n >= 64) {
+        carve_rivers(p, out, ws);
+        flow_accum(out->height, n, p->size_m, p->seed, out->flow, ws->scratch,
+                   ws->recv, ws->ups, ws->queue, NULL, NULL);
+    }
     cave_entrances(p,out,ws);
     if(out->cave_count) flow_accum(out->height,n,p->size_m,p->seed,out->flow,ws->scratch,
                                   ws->recv,ws->ups,ws->queue,NULL,NULL);
     material_map(p,out);
+    if (p->rivers > 0.f && n >= 64) river_water(p, out, ws);
+    else if (out->river) memset(out->river, 0, (size_t)nn);
     notify(fn, user, CP_TERR_STAGE_DONE, 1, 1);
     return CP_TERR_OK;
 }

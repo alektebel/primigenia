@@ -103,12 +103,13 @@ Dictionary CporeTerrain::generate(const Dictionary &options) {
     }
     const int count = p.n * p.n;
     PackedFloat32Array height, flow, sediment, level;
-    PackedByteArray material;
+    PackedByteArray material, river;
+    river.resize(count);
     height.resize(count); flow.resize(count); sediment.resize(count);
     level.resize(count); material.resize(count);
     std::vector<int32_t> recv(count), ups(count), queue(count);
     CpTerrain t{};
-    t.height = height.ptrw(); t.flow = flow.ptrw(); t.sediment = sediment.ptrw(); t.material = material.ptrw();
+    t.height = height.ptrw(); t.flow = flow.ptrw(); t.sediment = sediment.ptrw(); t.material = material.ptrw(); t.river = river.ptrw();
     CpTerrainWorkspace ws{level.ptrw(), recv.data(), ups.data(), queue.data()};
     stage.store(0); done.store(0); total.store(1);
     rc = cp_terrain_generate(&p, &t, &ws, notify, this);
@@ -130,7 +131,7 @@ Dictionary CporeTerrain::generate(const Dictionary &options) {
     result["params"] = resolved;
     result["hash"] = cpore::hash_text(cp_terrain_hash(&t));
     result["height"] = height; result["flow"] = flow; result["sediment"] = sediment;
-    result["water_level"] = level; result["material"] = material;
+    result["water_level"] = level; result["material"] = material; result["river"] = river;
     Array caves;
     for (int i = 0; i < t.cave_count; ++i) {
         const CpTerrainCave &c = t.caves[i];
@@ -148,19 +149,19 @@ Dictionary CporeTerrain::generate(const Dictionary &options) {
 
 String CporeTerrain::hash(const Dictionary &data) {
     if (!data.has("n") || !data.has("size_m") || !data.has("height") || !data.has("flow") ||
-        !data.has("sediment") || !data.has("material") || !data.has("caves") || !data.has("volcano"))
+        !data.has("sediment") || !data.has("material") || !data.has("river") || !data.has("caves") || !data.has("volcano"))
         return String();
     int64_t n;
     float size_m;
     if (!cpore::to_int(data["n"], CP_TERRAIN_N_MIN, CP_TERRAIN_N_MAX, n) || !cpore::to_float(data["size_m"], size_m)) return String();
     if (data["height"].get_type() != Variant::PACKED_FLOAT32_ARRAY || data["flow"].get_type() != Variant::PACKED_FLOAT32_ARRAY ||
         data["sediment"].get_type() != Variant::PACKED_FLOAT32_ARRAY || data["material"].get_type() != Variant::PACKED_BYTE_ARRAY ||
-        data["caves"].get_type() != Variant::ARRAY || data["volcano"].get_type() != Variant::VECTOR4)
+        data["river"].get_type() != Variant::PACKED_BYTE_ARRAY || data["caves"].get_type() != Variant::ARRAY || data["volcano"].get_type() != Variant::VECTOR4)
         return String();
     PackedFloat32Array height = data["height"], flow = data["flow"], sediment = data["sediment"];
-    PackedByteArray material = data["material"];
+    PackedByteArray material = data["material"], river = data["river"];
     const int64_t count = n * n;
-    if (!bytes_ok(height, count) || !bytes_ok(flow, count) || !bytes_ok(sediment, count) || material.size() != count) return String();
+    if (!bytes_ok(height, count) || !bytes_ok(flow, count) || !bytes_ok(sediment, count) || material.size() != count || river.size() != count) return String();
     Array caves = data["caves"];
     if (caves.size() > CP_TERRAIN_CAVES_MAX) return String();
     CpTerrain t{};
@@ -168,6 +169,7 @@ String CporeTerrain::hash(const Dictionary &data) {
     // Read-only use: const_cast avoids a copy-on-write detach of 4 MB arrays.
     t.height = const_cast<float *>(height.ptr()); t.flow = const_cast<float *>(flow.ptr());
     t.sediment = const_cast<float *>(sediment.ptr()); t.material = const_cast<uint8_t *>(material.ptr());
+    t.river = const_cast<uint8_t *>(river.ptr());
     t.cave_count = caves.size();
     for (int i = 0; i < caves.size(); ++i) {
         if (caves[i].get_type() != Variant::DICTIONARY) return String();
@@ -224,6 +226,9 @@ Dictionary CporeTerrain::surface_maps(const Dictionary &data) {
     const float *L = level.ptr();
     const float *SD = sediment.ptr();
     const uint8_t *M = material.ptr();
+    PackedByteArray river_arr;
+    if (data.has("river") && data["river"].get_type() == Variant::PACKED_BYTE_ARRAY) river_arr = data["river"];
+    const uint8_t *RV = river_arr.size() == count ? river_arr.ptr() : nullptr;
     const int N = int(n);
     const float cell = size_m / float(N);
     auto at = [&](int i, int j) { i = i < 0 ? 0 : (i >= N ? N - 1 : i); j = j < 0 ? 0 : (j >= N ? N - 1 : j); return H[j * N + i]; };
@@ -269,6 +274,16 @@ Dictionary CporeTerrain::surface_maps(const Dictionary &data) {
             const float area = F[k] * size_m * size_m;
             float wet = (std::log10(std::max(area, 1.f)) - lo) / (hi - lo);
             wet = wet < 0.f ? 0.f : (wet > 1.f ? 1.f : wet);
+            if (RV) {   // wet banks: 1 on the channel, fading over three cells (rock shows it darker, meadow greener)
+                float bank = 0.f;
+                for (int dj = -3; dj <= 3; ++dj) for (int di = -3; di <= 3; ++di) {
+                    const int ii = i + di, jj = j + dj;
+                    if (ii < 0 || jj < 0 || ii >= N || jj >= N || (RV[jj * N + ii] & 3) == 0) continue;
+                    const float d = std::sqrt(float(di * di + dj * dj));
+                    bank = std::max(bank, ((RV[jj * N + ii] & 3) >= 2 ? 1.f : 0.75f) * (1.f - d / 3.5f));
+                }
+                wet = std::max(wet, bank);
+            }
             uint8_t *px = S + size_t(k) * 4;
             px[0] = M[k]; px[1] = byte01(grass); px[2] = byte01(cavity); px[3] = byte01(wet);
             uint8_t *rp = RL + size_t(k) * 4;

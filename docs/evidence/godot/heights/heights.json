@@ -13,14 +13,14 @@
 					0,
 					0
 				],
-				"left_m": 1.7,
+				"left_m": 2.0,
 				"reason": "",
 				"result": "arrived",
 				"target": [
 					-934.1,
 					-1148.5
 				],
-				"ticks": 3764
+				"ticks": 3772
 			},
 			{
 				"grid": [
@@ -34,49 +34,49 @@
 					-641.5,
 					-1308.5
 				],
-				"ticks": 4028
+				"ticks": 4045
 			},
 			{
 				"grid": [
 					2,
 					0
 				],
-				"left_m": 1.7,
+				"left_m": 2.0,
 				"reason": "",
 				"result": "arrived",
 				"target": [
 					-24.0,
 					-1300.0
 				],
-				"ticks": 3975
+				"ticks": 3968
 			},
 			{
 				"grid": [
 					3,
 					0
 				],
-				"left_m": 1.6,
+				"left_m": 1.7,
 				"reason": "",
 				"result": "arrived",
 				"target": [
 					650.0,
 					-1252.0
 				],
-				"ticks": 4304
+				"ticks": 4307
 			},
 			{
 				"grid": [
 					4,
 					0
 				],
-				"left_m": 1.7,
+				"left_m": 1.6,
 				"reason": "",
 				"result": "arrived",
 				"target": [
 					1070.9,
 					-1070.9
 				],
-				"ticks": 4488
+				"ticks": 4489
 			},
 			{
 				"grid": [
@@ -90,7 +90,7 @@
 					-1322.2,
 					-424.1
 				],
-				"ticks": 3990
+				"ticks": 3995
 			},
 			{
 				"grid": [
@@ -104,49 +104,49 @@
 					-650.0,
 					-457.3
 				],
-				"ticks": 1833
+				"ticks": 1838
 			},
 			{
 				"grid": [
 					2,
 					1
 				],
-				"left_m": 1.7,
+				"left_m": 1.6,
 				"reason": "",
 				"result": "arrived",
 				"target": [
 					42.4,
 					-390.9
 				],
-				"ticks": 690
+				"ticks": 701
 			},
 			{
 				"grid": [
 					3,
 					1
 				],
-				"left_m": 1.6,
+				"left_m": 1.7,
 				"reason": "",
 				"result": "arrived",
 				"target": [
 					650.0,
 					-373.3
 				],
-				"ticks": 2191
+				"ticks": 2197
 			},
 			{
 				"grid": [
 					4,
 					1
 				],
-				"left_m": 1.7,
+				"left_m": 1.8,
 				"reason": "",
 				"result": "arrived",
 				"target": [
 					1300.0,
 					-433.3
 				],
-				"ticks": 4125
+				"ticks": 4131
 			},
 			{
 				"grid": [
@@ -160,7 +160,7 @@
 					-1300.0,
 					433.3
 				],
-				"ticks": 3656
+				"ticks": 3666
 			},
 			{
 				"grid": [
@@ -174,35 +174,35 @@
 					-650.0,
 					433.3
 				],
-				"ticks": 1931
+				"ticks": 1936
 			},
 			{
 				"grid": [
 					2,
 					2
 				],
-				"left_m": 1.9,
+				"left_m": 1.6,
 				"reason": "",
 				"result": "arrived",
 				"target": [
 					0.0,
 					421.3
 				],
-				"ticks": 684
+				"ticks": 694
 			},
 			{
 				"grid": [
 					3,
 					2
 				],
-				"left_m": 2.0,
+				"left_m": 1.8,
 				"reason": "",
 				"result": "arrived",
 				"target": [
 					683.3,
 					419.6
 				],
-				"ticks": 2676
+				"ticks": 2678
 			},
 			{
 				"grid": [
@@ -216,90 +216,90 @@
 					1304.6,
 					444.4
 				],
-				"ticks": 4158
+				"ticks": 4166
 			},
 			{
 				"grid": [
 					0,
 					3
 				],
-				"left_m": 2.0,
+				"left_m": 1.9,
 				"reason": "",
 				"result": "arrived",
 				"target": [
 					-712.4,
 					1056.6
 				],
-				"ticks": 3835
+				"ticks": 3847
 			},
 			{
 				"grid": [
 					1,
 					3
 				],
-				"left_m": 1.9,
+				"left_m": 1.7,
 				"reason": "",
 				"result": "arrived",
 				"target": [
 					-631.6,
 					1255.7
 				],
-				"ticks": 4127
+				"ticks": 4142
 			},
 			{
 				"grid": [
 					2,
 					3
 				],
-				"left_m": 1.9,
+				"left_m": 1.8,
 				"reason": "",
 				"result": "arrived",
 				"target": [
 					32.1,
 					1377.6
 				],
-				"ticks": 4701
+				"ticks": 4675
 			},
 			{
 				"grid": [
 					3,
 					3
 				],
-				"left_m": 1.7,
+				"left_m": 1.6,
 				"reason": "",
 				"result": "arrived",
 				"target": [
 					662.0,
 					1300.0
 				],
-				"ticks": 4729
+				"ticks": 4733
 			},
 			{
 				"grid": [
 					4,
 					3
 				],
-				"left_m": 1.9,
+				"left_m": 1.8,
 				"reason": "",
 				"result": "arrived",
 				"target": [
 					1139.3,
 					912.0
 				],
-				"ticks": 4838
+				"ticks": 4877
 			}
 		],
 		"stuck": 0
 	},
 	"timing_us_per_step": {
-		"field": 7.2,
-		"flat": 5.2,
+		"field": 18.0,
+		"flat": 10.9,
 		"note": "measured through the GDScript call, so it includes marshalling",
 		"steps": 10000,
 		"wild": 24
 	},
 	"walk": {
-		"farthest_m": 330.4,
+		"farthest_m": 329.8,
 		"outside": 0,
 		"ticks": 3000,
 		"wet": 0

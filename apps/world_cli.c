@@ -23,6 +23,7 @@ static int make_field(uint32_t seed,int n,float size_m,uint64_t expect,int check
     const size_t count=(size_t)n*(size_t)n;
     memset(&terrain,0,sizeof terrain);
     terrain.material=calloc(count,1);
+    terrain.river=calloc(count,1);   /* hashed with the terrain, so this hash equals the Godot and terrain_cli ones */
     terrain.height=calloc(count,sizeof(float));
     terrain.flow=calloc(count,sizeof(float));
     terrain.sediment=calloc(count,sizeof(float));
@@ -30,7 +31,7 @@ static int make_field(uint32_t seed,int n,float size_m,uint64_t expect,int check
     workspace.recv=calloc(count,sizeof(int32_t));
     workspace.ups=calloc(count,sizeof(int32_t));
     workspace.queue=calloc(count,sizeof(int32_t));
-    if(!terrain.material||!terrain.height||!terrain.flow||!terrain.sediment||!workspace.scratch||!workspace.recv||!workspace.ups||!workspace.queue){
+    if(!terrain.material||!terrain.river||!terrain.height||!terrain.flow||!terrain.sediment||!workspace.scratch||!workspace.recv||!workspace.ups||!workspace.queue){
         fputs("out of memory\n",stderr);
         return -1;
     }

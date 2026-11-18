@@ -26,6 +26,25 @@ Game="*res://game/game.gd"
 Audio="*res://audio/audio_manager.gd"
 Dev="*res://devtools/dev.gd"
 
+[shader_globals]
+
+cloud_cover={
+"type": "float",
+"value": 0.45
+}
+cloud_time={
+"type": "float",
+"value": 0.0
+}
+sky_tod={
+"type": "float",
+"value": 0.75
+}
+fog_amount={
+"type": "float",
+"value": 0.0
+}
+
 [display]
 
 window/size/viewport_width=1280

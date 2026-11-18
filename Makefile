@@ -58,7 +58,7 @@ test: $(BUILD)/social_test $(BUILD)/world_cli $(BUILD)/world_test $(BUILD)/terra
 	nice -n 10 ./$(BUILD)/nav_test
 	./$(BUILD)/steer_test
 	@for g in world-1 world-42 world-987654321 world-debug-42 world-field-1; do ./$(BUILD)/world_cli --replay tests/golden/$$g.log | diff -q - tests/golden/$$g.hashes >/dev/null || { echo "world_cli replay of $$g differs from its .hashes"; exit 1; }; done; echo "world_cli replays match the golden hashes"
-	@sed "s/ b255c92a5b85e43d/ b255c92a5b85e43e/" tests/golden/world-field-1.log > $(BUILD)/world-field-bad.log; ! ./$(BUILD)/world_cli --replay $(BUILD)/world-field-bad.log 2>$(BUILD)/world-field-bad.err >/dev/null && grep -q "terrain hash mismatch" $(BUILD)/world-field-bad.err && echo "a field log with an edited hash is refused"
+	@sed "s/ 5ef8636377460348/ 5ef8636377460345/" tests/golden/world-field-1.log > $(BUILD)/world-field-bad.log; ! ./$(BUILD)/world_cli --replay $(BUILD)/world-field-bad.log 2>$(BUILD)/world-field-bad.err >/dev/null && grep -q "terrain hash mismatch" $(BUILD)/world-field-bad.err && echo "a field log with an edited hash is refused"
 	python3 tests/test_terrain_metrics.py
 	./$(BUILD)/cpore_test
 	./$(BUILD)/combat_test
@@ -159,7 +159,7 @@ $(BUILD)/terrain_test: tests/test_terrain.c $(HDRS) $(BUILD)/libcpore.a
 terrain-test: $(BUILD)/terrain_test $(BUILD)/terrain_cli
 	nice -n 10 ./$(BUILD)/terrain_test --heavy
 
-TERRAIN_EXPORTS := '[_ct_config,_ct_deltas,_ct_features,_ct_material,_ct_cave_count,_ct_caves,_ct_volcano,_ct_generate,_ct_map,_ct_hash,_ct_version,_ct_size]'
+TERRAIN_EXPORTS := '[_ct_config,_ct_deltas,_ct_features,_ct_rivers,_ct_river,_ct_material,_ct_cave_count,_ct_caves,_ct_volcano,_ct_generate,_ct_map,_ct_hash,_ct_version,_ct_size]'
 wasm: $(BUILD)/wasm/cpore_terrain.mjs $(BUILD)/wasm/cpore_terrain.wasm
 $(BUILD)/wasm/cpore_terrain.mjs $(BUILD)/wasm/cpore_terrain.wasm &: $(TERRAIN_SRC) apps/terrain_wasm_api.c $(HDRS) Makefile
 	@mkdir -p $(dir $@)

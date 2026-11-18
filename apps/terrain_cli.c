@@ -91,6 +91,7 @@ static void apply_overrides(CpTerrainParams *p, int argc, char **argv)
     p->hard_rock=arg_f(argc,argv,"--hard-rock",p->hard_rock);
     p->volcano=arg_f(argc,argv,"--volcano",p->volcano);
     p->caves=arg_f(argc,argv,"--caves",p->caves);
+    p->rivers=arg_f(argc,argv,"--rivers",p->rivers);
     p->stream_iters = stream;
     p->stream_k=arg_f(argc,argv,"--stream-k",p->stream_k);
     p->talus_deg=arg_f(argc,argv,"--talus",p->talus_deg);
@@ -120,6 +121,7 @@ static void setup(const CpTerrainParams *p, CpTerrain *t, CpTerrainWorkspace *ws
 {
     memset(t,0,sizeof *t);
     t->material=calloc((size_t)p->n*p->n,1);if(!t->material)die("out of memory");
+    t->river=calloc((size_t)p->n*p->n,1);if(!t->river)die("out of memory");
     t->height = falloc(p->n);
     t->flow = falloc(p->n);
     t->sediment = falloc(p->n);
@@ -262,6 +264,8 @@ static int write_dump(const char *path, const CpTerrainParams *p, const CpTerrai
         const float fields[]={v->x_m,v->y_m,v->z_m,v->facing_x,v->facing_y,v->width_m,v->height_m,v->depth_m};
         failed|=fwrite(fields,4,8,f)!=8 || fwrite(&v->waterfall,4,1,f)!=1;
     }
+    /* v4 trailer: the river class map (n*n bytes) after the caves; older readers stop before it. */
+    failed|=t->river && fwrite(t->river,1,(size_t)nn,f)!=(size_t)nn;
     failed|=fclose(f)!=0;
     free(dir);
     return failed?2:0;
