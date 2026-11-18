@@ -15,13 +15,13 @@ Process (owner rule, 2026-11-16): Opus or Fable write a plan (`docs/godot/PLAN-*
 | M0 | Foundation: GDExtension over the C core, island with on-disk cache, terrain LOD, sky, sea, grass, chase camera, controls | PLAN-m0.md, M0.md | done (merged) |
 | M1a | Creature builder port (body, 46 parts, materials, growth, IK rig) | PLAN-creature.md, CREATURE.md | done (merged) |
 | M1b | Locomotion from morphology (G73) | PLAN-locomotion.md, LOCOMOTION.md | done (merged) |
-| M2 | Studio (creator) in Godot | STUDIO.md | done (merged); parity with the original creator in progress (STUDIO-PARITY.md) |
+| M2 | Studio (creator) in Godot | STUDIO.md | done (merged); parity pass merged (9b1abb7), honest gaps in STUDIO-PARITY.md |
 | M3 | HUD, G75 card and radial, audio | UI.md | done (merged) |
 | W | Wiring into one playable game, main menu, play test | WIRE.md | done (merged, e9710aa) |
-| F1 | Feel: faster creatures, curved turns, pivots, camera (owner playtest) | PLAN-feel.md | in progress |
-| F2 | Mountain rock material: biplanar mapping, detail, relief, quality tiers | PLAN-rock.md | in progress; baked sun shadows need owner approval |
-| F3 | Procedural action animations (G77): combat, social, intimidate, observe | PLAN-actions.md | planned, implementer queued |
-| F4 | C world uses the generated island heights (the island is visual only beyond ±195 m) | item 6 below | next |
+| F1 | Feel: faster creatures, curved turns, pivots, camera (owner playtest) | PLAN-feel.md | done (2f5cf70) |
+| F2 | Mountain rock material: biplanar mapping, detail, relief, quality tiers | PLAN-rock.md | done (ea0e31e, through step 10); baked sun shadows off by default, owner approval pending |
+| F3 | Procedural action animations (G77): combat, social, intimidate, observe | PLAN-actions.md | done (0e35914, b232e19, aaa35f2) |
+| F4 | C world uses the generated island heights (FIELD mode, `docs/godot/NAV.md`) | item 6 below | done (98cb49a) |
 
 ## 1. First MVP: a creature-stage slice you can play and enjoy
 

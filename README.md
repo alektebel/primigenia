@@ -13,13 +13,39 @@ Maxis or EA** — an independent fan tribute.
 
 ```bash
 make            # core library, C tests, bench binary
-make wasm       # WASM builds (requires Emscripten)
+make test       # C tests + core dependency check
+make smoke      # Python binding smoke test
+make bench      # steps/s
+make studio     # the legacy SDL creature studio (needs libsdl2-dev libepoxy-dev)
+make godot      # the Godot desktop build (needs Godot 4.7 and godot-cpp; godot/README.md)
+make wasm       # WASM: combat, terrain, world (requires Emscripten)
+make wasm-test  # WASM parity + browser test
+make terrain-test # 1024-gen guarantees, WASM parity, metrics
+make stage      # stage builder (copies assets into place)
+make blender    # Blender with the local LLM/MCP design bridge
 ```
 
 Emscripten must be available — either `emcc` on `PATH` or installed at
 `~/emsdk/emsdk_env.sh`. The native build needs nothing extra.
 
+To let Kimi or another vision-capable MCP model inspect, model, render, revise,
+and export Blender assets, see
+[docs/BLENDER_MCP.md](docs/BLENDER_MCP.md). The project-level Kimi MCP
+configuration is included; run `make blender` first.
+
 ## How to play
+
+### Desktop build (Godot)
+
+```bash
+make godot && godot --path godot
+```
+
+The desktop build is the game proper: main menu, the island stage and the
+creature studio. Build dependencies and the full controls are in
+[godot/README.md](godot/README.md).
+
+### Web build
 
 ```bash
 make serve      # starts an http server on port 8090
@@ -33,7 +59,7 @@ Then open in your browser:
 | Creature stage (game) | `http://127.0.0.1:8090/web/stage/` |
 | Terrain generator lab | `http://127.0.0.1:8090/web/terrain-lab/` |
 
-**Stage controls** — see
+**Web stage controls** — see
 [docs/evidence/stage/polish/README.md](docs/evidence/stage/polish/README.md)
 for the full movement, combat, camera, touch and audio details.
 
@@ -53,7 +79,9 @@ server for the browser tests automatically and tears it down afterwards.
 | File | What |
 |---|---|
 | [docs/DESIGN.md](docs/DESIGN.md) | All design decisions (Q1–Q57, G1–G62, W1–W13) — the source of truth |
-| [docs/BACKLOG.md](docs/BACKLOG.md) | Current order of work, milestones, acceptance criteria |
+| [docs/BACKLOG.md](docs/BACKLOG.md) | Per-item state, milestones, acceptance criteria (the plan of record is [docs/CREATURE-ROADMAP.md](docs/CREATURE-ROADMAP.md)) |
+| [docs/CREATURE-ROADMAP.md](docs/CREATURE-ROADMAP.md) | The creature stage plan of record (phases C0–C9) |
+| [docs/godot/](docs/godot/) | Godot desktop frontend: interfaces (WIRE.md, M0.md…), NAV, FEEL, ROCK, ACTIONS, STUDIO, DEVTOOLS |
 | [docs/P4.md](docs/P4.md) | Phase-4 spec: social depth, Q43 loop, discovery, tiers, recipes, editing |
 | [docs/COMBAT.md](docs/COMBAT.md) | Creature combat move data, profiles, balance notes |
 | [docs/WORLD.md](docs/WORLD.md) | G56 world simulation: entities, terrain, encounters |
@@ -67,7 +95,8 @@ server for the browser tests automatically and tears it down afterwards.
 | `bindings/python/` | ctypes binding, Gymnasium envs, `Campaign`, the `TextLand` LLM face |
 | `bindings/puffer/` | PufferLib-native binding |
 | `tests/`, `apps/` | C test suite, benchmarks, CLI tools, and wasm API helpers |
-| `studio-sdl/` | transitional SDL2/GL creature studio, moving to `web/` |
+| `studio-sdl/` | legacy SDL2/GL creature studio (superseded by Godot `godot/studio`, G76) |
+| `godot/` | desktop game: island stage, studio, creatures, actions, dev tools (see [godot/README.md](godot/README.md)) |
 | `art/reference/` | the visual and rules references (`valle-primigenio.html`, etc.) |
 | `web/studio/` | creature creator: sculptable spine, Build/Paint/Test, 3D part palette, procedural IK legs, 24 Blender GLBs, growth regions, undo/redo, JSON, sharing, es/en |
 | `web/stage/` | creature stage: terrain, movement, encounter combat, P4 social loop |
@@ -90,22 +119,9 @@ and wild NPCs, runs combat through the C/WASM core, and exposes the P4 social
 loop (singing, befriending, dominating, DNA economy, advance). WASD/arrows
 move; space guards; Q/E dodge; camera orbits with right-drag or scroll.
 
-## Build
+### Godot desktop game
 
-```
-make            # core library, tests, bench
-make test       # C tests + core dependency check
-make smoke      # Python binding smoke test
-make bench      # steps/s
-make studio     # the SDL creature studio (needs libsdl2-dev libepoxy-dev)
-make wasm       # WASM: combat, terrain, world
-make wasm-test  # WASM parity + browser test
-make terrain-test # 1024-gen guarantees, WASM parity, metrics
-make stage      # stage builder (copies assets into place)
-make blender    # Blender with the local LLM/MCP design bridge
-```
-
-To let Kimi or another vision-capable MCP model inspect, model, render, revise,
-and export Blender assets, see
-[docs/BLENDER_MCP.md](docs/BLENDER_MCP.md). The project-level Kimi MCP
-configuration is included; run `make blender` first.
+The desktop build in `godot/` is the one playable game going forward (G76):
+main menu, the island stage with real creatures and the creature studio. See
+[godot/README.md](godot/README.md) for build dependencies, controls and the dev
+tools.

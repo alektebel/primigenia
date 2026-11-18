@@ -112,9 +112,8 @@ player's creature when chosen from the radial's keys (nothing is sent to C). `ma
 
 ## Known limits
 
-* **The C world is flat.** Its heights are analytic and it only knows a +-195 m square around the start valley (valley
-  floor 42 m); the rest of the island is visual. Creatures are drawn at `Game.ground(x, z)` and the player cannot walk
-  out of the square (C clamps it; there is no wall or message yet).
+* **The C world walks the island field:** the sim runs on the generated island heights (F4); the walkable bound is
+  the island minus a 2-cell coast margin, and the rest of the island is no longer visual only (`docs/godot/NAV.md`).
 * **Only combat exists in the world.** Befriend, Observe and Intimidate show their moves but only tell you they are not
   in this build; the C stage has verbs for attack, guard and dodge only. Species card fields other than name and
   temperament (diet, relationship, likes) are placeholders.

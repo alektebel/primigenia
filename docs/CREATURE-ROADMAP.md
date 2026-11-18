@@ -18,12 +18,12 @@ L ≈ 2–4 weeks; usage limits are the real clock.
 | Area | State |
 |---|---|
 | Engine | Godot 4.7 desktop + C core over GDExtension (G76). One playable game: `make godot && godot --path godot` |
-| World | Fable v2 island (3.2 km) + cliffs + caves, visual only; **the C world is flat beyond ±195 m** (F4) |
+| World | Fable v2 island (3.6 km) + cliffs + caves; **the C world uses the island heights** (FIELD mode, `docs/godot/NAV.md`) |
 | Creature | Studio port, 46 parts, IK rig, locomotion from morphology (G73), feel pass F1 merged (2f5cf70) |
 | Combat | C tactical combat on a tick, Garfio beatable by all three seeds (42/58/76 %) |
 | UI | HUD, G75 card and radial (only attack works; befriend/observe/intimidate are placeholders), audio |
-| In flight | Studio parity (paused WIP), rock material F2 (step 1 of plan), action animations F3 (plan only) |
-| Missing | the P4 loop (social, DNA, parts discovery), nest, water, air, digging, secrets, journal, saves, dev tools |
+| In flight | Nothing. Studio parity (`9b1abb7`, gaps in STUDIO-PARITY.md), rock material F2 (`ea0e31e`/`3eb3ece`, through step 10) and action animations F3 (`0e35914`, `b232e19`, `aaa35f2`) are merged; the only open F-item is owner approval of the baked sun shadows (off by default) |
+| Missing | the P4 loop (social, DNA, parts discovery), nest, water, air, digging, secrets, journal |
 
 ---
 
