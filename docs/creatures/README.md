@@ -2,6 +2,15 @@
 
 # Creatures
 
+## Earth (Sol) (`earth`)
+
+| Creature | Kind | Status | Chains | Verdicts |
+|---|---|---|---|---|
+| [Bottlenose dolphin](bottlenose_dolphin.md) | native | draft | 3 | 3 plausible |
+| [Common raven](common_raven.md) | native | draft | 3 | 3 plausible |
+| [Humans](humans.md) | native | draft | 5 | 5 plausible |
+| [Pronghorn](pronghorn.md) | native | draft | 3 | 3 plausible |
+
 ## Primigenia (the island world) (`primigenia`)
 
 | Creature | Kind | Status | Chains | Verdicts |

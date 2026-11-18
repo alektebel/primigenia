@@ -1,0 +1,632 @@
+{
+  "schema": "cpore.world/1",
+  "id": "earth",
+  "kind": "real",
+  "system": {
+    "star": "Sol (G2V main-sequence star)",
+    "position": "Third planet from Sol, Orion (Local) Arm, Milky Way, about 8.1 kpc from the Galactic Centre",
+    "distance_ly_from_sol": 0.0
+  },
+  "name": {
+    "en": "Earth (Sol)",
+    "es": "La Tierra (Sol)"
+  },
+  "status": "draft",
+  "facts": [
+    {
+      "id": "F1",
+      "group": "star",
+      "claim": "Sol is a G2V main-sequence star of 5772 K, 3.828 × 10^26 W and about 4.57 Gyr.",
+      "justification": "IAU nominal values anchor every energy figure in the canon, and the star brightens roughly 1% per 100 Myr.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "G2V",
+      "unit": "spectral type",
+      "consequences": [
+        "Steady visible output let photosynthesis and vision share one band.",
+        "The habitable zone migrates outward over geological time."
+      ],
+      "refs": [
+        "prsa_2016_nominal",
+        "sackmann_1993_sun"
+      ]
+    },
+    {
+      "id": "F2",
+      "group": "star",
+      "claim": "Total solar irradiance at 1 AU is 1361 W m^-2, peaking near 500 nm, with roughly 8% of the bolometric flux in the ultraviolet (exact share depends on band definition).",
+      "justification": "Irradiance sets the energy budget; the spectral shape decides which wavelengths do work and which do damage.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 1361,
+      "unit": "W m^-2",
+      "consequences": [
+        "Visible light powers both photosynthesis and vision.",
+        "UV is a small energy share but a large damage share."
+      ],
+      "refs": [
+        "kopp_lean_2011_tsi"
+      ]
+    },
+    {
+      "id": "F3",
+      "group": "orbit",
+      "claim": "The orbit has a semi-major axis of 149,597,870.7 km, eccentricity 0.0167 and a sidereal year of 365.256 days.",
+      "justification": "The near-circular orbit changes flux by only about ±3.3%, so seasons must come from tilt, not distance.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 1,
+      "unit": "AU",
+      "consequences": [
+        "Distance cannot drive seasonal extremes.",
+        "Perihelion in January slightly boosts southern summers."
+      ],
+      "refs": [
+        "prsa_2016_nominal"
+      ]
+    },
+    {
+      "id": "F4",
+      "group": "orbit",
+      "claim": "Axial obliquity is 23.44°, precession takes 25,772 years, obliquity wanders within a simplified envelope of about ±1.3°, and polar day or night begins at 66.56° latitude.",
+      "justification": "Tilt sets seasonal contrast, while precession slowly shifts which hemisphere gets the stronger swing.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 23.44,
+      "unit": "degree",
+      "consequences": [
+        "Photoperiod becomes a reliable calendar.",
+        "High latitudes face extreme summer and winter light regimes."
+      ],
+      "refs": [
+        "laskar_2004_insolation"
+      ]
+    },
+    {
+      "id": "F5",
+      "group": "planet",
+      "claim": "Earth has mass 5.9722 × 10^24 kg, equatorial radius 6378.137 km, polar radius 6356.752 km and mean density 5514.8 kg m^-3.",
+      "justification": "The flattening follows from rotation, and the density requires a metal core, the source of the dynamo.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 5.9722e+24,
+      "unit": "kg",
+      "consequences": [
+        "Gravity and centrifugal cost vary slightly with latitude.",
+        "A differentiated core is built into the bulk composition."
+      ],
+      "refs": [
+        "prsa_2016_nominal"
+      ]
+    },
+    {
+      "id": "F6",
+      "group": "planet",
+      "claim": "Standard gravity is 9.80665 m s^-2 (a conventional value, with local g varying by a few tenths of a percent) and escape velocity is 11.186 km s^-1.",
+      "justification": "Gravity sets structural loads, while escape velocity with thermal motion decides which gases stay.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 9.80665,
+      "unit": "m s^-2",
+      "consequences": [
+        "Skeletons, blood pressure and flight costs scale from about 9.8 N kg^-1.",
+        "N2 and O2 are retained; H2 and He leak away."
+      ],
+      "refs": [
+        "prsa_2016_nominal"
+      ]
+    },
+    {
+      "id": "F7",
+      "group": "planet",
+      "claim": "The sidereal day is 86,164.0905 s, the solar day 24 h, equatorial speed 465 m s^-1, and the day lengthens by roughly 1.5-2.3 ms per century through model-dependent tidal braking.",
+      "justification": "The solar day is longer because the planet also moves along its orbit, and tidal friction brakes the spin at a rate that depends on tidal and core models.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 86164.0905,
+      "unit": "s",
+      "consequences": [
+        "A 24 h cycle entrains circadian clocks.",
+        "Ancient tides and skies differed from today's."
+      ],
+      "refs": [
+        "petit_luzum_2010_iers",
+        "stephenson_morrison_1995_rotation"
+      ]
+    },
+    {
+      "id": "F8",
+      "group": "planet",
+      "claim": "The Moon has 0.0123 Earth masses, radius 1737.4 km, a conventional mean distance of ~384,400 km (time-averaged ~385,000 km), recedes 3.8 cm yr^-1 and formed ~4.47-4.51 Ga ago.",
+      "justification": "A giant impact made an unusually large Moon whose torque stabilises obliquity and whose gravity raises tides; distance and age carry model spread and so are quoted as ranges.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 384400,
+      "unit": "km",
+      "consequences": [
+        "Obliquity stays in a narrow band, keeping seasons predictable.",
+        "Recession weakens tides and lengthens the day over time."
+      ],
+      "refs": [
+        "dickey_1994_lunar",
+        "canup_2012_moon"
+      ]
+    },
+    {
+      "id": "F9",
+      "group": "interior",
+      "claim": "The geodynamo gives a dipole moment of 7.94 × 10^22 A m^2 and a surface field of 25-65 µT; polarity reversals are irregular with a median interval of 10^5-10^6 yr, the last full reversal was 780 ka, and short weak-field excursions are not full reversals.",
+      "justification": "A convecting liquid-iron outer core sustains a tilted dipole whose strength and polarity change on a skewed, not periodic, schedule.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 7.94e+22,
+      "unit": "A m^2",
+      "consequences": [
+        "The magnetosphere shields the surface from charged particles.",
+        "Reversals open weak-field intervals when surface radiation dose rises."
+      ],
+      "refs": [
+        "thebault_2015_igrf"
+      ]
+    },
+    {
+      "id": "F10",
+      "group": "atmosphere",
+      "claim": "Sea-level pressure is 101,325 Pa, dry air is 78.084% N2, 20.946% O2 and 0.934% Ar with CO2 at 422 ppm in 2024 (278 ppm pre-industrially), and water vapour adds a variable 0-4% near the surface.",
+      "justification": "The dry mix is the residue of outgassing, photolysis and biology, while water vapour is a fast, temperature-controlled variable rather than a fixed component.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 101325,
+      "unit": "Pa",
+      "consequences": [
+        "O2 at 21% supports high metabolism and makes fire permanent.",
+        "Humidity, not the dry mix, governs evaporation and heat stress."
+      ],
+      "refs": [
+        "etheridge_1996_co2"
+      ]
+    },
+    {
+      "id": "F11",
+      "group": "atmosphere",
+      "claim": "Scale height is near 8.5 km, sea-level density 1.225 kg m^-3, the ISA tropospheric environmental lapse rate is 6.5 K km^-1 (not a global default), and sound speed is about 343 m s^-1 at 20 °C.",
+      "justification": "Pressure falls exponentially with height; sound speed depends on temperature and molecular mass, not gravity, and inversions break the standard gradient.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 8.5,
+      "unit": "km",
+      "consequences": [
+        "High ground is a physiological filter and distinct habitat.",
+        "Sound carries for kilometres, making acoustic signalling cheap."
+      ],
+      "refs": [
+        "us_standard_1976",
+        "kinsler_2000_acoustics"
+      ]
+    },
+    {
+      "id": "F12",
+      "group": "sky",
+      "claim": "The surface averages about 288 K against an effective 255 K, a greenhouse effect of about 33 K.",
+      "justification": "The atmosphere passes sunlight but absorbs infrared, warming the surface above a bare-rock equilibrium.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 33,
+      "unit": "K",
+      "consequences": [
+        "Liquid water persists across most of the surface.",
+        "CO2 changes move the 33 K budget."
+      ],
+      "refs": [
+        "kiehl_trenberth_1997_budget"
+      ]
+    },
+    {
+      "id": "F13",
+      "group": "sky",
+      "claim": "Ozone is concentrated 15-35 km up at about 300 DU and absorbs most UVB below 320 nm, while UVA reaches the ground.",
+      "justification": "UV photochemistry creates and destroys ozone; the column screens DNA-damaging UVB but passes longer UVA.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 300,
+      "unit": "DU",
+      "consequences": [
+        "Land life is possible under the UVB screen.",
+        "UVA remains a selection pressure on pigment and behaviour."
+      ],
+      "refs": [
+        "wmo_2022_ozone",
+        "farman_1985_ozone"
+      ]
+    },
+    {
+      "id": "F14",
+      "group": "atmosphere",
+      "claim": "At 21% O2 fire spreads readily and below about 16% it barely propagates, while ecosystem collapse above roughly 30% O2 is a speculative model scenario rather than a measured bound.",
+      "justification": "Combustion needs roughly 16% O2 to propagate, so present levels sit inside a narrow, life-defined band; the upper limit is extrapolated, not observed.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 21,
+      "unit": "percent O2",
+      "consequences": [
+        "Fire is both a reliable tool and a permanent hazard.",
+        "The spread rate of any fire depends on fuel and weather, not oxygen alone."
+      ],
+      "refs": [
+        "belcher_2010_flammability"
+      ]
+    },
+    {
+      "id": "F15",
+      "group": "ocean",
+      "claim": "Oceans cover 70.8% of the surface, hold 1.335 × 10^9 km^3, average 3688 m deep and reach 10,935 m in the Challenger Deep.",
+      "justification": "Water volume and hypsometry put most of the surface below sea level; the mean is a measured average.",
+      "status": "retired",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 3688,
+      "unit": "m",
+      "consequences": [
+        "Most habitable surface is dark, cold and under pressure.",
+        "Hadal pressure exceeds 1000 atm."
+      ]
+    },
+    {
+      "id": "F16",
+      "group": "ocean",
+      "claim": "Mean salinity is 35.17 g kg^-1 on the Reference-Composition scale and surface pH is about 8.1, down 0.1 since 1750.",
+      "justification": "Salinity is definitional for standard seawater, and pH has fallen measurably as CO2 dissolves.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 35.17,
+      "unit": "g kg^-1",
+      "consequences": [
+        "Every drink is an osmotic problem.",
+        "Acidification shifts the carbonate budget for shell-builders."
+      ],
+      "refs": [
+        "millero_2008_salinity",
+        "orr_2005_acidification"
+      ]
+    },
+    {
+      "id": "F17",
+      "group": "ocean",
+      "claim": "The dominant lunar tide has a 12.42 h period; open-ocean range is about 0.5 m, the Bay of Fundy exceeds 15 m, and dissipation totals about 3.7 TW.",
+      "justification": "Tides are the lunar gravity difference across the planet; resonance amplifies them locally and friction turns them to heat.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 12.42,
+      "unit": "h",
+      "consequences": [
+        "Intertidal life runs on a 12.42 h clock.",
+        "Large ranges create a twice-daily pantry and drowning hazard."
+      ],
+      "refs": [
+        "egbert_ray_2000_tides",
+        "garrett_1972_fundy"
+      ]
+    },
+    {
+      "id": "F18",
+      "group": "geology",
+      "claim": "About 7-15 major plates, depending on how they are defined, move 2-15 cm yr^-1, recycling ocean floor in under 200 Ma while continental crust survives for billions of years.",
+      "justification": "The conveyor is driven by about 47 TW of surface heat loss; buoyant continental crust escapes subduction.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "7-15",
+      "unit": "major plates",
+      "consequences": [
+        "Rifting and uplift split and rejoin gene pools.",
+        "Subduction and volcanism return CO2 to the air."
+      ],
+      "refs": [
+        "demets_2010_plate",
+        "davies_davies_2010_heat"
+      ]
+    },
+    {
+      "id": "F19",
+      "group": "geology",
+      "claim": "Silicate weathering consumes CO2 and tectonics returns it, damping temperature excursions on a 10^5-10^6 yr timescale.",
+      "justification": "Warmer, wetter conditions weather more rock and draw down CO2; colder conditions slow weathering and let volcanic CO2 accumulate, but the loop spans several timescales.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "10^5-10^6",
+      "unit": "year",
+      "consequences": [
+        "The thermostat prevents runaway greenhouse or permanent snowball over millions of years.",
+        "Fast carbon release outruns the feedback by orders of magnitude."
+      ],
+      "refs": [
+        "walker_1981_thermostat"
+      ]
+    },
+    {
+      "id": "F20",
+      "group": "climate",
+      "claim": "Milankovitch cycles pace glacials and the Last Glacial Maximum lowered sea level about 120 m.",
+      "justification": "Orbital variations redistribute insolation, and ice sheets respond on 10^4-10^5-year timescales.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 120,
+      "unit": "m",
+      "consequences": [
+        "Coastlines migrate by tens of kilometres on long cycles.",
+        "Ice-age aridity selects for migration and caching."
+      ],
+      "refs": [
+        "hays_1976_pacemaker",
+        "lambeck_2014_sea_level"
+      ]
+    },
+    {
+      "id": "F21",
+      "group": "chemistry",
+      "claim": "Life uses CHNOPS with water as solvent, DNA with four bases, and homochiral L-amino acids and D-sugars.",
+      "justification": "Carbon's four bonds and water's polarity set the chemistry, and homochirality makes polymers readable.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "CHNOPS",
+      "unit": "element set",
+      "consequences": [
+        "The wrong chirality breaks folding and catalysis.",
+        "Genetic exchange by horizontal transfer is routine in prokaryotes and limited in eukaryotes."
+      ],
+      "refs": [
+        "alberts_2014_mbc"
+      ]
+    },
+    {
+      "id": "F22",
+      "group": "biochemistry",
+      "claim": "ATP comes from proton gradients; oxygenic photosynthesis oxygenated the air about 2.4 Ga, and sterol synthesis requires O2.",
+      "justification": "Chemiosmosis is the universal energy currency, and oxygen is both a high-yield acceptor and a radical source.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 2.4,
+      "unit": "Ga",
+      "consequences": [
+        "The Great Oxidation poisoned anaerobes and enabled aerobes.",
+        "Complex eukaryotes waited for oxygen."
+      ],
+      "refs": [
+        "mitchell_1961_chemiosmotic",
+        "lyons_2014_oxygen"
+      ]
+    },
+    {
+      "id": "F23",
+      "group": "biochemistry",
+      "claim": "Human bipedalism uses a short, bowl-shaped pelvis, a valgus knee and a forward-placed foramen magnum, efficient for striding but narrowing the birth canal; footprints at Laetoli (~3.66 Ma) record the gait.",
+      "justification": "East African footprint and skeletal evidence fixes the anatomy by the Pliocene, and the same package creates obstructed labour.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "obstetric dilemma",
+      "unit": "trait",
+      "consequences": [
+        "Striding opens a large home range at low cost.",
+        "Birth becomes social and assisted."
+      ],
+      "refs": [
+        "leakey_hay_1979_laetoli",
+        "rosenberg_trevathan_1995_obstetric"
+      ]
+    },
+    {
+      "id": "F24",
+      "group": "biochemistry",
+      "claim": "Human skin has 2-4 million eccrine glands and can lose up to about 2-3 L of sweat per hour in extreme heat, with 4 L rare even in athletes.",
+      "justification": "Evaporative cooling on bare skin lets a biped keep working when furred animals must stop, at the cost of a water debt; the persistence-hunting use of this capacity is a hypothesis, not an established primary strategy.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "2-4 million",
+      "unit": "eccrine glands",
+      "consequences": [
+        "Sustained heat work is possible but bounded by water.",
+        "Thirst sets a hard ceiling on hot-season travel."
+      ],
+      "refs": [
+        "bramble_lieberman_2004_endurance",
+        "byers_1997_pronghorn"
+      ]
+    },
+    {
+      "id": "F25",
+      "group": "biochemistry",
+      "claim": "The human hand combines a rotatable saddle joint at the thumb base with precision grips that control fingertip force.",
+      "justification": "The opposable thumb reaches every fingertip, so small hard foods and tools can be handled at the cost of crush force.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "precision grip",
+      "unit": "trait",
+      "consequences": [
+        "Marrow, nuts and shellfish become accessible.",
+        "Toolmaking and tool transfer become possible."
+      ],
+      "refs": [
+        "napier_1956_prehensile"
+      ]
+    },
+    {
+      "id": "F26",
+      "group": "biochemistry",
+      "claim": "Speech uses a descended larynx, fine breath control and two coding changes in FOXP2 on the human lineage, with gene regulation and many other loci also required.",
+      "justification": "A long vocal tract above a low larynx widens vowel range and FOXP2 is one contributor among many, not a single speech gene; the cost is a shared opening for food and air.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "FOXP2",
+      "unit": "gene",
+      "consequences": [
+        "Names coordinate many individuals at distance.",
+        "A descended larynx raises choking risk."
+      ],
+      "refs": [
+        "enard_2002_foxp2",
+        "janik_2000_whistles"
+      ]
+    },
+    {
+      "id": "F27",
+      "group": "biochemistry",
+      "claim": "Human brains reach about 1350 cm^3 and 20-25% of resting metabolism, paired with secondary altricial infants, making cooperative breeding obligatory.",
+      "justification": "Expensive brain tissue trades against gut and muscle, and a large head through a narrow pelvis forces early birth.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 1350,
+      "unit": "cm^3",
+      "consequences": [
+        "Big brains require calorie-dense food and long learning.",
+        "Alloparents extend forage range and buffer mothers."
+      ],
+      "refs": [
+        "aiello_wheeler_1995_expensive",
+        "hrdy_2009_mothers"
+      ]
+    },
+    {
+      "id": "F28",
+      "group": "biochemistry",
+      "claim": "Controlled fire at 21% O2 gelatinises starch and denatures protein, raising net calories and allowing a shorter gut; habitual cooking appears in hominins from at least ~400 ka, with older traces debated.",
+      "justification": "Cooking is external digestion, the hearth also deters predators at night, and the archaeological record places habitual fire well before anatomically modern humans.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 21,
+      "unit": "percent O2",
+      "consequences": [
+        "Cooking frees energy for brains.",
+        "Fire has smoke costs and must be fed."
+      ],
+      "refs": [
+        "wrangham_2009_catching_fire"
+      ]
+    },
+    {
+      "id": "F29",
+      "group": "climate",
+      "claim": "Cenozoic climate cooled from Eocene peak warmth to Antarctic glaciation near 34 Ma, Northern Hemisphere ice sheets only in the late Cenozoic, and 100-kyr Pleistocene cycles, with CO2 near 280 ppm before industrialization.",
+      "justification": "Falling CO2 and changing ocean gateways stepped the climate down through ice-free, unipolar and bipolar ice states that orbital forcing then paced.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 34,
+      "unit": "Ma (Antarctic ice onset)",
+      "consequences": [
+        "Warm epochs leave heat-adapted lineages stranded in refugia.",
+        "Ice-age coastlines and land bridges redraw migration routes."
+      ],
+      "refs": [
+        "zachos_2001_cenozoic",
+        "hays_1976_pacemaker"
+      ]
+    },
+    {
+      "id": "F30",
+      "group": "biochemistry",
+      "claim": "The Homo lineage evolved mainly in Africa, with the earliest fossils and deepest genetic structure in East and South Africa, and dispersals out of Africa mixing with archaic populations elsewhere.",
+      "justification": "The fossil and genomic records place the lineage's branching and early diversity on one continent before repeated dispersal, which binds any player lineage to real biogeography.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "Africa",
+      "unit": "origin region",
+      "consequences": [
+        "Tropical savanna and rift geography shape early technology.",
+        "Dispersal routes become bottlenecks and mixing zones."
+      ],
+      "refs": [
+        "stringer_2016_origin"
+      ]
+    },
+    {
+      "id": "F31",
+      "group": "biochemistry",
+      "claim": "Three non-local species serve as method anchors: the pronghorn for aerobic stamina, the bottlenose dolphin for echolocation in fission-fusion society, and the common raven for deferred gratification and tool use.",
+      "justification": "These are prediction templates for how anatomy and cognition solve locomotion, sensing and planning problems, not required local fauna.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "pronghorn/dolphin/raven",
+      "unit": "anchor species",
+      "consequences": [
+        "Stamina, echolocation and planning can be derived without inventing biology.",
+        "Analogies stay comparative and never imply shared descent."
+      ],
+      "refs": [
+        "byers_1997_pronghorn",
+        "janik_2000_whistles",
+        "emery_clayton_2004_corvids"
+      ]
+    }
+  ],
+  "changelog": [
+    {
+      "date": "2026-11-18",
+      "who": "autoloop",
+      "what": "world canon drafted by the council chair from 31 facts (planet drafts, peer reviews, astrobio referee)"
+    },
+    {
+      "date": "2026-11-18",
+      "who": "autoloop",
+      "what": "removed rejected references; retired real facts left without references"
+    }
+  ]
+}

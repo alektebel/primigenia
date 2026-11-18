@@ -169,8 +169,10 @@
       ]
     },
     "container-title": "The Astronomical Journal",
-    "x-status": "unverified",
-    "x-note": "cited by a council model from memory; not yet checked"
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "DOI": "10.3847/0004-6256/152/2/41",
+    "x-checked": "2026-11-18"
   },
   {
     "id": "sackmann_1993_sun",
@@ -190,8 +192,10 @@
       ]
     },
     "container-title": "The Astrophysical Journal",
-    "x-status": "unverified",
-    "x-note": "cited by a council model from memory; not yet checked"
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "DOI": "10.1086/173407",
+    "x-checked": "2026-11-18"
   },
   {
     "id": "kopp_lean_2011_tsi",
@@ -231,9 +235,11 @@
         ]
       ]
     },
-    "container-title": "Astronomy and Astrophysics",
-    "x-status": "unverified",
-    "x-note": "cited by a council model from memory; not yet checked"
+    "container-title": "Astronomy &amp; Astrophysics",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); container-title corrected from 'Astronomy and Astrophysics'; DOI added",
+    "DOI": "10.1051/0004-6361:20041335",
+    "x-checked": "2026-11-18"
   },
   {
     "id": "petit_luzum_2010_iers",
@@ -257,7 +263,8 @@
       ]
     },
     "x-status": "unverified",
-    "x-note": "cited by a council model from memory; not yet checked"
+    "x-note": "ambiguous: closest Crossref hit is 'Relativity in the IERS Conventions' (Petit, 2009, doi 10.1017/s1743921309990093), title similarity 0.64, author match, year ok",
+    "x-checked": "2026-11-18"
   },
   {
     "id": "stephenson_morrison_1995_rotation",
@@ -319,8 +326,10 @@
       ]
     },
     "container-title": "Science",
-    "x-status": "unverified",
-    "x-note": "cited by a council model from memory; not yet checked"
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "DOI": "10.1126/science.1226073",
+    "x-checked": "2026-11-18"
   },
   {
     "id": "thebault_2015_igrf",
@@ -341,7 +350,8 @@
     },
     "container-title": "Earth, Planets and Space",
     "x-status": "unverified",
-    "x-note": "cited by a council model from memory; not yet checked"
+    "x-note": "ambiguous: closest Crossref hit is 'Special issue “International Geomagnetic Reference Field—the twelfth generation”' (Thébault, 2015, doi 10.1186/s40623-015-0313-0), title similarity 0.84, author match, year ok",
+    "x-checked": "2026-11-18"
   },
   {
     "id": "noaa_2024_co2",
@@ -360,8 +370,9 @@
         ]
       ]
     },
-    "x-status": "unverified",
-    "x-note": "cited by a council model from memory; not yet checked"
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Atmospheric Carbon Dioxide Mixing Ratios from the NOAA CMDL Carbon Cycle Cooperative Global Air Sampling Network' (Conway,, 2009) title similarity 0.35",
+    "x-checked": "2026-11-18"
   },
   {
     "id": "etheridge_1996_co2",
@@ -380,9 +391,11 @@
         ]
       ]
     },
-    "container-title": "Journal of Geophysical Research",
-    "x-status": "unverified",
-    "x-note": "cited by a council model from memory; not yet checked"
+    "container-title": "Journal of Geophysical Research: Atmospheres",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); container-title corrected from 'Journal of Geophysical Research'; DOI added",
+    "DOI": "10.1029/95jd03410",
+    "x-checked": "2026-11-18"
   },
   {
     "id": "us_standard_1976",
@@ -402,7 +415,8 @@
       ]
     },
     "x-status": "unverified",
-    "x-note": "cited by a council model from memory; not yet checked"
+    "x-note": "ambiguous: closest Crossref hit is 'THE STANDARD ATMOSPHERE' (, 1976, doi 10.1016/b978-0-08-020414-7.50016-2), title similarity 0.78, author differs, year ok",
+    "x-checked": "2026-11-18"
   },
   {
     "id": "kinsler_2000_acoustics",
@@ -421,8 +435,10 @@
         ]
       ]
     },
-    "x-status": "unverified",
-    "x-note": "cited by a council model from memory; not yet checked"
+    "x-status": "verified",
+    "x-note": "verified against OpenLibrary (title 1.00); ISBN added",
+    "ISBN": "9780471847892",
+    "x-checked": "2026-11-18"
   },
   {
     "id": "kiehl_trenberth_1997_budget",
@@ -442,8 +458,10 @@
       ]
     },
     "container-title": "Bulletin of the American Meteorological Society",
-    "x-status": "unverified",
-    "x-note": "cited by a council model from memory; not yet checked"
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "DOI": "10.1175/1520-0477(1997)078<0197:eagmeb>2.0.co;2",
+    "x-checked": "2026-11-18"
   },
   {
     "id": "wmo_2022_ozone",
@@ -483,13 +501,15 @@
       ]
     },
     "container-title": "Nature",
-    "x-status": "unverified",
-    "x-note": "cited by a council model from memory; not yet checked"
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "DOI": "10.1038/315207a0",
+    "x-checked": "2026-11-18"
   },
   {
     "id": "belcher_2010_flammability",
     "type": "article-journal",
-    "title": "Baseline intrinsic flammability of Earth's ecosystems estimated from paleoatmospheric oxygen over the past 350 million years",
+    "title": "Baseline intrinsic flammability of Earth’s ecosystems estimated from paleoatmospheric oxygen over the past 350 million years",
     "author": [
       {
         "family": "Belcher",
@@ -504,8 +524,10 @@
       ]
     },
     "container-title": "Proceedings of the National Academy of Sciences",
-    "x-status": "unverified",
-    "x-note": "cited by a council model from memory; not yet checked"
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); title corrected from 'Baseline intrinsic flammability of Earth's ecosystems estimated from paleoatmospheric oxygen over the past 350 million years'; DOI added",
+    "DOI": "10.1073/pnas.1011974107",
+    "x-checked": "2026-11-18"
   },
   {
     "id": "eakins_sharman_2010_volumes",
@@ -528,8 +550,9 @@
         ]
       ]
     },
-    "x-status": "unverified",
-    "x-note": "cited by a council model from memory; not yet checked"
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Electrical Properties of Icy World Oceans from Laboratory Measurements' (, None) title similarity 0.50",
+    "x-checked": "2026-11-18"
   },
   {
     "id": "millero_2008_salinity",
@@ -548,9 +571,11 @@
         ]
       ]
     },
-    "container-title": "Deep-Sea Research I",
-    "x-status": "unverified",
-    "x-note": "cited by a council model from memory; not yet checked"
+    "container-title": "Deep Sea Research Part I: Oceanographic Research Papers",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); container-title corrected from 'Deep-Sea Research I'; DOI added",
+    "DOI": "10.1016/j.dsr.2007.10.001",
+    "x-checked": "2026-11-18"
   },
   {
     "id": "orr_2005_acidification",
@@ -570,8 +595,10 @@
       ]
     },
     "container-title": "Nature",
-    "x-status": "unverified",
-    "x-note": "cited by a council model from memory; not yet checked"
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "DOI": "10.1038/nature04095",
+    "x-checked": "2026-11-18"
   },
   {
     "id": "egbert_ray_2000_tides",
@@ -591,8 +618,10 @@
       ]
     },
     "container-title": "Nature",
-    "x-status": "unverified",
-    "x-note": "cited by a council model from memory; not yet checked"
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "DOI": "10.1038/35015531",
+    "x-checked": "2026-11-18"
   },
   {
     "id": "garrett_1972_fundy",
@@ -612,8 +641,10 @@
       ]
     },
     "container-title": "Nature",
-    "x-status": "unverified",
-    "x-note": "cited by a council model from memory; not yet checked"
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "DOI": "10.1038/238441a0",
+    "x-checked": "2026-11-18"
   },
   {
     "id": "demets_2010_plate",
@@ -633,8 +664,10 @@
       ]
     },
     "container-title": "Geophysical Journal International",
-    "x-status": "unverified",
-    "x-note": "cited by a council model from memory; not yet checked"
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "DOI": "10.1111/j.1365-246x.2009.04491.x",
+    "x-checked": "2026-11-18"
   },
   {
     "id": "davies_davies_2010_heat",
@@ -654,8 +687,10 @@
       ]
     },
     "container-title": "Solid Earth",
-    "x-status": "unverified",
-    "x-note": "cited by a council model from memory; not yet checked"
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "DOI": "10.5194/se-1-5-2010",
+    "x-checked": "2026-11-18"
   },
   {
     "id": "walker_1981_thermostat",
@@ -717,8 +752,10 @@
       ]
     },
     "container-title": "Proceedings of the National Academy of Sciences",
-    "x-status": "unverified",
-    "x-note": "cited by a council model from memory; not yet checked"
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "DOI": "10.1073/pnas.1411762111",
+    "x-checked": "2026-11-18"
   },
   {
     "id": "alberts_2014_mbc",
@@ -738,7 +775,8 @@
       ]
     },
     "x-status": "unverified",
-    "x-note": "cited by a council model from memory; not yet checked"
+    "x-note": "ambiguous: closest OpenLibrary hit is 'Molecular Biology of the Cell' (Alberts, 1983), title similarity 1.00, author match, year off",
+    "x-checked": "2026-11-18"
   },
   {
     "id": "mitchell_1961_chemiosmotic",
@@ -758,8 +796,10 @@
       ]
     },
     "container-title": "Nature",
-    "x-status": "unverified",
-    "x-note": "cited by a council model from memory; not yet checked"
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "DOI": "10.1038/191144a0",
+    "x-checked": "2026-11-18"
   },
   {
     "id": "lyons_2014_oxygen",
@@ -804,8 +844,10 @@
       ]
     },
     "container-title": "Nature",
-    "x-status": "unverified",
-    "x-note": "cited by a council model from memory; not yet checked"
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "DOI": "10.1038/278317a0",
+    "x-checked": "2026-11-18"
   },
   {
     "id": "rosenberg_trevathan_1995_obstetric",
@@ -824,9 +866,11 @@
         ]
       ]
     },
-    "container-title": "Evolutionary Anthropology",
-    "x-status": "unverified",
-    "x-note": "cited by a council model from memory; not yet checked"
+    "container-title": "Evolutionary Anthropology: Issues, News, and Reviews",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); container-title corrected from 'Evolutionary Anthropology'; DOI added",
+    "DOI": "10.1002/evan.1360040506",
+    "x-checked": "2026-11-18"
   },
   {
     "id": "bramble_lieberman_2004_endurance",
@@ -846,8 +890,10 @@
       ]
     },
     "container-title": "Nature",
-    "x-status": "unverified",
-    "x-note": "cited by a council model from memory; not yet checked"
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "DOI": "10.1038/nature03052",
+    "x-checked": "2026-11-18"
   },
   {
     "id": "byers_1997_pronghorn",
@@ -866,8 +912,10 @@
         ]
       ]
     },
-    "x-status": "unverified",
-    "x-note": "cited by a council model from memory; not yet checked"
+    "x-status": "verified",
+    "x-note": "verified against OpenLibrary (title 1.00); ISBN added",
+    "ISBN": "9780226086989",
+    "x-checked": "2026-11-18"
   },
   {
     "id": "napier_1956_prehensile",
@@ -886,9 +934,11 @@
         ]
       ]
     },
-    "container-title": "Journal of Bone and Joint Surgery (British Volume)",
-    "x-status": "unverified",
-    "x-note": "cited by a council model from memory; not yet checked"
+    "container-title": "The Journal of Bone and Joint Surgery. British volume",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); container-title corrected from 'Journal of Bone and Joint Surgery (British Volume)'; DOI added",
+    "DOI": "10.1302/0301-620x.38b4.902",
+    "x-checked": "2026-11-18"
   },
   {
     "id": "enard_2002_foxp2",
@@ -908,8 +958,10 @@
       ]
     },
     "container-title": "Nature",
-    "x-status": "unverified",
-    "x-note": "cited by a council model from memory; not yet checked"
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "DOI": "10.1038/nature01025",
+    "x-checked": "2026-11-18"
   },
   {
     "id": "janik_2000_whistles",
@@ -929,8 +981,10 @@
       ]
     },
     "container-title": "Science",
-    "x-status": "unverified",
-    "x-note": "cited by a council model from memory; not yet checked"
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "DOI": "10.1126/science.289.5483.1355",
+    "x-checked": "2026-11-18"
   },
   {
     "id": "aiello_wheeler_1995_expensive",
@@ -970,8 +1024,10 @@
         ]
       ]
     },
-    "x-status": "unverified",
-    "x-note": "cited by a council model from memory; not yet checked"
+    "x-status": "verified",
+    "x-note": "verified against OpenLibrary (title 1.00); ISBN added",
+    "ISBN": "9780674032996",
+    "x-checked": "2026-11-18"
   },
   {
     "id": "wrangham_2009_catching_fire",
@@ -990,8 +1046,10 @@
         ]
       ]
     },
-    "x-status": "unverified",
-    "x-note": "cited by a council model from memory; not yet checked"
+    "x-status": "verified",
+    "x-note": "verified against OpenLibrary (title 1.00); ISBN added",
+    "ISBN": "9780786744787",
+    "x-checked": "2026-11-18"
   },
   {
     "id": "zachos_2001_cenozoic",
@@ -1011,8 +1069,10 @@
       ]
     },
     "container-title": "Science",
-    "x-status": "unverified",
-    "x-note": "cited by a council model from memory; not yet checked"
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "DOI": "10.1126/science.1059412",
+    "x-checked": "2026-11-18"
   },
   {
     "id": "stringer_2016_origin",
@@ -1057,7 +1117,482 @@
       ]
     },
     "container-title": "Science",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "DOI": "10.1126/science.1098410",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "au_1993_sonar",
+    "type": "article-journal",
+    "title": "The Sonar of Dolphins",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "author": [
+      {
+        "family": "Au",
+        "given": "W. W. L."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1993
+        ]
+      ]
+    },
+    "container-title": "Springer-Verlag",
+    "DOI": "10.1007/978-1-4612-4356-4",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "blix_2016_adaptations",
+    "type": "article-journal",
+    "title": "Adaptations to polar life in mammals and birds",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); container-title corrected from 'Journal of Experimental Biology 219: 1093-1105'; DOI added",
+    "author": [
+      {
+        "family": "Blix",
+        "given": "A. S."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2016
+        ]
+      ]
+    },
+    "container-title": "Journal of Experimental Biology",
+    "DOI": "10.1242/jeb.120477",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "bramble_2004_endurance",
+    "type": "article-journal",
+    "title": "Endurance running and the evolution of Homo",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); container-title corrected from 'Nature 432: 345-352'; DOI added",
+    "author": [
+      {
+        "family": "Bramble",
+        "given": "D. M. & Lieberman, D. E."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2004
+        ]
+      ]
+    },
+    "container-title": "Nature",
+    "DOI": "10.1038/nature03052",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "bugnyar_2002_observational",
+    "type": "article-journal",
+    "title": "Observational learning and the raiding of food caches in ravens, Corvus corax: is it 'tactical' deception?",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); container-title corrected from 'Animal Behaviour 64: 185-195'; DOI added",
+    "author": [
+      {
+        "family": "Bugnyar",
+        "given": "T. & Kotrschal, K."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2002
+        ]
+      ]
+    },
+    "container-title": "Animal Behaviour",
+    "DOI": "10.1006/anbe.2002.3056",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "byers_1997_american",
+    "type": "book",
+    "title": "American Pronghorn: Social Adaptations and the Ghosts of Predators Past",
+    "x-status": "verified",
+    "x-note": "verified against OpenLibrary (title 1.00); ISBN added",
+    "author": [
+      {
+        "family": "Byers",
+        "given": "J. A."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1997
+        ]
+      ]
+    },
+    "container-title": "University of Chicago Press",
+    "ISBN": "9780226086989",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "carmody_2009_energetic",
+    "type": "article-journal",
+    "title": "The energetic significance of cooking",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); container-title corrected from 'Journal of Human Evolution 57: 379-391'; DOI added",
+    "author": [
+      {
+        "family": "Carmody",
+        "given": "R. N. & Wrangham, R. W."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2009
+        ]
+      ]
+    },
+    "container-title": "Journal of Human Evolution",
+    "DOI": "10.1016/j.jhevol.2009.02.011",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "diamond_2003_comparative",
+    "type": "article-journal",
+    "title": "A comparative analysis of social play in birds",
     "x-status": "unverified",
-    "x-note": "cited by a council model from memory; not yet checked"
+    "x-note": "ambiguous: closest Crossref hit is 'A Comparative Analysis of Social Play in Birds' (Bond, 2003, doi 10.1163/156853903322589650), title similarity 1.00, author differs, year ok",
+    "author": [
+      {
+        "family": "Diamond",
+        "given": "J. & Bond, A. B."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2003
+        ]
+      ]
+    },
+    "container-title": "Behaviour 140: 1091-1111",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "fitch_2001_descended",
+    "type": "article-journal",
+    "title": "The descended larynx is not uniquely human",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); container-title corrected from 'Proceedings of the Royal Society B 268: 1669-1675'; DOI added",
+    "author": [
+      {
+        "family": "Fitch",
+        "given": "W. T. & Reby, D."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2001
+        ]
+      ]
+    },
+    "container-title": "Proceedings of the Royal Society of London. Series B: Biological Sciences",
+    "DOI": "10.1098/rspb.2001.1704",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "heinrich_1998_influence",
+    "type": "article-journal",
+    "title": "Influence of competitors on caching behaviour in the common raven, Corvus corax",
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked",
+    "author": [
+      {
+        "family": "Heinrich",
+        "given": "B. & Pepper, J. W."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1998
+        ]
+      ]
+    },
+    "container-title": "Animal Behaviour 56: 1083-1090"
+  },
+  {
+    "id": "heinrich_1999_mind",
+    "type": "article-journal",
+    "title": "Mind of the Raven",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Common Raven (Corvus corax)' (Boarman, 1999) title similarity 0.38",
+    "author": [
+      {
+        "family": "Heinrich",
+        "given": "B."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1999
+        ]
+      ]
+    },
+    "container-title": "HarperCollins",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "janik_1998_context",
+    "type": "article-journal",
+    "title": "Context-specific use suggests that bottlenose dolphin signature whistles are cohesion calls",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); container-title corrected from 'Animal Behaviour 56: 829-838'; DOI added",
+    "author": [
+      {
+        "family": "Janik",
+        "given": "V. M. & Slater, P. B."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1998
+        ]
+      ]
+    },
+    "container-title": "Animal Behaviour",
+    "DOI": "10.1006/anbe.1998.0881",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "lai_2001_forkhead",
+    "type": "article-journal",
+    "title": "A forkhead-domain gene is mutated in a severe speech and language disorder",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); container-title corrected from 'Nature 413: 519-523'; DOI added",
+    "author": [
+      {
+        "family": "Lai",
+        "given": "C. S. L., Fisher, S. E., Hurst, J. A., Vargha-Khadem, F. & Monaco, A. P."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2001
+        ]
+      ]
+    },
+    "container-title": "Nature",
+    "DOI": "10.1038/35097076",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "leakey_1979_pliocene",
+    "type": "article-journal",
+    "title": "Pliocene footprints in the Laetolil Beds at Laetoli, northern Tanzania",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); container-title corrected from 'Nature 278: 317-323'; DOI added",
+    "author": [
+      {
+        "family": "Leakey",
+        "given": "M. D. & Hay, R. L."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1979
+        ]
+      ]
+    },
+    "container-title": "Nature",
+    "DOI": "10.1038/278317a0",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "lindstedt_1991_running",
+    "type": "article-journal",
+    "title": "Running energetics in the pronghorn antelope",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); container-title corrected from 'Nature 353: 748-750'; DOI added",
+    "author": [
+      {
+        "family": "Lindstedt",
+        "given": "S. L., et al."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1991
+        ]
+      ]
+    },
+    "container-title": "Nature",
+    "DOI": "10.1038/353748a0",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "lyamin_2008_cetacean",
+    "type": "article-journal",
+    "title": "Cetacean sleep: an unusual form of mammalian sleep",
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked",
+    "author": [
+      {
+        "family": "Lyamin",
+        "given": "O. I., Manger, P. R., Ridgway, S. H., Mukhametov, L. M. & Siegel, J. M."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2008
+        ]
+      ]
+    },
+    "container-title": "Neuroscience & Biobehavioral Reviews 32: 1451-1484"
+  },
+  {
+    "id": "martin_1990_vertebrate",
+    "type": "book",
+    "title": "Vertebrate Vision: A Study of Biological Control Systems",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'The Oxford handbook of eye movements' (Liversedge, 2011) title similarity 0.31",
+    "author": [
+      {
+        "family": "Martin",
+        "given": "G. R."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1990
+        ]
+      ]
+    },
+    "container-title": "Cambridge University Press",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "marzke_2000_evolution",
+    "type": "article-journal",
+    "title": "Evolution of the human hand: approaches to acquiring, analysing and interpreting the anatomical evidence",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); container-title corrected from 'Journal of Anatomy 197: 121-140'; DOI added",
+    "author": [
+      {
+        "family": "Marzke",
+        "given": "M. W. & Marzke, R. F."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2000
+        ]
+      ]
+    },
+    "container-title": "Journal of Anatomy",
+    "DOI": "10.1046/j.1469-7580.2000.19710121.x",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "pennycuick_2008_modelling",
+    "type": "book",
+    "title": "Modelling the Flying Bird",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest OpenLibrary hit is 'Modelling the flying bird' (Pennycuick, 1992), title similarity 1.00, author match, year off",
+    "author": [
+      {
+        "family": "Pennycuick",
+        "given": "C. J."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2008
+        ]
+      ]
+    },
+    "container-title": "Academic Press",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "sayigh_1999_individual",
+    "type": "article-journal",
+    "title": "Individual recognition in wild bottlenose dolphins: a field test using playback experiments",
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked",
+    "author": [
+      {
+        "family": "Sayigh",
+        "given": "L. S., Tyack, P. L., Wells, R. S., Solow, A. R., Scott, M. D. & Irvine, A. B."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1999
+        ]
+      ]
+    },
+    "container-title": "Animal Behaviour 57: 41-50"
+  },
+  {
+    "id": "wheeler_1991_thermoregulatory",
+    "type": "article-journal",
+    "title": "The thermoregulatory advantages of hominid bipedalism in open equatorial environments: the contribution of increased convective heat loss and cutaneous evaporative cooling",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); title corrected from 'The thermoregulatory advantages of hominid bipedalism in open equatorial environments'; container-title corrected from 'Journal of Human Evolution 21: 107-115'; DOI added",
+    "author": [
+      {
+        "family": "Wheeler",
+        "given": "P. E."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1991
+        ]
+      ]
+    },
+    "container-title": "Journal of Human Evolution",
+    "DOI": "10.1016/0047-2484(91)90002-d",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "wrangham_2003_cooking",
+    "type": "article-journal",
+    "title": "Cooking as a biological trait",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); container-title corrected from 'Comparative Biochemistry and Physiology Part A 136: 35-46'; DOI added",
+    "author": [
+      {
+        "family": "Wrangham",
+        "given": "R. & Conklin-Brittain, N. L."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2003
+        ]
+      ]
+    },
+    "container-title": "Comparative Biochemistry and Physiology Part A: Molecular &amp; Integrative Physiology",
+    "DOI": "10.1016/s1095-6433(03)00020-5",
+    "x-checked": "2026-11-18"
   }
 ]
