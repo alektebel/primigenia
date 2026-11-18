@@ -282,12 +282,14 @@ def species_all():
     for i in range(len(specs)):
         r = results.get(i)
         if not r: continue
+        r["species"] = [x for x in (r["species"] if isinstance(r["species"], list) else (next((v for v in r["species"].values() if isinstance(v, list)), []) if isinstance(r["species"], dict) else [])) if isinstance(x, dict)]
         rev = {str(x.get("name", "")).lower(): x for x in (r["review"] or []) if isinstance(x, dict)}
         bio = {str(x.get("name", "")).lower(): x for x in (r["astrobio"] or []) if isinstance(x, dict)}
         for sp in r["species"]:
             name = str(sp.get("name", "")).strip()
-            if not name or not sp.get("chains"): continue
+            if not name or not isinstance(sp.get("chains"), list): continue
             chs = [ch for ch in sp["chains"] if isinstance(ch, dict) and ch.get("trait")]
+            if not chs: continue
             for ch in chs: ch.setdefault("from", ["naturalist/qwen"])
             chains[name] = chs
             profs[name] = {k: sp.get(k) for k in ("habitat", "diet", "active", "body", "temperament", "secrets") if sp.get(k)}

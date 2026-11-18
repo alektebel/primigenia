@@ -223,6 +223,16 @@ def best_json(t):
             i = end
         except ValueError:
             i = j + 1
+    # a truncated top-level array: keep its complete elements when that covers more than any inner value did
+    k = t.find("[")
+    if k >= 0 and (t.find("{") < 0 or k < t.find("{")):
+        items, p = [], k + 1
+        while True:
+            q = t.find("{", p)
+            if q < 0: break
+            try: o, p = dec.raw_decode(t, q); items.append(o)
+            except ValueError: break
+        if items and (best is None or p - k > best[1]): best = (items, p - k)
     if best is None: raise ValueError("no json")
     return best[0]
 
