@@ -4411,5 +4411,293 @@
     },
     "container-title": "British Antarctic (Terra Nova) Expedition 1910 Natural History Report Zoology",
     "x-checked": "2026-11-18"
+  },
+  {
+    "id": "kasting_1993_habitable",
+    "type": "article-journal",
+    "title": "Habitable Zones Around Main Sequence Stars",
+    "author": [
+      {
+        "family": "Kasting",
+        "given": "James F."
+      },
+      {
+        "family": "Whitmire",
+        "given": "Daniel P."
+      },
+      {
+        "family": "Reynolds",
+        "given": "Raymond T."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1993
+        ]
+      ]
+    },
+    "container-title": "Icarus",
+    "DOI": "10.1006/icar.1993.1010",
+    "ISBN": "",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "seager_2013_pseudophotosynthesis",
+    "type": "article-journal",
+    "title": "Pseudophotosynthesis: Using Infrared Light to Support Life on Extrasolar Planets",
+    "author": [
+      {
+        "family": "Seager",
+        "given": "Sara"
+      },
+      {
+        "family": "Kiang",
+        "given": "Natalie Y."
+      },
+      {
+        "family": "Bertone",
+        "given": "Elena"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2013
+        ]
+      ]
+    },
+    "container-title": "The Astrophysical Journal",
+    "DOI": "10.1088/0004-637X/771/2/106",
+    "ISBN": "",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Photometric Light Curves and Polarization of Close‐in Extrasolar Giant Planets' (Seager, 2000) title similarity 0.54",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "alexander_2003_principles",
+    "type": "book",
+    "title": "Principles of Animal Locomotion",
+    "author": [
+      {
+        "family": "Alexander",
+        "given": "R. McNeill"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2002
+        ]
+      ]
+    },
+    "container-title": "Princeton University Press",
+    "DOI": "",
+    "ISBN": "9780691126340",
+    "x-status": "verified",
+    "x-note": "verified against OpenLibrary (title 1.00); year corrected from 2003; ISBN added",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "rothschild_2001_extremes",
+    "type": "book",
+    "title": "Life at the Extremes: The Very Limits of Life on Earth",
+    "author": [
+      {
+        "family": "Rothschild",
+        "given": "Lisa J."
+      },
+      {
+        "family": "Mancinelli",
+        "given": "Robert L."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2001
+        ]
+      ]
+    },
+    "container-title": "Oxford University Press",
+    "DOI": "",
+    "ISBN": "9780195133674",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'The Conspirators Hierarchy' (Coleman, 1992) title similarity 0.35",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "kiang_2006_spectral",
+    "type": "article-journal",
+    "title": "Spectral signatures of photosynthetic organisms on Earth",
+    "author": [
+      {
+        "family": "Kiang",
+        "given": "Natalie Y."
+      },
+      {
+        "family": "Sagan",
+        "given": "Carl"
+      },
+      {
+        "family": "Seager",
+        "given": "Sara"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2006
+        ]
+      ]
+    },
+    "container-title": "Proceedings of the National Academy of Sciences",
+    "DOI": "10.1073/pnas.0605504103",
+    "ISBN": "",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'Spectral Signatures of Photosynthesis. I. Review of Earth Organisms' (Kiang, 2007, doi 10.1089/ast.2006.0105), title similarity 0.74, author match, year ok",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "olson_2006_power",
+    "type": "article-journal",
+    "title": "Power requirements for the geodynamo and their consequences",
+    "author": [
+      {
+        "family": "Olson",
+        "given": "Paul"
+      },
+      {
+        "family": "Christensen",
+        "given": "Ulrich R."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2006
+        ]
+      ]
+    },
+    "container-title": "Geophysical Journal International",
+    "DOI": "10.1111/j.1365-246X.2006.02915.x",
+    "ISBN": "",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Mantle control of the geodynamo: Consequences of top‐down regulation' (Olson, 2016) title similarity 0.51",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "wordsworth_2016_climate",
+    "type": "article-journal",
+    "title": "The Climate of Early Mars",
+    "author": [
+      {
+        "family": "Wordsworth",
+        "given": "Robin"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2016
+        ]
+      ]
+    },
+    "container-title": "Annual Review of Earth and Planetary Sciences",
+    "DOI": "10.1146/annurev-earth-060115-012355",
+    "ISBN": "",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 0.90); title corrected from 'The Climate of Early Earth'; DOI added",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "biewener_2003_scaling",
+    "type": "article-journal",
+    "title": "Scaling body size: biomechanical constraints on vertebrate locomotion",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'Scaling Body Support in Mammals: Limb Posture and Muscle Mechanics' (Biewener, 1989, doi 10.1126/science.2740914), title similarity 0.62, author match, year off",
+    "author": [
+      {
+        "family": "Biewener",
+        "given": "A. A."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2003
+        ]
+      ]
+    },
+    "container-title": "Nature",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "fletcher_1998_physics",
+    "type": "article-journal",
+    "title": "The Physics of Musical Instruments: Sound propagation in dense media",
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked",
+    "author": [
+      {
+        "family": "Fletcher",
+        "given": "N. H."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1998
+        ]
+      ]
+    },
+    "container-title": "Springer"
+  },
+  {
+    "id": "linder_1991_copper",
+    "type": "article-journal",
+    "title": "Copper metabolism in eukaryotic organisms",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'Copper in Nonvertebrate Organisms' (Linder, 1991, doi 10.1007/978-1-4757-9432-8_10), title similarity 0.62, author match, year ok",
+    "author": [
+      {
+        "family": "Linder",
+        "given": "M. C."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1991
+        ]
+      ]
+    },
+    "container-title": "Biological Trace Element Research",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "striedter_2005_principles",
+    "type": "article-journal",
+    "title": "Précis of Principles of Brain Evolution",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 0.85); title corrected from 'Principles of Brain Evolution'; container-title corrected from 'Sinauer Associates'; year corrected from 2005; DOI added",
+    "author": [
+      {
+        "family": "Striedter",
+        "given": "G. F."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2006
+        ]
+      ]
+    },
+    "container-title": "Behavioral and Brain Sciences",
+    "DOI": "10.1017/s0140525x06009010",
+    "x-checked": "2026-11-18"
   }
 ]

@@ -1,0 +1,159 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "at_ruin_haunters",
+  "name": {
+    "en": "Ruin Haunters"
+  },
+  "world": "at_qu_worlds",
+  "kind": "easter_egg",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "to be written",
+    "diet": "to be written",
+    "active": "to be written",
+    "predators": []
+  },
+  "body": "to be written",
+  "chains": [
+    {
+      "id": "at_ruin_haunters.c1",
+      "trait": "Rapid technological replication and architectural fixation",
+      "links": [
+        "Halted tectonic recycling preserves ancient urban foundations",
+        "K2V magnetic pumping creates unpredictable radiation zones",
+        "Survival selects for rapid tech adaptation and ruin-shelter ideology",
+        "Cultural madness reinforces replication without full comprehension"
+      ],
+      "roots": [
+        "F1",
+        "F4",
+        "F8",
+        "F17"
+      ],
+      "skill": {
+        "id": "at_ruin_haunters.dead_god_tech",
+        "name": {
+          "en": "Dead God Tech"
+        },
+        "role": "Control",
+        "effect": "Repurposes Qu debris into functional tools/weapons, granting temporary stat boosts (20% for 45s) but risking instability.",
+        "numbers": {}
+      },
+      "weakness": "Replicates tech without understanding; prone to catastrophic feedback loops when stressed.",
+      "observe": [
+        "Ape-like primates manipulating glass shards",
+        "Pyramid shadows cast over makeshift tech labs",
+        "Strange hybrid machinery powered by basalt conduits"
+      ],
+      "journal": {
+        "en": "They found the dead gods' tools and assumed the gods were listening. The metal hums; the primates believe they hear it back."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Call it cultural evolution and salvage ecology, not a species trait; weakness ‘feedback loops’ is honest—gate Dead God Tech behind ruin shelter + magnetic shielding lore (F4 blind spots) to avoid implying innate biology.",
+        "fixes": [
+          "Call it cultural evolution and salvage ecology, not a species trait; weakness ‘feedback loops’ is honest—gate Dead God Tech behind ruin shelter + magnetic shielding lore (F4 blind spots) to avoid implying innate biology."
+        ],
+        "analogues": [
+          {
+            "organism": "Chimpanzees and corvids tool tradition copying without full causal models; human societies reverse-engineering lost industrial artifacts (Antikythera-era salvage mindset)",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 7,
+          "designer": 8,
+          "physicist": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist",
+          "physicist"
+        ]
+      }
+    },
+    {
+      "id": "at_ruin_haunters.c2",
+      "trait": "Rapid technological decoding and machinic transition",
+      "links": [
+        "Ancient ruins preserved by zero tectonic recycling",
+        "Engineered seismic dampening leaves infrastructure exposed to aeolian weathering",
+        "K2V star with magnetic pumping drives persistent ground fog and low contrast",
+        "Controlled stellar dimming phase over millennia reduces luminosity"
+      ],
+      "roots": [
+        "F8",
+        "F14",
+        "F17"
+      ],
+      "skill": {
+        "id": "at_ruin_haunters.archaeo_techno_synthesis",
+        "name": {
+          "en": "Archaeo-Techno Synthesis"
+        },
+        "role": "Engage",
+        "effect": "Temporarily boosts tech research by simulating lost Star People systems, granting +25% progression.",
+        "numbers": {}
+      },
+      "weakness": "Prone to cognitive overload when processing unshielded stellar flare data.",
+      "observe": [
+        "Glass-melt plains",
+        "Basalt magnetic blind spots",
+        "Ape-to-human recovery fossils"
+      ],
+      "journal": {
+        "en": "They found the ghosts in the stone. Then they decided to become them. Gravity-spheres await."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Machinic transition (Gravital) is singularity-tier discontinuity—score the ruin-decoding chain separately from body replacement; flare ‘cognitive overload’ works as environmental hazard (F7), not neural adaptation.",
+        "fixes": [
+          "Machinic transition (Gravital) is singularity-tier discontinuity—score the ruin-decoding chain separately from body replacement; flare ‘cognitive overload’ works as environmental hazard (F7), not neural adaptation."
+        ],
+        "analogues": [
+          {
+            "organism": "Rapid primate recovery and technophilic niche after catastrophe (feral-city macaques, post-disaster human tech scavenging); radiation-sensitive cognition in lab mammals",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "designer": 7,
+          "physicist": 5
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist",
+          "physicist"
+        ]
+      }
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-18",
+    "by": [
+      "naturalist",
+      "physicist"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-18",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-18"
+    }
+  ],
+  "lore_ref": {
+    "file": "lore/alltomorrows.en.json",
+    "id": "ruin-haunters"
+  }
+}

@@ -1,0 +1,163 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "at_qu",
+  "name": {
+    "en": "Qu"
+  },
+  "world": "at_qu_worlds",
+  "kind": "easter_egg",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "to be written",
+    "diet": "to be written",
+    "active": "to be written",
+    "predators": []
+  },
+  "body": "to be written",
+  "chains": [
+    {
+      "id": "at_qu.c1",
+      "trait": "Kilometric pyramids channel katabatic winds",
+      "links": [
+        "Geometric mass-dumping creates wind-tunnel acoustics",
+        "Dense 1.8 bar atmosphere scatters high frequencies",
+        "Habitat stabilizes low-frequency ground-coupled communication",
+        "K2V flare flux demands rapid heat dissipation (speculative)"
+      ],
+      "roots": [
+        "F1",
+        "F5",
+        "F8",
+        "F16"
+      ],
+      "skill": {
+        "id": "at_qu.wind_sync_mapping",
+        "name": {
+          "en": "Wind-Sync Mapping"
+        },
+        "role": "Control",
+        "effect": "Aligns player to pyramid acoustic nodes, revealing hidden Qu drone paths and structural weak points (30m radius).",
+        "numbers": {}
+      },
+      "weakness": "Vulnerable to sudden high-frequency sonic bursts that disrupt atmospheric coupling.",
+      "observe": [
+        "Amber ground fog pooling in glass canyons",
+        "Glass-melt plains reflecting K2V flares",
+        "Kilometric basalt pyramids funneling visible wind shears"
+      ],
+      "journal": {
+        "en": "They built wind-scrubbers that doubled as monuments. Clever, until the dust settled."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "analogues": [
+          {
+            "organism": "Mountain pass and urban canyon wind-tunnel acoustics (Lee waves, venturi channels); elephant and hippopotamus low-frequency rumbles coupled through substrate (payne/langbauer seismic communication)",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "fletcher_1998_physics"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "designer": 8,
+          "physicist": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist",
+          "physicist"
+        ]
+      }
+    },
+    {
+      "id": "at_qu.c2",
+      "trait": "Nanite-saturated soil and geometric wind funnels",
+      "links": [
+        "Geometric pyramids naturally funnel katabatic airflow",
+        "Dense aerosol atmosphere traps thermal gradients and silicate dust",
+        "Engineered K2V star with forced magnetic pumping drives surface heating and flare flux",
+        "Dormant nanite lattices integrate into soil as catalytic bridges"
+      ],
+      "roots": [
+        "F1",
+        "F5",
+        "F8",
+        "F12"
+      ],
+      "skill": {
+        "id": "at_qu.scan_terraforming_signatures",
+        "name": {
+          "en": "Scan Terraforming Signatures"
+        },
+        "role": "Basic",
+        "effect": "Reveals hidden nanite hotspots and Qu drone flight paths within 30m.",
+        "numbers": {}
+      },
+      "weakness": "Disoriented by localized magnetic anomalies near basalt foundations.",
+      "observe": [
+        "Glass-melt plains",
+        "Pyramid base wind funnels",
+        "Soil catalytic residue"
+      ],
+      "journal": {
+        "en": "They didn't evolve here. They built it. And left their fingerprints in the dust."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Treat nanite detection as engineered residual tech, not evolved sense; cap hotspot read range and require player instruments on worlds where F12 is patchy or decayed.",
+        "fixes": [
+          "Treat nanite detection as engineered residual tech, not evolved sense; cap hotspot read range and require player instruments on worlds where F12 is patchy or decayed."
+        ],
+        "analogues": [
+          {
+            "organism": "Magnetotactic bacteria aligning to field lines (Blakemore 1975); aeolian deposition in lee of monuments — no true nanite soil analogue on Earth",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "designer": 7,
+          "physicist": 5
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist",
+          "physicist"
+        ]
+      }
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-18",
+    "by": [
+      "naturalist",
+      "physicist"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-18",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-18"
+    }
+  ],
+  "lore_ref": {
+    "file": "lore/alltomorrows.en.json",
+    "id": "qu"
+  }
+}

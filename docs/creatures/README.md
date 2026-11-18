@@ -19,6 +19,18 @@
 | [Martians](at_martians.md) | easter_egg | draft | 3 | 3 plausible |
 | [Star People](at_star_people.md) | easter_egg | draft | 2 | 1 fixable, 1 plausible |
 
+## All Tomorrows: the Qu-shaped worlds (`at_qu_worlds`)
+
+| Creature | Kind | Status | Chains | Verdicts |
+|---|---|---|---|---|
+| [Colonials](at_colonials.md) | easter_egg | draft | 2 | 1 fixable, 1 implausible |
+| [Killer Folk](at_killer_folk.md) | easter_egg | draft | 3 | 3 plausible |
+| [Panderavis pandora](at_panderavis_pandora.md) | easter_egg | draft | 2 | 2 plausible |
+| [Qu](at_qu.md) | easter_egg | draft | 2 | 1 fixable, 1 plausible |
+| [Ruin Haunters](at_ruin_haunters.md) | easter_egg | draft | 2 | 1 fixable, 1 plausible |
+| [Snake People](at_snake_people.md) | easter_egg | draft | 2 | 1 fixable, 1 plausible |
+| [Worms](at_worms.md) | easter_egg | draft | 2 | 2 plausible |
+
 ## The Deep Sky (`deepsky`)
 
 | Creature | Kind | Status | Chains | Verdicts |

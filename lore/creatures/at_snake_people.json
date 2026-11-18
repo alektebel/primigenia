@@ -1,0 +1,159 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "at_snake_people",
+  "name": {
+    "en": "Snake People"
+  },
+  "world": "at_qu_worlds",
+  "kind": "easter_egg",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "to be written",
+    "diet": "to be written",
+    "active": "to be written",
+    "predators": []
+  },
+  "body": "to be written",
+  "chains": [
+    {
+      "id": "at_snake_people.c1",
+      "trait": "Spirally coiled brains and singular pelvic manipulator",
+      "links": [
+        "Underground hypoxic niches selected for copper-sulfur neural clusters (speculative)",
+        "Parallel spatial processing optimizes tangle navigation",
+        "Surface re-expansion plus tree-climbing ancestry favors serpentine locomotion",
+        "1.22 g gravity demands low center-of-mass architecture"
+      ],
+      "roots": [
+        "F3",
+        "F11",
+        "F18",
+        "F19"
+      ],
+      "skill": {
+        "id": "at_snake_people.pipe_crawl",
+        "name": {
+          "en": "Pipe Crawl"
+        },
+        "role": "Engage",
+        "effect": "Navigates complex 3D structures and ground-vibration networks, revealing hidden paths and acoustic signals (60m radius).",
+        "numbers": {}
+      },
+      "weakness": "Poor balance on open flat ground (agoraphobia); high copper toxicity risk in metal-rich soils.",
+      "observe": [
+        "Coiled neural scans showing spiral ganglia",
+        "Pipe-like roads and windowless glass-metal spheres",
+        "Ground-coupled vibration patterns"
+      ],
+      "journal": {
+        "en": "They evolved to coil through the dark. Now they coil through city pipes, listening to the world shake, and hating the open sky."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Drop copper-sulfur neural ‘enhancement’ as physiology; keep spiral ganglia as compact packaging in skull + elongate body (F18 highly speculative). Pelvic ‘hand’ from vestigial feet is plausible if framed as repurposed hindlimb elements in a worm–mammal descendant, not tripedal native F19 logic.",
+        "fixes": [
+          "Drop copper-sulfur neural ‘enhancement’ as physiology; keep spiral ganglia as compact packaging in skull + elongate body (F18 highly speculative). Pelvic ‘hand’ from vestigial feet is plausible if framed as repurposed hindlimb elements in a worm–mammal descendant, not tripedal native F19 logic."
+        ],
+        "analogues": [
+          {
+            "organism": "Snake locomotion and arboreal/burrow body plan (boa, tree python); mole-rat forelimb repurposing; compact CNS in elongate vertebrates—not true spiral encephalization",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 5,
+          "designer": 9,
+          "physicist": 7
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist",
+          "physicist"
+        ]
+      }
+    },
+    {
+      "id": "at_snake_people.c2",
+      "trait": "Spirally coiled brains and serpentine locomotion",
+      "links": [
+        "Low-oxygen, high-metal underground niches demand parallel spatial processing",
+        "1.22 g surface gravity with copper-sulfur neural redox adaptation",
+        "Copper bioavailability allows heavy structural integration requiring strict chelation",
+        "Spirally coiled brains adapt to hypoxic, high-metal underground niches"
+      ],
+      "roots": [
+        "F3",
+        "F10",
+        "F18"
+      ],
+      "skill": {
+        "id": "at_snake_people.seismic_harmony",
+        "name": {
+          "en": "Seismic Harmony"
+        },
+        "role": "Signature",
+        "effect": "Reads ground vibrations to predict enemy movement and calm allies in tight spaces for 3 turns.",
+        "numbers": {}
+      },
+      "weakness": "Agoraphobic reflexes cause disorientation in open plazas without overhead cover.",
+      "observe": [
+        "Copper-tinted neural tissue",
+        "Pipe-like road networks",
+        "Windowless glass/metal spheres"
+      ],
+      "journal": {
+        "en": "They climbed out of the dark and curled their minds into coils. Gravity made them three-limbed; they chose to slide."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Ground-vibration ‘music’ and seismic harmony align with F16 if snakes use jaw/skin mechanoreceptors (not coiled-brain physics); agoraphobia as derived neophobia toward exposed horizon is behavioral—optional, not mandatory reflex. Copper toxicity weakness: keep for metal-rich soils (F10) with chelation behavior in-lore.",
+        "fixes": [
+          "Ground-vibration ‘music’ and seismic harmony align with F16 if snakes use jaw/skin mechanoreceptors (not coiled-brain physics); agoraphobia as derived neophobia toward exposed horizon is behavioral—optional, not mandatory reflex. Copper toxicity weakness: keep for metal-rich soils (F10) with chelation behavior in-lore."
+        ],
+        "analogues": [
+          {
+            "organism": "Burrowing and semi-fossorial snakes using vibrational prey cues; elephant seal and mole vibrational sensitivity; tree-dwelling primates’ discomfort in open ground as comparative psychology stretch",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 7,
+          "designer": 9,
+          "physicist": 4
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist",
+          "physicist"
+        ]
+      }
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-18",
+    "by": [
+      "naturalist",
+      "physicist"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-18",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-18"
+    }
+  ],
+  "lore_ref": {
+    "file": "lore/alltomorrows.en.json",
+    "id": "snake-people"
+  }
+}
