@@ -24,6 +24,22 @@ Scenario: `<name>.json` (`primigenia.scenario/1`) + `.cpstate` + `.log` recipe; 
 Feedback bundle: `feedback/<stamp>/` (git-ignored) with screenshot, scenario, replay.log + replay.hashes, tuning, meta, log.txt.
 Agent socket: `godot/devtools/agent/PROTOCOL.md`; Python client `agent/client.py`.
 
+## Curated scenarios (`godot/scenarios/creature/`)
+
+Regenerate after terrain or engine changes: `godot --headless --path godot --script res://devtools/tools/make_scenarios.gd`.
+
+| Scenario | What to test here |
+|---|---|
+| `nest_start` | Fresh game at the nest with Garfio at home: baseline movement, nest and first quest beats. |
+| `garfio_close` | First meeting 8 m from Garfio: opening attack timings, combat tuning, chase camera. |
+| `far_meadow` | Remote slope with no creatures: island scale, heightfield and camera on inclines. |
+| `cliff_crossing` | Player below a cliff with an active GO to the rim: `overlay path`, A* detours and waypoint following. |
+| `water_edge` | Shore GO to dry ground across shallow water: unreachable snap, `last_error` and `blocked` readouts. |
+| `garfio_low_hp` | Garfio near death, player full: finisher moves, kill events and fight teardown. |
+| `player_low_hp` | Player nearly dead beside Garfio: flee, death, respawn and panic UI. |
+| `dusk_meadow` | Far meadow at 19:30: sun angle, ambient colour and time-of-day on slopes. |
+| `crowd` | Several Garfios around the nest: nameplates, icons and camera readability in a cluster. |
+
 ## Owner-question defaults (single settings in `dev.gd`)
 Dev tools on in every debug build (`--dev` / `--no-dev`); console on the key left of 1 and F12; feedback in repo `feedback/` falling
 back to `user://feedback/`; raw snapshots with recipes; fights next to cliffs stop at the edge; island mode stays out of WASM and
