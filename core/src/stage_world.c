@@ -633,6 +633,7 @@ int cp_stage_reset(CpStageWorld *w,const CpStageSetup *s){
     w->motion=CP_STAGE_MOTION;
     w->field_hash=field?field->hash:0;
     w->setup=copy;
+    cp_stage_social_reset(w);
     w->active=-1;
     cp_rng_seed(&w->spawn_rng,copy.seed^0x53504157u);
     cp_rng_seed(&w->roam_rng,copy.seed^0x524f414du);
@@ -675,6 +676,7 @@ static CpBot bot_load(const CpStageBot *s){
     return b;
 }
 static void start(CpStageWorld *w,int index){
+    cp_stage_social_on_fight(w,index);
     CpStageCreature *e=&w->wild[index],*p=&w->player;
     w->arena_x=(p->x+e->x)/2;
     w->arena_z=(p->z+e->z)/2;
@@ -779,7 +781,7 @@ static int has_threat(const CpStageWorld *w){
     return 0;
 }
 static int order_apply(CpStageWorld *w,const CpStageInput *a){
-    if(!w||!a||!isfinite(a->x)||!isfinite(a->z)||a->verb<0||a->verb>CP_STAGE_LOADOUT||a->sprint<0||a->sprint>1)return -1;
+    if(!w||!a||!isfinite(a->x)||!isfinite(a->z)||a->verb<0||a->verb>CP_STAGE_EAT||a->sprint<0||a->sprint>1)return -1;
     if(a->verb==CP_STAGE_CONTINUE)return 0;
     if(a->verb==CP_STAGE_LOADOUT){
         if(a->target<1||a->target>CB_LOADOUT_SLOTS)return CP_STAGE_ERR_BAD_SLOT;
@@ -792,6 +794,14 @@ static int order_apply(CpStageWorld *w,const CpStageInput *a){
         if(rc)return rc;
         w->loadout=next;
         w->hash=cp_stage_hash(w);
+        return 0;
+    }
+    if(a->verb>=CP_STAGE_BEFRIEND){
+        const int rc=cp_stage_social_order_check(w,a);
+        if(rc)return rc;
+        path_clear(w);
+        w->order=*a;
+        w->social.used=1;
         return 0;
     }
     if(a->verb==CP_STAGE_GO&&(!isfinite(a->x)||!isfinite(a->z)||ab(a->x)>cp_stage_bound(w)||ab(a->z)>cp_stage_bound(w)))return -1;
@@ -849,6 +859,7 @@ static void finish(CpStageWorld *w,int outcome){
     if(outcome==CP_STAGE_VICTORY||wild_ko){
         e->dead=1;
         ev_push(w,CP_STAGE_EV_KILL,0,id,-1,0,e->x,e->z);
+        cp_stage_social_on_kill(w,id-1);
     }
     else e->returning=1;
     if(outcome!=CP_STAGE_VICTORY){
@@ -1023,8 +1034,7 @@ static void wild_tick(CpStageWorld *w,int skip,int engage){
             tx=e->goal_x;
             tz=e->goal_z;
         }
-        float territory=s->temperament==CP_STAGE_TERRITORIAL?length(w->player.x-e->home_x,w->player.z-e->home_z):d;
-        int hostile=s->temperament!=CP_STAGE_TIMID&&d<s->sight&&territory<s->hostile+cp_combat_body_radius(&e->profile)&&!w->cooldown_ticks;
+        int hostile=cp_stage_social_hostile(w,i);   /* the temperament rule, minus what the social layer pacifies */
         if(e->returning){
             tx=e->home_x;
             tz=e->home_z;
@@ -1032,6 +1042,10 @@ static void wild_tick(CpStageWorld *w,int skip,int engage){
         else if(hostile){
             tx=w->player.x;
             tz=w->player.z;
+        }
+        else if(cp_stage_social_leaving(w,i)){
+            tx=e->x+(e->x-w->player.x);
+            tz=e->z+(e->z-w->player.z);
         }
         else if(s->temperament==CP_STAGE_TIMID&&d<s->sight*.5f){
             tx=e->x+(e->x-w->player.x);
@@ -1042,7 +1056,7 @@ static void wild_tick(CpStageWorld *w,int skip,int engage){
         walk(w,e,tx-e->x,tz-e->z,espeed,jog);
         if(e->returning&&length(e->x-e->home_x,e->z-e->home_z)<.6f)e->returning=0;
         int targeted=(w->order.verb==CP_STAGE_ATTACK&&w->order.target==i+1);
-        if(engage&&w->active<0&&!e->returning&&!w->cooldown_ticks&&(hostile||targeted)&&dist(&w->player,e)<5.5f)start(w,i);
+        if(engage&&w->active<0&&!e->returning&&!w->cooldown_ticks&&((hostile&&!cp_stage_social_shielded(w,i))||targeted)&&dist(&w->player,e)<5.5f)start(w,i);
     }
 }
 uint64_t cp_stage_step(CpStageWorld *w,const CpStageInput *input){
@@ -1156,6 +1170,19 @@ uint64_t cp_stage_step(CpStageWorld *w,const CpStageInput *input){
                 }
             }
         }
+        else if(a->verb>=CP_STAGE_BEFRIEND&&a->verb<=CP_STAGE_EAT){
+            /* social verbs: walk into range, then stand still while performing (observe never moves) */
+            if(a->target>=1&&a->target<=w->setup.n&&(a->verb==CP_STAGE_EAT||!creature_is_dead(&w->wild[a->target-1]))&&a->verb!=CP_STAGE_OBSERVE){
+                const CpStageCreature *t=&w->wild[a->target-1];
+                dx=t->x-w->player.x;
+                dz=t->z-w->player.z;
+                remaining=length(dx,dz);
+                if(w->social.act_verb||remaining<=cp_stage_social_reach(w,a)){
+                    dx=dz=0;
+                    remaining=0;
+                }
+            }
+        }
         else if(a->verb==CP_STAGE_FLEE){
             int nearest=-1;
             float d=100000;
@@ -1196,6 +1223,7 @@ uint64_t cp_stage_step(CpStageWorld *w,const CpStageInput *input){
         w->player.stamina=clamp(w->player.stamina+(sprint?-1.4f:1),0,w->player.profile.stamina);
         if(w->cooldown_ticks>0)w->cooldown_ticks--;
     }
+    cp_stage_social_step(w);
     wild_tick(w,skip,engage);
     w->tick++;
     w->clock=(w->clock+1)%CP_STAGE_DAY_TICKS;
@@ -1339,6 +1367,11 @@ uint64_t cp_stage_hash(const CpStageWorld *w){
             fl(&h,w->path[i][1]);
         }
     }
+    if(w->social.used){
+        const uint64_t sh=cp_stage_social_hash(w);
+        u32(&h,(uint32_t)sh);
+        u32(&h,(uint32_t)(sh>>32));
+    }
     if(s->terrain==CP_STAGE_FIELD){
         u32(&h,(uint32_t)w->field_hash);
         u32(&h,(uint32_t)(w->field_hash>>32));
@@ -1346,8 +1379,8 @@ uint64_t cp_stage_hash(const CpStageWorld *w){
     return h;
 }
 uint16_t cp_stage_known_moves(const CpStageWorld *w){
-    /* hook: learning by observing (A21 section 4) ORs its learned moves in here */
-    return cp_combat_known_default(&w->player.profile);
+    /* learning by observing (A21 section 4, A22): moves of completed observe chains are OR-ed in */
+    return (uint16_t)(cp_combat_known_default(&w->player.profile)|(uint16_t)w->social.learned);
 }
 static int parse_text(const char *text,CpStageInput *out){
     CpStageInput a={
@@ -1414,7 +1447,11 @@ static int parse_text(const char *text,CpStageInput *out){
         a.hx=(int16_t)(x*32767);
         a.hz=(int16_t)(z*32767);
     }
-    else rc=-1;
+    else{
+        int soc_rc=0;
+        if(cp_stage_social_parse(text,&a,&soc_rc))rc=soc_rc;
+        else rc=-1;
+    }
 done:
     *out=a;
     return rc;
@@ -1461,6 +1498,14 @@ const char *cp_stage_order_error(int code){
         case CP_STAGE_ERR_UNKNOWN_MOVE:return "unknown_move";
         case CP_STAGE_ERR_NOT_AT_NEST:return "not_at_nest";
         case CP_STAGE_ERR_IN_FIGHT:return "in_fight";
+        case CP_STAGE_ERR_REFUSES:return "refuses (hostile, aggressive and not calmed, or in a bad mood)";
+        case CP_STAGE_ERR_NO_ITEM:return "no_item";
+        case CP_STAGE_ERR_BAD_SKILL:return "unknown_skill_or_item";
+        case CP_STAGE_ERR_STAGGERED:return "staggered";
+        case CP_STAGE_ERR_NO_STAMINA:return "no_stamina";
+        case CP_STAGE_ERR_BUSY:return "busy (cooldown)";
+        case CP_STAGE_ERR_DIET:return "cannot_digest (diet)";
+        case CP_STAGE_ERR_FULL:return "full";
         default:return "invalid command or value";
     }
 }
@@ -1572,7 +1617,12 @@ int cp_stage_observe_v(const CpStageWorld *w,char *out,size_t cap,int version){
                 case CP_STAGE_EV_ARRIVED:ADD("%s{\"tick\":%u,\"type\":\"arrived\",\"x\":%.3f,\"z\":%.3f}",sep,e->tick,e->x,e->z);break;
                 case CP_STAGE_EV_FLED:ADD("%s{\"tick\":%u,\"type\":\"fled\",\"target\":%d}",sep,e->tick,e->target);break;
                 case CP_STAGE_EV_PATH_FAILED:ADD("%s{\"tick\":%u,\"type\":\"path_failed\",\"x\":%.3f,\"z\":%.3f}",sep,e->tick,e->x,e->z);break;
-                default:ADD("%s{\"tick\":%u,\"type\":\"unknown\"}",sep,e->tick);break;
+                default:{
+                    char eb[640];
+                    if(cp_stage_social_event_json(e,eb,sizeof eb))ADD("%s%s",sep,eb);
+                    else ADD("%s{\"tick\":%u,\"type\":\"unknown\"}",sep,e->tick);
+                    break;
+                }
             }
         }
         ADD("],");
@@ -1585,6 +1635,21 @@ int cp_stage_observe_v(const CpStageWorld *w,char *out,size_t cap,int version){
         if(version==2){
             const char *state=creature_state(w,i);
             ADD("%s{\"id\":%d,\"type\":\"%s\",\"species\":\"%s\",\"distance\":%.6f,\"bearing\":%.6f,\"hp\":%.6f,\"hp_max\":%.6f,\"state\":\"%s\",\"in_fight\":%s,\"attackable\":%s}",comma?",":"",i+1,creature_is_dead(e)?"carcass":"creature",CP_STAGE_SPECIES[e->species].name,d,bearing(&w->player,e->x,e->z),e->hp,e->profile.hp,state,w->active==i?"true":"false",creature_attackable(w,i)?"true":"false");
+            if(creature_is_dead(e)){
+                char sb[256];
+                if(cp_stage_social_carcass_json(w,i,sb,sizeof sb)>0){
+                    used--;
+                    ADD("%s}",sb);
+                }
+            }
+            else{
+                char sb[1024];
+                if(cp_stage_social_creature_json(w,i,sb,sizeof sb)>0){
+                    /* splice the social fields in before the closing brace */
+                    used--;
+                    ADD("%s}",sb);
+                }
+            }
         }
         else ADD("%s{\"id\":%d,\"type\":\"%s\",\"species\":\"%s\",\"distance\":%.6f,\"bearing\":%.6f}",comma?",":"",i+1,creature_is_dead(e)?"carcass":"creature",CP_STAGE_SPECIES[e->species].name,d,bearing(&w->player,e->x,e->z));
         comma=1;
@@ -1610,6 +1675,13 @@ int cp_stage_observe_v(const CpStageWorld *w,char *out,size_t cap,int version){
     for(int i=0;i<CB_MOVE_COUNT;i++)if(attack_move_ok(w,i)&&cp_combat_loadout_slot_of(&w->loadout,i)>=0)attacks++;
     if(target)ADD(",\"approach\"");
     if(target&&attacks)ADD(",\"attack\"");
+    if(version==2){
+        if(cp_stage_social_legal(w,CP_STAGE_BEFRIEND))ADD(",\"befriend\"");
+        if(cp_stage_social_legal(w,CP_STAGE_OBSERVE))ADD(",\"observe\"");
+        if(cp_stage_social_legal(w,CP_STAGE_INTIMIDATE))ADD(",\"intimidate\"");
+        if(cp_stage_social_legal(w,CP_STAGE_EAT))ADD(",\"eat\"");
+        if(cp_stage_social_legal(w,CP_STAGE_GIFT))ADD(",\"gift\"");
+    }
     if(version==2&&w->active<0&&length(w->player.x-w->setup.nest_x,w->player.z-w->setup.nest_z)<=CP_STAGE_NEST_RADIUS)ADD(",\"loadout\"");   /* only at the nest, never in a fight */
     ADD("]");
     if(version==2){
@@ -1631,6 +1703,11 @@ int cp_stage_observe_v(const CpStageWorld *w,char *out,size_t cap,int version){
             kc++;
         }
         ADD("]");
+        {
+            char *sb=malloc(16384);
+            if(sb&&cp_stage_social_json(w,sb,16384)>0)ADD(",\"social\":%s",sb);
+            free(sb);
+        }
     }
     ADD(",\"attack_moves\":[");
     comma=0;
@@ -1785,7 +1862,7 @@ uint64_t cp_stage_layout(void){
     LAY(CpStageWorld,debug_flags);LAY(CpStageWorld,reserved);LAY(CpStageWorld,field_hash);LAY(CpStageWorld,path);LAY(CpStageWorld,n_path);LAY(CpStageWorld,path_i);
     LAY(CpStageWorld,blocked_ticks);LAY(CpStageWorld,replans);LAY(CpStageWorld,path_goal_x);LAY(CpStageWorld,path_goal_z);
     LAY(CpStageWorld,blocked_reason);LAY(CpStageWorld,blocked_x);LAY(CpStageWorld,blocked_z);LAY(CpStageWorld,ev_total);
-    LAY(CpStageWorld,ev_acked);LAY(CpStageWorld,events);LAY(CpStageWorld,loadout);LAY(CpStageWorld,field);lay(&h,sizeof(CpStageEvent));
+    LAY(CpStageWorld,ev_acked);LAY(CpStageWorld,events);LAY(CpStageWorld,loadout);LAY(CpStageWorld,social);LAY(CpStageWorld,field);lay(&h,sizeof(CpStageSocial));lay(&h,sizeof(CpStageSocialCreature));lay(&h,sizeof(CpStageEvent));
     LAY(CpStageSetup,seed);LAY(CpStageSetup,terrain_seed);LAY(CpStageSetup,terrain);LAY(CpStageSetup,n);
     LAY(CpStageSetup,n_obstacles);LAY(CpStageSetup,nest_x);LAY(CpStageSetup,nest_z);LAY(CpStageSetup,flat_height);
     LAY(CpStageSetup,water_x);LAY(CpStageSetup,water_z);LAY(CpStageSetup,water_radius);LAY(CpStageSetup,player);LAY(CpStageSetup,player_legs);

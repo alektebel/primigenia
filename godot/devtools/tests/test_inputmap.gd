@@ -3,7 +3,7 @@ extends RefCounted
 
 const Radial := preload("res://ui/radial_menu.gd")
 const GAME_ACTIONS := ["ability_1", "ability_2", "ability_3", "ability_4", "guard", "dodge_left", "dodge_right",
-	"radial_reopen", "pause_menu", "radial_attack", "radial_befriend", "radial_observe", "radial_intimidate"]
+	"radial_reopen", "pause_menu", "gift", "gift_cycle", "radial_attack", "radial_befriend", "radial_observe", "radial_intimidate"]
 const DEV_ACTIONS := ["legend_hold", "dev_console", "dev_sites", "dev_bookmark", "dev_tuning", "dev_ab_swap",
 	"dev_quicksave", "dev_quickload", "dev_feedback", "time_pause", "time_step", "time_slower", "time_faster"]
 

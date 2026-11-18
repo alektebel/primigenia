@@ -40,8 +40,8 @@ approves the look, movement, fights and the P4 loop.
 | 6 | Terrain into the valley and stage (phase B): props re-placed, W12 guarantees, LOD far mountains, Worker + IndexedDB cache, pre-baked curated seed, C world height from the generator | W11–W13, G56 | next after 5b |
 | 7 | P2 move-level tourney gates pass (prerequisite for P4) | G55 | in progress (codex) |
 | 8a | P4 foundation: world simulation in C, agent observation and verbs | G56 | done (77ef7f5) |
-| 8b | P4 social: befriending skills (sing, dance, charm, pose, gifts by diet), trust and bonds, defending a creature from a raid | P4.md, Q-3/4/17 | queued |
-| 8c | P4 DNA: two meters (total only rises, balance is spent), awards for befriending, kills, carcasses, exploration; progress = species resolved / 4 | P4.md, G23, Q-1/8 | queued |
+| 8b | P4 social: befriending skills (sing, dance, charm, pose, gifts by diet), trust and bonds, defending a creature from a raid | P4.md, Q-3/4/17 | built on `c2/social-loop`, in review (raid defence deferred); also observe, intimidate, eat |
+| 8c | P4 DNA: two meters (total only rises, balance is spent), awards for befriending, kills, carcasses, exploration; progress = species resolved / 4 | P4.md, G23, Q-1/8 | built on `c2/social-loop`, in review (egg counter Q-7 deferred) |
 | 8d | P4 parts: discovery (drops with pity, carcasses, fossils), start inventory, tiers by DNA plus usage, mid-game editing at a minimal nest | P4.md, G37, G49, Q-2/5/6/10/11/19 | queued |
 | 8e | P4 recipes and the first secret move, bone spines (new `espinas_dorsales` part, calcium meter, clues), through the same tourney gates | P4.md, G50–G53, Q-12/13/15/16 | queued (needs 7) |
 | 9 | Minor tasks on free models: `make check` + README, Python world binding, calibration research, vista grass-disc fix | Q22, Q9/Q10 | in progress |

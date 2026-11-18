@@ -4,6 +4,7 @@ extends Control
 
 const Palette := preload("res://ui/palette.gd")
 const Sweep := preload("res://ui/cooldown_sweep.gd")
+const Rings := preload("res://ui/target_rings.gd")
 
 signal ability_clicked(index: int)
 signal guard_clicked
@@ -32,6 +33,14 @@ var _numbers: Array = []
 var _anchor = null  # Vector3 world position or null
 var _flash_tween: Tween
 var move_row: HBoxContainer
+var rings: Control
+var meters: PanelContainer
+var dna_label: Label
+var species_label: Label
+var food_label: Label
+var food_bar: ProgressBar
+var gift_label: Label
+var _ring_state := {"beat": false, "beat_in": 0, "observe": -1.0, "trust": -1.0, "carcass": false}
 
 func _ready() -> void:
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -69,12 +78,37 @@ func _build() -> void:
 	pb.pressed.connect(func() -> void: pause_clicked.emit())
 	head.add_child(pb)
 	add_child(head)
-	# DNA toasts (top-right under header)
+	# Meters (C2, docs/P4.md 2.3): DNA total (only rises) and balance (to spend), species resolved, food
+	meters = PanelContainer.new()
+	meters.add_theme_stylebox_override("panel", Palette.box(Palette.PANEL, 14, Palette.BORDER, 9))
+	meters.set_anchors_and_offsets_preset(Control.PRESET_TOP_LEFT)
+	meters.offset_left = 28
+	meters.offset_top = 74
+	meters.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var mv := VBoxContainer.new()
+	mv.add_theme_constant_override("separation", 2)
+	dna_label = Label.new()
+	dna_label.add_theme_color_override("font_color", Palette.LEAF)
+	species_label = Label.new()
+	food_label = Label.new()
+	food_label.add_theme_color_override("font_color", Palette.MUTED)
+	food_label.add_theme_font_size_override("font_size", 12)
+	food_bar = Palette.bar(Palette.EMBER, 5)
+	food_bar.custom_minimum_size = Vector2(150, 5)
+	gift_label = Label.new()
+	gift_label.add_theme_font_size_override("font_size", 12)
+	gift_label.add_theme_color_override("font_color", Palette.MUTED)
+	for n in [dna_label, species_label, food_label, food_bar, gift_label]:
+		mv.add_child(n)
+	meters.add_child(mv)
+	add_child(meters)
+	set_meters(0, 0, 0, 4, 70, 100)
+	# DNA toasts (top-left under the meters)
 	dna_box = VBoxContainer.new()
-	dna_box.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT)
-	dna_box.offset_left = -220
-	dna_box.offset_right = -28
-	dna_box.offset_top = 80
+	dna_box.set_anchors_and_offsets_preset(Control.PRESET_TOP_LEFT)
+	dna_box.offset_left = 28
+	dna_box.offset_right = 250
+	dna_box.offset_top = 170
 	dna_box.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(dna_box)
 	# Player vitals
@@ -172,6 +206,8 @@ func _build() -> void:
 	target_panel.add_child(tvv)
 	target_panel.visible = false
 	add_child(target_panel)
+	rings = Rings.new()
+	add_child(rings)
 	damage_layer = Control.new()
 	damage_layer.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	damage_layer.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -263,9 +299,45 @@ func show_message(text: String, kind: String = "info", seconds: float = 3.0) -> 
 		toasts.remove_child(toasts.get_child(0))
 	return l
 
-func show_dna(amount: int) -> void:
+## DNA total (only rises) with the spendable balance, species resolved / present, the food meter.
+func set_meters(dna_total: int, dna_balance: int, resolved: int, total: int, food: int, food_max: int) -> void:
+	dna_label.text = "DNA %d   (%d to spend)" % [dna_total, dna_balance]
+	species_label.text = "Species resolved %d / %d" % [resolved, total]
+	food_label.text = "Food %d / %d%s" % [food, food_max, "  (hungry)" if food < 20 else ""]
+	food_bar.max_value = maxf(food_max, 1)
+	food_bar.value = clampf(food, 0, food_max)
+
+## The gift the G key gives: "fruit x2" (H changes it).
+func set_gift(text: String) -> void:
+	gift_label.text = "Gift [G]: %s   [H] next" % text
+
+## Rings of the selected creature (beat pulse, observe arc, trust arc); pass observe/trust < 0 to hide them.
+func set_rings(beat: bool, beat_in: int, observe: float, trust: float, carcass: bool = false) -> void:
+	_ring_state = {"beat": beat, "beat_in": beat_in, "observe": observe, "trust": trust, "carcass": carcass}
+	_place_rings()
+
+func _place_rings() -> void:
+	var c := Vector2.ZERO
+	if target_panel.visible and _anchor is Vector3 and camera and not camera.is_position_behind(_anchor):
+		c = camera.unproject_position(_anchor - Vector3(0, 0.8, 0) if _anchor.y > 0.8 else _anchor)
+	rings.carcass = bool(_ring_state.carcass)
+	rings.set_state(c, bool(_ring_state.beat), int(_ring_state.beat_in), float(_ring_state.observe), float(_ring_state.trust))
+
+## A short floating text (+trust, rhythm, intimidate result...) at a world position.
+func show_float(pos, text: String, color: Color = Palette.LEAF, size_px: int = 22) -> void:
 	var l := Label.new()
-	l.text = "+%d DNA" % amount
+	l.text = text
+	l.add_theme_font_size_override("font_size", size_px)
+	l.add_theme_color_override("font_color", color)
+	l.add_theme_color_override("font_outline_color", Color("15241b"))
+	l.add_theme_constant_override("outline_size", 5)
+	damage_layer.add_child(l)
+	_numbers.append({"label": l, "pos": pos, "age": 0.0})
+	_place_number(_numbers[-1])
+
+func show_dna(amount: int, source: String = "") -> void:
+	var l := Label.new()
+	l.text = "+%d DNA%s" % [amount, ("  " + source) if source != "" else ""]
 	l.add_theme_font_size_override("font_size", 20)
 	l.add_theme_color_override("font_color", Palette.LEAF)
 	l.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
@@ -359,6 +431,7 @@ func _place_number(n: Dictionary) -> void:
 
 func _process(dt: float) -> void:
 	_place_target()
+	_place_rings()
 	for i in range(_numbers.size() - 1, -1, -1):
 		var n: Dictionary = _numbers[i]
 		n.age += dt

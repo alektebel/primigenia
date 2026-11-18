@@ -26,6 +26,7 @@ func _initialize() -> void:
 	test_modes()
 	test_card()
 	test_radial_geometry()
+	test_social_ui()
 	test_volumes()
 	test_sounds()
 	call_deferred("_finish")
@@ -69,6 +70,30 @@ func test_radial_geometry() -> void:
 	ok(Radial.sector_at(Vector2(0, 80)) == 2, "south = observe")
 	ok(Radial.sector_at(Vector2(-80, 0)) == 3, "west = intimidate")
 	ok(Radial.sector_at(Vector2(5, 5)) == -1, "centre = none")
+
+func test_social_ui() -> void:
+	# C2: the Eat mode, the carcass radial, the card's trust fields, the beat window
+	ok(ids(Modes.abilities_for(Modes.EAT)) == ["eat"] and Modes.is_mode(Modes.EAT), "eat mode")
+	ok(Modes.VERB_NUMBERS.befriend == 11 and Modes.VERB_NUMBERS.eat == 15 and Modes.ITEMS == ["plant", "fruit", "meat", "bone"], "verb numbers match world.h")
+	var radial = Radial.new()
+	radial.carcass = true
+	ok(radial.mode_at(0) == Modes.EAT and radial.mode_at(2) == Modes.OBSERVE, "carcass radial: Eat north, Observe south")
+	ok(radial.enabled_at(0) and radial.enabled_at(2) and not radial.enabled_at(1) and not radial.enabled_at(3), "carcass radial dims befriend and intimidate")
+	var chosen := []
+	radial.chosen.connect(func(m): chosen.append(m))
+	radial.choose(1)
+	radial.choose(0)
+	ok(chosen == [Modes.EAT], "only Eat is chosen on a carcass")
+	radial.free()
+	var Rings = preload("res://ui/target_rings.gd")
+	ok(Rings.in_window(0) and Rings.in_window(2) and Rings.in_window(10) and Rings.in_window(11) and not Rings.in_window(3) and not Rings.in_window(9), "beat window is +-2 ticks of a 12 tick beat")
+	var card := Card.new()
+	card.set_info({"species": "Rondo", "temperament": 0, "diet": 0, "relationship": 2, "trust": 42, "mood": 25, "likes": ["sing", "fruit"], "dislikes": ["meat"], "resolved": 1, "resolved_total": 4})
+	var s := card.snapshot()
+	ok(s.trust.begins_with("42") and s.mood.begins_with("Joyful") and s.likes.contains("sing, fruit") and s.likes.contains("Dislikes: meat") and s.resolved == "1 / 4", "card shows trust, mood, likes, dislikes and species resolved")
+	card.set_info({"species": "Rondo", "carcass_meat": 3})
+	ok(card.snapshot().note.contains("3 bites"), "card of a carcass shows the bites left")
+	card.free()
 
 func test_volumes() -> void:
 	var path := "user://test_settings_%d.cfg" % Time.get_ticks_usec()

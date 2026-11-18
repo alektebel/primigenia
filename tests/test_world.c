@@ -440,7 +440,7 @@ static void snapshots(void){
                 assert(h==golden_hash[i]);
                 assert(h==cp_stage_step(&snap_a,&golden_in[i]));
             }
-            char oa[8192],ob[8192];
+            char oa[32768],ob[32768];
             assert(cp_stage_observe(&snap_a,oa,sizeof oa)>0&&cp_stage_observe(&snap_b,ob,sizeof ob)>0&&!strcmp(oa,ob));
         }
     }

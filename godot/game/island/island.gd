@@ -127,7 +127,7 @@ func _build_stage() -> void:
 		push_error("the island field was rejected: %s" % stage.world.last_error())
 		return
 	stage.world.reset({"terrain": 2})     # a probe state so StageSetup can ask the C walk rule
-	var setup := StageSetup.build(Game.data, int(Game.settings.seed), pr.profile, garfio_profile, bool(Game.settings.wild), stage.world)
+	var setup := StageSetup.build(Game.data, int(Game.settings.seed), pr.profile, garfio_profile, bool(Game.settings.wild), stage.world, bool(Game.settings.get("herds", true)))
 	stage.process_priority = -10     # the world ticks before the actors read it (action timing, G77)
 	add_child(stage)
 	_nest = setup.nest
@@ -157,6 +157,7 @@ func _build_stage() -> void:
 		h.name = "Wild%d" % (i + 1)
 		add_child(h)
 		h.setup(Profile.load_json("res://game/data/garfio.json"), i + 1, setup.wild[i].profile, ground)
+		h.set_meta("base_scale", _species_scale(int(setup.wild[i].species)))
 		hosts[i + 1] = h
 	var yaw := PI
 	if setup.wild.size() > 0:
@@ -240,7 +241,7 @@ func load_scenario(parsed: Dictionary) -> String:
 		if stage_ui != null:
 			h.footfall.connect(stage_ui.on_footfall)
 	for id in hosts.keys():
-		if id > 0 and (id >= stage.cur.entities.size() or int(stage.cur.entities[id].species) != 3):
+		if id > 0 and id >= stage.cur.entities.size():
 			hosts[id].queue_free()
 			hosts.erase(id)
 	_sync_hosts()
@@ -258,16 +259,21 @@ func load_scenario(parsed: Dictionary) -> String:
 		stage_ui.ui.show_message(res.note, "warn")
 	return ""
 
+# Until the other species have their own art they borrow Garfio's body, scaled by size so a herd reads as a different animal.
+func _species_scale(species: int) -> float:
+	return [0.6, 0.7, 0.9, 1.0][clampi(species, 0, 3)]
+
 # Creatures that appear after the build (console spawn, restored scenarios) get a body when their species has one.
 func _sync_hosts() -> void:
 	var es: Array = stage.cur.entities
 	for i in range(1, es.size()):
-		if hosts.has(i) or int(es[i].species) != 3:
+		if hosts.has(i):
 			continue
 		var h := ActorHost.new()
 		h.name = "Wild%d" % i
 		add_child(h)
 		h.setup(Profile.load_json("res://game/data/garfio.json"), i, _garfio_profile, Callable(Game, "ground"))
+		h.set_meta("base_scale", _species_scale(int(es[i].species)))
 		hosts[i] = h
 		if stage_ui != null:
 			h.footfall.connect(stage_ui.on_footfall)
@@ -295,11 +301,17 @@ func _update_actors(dt: float) -> void:
 			ctx["target"] = {"id": tid, "pos": ts.pos, "radius": float(ent.get("radius_cm", 60)) * 0.01, "height": th.height(), "spheres": th.occluders() if d < 40.0 else []}
 		if id == 0:
 			ctx["dodge_dir"] = int(dodge_hint.dir) if Time.get_ticks_msec() < int(dodge_hint.until) else 0
-			if ui_mode == &"observe" and selected_id > 0:
+			if int(stage.cur.order.verb) == 13:      # C is running the player's observe order
 				ctx["mode"] = "observe"
 		elif ui_mode == &"befriend" and id == selected_id and not bool(sig.get("in_fight", false)) and d < 12.0:
 			ctx["attend"] = true
 		hosts[id].update(dt, sm, ctx)
+		if id > 0:
+			# the driver sets the host basis (yaw) every frame, so the size goes on after it: a species' size, and a carcass
+			# shrinks as it is eaten (4 bites)
+			var ent0: Dictionary = stage.cur.entities[id]
+			var base: float = float(hosts[id].get_meta("base_scale", 1.0))
+			hosts[id].scale = Vector3.ONE * base * (0.3 + 0.7 * float(ent0.get("meat", 0)) / 4.0 if bool(ent0.get("dead", false)) else 1.0)
 	var p: Dictionary = stage.sample(0)
 	player_pos = p.pos
 	var occ := []
@@ -467,6 +479,8 @@ func _click_ground(allow_pick: bool, mouse: Vector2, follow: bool = false) -> vo
 			last_click = mouse
 			Game.creature_clicked.emit(picked.id, picked.pos)
 			return
+	if allow_pick and stage_ui != null and selected_id > 0:
+		stage_ui.ui.clear_selection()       # a click on empty ground deselects (and walks there)
 	var hit = Pointer.ground_hit(camera, mouse, ground, maxf(900.0, chase.distance * 2.0))
 	if hit != null:
 		if follow:
