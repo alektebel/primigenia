@@ -49,12 +49,12 @@ void cp_combat_test_hit_variance(int enabled) { test_fixed_variance = enabled; }
  * Balance rationale and acceptance evidence are in docs/COMBAT.md.
  * ------------------------------------------------------------------ */
 const CpCombatMove CP_COMBAT_MOVES[CB_MOVE_COUNT] = {
-  { "bite",        3, 1, 2,  1.8f, 1.00f,  9.0f, 11.0f, CB_ST_BLEED,  8, 0,                                       CB_PART_MOUTH  },
-  { "charge",     10, 5, 2,  5.0f, 0.70f, 18.0f, 30.0f, CB_ST_STUN,   6, CB_F_DASH | CB_F_NO_WATER,               CB_PART_CHARGE },
-  { "guard",       1,14, 2,  0.0f, 2.40f,  1.0f,  0.0f, CB_ST_NONE,   0, CB_F_SELF | CB_F_GUARD,                  CB_PART_GUARD  },
-  { "spit",        6, 1, 4,  6.0f, 0.25f, 12.0f, 13.0f, CB_ST_SLOW,  20, CB_F_RANGED,                             CB_PART_SPIT   },
-  { "tail_strike", 3, 2, 4,  2.2f, 1.60f, 10.0f, 17.0f, CB_ST_SLOW,  15, CB_F_SWEEP,                              CB_PART_TAIL   },
-  { "dodge",       1, 3, 2,  2.2f, 0.00f, 20.0f,  0.0f, CB_ST_NONE,   0, CB_F_SELF | CB_F_DASH | CB_F_DIR | CB_F_EVADE, CB_PART_NONE },
+  { "bite",        3, 1, 2,  1.8f, 1.00f,  9.0f, 11.0f, CB_ST_BLEED,  8, 0,                                       CB_PART_MOUTH, CB_ROLE_BASIC, 0 },
+  { "charge",     10, 5, 2,  5.0f, 0.70f, 18.0f, 30.0f, CB_ST_STUN,   6, CB_F_DASH | CB_F_NO_WATER,               CB_PART_CHARGE, CB_ROLE_ENGAGE, 0 },
+  { "guard",       1,14, 2,  0.0f, 2.40f,  1.0f,  0.0f, CB_ST_NONE,   0, CB_F_SELF | CB_F_GUARD,                  CB_PART_GUARD, CB_ROLE_DEFENCE, 0 },
+  { "spit",        6, 1, 4,  6.0f, 0.25f, 12.0f, 13.0f, CB_ST_SLOW,  20, CB_F_RANGED,                             CB_PART_SPIT, CB_ROLE_POKE, 0 },
+  { "tail_strike", 3, 2, 4,  2.2f, 1.60f, 10.0f, 17.0f, CB_ST_SLOW,  15, CB_F_SWEEP,                              CB_PART_TAIL, CB_ROLE_CONTROL, 0 },
+  { "dodge",       1, 3, 2,  2.2f, 0.00f, 20.0f,  0.0f, CB_ST_NONE,   0, CB_F_SELF | CB_F_DASH | CB_F_DIR | CB_F_EVADE, CB_PART_NONE, CB_ROLE_DEFENCE, 0 },
 };
 
 /* ------------------------------------------------------------------ *
@@ -79,6 +79,11 @@ static const float DIRS8[8][2] = {
     { -1.0f, 0.0f }, { -0.70710678f, 0.70710678f }, { 0.0f, 1.0f }, { 0.70710678f, 0.70710678f },
 };
 
+const char *cp_combat_role_name(int r)
+{
+    static const char *n[CB_ROLE_COUNT] = { "basic", "engage", "poke", "control", "defence", "signature" };
+    return (r >= 0 && r < CB_ROLE_COUNT) ? n[r] : "none";
+}
 const char *cp_combat_move_name(int m)
 {
     return (m >= 0 && m < CB_MOVE_COUNT) ? CP_COMBAT_MOVES[m].name : "none";
@@ -99,6 +104,11 @@ const char *cp_combat_order_error(int code)
     case CB_ERR_BAD_MOVE:    return "attack needs an offensive move (bite, charge, spit, tail_strike)";
     case CB_ERR_UNAVAILABLE: return "this creature cannot use that move (missing part or wrong medium)";
     case CB_ERR_BAD_DIR:     return "dir must be 0..7";
+    case CB_ERR_ON_COOLDOWN: return "on_cooldown";
+    case CB_ERR_NOT_EQUIPPED: return "not_equipped";
+    case CB_ERR_BAD_SLOT:    return "invalid slot (1..4, and a signature move only fits the signature slot)";
+    case CB_ERR_NOT_KNOWN:   return "not_known";
+    case CB_ERR_UNKNOWN_MOVE: return "unknown_move";
     default:                 return "unknown error";
     }
 }
@@ -162,6 +172,81 @@ int cp_combat_move_available(const CpCombatCreature *c, int move)
     if (cp_combat_part_level(&c->prof, m->part) <= 0) return 0;
     if ((m->flags & CB_F_NO_WATER) && c->medium == CB_WATER) return 0;
     return 1;
+}
+
+#ifdef CP_COMBAT_TEST
+static int cb_cd_override[CB_MOVE_COUNT] = { -1, -1, -1, -1, -1, -1 };
+void cp_combat_test_cooldown(int move, int ticks)
+{
+    if (move >= 0 && move < CB_MOVE_COUNT) cb_cd_override[move] = ticks;
+}
+#endif
+static int move_cooldown(int move)
+{
+#ifdef CP_COMBAT_TEST
+    if (cb_cd_override[move] >= 0) return cb_cd_override[move];
+#endif
+    return CP_COMBAT_MOVES[move].cooldown;
+}
+
+uint16_t cp_combat_known_default(const CpCombatProfile *p)
+{
+    uint16_t k = 0;
+    for (int i = 0; i < CB_MOVE_COUNT; i++)
+        if (!(CP_COMBAT_MOVES[i].flags & CB_F_SELF) && cp_combat_part_level(p, CP_COMBAT_MOVES[i].part) > 0)
+            k |= (uint16_t)(1u << i);
+    return k;
+}
+
+void cp_combat_loadout_default(CpCombatLoadout *lo, const CpCombatProfile *p)
+{
+    memset(lo, 0, sizeof(*lo));
+    for (int i = 0; i < CB_LOADOUT_SLOTS; i++) lo->slot[i] = CB_MOVE_NONE;
+    lo->sig_slot = -1;
+    lo->known = cp_combat_known_default(p);
+    int s = 0;
+    for (int i = 0; i < CB_MOVE_COUNT && s < CB_LOADOUT_SLOTS; i++)
+        if (lo->known & (1u << i)) lo->slot[s++] = (int8_t)i;
+}
+
+int cp_combat_loadout_slot_of(const CpCombatLoadout *lo, int move)
+{
+    for (int i = 0; i < CB_LOADOUT_SLOTS; i++) if (lo->slot[i] == move && move >= 0) return i;
+    return -1;
+}
+
+int cp_combat_loadout_is_default(const CpCombatLoadout *lo, const CpCombatProfile *p)
+{
+    CpCombatLoadout d;
+    cp_combat_loadout_default(&d, p);
+    return memcmp(lo->slot, d.slot, sizeof d.slot) == 0 && lo->sig_slot == d.sig_slot && lo->known == d.known;
+}
+
+int cp_combat_loadout_set(CpCombatLoadout *lo, int slot, int move)
+{
+    if (slot < 0 || slot >= CB_LOADOUT_SLOTS) return CB_ERR_BAD_SLOT;
+    if (move != CB_MOVE_NONE) {
+        if (move < 0 || move >= CB_MOVE_COUNT || (CP_COMBAT_MOVES[move].flags & CB_F_SELF)) return CB_ERR_UNKNOWN_MOVE;
+        if (!(lo->known & (1u << move))) return CB_ERR_NOT_KNOWN;
+        int sig = CP_COMBAT_MOVES[move].role == CB_ROLE_SIGNATURE;
+        if (sig != (slot == lo->sig_slot)) return CB_ERR_BAD_SLOT;
+    }
+    if (move != CB_MOVE_NONE) {
+        int from = cp_combat_loadout_slot_of(lo, move);
+        if (from >= 0) lo->slot[from] = CB_MOVE_NONE;
+    }
+    lo->slot[slot] = (int8_t)move;
+    return CB_OK;
+}
+
+int cp_combat_move_equipped(const CpCombatCreature *c, int move)
+{
+    return cp_combat_loadout_slot_of(&c->lo, move) >= 0;
+}
+
+int cp_combat_cooldown_left(const CpCombatCreature *c, int move)
+{
+    return (move >= 0 && move < CB_MOVE_COUNT) ? (int)c->cd[move] : 0;
 }
 
 int cp_combat_helpless(const CpCombatCreature *c)
@@ -251,6 +336,16 @@ uint64_t cp_combat_hash(const CpCombatWorld *w)
             fu8(&f, (uint16_t)c->heading_x); fu8(&f, (uint16_t)c->heading_x >> 8);
             fu8(&f, (uint16_t)c->heading_y); fu8(&f, (uint16_t)c->heading_y >> 8);
         }
+        /* A21: loadout and cooldowns only when they differ from the default state. */
+        if (!cp_combat_loadout_is_default(&c->lo, &c->prof)) {
+            for (int k = 0; k < CB_LOADOUT_SLOTS; k++) fu8(&f, (uint8_t)c->lo.slot[k]);
+            fu8(&f, (uint8_t)c->lo.sig_slot);
+            fu8(&f, (uint8_t)c->lo.known); fu8(&f, (uint8_t)(c->lo.known >> 8));
+        }
+        int any_cd = 0;
+        for (int k = 0; k < CB_MOVE_COUNT; k++) any_cd |= c->cd[k] != 0;
+        if (any_cd)
+            for (int k = 0; k < CB_MOVE_COUNT; k++) { fu8(&f, (uint8_t)c->cd[k]); fu8(&f, (uint8_t)(c->cd[k] >> 8)); }
         ff(&f, c->dmg_dealt); ff(&f, c->dmg_taken); ff(&f, c->stamina_spent);
         fu32(&f, (uint32_t)c->hits); fu32(&f, (uint32_t)c->hits_taken);
         fu32(&f, (uint32_t)c->blocked); fu32(&f, (uint32_t)c->dodged);
@@ -343,6 +438,8 @@ void cp_combat_reset(CpCombatWorld *w, const CpCombatSetup *s)
         c->stamina = c->prof.stamina;
         c->move = CB_MOVE_NONE;
         c->phase = CB_PH_IDLE;
+        if (sp->has_loadout) c->lo = sp->loadout;
+        else cp_combat_loadout_default(&c->lo, &c->prof);
         c->since_spend = 255;
         c->verb_target = -1;
         c->bleed_src = -1;
@@ -375,6 +472,8 @@ int cp_combat_order(CpCombatWorld *w, int id, const CpCombatAction *a)
             if (a->move < 0 || a->move >= CB_MOVE_COUNT) return CB_ERR_BAD_MOVE;
             if (CP_COMBAT_MOVES[a->move].flags & CB_F_SELF) return CB_ERR_BAD_MOVE;
             if (!cp_combat_move_available(c, a->move)) return CB_ERR_UNAVAILABLE;
+            if (!cp_combat_move_equipped(c, a->move)) return CB_ERR_NOT_EQUIPPED;
+            if (c->cd[a->move]) return CB_ERR_ON_COOLDOWN;
             move = a->move;
         }
         break;
@@ -530,6 +629,7 @@ static void begin_move(CpCombatCreature *c, int move)
     c->stamina = cb_maxf(0.0f, c->stamina - cost);
     c->stamina_spent += cost;
     c->since_spend = 0;
+    if (move_cooldown(move)) c->cd[move] = (uint16_t)move_cooldown(move);
     c->move = (int8_t)move;
     c->hit_mask = 0;
     c->ptick = 0;
@@ -638,6 +738,7 @@ static void plan(CpCombatWorld *w, int i, Disp *d)
         if (gap <= m->reach * 0.92f) {
             int aligned = (c->fx * ux + c->fy * uy) >= cb_cos(m->arc * 0.25f);
             if (!aligned) { turn_toward(c, ux, uy); return; }
+            if (c->cd[mv]) { turn_toward(c, ux, uy); return; }   /* recharging: hold the standing order */
             if (c->stamina >= cp_combat_move_stamina(&c->prof, mv)) begin_move(c, mv);
             else { turn_toward(c, ux, uy); ev_add(w, CB_EV_NO_STAMINA, i, i, mv, 0.0f); }
             return;
@@ -1043,6 +1144,7 @@ uint64_t cp_combat_step(CpCombatWorld *w)
             if (c->stamina > c->prof.stamina) c->stamina = c->prof.stamina;
         }
         if (c->since_spend < 255) c->since_spend++;
+        for (int k = 0; k < CB_MOVE_COUNT; k++) if (c->cd[k]) c->cd[k]--;
     }
 
     w->tick++;

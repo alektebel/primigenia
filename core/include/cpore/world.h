@@ -7,7 +7,7 @@
 #define CP_STAGE_MAX_OBSTACLES 1024
 #define CP_STAGE_DAY_TICKS 12000
 #define CP_STAGE_DT .1f
-#define CP_STAGE_SNAPSHOT_VERSION 2
+#define CP_STAGE_SNAPSHOT_VERSION 3   /* 3: player loadout (A21) */
 #define CP_STAGE_MAX_PATH 64      /* waypoints kept by the planner (docs/godot/NAV.md) */
 #define CP_STAGE_MAX_EVENTS 64    /* event ring since the last observe */
 
@@ -15,7 +15,12 @@ enum { CP_STAGE_ANALYTIC, CP_STAGE_FLAT, CP_STAGE_FIELD }; /* FIELD: the generat
 enum { CP_STAGE_TIMID, CP_STAGE_TERRITORIAL, CP_STAGE_AGGRESSIVE };
 enum { CP_STAGE_CONTINUE, CP_STAGE_WAIT, CP_STAGE_GO, CP_STAGE_HEADING,
        CP_STAGE_APPROACH, CP_STAGE_ATTACK, CP_STAGE_FLEE, CP_STAGE_GO_NEST,
-       CP_STAGE_GUARD, CP_STAGE_DODGE };
+       CP_STAGE_GUARD, CP_STAGE_DODGE,
+       CP_STAGE_LOADOUT };   /* target = slot 1..4, move = move id or -1 to empty the slot; instant, not a standing order */
+#define CP_STAGE_NEST_RADIUS 12.f   /* metres from the nest within which the loadout can be changed (tunable) */
+/* Stage order codes added by A21 (-1..-6 are older): the loadout and move errors share the combat numbers. */
+enum { CP_STAGE_ERR_ON_COOLDOWN=-8, CP_STAGE_ERR_NOT_EQUIPPED=-9, CP_STAGE_ERR_BAD_SLOT=-10,
+       CP_STAGE_ERR_NOT_KNOWN=-11, CP_STAGE_ERR_UNKNOWN_MOVE=-12, CP_STAGE_ERR_NOT_AT_NEST=-13, CP_STAGE_ERR_IN_FIGHT=-14 };
 enum { CP_STAGE_NONE, CP_STAGE_VICTORY, CP_STAGE_DEATH, CP_STAGE_FLED };
 typedef struct { float x,z,r; int32_t type; } CpStageObstacle;
 typedef struct {
@@ -112,6 +117,7 @@ typedef struct {
     float blocked_x,blocked_z;
     uint32_t ev_total,ev_acked;      /* events pushed / already shown to the agent; ring index = n % CP_STAGE_MAX_EVENTS */
     CpStageEvent events[CP_STAGE_MAX_EVENTS];
+    CpCombatLoadout loadout;         /* the player's kit; copied into the fight at its start; hashed when custom */
     const CpStageField *field;       /* not owned, not in the snapshot, set by cp_stage_attach_field */
 } CpStageWorld;
 void cp_stage_setup_default(CpStageSetup *s,uint32_t seed);
@@ -126,7 +132,9 @@ int cp_stage_can_walk(const CpStageWorld *w,float x,float z,float nx,float nz,fl
 /* Stable ids: player 0, wild 1..n, nest 1000, obstacles 2000+i. */
 int cp_stage_order(CpStageWorld *w,const CpStageInput *input);
 int cp_stage_command(CpStageWorld *w,const char *command);
-const char *cp_stage_order_error(int code);   /* -4 = unreachable (no walkable route within the search limit) */
+const char *cp_stage_order_error(int code);
+/* Moves the player may slot (parts today; learned-by-observing moves will be added here). */
+uint16_t cp_stage_known_moves(const CpStageWorld *w);   /* -4 = unreachable (no walkable route within the search limit) */
 /* The current GO path: copies up to cap (x,z) pairs of the remaining waypoints (path_i..n_path), returns how many. */
 int cp_stage_path(const CpStageWorld *w,float *xz,int cap);
 /* The walkable grid cell size used by the planner for the attached field (0 when none / nav disabled). */

@@ -53,6 +53,11 @@ enum {
 };
 #define CB_MOVE_NONE  (-1)
 
+/* move roles (docs/COMBAT-MOVES.md): colour in the UI and place in the loadout */
+enum { CB_ROLE_BASIC = 0, CB_ROLE_ENGAGE, CB_ROLE_POKE, CB_ROLE_CONTROL, CB_ROLE_DEFENCE,
+       CB_ROLE_SIGNATURE, CB_ROLE_COUNT };
+const char *cp_combat_role_name(int role);
+
 /* statuses a move can apply */
 enum { CB_ST_NONE = 0, CB_ST_STUN, CB_ST_BLEED, CB_ST_SLOW, CB_ST_COUNT };
 
@@ -83,6 +88,9 @@ typedef struct {
     uint8_t  status_ticks;
     uint8_t  flags;                     /* CB_F_*                                */
     uint8_t  part;                      /* CB_PART_*                             */
+    uint8_t  role;                      /* CB_ROLE_*                             */
+    uint16_t cooldown;                  /* ticks before the move can start again,
+                                           counted from the tick it starts; 0 = none */
 } CpCombatMove;
 
 extern const CpCombatMove CP_COMBAT_MOVES[CB_MOVE_COUNT];
@@ -150,6 +158,33 @@ int   cp_combat_part_level(const CpCombatProfile *p, int part);
 float cp_combat_move_damage(const CpCombatProfile *p, int move);
 float cp_combat_move_stamina(const CpCombatProfile *p, int move);
 
+/* ---- loadout (A21): four attack slots on keys 1-4 ----
+ * Guard and dodge are always available and never sit in a slot. `known` is a
+ * bitmask over move ids (bit = 1 << move): what the creature may slot. A slot
+ * holds a move id or CB_MOVE_NONE. `sig_slot` is the slot (0..3) reserved for a
+ * Signature move, or -1 while no signature is unlocked (a Signature move can
+ * only sit in that slot, and that slot holds nothing else). `custom` is set by
+ * the first successful cp_combat_loadout_set and gates what is hashed, so a
+ * default loadout leaves every existing hash unchanged. */
+#define CB_LOADOUT_SLOTS 4
+typedef struct {
+    int8_t   slot[CB_LOADOUT_SLOTS];
+    int8_t   sig_slot;
+    uint8_t  pad;
+    uint16_t known;
+} CpCombatLoadout;
+
+/* Moves whose part level is > 0 (hook: learned-by-observing moves will be OR-ed in by the caller). */
+uint16_t cp_combat_known_default(const CpCombatProfile *p);
+/* Default loadout: the known attack moves in table order (bite, charge, spit, tail_strike). */
+void     cp_combat_loadout_default(CpCombatLoadout *lo, const CpCombatProfile *p);
+/* slot 0..3, move id or CB_MOVE_NONE to empty it. Returns CB_OK or CB_ERR_BAD_SLOT / CB_ERR_UNKNOWN_MOVE /
+ * CB_ERR_NOT_KNOWN; a rejected call changes nothing. A move already in another slot is moved. */
+int      cp_combat_loadout_is_default(const CpCombatLoadout *lo, const CpCombatProfile *p);
+int      cp_combat_loadout_set(CpCombatLoadout *lo, int slot, int move);
+/* slot holding the move, or -1 */
+int      cp_combat_loadout_slot_of(const CpCombatLoadout *lo, int move);
+
 /* ---- verbs (what agents say) ---- */
 enum {
     CB_V_IDLE = 0,
@@ -180,7 +215,12 @@ enum {
     CB_ERR_BAD_TARGET = -4,    /* missing, self, or not a creature              */
     CB_ERR_BAD_MOVE = -5,      /* not an attack move                            */
     CB_ERR_UNAVAILABLE = -6,   /* profile lacks the part, or wrong medium       */
-    CB_ERR_BAD_DIR = -7
+    CB_ERR_BAD_DIR = -7,
+    CB_ERR_ON_COOLDOWN = -8,   /* the move is recharging                        */
+    CB_ERR_NOT_EQUIPPED = -9,  /* attack move is not in the loadout             */
+    CB_ERR_BAD_SLOT = -10,     /* slot must be 0..3 (text: 1..4); signature rules */
+    CB_ERR_NOT_KNOWN = -11,    /* loadout: the creature does not know the move  */
+    CB_ERR_UNKNOWN_MOVE = -12  /* loadout: not an attack move id                */
 };
 const char *cp_combat_order_error(int code);
 
@@ -208,6 +248,10 @@ typedef struct {
     /* statuses and stamina bookkeeping, in ticks */
     uint8_t  stun_t, bleed_t, slow_t, since_spend;
     int8_t   bleed_src;         /* who gets credit for the bleed damage, -1 none  */
+
+    CpCombatLoadout lo;         /* hashed only when not the default                      */
+    uint16_t cd[CB_MOVE_COUNT]; /* ticks left before each move can start again; hashed
+                                   only while any is nonzero                        */
 
     /* standing order */
     uint8_t  verb, verb_move, verb_started;
@@ -266,6 +310,8 @@ typedef struct {
     CpCombatProfile prof;
     float   x, y, fx, fy;       /* fx,fy need not be normalised; (0,0) -> +x      */
     uint8_t medium, team;
+    uint8_t has_loadout;        /* 1: use `loadout` as given; 0: the default loadout    */
+    CpCombatLoadout loadout;
 } CpCombatSpawn;
 
 typedef struct {
@@ -307,6 +353,10 @@ uint64_t cp_combat_replay(const CpCombatSetup *s, const CpCombatLogEntry *log,
 /* ---- queries ---- */
 float cp_combat_height(const CpCombatWorld *w, float x, float y);
 int   cp_combat_move_available(const CpCombatCreature *c, int move);
+/* attack move sits in a loadout slot */
+int   cp_combat_move_equipped(const CpCombatCreature *c, int move);
+/* ticks until the move can start again (0 = ready) */
+int   cp_combat_cooldown_left(const CpCombatCreature *c, int move);
 /* true while the creature can do nothing (stun, or a stagger) */
 int   cp_combat_helpless(const CpCombatCreature *c);
 /* ticks until the creature's current move first becomes (or next is) active;
@@ -328,6 +378,8 @@ void  cp_combat_preview(const CpCombatWorld *w, int atk, int move, int tgt,
                         CpCombatPreview *out);
 
 #ifdef CP_COMBAT_TEST
+/* Unit tests only: override a move's cooldown (ticks) for every world; -1 restores the table. */
+void cp_combat_test_cooldown(int move, int ticks);
 /* Unit tests only: fix damage variance at 1.0; still consume the hit RNG draw. */
 void cp_combat_test_hit_variance(int enabled);
 #endif

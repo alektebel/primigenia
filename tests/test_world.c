@@ -867,6 +867,111 @@ static void nav_contract(void) {
         assert(fabsf(w.player.x)<=195.001f&&fabsf(w.wild[0].x)<=195.001f);
     }
 }
+
+static int cmd(CpStageWorld *x,const char *text){
+    return cp_stage_command(x,text);
+}
+static void loadout_contract(void){
+    reset();
+    const uint64_t h0=cp_stage_hash(&w);
+    char obs[16384];
+    assert(cp_stage_observe(&w,obs,sizeof obs)>0);
+    assert(strstr(obs,"\"loadout\":{\"slots\":[\"bite\",\"charge\",\"spit\",\"tail_strike\"],\"signature_slot\":null,\"can_edit\":true"));
+    assert(strstr(obs,"\"known_moves\":[\"bite\",\"charge\",\"spit\",\"tail_strike\"]"));
+    assert(strstr(obs,"\"role\":\"basic\"") && strstr(obs,"\"equipped\":true,\"slot\":1,"));
+    assert(strstr(obs,"\"cooldown_ticks\":0,\"cooldown_left\":0"));
+    /* errors, each with its own name */
+    assert(cmd(&w,"loadout 5 bite")==CP_STAGE_ERR_BAD_SLOT && cmd(&w,"loadout 0 bite")==CP_STAGE_ERR_BAD_SLOT);
+    assert(cmd(&w,"loadout 1 dance")==CP_STAGE_ERR_UNKNOWN_MOVE && cmd(&w,"loadout 1 guard")==CP_STAGE_ERR_UNKNOWN_MOVE && cmd(&w,"loadout 1 dodge")==CP_STAGE_ERR_UNKNOWN_MOVE);
+    assert(!strcmp(cp_stage_order_error(w.last_error),"unknown_move"));
+    assert(cp_stage_hash(&w)==h0);                          /* rejected orders change nothing */
+    setup.player.spit=0;
+    assert(cp_stage_reset(&w,&setup)==0);
+    assert(cmd(&w,"loadout 1 spit")==CP_STAGE_ERR_NOT_KNOWN);
+    assert(!strcmp(cp_stage_order_error(w.last_error),"not_known"));
+    assert(w.loadout.slot[0]==CB_BITE && w.loadout.slot[1]==CB_CHARGE && w.loadout.slot[2]==CB_TAIL_STRIKE && w.loadout.slot[3]==CB_MOVE_NONE);
+    assert(cp_stage_observe(&w,obs,sizeof obs)>0 && strstr(obs,"\"slots\":[\"bite\",\"charge\",\"tail_strike\",null]") && !strstr(obs,"\"known_moves\":[\"bite\",\"charge\",\"spit\""));
+    reset();
+    /* change, hash, restore */
+    assert(cmd(&w,"loadout 1 none")==0 && cmd(&w,"loadout 1 tail_strike")==0);
+    assert(w.loadout.slot[0]==CB_TAIL_STRIKE && w.loadout.slot[3]==CB_MOVE_NONE);
+    assert(cp_stage_hash(&w)!=h0 && w.hash==cp_stage_hash(&w));
+    assert(cmd(&w,"loadout 4 3")==0 && w.loadout.slot[3]==CB_SPIT && w.loadout.slot[2]==CB_MOVE_NONE);
+    assert(cmd(&w,"loadout 1 bite")==0 && cmd(&w,"loadout 3 spit")==0 && cmd(&w,"loadout 4 tail_strike")==0);
+    assert(w.loadout.slot[0]==CB_BITE && w.loadout.slot[2]==CB_SPIT && w.loadout.slot[3]==CB_TAIL_STRIKE);
+    assert(cp_stage_hash(&w)==h0);                          /* back to the default loadout: the default hash */
+    /* not_equipped outside a fight */
+    assert(cmd(&w,"loadout 2 none")==0);
+    assert(cmd(&w,"attack #1 charge")==CP_STAGE_ERR_NOT_EQUIPPED && !strcmp(cp_stage_order_error(w.last_error),"not_equipped"));
+    assert(cmd(&w,"attack #1 bite")==0);
+    /* away from the nest */
+    CpStageDebug tp={CP_STAGE_DBG_TELEPORT,0,0,CP_STAGE_NEST_RADIUS+2,0,0};
+    assert(cp_stage_debug(&w,&tp)==0);
+    const uint64_t far=cp_stage_hash(&w);
+    assert(cmd(&w,"loadout 2 charge")==CP_STAGE_ERR_NOT_AT_NEST && !strcmp(cp_stage_order_error(w.last_error),"not_at_nest"));
+    assert(cp_stage_hash(&w)==far && w.loadout.slot[1]==CB_MOVE_NONE);
+    tp.x=CP_STAGE_NEST_RADIUS-1;
+    assert(cp_stage_debug(&w,&tp)==0 && cmd(&w,"loadout 2 charge")==0);
+    /* a fight is played with the kit brought; no edits during it */
+    reset();
+    assert(cmd(&w,"loadout 4 none")==0);
+    tp.x=0;tp.z=0;
+    CpStageInput in={0};
+    in.verb=CP_STAGE_ATTACK;in.target=1;in.move=CB_BITE;
+    for(int i=0;i<300&&w.active<0;i++)cp_stage_step(&w,&in);
+    assert(w.active>=0);
+    assert(w.combat.c[0].lo.slot[3]==CB_MOVE_NONE && w.combat.c[0].lo.slot[0]==CB_BITE);
+    assert(cmd(&w,"loadout 4 tail_strike")==CP_STAGE_ERR_IN_FIGHT && !strcmp(cp_stage_order_error(w.last_error),"in_fight"));
+    assert(cmd(&w,"attack #1 tail_strike")==CP_STAGE_ERR_NOT_EQUIPPED);
+    w.combat.c[0].cd[CB_BITE]=5;
+    assert(cmd(&w,"attack #1 bite")==CP_STAGE_ERR_ON_COOLDOWN && !strcmp(cp_stage_order_error(w.last_error),"on_cooldown"));
+    assert(cp_stage_observe(&w,obs,sizeof obs)>0 && strstr(obs,"\"cooldown_left\":5") && strstr(obs,"\"can_edit\":false"));
+    /* struct input path and the observation mirror */
+    reset();
+    CpStageInput lo={0};
+    lo.verb=CP_STAGE_LOADOUT;lo.target=3;lo.move=CB_MOVE_NONE;
+    assert(cp_stage_order(&w,&lo)==0 && w.loadout.slot[2]==CB_MOVE_NONE);
+    lo.target=0;assert(cp_stage_order(&w,&lo)==CP_STAGE_ERR_BAD_SLOT);
+    lo.target=1;lo.move=-2;assert(cp_stage_order(&w,&lo)==CP_STAGE_ERR_UNKNOWN_MOVE);
+    lo.move=CB_MOVE_COUNT;assert(cp_stage_order(&w,&lo)==CP_STAGE_ERR_UNKNOWN_MOVE);
+    /* determinism: a replay with loadout orders, and a snapshot taken mid-run with a custom loadout */
+    reset();
+    enum{N=400};
+    static CpStageLogEntry log[8];
+    int n=0;
+    log[n++]=(CpStageLogEntry){5,{.verb=CP_STAGE_LOADOUT,.target=2,.move=CB_MOVE_NONE}};
+    log[n++]=(CpStageLogEntry){40,{.verb=CP_STAGE_LOADOUT,.target=2,.move=CB_SPIT}};
+    log[n++]=(CpStageLogEntry){60,{.verb=CP_STAGE_ATTACK,.target=1,.move=CB_SPIT}};
+    log[n++]=(CpStageLogEntry){90,{.verb=CP_STAGE_LOADOUT,.target=1,.move=CB_MOVE_NONE}};
+    static uint64_t live[N],rep[N];
+    static CpStageWorld mid,tail;
+    static uint8_t blob[1<<16];
+    int cur=0;
+    for(int i=0;i<N;i++){
+        while(cur<n&&log[cur].tick==(uint32_t)i)cp_stage_order(&w,&log[cur++].input);
+        live[i]=cp_stage_step(&w,NULL);
+        if(i==70){
+            assert(cp_stage_snapshot(&w,blob,sizeof blob)==(int)cp_stage_snapshot_size());
+            mid=w;
+        }
+    }
+    uint64_t fin=cp_stage_replay(&setup,log,n,N,rep);
+    for(int i=0;i<N;i++)assert(live[i]==rep[i]);
+    assert(fin==cp_stage_hash(&w));
+    assert(cp_stage_restore(&tail,blob,cp_stage_snapshot_size(),NULL)==CP_STAGE_SNAP_OK);
+    assert(cp_stage_hash(&tail)==cp_stage_hash(&mid));
+    assert(tail.loadout.slot[1]==CB_SPIT);
+    cur=3;
+    for(int i=71;i<N;i++){
+        while(cur<n&&log[cur].tick==(uint32_t)i)cp_stage_order(&tail,&log[cur++].input);
+        assert(cp_stage_step(&tail,NULL)==live[i]);
+    }
+    assert(cp_stage_hash(&tail)==cp_stage_hash(&w));
+    /* an old snapshot version is refused with the format error */
+    blob[8]=2;
+    assert(cp_stage_restore(&tail,blob,cp_stage_snapshot_size(),NULL)==CP_STAGE_SNAP_ERR_FORMAT);
+    puts("PASS loadout: slots, errors, nest and fight rules, observation, replay and snapshot determinism");
+}
 int main(void) {
     validation();
     motion_law();
@@ -880,6 +985,7 @@ int main(void) {
     field_fight();
     debug_ops();
     nav_contract();
+    loadout_contract();
     reset();
     CpStageInput a={
         0
