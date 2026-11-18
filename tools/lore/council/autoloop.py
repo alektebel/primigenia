@@ -237,29 +237,33 @@ def sanitize(w, log_=log):
     return fixed
 
 
-def repair_rejected(w, log_=log):
+def repair_rejected(w=None, log_=log):
     """After refcheck: remove rejected refs everywhere; real-world facts left without refs are retired (and chains rooted only on them dropped)."""
     refs = {r["id"]: r for r in load(os.path.join(ROOT, "lore", "references.json"))}
     bad = {i for i, r in refs.items() if r.get("x-status") == "rejected"}
     if not bad: return 0
     n = 0
-    wp = os.path.join(ROOT, "lore", "worlds", f"{w['id']}.json"); wd = load(wp)
-    for f in wd["facts"]:
-        if f.get("refs") and set(f["refs"]) & bad:
-            f["refs"] = [r for r in f["refs"] if r not in bad]; n += 1
-            if not f["refs"]: del f["refs"]
-        if wd["kind"] == "real" and f["status"] == "active" and not f.get("refs"):
-            f["status"] = "retired"; log_(f"repair: retired {f['id']} (all references rejected)"); n += 1
-    if n: wd["changelog"].append({"date": DATE, "who": "autoloop", "what": "removed rejected references; retired real facts left without references"}); dump(wd, wp)
-    for p, c in world_creature_files(w["id"]):
-        ch0 = False
+    # refcheck is global, so a reference cited by an EARLIER world can be rejected now: repair every world and every creature
+    for wp in sorted(glob.glob(os.path.join(ROOT, "lore", "worlds", "*.json"))):
+        wd = load(wp); ch = 0
+        for f in wd["facts"]:
+            if f.get("refs") and set(f["refs"]) & bad:
+                f["refs"] = [r for r in f["refs"] if r not in bad]; ch += 1
+                if not f["refs"]: del f["refs"]
+            if wd["kind"] == "real" and f["status"] == "active" and not f.get("refs"):
+                f["status"] = "retired"; ch += 1; log_(f"repair: retired {wd['id']}.{f['id']} (all references rejected)")
+        if ch:
+            wd["changelog"].append({"date": DATE, "who": "autoloop", "what": "removed rejected references; retired real facts left without references"}); dump(wd, wp); n += ch
+    for p in sorted(glob.glob(os.path.join(ROOT, "lore", "creatures", "*.json"))):
+        c = load(p); ch0 = False
         for ch in c["chains"]:
             for a in ch.get("plausibility", {}).get("analogues", []):
                 if set(a.get("refs", [])) & bad:
                     a["refs"] = [r for r in a["refs"] if r not in bad]; ch0 = True
                     if not a["refs"]: del a["refs"]
         if ch0: n += 1; c["changelog"].append({"date": DATE, "who": "autoloop", "what": "removed rejected references from analogues"}); dump(c, p)
-    sanitize(w, log_)
+    for wp in glob.glob(os.path.join(ROOT, "lore", "worlds", "*.json")):
+        sanitize({"id": os.path.basename(wp)[:-5]}, log_)
     return n
 
 

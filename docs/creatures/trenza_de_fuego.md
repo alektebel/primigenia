@@ -78,7 +78,7 @@ Trait ← Withstand 63 MW/m² radiative flux ← Photospheric radiative load req
   - Restrict lattice skin to dust-loaded sheath at the umbra anchor and grapple tips inside the tube; Lattice Scatter = anisotropic Mie/Yukawa scattering and partial reradiation in a narrow band, collapsing during flare particle storms (F12). Drop ‘ultrasonic’ or describe as MHz-scale dust-lattice / ion-acoustic modes.
   - scores: astrobio 6, skeptic 6
   - Analogue: Dusty plasma crystal monolayers in laboratory discharges (Ivlev et al.); structurally coloured photonic scatterers (e.g. Morpho butterfly scales) for angle-dependent scattering—not true reflection of DEW-like attacks, but same gameplay niche as F18 radiative lattice skin.: as named by the judge; no mechanism or reference recorded
-  - Analogue: real biology behind this chain: see the cited works; chain wording is the council's own (Morfill 2007 [rejected])
+  - Analogue: real biology behind this chain: see the cited works; chain wording is the council's own
   - Fix: Restrict lattice skin to dust-loaded sheath at the umbra anchor and grapple tips inside the tube; Lattice Scatter = anisotropic Mie/Yukawa scattering and partial reradiation in a narrow band, collapsing during flare particle storms (F12). Drop ‘ultrasonic’ or describe as MHz-scale dust-lattice / ion-acoustic modes.
 - **Chain provenance:** council run `autoloop-2026-11-18`; by naturalist/qwen
 
@@ -127,3 +127,4 @@ council run `autoloop-2026-11-18`; by naturalist/qwen
 ## Changelog
 
 - 2026-11-18 import_got: imported from council run autoloop-2026-11-18
+- 2026-11-18 autoloop: removed rejected references from analogues

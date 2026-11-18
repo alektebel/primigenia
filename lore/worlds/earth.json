@@ -261,7 +261,6 @@
         "UVA remains a selection pressure on pigment and behaviour."
       ],
       "refs": [
-        "wmo_2022_ozone",
         "farman_1985_ozone"
       ]
     },
@@ -622,6 +621,11 @@
       "date": "2026-11-18",
       "who": "autoloop",
       "what": "world canon drafted by the council chair from 31 facts (planet drafts, peer reviews, astrobio referee)"
+    },
+    {
+      "date": "2026-11-18",
+      "who": "autoloop",
+      "what": "removed rejected references; retired real facts left without references"
     },
     {
       "date": "2026-11-18",

@@ -75,9 +75,6 @@
       "consequences": [
         "Dense medium attenuates high-frequency sound, limiting acoustic range to low frequencies.",
         "Visual range is restricted to ~300 m by SO₂ aerosol scattering and thermal haze."
-      ],
-      "refs": [
-        "bains_2004_silicon"
       ]
     },
     {
@@ -177,9 +174,6 @@
       "consequences": [
         "Metabolism is slow and high-energy, favoring crystalline growth over cellular division.",
         "Polymer stability relies on defect-patterned lattices rather than enzymatic scaffolding."
-      ],
-      "refs": [
-        "bains_2004_silicon"
       ]
     },
     {
@@ -196,9 +190,6 @@
       "consequences": [
         "Life avoids oxidizing environments and clean-air zones.",
         "Sudden temperature drops trigger rapid structural failure, creating environmental vulnerability windows."
-      ],
-      "refs": [
-        "bains_2004_silicon"
       ]
     },
     {
@@ -213,9 +204,6 @@
       "consequences": [
         "Reproduction involves geode-like spore ejection into vent plumes.",
         "Lineage tracking requires spectral analysis of shell fracture patterns."
-      ],
-      "refs": [
-        "bains_2004_silicon"
       ]
     },
     {
@@ -318,7 +306,6 @@
         "Lore should distinguish between established astrobiology and speculative worldbuilding."
       ],
       "refs": [
-        "bains_2004_silicon",
         "petkowski_bains_seager_2020_solvents"
       ]
     },
@@ -345,6 +332,11 @@
       "date": "2026-11-18",
       "who": "autoloop",
       "what": "world canon drafted by the council chair from 20 facts (planet drafts, peer reviews, astrobio referee)"
+    },
+    {
+      "date": "2026-11-18",
+      "who": "autoloop",
+      "what": "removed rejected references; retired real facts left without references"
     }
   ]
 }

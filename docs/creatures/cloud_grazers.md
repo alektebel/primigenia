@@ -113,7 +113,7 @@ Trait ← Ambient microdroplets act as biological solvent ← Standard lipid bil
   - Label highly speculative for F11 aqueous-ammonia microdroplets: azotosomes were proposed for liquid methane/ethane (Titan), not warm NH₃-water pockets—use amine-rich amphiphiles stable at cloud T/P per F13, with Seager cited as conceptual analogue only.
   - scores: astrobio 7, designer 9, physicist 10
   - Analogue: Proposed azotosome vesicles in cryogenic hydrocarbons; extremophile membrane tuning in haloarchaea and acidophiles for non-Earth solvents.: as named by the judge; no mechanism or reference recorded
-  - Analogue: real biology behind this chain: see the cited works; chain wording is the council's own (Seager 2020 [rejected])
+  - Analogue: real biology behind this chain: see the cited works; chain wording is the council's own
   - Fix: Label highly speculative for F11 aqueous-ammonia microdroplets: azotosomes were proposed for liquid methane/ethane (Titan), not warm NH₃-water pockets—use amine-rich amphiphiles stable at cloud T/P per F13, with Seager cited as conceptual analogue only.
 - **Chain provenance:** council run `autoloop-2026-11-18`; by physicist, designer
 
@@ -132,3 +132,4 @@ council run `autoloop-2026-11-18`; by designer, physicist, wildcard
 ## Changelog
 
 - 2026-11-18 import_got: imported from council run autoloop-2026-11-18
+- 2026-11-18 autoloop: removed rejected references from analogues
