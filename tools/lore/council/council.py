@@ -94,6 +94,7 @@ def chat(system, user, temp=0.9, max_tokens=7000):
                 r = urllib.request.Request(URL, body, {"Authorization": "Bearer " + KEY, "Content-Type": "application/json",
                                                        "User-Agent": "opencode"})
                 out = json.load(urllib.request.urlopen(r, timeout=900))["choices"][0]["message"]["content"]
+                if not out: raise ValueError("empty content (max_tokens eaten by reasoning?)")
             return re.sub(r"<think>.*?</think>", "", out, flags=re.S).strip()
         except Exception as e:
             print("retry", a, e, file=sys.stderr, flush=True); time.sleep(30)
@@ -168,7 +169,9 @@ def stage(name, task, extra):
         p = os.path.join(od, f"draft_{k}.md")
         if os.path.exists(p): drafts[k] = open(p).read(); return
         t = ask(k, ADV[k] + "\n\n" + CANON + extra + "\n\n" + FP, task)
-        if t.startswith("(failed)"): print(name, "draft FAILED", k, flush=True); drafts[k] = t; return; drafts[k] = t; open(p, "w").write(t)
+        drafts[k] = t
+        if t.startswith("(failed)"): print(name, "draft FAILED", k, flush=True); return
+        open(p, "w").write(t)
         print(name, "draft", k, len(t), flush=True)
     ts = [threading.Thread(target=run, args=(k,)) for k in ADV]; [t.start() for t in ts]; [t.join() for t in ts]
     keys = list(ADV); random.Random(7).shuffle(keys); lab = {k: chr(65 + i) for i, k in enumerate(keys)}
