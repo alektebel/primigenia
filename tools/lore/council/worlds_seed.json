@@ -1487,5 +1487,69 @@
    }
   ],
   "batch": 1
+ },
+ {
+  "id": "orbital",
+  "name": {
+   "en": "Orbital life",
+   "es": "Vida orbital"
+  },
+  "kind": "fictional",
+  "system": {
+   "star": "a G dwarf with a ringed gas giant",
+   "position": "a dense ring or debris system, or the L4/L5 Trojan swarm of a gas giant, or low orbit of a small airless moon; fictional",
+   "distance_ly_from_sol": null
+  },
+  "stage": "space",
+  "habitat_word": "orbit",
+  "creature_kind": "new",
+  "notes": "Orbital and satellite organisms: life that lives in orbit around a planet or giant and never touches ground (a dense ring or debris system, the L4/L5 Trojan swarm of a gas giant, or low orbit of a small airless moon). Derive honestly: how they reached orbit (ejecta from impacts carrying spores, lithopanspermia; or descendants of high-altitude floaters of the deep-sky gas giant pushed up by radiation pressure or electrostatic lofting: the referee must check whether that is even possible, since orbital velocity is km/s and atmosphere-to-orbit is the hard part), energy (sunlight, sail-like membranes and radiation pressure, planetary magnetospheric currents), materials (grazing ring ice and dust, micrometeoroid capture), orbital mechanics as behaviour (orbital decay from drag, station-keeping, Hohmann-like migration between rings, predators that catch prey by orbital phasing, Kessler-like collision cascades as a disaster), radiation shielding, reproduction in microgravity, and what an orbiting creature looks like from the ground (moving lights at dusk like satellites: a night-sky egg for the creature stage). Real anchors: Melosh 1988 (Nature) and Mileikowsky et al. 2000 (Icarus) on lithopanspermia; ring dynamics (Burns et al.); Kessler and Cour-Palais 1978 (Journal of Geophysical Research); tardigrades in low Earth orbit (Jonsson et al. 2008); solar-sail radiation-pressure physics. The referee marks 'highly speculative' where true. Our own names only.",
+  "creatures": [],
+  "seed_refs": [
+   {
+    "author": "Melosh, H. J.",
+    "year": 1988,
+    "title": "The rocky road to panspermia",
+    "venue": "Nature"
+   },
+   {
+    "author": "Mileikowsky, C.",
+    "year": 2000,
+    "title": "Natural transfer of viable microbes in space",
+    "venue": "Icarus"
+   },
+   {
+    "author": "Kessler, D. J.",
+    "year": 1978,
+    "title": "Collision frequency of artificial satellites: the creation of a debris belt",
+    "venue": "Journal of Geophysical Research"
+   },
+   {
+    "author": "Jonsson, K. I.",
+    "year": 2008,
+    "title": "Tardigrades survive exposure to space in low Earth orbit",
+    "venue": "Current Biology"
+   }
+  ],
+  "species": [
+   {
+    "seed": "a ring-grazing organism that lives in a dense ring system, feeding on ice and dust, with a sail-like membrane and orbital station-keeping as behaviour",
+    "n": 2
+   },
+   {
+    "seed": "an orbital predator that catches prey by orbital phasing (Hohmann-like transfers), and what a Kessler-like cascade does to its prey",
+    "n": 1
+   },
+   {
+    "seed": "a creature seen from the ground at dusk as a moving light like a satellite (a night-sky egg for the creature stage), with a plausible way it reached orbit",
+    "n": 1
+   },
+   {
+    "seed": "a CRAB-LIKE species that converged on the crab body plan (flattened carapace, armour, sideways walking, a tucked abdomen or tail equivalent, claws) from a totally different lineage than any crab. Write honest first-principles chains for WHY this world's physics pushes toward a crab; if it is a stretch, say so plainly (that is part of the joke). Its second journal line is a dry wink at carcinisation. Own name, nothing from books or films.",
+    "n": 1,
+    "carcinised": true
+   }
+  ],
+  "batch": 1
  }
 ]
