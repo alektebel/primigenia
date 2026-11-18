@@ -107,3 +107,10 @@ pivot guards); the zoom is a new parameter `z` on top.
 - Software GL, 1280x720, llvmpipe (`make godot-camera-evidence`, `docs/evidence/godot/camera/frame_times.json`):
   z 0: 762 ms, 0.25: 606, 0.5: 400, 0.75: 223, 1.0: 124 ms per frame. Far zoom is the cheapest view; real GPU rates are
   not measured. Camera CPU at z 1 is under 1 ms (checked in test_camera).
+
+## Hold to follow, steering (branch c1/movement-feel)
+
+Left button: a drag before 0.15 s orbits; a release before 0.15 s is a click (walk there, or select a creature); staying 0.15 s
+makes a **hold**: the creature follows the mouse while the button is down (target re-sent every 0.15 s, moves under 0.6 m
+ignored so a still mouse does not replan) and moving the mouse steers it instead of orbiting. Releasing keeps going to the last
+target. Turns are now size dependent and smooth: see LOCOMOTION.md section 8. Key legend: "Follow the mouse (hold, then move)".

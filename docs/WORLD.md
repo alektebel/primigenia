@@ -56,16 +56,20 @@ Each `cp_stage_step`:
 `CP_STAGE_CONTINUE` or a NULL input preserves an order. `WAIT` brakes to a
 stop. Headings have signed int16 x/z components and are normalized using
 `sqrtf`; destinations and approach/attack orders steer toward points/entities.
-Locomotion (CP_STAGE_VERSION 2, `CP_STAGE_MOTION` in `core/src/stage_world.c`, PLAN-feel): the
+Locomotion (CP_STAGE_VERSION 3, `CP_STAGE_MOTION` in `core/src/stage_world.c`, steering in `core/src/steer.c`;
+PLAN-feel and the owner-requested steering, docs/godot/LOCOMOTION.md "Steering"): the
 jog speed is 1.3 x `profile.speed`, sprint is 1.7 x jog (stamina rules unchanged), and wild creatures
 roam and chase at 0.6 x jog. Speed eases toward the wanted speed (60 % of the error per tick) with
-acceleration capped at 15 m/s2 and braking at 20 m/s2. The yaw rate is limited by body size,
-`clamp(1.1 sqrt(9.81 / r_body), 1.5, 4.5)` rad/s, and by lateral grip at speed, `11.8 / v`, so a turn
-at speed is a curve; the wanted speed falls to 60 % for a 90 degree turn and to 0 beyond 120 degrees
-(plant and brake). Only below 0.3 x jog does a reversal become a pivot, rotating at twice the turn
-rate (3 to 7 rad/s). Destination speed reduces with stopping distance; uphill or downhill slope reduces
-speed. Everything uses + - * /, `sqrtf` and the existing polynomials, so native and WASM agree. Logs and
-hashes from version 1 are rejected (log header `CPORE_WORLD_LOG 2`).
+acceleration and braking caps (15 and 20 m/s2, a little lower for big bodies). The heading has an angular
+velocity: yaw acceleration `ang_k * 9.81 / r_body` rad/s2, top rate `clamp(1.1 sqrt(9.81 / r_body), 1.5, 4.5)`
+and at speed `a_lat / v` with the lateral grip `a_lat` falling with size and rising with legs, so the turn radius
+is `v^2 / a_lat`. The wanted speed falls to 60 % for a 90 degree turn (the creature brakes into the corner). A
+body up to `pivot_r` metres turns on the spot below 0.3 x jog when the target is more than 120 degrees away; a bigger
+one keeps at least `creep` of its speed and takes a slow U-turn. GO paths are followed by pure pursuit
+(lookahead `look_min + look_k * v`), so corners are arcs. Slope: the speed is scaled by a grade factor
+(uphill slower, 0 at `climb * stall_mul`; mild downhill faster, steep downhill braked), above `stall * slide_mul` the
+body slides down the fall line; the planner uses the same `climb` per body (legs). Everything uses + - * /, `sqrtf` and
+polynomials, so native and WASM agree. Logs and hashes from version 2 are rejected (log header `CPORE_WORLD_LOG 2`).
 Sprint spends 1.4 stamina/tick; ordinary roaming recovers 1/tick.
 
 Movement checks the ±195 m world boundary, terrain slope and ground below

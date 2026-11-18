@@ -162,3 +162,37 @@ Alexander 1984 (dynamic similarity, Froude number and gait change); Alexander & 
 factor and stride as functions of Froude number); Hildebrand 1965 and 1989 (footfall patterns,
 diagonal and lateral sequences); Hecker et al. 2008 (Spore creature locomotion); Raibert 1986
 (legged robots, spring-mass bouncing); Hirt et al. 2017 (maximum speed versus body mass).
+
+## 8. Steering and slopes in the C sim (CP_STAGE_VERSION 3, `core/src/steer.c`)
+
+Owner-requested change of the movement law (clunky direction changes, size-independent turns, slopes that only slowed
+the step). The sim is authoritative; this module only follows it.
+
+- **Heading with inertia.** `CpStageCreature.omega` is the yaw rate. Yaw acceleration `ang_k * 9.81 / r` (r = body radius, so
+  big bodies start and stop turning slowly), top rate `clamp(turn_k sqrt(9.81/r), 1.5, 4.5)` and, at speed, `a_lat / v` with
+  `a_lat = grip * legs_k / (1 + grip_mass (r - 0.6))`: the turn radius is `v^2 / a_lat`, wider for faster, bigger bodies and
+  tighter for more legs. The desired rate brakes in time for the remaining angle (no overshoot), so a new target never snaps the
+  heading: the first tick after a retarget turns by at most `alpha dt^2`.
+- **Speed.** Acceleration and braking caps (a little lower for big bodies); the wanted speed falls with the angle to the target
+  (60 % at 90 degrees), so the creature brakes into a corner. Beyond 120 degrees at low speed a body up to `pivot_r` = 3.2 m
+  pivots on the spot (2 x yaw acceleration); a bigger one keeps `creep` (25 %) of its speed and takes a slow U-turn.
+- **Path following.** GO paths are followed by pure pursuit: the creature steers at the point `look_min + look_k v` metres
+  ahead on the (already string-pulled) A* polyline, checked with the same walk rule, so corners become arcs.
+- **Slopes.** `legs` (setup `player_legs`, `wild[].legs`, 0 = 4; the zoo reads it from the rig) sets `climb = 0.55 + 1.35 (legs-2)/6`,
+  less for big bodies (2 legs 0.55, 4 legs 1.0, 8 legs 1.9). Speed factor: uphill `sqrt(1 - g/(climb stall_mul))` (0 at 1.4 x climb:
+  it cannot walk up), mild downhill up to +15 % at grade 0.2, steep downhill braked to 40 %; above `stall * slide_mul` the body
+  slides down the fall line at `slide_k (excess) + 0.4` m/s (`sliding` flag). The planner uses the same `climb` (edges and its
+  shortcuts), plus a cost per unit grade; a GO whose only route is too steep is refused (-4). Walking against a wall too steep
+  to climb reports `cliff` and replans, giving up after four tries.
+- **Tuning.** 13 new `CP_STAGE_PARAMS` (ang_k, grip_mass, acc_mass, creep, pivot_r, look_min, look_k, climb_base, climb_legs,
+  stall_mul, slide_mul, slide_k, down_gain), live in the tuning panel.
+- **Visuals.** The rig already pitches and rolls to the hip plane fitted to the feet on the ground, banks with `v * omega` and
+  leans with acceleration (section 1); nothing new was needed on slopes beyond the sim's stalls and slides.
+- **Evidence:** `docs/evidence/godot/steering/`: `retarget120_before_after.png` (top-down 120 degree retarget, small / hero / giant,
+  before vs after; the path differs mildly, the gain is in time: yaw rate and speed now ramp instead of jumping), `uturn_strip.png`,
+  `zoo_strip.png`, `tourney_before.txt` / `tourney_after.txt` (identical: combat.c is untouched).
+- **Tests:** `make test` runs `build/steer_test` (turn radius grows with size and speed, more legs turn tighter, no heading snap,
+  pivot rule, slope speeds, stall by legs, slide, planner refusal, determinism and snapshot), the regenerated goldens and the NAV gate
+  (20/20; cold plan time worst about 150 ms, was 50 ms, because the walk grid now checks grade).
+- Deviations: the feel test gates for a 90 degree turn and a reversal are relaxed to 1.0 s and 1.2 s (were 0.8 / 1.0) by the yaw
+  acceleration. Not verified: WASM (no emcc here; `core/src/steer.c` is in `WORLD_SRC`), the owner's feel on a real GPU.

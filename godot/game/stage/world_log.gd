@@ -39,10 +39,18 @@ static func write(setup: Dictionary, inputs: Array, opts: Dictionary = {}) -> St
 	var debug: Array = opts.get("debug", [])
 	var snapshot: String = opts.get("snapshot", "")
 	var field: Dictionary = opts.get("field", {})
-	var v3 := not debug.is_empty() or snapshot != "" or not field.is_empty()
+	var any_legs := int(setup.get("player_legs", 0)) != 0
+	for w in setup.wild:
+		any_legs = any_legs or int(w.get("legs", 0)) != 0
+	var v3 := not debug.is_empty() or snapshot != "" or not field.is_empty() or any_legs
 	lines.append("%s %d" % [MAGIC, 3 if v3 else VERSION])
 	if snapshot != "":
 		lines.append("snapshot " + snapshot)
+	if any_legs:
+		var l := "legs %d %d" % [setup.wild.size(), int(setup.get("player_legs", 0))]
+		for w in setup.wild:
+			l += " %d" % int(w.get("legs", 0))
+		lines.append(l)
 	if not field.is_empty():
 		lines.append("field %d %d %s %s" % [field.seed, field.n, num(field.size_m), field.hash])
 	var nest: Vector2 = setup.nest
@@ -80,10 +88,18 @@ static func parse(text: String) -> Dictionary:
 	cur[0] = 2
 	var snapshot := ""
 	var field := {}
-	while version == 3 and cur[0] + 1 < tok.size() and (tok[cur[0]] == "snapshot" or tok[cur[0]] == "field"):
+	var legs: Array = []
+	while version == 3 and cur[0] + 1 < tok.size() and (tok[cur[0]] == "snapshot" or tok[cur[0]] == "field" or tok[cur[0]] == "legs"):
 		if tok[cur[0]] == "snapshot":
 			snapshot = tok[cur[0] + 1]
 			cur[0] += 2
+		elif tok[cur[0]] == "legs":
+			var cnt: int = tok[cur[0] + 1].to_int()
+			if cur[0] + 2 + cnt >= tok.size():
+				return fail.call("bad legs line")
+			for k in cnt + 1:
+				legs.append(tok[cur[0] + 2 + k].to_int())
+			cur[0] += 3 + cnt
 		else:
 			if cur[0] + 4 >= tok.size():
 				return fail.call("bad field line")
@@ -128,6 +144,10 @@ static func parse(text: String) -> Dictionary:
 		w.profile = read_profile.call()
 		wild.append(w)
 	setup.wild = wild
+	if legs.size() == n_wild + 1:
+		setup.player_legs = legs[0]
+		for i in n_wild:
+			wild[i].legs = legs[i + 1]
 	var obstacles := []
 	for i in n_obs:
 		var o := {}

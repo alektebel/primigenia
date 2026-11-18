@@ -43,6 +43,8 @@ var occluders_enabled := true
 var icons: CanvasLayer
 var pois_fn: Callable            # sites hook for the strategic map (see strategic_icons.gd; D2 registry plugs in here)
 var _mouse_held := false
+var _follow_clock := 0.0       # hold to follow: the mouse target is sent at most every FOLLOW_PERIOD s
+const FOLLOW_PERIOD := 0.15
 var _genome: Dictionary = {}
 var _garfio_profile: Dictionary = {}   # kept so creatures spawned later (dev console, scenarios) get a body
 var gesture := Gesture.new()       # the left button: click, hold or orbit drag
@@ -341,7 +343,7 @@ func _update_camera(dt: float) -> void:
 	camera.fov = 48.0 + float(r.fov_add)
 	camera.near = clampf(float(r.distance) * 0.012, 0.25, 40.0)       # keep the depth buffer precise at 3 km
 	camera.position = r.position
-	camera.look_at(r.target)
+	camera.look_at(r.aim)
 	player_input.view_yaw = chase.view_yaw
 	_apply_zoom_budget(chase.z)
 	icons.update_alpha(chase.icon_alpha())
@@ -398,7 +400,12 @@ func _process(delta: float) -> void:
 	gesture.tick(delta)
 	_mouse_held = gesture.holding
 	if _mouse_held and not Game.movement_blocked():
-		_click_ground(false, get_viewport().get_mouse_position())
+		_follow_clock -= delta
+		if _follow_clock <= 0.0:
+			_follow_clock = FOLLOW_PERIOD
+			_click_ground(false, get_viewport().get_mouse_position(), true)
+	else:
+		_follow_clock = 0.0
 
 # Mouse (docs/godot/CAMERA-ZOOM.md section 1): wheel zooms along the one curve; a left press that moves more than
 # DRAG_PX is an orbit drag, otherwise it is a click (acted on at release) or, held, steers towards the mouse; right and
@@ -463,7 +470,7 @@ func _click(pos: Vector2, double: bool) -> void:
 			chase.set_zoom(chase.Z_CHASE)
 	_click_ground(true, pos)
 
-func _click_ground(allow_pick: bool, mouse: Vector2) -> void:
+func _click_ground(allow_pick: bool, mouse: Vector2, follow: bool = false) -> void:
 	var ground := Callable(Game, "ground")
 	if allow_pick:
 		var picked := Pointer.pick_entity(camera.project_ray_origin(mouse), camera.project_ray_normal(mouse), stage.cur.entities, ground)
@@ -476,4 +483,7 @@ func _click_ground(allow_pick: bool, mouse: Vector2) -> void:
 		stage_ui.ui.clear_selection()       # a click on empty ground deselects (and walks there)
 	var hit = Pointer.ground_hit(camera, mouse, ground, maxf(900.0, chase.distance * 2.0))
 	if hit != null:
-		player_input.set_destination(Vector2(hit.x, hit.z))
+		if follow:
+			player_input.follow_to(Vector2(hit.x, hit.z))
+		else:
+			player_input.set_destination(Vector2(hit.x, hit.z))

@@ -61,3 +61,10 @@ Zoom curve monotonic (distance, pitch); never below the terrain at 200 random
 points; click vs drag threshold (click moves, drag orbits); orbit holds while still
 and returns while moving; strategic icons appear above z ≈ 0.7; frame time at
 z = 1 within budget. Evidence: a 5-frame strip from z = 0 to z = 1 on the real island.
+
+## 5. Looking at the sky
+
+Orbit pitch (`orbit_pitch`) goes from +0.5 to -1.6 rad (drag up). Below the level where the camera still looks at the creature
+(elevation 0.04 rad) the camera stops rising above its floor, sinks towards the ground (never under it: 0.65 m clear) and its
+aim tilts past the horizon up to -60 degrees (`look_pitch`, `aim` in the update result; the island does `camera.look_at(r.aim)`).
+The zoom curve is unchanged; Home or middle click resets to behind the creature at the default pitch.
