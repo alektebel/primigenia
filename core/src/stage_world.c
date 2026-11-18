@@ -754,6 +754,10 @@ static void walk(CpStageWorld *w,CpStageCreature *c,float dx,float dz,float spee
     c->acceleration=(c->speed-old)*10;
     c->turn_rate=turn*10;
 }
+/* the one death predicate: the flag set at fight resolution, or no hp left */
+static int creature_is_dead(const CpStageCreature *e){
+    return e->dead||e->hp<=0;
+}
 static int has_threat(const CpStageWorld *w){
     for(int i=0;i<w->setup.n;i++)if(!w->wild[i].dead&&dist(&w->player,&w->wild[i])<30)return 1;
     return 0;
@@ -775,7 +779,7 @@ static int order_apply(CpStageWorld *w,const CpStageInput *a){
         return 0;
     }
     if(a->verb==CP_STAGE_GO&&(!isfinite(a->x)||!isfinite(a->z)||ab(a->x)>cp_stage_bound(w)||ab(a->z)>cp_stage_bound(w)))return -1;
-    if((a->verb==CP_STAGE_APPROACH||a->verb==CP_STAGE_ATTACK)&&(a->target<1||a->target>w->setup.n||w->wild[a->target-1].dead))return -2;
+    if((a->verb==CP_STAGE_APPROACH||a->verb==CP_STAGE_ATTACK)&&(a->target<1||a->target>w->setup.n||creature_is_dead(&w->wild[a->target-1])))return -2;
     if(a->verb==CP_STAGE_ATTACK&&(a->move<0||a->move>=CB_MOVE_COUNT||(CP_COMBAT_MOVES[a->move].flags&CB_F_SELF)||!cp_combat_part_level(&w->player.profile,CP_COMBAT_MOVES[a->move].part)))return -3;
     if(a->verb==CP_STAGE_ATTACK&&cp_combat_loadout_slot_of(&w->loadout,a->move)<0)return CP_STAGE_ERR_NOT_EQUIPPED;
     if(a->verb==CP_STAGE_ATTACK&&w->active>=0&&w->combat.c[0].cd[a->move])return CP_STAGE_ERR_ON_COOLDOWN;
@@ -823,12 +827,15 @@ static void finish(CpStageWorld *w,int outcome){
     w->player.speed=e->speed=0;
     path_clear(w);
     const int id=(int)(e-w->wild)+1;
-    if(outcome==CP_STAGE_VICTORY){
+    /* a double KO (both fighters reach 0 hp in the same combat tick) is a death for the player AND a kill: the wild
+     * creature is dead too, it must not walk home as a 0 hp "living" creature that is still attackable */
+    const int wild_ko=outcome==CP_STAGE_DEATH&&!w->combat.c[1].alive;
+    if(outcome==CP_STAGE_VICTORY||wild_ko){
         e->dead=1;
         ev_push(w,CP_STAGE_EV_KILL,0,id,-1,0,e->x,e->z);
     }
-    else{
-        e->returning=1;
+    else e->returning=1;
+    if(outcome!=CP_STAGE_VICTORY){
         if(outcome==CP_STAGE_DEATH){
             w->respawn_ticks=20;
             ev_push(w,CP_STAGE_EV_DEATH,id,0,-1,0,w->player.x,w->player.z);
@@ -1473,8 +1480,7 @@ static const char *block_name(int r){
 static const char *creature_state(const CpStageWorld *w,int i){
     const CpStageCreature *e=&w->wild[i];
     const CpStageSpecies *s=&CP_STAGE_SPECIES[e->species];
-    if(e->dead)return "carcass";
-    if(e->hp<=0)return "dead";
+    if(creature_is_dead(e))return "carcass";
     if(w->active==i)return "fighting";
     const float d=dist(&w->player,e);
     if(e->returning)return "roam";
@@ -1504,7 +1510,7 @@ static int attack_move_reaches(const CpStageWorld *w,int i,const CpStageCreature
 }
 static int creature_attackable(const CpStageWorld *w,int k){
     const CpStageCreature *t=&w->wild[k];
-    if(t->dead||(w->active>=0&&w->active!=k))return 0;
+    if(creature_is_dead(t)||(w->active>=0&&w->active!=k))return 0;
     for(int i=0;i<CB_MOVE_COUNT;i++)if(attack_move_ok(w,i)&&attack_move_reaches(w,i,t))return 1;
     return 0;
 }
@@ -1547,9 +1553,9 @@ int cp_stage_observe_v(const CpStageWorld *w,char *out,size_t cap,int version){
         if(d>40)continue;
         if(version==2){
             const char *state=creature_state(w,i);
-            ADD("%s{\"id\":%d,\"type\":\"%s\",\"species\":\"%s\",\"distance\":%.6f,\"bearing\":%.6f,\"hp\":%.6f,\"hp_max\":%.6f,\"state\":\"%s\",\"in_fight\":%s,\"attackable\":%s}",comma?",":"",i+1,e->dead?"carcass":"creature",CP_STAGE_SPECIES[e->species].name,d,bearing(&w->player,e->x,e->z),e->hp,e->profile.hp,state,w->active==i?"true":"false",creature_attackable(w,i)?"true":"false");
+            ADD("%s{\"id\":%d,\"type\":\"%s\",\"species\":\"%s\",\"distance\":%.6f,\"bearing\":%.6f,\"hp\":%.6f,\"hp_max\":%.6f,\"state\":\"%s\",\"in_fight\":%s,\"attackable\":%s}",comma?",":"",i+1,creature_is_dead(e)?"carcass":"creature",CP_STAGE_SPECIES[e->species].name,d,bearing(&w->player,e->x,e->z),e->hp,e->profile.hp,state,w->active==i?"true":"false",creature_attackable(w,i)?"true":"false");
         }
-        else ADD("%s{\"id\":%d,\"type\":\"%s\",\"species\":\"%s\",\"distance\":%.6f,\"bearing\":%.6f}",comma?",":"",i+1,e->dead?"carcass":"creature",CP_STAGE_SPECIES[e->species].name,d,bearing(&w->player,e->x,e->z));
+        else ADD("%s{\"id\":%d,\"type\":\"%s\",\"species\":\"%s\",\"distance\":%.6f,\"bearing\":%.6f}",comma?",":"",i+1,creature_is_dead(e)?"carcass":"creature",CP_STAGE_SPECIES[e->species].name,d,bearing(&w->player,e->x,e->z));
         comma=1;
     }
     float d=length(w->setup.nest_x-w->player.x,w->setup.nest_z-w->player.z);
