@@ -53,7 +53,7 @@ Every new move adds counter rows, so the counter triangle stays readable: each m
 ## 4. Learning moves
 
 1. **From parts**: adding a part in the creator/at the nest makes its move known.
-2. **By observing**: watching a species use a move enough times (Observe mode) makes it learnable: you can grow the part for it at the nest. Other creatures become teachers.
+2. **By observing, from first principles** (A22): each trait is a causal chain from the planet's physics to the move (e.g. low hum ← dense air carries sound ← fog blinds eyes ← cold sea on warm volcanic ground). Observe mode reveals the chain one link at a time in the journal (watch the move, watch the habitat, watch the weakness); completing the chain makes the move learnable at the nest. Other creatures become teachers, and the journal becomes a book of reasons, not just names.
 3. **From deep secrets**: each one unlocks a move (most of the Signature and Defence variants).
 4. **Combos** (later): short timing windows, e.g. a tail sweep right after a bite does more.
 
