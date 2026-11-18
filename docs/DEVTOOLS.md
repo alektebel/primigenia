@@ -1,6 +1,9 @@
 # The meta-game: tools for playing, testing and debugging
 
-Status: **draft, 2026-11-17.** Owner request: a meta layer to debug and to jump
+Status: **DT0 shipped (C0), 2026-11-17.** Implemented in the Godot build: D13
+key legend, D1 console, D2 sites, D3 scenarios, D4 tuning + A/B, D5 feedback,
+D7 time control, and D8's `overlay path`. Planned: D6, the rest of D8, D9
+(DT1); D10, D11, D12 (DT2). Owner request: a meta layer to debug and to jump
 to particular places, sites and situations, so that iterating on the feel of
 each stage is fast instead of tedious. It's designed once for the creature stage
 and grows with every stage.
@@ -24,21 +27,21 @@ benchmark starts.
 
 ## 2. Tools
 
-| # | Tool | What it does | Key |
-|---|---|---|---|
-| D1 | **Console** | Type commands: `tp crater`, `tp 120 -40`, `spawn garfio 3`, `give dna 500`, `time 18:30`, `weather storm`, `timescale 0.2`, `ai off`, `god`, `reveal`, `kill radius 30`, `stage band`, `trait add aquatic`… Autocomplete, history, help | ` (backtick) |
-| D2 | **Sites** | Every world seed publishes its points of interest from the generator: crater, volcano, waterfall cave, nest sites, species dens, Garfio's territory, viewpoints, meteor shards, fossils. A **site picker** (searchable list with thumbnails) teleports you there. You can add your own **bookmarks** with a key | F2 picker, Ctrl+B bookmark |
-| D3 | **Scenarios** | Save / load the full situation. Library under `scenarios/<stage>/` (JSON + C state blob). Starts from the command line too: `godot --path godot -- --scenario creature/garfio_fight` | F5 save, F6 load |
-| D4 | **Live tuning panel** | Every tunable (C params via GDExtension, GDScript params) registered in one registry: sliders, applied instantly, grouped (movement, camera, combat, AI, look). Save the changes as a tuning diff to `tuning/*.json`; **A/B slots** to switch between two versions with one key | F3 panel, F4 swap A/B |
-| D5 | **Feedback key** | Saves a screenshot, the last 60 s of replay, the scenario at that point, the tuning diff, the build hash and a typed note to `feedback/<time>/`. Claude or an agent loads it and sees exactly what happened | F8 |
-| D6 | **Replay scrubber** | A timeline over any replay: pause, rewind, step one tick, jump. **"Take control from here"** branches a new game from any moment (possible because the C sim is deterministic) | F9 |
-| D7 | **Time control** | Pause, step a tick, slow motion, fast-forward ×10 / ×100 (seasons in Band, years in Realm and Space) | Pause, [ ] |
-| D8 | **Overlays** | Toggle visual debug layers: navigation, AI intents and target lines, combat phases and hitboxes, locomotion (feet, support polygon, gait), C vs rendered positions, fog, trust between species, economic flows (later), performance | F10 cycles, console `overlay <name>` (first one built: `overlay path`, the planned GO route, off by default) |
-| D9 | **Free camera** | Detach the camera and fly anywhere; snap back | F7 |
-| D10 | **Lineage editor** | Pick the traits you've earned (aquatic, void-adapted, silk…), then start any stage with them. That's how carry-forward between stages gets tested without playing the whole arc | console `lineage` |
-| D11 | **Stage jump** | Start any stage from its standard start state (Q7), with any lineage | main menu (dev builds) |
-| D13 | **Key legend** | An always-available legend of what every key and button does, **context-sensitive** (it changes with the mode: walking, fighting, radial menu, studio, RTS, console). Hold the key for the full sheet; a small corner hint shows the 3–4 keys that matter right now. Generated from Godot's input map, so it never goes out of date. Also in the player build (not dev-only) | F1 (hold) |
-| D12 | **Autoplay** | The AI takes the avatar; overnight runs play a matrix of scenarios × tuning and write a report (win rates, durations, stuck units, errors, frame times) | console `autoplay`, `make soak` |
+| # | Tool | State | What it does | Key |
+|---|---|---|---|---|
+| D1 | **Console** | built | Type commands: `tp crater`, `tp 120 -40`, `spawn garfio 3`, `give hp 100`, `time 18:30`, `timescale 0.2`, `ai off`, `god`, `reveal`, `kill radius 30`, `overlay path`… (`give dna` answers "C2"; `stage` and `trait add` are registered stubs answering "DT2"/"L0"). Autocomplete, history, help | physical key left of 1 (º) / F12 |
+| D2 | **Sites** | built (picker thumbnails DT1) | Every world seed publishes its points of interest from the generator: crater, volcano, waterfall cave, nest sites, species dens, Garfio's territory, viewpoints, meteor shards, fossils. A **site picker** (searchable list with thumbnails) teleports you there. You can add your own **bookmarks** with a key | F2 picker, Ctrl+B bookmark |
+| D3 | **Scenarios** | built | Save / load the full situation. Library under `scenarios/<stage>/` (JSON + C state blob). Starts from the command line too: `godot --path godot -- --scenario creature/garfio_fight` | F5 save, F6 load |
+| D4 | **Live tuning panel** | built | Every tunable (C params via GDExtension, GDScript params) registered in one registry: sliders, applied instantly, grouped (movement, camera, combat, AI, look). Save the changes as a tuning diff to `tuning/*.json`; **A/B slots** to switch between two versions with one key | F3 panel, F4 swap A/B |
+| D5 | **Feedback key** | built | Saves a screenshot, the last 60 s of replay, the scenario at that point, the tuning diff, the build hash and a typed note to `feedback/<stamp>/`. Claude or an agent loads it and sees exactly what happened | F8 |
+| D6 | **Replay scrubber** | planned (DT1) | A timeline over any replay: pause, rewind, step one tick, jump. **"Take control from here"** branches a new game from any moment (possible because the C sim is deterministic) | — |
+| D7 | **Time control** | built | Pause, step a tick, slow motion, fast-forward ×10 / ×100 (seasons in Band, years in Realm and Space) | P, `.`, `[` `]` |
+| D8 | **Overlays** | partial: console `overlay path` built; the rest planned (DT1) | Toggle visual debug layers: navigation, AI intents and target lines, combat phases and hitboxes, locomotion (feet, support polygon, gait), C vs rendered positions, fog, trust between species, economic flows (later), performance | console `overlay <name>`; the first one built is `overlay path` (the planned GO route, off by default) |
+| D9 | **Free camera** | planned (DT1) | Detach the camera and fly anywhere; snap back | — |
+| D10 | **Lineage editor** | planned (DT2) | Pick the traits you've earned (aquatic, void-adapted, silk…), then start any stage with them. That's how carry-forward between stages gets tested without playing the whole arc | — |
+| D11 | **Stage jump** | planned (DT2) | Start any stage from its standard start state (Q7), with any lineage | — |
+| D13 | **Key legend** | built | An always-available legend of what every key and button does, **context-sensitive** (it changes with the mode: walking, fighting, radial menu, studio, RTS, console). Hold the key for the full sheet; a small corner hint shows the 3–4 keys that matter right now. Generated from Godot's input map, so it never goes out of date. Also in the player build (not dev-only) | F1 (hold) |
+| D12 | **Autoplay** | planned (DT2) | The AI takes the avatar; overnight runs play a matrix of scenarios × tuning and write a report (win rates, durations, stuck units, errors, frame times) | — |
 
 ### What "A/B" means (D4)
 
@@ -69,7 +72,7 @@ records it, so your note says "B is better" and we know exactly what B was.
 
 | Step | Tools | Size |
 |---|---|---|
-| DT0 (now, creature stage) | D13 key legend, D1 console, D2 sites + bookmarks, D3 scenarios, D4 tuning + A/B, D5 feedback key, D7 time | M |
+| DT0 (shipped in C0, creature stage) | D13 key legend, D1 console, D2 sites + bookmarks, D3 scenarios, D4 tuning + A/B, D5 feedback key, D7 time | M |
 | DT1 | D6 replay scrubber + branching, D9 free camera, D8 overlays (combat, locomotion, AI) | M |
 | DT2 | D10 lineage editor, D11 stage jump, D12 autoplay + soak report | M |
 | With each new stage | more console commands, sites, overlays (RTS: orders, flow fields, fog; Industry: logistics flows) and standard scenarios | S each |

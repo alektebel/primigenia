@@ -36,5 +36,5 @@ world_cli), `make tourney` identical, `make godot-test`, `godot-play-test`, `god
 dialogs on a real display (only software screenshots), the F5 quick-save write path in an exported build.
 
 ## Known limits
-A straight GO order is blocked by cliffs on about half of 20 far targets (no path-finding); `tp` into water or an obstacle is refused;
+GO orders plan around cliffs (A* on the walk grid; 20/20 far targets reached on the island, `docs/godot/NAV.md`); `tp` into water or an obstacle is refused;
 thumbnails in the picker are DT1; `tune`/scenario loads of another island regenerate it only through the cache.
