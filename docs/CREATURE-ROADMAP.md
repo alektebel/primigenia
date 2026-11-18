@@ -57,6 +57,7 @@ G70 minute-to-minute loop. Spec: `P4.md`.
 - **Observe** (learning behaviour, recipe clues) and **Intimidate** (driving off without killing).
 - **DNA**: total only rises, balance is spent; rewards for befriending, kills, carcasses, exploration.
 - **Parts**: discovery (drops, carcasses, fossils), tiers by DNA + usage (G49), **editing at the nest**.
+- **Moves and loadout** (A21, COMBAT-MOVES.md): 4 slots + guard/dodge, cooldowns, the C2 moves (claw swipe, peck, pounce, quill volley, roar with fear, stomp, curl up, bone-spine frenzy), learning by Observe.
 - **Species roster** (ECOLOGY.md): 6–8 species with temperaments, diets, home ranges; ally/dominate per species (Q43); progress = species resolved.
 - **Ancestors become cousins** (A13): each evolution leaves the old form in the world.
 - **Lineage ledger L0** (ARC-PLAN §7.1): traits are recorded from now on.
