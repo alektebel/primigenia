@@ -212,6 +212,11 @@ static void agent_contract(void) {
     assert(cp_stage_reset(&w,&setup)==0);
     char obs[16384];assert(cp_stage_observe(&w,obs,sizeof obs)>0);
     assert(strstr(obs,"tree")&&strstr(obs,"rock")&&strstr(obs,"attack_moves"));
+    assert(strstr(obs,"\"stamina_cost\"")&&strstr(obs,"\"range_m\"")&&strstr(obs,"\"windup_ticks\"")&&strstr(obs,"\"usable\":true")&&strstr(obs,"\"attackable\":false"));
+    assert(cp_stage_command(&w,"attack #1 BITE")==0&&w.order.move==CB_BITE);
+    assert(cp_stage_command(&w,"attack #1 0")==0&&w.order.move==CB_BITE);
+    assert(cp_stage_command(&w,"attack #1 atack")<0);
+    assert(cp_stage_observe(&w,obs,sizeof obs)>0&&strstr(obs,"\"last_error\":\"unknown_move\""));
     assert(cp_stage_observe(&w,NULL,1)<0 && cp_stage_observe(&w,obs,0)<0);
     assert(cp_stage_command(&w,NULL)<0);
     setup.n=0;setup.player.mouth=setup.player.charge=setup.player.spit=setup.player.tail=0;
