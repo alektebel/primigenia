@@ -82,9 +82,19 @@ def main():
     w1 = StageWorld(seed=42)
     o1 = w1.observe()
     mv = o1["attack_moves"]
-    check(mv and all(list(m) == ["index", "id", "name", "stamina_cost", "range_m", "windup_ticks", "active_ticks",
-                                 "recover_ticks", "usable", "target_in_range"] for m in mv),
-          "observe().attack_moves lists index, name, cost, range, ticks, usable")
+    check(mv and all(list(m) == ["index", "id", "name", "role", "stamina_cost", "range_m", "windup_ticks", "active_ticks",
+                                 "recover_ticks", "cooldown_ticks", "cooldown_left", "equipped", "slot", "usable",
+                                 "target_in_range"] for m in mv),
+          "observe().attack_moves lists index, name, role, cost, range, ticks, cooldown, equipped, slot, usable")
+    check(o1["loadout"] == {"slots": ["bite", "charge", "spit", "tail_strike"], "signature_slot": None, "can_edit": True,
+                            "nest_radius_m": 12.0} and o1["known_moves"] == ["bite", "charge", "spit", "tail_strike"]
+          and "loadout" in o1["legal_verbs"], "observe() carries the loadout, known_moves and offers the loadout verb at the nest")
+    check(w1.command("loadout 1 none") == 0 and w1.observe()["loadout"]["slots"][0] is None, "loadout SLOT none empties a slot")
+    check(w1.command("attack #1 bite") < 0 and w1.observe()["last_error"] == "not_equipped", "an unequipped move gives not_equipped")
+    check(w1.command("loadout 1 bite") == 0 and w1.command("attack #1 bite") == 0, "the move can be slotted back and used")
+    check(w1.command("loadout 9 bite") < 0 and w1.command("loadout 1 guard") < 0 and w1.observe()["last_error"] == "unknown_move",
+          "bad slot and non-attack moves are rejected")
+    w1.reset(42)
     check(all("attackable" in n for n in o1["nearby"] if n["type"] == "creature"), "nearby creatures carry attackable")
     check(w1.command("attack #1 BITE") == 0 and w1.command("attack #1 0") == 0, "attack accepts name (any case) or index")
     check(w1.command("attack #1 atack") < 0 and w1.observe()["last_error"] == "unknown_move", "unknown move gives unknown_move")

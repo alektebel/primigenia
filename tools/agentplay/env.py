@@ -14,24 +14,30 @@ from cpore.world import StageWorld  # noqa: E402
 
 BOUND = 195.0            # walkable half-extent; world-2 states it in obs["world"]["bound"], this is the fallback
 MAX_STEP = 3.0           # max plausible displacement per 10 Hz tick
-KNOWN_VERBS = {"go", "heading", "flee", "go_nest", "wait", "approach", "attack"}
+KNOWN_VERBS = {"go", "heading", "flee", "go_nest", "wait", "approach", "attack", "loadout"}
 MOVE_VERBS = {"go", "heading", "flee", "go_nest", "approach"}
 SCHEMA = "world-2"
 TOP_KEYS = ["schema", "tick", "clock", "world", "own", "last_error", "blocked", "events_dropped", "events",
-            "nearby", "legal_verbs", "attack_moves", "summary"]
+            "nearby", "legal_verbs", "loadout", "known_moves", "attack_moves", "summary"]
 WORLD_KEYS = ["bound", "units", "nest", "tick_hz"]
 BLOCK_REASONS = {"cliff", "water", "edge", "creature", "unreachable", "obstacle"}
 EVENT_TYPES = {"hit", "kill", "death", "respawn", "order_rejected", "path_found", "arrived", "fled", "path_failed"}
 CREATURE_STATES = {"roam", "alert", "fighting", "carcass", "dead"}
 CREATURE_KEYS = ["id", "type", "species", "distance", "bearing", "hp", "hp_max", "state", "in_fight", "attackable"]
-MOVE_KEYS = ["index", "id", "name", "stamina_cost", "range_m", "windup_ticks", "active_ticks", "recover_ticks",
-             "usable", "target_in_range"]
+MOVE_KEYS = ["index", "id", "name", "role", "stamina_cost", "range_m", "windup_ticks", "active_ticks", "recover_ticks",
+             "cooldown_ticks", "cooldown_left", "equipped", "slot", "usable", "target_in_range"]
+LOADOUT_KEYS = ["slots", "signature_slot", "can_edit", "nest_radius_m"]
+ROLES = {"basic", "engage", "poke", "control", "defence", "signature"}
 OWN_KEYS = ["id", "x", "z", "hp", "stamina", "hp_max", "stamina_max", "speed", "facing"]
 NEAR_TYPES = {"creature", "carcass", "nest", "rock", "tree"}
 KNOWN_ERRORS = {"ok", "invalid command or value", "invalid or unavailable target",
-                "invalid or unavailable attack move", "unreachable", "no_threat", "unknown_move"}
+                "invalid or unavailable attack move", "unreachable", "no_threat", "unknown_move",
+                "on_cooldown", "not_equipped", "not_known", "not_at_nest", "in_fight",
+                "invalid slot (1..4, and a signature move only fits the signature slot)"}
 ERR_TEXT = {0: "ok", -1: "invalid command or value", -2: "invalid or unavailable target",
-            -3: "invalid or unavailable attack move", -4: "unreachable", -5: "no_threat", -6: "unknown_move"}
+            -3: "invalid or unavailable attack move", -4: "unreachable", -5: "no_threat", -6: "unknown_move",
+            -8: "on_cooldown", -9: "not_equipped", -10: "invalid slot (1..4, and a signature move only fits the signature slot)",
+            -11: "not_known", -12: "unknown_move", -13: "not_at_nest", -14: "in_fight"}
 
 
 def clone_world(w: StageWorld) -> StageWorld:
@@ -161,9 +167,22 @@ class Episode:
                     self.bug("schema_drift", f"bad creature entry {n}")
             if n["type"] == "carcass" and n["id"] not in self.wins:
                 self.wins.add(n["id"])
+        lo = o["loadout"]
+        known = o["known_moves"]
+        names = [m["name"] for m in o["attack_moves"]]
+        if list(lo.keys()) != LOADOUT_KEYS or len(lo["slots"]) != 4 or lo["can_edit"] != ("loadout" in o["legal_verbs"]) \
+                or any(s is not None and s not in known for s in lo["slots"]) \
+                or len([s for s in lo["slots"] if s is not None]) != len(set(s for s in lo["slots"] if s is not None)) \
+                or lo["signature_slot"] not in (None, 1, 2, 3, 4):
+            self.bug("schema_drift", f"bad loadout {lo}")
+        if not isinstance(known, list) or sorted(known) != sorted(names):
+            self.bug("schema_drift", f"known_moves {known} differ from attack_moves {names}")
         for m in o["attack_moves"]:
+            slot = m.get("slot")
             if list(m.keys()) != MOVE_KEYS or not isinstance(m["usable"], bool) or m["stamina_cost"] < 0 \
-                    or m["range_m"] < 0 or m["index"] != m["id"]:
+                    or m["range_m"] < 0 or m["index"] != m["id"] or m["role"] not in ROLES \
+                    or m["equipped"] != (slot is not None) or (slot is not None and lo["slots"][slot - 1] != m["name"]) \
+                    or not 0 <= m["cooldown_left"] <= m["cooldown_ticks"] or (m["usable"] and not m["equipped"]):
                 self.bug("schema_drift", f"bad attack_moves entry {m}")
         if o["last_error"] not in KNOWN_ERRORS:
             self.bug("schema_drift", f"unknown last_error {o['last_error']!r}")
@@ -173,7 +192,8 @@ class Episode:
         o = self.obs
         legal = set(o["legal_verbs"])
         n_wild = 24
-        moves = [m["name"] for m in o["attack_moves"]]
+        moves = [m["name"] for m in o["attack_moves"] if m["equipped"]]
+        any_known = (o["known_moves"] or ["bite"])[0]
         try:
             for v in KNOWN_VERBS:
                 ok = False
@@ -185,6 +205,8 @@ class Episode:
                     ok = clone_world(self.w).command(v) == 0
                 elif v == "approach":
                     ok = any(clone_world(self.w).command(f"approach #{i}") == 0 for i in range(1, n_wild + 1))
+                elif v == "loadout":
+                    ok = clone_world(self.w).command(f"loadout 1 {any_known}") == 0
                 elif v == "attack":
                     ok = any(clone_world(self.w).command(f"attack #{i} {m}") == 0
                              for i in range(1, n_wild + 1) for m in (moves or ["bite"]))
@@ -205,7 +227,7 @@ class Episode:
         try:
             if cmd is not None:
                 code = self.w.command(cmd)
-                if code == 0:
+                if code == 0 and verb != "loadout":     # instant, not a standing order
                     self.order = (verb, cmd)
             self.ops.append(cmd)
             self.turn_blocked = []

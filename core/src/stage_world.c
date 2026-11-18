@@ -1560,6 +1560,7 @@ int cp_stage_observe_v(const CpStageWorld *w,char *out,size_t cap,int version){
     for(int i=0;i<CB_MOVE_COUNT;i++)if(attack_move_ok(w,i)&&cp_combat_loadout_slot_of(&w->loadout,i)>=0)attacks++;
     if(target)ADD(",\"approach\"");
     if(target&&attacks)ADD(",\"attack\"");
+    if(version==2&&w->active<0&&length(w->player.x-w->setup.nest_x,w->player.z-w->setup.nest_z)<=CP_STAGE_NEST_RADIUS)ADD(",\"loadout\"");   /* only at the nest, never in a fight */
     ADD("]");
     if(version==2){
         /* A21: the kit. Slots are keys 1..4; guard and dodge are always available and never in a slot. */

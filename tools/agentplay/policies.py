@@ -28,7 +28,8 @@ Commands (one per turn; the last accepted order keeps running until you give a n
   go X Z            walk to coordinates (routes around cliffs and water; "unreachable" if there is no way)
   heading DEG       walk in a direction (degrees: 0 = +z, 90 = +x, clockwise seen from above)
   approach #ID      walk toward creature ID
-  attack #ID MOVE   attack creature ID with a move from attack_moves (its name, any case, or its index number); an unknown move gives last_error unknown_move
+  attack #ID MOVE   attack creature ID with a move from attack_moves (its name, any case, or its index number); an unknown move gives last_error unknown_move, a move outside your loadout not_equipped, one still recharging on_cooldown
+  loadout SLOT MOVE put a known move (name, or its index number; "none" empties the slot) in attack slot SLOT 1-4; only near the nest and never during a fight, listed in legal_verbs as "loadout" when allowed. Errors: not_at_nest, in_fight, not_known, unknown_move, invalid slot
   flee              run away from the nearest creature (error no_threat if none is within 30 m)
   go_nest           return to the nest (safe place)
   wait              stand still
@@ -38,7 +39,9 @@ Only verbs in legal_verbs are available. Observation fields:
   last_error: result of your last command ("ok" or why it was rejected); it stays until your next command
   blocked: null, or {{reason: cliff|water|edge|obstacle|creature|unreachable, x, z}} when you were stopped during the last tick
   events: what happened since your last turn: hit {{by,target,move,damage}}, kill, death, respawn, order_rejected, path_found, arrived, fled, path_failed (ids: 0 = you, 1.. = creatures); a kill, death or fled event also ends your standing order
-  attack_moves: your attack moves, each {{index, id (same as index), name, stamina_cost, range_m (reach from your centre to the target's surface), windup_ticks, active_ticks, recover_ticks, usable (enough stamina and free to act now), target_in_range (nearest valid target is within range_m, or null if none)}}; use name or index in "attack #ID MOVE"
+  loadout: {{slots: your 4 attack slots in order (a move name or null), signature_slot (1-4 or null), can_edit (true at the nest outside a fight), nest_radius_m}}; guard and dodge are always available and never in a slot
+  known_moves: the attack moves you may put in a slot
+  attack_moves: your known attack moves, each {{index, id (same as index), name, role (basic|engage|poke|control|defence|signature), stamina_cost, range_m (reach from your centre to the target's surface), windup_ticks, active_ticks, recover_ticks, cooldown_ticks (recharge time after each use), cooldown_left (ticks until it can start again, 0 = ready), equipped (in a slot: only equipped moves can be used), slot (1-4 or null), usable (equipped, ready, enough stamina and free to act now), target_in_range (nearest valid target is within range_m, or null if none)}}; use name or index in "attack #ID MOVE"
   nearby: creatures and carcasses (id, species, distance, bearing in degrees relative to your facing, positive = clockwise/right, hp, hp_max, state roam|alert|fighting|carcass|dead, in_fight, attackable = in reach of at least one of your attack moves right now), the nest, rocks and trees within 40 m
 Reply format:
 ACTION: <one command>
@@ -77,7 +80,7 @@ def parse_reply(text: str):
         return _clean(m.group(1)), note, "action"
     for line in t.splitlines():
         line = line.strip().strip("`").strip()
-        if re.match(r"^(go|heading|approach|attack|flee|go_nest|wait)\b", line, re.I):
+        if re.match(r"^(go|heading|approach|attack|loadout|flee|go_nest|wait)\b", line, re.I):
             return _clean(line), note, "line"
     return None, note, "unparsed"
 
@@ -97,7 +100,7 @@ class ScriptedPolicy:
         self.i += 1
         o = obs
         live = [n for n in o["nearby"] if n["type"] == "creature"]
-        moves = [m["name"] for m in o["attack_moves"]] or ["bite"]
+        moves = [m["name"] for m in o["attack_moves"] if m["equipped"]] or ["bite"]
         p = self.persona
         if p == "fighter":
             tgt = next((n for n in live if n["id"] == 1), None)
@@ -133,6 +136,7 @@ class RandomPolicy:
              "heading": lambda: f"heading {r.choice([r.uniform(-720, 720), 1e9, 'nan'])}",
              "approach": lambda: f"approach #{r.choice(ids)}",
              "attack": lambda: f"attack #{r.choice(ids)} {r.choice(moves)}",
+             "loadout": lambda: f"loadout {r.choice([1, 2, 3, 4, 4, 5, 0, -1])} {r.choice(moves + ['none'])}",
              "bogus": lambda: r.choice(["", "dance", "go", "attack #1", "heading", "go 1", "wait now", "ATTACK #1 bite", "go_nest please"]),
              }.get(v, lambda: v)()
         return c, None

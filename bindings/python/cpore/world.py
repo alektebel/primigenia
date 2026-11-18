@@ -25,6 +25,7 @@ CP_STAGE_FLEE = 6
 CP_STAGE_GO_NEST = 7
 CP_STAGE_GUARD = 8
 CP_STAGE_DODGE = 9
+CP_STAGE_LOADOUT = 10   # target = slot 1..4, move = move id or -1 (empty); instant, only near the nest, never in a fight
 
 CP_STAGE_MAX_WILD = 24
 CP_STAGE_MAX_OBSTACLES = 1024
@@ -173,6 +174,7 @@ def input_from_mapping(action: dict) -> CpStageInput:
             "go_nest": CP_STAGE_GO_NEST,
             "guard": CP_STAGE_GUARD,
             "dodge": CP_STAGE_DODGE,
+            "loadout": CP_STAGE_LOADOUT,
         }[verb]
     return CpStageInput(
         int(verb),

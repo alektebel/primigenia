@@ -26,13 +26,16 @@ def random_command(obs: dict, rng: random.Random) -> str:
             return f"approach #{creatures[0]}"
         return "wait"
     if verb == "attack":
-        moves = obs.get("attack_moves") or [{"id": 0, "name": "bite"}]
+        moves = [m for m in obs.get("attack_moves", []) if m.get("equipped", True)] or [{"id": 0, "name": "bite"}]
         creatures = [e["id"] for e in obs.get("nearby", [])
                      if e.get("type") == "creature"]
         if creatures and moves:
             mv = rng.choice(moves)
             return f"attack #{creatures[0]} {mv['name']}"
         return "wait"
+    if verb == "loadout":
+        known = obs.get("known_moves") or ["bite"]
+        return f"loadout {rng.randint(1, 4)} {rng.choice(known)}"
     return verb
 
 
