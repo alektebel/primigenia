@@ -1,0 +1,288 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "corrienta",
+  "name": {
+    "en": "Corrienta"
+  },
+  "world": "silicon_cryo",
+  "kind": "new",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "CH₄/ethane equatorial troughs with slow subsurface currents",
+    "diet": "Colloidal organosilicon + photolytic trace oxidants",
+    "active": "Crepuscular (peak activity during fog drizzle and micro-flare ionization)",
+    "predators": []
+  },
+  "body": "Ribbon-like morphology with porous filtration fronds, lateral fin-flaps, and chemical gradient receptors",
+  "chains": [
+    {
+      "id": "corrienta.c1",
+      "trait": "Porous filtration fronds",
+      "links": [
+        "Strains organosilicon colloids from slow methane currents",
+        "Phase boundaries force solute accumulation at liquid interfaces",
+        "F20"
+      ],
+      "roots": [
+        "F20"
+      ],
+      "skill": {
+        "id": "corrienta.colloid_filter",
+        "name": {
+          "en": "Colloid Filter"
+        },
+        "role": "Basic",
+        "effect": "Extracts nutrients from liquid terrain, healing 5 HP/s",
+        "numbers": {}
+      },
+      "weakness": "Clogs in pure solvent zones without solute gradients",
+      "observe": [
+        "Lace-like frond edges",
+        "Sediment clouds behind movement",
+        "Stationary hover posture"
+      ],
+      "journal": {
+        "en": "It drinks the sea's whisper."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Place feeding at CH₄/N₂ or CH₄/C₂H₆ interface shoals (F11, F20) or specify equatorial membranes as organosilicon–nitrile copolymers stable in methane, with azotosome-like pores only at phase contacts.",
+        "fixes": [
+          "Place feeding at CH₄/N₂ or CH₄/C₂H₆ interface shoals (F11, F20) or specify equatorial membranes as organosilicon–nitrile copolymers stable in methane, with azotosome-like pores only at phase contacts."
+        ],
+        "analogues": [
+          {
+            "organism": "Sponges (Porifera) and baleen whales — passive filtration of suspended organics; estuarine fronts — solute stacking at density interfaces.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "corrienta.c2",
+      "trait": "Lateral fin-flaps",
+      "links": [
+        "Maintains position in slow trough currents",
+        "Low gravity and high fluid density allow sustained hovering",
+        "F4"
+      ],
+      "roots": [
+        "F4",
+        "F9"
+      ],
+      "skill": {
+        "id": "corrienta.current_anchor",
+        "name": {
+          "en": "Current Anchor"
+        },
+        "role": "Control",
+        "effect": "Pins allies or enemies in place for 2s using liquid drag",
+        "numbers": {}
+      },
+      "weakness": "Useless in still fluid or vacuum pockets",
+      "observe": [
+        "Wave-matching fin rhythm",
+        "Tilt against invisible flow",
+        "Surface tension ripples"
+      ],
+      "journal": {
+        "en": "It rides the dark river without fighting it."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Dense cryo-hydrocarbon fluids at ~0.86 g and low-Reynolds swimming/hovering against slow trough currents is feasible without high metabolic burst. Using broad fins for station-holding matches crepuscular filter-feeding ecology.",
+        "fixes": [
+          "Dense cryo-hydrocarbon fluids at ~0.86 g and low-Reynolds swimming/hovering against slow trough currents is feasible without high metabolic burst. Using broad fins for station-holding matches crepuscular filter-feeding ecology."
+        ],
+        "analogues": [
+          {
+            "organism": "Manta ray cephalic fins and sea angels (Clione) — gentle positioning in weak currents.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "corrienta.c3",
+      "trait": "Chemical gradient receptors",
+      "links": [
+        "Tracks trace oxidant plumes from photolysis",
+        "Dense fog and weak light make chemical trails the only reliable navigation",
+        "F18"
+      ],
+      "roots": [
+        "F18",
+        "F10"
+      ],
+      "skill": {
+        "id": "corrienta.scent_trail",
+        "name": {
+          "en": "Scent Trail"
+        },
+        "role": "Engage",
+        "effect": "Reveals hidden path to resource nodes, granting +20% movement speed",
+        "numbers": {}
+      },
+      "weakness": "Overwhelmed by uniform chemical noise or heavy fog",
+      "observe": [
+        "Antennae twitching",
+        "Sudden directional lunges",
+        "Chemical bloom clouds"
+      ],
+      "journal": {
+        "en": "It tastes the future before it arrives."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "In fog-drenched, optically dull habitats (F10, F18), chemosensory navigation along photolytic oxidant and organosilicon trails is expected. Failure in uniform plumes mirrors sensory crowding in real chemotaxis.",
+        "fixes": [
+          "In fog-drenched, optically dull habitats (F10, F18), chemosensory navigation along photolytic oxidant and organosilicon trails is expected. Failure in uniform plumes mirrors sensory crowding in real chemotaxis."
+        ],
+        "analogues": [
+          {
+            "organism": "Salmon homing on dissolved cues; moth pheromone gradient tracking (Bombyx) — aerial/stream chemical filaments.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "corrienta.c4",
+      "trait": "Crepuscular activity bursts",
+      "links": [
+        "Aligns with fog-drizzle peaks and micro-flare ionization",
+        "Stratospheric haze regulation and stochastic flares create transient reactive windows",
+        "F19"
+      ],
+      "roots": [
+        "F19",
+        "F3"
+      ],
+      "skill": {
+        "id": "corrienta.flare_sprint",
+        "name": {
+          "en": "Flare Sprint"
+        },
+        "role": "Basic",
+        "effect": "2s burst speed +30% during active micro-flare events",
+        "numbers": {}
+      },
+      "weakness": "Exhaustion follows burst; highly vulnerable post-activity",
+      "observe": [
+        "Energy spikes before movement",
+        "Haze-dissolving gas exhalation",
+        "Eyes reflecting transient light"
+      ],
+      "journal": {
+        "en": "It waits for the sky to bleed light, then runs."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Reflavor Flare Sprint as deployment of pre-accumulated photolytic oxidants and frond unclogging during ionization windows; modest mobility increase or feeding/healing spike, with post-window torpor vulnerability.",
+        "fixes": [
+          "Reflavor Flare Sprint as deployment of pre-accumulated photolytic oxidants and frond unclogging during ionization windows; modest mobility increase or feeding/healing spike, with post-window torpor vulnerability."
+        ],
+        "analogues": [
+          {
+            "organism": "Intertidal filter feeders opening during tidal surge — exploitation of periodic resource pulses, not faster ATP clocks.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "bains_2004_many"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-18",
+    "by": [
+      "naturalist/qwen"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-18",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-18"
+    },
+    {
+      "date": "2026-11-18",
+      "who": "autoloop",
+      "what": "removed rejected references from analogues"
+    }
+  ],
+  "temperament": "Placid, communal, highly reactive to chemical shifts",
+  "secrets": [
+    "Filtration fronds can temporarily seal to conserve moisture during dry fog spells.",
+    "Communal clustering creates a localized pressure wave that disorients larger predators."
+  ],
+  "moments": [
+    "When the haze thins and the first flare hits, a hundred Corrienta unfold their fronds like pale flowers, drinking the sky's electric breath."
+  ],
+  "journal": [
+    {
+      "en": "It does not chase food. It waits for the sea to bring it."
+    },
+    {
+      "en": "Chemical trails are its highways; solvent boundaries are its walls."
+    }
+  ]
+}

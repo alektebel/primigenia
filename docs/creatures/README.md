@@ -49,6 +49,16 @@
 |---|---|---|---|---|
 | [Ecolumbre](ecolumbre.md) | native | draft | 4 | 1 fixable, 3 plausible |
 
+## Silicon cryogenic world (`silicon_cryo`)
+
+| Creature | Kind | Status | Chains | Verdicts |
+|---|---|---|---|---|
+| [Ceníx](cenix.md) | new | draft | 4 | 3 fixable, 1 plausible |
+| [Corrienta](corrienta.md) | new | draft | 4 | 2 fixable, 2 plausible |
+| [Escarchón](escarchon.md) | new | draft | 4 | 2 fixable, 2 plausible |
+| [Sifon-Hielo](sifon_hielo.md) | new | draft | 4 | 2 fixable, 2 plausible |
+| [Vivisilice](vivisilice.md) | new | draft | 4 | 1 fixable, 3 plausible |
+
 ## Silicon Hot World (`silicon_hot`)
 
 | Creature | Kind | Status | Chains | Verdicts |

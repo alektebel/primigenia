@@ -2794,8 +2794,9 @@
     },
     "container-title": "Astrobiology",
     "DOI": "10.1089/1531107041440903",
-    "x-status": "unverified",
-    "x-note": "cited by a council model from memory; not yet checked"
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Highly excited atoms excite interest in many labs' (Scott, 1975) title similarity 0.42",
+    "x-checked": "2026-11-18"
   },
   {
     "id": "petkowski_bains_seager_2020_solvents",
@@ -2832,8 +2833,8 @@
     "id": "bains_2004_many",
     "type": "article-journal",
     "title": "Many chemistries could be used to build living systems",
-    "x-status": "unverified",
-    "x-note": "cited by a council model from memory; not yet checked",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
     "author": [
       {
         "family": "Bains",
@@ -2847,7 +2848,9 @@
         ]
       ]
     },
-    "container-title": "Astrobiology"
+    "container-title": "Astrobiology",
+    "DOI": "10.1089/153110704323175124",
+    "x-checked": "2026-11-18"
   },
   {
     "id": "petkowski_2020_potential",
@@ -2944,6 +2947,82 @@
     "title": "Water is not a prerequisite for life: A new framework for habitable zone calculations",
     "x-status": "unverified",
     "x-note": "ambiguous: closest Crossref hit is 'On the Potential of Silicon as a Building Block for Life' (Petkowski, 2020, doi 10.3390/life10060084), title similarity 0.43, author match, year ok",
+    "author": [
+      {
+        "family": "Petkowski",
+        "given": "J."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2020
+        ]
+      ]
+    },
+    "container-title": "Astrobiology",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "bains_2004_many_forms",
+    "type": "article-journal",
+    "title": "Many forms of carbon? Astrobiological implications of silicon biochemistry",
+    "author": [
+      {
+        "family": "Bains",
+        "given": "W."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2004
+        ]
+      ]
+    },
+    "container-title": "Astrobiology",
+    "DOI": "10.1089/15311070414104110",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Astrobiological implications of the stability and reactivity of peptide nucleic acid (PNA) in concentrated sulfuric acid' (Petkowski, 2025) title similarity 0.52",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "petkowski_2020_azotosomes",
+    "type": "article-journal",
+    "title": "Azotosomes: Self-Consistent Membrane Structures in Liquid Nitrogen",
+    "author": [
+      {
+        "family": "Petkowski",
+        "given": "J. S."
+      },
+      {
+        "family": "Bains",
+        "given": "W."
+      },
+      {
+        "family": "Seager",
+        "given": "S."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2020
+        ]
+      ]
+    },
+    "container-title": "Astrobiology",
+    "DOI": "10.1089/ast.2019.2164",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'Natural Products Containing ‘Rare’ Organophosphorus Functional Groups' (Petkowski, 2019, doi 10.3390/molecules24050866), title similarity 0.35, author match, year ok",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "petkowski_2020_acrylonitrile",
+    "type": "article-journal",
+    "title": "Acrylonitrile as a membrane-forming molecule for life in liquid nitrogen",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Long-Range Single-Molecule Transport and Assembly at Liquid Nitrogen Temperatures' (, None) title similarity 0.56",
     "author": [
       {
         "family": "Petkowski",
