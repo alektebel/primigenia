@@ -10,3 +10,7 @@ godot/.godot/
 feedback/
 godot/devtools/build.txt
 godot/scenarios/creature/quick-*
+
+# lore council runs and HTTP cache
+tools/lore/council/runs/
+tools/lore/.cache/

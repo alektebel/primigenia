@@ -1,6 +1,8 @@
 {
-  "schema": "cpore.planet/1",
+  "schema": "cpore.world/1",
   "id": "primigenia",
+  "kind": "fictional",
+  "system": {"star": "G1-G2V, yellow-white, quiet and middle-aged", "position": "fictional; no galactic position fixed", "distance_ly_from_sol": null},
   "name": {"en": "Primigenia (the island world)", "es": "Primigenia (el mundo de la isla)"},
   "status": "draft",
   "facts": [

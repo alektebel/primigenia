@@ -405,3 +405,14 @@ godot-loadout-evidence: godot
 	@mkdir -p docs/evidence/godot/loadout
 	LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 600 xvfb-run -a $(GODOT) --rendering-driver opengl3 --max-fps 15 \
 	  --resolution 1280x720 --path godot --script res://game/tests/loadout_evidence.gd -- $(CURDIR)/docs/evidence/godot/loadout
+
+# ---- lore (docs/LORE-FORMAT.md, tools/lore/README.md) ----
+.PHONY: lore-check lore-refcheck
+lore-check:
+	python3 -m unittest discover tools/lore/tests
+	python3 tools/lore/validate.py
+	python3 tools/lore/render.py
+	git diff --exit-code -- docs/creatures docs/lore
+	@if git status --porcelain docs/creatures docs/lore | grep -q '^??'; then echo "untracked rendered docs: git add them"; exit 1; fi
+lore-refcheck:
+	python3 tools/lore/refcheck.py
