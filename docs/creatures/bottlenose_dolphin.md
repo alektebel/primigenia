@@ -56,7 +56,7 @@ Trait ← each animal invents one individually distinctive frequency-modulated w
   - 2 km summon is plausible for acoustic contact in open ocean but not guaranteed in noisy coastal habitat; add noise/habitat modifier halving range.
   - scores: astrobio 9, designer 8, physicist 8, skeptic 9
   - Analogue: Bottlenose dolphin individually distinctive signature whistle, learned and copied — cohesion/identification (Janik & Slater; playback approach in Sayigh et al.): as named by the judge; no mechanism or reference recorded
-  - Analogue: real biology behind this chain: see the cited works; chain wording is the council's own (Janik 1998 [verified]; Sayigh 1999 [unverified])
+  - Analogue: real biology behind this chain: see the cited works; chain wording is the council's own (Janik 1998 [verified]; Sayigh 1999 [verified])
   - Fix: 2 km summon is plausible for acoustic contact in open ocean but not guaranteed in noisy coastal habitat; add noise/habitat modifier halving range.
 
 ### bottlenose_dolphin.c3: One hemisphere asleep at a time
@@ -73,7 +73,7 @@ Trait ← half the brain sleeps while the other half keeps watching and keeps th
 - **Plausibility:** plausible (judge astrobio/autoloop-2026-11-18, 2026-11-18)
   - scores: astrobio 10, designer 7, physicist 9, skeptic 8
   - Analogue: Cetacean unihemispheric slow-wave sleep (USWS) — blowhole vigilance while resting (Lyamin et al.; also fur seals/other marine mammals with variants): as named by the judge; no mechanism or reference recorded
-  - Analogue: real biology behind this chain: see the cited works; chain wording is the council's own (Lyamin 2008 [unverified])
+  - Analogue: real biology behind this chain: see the cited works; chain wording is the council's own (Lyamin 2008 [verified])
 
 ## Relations
 

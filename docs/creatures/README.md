@@ -11,6 +11,15 @@
 | [Humans](humans.md) | native | draft | 5 | 5 plausible |
 | [Pronghorn](pronghorn.md) | native | draft | 3 | 3 plausible |
 
+## Erid (`erid`)
+
+| Creature | Kind | Status | Chains | Verdicts |
+|---|---|---|---|---|
+| [Eridians](eridians.md) | easter_egg | draft | 5 | 1 fixable, 4 plausible |
+| [Espinovent](espinovent.md) | new | draft | 4 | 2 fixable, 2 plausible |
+| [Hidrazón](hidrazon.md) | new | draft | 4 | 1 fixable, 3 plausible |
+| [Nubezón](nubezon.md) | new | draft | 4 | 3 fixable, 1 plausible |
+
 ## Primigenia (the island world) (`primigenia`)
 
 | Creature | Kind | Status | Chains | Verdicts |

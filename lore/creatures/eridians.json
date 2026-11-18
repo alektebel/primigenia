@@ -1,0 +1,427 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "eridians",
+  "name": {
+    "en": "Eridians"
+  },
+  "world": "erid",
+  "kind": "easter_egg",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "Nitride-vein canyons and hydrothermal basins where metal-rich brines pool under 40-bar pressure.",
+    "diet": "Ammonia-assimilation grazer; metabolizes nitride-filaments and bio-sintered carbide crusts, recycling NH₃ into amidine polymers with urea-like slurry waste.",
+    "active": "Continuous; the opaque haze and slow rotation erase diurnal cues, so activity tracks thermal gradients and acoustic social rhythms.",
+    "predators": [
+      "Pressure-crushing ambushers",
+      "Thermal-vent leviathans"
+    ],
+    "prey": [
+      "Nitride-filament colonies",
+      "Brine-ammonoids"
+    ]
+  },
+  "body": "A low-slung, multi-limbed crawler with a laminated carapace reinforced by bio-scavenged iron-nickel inlays that distribute load under 1.35 g and resist fracture. Fluid-filled internal cavities match the 40-bar ambient pressure, while vascularized thoracic flaps radiate metabolic heat to prevent overheating.",
+  "chains": [
+    {
+      "id": "eridians.c1",
+      "trait": "Jaw-thoracic resonators for echolocation mapping",
+      "links": [
+        "Perpetual haze blinds visible light",
+        "Dense ammonia atmosphere speeds sound",
+        "Resonators pulse clicks to map geometry",
+        "Echo delay reveals terrain and stealth"
+      ],
+      "roots": [
+        "F8",
+        "F9",
+        "F14"
+      ],
+      "skill": {
+        "id": "eridians.sonic_loom",
+        "name": {
+          "en": "Sonic Loom"
+        },
+        "role": "Signature",
+        "effect": "Maps 15m radius, reveals stealth units, stuns targets for 2s.",
+        "numbers": {}
+      },
+      "weakness": "Dissonance burst stuns resonators; high frequencies cause feedback pain.",
+      "observe": [
+        "Throat plates vibrating rapidly",
+        "Ear-slits dilating to ambient noise",
+        "Low hum audible before sight"
+      ],
+      "journal": {
+        "en": "They weave the world's shape from voice."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Treat 'stun 2s' as startle/disorientation from saturation or high SPL clicks, not neuromuscular paralysis; cap mapping at ~15–25 m given F8 haze and multipath clutter; prefer low-frequency calls (NH₃ absorption punishes highs, matching the dissonance weakness).",
+        "fixes": [
+          "Treat 'stun 2s' as startle/disorientation from saturation or high SPL clicks, not neuromuscular paralysis; cap mapping at ~15–25 m given F8 haze and multipath clutter; prefer low-frequency calls (NH₃ absorption punishes highs, matching the dissonance weakness)."
+        ],
+        "analogues": [
+          {
+            "organism": "Oilbird (Steatornis caripensis) and cave swiftlets—oral/head-region echolocation in visually depauperate habitats; horseshoe bats (Rhinolophidae) couple nasal/oral resonators to narrowband CF clicks.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "designer": 9,
+          "physicist": 9
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "physicist",
+          "naturalist",
+          "mythmaker",
+          "wildcard"
+        ]
+      }
+    },
+    {
+      "id": "eridians.c2",
+      "trait": "Laminated Fe-Ni carapace with cultural sintering",
+      "links": [
+        "1.35 g fractures organic exoskeletons",
+        "Hydrothermal vents precipitate metal nitrides",
+        "Bio-scavengers concentrate metals along stress lines",
+        "Cultural sintering fuses inlays into super-strong alloys"
+      ],
+      "roots": [
+        "F3",
+        "F11",
+        "F17",
+        "F20"
+      ],
+      "skill": {
+        "id": "eridians.sonic_anvil",
+        "name": {
+          "en": "Sonic Anvil"
+        },
+        "role": "Basic",
+        "effect": "Strikes ground to send tremor (15m); knocks down low-gravity foes and cracks brittle structures.",
+        "numbers": {}
+      },
+      "weakness": "Requires stable footing; slippery terrain nullifies tremor. Heavy armor slows movement.",
+      "observe": [
+        "Metallic clatter on shell as they move",
+        "Glowing heat visible at joint inlays during exertion",
+        "Carrying a sintered metal shard or tool"
+      ],
+      "journal": {
+        "en": "Their shells sing of the vents, and their tools answer back."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Frame 'super-strong' as carbide/nitride–ceramic matrices or diffusion-bonded laminates sintered at vent temperatures (F11/F20), not ambient 330 K steelmaking; keep inlays localized (F17) so carapace stays organomineral, not a full metal shell; Sonic Anvil as substrate-borne vibration is fine—don't imply the shell alone alloys on impact.",
+        "fixes": [
+          "Frame 'super-strong' as carbide/nitride–ceramic matrices or diffusion-bonded laminates sintered at vent temperatures (F11/F20), not ambient 330 K steelmaking; keep inlays localized (F17) so carapace stays organomineral, not a full metal shell; Sonic Anvil as substrate-borne vibration is fine—don't imply the shell alone alloys on impact."
+        ],
+        "analogues": [
+          {
+            "organism": "Chiton (Polyplacophora) magnetite/iron mineral teeth along wear zones (Weaver et al. 2010 PNAS—iron biominerals in chiton teeth); cultural pyro/pressure processing analogous to human powder metallurgy and ceramic sintering, not biological alloying.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "meyers_2008_biological"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 7,
+          "designer": 9,
+          "physicist": 9
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "physicist",
+          "naturalist",
+          "mythmaker",
+          "wildcard"
+        ]
+      }
+    },
+    {
+      "id": "eridians.c3",
+      "trait": "Multi-limbed, low-slung crawling gait",
+      "links": [
+        "1.35 g torque prohibits bipedalism",
+        "Distributed load-bearing ensures traction",
+        "Stagnant-lid tectonics leave viscous terrain",
+        "Low-slung crawl minimizes gravitational torque"
+      ],
+      "roots": [
+        "F3",
+        "F4",
+        "F15"
+      ],
+      "skill": {
+        "id": "eridians.grav_plow",
+        "name": {
+          "en": "Grav-Plow"
+        },
+        "role": "Engage",
+        "effect": "Charges forward 8m, pushes obstacles, reduces friction by 20%.",
+        "numbers": {}
+      },
+      "weakness": "Upright posture doubles fall risk; high center of gravity topples easily.",
+      "observe": [
+        "Six legs planted wide",
+        "Belly scrapes ground",
+        "Slow rhythmic cadence"
+      ],
+      "journal": {
+        "en": "Gravity taxes the tall; they pay in limbs."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "analogues": [
+          {
+            "organism": "Sprawling, multi-legged graviportal locomotion as in crocodilians (low belly, wide track) and myriapods (centipedes/millipedes)—distributed support and low COM reduce pitch torque on soft ground.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own"
+          }
+        ],
+        "scores": {
+          "astrobio": 9,
+          "designer": 7,
+          "physicist": 7
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "physicist",
+          "naturalist",
+          "designer"
+        ]
+      }
+    },
+    {
+      "id": "eridians.c4",
+      "trait": "Fluid-filled internal cavities match 40 bar",
+      "links": [
+        "40 bar atmosphere crushes hollow organs",
+        "Fluids transmit pressure uniformly",
+        "Uniform pressure prevents tissue collapse",
+        "No gas bladders required for structural support"
+      ],
+      "roots": [
+        "F5",
+        "F16"
+      ],
+      "skill": {
+        "id": "eridians.hydrostatic_skin",
+        "name": {
+          "en": "Hydrostatic Skin"
+        },
+        "role": "Defence",
+        "effect": "Blocks 15 blunt damage; immune to crushing effects.",
+        "numbers": {}
+      },
+      "weakness": "Vulnerable to rapid depressurization attacks which expand internal fluid.",
+      "observe": [
+        "Glistening wet sheen suggests saturated biology",
+        "No chest expansion; intake vents hiss silently",
+        "Fluid sloshing visible beneath translucent carapace"
+      ],
+      "journal": {
+        "en": "They carry the weight of the sky inside them."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Stress that compliance comes from fluid-filled sinuses/hemocoel and minimal compressible gas (F16); any respiratory/metabolic voids must stay pressure-equilibrated—sudden depressurization causes barotrauma/cavitation in tissues (game weakness is honest).",
+        "fixes": [
+          "Stress that compliance comes from fluid-filled sinuses/hemocoel and minimal compressible gas (F16); any respiratory/metabolic voids must stay pressure-equilibrated—sudden depressurization causes barotrauma/cavitation in tissues (game weakness is honest)."
+        ],
+        "analogues": [
+          {
+            "organism": "Deep-sea gelatinous and benthic invertebrates living at high ambient pressure with minimal gas spaces; vertebrate analogue is pressure-adapted deep benthic fish without swim-bladder expansion at depth (traded for buoyancy control).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "designer": 8,
+          "physicist": 10
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "designer",
+          "mythmaker",
+          "wildcard"
+        ]
+      }
+    },
+    {
+      "id": "eridians.c5",
+      "trait": "Symbiotic NH3-assimilation gut with amidine slurry",
+      "links": [
+        "Reducing atmosphere lacks free oxygen and nitrates",
+        "NH2- chemistry dominates surface biochemistry",
+        "Symbiotic microbial guild fixes NH3 into amino acids",
+        "Gut absorbs nutrients; excretes amidine/guanidine slurry"
+      ],
+      "roots": [
+        "F6",
+        "F12",
+        "F18"
+      ],
+      "skill": {
+        "id": "eridians.nitrogen_tap",
+        "name": {
+          "en": "Nitrogen Tap"
+        },
+        "role": "Social",
+        "effect": "Channels for 1.5s to draw ambient NH3; heals 6 HP scaled by local ammonia concentration; attracts NH3-seeking allies.",
+        "numbers": {}
+      },
+      "weakness": "Oxidizers burn tissues; 'dry air' biome modifier halts healing and applies 2 HP/s solvent-depletion damage.",
+      "observe": [
+        "Gut-sacs pulse with visible symbiotic culture",
+        "Waste slurry crystallizes into amidine salts",
+        "Vent-brine pooling clings to carapace after feeding"
+      ],
+      "journal": {
+        "en": "They farm the air in their bellies. Their waste is poison to us, but a feast to the vents."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Macroscopic direct NH₃ diet is highly speculative— posit a symbiotic microbial guild (F12/F18) that fixes/assimilates reduced nitrogen, with the Eridian gut absorbing amino acids and excreting concentrated nitrogenous slurry (urea/urate-like); 'Nitrogen Tap' healing should read as environmental NH₃ uptake through symbionts or vent brines, not magic; oxidizer weakness stays; desiccation weakness fits ammonia-requiring water activity.",
+        "fixes": [
+          "Macroscopic direct NH₃ diet is highly speculative— posit a symbiotic microbial guild (F12/F18) that fixes/assimilates reduced nitrogen, with the Eridian gut absorbing amino acids and excreting concentrated nitrogenous slurry (urea/urate-like); 'Nitrogen Tap' healing should read as environmental NH₃ uptake through symbionts or vent brines, not magic; oxidizer weakness stays; desiccation weakness fits ammonia-requiring water activity."
+        ],
+        "analogues": [
+          {
+            "organism": "Terrestrial nitrogen economy: plants and rhizobia assimilate NH₄⁺/fixed N; ureotelic birds/mammals excrete concentrated nitrogen waste (uric acid/urea) to save water—mechanism parallel, solvent swapped.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "designer": 8,
+          "physicist": 9
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist",
+          "mythmaker",
+          "wildcard"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "K'thar",
+      "kind": "rivalry",
+      "note": "K'thar consumes Fe-Ni nitrides directly from hydrothermal precipitates; Eridians harvest the same veins for carapace inlays and tool-casting. K'thar foraging destabilizes Eridian structural supports.",
+      "via": "F11"
+    },
+    {
+      "with": "Krr-shatter",
+      "kind": "counter",
+      "note": "Krr-shatter emits a focused infrasonic pulse that resonates with Fe-Ni inlays, inducing micro-fractures. Eridians must apply 'Dampening' (mud-caking) or shift resonance to avoid carapace failure.",
+      "via": "F9"
+    },
+    {
+      "with": "Nimbus-wisp",
+      "kind": "symbiosis",
+      "note": "Nimbus-wisps use lipid bladders to drift in high-pressure currents, absorbing toxic ammonia clumps. Eridians groom wisps for clean slurry; wisps carry Eridian spores to new vent clusters using sound-guided flight.",
+      "via": "F9"
+    },
+    {
+      "with": "Silt-sponge",
+      "kind": "predation",
+      "note": "Silt-sponges filter concentrated amino-acid slurry from NH3-brine. Eridians harvest sponges for nutrient paste. Sponges deploy pressure-spines matching Eridian grip, requiring precise disarticulation skills to avoid injury.",
+      "via": "F10"
+    },
+    {
+      "with": "Iron-back",
+      "kind": "convergent",
+      "note": "Iron-backs also use low-slung, multi-limbed crawling and Fe-Ni inlays. Divergence: Iron-backs rely on passive armor and ambush; Eridians use active tool-use and acoustic manipulation. Iron-backs cannot sinter metal, limiting them to scavenged ore.",
+      "via": "F3"
+    },
+    {
+      "with": "Vacuum-biter",
+      "kind": "predation",
+      "note": "Vacuum-biters secrete a rapid-evaporation enzyme creating localized vacuum pockets. This exploits the Eridian's fluid-matched internal structure, causing implosion damage. Eridians are vulnerable to 'Silence' zones where biters hide.",
+      "via": "F16"
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-18",
+    "by": [
+      "designer",
+      "mythmaker",
+      "naturalist",
+      "physicist",
+      "wildcard"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-18",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-18"
+    },
+    {
+      "date": "2026-11-18",
+      "who": "autoloop",
+      "what": "removed rejected references from analogues"
+    }
+  ],
+  "lore_ref": {
+    "file": "lore/hailmary.en.json",
+    "id": "eridians"
+  },
+  "temperament": "Deeply communal and inquisitive, communicating complex metallurgical knowledge through modulated thoracic hums that resonate through the dense atmosphere.",
+  "secrets": [
+    "Electroreceptive ore-sense: They detect metal veins through solid rock using ampullary sensors, guiding migration to rich deposits.",
+    "Cultural pressure-sintering: They use geothermal heat and hydraulic pressure dies to forge carbide-nitride ceramics, a skill passed down socially."
+  ],
+  "moments": [
+    "Mapping a dark cavern by listening to the harmonic echo of a jaw-thoracic click.",
+    "Sintering a metal shard against a hot vent to craft a tool, emitting a puff of ammonia spray.",
+    "Harmonizing with a distant herd to coordinate a migration across a nitride plateau."
+  ]
+}

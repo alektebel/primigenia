@@ -57,7 +57,7 @@ Trait ← hundreds of separate stores are each remembered by the landmark beside
   - 50 m cache find is strong; frame as landmark vicinity search unless player cache has scent/sign cue. Re-hiding when watched is better documented as strategic recaching under observer risk in corvids broadly.
   - scores: astrobio 9, designer 9, physicist 7, skeptic 8
   - Analogue: Common raven caching and competitor-sensitive behaviour (Heinrich); tactical cache protection/raid sensitivity in Corvus corax (Bugnyar & Kotrschal): as named by the judge; no mechanism or reference recorded
-  - Analogue: real biology behind this chain: see the cited works; chain wording is the council's own (Heinrich 1998 [unverified]; Bugnyar 2002 [verified])
+  - Analogue: real biology behind this chain: see the cited works; chain wording is the council's own (Heinrich 1998 [verified]; Bugnyar 2002 [verified])
   - Fix: 50 m cache find is strong; frame as landmark vicinity search unless player cache has scent/sign cue. Re-hiding when watched is better documented as strategic recaching under observer risk in corvids broadly.
 - **Chain provenance:** council run `autoloop-2026-11-18`; by s, k, e, p, t, i, c
 

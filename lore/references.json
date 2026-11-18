@@ -215,8 +215,10 @@
       ]
     },
     "container-title": "Geophysical Research Letters",
-    "x-status": "unverified",
-    "x-note": "cited by a council model from memory; not yet checked"
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "DOI": "10.1029/2010gl045777",
+    "x-checked": "2026-11-18"
   },
   {
     "id": "laskar_2004_insolation",
@@ -305,8 +307,10 @@
       ]
     },
     "container-title": "Science",
-    "x-status": "unverified",
-    "x-note": "cited by a council model from memory; not yet checked"
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "DOI": "10.1126/science.265.5171.482",
+    "x-checked": "2026-11-18"
   },
   {
     "id": "canup_2012_moon",
@@ -695,7 +699,7 @@
   {
     "id": "walker_1981_thermostat",
     "type": "article-journal",
-    "title": "A negative feedback mechanism for the long-term stabilization of Earth's surface temperature",
+    "title": "A negative feedback mechanism for the long‐term stabilization of Earth's surface temperature",
     "author": [
       {
         "family": "Walker",
@@ -709,9 +713,11 @@
         ]
       ]
     },
-    "container-title": "Journal of Geophysical Research",
-    "x-status": "unverified",
-    "x-note": "cited by a council model from memory; not yet checked"
+    "container-title": "Journal of Geophysical Research: Oceans",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 0.99); title corrected from 'A negative feedback mechanism for the long-term stabilization of Earth's surface temperature'; container-title corrected from 'Journal of Geophysical Research'; DOI added",
+    "DOI": "10.1029/jc086ic10p09776",
+    "x-checked": "2026-11-18"
   },
   {
     "id": "hays_1976_pacemaker",
@@ -731,8 +737,10 @@
       ]
     },
     "container-title": "Science",
-    "x-status": "unverified",
-    "x-note": "cited by a council model from memory; not yet checked"
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "DOI": "10.1126/science.194.4270.1121",
+    "x-checked": "2026-11-18"
   },
   {
     "id": "lambeck_2014_sea_level",
@@ -1004,8 +1012,10 @@
       ]
     },
     "container-title": "Current Anthropology",
-    "x-status": "unverified",
-    "x-note": "cited by a council model from memory; not yet checked"
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "DOI": "10.1086/204350",
+    "x-checked": "2026-11-18"
   },
   {
     "id": "hrdy_2009_mothers",
@@ -1309,8 +1319,8 @@
     "id": "heinrich_1998_influence",
     "type": "article-journal",
     "title": "Influence of competitors on caching behaviour in the common raven, Corvus corax",
-    "x-status": "unverified",
-    "x-note": "cited by a council model from memory; not yet checked",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); container-title corrected from 'Animal Behaviour 56: 1083-1090'; DOI added",
     "author": [
       {
         "family": "Heinrich",
@@ -1324,7 +1334,9 @@
         ]
       ]
     },
-    "container-title": "Animal Behaviour 56: 1083-1090"
+    "container-title": "Animal Behaviour",
+    "DOI": "10.1006/anbe.1998.0906",
+    "x-checked": "2026-11-18"
   },
   {
     "id": "heinrich_1999_mind",
@@ -1444,8 +1456,8 @@
     "id": "lyamin_2008_cetacean",
     "type": "article-journal",
     "title": "Cetacean sleep: an unusual form of mammalian sleep",
-    "x-status": "unverified",
-    "x-note": "cited by a council model from memory; not yet checked",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); container-title corrected from 'Neuroscience & Biobehavioral Reviews 32: 1451-1484'; DOI added",
     "author": [
       {
         "family": "Lyamin",
@@ -1459,7 +1471,9 @@
         ]
       ]
     },
-    "container-title": "Neuroscience & Biobehavioral Reviews 32: 1451-1484"
+    "container-title": "Neuroscience &amp; Biobehavioral Reviews",
+    "DOI": "10.1016/j.neubiorev.2008.05.023",
+    "x-checked": "2026-11-18"
   },
   {
     "id": "martin_1990_vertebrate",
@@ -1532,8 +1546,8 @@
     "id": "sayigh_1999_individual",
     "type": "article-journal",
     "title": "Individual recognition in wild bottlenose dolphins: a field test using playback experiments",
-    "x-status": "unverified",
-    "x-note": "cited by a council model from memory; not yet checked",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); container-title corrected from 'Animal Behaviour 57: 41-50'; DOI added",
     "author": [
       {
         "family": "Sayigh",
@@ -1547,7 +1561,9 @@
         ]
       ]
     },
-    "container-title": "Animal Behaviour 57: 41-50"
+    "container-title": "Animal Behaviour",
+    "DOI": "10.1006/anbe.1998.0961",
+    "x-checked": "2026-11-18"
   },
   {
     "id": "wheeler_1991_thermoregulatory",
@@ -1593,6 +1609,508 @@
     },
     "container-title": "Comparative Biochemistry and Physiology Part A: Molecular &amp; Integrative Physiology",
     "DOI": "10.1016/s1095-6433(03)00020-5",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "gray2006_stellaruv",
+    "type": "article-journal",
+    "title": "The FLAIR Revisited",
+    "author": [
+      {
+        "family": "Gray",
+        "given": "D. R."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2006
+        ]
+      ]
+    },
+    "container-title": "Solar Physics",
+    "DOI": "10.1007/s11207-006-0152-1",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'Epiphenomenalism revisited' (Gray, 2006, doi 10.1093/acprof:oso/9780198520917.003.0009), title similarity 0.62, author match, year ok",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "seager2007_massradius",
+    "type": "article-journal",
+    "title": "Mass‐Radius Relationships for Solid Exoplanets",
+    "author": [
+      {
+        "family": "Seager",
+        "given": "S."
+      },
+      {
+        "family": "Kuchner",
+        "given": "M."
+      },
+      {
+        "family": "Hier-Miller",
+        "given": "C. A."
+      },
+      {
+        "family": "Hong",
+        "given": "C. A."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2007
+        ]
+      ]
+    },
+    "container-title": "The Astrophysical Journal",
+    "DOI": "10.1086/521346",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 0.99); title corrected from 'Mass-Radius Relationships for Solid Exoplanets'; DOI added",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "lunine1987_ammonia",
+    "type": "article-journal",
+    "title": "Origin and Composition of the Atmosphere of Titan",
+    "author": [
+      {
+        "family": "Lunine",
+        "given": "J. I."
+      },
+      {
+        "family": "Stevenson",
+        "given": "D. J."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1987
+        ]
+      ]
+    },
+    "container-title": "Icarus",
+    "DOI": "10.1016/0019-1035(87)90108-3",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'The origin and evolution of Titan' (Lunine, 2025, doi 10.1016/b978-0-323-99161-2.00008-5), title similarity 0.61, author match, year off",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "kinsler2000_acoustics",
+    "type": "book",
+    "title": "Fundamentals of Acoustics",
+    "author": [
+      {
+        "family": "Kinsler",
+        "given": "L. E."
+      },
+      {
+        "family": "Frey",
+        "given": "A. R."
+      },
+      {
+        "family": "Coppens",
+        "given": "A. B."
+      },
+      {
+        "family": "Sanders",
+        "given": "J. V."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2000
+        ]
+      ]
+    },
+    "container-title": "Wiley",
+    "x-status": "verified",
+    "x-note": "verified against OpenLibrary (title 1.00); ISBN added",
+    "ISBN": "9780471847892",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "on2007_tectonics",
+    "type": "article-journal",
+    "title": "A possible mechanism for the initiation of plate tectonics",
+    "author": [
+      {
+        "family": "O'Neill",
+        "given": "C."
+      },
+      {
+        "family": "Lenardic",
+        "given": "A."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2007
+        ]
+      ]
+    },
+    "container-title": "Geophysical Research Letters",
+    "DOI": "10.1029/2006GL028693",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Supplemental Material: Mantle cooling and continental growth control the initiation and cessation of plate tectonics' (Wang, 2026) title similarity 0.54",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "schulze2008_ammoniobio",
+    "type": "book",
+    "title": "Life in the Universe",
+    "author": [
+      {
+        "family": "Schulze-Makuch",
+        "given": "D."
+      },
+      {
+        "family": "Irwin",
+        "given": "L. N."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2008
+        ]
+      ]
+    },
+    "container-title": "Springer",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'The impact of discovering life beyond Earth' (Dick, 2015) title similarity 0.29",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "kasting1993_hz",
+    "type": "article-journal",
+    "title": "Habitable Zones Around Main Sequence Stars",
+    "author": [
+      {
+        "family": "Kasting",
+        "given": "J. F."
+      },
+      {
+        "family": "Whitmire",
+        "given": "D. P."
+      },
+      {
+        "family": "Reynolds",
+        "given": "R. T."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1993
+        ]
+      ]
+    },
+    "container-title": "Icarus",
+    "DOI": "10.1006/icar.1993.1010",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "selsis2007_climate",
+    "type": "article-journal",
+    "title": "Habitable Planets Around the Star Gliese 581",
+    "author": [
+      {
+        "family": "Selsis",
+        "given": "F."
+      },
+      {
+        "family": "Kasting",
+        "given": "J. F."
+      },
+      {
+        "family": "Levrard",
+        "given": "B."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2007
+        ]
+      ]
+    },
+    "container-title": "Astronomy &amp; Astrophysics",
+    "DOI": "10.1051/0004-6361:20078091",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); container-title corrected from 'Astronomy & Astrophysics'; DOI added",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "shock2001_chemistry",
+    "type": "article-journal",
+    "title": "Chemical Evolution and the Origin of Life on Early Earth and Other Worlds",
+    "author": [
+      {
+        "family": "Shock",
+        "given": "E. L."
+      },
+      {
+        "family": "Sasselov",
+        "given": "D."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2001
+        ]
+      ]
+    },
+    "container-title": "Astrobiology",
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked"
+  },
+  {
+    "id": "bada_2003_origins",
+    "type": "book",
+    "title": "Origins of life: a critical perspective",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'The genetic code and the origin of life' (, 2004) title similarity 0.52",
+    "author": [
+      {
+        "family": "Bada",
+        "given": "J. L."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2003
+        ]
+      ]
+    },
+    "container-title": "Academic Press",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "fay_1988_auditory",
+    "type": "article-journal",
+    "title": "Auditory Processing in Animals",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Temporal Processing by the Auditory System of Fishes' (Fay, 1985) title similarity 0.49",
+    "author": [
+      {
+        "family": "Fay",
+        "given": "R. R."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1988
+        ]
+      ]
+    },
+    "container-title": "Springer",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "galland_2022_ammonia",
+    "type": "article-journal",
+    "title": "Ammonia as a solvent for life",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Liquid Ammonia: More than an Innocent Solvent for Zintl Anions' (, None) title similarity 0.58",
+    "author": [
+      {
+        "family": "Galland",
+        "given": "F."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2022
+        ]
+      ]
+    },
+    "container-title": "Astrobiology",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "heller_2013_super",
+    "type": "article-journal",
+    "title": "Super-Earth biomechanics: gravity and locomotion",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Finite element analysis in orthopedic biomechanics' (Heller, 2022) title similarity 0.54",
+    "author": [
+      {
+        "family": "Heller",
+        "given": "R."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2013
+        ]
+      ]
+    },
+    "container-title": "ApJ",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "meyers_2008_biological",
+    "type": "article-journal",
+    "title": "Biological materials: functional structures and properties",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'Biological Materials Science' (Meyers, 2014, doi 10.1017/cbo9780511862397), title similarity 0.83, author match, year off",
+    "author": [
+      {
+        "family": "Meyers",
+        "given": "M. A."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2008
+        ]
+      ]
+    },
+    "container-title": "Progress of Materials Science",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "steele_2012_ammonia",
+    "type": "article-journal",
+    "title": "Ammonia-based life: a review of the potential",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Review on Ammonia as a Potential Fuel: From Synthesis to Economics' (, None) title similarity 0.47",
+    "author": [
+      {
+        "family": "Steele",
+        "given": "A."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2012
+        ]
+      ]
+    },
+    "container-title": "Origins of Life and Evolution of Biospheres",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "zahnle_2006_sound",
+    "type": "article-journal",
+    "title": "Sound in the atmospheres of Venus and Titan",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Modeling crater populations on Venus and Titan' (Korycansky, 2005) title similarity 0.63",
+    "author": [
+      {
+        "family": "Zahnle",
+        "given": "K."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2006
+        ]
+      ]
+    },
+    "container-title": "LPSC",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "gao_2015_haze",
+    "type": "article-journal",
+    "title": "Haze structure of Titan's atmosphere from Cassini/UVIS occultations",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit '&#160;An updated view of Titan&#8217;s upper atmosphere from Cassini/UVIS airglow observations: Constraints on atmospheric structure and haze.' (Lavvas, 2025) title similarity 0.69",
+    "author": [
+      {
+        "family": "Gao",
+        "given": "P."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2015
+        ]
+      ]
+    },
+    "container-title": "Icarus",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "gerya_2007_nature",
+    "type": "article-journal",
+    "title": "The nature of mantle convection under a stagnant lid",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Stagnant Lid Convection' (, None) title similarity 0.32",
+    "author": [
+      {
+        "family": "Gerya",
+        "given": "T. V."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2007
+        ]
+      ]
+    },
+    "container-title": "JGR",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "lunine_2016_titan",
+    "type": "article-journal",
+    "title": "Titan's Atmosphere",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Surface-Atmosphere Interactions on Titan' (Lunine, 1998) title similarity 0.41",
+    "author": [
+      {
+        "family": "Lunine",
+        "given": "L. A."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2016
+        ]
+      ]
+    },
+    "container-title": "Treatise on Geophysics",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "travis_2014_life",
+    "type": "article-journal",
+    "title": "Life and habitability in an ammonia ocean",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'A habitability corridor for DNA-based life across water-ammonia mixtures: dimensionless thermodynamic constraints for icy ocean worlds' (Konovalov, 2026) title similarity 0.51",
+    "author": [
+      {
+        "family": "Travis",
+        "given": "B. J."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2014
+        ]
+      ]
+    },
+    "container-title": "Astrobiology",
     "x-checked": "2026-11-18"
   }
 ]

@@ -1,0 +1,299 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "nubezon",
+  "name": {
+    "en": "Nubezón"
+  },
+  "world": "erid",
+  "kind": "new",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "Upper haze layer (15-25 km altitude), drifting on thermal tides",
+    "diet": "Electrostatically charged tholin particulates, dissolved ammonia vapor",
+    "active": "Perpetual; pulses rhythmically to regulate buoyancy",
+    "predators": []
+  },
+  "body": "Enormous gas-filled hydrocarbon bladder, suspended tethers of woven keratin-analogue, skin laminated with conductive Fe-Ni dust",
+  "chains": [
+    {
+      "id": "nubezon.c1",
+      "trait": "Enormous gas-filled hydrocarbon bladder",
+      "links": [
+        "Bladder generates lift",
+        "Dense 40-bar air provides buoyancy",
+        "Gravity 1.35g requires massive volume",
+        "Physical root: High surface pressure and gravity"
+      ],
+      "roots": [
+        "F5",
+        "F3"
+      ],
+      "skill": {
+        "id": "nubezon.buoyancy_float",
+        "name": {
+          "en": "Buoyancy Float"
+        },
+        "role": "Passive",
+        "effect": "Reduces fall damage by 80% and grants slow descent at 2 m/s.",
+        "numbers": {}
+      },
+      "weakness": "Vulnerable to puncture weapons; sudden pressure drops cause explosive decompression.",
+      "observe": [
+        "Glossy, tensioned skin ripples",
+        "Tethers drag below the bulk",
+        "Slow, rhythmic expansion"
+      ],
+      "journal": {
+        "en": "A living balloon drinking the sky's grey rain."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Treat the bladder as a hydrogen-dominated lift envelope with hydrocarbon/polymer lamination as the structural skin; keep the creature strictly in the upper haze where scale height improves the volume-to-mass tradeoff.",
+        "fixes": [
+          "Treat the bladder as a hydrogen-dominated lift envelope with hydrocarbon/polymer lamination as the structural skin; keep the creature strictly in the upper haze where scale height improves the volume-to-mass tradeoff."
+        ],
+        "analogues": [
+          {
+            "organism": "Deep-sea squid neutral buoyancy via ammonia-rich coelomic fluid (not a gas balloon); spider juvenile ballooning on silk—mechanism differs but selects on aerial dispersal/filter niches",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "nubezon.c2",
+      "trait": "Conductive Fe-Ni dust lamination in skin",
+      "links": [
+        "Skin accumulates static charge",
+        "Atmospheric friction in opaque haze generates high voltage",
+        "Conductive metal prevents arc damage and discharges enemies",
+        "Physical root: Reducing atmosphere and photochemical haze"
+      ],
+      "roots": [
+        "F8",
+        "F6",
+        "F17"
+      ],
+      "skill": {
+        "id": "nubezon.arc_skin",
+        "name": {
+          "en": "Arc Skin"
+        },
+        "role": "Defence",
+        "effect": "Reflects 40% of incoming kinetic damage and deals 8 shock damage to melee attackers.",
+        "numbers": {}
+      },
+      "weakness": "Attracted to strong magnetic fields; EMP-like pulses stun and discharge skin.",
+      "observe": [
+        "Skin sparks in twilight",
+        "Metallic shimmer along growth lines",
+        "Hair stands on tethers"
+      ],
+      "journal": {
+        "en": "It wears lightning as armor."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Replace ‘high-voltage arc armor’ with weak pulsed shocks/corona at close range; keep Fe–Ni lamination for charge spreading and self-protection during drift through charged tholin aerosols.",
+        "fixes": [
+          "Replace ‘high-voltage arc armor’ with weak pulsed shocks/corona at close range; keep Fe–Ni lamination for charge spreading and self-protection during drift through charged tholin aerosols."
+        ],
+        "analogues": [
+          {
+            "organism": "Electric ray (Torpediniformes) and electric eel (Electrophorus) discharge; chiton (Acanthopleura) magnetite-reinforced teeth for mineralized conduction paths",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "nubezon.c3",
+      "trait": "Tethered siphon-traps for harvesting",
+      "links": [
+        "Siphons collect tholin particulates",
+        "Haze concentrates organic carbon aloft",
+        "Metabolism requires ammonia and carbon",
+        "Physical root: Ammonia-tholin haze and biochemistry"
+      ],
+      "roots": [
+        "F8",
+        "F6",
+        "F18"
+      ],
+      "skill": {
+        "id": "nubezon.atmospheric_harvest",
+        "name": {
+          "en": "Atmospheric Harvest"
+        },
+        "role": "Basic",
+        "effect": "Target siphon deals 5 damage over time and heals Nubezón for 3 HP per tick.",
+        "numbers": {}
+      },
+      "weakness": "Tethers can be snagged on terrain or entangled; immobilized Nubezón cannot feed.",
+      "observe": [
+        "Siphons uncurl when airborne",
+        "Sac swells with grey slurry",
+        "Vibrates near haze density"
+      ],
+      "journal": {
+        "en": "Drifting orchards of glass and poison."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "F8 photochemical tholins and F6 NH₃ vapor provide a spatially concentrated aerial organic flux; sticky or charged aerosols can be harvested by elongated filter tethers without vision. At 330 K (F7), enzymatic handling of NH₃ and reduced organics aligns with F18 assimilation paths. Tether entanglement risk in gust shear is an honest weakness.",
+        "fixes": [
+          "F8 photochemical tholins and F6 NH₃ vapor provide a spatially concentrated aerial organic flux; sticky or charged aerosols can be harvested by elongated filter tethers without vision. At 330 K (F7), enzymatic handling of NH₃ and reduced organics aligns with F18 assimilation paths. Tether entanglement risk in gust shear is an honest weakness."
+        ],
+        "analogues": [
+          {
+            "organism": "Appendicularian ‘larvacean house’ aerosol/filter feeding; baleen whale skim filtering—convergent on dilute suspended particles",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "nubezon.c4",
+      "trait": "Low-frequency pulsating resonator",
+      "links": [
+        "Resonator emits thrums",
+        "Dense air propagates low frequencies far",
+        "Used for mate attraction and territory",
+        "Physical root: Sound speed and propagation in dense atmosphere"
+      ],
+      "roots": [
+        "F9",
+        "F5"
+      ],
+      "skill": {
+        "id": "nubezon.drum_beat",
+        "name": {
+          "en": "Drum Beat"
+        },
+        "role": "Social",
+        "effect": "Summons a friendly Nubezón within 40m; allies gain +2 defense for 6s.",
+        "numbers": {}
+      },
+      "weakness": "High-frequency whistles disrupt resonance; silence zones negate skill range.",
+      "observe": [
+        "Throat sac pulses with blue bioluminescence",
+        "Air distorts around resonator",
+        "Response to low vibrations"
+      ],
+      "journal": {
+        "en": "The sky speaks in rumbles."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Drop visible bioluminescence; describe the sac as an inflatable resonator with vascular IR flushing (cf. F19) for close-range display, and keep long-range pairing on low-frequency throbs only.",
+        "fixes": [
+          "Drop visible bioluminescence; describe the sac as an inflatable resonator with vascular IR flushing (cf. F19) for close-range display, and keep long-range pairing on low-frequency throbs only."
+        ],
+        "analogues": [
+          {
+            "organism": "Oilbird (Steatornis caripensis) and many bats: low-frequency calls for communication/space use in cluttered, dark habitats",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "Eridian Crawler",
+      "kind": "cousin",
+      "note": "(council kind 'Resource Provider') Nubezón molted carapace flakes drift down; Eridians scavenge them for carapace repair."
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-18",
+    "by": [
+      "naturalist/qwen"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-18",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-18"
+    },
+    {
+      "date": "2026-11-18",
+      "who": "autoloop",
+      "what": "removed rejected references from analogues"
+    }
+  ],
+  "temperament": "Placid drifter; defensive via high-voltage arc and acoustic thrumming",
+  "secrets": [
+    "Nubezón bladder gas can be condensed into a volatile fuel mixture.",
+    "Conductive skin scrapings craft high-efficiency insulation for high-pressure gear."
+  ],
+  "moments": [
+    "A Nubezón breaches the haze layer; its metallic skin catches the faint IR glow of the star, turning it into a silent, glowing leviathan that arcs lightning across the dark."
+  ],
+  "journal": [
+    {
+      "en": "The sky does not fall; it hovers."
+    },
+    {
+      "en": "We listen for the drum that holds the weight of worlds."
+    }
+  ]
+}
