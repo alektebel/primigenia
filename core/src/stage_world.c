@@ -186,6 +186,23 @@ int cp_stage_can_walk(const CpStageWorld *w,float x,float z,float nx,float nz,fl
     }
     return 1;
 }
+/* A body does not follow a planned line to the centimetre (yaw inertia, turn radius), so a route may not skim blocking water:
+ * the planner, its shortcuts and the waypoint following also want `clear` metres of dry-enough ground either side of the line.
+ * Carved deep rivers are one cell wide, so without this a plan threads the corner between two deep cells and the body drives
+ * into the channel. Field terrain only (the other terrains have no narrow channels). */
+#define WATER_MARGIN 1.f
+static int water_clear(const CpStageWorld *w,float x,float z,float nx,float nz,float clear){
+    if(w->setup.terrain!=CP_STAGE_FIELD)return 1;
+    const float dx=nx-x,dz=nz-z,distance=length(dx,dz);
+    if(distance<1e-4f)return 1;
+    const float px=-dz/distance*clear,pz=dx/distance*clear;
+    const int steps=(int)(distance/1.f)+1;
+    for(int i=0;i<=steps;i++){
+        const float t=(float)i/steps,cx=x+dx*t,cz=z+dz*t;
+        if(cp_stage_water_depth(w,cx+px,cz+pz)>.7f||cp_stage_water_depth(w,cx-px,cz-pz)>.7f)return 0;
+    }
+    return 1;
+}
 /* can_walk plus the body's climb limit: no stretch of the straight move steeper than `climb` (rise / run over about a metre).
  * The planner, its shortcuts and the waypoint following use this one rule, so a route is never one the body would stall on. */
 static int walk_ok(const CpStageWorld *w,float x,float z,float nx,float nz,float radius,float climb){
@@ -199,7 +216,7 @@ static int walk_ok(const CpStageWorld *w,float x,float z,float nx,float nz,float
         if(ab(height-previous)>climb*run)return 0;
         previous=height;
     }
-    return 1;
+    return water_clear(w,x,z,nx,nz,radius+WATER_MARGIN);
 }
 static float player_climb(const CpStageWorld *w){
     CpSteerBody body;
@@ -715,6 +732,20 @@ static void start(CpStageWorld *w,int index){
     w->started++;
     w->outcome=0;
 }
+/* Ground gradient (rise/run) over a 0.5 m stencil, the one the ceiling is measured with. */
+static void ground_grad(const CpStageWorld *w,float x,float z,float *gx,float *gz,float h){
+    *gx=(cp_stage_ground(w,x+h,z)-cp_stage_ground(w,x-h,z))/(2*h);
+    *gz=(cp_stage_ground(w,x,z+h)-cp_stage_ground(w,x,z-h))/(2*h);
+}
+/* A move onto ground steeper than CP_STEER_GRADE_MAX that is not downhill: refused for creatures (the player keeps its stall rule). */
+static int steep_up(const CpStageWorld *w,const CpStageCreature *c,float x,float z,float nx,float nz){
+    if(c==&w->player)return 0;
+    float gx,gz;
+    ground_grad(w,nx,nz,&gx,&gz,.25f);
+    if(length(gx,gz)<=CP_STEER_GRADE_MAX)return 0;
+    ground_grad(w,x,z,&gx,&gz,.25f);   /* already on such ground (spawned, slid onto it): only downhill is allowed, the slide takes it from there */
+    return length(gx,gz)<=CP_STEER_GRADE_MAX||cp_stage_ground(w,nx,nz)>=cp_stage_ground(w,x,z);
+}
 const CpStageMotion CP_STAGE_MOTION={
     1.3f,1.7f,.6f,15.f,20.f,.6f,1.1f,1.5f,4.5f,11.8f,.3f,2.f,7.f,.4f,
     1.4f,.35f,.03f,.25f,3.2f,1.5f,.8f,.55f,1.35f,1.4f,1.1f,8.f,.15f
@@ -727,6 +758,9 @@ static void walk(CpStageWorld *w,CpStageCreature *c,float dx,float dz,float spee
     const float ox=c->x,oz=c->z,old=c->speed,r=cp_combat_body_radius(&c->profile);
     CpSteerBody body;
     cp_steer_body(m,r,c->legs,&body);
+    /* the ceiling: no creature rests on ground steeper than CP_STEER_GRADE_MAX (steep_up refuses it, the slide takes over above it).
+     * The player keeps the body's own stall and slide grades, which the planner and the GO gates are built on. */
+    if(c!=&w->player&&body.slide>CP_STEER_GRADE_MAX)body.slide=CP_STEER_GRADE_MAX;
     const float grade=cp_stage_ground(w,c->x+c->fx,c->z+c->fz)-cp_stage_ground(w,c->x,c->z);
     CpSteer st={c->fx,c->fz,c->speed,c->omega,c->pivot};
     const float sf=cp_steer_slope(m,&body,grade);
@@ -737,13 +771,16 @@ static void walk(CpStageWorld *w,CpStageCreature *c,float dx,float dz,float spee
     c->omega=st.omega;
     c->grade=grade;
     const float step=v*.1f,nx=c->x+c->fx*step,nz=c->z+c->fz*step;
-    if(cp_stage_can_walk(w,c->x,c->z,nx,nz,r)){
+    if(steep_up(w,c,c->x,c->z,nx,nz)){
+        /* the cell ahead is above the ceiling and higher than here: refuse it (the same predicate the slide below uses) */
+    }
+    else if(cp_stage_can_walk(w,c->x,c->z,nx,nz,r)){
         c->x=nx;
         c->z=nz;
     }
     else {
-        if(cp_stage_can_walk(w,c->x,c->z,nx,c->z,r))c->x=nx;
-        if(cp_stage_can_walk(w,c->x,c->z,c->x,nz,r))c->z=nz;
+        if(!steep_up(w,c,c->x,c->z,nx,c->z)&&cp_stage_can_walk(w,c->x,c->z,nx,c->z,r))c->x=nx;
+        if(!steep_up(w,c,c->x,c->z,c->x,nz)&&cp_stage_can_walk(w,c->x,c->z,c->x,nz,r))c->z=nz;
     }
     if(c==&w->player&&step>.02f&&length(c->x-ox,c->z-oz)<step*.5f&&!w->blocked_reason){
         w->blocked_reason=block_reason(w,ox,oz,nx,nz,r);
@@ -760,7 +797,8 @@ static void walk(CpStageWorld *w,CpStageCreature *c,float dx,float dz,float spee
     c->acceleration=(c->speed-old)*10;
     c->turn_rate=c->omega;
     /* ground steeper than the body can hold: it slides down the fall line (deterministic; the walk above has already stopped) */
-    const float gx=(cp_stage_ground(w,c->x+.5f,c->z)-cp_stage_ground(w,c->x-.5f,c->z)),gz=(cp_stage_ground(w,c->x,c->z+.5f)-cp_stage_ground(w,c->x,c->z-.5f));
+    float gx,gz;
+    ground_grad(w,c->x,c->z,&gx,&gz,.5f);
     const float g=length(gx,gz),vs=cp_steer_slide(m,&body,g);
     c->sliding=0;
     if(vs>0&&g>.00001f){
