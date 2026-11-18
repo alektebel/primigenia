@@ -101,6 +101,26 @@ func run(t) -> void:
 			wrong += 1
 	t.eq(wrong, 0, "pond/sea classification")
 
+	# Smooth shading normal (S2): unit, upward, within a bounded angle of the triangle-surface normal on most of the terrain,
+	# and C1: two points 1 cm apart across a cell border differ by < 0.1 degree (the triangle normal jumps there).
+	var ang: Array = []
+	var jump_bad := 0
+	for s3 in 400:
+		var x3 := rng.randf_range(-1700.0, 1700.0)
+		var z3 := rng.randf_range(-1700.0, 1700.0)
+		var sn: Vector3 = d.smooth_normal(x3, z3)
+		var tn: Vector3 = d.normal(x3, z3)
+		if absf(sn.length() - 1.0) > 1e-4 or sn.y <= 0.0:
+			jump_bad += 1
+		ang.append(rad_to_deg(sn.angle_to(tn)))
+		var edge: float = (floorf((x3 + d.half) / d.cell) + 0.5) * d.cell - d.half + d.cell * 0.5
+		if rad_to_deg(d.smooth_normal(edge - 0.005, z3).angle_to(d.smooth_normal(edge + 0.005, z3))) > 0.1:
+			jump_bad += 1
+	ang.sort()
+	t.eq(jump_bad, 0, "smooth normal is a unit up vector and continuous across cell borders")
+	t.check(ang[200] < 12.0, "median smooth-vs-triangle normal angle %.1f deg < 12" % ang[200])
+	print("  smooth normal vs triangle normal (n=128): median %.1f p90 %.1f deg" % [ang[200], ang[360]])
+
 	if t.shared.has("big"):
 		var big: Dictionary = t.shared.big
 		var t0 := Time.get_ticks_msec()

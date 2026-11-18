@@ -152,6 +152,8 @@ func build(terrain_data) -> void:
 			m.set_shader_parameter("MAP_CELL", data.cell)
 			m.set_shader_parameter("MAP_HALF", data.half)
 			m.set_shader_parameter("lod_color", _lod_color(lod))
+			m.set_shader_parameter("lod_step", STEPS[lod])
+			m.set_shader_parameter("morph_range", THRESHOLDS[lod] if lod < THRESHOLDS.size() else 0.0)
 			m.set_shader_parameter("lod_debug", 0.0)
 		var empty := []
 		for i in 12:

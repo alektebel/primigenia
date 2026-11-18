@@ -1,7 +1,7 @@
 extends RefCounted
 # Terrain arrays plus everything the renderers and gameplay derive from them.
 # One ground() function serves creatures, camera collision, pointer, grass and stage setup;
-# it is the exact surface of the LOD0 mesh (same triangle diagonal).
+# it is the exact surface of the LOD0 mesh (same triangle diagonal). Only the shading normal is smoothed (smooth_normal).
 
 # Bump when the derived maps (surface and relief RGBA8, chunk bounds) change; part of the cache key.
 const RENDER_PREP_VERSION := 2
@@ -96,6 +96,44 @@ func normal(x: float, z: float) -> Vector3:
 	var dx := ground(x + cell, z) - ground(x - cell, z)
 	var dz := ground(x, z + cell) - ground(x, z - cell)
 	return Vector3(-dx, 2.0 * cell, -dz).normalized()
+
+# Shading normal of the terrain shaders (terrain_maps.gdshaderinc ground_normal): Catmull-Rom bicubic gradient of the height
+# texels. Smooth (C1) across cells; the geometry itself remains the triangle surface of ground().
+func smooth_normal(x: float, z: float) -> Vector3:
+	var u := (x + half) / cell - 0.5
+	var v := (z + half) / cell - 0.5
+	var i := floori(u)
+	var j := floori(v)
+	var fx := u - float(i)
+	var fy := v - float(j)
+	var wx := _cr(fx)
+	var wy := _cr(fy)
+	var dx := _cr_d(fx)
+	var dy := _cr_d(fy)
+	var gx := 0.0
+	var gz := 0.0
+	for b in 4:
+		var row := 0.0
+		var rowd := 0.0
+		for a in 4:
+			var hh := _hc(i + a - 1, j + b - 1)
+			row += wx[a] * hh
+			rowd += dx[a] * hh
+		gx += rowd * wy[b]
+		gz += row * dy[b]
+	return Vector3(-gx / cell, 1.0, -gz / cell).normalized()
+
+func _hc(i: int, j: int) -> float:
+	return height[clampi(j, 0, n - 1) * n + clampi(i, 0, n - 1)]
+
+static func _cr(f: float) -> Array:
+	var f2 := f * f
+	var f3 := f2 * f
+	return [(-f3 + 2.0 * f2 - f) * 0.5, (3.0 * f3 - 5.0 * f2 + 2.0) * 0.5, (-3.0 * f3 + 4.0 * f2 + f) * 0.5, (f3 - f2) * 0.5]
+
+static func _cr_d(f: float) -> Array:
+	var f2 := f * f
+	return [(-3.0 * f2 + 4.0 * f - 1.0) * 0.5, (9.0 * f2 - 10.0 * f) * 0.5, (-9.0 * f2 + 8.0 * f + 1.0) * 0.5, (3.0 * f2 - 2.0 * f) * 0.5]
 
 func is_sea(k: int) -> bool:
 	return height[k] <= 0.0
