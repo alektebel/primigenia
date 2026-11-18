@@ -28,7 +28,7 @@ void vertex() {
 	float rolling = 0.65 + 0.55 * sin(base.x * 0.033 + sin(base.y * 0.027)) * 0.5 + tone(base) * 0.4;
 	float mask = surface_bilinear(base).g;
 	float hg = mix(0.48 + 0.75 * clump, 0.3 + 0.4 * clump, lod) * rolling * mask * fade;
-	float ground = ground_tri(base) - 0.025;
+	float ground = vground_tri(base) - 0.025;
 	vec3 gn = ground_normal(base);
 	float light = max(dot(gn, SUN_DIR), 0.0);
 	float vis = mix(1.0, texture(relief_tex, (base + MAP_HALF) / (MAP_CELL * float(MAP_N))).a, rock_shadows);

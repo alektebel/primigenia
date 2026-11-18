@@ -14,7 +14,7 @@ uniform int rock_debug = 0;
 
 varying vec3 wp;
 
-// Geomorph (terrain_chunks.gd): this LOD's grid step in cells and the distance T at which the chunk drops to the next LOD
+// Geomorph (terrain_chunks.gd): this LOD's grid step in visual cells and the distance T at which the chunk drops to the next LOD
 // (0 for the coarsest). Vertices slide onto the coarser lattice between 0.6 T and 0.9 T, so a switch (at 0.9 T down, 1.1 T up)
 // happens between identical surfaces and does not pop.
 uniform int lod_step = 1;
@@ -23,13 +23,13 @@ uniform float morph_range = 0.0;
 void vertex() {
 	// UV2.x = 1 marks skirt vertices; UV2.y carries the skirt depth in metres.
 	vec2 xz = (MODEL_MATRIX * vec4(VERTEX, 1.0)).xz;
-	ivec2 ij = clamp(ivec2(round((xz + MAP_HALF) / MAP_CELL - 0.5)), ivec2(0), ivec2(MAP_N - 1));
-	float hv = texelFetch(height_tex, ij, 0).r;
+	ivec2 ij = clamp(ivec2(round((xz + MAP_HALF) / VIS_CELL - 0.5)), ivec2(0), ivec2(VIS_N - 1));
+	float hv = vis_h(ij);
 	if (morph_range > 0.0) {
 		float d = distance(vec3(xz.x, hv, xz.y), CAMERA_POSITION_WORLD);
 		float t = smoothstep(0.6 * morph_range, 0.9 * morph_range, d);
 		if (t > 0.0) {
-			hv = mix(hv, ground_coarse(xz, lod_step * 2), t);
+			hv = mix(hv, vground_coarse(xz, lod_step * 2), t);
 		}
 	}
 	VERTEX.y = hv - UV2.x * UV2.y;
@@ -52,7 +52,8 @@ bool terrain_weights(vec3 gn, float steep, float wet, float grass, float dist, M
 
 void fragment() {
 	vec2 xz = wp.xz;
-	vec3 gn = ground_normal(xz);
+	float dist0 = distance(wp, CAMERA_POSITION_WORLD);
+	vec3 gn = terrain_normal(xz, dist0);
 	if (rock_debug > 0) {
 		vec3 dbg = vec3(0.0);
 		if (rock_debug == 1) {

@@ -51,6 +51,13 @@ static func _valid(entry: Dictionary, params: Dictionary) -> bool:
 		return false
 	if entry.params != params or entry.get("seed") != params.seed:
 		return false
+	if typeof(entry.get("vheight")) != TYPE_PACKED_BYTE_ARRAY or typeof(entry.get("vmaps")) != TYPE_PACKED_BYTE_ARRAY or typeof(entry.get("vn")) != TYPE_INT:
+		return false
+	var vn: int = entry.vn
+	if vn != n * TerrainData.visual_factor(n) or entry.vheight.size() != vn * vn * 2 or entry.vmaps.size() != (vn / 2) * (vn / 2) * 4:
+		return false
+	if typeof(entry.get("vh_min")) != TYPE_FLOAT or typeof(entry.get("vh_range")) != TYPE_FLOAT or typeof(entry.get("vhash")) != TYPE_STRING:
+		return false
 	var cps: int = (n + TerrainData.CHUNK_CELLS - 1) / TerrainData.CHUNK_CELLS
 	if entry.get("chunks_per_side") != cps or entry.chunk_bounds.size() != cps * cps * 2:
 		return false

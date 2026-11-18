@@ -4,8 +4,14 @@ extends RefCounted
 # it is the exact surface of the LOD0 mesh (same triangle diagonal). Only the shading normal is smoothed (smooth_normal).
 
 # Bump when the derived maps (surface and relief RGBA8, chunk bounds) change; part of the cache key.
-const RENDER_PREP_VERSION := 3
+const RENDER_PREP_VERSION := 5
 const CHUNK_CELLS := 64
+# Visual heightfield (terrain v5): VISUAL_FACTOR times finer than the sim grid, rendered by the terrain and used for feet, grass and the camera.
+const VISUAL_FACTOR := 4
+
+# Factor for a sim grid of n cells: 4, or 2 when n is 2048 (the visual grid stays at most 4096 squared).
+static func visual_factor(n: int) -> int:
+	return clampi(4096 / maxi(n, 1), 2, VISUAL_FACTOR)
 
 var n: int = 0
 var size_m: float = 0.0
@@ -22,6 +28,14 @@ var chunk_bounds: PackedFloat32Array
 var chunks_per_side: int = 0
 var caves: Array = []
 var volcano: Vector4 = Vector4.ZERO
+var vn: int = 0                   # visual grid side (n * VISUAL_FACTOR)
+var vcell: float = 0.0
+var vheight: PackedByteArray      # uint16 LE, vn*vn: height = vh_min + vh_range * v / 65535
+var vh_min: float = 0.0
+var vh_range: float = 1.0
+var vmaps: PackedByteArray        # RGBA8, (vn/2)^2: R flow/wetness, G droplet deposition, B talus apron, A exposure (> 128 convex)
+var vheight_tex: ImageTexture
+var vmaps_tex: ImageTexture
 var height_tex: ImageTexture
 var level_tex: ImageTexture
 var surface_tex: ImageTexture
@@ -34,6 +48,9 @@ static func prepare(entry: Dictionary) -> void:
 	entry["relief"] = maps.get("relief", PackedByteArray())
 	entry["chunk_bounds"] = maps.get("chunk_bounds", PackedFloat32Array())
 	entry["chunks_per_side"] = maps.get("chunks_per_side", 0)
+	var vis: Dictionary = CporeTerrain.visual_maps(entry, {"factor": visual_factor(int(entry.n))})
+	for key in ["vn", "vheight", "vh_min", "vh_range", "vmaps", "vhash", "vstats"]:
+		entry[key] = vis.get(key)
 	entry["render_prep"] = RENDER_PREP_VERSION
 
 func setup(entry: Dictionary, build_textures: bool = true) -> void:
@@ -52,7 +69,17 @@ func setup(entry: Dictionary, build_textures: bool = true) -> void:
 	chunks_per_side = entry.chunks_per_side
 	caves = entry.caves
 	volcano = entry.volcano
+	vn = entry.get("vn", 0)
+	if vn > 0:
+		vcell = size_m / float(vn)
+		vheight = entry.vheight
+		vh_min = entry.vh_min
+		vh_range = entry.vh_range
+		vmaps = entry.vmaps
 	if build_textures:
+		if vn > 0:
+			vheight_tex = ImageTexture.create_from_image(Image.create_from_data(vn, vn, false, Image.FORMAT_R16, vheight))
+			vmaps_tex = ImageTexture.create_from_image(Image.create_from_data(vn / 2, vn / 2, false, Image.FORMAT_RGBA8, vmaps))
 		height_tex = _tex(Image.FORMAT_RF, height.to_byte_array())
 		level_tex = _tex(Image.FORMAT_RF, water_level.to_byte_array())
 		surface_tex = _tex(Image.FORMAT_RGBA8, surface)
@@ -90,6 +117,37 @@ func ground(x: float, z: float) -> float:
 	var h10 := height[k + 1]
 	var h01 := height[k + n]
 	var h11 := height[k + n + 1]
+	if fu >= fv:
+		return h00 + fu * (h10 - h00) + fv * (h11 - h10)
+	return h00 + fv * (h01 - h00) + fu * (h11 - h01)
+
+# Sets the visual heightfield and erosion map uniforms (terrain_maps.gdshaderinc) on a ShaderMaterial.
+func bind_visual(m: ShaderMaterial) -> void:
+	m.set_shader_parameter("vheight_tex", vheight_tex)
+	m.set_shader_parameter("vmaps_tex", vmaps_tex)
+	m.set_shader_parameter("VIS_N", vn)
+	m.set_shader_parameter("VIS_CELL", vcell)
+	m.set_shader_parameter("VH_MIN", vh_min)
+	m.set_shader_parameter("VH_RANGE", vh_range)
+
+func _vh(i: int, j: int) -> float:
+	return vh_min + vh_range * (1.0 / 65535.0) * float(vheight.decode_u16((clampi(j, 0, vn - 1) * vn + clampi(i, 0, vn - 1)) * 2))
+
+# Surface of the visual heightfield (the LOD0 mesh: same triangle diagonal on the vn grid). Feet, grass and the camera stand on this; the
+# C sim keeps ground(). Within about 0.4 m of ground() on walkable ground (test_visual.gd), exactly equal near rivers, lakes and the coast.
+func visual_ground(x: float, z: float) -> float:
+	if vn == 0:
+		return ground(x, z)
+	var u := (x + half) / vcell - 0.5
+	var v := (z + half) / vcell - 0.5
+	var i := clampi(floori(u), 0, vn - 2)
+	var j := clampi(floori(v), 0, vn - 2)
+	var fu := clampf(u - float(i), 0.0, 1.0)
+	var fv := clampf(v - float(j), 0.0, 1.0)
+	var h00 := _vh(i, j)
+	var h10 := _vh(i + 1, j)
+	var h01 := _vh(i, j + 1)
+	var h11 := _vh(i + 1, j + 1)
 	if fu >= fv:
 		return h00 + fu * (h10 - h00) + fv * (h11 - h10)
 	return h00 + fv * (h01 - h00) + fu * (h11 - h01)

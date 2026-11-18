@@ -119,5 +119,5 @@ func _run() -> void:
 		for i in 6:
 			await process_frame
 		await RenderingServer.frame_post_draw
-		root.get_image().save_png(out_dir.path_join(v + ".png")) if false else root.get_texture().get_image().save_png(out_dir.path_join(v + ".png"))
+		root.get_texture().get_image().save_jpg(out_dir.path_join(v + ".jpg"), 0.85)
 	quit()

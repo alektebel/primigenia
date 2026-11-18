@@ -12,9 +12,10 @@ const TIER_SHADERS := [
 const ROCK_TEX := preload("res://game/textures/rock_detail.png")
 const SCREE_TEX := preload("res://game/textures/scree_detail.png")
 
-const CHUNK := TerrainData.CHUNK_CELLS
-const STEPS := [1, 2, 4, 8, 16]
-const THRESHOLDS := [300.0, 700.0, 1500.0, 3200.0]   # metres; LOD i is used below THRESHOLDS[i]
+# Chunks are 64 sim cells (224 m) wide = CHUNK visual cells. LOD steps are in visual cells (0.88 m): 0.9, 1.8, 3.5, 7, 14, 28, 56 m.
+const CHUNK := TerrainData.CHUNK_CELLS * TerrainData.VISUAL_FACTOR
+const STEPS := [1, 2, 4, 8, 16, 32, 64]
+const THRESHOLDS := [130.0, 280.0, 600.0, 1200.0, 2400.0, 3800.0]   # metres; LOD i is used below THRESHOLDS[i]
 const HYSTERESIS := 0.10
 const UPDATE_PERIOD := 0.25
 const UPDATE_MOVE := 20.0
@@ -91,7 +92,7 @@ static func build_lod_mesh(step: int, cell: float) -> ArrayMesh:
 	var su := PackedVector2Array()
 	var sn := PackedVector3Array()
 	var si := PackedInt32Array()
-	var depth := 4.0 * step
+	var depth := maxf(2.0, 1.15 * float(step) * cell)
 	var ring := []
 	for a in per_side:
 		ring.append(Vector2i(a, 0))
@@ -136,7 +137,7 @@ func build(terrain_data) -> void:
 	_skirt_shader = Shader.new()
 	_skirt_shader.code = shader.code.replace("cull_back", "cull_disabled")
 	for lod in STEPS.size():
-		var mesh := build_lod_mesh(STEPS[lod], data.cell)
+		var mesh := build_lod_mesh(STEPS[lod], data.vcell)
 		var grid_mat := ShaderMaterial.new()
 		grid_mat.shader = shader
 		var skirt_mat := ShaderMaterial.new()
@@ -148,6 +149,7 @@ func build(terrain_data) -> void:
 			m.set_shader_parameter("relief_tex", data.relief_tex)
 			m.set_shader_parameter("rock_tex", ROCK_TEX)
 			m.set_shader_parameter("scree_tex", SCREE_TEX)
+			data.bind_visual(m)
 			m.set_shader_parameter("MAP_N", data.n)
 			m.set_shader_parameter("MAP_CELL", data.cell)
 			m.set_shader_parameter("MAP_HALF", data.half)
@@ -170,17 +172,17 @@ func build(terrain_data) -> void:
 			mi.name = "Chunk_%d_%d" % [ci, cj]
 			mi.mesh = lod_meshes[0]
 			mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-			mi.position = Vector3((ci * CHUNK + 0.5) * data.cell - data.half, 0.0, (cj * CHUNK + 0.5) * data.cell - data.half)
+			mi.position = Vector3((ci * CHUNK + 0.5) * data.vcell - data.half, 0.0, (cj * CHUNK + 0.5) * data.vcell - data.half)
 			var mn: float = data.chunk_bounds[(cj * cps + ci) * 2]
 			var mx: float = data.chunk_bounds[(cj * cps + ci) * 2 + 1]
-			var aabb := AABB(Vector3(0.0, mn - 64.0, 0.0), Vector3(CHUNK * data.cell, mx - mn + 64.0, CHUNK * data.cell))
+			var aabb := AABB(Vector3(0.0, mn - 64.0, 0.0), Vector3(CHUNK * data.vcell, mx - mn + 80.0, CHUNK * data.vcell))
 			mi.custom_aabb = aabb
 			add_child(mi)
 			chunks.append({"node": mi, "lod": 0, "aabb": AABB(aabb.position + mi.position, aabb.size)})
 	update_lods(Vector3.ZERO, true)
 
 static func _lod_color(lod: int) -> Vector3:
-	return [Vector3(0.9, 0.2, 0.2), Vector3(0.95, 0.65, 0.15), Vector3(0.9, 0.9, 0.2), Vector3(0.2, 0.75, 0.3), Vector3(0.25, 0.45, 0.95)][lod]
+	return [Vector3(0.9, 0.2, 0.2), Vector3(0.95, 0.65, 0.15), Vector3(0.9, 0.9, 0.2), Vector3(0.2, 0.75, 0.3), Vector3(0.25, 0.45, 0.95), Vector3(0.6, 0.3, 0.9), Vector3(0.9, 0.9, 0.9)][lod]
 
 # Sets one shader uniform on every terrain material (tests, tuning).
 func set_uniform(name: String, value) -> void:

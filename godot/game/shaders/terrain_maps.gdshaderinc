@@ -3,6 +3,14 @@
 uniform sampler2D height_tex : filter_nearest, repeat_disable;
 uniform sampler2D level_tex : filter_nearest, repeat_disable;
 uniform sampler2D surface_tex : filter_nearest, repeat_disable;
+// Visual heightfield (terrain v5): R16 (height = VH_MIN + VH_RANGE * r), VIS_N squared, VIS_CELL metres; vmaps_tex (linear, (VIS_N / 2) squared):
+// R flow/wetness, G droplet deposition, B talus apron, A exposure (> 0.5 convex).
+uniform sampler2D vheight_tex : filter_nearest, repeat_disable;
+uniform sampler2D vmaps_tex : filter_linear, repeat_disable;
+uniform int VIS_N = 4096;
+uniform float VIS_CELL = 0.87890625;
+uniform float VH_MIN = 0.0;
+uniform float VH_RANGE = 1.0;
 uniform int MAP_N = 1024;
 uniform float MAP_CELL = 3.515625;
 uniform float MAP_HALF = 1800.0;
@@ -88,4 +96,58 @@ void material_weights(vec2 xz, out float w[6]) {
 		int id = int(round(texelFetch(surface_tex, clamp(i + o, ivec2(0), hi), 0).r * 255.0));
 		w[clamp(id, 0, 5)] += wt;
 	}
+}
+
+// ---- Visual heightfield ----
+float vis_h(ivec2 ij) {
+	return VH_MIN + VH_RANGE * texelFetch(vheight_tex, clamp(ij, ivec2(0), ivec2(VIS_N - 1)), 0).r;
+}
+
+// Exact LOD0 surface of the visual mesh (same triangle diagonal as TerrainData.visual_ground).
+float vground_tri(vec2 xz) {
+	vec2 uv = (xz + MAP_HALF) / VIS_CELL - 0.5;
+	ivec2 i = clamp(ivec2(floor(uv)), ivec2(0), ivec2(VIS_N - 2));
+	vec2 f = clamp(uv - vec2(i), 0.0, 1.0);
+	float h00 = vis_h(i);
+	float h10 = vis_h(i + ivec2(1, 0));
+	float h01 = vis_h(i + ivec2(0, 1));
+	float h11 = vis_h(i + ivec2(1, 1));
+	return f.x >= f.y ? h00 + f.x * (h10 - h00) + f.y * (h11 - h10) : h00 + f.y * (h01 - h00) + f.x * (h11 - h01);
+}
+
+// Height at xz of the coarse lattice of `step` visual cells: the target of the vertex geomorph.
+float vground_coarse(vec2 xz, int step) {
+	vec2 uv = (xz + MAP_HALF) / VIS_CELL - 0.5;
+	float fs = float(step);
+	ivec2 i0 = clamp(ivec2(floor(uv / fs)) * step, ivec2(0), ivec2(VIS_N - 1));
+	vec2 f = clamp((uv - vec2(i0)) / fs, 0.0, 1.0);
+	ivec2 i1 = min(i0 + ivec2(step), ivec2(VIS_N - 1));
+	float h00 = vis_h(i0);
+	float h10 = vis_h(ivec2(i1.x, i0.y));
+	float h01 = vis_h(ivec2(i0.x, i1.y));
+	float h11 = vis_h(i1);
+	return f.x >= f.y ? h00 + f.x * (h10 - h00) + f.y * (h11 - h10) : h00 + f.y * (h01 - h00) + f.x * (h11 - h01);
+}
+
+vec2 vis_grad_at(ivec2 i) {
+	return vec2(vis_h(i + ivec2(1, 0)) - vis_h(i - ivec2(1, 0)), vis_h(i + ivec2(0, 1)) - vis_h(i - ivec2(0, 1))) / (2.0 * VIS_CELL);
+}
+
+// Shading normal of the visual field: bilinear blend of central-difference gradients (C0, no facets).
+vec3 vis_normal(vec2 xz) {
+	vec2 uv = (xz + MAP_HALF) / VIS_CELL - 0.5;
+	ivec2 i = ivec2(floor(uv));
+	vec2 f = uv - vec2(i);
+	vec2 g = mix(mix(vis_grad_at(i), vis_grad_at(i + ivec2(1, 0)), f.x), mix(vis_grad_at(i + ivec2(0, 1)), vis_grad_at(i + ivec2(1, 1)), f.x), f.y);
+	return normalize(vec3(-g.x, 1.0, -g.y));
+}
+
+// Terrain shading normal: the visual field up close, the sim's Catmull-Rom normal beyond ~300 m (no aliasing of the 0.9 m texels).
+vec3 terrain_normal(vec2 xz, float dist) {
+	float w = smoothstep(140.0, 340.0, dist);
+	vec3 ns = ground_normal(xz);
+	if (w >= 1.0) {
+		return ns;
+	}
+	return normalize(mix(vis_normal(xz), ns, w));
 }
