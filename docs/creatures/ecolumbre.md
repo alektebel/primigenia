@@ -111,7 +111,7 @@ Trait ← Biofilm needs constant moisture to thrive ← Waterfall spray keeps tu
 - **Plausibility:** plausible (judge astrobio/autoloop-2026-11-18, 2026-11-18)
   - scores: astrobio 8, designer 8, physicist 9
   - Analogue: Marine iguana (Amblyrhynchus cristatus): intertidal algae grazer with salt handling; endolithic/cave-wall microbial mats grazed by snails and nematodes on damp rock: as named by the judge; no mechanism or reference recorded
-  - Analogue: real biology behind this chain: see the cited works; chain wording is the council's own (Schwarz 2013 [unverified]; Lloyd 2014 [unverified])
+  - Analogue: real biology behind this chain: see the cited works; chain wording is the council's own (Lloyd 2014 [unverified])
 - **Chain provenance:** council run `autoloop-2026-11-18`; by naturalist, physicist, mythmaker
 
 ### ecolumbre.c6: Syncs low hums and ventral flashes to flock
@@ -226,5 +226,6 @@ council run `manual example 2026-11-18`; by opus (derivation), astrobio/composer
 
 - 2026-11-18 opus: first example of the standard, from the owner's concept 'sees sound, talks with light'
 - 2026-11-18 import_got: merged run autoloop-2026-11-18: 5 chain(s) added, 0 plausibility block(s) filled, 8 relation(s) added
+- 2026-11-18 autoloop: removed rejected references from analogues
 - 2026-11-18 autoloop: removed rejected references from analogues
 - 2026-11-18 autoloop: removed rejected references from analogues

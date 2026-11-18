@@ -44,7 +44,7 @@ Trait ← Low H₂ density reduces impact capture efficiency ← Ambient static 
   - scores: astrobio 7, designer 8, physicist 7
   - Analogue: Pollen electrostatic adherence to negatively charged bees (Urtica-style charging in flight); spiderwebs and mist nets capturing charged droplets.: as named by the judge; no mechanism or reference recorded
   - Fix: Cap passive yield to aerosol-limited flux: electrostatic bias helps capture sub-micron sinkers in F11 microdroplets, but lightning reset is real; add dependence on convective charge like Earth thunderclouds, not continuous triboelectric free lunch.
-- **Chain provenance:** council run `autoloop-2026-11-18`; by physicist, designer, wildcard
+- **Chain provenance:** council run `autoloop-2026-11-18`; by designer, physicist, wildcard
 
 ### cloud_grazers.c2: Metabolic hydrogen bladders regulate neutral float
 
@@ -62,7 +62,7 @@ Trait ← 2.6 g gravity pulls everything downward ← Hydrogen atmosphere offers
   - scores: astrobio 8, designer 9, physicist 8
   - Analogue: Sagan-Salpeter floaters with regulated balloon metabolisms; Portuguese man-o-war pneumatophore gas float (passive, for contrast).: as named by the judge; no mechanism or reference recorded
   - Fix: >10 bar cooking (F15) should rupture or denature bladders and force descent/lag, not only a debuff—align pop damage with protein denaturation, not mere mechanical pop at 1-bar thinking.
-- **Chain provenance:** council run `autoloop-2026-11-18`; by physicist, designer, wildcard
+- **Chain provenance:** council run `autoloop-2026-11-18`; by designer, physicist, wildcard
 
 ### cloud_grazers.c3: Septate dual-stomachs split oxidized and reduced feeds
 
@@ -96,7 +96,7 @@ Trait ← High-drag aerosol haze blurs visual tracking ← Dense H₂ atmosphere
 - **Plausibility:** plausible (judge astrobio/autoloop-2026-11-18, 2026-11-18)
   - scores: astrobio 9, designer 9, physicist 9
   - Analogue: Humpback and fin whale 20–40 Hz coordination; African elephant long-distance rumbles through heterogeneous terrain.: as named by the judge; no mechanism or reference recorded
-- **Chain provenance:** council run `autoloop-2026-11-18`; by physicist, designer, wildcard
+- **Chain provenance:** council run `autoloop-2026-11-18`; by designer, physicist, wildcard
 
 ### cloud_grazers.c5: Azotosome-like membranes resist ammonia corrosion
 
@@ -115,7 +115,7 @@ Trait ← Ambient microdroplets act as biological solvent ← Standard lipid bil
   - Analogue: Proposed azotosome vesicles in cryogenic hydrocarbons; extremophile membrane tuning in haloarchaea and acidophiles for non-Earth solvents.: as named by the judge; no mechanism or reference recorded
   - Analogue: real biology behind this chain: see the cited works; chain wording is the council's own
   - Fix: Label highly speculative for F11 aqueous-ammonia microdroplets: azotosomes were proposed for liquid methane/ethane (Titan), not warm NH₃-water pockets—use amine-rich amphiphiles stable at cloud T/P per F13, with Seager cited as conceptual analogue only.
-- **Chain provenance:** council run `autoloop-2026-11-18`; by physicist, designer
+- **Chain provenance:** council run `autoloop-2026-11-18`; by designer, physicist
 
 ## Secrets
 
@@ -133,3 +133,4 @@ council run `autoloop-2026-11-18`; by designer, physicist, wildcard
 
 - 2026-11-18 import_got: imported from council run autoloop-2026-11-18
 - 2026-11-18 autoloop: removed rejected references from analogues
+- 2026-11-18 import_got: merged run autoloop-2026-11-18: 0 chain(s) added, 0 plausibility block(s) filled, 0 relation(s) added

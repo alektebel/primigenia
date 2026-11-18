@@ -41,7 +41,7 @@ Trait ← Drifts downward under 2.6 g gravity ← Crosses adiabatic lapse rate o
 - **Plausibility:** unreviewed (judge none, 2026-11-18)
   - scores: designer 8, physicist 9
   - Analogue: real biology behind this chain: see the cited works; chain wording is the council's own (Sagan 1976 [verified])
-- **Chain provenance:** council run `autoloop-2026-11-18`; by physicist, designer
+- **Chain provenance:** council run `autoloop-2026-11-18`; by designer, physicist
 
 ### sinkers.c2: Red-shifted near-infrared photopigments in upper decks
 
@@ -56,7 +56,7 @@ Trait ← Star at 5.2 AU yields 3.5% Earth flux ← Photon starvation limits vis
 - **Journal:** They drink the near-infrared whisper of a distant sun.
 - **Plausibility:** unreviewed (judge none, 2026-11-18)
   - scores: designer 7, physicist 9
-- **Chain provenance:** council run `autoloop-2026-11-18`; by physicist, designer
+- **Chain provenance:** council run `autoloop-2026-11-18`; by designer, physicist
 
 ### sinkers.c3: Pressure-reactive azotosome sealant
 
@@ -71,7 +71,7 @@ Trait ← Azotosome lipids cross-link under high pressure ← Cross-linking form
 - **Journal:** They armor up in the crush, only to bleed out when the sky thins.
 - **Plausibility:** unreviewed (judge none, 2026-11-18)
   - scores: designer 6, physicist 10
-- **Chain provenance:** council run `autoloop-2026-11-18`; by physicist, designer
+- **Chain provenance:** council run `autoloop-2026-11-18`; by designer, physicist
 
 ### sinkers.c4: Armored mineralized spore casing
 
@@ -118,3 +118,4 @@ council run `autoloop-2026-11-18`; by designer, physicist
 ## Changelog
 
 - 2026-11-18 import_got: imported from council run autoloop-2026-11-18
+- 2026-11-18 import_got: merged run autoloop-2026-11-18: 0 chain(s) added, 0 plausibility block(s) filled, 0 relation(s) added

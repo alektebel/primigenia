@@ -61,7 +61,7 @@ Trait ← Vertical migration against 2.6 g gravity requires constant buoyancy tr
 - **Plausibility:** plausible (judge astrobio/autoloop-2026-11-18, 2026-11-18)
   - scores: astrobio 9, designer 9, physicist 9
   - Analogue: Elephant infrasonic communication and seismic/vibrotactile foot detection; lateral line–like pressure sensing in fish (mechanotransduction in neuromasts).: as named by the judge; no mechanism or reference recorded
-- **Chain provenance:** council run `autoloop-2026-11-18`; by physicist, designer
+- **Chain provenance:** council run `autoloop-2026-11-18`; by designer, physicist
 
 ### jet_hunters.c3: Infrasound receptor arrays along flanks
 
@@ -77,7 +77,7 @@ Trait ← Aerosol haze reduces visual range to tens of meters ← H₂ atmospher
 - **Plausibility:** plausible (judge astrobio/autoloop-2026-11-18, 2026-11-18)
   - scores: astrobio 9, designer 9, physicist 9
   - Analogue: Elephant infrasonic communication and seismic/vibrotactile foot detection; lateral line–like pressure sensing in fish (mechanotransduction in neuromasts).: as named by the judge; no mechanism or reference recorded
-- **Chain provenance:** council run `autoloop-2026-11-18`; by physicist, designer, wildcard
+- **Chain provenance:** council run `autoloop-2026-11-18`; by designer, physicist, wildcard
 
 ### jet_hunters.c4: Red-shifted photopigments absorb near-infrared photons
 
@@ -113,7 +113,7 @@ Trait ← Low H₂ density starves static lift, demanding high Reynolds number f
   - scores: astrobio 6, designer 9, physicist 8
   - Analogue: Albatross dynamic soaring on wind shear; flying fish gliding plus powered escape; Sagan-Salpeter hunters with active locomotion in banded winds.: as named by the judge; no mechanism or reference recorded
   - Fix: Hydrofoils supplement jets and neutral buoyancy (F16), not solo flight at 110 m/s: use shear-layer surfing for repositioning and damage reduction at sub-jet speeds while jets maintain minimum dynamic pressure in 2.6 g thin H₂. Remove salt-crusted tips or replace with ammonium hydrosulfide ice fouling.
-- **Chain provenance:** council run `autoloop-2026-11-18`; by physicist, designer, wildcard
+- **Chain provenance:** council run `autoloop-2026-11-18`; by designer, physicist, wildcard
 
 ## Secrets
 
@@ -130,3 +130,4 @@ council run `autoloop-2026-11-18`; by designer, physicist, wildcard
 ## Changelog
 
 - 2026-11-18 import_got: imported from council run autoloop-2026-11-18
+- 2026-11-18 import_got: merged run autoloop-2026-11-18: 0 chain(s) added, 0 plausibility block(s) filled, 0 relation(s) added

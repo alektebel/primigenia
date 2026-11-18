@@ -44,7 +44,7 @@ Trait ← Low-visibility aerosol haze disables long-range visual targeting ← 2
   - scores: astrobio 8, designer 8, physicist 6
   - Analogue: Octopus vulgaris semi-autonomous arms with local ganglia and central brain override (Godfrey-Smith octopus cognition literature).: as named by the judge; no mechanism or reference recorded
   - Fix: In 2.6 g and low tactile damping in H₂, emphasize sucker-mediated chemical/tactile oaths (contact required) rather than long-range limb autonomy; cap independent accuracy loss per severed arm below octopus-like regeneration unless lore adds it.
-- **Chain provenance:** council run `autoloop-2026-11-18`; by physicist, designer, wildcard
+- **Chain provenance:** council run `autoloop-2026-11-18`; by designer, physicist, wildcard
 
 ### oathbound.c2: Rigid hydrostatic skeleton reinforced with mineral plates
 
@@ -62,7 +62,7 @@ Trait ← Atmospheric buoyancy vanishes below 0.5 bar ← 2.6 g surface-equivale
   - scores: astrobio 7, designer 9, physicist 7
   - Analogue: Cephalopod beak and stylets (chitin/mineral composites); arthropod exoskeleton load spreading in high gravity (scaled isometrically costly—keep Oathbound mid-sized, not whale-scale).: as named by the judge; no mechanism or reference recorded
   - Fix: Pair plates with internal fluid bladders (F16/F20): rigid plates fight 2.6 g posture load but megafauna still need lift gas or jet tethering above ~0.5 bar; Stone Chitin blocks melee in close duels, not free-flight without buoyancy aid.
-- **Chain provenance:** council run `autoloop-2026-11-18`; by physicist, designer
+- **Chain provenance:** council run `autoloop-2026-11-18`; by designer, physicist
 
 ### oathbound.c3: Chromatophore arrays broadcast ritualized duel patterns
 
@@ -80,7 +80,7 @@ Trait ← Aerosol haze reduces visual range to meters ← Evolutionary pressure 
   - scores: astrobio 8, designer 9, physicist 9
   - Analogue: Cephalopod chromatophore threat and submission displays; stomatopod species recognition and ritualized contests.: as named by the judge; no mechanism or reference recorded
   - Fix: Bioluminescence beacon weakness: at 5.2 AU low flux, favor pigment structural color + iridophores over bright sustained bioluminescence unless localized duel patches; jet-hunter attraction only in thin upper decks where contrast is high.
-- **Chain provenance:** council run `autoloop-2026-11-18`; by physicist, designer, wildcard
+- **Chain provenance:** council run `autoloop-2026-11-18`; by designer, physicist, wildcard
 
 ### oathbound.c4: Baroreceptive fronds map shear and pressure gradients
 
@@ -98,7 +98,7 @@ Trait ← Zonal jets create predictable high-shear wind layers ← Low-frequency
   - scores: astrobio 5, designer 8, physicist 7
   - Analogue: Fish swim-bladder innervation and baroreflex; statocyst gravity/pressure organs in invertebrates.: as named by the judge; no mechanism or reference recorded
   - Fix: Rename and retune: baroreceptive/statocyst fronds for shear and ΔP (F7 F20), with chemoreception limited to redox/honor pheromones on contact—not primary strike warning. Lightning disorientation = saturation of mechanoreceptors, not chemical overload.
-- **Chain provenance:** council run `autoloop-2026-11-18`; by physicist, designer, wildcard
+- **Chain provenance:** council run `autoloop-2026-11-18`; by designer, physicist, wildcard
 
 ### oathbound.c5: Segmented, fluid-filled tentacle clusters equalize pressure
 
@@ -137,3 +137,4 @@ council run `autoloop-2026-11-18`; by designer, physicist, wildcard
 ## Changelog
 
 - 2026-11-18 import_got: imported from council run autoloop-2026-11-18
+- 2026-11-18 import_got: merged run autoloop-2026-11-18: 0 chain(s) added, 0 plausibility block(s) filled, 0 relation(s) added

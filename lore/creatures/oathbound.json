@@ -79,8 +79,8 @@
       "provenance": {
         "council_run": "autoloop-2026-11-18",
         "by": [
-          "physicist",
           "designer",
+          "physicist",
           "wildcard"
         ]
       }
@@ -139,8 +139,8 @@
       "provenance": {
         "council_run": "autoloop-2026-11-18",
         "by": [
-          "physicist",
-          "designer"
+          "designer",
+          "physicist"
         ]
       }
     },
@@ -197,8 +197,8 @@
       "provenance": {
         "council_run": "autoloop-2026-11-18",
         "by": [
-          "physicist",
           "designer",
+          "physicist",
           "wildcard"
         ]
       }
@@ -258,8 +258,8 @@
       "provenance": {
         "council_run": "autoloop-2026-11-18",
         "by": [
-          "physicist",
           "designer",
+          "physicist",
           "wildcard"
         ]
       }
@@ -338,6 +338,11 @@
       "date": "2026-11-18",
       "who": "import_got",
       "what": "imported from council run autoloop-2026-11-18"
+    },
+    {
+      "date": "2026-11-18",
+      "who": "import_got",
+      "what": "merged run autoloop-2026-11-18: 0 chain(s) added, 0 plausibility block(s) filled, 0 relation(s) added"
     }
   ],
   "aliases": [

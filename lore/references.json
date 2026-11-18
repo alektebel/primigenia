@@ -4039,8 +4039,8 @@
     "id": "schwarz_2013_salt",
     "type": "article-journal",
     "title": "Salt glands in marine iguanas: morphology and function",
-    "x-status": "unverified",
-    "x-note": "cited by a council model from memory; not yet checked",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Ion Secretion by Salt Glands of Desert Iguanas (Dipsosaurus dorsalis)' (Hazard, 2001) title similarity 0.59",
     "author": [
       {
         "family": "Schwarz",
@@ -4054,7 +4054,8 @@
         ]
       ]
     },
-    "container-title": "Journal of Experimental Biology"
+    "container-title": "Journal of Experimental Biology",
+    "x-checked": "2026-11-18"
   },
   {
     "id": "vega_2021_mineral",
@@ -4342,6 +4343,72 @@
       ]
     },
     "container-title": "Fish Bulletin",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "keiler_2017_hundred",
+    "type": "article-journal",
+    "title": "One hundred years of carcinization – the evolution of the crab-like habitus in Anomura (Arthropoda: Crustacea)",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 0.89); title corrected from 'One hundred years of carcinization: the evolution of the crab-like habitus in Anomura'; container-title corrected from 'Zoologischer Anzeiger'; DOI added",
+    "author": [
+      {
+        "family": "Keiler",
+        "given": "J."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2017
+        ]
+      ]
+    },
+    "container-title": "Biological Journal of the Linnean Society",
+    "DOI": "10.1093/biolinnean/blw031",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "wolfe_2021_convergent",
+    "type": "article-journal",
+    "title": "Convergent adaptations: carcinization and its contribution to understanding the evolution of crab-like body plans",
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked",
+    "author": [
+      {
+        "family": "Wolfe",
+        "given": "J. M."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2021
+        ]
+      ]
+    },
+    "container-title": "BioEssays"
+  },
+  {
+    "id": "borradaile_1916_crustacea",
+    "type": "article-journal",
+    "title": "Crustacea. Part II. Porcellana",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'The complete larval development of Porcellana sigsbeiana (Crustacea: Decapoda) under laboratory conditions' (Gore, 1971) title similarity 0.45",
+    "author": [
+      {
+        "family": "Borradaile",
+        "given": "L. A."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1916
+        ]
+      ]
+    },
+    "container-title": "British Antarctic (Terra Nova) Expedition 1910 Natural History Report Zoology",
     "x-checked": "2026-11-18"
   }
 ]
