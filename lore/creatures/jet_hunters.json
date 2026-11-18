@@ -1,0 +1,348 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "jet_hunters",
+  "name": {
+    "en": "Jet hunters"
+  },
+  "world": "deepsky",
+  "kind": "new",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "Mid to upper decks, near thermal updrafts and jet streams",
+    "diet": "Carnivore (floaters, grazer calves, whale calves)",
+    "active": "Continuous, ambush predators following thermal layers",
+    "predators": [],
+    "prey": [
+      "Floaters",
+      "Cloud grazers",
+      "Air whale calves"
+    ]
+  },
+  "body": "Sleek, needle-like predators with swept-back wings and ventral thermal bladders. They ride adiabatic updrafts, using metabolic heat to expand gas for rapid ascent, then dive with red-shifted eyes locked on thermal signatures.",
+  "chains": [
+    {
+      "id": "jet_hunters.c1",
+      "trait": "Compressed gas ram-jets for burst acceleration",
+      "links": [
+        "Low H₂ density starves conventional hydrofoils",
+        "Metabolic CO₂ is rapidly compressed and vented",
+        "Delivers short-duration kinetic strikes",
+        "100 m/s zonal winds demand constant forward momentum"
+      ],
+      "roots": [
+        "F5",
+        "F7",
+        "F17"
+      ],
+      "skill": {
+        "id": "jet_hunters.ram_strike",
+        "name": {
+          "en": "Ram Strike"
+        },
+        "role": "Engage",
+        "effect": "Deals 22 damage in a 50 m radius with a 0.5 s wind-up",
+        "numbers": {}
+      },
+      "weakness": "Leaves a brief jet-wake vortex that alerts prey and breaks stealth",
+      "observe": [
+        "Expanding gas vents",
+        "Sudden directional acceleration",
+        "Torn cloud vapor and shock rings"
+      ],
+      "journal": {
+        "en": "They don't fly; they kick the atmosphere into submission."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Frame vents as stored metabolic gas (H₂/CH₄ mix) expelled through constricted nozzles for squid-like thrust, not a true ram-compressor; Ram Strike damage comes from kinetic impact after jet burst, not a 50 m gas shock in thin 1-bar H₂.",
+        "fixes": [
+          "Frame vents as stored metabolic gas (H₂/CH₄ mix) expelled through constricted nozzles for squid-like thrust, not a true ram-compressor; Ram Strike damage comes from kinetic impact after jet burst, not a 50 m gas shock in thin 1-bar H₂."
+        ],
+        "analogues": [
+          {
+            "organism": "Squid and cuttlefish mantle jet propulsion (high-pressure siphon expulsion); burst pursuit in low-density medium resembles flying squid (Todarodes) leaving water.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "sagan_1976_particles"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 7,
+          "designer": 8,
+          "physicist": 7
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "physicist",
+          "wildcard"
+        ]
+      }
+    },
+    {
+      "id": "jet_hunters.c2",
+      "trait": "Thermal bladder equalizes depth via adiabatic venting",
+      "links": [
+        "Vertical migration against 2.6 g gravity requires constant buoyancy trim",
+        "Adiabatic compression during descent squeezes gas pockets, raising internal pressure",
+        "Metabolic H₂ slowly restores volume, while thermal expansion offsets density changes during ascent",
+        "Equalization lag creates a tactical window for ballistic dives"
+      ],
+      "roots": [
+        "F3",
+        "F9",
+        "F16",
+        "F20"
+      ],
+      "skill": {
+        "id": "jet_hunters.ballistic_drop",
+        "name": {
+          "en": "Ballistic Drop"
+        },
+        "role": "Poke",
+        "effect": "Instantly drop 500 m, delivering a wake shock that stuns targets for 2 s. Builds a pressure meter; full meter requires 10 s of ascent to reset.",
+        "numbers": {}
+      },
+      "weakness": "Rapid venting in thin upper air causes decompression bubbles, slowing movement by 40% for 5 s.",
+      "observe": [
+        "Rhythmic abdominal pulsing",
+        "Frost forming on vent valves",
+        "Warping air around dorsal sac"
+      ],
+      "journal": {
+        "en": "Inflate, dive, crush. The cycle is simple."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "analogues": [
+          {
+            "organism": "Elephant infrasonic communication and seismic/vibrotactile foot detection; lateral line–like pressure sensing in fish (mechanotransduction in neuromasts).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 9,
+          "designer": 9,
+          "physicist": 9
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "physicist",
+          "designer"
+        ]
+      }
+    },
+    {
+      "id": "jet_hunters.c3",
+      "trait": "Infrasound receptor arrays along flanks",
+      "links": [
+        "Aerosol haze reduces visual range to tens of meters",
+        "H₂ atmosphere transmits low-frequency sound over kilometers",
+        "Membrane flaps detect pressure variations below 100 Hz",
+        "Tracks floating prey by their buoyancy modulation"
+      ],
+      "roots": [
+        "F8",
+        "F19"
+      ],
+      "skill": {
+        "id": "jet_hunters.depth_sense",
+        "name": {
+          "en": "Depth Sense"
+        },
+        "role": "Basic",
+        "effect": "Reveals stealthed floaters within 80 m and grants 10% accuracy",
+        "numbers": {}
+      },
+      "weakness": "Blind to high-frequency alarm whistles used by some prey",
+      "observe": [
+        "Wavy membrane ridges",
+        "Slow rhythmic twitching",
+        "Cloud vapor distortion around sensory arrays"
+      ],
+      "journal": {
+        "en": "They hear the heartbeat of the sky."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "analogues": [
+          {
+            "organism": "Elephant infrasonic communication and seismic/vibrotactile foot detection; lateral line–like pressure sensing in fish (mechanotransduction in neuromasts).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 9,
+          "designer": 9,
+          "physicist": 9
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "physicist",
+          "designer",
+          "wildcard"
+        ]
+      }
+    },
+    {
+      "id": "jet_hunters.c4",
+      "trait": "Red-shifted photopigments absorb near-infrared photons",
+      "links": [
+        "Stellar flux at 5.2 AU is only 3.5% of Earth's",
+        "Visible spectrum photons are too sparse for rapid hunting",
+        "G2V star peaks in longer wavelengths after atmospheric scattering",
+        "Porphyrin-based pigments absorb 600–900 nm"
+      ],
+      "roots": [
+        "F1",
+        "F22",
+        "F14"
+      ],
+      "skill": {
+        "id": "jet_hunters.thermal_track",
+        "name": {
+          "en": "Thermal Track"
+        },
+        "role": "Basic",
+        "effect": "Detect heat signatures through ammonia haze, increasing first-strike accuracy by 30%",
+        "numbers": {}
+      },
+      "weakness": "Flash-blind when struck by direct lightning discharge in water clouds",
+      "observe": [
+        "Pupils dilate into narrow slits",
+        "Dorsal membrane glows faintly crimson",
+        "Head tilts toward lightning arcs"
+      ],
+      "journal": {
+        "en": "They see what we call invisible."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Split Thermal Track: NIR vision (bacteriochlorophyll-analog opsins, 700–900 nm) for navigation and silhouette in haze; separate pit-organ or trigeminal IR for metabolic heat at close range. Lightning flash-blind affects whichever channel is primary.",
+        "fixes": [
+          "Split Thermal Track: NIR vision (bacteriochlorophyll-analog opsins, 700–900 nm) for navigation and silhouette in haze; separate pit-organ or trigeminal IR for metabolic heat at close range. Lightning flash-blind affects whichever channel is primary."
+        ],
+        "analogues": [
+          {
+            "organism": "Anoxygenic phototrophs with bacteriochlorophyll (e.g. purple nonsulfur bacteria); pit viper (Crotalus) IR-sensitive trigeminal pits for strike targeting.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 7,
+          "designer": 9,
+          "physicist": 9
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "physicist",
+          "wildcard"
+        ]
+      }
+    },
+    {
+      "id": "jet_hunters.c5",
+      "trait": "Swept-back hydrofoils generate lift via high Reynolds flow",
+      "links": [
+        "Low H₂ density starves static lift, demanding high Reynolds number flow",
+        "Swept-back membranes deflect gas to ride jet shear layers and dynamic soar",
+        "Foils supplement ram-jets, maintaining minimum dynamic pressure during turns in 2.6 g",
+        "Localized turbulence pockets in shear edges cause unpredictable stall conditions"
+      ],
+      "roots": [
+        "F3",
+        "F9",
+        "F17"
+      ],
+      "skill": {
+        "id": "jet_hunters.shear_glide",
+        "name": {
+          "en": "Shear Glide"
+        },
+        "role": "Defence",
+        "effect": "Ride a jet stream at 90 m/s, reducing incoming damage by 25% and repositioning 30 m forward. Requires active jet bursts to maintain dynamic pressure.",
+        "numbers": {}
+      },
+      "weakness": "Stalls completely in localized turbulence dead zones, leaving it drifting and defenseless for 3 s.",
+      "observe": [
+        "Curved leading edges catching updrafts",
+        "Twitching caudal fins adjusting pitch",
+        "Ammonium hydrosulfide ice fouling on foil tips"
+      ],
+      "journal": {
+        "en": "A living sail riding a hurricane."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Hydrofoils supplement jets and neutral buoyancy (F16), not solo flight at 110 m/s: use shear-layer surfing for repositioning and damage reduction at sub-jet speeds while jets maintain minimum dynamic pressure in 2.6 g thin H₂. Remove salt-crusted tips or replace with ammonium hydrosulfide ice fouling.",
+        "fixes": [
+          "Hydrofoils supplement jets and neutral buoyancy (F16), not solo flight at 110 m/s: use shear-layer surfing for repositioning and damage reduction at sub-jet speeds while jets maintain minimum dynamic pressure in 2.6 g thin H₂. Remove salt-crusted tips or replace with ammonium hydrosulfide ice fouling."
+        ],
+        "analogues": [
+          {
+            "organism": "Albatross dynamic soaring on wind shear; flying fish gliding plus powered escape; Sagan-Salpeter hunters with active locomotion in banded winds.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "designer": 9,
+          "physicist": 8
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "physicist",
+          "designer",
+          "wildcard"
+        ]
+      }
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-18",
+    "by": [
+      "designer",
+      "physicist",
+      "wildcard"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-18",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-18"
+    }
+  ],
+  "temperament": "Arrogant, solitary, and fiercely territorial.",
+  "secrets": [
+    "Thermal bladders <- adiabatic venting <- 1.5–2 K/km lapse rate + 2.6g gravity -> Skill 'Thermal Surge' (Control): vents superheated gas to break gravity, gaining instant altitude for a strike. Weakness: Bladder rupture causes rapid descent; relies on specific thermal layers."
+  ],
+  "moments": [
+    "A sudden crack of displaced air as it drops from the stratosphere, wings folding into a razor-edged dive that leaves ionized trails."
+  ]
+}

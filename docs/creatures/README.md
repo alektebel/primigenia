@@ -11,6 +11,20 @@
 | [Sombría](sombria.md) | new | draft | 4 | 1 fixable, 3 plausible |
 | [Taumoeba](taumoeba.md) | easter_egg | draft | 5 | 2 fixable, 3 plausible |
 
+## The Deep Sky (`deepsky`)
+
+| Creature | Kind | Status | Chains | Verdicts |
+|---|---|---|---|---|
+| [Air whales](air_whales.md) | new | draft | 4 | 4 unreviewed |
+| [Cloud grazers](cloud_grazers.md) | new | draft | 5 | 1 fixable, 4 plausible |
+| [Floaters](floaters.md) | new | draft | 5 | 5 unreviewed |
+| [Hunters](hunters.md) | new | draft | 5 | 5 unreviewed |
+| [Jet hunters](jet_hunters.md) | new | draft | 5 | 1 fixable, 4 plausible |
+| [Oathbound](oathbound.md) | cameo | draft | 5 | 2 fixable, 3 plausible |
+| [Rayotela](rayotela.md) | new | draft | 4 | 3 fixable, 1 plausible |
+| [Sinkers](sinkers.md) | new | draft | 5 | 5 unreviewed |
+| [Soplomanta](soplomanta.md) | new | draft | 4 | 1 fixable, 1 implausible, 2 plausible |
+
 ## Earth (Sol) (`earth`)
 
 | Creature | Kind | Status | Chains | Verdicts |

@@ -1,0 +1,243 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "air_whales",
+  "name": {
+    "en": "Air whales"
+  },
+  "world": "deepsky",
+  "kind": "new",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "Upper cloud decks (0.5–1 bar), slow migrators",
+    "diet": "Filter-feeds on cloud plankton and sinker spores",
+    "active": "Continuous, migrates with chemical and thermal gradients",
+    "predators": [
+      "Jet hunters (calves)",
+      "Hunters"
+    ],
+    "prey": [
+      "Cloud plankton",
+      "Sinker spores"
+    ]
+  },
+  "body": "Colossal, segmented leviathans spanning hundreds of meters, their bodies acting as living atmospheric engines. Massive filter-maws sweep through the haze while deep vocal sacs hum at 20 Hz, coordinating the herd across storm fronts.",
+  "chains": [
+    {
+      "id": "air_whales.c1",
+      "trait": "Modular gigantism for kilometre-scale neutral buoyancy",
+      "links": [
+        "2.6 g gravity demands extreme mass-to-volume ratios",
+        "H₂ atmosphere provides minimal displacement per cubic meter",
+        "Segmented body distributes structural stress across joints",
+        "Maintains stable altitude without constant metabolic output"
+      ],
+      "roots": [
+        "F3",
+        "F5",
+        "F18"
+      ],
+      "skill": {
+        "id": "air_whales.leviathan_hull",
+        "name": {
+          "en": "Leviathan Hull"
+        },
+        "role": "Defence",
+        "effect": "Blocks incoming attacks from 180° arc and absorbs 30 damage per hit",
+        "numbers": {}
+      },
+      "weakness": "Slow turning radius makes them vulnerable to flanking strikes",
+      "observe": [
+        "Distant floating silhouette",
+        "Segmented body joints shifting",
+        "Minimal wake despite massive size"
+      ],
+      "journal": {
+        "en": "They are mountains that learned to float."
+      },
+      "plausibility": {
+        "verdict": "unreviewed",
+        "judge": "none",
+        "date": "2026-11-18",
+        "scores": {
+          "physicist": 9
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "physicist"
+        ]
+      }
+    },
+    {
+      "id": "air_whales.c2",
+      "trait": "Infrasound vocal sacs for herd synchronization",
+      "links": [
+        "Zonal shear scatters high-frequency sound instantly",
+        "H₂ atmosphere transmits subsonic waves for hundreds of kilometers",
+        "Massive gas sacs modulate low-pressure pulses",
+        "Aligns migration routes across dangerous jet boundaries"
+      ],
+      "roots": [
+        "F7",
+        "F8",
+        "F18"
+      ],
+      "skill": {
+        "id": "air_whales.sky_chorus",
+        "name": {
+          "en": "Sky Chorus"
+        },
+        "role": "Social",
+        "effect": "Grants all nearby allies 20% movement speed and 15% damage resistance",
+        "numbers": {}
+      },
+      "weakness": "Vocalization reveals position to all nearby predators",
+      "observe": [
+        "Expanding throat sacs",
+        "Rhythmic ground and cloud tremors",
+        "Visible air pressure waves radiating outward"
+      ],
+      "journal": {
+        "en": "They sing the sky awake, and the storm answers."
+      },
+      "plausibility": {
+        "verdict": "unreviewed",
+        "judge": "none",
+        "date": "2026-11-18",
+        "scores": {
+          "physicist": 10
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "physicist"
+        ]
+      }
+    },
+    {
+      "id": "air_whales.c3",
+      "trait": "Aerodynamic filter-maw rakers for cloud grazing",
+      "links": [
+        "3.5% stellar flux caps cloud plankton abundance",
+        "Passive drifting starves the massive biomass",
+        "Rake-like gill structures maximize filtration surface",
+        "Converts forward wind momentum into feeding efficiency"
+      ],
+      "roots": [
+        "F22",
+        "F18"
+      ],
+      "skill": {
+        "id": "air_whales.plankton_sweep",
+        "name": {
+          "en": "Plankton Sweep"
+        },
+        "role": "Basic",
+        "effect": "Heals 15 HP per second while moving forward through cloud layers",
+        "numbers": {}
+      },
+      "weakness": "Cannot feed while stationary or fighting defensively",
+      "observe": [
+        "Glowing maw filters",
+        "Debris and plankton swirling inward",
+        "Steady forward glide with rakers extended"
+      ],
+      "journal": {
+        "en": "They drink the sky's dregs, turning waste into world-shaping mass."
+      },
+      "plausibility": {
+        "verdict": "unreviewed",
+        "judge": "none",
+        "date": "2026-11-18",
+        "scores": {
+          "physicist": 9
+        },
+        "analogues": [
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "sagan_1976_particles"
+            ]
+          }
+        ]
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "designer"
+        ]
+      }
+    },
+    {
+      "id": "air_whales.c4",
+      "trait": "Thermal circulation network for internal heat retention",
+      "links": [
+        "Retain metabolic heat for lift",
+        "Metabolic H2 production generates waste heat",
+        "Gigantism allows internal heat retention",
+        "Sustains enzymatic function across cold upper decks"
+      ],
+      "roots": [
+        "F16",
+        "F18"
+      ],
+      "skill": {
+        "id": "air_whales.core_warmth",
+        "name": {
+          "en": "Core Warmth"
+        },
+        "role": "Passive",
+        "effect": "Immune to cold/pressure debuffs, heal 1 HP/turn",
+        "numbers": {}
+      },
+      "weakness": "Vulnerable to heat sinks",
+      "observe": [
+        "Steam vents along flanks",
+        "Internal red glow",
+        "Warm air currents"
+      ],
+      "journal": {
+        "en": "They breathe fire to float."
+      },
+      "plausibility": {
+        "verdict": "unreviewed",
+        "judge": "none",
+        "date": "2026-11-18",
+        "scores": {
+          "physicist": 8
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "designer"
+        ]
+      }
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-18",
+    "by": [
+      "designer",
+      "physicist"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-18",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-18"
+    }
+  ],
+  "temperament": "Gentle, ancient, and deeply communal.",
+  "secrets": [
+    "Infrasound vocal sacs <- low attenuation <- 350 m/s sound speed + dense H₂ -> Skill 'Herd Call' (Control): emits a 15 Hz pulse that calms allies and redirects jet currents. Weakness: High drag makes them vulnerable to sudden shear; vocal cords strain if overused."
+  ],
+  "moments": [
+    "A shadow passing overhead, so vast it blocks the red star, followed by a subsonic thrum that vibrates in your chest."
+  ]
+}

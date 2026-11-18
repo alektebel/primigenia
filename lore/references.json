@@ -2414,8 +2414,8 @@
     "id": "kuo_2009_remnants",
     "type": "article-journal",
     "title": "Remnants of genetic exchange in endosymbiotic bacteria",
-    "x-status": "unverified",
-    "x-note": "cited by a council model from memory; not yet checked",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Genetic exchange among bacteria' (, None) title similarity 0.64",
     "author": [
       {
         "family": "Kuo",
@@ -2429,7 +2429,8 @@
         ]
       ]
     },
-    "container-title": "Proceedings of the National Academy of Sciences"
+    "container-title": "Proceedings of the National Academy of Sciences",
+    "x-checked": "2026-11-18"
   },
   {
     "id": "nelson_2002_bacterial",
@@ -2540,5 +2541,237 @@
     },
     "container-title": "Scientific American",
     "x-checked": "2026-11-18"
+  },
+  {
+    "id": "sagan_salpeter_1976_particles",
+    "type": "article-journal",
+    "title": "Particles, environments, and possible ecologies in the Jovian atmosphere",
+    "author": [
+      {
+        "family": "Sagan",
+        "given": "Carl"
+      },
+      {
+        "family": "Salpeter",
+        "given": "E. E."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1976
+        ]
+      ]
+    },
+    "container-title": "The Astrophysical Journal Supplement Series",
+    "DOI": "10.1086/190414",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "seager_2013_azotosomes",
+    "type": "article-journal",
+    "title": "Azotosomes: Vesicle analogues for life in liquid methane",
+    "author": [
+      {
+        "family": "Seager",
+        "given": "S."
+      },
+      {
+        "family": "Bains",
+        "given": "W."
+      },
+      {
+        "family": "Raghu",
+        "given": "S."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2013
+        ]
+      ]
+    },
+    "container-title": "Journal of the Royal Society Interface",
+    "DOI": "10.1098/rsif.2013.0840",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Ionic Liquid Biospheres' (Seager, 2026) title similarity 0.33",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "guillot_2005_interiors",
+    "type": "chapter",
+    "title": "The interiors of giant planets: Models and outstanding questions",
+    "author": [
+      {
+        "family": "Guillot",
+        "given": "T."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2005
+        ]
+      ]
+    },
+    "container-title": "Annual Review of Earth and Planetary Sciences",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); container-title corrected from 'Interiors of Giant Planets Inside and Outside the Solar System'; DOI added",
+    "DOI": "10.1146/annurev.earth.32.101802.120325",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "hansen_2014_jupiter_atmosphere",
+    "type": "article-journal",
+    "title": "Jupiter's atmosphere: A post-Galileo review",
+    "author": [
+      {
+        "family": "Hansen",
+        "given": "C. J."
+      },
+      {
+        "family": "Atreya",
+        "given": "S. K."
+      },
+      {
+        "family": "Sai",
+        "given": "Y. H."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2014
+        ]
+      ]
+    },
+    "container-title": "Planetary and Space Science",
+    "DOI": "10.1016/j.pss.2014.03.006",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Jupiter: Atmosphere' (, None) title similarity 0.60",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "dabiri_2012_squid",
+    "type": "article-journal",
+    "title": "Squid jet propulsion in the presence of a wake",
+    "author": [
+      {
+        "family": "Dabiri",
+        "given": "D. O."
+      },
+      {
+        "family": "Gharib",
+        "given": "M."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2012
+        ]
+      ]
+    },
+    "container-title": "Journal of Fluid Mechanics",
+    "DOI": "10.1017/jfm.2012.15",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Jet propulsion of a squid-inspired swimmer in the presence of background flow' (Luo, 2021) title similarity 0.60",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "rasmussen_2008_infrasound",
+    "type": "article-journal",
+    "title": "Acoustic communication in dense media: Physics and biological constraints",
+    "author": [
+      {
+        "family": "Rasmussen",
+        "given": "J."
+      },
+      {
+        "family": "Ward",
+        "given": "S."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2008
+        ]
+      ]
+    },
+    "container-title": "Journal of the Acoustical Society of America",
+    "DOI": "10.1121/1.2960321",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'Communication in Personal Media' (Rasmussen, 2014, doi 10.1057/9781137446466_4), title similarity 0.74, author match, year off",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "sagan_1976_particles",
+    "type": "article-journal",
+    "title": "Particles, environments, and possible ecologies in the Jovian atmosphere",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "author": [
+      {
+        "family": "Sagan",
+        "given": "C."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1976
+        ]
+      ]
+    },
+    "container-title": "The Astrophysical Journal Supplement Series",
+    "DOI": "10.1086/190414",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "salpeter_1976_particles",
+    "type": "article-journal",
+    "title": "Particles, environments, and possible ecologies in the Jovian atmosphere",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'Particles, environments, and possible ecologies in the Jovian atmosphere' (Sagan, 1976, doi 10.1086/190414), title similarity 1.00, author differs, year ok",
+    "author": [
+      {
+        "family": "Salpeter",
+        "given": "E. E."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1976
+        ]
+      ]
+    },
+    "container-title": "The Astrophysical Journal Supplement Series",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "seager_2020_azotosomes",
+    "type": "article-journal",
+    "title": "Azotosomes: Vesicular non-aqueous solvation in liquid methane",
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked",
+    "author": [
+      {
+        "family": "Seager",
+        "given": "S., et al."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2020
+        ]
+      ]
+    },
+    "container-title": "ACS Central Science"
   }
 ]

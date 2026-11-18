@@ -83,7 +83,7 @@ Trait ← Compartmentalized redox buffering via ion gradients ← Adaptation to 
   - Clarify that “Toggle” is facultative mixotrophy: separate cytoplasmic or invagination compartments with proton/sodium motifs (not full synthetic ion-exchange polymers); align F16 by noting other lineages later domesticate the same machinery as endosymbionts—this trait is ancestral compartmentalization in Taumoeba, not the host–symbiont version.
   - scores: astrobio 7, designer 8, physicist 9
   - Analogue: Anoxygenic phototrophs with intracytoplasmic membranes (Rhodobacter spheroides); mixotrophic protists (Euglena); mitochondrial/H+ gradient segregation (general textbook endosymbiosis).: as named by the judge; no mechanism or reference recorded
-  - Analogue: real biology behind this chain: see the cited works; chain wording is the council's own (Kuo 2009 [unverified])
+  - Analogue: real biology behind this chain: see the cited works; chain wording is the council's own (Kuo 2009 [rejected])
   - Fix: Clarify that “Toggle” is facultative mixotrophy: separate cytoplasmic or invagination compartments with proton/sodium motifs (not full synthetic ion-exchange polymers); align F16 by noting other lineages later domesticate the same machinery as endosymbionts—this trait is ancestral compartmentalization in Taumoeba, not the host–symbiont version.
 - **Chain provenance:** council run `autoloop-2026-11-18`; by naturalist, designer, wildcard
 

@@ -1,0 +1,357 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "oathbound",
+  "name": {
+    "en": "Oathbound"
+  },
+  "world": "deepsky",
+  "kind": "cameo",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "Upper Ammonia-Haze Decks (0.5–1.5 bar). The thick aerosol haze limits visibility, selecting for non-visual communication and ritualized conflict over lethal combat. This layer provides stable thermal gradients, ammonia-ice crystals, and chemotrophic aerosols.",
+    "diet": "Chemotrophic grazer and filter-feeder. Raking arms harvest ammonia-ice crystals and chemotrophic mats; they also intercept 'Sinker' spores in the upper drift before they descend into the cooking zone.",
+    "active": "Continuous, with activity peaks during lightning discharges. They utilize red-shifted photopigments for low-light grazing and track lightning storms to exploit chemical blooms.",
+    "predators": [
+      "Jet Hunters",
+      "Deep Thermal Sinks"
+    ],
+    "prey": [
+      "Ammonia Crystals",
+      "Chemotrophic Mats",
+      "Sinker Spores"
+    ]
+  },
+  "body": "A hydrostatic mantle supported by eight independent, ganglion-controlled arms and reinforced with iridescent mineral plates that deflect shear winds and rival blows. Baroreceptive fronds map jet streams, while segmented fluid clusters enable rapid pressure equalization for vertical migration.",
+  "chains": [
+    {
+      "id": "oathbound.c1",
+      "trait": "Eight independent arms with distributed neural ganglia",
+      "links": [
+        "Low-visibility aerosol haze disables long-range visual targeting",
+        "2.6 g gravity and low-H₂ viscosity demand constant micro-torques to prevent yaw drift",
+        "Distributed ganglia grant independent limb control to stabilize posture and execute contact strikes",
+        "Suction-cup contact is required to transmit chemical oath-signals in dampened air"
+      ],
+      "roots": [
+        "F3",
+        "F5",
+        "F19"
+      ],
+      "skill": {
+        "id": "oathbound.tactile_pact",
+        "name": {
+          "en": "Tactile Pact"
+        },
+        "role": "Social",
+        "effect": "Contact a target with two arms to exchange a temporary buff, locking a 10-second oath bond that shares damage mitigation",
+        "numbers": {}
+      },
+      "weakness": "Severed limbs cause neural cross-talk, reducing attack accuracy by 15% per lost arm and exposing a predictable weak-point cluster",
+      "observe": [
+        "Arms move in independent wave patterns",
+        "Suction cups pulse with chemical secretions",
+        "Ganglia glow faintly under skin"
+      ],
+      "journal": {
+        "en": "Eight hands, one mind, a thousand vows."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "In 2.6 g and low tactile damping in H₂, emphasize sucker-mediated chemical/tactile oaths (contact required) rather than long-range limb autonomy; cap independent accuracy loss per severed arm below octopus-like regeneration unless lore adds it.",
+        "fixes": [
+          "In 2.6 g and low tactile damping in H₂, emphasize sucker-mediated chemical/tactile oaths (contact required) rather than long-range limb autonomy; cap independent accuracy loss per severed arm below octopus-like regeneration unless lore adds it."
+        ],
+        "analogues": [
+          {
+            "organism": "Octopus vulgaris semi-autonomous arms with local ganglia and central brain override (Godfrey-Smith octopus cognition literature).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "designer": 8,
+          "physicist": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "physicist",
+          "designer",
+          "wildcard"
+        ]
+      }
+    },
+    {
+      "id": "oathbound.c2",
+      "trait": "Rigid hydrostatic skeleton reinforced with mineral plates",
+      "links": [
+        "Atmospheric buoyancy vanishes below 0.5 bar",
+        "2.6 g surface-equivalent gravity taxes soft tissue continuously",
+        "No solid mantle means gravity bears directly on biological structure",
+        "Calcified plates distribute compressive load"
+      ],
+      "roots": [
+        "F3",
+        "F10"
+      ],
+      "skill": {
+        "id": "oathbound.stone_chitin",
+        "name": {
+          "en": "Stone Chitin"
+        },
+        "role": "Defence",
+        "effect": "Expand calcified plates for 5 seconds, blocking 25 melee damage",
+        "numbers": {}
+      },
+      "weakness": "Expanded plates restrict diaphragm movement, lowering stamina regeneration by 20%",
+      "observe": [
+        "Joints click with ceramic friction",
+        "Belly expands with armored segments",
+        "Dust sheds off rigid shoulders"
+      ],
+      "journal": {
+        "en": "They wear their gravity."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Pair plates with internal fluid bladders (F16/F20): rigid plates fight 2.6 g posture load but megafauna still need lift gas or jet tethering above ~0.5 bar; Stone Chitin blocks melee in close duels, not free-flight without buoyancy aid.",
+        "fixes": [
+          "Pair plates with internal fluid bladders (F16/F20): rigid plates fight 2.6 g posture load but megafauna still need lift gas or jet tethering above ~0.5 bar; Stone Chitin blocks melee in close duels, not free-flight without buoyancy aid."
+        ],
+        "analogues": [
+          {
+            "organism": "Cephalopod beak and stylets (chitin/mineral composites); arthropod exoskeleton load spreading in high gravity (scaled isometrically costly—keep Oathbound mid-sized, not whale-scale).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 7,
+          "designer": 9,
+          "physicist": 7
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "physicist",
+          "designer"
+        ]
+      }
+    },
+    {
+      "id": "oathbound.c3",
+      "trait": "Chromatophore arrays broadcast ritualized duel patterns",
+      "links": [
+        "Aerosol haze reduces visual range to meters",
+        "Evolutionary pressure favors energy-efficient conflict resolution",
+        "Strict honor codes require unambiguous non-lethal signaling",
+        "Dye-secreting glands shift hue to indicate rank"
+      ],
+      "roots": [
+        "F19"
+      ],
+      "skill": {
+        "id": "oathbound.oath_display",
+        "name": {
+          "en": "Oath Display"
+        },
+        "role": "Signature",
+        "effect": "Flash a binding pattern, forcing target into a 6-second ritual duel where only basic attacks are allowed",
+        "numbers": {}
+      },
+      "weakness": "Intense bioluminescence acts as a beacon, drawing jet hunters if used below 0.7 bar",
+      "observe": [
+        "Skin ripples with geometric light",
+        "Posture squares up deliberately",
+        "Light casts sharp, colored shadows"
+      ],
+      "journal": {
+        "en": "They fight with poetry, not claws."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Bioluminescence beacon weakness: at 5.2 AU low flux, favor pigment structural color + iridophores over bright sustained bioluminescence unless localized duel patches; jet-hunter attraction only in thin upper decks where contrast is high.",
+        "fixes": [
+          "Bioluminescence beacon weakness: at 5.2 AU low flux, favor pigment structural color + iridophores over bright sustained bioluminescence unless localized duel patches; jet-hunter attraction only in thin upper decks where contrast is high."
+        ],
+        "analogues": [
+          {
+            "organism": "Cephalopod chromatophore threat and submission displays; stomatopod species recognition and ritualized contests.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "designer": 9,
+          "physicist": 9
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "physicist",
+          "designer",
+          "wildcard"
+        ]
+      }
+    },
+    {
+      "id": "oathbound.c4",
+      "trait": "Baroreceptive fronds map shear and pressure gradients",
+      "links": [
+        "Zonal jets create predictable high-shear wind layers",
+        "Low-frequency acoustic waves travel far in dense gas",
+        "Vertical migration requires precise altitude control to avoid thermal cooking",
+        "Fronds twitch toward static pressure differentials and ΔP shear"
+      ],
+      "roots": [
+        "F7",
+        "F8",
+        "F20"
+      ],
+      "skill": {
+        "id": "oathbound.pressure_sense",
+        "name": {
+          "en": "Pressure Sense"
+        },
+        "role": "Passive",
+        "effect": "Detect incoming strikes 0.5 seconds early, increasing dodge chance by 20% within active jet streams",
+        "numbers": {}
+      },
+      "weakness": "Sudden lightning thunder overloads mechanoreceptors, causing 3 seconds of disorientation and blind-spot vulnerability",
+      "observe": [
+        "Fronds twitch toward wind shifts",
+        "Skin ripples match distant thunder",
+        "Always faces into the jet stream"
+      ],
+      "journal": {
+        "en": "They read the sky's heartbeat."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Rename and retune: baroreceptive/statocyst fronds for shear and ΔP (F7 F20), with chemoreception limited to redox/honor pheromones on contact—not primary strike warning. Lightning disorientation = saturation of mechanoreceptors, not chemical overload.",
+        "fixes": [
+          "Rename and retune: baroreceptive/statocyst fronds for shear and ΔP (F7 F20), with chemoreception limited to redox/honor pheromones on contact—not primary strike warning. Lightning disorientation = saturation of mechanoreceptors, not chemical overload."
+        ],
+        "analogues": [
+          {
+            "organism": "Fish swim-bladder innervation and baroreflex; statocyst gravity/pressure organs in invertebrates.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 5,
+          "designer": 8,
+          "physicist": 7
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "physicist",
+          "designer",
+          "wildcard"
+        ]
+      }
+    },
+    {
+      "id": "oathbound.c5",
+      "trait": "Segmented, fluid-filled tentacle clusters equalize pressure",
+      "links": [
+        "Rapid altitude changes cause lethal pressure differentials",
+        "Hydrostatic balance must be maintained instantly",
+        "Internal fluid shifts between chambered segments",
+        "Exponential pressure gradients demand rapid adaptation"
+      ],
+      "roots": [
+        "F9",
+        "F15",
+        "F20"
+      ],
+      "skill": {
+        "id": "oathbound.depth_equalizer",
+        "name": {
+          "en": "Depth Equalizer"
+        },
+        "role": "Engage",
+        "effect": "Grants graded pressure tolerance during vertical movement, enabling safe traversal of deep zones but draining stamina on timed transits above 10 bar to avoid thermal denaturation",
+        "numbers": {}
+      },
+      "weakness": "Fluid segments lock rigidly during extreme cold snaps, halving movement speed and preventing pressure equalization in frigid upper decks",
+      "observe": [
+        "Tentacles rippling like accordion bellows",
+        "Standing perfectly still while wind screams past",
+        "Shifting weight between limbs"
+      ],
+      "journal": {
+        "en": "They carry their own oceans in every limb."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Depth Equalizer grants graded tolerance and slower osmotic/hydrostatic equilibration during vertical moves, not full immunity at 100 bar+ cooking (F15): deep traverse survival requires staying above denaturation isotherm or short timed transits with stamina cost.",
+        "fixes": [
+          "Depth Equalizer grants graded tolerance and slower osmotic/hydrostatic equilibration during vertical moves, not full immunity at 100 bar+ cooking (F15): deep traverse survival requires staying above denaturation isotherm or short timed transits with stamina cost."
+        ],
+        "analogues": [
+          {
+            "organism": "Deep-sea gelatinous animals with uniform internal pressure; amphipods and fish rapid barostasis via permeable tissues and ion/osmolyte tuning.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "designer": 9,
+          "physicist": 9
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "physicist",
+          "wildcard"
+        ]
+      }
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-18",
+    "by": [
+      "designer",
+      "physicist",
+      "wildcard"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-18",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-18"
+    }
+  ],
+  "aliases": [
+    "the honour-bound tentacled species"
+  ],
+  "temperament": "Stoic and ritualistic; they view oaths as biological imperatives and resolve conflicts through complex chromatophore duels that prioritize honor over survival.",
+  "secrets": [
+    "Oath-Binding: The player can swear oaths; breaking one marks the player as 'Disgraced', increasing aggression from all intelligent fauna.",
+    "Pressure-Sharing: An Oathbound can teach the player to equalize pressure, unlocking safe descent to the Ammonium-Hydrosulfide layer.",
+    "Duel-Deflection: Their mineral plates can be angled to reflect lightning, allowing the player to harvest energy or stun predators."
+  ],
+  "moments": [
+    "The Silent Duel: Two Oathbound engage in a rapid exchange of chromatophore patterns, mimicking each other's moves to settle a dispute without injury.",
+    "Lightning Anchor: An Oathbound locks its plates to channel a lightning strike, creating a temporary nutrient vortex that attracts prey.",
+    "The Oathkeeper: A wounded Oathbound offers the player a pressure-equalization secret in exchange for a promise to carry its spores to a safe altitude."
+  ]
+}

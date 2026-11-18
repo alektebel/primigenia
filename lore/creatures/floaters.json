@@ -1,0 +1,280 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "floaters",
+  "name": {
+    "en": "Floaters"
+  },
+  "world": "deepsky",
+  "kind": "new",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "Mid-cloud decks (1–3 bar), riding zonal jets",
+    "diet": "Filter-feeds on cloud plankton and sinker spores",
+    "active": "Continuous, follows jet streams and light gradients",
+    "predators": [
+      "Hunters",
+      "Jet hunters"
+    ],
+    "prey": [
+      "Cloud plankton",
+      "Sinker spores"
+    ]
+  },
+  "body": "Translucent, balloon-like sacs tethered to swept-back hydrofoil wings. They metabolize ambient gases to inflate bladders, riding the 100 m/s wind rivers while pressure chambers keep them from bursting or imploding.",
+  "chains": [
+    {
+      "id": "floaters.c1",
+      "trait": "Metabolic hydrogen production bladders for neutral buoyancy",
+      "links": [
+        "2.6 g gravity demands high gas displacement",
+        "H₂ atmosphere provides exceptionally low density",
+        "Metabolize trace CO₂ and NH₃ to yield H₂",
+        "Fill internal bladders to regulate vertical position"
+      ],
+      "roots": [
+        "F3",
+        "F5",
+        "F16"
+      ],
+      "skill": {
+        "id": "floaters.thermal_lift",
+        "name": {
+          "en": "Thermal Lift"
+        },
+        "role": "Engage",
+        "effect": "Ascends 20 m/s while generating a 10 wind-damage shield for allies",
+        "numbers": {}
+      },
+      "weakness": "Leaves a distinct H₂ chemical signature detectable by hunters",
+      "observe": [
+        "Translucent gas bladders",
+        "Bubble emission trails",
+        "Slow vertical drift with steady gas exchange"
+      ],
+      "journal": {
+        "en": "They carry their own balloons, cooking gas to defy gravity."
+      },
+      "plausibility": {
+        "verdict": "unreviewed",
+        "judge": "none",
+        "date": "2026-11-18",
+        "scores": {
+          "physicist": 10
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "physicist"
+        ]
+      }
+    },
+    {
+      "id": "floaters.c2",
+      "trait": "Asymmetric hydrofoil membranes to catch zonal jets",
+      "links": [
+        "100 m/s zonal wind shear rips passive targets",
+        "Low Reynolds number in thin gas demands active lift",
+        "Rigid asymmetric edges generate aerodynamic force",
+        "Steer and lock onto moving cloud highways"
+      ],
+      "roots": [
+        "F7",
+        "F17"
+      ],
+      "skill": {
+        "id": "floaters.jet_ride",
+        "name": {
+          "en": "Jet Ride"
+        },
+        "role": "Control",
+        "effect": "Grants 30 m/s horizontal boost and 25% evasion along wind bands",
+        "numbers": {}
+      },
+      "weakness": "Cannot brake quickly when crossing opposing wind layers",
+      "observe": [
+        "Stiff, curved membrane edges",
+        "Sudden acceleration along cloud bands",
+        "Trailing wake turbulence and vapor shear"
+      ],
+      "journal": {
+        "en": "They ride the sky-rivers, surfing storms on curved bone."
+      },
+      "plausibility": {
+        "verdict": "unreviewed",
+        "judge": "none",
+        "date": "2026-11-18",
+        "scores": {
+          "physicist": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "physicist"
+        ]
+      }
+    },
+    {
+      "id": "floaters.c3",
+      "trait": "Flexible internal hydrostatic chambers for pressure equalization",
+      "links": [
+        "Pressure doubles every 25 km descent",
+        "External crush forces rise exponentially",
+        "Internal fluid chambers compress passively",
+        "Matches ambient pressure to prevent tissue collapse"
+      ],
+      "roots": [
+        "F9",
+        "F20"
+      ],
+      "skill": {
+        "id": "floaters.iso_dive",
+        "name": {
+          "en": "Iso-Dive"
+        },
+        "role": "Defence",
+        "effect": "Nullifies pressure damage and grants 15% movement speed in deep clouds",
+        "numbers": {}
+      },
+      "weakness": "Slow to equilibrate when ascending rapidly into low pressure",
+      "observe": [
+        "Inflating and deflating internal sacs",
+        "No membrane stress cracks during depth shifts",
+        "Steady descent through density gradients"
+      ],
+      "journal": {
+        "en": "They breathe the crushing weight, turning pressure into padding."
+      },
+      "plausibility": {
+        "verdict": "unreviewed",
+        "judge": "none",
+        "date": "2026-11-18",
+        "scores": {
+          "physicist": 9
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "physicist"
+        ]
+      }
+    },
+    {
+      "id": "floaters.c4",
+      "trait": "Thermal buoyancy regulation via metabolic heat",
+      "links": [
+        "Expand gas volume via metabolic heat",
+        "Ideal gas law links heat to lift",
+        "Scale height allows vertical maneuverability",
+        "Enables rapid altitude shifts without chemical byproducts"
+      ],
+      "roots": [
+        "F16",
+        "F9"
+      ],
+      "skill": {
+        "id": "floaters.steam_rise",
+        "name": {
+          "en": "Steam Rise"
+        },
+        "role": "Control",
+        "effect": "Ignore 3m wind, ascend 8m",
+        "numbers": {}
+      },
+      "weakness": "Overheat causes burn damage",
+      "observe": [
+        "Translucent skin",
+        "Internal heat glow",
+        "Water vapor rings"
+      ],
+      "journal": {
+        "en": "They steam themselves upward."
+      },
+      "plausibility": {
+        "verdict": "unreviewed",
+        "judge": "none",
+        "date": "2026-11-18",
+        "scores": {
+          "physicist": 9
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "designer"
+        ]
+      }
+    },
+    {
+      "id": "floaters.c5",
+      "trait": "Azotosome membrane fluidity across pressure swings",
+      "links": [
+        "Maintain integrity across pressure swings",
+        "Vertical migration changes external pressure",
+        "Exponential pressure gradient stresses tissues",
+        "Selects for flexible, solvent-compatible boundaries"
+      ],
+      "roots": [
+        "F13",
+        "F20",
+        "F9"
+      ],
+      "skill": {
+        "id": "floaters.pressure_equalize",
+        "name": {
+          "en": "Pressure Equalize"
+        },
+        "role": "Passive",
+        "effect": "Resist 3 pressure damage, ignore 1 debuff",
+        "numbers": {}
+      },
+      "weakness": "Fails against instant vacuum",
+      "observe": [
+        "Iridescent shimmer",
+        "No rigid bones",
+        "Fluid internal motion"
+      ],
+      "journal": {
+        "en": "Jelly that laughs at pressure."
+      },
+      "plausibility": {
+        "verdict": "unreviewed",
+        "judge": "none",
+        "date": "2026-11-18",
+        "scores": {
+          "physicist": 10
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "designer"
+        ]
+      }
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-18",
+    "by": [
+      "designer",
+      "physicist"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-18",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-18"
+    }
+  ],
+  "temperament": "Drifting, cautious, and masterfully passive.",
+  "secrets": [
+    "Hydrostatic chambers <- pressure gradient <- 25 km scale height + adiabatic cooling -> Skill 'Depth Shift' (Control): vents or retains metabolic H₂ to rise/fall silently, escaping shear winds. Weakness: Rapid ascent causes decompression shock; slow descent risks cooking."
+  ],
+  "moments": [
+    "Gliding through a lightning-streaked ammonia haze, wings angled to catch a jet that screams past at supersonic speeds."
+  ]
+}

@@ -1,0 +1,293 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "sinkers",
+  "name": {
+    "en": "Sinkers"
+  },
+  "world": "deepsky",
+  "kind": "new",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "Upper cloud decks (0.5–2 bar), drifting downward",
+    "diet": "Phototrophy (NIR) & chemosynthesis (ammonia oxidation)",
+    "active": "Continuous, driven by starlight and chemical gradients",
+    "predators": [
+      "Floaters",
+      "Cloud grazers"
+    ]
+  },
+  "body": "Tiny, crimson-hued colonies that drink the dim red starlight through red-shifted pigments. They carry pressurized mineralized spores that burst into rapid mitosis as they sink through the ammonia haze.",
+  "chains": [
+    {
+      "id": "sinkers.c1",
+      "trait": "Rapid mitotic division before cooking",
+      "links": [
+        "Drifts downward under 2.6 g gravity",
+        "Crosses adiabatic lapse rate of 2 K/km",
+        "Reaches >10 bar cooking zone",
+        "Forces rapid mitosis before protein denaturation"
+      ],
+      "roots": [
+        "F3",
+        "F9",
+        "F15"
+      ],
+      "skill": {
+        "id": "sinkers.spore_burst",
+        "name": {
+          "en": "Spore Burst"
+        },
+        "role": "Basic",
+        "effect": "Releases 3 defensive spores on descent, dealing 12 heat damage and slowing pursuit",
+        "numbers": {}
+      },
+      "weakness": "Completely immobile and vulnerable during the 4-second mitosis phase",
+      "observe": [
+        "Pulsing crimson membrane",
+        "Falling dust and vapor trail",
+        "Rapid cellular expansion before splitting"
+      ],
+      "journal": {
+        "en": "They race the oven, betting their lives on a single division."
+      },
+      "plausibility": {
+        "verdict": "unreviewed",
+        "judge": "none",
+        "date": "2026-11-18",
+        "scores": {
+          "designer": 8,
+          "physicist": 9
+        },
+        "analogues": [
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "sagan_1976_particles"
+            ]
+          }
+        ]
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "physicist",
+          "designer"
+        ]
+      }
+    },
+    {
+      "id": "sinkers.c2",
+      "trait": "Red-shifted near-infrared photopigments in upper decks",
+      "links": [
+        "Star at 5.2 AU yields 3.5% Earth flux",
+        "Photon starvation limits visible light capture",
+        "Absorbs 600–900 nm NIR bands",
+        "Enables anoxygenic photosynthesis in dim haze"
+      ],
+      "roots": [
+        "F1",
+        "F14",
+        "F22"
+      ],
+      "skill": {
+        "id": "sinkers.nir_pulse",
+        "name": {
+          "en": "NIR Pulse"
+        },
+        "role": "Poke",
+        "effect": "Gains 15% damage boost and 10% evasion in low-light cloud strata",
+        "numbers": {}
+      },
+      "weakness": "Suffers neural static and reduced accuracy under bright UV flares",
+      "observe": [
+        "Crimson shimmering surface",
+        "Dim, hazy cloud layer",
+        "Slow rhythmic light-capture pulses"
+      ],
+      "journal": {
+        "en": "They drink the near-infrared whisper of a distant sun."
+      },
+      "plausibility": {
+        "verdict": "unreviewed",
+        "judge": "none",
+        "date": "2026-11-18",
+        "scores": {
+          "designer": 7,
+          "physicist": 9
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "physicist",
+          "designer"
+        ]
+      }
+    },
+    {
+      "id": "sinkers.c3",
+      "trait": "Pressure-reactive azotosome sealant",
+      "links": [
+        "Azotosome lipids cross-link under high pressure",
+        "Cross-linking forms a temporary, damage-resistant membrane seal",
+        "Rapid ascent to low-pressure zones breaks bonds, causing internal gas expansion",
+        "Root: F13, F16"
+      ],
+      "roots": [
+        "F13",
+        "F16"
+      ],
+      "skill": {
+        "id": "sinkers.pressure_seal",
+        "name": {
+          "en": "Pressure Seal"
+        },
+        "role": "Defence",
+        "effect": "Grants 25% damage reduction for 3s, but applies a stacking 'Decompression' debuff if used in low-pressure zones",
+        "numbers": {}
+      },
+      "weakness": "Using it in thin upper clouds causes rapid tissue expansion and movement penalty",
+      "observe": [
+        "Iridescent liquid film",
+        "Cracking vapor sound",
+        "Cloud droplet adhesion and beading"
+      ],
+      "journal": {
+        "en": "They armor up in the crush, only to bleed out when the sky thins."
+      },
+      "plausibility": {
+        "verdict": "unreviewed",
+        "judge": "none",
+        "date": "2026-11-18",
+        "scores": {
+          "designer": 6,
+          "physicist": 10
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "physicist",
+          "designer"
+        ]
+      }
+    },
+    {
+      "id": "sinkers.c4",
+      "trait": "Armored mineralized spore casing",
+      "links": [
+        "Shield DNA from high-pressure cooking",
+        "Lethal zone begins above supercritical transition",
+        "No surface means descent is permanent mortality",
+        "Selects for durable dispersal units"
+      ],
+      "roots": [
+        "F10",
+        "F15"
+      ],
+      "skill": {
+        "id": "sinkers.spore_shell",
+        "name": {
+          "en": "Spore Shell"
+        },
+        "role": "Defence",
+        "effect": "Block 4 damage, gain 1 stack of armor",
+        "numbers": {}
+      },
+      "weakness": "Brittle against kinetic shear",
+      "observe": [
+        "Geometric facets",
+        "Dense vapor trail",
+        "Reflected starlight flash"
+      ],
+      "journal": {
+        "en": "Nature's tin cans falling to their doom."
+      },
+      "plausibility": {
+        "verdict": "unreviewed",
+        "judge": "none",
+        "date": "2026-11-18",
+        "scores": {
+          "designer": 7,
+          "physicist": 7
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "designer"
+        ]
+      }
+    },
+    {
+      "id": "sinkers.c5",
+      "trait": "Chemosynthetic ammonia oxidation fallback",
+      "links": [
+        "Fuel metabolism where light fails",
+        "Insolation drops precipitously with depth",
+        "Cloud decks scatter and absorb stellar flux",
+        "Sustains survival in permanent shadow"
+      ],
+      "roots": [
+        "F22",
+        "F14"
+      ],
+      "skill": {
+        "id": "sinkers.ammonia_tap",
+        "name": {
+          "en": "Ammonia Tap"
+        },
+        "role": "Poke",
+        "effect": "Deal 4 damage, heal 2 HP",
+        "numbers": {}
+      },
+      "weakness": "Starved in pure hydrogen pockets",
+      "observe": [
+        "Faint greenish haze",
+        "Bubbling ventral pores",
+        "Chemical scent trails"
+      ],
+      "journal": {
+        "en": "Drinking the sky's blood."
+      },
+      "plausibility": {
+        "verdict": "unreviewed",
+        "judge": "none",
+        "date": "2026-11-18",
+        "scores": {
+          "designer": 8,
+          "physicist": 8
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "designer"
+        ]
+      }
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-18",
+    "by": [
+      "designer",
+      "physicist"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-18",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-18"
+    }
+  ],
+  "temperament": "Frantic, prolific, and utterly indifferent to individual survival.",
+  "secrets": [
+    "Rapid mitotic division <- heat stress <- 2.6g gravity + adiabatic lapse rate -> Skill 'Spore Burst' (Control): releases a cloud of fast-growing allies that temporarily boost local biomass. Weakness: Spores detonate if pressure drops too high (decompression)."
+  ],
+  "moments": [
+    "Watching a crimson bloom erupt mid-fall, a living hourglass ticking against the cooking zone."
+  ]
+}
