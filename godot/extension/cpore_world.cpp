@@ -324,7 +324,10 @@ Dictionary CporeWorld::command_input(const String &text) const {
     const int rc = cp_stage_command(scratch.get(), text.utf8().get_data());
     Dictionary d;
     d["rc"] = rc;
-    d["input"] = order_to_dict(scratch->order);
+    CpStageInput parsed;
+    std::memset(&parsed, 0, sizeof parsed);
+    if (cp_stage_parse(text.utf8().get_data(), &parsed) == 0) d["input"] = order_to_dict(parsed);
+    else d["input"] = order_to_dict(scratch->order);
     return d;
 }
 

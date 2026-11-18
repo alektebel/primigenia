@@ -1311,13 +1311,14 @@ uint16_t cp_stage_known_moves(const CpStageWorld *w){
     /* hook: learning by observing (A21 section 4) ORs its learned moves in here */
     return cp_combat_known_default(&w->player.profile);
 }
-int cp_stage_command(CpStageWorld *w,const char *text){
+static int parse_text(const char *text,CpStageInput *out){
     CpStageInput a={
         0
     };
     char extra,move_name[32];
     float deg;
-    if(!w||!text)return -1;
+    int rc=0;
+    if(!text)return -1;
     if(strcmp(text,"wait")==0)a.verb=CP_STAGE_WAIT;
     else if(strcmp(text,"go_nest")==0)a.verb=CP_STAGE_GO_NEST;
     else if(strcmp(text,"flee")==0)a.verb=CP_STAGE_FLEE;
@@ -1332,7 +1333,7 @@ int cp_stage_command(CpStageWorld *w,const char *text){
             long value=strtol(move_name,&end,10);
             if(*move_name&&!*end&&value>=0&&value<CB_MOVE_COUNT)a.move=(int)value;
         }
-        if(a.move<0)return reject(w,&a,-6);
+        if(a.move<0){rc=-6;goto done;}
     }
     else if(sscanf(text,"loadout %d %31s %c",&a.target,move_name,&extra)==2){
         a.verb=CP_STAGE_LOADOUT;
@@ -1344,10 +1345,10 @@ int cp_stage_command(CpStageWorld *w,const char *text){
             long value=strtol(move_name,&end,10);
             if(*move_name&&!*end&&value>=0&&value<CB_MOVE_COUNT)a.move=(int)value;
         }
-        if(a.move==-2)return reject(w,&a,CP_STAGE_ERR_UNKNOWN_MOVE);
+        if(a.move==-2){rc=CP_STAGE_ERR_UNKNOWN_MOVE;goto done;}
     }
     else if(sscanf(text,"heading %f %c",&deg,&extra)==1){
-        if(!isfinite(deg)||ab(deg)>1000000)return reject(w,&a,-1);
+        if(!isfinite(deg)||ab(deg)>1000000){rc=-1;goto done;}
         deg-=(int)(deg/360)*360;
         if(deg<0)deg+=360;
         int quadrant=(int)(deg/90);
@@ -1375,7 +1376,19 @@ int cp_stage_command(CpStageWorld *w,const char *text){
         a.hx=(int16_t)(x*32767);
         a.hz=(int16_t)(z*32767);
     }
-    else return reject(w,&a,-1);
+    else rc=-1;
+done:
+    *out=a;
+    return rc;
+}
+int cp_stage_parse(const char *text,CpStageInput *out){
+    return parse_text(text,out);
+}
+int cp_stage_command(CpStageWorld *w,const char *text){
+    CpStageInput a;
+    if(!w||!text)return -1;
+    const int rc=parse_text(text,&a);
+    if(rc)return reject(w,&a,rc);
     if(a.verb==CP_STAGE_FLEE&&w->active<0&&!has_threat(w))return reject(w,&a,-5);
     return cp_stage_order(w,&a);
 }

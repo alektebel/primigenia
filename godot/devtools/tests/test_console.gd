@@ -40,7 +40,7 @@ func _loadout(t) -> void:
 	sw.step_ticks(1)
 	t.eq(sw.cur.loadout.slots, [4, 1, 3, -1], "the move went to slot 1 and left slot 4")
 	t.check(r.execute("loadout 2 none").ok and r.execute("loadout 4 0").ok, "none empties, a move index works")
-	sw.step_ticks(1)
+	sw.step_ticks(2)         # one queued order per tick
 	t.eq(sw.cur.loadout.slots, [4, -1, 3, 0], "none empties a slot and an index fills one")
 	t.eq(int(sw.log_inputs[sw.log_inputs.size() - 1].verb), 10, "the loadout order is in the input log (verb 10)")
 	var attack: Dictionary = r.execute("order attack #1 charge")

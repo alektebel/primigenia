@@ -132,6 +132,8 @@ int cp_stage_can_walk(const CpStageWorld *w,float x,float z,float nx,float nz,fl
 /* Stable ids: player 0, wild 1..n, nest 1000, obstacles 2000+i. */
 int cp_stage_order(CpStageWorld *w,const CpStageInput *input);
 int cp_stage_command(CpStageWorld *w,const char *command);
+/* Parses a command text into the input it stands for, touching no world: 0 or the error code (-1 invalid, -6 / -12 unknown_move). */
+int cp_stage_parse(const char *text,CpStageInput *out);
 const char *cp_stage_order_error(int code);
 /* Moves the player may slot (parts today; learned-by-observing moves will be added here). */
 uint16_t cp_stage_known_moves(const CpStageWorld *w);   /* -4 = unreachable (no walkable route within the search limit) */
