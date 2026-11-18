@@ -90,7 +90,7 @@
 - `yakovlev_pethick_2004_ns_cooling`: Yakovlev & Pethick 2004. Neutron Star Cooling. *Annual Review of Astronomy and Astrophysics*. DOI: 10.1146/annurev.astro.42.053102.134013. Checked 2026-11-18. Note: verified against Crossref (title 1.00); DOI added. Cited by: neutronstar F1, neutronstar F12.
 - `zachos_2001_cenozoic`: Zachos 2001. Trends, rhythms, and aberrations in global climate 65 Ma to present. *Science*. DOI: 10.1126/science.1059412. Checked 2026-11-18. Note: verified against Crossref (title 1.00); DOI added. Cited by: earth F29.
 
-## Unverified (38)
+## Unverified (37)
 
 - `alberts_2014_mbc`: Alberts 2014. Molecular Biology of the Cell. Checked 2026-11-18. Note: ambiguous: closest OpenLibrary hit is 'Molecular Biology of the Cell' (Alberts, 1983), title similarity 1.00, author match, year off. Cited by: earth F21.
 - `anderson_itoh_1975_glitch`: Anderson & Itoh 1975. Pulsar Glitches. *Nature*. Checked 2026-11-18. Note: ambiguous: closest Crossref hit is 'Pulsar Glitches: Superfluid Unpinning' (Anderson, 1981, doi 10.1007/978-94-011-7912-6_48), title similarity 1.00, author match, year off. Cited by: neutronstar F10.
@@ -128,10 +128,9 @@
 - `southward_1991_evolution`: Southward 1991. Evolution of Deep-Sea Hydrothermal Vent Fauna. *Nature*. Checked 2026-11-18. Note: ambiguous: closest Crossref hit is 'Handbook of Deep‐Sea Hydrothermal Vent Fauna' (Ott, 2006, doi 10.1111/j.1439-0485.2006.00107.x), title similarity 0.84, author differs, year off. Cited by: cristalon.
 - `thebault_2015_igrf`: Thébault 2015. International Geomagnetic Reference Field: the 12th generation. *Earth, Planets and Space*. Checked 2026-11-18. Note: ambiguous: closest Crossref hit is 'Special issue “International Geomagnetic Reference Field—the twelfth generation”' (Thébault, 2015, doi 10.1186/s40623-015-0313-0), title similarity 0.84, author match, year ok. Cited by: earth F9.
 - `webb_1975_hydrodynamics`: Webb 1975. Hydrodynamics of fish movement. *Fish Bulletin*. Checked 2026-11-18. Note: ambiguous: closest Crossref hit is 'Hydrodynamics: Nonscombroid Fish' (Webb, 1978, doi 10.1016/s1546-5098(08)60165-x), title similarity 0.66, author match, year off. Cited by: sifon.
-- `wolfe_2021_convergent`: Wolfe 2021. Convergent adaptations: carcinization and its contribution to understanding the evolution of crab-like body plans. *BioEssays*. Note: cited by a council model from memory; not yet checked.
 - `zeng_2016`: Zeng et al. 2016. Mass-Radius Relation for Rocky Exoplanets. *Earth and Planetary Science Letters*. DOI: 10.1016/j.epsl.2016.04.030. Checked 2026-11-18. Note: ambiguous: closest Crossref hit is 'MASS–RADIUS RELATION FOR ROCKY PLANETS BASED ON PREM' (Zeng, 2016, doi 10.3847/0004-637x/819/2/127), title similarity 0.80, author match, year ok. Cited by: adrian F3.
 
-## Rejected (64)
+## Rejected (65)
 
 - `anderson_1975_vortex`: Anderson 1975. Vortex unpinning and neutron star glitches. *ApJ*. Checked 2026-11-18. Note: nothing plausible; closest hit 'Vortex unpinning due to crustquake-initiated neutron excitation and pulsar glitches' (Layek, 2020) title similarity 0.66.
 - `given_by_lore`: Author 2024. Project Hail Mary / Star World Lore Notes. Checked 2026-11-18. Note: nothing plausible; closest hit '[Grab] Project Hail Mary' (ginanda, 2026) title similarity 0.56.
@@ -192,6 +191,7 @@
 - `ward_2020_acoustic`: Ward 2020. Acoustic-optical coupling in social cave fauna. *Journal of Experimental Biology*. Checked 2026-11-18. Note: nothing plausible; closest hit 'Mousterian fauna from Dederiyeh Cave and comparisons with Fauna from Umm El Tlel and Douara Cave' (Griggo, 2004) title similarity 0.30.
 - `weisfogh_1973_mechanics`: Weis-Fogh 1973. Mechanics of Insect Flight. *Scientific American*. Checked 2026-11-18. Note: nothing plausible; closest hit 'Biology and physics of locust flight. I. Basic principles in insect flight. A critical review' (Weis-Fogh, 1956) title similarity 0.38.
 - `wesson_2011_plasma`: Wesson 2011. Plasma Physics and Controlled Fusion. *IOP Publishing*. Checked 2026-11-18. Note: nothing plausible; closest hit 'Introduction to Plasma Physics' (Wesson, 1996) title similarity 0.42.
+- `wolfe_2021_convergent`: Wolfe 2021. Convergent adaptations: carcinization and its contribution to understanding the evolution of crab-like body plans. *BioEssays*. Checked 2026-11-18. Note: nothing plausible; closest hit 'Dietary adaptations in the genomes and microbiomes of convergent myrmecophagous mammals' (Teullet, None) title similarity 0.42.
 - `woolley_2008_vocal`: Woolley 2008. Vocal masking in animal communication. *Current Biology*. Checked 2026-11-18. Note: nothing plausible; closest hit 'Form and function in vocal communication' (, 1998) title similarity 0.62.
 - `wordsworth_2021`: Wordsworth & Pierrefort 2021. Carbon dioxide climate feedback on the habitability of rocky exoplanets. *Astronomy & Astrophysics*. DOI: 10.1051/0004-6361/202039738. Checked 2026-11-18. Note: nothing plausible; closest hit 'Habitability of Rocky Exoplanets: Insight from Laboratory Simulations' (He, 2019) title similarity 0.62.
 - `wmo_2022_ozone`: World Meteorological Organization 2022. Scientific Assessment of Ozone Depletion: 2022. Checked 2026-11-18. Note: nothing plausible; closest hit '3. Assessing Ozone Depletion' (, 2019) title similarity 0.72.

@@ -4372,8 +4372,8 @@
     "id": "wolfe_2021_convergent",
     "type": "article-journal",
     "title": "Convergent adaptations: carcinization and its contribution to understanding the evolution of crab-like body plans",
-    "x-status": "unverified",
-    "x-note": "cited by a council model from memory; not yet checked",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Dietary adaptations in the genomes and microbiomes of convergent myrmecophagous mammals' (Teullet, None) title similarity 0.42",
     "author": [
       {
         "family": "Wolfe",
@@ -4387,7 +4387,8 @@
         ]
       ]
     },
-    "container-title": "BioEssays"
+    "container-title": "BioEssays",
+    "x-checked": "2026-11-18"
   },
   {
     "id": "borradaile_1916_crustacea",
