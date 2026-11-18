@@ -86,9 +86,9 @@ def ask(k, system, user, **kw):
 
 
 def chat(system, user, temp=0.9, max_tokens=7000):
-    body = json.dumps({"model": M, "messages": [{"role": "system", "content": system}, {"role": "user", "content": user}],
-                       "temperature": temp, "max_tokens": max_tokens}).encode()
     for a in range(40):
+        body = json.dumps({"model": M, "messages": [{"role": "system", "content": system}, {"role": "user", "content": user}],
+                           "temperature": temp, "max_tokens": min(32000, int(max_tokens * (1 + 0.5 * min(a, 4))))}).encode()  # empty content = reasoning ate the budget: grow it
         try:
             with sem:
                 r = urllib.request.Request(URL, body, {"Authorization": "Bearer " + KEY, "Content-Type": "application/json",
