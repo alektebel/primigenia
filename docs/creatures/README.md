@@ -43,6 +43,15 @@
 | [Hidrazón](hidrazon.md) | new | draft | 4 | 1 fixable, 3 plausible |
 | [Nubezón](nubezon.md) | new | draft | 4 | 3 fixable, 1 plausible |
 
+## The Neutron-Star Crust (`neutronstar`)
+
+| Creature | Kind | Status | Chains | Verdicts |
+|---|---|---|---|---|
+| [Andador Fractura](andador_fractura.md) | new | draft | 4 | 2 fixable, 2 plausible |
+| [Cristalino Filar](cristalino_filar.md) | new | draft | 4 | 2 fixable, 1 implausible, 1 plausible |
+| [Tamiz Drip](tamiz_drip.md) | new | draft | 4 | 2 fixable, 2 plausible |
+| [Vibra-Losa](vibra_losa.md) | new | draft | 4 | 4 fixable |
+
 ## Primigenia (the island world) (`primigenia`)
 
 | Creature | Kind | Status | Chains | Verdicts |

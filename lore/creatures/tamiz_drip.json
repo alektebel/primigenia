@@ -1,0 +1,301 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "tamiz_drip",
+  "name": {
+    "en": "Tamiz Drip"
+  },
+  "world": "neutronstar",
+  "kind": "new",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "Crustal transition zone near neutron drip threshold (~4×10^11 g/cm³)",
+    "diet": "Free neutrons from drip, latent heat from pasta phase boundaries",
+    "active": "Periodic bursts during density fluctuations, rests during stable hydrostatic equilibrium",
+    "predators": []
+  },
+  "body": "Compact layered defect shells, ~0.3 μm diameter, high proton-tolerance (speculative)",
+  "chains": [
+    {
+      "id": "tamiz_drip.c1",
+      "trait": "Filters free neutrons before they sink into the superfluid core",
+      "links": [
+        "Chemical potential gradient drives downward neutron flow",
+        "Defect complexes trap neutrons via weak-interaction capture",
+        "Neutron drip threshold establishes a sharp density boundary"
+      ],
+      "roots": [
+        "F9"
+      ],
+      "skill": {
+        "id": "tamiz_drip.drip_sieve",
+        "name": {
+          "en": "Drip-Sieve"
+        },
+        "role": "Basic",
+        "effect": "Harvests 20 free neutrons per cycle, fueling beta-decay metabolism and granting +10% mass to self.",
+        "numbers": {}
+      },
+      "weakness": "Neutron depletion stalls activity; requires waiting 40μs for drip replenishment.",
+      "observe": [
+        "Lattice vibrates during drip phase",
+        "Defect shells swell slightly",
+        "Neutrino emission spikes"
+      ],
+      "journal": {
+        "en": "They stand at the cliff's edge and catch the falling sky."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Phrase diet as tapping the drip-line neutron flux (n cm⁻² s⁻¹ at the habitat) with cycle stall when gradient weakens; drop integer neutron tallies or define them as game abstraction of integrated capture cross-section over 1 μs.",
+        "fixes": [
+          "Phrase diet as tapping the drip-line neutron flux (n cm⁻² s⁻¹ at the habitat) with cycle stall when gradient weakens; drop integer neutron tallies or define them as game abstraction of integrated capture cross-section over 1 μs."
+        ],
+        "analogues": [
+          {
+            "organism": "Chemosynthetic mats at redox/cline interfaces (e.g. Beggiatoa at sulfide–oxygen fronts)—exploit sharp chemical potential gradients, not neutron drip.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "tamiz_drip.c2",
+      "trait": "Metabolizes latent heat from solid-solid pasta phase transitions",
+      "links": [
+        "Phase boundaries release entropy as heat",
+        "Defect complexes couple to lattice vibrations",
+        "Competing strong-force and Coulomb forces minimize free energy"
+      ],
+      "roots": [
+        "F8"
+      ],
+      "skill": {
+        "id": "tamiz_drip.phase_forge",
+        "name": {
+          "en": "Phase-Forge"
+        },
+        "role": "Engage",
+        "effect": "Triggers localized pasta transition, dealing 25% heat damage to adjacent enemies and healing self.",
+        "numbers": {}
+      },
+      "weakness": "Requires precise density targeting; wrong phase causes structural instability.",
+      "observe": [
+        "Lattice changes intensity during transition",
+        "Defects align at phase boundaries",
+        "Heat pulses detected via phonons"
+      ],
+      "journal": {
+        "en": "They cook in the dark, using the world's own geometry as a furnace."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Limit Phase-Forge to steering/straining a pre-existing pasta boundary (symbiosis with Cristalino’s field-stabilized Tamiz metabolism fits); damage/heal = local enthalpy release/absorption at the interface, not arbitrary bulk phase nucleation.",
+        "fixes": [
+          "Limit Phase-Forge to steering/straining a pre-existing pasta boundary (symbiosis with Cristalino’s field-stabilized Tamiz metabolism fits); damage/heal = local enthalpy release/absorption at the interface, not arbitrary bulk phase nucleation."
+        ],
+        "analogues": [
+          {
+            "organism": "Organisms exploiting mineral hydration/dehydration or freeze–thaw heat at interfaces—weak but same ‘boundary enthalpy’ logic; no Earth pasta analogue.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "chamel_2008_nuclear"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "tamiz_drip.c3",
+      "trait": "Sheds proton contaminants to avoid inverse beta decay fractures",
+      "links": [
+        "Proton capture catalyzes p+e⁻→n+ν_e",
+        "Reaction disrupts neutron drip equilibrium",
+        "Exceeds crustal break stress"
+      ],
+      "roots": [
+        "F9",
+        "F14"
+      ],
+      "skill": {
+        "id": "tamiz_drip.proton_scrub",
+        "name": {
+          "en": "Proton-Scrub"
+        },
+        "role": "Defence",
+        "effect": "Purges adjacent proton-rich defects, preventing micro-glitch nucleation and granting +20% lattice integrity.",
+        "numbers": {}
+      },
+      "weakness": "Scrubbing releases neutrino flux, attracting Andador Fractura scavengers.",
+      "observe": [
+        "Defects reject bright spots",
+        "Lattice hums at high frequency",
+        "No fracture propagates nearby"
+      ],
+      "journal": {
+        "en": "A single wrong atom can crack a continent. They are fiercely hygienic."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Directly grounded in F14 (proton-rich triggers p+e⁻→n+ν_e, fracture/glitch risk). Active export or segregation of proton excess in defect shells is speculative but selected if contamination is lethal—a ‘hygienic’ pump at a nuclear interface is internally coherent. Neutrino leakage attracting predators matches weak-interaction by-products.",
+        "fixes": [
+          "Directly grounded in F14 (proton-rich triggers p+e⁻→n+ν_e, fracture/glitch risk). Active export or segregation of proton excess in defect shells is speculative but selected if contamination is lethal—a ‘hygienic’ pump at a nuclear interface is internally coherent. Neutrino leakage attracting predators matches weak-interaction by-products."
+        ],
+        "analogues": [
+          {
+            "organism": "Bacterial efflux pumps and periplasmic detox (e.g. Cus/Cue copper efflux in E. coli)—active exclusion of a lethal chemical species.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "tamiz_drip.c4",
+      "trait": "Accumulates heavy isotopes via resonant tunneling during lattice vibrations",
+      "links": [
+        "Phonon waves modulate lattice spacing",
+        "Electron-mediated tunneling rates peak at resonance",
+        "Relativistic degenerate electrons enable rapid quantum tunneling"
+      ],
+      "roots": [
+        "F6",
+        "F11"
+      ],
+      "skill": {
+        "id": "tamiz_drip.resonant_graft",
+        "name": {
+          "en": "Resonant-Graft"
+        },
+        "role": "Engage",
+        "effect": "Synchronizes with a target's vibration, transferring 15% of its heavy isotope reserves via tunneling.",
+        "numbers": {}
+      },
+      "weakness": "Requires sustained contact; broken contact during vibration mismatch causes tunneling failure.",
+      "observe": [
+        "Defects pulse in sync with target",
+        "Isotope counts shift visibly",
+        "Tunneling sparks observed"
+      ],
+      "journal": {
+        "en": "They borrow tomorrow's mass by singing with today's."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Phonon-modulated spacing plus relativistic degenerate screening (F6, F11) boosts tunnelling rates at resonance; F16 conjugation-style exchange at interfaces is the stated inheritance/reproduction channel. Isotope grafting under sustained contact is highly speculative but follows the same physics chain as resonant nuclear reactions in solids.",
+        "fixes": [
+          "Phonon-modulated spacing plus relativistic degenerate screening (F6, F11) boosts tunnelling rates at resonance; F16 conjugation-style exchange at interfaces is the stated inheritance/reproduction channel. Isotope grafting under sustained contact is highly speculative but follows the same physics chain as resonant nuclear reactions in solids."
+        ],
+        "analogues": [
+          {
+            "organism": "Phonon-assisted tunnelling in Josephson junctions and superconducting qubits (condensed matter, not biology); biologically, lateral gene transfer upon membrane contact (bacterial conjugation) mirrors ‘intimate interface required’.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "cristalino_filar",
+      "kind": "symbiosis",
+      "note": "Cristalino channels magnetic energy that stabilizes Tamiz's phase-boundary metabolism."
+    },
+    {
+      "with": "cristalino_filar",
+      "kind": "symbiosis",
+      "note": "Cristalino channels magnetic energy that stabilizes Tamiz's phase-boundary metabolism."
+    },
+    {
+      "with": "andador_fractura",
+      "kind": "predation",
+      "note": "Andador hunts Tamiz by tracking neutrino leakage from proton-scrubbing events."
+    },
+    {
+      "with": "andador_fractura",
+      "kind": "predation",
+      "note": "Andador hunts Tamiz by tracking neutrino leakage from proton-scrubbing events."
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-18",
+    "by": [
+      "naturalist/qwen"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-18",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-18"
+    }
+  ],
+  "temperament": "Solitary, meticulous, prone to lattice-fracture anxiety",
+  "secrets": [
+    "They can survive a full micro-glitch if buried deep enough.",
+    "Their layered shells record density history like tree rings.",
+    "Inviting one to conjugate grants temporary proton immunity."
+  ],
+  "moments": [
+    "The drip line shifts. Tamiz Drip pauses, senses the chemical gradient flip, and expands its shell just as a wave of free neutrons washes over it. It drinks gravity itself."
+  ],
+  "journal": [
+    {
+      "en": "They are the keepers of the threshold."
+    },
+    {
+      "en": "In a world of solid rock, they harvest the liquid that falls through it."
+    }
+  ]
+}

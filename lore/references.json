@@ -3209,9 +3209,10 @@
       ]
     },
     "container-title": "The Astrophysical Journal",
-    "DOI": "10.1086/146094",
-    "x-status": "unverified",
-    "x-note": "cited by a council model from memory; not yet checked"
+    "DOI": "10.1086/146087",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "x-checked": "2026-11-18"
   },
   {
     "id": "given_by_lore",
@@ -3415,8 +3416,8 @@
     "id": "morfill_2007_dusty",
     "type": "article-journal",
     "title": "Dusty plasmas: from crystals to complexity",
-    "x-status": "unverified",
-    "x-note": "cited by a council model from memory; not yet checked",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Complex and Dusty Plasmas' (Fortov, 2009) title similarity 0.68",
     "author": [
       {
         "family": "Morfill",
@@ -3430,6 +3431,311 @@
         ]
       ]
     },
-    "container-title": "New Journal of Physics 9, 263"
+    "container-title": "New Journal of Physics 9, 263",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "chamel_haensel_2008_physics",
+    "type": "article-journal",
+    "title": "Physics of Neutron Star Crusts",
+    "author": [
+      {
+        "family": "Chamel",
+        "given": "N."
+      },
+      {
+        "family": "Haensel",
+        "given": "P."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2008
+        ]
+      ]
+    },
+    "container-title": "Living Reviews in Relativity",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "DOI": "10.12942/lrr-2008-10",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "duncan_thompson_1992_magnetar",
+    "type": "article-journal",
+    "title": "Formation of Very Strongly Magnetized Neutron Stars",
+    "author": [
+      {
+        "family": "Duncan",
+        "given": "R. C."
+      },
+      {
+        "family": "Thompson",
+        "given": "C."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1992
+        ]
+      ]
+    },
+    "container-title": "The Astrophysical Journal",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'Formation of very strongly magnetized neutron stars - Implications for gamma-ray bursts' (Duncan, 1992, doi 10.1086/186413), title similarity 0.75, author match, year ok",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "mereghetti_2008_magnetar_flares",
+    "type": "article-journal",
+    "title": "The Soft Gamma Repeaters and Anomalous X-ray Pulsars as Magnetars",
+    "author": [
+      {
+        "family": "Mereghetti",
+        "given": "S."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2008
+        ]
+      ]
+    },
+    "container-title": "Living Reviews in Relativity",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'SOFT GAMMA REPEATERS AND ANOMALOUS X-RAY PULSARS BEYOND MAGNETARS' (Bisnovatyi-Kogan, 2016, doi 10.18524/1810-4215.2016.29.84971), title similarity 0.91, author differs, year off",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "blakemore_1975_magnetotactic",
+    "type": "article-journal",
+    "title": "Magnetotactic Bacteria",
+    "author": [
+      {
+        "family": "Blakemore",
+        "given": "R."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1975
+        ]
+      ]
+    },
+    "container-title": "Science",
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked"
+  },
+  {
+    "id": "adler_1971_vacuum_birefringence",
+    "type": "article-journal",
+    "title": "Photon Splitting and Photon Dispersion in a Strong Magnetic Field",
+    "author": [
+      {
+        "family": "Adler",
+        "given": "S. L."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1971
+        ]
+      ]
+    },
+    "container-title": "Annals of Physics",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "DOI": "10.1016/0003-4916(71)90154-0",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "anderson_itoh_1975_glitch",
+    "type": "article-journal",
+    "title": "Pulsar Glitches",
+    "author": [
+      {
+        "family": "Anderson",
+        "given": "P. W."
+      },
+      {
+        "family": "Itoh",
+        "given": "N."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1975
+        ]
+      ]
+    },
+    "container-title": "Nature",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'Pulsar Glitches: Superfluid Unpinning' (Anderson, 1981, doi 10.1007/978-94-011-7912-6_48), title similarity 1.00, author match, year off",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "yakovlev_pethick_2004_ns_cooling",
+    "type": "article-journal",
+    "title": "Neutron Star Cooling",
+    "author": [
+      {
+        "family": "Yakovlev",
+        "given": "D. G."
+      },
+      {
+        "family": "Pethick",
+        "given": "C. J."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2004
+        ]
+      ]
+    },
+    "container-title": "Annual Review of Astronomy and Astrophysics",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "DOI": "10.1146/annurev.astro.42.053102.134013",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "chamel_2013_superfluid_vortices",
+    "type": "article-journal",
+    "title": "Vortex Pinning and Superfluidity in Neutron Star Crusts",
+    "author": [
+      {
+        "family": "Chamel",
+        "given": "N."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2013
+        ]
+      ]
+    },
+    "container-title": "Physical Review C",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Physics of Neutron Star Crusts' (Chamel, 2008) title similarity 0.52",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "chamel_2008_physics",
+    "type": "article-journal",
+    "title": "Physics of neutron star crusts",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "author": [
+      {
+        "family": "Chamel",
+        "given": "N."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2008
+        ]
+      ]
+    },
+    "container-title": "Living Reviews in Relativity",
+    "DOI": "10.12942/lrr-2008-10",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "anderson_1975_vortex",
+    "type": "article-journal",
+    "title": "Vortex unpinning and neutron star glitches",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Vortex unpinning due to crustquake-initiated neutron excitation and pulsar glitches' (Layek, 2020) title similarity 0.66",
+    "author": [
+      {
+        "family": "Anderson",
+        "given": "P."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1975
+        ]
+      ]
+    },
+    "container-title": "ApJ",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "chamel_2008_nuclear",
+    "type": "article-journal",
+    "title": "Nuclear pasta in neutron star crusts",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'Pairing: From Atomic Nuclei to Neutron Star Crusts' (Chamel, 2013, doi 10.1142/9789814412490_0021), title similarity 0.64, author match, year off",
+    "author": [
+      {
+        "family": "Chamel",
+        "given": "N."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2008
+        ]
+      ]
+    },
+    "container-title": "Phys. Rev. C",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "chamel_2012_neutron",
+    "type": "article-journal",
+    "title": "Neutron stars with strong magnetic fields",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'Envelopes with Strong Magnetic Fields' (, 2007, doi 10.1007/978-0-387-47301-7_4), title similarity 0.82, author differs, year off",
+    "author": [
+      {
+        "family": "Chamel",
+        "given": "N."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2012
+        ]
+      ]
+    },
+    "container-title": "J. Phys. G: Nucl. Part. Phys.",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "haensel_2008_physics",
+    "type": "article-journal",
+    "title": "The physics of neutron star crusts",
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked",
+    "author": [
+      {
+        "family": "Haensel",
+        "given": "P."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2008
+        ]
+      ]
+    },
+    "container-title": "Living Rev. Relativity"
   }
 ]

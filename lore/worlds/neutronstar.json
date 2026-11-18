@@ -1,0 +1,372 @@
+{
+  "schema": "cpore.world/1",
+  "id": "neutronstar",
+  "kind": "fictional",
+  "system": {
+    "star": "Isolated Magnetar-Class Neutron Star",
+    "position": "fictional",
+    "distance_ly_from_sol": null
+  },
+  "name": {
+    "en": "The Neutron-Star Crust",
+    "es": "La Corteza de la Estrella de Neutrones"
+  },
+  "status": "draft",
+  "facts": [
+    {
+      "id": "F1",
+      "group": "star",
+      "claim": "Isolated magnetar radiates ~10^25 W as soft X-rays and low-energy gamma rays from residual thermal cooling and magnetic field decay.",
+      "justification": "Stefan-Boltzmann law for R≈11 km and T≈10^6 K matches observed anomalous X-ray pulsar luminosities without requiring exotic heating.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 1e+25,
+      "unit": "W",
+      "consequences": [
+        "Drives continuous surface ionization",
+        "Sets baseline metabolic energy budget",
+        "No optical photosynthesis; soft X-ray/gamma sky sets energy budget."
+      ],
+      "refs": [
+        "yakovlev_pethick_2004_ns_cooling",
+        "chamel_haensel_2008_physics"
+      ]
+    },
+    {
+      "id": "F2",
+      "group": "orbit",
+      "claim": "Crust rotates with a 2.3-second period, driving stochastic giant flares (10^44–10^46 erg) via crustal yield fractures and magnetic reconnection.",
+      "justification": "Magnetar spin periods typically span 2–12 seconds; flares are stochastic reconnection events, not spin-locked periodic phenomena.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 2.3,
+      "unit": "s",
+      "consequences": [
+        "Rotation provides a predictable macroscopic clock for timekeeping",
+        "Giant flares act as rare, stochastic global sterilization hazards",
+        "Forces stasis or deep-burrow survival tactics during outbursts."
+      ],
+      "refs": [
+        "duncan_thompson_1992_magnetar",
+        "mereghetti_2008_magnetar_flares"
+      ]
+    },
+    {
+      "id": "F3",
+      "group": "planet",
+      "claim": "Solid crust has an 11.2 km radius and 1.7×10^11 g surface gravity, balancing neutron degeneracy pressure against gravitational collapse.",
+      "justification": "Tolman-Oppenheimer-Volkoff limit and chiral EFT constraints fix neutron star mass-radius relations and surface acceleration.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 170000000000.0,
+      "unit": "g_earth",
+      "consequences": [
+        "Crushes macroscopic bodies to sub-micron scale",
+        "Makes vertical movement energetically prohibitive",
+        "Habitable size class restricted to lattice defect complexes, not kg-scale morphology."
+      ],
+      "refs": [
+        "chamel_haensel_2008_physics"
+      ]
+    },
+    {
+      "id": "F5",
+      "group": "atmosphere",
+      "claim": "No gaseous atmosphere exists; the habitable medium is a degenerate electron sea permeating a crystalline ion lattice, capped by a highly variable magnetospheric particle veneer.",
+      "justification": "Hydrostatic equilibrium in degenerate matter yields a scale height <0.1 m; only a collisionless magnetospheric veneer extends outward, not a fixed hydrostatic cap.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 0.05,
+      "unit": "m (variable)",
+      "consequences": [
+        "Eliminates aerodynamic flight",
+        "Replaces wind with phonon propagation",
+        "Requires direct lattice contact for respiration."
+      ],
+      "refs": [
+        "chamel_haensel_2008_physics"
+      ]
+    },
+    {
+      "id": "F6",
+      "group": "atmosphere",
+      "claim": "Lattice vibrations (phonons) propagate at ~1.2×10^6 m/s through the degenerate crust, serving as the primary medium for mechanical communication and seismic sensing.",
+      "justification": "Bulk modulus K≈10^33 dyne/cm² and density ρ≈10^14 g/cm³ yield sound speeds approaching 0.004c in the nuclear lattice.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 1200000.0,
+      "unit": "m/s",
+      "consequences": [
+        "Enables µm–mm effective communication range at µs cadence",
+        "Reveals terrain structure via echo mapping",
+        "High-amplitude phonons cause structural damage."
+      ],
+      "refs": [
+        "chamel_haensel_2008_physics"
+      ]
+    },
+    {
+      "id": "F4",
+      "group": "interior",
+      "claim": "A 3.5×10^14 G dipolar magnetic field dominates QED, transport, and orientation channels, enforcing Zeeman splitting and aligning nuclear spins along flux tubes; elasticity and gravity set substrate geometry.",
+      "justification": "Magnetar-class surface fields exceed the QED critical field (B_c≈4.4×10^13 G), making magnetic energy density > thermal energy density for charged particles.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 350000000000000.0,
+      "unit": "G",
+      "consequences": [
+        "Enforces pancake morphology to minimize Lorentz stress",
+        "Provides primary navigation highways",
+        "Scrambles during reconnection storms."
+      ],
+      "refs": [
+        "chamel_haensel_2008_physics"
+      ]
+    },
+    {
+      "id": "F8",
+      "group": "geology",
+      "claim": "The inner crust hosts nuclear pasta phases (lasagna, gnocchi, spaghetti) where competing strong-force clustering and Coulomb repulsion minimize free energy at density gradients.",
+      "justification": "Chamel & Haensel (2008) phase diagrams show entropy minimization produces rod, bubble, and slab structures at 0.5–0.8 nuclear saturation density.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 0.65,
+      "unit": "rho_sat",
+      "consequences": [
+        "Creates fluid-like phase boundaries for gliding (highly speculative ecology)",
+        "Provides structural camouflage domains",
+        "Releases latent heat during phase transitions."
+      ],
+      "refs": [
+        "chamel_haensel_2008_physics"
+      ]
+    },
+    {
+      "id": "F9",
+      "group": "geology",
+      "claim": "Neutron drip occurs at a density threshold of ~4×10^11 g/cm³, releasing free neutrons that flow downward via chemical potential gradients into the superfluid core.",
+      "justification": "Nuclear shell model and drip-line calculations place neutron unbinding at this density, driving core-crust neutron flux.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 400000000000.0,
+      "unit": "g/cm3",
+      "consequences": [
+        "Sustains neutron-rich metabolic pools",
+        "Creates vertical chemical gradients for foraging",
+        "Triggers lattice shear if proton contamination occurs."
+      ],
+      "refs": [
+        "chamel_haensel_2008_physics"
+      ]
+    },
+    {
+      "id": "F10",
+      "group": "climate",
+      "claim": "Crustal glitches release up to 10^38 erg when pinned superfluid vortices unpin and transfer angular momentum, fracturing the lattice and ejecting neutron-rich matter.",
+      "justification": "Anderson & Itoh (1975) and Chamel (2013) model glitches as sudden vortex unpinning events transferring rotational energy to the crust.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 1e+38,
+      "unit": "erg",
+      "consequences": [
+        "Generates seismic events correlated with pinning/unpinning statistics (model-dependent)",
+        "Ejects neutron-rich ejecta for harvesting",
+        "Scrambles local magnetic topology."
+      ],
+      "refs": [
+        "anderson_itoh_1975_glitch"
+      ]
+    },
+    {
+      "id": "F11",
+      "group": "chemistry",
+      "claim": "Relativistic degenerate electrons provide extreme screening and conduction, enabling rapid quantum tunneling; Fermi velocity approaches c in the inner crust.",
+      "justification": "Electron Fermi energy exceeds rest mass in the inner crust, creating a relativistic Fermi gas that screens Coulomb repulsion and facilitates tunneling.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "0.1–0.9",
+      "unit": "v_F_over_c",
+      "consequences": [
+        "Enables sub-microsecond reaction rates",
+        "Stabilizes exotic nuclear isomers",
+        "Provides high thermal conductivity buffering."
+      ],
+      "refs": [
+        "chamel_haensel_2008_physics"
+      ]
+    },
+    {
+      "id": "F12",
+      "group": "chemistry",
+      "claim": "Metabolic energy derives from weak-interaction beta decay cycles and latent heat released during solid-solid pasta phase transitions; ~8 MeV/nucleon represents the nuclear binding energy scale, not direct per-reaction yield.",
+      "justification": "Nuclear binding energy gradients and magnetic decay supply work far exceeding kT at crust temperatures, driving non-Arrhenius chemistry.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 8,
+      "unit": "MeV_per_nucleon",
+      "consequences": [
+        "Replaces photosynthesis with decay harvesting",
+        "Ties energy budget to magnetic field strength",
+        "Generates waste heat requiring lattice dissipation."
+      ],
+      "refs": [
+        "yakovlev_pethick_2004_ns_cooling",
+        "chamel_haensel_2008_physics"
+      ]
+    },
+    {
+      "id": "F13",
+      "group": "biochemistry",
+      "claim": "Macroscopic life is constrained to sub-micron quasi-crystalline defect complexes; metabolic cycles run at microsecond timescales due to weak interaction and phonon transport limits.",
+      "justification": "Nuclear timescales Γ≈10^6 s⁻¹ and 10^11 g gravity prevent macroscopic structures; life operates as lattice defect ensembles limited by phonon propagation and weak decay rates (highly speculative).",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 1e-06,
+      "unit": "s",
+      "consequences": [
+        "Compresses gameplay to frame-perfect timing",
+        "Requires collective swarm intelligence",
+        "Limits sensory range to µm–mm lattice cells."
+      ],
+      "refs": [
+        "chamel_haensel_2008_physics"
+      ]
+    },
+    {
+      "id": "F14",
+      "group": "biochemistry",
+      "claim": "Organisms metabolize neutron-rich nuclear clusters and magnetic reconnection sparks, while proton-rich contaminants trigger inverse beta decay and risk crust fracture / micro-glitch nucleation.",
+      "justification": "Proton capture catalyzes p+e⁻→n+ν_e, disrupting neutron drip equilibrium and exceeding crustal break stress.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 0,
+      "unit": "proton_fraction",
+      "consequences": [
+        "Forces strict isotopic portfolio management",
+        "Makes proton sources lethal hazards",
+        "Drives evolutionary pressure toward neutron stability."
+      ],
+      "refs": [
+        "chamel_haensel_2008_physics"
+      ]
+    },
+    {
+      "id": "F15",
+      "group": "biochemistry",
+      "claim": "Hereditary information is stored in topological flux-tube entanglements and lattice defect patterns, replicated via electron-mediated quantum tunneling between nuclear clusters; relies on metastable isomers with finite lifetimes.",
+      "justification": "QED-stabilized nuclear isomers and flux-tube knots provide stable information carriers in degenerate matter (highly speculative; requires stated metastable lifetimes).",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 1,
+      "unit": "topological_charge",
+      "consequences": [
+        "Enables non-DNA horizontal trait transfer",
+        "Ties inheritance to magnetic field topology",
+        "Allows rapid adaptation via defect reconfiguration."
+      ],
+      "refs": [
+        "chamel_haensel_2008_physics"
+      ]
+    },
+    {
+      "id": "F16",
+      "group": "biochemistry",
+      "claim": "Reproduction occurs through lattice conjugation, where adjacent defect complexes exchange nuclear fragments and share adaptive isotopic traits across the degenerate medium via resonant tunneling at shared interfaces.",
+      "justification": "Degenerate electron gas enables heavy-nucleus tunneling, allowing direct nuclear exchange without gaseous diffusion (highly speculative; requires intimate lattice contact + resonant defect channel).",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 1,
+      "unit": "conjugation_event",
+      "consequences": [
+        "Creates localized mutation hotspots",
+        "Requires physical lattice proximity",
+        "Shares radiation-hardening adaptations."
+      ],
+      "refs": [
+        "chamel_haensel_2008_physics"
+      ]
+    },
+    {
+      "id": "F17",
+      "group": "planet",
+      "claim": "Organism phenomenological rate ~10^6× faster than human baseline; stellar spin 2.3 s and flare/glitch hazards set macro rhythm, not cell cycle.",
+      "justification": "Explicit time-layer rule reconciles microsecond biological cycles with second-scale stellar dynamics.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 1000000.0,
+      "unit": "rate_multiplier",
+      "consequences": [
+        "Demands asynchronous population dynamics",
+        "Decouples local metabolism from global flare timing",
+        "Enables rapid evolutionary turnover within single spin periods."
+      ],
+      "refs": [
+        "duncan_thompson_1992_magnetar",
+        "chamel_haensel_2008_physics"
+      ]
+    },
+    {
+      "id": "F18",
+      "group": "planet",
+      "claim": "Persistent X/gamma flux and supercritical B impose strict selection pressures; life requires radiation-hard, magnet-aligned defect strategies with no Earth-analog multicell at mm scale.",
+      "justification": "Selection filters out macroscopic or weakly shielded architectures; only lattice-embedded defect ensembles survive.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "consequences": [
+        "Eliminates soft-tissue analogues",
+        "Enforces magnetic alignment for navigation",
+        "Drives convergent evolution toward degenerate-matter compatibility."
+      ],
+      "refs": [
+        "chamel_haensel_2008_physics",
+        "adler_1971_vacuum_birefringence"
+      ]
+    }
+  ],
+  "changelog": [
+    {
+      "date": "2026-11-18",
+      "who": "autoloop",
+      "what": "world canon drafted by the council chair from 17 facts (planet drafts, peer reviews, astrobio referee)"
+    },
+    {
+      "date": "2026-11-18",
+      "who": "autoloop",
+      "what": "removed rejected references; retired real facts left without references"
+    }
+  ]
+}

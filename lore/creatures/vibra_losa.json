@@ -1,0 +1,297 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "vibra_losa",
+  "name": {
+    "en": "Vibra-Losa"
+  },
+  "world": "neutronstar",
+  "kind": "new",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "Inner crust slab-transition zone (~0.65 ρ_sat)",
+    "diet": "Downward neutron drip flux & latent heat from phase transitions",
+    "active": "Continuous (cycles synchronized to stellar spin & glitch cycles)",
+    "predators": []
+  },
+  "body": "Sub-micron planar defect complex, elongated along magnetic flux tubes, quasi-crystalline isomer clusters",
+  "chains": [
+    {
+      "id": "vibra_losa.c1",
+      "trait": "Cognitive cycles flash at one microsecond intervals",
+      "links": [
+        "Processes magnetic flux states via weak decay",
+        "Weak interaction timescales impose a hard biological ceiling",
+        "Relativistic degenerate electrons lower tunneling activation barriers"
+      ],
+      "roots": [
+        "F12",
+        "F13",
+        "F11"
+      ],
+      "skill": {
+        "id": "vibra_losa.phonon_sync",
+        "name": {
+          "en": "Phonon Sync"
+        },
+        "role": "Engage",
+        "effect": "Synchronizes with nearby allies, granting +25% resonant tunneling success for 3 turns.",
+        "numbers": {}
+      },
+      "weakness": "Proton contamination stalls metabolic cycles, causing a 1-turn stun.",
+      "observe": [
+        "Rapid lattice shimmer",
+        "High-frequency phonon click",
+        "Tightening flux-tube knot"
+      ],
+      "journal": {
+        "en": "They don’t wait for the world; they outrun it."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Rename skill logic to ‘processing/metabolic cycles’ or ‘colony phase clock’; tie the 1 μs beat explicitly to F13’s phonon round-trip or weak-rate ceiling; keep ‘Phonon Sync’ as resonant defect coordination, not consciousness.",
+        "fixes": [
+          "Rename skill logic to ‘processing/metabolic cycles’ or ‘colony phase clock’; tie the 1 μs beat explicitly to F13’s phonon round-trip or weak-rate ceiling; keep ‘Phonon Sync’ as resonant defect coordination, not consciousness."
+        ],
+        "analogues": [
+          {
+            "organism": "Fast enzymatic turnover in catalytic cycles (e.g. carbonic anhydrase steps on ~μs scales) shows biology can tick at microseconds for local chemistry; nothing Earth-like matches colony ‘thought’ at that rate—closest metaphor is bacterial quorum-chemistry oscillations (Vibrio fischeri LuxI/LuxR), but those run in milliseconds, not microseconds.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "vibra_losa.c2",
+      "trait": "Planar defect bodies glide along nuclear lasagna sheets",
+      "links": [
+        "Frictionless sliding between competing pasta phases",
+        "Density gradients minimize Coulomb repulsion at slab interfaces",
+        "QED-supercritical magnetic field confines motion to two-dimensional planes"
+      ],
+      "roots": [
+        "F8",
+        "F4"
+      ],
+      "skill": {
+        "id": "vibra_losa.phase_slip",
+        "name": {
+          "en": "Phase Slip"
+        },
+        "role": "Basic",
+        "effect": "Shifts to an adjacent pasta layer, dodging seismic waves and gaining +30% mobility.",
+        "numbers": {}
+      },
+      "weakness": "Micro-glitch fractures trap them, dealing +20% damage taken.",
+      "observe": [
+        "Smooth lateral glide",
+        "Bent magnetic field lines",
+        "Phase-boundary refraction"
+      ],
+      "journal": {
+        "en": "A ghost in the pasta, slipping between the noodles."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Replace ‘frictionless’ with ‘low pinning / intermittent phase-slip’; weakness on micro-glitch trapping stays; Phase Slip costs a brief phonon burst or temporary misalignment with B.",
+        "fixes": [
+          "Replace ‘frictionless’ with ‘low pinning / intermittent phase-slip’; weakness on micro-glitch trapping stays; Phase Slip costs a brief phonon burst or temporary misalignment with B."
+        ],
+        "analogues": [
+          {
+            "organism": "Dislocation glide and grain-boundary sliding in minerals; smectic liquid-crystal layer slip (smectic A phases slide with anisotropic viscosity).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "chamel_2008_physics"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "vibra_losa.c3",
+      "trait": "Hereditary data stored in magnetic flux-tube knots",
+      "links": [
+        "Encodes isotopic traits via quantum entanglement",
+        "Flux tubes provide radiation-hard channels in degenerate matter",
+        "Chiral EFT stabilizes metastable nuclear isomers"
+      ],
+      "roots": [
+        "F15",
+        "F4",
+        "F18"
+      ],
+      "skill": {
+        "id": "vibra_losa.knot_weave",
+        "name": {
+          "en": "Knot Weave"
+        },
+        "role": "Social",
+        "effect": "Shares adaptive isotopes via resonant tunneling, granting +15% radiation resistance to allies.",
+        "numbers": {}
+      },
+      "weakness": "X-ray flares disrupt knot topology, breaking the link and causing -20% resistance for 2 turns.",
+      "observe": [
+        "Glowing knot patterns",
+        "Resonant tunneling hum",
+        "Crossing magnetic field lines"
+      ],
+      "journal": {
+        "en": "They carry their ancestors in magnetic scars."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Store information in metastable nuclear isomer population ratios + defect knot topology that templates daughter defects, not entanglement bits; Knot Weave = shared isomer loading via resonant tunneling at interfaces (F16), with flare weakness breaking specific knot/wrapping numbers.",
+        "fixes": [
+          "Store information in metastable nuclear isomer population ratios + defect knot topology that templates daughter defects, not entanglement bits; Knot Weave = shared isomer loading via resonant tunneling at interfaces (F16), with flare weakness breaking specific knot/wrapping numbers."
+        ],
+        "analogues": [
+          {
+            "organism": "Prion templating (Prusiner): self-copying conformational information without nucleic acids; bacterial FtsK/topoisomerase-mediated DNA knot segregation—topological inheritance motif.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "vibra_losa.c4",
+      "trait": "Extracts metabolic energy from downward neutron drip",
+      "links": [
+        "Captures free neutrons before they sink to the core",
+        "Chemical potential gradient drives steady downward drip flow",
+        "Nuclear binding energy gradients supply work for defect maintenance"
+      ],
+      "roots": [
+        "F9",
+        "F12"
+      ],
+      "skill": {
+        "id": "vibra_losa.drip_siphon",
+        "name": {
+          "en": "Drip Siphon"
+        },
+        "role": "Poke",
+        "effect": "Drains neutron flux from a lattice node, dealing 2 weak-interaction damage and healing 1 HP.",
+        "numbers": {}
+      },
+      "weakness": "Overharvesting triggers inverse beta decay, attracting lattice predators.",
+      "observe": [
+        "Subtle density waves",
+        "Neutron-rich aura",
+        "Phase-transition heat shimmer"
+      ],
+      "journal": {
+        "en": "They drink the crust’s bleeding heart."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Drip Siphon = local enhancement of n-capture–β turnover at a drip node and tapping phase-transition heat; damage/heal flavored as redistribution of binding energy, with predator attraction tied to F14 proton/neutron imbalance, not literal neutron vacuuming.",
+        "fixes": [
+          "Drip Siphon = local enhancement of n-capture–β turnover at a drip node and tapping phase-transition heat; damage/heal flavored as redistribution of binding energy, with predator attraction tied to F14 proton/neutron imbalance, not literal neutron vacuuming."
+        ],
+        "analogues": [
+          {
+            "organism": "Chemolithoautotrophs at hydrothermal vents (e.g. Sulfurimonas) harvesting opposing chemical-potential gradients, not ingesting a raw particle beam.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "chamel_2008_physics"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "Sialagón",
+      "kind": "cousin",
+      "note": "(council kind 'Niche Partitioning') Vibra-Losa grazes on their phase-transition heat; Sialagón avoids competition by migrating to the higher-density gnocchi layer."
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-18",
+    "by": [
+      "naturalist/qwen"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-18",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-18"
+    }
+  ],
+  "temperament": "Hyper-reactive, mathematically precise, colony-minded",
+  "secrets": [
+    "Proton-rich contaminants are actually a deliberate evolutionary trap; ingesting them triggers a controlled inverse beta decay that temporarily accelerates their cognition to nanosecond speeds, at the cost of severe lattice brittleness.",
+    "Their 'thoughts' are standing phonon waves; destroying the host pasta slab silences their colony permanently.",
+    "They can be befriended by playing a resonant magnetic frequency that matches their topological knot spacing."
+  ],
+  "moments": [
+    "When a micro-glitch fractures the lasagna layer, you watch them fracture too, then reassemble from scattered isomer fragments in exactly three microseconds."
+  ],
+  "journal": [
+    {
+      "en": "Physics says nothing should live here. Then the crust hums."
+    },
+    {
+      "en": "They think in microseconds, but their grudges outlast the star."
+    }
+  ]
+}
