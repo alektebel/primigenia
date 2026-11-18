@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include <string.h>
+#include <strings.h>
 #include <stdlib.h>
 #include <stddef.h>
 #ifdef NAV_STATS
@@ -1296,12 +1297,13 @@ int cp_stage_command(CpStageWorld *w,const char *text){
     else if(sscanf(text,"attack #%d %31s %c",&a.target,move_name,&extra)==2){
         a.verb=CP_STAGE_ATTACK;
         a.move=-1;
-        for(int i=0;i<CB_MOVE_COUNT;i++)if(strcmp(move_name,cp_combat_move_name(i))==0)a.move=i;
+        for(int i=0;i<CB_MOVE_COUNT;i++)if(strcasecmp(move_name,cp_combat_move_name(i))==0)a.move=i;
         if(a.move<0){
             char *end;
             long value=strtol(move_name,&end,10);
             if(*move_name&&!*end&&value>=0&&value<CB_MOVE_COUNT)a.move=(int)value;
         }
+        if(a.move<0)return reject(w,&a,-6);
     }
     else if(sscanf(text,"heading %f %c",&deg,&extra)==1){
         if(!isfinite(deg)||ab(deg)>1000000)return reject(w,&a,-1);
@@ -1359,6 +1361,7 @@ const char *cp_stage_order_error(int code){
         case -3:return "invalid or unavailable attack move";
         case -4:return "unreachable";
         case -5:return "no_threat";
+        case -6:return "unknown_move";
         default:return "invalid command or value";
     }
 }
@@ -1421,6 +1424,29 @@ static const char *creature_state(const CpStageWorld *w,int i){
 int cp_stage_observe(const CpStageWorld *w,char *out,size_t cap){
     return cp_stage_observe_v(w,out,cap,2);
 }
+/* A move the player can attack with (part owned, not a self move). */
+static int attack_move_ok(const CpStageWorld *w,int i){
+    return !(CP_COMBAT_MOVES[i].flags&CB_F_SELF)&&cp_combat_part_level(&w->player.profile,CP_COMBAT_MOVES[i].part)>0;
+}
+/* Usable now: enough stamina, and (in a fight) the fighter is free to start it. */
+static int attack_move_usable(const CpStageWorld *w,int i){
+    if(!attack_move_ok(w,i)||w->player.stamina<cp_combat_move_stamina(&w->player.profile,i))return 0;
+    if(w->active>=0){
+        const CpCombatCreature *c=&w->combat.c[0];
+        return cp_combat_move_available(c,i)&&c->move==CB_MOVE_NONE&&c->phase!=CB_PH_RECOVERY&&c->stun_t<=0;
+    }
+    return 1;
+}
+/* Centre-to-target-surface gap against the move's reach (the combat rule). */
+static int attack_move_reaches(const CpStageWorld *w,int i,const CpStageCreature *t){
+    return dist(&w->player,t)-cp_combat_body_radius(&t->profile)<=CP_COMBAT_MOVES[i].reach;
+}
+static int creature_attackable(const CpStageWorld *w,int k){
+    const CpStageCreature *t=&w->wild[k];
+    if(t->dead||(w->active>=0&&w->active!=k))return 0;
+    for(int i=0;i<CB_MOVE_COUNT;i++)if(attack_move_ok(w,i)&&attack_move_reaches(w,i,t))return 1;
+    return 0;
+}
 int cp_stage_observe_v(const CpStageWorld *w,char *out,size_t cap,int version){
     if(!out||!cap||(version!=1&&version!=2))return -1;
     size_t used=0;
@@ -1460,7 +1486,7 @@ int cp_stage_observe_v(const CpStageWorld *w,char *out,size_t cap,int version){
         if(d>40)continue;
         if(version==2){
             const char *state=creature_state(w,i);
-            ADD("%s{\"id\":%d,\"type\":\"%s\",\"species\":\"%s\",\"distance\":%.6f,\"bearing\":%.6f,\"hp\":%.6f,\"hp_max\":%.6f,\"state\":\"%s\",\"in_fight\":%s}",comma?",":"",i+1,e->dead?"carcass":"creature",CP_STAGE_SPECIES[e->species].name,d,bearing(&w->player,e->x,e->z),e->hp,e->profile.hp,state,w->active==i?"true":"false");
+            ADD("%s{\"id\":%d,\"type\":\"%s\",\"species\":\"%s\",\"distance\":%.6f,\"bearing\":%.6f,\"hp\":%.6f,\"hp_max\":%.6f,\"state\":\"%s\",\"in_fight\":%s,\"attackable\":%s}",comma?",":"",i+1,e->dead?"carcass":"creature",CP_STAGE_SPECIES[e->species].name,d,bearing(&w->player,e->x,e->z),e->hp,e->profile.hp,state,w->active==i?"true":"false",creature_attackable(w,i)?"true":"false");
         }
         else ADD("%s{\"id\":%d,\"type\":\"%s\",\"species\":\"%s\",\"distance\":%.6f,\"bearing\":%.6f}",comma?",":"",i+1,e->dead?"carcass":"creature",CP_STAGE_SPECIES[e->species].name,d,bearing(&w->player,e->x,e->z));
         comma=1;
@@ -1488,8 +1514,16 @@ int cp_stage_observe_v(const CpStageWorld *w,char *out,size_t cap,int version){
     if(target&&attacks)ADD(",\"attack\"");
     ADD("],\"attack_moves\":[");
     comma=0;
-    for(int i=0;i<CB_MOVE_COUNT;i++)if(!(CP_COMBAT_MOVES[i].flags&CB_F_SELF)&&cp_combat_part_level(&w->player.profile,CP_COMBAT_MOVES[i].part)>0){
-        ADD("%s{\"id\":%d,\"name\":\"%s\"}",comma?",":"",i,cp_combat_move_name(i));comma=1;
+    int tgt=-1;
+    float best=1e30f;
+    for(int i=0;i<w->setup.n;i++)if(!w->wild[i].dead&&(w->active<0||w->active==i)&&dist(&w->player,&w->wild[i])<best){
+        tgt=i;
+        best=dist(&w->player,&w->wild[i]);
+    }
+    for(int i=0;i<CB_MOVE_COUNT;i++)if(attack_move_ok(w,i)){
+        const CpCombatMove *m=&CP_COMBAT_MOVES[i];
+        ADD("%s{\"index\":%d,\"id\":%d,\"name\":\"%s\",\"stamina_cost\":%.3f,\"range_m\":%.3f,\"windup_ticks\":%d,\"active_ticks\":%d,\"recover_ticks\":%d,\"usable\":%s,\"target_in_range\":%s}",comma?",":"",i,i,m->name,cp_combat_move_stamina(&w->player.profile,i),m->reach,m->windup,m->active,m->recovery,attack_move_usable(w,i)?"true":"false",tgt<0?"null":attack_move_reaches(w,i,&w->wild[tgt])?"true":"false");
+        comma=1;
     }
     ADD("],\"summary\":\"Explore the valley; creature ids are stable.\"}");
 #undef ADD

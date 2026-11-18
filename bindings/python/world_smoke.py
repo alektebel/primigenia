@@ -80,6 +80,14 @@ def main():
     check(obs.get("schema") == "world-2" and "legal_verbs" in obs and obs["world"]["bound"] == 195.0,
           f"observe() returns world-2 JSON (tick {obs.get('tick')})")
     w1 = StageWorld(seed=42)
+    o1 = w1.observe()
+    mv = o1["attack_moves"]
+    check(mv and all(list(m) == ["index", "id", "name", "stamina_cost", "range_m", "windup_ticks", "active_ticks",
+                                 "recover_ticks", "usable", "target_in_range"] for m in mv),
+          "observe().attack_moves lists index, name, cost, range, ticks, usable")
+    check(all("attackable" in n for n in o1["nearby"] if n["type"] == "creature"), "nearby creatures carry attackable")
+    check(w1.command("attack #1 BITE") == 0 and w1.command("attack #1 0") == 0, "attack accepts name (any case) or index")
+    check(w1.command("attack #1 atack") < 0 and w1.observe()["last_error"] == "unknown_move", "unknown move gives unknown_move")
     check(w1.observe(schema=1).get("schema") == "world-1", "observe(schema=1) still gives the world-1 text")
     check(w1.command("dance") < 0 and w1.observe()["last_error"] != "ok", "a rejected text command shows in observe().last_error")
     w1.step(None)

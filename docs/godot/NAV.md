@@ -40,7 +40,8 @@ Top-level keys in order: `schema, tick, clock, world, own, last_error, blocked, 
   `flee` with no creature within 30 m: the text API rejects it with `no_threat`; the struct API (replay logs) still accepts it, so recorded logs replay unchanged, and flags `no_threat`. `flee` is not listed in `legal_verbs` then.
 - `blocked`: `null` or `{reason: cliff|water|edge|obstacle|creature|unreachable, x, z}` for the last step (the refused target point). `creature` is reserved (creatures do not collide yet).
 - `events` (ring of 64, deterministic, not hashed): `hit {by,target,move,damage}`, `kill`, `death`, `respawn`, `order_rejected {error}`, `path_found {length,x,z}`, `arrived`, `fled`, `path_failed`; ids 0 = player. Listed until acknowledged: `cp_stage_ack_events` (the Python `observe()` and the agent socket `observe` do it; the console `obs` does not). `events_dropped` counts events lost to the ring.
-- `nearby` creatures add `hp, hp_max, state (roam|alert|fighting|carcass|dead), in_fight`.
+- `nearby` creatures add `hp, hp_max, state (roam|alert|fighting|carcass|dead), in_fight, attackable` (alive, and in reach of at least one of the player's attack moves: centre distance minus target body radius <= `range_m`).
+- `attack_moves`: the player's attack moves, `{index, id (=index), name, stamina_cost, range_m, windup_ticks, active_ticks, recover_ticks, usable, target_in_range}`. `usable` = enough stamina and (in a fight) not mid-move, recovering or stunned; `target_in_range` refers to the nearest valid target (null if none). `attack #ID MOVE` takes the name case-insensitively or the index; an unknown move sets `last_error` `unknown_move` (code -6); a known move the player lacks stays `invalid or unavailable attack move`.
 - Walkable bound: fights now clamp both fighters to `+-bound` (agentplay saw 195.7).
 
 ## API

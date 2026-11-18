@@ -23,13 +23,15 @@ WORLD_KEYS = ["bound", "units", "nest", "tick_hz"]
 BLOCK_REASONS = {"cliff", "water", "edge", "creature", "unreachable", "obstacle"}
 EVENT_TYPES = {"hit", "kill", "death", "respawn", "order_rejected", "path_found", "arrived", "fled", "path_failed"}
 CREATURE_STATES = {"roam", "alert", "fighting", "carcass", "dead"}
-CREATURE_KEYS = ["id", "type", "species", "distance", "bearing", "hp", "hp_max", "state", "in_fight"]
+CREATURE_KEYS = ["id", "type", "species", "distance", "bearing", "hp", "hp_max", "state", "in_fight", "attackable"]
+MOVE_KEYS = ["index", "id", "name", "stamina_cost", "range_m", "windup_ticks", "active_ticks", "recover_ticks",
+             "usable", "target_in_range"]
 OWN_KEYS = ["id", "x", "z", "hp", "stamina", "hp_max", "stamina_max", "speed", "facing"]
 NEAR_TYPES = {"creature", "carcass", "nest", "rock", "tree"}
 KNOWN_ERRORS = {"ok", "invalid command or value", "invalid or unavailable target",
-                "invalid or unavailable attack move", "unreachable", "no_threat"}
+                "invalid or unavailable attack move", "unreachable", "no_threat", "unknown_move"}
 ERR_TEXT = {0: "ok", -1: "invalid command or value", -2: "invalid or unavailable target",
-            -3: "invalid or unavailable attack move", -4: "unreachable", -5: "no_threat"}
+            -3: "invalid or unavailable attack move", -4: "unreachable", -5: "no_threat", -6: "unknown_move"}
 
 
 def clone_world(w: StageWorld) -> StageWorld:
@@ -159,6 +161,10 @@ class Episode:
                     self.bug("schema_drift", f"bad creature entry {n}")
             if n["type"] == "carcass" and n["id"] not in self.wins:
                 self.wins.add(n["id"])
+        for m in o["attack_moves"]:
+            if list(m.keys()) != MOVE_KEYS or not isinstance(m["usable"], bool) or m["stamina_cost"] < 0 \
+                    or m["range_m"] < 0 or m["index"] != m["id"]:
+                self.bug("schema_drift", f"bad attack_moves entry {m}")
         if o["last_error"] not in KNOWN_ERRORS:
             self.bug("schema_drift", f"unknown last_error {o['last_error']!r}")
 
