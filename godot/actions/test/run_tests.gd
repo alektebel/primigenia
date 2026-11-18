@@ -945,7 +945,7 @@ func _t_idle() -> void:
 # ---------------------------------------------------------------------------------------------
 func _t_cosmetic() -> void:
 	print("-- cosmetic")
-	var cos_ids := ["sing", "dance", "charm", "pose", "gift", "roar", "display", "observe", "attend"]
+	var cos_ids := ["sing", "dance", "charm", "pose", "gift", "roar", "display", "eat", "observe", "attend"]
 	for name in BODIES:
 		var h = _build(name)
 		h.layer.idle_on = false

@@ -18,6 +18,8 @@ const ACTIONS: Array[StringName] = [&"radial_attack", &"radial_befriend", &"radi
 var centre := Vector2.ZERO
 var current: StringName = Modes.ATTACK
 var hover := -1
+## Radial of a carcass: Eat (north) and Observe (south) only; Befriend and Intimidate make no sense on a dead creature.
+var carcass := false
 
 func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_STOP
@@ -45,10 +47,16 @@ static func sector_at(offset: Vector2) -> int:
 	var a := fposmod(atan2(offset.x, -offset.y), TAU)  # 0 = north, clockwise
 	return int(floor(fposmod(a + PI / 4.0, TAU) / (PI / 2.0))) % 4
 
+func mode_at(i: int) -> StringName:
+	return Modes.EAT if carcass and i == 0 else ORDER[i]
+
+func enabled_at(i: int) -> bool:
+	return not carcass or i == 0 or i == 2
+
 func choose(i: int) -> void:
-	if i < 0 or i > 3:
+	if i < 0 or i > 3 or not enabled_at(i):
 		return
-	current = ORDER[i]
+	current = mode_at(i)
 	visible = false
 	chosen.emit(current)
 
@@ -102,19 +110,20 @@ func _draw() -> void:
 		var mid := i * PI / 2.0
 		var a0 := mid - PI / 4.0 + 0.03
 		var a1 := mid + PI / 4.0 - 0.03
-		var active := ORDER[i] == current
+		var active := mode_at(i) == current
+		var off := not enabled_at(i)
 		var col := Palette.PANEL_ACTIVE if (i == hover) else (Palette.PANEL_HOVER if active else Palette.PANEL_SOLID)
-		col.a = 0.94
+		col.a = 0.94 if not off else 0.45
 		var poly := _arc_poly(a0, a1, R_IN, R_OUT)
 		draw_colored_polygon(poly, col)
 		var outline := poly.duplicate()
 		outline.append(poly[0])
 		draw_polyline(outline, Palette.GOLD if (i == hover or active) else Palette.BORDER_BTN, 1.5, true)
 		var c := centre + Vector2(sin(mid), -cos(mid)) * (R_IN + R_OUT) * 0.5
-		var title := Modes.title(ORDER[i])
+		var title := Modes.title(mode_at(i))
 		var ts := font.get_string_size(title, HORIZONTAL_ALIGNMENT_LEFT, -1, 17)
 		draw_string(font, c + Vector2(-ts.x / 2.0, 2), title, HORIZONTAL_ALIGNMENT_LEFT, -1, 17, Palette.TEXT)
-		var hint: String = Modes.HINTS[ORDER[i]]
+		var hint: String = Modes.HINTS[mode_at(i)] if not off else "-"
 		var hs := font.get_string_size(hint, HORIZONTAL_ALIGNMENT_LEFT, -1, 10)
 		draw_string(font, c + Vector2(-hs.x / 2.0, 19), hint, HORIZONTAL_ALIGNMENT_LEFT, -1, 10, Palette.MUTED)
 	draw_circle(centre, R_IN - 6, Color(Palette.PANEL_SOLID, 0.95))

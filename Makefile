@@ -422,3 +422,13 @@ lore-refcheck:
 # C2 social layer (core/src/stage_social.c)
 $(BUILD)/social_test: tests/test_social.c $(HDRS) $(BUILD)/libcpore.a
 	$(CC) $(CFLAGS) $< $(BUILD)/libcpore.a -o $@ $(LDLIBS)
+
+# C2 social loop through the real island and UI (software GL). Evidence strip: make godot-social-evidence
+.PHONY: godot-social-test godot-social-evidence
+godot-social-test: godot
+	LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 900 xvfb-run -a -s "-screen 0 1280x720x24" \
+	  $(GODOT) --rendering-driver opengl3 --max-fps 15 --resolution 1280x720 --path godot --script res://game/tests/social_flow.gd
+godot-social-evidence: godot
+	@mkdir -p docs/evidence/godot/social
+	LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 900 xvfb-run -a -s "-screen 0 1280x720x24" \
+	  $(GODOT) --rendering-driver opengl3 --max-fps 15 --resolution 1280x720 --path godot --script res://game/tests/social_flow.gd -- $(CURDIR)/docs/evidence/godot/social
