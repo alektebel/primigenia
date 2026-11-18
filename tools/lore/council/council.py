@@ -17,7 +17,7 @@ CANON = CTX.get("canon_text") or open(os.path.join(HERE, "canon.md")).read()
 HABITAT = CTX.get("habitat_word", "island")
 PC = os.path.join(D, "planet_canon.md")
 PLANET = open(PC).read() if os.path.exists(PC) else ""
-sem = threading.Semaphore(2)  # qwen allows 5 concurrent; leave room for the agentplay batch
+sem = threading.Semaphore(int(os.environ.get("QWEN_CONC", "5")))  # NAN qwen allows 5 concurrent; set QWEN_CONC lower while an agentplay batch shares the key
 
 
 # advisors served by opencode free-tier models instead of qwen (model diversity)
