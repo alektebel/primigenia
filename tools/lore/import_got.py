@@ -60,7 +60,36 @@ def plausibility(scores, chain, idx, n, run, date):
     return p
 
 
-def convert_chain(cid, n, ch, scores, idx, total, run, date):
+def ref_id(spec):
+    """CSL id author_year_shortword from a model-written reference spec {author, year, title, venue}."""
+    au = re.sub(r"[^a-z]", "", slug(str(spec.get("author", "anon")).split(",")[0].split(" and ")[0].split("&")[0]))[:20] or "anon"
+    words = [w for w in re.findall(r"[a-z]+", slug(str(spec.get("title", ""))).replace("_", " ")) if len(w) > 3 and w not in ("with", "from", "their", "that", "this", "the")]
+    return f"{au}_{spec.get('year', 'nd')}_{words[0] if words else 'work'}"
+
+
+def csl_from_spec(spec):
+    fam, _, giv = str(spec.get("author", "")).partition(",")
+    r = {"id": ref_id(spec), "type": "book" if re.search(r"press|books|publisher|textbook|\bed\.", str(spec.get("venue", "")), re.I) else "article-journal",
+         "title": str(spec.get("title", "")).strip(), "x-status": "unverified", "x-note": "cited by a council model from memory; not yet checked"}
+    if fam.strip(): r["author"] = [{"family": fam.strip(), **({"given": giv.strip()} if giv.strip() else {})}]
+    try: r["issued"] = {"date-parts": [[int(spec["year"])]]}
+    except (KeyError, ValueError, TypeError): pass
+    if spec.get("venue"): r["container-title"] = str(spec["venue"])
+    return r
+
+
+def chain_refs(ch, refs_out):
+    """-> [csl ids] for the chain's 'references' (and a judge's 'reference' string is handled elsewhere); new CSL entries go to refs_out."""
+    ids = []
+    for spec in ch.get("references") or []:
+        if isinstance(spec, dict) and spec.get("title") and spec.get("author"):
+            r = csl_from_spec(spec)
+            if r["title"]:
+                refs_out.setdefault(r["id"], r); ids.append(r["id"])
+    return ids
+
+
+def convert_chain(cid, n, ch, scores, idx, total, run, date, refs_out=None):
     sk = ch.get("skill") or {}
     sname = str(sk.get("name") or f"skill {n}")
     role = sk.get("role") if sk.get("role") in ROLES else "Passive"
@@ -74,6 +103,10 @@ def convert_chain(cid, n, ch, scores, idx, total, run, date):
            "observe": [str(x) for x in (ch.get("observe") or [])][:4] or ["(nothing recorded)"],
            "journal": jr,
            "plausibility": plausibility(scores, ch, idx, total, run, date)}
+    rids = chain_refs(ch, refs_out if refs_out is not None else {})
+    if rids:
+        pl = out["plausibility"]
+        pl.setdefault("analogues", []).append({"organism": "real biology behind this chain", "mechanism": "see the cited works; chain wording is the council's own", "refs": rids})
     if ch.get("from"): out["provenance"] = {"council_run": run, "by": [str(x) for x in ch["from"]]}
     return out
 
@@ -120,27 +153,35 @@ def merge(existing, new, date, run):
     return m, (added, updated, len(rel_new))
 
 
-def build(graph, gdir, run, date, world, kind="native"):
+def build(graph, gdir, run, date, world, kind="native", cmap=None, refs_out=None):
+    """cmap: {council name: {id, name (str or i18n), aliases, lore_ref}} overrides ids and display names."""
+    cmap = cmap or {}
     chains, edges = graph.get("chains", {}), (graph.get("graph") or {}).get("edges", [])
-    known = {n: slug(n) for n in chains}
+    known = {n: (cmap.get(n) or {}).get("id") or slug(n) for n in chains}
+    for n, m in cmap.items():
+        known.setdefault(n, m.get("id") or slug(n))
     out = {}
     for name, chs in chains.items():
-        cid = slug(name)
+        cid = known[name]
         if not cid or not chs: continue
         scores = load_scores(gdir, name)
-        cs = [convert_chain(cid, i + 1, ch, scores, i, len(chs), run, date) for i, ch in enumerate(chs) if isinstance(ch, dict) and ch.get("trait")]
+        cs = [convert_chain(cid, i + 1, ch, scores, i, len(chs), run, date, refs_out) for i, ch in enumerate(chs) if isinstance(ch, dict) and ch.get("trait")]
         seen = set()
         for c in cs:  # keep skill ids unique inside the creature
             base, i = c["skill"]["id"], 2
             while c["skill"]["id"] in seen: c["skill"]["id"] = f"{base}_{i}"; i += 1
             seen.add(c["skill"]["id"])
         by = sorted({b for ch in chs if isinstance(ch, dict) for b in (ch.get("from") or [])})
-        doc = {"schema": "cpore.creature/1", "id": cid, "name": {"en": name}, "world": world, "kind": kind, "status": "draft", "stage": "creature",
+        m = cmap.get(name) or {}
+        nm = m.get("name") or name
+        doc = {"schema": "cpore.creature/1", "id": cid, "name": nm if isinstance(nm, dict) else {"en": nm}, "world": world, "kind": kind, "status": "draft", "stage": "creature",
                "niche": {"habitat": "to be written", "diet": "to be written", "active": "to be written", "predators": []},
                "body": "to be written", "chains": cs, "relations": convert_relations(name, edges, known),
                "provenance": {"council_run": run, **({"by": by} if by else {})},
                "changelog": [{"date": date, "who": "import_got", "what": f"imported from council run {run}"}]}
         if not doc["relations"]: del doc["relations"]
+        if m.get("aliases"): doc["aliases"] = list(m["aliases"])
+        if m.get("lore_ref"): doc["lore_ref"] = m["lore_ref"]
         out[cid] = doc
     return out
 
@@ -152,12 +193,15 @@ def main():
     ap.add_argument("--world", required=True, help="world id the creatures live in (lore/worlds/<id>.json)")
     ap.add_argument("--kind", default="native", choices=["native", "easter_egg", "cameo", "new"])
     ap.add_argument("--run", default=None)
+    ap.add_argument("--map", default=None, help="json {council name: {id, name, aliases, lore_ref}} overriding ids/names")
+    ap.add_argument("--refs", default=None, help="references.json to add the chains' cited works to (as unverified); default lore/references.json of --root")
     ap.add_argument("--date", default=datetime.date.today().isoformat())
     ap.add_argument("--dry-run", action="store_true")
     a = ap.parse_args()
     gdir = os.path.dirname(os.path.abspath(a.graph))
     run = a.run or f"got-{a.date}"
-    docs = build(load(a.graph), gdir, run, a.date, a.world, a.kind)
+    new_refs = {}
+    docs = build(load(a.graph), gdir, run, a.date, a.world, a.kind, load(a.map) if a.map else None, new_refs)
     cdir = os.path.join(a.root, "lore", "creatures")
     for cid, doc in sorted(docs.items()):
         p = os.path.join(cdir, f"{cid}.json")
@@ -174,6 +218,12 @@ def main():
         print(f"{cid}: {msg}")
         if not a.dry_run:
             os.makedirs(cdir, exist_ok=True); dump(doc, p)
+    if new_refs and not a.dry_run:
+        rp = a.refs or os.path.join(a.root, "lore", "references.json")
+        cur = load(rp) if os.path.exists(rp) else []
+        have = {r["id"] for r in cur}
+        add = [r for i, r in sorted(new_refs.items()) if i not in have]
+        if add: dump(cur + add, rp); print(f"references: {len(add)} unverified entr{'y' if len(add) == 1 else 'ies'} added")
 
 
 if __name__ == "__main__":

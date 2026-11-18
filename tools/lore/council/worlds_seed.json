@@ -1,0 +1,1097 @@
+[
+ {
+  "id": "primigenia",
+  "name": {
+   "en": "Primigenia (the island world)",
+   "es": "Primigenia (el mundo de la isla)"
+  },
+  "kind": "fictional",
+  "system": {
+   "star": "G1V, yellow-white, quiet, 3.8 Gyr old",
+   "position": "fictional; no galactic position fixed",
+   "distance_ly_from_sol": null
+  },
+  "stage": "creature",
+  "skip_planet": true,
+  "habitat_word": "island",
+  "canon_file": "primigenia_canon.md",
+  "use_default_frame": true,
+  "opus_got": "/home/diego/Desarrollo/cpore-wt/_agent/lore-council/got",
+  "creatures": [
+   {
+    "name": "Rondo",
+    "brief": ""
+   },
+   {
+    "name": "Zanco",
+    "brief": ""
+   },
+   {
+    "name": "Espinodo",
+    "brief": ""
+   },
+   {
+    "name": "Garfio",
+    "brief": ""
+   },
+   {
+    "name": "Coloso",
+    "brief": ""
+   },
+   {
+    "name": "Merodeador",
+    "brief": ""
+   },
+   {
+    "name": "Zancuda",
+    "brief": ""
+   },
+   {
+    "name": "Babosa",
+    "brief": ""
+   },
+   {
+    "name": "player lineage and cousins",
+    "brief": ""
+   },
+   {
+    "name": "nocturnal creature",
+    "brief": ""
+   },
+   {
+    "name": "albinos",
+    "brief": ""
+   }
+  ],
+  "extra_creatures": [
+   {
+    "name": "Ecolumbre",
+    "brief": "a small flock-living cave creature that sees with sound and talks with light; it ALREADY has chains: sees with sound (echolocation in lava tubes), talks with light (ventral photophores), only speaks on moonless nights, so write DIFFERENT traits (diet, reproduction, flocking, migration, relation to the waterfall cave)"
+   }
+  ],
+  "cmap": {
+   "nocturnal creature": {
+    "id": "acechalunas",
+    "name": {
+     "en": "Acechalunas",
+     "es": "Acechalunas"
+    },
+    "aliases": [
+     "nocturnal creature",
+     "the nocturnal variant"
+    ]
+   },
+   "player lineage and cousins": {
+    "id": "player_lineage",
+    "name": {
+     "en": "The player's lineage and cousins",
+     "es": "El linaje del jugador y sus primos"
+    },
+    "aliases": [
+     "player lineage",
+     "cousins"
+    ]
+   },
+   "albinos": {
+    "id": "albinos",
+    "name": {
+     "en": "Albinos",
+     "es": "Albinos"
+    },
+    "aliases": [
+     "albino"
+    ]
+   }
+  },
+  "species": [
+   {
+    "seed": null,
+    "n": 3
+   },
+   {
+    "seed": "the strangest species this island's physics could force into an empty niche, one that surprises even a biologist (a bizarre but physically forced body plan or sense)",
+    "n": 1
+   }
+  ],
+  "batch": 1
+ },
+ {
+  "id": "earth",
+  "name": {
+   "en": "Earth (Sol)",
+   "es": "La Tierra (Sol)"
+  },
+  "kind": "real",
+  "system": {
+   "star": "Sun, G2V",
+   "position": "Orion Arm, ~8.2 kpc from the galactic centre, ~20 pc above the galactic plane",
+   "distance_ly_from_sol": 0.0
+  },
+  "stage": "space",
+  "habitat_word": "planet",
+  "creature_kind": "native",
+  "notes": "The REAL Earth, where humans really live. Facts must be real measured values with references (star, orbit, gravity, day, tilt, Moon and tides, atmosphere, oceans, plate tectonics, magnetic field, biochemistry of life, Cenozoic climate). Humans evolved in East Africa; their creature chains must be REAL human biology (bipedalism and the pelvis, endurance running and sweating, thumb and precision grip, language and the larynx/FOXP2, cooperative breeding, fire and cooking, large brains and their cost, helpless infants) with real references. Three real animals serve as reference points for the council's method (pronghorn: sustained speed, bottlenose dolphin: echolocation and social cognition, common raven: tool use and play).",
+  "creatures": [
+   {
+    "name": "Humans",
+    "brief": "Homo sapiens, the real species; chains from real biology and anthropology, each with real references"
+   },
+   {
+    "name": "Pronghorn",
+    "brief": "Antilocapra americana; fastest sustained runner of North America, real physiology"
+   },
+   {
+    "name": "Bottlenose dolphin",
+    "brief": "Tursiops truncatus; echolocation, signature whistles, fission-fusion societies"
+   },
+   {
+    "name": "Common raven",
+    "brief": "Corvus corax; tool use, caching, play, social learning"
+   }
+  ],
+  "cmap": {
+   "Humans": {
+    "id": "humans",
+    "aliases": [
+     "human",
+     "Homo sapiens"
+    ]
+   },
+   "Pronghorn": {
+    "id": "pronghorn"
+   },
+   "Bottlenose dolphin": {
+    "id": "bottlenose_dolphin"
+   },
+   "Common raven": {
+    "id": "common_raven"
+   }
+  },
+  "species": [],
+  "batch": 4,
+  "chains_per": "3-4"
+ },
+ {
+  "id": "erid",
+  "name": {
+   "en": "Erid (40 Eridani A)",
+   "es": "Erid (40 Eridani A)"
+  },
+  "kind": "third_party",
+  "lore_source": "hailmary",
+  "lore_file": "lore/hailmary.en.json",
+  "lore_ids": [
+   "forty-eridani",
+   "erid",
+   "eridians",
+   "rocky",
+   "xenonite",
+   "eridian-space-elevator"
+  ],
+  "system": {
+   "star": "40 Eridani A, K1V orange dwarf",
+   "position": "the real star 40 Eridani A in the Orion-Eridanus region, ~16.3 ly from the Sun",
+   "distance_ly_from_sol": 16.3
+  },
+  "stage": "space",
+  "habitat_word": "world",
+  "creature_kind": "easter_egg",
+  "notes": "Third-party world (A20, Project Hail Mary): the planet Erid orbits the real star 40 Eridani A. Known from the work: a dense, hot, ammonia-rich atmosphere under crushing pressure, higher gravity than Earth, an intelligent crawling species with a hard carapace that senses and speaks by sound, not light, and works metals into a super-strong material. Use the LORE TEXT when present; fill gaps with first-principles science. Original wording only.",
+  "creatures": [
+   {
+    "name": "Eridians",
+    "brief": "the intelligent species of Erid, in our own words from the lore entry; their body, senses by sound, chemistry in a hot high-pressure ammonia-rich world"
+   }
+  ],
+  "cmap": {
+   "Eridians": {
+    "id": "eridians",
+    "lore_ref": {
+     "file": "lore/hailmary.en.json",
+     "id": "eridians"
+    }
+   }
+  },
+  "species": [
+   {
+    "seed": null,
+    "n": 3
+   }
+  ],
+  "batch": 1
+ },
+ {
+  "id": "adrian",
+  "name": {
+   "en": "Adrian (Tau Ceti)",
+   "es": "Adrian (Tau Ceti)"
+  },
+  "kind": "third_party",
+  "lore_source": "hailmary",
+  "lore_file": "lore/hailmary.en.json",
+  "lore_ids": [
+   "adrian",
+   "tau-ceti",
+   "taumoeba",
+   "taumoeba-82-5",
+   "threeworld",
+   "astrophage"
+  ],
+  "system": {
+   "star": "Tau Ceti, G8V",
+   "position": "the real star Tau Ceti, ~11.9 ly from the Sun",
+   "distance_ly_from_sol": 11.9
+  },
+  "stage": "space",
+  "habitat_word": "world",
+  "creature_kind": "easter_egg",
+  "notes": "Third-party world (A20, Project Hail Mary): Adrian is a planet of the real star Tau Ceti, with a carbon-dioxide-rich atmosphere in which Astrophage breeds and in which a native microbe, the Taumoeba, evolved and feeds on it. Use the LORE TEXT when present; fill gaps with first-principles science. Original wording only.",
+  "creatures": [
+   {
+    "name": "Taumoeba",
+    "brief": "a microscopic atmosphere-dwelling organism of Adrian that eats Astrophage; metabolism, scale, physics of life in a dense CO2 atmosphere"
+   }
+  ],
+  "cmap": {
+   "Taumoeba": {
+    "id": "taumoeba",
+    "lore_ref": {
+     "file": "lore/hailmary.en.json",
+     "id": "taumoeba"
+    }
+   }
+  },
+  "species": [
+   {
+    "seed": null,
+    "n": 3
+   }
+  ],
+  "batch": 1
+ },
+ {
+  "id": "deepsky",
+  "name": {
+   "en": "The deep sky (gas giant)",
+   "es": "El cielo profundo (gigante gaseoso)"
+  },
+  "kind": "fictional",
+  "system": {
+   "star": "a G/K dwarf, 5 AU away",
+   "position": "fictional gas giant of a nearby star system",
+   "distance_ly_from_sol": null
+  },
+  "stage": "space",
+  "habitat_word": "atmosphere",
+  "creature_kind": "new",
+  "notes": "Life in the cloud decks of a Jupiter-like gas giant (hydrogen-helium, ammonia/water/ammonium-hydrosulfide cloud layers, strong convection and zonal jets, lightning, no surface, rising temperature and pressure with depth). Derive from first principles the ecology of Sagan and Salpeter (1976, 'Particles, environments, and possible ecologies in the Jovian atmosphere', The Astrophysical Journal Supplement Series 32, 737-755): SINKERS (tiny photosynthesizers or chemotrophs that drift down and are cooked, so they must reproduce fast), FLOATERS (balloon-like organisms, hydrogen-buoyant, that regulate depth), HUNTERS (predators of floaters). Add AIR WHALES (giant hydrogen-buoyed floaters, kilometre-scale, that graze the cloud plankton), JET HUNTERS (fast predators that propel themselves by jets), grazers of the cloud plankton, and an intelligent, honour-bound, tentacled species with a strict code of oaths and duels (own invention; no names from any book).",
+  "creatures": [
+   {
+    "name": "Sinkers",
+    "brief": "tiny cloud-deck organisms that drift down and must out-reproduce the heat (Sagan and Salpeter 1976)"
+   },
+   {
+    "name": "Floaters",
+    "brief": "balloon organisms that regulate buoyancy with light hydrogen or hot gas"
+   },
+   {
+    "name": "Hunters",
+    "brief": "predators that stalk floaters in the cloud decks (Sagan and Salpeter 1976)"
+   },
+   {
+    "name": "Air whales",
+    "brief": "giant hydrogen-buoyed floaters, kilometre scale, that filter the cloud plankton"
+   },
+   {
+    "name": "Jet hunters",
+    "brief": "fast predators propelled by jets, hunting air whales' calves and floaters"
+   },
+   {
+    "name": "Cloud grazers",
+    "brief": "herd grazers of the cloud plankton, between sinker and whale in size"
+   },
+   {
+    "name": "Oathbound",
+    "brief": "an intelligent tentacled species with a strict honour code; kind cameo for the Space stage; describe in our own words, no third-party names"
+   }
+  ],
+  "cmap": {
+   "Oathbound": {
+    "id": "oathbound",
+    "kind": "cameo",
+    "aliases": [
+     "the honour-bound tentacled species"
+    ]
+   }
+  },
+  "seed_refs": [
+   {
+    "author": "Sagan, C.",
+    "year": 1976,
+    "title": "Particles, environments, and possible ecologies in the Jovian atmosphere",
+    "venue": "The Astrophysical Journal Supplement Series"
+   }
+  ],
+  "species": [
+   {
+    "seed": "one more bizarre but physics-forced atmosphere dweller of a gas giant (not a sinker, floater, hunter, whale, jet hunter or grazer)",
+    "n": 2
+   }
+  ],
+  "batch": 4
+ },
+ {
+  "id": "silicon_hot",
+  "name": {
+   "en": "Silicon hot world",
+   "es": "Mundo de silicio caliente"
+  },
+  "kind": "fictional",
+  "system": {
+   "star": "a K or G dwarf; the planet is close-in",
+   "position": "fictional",
+   "distance_ly_from_sol": null
+  },
+  "stage": "space",
+  "habitat_word": "world",
+  "creature_kind": "new",
+  "notes": "A HOT world where silicon-based biochemistry can plausibly work: surface 150-450 C, sulfuric acid or molten silicate/sulfur chemistry, silicone-like Si-O polymers, little water. The referee MUST say under which conditions silicon chemistry works at all and why it fails elsewhere, citing the silicon-versus-carbon literature (Bains 2004, Astrobiology; Petkowski, Bains and Seager 2020, Life). Creatures follow from the chemistry: slow metabolisms, crystal growth, glassy shells, whatever the physics forces. Grade honestly: speculative.",
+  "creatures": [],
+  "seed_refs": [
+   {
+    "author": "Bains, W.",
+    "year": 2004,
+    "title": "Many chemistries could be used to build living systems",
+    "venue": "Astrobiology"
+   },
+   {
+    "author": "Petkowski, J.",
+    "year": 2020,
+    "title": "On the Potential of Silicon as a Building Block for Life",
+    "venue": "Life"
+   }
+  ],
+  "species": [
+   {
+    "seed": null,
+    "n": 3
+   },
+   {
+    "seed": "a creature whose body is a growing glassy crystal with a slow pulse of molten-salt fluid",
+    "n": 2
+   }
+  ],
+  "batch": 1
+ },
+ {
+  "id": "silicon_cryo",
+  "name": {
+   "en": "Silicon cryogenic world",
+   "es": "Mundo de silicio criogénico"
+  },
+  "kind": "fictional",
+  "system": {
+   "star": "a dim M dwarf or a far orbit; the planet is very cold",
+   "position": "fictional",
+   "distance_ly_from_sol": null
+  },
+  "stage": "space",
+  "habitat_word": "world",
+  "creature_kind": "new",
+  "notes": "A CRYOGENIC world where silicon-based biochemistry can plausibly work: surface 60-110 K, liquid nitrogen/methane seas, silanes and organosilicon chemistry, which are unstable in water and oxygen but possible in cold inert solvents. The referee MUST say under which conditions silane chemistry works and why it fails elsewhere, citing the silicon-versus-carbon literature (Bains 2004, Astrobiology; Petkowski, Bains and Seager 2020, Life). Creatures follow from the chemistry (extremely slow metabolisms, crystal and frost growth, whatever the physics forces). Grade honestly: speculative.",
+  "creatures": [],
+  "seed_refs": [
+   {
+    "author": "Bains, W.",
+    "year": 2004,
+    "title": "Many chemistries could be used to build living systems",
+    "venue": "Astrobiology"
+   },
+   {
+    "author": "Petkowski, J.",
+    "year": 2020,
+    "title": "On the Potential of Silicon as a Building Block for Life",
+    "venue": "Life"
+   }
+  ],
+  "species": [
+   {
+    "seed": null,
+    "n": 3
+   },
+   {
+    "seed": "a creature that grows and moves only when a rare warm pulse thaws its solvent",
+    "n": 2
+   }
+  ],
+  "batch": 1
+ },
+ {
+  "id": "starlife",
+  "name": {
+   "en": "The star world (photospheres and coronae)",
+   "es": "El mundo estelar (fotosferas y coronas)"
+  },
+  "kind": "fictional",
+  "lore_ids": [
+   "astrophage"
+  ],
+  "lore_file": "lore/hailmary.en.json",
+  "system": {
+   "star": "a G2V star like the Sun",
+   "position": "stellar photosphere and corona; any star",
+   "distance_ly_from_sol": null
+  },
+  "stage": "space",
+  "habitat_word": "star",
+  "creature_kind": "new",
+  "notes": "Life on and in stars. The stellar surface (photosphere ~5800 K, granulation, sunspots, magnetic flux tubes, the corona at 1e6 K, prominences) is the habitat. FILE Astrophage (A20, third-party, easter egg: a single-celled star-surface organism; use the lore entry) and add ORIGINAL speculative life: plasma and magnetic-flux-tube organisms (self-organised plasma structures; Tsytovich, Morfill et al. 2007, 'From plasma crystals and helical structures towards inorganic living matter', New Journal of Physics 9, 263) living in the photosphere or corona. The referee must grade honestly (HIGHLY SPECULATIVE where true) and cite the speculative literature it knows. No names from novels.",
+  "creatures": [
+   {
+    "name": "Astrophage",
+    "brief": "the star-surface microbe from the third-party lore entry, in our own words: eats the light, banks energy as mass, flies to a nearby world to breed"
+   }
+  ],
+  "cmap": {
+   "Astrophage": {
+    "id": "astrophage",
+    "kind": "easter_egg",
+    "lore_ref": {
+     "file": "lore/hailmary.en.json",
+     "id": "astrophage"
+    }
+   }
+  },
+  "seed_refs": [
+   {
+    "author": "Tsytovich, V. N.",
+    "year": 2007,
+    "title": "From plasma crystals and helical structures towards inorganic living matter",
+    "venue": "New Journal of Physics"
+   }
+  ],
+  "species": [
+   {
+    "seed": "organisms made of a self-organised plasma or a magnetic flux tube in a stellar photosphere, feeding on convective energy",
+    "n": 2
+   },
+   {
+    "seed": "organisms of a stellar corona or prominence, living on magnetic reconnection",
+    "n": 2
+   }
+  ],
+  "batch": 1
+ },
+ {
+  "id": "neutronstar",
+  "name": {
+   "en": "The neutron-star crust",
+   "es": "La corteza de la estrella de neutrones"
+  },
+  "kind": "fictional",
+  "system": {
+   "star": "a neutron star, ~1.4 Msun in ~12 km, 1e12 gauss",
+   "position": "fictional neutron star",
+   "distance_ly_from_sol": null
+  },
+  "stage": "space",
+  "habitat_word": "crust",
+  "creature_kind": "new",
+  "notes": "A neutron-star crust ecology: surface gravity ~1e11 g, magnetic field 1e8-1e15 gauss, nuclear-chemistry life ('nuclear pasta' phases in the inner crust), time scales of microseconds so life runs a million times faster than ours. The referee must grade honestly (highly speculative) and cite the physics literature on neutron-star crusts it knows (Chamel and Haensel 2008, Living Reviews in Relativity, 'Physics of neutron star crusts'). No names from novels.",
+  "creatures": [],
+  "seed_refs": [
+   {
+    "author": "Chamel, N.",
+    "year": 2008,
+    "title": "Physics of neutron star crusts",
+    "venue": "Living Reviews in Relativity"
+   }
+  ],
+  "species": [
+   {
+    "seed": null,
+    "n": 3
+   },
+   {
+    "seed": "a creature that lives in a nuclear-pasta layer and thinks in microseconds",
+    "n": 1
+   }
+  ],
+  "batch": 1
+ },
+ {
+  "id": "at_earth_mars",
+  "name": {
+   "en": "All Tomorrows: Earth and Mars",
+   "es": "All Tomorrows: Tierra y Marte"
+  },
+  "kind": "third_party",
+  "lore_source": "alltomorrows",
+  "lore_file": "lore/alltomorrows.en.json",
+  "lore_ids": [
+   "humans",
+   "martians",
+   "star-people"
+  ],
+  "system": {
+   "star": "worlds implied by the lore file (A19)",
+   "position": "fictional; the lore's far-future galaxy",
+   "distance_ly_from_sol": null
+  },
+  "stage": "space",
+  "habitat_word": "world",
+  "creature_kind": "easter_egg",
+  "notes": "Earth, then terraformed Mars: the human lineage's cradle worlds. Third-party worlds (A19, All Tomorrows): facts come from the LORE TEXT (given) and first-principles gap filling (inferred). Original wording only; each species is an easter egg filed with its lore entry id; chains explain the design of each species from first principles (what pressure, what body, what senses), in our own words.",
+  "creatures": [
+   {
+    "name": "humans",
+    "lore_id": "humans",
+    "brief": ""
+   },
+   {
+    "name": "martians",
+    "lore_id": "martians",
+    "brief": ""
+   },
+   {
+    "name": "star-people",
+    "lore_id": "star-people",
+    "brief": ""
+   }
+  ],
+  "gen_voices": [
+   "naturalist",
+   "physicist",
+   "skeptic"
+  ],
+  "batch": 6,
+  "chains_per": "1-2",
+  "rounds": 1,
+  "species": []
+ },
+ {
+  "id": "at_qu_worlds",
+  "name": {
+   "en": "All Tomorrows: the Qu-shaped worlds",
+   "es": "All Tomorrows: los mundos de los Qu"
+  },
+  "kind": "third_party",
+  "lore_source": "alltomorrows",
+  "lore_file": "lore/alltomorrows.en.json",
+  "lore_ids": [
+   "qu",
+   "panderavis-pandora",
+   "worms",
+   "colonials",
+   "ruin-haunters",
+   "snake-people",
+   "killer-folk"
+  ],
+  "system": {
+   "star": "worlds implied by the lore file (A19)",
+   "position": "fictional; the lore's far-future galaxy",
+   "distance_ly_from_sol": null
+  },
+  "stage": "space",
+  "habitat_word": "world",
+  "creature_kind": "easter_egg",
+  "notes": "Worlds reshaped by the Qu: pyramid worlds, monstrous suns, ruins and engineered biospheres. Third-party worlds (A19, All Tomorrows): facts come from the LORE TEXT (given) and first-principles gap filling (inferred). Original wording only; each species is an easter egg filed with its lore entry id; chains explain the design of each species from first principles (what pressure, what body, what senses), in our own words.",
+  "creatures": [
+   {
+    "name": "qu",
+    "lore_id": "qu",
+    "brief": ""
+   },
+   {
+    "name": "panderavis-pandora",
+    "lore_id": "panderavis-pandora",
+    "brief": ""
+   },
+   {
+    "name": "worms",
+    "lore_id": "worms",
+    "brief": ""
+   },
+   {
+    "name": "colonials",
+    "lore_id": "colonials",
+    "brief": ""
+   },
+   {
+    "name": "ruin-haunters",
+    "lore_id": "ruin-haunters",
+    "brief": ""
+   },
+   {
+    "name": "snake-people",
+    "lore_id": "snake-people",
+    "brief": ""
+   },
+   {
+    "name": "killer-folk",
+    "lore_id": "killer-folk",
+    "brief": ""
+   }
+  ],
+  "gen_voices": [
+   "naturalist",
+   "physicist",
+   "skeptic"
+  ],
+  "batch": 6,
+  "chains_per": "1-2",
+  "rounds": 1,
+  "species": []
+ },
+ {
+  "id": "at_garden_prairies",
+  "name": {
+   "en": "All Tomorrows: garden prairies and shores",
+   "es": "All Tomorrows: praderas y orillas"
+  },
+  "kind": "third_party",
+  "lore_source": "alltomorrows",
+  "lore_file": "lore/alltomorrows.en.json",
+  "lore_ids": [
+   "predators",
+   "saltatorial-prey",
+   "mantelopes",
+   "swimmers",
+   "titans",
+   "flyers",
+   "finger-fishers",
+   "hand-flappers",
+   "temptors",
+   "insectophagi",
+   "bone-crushers"
+  ],
+  "system": {
+   "star": "worlds implied by the lore file (A19)",
+   "position": "fictional; the lore's far-future galaxy",
+   "distance_ly_from_sol": null
+  },
+  "stage": "space",
+  "habitat_word": "world",
+  "creature_kind": "easter_egg",
+  "notes": "Garden colony worlds of savannahs, prairies, forests, beaches and mound forests, with their lopsided ecologies. Third-party worlds (A19, All Tomorrows): facts come from the LORE TEXT (given) and first-principles gap filling (inferred). Original wording only; each species is an easter egg filed with its lore entry id; chains explain the design of each species from first principles (what pressure, what body, what senses), in our own words.",
+  "creatures": [
+   {
+    "name": "predators",
+    "lore_id": "predators",
+    "brief": ""
+   },
+   {
+    "name": "saltatorial-prey",
+    "lore_id": "saltatorial-prey",
+    "brief": ""
+   },
+   {
+    "name": "mantelopes",
+    "lore_id": "mantelopes",
+    "brief": ""
+   },
+   {
+    "name": "swimmers",
+    "lore_id": "swimmers",
+    "brief": ""
+   },
+   {
+    "name": "titans",
+    "lore_id": "titans",
+    "brief": ""
+   },
+   {
+    "name": "flyers",
+    "lore_id": "flyers",
+    "brief": ""
+   },
+   {
+    "name": "finger-fishers",
+    "lore_id": "finger-fishers",
+    "brief": ""
+   },
+   {
+    "name": "hand-flappers",
+    "lore_id": "hand-flappers",
+    "brief": ""
+   },
+   {
+    "name": "temptors",
+    "lore_id": "temptors",
+    "brief": ""
+   },
+   {
+    "name": "insectophagi",
+    "lore_id": "insectophagi",
+    "brief": ""
+   },
+   {
+    "name": "bone-crushers",
+    "lore_id": "bone-crushers",
+    "brief": ""
+   }
+  ],
+  "gen_voices": [
+   "naturalist",
+   "physicist",
+   "skeptic"
+  ],
+  "batch": 6,
+  "chains_per": "1-2",
+  "rounds": 1,
+  "species": []
+ },
+ {
+  "id": "at_garden_peoples",
+  "name": {
+   "en": "All Tomorrows: garden-world peoples",
+   "es": "All Tomorrows: pueblos de los mundos jardín"
+  },
+  "kind": "third_party",
+  "lore_source": "alltomorrows",
+  "lore_file": "lore/alltomorrows.en.json",
+  "lore_ids": [
+   "lizard-herders",
+   "hedonists",
+   "blind-folk",
+   "lopsiders",
+   "striders",
+   "parasites",
+   "hosts",
+   "tool-breeders",
+   "saurosapients",
+   "modular-people",
+   "pterosapiens",
+   "asymmetric-people",
+   "symbiotes",
+   "sail-people",
+   "satyriacs",
+   "bug-facers"
+  ],
+  "system": {
+   "star": "worlds implied by the lore file (A19)",
+   "position": "fictional; the lore's far-future galaxy",
+   "distance_ly_from_sol": null
+  },
+  "stage": "space",
+  "habitat_word": "world",
+  "creature_kind": "easter_egg",
+  "notes": "Garden worlds where the star people's descendants rose again: high gravity, tropics, caves, forest moons, islands and seas. Third-party worlds (A19, All Tomorrows): facts come from the LORE TEXT (given) and first-principles gap filling (inferred). Original wording only; each species is an easter egg filed with its lore entry id; chains explain the design of each species from first principles (what pressure, what body, what senses), in our own words.",
+  "creatures": [
+   {
+    "name": "lizard-herders",
+    "lore_id": "lizard-herders",
+    "brief": ""
+   },
+   {
+    "name": "hedonists",
+    "lore_id": "hedonists",
+    "brief": ""
+   },
+   {
+    "name": "blind-folk",
+    "lore_id": "blind-folk",
+    "brief": ""
+   },
+   {
+    "name": "lopsiders",
+    "lore_id": "lopsiders",
+    "brief": ""
+   },
+   {
+    "name": "striders",
+    "lore_id": "striders",
+    "brief": ""
+   },
+   {
+    "name": "parasites",
+    "lore_id": "parasites",
+    "brief": ""
+   },
+   {
+    "name": "hosts",
+    "lore_id": "hosts",
+    "brief": ""
+   },
+   {
+    "name": "tool-breeders",
+    "lore_id": "tool-breeders",
+    "brief": ""
+   },
+   {
+    "name": "saurosapients",
+    "lore_id": "saurosapients",
+    "brief": ""
+   },
+   {
+    "name": "modular-people",
+    "lore_id": "modular-people",
+    "brief": ""
+   },
+   {
+    "name": "pterosapiens",
+    "lore_id": "pterosapiens",
+    "brief": ""
+   },
+   {
+    "name": "asymmetric-people",
+    "lore_id": "asymmetric-people",
+    "brief": ""
+   },
+   {
+    "name": "symbiotes",
+    "lore_id": "symbiotes",
+    "brief": ""
+   },
+   {
+    "name": "sail-people",
+    "lore_id": "sail-people",
+    "brief": ""
+   },
+   {
+    "name": "satyriacs",
+    "lore_id": "satyriacs",
+    "brief": ""
+   },
+   {
+    "name": "bug-facers",
+    "lore_id": "bug-facers",
+    "brief": ""
+   }
+  ],
+  "gen_voices": [
+   "naturalist",
+   "physicist",
+   "skeptic"
+  ],
+  "batch": 6,
+  "chains_per": "1-2",
+  "rounds": 1,
+  "species": []
+ },
+ {
+  "id": "at_gravital_space",
+  "name": {
+   "en": "All Tomorrows: Gravital space",
+   "es": "All Tomorrows: el espacio de los Gravitales"
+  },
+  "kind": "third_party",
+  "lore_source": "alltomorrows",
+  "lore_file": "lore/alltomorrows.en.json",
+  "lore_ids": [
+   "spacers",
+   "asteromorphs",
+   "gravitals",
+   "subjects",
+   "terrestrials",
+   "new-machines",
+   "amphicephali",
+   "the-author"
+  ],
+  "system": {
+   "star": "worlds implied by the lore file (A19)",
+   "position": "fictional; the lore's far-future galaxy",
+   "distance_ly_from_sol": null
+  },
+  "stage": "space",
+  "habitat_word": "world",
+  "creature_kind": "easter_egg",
+  "notes": "Weightless hollow asteroids, machine-empire worlds, void habitats and other galaxies. Third-party worlds (A19, All Tomorrows): facts come from the LORE TEXT (given) and first-principles gap filling (inferred). Original wording only; each species is an easter egg filed with its lore entry id; chains explain the design of each species from first principles (what pressure, what body, what senses), in our own words.",
+  "creatures": [
+   {
+    "name": "spacers",
+    "lore_id": "spacers",
+    "brief": ""
+   },
+   {
+    "name": "asteromorphs",
+    "lore_id": "asteromorphs",
+    "brief": ""
+   },
+   {
+    "name": "gravitals",
+    "lore_id": "gravitals",
+    "brief": ""
+   },
+   {
+    "name": "subjects",
+    "lore_id": "subjects",
+    "brief": ""
+   },
+   {
+    "name": "terrestrials",
+    "lore_id": "terrestrials",
+    "brief": ""
+   },
+   {
+    "name": "new-machines",
+    "lore_id": "new-machines",
+    "brief": ""
+   },
+   {
+    "name": "amphicephali",
+    "lore_id": "amphicephali",
+    "brief": ""
+   },
+   {
+    "name": "the-author",
+    "lore_id": "the-author",
+    "brief": ""
+   }
+  ],
+  "gen_voices": [
+   "naturalist",
+   "physicist",
+   "skeptic"
+  ],
+  "batch": 6,
+  "chains_per": "1-2",
+  "rounds": 1,
+  "species": []
+ },
+ {
+  "id": "redtide",
+  "name": {
+   "en": "Tidally locked red-dwarf world",
+   "es": "Mundo anclado a una enana roja"
+  },
+  "kind": "fictional",
+  "system": {
+   "star": "M3V red dwarf, 0.35 Msun",
+   "position": "fictional",
+   "distance_ly_from_sol": null
+  },
+  "stage": "space",
+  "habitat_word": "world",
+  "creature_kind": "new",
+  "notes": "A tidally locked planet of an M dwarf in its habitable zone (orbit ~10-20 days): a permanent dayside, a frozen nightside, a ring-shaped terminator belt of liquid water, strong winds from day to night, frequent flares, a red-heavy spectrum (photosynthesis in the near-infrared), no day/night cycle but a sun fixed in the sky. Bizarre but physically plausible: ground everything in published planetary science; the referee should name the literature it knows (and say 'speculative' where true).",
+  "creatures": [],
+  "species": [
+   {
+    "seed": null,
+    "n": 3
+   },
+   {
+    "seed": "the strangest species this world's physics could force, one that surprises even a biologist",
+    "n": 1
+   }
+  ],
+  "batch": 1
+ },
+ {
+  "id": "icemoon",
+  "name": {
+   "en": "Ice-moon subsurface ocean",
+   "es": "Océano bajo el hielo de una luna"
+  },
+  "kind": "fictional",
+  "system": {
+   "star": "a giant planet's moon in a G star system",
+   "position": "fictional",
+   "distance_ly_from_sol": null
+  },
+  "stage": "space",
+  "habitat_word": "world",
+  "creature_kind": "new",
+  "notes": "An icy moon of a giant planet with a global liquid ocean under 10-30 km of ice, tidally heated, hydrothermal vents on the rock floor, no sunlight, chemosynthesis (like Europa and Enceladus), salinity, pressure, cracked ice shell with plumes. Bizarre but physically plausible: ground everything in published planetary science; the referee should name the literature it knows (and say 'speculative' where true).",
+  "creatures": [],
+  "species": [
+   {
+    "seed": null,
+    "n": 3
+   },
+   {
+    "seed": "the strangest species this world's physics could force, one that surprises even a biologist",
+    "n": 1
+   }
+  ],
+  "batch": 1
+ },
+ {
+  "id": "superearth",
+  "name": {
+   "en": "High-pressure super-Earth",
+   "es": "Supertierra de alta presión"
+  },
+  "kind": "fictional",
+  "system": {
+   "star": "K0V star",
+   "position": "fictional",
+   "distance_ly_from_sol": null
+  },
+  "stage": "space",
+  "habitat_word": "world",
+  "creature_kind": "new",
+  "notes": "A rocky super-Earth of 5 Earth masses, surface gravity ~2 g, atmosphere ~10 bar, thick air, stunted mountains, deep seas, high drag and heavy bodies, very strong magnetic field, flying is cheap but heavy bodies are costly. Bizarre but physically plausible: ground everything in published planetary science; the referee should name the literature it knows (and say 'speculative' where true).",
+  "creatures": [],
+  "species": [
+   {
+    "seed": null,
+    "n": 3
+   },
+   {
+    "seed": "the strangest species this world's physics could force, one that surprises even a biologist",
+    "n": 1
+   }
+  ],
+  "batch": 1
+ },
+ {
+  "id": "rogue",
+  "name": {
+   "en": "Rogue planet warmed from inside",
+   "es": "Planeta errante calentado desde dentro"
+  },
+  "kind": "fictional",
+  "system": {
+   "star": "none: a free-floating planet",
+   "position": "interstellar space, no star",
+   "distance_ly_from_sol": null
+  },
+  "stage": "space",
+  "habitat_word": "world",
+  "creature_kind": "new",
+  "notes": "A rogue planet of 3 Earth masses with no star, kept warm by radiogenic heat and a thick hydrogen atmosphere (collision-induced absorption) that insulates a liquid-water ocean, perpetual darkness, chemosynthesis at vents, ice crust, no seasons, no day. Bizarre but physically plausible: ground everything in published planetary science; the referee should name the literature it knows (and say 'speculative' where true).",
+  "creatures": [],
+  "species": [
+   {
+    "seed": null,
+    "n": 3
+   },
+   {
+    "seed": "the strangest species this world's physics could force, one that surprises even a biologist",
+    "n": 1
+   }
+  ],
+  "batch": 1
+ },
+ {
+  "id": "ringmoon",
+  "name": {
+   "en": "Ring-moon of a gas giant",
+   "es": "Luna con anillos de un gigante gaseoso"
+  },
+  "kind": "fictional",
+  "system": {
+   "star": "a gas giant of a K star",
+   "position": "fictional",
+   "distance_ly_from_sol": null
+  },
+  "stage": "space",
+  "habitat_word": "world",
+  "creature_kind": "new",
+  "notes": "A habitable moon of a giant planet, with the giant filling a quarter of the sky, rings that cast a shadow band, eclipses every orbit, tidal heating, intense radiation belts at the giant's magnetosphere, strong tides, a moon-sized rocky body with a thick atmosphere. Bizarre but physically plausible: ground everything in published planetary science; the referee should name the literature it knows (and say 'speculative' where true).",
+  "creatures": [],
+  "species": [
+   {
+    "seed": null,
+    "n": 3
+   },
+   {
+    "seed": "the strangest species this world's physics could force, one that surprises even a biologist",
+    "n": 1
+   }
+  ],
+  "batch": 1
+ }
+]
