@@ -186,6 +186,23 @@ int cp_stage_can_walk(const CpStageWorld *w,float x,float z,float nx,float nz,fl
     }
     return 1;
 }
+/* A body does not follow a planned line to the centimetre (yaw inertia, turn radius), so a route may not skim blocking water:
+ * the planner, its shortcuts and the waypoint following also want `clear` metres of dry-enough ground either side of the line.
+ * Carved deep rivers are one cell wide, so without this a plan threads the corner between two deep cells and the body drives
+ * into the channel. Field terrain only (the other terrains have no narrow channels). */
+#define WATER_MARGIN 1.f
+static int water_clear(const CpStageWorld *w,float x,float z,float nx,float nz,float clear){
+    if(w->setup.terrain!=CP_STAGE_FIELD)return 1;
+    const float dx=nx-x,dz=nz-z,distance=length(dx,dz);
+    if(distance<1e-4f)return 1;
+    const float px=-dz/distance*clear,pz=dx/distance*clear;
+    const int steps=(int)(distance/1.f)+1;
+    for(int i=0;i<=steps;i++){
+        const float t=(float)i/steps,cx=x+dx*t,cz=z+dz*t;
+        if(cp_stage_water_depth(w,cx+px,cz+pz)>.7f||cp_stage_water_depth(w,cx-px,cz-pz)>.7f)return 0;
+    }
+    return 1;
+}
 /* can_walk plus the body's climb limit: no stretch of the straight move steeper than `climb` (rise / run over about a metre).
  * The planner, its shortcuts and the waypoint following use this one rule, so a route is never one the body would stall on. */
 static int walk_ok(const CpStageWorld *w,float x,float z,float nx,float nz,float radius,float climb){
@@ -199,7 +216,7 @@ static int walk_ok(const CpStageWorld *w,float x,float z,float nx,float nz,float
         if(ab(height-previous)>climb*run)return 0;
         previous=height;
     }
-    return 1;
+    return water_clear(w,x,z,nx,nz,radius+WATER_MARGIN);
 }
 static float player_climb(const CpStageWorld *w){
     CpSteerBody body;
