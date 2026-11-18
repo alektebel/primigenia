@@ -2,6 +2,8 @@
 
 # Creatures
 
-| Creature | Status | Chains | Verdicts |
-|---|---|---|---|
-| [Ecolumbre](ecolumbre.md) | draft | 4 | 1 fixable, 3 plausible |
+## Primigenia (the island world) (`primigenia`)
+
+| Creature | Kind | Status | Chains | Verdicts |
+|---|---|---|---|---|
+| [Ecolumbre](ecolumbre.md) | native | draft | 4 | 1 fixable, 3 plausible |

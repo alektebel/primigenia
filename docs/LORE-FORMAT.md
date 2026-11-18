@@ -1,4 +1,4 @@
-# Lore format: one file per creature, one planet file, one bibliography
+# Lore format: one file per creature, one file per world, one bibliography
 
 Status: **standard, 2026-11-18** (owner request). Applies to all creature-stage lore (A22) and, later, to every stage's worlds.
 
@@ -6,10 +6,11 @@ Status: **standard, 2026-11-18** (owner request). Applies to all creature-stage 
 
 | File | Format | What it holds |
 |---|---|---|
-| `lore/planet.json` | JSON, schema `lore/schema/planet.schema.json` | The planet canon: numbered facts `F1…Fn`, each with value, unit, justification and references |
-| `lore/creatures/<id>.json` | JSON, schema `lore/schema/creature.schema.json` | **One file per creature**: niche, body, causal chains, skills, weaknesses, observe steps, journal, relations, plausibility review, provenance, changelog |
+| `lore/worlds/<world_id>.json` | JSON, schema `lore/schema/world.schema.json` (`cpore.world/1`) | **One file per world** (Primigenia, Earth, a third-party world): `kind` (`fictional` / `real` / `third_party`), `system` (star, position, distance in ly from Sol or null), optional `lore_source` (id into a third-party lore file such as `lore/hailmary.en.json`), and numbered facts `F1…Fn` with value, unit, justification and references. For `kind: real` (Earth) every active fact **must** cite references |
+| `lore/creatures/<id>.json` | JSON, schema `lore/schema/creature.schema.json` | **One file per creature**: `world` (required world id), `kind` (`native` / `easter_egg` / `cameo` / `new`), optional `lore_ref` (`{file, id}` of a third-party lore entry for easter-egg species), niche, body, causal chains, skills, weaknesses, observe steps, journal, relations, plausibility review, provenance, changelog |
 | `lore/references.json` | **CSL-JSON** (the citation standard used by Zotero, Pandoc, Crossref) | Every reference, cited by `id` from the files above. Each entry adds `x-status`: `verified` (DOI or ISBN checked against Crossref/OpenLibrary), `unverified` (from a model's memory) or `rejected` (does not exist / wrong) |
-| `docs/creatures/<id>.md` | Markdown, **generated** | A readable page per creature, rendered from its JSON. Never edited by hand |
+| `docs/creatures/<id>.md`, `docs/creatures/README.md` | Markdown, **generated** | A readable page per creature and an index grouped by world. Never edited by hand |
+| `docs/lore/worlds/<id>.md`, `docs/lore/REFERENCES.md` | Markdown, **generated** | One page per world; the bibliography grouped by status |
 | `lore/alltomorrows.en.json`, `lore/hailmary.en.json` | existing | Third-party lore files (A19, A20). Their references move into `lore/references.json` later |
 
 JSON is the single source of truth (the game reads it: Observe reveals chains, the journal prints `journal` lines). Markdown is only a view.
@@ -17,7 +18,8 @@ JSON is the single source of truth (the game reads it: Observe reveals chains, t
 ## 2. Identifiers
 
 - Creatures: lowercase ascii ids (`rondo`, `garfio`, `ecolumbre`). Display names in `name.es` / `name.en`.
-- Planet facts: `F1…Fn`, never renumbered; a retired fact keeps its id with `"status": "retired"`.
+- Worlds: lowercase ascii ids (`primigenia`, `earth`), equal to the file name.
+- World facts: `F1…Fn` per world (the same `F4` in two worlds is two facts), never renumbered; a retired fact keeps its id with `"status": "retired"`.
 - Chains: `<creature>.c<N>` (`ecolumbre.c2`). Skills: `<creature>.<skill_slug>`.
 - References: CSL `id` = `author_year_shortword` (`lloyd_1965_photuris`).
 
@@ -47,9 +49,9 @@ JSON is the single source of truth (the game reads it: Observe reveals chains, t
 
 ## 4. Rules
 
-1. **No chain without roots.** Every chain cites at least one planet fact. Every fact cites a justification (and references where it is real physics).
+1. **No chain without roots.** Every chain cites at least one fact of the creature's own `world`. Every fact cites a justification (and references where it is real physics).
 2. **No reference without a status.** Model-provided citations enter as `unverified`; a tool checks them against Crossref / OpenLibrary and flips them to `verified` (with DOI/ISBN) or `rejected`. Docs show the status next to each citation.
 3. **Never invent a reference.** A rejected reference is removed from the chain and the claim is re-reviewed.
 4. **Provenance is kept**: which council voice/model proposed it, which judge reviewed it, who edited it, and a `changelog` per file.
 5. **Status per creature**: `draft` (council output) → `reviewed` (judges passed) → `canon` (owner approved). Only `canon` ships.
-6. **Validation in CI**: `make lore-check` validates every file against its schema, checks that every `roots` id exists in `planet.json`, every reference id exists in `references.json`, every relation points to an existing creature, and renders `docs/creatures/`.
+6. **Validation in CI**: `make lore-check` validates every file against its schema, checks that every `roots` id exists (and is active) in the creature's world file `lore/worlds/<world>.json`, every reference id exists in `references.json`, every relation points to an existing creature or alias (a warning while draft), every world fact of a `real` world cites references, and renders `docs/creatures/`.

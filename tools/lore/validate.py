@@ -23,25 +23,16 @@ def schema_errors(inst, schema, rel):
 def validate_all(root):
     errors, warnings = [], []
     sd = os.path.join(root, "lore", "schema")
-    sch = {n: load(os.path.join(sd, f"{n}.schema.json")) for n in ("creature", "planet", "references")}
+    sch = {n: load(os.path.join(sd, f"{n}.schema.json")) for n in ("creature", "world", "references")}
     rel = lambda p: os.path.relpath(p, root)
 
-    planet_p = os.path.join(root, "lore", "planet.json")
     refs_p = os.path.join(root, "lore", "references.json")
-    planet = load(planet_p) if os.path.exists(planet_p) else None
     refs = load(refs_p) if os.path.exists(refs_p) else None
-    if planet is None: errors.append("lore/planet.json: missing")
     if refs is None: errors.append("lore/references.json: missing")
-
-    active, all_facts = set(), set()
-    if planet is not None:
-        errors += schema_errors(planet, sch["planet"], rel(planet_p))
-        seen = set()
-        for i, f in enumerate(planet.get("facts", [])):
-            fid = f.get("id")
-            if fid in seen: errors.append(f"lore/planet.json: $.facts[{i}].id: duplicate fact id {fid}")
-            seen.add(fid); all_facts.add(fid)
-            if f.get("status") == "active": active.add(fid)
+    wdir = os.path.join(root, "lore", "worlds")
+    worlds = {}  # id -> (all fact ids, active fact ids)
+    wfiles = sorted(os.path.join(wdir, n) for n in os.listdir(wdir) if n.endswith(".json")) if os.path.isdir(wdir) else []
+    if not wfiles: errors.append("lore/worlds: no world files")
     status = {}
     if refs is not None:
         errors += schema_errors(refs, sch["references"], rel(refs_p))
@@ -54,9 +45,22 @@ def validate_all(root):
             if rid not in status: errors.append(f"{file}: {path}: reference '{rid}' not in references.json")
             elif status[rid] == "rejected": errors.append(f"{file}: {path}: reference '{rid}' is rejected and must not be cited")
 
-    if planet is not None:
-        for i, f in enumerate(planet.get("facts", [])):
-            check_refs("lore/planet.json", f"$.facts[{i}].refs", f.get("refs", []))
+    for wp in wfiles:
+        w = load(wp)
+        fn = rel(wp)
+        errors += schema_errors(w, sch["world"], fn)
+        if w.get("id") != os.path.basename(wp)[:-5]:
+            errors.append(f"{fn}: $.id: id '{w.get('id')}' does not match the file name")
+        allf, act, seen = set(), set(), set()
+        for i, f in enumerate(w.get("facts", [])):
+            fid = f.get("id")
+            if fid in seen: errors.append(f"{fn}: $.facts[{i}].id: duplicate fact id {fid}")
+            seen.add(fid); allf.add(fid)
+            if f.get("status") == "active": act.add(fid)
+            if w.get("kind") == "real" and f.get("status") == "active" and not f.get("refs"):
+                errors.append(f"{fn}: $.facts[{i}].refs: fact {fid} of a real world must cite references")
+            check_refs(fn, f"$.facts[{i}].refs", f.get("refs", []))
+        worlds[w.get("id")] = (allf, act)
 
     cres = []
     for p in creature_files(root):
@@ -78,6 +82,10 @@ def validate_all(root):
     chain_ids, skill_ids = {}, {}
     for fn, c in cres:
         cid = c.get("id", "")
+        wid = c.get("world")
+        if wid not in worlds:
+            errors.append(f"{fn}: $.world: world '{wid}' has no file lore/worlds/{wid}.json")
+        all_facts, active = worlds.get(wid, (set(), set()))
         for i, ch in enumerate(c.get("chains", [])):
             base = f"$.chains[{i}]"
             chid = ch.get("id", "")
@@ -85,8 +93,8 @@ def validate_all(root):
             if chid in chain_ids: errors.append(f"{fn}: {base}.id: duplicate chain id '{chid}' (also in {chain_ids[chid]})")
             chain_ids.setdefault(chid, fn)
             for j, r in enumerate(ch.get("roots", [])):
-                if r not in all_facts: errors.append(f"{fn}: {base}.roots[{j}]: planet fact '{r}' does not exist")
-                elif r not in active: errors.append(f"{fn}: {base}.roots[{j}]: planet fact '{r}' is retired")
+                if r not in all_facts: errors.append(f"{fn}: {base}.roots[{j}]: fact '{r}' does not exist in world '{wid}'")
+                elif r not in active: errors.append(f"{fn}: {base}.roots[{j}]: fact '{r}' is retired in world '{wid}'")
             sk = ch.get("skill", {}).get("id")
             if sk:
                 if sk in skill_ids: errors.append(f"{fn}: {base}.skill.id: duplicate skill id '{sk}' (also in {skill_ids[sk]})")
@@ -102,7 +110,7 @@ def validate_all(root):
                 (warnings if c.get("status") == "draft" else errors).append(msg)
             via = r.get("via", "")
             if via and via.startswith("F") and via[1:].isdigit() and via not in all_facts:
-                errors.append(f"{fn}: $.relations[{i}].via: planet fact '{via}' does not exist")
+                errors.append(f"{fn}: $.relations[{i}].via: fact '{via}' does not exist in world '{wid}'")
     return errors, warnings
 
 

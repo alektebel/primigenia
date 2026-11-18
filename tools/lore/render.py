@@ -3,7 +3,7 @@
 
   python3 tools/lore/render.py [--root DIR]
 
-Writes docs/creatures/<id>.md, docs/creatures/README.md, docs/lore/PLANET.md, docs/lore/REFERENCES.md.
+Writes docs/creatures/<id>.md, docs/creatures/README.md (grouped by world), docs/lore/worlds/<id>.md, docs/lore/REFERENCES.md.
 """
 import argparse, os, sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -48,10 +48,11 @@ def lang(d, k="en"):
     return d.get(k) or d.get("en", "")
 
 
-def render_creature(c, planet, refs):
-    facts = {f["id"]: f for f in planet["facts"]}
+def render_creature(c, world, refs):
+    facts = {f["id"]: f for f in (world or {"facts": []})["facts"]}
     o = [HEADER, f"# {c['name']['en']}" + (f" ({c['name']['es']})" if c["name"].get("es", c["name"]["en"]) != c["name"]["en"] else ""), ""]
-    o.append(f"**Status: {BADGE[c['status']]}** · stage: {c['stage']} · id: `{c['id']}`" + (f" · aliases: {', '.join(c['aliases'])}" if c.get("aliases") else ""))
+    o.append(f"**Status: {BADGE[c['status']]}** · world: [{c['world']}](../lore/worlds/{c['world']}.md) · kind: {c.get('kind', 'native')} · stage: {c['stage']} · id: `{c['id']}`" + (f" · aliases: {', '.join(c['aliases'])}" if c.get("aliases") else ""))
+    if c.get("lore_ref"): o.append(f"\nThird-party lore: `{c['lore_ref']['file']}` / `{c['lore_ref']['id']}`")
     o += ["", "## Niche", ""]
     n = c["niche"]
     o += [f"- **Habitat:** {n['habitat']}", f"- **Diet:** {n['diet']}", f"- **Active:** {n['active']}",
@@ -101,27 +102,35 @@ def prov(p):
     return "; ".join(parts) or "none recorded"
 
 
-def render_index(cres):
-    o = [HEADER, "# Creatures", "", "| Creature | Status | Chains | Verdicts |", "|---|---|---|---|"]
-    for c in sorted(cres, key=lambda c: c["id"]):
-        v = {}
-        for ch in c["chains"]: v[ch["plausibility"]["verdict"]] = v.get(ch["plausibility"]["verdict"], 0) + 1
-        o.append(f"| [{c['name']['en']}]({c['id']}.md) | {c['status']} | {len(c['chains'])} | " + ", ".join(f"{n} {k}" for k, n in sorted(v.items())) + " |")
-    return "\n".join(o) + "\n"
+def render_index(cres, worlds):
+    o = [HEADER, "# Creatures", ""]
+    for wid in sorted({c["world"] for c in cres}):
+        w = worlds.get(wid)
+        o += [f"## {w['name']['en'] if w else wid} (`{wid}`)", "", "| Creature | Kind | Status | Chains | Verdicts |", "|---|---|---|---|---|"]
+        for c in sorted((c for c in cres if c["world"] == wid), key=lambda c: c["id"]):
+            v = {}
+            for ch in c["chains"]: v[ch["plausibility"]["verdict"]] = v.get(ch["plausibility"]["verdict"], 0) + 1
+            o.append(f"| [{c['name']['en']}]({c['id']}.md) | {c.get('kind', 'native')} | {c['status']} | {len(c['chains'])} | " + ", ".join(f"{n} {k}" for k, n in sorted(v.items())) + " |")
+        o.append("")
+    return "\n".join(o).rstrip("\n") + "\n"
 
 
-def render_planet(planet, refs):
-    o = [HEADER, f"# {planet['name']['en']}", "", f"Status: **{BADGE[planet['status']]}**", "",
-         "| Fact | Group | Claim | Value | Justification | References | Status |", "|---|---|---|---|---|---|---|"]
-    for f in sorted(planet["facts"], key=lambda f: int(f["id"][1:])):
+def render_world(w, refs):
+    sy = w["system"]
+    o = [HEADER, f"# {w['name']['en']}", "", f"Status: **{BADGE[w['status']]}** · kind: {w['kind']} · id: `{w['id']}`", "",
+         f"- **Star:** {sy['star']}", f"- **Position:** {sy['position']}",
+         "- **Distance from Sol:** " + ("n/a" if sy["distance_ly_from_sol"] is None else f"{sy['distance_ly_from_sol']:g} ly")]
+    if w.get("lore_source"): o.append(f"- **Lore source:** `{w['lore_source']}`")
+    o += ["", "| Fact | Group | Claim | Value | Justification | References | Status |", "|---|---|---|---|---|---|---|"]
+    for f in sorted(w["facts"], key=lambda f: int(f["id"][1:])):
         val = f"{f['value']} {f.get('unit', '')}".strip() if "value" in f else ""
         o.append("| " + " | ".join(cell(x) for x in [f["id"], f["group"], f["claim"], val, f["justification"],
                  "; ".join(cite(r, refs) for r in f.get("refs", [])), f["status"]]) + " |")
-    cons = [f for f in planet["facts"] if f.get("consequences")]
+    cons = [f for f in w["facts"] if f.get("consequences")]
     if cons:
         o += ["", "## Consequences", ""]
         for f in cons: o += [f"- **{f['id']}**: " + "; ".join(f["consequences"])]
-    o += ["", "## Changelog", ""] + [f"- {e.get('date', '')} {e.get('who', '')}: {e.get('what', '')}" for e in planet["changelog"]]
+    o += ["", "## Changelog", ""] + [f"- {e.get('date', '')} {e.get('who', '')}: {e.get('what', '')}" for e in w["changelog"]]
     return "\n".join(o) + "\n"
 
 
@@ -147,21 +156,25 @@ def write(path, text):
 
 
 def render_all(root):
-    planet = load(os.path.join(root, "lore", "planet.json"))
+    wdir = os.path.join(root, "lore", "worlds")
+    worlds = {}
+    for n in sorted(os.listdir(wdir)):
+        if n.endswith(".json"):
+            w = load(os.path.join(wdir, n)); worlds[w["id"]] = w
     reflist = load(os.path.join(root, "lore", "references.json"))
     refs = {r["id"]: r for r in reflist}
     cres = [load(p) for p in creature_files(root)]
-    out = {}
-    usage = {}
+    out, usage = {}, {}
     for c in cres:
-        out[f"docs/creatures/{c['id']}.md"] = render_creature(c, planet, refs)
+        out[f"docs/creatures/{c['id']}.md"] = render_creature(c, worlds.get(c["world"]), refs)
         for ch in c["chains"]:
             for a in ch["plausibility"].get("analogues", []):
                 for r in a.get("refs", []): usage.setdefault(r, set()).add(c["id"])
-    for f in planet["facts"]:
-        for r in f.get("refs", []): usage.setdefault(r, set()).add("planet " + f["id"])
-    out["docs/creatures/README.md"] = render_index(cres)
-    out["docs/lore/PLANET.md"] = render_planet(planet, refs)
+    for wid, w in worlds.items():
+        out[f"docs/lore/worlds/{wid}.md"] = render_world(w, refs)
+        for f in w["facts"]:
+            for r in f.get("refs", []): usage.setdefault(r, set()).add(f"{wid} {f['id']}")
+    out["docs/creatures/README.md"] = render_index(cres, worlds)
     out["docs/lore/REFERENCES.md"] = render_refs(reflist, usage)
     return out
 

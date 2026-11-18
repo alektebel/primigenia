@@ -2,7 +2,7 @@
 
 # Ecolumbre
 
-**Status: DRAFT** · stage: creature · id: `ecolumbre`
+**Status: DRAFT** · world: [primigenia](../lore/worlds/primigenia.md) · kind: native · stage: creature · id: `ecolumbre`
 
 ## Niche
 

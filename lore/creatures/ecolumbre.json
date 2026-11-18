@@ -2,6 +2,8 @@
   "schema": "cpore.creature/1",
   "id": "ecolumbre",
   "name": {"en": "Ecolumbre", "es": "Ecolumbre"},
+  "world": "primigenia",
+  "kind": "native",
   "status": "draft",
   "stage": "creature",
   "niche": {"habitat": "deep lava-tube caves, the cave behind the waterfall, fog-filled gullies at dawn", "diet": "cave moss and fungi, small grazers",

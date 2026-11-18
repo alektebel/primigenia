@@ -1,0 +1,146 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "cpore/lore/world.schema.json",
+  "title": "Lore world canon (numbered facts), one file per world",
+  "type": "object",
+  "required": [
+    "schema",
+    "id",
+    "name",
+    "kind",
+    "system",
+    "status",
+    "facts",
+    "changelog"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema": {
+      "const": "cpore.world/1"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9_]+$"
+    },
+    "name": {
+      "type": "object"
+    },
+    "status": {
+      "enum": [
+        "draft",
+        "reviewed",
+        "canon"
+      ]
+    },
+    "facts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "group",
+          "claim",
+          "justification",
+          "status"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^F[0-9]+$"
+          },
+          "group": {
+            "enum": [
+              "star",
+              "orbit",
+              "planet",
+              "atmosphere",
+              "ocean",
+              "geology",
+              "chemistry",
+              "biochemistry",
+              "sky",
+              "climate"
+            ]
+          },
+          "claim": {
+            "type": "string"
+          },
+          "value": {
+            "type": [
+              "number",
+              "string"
+            ]
+          },
+          "unit": {
+            "type": "string"
+          },
+          "justification": {
+            "type": "string"
+          },
+          "consequences": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "refs": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "status": {
+            "enum": [
+              "active",
+              "retired"
+            ]
+          },
+          "provenance": {
+            "type": "object"
+          }
+        }
+      }
+    },
+    "changelog": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "kind": {
+      "enum": [
+        "fictional",
+        "real",
+        "third_party"
+      ]
+    },
+    "system": {
+      "type": "object",
+      "required": [
+        "star",
+        "position",
+        "distance_ly_from_sol"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "star": {
+          "type": "string"
+        },
+        "position": {
+          "type": "string"
+        },
+        "distance_ly_from_sol": {
+          "type": [
+            "number",
+            "null"
+          ]
+        }
+      }
+    },
+    "lore_source": {
+      "type": "string",
+      "description": "id into a third-party lore file such as lore/hailmary.en.json"
+    }
+  }
+}

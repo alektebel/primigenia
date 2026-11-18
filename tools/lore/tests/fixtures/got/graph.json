@@ -1,0 +1,22 @@
+{
+  "chains": {
+    "Rondo": [
+      {"creature": "Rondo", "trait": "talks by long hums", "links": ["dense air carries sound far", "hums travel across the meadow"], "roots": ["F4"],
+       "skill": {"name": "Long hum", "role": "Social", "effect": "calls the herd over 60 m"}, "weakness": "a hunter can follow the hum",
+       "observe": ["hear a hum answered from far away", "see the herd turn to it", "see a hunter shadow the herd"], "journal": "It sings to the horizon.", "from": ["senses", "naturalist"]},
+      {"creature": "Rondo", "trait": "grazes at dusk", "links": ["long twilights", "predators are half blind then"], "roots": ["F3", "F99"],
+       "skill": {"name": "Dusk graze", "role": "Weird", "effect": "regenerates in twilight"}, "weakness": "cold nights",
+       "observe": ["see it graze at dusk", "see it sleep at noon", "see it shiver at night"], "journal": "Waits for the light to soften.", "from": ["wildcard"]}
+    ],
+    "nocturnal creature": [
+      {"creature": "nocturnal creature", "trait": "hunts under the moon", "links": ["bright moon gives contrast"], "roots": ["F6"],
+       "skill": {"name": "Moon ambush", "role": "Engage", "effect": "leaps from shadow"}, "weakness": "dark nights",
+       "observe": ["see it wait at the edge", "see it stay home on dark nights", "see it flee fog"], "journal": "Patient as a tide.", "from": ["skeptic"]}
+    ]
+  },
+  "graph": {"edges": [
+    {"a": "Rondo", "b": "nocturnal creature", "kind": "predation", "via": "F6", "note": "the hunter eats grazers"},
+    {"a": "Rondo", "b": "Ecolumbre", "kind": "teaching", "via": "F4", "note": "opposite uses of dense air"},
+    {"a": "Ecolumbre", "b": "nocturnal creature", "kind": "predation", "via": "F6", "note": "unrelated to Rondo"}
+  ], "contradictions": []}
+}

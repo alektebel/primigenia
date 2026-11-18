@@ -2,7 +2,11 @@
 
 # Primigenia (the island world)
 
-Status: **DRAFT**
+Status: **DRAFT** · kind: fictional · id: `primigenia`
+
+- **Star:** G1-G2V, yellow-white, quiet and middle-aged
+- **Position:** fictional; no galactic position fixed
+- **Distance from Sol:** n/a
 
 | Fact | Group | Claim | Value | Justification | References | Status |
 |---|---|---|---|---|---|---|
