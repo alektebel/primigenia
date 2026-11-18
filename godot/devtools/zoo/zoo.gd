@@ -39,8 +39,10 @@ func _ready() -> void:
 	var args: Dictionary = Game.zoo_args if "zoo_args" in Game else {}
 	if args.is_empty():
 		args = parse_args(OS.get_cmdline_user_args())
-	morph_ids = args.get("morphs", Genomes.DEFAULT_SET)
-	course_name = args.get("course", "all")
+	if morph_ids.is_empty():
+		morph_ids = args.get("morphs", Genomes.DEFAULT_SET)
+	if args.has("course"):
+		course_name = args.course
 	repeat = bool(args.get("repeat", true))
 	build()
 
@@ -181,8 +183,8 @@ func _terrain_mesh(entry: Dictionary) -> ArrayMesh:
 	verts.resize(n * n)
 	norms.resize(n * n)
 	cols.resize(n * n)
-	var stops := [[0.0, Color(0.42, 0.55, 0.34)], [0.18, Color(0.55, 0.62, 0.32)], [0.36, Color(0.85, 0.78, 0.3)], [0.6, Color(0.9, 0.5, 0.2)],
-		[0.85, Color(0.82, 0.25, 0.2)], [1.2, Color(0.7, 0.2, 0.6)]]
+	var stops := [[0.0, Color(0.2, 0.3, 0.18)], [0.18, Color(0.3, 0.36, 0.17)], [0.36, Color(0.5, 0.45, 0.15)], [0.6, Color(0.55, 0.28, 0.1)],
+		[0.85, Color(0.5, 0.14, 0.1)], [1.2, Color(0.4, 0.1, 0.35)]]
 	for j in n:
 		for i in n:
 			var k := j * n + i

@@ -435,3 +435,10 @@ godot-social-evidence: godot
 	@mkdir -p docs/evidence/godot/social
 	LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 900 xvfb-run -a -s "-screen 0 1280x720x24" \
 	  $(GODOT) --rendering-driver opengl3 --max-fps 15 --resolution 1280x720 --path godot --script res://game/tests/social_flow.gd -- $(CURDIR)/docs/evidence/godot/social
+
+.PHONY: godot-zoo-evidence
+godot-zoo-evidence: godot
+	@mkdir -p docs/evidence/godot/steering
+	LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 600 xvfb-run -a -s "-screen 0 1280x720x24" \
+	  $(GODOT) --rendering-driver opengl3 --resolution 1280x720 --path godot \
+	  --script res://devtools/tests/zoo_evidence.gd -- $(CURDIR)/docs/evidence/godot/steering
