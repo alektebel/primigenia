@@ -45,6 +45,7 @@
     "schema": {"const": "cpore.creature/1"},
     "id": {"type": "string", "pattern": "^[a-z0-9_]+$"},
     "name": {"$ref": "#/$defs/i18n"},
+    "aliases": {"type": "array", "description": "other names this creature is referred to by in relations (e.g. 'nocturnal creature')", "items": {"type": "string"}},
     "status": {"enum": ["draft", "reviewed", "canon"]},
     "stage": {"enum": ["cell", "creature", "band", "realm", "industry", "space"]},
     "niche": {"type": "object", "required": ["habitat", "diet", "active", "predators"], "additionalProperties": false,
