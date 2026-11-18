@@ -86,3 +86,19 @@ Rock still reads greyer than the hero's warm cliffs (M0 note); not changed here.
 `ground_normal` (terrain_maps.gdshaderinc) is now a Catmull-Rom bicubic gradient of the height texels instead of differences of the triangle surface; the geometry (`ground_tri`, `TerrainData.ground`)
 is unchanged. The vertex shader geomorphs each LOD onto the next lattice (`lod_step`, `morph_range` uniforms) and the LOD ranges are 300/700/1500/3200 m. The terrain light is multiplied by the cloud shadow
 (docs/godot/CLOUDS.md). See docs/TERRAIN.md "Version 4" for the diagnosis.
+
+## Terrain v5 (visual erosion)
+
+Full description in docs/TERRAIN.md "Version 5". What changes for the rock material:
+
+* The terrain mesh samples a 4096 visual heightfield (0.88 m) bounded against the sim; the shading normal is the visual field's near the camera.
+* New erosion maps (`vmaps_tex`, `erosion_maps()` in terrain_body.gdshaderinc) feed the material: flow -> wet streaks (`wet_rock`, the existing ROCK_WET_* path), deposition -> sediment fans
+  (`fan`), talus apron -> rock to scree on slopes with normal y above 0.55 to 0.7, exposure -> clean rock and no turf on convex ridges, plus a sharper `rl.r` relief cue.
+  Strata (cap rock, bedding) and snow rules are untouched: they run on world position and the gated detail normal. The maps fade between 500 and 1500 m.
+* Class borders: the material lookup is warped by +-2.5 m of value noise (`warp`), so the 3.5 m classification steps are not straight.
+* Rock sheet mapping is domain-warped (`ROCK_WARP` 1.0 m plus a 0.35 m octave at 2.7x): the Voronoi plates no longer form a regular honeycomb. Same warp at all distances (no swimming).
+* Eroded fBm (`fbm_tilt`, `FBM_*`): normal-only, 22 to 85 m, tiers medium and high.
+* Debug modes: 12 erosion maps (R flow, G deposition, B apron), 13 exposure.
+* New constants for owner approval: EROSION_FADE 500/1500, FBM_AMP 0.4, FBM_WAVELENGTH 2.4, FBM 22/85, ROCK_WARP 1.0, warp 5 m of the class lookup (`warp * 5.0`).
+
+Tier note: the Voronoi plate sheet (rock_detail.png) is still the dominant read at 2 to 10 m; replacing it with a less cellular sheet is the next visual step (texture art, not geometry).

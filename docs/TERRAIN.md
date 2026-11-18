@@ -263,3 +263,49 @@ high col guarantees hold on seeds 1, 7, 42, 99, 1234, 31337 (`terrain_test --hea
 4. *Missing sub-cell detail.* The rock tiers already add triplanar strata and a detail normal (docs/godot/ROCK.md); no geometric micro-relief was added, because the sim ignores it and feet must stay on `ground()`.
 
 Wetness now also comes from the river map (wet banks). Evidence: `docs/evidence/godot/look/`. Deferred: raising the generator to n=2048 (measured in the report, not forced), geometric micro-relief on rock, softer classification thresholds.
+
+## Version 5 (visual erosion; branch terrain/erosion-detail)
+
+Presentation only: the C core, its hash and goldens are unchanged (`CP_TERRAIN_VERSION` stays 4). Mountains were good from afar but up close the 3.5 m
+triangles gave angular silhouettes and no sub-cell relief. v5 derives a **visual heightfield 4x finer (4096 squared, 0.88 m)** from the sim heights and
+adds the fine erosion the sim cannot afford. The sim stays authoritative.
+
+**Pipeline** (`godot/extension/visual_terrain.cpp`, `CporeTerrain.visual_maps(entry, options)`; called by `TerrainData.prepare`, cached with the entry):
+1. *Bicubic base.* Catmull-Rom upsample of the sim heights at the 4096 grid.
+2. *Droplet erosion* (Beyer/Lague particles: inertia 0.1, capacity 4, erode/deposit 0.3, brush radius 2, lifetime 90) with 0.12 droplets per visual cell (about 2 M),
+   then a x3 amplification of the carved delta (rills have to read at 0.9 m texels). Parallel and deterministic: the grid is cut into 512 cell tiles run in four
+   checkerboard phases (tiles of one phase are further apart than a droplet travels) with a per-tile RNG, so the result is bit-identical for any thread count
+   (test). Visits give a **flow** map, deposits a **deposition** map.
+3. *Thermal talus*, 6 Jacobi sweeps at 36 degrees; the material that arrives is the **talus apron** map.
+4. *Bound against the sim.* `visual = S + b * tanh((V - S) / b)` where `S` is the exact triangle surface of the sim (`TerrainData.ground`) and the budget `b` is
+   0.4 m on walkable ground, growing to 10 m on steep rock (sim slope 42 to 61 degrees), and 0.06 m within ~10 m of a river, lake or the coast (below 1.5 m altitude).
+   So rivers, lakes and the coast stay where the sim and the water meshes put them, and a creature never stands more than the budget from where the C world thinks it is.
+5. *Maps* at 2048 squared RGBA8: R flow (log), G droplet deposition, B talus apron, A exposure (curvature at 2.6 and 6 m; > 0.5 convex).
+   Heights are stored as uint16 (`vh_min + vh_range * v / 65535`, 1 cm steps over 600 m).
+
+**Rendering.** Chunks keep their 224 m footprint but are 256 visual cells wide; 7 LODs (step 1..64 cells = 0.9, 1.8, 3.5, 7, 14, 28, 56 m) switch at 130/280/600/1200/2400/3800 m
+with the existing geomorph; all of them read the visual texture (R16). The fragment normal is the visual field's up to ~140 m and the sim's Catmull-Rom normal beyond ~340 m (no
+aliasing of 0.9 m texels, far palette unchanged). Materials (terrain_body.gdshaderinc, `erosion_maps`): gully water streaks on steep ground (flow into the existing wet-streak path),
+deposition fans (feed the existing sediment-fan look of scree and the fine pebble tile), talus aprons turn rock below cliffs into scree on stable slopes, exposed convex ridges lose grass
+and wetness and sharpen the relief cue, the class lookup is domain-warped by 2.5 m so the 3.5 m cell borders stop showing, and the rock sheets are domain-warped by about 1 m so the plate pattern is not a regular honeycomb.
+Close to the camera (22 to 85 m) a derivative-damped eroded fBm (3 octaves, 2.4 m wavelength, triplanar) tilts the rock normal. It is normal-only: no geometric displacement, so feet and
+`visual_ground` agree with the mesh (a vertex displacement of a few cm is deferred). The maps fade out between 500 and 1500 m.
+
+**Feet and camera.** `TerrainData.visual_ground(x, z)` is the exact surface of the LOD0 mesh (same diagonal on the 4096 grid). `Game.visual_ground` feeds creature bodies and feet
+(`stage.ground_fn`, actor hosts, loco IK), chase camera, pointer and icons; the grass shader roots blades with `vground_tri`. The C sim keeps `ground()`; the two differ by at most the
+budget (below).
+
+**Measured** (seed 1, 1024 sim cells; `test_visual.gd`, `make godot-test`):
+|visual - sim| on walkable ground (sim slope below 35 degrees, away from water): p50 0.10 m, **p99 0.40 m**, max 0.96 m (cliff-edge samples, where the budget starts to grow);
+on river, lake and coast cells at most 0.064 m. Second difference at 0.9 m is more than 1.5x the triangle surface's (test). Rendered frames: `docs/evidence/godot/terrain-v5/`.
+
+**Cost** (`make godot-visual-bench`, 16 cores, `docs/evidence/godot/terrain-v5/bench-visual-gen.json`): first generation of the visual maps 1.5 s on 8 threads (5.4 s on 1 thread) on top of
+3.5 s for the sim; cache file 38 MB (was 10 MB), cache hit 85 ms; transient RAM during generation about 330 MB, resident +48 MB (uint16 heights 32 MB + maps 16 MB) plus the same in VRAM
+(R16 4096 squared = 32 MB, RGBA8 2048 squared = 16 MB; a float heightfield would have been 64 MB). The generator is CPU code (C++ in the GDExtension, multithreaded), not a compute shader: it works headless, is testable and
+deterministic, and its cost is paid once per island (cache key: terrain hash, `CP_TERRAIN_VERSION`, `RENDER_PREP_VERSION` 5). The numbers scale with cores; on the owner's desktop with 8+ cores expect 1 to 2 s,
+on a 4-core laptop 3 to 5 s. Rendering cost, llvmpipe medium tier, 1280x720, 40 frames, 60000 grass (software raster, noisy, a relative ratio and never a GPU number; `bench-before/after-medium-llvmpipe.json`),
+mean frame ms before -> after: chase 429 -> 853, mid 203 -> 407, far 594 -> 640, cliff_lit 212 -> 471. Near views double (about 4x the vertices in range, a 16-fetch fragment normal, the fBm and domain warp); far views
+are within 8 %. The RTX figure is open: `make godot-terrain-bench TIER=high` writes `docs/evidence/godot/terrain-v5/bench-high-*.json`. Knobs if it is too much: LOD0 range (130 m), the vis_normal fetch count, the fBm range.
+
+**Deferred.** A Mei/grid hydraulic pass or a compute-shader port (would allow re-eroding in the editor); geometric micro-displacement on rock at LOD0; D8 stair steps of the carved rivers remain (the sim channels are
+exact and protected by design); softer classification thresholds for the generator itself; a visual field for n=2048 uses factor 2 only.
