@@ -1093,5 +1093,233 @@
    }
   ],
   "batch": 1
+ },
+ {
+  "id": "magneto",
+  "name": {
+   "en": "Magnetic world",
+   "es": "Mundo magnético"
+  },
+  "kind": "fictional",
+  "system": {
+   "star": "a K dwarf, or a magnetised giant's moon",
+   "position": "fictional",
+   "distance_ly_from_sol": null
+  },
+  "stage": "space",
+  "habitat_word": "world",
+  "creature_kind": "new",
+  "notes": "A planet with a very strong magnetic field: a young super-Earth with a vigorous dynamo (tens of times Earth's surface field), or a world close to a magnetised giant; auroral belts, strong radiation-belt structure, compass-stable surface. Real anchors: radical-pair magnetoreception in birds (Ritz, Adem and Schulten 2000, Biophysical Journal; Hore and Mouritsen 2016, Annual Review of Biophysics), magnetotactic bacteria (Blakemore 1975, Science), electric-fish electrocommunication. Near-field magnetic signalling falls off as 1/r^3 and costs energy: the referee must check range and energy budget honestly. Everything is our own design (no names from books or films). The referee must say 'highly speculative' wherever that is true, name the physics that forces each trait, and cite only works it is sure exist.",
+  "creatures": [],
+  "seed_refs": [
+   {
+    "author": "Ritz, T.",
+    "year": 2000,
+    "title": "A model for photoreceptor-based magnetoreception in birds",
+    "venue": "Biophysical Journal"
+   },
+   {
+    "author": "Hore, P. J.",
+    "year": 2016,
+    "title": "Radical-pair mechanism of magnetoreception",
+    "venue": "Annual Review of Biophysics"
+   },
+   {
+    "author": "Blakemore, R.",
+    "year": 1975,
+    "title": "Magnetotactic bacteria",
+    "venue": "Science"
+   }
+  ],
+  "species": [
+   {
+    "seed": "creatures that SEE magnetic field lines (a magnetic sense like a visual sense: radical-pair or magnetite based) and navigate and hunt with it",
+    "n": 2
+   },
+   {
+    "seed": "creatures that COMMUNICATE by modulating magnetic fields at short range (near-field, dipole 1/r^3 falloff): give range, energy cost and why it beats sound or light here",
+    "n": 2
+   }
+  ],
+  "batch": 1
+ },
+ {
+  "id": "spectrum",
+  "name": {
+   "en": "Full-spectrum world",
+   "es": "Mundo de espectro completo"
+  },
+  "kind": "fictional",
+  "system": {
+   "star": "binary: a hot A/F star plus a red dwarf",
+   "position": "fictional",
+   "distance_ly_from_sol": null
+  },
+  "stage": "space",
+  "habitat_word": "world",
+  "creature_kind": "new",
+  "notes": "A binary-star world (a hot bright star plus a red dwarf) with a thin, transparent atmosphere window from the ultraviolet to the thermal infrared, so light of every band reaches the ground. Real anchors: mantis shrimp colour and polarization vision (Thoen et al. 2014, Science), pit viper infrared sensing (Gracheva et al. 2010, Nature), bird ultraviolet vision. Costs the referee must check: eye size and diffraction limits across bands, thermal noise for infrared (why pit vipers use a pit organ), UV damage. Everything is our own design (no names from books or films). The referee must say 'highly speculative' wherever that is true, name the physics that forces each trait, and cite only works it is sure exist.",
+  "creatures": [],
+  "seed_refs": [
+   {
+    "author": "Thoen, H. H.",
+    "year": 2014,
+    "title": "A different form of color vision in mantis shrimp",
+    "venue": "Science"
+   },
+   {
+    "author": "Gracheva, E. O.",
+    "year": 2010,
+    "title": "Molecular basis of infrared detection by snakes",
+    "venue": "Nature"
+   }
+  ],
+  "species": [
+   {
+    "seed": "creatures that see the WHOLE spectrum, UV to thermal infrared plus polarization, and what it costs them (eye size, diffraction, thermal noise)",
+    "n": 2
+   },
+   {
+    "seed": "a predator and a prey whose camouflage works in one band and fails in another (an arms race across the spectrum)",
+    "n": 2
+   }
+  ],
+  "batch": 1
+ },
+ {
+  "id": "void",
+  "name": {
+   "en": "Deep space (the void)",
+   "es": "El espacio profundo (el vacío)"
+  },
+  "kind": "fictional",
+  "system": {
+   "star": "none: interstellar medium, molecular clouds, comets and Oort-cloud bodies",
+   "position": "interstellar space and the outer reaches of star systems",
+   "distance_ly_from_sol": null
+  },
+  "stage": "space",
+  "habitat_word": "world",
+  "creature_kind": "new",
+  "notes": "Life in the interstellar medium and in molecular clouds, comets and Oort-cloud bodies: ice, dust, organics, very low temperature and density, radiation pressure, cosmic rays, millennia between events. Real anchors: tardigrade survival in open space (Jonsson et al. 2008, Current Biology), comet-based life speculation (Dyson 1972 and 1979), complex organic molecules in the interstellar medium (Herbst and van Dishoeck 2009, Annual Review of Astronomy and Astrophysics). The referee must be honest about how speculative this is. Everything is our own design (no names from books or films). The referee must say 'highly speculative' wherever that is true, name the physics that forces each trait, and cite only works it is sure exist.",
+  "creatures": [],
+  "seed_refs": [
+   {
+    "author": "Jonsson, K. I.",
+    "year": 2008,
+    "title": "Tardigrades survive exposure to space in low Earth orbit",
+    "venue": "Current Biology"
+   },
+   {
+    "author": "Dyson, F. J.",
+    "year": 1979,
+    "title": "Time without end: physics and biology in an open universe",
+    "venue": "Reviews of Modern Physics"
+   },
+   {
+    "author": "Herbst, E.",
+    "year": 2009,
+    "title": "Complex organic interstellar molecules",
+    "venue": "Annual Review of Astronomy and Astrophysics"
+   }
+  ],
+  "species": [
+   {
+    "seed": "giant sidereal 'space whales' grazing a molecular cloud (ice, dust, organics), using light sails or radiation pressure, with an extremely slow metabolism",
+    "n": 2
+   },
+   {
+    "seed": "migrants crossing the vast voids between clouds and stars over millennia: cryptobiosis like tardigrades, ballistic seed-like dormancy, comet riders",
+    "n": 2
+   }
+  ],
+  "batch": 1
+ },
+ {
+  "id": "mycelia",
+  "name": {
+   "en": "Mycelial world",
+   "es": "Mundo micelial"
+  },
+  "kind": "fictional",
+  "system": {
+   "star": "a G/K dwarf",
+   "position": "fictional",
+   "distance_ly_from_sol": null
+  },
+  "stage": "space",
+  "habitat_word": "planet",
+  "creature_kind": "new",
+  "notes": "A world where a single fungus-like mycelial network covers the whole planet and may have a slow planetary 'consciousness'. Derive honestly: signalling speed along hyphae, network topology, how cognition could emerge (or not), timescales (a thought takes days or years), what it wants, how a creature-stage player could interact with it. Real anchors: the giant Armillaria ostoyae individual (Ferguson et al. 2003, Mycologia, Canadian Journal of Forest Research), mycorrhizal networks (Simard et al. 1997, Nature) AND the critique of the 'wood-wide web' claims (Karst et al. 2023, Nature Ecology and Evolution), electrical spiking in fungi (Adamatzky 2022, Royal Society Open Science; flag as contested). Also 2-3 animals living inside or with the network. Everything is our own design (no names from books or films). The referee must say 'highly speculative' wherever that is true, name the physics that forces each trait, and cite only works it is sure exist.",
+  "creatures": [],
+  "seed_refs": [
+   {
+    "author": "Simard, S. W.",
+    "year": 1997,
+    "title": "Net transfer of carbon between ectomycorrhizal tree species in the field",
+    "venue": "Nature"
+   },
+   {
+    "author": "Karst, J.",
+    "year": 2023,
+    "title": "Positive citation bias and overinterpreted results lead to misinformation on common mycorrhizal networks in forests",
+    "venue": "Nature Ecology and Evolution"
+   },
+   {
+    "author": "Adamatzky, A.",
+    "year": 2022,
+    "title": "Language of fungi derived from their electrical spiking activity",
+    "venue": "Royal Society Open Science"
+   }
+  ],
+  "species": [
+   {
+    "seed": "2-3 animals that live inside or with the planet-wide mycelial network (farmers, symbionts, parasites, messengers) and how the network treats them",
+    "n": 3
+   },
+   {
+    "seed": "the network's own 'mind' as a creature entry: its senses, slow signalling, what it wants, and how a creature-stage player can talk to it",
+    "n": 1
+   }
+  ],
+  "batch": 1
+ },
+ {
+  "id": "oddities",
+  "name": {
+   "en": "Oddities (bizarre extras)",
+   "es": "Rarezas (extras extraños)"
+  },
+  "kind": "fictional",
+  "system": {
+   "star": "various",
+   "position": "spans the physics of the other worlds",
+   "distance_ly_from_sol": null
+  },
+  "stage": "space",
+  "habitat_word": "world",
+  "creature_kind": "new",
+  "notes": "A bucket for four more bizarre-but-plausible species across any of the existing worlds' physics (tidal-heating feeders on a moon, lightning-eaters in a stormy gas giant or a thick atmosphere, chemosynthetic sky reefs, and whatever else the physics forces). Each species must NAME its forcing physics (which world's physics, which numbers) and say how it differs from Earth life. Everything is our own design (no names from books or films). The referee must say 'highly speculative' wherever that is true, name the physics that forces each trait, and cite only works it is sure exist.",
+  "creatures": [],
+  "seed_refs": [],
+  "species": [
+   {
+    "seed": "a tidal-heating feeder living on a moon's tidal heat flow (name the moon's physics)",
+    "n": 1
+   },
+   {
+    "seed": "a lightning-eater of a storm world that harvests discharge energy",
+    "n": 1
+   },
+   {
+    "seed": "a chemosynthetic sky reef: a floating colony fed by atmospheric chemistry",
+    "n": 1
+   },
+   {
+    "seed": "the strangest species any of the other worlds' physics could force, one that surprises a biologist (name the forcing physics)",
+    "n": 1
+   }
+  ],
+  "batch": 1
  }
 ]
