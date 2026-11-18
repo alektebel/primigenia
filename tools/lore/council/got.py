@@ -15,7 +15,7 @@ Output dir: $LORE_RUNS_DIR (default council/runs/). Needs planet_canon.md in it 
 World parameters come from $LORE_CTX (json): creatures [{name, brief}], gen_voices, batch, chains_per, rounds, species, notes, got_dir.
 Without LORE_CTX: the original Primigenia island creature list."""
 import json, os, re, sys, threading, random
-from council import ADV, CANON, FP, D, ask, persona, CTX
+from council import ADV, CANON, FP, D, ask, persona, CTX, best_json
 
 PLANET = open(os.path.join(D, "planet_canon.md")).read()
 OUT = os.path.join(D, CTX.get("got_dir", "got")); os.makedirs(OUT, exist_ok=True)
@@ -44,14 +44,7 @@ if CTX.get("kind") == "real":
 
 
 def jparse(text):
-    m = re.search(r"```(?:json)?\s*(.*?)```", text, re.S)
-    t = m.group(1) if m else text
-    i = min([x for x in (t.find("["), t.find("{")) if x >= 0], default=-1)
-    if i < 0: raise ValueError("no json")
-    for j in range(len(t), i, -1):
-        try: return json.loads(t[i:j])
-        except Exception: continue
-    raise ValueError("bad json")
+    return best_json(text)
 
 
 def cached(name, fn, base=None):

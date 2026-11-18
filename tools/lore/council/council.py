@@ -206,15 +206,24 @@ def _read(p):
     return open(p).read() if os.path.exists(p) else ""
 
 
+def best_json(t):
+    """Largest JSON value that decodes anywhere in t (models often echo the answer twice or add prose around it)."""
+    dec = json.JSONDecoder(strict=False); best = None; i = 0
+    while True:
+        j = min([x for x in (t.find("{", i), t.find("[", i)) if x >= 0], default=-1)
+        if j < 0: break
+        try:
+            v, end = dec.raw_decode(t, j)
+            if isinstance(v, (dict, list)) and (best is None or end - j > best[1]): best = (v, end - j)
+            i = end
+        except ValueError:
+            i = j + 1
+    if best is None: raise ValueError("no json")
+    return best[0]
+
+
 def _jload(text):
-    m = re.search(r"```(?:json)?\s*(.*?)```", text, re.S)
-    t = m.group(1) if m else text
-    i = t.find("{")
-    if i < 0: raise ValueError("no json")
-    for j in range(len(t), i, -1):
-        try: return json.loads(t[i:j])
-        except Exception: continue
-    raise ValueError("bad json")
+    return best_json(text)
 
 
 def _chair_ask(system, user):
@@ -222,6 +231,7 @@ def _chair_ask(system, user):
     for attempt in range(3):
         t = ask("skeptic", system, user, temp=0.3, max_tokens=12000) if attempt < 2 else chat(system, user, temp=0.3, max_tokens=12000)
         if t.startswith("(failed)"): continue
+        open(os.path.join(D, f"chair_raw_{int(time.time())}.txt"), "w").write(t)
         try: return _jload(t)
         except Exception as e: print("chair json error", attempt, e, file=sys.stderr, flush=True)
     return None
