@@ -972,6 +972,41 @@ static void loadout_contract(void){
     assert(cp_stage_restore(&tail,blob,cp_stage_snapshot_size(),NULL)==CP_STAGE_SNAP_ERR_FORMAT);
     puts("PASS loadout: slots, errors, nest and fight rules, observation, replay and snapshot determinism");
 }
+/* agentplay seed 3: both fighters reach 0 hp in the same tick. The wild creature used to be left with hp 0 but
+ * dead=0, listed as a live "creature" with state "dead", attackable, and the attack command accepted it. */
+static void double_ko_is_consistent(void) {
+    cp_stage_setup_default(&setup,3);
+    assert(cp_stage_reset(&w,&setup)==0);
+    static char obs[65536];
+    int saw_ko=0;
+    for(int tick=0;tick<220;tick++) {
+        if(tick==40)assert(cp_stage_command(&w,"attack #1 bite")==0);
+        cp_stage_step(&w,NULL);
+        for(int i=0;i<w.setup.n;i++) {
+            const CpStageCreature *e=&w.wild[i];
+            if(e->hp<=0) {
+                saw_ko=1;
+                assert(e->dead);
+                assert(w.active!=i);
+                assert(cp_stage_command(&w,"attack #1 bite")==-2);
+                assert(cp_stage_command(&w,"approach #1")==-2);
+            }
+        }
+        assert(cp_stage_observe(&w,obs,sizeof obs)>0);
+        const char *c=strstr(obs,"\"type\":\"creature\"");
+        while(c) {
+            const char *end=strchr(c,'}');
+            assert(end);
+            char one[512];
+            size_t n=(size_t)(end-c)<sizeof one-1?(size_t)(end-c):sizeof one-1;
+            memcpy(one,c,n);one[n]=0;
+            assert(!strstr(one,"\"state\":\"dead\""));
+            assert(!strstr(one,"\"hp\":0.000000,"));
+            c=strstr(end,"\"type\":\"creature\"");
+        }
+    }
+    assert(saw_ko);
+}
 int main(void) {
     validation();
     motion_law();
@@ -986,6 +1021,7 @@ int main(void) {
     debug_ops();
     nav_contract();
     loadout_contract();
+    double_ko_is_consistent();
     reset();
     CpStageInput a={
         0
