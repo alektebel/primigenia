@@ -1,0 +1,283 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "coloso",
+  "name": {
+    "en": "Coloso"
+  },
+  "world": "primigenia",
+  "kind": "native",
+  "status": "draft",
+  "stage": "creature",
+  "niche": {
+    "habitat": "Coastal islet, sea arches, tidal causeways, and the giant tree spring.",
+    "diet": "Herbivore: high-canopy foliage, salt spray, mineral licks, and floating carcasses.",
+    "active": "Diurnal, slow-paced; active during low tide and clear days.",
+    "predators": []
+  },
+  "body": "Colossal browser with a long neck that reaches the giant tree's canopy and a mass that anchors it against the island's 1.6× wind force. Its slow, duet-sway gait conserves energy in dense air, while its colossal stomping gait communicates across the islet and triggers tidal resonance awareness.",
+  "chains": [
+    {
+      "id": "coloso.c1",
+      "trait": "Island giant body",
+      "links": [
+        "No land predator on the islet, so bulk costs nothing in escape speed",
+        "Cold upwelling feeds plankton-rich shallows, so a giant can graze the surf all year",
+        "1.6 bar air with pO2 0.34 bar funds a huge aerobic gut",
+        "At 1.05 g, wide feet and a slow gait beat running"
+      ],
+      "roots": [
+        "F27",
+        "F20",
+        "F5",
+        "F2",
+        "F13"
+      ],
+      "skill": {
+        "id": "coloso.tide_stride",
+        "name": {
+          "en": "Tide stride"
+        },
+        "role": "Signature",
+        "effect": "Wades 1.2 m deep for 20 s behind a 3 m bow wave; leaves the islet only at spring low, when the 3.2 m shelf tide uncovers the causeway.",
+        "numbers": {}
+      },
+      "weakness": "Deep water and high tide: lure it onto the flat as the tide turns and it is cut off for a full 14.9 d cycle, turning its back on you.",
+      "observe": [
+        "huge prints in the tidal flat",
+        "algae crust on its shoulders",
+        "slow blink"
+      ],
+      "journal": {
+        "en": "The islet kept it big and slow."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "State explicitly a giant-tortoise-grade resting metabolism and a mixed diet (intertidal algae mats + wrack + high canopy); surf alone rarely sustains multi-ton mass year-round. Optionally note Coloso is the last or near-last giant on the islet, not proof that gigantism evolved with zero predation pressure everywhere.",
+        "fixes": [
+          "State explicitly a giant-tortoise-grade resting metabolism and a mixed diet (intertidal algae mats + wrack + high canopy); surf alone rarely sustains multi-ton mass year-round. Optionally note Coloso is the last or near-last giant on the islet, not proof that gigantism evolved with zero predation pressure everywhere."
+        ],
+        "analogues": [
+          {
+            "organism": "Galápagos giant tortoise (Chelonoidis niger) — insular gigantism with abundant low-quality browse and reduced predation (MacArthur & Wilson 1967, island biogeography, from memory, unverified); hippopotamus — bulk wading in shallow water.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "designer": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "skeptic"
+        ]
+      }
+    },
+    {
+      "id": "coloso.c2",
+      "trait": "Long browsing neck",
+      "links": [
+        "Islet browse is sparse and goes bare each dry season",
+        "Kelp holdfasts and stripped canopy sit at 4 m, above every other grazer",
+        "Reach was cheaper than height: the neck grew, the legs stayed short against winter gales"
+      ],
+      "roots": [
+        "F27",
+        "F11",
+        "F19"
+      ],
+      "skill": {
+        "id": "coloso.canopy_reach",
+        "name": {
+          "en": "Canopy reach"
+        },
+        "role": "Basic",
+        "effect": "Eats leaves or fruit up to 4 m without lowering its guard; fruit gifts offered at head height count +15 instead of +8.",
+        "numbers": {}
+      },
+      "weakness": "Blind under its own chin: lure it beneath a rock arch and strike the neck from the far side; it cannot turn its head fast at close range.",
+      "observe": [
+        "branches stripped at 4 m",
+        "slow neck sway",
+        "salt crust on its lips"
+      ],
+      "journal": {
+        "en": "It eats what nothing else can reach."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Drop \"kelp holdfasts at 4 m\" (holdfasts are benthic). Use storm-pruned coastal trees, lianas, and stacked intertidal wrack / canopy leftovers in a ~4 m band; short legs are wind-loading tradeoff on the islet (F19), accepting slower travel on steep dyke rock.",
+        "fixes": [
+          "Drop \"kelp holdfasts at 4 m\" (holdfasts are benthic). Use storm-pruned coastal trees, lianas, and stacked intertidal wrack / canopy leftovers in a ~4 m band; short legs are wind-loading tradeoff on the islet (F19), accepting slower travel on steep dyke rock."
+        ],
+        "analogues": [
+          {
+            "organism": "Giraffe (Giraffa camelopardalis) — height/reach competition for browse; extinct moa (Dinornis spp.) — large island browser with neck reach (from memory, unverified).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 7,
+          "designer": 9,
+          "skeptic": 5
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "skeptic"
+        ]
+      }
+    },
+    {
+      "id": "coloso.c3",
+      "trait": "Slow giant duet sway",
+      "links": [
+        "A retained mainland pair-bond ritual (F27) persists in a solitary adult, causing heterospecific redirection to any large, slow mimic",
+        "Dense air (F4) and high O2 (F5) allow low-frequency body rumbles to travel far on foggy dawns (F8), sustaining an obligate 0.5 Hz sway without metabolic fatigue",
+        "High drag (F4) and 1.05 g (F2) enforce slow metabolic pacing, making the visual rhythm peak align predictably with weight shifts"
+      ],
+      "roots": [
+        "F27",
+        "F4",
+        "F5",
+        "F8",
+        "F2"
+      ],
+      "skill": {
+        "id": "coloso.giant_duet",
+        "name": {
+          "en": "Giant duet"
+        },
+        "role": "Social",
+        "effect": "+30 befriend if the player presses on the sway peak in a rhythm mini-game; stacks with a fruit gift but not with dance.",
+        "numbers": {}
+      },
+      "weakness": "Too fast or too loud: sudden loud noises or water splashes trigger a startle reflex, and it withdraws into the sea for 60 s.",
+      "observe": [
+        "slow sway",
+        "sand spray from each shift",
+        "lowered head"
+      ],
+      "journal": {
+        "en": "It has been waiting for a duet."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Social duet is a species-typical pair bond retained from mainland founders (F27); the epic is a solitary adult that still performs the obligate ritual and treats any large, slow, low-frequency mimic as a duet partner (heterospecific redirection), not a trait that evolved on an islet with zero conspecifics.",
+        "fixes": [
+          "Social duet is a species-typical pair bond retained from mainland founders (F27); the epic is a solitary adult that still performs the obligate ritual and treats any large, slow, low-frequency mimic as a duet partner (heterospecific redirection), not a trait that evolved on an islet with zero conspecifics."
+        ],
+        "analogues": [
+          {
+            "organism": "African elephant (Loxodonta africana) — low-frequency rumbles and substrate-coupled vibration (Payne et al. 1986, from memory, unverified); sandhill crane pair dances — synchronized slow courtship display.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "designer": 7,
+          "skeptic": 4
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "skeptic"
+        ]
+      }
+    },
+    {
+      "id": "coloso.c4",
+      "trait": "Colossal mass and stomping gait",
+      "links": [
+        "pO2 0.34 bar pays for aerobic bulk, so mass is cheap to carry and cheap to drop",
+        "At 1.05 g every fall lands heavy: the stomp uses gravity, not muscle",
+        "Ground-borne thumps outrange its own eyes in the turbid coastal air"
+      ],
+      "roots": [
+        "F5",
+        "F2",
+        "F3"
+      ],
+      "skill": {
+        "id": "coloso.earth_stomp",
+        "name": {
+          "en": "Earth stomp"
+        },
+        "role": "Engage",
+        "effect": "6 m radius, knocks down creatures under 200 kg for 2 s and cracks rock armour; 3 s recovery between stomps.",
+        "numbers": {}
+      },
+      "weakness": "It needs dry footing: lure it into the shallows or onto wet kelp and its own mass sinks and slides, and it cannot stomp while wading.",
+      "observe": [
+        "dust rings at each footfall",
+        "pebbles jumping off the flat",
+        "tail swinging as a counterweight"
+      ],
+      "journal": {
+        "en": "Each step lands like a small landslide."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Tie knockdown radius to compact tidal flat or rock; damp sand and wading absorb shock so stomp becomes mainly close-range intimidation (matches weakness on wet kelp). Cap stomp frequency by cardiac/aerobic load despite high pO₂.",
+        "fixes": [
+          "Tie knockdown radius to compact tidal flat or rock; damp sand and wading absorb shock so stomp becomes mainly close-range intimidation (matches weakness on wet kelp). Cap stomp frequency by cardiac/aerobic load despite high pO₂."
+        ],
+        "analogues": [
+          {
+            "organism": "African elephant — footfall-generated seismic signals detected at distance (O'Connell-Rodwell et al., elephant vibration communication, from memory, unverified); cassowary — lethal stomp/kick display.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "designer": 9,
+          "skeptic": 4
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "skeptic"
+        ]
+      }
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-18",
+    "by": [
+      "skeptic"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-18",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-18"
+    }
+  ],
+  "temperament": "Slow, deliberate, and socially complex; it moves with the patience of a landscape feature.",
+  "secrets": [
+    "Viewpoint: islet causeway",
+    "Fossil: tiny skull",
+    "Albinos",
+    "Nocturnal variant",
+    "Void-adapted (later)"
+  ],
+  "moments": [
+    "A slow, rhythmic sway that harmonizes with a distant Rondo's hum across the water.",
+    "The islet's causeway opening at spring low tide, revealing the Coloso's footprints in the wet tuff.",
+    "A gentle nudge that clears a path through the giant tree's roots."
+  ]
+}

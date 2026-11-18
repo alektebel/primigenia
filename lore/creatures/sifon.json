@@ -1,0 +1,310 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "sifon",
+  "name": {
+    "en": "Sifón"
+  },
+  "world": "primigenia",
+  "kind": "new",
+  "status": "draft",
+  "stage": "creature",
+  "niche": {
+    "habitat": "Shallows, Sea arches, Sunken cave entrance",
+    "diet": "Plankton, drifting carcass bits, salt",
+    "active": "Diurnal and nocturnal",
+    "predators": []
+  },
+  "body": "Babosa (aquatic adaptation: hydrostatic skin, siphon appendage)",
+  "chains": [
+    {
+      "id": "sifon.c1",
+      "trait": "Electroreceptive snout twitching toward faint currents",
+      "links": [
+        "Turbid volcanic water blocks sight and scent diffusion",
+        "Prey detection requires non-visual sensing",
+        "Electroreceptors evolved to detect muscle spasms of fish and drifters",
+        "Snout concentrates sensors to pinpoint targets"
+      ],
+      "roots": [
+        "F20",
+        "F16"
+      ],
+      "skill": {
+        "id": "sifon.electric_sense",
+        "name": {
+          "en": "Electric Sense"
+        },
+        "role": "Poke",
+        "effect": "Reveals hidden prey and ambushers within 8m; ignores visual camouflage.",
+        "numbers": {}
+      },
+      "weakness": "Loud electrical interference (lightning strikes nearby) disorients it; blind to visual traps.",
+      "observe": [
+        "Snout twitches toward moving fish, ignoring visible bait.",
+        "Creature ignores visual decoys but lunges at electrical pulses.",
+        "Scent trails in fog do not attract it."
+      ],
+      "journal": {
+        "en": "It hunts by the spark of life, not the shadow of prey."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "F20 explicitly favours non-visual prey detection in turbid volcanic shallows; ampullary electroreception detects the weak dipole fields of muscle activity in nearby fish and twitching carcass drifters. F16 limits aerial scent in fog but underwater chemoreception is separate; ignoring visual decoys fits a primary electrosensory channel. Lightning disorientation is a fair trade-off (transient strong EM noise).",
+        "fixes": [
+          "F20 explicitly favours non-visual prey detection in turbid volcanic shallows; ampullary electroreception detects the weak dipole fields of muscle activity in nearby fish and twitching carcass drifters. F16 limits aerial scent in fog but underwater chemoreception is separate; ignoring visual decoys fits a primary electrosensory channel. Lightning disorientation is a fair trade-off (transient strong EM noise)."
+        ],
+        "analogues": [
+          {
+            "organism": "Sand tiger shark and platypus (Ornithorhynchus anatinus): concentrated electroreceptors on the rostrum/bill map prey bioelectric fields (mechanism akin to ampullae of Lorenzini).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "mller_1990_electric"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "sifon.c2",
+      "trait": "Bioluminescent lure pulsing blue in dark caves",
+      "links": [
+        "Sunken cave and deep arches lack ambient light",
+        "Filter feeding is passive; active attraction needed for nutrients",
+        "Bioluminescent symbionts or organs evolve to attract prey",
+        "Pulsing mimicry confuses and draws curious organisms"
+      ],
+      "roots": [
+        "F9",
+        "F20"
+      ],
+      "skill": {
+        "id": "sifon.glow",
+        "name": {
+          "en": "Glow"
+        },
+        "role": "Basic",
+        "effect": "Illuminates dark areas; attracts curious prey to lure; +10% befriending in dark.",
+        "numbers": {}
+      },
+      "weakness": "Glow reveals position to predators; cannot turn off in combat.",
+      "observe": [
+        "Snout tip glows bright blue in the sunken cave.",
+        "Small fish swarm the glow before being suctioned.",
+        "Glow persists in total darkness of night."
+      ],
+      "journal": {
+        "en": "A star trapped in a throat, waiting for a mouth."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Frame the lure as drawing plankton swarms and curious small nekton into the inhalant current of the siphon (combined filter-feeder + opportunistic scavenger), not sole nutrition; allow dimming in combat or restrict bright pulsing to sunken-cave/night niches where F20 vision is already useless.",
+        "fixes": [
+          "Frame the lure as drawing plankton swarms and curious small nekton into the inhalant current of the siphon (combined filter-feeder + opportunistic scavenger), not sole nutrition; allow dimming in combat or restrict bright pulsing to sunken-cave/night niches where F20 vision is already useless."
+        ],
+        "analogues": [
+          {
+            "organism": "Deep-sea anglerfish (submersible photophore lures nekton); in shallows, bioluminescent syllid worms (Odontosyllis) use light to swarm mates—here repurposed as attraction (mechanism: luciferin–luciferase or symbiotic luminous bacteria, as in Hawaiian bobtail squid counter-illumination systems).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "haddock_2010_evolution"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "sifon.c3",
+      "trait": "Hydrostatic skin allowing hover-still in water column",
+      "links": [
+        "Gravity 1.05g makes supporting weight costly in water",
+        "Dense air implies high pressure environment, water is dense",
+        "Buoyancy control via gas bladders or stiffened hydrostatic skeleton",
+        "Energy conservation favors hovering over swimming"
+      ],
+      "roots": [
+        "F2",
+        "F4"
+      ],
+      "skill": {
+        "id": "sifon.float",
+        "name": {
+          "en": "Float"
+        },
+        "role": "Defence",
+        "effect": "Reduces stamina drain while stationary; allows slow vertical movement without noise.",
+        "numbers": {}
+      },
+      "weakness": "Rapid pressure changes (diving too fast) risk bladder rupture; vulnerable on land.",
+      "observe": [
+        "Creature hovers motionless, undisturbed by currents.",
+        "Changes depth slowly without kicking.",
+        "On beach, body sags and moves sluggishly."
+      ],
+      "journal": {
+        "en": "It weighs nothing in the deep, a ghost in the water."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Re-root in swim bladder ± gelatinous mesoglea (Babosa body plan), not F4; keep rapid ascent/descent bladder risk; on land collapse is already correct.",
+        "fixes": [
+          "Re-root in swim bladder ± gelatinous mesoglea (Babosa body plan), not F4; keep rapid ascent/descent bladder risk; on land collapse is already correct."
+        ],
+        "analogues": [
+          {
+            "organism": "Jellyfish (Aurelia) mesoglea hydrostatic skeleton; teleost swim bladder adjusted via gas secretion (physostomous fishes) for neutral hover.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "webb_1975_hydrodynamics"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "sifon.c4",
+      "trait": "Extendable proboscis sifting water for particulates",
+      "links": [
+        "Turbid water rich in suspended organic matter",
+        "Grab-and-bite inefficient for small particles",
+        "Proboscis evolves to filter large water volumes",
+        "High oxygen availability supports metabolic cost of pumping"
+      ],
+      "roots": [
+        "F20",
+        "F5"
+      ],
+      "skill": {
+        "id": "sifon.siphon",
+        "name": {
+          "en": "Siphon"
+        },
+        "role": "Basic",
+        "effect": "Drains stamina from nearby creatures; restores own stamina by feeding.",
+        "numbers": {}
+      },
+      "weakness": "Cannot bite; extremely vulnerable to attack while feeding; clogs with debris.",
+      "observe": [
+        "Proboscis extends fully; water churns and clears.",
+        "Creature consumes nothing solid; only liquid.",
+        "Stomach swells visibly after feeding."
+      ],
+      "journal": {
+        "en": "A living straw, drinking the sea's dust."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Turbid, organic-rich suspension (F20) rewards high-volume particulate feeding; elevated pO₂ (F5) pays pumping costs. Proboscis/siphon morphology matches name and scavenger-filter niche; vulnerability while extended is realistic.",
+        "fixes": [
+          "Turbid, organic-rich suspension (F20) rewards high-volume particulate feeding; elevated pO₂ (F5) pays pumping costs. Proboscis/siphon morphology matches name and scavenger-filter niche; vulnerability while extended is realistic."
+        ],
+        "analogues": [
+          {
+            "organism": "Sipunculid peanut worms and ascidian tunicates: extendable tentacles/siphons filter suspended matter; baleen whales scale the same principle.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "Rondo",
+      "kind": "cousin",
+      "note": "(council kind 'Scavenger') Rondo carcasses drift ashore and sink; Sifón scavenges them, cleaning the coast. Rondo herds ignore Sifón unless distressed."
+    },
+    {
+      "with": "Coloso",
+      "kind": "cousin",
+      "note": "(council kind 'Cleaner') Sifón often cleans parasites from Coloso's flanks in shallow water near the islet causeway."
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-18",
+    "by": [
+      "naturalist/qwen"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-18",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-18"
+    }
+  ],
+  "temperament": "Docile, skittish, slow on land",
+  "secrets": [
+    "Ink jet",
+    "Sunken cave"
+  ],
+  "moments": [
+    "In the sunken cave, a Sifón pulses with cold blue light, guiding lost fish into its throat as the tide turns and water swirls through the lava tube."
+  ],
+  "journal": [
+    {
+      "en": "The sea hides its secrets in the dark. This one drinks by taste and spark."
+    },
+    {
+      "en": "It brings ink and bone from the deep; a gift from the water."
+    }
+  ]
+}

@@ -64,7 +64,22 @@
 
 | Creature | Kind | Status | Chains | Verdicts |
 |---|---|---|---|---|
-| [Ecolumbre](ecolumbre.md) | native | draft | 4 | 1 fixable, 3 plausible |
+| [Acechalunas](acechalunas.md) | native | draft | 4 | 4 plausible |
+| [Albinos](albinos.md) | native | draft | 5 | 1 fixable, 4 plausible |
+| [Alula](alula.md) | new | draft | 4 | 2 fixable, 2 plausible |
+| [Babosa](babosa.md) | native | draft | 4 | 4 plausible |
+| [Coloso](coloso.md) | native | draft | 4 | 1 fixable, 3 plausible |
+| [Ecolumbre](ecolumbre.md) | native | draft | 9 | 3 fixable, 6 plausible |
+| [El Resoplido](el_resoplido.md) | new | draft | 4 | 2 fixable, 2 plausible |
+| [Espinodo](espinodo.md) | native | draft | 5 | 5 plausible |
+| [Garfio](garfio.md) | native | draft | 4 | 4 plausible |
+| [Merodeador](merodeador.md) | native | draft | 4 | 4 plausible |
+| [The player's lineage and cousins](player_lineage.md) | native | draft | 4 | 3 fixable, 1 plausible |
+| [Rondo](rondo.md) | native | draft | 4 | 4 plausible |
+| [Sifón](sifon.md) | new | draft | 4 | 2 fixable, 2 plausible |
+| [Sosa](sosa.md) | new | draft | 4 | 3 fixable, 1 plausible |
+| [Zanco](zanco.md) | native | draft | 4 | 4 plausible |
+| [Zancuda](zancuda.md) | native | draft | 4 | 4 plausible |
 
 ## Silicon cryogenic world (`silicon_cryo`)
 

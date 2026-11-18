@@ -42,7 +42,7 @@ Trait ← Continuous gravitational loading ← Trabecular bone reinforcement ←
 - **Plausibility:** plausible (judge astrobio/autoloop-2026-11-18, 2026-11-18)
   - scores: astrobio 10, designer 8, physicist 9
   - Analogue: Homo sapiens trabecular bone remodeling under habitual loading (Wolff’s law); terrestrial bipedalism: as named by the judge; no mechanism or reference recorded
-  - Analogue: real biology behind this chain: see the cited works; chain wording is the council's own (Frost 2003 [unverified])
+  - Analogue: real biology behind this chain: see the cited works; chain wording is the council's own
 - **Chain provenance:** council run `autoloop-2026-11-18`; by naturalist, physicist
 
 ### at_humans.c2: Broadband vocal tract for mid-frequency speech
@@ -103,3 +103,4 @@ council run `autoloop-2026-11-18`; by naturalist, physicist
 ## Changelog
 
 - 2026-11-18 import_got: imported from council run autoloop-2026-11-18
+- 2026-11-18 autoloop: removed rejected references from analogues

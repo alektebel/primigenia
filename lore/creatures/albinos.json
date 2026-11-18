@@ -1,0 +1,340 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "albinos",
+  "name": {
+    "en": "Albinos",
+    "es": "Albinos"
+  },
+  "world": "primigenia",
+  "kind": "native",
+  "status": "draft",
+  "stage": "creature",
+  "niche": {
+    "habitat": "Restricted to shaded refuges, dense forest, dawn fog, and cave entrances.",
+    "diet": "Same as base species, but avoids toxic red-veined plants and raw sulfur.",
+    "active": "Crepuscular and nocturnal; avoids midday sun and wind.",
+    "predators": [
+      "Garfio",
+      "Espinodo",
+      "Sunburn",
+      "Dehydration"
+    ],
+    "prey": [
+      "Base species prey",
+      "Soft fruits",
+      "Carrion"
+    ]
+  },
+  "body": "Lacking cuticular detox enzymes and heavy melanin, translucent pink hide and pale fur offer no UV protection or chemical shielding, forcing reliance on shaded microclimates. Large, sensitive eyes compensate for poor contrast vision in low light, while rapid heat exchange demands constant thermoregulation.",
+  "chains": [
+    {
+      "id": "albinos.c1",
+      "trait": "Translucent pink hide; sunburns in open sun.",
+      "links": [
+        "Melanin mutation blocks UV absorption",
+        "High UV at altitude causes sunburn and cancer",
+        "Survival restricted to shade and caves"
+      ],
+      "roots": [
+        "F14",
+        "F25"
+      ],
+      "skill": {
+        "id": "albinos.shade_dash",
+        "name": {
+          "en": "Shade Dash"
+        },
+        "role": "Defence",
+        "effect": "Flee to nearest shadow; gain 20% evasion for 5s.",
+        "numbers": {}
+      },
+      "weakness": "Sunlight deals damage over time; cannot fight in open.",
+      "observe": [
+        "Pink skin and red eyes",
+        "Hiding under rock overhangs",
+        "Trembling when exposed"
+      ],
+      "journal": {
+        "en": "The sun attacks him. He hides in the stone's shadow."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "analogues": [
+          {
+            "organism": "Oculocutaneous albinism (OCA1–OCA4) in humans and captive albino mammals: absent epidermal melanin → high UV-B damage and skin cancer (Kromberg & Manga, 2008, Pigment Cell & Melanoma Research); on Primigenia F14 adds UV hazard above ~1,750 m (1.4× at 2,000 m) and honest UV stress in F25 plants.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 9,
+          "designer": 8,
+          "physicist": 7
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "wildcard"
+        ]
+      }
+    },
+    {
+      "id": "albinos.c2",
+      "trait": "Large, sensitive eyes; poor contrast vision.",
+      "links": [
+        "No pigment in retina scatters light",
+        "High sensitivity but low contrast resolution",
+        "Relies on glints and movement over shape"
+      ],
+      "roots": [
+        "F14",
+        "F17"
+      ],
+      "skill": {
+        "id": "albinos.glint_sight",
+        "name": {
+          "en": "Glint Sight"
+        },
+        "role": "Poke",
+        "effect": "Reveal hidden metallic parts or water sources; +15% accuracy on glinting targets.",
+        "numbers": {}
+      },
+      "weakness": "Blind to slow, dark prey; misses camouflaged foes.",
+      "observe": [
+        "Wide, watery eyes",
+        "Tracking reflections on water",
+        "Ignoring dark prey"
+      ],
+      "journal": {
+        "en": "He sees the glint but misses the shadow. His world is bright and blurry."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Attribute ‘large eyes’ mainly to a nocturnal/cave-edge niche (fits rare albino + night-variant canon), not as a direct genetic pleiotropy of every albino.",
+        "fixes": [
+          "Attribute ‘large eyes’ mainly to a nocturnal/cave-edge niche (fits rare albino + night-variant canon), not as a direct genetic pleiotropy of every albino."
+        ],
+        "analogues": [
+          {
+            "organism": "Albino mammals and humans: foveal hypoplasia, abnormal chiasmatic routing, photophobia, nystagmus → high luminance sensitivity, poor acuity and contrast (Creel et al., 1974, Brain Research; Summers et al., 1988, Vision Research); long twilight F3/F17 supports glint/motion over form.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "designer": 9,
+          "physicist": 9
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "wildcard"
+        ]
+      }
+    },
+    {
+      "id": "albinos.c3",
+      "trait": "Pale skin; lacks cuticular detox enzymes.",
+      "links": [
+        "Tyrosinase mutation halts phenoloxidase, thinning the epidermal barrier.",
+        "Unpigmented skin absorbs phototoxic furanocoumarins from F25 red-veined plants.",
+        "Thin barrier lets F23 heavy metals and alkaloids hit nerves faster."
+      ],
+      "roots": [
+        "F14",
+        "F25",
+        "F26",
+        "F23"
+      ],
+      "skill": {
+        "id": "albinos.toxin_vomit",
+        "name": {
+          "en": "Toxin Vomit"
+        },
+        "role": "Engage",
+        "effect": "Force-regurgitate acidic bile; damages self slightly, poisons target.",
+        "numbers": {}
+      },
+      "weakness": "Dies quickly if eats toxic plants; avoids mineral licks with poisons.",
+      "observe": [
+        "Pale hide",
+        "Avoiding red-veined plants",
+        "Spitting green slime near vents"
+      ],
+      "journal": {
+        "en": "His blood holds no shield. He spits the poison he cannot keep."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Replace ‘herd rejects’ with selfish-herd geometry: conspicuos individual stays at the herd fringe or center-by-need; mates tolerate it but predators key on white first—Desperate Bleat is alarm/dilution, not social ostracism.",
+        "fixes": [
+          "Replace ‘herd rejects’ with selfish-herd geometry: conspicuos individual stays at the herd fringe or center-by-need; mates tolerate it but predators key on white first—Desperate Bleat is alarm/dilution, not social ostracism."
+        ],
+        "analogues": [
+          {
+            "organism": "Conspicuous prey suffer higher predation (Tinbergen’s conspicuousness experiments; general ‘oddity effect’ in fish schools, Landeau & Dill, 1995, Animal Behaviour); leucistic white-tailed deer and other pale morphs are predator-visible in closed habitat—unverified for explicit ‘shunning’ (e.g. albino gorilla ‘Snowflake’ was integrated in his troop, Sabater Pi et al., 1967, from memory, unverified).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 7,
+          "designer": 7,
+          "physicist": 5
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "wildcard"
+        ]
+      }
+    },
+    {
+      "id": "albinos.c4",
+      "trait": "Pale fur; rapid heat exchange.",
+      "links": [
+        "Melanin-free guard hairs reflect solar IR, preventing passive basking.",
+        "High-conductance coat and thin fat layer let core temp track ambient fast.",
+        "Cold fog (F8) and shade trigger thermoregulatory stress, spiking adrenaline."
+      ],
+      "roots": [
+        "F14",
+        "F8",
+        "F15"
+      ],
+      "skill": {
+        "id": "albinos.thermal_surge",
+        "name": {
+          "en": "Thermal Surge"
+        },
+        "role": "Basic",
+        "effect": "Sprint for 2s after brief sun exposure; gains 20% speed but loses heat fast in fog/shade.",
+        "numbers": {}
+      },
+      "weakness": "Sluggish in fog/shade (F8); speed fades if not in direct light.",
+      "observe": [
+        "Basking on warm rocks",
+        "Fast movement then hiding",
+        "Shivering in the mist"
+      ],
+      "journal": {
+        "en": "He burns daylight into a sprint, but the fog steals his heat."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "For aerobic herd homeotherms on F15 (mean ~14 °C), pale fur reflects solar gain—basking should not reliably add speed. Reframe Thermal Surge as brief stress/adrenal sprint after edge-of-sun exposure, or restrict to a thin-coated variant with high conductance that warms quickly in sun but loses heat fast in fog/shade (F8); drop ‘steam from skin’ unless ectotherm-heterotherm lineage.",
+        "fixes": [
+          "For aerobic herd homeotherms on F15 (mean ~14 °C), pale fur reflects solar gain—basking should not reliably add speed. Reframe Thermal Surge as brief stress/adrenal sprint after edge-of-sun exposure, or restrict to a thin-coated variant with high conductance that warms quickly in sun but loses heat fast in fog/shade (F8); drop ‘steam from skin’ unless ectotherm-heterotherm lineage."
+        ],
+        "analogues": [
+          {
+            "organism": "Color–radiation tradeoffs in desert and montane mammals (e.g. dark vs pale morphs in Peromyscus, Hayssen, 2010, Journal of Thermal Biology—direction depends on fur depth and behavior); albino surface mammals rarely show ‘fast solar warming’ as an advantage—plausible as gameplay with this physics fix.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 5,
+          "designer": 9,
+          "physicist": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "wildcard"
+        ]
+      }
+    },
+    {
+      "id": "albinos.c5",
+      "trait": "Distinctive white coat; outcast from herd.",
+      "links": [
+        "White coat breaks herd camouflage",
+        "Predators spot him first",
+        "Relies on herd defense; weak when isolated"
+      ],
+      "roots": [
+        "F14"
+      ],
+      "skill": {
+        "id": "albinos.desperate_bleat",
+        "name": {
+          "en": "Desperate Bleat"
+        },
+        "role": "Control",
+        "effect": "Summons nearby herd members to aggro; costs 30% health.",
+        "numbers": {}
+      },
+      "weakness": "Isolation makes him weak; if herd dies, he flees or dies.",
+      "observe": [
+        "White coat standing out",
+        "Clinging to herd edge",
+        "Bleats when threatened"
+      ],
+      "journal": {
+        "en": "The herd rejects his white coat. He bleats to call them back."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Replace ‘herd rejects’ with selfish-herd geometry: conspicuos individual stays at the herd fringe or center-by-need; mates tolerate it but predators key on white first—Desperate Bleat is alarm/dilution, not social ostracism.",
+        "fixes": [
+          "Replace ‘herd rejects’ with selfish-herd geometry: conspicuos individual stays at the herd fringe or center-by-need; mates tolerate it but predators key on white first—Desperate Bleat is alarm/dilution, not social ostracism."
+        ],
+        "analogues": [
+          {
+            "organism": "Conspicuous prey suffer higher predation (Tinbergen’s conspicuousness experiments; general ‘oddity effect’ in fish schools, Landeau & Dill, 1995, Animal Behaviour); leucistic white-tailed deer and other pale morphs are predator-visible in closed habitat—unverified for explicit ‘shunning’ (e.g. albino gorilla ‘Snowflake’ was integrated in his troop, Sabater Pi et al., 1967, from memory, unverified).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 7,
+          "designer": 7,
+          "physicist": 5
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "wildcard"
+        ]
+      }
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-18",
+    "by": [
+      "wildcard"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-18",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-18"
+    }
+  ],
+  "aliases": [
+    "albino"
+  ],
+  "temperament": "Isolated and cautious, often shunned by herds but occasionally tolerated for unique sensory traits.",
+  "secrets": [
+    "Albinos themselves",
+    "Ancient fossil",
+    "Hidden cave",
+    "Nocturnal creature"
+  ],
+  "moments": [
+    "The herd parts at the tree line; the albino lingers in the shadow of a dyke. Sunlight catches its pink hide, and it flinches, retreating to the damp tuff where the fog clings longest."
+  ]
+}

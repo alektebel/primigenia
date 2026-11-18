@@ -1,0 +1,309 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "alula",
+  "name": {
+    "en": "Alula"
+  },
+  "world": "primigenia",
+  "kind": "new",
+  "status": "draft",
+  "stage": "creature",
+  "niche": {
+    "habitat": "Alpine slopes, Rock spire, Giant tree canopy, Sea arches",
+    "diet": "Fruit, small prey, insects",
+    "active": "Diurnal",
+    "predators": []
+  },
+  "body": "Merodeador (winged adaptation: patagium, hooked talons)",
+  "chains": [
+    {
+      "id": "alula.c1",
+      "trait": "Patagial membrane stretching between limbs on leaps",
+      "links": [
+        "Dense air (1.6 bar) creates high drag and low terminal velocity",
+        "Falls are survivable; gliding is energetically cheap",
+        "Membranes evolve to convert falls into forward travel",
+        "Gliding reduces energy cost of traversing steep terrain"
+      ],
+      "roots": [
+        "F4"
+      ],
+      "skill": {
+        "id": "alula.glide",
+        "name": {
+          "en": "Glide"
+        },
+        "role": "Basic",
+        "effect": "Leaps from height and glides; covers distance without stamina cost; allows escape from ground chases.",
+        "numbers": {}
+      },
+      "weakness": "Ground movement is slow; gales and turbulence can ground it or blow it off course.",
+      "observe": [
+        "Leaps from cliff, stretches skin between limbs, and glides silently.",
+        "Landing is soft and controlled; no heavy thud.",
+        "Creature perches on high spires and drops to food."
+      ],
+      "journal": {
+        "en": "It falls only when it chooses, riding the heavy air."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "F4 matches textbook glider physics on Primigenia: higher drag lowers terminal velocity (~25% per canon), making parachuting/gliding safer and cheaper than on Earth; steep andesite terrain (F7, F9) rewards gap-crossing without powered flight. Sprint cost and short chases fit Merodeador ground slowness.",
+        "fixes": [
+          "F4 matches textbook glider physics on Primigenia: higher drag lowers terminal velocity (~25% per canon), making parachuting/gliding safer and cheaper than on Earth; steep andesite terrain (F7, F9) rewards gap-crossing without powered flight. Sprint cost and short chases fit Merodeador ground slowness."
+        ],
+        "analogues": [
+          {
+            "organism": "Malayan colugo (Galeopterus variegatus) and sugar glider (Petaurus): interlimb patagium converts height into horizontal travel.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "pennycuick_2008_modelling"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "alula.c2",
+      "trait": "UV-reflective plumage shimmering blue-white in noon sun",
+      "links": [
+        "High slopes have 1.4× UV radiation hazard",
+        "DNA damage risk selects for UV protection",
+        "Reflective pigments or structural coloration evolve to scatter UV",
+        "Bright appearance may also signal fitness or startle prey"
+      ],
+      "roots": [
+        "F14"
+      ],
+      "skill": {
+        "id": "alula.uv_shield",
+        "name": {
+          "en": "UV Shield"
+        },
+        "role": "Passive",
+        "effect": "Immune to UV damage on high slopes; reduces stamina drain in bright sun.",
+        "numbers": {}
+      },
+      "weakness": "Highly visible to predators in open; overheat risk if sheltered too long.",
+      "observe": [
+        "Plumage reflects sunlight like a mirror in midday.",
+        "Creature active only in bright light; avoids shade.",
+        "No sunburn marks on skin or feathers."
+      ],
+      "journal": {
+        "en": "A mirror for the burning sky."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Call it patagial and dorsal keratinized filoplumes or UV-scattering nanostructures in skin (not full avian plumage), unless lineage is explicitly ex-avian founder from F27; keep stamina benefit on ridges, visibility cost in meadows.",
+        "fixes": [
+          "Call it patagial and dorsal keratinized filoplumes or UV-scattering nanostructures in skin (not full avian plumage), unless lineage is explicitly ex-avian founder from F27; keep stamina benefit on ridges, visibility cost in meadows."
+        ],
+        "analogues": [
+          {
+            "organism": "Budgerigar and blue tits: structural coloration in feather barbs manipulates UV reflectance; analogous UV scatter in butterfly wings (Morpho).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "cuthill_2000_ultraviolet"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "alula.c3",
+      "trait": "Hooked talons locking into bark immovable in wind",
+      "links": [
+        "Wind force per m/s is 1.6× Earth's; gales push light creatures",
+        "Gliders need stable perching to avoid being blown away",
+        "Hooks evolve to grip uneven rock and bark",
+        "Allows resting and hunting from fixed vantage points"
+      ],
+      "roots": [
+        "F19"
+      ],
+      "skill": {
+        "id": "alula.perch",
+        "name": {
+          "en": "Perch"
+        },
+        "role": "Defence",
+        "effect": "Attaches to cliff or tree; immune to wind and push effects; can ambush from above.",
+        "numbers": {}
+      },
+      "weakness": "Cannot move while perched; slow to detach if attacked.",
+      "observe": [
+        "Claws dig into rock or bark; creature immovable in strong wind.",
+        "Head turns while body remains fixed.",
+        "Gale howls, but creature sleeps on spire."
+      ],
+      "journal": {
+        "en": "The gale screams; the creature sleeps."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "F19 (1.6× wind force per m/s) favours low-profile gripping and heavy claw purchase on dyke rock and giant-tree bark (F21). Gliders that sleep on spires need static perches; trade-off (immobile while locked) is realistic.",
+        "fixes": [
+          "F19 (1.6× wind force per m/s) favours low-profile gripping and heavy claw purchase on dyke rock and giant-tree bark (F21). Gliders that sleep on spires need static perches; trade-off (immobile while locked) is realistic."
+        ],
+        "analogues": [
+          {
+            "organism": "Woodpecker zygodactyl feet and raptor flexor tendon locking; sloths hooking arboreal substrates in wind.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "alula.c4",
+      "trait": "Curved beak snatching fruit mid-air from Rondo herds",
+      "links": [
+        "East meadows have fruit abundance; Rondo herds love fruit",
+        "Competition for fruit drives niche specialization",
+        "Alula evolves aerial raiding to avoid ground competition",
+        "Beak shape optimized for tearing fruit and small prey"
+      ],
+      "roots": [
+        "F18",
+        "F26"
+      ],
+      "skill": {
+        "id": "alula.steal",
+        "name": {
+          "en": "Steal"
+        },
+        "role": "Engage",
+        "effect": "Snatches fruit from Rondo or Zanco herds; interrupts their eating; +15% intimidation.",
+        "numbers": {}
+      },
+      "weakness": "Rondo spits can hit glider; Garfio may raid Alula's cache.",
+      "observe": [
+        "Alula dives, snatches fruit from Rondo's mouth, and rises.",
+        "Rondo herds panic and spit at the sky.",
+        "Alula caches stolen fruit in moss."
+      ],
+      "journal": {
+        "en": "It steals fruit from the herd with a laugh in its wings."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Steal from low branches, moss caches, or fruit Rondo holds at browse height during pauses; use glide-dive + short flap burst (Engage) rather than chase; Rondo spit weakness stays.",
+        "fixes": [
+          "Steal from low branches, moss caches, or fruit Rondo holds at browse height during pauses; use glide-dive + short flap burst (Engage) rather than chase; Rondo spit weakness stays."
+        ],
+        "analogues": [
+          {
+            "organism": "Skua kleptoparasitism; frugivorous bats snatch fruit in canopy—not typically from mouths of running ungulates.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "Garfio",
+      "kind": "cousin",
+      "note": "(council kind 'Predator/Thief') Garfio raids nests; Alula steals from Garfio's mouth using speed. Garfio finds Alula too fast to catch consistently."
+    },
+    {
+      "with": "Rondo",
+      "kind": "cousin",
+      "note": "(council kind 'Competitor') Alula steals fruit from Rondo herds; Rondo cannot reach. Rondo herds view Alula as a nuisance."
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-18",
+    "by": [
+      "naturalist/qwen"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-18",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-18"
+    },
+    {
+      "date": "2026-11-18",
+      "who": "autoloop",
+      "what": "removed rejected references from analogues"
+    }
+  ],
+  "temperament": "Opportunistic, aggressive raider, mischievous",
+  "secrets": [
+    "Viewpoint",
+    "Thrown claws"
+  ],
+  "moments": [
+    "Silhouetted against the evening star, an Alula drops from the rock spire, snatches a Rondo's fruit mid-air, and vanishes into the mist before the herd can spit."
+  ],
+  "journal": [
+    {
+      "en": "The wind holds it up. It steals fruit from the herd with a laugh in its wings."
+    },
+    {
+      "en": "It sees the world from the spire; a secret of height."
+    }
+  ]
+}

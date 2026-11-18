@@ -1,0 +1,269 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "zancuda",
+  "name": {
+    "en": "Zancuda"
+  },
+  "world": "primigenia",
+  "kind": "native",
+  "status": "draft",
+  "stage": "creature",
+  "niche": {
+    "habitat": "Tidal flats, shallow sea edges, and fog-damp meadow slopes.",
+    "diet": "Aquatic greens, soft grasses, and mineral-rich algae.",
+    "active": "Diurnal; peaks at dawn fog and shifting tides.",
+    "predators": [
+      "Garfio",
+      "Espinodo",
+      "Avian scavengers"
+    ],
+    "prey": [
+      "Aquatic plants",
+      "Soft shoots",
+      "Algae"
+    ]
+  },
+  "body": "Stilt-wading legs with splayed toes distribute weight across soft tidal mud, preventing sinkage in 1.6-bar dense air. A braced, flexible neck and spear-strike beak allow rapid, low-energy plucking without torso bending, conserving stamina for quick escapes.",
+  "chains": [
+    {
+      "id": "zancuda.c1",
+      "trait": "Stilt-wading legs with splayed toes",
+      "links": [
+        "Tides expose mudflats twice daily",
+        "Long legs keep body dry",
+        "Splayed toes spread weight on soft mud"
+      ],
+      "roots": [
+        "F13",
+        "F20"
+      ],
+      "skill": {
+        "id": "zancuda.stilt_wade",
+        "name": {
+          "en": "Stilt Wade"
+        },
+        "role": "Basic",
+        "effect": "Crosses 0.6m water or mud at 2m/s with no stamina drain.",
+        "numbers": {}
+      },
+      "weakness": "Spring tides flood the flats; catch it at high water.",
+      "observe": [
+        "three-toe prints",
+        "mud line on legs",
+        "feeding at low tide"
+      ],
+      "journal": {
+        "en": "It keeps the tide's schedule."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Semi-diurnal shelf tides (F13), not a strict twice-daily mudflat clock on a 26 h day—tie exposure to tide phase in UI. Cap Stilt Wade at ~1.2–1.5 m/s in knee-deep mud or soft peat; reserve 2 m/s for firm sand/causeway (F4: dense air makes fast wading costlier than the skill implies).",
+        "fixes": [
+          "Semi-diurnal shelf tides (F13), not a strict twice-daily mudflat clock on a 26 h day—tie exposure to tide phase in UI. Cap Stilt Wade at ~1.2–1.5 m/s in knee-deep mud or soft peat; reserve 2 m/s for firm sand/causeway (F4: dense air makes fast wading costlier than the skill implies)."
+        ],
+        "analogues": [
+          {
+            "organism": "Black-winged stilt (Himantopus himantopus) and American flamingo (Phoenicopterus ruber): long legs for shallow inundation, broad-footed weight spreading on soft substrate (standard wading-bird limb ecology; textbook-level, unverified author/year).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "designer": 9
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "skeptic"
+        ]
+      }
+    },
+    {
+      "id": "zancuda.c2",
+      "trait": "Long, flexible neck for surface viewing",
+      "links": [
+        "Shallows are turbid, visibility under 10m",
+        "Eyes underwater are nearly useless",
+        "Long neck lifts eyes above the surface"
+      ],
+      "roots": [
+        "F20"
+      ],
+      "skill": {
+        "id": "zancuda.periscope",
+        "name": {
+          "en": "Periscope"
+        },
+        "role": "Passive",
+        "effect": "See over reeds and water to 60m; +20% detect hidden creatures.",
+        "numbers": {}
+      },
+      "weakness": "Wind pushes the neck; gusts above 8m/s force it down for 5s.",
+      "observe": [
+        "neck above reeds",
+        "slow scan",
+        "head tilt"
+      ],
+      "journal": {
+        "en": "It watches the water from above the water."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "analogues": [
+          {
+            "organism": "Anhinga / darter (Anhinga spp.): body submerged in turbid water, neck as periscope for surface vision and aim (Johnsgard, C. A. 1993, *Cormorants, Darters, and Pelicans of the World*—from memory, unverified). Wind weakness matches F19 (1.6× wind load on a long lever).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 9,
+          "designer": 8
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "skeptic"
+        ]
+      }
+    },
+    {
+      "id": "zancuda.c3",
+      "trait": "Spear-strike beak and neck",
+      "links": [
+        "Fish hide in turbid water",
+        "A strike from above needs reach, not pursuit",
+        "A miss tangles the long neck"
+      ],
+      "roots": [
+        "F20"
+      ],
+      "skill": {
+        "id": "zancuda.spear",
+        "name": {
+          "en": "Spear"
+        },
+        "role": "Engage",
+        "effect": "10 dmg, 2.5m reach, 1.5s cooldown; a miss costs 2s.",
+        "numbers": {}
+      },
+      "weakness": "Bait two misses; the neck tangles and it cannot strike for 4s.",
+      "observe": [
+        "head cocked",
+        "ripple",
+        "stab"
+      ],
+      "journal": {
+        "en": "It fishes by stabbing the cloud."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "In F20 turbidity, prey must be within ~0.5 m of the surface (ripples, fin breaks); subsurface fish are strike targets only after Periscope cues, not deep pursuit. Keep miss/recoil penalties—they match real heron strike overshoot and recovery lag.",
+        "fixes": [
+          "In F20 turbidity, prey must be within ~0.5 m of the surface (ripples, fin breaks); subsurface fish are strike targets only after Periscope cues, not deep pursuit. Keep miss/recoil penalties—they match real heron strike overshoot and recovery lag."
+        ],
+        "analogues": [
+          {
+            "organism": "Great blue heron (Ardea herodias) and goliath heron (Ardea goliath): downward spear-strike on sighted or rippling prey in murky shallows (Kushlan & Hancock 2005, *Herons*—from memory, unverified).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "designer": 8
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "skeptic"
+        ]
+      }
+    },
+    {
+      "id": "zancuda.c4",
+      "trait": "Muscular, braced neck structure",
+      "links": [
+        "Drag on neck selects for bracing",
+        "High drag increases structural stress",
+        "1.6 bar air density loads neck structure"
+      ],
+      "roots": [
+        "F4"
+      ],
+      "skill": {
+        "id": "zancuda.neck_strike",
+        "name": {
+          "en": "Neck Strike"
+        },
+        "role": "Control",
+        "effect": "Range grab; pull enemy close or break their stance.",
+        "numbers": {}
+      },
+      "weakness": "Neck vulnerable to direct bite if caught.",
+      "observe": [
+        "neck muscles rippling under skin",
+        "feeding on high foliage",
+        "S-curve neck locking during strike"
+      ],
+      "journal": {
+        "en": "A heron of stone and sinew. The neck is a whip. High wind breaks weak necks; he stands."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Split selection story: S-curve locking and myofascial bracing primarily resist F19 gusts and strike recoil; 1.6 bar air (F4) raises aerodynamic drag on an extended neck but is secondary to wind on exposed coast. Drop or relocate 'high foliage feeding' journal beat—or make it rare dry-season browse so the neck isn't both heron-periscope and giraffe-browser in one chain.",
+        "fixes": [
+          "Split selection story: S-curve locking and myofascial bracing primarily resist F19 gusts and strike recoil; 1.6 bar air (F4) raises aerodynamic drag on an extended neck but is secondary to wind on exposed coast. Drop or relocate 'high foliage feeding' journal beat—or make it rare dry-season browse so the neck isn't both heron-periscope and giraffe-browser in one chain."
+        ],
+        "analogues": [
+          {
+            "organism": "Heron cervical musculature and double S-curve lock during strike (Bout, R. G. 1984, neck myology in birds—from memory, unverified); convergent long-neck support also in giraffe but for browsing, not wading (different mechanism).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 7,
+          "designer": 7
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "wildcard"
+        ]
+      }
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-18",
+    "by": [
+      "skeptic",
+      "wildcard"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-18",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-18"
+    }
+  ],
+  "temperament": "Timid herd-dweller that uses height and early warning to avoid confrontation.",
+  "secrets": [
+    "Ancient stilt-walker fossil",
+    "High cliff viewpoint",
+    "Hidden cave entrance"
+  ],
+  "moments": [
+    "Dawn mist parts; the herd lifts its necks in unison, scanning the fog line. A sudden stampede kicks up salt spray as a shadow crosses the causeway."
+  ]
+}

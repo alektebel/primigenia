@@ -3810,7 +3810,8 @@
     "DOI": "10.1055/s-2008-1025854",
     "ISBN": "",
     "x-status": "unverified",
-    "x-note": "cited by a council model from memory; not yet checked"
+    "x-note": "ambiguous: closest Crossref hit is 'Bone “mass” and the “mechanostat”: A proposal' (Frost, 1987, doi 10.1002/ar.1092190104), title similarity 0.68, author match, year ok",
+    "x-checked": "2026-11-18"
   },
   {
     "id": "schwartz_2006_water",
@@ -3840,8 +3841,8 @@
     "id": "frost_2003_wolffs",
     "type": "article-journal",
     "title": "Wolff’s Law and bone structure: A mechanical perspective",
-    "x-status": "unverified",
-    "x-note": "cited by a council model from memory; not yet checked",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Alterations of the Subchondral Bone in Osteoarthritis: Complying with Wolff’s Law' (Zhang, 2022) title similarity 0.41",
     "author": [
       {
         "family": "Frost",
@@ -3855,7 +3856,8 @@
         ]
       ]
     },
-    "container-title": "Journal of Orthopaedic Research"
+    "container-title": "Journal of Orthopaedic Research",
+    "x-checked": "2026-11-18"
   },
   {
     "id": "kieft_2009_perchlorate",
@@ -3899,6 +3901,444 @@
       ]
     },
     "container-title": "W.H. Freeman",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "bishop_1999_evolutionary",
+    "type": "article-journal",
+    "title": "The evolutionary ecology of caves",
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked",
+    "author": [
+      {
+        "family": "Bishop",
+        "given": "J.O."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1999
+        ]
+      ]
+    },
+    "container-title": "Journal of Arachnology"
+  },
+  {
+    "id": "brager_2014_acoustic",
+    "type": "article-journal",
+    "title": "Acoustic jamming and synchronization in bat echolocation",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Decision letter for \"Discrimination of object information by bat echolocation deciphered from acoustic simulations\"' (, 2023) title similarity 0.38",
+    "author": [
+      {
+        "family": "Bräger",
+        "given": "D."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2014
+        ]
+      ]
+    },
+    "container-title": "Behavioral Ecology and Sociobiology",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "haddock_2010_diversity",
+    "type": "article-journal",
+    "title": "Diversity and distribution of bioluminescence in marine and freshwater animals",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Systematic Distribution of Bioluminescence in Marine Animals: A Species-Level Inventory' (Claes, 2024) title similarity 0.74",
+    "author": [
+      {
+        "family": "Haddock",
+        "given": "S. H."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2010
+        ]
+      ]
+    },
+    "container-title": "Biological Bulletin",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "hendrycks_2009_cave",
+    "type": "article-journal",
+    "title": "Cave ecology: the biology of life in permanent darkness",
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked",
+    "author": [
+      {
+        "family": "Hendrycks",
+        "given": "P.M."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2009
+        ]
+      ]
+    },
+    "container-title": "Journal of Cave and Karst Studies"
+  },
+  {
+    "id": "levin_2009_tidal",
+    "type": "article-journal",
+    "title": "Tidal periodicity in marine reproduction and larval dispersal",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Connectivity in marine ecosystems: the importance of larval and spore dispersal' (Dibacco, 2006) title similarity 0.53",
+    "author": [
+      {
+        "family": "Levin",
+        "given": "L. A."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2009
+        ]
+      ]
+    },
+    "container-title": "Marine Ecology Progress Series",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "lloyd_2014_microbial",
+    "type": "article-journal",
+    "title": "Microbial life deep below the surface",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is '6. Quantifying microbes in the marine subseafloor: some notes of caution' (Lloyd, 2014, doi 10.1515/9783110300130.121), title similarity 0.35, author match, year ok",
+    "author": [
+      {
+        "family": "Lloyd",
+        "given": "K.G."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2014
+        ]
+      ]
+    },
+    "container-title": "Microbiology Spectrum",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "schwarz_2013_salt",
+    "type": "article-journal",
+    "title": "Salt glands in marine iguanas: morphology and function",
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked",
+    "author": [
+      {
+        "family": "Schwarz",
+        "given": "M. G."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2013
+        ]
+      ]
+    },
+    "container-title": "Journal of Experimental Biology"
+  },
+  {
+    "id": "vega_2021_mineral",
+    "type": "article-journal",
+    "title": "Mineral-assisted molting in high-UV insular reptiles",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Review for \"Elevated human impact on islands increases the introduction and extinction status of native insular reptiles\"' (, 2023) title similarity 0.42",
+    "author": [
+      {
+        "family": "Vega",
+        "given": "M."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2021
+        ]
+      ]
+    },
+    "container-title": "Ecology Letters",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "ward_2020_acoustic",
+    "type": "article-journal",
+    "title": "Acoustic-optical coupling in social cave fauna",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Mousterian fauna from Dederiyeh Cave and comparisons with Fauna from Umm El Tlel and Douara Cave' (Griggo, 2004) title similarity 0.30",
+    "author": [
+      {
+        "family": "Ward",
+        "given": "L."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2020
+        ]
+      ]
+    },
+    "container-title": "Journal of Experimental Biology",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "woolley_2008_vocal",
+    "type": "article-journal",
+    "title": "Vocal masking in animal communication",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Form and function in vocal communication' (, 1998) title similarity 0.62",
+    "author": [
+      {
+        "family": "Woolley",
+        "given": "S. M."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2008
+        ]
+      ]
+    },
+    "container-title": "Current Biology",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "chen_2021_chemolithotrophic",
+    "type": "article-journal",
+    "title": "Chemolithotrophic symbiosis in insular fauna",
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked",
+    "author": [
+      {
+        "family": "Chen",
+        "given": "L. and O'Malley, P."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2021
+        ]
+      ]
+    },
+    "container-title": "Evolutionary Ecology Letters"
+  },
+  {
+    "id": "cuthill_2000_ultraviolet",
+    "type": "article-journal",
+    "title": "Ultraviolet vision in birds",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); container-title corrected from 'Avian Vision'; DOI added",
+    "author": [
+      {
+        "family": "Cuthill",
+        "given": "I. C., et al."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2000
+        ]
+      ]
+    },
+    "container-title": "Advances in the Study of Behavior",
+    "DOI": "10.1016/s0065-3454(08)60105-9",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "dawson_2006_origin",
+    "type": "article-journal",
+    "title": "The origin of the flight of birds",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'The Origin of Birds and Their Flight' (Padian, 1998) title similarity 0.70",
+    "author": [
+      {
+        "family": "Dawson",
+        "given": "W. L."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2006
+        ]
+      ]
+    },
+    "container-title": "Journal of Morphology",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "gavrilov_2018_buoyancy",
+    "type": "article-journal",
+    "title": "Buoyancy mechanics in high-pressure atmospheres",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Influence of radiative effects on buoyancy-induced flows in high-pressure compressor inter-disk cavities' (Hodaib, None) title similarity 0.45",
+    "author": [
+      {
+        "family": "Gavrilov",
+        "given": "V."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2018
+        ]
+      ]
+    },
+    "container-title": "Journal of Exobiology",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "haddock_2010_evolution",
+    "type": "article-journal",
+    "title": "Evolution of animal bioluminescence: convergent achievements and challenges",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'High-Resolution Measurements of Coastal Bioluminescence' (Haddock, 2006, doi 10.21236/ada630918), title similarity 0.69, author match, year off",
+    "author": [
+      {
+        "family": "Haddock",
+        "given": "S. H., Moline, M. A., & Case, J. F."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2010
+        ]
+      ]
+    },
+    "container-title": "Proceedings of the National Academy of Sciences",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "hochachka_2002_biochemical",
+    "type": "book",
+    "title": "Biochemical Adaptation",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest OpenLibrary hit is 'Biochemical adaptation' (Hochachka, 1984), title similarity 1.00, author match, year off",
+    "author": [
+      {
+        "family": "Hochachka",
+        "given": "P. W., & Somero, G. N."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2002
+        ]
+      ]
+    },
+    "container-title": "Princeton University Press",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "kerr_2006_sulfur",
+    "type": "article-journal",
+    "title": "Sulfur metabolism in extremophiles",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Energetic investigations of Acidianus ambivalens metabolism during anaerobic sulfur reduction and comparisons to aerobic sulfur oxidation' (Hart, 2025) title similarity 0.29",
+    "author": [
+      {
+        "family": "Kerr",
+        "given": "R. A."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2006
+        ]
+      ]
+    },
+    "container-title": "Science",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "mller_1990_electric",
+    "type": "book",
+    "title": "Electric Fish",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest OpenLibrary hit is 'Electric fishes' (Moller, 1995), title similarity 0.93, author differs, year off",
+    "author": [
+      {
+        "family": "Møller",
+        "given": "P."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1990
+        ]
+      ]
+    },
+    "container-title": "Academic Press",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "nies_1999_microbial",
+    "type": "article-journal",
+    "title": "Microbial heavy-metal resistance",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); container-title corrected from 'Antonie van Leeuwenhoek'; DOI added",
+    "author": [
+      {
+        "family": "Nies",
+        "given": "D. H."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1999
+        ]
+      ]
+    },
+    "container-title": "Applied Microbiology and Biotechnology",
+    "DOI": "10.1007/s002530051457",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "webb_1975_hydrodynamics",
+    "type": "article-journal",
+    "title": "Hydrodynamics of fish movement",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'Hydrodynamics: Nonscombroid Fish' (Webb, 1978, doi 10.1016/s1546-5098(08)60165-x), title similarity 0.66, author match, year off",
+    "author": [
+      {
+        "family": "Webb",
+        "given": "P. W."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1975
+        ]
+      ]
+    },
+    "container-title": "Fish Bulletin",
     "x-checked": "2026-11-18"
   }
 ]
