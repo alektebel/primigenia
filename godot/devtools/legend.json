@@ -42,7 +42,9 @@
     "time_faster": {"label": "Faster", "group": "Time", "dev": true, "contexts": ["walk", "fight"]}
   },
   "gestures": [
-    {"label": "Orbit camera", "keys": "Left drag", "group": "Camera", "contexts": ["walk", "fight"], "corner": ["walk"]},
+    {"label": "Move to the point", "keys": "Left click", "group": "Move", "contexts": ["walk"]},
+    {"label": "Follow the mouse (hold, then move)", "keys": "Hold left (0.15 s)", "group": "Move", "contexts": ["walk"]},
+    {"label": "Orbit camera (up to the sky)", "keys": "Left drag", "group": "Camera", "contexts": ["walk", "fight"], "corner": ["walk"]},
     {"label": "Orbit camera", "keys": "Right / Middle drag", "group": "Camera", "contexts": ["walk", "fight"]},
     {"label": "Zoom near / far", "keys": "Wheel", "group": "Camera", "contexts": ["walk", "fight"], "corner": ["walk"]},
     {"label": "Reset camera", "keys": "Middle click", "group": "Camera", "contexts": ["walk", "fight"]},

@@ -4,7 +4,8 @@ extends RefCounted
 
 var height: float
 var yaw: float
-var pitch := 0.2618
+var pitch := 0.2618             # camera elevation above the look-at point (>= FLOOR_PITCH)
+var look_pitch := 0.2618        # where the camera is aimed: equal to pitch when looking at the creature, below FLOOR_PITCH when looking up
 var min_distance: float
 var max_distance: float
 var distance: float
@@ -23,6 +24,12 @@ const ZOOM_RATE := 1.4           # z/s: ...but never faster than this (a full zo
 const ORBIT_HOLD := 1.0          # s of moving before the camera comes back behind after an orbit
 const PITCH_RETURN := 0.6        # rad/s cap of the orbit pitch easing back
 const MAX_PITCH := 1.4
+# Looking at the sky (docs/godot/CAMERA-ZOOM.md s5): the orbit pitch may go far below zero. The camera then sinks towards
+# the ground and stops rising above its own floor, while its aim tilts past the horizon up to LOOK_MIN (-60 deg).
+const ORBIT_PITCH_MIN := -1.6
+const ORBIT_PITCH_MAX := 0.5
+const LOOK_MIN := -1.0472
+const FLOOR_PITCH := 0.04      # lowest camera elevation above the look-at point while it still looks at the creature
 var z := Z_CHASE                 # eased
 var z_target := Z_CHASE
 var strategic_distance := 3000.0 # m at z = 1 (the island; the island sets it from its size)
@@ -108,7 +115,7 @@ static func icon_alpha_at(zz: float) -> float:
 func orbit(dx: float, dy: float) -> void:
 	yaw -= dx * 0.006
 	view_yaw -= dx * 0.006
-	orbit_pitch = clampf(orbit_pitch + dy * 0.004, -0.2, 0.5)
+	orbit_pitch = clampf(orbit_pitch + dy * 0.004, ORBIT_PITCH_MIN, ORBIT_PITCH_MAX)
 	manual = ORBIT_HOLD
 	_orbited = true
 	_reset = false
@@ -156,7 +163,8 @@ func update(player: Dictionary, enemy, fighting: bool, dt: float, aspect: float 
 			orbit_pitch += clampf(-orbit_pitch * (1.0 - exp(-dt / 0.5)), -PITCH_RETURN * dt, PITCH_RETURN * dt)
 		else:
 			orbit_pitch = 0.0
-	pitch = clampf(curve_pitch(z) + orbit_pitch, 0.04, MAX_PITCH)
+	look_pitch = clampf(curve_pitch(z) + orbit_pitch, LOOK_MIN, MAX_PITCH)
+	pitch = maxf(look_pitch, FLOOR_PITCH)
 	var mb := map_blend()
 	var h := height
 	# the discrete first-order follow (player moved first, then eased) lags by dt (1-k)/k = about tau - dt/2: lead by exactly that
@@ -203,8 +211,16 @@ func update(player: Dictionary, enemy, fighting: bool, dt: float, aspect: float 
 			break
 		d += maxf(0.2, d * 0.02)
 	var pos := tv + dir * length
+	# Looking up: the camera sinks towards the ground (never under it) and its aim goes up past the horizon.
+	var up_amount := clampf((FLOOR_PITCH - look_pitch) / (FLOOR_PITCH - LOOK_MIN), 0.0, 1.0)
+	if up_amount > 0.0 and mb < 0.5:
+		pos.y = lerpf(pos.y, minf(pos.y, ground.call(pos.x, pos.z) + 1.0 + h * 0.5), up_amount)
 	pos.y = maxf(pos.y, ground.call(pos.x, pos.z) + 0.65)
-	return {"fov_add": fov_add, "position": pos, "target": tv, "yaw": view_yaw, "pitch": pitch, "distance": boom, "actual_distance": length, "z": z}
+	var aim := tv
+	if look_pitch < pitch:
+		var f := -look_pitch
+		aim = pos + Vector3(-sin(view_yaw) * cos(f), sin(f), -cos(view_yaw) * cos(f)) * 20.0
+	return {"fov_add": fov_add, "position": pos, "target": tv, "aim": aim, "look_pitch": look_pitch, "yaw": view_yaw, "pitch": pitch, "distance": boom, "actual_distance": length, "z": z}
 
 # Auto-follow of the creature's heading with a rate cap and an acceleration cap. It does not swing when the creature
 # runs towards the camera (more than 110 degrees away), pivots, has not held its heading for a quarter of a second
