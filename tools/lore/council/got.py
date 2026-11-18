@@ -294,8 +294,10 @@ def species_all():
             chains[name] = chs
             profs[name] = {k: sp.get(k) for k in ("habitat", "diet", "active", "body", "temperament", "secrets") if sp.get(k)}
             profs[name]["niche_text"] = sp.get("niche", "")
+            if specs[i].get("carcinised"): profs[name]["carcinised"] = True
             if sp.get("haunting_moment"): profs[name]["moments"] = [sp["haunting_moment"]]
-            if sp.get("journal"): profs[name]["journal"] = sp["journal"]
+            if sp.get("journal"): profs[name]["journal"] = list(sp["journal"]) if isinstance(sp["journal"], list) else [str(sp["journal"])]
+            if specs[i].get("carcinised"): profs[name]["journal"] = profs[name].get("journal", [])[:2] + ["Again."]
             for rl in sp.get("relations") or []:
                 if isinstance(rl, dict) and rl.get("with"): edges.append({"a": name, "b": rl["with"], "kind": rl.get("kind", "cousin"), "note": rl.get("note", "")})
             b = bio.get(name.lower()) or {}

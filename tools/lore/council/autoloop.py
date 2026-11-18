@@ -195,6 +195,7 @@ def patch_profiles(w, rd, cmap):
         pr = byid.get(c["id"])
         c["stage"] = w.get("stage", c.get("stage", "creature"))
         if not pr: dump(c, p); continue
+        if pr.get("carcinised"): c["carcinised"] = True
         ni = c["niche"]
         if ni.get("habitat") == "to be written":
             ni["habitat"] = str(pr.get("habitat") or pr.get("niche_text") or "to be written"); ni["diet"] = str(pr.get("diet") or "to be written"); ni["active"] = str(pr.get("active") or "to be written")
@@ -210,6 +211,19 @@ def patch_profiles(w, rd, cmap):
             c["journal"] = [{"en": str(x)} for x in pr["journal"]]
         n += 1; dump(c, p)
     return n
+
+
+def link_carcinised():
+    """Every carcinised creature gets a convergent relation (via 'carcinisation') to every other one, across worlds."""
+    cs = [(p, load(p)) for p in sorted(glob.glob(os.path.join(ROOT, "lore", "creatures", "*.json")))]
+    cs = [(p, c) for p, c in cs if c.get("carcinised")]
+    for p, c in cs:
+        have = {r["with"] for r in c.get("relations", []) if r.get("via") == "carcinisation"}
+        add = [{"with": o["id"], "kind": "convergent", "via": "carcinisation", "note": "both converged on the crab body plan from unrelated lineages (Borradaile 1916; Keiler, Wirkner and Richter 2017; Wolfe, Luque and Bracken-Grissom 2021)"}
+               for _, o in cs if o["id"] != c["id"] and o["id"] not in have]
+        if add:
+            c.setdefault("relations", []).extend(add)
+            c["changelog"].append({"date": DATE, "who": "autoloop", "what": f"carcinisation links to {len(add)} creature(s)"}); dump(c, p)
 
 
 def sanitize(w, log_=log):
@@ -372,6 +386,7 @@ def process(w, args, opus_wait=False):
             if (m.get("id") or slug(name)) == c["id"] and m.get("kind") and c.get("kind") != m["kind"]:
                 c["kind"] = m["kind"]; dump(c, p)
     sanitize(w)
+    link_carcinised()
     # 5 validate, render, refcheck
     code, out = validate()
     if code: log("validate errors:\n" + out[-2500:])

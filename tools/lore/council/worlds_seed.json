@@ -330,12 +330,35 @@
     "year": 1976,
     "title": "Particles, environments, and possible ecologies in the Jovian atmosphere",
     "venue": "The Astrophysical Journal Supplement Series"
+   },
+   {
+    "author": "Keiler, J.",
+    "year": 2017,
+    "title": "One hundred years of carcinization: the evolution of the crab-like habitus in Anomura",
+    "venue": "Zoologischer Anzeiger"
+   },
+   {
+    "author": "Wolfe, J. M.",
+    "year": 2021,
+    "title": "Convergent adaptations: carcinization and its contribution to understanding the evolution of crab-like body plans",
+    "venue": "BioEssays"
+   },
+   {
+    "author": "Borradaile, L. A.",
+    "year": 1916,
+    "title": "Crustacea. Part II. Porcellana",
+    "venue": "British Antarctic (Terra Nova) Expedition 1910 Natural History Report Zoology"
    }
   ],
   "species": [
    {
     "seed": "one more bizarre but physics-forced atmosphere dweller of a gas giant (not a sinker, floater, hunter, whale, jet hunter or grazer)",
     "n": 2
+   },
+   {
+    "seed": "a CRAB-LIKE species that converged on the crab body plan (flattened carapace, armour, sideways walking, a tucked abdomen or tail equivalent, claws) from a totally different lineage than any crab. Write honest first-principles chains for WHY this world's physics pushes toward a crab; if it is a stretch, say so plainly (that is part of the joke). Its second journal line is a dry wink at carcinisation. Own name, nothing from books or films.",
+    "n": 1,
+    "carcinised": true
    }
   ],
   "batch": 4
@@ -369,6 +392,24 @@
     "year": 2020,
     "title": "On the Potential of Silicon as a Building Block for Life",
     "venue": "Life"
+   },
+   {
+    "author": "Keiler, J.",
+    "year": 2017,
+    "title": "One hundred years of carcinization: the evolution of the crab-like habitus in Anomura",
+    "venue": "Zoologischer Anzeiger"
+   },
+   {
+    "author": "Wolfe, J. M.",
+    "year": 2021,
+    "title": "Convergent adaptations: carcinization and its contribution to understanding the evolution of crab-like body plans",
+    "venue": "BioEssays"
+   },
+   {
+    "author": "Borradaile, L. A.",
+    "year": 1916,
+    "title": "Crustacea. Part II. Porcellana",
+    "venue": "British Antarctic (Terra Nova) Expedition 1910 Natural History Report Zoology"
    }
   ],
   "species": [
@@ -379,6 +420,11 @@
    {
     "seed": "a creature whose body is a growing glassy crystal with a slow pulse of molten-salt fluid",
     "n": 2
+   },
+   {
+    "seed": "a CRAB-LIKE species that converged on the crab body plan (flattened carapace, armour, sideways walking, a tucked abdomen or tail equivalent, claws) from a totally different lineage than any crab. Write honest first-principles chains for WHY this world's physics pushes toward a crab; if it is a stretch, say so plainly (that is part of the joke). Its second journal line is a dry wink at carcinisation. Own name, nothing from books or films.",
+    "n": 1,
+    "carcinised": true
    }
   ],
   "batch": 1
@@ -974,9 +1020,34 @@
    {
     "seed": "the strangest species this world's physics could force, one that surprises even a biologist",
     "n": 1
+   },
+   {
+    "seed": "a CRAB-LIKE species that converged on the crab body plan (flattened carapace, armour, sideways walking, a tucked abdomen or tail equivalent, claws) from a totally different lineage than any crab. Write honest first-principles chains for WHY this world's physics pushes toward a crab; if it is a stretch, say so plainly (that is part of the joke). Its second journal line is a dry wink at carcinisation. Own name, nothing from books or films.",
+    "n": 1,
+    "carcinised": true
    }
   ],
-  "batch": 1
+  "batch": 1,
+  "seed_refs": [
+   {
+    "author": "Keiler, J.",
+    "year": 2017,
+    "title": "One hundred years of carcinization: the evolution of the crab-like habitus in Anomura",
+    "venue": "Zoologischer Anzeiger"
+   },
+   {
+    "author": "Wolfe, J. M.",
+    "year": 2021,
+    "title": "Convergent adaptations: carcinization and its contribution to understanding the evolution of crab-like body plans",
+    "venue": "BioEssays"
+   },
+   {
+    "author": "Borradaile, L. A.",
+    "year": 1916,
+    "title": "Crustacea. Part II. Porcellana",
+    "venue": "British Antarctic (Terra Nova) Expedition 1910 Natural History Report Zoology"
+   }
+  ]
  },
  {
   "id": "icemoon",
@@ -1032,9 +1103,34 @@
    {
     "seed": "the strangest species this world's physics could force, one that surprises even a biologist",
     "n": 1
+   },
+   {
+    "seed": "a CRAB-LIKE species that converged on the crab body plan (flattened carapace, armour, sideways walking, a tucked abdomen or tail equivalent, claws) from a totally different lineage than any crab. Write honest first-principles chains for WHY this world's physics pushes toward a crab; if it is a stretch, say so plainly (that is part of the joke). Its second journal line is a dry wink at carcinisation. Own name, nothing from books or films.",
+    "n": 1,
+    "carcinised": true
    }
   ],
-  "batch": 1
+  "batch": 1,
+  "seed_refs": [
+   {
+    "author": "Keiler, J.",
+    "year": 2017,
+    "title": "One hundred years of carcinization: the evolution of the crab-like habitus in Anomura",
+    "venue": "Zoologischer Anzeiger"
+   },
+   {
+    "author": "Wolfe, J. M.",
+    "year": 2021,
+    "title": "Convergent adaptations: carcinization and its contribution to understanding the evolution of crab-like body plans",
+    "venue": "BioEssays"
+   },
+   {
+    "author": "Borradaile, L. A.",
+    "year": 1916,
+    "title": "Crustacea. Part II. Porcellana",
+    "venue": "British Antarctic (Terra Nova) Expedition 1910 Natural History Report Zoology"
+   }
+  ]
  },
  {
   "id": "rogue",
@@ -1270,6 +1366,24 @@
     "year": 2022,
     "title": "Language of fungi derived from their electrical spiking activity",
     "venue": "Royal Society Open Science"
+   },
+   {
+    "author": "Keiler, J.",
+    "year": 2017,
+    "title": "One hundred years of carcinization: the evolution of the crab-like habitus in Anomura",
+    "venue": "Zoologischer Anzeiger"
+   },
+   {
+    "author": "Wolfe, J. M.",
+    "year": 2021,
+    "title": "Convergent adaptations: carcinization and its contribution to understanding the evolution of crab-like body plans",
+    "venue": "BioEssays"
+   },
+   {
+    "author": "Borradaile, L. A.",
+    "year": 1916,
+    "title": "Crustacea. Part II. Porcellana",
+    "venue": "British Antarctic (Terra Nova) Expedition 1910 Natural History Report Zoology"
    }
   ],
   "species": [
@@ -1280,6 +1394,11 @@
    {
     "seed": "the network's own 'mind' as a creature entry: its senses, slow signalling, what it wants, and how a creature-stage player can talk to it",
     "n": 1
+   },
+   {
+    "seed": "a CRAB-LIKE species that converged on the crab body plan (flattened carapace, armour, sideways walking, a tucked abdomen or tail equivalent, claws) from a totally different lineage than any crab. Write honest first-principles chains for WHY this world's physics pushes toward a crab; if it is a stretch, say so plainly (that is part of the joke). Its second journal line is a dry wink at carcinisation. Own name, nothing from books or films.",
+    "n": 1,
+    "carcinised": true
    }
   ],
   "batch": 1
