@@ -25,14 +25,16 @@ def oc_chat(model, system, user):
     """One-shot call through `opencode run`; the prompt goes through a file (too big for argv)."""
     wd = tempfile.mkdtemp(prefix="oc_", dir=os.path.join(D, "tmp"))
     open(os.path.join(wd, "prompt.md"), "w").write("# SYSTEM\n" + system + "\n\n# TASK\n" + user)
-    msg = ("Read the file prompt.md in the current directory. Act as described under SYSTEM and do the TASK. "
-           "Do not edit or create any files and do not run commands other than reading prompt.md. "
+    pf = os.path.join(wd, "prompt.md")
+    msg = (f"Read the file {pf} (that exact absolute path; ignore any other prompt.md). Act as described under SYSTEM and do the TASK. "
+           "Do not edit or create any files and do not run commands other than reading that one file. "
            "Your final message must be ONLY the requested Markdown answer.")
     for a in range(6):
         with ocsem:
             r = subprocess.run(["opencode", "run", "-m", model, msg], cwd=wd, stdin=subprocess.DEVNULL,
                                capture_output=True, text=True, timeout=1800)
-        out = ANSI.sub("", r.stdout).strip()
+        out = ANSI.sub("", r.stdout)
+        out = "\n".join(l for l in out.splitlines() if not re.match(r"^\s*(> build|\S\s+(Read|Glob|Grep|List|Bash)\b)", l)).strip()
         if r.returncode == 0 and len(out) > 800:
             return re.sub(r"<think>.*?</think>", "", out, flags=re.S).strip()
         print("oc retry", model, a, r.returncode, len(out), r.stderr[-300:], file=sys.stderr, flush=True); time.sleep(30)
@@ -55,7 +57,8 @@ cursem = threading.Semaphore(2)
 def cur_chat(model, system, user):
     wd = tempfile.mkdtemp(prefix="cur_", dir=os.path.join(D, "tmp"))
     open(os.path.join(wd, "prompt.md"), "w").write("# SYSTEM\n" + system + "\n\n# TASK\n" + user)
-    msg = ("Read prompt.md in this directory. Act as described under SYSTEM and do the TASK. You may search the web for references. "
+    pf = os.path.join(wd, "prompt.md")
+    msg = (f"Read the file {pf} (that exact absolute path; ignore any other prompt.md). Act as described under SYSTEM and do the TASK. You may search the web for references. "
            "Do not create or edit files. Your final message must be ONLY the requested answer.")
     for a in range(4):
         with cursem:
