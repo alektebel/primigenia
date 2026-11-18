@@ -158,3 +158,18 @@ class ImportTests(Base):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class ImportMapTests(Base):
+    def test_map_ids_aliases_and_references(self):
+        g = json.load(open(os.path.join(FIX, "graph.json")))
+        name = next(iter(g["chains"]))
+        g["chains"][name][0]["references"] = [{"author": "Smith, J.", "year": 2001, "title": "Sound in dense air", "venue": "Journal of Tests"}]
+        refs = {}
+        docs = import_got.build(g, FIX, "run", "2026-01-01", "primigenia", "native",
+                                {name: {"id": "renamed", "name": {"en": "Renamed"}, "aliases": ["old name"], "lore_ref": {"file": "x.json", "id": "y"}}}, refs)
+        d = docs["renamed"]
+        self.assertEqual(d["name"], {"en": "Renamed"}); self.assertEqual(d["aliases"], ["old name"]); self.assertEqual(d["lore_ref"]["id"], "y")
+        self.assertIn("smith_2001_sound", refs)
+        self.assertEqual(refs["smith_2001_sound"]["x-status"], "unverified")
+        self.assertEqual(d["chains"][0]["plausibility"]["analogues"][-1]["refs"], ["smith_2001_sound"])
