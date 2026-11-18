@@ -14,7 +14,7 @@ const SCREE_TEX := preload("res://game/textures/scree_detail.png")
 
 const CHUNK := TerrainData.CHUNK_CELLS
 const STEPS := [1, 2, 4, 8, 16]
-const THRESHOLDS := [250.0, 550.0, 1200.0, 2600.0]   # metres; LOD i is used below THRESHOLDS[i]
+const THRESHOLDS := [300.0, 700.0, 1500.0, 3200.0]   # metres; LOD i is used below THRESHOLDS[i]
 const HYSTERESIS := 0.10
 const UPDATE_PERIOD := 0.25
 const UPDATE_MOVE := 20.0

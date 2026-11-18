@@ -358,12 +358,13 @@ static void rivers_test(void) {
         assert(cp_terrain_hash(&a.t)!=hash);
         float cell=p.size_m/p.n,half=p.size_m*.5f; uint8_t *block_a=calloc(nn,1),*block_b=calloc(nn,1); assert(block_a&&block_b);
         for(int i=0;i<nn;i++) {
-            counts[b.riv[i]]++; assert(b.riv[i]<=3 && a.riv[i]==0);
+            counts[b.riv[i]&3]++; assert((b.riv[i]&3)<=3 && (b.riv[i]>>2)<=8 && a.riv[i]==0);
+            if(b.riv[i]) { int dd=(b.riv[i]>>2)-1; if(dd>=0){ const int DX8[8]={1,1,0,-1,-1,-1,0,1},DY8[8]={0,1,1,1,0,-1,-1,-1}; assert(b.w.recv[i]==i+DY8[dd]*p.n+DX8[dd]); } }
             if(b.t.height[i]>a.t.height[i]+1e-6f) deep_neg++;
             if(a.t.height[i]-b.t.height[i]>maxcut) maxcut=a.t.height[i]-b.t.height[i];
-            if(b.riv[i]) { float d=b.w.scratch[i]-b.t.height[i],want=b.riv[i]==3?1.2f:b.riv[i]==2?.6f:.35f;
+            if(b.riv[i]) { float d=b.w.scratch[i]-b.t.height[i],want=(b.riv[i]&3)==3?1.2f:(b.riv[i]&3)==2?.6f:.35f;
                 assert(fabsf(d-want)<1e-3f); }
-            if(b.riv[i]==CP_TERR_RIVER_DEEP) block_b[i]=1;
+            if((b.riv[i]&3)==CP_TERR_RIVER_DEEP) block_b[i]=1;
             float wx=((i%p.n)+.5f)*cell-half-p.lake_x_m,wy=((i/p.n)+.5f)*cell-half-p.lake_y_m;
             if(wx*wx+wy*wy<p.lake_radius_m*p.lake_radius_m*1.25f*1.25f) assert(a.t.height[i]==b.t.height[i]);
         }

@@ -4,6 +4,7 @@ extends SceneTree
 const TerrainCache := preload("res://game/island/terrain_cache.gd")
 const Views := preload("res://game/tests/rock_views.gd")
 const ALL := ["cliff_lit", "cliff_shade", "ridge", "scree", "valley", "coast", "far", "river"]
+const Rivers := preload("res://game/island/rivers.gd")
 
 # {pos, look} for a look view.
 static func camera_for(td, v: String) -> Dictionary:
@@ -47,6 +48,39 @@ static func camera_for(td, v: String) -> Dictionary:
 			return {"pos": Vector3(0, 900, 2600), "look": Vector3(0, 150, 0)}
 		"river":
 			return {"pos": Vector3(0, 1700, 1400), "look": Vector3(0, 0, -100)}
+		"river_close":
+			# The shallow/deep river cell (class >= 2) closest to 250 m from the origin: the trunk through the east gap.
+			var best_k := -1
+			var best_d := 1e30
+			for k in td.n * td.n:
+				var nxk: int = Rivers.next_cell(td, k)
+				if td.river_class(k) >= 2 and nxk >= 0 and absf(td.height[k] - td.height[nxk]) < 0.5 and td.height[k] > 8.0:
+					var d := absf(Vector2(td.cell_center(k % td.n), td.cell_center(k / td.n)).length() - 700.0)
+					if d < best_d:
+						best_d = d
+						best_k = k
+			# Look downstream from 40 m upstream of the cell (walk four receivers up is not possible; use the receiver direction).
+			var at := Vector3(td.cell_center(best_k % td.n), td.height[best_k], td.cell_center(best_k / td.n))
+			var nxb: int = Rivers.next_cell(td, best_k)
+			var dn := Vector3(td.cell_center(nxb % td.n) - at.x, 0.0, td.cell_center(nxb / td.n) - at.z).normalized()
+			return {"pos": at - dn * 30.0 + Vector3(0, 9, 0), "look": at + dn * 40.0 + Vector3(0, -3, 0)}
+		"fall":
+			# The river/stream cell with the steepest bed drop to its receiver.
+			var best_k2 := -1
+			var best_drop := 0.0
+			for k in td.n * td.n:
+				if td.river_class(k) >= 1:
+					var nx: int = Rivers.next_cell(td, k)
+					if nx >= 0:
+						var dr: float = td.height[k] - td.height[nx]
+						if dr > best_drop:
+							best_drop = dr
+							best_k2 = k
+			var at2 := Vector3(td.cell_center(best_k2 % td.n), td.height[best_k2], td.cell_center(best_k2 / td.n))
+			print("fall drop ", best_drop, " at ", at2)
+			var nrm: Vector3 = td.normal(at2.x, at2.z)
+			var side := Vector3(nrm.x, 0.0, nrm.z).normalized()
+			return {"pos": at2 + side * 45.0 + Vector3(0, 10, 0), "look": at2}
 	return {}
 
 func _initialize() -> void:

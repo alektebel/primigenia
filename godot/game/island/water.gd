@@ -13,7 +13,7 @@ static func lake_cells(data) -> PackedInt32Array:
 	var pond := PackedByteArray()
 	pond.resize(n * n)
 	for k in n * n:
-		if data.is_pond(k):
+		if data.is_pond(k) and not data.is_river(k):
 			pond[k] = 1
 	var out := PackedInt32Array()
 	for j in n:
@@ -39,7 +39,7 @@ static func lake_level(data, k: int) -> float:
 		for di in range(-1, 2):
 			var ii := i + di
 			var jj := j + dj
-			if ii >= 0 and jj >= 0 and ii < n and jj < n and data.is_pond(jj * n + ii):
+			if ii >= 0 and jj >= 0 and ii < n and jj < n and data.is_pond(jj * n + ii) and not data.is_river(jj * n + ii):
 				level = maxf(level, data.water_level[jj * n + ii])
 	return level
 

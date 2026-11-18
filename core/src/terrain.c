@@ -1353,7 +1353,11 @@ static void river_water(const CpTerrainParams *p, CpTerrain *t, const CpTerrainW
         float h = t->height[i], wd;
         if (c == CP_TERR_RIVER_NONE || !(h > 0.5f) || ws->scratch[i] - h > 0.3f) continue;
         wd = c == CP_TERR_RIVER_DEEP ? 1.2f : c == CP_TERR_RIVER_SHALLOW ? 0.6f : 0.35f;
-        if (t->river) t->river[i] = (uint8_t)c;
+        if (t->river) {
+            int d = 0, r = ws->recv[i];
+            if (r >= 0) for (d = 0; d < 8; d++) if (r == i + DY[d] * n + DX[d]) break;
+            t->river[i] = (uint8_t)(c | ((d < 8 && r >= 0 ? d + 1 : 0) << 2));   /* bits 2..5: receiver direction + 1, 0 = outlet */
+        }
         ws->scratch[i] = h + wd;
     }
 }

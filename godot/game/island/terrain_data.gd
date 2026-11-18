@@ -4,7 +4,7 @@ extends RefCounted
 # it is the exact surface of the LOD0 mesh (same triangle diagonal). Only the shading normal is smoothed (smooth_normal).
 
 # Bump when the derived maps (surface and relief RGBA8, chunk bounds) change; part of the cache key.
-const RENDER_PREP_VERSION := 2
+const RENDER_PREP_VERSION := 3
 const CHUNK_CELLS := 64
 
 var n: int = 0
@@ -15,6 +15,7 @@ var height: PackedFloat32Array
 var flow: PackedFloat32Array
 var water_level: PackedFloat32Array
 var material: PackedByteArray
+var river: PackedByteArray        # CP_TERR_RIVER_*: 0 none, 1 stream, 2 shallow river, 3 deep river (terrain v4)
 var surface: PackedByteArray      # RGBA8: R material id, G grass mask, B cavity, A wetness
 var relief: PackedByteArray       # RGBA8: R fine curvature, G broad curvature (> 128 concave), B sediment, A sun visibility
 var chunk_bounds: PackedFloat32Array
@@ -44,6 +45,7 @@ func setup(entry: Dictionary, build_textures: bool = true) -> void:
 	flow = entry.flow
 	water_level = entry.water_level
 	material = entry.material
+	river = entry.get("river", PackedByteArray())
 	surface = entry.surface
 	relief = entry.relief
 	chunk_bounds = entry.chunk_bounds
@@ -146,5 +148,13 @@ func cell_index(x: float, z: float) -> int:
 	var j := clampi(floori((z + half) / cell), 0, n - 1)
 	return j * n + i
 
+# River class of cell k (0 none, 1 stream, 2 shallow, 3 deep); 0 when the entry has no river map.
+func river_class(k: int) -> int:
+	return river[k] & 3 if river.size() == n * n else 0
+
+func is_river(k: int) -> bool:
+	return river_class(k) > 0
+
+# Water the C world blocks on: deep river, lake or sea (depth > 0.7 m; shallow river is 0.6 m and walkable).
 func is_pond_at(x: float, z: float) -> bool:
 	return is_pond(cell_index(x, z))

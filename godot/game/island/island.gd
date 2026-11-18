@@ -6,6 +6,7 @@ const Look := preload("res://game/island/look.gd")
 const EnvironmentFactory := preload("res://game/island/environment.gd")
 const TerrainChunks := preload("res://game/island/terrain_chunks.gd")
 const Water := preload("res://game/island/water.gd")
+const Rivers := preload("res://game/island/rivers.gd")
 const Grass := preload("res://game/island/grass.gd")
 const StageWorld := preload("res://game/stage/stage_world.gd")
 const StageSetup := preload("res://game/stage/stage_setup.gd")
@@ -28,6 +29,7 @@ var terrain_chunks: Node3D
 var world_env: WorldEnvironment
 var sun: DirectionalLight3D
 var water: Node3D
+var rivers: Node3D
 var grass: MultiMeshInstance3D
 var camera: Camera3D
 var debug_camera: Camera3D       # alias of camera (tests and evidence move it directly)
@@ -87,6 +89,10 @@ func build() -> void:
 	water.name = "Water"
 	add_child(water)
 	water.build(data)
+	rivers = Rivers.new()
+	rivers.name = "Rivers"
+	add_child(rivers)
+	rivers.build(data)
 	var t0 := Time.get_ticks_msec()
 	grass = Grass.new()
 	grass.name = "Grass"

@@ -107,7 +107,9 @@ enum {
     CP_TERR_MAT_MEADOW = 0, CP_TERR_MAT_ROCK = 1, CP_TERR_MAT_SCREE = 2,
     CP_TERR_MAT_VOLCANIC = 3, CP_TERR_MAT_SAND = 4, CP_TERR_MAT_SNOW = 5
 };
-/* River classes of CpTerrain.river (v4). Drainage area decides the class; the water level the world sees is the
+/* River classes of CpTerrain.river (v4): bits 0..1 the class, bits 2..5 the D8 receiver direction + 1 (0 = outlet;
+ * directions as cp_terrain_directions), so renderers can follow the channel. */
+/* River classes (low 2 bits). Drainage area decides the class; the water level the world sees is the
  * bed plus 0.35 m (stream, under the 0.5 m a pond needs, so dry for the sim), 0.6 m (river: shallow, walkable)
  * or 1.2 m (deep: blocked until swimming exists). */
 enum { CP_TERR_RIVER_NONE = 0, CP_TERR_RIVER_STREAM = 1, CP_TERR_RIVER_SHALLOW = 2, CP_TERR_RIVER_DEEP = 3 };
@@ -128,7 +130,7 @@ typedef struct CpTerrain {
     float *flow;            /* fraction of the map draining through the cell */
     float *sediment;        /* metres deposited by droplets */
     uint8_t *material;      /* caller-owned n*n bytes, CP_TERR_MAT_* */
-    uint8_t *river;         /* optional n*n bytes, CP_TERR_RIVER_*; NULL skips the map (the carving still happens) */
+    uint8_t *river;         /* optional n*n bytes, CP_TERR_RIVER_* | receiver direction << 2; NULL skips the map (the carving still happens) */
     int cave_count;
     CpTerrainCave caves[CP_TERRAIN_CAVES_MAX];
     float volcano_x_m, volcano_y_m, volcano_radius_m, crater_radius_m;
