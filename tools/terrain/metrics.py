@@ -40,7 +40,7 @@ def load_dump(path):
     magic, version, seed, n, size, flags = struct.unpack_from("<8sIIifI", blob, 0)
     if magic != b"CPTER10\x00":
         raise ValueError(f"{path}: bad magic {magic!r}")
-    if version not in (1,2,3) or not 8<=n<=2048 or not math.isfinite(size) or size<=0 or flags not in (0,1,2,3) or (version<3 and flags&2):
+    if version not in (1,2,3,4) or not 8<=n<=2048 or not math.isfinite(size) or size<=0 or flags not in (0,1,2,3) or (version<3 and flags&2):
         raise ValueError(f"{path}: invalid terrain header")
     nn = n * n
     off = 28
@@ -55,7 +55,7 @@ def load_dump(path):
             raise ValueError(f"{path}: invalid terrain features")
         feature_data={'material':material,'volcano':landmark,'caves':[]}
         start=need+nn+20
-        if len(blob)!=start+36*count:
+        if len(blob) not in (start+36*count, start+36*count+nn):   # v4 appends the n*n river class map
             raise ValueError(f"{path}: invalid cave data length")
         for i in range(count):
             v=struct.unpack_from('<8fI',blob,start+36*i)
@@ -63,6 +63,8 @@ def load_dump(path):
                 raise ValueError(f"{path}: invalid cave record")
             feature_data['caves'].append(v)
         need=start+36*count
+    if version>=4 and len(blob)==need+nn:
+        need+=nn
     if len(blob) != need:
         raise ValueError(f"{path}: expected {need} bytes, got {len(blob)}")
     height = struct.unpack_from(f"<{nn}f", blob, off)

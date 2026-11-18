@@ -21,7 +21,7 @@ extern "C" {
 #endif
 
 /* Bump when the bytes for a seed change. Cached worlds key on this (W13). */
-#define CP_TERRAIN_VERSION 3
+#define CP_TERRAIN_VERSION 4
 
 #define CP_TERRAIN_N_MIN   8
 #define CP_TERRAIN_N_MAX   2048
@@ -100,12 +100,17 @@ typedef struct CpTerrainParams {
     float volcano;          /* 0 = original massif; 1 = one stratovolcano */
     float caves;            /* 0 = no entrances/notches; 1 = seeded entrances */
     float cliff_deg;        /* bedrock: the sweep inside stream power */
+    float rivers;           /* 0 = no channels; 1 = carved river network (v4) */
 } CpTerrainParams;
 
 enum {
     CP_TERR_MAT_MEADOW = 0, CP_TERR_MAT_ROCK = 1, CP_TERR_MAT_SCREE = 2,
     CP_TERR_MAT_VOLCANIC = 3, CP_TERR_MAT_SAND = 4, CP_TERR_MAT_SNOW = 5
 };
+/* River classes of CpTerrain.river (v4). Drainage area decides the class; the water level the world sees is the
+ * bed plus 0.35 m (stream, under the 0.5 m a pond needs, so dry for the sim), 0.6 m (river: shallow, walkable)
+ * or 1.2 m (deep: blocked until swimming exists). */
+enum { CP_TERR_RIVER_NONE = 0, CP_TERR_RIVER_STREAM = 1, CP_TERR_RIVER_SHALLOW = 2, CP_TERR_RIVER_DEEP = 3 };
 #define CP_TERRAIN_CAVES_MAX 6
 /* Map x/y in metres, z altitude; facing is the outward horizontal unit vector.
  * A notch is only a heightfield hint. Passage/chamber meshes belong to rendering. */
@@ -123,6 +128,7 @@ typedef struct CpTerrain {
     float *flow;            /* fraction of the map draining through the cell */
     float *sediment;        /* metres deposited by droplets */
     uint8_t *material;      /* caller-owned n*n bytes, CP_TERR_MAT_* */
+    uint8_t *river;         /* optional n*n bytes, CP_TERR_RIVER_*; NULL skips the map (the carving still happens) */
     int cave_count;
     CpTerrainCave caves[CP_TERRAIN_CAVES_MAX];
     float volcano_x_m, volcano_y_m, volcano_radius_m, crater_radius_m;
@@ -131,7 +137,8 @@ typedef struct CpTerrain {
 /* scratch: n*n floats. recv, ups, queue: n*n int32 each.
  * Each buffer has at least n*n elements, is suitably aligned, and must not
  * overlap any other buffer. scratch holds depression-filled water levels.
- * After generation recv holds flow receivers (-1 = boundary outlet).
+ * After generation recv holds flow receivers (-1 = boundary outlet). scratch is the routing water level, raised
+ * to bed + 0.35/0.6/1.2 m on river cells (v4), so it is no longer strictly decreasing along recv there.
  * The caller must size buffers; C cannot infer their capacity.
  * All callbacks run synchronously on the calling thread. */
 typedef struct CpTerrainWorkspace {
