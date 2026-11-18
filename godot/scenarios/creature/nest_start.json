@@ -1,11 +1,11 @@
 {
 	"camera": {},
-	"created": "2026-11-18T01:28:20",
+	"created": "2026-11-18T23:28:27",
 	"engine": {
 		"build": "unknown",
-		"layout": "0fc43e40d262155d",
+		"layout": "c7c0897ca5a4b053",
 		"snapshot_version": 3,
-		"stage_version": 2
+		"stage_version": 3
 	},
 	"format": "primigenia.scenario/1",
 	"genome": {
@@ -138,7 +138,7 @@
 			"wet": 0.3
 		}
 	},
-	"hash": "dfbe35302bf437b3",
+	"hash": "eb6f425bd2d106c6",
 	"island": {
 		"seed": 1,
 		"terrain_hash": "281193d8ad044e09",
@@ -170,6 +170,7 @@
 			"stamina": 100.0,
 			"tail": 0
 		},
+		"player_legs": 0,
 		"seed": 1,
 		"terrain": 2,
 		"terrain_seed": 7,
@@ -183,6 +184,7 @@
 				"bot": -1,
 				"home_x": 0.0,
 				"home_z": 60.0,
+				"legs": 0,
 				"profile": {
 					"charge": 0,
 					"guard": 0,

@@ -69,7 +69,7 @@ static int replay(const char *path){
     char magic[32],snapshot_path[1024]="",word[32];
     int version,ticks;
     CpStageDebugEntry *debug=NULL;
-    int n_debug=0;
+    int n_debug=0,legs_n=-1,legs[CP_STAGE_MAX_WILD+1]={0};
     if(fscanf(f,"%31s%d",magic,&version)!=2||strcmp(magic,"CPORE_WORLD_LOG")||(version!=2&&version!=3))goto invalid;
     if(version==3){
         long mark;
@@ -78,6 +78,11 @@ static int replay(const char *path){
             if(fscanf(f,"%31s",word)!=1)goto invalid;
             if(!strcmp(word,"snapshot")){
                 if(fscanf(f,"%1023s",snapshot_path)!=1)goto invalid;
+            }
+            else if(!strcmp(word,"legs")){
+                /* legs <n_wild> <player> <wild...>: leg counts (0 = 4), written only when one is set */
+                if(fscanf(f,"%d",&legs_n)!=1||legs_n<0||legs_n>CP_STAGE_MAX_WILD)goto invalid;
+                for(int i=0;i<=legs_n;i++)if(fscanf(f,"%d",&legs[i])!=1)goto invalid;
             }
             else if(!strcmp(word,"field")){
                 unsigned seed;
@@ -102,6 +107,10 @@ static int replay(const char *path){
     for(int i=0;i<setup.n_obstacles;i++){
         CpStageObstacle *o=&setup.obstacles[i];
         if(fscanf(f,"%f%f%f%d",&o->x,&o->z,&o->r,&o->type)!=4)goto invalid;
+    }
+    if(legs_n==setup.n){
+        setup.player_legs=legs[0];
+        for(int i=0;i<setup.n;i++)setup.wild[i].legs=legs[i+1];
     }
     if(snapshot_path[0]){
         char full[2048];

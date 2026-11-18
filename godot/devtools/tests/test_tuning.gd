@@ -23,7 +23,7 @@ func run(t) -> void:
 	tn.user_dir = "user://devtools-test/tuning"
 	tn.bind_sim(sw)
 	tn.bind_island(island)
-	t.eq(tn.order.size(), 14 + 10 + 5, "14 sim + 10 camera + 5 locomotion parameters")
+	t.eq(tn.order.size(), 27 + 10 + 5, "27 sim + 10 camera + 5 locomotion parameters")
 	t.eq(tn.current_values(), {}, "nothing changed at the start")
 	# set/get for every GDScript entry
 	for k in tn.order:

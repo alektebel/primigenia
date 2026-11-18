@@ -51,6 +51,7 @@ Dictionary setup_to_dict(const CpStageSetup &s) {
     d["flat_height"] = double(s.flat_height);
     d["water"] = Vector3(s.water_x, s.water_z, s.water_radius);
     d["player"] = profile_to_dict(s.player);
+    d["player_legs"] = int(s.player_legs);
     Array wild;
     for (int i = 0; i < s.n; ++i) {
         const CpStageSpawn &c = s.wild[i];
@@ -59,6 +60,7 @@ Dictionary setup_to_dict(const CpStageSetup &s) {
         w["home_x"] = double(c.home_x); w["home_z"] = double(c.home_z);
         w["species"] = int(c.species); w["bot"] = int(c.bot);
         w["profile"] = profile_to_dict(c.profile);
+        w["legs"] = int(c.legs);
         wild.append(w);
     }
     d["wild"] = wild;
@@ -83,7 +85,7 @@ bool vec2_from(const Variant &v, float &x, float &z) {
 // Fills `s` from the dictionary over `defaults`. Returns false on any type/shape error.
 bool setup_from_dict(const Dictionary &d, CpStageSetup &s) {
     static const char *const known[] = {"seed", "terrain_seed", "terrain", "nest", "flat_height",
-                                        "water", "player", "wild", "obstacles"};
+                                        "water", "player", "player_legs", "wild", "obstacles"};
     const Array keys = d.keys();
     for (int i = 0; i < keys.size(); ++i) {
         bool ok = false;
@@ -105,6 +107,7 @@ bool setup_from_dict(const Dictionary &d, CpStageSetup &s) {
         s.water_x = w.x; s.water_z = w.y; s.water_radius = w.z;
     }
     if (d.has("player") && !profile_from_dict(d["player"], s.player)) return false;
+    if (d.has("player_legs")) { if (!cpore::to_int(d["player_legs"], 0, 8, n)) return false; s.player_legs = int(n); }
     if (d.has("wild")) {
         if (d["wild"].get_type() != Variant::ARRAY) return false;
         const Array wild = d["wild"];
@@ -123,6 +126,7 @@ bool setup_from_dict(const Dictionary &d, CpStageSetup &s) {
             if (w.has("home_x") && !cpore::to_float(w["home_x"], c.home_x)) return false;
             if (w.has("home_z") && !cpore::to_float(w["home_z"], c.home_z)) return false;
             if (w.has("species")) { if (!cpore::to_int(w["species"], -2147483648LL, 2147483647LL, n)) return false; c.species = int(n); }
+            if (w.has("legs")) { if (!cpore::to_int(w["legs"], 0, 8, n)) return false; c.legs = int(n); }
             if (w.has("bot")) { if (!cpore::to_int(w["bot"], -2147483648LL, 2147483647LL, n)) return false; c.bot = int(n); }
             if (c.species >= 0 && c.species < 4) c.profile = CP_STAGE_SPECIES[c.species].profile;
             if (w.has("profile") && !profile_from_dict(w["profile"], c.profile)) return false;
@@ -191,6 +195,7 @@ Dictionary entity(const CpStageCreature &c, int id) {
     d["home_x"] = double(c.home_x); d["home_z"] = double(c.home_z);
     d["goal_x"] = double(c.goal_x); d["goal_z"] = double(c.goal_z);
     d["species"] = int(c.species); d["dead"] = bool(c.dead); d["pivot"] = int(c.pivot);
+    d["omega"] = double(c.omega); d["grade"] = double(c.grade); d["legs"] = int(c.legs); d["sliding"] = bool(c.sliding);
     d["returning"] = bool(c.returning); d["roam_ticks"] = int(c.roam_ticks);
     d["hp_max"] = double(c.profile.hp); d["stamina_max"] = double(c.profile.stamina);
     d["radius_cm"] = int(c.profile.radius_cm);

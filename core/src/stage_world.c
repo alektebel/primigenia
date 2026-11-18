@@ -715,7 +715,7 @@ static void start(CpStageWorld *w,int index){
 }
 const CpStageMotion CP_STAGE_MOTION={
     1.3f,1.7f,.6f,15.f,20.f,.6f,1.1f,1.5f,4.5f,11.8f,.3f,2.f,7.f,.4f,
-    1.f,.35f,.03f,.25f,1.5f,1.5f,.8f,.55f,1.35f,1.4f,1.1f,8.f,.15f
+    1.4f,.35f,.03f,.25f,3.2f,1.5f,.8f,.55f,1.35f,1.4f,1.1f,8.f,.15f
 };
 /* Stage locomotion (CP_STAGE_VERSION 3). The decisions (yaw acceleration, turn radius from grip and size, braking into
  * corners, pivot, slope speed and slide) live in core/src/steer.c; this moves the body with them. The heading turns with
