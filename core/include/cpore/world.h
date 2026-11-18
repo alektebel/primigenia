@@ -20,7 +20,8 @@ enum { CP_STAGE_CONTINUE, CP_STAGE_WAIT, CP_STAGE_GO, CP_STAGE_HEADING,
        /* C2 social verbs (docs/P4.md section 2.1, G75). BEFRIEND: target + move = skill (CP_SOC_*); GIFT: target + move = item
         * (CP_ITEM_*); OBSERVE and INTIMIDATE: target. All are standing orders: the player walks into range, performs it, and the
         * order ends. Any other order cancels it. */
-       CP_STAGE_BEFRIEND, CP_STAGE_GIFT, CP_STAGE_OBSERVE, CP_STAGE_INTIMIDATE };
+       CP_STAGE_BEFRIEND, CP_STAGE_GIFT, CP_STAGE_OBSERVE, CP_STAGE_INTIMIDATE,
+       CP_STAGE_EAT };   /* EAT: target = a carcass; bites every 10 ticks until it is gone, the player is full, or another order cancels it */
 #define CP_STAGE_NEST_RADIUS 12.f   /* metres from the nest within which the loadout can be changed (tunable) */
 /* Stage order codes added by A21 (-1..-6 are older): the loadout and move errors share the combat numbers. */
 enum { CP_STAGE_ERR_ON_COOLDOWN=-8, CP_STAGE_ERR_NOT_EQUIPPED=-9, CP_STAGE_ERR_BAD_SLOT=-10,
@@ -31,7 +32,16 @@ enum { CP_STAGE_ERR_ON_COOLDOWN=-8, CP_STAGE_ERR_NOT_EQUIPPED=-9, CP_STAGE_ERR_B
        CP_STAGE_ERR_BAD_SKILL=-17,    /* unknown skill or item name/id */
        CP_STAGE_ERR_STAGGERED=-18,    /* a rival heckled you: social actions are blocked for a few ticks */
        CP_STAGE_ERR_NO_STAMINA=-19,   /* not enough stamina for the skill */
-       CP_STAGE_ERR_BUSY=-20 };       /* a social action is already under way / on cooldown (intimidate) */
+       CP_STAGE_ERR_BUSY=-20,
+       CP_STAGE_ERR_DIET=-21,         /* eat: this body cannot digest that (a herbivore and meat) */
+       CP_STAGE_ERR_FULL=-22 };      /* eat: the food meter is full */
+enum { CP_DIET_HERBIVORE, CP_DIET_CARNIVORE, CP_DIET_OMNIVORE };
+#define CP_SOC_CARCASS_BITES 4    /* bites in a carcass */
+#define CP_SOC_BITE_TICKS 10      /* ticks per bite */
+#define CP_SOC_BITE_FOOD 12       /* food per bite of meat */
+#define CP_SOC_FOOD_MAX 100
+#define CP_SOC_FOOD_START 70
+#define CP_SOC_FOOD_DECAY 60      /* ticks per food point lost */       /* a social action is already under way / on cooldown (intimidate) */
 enum { CP_SOC_SING, CP_SOC_DANCE, CP_SOC_CHARM, CP_SOC_POSE, CP_SOC_COUNT };
 enum { CP_ITEM_PLANT, CP_ITEM_FRUIT, CP_ITEM_MEAT, CP_ITEM_BONE, CP_ITEM_COUNT };
 enum { CP_REL_STRANGER, CP_REL_NEUTRAL, CP_REL_TRUSTED, CP_REL_ALLY };
@@ -109,7 +119,7 @@ enum { CP_STAGE_EV_HIT=1, CP_STAGE_EV_KILL, CP_STAGE_EV_DEATH, CP_STAGE_EV_RESPA
        CP_STAGE_EV_PATH_FOUND, CP_STAGE_EV_ARRIVED, CP_STAGE_EV_FLED, CP_STAGE_EV_PATH_FAILED,
        /* C2 social events: by = 0, target = creature id; move/value/x/z carry the detail (see stage_social.c) */
        CP_STAGE_EV_SKILL, CP_STAGE_EV_GIFT, CP_STAGE_EV_BOND_MADE, CP_STAGE_EV_BOND_BROKEN, CP_STAGE_EV_SPECIES_RESOLVED,
-       CP_STAGE_EV_DNA, CP_STAGE_EV_OBSERVE, CP_STAGE_EV_CHAIN_DONE, CP_STAGE_EV_INTIMIDATE, CP_STAGE_EV_SOCIAL_CANCELLED };
+       CP_STAGE_EV_DNA, CP_STAGE_EV_OBSERVE, CP_STAGE_EV_CHAIN_DONE, CP_STAGE_EV_INTIMIDATE, CP_STAGE_EV_SOCIAL_CANCELLED, CP_STAGE_EV_EAT };
 enum { CP_STAGE_BLOCK_NONE, CP_STAGE_BLOCK_CLIFF, CP_STAGE_BLOCK_WATER, CP_STAGE_BLOCK_EDGE,
        CP_STAGE_BLOCK_CREATURE, CP_STAGE_BLOCK_UNREACHABLE, CP_STAGE_BLOCK_OBSTACLE };
 typedef struct {
@@ -127,7 +137,7 @@ typedef struct {
     int32_t last_skill,last_skill_tick;  /* combo: the previous skill started on this creature (-1 none) */
     int32_t hab_tick[CP_SOC_COUNT];  /* habituation: tick+1 of the last use of each skill, 0 = never */
     uint8_t hab_n[CP_SOC_COUNT];
-    int32_t carcass_seen,pad;        /* carcass DNA paid */
+    int32_t carcass_seen,eaten;      /* carcass DNA paid (first bite); bites taken from this carcass */
 } CpStageSocialCreature;
 typedef struct {
     CpRng rng;                       /* the `social` stream: mood jitter, rival heckle, display contest */
@@ -136,6 +146,7 @@ typedef struct {
     int32_t items[CP_ITEM_COUNT];
     int32_t act_verb,act_target,act_arg,act_t,act_len,act_rhythm,act_mult; /* the action under way (verb 0 = none) */
     int32_t stagger,intimidate_cd;
+    int32_t food,diet;               /* hunger meter 0..100 (no starvation effect yet) and the body's diet (CP_DIET_*, omnivore by default) */
     int32_t obs_target,obs_ticks;    /* observe: creature watched and ticks on the current clue */
     int32_t obs_items[CP_SOC_SPECIES]; /* clues revealed per species chain, 0..3 */
     uint32_t learned;                /* moves learned by observing (bit = 1 << move id) */
@@ -222,6 +233,8 @@ int cp_stage_social_species_resolved(const CpStageWorld *w);
 /* Gives items (tests, pickups later) / spends DNA. Spend returns 0 or -1 if the balance is too low; dna_total never changes. */
 int cp_stage_social_give(CpStageWorld *w,int item,int count);
 int cp_stage_social_spend(CpStageWorld *w,int amount);
+int cp_stage_social_set_diet(CpStageWorld *w,int diet);               /* CP_DIET_*; the body's diet (from the genome later) */
+int cp_stage_social_carcass_meat(const CpStageWorld *w,int index);    /* bites left in the dead creature's carcass */
 /* internal hooks used by stage_world.c */
 int cp_stage_social_order_check(CpStageWorld *w,const CpStageInput *a);
 void cp_stage_social_step(CpStageWorld *w);
@@ -235,6 +248,7 @@ void cp_stage_social_reset(CpStageWorld *w);
 float cp_stage_social_reach(const CpStageWorld *w,const CpStageInput *a);   /* centre-to-centre distance at which the player stops walking */
 int cp_stage_social_json(const CpStageWorld *w,char *out,size_t cap);                     /* the "social" object of world-2 */
 int cp_stage_social_creature_json(const CpStageWorld *w,int index,char *out,size_t cap);  /* extra fields of a nearby creature, starts with a comma */
+int cp_stage_social_carcass_json(const CpStageWorld *w,int index,char *out,size_t cap);  /* meat/edible of a carcass entry, starts with a comma */
 int cp_stage_social_event_json(const CpStageEvent *e,char *out,size_t cap);               /* bytes, 0 when not a social event */
 int cp_stage_social_parse(const char *text,CpStageInput *out,int *rc);   /* 1 = was a social command (rc is its result), 0 = not one */
 int cp_stage_social_legal(const CpStageWorld *w,int verb);               /* the verb is worth listing in legal_verbs */

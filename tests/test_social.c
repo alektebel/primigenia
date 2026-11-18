@@ -277,6 +277,44 @@ static void determinism(void){
     }
     PASS("social state is deterministic and survives snapshot/restore");
 }
+static void eating(void){
+    mk1(0,3,0);
+    kill_n(1);
+    for(int i=0;i<150;i++)cp_stage_step(&w,NULL);   /* the 80 tick post-fight cooldown */
+    assert(cp_stage_social_carcass_meat(&w,0)==CP_SOC_CARCASS_BITES);
+    w.social.food=20;
+    const int dna0=w.social.dna_total,food0=w.social.food;
+    assert(cp_stage_command(&w,"eat #1")==0);
+    for(int i=0;i<12;i++)cp_stage_step(&w,NULL);
+    assert(w.social.act_verb==CP_STAGE_EAT);
+    for(int i=0;i<40&&w.order.verb;i++)cp_stage_step(&w,NULL);
+    /* the carcass is depleted bite by bite, food rises, the carcass DNA is paid once */
+    assert(cp_stage_social_carcass_meat(&w,0)==0&&w.social.food>food0&&w.social.dna_total==dna0+3);
+    assert(w.social.dna_by_source[CP_DNA_CARCASS]==3&&w.social.items[CP_ITEM_BONE]==1);
+    assert(cp_stage_command(&w,"eat #1")==-2);
+    PASS("eat: carcass depletes over bites, food rises, carcass DNA once");
+    /* interrupted by another order: the bites already taken stay taken */
+    mk1(1,3,0);
+    kill_n(1);
+    for(int i=0;i<150;i++)cp_stage_step(&w,NULL);
+    assert(cp_stage_command(&w,"eat #1")==0);
+    for(int i=0;i<25;i++)cp_stage_step(&w,NULL);
+    assert(cp_stage_social_carcass_meat(&w,0)==CP_SOC_CARCASS_BITES-2);
+    assert(cp_stage_command(&w,"wait")==0);
+    cp_stage_step(&w,NULL);
+    assert(w.social.act_verb==0);
+    steps(100);
+    assert(cp_stage_social_carcass_meat(&w,0)==CP_SOC_CARCASS_BITES-2);
+    PASS("eat: interrupted by another order");
+    /* diet: a herbivore cannot eat meat */
+    assert(cp_stage_social_set_diet(&w,CP_DIET_HERBIVORE)==0);
+    assert(cp_stage_command(&w,"eat #1")==CP_STAGE_ERR_DIET);
+    assert(cp_stage_social_set_diet(&w,CP_DIET_CARNIVORE)==0);
+    assert(cp_stage_command(&w,"eat #1")==0);
+    PASS("eat: diet matters");
+    /* a carcass is not a fight target and holds clues */
+    assert(cp_stage_command(&w,"observe #1")==0);
+}
 static void unused_hash(void){
     /* a run that never uses a social verb does not fold the social block into the hash */
     mk1(0,3,1);
@@ -288,7 +326,7 @@ static void unused_hash(void){
     PASS("hash ignores the social block until a social verb is used");
 }
 int main(void){
-    bonding();rhythm_and_combo();habituation();refusals();herd();dominate();observe();intimidate();dna_monotonic();determinism();unused_hash();
+    bonding();rhythm_and_combo();habituation();refusals();herd();dominate();observe();intimidate();dna_monotonic();eating();determinism();unused_hash();
     printf("social: all passed\n");
     return 0;
 }

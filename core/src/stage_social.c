@@ -27,6 +27,7 @@ const char *const CP_STAGE_ITEM_NAMES[CP_ITEM_COUNT]={"plant","fruit","meat","bo
 #define INT_RANGE 12.f
 #define INT_STAMINA 8.f
 #define INT_COOLDOWN 100
+#define EAT_RANGE 1.5f
 #define COMBO_WINDOW 20
 #define HAB_WINDOW 300
 #define DECAY_IDLE 1200
@@ -74,7 +75,7 @@ static float len2(float x,float z){return sqrtf(x*x+z*z);}
 static float dist2(const CpStageCreature *a,const CpStageCreature *b){return len2(a->x-b->x,a->z-b->z);}
 static int clampi(int x,int a,int b){return x<a?a:x>b?b:x;}
 static int is_dead(const CpStageCreature *e){return e->dead||e->hp<=0;}
-static int skill_verb(int v){return v==CP_STAGE_BEFRIEND||v==CP_STAGE_GIFT||v==CP_STAGE_INTIMIDATE;}
+static int skill_verb(int v){return v==CP_STAGE_BEFRIEND||v==CP_STAGE_GIFT||v==CP_STAGE_INTIMIDATE||v==CP_STAGE_EAT;}
 static void push(CpStageWorld *w,int type,int target,int move,float value,float x,float z){
     w->events[w->ev_total%CP_STAGE_MAX_EVENTS]=(CpStageEvent){w->tick,type,0,target,move,value,x,z};
     w->ev_total++;
@@ -92,7 +93,7 @@ uint64_t cp_stage_social_hash(const CpStageWorld *w){
     for(int i=0;i<CP_ITEM_COUNT;i++)hu(&h,(uint32_t)s->items[i]);
     hu(&h,(uint32_t)s->act_verb);hu(&h,(uint32_t)s->act_target);hu(&h,(uint32_t)s->act_arg);hu(&h,(uint32_t)s->act_t);
     hu(&h,(uint32_t)s->act_len);hu(&h,(uint32_t)s->act_rhythm);hu(&h,(uint32_t)s->act_mult);
-    hu(&h,(uint32_t)s->stagger);hu(&h,(uint32_t)s->intimidate_cd);hu(&h,(uint32_t)s->obs_target);hu(&h,(uint32_t)s->obs_ticks);
+    hu(&h,(uint32_t)s->food);hu(&h,(uint32_t)s->diet);hu(&h,(uint32_t)s->stagger);hu(&h,(uint32_t)s->intimidate_cd);hu(&h,(uint32_t)s->obs_target);hu(&h,(uint32_t)s->obs_ticks);
     hu(&h,s->learned);hu(&h,s->tested);hu(&h,s->liked);hu(&h,s->species_seen);
     for(int i=0;i<CP_SOC_SPECIES;i++){
         hu(&h,(uint32_t)s->obs_items[i]);hu(&h,(uint32_t)s->kills[i]);hu(&h,(uint32_t)s->latched[i]);
@@ -106,7 +107,7 @@ uint64_t cp_stage_social_hash(const CpStageWorld *w){
         hu(&h,(uint32_t)(uint16_t)c->trust);hu(&h,(uint32_t)(uint16_t)c->mood);
         hu(&h,(uint32_t)c->bonded|(uint32_t)c->ever_bonded<<8|(uint32_t)c->met<<16|(uint32_t)c->combo<<24);
         hu(&h,(uint32_t)c->last_contact);hu(&h,(uint32_t)c->calm_ticks);hu(&h,(uint32_t)c->leave_ticks);hu(&h,(uint32_t)c->aggro_ticks);
-        hu(&h,(uint32_t)c->last_skill);hu(&h,(uint32_t)c->last_skill_tick);hu(&h,(uint32_t)c->carcass_seen);
+        hu(&h,(uint32_t)c->last_skill);hu(&h,(uint32_t)c->last_skill_tick);hu(&h,(uint32_t)c->carcass_seen);hu(&h,(uint32_t)c->eaten);
         for(int k=0;k<CP_SOC_COUNT;k++){hu(&h,(uint32_t)c->hab_tick[k]);hu(&h,c->hab_n[k]);}
     }
     return h;
@@ -116,6 +117,8 @@ void cp_stage_social_reset(CpStageWorld *w){
     CpStageSocial *s=&w->social;
     memset(s,0,sizeof *s);
     cp_rng_seed(&s->rng,w->setup.seed^0x534f4349u);
+    s->food=CP_SOC_FOOD_START;
+    s->diet=CP_DIET_OMNIVORE;
     s->items[CP_ITEM_PLANT]=2;
     s->items[CP_ITEM_FRUIT]=2;
     s->obs_target=0;
@@ -195,6 +198,15 @@ int cp_stage_social_spend(CpStageWorld *w,int amount){
     return 0;
 }
 
+int cp_stage_social_set_diet(CpStageWorld *w,int diet){
+    if(!w||diet<0||diet>CP_DIET_OMNIVORE)return -1;
+    w->social.diet=diet;
+    w->hash=cp_stage_hash(w);
+    return 0;
+}
+int cp_stage_social_carcass_meat(const CpStageWorld *w,int i){
+    return is_dead(&w->wild[i])?CP_SOC_CARCASS_BITES-w->social.c[i].eaten:0;
+}
 /* --- DNA --- */
 static void award(CpStageWorld *w,int amount,int source,int target){
     CpStageSocial *s=&w->social;
@@ -253,6 +265,7 @@ float cp_stage_social_reach(const CpStageWorld *w,const CpStageInput *a){
         case CP_STAGE_BEFRIEND:return CP_STAGE_SKILLS[a->move<0||a->move>=CP_SOC_COUNT?0:a->move].range+r-.4f;
         case CP_STAGE_GIFT:return GIFT_RANGE+r-.4f;
         case CP_STAGE_INTIMIDATE:return INT_RANGE+r-.4f;
+        case CP_STAGE_EAT:return EAT_RANGE+r-.2f;
         default:return 1e9f;   /* observe: stay where you are */
     }
 }
@@ -260,6 +273,7 @@ static float verb_range(const CpStageInput *a){
     if(a->verb==CP_STAGE_BEFRIEND)return CP_STAGE_SKILLS[a->move].range;
     if(a->verb==CP_STAGE_GIFT)return GIFT_RANGE;
     if(a->verb==CP_STAGE_INTIMIDATE)return INT_RANGE;
+    if(a->verb==CP_STAGE_EAT)return EAT_RANGE;
     return 1e9f;
 }
 static float verb_stamina(const CpStageInput *a){
@@ -271,9 +285,16 @@ static float verb_stamina(const CpStageInput *a){
 int cp_stage_social_order_check(CpStageWorld *w,const CpStageInput *a){
     if(w->active>=0)return CP_STAGE_ERR_IN_FIGHT;
     if(w->respawn_ticks>0)return CP_STAGE_ERR_IN_FIGHT;
-    if(a->target<1||a->target>w->setup.n||is_dead(&w->wild[a->target-1]))return -2;
+    if(a->target<1||a->target>w->setup.n)return -2;
     const int i=a->target-1;
-    if(a->verb==CP_STAGE_OBSERVE)return 0;
+    if(a->verb==CP_STAGE_OBSERVE)return 0;   /* a living creature or a carcass (its remains hold clues too) */
+    if(a->verb==CP_STAGE_EAT){
+        if(!is_dead(&w->wild[i])||cp_stage_social_carcass_meat(w,i)<=0)return -2;
+        if(w->social.diet==CP_DIET_HERBIVORE)return CP_STAGE_ERR_DIET;
+        if(w->social.food>=CP_SOC_FOOD_MAX)return CP_STAGE_ERR_FULL;
+        return 0;
+    }
+    if(is_dead(&w->wild[i]))return -2;
     if(w->social.stagger>0)return CP_STAGE_ERR_STAGGERED;
     if(a->verb==CP_STAGE_BEFRIEND){
         if(a->move<0||a->move>=CP_SOC_COUNT)return CP_STAGE_ERR_BAD_SKILL;
@@ -459,13 +480,7 @@ static void social_events(CpStageWorld *w){
             if(c->mood>0)c->mood--;else if(c->mood<0)c->mood++;
             if(d&1)add_mood(c,(d&2)?1:-1);
         }
-        if(is_dead(&w->wild[i])){
-            if(!c->carcass_seen&&dist2(&w->player,&w->wild[i])<2.5f){
-                c->carcass_seen=1;
-                award(w,3,CP_DNA_CARCASS,i+1);
-            }
-        }
-        else{
+        if(!is_dead(&w->wild[i])){
             const int sp=w->wild[i].species;
             if(!(s->species_seen&(1u<<sp))&&dist2(&w->player,&w->wild[i])<=30.f){
                 s->species_seen|=1u<<sp;
@@ -474,6 +489,7 @@ static void social_events(CpStageWorld *w){
             }
         }
     }
+    if(t%CP_SOC_FOOD_DECAY==CP_SOC_FOOD_DECAY-1&&s->food>0)s->food--;
     /* exploration: the first entry into each 40 m cell, 40 DNA at most */
     if(s->n_explored<CP_SOC_EXPLORE_MAX){
         const int cx=(int)floorf(w->player.x/40.f),cz=(int)floorf(w->player.z/40.f),id=(cx+1000)*2048+(cz+1000);
@@ -499,6 +515,31 @@ void cp_stage_social_step(CpStageWorld *w){
     if(w->active>=0)return;
     if(skill_verb(o->verb)){
         const int i=o->target-1;
+        if(o->verb==CP_STAGE_EAT&&i>=0&&i<w->setup.n){
+            const CpStageCreature *e=&w->wild[i];
+            if(!is_dead(e)||cp_stage_social_carcass_meat(w,i)<=0||s->food>=CP_SOC_FOOD_MAX){
+                if(s->act_verb)cancel_action(w,6);
+                end_order(w);
+                return;
+            }
+            if(!s->act_verb){
+                if(dist2(&w->player,e)-cp_combat_body_radius(&e->profile)>EAT_RANGE+.05f)return;
+                s->act_verb=CP_STAGE_EAT;s->act_target=o->target;s->act_arg=0;s->act_t=0;s->act_len=0;s->act_rhythm=0;s->act_mult=0;
+                return;
+            }
+            if(dist2(&w->player,e)-cp_combat_body_radius(&e->profile)>EAT_RANGE+2.5f){cancel_action(w,4);end_order(w);return;}
+            if(++s->act_t%CP_SOC_BITE_TICKS==0){
+                CpStageSocialCreature *c=&s->c[i];
+                const int before=s->food;
+                s->food=s->food+CP_SOC_BITE_FOOD>CP_SOC_FOOD_MAX?CP_SOC_FOOD_MAX:s->food+CP_SOC_BITE_FOOD;
+                c->eaten++;
+                if(!c->carcass_seen){c->carcass_seen=1;award(w,3,CP_DNA_CARCASS,i+1);}
+                const int left=CP_SOC_CARCASS_BITES-c->eaten;
+                if(left<=0)s->items[CP_ITEM_BONE]++;
+                push(w,CP_STAGE_EV_EAT,i+1,left,(float)(s->food-before),(float)s->food,(float)s->items[CP_ITEM_BONE]);
+            }
+            return;
+        }
         if(i<0||i>=w->setup.n||is_dead(&w->wild[i])){
             cancel_action(w,-2);
             w->last_error=-2;
@@ -552,7 +593,7 @@ void cp_stage_social_step(CpStageWorld *w){
     }
     if(o->verb==CP_STAGE_OBSERVE){
         const int i=o->target-1;
-        if(i<0||i>=w->setup.n||is_dead(&w->wild[i])){
+        if(i<0||i>=w->setup.n){
             w->last_error=-2;
             end_order(w);
             return;
@@ -565,7 +606,8 @@ void cp_stage_social_step(CpStageWorld *w){
         }
         const CpStageSpecies *spec=&CP_STAGE_SPECIES[sp];
         const float d=dist2(&w->player,&w->wild[i]);
-        const int seen=cp_stage_social_hostile(w,i)||(spec->temperament==CP_STAGE_TIMID&&d<spec->sight*.5f)||d<3.f;
+        const int dead=is_dead(&w->wild[i]);
+        const int seen=!dead&&(cp_stage_social_hostile(w,i)||(spec->temperament==CP_STAGE_TIMID&&d<spec->sight*.5f)||d<3.f);
         if(d>CP_SOC_OBSERVE_RANGE||seen||w->player.speed>1.f){
             if(s->obs_ticks>0)push(w,CP_STAGE_EV_SOCIAL_CANCELLED,o->target,CP_STAGE_OBSERVE,5.f,0,0);
             s->obs_ticks=0;
@@ -613,6 +655,7 @@ int cp_stage_social_parse(const char *text,CpStageInput *out,int *rc){
     }
     else if(sscanf(text,"observe #%d %c",&a.target,&extra)==1)a.verb=CP_STAGE_OBSERVE;
     else if(sscanf(text,"intimidate #%d %c",&a.target,&extra)==1)a.verb=CP_STAGE_INTIMIDATE;
+    else if(sscanf(text,"eat #%d %c",&a.target,&extra)==1)a.verb=CP_STAGE_EAT;
     else return 0;
     *out=a;
     return 1;
@@ -620,6 +663,10 @@ int cp_stage_social_parse(const char *text,CpStageInput *out,int *rc){
 int cp_stage_social_legal(const CpStageWorld *w,int verb){
     if(w->active>=0)return 0;
     int any=0;
+    if(verb==CP_STAGE_EAT){
+        for(int i=0;i<w->setup.n;i++)if(cp_stage_social_carcass_meat(w,i)>0&&dist2(&w->player,&w->wild[i])<40.f)return w->social.diet!=CP_DIET_HERBIVORE&&w->social.food<CP_SOC_FOOD_MAX;
+        return 0;
+    }
     for(int i=0;i<w->setup.n;i++)if(!is_dead(&w->wild[i]))any=1;
     if(!any)return 0;
     if(verb==CP_STAGE_GIFT){
@@ -674,6 +721,7 @@ int cp_stage_social_json(const CpStageWorld *w,char *out,size_t cap){
     bp(&b,"{\"dna_total\":%d,\"dna_balance\":%d,\"dna_sources\":{\"kill\":%d,\"bond\":%d,\"ally\":%d,\"dominate\":%d,\"carcass\":%d,\"explore\":%d,\"species_seen\":%d},",
        s->dna_total,s->dna_balance,s->dna_by_source[CP_DNA_KILL],s->dna_by_source[CP_DNA_BOND],s->dna_by_source[CP_DNA_ALLY],s->dna_by_source[CP_DNA_DOMINATE],
        s->dna_by_source[CP_DNA_CARCASS],s->dna_by_source[CP_DNA_EXPLORE],s->dna_by_source[CP_DNA_SEEN]);
+    bp(&b,"\"food\":{\"meter\":%d,\"max\":%d,\"diet\":\"%s\"},",s->food,CP_SOC_FOOD_MAX,s->diet==CP_DIET_HERBIVORE?"herbivore":s->diet==CP_DIET_CARNIVORE?"carnivore":"omnivore");
     bp(&b,"\"inventory\":{");
     for(int k=0;k<CP_ITEM_COUNT;k++)bp(&b,"%s\"%s\":%d",k?",":"",CP_STAGE_ITEM_NAMES[k],s->items[k]);
     bp(&b,"},\"progress\":{\"resolved\":%d,\"total\":%d},\"species\":[",cp_stage_social_species_resolved(w),cp_stage_social_species_present(w));
@@ -711,7 +759,7 @@ int cp_stage_social_json(const CpStageWorld *w,char *out,size_t cap){
         bp(&b,"%s{\"id\":%d,\"name\":\"%s\",\"windup_ticks\":%d,\"active_ticks\":%d,\"recover_ticks\":%d,\"range_m\":%.1f,\"stamina_cost\":%.1f}",k?",":"",k,sk->name,sk->windup,sk->active,sk->recovery,sk->range,sk->stamina);
     }
     bp(&b,"],\"beat_ticks\":%d,\"rhythm_window\":%d,\"stagger\":%d,\"intimidate_cooldown\":%d,\"action\":",CP_SOC_BEAT,CP_SOC_WINDOW,s->stagger,s->intimidate_cd);
-    if(s->act_verb)bp(&b,"{\"verb\":\"%s\",\"target\":%d,\"t\":%d,\"len\":%d,\"windup\":%d}",s->act_verb==CP_STAGE_BEFRIEND?"befriend":s->act_verb==CP_STAGE_GIFT?"gift":"intimidate",s->act_target,s->act_t,s->act_len,s->act_mult);
+    if(s->act_verb)bp(&b,"{\"verb\":\"%s\",\"target\":%d,\"t\":%d,\"len\":%d,\"windup\":%d}",s->act_verb==CP_STAGE_BEFRIEND?"befriend":s->act_verb==CP_STAGE_GIFT?"gift":s->act_verb==CP_STAGE_EAT?"eat":"intimidate",s->act_target,s->act_t,s->act_len,s->act_mult);
     else bp(&b,"null");
     bp(&b,"}");
     return b.failed?-1:(int)b.used;
@@ -741,7 +789,14 @@ int cp_stage_social_event_json(const CpStageEvent *e,char *out,size_t cap){
             bp(&b,"{\"tick\":%u,\"type\":\"social_cancelled\",\"target\":%d,\"reason\":\"%s\"}",e->tick,e->target,why);
             break;
         }
+        case CP_STAGE_EV_EAT:bp(&b,"{\"tick\":%u,\"type\":\"eat\",\"target\":%d,\"bites_left\":%d,\"food_gain\":%.0f,\"food\":%.0f,\"bones\":%.0f}",e->tick,e->target,e->move,e->value,e->x,e->z);break;
         default:return 0;
     }
     return b.failed?0:(int)b.used;
+}
+int cp_stage_social_carcass_json(const CpStageWorld *w,int i,char *out,size_t cap){
+    const int meat=cp_stage_social_carcass_meat(w,i);
+    Buf b={out,cap,0,0};
+    bp(&b,",\"meat\":%d,\"edible\":%s,\"species_name\":\"%s\"",meat,meat>0&&w->social.diet!=CP_DIET_HERBIVORE?"true":"false",CP_STAGE_SPECIES[w->wild[i].species].name);
+    return b.failed?-1:(int)b.used;
 }

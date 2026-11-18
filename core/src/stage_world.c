@@ -765,7 +765,7 @@ static int has_threat(const CpStageWorld *w){
     return 0;
 }
 static int order_apply(CpStageWorld *w,const CpStageInput *a){
-    if(!w||!a||!isfinite(a->x)||!isfinite(a->z)||a->verb<0||a->verb>CP_STAGE_INTIMIDATE||a->sprint<0||a->sprint>1)return -1;
+    if(!w||!a||!isfinite(a->x)||!isfinite(a->z)||a->verb<0||a->verb>CP_STAGE_EAT||a->sprint<0||a->sprint>1)return -1;
     if(a->verb==CP_STAGE_CONTINUE)return 0;
     if(a->verb==CP_STAGE_LOADOUT){
         if(a->target<1||a->target>CB_LOADOUT_SLOTS)return CP_STAGE_ERR_BAD_SLOT;
@@ -1142,9 +1142,9 @@ uint64_t cp_stage_step(CpStageWorld *w,const CpStageInput *input){
                 }
             }
         }
-        else if(a->verb>=CP_STAGE_BEFRIEND&&a->verb<=CP_STAGE_INTIMIDATE){
+        else if(a->verb>=CP_STAGE_BEFRIEND&&a->verb<=CP_STAGE_EAT){
             /* social verbs: walk into range, then stand still while performing (observe never moves) */
-            if(a->target>=1&&a->target<=w->setup.n&&!creature_is_dead(&w->wild[a->target-1])&&a->verb!=CP_STAGE_OBSERVE){
+            if(a->target>=1&&a->target<=w->setup.n&&(a->verb==CP_STAGE_EAT||!creature_is_dead(&w->wild[a->target-1]))&&a->verb!=CP_STAGE_OBSERVE){
                 const CpStageCreature *t=&w->wild[a->target-1];
                 dx=t->x-w->player.x;
                 dz=t->z-w->player.z;
@@ -1473,6 +1473,8 @@ const char *cp_stage_order_error(int code){
         case CP_STAGE_ERR_STAGGERED:return "staggered";
         case CP_STAGE_ERR_NO_STAMINA:return "no_stamina";
         case CP_STAGE_ERR_BUSY:return "busy (cooldown)";
+        case CP_STAGE_ERR_DIET:return "cannot_digest (diet)";
+        case CP_STAGE_ERR_FULL:return "full";
         default:return "invalid command or value";
     }
 }
@@ -1602,7 +1604,14 @@ int cp_stage_observe_v(const CpStageWorld *w,char *out,size_t cap,int version){
         if(version==2){
             const char *state=creature_state(w,i);
             ADD("%s{\"id\":%d,\"type\":\"%s\",\"species\":\"%s\",\"distance\":%.6f,\"bearing\":%.6f,\"hp\":%.6f,\"hp_max\":%.6f,\"state\":\"%s\",\"in_fight\":%s,\"attackable\":%s}",comma?",":"",i+1,creature_is_dead(e)?"carcass":"creature",CP_STAGE_SPECIES[e->species].name,d,bearing(&w->player,e->x,e->z),e->hp,e->profile.hp,state,w->active==i?"true":"false",creature_attackable(w,i)?"true":"false");
-            if(!creature_is_dead(e)){
+            if(creature_is_dead(e)){
+                char sb[256];
+                if(cp_stage_social_carcass_json(w,i,sb,sizeof sb)>0){
+                    used--;
+                    ADD("%s}",sb);
+                }
+            }
+            else{
                 char sb[1024];
                 if(cp_stage_social_creature_json(w,i,sb,sizeof sb)>0){
                     /* splice the social fields in before the closing brace */
@@ -1637,6 +1646,7 @@ int cp_stage_observe_v(const CpStageWorld *w,char *out,size_t cap,int version){
     if(target&&attacks)ADD(",\"attack\"");
     if(version==2){
         if(cp_stage_social_legal(w,CP_STAGE_BEFRIEND))ADD(",\"befriend\",\"observe\",\"intimidate\"");
+        if(cp_stage_social_legal(w,CP_STAGE_EAT))ADD(",\"eat\"");
         if(cp_stage_social_legal(w,CP_STAGE_GIFT))ADD(",\"gift\"");
     }
     if(version==2&&w->active<0&&length(w->player.x-w->setup.nest_x,w->player.z-w->setup.nest_z)<=CP_STAGE_NEST_RADIUS)ADD(",\"loadout\"");   /* only at the nest, never in a fight */
