@@ -39,7 +39,7 @@ Trait ← it lives where light never arrives: lava tubes and fog-filled gullies 
 - **Journal:** Sees with its ears. / Ve con los oídos.
 - **Plausibility:** plausible (judge astrobio/composer-2.5, 2026-11-18)
   - echolocation in dark caves is common on Earth; flocks should stagger clicks to avoid confusion
-  - Analogue: oilbird (Steatornis caripensis), cave swiftlets: audible click echolocation in caves (Brinkløv et al. 2013 [unverified])
+  - Analogue: oilbird (Steatornis caripensis), cave swiftlets: audible click echolocation in caves (Brinkløv et al. 2013 [verified])
   - Fix: narrowband, staggered clicks in flocks
 
 ### ecolumbre.c2: talks with light
@@ -55,8 +55,8 @@ Trait ← vocal calls would mask its own and the flock's echolocation ← long e
 - **Journal:** It sings with its skin. / Canta con la piel.
 - **Plausibility:** fixable (judge astrobio/composer-2.5, 2026-11-18)
   - a separate channel against acoustic masking is credible, but only as a dim, ventral, brief, refuge-bound signal
-  - Analogue: weakly electric fish: jamming avoidance by switching channel/frequency (Heiligenberg 1991 [unverified])
-  - Analogue: Hawaiian bobtail squid (Euprymna scolopes): ventral light hidden from predators (McFall-Ngai & Ruby 2000 [unverified])
+  - Analogue: weakly electric fish: jamming avoidance by switching channel/frequency (Heiligenberg 1991 [verified])
+  - Analogue: Hawaiian bobtail squid (Euprymna scolopes): ventral light hidden from predators (McFall-Ngai & Ruby 2000 [verified])
   - Fix: ventral photophores and sub-second bursts
   - Fix: possibly a UV or polarised channel the predator sees poorly
 
@@ -73,7 +73,7 @@ Trait ← moonlight drowns its signal and lights up its silhouette for sight hun
 - **Journal:** Silent in the cave. Why would something that loud keep quiet? / Callada en la cueva. ¿Por qué algo tan ruidoso calla?
 - **Plausibility:** plausible (judge astrobio/composer-2.5, 2026-11-18)
   - lunar and depth gating is adaptive: signal when contrast is high and risk is low
-  - Analogue: Photinus fireflies: species-specific flash windows (Lewis & Cratsley 2008 [unverified])
+  - Analogue: Photinus fireflies: species-specific flash windows (Lewis & Cratsley 2008 [verified])
   - Fix: also gate on fog thickness and depth inside the tube
 
 ### ecolumbre.c4: a predator fakes its light code
@@ -89,7 +89,7 @@ Trait ← its code is a reliable signal of a meal ← the predator sees its flas
 - **Journal:** Not every light is a friend. / No toda luz es amiga.
 - **Plausibility:** plausible (judge astrobio/composer-2.5, 2026-11-18)
   - a mimic-lure arms race is well documented; limit the lure to places with line of sight
-  - Analogue: Photuris fireflies: femme-fatale aggressive mimicry of Photinus codes (Lloyd 1965 [unverified]; Lewis & Cratsley 2008 [unverified])
+  - Analogue: Photuris fireflies: femme-fatale aggressive mimicry of Photinus codes (Lloyd 1965 [verified]; Lewis & Cratsley 2008 [verified])
   - Fix: lure works only at gully mouths and the waterfall entrance
 
 ## Relations

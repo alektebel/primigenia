@@ -2,18 +2,18 @@
 
 # References
 
-## Verified (0)
+## Verified (6)
+
+- `brinklov_2013_oilbird`: Brinkløv et al. 2013. Echolocation in oilbirds and swiftlets. *Frontiers in Physiology*. DOI: 10.3389/fphys.2013.00123. Checked 2026-11-18. Note: verified against Crossref (title 1.00); DOI added. Cited by: ecolumbre.
+- `heiligenberg_1991_electric`: Heiligenberg 1991. Neural Nets in Electric Fish. ISBN: 9780585356082. Checked 2026-11-18. Note: verified against OpenLibrary (title 1.00); ISBN added. Cited by: ecolumbre.
+- `johnsen_2012_optics`: Johnsen 2012. The Optics of Life: A Biologist's Guide to Light in Nature. ISBN: 9780691139906. Checked 2026-11-18. Note: verified against OpenLibrary (title 1.00); ISBN added.
+- `lewis_2008_fireflies`: Lewis & Cratsley 2008. Flash signal evolution, mate choice, and predation in fireflies. *Annual Review of Entomology*. DOI: 10.1146/annurev.ento.53.103106.093346. Checked 2026-11-18. Note: verified against Crossref (title 1.00); DOI added. Cited by: ecolumbre.
+- `lloyd_1965_photuris`: Lloyd 1965. Aggressive mimicry in Photuris: firefly femmes fatales. *Science*. DOI: 10.1126/science.149.3684.653. Checked 2026-11-18. Note: verified against Crossref (title 1.00); DOI added. Cited by: ecolumbre.
+- `mcfallngai_2000_squid`: McFall-Ngai & Ruby 2000. Developmental biology in marine invertebrate symbioses. *Current Opinion in Microbiology*. DOI: 10.1016/s1369-5274(00)00147-8. Checked 2026-11-18. Note: verified against Crossref (title 1.00); title corrected from 'Developmental biology in marine invertebrate symbioses (Euprymna scolopes and Vibrio fischeri)'; container-title set; DOI added. Cited by: ecolumbre.
+
+## Unverified (0)
 
 None.
-
-## Unverified (6)
-
-- `brinklov_2013_oilbird`: Brinkløv et al. 2013. Echolocation in oilbirds and swiftlets. *Frontiers in Physiology*. Note: cited by astrobio/composer-2.5. Cited by: ecolumbre.
-- `heiligenberg_1991_electric`: Heiligenberg 1991. Neural Nets in Electric Fish. Note: astrobio cited it as a J. Comp. Physiol. A paper; most likely this MIT Press book (jamming avoidance response). Cited by: ecolumbre.
-- `johnsen_2012_optics`: Johnsen 2012. The Optics of Life: A Biologist's Guide to Light in Nature. Note: cited by astrobio/composer-2.5.
-- `lewis_2008_fireflies`: Lewis & Cratsley 2008. Flash signal evolution, mate choice, and predation in fireflies. *Annual Review of Entomology*. Note: cited by astrobio/composer-2.5. Cited by: ecolumbre.
-- `lloyd_1965_photuris`: Lloyd 1965. Aggressive mimicry in Photuris: firefly femmes fatales. *Science*. Note: cited by astrobio/composer-2.5. Cited by: ecolumbre.
-- `mcfallngai_2000_squid`: McFall-Ngai & Ruby 2000. Developmental biology in marine invertebrate symbioses (Euprymna scolopes and Vibrio fischeri). Note: astrobio cited PNAS 2000; exact title and venue to be checked. Cited by: ecolumbre.
 
 ## Rejected (0)
 
