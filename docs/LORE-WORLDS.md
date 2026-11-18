@@ -34,6 +34,9 @@ Open questions for the owner (not decided):
 | **adrian** | third_party (A20) | from the book's facts | Taumoeba; Astrophage lives on stars, filed under its host |
 | **gas giant of the honour-bound tentacled species** | third_party (A4, Banks) | atmosphere layers, winds, chemistry | the Affront-like species |
 | ***All Tomorrows* worlds** | third_party (A19) | one world per group (Earth, Mars, the Qu-shaped worlds, Gravital space…) | all 45 catalogued species as `easter_egg` creatures with 1–3 chains each, linked to `lore/alltomorrows.en.json` |
+| **the deep sky** (a gas giant) | fictional | atmosphere layers, winds, chemistry | **sinkers, floaters, hunters** (Sagan & Salpeter 1976), **air whales** (giant hydrogen-buoyed floaters), **jet hunters**, cloud-plankton grazers; home of the honour-bound tentacled species (A4) |
+| **silicon worlds** (hot and cryogenic) | fictional | silicone/silicate chemistry where it can work; silanes in liquid nitrogen/methane | slow, crystalline, glass-shelled life, graded honestly by the referee (Bains 2004; Petkowski, Bains & Seager 2020) |
+| **the star world** | fictional + A20 | a star's photosphere and corona; a neutron-star crust | Astrophage (A20), plasma / magnetic-flux-tube organisms, a nuclear-chemistry ecology on a neutron star (very fast time); marked "highly speculative" where true |
 | **bizarre but plausible** | fictional | new worlds with extreme physics: a tidally locked red-dwarf world, an ice-moon ocean, a high-pressure super-Earth, a rogue planet, a ring-world of a gas giant's moon | species derived from those physics, checked by the referee (for the Space stage's alien bestiary) |
 
 ## 3. Integration in the game
