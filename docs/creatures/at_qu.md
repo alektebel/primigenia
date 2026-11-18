@@ -38,7 +38,7 @@ Trait ← Geometric mass-dumping creates wind-tunnel acoustics ← Dense 1.8 bar
 - **Plausibility:** plausible (judge astrobio/autoloop-2026-11-18, 2026-11-18)
   - scores: astrobio 8, designer 8, physicist 6
   - Analogue: Mountain pass and urban canyon wind-tunnel acoustics (Lee waves, venturi channels); elephant and hippopotamus low-frequency rumbles coupled through substrate (payne/langbauer seismic communication): as named by the judge; no mechanism or reference recorded
-  - Analogue: real biology behind this chain: see the cited works; chain wording is the council's own (Fletcher 1998 [unverified])
+  - Analogue: real biology behind this chain: see the cited works; chain wording is the council's own (Fletcher 1998 [verified])
 - **Chain provenance:** council run `autoloop-2026-11-18`; by naturalist, physicist
 
 ### at_qu.c2: Nanite-saturated soil and geometric wind funnels

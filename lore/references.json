@@ -4637,9 +4637,9 @@
   {
     "id": "fletcher_1998_physics",
     "type": "article-journal",
-    "title": "The Physics of Musical Instruments: Sound propagation in dense media",
-    "x-status": "unverified",
-    "x-note": "cited by a council model from memory; not yet checked",
+    "title": "The Physics of Musical Instruments",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); title corrected from 'The Physics of Musical Instruments: Sound propagation in dense media'; DOI added",
     "author": [
       {
         "family": "Fletcher",
@@ -4653,7 +4653,9 @@
         ]
       ]
     },
-    "container-title": "Springer"
+    "container-title": "Springer",
+    "DOI": "10.1007/978-0-387-21603-4",
+    "x-checked": "2026-11-18"
   },
   {
     "id": "linder_1991_copper",
@@ -4698,6 +4700,560 @@
     },
     "container-title": "Behavioral and Brain Sciences",
     "DOI": "10.1017/s0140525x06009010",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "kasting_whitmire_reynolds_1993",
+    "type": "article-journal",
+    "title": "Habitable Zones Around Main Sequence Stars",
+    "author": [
+      {
+        "family": "Kasting",
+        "given": "James F."
+      },
+      {
+        "family": "Whitmire",
+        "given": "Daniel P."
+      },
+      {
+        "family": "Reynolds",
+        "given": "Robert T."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1993
+        ]
+      ]
+    },
+    "container-title": "Icarus",
+    "DOI": "10.1006/icar.1993.1010",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "gudel_2004",
+    "type": "article-journal",
+    "title": "Stellar activity and the habitability of Earth-like planets",
+    "author": [
+      {
+        "family": "Güdel",
+        "given": "M."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2004
+        ]
+      ]
+    },
+    "container-title": "Astronomy & Astrophysics Review",
+    "DOI": "10.1007/s00159-004-0030-1",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Stellar activity and winds shaping the atmospheres of Earth-like planets' (Lueftinger, 2018) title similarity 0.73",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "williams_pollard_2002",
+    "type": "article-journal",
+    "title": "Seasonal climate and eccentricity forcing of habitable exoplanets",
+    "author": [
+      {
+        "family": "Williams",
+        "given": "Dawn M."
+      },
+      {
+        "family": "Pollard",
+        "given": "David"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2002
+        ]
+      ]
+    },
+    "container-title": "Icarus",
+    "DOI": "10.1006/icar.2002.6899",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Waterbelt solutions as a habitable climate state of Earth-like exoplanets' (Voigt, 2026) title similarity 0.49",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "carroll_ostlie_2006",
+    "type": "book",
+    "title": "An Introduction to Modern Astrophysics",
+    "author": [
+      {
+        "family": "Carroll",
+        "given": "Bradley W."
+      },
+      {
+        "family": "Ostlie",
+        "given": "Michael A."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2006
+        ]
+      ]
+    },
+    "container-title": "Addison-Wesley",
+    "ISBN": "978-0-321-01596-7",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest OpenLibrary hit is 'An introduction to modern astrophysics' (Carroll, 1995), title similarity 1.00, author match, year off",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "sleep_2010",
+    "type": "article-journal",
+    "title": "Plate tectonics and long-term surface habitability",
+    "author": [
+      {
+        "family": "Sleep",
+        "given": "Nevan H."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2010
+        ]
+      ]
+    },
+    "container-title": "Astrobiology",
+    "DOI": "10.1089/ast.2010.0512",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Plate tectonics is crucial for habitability of terrestrial planets' (Khazan, 2026) title similarity 0.57",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "mcmahon_1973",
+    "type": "article-journal",
+    "title": "Size and structure",
+    "author": [
+      {
+        "family": "McMahon",
+        "given": "Thomas A."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1973
+        ]
+      ]
+    },
+    "container-title": "Nature",
+    "DOI": "10.1038/246012a0",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Crystal structure of CtDsbA' (McMahon, 2016) title similarity 0.53",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "dunlap_1999",
+    "type": "article-journal",
+    "title": "Molecular genetics of circadian rhythms in Drosophila",
+    "author": [
+      {
+        "family": "Dunlap",
+        "given": "Jeffrey C."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1999
+        ]
+      ]
+    },
+    "container-title": "Science",
+    "DOI": "10.1126/science.284.5417.760",
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked"
+  },
+  {
+    "id": "seinfeld_pandis_2016",
+    "type": "book",
+    "title": "Atmospheric Chemistry and Physics: From Air Pollution to Climate Change",
+    "author": [
+      {
+        "family": "Seinfeld",
+        "given": "John H."
+      },
+      {
+        "family": "Pandis",
+        "given": "Stavros N."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2016
+        ]
+      ]
+    },
+    "container-title": "Wiley",
+    "ISBN": "978-1-118-67810-7",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest OpenLibrary hit is 'Atmospheric Chemistry and Physics' (Seinfeld, 1998), title similarity 1.00, author match, year off",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "weibel_1973",
+    "type": "book",
+    "title": "Comparative Physiology of Animal Life",
+    "author": [
+      {
+        "family": "Weibel",
+        "given": "Ewald R."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1973
+        ]
+      ]
+    },
+    "container-title": "Oxford University Press",
+    "x-status": "rejected",
+    "x-note": "no candidate returned by the index",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "scott_2000",
+    "type": "book",
+    "title": "Wildfire in the Earth System",
+    "author": [
+      {
+        "family": "Scott",
+        "given": "Andrew C."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2000
+        ]
+      ]
+    },
+    "container-title": "Cambridge University Press",
+    "ISBN": "978-0-521-78054-6",
+    "x-status": "rejected",
+    "x-note": "no candidate returned by the index",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "ingard_1999",
+    "type": "report",
+    "title": "Notes on Sound Absorption Theory",
+    "author": [
+      {
+        "family": "Ingard",
+        "given": "Uno K."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1999
+        ]
+      ]
+    },
+    "container-title": "MIT Department of Physics",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'Sound Absorption Technology' (Ingard, 1996, doi 10.1121/1.414472), title similarity 0.71, author match, year off",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "salomons_2001",
+    "type": "book",
+    "title": "Computational Atmospheric Acoustics",
+    "author": [
+      {
+        "family": "Salomons",
+        "given": "Erik M."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2001
+        ]
+      ]
+    },
+    "container-title": "Kluwer Academic Publishers",
+    "ISBN": "9780792371618",
+    "x-status": "verified",
+    "x-note": "verified against OpenLibrary (title 1.00); ISBN added",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "lacis_et_al_2010",
+    "type": "article-journal",
+    "title": "Atmospheric CO 2 : Principal Control Knob Governing Earth’s Temperature",
+    "author": [
+      {
+        "family": "Lacis",
+        "given": "Andrew A."
+      },
+      {
+        "family": "Oinas",
+        "given": "Vladimir"
+      },
+      {
+        "family": "Ramanathan",
+        "given": "V. Ramaswamy"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2010
+        ]
+      ]
+    },
+    "container-title": "Science",
+    "DOI": "10.1126/science.1190653",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 0.99); title corrected from 'Atmospheric CO2: Principal control knob governing Earth's temperature'; DOI added",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "klein_hartmann_1993",
+    "type": "article-journal",
+    "title": "A climate feedback mechanism for the regulation of the stratospheric aerosol optical depth",
+    "author": [
+      {
+        "family": "Klein",
+        "given": "Stephen A."
+      },
+      {
+        "family": "Hartmann",
+        "given": "Gregory L."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1993
+        ]
+      ]
+    },
+    "container-title": "Journal of Geophysical Research: Atmospheres",
+    "DOI": "10.1029/93JD01036",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Modeled Dependence of Climate Feedback on CO2 and Stratospheric Aerosol Forcing at Different Latitudes' (Cao, 2026) title similarity 0.53",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "walker_et_al_1981",
+    "type": "article-journal",
+    "title": "A negative feedback mechanism for the long‐term stabilization of Earth's surface temperature",
+    "author": [
+      {
+        "family": "Walker",
+        "given": "James C. G."
+      },
+      {
+        "family": "Hays",
+        "given": "Peter B."
+      },
+      {
+        "family": "Kasting",
+        "given": "James F."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1981
+        ]
+      ]
+    },
+    "container-title": "Journal of Geophysical Research: Oceans",
+    "DOI": "10.1029/jc086ic10p09776",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 0.99); title corrected from 'A negative feedback mechanism for the long-term stabilization of Earth's surface temperature'; DOI added",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "retallack_2013",
+    "type": "book",
+    "title": "A Geological Guide to Mass Extinctions",
+    "author": [
+      {
+        "family": "Retallack",
+        "given": "Gregory J."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2013
+        ]
+      ]
+    },
+    "container-title": "Wiley-Blackwell",
+    "ISBN": "978-1-118-38400-0",
+    "x-status": "rejected",
+    "x-note": "no candidate returned by the index",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "richter_1973",
+    "type": "article-journal",
+    "title": "A model for the origin of the Pacific basin",
+    "author": [
+      {
+        "family": "Richter",
+        "given": "Friedrich M."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1973
+        ]
+      ]
+    },
+    "container-title": "Journal of Geophysical Research",
+    "DOI": "10.1029/JB078i028p06735",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Toward a model-free measure of market efficiency' (Godfrey, 2017) title similarity 0.53",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "alberts_et_al_2014",
+    "type": "book",
+    "title": "Molecular Biology of the Cell",
+    "author": [
+      {
+        "family": "Alberts",
+        "given": "Bruce"
+      },
+      {
+        "family": "Johnson",
+        "given": "Alexander"
+      },
+      {
+        "family": "Lewis",
+        "given": "Julian"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2014
+        ]
+      ]
+    },
+    "container-title": "Garland Science",
+    "ISBN": "978-0-8153-4432-2",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest OpenLibrary hit is 'Molecular Biology of the Cell' (Alberts, 1983), title similarity 1.00, author match, year off",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "doudna_charpentier_2014",
+    "type": "article-journal",
+    "title": "Genome engineering using CRISPR-Cas systems",
+    "author": [
+      {
+        "family": "Doudna",
+        "given": "Jennifer A."
+      },
+      {
+        "family": "Charpentier",
+        "given": "Emmanuelle"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2014
+        ]
+      ]
+    },
+    "container-title": "Science",
+    "DOI": "10.1126/science.1258096",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'CRISPR-Cas Systems: Prokaryotic Protection and Bioengineering Bonanza' (Doudna, 2020) title similarity 0.59",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "blankenship_2010",
+    "type": "book",
+    "title": "Molecular Mechanisms of Photosynthesis",
+    "author": [
+      {
+        "family": "Blankenship",
+        "given": "Robert E."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2010
+        ]
+      ]
+    },
+    "container-title": "Wiley-Blackwell",
+    "ISBN": "9780632043217",
+    "x-status": "verified",
+    "x-note": "verified against OpenLibrary (title 1.00); ISBN added",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "krushinskii_1962",
+    "type": "book",
+    "title": "Evolutionary Changes in Domestic Animals",
+    "author": [
+      {
+        "family": "Krushinskii",
+        "given": "V. D."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1962
+        ]
+      ]
+    },
+    "container-title": "Yale University Press",
+    "x-status": "rejected",
+    "x-note": "no candidate returned by the index",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "demar_1966",
+    "type": "article-journal",
+    "title": "Rumen fermentation and digestion",
+    "author": [
+      {
+        "family": "Demar",
+        "given": "R. G."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1966
+        ]
+      ]
+    },
+    "container-title": "Journal of Dairy Science",
+    "DOI": "10.3168/jds.S0022-0302(66)88288-4",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Nutrition, Digestion and Absorption: Fermentation in the Rumen' (Murphy, 2021) title similarity 0.46",
     "x-checked": "2026-11-18"
   }
 ]

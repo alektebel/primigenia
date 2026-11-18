@@ -1,0 +1,463 @@
+{
+  "schema": "cpore.world/1",
+  "id": "at_garden_prairies",
+  "kind": "third_party",
+  "system": {
+    "star": "K2V main-sequence dwarf",
+    "position": "fictional",
+    "distance_ly_from_sol": null
+  },
+  "name": {
+    "en": "All Tomorrows: garden prairies and shores",
+    "es": "All Tomorrows: praderas y orillas"
+  },
+  "status": "draft",
+  "facts": [
+    {
+      "id": "F1",
+      "group": "star",
+      "claim": "Stellar mass and spectral class define a K2V dwarf with reduced UV output and stable photic zones.",
+      "justification": "Cooler dwarf reduces lethal UV flux while maintaining long-term stability for prairie canopies. (given by the lore)",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 0.78,
+      "unit": "M☉",
+      "consequences": [
+        "Predictable photoperiods drive herd migration cycles.",
+        "Reduced UV stress allows dense canopy retention in mound forests."
+      ],
+      "refs": [
+        "kasting_whitmire_reynolds_1993"
+      ]
+    },
+    {
+      "id": "F20",
+      "group": "star",
+      "claim": "K dwarf flare and UV duty cycle minimizes lethal radiation while maintaining ozone shielding.",
+      "justification": "K2V stars exhibit lower high-energy flare rates than M dwarves, reducing atmospheric stripping and surface UV stress over geological timescales.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "low",
+      "unit": "duty cycle",
+      "consequences": [
+        "Allows dense canopy retention.",
+        "Reduces selection pressure for heavy DNA repair in early lineages."
+      ]
+    },
+    {
+      "id": "F21",
+      "group": "orbit",
+      "claim": "Orbital distance matches K2V luminosity for Earth-normal bolometric flux.",
+      "justification": "sqrt(0.32) ≈ 0.57 AU; 0.61 AU accounts for planetary albedo and greenhouse offset.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 0.61,
+      "unit": "AU",
+      "consequences": [
+        "Stable insolation enables perennial grasslands.",
+        "Prevents runaway icehouse or greenhouse states."
+      ],
+      "refs": [
+        "kasting_whitmire_reynolds_1993"
+      ]
+    },
+    {
+      "id": "F2",
+      "group": "orbit",
+      "claim": "Moderate axial tilt enforces cyclical resource pulses and seasonal droughts.",
+      "justification": "18° tilt drives predictable wet/dry cycles without extreme polar ice expansion, conditional on CO₂ levels.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 18,
+      "unit": "degrees",
+      "consequences": [
+        "Drives seasonal fire regimes that clear underbrush.",
+        "Synchronizes breeding windows for saltatorial prey and ground-nesting flyers."
+      ]
+    },
+    {
+      "id": "F22",
+      "group": "orbit",
+      "claim": "Lunar mass matches Earth’s Moon, stabilizing axial precession.",
+      "justification": "Sufficient mass prevents chaotic obliquity drift over geological timescales.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 0.012,
+      "unit": "Mearth",
+      "consequences": [
+        "Maintains long-term seasonal predictability.",
+        "Supports stable circadian entrainment."
+      ],
+      "refs": [
+        "carroll_ostlie_2006"
+      ]
+    },
+    {
+      "id": "F23",
+      "group": "orbit",
+      "claim": "Orbital radius matches Earth-Moon distance, yielding low tidal flux.",
+      "justification": "Distance cubed in tide equation suppresses amplitude despite moderate mass.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 380000,
+      "unit": "km",
+      "consequences": [
+        "Limits deep-water mixing, favoring shallow epicontinental seas.",
+        "Reduces coastal storm surge intensity."
+      ],
+      "refs": [
+        "carroll_ostlie_2006"
+      ]
+    },
+    {
+      "id": "F3",
+      "group": "orbit",
+      "claim": "Orbital mechanics yield minimal tidal range across shallow shelves.",
+      "justification": "Combined with moon mass and distance, spring tides remain low, preserving calm swallow seas.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 0.8,
+      "unit": "m",
+      "consequences": [
+        "Predictable shoreline exposure enables filter-feeding.",
+        "Prevents coastal erosion of Temptor roots."
+      ],
+      "refs": [
+        "carroll_ostlie_2006"
+      ]
+    },
+    {
+      "id": "F4",
+      "group": "planet",
+      "claim": "Planetary radius yields Earth-like crustal density with moderate tectonic renewal.",
+      "justification": "Silicate basalt composition supports extensive shallow shelves.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 0.92,
+      "unit": "Rearth",
+      "consequences": [
+        "Rapid erosion feeds inland basins.",
+        "Maintains atmospheric pressure via slow phosphorus recycling."
+      ]
+    },
+    {
+      "id": "F24",
+      "group": "planet",
+      "claim": "Planetary mass is consistent with 0.92 R⊕ and 0.88 g.",
+      "justification": "Density calculation confirms Earth-like silicate interior without excessive iron core.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 0.82,
+      "unit": "Mearth",
+      "consequences": [
+        "Supports moderate magnetic field generation.",
+        "Enables sustained plate tectonics."
+      ]
+    },
+    {
+      "id": "F5",
+      "group": "planet",
+      "claim": "Surface gravity relaxes square-cube scaling limits for terrestrial megafauna.",
+      "justification": "Lower load permits columnar-limbed giants, though 40 m Titans require graviportal posture, slow growth, and reinforced bone histology.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 0.88,
+      "unit": "g",
+      "consequences": [
+        "Enables massive herbivore biomass.",
+        "Reduces metabolic cost for sustained flight in Flyers."
+      ]
+    },
+    {
+      "id": "F6",
+      "group": "planet",
+      "claim": "Sidereal rotation period matches Earth-like circadian rhythms.",
+      "justification": "Day length aligns with complex neural processing and pack-hunting coordination.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 24.4,
+      "unit": "hours",
+      "consequences": [
+        "Stabilizes diurnal temperature gradients.",
+        "Aligns with crepuscular hunting peaks."
+      ],
+      "refs": [
+        "dunlap_1999"
+      ]
+    },
+    {
+      "id": "F7",
+      "group": "atmosphere",
+      "claim": "Surface pressure is slightly elevated, dampening convective turbulence.",
+      "justification": "+10% pressure modestly increases air density, reducing aerodynamic drag and slightly lowering sound attenuation.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 1.1,
+      "unit": "bar",
+      "consequences": [
+        "Low-frequency sound travels efficiently.",
+        "Increases heat retention in shallow seas."
+      ],
+      "refs": [
+        "seinfeld_pandis_2016"
+      ]
+    },
+    {
+      "id": "F8",
+      "group": "atmosphere",
+      "claim": "Oxygen concentration supports high-aerobic metabolisms without rampant fire risk.",
+      "justification": "22% pO₂ sustains Flyers’ turbine hearts and active predators while matching modern savanna fire thresholds.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 22,
+      "unit": "percent",
+      "consequences": [
+        "Enables sustained flight and large-brain thermoregulation.",
+        "Increases oxidative stress, selecting for robust DNA repair."
+      ]
+    },
+    {
+      "id": "F9",
+      "group": "atmosphere",
+      "claim": "Acoustic propagation favors low-frequency modulation over vast distances.",
+      "justification": "Dense, humid air with temperature inversions minimizes ground absorption, enabling long-range communication primarily during nocturnal/crepuscular hours.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 340,
+      "unit": "m/s",
+      "consequences": [
+        "Drives evolution of massive pinnae and low-frequency vocal sacs.",
+        "Enables acoustic ambush hunting."
+      ],
+      "refs": [
+        "ingard_1999",
+        "salomons_2001"
+      ]
+    },
+    {
+      "id": "F25",
+      "group": "atmosphere",
+      "claim": "Mean surface temperature supports liquid water and stable atmospheric ducting.",
+      "justification": "Balanced greenhouse effect maintains temperate conditions, allowing nocturnal temperature inversions that bend sound waves.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 15,
+      "unit": "°C",
+      "consequences": [
+        "Favors nocturnal activity to avoid midday heat.",
+        "Supports moisture-dependent fungal symbionts."
+      ],
+      "refs": [
+        "lacis_et_al_2010"
+      ]
+    },
+    {
+      "id": "F10",
+      "group": "climate",
+      "claim": "Stratocumulus decks at 2 km trap humidity and drive stable temperature inversions.",
+      "justification": "Persistent low cloud layers prevent rapid evaporation, maintaining perennial moisture in prairie rhizomes and coastal peat bogs. (highly speculative)",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 2.0,
+      "unit": "km",
+      "consequences": [
+        "Favors nocturnal activity.",
+        "Supports moisture-dependent fungal symbionts."
+      ]
+    },
+    {
+      "id": "F19",
+      "group": "climate",
+      "claim": "Atmospheric CO₂ concentration closes the loop on seasonal ice risk and cloud feedbacks.",
+      "justification": "Moderate greenhouse gas levels stabilize F2 obliquity-driven seasons and sustain F10 stratocumulus persistence without triggering runaway warming.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 420,
+      "unit": "ppm",
+      "consequences": [
+        "Regulates prairie fire fuel moisture.",
+        "Buffers against stellar luminosity evolution."
+      ],
+      "refs": [
+        "lacis_et_al_2010"
+      ]
+    },
+    {
+      "id": "F11",
+      "group": "ocean",
+      "claim": "Ocean coverage is dominated by shallow epicontinental shelves with low tidal range.",
+      "justification": "Gentle continental slopes create vast swallow seas matching the archipelagic magnified Aegean described in colony records. (given by the lore)",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 50,
+      "unit": "percent",
+      "consequences": [
+        "Limits deep-water megafauna, pushing competition to air and shallow shores.",
+        "Creates stable nurseries for Finger Fishers."
+      ],
+      "refs": [
+        "walker_et_al_1981"
+      ]
+    },
+    {
+      "id": "F12",
+      "group": "geology",
+      "claim": "Soil chemistry splits into alkaline prairie loams, acidic coastal peats, and biogenic mound forests.",
+      "justification": "Weathered basalt and quartz-sandstone leach into nutrient-rich loams, while calcareous groundwater upwellings fuse with fungal hyphae to form rigid topography.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "5.5–7.8",
+      "unit": "pH",
+      "consequences": [
+        "Forces deep-rooting strategies in flora.",
+        "Provides anchored substrates for sessile Temptor females."
+      ]
+    },
+    {
+      "id": "F13",
+      "group": "geology",
+      "claim": "Tectonic activity is moderate, recycling phosphorus without disrupting garden stability.",
+      "justification": "Slow plate drift preserves engineered trophic simplicity while replenishing soil phosphates essential for prairie grasses.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 1.8,
+      "unit": "cm/yr",
+      "consequences": [
+        "Prevents nutrient depletion that would collapse herbivore populations.",
+        "Maintains atmospheric pressure through slow volcanic outgassing."
+      ]
+    },
+    {
+      "id": "F14",
+      "group": "chemistry",
+      "claim": "Base biochemistry follows CHNOPS architecture with Earth-standard chirality.",
+      "justification": "Qu genetic stock preserved terrestrial molecular structure, ensuring shared pathogen susceptibility and cross-species compatibility. (given by the lore)",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "consequences": [
+        "Enables universal disease vectors that can reset population booms.",
+        "Allows player lineages to decipher foreign pheromones and neural signals."
+      ],
+      "refs": [
+        "alberts_et_al_2014"
+      ]
+    },
+    {
+      "id": "F15",
+      "group": "biochemistry",
+      "claim": "Qu-engineered synthetic proteins are heritable and retained only when conferring niche advantages.",
+      "justification": "Artificial metabolic pathways were grafted onto Star People stock; natural selection prunes costly shunts while preserving functional adaptations. (Lore-given; mechanism speculative)",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "consequences": [
+        "Flyers maintain high-efficiency starfish-shaped O₂ pumps.",
+        "Predators wield precision grip switchblade claws.",
+        "Temptors anchor via phenolic tannins."
+      ]
+    },
+    {
+      "id": "F16",
+      "group": "biochemistry",
+      "claim": "Photosynthetic pigment arrays shift absorption peaks to match stellar flux and canopy ecology.",
+      "justification": "K2V spectrum selects for carotenoid-rich canopies that absorb red/near-IR light, yielding gold-green prairie sheens and reducing photoinhibition.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 650,
+      "unit": "nm",
+      "consequences": [
+        "Drives cryptic lateral striping in herbivores.",
+        "Reduces light-stress during peak insolation."
+      ],
+      "refs": [
+        "blankenship_2010"
+      ]
+    },
+    {
+      "id": "F17",
+      "group": "biochemistry",
+      "claim": "Neural retention carries severe thermal and energetic penalties when unutilized.",
+      "justification": "Qu gene-locks preserved encephalic volume in grazer bodies; post-Qu selection rapidly prunes unused neural tissue due to heat trapping and caloric drain. (Lore-given)",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "consequences": [
+        "Mantelopes lose cognitive function, reverting to instinct.",
+        "Only lineages repurposing brains for tool-use or social signaling survive."
+      ]
+    },
+    {
+      "id": "F18",
+      "group": "biochemistry",
+      "claim": "Digestive symbiosis and coprophagy maximize nitrogen extraction from nutrient-poor loams.",
+      "justification": "Shallow prairie soils select for rapid biomass processing; symbiotic fermentation extracts maximum nutrients from tough grasses and carrion.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "consequences": [
+        "Enables pack herding around shared defecation sites.",
+        "Supports carrion-scavenging Bone Crushers that recycle marrow."
+      ]
+    }
+  ],
+  "changelog": [
+    {
+      "date": "2026-11-18",
+      "who": "autoloop",
+      "what": "world canon drafted by the council chair from 25 facts (planet drafts, peer reviews, astrobio referee)"
+    },
+    {
+      "date": "2026-11-18",
+      "who": "autoloop",
+      "what": "removed rejected references; retired real facts left without references"
+    }
+  ],
+  "lore_source": "alltomorrows"
+}
