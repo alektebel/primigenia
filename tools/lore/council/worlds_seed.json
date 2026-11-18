@@ -1551,5 +1551,121 @@
    }
   ],
   "batch": 1
+ },
+ {
+  "id": "metallic",
+  "name": {
+   "en": "Metallic world",
+   "es": "Mundo metálico"
+  },
+  "kind": "fictional",
+  "system": {
+   "star": "a G/K dwarf",
+   "position": "a stripped, iron-rich world, a tidally heated moon with sulfide vents, or a metal-rich asteroid-belt body; fictional",
+   "distance_ly_from_sol": null
+  },
+  "stage": "space",
+  "habitat_word": "world",
+  "creature_kind": "new",
+  "notes": "METAL CREATURES where metal bodies are FORCED by the environment, not decorative. Real anchors first: the scaly-foot snail Chrysomallon squamiferum with iron-sulfide armour (Warén et al. 2003, Science), magnetotactic magnetite chains (Blakemore 1975, Science), chiton magnetite teeth (Lowenstam 1962, Geological Society of America Bulletin), metal-hyperaccumulator plants, iron-oxidising bacteria. Then a world rich in exposed metals and sulfides: metal-armoured grazers, conductive-bodied creatures that use electric currents, electrolytic hunters, organisms that smelt with vent heat; magnetic interactions with the creatures of the 'magneto' world are a crosslink. The referee must separate what biology can really do with metals (deposit oxides and sulfides, never grow solid native metal) from the highly speculative. Our own names only; no names from books or films. The referee must say 'highly speculative' (or 'fantasy') wherever that is true and cite only works it is sure exist.",
+  "creatures": [],
+  "seed_refs": [
+   {
+    "author": "Warén, A.",
+    "year": 2003,
+    "title": "A hot-vent gastropod with iron sulfide dermal sclerites",
+    "venue": "Science"
+   },
+   {
+    "author": "Lowenstam, H. A.",
+    "year": 1962,
+    "title": "Magnetite in denticle capping in recent chitons (Polyplacophora)",
+    "venue": "Geological Society of America Bulletin"
+   },
+   {
+    "author": "Blakemore, R.",
+    "year": 1975,
+    "title": "Magnetotactic bacteria",
+    "venue": "Science"
+   }
+  ],
+  "species": [
+   {
+    "seed": null,
+    "n": 3
+   },
+   {
+    "seed": "metal-armoured grazers and conductive-bodied creatures that use currents (what biology can really deposit: iron sulfides and oxides, magnetite)",
+    "n": 2
+   },
+   {
+    "seed": "an electrolytic hunter and a vent-heat smelting organism, honestly graded for how much is speculative",
+    "n": 2
+   },
+   {
+    "seed": "a CRAB-LIKE species that converged on the crab body plan (flattened carapace, armour, sideways walking, a tucked abdomen or tail equivalent, claws) from a totally different lineage than any crab. Write honest first-principles chains for WHY this world's physics pushes toward a crab; if it is a stretch, say so plainly (that is part of the joke). Its second journal line is a dry wink at carcinisation. Own name, nothing from books or films.",
+    "n": 1,
+    "carcinised": true
+   }
+  ],
+  "batch": 1
+ },
+ {
+  "id": "deepinterior",
+  "name": {
+   "en": "Life inside a planet",
+   "es": "Vida dentro de un planeta"
+  },
+  "kind": "fictional",
+  "system": {
+   "star": "a G dwarf",
+   "position": "the crust, mantle and core of a rocky planet; fictional",
+   "distance_ly_from_sol": null
+  },
+  "stage": "space",
+  "habitat_word": "world",
+  "creature_kind": "new",
+  "notes": "LIFE INSIDE A PLANET, in two honest tiers. (a) The real deep biosphere: subsurface microbes kilometres down in the crust (Onstott; the Magnabosco et al. 2018 estimate; Desulforudis audaxviator, Chivian et al. 2008, Science), radiolysis-powered life, the hot-crust limit of about 122 C (Takai et al. 2008, PNAS); creatures of deep aquifers, lava-tube and fracture ecosystems. (b) A mantle-boundary or core-edge tier that is HIGHLY SPECULATIVE: exotic life in a molten, supercritical or plasma-like environment (no carbon chemistry is possible there: say so; maybe information structures in convection or magnetic-dynamo patterns, flagged as near-fantasy). Also seismic-sensing creatures that 'hear' the planet, and creatures that ride convection. The referee must clearly separate plausible / speculative / fantasy per chain, and say why the core itself is essentially excluded for anything chemistry-based. Our own names only; no names from books or films. The referee must say 'highly speculative' (or 'fantasy') wherever that is true and cite only works it is sure exist.",
+  "creatures": [],
+  "seed_refs": [
+   {
+    "author": "Chivian, D.",
+    "year": 2008,
+    "title": "Environmental genomics reveals a single-species ecosystem deep within Earth",
+    "venue": "Science"
+   },
+   {
+    "author": "Takai, K.",
+    "year": 2008,
+    "title": "Cell proliferation at 122 C and isotopically heavy CH4 production by a hyperthermophilic methanogen under high-pressure cultivation",
+    "venue": "Proceedings of the National Academy of Sciences"
+   },
+   {
+    "author": "Magnabosco, C.",
+    "year": 2018,
+    "title": "The biomass and biodiversity of the continental subsurface",
+    "venue": "Nature Geoscience"
+   }
+  ],
+  "species": [
+   {
+    "seed": null,
+    "n": 3
+   },
+   {
+    "seed": "creatures of deep aquifers and fractures that live on radiolysis and hear the planet's seismic waves (tier a, plausible to fixable)",
+    "n": 2
+   },
+   {
+    "seed": "a mantle-boundary or core-edge 'life' that rides convection or dynamo patterns, honestly marked near-fantasy (tier b)",
+    "n": 1
+   },
+   {
+    "seed": "a CRAB-LIKE species that converged on the crab body plan (flattened carapace, armour, sideways walking, a tucked abdomen or tail equivalent, claws) from a totally different lineage than any crab. Write honest first-principles chains for WHY this world's physics pushes toward a crab; if it is a stretch, say so plainly (that is part of the joke). Its second journal line is a dry wink at carcinisation. Own name, nothing from books or films.",
+    "n": 1,
+    "carcinised": true
+   }
+  ],
+  "batch": 1
  }
 ]
