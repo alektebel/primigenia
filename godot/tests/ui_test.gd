@@ -7,6 +7,9 @@ const Mock := preload("res://ui/mock_source.gd")
 const GameUI := preload("res://ui/game_ui.gd")
 const Radial := preload("res://ui/radial_menu.gd")
 const Palette := preload("res://ui/palette.gd")
+const Style := preload("res://ui/style.gd")
+const Glyphs := preload("res://ui/glyphs.gd")
+const Strings := preload("res://ui/strings.gd")
 const AudioManager := preload("res://audio/audio_manager.gd")
 const Settings := preload("res://audio/audio_settings.gd")
 
@@ -23,6 +26,7 @@ func ids(list: Array) -> Array:
 	return list.map(func(a): return a["id"])
 
 func _initialize() -> void:
+	test_foundations()
 	test_modes()
 	test_card()
 	test_radial_geometry()
@@ -283,3 +287,37 @@ func test_audio_manager() -> void:
 	am2.free()
 	am.queue_free()
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
+
+# S0: fonts, glyphs, strings, sizes.
+func test_foundations() -> void:
+	for n in Glyphs.NAMES:
+		ok(Glyphs.has(n), "glyph %s loads" % n)
+	ok(Glyphs.NAMES.size() == 33, "33 glyphs")
+	for id in ["bite", "charge", "spit", "tail_strike", "sing", "dance", "charm", "pose", "roar", "display", "observe", "eat", "guard", "dodge"]:
+		ok(Glyphs.has(Glyphs.for_move(id)), "move %s has a glyph" % id)
+	for i in 4:
+		ok(Glyphs.has(Glyphs.for_item(i)), "item %d has a glyph" % i)
+	for m in Modes.ALL + [Modes.EAT]:
+		ok(Glyphs.has(Glyphs.for_mode(m)), "mode %s has a glyph" % m)
+	ok(Glyphs.for_move("no_such_move") == "attack", "an unknown move falls back to attack")
+	for k in Strings.TABLE:
+		var row: Array = Strings.TABLE[k]
+		ok(row.size() == 2 and str(row[0]) != "" and str(row[1]) != "", "string %s has both languages" % k)
+		ok(str(row[1]).length() <= int(1.6 * str(row[0]).length()) + 4, "string %s: es is not much longer than en (%s)" % [k, row[1]])
+	var g = root.get_node("Game")
+	var old_lang = g.settings.get("language", "")
+	g.settings["language"] = "es"
+	ok(Strings.t("befriend") == "Amistad" and Strings.t("learned", ["Salto"]) == "Aprendido: Salto", "Spanish strings with arguments")
+	g.settings["language"] = "en"
+	ok(Strings.t("befriend") == "Befriend" and Strings.t("learned", ["Pounce"]) == "Learned: Pounce", "English strings with arguments")
+	g.settings["language"] = old_lang
+	var old_scale = g.settings.get("ui_scale", 1.0)
+	g.settings["ui_scale"] = 1.0
+	var u1 := Style.u(10.0)
+	g.settings["ui_scale"] = 1.5
+	ok(is_equal_approx(u1, 10.0) and is_equal_approx(Style.u(10.0), 15.0), "Style.u scales with ui_scale")
+	g.settings["ui_scale"] = old_scale
+	ok(Style.font_sans() != null and Style.font_sans(true) != null and Style.font_italic() != null, "fonts load")
+	for f in ["OFL-AlegreyaSans.txt", "OFL-Alegreya.txt"]:
+		ok(FileAccess.file_exists("res://ui/fonts/" + f), "licence %s sits next to the fonts" % f)
+	ok(Modes.NONE == &"" and Modes.is_mode(Modes.NONE), "Modes.NONE exists")

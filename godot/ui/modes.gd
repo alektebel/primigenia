@@ -8,6 +8,8 @@ const OBSERVE := &"observe"
 const INTIMIDATE := &"intimidate"
 ## Eat replaces Attack in the radial of a carcass (it is not one of the four modes of a living creature).
 const EAT := &"eat"
+## No mode chosen yet: after a selection keys 1-4 do nothing until the player picks one on the ring.
+const NONE := &""
 const ALL: Array[StringName] = [ATTACK, BEFRIEND, OBSERVE, INTIMIDATE]
 
 const TITLES := {ATTACK: "Attack", BEFRIEND: "Befriend", OBSERVE: "Observe", INTIMIDATE: "Intimidate", EAT: "Eat"}
@@ -52,7 +54,7 @@ const ABILITIES := {
 }
 
 static func is_mode(m) -> bool:
-	return StringName(m) in ALL or StringName(m) == EAT
+	return StringName(m) in ALL or StringName(m) == EAT or StringName(m) == NONE
 
 static func abilities_for(mode) -> Array:
 	var out: Array = []

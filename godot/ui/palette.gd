@@ -1,6 +1,25 @@
 extends RefCounted
-## Palette C "Current+" HUD colours, taken from web/stage/stage.css (warm, calm, readable).
+## HUD colours. The diegetic tokens (docs/godot/UI-DIEGETIC.md section 2) come first; the older panel colours below
+## are kept only for the dev tools, the studio and the main menu, which keep their own look.
 
+# Diegetic UI tokens.
+const BONE := Color("F4EDE0")      # every neutral mark
+const FOG := Color("C9D3D4")       # secondary text, disabled marks
+const INK := Color("0E1715")       # the halo behind marks, never a panel
+const LICHEN := Color("86D9B0")    # social: befriend, trust
+const EMBER_HOT := Color("F0704A") # aggressive: attack, hostile, low health
+const OCHRE := Color("EBCB7A")     # observe, hunger, eating
+const DUSK := Color("CDBDF2")      # intimidate
+const COPPER := Color("E09A5F")    # DNA, progress, the one accent
+const MIST := Color("9CC4DD")      # stamina, guard, dodge
+
+## Mode -> colour and the line style of its ring (section 4).
+const MODE_COLORS := {&"befriend": LICHEN, &"attack": EMBER_HOT, &"observe": OCHRE, &"intimidate": DUSK, &"eat": OCHRE}
+const MODE_STYLES := {&"befriend": &"smooth", &"attack": &"teeth", &"observe": &"dots", &"intimidate": &"double", &"eat": &"smooth"}
+## Role -> outline shape (section 7.14); the role colours below are for the journal only.
+const ROLE_SHAPES := {"basic": &"circle", "engage": &"triangle", "poke": &"diamond", "control": &"square", "defence": &"dome", "signature": &"hexagon"}
+
+# Legacy tokens (web/stage/stage.css palette).
 const PANEL := Color("13241edb")
 const PANEL_SOLID := Color("17281f")
 const PANEL_HOVER := Color("344c35")
@@ -91,3 +110,13 @@ static func bar(color: Color, height: int = 9) -> ProgressBar:
 	b.add_theme_stylebox_override("background", bg)
 	b.add_theme_stylebox_override("fill", fg)
 	return b
+
+## Theme of the diegetic UI: the Alegreya fonts and bone text, no style boxes at all.
+static func make_diegetic_theme() -> Theme:
+	var t := Theme.new()
+	t.default_font = load("res://ui/fonts/AlegreyaSans-Regular.ttf")
+	t.default_font_size = 16
+	t.set_color("font_color", "Label", BONE)
+	t.set_color("font_outline_color", "Label", Color(INK, 0.55))
+	t.set_constant("outline_size", "Label", 4)
+	return t
