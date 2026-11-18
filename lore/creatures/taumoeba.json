@@ -81,8 +81,8 @@
       "provenance": {
         "council_run": "autoloop-2026-11-18",
         "by": [
-          "physicist",
-          "mythmaker"
+          "mythmaker",
+          "physicist"
         ]
       }
     },
@@ -209,8 +209,8 @@
       "provenance": {
         "council_run": "autoloop-2026-11-18",
         "by": [
-          "naturalist",
           "designer",
+          "naturalist",
           "wildcard"
         ]
       }
@@ -363,6 +363,11 @@
       "date": "2026-11-18",
       "who": "autoloop",
       "what": "removed rejected references from analogues"
+    },
+    {
+      "date": "2026-11-18",
+      "who": "import_got",
+      "what": "merged run autoloop-2026-11-18: 0 chain(s) added, 0 plausibility block(s) filled, 0 relation(s) added"
     }
   ],
   "lore_ref": {

@@ -47,7 +47,7 @@ Trait ← Internal gas vesicles exclude liquid to lower colony density ← Hygro
   - Analogue: Cyanobacteria gas vesicles (e.g. Anabaena, Microcystis)—Walsby floatation regulation in aquatic media; airborne microbes as bioaerosols (Bacillus/Aspergillus spores) lofted by convection without vesicles.: as named by the judge; no mechanism or reference recorded
   - Analogue: real biology behind this chain: see the cited works; chain wording is the council's own
   - Fix: Treat haze drift as buoyancy inside hygroscopic Astrophage–water microdroplets (vesicles exclude liquid phase and tune density), plus passive lofting as sub‑10 µm aerosol; drop the claim that 1.7 bar CO₂ alone amplifies “lift per volume” for a cell in open gas—Stokes/ballistic limits still dominate unless the organism is a droplet nucleus or colonial raft.
-- **Chain provenance:** council run `autoloop-2026-11-18`; by physicist, mythmaker
+- **Chain provenance:** council run `autoloop-2026-11-18`; by mythmaker, physicist
 
 ### taumoeba.c2: Enzymatic pits dissolve photoconductor surfaces
 
@@ -85,7 +85,7 @@ Trait ← Compartmentalized redox buffering via ion gradients ← Adaptation to 
   - Analogue: Anoxygenic phototrophs with intracytoplasmic membranes (Rhodobacter spheroides); mixotrophic protists (Euglena); mitochondrial/H+ gradient segregation (general textbook endosymbiosis).: as named by the judge; no mechanism or reference recorded
   - Analogue: real biology behind this chain: see the cited works; chain wording is the council's own
   - Fix: Clarify that “Toggle” is facultative mixotrophy: separate cytoplasmic or invagination compartments with proton/sodium motifs (not full synthetic ion-exchange polymers); align F16 by noting other lineages later domesticate the same machinery as endosymbionts—this trait is ancestral compartmentalization in Taumoeba, not the host–symbiont version.
-- **Chain provenance:** council run `autoloop-2026-11-18`; by naturalist, designer, wildcard
+- **Chain provenance:** council run `autoloop-2026-11-18`; by designer, naturalist, wildcard
 
 ### taumoeba.c4: Mucilage rafts couple near-field pressure waves
 
@@ -143,3 +143,4 @@ council run `autoloop-2026-11-18`; by designer, mythmaker, naturalist, physicist
 - 2026-11-18 import_got: imported from council run autoloop-2026-11-18
 - 2026-11-18 autoloop: removed rejected references from analogues
 - 2026-11-18 autoloop: removed rejected references from analogues
+- 2026-11-18 import_got: merged run autoloop-2026-11-18: 0 chain(s) added, 0 plausibility block(s) filled, 0 relation(s) added

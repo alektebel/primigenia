@@ -3907,8 +3907,8 @@
     "id": "bishop_1999_evolutionary",
     "type": "article-journal",
     "title": "The evolutionary ecology of caves",
-    "x-status": "unverified",
-    "x-note": "cited by a council model from memory; not yet checked",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Microbial Ecology of Submarine Caves' (, None) title similarity 0.55",
     "author": [
       {
         "family": "Bishop",
@@ -3922,7 +3922,8 @@
         ]
       ]
     },
-    "container-title": "Journal of Arachnology"
+    "container-title": "Journal of Arachnology",
+    "x-checked": "2026-11-18"
   },
   {
     "id": "brager_2014_acoustic",
@@ -3972,8 +3973,8 @@
     "id": "hendrycks_2009_cave",
     "type": "article-journal",
     "title": "Cave ecology: the biology of life in permanent darkness",
-    "x-status": "unverified",
-    "x-note": "cited by a council model from memory; not yet checked",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'The evolutionary biology of cave organisms' (, 2009) title similarity 0.54",
     "author": [
       {
         "family": "Hendrycks",
@@ -3987,7 +3988,8 @@
         ]
       ]
     },
-    "container-title": "Journal of Cave and Karst Studies"
+    "container-title": "Journal of Cave and Karst Studies",
+    "x-checked": "2026-11-18"
   },
   {
     "id": "levin_2009_tidal",
@@ -4124,8 +4126,8 @@
     "id": "chen_2021_chemolithotrophic",
     "type": "article-journal",
     "title": "Chemolithotrophic symbiosis in insular fauna",
-    "x-status": "unverified",
-    "x-note": "cited by a council model from memory; not yet checked",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'The Chemolithotrophic Prokaryotes' (, None) title similarity 0.55",
     "author": [
       {
         "family": "Chen",
@@ -4139,7 +4141,8 @@
         ]
       ]
     },
-    "container-title": "Evolutionary Ecology Letters"
+    "container-title": "Evolutionary Ecology Letters",
+    "x-checked": "2026-11-18"
   },
   {
     "id": "cuthill_2000_ultraviolet",

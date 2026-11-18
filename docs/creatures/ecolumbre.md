@@ -148,7 +148,7 @@ Trait ← Spring tides flood the lower waterfall overhang ← Adults carry eggs 
   - Rename/reframe the nest site as a cool, humid upper lava tube (drip-fed microclimate), not dry air; adults move eggs there before summer desiccation peaks and only use tide rhythm to cross flooded lower tubes—not because the nest chamber is arid.
   - scores: astrobio 5, designer 8, physicist 7
   - Analogue: Tidal spawning cues: fiddler crabs and intertidal worms (semilunar rhythms); humid cave oviposition: cave salamanders (Eurycea) and some cave crickets in stable moist refugia: as named by the judge; no mechanism or reference recorded
-  - Analogue: real biology behind this chain: see the cited works; chain wording is the council's own (Hendrycks 2009 [unverified])
+  - Analogue: real biology behind this chain: see the cited works; chain wording is the council's own
   - Fix: Rename/reframe the nest site as a cool, humid upper lava tube (drip-fed microclimate), not dry air; adults move eggs there before summer desiccation peaks and only use tide rhythm to cross flooded lower tubes—not because the nest chamber is arid.
 - **Chain provenance:** council run `autoloop-2026-11-18`; by naturalist, designer, physicist
 
@@ -167,7 +167,7 @@ Trait ← 1.05g gravity makes high climbs costly ← Summer UV spikes at altitud
   - Molt abrasion at shaded alpine basalt grit licks near snowline gullies (F15), chiefly at dawn/dusk—not midday 1.4× UV exposure; frame the climb as mineral/Ca uptake plus keratin filing, with UV only as the seasonal trigger to shed.
   - scores: astrobio 6, designer 9, physicist 8
   - Analogue: Decapod crustaceans: mineral reservoir and hardening at ecdysis; geophagy at mineral licks in herbivorous reptiles and birds; insular reptiles: episodic sloughing after sun/UV exposure: as named by the judge; no mechanism or reference recorded
-  - Analogue: real biology behind this chain: see the cited works; chain wording is the council's own (Bishop 1999 [unverified])
+  - Analogue: real biology behind this chain: see the cited works; chain wording is the council's own
   - Fix: Molt abrasion at shaded alpine basalt grit licks near snowline gullies (F15), chiefly at dawn/dusk—not midday 1.4× UV exposure; frame the climb as mineral/Ca uptake plus keratin filing, with UV only as the seasonal trigger to shed.
 - **Chain provenance:** council run `autoloop-2026-11-18`; by designer, mythmaker, physicist
 
@@ -226,4 +226,5 @@ council run `manual example 2026-11-18`; by opus (derivation), astrobio/composer
 
 - 2026-11-18 opus: first example of the standard, from the owner's concept 'sees sound, talks with light'
 - 2026-11-18 import_got: merged run autoloop-2026-11-18: 5 chain(s) added, 0 plausibility block(s) filled, 8 relation(s) added
+- 2026-11-18 autoloop: removed rejected references from analogues
 - 2026-11-18 autoloop: removed rejected references from analogues

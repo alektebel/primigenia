@@ -415,10 +415,7 @@
           },
           {
             "organism": "real biology behind this chain",
-            "mechanism": "see the cited works; chain wording is the council's own",
-            "refs": [
-              "hendrycks_2009_cave"
-            ]
+            "mechanism": "see the cited works; chain wording is the council's own"
           }
         ],
         "scores": {
@@ -484,10 +481,7 @@
           },
           {
             "organism": "real biology behind this chain",
-            "mechanism": "see the cited works; chain wording is the council's own",
-            "refs": [
-              "bishop_1999_evolutionary"
-            ]
+            "mechanism": "see the cited works; chain wording is the council's own"
           }
         ],
         "scores": {
@@ -670,6 +664,11 @@
       "date": "2026-11-18",
       "who": "import_got",
       "what": "merged run autoloop-2026-11-18: 5 chain(s) added, 0 plausibility block(s) filled, 8 relation(s) added"
+    },
+    {
+      "date": "2026-11-18",
+      "who": "autoloop",
+      "what": "removed rejected references from analogues"
     },
     {
       "date": "2026-11-18",

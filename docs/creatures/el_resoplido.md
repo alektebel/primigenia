@@ -60,7 +60,7 @@ Trait ← Digests toxic sulfur crusts for sulfur and minerals ← Symbionts conv
   - Fumarole crusts rich in sulfur, SO₂/H₂S (F23) are toxic to generalists (F26) but abundant; specialist scavenger with chemolithotrophic or sulfur-oxidizing gut symbionts is a standard island-radiation niche (F27). Detoxifying vent minerals while eating carcass flesh matches one shared biochemistry (F24). Risk of choking on elemental sulfur without symbiont priming matches slow oxidation kinetics.
   - scores: astrobio 8, skeptic 6
   - Analogue: Giant tubeworm Riftia pachyptila and vestimentiferans with thioautotrophic bacterial symbionts (sulfide oxidation); shallow-water sulfide-oxidizing symbioses in lucinid and vesicomyid clams; terrestrial/soil sulfur bacteria associations in some detritivores (weaker analogue).: as named by the judge; no mechanism or reference recorded
-  - Analogue: real biology behind this chain: see the cited works; chain wording is the council's own (Chen 2021 [unverified])
+  - Analogue: real biology behind this chain: see the cited works; chain wording is the council's own
   - Fix: Fumarole crusts rich in sulfur, SO₂/H₂S (F23) are toxic to generalists (F26) but abundant; specialist scavenger with chemolithotrophic or sulfur-oxidizing gut symbionts is a standard island-radiation niche (F27). Detoxifying vent minerals while eating carcass flesh matches one shared biochemistry (F24). Risk of choking on elemental sulfur without symbiont priming matches slow oxidation kinetics.
 - **Chain provenance:** council run `autoloop-2026-11-18`; by naturalist/qwen
 
@@ -130,4 +130,5 @@ council run `autoloop-2026-11-18`; by naturalist/qwen
 ## Changelog
 
 - 2026-11-18 import_got: imported from council run autoloop-2026-11-18
+- 2026-11-18 autoloop: removed rejected references from analogues
 - 2026-11-18 autoloop: removed rejected references from analogues
