@@ -18,6 +18,7 @@ const Course := preload("res://devtools/zoo/zoo_course.gd")
 var morph_ids: Array = []
 var course_name := "all"
 var repeat := true
+var auto_build := true           # tests build by hand
 var with_visuals := true         # tests turn the meshes and the rigs off
 var runners: Array = []
 var camera: Camera3D
@@ -33,6 +34,8 @@ var _drag := false
 var _clock := 0.0
 
 func _ready() -> void:
+	if not auto_build:
+		return
 	var args: Dictionary = Game.zoo_args if "zoo_args" in Game else {}
 	if args.is_empty():
 		args = parse_args(OS.get_cmdline_user_args())
