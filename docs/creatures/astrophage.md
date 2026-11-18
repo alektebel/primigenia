@@ -47,7 +47,7 @@ Trait ← Membrane self-organizes into an ion-acoustic plasma crystal ← Sheath
   - Analogue: Cyanobacteria / purple bacteria—narrow-band resonant absorption (chlorophyll or bacteriochlorophyll) feeding metabolism; mechanism analog only (plasma line opacity vs organic pigments).: as named by the judge; no mechanism or reference recorded
   - Analogue: real biology behind this chain: see the cited works; chain wording is the council's own (Tsytovich 2007 [verified])
   - Fix: Limit the Yukawa lattice to microparticle-scale ordering inside flux-tube dusty condensations (F13, F21), not a stable membrane at τ=1; rescale Photon Siphon to radiation-pressure thrust plus slow resonant heating (~0.01–1% effective line-capture, Earth-photosynthesis order of magnitude), not 5% of 63 MW/m² s⁻¹ converted to mass/charge.
-- **Chain provenance:** council run `autoloop-2026-11-18`; by physicist, mythmaker, wildcard, designer
+- **Chain provenance:** council run `autoloop-2026-11-18`; by designer, mythmaker, physicist, wildcard
 
 ### astrophage.c2: Diamagnetic current loops anchor to flux boundaries
 
@@ -66,7 +66,7 @@ Trait ← Induces plasma currents to expel ambient magnetic pressure ← Anchors
   - Analogue: Magnetotactic bacteria (e.g. Magnetospirillum)—intracellular magnetite aligns body to geomagnetic field lines for oriented swimming, not levitation (Blakemore 1975).: as named by the judge; no mechanism or reference recorded
   - Analogue: real biology behind this chain: see the cited works; chain wording is the council's own
   - Fix: Replace free levitation over granules with confinement in low-β, closed flux tubes and spot umbrae (F21, F9): passive diamagnetic/current-loop shedding reduces drift shear, does not cancel 274 m s⁻² gravity; immunity = anchored in tube, not hovering open photosphere.
-- **Chain provenance:** council run `autoloop-2026-11-18`; by physicist, naturalist, wildcard
+- **Chain provenance:** council run `autoloop-2026-11-18`; by naturalist, physicist, wildcard
 
 ### astrophage.c3: Porous launch sacs couple to magnetoacoustic resonance
 
@@ -85,7 +85,7 @@ Trait ← Fills with plasma during compression phase of magnetoacoustic waves �
   - Analogue: Ballistospore fungi (e.g. Basidiomycota)—cavity resonance and sudden rupture eject spores onto external air currents; external flow does the long-range transport.: as named by the judge; no mechanism or reference recorded
   - Analogue: real biology behind this chain: see the cited works; chain wording is the council's own
   - Fix: Match sac resonance to magnetoacoustic/granule pumping (F7, F8) and treat Spicule Surf as opportunistic entrainment in existing upflows at ~5–30 km/s with a tight phase window; 50 km/s only at chromospheric footpoints, with shear damage if mis-timed.
-- **Chain provenance:** council run `autoloop-2026-11-18`; by physicist, naturalist, wildcard
+- **Chain provenance:** council run `autoloop-2026-11-18`; by naturalist, physicist, wildcard
 
 ### astrophage.c4: Helical body rides magnetic flux tubes
 
@@ -123,7 +123,7 @@ Trait ← Sheds stored charge to form a transient current loop ← Couples to pr
   - Analogue: Weak only: animals and spores lifted by wildfire or thunderstorm updrafts—passive use of violent external mass motion, not coupling to the energy source.: as named by the judge; no mechanism or reference recorded
   - Analogue: real biology behind this chain: see the cited works; chain wording is the council's own (Parker 1988 [unverified])
   - Fix: Highly speculative: organism cannot tap flare-scale reconnection (F12, ~10²²–10²⁴ J) without destruction; Flare Skip = brief hitch on pre-accelerated surge or surge channel edge during X-class events (F2), launched from sheltered flux tube (F21), cooldown tied to flare cadence, no offensive damage from launch plasma.
-- **Chain provenance:** council run `autoloop-2026-11-18`; by physicist, naturalist, designer
+- **Chain provenance:** council run `autoloop-2026-11-18`; by designer, naturalist, physicist
 
 ## Secrets
 
@@ -144,3 +144,4 @@ council run `autoloop-2026-11-18`; by designer, mythmaker, naturalist, physicist
 
 - 2026-11-18 import_got: imported from council run autoloop-2026-11-18
 - 2026-11-18 autoloop: removed rejected references from analogues
+- 2026-11-18 import_got: merged run autoloop-2026-11-18: 0 chain(s) added, 0 plausibility block(s) filled, 0 relation(s) added

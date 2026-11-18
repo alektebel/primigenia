@@ -87,10 +87,10 @@
       "provenance": {
         "council_run": "autoloop-2026-11-18",
         "by": [
-          "physicist",
+          "designer",
           "mythmaker",
-          "wildcard",
-          "designer"
+          "physicist",
+          "wildcard"
         ]
       }
     },
@@ -154,8 +154,8 @@
       "provenance": {
         "council_run": "autoloop-2026-11-18",
         "by": [
-          "physicist",
           "naturalist",
+          "physicist",
           "wildcard"
         ]
       }
@@ -220,8 +220,8 @@
       "provenance": {
         "council_run": "autoloop-2026-11-18",
         "by": [
-          "physicist",
           "naturalist",
+          "physicist",
           "wildcard"
         ]
       }
@@ -360,9 +360,9 @@
       "provenance": {
         "council_run": "autoloop-2026-11-18",
         "by": [
-          "physicist",
+          "designer",
           "naturalist",
-          "designer"
+          "physicist"
         ]
       }
     }
@@ -387,6 +387,11 @@
       "date": "2026-11-18",
       "who": "autoloop",
       "what": "removed rejected references from analogues"
+    },
+    {
+      "date": "2026-11-18",
+      "who": "import_got",
+      "what": "merged run autoloop-2026-11-18: 0 chain(s) added, 0 plausibility block(s) filled, 0 relation(s) added"
     }
   ],
   "lore_ref": {
