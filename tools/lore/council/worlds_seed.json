@@ -1321,5 +1321,52 @@
    }
   ],
   "batch": 1
+ },
+ {
+  "id": "wheels",
+  "name": {
+   "en": "The highway world",
+   "es": "El mundo de las autopistas"
+  },
+  "kind": "fictional",
+  "system": {
+   "star": "a G/K dwarf",
+   "position": "fictional",
+   "distance_ly_from_sol": null
+  },
+  "stage": "space",
+  "habitat_word": "world",
+  "creature_kind": "new",
+  "notes": "A planet with natural 'highways': long, flat, hard surfaces (vast salt flats and playas, solidified basalt sheet-flows, wind-polished pavements, frozen lake plains, ancient lava channels linking regions) where wheeled locomotion beats legs. Real anchors: Gould 1981 'Kingdoms without wheels' (essay in Hen's Teeth and Horse's Toes); LaBarbera 1983 'Why the wheels won't go' (American Naturalist); real rollers: the wheel spider Carparachne aureoflava, the mother-of-pearl moth caterpillar, pangolin and armadillo balling; the bacterial flagellar motor, the one true biological rotary axle (Berg and Anderson 1973, Nature). Derive honestly the hard problem: how a rotating part stays alive (no blood vessels or nerves across a free joint: a dead keratinous or mineral wheel grown and shed like antlers or teeth, a symbiont wheel, or a detachable rolling organism), how it evolves through intermediate steps (rolling-body animals first), braking, steering, what happens off-road (why they also keep legs or are trapped on the highways), and predators and parasites that exploit the road network. Our own names only; the referee must say 'highly speculative' where true.",
+  "creatures": [],
+  "seed_refs": [
+   {
+    "author": "LaBarbera, M.",
+    "year": 1983,
+    "title": "Why the wheels won't go",
+    "venue": "The American Naturalist"
+   },
+   {
+    "author": "Berg, H. C.",
+    "year": 1973,
+    "title": "Bacteria swim by rotating their flagellar filaments",
+    "venue": "Nature"
+   }
+  ],
+  "species": [
+   {
+    "seed": "creatures that evolve TRUE WHEELS (a free-rotating axle) and the honest solution of the living-axle problem: a dead grown-and-shed wheel, a symbiont wheel, or a detachable rolling organism; with braking, steering and the road's limits",
+    "n": 2
+   },
+   {
+    "seed": "rolling-body creatures (non-wheel rollers, the intermediate steps) that are cousins of the wheeled ones",
+    "n": 2
+   },
+   {
+    "seed": "predators or parasites that exploit the highway network (ambush at junctions, road-bound prey, off-road refuges)",
+    "n": 1
+   }
+  ],
+  "batch": 1
  }
 ]
