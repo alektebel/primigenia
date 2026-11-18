@@ -1,0 +1,18 @@
+{
+  "schema": "cpore.planet/1",
+  "id": "primigenia",
+  "name": {"en": "Primigenia (the island world)", "es": "Primigenia (el mundo de la isla)"},
+  "status": "draft",
+  "facts": [
+    {"id": "F1", "group": "star", "claim": "A quiet, middle-aged G-type star, yellow-white", "value": "G1-G2V", "justification": "the art fixes a yellow-white sun and a blue sky; a K dwarf would give an orange sky", "status": "active", "provenance": {"council": "planet drafts skeptic/deepseek, senses/glm"}},
+    {"id": "F2", "group": "planet", "claim": "Surface gravity a little above Earth's", "value": 1.1, "unit": "g", "justification": "council range 1.05-1.15 g; to be fixed in the planet canon", "status": "active"},
+    {"id": "F3", "group": "orbit", "claim": "A day of about 26-27 hours with long twilights", "value": 26.5, "unit": "h", "justification": "tidal braking by a large moon", "status": "active"},
+    {"id": "F4", "group": "atmosphere", "claim": "Dense air", "value": 1.6, "unit": "bar", "justification": "sound carries far and echoes are long; slower falls; drag caps sprint speeds", "status": "active"},
+    {"id": "F5", "group": "atmosphere", "claim": "High oxygen partial pressure", "value": 0.34, "unit": "bar", "justification": "large bodies and costly organs (glow, sonar) are affordable", "status": "active"},
+    {"id": "F6", "group": "sky", "claim": "A large, close, bright moon; strong tides; month about 30 days", "value": 29.7, "unit": "d", "justification": "bright moonlit nights favour sight hunters; moonless nights are truly dark", "status": "active"},
+    {"id": "F7", "group": "geology", "claim": "An active volcanic hotspot built the island", "justification": "explains the stratovolcano, warm ground, mineral licks and lava tubes", "status": "active"},
+    {"id": "F8", "group": "climate", "claim": "Thick valley fog most mornings", "justification": "cold sea air over warm volcanic ground under dense air", "status": "active"},
+    {"id": "F9", "group": "geology", "claim": "Old lava-tube caves and a cave behind a waterfall", "justification": "drained lava flows from the hotspot (F7); erosion behind the falls", "status": "active"}
+  ],
+  "changelog": [{"date": "2026-11-18", "who": "opus", "what": "draft facts from the council's planet drafts; replaced by the merged planet canon"}]
+}

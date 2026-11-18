@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "cpore/lore/planet.schema.json",
+  "title": "Primigenia planet canon (numbered facts)",
+  "type": "object",
+  "required": ["schema", "id", "name", "status", "facts", "changelog"],
+  "additionalProperties": false,
+  "properties": {
+    "schema": {"const": "cpore.planet/1"},
+    "id": {"type": "string"}, "name": {"type": "object"}, "status": {"enum": ["draft", "reviewed", "canon"]},
+    "facts": {"type": "array", "items": {"type": "object", "required": ["id", "group", "claim", "justification", "status"], "additionalProperties": false,
+      "properties": {
+        "id": {"type": "string", "pattern": "^F[0-9]+$"},
+        "group": {"enum": ["star", "orbit", "planet", "atmosphere", "ocean", "geology", "chemistry", "biochemistry", "sky", "climate"]},
+        "claim": {"type": "string"}, "value": {"type": ["number", "string"]}, "unit": {"type": "string"},
+        "justification": {"type": "string"},
+        "consequences": {"type": "array", "items": {"type": "string"}},
+        "refs": {"type": "array", "items": {"type": "string"}},
+        "status": {"enum": ["active", "retired"]},
+        "provenance": {"type": "object"}}}},
+    "changelog": {"type": "array", "items": {"type": "object"}}
+  }
+}

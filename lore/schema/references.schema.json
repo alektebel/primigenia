@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "cpore/lore/references.schema.json",
+  "title": "CSL-JSON bibliography with verification status",
+  "type": "array",
+  "items": {"type": "object", "required": ["id", "type", "title", "x-status"],
+    "properties": {
+      "id": {"type": "string", "pattern": "^[a-z0-9_]+$"},
+      "type": {"enum": ["article-journal", "book", "chapter", "paper-conference", "thesis", "webpage", "report"]},
+      "title": {"type": "string"}, "author": {"type": "array"}, "issued": {"type": "object"},
+      "container-title": {"type": "string"}, "DOI": {"type": "string"}, "ISBN": {"type": "string"}, "URL": {"type": "string"},
+      "x-status": {"enum": ["verified", "unverified", "rejected"]},
+      "x-checked": {"type": "string"}, "x-note": {"type": "string"}}}
+}
