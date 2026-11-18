@@ -1,0 +1,248 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "at_humans",
+  "name": {
+    "en": "Humans"
+  },
+  "world": "at_earth_mars",
+  "kind": "easter_egg",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "Earth's temperate to tropical biomes, river valleys, and coastal shelves",
+    "diet": "Omnivorous; high-calorie seeds, tubers, and opportunistic fauna",
+    "active": "Diurnal, with crepuscular peaks during foraging seasons",
+    "predators": [
+      "Large felids",
+      "raptors",
+      "crocodilians",
+      "engineered megafauna"
+    ],
+    "prey": [
+      "Grazers",
+      "burrowing rodents",
+      "fish",
+      "cultivated crops"
+    ]
+  },
+  "body": "Robust bipedal calcium-skeleton <- 1.0 g gravity + high O2 partial pressure <- Earth's tectonic oxygen cycle & stable insolation -> Endurance trek (Passive: maintains stamina over 12+ hours, but requires high caloric intake). Broadband vocal tract <- 1.0 bar atmosphere efficiently couples sound <- Terrestrial atmospheric density & wind patterns -> Signal flare (Control: coordinates pack movement across fog, but deafens user to high pitches).",
+  "chains": [
+    {
+      "id": "at_humans.c1",
+      "trait": "Robust bipedal calcium-skeleton frame",
+      "links": [
+        "Continuous gravitational loading",
+        "Trabecular bone reinforcement",
+        "9.81 m/s² surface acceleration"
+      ],
+      "roots": [
+        "F4"
+      ],
+      "skill": {
+        "id": "at_humans.sure_footed_stride",
+        "name": {
+          "en": "Sure-footed Stride"
+        },
+        "role": "Basic",
+        "effect": "+20% movement speed and stability on irregular terrain",
+        "numbers": {}
+      },
+      "weakness": "Rapid joint degeneration and muscle wasting if relocated to sub-0.5g environments",
+      "observe": [
+        "Thickened femoral necks visible in gait",
+        "Calcium-rich sweat salts on skin",
+        "Weighted, deliberate footfalls"
+      ],
+      "journal": {
+        "en": "Built for the crush of a heavy world, they stand tall against gravity’s pull but pay for it in joints and sweat."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "analogues": [
+          {
+            "organism": "Homo sapiens trabecular bone remodeling under habitual loading (Wolff’s law); terrestrial bipedalism",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "frost_2003_wolffs"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 10,
+          "designer": 8,
+          "physicist": 9
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist",
+          "physicist"
+        ]
+      }
+    },
+    {
+      "id": "at_humans.c2",
+      "trait": "Broadband vocal tract for mid-frequency speech",
+      "links": [
+        "Acoustic resonance in elongated larynx",
+        "Efficient coupling with dense gas",
+        "1.0 bar nitrogen-oxygen envelope"
+      ],
+      "roots": [
+        "F7"
+      ],
+      "skill": {
+        "id": "at_humans.clear_call",
+        "name": {
+          "en": "Clear Call"
+        },
+        "role": "Social",
+        "effect": "+25 m effective range for diplomatic commands; -15% hostility in local fauna",
+        "numbers": {}
+      },
+      "weakness": "Vocal folds crackle and fade below 0.3 bar pressure",
+      "observe": [
+        "Elongated larynx position",
+        "Concentric vocal tract resonance patterns",
+        "Mid-range humming during rest"
+      ],
+      "journal": {
+        "en": "Their voices ride the air like ships on a calm sea—loud, clear, and utterly dependent on the atmosphere's breath."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "analogues": [
+          {
+            "organism": "Human descended larynx and vocal tract resonance for speech in ~1 bar N₂/O₂ (compare other hominids)",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 9,
+          "designer": 7,
+          "physicist": 8
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist"
+        ]
+      }
+    },
+    {
+      "id": "at_humans.c3",
+      "trait": "High-throughput aerobic metabolic engine",
+      "links": [
+        "Rapid glucose oxidation via mitochondria",
+        "0.21 bar partial pressure sustains proton gradients",
+        "Stable 21% O₂ atmospheric mix"
+      ],
+      "roots": [
+        "F7"
+      ],
+      "skill": {
+        "id": "at_humans.adrenal_surge",
+        "name": {
+          "en": "Adrenal Surge"
+        },
+        "role": "Engage",
+        "effect": "3× burst speed for 4 seconds, consumes 40% stamina",
+        "numbers": {}
+      },
+      "weakness": "Hypoxia collapse if ambient O₂ drops below 15% for >10 s",
+      "observe": [
+        "Flaring nostrils",
+        "Synchronized chest expansion",
+        "Sweat-slicked dermis under artificial lumens"
+      ],
+      "journal": {
+        "en": "Their blood sings the song of a thick sky."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "analogues": [
+          {
+            "organism": "Mammalian mitochondrial oxidative phosphorylation; hemoglobin–O₂ delivery tuned to ~21% atmospheric O₂",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 10,
+          "designer": 9,
+          "physicist": 9
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "physicist"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "at_martians",
+      "kind": "opposite",
+      "note": "Robust bipedal frame <- impact absorption <- 1.0g gravity -> Skill 'Heavy Stance' (Defence). Spindly limbs <- low skeletal loading <- 0.38g gravity -> Skill 'Silent Stride' (Control). Weakness: Martians fracture under Earth gravity; Humans tire faster on Mars.",
+      "via": "F4"
+    },
+    {
+      "with": "at_martians",
+      "kind": "convergent",
+      "note": "Broadband vocal tract <- mid-frequency acoustic coupling <- 1.0/0.8 bar N2/O2 -> Skill 'Shout' (Control). Both retain identical speech niches despite density shifts, preserving the same communication biome.",
+      "via": "F7"
+    },
+    {
+      "with": "at_star_people",
+      "kind": "opposite",
+      "note": "High-throughput aerobic engine <- immediate physical exertion <- Earth's 1.0 bar O2 -> Skill 'Endurance' (Defence). Enlarged associative cortices <- neural plasticity <- unified multi-world template -> Skill 'Adapt' (Passive). Metabolic stamina traded for cognitive flexibility.",
+      "via": "F6"
+    },
+    {
+      "with": "at_martians",
+      "kind": "rivalry",
+      "note": "Low insolation <- energy conservation <- 0.43x solar flux -> Skill 'Trade Ban' (Control). High insolation <- industrial throughput <- 1.0x solar flux -> Skill 'Industrial Surge' (Control). Resource competition fractures the lineage.",
+      "via": "F3"
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-18",
+    "by": [
+      "naturalist",
+      "physicist"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-18",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-18"
+    }
+  ],
+  "lore_ref": {
+    "file": "lore/alltomorrows.en.json",
+    "id": "humans"
+  },
+  "temperament": "Fiercely territorial yet deeply cooperative <- seasonal scarcity + pack hunting <- Earth's shifting biomes -> drives their need to share calories and coordinate via mid-frequency calls.",
+  "secrets": [
+    "Aerobic bottleneck: rapid lactic acidosis in low-O2 zones",
+    "Acoustic beacon: vocal range makes stealth communication impossible without dampening gear"
+  ],
+  "moments": [
+    "Signal flare (Control): uses mid-frequency hum to coordinate pack movement across fog",
+    "Endurance trek (Passive): maintains stamina over 12+ hours of travel, but requires high caloric intake"
+  ]
+}

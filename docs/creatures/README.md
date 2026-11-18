@@ -11,6 +11,14 @@
 | [Sombría](sombria.md) | new | draft | 4 | 1 fixable, 3 plausible |
 | [Taumoeba](taumoeba.md) | easter_egg | draft | 5 | 2 fixable, 3 plausible |
 
+## All Tomorrows: Earth and Mars (`at_earth_mars`)
+
+| Creature | Kind | Status | Chains | Verdicts |
+|---|---|---|---|---|
+| [Humans](at_humans.md) | easter_egg | draft | 3 | 3 plausible |
+| [Martians](at_martians.md) | easter_egg | draft | 3 | 3 plausible |
+| [Star People](at_star_people.md) | easter_egg | draft | 2 | 1 fixable, 1 plausible |
+
 ## The Deep Sky (`deepsky`)
 
 | Creature | Kind | Status | Chains | Verdicts |

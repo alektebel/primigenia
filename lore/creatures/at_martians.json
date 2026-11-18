@@ -1,0 +1,264 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "at_martians",
+  "name": {
+    "en": "Martians"
+  },
+  "world": "at_earth_mars",
+  "kind": "easter_egg",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "Terraformed Martian basins, regolith flats, and shallow capillary-fed marshes",
+    "diet": "Detritivorous-omnivore; engineered red-edge flora, perchlorate-tolerant tubers, and regolith-filtered invertebrates",
+    "active": "Diurnal, but shifts to nocturnal during high-UV midday peaks to protect integument",
+    "predators": [
+      "Terran-imported apex predators",
+      "engineered avian hunters",
+      "Star People bio-weapons"
+    ],
+    "prey": [
+      "Soil macrofauna",
+      "engineered grasses",
+      "cultivated lichen mats"
+    ]
+  },
+  "body": "Spindly limbs with reduced bone density <- 0.38 g surface gravity + Wolff’s law <- Mars' mass/radius differential -> Low-g leap (Basic: exploits reduced bone density for silent bounding, but fractures on sudden gravity shifts). UV-hardened integument & perchlorate-reducing gut symbiome <- High UV flux + toxic regolith <- Mars' lack of dynamo & ancient photolysis -> Regolith siphon (Engage: safely harvests nutrients from toxic soil, but triggers radiation lag).",
+  "chains": [
+    {
+      "id": "at_martians.c1",
+      "trait": "Spindly limbs with reduced bone density",
+      "links": [
+        "Elongated osteological architecture",
+        "Disuse osteopenia & deliberate selection",
+        "0.38g surface gravity reduces mechanical loading"
+      ],
+      "roots": [
+        "F4",
+        "F5"
+      ],
+      "skill": {
+        "id": "at_martians.leaping_drift",
+        "name": {
+          "en": "Leaping Drift"
+        },
+        "role": "Engage",
+        "effect": "+40% vertical leap and +30% fall damage mitigation",
+        "numbers": {}
+      },
+      "weakness": "Fracture risk exceeds 0.6g; prolonged Earth-side duty causes rapid joint collapse",
+      "observe": [
+        "Skeletal X-rays show porous trabecular matrix",
+        "Elastic tendon recoil on takeoff",
+        "Gait appears floating or gliding"
+      ],
+      "journal": {
+        "en": "Gravity is a suggestion they gladly ignore, trading bone weight for springy grace."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "analogues": [
+          {
+            "organism": "ISS/long-duration microgravity osteopenia and reduced mechanical loading; Wolff’s law reversal—here chronic ~0.38g plus multi-century selection/engineering per F5",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 9,
+          "designer": 7,
+          "physicist": 9
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist",
+          "physicist"
+        ]
+      }
+    },
+    {
+      "id": "at_martians.c2",
+      "trait": "UV-hardened integument with enhanced DNA repair",
+      "links": [
+        "Melanin-analog skin pigmentation",
+        "Chronic high-surface radiation exposure",
+        "Unshielded magnetosphere & thin ozone layer"
+      ],
+      "roots": [
+        "F16",
+        "F19"
+      ],
+      "skill": {
+        "id": "at_martians.solar_shield",
+        "name": {
+          "en": "Solar Shield"
+        },
+        "role": "Defence",
+        "effect": "+50% resistance to radiation damage and +10% photosynthetic efficiency from ambient light",
+        "numbers": {}
+      },
+      "weakness": "Pigment absorbs visible light poorly, reducing night vision by 40%",
+      "observe": [
+        "Bronze-to-black skin sheen",
+        "Rapid cellular turnover under stress",
+        "Pupils constrict sharply in daylight"
+      ],
+      "journal": {
+        "en": "They wear the star’s wrath like armor, trading softness for survival under an unguarded sky."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Drop ‘+10% photosynthetic efficiency from ambient light’ from Solar Shield—humans are heterotrophs; keep defence as melanin/analog pigment plus nucleotide-excision and other UV-DNA repair only. Night-vision penalty from heavy pigmentation is fine.",
+        "fixes": [
+          "Drop ‘+10% photosynthetic efficiency from ambient light’ from Solar Shield—humans are heterotrophs; keep defence as melanin/analog pigment plus nucleotide-excision and other UV-DNA repair only. Night-vision penalty from heavy pigmentation is fine."
+        ],
+        "analogues": [
+          {
+            "organism": "Human melanin photoprotection (Jablonski); high-UV selection on pigmentation and DNA repair (e.g. xeroderma pigmentosum pathways contrast); not plant-style photosynthesis",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 7,
+          "designer": 8,
+          "physicist": 8
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist"
+        ]
+      }
+    },
+    {
+      "id": "at_martians.c3",
+      "trait": "Perchlorate-reducing gut symbiome for soil detox",
+      "links": [
+        "Halophilic bacterial consortium in hindgut",
+        "Regolith perchlorate concentration requires enzymatic reduction",
+        "Ancient UV photolysis left toxic salt deposits"
+      ],
+      "roots": [
+        "F11"
+      ],
+      "skill": {
+        "id": "at_martians.toxin_digest",
+        "name": {
+          "en": "Toxin Digest"
+        },
+        "role": "Basic",
+        "effect": "+30% stamina recovery from raw local biomass, identifies safe foraging zones",
+        "numbers": {}
+      },
+      "weakness": "Incompatible with Earth-standard probiotics; causes acute dysentery on diet shift",
+      "observe": [
+        "Faint salt-crystals on lips",
+        "Deliberate soil-tasting gestures",
+        "Microbiome vials in belt pouches"
+      ],
+      "journal": {
+        "en": "They turned poison into bread."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Scope symbionts to detoxify perchlorate in food/water/regolith contact and enable safe use of local engineered flora (lore biosynthetic grass), not direct ‘stamina from raw soil’ calories; dysbiosis on Earth probiotics is plausible if framed as obligate Martian consortium.",
+        "fixes": [
+          "Scope symbionts to detoxify perchlorate in food/water/regolith contact and enable safe use of local engineered flora (lore biosynthetic grass), not direct ‘stamina from raw soil’ calories; dysbiosis on Earth probiotics is plausible if framed as obligate Martian consortium."
+        ],
+        "analogues": [
+          {
+            "organism": "Earth perchlorate-respiring / reducing bacteria (e.g. perchlorate-reducing Proteobacteria in contaminated soils)",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own"
+          }
+        ],
+        "scores": {
+          "astrobio": 7,
+          "designer": 9,
+          "physicist": 9
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "physicist"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "at_humans",
+      "kind": "opposite",
+      "note": "Robust bipedal frame <- impact absorption <- 1.0g gravity -> Skill 'Heavy Stance' (Defence). Spindly limbs <- low skeletal loading <- 0.38g gravity -> Skill 'Silent Stride' (Control). Weakness: Martians fracture under Earth gravity; Humans tire faster on Mars.",
+      "via": "F4"
+    },
+    {
+      "with": "at_humans",
+      "kind": "convergent",
+      "note": "Broadband vocal tract <- mid-frequency acoustic coupling <- 1.0/0.8 bar N2/O2 -> Skill 'Shout' (Control). Both retain identical speech niches despite density shifts, preserving the same communication biome.",
+      "via": "F7"
+    },
+    {
+      "with": "at_star_people",
+      "kind": "convergent",
+      "note": "Perchlorate gut symbiome <- regolith detox <- Martian perchlorates -> Skill 'Soil Tamer' (Befriend). Cryo-stasis vaults <- instant population scaling <- automated colonization -> Skill 'Vault Breach' (Secret). Convergent reproductive bottlenecks for rapid acclimatization.",
+      "via": "F17"
+    },
+    {
+      "with": "at_star_people",
+      "kind": "counter",
+      "note": "UV-hardened integument <- somatic DNA repair <- high surface radiation -> Skill 'Radiation Hardening' (Defence). Star People's neural plasticity <- rapid physiological reconfiguration <- engineered epigenetics -> Skill 'Cognitive Shift' (Control). Neural adaptation counters static somatic shielding.",
+      "via": "F16"
+    },
+    {
+      "with": "at_humans",
+      "kind": "rivalry",
+      "note": "Low insolation <- energy conservation <- 0.43x solar flux -> Skill 'Trade Ban' (Control). High insolation <- industrial throughput <- 1.0x solar flux -> Skill 'Industrial Surge' (Control). Resource competition fractures the lineage.",
+      "via": "F3"
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-18",
+    "by": [
+      "naturalist",
+      "physicist"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-18",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-18"
+    },
+    {
+      "date": "2026-11-18",
+      "who": "autoloop",
+      "what": "removed rejected references from analogues"
+    }
+  ],
+  "lore_ref": {
+    "file": "lore/alltomorrows.en.json",
+    "id": "martians"
+  },
+  "temperament": "Rebellious and insular <- low-resource efficiency + regolith toxicity <- Mars' engineered biosphere & perchlorate chemistry -> fosters a culture that trusts symbiotic microbes more than external trade.",
+  "secrets": [
+    "Bone fragility: sudden gravity shifts or impacts cause fractures",
+    "Radiation lag: DNA repair takes hours, leaving them vulnerable to acute UV spikes"
+  ],
+  "moments": [
+    "Regolith siphon (Engage): uses gut symbionts to safely harvest nutrients from toxic soil, healing minor radiation damage",
+    "Low-g leap (Basic): exploits reduced bone density for high, silent bounding jumps"
+  ]
+}

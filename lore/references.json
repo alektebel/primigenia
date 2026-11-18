@@ -3527,8 +3527,10 @@
       ]
     },
     "container-title": "Science",
-    "x-status": "unverified",
-    "x-note": "cited by a council model from memory; not yet checked"
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "DOI": "10.1126/science.170679",
+    "x-checked": "2026-11-18"
   },
   {
     "id": "adler_1971_vacuum_birefringence",
@@ -3722,7 +3724,7 @@
     "type": "article-journal",
     "title": "The physics of neutron star crusts",
     "x-status": "unverified",
-    "x-note": "cited by a council model from memory; not yet checked",
+    "x-note": "ambiguous: closest Crossref hit is 'Physics of Neutron Star Crusts' (Chamel, 2008, doi 10.12942/lrr-2008-10), title similarity 0.94, author differs, year ok",
     "author": [
       {
         "family": "Haensel",
@@ -3736,6 +3738,167 @@
         ]
       ]
     },
-    "container-title": "Living Rev. Relativity"
+    "container-title": "Living Rev. Relativity",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "kasting_1993_how",
+    "type": "article-journal",
+    "title": "Habitable zones around main sequence stars",
+    "author": [
+      {
+        "family": "Kasting",
+        "given": "James F."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1993
+        ]
+      ]
+    },
+    "container-title": "Icarus",
+    "DOI": "10.1006/icar.1993.1010",
+    "ISBN": "",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "seager_2010_exoplanet",
+    "type": "book",
+    "title": "Exoplanet Atmospheres: Physical Processes",
+    "author": [
+      {
+        "family": "Seager",
+        "given": "Sara"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2010
+        ]
+      ]
+    },
+    "container-title": "University of Arizona Press",
+    "DOI": "",
+    "ISBN": "9780691119144",
+    "x-status": "verified",
+    "x-note": "verified against OpenLibrary (title 1.00); ISBN added",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "frost_1987_mechanostat",
+    "type": "article-journal",
+    "title": "The Mechanostat: A Proposed Pathogenetic Role for Bone",
+    "author": [
+      {
+        "family": "Frost",
+        "given": "Harold M."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1987
+        ]
+      ]
+    },
+    "container-title": "International Journal of Sports Medicine",
+    "DOI": "10.1055/s-2008-1025854",
+    "ISBN": "",
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked"
+  },
+  {
+    "id": "schwartz_2006_water",
+    "type": "book",
+    "title": "Water on Mars: Modern and Ancient Water",
+    "author": [
+      {
+        "family": "Schwartz",
+        "given": "S.W."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2006
+        ]
+      ]
+    },
+    "container-title": "Oxford University Press",
+    "DOI": "",
+    "ISBN": "9780195176503",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'American Film' (Institute, 1975) title similarity 0.46",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "frost_2003_wolffs",
+    "type": "article-journal",
+    "title": "Wolff’s Law and bone structure: A mechanical perspective",
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked",
+    "author": [
+      {
+        "family": "Frost",
+        "given": "H. M."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2003
+        ]
+      ]
+    },
+    "container-title": "Journal of Orthopaedic Research"
+  },
+  {
+    "id": "kieft_2009_perchlorate",
+    "type": "article-journal",
+    "title": "Perchlorate and the microbial geochemistry of Mars",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Photostationary State in Photoelectrochemical Generation of Perchlorate: Relevance to Mars' (, None) title similarity 0.32",
+    "author": [
+      {
+        "family": "Kieft",
+        "given": "T. L."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2009
+        ]
+      ]
+    },
+    "container-title": "Astrobiology",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "kolb_2015_fundamentals",
+    "type": "article-journal",
+    "title": "Fundamentals of Human Neuropsychology",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'Fundamentals of human neuropsychology' (Tallal, 1982, doi 10.1016/0166-2236(82)90061-3), title similarity 1.00, author differs, year off",
+    "author": [
+      {
+        "family": "Kolb",
+        "given": "B."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2015
+        ]
+      ]
+    },
+    "container-title": "W.H. Freeman",
+    "x-checked": "2026-11-18"
   }
 ]
