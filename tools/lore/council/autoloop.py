@@ -434,6 +434,7 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--only"); ap.add_argument("--max-worlds", type=int, default=0)
     ap.add_argument("--no-commit", action="store_true"); ap.add_argument("--no-wait-opus", action="store_true")
+    ap.add_argument("--retry-failed", action="store_true", help="also re-run worlds whose summary lists failed steps (resumes at the failed step)")
     args = ap.parse_args()
     os.makedirs(RUNS, exist_ok=True)
     seed = load(os.path.join(HERE, "worlds_seed.json"))
@@ -441,7 +442,9 @@ def main():
     todo = []
     for w in seed:
         sp = os.path.join(RUNS, w["id"], "summary.json")
-        if os.path.exists(sp) and not str(load(sp).get("why", "")).endswith("deferred") and not args.only: continue
+        if os.path.exists(sp) and not args.only:
+            sm = load(sp)
+            if not str(sm.get("why", "")).endswith("deferred") and not (args.retry_failed and (sm.get("failures") or sm.get("why") != "done")): continue
         todo.append(w)
     if args.max_worlds: todo = todo[:args.max_worlds]
     deferred = []

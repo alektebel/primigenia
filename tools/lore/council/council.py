@@ -228,13 +228,32 @@ def best_json(t):
 
 
 def _jload(text):
-    return best_json(text)
+    v = best_json(text)
+    if isinstance(v, dict): return v
+    # truncated reply (the model ran out of tokens inside the references): rebuild {name, system, facts, references} from the complete parts
+    i = text.find("{"); dec = json.JSONDecoder(strict=False); doc = {}
+    for key in ("name", "system", "facts"):
+        k = text.find(f'"{key}"', i)
+        if k < 0: continue
+        try: doc[key], _ = dec.raw_decode(text, text.index(":", k) + 1 + len(text[text.index(":", k) + 1:]) - len(text[text.index(":", k) + 1:].lstrip()))
+        except ValueError: pass
+    k = text.find('"references"')
+    if k >= 0:
+        refs, p = [], text.find("[", k) + 1
+        while p > 0:
+            q = text.find("{", p)
+            if q < 0: break
+            try: o, p = dec.raw_decode(text, q); refs.append(o)
+            except ValueError: break
+        doc["references"] = refs
+    if "facts" not in doc: return v
+    return doc
 
 
 def _chair_ask(system, user):
     """Chair = DeepSeek skeptic via opencode, fallback qwen."""
     for attempt in range(3):
-        t = ask("skeptic", system, user, temp=0.3, max_tokens=12000) if attempt < 2 else chat(system, user, temp=0.3, max_tokens=12000)
+        t = ask("skeptic", system, user, temp=0.3, max_tokens=12000) if attempt < 2 else chat(system, user, temp=0.3, max_tokens=20000)
         if t.startswith("(failed)"): continue
         open(os.path.join(D, f"chair_raw_{int(time.time())}.txt"), "w").write(t)
         try: return _jload(t)
