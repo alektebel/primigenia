@@ -1,0 +1,163 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "at_pterosapiens",
+  "name": {
+    "en": "Pterosapiens"
+  },
+  "world": "at_garden_peoples",
+  "kind": "easter_egg",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "to be written",
+    "diet": "to be written",
+    "active": "to be written",
+    "predators": []
+  },
+  "body": "to be written",
+  "chains": [
+    {
+      "id": "at_pterosapiens.c1",
+      "trait": "Hyperthrophic cardiac ventricles with high oxygen affinity",
+      "links": [
+        "Low-gravity moon (F5) allows heavier brains without wing penalty",
+        "High O2 partial pressure (F7) maximizes hemoglobin binding saturation",
+        "Dual-aerobic hearts sustain flight and cognition simultaneously",
+        "Leap upward with height advantage, -20% defense next turn"
+      ],
+      "roots": [
+        "F5",
+        "F7"
+      ],
+      "skill": {
+        "id": "at_pterosapiens.aero_thrust",
+        "name": {
+          "en": "Aero-Thrust"
+        },
+        "role": "Engage",
+        "effect": "leap 30m upward, gain height advantage, -20% defense next turn",
+        "numbers": {}
+      },
+      "weakness": "Cardiac strain from prolonged flight; ends turn with exhaustion",
+      "observe": [
+        "Massive chest cavity",
+        "Rapid pulse visible at throat",
+        "Featherless wing joints"
+      ],
+      "journal": {
+        "en": "They fly not by grace, but by cardiovascular desperation."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-19",
+        "summary": "Low g (F5) lightens weight-bearing but not aerodynamic power demand; hypertrophic heart is the cost of dual flight + large brain—cap ‘Aero-Thrust’ leaps and tie post-flight exhaustion to lore lifespan (~23 y) and endemic cardiomyopathy rather than unlimited sorties.",
+        "fixes": [
+          "Low g (F5) lightens weight-bearing but not aerodynamic power demand; hypertrophic heart is the cost of dual flight + large brain—cap ‘Aero-Thrust’ leaps and tie post-flight exhaustion to lore lifespan (~23 y) and endemic cardiomyopathy rather than unlimited sorties."
+        ],
+        "analogues": [
+          {
+            "organism": "Flying fox (*Pteropus*) large heart for powered flight; hummingbird extreme cardiac output; bar-headed goose high-O2 hemoglobin affinity",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "designer": 9,
+          "physicist": 9
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist",
+          "physicist"
+        ]
+      }
+    },
+    {
+      "id": "at_pterosapiens.c2",
+      "trait": "Hollow trabeculated long bones filled with air sacs",
+      "links": [
+        "Low-g environment (F5) favors ventral feeding and aerial lifestyle",
+        "Stable climate (F2) allows prolonged flight without thermal stress",
+        "Hollow trabeculated bones reduce structural mass",
+        "Reduce incoming kinetic damage by 20% when airborne"
+      ],
+      "roots": [
+        "F2",
+        "F5"
+      ],
+      "skill": {
+        "id": "at_pterosapiens.aerodynamic_frame",
+        "name": {
+          "en": "Aerodynamic Frame"
+        },
+        "role": "Defence",
+        "effect": "Reduce incoming kinetic damage by 20% when airborne",
+        "numbers": {}
+      },
+      "weakness": "Bones fracture easily if caught in high-wind shear zones",
+      "observe": [
+        "Lightweight gait",
+        "Featherless downy covering",
+        "Wind-reading posture"
+      ],
+      "journal": {
+        "en": "Their skeletons are hollow vessels, carrying weightless dreams across a weightless sky."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-19",
+        "summary": "In 0.2 g, pneumatic bones can be extreme but brittle on hard landing—keep F9 wind-shear fracture weakness; pneumatization should invade postcranial skeleton but preserve cortical shell at joint loads (pterosaur/bird pattern).",
+        "fixes": [
+          "In 0.2 g, pneumatic bones can be extreme but brittle on hard landing—keep F9 wind-shear fracture weakness; pneumatization should invade postcranial skeleton but preserve cortical shell at joint loads (pterosaur/bird pattern)."
+        ],
+        "analogues": [
+          {
+            "organism": "Bird pneumatic skeleton and air-sac system; pterosaur hollow humeri",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 9,
+          "designer": 8,
+          "physicist": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "at_striders",
+      "kind": "convergent",
+      "note": "Both exploit low-g/aerial niches; Striders rely on passive buoyancy and heat-dumping flaps, Pterosapiens evolve active flight with hollow bones and hyperthrophic hearts.",
+      "via": "F5, F7, F21"
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-18",
+    "by": [
+      "naturalist",
+      "physicist"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-19",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-18"
+    }
+  ],
+  "lore_ref": {
+    "file": "lore/alltomorrows.en.json",
+    "id": "pterosapiens"
+  }
+}

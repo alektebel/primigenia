@@ -19,6 +19,27 @@
 | [Martians](at_martians.md) | easter_egg | draft | 3 | 3 plausible |
 | [Star People](at_star_people.md) | easter_egg | draft | 2 | 1 fixable, 1 plausible |
 
+## All Tomorrows: garden-world peoples (`at_garden_peoples`)
+
+| Creature | Kind | Status | Chains | Verdicts |
+|---|---|---|---|---|
+| [Asymmetric People](at_asymmetric_people.md) | easter_egg | draft | 2 | 1 fixable, 1 plausible |
+| [Blind Folk](at_blind_folk.md) | easter_egg | draft | 2 | 2 plausible |
+| [Bug Facers](at_bug_facers.md) | easter_egg | draft | 3 | 1 fixable, 2 plausible |
+| [Hedonists](at_hedonists.md) | easter_egg | draft | 2 | 2 plausible |
+| [Hosts](at_hosts.md) | easter_egg | draft | 2 | 2 plausible |
+| [Lizard Herders](at_lizard_herders.md) | easter_egg | draft | 2 | 1 fixable, 1 plausible |
+| [Lopsiders](at_lopsiders.md) | easter_egg | draft | 2 | 2 fixable |
+| [Modular People](at_modular_people.md) | easter_egg | draft | 2 | 2 fixable |
+| [Parasites](at_parasites.md) | easter_egg | draft | 2 | 2 plausible |
+| [Pterosapiens](at_pterosapiens.md) | easter_egg | draft | 2 | 2 plausible |
+| [Sail People](at_sail_people.md) | easter_egg | draft | 3 | 2 implausible, 1 plausible |
+| [Satyriacs](at_satyriacs.md) | easter_egg | draft | 3 | 3 plausible |
+| [Saurosapients](at_saurosapients.md) | easter_egg | draft | 2 | 1 fixable, 1 plausible |
+| [Striders](at_striders.md) | easter_egg | draft | 2 | 2 plausible |
+| [Symbiotes](at_symbiotes.md) | easter_egg | draft | 3 | 2 fixable, 1 plausible |
+| [Tool Breeders](at_tool_breeders.md) | easter_egg | draft | 2 | 2 plausible |
+
 ## All Tomorrows: the Qu-shaped worlds (`at_qu_worlds`)
 
 | Creature | Kind | Status | Chains | Verdicts |

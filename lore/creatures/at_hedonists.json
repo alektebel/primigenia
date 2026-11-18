@@ -1,0 +1,170 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "at_hedonists",
+  "name": {
+    "en": "Hedonists"
+  },
+  "world": "at_garden_peoples",
+  "kind": "easter_egg",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "to be written",
+    "diet": "to be written",
+    "active": "to be written",
+    "predators": []
+  },
+  "body": "to be written",
+  "chains": [
+    {
+      "id": "at_hedonists.c1",
+      "trait": "Decade-long polyandrous conception cycle",
+      "links": [
+        "Prolonged estrus gatekeeping prevents selective sweeps",
+        "Absence of seasonal photoperiod cues removes natural breeding windows",
+        "Low axial tilt & low-eccentricity orbit lock photoperiods"
+      ],
+      "roots": [
+        "F1",
+        "F2",
+        "F3"
+      ],
+      "skill": {
+        "id": "at_hedonists.sweet_manna_lure",
+        "name": {
+          "en": "Sweet Manna Lure"
+        },
+        "role": "Social",
+        "effect": "Draws Hedonists within 20m using nutrient-rich bacterial slurry",
+        "numbers": {}
+      },
+      "weakness": "Metabolic lethargy; cannot initiate rapid escape without decades of gestational preparation",
+      "observe": [
+        "Soft, unpigmented skin with high capillary density",
+        "Sluggish, deliberate movements and dilated pupils",
+        "Gestation-related abdominal distension despite low body mass"
+      ],
+      "journal": {
+        "en": "They trade evolution for eternity in the fruit."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-19",
+        "summary": "Frame the decade-long mating threshold as a Qu heuristic fertility lock (F14), not natural selection; rewrite weakness so it is inability to conceive/escape breeding politics quickly, not ‘decades of gestational preparation’ (gestation can remain normal once the lock opens).",
+        "fixes": [
+          "Frame the decade-long mating threshold as a Qu heuristic fertility lock (F14), not natural selection; rewrite weakness so it is inability to conceive/escape breeding politics quickly, not ‘decades of gestational preparation’ (gestation can remain normal once the lock opens)."
+        ],
+        "analogues": [
+          {
+            "organism": "Artificial fertility gates in domestic breeding; extreme polyandry in some insects is analogue for mechanics only, not decade-scale primate estrus",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "roff_1992_evolution"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "designer": 7,
+          "physicist": 9
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist",
+          "physicist"
+        ]
+      }
+    },
+    {
+      "id": "at_hedonists.c2",
+      "trait": "Three-year-old intellectual ceiling & leisurely browsing",
+      "links": [
+        "Lack of ecological problem-solving pressure",
+        "Nutrient-dense fruit and microbial manna blooms",
+        "Stable tropical climate and low seasonal stress"
+      ],
+      "roots": [
+        "F6",
+        "F15",
+        "F20"
+      ],
+      "skill": {
+        "id": "at_hedonists.pleasure_drift",
+        "name": {
+          "en": "Pleasure Drift"
+        },
+        "role": "Passive",
+        "effect": "Reduces stress by 15% per turn but delays action readiness by 1 turn",
+        "numbers": {}
+      },
+      "weakness": "Falls ill when exposed to bitter or toxic flora",
+      "observe": [
+        "Leisurely chewing of succulent fruit clusters",
+        "Smiling at trivial stimuli",
+        "Group huddling for warmth without purpose"
+      ],
+      "journal": {
+        "en": "A three-year-old mind in a perfect world."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-19",
+        "summary": "Attribute the cognitive cap primarily to Qu neural downsizing plus F15 bloom–bust food security (relaxed selection on problem-solving), not spontaneous evolution to a fixed ‘three-year-old’ IQ on an island without predators.",
+        "fixes": [
+          "Attribute the cognitive cap primarily to Qu neural downsizing plus F15 bloom–bust food security (relaxed selection on problem-solving), not spontaneous evolution to a fixed ‘three-year-old’ IQ on an island without predators."
+        ],
+        "analogues": [
+          {
+            "organism": "Island tameness and brain-size reduction in some insular vertebrates (Foster’s rule pattern); domesticated species reduced fear and exploration",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 7,
+          "designer": 8,
+          "physicist": 8
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "at_satyriacs",
+      "kind": "opposite",
+      "note": "Hedonists maintain a Qu-imposed decade-long polyandrous lock to freeze selection; Satyriacs drop it for rapid colonization after geological upheaval.",
+      "via": "F1, F2, F3"
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-18",
+    "by": [
+      "naturalist",
+      "physicist"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-19",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-18"
+    }
+  ],
+  "lore_ref": {
+    "file": "lore/alltomorrows.en.json",
+    "id": "hedonists"
+  }
+}

@@ -1,0 +1,208 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "at_satyriacs",
+  "name": {
+    "en": "Satyriacs"
+  },
+  "world": "at_garden_peoples",
+  "kind": "easter_egg",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "to be written",
+    "diet": "to be written",
+    "active": "to be written",
+    "predators": []
+  },
+  "body": "to be written",
+  "chains": [
+    {
+      "id": "at_satyriacs.c1",
+      "trait": "Boneless pelvic tails & horizontal quadrupedal posture",
+      "links": [
+        "post-catastrophe nutrient influx fuels rapid lipid storage",
+        "low gravitational stress on limb joints favors sprawling weight distribution",
+        "stable axial tilt eliminates seasonal foraging scarcity"
+      ],
+      "roots": [
+        "F7",
+        "F3",
+        "F2"
+      ],
+      "skill": {
+        "id": "at_satyriacs.lipid_reserve",
+        "name": {
+          "en": "Lipid Reserve"
+        },
+        "role": "Defence",
+        "effect": "Absorbs 30% of incoming damage by metabolizing stored fat, regenerates health over 2 turns",
+        "numbers": {}
+      },
+      "weakness": "Fat metabolism produces heat; prolonged use causes overheating in dry biomes",
+      "observe": [
+        "Pelvic regions swell into thick, muscular fat-ridges",
+        "Locomotion is horizontal and sprawling, using forelimbs for balance",
+        "Tails twitch rhythmically during social gatherings and rest"
+      ],
+      "journal": {
+        "en": "Gravity relaxes; flesh piles on, turning posture horizontal."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-19",
+        "summary": "Reframe Lipid Reserve as stamina/ healing from fat stores after injury, not literal damage absorption; link sprawling posture to display and even weight on saturated substrates (F8), not F2 alone.",
+        "fixes": [
+          "Reframe Lipid Reserve as stamina/ healing from fat stores after injury, not literal damage absorption; link sprawling posture to display and even weight on saturated substrates (F8), not F2 alone."
+        ],
+        "analogues": [
+          {
+            "organism": "Fat-tailed sheep and Macropus tails (lipid depot); crocodilian sprawling gait under high resource availability.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "alexander_2003_exploration"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 7,
+          "designer": 8
+        }
+      }
+    },
+    {
+      "id": "at_satyriacs.c2",
+      "trait": "Ritualised communal pleasure & festival-driven social cycles",
+      "links": [
+        "high humidity and stable climate reduce territorial resource competition",
+        "nutrient-rich bacterial manna yields constant caloric surplus",
+        "post-catastrophe population boom requires rapid social cohesion"
+      ],
+      "roots": [
+        "F8",
+        "F15",
+        "F20"
+      ],
+      "skill": {
+        "id": "at_satyriacs.euphoric_sync",
+        "name": {
+          "en": "Euphoric Sync"
+        },
+        "role": "Social",
+        "effect": "Grants +2 morale to all nearby allies and reduces conflict chance by 40% for 3 turns",
+        "numbers": {}
+      },
+      "weakness": "Predictable mating/festival windows allow enemies to ambush gathering sites",
+      "observe": [
+        "Groups gather in open clearings for extended, synchronized social rituals",
+        "Cranial vasculature dilates visibly during peak social interaction",
+        "No personal shelters; communal sleeping mats dominate settlements"
+      ],
+      "journal": {
+        "en": "When survival is guaranteed, pleasure becomes the primary economy."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-19",
+        "summary": "Tie festival windows to bacterial manna bloom pulses (F15) so predictability is ecological, not arbitrary; keep sentient culture as driver of ritual scale.",
+        "fixes": [
+          "Tie festival windows to bacterial manna bloom pulses (F15) so predictability is ecological, not arbitrary; keep sentient culture as driver of ritual scale."
+        ],
+        "analogues": [
+          {
+            "organism": "Bonobo resource-rich reduced aggression; lek and festival timing in seasonally abundant ungulates/birds.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 7,
+          "designer": 9
+        }
+      }
+    },
+    {
+      "id": "at_satyriacs.c3",
+      "trait": "Muscular fat tail as dynamic counterbalance and display",
+      "links": [
+        "High fecundity and energy surplus from high O2",
+        "Pelvic mass accumulates in rear",
+        "Horizontal posture distributes weight along spine",
+        "Tail evolves as counterweight and display organ"
+      ],
+      "roots": [
+        "F7"
+      ],
+      "skill": {
+        "id": "at_satyriacs.pelvic_sweep",
+        "name": {
+          "en": "Pelvic Sweep"
+        },
+        "role": "Defence",
+        "effect": "30% chance to knock back melee attackers; +20% success in social contests",
+        "numbers": {}
+      },
+      "weakness": "Tail is highly vascular and vulnerable to crushing; requires constant high-calorie intake",
+      "observe": [
+        "Tail sways rhythmically with gait",
+        "Skin flushes crimson during exertion",
+        "Group performs synchronized pelvic display"
+      ],
+      "journal": {
+        "en": "A tail to balance the weight of a life lived in the moment."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-19",
+        "summary": "Note high vascularity makes tail a real combat liability; social +20% is display honesty (handicap principle), not magic.",
+        "fixes": [
+          "Note high vascularity makes tail a real combat liability; social +20% is display honesty (handicap principle), not magic."
+        ],
+        "analogues": [
+          {
+            "organism": "Kangaroo tail as balance strut during hopping; lizard and bird tail display during agonistic signaling.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "alexander_1977_biomechanics"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "designer": 7
+        }
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "at_hedonists",
+      "kind": "opposite",
+      "note": "Hedonists maintain a Qu-imposed decade-long polyandrous lock to freeze selection; Satyriacs drop it for rapid colonization after geological upheaval.",
+      "via": "F1, F2, F3"
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-18"
+  },
+  "changelog": [
+    {
+      "date": "2026-11-19",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-18"
+    }
+  ],
+  "lore_ref": {
+    "file": "lore/alltomorrows.en.json",
+    "id": "satyriacs"
+  }
+}

@@ -1,0 +1,473 @@
+{
+  "schema": "cpore.world/1",
+  "id": "at_garden_peoples",
+  "kind": "third_party",
+  "system": {
+    "star": "K2V–G2V main-sequence dwarfs",
+    "position": "fictional",
+    "distance_ly_from_sol": null
+  },
+  "name": {
+    "en": "All Tomorrows: garden-world peoples",
+    "es": "All Tomorrows: pueblos de los mundos jardín"
+  },
+  "status": "draft",
+  "facts": [
+    {
+      "id": "F1",
+      "group": "star",
+      "claim": "Host stars are K2V to G2V main-sequence dwarfs (0.6–1.0 L⊙) with stable photosynthetic output and age-dependent flare activity.",
+      "justification": "K-dwarfs provide longer main-sequence lifespans and lower UV/X-ray flare rates than M-dwarfs, delivering multi-million-year climatic stability for seeded lineages (given by the lore, inferred from stellar astrophysics). G2V hosts offer higher bolometric flux but require wider habitable zone margins.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "K2V–G2V",
+      "unit": "spectral class",
+      "consequences": [
+        "Predictable insolation cycles enable long-term agricultural planning.",
+        "Reduced radiation storms allow unshielded surface ecosystems.",
+        "Stable spectrum drives photosynthetic pigment adaptation."
+      ],
+      "refs": [
+        "kasting_1993_habitable"
+      ]
+    },
+    {
+      "id": "F2",
+      "group": "orbit",
+      "claim": "Orbits are low-eccentricity (e≈0.05) with low axial tilt (4–12°), minimizing seasonal extremes.",
+      "justification": "Low eccentricity and obliquity lock biomass in equatorial and mid-latitude belts, matching the Hedonist and Lizard Herder stability (inferred from orbital mechanics and lore). e=0.05 is low, not zero.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "0.05 / 4–12°",
+      "unit": "eccentricity / obliquity",
+      "consequences": [
+        "Year-round tropical conditions support continuous herbivore herds.",
+        "Weak seasonal die-offs prevent mass starvation events.",
+        "Stable climate reduces extinction pressure on fragile lineages."
+      ],
+      "refs": [
+        "laskar_1993_orbital"
+      ]
+    },
+    {
+      "id": "F3",
+      "group": "planet",
+      "claim": "Baseline terrestrial worlds maintain ~1.0 Earth mass and radius as the Qu reference template.",
+      "justification": "The Star People originated on Earth-analogue worlds; the Qu preserved this baseline for primary colonization zones (given by the lore). Serves as the reference point for F4/F5 gravity variants.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "1.0",
+      "unit": "M⊕ / R⊕",
+      "consequences": [
+        "Standard vertebral loading permits upright or semi-erect postures.",
+        "Balanced gravity supports diverse locomotion styles.",
+        "Baseline serves as the reference point for Qu gravity modifications."
+      ]
+    },
+    {
+      "id": "F4",
+      "group": "planet",
+      "claim": "High-gravity engineering artifact yields 36 g surface acceleration.",
+      "justification": "Qu mass-injection or localized metric manipulation created a super-dense world; natural planetary formation cannot yield 36 g without artificial intervention (given by the lore, speculative engineering). Expect wide stance, neotenous bone, no Earth-primate without redesign.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "36",
+      "unit": "g",
+      "consequences": [
+        "Forces low center-of-mass, wide-stance morphologies.",
+        "Requires reinforced trabecular bone and multi-limbed support.",
+        "Movement is slow but highly impact-resistant."
+      ],
+      "refs": [
+        "currey_2002_bones"
+      ]
+    },
+    {
+      "id": "F5",
+      "group": "planet",
+      "claim": "Low-gravity moon environments yield 0.2 g surface acceleration.",
+      "justification": "A Jovian moon with reduced mass allows extreme verticality but demands fluid-filled support or extreme fragility (given by the lore). Limb safety factors require low mineral density and cartilage trusses to prevent Earth-composition glass bones.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "0.2",
+      "unit": "g",
+      "consequences": [
+        "Enables elongated, high-lever limbs and gliding.",
+        "Reduces bone density via Wolff’s law scaling.",
+        "Increases fracture risk on hard landings or wind shear."
+      ]
+    },
+    {
+      "id": "F6",
+      "group": "atmosphere",
+      "claim": "Surface pressure averages 1.1–1.3 bar in a nitrogen-oxygen mix.",
+      "justification": "Engineered to support high biomass, rapid metabolism, and convective cooling in warm tropics (inferred from atmospheric physics and lore productivity). Decoupled from O2-specific limits.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "1.2",
+      "unit": "bar",
+      "consequences": [
+        "Dense medium dampens diurnal temperature swings.",
+        "Increases acoustic impedance, extending sound range.",
+        "Supports large herbivore and insect analogues."
+      ],
+      "refs": [
+        "seager_2010_exoplanet"
+      ]
+    },
+    {
+      "id": "F7",
+      "group": "atmosphere",
+      "claim": "Partial oxygen pressure is optimized at 23–27% O₂.",
+      "justification": "Elevated O₂ enhances tracheal diffusion and aerobic capacity without triggering runaway oxidation or fire hazards (inferred from respiratory physiology). Capped at ~25% unless world is wetland-dominated.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "0.25",
+      "unit": "fraction",
+      "consequences": [
+        "Supports high-cognition and high-metabolism lineages.",
+        "Allows expanded respiratory networks in invertebrates.",
+        "Elevated wildfire frequency in dry season margins."
+      ]
+    },
+    {
+      "id": "F8",
+      "group": "atmosphere",
+      "claim": "Relative humidity regularly exceeds 80% with saturated boundary layers.",
+      "justification": "Saturated air traps acoustic energy and reduces evaporative cooling, matching the lush, stagnant garden aesthetic (inferred from thermodynamics and lore). High RH attenuates high frequencies; sound carries farther only in forest/cave waveguides.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "85",
+      "unit": "%",
+      "consequences": [
+        "Sound carries farther with low-frequency dominance in waveguides.",
+        "Visual range is reduced by tropospheric scattering.",
+        "Pheromones persist for days; perpetual saturation increases fungal pathogen load."
+      ],
+      "refs": [
+        "kinsler_2000_acoustics"
+      ]
+    },
+    {
+      "id": "F9",
+      "group": "atmosphere",
+      "claim": "Wind shear is high on exposed ridges and low-g plains due to thermal plumes.",
+      "justification": "Dense atmospheric convection and low-g buoyancy generate intermittent microbursts and crosswinds (inferred from fluid dynamics and lore).",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "high",
+      "unit": "load",
+      "consequences": [
+        "Low-g lineages suffer mast-toppling fractures.",
+        "High-g lineages evolve wide stances to resist downdrafts.",
+        "Flight requires constant metabolic compensation."
+      ],
+      "refs": [
+        "stull_1988_boundary"
+      ]
+    },
+    {
+      "id": "F10",
+      "group": "ocean",
+      "claim": "Warm, shallow epicontinental seas maintain high carbonate alkalinity (pH 8.1–8.3).",
+      "justification": "Active upwelling and volcanic runoff supply silicates and phosphates, sustaining rapid calcification and reef formation (inferred from marine biogeochemistry).",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "8.2",
+      "unit": "pH",
+      "consequences": [
+        "Enables calcified exoskeletal reinforcement in reef fauna.",
+        "Supports Tool-Breeder shell-cities and bioluminescent grids.",
+        "High alkalinity buffers against acidification from volcanic outgassing."
+      ],
+      "refs": [
+        "zeebe_2001_co2"
+      ]
+    },
+    {
+      "id": "F11",
+      "group": "ocean",
+      "claim": "Tidal amplitudes reach 10–20 m on moon-worlds due to large lunar orbits and resonant basins.",
+      "justification": "Low planetary mass and large moons create shifting intertidal mudflats and rapid fluid-solid state transitions (inferred from orbital mechanics and lore). Requires specific moon mass and semi-major axis to avoid over-tidaling.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "15",
+      "unit": "m",
+      "consequences": [
+        "Semi-aquatic foragers evolve hydrostatic limb suspension.",
+        "Tidal zones flip routing paths daily.",
+        "Requires adaptive shell reinforcement against wave action."
+      ],
+      "refs": [
+        "pugh_2004_tides"
+      ]
+    },
+    {
+      "id": "F12",
+      "group": "geology",
+      "claim": "Active plate tectonics drive orogenic cave compression and volcanic uplift.",
+      "justification": "Continental drift compresses cave networks, seals aquifers, and raises new landmasses, matching the Blind Folk and Hedonist fates (given by the lore). Mechanism is orogenic/cave strangulation, not glacial.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "active",
+      "unit": "cycle",
+      "consequences": [
+        "Caves open and close on million-year cycles.",
+        "Ashfalls and new terrain force migration.",
+        "Tectonic stress drives geothermal vents used by chemosynthetic life."
+      ],
+      "refs": [
+        "jackson_2002_geodynamics"
+      ]
+    },
+    {
+      "id": "F13",
+      "group": "interior",
+      "claim": "Karst aquifers and lava-tube networks maintain isothermal microclimates of 15–27 °C.",
+      "justification": "Subterranean shelters decouple from surface weather, creating isolated, low-energy refuges (inferred from speleology and lore). Temperature tracks mean annual surface depth; deep chambers may warm with geothermal gradient.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "15–27",
+      "unit": "°C",
+      "consequences": [
+        "Blind Folk evolve tactile and echolocation senses.",
+        "Fungal fields thrive without sunlight.",
+        "Continental plate closure eventually snuffs these shelters."
+      ],
+      "refs": [
+        "culver_2006_subterranean"
+      ]
+    },
+    {
+      "id": "F14",
+      "group": "chemistry",
+      "claim": "Baseline biochemistry follows CHNOPS with Qu-modified horizontal gene transfer.",
+      "justification": "Standard biochemistry augmented by engineered lateral transfer and epigenetic toggles enables rapid phenotypic plasticity (given by the lore, inferred from molecular biology). Qu HGT is highly speculative and treated as Lamarckian heuristic locks.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "CHNOPS",
+      "unit": "elements",
+      "consequences": [
+        "Chimeric life forms and cross-kingdom symbiosis become possible.",
+        "Metabolic bottlenecks are bypassed via engineered enzymes.",
+        "Genetic drift is accelerated by Qu legacy code."
+      ],
+      "refs": [
+        "doolittle_1999_phylogenetic"
+      ]
+    },
+    {
+      "id": "F15",
+      "group": "chemistry",
+      "claim": "Bacterial bloom dynamics drive rapid bloom–bust microbial proliferation in nutrient-rich zones.",
+      "justification": "Nutrient runoff and Qu-seeded cyanobacteria create rapid microbial mats, analogous to Earth's algal blooms and desert manna (given by the lore, inferred from microbial ecology). Growth is logistic, not unbounded exponential.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "bloom-bust",
+      "unit": "growth",
+      "consequences": [
+        "Manna lakes provide instant healing and terrain alteration.",
+        "Contamination spreads instantly in nutrient-rich zones.",
+        "Attracts opportunistic scavengers and pests."
+      ],
+      "refs": [
+        "cohen_1977_manna"
+      ]
+    },
+    {
+      "id": "F16",
+      "group": "biochemistry",
+      "claim": "Widespread bioluminescent and chemosynthetic pathways replace solar dependence in dark zones.",
+      "justification": "Bioluminescence is phylogenetically widespread and abundant, adapted for cave darkness and reef signaling (given by the lore, inferred from evolutionary biology).",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "luciferin",
+      "unit": "pigment",
+      "consequences": [
+        "Fungal canopies replace solar photosynthesis in deep shelters.",
+        "Bioluminescent grids power aquatic Tool-Breeder cities.",
+        "Attracts phototactic predators in dark zones."
+      ]
+    },
+    {
+      "id": "F17",
+      "group": "biochemistry",
+      "claim": "Electrochemical symbiosis utilizes modified electrocytes and tactile/olfactory dominance for neural interface tissues.",
+      "justification": "Electric fish electrocytes + jamming avoidance are Earth analogues for touch/electric puppetry better than piezoelectric keratin. Symbiotes puppet hosts via touch and smell; vulnerable to electromagnetic interference.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "electrocytes",
+      "unit": "tissue",
+      "consequences": [
+        "Symbiotes puppet hosts via touch and smell.",
+        "Tool-Breeders command living gear via bio-electric pulse.",
+        "Vulnerable to electromagnetic interference and heavy rain short-circuits."
+      ],
+      "refs": [
+        "bullock_2005_electroreception"
+      ]
+    },
+    {
+      "id": "F18",
+      "group": "biochemistry",
+      "claim": "Robust DNA repair and branched fatty-acid phospholipids confer thermal and radiation resilience.",
+      "justification": "Redundant double-stranded helix and thermally stable branched isoprenoid lipids enable survival across temperature and radiation gradients (inferred from extremophile biology and lore). Qu heuristic rewrites are lore, not baseline biochemistry.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "stable",
+      "unit": "membrane",
+      "consequences": [
+        "Lineages survive Qu heuristic rewrites without lethal frameshifts.",
+        "Membranes resist thermal stress in caves and tropics.",
+        "Enables long-term genetic drift and cultural memory storage."
+      ]
+    },
+    {
+      "id": "F19",
+      "group": "sky",
+      "claim": "Stellar flare activity is moderate with rare auroral radio noise.",
+      "justification": "K2V–G2V hosts stabilize after early youth; K-dwarfs show higher youth activity than G-dwarfs but remain low-flare overall. Flares are infrequent but can trigger ionospheric disturbances.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "low",
+      "unit": "frequency",
+      "consequences": [
+        "Predictable insolation enables long-term projects.",
+        "Rare radio noise interferes with analog communication arrays.",
+        "Low UV reduces surface sterilization, allowing fragile lineages to thrive."
+      ],
+      "refs": [
+        "kasting_1993_habitable"
+      ]
+    },
+    {
+      "id": "F20",
+      "group": "climate",
+      "claim": "Diurnal temperature variation remains below 5°C on coasts/epicontinental belts, 8–10°C inland.",
+      "justification": "High heat capacity of shallow seas and low axial tilt lock maritime zones into equatorial equilibrium (inferred from climatology). Inland areas experience greater swings; aligns with F8 cloud/moisture coupling.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "5",
+      "unit": "°C",
+      "consequences": [
+        "Ectothermic lineages maintain constant muscle efficiency.",
+        "Thermal camouflage matches background IR signatures.",
+        "Activity halts predictably at twilight without metabolic crash."
+      ],
+      "refs": [
+        "peixoto_1992_climate"
+      ]
+    },
+    {
+      "id": "F21",
+      "group": "planet",
+      "claim": "World variant map links lore lineages to physical parameters: Lizard Herders (1 g, 1.2 bar), Lopsiders (36 g, 1.5 bar), Striders (0.2 g, 0.8 bar), Blind Folk (1 g, 1.1 bar, cave-bound).",
+      "justification": "Synthetic lookup table to prevent player prediction errors. Each lineage occupies a distinct gravitational and atmospheric niche (given by the lore, inferred from F3–F5, F6, F13).",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "lookup",
+      "unit": "mapping",
+      "consequences": [
+        "Prevents cross-environment morphological mismatches.",
+        "Guides Space-stage colonization strategy.",
+        "Clarifies which traits are environment-dependent vs lineage-locked."
+      ],
+      "refs": [
+        "currey_2002_bones"
+      ]
+    },
+    {
+      "id": "F22",
+      "group": "atmosphere",
+      "claim": "High-O2 fire weather creates playable hazard: dry-season firestorms require Engage/Defence checks.",
+      "justification": "Links F7 to a tangible ecological risk. 25% O2 lowers ignition thresholds; dry margins become fire-prone without wetland buffering (inferred from palaeozoic fire ecology).",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "firestorm",
+      "unit": "hazard",
+      "consequences": [
+        "Forces fire-resistant morphologies or seasonal migration.",
+        "Ash deposition alters soil chemistry and crop yields.",
+        "Creates tactical cover and terrain denial zones."
+      ]
+    },
+    {
+      "id": "F23",
+      "group": "interior",
+      "claim": "Cave acoustic ecology drives narrowband sonar: banshee screams = focused pulses in reverberant karst.",
+      "justification": "Adult freeze vs infant scream matches reversed predator-evasion in high-reverb environments (inferred from oilbird/cave swiftlet bioacoustics). Saturated boundary layers (F8) amplify low frequencies.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "narrowband",
+      "unit": "acoustic",
+      "consequences": [
+        "Enables precise prey tracking in total darkness.",
+        "High-frequency calls are absorbed; low-frequency dominate.",
+        "Predators evolve jamming or echo-dampening tissues."
+      ],
+      "refs": [
+        "kinsler_2000_acoustics",
+        "culver_2006_subterranean"
+      ]
+    }
+  ],
+  "changelog": [
+    {
+      "date": "2026-11-18",
+      "who": "autoloop",
+      "what": "world canon drafted by the council chair from 23 facts (planet drafts, peer reviews, astrobio referee)"
+    },
+    {
+      "date": "2026-11-18",
+      "who": "autoloop",
+      "what": "removed rejected references; retired real facts left without references"
+    }
+  ],
+  "lore_source": "alltomorrows"
+}

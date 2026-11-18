@@ -1,0 +1,156 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "at_modular_people",
+  "name": {
+    "en": "Modular People"
+  },
+  "world": "at_garden_peoples",
+  "kind": "easter_egg",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "to be written",
+    "diet": "to be written",
+    "active": "to be written",
+    "predators": []
+  },
+  "body": "to be written",
+  "chains": [
+    {
+      "id": "at_modular_people.c1",
+      "trait": "Interlocking dermal hinge joints between segments",
+      "links": [
+        "Active tectonics (F12) create shifting terrain",
+        "High gravity baseline (F3) demands flexible load distribution",
+        "Interlocking dermal hinges allow rapid structural reconfiguration",
+        "Redeploy units as bridges or barricades in 1 turn"
+      ],
+      "roots": [
+        "F3",
+        "F12"
+      ],
+      "skill": {
+        "id": "at_modular_people.form_shift",
+        "name": {
+          "en": "Form Shift"
+        },
+        "role": "Control",
+        "effect": "Redeploy 3 units as bridge or barricade in 1 turn",
+        "numbers": {}
+      },
+      "weakness": "Hinges require moist environment; desiccation causes lock-jam",
+      "observe": [
+        "Seam-pulsing tissue",
+        "Synchronized limb movements",
+        "Shared neural flicker"
+      ],
+      "journal": {
+        "en": "They never learned to build a wall; they simply grew one."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-19",
+        "summary": "Drop F3 as ‘high gravity’ (F3 is ~1 g); justify hinges via colonial load-sharing on shifting industrial ground (F12) and Qu/colonial human fusion lore; require mucosal lubrication—desiccation weakness is good—modeled on mutable collagen, not ordinary keratin elbows.",
+        "fixes": [
+          "Drop F3 as ‘high gravity’ (F3 is ~1 g); justify hinges via colonial load-sharing on shifting industrial ground (F12) and Qu/colonial human fusion lore; require mucosal lubrication—desiccation weakness is good—modeled on mutable collagen, not ordinary keratin elbows."
+        ],
+        "analogues": [
+          {
+            "organism": "Siphonophore zooid integration; arthropod/onychophoran hinge cuticle; echinoderm mutable collagenous tissue (MCT)",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 5,
+          "designer": 8,
+          "physicist": 5
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist",
+          "physicist"
+        ]
+      }
+    },
+    {
+      "id": "at_modular_people.c2",
+      "trait": "Distributed neural ganglia linked by chemical relay",
+      "links": [
+        "Qu-modified HGT (F14) enabled phenotypic plasticity",
+        "Atmospheric mixing (F6) ensures rapid pheromone spread",
+        "Eliminates individual ego for consensus decision-making",
+        "Share vision and stamina pools among colony for 3 turns"
+      ],
+      "roots": [
+        "F6",
+        "F14"
+      ],
+      "skill": {
+        "id": "at_modular_people.hive_sync",
+        "name": {
+          "en": "Hive Sync"
+        },
+        "role": "Passive",
+        "effect": "Share vision and stamina pools among colony for 3 turns",
+        "numbers": {}
+      },
+      "weakness": "Pheromone jamming causes sector paralysis",
+      "observe": [
+        "Chemical scent trails",
+        "Synchronized breathing",
+        "Lack of individual hesitation"
+      ],
+      "journal": {
+        "en": "A thousand bodies breathing as one lung, dreaming as one mind."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-19",
+        "summary": "Pheromones (F6 mixing) alone cannot pool ‘vision’—use fast paracrine/neuropeptide coupling within connected tissue plus Qu HGT neural bridges (F14, highly speculative); reserve pheromone jamming weakness for coordination, not literal shared retinal input.",
+        "fixes": [
+          "Pheromones (F6 mixing) alone cannot pool ‘vision’—use fast paracrine/neuropeptide coupling within connected tissue plus Qu HGT neural bridges (F14, highly speculative); reserve pheromone jamming weakness for coordination, not literal shared retinal input."
+        ],
+        "analogues": [
+          {
+            "organism": "Honeybee colony decision via chemical signals; octopus arm ganglia with central integration; slime mold *Physarum* network optimization",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "designer": 8,
+          "physicist": 7
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist",
+          "physicist"
+        ]
+      }
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-18",
+    "by": [
+      "naturalist",
+      "physicist"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-19",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-18"
+    }
+  ],
+  "lore_ref": {
+    "file": "lore/alltomorrows.en.json",
+    "id": "modular-people"
+  }
+}

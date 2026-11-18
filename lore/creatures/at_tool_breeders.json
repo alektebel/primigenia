@@ -1,0 +1,169 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "at_tool_breeders",
+  "name": {
+    "en": "Tool Breeders"
+  },
+  "world": "at_garden_peoples",
+  "kind": "easter_egg",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "to be written",
+    "diet": "to be written",
+    "active": "to be written",
+    "predators": []
+  },
+  "body": "to be written",
+  "chains": [
+    {
+      "id": "at_tool_breeders.c1",
+      "trait": "Blowhole nasal valve with sphincter control",
+      "links": [
+        "Warm shallow seas (F10) demand submerged tool manipulation",
+        "Dense atmosphere (F6) increases dissolved O2 capacity",
+        "Sphincter valve seals airway during extended dives",
+        "Continuous underwater manipulation without surfacing"
+      ],
+      "roots": [
+        "F6",
+        "F10"
+      ],
+      "skill": {
+        "id": "at_tool_breeders.aqueous_adapt",
+        "name": {
+          "en": "Aqueous Adapt"
+        },
+        "role": "Engage",
+        "effect": "breathe underwater for 10 turns, -20% movement penalty",
+        "numbers": {}
+      },
+      "weakness": "Valve seals fail in high-sediment water, causing choking",
+      "observe": [
+        "Rhythmic blowhole mist",
+        "Cranial bone ridges",
+        "Coordinated fin-dips"
+      ],
+      "journal": {
+        "en": "They turned their own lungs into docking ports for living machinery."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-19",
+        "summary": "Remove ‘warm shallow seas (F10) increase dissolved O2’—warm water lowers O2 solubility (Henry’s law); attribute 10-turn submergence to cetacean-like dive reflex + symbiotic crustacean gill gear from lore, with episodic blowhole ventilation.",
+        "fixes": [
+          "Remove ‘warm shallow seas (F10) increase dissolved O2’—warm water lowers O2 solubility (Henry’s law); attribute 10-turn submergence to cetacean-like dive reflex + symbiotic crustacean gill gear from lore, with episodic blowhole ventilation."
+        ],
+        "analogues": [
+          {
+            "organism": "Odontocete nasal plug and blowhole locomotion; phocid/spinner dolphin dive apnea",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 7,
+          "designer": 8,
+          "physicist": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist",
+          "physicist"
+        ]
+      }
+    },
+    {
+      "id": "at_tool_breeders.c2",
+      "trait": "Bioluminescent reef-city signaling networks",
+      "links": [
+        "Low-light depths replace solar dependence (F16)",
+        "High alkalinity (F10) fosters calcified shell architecture",
+        "Silent optical communication avoids acoustic predators",
+        "Synchronized dermal flashes transmit tactical commands"
+      ],
+      "roots": [
+        "F10",
+        "F16"
+      ],
+      "skill": {
+        "id": "at_tool_breeders.glow_code",
+        "name": {
+          "en": "Glow-Code"
+        },
+        "role": "Basic",
+        "effect": "transmit tactical commands in darkness, 15m radius",
+        "numbers": {}
+      },
+      "weakness": "Light pollution in bright zones washes out signals; causes disorientation",
+      "observe": [
+        "Pulsing dermal chromatophores",
+        "Calcified shell dwellings",
+        "Synchronized light flashes"
+      ],
+      "journal": {
+        "en": "They built a network that thinks in pulses, not words."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-19",
+        "summary": "Limit tactical range to ~15 m in turbid reef water; use species-specific luciferin and shuttered chromatophores so neighbors don’t broadcast to pelagic predators; calcified architecture from F10 is fine for reef builders, not for the signal tissue itself.",
+        "fixes": [
+          "Limit tactical range to ~15 m in turbid reef water; use species-specific luciferin and shuttered chromatophores so neighbors don’t broadcast to pelagic predators; calcified architecture from F10 is fine for reef builders, not for the signal tissue itself."
+        ],
+        "analogues": [
+          {
+            "organism": "Hawaiian bobtail squid *Euprymna scolopes*–*Vibrio fischeri* counter-illumination; reef cardinalfish and deep-sea lanternfish species-specific bioluminescence",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "designer": 8,
+          "physicist": 7
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "physicist"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "at_sail_people",
+      "kind": "rivalry",
+      "note": "Tool Breeders engineer bio-architecture in shallow reefs; Sail People exploit wind currents for pelagic cruising, competing for similar carbonate-rich waters.",
+      "via": "F10, F3, F9"
+    },
+    {
+      "with": "at_blind_folk",
+      "kind": "counter",
+      "note": "Blind Folk use narrowband banshee screams for sonar in high-reverb caves; Tool Breeders use bioluminescent signaling networks that would blind/disorient Blind Folk if they surfaced.",
+      "via": "F8, F16, F23"
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-18",
+    "by": [
+      "naturalist",
+      "physicist"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-19",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-18"
+    }
+  ],
+  "lore_ref": {
+    "file": "lore/alltomorrows.en.json",
+    "id": "tool-breeders"
+  }
+}
