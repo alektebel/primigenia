@@ -398,3 +398,10 @@ $(BUILD)/nav_test: tests/test_nav.c $(HDRS) $(BUILD)/libcpore.a
 .PHONY: nav-test
 nav-test: $(BUILD)/nav_test
 	nice -n 10 ./$(BUILD)/nav_test
+
+# A21 evidence: the hotbar and the loadout panel (software GL).
+.PHONY: godot-loadout-evidence
+godot-loadout-evidence: godot
+	@mkdir -p docs/evidence/godot/loadout
+	LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 600 xvfb-run -a $(GODOT) --rendering-driver opengl3 --max-fps 15 \
+	  --resolution 1280x720 --path godot --script res://game/tests/loadout_evidence.gd -- $(CURDIR)/docs/evidence/godot/loadout
