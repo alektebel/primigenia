@@ -1,0 +1,14 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=1280">
+<title>Primigenia UI: low health</title><script src="kit.js"></script></head><body><script>
+const {defence,C,arc,glyph,text,creature,groundRing,moveMarker,radial,petals,fieldNote,hud,whisper,keycap,page,P,K}=Kit;
+
+// Low health: the health line turns ember and beats, the edges of the view close in, the hostile ring stays on the hunter.
+page({title:'Low health', time:'evening',
+  world: creature(930,470,0.62,{color:'#6F5A6E',dark:'#463847'}) + creature(480,580,1.15,{stripes:1,tilt:7}),
+  veil: '<defs><radialGradient id="vg" cx=".5" cy=".52" r=".72"><stop offset=".55" stop-color="#2a0f0a" stop-opacity="0"/><stop offset="1" stop-color="#2a0f0a" stop-opacity=".78"/></radialGradient></defs><rect width="1280" height="720" fill="url(#vg)"/>',
+  marks: groundRing(930,470,58,{color:C.ember,style:'teeth',teeth:14,op:.75,w:2})
+    + moveMarker(250,520,30)
+    + hud({hp:.19, stamina:.3, food:.4, targetColor:C.ember, targetBearing:88})
+});
+</script></body></html>

@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=1280">
+<title>Primigenia UI: menu open</title><script src="kit.js"></script></head><body><script>
+const {defence,C,arc,glyph,text,creature,groundRing,moveMarker,radial,petals,fieldNote,hud,whisper,keycap,page,P,K}=Kit;
+
+// The seed opens the menu: the world pauses under a veil of fog. Text only, no panels.
+const items=[['Resume','Esc'],['Journal','J'],['Family tree','T'],['Loadout','L'],['Settings',''],['Keys','F1'],['Save',''],['Load',''],['Main menu','']];
+let m='';
+items.forEach((it,i)=>{const y=372+i*33, sel=i===4, dim=i===3;
+  m+=text(64,y,it[0],{size:22,weight:sel?500:400,op:dim?.4:sel?1:.82});
+  if(it[1]) m+=text(214,y,it[1]+(dim?'   at the nest':''),{size:14.5,color:C.fog,op:dim?.5:.75,ls:.6});
+  if(sel) m+='<path d="M40 '+(y-7)+'h14" stroke="'+C.copper+'" stroke-width="2.4" stroke-linecap="round"/>';});
+const sx=330; let s='';
+const slider=(y,label,v)=>text(sx,y,label,{size:16.5,op:.9})+'<path d="M'+(sx+150)+' '+(y-5)+'h170" stroke="'+C.bone+'" stroke-width="1.2" opacity=".3"/><path d="M'+(sx+150)+' '+(y-5)+'h'+(170*v)+'" stroke="'+C.bone+'" stroke-width="2.2" stroke-linecap="round"/><circle cx="'+(sx+150+170*v)+'" cy="'+(y-5)+'" r="5" fill="'+C.bone+'"/>';
+const choice=(y,label,opts,k)=>{let o=text(sx,y,label,{size:16.5,op:.9}),x=sx+150;opts.forEach((t,i)=>{o+=text(x,y,t,{size:16.5,weight:i===k?500:400,op:i===k?1:.5});if(i===k)o+='<path d="M'+x+' '+(y+7)+'h'+(t.length*7.6)+'" stroke="'+C.copper+'" stroke-width="1.6" stroke-linecap="round"/>';x+=t.length*7.8+24});return o};
+s+=text(sx,372,'Settings',{serif:true,size:23});
+s+=choice(408,'Language',['English','Español'],0);
+s+=slider(441,'Size of the signs',.42);
+s+=choice(474,'Names on signs',['On hover','Always'],0);
+s+=choice(507,'Numbers',['Off','On'],0);
+s+=choice(540,'Stronger outlines',['Off','On'],0);
+s+=choice(573,'Less motion',['Off','On'],0);
+s+=slider(606,'Sound',.8);
+s+=slider(639,'Music',.55);
+page({title:'Menu', time:'dawn',
+  world: creature(960,560,1.1,{stripes:1}),
+  veil: '<rect width="1280" height="720" fill="#18221f" opacity=".62"/>',
+  marks: m + s + hud({menu:1, quiet:.4})
+});
+</script></body></html>

@@ -1,0 +1,10 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=1280">
+<title>Primigenia UI: glyph sheet</title><script src="kit.js"></script></head><body><script>
+const {C,G,glyph,text,page}=Kit;
+// Every glyph at 48 px and at its real 24 px size, on the three skies' typical ground colour.
+let m='', names=Object.keys(G);
+names.forEach((n,i)=>{const col=i%9,row=Math.floor(i/9),x=110+col*132,y=150+row*136;
+  m+=glyph(n,x,y,48,C.bone,1,1.7)+glyph(n,x+46,y+10,24,C.bone,1,1.7)+text(x+10,y+52,n,{size:14.5,anchor:'middle',color:C.fog});});
+page({title:'Glyphs', time:'midday', veil:'<rect width="1280" height="720" fill="#22332b" opacity=".92"/>', marks:text(86,70,'Glyphs',{serif:true,size:26})+text(86,94,'one stroke weight, round caps, 24-unit box; shown at 48 and 24',{size:14.5,color:C.fog})+m});
+</script></body></html>

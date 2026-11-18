@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=1280">
+<title>Primigenia UI: fight</title><script src="kit.js"></script></head><body><script>
+const {defence,C,arc,glyph,text,creature,groundRing,moveMarker,radial,petals,fieldNote,hud,whisper,keycap,page,P,K}=Kit;
+
+// Attack chosen against a Garfio: toothed ember ring = its health, the disc growing inside = its wind-up.
+const cx=800, cy=392, gy=452;
+page({title:'Combat', time:'evening',
+  world: creature(1090,420,0.5,{color:'#6F5A6E',dark:'#463847',flip:1})
+    + '<ellipse cx="'+cx+'" cy="'+gy+'" rx="44" ry="'+(44*K)+'" fill="'+C.ember+'" opacity=".30"/>'
+    + creature(520,590,1.15,{stripes:1}) + creature(cx,gy,0.7,{color:'#6F5A6E',dark:'#463847',flip:1,tilt:-5}),
+  marks: groundRing(cx,gy,66,{color:C.ember,style:'teeth',teeth:13,frac:.64,w:2.6})
+    + arc(cx,gy,44,44*K,0,360,{color:C.ember,w:1.4,op:.9})
+    + groundRing(1090,420,46,{color:C.ember,style:'teeth',teeth:14,op:.5,w:1.6})
+    + petals(cx,cy+4,104,[{g:'bite',key:'1',color:C.ember},{g:'charge',key:'2',color:C.ember,cd:.6},{g:'spit',key:'3',color:C.ember},{g:'tail',key:'4',color:C.ember,off:1}])
+    + defence(520,590,84)
+    + fieldNote(cx+122,cy-6,'Garfio',{})
+    + hud({hp:.72, stamina:.55, hpHot:1, targetBearing:30, targetColor:C.ember})
+});
+</script></body></html>
