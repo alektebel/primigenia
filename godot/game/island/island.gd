@@ -7,6 +7,7 @@ const EnvironmentFactory := preload("res://game/island/environment.gd")
 const TerrainChunks := preload("res://game/island/terrain_chunks.gd")
 const Water := preload("res://game/island/water.gd")
 const Rivers := preload("res://game/island/rivers.gd")
+const Clouds := preload("res://game/island/clouds.gd")
 const Grass := preload("res://game/island/grass.gd")
 const StageWorld := preload("res://game/stage/stage_world.gd")
 const StageSetup := preload("res://game/stage/stage_setup.gd")
@@ -76,6 +77,7 @@ func data_for_shadows():
 
 func build() -> void:
 	var data = Game.data
+	Clouds.apply(Game.settings.get("weather", ""))
 	world_env = WorldEnvironment.new()
 	world_env.environment = EnvironmentFactory.make_environment()
 	add_child(world_env)
@@ -384,6 +386,7 @@ func _sync_controls() -> void:
 		player_input.position = Vector2(e.x, e.z)
 
 func _process(delta: float) -> void:
+	Clouds.set_time(Time.get_ticks_msec() * 0.001)
 	if stage == null:
 		return
 	_sync_controls()

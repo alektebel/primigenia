@@ -116,7 +116,7 @@ void fragment() {
 		ALBEDO = min(dbg * 0.97, vec3(0.97));   // raw: read it under a linear tone map (the stretch test does)
 	} else {
 		vec4 rl = texture(relief_tex, (xz + MAP_HALF) / (MAP_CELL * float(MAP_N)));
-		float vis = mix(1.0, rl.a, rock_shadows);   // baked terrain shadow (step 9), 1 when the switch is off
+		float vis = mix(1.0, rl.a, rock_shadows) * cloud_shadow(wp, SUN_DIR);   // baked terrain shadow (step 9) and the cloud layer's shadow
 		float light = max(dot(gn, SUN_DIR), 0.0) * vis;
 		float wave = meadowWave(xz, TIME);
 		float msh = min(occluder_shadow(wp), vis);

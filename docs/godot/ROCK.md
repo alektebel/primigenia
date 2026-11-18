@@ -80,3 +80,9 @@ Rock still reads greyer than the hero's warm cliffs (M0 note); not changed here.
 * Snow amount: peaks now carry much less snow (facets flatter than 55 degrees only). Loosen `SNOW_MACRO_*` if wanted.
 * Approve the constants above, and DESIGN.md entry afterwards.
 * Verify the sin-hash banding suspicion (plan item 8) on the real GPU; strata use a sin-free hash.
+
+## Terrain look update (terrain/look-hydro)
+
+`ground_normal` (terrain_maps.gdshaderinc) is now a Catmull-Rom bicubic gradient of the height texels instead of differences of the triangle surface; the geometry (`ground_tri`, `TerrainData.ground`)
+is unchanged. The vertex shader geomorphs each LOD onto the next lattice (`lod_step`, `morph_range` uniforms) and the LOD ranges are 300/700/1500/3200 m. The terrain light is multiplied by the cloud shadow
+(docs/godot/CLOUDS.md). See docs/TERRAIN.md "Version 4" for the diagnosis.

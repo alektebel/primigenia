@@ -5,6 +5,7 @@ const TerrainCache := preload("res://game/island/terrain_cache.gd")
 const Views := preload("res://game/tests/rock_views.gd")
 const ALL := ["cliff_lit", "cliff_shade", "ridge", "scree", "valley", "coast", "far", "river"]
 const Rivers := preload("res://game/island/rivers.gd")
+const Clouds := preload("res://game/island/clouds.gd")
 
 # {pos, look} for a look view.
 static func camera_for(td, v: String) -> Dictionary:
@@ -93,6 +94,8 @@ func _run() -> void:
 	DirAccess.make_dir_recursive_absolute(out_dir)
 	root.size = Vector2i(1280, 720)
 	var game = root.get_node("Game")
+	var weather: String = args[2] if args.size() > 2 else ""
+	game.settings.weather = weather
 	game.settings.grass = 20000
 	var entry := TerrainCache.load_entry({"seed": 1})
 	if entry.is_empty():
@@ -110,6 +113,8 @@ func _run() -> void:
 		island.camera.look_at(cv.look)
 		island.camera.far = 12000.0
 		island.terrain_chunks.update_lods(island.camera.global_position, true)
+		Clouds.frozen_time = 600.0   # fixed wind phase so frames compare
+		Clouds.set_time(0.0)
 		island.grass.visible = false
 		for i in 6:
 			await process_frame
