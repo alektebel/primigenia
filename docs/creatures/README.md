@@ -2,6 +2,15 @@
 
 # Creatures
 
+## Adrian (Tau Ceti) (`adrian`)
+
+| Creature | Kind | Status | Chains | Verdicts |
+|---|---|---|---|---|
+| [Aurorán](auroran.md) | new | draft | 4 | 2 fixable, 2 plausible |
+| [Cristalón](cristalon.md) | new | draft | 4 | 4 plausible |
+| [Sombría](sombria.md) | new | draft | 4 | 1 fixable, 3 plausible |
+| [Taumoeba](taumoeba.md) | easter_egg | draft | 5 | 2 fixable, 3 plausible |
+
 ## Earth (Sol) (`earth`)
 
 | Creature | Kind | Status | Chains | Verdicts |

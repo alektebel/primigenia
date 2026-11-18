@@ -271,7 +271,7 @@
   {
     "id": "stephenson_morrison_1995_rotation",
     "type": "article-journal",
-    "title": "Long-term fluctuations in the Earth's rotation: 700 BC to AD 1990",
+    "title": "Long-term fluctuations in the Earth’s rotation: 700 BC to AD 1990",
     "author": [
       {
         "family": "Stephenson",
@@ -285,9 +285,11 @@
         ]
       ]
     },
-    "container-title": "Philosophical Transactions of the Royal Society A",
-    "x-status": "unverified",
-    "x-note": "cited by a council model from memory; not yet checked"
+    "container-title": "Philosophical Transactions of the Royal Society of London. Series A: Physical and Engineering Sciences",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 0.99); title corrected from 'Long-term fluctuations in the Earth's rotation: 700 BC to AD 1990'; container-title corrected from 'Philosophical Transactions of the Royal Society A'; DOI added",
+    "DOI": "10.1098/rsta.1995.0028",
+    "x-checked": "2026-11-18"
   },
   {
     "id": "dickey_1994_lunar",
@@ -484,8 +486,9 @@
         ]
       ]
     },
-    "x-status": "unverified",
-    "x-note": "cited by a council model from memory; not yet checked"
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit '3. Assessing Ozone Depletion' (, 2019) title similarity 0.72",
+    "x-checked": "2026-11-18"
   },
   {
     "id": "farman_1985_ozone",
@@ -812,7 +815,7 @@
   {
     "id": "lyons_2014_oxygen",
     "type": "article-journal",
-    "title": "The rise of oxygen in Earth's early ocean and atmosphere",
+    "title": "The rise of oxygen in Earth’s early ocean and atmosphere",
     "author": [
       {
         "family": "Lyons",
@@ -827,8 +830,10 @@
       ]
     },
     "container-title": "Nature",
-    "x-status": "unverified",
-    "x-note": "cited by a council model from memory; not yet checked"
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 0.99); title corrected from 'The rise of oxygen in Earth's early ocean and atmosphere'; DOI added",
+    "DOI": "10.1038/nature13068",
+    "x-checked": "2026-11-18"
   },
   {
     "id": "leakey_hay_1979_laetoli",
@@ -1101,9 +1106,11 @@
         ]
       ]
     },
-    "container-title": "Philosophical Transactions of the Royal Society B",
-    "x-status": "unverified",
-    "x-note": "cited by a council model from memory; not yet checked"
+    "container-title": "Philosophical Transactions of the Royal Society B: Biological Sciences",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); container-title corrected from 'Philosophical Transactions of the Royal Society B'; DOI added",
+    "DOI": "10.1098/rstb.2015.0237",
+    "x-checked": "2026-11-18"
   },
   {
     "id": "emery_clayton_2004_corvids",
@@ -1869,7 +1876,8 @@
     },
     "container-title": "Astrobiology",
     "x-status": "unverified",
-    "x-note": "cited by a council model from memory; not yet checked"
+    "x-note": "ambiguous: closest Crossref hit is 'The Early Earth vs. The Origin of Life' (Shock, 2000, doi 10.2307/j.ctv1v7zdrp.33), title similarity 0.44, author match, year ok",
+    "x-checked": "2026-11-18"
   },
   {
     "id": "bada_2003_origins",
@@ -2111,6 +2119,426 @@
       ]
     },
     "container-title": "Astrobiology",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "pecaut_mamajek_2013",
+    "type": "article-journal",
+    "title": "A Catalog of Neighboring Stars",
+    "author": [
+      {
+        "family": "Pecaut",
+        "given": "Michael"
+      },
+      {
+        "family": "Mamajek",
+        "given": "Eric"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2013
+        ]
+      ]
+    },
+    "container-title": "The Astrophysical Journal Supplement Series",
+    "DOI": "10.1088/0067-0049/208/1/9",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Anomalous Spectral Types and Intrinsic Colors of Young Stars' (Pecaut, 2015) title similarity 0.38",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "kopparapu_2013",
+    "type": "article-journal",
+    "title": "Habitable Zones Around Main-Sequence Stars: New Estimates",
+    "author": [
+      {
+        "family": "Kopparapu",
+        "given": "Ravi"
+      },
+      {
+        "family": "Ramirez",
+        "given": "Robert"
+      },
+      {
+        "family": "Schottel Kopp",
+        "given": "Geoffrey"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2013
+        ]
+      ]
+    },
+    "container-title": "The Astrophysical Journal",
+    "DOI": "10.1088/0004-637x/765/2/131",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "zeng_2016",
+    "type": "article-journal",
+    "title": "Mass-Radius Relation for Rocky Exoplanets",
+    "author": [
+      {
+        "family": "Zeng",
+        "given": "Lisha"
+      },
+      {
+        "family": "Sasselov",
+        "given": "Dimitar"
+      },
+      {
+        "family": "Seager",
+        "given": "Sara"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2016
+        ]
+      ]
+    },
+    "container-title": "Earth and Planetary Science Letters",
+    "DOI": "10.1016/j.epsl.2016.04.030",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'MASS–RADIUS RELATION FOR ROCKY PLANETS BASED ON PREM' (Zeng, 2016, doi 10.3847/0004-637x/819/2/127), title similarity 0.80, author match, year ok",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "wordsworth_2021",
+    "type": "article-journal",
+    "title": "Carbon dioxide climate feedback on the habitability of rocky exoplanets",
+    "author": [
+      {
+        "family": "Wordsworth",
+        "given": "Rory"
+      },
+      {
+        "family": "Pierrefort",
+        "given": "Gaël"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2021
+        ]
+      ]
+    },
+    "container-title": "Astronomy & Astrophysics",
+    "DOI": "10.1051/0004-6361/202039738",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Habitability of Rocky Exoplanets: Insight from Laboratory Simulations' (He, 2019) title similarity 0.62",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "zeebe_2001",
+    "type": "book",
+    "title": "CO2 in the Ocean",
+    "author": [
+      {
+        "family": "Zeebe",
+        "given": "Rainer"
+      },
+      {
+        "family": "Wolf-Gladrow",
+        "given": "Dieter"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2001
+        ]
+      ]
+    },
+    "container-title": "Springer",
+    "ISBN": "9783540421045",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'The warming papers' (Archer, 2011) title similarity 0.29",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "kump_2004",
+    "type": "chapter",
+    "title": "The Weathering Feedbacks on Climate and the Evolution of Life",
+    "author": [
+      {
+        "family": "Kump",
+        "given": "James"
+      },
+      {
+        "family": "Brantley",
+        "given": "Stephen"
+      },
+      {
+        "family": "Arnold",
+        "given": "John"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2004
+        ]
+      ]
+    },
+    "container-title": "Geological Society of America Special Papers",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'The Roles of Rock Formation and Weathering in Long-Term Climate Change' (Kump, 2025) title similarity 0.46",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "christensen_2010",
+    "type": "article-journal",
+    "title": "Scaling laws for the magnetic fields of convecting planetary cores",
+    "author": [
+      {
+        "family": "Christensen",
+        "given": "Ulrich"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2010
+        ]
+      ]
+    },
+    "container-title": "Geophysical Journal International",
+    "DOI": "10.1111/j.1365-246X.2010.04599.x",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'Dynamo Scaling Laws and Applications to the Planets' (Christensen, 2009, doi 10.1007/978-1-4419-5901-0_17), title similarity 0.44, author match, year ok",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "rothschild_2013",
+    "type": "chapter",
+    "title": "Potential Biospheres",
+    "author": [
+      {
+        "family": "Rothschild",
+        "given": "Lisa"
+      },
+      {
+        "family": "Mancinelli",
+        "given": "Robert"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2013
+        ]
+      ]
+    },
+    "container-title": "Exoplanets",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Proton-Induced Collisions on Potential Prebiotic Species' (Bacchus-Montabonel, 2016) title similarity 0.47",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "coxon_2018",
+    "type": "book",
+    "title": "Acoustics of the Atmosphere",
+    "author": [
+      {
+        "family": "Coxon",
+        "given": "John"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2018
+        ]
+      ]
+    },
+    "container-title": "Springer",
+    "x-status": "rejected",
+    "x-note": "no candidate returned by the index",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "pierrehumbert_2010",
+    "type": "book",
+    "title": "Principles of Planetary Climate",
+    "author": [
+      {
+        "family": "Pierrehumbert",
+        "given": "Raymond"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2010
+        ]
+      ]
+    },
+    "container-title": "Cambridge University Press",
+    "x-status": "verified",
+    "x-note": "verified against OpenLibrary (title 1.00); ISBN added",
+    "ISBN": "9780511780783",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "kuckuck_2007_vesicles",
+    "type": "article-journal",
+    "title": "Gas vesicles: nanoscale structural proteins of the bacterial world",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'High-Resolution In Situ NMR Spectroscopy of Bacterial Envelope Proteins in Outer Membrane Vesicles' (, None) title similarity 0.36",
+    "author": [
+      {
+        "family": "Kuckuck",
+        "given": "F."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2007
+        ]
+      ]
+    },
+    "container-title": "Nature Reviews Microbiology",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "kuo_2009_remnants",
+    "type": "article-journal",
+    "title": "Remnants of genetic exchange in endosymbiotic bacteria",
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked",
+    "author": [
+      {
+        "family": "Kuo",
+        "given": "C.H."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2009
+        ]
+      ]
+    },
+    "container-title": "Proceedings of the National Academy of Sciences"
+  },
+  {
+    "id": "nelson_2002_bacterial",
+    "type": "article-journal",
+    "title": "Bacterial weathering of minerals",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Chapter 1. CHEMICAL WEATHERING RATES OF SILICATE MINERALS: AN OVERVIEW' (White, 1995) title similarity 0.68",
+    "author": [
+      {
+        "family": "Nelson",
+        "given": "Y.D."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2002
+        ]
+      ]
+    },
+    "container-title": "Reviews in Mineralogy and Geochemistry",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "ricomartinez_2014_silica",
+    "type": "article-journal",
+    "title": "Silica biomineralization in marine bacteria",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Silica Biomineralization, Sponges' (, None) title similarity 0.72",
+    "author": [
+      {
+        "family": "Rico-Martínez",
+        "given": "A."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2014
+        ]
+      ]
+    },
+    "container-title": "Frontiers in Microbiology",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "endler_1980_natural",
+    "type": "article-journal",
+    "title": "Natural and sexual selection on color patterns in poeciliid fishes",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'Natural and sexual selection on color patterns in poeciliid fishes' (Endler, 1983, doi 10.1007/bf00690861), title similarity 1.00, author match, year off",
+    "author": [
+      {
+        "family": "Endler",
+        "given": "J.A."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1980
+        ]
+      ]
+    },
+    "container-title": "Evolution",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "southward_1991_evolution",
+    "type": "article-journal",
+    "title": "Evolution of Deep-Sea Hydrothermal Vent Fauna",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'Handbook of Deep‐Sea Hydrothermal Vent Fauna' (Ott, 2006, doi 10.1111/j.1439-0485.2006.00107.x), title similarity 0.84, author differs, year off",
+    "author": [
+      {
+        "family": "Southward",
+        "given": "A.J."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1991
+        ]
+      ]
+    },
+    "container-title": "Nature",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "weisfogh_1973_mechanics",
+    "type": "article-journal",
+    "title": "Mechanics of Insect Flight",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Biology and physics of locust flight. I. Basic principles in insect flight. A critical review' (Weis-Fogh, 1956) title similarity 0.38",
+    "author": [
+      {
+        "family": "Weis-Fogh",
+        "given": "T."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1973
+        ]
+      ]
+    },
+    "container-title": "Scientific American",
     "x-checked": "2026-11-18"
   }
 ]
