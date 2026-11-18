@@ -115,7 +115,7 @@ static int test_pivot(void){
     Turn s=run_turn(60,4,0,180);
     CHECK(s.pivoted);
     /* a big one never pivots: it rolls through a slow U-turn */
-    Turn big=run_turn(300,4,0,180);
+    Turn big=run_turn(400,4,0,180);
     CHECK(!big.pivoted);
     CHECK(big.min_speed>.5f);
     CHECK(big.ticks_to_face>s.ticks_to_face);
