@@ -48,3 +48,13 @@
 | Creature | Kind | Status | Chains | Verdicts |
 |---|---|---|---|---|
 | [Ecolumbre](ecolumbre.md) | native | draft | 4 | 1 fixable, 3 plausible |
+
+## Silicon Hot World (`silicon_hot`)
+
+| Creature | Kind | Status | Chains | Verdicts |
+|---|---|---|---|---|
+| [Azufraja](azufraja.md) | new | draft | 4 | 3 fixable, 1 plausible |
+| [Cenizor](cenizor.md) | new | draft | 4 | 2 fixable, 2 plausible |
+| [Cuarzo-Sangre](cuarzo_sangre.md) | new | draft | 4 | 3 fixable, 1 plausible |
+| [Quemador](quemador.md) | new | draft | 4 | 1 fixable, 3 plausible |
+| [Vidrio-Pulso](vidrio_pulso.md) | new | draft | 4 | 3 fixable, 1 plausible |

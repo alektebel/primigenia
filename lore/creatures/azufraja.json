@@ -1,0 +1,303 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "azufraja",
+  "name": {
+    "en": "Azufraja"
+  },
+  "world": "silicon_hot",
+  "kind": "new",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "Shallow margins of regional S8-SO2 eutectic pools.",
+    "diet": "Dissolved sulfur compounds, suspended silicate particulates, convection-carried organics.",
+    "active": "Diurnal cooling phases (when thermal inversion convection peaks).",
+    "predators": []
+  },
+  "body": "Flattened disc-like carapace with radiating piezoelectric filter filaments and CO2-filled buoyancy bladders.",
+  "chains": [
+    {
+      "id": "azufraja.c1",
+      "trait": "Radiating filter filaments",
+      "links": [
+        "Harvests suspended silicate and sulfur particulates",
+        "Thermal inversions drive convection plumes across basins",
+        "Molten S8-SO2 eutectic provides liquid ion medium"
+      ],
+      "roots": [
+        "F7",
+        "F8"
+      ],
+      "skill": {
+        "id": "azufraja.current_draw",
+        "name": {
+          "en": "Current-draw"
+        },
+        "role": "Engage",
+        "effect": "Pulls enemies closer, +20% accuracy on drawn targets",
+        "numbers": {}
+      },
+      "weakness": "Rapid temperature drops below 130°C vitrify filter filaments, halting metabolism completely.",
+      "observe": [
+        "Filaments rippling in slow, viscous currents",
+        "Carapace breathing like a bellows",
+        "Lattice nodes flashing faint amber when ions pass"
+      ],
+      "journal": {
+        "en": "They drink the world's slow blood and wear the cooling sky."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Filaments are rigid silicate–sulfur mesh ‘baleen’ with ion-binding surface groups; Current-draw = tuning piezo filaments to align with inversion plumes (vibration entrainment), not metazoan-style pumping.",
+        "fixes": [
+          "Filaments are rigid silicate–sulfur mesh ‘baleen’ with ion-binding surface groups; Current-draw = tuning piezo filaments to align with inversion plumes (vibration entrainment), not metazoan-style pumping."
+        ],
+        "analogues": [
+          {
+            "organism": "Sponge choanocyte collars in water (too cold/aqueous here); salp mucous-net feeders in particle-rich currents—scaled to passive mesh in viscous medium.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "petkowski_2020_water"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "azufraja.c2",
+      "trait": "Supercritical CO2 buoyancy bladders",
+      "links": [
+        "Maintains neutral buoyancy in stratified eutectic",
+        "Density contrasts between solvent and tissue cause sinking",
+        "Geothermal vents supply supercritical CO2 pockets"
+      ],
+      "roots": [
+        "F5",
+        "F9"
+      ],
+      "skill": {
+        "id": "azufraja.gas_lift",
+        "name": {
+          "en": "Gas-lift"
+        },
+        "role": "Passive",
+        "effect": "+30% movement speed in liquid terrain, grants brief float",
+        "numbers": {}
+      },
+      "weakness": "Rapid temperature drops below 130°C vitrify filter filaments, halting metabolism completely.",
+      "observe": [
+        "Filaments rippling in slow, viscous currents",
+        "Carapace breathing like a bellows",
+        "Lattice nodes flashing faint amber when ions pass"
+      ],
+      "journal": {
+        "en": "They drink the world's slow blood and wear the cooling sky."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Rename to ‘pressurized CO₂/H₂S gas chambers’ sealed in F15 joints, refilled from vent seeps; Gas-lift works in eutectic pools via density contrast with molten sulfur, not necessarily supercritical internal fluid.",
+        "fixes": [
+          "Rename to ‘pressurized CO₂/H₂S gas chambers’ sealed in F15 joints, refilled from vent seeps; Gas-lift works in eutectic pools via density contrast with molten sulfur, not necessarily supercritical internal fluid."
+        ],
+        "analogues": [
+          {
+            "organism": "Fish physostomous swim bladder gas regulation; some larvae buoyancy via gas or lipid—here pressurized gas chambers in mineral shell.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "azufraja.c3",
+      "trait": "Lattice-defect sensory nodes",
+      "links": [
+        "Reads chemical gradients and thermal shifts in solvent",
+        "Silicate lattice defects store stable high-T data",
+        "Anoxic dry conditions preclude aqueous signaling"
+      ],
+      "roots": [
+        "F12",
+        "F13"
+      ],
+      "skill": {
+        "id": "azufraja.ion_taste",
+        "name": {
+          "en": "Ion-taste"
+        },
+        "role": "Basic",
+        "effect": "Reveals enemy stats/weaknesses, +15% crit chance",
+        "numbers": {}
+      },
+      "weakness": "Rapid temperature drops below 130°C vitrify filter filaments, halting metabolism completely.",
+      "observe": [
+        "Filaments rippling in slow, viscous currents",
+        "Carapace breathing like a bellows",
+        "Lattice nodes flashing faint amber when ions pass"
+      ],
+      "journal": {
+        "en": "They drink the world's slow blood and wear the cooling sky."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Nodes are dedicated piezoelectric or ion-conductivity sensilla in the carapace (parallel to F14), with slow lattice archival as a separate Passive—Ion-taste reads local SO₂/H₂S and thermal gradients, not genotype.",
+        "fixes": [
+          "Nodes are dedicated piezoelectric or ion-conductivity sensilla in the carapace (parallel to F14), with slow lattice archival as a separate Passive—Ion-taste reads local SO₂/H₂S and thermal gradients, not genotype."
+        ],
+        "analogues": [
+          {
+            "organism": "Insect gustatory sensilla; electric fish ampullary electroreceptors reading ion gradients—not crystal defect DNA.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "azufraja.c4",
+      "trait": "Thermal expansion joints",
+      "links": [
+        "Allows carapace flexion during temperature swings",
+        "Diurnal cooling induces rapid solvent viscosity changes",
+        "Atmospheric heat lock creates sharp thermal gradients"
+      ],
+      "roots": [
+        "F7",
+        "F15"
+      ],
+      "skill": {
+        "id": "azufraja.flex_shell",
+        "name": {
+          "en": "Flex-shell"
+        },
+        "role": "Defence",
+        "effect": "+40% damage reduction during environmental damage phases",
+        "numbers": {}
+      },
+      "weakness": "Rapid temperature drops below 130°C vitrify filter filaments, halting metabolism completely.",
+      "observe": [
+        "Filaments rippling in slow, viscous currents",
+        "Carapace breathing like a bellows",
+        "Lattice nodes flashing faint amber when ions pass"
+      ],
+      "journal": {
+        "en": "They drink the world's slow blood and wear the cooling sky."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "F7 diurnal inversion and vent-adjacent basins impose sharp thermal swings on F15 composite carapaces; sliding expansion joints prevent vitrification cracks—direct match to canon F15 and F17 dormancy threshold.",
+        "fixes": [
+          "F7 diurnal inversion and vent-adjacent basins impose sharp thermal swings on F15 composite carapaces; sliding expansion joints prevent vitrification cracks—direct match to canon F15 and F17 dormancy threshold."
+        ],
+        "analogues": [
+          {
+            "organism": "Arthropod arthrodial membrane sutures; bimetallic-style biological compensation in desert tortoise shell growth zones (loose analogy).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "petkowski_2020_water"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "cenizor",
+      "kind": "prey",
+      "note": "Azufraja colonies cluster near Cenizor vent-grazing patches to harvest mineral runoff."
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-18",
+    "by": [
+      "naturalist/qwen"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-18",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-18"
+    },
+    {
+      "date": "2026-11-18",
+      "who": "autoloop",
+      "what": "removed rejected references from analogues"
+    }
+  ],
+  "temperament": "Passive, colonial, highly sensitive to vibration and chemical shifts.",
+  "secrets": [
+    "Player can trigger a thermal inversion event to force Azufraja into a defensive cluster, enabling safe harvesting.",
+    "Their lattice defects store environmental data; scanning them reveals historical temperature maps of the basin."
+  ],
+  "moments": [
+    "As the sun sets, the basin exhales. The Azufraja open their discs like silent bells, and the dark water turns to a forest of amber light."
+  ],
+  "journal": [
+    {
+      "en": "They drink the world's slow blood and wear the cooling sky."
+    },
+    {
+      "en": "A bellows of glass, a pulse of ions, and the pool remembers them."
+    }
+  ]
+}

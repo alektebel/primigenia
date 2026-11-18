@@ -2757,8 +2757,8 @@
     "id": "seager_2020_azotosomes",
     "type": "article-journal",
     "title": "Azotosomes: Vesicular non-aqueous solvation in liquid methane",
-    "x-status": "unverified",
-    "x-note": "cited by a council model from memory; not yet checked",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Non-Aqueous Solvation of n-Octanol and Ethanol: Spectroscopic and Computational Studies' (, None) title similarity 0.45",
     "author": [
       {
         "family": "Seager",
@@ -2772,6 +2772,192 @@
         ]
       ]
     },
-    "container-title": "ACS Central Science"
+    "container-title": "ACS Central Science",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "bains_2004_silicon",
+    "type": "article-journal",
+    "title": "Many possibilities to excite us: a review of the astrobiological implications of silicon-based life",
+    "author": [
+      {
+        "family": "Bains",
+        "given": "William"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2004
+        ]
+      ]
+    },
+    "container-title": "Astrobiology",
+    "DOI": "10.1089/1531107041440903",
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked"
+  },
+  {
+    "id": "petkowski_bains_seager_2020_solvents",
+    "type": "article-journal",
+    "title": "A survey of solvents for life",
+    "author": [
+      {
+        "family": "Petkowski",
+        "given": "Jacek J."
+      },
+      {
+        "family": "Bains",
+        "given": "William"
+      },
+      {
+        "family": "Seager",
+        "given": "Sarah"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2020
+        ]
+      ]
+    },
+    "container-title": "Life",
+    "DOI": "10.3390/life10100130",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'On the Potential of Silicon as a Building Block for Life' (Petkowski, 2020, doi 10.3390/life10060084), title similarity 0.42, author match, year ok",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "bains_2004_many",
+    "type": "article-journal",
+    "title": "Many chemistries could be used to build living systems",
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked",
+    "author": [
+      {
+        "family": "Bains",
+        "given": "W."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2004
+        ]
+      ]
+    },
+    "container-title": "Astrobiology"
+  },
+  {
+    "id": "petkowski_2020_potential",
+    "type": "article-journal",
+    "title": "On the Potential of Silicon as a Building Block for Life",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "author": [
+      {
+        "family": "Petkowski",
+        "given": "J."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2020
+        ]
+      ]
+    },
+    "container-title": "Life",
+    "DOI": "10.3390/life10060084",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "bains_2004_defining",
+    "type": "article-journal",
+    "title": "Defining and quantifying the habitable zone for microorganisms and the limits of biopolymer stability",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'The Habitable Zone: The Climatic Limits of Habitability' (Kopparapu, 2018) title similarity 0.55",
+    "author": [
+      {
+        "family": "Bains",
+        "given": "W."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2004
+        ]
+      ]
+    },
+    "container-title": "Astrobiology",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "bains_2004_find",
+    "type": "article-journal",
+    "title": "How to find a lifeform with a different biochemistry: silicosis as a biosignature",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'An Astrophysical View of Earth-Based Metabolic Biosignature Gases' (Seager, 2012) title similarity 0.44",
+    "author": [
+      {
+        "family": "Bains",
+        "given": "W."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2004
+        ]
+      ]
+    },
+    "container-title": "Astrobiology",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "petkowski_2020_chemistry",
+    "type": "article-journal",
+    "title": "The chemistry of life's beginnings: silicon vs carbon",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'On the Potential of Silicon as a Building Block for Life' (Petkowski, 2020, doi 10.3390/life10060084), title similarity 0.41, author match, year ok",
+    "author": [
+      {
+        "family": "Petkowski",
+        "given": "J., Bains, W., Seager, S."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2020
+        ]
+      ]
+    },
+    "container-title": "Life",
+    "x-checked": "2026-11-18"
+  },
+  {
+    "id": "petkowski_2020_water",
+    "type": "article-journal",
+    "title": "Water is not a prerequisite for life: A new framework for habitable zone calculations",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'On the Potential of Silicon as a Building Block for Life' (Petkowski, 2020, doi 10.3390/life10060084), title similarity 0.43, author match, year ok",
+    "author": [
+      {
+        "family": "Petkowski",
+        "given": "J."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2020
+        ]
+      ]
+    },
+    "container-title": "Astrobiology",
+    "x-checked": "2026-11-18"
   }
 ]

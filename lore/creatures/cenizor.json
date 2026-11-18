@@ -1,0 +1,309 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "cenizor",
+  "name": {
+    "en": "Cenizor"
+  },
+  "world": "silicon_hot",
+  "kind": "new",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "Geothermal vent fields and basaltic plains.",
+    "diet": "Chemolithotrophic mineral crusts and iron-sulfide biofilms.",
+    "active": "Vent-flux cycle (peak emission phases).",
+    "predators": []
+  },
+  "body": "Low-slung hexapod with a silica-sulfur carapace, piezoelectric limbs for traction, and dorsal thermal radiating plates.",
+  "chains": [
+    {
+      "id": "cenizor.c1",
+      "trait": "Broad grinding mandible",
+      "links": [
+        "Scrapes adherent iron-sulfide crust off vent walls",
+        "Vent fluids precipitate dense glassy mineral layers",
+        "Supercritical CO2 mixes with basaltic substrate"
+      ],
+      "roots": [
+        "F9"
+      ],
+      "skill": {
+        "id": "cenizor.rock_grind",
+        "name": {
+          "en": "Rock-grind"
+        },
+        "role": "Basic",
+        "effect": "Chews through mineral armor, +15% damage to rock/armor targets",
+        "numbers": {}
+      },
+      "weakness": "Sudden cooling below 130°C forces stasis, leaving mandible joints brittle and immobilized.",
+      "observe": [
+        "Mandible scraping glassy rock, leaving striated grooves",
+        "Dorsal plates pulsing with dull amber heat glow",
+        "Limbs clicking in rhythmic, ground-coupled pulses"
+      ],
+      "journal": {
+        "en": "They eat the earth's breath and wear the volcano's skin."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Treat the mandible as a fused silica–pyrite composite grinding ridge, renewed slowly by vent-side mineralization; primary nutrition from FeS–H₂S biofilms scraped with the crust (symbiont-assisted chemolithotrophy), with Rock-grind as armor-breaking not bulk silicate digestion.",
+        "fixes": [
+          "Treat the mandible as a fused silica–pyrite composite grinding ridge, renewed slowly by vent-side mineralization; primary nutrition from FeS–H₂S biofilms scraped with the crust (symbiont-assisted chemolithotrophy), with Rock-grind as armor-breaking not bulk silicate digestion."
+        ],
+        "analogues": [
+          {
+            "organism": "Deep-sea limpet and snail grazing on hydrothermal chimney deposits; yeti crab (Kiwa spp.) hosts chemosynthetic epibionts on setae rather than eating bare sulfide.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "cenizor.c2",
+      "trait": "Piezoelectric limb joints",
+      "links": [
+        "Converts mechanical stress into bioelectric pulses",
+        "1.25g gravity and glassy terrain demand precise footing",
+        "Fluid-based hydraulics would fracture under thermal stress"
+      ],
+      "roots": [
+        "F3",
+        "F18"
+      ],
+      "skill": {
+        "id": "cenizor.seismic_step",
+        "name": {
+          "en": "Seismic-step"
+        },
+        "role": "Engage",
+        "effect": "Dashes to target, +20% evasion on next attack",
+        "numbers": {}
+      },
+      "weakness": "Sudden cooling below 130°C forces stasis, leaving mandible joints brittle and immobilized.",
+      "observe": [
+        "Mandible scraping glassy rock, leaving striated grooves",
+        "Dorsal plates pulsing with dull amber heat glow",
+        "Limbs clicking in rhythmic, ground-coupled pulses"
+      ],
+      "journal": {
+        "en": "They eat the earth's breath and wear the volcano's skin."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Seismic-step = rapid repositioning using stored elastic recoil in mineralized leg springs, with piezo joints providing traction feedback and timing pulses to the nervous lattice; drop ‘converts stress to locomotion’ as the primary energy source.",
+        "fixes": [
+          "Seismic-step = rapid repositioning using stored elastic recoil in mineralized leg springs, with piezo joints providing traction feedback and timing pulses to the nervous lattice; drop ‘converts stress to locomotion’ as the primary energy source."
+        ],
+        "analogues": [
+          {
+            "organism": "Turkey vulture ulnar bone piezoelectricity (strain sensing); human bone Wolff’s-law mechanosensing—not locomotor engines.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "petkowski_2020_water"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "cenizor.c3",
+      "trait": "Dorsal thermal radiating plates",
+      "links": [
+        "Dissipates metabolic waste heat into the atmosphere",
+        "High activation energy for sulfur metabolism generates excess",
+        "Dense 3.2 bar atmosphere efficiently conducts heat away"
+      ],
+      "roots": [
+        "F5",
+        "F13"
+      ],
+      "skill": {
+        "id": "cenizor.heat_sink",
+        "name": {
+          "en": "Heat-sink"
+        },
+        "role": "Defence",
+        "effect": "Absorbs thermal damage, reflects 30% as AoE",
+        "numbers": {}
+      },
+      "weakness": "Sudden cooling below 130°C forces stasis, leaving mandible joints brittle and immobilized.",
+      "observe": [
+        "Mandible scraping glassy rock, leaving striated grooves",
+        "Dorsal plates pulsing with dull amber heat glow",
+        "Limbs clicking in rhythmic, ground-coupled pulses"
+      ],
+      "journal": {
+        "en": "They eat the earth's breath and wear the volcano's skin."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Slow, high–activation-energy sulfur metabolism (F13) still yields waste heat; at 3.2 bar (F5), convective and conductive loss to dense air is efficient. Fins/plates help shed spikes during vent-flux peaks and avoid overheating when grazing hot plumes—classic thermoregulatory selection in a narrow thermal window.",
+        "fixes": [
+          "Slow, high–activation-energy sulfur metabolism (F13) still yields waste heat; at 3.2 bar (F5), convective and conductive loss to dense air is efficient. Fins/plates help shed spikes during vent-flux peaks and avoid overheating when grazing hot plumes—classic thermoregulatory selection in a narrow thermal window."
+        ],
+        "analogues": [
+          {
+            "organism": "African elephant ear radiators; desert iguana dorsal basking/radiating surfaces; large surface–volume heat dumping in hot environments.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "cenizor.c4",
+      "trait": "Infrasound throat communication sac",
+      "links": [
+        "Broadcasts low-frequency pulses to coordinate grazing",
+        "Dense air and ground transmission carry low frequencies far",
+        "Line-of-sight navigation fails in volcanic haze"
+      ],
+      "roots": [
+        "F6",
+        "F16"
+      ],
+      "skill": {
+        "id": "cenizor.deep_hum",
+        "name": {
+          "en": "Deep-hum"
+        },
+        "role": "Control",
+        "effect": "Slows enemies in area, -25% action speed",
+        "numbers": {}
+      },
+      "weakness": "Sudden cooling below 130°C forces stasis, leaving mandible joints brittle and immobilized.",
+      "observe": [
+        "Mandible scraping glassy rock, leaving striated grooves",
+        "Dorsal plates pulsing with dull amber heat glow",
+        "Limbs clicking in rhythmic, ground-coupled pulses"
+      ],
+      "journal": {
+        "en": "They eat the earth's breath and wear the volcano's skin."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "F6 gives ~500 m/s sound speed and long ground-coupled paths; F7 haze breaks line-of-sight; territorial vent-patch grazers benefit from low-frequency coordination. Dense air favors infrasound over high pitch; matches F16.",
+        "fixes": [
+          "F6 gives ~500 m/s sound speed and long ground-coupled paths; F7 haze breaks line-of-sight; territorial vent-patch grazers benefit from low-frequency coordination. Dense air favors infrasound over high pitch; matches F16."
+        ],
+        "analogues": [
+          {
+            "organism": "African elephant Loxodonta infrasound; oilbird (Steatornis caripensis) cave resonant low calls; elephant seismic/vibration signaling through substrate.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "none (baseline)",
+      "kind": "cousin",
+      "note": "(council kind 'ecological foundation') First trophic layer establishes silicon-hot world food web."
+    },
+    {
+      "with": "azufraja",
+      "kind": "prey",
+      "note": "Azufraja colonies cluster near Cenizor vent-grazing patches to harvest mineral runoff."
+    },
+    {
+      "with": "quemador",
+      "kind": "cousin",
+      "note": "(council kind 'predator') Quemador patrols vent perimeters, hunting stasis-bound Cenizor that failed to migrate during cooling."
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-18",
+    "by": [
+      "naturalist/qwen"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-18",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-18"
+    },
+    {
+      "date": "2026-11-18",
+      "who": "autoloop",
+      "what": "removed rejected references from analogues"
+    }
+  ],
+  "temperament": "Docile, highly territorial over vent patches, communicates through ground-coupled hums.",
+  "secrets": [
+    "Player can place a cooling trap near vent patches to force stasis, making them easy to befriend or harvest.",
+    "Their infrasound hums resonate with piezoelectric terrain, revealing hidden geothermal updrafts on the map."
+  ],
+  "moments": [
+    "When a vent collapses, the herd does not flee. They lower their heads, press their plates to the stone, and hum until the cooling wind carries their frequency into the dark."
+  ],
+  "journal": [
+    {
+      "en": "They eat the earth's breath and wear the volcano's skin."
+    },
+    {
+      "en": "A slow pulse of amber heat, a grind of stone, and the valley remembers them."
+    }
+  ]
+}
