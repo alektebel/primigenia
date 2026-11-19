@@ -857,15 +857,24 @@ static void fall_tick(CpStageWorld *w){
     if(w->fall_y_mm<=floor){
         w->fall_y_mm=floor;
         if(floor>w->fall_start_mm)w->fall_start_mm=floor;
-        if(length(gx,gz)<=limit){
+        /* fall_start_mm is the height of the last ground contact (the takeoff, or the last steep slope touched while sliding), so
+         * start - floor is the vertical air of this fall since it last touched the ground. */
+        if(length(gx,gz)>limit)w->fall_start_mm=floor;   /* touched a slope it cannot hold: a slide, the air count restarts here */
+        else{
             int drop=w->fall_start_mm-floor;if(drop<0)drop=0;
+            const int32_t air=drop;
             /* D8: damage comes from the vertical impact speed as an equivalent drop v^2/2g (integer mm), so a glide or
              * flare that slows the descent lowers it; a plain free fall gives the geometric drop back. */
             int64_t pv=prev_v<0?-(int64_t)prev_v:0,fy=prev_y>floor?prev_y-floor:0;
             int eq=(int)((pv*pv+2*9810*fy)/(2*9810)); /* speed at the instant of contact, not after the overshoot */
             if(w->fall_v_mm_s>=0)eq=0;
-            float damage=(eq*.001f-cp_stage_safe_drop(w))*20;
+            /* A31: 10 HP per metre beyond the safe drop (0.01 HP per mm), at most CP_FALL_CAP_PERMILLE of max HP unless it was a
+             * real free fall: the air between the last ground contact and this landing exceeds CP_FALL_FREE_X times the safe drop.
+             * A long slide down a steep slope keeps touching ground, so it is never a free fall. */
+            const int32_t safe_mm=(int32_t)lroundf(cp_stage_safe_drop(w)*1000);
+            float damage=(float)(eq-safe_mm)*.01f;
             if(damage<0)damage=0;
+            if(air<=CP_FALL_FREE_X*safe_mm){float cap=c->profile.hp*(CP_FALL_CAP_PERMILLE*.001f);if(damage>cap)damage=cap;}
             if(w->debug_flags&CP_STAGE_FLAG_GOD)damage=0;
             ev_push(w,CP_STAGE_EV_FELL,0,0,(drop+5)/10,damage,c->x,c->z);
             c->hp=clamp(c->hp-damage,0,c->profile.hp);
@@ -1764,26 +1773,26 @@ uint64_t cp_stage_replay_run(const CpStageSetup *setup,const uint8_t *snapshot,s
     for(uint32_t k=0;k<ticks;k++){
         const uint32_t tick=first+k;
         while(dcursor<dbg_count&&dbg[dcursor].tick==tick)cp_stage_debug(&replay,&dbg[dcursor++].d);
+        while(rcursor<run_count&&runs[rcursor].tick==tick){cp_stage_set_run(&replay,runs[rcursor].on);rcursor++;}
         while(cursor<count&&log[cursor].tick==tick)cp_stage_order(&replay,&log[cursor++].input);
         uint64_t hash=cp_stage_step(&replay,NULL);
         if(hashes)hashes[k]=hash;
     }
     return cp_stage_hash(&replay);
 }
+uint64_t cp_stage_replay_ex(const CpStageSetup *setup,const uint8_t *snapshot,size_t snap_len,const CpStageField *field,
+                            const CpStageLogEntry *log,int count,const CpStageDebugEntry *dbg,int dbg_count,
+                            uint32_t ticks,uint64_t *hashes){
+    return cp_stage_replay_run(setup,snapshot,snap_len,field,log,count,dbg,dbg_count,NULL,0,ticks,hashes);
+}
 uint64_t cp_stage_replay(const CpStageSetup *setup,const CpStageLogEntry *log,int count,uint32_t ticks,uint64_t *hashes){
     return cp_stage_replay_ex(setup,NULL,0,NULL,log,count,NULL,0,ticks,hashes);
-        while(rcursor<run_count&&runs[rcursor].tick==tick){cp_stage_set_run(&replay,runs[rcursor].on);rcursor++;}
 }
 static const char *block_name(int r){
     switch(r){
         case CP_STAGE_BLOCK_CLIFF:return "cliff";
         case CP_STAGE_BLOCK_WATER:return "water";
         case CP_STAGE_BLOCK_EDGE:return "edge";
-uint64_t cp_stage_replay_ex(const CpStageSetup *setup,const uint8_t *snapshot,size_t snap_len,const CpStageField *field,
-                            const CpStageLogEntry *log,int count,const CpStageDebugEntry *dbg,int dbg_count,
-                            uint32_t ticks,uint64_t *hashes){
-    return cp_stage_replay_run(setup,snapshot,snap_len,field,log,count,dbg,dbg_count,NULL,0,ticks,hashes);
-}
         case CP_STAGE_BLOCK_CREATURE:return "creature";
         case CP_STAGE_BLOCK_UNREACHABLE:return "unreachable";
         case CP_STAGE_BLOCK_OBSTACLE:return "obstacle";

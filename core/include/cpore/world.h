@@ -10,6 +10,9 @@
 #define CP_STAGE_DAY_TICKS 12000
 #define CP_STAGE_DT .1f
 #define CP_STAGE_SNAPSHOT_VERSION 8   /* 3: player loadout (A21); 4: social layer (C2); 5: lineage ledger and ancestry; 6: discovery, nest shop and eggs; 7: secrets (shards, cave chamber, day/night) and 6 species; 8: run and fixed-point fall state */
+/* A31 fall damage: 10 HP per metre beyond the safe drop, capped at 60 % of max HP unless the fall is free (air above 2x the safe drop). */
+#define CP_FALL_CAP_PERMILLE 600
+#define CP_FALL_FREE_X 2
 #define CP_STAGE_MAX_PATH 64      /* waypoints kept by the planner (docs/godot/NAV.md) */
 #define CP_STAGE_MAX_EVENTS 64    /* event ring since the last observe */
 
@@ -407,15 +410,15 @@ extern const int CP_STAGE_PARAM_COUNT;
 uint64_t cp_stage_replay_ex(const CpStageSetup *setup,const uint8_t *snapshot,size_t snap_len,const CpStageField *field,
                             const CpStageLogEntry *log,int count,const CpStageDebugEntry *dbg,int dbg_count,
                             uint32_t ticks,uint64_t *hashes);
-uint64_t cp_stage_step(CpStageWorld *w,const CpStageInput *input);
-uint64_t cp_stage_hash(const CpStageWorld *w);
-/* Returns bytes excluding NUL, or -1 on insufficient capacity. */
 /* Input log v4: the run toggle of a tick (`on` 0/1, applied with cp_stage_set_run after that tick's debug ops, before its order and
  * step, as the Godot session does). Entries carry absolute world ticks, ascending. cp_stage_replay_ex is this with no run entries. */
 typedef struct { uint32_t tick; int32_t on; } CpStageRunEntry;
 uint64_t cp_stage_replay_run(const CpStageSetup *setup,const uint8_t *snapshot,size_t snap_len,const CpStageField *field,
                              const CpStageLogEntry *log,int count,const CpStageDebugEntry *dbg,int dbg_count,
                              const CpStageRunEntry *runs,int run_count,uint32_t ticks,uint64_t *hashes);
+uint64_t cp_stage_step(CpStageWorld *w,const CpStageInput *input);
+uint64_t cp_stage_hash(const CpStageWorld *w);
+/* Returns bytes excluding NUL, or -1 on insufficient capacity. */
 int cp_stage_observe(const CpStageWorld *w,char *out,size_t cap);   /* schema "world-2" */
 int cp_stage_observe_v(const CpStageWorld *w,char *out,size_t cap,int version);   /* 1 = the old "world-1" text, 2 = world-2 */
 /* --- snapshot / restore (PLAN-devtools step 3) ---
