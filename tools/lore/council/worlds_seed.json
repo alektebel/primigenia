@@ -111,9 +111,50 @@
    {
     "seed": "the strangest species this island's physics could force into an empty niche, one that surprises even a biologist (a bizarre but physically forced body plan or sense)",
     "n": 1
+   },
+   {
+    "seed": "RADIAL-SYMMETRY wild species (A24: radial is a lineage body plan). A pentaradial tide-pool 'star' that radialised SECONDARILY from a bilateral ancestor (like echinoderms: bilateral larva, radial adult) living on the island's tidal shelf (F13, 3.2 m shelf tides): tube feet and a water-vascular system for locomotion, no head, regenerating arms. Set body_plan to radial with arms 5 and an origin note. Skills tied to actuation (tube feet, hydrostat arms) with weaknesses, observe steps",
+    "n": 1,
+    "radial": true
+   },
+   {
+    "seed": "RADIAL-SYMMETRY wild species: a tetramerous or octoradial jellyfish-like drifter for the water phase (C4) in the turbid shallows (F20): stinging cells (cnidocytes), bell pulsing and jet propulsion; why radial symmetry pays for a drifting body that meets food from all directions. body_plan radial with arms 4 or 8",
+    "n": 1,
+    "radial": true
+   },
+   {
+    "seed": "RADIAL-SYMMETRY wild species: one more radial or biradial species where THIS island's physics forces it (for example a sessile radial filter-feeder in the lava-tube sea cave, or a colony); say why sessile, drifting or slow benthic life with food from all directions selects radial symmetry. body_plan radial or biradial",
+    "n": 1,
+    "radial": true
    }
   ],
-  "batch": 1
+  "batch": 1,
+  "seed_refs": [
+   {
+    "author": "Astley, H. C.",
+    "year": 2012,
+    "title": "The diversity and evolution of locomotor biomechanics in brittle stars (rowing locomotion)",
+    "venue": "Journal of Experimental Biology"
+   },
+   {
+    "author": "Dabiri, J. O.",
+    "year": 2005,
+    "title": "Jet propulsion by jellyfish and the role of vortex formation",
+    "venue": "Journal of Experimental Biology"
+   },
+   {
+    "author": "Nüchter, T.",
+    "year": 2006,
+    "title": "Nanosecond-scale kinetics of nematocyst discharge",
+    "venue": "Current Biology"
+   },
+   {
+    "author": "Brusca, R. C.",
+    "year": 2016,
+    "title": "Invertebrates",
+    "venue": "Sinauer Associates"
+   }
+  ]
  },
  {
   "id": "earth",

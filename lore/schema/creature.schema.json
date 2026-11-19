@@ -430,6 +430,33 @@
     "carcinised": {
       "type": "boolean",
       "description": "convergent crab body plan (carcinisation joke); linked to every other carcinised creature by a convergent relation via 'carcinisation'"
+    },
+    "body_plan": {
+      "type": "object",
+      "required": [
+        "symmetry"
+      ],
+      "additionalProperties": false,
+      "description": "body plan for the creature generator (A24)",
+      "properties": {
+        "symmetry": {
+          "enum": [
+            "bilateral",
+            "radial",
+            "biradial",
+            "asymmetric",
+            "spherical"
+          ]
+        },
+        "arms": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "origin": {
+          "type": "string",
+          "description": "e.g. secondary radialisation from a bilateral ancestor"
+        }
+      }
     }
   }
 }

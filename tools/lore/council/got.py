@@ -257,7 +257,7 @@ def speciate(seed, n=3, base=None):
          "from the same causes (every trait is a consequence, nothing decorative)." if seed else
          f"List this world's EMPTY niches (habitat x food x energy source x time not taken by the existing creatures: {existing}) and derive {n} new species "
          "to fill them, each forced by the world's physics.") +
-        ' Output ONLY JSON: [{"name": Spanish-flavoured or invented, no names from books or films, "niche": str, "habitat": str, "diet": str, "active": str, "body": str, "temperament": str, "chains": [4 chains, each ' + CHAIN_SCHEMA +
+        ' Output ONLY JSON: [{"name": Spanish-flavoured or invented, no names from books or films, "niche": str, "habitat": str, "diet": str, "active": str, "body": str, "temperament": str, "body_plan": {"symmetry": "bilateral|radial|biradial|asymmetric|spherical", "arms": int or null, "origin": str (optional)}, "chains": [4 chains, each ' + CHAIN_SCHEMA +
         '], "relations": [{"with": existing creature, "kind": str, "note": str}], "haunting_moment": str, "journal": [str, str], "secrets": [str]}]',
         temp=0.9, max_tokens=12000)), base=sdir)
     if not gen: return None
@@ -295,6 +295,7 @@ def species_all():
             profs[name] = {k: sp.get(k) for k in ("habitat", "diet", "active", "body", "temperament", "secrets") if sp.get(k)}
             profs[name]["niche_text"] = sp.get("niche", "")
             if specs[i].get("carcinised"): profs[name]["carcinised"] = True
+            if isinstance(sp.get("body_plan"), dict): profs[name]["body_plan"] = sp["body_plan"]
             if sp.get("haunting_moment"): profs[name]["moments"] = [sp["haunting_moment"]]
             if sp.get("journal"): profs[name]["journal"] = list(sp["journal"]) if isinstance(sp["journal"], list) else [str(sp["journal"])]
             if specs[i].get("carcinised"): profs[name]["journal"] = profs[name].get("journal", [])[:2] + ["Again."]

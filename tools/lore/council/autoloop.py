@@ -196,6 +196,11 @@ def patch_profiles(w, rd, cmap):
         c["stage"] = w.get("stage", c.get("stage", "creature"))
         if not pr: dump(c, p); continue
         if pr.get("carcinised"): c["carcinised"] = True
+        bp = pr.get("body_plan")
+        if isinstance(bp, dict) and bp.get("symmetry") in ("bilateral", "radial", "biradial", "asymmetric", "spherical") and "body_plan" not in c:
+            c["body_plan"] = {"symmetry": bp["symmetry"]}
+            if isinstance(bp.get("arms"), int) and bp["arms"] >= 1: c["body_plan"]["arms"] = bp["arms"]
+            if bp.get("origin"): c["body_plan"]["origin"] = str(bp["origin"])
         ni = c["niche"]
         if ni.get("habitat") == "to be written":
             ni["habitat"] = str(pr.get("habitat") or pr.get("niche_text") or "to be written"); ni["diet"] = str(pr.get("diet") or "to be written"); ni["active"] = str(pr.get("active") or "to be written")
