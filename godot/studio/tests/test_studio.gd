@@ -36,6 +36,7 @@ func _init() -> void:
 	test_undo_redo_every_edit()
 	test_transactions()
 	test_spine()
+	test_direct_manipulation()
 	test_roundtrip_and_storage()
 	test_placeholder_view()
 	await test_ui()
@@ -256,6 +257,65 @@ func test_spine() -> void:
 	ok(m.validate()["ok"], "spine edit keeps the document valid")
 	m.set_node_radius(2, 99.0)
 	ok(m.doc["nodes"][2]["r"] <= 1.7, "radius clamped")
+
+func test_direct_manipulation() -> void:
+	var m := Model.new(db)
+	m.new_from_seed("Merodeador")
+	var eye := 1
+	var s0: float = m.doc["parts"][eye]["size"]
+	var r: Dictionary = m.scale_part(eye, 1.2)
+	ok(r["kind"] == "size" and is_equal_approx(m.doc["parts"][eye]["size"], s0 * 1.2) and r["changed"] and not r["at_limit"], "scale_part grows a part")
+	r = m.scale_part(eye, 100.0)
+	ok(is_equal_approx(m.doc["parts"][eye]["size"], 2.2) and r["at_limit"], "scale_part clamps at the maximum")
+	r = m.scale_part(eye, .0001)
+	ok(is_equal_approx(m.doc["parts"][eye]["size"], .5) and r["at_limit"], "scale_part clamps at the minimum")
+	ok(m.validate()["ok"], "scaled genome validates")
+	ok(m.scale_part(99, 1.1).is_empty(), "scale_part ignores a bad index")
+	var leg := 3
+	var f0: Array = m.doc["parts"][leg]["f"].duplicate()
+	r = m.scale_part(leg, 1.5)
+	ok(r["kind"] == "reach" and absf(m.doc["parts"][leg]["f"][1]) > absf(f0[1]) and m.doc["parts"][leg]["w"] > .23, "scale_part lengthens and thickens a leg")
+	r = m.scale_part(leg, 100.0)
+	var ff: Array = m.doc["parts"][leg]["f"]
+	ok(Vector3(ff[0], ff[1], ff[2]).length() <= 6.0 + 1e-4 and m.doc["parts"][leg]["w"] <= .45 + 1e-6 and r["at_limit"], "leg reach and thickness clamp")
+	ok(m.validate()["ok"], "scaled leg validates")
+	m.undo(); m.undo(); m.undo(); m.undo(); m.undo()
+	ok(m.doc["parts"][eye]["size"] == s0 and m.doc["parts"][leg]["f"] == f0, "every scale undoes")
+	# bending a spine end
+	m.new_from_seed("Merodeador")
+	var N: Array = m.doc["nodes"]
+	var n0: int = N.size()
+	var head: Dictionary = N[n0 - 1].duplicate()
+	var nb: Dictionary = N[n0 - 2].duplicate()
+	var out: int = m.bend_end(n0 - 1, head["y"] + 1.0, head["z"])
+	ok(out == m.doc["nodes"].size() - 1 and m.doc["nodes"][out]["y"] > head["y"] + .5, "bend_end moves the head end")
+	ok(m.doc["nodes"][out - 1]["y"] > nb["y"] or m.doc["nodes"].size() > n0, "the neighbour leans with it")
+	ok(m.bend_end(3, 2.0, 0.0) == 3 and m.doc["nodes"][3]["y"] == N[3]["y"], "bend_end ignores interior nodes")
+	m.new_from_seed("Merodeador")
+	out = m.bend_end(0, 1.6, -6.0)
+	out = m.bend_end(0, 1.6, -7.0)
+	ok(m.doc["nodes"].size() > n0 and out == 0, "dragging the tail end outward adds vertebrae")
+	for k in range(1, m.doc["nodes"].size()):
+		var a: Dictionary = m.doc["nodes"][k - 1]; var b: Dictionary = m.doc["nodes"][k]
+		var d := Vector2(a["y"] - b["y"], a["z"] - b["z"]).length()
+		ok(d >= .29 and d <= 1.96, "tail spacing kept at %d (%.2f)" % [k, d])
+	ok(m.doc["nodes"].size() <= m.MAX_NODES_EDIT and m.validate()["ok"], "limits and validity after a tail drag")
+	m.begin()
+	for i in 30:
+		out = m.bend_end(out, 1.6, m.doc["nodes"][0]["z"] + 1.0)
+	m.end()
+	ok(m.doc["nodes"].size() >= 4 and m.validate()["ok"], "shortening never goes under four vertebrae")
+	m.undo()
+	ok(m.doc["nodes"].size() > n0, "a whole drag is one undo step")
+	# actuator choices (pure rules on a bio dictionary)
+	var bio := {"skeleton": "endo", "skel_cands": ["endo"], "limbs": {3: {"act": "muscle"}}}
+	var opts: Array = m.actuation_options(bio, 3)
+	ok(opts.size() == 4 and opts[0]["current"] and opts[3]["allowed"] and not opts[1]["allowed"] and not opts[2]["allowed"], "endo body: muscle current, hydrostat allowed, hydraulic and exo not")
+	ok(not m.set_limb_actuation(bio, 3, "hydraulic"), "a disallowed actuator is refused")
+	ok(m.set_limb_actuation(bio, 3, "hydrostat") and m.doc["parts"][3]["act"] == "hydrostat", "hydrostat applied")
+	var bio2 := {"skeleton": "endo", "skel_cands": ["exo", "endo"], "limbs": {3: {"act": "muscle"}}}
+	ok(m.set_limb_actuation(bio2, 3, "exo") and m.doc["skin"]["sk"] == "exo" and m.doc["parts"][3]["act"] == "muscle", "exo choice sets the skeleton and muscle")
+	ok(m.validate()["ok"], "genome valid after actuator choices")
 
 func test_roundtrip_and_storage() -> void:
 	var st := Storage.new("user://studio_test")

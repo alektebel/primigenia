@@ -46,6 +46,9 @@ func rot_handle_pos(_i: int) -> Vector3: return Vector3.ZERO
 ## New `rot` for a ray dragged over the part's surface plane (NAN when unknown).
 func rot_from_ray(_i: int, _o: Vector3, _d: Vector3) -> float: return NAN
 ## [{joint: "k"|"f", side, pos, hip}] for a selected leg.
+func set_hover_leg(_i: int) -> void: pass
+func spine_alpha() -> float: return 0.0
+func handle_leg() -> int: return -1
 func leg_handles(_i: int) -> Array: return []
 func leg_drag(_i: int, _joint: String, _side: int, _o: Vector3, _d: Vector3, _cam_fwd: Vector3) -> Dictionary: return {}
 func floor_y() -> float: return 0.0

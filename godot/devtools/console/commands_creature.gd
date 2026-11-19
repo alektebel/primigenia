@@ -83,8 +83,10 @@ static func register_all(r) -> void:
 	r.register("hash", "", "state hash of the C world", func(a): return _with_stage(r, func(st): return ok(st.world.hash())))
 	r.register("tick", "", "world tick", func(a): return _with_stage(r, func(st): return ok(str(st.world.state().tick))))
 	r.register("obs", "", "the observation text the agents get", func(a): return _with_stage(r, func(st): return ok(st.world.observe())))
-	r.register("zoo", "[morphs|all] [course] | exit", "open the locomotion zoo: creatures of different morphologies run a course side by side (morphs: mite trotter hero giant longneck centipede hexapod; courses: figure8 zigzag steps uturn ramps all)",
+	r.register("zoo", "[morphs|all] [course] [run|factor] | exit", "open the locomotion zoo: creatures of different morphologies run a course side by side (morphs: mite trotter hero giant longneck centipede hexapod; courses: figure8 zigzag steps uturn ramps all)",
 		func(a): return _zoo(r, a), {"complete": func(i, p, t): return _zoo_names(i)})
+	r.register("runvis", "[factor|off]", "dev: show the player moving factor (default 2.5) times faster than the C world moves it, to see the run gaits before the sim can run (presentation only; off drops the offset)",
+		func(a): return _runvis(r, a), {"complete": func(i, p, t): return ["off", "2.5"] if i == 0 else []})
 	r.register("overlay", "path [on|off]", "debug overlays (off by default): path = the planned GO route drawn on the ground",
 		func(a): return _overlay(r, a), {"complete": func(i, p, t): return ["path"] if i == 0 else (["on", "off"] if i == 1 else [])})
 	r.register("clear", "", "clear the console", func(a): return {"ok": true, "out": "", "error": "", "clear": true}, {"dev": false})
@@ -332,8 +334,23 @@ static func _zoo(r, a: PackedStringArray) -> Dictionary:
 		if not (a[1] in Course.NAMES):
 			return fail("unknown course '%s' (%s)" % [a[1], ", ".join(Course.NAMES)])
 		course = a[1]
-	Game.goto_zoo(morphs, course)
-	return ok("opening the zoo: %s, course %s (Esc or `zoo exit` to leave)" % [", ".join(morphs), course])
+	var run := 1.0
+	if a.size() > 2:
+		run = 2.0 if a[2] == "run" else a[2].to_float()
+		if run < 1.0 or run > 6.0:
+			return fail("run speed: 'run' or a factor between 1 and 6")
+	Game.goto_zoo(morphs, course, run)
+	return ok("opening the zoo: %s, course %s%s (Esc or `zoo exit` to leave)" % [", ".join(morphs), course, ", run x%.1f" % run if run > 1.0 else ""])
+
+static func _runvis(r, a: PackedStringArray) -> Dictionary:
+	return _with_stage(r, func(st):
+		var k := 2.5
+		if a.size() > 0:
+			k = 1.0 if a[0] == "off" else a[0].to_float()
+			if a[0] != "off" and (k < 1.0 or k > 6.0):
+				return fail("usage: runvis [factor 1..6|off]")
+		st.set_vis_speed(k)
+		return ok("visual speed x%.1f" % st.vis_speed if st.vis_speed > 1.0 else "visual speed off"))
 
 static func _move_names() -> Array:
 	var out := []

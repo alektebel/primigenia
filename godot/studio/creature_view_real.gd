@@ -33,6 +33,7 @@ var _rings: Array = []
 var _rot_bead: MeshInstance3D
 var _bead_hot := false
 var _leg_group: Node3D
+var _hover_leg := -1
 var _hidden_part := -1
 var _pulses := {}                     # part index -> seconds left
 var _sel_time := 0.0
@@ -559,7 +560,12 @@ func _update_sel_nodes() -> void:
 	_rot_bead.visible = false
 	for c in _leg_group.get_children():
 		c.queue_free()
-	if _selected < 0 or _selected >= genome.get("parts", []).size() or _playing:
+	if _playing:
+		return
+	var hl := handle_leg()
+	if hl >= 0:
+		_build_leg_handles(hl)
+	if _selected < 0 or _selected >= genome.get("parts", []).size():
 		return
 	var p: Dictionary = genome.parts[_selected]
 	var leg := _is_leg(p.type)
@@ -578,8 +584,6 @@ func _update_sel_nodes() -> void:
 	if not leg:
 		_rot_bead.visible = true
 		_rot_bead.position = rot_handle_pos(_selected)
-	else:
-		_build_leg_handles()
 
 func _tick_selection(dt: float) -> void:
 	_sel_time += dt
@@ -634,9 +638,23 @@ func leg_handles(index: int) -> Array:
 		out.append({"joint": "f", "side": l.side, "pos": hip + l.rest_foot, "hip": hip})
 	return out
 
-func _build_leg_handles() -> void:
+## Joint handles belong to the hovered leg, else to the selected leg: any limb can be grabbed without selecting it.
+func set_hover_leg(i: int) -> void:
+	if i == _hover_leg:
+		return
+	_hover_leg = i
+	_update_sel_nodes()
+
+func handle_leg() -> int:
+	if _hover_leg >= 0 and _hover_leg < genome.get("parts", []).size():
+		return _hover_leg
+	if _selected >= 0 and _selected < genome.get("parts", []).size() and _is_leg(genome.parts[_selected].type):
+		return _selected
+	return -1
+
+func _build_leg_handles(index: int) -> void:
 	var m := _joint_mat(Color("6fd3ff", .95))
-	var hs := leg_handles(_selected)
+	var hs := leg_handles(index)
 	var by_side := {}
 	for h in hs:
 		var sm := SphereMesh.new()
