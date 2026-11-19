@@ -25,7 +25,39 @@ func run(t) -> void:
 			var mat := a.surface_get_material(0) as ShaderMaterial
 			t.eq(mat.shader, Generator.GROUND_COVER, "terrain layer material " + r.id)
 			t.eq(mat.get_shader_parameter("moss"), r.has("glow"), "colony pigment " + r.id)
+			t.check(r.relief_mm > 0 and r.relief_mm <= 3.0, "millimetre-scale colony relief " + r.id)
+			t.check(is_equal_approx(mat.get_shader_parameter("relief_mm"), r.relief_mm), "colony relief uniform " + r.id)
+		if r.id == "rodela_de_nieve":
+			var mat := a.surface_get_material(0) as ShaderMaterial
+			t.eq(mat.get_shader_parameter("leaf_margin"), Color(r.margin), "Snowshield margin pigment")
+			var arrays := a.surface_get_arrays(0)
+			var styles: PackedVector2Array = arrays[Mesh.ARRAY_TEX_UV2]
+			var points: PackedVector3Array = arrays[Mesh.ARRAY_VERTEX]
+			var normals: PackedVector3Array = arrays[Mesh.ARRAY_NORMAL]
+			var indices: PackedInt32Array = arrays[Mesh.ARRAY_INDEX]
+			var has_column := false
+			var has_skirt := false
+			var cupped := false
+			for ix in points.size():
+				if styles[ix].x == -1 and points[ix].y >= r.caudex - 0.001:
+					has_column = true
+				if styles[ix].x == 0 and points[ix].y < r.caudex * 0.5:
+					has_skirt = true
+			for i in range(0, indices.size(), 3):
+				var ix := indices[i]
+				if styles[ix].x == -2 and normals[ix].dot(normals[indices[i+1]]) < 0.99:
+					cupped = true
+			t.check(has_column, "bark reaches the Snowshield crown")
+			t.check(has_skirt, "retained leaves insulate the lower stem")
+			t.check(cupped, "interpolated normals across living Snowshield blades")
+			t.check(absf(a.get_aabb().end.y - 1.0) < 0.01, "living blades reach recipe height")
+		if r.form in ["tree", "shrub"]:
+			t.check(r.droop > 0 and r.droop < 1, "species limb droop " + r.id)
 		if r.id == "nieblon":
+			var upright: Dictionary = r.duplicate()
+			upright.droop = 0.0
+			t.check(hash(Generator.new().plant(upright, 7, true).surface_get_arrays(0)) != hash(a.surface_get_arrays(0)),
+				"droop changes the baked limb geometry")
 			props.recipe[r.id] = r
 			var previous := 0
 			var far_mesh := props.geometry(r.id, 0, false)
@@ -50,7 +82,6 @@ func run(t) -> void:
 					rounded_bark = rounded_bark or styles[first].x < 0.0
 					rounded_leaves = rounded_leaves or styles[first].x > 1.5
 			t.check(rounded_bark and rounded_leaves, "interpolated bark and crown normals")
-	props.free()
 	var canon_files := DirAccess.get_files_at(ProjectSettings.globalize_path("res://").path_join("../lore/flora").simplify_path())
 	t.check(canon_files.size() >= rows.size(),"read lore directory")
 	for file in canon_files:
@@ -59,6 +90,17 @@ func run(t) -> void:
 	var d := Terrain.new()
 	d.setup(Cache.get_or_build({"seed":1}).entry, false)
 	var setup := {"nest": Vector2.ZERO,"wild":[{"x":64,"z":0}]}
+	props.build_nest(d, setup.nest, 1)
+	var nest_mesh: ArrayMesh = props.get_node("Nest").mesh
+	var nest_styles: PackedVector2Array = nest_mesh.surface_get_arrays(0)[Mesh.ARRAY_TEX_UV2]
+	var has_down := false
+	var has_scrape := false
+	for uv in nest_styles:
+		has_down = has_down or uv.x == -3
+		has_scrape = has_scrape or uv.x == -4
+	t.check(has_down and has_scrape, "nest down and scraped-earth hollow")
+	t.eq(nest_mesh.get_surface_count(), 1, "nest weave shares a single surface")
+	props.free()
 	var start := Time.get_ticks_usec()
 	var a := Placement.generate(d, setup, 1, 0.34, rows)
 	print("  flora low placement %d instances in %.1f ms" % [a.size(), (Time.get_ticks_usec() - start) * 0.001])
