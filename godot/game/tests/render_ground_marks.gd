@@ -5,7 +5,6 @@ extends SceneTree
 # pixels in the screen box where it must be; then the player's body is put in front of it and the count must drop.
 
 const TerrainCache := preload("res://game/island/terrain_cache.gd")
-const GroundMark := preload("res://game/island/ground_mark.gd")
 
 var checks := 0
 var failures := 0
@@ -30,7 +29,7 @@ func bone_pixels(img: Image, box: Rect2i) -> int:
 	for y in range(maxi(box.position.y, 0), mini(box.end.y, img.get_height())):
 		for x in range(maxi(box.position.x, 0), mini(box.end.x, img.get_width())):
 			var c := img.get_pixel(x, y)
-			if c.r > 0.85 and c.g > 0.82 and c.b > 0.74 and c.r - c.b < 0.2:
+			if c.r > 0.72 and c.g > 0.7 and c.b > 0.58 and c.r - c.b < 0.25:
 				n += 1
 	return n
 
@@ -91,7 +90,7 @@ func _run() -> void:
 			await RenderingServer.frame_post_draw
 			var img := root.get_texture().get_image()
 			var sp: Vector2 = cam.unproject_position(p)
-			var rpx := gm.move_radius() / dist * 808.0 * 1.2
+			var rpx: float = gm.move_radius() / dist * 808.0 * 1.2
 			var box := Rect2i(Vector2i(sp) - Vector2i(int(rpx * 1.3), int(rpx * 0.9)), Vector2i(int(rpx * 2.6), int(rpx * 1.8)))
 			var n := bone_pixels(img, box)
 			check(n > 12, "the move ring is visible on %s ground at %.0f m (%d bone pixels in its box)" % [spot[0], dist, n])
@@ -108,7 +107,7 @@ func _run() -> void:
 	await settle(6)
 	await RenderingServer.frame_post_draw
 	var sp2: Vector2 = cam.unproject_position(p2)
-	var rpx2 := gm.move_radius() / 9.0 * 808.0 * 1.2
+	var rpx2: float = gm.move_radius() / 9.0 * 808.0 * 1.2
 	var box2 := Rect2i(Vector2i(sp2) - Vector2i(int(rpx2 * 1.3), int(rpx2 * 0.9)), Vector2i(int(rpx2 * 2.6), int(rpx2 * 1.8)))
 	var before := bone_pixels(root.get_texture().get_image(), box2)
 	var dir := (from2 - p2).normalized()

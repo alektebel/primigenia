@@ -122,7 +122,8 @@ func scene_move_marker() -> void:
 	ui.onboarding.enabled = false
 	var gm = island.ground_marks
 	var frames := []
-	var click_at := Vector2(850, 430)
+	await turn_camera(island.chase.yaw + 1.2)
+	var click_at := Vector2(900, 470)
 	island._click_ground(false, click_at)
 	var goal: Vector3 = gm.destination()
 	await ticks(1)
@@ -138,7 +139,7 @@ func scene_move_marker() -> void:
 	frames.append(crop(await grab(), s3, Vector2i(420, 300)))
 	await ticks(8)
 	# hold to follow
-	var s4 := Vector2(520, 470)
+	var s4 := Vector2(380, 480)
 	island._click_ground(false, s4, true)
 	await settle(10)
 	frames.append(crop(await grab(), s4, Vector2i(420, 300)))
@@ -197,7 +198,8 @@ func thaw() -> void:
 func scene_idle() -> void:
 	thaw()
 	ui.onboarding.enabled = false
-	var screen := Vector2(850, 430)
+	await turn_camera(island.chase.yaw + 1.2)
+	var screen := Vector2(900, 470)
 	island._click_ground(false, screen)
 	await settle(8)
 	print("move marker at ", island.ground_marks.destination(), " visible ", island.ground_marks.move_visible())
@@ -233,6 +235,8 @@ func scene_selected() -> void:
 
 func scene_befriend() -> void:
 	thaw()
+	if weather_name == "dawn":
+		await turn_camera(-PI / 2.0)      # the fog banks lie to the east
 	var rondo := creature_ahead(0, 5.5, 4.0)
 	await ticks(4)
 	ui.onboarding.enabled = false
@@ -261,7 +265,7 @@ func scene_combat() -> void:
 	var gar := 1
 	var fwd: Vector3 = -island.camera.global_transform.basis.z
 	fwd.y = 0.0
-	var p: Vector3 = island.player_pos + fwd.normalized() * 6.5 + Vector3(4.5, 0, 0)
+	var p: Vector3 = island.player_pos + fwd.normalized() * 13.0 + Vector3(5.0, 0, 0)
 	var rc: int = stage.debug_now({"op": 1, "id": gar, "x": p.x, "z": p.z})
 	await ticks(3)
 	freeze()
@@ -377,6 +381,12 @@ func find_meadow() -> Vector3:
 					best = Vector3(x, 0, z)
 	return best
 
+# Turn the chase camera to a world yaw (the camera looks along (-sin yaw, -cos yaw)) and let it settle.
+func turn_camera(yaw: float) -> void:
+	island.chase.yaw = yaw
+	island.chase.view_yaw = yaw
+	await settle(40)
+
 func relocate_player() -> void:
 	var m := find_meadow()
 	print("meadow ", m)
@@ -424,7 +434,7 @@ func scene_minimap() -> void:
 	stage.debug_now({"op": 1, "id": 0, "x": best.x, "z": best.z})
 	await ticks(6)
 	island.chase.reset_behind()
-	await settle(30)
+	await settle(100)
 	var rondo := creature_ahead(0, 14.0, 3.0)
 	await ticks(2)
 	sui.select_id(rondo)
