@@ -1,9 +1,9 @@
 {
 	"camera": {},
-	"created": "2026-11-18T23:45:20",
+	"created": "2026-11-19T11:45:57",
 	"engine": {
 		"build": "unknown",
-		"layout": "126236ab73504c0f",
+		"layout": "a032a357537de2b2",
 		"snapshot_version": 3,
 		"stage_version": 3
 	},
@@ -138,21 +138,100 @@
 			"wet": 0.3
 		}
 	},
-	"hash": "eb6f425bd2d106c6",
+	"hash": "97692efdf594fda7",
 	"island": {
 		"seed": 1,
-		"terrain_hash": "281193d8ad044e09",
-		"terrain_version": 3
+		"terrain_hash": "7137e3ea79830ad7",
+		"terrain_version": 4
 	},
 	"kind": "scenario",
 	"lineage": {
-		"format": "cpore.lineage/0",
+		"current_deeds": {
+			"befriends": 0.0,
+			"bigger_approaches": 0.0,
+			"building": 0.0,
+			"deep_dives": 0.0,
+			"digging": 0.0,
+			"distance_cm": 0.0,
+			"fights_fled": 0.0,
+			"fights_started": 0.0,
+			"flight_ticks": 0.0,
+			"foraging": 0.0,
+			"gifts": 0.0,
+			"hoarding": 0.0,
+			"hunts": 0.0,
+			"intimidations": 0.0,
+			"kills": 0.0,
+			"meat": 0.0,
+			"nest_ticks": 0.0,
+			"new_places": 0.0,
+			"night_ticks": 0.0,
+			"observations": 0.0,
+			"plants": 0.0,
+			"stealth": 0.0,
+			"swimming_ticks": 0.0,
+			"void_ticks": 0.0
+		},
+		"deeds": {
+			"befriends": 0.0,
+			"bigger_approaches": 0.0,
+			"building": 0.0,
+			"deep_dives": 0.0,
+			"digging": 0.0,
+			"distance_cm": 0.0,
+			"fights_fled": 0.0,
+			"fights_started": 0.0,
+			"flight_ticks": 0.0,
+			"foraging": 0.0,
+			"gifts": 0.0,
+			"hoarding": 0.0,
+			"hunts": 0.0,
+			"intimidations": 0.0,
+			"kills": 0.0,
+			"meat": 0.0,
+			"nest_ticks": 0.0,
+			"new_places": 0.0,
+			"night_ticks": 0.0,
+			"observations": 0.0,
+			"plants": 0.0,
+			"stealth": 0.0,
+			"swimming_ticks": 0.0,
+			"void_ticks": 0.0
+		},
+		"deeds_aggregated": 0.0,
+		"enabled": false,
+		"entries": [],
+		"format": "cpore.lineage/1",
+		"generation": 0.0,
+		"generations": [],
+		"live_type": {
+			"code": "?-?-?-?",
+			"description": "Your deeds have not yet decided what this body becomes.",
+			"index": 0.0,
+			"name": "Undetermined",
+			"perk": -1.0,
+			"scores": [
+				0.0,
+				0.0,
+				0.0,
+				0.0
+			]
+		},
 		"traits": []
 	},
 	"name": "nest_start",
 	"note": "The start of a game: at the nest, Garfio at its home 60 m away.",
 	"recipe": "nest_start.log",
 	"setup": {
+		"cave": {
+			"fx": -0.615702271461487,
+			"fz": -0.787978887557983,
+			"half": 0.0,
+			"length": 0.0,
+			"radius": 0.0,
+			"x": 61.5234375,
+			"z": 620.5078125
+		},
 		"flat_height": 2.0,
 		"nest": [
 			0.0,
@@ -171,7 +250,9 @@
 			"tail": 0
 		},
 		"player_legs": 0,
+		"secrets": 3,
 		"seed": 1,
+		"start_clock": 4000,
 		"terrain": 2,
 		"terrain_seed": 7,
 		"water": [
@@ -182,8 +263,8 @@
 		"wild": [
 			{
 				"bot": -1,
-				"home_x": 0.0,
-				"home_z": 60.0,
+				"home_x": 22.9610061645508,
+				"home_z": 55.4327697753906,
 				"legs": 0,
 				"profile": {
 					"charge": 0,
@@ -197,8 +278,8 @@
 					"tail": 2
 				},
 				"species": 3,
-				"x": 0.0,
-				"z": 60.0
+				"x": 22.9610061645508,
+				"z": 55.4327697753906
 			}
 		]
 	},
