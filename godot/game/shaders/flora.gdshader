@@ -1,6 +1,7 @@
 shader_type spatial;
 render_mode cull_disabled, alpha_to_coverage;
-// UV2.x selects bark (-1), solid tissue (0), a blade (1), or a compound spray.
+uniform vec4 leaf_margin : source_color = vec4(0.44, 0.24, 0.34, 1.0);
+// UV2.x selects scraped soil (-4), down (-3), hairy leaf (-2), bark (-1), solid tissue (0), a blade (1), or a compound spray.
 varying float pigment_shift;
 varying vec3 wood_tangent;
 
@@ -22,7 +23,26 @@ void fragment() {
 	float v = UV.y;
 	vec3 pigment = COLOR.rgb;
 	float coverage = 1.0;
-	if (style < -0.5) {
+	if (style < -3.5) {
+		vec2 bed = UV * vec2(1.0, 1.22);
+		float radius = length(bed);
+		float scratch = radius * 67.0 + 1.5 * sin(bed.y * 9.0) + sin(bed.x * 12.0);
+		float grooves = smoothstep(0.56, 0.96, cos(scratch)) * (1.0 - smoothstep(0.6, 2.8, fwidth(scratch)));
+		pigment *= 1.0 - 0.26 * grooves * smoothstep(0.15, 0.50, radius) * (1.0 - smoothstep(0.76, 0.94, radius));
+	} else if (style < -2.5) {
+		float vane = sin(3.14159 * v);
+		float barb = v * 58.0 - u * 5.0;
+		float separated = (0.5 + 0.5 * cos(barb)) * (1.0 - smoothstep(0.6, 2.8, fwidth(barb)));
+		coverage = edge_coverage(vane * (0.94 - 0.24 * separated) - u);
+		pigment *= 0.84 + 0.16 * separated + 0.14 * (1.0 - smoothstep(0.02, 0.09, u));
+	} else if (style < -1.5) {
+		float phase = UV.x * 113.0 + 3.0 * sin(v * 16.0 + UV.x * 9.0) + v * 21.0;
+		float pile = 0.5 + 0.5 * cos(phase) * (1.0 - smoothstep(0.5, 2.8, fwidth(phase)));
+		float rim = smoothstep(0.79, 0.97, u);
+		pigment = mix(pigment, leaf_margin.rgb, rim);
+		float grazing = pow(1.0 - clamp(abs(dot(normalize(NORMAL), VIEW)), 0.0, 1.0), 2.0);
+		pigment = mix(pigment, vec3(0.62, 0.68, 0.63), (0.08 + 0.13 * pile + 0.24 * grazing) * (1.0 - 0.68 * rim));
+	} else if (style < -0.5) {
 		// Periodic around the shaft so the UV seam has continuous furrows.
 		float around = UV.x * 6.2831853;
 		float drift = 0.75 * sin(v * 29.0 + 3.0 * around) + 0.35 * sin(7.0 * around - 48.0 * v);

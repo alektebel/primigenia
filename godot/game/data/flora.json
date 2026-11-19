@@ -22,7 +22,8 @@
     "name": {
       "en": "Whistlewood",
       "es": "Caramillo"
-    }
+    },
+    "droop": 0.18
   },
   {
     "id": "ceniza_roja",
@@ -48,7 +49,8 @@
     "name": {
       "en": "Ember Crust",
       "es": "Ceniza roja"
-    }
+    },
+    "relief_mm": 1.1
   },
   {
     "id": "cinta_de_marea",
@@ -94,7 +96,8 @@
     "name": {
       "en": "Sulfur Crust",
       "es": "Costra de azufre"
-    }
+    },
+    "relief_mm": 0.65
   },
   {
     "id": "grama_de_ceniza",
@@ -194,7 +197,8 @@
     "name": {
       "en": "Springmother",
       "es": "Madre de agua"
-    }
+    },
+    "droop": 0.26
   },
   {
     "id": "musgo_faro",
@@ -218,7 +222,8 @@
     "name": {
       "en": "Beacon Moss",
       "es": "Musgo faro"
-    }
+    },
+    "relief_mm": 2.8
   },
   {
     "id": "nieblon",
@@ -243,7 +248,8 @@
     "name": {
       "en": "Fogcomber",
       "es": "Nieblón"
-    }
+    },
+    "droop": 0.33
   },
   {
     "id": "paja_dulce",
@@ -317,7 +323,8 @@
     "name": {
       "en": "Wellberry",
       "es": "Perlilla"
-    }
+    },
+    "droop": 0.37
   },
   {
     "id": "pluma_de_sombra",
@@ -357,17 +364,18 @@
     ],
     "habitat": "snowline",
     "chance": 0.8,
-    "colour": "9ca89a",
+    "colour": "697f68",
     "spread": 0.7,
     "angle": 0,
     "levels": 0,
     "leaf_cm": 150,
-    "caudex": 0.32,
-    "margin": "8b6775",
+    "caudex": 0.39,
+    "margin": "743f57",
     "name": {
       "en": "Snowshield",
       "es": "Rodela de nieve"
-    }
+    },
+    "dead": "76603f"
   },
   {
     "id": "salvisca",
@@ -390,7 +398,8 @@
     "name": {
       "en": "Saltweeper",
       "es": "Salvisca"
-    }
+    },
+    "droop": 0.23
   },
   {
     "id": "soga_de_dosel",
@@ -439,7 +448,8 @@
     "name": {
       "en": "Riverbraid",
       "es": "Trenza de ribera"
-    }
+    },
+    "droop": 0.46
   },
   {
     "id": "velilla",
