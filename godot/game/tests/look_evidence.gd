@@ -175,6 +175,8 @@ func _run() -> void:
 		var p := kv.split("=")
 		island.terrain_chunks.set_uniform(p[0], float(p[1]) if "." in p[1] or p[1].is_valid_float() else p[1])
 		print("uniform ", p[0], " = ", p[1])
+	if OS.get_environment("LOOK_ANISO") != "":
+		root.anisotropic_filtering_level = int(OS.get_environment("LOOK_ANISO")) as Viewport.AnisotropicFiltering   # 0 off, 1 2x, 2 4x, 3 8x, 4 16x
 	for v in views:
 		var cv := camera_for(game.data, v)
 		print(v, " ", cv)

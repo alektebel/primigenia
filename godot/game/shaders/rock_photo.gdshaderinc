@@ -10,6 +10,8 @@
 // Anisotropic in every tier: the ground is mostly seen at a grazing angle, where trilinear blurs the photograph into streaks.
 uniform sampler2DArray ph_alb : filter_linear_mipmap_anisotropic, repeat_enable;
 uniform sampler2DArray ph_pk : filter_linear_mipmap_anisotropic, repeat_enable;
+uniform float ph_stochastic = 1.0;   // quality knob: 1 = two taps per fetch (no visible tiling), 0 = one tap
+uniform float ph_near = 1.0;         // quality knob: 1 = the close scale is used, 0 = macro scale only
 uniform int ph_synth = 0;   // tests: 1 = every tap returns a synthetic horizontal ridge (one per tile, v = 0.5) instead of the sheets
 
 const float PH_ANDESITE = 0.0;
@@ -43,8 +45,8 @@ const float PH_TILE_SEDIMENT = 1.3;
 const float PH_MACRO_K = 7.0;
 const float PH_NEAR_START = 30.0;       // the close scale fades out between these distances (m)
 const float PH_NEAR_FAR = 110.0;
-const float PH_MACRO_START = 700.0;     // the macro scale fades to "no variation" between these; beyond the far one no fetch is made
-const float PH_MACRO_FAR = 1500.0;
+const float PH_MACRO_START = 250.0;     // the macro scale fades to "no variation" between these; beyond the far one no fetch is made
+const float PH_MACRO_FAR = 900.0;
 const float PH_NEAR_COLOR = 0.7;        // share of the close scale in the colour ratio where it is present
 const float PH_N_NEAR = 0.6;            // detail normal strength per scale (tilt added to the face normal)
 const float PH_N_MACRO = 0.5;
@@ -60,7 +62,8 @@ struct PhMat {
 	vec3 tilt;    // -grad h as a world vector, strengths applied
 };
 
-// One stochastic fetch: albedo (linear) and pack at uv, from two random shifts of the sheet blended by a low-frequency noise.
+// One stochastic fetch: albedo (linear) and pack at uv, from two random shifts of the sheet blended by a low-frequency noise
+// (Quilez's "virtual pattern" without the contrast term, so the blend can be skipped where one shift is alone).
 void ph_tap(float layer, vec2 uv, vec2 dx, vec2 dy, out vec3 a, out vec3 p) {
 	if (ph_synth > 0) {
 		float v = fract(uv.y) - 0.5;
@@ -70,19 +73,30 @@ void ph_tap(float layer, vec2 uv, vec2 dx, vec2 dy, out vec3 a, out vec3 p) {
 		p = vec3(0.5, 0.5 + 0.5 * clamp(g * 0.5, -1.0, 1.0), hh);   // green = +dh/dv (see ph_layer)
 		return;
 	}
+	if (ph_stochastic < 0.5) {
+		a = textureGrad(ph_alb, vec3(uv, layer), dx, dy).rgb;
+		a = a * (a * (a * 0.305306011 + 0.682171111) + 0.012522878);
+		p = textureGrad(ph_pk, vec3(uv, layer), dx, dy).rgb;
+		return;
+	}
 	float idx = rockNoise(uv * 0.19 + layer * 5.1) * 6.0;
 	float i = floor(idx);
 	float f = fract(idx);
 	vec2 oa = sin(vec2(3.0, 7.0) * (i + layer * 1.7));
 	vec2 ob = sin(vec2(3.0, 7.0) * (i + 1.0 + layer * 1.7));
-	vec3 a0 = textureGrad(ph_alb, vec3(uv + oa, layer), dx, dy).rgb;
-	vec3 a1 = textureGrad(ph_alb, vec3(uv + ob, layer), dx, dy).rgb;
-	vec3 p0 = textureGrad(ph_pk, vec3(uv + oa, layer), dx, dy).rgb;
-	vec3 p1 = textureGrad(ph_pk, vec3(uv + ob, layer), dx, dy).rgb;
-	float t = smoothstep(0.36, 0.64, f - 0.06 * (a0.r + a0.g + a0.b - a1.r - a1.g - a1.b));
-	a = mix(a0, a1, t);
+	// The two shifts blend only inside a narrow band (about a quarter of the surface); elsewhere one tap of each sheet is enough.
+	float t = smoothstep(0.36, 0.64, f);
+	if (t <= 0.0) {
+		a = textureGrad(ph_alb, vec3(uv + oa, layer), dx, dy).rgb;
+		p = textureGrad(ph_pk, vec3(uv + oa, layer), dx, dy).rgb;
+	} else if (t >= 1.0) {
+		a = textureGrad(ph_alb, vec3(uv + ob, layer), dx, dy).rgb;
+		p = textureGrad(ph_pk, vec3(uv + ob, layer), dx, dy).rgb;
+	} else {
+		a = mix(textureGrad(ph_alb, vec3(uv + oa, layer), dx, dy).rgb, textureGrad(ph_alb, vec3(uv + ob, layer), dx, dy).rgb, t);
+		p = mix(textureGrad(ph_pk, vec3(uv + oa, layer), dx, dy).rgb, textureGrad(ph_pk, vec3(uv + ob, layer), dx, dy).rgb, t);
+	}
 	a = a * (a * (a * 0.305306011 + 0.682171111) + 0.012522878);   // sRGB -> linear (Godot's own polynomial)
-	p = mix(p0, p1, t);
 }
 
 // All projections of one layer at one scale: albedo, height and world tilt of the detail normal.
@@ -106,31 +120,36 @@ void ph_layer(float layer, MapCtx c, float inv_tile, vec2 off, out vec3 a, out f
 	}
 }
 
-// One material at both scales. `mean` normalises the albedo into a ratio. Cheap exit (ratio 1, h 0.5, no tilt) far away.
-PhMat ph_material(float layer, vec3 mean, MapCtx mc, float tile, float dist, vec2 off) {
+// One material at both scales (`macro` false: the close scale only, for fine-grained sheets that carry nothing useful at 7x the size). `mean` normalises the albedo into a ratio. Cheap exit (ratio 1, h 0.5, no tilt) far away.
+PhMat ph_material(float layer, vec3 mean, MapCtx mc, float tile, float dist, vec2 off, bool macro) {
 	PhMat m;
 	m.ratio = vec3(1.0);
 	m.h = 0.5;
 	m.tilt = vec3(0.0);
-	if (dist >= PH_MACRO_FAR) {
+	if (dist >= (macro ? PH_MACRO_FAR : PH_NEAR_FAR)) {
 		return m;
 	}
-	float fm = 1.0 - smoothstep(PH_MACRO_START, PH_MACRO_FAR, dist);
-	vec3 a;
-	float h;
-	vec3 t;
-	ph_layer(layer, mc, 1.0 / (tile * PH_MACRO_K), off, a, h, t);
-	vec3 r = clamp(a / mean, vec3(PH_RATIO_MIN), vec3(PH_RATIO_MAX));
-	m.ratio = mix(vec3(1.0), r, fm);
-	m.h = h;
-	m.tilt = t * PH_N_MACRO;
+	if (macro) {
+		float fm = 1.0 - smoothstep(PH_MACRO_START, PH_MACRO_FAR, dist);
+		vec3 a;
+		float h;
+		vec3 t;
+		ph_layer(layer, mc, 1.0 / (tile * PH_MACRO_K), off, a, h, t);
+		vec3 r = clamp(a / mean, vec3(PH_RATIO_MIN), vec3(PH_RATIO_MAX));
+		m.ratio = mix(vec3(1.0), r, fm);
+		m.h = h;
+		m.tilt = t * PH_N_MACRO * fm;
+	}
 #if ROCK_TIER >= 2
-	if (dist < PH_NEAR_FAR && ph_synth == 0) {
+	if (dist < PH_NEAR_FAR && ph_synth == 0 && ph_near > 0.5) {
 		float fa = 1.0 - smoothstep(PH_NEAR_START, PH_NEAR_FAR, dist);
+		vec3 a;
+		float h;
+		vec3 t;
 		ph_layer(layer, mc, 1.0 / tile, off + vec2(0.37, 0.61), a, h, t);
 		vec3 r2 = clamp(a / mean, vec3(PH_RATIO_MIN), vec3(PH_RATIO_MAX));
-		m.ratio = mix(m.ratio, r2, fa * PH_NEAR_COLOR);
-		m.h = mix(m.h, h, fa * 0.75);
+		m.ratio = macro ? mix(m.ratio, r2, fa * PH_NEAR_COLOR) : mix(m.ratio, r2, fa);
+		m.h = mix(m.h, h, macro ? fa * 0.75 : fa);
 		m.tilt += t * PH_N_NEAR * fa;
 	}
 #endif
@@ -155,5 +174,7 @@ float ph_ao(float h) {
 
 const float PH_SOIL_SHARE = 0.6;                     // of the steep-meadow weight that shows soil rather than rock (on gentle faces)
 const vec3 PH_SOIL_PAL = vec3(0.19, 0.135, 0.095);   // volcanic soil, a warm dark brown between R2 and VOLCANIC_R1
-const vec3 PH_BANK_GRAVEL = vec3(0.17, 0.155, 0.13);   // wet river gravel (the wet tint is applied after)
-const vec3 PH_BANK_SILT = vec3(0.26, 0.21, 0.15);     // fine sediment between the bars
+const vec3 PH_BANK_GRAVEL = vec3(0.25, 0.22, 0.18);   // wet river gravel (the wet tint is applied after)
+const vec3 PH_BANK_SILT = vec3(0.33, 0.265, 0.19);     // fine sediment between the bars
+const float PH_BLEND_NEAR = 120.0;   // the height blend of materials fades out between these distances (m)
+const float PH_BLEND_FAR = 450.0;

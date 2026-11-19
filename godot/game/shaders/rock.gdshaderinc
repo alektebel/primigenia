@@ -167,31 +167,43 @@ RockTex rock_sample(MapCtx mc, float dist, float wet, float steep, float wr, flo
 	r.mineral = clamp(0.5 + (m - 0.5) * ROCK_MINERAL_GAIN + ROCK_MINERAL_BIAS, 0.0, 1.0);
 	float wsum = max(wr + wv, 1e-4);
 	if (wr > 0.001) {
-		PhMat a = ph_material(PH_ANDESITE, PH_MEAN_ANDESITE, mc, PH_TILE_ANDESITE, dist, vec2(0.0));
-		vec3 c = ph_tint(mix(R0, R1, smoothstep(0.25, 0.78, r.mineral)), a.ratio);
-		float h = a.h;
-		vec3 t = a.tilt;
-		// Bedded faces and the generator's cap rock read as layered strata, patches of tuff as warm, cracked brown.
+		// Bedded faces and the generator's cap rock read as layered strata, patches of tuff as warm, cracked brown; the rest is andesite.
+		// Each sheet is fetched only where its share is present (a sheet costs two scales x projections x four taps).
 		float ms = ph_synth > 0 ? 0.0 : clamp(steep * rock_bed_faces(mc.p) * 0.75 + rock_cap(mc.p) * 0.6, 0.0, 1.0);
-		if (ms > 0.02) {
-			PhMat s = ph_material(PH_STRATA, PH_MEAN_STRATA, mc, PH_TILE_STRATA, dist, vec2(0.17, 0.43));
-			c = mix(c, ph_tint(mix(R0, R1, 0.5), s.ratio), ms);
-			h = mix(h, s.h, ms);
-			t = mix(t, s.tilt, ms);
-		}
 		float mt = ph_synth > 0 ? 0.0 : smoothstep(0.62, 0.8, r.mineral) * (1.0 - 0.5 * steep);
-		if (mt > 0.02) {
-			PhMat f = ph_material(PH_TUFF, PH_MEAN_TUFF, mc, PH_TILE_TUFF, dist, vec2(0.71, 0.29));
-			c = mix(c, ph_tint(R2 * 1.3, f.ratio), mt);
-			h = mix(h, f.h, mt);
-			t = mix(t, f.tilt, mt);
+		float wa = (1.0 - ms) * (1.0 - mt);
+		float ws = ms * (1.0 - mt);
+		float wsum_r = 0.0;
+		vec3 c = vec3(0.0);
+		float h = 0.0;
+		vec3 t = vec3(0.0);
+		if (wa > 0.02) {
+			PhMat a = ph_material(PH_ANDESITE, PH_MEAN_ANDESITE, mc, PH_TILE_ANDESITE, dist, vec2(0.0), true);
+			c += wa * ph_tint(mix(R0, R1, smoothstep(0.25, 0.78, r.mineral)), a.ratio);
+			h += wa * a.h;
+			t += wa * a.tilt;
+			wsum_r += wa;
 		}
-		r.col = c;
-		r.plate = h;
-		r.tilt = t * (wr / wsum);
+		if (ws > 0.02) {
+			PhMat s = ph_material(PH_STRATA, PH_MEAN_STRATA, mc, PH_TILE_STRATA, dist, vec2(0.17, 0.43), true);
+			c += ws * ph_tint(mix(R0, R1, 0.5), s.ratio);
+			h += ws * s.h;
+			t += ws * s.tilt;
+			wsum_r += ws;
+		}
+		if (mt > 0.02) {
+			PhMat f = ph_material(PH_TUFF, PH_MEAN_TUFF, mc, PH_TILE_TUFF, dist, vec2(0.71, 0.29), true);
+			c += mt * ph_tint(R2 * 1.3, f.ratio);
+			h += mt * f.h;
+			t += mt * f.tilt;
+			wsum_r += mt;
+		}
+		r.col = c / max(wsum_r, 1e-4);
+		r.plate = h / max(wsum_r, 1e-4);
+		r.tilt = t / max(wsum_r, 1e-4) * (wr / wsum);
 	}
 	if (wv > 0.001) {
-		PhMat b = ph_material(PH_BASALT, PH_MEAN_BASALT, mc, PH_TILE_BASALT, dist, vec2(0.53, 0.07));
+		PhMat b = ph_material(PH_BASALT, PH_MEAN_BASALT, mc, PH_TILE_BASALT, dist, vec2(0.53, 0.07), true);
 		r.col_v = ph_tint(mix(VOLCANIC_R0, VOLCANIC_R1, smoothstep(0.25, 0.78, r.mineral)), b.ratio);
 		r.plate = mix(r.plate, b.h, wv / wsum);
 		r.tilt += b.tilt * (wv / wsum);
@@ -252,12 +264,12 @@ struct ScreeTex {
 
 ScreeTex scree_sample(MapCtx mc, RockTex r, float dist, float fan) {
 	ScreeTex s;
-	PhMat g = ph_material(PH_SCREE, PH_MEAN_SCREE, mc, PH_TILE_SCREE, dist, vec2(0.13, 0.41));
+	PhMat g = ph_material(PH_SCREE, PH_MEAN_SCREE, mc, PH_TILE_SCREE, dist, vec2(0.13, 0.41), false);
 	s.col = ph_tint(SCREE, g.ratio);
 	s.height = g.h;
 	s.tilt = g.tilt;
 	if (fan > 0.02) {
-		PhMat t = ph_material(PH_TALUS, PH_MEAN_TALUS, mc, PH_TILE_TALUS, dist, vec2(0.57, 0.29));
+		PhMat t = ph_material(PH_TALUS, PH_MEAN_TALUS, mc, PH_TILE_TALUS, dist, vec2(0.57, 0.29), false);
 		float f = fan * 0.85;
 		s.col = mix(s.col, ph_tint(SCREE * vec3(1.12, 1.0, 0.82), t.ratio), f);
 		s.height = mix(s.height, t.h, f);
@@ -277,8 +289,10 @@ vec3 scree_shade(vec3 rock_c, ScreeTex s, float light, float fw, float fan) {
 // 3.5 m ramp. Only materials present in the cell take part. Then the snow gate: snow only rests where the DETAIL normal is
 // flatter than about 55 degrees, the rest falls back to rock, and rock near the classifier's line is dusted on up-facing
 // ledges. `plate` is the macro height 0..1, `grass` the grass mask.
-void rock_blend(inout float w[6], float plate, float scree_h, float grass, vec3 nd, vec3 gn, vec3 wp, bool blend) {
+void rock_blend(inout float w[6], float plate, float scree_h, float grass, vec3 nd, vec3 gn, vec3 wp, float dist, bool blend) {
 	if (blend) {
+		// The sheets' heights decide the borders only where a texel is bigger than a pixel: beyond a few hundred metres they would break every border into noise.
+		float bias = ROCK_BLEND_BIAS * (1.0 - smoothstep(PH_BLEND_NEAR, PH_BLEND_FAR, dist));
 		float hh[6];
 		hh[0] = 0.5 + 0.5 * grass;
 		hh[1] = plate;
@@ -289,7 +303,7 @@ void rock_blend(inout float w[6], float plate, float scree_h, float grass, vec3 
 		float hw[6];
 		float m = -10.0;
 		for (int i = 0; i < 6; i++) {
-			hw[i] = w[i] > 0.001 ? w[i] + ROCK_BLEND_BIAS * hh[i] : -10.0;
+			hw[i] = w[i] > 0.001 ? w[i] + bias * hh[i] : -10.0;
 			m = max(m, hw[i]);
 		}
 		float sum = 0.0;

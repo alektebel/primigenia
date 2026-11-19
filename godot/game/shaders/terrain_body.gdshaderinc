@@ -132,7 +132,7 @@ bool terrain_weights(vec3 gn, float steep, float wet, float grass, float dist, M
 #if ROCK_TIER >= 2
 	rt.tilt += fbm_gain * fbm_tilt(wp, gn, dist) * (w[1] + w[2] + w[3] + w[0] * (1.0 - turf_slope));
 #endif
-	rock_blend(w, rt.plate, st.height, grass, normalize(gn + rt.tilt), gn, wp, blend);
+	rock_blend(w, rt.plate, st.height, grass, normalize(gn + rt.tilt), gn, wp, dist, blend);
 	return true;
 }
 
@@ -259,19 +259,19 @@ void fragment() {
 				volc_c = rock_shade(rt.col_v, rt, rlight, fw, steep, cavity, wp, 2.0, rl, wet_rock) * GRASS;
 			}
 			if (w_soil > 0.001) {
-				PhMat sm = ph_material(PH_SOIL, PH_MEAN_SOIL, mc, PH_TILE_SOIL, dist, vec2(0.29, 0.83));
+				PhMat sm = ph_material(PH_SOIL, PH_MEAN_SOIL, mc, PH_TILE_SOIL, dist, vec2(0.29, 0.83), false);
 				float sfw2;
 				float sl2 = rock_light(gn, sm.tilt, sfw2) * vis;
-				soil_c = ph_tint(PH_SOIL_PAL, sm.ratio) * ph_ao(sm.h) * mix(ROCK_SHADE, ROCK_LIT, rock_lit_mask(sl2, sfw2)) * ph_ramp(sl2, rock_light_step(sl2, sfw2)) * GRASS * mix(1.0, WET_TINT.g * 0.8, smoothstep(0.1, 0.5, wet));
+				soil_c = ph_tint(PH_SOIL_PAL, sm.ratio) * ph_ao(sm.h) * mix(ROCK_SHADE, ROCK_LIT, rock_lit_mask(sl2, sfw2)) * ph_ramp(sl2, rock_light_step(sl2, sfw2)) * GRASS * mix(1.0, WET_TINT.g * 0.8, smoothstep(0.1, 0.5, wet)) * mix(SH_K, 1.0, msh) * mix(S_TINT, vec3(1.0), msh);
 			}
 		}
 		// Sand: the sediment sheet under the palette's sand.
 		vec3 sand_c = vec3(0.0);
 		if (w[4] > 0.001) {
-			PhMat sd = ph_material(PH_SEDIMENT, PH_MEAN_SEDIMENT, mc, PH_TILE_SEDIMENT, dist, vec2(0.91, 0.13));
+			PhMat sd = ph_material(PH_SEDIMENT, PH_MEAN_SEDIMENT, mc, PH_TILE_SEDIMENT, dist, vec2(0.91, 0.13), false);
 			float dfw;
 			float dl = rock_light(gn, sd.tilt, dfw) * vis;
-			sand_c = ph_tint(SAND, sd.ratio) * ph_ao(sd.h) * ph_ramp(dl, 0.6 + 0.25 * smoothstep(0.18, 0.25, dl) + 0.23 * smoothstep(0.53, 0.61, dl)) * GRASS;
+			sand_c = ph_tint(SAND, sd.ratio) * ph_ao(sd.h) * ph_ramp(dl, 0.6 + 0.25 * smoothstep(0.18, 0.25, dl) + 0.23 * smoothstep(0.53, 0.61, dl)) * GRASS * mix(SH_K, 1.0, msh) * mix(S_TINT, vec3(1.0), msh);
 		}
 		vec3 snow_c = SNOW * landRamp(snow_light) * GRASS;
 
@@ -282,14 +282,15 @@ void fragment() {
 		// River and lake banks: wet gravel and sediment instead of a meadow colour fading into the channel (the textures also carry the shore up close).
 		float bank = smoothstep(0.22, 0.5, wet) * (1.0 - w[5]) * (1.0 - steep);
 		if (bank > 0.01) {
-			PhMat bg = ph_material(PH_SCREE, PH_MEAN_SCREE, mc, PH_TILE_SCREE * 1.3, dist, vec2(0.47, 0.77));
-			PhMat bs = ph_material(PH_SEDIMENT, PH_MEAN_SEDIMENT, mc, PH_TILE_SEDIMENT, dist, vec2(0.23, 0.59));
+			PhMat bg = ph_material(PH_SCREE, PH_MEAN_SCREE, mc, PH_TILE_SCREE * 1.3, dist, vec2(0.47, 0.77), false);
+			PhMat bs = ph_material(PH_SEDIMENT, PH_MEAN_SEDIMENT, mc, PH_TILE_SEDIMENT, dist, vec2(0.23, 0.59), false);
 			float silt = smoothstep(0.35, 0.65, landNoise(xz * 0.35));   // patches of fine sediment between the gravel bars
 			vec3 bt = mix(bg.tilt, bs.tilt, silt);
 			float bfw;
 			float bl = rock_light(gn, bt, bfw) * vis;
 			vec3 bank_c = mix(ph_tint(PH_BANK_GRAVEL, bg.ratio) * ph_ao(bg.h), ph_tint(PH_BANK_SILT, bs.ratio) * ph_ao(bs.h), silt);
 			bank_c *= mix(ROCK_SHADE, ROCK_LIT, rock_lit_mask(bl, bfw)) * ph_ramp(bl, rock_light_step(bl, bfw)) * GRASS * 0.8;
+			bank_c *= mix(SH_K, 1.0, msh) * mix(S_TINT, vec3(1.0), msh);   // a creature's contact shadow falls on the bank as on the meadow
 			land = mix(land, bank_c, bank * 0.9);
 		}
 		land *= mix(vec3(1.0), WET_TINT, smoothstep(0.0, 0.4, wet) * 0.6);

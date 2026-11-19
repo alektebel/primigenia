@@ -133,7 +133,7 @@ func build(terrain_data) -> void:
 	tier = resolve_tier(_quality(), RenderingServer.get_video_adapter_name())
 	var shader: Shader = TIER_SHADERS[tier - 1]
 	if tier >= 2 and is_inside_tree():
-		get_viewport().anisotropic_filtering_level = Viewport.ANISOTROPY_4X if tier == 2 else Viewport.ANISOTROPY_8X   # the photographic materials are seen at grazing angles
+		get_viewport().anisotropic_filtering_level = Viewport.ANISOTROPY_2X if tier == 2 else Viewport.ANISOTROPY_8X   # the photographic materials are seen at grazing angles
 	_skirt_shader = Shader.new()
 	_skirt_shader.code = shader.code.replace("cull_back", "cull_disabled")
 	for lod in STEPS.size():
