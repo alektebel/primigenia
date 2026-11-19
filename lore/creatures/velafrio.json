@@ -1,0 +1,320 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "velafrio",
+  "name": {
+    "en": "Velafrío"
+  },
+  "world": "void",
+  "kind": "new",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "Drifting Isles exosphere and surface; drifts attached to or within 1 km of the isle during F3 flybys.",
+    "diet": "Interstellar dust, PAHs, radiolytic volatiles, accreted organics; filters via magnetic sail.",
+    "active": "Only during molecular cloud passages or near radiogenic heat vents; stasis otherwise.",
+    "predators": []
+  },
+  "body": "Gigantic (~150 m span), translucent ether-membrane with embedded magnetite filaments; biradial symmetry; slow pulsing internal glow.",
+  "chains": [
+    {
+      "id": "velafrio.c1",
+      "trait": "Magnetite-embedded dorsal sail unfolds",
+      "links": [
+        "Captures charged ISM dust and PAHs",
+        "Requires magnetic field torque to orient",
+        "Conductive protein filaments align with GCR flux",
+        "GCR ionization creates charge separation in sail matrix"
+      ],
+      "roots": [
+        "F2",
+        "F15",
+        "F20"
+      ],
+      "skill": {
+        "id": "velafrio.harmonic_accretion",
+        "name": {
+          "en": "Harmonic Accretion"
+        },
+        "role": "Control",
+        "effect": "Unfurls a magnetic field that pulls 3 resource tokens from the environment into a 2m radius; also aligns player to magnetic north.",
+        "numbers": {}
+      },
+      "weakness": "High radiation spikes disrupt sail alignment, causing resource loss and stun.",
+      "observe": [
+        "Dust sparks fly toward the sail as it hums.",
+        "Magnetite filaments glow faintly blue along the edges.",
+        "Movement is a slow, drifting arc with no visible propulsion."
+      ],
+      "journal": {
+        "en": "It eats the dead wind and flashes its hunger in the dark."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-20",
+        "summary": "Reframe accretion as (1) passive sail interception during F3 cloud passages when grain flux spikes, plus (2) electrostatic retention on a radiolysis-charged ether sail; magnetite only aligns the sheet to galactic B-field and local charge gradients. Skill pulls nearby tokens already in ballistic range on the isle, not deep ISM. Say highly speculative for any macroscopic field-modulated collector.",
+        "fixes": [
+          "Reframe accretion as (1) passive sail interception during F3 cloud passages when grain flux spikes, plus (2) electrostatic retention on a radiolysis-charged ether sail; magnetite only aligns the sheet to galactic B-field and local charge gradients. Skill pulls nearby tokens already in ballistic range on the isle, not deep ISM. Say highly speculative for any macroscopic field-modulated collector."
+        ],
+        "analogues": [
+          {
+            "organism": "Magnetotactic bacteria (magnetite chain alignment to Earth's µT field; Blakemore, from memory, unverified) and passive electrostatic sticking of charged cometary dust (not organism-powered magnets).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "herbst_2009_complex"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "velafrio.c2",
+      "trait": "Translucent ether-membrane thickens",
+      "links": [
+        "Shields internal brine from GCR dose",
+        "Melanin-like pigments dissipate ionization energy",
+        "Radiolytic oxidants accumulate in pigment granules",
+        "Ether-linked lipids maintain membrane fluidity at cryogenic temps"
+      ],
+      "roots": [
+        "F2",
+        "F8",
+        "F17"
+      ],
+      "skill": {
+        "id": "velafrio.radiolytic_soak",
+        "name": {
+          "en": "Radiolytic Soak"
+        },
+        "role": "Defence",
+        "effect": "Player absorbs 50% of incoming radiation damage for 6 turns; Velafrío gains a temporary shield token.",
+        "numbers": {}
+      },
+      "weakness": "Absorbed dose must be vented; venting reveals a chemical plume.",
+      "observe": [
+        "Surface glows with trapped Cerenkov-like blue luminescence.",
+        "Membrane ripples slowly to redistribute pigment granules.",
+        "Tiny cracks in the ice heal as fluid seeps and seals."
+      ],
+      "journal": {
+        "en": "A cathedral of glass that drinks the universe's poison."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-20",
+        "summary": "Describe the membrane as a sparse colonial veil: living pigment nodes linked by glass-state matrix, active only during flybys; Radiolytic Soak vents dose into pigment granules and brine sinks, matching weakness plume (F11 ballistic). Mark highly speculative for cathedral-scale macrostructure.",
+        "fixes": [
+          "Describe the membrane as a sparse colonial veil: living pigment nodes linked by glass-state matrix, active only during flybys; Radiolytic Soak vents dose into pigment granules and brine sinks, matching weakness plume (F11 ballistic). Mark highly speculative for cathedral-scale macrostructure."
+        ],
+        "analogues": [
+          {
+            "organism": "Tardigrade tun formation and radiation survival in space exposure (Jonsson et al. 2008, Current Biology); fungal melanin radiation-shielding pigment (highly speculative at this scale).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "jonsson_2008_survival"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "velafrio.c3",
+      "trait": "Chemical luminescence pulses",
+      "links": [
+        "Signs presence to mates and brine-colonies",
+        "Chemical luminescence from H2O2 burst",
+        "Redox disequilibrium triggers flash",
+        "Coupling radiolytic oxidants with stored organics releases energy"
+      ],
+      "roots": [
+        "F15",
+        "F16",
+        "F19"
+      ],
+      "skill": {
+        "id": "velafrio.flash_beacon",
+        "name": {
+          "en": "Flash Beacon"
+        },
+        "role": "Social",
+        "effect": "Emits a chemical pulse that attracts passive creatures within 10m and reveals hidden resources for 4 turns.",
+        "numbers": {}
+      },
+      "weakness": "Flash consumes stored energy; Velafrío enters stasis for 2 turns after.",
+      "observe": [
+        "Sudden burst of IR/UV light with no heat.",
+        "Scent molecules travel in straight lines to player.",
+        "Stomach fluids mix, causing a visible reaction."
+      ],
+      "journal": {
+        "en": "It speaks in straight lines and sudden light."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-20",
+        "summary": "Call it chemiluminescence (not heatless 'bioluminescence' unless enzymes are named). Pulses are rare, mate/colony sync only; Social range 10 m is honest in vacuum. Highly speculative as macroscopic beacon.",
+        "fixes": [
+          "Call it chemiluminescence (not heatless 'bioluminescence' unless enzymes are named). Pulses are rare, mate/colony sync only; Social range 10 m is honest in vacuum. Highly speculative as macroscopic beacon."
+        ],
+        "analogues": [
+          {
+            "organism": "Firefly luciferin–luciferase signaling (mechanism differs); dinoflagellate bioluminescence as short-range presence flash; for chemistry-only flashes, luminol-type peroxide reactions (textbook organic chem, from memory, unverified).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "velafrio.c4",
+      "trait": "Gigantic size (~150 m span)",
+      "links": [
+        "Maximizes sail area for low-density accretion",
+        "Surface area scales faster than metabolic cost",
+        "Extremely slow chemolithotrophic metabolism",
+        "Energy limited by GCR flux and finite brine volume"
+      ],
+      "roots": [
+        "F2",
+        "F3",
+        "F18"
+      ],
+      "skill": {
+        "id": "velafrio.massive_harvest",
+        "name": {
+          "en": "Massive Harvest"
+        },
+        "role": "Basic",
+        "effect": "Gather 5 resources from the environment; costs 2 energy per resource.",
+        "numbers": {}
+      },
+      "weakness": "Cannot enter tight spaces; high energy cost makes it slow.",
+      "observe": [
+        "Shadow blocks the player's view for seconds.",
+        "Movement creates subtle seismic vibrations.",
+        "Brine drips from the sail onto the isle."
+      ],
+      "journal": {
+        "en": "To be small is to starve in the long dark."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-20",
+        "summary": "Either shrink playable active span to tens of metres of thin sail, or state ≥90% mass is inert glass/cryptobiotic with brine lodes; Massive Harvest works only during cloud passage windows. Flag highly speculative macrograzer.",
+        "fixes": [
+          "Either shrink playable active span to tens of metres of thin sail, or state ≥90% mass is inert glass/cryptobiotic with brine lodes; Massive Harvest works only during cloud passage windows. Flag highly speculative macrograzer."
+        ],
+        "analogues": [
+          {
+            "organism": "Colonial siphonophores (Portuguese man-o'-war) maximize spread with shared slow metabolism; filter veneers on sponges/corals—none in vacuum or centennial stasis.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "dyson_1979_search"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "polvorin",
+      "kind": "cousin",
+      "note": "(council kind 'mutualism') Velafrío drops radiolytic waste and dormant spores; Polvorín cleans the sail and returns thawed brine."
+    },
+    {
+      "with": "polvorin",
+      "kind": "cousin",
+      "note": "(council kind 'mutualism') Polvorín cleans Velafrío's sail and provides thawed brine; Velafrío drops waste and spores."
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-19",
+    "by": [
+      "naturalist/qwen"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-20",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-19"
+    }
+  ],
+  "body_plan": {
+    "symmetry": "biradial",
+    "arms": 4,
+    "origin": "Evolved from flattened brine-colonies that unfolded their membranes to catch matter flux during rare flybys; membranes thickened to shield radiation."
+  },
+  "temperament": "Apathetic giant; indifferent to small fauna; accidental mutualist; drifts on ballistic trajectories.",
+  "secrets": [
+    "Velafrío carries dormant spores from molecular clouds to the isle.",
+    "Its sail membrane can be harvested for radiation shielding.",
+    "The pulsing glow matches the resonance of deep brine pockets."
+  ],
+  "moments": [
+    "A shadow swallows the starless sky; the Velafrío opens its gossamer sail, and suddenly the void is filled with the silent spark of accreted dust, painting the dark with transient constellations of life."
+  ],
+  "journal": [
+    {
+      "en": "It drifts like a cathedral of glass, eating the dead wind."
+    },
+    {
+      "en": "Its sail catches the radiation, and for a moment, the dark is alive."
+    }
+  ]
+}

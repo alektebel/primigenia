@@ -1,0 +1,283 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "ceniza_roja",
+  "name": {
+    "en": "Ceniza Roja"
+  },
+  "world": "void",
+  "kind": "new",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "Ice veneer, shallow fractures, ejected regolith",
+    "diet": "Radiolytic redox couples in ice lattice; chemolithotrophy upon landing",
+    "active": "Cryptobiotic stasis >99.99% of time; brief activation during flyby heat or landing",
+    "predators": []
+  },
+  "body": "Filamentous mat of ether-linked lipids embedded with melanin-like pigment grains and trehalose glass; forms spherical 'tuns' that detach as propagules",
+  "chains": [
+    {
+      "id": "ceniza_roja.c1",
+      "trait": "Melanin-rich armor grains shield DNA",
+      "links": [
+        "Prevents high-LET ionization tracks from shattering helices",
+        "Unshielded cosmic rays deliver lethal doses even in vacuum",
+        "F8"
+      ],
+      "roots": [
+        "F8",
+        "F15"
+      ],
+      "skill": {
+        "id": "ceniza_roja.radiolytic_shielding",
+        "name": {
+          "en": "Radiolytic Shielding"
+        },
+        "role": "Passive",
+        "effect": "Reduces DNA damage accumulation by 60% while exposed to GCR flux; allows longer drift times.",
+        "numbers": {}
+      },
+      "weakness": "Melanin saturation. After ~500 years of unshielded exposure, accumulated damage outpaces repair; lineage must land in a shielded niche or risk extinction.",
+      "observe": [
+        "Red dust coating ice crystals",
+        "Propagules detaching in straight lines without wind",
+        "Tuns hardening instantly when shadowed"
+      ],
+      "journal": {
+        "en": "Ash that flies. The wind is dead; only the straight line matters."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-20",
+        "summary": "Reframe as strong reduction of secondary (radiolytic) damage and UV, not linear-energy-transfer track dose; pair with shallow burial in the ice veneer or symbiotic shielding from Coraza Peregrina; cap unshielded drift before saturation (~0.8 Sv/y from F8) to match the 500-year weakness.",
+        "fixes": [
+          "Reframe as strong reduction of secondary (radiolytic) damage and UV, not linear-energy-transfer track dose; pair with shallow burial in the ice veneer or symbiotic shielding from Coraza Peregrina; cap unshielded drift before saturation (~0.8 Sv/y from F8) to match the 500-year weakness."
+        ],
+        "analogues": [
+          {
+            "organism": "Melanized fungi (e.g. Cryptococcus neoformans) and radiotolerant melanized fungi—melanin binds radicals and modulates damage; tardigrades add DNA repair and vitrification, not pigment alone.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "ceniza_roja.c2",
+      "trait": "Aerogel-like silica-ice lattice",
+      "links": [
+        "Allows ejection by tiny outgassing torques and microgravity",
+        "Surface grains escape at velocities near thermal kinetic energy",
+        "F5"
+      ],
+      "roots": [
+        "F5",
+        "F6"
+      ],
+      "skill": {
+        "id": "ceniza_roja.ballistic_seed",
+        "name": {
+          "en": "Ballistic Seed"
+        },
+        "role": "Basic",
+        "effect": "Eject propagule to drift toward target world. Success chance +25% if target is within 0.5 ly and velocity matches relative drift.",
+        "numbers": {}
+      },
+      "weakness": "Requires trigger. Propagules only eject during chaotic tumbling events or transient outgassing; player must wait for spin state changes.",
+      "observe": [
+        "Filaments loosening from ice matrix",
+        "Seeds floating upward against negligible gravity",
+        "No plume, only straight trajectories"
+      ],
+      "journal": {
+        "en": "The world shakes, and the seeds wake to ride the spin."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-20",
+        "summary": "Treat Ballistic Seed as same-nucleus or same-swarm ejection (regolith across fractures, between tumbling faces); reserve interstellar success bonuses to the Coraza symbiosis or rare flyby outburst windows; drop or soften ly-scale targeting unless velocity and encounter geometry are explicit.",
+        "fixes": [
+          "Treat Ballistic Seed as same-nucleus or same-swarm ejection (regolith across fractures, between tumbling faces); reserve interstellar success bonuses to the Coraza symbiosis or rare flyby outburst windows; drop or soften ly-scale targeting unless velocity and encounter geometry are explicit."
+        ],
+        "analogues": [
+          {
+            "organism": "Comet nucleus outgassing and dust jets (67P/Churyumov–Gerasimenko-style non-gravitational forces); porous refractory–ice aggregates in Oort-cloud bodies.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "ceniza_roja.c3",
+      "trait": "Ballistic chemical pheromone bursts",
+      "links": [
+        "Signals safe landing zones and colony aggregation in straight lines",
+        "No turbulence or plume formation in hard vacuum",
+        "F11"
+      ],
+      "roots": [
+        "F11"
+      ],
+      "skill": {
+        "id": "ceniza_roja.direct_signal",
+        "name": {
+          "en": "Direct Signal"
+        },
+        "role": "Social",
+        "effect": "Place chemical beacon; allied Ceniza units within line-of-sight instantly migrate to beacon with +40% speed.",
+        "numbers": {}
+      },
+      "weakness": "Line-of-sight only. Signal blocks if an obstacle (asteroid, moon) intercepts the straight path.",
+      "observe": [
+        "Crystal shards releasing vapor that hangs motionless",
+        "Units aligning instantly to vapor line",
+        "Signals ignored around corners"
+      ],
+      "journal": {
+        "en": "A whisper that travels forever until it strikes."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-20",
+        "summary": "Limit Direct Signal to (1) shallow fractures with adsorbed/brine films during flyby or landing activation, or (2) co-released sublimates that form a short-lived, confined vapor sheet; allies respond by tun rupture and passive roll/detachment along the flux gradient, not sprinting in vacuum. Keep line-of-sight blocking as stated.",
+        "fixes": [
+          "Limit Direct Signal to (1) shallow fractures with adsorbed/brine films during flyby or landing activation, or (2) co-released sublimates that form a short-lived, confined vapor sheet; allies respond by tun rupture and passive roll/detachment along the flux gradient, not sprinting in vacuum. Keep line-of-sight blocking as stated."
+        ],
+        "analogues": [
+          {
+            "organism": "Bacterial quorum sensing works in liquid films, not ISM vacuum; insect pheromones require a continuous atmosphere—here the honest analogue is brief volatile release in a transient sublimate micro-shroud (F12).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "ceniza_roja.c4",
+      "trait": "Trehalose glass tun formation",
+      "links": [
+        "Suspends metabolism for millennia during energy gaps",
+        "Radiolytic fuels and solvents are scarce and patchy",
+        "F3"
+      ],
+      "roots": [
+        "F19",
+        "F3"
+      ],
+      "skill": {
+        "id": "ceniza_roja.cryptobiotic_stasis",
+        "name": {
+          "en": "Cryptobiotic Stasis"
+        },
+        "role": "Defence",
+        "effect": "Enter tun state. Immune to radiation and cold damage for 10,000 years; metabolism halted. Recovery costs 20% biomass.",
+        "numbers": {}
+      },
+      "weakness": "Slow recovery. Takes 50 years of radiolytic recharge to restore full biomass after waking; vulnerable during this period.",
+      "observe": [
+        "Filaments curling into glassy spheres",
+        "Glow fading as chemical bonds lock",
+        "Resuming activity only near brine seep"
+      ],
+      "journal": {
+        "en": "Sleep is the only travel. The void is long."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-20",
+        "summary": "Optional honesty tweak: change 'immune' for 10,000 years to 'metabolically suspended; radiation and cold tolerant with greatly reduced active damage; total dose and repair cost still bind long drift'—gameplay numbers can stay if framed as relative resistance.",
+        "fixes": [
+          "Optional honesty tweak: change 'immune' for 10,000 years to 'metabolically suspended; radiation and cold tolerant with greatly reduced active damage; total dose and repair cost still bind long drift'—gameplay numbers can stay if framed as relative resistance."
+        ],
+        "analogues": [
+          {
+            "organism": "Tardigrade tun formation (Milnesium tardigradum and relatives); nematode anhydrobiosis with trehalose glass.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "Coraza Peregrina",
+      "kind": "cousin",
+      "note": "(council kind 'Symbiont/Vector') Ceniza Roja aggregates within the Coraza's sheltered core; the Coraza provides magnetic navigation and superior shielding, carrying Ceniza to worlds the surface cannot reach alone."
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-19",
+    "by": [
+      "naturalist/qwen"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-20",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-19"
+    }
+  ],
+  "body_plan": {
+    "symmetry": "asymmetric",
+    "origin": "Grows as a continuous surface veneer; breaks into units via mechanical stress or radiolytic oxidation"
+  },
+  "temperament": "Passive, opportunistic; triggers ejection only when radiation dose or outgassing torque reaches threshold",
+  "secrets": [
+    "Injecting radiation accelerates melanin production but risks saturation; player can 'over-shield' a lineage to extend drift range at the cost of eventual repair need.",
+    "Ballistic signals can be hijacked by placing a reflective ice shard; the signal bounces, misleading allies to barren worlds."
+  ],
+  "moments": [
+    "A million red specks lift off the ice as the nucleus tumbles, drifting like a reverse aurora toward the dark, each one a universe waiting to wake."
+  ],
+  "journal": [
+    {
+      "en": "Ash that flies. The wind is dead; only the straight line matters."
+    },
+    {
+      "en": "Sleep is the only travel. The void is long."
+    }
+  ]
+}

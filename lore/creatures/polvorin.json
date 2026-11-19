@@ -1,0 +1,312 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "polvorin",
+  "name": {
+    "en": "Polvorín"
+  },
+  "world": "void",
+  "kind": "new",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "Drifting Isles subsurface fractures and surface; nests in radiogenic heat vents.",
+    "diet": "Ammonia-water eutectic fluids, silicate inclusions, radiolytic oxidants; digests via chemolithotrophy.",
+    "active": "Continuous but slow; accelerates near heat sources or during flybys.",
+    "predators": []
+  },
+  "body": "Asymmetric armored thorax with silicate plates; internal ammonia-brine circulation; chemical blowhole vent; crystalline memory lobes.",
+  "chains": [
+    {
+      "id": "polvorin.c1",
+      "trait": "Silicate-armored thorax",
+      "links": [
+        "Deflects hypervelocity dust impacts",
+        "No atmosphere to burn micrometeoroids",
+        "Accumulated silicate inclusions form armor plates",
+        "Porosity allows shock absorption in microgravity"
+      ],
+      "roots": [
+        "F9",
+        "F10",
+        "F13"
+      ],
+      "skill": {
+        "id": "polvorin.crystalline_carapace",
+        "name": {
+          "en": "Crystalline Carapace"
+        },
+        "role": "Defence",
+        "effect": "Player gains +50% damage reduction and immunity to terrain hazards for 5 turns.",
+        "numbers": {}
+      },
+      "weakness": "Heavy armor reduces movement speed and agility.",
+      "observe": [
+        "Plates click and shift as it moves.",
+        "Dust bounces off the thorax with visible sparks.",
+        "Body is lopsided, armored on one side."
+      ],
+      "journal": {
+        "en": "A walking icebox of poison and patience."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-20",
+        "summary": "Without an atmosphere (F9–F10), micrometeoroids strike at hypervelocity; silicate inclusions in F13 ice can sinter into asymmetric plates. Low g (F5) reduces weight penalty; porous shock layers are consistent with fracture-dwelling macrofauna (still highly speculative per F18, but smaller than Velafrío).",
+        "fixes": [
+          "Without an atmosphere (F9–F10), micrometeoroids strike at hypervelocity; silicate inclusions in F13 ice can sinter into asymmetric plates. Low g (F5) reduces weight penalty; porous shock layers are consistent with fracture-dwelling macrofauna (still highly speculative per F18, but smaller than Velafrío)."
+        ],
+        "analogues": [
+          {
+            "organism": "Diatom silica frustules (mechanical armor from polymerized/mineral coating); chiton radula teeth with iron biominerals; armored polychaete scales.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "polvorin.c2",
+      "trait": "Ammonia-brine internal circulation",
+      "links": [
+        "Prevents water ice crystallization",
+        "Ammonia lowers freezing point to 176 K",
+        "Radiogenic heat maintains liquid phase in fractures",
+        "Internal pumps move fluid through thermal gradients"
+      ],
+      "roots": [
+        "F14",
+        "F7",
+        "F18"
+      ],
+      "skill": {
+        "id": "polvorin.thaw_injection",
+        "name": {
+          "en": "Thaw Injection"
+        },
+        "role": "Engage",
+        "effect": "Heals 3 health and restores 2 solvent to player; freezes enemy terrain for 2 turns.",
+        "numbers": {}
+      },
+      "weakness": "Heat sources cause rapid evaporation of brine.",
+      "observe": [
+        "Internal fluids swirl with visible bubbles.",
+        "Frost forms and melts rapidly on its back.",
+        "Smell of sharp ammonia in the air."
+      ],
+      "journal": {
+        "en": "It drinks poison and breathes ice."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-20",
+        "summary": "Keep circulation peristaltic/microbial-film slow; Thaw Injection targets F14 pockets, not open vacuum. Replace 'smell in the air' with detectable ballistic NH3 trace at the vent mouth. Highly speculative macroscopic brine engine.",
+        "fixes": [
+          "Keep circulation peristaltic/microbial-film slow; Thaw Injection targets F14 pockets, not open vacuum. Replace 'smell in the air' with detectable ballistic NH3 trace at the vent mouth. Highly speculative macroscopic brine engine."
+        ],
+        "analogues": [
+          {
+            "organism": "Riftia tubeworm vent circulation and symbiont chemistry (energy-rich, not cryogenic); Arctic fish antifreeze glycoproteins (freezing-point depression principle, different molecule).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "jonsson_2008_survival"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "polvorin.c3",
+      "trait": "Chemical blowhole vent",
+      "links": [
+        "Releases excess radiolytic gases",
+        "Gas expansion provides micro-thrust",
+        "Ballistic gas ejection in vacuum",
+        "Pressure buildup in brine pockets forces venting"
+      ],
+      "roots": [
+        "F9",
+        "F11",
+        "F14"
+      ],
+      "skill": {
+        "id": "polvorin.jet_push",
+        "name": {
+          "en": "Jet Push"
+        },
+        "role": "Poke",
+        "effect": "Launch player 5m in a straight line; leaves a chemical trail that confuses enemies for 2 turns.",
+        "numbers": {}
+      },
+      "weakness": "Venting leaves player vulnerable during launch animation.",
+      "observe": [
+        "Jet of mist shoots out, no sound.",
+        "Body recoils slightly with each vent.",
+        "Molecules travel in a straight line away from vent."
+      ],
+      "journal": {
+        "en": "A walking icebox that pushes against the dark."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-20",
+        "summary": "Cap Jet Push to short straight hops and tie gas inventory to radiolytic buildup; venting duration = vulnerability is already honest.",
+        "fixes": [
+          "Cap Jet Push to short straight hops and tie gas inventory to radiolytic buildup; venting duration = vulnerability is already honest."
+        ],
+        "analogues": [
+          {
+            "organism": "Squid jet propulsion (fluid expelled for thrust); comet non-gravitational jets from subsurface gas (F6 torques on body—organism scales down same physics).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "polvorin.c4",
+      "trait": "Crystalline memory lobes",
+      "links": [
+        "Records radiation history over centuries",
+        "Crystal lattice defects store information",
+        "Radiation-induced defect trapping",
+        "High-LET ionization creates stable traps in quartz/magnetite"
+      ],
+      "roots": [
+        "F2",
+        "F8",
+        "F19"
+      ],
+      "skill": {
+        "id": "polvorin.deep_memory",
+        "name": {
+          "en": "Deep Memory"
+        },
+        "role": "Passive",
+        "effect": "Reveals hidden paths and past events on the world map; reduces stasis recovery time by 20%.",
+        "numbers": {}
+      },
+      "weakness": "Memory lobes are brittle; damage causes information loss.",
+      "observe": [
+        "Lobes glow with trapped internal light.",
+        "Cracks in the crystal show patterns.",
+        "Creature pauses and seems to 'listen' to the radiation."
+      ],
+      "journal": {
+        "en": "It remembers every death of a star it passes."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-20",
+        "summary": "Rebrand Deep Memory as passive dosimeter + simple photochemical tropism (e.g., glow cracks = safer route), not narrative replay; brittleness weakness stays. Highly speculative; do not imply animal cognition stored in quartz.",
+        "fixes": [
+          "Rebrand Deep Memory as passive dosimeter + simple photochemical tropism (e.g., glow cracks = safer route), not narrative replay; brittleness weakness stays. Highly speculative; do not imply animal cognition stored in quartz."
+        ],
+        "analogues": [
+          {
+            "organism": "Optically stimulated luminescence in geological quartz (dose history, not cognition); magnetotactic bacteria multi-modal navigation (F20) as alternative to 'crystal encyclopedia.'",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "herbst_2009_complex"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "velafrio",
+      "kind": "cousin",
+      "note": "(council kind 'mutualism') Velafrío drops radiolytic waste and dormant spores; Polvorín cleans the sail and returns thawed brine."
+    },
+    {
+      "with": "velafrio",
+      "kind": "cousin",
+      "note": "(council kind 'mutualism') Polvorín cleans Velafrío's sail and provides thawed brine; Velafrío drops waste and spores."
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-19",
+    "by": [
+      "naturalist/qwen"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-20",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-19"
+    }
+  ],
+  "body_plan": {
+    "symmetry": "asymmetric",
+    "origin": "Evolves from burrowing brine-colonies that developed rigid armor to survive dust impacts; internal circulation evolved to manage radiolytic byproducts in insulated fractures."
+  },
+  "temperament": "Territorial guardian; defensive; hoards solvent; wary of Velafrío.",
+  "secrets": [
+    "Its ammonia can thaw frozen brine pockets.",
+    "Its armor is pure magnetite; can be used for navigation.",
+    "The crystalline lobes hold the history of the isle's journey."
+  ],
+  "moments": [
+    "The Polvorín hunches over the player's shelter, and a jet of supercooled ammonia mist hisses from its blowhole, instantly freezing the cracks in the rock where life might hide."
+  ],
+  "journal": [
+    {
+      "en": "It turns the universe's radiation into a slow, freezing breath."
+    },
+    {
+      "en": "Armor of dust, heart of poison, memory of ice."
+    }
+  ]
+}

@@ -11296,5 +11296,256 @@
     },
     "container-title": "Science",
     "x-checked": "2026-11-20"
+  },
+  {
+    "id": "dyson_1972_comet",
+    "type": "article-journal",
+    "title": "Life in interstellar space",
+    "author": [
+      {
+        "family": "Dyson",
+        "given": "Freeman"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1972
+        ]
+      ]
+    },
+    "container-title": "Nature",
+    "DOI": "10.1038/236452a0",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'Interstellar Grains' (Dyson, 2020, doi 10.1201/9781003025030-4), title similarity 0.62, author match, year off",
+    "x-checked": "2026-11-20"
+  },
+  {
+    "id": "jonsson_2008_tardigrade",
+    "type": "article-journal",
+    "title": "Tardigrades survive exposure to space in low Earth orbit",
+    "author": [
+      {
+        "family": "Jonsson",
+        "given": "Kristin I."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2008
+        ]
+      ]
+    },
+    "container-title": "Current Biology",
+    "DOI": "10.1016/j.cub.2008.06.048",
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked"
+  },
+  {
+    "id": "herbst_van_dishoeck_2009_ism",
+    "type": "article-journal",
+    "title": "Complex organic molecules in the interstellar medium",
+    "author": [
+      {
+        "family": "Herbst",
+        "given": "Eric"
+      },
+      {
+        "family": "van Dishoeck",
+        "given": "Ewine F."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2009
+        ]
+      ]
+    },
+    "container-title": "Annual Review of Astronomy and Astrophysics",
+    "DOI": "10.1146/annurev.astro.46.060407.145208",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'Large Molecules in the Interstellar Medium' (Herbst, 1995, doi 10.1007/978-94-011-0373-2_30), title similarity 0.85, author match, year off",
+    "x-checked": "2026-11-20"
+  },
+  {
+    "id": "mewaldt_2012_cosmic",
+    "type": "article-journal",
+    "title": "Solar and Galactic Cosmic Rays",
+    "author": [
+      {
+        "family": "Mewaldt",
+        "given": "Richard A."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2012
+        ]
+      ]
+    },
+    "container-title": "Space Science Reviews",
+    "DOI": "10.1007/s11214-012-9918-8",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'He-3 in galactic cosmic rays' (Mewaldt, 1986, doi 10.1086/164835), title similarity 0.79, author match, year off",
+    "x-checked": "2026-11-20"
+  },
+  {
+    "id": "schmidt_2016_rosetta",
+    "type": "article-journal",
+    "title": "The surface composition of 67P/Churyumov–Gerasimenko from Rosetta/OSIRIS",
+    "author": [
+      {
+        "family": "Schmidt",
+        "given": "Christian"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2016
+        ]
+      ]
+    },
+    "container-title": "Science",
+    "DOI": "10.1126/science.aaf3021",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Comet 67P/Churyumov-Gerasimenko through the eyes of the Rosetta/OSIRIS cameras' (Güttler, 2018) title similarity 0.63",
+    "x-checked": "2026-11-20"
+  },
+  {
+    "id": "goldstein_2007_trehalose",
+    "type": "article-journal",
+    "title": "Trehalose and the anhydrobiotic state",
+    "author": [
+      {
+        "family": "Goldstein",
+        "given": "Bernard"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2007
+        ]
+      ]
+    },
+    "container-title": "Journal of Experimental Biology",
+    "DOI": "10.1242/jeb.00365",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Review for \"Parallel evolution of trehalose production machinery in anhydrobiotic animals via recurrent gene loss and horizontal transfer\"' (, 2021) title similarity 0.38",
+    "x-checked": "2026-11-20"
+  },
+  {
+    "id": "jonsson_2008_tardigrades",
+    "type": "article-journal",
+    "title": "Tardigrades survive exposure to space in low Earth orbit",
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked",
+    "author": [
+      {
+        "family": "Jonsson",
+        "given": "K. I."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2008
+        ]
+      ]
+    },
+    "container-title": "Current Biology"
+  },
+  {
+    "id": "dyson_1979_time",
+    "type": "article-journal",
+    "title": "Time without end: physics and biology in an open universe",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "author": [
+      {
+        "family": "Dyson",
+        "given": "F. J."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1979
+        ]
+      ]
+    },
+    "container-title": "Reviews of Modern Physics",
+    "DOI": "10.1103/revmodphys.51.447",
+    "x-checked": "2026-11-20"
+  },
+  {
+    "id": "herbst_2009_complex",
+    "type": "article-journal",
+    "title": "Complex organic interstellar molecules",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "author": [
+      {
+        "family": "Herbst",
+        "given": "E."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2009
+        ]
+      ]
+    },
+    "container-title": "Annual Review of Astronomy and Astrophysics",
+    "DOI": "10.1146/annurev-astro-082708-101654",
+    "x-checked": "2026-11-20"
+  },
+  {
+    "id": "dyson_1979_search",
+    "type": "article-journal",
+    "title": "Search for Artificial Stellar Objects of Universal Origin",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'Search for Artificial Stellar Sources of Infrared Radiation' (Dyson, 1960, doi 10.1126/science.131.3414.1667), title similarity 0.67, author match, year off",
+    "author": [
+      {
+        "family": "Dyson",
+        "given": "F."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1979
+        ]
+      ]
+    },
+    "container-title": "International Journal of Astrobiology",
+    "x-checked": "2026-11-20"
+  },
+  {
+    "id": "jonsson_2008_survival",
+    "type": "article-journal",
+    "title": "Survival of tardigrades to outer space",
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked",
+    "author": [
+      {
+        "family": "Jonsson",
+        "given": "K.G."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2008
+        ]
+      ]
+    },
+    "container-title": "Current Biology"
   }
 ]

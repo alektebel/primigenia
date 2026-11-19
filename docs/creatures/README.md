@@ -238,3 +238,11 @@
 | [Khol-zhar](khol_zhar.md) | new | draft | 4 | 1 fixable, 3 plausible |
 | [RastreadorCeniza](rastreadorceniza.md) | new | draft | 4 | 2 fixable, 2 plausible |
 | [SoplilloAlado](soplilloalado.md) | new | draft | 4 | 2 fixable, 2 plausible |
+
+## The Drifting Isles (`void`)
+
+| Creature | Kind | Status | Chains | Verdicts |
+|---|---|---|---|---|
+| [Ceniza Roja](ceniza_roja.md) | new | draft | 4 | 3 fixable, 1 plausible |
+| [Polvorín](polvorin.md) | new | draft | 4 | 2 fixable, 2 plausible |
+| [Velafrío](velafrio.md) | new | draft | 4 | 4 fixable |

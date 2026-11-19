@@ -1,0 +1,391 @@
+{
+  "schema": "cpore.world/1",
+  "id": "void",
+  "kind": "fictional",
+  "system": {
+    "star": "None (Rogue body drifting in ISM)",
+    "position": "fictional",
+    "distance_ly_from_sol": null
+  },
+  "name": {
+    "en": "The Drifting Isles",
+    "es": "Las Islas Errantes"
+  },
+  "status": "draft",
+  "facts": [
+    {
+      "id": "F1",
+      "group": "star",
+      "claim": "No host star; the body drifts freely through the interstellar medium and Oort-cloud analogs.",
+      "justification": "Rogue planetesimals are dynamically stable in the ISM; without a bound star, external photon flux is negligible.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "consequences": [
+        "No diurnal cycles or circadian rhythms.",
+        "Navigation must rely on non-solar cues (magnetic, chemical, or seismic)."
+      ],
+      "refs": [
+        "dyson_1972_comet"
+      ]
+    },
+    {
+      "id": "F2",
+      "group": "star",
+      "claim": "Galactic cosmic ray (GCR) flux averages ~2–5 cm⁻² s⁻¹ (E ≳ 1 GeV).",
+      "justification": "ISM GCR flux is well-constrained by cosmic ray spectroscopy; high-LET protons and nuclei penetrate ice meters deep. Low flux does not imply low dose, as high-LET particles dominate ionization damage.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 2.5,
+      "unit": "particles cm⁻² s⁻¹",
+      "consequences": [
+        "Ionization damage necessitates robust DNA repair and radiation-hardened membranes.",
+        "Radiolysis of ice provides a steady, low-yield redox energy flux."
+      ],
+      "refs": [
+        "mewaldt_2012_cosmic"
+      ]
+    },
+    {
+      "id": "F3",
+      "group": "star",
+      "claim": "Stellar flybys and molecular cloud passages occur on staggered timescales.",
+      "justification": "Stellar proper motions and ISM density fluctuations operate on galactic dynamical timescales. Fixed: 10³–10⁴ yr in dense ISM filaments; 10⁵–10⁶ yr for major flybys/cloud encounters.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 10000,
+      "unit": "years",
+      "consequences": [
+        "Rare thermal shocks require elastic joints or thermal expansion buffers.",
+        "Millennial isolation favors slow life cycles and reversible colonial fusion over rapid reproduction."
+      ],
+      "refs": [
+        "mewaldt_2012_cosmic"
+      ]
+    },
+    {
+      "id": "F4",
+      "group": "planet",
+      "claim": "Radius ~5.0 km; mass ~5.8×10¹⁴ kg (ice-rock aggregate, ρ≈1.1 g/cm³).",
+      "justification": "Mass-radius relation for a porous cometary nucleus matches observed Oort-cloud size distributions. Fixed density/mass consistency to avoid physical contradictions.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 5.0,
+      "unit": "km",
+      "consequences": [
+        "Irregular shape and low mass prevent atmospheric retention and large-scale tectonics.",
+        "Surface is static-charged and abrasive, requiring specialized integument for anchoring."
+      ]
+    },
+    {
+      "id": "F5",
+      "group": "planet",
+      "claim": "Surface gravity ~0.00013 g (0.0013 m/s²).",
+      "justification": "Calculated from F4 parameters (g=GM/r²); microgravity dominates over thermal kinetic energy for surface grains.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 0.00013,
+      "unit": "g",
+      "consequences": [
+        "Propagules and dust drift indefinitely; nothing settles.",
+        "Locomotion requires electrostatic adhesion, jetting, or magnetic trekking rather than walking."
+      ]
+    },
+    {
+      "id": "F6",
+      "group": "planet",
+      "claim": "Chaotic tumbling rotation with no stable axis or predictable seasons.",
+      "justification": "Low angular momentum and non-gravitational outgassing torques cause chaotic spin states in small bodies.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "consequences": [
+        "No stable seasons; climate shifts only during external flybys.",
+        "Surface ice experiences random thermal stress, favoring elastic or glass-state materials."
+      ],
+      "refs": [
+        "mewaldt_2012_cosmic"
+      ]
+    },
+    {
+      "id": "F7",
+      "group": "interior",
+      "claim": "No intrinsic magnetic field; interior is frozen and too small to sustain a dynamo.",
+      "justification": "Dynamo action requires a convecting, electrically conductive fluid core; km-scale icy bodies cool and solidify rapidly.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "consequences": [
+        "No magnetosphere to deflect charged particles; surface is fully irradiated.",
+        "Navigation must use external galactic magnetic fields rather than planetary shielding."
+      ]
+    },
+    {
+      "id": "F8",
+      "group": "planet",
+      "claim": "Unshielded surface radiation dose ~0.8 Sv/year from high-LET cosmic rays.",
+      "justification": "Deep-space dosimetry confirms ~0.3–1.5 Sv/y unshielded; high-LET ions dominate biological damage. Ionization/DNA damage assumes DNA-based life; repair prioritized over growth.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 0.8,
+      "unit": "Sv/year",
+      "consequences": [
+        "High-LET radiation causes frequent DNA strand breaks; repair prioritized over growth.",
+        "Organisms require melanin-analogs, hermetic shielding, or subsurface refuge."
+      ],
+      "refs": [
+        "mewaldt_2012_cosmic",
+        "jonsson_2008_tardigrade"
+      ]
+    },
+    {
+      "id": "F9",
+      "group": "atmosphere",
+      "claim": "Ambient pressure ~10⁻¹¹ Pa (hard vacuum).",
+      "justification": "Matches deep-comet exospheres and ISM baseline; gravity is insufficient to retain volatiles against thermal escape.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 1e-11,
+      "unit": "Pa",
+      "consequences": [
+        "No convective cooling; heat loss relies on radiation and conduction.",
+        "Volatiles sublimate rapidly if exposed; life must be hermetic or subsurface."
+      ],
+      "refs": [
+        "dyson_1972_comet"
+      ]
+    },
+    {
+      "id": "F10",
+      "group": "atmosphere",
+      "claim": "Gas mean free path exceeds 10⁴ km, preventing continuous fluid flow or gaseous sound propagation.",
+      "justification": "At 10⁻¹¹ Pa, molecular collision frequency is negligible; kinetic theory confirms MFP >> body diameter.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 10000,
+      "unit": "km",
+      "consequences": [
+        "Sound cannot travel through gas; communication requires substrate vibration, EM pulses, or contact chemistry.",
+        "No aerodynamic drag; movement is purely inertial or jet-driven."
+      ],
+      "refs": [
+        "dyson_1972_comet"
+      ]
+    },
+    {
+      "id": "F11",
+      "group": "atmosphere",
+      "claim": "Molecular diffusion is ballistic; chemical signals travel in straight lines until intercepted.",
+      "justification": "In hard vacuum, molecules follow straight-line trajectories without forming turbulent plumes.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "consequences": [
+        "Pheromones and chemical trails do not disperse; sensing requires direct line-of-sight or physical contact.",
+        "Stealth is trivial against chemical detection but vulnerable to EM or vibrational tracking."
+      ],
+      "refs": [
+        "dyson_1972_comet"
+      ]
+    },
+    {
+      "id": "F12",
+      "group": "atmosphere",
+      "claim": "Trace sublimates (CO, CH₄, NH₃) exist only transiently near localized heat sources.",
+      "justification": "Sublimation requires thermal energy; without stellar heating, volatiles only outgas near radiogenic vents or during flybys.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "consequences": [
+        "Surface is chemically inert except near vents.",
+        "Life must migrate to or engineer access to volatile sources to avoid desiccation."
+      ],
+      "refs": [
+        "herbst_van_dishoeck_2009_ism"
+      ]
+    },
+    {
+      "id": "F13",
+      "group": "geology",
+      "claim": "Subsurface consists of porous ice matrix with silicate inclusions and clathrate hydrates.",
+      "justification": "Cometary nuclei are confirmed mixtures of water ice, CO₂/CO clathrates, and refractory dust by in-situ spectroscopy.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "consequences": [
+        "Porous structure allows subsurface fluid migration and chemical trapping.",
+        "Surface is abrasive and static-charged, requiring specialized integument for anchoring."
+      ]
+    },
+    {
+      "id": "F14",
+      "group": "geology",
+      "claim": "Pressurized ammonia-water eutectic pockets (30:70 mass ratio, freezing point ~176 K) persist in deep fractures.",
+      "justification": "Ammonia depresses water's freezing point; radiogenic heat and radiolytic heating maintain liquid phase in insulated, fracture-confined pockets.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 176,
+      "unit": "K",
+      "consequences": [
+        "Liquid solvent is restricted to pressurized pockets; surface life is impossible.",
+        "Organisms must be hermetic to prevent explosive decompression or freezing upon exposure."
+      ],
+      "refs": [
+        "herbst_van_dishoeck_2009_ism"
+      ]
+    },
+    {
+      "id": "F15",
+      "group": "chemistry",
+      "claim": "GCR radiolysis of surface ice continuously generates H₂, H₂O₂, and solvated electrons.",
+      "justification": "Ionizing radiation breaks H₂O ice bonds, producing stable redox pairs that accumulate in ice lattices.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "consequences": [
+        "Radiolysis provides a steady, low-yield energy flux independent of stellar light.",
+        "Metabolism is optimized for slow electron transfer rather than rapid combustion."
+      ],
+      "refs": [
+        "herbst_van_dishoeck_2009_ism"
+      ]
+    },
+    {
+      "id": "F16",
+      "group": "chemistry",
+      "claim": "Redox disequilibrium between radiolytic oxidants and accreted organics drives chemolithotrophic metabolism.",
+      "justification": "ISM dust delivers PAHs and amino acid precursors; coupling these with radiolytic H₂/O₂ yields thermodynamically favorable reactions.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "consequences": [
+        "Nutrient scarcity favors extreme efficiency and symbiotic digestion.",
+        "Waste products are recycled internally to near-zero; growth is slow and deliberate."
+      ],
+      "refs": [
+        "herbst_van_dishoeck_2009_ism"
+      ]
+    },
+    {
+      "id": "F17",
+      "group": "biochemistry",
+      "claim": "Membranes utilize ether-linked lipids and melanin-like pigments with trehalose/glass-state protection to resist radiation and maintain fluidity.",
+      "justification": "Ether bonds and melanin analogs are chemically stable against hydrolysis and ionizing radiation; trehalose glass prevents membrane crystallization and desiccation.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "consequences": [
+        "Membranes are rigid yet radiation-resistant, limiting rapid shape-shifting.",
+        "Cold-adapted enzymes require high water activity or ammonia substitution for oxygen in active sites."
+      ],
+      "refs": [
+        "jonsson_2008_tardigrade"
+      ]
+    },
+    {
+      "id": "F18",
+      "group": "biochemistry",
+      "claim": "Metabolism operates on chemolithotrophy and radiolytic redox gradients; active growth is restricted to subsurface brine pockets.",
+      "justification": "Macroscopic active metabolism in hard vacuum is highly speculative; physics confines complex life to insulated, solvent-rich niches.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "consequences": [
+        "Macroscopic life is confined to subsurface brine networks.",
+        "Surface-dwelling forms are spore-like, colonial biofilms, or dormant propagules."
+      ],
+      "refs": [
+        "jonsson_2008_tardigrade"
+      ]
+    },
+    {
+      "id": "F19",
+      "group": "biochemistry",
+      "claim": "Cryptobiotic stasis (tun formation) allows metabolic suspension for centuries during energy or solvent gaps.",
+      "justification": "Trehalose glass formation and anhydrobiosis are documented in tardigrades and nematodes under vacuum/cryogenic stress. Metabolic rates drop below detectable limits (~10⁻²⁰ W/cell); recovery is slow and energetically costly.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "consequences": [
+        "Players must manage dormancy cycles; skipping millennia is a core survival mechanic.",
+        "Recovery from stasis requires significant energy investment and time."
+      ],
+      "refs": [
+        "jonsson_2008_tardigrade"
+      ]
+    },
+    {
+      "id": "F20",
+      "group": "biochemistry",
+      "claim": "Magnetite nanocrystals enable weak-field alignment for short-range navigation, supplemented by chemical and seismic cues.",
+      "justification": "Magnetotactic bacteria use intracellular magnetite chains to align with µT fields; galactic fields (~0.1–1 nT) are too weak for long-range torque, requiring multi-modal navigation.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "consequences": [
+        "Navigation is tied to local magnetic topology and chemical gradients; movement is slow and directional.",
+        "Sensory overload from localized plasma or seismic events is possible."
+      ],
+      "refs": [
+        "mewaldt_2012_cosmic"
+      ]
+    },
+    {
+      "id": "F21",
+      "group": "planet",
+      "claim": "Surface biota are almost entirely dormant propagules or thin radiolytic veneers; active reproduction occurs only in F14 brine pockets.",
+      "justification": "Physics gates macroscopic activity to insulated, solvent-rich niches; vacuum exposure forces cryptobiosis.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "consequences": [
+        "Population density is extremely low outside fractures.",
+        "Players must locate and protect subsurface vents to sustain active colonies."
+      ],
+      "refs": [
+        "jonsson_2008_tardigrade"
+      ]
+    }
+  ],
+  "changelog": [
+    {
+      "date": "2026-11-19",
+      "who": "autoloop",
+      "what": "world canon drafted by the council chair from 21 facts (planet drafts, peer reviews, astrobio referee)"
+    },
+    {
+      "date": "2026-11-19",
+      "who": "autoloop",
+      "what": "removed rejected references; retired real facts left without references"
+    }
+  ]
+}
