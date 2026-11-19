@@ -57,9 +57,10 @@ func _run() -> void:
 	var game = root.get_node("Game")
 	game.persist_settings = false
 	game.settings.grass = 3000
-	var entry := TerrainCache.load_entry({"seed": 1})
+	# own cache folder: the shared user://terrain can hold an island from before the route-certification terrain curation
+	var entry := TerrainCache.load_entry({"seed": 1}, "user://terrain-secrets")
 	if entry.is_empty():
-		entry = TerrainCache.build({"seed": 1}, CporeTerrain.new())
+		entry = TerrainCache.build({"seed": 1}, CporeTerrain.new(), "user://terrain-secrets")
 	game.set_island(entry)
 	game.goto_island()
 	for i in 900:
