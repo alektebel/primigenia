@@ -21,6 +21,8 @@ typedef struct {
     int      kind;
     CpRng    rng;
     int      spam_move;      /* BOT_SPAM                                            */
+    int      filler;         /* BOT_SPAM: move used while spam_move is unavailable;
+                                CB_MOVE_NONE = idle (default)                       */
     int      delay;          /* ticks to wait before the first order                */
     int      reaction;       /* COUNTER/SPAM: sees a wind-up once it is this many
                                 ticks old (default 2, i.e. 200 ms)                  */

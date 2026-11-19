@@ -710,6 +710,7 @@ static CpBot bot_load(const CpStageBot *s){
         0
     };
     b.rng=s->rng;
+    b.filler=CB_MOVE_NONE;
     b.kind=s->kind;
     b.spam_move=s->spam_move;
     b.delay=s->delay;

@@ -28,6 +28,7 @@ void bot_init(CpBot *b, int kind, uint32_t seed)
     memset(b, 0, sizeof(*b));
     b->kind = kind;
     b->reaction = 2;
+    b->filler = CB_MOVE_NONE;
     cp_rng_seed(&b->rng, seed * 2654435761u + (uint32_t)kind * 40503u + 17u);
 }
 
@@ -346,7 +347,14 @@ int bot_decide(CpBot *b, const CpCombatWorld *w, int self, int foe, CpCombatActi
         memset(out, 0, sizeof(*out));
         /* A fixed-move policy rests while recharging or out of ammunition.
          * Retreating forever after the final shot would price movement, not the move. */
-        if(!bot_available(me,b->spam_move)){out->verb=CB_V_IDLE;return 1;}
+        if(!bot_available(me,b->spam_move)){
+            if(b->filler!=CB_MOVE_NONE){
+                if(bot_available(me,b->filler)&&me->stamina>=cp_combat_move_stamina(&me->prof,b->filler))
+                    return spaced_attack(b,w,self,foe,b->filler,out);
+                out->verb=CB_V_APPROACH;out->target=(int8_t)foe;return 1;
+            }
+            out->verb=CB_V_IDLE;return 1;
+        }
         if (CP_COMBAT_MOVES[b->spam_move].flags & (CB_F_SELF|CB_F_GUARD)) {
             /* Defensive commitment: the defence plus the punish it earns.
              * It never gambles: it strikes only when the foe is provably

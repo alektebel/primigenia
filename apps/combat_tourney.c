@@ -77,6 +77,11 @@ static void compute_payoff(int duels)
                 CpBot b0, b1;
                 bot_init(&b0, BOT_SPAM, (uint32_t)s); b0.spam_move = s%2 ? b : a; b0.delay = (s/2) % 4;
                 bot_init(&b1, BOT_SPAM, (uint32_t)s + 7777u); b1.spam_move = s%2 ? a : b; b1.delay = (s/8) % 7;
+                /* A Signature move has a long cooldown, so nobody plays it as a whole policy: the row plays it
+                 * when ready and bites otherwise (its recipe needs a carnivore jaw at mouth level 2+, so every
+                 * kit that holds it has bite). Chosen by role, so later signatures inherit it. */
+                b0.filler = CP_COMBAT_MOVES[b0.spam_move].role==CB_ROLE_SIGNATURE ? CB_BITE : CB_MOVE_NONE;
+                b1.filler = CP_COMBAT_MOVES[b1.spam_move].role==CB_ROLE_SIGNATURE ? CB_BITE : CB_MOVE_NONE;
                 /* Timed reads are averaged over reaction delays 0..3, the
                  * span the wind-ups are budgeted for; both seats share one. */
                 b0.reaction = b1.reaction = (s/8) % 4;
@@ -190,11 +195,21 @@ static int equilibrium_support(const double mix[CB_MOVE_COUNT])
     return n;
 }
 
+/* B3 for a meter-limited signature (spine_volley): a, raw equilibrium weight in [1%,35%] (viable, never the
+ * centre); b, resource equilibrium weight <= 35% (upper bound only: the resource matrix prices sprint spacing at
+ * the attack exchange rate and zeroes every cooldown ranged move, and a payoff duel never binds the meter);
+ * c, full meter beats empty by 3..20 points of field mean. */
+static double b3_raw_w, b3_res_w;
+static int b3_ok(double raw_w,double res_w,double gain){
+    return raw_w>=.01&&raw_w<=.35&&res_w<=.35&&gain>=.03&&gain<=.20;
+}
+
 static void report_payoff(int duels)
 {
     printf("== Move-vs-move payoff, %d duels per cell: move policies, 7 m apart,\n", duels);
     printf("   paired seats and start offsets, 12 s; neutral builds (all parts L3, hp 100000 so nobody dies)\n");
-    printf("   guard closes and blocks; dodge reads contact; both take funded bite punishes; ranged moves space\n\n");
+    printf("   guard closes and blocks; dodge reads contact; both take funded bite punishes; ranged moves space\n");
+    printf("   signature rows play the signature when ready, bite otherwise\n\n");
     printf("-- raw: row's damage dealt minus column's (hp)\n");
     print_matrix(payoff);
     printf("\n-- resource-adjusted: raw minus %.6f hp per stamina point the row spent, plus the same for the column\n",
@@ -218,12 +233,15 @@ static void report_payoff(int duels)
         for (int a = 0; a < CB_MOVE_COUNT; a++) printf("  %s %.1f%%", cp_combat_move_name(a), mix[a] * 100.0);
         printf("\n");
         int support = equilibrium_support(mix);
-        check(mix[CB_SPINE_VOLLEY]>=.01&&mix[CB_SPINE_VOLLEY]<=.35,"B3 spines equilibrium weight in [1%,35%]");
+        if(r)b3_res_w=mix[CB_SPINE_VOLLEY];else b3_raw_w=mix[CB_SPINE_VOLLEY];
         char msg[160];
         snprintf(msg, sizeof msg, "%s equilibrium uses >=4 moves at >=1%% weight (observed %d/14)",
                  r ? "resource" : "raw", support);
         check(support >= 4, msg);
     }
+    {char m[160];
+     snprintf(m,sizeof m,"B3a raw signature weight in [1%%,35%%] (observed %.1f%%)",b3_raw_w*100);check(b3_raw_w>=.01&&b3_raw_w<=.35,m);
+     snprintf(m,sizeof m,"B3b resource signature weight <=35%% (observed %.1f%%)",b3_res_w*100);check(b3_res_w<=.35,m);}
     check(!raw_dominant, "no move weakly dominates another (raw damage payoff)");
     check(!resource_dominant, "no move weakly dominates another (resource-adjusted payoff)");
 }
@@ -434,7 +452,7 @@ static void spine_setup(CpCombatSetup *s,int p,int q,int meter,uint32_t seed,int
  }
 }
 static void report_spines(int seeds){
- double exhausted_spiner=0,exhausted_all=0;
+ double exhausted_spiner=0,exhausted_all=0,full_spiner=0;
  puts("\n== P4 spines field (all nine strategy pairs, paired seats; calcium 100 / 60 / 0)");
  for(int mode=0;mode<3;mode++){
   int meter=mode==0?100:mode==1?60:0,limit_ok=1;
@@ -459,6 +477,7 @@ static void report_spines(int seeds){
     win[p*NP4+q]=field[p][q].wins;games[p*NP4+q]=field[p][q].games;
    }
    double mean=total/n;printf(" %10.3f\n",mean);if(mean>worst)worst=mean;
+   if(mode==0&&p==N_PROFILES)full_spiner=mean;
    if(mode==2&&p==N_PROFILES)exhausted_spiner=mean;
    if(mode==2&&p==4)exhausted_all=mean;
   }
@@ -467,6 +486,10 @@ static void report_spines(int seeds){
   if(mode==1)check(limit_ok,"B6 calcium 60 permits at most three volleys in 900 ticks");
  }
  check(exhausted_spiner<exhausted_all,"B6 exhausted spiner field mean below allrounder");
+ {char m[160];double gain=full_spiner-exhausted_spiner;
+  snprintf(m,sizeof m,"B3c spines field gain (meter 100 vs 0) in [3,20] points (observed %.1f)",gain*100);
+  check(gain>=.03&&gain<=.20,m);
+  check(b3_ok(b3_raw_w,b3_res_w,gain),"B3 a, b and c hold together");}
  double premium[2]={0};int games=0;
  for(int p=0;p<N_PROFILES;p++)for(int k=0;k<seeds;k++)for(int swap=0;swap<2;swap++){
   for(int naive=0;naive<2;naive++){
