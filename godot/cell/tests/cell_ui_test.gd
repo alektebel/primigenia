@@ -78,5 +78,30 @@ func _run() -> void:
 	for i in 10:
 		await process_frame
 	ok(st.sim.T > t0, "the sim advances with frames")
+	# phase 5: locked until the aggregation, then the threats card and the counter tools
+	_key(KEY_1)
+	st._refresh_hud(true)
+	ok(st._phase_btns[4].disabled and st._phase_btns[5].disabled, "phases 5 and 6 are locked at the start")
+	_key(KEY_5)
+	ok(st.sim.phase == 1, "key 5 does nothing while threats are locked")
+	st.sim.agg_done = true
+	st._refresh_hud(true)
+	ok(not st._phase_btns[4].disabled and st._phase_btns[5].disabled, "the aggregation opens phase 5 only")
+	_key(KEY_5)
+	ok(st.sim.phase == 5 and st._th_card.visible, "key 5 selects phase 5 and shows the threats card")
+	ok(st._tool_btns.has("rib") and st._tool_btns.has("cas") and st._tool_btns.has("pump") and st._tool_btns.has("cat") and st._tool_btns.has("spn"), "the five new pieces are tools in phase 5")
+	st.sim.reset()
+	st._tool_btns["cas"].emit_signal("pressed")
+	_click(st.canvas.to_screen(Vector2(340, 330)))
+	ok(st.sim.pieces.is_empty(), "a Cas cannot be placed without a ribosome")
+	ok(st.sim.fx.any(func(f): return f.k == "txt" and f.text == "need_rib"), "the cell says why (needs a ribosome)")
+	st.canvas.tool = ""
+	st.sim.demo()
+	st._refresh_hud(true)
+	ok(st._th_grid.get_child_count() >= 12, "the card lists the four threats with counter and state (%d cells)" % st._th_grid.get_child_count())
+	st.sim.start_threats(1.0, 0)
+	st.advance(3.0)
+	await process_frame
+	ok(st.sim.threat_info().stage == "warn", "the first threat gives a warning")
 	print("cell ui tests: %d checks, %d failed" % [checks, fails])
 	quit(1 if fails > 0 else 0)

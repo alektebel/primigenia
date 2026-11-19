@@ -42,6 +42,9 @@ var _diag: Label
 var _title: Label
 var _note: Label
 var _create_lbl: Label
+var _th_card: PanelContainer
+var _th_title: Label
+var _th_grid: GridContainer
 var _agg_card: PanelContainer
 var _agg_title: Label
 var _agg_body: Label
@@ -221,9 +224,9 @@ func _build_top() -> void:
 	var sp := Control.new()
 	sp.custom_minimum_size = Vector2(22, 0)
 	box.add_child(sp)
-	for i in range(1, 5):
+	for i in range(1, 7):
 		var b := _btn("", true)
-		b.custom_minimum_size = Vector2(104, 40)
+		b.custom_minimum_size = Vector2(92, 40)
 		b.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 		b.pressed.connect(func(): _apply_phase(i); _hud_t = 1.0)
 		box.add_child(b)
@@ -263,6 +266,21 @@ func _build_side() -> void:
 	_bar.max_value = 100
 	_bar.custom_minimum_size = Vector2(0, 8)
 	v1.add_child(_bar)
+	# threats card (phase 5): the schedule, readable at a glance
+	_th_card = _card()
+	_th_card.visible = false
+	col.add_child(_th_card)
+	var vt := VBoxContainer.new()
+	vt.add_theme_constant_override("separation", 5)
+	_th_card.add_child(vt)
+	_th_title = _lbl("", 12, SUB)
+	_th_title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	vt.add_child(_th_title)
+	_th_grid = GridContainer.new()
+	_th_grid.columns = 3
+	_th_grid.add_theme_constant_override("h_separation", 12)
+	_th_grid.add_theme_constant_override("v_separation", 3)
+	vt.add_child(_th_grid)
 	# create card
 	var c2 := _card()
 	col.add_child(c2)
@@ -369,7 +387,7 @@ func _build_agg() -> void:
 	r.add_theme_constant_override("separation", 8)
 	v.add_child(r)
 	_agg_go = _btn("")
-	_agg_go.pressed.connect(func(): sim.continue_colony(); _hide_agg())
+	_agg_go.pressed.connect(func(): sim.continue_colony(); _hide_agg(); _apply_phase(5); _hud_t = 1.0)
 	r.add_child(_agg_go)
 	_agg_new = _btn("")
 	_agg_new.pressed.connect(func(): _hide_agg(); _restart())
@@ -414,6 +432,7 @@ func _layout() -> void:
 	_side.position = Vector2(sz.x - side_w - 14.0, 10)
 	_side.size = Vector2(side_w + 4.0, sz.y - 20.0)
 	_key_help.position = Vector2(18, sz.y - 26.0)
+	_title.visible = sz.x >= 1200.0
 	var left_w := sz.x - side_w - 28.0
 	canvas.play_rect = Rect2(0, 56, left_w, sz.y - 56.0 - 18.0)
 	if _agg_card != null:
@@ -428,7 +447,7 @@ func _place_agg() -> void:
 # ---------- text refresh (language)
 func _refresh_texts() -> void:
 	_title.text = CS.t("title")
-	for i in 4:
+	for i in 6:
 		_phase_btns[i].text = "%d  %s" % [i + 1, CS.phase_name(i + 1, Sim.PHASE_NAMES)]
 	_create_lbl.text = CS.t("create").to_upper()
 	_del_btn.text = CS.t("remove")
@@ -489,8 +508,10 @@ func _refresh_tools() -> void:
 	_del_btn.set_pressed_no_signal(canvas.tool == "del")
 
 func _apply_phase(n: int) -> void:
+	if n == 5 and not sim.threats_unlocked():
+		return
 	sim.set_phase(n)
-	for i in 4:
+	for i in 6:
 		_phase_btns[i].set_pressed_no_signal(i + 1 == n)
 	if canvas.tool != "" and canvas.tool != "del" and int(Sim.PIECES[canvas.tool].ph) > n:
 		canvas.tool = ""
@@ -540,6 +561,7 @@ func _process(delta: float) -> void:
 	if _hud_t >= 0.25:
 		_hud_t = 0.0
 		_refresh_hud()
+	sim.take_events()
 	var ag: Dictionary = sim.aggregation()
 	if ag.shown and not _agg_shown:
 		_show_agg(ag)
@@ -550,7 +572,7 @@ func _unhandled_input(ev: InputEvent) -> void:
 	if not (ev is InputEventKey) or not ev.pressed or ev.echo:
 		return
 	match ev.keycode:
-		KEY_1, KEY_2, KEY_3, KEY_4:
+		KEY_1, KEY_2, KEY_3, KEY_4, KEY_5:
 			if not menu_open:
 				_apply_phase(int(ev.keycode - KEY_0))
 		KEY_SPACE:
@@ -632,6 +654,7 @@ func _refresh_hud(instant := false) -> void:
 			var s := _lbl(CS.status(r.status), 14, Canvas.STT.get(r.status, SUB))
 			s.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 			_lines_grid.add_child(s)
+	_refresh_threats()
 	var dg: String = sim.diagnose()
 	_diag.text = CS.t(dg) if dg != "" else (CS.t("no_bottleneck") if sim.has_piece("hk") else "")
 	_diag.add_theme_color_override("font_color", WARN if dg != "" else GOOD)
@@ -675,3 +698,46 @@ func _hide_agg(instant := false) -> void:
 	var tw := create_tween()
 	tw.tween_property(_agg_card, "modulate:a", 0.0, 0.15).set_trans(Tween.TRANS_QUINT).set_ease(Tween.EASE_OUT)
 	tw.tween_callback(func(): _agg_card.visible = false)
+
+# ---------- phase 5 card and the locks of phases 5 and 6
+func _refresh_threats() -> void:
+	_phase_btns[4].disabled = not sim.threats_unlocked()
+	_phase_btns[4].tooltip_text = CS.t("locked_5") if _phase_btns[4].disabled else ""
+	_phase_btns[5].disabled = not sim.colony_unlocked()
+	_phase_btns[5].tooltip_text = CS.t("locked_6") if _phase_btns[5].disabled else ""
+	_th_card.visible = sim.phase == 5
+	if sim.phase != 5:
+		return
+	_th_title.text = CS.t("threats_card").to_upper()
+	for c in _th_grid.get_children():
+		c.queue_free()
+		_th_grid.remove_child(c)
+	var info: Dictionary = sim.threat_info()
+	for i in 4:
+		var kind: String = Sim.THREAT_ORDER[i]
+		var res: String = info.results[i]
+		var active: bool = i == info.idx and not info.done
+		_th_grid.add_child(_lbl(CS.t("kind_" + kind), 14, INK if active else SUB))
+		var counter: String = {"phage": "cas", "abx": "pump", "ox": "cat", "amoeba": "spn"}[kind]
+		var have: bool = sim.has_piece(counter) or (kind == "amoeba" and sim.tier >= 3)
+		var cl := _lbl(CS.t("has_it") if have else CS.t("lacks_it"), 13, GOOD if have else WARN)
+		cl.tooltip_text = CS.t("counter_" + counter)
+		cl.mouse_filter = Control.MOUSE_FILTER_PASS
+		_th_grid.add_child(cl)
+		var txt := ""
+		var tc := SUB
+		if res == "ok":
+			txt = CS.t("th_ok")
+			tc = GOOD
+		elif active and info.stage != "wait":
+			txt = "%s · %d s" % [CS.t("th_now"), int(ceil(info.eta))]
+			tc = WARN
+		elif res == "fail" or (active and info.tries > 0):
+			txt = CS.t("th_fail")
+			tc = WARN
+		else:
+			txt = CS.t("th_pend") + ((" · %d s" % int(ceil(info.eta))) if active else "")
+		var rl := _lbl(txt, 13, tc)
+		rl.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+		rl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		_th_grid.add_child(rl)
