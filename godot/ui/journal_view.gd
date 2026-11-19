@@ -466,6 +466,8 @@ func _species_page(p: Rect2, e: Dictionary, mod: Color) -> void:
 	_ink(fi, Vector2(p.position.x, y), Strings.t(path), 18.0, _c(COPPER_D if int(e.resolution) > 0 else INK_SOFT, mod))
 	y += Style.u(12.0)
 	y += _para(fs, Vector2(p.position.x, y), Strings.t("j_range", [int(e.roam)]), 16.0, p.size.x, minf(Style.u(44.0), p.end.y - y), _c(INK_SOFT, mod)) + Style.u(8.0)
+	if int(e.activity) > 0:
+		y += _para(fi, Vector2(p.position.x, y), Strings.t("j_activity_%d" % clampi(int(e.activity), 1, 2)), 16.0, p.size.x, minf(Style.u(44.0), p.end.y - y), _c(INK_SOFT, mod)) + Style.u(8.0)
 	# observation clues, then likes
 	_ink(fm, Vector2(p.position.x, y + Style.u(16.0)), Strings.t("j_clues", [e.clues.size(), int(e.clue_total)]), 16.0, _c(INK_T, mod))
 	y += Style.u(24.0)
@@ -630,9 +632,11 @@ func _draw_fossils(p: Rect2, y: float, fossils: Array, mod: Color) -> float:
 
 func _draw_cave(p: Rect2, y: float, cave: String, mod: Color) -> void:
 	y += _heading(p, y, Strings.t("j_cave"), mod)
-	var key: String = {"entered": "j_cave_found", "known": "j_cave_seen"}.get(cave, "j_cave_unknown")
+	var key: String = {"chamber": "j_cave_chamber", "entered": "j_cave_found"}.get(cave, "j_cave_unknown")
 	var known := cave != "unknown"
-	_ink(Style.font_italic(), Vector2(p.position.x, y + Style.u(10.0)), Strings.t(key) if known else "?  " + Strings.t(key), 18.0, _c(INK_T if known else INK_FAINT, mod))
+	var fi := Style.font_italic()
+	var text := Strings.t(key) if known else "?  " + Strings.t(key)
+	_para(fi, Vector2(p.position.x, y + Style.u(10.0)), text, 18.0, p.size.x, maxf(p.end.y - y - Style.u(10.0), 0.0), _c(INK_T if known else INK_FAINT, mod))
 
 # --- recipes ---------------------------------------------------------------------------------------------------------
 
