@@ -53,7 +53,8 @@ def oc_chat(model, system, user):
 
 # judges served by Cursor's own models (owner rule: only Cursor's models on the Cursor subscription)
 CUR_MODEL = {"astrobio": "composer-2.5"}
-JUDGE_PERSONA = {"astrobio": (
+JUDGE_PERSONA = {"chair": ("You are the CHAIR and editor of the council: you consolidate drafts and reviews, enforce consistency with the planet canon (cite fact ids) and with the creature lore, resolve contradictions, and write the final canon in exactly the requested format. You never invent references."),
+                 "astrobio": (
     "You are an astrobiologist and evolutionary biologist acting as the council's plausibility referee. For every claim you check "
     "whether the adaptation is plausible FOR THAT CREATURE on THAT planet: is the physics right (acoustics, optics, gas exchange, "
     "scaling laws, metabolism, energy budgets), does selection actually favour it, are there real analogues on Earth (name the "
@@ -81,11 +82,45 @@ def cur_chat(model, system, user):
     return "(failed)"
 
 
+# Codex GPT sol: the CHAIR/editor of the flora pass (and any step that asks for k == "chair"); one call at a time
+SOL_MODEL = {"chair": "gpt-6.1-sol"}
+solsem = threading.Semaphore(1)
+
+
+def sol_chat(system, user):
+    wd = tempfile.mkdtemp(prefix="sol_", dir=os.path.join(D, "tmp"))
+    pf = os.path.join(wd, "prompt.md")
+    open(pf, "w").write("# SYSTEM\n" + system + "\n\n# TASK\n" + user)
+    down = os.path.join(os.path.dirname(D), "sol_down_until")
+    msg = f"Read the file {pf} and do the TASK. Output ONLY the requested answer."
+    for a in range(5):
+        if os.path.exists(down) and time.time() < float(open(down).read() or 0): return "(failed)"
+        with solsem:
+            try:
+                r = subprocess.run(["codex", "exec", "--skip-git-repo-check", "-m", SOL_MODEL["chair"], "-s", "read-only", msg], cwd=wd,
+                                   stdin=subprocess.DEVNULL, capture_output=True, text=True, timeout=1800)
+            except subprocess.TimeoutExpired:
+                print("sol timeout", a, file=sys.stderr, flush=True); continue
+        out = ANSI.sub("", r.stdout)
+        if "\ncodex\n" in out: out = out.rsplit("\ncodex\n", 1)[1]
+        out = "\n".join(l for l in out.splitlines() if not l.startswith(("hook:", "tokens used"))).strip()
+        if r.returncode == 0 and len(out) > 200: return out
+        if "usage limit" in (r.stdout + r.stderr).lower():
+            open(down, "w").write(str(time.time() + 3600)); print("sol usage limit: cooling down 60 min", file=sys.stderr, flush=True); return "(failed)"
+        print("sol retry", a, r.returncode, len(out), r.stderr[-300:], file=sys.stderr, flush=True); time.sleep(60)
+    return "(failed)"
+
+
 def persona(k):
     return JUDGE_PERSONA.get(k) or ADV[k]
 
 
 def ask(k, system, user, **kw):
+    if k in SOL_MODEL:  # chair: sol, falling back to the DeepSeek skeptic via opencode, then qwen
+        t = sol_chat(system, user)
+        if not t.startswith("(failed)"): return t
+        t = oc_chat(OC_MODEL["skeptic"], system, user)
+        return t if not t.startswith("(failed)") else chat(system, user, **kw)
     if k in CUR_MODEL: return cur_chat(CUR_MODEL[k], system, user)
     return oc_chat(OC_MODEL[k], system, user) if k in OC_MODEL else chat(system, user, **kw)
 
@@ -162,6 +197,7 @@ the nocturnal creature, the albinos:
 Original, concrete, consistent. Max ~2600 words."""
 
 REV = {
+    "flora": "Seven anonymous flora designs for the island follow. Review as a peer: 1) rank A-G, one line why (botanical plausibility, consistency with the planet canon facts, coverage of habitats, play value); 2) per habitat, the best plant (letter + name + why) and what to combine; 3) physics or botany errors and contradictions with the canon or between drafts; 4) the 8 strongest plants overall and 3 to cut. Concise.",
     "planet": "Seven anonymous planet designs follow. Review as a peer: 1) rank A-G, one line why (physical consistency, fit with the fixed art, what it gives to play); 2) per section, the best choice (letter + value + why); 3) physics errors or contradictions; 4) the 6 most playable consequences overall. Concise.",
     "creatures": "Seven anonymous lore drafts follow. Review as a peer: 1) rank A-G, one line why; 2) per creature and for the shards, the best chain or idea (letter + one line) and what to combine; 3) chains that break physics or the planet canon, and contradictions between drafts; 4) the 6 strongest chains overall (they become skills) and 3 ideas to cut. Concise.",
 }

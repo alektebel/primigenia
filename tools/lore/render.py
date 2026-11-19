@@ -225,7 +225,9 @@ def render_all(root):
         for ch in c["chains"]:
             for a in ch["plausibility"].get("analogues", []):
                 for r in a.get("refs", []): usage.setdefault(r, set()).add(f"flora {c['id']}")
-    if plants: out["docs/lore/FLORA.md"] = render_flora_index(plants, worlds)
+    if plants:
+        zp = os.path.join(root, "lore", "flora", "zonation.md")
+        out["docs/lore/FLORA.md"] = render_flora_index(plants, worlds) + ("\n" + open(zp, encoding="utf-8").read() if os.path.exists(zp) else "")
     out["docs/creatures/README.md"] = render_index(cres, worlds)
     out["docs/lore/REFERENCES.md"] = render_refs(reflist, usage)
     return out

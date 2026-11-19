@@ -1,0 +1,334 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "brujula",
+  "name": {
+    "en": "Brújula"
+  },
+  "world": "primigenia",
+  "kind": "new",
+  "status": "draft",
+  "stage": "creature",
+  "niche": {
+    "habitat": "Intertidal shelves and shallow lagoons behind sea arches and islets (F13, F21)",
+    "diet": "Filter-suspension, mollusk crusts, drifting carrion, salt-rich detritus",
+    "active": "Diurnal, tidal-cycle driven (high tide active, low tide sealed)",
+    "predators": []
+  },
+  "body": "Pentaradial disc with five long, hydrostatic arms; central mouth; suction-cupped tube feet; no head; extensive central nerve ring",
+  "chains": [
+    {
+      "id": "brujula.c1",
+      "trait": "Five-arm radial body plan with no head",
+      "links": [
+        "Omnidirectional threat detection in complex reef structures",
+        "Stabilizes posture against irregular wave forces",
+        "Removes directional bias for feeding in confined pools",
+        "Evolved from a crawling bilateral ancestor that lost cephalization as arms took over sensing"
+      ],
+      "roots": [
+        "F13",
+        "F2",
+        "F9",
+        "F27"
+      ],
+      "skill": {
+        "id": "brujula.radial_stance",
+        "name": {
+          "en": "Radial Stance"
+        },
+        "role": "Control",
+        "effect": "Turns 360° threat arc visible, +20% intimidation, -30% sprint speed",
+        "numbers": {}
+      },
+      "weakness": "Player can flank and deliver frontal impact to stun before retreat",
+      "observe": [
+        "Watch it align arms with incoming swell",
+        "See it orient toward distant predator",
+        "Note feeding without a fixed front"
+      ],
+      "journal": {
+        "en": "No front. No back. Just five equal claims on the world."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "Secondary pentaradial symmetry from a bilateral ancestor is a well-trodden evolutionary path on Earth; a decentralized nerve ring with no true head fits intertidal reef and tide-pool habitats (F13, F21) where threats and food arrive from all bearings. Slightly higher gravity (F2) does not block this in water or when the disc is supported on rock; it mainly punishes fast terrestrial sprinting, which matches a sluggish radial crawler. Island radiation from marine founders (F27) can produce a recognisably echinoderm-like lineage without copying Spore. Highly speculative only if the same biochemistry (F24) must share recent ancestry with land quadrupeds—that is a game graft rule, not a natural-history requirement.",
+        "fixes": [
+          "Secondary pentaradial symmetry from a bilateral ancestor is a well-trodden evolutionary path on Earth; a decentralized nerve ring with no true head fits intertidal reef and tide-pool habitats (F13, F21) where threats and food arrive from all bearings. Slightly higher gravity (F2) does not block this in water or when the disc is supported on rock; it mainly punishes fast terrestrial sprinting, which matches a sluggish radial crawler. Island radiation from marine founders (F27) can produce a recognisably echinoderm-like lineage without copying Spore. Highly speculative only if the same biochemistry (F24) must share recent ancestry with land quadrupeds—that is a game graft rule, not a natural-history requirement."
+        ],
+        "analogues": [
+          {
+            "organism": "Asteroidea (sea stars): pentaradial body, oral–aboral axis, nerve ring, reduced cephalization after secondary radialisation from bilaterian ancestry.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 4
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "brujula.c2",
+      "trait": "Hydraulic tube feet with adhesive suckers",
+      "links": [
+        "Dense air and 1.05g gravity increase drag on exposed bodies",
+        "Hydrostatic pressure system acts as a compact, jointless actuator",
+        "Suction cups distribute force across rough volcanic rock",
+        "Enables precise grip during 3.2 m tidal surges without muscular fatigue"
+      ],
+      "roots": [
+        "F2",
+        "F4",
+        "F9",
+        "F13"
+      ],
+      "skill": {
+        "id": "brujula.adhesion",
+        "name": {
+          "en": "Adhesion"
+        },
+        "role": "Basic",
+        "effect": "Climb vertical basalt cliffs, +40% stability on wet surfaces, prevents knockback",
+        "numbers": {}
+      },
+      "weakness": "Player can dry the rock surface with wind or heat to break suction and force a fall",
+      "observe": [
+        "Watch feet extend from central disc",
+        "See them lock onto wet tuff against strong wind",
+        "Note hydraulic pulsing in shallow water"
+      ],
+      "journal": {
+        "en": "They drink the water to move. A pump, not a muscle."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "Cap Adhesion to wet intertidal surfaces, sea-spray zone, and dyke faces under ~55–60°; allow only short emersion holds until the rock film dries. Drop ‘vertical cliff’ wording or gate it behind shallow-water hydraulic assist.",
+        "fixes": [
+          "Cap Adhesion to wet intertidal surfaces, sea-spray zone, and dyke faces under ~55–60°; allow only short emersion holds until the rock film dries. Drop ‘vertical cliff’ wording or gate it behind shallow-water hydraulic assist."
+        ],
+        "analogues": [
+          {
+            "organism": "Intertidal Pisaster / Asterias spp.: tube feet and suckers on barnacle- and basalt-textured shore; bat star (Patiria) on irregular rock.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "pearse_2012_starfish"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 4
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "brujula.c3",
+      "trait": "Self-amputation and rapid arm regrowth",
+      "links": [
+        "High predation pressure from raiders in shallow zones",
+        "Arms serve as decoy and bite targets",
+        "Sacrificing an arm preserves the central nervous ring",
+        "Regrowth fueled by high pO₂ and mineral-rich scavenging"
+      ],
+      "roots": [
+        "F5",
+        "F23",
+        "F27",
+        "F21"
+      ],
+      "skill": {
+        "id": "brujula.autotomy",
+        "name": {
+          "en": "Autotomy"
+        },
+        "role": "Defence",
+        "effect": "Drop an arm when HP < 30%, enemy distracted, arm regenerates in 3 cycles",
+        "numbers": {}
+      },
+      "weakness": "Player can target the exposed nerve ring during regeneration for bonus damage",
+      "observe": [
+        "See an arm detach at slight touch",
+        "Watch fresh arm tissue pulse",
+        "Note scavengers ignore the detached limb"
+      ],
+      "journal": {
+        "en": "They cut themselves loose. The sea gives it back, slow but sure."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "Define cycle as ~29.7 d lunar month or spring–neap sequence: partial regrowth in one month, full arm in 2–3 months (tunable). Autotomy leaves a functional but weakened disc; harvested tips tie to F23 minerals, not full limb in days.",
+        "fixes": [
+          "Define cycle as ~29.7 d lunar month or spring–neap sequence: partial regrowth in one month, full arm in 2–3 months (tunable). Autotomy leaves a functional but weakened disc; harvested tips tie to F23 minerals, not full limb in days."
+        ],
+        "analogues": [
+          {
+            "organism": "Linckia multifora and various Asterias: deliberate arm shedding (autotomy) and slow epimorphic regeneration; predation by crabs and fish on arms.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "pearse_2012_starfish"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 5
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "brujula.c4",
+      "trait": "Ring-shaped mouth with chemotactic arm tips",
+      "links": [
+        "Turbid shallow waters reduce visual range",
+        "Radial arrangement places sensory tips everywhere",
+        "Detects chemical plumes from drifting carcasses and salt seeps",
+        "Allows simultaneous feeding and environmental scanning"
+      ],
+      "roots": [
+        "F20",
+        "F16",
+        "F23",
+        "F4"
+      ],
+      "skill": {
+        "id": "brujula.chemical_sweep",
+        "name": {
+          "en": "Chemical Sweep"
+        },
+        "role": "Engage",
+        "effect": "Reveals hidden prey/carcasses within 15m, +50% befriend chance if offered bone/salt gifts",
+        "numbers": {}
+      },
+      "weakness": "Player can deploy H₂S gas or trigger thick fog to blind its chemical sense and force random movement",
+      "observe": [
+        "Watch tips quiver toward salt spray",
+        "See mouth open radially to engulf prey",
+        "Note it tracks scent plumes upwind"
+      ],
+      "journal": {
+        "en": "Five noses circling a single throat. It tastes the tide before it moves."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "State detection as ~5–15 m downcurrent in sheltered pools (not open surge); in thick fog above water, chemical sense in film water still works but air-borne carrion cues weaken—match weakness to submersion, not total fog blindness unless the pool is stagnant H₂S (F23).",
+        "fixes": [
+          "State detection as ~5–15 m downcurrent in sheltered pools (not open surge); in thick fog above water, chemical sense in film water still works but air-borne carrion cues weaken—match weakness to submersion, not total fog blindness unless the pool is stagnant H₂S (F23)."
+        ],
+        "analogues": [
+          {
+            "organism": "Asterias and Odontaster: oral ring eversion, arm-tip and podia-mediated chemotaxis toward carrion and odour sources in low-visibility benthic habitats.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 4
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "Garfio",
+      "kind": "cousin",
+      "note": "(council kind 'Predator-Prey') Brújula sacrifices arms to distract Garfio; Garfio's strong bite often severs limbs, but the crawler's radial arms make it harder to swallow whole."
+    },
+    {
+      "with": "Rondo",
+      "kind": "cousin",
+      "note": "(council kind 'Commensal') Follows Rondo herds to scavenged carcasses; Rondo ignores the low-value radial crawler as it cleans hide-bound tissue."
+    },
+    {
+      "with": "Coloso",
+      "kind": "cousin",
+      "note": "(council kind 'Habitat') Nests in the Coloso's massive scale pools; benefits from the giant's tidal shadow and the shelter of the islet's dyke."
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-19",
+    "by": [
+      "naturalist/qwen"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-19",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-19"
+    },
+    {
+      "date": "2026-11-19",
+      "who": "autoloop",
+      "what": "removed rejected references from analogues"
+    }
+  ],
+  "body_plan": {
+    "symmetry": "radial",
+    "arms": 5,
+    "origin": "secondary radialisation from a crawling bilateral ancestor"
+  },
+  "temperament": "Patient, territorial over prime pools, highly resilient to physical trauma",
+  "secrets": [
+    "Regenerated arm tips store trace minerals; harvesting yields bone shards and salt crystals.",
+    "The central nerve ring can be stunned by rapid temperature drops, revealing a dormant egg-nest in the pool below."
+  ],
+  "moments": [
+    "On spring low tide, a colony seals into the rock crevice. Their arms retract inward, the tube feet lock, and the disc hardens like polished stone. The tide recedes, leaving a ring of silent, waiting statues until the next swell returns."
+  ],
+  "journal": [
+    {
+      "en": "No face. No back. Just five equal claims on the world."
+    },
+    {
+      "en": "They cut themselves loose. The sea gives it back, slow but sure."
+    }
+  ]
+}

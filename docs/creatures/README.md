@@ -115,6 +115,7 @@
 | [Albinos](albinos.md) | native | draft | 5 | 1 fixable, 4 plausible |
 | [Alula](alula.md) | new | draft | 4 | 2 fixable, 2 plausible |
 | [Babosa](babosa.md) | native | draft | 4 | 4 plausible |
+| [Brújula](brujula.md) | new | draft | 4 | 2 fixable, 2 plausible |
 | [Coloso](coloso.md) | native | draft | 4 | 1 fixable, 3 plausible |
 | [Corona](corona.md) | new | draft | 4 | 3 fixable, 1 plausible |
 | [Cuarteta](cuarteta.md) | new | draft | 4 | 3 fixable, 1 plausible |

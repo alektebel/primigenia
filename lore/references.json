@@ -6665,9 +6665,10 @@
       ]
     },
     "container-title": "The Astrophysical Journal",
-    "DOI": "10.1088/0004-637X/804/2/64",
-    "x-status": "unverified",
-    "x-note": "cited by a council model from memory; not yet checked"
+    "DOI": "10.1088/0004-637x/804/1/64",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "x-checked": "2026-11-19"
   },
   {
     "id": "goldreich_soter_1966",
@@ -7096,7 +7097,7 @@
     "type": "article-journal",
     "title": "Extreme water loss and atmospheric evolution of close-in Earths",
     "x-status": "unverified",
-    "x-note": "cited by a council model from memory; not yet checked",
+    "x-note": "ambiguous: closest Crossref hit is 'Extreme Water Loss and Abiotic O 2 Buildup on Planets Throughout the Habitable Zones of M Dwarfs' (Luger, 2015, doi 10.1089/ast.2014.1231), title similarity 0.54, author match, year ok",
     "author": [
       {
         "family": "Luger",
@@ -7110,7 +7111,8 @@
         ]
       ]
     },
-    "container-title": "Icarus"
+    "container-title": "Icarus",
+    "x-checked": "2026-11-19"
   },
   {
     "id": "rothman_2020_chemolithoautotrophy",
@@ -7199,6 +7201,757 @@
     },
     "container-title": "Physics Today",
     "DOI": "10.1063/1.2807982",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "peale_1979_io",
+    "type": "article-journal",
+    "title": "Melting of Io by tidal dissipation",
+    "author": [
+      {
+        "family": "Peale",
+        "given": "S. J."
+      },
+      {
+        "family": "Cassen",
+        "given": "P."
+      },
+      {
+        "family": "Reynolds",
+        "given": "R. T."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1979
+        ]
+      ]
+    },
+    "container-title": "Science",
+    "DOI": "10.1126/science.203.4383.892",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "murray_dermott_1999",
+    "type": "book",
+    "title": "Solar System Dynamics",
+    "author": [
+      {
+        "family": "Murray",
+        "given": "Carl D."
+      },
+      {
+        "family": "Dermott",
+        "given": "Stanley F."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1999
+        ]
+      ]
+    },
+    "container-title": "Cambridge University Press",
+    "x-status": "verified",
+    "x-note": "verified against OpenLibrary (title 1.00); ISBN added",
+    "ISBN": "9781139174817",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "carr_1998_europa",
+    "type": "article-journal",
+    "title": "Evidence for a subsurface ocean on Europa",
+    "author": [
+      {
+        "family": "Carr",
+        "given": "M. H."
+      },
+      {
+        "family": "Belton",
+        "given": "M. J. S."
+      },
+      {
+        "family": "Chapman",
+        "given": "C. R."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1998
+        ]
+      ]
+    },
+    "container-title": "Nature",
+    "DOI": "10.1038/34857",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'Seismic Detectability of a Subsurface Ocean on Europa' (Kovach, 2001, doi 10.1006/icar.2000.6577), title similarity 0.77, author differs, year off",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "kivelson_2000_europa",
+    "type": "article-journal",
+    "title": "Galileo magnetometer measurements: a stronger case for a subsurface ocean at Europa",
+    "author": [
+      {
+        "family": "Kivelson",
+        "given": "M. G."
+      },
+      {
+        "family": "Khurana",
+        "given": "K. K."
+      },
+      {
+        "family": "Russell",
+        "given": "C. T."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2000
+        ]
+      ]
+    },
+    "container-title": "Science",
+    "DOI": "10.1126/science.289.5483.1340",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "anderson_1998_europa",
+    "type": "article-journal",
+    "title": "Europa's differentiated internal structure: inferences from four Galileo encounters",
+    "author": [
+      {
+        "family": "Anderson",
+        "given": "J. D."
+      },
+      {
+        "family": "Schubert",
+        "given": "G."
+      },
+      {
+        "family": "Jacobson",
+        "given": "R. A."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1998
+        ]
+      ]
+    },
+    "container-title": "Science",
+    "DOI": "10.1126/science.281.5385.2019",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "moore_schubert_2000",
+    "type": "article-journal",
+    "title": "The tidal response of Europa",
+    "author": [
+      {
+        "family": "Moore",
+        "given": "W. B."
+      },
+      {
+        "family": "Schubert",
+        "given": "G."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2000
+        ]
+      ]
+    },
+    "container-title": "Icarus",
+    "DOI": "10.1006/icar.2000.6460",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "hall_1995_oxygen",
+    "type": "article-journal",
+    "title": "Detection of an oxygen atmosphere on Jupiter's moon Europa",
+    "author": [
+      {
+        "family": "Hall",
+        "given": "D. T."
+      },
+      {
+        "family": "Strobel",
+        "given": "D. F."
+      },
+      {
+        "family": "Feldman",
+        "given": "P. D."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1995
+        ]
+      ]
+    },
+    "container-title": "Nature",
+    "DOI": "10.1038/373677a0",
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked"
+  },
+  {
+    "id": "cooper_2001_irradiation",
+    "type": "article-journal",
+    "title": "Energetic ion and electron irradiation of the icy Galilean satellites",
+    "author": [
+      {
+        "family": "Cooper",
+        "given": "J. F."
+      },
+      {
+        "family": "Johnson",
+        "given": "R. E."
+      },
+      {
+        "family": "Mauk",
+        "given": "B. H."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2001
+        ]
+      ]
+    },
+    "container-title": "Icarus",
+    "DOI": "10.1006/icar.2000.6498",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "hand_2007_europa",
+    "type": "article-journal",
+    "title": "Energy, chemical disequilibrium, and geological constraints on Europa",
+    "author": [
+      {
+        "family": "Hand",
+        "given": "K. P."
+      },
+      {
+        "family": "Carlson",
+        "given": "R. W."
+      },
+      {
+        "family": "Chyba",
+        "given": "C. F."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2007
+        ]
+      ]
+    },
+    "container-title": "Astrobiology",
+    "DOI": "10.1089/ast.2007.0156",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "jensen_2011_ocean_acoustics",
+    "type": "book",
+    "title": "Computational Ocean Acoustics",
+    "author": [
+      {
+        "family": "Jensen",
+        "given": "Finn B."
+      },
+      {
+        "family": "Kuperman",
+        "given": "William A."
+      },
+      {
+        "family": "Porter",
+        "given": "Michael B."
+      },
+      {
+        "family": "Schmidt",
+        "given": "Henrik"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2011
+        ]
+      ]
+    },
+    "container-title": "Springer",
+    "x-status": "verified",
+    "x-note": "verified against OpenLibrary (title 1.00); ISBN added",
+    "ISBN": "9781441986771",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "wagner_pruss_2002",
+    "type": "article-journal",
+    "title": "The IAPWS formulation 1995 for the thermodynamic properties of ordinary water substance for general and scientific use",
+    "author": [
+      {
+        "family": "Wagner",
+        "given": "W."
+      },
+      {
+        "family": "Pruss",
+        "given": "A."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2002
+        ]
+      ]
+    },
+    "container-title": "Journal of Physical and Chemical Reference Data",
+    "DOI": "10.1063/1.1461829",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "kelley_2005_lostcity",
+    "type": "article-journal",
+    "title": "A serpentinite-hosted ecosystem: the Lost City hydrothermal field",
+    "author": [
+      {
+        "family": "Kelley",
+        "given": "D. S."
+      },
+      {
+        "family": "Karson",
+        "given": "J. A."
+      },
+      {
+        "family": "Fruh-Green",
+        "given": "G. L."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2005
+        ]
+      ]
+    },
+    "container-title": "Science",
+    "DOI": "10.1126/science.1102556",
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked"
+  },
+  {
+    "id": "postberg_2009_salts",
+    "type": "article-journal",
+    "title": "Sodium salts in E-ring ice grains from an ocean below the surface of Enceladus",
+    "author": [
+      {
+        "family": "Postberg",
+        "given": "F."
+      },
+      {
+        "family": "Kempf",
+        "given": "S."
+      },
+      {
+        "family": "Schmidt",
+        "given": "J."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2009
+        ]
+      ]
+    },
+    "container-title": "Nature",
+    "DOI": "10.1038/nature08046",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "mccollom_bach_2009",
+    "type": "article-journal",
+    "title": "Thermodynamic constraints on hydrogen generation during serpentinization of ultramafic rocks",
+    "author": [
+      {
+        "family": "McCollom",
+        "given": "T. M."
+      },
+      {
+        "family": "Bach",
+        "given": "W."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2009
+        ]
+      ]
+    },
+    "container-title": "Geochimica et Cosmochimica Acta",
+    "DOI": "10.1016/j.gca.2008.10.032",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "martin_russell_2007",
+    "type": "article-journal",
+    "title": "On the origin of biochemistry at an alkaline hydrothermal vent",
+    "author": [
+      {
+        "family": "Martin",
+        "given": "W."
+      },
+      {
+        "family": "Russell",
+        "given": "M. J."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2006
+        ]
+      ]
+    },
+    "container-title": "Philosophical Transactions of the Royal Society B: Biological Sciences",
+    "DOI": "10.1098/rstb.2006.1881",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); container-title corrected from 'Philosophical Transactions of the Royal Society B'; year corrected from 2007; DOI added",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "zolotov_shock_2001_salts",
+    "type": "article-journal",
+    "title": "Composition and stability of salts on the surface of Europa and their oceanic origin",
+    "author": [
+      {
+        "family": "Zolotov",
+        "given": "M. Yu."
+      },
+      {
+        "family": "Shock",
+        "given": "E. L."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2001
+        ]
+      ]
+    },
+    "container-title": "Journal of Geophysical Research",
+    "DOI": "10.1029/2000JE001413",
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked"
+  },
+  {
+    "id": "thomas_dieckmann_2003_seaice",
+    "type": "book",
+    "title": "Sea Ice: An Introduction to its Physics, Chemistry, Biology and Geology",
+    "author": [
+      {
+        "family": "Thomas",
+        "given": "David N."
+      },
+      {
+        "family": "Dieckmann",
+        "given": "Gerhard S."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2003
+        ]
+      ]
+    },
+    "container-title": "Blackwell Science",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Sea Ice, Third Edition' (Thomas, 2017) title similarity 0.31",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "koga_2005_ether",
+    "type": "article-journal",
+    "title": "Recent advances in structural research on ether lipids from archaea including comparative and physiological aspects",
+    "author": [
+      {
+        "family": "Koga",
+        "given": "Y."
+      },
+      {
+        "family": "Morii",
+        "given": "H."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2005
+        ]
+      ]
+    },
+    "container-title": "Bioscience, Biotechnology, and Biochemistry",
+    "DOI": "10.1271/bbb.69.2019",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "price_sowers_2004",
+    "type": "article-journal",
+    "title": "Temperature dependence of metabolic rates for microbial growth, maintenance, and survival",
+    "author": [
+      {
+        "family": "Price",
+        "given": "P. B."
+      },
+      {
+        "family": "Sowers",
+        "given": "T."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2004
+        ]
+      ]
+    },
+    "container-title": "Proceedings of the National Academy of Sciences",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "DOI": "10.1073/pnas.0400522101",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "stewart_2005_symbiosis",
+    "type": "article-journal",
+    "title": "Chemosynthetic endosymbioses: adaptations to oxic–anoxic interfaces",
+    "author": [
+      {
+        "family": "Stewart",
+        "given": "F. J."
+      },
+      {
+        "family": "Newton",
+        "given": "I. L. G."
+      },
+      {
+        "family": "Cavanaugh",
+        "given": "C. M."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2005
+        ]
+      ]
+    },
+    "container-title": "Trends in Microbiology",
+    "DOI": "10.1016/j.tim.2005.07.007",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); title corrected from 'Chemosynthetic endosymbioses: adaptations to oxic-anoxic interfaces'; DOI added",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "pizzolato_2003_activity",
+    "type": "article-journal",
+    "title": "The stellar activity-rotation relationship revisited: dependence of saturated and non-saturated X-ray emission regimes on stellar mass for late-type dwarfs",
+    "author": [
+      {
+        "family": "Pizzolato",
+        "given": "N."
+      },
+      {
+        "family": "Maggio",
+        "given": "A."
+      },
+      {
+        "family": "Micela",
+        "given": "G."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2002
+        ]
+      ]
+    },
+    "container-title": "Astronomy &amp; Astrophysics",
+    "DOI": "10.1051/0004-6361:20021560",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); container-title corrected from 'Astronomy and Astrophysics'; year corrected from 2003; DOI added",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "mamajek_hillenbrand_2008",
+    "type": "article-journal",
+    "title": "Improved Age Estimation for Solar‐Type Dwarfs Using Activity‐Rotation Diagnostics",
+    "author": [
+      {
+        "family": "Mamajek",
+        "given": "E. E."
+      },
+      {
+        "family": "Hillenbrand",
+        "given": "L. A."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2008
+        ]
+      ]
+    },
+    "container-title": "The Astrophysical Journal",
+    "DOI": "10.1086/591785",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 0.99); title corrected from 'Improved age estimation for solar-type dwarfs using activity-rotation diagnostics'; DOI added",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "anderson_1973_biology",
+    "type": "book",
+    "title": "The Biology of Echinodermata",
+    "x-status": "rejected",
+    "x-note": "no candidate returned by the index",
+    "author": [
+      {
+        "family": "Anderson",
+        "given": "D.T."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1973
+        ]
+      ]
+    },
+    "container-title": "Academic Press",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "emson_1994_biology",
+    "type": "book",
+    "title": "The Biology of Starfish",
+    "x-status": "rejected",
+    "x-note": "no candidate returned by the index",
+    "author": [
+      {
+        "family": "Emson",
+        "given": "R.H."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1994
+        ]
+      ]
+    },
+    "container-title": "Oxford University Press",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "jangoux_2004_echinoderm",
+    "type": "article-journal",
+    "title": "Echinoderm Feeding Biology",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Echinoderm Studies' (Jangoux, 2020) title similarity 0.59",
+    "author": [
+      {
+        "family": "Jangoux",
+        "given": "M."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2004
+        ]
+      ]
+    },
+    "container-title": "Springer",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "pearse_2012_starfish",
+    "type": "article-journal",
+    "title": "Starfish Regrowth Physiology",
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked",
+    "author": [
+      {
+        "family": "Pearse",
+        "given": "V.S."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2012
+        ]
+      ]
+    },
+    "container-title": "Annual Review of Marine Science"
+  },
+  {
+    "id": "tyler_1976_chemoreception",
+    "type": "article-journal",
+    "title": "Chemoreception in Echinoderms",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Echinoderms as hosts for anthozoans in the deep-sea' (Bronsdon, 2020) title similarity 0.28",
+    "author": [
+      {
+        "family": "Tyler",
+        "given": "P.A."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1976
+        ]
+      ]
+    },
+    "container-title": "Symposia of the Society for Experimental Biology",
     "x-checked": "2026-11-19"
   }
 ]
