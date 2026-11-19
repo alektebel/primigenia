@@ -14,6 +14,7 @@ var fruit := Color.TRANSPARENT
 var leaflet_pairs := 6
 var berry_sites := []
 var r_tree := false
+var droop := 0.0
 
 func begin(shape_seed: int) -> void:
 	rng.seed = shape_seed
@@ -76,7 +77,7 @@ func radial(angle: float) -> Vector3:
 	return Vector3(cos(angle), 0, sin(angle))
 
 func crown(p: Vector3, extent: float) -> void:
-	var cards := [6, 10, 16]
+	var cards := [5, 10, 16]
 	var count := int(cards[tier]) if detail else 4
 	var turn := rng.randf() * TAU
 	for j in count:
@@ -90,12 +91,44 @@ func crown(p: Vector3, extent: float) -> void:
 	if detail and fruit.a > 0 and r_tree and rng.randf() < 0.4:
 		lump(p - Vector3.UP * 0.01, Vector3(0.009, 0.014, 0.009), fruit, 6)
 
-func branch(a: Vector3, dir: Vector3, length_m: float, radius: float, depth: int, angle: float) -> void:
-	var b := a + dir * length_m
-	rod(a, b, radius, radius * 0.62, bark, (5 + tier) if detail else 3, detail)
+# The first tangent follows the parent out of its collar. Gravity bends the
+# distal half of the limb. All rings share their neighbours' lighting normals.
+func branch(a: Vector3, parent: Vector3, dir: Vector3, length_m: float, radius: float, depth: int, angle: float) -> void:
+	var start := a - parent * radius * 0.65
+	var b := a + (dir - Vector3.UP * droop * 0.32) * length_m
+	var control_a := a + parent * length_m * 0.31
+	var control_b := b - (dir - Vector3.UP * droop * 1.6).normalized() * length_m * 0.38
+	var tangent := (b - control_b).normalized()
+	if detail:
+		var sides := 4 + tier
+		var levels := [0.0, 0.24, 0.62, 1.0]
+		var rings := []
+		var normals := []
+		var across := dir.cross(Vector3.UP).normalized()
+		for t: float in levels:
+			var center := start.bezier_interpolate(control_a, control_b, b, t)
+			var axis := start.bezier_derivative(control_a, control_b, b, t).normalized()
+			var right := axis.cross(across).normalized()
+			var ring := PackedVector3Array()
+			var nr := PackedVector3Array()
+			# Bury the narrow first ring inside the parent; the next ring
+			# rounds out the collar just beyond the attachment.
+			var collar_offset := (t - 0.24) / 0.19
+			var collar := 0.23 * exp(-collar_offset * collar_offset)
+			var buried := 0.26 * pow(1.0 - t, 8.0)
+			var taper := 0.48 + 2.0 * collar_offset * collar / 0.19 - 2.08 * pow(1.0 - t, 7.0)
+			for j in sides:
+				var outward := right.rotated(axis, -TAU * j / sides)
+				ring.append(center + outward * radius * (1.0 - 0.48 * t + collar - buried))
+				nr.append((outward + axis * radius / length_m * taper).normalized())
+			rings.append(ring)
+			normals.append(nr)
+		wood_skin(rings, normals, levels, sides, length_m)
+	else:
+		rod(a, b, radius, radius * 0.52, bark, 3)
 	if not r_tree and detail and depth >= 1:
-		crown(a.lerp(b, 0.85), width * 0.3)
-	if depth <= 1 and b.y < 0.85 and (b - Vector3(0, b.y, 0)).length() > 0.05:
+		crown(start.bezier_interpolate(control_a, control_b, b, 0.85), width * 0.3)
+	if depth <= 1 and b.y < 0.85 and Vector2(b.x, b.z).length() > 0.05:
 		berry_sites.append(b)
 	if depth <= 0:
 		crown(b, width * 0.37)
@@ -103,7 +136,8 @@ func branch(a: Vector3, dir: Vector3, length_m: float, radius: float, depth: int
 	var turn := rng.randf() * TAU
 	for i in 2:
 		var lateral := radial(turn + PI * i)
-		branch(b, (dir * 0.54 + Vector3.UP * cos(angle) * 0.45 + lateral * sin(angle)).normalized(), length_m * 0.67, radius * 0.6, depth - 1, angle)
+		var aim := (dir * 0.54 + Vector3.UP * cos(angle) * 0.45 + lateral * sin(angle)).normalized()
+		branch(b, tangent, aim, length_m * 0.67, radius * (0.60 if i == 0 else 0.46), depth - 1, angle)
 
 func ribbon(angle: float) -> void:
 	var root := radial(angle) * 0.03
@@ -138,13 +172,16 @@ func trunk(top: Vector3) -> void:
 			normal_ring.append(dv.cross(du).normalized())
 		rings.append(ring)
 		normals.append(normal_ring)
+	wood_skin(rings, normals, levels, sides, top.y)
+
+func wood_skin(rings: Array, normals: Array, levels: Array, sides: int, length_m: float) -> void:
 	for i in range(1, levels.size()):
 		for j in sides:
 			var k := (j + 1) % sides
 			var u := float(j) / sides
 			var v := float(j + 1) / sides
-			var lo: float = levels[i-1] * top.y
-			var hi: float = levels[i] * top.y
+			var lo: float = levels[i-1] * length_m
+			var hi: float = levels[i] * length_m
 			triangle(rings[i-1][j], rings[i-1][k], rings[i][k], bark, -1, 0,
 				[Vector2(u,lo),Vector2(v,lo),Vector2(v,hi)], [normals[i-1][j],normals[i-1][k],normals[i][k]])
 			triangle(rings[i-1][j], rings[i][k], rings[i][j], bark, -1, 0,
@@ -157,10 +194,11 @@ func woody(r: Dictionary) -> void:
 	if tree:
 		trunk(top)
 	else:
-		rod(Vector3.DOWN * 0.03, top, 0.065, 0.02, bark, (10 + 3 * tier) if detail else 7, detail)
-	for j in (8 if detail else 5):
+		rod(Vector3.DOWN * 0.03, top, 0.065, 0.02, bark, (10 + 3 * tier) if detail else 5, detail)
+	var limbs := (5 if tier == 0 else 8) if detail else 5
+	for j in limbs:
 		var dir := radial(j * 2.4 + rng.randf() * 0.5) * width * (2.0 if tree else 1.1) + Vector3.UP * ((0.48 + j * 0.09) if tree else (1.0 + j * 0.12))
-		branch(top * (0.55 + j * 0.06), dir.normalized(), 0.32 if tree else 0.54, 0.021, clampi(int(r.levels) - 2, 1, 2) if detail else 0, deg_to_rad(r.angle))
+		branch(top * (0.55 + 0.42 * j / (limbs - 1)), top.normalized(), dir.normalized(), 0.32 if tree else 0.54, 0.021, clampi(int(r.levels) - 2, 1, 2) if detail else 0, deg_to_rad(r.angle))
 	if not tree and fruit.a > 0:
 		# Hang compact bunches below the outer sprays, clear of the central stems.
 		for site: Vector3 in berry_sites:
@@ -175,8 +213,8 @@ func woody(r: Dictionary) -> void:
 # A pendant berry is a smooth ellipsoid: latitude rings with sphere normals, pale on top and shaded at the blossom end.
 func berry(center: Vector3, colour: Color) -> void:
 	var radii := Vector3(0.026, 0.03, 0.026)
-	var sides := 10 if detail else 5
-	var bands := 4 if detail else 2
+	var sides := (6 if tier == 0 else 10) if detail else 5
+	var bands := (3 if tier == 0 else 4) if detail else 2
 	var rows := []
 	for i in range(bands + 1):
 		var phi := PI * i / bands
@@ -250,6 +288,50 @@ static func vine_point(step: int) -> Vector3:
 	var radius := lerpf(0.074, 0.033, t) + 0.07 * pow(1.0 - t, 12.0)
 	return Vector3(cos(step * 0.43) * radius, t, sin(step * 0.43) * radius)
 
+# Sweep a cupped blade with a rounded keel. The width profile closes the
+# silhouette in geometry and keeps the purple rim attached as the leaf bends.
+func snow_leaf(ray: Vector3, base: Vector3, reach: float, rise: float, arch: float, half_width: float, pigment: Color, living: bool) -> void:
+	var side := ray.cross(Vector3.UP)
+	var previous := []
+	var old_normals := []
+	var steps := 4 if living else 3
+	for i in range(steps + 1):
+		var t := float(i) / steps
+		var w := half_width * (0.025 + pow(sin(PI * t), 0.78))
+		var center := base + ray * (reach * t) + Vector3.UP * (rise * t + arch * sin(PI * t))
+		var tangent := (ray * reach + Vector3.UP * (rise + arch * PI * cos(PI * t))).normalized()
+		var facing := side.cross(tangent).normalized()
+		var row := [center - side * w, center - facing * w * 0.28, center + side * w]
+		var nr := [(facing + side * 0.38).normalized(), facing, (facing - side * 0.38).normalized()]
+		if i > 0:
+			var lo := float(i - 1) / steps
+			var style := -2 if living else 0
+			for j in 2:
+				var u := j * 0.5
+				triangle(previous[j], row[j+1], previous[j+1], pigment, style, 0.18,
+					[Vector2(u,lo),Vector2(u+0.5,t),Vector2(u+0.5,lo)], [old_normals[j],nr[j+1],old_normals[j+1]])
+				triangle(previous[j], row[j], row[j+1], pigment, style, 0.18,
+					[Vector2(u,lo),Vector2(u,t),Vector2(u+0.5,t)], [old_normals[j],nr[j],nr[j+1]])
+		previous = row
+		old_normals = nr
+
+func snowshield(r: Dictionary) -> void:
+	var top := Vector3.UP * float(r.caudex)
+	rod(Vector3.ZERO, top, 0.095, 0.083, bark, 12, true)
+	var dead := Color(r.dead).srgb_to_linear()
+	var turn := rng.randf() * TAU
+	for j in 34:
+		var ray := radial(turn + j * 2.39996)
+		var base := top * (0.74 + 0.24 * j / 33.0) + ray * 0.072
+		snow_leaf(ray, base, rng.randf_range(0.10, 0.22), -rng.randf_range(0.19, 0.29),
+			0.042, 0.052, dead.darkened(rng.randf_range(0.0, 0.42)), false)
+	for j in 30:
+		var t := j / 29.0
+		var ray := radial(turn + j * 2.39996 + rng.randf_range(-0.09, 0.09))
+		snow_leaf(ray, top + ray * 0.045, width * lerpf(0.91, 0.085, t),
+			lerpf(0.08, 1.0 - top.y, t), lerpf(0.14, 0.04, t), lerpf(0.084, 0.038, t),
+			tint.darkened(t * 0.24), true)
+
 func plant(r: Dictionary, shape_seed: int, near_mesh: bool, near_tier := 0) -> ArrayMesh:
 	begin(shape_seed)
 	detail = near_mesh
@@ -262,6 +344,7 @@ func plant(r: Dictionary, shape_seed: int, near_mesh: bool, near_tier := 0) -> A
 	leaflet_pairs = clampi(roundi(width * 0.37 * float(r.height[1]) / maxf(0.01, float(r.leaf_cm) / 100.0)), 3, 24) if detail else 4
 	match str(r.form):
 		"tree","shrub":
+			droop = r.droop
 			woody(r)
 		"algae":
 			for j in (7 if detail else 4):
@@ -291,20 +374,15 @@ func plant(r: Dictionary, shape_seed: int, near_mesh: bool, near_tier := 0) -> A
 				lump(p, Vector3(span, thick, span * 0.86), tint.darkened(rng.randf() * 0.12), 10)
 		"herb" when r.get("arrangement", "") == "opposite":
 			opposite_herb(r)
+		"rosette" when r.has("caudex"):
+			snowshield(r)
 		_:
 			var count := 24 if detail else 9
-			var caudex := float(r.get("caudex", 0.0))
-			if caudex > 0:
-				var dead := Color(r.get("dead", "8a7656")).srgb_to_linear()
-				rod(Vector3.ZERO, Vector3.UP * caudex, 0.05, 0.06, dead.darkened(0.2), 8)
-				for j in 14:
-					var ray := radial(j * 2.4 + rng.randf() * 0.3)
-					blade(Vector3.UP * caudex * 0.95, ray * rng.randf_range(0.18, 0.3) + Vector3.UP * caudex * rng.randf_range(0.2, 0.6), 0.04, 0.0, 1, dead.darkened(rng.randf() * 0.25))
 			for j in count:
 				var ray := radial(j * 2.39996 + rng.randf() * 0.16)
 				var t := float(j + 1) / count
-				var base := Vector3.UP * caudex + ray * 0.035
-				var end := ray * width * (1.06 - t * 0.76) + Vector3.UP * lerpf(0.18 + caudex, 0.5 if r.has("flower") else 1.0, t)
+				var base := ray * 0.035
+				var end := ray * width * (1.06 - t * 0.76) + Vector3.UP * lerpf(0.18, 0.5 if r.has("flower") else 1.0, t)
 				var w := 0.10
 				var style := 1
 				var colour := tint
@@ -316,9 +394,6 @@ func plant(r: Dictionary, shape_seed: int, near_mesh: bool, near_tier := 0) -> A
 						w = 0.016
 						colour = tint.darkened(rng.randf() * 0.3)
 				blade(base, end, w, 0.12, style, colour)
-				if r.has("margin"):
-					var edge := Color(r.margin).srgb_to_linear()
-					blade(base.lerp(end, 0.55), end, w * 0.7, 0.05, style, edge)
 				if r.has("veins"):
 					blade(base, end, 0.008, 0.123, 1, Color(r.veins).srgb_to_linear())
 				if r.has("tips"):
@@ -335,8 +410,11 @@ func plant(r: Dictionary, shape_seed: int, near_mesh: bool, near_tier := 0) -> A
 		if r.has("flower_centre"):
 			lump(center + Vector3.UP * 0.005, Vector3(0.05, 0.03, 0.05), Color(r.flower_centre).srgb_to_linear(), 8)
 	var mesh := finish(GROUND_COVER if r.form == "moss_lichen" else SURFACE)
+	if r.has("caudex"):
+		mesh.surface_get_material(0).set_shader_parameter("leaf_margin", Color(r.margin))
 	if r.form == "moss_lichen":
 		var material := mesh.surface_get_material(0) as ShaderMaterial
+		material.set_shader_parameter("relief_mm", r.relief_mm)
 		material.set_shader_parameter("moss", r.has("glow"))
 		if r.has("glow"):
 			material.set_shader_parameter("glow", Color(r.glow))
