@@ -58,7 +58,7 @@ Trait ← Pheromone tracking across mound forests -> dense air + temp inversions
   - Use volatile concentration gradients (not 'low-frequency chemical'); stiff gait = display/neuromotor drone phenotype; scent confusion in wind stays.
   - scores: astrobio 7, designer 8, physicist 8
   - Analogue: Bombyx mori male (long-range pheromone tracking); leafcutter ant workers (trail following): as named by the judge; no mechanism or reference recorded
-  - Analogue: real biology behind this chain: see the cited works; chain wording is the council's own (Sukumar 2002 [unverified])
+  - Analogue: real biology behind this chain: see the cited works; chain wording is the council's own
   - Fix: Use volatile concentration gradients (not 'low-frequency chemical'); stiff gait = display/neuromotor drone phenotype; scent confusion in wind stays.
 - **Chain provenance:** council run `autoloop-2026-11-19`; by council
 
@@ -75,4 +75,5 @@ council run `autoloop-2026-11-19`; by council, naturalist, physicist
 ## Changelog
 
 - 2026-11-19 import_got: imported from council run autoloop-2026-11-19
+- 2026-11-19 autoloop: removed rejected references from analogues
 - 2026-11-19 autoloop: removed rejected references from analogues

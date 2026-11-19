@@ -6,6 +6,7 @@
 
 | Plant | Form | Height (m) | Habitats | Status | Chains | Verdicts |
 |---|---|---|---|---|---|---|
+| [Whistlewood](flora/caramillo.md) | tree | 5-9 | Deep-soiled lower valley margins, Sheltered slopes above subsurface seepage, Moist fissure lines outside the central spring basin | draft | 3 | 1 fixable, 2 plausible |
 | [Red Ash Crust](flora/ceniza_roja.md) | moss_lichen | 0.001-0.006 | Cooled lava fields, Bare basalt and tuff, Exposed crater-rim rock | draft | 2 | 2 plausible |
 | [Tide Ribbon](flora/cinta_de_marea.md) | algae | 0.2-1.5 | Tidal shelf, Sheltered sea-arch pools, Shallow lagoons, Illuminated sunken-cave entrance | draft | 2 | 2 plausible |
 | [Sulfur Crust](flora/costra_de_azufre.md) | moss_lichen | 0.001-0.02 | Cooler hot-spring mixing margins, Oxygenated fumarole seep edges, Habitable geothermal rock surfaces below approximately 70 °C | draft | 2 | 2 plausible |
@@ -17,11 +18,14 @@
 | [Fogcomber](flora/nieblon.md) | tree | 12-22 | Sheltered western fog forest, Protected western benches and gullies between 80 and 950 m | draft | 2 | 2 plausible |
 | [Sweet Straw](flora/paja_dulce.md) | grass | 0.3-1.2 | Dry eastern meadow, Start valley, Fog-trap meadow edges | draft | 2 | 2 plausible |
 | [Humus Bread](flora/pan_de_humus.md) | fungus_like | 0.02-0.18 | Wet aerated forest litter, Cave mouths, Unflooded upper lava tubes receiving organic debris, Aerated waterfall-cave deposits, Sunken-cave splash debris above prolonged immersion | draft | 2 | 2 plausible |
+| [Wellberry](flora/perlilla.md) | shrub | 0.8-2.5 | Groundwater-accessible spring-basin fringes, Moist pockets along the groundwater-damming dyke, Lower meadow margins with persistent capillary moisture | draft | 2 | 2 plausible |
 | [Shade Feather](flora/pluma_de_sombra.md) | fern | 0.3-1.4 | Wet western forest understory, Shaded riverbanks, Illuminated cave mouths, Waterfall-cave spray fringe | draft | 2 | 2 plausible |
 | [Snowshield Rosette](flora/rodela_de_nieve.md) | rosette | 1.5-3 | Sheltered high volcanic slopes, Snowline gullies from about 1750 m, Leeward alpine gullies below the summit | draft | 2 | 2 plausible |
 | [Saltweeper](flora/salvisca.md) | shrub | 0.3-1.2 | Coastal spray belt above mean high tide, Drained upper-shore pockets, Sea-arch and islet margins above regular inundation | draft | 2 | 2 plausible |
 | [Canopy Rope](flora/soga_de_dosel.md) | vine | 1-32 | Sheltered western forest canopy, The spring giant's branches, Sheltered riverbank woodland | draft | 2 | 2 plausible |
 | [Riverbraid](flora/trenza_de_ribera.md) | shrub | 2-6 | Freshwater riverbanks, Seasonally moist gravel bars, Groundwater-connected channels and spring outflows | draft | 2 | 2 plausible |
+| [Fogcandle](flora/velilla.md) | herb | 0.15-0.45 | Open seasonal meadow hollows, Unshaded spring-basin outskirts, Moist tuff pockets between tussocks | draft | 2 | 1 fixable, 1 plausible |
+| [Redvein](flora/vetirroja.md) | herb | 0.3-0.9 | Enriched disturbed meadow margins, Old latrine and nest edges, Drained carcass-enriched soil | draft | 2 | 1 fixable, 1 plausible |
 
 ## Zonation, coast to summit
 
@@ -30,3 +34,7 @@ Salt-secreting Salvisca covers the spray zone, while Cinta de marea occupies the
 ## Primary succession on young lava
 
 After lava cools, Ceniza roja establishes on suitable damp rock, using photosynthesis, mineral-weathering acids and the shared nitrogen-fixing symbiont to accumulate dust and organic matter (F7, F9, F24). Grama de ceniza roots in water-holding cracks; Lengua de lava supplements mineral nutrition with insects at nutrient-poor seeps. Roots exploit existing fractures rather than splitting intact basalt. Litter and decomposition deepen soil, enabling shrubs and, on sufficiently wet sheltered western sites, Nieblón forest (F18, F19). Dry eastern sites may remain grassland; exposed ridges, alpine ground and chemically hostile geothermal patches follow different trajectories. The spring giant depends on the dyke aquifer, rather than representing a universal final stage (F21). Dark lava tubes receive organic matter from outside and support decomposers, not photosynthetic succession (F9). Recovery has no fixed timetable: substrate age, water, wind, erosion and chemistry maintain a mosaic, with locally metal-rich crater patches retaining specialist vegetation after 12,000 years (F22, F23). All forms share the seeded biochemistry and derive from island founders and their radiation (F24, F27).
+
+## The start valley
+
+The dry eastern start valley remains a paja_dulce meadow with grama_de_ceniza on disturbed ground, receiving frequent dawn fog without dependable fog irrigation (F8, F18). Perlilla occupies groundwater-accessible spring and dyke fringes beneath madre_de_agua, offering low fruit before the landmark tree's main crop (F21). Velilla flowers in open, seasonally wetted meadow hollows, marking recent sustained rain rather than permanent groundwater. Caramillo forms small, drought-deciduous stands on deep-soiled lower margins with reliable subsurface moisture; it supplies climbable cover without replacing the western nieblon forest. Vetirroja marks nutrient-enriched disturbed margins with conspicuous red-veined foliage and grazing avoidance. Together they teach food sharing, seasonal observation, wind and sound, and chemical warning. Red-veined leaves warrant caution here (F25); before reaching the high slopes, players learn that red-purple pigmentation can also screen UV, as in rodela_de_nieve (F14, F25).

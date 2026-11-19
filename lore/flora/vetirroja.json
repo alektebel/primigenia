@@ -1,0 +1,230 @@
+{
+  "schema": "cpore.plant/1",
+  "id": "vetirroja",
+  "name": {
+    "en": "Redvein",
+    "es": "Vetirroja"
+  },
+  "world": "primigenia",
+  "status": "draft",
+  "growth_form": "herb",
+  "habitats": [
+    "Enriched disturbed meadow margins",
+    "Old latrine and nest edges",
+    "Drained carcass-enriched soil"
+  ],
+  "summary": "A bitter herb displays red-purple veins on paired green leaves. Nutrient-rich patches teach the valley's defended-leaf warning through visible foliage, grazing avoidance and specialist feeding.",
+  "chains": [
+    {
+      "id": "vetirroja.c1",
+      "trait": "Persistent red veins and alkaloid-bearing glandular leaves",
+      "links": [
+        "Seeded biochemistry associates warning pigment with defended foliage",
+        "Alkaloids occur throughout leaves, concentrated near veins and glands",
+        "Most grazers avoid patches while specialists tolerate limited feeding"
+      ],
+      "roots": [
+        "F24",
+        "F25",
+        "F26"
+      ],
+      "play": "Learn avoidance before ingestion; observe babosa and merodeador without copying their tolerance.",
+      "weakness": "Specialist herbivores still consume defended tissue.",
+      "observe": [
+        "Inspect red veins.",
+        "Watch grazers turn aside.",
+        "Observe specialist feeding."
+      ],
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "botanist/composer-2.5; chair sol",
+        "date": "2026-11-19",
+        "summary": "Pigment–toxin association follows canon; no shared precursor is claimed. Green leaf portions remain poisonous.",
+        "analogues": [
+          {
+            "organism": "Red-leaved Coleus, Coleus scutellarioides",
+            "mechanism": "Anthocyanin overlays remain visible over green photosynthetic tissue; honest alkaloid signalling is planet-specific.",
+            "refs": [
+              "gould_2004_anthocyanins"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "vetirroja.c2",
+      "trait": "Enrichment-loving patches and hooked dry propagules",
+      "links": [
+        "Decomposing compatible tissues enrich disturbed soil",
+        "Available nutrients support rapid growth and nitrogen-containing defence",
+        "Hooked propagules hitchhike on passing bodies"
+      ],
+      "roots": [
+        "F24",
+        "F27"
+      ],
+      "play": "Read irregular grazing halos and inspect attached seed capsules.",
+      "weakness": "Dense grass, deep shade and waterlogging suppress recruitment.",
+      "observe": [
+        "Find an enriched bare margin.",
+        "Compare adjacent ungrazed grass.",
+        "Inspect a hooked capsule."
+      ],
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "botanist/composer-2.5; chair sol",
+        "date": "2026-11-19",
+        "summary": "Nutrient enrichment explains placement without implying metal contamination or certain predator presence.",
+        "analogues": [
+          {
+            "organism": "Common agrimony, Agrimonia eupatoria",
+            "mechanism": "Hooked fruiting structures attach to animals for external dispersal; enrichment preference is a separate fictional trait.",
+            "refs": [
+              "howe_1982_dispersal"
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "gameplay": {
+    "food_for": [
+      "Alkaloid-tolerant specialists"
+    ],
+    "gift_item": null,
+    "poison": {
+      "alkaloid": true,
+      "signal": "Conspicuous red-purple veins on every living leaf, including young foliage."
+    },
+    "healing": null,
+    "cover": null,
+    "climbing": false,
+    "nest_material": null,
+    "mineral_lick": null,
+    "notes": "Ingestion causes dose-dependent nausea and impaired movement. Known clean kaolin offers partial detoxification in play, not an instant universal cure. Teach this route before optional poisoning; specialist self-medication is observational."
+  },
+  "relations": [
+    {
+      "with": "rondo",
+      "kind": "other",
+      "note": "Avoids feeding and leaves irregular tall-grass fringes."
+    },
+    {
+      "with": "zanco",
+      "kind": "other",
+      "note": "Avoids defended foliage."
+    },
+    {
+      "with": "albinos",
+      "kind": "other",
+      "note": "Avoids toxic leaves and lacks normal detox capacity."
+    },
+    {
+      "with": "babosa",
+      "kind": "eaten_by",
+      "note": "Tolerates foliage and incorporates defensive compounds into mucus."
+    },
+    {
+      "with": "merodeador",
+      "kind": "eaten_by",
+      "note": "Occasionally takes small amounts during self-medication."
+    },
+    {
+      "with": "grama_de_ceniza",
+      "kind": "competes",
+      "note": "Shares enriched disturbed openings."
+    },
+    {
+      "with": "ceniza_roja",
+      "kind": "grows_with",
+      "note": "Crust persists on adjacent exposed rock."
+    },
+    {
+      "with": "nieblon",
+      "kind": "other",
+      "note": "Shares the defended red-vein warning."
+    },
+    {
+      "with": "rodela_de_nieve",
+      "kind": "other",
+      "note": "Later comparison teaches that alpine purple pigmentation can screen UV."
+    }
+  ],
+  "generator": {
+    "growth_form": "herb",
+    "height_m": {
+      "min": 0.3,
+      "max": 0.9
+    },
+    "trunk": "Soft upright glandular stems.",
+    "branching": {
+      "angle_deg": 45,
+      "levels": 2,
+      "apical_dominance": 0.6,
+      "buttress": "None"
+    },
+    "leaf": {
+      "type": "Serrated, finely glandular blade",
+      "size_cm": 6,
+      "arrangement": "Opposite pairs"
+    },
+    "colour": {
+      "base": "Green",
+      "overlay_rules": [
+        "Five to seven prominent red-purple secondary veins.",
+        "Preserve vein visibility across ages and lighting variants."
+      ]
+    },
+    "placement": {
+      "slope": "Drained margins",
+      "altitude_m": [
+        15,
+        450
+      ],
+      "wetness": "Seasonally moist, never stagnant",
+      "soil": "Nutrient-enriched disturbed soil",
+      "coast_distance_m": [
+        100,
+        1600
+      ],
+      "fog": "Frequent dawn fog",
+      "density": "Irregular enriched patches; first teaching patch in low-threat ground"
+    },
+    "seasonal": "Vigorous wet-season growth; approximately 5 mm hooked capsules mature as soil dries.",
+    "wind_response": "Stems flex; grazing halos follow local avoidance rather than fixed circles."
+  },
+  "journal": [
+    {
+      "en": "Red veins, grass left tall. The slug eats what the herd refuses.",
+      "es": "Venas rojas, hierba sin pacer. La babosa come lo que rechaza la manada."
+    }
+  ],
+  "provenance": {
+    "council_run": "flora-valley-2026-11-19",
+    "by": [
+      "designer",
+      "mythmaker",
+      "naturalist",
+      "physicist",
+      "senses",
+      "skeptic",
+      "wildcard"
+    ],
+    "edited_by": "sol"
+  },
+  "changelog": [
+    {
+      "date": "2026-11-19",
+      "who": "flora.py",
+      "what": "flora addendum (start valley): 7 voices drafted and peer-reviewed, Composer referee, sol chaired"
+    }
+  ],
+  "observe": [
+    "Read veins before contact.",
+    "Distinguish specialist tolerance from safety.",
+    "Learn clean kaolin access and later compare alpine UV pigmentation (F14, F25)."
+  ],
+  "secrets": [
+    "Its patches reveal enrichment, not nickel, impact shards or a guaranteed ambush."
+  ]
+}

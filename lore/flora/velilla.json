@@ -1,0 +1,220 @@
+{
+  "schema": "cpore.plant/1",
+  "id": "velilla",
+  "name": {
+    "en": "Fogcandle",
+    "es": "Velilla"
+  },
+  "world": "primigenia",
+  "status": "draft",
+  "growth_form": "herb",
+  "habitats": [
+    "Open seasonal meadow hollows",
+    "Unshaded spring-basin outskirts",
+    "Moist tuff pockets between tussocks"
+  ],
+  "summary": "A corm herb raises pale cups around dark nectar discs after sustained soil wetting. Dawn flowers mark a temporary wet-season opportunity; summer dormancy leaves the meadow open.",
+  "chains": [
+    {
+      "id": "velilla.c1",
+      "trait": "Buried corm and moisture-triggered emergence",
+      "links": [
+        "Seasonal drought makes continuous foliage costly",
+        "A buried corm preserves reserves through dormancy",
+        "Sustained root-zone wetting permits emergence and flowering"
+      ],
+      "roots": [
+        "F11",
+        "F18"
+      ],
+      "play": "Read flowering patches as evidence of recent sustained wetting; harvest starchy corms at the cost of individual plants.",
+      "weakness": "Brief fog or surface dew cannot trigger a reliable bloom.",
+      "observe": [
+        "Inspect soil after rain.",
+        "Watch shoots emerge.",
+        "Return during summer dormancy."
+      ],
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "botanist/composer-2.5; chair sol",
+        "date": "2026-11-19",
+        "summary": "Local moisture and developmental state govern flowering; blooms do not prove permanent or drinkable groundwater.",
+        "analogues": [
+          {
+            "organism": "Autumn crocus, Crocus speciosus",
+            "mechanism": "An underground corm stores reserves across seasonal shoot dormancy; the analogue concerns storage, not edibility.",
+            "refs": [
+              "gifford_1989_morphology"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "velilla.c2",
+      "trait": "Dawn-opening pale cups with dark nectar discs",
+      "links": [
+        "Cream petals contrast with green foliage under scattered daylight",
+        "Shallow cups expose nectar and pollen to small flies",
+        "Humid, sheltered dawn conditions favour local scent-guided visits"
+      ],
+      "roots": [
+        "F1",
+        "F3",
+        "F8",
+        "F16",
+        "F17",
+        "F25"
+      ],
+      "play": "Watch inferred hairy flies contact anthers and stigmas; use flowers as nearby landmarks.",
+      "weakness": "Opaque fog hides distant blooms; cold, wind or rain reduces visitation.",
+      "observe": [
+        "Find open cups near dawn.",
+        "Watch a fly touch the disc.",
+        "Return after flowers close."
+      ],
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "botanist/composer-2.5; chair sol",
+        "date": "2026-11-19",
+        "summary": "Fly pollination is inferred and must be observable. White petals reflect light; dark centres warm only under suitable sunlight.",
+        "analogues": [
+          {
+            "organism": "Meadow buttercup, Ranunculus acris",
+            "mechanism": "Open bowl flowers offer accessible reproductive surfaces to visiting insects; exact colour and dawn timing are fictional adaptations.",
+            "refs": [
+              "gifford_1989_morphology",
+              "johnsen_2012_optics"
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "gameplay": {
+    "food_for": [
+      "Corm-eating herbivores",
+      "Omnivores"
+    ],
+    "gift_item": null,
+    "poison": {
+      "alkaloid": false,
+      "signal": "Green foliage; cream flowers with dark centres."
+    },
+    "healing": null,
+    "cover": null,
+    "climbing": false,
+    "nest_material": "Dry scapes and leaves in small quantities.",
+    "mineral_lick": null,
+    "notes": "Corm removal kills that individual. Flowering indicates seasonal soil moisture."
+  },
+  "relations": [
+    {
+      "with": "rondo",
+      "kind": "eaten_by",
+      "note": "Occasionally eats exposed corms."
+    },
+    {
+      "with": "player_lineage",
+      "kind": "eaten_by",
+      "note": "Can excavate starchy corms."
+    },
+    {
+      "with": "alula",
+      "kind": "other",
+      "note": "Hunts flower visitors; pollination is not obligatory."
+    },
+    {
+      "with": "paja_dulce",
+      "kind": "grows_with",
+      "note": "Occupies open gaps between tussocks."
+    },
+    {
+      "with": "grama_de_ceniza",
+      "kind": "competes",
+      "note": "Competes in seasonally moist open soil."
+    },
+    {
+      "with": "perlilla",
+      "kind": "competes",
+      "note": "Expanding shrub shade suppresses flowering."
+    }
+  ],
+  "generator": {
+    "growth_form": "herb",
+    "height_m": {
+      "min": 0.15,
+      "max": 0.45
+    },
+    "trunk": "None; slender scapes above buried 30–50 mm corms.",
+    "branching": {
+      "angle_deg": 0,
+      "levels": 0,
+      "apical_dominance": 1,
+      "buttress": "None"
+    },
+    "leaf": {
+      "type": "Narrow basal blade",
+      "size_cm": 15,
+      "arrangement": "Basal cluster"
+    },
+    "colour": {
+      "base": "Green",
+      "overlay_rules": [
+        "Six to nine cream petals around a charcoal disc.",
+        "Flowers 25–40 mm across; translucent, never luminous."
+      ]
+    },
+    "placement": {
+      "slope": "Level or gently concave",
+      "altitude_m": [
+        15,
+        400
+      ],
+      "wetness": "Seasonally moist, aerated",
+      "soil": "Fine tuff-derived pockets",
+      "coast_distance_m": [
+        100,
+        1600
+      ],
+      "fog": "Humid dawns supplement seasonal rain",
+      "density": "Irregular open patches"
+    },
+    "seasonal": "Emergence requires sustained wetting; daily opening follows dawn light and humidity within the 26-hour day.",
+    "wind_response": "Scapes flex; strong wind suppresses visits."
+  },
+  "journal": [
+    {
+      "en": "The ground drinks first. Then its little candles open.",
+      "es": "Primero bebe la tierra. Después abre sus pequeñas velas."
+    }
+  ],
+  "provenance": {
+    "council_run": "flora-valley-2026-11-19",
+    "by": [
+      "designer",
+      "mythmaker",
+      "naturalist",
+      "physicist",
+      "senses",
+      "skeptic",
+      "wildcard"
+    ],
+    "edited_by": "sol"
+  },
+  "changelog": [
+    {
+      "date": "2026-11-19",
+      "who": "flora.py",
+      "what": "flora addendum (start valley): 7 voices drafted and peer-reviewed, Composer referee, sol chaired"
+    }
+  ],
+  "observe": [
+    "Find flowers after sustained wetting.",
+    "Watch dawn fly visits.",
+    "Compare midday closure and summer dormancy."
+  ],
+  "secrets": [
+    "Adjacent hollows can flower weeks apart when their soils retain water differently."
+  ]
+}

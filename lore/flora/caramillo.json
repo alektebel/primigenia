@@ -1,0 +1,257 @@
+{
+  "schema": "cpore.plant/1",
+  "id": "caramillo",
+  "name": {
+    "en": "Whistlewood",
+    "es": "Caramillo"
+  },
+  "world": "primigenia",
+  "status": "draft",
+  "growth_form": "tree",
+  "habitats": [
+    "Deep-soiled lower valley margins",
+    "Sheltered slopes above subsurface seepage",
+    "Moist fissure lines outside the central spring basin"
+  ],
+  "summary": "A stout, seasonally thinning tree carries separated foliage tiers above spreading anchoring roots. Occasional mature hollows sound in suitable wind. It provides climbable branches and shelter without forming a western fog forest.",
+  "chains": [
+    {
+      "id": "caramillo.c1",
+      "trait": "Stout trunk, flexible porous crown and occasional humming hollow",
+      "links": [
+        "Heavy-air winds impose strong bending loads",
+        "Low leverage, crown gaps and anchoring roots limit loading",
+        "An age-formed cavity can resonate only with suitable airflow and geometry"
+      ],
+      "roots": [
+        "F2",
+        "F4",
+        "F19"
+      ],
+      "play": "Climb sound branches and learn a conditional acoustic bearing.",
+      "weakness": "Decay weakens wood; calm trees are silent and storms mask sound.",
+      "observe": [
+        "Inspect roots and crown gaps.",
+        "Locate a sounding hollow.",
+        "Return in calm air."
+      ],
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "botanist/composer-2.5; chair sol",
+        "date": "2026-11-19",
+        "summary": "Porosity alone produces no guaranteed tone. Approximately 80–200 Hz requires validated cavity geometry; propagation follows weather.",
+        "analogues": [
+          {
+            "organism": "White willow, Salix alba",
+            "mechanism": "Flexible branching and mature decay cavities provide structural analogues; tuned cavity sound is a conditional physical extrapolation.",
+            "refs": [
+              "vogel_1994_fluids",
+              "fletcher_1998_physics"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "caramillo.c2",
+      "trait": "Deep roots, small leaves and partial summer leaf shed",
+      "links": [
+        "Eastern summer drought limits water supply",
+        "Deep roots reach persistent subsurface moisture",
+        "Small leaves and seasonal shedding reduce demand"
+      ],
+      "roots": [
+        "F8",
+        "F18",
+        "F19"
+      ],
+      "play": "Compare seasonal shade and identify moisture-supported tree stands.",
+      "weakness": "Shallow dry soil prevents establishment; still fog provides little interception.",
+      "observe": [
+        "Compare deep and shallow soils.",
+        "Watch summer thinning.",
+        "Find drip only during moving fog."
+      ],
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "botanist/composer-2.5; chair sol",
+        "date": "2026-11-19",
+        "summary": "Subsurface water supports the tree; fog interception is supplementary and requires droplet movement.",
+        "analogues": [
+          {
+            "organism": "Blue oak, Quercus douglasii",
+            "mechanism": "Deep-rooted woodland trees combine restricted foliage with seasonal adjustment to summer water shortage.",
+            "refs": [
+              "vogel_1994_life",
+              "dawson_1998_fog"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "caramillo.c3",
+      "trait": "Winged seeds with moisture-limited recruitment",
+      "links": [
+        "Aerodynamic drag slows winged seed descent",
+        "Wind carries samaras beyond the parent",
+        "Sheltered moist microsites permit seedling survival"
+      ],
+      "roots": [
+        "F4",
+        "F18"
+      ],
+      "play": "Track drifting samaras and find seedlings beneath nurse shrubs.",
+      "weakness": "Dispersal into exposed dry ground usually fails.",
+      "observe": [
+        "Watch samaras descend.",
+        "Inspect sheltered seedlings.",
+        "Compare exposed landing sites."
+      ],
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "botanist/composer-2.5; chair sol",
+        "date": "2026-11-19",
+        "summary": "Dense air aids descent control without guaranteeing distance or establishment.",
+        "analogues": [
+          {
+            "organism": "Field maple, Acer campestre",
+            "mechanism": "Winged samaras use aerodynamic drag and autorotation for wind dispersal.",
+            "refs": [
+              "howe_1982_dispersal",
+              "vogel_1994_fluids"
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "gameplay": {
+    "food_for": [],
+    "gift_item": null,
+    "poison": {
+      "alkaloid": false,
+      "signal": "Matte green leaves."
+    },
+    "healing": null,
+    "cover": "Seasonal shade, lee shelter and elevated refuge.",
+    "climbing": true,
+    "nest_material": "Fine fallen twigs and dry leaf strips.",
+    "mineral_lick": null,
+    "notes": "Climbing can interrupt garfio pursuit; predators may wait below. Cavities require maturity. Trees offer no guaranteed lightning protection."
+  },
+  "relations": [
+    {
+      "with": "alula",
+      "kind": "shelters",
+      "note": "Uses sturdy forks for perching and launch."
+    },
+    {
+      "with": "acechalunas",
+      "kind": "shelters",
+      "note": "Occupies suitable mature cavities."
+    },
+    {
+      "with": "rondo",
+      "kind": "shelters",
+      "note": "Rests in the lee."
+    },
+    {
+      "with": "merodeador",
+      "kind": "other",
+      "note": "May wait beneath occupied refuge branches."
+    },
+    {
+      "with": "perlilla",
+      "kind": "grows_with",
+      "note": "Shrubs shelter seedlings; mature roots later compete for water."
+    },
+    {
+      "with": "soga_de_dosel",
+      "kind": "other",
+      "note": "Supports vines only to actual crown height."
+    },
+    {
+      "with": "musgo_faro",
+      "kind": "grows_with",
+      "note": "Restricted to persistently damp illuminated grooves."
+    }
+  ],
+  "generator": {
+    "growth_form": "tree",
+    "height_m": {
+      "min": 5.0,
+      "max": 9.0
+    },
+    "trunk": "Fluted, 0.4–0.65 m diameter; three to five major spreading roots.",
+    "branching": {
+      "angle_deg": 55,
+      "levels": 3,
+      "apical_dominance": 0.45,
+      "buttress": "Low root flares"
+    },
+    "leaf": {
+      "type": "Small simple blade",
+      "size_cm": 4,
+      "arrangement": "Alternate"
+    },
+    "colour": {
+      "base": "Matte green, grey-brown bark",
+      "overlay_rules": [
+        "Summer foliage thins.",
+        "Age-gate dark cavities."
+      ]
+    },
+    "placement": {
+      "slope": "Sheltered lower slopes",
+      "altitude_m": [
+        30,
+        550
+      ],
+      "wetness": "Reliable deep moisture",
+      "soil": "Deep colluvium or water-bearing fissures",
+      "coast_distance_m": [
+        150,
+        1600
+      ],
+      "fog": "Supplementary interception in moving fog",
+      "density": "Small separated stands"
+    },
+    "seasonal": "Partial summer leaf shed; dry 30–40 mm samaras disperse seasonally.",
+    "wind_response": "Asymmetric lee crown with 35–50% gaps; usually 5–8 m, reaching 9 m only in shelter."
+  },
+  "journal": [
+    {
+      "en": "Wind crosses the crown. One old hollow lends it a voice.",
+      "es": "El viento cruza la copa. Un hueco viejo le presta voz."
+    }
+  ],
+  "provenance": {
+    "council_run": "flora-valley-2026-11-19",
+    "by": [
+      "designer",
+      "mythmaker",
+      "naturalist",
+      "physicist",
+      "senses",
+      "skeptic",
+      "wildcard"
+    ],
+    "edited_by": "sol"
+  },
+  "changelog": [
+    {
+      "date": "2026-11-19",
+      "who": "flora.py",
+      "what": "flora addendum (start valley): 7 voices drafted and peer-reviewed, Composer referee, sol chaired"
+    }
+  ],
+  "observe": [
+    "Compare breeze and calm.",
+    "Follow samaras to sheltered seedlings.",
+    "Inspect summer crown thinning."
+  ],
+  "secrets": [
+    "Most mature trees never develop a sounding cavity."
+  ]
+}

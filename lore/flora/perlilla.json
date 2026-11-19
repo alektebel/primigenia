@@ -1,0 +1,228 @@
+{
+  "schema": "cpore.plant/1",
+  "id": "perlilla",
+  "name": {
+    "en": "Wellberry",
+    "es": "Perlilla"
+  },
+  "world": "primigenia",
+  "status": "draft",
+  "growth_form": "shrub",
+  "habitats": [
+    "Groundwater-accessible spring-basin fringes",
+    "Moist pockets along the groundwater-damming dyke",
+    "Lower meadow margins with persistent capillary moisture"
+  ],
+  "summary": "A multistemmed shrub bearing low clusters of soft, wax-white fruit containing sugar and starch. Its harvest precedes madre_de_agua's principal dry-season crop. Fruiting patches indicate accessible subsurface moisture, while carried fruit and abandoned caches connect feeding to dispersal.",
+  "chains": [
+    {
+      "id": "perlilla.c1",
+      "trait": "Low, seasonal carbohydrate-rich fruit",
+      "links": [
+        "Eastern summer drought limits reproductive water",
+        "Dyke-retained groundwater sustains selected root zones",
+        "Watered shrubs ripen accessible clusters during the seasonal drying transition"
+      ],
+      "roots": [
+        "F11",
+        "F18",
+        "F21",
+        "F26"
+      ],
+      "play": "Harvest ripe fruit for food and gifts; compare productive shrubs with dry meadow.",
+      "weakness": "Falling groundwater reduces the crop; fog alone cannot sustain it.",
+      "observe": [
+        "Find low fruit beside moist soil.",
+        "Compare a dry, fruitless margin.",
+        "Return as the meadow begins drying."
+      ],
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "botanist/composer-2.5; chair sol",
+        "date": "2026-11-19",
+        "summary": "Fruit production requires persistent root water; its timing is conditional rather than a fixed calendar event.",
+        "analogues": [
+          {
+            "organism": "Black elder, Sambucus nigra",
+            "mechanism": "Animal-accessible fleshy fruit rewards transport of enclosed seeds.",
+            "refs": [
+              "howe_1982_dispersal"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "perlilla.c2",
+      "trait": "Pale waxy berries, ripe scent and small hard seeds",
+      "links": [
+        "Pale fruit contrasts with green leaves in available daylight",
+        "Ripe volatiles persist locally in sheltered, still dawn air",
+        "Rondo carry fruit to caches; swallowed seeds receive additional dispersal",
+        "Only surviving seeds in moist microsites recruit"
+      ],
+      "roots": [
+        "F1",
+        "F16",
+        "F17",
+        "F18",
+        "F26"
+      ],
+      "play": "Follow fruit-carrying rondo, offer sound berries, and revisit abandoned caches after rain.",
+      "weakness": "Wind disrupts scent trails; damaged fruit spoils and many cached seeds are eaten.",
+      "observe": [
+        "Watch a rondo carry berries.",
+        "Compare intact and bruised fallen fruit.",
+        "Find seedlings at an abandoned moist cache."
+      ],
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "botanist/composer-2.5; chair sol",
+        "date": "2026-11-19",
+        "summary": "Fruit reflects light without glowing. Dispersal provides opportunities, not guaranteed germination or universal gut survival.",
+        "analogues": [
+          {
+            "organism": "Common guava, Psidium guajava",
+            "mechanism": "Aromatic soft pulp surrounds small hard seeds dispersed by fruit consumers; rondo caching is an additional fictional interaction.",
+            "refs": [
+              "howe_1982_dispersal",
+              "herrera_1982_defense"
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "gameplay": {
+    "food_for": [
+      "Fruit-eating herbivores",
+      "Omnivores",
+      "Detritivores consuming spoiled falls"
+    ],
+    "gift_item": "Sound ripe Wellberry cluster",
+    "poison": {
+      "alkaloid": false,
+      "signal": "Plain green foliage; wax-white ripe fruit."
+    },
+    "healing": null,
+    "cover": "Low concealment among clustered stems.",
+    "climbing": false,
+    "nest_material": "Dry slender twigs.",
+    "mineral_lick": null,
+    "notes": "Fruit supports befriending rondo and receptive zanco; zanco courtship remains dance-based. Spoiled berries lose gift value."
+  },
+  "relations": [
+    {
+      "with": "rondo",
+      "kind": "dispersed_by",
+      "note": "Carried fruit and abandoned caches move viable seeds."
+    },
+    {
+      "with": "zanco",
+      "kind": "eaten_by",
+      "note": "Browses reachable ripe clusters; some swallowed seeds survive."
+    },
+    {
+      "with": "player_lineage",
+      "kind": "eaten_by",
+      "note": "Consumes fruit and carries gift clusters."
+    },
+    {
+      "with": "babosa",
+      "kind": "eaten_by",
+      "note": "Consumes softened, decaying falls."
+    },
+    {
+      "with": "paja_dulce",
+      "kind": "grows_with",
+      "note": "Shares moist meadow fringes."
+    },
+    {
+      "with": "trenza_de_ribera",
+      "kind": "competes",
+      "note": "Overlapping roots compete for wet soil and light."
+    },
+    {
+      "with": "madre_de_agua",
+      "kind": "grows_with",
+      "note": "Uses the same groundwater reservoir through independent roots."
+    }
+  ],
+  "generator": {
+    "growth_form": "shrub",
+    "height_m": {
+      "min": 0.8,
+      "max": 2.5
+    },
+    "trunk": "Three to seven grey-brown woody stems; thin persistent fruit calyces.",
+    "branching": {
+      "angle_deg": 50,
+      "levels": 3,
+      "apical_dominance": 0.3,
+      "buttress": "None"
+    },
+    "leaf": {
+      "type": "Small ovate blade",
+      "size_cm": 4,
+      "arrangement": "Alternate"
+    },
+    "colour": {
+      "base": "Green leaves, grey-brown wood",
+      "overlay_rules": [
+        "Ripe berries wax-white, 10–15 mm across.",
+        "Bruised fallen fruit browns; no emission."
+      ]
+    },
+    "placement": {
+      "slope": "Gentle footslopes and sheltered dyke pockets",
+      "altitude_m": [
+        15,
+        350
+      ],
+      "wetness": "Persistent root-accessible moisture; drained surface",
+      "soil": "Deep tuff-derived soil",
+      "coast_distance_m": [
+        100,
+        1600
+      ],
+      "fog": "Frequent dawn fog; no irrigation guarantee",
+      "density": "Small groundwater-gated clumps"
+    },
+    "seasonal": "Flowers before the drying transition; fruit timing follows water availability. Each berry encloses one or two small seeds.",
+    "wind_response": "Flexible stems bend; clusters chiefly 0.3–1 m high remain partly sheltered."
+  },
+  "journal": [
+    {
+      "en": "White berries scent the dawn. The herd carries some away; a few return as bushes.",
+      "es": "Las bayas blancas perfuman el alba. La manada se lleva algunas; unas pocas vuelven hechas arbustos."
+    }
+  ],
+  "provenance": {
+    "council_run": "flora-valley-2026-11-19",
+    "by": [
+      "designer",
+      "mythmaker",
+      "naturalist",
+      "physicist",
+      "senses",
+      "skeptic",
+      "wildcard"
+    ],
+    "edited_by": "sol"
+  },
+  "changelog": [
+    {
+      "date": "2026-11-19",
+      "who": "flora.py",
+      "what": "flora addendum (start valley): 7 voices drafted and peer-reviewed, Composer referee, sol chaired"
+    }
+  ],
+  "observe": [
+    "Follow a rondo carrying pale fruit.",
+    "Compare productive moist patches with dry margins.",
+    "Offer ripe fruit and revisit abandoned caches."
+  ],
+  "secrets": [
+    "A moist abandoned cache can establish a new patch after rain."
+  ]
+}
