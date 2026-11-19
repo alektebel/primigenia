@@ -415,6 +415,8 @@ func _build_parts() -> void:
 		var p: Dictionary = plist[pi]
 		var m: Dictionary = maker.meta(p["type"])
 		var sides := [1] if _centered(p) else [1, -1]
+		if int(p.get("single", 0)) != 0 and not maker.is_leg(p["type"]) and not _centered(p):
+			sides = [int(p["single"])]    # one giant claw, one eye: the creator made this part single (A24)
 		for sg in sides:
 			var A := anchor(p["t"], sg * p["ang"])
 			var o: Vector3 = A["p"]
@@ -486,8 +488,9 @@ func _make_leg(pi: int, p: Dictionary, sg: int, A: Dictionary) -> void:
 	var b: float = max(.12, (fv - kv).length())
 	var segs := maker.make_leg(p["type"], pose, A["p"], a, b)
 	var leg := CreatureLegChain.new()
-	leg.upper_mat = _limb_skin(segs["up"], 1, a)
-	leg.lower_mat = _limb_skin(segs["lo"], 2, b)
+	var mode := float(bio["limbs"][pi]["mode"]) if bio.get("limbs", {}).has(pi) else 1.0
+	leg.upper_mat = _limb_skin(segs["up"], 1, a, mode)
+	leg.lower_mat = _limb_skin(segs["lo"], 2, b, mode)
 	leg.creature = self
 	leg.part = p
 	leg.part_index = pi
@@ -517,8 +520,8 @@ func _make_leg(pi: int, p: Dictionary, sg: int, A: Dictionary) -> void:
 
 
 ## Gives the skin meshes of one limb segment their own copy of the skin material (the flex uniform is per segment).
-func _limb_skin(seg: Node3D, part: int, seg_len: float) -> ShaderMaterial:
-	var m := materials.limb_material(part, seg_len)
+func _limb_skin(seg: Node3D, part: int, seg_len: float, mode: float) -> ShaderMaterial:
+	var m := materials.limb_material(part, seg_len, mode)
 	for c in seg.get_children():
 		if c is MeshInstance3D and c.material_override == materials.skin:
 			c.material_override = m

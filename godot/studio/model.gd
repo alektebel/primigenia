@@ -268,6 +268,30 @@ func set_param(i: int, key: String, value: float) -> void:
 	_touch()
 	end()
 
+## Optional per-part genome keys of the realism round: act (limb actuation), single (-1 / 0 / 1: only that side),
+## pupil (auto, round, slit, bar). Absent = default; "auto" / 0 remove the key so old genomes stay byte-identical.
+func set_part_key(i: int, key: String, value) -> void:
+	set_part_keys([i], key, value)
+
+## Same, for several parts in one undo step (the creator groups identical limbs).
+func set_part_keys(idx: Array, key: String, value) -> void:
+	if not key in ["act", "single", "pupil"]:
+		return
+	begin()
+	for i in idx:
+		_set_part_key(int(i), key, value)
+	_touch()
+	end()
+
+func _set_part_key(i: int, key: String, value) -> void:
+	if i < 0 or i >= doc["parts"].size():
+		return
+	var p: Dictionary = doc["parts"][i]
+	if value == null or (typeof(value) == TYPE_STRING and value == "auto") or (key == "single" and int(value) == 0):
+		p.erase(key)
+	else:
+		p[key] = int(value) if key == "single" else str(value)
+
 # ---------------------------------------------------------------- spine
 ## Port of moveNode(): neighbour distance clamp .3..1.95, grows or shrinks the end vertebrae.
 ## Returns the index of the node being dragged (it changes when a vertebra is added at an end).
@@ -355,7 +379,7 @@ func set_skin(key: String, value) -> void:
 		"cA", "cB", "cC": s[key] = str(value).to_lower()
 		"cs", "pc": s[key] = clampf(value, 0.0, 1.0)      # countershading, pattern contrast (realism pilot)
 		"ps": s[key] = clampf(value, 0.5, 2.0)            # pattern scale
-		"act": s[key] = str(value) if str(value) in ["auto", "muscle", "hydraulic", "exo"] else "auto"
+		"sk": s[key] = str(value) if str(value) in ["auto", "endo", "exo", "hydro"] else "auto"   # body skeleton choice
 		"ros": s[key] = clampi(int(value), 0, 1)          # spots become rosettes
 	_touch()
 	end()

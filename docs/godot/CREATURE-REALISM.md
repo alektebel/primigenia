@@ -49,36 +49,66 @@ under `#ifdef RENDERER_FORWARD_PLUS`); no incompatibility known, but unconfirmed
   rule for the generator that makes AI genomes (not changed here): earth palette, green ancestry, red/purple only if toxic.
   The canon file F25 was not in this tree, owner wording used.
 
-## 4. Actuation (S4) - `creature_bio.gd`
-Class from the parts, with the reason shown in the creator Build panel ("Actuacion: hidraulica - Muchas patas finas...") and an
-OptionButton when the parts allow more than one class (`skin.act`).
+## 4. Skeleton per body, actuation per limb (A24, round 2) - `creature_bio.gd`
+The body has a skeleton class, derived from the parts: **exo** (2+ plates, or plate + pincers/mandibles, or 8+ thin legs),
+**hydro** (no legs), else **endo**. Each limb part (legs, `arm_*`, `tail_*`, `tongue_spring`, `trompa`/`snout_trumpet`,
+`excavadora`) has its own actuation among what the skeleton allows, derived from the part's form. The creator shows, for the body and
+for every group of identical limbs, "Actuacion: <class> - <why>", an OptionButton only where the form is ambiguous (more than one
+candidate), and "N tipos de actuacion: +N-1 metabolismo" (informational only; the cost is a later sim rule). Stored per limb as the
+optional part key `act`, body choice as `skin.sk` (auto | endo | exo | hydro); absent keys are derived, so old genomes load unchanged.
 
-| Class | Rule here | Visual now |
-|---|---|---|
-| muscle (endoskeleton) | default; thick legs | haunch/shoulder masses at the leg mounts; limb muscle belly swells with knee flexion (`flex` per segment) |
-| hydraulic | 6+ legs, thin (w < .3 body radius) | slim rigid tubes, knuckle at each joint, no bulge |
-| exo | 2+ plates, or plate + pincers/mandibles | ring grooves between segments on body and legs, polished, dark joints |
-| hydrostatic | no legs | peristaltic radius wave, extra wrinkles |
+| Skeleton | Allowed limb actuations |
+|---|---|
+| endo | muscle, tendon (elastic), spring (latch), hydrostat |
+| exo | muscle (in exo), hydraulic, spring |
+| hydro | peristaltic, hydrostat, tube feet, cilia |
 
-Real actuation systems and status (gameplay is a later C-sim design; proposals only, none implemented):
+Derivation of a leg: hydro -> tube feet; `foot_spring` -> spring; exo with 8+ legs -> hydraulic; endo with long thin legs
+(w/L < .075 and L > 2.4 body radii) -> elastic tendon; exo -> muscle in exo; else muscle. Arms: `arm_smasher` -> spring, `arm_grasper` ->
+muscle (hydro: hydrostat). Tail: muscle (hydro: peristaltic). Tongue: hydrostat or spring. Trunk: hydrostat (exo: hydraulic).
 
-| System | Real examples | Visual | Proposed rule (later) |
+Visuals (`skin_common.gdshaderinc`, per leg segment material, `leg_mode`; verified in `limb_*_legs_limbs.jpg`):
+muscle = belly swelling with knee flexion; elastic tendon = thin sinewy limb with a pale raised cord down the back; spring-latch =
+coiled flared joint with a faint ember glow of stored energy and a thin rod; hydrostat = smooth boneless taper with a slow wave;
+hydraulic = slim rigid tube with knuckles; muscle in exo = three rigid sclerites with deep dark grooves (the body rings are
+deeper too); tube feet = stubby taper with sucker dots (code only: only reachable on legged hydrostatic bodies, not shown). Arms, tails, tongue
+and trunk get the readout and the stored choice but no per-limb shader yet (their meshes have no common axis); deferred.
+The previous per-creature class survives only as the body shader class (`bio["actuation"]`: muscle / exo / hydrostatic).
+
+Real actuation systems and status (gameplay is a later C-sim design, see COMBAT-MOVES.md section 7 and DESIGN.md A24):
+
+| System | Real examples | Visual | Note |
 |---|---|---|---|
-| muscle + endoskeleton | vertebrates | now | speed/stamina from muscle mass, injuries slow limbs |
-| muscle + exoskeleton | insects, crabs | now (grooves) | armour value, moulting vulnerability |
-| hydraulic (blood pressure) | spiders, jumping spiders | now (slim tubes) | big jump from pressure, collapse (curled legs) when hurt; curl on death is deferred (needs IK pose) |
-| hydrostatic skeleton | worms, sea anemones | now (wave) | squeeze through gaps, weak to drying |
-| muscular hydrostat | octopus arm, tongue, trunk | later | boneless reach and grip |
-| spring-latch (resilin) | flea, click beetle, mantis shrimp | later | explosive one-shot move on cooldown |
-| elastic tendons | kangaroo, cheetah | later | cheap sustained hopping |
-| water-vascular tube feet | starfish, urchins | later | slow wall/rock climbing |
-| jet propulsion | squid, scallop, nautilus | later | burst escape in water |
-| cilia | ctenophores, paramecia | later | silent slow drift |
-| turgor / snap-buckling | Venus flytrap, Mimosa | later | plant ambush traps |
+| muscle + endoskeleton | vertebrates | now | |
+| muscle + exoskeleton | insects, crabs | now (grooves) | |
+| hydraulic (blood pressure) | spiders, jumping spiders | now (slim tubes); curl on death deferred | |
+| hydrostatic skeleton | worms, anemones | now (body wave) | |
+| muscular hydrostat | octopus arm, tongue, trunk | now on legs only, readout elsewhere | |
+| spring-latch (resilin) | flea, click beetle, mantis shrimp | now (coiled joint) | |
+| elastic tendons | kangaroo, ostrich, cheetah | now (cord) | |
+| water-vascular tube feet | starfish, urchins | code only | |
+| jet propulsion | squid, scallop | later | |
+| cilia | ctenophores | readout only | |
+| turgor / snap-buckling | Venus flytrap, Mimosa | later | |
+
+## 4b. Single parts, eyes, renderer choice
+- **Single parts**: part key `single` (-1 left, 1 right, absent = pair). Creator: "Pareja / Solo derecha / Solo izquierda" on any mirrored
+  non-leg part. Visual only now; which side matters later in the sim. Legs stay paired (walking needs them).
+- **Eyes** (`_eyeball` in `creature_parts.gd`, `shaders/eye_iris.gdshader`): veined cream sclera, a glossy transparent cornea dome
+  bulging over a radial iris (fibres, collarette, limbal ring, tint from the creature seed), upper and lower lids of skin, pupil drawn in
+  the shader: vertical slit for carnivores and night hunters (big eyes, lure), horizontal bar for grazers, round otherwise; part key `pupil`
+  (auto | round | slit | bar) overrides it in the creator. Used by `ojo`, `tallo`, `eye_triad`; the `eye_stalk` GLB gets the radial iris but keeps its own pupil mesh.
+- **Renderer choice** (`game/render_choice.gd`, called by the Game autoload): auto-Forward+ on discrete GPUs, Compatibility elsewhere, setting
+  `[game] renderer = auto | forward_plus | compatibility` in `user://settings.cfg` (also env `CPORE_RENDERER`), `make godot-play-hq` unchanged. The
+  renderer cannot switch in a running Godot, so the game relaunches itself once with `--rendering-method forward_plus` and quits; the
+  child never relaunches (`--cpore-relaunched`), and where Vulkan is absent Godot's own OpenGL 3 fallback starts it, so nothing
+  crashes. It never relaunches in headless, script, import or explicit-method runs, nor on software rasterisers. Detection: adapter type
+  DISCRETE_GPU or an NVIDIA / GeForce / RTX / GTX / Radeon RX / Radeon PRO / Arc name from the running GL context; a hybrid laptop whose GL
+  context is the iGPU stays Compatibility until forced. No UI row was added (the settings screen is `godot/ui`, owned by another branch):
+  the key exists and the screen only needs to write it. Unverified on a GPU here.
 
 ## 5. Secondary motion (S5)
-Breathing only (torso radius pulse in the vertex shader). Footfall jiggle and tail inertia are not done (need locomotion
-hooks); deferred.
+Breathing only (torso radius pulse in the vertex shader). Hydraulic leg curl on death, footfall jiggle and tail inertia are not done (need locomotion / IK hooks); deferred.
 
 ## 6. Evidence and numbers (S6)
 `docs/evidence/godot/creature-realism/`: `<id>_<chase|close|side>_<before|after>.jpg` for hero, giant (heavy quadruped),

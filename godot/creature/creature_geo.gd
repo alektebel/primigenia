@@ -171,6 +171,49 @@ func compute_along() -> void:
 		uv[i] = Vector2(1.0 - f if flip else f, 0.0)
 
 
+## Iris meshes: UV = coordinates in the plane of the disc, scaled to [-1, 1] at the rim, +Y of the part up the disc.
+## The disc plane is the one of smallest variance (power iteration on tr(C) I - C).
+func compute_disc() -> void:
+	var n := pos.size()
+	if n < 4:
+		return
+	var c := Vector3.ZERO
+	for p in pos:
+		c += p
+	c /= n
+	var xx := 0.0
+	var xy := 0.0
+	var xz := 0.0
+	var yy := 0.0
+	var yz := 0.0
+	var zz := 0.0
+	for p in pos:
+		var d := p - c
+		xx += d.x * d.x
+		xy += d.x * d.y
+		xz += d.x * d.z
+		yy += d.y * d.y
+		yz += d.y * d.z
+		zz += d.z * d.z
+	var tr := xx + yy + zz
+	var ax := Vector3(.3, .5, 1).normalized()
+	for it in 8:
+		ax = Vector3((tr - xx) * ax.x - xy * ax.y - xz * ax.z, -xy * ax.x + (tr - yy) * ax.y - yz * ax.z, -xz * ax.x - yz * ax.y + (tr - zz) * ax.z).normalized()
+	var up := Y - ax * Y.dot(ax)
+	if up.length_squared() < 1e-4:
+		up = X0 - ax * X0.dot(ax)
+	up = up.normalized()
+	var right := up.cross(ax).normalized()
+	var rmax := 1e-6
+	for p in pos:
+		var d := p - c
+		rmax = maxf(rmax, Vector2(d.dot(right), d.dot(up)).length())
+	uv.resize(n)
+	for i in n:
+		var d := pos[i] - c
+		uv[i] = Vector2(d.dot(right), d.dot(up)) / rmax
+
+
 func with_index_subset(from: int) -> CreatureGeo:
 	var g := clone()
 	g.idx = idx.slice(from)

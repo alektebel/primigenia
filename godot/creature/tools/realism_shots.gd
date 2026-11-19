@@ -24,10 +24,17 @@ func _run() -> void:
 		var mid: Vector3 = CreaturePreview.mid_target(c)
 		var len: float = c.rest[0].distance_to(c.rest[Creature.NS - 1])
 		var head: Vector3 = c.rest[Creature.NS - 1] + Vector3(0, c.ground_offset, 0)
-		var views := {"chase": [mid + Vector3(0, .2, 0), .75, .2, len * 1.25, 42.0], "side": [mid + Vector3(0, .1, 0), 1.5708, .06, len * 1.05, 42.0], "close": [head - Vector3(0, .1, 0), .6, .1, maxf(len * .42, 1.8), 36.0]}
+		var views := {"chase": [mid + Vector3(0, .2, 0), .75, .2, len * 1.25, 42.0], "side": [mid + Vector3(0, .1, 0), 1.5708, .06, len * 1.05, 42.0], "legs": [Vector3(mid.x, mid.y * .45, mid.z), 1.5708, .02, len * .62, 40.0], "close": [head - Vector3(0, .1, 0), .6, .1, maxf(len * .42, 1.8), 36.0]}
 		if tag == "bent":
 			for l in c.legs:
 				l.solve_local(l.home + Vector3(0, .0, 0) + Vector3(0, l.upper_length * .55, 0))
+		for i in 3:
+			await process_frame
+		for e in c.parts:
+			if e["type"] in ["ojo", "tallo"]:
+				var ep: Vector3 = (e["node"] as Node3D).global_position
+				views["eye"] = [ep, 1.45, .35, 1.0, 32.0]
+				break
 		for v in views:
 			var p: Array = views[v]
 			stage.orbit(p[0], p[1], p[2], p[3], p[4])

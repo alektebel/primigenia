@@ -294,6 +294,8 @@ static func finalize(root: Node) -> void:
 		var mat = root.material_override
 		if mat is ShaderMaterial and mat.shader.resource_path.ends_with("keratin.gdshader"):
 			geo.compute_along()
+		elif mat is ShaderMaterial and mat.shader.resource_path.ends_with("eye_iris.gdshader"):
+			geo.compute_disc()
 		root.mesh = geo.to_mesh()
 	for c in root.get_children():
 		finalize(c)
@@ -385,14 +387,25 @@ func _eye(p: Dictionary, off: Vector3, stalk: bool) -> Node3D:
 		e.position = Vector3(0, L * .35, L)
 	else:
 		e.position.z = er * .3
-	_mesh(CreatureGeo.sphere(er, 20, 14), "eye_white", e)
-	_mesh(CreatureGeo.ell(er * .64, er * .64, er * .3, 0, 0, er * .76), "iris", e)
-	_mesh(CreatureGeo.ell(er * .17, er * .5, er * .2, 0, 0, er * .93), "pupil", e)
+	g.set_meta("lid", _eyeball(e, er, off, str(p.get("pupil", "auto"))))
+	return g
+
+
+## One eye: sclera, a wet cornea bulge over a radial iris whose pupil shape follows the creature (or the creator's
+## override: round, slit, bar), and two eyelids of skin. Returns the upper lid (the blink hook).
+func _eyeball(e: Node3D, er: float, off: Vector3, pupil := "auto") -> MeshInstance3D:
+	var kind := pupil if pupil != "auto" else str(mats.bio.get("pupil", "round"))
+	_mesh(CreatureGeo.sphere(er, 24, 16), "eye_white", e)
+	_mesh(CreatureGeo.ell(er * .66, er * .66, er * .3, 0, 0, er * .72), mats.iris_for(kind), e)
+	var cor := _mesh(CreatureGeo.ell(er * .74, er * .74, er * .5, 0, 0, er * .62), mats.cornea, e)
+	cor.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	var lid := _mesh(CreatureGeo.sphere(er * 1.13, 18, 10, 0, 6.2832, 0, 1.25).skinify(off, .6), "skin", e)
 	lid.name = "lid"
 	set_euler(lid, -.3, 0, 0)
-	g.set_meta("lid", lid)
-	return g
+	var low := _mesh(CreatureGeo.sphere(er * 1.1, 18, 8, 0, 6.2832, 2.4, PI - 2.4).skinify(off, .3), "skin", e)
+	low.name = "lid_low"
+	set_euler(low, .12, 0, 0)
+	return lid
 
 
 static func _cone_z(r: float, h: float, z: float) -> CreatureGeo:
@@ -629,9 +642,7 @@ func _creator_shape(type: String, p: Dictionary, r: float, s: float, context: Di
 			for x in [-.3, 0.0, .3]:
 				var e := _group(g, "eye")
 				e.position = Vector3(x, 0, .23 if x == 0.0 else .16)
-				_tissue(CreatureGeo.ell(.17, .16, .16), "skin", e)
-				_tissue(CreatureGeo.ell(.11, .11, .045, 0, 0, .14), "iris", e)
-				_tissue(CreatureGeo.ell(.055, .075, .018, 0, 0, .18), "eye", e)
+				_eyeball(e, .17, Vector3.ZERO, str(p.get("pupil", "auto")))
 		"wing_glider", "wing_insect":
 			var wing := _group(g, "wing")
 			g.set_meta("wing", wing)

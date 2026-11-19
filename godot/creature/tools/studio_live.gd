@@ -27,22 +27,51 @@ func _init() -> void:
 	ui.model.set_skin("pat", 2)
 	ui.model.set_skin("ros", 1)
 	ui.model.set_skin("cs", .9)
-	ui.model.set_skin("ps", 1.4)
 	await _frames(12)
 	await _shot(out, "studio_3_rosettes_countershade_" + tag, ui)
+	# Per-limb actuation readout: eight thin legs (exoskeleton, hydraulic) plus a spring-latch claw, with the mixing count.
 	ui.set_mode("build")
 	ui.model.new_from_seed("Merodeador")
-	var d: Dictionary = ui.model.get_doc()
 	for i in 6:
 		ui.model.add_part("pata", .2 + i * .1, 2.0)
+	var claw: int = ui.model.add_part("arm_smasher", .72, 1.3)
+	ui.model.set_param(claw, "size", 1.6)
+	ui.model.select(-1)
 	await _frames(12)
-	await _shot(out, "studio_4_many_legs_actuation_" + tag, ui)
+	await _shot(out, "studio_4_limb_readout_" + tag, ui)
+	# An asymmetric claw: one giant claw, single, with the part panel (side and actuation choices).
+	ui.model.set_part_key(claw, "single", 1)
+	ui.model.select(claw)
+	await _frames(14)
+	_scroll(ui)
+	await _frames(3)
+	await _shot(out, "studio_5_single_claw_" + tag, ui)
+	# Eyes: pupil override on the selected eye.
+	ui.model.new_from_seed("Merodeador")
+	var eye := -1
+	var d: Dictionary = ui.model.get_doc()
+	for i in d.parts.size():
+		if d.parts[i].type == "ojo":
+			eye = i
+	ui.model.set_part_key(eye, "pupil", "bar")
+	ui.model.select(eye)
+	await _frames(14)
+	_scroll(ui)
+	await _frames(3)
+	await _shot(out, "studio_6_eye_pupil_" + tag, ui)
 	var t0 := Time.get_ticks_usec()
 	for i in 10:
 		ui.model.set_skin("ps", 1.0 + i * .05)
 		await process_frame
 	print("10 live pattern-scale edits incl. frames: %.1f ms each (software GL)" % ((Time.get_ticks_usec() - t0) / 10000.0))
 	quit()
+
+func _scroll(ui) -> void:
+	var n: Node = ui.panel_box
+	while n != null and not (n is ScrollContainer):
+		n = n.get_parent()
+	if n != null:
+		(n as ScrollContainer).scroll_vertical = 900
 
 func _frames(n: int) -> void:
 	for i in n:

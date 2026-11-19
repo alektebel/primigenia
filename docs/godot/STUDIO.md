@@ -38,3 +38,7 @@ Paint panel, "Biologia": countershading slider, pattern size and contrast slider
 Build panel, under Capacidades: "Actuacion: <class> - <reason>" and, when the parts allow several classes, a selector (Automatica
 or one class). Stored as optional `skin` keys `cs`, `ps`, `pc`, `ros`, `act` (`creature_genome.gd` and `studio/genome.gd` accept
 them; the web genome.js does not). The player's colours are never altered. See `CREATURE-REALISM.md`.
+
+Round 2 (A24): Build panel "Actuacion" block: skeleton readout with a choice when ambiguous, one row per group of identical limbs with its
+reason and a choice when ambiguous, and the count of actuation types. Part panel: "Pareja / Solo derecha / Solo izquierda" on mirrored
+non-leg parts (`single`), pupil choice on eyes (`pupil`). Optional keys `parts[].act|single|pupil`, `skin.sk` (the earlier `skin.act` is accepted and ignored).

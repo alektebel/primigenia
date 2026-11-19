@@ -34,6 +34,34 @@ static func genome(id: String) -> Dictionary:
 			g.parts.append({"type": "shell_plate", "t": 0.57, "ang": 0.0, "size": 1.3})
 			g.skin = {"pat": 0, "cA": "#3a2f22", "cB": "#1d1710", "cC": "#7a6a4c", "wet": 0.5, "scale": 12}
 			return g
+	if id.begins_with("limb_"):
+		# limb_<skeleton>_<actuation>: the hero with every leg forced to one actuation (evidence of the per-limb visuals).
+		var bits := id.split("_")
+		var g: Dictionary = Zoo.genome("giant")
+		g.name = id
+		g.skin = {"pat": 0, "cA": "#8a6a48", "cB": "#4a3828", "cC": "#d8c8a0", "wet": .3, "scale": 7, "sk": bits[1]}
+		if bits[1] == "exo":
+			g.parts.append({"type": "placa", "t": .5, "ang": 0, "size": 1})
+			g.parts.append({"type": "placa", "t": .6, "ang": 0, "size": 1})
+		for p in g.parts:
+			if p.type == "pata":
+				p.act = bits[2]
+		return g
+	if id == "mixed":
+		# One body, three actuations (spring-latch, elastic tendon, muscle), a single giant claw and a single eye.
+		var g: Dictionary = Zoo.genome("hexapod")
+		g.name = "Mixto"
+		var acts := ["spring", "tendon", "muscle"]
+		var k := 0
+		for p in g.parts:
+			if p.type == "pata":
+				p.act = acts[k % 3]
+				k += 1
+		g.parts.append({"type": "arm_smasher", "t": 0.72, "ang": 1.3, "size": 1.5, "single": 1})
+		for p in g.parts:
+			if p.type == "ojo":
+				p.single = 1
+		return g
 	if id == "slug":
 		return Creature.seeds()["Babosa"]
 	if id == "stilt":

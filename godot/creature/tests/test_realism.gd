@@ -49,11 +49,27 @@ func _run() -> void:
 	ms.sort()
 	print("turing field build (48x48, 16 iterations): median %.1f ms" % ms[2])
 	check(ms[2] < 50.0, "turing under 50 ms (%.1f)" % ms[2])
+	# Renderer choice (A24): discrete GPUs go Forward+, software and integrated parts stay on Compatibility.
+	var RC = load("res://game/render_choice.gd")
+	check(RC.looks_discrete("NVIDIA GeForce RTX 5070 Ti", 0), "RTX is discrete")
+	check(RC.looks_discrete("AMD Radeon RX 7800 XT", 0), "Radeon RX is discrete")
+	check(not RC.looks_discrete("Mesa - llvmpipe (LLVM 23)", 0), "llvmpipe is not")
+	check(not RC.looks_discrete("AMD Radeon 860M Graphics", 0), "integrated Radeon is not")
+	check(not RC.looks_discrete("Intel(R) UHD Graphics", 0), "Intel UHD is not")
+	check(RC.looks_discrete("Some GPU", RenderingDevice.DEVICE_TYPE_DISCRETE_GPU), "adapter type discrete wins")
+	check(RC.decide()["relaunch"] == false, "a script run never relaunches")
 	# Bio rules.
-	var ids := {"hero": "muscle", "giant": "muscle", "spider": "hydraulic", "beetle": "exo", "slug": "hydrostatic"}
+	# A24: skeleton per body, actuation per limb.
+	var ids := {"hero": ["endo", "muscle"], "giant": ["endo", "muscle"], "spider": ["exo", "hydraulic"], "beetle": ["exo", "muscle"], "stilt": ["endo", "tendon"], "slug": ["hydro", ""]}
 	for id in ids:
 		var cr := _build(Creatures.genome(id))
-		check(cr.bio["actuation"] == ids[id], "%s actuation %s (got %s)" % [id, ids[id], cr.bio["actuation"]])
+		check(cr.bio["skeleton"] == ids[id][0], "%s skeleton %s (got %s)" % [id, ids[id][0], cr.bio["skeleton"]])
+		if ids[id][1] != "":
+			var leg_act := ""
+			for i in cr.bio["limbs"]:
+				if cr.bio["limbs"][i]["kind"] == "leg":
+					leg_act = cr.bio["limbs"][i]["act"]
+			check(leg_act == ids[id][1], "%s legs actuation %s (got %s)" % [id, ids[id][1], leg_act])
 		var pal: Dictionary = cr.bio["palette"]
 		var sk: Dictionary = cr.genome["skin"]
 		check((pal["cA"] as Color).is_equal_approx(Color(sk["cA"])) and (pal["cB"] as Color).is_equal_approx(Color(sk["cB"])), "%s keeps the player's colours" % id)
@@ -64,6 +80,46 @@ func _run() -> void:
 	var toxic := _build(gt)
 	check(toxic.bio["toxic"] > .5, "aguijon makes a creature toxic")
 	toxic.free()
+	# Per-limb choice, skeleton choice, single part and pupil override survive validation and reach the build.
+	var gl := Creatures.genome("hero")
+	gl.parts[3]["act"] = "spring"
+	gl.skin["sk"] = "exo"
+	gl.parts[0]["pupil"] = "bar"
+	var cl := _build(gl)
+	check(cl.bio["skeleton"] == "endo" or cl.bio["skel_cands"].size() == 1, "skeleton choice ignored when not a candidate")
+	var legs_act: Array = []
+	for i in cl.bio["limbs"]:
+		legs_act.append(cl.bio["limbs"][i]["act"])
+	check("spring" in legs_act, "stored per-limb act is honoured when the skeleton allows it")
+	cl.free()
+	var gs := Creatures.genome("hero")
+	var n_before := 0
+	var cb := _build(gs)
+	for e in cb.parts:
+		if e["type"] == "cuerno":
+			n_before += 1
+	var horn_i := -1
+	for i in gs.parts.size():
+		if gs.parts[i]["type"] == "cuerno":
+			horn_i = i
+	gs.parts[horn_i]["single"] = 1
+	var cs := _build(gs)
+	var n_after := 0
+	for e in cs.parts:
+		if e["type"] == "cuerno":
+			n_after += 1
+	check(n_before == 2 and n_after == 1, "a single part builds one copy (%d -> %d)" % [n_before, n_after])
+	cb.free()
+	cs.free()
+	var gb := Creatures.genome("hero")
+	gb.parts[1]["single"] = 5
+	check(not Creature.parse_genome(gb)["ok"], "single out of range is rejected")
+	var gp := Creatures.genome("hero")
+	gp.parts[1]["pupil"] = "star"
+	check(not Creature.parse_genome(gp)["ok"], "unknown pupil is rejected")
+	var herb := _build(Creatures.genome("giant"))
+	check(herb.bio["pupil"] == "slit" and Creatures.genome("giant").parts.any(func(p): return p.type == "fauces"), "carnivore (fauces) gets slit pupils")
+	herb.free()
 	# Optional creator keys validate and reach the shader.
 	var gk := Creatures.genome("hero")
 	gk.skin["cs"] = .9

@@ -31,6 +31,7 @@ uniform float sss = 0.45;          // fake subsurface strength
 uniform float wrinkle = 0.35;
 uniform float scale_amt = 1.0;     // scales / plates detail amount
 uniform float act_mode = 1.0;      // 1 muscle, 2 hydraulic, 3 exoskeleton, 4 hydrostatic
+uniform float leg_mode = 1.0;      // actuation of this limb: 1 muscle, 2 hydraulic, 3 muscle in exo, 4 hydrostat, 5 tendon, 6 spring, 7 tube feet
 uniform float leg_part = 0.0;      // 1 upper leg, 2 lower leg (limb material copies only)
 uniform float seg_len = 1.0;       // limb segment length
 uniform float flex = 0.0;          // knee bend 0..1, swells muscle
@@ -62,18 +63,30 @@ void vertex() {
 		float k = 0.0;
 		float rad = max(UV2.x, 0.001);
 		if (leg_part > .5) {
-			// Limb segment: local -Y runs from the joint to the far end.
+			// Limb segment: local -Y runs from the joint to the far end. leg_mode = the limb's actuation (A24).
 			float sl = clamp(-VERTEX.y / max(seg_len, 0.001), 0.0, 1.0);
 			float swell = sin(3.14159 * sl);
-			if (act_mode < 1.5) {          // muscle: belly of the muscle swells with joint flexion
+			float m = leg_mode;
+			if (m < 1.5) {                 // muscle on bone: the belly swells with joint flexion
 				k = swell * (0.07 + 0.34 * flex) * (leg_part < 1.5 ? 1.0 : 0.8);
 				if (leg_part > 1.5) k -= smoothstep(0.55, 1.0, sl) * 0.18;
-			} else if (act_mode < 2.5) {   // hydraulic: slim rigid tube, knuckle at each joint, no bulge
+			} else if (m < 2.5) {          // hydraulic: slim rigid tube, knuckle at each joint, no bulge
 				k = -0.16 - 0.1 * swell + 0.5 * (exp(-sl * sl * 80.0) + exp(-(1.0 - sl) * (1.0 - sl) * 80.0));
-			} else if (act_mode < 3.5) {   // exoskeleton: sclerite with a ring at each end
-				float g = pow(abs(cos(3.14159 * sl)), 14.0);
-				k = -0.09 * g + 0.04 * swell;
+			} else if (m < 3.5) {          // muscle in an exoskeleton: three rigid sclerites with deep grooves between them
+				float g = pow(abs(cos(3.14159 * sl * 3.0)), 5.0);
+				k = -0.2 * g + 0.04 * swell;
 				vAct.z = g;
+			} else if (m < 4.5) {          // hydrostat: boneless, smooth and tapering, a slow wave along it
+				k = 0.22 - 0.75 * sl;
+				VERTEX.x += 0.05 * seg_len * sin(sl * 5.0 - TIME * 1.6 + act_phase) * sl;
+			} else if (m < 5.5) {          // elastic tendon: thin sinewy limb, muscle only near the hip
+				k = -0.52 + 0.62 * exp(-sl * sl * 10.0) - 0.04 * swell;
+				vAct.w = atan(VERTEX.x, VERTEX.z);
+			} else if (m < 6.5) {          // spring-latch: a coiled, loaded joint, thin rod beyond it
+				k = 0.5 * exp(-sl * sl * 30.0) - 0.3 * smoothstep(0.25, 0.55, sl) + 0.1 * sin(sl * 48.0) * (1.0 - smoothstep(0.15, 0.5, sl));
+				vAct.z = (1.0 - smoothstep(0.1, 0.5, sl)) * (0.5 + 0.5 * sin(sl * 48.0));
+			} else {                       // tube feet: stubby, tapering, studded with suckers
+				k = 0.1 - 0.35 * sl;
 			}
 			vAct.x = sl;
 			VERTEX.xz *= (1.0 + k);
@@ -83,8 +96,8 @@ void vertex() {
 			if (act_mode > 3.5) {          // hydrostatic: peristaltic wave of the circular muscles
 				k = 0.05 * sin(t * 15.0 - TIME * 2.4 + act_phase) * smoothstep(0.02, 0.2, t);
 			} else if (act_mode > 2.5) {   // exoskeleton: overlapping segment plates and soft joint rings
-				float g = pow(abs(sin(3.14159 * t * seg_rings)), 12.0);
-				k = -0.07 * g + 0.025;
+				float g = pow(abs(sin(3.14159 * t * seg_rings)), 5.0);
+				k = -0.13 * g + 0.035;
 				vAct.z = g;
 			} else if (act_mode < 1.5) {   // muscle: haunch and shoulder masses
 				for (int i = 0; i < n_mounts; i++) {
@@ -143,11 +156,27 @@ void fragment() {
 		float wr = 1.0 - abs(2.0 * cre - 1.0);
 		float hgt = scale_amt * plate * 0.085 + pores * 0.025 + wrinkle * wr * wr * 0.22;
 		hgt *= fade / freq;
-		hgt -= vAct.z * 0.02;                 // segment grooves of an exoskeleton read in the normal too
+		hgt -= vAct.z * 0.05;                 // segment grooves of an exoskeleton read in the normal too
 		sk *= mix(1.0, mix(0.86, 1.0, sh), scale_amt * 0.7 * fade) * (0.95 + 0.1 * pores);
 		// plates of an exoskeleton: dark joint rings, polished sclerites
 		float joint = vAct.z;
-		sk *= 1.0 - 0.5 * joint;
+		float loaded = 0.0;
+		sk *= 1.0 - 0.6 * joint;
+		if (leg_part > .5 && leg_mode > 4.5 && leg_mode < 5.5) {       // the elastic tendon: a pale, raised cord down the back of the limb
+			float da = abs(abs(vAct.w) - 3.14159);
+			float cord = (1.0 - smoothstep(0.08, 0.2, da)) * smoothstep(0.1, 0.3, vAct.x);
+			sk = mix(sk, vec3(0.86, 0.8, 0.66), cord * 0.85);
+			hgt += cord * 0.006;
+		}
+		if (leg_part > .5 && leg_mode > 5.5 && leg_mode < 6.5) {       // spring-latch: coil shading and the glow of stored energy
+			sk *= 1.0 - 0.35 * joint;
+			loaded = joint * 0.6;
+		}
+		if (leg_part > .5 && leg_mode > 6.5) {                          // tube feet: sucker dots
+			float dots = 1.0 - smoothstep(0.18, 0.34, w1.x);
+			sk = mix(sk, sk * 0.55, dots * 0.8);
+			hgt -= dots * 0.004;
+		}
 		vec3 view = normalize(-VERTEX);
 		// ---- roughness: dry back, damp belly, wet snout and mouth ----
 		float wetm = 0.0;
@@ -171,6 +200,7 @@ void fragment() {
 #ifdef RENDERER_FORWARD_PLUS
 		SSS_STRENGTH = sss * (0.15 + 0.5 * thin);
 #endif
+		em += vec3(0.9, 0.35, 0.08) * loaded * 0.5;
 		EMISSION = em;
 		METALLIC = 0.0;
 		CLEARCOAT = clamp(clearcoat_amount * (1.0 + 3.0 * wetm), 0.0, 1.0);

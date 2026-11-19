@@ -27,7 +27,9 @@ var bone: ShaderMaterial          ## keratin.gdshader kinds: horn / bone, tooth,
 var tooth: ShaderMaterial
 var beak: ShaderMaterial
 var eye_white: StandardMaterial3D
-var iris: StandardMaterial3D
+var iris: ShaderMaterial          ## eye_iris.gdshader, default pupil of the creature; iris_for() gives the other shapes
+var cornea: StandardMaterial3D     ## wet transparent bulge over the iris
+var _iris_by_kind := {}
 var pupil: StandardMaterial3D
 var dark: ShaderMaterial
 var glow: StandardMaterial3D
@@ -74,23 +76,25 @@ func _init() -> void:
 	bone = _keratin(0.0, "#bfae8a", "#4a3822", "#cdbf9c", .5)
 	tooth = _keratin(1.0, "#f7f1df", "#6d5a3a", "#e6dcc0", .8)
 	beak = _keratin(2.0, "#d9952f", "#5a3512", "#d6a04a", .9)
+	# Wet, specular eyes: veined cream sclera, a radial iris (own shader), a glossy cornea bulge over it.
 	if realism:
-		# Wet, specular eyes: a sharp clearcoat glint over a slightly veined off-white, a deeper iris without its glow.
-		eye_white = phys("#cdbf9f", .1, 1)
+		eye_white = phys("#cdbf9f", .12, 1)
 		eye_white.clearcoat_roughness = .03
-		iris = phys("#8a5f1c", .25, 1)
-		iris.clearcoat_roughness = .03
-		iris.emission_enabled = true
-		iris.emission = Color("#3a2000")
-		iris.emission_energy_multiplier = .5
 		pupil = phys("#030303", .05, 1)
 		pupil.clearcoat_roughness = .02
 	else:
 		eye_white = phys("#f4efe6", .08, 1)
-		iris = phys("#e8a41c", .2, 1)
-		iris.emission_enabled = true
-		iris.emission = Color("#6a3a00")
 		pupil = phys("#050505", .05, 1)
+	iris = _iris("round")
+	cornea = StandardMaterial3D.new()
+	cornea.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	cornea.albedo_color = Color(1, 1, 1, .07)
+	cornea.roughness = .02
+	cornea.metallic_specular = 1.0
+	cornea.clearcoat_enabled = true
+	cornea.clearcoat = 1.0
+	cornea.clearcoat_roughness = .01
+	cornea.render_priority = 3
 	dark = _keratin(0.0, "#1a1210", "#150e0a", "#4a392b", .7)   # chitin / dark horn: keratin shader, dark palette
 	glow = StandardMaterial3D.new()
 	glow.albedo_color = Color("#7fe8ff")
@@ -120,13 +124,33 @@ func _keratin(kind: float, flat_hex: String, root_hex: String, tip_hex: String, 
 	return m
 
 
+func _iris(kind: String) -> ShaderMaterial:
+	var m := ShaderMaterial.new()
+	m.shader = _shader("eye_iris")
+	m.set_shader_parameter("pupil_kind", {"round": 0.0, "slit": 1.0, "bar": 2.0}[kind])
+	m.set_shader_parameter("realism", 1.0 if realism else 0.0)
+	return m
+
+
+## Iris material of a pupil shape ("round", "slit", "bar"), shared by the eyes of one creature.
+func iris_for(kind: String) -> ShaderMaterial:
+	if not _iris_by_kind.has(kind):
+		var m := _iris(kind)
+		m.set_shader_parameter("col_in", iris.get_shader_parameter("col_in"))
+		m.set_shader_parameter("col_out", iris.get_shader_parameter("col_out"))
+		m.set_shader_parameter("seed", iris.get_shader_parameter("seed"))
+		_iris_by_kind[kind] = m
+	return _iris_by_kind[kind]
+
+
 func skin_materials() -> Array:
 	return [skin, skin_body, skin2, membrane, glider, insect, sac] + limb_mats
 
 
 ## A copy of the skin for one limb segment: part 1 upper leg, 2 lower leg. Carries its own flex uniform.
-func limb_material(part: int, seg_len: float) -> ShaderMaterial:
+func limb_material(part: int, seg_len: float, mode: float = 1.0) -> ShaderMaterial:
 	var m: ShaderMaterial = skin.duplicate()
+	m.set_shader_parameter("leg_mode", mode)
 	m.set_shader_parameter("leg_part", float(part))
 	m.set_shader_parameter("seg_len", seg_len)
 	limb_mats.append(m)
@@ -175,6 +199,13 @@ func set_skin(s: Dictionary) -> void:
 func configure(b: Dictionary, genome_skin: Dictionary) -> void:
 	bio = b
 	limb_mats.clear()
+	_iris_by_kind.clear()
+	var tints := [[Color(.78, .5, .1), Color(.45, .26, .05)], [Color(.72, .72, .2), Color(.3, .38, .06)], [Color(.85, .38, .06), Color(.42, .14, .03)], [Color(.5, .32, .14), Color(.22, .12, .05)]]
+	var tint: Array = tints[int(b["seed"]) % 4]
+	iris.set_shader_parameter("col_in", tint[0])
+	iris.set_shader_parameter("col_out", tint[1])
+	iris.set_shader_parameter("seed", float(int(b["seed"]) % 97))
+	iris.set_shader_parameter("pupil_kind", {"round": 0.0, "slit": 1.0, "bar": 2.0}[b["pupil"]])
 	var mode: float = {"muscle": 1.0, "hydraulic": 2.0, "exo": 3.0, "hydrostatic": 4.0}[b["actuation"]]
 	var kind := int(b["pat"])
 	var seed_: int = b["seed"]

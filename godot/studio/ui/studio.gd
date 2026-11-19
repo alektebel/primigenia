@@ -653,30 +653,65 @@ func _rebuild_panel() -> void:
 		"test": _panel_test()
 	_sync_history()
 
-## How the body moves, from the parts picked (CreatureBio): readout with the reason, and a choice when the parts allow
-## more than one class. Purely visual in this pilot (docs/godot/CREATURE-REALISM.md).
+## A24: skeleton per body, actuation per limb. Readout "Actuación: <class> - <why>" for the body and for every limb,
+## a choice only where the part form is ambiguous, and the count of actuation types (informational: the cost is a
+## later sim rule). Purely visual for now (docs/godot/CREATURE-REALISM.md).
 func _actuation_section() -> void:
 	var bio: Dictionary = view.creature.bio if "creature" in view and view.creature != null else {}
 	if bio.is_empty():
 		return
 	var C = load("res://creature/creature_bio.gd")
-	var l := _note(T("Actuación") + ": " + T(C.actuation_label(bio)) + " - " + T(C.actuation_reason(bio)))
-	l.name = "ActuationReadout"
-	panel_box.add_child(l)
-	var allowed: Array = bio["allowed"]
-	if allowed.size() > 1:
+	panel_box.add_child(_h2(T("Actuación")))
+	var sk := _note(T("Esqueleto") + ": " + T(C.label(bio["skeleton"])) + " - " + T(bio["skel_why"]))
+	sk.name = "SkeletonReadout"
+	panel_box.add_child(sk)
+	var cands: Array = bio["skel_cands"]
+	if cands.size() > 1:
 		var ob := OptionButton.new()
-		ob.name = "ActuationChoice"
+		ob.name = "SkeletonChoice"
 		ob.add_item(T("Automática"))
-		var cur := 0
-		for i in allowed.size():
-			ob.add_item(T(C.actuation_label({"actuation": allowed[i]})))
-		var chosen := String(model.doc["skin"].get("act", "auto"))
-		if chosen in allowed:
-			cur = allowed.find(chosen) + 1
-		ob.select(cur)
-		ob.item_selected.connect(func(i): model.set_skin("act", "auto" if i == 0 else allowed[i - 1]))
+		for c in cands:
+			ob.add_item(T(C.label(c)))
+		var cur := String(model.doc["skin"].get("sk", "auto"))
+		ob.select(cands.find(cur) + 1 if cur in cands else 0)
+		ob.item_selected.connect(func(i): model.set_skin("sk", "auto" if i == 0 else cands[i - 1]))
 		panel_box.add_child(ob)
+	# Identical limbs (same part type, actuation and reason) share one row and one choice.
+	var groups := {}
+	var order: Array = []
+	for idx in bio["limbs"]:
+		var L: Dictionary = bio["limbs"][idx]
+		var key: String = "%s|%s|%s" % [L["type"], L["act"], L["why"]]
+		if not groups.has(key):
+			groups[key] = []
+			order.append(key)
+		groups[key].append(int(idx))
+	for key in order:
+		var ids: Array = groups[key]
+		var L: Dictionary = bio["limbs"][ids[0]]
+		var row := _note(T(parts_db_name(L["type"])) + (" x%d" % ids.size() if ids.size() > 1 else "") + ": " + T("Actuación") + ": " + T(C.label(L["act"])) + " - " + T(L["why"]))
+		row.name = "Limb_%d" % ids[0]
+		panel_box.add_child(row)
+		if L["cands"].size() > 1:
+			var ob2 := OptionButton.new()
+			ob2.name = "LimbChoice_%d" % ids[0]
+			ob2.add_item(T("Automática"))
+			for c in L["cands"]:
+				ob2.add_item(T(C.label(c)))
+			var stored := String(model.doc["parts"][ids[0]].get("act", ""))
+			ob2.select(L["cands"].find(stored) + 1 if stored in L["cands"] else 0)
+			var lc: Array = L["cands"]
+			ob2.item_selected.connect(func(i): model.set_part_keys(ids, "act", "auto" if i == 0 else lc[i - 1]))
+			panel_box.add_child(ob2)
+	var n := int(bio["act_types"])
+	if n > 0:
+		var mix := _note(("%d " % n) + (T("tipo de actuación") if n == 1 else T("tipos de actuación")) + (": +%d " % (n - 1) + T("metabolismo") if n > 1 else ""))
+		mix.name = "ActuationMix"
+		panel_box.add_child(mix)
+	panel_box.add_child(HSeparator.new())
+
+func parts_db_name(type: String) -> String:
+	return i18n.part_name(type)
 
 ## Capabilities (web #caps): 1..5 pips per stat, plus the warnings from the part set.
 func _caps_section() -> void:
@@ -723,6 +758,25 @@ func _panel_build() -> void:
 		var mirrored: bool = absf(sin(p["ang"])) >= .14 or parts_db.is_lateral(p["type"])
 		if mirrored:
 			panel_box.add_child(_note("⇋ " + T("Piezas en pareja: se reflejan a ambos lados")))
+			if not parts_db.is_leg(p["type"]):
+				# A24: any mirrored part can be made single (one giant claw, one eye). Which side matters later in the sim.
+				var sob := OptionButton.new()
+				sob.name = "SideChoice"
+				for lbl in ["Pareja (ambos lados)", "Solo derecha", "Solo izquierda"]:
+					sob.add_item(T(lbl))
+				var cur := int(p.get("single", 0))
+				sob.select(0 if cur == 0 else (1 if cur == 1 else 2))
+				sob.item_selected.connect(func(i): model.set_part_key(sel, "single", [0, 1, -1][i]))
+				panel_box.add_child(sob)
+		if p["type"] in ["ojo", "tallo", "eye_triad"]:
+			var pob := OptionButton.new()
+			pob.name = "PupilChoice"
+			var kinds := ["auto", "round", "slit", "bar"]
+			for lbl in ["Pupila: según su vida", "Pupila redonda", "Pupila en rendija", "Pupila horizontal"]:
+				pob.add_item(T(lbl))
+			pob.select(maxi(kinds.find(String(p.get("pupil", "auto"))), 0))
+			pob.item_selected.connect(func(i): model.set_part_key(sel, "pupil", kinds[i]))
+			panel_box.add_child(pob)
 		var del := Button.new()
 		del.text = T("Quitar pieza") + "  (Del)"
 		del.pressed.connect(on_key_delete)
