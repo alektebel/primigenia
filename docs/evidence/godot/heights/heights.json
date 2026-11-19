@@ -292,8 +292,8 @@
 		"stuck": 0
 	},
 	"timing_us_per_step": {
-		"field": 20.1,
-		"flat": 13.6,
+		"field": 10.7,
+		"flat": 7.7,
 		"note": "median of three interleaved 10000-step trials per mode; includes GDScript marshalling",
 		"steps": 10000,
 		"wild": 24

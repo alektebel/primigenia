@@ -1,121 +1,66 @@
-# Route certification handoff — 2026-11-19
+# Route certification (C1): closed 2026-11-19
 
-**Incomplete: C1 is not closed.** The strict required-route gate is implemented and deliberately remains red.
-The brief's requirement that `make test` pass is **not met**. No terrain repair has been implemented to make
-the failed required routes traversable. Do not interpret the separate NAV pass as curated-route acceptance.
-All changes are uncommitted in this worktree; no screenshots, X11, commits or other-worktree edits were used.
+The strict required-route gate (`tests/test_routes.c`, `make routes-test`, part of `make test`) passes on seeds 1, 7 and 42:
+**144/144 trips per seed**, every trajectory replayed to the same tick-hash digest. The first Codex pass (commits
+`test(routes)`, `fix(nav)`, `fix(world)`, `docs(routes)`) built the gate and found the failures; the terrain curation that fixes
+them is `fix(terrain): graded gap trail, cave approach and fords ...` plus the re-pinned fixtures.
 
-| Slice | Result |
-|---|---|
-| S1: data, C simulation, reporting | Implemented; required round trips fail as detailed below. |
-| S2: player ceiling and planner agreement | Player exemption removed; climb, holding ceiling and lateral bank clearance checked. NAV gate passes. Required outer routes still need terrain/placement repair. |
-| S3: arrival / blocked feedback | Implemented and tested through C world-2 and Godot native state; visual HUD acceptance remains unverified. |
+## Gate
 
-## Reviewable slices and intended commit messages
+Nine bodies x eight required pairs (nest to Garfio, three herd home ranges, start valley, lake shore/water approach, river gap,
+cave mouth) x both directions = 144 trips per seed. Real steering, one GO per trip, no teleport or debug move, no combatants.
+A trip must emit `arrived`, finish within 0.3 m and 20,000 ticks, stay out of deep water and respect the 1.26 gradient ceiling.
+Bodies: the real Merodeador (4 legs, 3 m) and 2/4/6/8 legs at 0.5 m and 4 m. The player obeys the same slope ceiling as wildlife.
 
-1. `test(routes): add strict curated round-trip certification for three seeds`
-   — `tests/test_routes.c`, `tests/routes/`, `tools/routes/`, the `routes_test`/`routes-test` Makefile targets and `make test` gate.
-   JSON fixtures contain actual StageSetup nest/Garfio/herd positions, all cave records, terrain identity, explicit required
-   places and pairs. Text fixtures are generated derivatives checked against JSON. The headless placement exporter is
-   `godot/game/tests/routes_fixture.gd`.
-2. `fix(nav): apply the player slope ceiling and reject snapped arrivals`
-   — isolated navigation/route-following hunks in `core/src/stage_world.c` and regressions in `tests/test_steer.c`.
-   Full-gradient checks use the body's holding threshold capped at 1.26, plus directional climb and 1 m lateral clearance.
-   The player obeys the same ceiling and capped slide rule as wildlife. Cache identity now includes stall/slide multipliers.
-   Larger detours required increasing the bounded A* expansion cap from 120,000 to 500,000. No terrain bytes changed.
-   Field gradients also avoid repeating the same terrain dispatch four times, with identical samples/math.
-   A target with no walkable final connection is rejected instead of silently reporting arrival at a snapped nearby cell.
-3. `fix(world): expose durable route outcomes to the Godot UI`
-   — `path_failed` gains an additive `reason`; continuation failures set the same blocked/error feedback as ordinary replan failures.
-   Godot exposes a separate `route_events` array to the UI, which displays `Arrived` / `Blocked: <reason>`.
-   Events use the existing schema/types and are not hashed. A headless native-state test checks once-only delivery and
-   independence from agent acknowledgement. The Python ctypes binding also needed the existing steering-v3 `legs` and
-   `player_legs` fields: its old 17,604-byte setup was 100 bytes too short and `make smoke` crashed with heap corruption.
-   It now matches the native 17,704-byte layout; smoke passes.
-4. `docs(routes): record certification failures and measured navigation costs`
-   — this report, the three route evidence tables, NAV/locomotion notes and headless heights evidence.
+| Seed | Before curation (first pass) | After curation |
+|---|---|---|
+| 1 | 122/144: cave entrance 0/18, river gap failed for both biped sizes | **144/144** |
+| 7 | 108/144: cave entrance and river gap 0/36 | **144/144** |
+| 42 | 122/144: cave entrance 0/18, river gap failed for both biped sizes | **144/144** |
 
-No lineage, evolution, cousin spawn or ledger hooks were edited. No new simulation module was needed; the core changes
-are confined to existing navigation, movement-ceiling and route-result code.
+The six local destinations were 108/108 before and are 108/108 after. Full per-route tables: `docs/evidence/routes/seed{1,7,42}.md`.
 
-## Required graph and results
+## Why they failed, and the curation (docs/TERRAIN.md item 9)
 
-Nine bodies × eight required pairs × both directions = **144 trips per seed**, each replayed to the same tick-hash digest.
-The real Merodeador is four-legged, radius 3 m, speed 4; the other bodies use 2/4/6/8 legs and radii 0.5/4 m.
-There are no teleport/debug moves during a trip and no combatants. Every successful trip must emit `arrived`, finish
-within 0.3 m and 20,000 ticks, stay out of deep water and respect the 1.26 gradient ceiling. Failed routes return a
-nonzero process status; the gate does not turn them into expected successes.
+* **Cave entrance.** Every cave site is chosen on a steep rock face (gradient > 0.9) at 50-250 m, inside massifs whose slope is above
+  1.26 for hundreds of metres around (seed 1: 1.30 at the entrance, 400 m of ground above 1.26 around it). No body could stand
+  there. Fix: the first (gameplay) entrance is ranked by the cost of a graded trail to the already-carved network, still preferring
+  the waterfall site (it moved on all three seeds and is still a waterfall), and a 0.30-slope corridor is cut to its floor. The rock
+  behind the entrance is never graded (the terrain guarantee entrance slope > 0.8 still holds), so the certified endpoint is the
+  apron 6 m in front of the entrance record, not the steep notch cell itself. This is a deliberate change from the first pass
+  ("do not certify an apron"): a body cannot stand on a 1.3 face, and the owner brief asks for an apron.
+* **River gap.** Two findings. (1) The checkpoint `(800,120)` was only on the gap on seeds 1 and 42; on seed 7 it lies on a 114 m
+  massif, which is why every body failed there. The gap checkpoint is now the lowest dry cell on the 809 m circle around the start
+  (`(796.3,138.9)` seeds 1 and 42, `(768.2,258.4)` seed 7). (2) On seeds 1 and 42 the lake-outflow river is a deep (1.2 m) channel
+  across the way out, and the gap floor is rugged at gradient 0.7-1.0, above the biped holding limits (0.85 / 0.70) and directional
+  climb (0.55 / 0.457). Disabling rivers did not help because the rugged floor alone stops bipeds. Fix: a graded 0.30 corridor from
+  the start through the checkpoint to the river mouth, with a ford (deep class becomes shallow, pits become a shoal 0.55 m below the
+  surface) where it meets deep or standing water. Real rivers and the lake bowl are never graded.
+* Cost: terrain generation at n=1024 goes from about 3.5 s to about 5 s (three cost fields by raster sweeps, no allocation).
 
-| Seed | Required trips reached | Failures |
-|---|---:|---|
-| 1 | **122/144** | First cave entrance: all 18 directions/bodies. River gap: both directions for the two biped sizes (4). |
-| 7 | **108/144** | First cave entrance and river gap: all 36 directions/bodies. |
-| 42 | **122/144** | First cave entrance: all 18 directions/bodies. River gap: both directions for the two biped sizes (4). |
+## Terrain limits retained
 
-The six local destinations (Garfio, three herd home ranges, start valley and lake shore/water approach) reach **108/108**
-trips on each seed. Full per-route tick counts, initial planned and actual walked distance, maximum grade, shallow-ford
-entries, blocked ticks, replans and first/repeated planning times are in:
+`terrain_test --heavy` passes on the six evidence seeds (1, 7, 42, 99, 1234, 31337): flat start, lake holds >= 10 m, river gap
+<= start + 5 m, col between 100 and 300 m, waterfall caves (area >= 8000 m2, drop > 1 m, entrance slope > 0.8, not in a standing
+lake), reachable-land and river rules. Trails only run at n >= 512 and are skipped without rivers (gap) or caves (cave approach),
+so the n=32 goldens are unchanged.
 
-- [seed 1](evidence/routes/seed1.md)
-- [seed 7](evidence/routes/seed7.md)
-- [seed 42](evidence/routes/seed42.md)
+## Goldens
 
-Cave endpoints are the actual first generated entrance, not a relocated gentle approximation. Seed 1's entrance itself
-has gradient approximately 1.3044, above the ceiling. Other cave records are retained for later curation; this does not prove
-that every other possible cave is unreachable. Named spring, fossils and meteor shards have no gameplay placements;
-the default disables the volcano, so there is no crater rim. They are explicit TODOs with proposed coordinates and sources
-in [the fixture notes](../tests/routes/README.md), not fabricated successful routes to the origin.
+Changed once, for the reason above: the n=1024 terrain hashes of seeds 1, 7 and 42, pinned in `tests/routes/seed*.json/.txt`,
+`docs/evidence/routes/seed*.md` and `docs/evidence/godot/heights/heights.json`. Fixture places: only `river-gap` and
+`hidden-cave-entrance` moved (nest, herds, player unchanged; re-exported with `godot/game/tests/routes_fixture.gd`). Unchanged: the
+five world replay goldens, `tests/golden/terrain-{1,7,42}.hash` (n=32), combat goldens.
 
-Diagnostic experiments (only ignored build files): disabling rivers did not make the seed-1 biped outer route pass;
-a 2 m navigation grid and tested nearby approaches also did not resolve it. Consequently, a river-only carve adjustment
-has not been demonstrated to be sufficient. Those experiments were not retained as gameplay changes.
+## Measured costs (wall clock, not deterministic)
 
-## Verification and costs
+* Curated trips, worst cold / worst warm plan: seed 1 27.1 / 2.7 ms, seed 7 59.2 / 4.8 ms, seed 42 46.5 / 3.9 ms.
+* NAV gate (random far targets, 500k expansion cap): 20/20 seed 1 (mean 69.7 ms, worst 476 ms, warm worst 57 ms),
+  19/20 seed 7 (39.4 / 311 / 76 ms), 19/20 seed 42 (86.0 / 477 / 43 ms). The single rejection per seed is unchanged from the first pass.
 
-- `make test`: **FAIL at the new required-route gate**. Earlier terrain, world, social, NAV, steering, native core,
-  combat, tournament-unit and combat-golden checks pass. All five existing world replay goldens match unchanged.
-- `make smoke`: **PASS** after correcting the pre-existing ctypes layout mismatch.
-- `make tourney`: **PASS**, including the balance checks.
-- `build/steer_test`: **PASS, 259 checks**. The new player-slide regression was separately linked against the original
-  `stage_world.c`: it fails on `slid`, demonstrating the old exemption; it passes with these changes. Synthetic tests
-  also check runtime path failure, retained reason after a later step, event acknowledgement and successful arrival.
-- NAV: **20/20 seed 1; 19/20 seed 7; 19/20 seed 42**. Each test also passes replay and mid-path snapshot determinism.
-- Headless Godot route UI-state events: **PASS, 0 failures**. No actual HUD rendering or owner interaction was tested.
-- Headless Godot heights: **PASS, 15 checks, 0 failures**; **18/20** grid arrivals, **0** unsafe chase ticks.
-  Median field time **20.1 us/step**, flat **13.6 us/step**, both timing thresholds pass. The original single sequential
-  timing sample failed under variable scheduling (including one isolated attempt); timing now uses three interleaved
-  identical 10,000-step trials per mode and compares medians, with the existing <2x and <50 us thresholds unchanged.
-  The test now measures remaining polyline distance
-  for its no-progress check: valid bank detours can initially increase distance to the destination. The 1,200-tick
-  no-progress window and 12,000-tick overall budget are unchanged; the arrival gate now counts both blocked and stuck
-  runs when requiring 18/20, rather than accidentally excluding stuck runs.
-- `git diff --check`: PASS. No goldens regenerated: existing golden hashes remained identical; terrain version stays 4.
+## Open items (not gate failures)
 
-Planning is substantially slower than the previous documented implementation. These are measured wall-clock costs,
-not deterministic outputs or dedicated hardware benchmarks; some runs overlapped other tests.
-
-| Seed | Curated worst cold / repeated warm plan | NAV first-pass mean / worst | NAV warm worst |
-|---|---:|---:|---:|
-| 1 | 599.775 / 11.583 ms | 381.55 / 3280.75 ms | 176.76 ms |
-| 7 | 0.319 / 0.134 ms | 155.81 / 908.21 ms | 189.99 ms |
-| 42 | 583.171 / 41.012 ms | 274.83 / 1354.93 ms | 832.97 ms |
-
-Curated cold measurements explicitly invalidate derived grid state before each trip; warm repeats the same request
-with its visited edges cached. The NAV first pass shares a progressively filled cache across its 20 targets; its warm
-pass repeats those targets. No full-grid prefill timing was measured here. Seed 7's cheap curated plans reflect immediate
-outer-target rejections, not good far-route performance. The increase in search cap and stricter checks need optimisation
-before claiming acceptable loading/command latency. Static planner storage grows by approximately 1.52 MB for the larger
-path reconstruction scratch array; grid dimensions and the world/snapshot layout are unchanged.
-
-The normal Godot build tried to regenerate shared `godot-cpp` files outside the worktree and was refused by the sandbox.
-The successful build used a copy under ignored `build/godot-cpp` and `GODOT_CPP=$PWD/build/godot-cpp`; user config/cache/data
-were redirected under ignored `build/godot-user` for headless runs. Existing Godot shutdown resource-leak warnings remain.
-No display, screenshots, visual acceptance or WASM verification is claimed.
-
-## Work still required
-
-Implement and verify the minimal deterministic terrain/access repair or a reachable authored entrance/trail; certify the
-river-gap round trip for both biped sizes and all required seeds; then make the strict route gate and `make test` green.
-Keep the real endpoint requirement and remove no failures from the graph merely to obtain a pass. Any terrain change must
-retain TERRAIN/HYDROLOGY limits, rerun the seed guarantees, and update affected terrain identities/goldens once with an
-explanation. Add actual placements before certifying the TODO discoveries. Address the measured planning-latency regression.
+* Named spring, fossils, meteor shards and the crater rim have no gameplay placements; they remain TODOs with proposed
+  coordinates in `tests/routes/README.md`, not fabricated trips.
+* Only the first (gameplay) cave is guaranteed reachable. The other 2-5 entrances stay secret rock faces.
+* The ctypes `legs`/`player_legs` fix of the first pass is also on main; the merge kept one copy.
