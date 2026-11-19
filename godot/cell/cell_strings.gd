@@ -3,6 +3,7 @@ extends RefCounted
 ## The sim returns ids (hint ids, goal ids, status words); this table turns them into text.
 
 const Strings := preload("res://ui/strings.gd")
+const CSim := preload("res://cell/colony_sim.gd")
 
 const TABLE := {
 	"title": ["Primigenia · cell stage", "Primigenia · fase célula"],
@@ -158,6 +159,66 @@ const TABLE := {
 	"h_threats_done": ["You survived the four threats. The colony stage is open: press 6.", "Has superado las cuatro amenazas. La colonia está abierta: pulsa 6."],
 	"g_threats": ["Survive the four threats with the membrane at {0} % or more", "Sobrevive a las cuatro amenazas con la membrana al {0} % o más"],
 	"d_threat": ["The last threat broke the membrane under 60 %: prepare its counter and it will come back.", "La última amenaza rompió la membrana por debajo del 60 %: prepara su defensa y volverá."],
+	# phase 6: the colony
+	"light": ["light", "luz"],
+	"founder": ["Founder", "Fundadora"],
+	"founder_role": ["Your cell from phase 5. Every block copies its sheet.", "Tu célula de la fase 5. Cada bloque copia su ficha."],
+	"inherits": ["Inherits: {0} ATP/min, membrane {1} %", "Hereda: {0} ATP/min, membrana {1} %"],
+	"cell_state": ["ATP {0} / 10 · membrane {1} %", "ATP {0} / 10 · membrana {1} %"],
+	"tap_slot": ["Tap a free hex next to the colony", "Toca un hueco libre junto a la colonia"],
+	"fx_no_atp": ["No ATP next door", "Sin ATP al lado"],
+	"fx_no_locked": ["Coming soon", "Próximamente"],
+	"fx_no_far": ["It must touch the colony", "Tiene que tocar la colonia"],
+	"fx_no_taken": ["Occupied", "Ocupado"],
+	"cw_warn": ["An amoeba comes from the marked side · {0} s", "Una ameba llega por el lado marcado · {0} s"],
+	"cw_hit": ["The amoeba bites the front line", "La ameba muerde la primera línea"],
+	"cw_arrived": ["You reached the light. Build up to {1} cells ({0} now)", "Has llegado a la luz. Monta hasta {1} células ({0} ahora)"],
+	"cw_soon": ["You reached the light. Something is coming…", "Has llegado a la luz. Algo se acerca…"],
+	"colony_card": ["Colony · place specialised cells around the founder", "Colonia · coloca células especializadas alrededor de la fundadora"],
+	"cs_atp": ["Colony ATP", "ATP de la colonia"],
+	"cs_cells": ["Cells", "Células"],
+	"cs_speed": ["Speed", "Velocidad"],
+	"cs_light": ["To the light", "Hacia la luz"],
+	"cs_wave": ["Threat", "Amenaza"],
+	"cw_wait": ["waiting", "espera"],
+	"cw_warn_s": ["incoming", "viene"],
+	"cw_hit_s": ["biting", "muerde"],
+	"cw_ok": ["survived", "superada"],
+	"g_colony": ["Colony of {0}, reach the light, survive the amoeba", "Colonia de {0}, llega a la luz y sobrevive a la ameba"],
+	"ch_energy": ["The founder makes ATP alone, slowly. Put an energy cell next to it: it costs 5 ATP, taken from its neighbour, and then it makes more than the founder. Neighbours share their ATP.",
+		"La fundadora fabrica ATP sola, despacio. Pon una célula de energía a su lado: cuesta 5 ATP, que salen de su vecina, y luego produce más que la fundadora. Las vecinas se reparten el ATP."],
+	"ch_motile": ["Now a motile cell: its flagellum burns ATP to swim toward the light. Speed is thrust over the size of the colony.",
+		"Ahora una célula móvil: su flagelo gasta ATP para nadar hacia la luz. La velocidad es el empuje entre el tamaño de la colonia."],
+	"ch_grow": ["{0}/{1} cells. Each block costs ATP from a neighbour: if it says there is no ATP, wait for the energy cells to fill the colony.",
+		"{0}/{1} células. Cada bloque cuesta ATP de una vecina: si dice que no hay ATP, espera a que las células de energía llenen la colonia."],
+	"ch_swim": ["The colony swims toward the light ({0} %). More motile cells swim faster but burn more ATP.", "La colonia nada hacia la luz ({0} %). Más células móviles nadan más rápido pero gastan más ATP."],
+	"ch_defense": ["You are at the light. An amoeba will come from one side and bite the front line: a defensive cell takes the bite and pricks it. Wait for the warning to see the side.",
+		"Estás en la luz. Una ameba vendrá por un lado y morderá la primera línea: una célula defensiva aguanta el mordisco y la pincha. Espera al aviso para ver el lado."],
+	"ch_wait": ["You are at the light with a defence. The amoeba comes soon: watch the marked side.", "Estás en la luz con defensa. La ameba llega pronto: vigila el lado marcado."],
+	"ch_warn": ["The dotted cells are the front line. Put defensive cells there (right click removes a block, then place one) before the bites in {0} s.",
+		"Las células con círculo punteado son la primera línea. Pon ahí células defensivas (clic derecho quita un bloque, luego coloca una) antes de los mordiscos en {0} s."],
+	"ch_hit": ["Bites on the front line. A defensive cell absorbs it; two absorbed bites and the amoeba leaves.", "Mordiscos en la primera línea. Una célula defensiva lo absorbe; con dos mordiscos absorbidos la ameba se va."],
+	"ch_fail": ["The colony lost cells. Rebuild up to {0}, put defence on the side of the warning and it will come back.", "La colonia perdió células. Reconstruye hasta {0}, pon defensa en el lado del aviso y volverá."],
+	"ch_done": ["The colony survived.", "La colonia sobrevivió."],
+	# carry-over card
+	"leg_title": ["The colony becomes a creature", "La colonia se convierte en criatura"],
+	"leg_body": ["This is what your cell hands to the creature. It is saved; the creature stage will read it.", "Esto es lo que tu célula le pasa a la criatura. Queda guardado; la etapa de criatura lo leerá."],
+	"leg_diet": ["Starting diet", "Dieta inicial"],
+	"leg_def": ["Starting part", "Parte inicial"],
+	"leg_size": ["Starter size", "Tamaño inicial"],
+	"leg_from": ["Metabolism: {0} % of your pieces handle waste", "Metabolismo: el {0} % de tus piezas gestiona residuos"],
+	"leg_from_def": ["Defence: {0} spines or defensive cells, {1} plates (flippases and membrane)", "Defensa: {0} espinas o células defensivas, {1} placas (flipasas y membrana)"],
+	"leg_diet_carronero": ["Scavenger", "Carroñero"],
+	"leg_diet_cazador": ["Hunter", "Cazador"],
+	"leg_diet_herbivoro": ["Herbivore", "Herbívoro"],
+	"leg_def_espinas": ["Spines", "Espinas"],
+	"leg_def_placas": ["Plates", "Placas"],
+	"leg_def_ninguna": ["None", "Ninguna"],
+	"leg_size_small": ["Small", "Pequeño"],
+	"leg_size_medium": ["Medium", "Mediano"],
+	"leg_size_large": ["Large", "Grande"],
+	"leg_menu": ["Back to the menu", "Volver al menú"],
+	"leg_stay": ["Keep looking", "Seguir mirando"],
 	# aggregation sheet
 	"agg_title": ["Aggregation: the colony begins", "Agregación: empieza la colonia"],
 	"agg_body": ["This sheet is what you carry to the colony stage: your cell becomes a piece with these numbers.", "Esta ficha es lo que llevas a la etapa colonia: tu célula pasa a ser una pieza con estos números."],
@@ -209,3 +270,9 @@ static func num(s: String) -> String:
 
 static func phase_name(n: int, names: Array) -> String:
 	return names[n][0 if es() else 1]
+
+static func block_name(kind: String) -> String:
+	return CSim.BLOCKS[kind].n[0 if es() else 1]
+
+static func block_role(kind: String) -> String:
+	return CSim.BLOCKS[kind].role[0 if es() else 1]

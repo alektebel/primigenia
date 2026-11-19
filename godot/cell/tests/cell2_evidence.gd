@@ -3,6 +3,7 @@ extends SceneTree
 ## Usage: ... --script res://cell/tests/cell2_evidence.gd -- <out dir>
 
 const Sim := preload("res://cell/cell_sim.gd")
+const CSimC := preload("res://cell/colony_sim.gd")
 
 var out_dir := ""
 var stage
@@ -63,9 +64,9 @@ func _run() -> void:
 	setup(3, 0, cas)
 	await at(1.0 + 6.0)
 	await _shot("threat1_phage_warn")
-	await at(7.6)
+	await at(8.4)
 	await _shot("threat1_phage_hijack")
-	await at(3.6)
+	await at(2.4)
 	await _shot("threat1_phage_cas_cuts")
 	# 2 antibiotic
 	setup(3, 1, pump)
@@ -101,8 +102,74 @@ func _run() -> void:
 	stage.sim.add_piece("spn", stage.sim.pol(stage.sim.RO, a + 0.25), true)
 	await at(3.0)
 	await _shot("threat4_amoeba_spines")
+	await _colony_shots()
 	# the cell stage panel with the threats card, the hint and the schedule
 	setup(3, 0, cas)
 	await at(1.0 + 3.0)
 	await _shot("phase5_panel")
 	quit(0)
+
+const RING := [Vector2i(1, 0), Vector2i(1, -1), Vector2i(0, -1), Vector2i(-1, 0), Vector2i(-1, 1), Vector2i(0, 1)]
+
+func fill_atp() -> void:
+	for h in stage.colony.cells.keys():
+		stage.colony.cells[h].atp = 10.0
+
+func build(kinds: Array) -> void:
+	for i in kinds.size():
+		fill_atp()
+		stage.colony.place(kinds[i], RING[i])
+	fill_atp()
+
+func _colony_shots() -> void:
+	# a finished phase 5 cell hands its sheet to the colony
+	var s = stage.sim
+	s.seed_value = 3
+	s.agg_done = true
+	stage._apply_phase(5)
+	s.demo()
+	s.threats.on = false
+	stage.advance(70.0)
+	s.threats.done = true
+	stage._refresh_hud(true)
+	stage._apply_phase(6)
+	await at(0.5)
+	fill_atp()
+	await at(0.2)
+	await _shot("colony1_founder")
+	# armed tool: free slots and a ghost
+	stage.ccanvas.tool = "energy"
+	stage.ccanvas.mouse_in = true
+	stage.ccanvas.hover_hex = Vector2i(1, 0)
+	stage.ccanvas.hover_pos = stage.ccanvas.hex_center(Vector2i(1, 0))
+	await _shot("colony2_slots")
+	stage.ccanvas.tool = ""
+	stage.ccanvas.mouse_in = false
+	# the colony of 7, swimming toward the light
+	build(["energy", "motile", "motile", "energy", "energy", "motile"])
+	await at(6.0)
+	await _shot("colony3_swimming")
+	# the amoeba: warning with the dotted front line
+	stage.colony.dist = 0.0
+	stage.colony.arrived = true
+	fill_atp()
+	await at(CSimC.WAVE_DELAY + 7.0)
+	await _shot("colony4_warning")
+	# defensive cells on the front line absorb the bites
+	for h in stage.colony.front(stage.colony.wave.a):
+		if h != Vector2i.ZERO:
+			stage.colony.cells[h] = stage.colony._cell("defense", 10.0, 160.0)
+	await at(CSimC.WARN_T - 7.0 + 2.6)
+	await _shot("colony5_bites")
+	await at(6.0)
+	for i in 30:
+		await process_frame
+	await _shot("colony6_end_card")
+	# a colony without defence loses cells
+	stage._restart()
+	build(["energy", "motile", "motile", "energy", "energy", "motile"])
+	stage.colony.dist = 0.0
+	stage.colony.arrived = true
+	fill_atp()
+	await at(CSimC.WAVE_DELAY + CSimC.WARN_T + 3.6)
+	await _shot("colony7_undefended")

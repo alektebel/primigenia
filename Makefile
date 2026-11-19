@@ -320,6 +320,7 @@ godot-cell:
 godot-cell-test:
 	nice -n 10 timeout 600 $(GODOT) --headless --path godot --script res://cell/tests/cell_test.gd
 	nice -n 10 timeout 900 $(GODOT) --headless --path godot --script res://cell/tests/threats_test.gd
+	nice -n 10 timeout 600 $(GODOT) --headless --path godot --script res://cell/tests/colony_test.gd
 	nice -n 10 timeout 600 $(GODOT) --headless --path godot --script res://cell/tests/cell_ui_test.gd
 godot-cell-evidence:
 	@mkdir -p docs/evidence/godot/cell

@@ -256,7 +256,7 @@ func _draw_lipids(da: Array, br: float, tt: float) -> void:
 		var dir: int = pr[1]
 		var n := int(round(TAU * Rb / 7.4))
 		for i in n:
-			var a := float(i) / n * TAU
+			var a: float = float(i) / n * TAU + sim.phi
 			var sk := false
 			for s in skips:
 				if sim.adiff(a, s[0]) < s[1]:

@@ -127,6 +127,7 @@ var ROt := R0
 var zoom := 270.0 / R0
 var zoomT := 270.0 / R0
 var T := 0.0
+var phi := 0.0              # lateral slide of the lipids
 var phase := 1
 var pieces: Array = []
 var mols: Array = []
@@ -185,8 +186,13 @@ func mid() -> float:
 func flw() -> float:
 	return 110.0 / mid()
 
+## The membrane is fluid (as in the prototype): lipid i sits at lang(i), and the whole bilayer slides sideways at 0.035 rad/s
+## while doors, enzymes and radicals stay put. Damage belongs to the lipid, not to the angle.
+func lang(i: int) -> float:
+	return float(i) / NL * TAU + phi
+
 func lidx(a: float) -> int:
-	return int(floor(fposmod(a, TAU) / TAU * NL)) % NL
+	return ((int(round((a - phi) / TAU * NL)) % NL) + NL) % NL
 
 func is_mem(p: Piece) -> bool:
 	return PIECES[p.type].has("mem")
@@ -329,6 +335,7 @@ func reset(phase_: int = -1) -> void:
 	logs = {"atp": [], "glu": [], "lip": [], "up": []}
 	store = 0
 	T = 0.0
+	phi = 0.0
 	set_r(R0)
 	ROt = R0
 	zoom = 270.0 / R0
@@ -517,7 +524,7 @@ func worst_in(fl: Piece) -> int:
 	var bv := 0.8
 	var w := flw()
 	for i in NL:
-		if integ[i] < bv and adiff(float(i) / NL * TAU, fl.a) < w:
+		if integ[i] < bv and adiff(lang(i), fl.a) < w:
 			bv = integ[i]
 			b = i
 	return b
@@ -546,6 +553,7 @@ func _lip_nearest(list: Array, m: Mol):
 # ---------- the step
 func step(dt: float) -> void:
 	T += dt
+	phi = fposmod(phi + dt * 0.035, TAU)
 	if absf(ROt - RO) > 0.05:
 		set_r(RO + (ROt - RO) * minf(1.0, dt * 1.2))
 	zoomT = 330.0 / (3.05 * RO) if agg != null else 270.0 / ROt
@@ -735,7 +743,7 @@ func step(dt: float) -> void:
 				var i := int(R(0, NL))
 				if integ[i] > 0.45:
 					integ[i] = 0.45
-				float_text(pol(RO + 20.0, float(i) / NL * TAU), "sin ATP", Color("9E392C"))
+				float_text(pol(RO + 20.0, lang(i)), "sin ATP", Color("9E392C"))
 	# membrane damage
 	if phase >= 3:
 		ros_t += dt
@@ -760,7 +768,7 @@ func step(dt: float) -> void:
 		leak_t += dt * minf(gaps.size(), 8)
 		if leak_t > 9.0 and gaps.size() > 0:
 			leak_t = 0.0
-			var gp := pol(RI - 10.0, float(gaps[int(R(0, gaps.size()))]) / NL * TAU)
+			var gp := pol(RI - 10.0, lang(gaps[int(R(0, gaps.size()))]))
 			var a4 = nearest(free_atp, gp)
 			if a4 != null:
 				a4.state = "exit"
@@ -940,7 +948,7 @@ func _step_mol(m: Mol, dt: float, h: float, trs: Array, exs: Array, fls: Array, 
 				if wi >= 0:
 					integ[wi] = 1.0
 					m.dead = true
-					pulses.append({"a": float(wi) / NL * TAU, "t": 0.0, "c": Color("7FA65A")})
+					pulses.append({"a": lang(wi), "t": 0.0, "c": Color("7FA65A")})
 				elif phase >= 4:
 					m.dead = true
 					grow(p2.a)
@@ -1066,7 +1074,7 @@ func _oxidise_enzyme(at: Vector2) -> void:
 
 func _lysis(a: float, w: float, lvl: float) -> void:
 	for i in NL:
-		if adiff(float(i) / NL * TAU, a) < w:
+		if adiff(lang(i), a) < w:
 			integ[i] = minf(integ[i], lvl)
 	burst(pol(RO, a), Color("B4382F"), true)
 	float_text(pol(RO + 24.0, a), "lisis", Color("9E392C"))
@@ -1414,7 +1422,7 @@ func _move_amoeba(dt: float) -> void:
 				elif am.bite >= 0.5:
 					am.bite = 0.0
 					for i in NL:
-						if adiff(float(i) / NL * TAU, am.a) < 0.5 and integ[i] > 0.0:
+						if adiff(lang(i), am.a) < 0.5 and integ[i] > 0.0:
 							integ[i] = maxf(0.0, integ[i] - 0.2)
 					pulses.append({"a": am.a, "t": 0.0, "c": Color("9E392C")})
 					am.engulf += 0.5 / 9.0
@@ -1722,6 +1730,18 @@ func aggregation() -> Dictionary:
 	if agg == null:
 		return {"active": false, "shown": false, "t": 0.0, "fade": -1.0, "done": agg_done, "stats": []}
 	return {"active": true, "shown": agg.shown and not agg.has("fade"), "t": agg.t, "fade": agg.get("fade", -1.0), "done": agg_done, "stats": agg.stats}
+
+## The numeric sheet of the cell that the colony and the creature inherit (counts of built pieces, rates per minute).
+func legacy_sheet() -> Dictionary:
+	var counts := {}
+	for p in pieces:
+		if p.built:
+			counts[p.type] = int(counts.get(p.type, 0)) + 1
+	var g := per("glu", 60.0)
+	var a := per("atp", 60.0)
+	return {"atp_min": int(round(a)), "glu_min": int(round(g)), "atp_per_glu": snappedf(a / g, 0.1) if g > 0.0 else 0.0,
+		"lip_min": int(round(per("lip", 60.0))), "up_min": int(round(per("up", 60.0))), "mem": mem_pct(),
+		"size": snappedf(RO / R0, 0.01), "tier": tier, "pieces": counts}
 
 ## "Seguir con esta célula": the card closes and the neighbours fade.
 func continue_colony() -> void:

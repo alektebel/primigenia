@@ -93,6 +93,18 @@ func legend_context() -> StringName:
 		return &"studio"
 	return &"walk"
 
+# What the cell stage passes on (docs/CELL-STAGE.md): {} when the player has not finished the cell yet.
+const CellLegacy := preload("res://cell/cell_legacy.gd")
+var legacy_path := CellLegacy.PATH
+
+func cell_legacy() -> Dictionary:
+	return CellLegacy.read(legacy_path)
+
+func save_cell_legacy(d: Dictionary) -> bool:
+	if not persist_settings:
+		return false
+	return CellLegacy.save(d, legacy_path)
+
 func goto_menu() -> void:
 	get_tree().change_scene_to_file("res://game/menu/main_menu.tscn")
 
