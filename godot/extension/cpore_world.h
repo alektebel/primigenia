@@ -37,6 +37,8 @@ public:
     godot::Dictionary get_setup() const;
     godot::String step(const godot::Dictionary &input);
     int command(const godot::String &text);
+    // The cell's legacy: starting diet (CP_DIET_*, -1 keeps it) and one owned starter part by catalogue id ("" none). 0 = ok.
+    int apply_legacy(int diet, const godot::String &part);
     // Parses a command text into the input it would order, without touching the world: {rc, input}.
     godot::Dictionary command_input(const godot::String &text) const;
     int order(const godot::Dictionary &input);

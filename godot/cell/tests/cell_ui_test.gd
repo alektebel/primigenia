@@ -144,6 +144,8 @@ func _run() -> void:
 		await process_frame
 	ok(st._leg_card.visible and st._leg_table.get_child_count() == 6, "the carry-over card shows diet, part and size")
 	ok(st._leg_title.text == "La colonia se convierte en criatura" or st._leg_title.text == "The colony becomes a creature", "with its title (%s)" % st._leg_title.text)
+	ok(st._leg_cont != null and st._leg_cont.visible and (st._leg_cont.text == "Continuar como criatura" or st._leg_cont.text == "Continue as a creature"), "the end card has the primary 'Continuar como criatura' button (%s)" % st._leg_cont.text)
+	ok(st._leg_go.text == "Volver al menú" or st._leg_go.text == "Back to the menu", "and keeps the way back to the menu")
 	_key(KEY_5)
 	await process_frame
 	ok(not st._phase6 and st.canvas.visible and not st.ccanvas.visible, "key 5 goes back to the cell")

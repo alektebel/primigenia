@@ -202,7 +202,7 @@ const TABLE := {
 	"ch_done": ["The colony survived.", "La colonia sobrevivió."],
 	# carry-over card
 	"leg_title": ["The colony becomes a creature", "La colonia se convierte en criatura"],
-	"leg_body": ["This is what your cell hands to the creature. It is saved; the creature stage will read it.", "Esto es lo que tu célula le pasa a la criatura. Queda guardado; la etapa de criatura lo leerá."],
+	"leg_body": ["This is what your cell hands to the creature. It is saved, and a new creature on the island starts with it.", "Esto es lo que tu célula le pasa a la criatura. Queda guardado, y una criatura nueva en la isla empieza con ello."],
 	"leg_diet": ["Starting diet", "Dieta inicial"],
 	"leg_def": ["Starting part", "Parte inicial"],
 	"leg_size": ["Starter size", "Tamaño inicial"],
@@ -217,6 +217,7 @@ const TABLE := {
 	"leg_size_small": ["Small", "Pequeño"],
 	"leg_size_medium": ["Medium", "Mediano"],
 	"leg_size_large": ["Large", "Grande"],
+	"leg_continue": ["Continue as a creature", "Continuar como criatura"],
 	"leg_menu": ["Back to the menu", "Volver al menú"],
 	"leg_stay": ["Keep looking", "Seguir mirando"],
 	# aggregation sheet

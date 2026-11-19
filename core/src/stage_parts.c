@@ -102,6 +102,16 @@ void cp_stage_parts_reset(CpStageWorld *w){
   if(!near){int i=p->n_nodes++;p->nodes[i]=(CpStagePartNode){x,z,i%2?CP_PART_OLD_CARCASS:CP_PART_FOSSIL,0};}
  }
 }
+/* The cell's legacy (DESIGN A26/A32): the starting diet (CP_DIET_*, -1 keeps the default) and one starting part (a catalogue id, -1 none),
+ * owned, discovered and a starter at level 1, so the nest shop and the evolve rules treat it like the first three. Called once after a reset;
+ * a world that never calls it is bit-identical to before. */
+int cp_stage_legacy_apply(CpStageWorld *w,int diet,int part){
+ if(!w||diet<-1||diet>CP_DIET_OMNIVORE||part<-1||part>=CP_STAGE_PART_COUNT)return -1;
+ if(diet>=0){w->social.diet=diet;w->social.used=1;}
+ if(part>=0){CpStageParts *p=&w->parts;p->starter|=1ULL<<part;p->discovered|=1ULL<<part;p->owned|=1ULL<<part;if(p->level[part]<1)p->level[part]=1;p->used=1;}
+ w->hash=cp_stage_hash(w);
+ return 0;
+}
 int cp_stage_part_find(CpStageWorld *w,int id,int source){
  if(!w||id<0||id>=CP_STAGE_PART_COUNT||source<0||source>CP_PART_OLD_CARCASS)return -1;
  CpStageParts *p=&w->parts;p->used=1;

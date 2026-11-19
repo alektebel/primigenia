@@ -112,6 +112,10 @@ int main(void){
  reset(11);int ally=cp_stage_part_id("romo");cp_stage_parts_ally(&w,0);assert(w.parts.discovered&(1ULL<<ally));int bank=w.social.dna_balance;cp_stage_parts_ally(&w,0);assert(w.social.dna_balance==bank);
  reset(12);cp_stage_set_tiers(&w,1);int pico=cp_stage_part_id("pico");w.social.dna_balance=100000;int costs[]={0,2,4,8,16};for(int lv=2;lv<=5;lv++){int old=w.social.dna_balance;assert(!cp_stage_part_buy(&w,pico,1));assert(old-w.social.dna_balance==CP_STAGE_PARTS[pico].cost*costs[lv-1]);}assert(cp_stage_part_buy(&w,pico,1)<0);
  w.parts.hits[pico]=74;w.parts.wins[pico]=10;w.parts.tier[pico]=1;assert(cp_stage_part_buy(&w,pico,2)<0);w.parts.hits[pico]=75;bank=w.social.dna_balance;assert(!cp_stage_part_buy(&w,pico,2));assert(bank-w.social.dna_balance==150);
+ /* the cell's legacy (A32): a diet and one owned starter part, both optional; none = untouched */
+ reset(13);{uint64_t h0=cp_stage_hash(&w);int pua=cp_stage_part_id("pua");assert(cp_stage_legacy_apply(&w,-1,-1)==0&&cp_stage_hash(&w)==h0);assert(!(w.parts.owned&(1ULL<<pua)));
+  assert(cp_stage_legacy_apply(&w,CP_DIET_CARNIVORE,pua)==0);assert(w.social.diet==CP_DIET_CARNIVORE);assert((w.parts.owned&(1ULL<<pua))&&(w.parts.discovered&(1ULL<<pua))&&(w.parts.starter&(1ULL<<pua))&&w.parts.level[pua]==1);assert(cp_stage_hash(&w)!=h0);
+  assert(cp_stage_legacy_apply(&w,7,-1)<0&&cp_stage_legacy_apply(&w,-1,CP_STAGE_PART_COUNT)<0);}
  printf("shop hash %016" PRIx64 "\n",cp_stage_hash(&w));
  puts("parts/nest rules PASS");return 0;
 }

@@ -298,6 +298,7 @@ int cp_stage_can_edit(const CpStageWorld *w);          /* at the nest, or anywhe
 void cp_stage_set_edit_anywhere(CpStageWorld *w,int on);
 int cp_stage_walkable_from_nest(const CpStageWorld *w,float x,float z);
 int cp_stage_part_id(const char *id);
+int cp_stage_legacy_apply(CpStageWorld *w,int diet,int part); /* the cell's legacy: starting diet (-1 keep) and one owned starter part (-1 none) */
 int cp_stage_part_find(CpStageWorld *w,int part,int source);
 int cp_stage_part_buy(CpStageWorld *w,int part,int kind); /* 0 part, 1 next level, 2 next tier */
 int cp_stage_edit(CpStageWorld *w,const char *genome);  /* Evolve: buys what the genome adds, then cp_stage_evolve once */

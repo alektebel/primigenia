@@ -24,7 +24,7 @@ func open() -> void:
 	_was_paused = island.stage_ui.ui.paused
 	island.stage_ui.ui.set_paused(true)
 	island.stage_ui.ui.menu.close_menu()
-	screen.show_lineage(JSON.parse_string(island.stage.world.lineage()))
+	screen.show_lineage(JSON.parse_string(island.stage.world.lineage()), Game.applied_legacy)
 	screen.show()
 
 func close() -> void:

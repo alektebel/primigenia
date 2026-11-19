@@ -45,6 +45,7 @@ static func build(stage, ctx: Dictionary, kind: String, scenario_name: String, n
 		"setup": _jsonable(w.get_setup()),
 		"state": scenario_name.get_file() + ".cpstate", "tick": int(st.tick), "hash": st.hash,
 		"genome": ctx.get("genome", {}),
+		"legacy": ctx.get("legacy", {}),
 		"wild_bodies": _bodies(st),
 		"lineage": JSON.parse_string(w.lineage()),
 		"camera": ctx.get("camera", {}),

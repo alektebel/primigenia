@@ -85,6 +85,8 @@ static func register_all(r) -> void:
 	r.register("obs", "", "the observation text the agents get", func(a): return _with_stage(r, func(st): return ok(st.world.observe())))
 	r.register("zoo", "[morphs|all] [course] [run|factor] | exit", "open the locomotion zoo: creatures of different morphologies run a course side by side (morphs: mite trotter hero giant longneck centipede hexapod; courses: figure8 zigzag steps uturn ramps all)",
 		func(a): return _zoo(r, a), {"complete": func(i, p, t): return _zoo_names(i)})
+	r.register("cell", "finish [carronero|cazador|herbivoro] [espinas|placas|ninguna] [small|medium|large]", "dev: finish the cell with a legacy and open its end card (Continuar como criatura starts the new creature game with it)",
+		func(a): return _cell(a), {"complete": func(i, p, t): return [["finish"], ["carronero", "cazador", "herbivoro"], ["espinas", "placas", "ninguna"], ["small", "medium", "large"]][clampi(i, 0, 3)]})
 	r.register("runvis", "[factor|off]", "dev: show the player moving factor (default 2.5) times faster than the C world moves it, to see the run gaits before the sim can run (presentation only; off drops the offset)",
 		func(a): return _runvis(r, a), {"complete": func(i, p, t): return ["off", "2.5"] if i == 0 else []})
 	r.register("overlay", "path [on|off]", "debug overlays (off by default): path = the planned GO route drawn on the ground",
@@ -341,6 +343,25 @@ static func _zoo(r, a: PackedStringArray) -> Dictionary:
 			return fail("run speed: 'run' or a factor between 1 and 6")
 	Game.goto_zoo(morphs, course, run)
 	return ok("opening the zoo: %s, course %s%s (Esc or `zoo exit` to leave)" % [", ".join(morphs), course, ", run x%.1f" % run if run > 1.0 else ""])
+
+static func _cell(a: PackedStringArray) -> Dictionary:
+	if a.is_empty() or a[0] != "finish" or a.size() > 4:
+		return fail("usage: cell finish [carronero|cazador|herbivoro] [espinas|placas|ninguna] [small|medium|large]")
+	var diet := a[1] if a.size() > 1 else "cazador"
+	var defense := a[2] if a.size() > 2 else "espinas"
+	var size_class := a[3] if a.size() > 3 else "medium"
+	if not diet in ["carronero", "cazador", "herbivoro"]:
+		return fail("diet: carronero, cazador or herbivoro")
+	if not defense in ["espinas", "placas", "ninguna"]:
+		return fail("defence: espinas, placas or ninguna")
+	if not size_class in ["small", "medium", "large"]:
+		return fail("size: small, medium or large")
+	var CellLegacy := load("res://cell/cell_legacy.gd")
+	var legacy := {"version": CellLegacy.VERSION, "source": "dev", "diet": diet, "defense": defense, "size_class": size_class,
+		"stats": {"atp_min": 0, "mem": 100, "tier": 5, "colony_cells": 7}, "tally": {"waste_share": 0.0, "spines": 3 if defense == "espinas" else 0, "plates": 3 if defense == "placas" else 0}}
+	Game.cell_jump_end = legacy
+	Game.goto_cell()
+	return ok("cell finished (%s, %s, %s): the end card is up, press Continuar como criatura" % [diet, defense, size_class])
 
 static func _runvis(r, a: PackedStringArray) -> Dictionary:
 	return _with_stage(r, func(st):

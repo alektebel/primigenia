@@ -3,10 +3,12 @@ extends Control
 const Palette := preload("res://ui/palette.gd")
 const CreatureMesh := preload("res://creature/creature.gd")
 const Session := preload("res://game/stage/lineage_session.gd")
+const Strings := preload("res://ui/strings.gd")
 signal closed
 signal cousin_pin_requested(generation: Dictionary)
 var portraits: Array[SubViewport] = []
 var generation_count := 0
+var root_shown := false     # the cell the lineage came from (a game started from the cell stage)
 var _row: HBoxContainer
 var _close: Button
 
@@ -50,13 +52,16 @@ func _ready() -> void:
 	_row.add_theme_constant_override("separation", 20)
 	scroll.add_child(_row)
 
-func show_lineage(data: Dictionary) -> void:
+func show_lineage(data: Dictionary, legacy: Dictionary = {}) -> void:
 	for child in _row.get_children():
 		_row.remove_child(child)
 		child.queue_free()
 	portraits.clear()
 	var generations: Array = data.get("generations", [])
 	generation_count = generations.size()
+	root_shown = not legacy.is_empty()
+	if root_shown:
+		_root_column(legacy)
 	var previous_traits := 0
 	var previous_code := ""
 	for g in generations:
@@ -120,6 +125,37 @@ func show_lineage(data: Dictionary) -> void:
 	if generations.is_empty():
 		_label(_row, "Your lineage begins when you enter the valley.", 20, Palette.FOG)
 	_close.grab_focus()
+
+## The root ancestor: the cell of the first stage. No portrait mesh, a drawn cell: a membrane ring with spines or plates as the legacy says.
+func _root_column(legacy: Dictionary) -> void:
+	var col := VBoxContainer.new()
+	col.name = "RootAncestor"
+	col.custom_minimum_size.x = 300
+	col.add_theme_constant_override("separation", 8)
+	_row.add_child(col)
+	_label(col, Strings.t("tree_origin"), 16, Palette.COPPER)
+	var cell := Control.new()
+	cell.custom_minimum_size = Vector2(300, 180)
+	cell.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var defense := str(legacy.get("defense", "ninguna"))
+	cell.draw.connect(func() -> void:
+		var c := cell.size / 2.0
+		var r := 46.0
+		if defense == "espinas":
+			for i in 14:
+				var a := TAU * i / 14.0
+				cell.draw_line(c + Vector2.from_angle(a) * (r - 2.0), c + Vector2.from_angle(a) * (r + 14.0), Palette.BONE, 2.0, true)
+		cell.draw_circle(c, r, Color(Palette.LICHEN, 0.22))
+		cell.draw_arc(c, r, 0.0, TAU, 48, Palette.LICHEN, 5.0 if defense == "placas" else 2.5, true)
+		cell.draw_circle(c + Vector2(8, -4), 14.0, Color(Palette.COPPER, 0.55)))
+	col.add_child(cell)
+	_label(col, Strings.t("tree_origin_line", [Strings.t("legacy_cell_" + str(legacy.get("diet", "cazador"))), Strings.t("legacy_def_" + str(legacy.get("defense", "ninguna")))]), 18, Palette.LICHEN)
+	_label(col, Strings.t("tree_origin_size", [Strings.t("leg_size_" + str(legacy.get("size_class", "medium")))]), 15, Palette.BONE)
+	var stem := VSeparator.new()
+	stem.custom_minimum_size = Vector2(1, 20)
+	stem.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	col.add_child(stem)
+	_label(col, "───→", 16, Palette.COPPER)
 
 func _label(parent: Node, text: String, font_size: int, color: Color) -> Label:
 	var label := Label.new()

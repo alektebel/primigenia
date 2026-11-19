@@ -300,6 +300,7 @@ void CporeWorld::_bind_methods() {
     ClassDB::bind_method(D_METHOD("get_setup"), &CporeWorld::get_setup);
     ClassDB::bind_method(D_METHOD("step", "input"), &CporeWorld::step);
     ClassDB::bind_method(D_METHOD("command", "text"), &CporeWorld::command);
+    ClassDB::bind_method(D_METHOD("apply_legacy", "diet", "part"), &CporeWorld::apply_legacy);
     ClassDB::bind_method(D_METHOD("command_input", "text"), &CporeWorld::command_input);
     ClassDB::bind_method(D_METHOD("order", "input"), &CporeWorld::order);
     ClassDB::bind_method(D_METHOD("state"), &CporeWorld::state);
@@ -426,6 +427,15 @@ String CporeWorld::step(const Dictionary &input) {
     CpStageInput in;
     if (!input_from_dict(input, in)) return String();
     return cpore::hash_text(cp_stage_step(world.get(), &in));
+}
+
+int CporeWorld::apply_legacy(int diet, const String &part) {
+    int id = -1;
+    if (!part.is_empty()) {
+        id = cp_stage_part_id(part.utf8().get_data());
+        if (id < 0) return -1;
+    }
+    return cp_stage_legacy_apply(world.get(), diet, id);
 }
 
 int CporeWorld::command(const String &text) { return cp_stage_command(world.get(), text.utf8().get_data()); }
