@@ -70,6 +70,7 @@
 | Creature | Kind | Status | Chains | Verdicts |
 |---|---|---|---|---|
 | [Air whales](air_whales.md) | new | draft | 4 | 4 unreviewed |
+| [Carmesa](carmesa.md) | new | draft | 4 | 3 fixable, 1 plausible |
 | [Cloud grazers](cloud_grazers.md) | new | draft | 5 | 1 fixable, 4 plausible |
 | [Floaters](floaters.md) | new | draft | 5 | 5 unreviewed |
 | [Hunters](hunters.md) | new | draft | 5 | 5 unreviewed |

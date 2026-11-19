@@ -6594,5 +6594,26 @@
     },
     "container-title": "Sinauer Associates",
     "x-checked": "2026-11-19"
+  },
+  {
+    "id": "crame_2002_carcinisation",
+    "type": "article-journal",
+    "title": "Carcinisation: evolution of a crab",
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked",
+    "author": [
+      {
+        "family": "Crame",
+        "given": "J.A."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2002
+        ]
+      ]
+    },
+    "container-title": "Biological Journal of the Linnean Society"
   }
 ]
