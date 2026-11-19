@@ -24,3 +24,8 @@ def slug(text):
     import re, unicodedata
     t = unicodedata.normalize("NFKD", text).encode("ascii", "ignore").decode().lower()
     return re.sub(r"[^a-z0-9]+", "_", t).strip("_")
+
+
+def flora_files(root):
+    d = os.path.join(root, "lore", "flora")
+    return sorted(os.path.join(d, n) for n in os.listdir(d) if n.endswith(".json")) if os.path.isdir(d) else []

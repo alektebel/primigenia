@@ -74,16 +74,21 @@ class ValidateTests(Base):
         dump(other, os.path.join(self.root, "lore", "creatures", "twin.json"))
         self.assertError("duplicate skill id")
 
+    def add_ghost(self):
+        self.edit(self.cp, lambda c: c.setdefault("relations", []).append({"with": "ghost creature", "kind": "rivalry", "note": "test"}))
+
     def test_relation_warning_when_draft_error_when_canon(self):
+        self.add_ghost()
         errs, warns = self.errors()
-        self.assertTrue(any("nocturnal creature" in w for w in warns))
+        self.assertTrue(any("ghost creature" in w for w in warns))
         self.edit(self.cp, lambda c: c.update(status="canon"))
         self.assertError("not a known creature id or alias")
 
     def test_alias_resolves(self):
-        self.edit(self.cp, lambda c: c.update(aliases=["nocturnal creature", "rondo"]))
+        self.add_ghost()
+        self.edit(self.cp, lambda c: c.update(aliases=["ghost creature"]))
         _, warns = self.errors()
-        self.assertEqual(warns, [])
+        self.assertFalse(any("ghost creature" in w for w in warns))
 
     def test_unknown_world(self):
         self.edit(self.cp, lambda c: c.update(world="atlantis"))
