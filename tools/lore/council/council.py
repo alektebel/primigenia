@@ -34,7 +34,7 @@ def oc_chat(model, system, user):
     msg = (f"Read the file {pf} (that exact absolute path; ignore any other prompt.md). Act as described under SYSTEM and do the TASK. "
            "Do not edit or create any files and do not run commands other than reading that one file. "
            "Your final message must be ONLY the requested Markdown answer.")
-    down = os.path.join(os.path.dirname(D), "oc_down_until")  # shared cooldown when opencode's free quota is exhausted
+    down = os.path.join(os.path.dirname(D), "oc_down_until_" + re.sub(r"\W+", "_", model))  # shared cooldown when opencode's free quota is exhausted
     for a in range(8):
         if os.path.exists(down) and time.time() < float(open(down).read() or 0):
             print("oc cooldown: skipping", model, file=sys.stderr, flush=True); return "(failed)"
@@ -45,8 +45,8 @@ def oc_chat(model, system, user):
         out = "\n".join(l for l in out.splitlines() if not re.match(r"^\s*(> build|\S\s+(Read|Glob|Grep|List|Bash)\b)", l)).strip()
         if r.returncode == 0 and len(out) > 800:
             return re.sub(r"<think>.*?</think>", "", out, flags=re.S).strip()
-        if "usage limit" in (r.stdout + r.stderr).lower():
-            open(down, "w").write(str(time.time() + 1800)); print("oc free usage limit reached: cooling down 30 min", file=sys.stderr, flush=True); return "(failed)"
+        if "usage limit" in (r.stdout + r.stderr).lower() or "model unavailable" in (r.stdout + r.stderr).lower():
+            open(down, "w").write(str(time.time() + 1800)); print("oc free usage limit reached: cooling this model down for 30 min", file=sys.stderr, flush=True); return "(failed)"
         print("oc retry", model, a, r.returncode, len(out), r.stderr[-300:], file=sys.stderr, flush=True); time.sleep(30)
     return "(failed)"
 
