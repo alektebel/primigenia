@@ -15,6 +15,8 @@ var manual := 0.0
 const Z_CHASE := 0.15            # the default gameplay view
 const Z_KEYS := [0.0, 0.15, 0.40, 0.70, 1.0]
 const KEY_DIST_H := [1.8, 4.0, 12.0]       # body heights, for z 0, 0.15, 0.40
+const MIN_DISTANCE := 1.6                  # m: the closest view never gets nearer than this, whatever the body (a 0.65 m hatchling)
+const EYE_RAISE := 0.45                    # m: the look-at point is at least this far above the ground-level body height
 const KEY_PITCH_DEG := [8.0, 15.0, 35.0, 55.0, 70.0]
 const TACTICAL_DISTANCE := 150.0           # m at z 0.7
 const ICON_Z := 0.7              # strategic icons start to fade in above this
@@ -78,7 +80,7 @@ func _init(creature_height: float, start_yaw: float, ground_fn: Callable) -> voi
 
 # ---- the zoom curve (pure functions of z) ---------------------------------------------------------
 func _key_distances() -> Array:
-	var d: Array = [height * KEY_DIST_H[0], height * KEY_DIST_H[1], height * KEY_DIST_H[2], maxf(TACTICAL_DISTANCE, height * KEY_DIST_H[2] * 1.5), 0.0]
+	var d: Array = [maxf(MIN_DISTANCE, height * KEY_DIST_H[0]), height * KEY_DIST_H[1], height * KEY_DIST_H[2], maxf(TACTICAL_DISTANCE, height * KEY_DIST_H[2] * 1.5), 0.0]
 	d[4] = maxf(strategic_distance, d[3] * 2.0)
 	return d
 
@@ -170,7 +172,7 @@ func update(player: Dictionary, enemy, fighting: bool, dt: float, aspect: float 
 	# the discrete first-order follow (player moved first, then eased) lags by dt (1-k)/k = about tau - dt/2: lead by exactly that
 	var kf := 1.0 - exp(-dt / POS_TAU) if dt > 0.0 else 1.0
 	var lead := LEAD if dt <= 0.0 else dt * (1.0 - kf) / kf
-	var tgt := Vector3(player.x + _vel_s.x * lead, ground.call(player.x, player.z) + h * 1.5, player.z + _vel_s.y * lead)
+	var tgt := Vector3(player.x + _vel_s.x * lead, ground.call(player.x, player.z) + maxf(h * 1.5, h + EYE_RAISE), player.z + _vel_s.y * lead)
 	if mb > 0.0:
 		tgt.x = lerpf(tgt.x, map_center.x, mb)
 		tgt.z = lerpf(tgt.z, map_center.y, mb)
@@ -185,7 +187,7 @@ func update(player: Dictionary, enemy, fighting: bool, dt: float, aspect: float 
 	if fighting and enemy != null:
 		tgt.x = (player.x + enemy.x) / 2.0
 		tgt.z = (player.z + enemy.z) / 2.0
-		tgt.y = (ground.call(player.x, player.z) + ground.call(enemy.x, enemy.z)) / 2.0 + h * 1.5
+		tgt.y = (ground.call(player.x, player.z) + ground.call(enemy.x, enemy.z)) / 2.0 + maxf(h * 1.5, h + EYE_RAISE)
 		var sep := Vector2(player.x - enemy.x, player.z - enemy.z).length()
 		var half_fov := atan(tan(deg_to_rad(24.0)) * minf(1.0, aspect))
 		desired = maxf(desired + sep * 0.6, (sep / 2.0 + h * 1.5) / sin(half_fov * 0.85))

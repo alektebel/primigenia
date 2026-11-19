@@ -55,6 +55,7 @@ func drag(a: Vector2, b: Vector2, steps := 6) -> void:
 
 func fresh(seed_name: String) -> void:
 	m.new_from_seed(seed_name)
+	ui.frame_creature()          # the studio starts on the 1 m hatchling: reframe for the seed under test
 	m.select(-1)
 	ui._close_ring()
 	ui._close_wheel_tx()

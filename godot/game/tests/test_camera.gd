@@ -173,6 +173,10 @@ func _zoom_curve(t) -> void:
 		pp = p
 	t.check(mono, "zoom curve: distance and pitch strictly increase with z over 101 samples")
 	t.check(absf(cam.curve_distance(0.4) - 12.0 * h) < 1e-9 and absf(cam.curve_pitch(0.4) - deg_to_rad(35.0)) < 1e-9, "zoom curve: z 0.4 is 12h at 35 deg")
+	# the starter hatchling is 0.65 m tall: the closest view stays at 1.6 m, and the curve is still increasing
+	var small = ChaseCamera.new(0.65, 0.0, flat)
+	t.check(absf(small.curve_distance(0.0) - 1.6) < 1e-9 and small.curve_distance(0.15) > 1.6 and small.curve_distance(0.4) > small.curve_distance(0.15), "zoom curve: a 0.65 m hatchling keeps the 1.6 m closest view (%.2f)" % small.curve_distance(0.0))
+	t.check(absf(cam.curve_distance(0.0) - 1.8 * h) < 1e-9, "zoom curve: a 2 m creature keeps 1.8 body heights at z 0")
 	t.check(absf(cam.curve_distance(0.7) - 150.0) < 1e-9 and absf(cam.curve_pitch(0.7) - deg_to_rad(55.0)) < 1e-9, "zoom curve: z 0.7 is 150 m at 55 deg")
 	# a giant creature still gets an increasing curve
 	var big = ChaseCamera.new(40.0, 0.0, flat)
