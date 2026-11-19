@@ -168,7 +168,7 @@ func _run() -> void:
 		var grove := densest("nieblon", 40.0)
 		if not grove.is_empty():
 			var g: Vector3 = grove.p
-			var from := g + Vector3(30, 0, 22)
+			var from := g + Vector3(34, 0, -26)
 			await shot("forest_edge", Vector3(from.x, ground(from) + 2.0, from.z), g + Vector3(0, 9, 0), 62.0)
 			var inside := g + Vector3(8, 0, 5)
 			await shot("forest_floor", Vector3(inside.x, ground(inside) + 1.7, inside.z), g + Vector3(-10, 8, -6), 70.0)
@@ -182,10 +182,10 @@ func _run() -> void:
 		var rod := densest("rodela_de_nieve", 30.0)
 		if not rod.is_empty():
 			var r: Vector3 = rod.p
-			var e := r + Vector3(9, 0, 6)
+			var e := r + downhill(rod) * 7.0
 			await shot("snow_rosettes", Vector3(e.x, ground(e) + 1.6, e.z), r + Vector3(0, 1.2, 0), 62.0)
-			var e2 := r + Vector3(40, 0, 30)
-			await shot("snow_slope", Vector3(e2.x, ground(e2) + 6.0, e2.z), r, 62.0)
+			var e2 := r + downhill(rod) * 35.0
+			await shot("snow_slope", Vector3(e2.x, ground(e2) + 8.0, e2.z), r, 62.0)
 		var rib := densest("trenza_de_ribera", 25.0)
 		if not rib.is_empty():
 			var r: Vector3 = rib.p

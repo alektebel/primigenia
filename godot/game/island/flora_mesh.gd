@@ -65,7 +65,9 @@ func crown(p: Vector3, extent: float) -> void:
 func branch(a: Vector3, dir: Vector3, length_m: float, radius: float, depth: int, angle: float) -> void:
 	var b := a + dir * length_m
 	rod(a, b, radius, radius * 0.62, bark, 5 if detail else 3)
-	if depth <= 1 and b.y < 0.62 and (b - Vector3(0, b.y, 0)).length() > 0.05:
+	if not r_tree and detail and depth >= 1:
+		crown(a.lerp(b, 0.85), width * 0.3)
+	if depth <= 1 and b.y < 0.85 and (b - Vector3(0, b.y, 0)).length() > 0.05:
 		berry_sites.append(b)
 	if depth <= 0:
 		crown(b, width * 0.37)

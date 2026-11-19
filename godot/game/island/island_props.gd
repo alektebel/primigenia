@@ -27,9 +27,9 @@ func geometry(id: String, variant: int, close: bool) -> ArrayMesh:
 	if id in ROCKS:
 		gen.begin(shape_seed)
 		var axes := Vector3(1.7, 1, 0.78) if id == "outcrop" else Vector3(0.96, 1, 0.84)
-		for i in (6 if id == "scree" else 1):
-			var offset := Vector3.ZERO if i == 0 else gen.radial(i * 2.4) * gen.rng.randf_range(0.8, 2.6)
-			gen.lump(offset, axes * gen.rng.randf_range(0.75, 1.1), Color.WHITE, 8 if close else 5)
+		for i in (6 if id == "scree" else 4):
+			var offset := Vector3.ZERO if i == 0 else gen.radial(i * 2.4) * (gen.rng.randf_range(0.8, 2.6) if id == "scree" else gen.rng.randf_range(0.35, 0.6))
+			gen.lump(offset, axes * (gen.rng.randf_range(0.75, 1.1) if id == "scree" else (1.0 if i == 0 else gen.rng.randf_range(0.45, 0.7))), Color.WHITE, (8 if id == "scree" else 13) if close else 5)
 		mesh = gen.finish()
 		var material := ShaderMaterial.new()
 		material.shader = ROCK_SHADER
