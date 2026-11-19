@@ -8724,5 +8724,370 @@
     "x-note": "verified against Crossref (title 1.00); year corrected from 2011; DOI added",
     "DOI": "10.1111/j.1469-8137.2010.03523.x",
     "x-checked": "2026-11-19"
+  },
+  {
+    "id": "bassle_2006_avian",
+    "type": "article-journal",
+    "title": "Avian cardiac anatomy and high-altitude flight",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'The physiology and biomechanics of avian flight at high altitude' (Altshuler, 2006) title similarity 0.44",
+    "author": [
+      {
+        "family": "Bassle",
+        "given": "B. et al."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2006
+        ]
+      ]
+    },
+    "container-title": "Journal of Morphology",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "biewener_2002_bone",
+    "type": "article-journal",
+    "title": "Bone strength in large quadrupeds: scaling and safety factors",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'Bone Strength in Small Mammals and Bipedal Birds: Do Safety Factors Change With Body Size?' (Biewener, 1982, doi 10.1242/jeb.98.1.289), title similarity 0.64, author match, year off",
+    "author": [
+      {
+        "family": "Biewener",
+        "given": "A. A."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2002
+        ]
+      ]
+    },
+    "container-title": "Journal of Experimental Biology",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "biewener_2003_animal",
+    "type": "article-journal",
+    "title": "Animal locomotion: scaling, neuromuscular and energetic trade-offs",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'Animal Locomotion' (Biewener, 2018, doi 10.1093/oso/9780198743156.001.0001), title similarity 1.00, author match, year off",
+    "author": [
+      {
+        "family": "Biewener",
+        "given": "A. A."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2003
+        ]
+      ]
+    },
+    "container-title": "Journal of Experimental Biology",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "eisner_2003_love",
+    "type": "book",
+    "title": "For a Love of Insects",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'American Film' (Institute, 1975) title similarity 0.12",
+    "author": [
+      {
+        "family": "Eisner"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2003
+        ]
+      ]
+    },
+    "container-title": "Harvard University Press",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "fay_2000_comparative",
+    "type": "article-journal",
+    "title": "Comparative hearing: mammals",
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked",
+    "author": [
+      {
+        "family": "Fay",
+        "given": "R. R., & Popper, A. N."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2000
+        ]
+      ]
+    },
+    "container-title": "Springer"
+  },
+  {
+    "id": "fitch_2000_evolution",
+    "type": "book",
+    "title": "The evolution of speech",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest OpenLibrary hit is 'The evolution of language' (Fitch, 2008), title similarity 0.75, author match, year off",
+    "author": [
+      {
+        "family": "Fitch",
+        "given": "W. T."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2000
+        ]
+      ]
+    },
+    "container-title": "Cambridge University Press",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "fitch_2004_acoustic",
+    "type": "article-journal",
+    "title": "Acoustic evolution of the human vocal tract",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'The Evolution of the Human Vocal Tract' (Clegg, 2012, doi 10.1093/acprof:osobl/9780199227341.003.0003), title similarity 0.89, author differs, year off",
+    "author": [
+      {
+        "family": "Fitch",
+        "given": "W. T., & Gelfand, A."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2004
+        ]
+      ]
+    },
+    "container-title": "Springer",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "hocking_1980_scavenging",
+    "type": "article-journal",
+    "title": "The Scavenging Ecology of Carnivores",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'On Scavenging by Hominids and Other Carnivores' (, 1976) title similarity 0.63",
+    "author": [
+      {
+        "family": "Hocking"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1980
+        ]
+      ]
+    },
+    "container-title": "Journal of Animal Ecology",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "hofmann_1989_evolutionary",
+    "type": "article-journal",
+    "title": "Evolutionary Stomach Ecology",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'Evolutionary Ecology' (, 1997, doi 10.1023/a:1018445209890), title similarity 0.83, author differs, year off",
+    "author": [
+      {
+        "family": "Hofmann"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1989
+        ]
+      ]
+    },
+    "container-title": "Springer",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "keller_1995_queens",
+    "type": "article-journal",
+    "title": "Queens and Workers",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Influence of the number of queens on nestmate recognition and attractiveness of queens to workers in the Argentine ant, Iridomyrmex humilis (Mayr)' (Keller, 1989) title similarity 0.23",
+    "author": [
+      {
+        "family": "Keller"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1995
+        ]
+      ]
+    },
+    "container-title": "Science",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "kleier_2015_acoustic",
+    "type": "article-journal",
+    "title": "Acoustic communication in savanna megafauna under temperature inversion",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Acoustic Communication Under the Sea' (Tyack, 1998) title similarity 0.62",
+    "author": [
+      {
+        "family": "Kleier",
+        "given": "F. et al."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2015
+        ]
+      ]
+    },
+    "container-title": "Journal of Acoustical Society",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "mainardi_2010_chemical",
+    "type": "article-journal",
+    "title": "Chemical Signaling in Scavengers",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Evolutionary Aspects of Hemoglobin Scavengers' (Wicher, 2010) title similarity 0.47",
+    "author": [
+      {
+        "family": "Mainardi"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2010
+        ]
+      ]
+    },
+    "container-title": "Behavioral Ecology",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "sukumar_2002_olfactory",
+    "type": "article-journal",
+    "title": "Olfactory Ecology in Terrestrial Mammals",
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked",
+    "author": [
+      {
+        "family": "Sukumar"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2002
+        ]
+      ]
+    },
+    "container-title": "Annual Review of Ecology and Systematics"
+  },
+  {
+    "id": "taylor_2001_thermoregulation",
+    "type": "article-journal",
+    "title": "Thermoregulation in Terrestrial Vertebrates",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'Thermoregulation in Vertebrates' (Speakman, 2001, doi 10.1038/npg.els.0001824), title similarity 0.84, author differs, year ok",
+    "author": [
+      {
+        "family": "Taylor"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2001
+        ]
+      ]
+    },
+    "container-title": "Physiological Reviews",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "warrant_2004_vision",
+    "type": "article-journal",
+    "title": "Vision in the Shallow Seas",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Shallow seas' (, 2005) title similarity 0.63",
+    "author": [
+      {
+        "family": "Warrant"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2004
+        ]
+      ]
+    },
+    "container-title": "Journal of Experimental Biology",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "webb_1984_form",
+    "type": "article-journal",
+    "title": "Form and Function in Fish Swimming",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 0.94); title corrected from 'Form and function of fish swimming'; DOI added",
+    "author": [
+      {
+        "family": "Webb",
+        "given": "P. W."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1984
+        ]
+      ]
+    },
+    "container-title": "Scientific American",
+    "DOI": "10.1038/scientificamerican0784-72",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "west_2012_biophysics",
+    "type": "article-journal",
+    "title": "Biophysics and physiology of high altitude",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'World Congresses of Mountain Medicine and High Altitude Physiology, 1994–2002' (West, 2002) title similarity 0.36",
+    "author": [
+      {
+        "family": "West",
+        "given": "J. B."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2012
+        ]
+      ]
+    },
+    "container-title": "Springer",
+    "x-checked": "2026-11-19"
   }
 ]

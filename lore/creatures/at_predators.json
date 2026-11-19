@@ -1,0 +1,191 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "at_predators",
+  "name": {
+    "en": "Predators"
+  },
+  "world": "at_garden_prairies",
+  "kind": "easter_egg",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "to be written",
+    "diet": "to be written",
+    "active": "to be written",
+    "predators": []
+  },
+  "body": "to be written",
+  "chains": [
+    {
+      "id": "at_predators.c1",
+      "trait": "Enormous, independently rotating pinnae atop cranial domes",
+      "links": [
+        "Dense humid air bends sound waves around tall grass obstacles",
+        "Nocturnal temperature inversions channel low-frequency pulses along the ground",
+        "Pack hunters rely on acoustic triangulation over visual contact in darkening savannas",
+        "Qu-gene locks preserve neural processing for complex sound mapping"
+      ],
+      "roots": [
+        "F9",
+        "F7",
+        "F17"
+      ],
+      "skill": {
+        "id": "at_predators.pack_rally",
+        "name": {
+          "en": "Pack Rally"
+        },
+        "role": "Control",
+        "effect": "Reveals stealth units within 25m and grants allies +2 evasion for 1 turn.",
+        "numbers": {}
+      },
+      "weakness": "High-pitched sonic disruptors scramble pinnae focus, breaking pack coordination.",
+      "observe": [
+        "Ears swivel independently to track ground-level vibrations",
+        "Tracks align with dawn and dusk hunting shifts",
+        "Dust plumes avoid direct strikes, favoring flanking arcs"
+      ],
+      "journal": {
+        "en": "They hear the grass breathe before they see it move."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "Treat \"triangulation\" as enhanced localization and inter-aural timing in a ~0.3–3 kHz band suited to footfalls in grass, not bat-grade echolocation mapping; keep Pack Rally range modest (≤30 m) unless prey are actively vocalizing.",
+        "fixes": [
+          "Treat \"triangulation\" as enhanced localization and inter-aural timing in a ~0.3–3 kHz band suited to footfalls in grass, not bat-grade echolocation mapping; keep Pack Rally range modest (≤30 m) unless prey are actively vocalizing."
+        ],
+        "analogues": [
+          {
+            "organism": "Domestic dog and gray wolf (Canis lupus) orientable pinnae with pronounced interaural level/time differences for terrestrial sound localization (Fay & Popper, comparative mammalian hearing).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "fay_2000_comparative"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "designer": 9,
+          "physicist": 9
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist",
+          "physicist"
+        ]
+      }
+    },
+    {
+      "id": "at_predators.c2",
+      "trait": "Retractable razor-thumbs on manipulator paws",
+      "links": [
+        "0.88g gravity reduces skeletal stress on fine motor override",
+        "Savanna ecology favors ambush over prolonged chases across open loam",
+        "Qu-engineered tendon sheaths lock under tension to pierce herbivore hide",
+        "Pack coordination forces precise strike over blunt force"
+      ],
+      "roots": [
+        "F5",
+        "F15"
+      ],
+      "skill": {
+        "id": "at_predators.precision_flank",
+        "name": {
+          "en": "Precision Flank"
+        },
+        "role": "Engage",
+        "effect": "Targets limb joints for -40% movement speed on hit, ignores 50% armor.",
+        "numbers": {}
+      },
+      "weakness": "Claws lock upon extension; cannot reposition or grapple without retracting and risking a turn.",
+      "observe": [
+        "Sunken nail beds snap outward like switchblades during ambush",
+        "Gait shows weight shifted forward onto metacarpals",
+        "Prey track parallel to wind, avoiding direct confrontations"
+      ],
+      "journal": {
+        "en": "The knife doesn't cut; it waits."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "Model thumbs as laterally hinged talons with partial retraction (felid-like sheaths on digit I), not a rigid lock that forbids all grasping—reserve full lock for the Engage finisher moment only.",
+        "fixes": [
+          "Model thumbs as laterally hinged talons with partial retraction (felid-like sheaths on digit I), not a rigid lock that forbids all grasping—reserve full lock for the Engage finisher moment only."
+        ],
+        "analogues": [
+          {
+            "organism": "Felidae proximal/distal phalanx retraction via dorsal elastic ligament and flexor mechanics; ambush strike via dromaeosaurid pedal sickle claw (paravian predation hypothesis).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "alexander_2003_principles",
+              "biewener_2002_bone"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 7,
+          "designer": 8,
+          "physicist": 8
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist",
+          "physicist"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "at_saltatorial_prey",
+      "kind": "predation",
+      "note": "Predators triangulate prey footfalls with independently rotating pinnae; prey counter with silent digitigrade leaping across prairie grasses.",
+      "via": "F9"
+    },
+    {
+      "with": "at_bone_crushers",
+      "kind": "counter",
+      "note": "Predator pinnae detect Bone Crusher carrion-scent gland sprays, allowing them to intercept scavengers or avoid contaminated kills.",
+      "via": "F7"
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-19",
+    "by": [
+      "naturalist",
+      "physicist"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-19",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-19"
+    },
+    {
+      "date": "2026-11-19",
+      "who": "autoloop",
+      "what": "removed rejected references from analogues"
+    }
+  ],
+  "lore_ref": {
+    "file": "lore/alltomorrows.en.json",
+    "id": "predators"
+  }
+}

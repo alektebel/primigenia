@@ -171,7 +171,9 @@ def import_graph(w, rd, graph, cmap, kind, run):
     mp = os.path.join(rd, f"cmap_{os.path.basename(os.path.dirname(graph))}.json")
     gk = set(load(graph).get("chains", {}))
     json.dump({k: v for k, v in cmap.items() if k in gk}, open(mp, "w"))
-    return sh([PY, os.path.join(LORE, "import_got.py"), graph, "--world", w["id"], "--kind", kind, "--run", run, "--map", mp], env={})
+    rc = sh([PY, os.path.join(LORE, "import_got.py"), graph, "--world", w["id"], "--kind", kind, "--run", run, "--map", mp], env={})
+    if rc: log(f"import_got FAILED (exit {rc}) for {graph}")
+    return rc
 
 
 def world_creature_files(wid):

@@ -156,7 +156,8 @@ def merge(existing, new, date, run):
 def build(graph, gdir, run, date, world, kind="native", cmap=None, refs_out=None):
     """cmap: {council name: {id, name (str or i18n), aliases, lore_ref}} overrides ids and display names."""
     cmap = cmap or {}
-    chains, edges = graph.get("chains", {}), (graph.get("graph") or {}).get("edges", [])
+    chains, g = graph.get("chains", {}), graph.get("graph")
+    edges = [e for e in (g.get("edges", []) if isinstance(g, dict) else g if isinstance(g, list) else []) if isinstance(e, dict)]
     known = {n: (cmap.get(n) or {}).get("id") or slug(n) for n in chains}
     for n, m in cmap.items():
         known.setdefault(n, m.get("id") or slug(n))

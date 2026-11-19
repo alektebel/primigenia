@@ -1,0 +1,180 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "at_hand_flappers",
+  "name": {
+    "en": "Hand Flappers"
+  },
+  "world": "at_garden_prairies",
+  "kind": "easter_egg",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "to be written",
+    "diet": "to be written",
+    "active": "to be written",
+    "predators": []
+  },
+  "body": "to be written",
+  "chains": [
+    {
+      "id": "at_hand_flappers.c1",
+      "trait": "Flag-like hand-wings & splayed perching legs",
+      "links": [
+        "Maximize visual display surface without structural stress -> ground adaptation after flight became metabolically unsustainable -> 0.88g gravity with 22% oxygen and 1.1 bar pressure limit sustained flight envelope"
+      ],
+      "roots": [
+        "F5",
+        "F7",
+        "F8"
+      ],
+      "skill": {
+        "id": "at_hand_flappers.ritual_strut",
+        "name": {
+          "en": "Ritual Strut"
+        },
+        "role": "Social",
+        "effect": "Unfolds flag-hands and performs a rhythmic dance, boosting party morale by 20% and stunning rivals for 1 turn.",
+        "numbers": {}
+      },
+      "weakness": "Completely immobile during display; vulnerable to ambush predators.",
+      "observe": [
+        "Wing membranes reduced to frayed, ribbon-like hands",
+        "Legs permanently splayed from perching ancestry",
+        "Ecstatic, rhythmic foot-stomping and feather-ruffling"
+      ],
+      "journal": {
+        "en": "Civilization died the moment they forgot how to throw a stone."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "Flight loss should follow removal of Qu-engineered high-output cardiac/aerobic shunt, not Earth's gravity/O2 alone on this world.",
+        "fixes": [
+          "Flight loss should follow removal of Qu-engineered high-output cardiac/aerobic shunt, not Earth's gravity/O2 alone on this world."
+        ],
+        "analogues": [
+          {
+            "organism": "Wekan rail and other flightless island birds (vestigial wings); birds-of-paradise (wing/flag display)",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "pennycuick_2008_modelling"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "designer": 8,
+          "physicist": 5
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist",
+          "physicist"
+        ]
+      }
+    },
+    {
+      "id": "at_hand_flappers.c2",
+      "trait": "Thermoregulatory frills & ground-dwelling gait",
+      "links": [
+        "High aerobic metabolism without flight -> 22% O2 and 1.1 bar pressure support elevated baseline heat -> K2V spectrum delivers steady visible light but low UV cooling -> heat dissipation shifts to cranial frills and padded feet"
+      ],
+      "roots": [
+        "F5",
+        "F7",
+        "F8"
+      ],
+      "skill": {
+        "id": "at_hand_flappers.heat_shed",
+        "name": {
+          "en": "Heat-Shed"
+        },
+        "role": "Defence",
+        "effect": "Reduces incoming damage by 15% during rest turns by venting excess thermal load through frill vasculature.",
+        "numbers": {}
+      },
+      "weakness": "Frills collapse if dehydrated; requires frequent water access.",
+      "observe": [
+        "Collapsible dermal flaps along the neck",
+        "Padded, splayed feet for ground contact",
+        "Rapid panting during exertion"
+      ],
+      "journal": {
+        "en": "They wear their cooling systems like crowns."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "Anchor frill vasculature to residual flyer-grade heat load on the ground; de-emphasize K2V UV as the cooling driver.",
+        "fixes": [
+          "Anchor frill vasculature to residual flyer-grade heat load on the ground; de-emphasize K2V UV as the cooling driver."
+        ],
+        "analogues": [
+          {
+            "organism": "Frilled-neck lizard (frill vascular flushing); African elephant (ear radiators)",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "taylor_2001_thermoregulation"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 7,
+          "designer": 7,
+          "physicist": 4
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "council"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "at_flyers",
+      "kind": "opposite",
+      "note": "Flyers maintain turbine hearts and digitigrade wing membranes to exploit aerial niches; Hand Flappers shed flight musculature, shrinking wings to flag-hands and shifting to ground-dwelling thermoregulation.",
+      "via": "F5"
+    },
+    {
+      "with": "at_mantelopes",
+      "kind": "mimicry",
+      "note": "Hand Flappers mimic Mantelope mournful harmonies to infiltrate herds and steal grazing time, exploiting acoustic overlap in dense air.",
+      "via": "F9"
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-19",
+    "by": [
+      "council",
+      "naturalist",
+      "physicist"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-19",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-19"
+    }
+  ],
+  "lore_ref": {
+    "file": "lore/alltomorrows.en.json",
+    "id": "hand-flappers"
+  }
+}

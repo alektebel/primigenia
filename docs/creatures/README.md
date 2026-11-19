@@ -40,6 +40,22 @@
 | [Symbiotes](at_symbiotes.md) | easter_egg | draft | 3 | 2 fixable, 1 plausible |
 | [Tool Breeders](at_tool_breeders.md) | easter_egg | draft | 2 | 2 plausible |
 
+## All Tomorrows: garden prairies and shores (`at_garden_prairies`)
+
+| Creature | Kind | Status | Chains | Verdicts |
+|---|---|---|---|---|
+| [Bone Crushers](at_bone_crushers.md) | easter_egg | draft | 2 | 2 plausible |
+| [Finger Fishers](at_finger_fishers.md) | easter_egg | draft | 2 | 1 fixable, 1 plausible |
+| [Flyers](at_flyers.md) | easter_egg | draft | 2 | 1 fixable, 1 plausible |
+| [Hand Flappers](at_hand_flappers.md) | easter_egg | draft | 2 | 2 plausible |
+| [Insectophagi](at_insectophagi.md) | easter_egg | draft | 2 | 2 plausible |
+| [Mantelopes](at_mantelopes.md) | easter_egg | draft | 2 | 2 plausible |
+| [Predators](at_predators.md) | easter_egg | draft | 2 | 2 plausible |
+| [Saltatorial Prey](at_saltatorial_prey.md) | easter_egg | draft | 2 | 2 plausible |
+| [Swimmers](at_swimmers.md) | easter_egg | draft | 2 | 2 plausible |
+| [Temptors](at_temptors.md) | easter_egg | draft | 2 | 1 fixable, 1 plausible |
+| [Titans](at_titans.md) | easter_egg | draft | 2 | 1 fixable, 1 plausible |
+
 ## Gravital Space / Asteroid Arks (`at_gravital_space`)
 
 | Creature | Kind | Status | Chains | Verdicts |
