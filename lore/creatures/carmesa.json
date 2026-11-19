@@ -238,10 +238,7 @@
           },
           {
             "organism": "real biology behind this chain",
-            "mechanism": "see the cited works; chain wording is the council's own",
-            "refs": [
-              "crame_2002_carcinisation"
-            ]
+            "mechanism": "see the cited works; chain wording is the council's own"
           }
         ],
         "scores": {
@@ -267,6 +264,12 @@
       "with": "Jet Hunters",
       "kind": "cousin",
       "note": "(council kind 'Predator') Target carapace seams; Carmesa's lateral armor leaves dorsal soft tissue exposed to dive-bombing strikes."
+    },
+    {
+      "with": "laja_tres",
+      "kind": "convergent",
+      "via": "carcinisation",
+      "note": "both converged on the crab body plan from unrelated lineages (Borradaile 1916; Keiler, Wirkner and Richter 2017; Wolfe, Luque and Bracken-Grissom 2021)"
     }
   ],
   "provenance": {
@@ -280,6 +283,16 @@
       "date": "2026-11-19",
       "who": "import_got",
       "what": "imported from council run autoloop-2026-11-19"
+    },
+    {
+      "date": "2026-11-19",
+      "who": "autoloop",
+      "what": "carcinisation links to 1 creature(s)"
+    },
+    {
+      "date": "2026-11-19",
+      "who": "autoloop",
+      "what": "removed rejected references from analogues"
     }
   ],
   "carcinised": true,

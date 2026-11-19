@@ -6599,8 +6599,8 @@
     "id": "crame_2002_carcinisation",
     "type": "article-journal",
     "title": "Carcinisation: evolution of a crab",
-    "x-status": "unverified",
-    "x-note": "cited by a council model from memory; not yet checked",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Origins and Evolution of the Antarctic Biota' (Crame, 1987) title similarity 0.60",
     "author": [
       {
         "family": "Crame",
@@ -6614,6 +6614,29 @@
         ]
       ]
     },
-    "container-title": "Biological Journal of the Linnean Society"
+    "container-title": "Biological Journal of the Linnean Society",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "petkowski_2020_number",
+    "type": "article-journal",
+    "title": "The number of habitable environments in the universe.",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Panbiotic Ethics as an Evolutionary Adaptation of a Habitable Planet in a Habitable Universe' (Shenderov, 2026) title similarity 0.50",
+    "author": [
+      {
+        "family": "Petkowski",
+        "given": "J."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2020
+        ]
+      ]
+    },
+    "container-title": "Astrobiology",
+    "x-checked": "2026-11-19"
   }
 ]

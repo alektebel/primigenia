@@ -1,0 +1,318 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "laja_tres",
+  "name": {
+    "en": "Laja-Tres"
+  },
+  "world": "silicon_hot",
+  "kind": "new",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "Basalt ridges, thermal vent fields, wind-scoured plates.",
+    "diet": "FeS₂, sulfur crystals, chemosynthetic biofilms, supercritical vent fluids.",
+    "active": "Thermally regulated; active above 150°C, stasis below 130°C.",
+    "predators": []
+  },
+  "body": "Laminated silicate armor, lateral piezoelectric limbs, pincer claws, tucked ventral lattice-housing.",
+  "chains": [
+    {
+      "id": "laja_tres.c1",
+      "trait": "Broad, flattened carapace with sliding thermal joints.",
+      "links": [
+        "Slides to reduce wind load and distribute shear stress",
+        "Dense atmosphere exerts high shear stress on low profile",
+        "3.2 bar pressure and abrasive silica dust scour open terrain"
+      ],
+      "roots": [
+        "F5",
+        "F7",
+        "F15"
+      ],
+      "skill": {
+        "id": "laja_tres.shield_plate",
+        "name": {
+          "en": "Shield Plate"
+        },
+        "role": "Defence",
+        "effect": "Carapace locks plates against wind and impact, reducing damage by 30% and passively venting excess heat.",
+        "numbers": {}
+      },
+      "weakness": "Slow to deploy; if struck before locking, thermal joints fracture and lose mobility.",
+      "observe": [
+        "Plates ratchet open under pressure, sliding against each other",
+        "Dust piles on the dorsal curve but blows off the sides",
+        "Joints hiss as they slide to relieve thermal expansion"
+      ],
+      "journal": {
+        "en": "A living slate that reads the wind like braille, armor that moves with the storm."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "F7 abrasive winds and F5 dense air impose high shear on exposed profiles; F15 already selects silica–sulfur composites with expansion joints. Laminated plates that ratchet and slide distribute thermomechanical stress like segmented armor, which is mechanically honest at 150–450°C where bulk silica would crack. Silicon biochemistry here remains highly speculative (Bains 2004; Petkowski, Bains & Seager 2020): siloxane backbones need low H₂O and anoxia (F10–F11), so carapace is mineralized tissue, not arbitrary fantasy metal.",
+        "fixes": [
+          "F7 abrasive winds and F5 dense air impose high shear on exposed profiles; F15 already selects silica–sulfur composites with expansion joints. Laminated plates that ratchet and slide distribute thermomechanical stress like segmented armor, which is mechanically honest at 150–450°C where bulk silica would crack. Silicon biochemistry here remains highly speculative (Bains 2004; Petkowski, Bains & Seager 2020): siloxane backbones need low H₂O and anoxia (F10–F11), so carapace is mineralized tissue, not arbitrary fantasy metal."
+        ],
+        "analogues": [
+          {
+            "organism": "Pangolin (Manis) overlapping keratin scales; trilobite articulating thoracic segments; bivalve shells with organic hinges—segmented rigid covers with flexible junctions under abrasion and thermal cycling.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "bains_2004_many"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "laja_tres.c2",
+      "trait": "Lateral gait generating bioelectricity via crystal compression.",
+      "links": [
+        "Compresses specific lattice axes to harvest charge for movement",
+        "High gravity demands efficient locomotion on brittle, glassy terrain",
+        "Silicate crystal lattices exhibit strong piezoelectric response under stress"
+      ],
+      "roots": [
+        "F3",
+        "F18"
+      ],
+      "skill": {
+        "id": "laja_tres.crystal_stride",
+        "name": {
+          "en": "Crystal Stride"
+        },
+        "role": "Control",
+        "effect": "Sideways movement regenerates stamina bar and stabilizes footing on loose scree; 20% speed boost when moving laterally.",
+        "numbers": {}
+      },
+      "weakness": "Cannot move forward effectively; turning requires a 90° pivot that drains charge and leaves flank exposed.",
+      "observe": [
+        "Legs move in a peristaltic wave strictly sideways",
+        "Faint amber glow pulses in joints as they flex",
+        "Tracks show parallel groove patterns with no forward scuffing"
+      ],
+      "journal": {
+        "en": "They walk sideways not for evasion, but to harvest the world's vibration; the universe is their battery."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "Reframe Crystal Stride: piezo joints provide footing feedback, joint locking, and minor charge for neural control; stamina bonus is efficiency on brittle terrain, not battery-like locomotion. Keep sideways-only as biomechanical specialization, not primary energy harvest.",
+        "fixes": [
+          "Reframe Crystal Stride: piezo joints provide footing feedback, joint locking, and minor charge for neural control; stamina bonus is efficiency on brittle terrain, not battery-like locomotion. Keep sideways-only as biomechanical specialization, not primary energy harvest."
+        ],
+        "analogues": [
+          {
+            "organism": "Decapod crustaceans (Brachyura) lateral scuttle on rough substrate; human/cortical bone piezoelectricity (osteon deformation); weak electric fish use bioelectric signals for navigation but do not power muscle from stride harvesting.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "laja_tres.c3",
+      "trait": "Ventral reproductive lattice tucked beneath carapace.",
+      "links": [
+        "Shielded from shear stress and abrasion during lateral acceleration",
+        "Defect-patterned silicate lattices are brittle and fracture easily under torsion",
+        "Lateral gait creates high differential forces across the body axis"
+      ],
+      "roots": [
+        "F12",
+        "F3",
+        "F15"
+      ],
+      "skill": {
+        "id": "laja_tres.lattice_offer",
+        "name": {
+          "en": "Lattice Offer"
+        },
+        "role": "Social",
+        "effect": "Tucks ventrum to reveal defect-pattern glow; befriend increases stability and grants passive thermal shielding from ally.",
+        "numbers": {}
+      },
+      "weakness": "Ventral is soft siloxane mesh; exposed to sulfuric acid mist or rapid thermal shock causes catastrophic lattice failure.",
+      "observe": [
+        "Soft underbelly hidden beneath carapace when stationary",
+        "Reveals ventrum only to mate or calm herd members",
+        "Lattice glows with shifting internal defect patterns when active"
+      ],
+      "journal": {
+        "en": "The secret is in the fold; a crystal book protected by stone, written in the language of broken bonds."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "Call ventral structure 'heritable defect mosaic' or brood lattice (reproduction/germ-line analog), not proven silicon DNA; weakness text should cite low-H₂O sulfuric aerosol (F5) plus quench below 130°C (F17), not generic 'acid' unless localized vent H₂S/SO₂ chemistry is specified.",
+        "fixes": [
+          "Call ventral structure 'heritable defect mosaic' or brood lattice (reproduction/germ-line analog), not proven silicon DNA; weakness text should cite low-H₂O sulfuric aerosol (F5) plus quench below 130°C (F17), not generic 'acid' unless localized vent H₂S/SO₂ chemistry is specified."
+        ],
+        "analogues": [
+          {
+            "organism": "Hawaiian bobtail squid (Euprymna scolopes) ventral light organ shielded for counter-illumination; isopod/arthropod brood pouches protecting eggs from shear; vent worms packing gonads in protected trunk while exposing feeding appendages.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "laja_tres.c4",
+      "trait": "Asymmetric crushing claws for prying supercritical vent seals.",
+      "links": [
+        "Pries supercritical CO₂/SO₂ vents to access chemosynthetic redox gradients",
+        "Dense crust requires mechanical advantage to access reduced volatiles",
+        "Reduced volatiles are locked in high-pressure mineral traps requiring leverage"
+      ],
+      "roots": [
+        "F9",
+        "F15"
+      ],
+      "skill": {
+        "id": "laja_tres.vent_pry",
+        "name": {
+          "en": "Vent Pry"
+        },
+        "role": "Poke",
+        "effect": "Pries open geological vents, releasing gas clouds for loot and exposing hidden mineral crusts; deals high damage to rock.",
+        "numbers": {}
+      },
+      "weakness": "Claws can jam if silica cements them in place; vulnerable if locked in rock by player or rival.",
+      "observe": [
+        "Cracks basalt to release sulfurous plumes and heat",
+        "One claw is a hammer, the other a chisel, working in opposition",
+        "Feeds on the mineral crust that rapidly reforms around the pry point"
+      ],
+      "journal": {
+        "en": "Geology is their garden; they crack the rock to harvest the breath, prying life from the planet's fever dream."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "F9 reduced H₂S, FeS₂, and supercritical CO₂ pockets at vents supply the diet and loot loop; mechanical leverage to breach mineral seals is convergent with vent-mining niches. Hammer–chisel asymmetry is workable under F15 mineralized claws; jamming via silica cement fits F7 dust deposition on wet mineral crusts. Eating reforming sulfide crust post-pry aligns with F13 anoxic sulfur redox and FeS₂ grinding niche. Player 'high damage to rock' is gameplay exaggeration but behavior root is honest.",
+        "fixes": [
+          "F9 reduced H₂S, FeS₂, and supercritical CO₂ pockets at vents supply the diet and loot loop; mechanical leverage to breach mineral seals is convergent with vent-mining niches. Hammer–chisel asymmetry is workable under F15 mineralized claws; jamming via silica cement fits F7 dust deposition on wet mineral crusts. Eating reforming sulfide crust post-pry aligns with F13 anoxic sulfur redox and FeS₂ grinding niche. Player 'high damage to rock' is gameplay exaggeration but behavior root is honest."
+        ],
+        "analogues": [
+          {
+            "organism": "Yeti crab (Kiwa spp.) cultivates chemosynthetic biofilm on claw setae at vents; fiddler crab (Uca) major/minor chela asymmetry for fight vs. feed; woodpecker/hyoid asymmetry for chiseling—paired tools with mechanical advantage.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "Sulfur-Skimmer",
+      "kind": "cousin",
+      "note": "(council kind 'Competition') Competes for vent crustaceans and mineral crusts; Laja-Tres dominate high-wind ridges, Skimmers hold low-vent flats."
+    },
+    {
+      "with": "carmesa",
+      "kind": "convergent",
+      "via": "carcinisation",
+      "note": "both converged on the crab body plan from unrelated lineages (Borradaile 1916; Keiler, Wirkner and Richter 2017; Wolfe, Luque and Bracken-Grissom 2021)"
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-19",
+    "by": [
+      "naturalist/qwen"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-19",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-19"
+    },
+    {
+      "date": "2026-11-19",
+      "who": "autoloop",
+      "what": "carcinisation links to 1 creature(s)"
+    },
+    {
+      "date": "2026-11-19",
+      "who": "autoloop",
+      "what": "removed rejected references from analogues"
+    }
+  ],
+  "carcinised": true,
+  "body_plan": {
+    "symmetry": "bilateral",
+    "arms": 10,
+    "origin": "Converged from a radially laminated silicate stack lineage that flattened for wind resistance and developed bilateral girders for lateral stress distribution."
+  },
+  "temperament": "Guarded, territorial of heat patches, defensive against wind shear.",
+  "secrets": [
+    "Harvesting a 'Piezo-Core' from a dead Laja-Tres grants the player temporary vibration sensing, allowing detection of hidden vents and seismic predators.",
+    "Laja-Tres migrate in perfect synchrony to their thermal stasis dormancy; interrupting the cycle with rapid cooling causes a mass freeze event, stunning the herd but making them vulnerable."
+  ],
+  "moments": [
+    "The heat haze shimmers, and a ridge of rock seems to slide sideways before your eyes, only to freeze into stillness as you approach, indistinguishable from the stone until the shadow of your ship passes and it resumes its slow, grinding march."
+  ],
+  "journal": [
+    {
+      "en": "Three slabs of basalt with legs. Or maybe legs grew slabs. Hard to tell when the wind howls."
+    },
+    {
+      "en": "Carcinisation? Please. The universe didn't fall in love with crabs; it just learned that flat, brittle things survive high pressure and brittle joints. A different lineage, same low-drag solution. Nature is a lazy engineer; it keeps finding the same angle."
+    },
+    {
+      "en": "Again."
+    }
+  ]
+}

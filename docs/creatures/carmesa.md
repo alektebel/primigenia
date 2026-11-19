@@ -96,7 +96,7 @@ Trait ← Lateral sweeping motion generates aerodynamic lift ← Converts ambien
   - Make Oath Strike powered mainly by stored leg/elastic energy and body inertia in the shear layer; treat wind as alignment aid (striking downshear) and infrasonic ‘clap’ as the honest signal. Drop or soften ‘sweeping lift’ unless chelae are sail-like and Carmesa is edge-on at high Re—then mark highly speculative.
   - scores: astrobio 6, skeptic 6
   - Analogue: Fiddler crab enlarged chela (display/ritualized combat asymmetry); stag beetles (ritualized grabbing/lifting contests with injury minimization); snapping shrimp cavitation click (sound as weapon/signal)—mechanism: asymmetry + ritualized force, not ambient wind powering the strike.: as named by the judge; no mechanism or reference recorded
-  - Analogue: real biology behind this chain: see the cited works; chain wording is the council's own (Crame 2002 [unverified])
+  - Analogue: real biology behind this chain: see the cited works; chain wording is the council's own
   - Fix: Make Oath Strike powered mainly by stored leg/elastic energy and body inertia in the shear layer; treat wind as alignment aid (striking downshear) and infrasonic ‘clap’ as the honest signal. Drop or soften ‘sweeping lift’ unless chelae are sail-like and Carmesa is edge-on at high Re—then mark highly speculative.
 - **Chain provenance:** council run `autoloop-2026-11-19`; by naturalist/qwen
 
@@ -106,6 +106,7 @@ Trait ← Lateral sweeping motion generates aerodynamic lift ← Converts ambien
 |---|---|---|---|
 | Air Whales | cousin |  | (council kind 'Commensal') Rides thermal updrafts from their massive filter-maws to reach higher cloud layers without metabolic cost. |
 | Jet Hunters | cousin |  | (council kind 'Predator') Target carapace seams; Carmesa's lateral armor leaves dorsal soft tissue exposed to dive-bombing strikes. |
+| laja_tres | convergent | carcinisation | both converged on the crab body plan from unrelated lineages (Borradaile 1916; Keiler, Wirkner and Richter 2017; Wolfe, Luque and Bracken-Grissom 2021) |
 
 ## Journal
 
@@ -129,3 +130,5 @@ council run `autoloop-2026-11-19`; by naturalist/qwen
 ## Changelog
 
 - 2026-11-19 import_got: imported from council run autoloop-2026-11-19
+- 2026-11-19 autoloop: carcinisation links to 1 creature(s)
+- 2026-11-19 autoloop: removed rejected references from analogues

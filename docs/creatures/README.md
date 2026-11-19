@@ -147,6 +147,7 @@
 | [Azufraja](azufraja.md) | new | draft | 4 | 3 fixable, 1 plausible |
 | [Cenizor](cenizor.md) | new | draft | 4 | 2 fixable, 2 plausible |
 | [Cuarzo-Sangre](cuarzo_sangre.md) | new | draft | 4 | 3 fixable, 1 plausible |
+| [Laja-Tres](laja_tres.md) | new | draft | 4 | 2 fixable, 2 plausible |
 | [Quemador](quemador.md) | new | draft | 4 | 1 fixable, 3 plausible |
 | [Vidrio-Pulso](vidrio_pulso.md) | new | draft | 4 | 3 fixable, 1 plausible |
 
