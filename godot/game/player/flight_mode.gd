@@ -57,6 +57,11 @@ func setup(isl, stg) -> void:
 func available() -> bool:
 	return enabled and Engine.get_main_loop() != null and _dev_on()
 
+## A31: `lift_mul` is a dev-only knob (D4, the global fun gain). Outside dev builds the gain is always 1: physics decides who flies.
+## Dev builds are `Dev.enabled` (debug build by default, `--dev` / `--no-dev` override; devtools/dev.gd compute_enabled).
+func lift_gain() -> float:
+	return _lift_mul if _dev_on() else 1.0
+
 static func _dev_on() -> bool:
 	var tree := Engine.get_main_loop() as SceneTree
 	if tree == null:
@@ -95,7 +100,7 @@ func _ensure_model() -> bool:
 		model.lift_mul = keep.lift_mul
 		model.power_mul = keep.power_mul
 		model.cd0_mul = keep.cd0_mul
-	model.lift_mul = _lift_mul
+	model.lift_mul = lift_gain()
 	model.power_mul = _power_mul
 	model.cd0_mul = _cd0_mul
 	wing = LocoWing.new(float(morph.mass), infos[0] if not infos.is_empty() else {})
@@ -329,7 +334,7 @@ func _set_mul(which: String, v: float) -> void:
 		"power": _power_mul = v
 		"cd0": _cd0_mul = v
 	if model != null:
-		model.lift_mul = _lift_mul
+		model.lift_mul = lift_gain()
 		model.power_mul = _power_mul
 		model.cd0_mul = _cd0_mul
 

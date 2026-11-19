@@ -152,6 +152,18 @@ func _creature_wings(t) -> void:
 	t.check(not r.ok and r.reason.contains("cannot take off"), "Merodeador cannot take off at 1x lift: %s" % r.reason.left(60))
 	model.lift_mul = 60.0
 	t.check(model.stall_speed() < 20.0, "the global lift multiplier brings it into reach (stall %.1f m/s at x60)" % model.stall_speed())
+	# A31: lift_mul is dev-only; without dev tools the gain the mode hands the model is 1 whatever was tuned
+	var dev = t.root.get_node_or_null("Dev")
+	if dev != null:
+		var fm = load("res://game/player/flight_mode.gd").new()
+		fm._lift_mul = 60.0
+		var was: bool = dev.enabled
+		dev.enabled = false
+		t.eq(fm.lift_gain(), 1.0, "normal play: lift_mul is ignored (physics decides who flies)")
+		dev.enabled = true
+		t.eq(fm.lift_gain(), 60.0, "dev builds: lift_mul applies")
+		dev.enabled = was
+		fm.free()
 	c.free()
 	# the same wing at the starter's body: the vane test creature, in numbers
 	var g: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://game/data/flyer.json"))
