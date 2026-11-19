@@ -58,9 +58,9 @@ what to read):
 
 | entry | before | after |
 |---|---|---|
-| cold start (menu to island, no kit) | 24.2 s | 19.4 s (nav_warm 6 s of it, a one-time C walk grid) |
-| island to menu to island | 11.4 s | 3.2 s |
-| studio to Jugar con esta criatura | 13.0 s | 5.8 s (2.7 s in a calmer run) |
+| cold start (menu to island, no kit) | 24.2 s | 17.3 s (nav_warm 8.4 s of it, a one-time C walk grid; the rest is load noise) |
+| island to menu to island | 11.4 s | 4.7 s (3.2 s in an earlier run) |
+| studio to Jugar con esta criatura | 13.0 s | 3.4 s (2.4 to 5.8 s over runs) |
 
 Phases of the 11.4 s re-entry before (ms): water 3767, props/flora 2691, creatures 2014, ui and rest 2002, stage reset 556, rivers 197,
 terrain meshes 94, grass 10. After: water, rivers, terrain, grass and props 0 (kit); what is left is the creatures (about 1.5 s: the
@@ -74,3 +74,7 @@ with a window open) writes it into a new Plants section of the journal (name, ha
 copied into `flora.json` as `lore`) and whispers "Nueva planta: ...". Visual only: `game/island/plant_gaze.gd` picks the plant from
 the placed flora records (spatial index, a stick with a radius that grows with distance) and the known list is saved in the
 scenario (`"plants"`). Tests: `test_plant_gaze.gd`, `ui_test.gd`, `play_test.gd`.
+
+Evidence in `docs/evidence/godot/creature-fixes/`: `bars_*.jpg`, `clouds_before_*` / `clouds_after_*`, `studio_play_button.jpg`, `entry_cold.jpg` and `entry_from_studio.jpg`
+(the same terrain, built and taken from the kit). Known rough edge: at 1280 px the studio's left cluster (with the new button) overlaps the
+start of the mode row.
