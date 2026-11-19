@@ -412,7 +412,7 @@ func test_menu_and_onboarding() -> void:
 	ui.stub.handle_input(_key_event(KEY_ESCAPE))
 	ok(not ui.stub.open, "Esc closes it")
 	ui._unhandled_input(_key_event(KEY_T))
-	ok(reqs == ["journal", "tree"] and ui.stub.open and ui.stub.kind == "tree", "T opens the family tree view")
+	ok(reqs == ["journal", "tree"] and not ui.stub.open, "T asks for the family tree (the real view, game/stage/lineage_controller.gd, opens it; the stub is only a fallback)")
 	ui.close_view()
 	# onboarding
 	var ob = Onboarding.new(null)
