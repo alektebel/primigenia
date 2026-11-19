@@ -45,10 +45,10 @@
  ],
  "parts": [
   {
-   "type": "fauces",
+   "type": "pico",
    "t": 1,
    "ang": 0,
-   "size": 0.247
+   "size": 0.3
   },
   {
    "type": "ojo",
