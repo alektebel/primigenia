@@ -13,7 +13,7 @@ from .env import lib as _core_lib
 # Layout sizes from the native headers (64-bit LP64). CpStageWorld grows with the engine, so its size
 # is asked from the library (cp_stage_world_size) when the stage API is bound.
 _WORLD_BYTES = 0
-_SETUP_BYTES = 17604
+_SETUP_BYTES = 17704
 
 CP_STAGE_CONTINUE = 0
 CP_STAGE_WAIT = 1
@@ -67,6 +67,7 @@ class CpStageSpawn(ctypes.Structure):
         ("species", c_int32),
         ("bot", c_int32),
         ("profile", CpCombatProfile),
+        ("legs", c_int32),
     ]
 
 
@@ -93,6 +94,7 @@ class CpStageSetup(ctypes.Structure):
         ("water_z", c_float),
         ("water_radius", c_float),
         ("player", CpCombatProfile),
+        ("player_legs", c_int32),
         ("wild", CpStageSpawn * CP_STAGE_MAX_WILD),
         ("obstacles", CpStageObstacle * CP_STAGE_MAX_OBSTACLES),
     ]
