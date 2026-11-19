@@ -475,7 +475,7 @@ func _species_page(p: Rect2, e: Dictionary, mod: Color) -> void:
 	for c in e.clues:
 		if left < line_height(fi, 15.5):
 			break
-		var h := _para(fi, Vector2(p.position.x + Style.u(14.0), y), String(c), 15.5, p.size.x - Style.u(14.0), minf(left, line_height(fi, 15.5) * 2.0), _c(INK_SOFT, mod))
+		var h := _para(fi, Vector2(p.position.x + Style.u(14.0), y), Strings.clue(String(c)), 15.5, p.size.x - Style.u(14.0), minf(left, line_height(fi, 15.5) * 2.0), _c(INK_SOFT, mod))
 		draw_circle(Vector2(p.position.x + Style.u(4.0), y + Style.u(10.0)), Style.u(2.2), _c(COPPER_D, mod))
 		y += h + Style.u(3.0)
 		left -= h + Style.u(3.0)

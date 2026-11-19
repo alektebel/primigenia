@@ -658,7 +658,7 @@ func _social_event(ev: Dictionary, state: Dictionary) -> void:
 			ui.show_dna(int(ev.value), DNA_SOURCES[src] if src >= 0 and src < DNA_SOURCES.size() else "", at)
 		EV_OBSERVE:
 			var sp2 := int(ev.value)
-			var clue: String = String(_chains[sp2].observe[int(ev.move)]) if sp2 < _chains.size() else ""
+			var clue: String = Strings.clue(String(_chains[sp2].observe[int(ev.move)])) if sp2 < _chains.size() else ""
 			ui.show_clue(at, "%s: %s" % [_species_name(sp2), clue])
 		EV_CHAIN_DONE:
 			var mv2 := int(ev.move)
