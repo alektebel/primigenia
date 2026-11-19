@@ -639,7 +639,7 @@ func _darts(from: Vector3, to: Vector3) -> void:
 		tween.tween_callback(dart.queue_free)
 
 func _social_event(ev: Dictionary, state: Dictionary) -> void:
-	if int(ev.type) == 26:
+	if int(ev.type) == 28:   # CP_STAGE_EV_VOLLEY
 		_darts(_target_pos(state, int(ev.target)), Vector3(ev.x, Game.ground(ev.x, ev.z) + 1.0, ev.z))
 		return
 	if int(ev.type) == 21:
