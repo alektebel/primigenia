@@ -90,6 +90,9 @@ func _on_island_ready() -> void:
 		console.registry.services["path_overlay"] = po
 	tuning.bind_sim(Game.stage)
 	tuning.bind_island(get_tree().current_scene)
+	var isl = get_tree().current_scene
+	if isl != null and isl.get("flight") != null:
+		isl.flight.register_console(console.registry)
 	picker.sites = sites
 	picker.registry = console.registry
 

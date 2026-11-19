@@ -915,6 +915,40 @@
       "shape_ref": "parts/wing_insect.glb"
     },
     {
+      "id": "wing_vane",
+      "category": "wings",
+      "name": {
+        "es": "Ala de plumas",
+        "en": "Vane wing"
+      },
+      "dna_cost": 24,
+      "source": "procedural",
+      "c_type": "CP4_WING",
+      "cosmetic": true,
+      "illustrative_abilities": [
+        "glide"
+      ],
+      "attachment": "right shoulder; mirror for left",
+      "mount": "body"
+    },
+    {
+      "id": "wing_flap",
+      "category": "wings",
+      "name": {
+        "es": "Patagio",
+        "en": "Patagium flap"
+      },
+      "dna_cost": 16,
+      "source": "procedural",
+      "c_type": "CP4_WING",
+      "cosmetic": true,
+      "illustrative_abilities": [
+        "glide"
+      ],
+      "attachment": "right shoulder; mirror for left",
+      "mount": "body"
+    },
+    {
       "id": "tail_hammer",
       "category": "weapons",
       "name": {

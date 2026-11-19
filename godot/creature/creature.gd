@@ -279,7 +279,7 @@ func default_part(type: String) -> Dictionary:
 	elif type == "eye_triad": t = .92
 	elif type == "sac_spitter": t = 1
 	elif type.begins_with("arm_"): t = _shoulder_t()
-	elif type in ["wing_glider", "wing_insect"]: t = _shoulder_t(.14)
+	elif type in ["wing_glider", "wing_insect", "wing_vane", "wing_flap"]: t = _shoulder_t(.14)
 	elif leg: t = .5
 	var ang := 0.0
 	if m.get("category") == "mouths" or type == "eye_triad": ang = 0

@@ -22,6 +22,7 @@ var frame_yaw = null         # latched view yaw (null: nothing held)
 var facing_yaw := 0.0        # the creature's heading, set by the island (tank mode, intent)
 var position := Vector2.INF  # the creature's world x, z, set by the island (intent towards a destination)
 var _last_keys := 0
+var suspended := false       # flight test: the creature flies, C is told to wait (the island teleports it each tick)
 var _tank_yaw = null
 const TANK_TURN := 2.2       # rad/s
 const K_FWD := 1
@@ -80,6 +81,8 @@ func _effective_yaw(mask: int) -> float:
 
 # The world yaw (radians, atan2(x, z) bearing) the player is asking for right now, or null. Pure.
 func intent_yaw() -> Variant:
+	if suspended:
+		return null
 	var k := _read_keys()
 	var is_blocked: bool = blocked.is_valid() and blocked.call()
 	var a := _axes(k, is_blocked)
@@ -97,6 +100,8 @@ func intent_yaw() -> Variant:
 	return null
 
 func sample() -> Dictionary:
+	if suspended:
+		return {"verb": VERB_WAIT}
 	var k := _read_keys()
 	var is_blocked: bool = blocked.is_valid() and blocked.call()
 	var a := _axes(k, is_blocked)

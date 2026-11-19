@@ -101,11 +101,48 @@ func _on_action_event(ev: String, data: Dictionary) -> void:
 		var flight := maxf(0.05, (float(act.get("w", 6.0)) - float(data.get("tau", 0.0))) * 0.1)
 		_fx_script.spit_blob(host.get_parent(), from, to, flight, map.height * 0.5 if map != null else 1.0)
 
+## After a flight the controller starts from where the creature landed (its feet were never on the ground in between).
+func rebase() -> void:
+	_started = false
+
+# Flying (flight test): the controller is not stepped (its feet would plant on the ground far below). The last ground pose is
+# re-rooted on the flyer's attitude and the legs are tucked under the body; the wings are written by the flight mode.
+func _update_flight(_dt: float, s: Dictionary) -> void:
+	var f: Dictionary = s.flight
+	var r: Basis = f.basis
+	var com_local: Vector3 = controller.morph.com
+	var pose: Dictionary = controller.pose.duplicate()
+	if pose.is_empty():
+		return
+	var root := Transform3D(r, (f.com as Vector3) - r * com_local)
+	pose["root"] = root
+	var feet: Array = []
+	var contact: Array = []
+	var swing: Array = []
+	var hips: PackedVector3Array = PackedVector3Array()
+	for j in desc.legs.size():
+		var leg: Dictionary = desc.legs[j]
+		var reach: float = float(leg.upper) + float(leg.lower)
+		var hip: Vector3 = root * (leg.hip as Vector3)
+		hips.append(hip)
+		feet.append(hip + r * Vector3(0.0, -0.4 * reach, -0.28 * reach))     # tucked: knees up, feet under the belly
+		contact.append(false)
+		swing.append(0.5)
+	pose["feet"] = feet
+	pose["contact"] = contact
+	pose["swing_u"] = swing
+	pose["hips"] = hips
+	adapter.loco_apply(body, pose, desc)
+	_acting_before = false
+
 # s: StageWorld.sample() -> {pos, yaw, speed, vel}, optionally intent (the world yaw the player asks for)
 # ctx (optional): what the action layer reads, see actions/action_layer.gd
 func update(dt: float, s: Dictionary, ctx: Dictionary = {}) -> void:
 	host.position = s.pos
 	host.basis = Basis(Vector3.UP, s.yaw)
+	if s.has("flight") and controller != null and adapter != null:
+		_update_flight(dt, s)
+		return
 	if is_placeholder:
 		if body.has_method("animate"):
 			body.animate(dt, s.speed)

@@ -59,6 +59,14 @@ var ENGAGE_TOL := 0.3491     # rad (20 deg)
 var kick := false              # optional speed cues (settings camera/kick): wider fov and boom near sprint speed
 var top_speed := 8.84
 var fov_add := 0.0
+# Flight (F1): the island sets `air_alt` (metres above the ground under the flyer) and `air_on`; the camera pulls back x1.6, rises with the
+# flyer and widens the fov by 8 degrees in a dive; it eases back to the chase curve in 0.5 s after landing. Roll is not followed.
+var air_alt := 0.0
+var air_on := false
+var air_dive := false
+var _air_k := 0.0
+var _air_dive_k := 0.0
+var _air_alt_s := 0.0
 var yaw_rate := 0.0            # the auto-follow's angular velocity (rad/s)
 var _vel_s := Vector2.ZERO
 var _clock := 0.0
@@ -170,7 +178,11 @@ func update(player: Dictionary, enemy, fighting: bool, dt: float, aspect: float 
 	# the discrete first-order follow (player moved first, then eased) lags by dt (1-k)/k = about tau - dt/2: lead by exactly that
 	var kf := 1.0 - exp(-dt / POS_TAU) if dt > 0.0 else 1.0
 	var lead := LEAD if dt <= 0.0 else dt * (1.0 - kf) / kf
-	var tgt := Vector3(player.x + _vel_s.x * lead, ground.call(player.x, player.z) + h * 1.5, player.z + _vel_s.y * lead)
+	_air_k = lerpf(_air_k, 1.0 if air_on else 0.0, 1.0 - exp(-dt / (0.3 if air_on else 0.17)) if dt > 0.0 else 1.0)
+	_air_dive_k = lerpf(_air_dive_k, 1.0 if (air_on and air_dive) else 0.0, 1.0 - exp(-dt / 0.25) if dt > 0.0 else 1.0)
+	if air_on:
+		_air_alt_s = lerpf(_air_alt_s, air_alt, 1.0 - exp(-dt / 0.3) if dt > 0.0 else 1.0)
+	var tgt := Vector3(player.x + _vel_s.x * lead, ground.call(player.x, player.z) + h * 1.5 + _air_alt_s * _air_k, player.z + _vel_s.y * lead)
 	if mb > 0.0:
 		tgt.x = lerpf(tgt.x, map_center.x, mb)
 		tgt.z = lerpf(tgt.z, map_center.y, mb)
@@ -182,6 +194,8 @@ func update(player: Dictionary, enemy, fighting: bool, dt: float, aspect: float 
 	_kick_k = lerpf(_kick_k, kick_goal, 1.0 - exp(-dt / 0.3) if dt > 0.0 else 1.0)
 	fov_add = 5.0 * _kick_k - 8.0 * smoothstep(0.7, 1.0, z)       # a flatter, map-like view at the far end
 	desired *= 1.0 + 0.06 * _kick_k
+	desired *= 1.0 + 0.6 * _air_k
+	fov_add += 8.0 * _air_dive_k
 	if fighting and enemy != null:
 		tgt.x = (player.x + enemy.x) / 2.0
 		tgt.z = (player.z + enemy.z) / 2.0

@@ -25,6 +25,7 @@ const TESTS := [
 	"res://game/tests/test_visual.gd",
 	"res://game/tests/test_photo.gd",
 	"res://game/tests/test_secrets.gd",
+	"res://game/tests/test_flight.gd",
 ]
 
 var checks := 0
