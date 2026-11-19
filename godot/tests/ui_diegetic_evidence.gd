@@ -123,11 +123,11 @@ func scene_move_marker() -> void:
 	var gm = island.ground_marks
 	var frames := []
 	await turn_camera(island.chase.yaw + 1.2)
-	var click_at := Vector2(900, 470)
+	var click_at := Vector2(880, 400)
 	island._click_ground(false, click_at)
 	var goal: Vector3 = gm.destination()
 	await ticks(1)
-	frames.append(crop(await grab(), click_at, Vector2i(420, 300)))
+	frames.append(crop(await grab(), island.camera.unproject_position(goal), Vector2i(420, 300)))
 	await ticks(8)
 	var s2: Vector2 = island.camera.unproject_position(goal)
 	frames.append(crop(await grab(), s2, Vector2i(420, 300)))
@@ -199,9 +199,9 @@ func scene_idle() -> void:
 	thaw()
 	ui.onboarding.enabled = false
 	await turn_camera(island.chase.yaw + 1.2)
-	var screen := Vector2(900, 470)
+	var screen := Vector2(880, 400)
 	island._click_ground(false, screen)
-	await settle(8)
+	await settle(3)
 	print("move marker at ", island.ground_marks.destination(), " visible ", island.ground_marks.move_visible())
 	await shot("idle")
 	island.player_input.clear_destination()

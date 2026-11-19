@@ -24,9 +24,9 @@ Evidence (JPG, real island, software GL under xvfb): `make godot-ui-diegetic-evi
 | Words | `words.gd` | One whisper line at a time (3.5 s), a rare moment line (Alegreya Italic, with its glyph), the onboarding hint, numbers (Numbers: On). |
 | Motes | `motes.gd` | DNA flies from where it came from to the DNA sign; clues fly to the seed. |
 | Veils | `veil.gd`, `veil.gdshader` | Menu (0.62), loadout (0.42), the ember vignette of low health and hits, the fog of death. |
-| Menu | `menu.gd` | Opened by the seed or Esc: a text list (Resume, Journal, Family tree, Loadout, Settings, Keys, Save, Load, Main menu) and a settings column (Language, Size of the signs, Names on signs, Numbers, Stronger outlines, Less motion, Round map, the four audio buses, Mute). |
+| Menu | `menu.gd` | Opened by the seed or Esc: a text list (Resume, Journal, Family tree, Loadout, Settings, Keys, Save, Load, Main menu) and a settings column (Language, Size of the signs, Names on signs, Numbers, Stronger outlines, Less motion, Round map, Renderer (auto / high / compatible, applies on restart), the four audio buses, Mute, Show the hints again). |
 | Loadout | `loadout_sheet.gd` | Key L at the nest: tokens of the moves you know, four slots; click a token then a slot, or Left/Right and 1-4. |
-| Journal, family tree | `stub_view.gd` | J and T open a veil with a title (the journal also shows DNA earned). The pages are a later design. |
+| Journal, family tree | `stub_view.gd`, `game/stage/family_tree.gd` | J opens a veil with a title and the DNA earned (pages are a later design). T and the menu item open the real lineage view (`lineage_controller.gd`, fog veil, Alegreya); the stub is only a fallback. A cousin shows "cousin · gen N" on its field note. |
 | Onboarding | `onboarding.gd` | One hint at a time (walk, look, select, choose on the ring, keys 1-4, guard, eat, loadout, F1), progress saved in `Game.settings["onboarding"]`; "Show the hints again" is the menu's reset. |
 
 `style.gd` holds sizes (`Style.u()`), motion constants and the line-drawing helpers; `glyphs.gd` the 33 SVG glyphs (`godot/ui/glyphs/`);
