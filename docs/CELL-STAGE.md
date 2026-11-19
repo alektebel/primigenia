@@ -67,4 +67,8 @@ right-click removal, pause list. Note the headless window is 64 px, so clicks ar
 2. Language: Spanish by default when the OS locale is Spanish, else English. Should the cell stage always default to Spanish?
 3. The prototype lets you place pieces during the colony animation; this port blocks it. Keep?
 4. Are Alegreya Sans and the cream panels the final look, or should the stage take the diegetic UI language of the island?
-5. Threat scenes (`malos-tiempos.html`): see the S4 note below.
+5. Threat scenes (`malos-tiempos.html`, slice S4) are not ported. That file is a looping narrated animation (phage injects
+   into a ribosome and CRISPR/Cas cuts it, antibiotic blocks ribosomes and an efflux pump clears them, an oxidative wave
+   breaks the membrane, an amoeba bites a patch and a capsule or flagellum answers) with ribosomes, a genome ring and an
+   efflux pump that the playable stage does not have yet. Making them events against the player's cell needs those pieces
+   and their costs decided first. Which should come first, and are ribosomes a placeable piece?
