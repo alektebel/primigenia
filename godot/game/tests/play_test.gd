@@ -508,8 +508,13 @@ func _actions_end(island, st: Dictionary) -> void:
 	var skipped := 0
 	for kind in [0, 1]:
 		for hf in st.hits[kind]:
-			if int(hf) == last_frame and st.hits[0].has(last_frame) != st.hits[1].has(last_frame):
-				skipped += 1     # the lethal last hit ends the fight: its layer never plays an impact
+			var trade: bool = st.hits[0].has(last_frame) and st.hits[1].has(last_frame)
+			var attacker_dead: bool = "death" in island.hosts[kind].driver.layer.current_ids()
+			if int(hf) == last_frame and (not trade or attacker_dead):
+				# the lethal last hit ends the fight: its layer never plays an impact. When both creatures hit in that
+				# same tick (a trade), only the one that died is excused: its death replaces the attack instance, while
+				# the survivor's impact must still fire.
+				skipped += 1
 				matched += 1
 				continue
 			var best := 1000000
