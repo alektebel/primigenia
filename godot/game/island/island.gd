@@ -20,6 +20,7 @@ const ActorHost := preload("res://game/actors/actor_host.gd")
 const StageUI := preload("res://game/stage/stage_ui.gd")
 const Scenario := preload("res://devtools/scenario.gd")
 const StrategicIcons := preload("res://game/island/strategic_icons.gd")
+const GroundMarks := preload("res://game/island/ground_marks.gd")
 
 const FAR_GRASS_Z := 0.6          # zoom above which grass, shadows and models are switched off
 const MODEL_OFF_Z := 0.85
@@ -38,6 +39,8 @@ var stage: Node
 var player_input
 var chase
 var stage_ui
+var ground_marks               # GroundMarks: the white circle where you click, the rings under creatures
+var _had_dest := false
 var hosts := {}                  # entity id -> ActorHost
 var chase_enabled := true
 var player_pos := Vector3.INF
@@ -179,6 +182,11 @@ func _build_stage() -> void:
 	icons.pois_fn = pois_fn if pois_fn.is_valid() else _default_pois
 	icons.actors_fn = _icon_actors
 	add_child(icons)
+	ground_marks = GroundMarks.new()
+	ground_marks.name = "GroundMarks"
+	ground_marks.island = self
+	add_child(ground_marks)
+	Game.creature_clicked.connect(func(_id: int, _p: Vector3) -> void: ground_marks.clear_move(false))
 	stage_ui = StageUI.new()
 	stage_ui.name = "StageUI"
 	add_child(stage_ui)
@@ -407,6 +415,7 @@ func _process(delta: float) -> void:
 	_update_actors(delta)
 	_update_camera(delta)
 	gesture.tick(delta)
+	_update_move_marker()
 	_mouse_held = gesture.holding
 	if _mouse_held and not Game.movement_blocked():
 		_follow_clock -= delta
@@ -442,6 +451,8 @@ func _on_button(e: InputEventMouseButton) -> void:
 			chase.orbit_active = _orbit_btn != 0
 			if kind == "click":
 				_click(gesture.press_pos, gesture.double)
+			elif kind == "hold" and ground_marks != null:
+				ground_marks.follow_release()
 			_mouse_held = false
 	elif e.button_index == MOUSE_BUTTON_RIGHT or e.button_index == MOUSE_BUTTON_MIDDLE:
 		var bit := 1 if e.button_index == MOUSE_BUTTON_RIGHT else 2
@@ -492,7 +503,34 @@ func _click_ground(allow_pick: bool, mouse: Vector2, follow: bool = false) -> vo
 		stage_ui.ui.clear_selection()       # a click on empty ground deselects (and walks there)
 	var hit = Pointer.ground_hit(camera, mouse, ground, maxf(900.0, chase.distance * 2.0))
 	if hit != null:
+		if walk_blocked(hit):
+			player_input.clear_destination()
+			if not follow:
+				ground_marks.move_blocked(hit)
+			return
 		if follow:
 			player_input.follow_to(Vector2(hit.x, hit.z))
+			ground_marks.follow_marker(hit)
 		else:
 			player_input.set_destination(Vector2(hit.x, hit.z))
+			ground_marks.move_marker(hit)
+
+# Deep water (sea, lake, deep river: the C world blocks on them) or ground steeper than the slope ceiling: a click there
+# orders nothing and shows the cut "cannot go there" ring.
+func walk_blocked(hit: Vector3) -> bool:
+	var d = Game.data
+	var k: int = d.cell_index(hit.x, hit.z)
+	if d.is_sea(k) or d.is_pond(k) or d.river_class(k) >= 3:
+		return true
+	return d.normal(hit.x, hit.z).y < 0.621     # cos(51.6 degrees): creatures never rest on steeper ground
+
+# The marker clears when the destination goes away: arrived (it expands and fades) or cancelled (WASD, a new order: quick).
+func _update_move_marker() -> void:
+	if ground_marks == null or player_input == null:
+		return
+	ground_marks.player_radius = maxf(0.6, float(stage.cur.entities[0].get("radius_cm", 60)) * 0.01) if not stage.cur.is_empty() else 0.6
+	var has: bool = player_input.destination != null
+	if _had_dest and not has and not ground_marks.follow_active() and ground_marks.move_visible():
+		var d := Vector2(player_pos.x - ground_marks.destination().x, player_pos.z - ground_marks.destination().z).length()
+		ground_marks.clear_move(d < GroundMarks.ARRIVE_RADIUS + 1.5)
+	_had_dest = has

@@ -41,7 +41,12 @@ func load_settings() -> void:
 		if cfg.has_section_key("game", key):
 			settings[key] = cfg.get_value("game", key)
 
+## Tests and evidence set this false so they never write the player's settings file.
+var persist_settings := true
+
 func save_settings() -> void:
+	if not persist_settings:
+		return
 	var cfg := ConfigFile.new()
 	cfg.load(SETTINGS_PATH)  # keep other sections (audio)
 	for key in settings.keys():
