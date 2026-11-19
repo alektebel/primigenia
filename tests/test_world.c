@@ -69,7 +69,7 @@ static void validation(void) {
     setup.wild[0].species=4;
     assert(cp_stage_reset(&w,&setup)<0);
     setup=valid;
-    setup.wild[0].bot=5;
+    setup.wild[0].bot=6;
     assert(cp_stage_reset(&w,&setup)<0);
     setup=valid;
     setup.n_obstacles=1;

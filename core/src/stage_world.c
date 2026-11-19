@@ -274,16 +274,11 @@ static int block_reason(const CpStageWorld *w,float x,float z,float nx,float nz,
  * field, the obstacles and the radius, so it lives in static derived storage (not in the world, not in the
  * snapshot, not hashed) and is filled lazily, one cell the first time the search expands it. A signature of its
  * inputs decides when it is thrown away. */
-#if defined(__EMSCRIPTEN__)
-/* the web build has no FIELD terrain: the planner is compiled out and costs no memory */
-#define NAV_DIM 1
-#define NAV_EXPAND 8
-#define NAV_HEAP 16
-#else
+/* Native and WASM use the same planner: resource-node placement probes it too.
+ * The world WASM target reserves enough memory for these derived caches. */
 #define NAV_DIM 1024
-#define NAV_EXPAND 500000   /* stricter bank clearance requires larger detours than the old 120k cap */
+#define NAV_EXPAND 500000
 #define NAV_HEAP (1<<21)
-#endif
 #define NAV_CELLS ((size_t)NAV_DIM*NAV_DIM)
 static uint8_t nav_mask[NAV_CELLS];
 static int32_t nav_g[NAV_CELLS];
@@ -595,6 +590,20 @@ static int plan_path(CpStageWorld *w,float tx,float tz){
     ev_push(w,CP_STAGE_EV_PATH_FOUND,0,0,-1,length_m,ex,ez);
     return 0;
 }
+/* Placement may need a route around a river. Preserve every observable field;
+ * the navigation cache is derived and intentionally stays warm. */
+int cp_stage_route_from_nest(CpStageWorld *w,float x,float z){
+    float path[CP_STAGE_MAX_PATH][2];memcpy(path,w->path,sizeof path);
+    const float px=w->player.x,pz=w->player.z,gx=w->path_goal_x,gz=w->path_goal_z;
+    const int n=w->n_path,i=w->path_i,blocked=w->blocked_ticks;
+    const uint32_t total=w->ev_total;const CpStageEvent event=w->events[total%CP_STAGE_MAX_EVENTS];
+    w->player.x=w->setup.nest_x;w->player.z=w->setup.nest_z;
+    int rc=plan_path(w,x,z);
+    w->player.x=px;w->player.z=pz;memcpy(w->path,path,sizeof path);
+    w->n_path=n;w->path_i=i;w->blocked_ticks=blocked;w->path_goal_x=gx;w->path_goal_z=gz;
+    w->events[total%CP_STAGE_MAX_EVENTS]=event;w->ev_total=total;
+    return rc==0;
+}
 int cp_stage_nav_warm(const CpStageWorld *w){
     if(!w||!nav_ready(w))return 0;
     for(int idx=0;idx<nav.dim*nav.dim;idx++)nav_cell(w,idx);
@@ -615,6 +624,8 @@ static void path_clear(CpStageWorld *w){
     memset(w->path,0,sizeof w->path);
 }
 static int profile_valid(const CpCombatProfile *p){
+    for(int k=0;k<8;k++)if(p->extra[k]>5)return 0;
+    if(p->carnivore>1)return 0;
     return p->mouth<=5&&p->charge<=5&&p->spit<=5&&p->tail<=5&&p->guard<=5&&isfinite(p->hp)&&p->hp>=1&&p->hp<=100000&&isfinite(p->stamina)&&p->stamina>=1&&p->stamina<=100000&&isfinite(p->speed)&&p->speed>=.5f&&p->speed<=12&&(p->radius_cm==0||(p->radius_cm>=CB_RADIUS_CM_MIN&&p->radius_cm<=CB_RADIUS_CM_MAX));
 }
 void cp_stage_setup_default(CpStageSetup *s,uint32_t seed){
@@ -681,6 +692,7 @@ int cp_stage_reset(CpStageWorld *w,const CpStageSetup *s){
         w->wild[i].legs=c->legs;
         w->wild[i].roam_ticks=10+(int)(cp_rng_u32(&w->spawn_rng)%40);
     }
+    cp_stage_recipes_reset(w);
     w->hash=cp_stage_hash(w);
     return 0;
 }
@@ -727,6 +739,13 @@ static void start(CpStageWorld *w,int index){
             s.c[0].loadout.known=cp_stage_known_moves(w);
         }
         s.c[i].prof=c[i]->profile;
+        s.c[i].calcium=i?w->recipes.wild_calcium[index]:w->recipes.calcium;
+        s.c[i].mineral=i?0:w->recipes.mineral;
+        if(i && c[i]->species==2){
+            s.c[i].prof.extra[7]=2;s.c[i].prof.carnivore=1;s.c[i].prof.mouth=2;
+            s.c[i].has_loadout=1;cp_combat_loadout_default(&s.c[i].loadout,&s.c[i].prof);
+            s.c[i].loadout.known|=1u<<CB_SPINE_VOLLEY;s.c[i].loadout.sig_slot=3;s.c[i].loadout.slot[3]=CB_SPINE_VOLLEY;
+        }
         s.c[i].prof.hp=c[i]->hp;
         s.c[i].prof.stamina=c[i]->stamina;
         s.c[i].x=c[i]->x-w->arena_x+20;
@@ -736,6 +755,9 @@ static void start(CpStageWorld *w,int index){
         s.c[i].team=(uint8_t)i;
     }
     cp_combat_reset(&w->combat,&s);
+    memcpy(w->combat.c[0].cd,w->recipes.cd,sizeof w->recipes.cd);
+    w->combat.c[0].calcium=w->recipes.calcium;w->combat.c[0].mineral=w->recipes.mineral;
+    w->combat.c[1].calcium=w->recipes.wild_calcium[index];
     if(w->ancestry.count&&w->parts.tiers_on)cp_stage_genome_tiers(w->ancestry.forms[w->ancestry.count-1].form.body,w->combat.c[0].tiers);
     int generation=cp_stage_cousin_generation(w,index+1);
     if(generation>0&&w->parts.tiers_on)cp_stage_genome_tiers(w->ancestry.forms[generation-1].form.body,w->combat.c[1].tiers);
@@ -846,6 +868,7 @@ static int order_apply(CpStageWorld *w,const CpStageInput *a){
     if(!w||!a||!isfinite(a->x)||!isfinite(a->z)||a->verb<0||a->verb>CP_STAGE_BUY_TIER||a->sprint<0||a->sprint>1)return -1;
     if(w->parts.lost)return CP_STAGE_ERR_BUSY;
     if(a->verb==CP_STAGE_CONTINUE)return 0;
+    if(a->verb==CP_STAGE_EAT&&a->target>=3000)return cp_stage_stone_eat(w,a->target);
     if(a->verb>=CP_STAGE_INSPECT)return cp_stage_parts_order(w,a);
     w->parts.inspect_id=w->parts.inspect_ticks=0;
     if(a->verb==CP_STAGE_LOADOUT){
@@ -855,6 +878,10 @@ static int order_apply(CpStageWorld *w,const CpStageInput *a){
         if(length(w->player.x-w->setup.nest_x,w->player.z-w->setup.nest_z)>CP_STAGE_NEST_RADIUS)return CP_STAGE_ERR_NOT_AT_NEST;
         CpCombatLoadout next=w->loadout;
         next.known=cp_stage_known_moves(w);
+        if(next.known&(1u<<CB_SPINE_VOLLEY)){
+            if(next.sig_slot<0&&next.slot[3]>=0&&CP_COMBAT_MOVES[next.slot[3]].role!=CB_ROLE_SIGNATURE)next.slot[3]=CB_MOVE_NONE;
+            next.sig_slot=3;
+        }
         const int rc=cp_combat_loadout_set(&next,a->target-1,a->move);
         if(rc)return rc;
         w->loadout=next;
@@ -872,8 +899,12 @@ static int order_apply(CpStageWorld *w,const CpStageInput *a){
     if(a->verb==CP_STAGE_GO&&(!isfinite(a->x)||!isfinite(a->z)||ab(a->x)>cp_stage_bound(w)||ab(a->z)>cp_stage_bound(w)))return -1;
     if((a->verb==CP_STAGE_APPROACH||a->verb==CP_STAGE_ATTACK)&&(a->target<1||a->target>w->setup.n||creature_is_dead(&w->wild[a->target-1])))return -2;
     if(a->verb==CP_STAGE_ATTACK&&(a->move<0||a->move>=CB_MOVE_COUNT||(CP_COMBAT_MOVES[a->move].flags&CB_F_SELF)||!cp_combat_part_level(&w->player.profile,CP_COMBAT_MOVES[a->move].part)))return -3;
+    if(a->verb==CP_STAGE_ATTACK&&CP_COMBAT_MOVES[a->move].meter_cost){
+        if(!cp_stage_recipe_ready(w))return CP_STAGE_ERR_NOT_KNOWN;
+        if(w->recipes.calcium<CP_COMBAT_MOVES[a->move].meter_cost)return CB_ERR_NO_METER;
+    }
     if(a->verb==CP_STAGE_ATTACK&&cp_combat_loadout_slot_of(&w->loadout,a->move)<0)return CP_STAGE_ERR_NOT_EQUIPPED;
-    if(a->verb==CP_STAGE_ATTACK&&w->active>=0&&w->combat.c[0].cd[a->move])return CP_STAGE_ERR_ON_COOLDOWN;
+    if(a->verb==CP_STAGE_ATTACK&&(w->recipes.cd[a->move]||(w->active>=0&&w->combat.c[0].cd[a->move])))return CP_STAGE_ERR_ON_COOLDOWN;
     if(a->verb==CP_STAGE_DODGE&&(a->dir<0||a->dir>7))return -1;
     if(a->verb==CP_STAGE_HEADING&&a->hx==0&&a->hz==0)return -1;
     if(w->active>=0&&a->verb==CP_STAGE_APPROACH&&a->target!=w->active+1)return CP_STAGE_ERR_IN_FIGHT; /* same as befriend/observe/gift */
@@ -1008,6 +1039,25 @@ static void fight(CpStageWorld *w){
     const float real_hp=w->combat.c[0].hp;
     if(god)w->combat.c[0].hp=real_hp+1000;
     cp_combat_step(&w->combat);
+    for(int mv=0;mv<CB_MOVE_COUNT;mv++)w->recipes.cd[mv]=w->combat.c[0].cd[mv]?w->combat.c[0].cd[mv]+1:0;
+    if(w->recipes.calcium!=w->combat.c[0].calcium){w->recipes.used=1;w->recipes.calcium=w->combat.c[0].calcium;}
+    if(w->recipes.wild_calcium[w->active]!=w->combat.c[1].calcium)w->recipes.used=1;
+    w->recipes.wild_calcium[w->active]=w->combat.c[1].calcium;
+    for(int k=0;k<w->combat.n_ev;k++){
+        const CpCombatEvent *ev=&w->combat.ev[k];
+        if(ev->type==CB_EV_HIT&&ev->b==1){
+            /* Last direct damage identifies a volley whose bleed later kills. */
+            int wound=ev->move==CB_SPINE_VOLLEY;
+            if(w->recipes.quill_carcass[w->active]!=wound)w->recipes.used=1;
+            w->recipes.quill_carcass[w->active]=(uint8_t)wound;
+        }
+        if(ev->type==CB_EV_HIT&&ev->move==CB_SPINE_VOLLEY){
+            if(ev->a==0&&w->recipes.state!=CP_RECIPE_MASTERED){
+                w->recipes.state=CP_RECIPE_MASTERED;w->recipes.used=1;
+                ev_push(w,CP_STAGE_EV_RECIPE,0,0,CP_RECIPE_MASTERED,CP_RECIPE_KNOWN,w->player.x,w->player.z);
+            }
+        }
+    }
     for(int i=0;i<w->combat.n_ev;i++){
         const CpCombatEvent *ev=&w->combat.ev[i];
         if(ev->type==CB_EV_HIT&&ev->a==0&&ev->b==1)cp_stage_parts_usage(w,ev->move,0);
@@ -1270,7 +1320,7 @@ uint64_t cp_stage_step(CpStageWorld *w,const CpStageInput *input){
             }
         }
         int sprint=(a->sprint||a->verb==CP_STAGE_FLEE)&&length(dx,dz)>0&&w->player.stamina>2;
-        float jog=w->player.profile.speed*w->motion.jog_k,speed=sprint?jog*w->motion.sprint_k:jog,stop=sqrtf(clamp(remaining-.08f,0,10000)*12);
+        float jog=w->player.profile.speed*w->motion.jog_k*(1.f-w->recipes.mineral*.003f),speed=sprint?jog*w->motion.sprint_k:jog,stop=sqrtf(clamp(remaining-.08f,0,10000)*12);
         if(stop<speed)speed=stop;
         walk(w,&w->player,dx,dz,speed,jog);
         if(following){
@@ -1299,6 +1349,7 @@ uint64_t cp_stage_step(CpStageWorld *w,const CpStageInput *input){
     }
     cp_stage_social_step(w);
     cp_stage_parts_step(w);
+    cp_stage_recipes_step(w);
     wild_tick(w,skip,engage);
     cp_stage_lineage_tick(w,lineage_x,lineage_z);
     w->tick++;
@@ -1327,6 +1378,8 @@ static void prof(uint64_t *h,const CpCombatProfile *p){
     fl(h,p->stamina);
     fl(h,p->speed);
     u32(h,p->radius_cm);
+    int extra=p->carnivore;for(int k=0;k<8;k++)extra|=p->extra[k];
+    if(extra){u32(h,0x43325052);for(int k=0;k<8;k++)u32(h,p->extra[k]);u32(h,p->carnivore);}
 }
 static void ent(uint64_t *h,const CpStageCreature *c){
     fl(h,c->x);
@@ -1443,6 +1496,7 @@ uint64_t cp_stage_hash(const CpStageWorld *w){
             fl(&h,w->path[i][1]);
         }
     }
+    if(w->recipes.used){uint64_t rh=cp_stage_recipes_hash(w);u32(&h,(uint32_t)rh);u32(&h,(uint32_t)(rh>>32));}
     if(w->parts.used){uint64_t ph=cp_stage_parts_hash(w);u32(&h,(uint32_t)ph);u32(&h,(uint32_t)(ph>>32));}
     if(w->social.used){
         const uint64_t sh=cp_stage_social_hash(w);
@@ -1458,7 +1512,7 @@ uint64_t cp_stage_hash(const CpStageWorld *w){
 }
 uint16_t cp_stage_known_moves(const CpStageWorld *w){
     /* learning by observing (A21 section 4, A22): moves of completed observe chains are OR-ed in */
-    return (uint16_t)(cp_combat_known_default(&w->player.profile)|(uint16_t)w->social.learned);
+    return (uint16_t)(cp_combat_known_default(&w->player.profile)|(uint16_t)w->social.learned|(cp_stage_recipe_ready(w)?(1u<<CB_SPINE_VOLLEY):0));
 }
 static int parse_text(const char *text,CpStageInput *out){
     CpStageInput a={
@@ -1575,6 +1629,7 @@ const char *cp_stage_order_error(int code){
         case -4:return "unreachable";
         case -5:return "no_threat";
         case -6:return "unknown_move";
+        case CB_ERR_NO_METER:return "no_meter";
         case CP_STAGE_ERR_ON_COOLDOWN:return "on_cooldown";
         case CP_STAGE_ERR_NOT_EQUIPPED:return "not_equipped";
         case CP_STAGE_ERR_BAD_SLOT:return "invalid slot (1..4, and a signature move only fits the signature slot)";
@@ -1653,11 +1708,12 @@ int cp_stage_observe(const CpStageWorld *w,char *out,size_t cap){
 }
 /* A move the player can attack with (part owned, not a self move). */
 static int attack_move_ok(const CpStageWorld *w,int i){
-    return !(CP_COMBAT_MOVES[i].flags&CB_F_SELF)&&cp_combat_part_level(&w->player.profile,CP_COMBAT_MOVES[i].part)>0;
+    return (!CP_COMBAT_MOVES[i].meter_cost||cp_stage_recipe_ready(w))&&!(CP_COMBAT_MOVES[i].flags&CB_F_SELF)&&cp_combat_part_level(&w->player.profile,CP_COMBAT_MOVES[i].part)>0;
 }
 /* Usable now: enough stamina, and (in a fight) the fighter is free to start it. */
 static int attack_move_usable(const CpStageWorld *w,int i){
-    if(!attack_move_ok(w,i)||cp_combat_loadout_slot_of(&w->loadout,i)<0||(w->active>=0&&w->combat.c[0].cd[i])||w->player.stamina<cp_combat_move_stamina(&w->player.profile,i))return 0;
+    if(w->recipes.calcium<CP_COMBAT_MOVES[i].meter_cost)return 0;
+    if(!attack_move_ok(w,i)||cp_combat_loadout_slot_of(&w->loadout,i)<0||(w->recipes.cd[i]||(w->active>=0&&w->combat.c[0].cd[i]))||w->player.stamina<cp_combat_move_stamina(&w->player.profile,i))return 0;
     if(w->active>=0){
         const CpCombatCreature *c=&w->combat.c[0];
         return cp_combat_move_available(c,i)&&c->move==CB_MOVE_NONE&&c->phase!=CB_PH_RECOVERY&&c->stun_t<=0;
@@ -1680,6 +1736,7 @@ int cp_stage_observe_v(const CpStageWorld *w,char *out,size_t cap,int version){
     int failed=0,comma=0;
 #define ADD(...) append(out,cap,&used,&failed,__VA_ARGS__)
     ADD("{\"schema\":\"world-%d\",\"tick\":%u,\"clock\":{\"tick\":%u,\"day_ticks\":%d},",version,w->tick,w->clock,CP_STAGE_DAY_TICKS);
+    if(version==2){char r[4096];if(cp_stage_recipes_json(w,r,sizeof r)<0)return -1;ADD("\"recipes\":%s,",r);}
     if(version==2){char parts[16384];if(cp_stage_parts_json(w,parts,sizeof parts)<0)return -1;ADD("\"parts\":%s,",parts);}
     if(version==2)ADD("\"world\":{\"bound\":%.6f,\"units\":\"metres; x and z are the ground plane; heading 0 = +z and 90 = +x (clockwise seen from above with +z up); bearing is relative to your facing, positive = clockwise (to your right), 0 = dead ahead, +-180 = behind\",\"nest\":{\"x\":%.6f,\"z\":%.6f},\"tick_hz\":10},",cp_stage_bound(w),w->setup.nest_x,w->setup.nest_z);
     if(version==2){int scores[4],prev=w->ancestry.count>1?w->ancestry.forms[w->ancestry.count-2].type:15;char code[8];int type=cp_type_score(w->ledger.current,prev,scores);cp_type_code(type,code);
@@ -1820,7 +1877,7 @@ int cp_stage_observe_v(const CpStageWorld *w,char *out,size_t cap,int version){
     for(int i=0;i<CB_MOVE_COUNT;i++)if(attack_move_ok(w,i)){
         const CpCombatMove *m=&CP_COMBAT_MOVES[i];
         if(version==2){
-            const int slot=cp_combat_loadout_slot_of(&w->loadout,i),left=w->active>=0?(int)w->combat.c[0].cd[i]:0;
+            const int slot=cp_combat_loadout_slot_of(&w->loadout,i),left=w->active>=0?w->combat.c[0].cd[i]:w->recipes.cd[i];
             ADD("%s{\"index\":%d,\"id\":%d,\"name\":\"%s\",\"role\":\"%s\",\"stamina_cost\":%.3f,\"range_m\":%.3f,\"windup_ticks\":%d,\"active_ticks\":%d,\"recover_ticks\":%d,\"cooldown_ticks\":%d,\"cooldown_left\":%d,\"equipped\":%s,\"slot\":",comma?",":"",i,i,m->name,cp_combat_role_name(m->role),cp_combat_move_stamina(&w->player.profile,i),m->reach,m->windup,m->active,m->recovery,m->cooldown,left,slot>=0?"true":"false");
             if(slot>=0)ADD("%d",slot+1);else ADD("null");
             ADD(",\"usable\":%s,\"target_in_range\":%s}",attack_move_usable(w,i)?"true":"false",tgt<0?"null":attack_move_reaches(w,i,&w->wild[tgt])?"true":"false");
@@ -1962,7 +2019,7 @@ uint64_t cp_stage_layout(void){
     LAY(CpStageWorld,debug_flags);LAY(CpStageWorld,reserved);LAY(CpStageWorld,field_hash);LAY(CpStageWorld,path);LAY(CpStageWorld,n_path);LAY(CpStageWorld,path_i);
     LAY(CpStageWorld,blocked_ticks);LAY(CpStageWorld,replans);LAY(CpStageWorld,path_goal_x);LAY(CpStageWorld,path_goal_z);
     LAY(CpStageWorld,blocked_reason);LAY(CpStageWorld,blocked_x);LAY(CpStageWorld,blocked_z);LAY(CpStageWorld,ev_total);
-    LAY(CpStageWorld,ev_acked);LAY(CpStageWorld,events);LAY(CpStageWorld,loadout);LAY(CpStageWorld,social);LAY(CpStageWorld,ledger);LAY(CpStageWorld,ancestry);LAY(CpStageWorld,parts);LAY(CpStageWorld,field);lay(&h,sizeof(CpStageSocial));lay(&h,sizeof(CpStageSocialCreature));lay(&h,sizeof(CpStageEvent));
+    LAY(CpStageWorld,ev_acked);LAY(CpStageWorld,events);LAY(CpStageWorld,loadout);LAY(CpStageWorld,social);LAY(CpStageWorld,ledger);LAY(CpStageWorld,ancestry);LAY(CpStageWorld,parts);LAY(CpStageWorld,recipes);LAY(CpStageWorld,field);lay(&h,sizeof(CpStageSocial));lay(&h,sizeof(CpStageSocialCreature));lay(&h,sizeof(CpStageEvent));
     LAY(CpStageSetup,seed);LAY(CpStageSetup,terrain_seed);LAY(CpStageSetup,terrain);LAY(CpStageSetup,n);
     LAY(CpStageSetup,n_obstacles);LAY(CpStageSetup,nest_x);LAY(CpStageSetup,nest_z);LAY(CpStageSetup,flat_height);
     LAY(CpStageSetup,water_x);LAY(CpStageSetup,water_z);LAY(CpStageSetup,water_radius);LAY(CpStageSetup,player);LAY(CpStageSetup,player_legs);
