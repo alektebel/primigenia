@@ -190,7 +190,21 @@ func _touchdown(ev: Dictionary) -> void:
 func _end_flight() -> void:
 	var rc := _send_teleport(true)
 	if rc != 0:
-		print("flight: the landing spot was refused by the world (%s); back to the last accepted spot" % CporeWorld.debug_error(rc))
+		# the touchdown spot is inside a rock or tree, or in deep water: the nearest spot the world accepts (rings of 1.5 m up to 9 m)
+		var base := Vector2(model.pos.x, model.pos.z)
+		var found := false
+		for ring in range(1, 7):
+			for k in 8:
+				var a := TAU * float(k) / 8.0
+				var q := base + Vector2(cos(a), sin(a)) * 1.5 * float(ring)
+				if stage.debug_now({"op": DBG_TELEPORT, "id": 0, "x": q.x, "z": q.y}) == 0:
+					model.pos.x = q.x
+					model.pos.z = q.y
+					found = true
+					break
+			if found:
+				break
+		print("flight: the landing spot was refused by the world (%s); %s" % [CporeWorld.debug_error(rc), "moved to the nearest accepted spot" if found else "back to the last accepted spot"])
 	island.player_input.suspended = false
 	var drv = _driver()
 	if drv != null:

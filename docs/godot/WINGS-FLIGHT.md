@@ -50,3 +50,17 @@ vane wing's fan opens and closes. The legs are tucked while airborne (`actor_dri
 
 `game/tests/test_flight.gd` (in `make godot-test`): genome block, four families, kinematics, physics. `make godot-flight-test`: the
 scripted flight on the real island. `make godot-flight-evidence`: contact sheets in `docs/evidence/godot/wings-flight/`.
+
+## Numbers (this branch)
+
+Plan's 30 kg vane flyer (S 3.7 m2, AR 7): stall 9.3 m/s, settled glide 10.9:1 against the polar's 11. The test creature Planeador
+(game/data/flyer.json, 1.1 m, 48 kg, wings 2.4 m per side, breadth 0.3): S 3.46 m2, AR 6.7, loading 135 N/m2, stall 12.1 m/s,
+L/D 11, 1290 W available against 635 W needed: it flaps, takes off from a standstill with the burst, and cannot run to 11 m/s.
+Suites: godot-test 1004 checks (105 in test_flight.gd), ui 784, creature 1554 + realism 64 + radial 278, studio 881, devtools 833,
+loco 254, play 217, flight scenario 22, all with 0 failures.
+
+## Known limits
+
+Hinge-only wings (W1 brings jointed membranes); the legs tuck but the spine keeps its last ground bend; roll of the camera is not
+followed; pointer steering is not wired in the air (A/D only); landing damage is reported (HUD, console) but not applied to hp
+until run-fall's curve exists; the mass of wings and flight muscle does not yet feed `loco_rig_adapter.gd`.

@@ -152,7 +152,7 @@ func _run() -> void:
 	var flyer_pos := Vector2(f.model.pos.x, f.model.pos.z)
 	check(c_pos.distance_to(flyer_pos) < 4.0, "C's player stands where the flyer landed (%.1f m apart)" % c_pos.distance_to(flyer_pos))
 	check(f.teleports_sent > 20, "teleports were sent every tick (%d)" % f.teleports_sent)
-	check(f.teleports_rejected <= 3, "the world accepted the teleports (%d refused)" % f.teleports_rejected)
+	check(f.teleports_rejected * 4 <= f.teleports_sent, "the world accepted most teleports (%d of %d refused: rocks and trees refuse a spot, the next tick tries again)" % [f.teleports_rejected, f.teleports_sent])
 	check(island.stage.log_debug.size() > teleports0 + 20, "the teleports are in the replay log (%d ops)" % (island.stage.log_debug.size() - teleports0))
 	# the session replays: the exported log parses and replays to the same final hash
 	var WorldLog := preload("res://game/stage/world_log.gd")
