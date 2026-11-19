@@ -9,8 +9,8 @@ const TIER_SHADERS := [
 	preload("res://game/shaders/terrain_medium.gdshader"),
 	preload("res://game/shaders/terrain_high.gdshader"),
 ]
-const ROCK_TEX := preload("res://game/textures/rock_detail.png")
-const SCREE_TEX := preload("res://game/textures/scree_detail.png")
+const PHOTO_ALBEDO := preload("res://game/textures/photo/rock_albedo.jpg")   # Texture2DArray, 8 CC0 materials (textures/CREDITS.md)
+const PHOTO_PACK := preload("res://game/textures/photo/rock_pack.jpg")
 
 # Chunks are 64 sim cells (224 m) wide = CHUNK visual cells. LOD steps are in visual cells (0.88 m): 0.9, 1.8, 3.5, 7, 14, 28, 56 m.
 const CHUNK := TerrainData.CHUNK_CELLS * TerrainData.VISUAL_FACTOR
@@ -132,8 +132,8 @@ func build(terrain_data) -> void:
 	var cps: int = data.chunks_per_side
 	tier = resolve_tier(_quality(), RenderingServer.get_video_adapter_name())
 	var shader: Shader = TIER_SHADERS[tier - 1]
-	if tier == 3 and is_inside_tree():
-		get_viewport().anisotropic_filtering_level = Viewport.ANISOTROPY_4X      # the High tier's detail samplers
+	if tier >= 2 and is_inside_tree():
+		get_viewport().anisotropic_filtering_level = Viewport.ANISOTROPY_4X if tier == 2 else Viewport.ANISOTROPY_8X   # the photographic materials are seen at grazing angles
 	_skirt_shader = Shader.new()
 	_skirt_shader.code = shader.code.replace("cull_back", "cull_disabled")
 	for lod in STEPS.size():
@@ -147,8 +147,8 @@ func build(terrain_data) -> void:
 			m.set_shader_parameter("level_tex", data.level_tex)
 			m.set_shader_parameter("surface_tex", data.surface_tex)
 			m.set_shader_parameter("relief_tex", data.relief_tex)
-			m.set_shader_parameter("rock_tex", ROCK_TEX)
-			m.set_shader_parameter("scree_tex", SCREE_TEX)
+			m.set_shader_parameter("ph_alb", PHOTO_ALBEDO)
+			m.set_shader_parameter("ph_pk", PHOTO_PACK)
 			data.bind_visual(m)
 			m.set_shader_parameter("MAP_N", data.n)
 			m.set_shader_parameter("MAP_CELL", data.cell)

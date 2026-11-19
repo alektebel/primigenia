@@ -4,14 +4,14 @@ extends SceneTree
 const TerrainCache := preload("res://game/island/terrain_cache.gd")
 const Views := preload("res://game/tests/rock_views.gd")
 const ALL := ["cliff_lit", "cliff_shade", "ridge", "scree", "valley", "coast", "far", "river"]
-const CLOSE := ["close_gully", "close_scree", "close_cliff", "close_bank"]   # terrain v5 close-ups (a person-height camera)
+const CLOSE := ["close_gully", "close_scree", "close_cliff", "close_bank", "close_cave"]   # terrain v5 close-ups (a person-height camera)
 const Rivers := preload("res://game/island/rivers.gd")
 const Clouds := preload("res://game/island/clouds.gd")
 
 # {pos, look} for a look view.
 static func camera_for(td, v: String) -> Dictionary:
 	match v:
-		"cliff_lit", "cliff_shade":
+		"cliff_lit", "cliff_shade", "mid":
 			return Views.camera_for(td, v)
 		"ridge":
 			var p := Views.highest(td)
@@ -85,6 +85,17 @@ static func camera_for(td, v: String) -> Dictionary:
 			return {"pos": at2 + side * 45.0 + Vector3(0, 10, 0), "look": at2}
 		"close_gully", "close_scree", "close_cliff":
 			return _close(td, v)
+		"close_cave":
+			# The cave entrance with the widest mouth, seen from 16 m out along its facing at person height (rock_photo: the cave notch's rock up close).
+			var cv: Dictionary = {}
+			for c in td.caves:
+				if cv.is_empty() or c.size.x > cv.size.x:
+					cv = c
+			var cp0: Vector3 = cv.position
+			var fc := Vector3(cv.facing.x, 0.0, cv.facing.z).normalized()
+			var mouth := Vector3(cp0.x, td.visual_ground(cp0.x, cp0.z), cp0.z)
+			var eye := mouth + fc * 16.0
+			return {"pos": Vector3(eye.x, td.visual_ground(eye.x, eye.z) + 2.0, eye.z), "look": mouth + Vector3(0, 2.0, 0)}
 		"close_bank":
 			var bk := -1
 			var bd := 1e30
@@ -159,6 +170,11 @@ func _run() -> void:
 	root.add_child(island)
 	for i in 30:
 		await process_frame
+	# LOOK_SET="name=value,name=value": float shader uniforms of the terrain materials, for tuning without editing the shaders.
+	for kv in OS.get_environment("LOOK_SET").split(",", false):
+		var p := kv.split("=")
+		island.terrain_chunks.set_uniform(p[0], float(p[1]) if "." in p[1] or p[1].is_valid_float() else p[1])
+		print("uniform ", p[0], " = ", p[1])
 	for v in views:
 		var cv := camera_for(game.data, v)
 		print(v, " ", cv)

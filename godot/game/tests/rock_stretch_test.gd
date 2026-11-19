@@ -62,8 +62,25 @@ static func cone_entry(height_fn: Callable) -> Dictionary:
 	mat.fill(1)
 	var zeros := PackedFloat32Array()
 	zeros.resize(N * N)
+	# Terrain v5 renders from the visual heightfield (4x finer, uint16) and its erosion maps: the same cone sampled finely, neutral maps.
+	var vn := N * 4
+	var vcell := N * CELL / float(vn)
+	var vmax := 1.0
+	for v in h:
+		vmax = maxf(vmax, v)
+	var vh := PackedByteArray()
+	vh.resize(vn * vn * 2)
+	for j in vn:
+		for i in vn:
+			var hv: float = height_fn.call((i + 0.5) * vcell - half, (j + 0.5) * vcell - half)
+			vh.encode_u16((j * vn + i) * 2, clampi(roundi(hv / vmax * 65535.0), 0, 65535))
+	var vmaps := PackedByteArray()
+	vmaps.resize(vn / 2 * vn / 2 * 4)
+	for k in vn / 2 * vn / 2:
+		vmaps[k * 4 + 3] = 128
 	return {"n": N, "size_m": N * CELL, "height": h, "flow": zeros, "water_level": h.duplicate(), "sediment": zeros, "material": mat,
-		"surface": surf, "chunk_bounds": bounds, "chunks_per_side": cps, "caves": [], "volcano": Vector4.ZERO, "relief": relief_flat()}
+		"surface": surf, "chunk_bounds": bounds, "chunks_per_side": cps, "caves": [], "volcano": Vector4.ZERO, "relief": relief_flat(),
+		"vn": vn, "vheight": vh, "vh_min": 0.0, "vh_range": vmax, "vmaps": vmaps}
 
 static func relief_flat() -> PackedByteArray:
 	var r := PackedByteArray()
@@ -204,22 +221,9 @@ func _run() -> void:
 	print("rock stretch test: %d checks, %d failures" % [checks, failures])
 	quit(1 if failures else 0)
 
-# Synthetic detail sheet: one raised horizontal ridge at v = 0.5 (Gaussian, sigma 0.06 of the tile), R/G = -grad h, A = 1.
-static func ridge_texture() -> ImageTexture:
-	var n := 512
-	var img := Image.create(n, n, false, Image.FORMAT_RGBA8)
-	var h := PackedFloat32Array()
-	h.resize(n)
-	for y in n:
-		var v := (y + 0.5) / n - 0.5
-		h[y] = exp(-pow(v / 0.06, 2.0))
-	for y in n:
-		var g := (h[(y + 1) % n] - h[(y + n - 1) % n]) * 0.5
-		var dy := clampf(-g * 100.0, -1.0, 1.0)
-		for x in n:
-			img.set_pixel(x, y, Color(0.5, 0.5 + 0.5 * dy, h[y], 1.0))
-	img.generate_mipmaps()
-	return ImageTexture.create_from_image(img)
+# The sign test drives the shader's synthetic ridge (rock_photo.gdshaderinc, `ph_synth`): one raised horizontal ridge per tile of the andesite
+# macro scale (1.7 m x 7 = 11.9 m), centred at v = 0.5, with the tilt convention of the photographic sheets (normal green = +dh/dv).
+const PHOTO_PERIOD := 11.9
 
 # PLAN-rock step 4, sign test: on the cone, mode 4 (rock light with the detail normal) must brighten the up-facing side of the
 # ridge, or darken it, exactly as the geometry says. For a face whose normal has elevation theta, a sun of elevation el and
@@ -227,14 +231,13 @@ static func ridge_texture() -> ImageTexture:
 # tilting the normal up brightens faces turned away from the sun and darkens faces turned to it (the plan's "up-facing side is
 # brighter at all azimuths" holds only for the first kind, so the check is the sign of this derivative).
 func sign_test() -> void:
-	chunks.set_uniform("rock_tex", ridge_texture())
-	chunks.set_uniform("rock_normal_gain", Vector3(1, 0, 0))
+	chunks.set_uniform("ph_synth", 1)
 	var img4 := await capture(4)
 	var sun: Vector3 = preload("res://game/island/look.gd").sun_dir()
 	var sun_az := atan2(sun.z, sun.x)
 	var theta := deg_to_rad(90.0 - SLOPE)
 	var el := asin(sun.y)
-	var period := 41.0
+	var period := PHOTO_PERIOD
 	var tan60 := tan(deg_to_rad(SLOPE))
 	var diffs := []
 	var preds := []
@@ -248,10 +251,10 @@ func sign_test() -> void:
 			var r: float = pt.length()
 			var ph := fposmod((R_CONE - r) * tan60, period)
 			var v := sample(img4, pt.x, pt.y, 0)
-			if ph > 20.5 + 3.0 and ph < 20.5 + 6.5:
+			if ph > period * 0.5 + 0.45 and ph < period * 0.5 + 1.3:
 				up += v
 				nu += 1
-			elif ph > 20.5 - 6.5 and ph < 20.5 - 3.0:
+			elif ph > period * 0.5 - 1.3 and ph < period * 0.5 - 0.45:
 				dn += v
 				nd += 1
 		var c := cos(az - sun_az)
