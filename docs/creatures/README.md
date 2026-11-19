@@ -194,3 +194,12 @@
 | [Seda Coronal](seda_coronal.md) | new | draft | 4 | 4 fixable |
 | [Trenza de Fuego](trenza_de_fuego.md) | new | draft | 4 | 4 fixable |
 | [Trenza Magnética](trenza_magnetica.md) | new | draft | 4 | 3 fixable, 1 plausible |
+
+## High-Pressure Super-Earth (`superearth`)
+
+| Creature | Kind | Status | Chains | Verdicts |
+|---|---|---|---|---|
+| [Carapaz](carapaz.md) | new | draft | 4 | 1 fixable, 3 plausible |
+| [Khol-zhar](khol_zhar.md) | new | draft | 4 | 1 fixable, 3 plausible |
+| [RastreadorCeniza](rastreadorceniza.md) | new | draft | 4 | 2 fixable, 2 plausible |
+| [SoplilloAlado](soplilloalado.md) | new | draft | 4 | 2 fixable, 2 plausible |

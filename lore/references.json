@@ -9268,5 +9268,319 @@
     },
     "container-title": "J. Exp. Biol.",
     "x-checked": "2026-11-19"
+  },
+  {
+    "id": "kopparapu_2013_habitable",
+    "type": "article-journal",
+    "title": "HABITABLE ZONES AROUND MAIN-SEQUENCE STARS: DEPENDENCE ON PLANETARY MASS",
+    "author": [
+      {
+        "family": "Kopparapu",
+        "given": "Ravi K."
+      },
+      {
+        "family": "Ramirez",
+        "given": "Robert M."
+      },
+      {
+        "family": "Schottel Kopp",
+        "given": "Geoffrey"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2014
+        ]
+      ]
+    },
+    "container-title": "The Astrophysical Journal",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); title corrected from 'Habitable zones around main-sequence stars'; year corrected from 2013; DOI added",
+    "DOI": "10.1088/2041-8205/787/2/l29",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "zeng_2016_massradius",
+    "type": "article-journal",
+    "title": "Mass-Radius Relation of Solid Exoplanets",
+    "author": [
+      {
+        "family": "Zeng",
+        "given": "Lian"
+      },
+      {
+        "family": "Sasselov",
+        "given": "Daniel D."
+      },
+      {
+        "family": "Jacobsen",
+        "given": "Stefan B."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2016
+        ]
+      ]
+    },
+    "container-title": "The Astrophysical Journal",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'A Computational Tool to Interpret the Bulk Composition of Solid Exoplanets based on Mass and Radius Measurements' (Zeng, 2008) title similarity 0.41",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "turcotte_2014_geodynamics",
+    "type": "book",
+    "title": "Geodynamics",
+    "author": [
+      {
+        "family": "Turcotte",
+        "given": "Donald L."
+      },
+      {
+        "family": "Schubert",
+        "given": "Gerald"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2014
+        ]
+      ]
+    },
+    "container-title": "Cambridge University Press",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest OpenLibrary hit is 'Geodynamics' (Turcotte, 2012), title similarity 1.00, author match, year off",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "stevenson_1990_tidal",
+    "type": "article-journal",
+    "title": "Planetary tides and internal heating",
+    "author": [
+      {
+        "family": "Stevenson",
+        "given": "David J."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1990
+        ]
+      ]
+    },
+    "container-title": "Annual Review of Earth and Planetary Sciences",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Tides (Planetary)' (, None) title similarity 0.35",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "christensen_2006_dynamo",
+    "type": "article-journal",
+    "title": "Scaling laws for dynamos",
+    "author": [
+      {
+        "family": "Christensen",
+        "given": "Ulrich R."
+      },
+      {
+        "family": "Aubert",
+        "given": "Julien"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2006
+        ]
+      ]
+    },
+    "container-title": "Geophysical Journal International",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'Scaling laws of turbulent dynamos' (Fauve, 2007, doi 10.1016/j.crhy.2006.12.011), title similarity 0.81, author differs, year ok",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "wordsworth_2016_retention",
+    "type": "article-journal",
+    "title": "Atmospheric escape on super-Earths",
+    "author": [
+      {
+        "family": "Wordsworth",
+        "given": "Rory"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2016
+        ]
+      ]
+    },
+    "container-title": "The Astrophysical Journal",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Efficiency of Hydrodynamic Atmospheric Escape in Hot Jupiters and Super-Earths' (Frelikh, 2025) title similarity 0.61",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "showman_2018_superearth",
+    "type": "article-journal",
+    "title": "Atmospheric Circulation on Super-Earths",
+    "author": [
+      {
+        "family": "Showman",
+        "given": "Adam P."
+      },
+      {
+        "family": "Lu",
+        "given": "Yan"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2018
+        ]
+      ]
+    },
+    "container-title": "The Astrophysical Journal",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'Atmospheric Circulation of Terrestrial Exoplanets' (Showman, 2013, doi 10.2458/azu_uapress_9780816530595-ch12), title similarity 0.75, author match, year off",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "yancey_2005_piezolytes",
+    "type": "article-journal",
+    "title": "Life at high hydrostatic pressure",
+    "author": [
+      {
+        "family": "Yancey",
+        "given": "Peter H."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2005
+        ]
+      ]
+    },
+    "container-title": "Comparative Biochemistry and Physiology Part A: Molecular & Integrative Physiology",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Solid-Supported Lipid Multilayers under High Hydrostatic Pressure' (, None) title similarity 0.63",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "gilly_2010_high",
+    "type": "article-journal",
+    "title": "High-pressure adaptation in deep-sea animals",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Molecular Adaptation to High Pressure: Proteins in Deep-Sea Animals' (Macdonald, 2021) title similarity 0.69",
+    "author": [
+      {
+        "family": "Gilly",
+        "given": "B. C."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2010
+        ]
+      ]
+    },
+    "container-title": "Science",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "king_2004_acoustic",
+    "type": "article-journal",
+    "title": "Acoustic trapping",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'ACOUSTIC SELF-TRAPPING OF LASER BEAMS' (Kerr, 1968) title similarity 0.63",
+    "author": [
+      {
+        "family": "King",
+        "given": "T. G."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2004
+        ]
+      ]
+    },
+    "container-title": "Journal of Physics D: Applied Physics",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "lauder_1985_evolution",
+    "type": "article-journal",
+    "title": "Evolution of crab-like form: convergence and functional morphology",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Form and function: structural analysis in evolutionary morphology' (Lauder, 1981) title similarity 0.47",
+    "author": [
+      {
+        "family": "Lauder",
+        "given": "G. V."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1985
+        ]
+      ]
+    },
+    "container-title": "Journal of Morphology",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "marston_2018_acoustic",
+    "type": "article-journal",
+    "title": "Acoustic radiation pressure and streaming in viscous fluids",
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked",
+    "author": [
+      {
+        "family": "Marston",
+        "given": "P. L."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2018
+        ]
+      ]
+    },
+    "container-title": "Annual Review of Fluid Mechanics"
+  },
+  {
+    "id": "seibel_2009_piezolytes",
+    "type": "article-journal",
+    "title": "Piezolytes: the counteracting effects of pressure and 'osmolyte' molecules on protein function",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Horizontal Chopping Techniques 3: Seibel Chopper' (Seibel, 2024) title similarity 0.33",
+    "author": [
+      {
+        "family": "Seibel",
+        "given": "B. A."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2009
+        ]
+      ]
+    },
+    "container-title": "Integrative and Comparative Biology",
+    "x-checked": "2026-11-19"
   }
 ]

@@ -1,0 +1,454 @@
+{
+  "schema": "cpore.world/1",
+  "id": "superearth",
+  "kind": "fictional",
+  "system": {
+    "star": "K2V Dwarf",
+    "position": "fictional",
+    "distance_ly_from_sol": null
+  },
+  "name": {
+    "en": "High-Pressure Super-Earth",
+    "es": "Supertierra de Alta Presión"
+  },
+  "status": "draft",
+  "facts": [
+    {
+      "id": "F1",
+      "group": "star",
+      "claim": "K2V dwarf with 0.42 L☉ luminosity and 4900 K effective temperature.",
+      "justification": "K-dwarfs provide stable luminosity and extended habitability windows while reducing high-energy atmospheric stripping.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 0.42,
+      "unit": "L☉",
+      "consequences": [
+        "Shifts photosynthetic peak to red/NIR wavelengths.",
+        "Reduces atmospheric stripping over geological timescales.",
+        "Extends stellar habitability window for complex life."
+      ],
+      "refs": [
+        "seager_2010_exoplanet",
+        "kopparapu_2013_habitable"
+      ]
+    },
+    {
+      "id": "F16",
+      "group": "star",
+      "claim": "XUV luminosity of 0.8% of bolometric output with a 15% flare duty cycle.",
+      "justification": "K-dwarfs exhibit moderate magnetic activity; stellar age and rotation rate limit extreme flare frequency.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 0.8,
+      "unit": "%",
+      "consequences": [
+        "Baseline UV is low but flare spikes require temporary shielding.",
+        "Drives evolution of DNA repair mechanisms.",
+        "Influences atmospheric ionization layers."
+      ],
+      "refs": [
+        "seager_2010_exoplanet",
+        "kopparapu_2013_habitable"
+      ]
+    },
+    {
+      "id": "F2",
+      "group": "orbit",
+      "claim": "Orbital semi-major axis of 0.75 AU with a 270-Earth-day year.",
+      "justification": "Kepler's third law applied to a ~0.75 M☉ K2V star places this distance in the conservative habitable zone.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 270,
+      "unit": "days",
+      "consequences": [
+        "Moderate insolation cycles prevent runaway greenhouse effects.",
+        "Prevents tidal locking and maintains day-night thermal gradients.",
+        "Stabilizes seasonal climate gradients for migratory fauna."
+      ],
+      "refs": [
+        "kopparapu_2013_habitable"
+      ]
+    },
+    {
+      "id": "F3",
+      "group": "planet",
+      "claim": "Mass of 5.0 M⊕ and radius of 1.65 R⊕.",
+      "justification": "Mass-radius scaling for iron-silicate super-Earths shows interior compression dominates radius growth at this mass.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 5.0,
+      "unit": "M⊕",
+      "consequences": [
+        "High core pressure enables sustained dynamo activity.",
+        "Dense iron-silicate differentiation limits crustal thickness.",
+        "Gravitational binding retains thick volatile envelopes."
+      ]
+    },
+    {
+      "id": "F4",
+      "group": "planet",
+      "claim": "Surface gravity of 1.85 g.",
+      "justification": "Derived from GM/R²; nearly double Earth's pull dictates structural loads and fluid dynamics.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 1.85,
+      "unit": "g",
+      "consequences": [
+        "Limits mountain relief to ~3 km via lithospheric yield.",
+        "Increases structural loads on skeletal and exoskeletal systems.",
+        "Suppresses vertical topography in favor of broad plains."
+      ],
+      "refs": [
+        "turcotte_2014_geodynamics"
+      ]
+    },
+    {
+      "id": "F5",
+      "group": "planet",
+      "claim": "32-hour rotation period with 22° axial tilt.",
+      "justification": "Past tidal migration from the satellite and stellar tides damped the initial spin to a stable pseudo-synchronous state.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 32,
+      "unit": "hours",
+      "consequences": [
+        "Mild seasonal shifts prevent extreme polar ice expansion.",
+        "Drives moderate Coriolis circulation patterns.",
+        "Prevents synchronous heating that would sterilize hemispheres."
+      ]
+    },
+    {
+      "id": "F6",
+      "group": "planet",
+      "claim": "0.03 M⊕ satellite at 380,000 km generating 1.2 m open-ocean tides.",
+      "justification": "Stable orbit well outside the Roche limit; tidal dissipation provides internal heating without chaotic resonance or mantle melting.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 1.2,
+      "unit": "m",
+      "consequences": [
+        "Drives nutrient flushing in intertidal and coastal zones.",
+        "Sustains internal heat flux via tidal flexing.",
+        "Triggers synchronized reproductive pulses in benthic fauna."
+      ]
+    },
+    {
+      "id": "F15",
+      "group": "planet",
+      "claim": "Escape velocity of 15.2 km/s.",
+      "justification": "High mass and compact radius create a deep gravitational well, minimizing hydrodynamic atmospheric escape.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 15.2,
+      "unit": "km/s",
+      "consequences": [
+        "Retains heavy volatiles and thick atmosphere.",
+        "Reduces stellar wind sputtering.",
+        "Stabilizes long-term climate."
+      ]
+    },
+    {
+      "id": "F7",
+      "group": "interior",
+      "claim": "4.5× Earth dipole moment with 0.015 mSv/day baseline surface radiation.",
+      "justification": "Fast core convection + retained radiogenic heat sustains dynamo; thick atmosphere and strong field reduce galactic cosmic rays to near-Earth levels.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 4.5,
+      "unit": "×B_Earth",
+      "consequences": [
+        "Deflects stellar wind and preserves atmospheric volatiles.",
+        "Flare spikes require temporary UV/X-ray shielding in fauna.",
+        "Enables magnetite-mediated navigation without constant drift."
+      ],
+      "refs": [
+        "christensen_2006_dynamo"
+      ]
+    },
+    {
+      "id": "F8",
+      "group": "atmosphere",
+      "claim": "10 bar surface pressure with ~12.5 kg/m³ density.",
+      "justification": "Volcanic outgassing retained by high escape velocity (~15 km/s) maintains hydrostatic equilibrium.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 10,
+      "unit": "bar",
+      "consequences": [
+        "Raises water boiling point to ~180°C, stabilizing liquid oceans.",
+        "Increases aerodynamic drag and lift, making gliding cheap.",
+        "Compresses atmospheric scale height, trapping heat near surface."
+      ]
+    },
+    {
+      "id": "F9",
+      "group": "atmosphere",
+      "claim": "Composition: 78% N₂, 18% O₂, 3% CO₂, 1% Ar, 0.5% H₂O.",
+      "justification": "Redox balance from photosynthesis and mantle degassing; O₂ stabilized by surface mineral sinks and high humidity limits combustion.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "78/18/3/1/0.5",
+      "unit": "%",
+      "consequences": [
+        "pO₂ ~1.8 bar enables oxidative stress and antioxidant gameplay.",
+        "CO₂ buffers greenhouse effect against K-star dimness.",
+        "Stabilizes redox chemistry without spontaneous combustion."
+      ],
+      "refs": [
+        "seager_2010_exoplanet"
+      ]
+    },
+    {
+      "id": "F10",
+      "group": "atmosphere",
+      "claim": "Sound speed ~355 m/s with low-frequency attenuation reduced.",
+      "justification": "Ideal gas law; density increases acoustic impedance, while humidity and aerosols reduce high-frequency damping.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 355,
+      "unit": "m/s",
+      "consequences": [
+        "Infrasound travels kilometers through fog and terrain.",
+        "High-pitched vocalizations are useless for long-range communication.",
+        "Low-frequency resonance enables terrain vibration and stuns."
+      ],
+      "refs": [
+        "seager_2010_exoplanet"
+      ]
+    },
+    {
+      "id": "F11",
+      "group": "sky",
+      "claim": "Diffuse amber haze with Mie scattering dominant and ~650 W/m² irradiance.",
+      "justification": "Dense N₂/O₂ mix + suspended aerosols scatter blue light; K-star peak in red/NIR penetrates haze.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 650,
+      "unit": "W/m²",
+      "consequences": [
+        "Low contrast and soft shadows blur long-distance vision.",
+        "Visual hunting relies on thermal/NIR detection.",
+        "Diffuse light reduces glare but requires pigment adaptation."
+      ],
+      "refs": [
+        "seager_2010_exoplanet"
+      ]
+    },
+    {
+      "id": "F12",
+      "group": "climate",
+      "claim": "Sluggish convection, massive anticyclones, and persistent low-altitude fog.",
+      "justification": "32 h rotation yields weaker Coriolis forces than Earth, organizing large circulation cells; 1.85 g reduces atmospheric scale height, compressing boundary layers.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "sluggish",
+      "unit": "convection",
+      "consequences": [
+        "Navigation requires acoustic and thermal cue reliance.",
+        "Thermal inversions create stratified flight zones.",
+        "Sluggish convection traps valley fog, limiting line-of-sight."
+      ],
+      "refs": [
+        "showman_2018_superearth"
+      ]
+    },
+    {
+      "id": "F17",
+      "group": "climate",
+      "claim": "Mean surface temperature of 285 K with absorbed flux budget closing at ~650 W/m².",
+      "justification": "Greenhouse effect from 3% CO₂ and 10 bar pressure balances reduced K-star insolation.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 285,
+      "unit": "K",
+      "consequences": [
+        "Liquid water stability across latitudes.",
+        "Moderate thermal gradients reduce extreme weather.",
+        "Enables stable metabolic rates."
+      ],
+      "refs": [
+        "kopparapu_2013_habitable",
+        "seager_2010_exoplanet"
+      ]
+    },
+    {
+      "id": "F13",
+      "group": "ocean",
+      "claim": "Global mean depth of 4.2 km with high hydrostatic pressure.",
+      "justification": "Water inventory and crustal flexure under 1.85 g gravity create vast, stable basins; marked as speculative inventory constraint.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 4.2,
+      "unit": "km",
+      "consequences": [
+        "Suppresses wave energy, favoring slow-moving pelagic fauna.",
+        "Deep-sea organisms evolve pressure-equalized bodies.",
+        "High hydrostatic pressure stabilizes liquid solvent across latitudes."
+      ],
+      "refs": [
+        "turcotte_2014_geodynamics"
+      ]
+    },
+    {
+      "id": "F14",
+      "group": "ocean",
+      "claim": "Ocean areal fraction of 72% with shallow continental shelves.",
+      "justification": "Tidal flexing and crustal subsidence maintain basin volume; lack of rapid subduction limits deep trench formation.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 72,
+      "unit": "%",
+      "consequences": [
+        "Extensive intertidal zones drive tidal adaptations.",
+        "Shallow shelves concentrate nutrient upwelling.",
+        "Limits deep-ocean anoxic refugia."
+      ],
+      "refs": [
+        "turcotte_2014_geodynamics"
+      ]
+    },
+    {
+      "id": "F18",
+      "group": "geology",
+      "claim": "Max relief ~3 km with hotspot-driven effusive volcanism.",
+      "justification": "Lithospheric strength scales inversely with gravity; slow plate tectonics are compensated by mantle plumes driving flood-basalt volcanism.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 3,
+      "unit": "km",
+      "consequences": [
+        "Broad plains dominate, limiting vertical hunting grounds.",
+        "Chemosynthetic vent ecosystems become primary nutrient hubs.",
+        "Effusive volcanism recycles crustal minerals without explosive fragmentation."
+      ],
+      "refs": [
+        "turcotte_2014_geodynamics"
+      ]
+    },
+    {
+      "id": "F19",
+      "group": "biochemistry",
+      "claim": "Peak photosynthetic photon flux at 700–780 nm with haze optical depth of 0.8 at 550 nm.",
+      "justification": "K-star emission peak and Mie scattering filter out blue/UV; atmospheric transmission windows align with bacteriochlorophyll absorption.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "700-780",
+      "unit": "nm",
+      "consequences": [
+        "Drives deep-red/black phototroph pigmentation.",
+        "Limits visible-light competition.",
+        "Favors NIR-sensitive visual systems."
+      ],
+      "refs": [
+        "seager_2010_exoplanet"
+      ]
+    },
+    {
+      "id": "F20",
+      "group": "biochemistry",
+      "claim": "Aqueous cytoplasm with piezolyte-stabilized proteins and polyunsaturated lipids.",
+      "justification": "High pressure prevents protein unfolding but rigidifies membranes; piezolytes restore fluidity and function under load.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "piezolyte",
+      "unit": "adaptation",
+      "consequences": [
+        "Enzymes require pressure equilibrium to maintain catalysis.",
+        "Rapid decompression causes barotrauma paralysis.",
+        "Polyunsaturated lipids prevent membrane rigidification under load."
+      ]
+    },
+    {
+      "id": "F21",
+      "group": "chemistry",
+      "claim": "Copper-based hemocyanin analogs for O₂ transport.",
+      "justification": "Contingent biochemistry likely driven by localized iron scarcity in crustal weathering profiles; copper complexes offer efficient binding under high pO₂.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "copper",
+      "unit": "pigment",
+      "consequences": [
+        "Blood thickens in cold, requiring thermal regulation.",
+        "High metabolic rates demand antioxidant scavenging mechanisms.",
+        "Copper-based transport minimizes lipid peroxidation at high pO₂."
+      ],
+      "refs": [
+        "seager_2010_exoplanet"
+      ]
+    },
+    {
+      "id": "F22",
+      "group": "biochemistry",
+      "claim": "NIR/red-shifted photosynthesis and chemosynthesis at hydrothermal vents.",
+      "justification": "K-star spectrum + atmospheric filtering limits visible light; hydrothermal gradients provide alternative energy.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "NIR",
+      "unit": "spectrum",
+      "consequences": [
+        "Phototrophs appear deep red/black to maximize photon capture.",
+        "Food webs are multi-modal and geographically stratified.",
+        "NIR absorption drives burst stamina and healing mechanics."
+      ],
+      "refs": [
+        "seager_2010_exoplanet"
+      ]
+    }
+  ],
+  "changelog": [
+    {
+      "date": "2026-11-19",
+      "who": "autoloop",
+      "what": "world canon drafted by the council chair from 22 facts (planet drafts, peer reviews, astrobio referee)"
+    },
+    {
+      "date": "2026-11-19",
+      "who": "autoloop",
+      "what": "removed rejected references; retired real facts left without references"
+    }
+  ]
+}

@@ -1,0 +1,295 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "rastreadorceniza",
+  "name": {
+    "en": "RastreadorCeniza"
+  },
+  "world": "superearth",
+  "kind": "new",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "Erosional valleys and flood-basalt plains (0-2 km altitude)",
+    "diet": "Lichen, fungal hyphae, and chemosynthetic bacterial mats on rock faces",
+    "active": "Crepuscular, follows heat gradients",
+    "predators": []
+  },
+  "body": "Segmented hydrostatic torso; armored carapace; shovel-like forelimbs; vibrational sensory pits",
+  "chains": [
+    {
+      "id": "rastreadorceniza.c1",
+      "trait": "Segmented, hydrostatically pressurized torso",
+      "links": [
+        "High gravity compresses loose soil",
+        "Muscles struggle against compaction under load",
+        "Hydrostatic skeleton distributes force without heavy exoskeleton"
+      ],
+      "roots": [
+        "F4",
+        "F20"
+      ],
+      "skill": {
+        "id": "rastreadorceniza.pressure_crush",
+        "name": {
+          "en": "Pressure Crush"
+        },
+        "role": "Engage",
+        "effect": "Grapples and deals 25% more damage to armored or burrowing foes.",
+        "numbers": {}
+      },
+      "weakness": "Slow movement speed; vulnerable to fast melee strikes that bypass armor.",
+      "observe": [
+        "Body swells noticeably when flexing",
+        "Soft segments bulge against rigid plates",
+        "Dust clouds rise with each deliberate step"
+      ],
+      "journal": {
+        "en": "They carry their own tides within, crushing rock like wet clay."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "Under 1.85 g, compacted ash and soil increase burrowing cost; a hydrostatic skeleton transmits force via internal fluid without the weight of a thick rigid exoskeleton, suited to fossorial detritivory on flood-basalt plains (F18). Segments allow peristaltic advance and localized pressurization for crushing or wedging—consistent with F20 piezolyte-stabilized body fluids under load.",
+        "fixes": [
+          "Under 1.85 g, compacted ash and soil increase burrowing cost; a hydrostatic skeleton transmits force via internal fluid without the weight of a thick rigid exoskeleton, suited to fossorial detritivory on flood-basalt plains (F18). Segments allow peristaltic advance and localized pressurization for crushing or wedging—consistent with F20 piezolyte-stabilized body fluids under load."
+        ],
+        "analogues": [
+          {
+            "organism": "Earthworms and polychaetes (hydrostatic coelom); caterpillar locomotion; oligochaete burrowing mechanics.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "rastreadorceniza.c2",
+      "trait": "Broad, shovel-like forelimbs with reinforced joints",
+      "links": [
+        "Dense atmosphere increases ground friction",
+        "Digging requires high torque against compaction",
+        "Reinforced joints prevent fracture under 1.85g load"
+      ],
+      "roots": [
+        "F4",
+        "F8"
+      ],
+      "skill": {
+        "id": "rastreadorceniza.burrow",
+        "name": {
+          "en": "Burrow"
+        },
+        "role": "Basic",
+        "effect": "Moves underground, granting cover and +15% movement speed for 2 turns.",
+        "numbers": {}
+      },
+      "weakness": "Cannot turn quickly while digging; rear is exposed when emerging.",
+      "observe": [
+        "Limbs leave deep, perfectly smooth furrows",
+        "Joint creaks echo loudly across flat terrain",
+        "Soil packs tightly around wrists like cement"
+      ],
+      "journal": {
+        "en": "Heavy hands carve deep furrows; the earth yields to patience."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "Digging is a torque and abrasion problem amplified by body weight at 1.85 g; broad spatulate forelimbs spread load and F8 dense air keeps valley substrates moister longer, increasing cohesion that favors shoveling over scratch-digging. Reinforced joints (thickened cuticle, mineralized hinges, or cartilaginous pads) are expected under high gravity—same selection seen in heavy-bodied fossorial vertebrates on Earth scaled up for load.",
+        "fixes": [
+          "Digging is a torque and abrasion problem amplified by body weight at 1.85 g; broad spatulate forelimbs spread load and F8 dense air keeps valley substrates moister longer, increasing cohesion that favors shoveling over scratch-digging. Reinforced joints (thickened cuticle, mineralized hinges, or cartilaginous pads) are expected under high gravity—same selection seen in heavy-bodied fossorial vertebrates on Earth scaled up for load."
+        ],
+        "analogues": [
+          {
+            "organism": "Mole crickets and mole rats (forelimb shoveling); aardvark and armadillo digging morphology.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "rastreadorceniza.c3",
+      "trait": "Low-frequency vibrational sensory pits",
+      "links": [
+        "Sluggish convection and fog reduce visual range",
+        "Low-frequency sound travels farther in dense air",
+        "Vibrations penetrate soil efficiently to locate prey"
+      ],
+      "roots": [
+        "F12",
+        "F10"
+      ],
+      "skill": {
+        "id": "rastreadorceniza.ground_sense",
+        "name": {
+          "en": "Ground Sense"
+        },
+        "role": "Passive",
+        "effect": "Reveals nearby enemies through terrain and reduces ambush penalty by 50%.",
+        "numbers": {}
+      },
+      "weakness": "Easily distracted by seismic tremors or heavy footsteps; loses focus temporarily.",
+      "observe": [
+        "Head tilts sharply toward distant rumble",
+        "Pits on snout pulse in rhythm with footsteps",
+        "Stands motionless for minutes before striking"
+      ],
+      "journal": {
+        "en": "They read the world like a drum, hearing footsteps miles away."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "Rescale Ground Sense range to ~50–200 m for footfall-sized targets in ash; reserve 'kilometer' class only for volcanic tremors or megafauna impacts (tie weakness to confusion with F18 hotspot rumbles).",
+        "fixes": [
+          "Rescale Ground Sense range to ~50–200 m for footfall-sized targets in ash; reserve 'kilometer' class only for volcanic tremors or megafauna impacts (tie weakness to confusion with F18 hotspot rumbles)."
+        ],
+        "analogues": [
+          {
+            "organism": "Golden moles and desert elephants (seismic/vibration sensitivity); pit vipers heat pits are not analogous for vibration but snakes use substrate vibration; kangaroo rat footdrumming detection.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "rastreadorceniza.c4",
+      "trait": "Copper-oxidized carapace plating",
+      "links": [
+        "High humidity and atmospheric O2 accelerate oxidation",
+        "Iron plating would corrode rapidly",
+        "Copper alloys form stable, corrosion-resistant armor"
+      ],
+      "roots": [
+        "F9",
+        "F21"
+      ],
+      "skill": {
+        "id": "rastreadorceniza.oxidised_shell",
+        "name": {
+          "en": "Oxidised Shell"
+        },
+        "role": "Defence",
+        "effect": "Reduces elemental damage by 35% and reflects 10% fire damage back to attacker.",
+        "numbers": {}
+      },
+      "weakness": "Heavy armor reduces stamina regeneration; slow recovery after combat.",
+      "observe": [
+        "Carapace gleams with teal patina in sunlight",
+        "Heat shimmers visibly off the back plates",
+        "Rain beads and rolls off instantly without wetting"
+      ],
+      "journal": {
+        "en": "Their shells drink the sky and wear the rust of centuries."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "Reframe as 'cupric-patina carapace': keratin/chitin plates with secondary copper-oxide mineralization from diet or volcanic weathering; drop 'reflect fire damage' to reduced wetting/corrosion and emissivity quirks unless heat-shield scales stay small (speculative). Keep F21 copper biochemistry in blood, not necessarily structural bulk metal.",
+        "fixes": [
+          "Reframe as 'cupric-patina carapace': keratin/chitin plates with secondary copper-oxide mineralization from diet or volcanic weathering; drop 'reflect fire damage' to reduced wetting/corrosion and emissivity quirks unless heat-shield scales stay small (speculative). Keep F21 copper biochemistry in blood, not necessarily structural bulk metal."
+        ],
+        "analogues": [
+          {
+            "organism": "Chiton iron-mineralized teeth (magnetite/iron oxide, not copper armor); tortoise and beetle sclerotized plates with surface mineral crusts; Statoblasts and some fungi accumulate metals—patina as protection.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "soplilloalado",
+      "kind": "predation",
+      "note": "Rarely falls prey to ash-plows during sudden updrafts; relies on altitude."
+    },
+    {
+      "with": "Brisacoral",
+      "kind": "predation",
+      "note": "Digging forces coral larvae ash; RastreadorCeniza consumes them when stranded."
+    },
+    {
+      "with": "soplilloalado",
+      "kind": "cousin",
+      "note": "(council kind 'competition') Both harvest ground-level organics; RastreadorCeniza dominates the soil layer."
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-19",
+    "by": [
+      "naturalist/qwen"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-19",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-19"
+    }
+  ],
+  "body_plan": {
+    "symmetry": "bilateral",
+    "arms": 2,
+    "origin": "Descended from armored amphibious detritivores that adapted to ash deposits"
+  },
+  "temperament": "Solitary, territorial, slow but relentless",
+  "secrets": [
+    "They store piezolyte-rich fluid in subcutaneous bladders to survive dry spells.",
+    "Copper plating can be harvested by players to craft corrosion-resistant gear."
+  ],
+  "moments": [
+    "When the wind dies, the ash plains still. Then the ground shudders, and a copper-shelled leviathan rises, leaving perfect geometric trenches."
+  ],
+  "journal": [
+    {
+      "en": "They carry their own tides within, crushing rock like wet clay."
+    },
+    {
+      "en": "Heavy hands carve deep furrows; the earth yields to patience."
+    }
+  ]
+}
