@@ -40,7 +40,7 @@ static func _num(v) -> bool:
 
 # Returns {ok: true, profile: {...}} or {ok: false, error: String}.
 static func from_studio(creature: Dictionary, manifest: Dictionary) -> Dictionary:
-	if creature.get("schema", "") != "cpore.creature/4":
+	if creature.get("schema", "") not in ["cpore.creature/4", "cpore.creature/5"]:
 		return {"ok": false, "error": "expected studio schema cpore.creature/4"}
 	var parts = creature.get("parts")
 	if typeof(parts) != TYPE_ARRAY or parts.size() > 256:
@@ -59,7 +59,7 @@ static func from_studio(creature: Dictionary, manifest: Dictionary) -> Dictionar
 		for rule in RULES:
 			if rule.c_type == entry.c_type and rule.category == entry.category:
 				for key in LEVELS:
-					result[key] = mini(5, result[key] + int(rule.get(key, 0)))
+					result[key] = mini(5, result[key] + int(rule.get(key, 0)) * int(part.get("level", 1)))
 				break
 	result.hp += result.guard * 5
 	result["radius_cm"] = body_radius_cm(creature.get("nodes"))

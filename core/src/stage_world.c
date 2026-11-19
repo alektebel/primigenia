@@ -237,6 +237,9 @@ static float player_climb(const CpStageWorld *w){
     cp_steer_body(&w->motion,cp_combat_body_radius(&w->player.profile),w->player.legs,&body);
     return body.climb;
 }
+int cp_stage_walkable_from_nest(const CpStageWorld *w,float x,float z){
+    return walk_ok(w,w->setup.nest_x,w->setup.nest_z,x,z,cp_combat_body_radius(&w->player.profile),player_climb(w));
+}
 /* --- C1-nav: events, block reasons, the walk grid and the GO planner (docs/godot/NAV.md) ---------------- */
 static void ev_push(CpStageWorld *w,int type,int by,int target,int move,float value,float x,float z){
     w->events[w->ev_total%CP_STAGE_MAX_EVENTS]=(CpStageEvent){w->tick,type,by,target,move,value,x,z};
@@ -667,6 +670,7 @@ int cp_stage_reset(CpStageWorld *w,const CpStageSetup *s){
     seed_noise(w);
     creature(&w->player,copy.nest_x,copy.nest_z,-1,&copy.player);
     w->player.legs=copy.player_legs;
+    cp_stage_parts_reset(w);
     cp_combat_loadout_default(&w->loadout,&copy.player);
     for(int i=0;i<copy.n;i++){
         const CpStageSpawn *c=&copy.wild[i];
@@ -732,6 +736,9 @@ static void start(CpStageWorld *w,int index){
         s.c[i].team=(uint8_t)i;
     }
     cp_combat_reset(&w->combat,&s);
+    if(w->ancestry.count&&w->parts.tiers_on)cp_stage_genome_tiers(w->ancestry.forms[w->ancestry.count-1].form.body,w->combat.c[0].tiers);
+    int generation=cp_stage_cousin_generation(w,index+1);
+    if(generation>0&&w->parts.tiers_on)cp_stage_genome_tiers(w->ancestry.forms[generation-1].form.body,w->combat.c[1].tiers);
     path_clear(w);
     CpBot b;
     int kind=w->setup.wild[index].bot;
@@ -836,8 +843,11 @@ static int has_threat(const CpStageWorld *w){
     return 0;
 }
 static int order_apply(CpStageWorld *w,const CpStageInput *a){
-    if(!w||!a||!isfinite(a->x)||!isfinite(a->z)||a->verb<0||a->verb>CP_STAGE_EAT||a->sprint<0||a->sprint>1)return -1;
+    if(!w||!a||!isfinite(a->x)||!isfinite(a->z)||a->verb<0||a->verb>CP_STAGE_BUY_TIER||a->sprint<0||a->sprint>1)return -1;
+    if(w->parts.lost)return CP_STAGE_ERR_BUSY;
     if(a->verb==CP_STAGE_CONTINUE)return 0;
+    if(a->verb>=CP_STAGE_INSPECT)return cp_stage_parts_order(w,a);
+    w->parts.inspect_id=w->parts.inspect_ticks=0;
     if(a->verb==CP_STAGE_LOADOUT){
         if(a->target<1||a->target>CB_LOADOUT_SLOTS)return CP_STAGE_ERR_BAD_SLOT;
         if(a->move!=CB_MOVE_NONE&&(a->move<0||a->move>=CB_MOVE_COUNT||(CP_COMBAT_MOVES[a->move].flags&CB_F_SELF)))return CP_STAGE_ERR_UNKNOWN_MOVE;
@@ -866,7 +876,8 @@ static int order_apply(CpStageWorld *w,const CpStageInput *a){
     if(a->verb==CP_STAGE_ATTACK&&w->active>=0&&w->combat.c[0].cd[a->move])return CP_STAGE_ERR_ON_COOLDOWN;
     if(a->verb==CP_STAGE_DODGE&&(a->dir<0||a->dir>7))return -1;
     if(a->verb==CP_STAGE_HEADING&&a->hx==0&&a->hz==0)return -1;
-    if(w->active>=0&&(a->verb==CP_STAGE_ATTACK||a->verb==CP_STAGE_APPROACH)&&a->target!=w->active+1)return -2;
+    if(w->active>=0&&a->verb==CP_STAGE_APPROACH&&a->target!=w->active+1)return CP_STAGE_ERR_IN_FIGHT; /* same as befriend/observe/gift */
+    if(w->active>=0&&a->verb==CP_STAGE_ATTACK&&a->target!=w->active+1)return -2;
     if(w->setup.terrain==CP_STAGE_FIELD&&w->active<0&&(a->verb==CP_STAGE_GO||a->verb==CP_STAGE_GO_NEST)){
         /* the same GO again while its path runs keeps the path (clients may repeat the order every frame) */
         if(w->n_path>0&&w->order.verb==a->verb&&(a->verb==CP_STAGE_GO_NEST||(w->order.x==a->x&&w->order.z==a->z)))return 0;
@@ -916,11 +927,13 @@ static void finish(CpStageWorld *w,int outcome){
         if(w->ledger.enabled)cp_ledger_deed(&w->ledger,w->tick,CP_DEED_KILLS,1,(int32_t)(e->x*100),(int32_t)(e->z*100),id);
         ev_push(w,CP_STAGE_EV_KILL,0,id,-1,0,e->x,e->z);
         cp_stage_social_on_kill(w,id-1);
+        cp_stage_parts_kill(w,id-1);
     }
     else e->returning=1;
+    if(outcome==CP_STAGE_VICTORY)cp_stage_parts_win(w);
     if(outcome!=CP_STAGE_VICTORY){
         if(outcome==CP_STAGE_DEATH){
-            w->respawn_ticks=20;
+            cp_stage_parts_death(w);
             ev_push(w,CP_STAGE_EV_DEATH,id,0,-1,0,w->player.x,w->player.z);
         }
         else {if(w->ledger.enabled)cp_stage_lineage_award(w,CP_DEED_FLED,1,id);ev_push(w,CP_STAGE_EV_FLED,0,id,-1,0,w->player.x,w->player.z);}
@@ -997,6 +1010,7 @@ static void fight(CpStageWorld *w){
     cp_combat_step(&w->combat);
     for(int i=0;i<w->combat.n_ev;i++){
         const CpCombatEvent *ev=&w->combat.ev[i];
+        if(ev->type==CB_EV_HIT&&ev->a==0&&ev->b==1)cp_stage_parts_usage(w,ev->move,0);
         if(ev->type==CB_EV_HIT&&ev->a<2&&ev->b<2)ev_push(w,CP_STAGE_EV_HIT,ev->a?w->active+1:0,ev->b?w->active+1:0,ev->move,ev->amount,0,0);
     }
     if(god){
@@ -1116,6 +1130,7 @@ static void wild_tick(CpStageWorld *w,int skip,int engage){
     }
 }
 uint64_t cp_stage_step(CpStageWorld *w,const CpStageInput *input){
+    if(w->parts.lost)return w->hash=cp_stage_hash(w);
     int32_t lineage_x=(int32_t)(w->player.x*100),lineage_z=(int32_t)(w->player.z*100);
     int skip=w->active,engage=w->active<0&&w->respawn_ticks==0;
     w->accepted[0]=w->accepted[1]=0;
@@ -1283,6 +1298,7 @@ uint64_t cp_stage_step(CpStageWorld *w,const CpStageInput *input){
         if(w->cooldown_ticks>0)w->cooldown_ticks--;
     }
     cp_stage_social_step(w);
+    cp_stage_parts_step(w);
     wild_tick(w,skip,engage);
     cp_stage_lineage_tick(w,lineage_x,lineage_z);
     w->tick++;
@@ -1427,6 +1443,7 @@ uint64_t cp_stage_hash(const CpStageWorld *w){
             fl(&h,w->path[i][1]);
         }
     }
+    if(w->parts.used){uint64_t ph=cp_stage_parts_hash(w);u32(&h,(uint32_t)ph);u32(&h,(uint32_t)(ph>>32));}
     if(w->social.used){
         const uint64_t sh=cp_stage_social_hash(w);
         u32(&h,(uint32_t)sh);
@@ -1448,6 +1465,12 @@ static int parse_text(const char *text,CpStageInput *out){
         0
     };
     char extra,move_name[32];
+    if(sscanf(text,"inspect #%d %c",&a.target,&extra)==1){a.verb=CP_STAGE_INSPECT;*out=a;return 0;}
+    const char *buy[]={"buy_part ","buy_level ","buy_tier "};
+    for(int k=0;k<3;k++)if(!strncmp(text,buy[k],strlen(buy[k]))){
+        if(sscanf(text+strlen(buy[k]),"%31s %c",move_name,&extra)!=1)return -1;
+        a.target=cp_stage_part_id(move_name);if(a.target<0)return -1;a.verb=CP_STAGE_BUY_PART+k;*out=a;return 0;
+    }
     float deg;
     int rc=0;
     if(!text)return -1;
@@ -1657,6 +1680,7 @@ int cp_stage_observe_v(const CpStageWorld *w,char *out,size_t cap,int version){
     int failed=0,comma=0;
 #define ADD(...) append(out,cap,&used,&failed,__VA_ARGS__)
     ADD("{\"schema\":\"world-%d\",\"tick\":%u,\"clock\":{\"tick\":%u,\"day_ticks\":%d},",version,w->tick,w->clock,CP_STAGE_DAY_TICKS);
+    if(version==2){char parts[16384];if(cp_stage_parts_json(w,parts,sizeof parts)<0)return -1;ADD("\"parts\":%s,",parts);}
     if(version==2)ADD("\"world\":{\"bound\":%.6f,\"units\":\"metres; x and z are the ground plane; heading 0 = +z and 90 = +x (clockwise seen from above with +z up); bearing is relative to your facing, positive = clockwise (to your right), 0 = dead ahead, +-180 = behind\",\"nest\":{\"x\":%.6f,\"z\":%.6f},\"tick_hz\":10},",cp_stage_bound(w),w->setup.nest_x,w->setup.nest_z);
     if(version==2){int scores[4],prev=w->ancestry.count>1?w->ancestry.forms[w->ancestry.count-2].type:15;char code[8];int type=cp_type_score(w->ledger.current,prev,scores);cp_type_code(type,code);
         ADD("\"lineage\":{\"format\":\"cpore.lineage/1\",\"enabled\":%s,\"generation\":%u,\"trait_mask\":%u,\"entries\":%u,\"deeds_aggregated\":%u,\"type_code\":\"%s\",\"scores\":[%d,%d,%d,%d]},",w->ledger.enabled?"true":"false",w->ledger.generation,w->ledger.traits,w->ledger.count,w->ledger.dropped,code,scores[0],scores[1],scores[2],scores[3]);}
@@ -1753,7 +1777,12 @@ int cp_stage_observe_v(const CpStageWorld *w,char *out,size_t cap,int version){
         if(cp_stage_social_legal(w,CP_STAGE_EAT))ADD(",\"eat\"");
         if(cp_stage_social_legal(w,CP_STAGE_GIFT))ADD(",\"gift\"");
     }
-    if(version==2&&w->active<0&&length(w->player.x-w->setup.nest_x,w->player.z-w->setup.nest_z)<=CP_STAGE_NEST_RADIUS)ADD(",\"loadout\"");   /* only at the nest, never in a fight */
+    if(version==2&&!w->parts.lost){
+        if(cp_stage_at_nest(w))ADD(",\"buy_part\",\"buy_level\",\"buy_tier\",\"edit\"");
+        for(int i=0;i<w->parts.n_nodes;i++){float dx=w->player.x-w->parts.nodes[i].x,dz=w->player.z-w->parts.nodes[i].z;
+            if(!w->parts.nodes[i].inspected&&w->active<0&&!w->respawn_ticks&&dx*dx+dz*dz<=6.25f){ADD(",\"inspect\"");break;}}
+    }
+    if(version==2&&cp_stage_at_nest(w))ADD(",\"loadout\"");   /* only at the nest, never in a fight */
     ADD("]");
     if(version==2){
         /* A21: the kit. Slots are keys 1..4; guard and dodge are always available and never in a slot. */
@@ -1933,7 +1962,7 @@ uint64_t cp_stage_layout(void){
     LAY(CpStageWorld,debug_flags);LAY(CpStageWorld,reserved);LAY(CpStageWorld,field_hash);LAY(CpStageWorld,path);LAY(CpStageWorld,n_path);LAY(CpStageWorld,path_i);
     LAY(CpStageWorld,blocked_ticks);LAY(CpStageWorld,replans);LAY(CpStageWorld,path_goal_x);LAY(CpStageWorld,path_goal_z);
     LAY(CpStageWorld,blocked_reason);LAY(CpStageWorld,blocked_x);LAY(CpStageWorld,blocked_z);LAY(CpStageWorld,ev_total);
-    LAY(CpStageWorld,ev_acked);LAY(CpStageWorld,events);LAY(CpStageWorld,loadout);LAY(CpStageWorld,social);LAY(CpStageWorld,ledger);LAY(CpStageWorld,ancestry);LAY(CpStageWorld,field);lay(&h,sizeof(CpStageSocial));lay(&h,sizeof(CpStageSocialCreature));lay(&h,sizeof(CpStageEvent));
+    LAY(CpStageWorld,ev_acked);LAY(CpStageWorld,events);LAY(CpStageWorld,loadout);LAY(CpStageWorld,social);LAY(CpStageWorld,ledger);LAY(CpStageWorld,ancestry);LAY(CpStageWorld,parts);LAY(CpStageWorld,field);lay(&h,sizeof(CpStageSocial));lay(&h,sizeof(CpStageSocialCreature));lay(&h,sizeof(CpStageEvent));
     LAY(CpStageSetup,seed);LAY(CpStageSetup,terrain_seed);LAY(CpStageSetup,terrain);LAY(CpStageSetup,n);
     LAY(CpStageSetup,n_obstacles);LAY(CpStageSetup,nest_x);LAY(CpStageSetup,nest_z);LAY(CpStageSetup,flat_height);
     LAY(CpStageSetup,water_x);LAY(CpStageSetup,water_z);LAY(CpStageSetup,water_radius);LAY(CpStageSetup,player);LAY(CpStageSetup,player_legs);

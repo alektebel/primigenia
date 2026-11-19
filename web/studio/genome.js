@@ -17,12 +17,13 @@ const StudioDocument = (() => {
   }
   function validate(g,types) {
     keys(g,['schema','name','nodes','parts','skin','regions','migration'],'document');
-    if(g.schema!=='cpore.creature/4')fail('schema');
+    if(!['cpore.creature/4','cpore.creature/5'].includes(g.schema))fail('schema');
     if(typeof g.name!=='string'||g.name.length>80||/[<>\x00-\x1f]/.test(g.name))fail('name');
     if(!Array.isArray(g.nodes)||g.nodes.length<4||g.nodes.length>32)fail('nodes');
     g.nodes.forEach((n,i)=>{keys(n,['y','z','r'],'nodes');number(n.y,-5,20,'nodes.y');number(n.z,-30,30,'nodes.z');number(n.r,.03,3,'nodes.r');if(i&&Math.hypot(n.y-g.nodes[i-1].y,n.z-g.nodes[i-1].z)<.05)fail('nodes.distance')});
     if(!Array.isArray(g.parts)||g.parts.length>256)fail('parts');
-    g.parts.forEach(p=>{keys(p,['type','t','ang','size','len','curve','w','k','f','rot','tilt'],'parts');if(!Object.hasOwn(types,p.type))fail('parts.type');
+    g.parts.forEach(p=>{keys(p,['type','t','ang','size','len','curve','w','k','f','rot','tilt','level','tier','act','single','pupil'],'parts');if(!Object.hasOwn(types,p.type))fail('parts.type');
+      if(g.schema==='cpore.creature/5'){integer(p.level,1,5,'parts.level');integer(p.tier,0,2,'parts.tier')}
       number(p.t,0,1,'parts.t');number(p.ang,-Math.PI,Math.PI,'parts.ang');
       for(const [k,min,max]of [['size',.1,4],['len',.1,5],['curve',-1.5,1.5],['w',.05,.8],['rot',-Math.PI,Math.PI],['tilt',-1.5,1.5]])if(p[k]!==undefined)number(p[k],min,max,'parts.'+k);
       if(['pata','zanca','pezuna'].includes(p.type)){number(p.w,.05,.8,'parts.w');for(const k of ['k','f']){if(!Array.isArray(p[k])||p[k].length!==3)fail('parts.'+k);p[k].forEach(v=>number(v,-20,20,'parts.'+k))}}
@@ -64,8 +65,10 @@ const StudioDocument = (() => {
   }
   function parse(input,types) {
     const g=typeof input==='string'?JSON.parse(input):input;object(g,'document');
-    if(!['cpore.creature/1','cpore.creature/2','cpore.creature/3','cpore.creature/4'].includes(g.schema))fail('schema');
-    const genome=validate(g.schema==='cpore.creature/4'?g:migrate(g),types);
+    if(!['cpore.creature/1','cpore.creature/2','cpore.creature/3','cpore.creature/4','cpore.creature/5'].includes(g.schema))fail('schema');
+    const doc=clone(['cpore.creature/4','cpore.creature/5'].includes(g.schema)?g:migrate(g));
+    if(doc.schema==='cpore.creature/4'){doc.schema='cpore.creature/5';if(Array.isArray(doc.parts))for(const p of doc.parts)if(p&&typeof p==='object'){p.level=1;p.tier=0}}
+    const genome=validate(doc,types);
     return {genome,warnings:genome.migration?.warnings||[]};
   }
   return {parse,validate,clone};

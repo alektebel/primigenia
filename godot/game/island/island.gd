@@ -128,7 +128,15 @@ func build() -> void:
 
 func _build_stage() -> void:
 	var manifest := Profile.load_json("res://game/data/parts.json")
-	var genome: Dictionary = Game.player_genome()
+	var genome: Dictionary = Game.player_genome().duplicate(true)
+	if Game.pending_scenario.is_empty():
+		genome.parts = genome.parts.filter(func(p): return p.type in ["pico", "pata", "ojo"])
+		if not genome.parts.any(func(p): return p.type == "pico"):
+			genome.parts.append({"type": "pico", "t": 1.0, "ang": 0.0, "size": 1.0, "level": 1, "tier": 0})
+		genome.schema = "cpore.creature/5"
+		for part in genome.parts:
+			part["level"] = 1
+			part["tier"] = 0
 	_genome = genome
 	var pr := Profile.from_studio(genome, manifest)
 	if not pr.ok:
@@ -196,6 +204,9 @@ func _build_stage() -> void:
 	stage_ui.name = "StageUI"
 	add_child(stage_ui)
 	stage_ui.setup(self, str(genome.get("name", "Merodeador")))
+	var part_nodes := preload("res://game/stage/part_nodes.gd").new()
+	add_child(part_nodes)
+	part_nodes.setup(stage, ground)
 	var lineage_error := preload("res://game/stage/lineage_session.gd").install(stage, genome)
 	if lineage_error != "":
 		push_error(lineage_error)

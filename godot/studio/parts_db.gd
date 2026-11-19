@@ -70,7 +70,7 @@ func defaults(type: String) -> Dictionary:
 	elif leg or fitted: ang = 2.1
 	elif cat == "wings": ang = 1.3
 	elif type.begins_with("arm_"): ang = .95
-	var p := {"type": type, "t": t, "ang": ang}
+	var p := {"type": type, "t": t, "ang": ang, "level": 1, "tier": 0}
 	if leg:
 		p["w"] = LEG[type]["w"]
 		p["k"] = LEG[type]["k"].duplicate()

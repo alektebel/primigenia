@@ -34,6 +34,7 @@ signal load_requested
 signal ui_click
 signal journal_requested
 signal family_tree_requested
+signal nest_requested
 signal loadout_requested             # key L / the panel's own close: the stage decides whether the nest allows it
 signal loadout_assign(slot: int, move: int)   # slot 0..3, move id or -1
 
@@ -127,6 +128,9 @@ func _ready() -> void:
 	menu.load_requested.connect(func() -> void: load_requested.emit())
 	menu.journal_requested.connect(func() -> void: open_view("journal"))
 	menu.family_tree_requested.connect(func() -> void: open_view("tree"))
+	menu.nest_requested.connect(func() -> void:
+		set_paused(false)
+		nest_requested.emit())
 	menu.loadout_requested.connect(func() -> void:
 		set_paused(false)
 		loadout_requested.emit())

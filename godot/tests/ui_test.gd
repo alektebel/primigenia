@@ -349,7 +349,7 @@ func test_menu_and_onboarding() -> void:
 	ok(m.open and m.column == 0 and m.focused_id() == "resume", "the menu opens on Resume")
 	# keyboard reaches every item
 	var seen := {}
-	for i in 9:
+	for i in m.item_ids().size():
 		seen[m.focused_id()] = true
 		m.handle_input(_key_event(KEY_DOWN))
 	ok(seen.size() == m.item_ids().size(), "Down reaches every item (%d)" % seen.size())

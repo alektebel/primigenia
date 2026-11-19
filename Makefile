@@ -51,7 +51,7 @@ $(BUILD)/combat_golden: tests/combat_golden.c apps/combat_bots.h $(BUILD)/apps/c
 
 # Correctness regressions. Balance acceptance is a separate measured gate:
 # run make tourney as well before claiming P2 acceptance.
-test: $(BUILD)/social_test $(BUILD)/world_cli $(BUILD)/world_test $(BUILD)/terrain_test $(BUILD)/cpore_test $(BUILD)/combat_test $(BUILD)/combat_tourney_test $(BUILD)/combat_golden check-core $(BUILD)/nav_test $(BUILD)/steer_test $(BUILD)/routes_test
+test: $(BUILD)/parts_nest_test $(BUILD)/social_test $(BUILD)/world_cli $(BUILD)/world_test $(BUILD)/terrain_test $(BUILD)/cpore_test $(BUILD)/combat_test $(BUILD)/combat_tourney_test $(BUILD)/combat_golden check-core $(BUILD)/nav_test $(BUILD)/steer_test $(BUILD)/routes_test
 	nice -n 10 ./$(BUILD)/terrain_test
 	./$(BUILD)/world_test
 	./$(BUILD)/social_test
@@ -62,6 +62,7 @@ test: $(BUILD)/social_test $(BUILD)/world_cli $(BUILD)/world_test $(BUILD)/terra
 	python3 tests/test_terrain_metrics.py
 	./$(BUILD)/cpore_test
 	./$(BUILD)/combat_test
+	./$(BUILD)/parts_nest_test
 	./$(BUILD)/combat_tourney_test
 	python3 tests/test_combat_golden.py ./$(BUILD)/combat_golden
 	python3 tools/routes/fixtures.py --check
@@ -75,6 +76,7 @@ smoke: lib $(BUILD)/world_cli
 	python3 bindings/python/world_smoke.py
 	python3 bindings/python/lineage_smoke.py
 	python3 bindings/python/social_smoke.py
+	python3 bindings/python/parts_nest_smoke.py
 
 # The core may only depend on libc/libm: fail if any core object pulls in more.
 check-core: $(BUILD)/libcpore.so
@@ -534,6 +536,13 @@ godot-zoo-evidence: godot
 	  $(GODOT) --rendering-driver opengl3 --resolution 1280x720 --path godot \
 	  --script res://devtools/tests/zoo_evidence.gd -- $(CURDIR)/docs/evidence/godot/steering
 
+$(BUILD)/parts_nest_test: tests/test_parts_nest.c $(HDRS) $(BUILD)/libcpore.a
+	$(CC) $(CFLAGS) $< $(BUILD)/libcpore.a -o $@ $(LDLIBS)
+
+.PHONY: godot-parts-nest-test
+godot-parts-nest-test:
+	$(GODOT) --headless --path godot --check-only --script res://game/tests/parts_nest_test.gd
+	$(GODOT) --headless --path godot --script res://game/tests/parts_nest_test.gd
 # C1 curated round trips, actual steering and deterministic trajectory replay.
 $(BUILD)/routes_test: tests/test_routes.c $(HDRS) $(BUILD)/libcpore.a
 	$(CC) $(CFLAGS) $< $(BUILD)/libcpore.a -o $@ $(LDLIBS)

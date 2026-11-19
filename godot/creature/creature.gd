@@ -84,7 +84,7 @@ static func seeds() -> Dictionary:
 			"parts": [{"type": "romo", "t": 1, "ang": 0, "size": 1.2}, {"type": "tallo", "t": .88, "ang": .5, "size": 1.2, "len": .8}, {"type": "maza", "t": 0, "ang": 0, "size": .9}, {"type": "placa", "t": .4, "ang": 0, "size": 1}, {"type": "placa", "t": .55, "ang": 0, "size": 1.1}],
 			"skin": {"pat": 2, "cA": "#5d8a3a", "cB": "#203818", "cC": "#e9e2a8", "wet": .7, "scale": 11}}}
 	for k in s:
-		s[k]["schema"] = CreatureGenome.SCHEMA
+		s[k]["schema"] = "cpore.creature/4"
 		s[k]["regions"] = []
 	return s
 

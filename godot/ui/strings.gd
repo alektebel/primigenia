@@ -88,6 +88,13 @@ const TABLE := {
 	"hint_f1": ["F1 shows every key", "F1 muestra todas las teclas"],
 	"keys_title": ["Keys", "Teclas"],
 	# journal / tree stubs
+	"fossil": ["Fossil", "Fósil"],
+	"bones": ["Bones", "Huesos"],
+	"nest_edit": ["Edit creature", "Editar criatura"],
+	"lineage_end": ["The lineage ends", "El linaje termina"],
+	"lineage_end_sub": ["No eggs are left. Your DNA and the island remember you; return to your last save.", "No quedan huevos. Tu ADN y la isla te recuerdan; vuelve a tu última partida."],
+	"lineage_end_back": ["Return to the last save", "Volver a la última partida"],
+	"part_found": ["Discovered: {0}", "Descubierto: {0}"],
 	"journal_title": ["Journal", "Diario"],
 	"tree_title": ["Family tree", "Árbol familiar"],
 	"journal_total": ["DNA earned", "ADN ganado"],

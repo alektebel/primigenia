@@ -29,7 +29,7 @@ export function bodyRadiusCm(nodes) {
   return cm === RADIUS_CM_DEFAULT ? 0 : cm;
 }
 export function profileFromStudio(creature, manifest) {
-  if (creature?.schema !== 'cpore.creature/4') throw new Error('expected studio schema cpore.creature/4');
+  if (!['cpore.creature/4', 'cpore.creature/5'].includes(creature?.schema)) throw new Error('expected studio schema cpore.creature/4');
   if (!Array.isArray(creature.parts) || creature.parts.length > 256) throw new Error('invalid studio parts');
   if (!Array.isArray(manifest?.parts)) throw new Error('invalid parts manifest');
   const catalog = new Map(manifest.parts.map(p => [p.id, p]));
@@ -38,7 +38,7 @@ export function profileFromStudio(creature, manifest) {
     const entry = catalog.get(part?.type);
     if (!entry) throw new Error(`unknown studio part: ${part?.type}`);
     const rule = PART_RULES.find(r => r.c_type === entry.c_type && r.category === entry.category);
-    if (rule) for (const key of LEVELS) result[key] = Math.min(5, result[key] + (rule[key] ?? 0));
+    if (rule) for (const key of LEVELS) result[key] = Math.min(5, result[key] + (rule[key] ?? 0) * (part.level ?? 1));
   }
   result.hp += result.guard * 5;
   result.radiusCm = bodyRadiusCm(creature.nodes);

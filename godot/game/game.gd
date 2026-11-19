@@ -147,7 +147,7 @@ func _read_genome(path: String) -> Dictionary:
 				return parsed.get("genome", v)
 			push_warning("genome %s rejected by the creature module" % path)
 			return {}
-	if v.get("schema", "") != "cpore.creature/4" or typeof(v.get("nodes")) != TYPE_ARRAY or v.nodes.size() < 2 \
+	if v.get("schema", "") not in ["cpore.creature/4", "cpore.creature/5"] or typeof(v.get("nodes")) != TYPE_ARRAY or v.nodes.size() < 2 \
 			or typeof(v.get("parts")) != TYPE_ARRAY or v.parts.size() > 256:
 		push_warning("genome %s: failed the minimal checks" % path)
 		return {}

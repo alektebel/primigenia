@@ -186,6 +186,7 @@ def input_from_mapping(action: dict) -> CpStageInput:
             "guard": CP_STAGE_GUARD,
             "dodge": CP_STAGE_DODGE,
             "loadout": CP_STAGE_LOADOUT,
+            "inspect": 16, "buy_part": 17, "buy_level": 18, "buy_tier": 19,
             "befriend": CP_STAGE_BEFRIEND,
             "gift": CP_STAGE_GIFT,
             "observe": CP_STAGE_OBSERVE,
@@ -334,6 +335,30 @@ class StageWorld:
         if n < 0:
             raise RuntimeError("lineage buffer too small")
         return json.loads(buf.value[:n])
+
+    def start_genome(self, genome: dict) -> int:
+        """Install a C-validated starter body before the first nest edit."""
+        self._lib.cp_stage_start_genome.argtypes = [c_void_p, c_char_p]
+        self._lib.cp_stage_start_genome.restype = c_int32
+        return int(self._lib.cp_stage_start_genome(self._world, json.dumps(genome).encode()))
+
+    def edit(self, genome: dict) -> int:
+        """Evolve at the nest: buys what the genome adds, spends DNA, starts one generation."""
+        self._lib.cp_stage_edit.argtypes = [c_void_p, c_char_p]
+        self._lib.cp_stage_edit.restype = c_int32
+        return int(self._lib.cp_stage_edit(self._world, json.dumps(genome).encode()))
+
+    def apply(self, genome: dict) -> int:
+        """Free repaint/rearrange at the nest (no generation); -23 when the change needs Evolve."""
+        self._lib.cp_stage_apply.argtypes = [c_void_p, c_char_p]
+        self._lib.cp_stage_apply.restype = c_int32
+        return int(self._lib.cp_stage_apply(self._world, json.dumps(genome).encode()))
+
+    def set_tiers(self, on: bool) -> None:
+        """Tier forms are built but off by default (A25)."""
+        self._lib.cp_stage_set_tiers.argtypes = [c_void_p, c_int32]
+        self._lib.cp_stage_set_tiers.restype = None
+        self._lib.cp_stage_set_tiers(self._world, 1 if on else 0)
 
     def command(self, text: str) -> int:
         return int(self._lib.cp_stage_command(self._world, text.encode()))
