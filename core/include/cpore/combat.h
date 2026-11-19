@@ -49,6 +49,7 @@ enum {
     CB_SPIT,
     CB_TAIL_STRIKE,
     CB_DODGE,
+    CB_FLAME,         /* first-quest: the fire gland's cone (core/src/combat.c)  */
     CB_MOVE_COUNT
 };
 #define CB_MOVE_NONE  (-1)
@@ -59,7 +60,7 @@ enum { CB_ROLE_BASIC = 0, CB_ROLE_ENGAGE, CB_ROLE_POKE, CB_ROLE_CONTROL, CB_ROLE
 const char *cp_combat_role_name(int role);
 
 /* statuses a move can apply */
-enum { CB_ST_NONE = 0, CB_ST_STUN, CB_ST_BLEED, CB_ST_SLOW, CB_ST_COUNT };
+enum { CB_ST_NONE = 0, CB_ST_STUN, CB_ST_BLEED, CB_ST_SLOW, CB_ST_BURN, CB_ST_COUNT };
 
 /* move flags */
 #define CB_F_RANGED   0x01   /* hit-scan along the facing: nearest enemy in the ray   */
@@ -73,7 +74,7 @@ enum { CB_ST_NONE = 0, CB_ST_STUN, CB_ST_BLEED, CB_ST_SLOW, CB_ST_COUNT };
 
 /* which profile part gates a move */
 enum { CB_PART_NONE = 0, CB_PART_MOUTH, CB_PART_CHARGE, CB_PART_SPIT,
-       CB_PART_TAIL, CB_PART_GUARD, CB_PART_COUNT };
+       CB_PART_TAIL, CB_PART_GUARD, CB_PART_FIRE, CB_PART_COUNT };
 
 typedef struct {
     const char *name;
@@ -143,6 +144,9 @@ typedef struct {
      * default-radius worlds stay bit-identical to the golden logs.
      * 60*0.01f is not bit-identical to 0.6f; do not recompute the default. */
     uint16_t radius_cm;
+    /* The fire gland level (0 = none). Last member, written to the hash only when nonzero, so positional
+     * initialisers and every existing hash stay as they were. */
+    uint8_t fire;
 } CpCombatProfile;
 
 /* Resolved metres. Default values return the CB_RADIUS literal. */
@@ -249,6 +253,8 @@ typedef struct {
     /* statuses and stamina bookkeeping, in ticks */
     uint8_t  stun_t, bleed_t, slow_t, since_spend;
     int8_t   bleed_src;         /* who gets credit for the bleed damage, -1 none  */
+    uint8_t  burn_t;            /* ticks of burning left (hashed only while nonzero) */
+    int8_t   burn_src;          /* who gets credit for the burn damage, -1 none     */
 
     CpCombatLoadout lo;         /* hashed only when not the default                      */
     uint16_t cd[CB_MOVE_COUNT]; /* ticks left before each move can start again; hashed

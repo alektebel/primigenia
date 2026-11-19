@@ -42,14 +42,14 @@ int cp_stage_species_counts_progress(const CpStageWorld *w,int id){return !cp_st
 static int valid_form(const CpLineageForm *f){
  if(!f||!memchr(f->body,0,sizeof f->body)||!memchr(f->name,0,sizeof f->name)||f->body[0]!='{')return 0;
  const CpCombatProfile *p=&f->profile;
- return p->mouth<=5&&p->charge<=5&&p->spit<=5&&p->tail<=5&&p->guard<=5&&isfinite(p->hp)&&p->hp>0&&p->hp<=100000&&isfinite(p->stamina)&&p->stamina>0&&p->stamina<=100000&&isfinite(p->speed)&&p->speed>0&&p->speed<=100&&(!p->radius_cm||(p->radius_cm>=40&&p->radius_cm<=400));
+ return p->mouth<=5&&p->charge<=5&&p->spit<=5&&p->tail<=5&&p->guard<=5&&p->fire<=5&&isfinite(p->hp)&&p->hp>0&&p->hp<=100000&&isfinite(p->stamina)&&p->stamina>0&&p->stamina<=100000&&isfinite(p->speed)&&p->speed>0&&p->speed<=100&&(!p->radius_cm||(p->radius_cm>=40&&p->radius_cm<=400));
 }
 static void copy_form(CpLineageForm *out,const CpLineageForm *in){
  memset(out,0,sizeof *out);
  memcpy(out->body,in->body,strlen(in->body)+1);memcpy(out->name,in->name,strlen(in->name)+1);
  memcpy(out->parts,in->parts,sizeof out->parts);
  const CpCombatProfile *p=&in->profile;CpCombatProfile *q=&out->profile;
- q->mouth=p->mouth;q->charge=p->charge;q->spit=p->spit;q->tail=p->tail;q->guard=p->guard;
+ q->mouth=p->mouth;q->charge=p->charge;q->spit=p->spit;q->tail=p->tail;q->guard=p->guard;q->fire=p->fire;
  q->hp=p->hp;q->stamina=p->stamina;q->speed=p->speed;q->radius_cm=p->radius_cm;
 }
 int cp_stage_lineage_form(CpStageWorld *w,const CpLineageForm *f,int evolve){
@@ -124,7 +124,7 @@ uint64_t cp_stage_ancestry_hash(const CpStageWorld *w){
  for(unsigned i=0;i<a->n_residence;i++){const CpLineageResidence *r=&a->residence[i];ah_u32(&h,r->cell_x);ah_u32(&h,r->cell_z);ah_u32(&h,r->x);ah_u32(&h,r->z);ah_u32(&h,r->ticks);}
  for(unsigned i=0;i<a->count;i++){const CpLineageGeneration *g=&a->forms[i];ah_text(&h,g->form.body);ah_text(&h,g->form.name);
   for(int k=0;k<CP_LINEAGE_PARTS;k++)ah_u32(&h,g->form.parts[k]);
-  const CpCombatProfile *p=&g->form.profile;ah_u32(&h,p->mouth);ah_u32(&h,p->charge);ah_u32(&h,p->spit);ah_u32(&h,p->tail);ah_u32(&h,p->guard);ah_u32(&h,p->radius_cm);ah_float(&h,p->hp);ah_float(&h,p->stamina);ah_float(&h,p->speed);
+  const CpCombatProfile *p=&g->form.profile;ah_u32(&h,p->mouth);ah_u32(&h,p->charge);ah_u32(&h,p->spit);ah_u32(&h,p->tail);ah_u32(&h,p->guard);if(p->fire)ah_u32(&h,0x46495245u+p->fire);ah_u32(&h,p->radius_cm);ah_float(&h,p->hp);ah_float(&h,p->stamina);ah_float(&h,p->speed);
   ah_u32(&h,g->generation);ah_u32(&h,g->traits);for(int k=0;k<CP_DEED_COUNT;k++)ah_u32(&h,g->deeds[k]);
   ah_u32(&h,g->cousin_id);ah_u32(&h,g->home_x);ah_u32(&h,g->home_z);ah_u32(&h,g->temperament);ah_u32(&h,g->diet);ah_u32(&h,g->trust_bonus);ah_u32(&h,g->type);
  }return h;

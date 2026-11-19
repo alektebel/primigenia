@@ -52,6 +52,8 @@ const CpStagePartDef CP_STAGE_PARTS[CP_STAGE_PART_COUNT]={
  {"lure_lantern",16,0,0,0,0,0},
  {"wing_insect",24,0,0,0,0,0},
  {"tail_hammer",16,0,0,0,1,0},
+ {"wing_vane",24,0,0,0,0,0},
+ {"fire_gland",30,0,0,0,0,0},   /* first-quest: the throat organ of the flamethrower (CB_FLAME) */
 };
 static void event(CpStageWorld *w,int type,int target,int move,int value){
  w->events[w->ev_total%CP_STAGE_MAX_EVENTS]=(CpStageEvent){w->tick,type,0,target,move,(float)value,w->player.x,w->player.z};w->ev_total++;
@@ -207,8 +209,10 @@ uint64_t cp_stage_parts_hash(const CpStageWorld *w){
  for(int i=0;i<4;i++){hu(&h,p->loot.s[i]);hu(&h,p->fossil.s[i]);hu(&h,p->dry[i]);hu(&h,p->ally_paid[i]);}
  for(int i=4;i<CP_STAGE_SPECIES_COUNT;i++)if(p->dry[i]||p->ally_paid[i]){hu(&h,0x53503435u+(uint32_t)i);hu(&h,p->dry[i]);hu(&h,p->ally_paid[i]);}   /* species 4 and 5: only once they matter */
  hu(&h,p->discovered);hu(&h,p->discovered>>32);hu(&h,p->owned);hu(&h,p->owned>>32);
- for(int i=0;i<CP_STAGE_PART_COUNT;i++){hu(&h,p->level[i]);hu(&h,p->tier[i]);hu(&h,p->hits[i]);hu(&h,p->wins[i]);hu(&h,p->kills[i]);}
- for(int i=0;i<CB_MOVE_COUNT;i++){hu(&h,p->move_hits[i]);hu(&h,p->move_wins[i]);}
+ for(int i=0;i<46;i++){hu(&h,p->level[i]);hu(&h,p->tier[i]);hu(&h,p->hits[i]);hu(&h,p->wins[i]);hu(&h,p->kills[i]);}
+ for(int i=46;i<CP_STAGE_PART_COUNT;i++)if(p->level[i]||p->tier[i]||p->hits[i]||p->wins[i]||p->kills[i]){hu(&h,0x46513032u+(uint32_t)i);hu(&h,p->level[i]);hu(&h,p->tier[i]);hu(&h,p->hits[i]);hu(&h,p->wins[i]);hu(&h,p->kills[i]);}   /* first-quest parts: only once they matter, so older goldens hold */
+ for(int i=0;i<6;i++){hu(&h,p->move_hits[i]);hu(&h,p->move_wins[i]);}
+ for(int i=6;i<CB_MOVE_COUNT;i++)if(p->move_hits[i]||p->move_wins[i]){hu(&h,0x4d563032u+(uint32_t)i);hu(&h,p->move_hits[i]);hu(&h,p->move_wins[i]);}   /* the flame: only once used, so older goldens hold */
  for(int i=0;i<CP_STAGE_MAX_WILD;i++)hu(&h,p->kill_paid[i]);
  if(p->tiers_on||p->clues){hu(&h,0x41323521u);hu(&h,p->tiers_on);hu(&h,p->clues);}
  hu(&h,p->eggs);hu(&h,p->lost);hu(&h,p->hatchling);hu(&h,p->n_nodes);hu(&h,p->inspect_id);hu(&h,p->inspect_ticks);
