@@ -1,0 +1,32 @@
+{
+	"adapter": "llvmpipe (LLVM 23.1.4, 256 bits)",
+	"frames": 15,
+	"grass": 60000,
+	"resolution": [
+		1280,
+		720
+	],
+	"tier": "medium",
+	"views": {
+		"chase": {
+			"gpu_ms": 1229.46,
+			"mean_ms": 1284.29,
+			"p95_ms": 1357.4
+		},
+		"cliff_lit": {
+			"gpu_ms": 1184.02,
+			"mean_ms": 1186.66,
+			"p95_ms": 1239.45
+		},
+		"far": {
+			"gpu_ms": 679.31,
+			"mean_ms": 707.81,
+			"p95_ms": 735.87
+		},
+		"mid": {
+			"gpu_ms": 807.2,
+			"mean_ms": 829.32,
+			"p95_ms": 889.34
+		}
+	}
+}

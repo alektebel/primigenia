@@ -309,3 +309,9 @@ are within 8 %. The RTX figure is open: `make godot-terrain-bench TIER=high` wri
 
 **Deferred.** A Mei/grid hydraulic pass or a compute-shader port (would allow re-eroding in the editor); geometric micro-displacement on rock at LOD0; D8 stair steps of the carved rivers remain (the sim channels are
 exact and protected by design); softer classification thresholds for the generator itself; a visual field for n=2048 uses factor 2 only.
+
+**v5 follow-up: photographic ground materials (branch terrain/rock-textures).** Up close the dominant look of v5 was still the Voronoi plate sheet at 2 to 10 m. The terrain material now reads eight CC0 photographic
+materials (ambientCG: andesite, bedded strata, basalt, tuff, scree gravel, talus debris, volcanic soil, sediment; `godot/game/textures/CREDITS.md`) through the same biplanar/triplanar rock mapping, with two scales,
+stochastic taps (no visible tiling), anisotropic filtering, height-based blending driven by the v5 erosion maps, wet gravel and silt banks, bare soil at turf edges and sand from the sediment sheet. Colours keep the island's
+palette (each texel is divided by its sheet's mean and multiplies the palette colour), so far views are recognisable. Shading only: the C core, its hash and goldens, the geometry and the visual heightfield are unchanged.
+Details, tiers, constants and tests: docs/godot/ROCK.md "Photographic materials". Frames: `docs/evidence/godot/terrain-photo/` against `terrain-v5/after`.
