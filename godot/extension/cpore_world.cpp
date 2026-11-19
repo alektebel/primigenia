@@ -458,11 +458,18 @@ Dictionary CporeWorld::state() const {
     d["social"] = social_to_dict(w);
     {
         // Social events since the last state(): [{type, target, move, value, x, z, tick}]; see stage_social.c for the fields.
-        Array evs;
+        Array evs, routes;
         uint32_t first = social_events_seen;
         if (first > w.ev_total || w.ev_total - first > CP_STAGE_MAX_EVENTS) first = w.ev_total > CP_STAGE_MAX_EVENTS ? w.ev_total - CP_STAGE_MAX_EVENTS : 0;
         for (uint32_t k = first; k < w.ev_total; ++k) {
             const CpStageEvent &e = w.events[k % CP_STAGE_MAX_EVENTS];
+            if (e.type == CP_STAGE_EV_ARRIVED || e.type == CP_STAGE_EV_PATH_FAILED || e.type == CP_STAGE_EV_ORDER_REJECTED) {
+                Dictionary route;
+                route["type"] = e.type == CP_STAGE_EV_ARRIVED ? "arrived" : "blocked";
+                route["tick"] = int64_t(e.tick); route["x"] = double(e.x); route["z"] = double(e.z);
+                route["reason"] = e.type == CP_STAGE_EV_ARRIVED ? "" : cp_stage_order_error(e.type == CP_STAGE_EV_PATH_FAILED ? -4 : int(e.value));
+                routes.append(route);
+            }
             if (e.type < CP_STAGE_EV_SKILL) continue;
             Dictionary ev;
             ev["type"] = int(e.type); ev["tick"] = int64_t(e.tick); ev["target"] = int(e.target); ev["move"] = int(e.move);
@@ -471,6 +478,7 @@ Dictionary CporeWorld::state() const {
         }
         social_events_seen = w.ev_total;
         d["social_events"] = evs;
+        d["route_events"] = routes;
     }
     Dictionary combat;
     combat["tick"] = int(w.combat.tick);

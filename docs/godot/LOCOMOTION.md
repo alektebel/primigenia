@@ -196,3 +196,8 @@ the step). The sim is authoritative; this module only follows it.
   (20/20; cold plan time worst about 150 ms, was 50 ms, because the walk grid now checks grade).
 - Deviations: the feel test gates for a 90 degree turn and a reversal are relaxed to 1.0 s and 1.2 s (were 0.8 / 1.0) by the yaw
   acceleration. Not verified: WASM (no emcc here; `core/src/steer.c` is in `WORLD_SRC`), the owner's feel on a real GPU.
+
+Route-certification update (2026-11-19): the player's ceiling exemption described by the implementation is removed.
+All bodies refuse entry onto facets above grade 1.26 and cap their slide threshold there. Planning additionally
+checks full-gradient holding limits and 1 m lateral bank clearance. The stricter curated graph is currently red;
+see [ROUTES-REPORT](../ROUTES-REPORT.md) for the separate NAV result, failed required trips and planning costs.

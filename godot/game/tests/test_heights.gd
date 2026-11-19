@@ -120,7 +120,7 @@ func _grid(nest: Vector2) -> void:
 	# C1-nav: GO plans a route over the walk grid (A*), so the plan's gate (<= 4 of 20 unreachable) holds; before it,
 	# 10 of 20 straight-line orders stopped at cliffs.
 	print("  %d of 20 GO targets were not reached (plan gate 4, C1-nav target 2)" % blocked)
-	check(blocked <= 2, "at least 18 of 20 targets are reached (%d not reached)" % blocked)
+	check(blocked + stuck <= 2, "at least 18 of 20 targets are reached (%d not reached)" % (blocked + stuck))
 	check(stuck <= 1, "at most one run wanders without progress (%d)" % stuck)
 	evidence["grid"] = {"blocked": blocked, "stuck": stuck, "runs": rows}
 
@@ -157,8 +157,17 @@ func _go(sw, target: Vector2) -> Dictionary:
 			still = 0
 		if still >= 50:
 			return {"result": "blocked", "reason": _reason(sw, e, target), "ticks": i, "left": left}
-		if left < best - 5.0:
-			best = left
+		# A certified route may go away from the destination to skirt a bank.
+		# Progress is remaining walk distance, not straight-line distance to the goal.
+		var remaining := 0.0
+		var cursor := Vector2(e.x, e.z)
+		var path: PackedVector2Array = sw.world.path()
+		for waypoint in path:
+			remaining += cursor.distance_to(waypoint)
+			cursor = waypoint
+		remaining += cursor.distance_to(target)
+		if remaining < best - 5.0:
+			best = remaining
 			best_tick = i
 		elif i - best_tick > 1200:
 			return {"result": "stuck", "reason": "no progress in 1200 ticks", "ticks": i, "left": left}
@@ -232,24 +241,30 @@ func _timing() -> void:
 		if _ok_spot(x, z) and Vector2(x, z).length() > 40.0:
 			wild.append({"x": x, "z": z, "home_x": x, "home_z": z, "species": wild.size() % 3, "bot": -1, "profile": CporeWorld.species()[wild.size() % 3].profile})
 	var res := {}
+	var samples := {"field": [], "flat": []}
+	# Interleave identical trials; a single scheduling pause must not decide the field/flat ratio.
+	for trial in 3:
+		for mode in (["field", "flat"] if trial % 2 == 0 else ["flat", "field"]):
+			var w := CporeWorld.new()
+			var setup: Dictionary = CporeWorld.default_setup(5)
+			setup.nest = Vector2.ZERO
+			setup.wild = wild
+			if mode == "field":
+				w.set_field(entry)
+				setup.terrain = 2
+			else:
+				setup.terrain = 1
+				setup.flat_height = 42.0
+			check(w.reset(setup) == 0, "%s timing world resets" % mode)
+			var input := {"verb": 3, "hx": 20000, "hz": 20000, "sprint": 1}
+			var t0 := Time.get_ticks_usec()
+			for i in 10000:
+				w.step(input)
+			samples[mode].append(float(Time.get_ticks_usec() - t0) / 10000.0)
 	for mode in ["field", "flat"]:
-		var w := CporeWorld.new()
-		var setup: Dictionary = CporeWorld.default_setup(5)
-		setup.nest = Vector2.ZERO
-		setup.wild = wild
-		if mode == "field":
-			w.set_field(entry)
-			setup.terrain = 2
-		else:
-			setup.terrain = 1
-			setup.flat_height = 42.0
-		check(w.reset(setup) == 0, "%s timing world resets" % mode)
-		var input := {"verb": 3, "hx": 20000, "hz": 20000, "sprint": 1}
-		var t0 := Time.get_ticks_usec()
-		for i in 10000:
-			w.step(input)
-		res[mode] = float(Time.get_ticks_usec() - t0) / 10000.0
-		print("  %s: %.1f us/step (through the GDScript bridge)" % [mode, res[mode]])
+		samples[mode].sort()
+		res[mode] = samples[mode][1]
+		print("  %s: %.1f us/step (median of 3 interleaved trials)" % [mode, res[mode]])
 	check(res.field < 2.0 * res.flat, "field step < 2x flat (%.1f vs %.1f us)" % [res.field, res.flat])
 	check(res.field < 50.0, "field step < 50 us (%.1f)" % res.field)
-	evidence["timing_us_per_step"] = {"field": snappedf(res.field, 0.1), "flat": snappedf(res.flat, 0.1), "wild": 24, "steps": 10000, "note": "measured through the GDScript call, so it includes marshalling"}
+	evidence["timing_us_per_step"] = {"field": snappedf(res.field, 0.1), "flat": snappedf(res.flat, 0.1), "wild": 24, "steps": 10000, "note": "median of three interleaved 10000-step trials per mode; includes GDScript marshalling"}

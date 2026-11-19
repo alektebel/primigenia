@@ -501,6 +501,11 @@ func _on_social(state: Dictionary) -> void:
 			if id != "":
 				layer.trigger(id)
 	_prev_action = verb
+	for ev in state.get("route_events", []):
+		if ev.type == "arrived":
+			ui.show_message("Arrived", "good")
+		else:
+			ui.show_message("Blocked: %s" % ev.reason, "bad")
 	for ev in state.get("social_events", []):
 		_social_event(ev, state)
 
