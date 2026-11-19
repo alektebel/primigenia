@@ -2,14 +2,16 @@ extends SceneTree
 ## Headless tests for godot/ui and godot/audio. Run: make godot-ui-test
 
 const Modes := preload("res://ui/modes.gd")
-const Card := preload("res://ui/creature_card.gd")
+const JournalData := preload("res://ui/journal_data.gd")
+const Note := preload("res://ui/field_note.gd")
 const Mock := preload("res://ui/mock_source.gd")
 const GameUI := preload("res://ui/game_ui.gd")
-const Radial := preload("res://ui/radial_menu.gd")
+const Ring := preload("res://ui/mode_ring.gd")
 const Palette := preload("res://ui/palette.gd")
 const Style := preload("res://ui/style.gd")
 const Glyphs := preload("res://ui/glyphs.gd")
 const Strings := preload("res://ui/strings.gd")
+const Onboarding := preload("res://ui/onboarding.gd")
 const AudioManager := preload("res://audio/audio_manager.gd")
 const Settings := preload("res://audio/audio_settings.gd")
 
@@ -26,10 +28,14 @@ func ids(list: Array) -> Array:
 	return list.map(func(a): return a["id"])
 
 func _initialize() -> void:
+	root.get_node("Game").persist_settings = false           # the tests never write the player's settings
+	root.get_node("Game").settings["language"] = "en"      # the tests read English strings whatever the OS language
 	test_foundations()
 	test_modes()
-	test_card()
-	test_radial_geometry()
+	test_journal_data()
+	test_field_note()
+	test_ring_geometry()
+	test_minimap()
 	test_social_ui()
 	test_volumes()
 	test_sounds()
@@ -38,6 +44,8 @@ func _initialize() -> void:
 func _finish() -> void:
 	await test_ui_flow()
 	await test_loadout_ui()
+	await test_signs_and_words()
+	await test_menu_and_onboarding()
 	await test_audio_manager()
 	print("ui tests: %d checks, %d failures" % [checks, fails])
 	quit(1 if fails else 0)
@@ -50,54 +58,65 @@ func test_modes() -> void:
 	for m in Modes.ALL:
 		ok(Modes.abilities_for(m).size() <= 4, "%s fits keys 1-4" % m)
 
-func test_card() -> void:
-	var card := Card.new()
+func test_journal_data() -> void:
+	# the old creature card's rows live in the journal data now
 	var seen := {}
 	for info in Mock.all_combinations():
-		card.set_info(info)
-		var s := card.snapshot()
-		ok(s.temperament == Card.TEMPERAMENTS[info.temperament], "temperament text %s" % s.temperament)
-		ok(s.relationship == Card.RELATIONSHIPS[info.relationship], "relationship text %s" % s.relationship)
+		var s := JournalData.page(info)
+		ok(s.temperament == JournalData.TEMPERAMENTS[info.temperament], "temperament text %s" % s.temperament)
+		ok(s.relationship == JournalData.RELATIONSHIPS[info.relationship], "relationship text %s" % s.relationship)
 		ok(s.diet != "" and s.species != "" and s.resolved.contains("/"), "diet/species/resolved shown")
 		ok(s.likes.begins_with("Likes:"), "likes hint shown")
 		seen["%s/%s" % [s.temperament, s.relationship]] = true
-	ok(seen.size() == 12, "card renders all 3x4 temperament/relationship pairs (%d)" % seen.size())
-	card.set_info({"species": "X", "temperament": "aggressive", "diet": "omnivore", "relationship": "ally"})
-	var s2 := card.snapshot()
+	ok(seen.size() == 12, "the page renders all 3x4 temperament/relationship pairs (%d)" % seen.size())
+	var s2 := JournalData.page({"species": "X", "temperament": "aggressive", "diet": "omnivore", "relationship": "ally"})
 	ok(s2.temperament == "Aggressive" and s2.diet == "Omnivore" and s2.relationship == "Ally", "string enums accepted")
 	ok(s2.likes.contains("unknown"), "missing likes handled")
-	card.free()
+	var s3 := JournalData.page({"species": "Rondo", "temperament": 0, "diet": 0, "relationship": 2, "trust": 42, "mood": 25, "likes": ["sing", "fruit"], "dislikes": ["meat"], "resolved": 1, "resolved_total": 4})
+	ok(s3.trust.begins_with("42") and s3.mood.begins_with("Joyful") and s3.likes.contains("sing, fruit") and s3.likes.contains("Dislikes: meat") and s3.resolved == "1 / 4", "page shows trust, mood, likes, dislikes and species resolved")
+	ok(JournalData.page({"species": "Rondo", "carcass_meat": 3}).note.contains("3 bites"), "the page of a carcass shows the bites left")
 
-func test_radial_geometry() -> void:
-	ok(Radial.sector_at(Vector2(0, -80)) == 0, "north = attack")
-	ok(Radial.sector_at(Vector2(80, 0)) == 1, "east = befriend")
-	ok(Radial.sector_at(Vector2(0, 80)) == 2, "south = observe")
-	ok(Radial.sector_at(Vector2(-80, 0)) == 3, "west = intimidate")
-	ok(Radial.sector_at(Vector2(5, 5)) == -1, "centre = none")
+func test_field_note() -> void:
+	var note := Note.new()
+	note.set_info({"id": 5, "species": "Rondo", "name": "Rondo", "diet": 0, "relationship": 2})
+	var sn := note.snapshot()
+	ok(sn.name == "Rondo" and sn.diet == "Herbivore" and sn.relationship == 2 and sn.sub == "", "the field note carries name, diet and relationship only")
+	note.set_info({"id": 6, "species": "Rondo", "carcass_meat": 3})
+	var sc := note.snapshot()
+	ok(sc.sub == "remains" and sc.diet == "", "a carcass says remains")
+	note.free()
+
+func test_ring_geometry() -> void:
+	var ring = Ring.new()
+	ring.centre = Vector2(400, 300)
+	ring.body_half_height = 70.0
+	var r: float = ring.radius()
+	ok(is_equal_approx(r, clampf(1.6 * 70.0, 84.0, 150.0)), "ring radius follows the body height (%.1f)" % r)
+	ok(ring.sector_at(Vector2(0, -r)) == 0, "north = observe")
+	ok(ring.sector_at(Vector2(r, 0)) == 1, "east = attack")
+	ok(ring.sector_at(Vector2(0, r)) == 2, "south = intimidate")
+	ok(ring.sector_at(Vector2(-r, 0)) == 3, "west = befriend")
+	ok(ring.sector_at(Vector2(r * 0.7, -r * 0.7)) == 1 and ring.sector_at(Vector2(-r * 0.7, -r * 0.7)) == 3, "the whole east and west halves count, not only the axes")
+	ok(ring.sector_at(Vector2(5, 5)) == -1 and ring.sector_at(Vector2(0, -r * 3.0)) == -1, "the centre and far outside are none")
+	ok(ring.mode_at(0) == Modes.OBSERVE and ring.mode_at(1) == Modes.ATTACK and ring.mode_at(2) == Modes.INTIMIDATE and ring.mode_at(3) == Modes.BEFRIEND, "modes by side")
+	ring.free()
 
 func test_social_ui() -> void:
 	# C2: the Eat mode, the carcass radial, the card's trust fields, the beat window
 	ok(ids(Modes.abilities_for(Modes.EAT)) == ["eat"] and Modes.is_mode(Modes.EAT), "eat mode")
 	ok(Modes.VERB_NUMBERS.befriend == 11 and Modes.VERB_NUMBERS.eat == 15 and Modes.ITEMS == ["plant", "fruit", "meat", "bone"], "verb numbers match world.h")
-	var radial = Radial.new()
-	radial.carcass = true
-	ok(radial.mode_at(0) == Modes.EAT and radial.mode_at(2) == Modes.OBSERVE, "carcass radial: Eat north, Observe south")
-	ok(radial.enabled_at(0) and radial.enabled_at(2) and not radial.enabled_at(1) and not radial.enabled_at(3), "carcass radial dims befriend and intimidate")
+	var ring = Ring.new()
+	ring.carcass = true
+	ok(ring.mode_at(1) == Modes.EAT and ring.mode_at(0) == Modes.OBSERVE, "carcass ring: Eat east, Observe north")
+	ok(ring.enabled_at(0) and ring.enabled_at(1) and not ring.enabled_at(2) and not ring.enabled_at(3), "carcass ring has no Befriend or Intimidate")
 	var chosen := []
-	radial.chosen.connect(func(m): chosen.append(m))
-	radial.choose(1)
-	radial.choose(0)
+	ring.chosen.connect(func(m): chosen.append(m))
+	ring.choose(3)
+	ring.choose(1)
 	ok(chosen == [Modes.EAT], "only Eat is chosen on a carcass")
-	radial.free()
-	var Rings = preload("res://ui/target_rings.gd")
-	ok(Rings.in_window(0) and Rings.in_window(2) and Rings.in_window(10) and Rings.in_window(11) and not Rings.in_window(3) and not Rings.in_window(9), "beat window is +-2 ticks of a 12 tick beat")
-	var card := Card.new()
-	card.set_info({"species": "Rondo", "temperament": 0, "diet": 0, "relationship": 2, "trust": 42, "mood": 25, "likes": ["sing", "fruit"], "dislikes": ["meat"], "resolved": 1, "resolved_total": 4})
-	var s := card.snapshot()
-	ok(s.trust.begins_with("42") and s.mood.begins_with("Joyful") and s.likes.contains("sing, fruit") and s.likes.contains("Dislikes: meat") and s.resolved == "1 / 4", "card shows trust, mood, likes, dislikes and species resolved")
-	card.set_info({"species": "Rondo", "carcass_meat": 3})
-	ok(card.snapshot().note.contains("3 bites"), "card of a carcass shows the bites left")
-	card.free()
+	ring.free()
+	var Gm = load("res://game/island/ground_marks.gd")
+	ok(Gm.in_window(0) and Gm.in_window(2) and Gm.in_window(10) and Gm.in_window(11) and not Gm.in_window(3) and not Gm.in_window(9), "beat window is +-2 ticks of a 12 tick beat")
 
 func test_volumes() -> void:
 	var path := "user://test_settings_%d.cfg" % Time.get_ticks_usec()
@@ -145,22 +164,47 @@ func test_ui_flow() -> void:
 	ui.ability_pressed.connect(func(i, a): presses.append(a["id"]))
 	var modes := []
 	ui.mode_changed.connect(func(m): modes.append(m))
-	ok(ids(ui.abilities) == ["bite", "charge", "spit", "tail_strike"], "default mode attack")
+	ok(ui.mode == Modes.NONE and ui.abilities.is_empty(), "no default mode: nothing on keys 1-4")
+	ui._unhandled_input(_key_event(KEY_1))
+	ok(presses.is_empty(), "key 1 does nothing before a mode is chosen")
 	ui.set_mode(Modes.BEFRIEND)
 	ok(ui.mode == Modes.BEFRIEND and ids(ui.abilities) == ["sing", "dance", "charm", "pose"], "befriend sets abilities")
-	ok(ui.hud.slots[0].text.contains("Sing") and ui.hud.slots[3].text.contains("Pose"), "move bar shows befriend")
+	ok(ui.petals.count() == 4 and ui.petals.id_at(0) == "sing" and ui.petals.glyph_at(0) == "sing" and ui.petals.id_at(3) == "pose", "the petals show the befriend skills with their glyphs")
 	ui.set_mode(Modes.OBSERVE)
-	ok(ui.hud.slots[0].visible and not ui.hud.slots[1].visible, "observe shows one slot")
+	ok(ui.petals.count() == 1 and ui.petals.glyph_at(0) == "observe", "observe shows one petal")
 	ui.set_mode(Modes.INTIMIDATE)
+	ok(ui.petals.count() == 2 and ui.petals.glyph_at(0) == "roar" and ui.petals.glyph_at(1) == "display", "intimidate shows two petals")
 	ok(ids(ui.abilities) == ["roar", "display"], "intimidate abilities in ui")
 	ok(modes == [Modes.BEFRIEND, Modes.OBSERVE, Modes.INTIMIDATE], "mode_changed emitted")
 	ui.set_mode("bogus")
 	ok(ui.mode == Modes.INTIMIDATE, "unknown mode ignored")
-	ui.select(Mock.creature(1))
-	ok(ui.card.visible and ui.radial.visible, "select shows card and radial")
-	ok(ui.hud.target_panel.visible, "target marker visible")
-	ui.radial.choose(0)
-	ok(ui.mode == Modes.ATTACK and not ui.radial.visible, "radial chooses attack")
+	ui.select(Mock.creature(1), true, Vector2(500, 380))
+	ok(ui.mode == Modes.NONE and ui.abilities.is_empty() and ui.petals.count() == 0, "select() sets no mode and shows no petals")
+	ok(not ui.defence.shown, "no guard and dodge marks without a fight or Attack mode")
+	ok(ui.note.visible and ui.ring.visible, "select shows the field note and opens the ring")
+	var nsnap: Dictionary = ui.note.snapshot()
+	ok(nsnap.name == "Rondo" and nsnap.has("diet") and nsnap.has("relationship"), "the field note carries the species")
+	presses.clear()
+	ui._unhandled_input(_key_event(KEY_1))
+	ok(presses.is_empty(), "keys 1-4 do nothing until a mode is chosen")
+	# mouse only: the move keys do not choose a mode
+	ui._unhandled_input(_key_event(KEY_A))
+	ui._unhandled_input(_key_event(KEY_W))
+	ok(ui.mode == Modes.NONE and ui.ring.visible, "W A S D do not choose on the ring (they keep walking)")
+	# a click on the west side chooses Befriend; the click is consumed, one outside is not
+	var c: Vector2 = ui.ring.centre
+	var r: float = ui.ring.radius()
+	var outside := _mouse(c + Vector2(0, -r * 4.0), true)
+	ok(not ui.ring.handle_input(outside) and ui.ring.visible, "a click outside the hit zones is not consumed")
+	var west := _mouse(c + Vector2(-r, 0), true)
+	ok(ui.ring.handle_input(west), "a click on the west arc is consumed")
+	ok(ui.mode == Modes.BEFRIEND and not ui.ring.visible, "the west side chooses Befriend and closes the ring")
+	ok(ui.ring.handle_input(_mouse(c + Vector2(-r, 0), false)), "the release of that click is consumed too")
+	ui._unhandled_input(_key_event(KEY_TAB))
+	ok(ui.ring.visible, "Tab reopens the ring")
+	ui.ring.choose_mode(Modes.ATTACK)
+	ok(ui.mode == Modes.ATTACK and not ui.ring.visible, "choose_mode(Attack)")
+	ok(ui.defence.shown, "Attack mode shows guard and dodge at your feet")
 	var key := InputEventKey.new()
 	key.keycode = KEY_2
 	key.physical_keycode = KEY_2   # the InputMap actions match physical keys
@@ -177,14 +221,221 @@ func test_ui_flow() -> void:
 	ui.set_windup(0.5, "Charge")
 	ui.set_player("Test", 40, 100, 20, 50)
 	await process_frame
-	ok(ui.hud.toasts.get_child_count() == 1 and ui.hud.dna_box.get_child_count() == 1, "toasts shown")
-	ok(ui.hud.windup_bar.visible, "wind-up tell visible")
+	ok(ui.words.whisper_text == "Hello", "a message is a whisper line (%s)" % ui.words.whisper_text)
 	ui.set_paused(true)
-	ok(ui.pause_menu.visible, "pause menu visible")
+	ok(ui.menu.visible and ui.menu.open and ui.veil.flat_amount > 0.5, "the menu opens over the veil")
 	ui.set_paused(false)
+	# Esc: closes the ring, keeps the selection; then deselects; then the menu
+	ui.select(Mock.creature(2), true, Vector2(500, 380))
+	ui._unhandled_input(_key_event(KEY_ESCAPE))
+	ok(not ui.ring.visible and not ui.selected.is_empty() and not ui.paused, "Esc closes the ring and keeps the selection")
+	ui._unhandled_input(_key_event(KEY_ESCAPE))
+	ok(ui.selected.is_empty() and not ui.paused, "a second Esc deselects")
+	ui._unhandled_input(_key_event(KEY_ESCAPE))
+	ok(ui.paused, "a third Esc opens the menu")
+	ui.set_paused(false)
+	ui.select(Mock.creature(1))
 	ui.clear_selection()
-	ok(not ui.card.visible and not ui.hud.target_panel.visible, "clear selection")
+	ok(not ui.note.visible or ui.note.info.is_empty(), "clear selection hides the field note")
+	# a fight starts: select(info, false) with fight goes straight to attack
+	var fi := Mock.creature(3)
+	fi["fight"] = true
+	ui.select(fi, false)
+	ok(ui.mode == Modes.ATTACK and not ui.ring.visible, "a fight selects the attacker in attack mode with no ring")
 	ui.queue_free()
+
+func _mouse(pos: Vector2, pressed: bool) -> InputEventMouseButton:
+	var m := InputEventMouseButton.new()
+	m.button_index = MOUSE_BUTTON_LEFT
+	m.position = pos
+	m.pressed = pressed
+	return m
+
+func test_signs_and_words() -> void:
+	var g = root.get_node("Game")
+	g.settings["numbers"] = false
+	g.settings["reduced_motion"] = false
+	var ui := GameUI.new()
+	root.add_child(ui)
+	await process_frame
+	var s = ui.signs
+	ui.set_player("X", 100, 100, 50, 50)
+	s._process(3.0)
+	ui.set_player("X", 80, 100, 50, 50)
+	ok(s.sign_alpha("health") > 0.99 and absf(s.hp_frac - 0.8) < 0.001, "a change brightens the health line (hp_frac %.2f)" % s.hp_frac)
+	for k in 8:
+		s._process(0.5)
+	ok(is_equal_approx(s.sign_alpha("health"), Style.REST_ALPHA), "the resting opacity returns after REST (%.3f)" % s.sign_alpha("health"))
+	ok(not s.stamina_visible, "the stamina line is hidden at full")
+	ui.set_player("X", 80, 100, 20, 50)
+	s._process(0.1)
+	ok(s.stamina_visible, "the stamina line shows below full")
+	ui.set_player("X", 80, 100, 50, 50)
+	for k in 6:
+		s._process(0.5)
+	ok(not s.stamina_visible, "and hides 2 s after it is full again")
+	ui.set_fight(true)
+	s.set_fight(true)
+	s._process(0.1)
+	ok(s.stamina_visible, "a fight shows the stamina line")
+	s.set_fight(false)
+	ok(not s.low_health and ui.veil.low_health == 0.0, "no low health at 80 %")
+	ui.set_player("X", 20, 100, 50, 50)
+	ok(s.low_health and ui.veil.low_health > 0.0, "below 30 % sets low_health and the ember vignette")
+	ok(ui.veil.edge_now() > 0.0, "the ember vignette is on")
+	ui.set_player("X", 100, 100, 50, 50)
+	# DNA: the spendable balance, species rings, a mote
+	ui.set_meters(9, 4, 1, 4, 70, 100)
+	ok(s.dna_text() == "4" and s.dna_total == 9, "the DNA sign shows the spendable balance, the total is the journal's (%s)" % s.dna_text())
+	ok(s.pips_total == 4 and s.pips_filled == 1, "one ring per species present, filled when resolved")
+	ui.set_meters(12, 7, 1, 4, 70, 100)
+	ui.show_dna(3, "carcass", Vector3(0, 1, 0))
+	ok(ui.motes.active() == 1 and s.dna_text() == "4" and ui.last_dna_source == "carcass", "a DNA gain creates one mote and the number waits for it (%s)" % s.dna_text())
+	ui.motes._process(0.9)
+	ok(ui.motes.active() == 0 and s.dna_text() == "7", "the number changes when the mote lands (%s)" % s.dna_text())
+	g.settings["reduced_motion"] = true
+	ui.set_meters(15, 10, 1, 4, 70, 100)
+	ui.show_dna(3, "kill")
+	ok(ui.motes.active() == 0 and s.dna_text() == "10", "with Less motion the number changes at once")
+	g.settings["reduced_motion"] = false
+	# the seed
+	var pauses := []
+	ui.pause_toggled.connect(func(p): pauses.append(p))
+	s.size = Vector2(1280, 720)
+	var down := _mouse(s.seed_center(), true)
+	ok(s.handle_input(down), "a click on the seed is consumed")
+	ok(pauses == [true] and ui.paused, "the seed opens the menu (pause_toggled(true))")
+	ui.set_paused(false)
+	# words: one whisper at a time, a moment line queues, numbers only with Numbers: On
+	ui.show_message("A")
+	ui.show_message("B")
+	ok(ui.words.whisper_text == "B", "one whisper at a time: the newer replaces the older")
+	ui.show_moment("First", "bone")
+	ui.show_moment("Second")
+	ok(ui.words.moment_text == "First" and ui.words._m_queue.size() == 1, "a moment line queues")
+	ui.show_float(Vector3(0, 1, 0), "+9", Palette.LICHEN)
+	ui.show_damage(Vector2(300, 200), 17)
+	ok(ui.words._floats.is_empty(), "no numbers on screen with Numbers: Off")
+	g.settings["numbers"] = true
+	ui.show_damage(Vector2(300, 200), 17)
+	ok(ui.words._floats.size() == 1, "damage numbers appear with Numbers: On")
+	g.settings["numbers"] = false
+	ui.flash("hit")
+	ok(ui.veil.hit > 0.9, "a hit flashes the edge veil")
+	ui.queue_free()
+
+func test_minimap() -> void:
+	var Mm := load("res://ui/minimap.gd")
+	var mm = Mm.new()
+	mm.player = Vector2(10, 20)
+	mm.size = Vector2(1280, 720)
+	var p: Vector2 = mm.world_to_map(Vector2(10 + Mm.WORLD_RADIUS, 20))
+	ok(is_equal_approx(p.x, Style.u(Mm.RADIUS_U)) and is_zero_approx(p.y), "the map is centred on the player, its edge is WORLD_RADIUS away")
+	var c: Vector2 = mm.map_centre()
+	ok(c.x > 1100 and c.y < 100, "the round map sits top-right (%s)" % c)
+	mm.free()
+
+func test_menu_and_onboarding() -> void:
+	var g = root.get_node("Game")
+	var am := AudioManager.new("user://test_menu_%d.cfg" % Time.get_ticks_usec())
+	root.add_child(am)
+	var ui := GameUI.new()
+	root.add_child(ui)
+	await process_frame
+	ui.bind_audio(am)
+	var m = ui.menu
+	m.size = Vector2(1280, 720)
+	ui.set_paused(true)
+	ok(m.open and m.column == 0 and m.focused_id() == "resume", "the menu opens on Resume")
+	# keyboard reaches every item
+	var seen := {}
+	for i in 9:
+		seen[m.focused_id()] = true
+		m.handle_input(_key_event(KEY_DOWN))
+	ok(seen.size() == m.item_ids().size(), "Down reaches every item (%d)" % seen.size())
+	ok(m.focused_id() == "resume", "and wraps")
+	m.handle_input(_key_event(KEY_UP))
+	ok(m.focused_id() == "main_menu", "Up wraps to the last item")
+	# the settings column: rows reachable, a choice changes a visible string at once
+	m.focus = m.item_ids().find("settings")
+	m.handle_input(_key_event(KEY_ENTER))
+	ok(m.column == 1, "Enter on Settings opens the second column")
+	var reached := {}
+	for i in m.rows.size():
+		reached[m.rows[m.row_focus].key] = true
+		m.handle_input(_key_event(KEY_S))
+	ok(reached.size() == m.rows.size(), "keyboard reaches every setting row (%d)" % reached.size())
+	g.settings["language"] = "en"
+	var en: String = Strings.t("resume")
+	m.row_focus = 0
+	m.handle_input(_key_event(KEY_RIGHT))
+	ok(g.settings["language"] == "es" and Strings.t("resume") != en and Strings.t("resume") == "Seguir", "changing Language switches a visible string at once")
+	m.handle_input(_key_event(KEY_LEFT))
+	ok(g.settings["language"] == "en", "and back")
+	# the size of the signs changes Style.u
+	var old = g.settings.get("ui_scale", 1.0)
+	m.set_value("ui_scale", 1.5)
+	ok(is_equal_approx(Style.u(10.0), 15.0), "ui_scale changes Style.u(10)")
+	m.set_value("ui_scale", old)
+	# audio sliders write through the audio manager by bus key
+	m.set_value("sfx", 0.35)
+	ok(is_equal_approx(am.get_volume("sfx"), 0.35) and is_equal_approx(float(m.value_of("sfx")), 0.35), "the sound sliders write through AudioManager")
+	m.set_value("mute", true)
+	ok(AudioServer.is_bus_mute(0), "Mute writes through")
+	m.set_value("mute", false)
+	# Numbers, outlines and less motion are plain settings
+	m.set_choice("numbers", 1)
+	ok(g.settings["numbers"] == true and Style.numbers(), "Numbers: On is a setting")
+	m.set_choice("numbers", 0)
+	# "Show the hints again" clears the onboarding progress
+	ui.onboarding.done_mask = 0b101
+	m.row_focus = m.rows.size() - 1
+	m.handle_input(_key_event(KEY_ENTER))
+	ok(ui.onboarding.done_mask == 0, "Show the hints again resets the onboarding")
+	# Esc goes back one level, then resumes
+	m.handle_input(_key_event(KEY_ESCAPE))
+	ok(m.column == 0 and ui.paused, "Esc goes back to the list")
+	m.handle_input(_key_event(KEY_ESCAPE))
+	ok(not ui.paused and not m.open, "Esc on the list resumes")
+	# save and load availability, loadout away from the nest
+	ok(not m.item_enabled("loadout") and m.item_enabled("save"), "Loadout is disabled away from the nest")
+	ui.set_loadout_available(true)
+	ok(m.item_enabled("loadout"), "and enabled at the nest")
+	var reqs := []
+	ui.journal_requested.connect(func(): reqs.append("journal"))
+	ui.family_tree_requested.connect(func(): reqs.append("tree"))
+	ui._unhandled_input(_key_event(KEY_J))
+	ok(reqs == ["journal"] and ui.stub.open, "J opens the journal view")
+	ui.stub.handle_input(_key_event(KEY_ESCAPE))
+	ok(not ui.stub.open, "Esc closes it")
+	ui._unhandled_input(_key_event(KEY_T))
+	ok(reqs == ["journal", "tree"] and ui.stub.open and ui.stub.kind == "tree", "T opens the family tree view")
+	ui.close_view()
+	# onboarding
+	var ob = Onboarding.new(null)
+	ok(ob.pick() == 0, "the first hint is walking")
+	ok(ob.update(0.1, {"fight": false}).get("text", "") == Strings.t("hint_walk"), "hint 1 shows at start")
+	ob.notify("walk")
+	ok(ob.pick() == 0, "one walk is not enough")
+	ob.notify("walk")
+	ok(ob.pick() == 1, "it advances after the action is done twice")
+	ob.notify("look")
+	ob.notify("look")
+	ok(ob.pick() == 2, "then selecting")
+	ob.notify("select")
+	ob.notify("select")
+	ok(ob.pick() == 8, "ring and keys wait for their situation (next is the F1 hint)")
+	ok(ob.update(0.1, {"ring": true, "fight": false}).get("text", "") == Strings.t("hint_ring"), "with the ring open the hint is about the ring")
+	ok(ob.update(0.1, {"ring": true, "fight": true}).get("keys", "") == "Space" or ob.pick() != 3, "never a hint in a fight except the fight one")
+	var ob2 = Onboarding.new(null)
+	ob2.update(0.1, {"fight": true})
+	ok(ob2.pick() == 5, "in a fight only the guard hint can show")
+	ob2.update(30.0, {"fight": false})
+	ok(ob2.is_done(0) and ob2.pick() == 1, "a hint expires after 25 s")
+	ob2.done_mask = (1 << Onboarding.STEPS.size()) - 1
+	ok(ob2.complete() and ob2.update(1.0, {}).is_empty(), "silent when everything is learned")
+	ui.queue_free()
+	am.queue_free()
 
 func _key_event(code: Key) -> InputEventKey:
 	var key := InputEventKey.new()
@@ -193,7 +444,7 @@ func _key_event(code: Key) -> InputEventKey:
 	key.pressed = true
 	return key
 
-# A21: keys 1-4 fire the loadout slots (not fixed moves); role colours, cooldown sweep, panel.
+# A21: keys 1-4 fire the loadout slots (not fixed moves); role shapes, cooldown rings, the loadout sheet.
 func test_loadout_ui() -> void:
 	var ui := GameUI.new()
 	root.add_child(ui)
@@ -204,6 +455,7 @@ func test_loadout_ui() -> void:
 		{"id": "", "name": "-", "empty": true, "enabled": false, "move": -1},
 		{"id": "spit", "name": "Spit", "move": 3, "role": "poke", "stamina": 12, "cooldown": 0},
 	]
+	ui.set_mode(Modes.ATTACK)
 	ui.set_loadout_abilities(kit)
 	ok(ids(ui.abilities) == ["tail_strike", "bite", "", "spit"], "Attack mode shows the loadout slots in order (%s)" % [ids(ui.abilities)])
 	var fired := []
@@ -211,20 +463,58 @@ func test_loadout_ui() -> void:
 	for code in [KEY_1, KEY_2, KEY_3, KEY_4]:
 		ui._unhandled_input(_key_event(code))
 	ok(fired == [[0, "tail_strike", 4], [1, "bite", 0], [3, "spit", 3]], "keys 1-4 fire slots 1-4 and an empty slot fires nothing (%s)" % [fired])
-	ok(ui.hud.slots[0].text == "1\nTail" and ui.hud.slots[2].text == "3\n-" and ui.hud.slots[2].disabled, "the hotbar shows key and name, empty slots a dash")
 	await create_timer(0.3).timeout      # the pressed highlight of the key presses above ends
-	var st: StyleBoxFlat = ui.hud.slots[0].get_theme_stylebox("normal")
-	ok(st.border_color == Palette.role_color("control") and ui.hud.slots[1].get_theme_stylebox("normal").border_color == Palette.role_color("basic"), "slot borders carry the role colour")
-	ok(Palette.role_color("control") != Palette.role_color("poke") and Palette.role_color("basic") != Palette.role_color("engage"), "roles have distinct colours")
+	ok(ui.petals.glyph_at(0) == "tail" and ui.petals.id_at(0) == "tail_strike" and ui.petals.glyph_at(2) == "" and ui.petals.state_at(2) == &"empty", "the petal shows the glyph of its move; an empty slot is a dashed circle with no glyph")
+	var shapes := {}
+	for role in ["basic", "engage", "poke", "control", "defence", "signature"]:
+		shapes[Palette.ROLE_SHAPES[role]] = true
+	ok(shapes.size() == 6, "the six roles have six different outline shapes")
+	ok(ui.petals.shape_at(0) == &"square" and ui.petals.shape_at(1) == &"circle" and ui.petals.shape_at(3) == &"diamond", "petal outlines carry the role: control square, basic circle, poke diamond")
 	ui.set_cooldowns([0.5, 0.0, 0.0, 0.0])
-	ok(ui.hud.sweeps[0].visible and is_equal_approx(ui.hud.sweeps[0].frac, 0.5) and not ui.hud.sweeps[1].visible, "the cooldown sweep shows the part still to wait")
+	ok(ui.petals.state_at(0) == &"cooling" and is_equal_approx(ui.petals.cooldown_at(0), 0.5) and ui.petals.state_at(1) == &"ready", "a cooling petal shows the part still to wait")
 	ui.set_cooldowns([0.0, 0.0, 0.0, 0.0])
-	ok(not ui.hud.sweeps[0].visible, "and hides when the move is ready")
+	ok(ui.petals.state_at(0) == &"ready", "and is ready when the move is")
 	ui.set_mode(Modes.BEFRIEND)
-	ok(ids(ui.abilities) == ["sing", "dance", "charm", "pose"] and not ui.hud.sweeps[0].visible, "other modes keep their own abilities")
+	ok(ids(ui.abilities) == ["sing", "dance", "charm", "pose"], "other modes keep their own abilities")
 	ui.set_mode(Modes.ATTACK)
-	ok(ids(ui.abilities) == ["tail_strike", "bite", "", "spit"], "back to Attack restores the loadout hotbar")
-	# the panel
+	ok(ids(ui.abilities) == ["tail_strike", "bite", "", "spit"], "back to Attack restores the loadout petals")
+	# a click on a petal presses its move
+	ui.petals.centre = Vector2(640, 360)
+	ui.petals.body_half_height = 70.0
+	fired.clear()
+	var p0: Vector2 = ui.petals.petal_pos(1)
+	ok(ui.petals.handle_input(_mouse(p0, true)), "a click on a petal is consumed")
+	ui.petals.handle_input(_mouse(p0, false))
+	ok(fired == [[1, "bite", 0]], "a click on a petal presses the move (%s)" % [fired])
+	ok(not ui.petals.handle_input(_mouse(Vector2(10, 10), true)), "a click elsewhere is not consumed")
+	# the gift petal: item glyph and count, only in Befriend
+	ui.set_gift(1, 2)
+	ok(not ui.petals.gift_visible(), "no gift petal outside Befriend")
+	ui.set_mode(Modes.BEFRIEND)
+	ok(ui.petals.gift_visible() and ui.petals.gift_item == 1 and ui.petals.gift_count == 2, "Befriend shows the gift petal with the item and the count")
+	var gifts := []
+	ui.gift_pressed.connect(func(): gifts.append(true))
+	ui.petals.handle_input(_mouse(ui.petals.gift_pos(), true))
+	ok(gifts.size() == 1, "a click on the gift petal gives the gift")
+	ui.set_gift(3, 1)
+	ok(Glyphs.for_item(ui.petals.gift_item) == "bone", "H changes the glyph of the gift petal")
+	# guard and dodge marks: a click presses them
+	var gd := []
+	ui.guard_pressed.connect(func(): gd.append("guard"))
+	ui.dodge_pressed.connect(func(d): gd.append(d))
+	ui.set_mode(Modes.ATTACK)
+	ui.defence.centre = Vector2(640, 500)
+	ui.defence.ring_radius = 56.0
+	ui.defence.handle_input(_mouse(ui.defence.mark_pos("guard"), true))
+	ui.defence.handle_input(_mouse(ui.defence.mark_pos("dodgeL"), true))
+	ui.defence.handle_input(_mouse(ui.defence.mark_pos("dodgeR"), true))
+	ok(gd == ["guard", -1, 1], "the marks at your feet emit guard and dodge (%s)" % [gd])
+	ui.set_mode(Modes.NONE)
+	ok(not ui.defence.shown, "the marks hide when no mode and no fight")
+	ui.set_fight(true)
+	ok(ui.defence.shown, "a fight shows the marks whatever the mode")
+	ui.set_fight(false)
+	# the sheet
 	var panel = ui.loadout_panel
 	var moves: Array = CporeWorld.moves()
 	panel.setup(moves)
@@ -232,28 +522,52 @@ func test_loadout_ui() -> void:
 	ui.loadout_assign.connect(func(slot, move): asked.append([slot, move]))
 	var lo := {"slots": [4, 0, -1, 3], "known": 0b10011, "can_edit": true, "signature_slot": -1, "nest_radius": 12.0}
 	panel.refresh(lo)
-	ok(not panel.visible, "the panel starts closed")
+	ok(not panel.visible_open, "the sheet starts closed")
 	var req := []
 	ui.loadout_requested.connect(func(): req.append(true))
 	ui._unhandled_input(_key_event(KEY_L))
-	ok(req.size() == 1, "key L asks for the loadout panel")
+	ok(req.size() == 1, "key L asks for the loadout sheet")
 	panel.open_panel()
-	ok(panel.option_buttons.size() == 4 and panel.option_buttons[0].item_count == 1 + 4, "each slot lists empty plus the four attack moves, not guard or dodge")
-	ok(panel.option_buttons[0].selected == 1 + 3 and panel.option_buttons[2].selected == 0, "the lists show the current loadout")
-	ok(not panel.option_buttons[0].disabled and panel.note.text == "", "editable at the nest")
-	ok(panel.option_buttons[0].is_item_disabled(1 + 2) == true and panel.option_buttons[0].is_item_disabled(1) == false, "a move that is not known is disabled in the list")
+	ok(ui.veil.flat_amount > 0.3 and ui.veil.flat_amount < 0.5, "a light veil (0.42) comes with the sheet")
+	ok(panel.token_count() == 4, "one token per slottable move, not guard or dodge (%d)" % panel.token_count())
+	var names := []
+	for i in panel.token_count():
+		names.append(panel.token_id(i))
+	ok(names == ["bite", "charge", "spit", "tail_strike"], "tokens are the four attack moves (%s)" % [names])
+	ok(panel.token_glyph(0) == "bite" and panel.token_glyph(1) == "charge" and panel.token_glyph(2) == "", "a known move is a token with a glyph; one not learned has none (no spoiler)")
+	ok(panel.token_enabled(0) and not panel.token_enabled(2), "a move not known cannot be chosen")
+	var shapes2 := {}
+	for role in ["basic", "engage", "poke", "control", "defence", "signature"]:
+		shapes2[Palette.ROLE_SHAPES[role]] = true
+	ok(shapes2.size() == 6 and panel.token_shape(0) == &"circle" and panel.token_shape(1) == &"triangle", "the role is the outline shape: basic circle, engage triangle")
 	panel.choose(2, 1)
 	ok(asked == [[2, 1]], "choosing a move asks for loadout SLOT MOVE (slot 0-based, move id) (%s)" % [asked])
 	panel.choose(0, -1)
 	ok(asked.back() == [0, -1], "choosing empty asks for -1")
+	panel.choose(1, 4)
+	ok(asked.back() == [1, 4], "a move the body cannot do still goes to C, which refuses it")
 	asked.clear()
 	panel.refresh(lo)
-	ok(asked.is_empty(), "refreshing the panel from the world sends nothing")
+	ok(asked.is_empty(), "refreshing the sheet from the world sends nothing")
+	# keys: Left/Right focus a token, 1-4 put it in that slot, Backspace empties
+	panel.focus = 0
+	panel.handle_input(_key_event(KEY_RIGHT))
+	panel.handle_input(_key_event(KEY_3))
+	ok(panel.focus == 1 and asked == [[2, 1]], "Right focuses the next token and key 3 puts it in slot 3 (%s)" % [asked])
+	panel.focus = 2
+	panel.handle_input(_key_event(KEY_1))
+	ok(asked.size() == 1, "a token that is not learned ignores the slot keys")
+	# mouse: click a token then a slot
+	asked.clear()
+	panel.size = Vector2(1280, 720)
+	panel.handle_input(_mouse(panel.token_pos(0), true))
+	panel.handle_input(_mouse(panel.slot_pos(3), true))
+	ok(asked == [[3, 0]] and panel.picked == -1, "click a token then a slot assigns it (%s)" % [asked])
 	lo["can_edit"] = false
 	panel.refresh(lo)
-	ok(panel.option_buttons[0].disabled and panel.note.text.contains("nest"), "away from the nest the panel is read-only and says why")
-	panel.close_panel()
-	ok(not panel.visible, "Done closes the panel")
+	ok(not panel.token_enabled(0), "away from the nest the sheet is read-only")
+	panel.handle_input(_key_event(KEY_ESCAPE))
+	ok(not panel.visible_open and is_equal_approx(ui.veil.flat_amount, 0.0), "Esc closes the sheet and the veil")
 	ui.queue_free()
 
 func test_audio_manager() -> void:

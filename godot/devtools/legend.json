@@ -5,7 +5,7 @@
   "actions": {
     "move_forward": {"label": "Move", "also": ["move_left", "move_back", "move_right"], "group": "Move", "contexts": ["walk", "fight"], "corner": ["walk"]},
     "sprint": {"label": "Sprint", "group": "Move", "contexts": ["walk", "fight"]},
-    "walk_to": {"label": "Walk there; a click on a creature only selects it (Esc or empty ground deselects)", "group": "Move", "contexts": ["walk", "fight"], "corner": ["walk"]},
+    "walk_to": {"label": "Walk there (a white circle marks it); a click on a creature only selects it", "group": "Move", "contexts": ["walk", "fight"], "corner": ["walk"]},
     "move_left": {"label": "Left", "group": "Move", "contexts": ["walk", "fight"], "hidden": true},
     "move_back": {"label": "Back", "group": "Move", "contexts": ["walk", "fight"], "hidden": true},
     "move_right": {"label": "Right", "group": "Move", "contexts": ["walk", "fight"], "hidden": true},
@@ -23,12 +23,10 @@
     "guard": {"label": "Guard", "group": "Fight", "contexts": ["walk", "fight"], "corner": ["fight"]},
     "dodge_left": {"label": "Dodge left", "group": "Fight", "contexts": ["walk", "fight"], "corner": ["fight"]},
     "dodge_right": {"label": "Dodge right", "group": "Fight", "contexts": ["walk", "fight"]},
-    "radial_reopen": {"label": "Reopen the mode wheel", "group": "Menus", "contexts": ["walk", "fight"]},
+    "radial_reopen": {"label": "Reopen the mode ring", "group": "Menus", "contexts": ["walk", "fight"]},
     "pause_menu": {"label": "Pause menu / close", "group": "Menus", "contexts": ["walk", "fight", "radial", "paused"], "corner": ["radial"]},
-    "radial_attack": {"label": "Attack mode", "group": "Menus", "contexts": ["radial"], "corner": ["radial"]},
-    "radial_befriend": {"label": "Befriend mode", "group": "Menus", "contexts": ["radial"], "corner": ["radial"]},
-    "radial_observe": {"label": "Observe mode", "group": "Menus", "contexts": ["radial"], "corner": ["radial"]},
-    "radial_intimidate": {"label": "Intimidate mode", "group": "Menus", "contexts": ["radial"], "corner": ["radial"]},
+    "journal": {"label": "Journal", "group": "Menus", "contexts": ["walk", "fight"]},
+    "family_tree": {"label": "Family tree", "group": "Menus", "contexts": ["walk", "fight"]},
     "legend_hold": {"label": "Key sheet (hold) / corner hint (tap)", "group": "Menus", "contexts": ["walk", "fight", "radial", "paused", "studio"], "corner": ["walk", "fight"]},
     "dev_console": {"label": "Console", "group": "Dev tools", "dev": true, "contexts": ["walk", "fight", "studio", "console"], "corner": ["console"]},
     "dev_sites": {"label": "Sites and bookmarks", "group": "Dev tools", "dev": true, "contexts": ["walk", "fight"]},
@@ -50,7 +48,11 @@
     {"label": "Orbit camera", "keys": "Right / Middle drag", "group": "Camera", "contexts": ["walk", "fight"]},
     {"label": "Zoom near / far", "keys": "Wheel", "group": "Camera", "contexts": ["walk", "fight"], "corner": ["walk"]},
     {"label": "Reset camera", "keys": "Middle click", "group": "Camera", "contexts": ["walk", "fight"]},
-    {"label": "Zoom down to it (map view icons)", "keys": "Double-click icon", "group": "Camera", "contexts": ["walk", "fight"]}
+    {"label": "Zoom down to it (map view icons)", "keys": "Double-click icon", "group": "Camera", "contexts": ["walk", "fight"]},
+    {"label": "Observe (north of the ring)", "keys": "Click north", "group": "Menus", "contexts": ["radial"], "corner": ["radial"]},
+    {"label": "Befriend (west half of the ring)", "keys": "Click west", "group": "Menus", "contexts": ["radial"], "corner": ["radial"]},
+    {"label": "Intimidate (south of the ring)", "keys": "Click south", "group": "Menus", "contexts": ["radial"], "corner": ["radial"]},
+    {"label": "Attack / Eat (east half of the ring)", "keys": "Click east", "group": "Menus", "contexts": ["radial"], "corner": ["radial"]}
   ],
   "fixed": [
     {"label": "Undo", "keys": "Ctrl+Z", "group": "Studio", "contexts": ["studio"]},

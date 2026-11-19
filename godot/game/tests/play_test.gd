@@ -73,6 +73,7 @@ func _run() -> void:
 	_clean(studio_dir)
 	game.studio_dir = studio_dir
 	root.size = Vector2i(1280, 720)
+	game.persist_settings = false
 	game.settings.grass = 3000
 	for a in OS.get_cmdline_user_args():
 		game.settings.quality = a      # make godot-play-test QUALITY=low|medium|high|auto forces the rock tier
@@ -226,7 +227,7 @@ func _stage() -> void:
 	var island = current_scene
 	await frames(5)
 	var ui = island.stage_ui.ui
-	check(ui != null and ui.hud != null, "the HUD is mounted")
+	check(ui != null and ui.signs != null and ui.ring != null, "the diegetic UI is mounted")
 	check(root.has_node("Audio"), "the Audio autoload exists")
 	check(AudioServer.get_bus_index("SFX") >= 0 and AudioServer.get_bus_index("Ambience") >= 0, "the bus layout (Master, Music, SFX, Ambience) is present")
 	var player = island.hosts[0]
@@ -241,27 +242,30 @@ func _stage() -> void:
 		events_seen += ev.size()
 		if OS.get_environment("PLAY_TEST_VERBOSE") != "":
 			print("  events@", game.stage.cur.tick, " ", ev, " player hp ", game.stage.cur.entities[0].hp, " st ", game.stage.cur.entities[0].stamina))
-	var watch := _watch_tick.bind(ui)
+	game.settings["numbers"] = true         # damage numbers exist only with Numbers: On
+	var watch := _watch_tick.bind(ui, island)
 	game.world_ticked.connect(watch)
 	if OS.get_environment("PLAY_TEST_VERBOSE") != "":
 		game.world_ticked.connect(func(st: Dictionary):
 			if st.order.verb > 1 and st.active >= 0:
 				print("  tick ", st.tick, " order ", st.order, " accepted ", st.accepted, " err ", st.error, " p.st ", st.entities[0].stamina, " fighters ", st.combat.fighters.map(func(f): return [f.move, f.phase, snappedf(f.x, 0.01), snappedf(f.z, 0.01), snappedf(f.fx, 0.01), snappedf(f.fz, 0.01)])))
 	var hp_before: float = game.stage.cur.entities[0].hp
-	check(String(ui.hud.player_hp_text.text) == str(ceili(hp_before)), "the HUD shows the player's HP (%s)" % ui.hud.player_hp_text.text)
-	check(ui.hud.player_name.text == player.body.genome.get("name", ""), "the HUD shows the creature's name")
+	var hp_max0: float = game.stage.cur.entities[0].hp_max
+	check(absf(ui.signs.hp_frac - hp_before / hp_max0) < 0.01, "the health line shows the player's HP (%.3f for %.1f / %.1f)" % [ui.signs.hp_frac, hp_before, hp_max0])
+	check(ui.player_name == player.body.genome.get("name", ""), "the UI knows the creature's name (it is the journal's, not a HUD label)")
 
 	print("== loadout (A21): the hotbar follows the C loadout; keys 1-4 fire slots; the panel at the nest")
 	var sui = island.stage_ui
+	ui.set_mode(&"attack")            # no default mode: the loadout slots show once Attack is chosen
 	var lo0: Dictionary = game.stage.cur.loadout
 	# Merodeador has a mouth and horns only: it knows bite and charge (parts decide what a creature can slot)
 	check(lo0.slots == [0, 1, -1, -1] and lo0.can_edit and int(lo0.known) == 0b11, "the player starts at the nest with its default loadout (%s, known %d)" % [lo0.slots, lo0.known])
 	check(ui.abilities.size() == 4 and ui.abilities[0].move == 0 and ui.abilities[1].move == 1 and ui.abilities[2].get("empty", false), "the hotbar carries the C move ids of the slots")
-	check(ui.hud.slots[0].text.contains("Bite") and ui.hud.slots[1].text.contains("Charge") and ui.hud.slots[3].text.contains("-"), "the hotbar shows key and name (%s / %s)" % [ui.hud.slots[0].text.replace("\n", " "), ui.hud.slots[1].text.replace("\n", " ")])
+	check(ui.petals.id_at(0) == "bite" and ui.petals.glyph_at(0) == "bite" and ui.petals.id_at(1) == "charge" and ui.petals.state_at(3) == &"empty", "the petals show the glyph of each loadout move and a dashed empty slot (%s / %s)" % [ui.petals.id_at(0), ui.petals.id_at(1)])
 	sui.assign_loadout(0, 1)                  # charge into slot 1: bite is displaced out of the loadout
 	await sim_ticks(2)
 	check(game.stage.cur.loadout.slots == [1, -1, -1, -1], "a loadout order reached C and moved the move (%s)" % [game.stage.cur.loadout.slots])
-	check(ui.abilities[0].id == "charge" and ui.abilities[1].get("empty", false), "the hotbar rebuilt: slot 1 is the charge, slot 2 empty")
+	check(ui.petals.id_at(0) == "charge" and ui.petals.state_at(1) == &"empty", "the petals rebuilt: slot 1 is the charge, slot 2 empty")
 	sui.assign_loadout(2, 4)                  # tail_strike: this creature has no tail, C says not_known
 	await sim_ticks(1)                        # (the next tick's walking input would overwrite the error)
 	check(game.stage.cur.loadout.slots == [1, -1, -1, -1] and game.stage.world.order_error(int(game.stage.cur.error)) == "not_known", "a move the body cannot do is refused by C (%s)" % game.stage.world.order_error(int(game.stage.cur.error)))
@@ -274,7 +278,7 @@ func _stage() -> void:
 	_key(KEY_2)
 	check(sui.attack_orders.size() == orders0, "key 2 on an empty slot fires nothing")
 	sui.toggle_loadout_panel()
-	check(ui.loadout_panel.visible and game.modal_open == false, "the panel opens at the nest (key L)")
+	check(ui.loadout_panel.visible_open and game.modal_open == false, "the panel opens at the nest (key L)")
 	await frames(2)
 	check(game.modal_open, "an open panel blocks movement input (modal_open)")
 	ui.loadout_panel.choose(0, 0)
@@ -284,6 +288,7 @@ func _stage() -> void:
 	ui.loadout_panel.close_panel()
 	await frames(2)
 	sui.selected_id = -1
+	ui.set_mode(&"")
 
 	print("== walk 10 s with scripted input")
 	var start: Vector3 = island.player_pos
@@ -310,10 +315,10 @@ func _stage() -> void:
 	_clean(Scenario.save_dir)
 	var gui = island.stage_ui.ui
 	gui.set_paused(true)
-	check(gui.pause_menu.load_button.disabled, "Load game is disabled while the slot is empty")
+	check(not gui.menu.item_enabled("load") and gui.menu.open, "Load is unavailable while the slot is empty")
 	var hash_saved: String = game.stage.world.hash()
 	var tick_saved: int = game.stage.cur.tick
-	gui.pause_menu.save_button.pressed.emit()
+	gui.menu.activate("save")
 	check(FileAccess.file_exists(Scenario.save_dir + "/slot1.json") and FileAccess.file_exists(Scenario.save_dir + "/slot1.cpstate"), "Save game writes the slot")
 	check(not gui.paused, "saving returns to the game")
 	island.player_input.keys_override = {"forward": true, "back": false, "left": false, "right": false, "sprint": true}
@@ -321,8 +326,8 @@ func _stage() -> void:
 	island.player_input.keys_override = {"forward": false, "back": false, "left": false, "right": false, "sprint": false}
 	check(game.stage.world.hash() != hash_saved, "the world moved on after saving")
 	gui.set_paused(true)
-	check(not gui.pause_menu.load_button.disabled, "Load game is enabled once the slot exists")
-	gui.pause_menu.load_button.pressed.emit()
+	check(gui.menu.item_enabled("load"), "Load is available once the slot exists")
+	gui.menu.activate("load")
 	check(game.stage.world.hash() == hash_saved and game.stage.cur.tick == tick_saved, "Load game restores the saved state (tick %d)" % game.stage.cur.tick)
 	check(not gui.paused, "loading returns to the game")
 	await frames(2)
@@ -359,18 +364,25 @@ func _stage() -> void:
 	await frames(3)
 	print("  clicked ", screen, " viewport ", vp, " player ", island.player_pos, " garfio ", wild.global_position)
 	check(ui.selected.get("id", -1) == 1, "clicking Garfio selects it (id %s)" % ui.selected.get("id", null))
-	check(ui.card.visible, "the creature card is shown")
-	check(ui.radial.visible, "the radial menu opened")
-	check(game.modal_open, "the radial blocks movement (modal_open)")
+	var gmk = island.ground_marks
+	check(gmk.is_selected() and gmk.sel_id == 1, "the selection ring is on Garfio")
+	check(ui.note.visible, "the field note is shown")
+	check(ui.ring.visible and ui.mode == &"", "the mode ring opened with no mode chosen")
+	check(not game.modal_open and game.radial_open, "the ring is not modal: movement keys keep working")
 	await _frame_png("radial")
-	# choose Attack: the north sector
-	var c: Vector2 = ui.radial.centre
-	_click(c + Vector2(0, -108))
+	# choose Attack: the east side of the ring
+	var c: Vector2 = ui.ring.centre
+	_click(c + Vector2(ui.ring.radius(), 0))
 	await frames(2)
-	check(not ui.radial.visible and ui.mode == &"attack", "choosing Attack closes the radial and sets the attack mode")
+	check(not ui.ring.visible and ui.mode == &"attack", "clicking the east side of the ring chooses Attack and closes it")
+	check(ui.petals.count() == 4 and ui.defence.shown, "Attack shows the four petals and the guard and dodge marks")
 	check(ui.abilities.size() == 4 and ui.abilities[0].id == "bite", "keys 1-4 carry the attack moves")
 	check(await until(func(): return game.stage.cur.active >= 0, 2400), "an encounter starts (active = %d)" % game.stage.cur.active)
 	await sim_ticks(2)
+	ui.clear_selection()
+	sui._fight_prev = false           # as if the fight had just started with nothing selected
+	await sim_ticks(2)
+	check(ui.selected.get("id", -1) == game.stage.cur.active + 1 and ui.mode == &"attack" and not ui.ring.visible and ui.defence.shown, "a fight starting with nothing selected selects the attacker in attack mode with no ring")
 	_key(KEY_2)
 	await sim_ticks(25)
 	_key(KEY_SPACE)
@@ -384,12 +396,26 @@ func _stage() -> void:
 	check(events_seen > 0, "combat events reached the stage (%d)" % events_seen)
 	check(windup_seen, "the wind-up tell was shown for an enemy wind-up")
 	check(damage_seen > 0 or flash_seen, "damage numbers or flashes appeared (%d numbers, flash %s)" % [damage_seen, flash_seen])
-	check(String(ui.hud.player_hp_text.text) == str(ceili(maxf(p_now.hp, 0.0))), "the HUD HP follows the world (%s vs %.1f)" % [ui.hud.player_hp_text.text, p_now.hp])
+	check(absf(ui.signs.hp_frac - clampf(p_now.hp / p_now.hp_max, 0.0, 1.0)) < 0.011, "the health line follows the world (%.3f vs %.1f / %.1f)" % [ui.signs.hp_frac, p_now.hp, p_now.hp_max])
 	check(min_player_hp < hp_before or min_enemy_hp < e_now.hp_max, "the fight changed HP (player min %.1f of %.1f, Garfio min %.1f of %.1f)" % [min_player_hp, hp_before, min_enemy_hp, e_now.hp_max])
 	check(root.get_node("Audio").played.get("hit", 0) + root.get_node("Audio").played.get("block", 0) + root.get_node("Audio").played.get("dodge", 0) + root.get_node("Audio").played.get("hurt", 0) > 0, "combat sounds played")
 	await _frame_png("fight")
 	game.world_ticked.disconnect(watch)
 	await _actions_end(island, act_state)
+
+	print("== move marker: the white circle where you click")
+	var walk_to := Vector2(640, 560)
+	_click(walk_to)
+	await frames(3)
+	check(island.player_input.destination != null and gmk.move_visible() and not gmk.follow_visible(), "a click on the ground sets a destination and shows the white circle")
+	check(Vector2(gmk.destination().x, gmk.destination().z).distance_to(island.player_input.destination) < 0.01, "the circle is at the destination")
+	await frames(10)
+	check(gmk.move_mark.alpha > 0.5, "the circle is opaque after it appears (%.2f)" % gmk.move_mark.alpha)
+	island.player_input.clear_destination()
+	await frames(50)
+	check(not gmk.move_mark.visible, "the circle fades once the destination is gone")
+	island.player_input.clear_destination()
+
 
 # ------------------------------------------------------------------------------------------------
 # G77: the procedural action layer on the real stage and the real C world
@@ -481,15 +507,15 @@ func _actions_end(island, st: Dictionary) -> void:
 		new_verbs[int(i.get("verb", 0))] = true
 	check(new_verbs.size() <= 2 and not new_verbs.has(10) and not new_verbs.has(11), "a cosmetic roar sends no new verb to C (%s)" % [new_verbs.keys()])
 
-func _watch_tick(state: Dictionary, ui) -> void:
+func _watch_tick(state: Dictionary, ui, island) -> void:
 	min_player_hp = minf(min_player_hp, state.entities[0].hp)
 	if state.entities.size() > 1:
 		min_enemy_hp = minf(min_enemy_hp, state.entities[1].hp)
 	for f in state.combat.fighters:
-		if f.world_id != 0 and f.phase == 1 and ui.hud.windup_bar.visible:
+		if f.world_id != 0 and f.phase == 1 and float(island.ground_marks.sel_mark.param("disc")) > 0.0:
 			windup_seen = true
-	damage_seen = maxi(damage_seen, ui.hud._numbers.size())
-	if ui.hud.flash_rect.modulate.a > 0.01:
+	damage_seen = maxi(damage_seen, ui.words._floats.size())
+	if ui.veil.hit > 0.01 or ui.defence._ripple > 0.0:
 		flash_seen = true
 
 func _click(pos: Vector2) -> void:

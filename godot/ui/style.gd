@@ -179,3 +179,50 @@ static func text(c: CanvasItem, font: Font, pos: Vector2, s: String, size: float
 
 static func text_width(font: Font, s: String, size: float) -> float:
 	return font.get_string_size(s, HORIZONTAL_ALIGNMENT_LEFT, -1, int(round(size))).x
+
+## Outline of a role shape (section 7.14) around `centre`: circle, triangle (pointing right), diamond, square, dome
+## (half circle), hexagon. `dash` > 0 draws it dashed (a move not available), `double` adds an inner line (a signature).
+static func shape_points(shape: StringName, centre: Vector2, r: float) -> PackedVector2Array:
+	var pts := PackedVector2Array()
+	match shape:
+		&"triangle":
+			for k in 3:
+				pts.append(centre + Vector2(cos(TAU * k / 3.0), sin(TAU * k / 3.0)) * r * 1.05)
+		&"diamond":
+			for k in 4:
+				pts.append(centre + Vector2(cos(TAU * k / 4.0 + PI / 4.0 + PI / 4.0), sin(TAU * k / 4.0 + PI / 2.0)) * r * 1.12)
+		&"square":
+			for k in 4:
+				pts.append(centre + Vector2(cos(TAU * k / 4.0 + PI / 4.0), sin(TAU * k / 4.0 + PI / 4.0)) * r * 1.2)
+		&"hexagon":
+			for k in 6:
+				pts.append(centre + Vector2(cos(TAU * k / 6.0), sin(TAU * k / 6.0)) * r * 1.05)
+		&"dome":
+			for k in 25:
+				var a := PI + PI * k / 24.0
+				pts.append(centre + Vector2(cos(a), sin(a) * 1.0) * r * 1.05 + Vector2(0, r * 0.45))
+		_:
+			for k in 41:
+				pts.append(centre + Vector2(cos(TAU * k / 40.0), sin(TAU * k / 40.0)) * r)
+	return pts
+
+static func shape_outline(c: CanvasItem, shape: StringName, centre: Vector2, r: float, color: Color, width: float, dashed := false, double := false) -> void:
+	var pts := shape_points(shape, centre, r)
+	var closed := shape != &"dome"
+	if closed and pts.size() >= 2:
+		pts.append(pts[0])
+	if dashed:
+		var i := 0
+		while i < pts.size() - 1:
+			polyline(c, PackedVector2Array([pts[i], pts[i + 1]]), color, width)
+			i += 2
+	else:
+		polyline(c, pts, color, width)
+	if double:
+		polyline(c, shape_points(shape, centre, r - u(4.0)), Color(color, color.a * 0.7), width * 0.7)
+
+static func key_cap(c: CanvasItem, text: String, pos: Vector2, size: float, color: Color) -> float:
+	var f := font_sans(true)
+	var w := text_width(f, text, size)
+	text(c, f, pos - Vector2(w * 0.5, 0), text, size, color)
+	return w
