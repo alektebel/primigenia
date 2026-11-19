@@ -81,6 +81,15 @@ func reset(setup: Dictionary) -> int:
 	_reset_log(false)
 	return 0
 
+## The cell's legacy (cell/cell_legacy.gd) right after a reset: the starting diet and the owned starter part. Returns the rc.
+func apply_legacy(diet: int, part: String) -> int:
+	var rc: int = world.apply_legacy(diet, part)
+	if rc == 0:
+		cur = world.state()
+		prev = cur
+		pprev = cur
+	return rc
+
 func _reset_log(from_snapshot: bool) -> void:
 	log_debug = []
 	_debug_queue = []

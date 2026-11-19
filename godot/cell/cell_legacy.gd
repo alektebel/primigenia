@@ -1,7 +1,8 @@
 extends RefCounted
 ## What the cell passes to the creature (DESIGN.md A26): metabolism -> starting diet, defence -> one starting part,
-## size -> starter size class. Saved as user://cell_legacy.json (versioned). The creature stage does not consume it yet;
-## Game.cell_legacy() reads it and the main menu's Criatura card shows it.
+## size -> starter size class. Saved as user://cell_legacy.json (versioned). Game.cell_legacy() reads it, the main menu's Criatura
+## card shows it and the bridge (docs/godot/CELL-BRIDGE.md) applies it to a NEW creature game: the island scales and equips the
+## hatchling (apply_genome), the C world gets the diet and the owned part (CporeWorld.apply_legacy).
 ##
 ## Rules (all from the sheet of the cell, see Sim.legacy_sheet(), and the colony composition):
 ##   diet     herbivoro if the colony has a photosynthetic cell (locked for now, so never yet);
@@ -14,6 +15,51 @@ extends RefCounted
 const VERSION := 1
 const PATH := "user://cell_legacy.json"
 const WASTE_SHARE := 0.25
+
+## defense -> the starter part (catalogue id); owned, equipped and a starter in the C world.
+const PART := {"espinas": "pua", "placas": "placa"}
+## diet -> CP_DIET_* of the C social state (HERBIVORE 0, CARNIVORE 1, OMNIVORE 2). The scavenger eats carcasses and anything else: omnivore.
+const DIET_C := {"herbivoro": 0, "cazador": 1, "carronero": 2}
+## size class -> hatchling scale (HATCHLING.md: 1.0 is the 1.18 m, 36 kg hatchling; 0.9 and 1.1 keep the camera floor, the 0.05 m near
+## plane and the Garfio winnability within the measured range).
+const SCALE := {"small": 0.9, "medium": 1.0, "large": 1.1}
+
+static func part_for(legacy: Dictionary) -> String:
+	return str(PART.get(str(legacy.get("defense", "")), ""))
+
+static func diet_for(legacy: Dictionary) -> int:
+	return int(DIET_C.get(str(legacy.get("diet", "")), -1))
+
+static func scale_for(legacy: Dictionary) -> float:
+	return float(SCALE.get(str(legacy.get("size_class", "")), 1.0))
+
+## The hatchling genome of a creature game that starts from this legacy: every length scaled (nodes, part sizes, leg joints), the starter
+## part added to the body (equipped). `{}` or an unknown legacy returns the genome unchanged. Pure; the original is not touched.
+static func apply_genome(genome: Dictionary, legacy: Dictionary) -> Dictionary:
+	if legacy.is_empty():
+		return genome
+	var g: Dictionary = genome.duplicate(true)
+	var k := scale_for(legacy)
+	if k != 1.0:
+		for n in g.get("nodes", []):
+			for key in ["y", "z", "r"]:
+				if n.has(key):
+					n[key] = float(n[key]) * k
+			n["r"] = maxf(float(n.get("r", 0.03)), 0.03)       # the creature module's floors (creature_genome.gd): node r 0.03, leg w 0.05, part size 0.1
+		for p in g.get("parts", []):
+			for key in ["size", "w"]:
+				if p.has(key):
+					p[key] = maxf(float(p[key]) * k, 0.05 if key == "w" else 0.1)
+			for key in ["k", "f"]:
+				if p.get(key) is Array:
+					p[key] = (p[key] as Array).map(func(v): return float(v) * k)
+	var part := part_for(legacy)
+	if part != "" and not g.get("parts", []).any(func(p): return p.get("type", "") == part):
+		var np := {"type": part, "t": 0.55 if part == "pua" else 0.45, "ang": 0.0, "size": 0.25 * k, "level": 1, "tier": 0}
+		if part == "pua":
+			np["len"] = 0.55
+		g.parts.append(np)
+	return g
 
 static func derive(sheet: Dictionary, colony: Dictionary = {}, source: String = "colony") -> Dictionary:
 	var p: Dictionary = sheet.get("pieces", {})

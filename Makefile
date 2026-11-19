@@ -307,10 +307,13 @@ godot-ui-test:
 	nice -n 10 timeout 600 $(GODOT) --headless --path godot --script res://tests/ui_test.gd
 .PHONY: godot-ui-test
 # The stage picker (main menu), headless; the second run checks that --play skips the menu.
-.PHONY: godot-menu-test godot-menu-evidence
+.PHONY: godot-menu-test godot-menu-evidence godot-bridge-test
 godot-menu-test:
 	nice -n 10 timeout 300 $(GODOT) --headless --path godot --script res://game/tests/test_menu.gd
 	nice -n 10 timeout 300 $(GODOT) --headless --path godot --script res://game/tests/test_menu.gd -- --play
+# The cell -> creature bridge, headless end to end (docs/godot/CELL-BRIDGE.md).
+godot-bridge-test: godot
+	nice -n 10 timeout 900 $(GODOT) --headless --fixed-fps 60 --path godot --script res://game/tests/test_bridge.gd
 godot-menu-evidence:
 	@mkdir -p docs/evidence/godot/stage-menu
 	LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 600 xvfb-run -a -s "-screen 0 1920x1080x24" $(GODOT) --rendering-driver opengl3 --max-fps 15 --resolution 1280x720 --path godot \

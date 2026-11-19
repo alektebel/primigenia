@@ -18,6 +18,7 @@ const PANEL := Color("FBF7EC")
 const SEL := Color("1F5F9E")
 const WARN := Color("9E392C")
 const GOOD := Color("3F6B2E")
+const BRIDGE_FADE := 0.5   # the stage transition: the one motion allowed past 250 ms (and under 600)
 const STEP := 1.0 / 60.0
 const DRAG_START := 6.0     # px the pointer travels before a press on a card becomes a drag (a tap stays a tap)
 const SIDE_W := 392.0
@@ -33,6 +34,11 @@ var _leg_body: Label
 var _leg_table: GridContainer
 var _leg_why: Label
 var _leg_go: Button
+var _leg_cont: Button       # the primary button of the end card: continue as a creature (the bridge, docs/godot/CELL-BRIDGE.md)
+var _leg_cur: Dictionary = {}
+var _bridging := false
+var _bridge_host: Control
+var _bridge_veil: ColorRect
 var _leg_stay: Button
 var _leg_shown := false
 var _lines_card: PanelContainer
@@ -128,6 +134,10 @@ func _ready() -> void:
 	_apply_phase(1)
 	_refresh_texts()
 	_refresh_hud(true)
+	var jump: Dictionary = _game().cell_jump_end       # dev `cell finish`
+	if not jump.is_empty():
+		_game().cell_jump_end = {}
+		jump_to_end.call_deferred(jump)
 
 func _game() -> Node:
 	return get_node("/root/Game")
@@ -516,6 +526,7 @@ func _refresh_texts() -> void:
 	_menu_btns[2].text = CS.t("main_menu")
 	_leg_title.text = CS.t("leg_title")
 	_leg_body.text = CS.t("leg_body")
+	_leg_cont.text = CS.t("leg_continue")
 	_leg_go.text = CS.t("leg_menu")
 	_leg_stay.text = CS.t("leg_stay")
 	_refresh_tools()
@@ -1070,6 +1081,20 @@ func _build_legacy() -> void:
 	var r := HBoxContainer.new()
 	r.add_theme_constant_override("separation", 8)
 	v.add_child(r)
+	_leg_cont = _btn("")
+	_leg_cont.name = "LegContinue"
+	_leg_cont.custom_minimum_size = Vector2(0, 46)
+	_leg_cont.add_theme_stylebox_override("normal", _flat(SEL, SEL, 10, 1, 8))
+	_leg_cont.add_theme_stylebox_override("hover", _flat(SEL.lightened(0.12), SEL, 10, 1, 8))
+	_leg_cont.add_theme_stylebox_override("pressed", _flat(SEL.darkened(0.12), SEL, 10, 1, 8))
+	_leg_cont.add_theme_stylebox_override("focus", _flat(SEL, INK, 10, 2, 8))
+	for c in ["font_color", "font_hover_color", "font_pressed_color", "font_focus_color"]:
+		_leg_cont.add_theme_color_override(c, Color.WHITE)
+	_leg_cont.add_theme_font_size_override("font_size", 17)
+	_leg_cont.focus_mode = Control.FOCUS_ALL
+	_leg_cont.pressed.connect(_to_creature)
+	v.add_child(_leg_cont)
+	v.move_child(_leg_cont, r.get_index())      # the primary button above the secondary row
 	_leg_go = _btn("")
 	_leg_go.pressed.connect(func(): _game().goto_menu())
 	r.add_child(_leg_go)
@@ -1083,9 +1108,11 @@ func _place_leg() -> void:
 	_leg_card.pivot_offset = _leg_card.size / 2.0
 
 ## The carry-over sheet: what passes to the creature. It is also written to user://cell_legacy.json.
-func _show_leg() -> void:
+## `given` (dev `cell finish`) shows a ready legacy instead of deriving one from the colony.
+func _show_leg(given: Dictionary = {}) -> void:
 	_leg_shown = true
-	var d: Dictionary = Legacy.derive(_sheet, colony.composition(), "colony")
+	var d: Dictionary = given if not given.is_empty() else Legacy.derive(_sheet, colony.composition(), "colony")
+	_leg_cur = d
 	_game().save_cell_legacy(d)
 	for c in _leg_table.get_children():
 		c.queue_free()
@@ -1108,6 +1135,35 @@ func _show_leg() -> void:
 	var tw := create_tween().set_parallel(true)
 	tw.tween_property(_leg_card, "scale", Vector2.ONE, 0.3).set_trans(Tween.TRANS_QUINT).set_ease(Tween.EASE_OUT)
 	tw.tween_property(_leg_card, "modulate:a", 1.0, 0.3).set_trans(Tween.TRANS_QUINT).set_ease(Tween.EASE_OUT)
+
+## Dev (`cell finish`): open the end card of a finished cell with this legacy.
+func jump_to_end(legacy: Dictionary) -> void:
+	_show_leg(legacy)
+
+## The bridge: a fade through the water colour (500 ms, ease-out), then the new creature game on the island (terrain cache or the
+## loading screen). The legacy it takes is the one on the card.
+func _to_creature() -> void:
+	if _bridging:
+		return
+	_bridging = true
+	_game().creature_legacy = _leg_cur.duplicate(true)
+	_bridge_host = Control.new()
+	_bridge_host.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	_bridge_host.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(_bridge_host)
+	_bridge_veil = ColorRect.new()
+	_bridge_veil.name = "BridgeVeil"
+	_bridge_veil.color = Color("0F2229", 0.0)       # the water of the cell scene
+	_bridge_veil.mouse_filter = Control.MOUSE_FILTER_STOP
+	_bridge_veil.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	add_child(_bridge_veil)
+	var tw := create_tween()
+	tw.tween_property(_bridge_veil, "color:a", 1.0, BRIDGE_FADE).set_trans(Tween.TRANS_QUINT).set_ease(Tween.EASE_OUT)
+	tw.tween_callback(func() -> void:
+		_game().enter_island_new(_bridge_host)       # a cache hit changes the scene here; a miss shows the loading screen under the veil
+		var back := create_tween()
+		back.tween_property(_bridge_veil, "color:a", 0.0, 0.25).set_trans(Tween.TRANS_QUINT).set_ease(Tween.EASE_OUT)
+		back.tween_callback(func() -> void: _bridge_veil.mouse_filter = Control.MOUSE_FILTER_IGNORE))
 
 func _hide_leg(instant := false) -> void:
 	if instant:

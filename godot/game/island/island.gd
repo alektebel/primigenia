@@ -24,6 +24,8 @@ const StageUI := preload("res://game/stage/stage_ui.gd")
 const Scenario := preload("res://devtools/scenario.gd")
 const StrategicIcons := preload("res://game/island/strategic_icons.gd")
 const GroundMarks := preload("res://game/island/ground_marks.gd")
+const CellLegacy := preload("res://cell/cell_legacy.gd")
+const Strings := preload("res://ui/strings.gd")
 
 const FAR_GRASS_Z := 0.6          # zoom above which grass, shadows and models are switched off
 const MODEL_OFF_Z := 0.85
@@ -207,6 +209,12 @@ func _build_stage() -> void:
 		for part in genome.parts:
 			part["level"] = 1
 			part["tier"] = 0
+	# The bridge: a NEW game started from the cell carries its legacy (scale and starter part here, diet and owned part in the C world).
+	Game.applied_legacy = {}
+	if Game.pending_scenario.is_empty() and not Game.creature_legacy.is_empty():
+		Game.applied_legacy = Game.creature_legacy
+		genome = CellLegacy.apply_genome(genome, Game.applied_legacy)
+	Game.creature_legacy = {}
 	_genome = genome
 	var pr := Profile.from_studio(genome, manifest)
 	if not pr.ok:
@@ -242,6 +250,10 @@ func _build_stage() -> void:
 	if stage.reset(setup) != 0:
 		push_error("the C world rejected the island setup")
 		return
+	if not Game.applied_legacy.is_empty():
+		var lrc: int = stage.apply_legacy(CellLegacy.diet_for(Game.applied_legacy), CellLegacy.part_for(Game.applied_legacy))
+		if lrc != 0:
+			push_error("the cell legacy was rejected by the C world (%d)" % lrc)
 	_phase("stage_reset")
 	stage.world.nav_warm()    # fill the GO walk grid now (about 0.6 s), so no click pays for it later
 	_phase("nav_warm")
@@ -282,6 +294,8 @@ func _build_stage() -> void:
 	stage_ui.name = "StageUI"
 	add_child(stage_ui)
 	stage_ui.setup(self, str(genome.get("name", "Merodeador")))
+	if not Game.applied_legacy.is_empty():
+		stage_ui.ui.show_message(Strings.t("legacy_whisper", [Strings.t("legacy_cell_" + str(Game.applied_legacy.diet)), Strings.t("legacy_def_" + str(Game.applied_legacy.defense))]))
 	flight = FlightMode.new()
 	flight.setup(self, stage)
 	if bool(Game.settings.wild):    # S5a: visual-only radial fauna (no C entities), see radial_fauna.gd
@@ -331,7 +345,7 @@ func scenario_ctx() -> Dictionary:
 	if stage.world.has_field():
 		var info: Dictionary = stage.world.field_info()
 		isl = {"seed": info.seed, "terrain_version": CporeTerrain.version(), "terrain_hash": info.hash}
-	var ctx := {"genome": _genome, "island": isl, "camera": camera_state(), "plants": gaze.to_list()}
+	var ctx := {"genome": _genome, "legacy": Game.applied_legacy, "island": isl, "camera": camera_state(), "plants": gaze.to_list()}
 	var dev = get_tree().root.get_node_or_null("Dev")
 	if dev != null and dev.has_method("tuning_state"):
 		ctx["tuning"] = dev.tuning_state()
@@ -355,6 +369,7 @@ func load_scenario(parsed: Dictionary) -> String:
 	if not res.ok:
 		return res.error
 	var d: Dictionary = parsed.dict
+	Game.applied_legacy = d.get("legacy", {})
 	var genome: Dictionary = d.get("genome", {})
 	var setup: Dictionary = stage.world.get_setup()
 	_place_props(setup)

@@ -181,6 +181,40 @@ func save_cell_legacy(d: Dictionary) -> bool:
 		return false
 	return CellLegacy.save(d, legacy_path)
 
+## The bridge (docs/godot/CELL-BRIDGE.md): the legacy the NEXT new creature game consumes ({} = a plain hatchling). The island reads it
+## when it builds a game that is not a loaded scenario and moves it to applied_legacy, which the journal's family tree shows as the root.
+var creature_legacy: Dictionary = {}
+var applied_legacy: Dictionary = {}
+
+## Starts a new creature game from the saved legacy (plain = ignore it).
+func begin_creature(plain := false) -> void:
+	creature_legacy = {} if plain else cell_legacy()
+
+const LoadingScene := preload("res://game/loading/loading_screen.tscn")
+
+## The island entry of a NEW game started away from the menu (the cell bridge): the terrain cache or the loading screen, then the island.
+## `host` is the control the loading screen is added to.
+func enter_island_new(host: Control) -> void:
+	var params := {"seed": int(settings.seed)}
+	if data != null and int(terrain.get("seed", settings.seed)) == int(settings.seed):
+		goto_island("cell")
+		return
+	var entry: Dictionary = TerrainCache.load_entry(params)
+	if not entry.is_empty():
+		set_island(entry)
+		goto_island("cell")
+		return
+	var screen := LoadingScene.instantiate()
+	host.add_child(screen)
+	screen.finished.connect(func(e: Dictionary) -> void:
+		if e.get("error", -1) != 0:
+			push_error("terrain generation failed: %s" % [e.get("error")])
+			get_tree().quit(1)
+			return
+		set_island(e)
+		goto_island("cell"))
+	screen.start(params)
+
 func goto_menu() -> void:
 	park_island()
 	get_tree().change_scene_to_file("res://game/menu/main_menu.tscn")
@@ -190,6 +224,8 @@ func goto_island(from: String = "") -> void:
 	entry_t0 = Time.get_ticks_msec()
 	entry_from = from if from != "" else ("studio" if get_tree().current_scene != null and get_tree().current_scene.scene_file_path.contains("/studio/") else "menu")
 	get_tree().change_scene_to_file("res://game/island/island.tscn")
+
+var cell_jump_end: Dictionary = {}   # dev (`cell finish`): the cell stage opens straight on its end card with this legacy
 
 func goto_cell() -> void:
 	park_island()

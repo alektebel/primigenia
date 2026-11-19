@@ -74,6 +74,7 @@ func _run() -> void:
 	game.studio_dir = studio_dir
 	root.size = Vector2i(1280, 720)
 	game.persist_settings = false
+	game.legacy_path = "user://cell_legacy_play_test_none.json"     # the owner's real legacy would be applied by the menu's new game
 	game.settings.grass = 3000
 	for a in OS.get_cmdline_user_args():
 		game.settings.quality = a      # make godot-play-test QUALITY=low|medium|high|auto forces the rock tier
