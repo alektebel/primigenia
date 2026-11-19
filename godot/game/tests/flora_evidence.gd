@@ -87,6 +87,14 @@ func downhill(r: Dictionary) -> Vector3:
 	var h := Vector3(n.x, 0, n.z)
 	return h.normalized() if h.length() > 0.05 else Vector3(1, 0, 0)
 
+# Raise the eye enough to clear every sampled terrain point along the shot.
+func clear_eye(eye: Vector3, target: Vector3) -> Vector3:
+	for j in range(1, 25):
+		var t := j / 24.0
+		var sample := target.lerp(eye, t)
+		eye.y += maxf(0.0, ground(sample) + 0.35 - sample.y) / t
+	return eye
+
 func close_up(id: String) -> void:
 	var r := pick(id)
 	if r.is_empty():
@@ -96,7 +104,14 @@ func close_up(id: String) -> void:
 	var patch := id in ["ceniza_roja", "costra_de_azufre", "musgo_faro", "pan_de_humus"]
 	var dist: float = clampf(float(r.height) * 2.3, 1.0, 45.0) if not patch else 1.2
 	if id == "soga_de_dosel":
-		dist = 6.0
+		var step := 4
+		var gen := preload("res://game/island/flora_mesh.gd")
+		var center: Vector3 = gen.vine_point(step).rotated(Vector3.UP, r.yaw) * r.height
+		var outward := Vector3(center.x, 0, center.z).normalized()
+		var look := p + center
+		var eye := look + outward * clampf(r.height * 0.28, 1.4, 7.0)
+		await shot("plant_" + id, clear_eye(eye, look), look, 48.0)
+		return
 	var nrm: Vector3 = r.up
 	var ang := atan2(nrm.z, nrm.x) if Vector2(nrm.x, nrm.z).length() > 0.05 else 0.7
 	var eye := p + Vector3(cos(ang), 0, sin(ang)) * dist
@@ -177,6 +192,10 @@ func _run() -> void:
 		var madre := pick("madre_de_agua")
 		if not madre.is_empty():
 			var m: Vector3 = madre.p
+			# The spring landmark is placed before density sampling on every tier.
+			var fork := m + Vector3.UP * float(madre.height) * 0.53
+			var crown_eye := fork + Vector3(0.52, -0.15, 0.30) * float(madre.height)
+			await shot("tier_crown", clear_eye(crown_eye, fork), fork, 52.0)
 			await shot("madre_spring", m + Vector3(40, 0, 20) + Vector3(0, ground(m + Vector3(40, 0, 20)) - m.y + 2.0, 0), m + Vector3(0, 14, 0), 62.0)
 			await shot("madre_base", m + Vector3(12, 0, 8) + Vector3(0, ground(m + Vector3(12, 0, 8)) - m.y + 1.7, 0), m + Vector3(0, 6, 0), 70.0)
 		var rod := densest("rodela_de_nieve", 30.0)
@@ -184,8 +203,9 @@ func _run() -> void:
 			var r: Vector3 = rod.p
 			var e := r + downhill(rod) * 7.0
 			await shot("snow_rosettes", Vector3(e.x, ground(e) + 1.6, e.z), r + Vector3(0, 1.2, 0), 62.0)
-			var e2 := r + downhill(rod) * 35.0
-			await shot("snow_slope", Vector3(e2.x, ground(e2) + 8.0, e2.z), r, 62.0)
+			var target := r + Vector3.UP * float(rod.height) * 0.5
+			var e2 := target + downhill(rod).rotated(Vector3.UP, 0.9) * 12.0 + Vector3.UP * 4.0
+			await shot("snow_slope", clear_eye(e2, target), target, 52.0)
 		var rib := densest("trenza_de_ribera", 25.0)
 		if not rib.is_empty():
 			var r: Vector3 = rib.p
