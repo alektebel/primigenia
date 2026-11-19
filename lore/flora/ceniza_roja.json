@@ -2,7 +2,7 @@
   "schema": "cpore.plant/1",
   "id": "ceniza_roja",
   "name": {
-    "en": "Red Ash Crust",
+    "en": "Ember Crust",
     "es": "Ceniza roja"
   },
   "world": "primigenia",
@@ -207,6 +207,11 @@
       "date": "2026-11-19",
       "who": "flora_addendum.py",
       "what": "strict second review (sol + DeepSeek) applied by sol: Used babosa as the supported consumer, removed the non-poison signal from poison and removed the unsupported claim about another plant's nickel specialization.; Kept the common name and clarified its descriptive meaning instead of renaming outside the requested output fields.; Rejected flows younger than approximately 400 years as a default: F7 places the last eruption approximately 400 years ago,"
+    },
+    {
+      "date": "2026-11-19",
+      "who": "flora_addendum.py",
+      "what": "bilingual name pass"
     }
   ],
   "observe": [

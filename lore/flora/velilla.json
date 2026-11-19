@@ -2,7 +2,7 @@
   "schema": "cpore.plant/1",
   "id": "velilla",
   "name": {
-    "en": "Fogcandle",
+    "en": "Dawnlamp",
     "es": "Velilla"
   },
   "world": "primigenia",
@@ -212,6 +212,11 @@
       "date": "2026-11-19",
       "who": "flora_addendum.py",
       "what": "strict second review (sol + DeepSeek) applied by sol: The plausible corm-storage chain remains unchanged.; Rondo's corm-feeding relation was removed because its stated diet and feeding traits do not establish storage-organ feeding or excavation.; Corm edibility is an explicit species property for player_lineage; the Crocus analogue supports storage only."
+    },
+    {
+      "date": "2026-11-19",
+      "who": "flora_addendum.py",
+      "what": "bilingual name pass"
     }
   ],
   "observe": [

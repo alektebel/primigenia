@@ -2,7 +2,7 @@
   "schema": "cpore.plant/1",
   "id": "rodela_de_nieve",
   "name": {
-    "en": "Snowshield Rosette",
+    "en": "Snowshield",
     "es": "Rodela de nieve"
   },
   "world": "primigenia",
@@ -189,6 +189,11 @@
       "date": "2026-11-19",
       "who": "flora_addendum.py",
       "what": "strict second review (sol + DeepSeek) applied by sol: Reduced maximum vegetative height to 2.5 m and tied instance height to caudex length and actual leaf projection.; Removed unsupported zanco browsing without altering its grass-based diet; neighboring grasses remain its established alpine food.; Changed alula's use to brief ground shelter rather than assuming loose leaf skirts provide bark-like talon anchorage."
+    },
+    {
+      "date": "2026-11-19",
+      "who": "flora_addendum.py",
+      "what": "bilingual name pass"
     }
   ],
   "observe": [

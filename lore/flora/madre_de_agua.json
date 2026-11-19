@@ -2,7 +2,7 @@
   "schema": "cpore.plant/1",
   "id": "madre_de_agua",
   "name": {
-    "en": "Mother of Water",
+    "en": "Springmother",
     "es": "Madre de agua"
   },
   "world": "primigenia",
@@ -212,6 +212,11 @@
       "date": "2026-11-19",
       "who": "flora_addendum.py",
       "what": "strict second review (sol + DeepSeek) applied by sol: Left c1 unchanged because both reviewers rated it plausible; its mechanical account remains qualitative rather than proof of storm stability.; Clarified that exactly one applies to the mature landmark, with self-compatibility resolving local fruit production and mainland populations supplying species context.; Removed the invented altitude allowance and constrained shoreline distance through the a"
+    },
+    {
+      "date": "2026-11-19",
+      "who": "flora_addendum.py",
+      "what": "bilingual name pass"
     }
   ],
   "observe": [

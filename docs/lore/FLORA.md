@@ -7,24 +7,24 @@
 | Plant | Form | Height (m) | Habitats | Status | Chains | Verdicts |
 |---|---|---|---|---|---|---|
 | [Whistlewood](flora/caramillo.md) | tree | 5-9 | Deep-soiled lower valley margins, Sheltered slopes above subsurface seepage, Moist fissure lines outside the central spring basin | draft | 3 | 1 fixable, 2 plausible |
-| [Red Ash Crust](flora/ceniza_roja.md) | moss_lichen | 0.001-0.006 | Cooled lava fields, Bare basalt and tuff, Exposed crater-rim rock | draft | 2 | 2 plausible |
+| [Ember Crust](flora/ceniza_roja.md) | moss_lichen | 0.001-0.006 | Cooled lava fields, Bare basalt and tuff, Exposed crater-rim rock | draft | 2 | 2 plausible |
 | [Tide Ribbon](flora/cinta_de_marea.md) | algae | 0.2-1.5 | Tidal shelf, Sheltered sea-arch pools, Shallow lagoons, Illuminated sunken-cave entrance | draft | 2 | 2 plausible |
 | [Sulfur Crust](flora/costra_de_azufre.md) | moss_lichen | 0.001-0.02 | Cooler hot-spring mixing margins, Oxygenated fumarole seep edges, Habitable geothermal rock surfaces below approximately 70 °C | draft | 2 | 2 plausible |
 | [Ash Tussock](flora/grama_de_ceniza.md) | grass | 0.2-0.6 | Cracks in cooled lava, Stable young scoria pockets, Damp protected fissures at alpine lava-field margins | draft | 3 | 3 plausible |
 | [Meteor Violet](flora/hierroflor.md) | herb | 0.1-0.4 | Metal-rich crater-floor patches, The bent ejecta ray, Weathered ground near meteor fragments | draft | 2 | 2 plausible |
 | [Lava Tongue](flora/lengua_de_lava.md) | rosette | 0.1-0.3 | Sheltered freshwater seeps on cooled young lava, Damp nutrient-poor volcanic fissures | draft | 2 | 2 plausible |
-| [Mother of Water](flora/madre_de_agua.md) | tree | 28-32 | The single dyke-dammed spring basin in the low eastern valley | draft | 2 | 2 plausible |
+| [Springmother](flora/madre_de_agua.md) | tree | 28-32 | The single dyke-dammed spring basin in the low eastern valley | draft | 2 | 2 plausible |
 | [Beacon Moss](flora/musgo_faro.md) | moss_lichen | 0.02-0.15 | Damp illuminated cave mouths, Lava-tube entrances, Waterfall-cave light fringe, Shaded fog-forest trunks | draft | 2 | 2 plausible |
 | [Fogcomber](flora/nieblon.md) | tree | 12-22 | Sheltered western fog forest, Protected western benches and gullies between 80 and 950 m | draft | 2 | 2 plausible |
 | [Sweet Straw](flora/paja_dulce.md) | grass | 0.08-1.2 | Dry eastern meadow, Start valley, Fog-trap meadow edges | draft | 2 | 2 plausible |
 | [Humus Bread](flora/pan_de_humus.md) | fungus_like | 0.02-0.18 | Wet aerated forest litter, Cave mouths, Unflooded upper lava tubes receiving organic debris, Aerated waterfall-cave deposits, Sunken-cave splash debris above prolonged immersion | draft | 2 | 2 plausible |
 | [Wellberry](flora/perlilla.md) | shrub | 0.8-2.5 | Groundwater-accessible spring-basin fringes, Moist pockets along the groundwater-damming dyke, Lower meadow margins with persistent capillary moisture | draft | 2 | 2 plausible |
 | [Shade Feather](flora/pluma_de_sombra.md) | fern | 0.3-1.4 | Wet western forest understory, Shaded riverbanks, Illuminated cave mouths, Waterfall-cave spray fringe | draft | 2 | 2 plausible |
-| [Snowshield Rosette](flora/rodela_de_nieve.md) | rosette | 1.5-2.5 | Sheltered high volcanic slopes, Snowline gullies from about 1750 m, Leeward alpine gullies below the summit | draft | 2 | 2 plausible |
+| [Snowshield](flora/rodela_de_nieve.md) | rosette | 1.5-2.5 | Sheltered high volcanic slopes, Snowline gullies from about 1750 m, Leeward alpine gullies below the summit | draft | 2 | 2 plausible |
 | [Saltweeper](flora/salvisca.md) | shrub | 0.3-1.2 | Coastal spray belt above mean high tide, Drained upper-shore pockets, Sea-arch and islet margins above regular inundation | draft | 2 | 1 fixable, 1 plausible |
 | [Canopy Rope](flora/soga_de_dosel.md) | vine | 1-32 | Sheltered western forest canopy, The spring giant's branches, Sheltered riverbank woodland | draft | 2 | 2 fixable |
 | [Riverbraid](flora/trenza_de_ribera.md) | shrub | 2-6 | Freshwater riverbanks, Seasonally moist gravel bars, Groundwater-connected channels and spring outflows | draft | 2 | 1 fixable, 1 plausible |
-| [Fogcandle](flora/velilla.md) | herb | 0.15-0.45 | Open seasonal meadow hollows, Unshaded spring-basin outskirts, Moist tuff pockets between tussocks | draft | 2 | 1 fixable, 1 plausible |
+| [Dawnlamp](flora/velilla.md) | herb | 0.15-0.45 | Open seasonal meadow hollows, Unshaded spring-basin outskirts, Moist tuff pockets between tussocks | draft | 2 | 1 fixable, 1 plausible |
 | [Redvein](flora/vetirroja.md) | herb | 0.3-0.9 | Enriched disturbed meadow margins, Old latrine and nest edges, Drained carcass-enriched soil | draft | 2 | 2 fixable |
 
 ## Zonation, coast to summit
