@@ -5,6 +5,7 @@ render_mode unshaded, cull_disabled, world_vertex_coords;
 #include "res://game/shaders/land.gdshaderinc"
 #include "res://game/shaders/terrain_maps.gdshaderinc"
 
+uniform vec2 nest_center = vec2(-10000.0);
 uniform vec3 center = vec3(0.0);
 uniform sampler2D relief_tex : filter_linear, repeat_disable;   // A: baked sun visibility (PLAN-rock step 9)
 uniform float rock_shadows = 0.0;                               // 0 off (the default), 1 on
@@ -26,7 +27,7 @@ void vertex() {
 	float fade = lod > 0.5 ? (1.0 - smoothstep(110.0, 140.0, d)) * smoothstep(30.0, 48.0, d) : 1.0 - smoothstep(30.0, 44.0, d);
 	float clump = COLOR.r;
 	float rolling = 0.65 + 0.55 * sin(base.x * 0.033 + sin(base.y * 0.027)) * 0.5 + tone(base) * 0.4;
-	float mask = surface_bilinear(base).g;
+	float mask = surface_bilinear(base).g * smoothstep(2.4, 3.2, length((base - nest_center) * vec2(1.0, 1.22)));
 	float hg = mix(0.48 + 0.75 * clump, 0.3 + 0.4 * clump, lod) * rolling * mask * fade;
 	float ground = vground_tri(base) - 0.025;
 	vec3 gn = ground_normal(base);
