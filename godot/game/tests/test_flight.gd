@@ -329,18 +329,119 @@ func _physics(t) -> void:
 	heavy.vel = Vector3(8, 0, 0)
 	var hres := _glide_sim(heavy, 60.0, {}, Callable(self, "_cliff"))
 	t.check(hres.landed and hres.ev.damage > 0.0, "a stalled body over a 40 m drop is hurt (equivalent drop %.1f m)" % hres.ev.h_eq)
-	# bank follows steering and turns the heading
-	var turn := _plan_model()
-	turn.takeoff(Vector3(-5, 40, 0), Vector3.ZERO, Vector2(1, 0))
-	_glide_sim(turn, 3.0, {}, Callable(self, "_cliff"))
-	var h0 := Vector2(turn.vel.x, turn.vel.z).normalized()
-	var max_bank := 0.0
+	_bird_turn(t)
+
+# A level cruiser at 18 m/s, 500 m up over flat ground, heading +Z. lift_mul 0 keeps the model's own; `balanced` sets it so that the
+# pulled-up lift cancels the weight at the given bank (tan), the textbook level turn.
+func _cruiser(balanced_tan := -1.0) -> FlightTest:
+	var f := _plan_model()
+	f.mode = "glide"
+	f.pos = Vector3(0, 500.0, 0)
+	f.vel = Vector3(0, 0, 18.0)
+	f.climb_out = 0.0
+	if balanced_tan >= 0.0:
+		var q := 0.5 * FlightTest.RHO * 18.0 * 18.0
+		f.lift_mul = float(f.spec.mass) * FlightTest.G / (q * float(f.spec.area) * f.cl_best())
+	return f
+
+func _bird_turn(t) -> void:
+	var flat := Callable(self, "_flat")
+	var dt := 1.0 / 60.0
+	# 1. roll leads: holding left builds the bank gradually, it does not jump to the clamp
+	var f := _cruiser()
+	f.step(dt, {"roll": 1.0}, flat)
+	t.check(f.bank_t > 0.0 and f.bank_t < 0.1, "a held turn key starts the roll gently (tan bank %.3f after one frame)" % f.bank_t)
+	var tan30 := 0.0
+	var t_half := -1.0
+	var t_max := -1.0
+	var time := dt
+	var yaw_at_30 := 0.0
+	while time < 4.0:
+		f.step(dt, {"roll": 1.0}, flat)
+		time += dt
+		if t_half < 0.0 and f.bank_t >= 0.577:
+			t_half = time
+		if t_max < 0.0 and f.bank_t >= FlightTest.BANK_MAX_T - 1e-4:
+			t_max = time
+	t.check(t_half > 0.4 and t_half < 1.0, "a 30 degree bank takes %.2f s of holding (between 0.4 and 1 s)" % t_half)
+	t.check(t_max > 1.3 and t_max < 2.6, "the sharp 60 degree bank takes %.2f s of holding" % t_max)
+	t.check(f.bank_t <= FlightTest.BANK_MAX_T + 1e-6 and f.yaw_rate > 0.0, "the bank stops at 60 degrees and the bird turns left (%.2f rad/s)" % f.yaw_rate)
+	# a tap is a gentle turn
+	var tap := _cruiser()
+	for i in 20:
+		tap.step(dt, {"roll": -1.0}, flat)
+	var after_tap := tap.bank_t
+	t.check(after_tap < -0.12 and after_tap > -0.9, "a third of a second of D banks right, gently (tan %.2f)" % after_tap)
+	# 2. roll-out: release the key and the wings come back level, smoothly
+	var prev := f.bank_t
+	var max_step := 0.0
+	var back := 0.0
+	for i in 400:
+		f.step(dt, {}, flat)
+		max_step = maxf(max_step, absf(f.bank_t - prev))
+		prev = f.bank_t
+		if absf(f.bank_t) < 0.02 and back == 0.0:
+			back = float(i + 1) * dt
+	t.check(back > 0.3 and back < 5.0 and absf(f.bank_t) < 0.01, "releasing the key rolls back out to level in %.2f s" % back)
+	t.check(max_step < 0.03, "the roll-out has no jerk (largest frame step in tan bank %.4f)" % max_step)
+	# 3. turn rate is the horizontal part of the lift: g tan(phi) / v, to 5 %
+	for bank in [0.36, 0.577, 1.0]:
+		var b := _cruiser(bank)
+		var yaw := 0.0
+		var pred := 0.0
+		for i in 15:
+			b.bank_t = bank
+			b.roll_rate = 0.0
+			var v := b.vel.length()
+			b.step(dt, {}, flat)
+			yaw += b.yaw_rate * dt
+			pred += FlightTest.G * bank / v * dt
+		t.check(absf(yaw / pred - 1.0) < 0.05, "turn rate at tan %.2f is g tan(phi)/v within 5 %% (%.3f vs %.3f rad in 0.25 s)" % [bank, yaw, pred])
+	# the heading never changes without a bank (no direct yaw from the keys)
+	var lvl := _cruiser()
+	for i in 120:
+		lvl.step(dt, {}, flat)
+	t.check(absf(lvl.vel.x) < 1e-4 and absf(lvl.yaw_rate) < 1e-4, "wings level, the heading holds (vx %.6f)" % lvl.vel.x)
+	# 4. a held-altitude 45 degree turn bleeds speed (and CL went up by 1/cos)
+	var turn := _cruiser(1.0)
+	var level := _cruiser(1.0)
+	var y0 := turn.pos.y
+	for i in 240:
+		turn.bank_t = 1.0
+		turn.roll_rate = 0.0
+		turn.step(dt, {}, flat)
+		level.step(dt, {}, flat)
+	t.check(absf(turn.last_cl * 0.7071 / level.last_cl - 1.0) < 0.12 or turn.last_cl > level.last_cl * 1.2, "CL rises in the bank (%.2f vs %.2f level)" % [turn.last_cl, level.last_cl])
+	t.check(turn.vel.length() < level.vel.length() - 0.3, "a 45 degree turn loses speed (%.2f vs %.2f m/s level after 4 s)" % [turn.vel.length(), level.vel.length()])
+	t.check(absf(turn.pos.y - y0) < 25.0 and not turn.overbank, "and the altitude holds well enough (%.1f m)" % (turn.pos.y - y0))
+	# too much bank or too little speed: it sinks (CL would exceed CL_MAX), and it says so
+	var steep := _cruiser()
+	steep.vel = Vector3(0, 0, steep.stall_speed() * 1.15)
+	var sink0 := steep.pos.y
+	var saw_over := false
 	for i in 180:
-		turn.step(1.0 / 60.0, {"steer": Vector2(h0.y, -h0.x)}, Callable(self, "_cliff"))       # ask for the creature's left
-		max_bank = maxf(max_bank, turn.bank_t)
-	var h1 := Vector2(turn.vel.x, turn.vel.z).normalized()
-	t.check(max_bank > 0.5, "banked to the left to turn left (tan bank %.2f)" % max_bank)
-	t.check(h0.x * h1.y - h0.y * h1.x < -0.2 and turn.mode != "ground", "and the heading turned left (%.2f)" % (h0.x * h1.y - h0.y * h1.x))
+		steep.bank_t = FlightTest.BANK_MAX_T
+		steep.roll_rate = 0.0
+		steep.step(dt, {}, flat)
+		saw_over = saw_over or steep.overbank
+	t.check(saw_over and steep.pos.y < sink0 - 8.0, "60 degrees near the stall speed overbanks and sinks (%.1f m in 3 s)" % (steep.pos.y - sink0))
+	# 5. the head stays on the horizon while the body rolls
+	var hd := _cruiser()
+	var worst_head := 0.0
+	var worst_body := 0.0
+	for i in 150:
+		hd.step(dt, {"roll": 1.0}, flat)
+		worst_head = maxf(worst_head, absf(hd.head_roll()))
+		worst_body = maxf(worst_body, absf(atan(hd.bank_t)))
+	t.check(rad_to_deg(worst_body) > 55.0 and rad_to_deg(worst_head) < 6.0, "the head stays within %.1f degrees of level while the body rolls %.0f" % [rad_to_deg(worst_head), rad_to_deg(worst_body)])
+	# determinism
+	var da := _cruiser()
+	var db := _cruiser()
+	for i in 300:
+		var inp := {"roll": 1.0 if (i / 70) % 2 == 0 else -1.0, "pitch": 0.2}
+		da.step(dt, inp, flat)
+		db.step(dt, inp, flat)
+	t.check(da.pos == db.pos and da.vel == db.vel and da.bank_t == db.bank_t, "the turn is deterministic")
 
 func _ground_takeoff(t) -> void:
 	var g: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://game/data/flyer.json"))

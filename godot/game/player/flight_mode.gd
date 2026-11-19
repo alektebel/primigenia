@@ -6,7 +6,8 @@ extends RefCounted
 ## (logged like every debug op, so the session replays and wild AI keeps seeing the player). Landing hands the creature back to C.
 ##
 ## Controls (decision D6): Space tap = one beat, hold = flap, release = glide; Ctrl = dive; S / W = pitch (slower and floatier /
-## faster); A / D = turn (the bank follows). Space on the ground takes off (a run helps; the HUD says why a body cannot).
+## faster); A / D = roll left / right (the bank builds while held, the
+## heading follows from the tilted lift, release rolls out); the mouse does the same (sideways = bank, up / down = pitch). Space on the ground takes off (a run helps; the HUD says why a body cannot).
 
 const FlightTest := preload("res://game/player/flight_test.gd")
 const LocoWing := preload("res://locomotion/loco_wing.gd")
@@ -26,6 +27,11 @@ var teleports_sent := 0
 var message := ""
 var message_t := 0.0
 var _space_edge := false
+var _mouse_dx := 0.0           # pixels moved since the last tick (flying, no button held)
+var _mouse_dy := 0.0
+var _mouse_turn := 0.0         # smoothed mouse commands, -1..1
+var _mouse_pitch := 0.0
+const MOUSE_FULL := 700.0      # px/s of sideways movement that commands the full roll rate
 var _hud: Label = null
 var _canvas: CanvasLayer = null
 var _spec_key := ""
@@ -116,6 +122,9 @@ func handle_input(event: InputEvent) -> bool:
 	if event is InputEventKey and event.keycode == KEY_SPACE and event.pressed and not event.echo:
 		_space_edge = true
 		return true
+	if event is InputEventMouseMotion and model != null and model.airborne() and event.button_mask == 0:
+		_mouse_dx += event.relative.x
+		_mouse_dy += event.relative.y
 	return false
 
 func press_space() -> void:
@@ -153,13 +162,18 @@ func tick(dt: float) -> void:
 		else:
 			if _space_edge:
 				model.press_flap()
-			var steer = null
 			var turn := float(k.get("turn", 0.0))
-			if absf(turn) > 0.01:
-				var f := model.yaw_dir
-				var lf := Vector2(f.y, -f.x)       # the creature's left (+X when facing +Z)
-				steer = (f + lf * -turn * 0.9).normalized()
-			var ev := model.step(dt, {"flap": bool(k.get("flap", false)), "dive": bool(k.get("dive", false)), "pitch": float(k.get("pitch", 0.0)), "steer": steer}, Callable(Game, "visual_ground"))
+			var pitch := float(k.get("pitch", 0.0))
+			if keys_override == null and dt > 0.0:
+				# the mouse commands like the keys: sideways movement is the roll rate (right = D), up / down is the pitch (up = W)
+				var gain := 1.0 - exp(-dt / 0.12)
+				_mouse_turn = lerpf(_mouse_turn, clampf(_mouse_dx / dt / MOUSE_FULL, -1.0, 1.0), gain)
+				_mouse_pitch = lerpf(_mouse_pitch, clampf(_mouse_dy / dt / MOUSE_FULL, -1.0, 1.0), gain)
+				turn = clampf(turn + _mouse_turn, -1.0, 1.0)
+				pitch = clampf(pitch + _mouse_pitch, -1.0, 1.0)
+			_mouse_dx = 0.0
+			_mouse_dy = 0.0
+			var ev := model.step(dt, {"flap": bool(k.get("flap", false)), "dive": bool(k.get("dive", false)), "pitch": pitch, "roll": -turn}, Callable(Game, "visual_ground"))
 			if ev.landed:
 				_touchdown(ev)
 			if ev.ended:
@@ -228,7 +242,7 @@ func _update_wing(dt: float, k: Dictionary) -> void:
 	var m := "ground"
 	if model.mode in ["glide", "flap", "dive", "flare"]:
 		m = model.mode
-	wing.step(dt, {"mode": m, "power": 1.0, "pitch": -float(k.get("pitch", 0.0)) if m != "ground" else 0.0})
+	wing.step(dt, {"mode": m, "power": 1.0, "pitch": -float(k.get("pitch", 0.0)) if m != "ground" else 0.0, "bank": clampf(model.bank_t / FlightTest.BANK_MAX_T, -1.0, 1.0) if m != "ground" else 0.0})
 	if m != "ground" or wing.deploy > 0.01 or wing.amp > 0.01:
 		_wing_pose_pending = wing.channels()      # written in post_update, after the action layer's own hinge values
 		_wing_active = true
@@ -284,7 +298,7 @@ func sample(base: Dictionary) -> Dictionary:
 	var r := model.orientation()
 	var origin2 := model.pos - r * com_local
 	return {"pos": origin2, "yaw": yaw, "speed": model.vel.length(), "speed_c": model.vel.length(), "vel": model.vel,
-		"flight": {"basis": r, "com": model.pos, "mode": model.mode, "bank": model.bank_t}}
+		"flight": {"basis": r, "com": model.pos, "mode": model.mode, "bank": model.bank_t, "head_roll": model.head_roll()}}
 
 ## Altitude of the flyer above the ground below it (0 on the ground), for the chase camera.
 func altitude() -> float:
@@ -306,7 +320,7 @@ func _update_hud() -> void:
 	if model.active():
 		var ground: Callable = Callable(Game, "visual_ground")
 		lines.append("FLIGHT  %s   V %.1f m/s   alt %.1f m   sink %+.1f m/s   stamina %d%%" % [model.mode, model.vel.length(), model.altitude(ground), model.vel.y, int(model.stamina * 100.0)])
-		lines.append("L/D %.1f   stall %.1f m/s%s   Space flap, Ctrl dive, W/S pitch, A/D turn" % [model.glide_ratio(), model.stall_speed(), "  STALLING" if model.stalled else ""])
+		lines.append("L/D %.1f   stall %.1f m/s%s   Space flap, Ctrl dive, W/S pitch, A/D or mouse: bank + pitch" % [model.glide_ratio(), model.stall_speed(), "  STALLING" if model.stalled else ("  BANK TOO STEEP: sinking" if model.overbank else "")])
 	else:
 		var r := model.report()
 		lines.append("Flight test: Space takes off.  %s.  loading %.0f N/m2, stall %.1f m/s, L/D %.1f, %.0f W vs %.0f W needed" % [str(r.capability).to_upper(), r.wing_loading, r.stall, r.ld, r.power, r.p_req if r.p_req < INF else -1.0])

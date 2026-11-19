@@ -15,7 +15,8 @@ F3 tuning, group `flight`: `lift_mul` (global lift gain, default 1), `power_mul`
 
 Controls (decision D6): **Space** on the ground takes off (a run helps; the HUD says why a body cannot), in the air Space tap = one
 beat, hold = flap, release = glide. **Ctrl** dive (wings fold to 40 % of the span). **S / W** pitch (slower and floatier / faster).
-**A / D** turn (the bank follows). Landing is an automatic flare below 1.5 body lengths of altitude.
+**A / D** roll left / right and the **mouse** (sideways = bank, up / down = pitch) do the same. Turning is bird-like (see
+"How the bird turns" below). Landing is an automatic flare below 1.5 body lengths of altitude.
 
 Merodeador (6 t) cannot fly by physics (stall about 120 m/s): the HUD and `fly report` say so. Raise `flight/lift_mul` to about 60
 to try it anyway (D4: a global fun knob, never per creature).
@@ -64,3 +65,16 @@ loco 254, play 217, flight scenario 22, all with 0 failures.
 Hinge-only wings (W1 brings jointed membranes); the legs tuck but the spine keeps its last ground bend; roll of the camera is not
 followed; pointer steering is not wired in the air (A/D only); landing damage is reported (HUD, console) but not applied to hp
 until run-fall's curve exists; the mass of wings and flight muscle does not yet feed `loco_rig_adapter.gd`.
+
+
+## How the bird turns
+
+Roll leads, yaw follows. A / D (or sideways mouse) command a roll *rate* (d tan(bank)/dt = 1.1, lagged 0.2 s): a tap banks gently
+(about 20 degrees), holding 0.6 s gives 30 degrees, 1.7 s the sharpest 60 degrees (`BANK_MAX_T = tan 60`). There is no direct yaw:
+the heading changes only through the horizontal part of the tilted lift, rate = g tan(phi) / v. Releasing the key rolls back
+to level (proportional, at most 1.3 tan/s). In a bank the bird pulls up, CL x 1/cos(phi) up to CL_MAX, to hold altitude, so it
+bleeds speed (induced drag); past CL_MAX (too steep or too slow) it sinks and the HUD says "BANK TOO STEEP: sinking".
+Presentation: the inner wing is flexed (shorter, swept back) and held higher, the outer wing extended (`loco_wing.gd`, `bank`
+channel); the neck rolls back against the body so the head keeps within 8 % of the bank of the horizon (`HEAD_STAB`), the
+tail twists into the turn and fans (`actor_driver.gd`). The camera follows the flight path with a 0.7 s yaw lag and rolls 30 %
+of the bank, eased over 0.35 s. Evidence: `docs/evidence/godot/bird-turn/` (behind and side sequences, `turn.csv`).
