@@ -119,7 +119,7 @@ static int replay(const char *path){
         if(slash&&snapshot_path[0]!='/')snprintf(full,sizeof full,"%.*s/%s",(int)(slash-path),path,snapshot_path);
         else snprintf(full,sizeof full,"%s",snapshot_path);
         FILE *sf=fopen(full,"rb");
-        static uint8_t blob[1<<16];
+        static uint8_t blob[48+offsetof(CpStageWorld,field)];
         size_t len=sf?fread(blob,1,sizeof blob,sf):0;
         if(sf)fclose(sf);
         int rc=cp_stage_restore(&world,blob,len,field_ready?&field:NULL);

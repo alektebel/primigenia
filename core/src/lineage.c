@@ -519,3 +519,60 @@ void cp_lineage_to_legacy(const CpLineage *l, Cp5Legacy *out)
         out->bonus[i] = b < 0.80f ? 0.80f : (b > 1.60f ? 1.60f : b);
     }
 }
+
+/* L0 event ledger. This integer-only layer is independent of the legacy genome conversions above. */
+#include "cpore/ledger.h"
+#include <stdio.h>
+#include <stdarg.h>
+#include <limits.h>
+static const char *deed_names[CP_DEED_COUNT]={"kills","befriends","intimidations","meat","plants","observations","distance_cm","nest_ticks","digging","building","fights_started","fights_fled","night_ticks","gifts","hunts","foraging","new_places","hoarding","bigger_approaches","deep_dives","stealth","swimming_ticks","flight_ticks","void_ticks"};
+static const char *trait_names[CP_TRAIT_COUNT]={"hunter","social","nocturnal","burrower","aquatic","flyer","void-adapted"};
+const char *cp_ledger_deed_name(int id){return id>=0&&id<CP_DEED_COUNT?deed_names[id]:"unknown";}
+const char *cp_ledger_trait_name(int id){return id>=0&&id<CP_TRAIT_COUNT?trait_names[id]:"unknown";}
+static uint32_t sat_add(uint32_t a,uint32_t b){return UINT32_MAX-a<b?UINT32_MAX:a+b;}
+void cp_ledger_init(CpLedger *l){memset(l,0,sizeof *l);l->enabled=1;l->generation=1;}
+int cp_ledger_append(CpLedger *l,uint32_t tick,uint32_t kind,uint32_t id,uint32_t value,int32_t x,int32_t z,uint32_t cause){
+ if(!l||!l->enabled||kind>CP_LEDGER_TYPE)return -1;
+ if(l->count>=CP_LEDGER_CAP)return -1;
+ l->entries[l->count++]=(CpLedgerEntry){tick,kind,id,value,x,z,cause};return 0;
+}
+int cp_ledger_deed(CpLedger *l,uint32_t tick,int deed,uint32_t amount,int32_t x,int32_t z,uint32_t cause){
+ if(!l||!l->enabled||deed<0||deed>=CP_DEED_COUNT||deed==CP_DEED_SWIMMING||deed==CP_DEED_FLIGHT||deed==CP_DEED_VOID||!amount)return -1;
+ l->deeds[deed]=sat_add(l->deeds[deed],amount);l->current[deed]=sat_add(l->current[deed],amount);
+ if(l->count<CP_LEDGER_DEED_CAP)cp_ledger_append(l,tick,CP_LEDGER_DEED,deed,amount,x,z,cause);
+ else l->dropped=sat_add(l->dropped,1);
+ const int earned[]={l->deeds[CP_DEED_KILLS]>=3,l->deeds[CP_DEED_BEFRIENDS]>=3,l->deeds[CP_DEED_NIGHT]>=600,l->deeds[CP_DEED_DIGGING]>=20,0,0,0};
+ for(int i=0;i<CP_TRAIT_COUNT;i++)if(earned[i]&&!(l->traits&(1u<<i))){
+  if(!cp_ledger_append(l,tick,CP_LEDGER_TRAIT,i,1,x,z,cause))l->traits|=1u<<i;
+ }
+ return 0;
+}
+static void ledger_u32(uint64_t *h,uint32_t v){for(int i=0;i<4;i++){*h^=(uint8_t)(v>>(8*i));*h*=1099511628211ULL;}}
+uint64_t cp_ledger_hash(const CpLedger *l){
+ uint64_t h=14695981039346656037ULL;
+ ledger_u32(&h,l->enabled);ledger_u32(&h,l->count);ledger_u32(&h,l->dropped);ledger_u32(&h,l->traits);ledger_u32(&h,l->generation);
+ for(int i=0;i<CP_DEED_COUNT;i++){ledger_u32(&h,l->deeds[i]);ledger_u32(&h,l->current[i]);}
+ for(uint32_t i=0;i<l->count;i++){const CpLedgerEntry *e=&l->entries[i];ledger_u32(&h,e->tick);ledger_u32(&h,e->kind);ledger_u32(&h,e->id);ledger_u32(&h,e->value);ledger_u32(&h,e->x);ledger_u32(&h,e->z);ledger_u32(&h,e->cause);}
+ return h;
+}
+static int ledger_json(char *out,size_t cap,size_t *used,const char *fmt,...){
+ if(*used>=cap)return -1;
+ va_list ap;va_start(ap,fmt);int n=vsnprintf(out+*used,cap-*used,fmt,ap);va_end(ap);
+ if(n<0||(size_t)n>=cap-*used)return -1;
+ *used+=(size_t)n;return 0;
+}
+int cp_ledger_export(const CpLedger *l,char *out,size_t cap){
+ if(!l||!out)return -1;
+ size_t used=0;
+#define LJ(...) do{if(ledger_json(out,cap,&used,__VA_ARGS__))return -1;}while(0)
+ LJ("{\"format\":\"cpore.lineage/1\",\"enabled\":%s,\"generation\":%u,\"traits\":[",l->enabled?"true":"false",l->generation);
+ int sep=0;for(int i=0;i<CP_TRAIT_COUNT;i++)if(l->traits&(1u<<i)){LJ("%s\"%s\"",sep?",":"",trait_names[i]);sep=1;}
+ LJ("],\"deeds\":{");for(int i=0;i<CP_DEED_COUNT;i++)LJ("%s\"%s\":%u",i?",":"",deed_names[i],l->deeds[i]);
+ LJ("},\"current_deeds\":{");for(int i=0;i<CP_DEED_COUNT;i++)LJ("%s\"%s\":%u",i?",":"",deed_names[i],l->current[i]);
+ LJ("},\"deeds_aggregated\":%u,\"entries\":[",l->dropped);
+ static const char *kinds[]={"trait_earned","part_gained","part_lost","evolved","deed","type"};
+ for(uint32_t i=0;i<l->count;i++){const CpLedgerEntry *e=&l->entries[i];LJ("%s{\"tick\":%u,\"kind\":\"%s\",\"id\":%u,\"value\":%u,\"x\":%d,\"z\":%d,\"cause\":%u}",i?",":"",e->tick,kinds[e->kind],e->id,e->value,e->x,e->z,e->cause);}
+ LJ("]}");
+#undef LJ
+ return (int)used;
+}

@@ -1,3 +1,4 @@
+#include <stdlib.h>
 /* Steering and slope rules of the stage creatures (core/src/steer.c, docs/godot/LOCOMOTION.md "Steering").
  * Everything goes through the public world API, so the tests cover what a replay sees.
  *   build/steer_test */
@@ -279,14 +280,14 @@ static int test_determinism(void){
     flat_world(&twin,300,4,6);
     CHECK(run_script(&w,a)==run_script(&twin,b));
     /* and a snapshot taken mid-turn replays to the same hashes */
-    static uint8_t blob[1<<16];
+    uint8_t *blob=malloc(cp_stage_snapshot_size());
     flat_world(&w,300,4,6);
     CpStageInput g={.verb=CP_STAGE_GO,.x=30,.z=40};
     for(int i=0;i<30;i++)cp_stage_step(&w,i==0?&g:NULL);
     g.x=-30;g.z=-20;
     cp_stage_step(&w,&g);
     CHECK(w.player.omega!=0);
-    const int len=cp_stage_snapshot(&w,blob,sizeof blob);
+    const int len=cp_stage_snapshot(&w,blob,cp_stage_snapshot_size());
     CHECK(len>0&&cp_stage_restore(&twin,blob,(size_t)len,NULL)==0);
     for(int i=0;i<200;i++)CHECK(cp_stage_step(&w,NULL)==cp_stage_step(&twin,NULL));
     return 0;

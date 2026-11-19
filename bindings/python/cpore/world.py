@@ -13,7 +13,7 @@ from .env import lib as _core_lib
 # Layout sizes from the native headers (64-bit LP64). CpStageWorld grows with the engine, so its size
 # is asked from the library (cp_stage_world_size) when the stage API is bound.
 _WORLD_BYTES = 0
-_SETUP_BYTES = 17604
+_SETUP_BYTES = 17704
 
 CP_STAGE_CONTINUE = 0
 CP_STAGE_WAIT = 1
@@ -67,6 +67,7 @@ class CpStageSpawn(ctypes.Structure):
         ("species", c_int32),
         ("bot", c_int32),
         ("profile", CpCombatProfile),
+        ("legs", c_int32),
     ]
 
 
@@ -93,6 +94,7 @@ class CpStageSetup(ctypes.Structure):
         ("water_z", c_float),
         ("water_radius", c_float),
         ("player", CpCombatProfile),
+        ("player_legs", c_int32),
         ("wild", CpStageSpawn * CP_STAGE_MAX_WILD),
         ("obstacles", CpStageObstacle * CP_STAGE_MAX_OBSTACLES),
     ]
@@ -308,6 +310,30 @@ class StageWorld:
         if self._lib.cp_stage_reset(self._world, ctypes.byref(self._setup)) != 0:
             raise RuntimeError("cp_stage_reset failed")
         return self.observe()
+
+    def lineage_begin(self) -> int:
+        self._lib.cp_stage_lineage_begin.argtypes = [c_void_p]
+        return int(self._lib.cp_stage_lineage_begin(self._world))
+
+    def lineage_award(self, deed: int, amount: int = 1, cause: int = 0) -> int:
+        self._lib.cp_stage_lineage_award.argtypes = [c_void_p, c_int32, c_uint32, c_uint32]
+        if not 0 < amount <= 0xFFFFFFFF or not 0 <= cause <= 0xFFFFFFFF:
+            raise ValueError("amount must be a positive uint32 and cause a uint32")
+        return int(self._lib.cp_stage_lineage_award(self._world, deed, amount, cause))
+
+    def lineage_perk(self, kind: int, serial: int, amount: int) -> int:
+        if not 0 < serial <= 0xFFFFFFFF or not 0 <= amount <= 0x7FFFFFFF:
+            raise ValueError("serial must be positive uint32 and amount a nonnegative int32")
+        self._lib.cp_stage_lineage_perk.argtypes = [c_void_p, c_int32, c_uint32, c_int32]
+        return int(self._lib.cp_stage_lineage_perk(self._world, kind, serial, amount))
+
+    def lineage(self) -> dict:
+        self._lib.cp_stage_lineage_export.argtypes = [c_void_p, c_void_p, c_size_t]
+        buf = ctypes.create_string_buffer(1000000)
+        n = self._lib.cp_stage_lineage_export(self._world, buf, len(buf))
+        if n < 0:
+            raise RuntimeError("lineage buffer too small")
+        return json.loads(buf.value[:n])
 
     def command(self, text: str) -> int:
         return int(self._lib.cp_stage_command(self._world, text.encode()))

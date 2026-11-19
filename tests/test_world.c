@@ -410,7 +410,7 @@ static CpStageWorld snap_a,snap_b;
 static void snapshots(void){
     assert(cp_stage_world_size()==sizeof(CpStageWorld));
     assert(cp_stage_snapshot_size()==48+offsetof(CpStageWorld,field));
-    static uint8_t blob[1<<16],again[1<<16];
+    static uint8_t blob[48+offsetof(CpStageWorld,field)],again[48+offsetof(CpStageWorld,field)];
     const unsigned seeds[]={1,42,987654321};
     for(unsigned si=0;si<3;si++){
         CpStageSetup su;
@@ -450,7 +450,7 @@ static void snapshots(void){
     int n=cp_stage_snapshot(&w,blob,sizeof blob);
     assert(n>0);
     const uint64_t before=cp_stage_hash(&snap_b);
-    uint8_t bad[1<<16];
+    uint8_t bad[48+offsetof(CpStageWorld,field)];
     memcpy(bad,blob,(size_t)n);bad[0]='X';
     assert(cp_stage_restore(&snap_b,bad,(size_t)n,NULL)==CP_STAGE_SNAP_ERR_MAGIC);
     memcpy(bad,blob,(size_t)n);bad[8]=CP_STAGE_SNAPSHOT_VERSION+1;
@@ -624,7 +624,7 @@ static void field_mode(void){
     cp_stage_attach_field(&second,&other_field);
     assert(cp_stage_reset(&second,&setup)==0&&cp_stage_hash(&second)!=base);
     /* snapshot of a FIELD world needs the field back */
-    static uint8_t blob[1<<16];
+    static uint8_t blob[48+offsetof(CpStageWorld,field)];
     for(int i=0;i<20;i++)cp_stage_step(&w,NULL);
     int n=cp_stage_snapshot(&w,blob,sizeof blob);
     assert(n>0);
@@ -795,7 +795,7 @@ static void debug_ops(void){
         while(cur<golden_ndbg&&golden_dbg[cur].tick==(uint32_t)i)assert(cp_stage_debug(&w,&golden_dbg[cur++].d)==0);
         assert(cp_stage_step(&w,&log[i].input)==hashes[i]);
         if(i==1499){   /* snapshot mid-run, continue from it with the remaining ops */
-            static uint8_t blob[1<<16];
+            static uint8_t blob[48+offsetof(CpStageWorld,field)];
             int n=cp_stage_snapshot(&w,blob,sizeof blob);
             assert(n>0);
             CpStageLogEntry tail[GOLDEN_TICKS];int nt=0;
@@ -947,7 +947,7 @@ static void loadout_contract(void){
     log[n++]=(CpStageLogEntry){90,{.verb=CP_STAGE_LOADOUT,.target=1,.move=CB_MOVE_NONE}};
     static uint64_t live[N],rep[N];
     static CpStageWorld mid,tail;
-    static uint8_t blob[1<<16];
+    static uint8_t blob[48+offsetof(CpStageWorld,field)];
     int cur=0;
     for(int i=0;i<N;i++){
         while(cur<n&&log[cur].tick==(uint32_t)i)cp_stage_order(&w,&log[cur++].input);
