@@ -104,6 +104,8 @@ func _run() -> void:
 	sui.open_nest_editor()
 	await settle(30)
 	var ed = editor_layer().get_child(0)
+	if args.size() >= 4:
+		ed.set_lang(args[3])
 	check(ed.nest_rows.size() == 3, "creator lists the 3 starter parts only")
 	check(not ed.palette_buttons["pua"].visible, "a locked part is absent from the palette")
 	await shot("02_creator_start_locked")
@@ -157,6 +159,8 @@ func _run() -> void:
 	sui.open_nest_editor()
 	await settle(30)
 	ed = editor_layer().get_child(0)
+	if args.size() >= 4:
+		ed.set_lang(args[3])
 	var dna0: int = int(stage.world.state().social.dna_balance)
 	var total0: int = int(stage.world.state().social.dna_total)
 	await shot("08_creator_discovered_priced")

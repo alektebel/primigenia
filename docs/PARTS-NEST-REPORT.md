@@ -1,6 +1,6 @@
 # Parts, nest and eggs — C2 report
 
-Worktree: `c2-parts-nest`, branch `c2/parts-nest`. All changes are uncommitted. No screenshots were taken. The implementation uses the existing fixed nest, social DNA account, creator, diegetic whisper API and `cp_stage_evolve` ancestry path.
+Worktree: `c2-parts-nest`, branch `c2/parts-nest`. Codex's work was integrated, merged with `claude/v0.1-restore` and adjusted to the A25 owner decisions by Sonnet (see the integration section at the end, which supersedes anything above that it contradicts). The implementation uses the existing fixed nest, social DNA account, creator, diegetic whisper API and `cp_stage_evolve` ancestry path.
 
 ## Slices and intended commits
 
@@ -79,3 +79,90 @@ Only the five death-containing world hash files changed. Inputs are unchanged. E
 4. Invalid confirmation shows its inline error; valid confirmation returns to the valley with the changed part, a previous-form cousin and ledger part-gain/loss entries.
 5. First death: two eggs remain and max HP is 60%; recovery after 1,200 ticks. Third death: no respawn and `parts.lost` true.
 6. Check the nest overlay at small-laptop size, Spanish and English, keyboard focus, cancellation, journal overflow and headless-test cleanup diagnostics.
+
+
+## Integration (Sonnet): commits, merge, A25, verification, evidence
+
+### Commits on `c2/parts-nest`
+
+1. `feat(core): parts discovery, nest editing, DNA purchases/levels/tiers and egg lineage (S1-S4)` (core, bindings, tests, web validators, Makefile).
+2. `test(golden): regenerate world hashes for egg-consuming deaths` (the five files documented above; prefixes before the first death are byte-identical to HEAD).
+3. `feat(godot): nest shop, creator overlay and discovery journal (S5)` (Godot, strings, this report).
+4. `Merge claude/v0.1-restore into c2/parts-nest`. The only textual conflict was the Makefile (both sides added test targets: kept `parts_nest_test` and the route-certification `routes_test` / `routes-test` / `godot-route-events-test`). `core/src/stage_world.c`, `island.gd`, `stage_ui.gd` and `cpore_world.cpp` auto-merged. The world goldens did not conflict and were not regenerated again: `make test` replays them and passes. Snapshot version stays **6**.
+5. The A25 / fix commit(s) below.
+
+### A25 owner adjustments (owner file wins over Codex)
+
+| A25 rule | Implementation |
+| --- | --- |
+| 1. Few starter parts | A new run owns and has discovered only `pico`, `pata`, `ojo`, with the small starting DNA budget the stage already gives (DNA 1 at the start). `island.gd` filters the saved genome to those parts for a fresh run. Locked parts are absent from the creator palette. Test: `a25()` in `tests/test_parts_nest.c`, `parts_nest_test.gd`. |
+| 2. Edit only at the nest | `cp_stage_edit` and the new `cp_stage_apply` both require `cp_stage_at_nest` (12 m, no fight, not lost); otherwise `-13`. Tested at 13 m. |
+| 3. Explicit Evolve | New `cp_stage_apply(w, genome)` (Godot `nest_apply`, Python `apply`): free repaint/rearrange at the nest. It never calls `cp_stage_evolve`, never spends DNA and never creates a generation; it replaces the current form's body (and radius) and returns `-23` (`CP_STAGE_ERR_NEEDS_EVOLVE`) when parts, levels, tiers or the derived combat profile would change. `cp_stage_edit` is now the Evolve action: it prices everything the genome adds (new discovered parts, levels, tiers if enabled), checks the DNA balance (`-24` `CP_STAGE_ERR_NO_DNA`), charges it atomically, calls `cp_stage_evolve` once, and restores parts and balance if the evolve itself fails. The `buy_part/level/tier` commands still exist for agents. In the creator, trying parts and levels is a free sketch with a pending-cost line; **Aplicar (gratis)** calls `nest_apply`; **Evolucionar** is the only button that spends DNA. Leaving the creator after a free apply keeps the new paint/layout without a new generation. |
+| 4. Zero eggs | C still freezes the stage (`parts.lost`, DNA kept). The stage UI now shows the end-of-lineage moment and its button returns to the last save (`island.load_game()`, no wipe, no new game); with no save it goes to the menu. Exercised in the evidence run. |
+| 5. Tiers behind a flag | Tiers T1/T2 stay implemented but `parts.tiers_on` is off by default (`cp_stage_set_tiers`, Godot `set_tiers`, Python `set_tiers`; reported as `parts.tiers_enabled`). Off: `buy_tier` and genome tiers are refused and the combat tier modifiers are not applied (including cousin forms). The Tier button is hidden in the creator. Tests turn the flag on. Levels 1-5 stay active. The flag is folded into the parts hash only once on, so existing hashes and goldens are untouched. |
+| 6. Clues | No recipe/clue model existed for fossils (the only clue model is observe). Added a counter: every inspected fossil or old carcass gives one clue (`parts.clues`, `parts.recipes = clues / 2`). Recipes themselves are left for the bone-spines slice. |
+
+### Small core fix
+
+`approach #X` during a fight on a creature other than the fight's opponent returned `-2`. It now returns `-14` (`in_fight`), like befriend/observe/gift. `attack` keeps `-2` and an invalid or dead target still returns `-2`. Test: `approach_in_fight()` in `tests/test_world.c`.
+
+### Other integration fixes (Codex had not run these suites)
+
+- `godot/creature/creature.gd` seeds stay `cpore.creature/4` (they had been relabelled /5 without level/tier, so they failed to parse; broke creature, play and lineage tests).
+- `web/studio/genome.js`: the /4 to /5 upgrade no longer throws on a null part; the parity fixture `godot/creature/tests/parity/expected.json` was regenerated with `gen_parity.cjs`; `test_creature.gd` now expects a /4 GLB-part document to upgrade to /5 with level 1, tier 0.
+- `godot/tests/ui_test.gd`: the keyboard loop uses the item count (the menu gained the Nest entry).
+- `godot/game/tests/play_test.gd`: a new run starts with pico/pata/ojo, so the loadout is bite + spit and the saved creature is starter-filtered. One check tolerates the lethal last hit having no layer impact (the starter body loses the scripted fight).
+- The nest panel in the creator is opaque (it sits over the stats column).
+
+### Verification (all under `build/parts-nest/`)
+
+| Check | Result |
+| --- | --- |
+| `make test` | PASS (includes world goldens and snapshots, `parts_nest_test` with the new `a25()` rules, `approach_in_fight()`, route certification, combat goldens). Goldens unchanged by the merge and by A25. |
+| `make smoke` | PASS (Python parts/nest smoke now also checks the free `apply`). |
+| `make tourney` | PASS: worst build field mean 62.3 percent, worst pooled pair 72.2 percent (gates 65/90). |
+| `godot-test` | PASS (rc 0) |
+| `godot-ui-test` | 538 checks, 0 failures |
+| `godot-creature-test` | 1471 checks, 0 failures; realism 64 checks, 0 failures |
+| `godot-studio-test` | 824 checks, 0 failures; web validator 8 files, 0 failures |
+| `godot-parts-nest-test` | PASS (extended with free apply, needs-Evolve refusal, pending cost, tier button hidden) |
+| `godot-play-test` | 217 checks, 0 failures |
+| `godot-lineage-test` | 0 failures (Godot and island) |
+| `godot-social-test` | 22 checks, 0 failures |
+| `godot-actions-test` | 345 checks, 0 failures |
+| `godot-soak` (10 sim minutes, xvfb software GL, images kept out of the repo) | 27 checks, 0 failures, no script errors |
+| `parts_nest_evidence.gd` (1280x720 ES, and 1024x600 EN) | 34 checks, 0 failures each |
+| `godot-agent-test` | not runnable here: cannot listen on 127.0.0.1:47110 in this sandbox (also unrelated to this change) |
+
+The Godot suites print the usual headless shutdown diagnostics (leaked RID, ObjectDB, resources in use); they are not counted as leak checks.
+
+### Evidence
+
+`docs/evidence/godot/parts-nest/` (JPG, 1280x720, software GL under xvfb, driven by `godot/game/tests/parts_nest_evidence.gd`):
+
+| File | Checklist item |
+| --- | --- |
+| `01_world_at_nest.jpg`, `02_creator_start_locked.jpg` | start: only pico/pata/ojo, locked parts absent, DNA 1 |
+| `03_outside_nest_refused.jpg` | 16 m from the nest: editor refuses ("Only at the nest") |
+| `04_fossil_marker_before.jpg`, `05_inspecting_ring.jpg`, `06_discovery_whisper.jpg` | surface find, 20-tick inspection, discovery whisper; a second inspect is refused in the run |
+| `07_journal.jpg` | journal lists the discovered ids (still a stub) |
+| `08_creator_discovered_priced.jpg`, `09_sketch_pending_cost.jpg` | discovered parts priced; a free sketch with a pending cost, balance unchanged |
+| `10_evolve_refused_inline.jpg` | unaffordable Evolve: disabled button and inline "not enough DNA" |
+| `11_valley_after_evolve.jpg`, `12_family_tree_ledger.jpg` | valley after Evolve (one generation, DNA lifetime unchanged, balance down); family tree shows the cousin branch and the `+ romo x1` ledger entry |
+| `13_first_death_two_eggs.jpg` | first death: two eggs, hatchling form |
+| `14_lineage_ends.jpg`, `15_back_at_last_save.jpg` | third death: end of the lineage, return to the last save |
+| `small-en/` (1024x600, English) | creator, priced parts, inline refusal, valley and end of lineage at small-laptop size in English |
+
+Not captured: keyboard focus traversal of the nest panel, journal overflow (the journal is a stub), a cousin in frame after Evolve (the cousin spawns about 32 m away; it is verified in the family tree and by the checks), and a tier purchase (tiers are off). The end-of-lineage text uses the engine default font, not the game's display font.
+
+### Open questions and remaining work
+
+- **Guard tier milestone semantics**: unchanged and now moot while tiers are off; needs a decision (count blocks?) before tiers are enabled.
+- **T1/T2 tournament matrix**: not run; tiers are disabled, so the existing T0 tourney (worst build field mean 62.3 percent, worst pair 72.2 percent) is the acceptance gate. A dedicated tier matrix is required before the flag is turned on.
+- **Journal design**: still a stub list of ids; no silhouettes, pagination, clue/recipe page or overflow handling.
+- **Tier meshes**: tier forms have names and modifiers but no distinct meshes or previews.
+- The creator's right-hand nest panel covers part of the stats column; a final layout pass is a design call.
+- The fresh-run starter filter is applied in `island.gd` when no scenario is pending; the studio/menu flow that creates the player's genome is unchanged.
+- Level-down below the owned level is not allowed (levels are never refunded); rearranging is free.
+- The Godot headless shutdown diagnostics (leaked RID / ObjectDB / resources) are unchanged.
+- `godot-agent-test` cannot run in this sandbox (cannot listen on 127.0.0.1:47110).
