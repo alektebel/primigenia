@@ -43,6 +43,11 @@ public:
     static godot::String order_error(int code);
     godot::Dictionary state() const;
     godot::String observe();
+    godot::String lineage() const;
+    int lineage_begin();
+    int lineage_perk(int kind,int serial,int amount);
+    int lineage_form(const godot::String &body,const godot::Dictionary &profile,const godot::Array &parts,const godot::String &name,bool evolve);
+    int lineage_award(int deed,int amount,int cause);
     godot::String hash() const;
     double height(double x, double z) const;
     double ground(double x, double z) const;

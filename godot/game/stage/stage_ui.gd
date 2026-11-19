@@ -270,13 +270,15 @@ func info_for(id: int) -> Dictionary:
 	var h := 1.5
 	if island.hosts.has(id):
 		h = island.hosts[id].height()
+	var cousin: Dictionary = preload("res://game/stage/lineage_session.gd").cousin(stage.world, id)
+	var shown_name: String = str(sp.get("name", "Creature")) if cousin.is_empty() else str(cousin.name)
 	var soc: Dictionary = st.get("social", {})
 	var carcass: bool = bool(e.get("dead", false))
 	var temper := int(e.get("temperament", sp.get("temperament", 1)))
-	return {"id": id, "name": sp.get("name", "Creature"), "species": sp.get("name", "Creature"),
+	return {"id": id, "name": shown_name, "species": shown_name, "cousin_generation": int(e.get("cousin_generation", 0)),
 		"radius_m": maxf(0.6, float(e.get("radius_cm", 60)) * 0.01), "height": h, "body_pos": pos + Vector3(0, h * 0.5, 0),
 		"refuses": not carcass and (int(e.get("mood", 0)) <= -20 or (temper == 2 and int(e.get("relationship", 0)) <= 0)),
-		"temperament": int(e.get("temperament", sp.get("temperament", 1))), "diet": 1 if int(e.species) >= 2 else 0,
+		"temperament": int(e.get("temperament", sp.get("temperament", 1))) if cousin.is_empty() else int(cousin.temperament), "diet": (1 if int(e.species) >= 2 else 0) if cousin.is_empty() else int(cousin.diet),
 		"relationship": int(e.get("relationship", 0)), "resolved": int(soc.get("resolved", 0)), "resolved_total": int(soc.get("resolved_total", 4)),
 		"trust": int(e.get("trust", 0)), "mood": int(e.get("mood", 0)), "bonded": bool(e.get("bonded", false)),
 		"likes": e.get("likes", []), "dislikes": e.get("dislikes", []), "beat_in": int(e.get("beat_in", 0)),

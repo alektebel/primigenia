@@ -355,10 +355,12 @@ func set_paused(on: bool) -> void:
 
 ## Journal (J) or family tree (T): their pages are a later design; the view is a veil with a title.
 func open_view(kind: String) -> void:
-	if kind == "journal":
-		journal_requested.emit()
+	if kind != "journal":
+		family_tree_requested.emit()        # the real tree (game/stage/lineage_controller.gd) opens itself
+		if not family_tree_requested.get_connections().is_empty():
+			return
 	else:
-		family_tree_requested.emit()
+		journal_requested.emit()
 	stub.open_view(kind, signs.dna_total)
 	veil.set_flat(0.5)
 

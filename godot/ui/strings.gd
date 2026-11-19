@@ -11,6 +11,7 @@ const TABLE := {
 	"intimidate": ["Intimidate", "Intimidar"],
 	"eat": ["Eat", "Comer"],
 	"remains": ["remains", "restos"],
+	"cousin_gen": ["cousin · gen {0}", "primo · gen {0}"],
 	# move names that are not creature data
 	"guard": ["Guard", "Guardia"],
 	"dodge": ["Dodge", "Esquiva"],

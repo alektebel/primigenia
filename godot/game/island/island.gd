@@ -196,9 +196,15 @@ func _build_stage() -> void:
 	stage_ui.name = "StageUI"
 	add_child(stage_ui)
 	stage_ui.setup(self, str(genome.get("name", "Merodeador")))
+	var lineage_error := preload("res://game/stage/lineage_session.gd").install(stage, genome)
+	if lineage_error != "":
+		push_error(lineage_error)
 	for h in hosts.values():
 		h.footfall.connect(stage_ui.on_footfall)
 	stage_ui.ui.menu_requested.connect(Game.goto_menu)
+	var lineage_controller := preload("res://game/stage/lineage_controller.gd").new()
+	add_child(lineage_controller)
+	lineage_controller.setup(self)
 	_update_actors(0.0)
 	_update_camera(0.0)
 	if not Game.pending_scenario.is_empty():
@@ -262,7 +268,17 @@ func load_scenario(parsed: Dictionary) -> String:
 		if stage_ui != null:
 			h.footfall.connect(stage_ui.on_footfall)
 	for id in hosts.keys():
-		if id > 0 and id >= stage.cur.entities.size():
+		if id <= 0:
+			continue
+		var remove: bool = id >= stage.cur.entities.size()
+		if not remove:
+			var e: Dictionary = stage.cur.entities[id]
+			var cousin: Dictionary = preload("res://game/stage/lineage_session.gd").cousin(stage.world, id) if int(e.get("cousin_generation", 0)) > 0 else {}
+			if cousin.is_empty():
+				remove = hosts[id].has_meta("lineage_body")
+			else:
+				remove = str(hosts[id].get_meta("lineage_body", "")) != str(cousin.body_json)
+		if remove:
 			hosts[id].queue_free()
 			hosts.erase(id)
 	_sync_hosts()
@@ -290,11 +306,16 @@ func _sync_hosts() -> void:
 	for i in range(1, es.size()):
 		if hosts.has(i):
 			continue
+		var cousin: Dictionary = preload("res://game/stage/lineage_session.gd").cousin(stage.world, i) if int(es[i].get("cousin_generation", 0)) > 0 else {}
 		var h := ActorHost.new()
 		h.name = "Wild%d" % i
 		add_child(h)
-		h.setup(Profile.load_json("res://game/data/garfio.json"), i, _garfio_profile, Callable(Game, "ground"))
+		var body: Dictionary = Profile.load_json("res://game/data/garfio.json") if cousin.is_empty() else JSON.parse_string(cousin.body_json)
+		var profile: Dictionary = _garfio_profile if cousin.is_empty() else stage.world.get_setup().wild[i - 1].profile
+		h.setup(body, i, profile, Callable(Game, "ground"))
 		h.set_meta("base_scale", _species_scale(int(es[i].species)))
+		if not cousin.is_empty():
+			h.set_meta("lineage_body", str(cousin.body_json))
 		hosts[i] = h
 		if stage_ui != null:
 			h.footfall.connect(stage_ui.on_footfall)

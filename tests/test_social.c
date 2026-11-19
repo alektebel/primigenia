@@ -252,7 +252,7 @@ static void determinism(void){
     uint8_t snap[1<<20];
     uint64_t hashes[2][1500];
     const char *cmds[]={"befriend #1 sing","gift #1 fruit","befriend #1 dance","observe #2","intimidate #3"};
-    static uint8_t blob[1<<20];
+    uint8_t *blob=malloc(cp_stage_snapshot_size());
     for(int pass=0;pass<2;pass++){
         mk(3,sp,d,1);
         cp_stage_social_give(&w,CP_ITEM_FRUIT,10);
@@ -260,7 +260,7 @@ static void determinism(void){
         for(int t=0;t<1500;t++){
             if(t%250==0)cp_stage_command(&w,cmds[(t/250)%5]);
             hashes[pass][t]=cp_stage_step(&w,NULL);
-            if(pass==0&&t==700){snapped=cp_stage_snapshot(&w,blob,sizeof blob);assert(snapped>0);}
+            if(pass==0&&t==700){snapped=cp_stage_snapshot(&w,blob,cp_stage_snapshot_size());assert(snapped>0);}
         }
         (void)snap;
         if(pass==1)break;

@@ -278,6 +278,11 @@ void CporeWorld::_bind_methods() {
     ClassDB::bind_method(D_METHOD("order", "input"), &CporeWorld::order);
     ClassDB::bind_method(D_METHOD("state"), &CporeWorld::state);
     ClassDB::bind_method(D_METHOD("observe"), &CporeWorld::observe);
+    ClassDB::bind_method(D_METHOD("lineage"), &CporeWorld::lineage);
+    ClassDB::bind_method(D_METHOD("lineage_form", "body", "profile", "parts", "name", "evolve"), &CporeWorld::lineage_form);
+    ClassDB::bind_method(D_METHOD("lineage_perk", "kind", "serial", "amount"), &CporeWorld::lineage_perk);
+    ClassDB::bind_method(D_METHOD("lineage_begin"), &CporeWorld::lineage_begin);
+    ClassDB::bind_method(D_METHOD("lineage_award", "deed", "amount", "cause"), &CporeWorld::lineage_award);
     ClassDB::bind_method(D_METHOD("hash"), &CporeWorld::hash);
     ClassDB::bind_method(D_METHOD("height", "x", "z"), &CporeWorld::height);
     ClassDB::bind_method(D_METHOD("ground", "x", "z"), &CporeWorld::ground);
@@ -443,6 +448,10 @@ Dictionary CporeWorld::state() const {
     for (int i = 0; i < w.setup.n; ++i) {
         Dictionary e = entity(w.wild[i], i + 1);
         add_social_entity(e, w, i);
+        const int generation=cp_stage_cousin_generation(&w,i+1);
+        e["cousin_generation"]=generation;
+        e["counts_progress"]=generation==0;
+        if(generation){e["lineage_species_id"]=4+generation;e["trust_bonus"]=20;}
         entities.append(e);
     }
     d["entities"] = entities;
@@ -632,3 +641,26 @@ PackedVector2Array CporeWorld::path() const {
 int CporeWorld::nav_warm() const { return cp_stage_nav_warm(world.get()); }
 double CporeWorld::nav_cell() const { return cp_stage_nav_cell(world.get()); }
 void CporeWorld::ack_events() { cp_stage_ack_events(world.get()); }
+
+String CporeWorld::lineage() const {
+    std::vector<char> buf(1000000);
+    int n=cp_stage_lineage_export(world.get(),buf.data(),buf.size());
+    return n<0?String():String::utf8(buf.data(),n);
+}
+int CporeWorld::lineage_begin(){return cp_stage_lineage_begin(world.get());}
+int CporeWorld::lineage_award(int deed,int amount,int cause){
+    if(amount<=0||cause<0)return -1;
+    return cp_stage_lineage_award(world.get(),deed,uint32_t(amount),uint32_t(cause));
+}
+
+int CporeWorld::lineage_form(const String &body,const Dictionary &profile,const Array &parts,const String &name,bool evolve){
+    CpLineageForm form={};
+    const CharString text=body.utf8(), label=name.utf8();
+    if(text.length()>=CP_LINEAGE_BODY_CAP||label.length()>=80||parts.size()!=CP_LINEAGE_PARTS)return -1;
+    memcpy(form.body,text.get_data(),text.length());memcpy(form.name,label.get_data(),label.length());
+    if(!profile_from_dict(profile,form.profile))return -1;
+    for(int i=0;i<CP_LINEAGE_PARTS;i++){int64_t n;if(!cpore::to_int(parts[i],0,65535,n))return -1;form.parts[i]=uint16_t(n);}
+    return cp_stage_lineage_form(world.get(),&form,evolve?1:0);
+}
+
+int CporeWorld::lineage_perk(int kind,int serial,int amount){if(serial<=0)return -1;return cp_stage_lineage_perk(world.get(),kind,uint32_t(serial),amount);}

@@ -728,6 +728,7 @@ static void start(CpStageWorld *w,int index){
     if(kind<0)kind=CP_STAGE_SPECIES[e->species].temperament==CP_STAGE_TERRITORIAL?BOT_GREEDY:BOT_COUNTER;
     bot_init(&b,kind,w->setup.seed+1);
     bot_store(&w->bot,&b);
+    if(w->ledger.enabled&&w->order.verb==CP_STAGE_ATTACK)cp_stage_lineage_award(w,CP_DEED_FIGHTS,1,index+1);
     w->active=index;
     w->started++;
     w->outcome=0;
@@ -896,6 +897,7 @@ static void finish(CpStageWorld *w,int outcome){
     const int wild_ko=outcome==CP_STAGE_DEATH&&!w->combat.c[1].alive;
     if(outcome==CP_STAGE_VICTORY||wild_ko){
         e->dead=1;
+        if(w->ledger.enabled)cp_ledger_deed(&w->ledger,w->tick,CP_DEED_KILLS,1,(int32_t)(e->x*100),(int32_t)(e->z*100),id);
         ev_push(w,CP_STAGE_EV_KILL,0,id,-1,0,e->x,e->z);
         cp_stage_social_on_kill(w,id-1);
     }
@@ -905,7 +907,7 @@ static void finish(CpStageWorld *w,int outcome){
             w->respawn_ticks=20;
             ev_push(w,CP_STAGE_EV_DEATH,id,0,-1,0,w->player.x,w->player.z);
         }
-        else ev_push(w,CP_STAGE_EV_FLED,0,id,-1,0,w->player.x,w->player.z);
+        else {if(w->ledger.enabled)cp_stage_lineage_award(w,CP_DEED_FLED,1,id);ev_push(w,CP_STAGE_EV_FLED,0,id,-1,0,w->player.x,w->player.z);}
     }
 }
 static void fight(CpStageWorld *w){
@@ -1098,6 +1100,7 @@ static void wild_tick(CpStageWorld *w,int skip,int engage){
     }
 }
 uint64_t cp_stage_step(CpStageWorld *w,const CpStageInput *input){
+    int32_t lineage_x=(int32_t)(w->player.x*100),lineage_z=(int32_t)(w->player.z*100);
     int skip=w->active,engage=w->active<0&&w->respawn_ticks==0;
     w->accepted[0]=w->accepted[1]=0;
     w->combat.n_ev=0;
@@ -1263,6 +1266,7 @@ uint64_t cp_stage_step(CpStageWorld *w,const CpStageInput *input){
     }
     cp_stage_social_step(w);
     wild_tick(w,skip,engage);
+    cp_stage_lineage_tick(w,lineage_x,lineage_z);
     w->tick++;
     w->clock=(w->clock+1)%CP_STAGE_DAY_TICKS;
     return w->hash=cp_stage_hash(w);
@@ -1414,6 +1418,7 @@ uint64_t cp_stage_hash(const CpStageWorld *w){
         u32(&h,(uint32_t)w->field_hash);
         u32(&h,(uint32_t)(w->field_hash>>32));
     }
+    if(w->ledger.enabled){uint64_t lh=cp_ledger_hash(&w->ledger);u32(&h,(uint32_t)lh);u32(&h,(uint32_t)(lh>>32));uint64_t ah=cp_stage_ancestry_hash(w);u32(&h,(uint32_t)ah);u32(&h,(uint32_t)(ah>>32));}
     return h;
 }
 uint16_t cp_stage_known_moves(const CpStageWorld *w){
@@ -1635,6 +1640,9 @@ int cp_stage_observe_v(const CpStageWorld *w,char *out,size_t cap,int version){
 #define ADD(...) append(out,cap,&used,&failed,__VA_ARGS__)
     ADD("{\"schema\":\"world-%d\",\"tick\":%u,\"clock\":{\"tick\":%u,\"day_ticks\":%d},",version,w->tick,w->clock,CP_STAGE_DAY_TICKS);
     if(version==2)ADD("\"world\":{\"bound\":%.6f,\"units\":\"metres; x and z are the ground plane; heading 0 = +z and 90 = +x (clockwise seen from above with +z up); bearing is relative to your facing, positive = clockwise (to your right), 0 = dead ahead, +-180 = behind\",\"nest\":{\"x\":%.6f,\"z\":%.6f},\"tick_hz\":10},",cp_stage_bound(w),w->setup.nest_x,w->setup.nest_z);
+    if(version==2){int scores[4],prev=w->ancestry.count>1?w->ancestry.forms[w->ancestry.count-2].type:15;char code[8];int type=cp_type_score(w->ledger.current,prev,scores);cp_type_code(type,code);
+        ADD("\"lineage\":{\"format\":\"cpore.lineage/1\",\"enabled\":%s,\"generation\":%u,\"trait_mask\":%u,\"entries\":%u,\"deeds_aggregated\":%u,\"type_code\":\"%s\",\"scores\":[%d,%d,%d,%d]},",w->ledger.enabled?"true":"false",w->ledger.generation,w->ledger.traits,w->ledger.count,w->ledger.dropped,code,scores[0],scores[1],scores[2],scores[3]);}
+
     ADD("\"own\":{\"id\":0,\"x\":%.6f,\"z\":%.6f,\"hp\":%.6f,\"stamina\":%.6f,\"hp_max\":%.6f,\"stamina_max\":%.6f,\"speed\":%.6f,\"facing\":[%.6f,%.6f]},\"last_error\":\"%s\",",w->player.x,w->player.z,w->player.hp,w->player.stamina,w->player.profile.hp,w->player.profile.stamina,w->player.speed,w->player.fx,w->player.fz,cp_stage_order_error(w->last_error));
     if(version==2){
         if(w->blocked_reason)ADD("\"blocked\":{\"reason\":\"%s\",\"x\":%.6f,\"z\":%.6f},",block_name(w->blocked_reason),w->blocked_x,w->blocked_z);
@@ -1673,6 +1681,13 @@ int cp_stage_observe_v(const CpStageWorld *w,char *out,size_t cap,int version){
         if(version==2){
             const char *state=creature_state(w,i);
             ADD("%s{\"id\":%d,\"type\":\"%s\",\"species\":\"%s\",\"distance\":%.6f,\"bearing\":%.6f,\"hp\":%.6f,\"hp_max\":%.6f,\"state\":\"%s\",\"in_fight\":%s,\"attackable\":%s}",comma?",":"",i+1,creature_is_dead(e)?"carcass":"creature",CP_STAGE_SPECIES[e->species].name,d,bearing(&w->player,e->x,e->z),e->hp,e->profile.hp,state,w->active==i?"true":"false",creature_attackable(w,i)?"true":"false");
+            {
+                const int generation=cp_stage_cousin_generation(w,i+1);
+                if(generation){
+                    used--;
+                    ADD(",\"cousin_generation\":%d,\"lineage_species_id\":%d,\"counts_progress\":false}",generation,4+generation);
+                }
+            }
             if(creature_is_dead(e)){
                 char sb[256];
                 if(cp_stage_social_carcass_json(w,i,sb,sizeof sb)>0){
@@ -1900,7 +1915,7 @@ uint64_t cp_stage_layout(void){
     LAY(CpStageWorld,debug_flags);LAY(CpStageWorld,reserved);LAY(CpStageWorld,field_hash);LAY(CpStageWorld,path);LAY(CpStageWorld,n_path);LAY(CpStageWorld,path_i);
     LAY(CpStageWorld,blocked_ticks);LAY(CpStageWorld,replans);LAY(CpStageWorld,path_goal_x);LAY(CpStageWorld,path_goal_z);
     LAY(CpStageWorld,blocked_reason);LAY(CpStageWorld,blocked_x);LAY(CpStageWorld,blocked_z);LAY(CpStageWorld,ev_total);
-    LAY(CpStageWorld,ev_acked);LAY(CpStageWorld,events);LAY(CpStageWorld,loadout);LAY(CpStageWorld,social);LAY(CpStageWorld,field);lay(&h,sizeof(CpStageSocial));lay(&h,sizeof(CpStageSocialCreature));lay(&h,sizeof(CpStageEvent));
+    LAY(CpStageWorld,ev_acked);LAY(CpStageWorld,events);LAY(CpStageWorld,loadout);LAY(CpStageWorld,social);LAY(CpStageWorld,ledger);LAY(CpStageWorld,ancestry);LAY(CpStageWorld,field);lay(&h,sizeof(CpStageSocial));lay(&h,sizeof(CpStageSocialCreature));lay(&h,sizeof(CpStageEvent));
     LAY(CpStageSetup,seed);LAY(CpStageSetup,terrain_seed);LAY(CpStageSetup,terrain);LAY(CpStageSetup,n);
     LAY(CpStageSetup,n_obstacles);LAY(CpStageSetup,nest_x);LAY(CpStageSetup,nest_z);LAY(CpStageSetup,flat_height);
     LAY(CpStageSetup,water_x);LAY(CpStageSetup,water_z);LAY(CpStageSetup,water_radius);LAY(CpStageSetup,player);LAY(CpStageSetup,player_legs);

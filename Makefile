@@ -71,6 +71,7 @@ bench: $(BUILD)/cpore_bench
 smoke: lib $(BUILD)/world_cli
 	python3 bindings/python/smoke_test.py
 	python3 bindings/python/world_smoke.py
+	python3 bindings/python/lineage_smoke.py
 	python3 bindings/python/social_smoke.py
 
 # The core may only depend on libc/libm: fail if any core object pulls in more.
@@ -179,7 +180,7 @@ terrain-test: terrain-metrics
 $(BUILD)/libcpore.a $(BUILD)/libcpore.so: $(BUILD)/apps/combat_bots.o
 $(BUILD)/world_test: tests/test_world.c $(HDRS) $(BUILD)/libcpore.a
 	$(CC) $(CFLAGS) $< $(BUILD)/libcpore.a -o $@ $(LDLIBS)
-WORLD_SRC := core/src/stage_world.c core/src/stage_social.c core/src/steer.c $(WASM_SRC)
+WORLD_SRC := $(CORE_SRC) apps/combat_bots.c
 WORLD_EXPORTS := '[_cw_version,_cw_config,_cw_profile,_cw_spawn,_cw_obstacle,_cw_reset,_cw_height,_cw_ground,_cw_step,_cw_hash,_cw_meta,_cw_entities,_cw_orders,_cw_observe,_cb_layout,_cb_tick,_cb_count,_cb_states,_cb_event_count,_cb_events,_cb_hash,_cb_preview]'
 wasm: $(BUILD)/wasm/cpore_world.mjs $(BUILD)/wasm/cpore_world.wasm
 $(BUILD)/wasm/cpore_world.mjs $(BUILD)/wasm/cpore_world.wasm &: $(WORLD_SRC) apps/world_wasm_api.c apps/wasm_api.c apps/combat_bots.h $(HDRS) Makefile
@@ -432,6 +433,37 @@ lore-check:
 lore-refcheck:
 	python3 tools/lore/refcheck.py
 
+$(BUILD)/lineage_test: tests/test_lineage_ledger.c $(HDRS) $(BUILD)/libcpore.a
+	$(CC) $(CFLAGS) $< $(BUILD)/libcpore.a -o $@ $(LDLIBS)
+test: lineage-test
+.PHONY: lineage-test
+lineage-test: $(BUILD)/lineage_test $(BUILD)/lineage_evolution_test $(BUILD)/lineage_social_test
+	./$(BUILD)/lineage_social_test
+	./$(BUILD)/lineage_test
+	./$(BUILD)/lineage_evolution_test
+$(BUILD)/lineage_evolution_test: tests/test_lineage_evolution.c $(HDRS) $(BUILD)/libcpore.a
+	$(CC) $(CFLAGS) $< $(BUILD)/libcpore.a -o $@ $(LDLIBS)
+
+$(BUILD)/lineage_social_test: tests/test_lineage_social.c $(HDRS) $(BUILD)/libcpore.a
+	$(CC) $(CFLAGS) $< $(BUILD)/libcpore.a -o $@ $(LDLIBS)
+
+$(BUILD)/creature_types_test: tests/test_creature_types.c $(HDRS) $(BUILD)/libcpore.a
+	$(CC) $(CFLAGS) $< $(BUILD)/libcpore.a -o $@ $(LDLIBS)
+test: creature-types-test
+.PHONY: creature-types-test
+creature-types-test: $(BUILD)/creature_types_test
+	./$(BUILD)/creature_types_test
+
+.PHONY: godot-lineage-test godot-lineage-evidence
+godot-lineage-test: godot
+	nice -n 10 timeout 60 $(GODOT) --headless --path godot --check-only --script res://game/tests/lineage_test.gd
+	nice -n 10 timeout 120 $(GODOT) --headless --path godot --script res://game/tests/lineage_test.gd
+	nice -n 10 timeout 60 $(GODOT) --headless --path godot --check-only --script res://game/tests/lineage_island_test.gd
+	nice -n 10 timeout 180 $(GODOT) --headless --path godot --script res://game/tests/lineage_island_test.gd
+godot-lineage-evidence: godot
+	nice -n 10 timeout 60 $(GODOT) --headless --path godot --check-only --script res://game/tests/lineage_test.gd
+	LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 120 xvfb-run -a -s "-screen 0 1280x720x24" $(GODOT) --rendering-driver opengl3 --max-fps 15 --resolution 1280x720 --path godot --script res://game/tests/lineage_test.gd -- --evidence
+	LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 300 xvfb-run -a -s "-screen 0 1280x720x24" $(GODOT) --rendering-driver opengl3 --max-fps 15 --resolution 1280x720 --path godot --script res://game/tests/lineage_island_test.gd -- --evidence
 # C2 social layer (core/src/stage_social.c)
 $(BUILD)/social_test: tests/test_social.c $(HDRS) $(BUILD)/libcpore.a
 	$(CC) $(CFLAGS) $< $(BUILD)/libcpore.a -o $@ $(LDLIBS)

@@ -57,7 +57,7 @@ func snapshot() -> Dictionary:
 		return {}
 	var p := JournalData.page(info)
 	return {"name": p.species, "diet": "" if is_carcass() else p.diet, "relationship": -1 if is_carcass() else JournalData.index_of(info.get("relationship", 0), JournalData.RELATIONSHIPS),
-		"sub": Strings.t("remains") if is_carcass() else ""}
+		"sub": Strings.t("remains") if is_carcass() else (Strings.t("cousin_gen", [int(info.cousin_generation)]) if int(info.get("cousin_generation", 0)) > 0 else "")}
 
 func _process(dt: float) -> void:
 	if _show and _delay > 0.0:
@@ -103,6 +103,8 @@ func _draw() -> void:
 	if is_carcass():
 		Style.text(self, Style.font_sans(), Vector2(_anchor.x, y + Style.u(6.0)), Strings.t("remains"), Style.u(13.5), Color(Palette.FOG, a))
 		return
+	if int(info.get("cousin_generation", 0)) > 0:
+		Style.text(self, Style.font_sans(), Vector2(_anchor.x, y + Style.u(26.0)), Strings.t("cousin_gen", [int(info.cousin_generation)]), Style.u(13.5), Color(Palette.FOG, a * _sign_alpha))
 	var sa := a * _sign_alpha
 	if sa <= 0.003:
 		return
