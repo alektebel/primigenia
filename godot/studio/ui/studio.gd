@@ -29,6 +29,8 @@ var nest_world: RefCounted
 var nest_genome: Dictionary = {}
 var nest_rows: Array = []
 var nest_status: Label
+var nest_panel: PanelContainer
+var right_card: PanelContainer        # the part/stats column; the nest panel stacks above it, never over it
 var nest_choice: OptionButton
 var nest_actions: Array = []
 
@@ -626,6 +628,7 @@ func _build_right_panel() -> void:
 	card.set_anchors_preset(Control.PRESET_RIGHT_WIDE)
 	card.offset_left = -282; card.offset_right = -14
 	card.offset_top = 66; card.offset_bottom = -52
+	right_card = card
 	hud.add_child(card)
 	var scroll := ScrollContainer.new()
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
@@ -1172,9 +1175,14 @@ func _unhandled_key_input(e: InputEvent) -> void:
 	var ctrl: bool = e.ctrl_pressed or e.meta_pressed
 	match e.keycode:
 		KEY_ESCAPE:
+			var busy: bool = not _drag.is_empty() or _pending_type != ""
 			_cancel_drag()
 			_pending_type = ""
 			_set_hint("")
+			if nest_world != null:
+				get_viewport().set_input_as_handled()      # never reaches the game menu behind the overlay
+				if not busy:
+					_on_exit()             # in the nest, Esc with nothing in hand cancels the edit and leaves (the same as the Menu button)
 		KEY_Z:
 			if ctrl:
 				if e.shift_pressed: on_redo()
@@ -1556,9 +1564,10 @@ func _build_nest_shop() -> void:
 	nest_actions = []
 	var panel := PanelContainer.new()
 	panel.set_anchors_preset(Control.PRESET_TOP_RIGHT)
-	panel.offset_left = -380
+	panel.offset_left = -282                  # the width of the stats column under it
 	panel.offset_right = -14
-	panel.offset_top = 70
+	panel.offset_top = 66
+	nest_panel = panel
 	var solid := StyleBoxFlat.new()          # opaque: it sits over the stats column
 	solid.bg_color = Color(0.06, 0.09, 0.12, 0.97)
 	solid.border_color = Color(0.9, 0.7, 0.3, 0.5)
@@ -1571,7 +1580,7 @@ func _build_nest_shop() -> void:
 	panel.add_child(rows)
 	nest_status = Label.new()
 	nest_status.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	nest_status.custom_minimum_size.x = 340
+	nest_status.custom_minimum_size.x = 232
 	rows.add_child(nest_status)
 	nest_choice = OptionButton.new()
 	nest_choice.custom_minimum_size.y = 44
@@ -1594,7 +1603,18 @@ func _build_nest_shop() -> void:
 	nest_evolve_button.pressed.connect(_nest_confirm)
 	rows.add_child(nest_evolve_button)
 	nest_choice.item_selected.connect(func(_i: int) -> void: _nest_labels())
+	nest_choice.clip_text = true
+	for b in [nest_apply_button, nest_evolve_button] + nest_actions:
+		b.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART      # long Spanish labels wrap inside the column instead of widening it
 	_nest_refresh()
+	nest_choice.grab_focus.call_deferred()                    # the keyboard works at once: arrows move between the controls
+	_stack_right_column.call_deferred()
+
+## The nest panel and the stats column share the right edge: the column starts under the panel (it scrolls, so it can shrink).
+func _stack_right_column() -> void:
+	if nest_panel == null or not is_instance_valid(nest_panel) or right_card == null or not is_instance_valid(right_card):
+		return
+	right_card.offset_top = nest_panel.offset_top + nest_panel.get_combined_minimum_size().y + 8.0
 
 func _nest_row(id: String) -> Dictionary:
 	for row in nest_rows:
@@ -1672,6 +1692,7 @@ func _nest_labels() -> void:
 	nest_actions[2].text = ("%s (probar)" if lang == "es" else "%s (try)") % row.next_form.capitalize()
 	nest_actions[2].visible = nest_tiers_on
 	nest_actions[2].disabled = not row.owned or want.tier >= 2 or row.hits < row.need_hits or row.fights < row.need_fights
+	_stack_right_column.call_deferred()
 
 func _nest_try(kind: int) -> void:
 	var row: Dictionary = nest_rows[nest_choice.selected]

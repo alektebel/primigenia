@@ -10,7 +10,7 @@ render, refcheck, repair, commit. Never run in parallel with another council pro
 """
 import argparse, datetime, glob, json, os, re, subprocess, sys
 HERE = os.path.dirname(os.path.abspath(__file__)); LORE = os.path.dirname(HERE); ROOT = os.path.dirname(os.path.dirname(LORE))
-RD = os.path.join(HERE, "runs", "primigenia_flora"); os.makedirs(RD, exist_ok=True)
+RD = os.environ.get("FLORA_RD") or os.path.join(HERE, "runs", "primigenia_flora"); os.makedirs(RD, exist_ok=True)
 os.environ["LORE_RUNS_DIR"] = RD
 WORLD = "primigenia"; DATE = datetime.date.today().isoformat(); PLANET = open(os.path.join(HERE, "runs", WORLD, "planet_canon.md")).read()
 sys.path.insert(0, LORE); sys.path.insert(0, HERE)
@@ -143,7 +143,7 @@ KINDS = {"eaten_by", "pollinated_by", "dispersed_by", "mimics", "shelters", "com
 FORMS = {"tree", "shrub", "rosette", "herb", "grass", "fern", "moss_lichen", "vine", "algae", "fungus_like"}
 
 
-def write_plants(plants, allrefs, plan, world):
+def write_plants(plants, allrefs, plan, world, run_name=None, what=None):
     ids = autoloop.add_refs([r for r in allrefs if isinstance(r, dict)])
     known = {r["id"] for r in load(os.path.join(ROOT, "lore", "references.json"))}
     act = {f["id"] for f in world["facts"] if f["status"] == "active"}
@@ -178,13 +178,13 @@ def write_plants(plants, allrefs, plan, world):
                "gameplay": p.get("gameplay") if isinstance(p.get("gameplay"), dict) else {},
                "relations": [{"with": str(r.get("with", "")), "kind": r.get("kind") if r.get("kind") in KINDS else "other", "note": str(r.get("note", ""))} for r in (p.get("relations") or []) if isinstance(r, dict) and r.get("with")],
                "generator": g, "journal": [({"en": str(j.get("en", "")), **({"es": str(j["es"])} if j.get("es") else {})} if isinstance(j, dict) else {"en": str(j)})] if j else [{"en": "(none)"}],
-               "provenance": {"council_run": f"flora-{DATE}", "by": sorted(ADV), "edited_by": "sol"},
-               "changelog": [{"date": DATE, "who": "flora.py", "what": "flora pass: 7 voices drafted and peer-reviewed, Composer botanical referee, sol chaired and applied the fixes"}]}
+               "provenance": {"council_run": run_name or f"flora-{DATE}", "by": sorted(ADV), "edited_by": "sol"},
+               "changelog": [{"date": DATE, "who": "flora.py", "what": what or "flora pass: 7 voices drafted and peer-reviewed, Composer botanical referee, sol chaired and applied the fixes"}]}
         if p.get("observe"): doc["observe"] = [str(x) for x in p["observe"]]
         if p.get("secrets"): doc["secrets"] = [str(x) for x in p["secrets"]]
         dump(doc, os.path.join(ROOT, "lore", "flora", f"{pid}.json")); n += 1
     z = os.path.join(ROOT, "lore", "flora", "zonation.md")
-    open(z, "w").write("## Zonation, coast to summit\n\n" + str(plan.get("zonation", "")) + "\n\n## Primary succession on young lava\n\n" + str(plan.get("succession", "")) + "\n")
+    if plan: open(z, "w").write("## Zonation, coast to summit\n\n" + str(plan.get("zonation", "")) + "\n\n## Primary succession on young lava\n\n" + str(plan.get("succession", "")) + "\n")
     print("plants written:", n)
 
 

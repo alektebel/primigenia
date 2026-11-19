@@ -4,25 +4,25 @@
 
 **Status: DRAFT** · world: [primigenia](../worlds/primigenia.md) · form: moss_lichen · id: `musgo_faro`
 
-A green moss cushion shelters a fungus-like microbial partner that feeds on trapped detritus and emits faint blue-green light. The moss requires daylight; its luminous partner can extend into adjacent dark, organic-rich crevices. Wet entrance recesses reveal the glow even during daylight outside, while exposed cushions become conspicuous on moonless nights (F6, F8, F9, F24).
+A green moss cushion provides moist, detritus-rich substrate for a facultative luminous decomposer. The moss requires daylight; the decomposer can extend into adjacent dark crevices supplied with organic carbon. Its faint green glow attracts insects that can carry propagules between suitable patches, a proposed island specialization rather than an established moss mutualism. Beacon describes a local nighttime landmark, visible over a few metres under favourable darkness rather than through daylight or thick fog (F6, F8, F9).
 
 **Habitats:** Damp illuminated cave mouths, Lava-tube entrances, Waterfall-cave light fringe, Shaded fog-forest trunks
 
 ## Causal chains
 
-### musgo_faro.c1: Detritus-fed luminous partner
+### musgo_faro.c1: Detritus-fed luminous decomposer with insect-carried propagules
 
-Trait ← Entrance cushions trap litter and insect remains. ← A fungus-like partner decomposes this material, obtaining carbon and chemical energy. ← Oxygen-dependent luminescence produces a faint blue-green glow. ← Dark recesses and moonless nights make that light visible. ← **F5** Oxygen 21% → pO₂ ≈ 0.34 bar (1.6× Earth's); **F6** One large moon: 1.2 Lunar masses at 450,000 km; month 29.7 d; spring tides every 14.9 d; **F9** Rock: andesite makes steep, unstable cliffs; basalt makes lava tubes (the caves); **F24** One biochemistry from the seed capsule: a porphyrin photosystem, DNA-like heredity, L-amino acids, a nitrogen-fixing symbiont
+Trait ← Moist moss cushions trap litter that supplies carbon and chemical energy to a facultative decomposer; the moss need not benefit from its presence. ← In carbon-rich, aerated patches, the decomposer's oxygen-dependent luciferin–luciferase reaction emits faint green light; elevated oxygen supports the aerobic budget rather than supplying the energy. ← In darkness, the glow attracts small insects to exposed propagule-bearing threads. ← Loosely adhesive propagules attach during contact and are shed when insects brush another damp, litter-rich cushion. ← Successful establishment in those deposits provides the proposed reproductive benefit maintaining light production. ← **F5** Oxygen 21% → pO₂ ≈ 0.34 bar (1.6× Earth's); **F6** One large moon: 1.2 Lunar masses at 450,000 km; month 29.7 d; spring tides every 14.9 d; **F8** Fog: cold upwelling sea on the west coast meets warm volcanic ground; the east start valley is a fog trap about 180 mornings a year; **F9** Rock: andesite makes steep, unstable cliffs; basalt makes lava tubes (the caves); **F24** One biochemistry from the seed capsule: a porphyrin photosystem, DNA-like heredity, L-amino acids, a nitrogen-fixing symbiont
 
-- **In play:** Recognize damp cave entrances, inspect nearby surfaces by faint light, and watch acechalunas hunt associated insects.
-- **Weakness:** Drying or detritus exhaustion dims the colony; carrying a glowing piece can reveal the player.
+- **In play:** Recognize nearby damp patches by their glow after dark adaptation and watch insects contact luminous threads or acechalunas hunt around them.
+- **Weakness:** Drying, poor aeration or detritus exhaustion dims the colony; unsuitable insect destinations yield no establishment, and a carried fragment can expose its bearer.
 - **Observe:**
-  1. Shade a wet cushion: luminous threads appear between green shoots.
-  2. Compare a litter-rich pocket with bare wet rock; the richer pocket glows more.
-  3. Return under a bright moon: the glow is harder to distinguish, without a lunar switch.
-- **Plausibility:** plausible (judge botanist/composer-2.5; chair sol, 2026-11-19)
-  - The partner supplies the light; the moss remains photosynthetic. Chemical energy comes from organic carbon, rather than elevated oxygen alone. Insect attraction may aid partner dispersal, but farming insects and sulfur-detox luminescence are not established mechanisms.
-  - Analogue: Neonothopanus gardneri: Luminous fungal metabolism provides an analogue for the partner, with insect attraction demonstrated experimentally. The moss association and blue-green spectral shift are fictional extensions. [Oliveira et al.](https://pmc.ncbi.nlm.nih.gov/articles/PMC4382382/) (Oliveira et al. 2015 [verified])
+  1. After dark adaptation, faint green threads become visible between wet shoots in a litter-rich patch.
+  2. An insect brushes a luminous thread and leaves with a small propagule clump attached.
+  3. An insect visiting another damp cushion sheds a clump; new threads appear there on a later visit.
+- **Plausibility:** plausible (judge strict review: sol (codex) + DeepSeek; chair sol, 2026-11-19)
+  - The partner supplies the light; the moss remains photosynthetic. Chemical energy comes from organic carbon, rather than elevated oxygen alone. Insect attraction may aid partner dispersal, but farming insects and sulfur-detox luminescence are not established mechanisms. Strict review (2026-11-19): revised: The original chain supplied energy but no benefit for light production; the rewrite adds a bounded dispersal mechanism, removes implied mutualism and uses green emission. Residual: F5 supports oxygen-dependent metabolism, not the energy supply or selection for light; the rewrite correctly supplies detrital carbon. F8 and F9 support moist entrance habitat, while F24 permits shared biochemistry without establishing this association. The remaining weak link is reproductive: insect attraction and attachment do not themselves establish increased recruitment. However, suitable deposition and establishment are explicitly identified as the proposed specialization, so the chain is coherent rather than demonstrated. Moonlit conditions under F6 and background illumination can reduce its effectiveness.
+  - Analogue: Neonothopanus gardneri: The supplied fungal analogue supports green bioluminescence and insect attraction. Facultative moss association, adhesive propagule transfer and successful establishment are fictional specializations; attraction alone does not demonstrate a reproductive benefit. (Oliveira et al. 2015 [verified])
 
 ### musgo_faro.c2: Capillary cushion confined to the light fringe
 
@@ -34,8 +34,8 @@ Trait ← Fog and spray repeatedly wet sheltered entrance surfaces. ← Closely 
   1. Water beads between overlapping leaves after fog.
   2. Green shoots thin out toward the cave's dark interior.
   3. A drying patch contracts and loses visible partner activity.
-- **Plausibility:** plausible (judge botanist/composer-2.5; chair sol, 2026-11-19)
-  - Cushion form supports water retention rather than compensating for still air. Neither moss growth nor sustained glow creates an independent food web in a dark, carbon-starved tube.
+- **Plausibility:** plausible (judge strict review: sol (codex) + DeepSeek; chair sol, 2026-11-19)
+  - Cushion form supports water retention rather than compensating for still air. Neither moss growth nor sustained glow creates an independent food web in a dark, carbon-starved tube. Strict review (2026-11-19): Residual: F8 supports recurrent wetting, F9 supplies sheltered entrances, and F24 permits photosynthesis. Capillary retention and a daylight boundary follow. Residual weakness: persistent saturation can restrict gas exchange, and a nominal cave entrance may still receive insufficient light; habitat labels alone do not establish suitable conditions.
   - Analogue: Cushion-forming bryophytes: Bryophyte water relations and drying responses support a small, moisture-dependent mat; recovery capacity varies among species. [Proctor et al.](https://doi.org/10.1639/0007-2745%282007%29110%5B595%3ADIBAR%5D2.0.CO%3B2) (Proctor et al. 2007 [verified])
 
 ## Gameplay
@@ -43,20 +43,20 @@ Trait ← Fog and spray repeatedly wet sheltered entrance surfaces. ← Closely 
 ```json
 {
  "food_for": [
-  "Moss-and-fungus grazers: ecolumbre",
-  "Detritivores: babosa consumes decaying cushion material"
+  "ecolumbre grazes moss and associated fungal tissue when it reaches illuminated, damp entrance fringes.",
+  "babosa consumes softened dead shoots and trapped organic matter."
  ],
- "gift_item": "A loose, moist luminous cushion fragment for ecolumbre",
+ "gift_item": "A loose, moist cushion fragment for ecolumbre; its faint glow usually fades within 2–6 hours without renewed moisture and organic substrate, and carrying it can reveal the bearer.",
  "poison": {
   "alkaloid": false,
-  "signal": "Green shoots and blue-green light indicate the living association, not edible purity or breathable cave air."
+  "signal": "Green shoots and green light indicate the living association, not edible purity or breathable cave air."
  },
  "healing": null,
  "cover": "Tiny invertebrates shelter between shoots; the mat provides no body-sized concealment.",
  "climbing": false,
  "nest_material": "Small shed fragments provide damp lining; they lose their glow as they dry.",
  "mineral_lick": null,
- "notes": "A living marker offers only local, faint illumination. Harvested pieces need moisture and organic substrate to persist. Glow does not certify freedom from cave gases (F23)."
+ "notes": "Glow provides a local landmark after dark adaptation, usually detectable only within a few metres under favourable darkness and clear sightlines. It does not illuminate a cave route; only immediately adjacent texture may become discernible beside a large colony. The 2–6-hour fragment lifetime is a gameplay parameter, shortened by drying or carbon exhaustion. Ecolumbre must visit the light fringe to graze green moss. Glow does not certify freedom from cave gases (F23)."
 }
 ```
 
@@ -64,9 +64,9 @@ Trait ← Fog and spray repeatedly wet sheltered entrance surfaces. ← Closely 
 
 | With | Kind | Note |
 |---|---|---|
-| ecolumbre | eaten_by | Grazes moss and associated fungal tissue around damp entrances. |
+| ecolumbre | eaten_by | Visits damp entrance fringes to graze moss and associated fungal tissue; green moss does not extend into its permanently dark refuges. |
 | babosa | eaten_by | Consumes softened dead shoots and trapped organic matter. |
-| acechalunas | other | Hunts insects around luminous patches; a glowing carried fragment can expose its bearer. |
+| acechalunas | other | Hunts insects visiting luminous patches; this predation is not itself a benefit to the decomposer, and a carried fragment can expose its bearer. |
 | pluma_de_sombra | grows_with | Shares the illuminated waterfall-spray fringe, occupying rock between fern rhizomes. |
 | nieblon | grows_with | Colonizes damp shaded bark without drawing nutrients from living tree tissues. |
 
@@ -94,27 +94,27 @@ Trait ← Fog and spray repeatedly wet sheltered entrance surfaces. ← Closely 
  "colour": {
   "base": "Deep green",
   "overlay_rules": [
-   "Wet partner threads emit faint blue-green light.",
-   "Render glow according to local darkness, moisture and detrital supply, without a moon-phase activation rule.",
+   "Hydrated decomposer threads emit faint green light where organic carbon and oxygen remain available.",
+   "Visible glow contrast follows local darkness and intervening fog, without a moon-phase activation rule.",
    "Dry shoots curl and dull to olive."
   ]
  },
  "placement": {
-  "slope": "Sheltered rock ledges, rough walls and shaded bark with stable attachment points",
+  "slope": "Sheltered rock ledges, rough walls and shaded bark with stable attachment points.",
   "altitude_m": [
    0,
    800
   ],
-  "wetness": "Regular fog, seepage or spray; exclude prolonged immersion and scouring flow",
-  "soil": "Thin trapped humus over basalt, tuff or bark",
+  "wetness": "Regular fog, seepage or spray; exclude prolonged immersion and scouring flow.",
+  "soil": "Thin trapped humus over basalt, tuff or bark.",
   "coast_distance_m": [
    0,
    3600
   ],
-  "fog": "Favoured where fog wets sheltered surfaces",
-  "density": "Patchy cushions concentrated along illuminated drip lines"
+  "fog": "Favoured where fog wets sheltered surfaces; fog reduces optical detection distance.",
+  "density": "Patchy green cushions along illuminated drip lines. Require the local daylight model to support positive daily moss carbon balance; reject permanently dark placements. Generate adjacent decomposer-only threads as a separate nonleafy component only where imported organic carbon, moisture and aeration persist."
  },
- "seasonal": "Green while hydrated; partner glow strengthens during wet, detritus-rich periods and fades during drying.",
+ "seasonal": "Green while hydrated; decomposer glow strengthens during wet, detritus-rich periods and fades during drying.",
  "wind_response": "Shoots flatten slightly; exposed edges dry first, restricting colonies to humid shelter."
 }
 ```
@@ -142,3 +142,4 @@ council run `flora-2026-11-19`; by designer, mythmaker, naturalist, physicist, s
 ## Changelog
 
 - 2026-11-19 flora.py: flora pass: 7 voices drafted and peer-reviewed, Composer botanical referee, sol chaired and applied the fixes
+- 2026-11-19 flora_addendum.py: strict second review (sol + DeepSeek) applied by sol: The plausible c2 is unchanged, including its light-fringe mechanism.; Removed the daylight visibility promise and separated visibility of a luminous surface from illumination of nearby objects.; A few metres is a favourable gameplay detection limit, not measured photometry or a guarantee through fog.

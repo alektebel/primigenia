@@ -15,7 +15,7 @@
     "Aerated waterfall-cave deposits",
     "Sunken-cave splash debris above prolonged immersion"
   ],
-  "summary": "A nonphotosynthetic decomposer fruits as pale cushions on damp, oxygenated organic deposits. Dark-tube colonies require imported carbon and never occupy permanently anaerobic cave pools. Fruit-like scent attracts occasional rondo investigation and small bites that move spores; the cushions are not its staple food. Suitable tissue feeds ecolumbre and babosa and emits no light (F9, F16, F23, F24).",
+  "summary": "A nonphotosynthetic decomposer fruits as pale cushions on damp, oxygenated organic deposits. Dark-tube colonies require imported carbon and remain confined to aerated substrate. Accessible mature cushions offer edible fungal tissue and a sticky spore-bearing surface to ecolumbre and babosa, allowing local contact dispersal between suitable deposits. Coastal colonies occupy freshwater-flushed debris above prolonged tidal immersion and emit no light (F9, F23, F24).",
   "chains": [
     {
       "id": "pan_de_humus.c1",
@@ -41,9 +41,9 @@
       ],
       "plausibility": {
         "verdict": "plausible",
-        "judge": "botanist/composer-2.5; chair sol",
+        "judge": "strict review: sol (codex) + DeepSeek; chair sol",
         "date": "2026-11-19",
-        "summary": "Dark growth consumes imported organic carbon and requires a suitable oxygenated substrate. Explicitly exclude permanently anaerobic pools and prolonged immersion; an unflooded tube can still contain humid substrate.",
+        "summary": "Dark growth consumes imported organic carbon and requires a suitable oxygenated substrate. Explicitly exclude permanently anaerobic pools and prolonged immersion; an unflooded tube can still contain humid substrate. Strict review (2026-11-19): Residual: Organic substrates supply energy, and external digestion explains nonphotosynthetic growth. F9 provides the cave setting and F24 permits compatible organic food. Residual weakness: oxygenated substrate is necessary but does not establish tolerance of sea salts or toxic vent deposits under F20 and F23; aeration also does not guarantee air safe for visiting creatures.",
         "analogues": [
           {
             "organism": "Saprotrophic filamentous fungi",
@@ -57,37 +57,34 @@
     },
     {
       "id": "pan_de_humus.c2",
-      "trait": "Fruit-scented cushions recruiting occasional spore carriers",
+      "trait": "Edible cushions with contact-transfer spore patches",
       "links": [
-        "Mature accessible cushions release fruit-like volatiles.",
-        "Still sheltered air retains a local scent patch.",
-        "Rondo investigates, noses or takes a small bite, picking up spores.",
-        "Subsequent movement transfers spores to other suitable deposits."
+        "Mature cushions expose a moist, tacky spore layer beside edible tissue in sheltered organic deposits.",
+        "Ecolumbre and babosa encounter and consume suitable fungal tissue within their documented habitats, receiving a food reward.",
+        "Contact leaves viable spore clumps on ecolumbre's mouth or feet and in babosa's surface mucus without requiring survival through digestion.",
+        "Later contact with another damp, aerated organic deposit rubs off some clumps, allowing establishment where carbon and oxygen suffice.",
+        "Contact transport supplements airborne dispersal across sheltered litter surfaces where weak air movement makes direct spore delivery patchy."
       ],
       "roots": [
-        "F16",
-        "F24",
-        "F27"
+        "F9",
+        "F24"
       ],
-      "play": "Watch brief rondo visits near entrances and distinguish scented cushions from actual fruit.",
-      "weakness": "Wind disperses scent, and inaccessible deep colonies cannot depend on rondo transport.",
+      "play": "Watch fungal grazers acquire sticky spore clumps and follow their local movement between organic patches; deep colonies need no rondo visits.",
+      "weakness": "Most transported spores reach unsuitable surfaces, drying reduces viability, and neither animal movement nor airborne spores can establish colonies on carbon-starved rock.",
       "observe": [
-        "A pale cushion smells fruity without containing seeds.",
-        "Rondo noses it and leaves only a small bite.",
-        "Spore dust clings to its damp muzzle."
+        "A mature cushion has a tacky tan spore patch beside pale edible tissue.",
+        "After feeding, ecolumbre carries clumps around its mouth or feet, or babosa leaves spore-bearing mucus at the cushion edge.",
+        "A later contact leaves a clump on damp litter; a small new colony develops there if the deposit remains aerated."
       ],
       "plausibility": {
         "verdict": "plausible",
-        "judge": "botanist/composer-2.5; chair sol",
+        "judge": "strict review: sol (codex) + DeepSeek; chair sol",
         "date": "2026-11-19",
-        "summary": "Rondo is an occasional sampler and spore carrier, not a staple fungivore. Fruit mimicry is a fictional specialization; deep colonies cannot assume visits from an inaccessible surface animal.",
+        "summary": "Rondo is an occasional sampler and spore carrier, not a staple fungivore. Fruit mimicry is a fictional specialization; deep colonies cannot assume visits from an inaccessible surface animal. Strict review (2026-11-19): revised: The original chain depended on unrewarded herbivore investigation and unexplained muzzle transfer; the rewrite uses rewarded fungal consumers and explicit external attachment and deposition. Residual: Both named consumers have fungal diets and overlapping habitats, so encounter and feeding require no dietary revision. F9 supplies suitable cave architecture; F24 permits compatible biochemistry but does not establish adhesive spores or successful transport. External transfer avoids assuming digestive survival. Residual weaknesses are attachment versus subsequent release, viability in babosa's alkaloid-rich mucus, and transfer before grooming or drying. These remain conditional biological specializations, not contradictions: the chain explicitly requires viable clumps, suitable deposits and local contact, and does not claim universal establishment or exclusive animal dispersal.",
         "analogues": [
           {
-            "organism": "Aromatic animal-dispersed truffle fungi",
-            "mechanism": "Fungal volatiles mediate animal attraction; precise fruit mimicry and external muzzle transport are proposed extensions.",
-            "refs": [
-              "splivallo_2011_volatiles"
-            ]
+            "organism": "Animal-associated fungal spore dispersal",
+            "mechanism": "The supplied truffle example supports animal attraction and ingestion-based transport, not external attachment. Tacky clumps transferred by documented fungal consumers are an explicit fictional contact-dispersal specialization; wind remains a supplementary route."
           }
         ]
       }
@@ -95,11 +92,10 @@
   ],
   "gameplay": {
     "food_for": [
-      "Fungivores eating suitable fresh tissue",
-      "Herbivores taking occasional small investigative bites",
-      "Marine particle feeders receiving washed-out decomposition material"
+      "ecolumbre grazes suitable fresh fungal tissue in aerated organic-fed patches.",
+      "babosa consumes soft cushions and decomposing litter."
     ],
-    "gift_item": "Fresh humus cushion from clean aerated litter",
+    "gift_item": "A fresh humus cushion from clean aerated litter for ecolumbre.",
     "poison": {
       "alkaloid": false,
       "signal": "Pale tissue lacks an alkaloid warning; substrate contamination and decay remain separate concerns."
@@ -109,33 +105,28 @@
     "climbing": false,
     "nest_material": null,
     "mineral_lick": null,
-    "notes": "Fresh fungal tissue is distinct from its decomposing substrate. Rondo takes occasional small bites rather than relying on cushions as a staple. No colonies occur in permanently anaerobic cave pools; pale bodies reflect light and never glow."
+    "notes": "Fresh fungal tissue is distinct from its decomposing substrate. Rondo is not a required consumer or disperser. Coastal colonies require freshwater-flushed substrate and adequate aeration; neither pale cushions nor oxygenated substrate certify safe cave air. Bodies reflect light and never glow. Small tissue fragments or edible microbial aggregates may enter tidal water from occupied sunken-cave fringe deposits, but this is an incidental input."
   },
   "relations": [
     {
       "with": "ecolumbre",
       "kind": "eaten_by",
-      "note": "Grazes suitable tissue in aerated organic-fed cave patches."
+      "note": "Grazes suitable fresh tissue in aerated organic-fed cave patches and can incidentally transfer sticky spores between deposits."
     },
     {
       "with": "babosa",
       "kind": "eaten_by",
-      "note": "Consumes soft cushions and decomposing litter."
-    },
-    {
-      "with": "rondo",
-      "kind": "dispersed_by",
-      "note": "Brief visits, nosing and occasional small bites pick up spores; this is not a staple food relationship."
+      "note": "Consumes soft cushions and decomposing litter; viable spores in external mucus may be deposited on later substrate contacts."
     },
     {
       "with": "corona",
       "kind": "other",
-      "note": "May receive decomposition particles washed from tidal-fringe organic deposits."
+      "note": "At occupied freshwater-flushed sunken-cave fringe deposits, tidal splash can detach small edible tissue fragments or microbial aggregates that enter the flooded tube and are occasionally intercepted by its mucus net."
     },
     {
       "with": "cuarteta",
       "kind": "other",
-      "note": "Intercepts suspended organic breakdown material carried into coastal water."
+      "note": "Occasionally intercepts small suspended tissue fragments or edible microbial aggregates washed from occupied sunken-cave fringe deposits into adjacent tidal water."
     },
     {
       "with": "pluma_de_sombra",
@@ -154,24 +145,24 @@
       "min": 0.02,
       "max": 0.18
     },
-    "trunk": "No trunk; fleshy cushions emerge from substrate filaments.",
+    "trunk": "No trunk; clustered fleshy cushions emerge over substrate filaments.",
     "branching": {
       "angle_deg": 60,
-      "levels": 3,
+      "levels": 1,
       "apical_dominance": 0.05,
-      "buttress": "None; branching describes filaments, not woody limbs."
+      "buttress": "None; branching describes substrate filaments, while visible bodies are rounded cushion clusters."
     },
     "leaf": {
-      "type": "None; rounded porous fruiting surface",
+      "type": "None; rounded porous fruiting surface with localized tacky spore patches",
       "size_cm": 0,
       "arrangement": "Loose cushion groups over organic material"
     },
     "colour": {
       "base": "Ivory to pale oatmeal",
       "overlay_rules": [
-        "Mature spore-bearing areas develop tan dust.",
+        "Mature spore patches become tacky tan areas.",
         "Waterlogged or spent cushions darken and collapse.",
-        "No bioluminescence or moon-phase colour change."
+        "Fresh hydrated cushion margins remain pale and rounded."
       ]
     },
     "placement": {
@@ -180,17 +171,17 @@
         0,
         1300
       ],
-      "wetness": "Humid oxygenated substrate without prolonged immersion; exclude permanently anaerobic cave pools and H₂S-bearing stagnant pool substrates.",
-      "soil": "Aerated dead leaves, wood, carcass material or imported organic sediment.",
+      "wetness": "Humid oxygenated substrate without prolonged immersion. Exclude persistently hypoxic, anaerobic or H₂S-bearing deposits. Coastal sites require recurrent freshwater flushing sufficient to prevent persistent salt accumulation.",
+      "soil": "Aerated dead leaves, wood, carcass material or imported organic sediment; exclude vent-contaminated deposits and salt-loaded splash debris.",
       "coast_distance_m": [
         0,
         1800
       ],
       "fog": "Supports entrance humidity; deep growth follows local moisture, oxygen and carbon delivery.",
-      "density": "Patchy colonies bounded by suitable organic deposits; absent from clean rock and permanently anaerobic pools."
+      "density": "Patchy colonies bounded by suitable organic deposits. Deep sites require a continuing local aeration route through connected air spaces; coastal sites additionally require freshwater flushing."
     },
     "seasonal": "Fruits after moisture pulses and fresh organic delivery; deep colonies follow substrate inputs rather than sunlight.",
-    "wind_response": "Low cushions move little; exposed edges dry and loose spores disperse in air."
+    "wind_response": "Low cushions move little; exposed edges dry. Loose spores can disperse in air, while tacky clumps transfer by contact."
   },
   "journal": [
     {
@@ -216,6 +207,11 @@
       "date": "2026-11-19",
       "who": "flora.py",
       "what": "flora pass: 7 voices drafted and peer-reviewed, Composer botanical referee, sol chaired and applied the fixes"
+    },
+    {
+      "date": "2026-11-19",
+      "who": "flora_addendum.py",
+      "what": "strict second review (sol + DeepSeek) applied by sol: The plausible c1 is unchanged; real placement concerns about hypoxia, salt accumulation and ventilation are addressed in the generator.; No numerical oxygen threshold is supplied because the canon provides no species-specific physiological measurement; placement requires sustained aeration rather than merely absence of complete anoxia.; The proposed dispersal rewrite removes dependence on rondo, f"
     }
   ],
   "observe": [
