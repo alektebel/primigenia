@@ -355,6 +355,11 @@ godot-studio-ix-evidence:
 	@mkdir -p docs/evidence/godot/creator-ix
 	LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 900 xvfb-run -a -s "-screen 0 1280x720x24" $(GODOT) --rendering-driver opengl3 --max-fps 30 --resolution 1280x720 --path godot \
 	  --script res://studio/tests/ix_evidence.gd -- $(CURDIR)/docs/evidence/godot/creator-ix
+godot-owner-evidence:
+	@mkdir -p docs/evidence/godot/owner-tweaks
+	LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 900 xvfb-run -a -s "-screen 0 1280x720x24" $(GODOT) --rendering-driver opengl3 --max-fps 30 --resolution 1280x720 --path godot \
+	  --script res://studio/tests/owner_evidence.gd -- $(CURDIR)/docs/evidence/godot/owner-tweaks
+.PHONY: godot-owner-evidence
 # Godot creature module (M1a, godot/creature). Headless tests; the import step
 # refreshes Godot's class_name cache. Evidence renders use software GL only.
 .PHONY: godot-creature-test godot-creature-evidence

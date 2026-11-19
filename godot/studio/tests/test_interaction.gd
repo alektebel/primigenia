@@ -90,6 +90,8 @@ func _init() -> void:
 	await t_wheel()
 	await t_joints()
 	await t_arrows()
+	await t_framing()
+	await t_chain()
 	await t_ring()
 	await t_no_other_actuation_path()
 	print("studio interaction tests: %d checks, %d failures" % [checks, fails])
@@ -257,8 +259,8 @@ func t_arrows() -> void:
 	await _frames(25)
 	arr = ui.spine_arrows()
 	var tail: Vector2 = arr["tail"]["pos"]
-	for i in range(1, 7):
-		motion(body.lerp(tail, float(i) / 6.0))
+	for i in range(1, 49):
+		motion(body.lerp(tail, float(i) / 48.0))
 	ok(ui._arrow_hot == "tail", "pointer on the tail arrow marks it hot")
 	drag(tail, tail + arr["tail"]["dir"] * 150.0, 12)
 	ok(m.doc["nodes"].size() > nt, "dragging the tail arrow outward adds tail segments (%d -> %d)" % [nt, m.doc["nodes"].size()])
@@ -272,6 +274,112 @@ func t_arrows() -> void:
 	ui._set_hover(-1)
 	await _frames(40)
 	ok(ui.view.spine_alpha() < .05, "spine fades out when the pointer leaves")
+
+# ------------------------------------------------------------------ 7 framing, 8 growing spine end, 9 soft chain (A31)
+func seg_lengths(N: Array) -> Array:
+	var out := []
+	for k in N.size() - 1:
+		out.append(Vector2(N[k + 1]["y"] - N[k]["y"], N[k + 1]["z"] - N[k]["z"]).length())
+	return out
+
+func t_framing() -> void:
+	for seed_name in ["Merodeador", "Hatchling"]:
+		await fresh(seed_name)
+		var free: Rect2 = ui.free_viewport()
+		var arr: Dictionary = ui.spine_arrows()
+		ok(arr.has("head") and arr.has("tail"), "%s: both spine arrows exist at the default framing" % seed_name)
+		var inside := true
+		for k in arr:
+			inside = inside and free.has_point(arr[k]["pos"])
+		ok(inside, "%s: both arrows sit in the free viewport between the panels (%s in %s)" % [seed_name, [arr["head"]["pos"], arr["tail"]["pos"]], free])
+
+func t_chain() -> void:
+	await fresh("Merodeador")
+	var N0: Array = m.doc["nodes"].duplicate(true)
+	var n0: int = N0.size()
+	var sp: float = m.natural_spacing(N0)
+	var e0 := Vector2(N0[n0 - 1]["y"], N0[n0 - 1]["z"])
+	var axis := (e0 - Vector2(N0[n0 - 2]["y"], N0[n0 - 2]["z"])).normalized()
+	var len0 := seg_lengths(N0)
+	# 8: one drag (one transaction): out by about 2.4 spacings, then further, then back
+	var hist0: int = m._hist.size()
+	m.begin()
+	m.bend_end(n0 - 1, e0.x + axis.x * sp * 2.4, e0.y + axis.y * sp * 2.4)
+	var Na: Array = m.doc["nodes"]
+	ok(Na.size() == n0 + 2, "dragging out 2.4 spacings generates two vertebrae (%d -> %d)" % [n0, Na.size()])
+	var same := true
+	for k in n0 - 1:
+		same = same and is_equal_approx(Na[k]["y"], N0[k]["y"]) and is_equal_approx(Na[k]["z"], N0[k]["z"])
+	ok(same, "the existing vertebrae did not move (no spreading)")
+	var ls := seg_lengths(Na)
+	var natural := true
+	for k in range(n0 - 1, ls.size()):
+		natural = natural and ls[k] > .45 * sp and ls[k] < 1.55 * sp
+	ok(natural, "the new segments keep the natural spacing %.2f (%s)" % [sp, ls.slice(n0 - 1)])
+	m.bend_end(Na.size() - 1, e0.x + axis.x * sp * 3.6, e0.y + axis.y * sp * 3.6)
+	ok(m.doc["nodes"].size() == n0 + 3, "further out: one more vertebra, one by one (%d)" % m.doc["nodes"].size())
+	m.bend_end(m.doc["nodes"].size() - 1, e0.x, e0.y)
+	ok(m.doc["nodes"].size() == n0, "dragging back removes the generated vertebrae (%d)" % m.doc["nodes"].size())
+	m.end()
+	ok(m._hist.size() == hist0 + (1 if m.snapshot() != m._hist.back() else 0), "the whole drag is one undo step")
+	m.undo()
+	# the cap: far beyond 14 vertebrae
+	m.begin()
+	m.bend_end(n0 - 1, e0.x + axis.x * 40.0, e0.y)
+	ok(m.doc["nodes"].size() == m.MAX_NODES_EDIT and m.end_capped, "the cap is %d vertebrae and says so (%d)" % [m.MAX_NODES_EDIT, m.doc["nodes"].size()])
+	var lc := seg_lengths(m.doc["nodes"])
+	var worst := 0.0
+	for k in range(n0 - 1, lc.size()):
+		worst = maxf(worst, lc[k])
+	ok(worst <= 1.55 * sp + .001, "at the cap the segments still do not stretch (%.2f)" % worst)
+	m.end()
+	m.undo()
+	# the tail grows the same way
+	m.begin()
+	var t0 := Vector2(N0[0]["y"], N0[0]["z"])
+	var taxis := (t0 - Vector2(N0[1]["y"], N0[1]["z"])).normalized()
+	m.bend_end(0, t0.x + taxis.x * sp * 2.2, t0.y + taxis.y * sp * 2.2)
+	ok(m.doc["nodes"].size() == n0 + 2 and is_equal_approx(m.doc["nodes"][m.doc["nodes"].size() - 1]["y"], N0[n0 - 1]["y"]), "the tail generates vertebrae at the natural spacing, the head end stays")
+	m.end()
+	m.undo()
+	# 9: a single vertebra drags its neighbours with a soft falloff
+	await fresh("Merodeador")
+	var A: Array = m.doc["nodes"].duplicate(true)
+	var mid: int = A.size() / 2
+	var parts_t := []
+	for p in m.doc["parts"]:
+		parts_t.append(p.get("t", 0.0))
+	var hist1: int = m._hist.size()
+	m.begin()
+	for step in 6:
+		m.move_node(mid, A[mid]["y"] + .12 * (step + 1), A[mid]["z"] + .1 * (step + 1))
+	m.end()
+	var B: Array = m.doc["nodes"]
+	var mv := []
+	for k in A.size():
+		mv.append(Vector2(B[k]["y"] - A[k]["y"], B[k]["z"] - A[k]["z"]).length())
+	ok(mv[mid] > .3, "the dragged vertebra moved (%.2f)" % mv[mid])
+	ok(mv[mid + 1] > .05 and mv[mid - 1] > .05 and mv[mid + 1] < mv[mid] and mv[mid - 1] < mv[mid], "its neighbours follow, less (%.2f, %.2f, %.2f)" % [mv[mid - 1], mv[mid], mv[mid + 1]])
+	ok(mv[mid + 2] < mv[mid + 1] + .001 and mv[mid - 2] < mv[mid - 1] + .001, "the pull decays along the chain (%.2f, %.2f)" % [mv[mid + 2], mv[mid - 2]])
+	var lb := seg_lengths(B)
+	var la := seg_lengths(A)
+	var kinks := 0
+	for k in lb.size():
+		if lb[k] < .3 or lb[k] > 1.95:
+			kinks += 1
+	ok(kinks == 0, "no segment collapses or overstretches")
+	var rigid := true
+	for k in range(mid - 2, mid + 2):
+		rigid = rigid and absf(lb[k] - la[k]) < .02
+	ok(rigid, "segment lengths inside the dragged chain stay as they were")
+	var same_t := true
+	for k in parts_t.size():
+		same_t = same_t and is_equal_approx(m.doc["parts"][k].get("t", 0.0), parts_t[k])
+	ok(same_t, "limbs and mirrored pairs hang on their vertebra (positions t unchanged)")
+	ok(m._hist.size() == hist1 + 1, "the whole drag is one undo step")
+	m.undo()
+	ok(Vector2(m.doc["nodes"][mid]["y"] - A[mid]["y"], m.doc["nodes"][mid]["z"] - A[mid]["z"]).length() < .001, "undo puts the spine back")
+	ok(m.validate()["ok"], "valid after the soft drag")
 
 # ------------------------------------------------------------------ 4 actuator ring
 func t_ring() -> void:
@@ -307,6 +415,25 @@ func t_ring() -> void:
 	var hp: Vector2 = ring.button_center(by["hydraulic"])
 	ring._gui_input(_mb(hp, true)); ring._gui_input(_mb(hp, false))
 	ok(not m.doc["parts"][li].has("act") or m.doc["parts"][li]["act"] == "muscle", "a disallowed choice changes nothing")
+	# A31: hovering a dimmed choice says why (bottom hint line and the bubble), Spanish and English
+	var ev_m := InputEventMouseMotion.new()
+	ev_m.position = hp
+	ring._gui_input(ev_m)
+	ok(ring._hover == by["hydraulic"] and ui.hint_label.text == "Necesita exoesqueleto: añade placas", "hovering a dimmed ring choice shows why in Spanish (%s)" % ui.hint_label.text)
+	ok(ring.options[by["exo"]]["why"] == "Necesita exoesqueleto: añade placas", "the exoskeleton choice gives the same reason")
+	var ev_m2 := InputEventMouseMotion.new()
+	ev_m2.position = ring.button_center(by["muscle"])
+	ring._gui_input(ev_m2)
+	ok(not ui.hint_label.text.begins_with("Necesita"), "an allowed choice has no reason")
+	ui.set_lang("en")
+	ui._close_ring()
+	ui._open_ring(li, false)
+	ring = ui._ring
+	ring.settle()
+	ev_m.position = ring.button_center(by["hydraulic"])
+	ring._gui_input(ev_m)
+	ok(ui.hint_label.text == "Needs an exoskeleton: add plates", "and in English (%s)" % ui.hint_label.text)
+	ui.set_lang("es")
 	await _frames(1)
 	# Esc closes
 	if not ui.ring_open():

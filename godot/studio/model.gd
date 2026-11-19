@@ -387,8 +387,13 @@ func move_node(i: int, y: float, z: float) -> int:
 	end()
 	return out
 
+## Weights of the vertebrae either side of a dragged one (A31): the chain follows with a soft falloff over three vertebrae.
+const FALLOFF := [1.0, .62, .32, .12]
+
 func _move_node(i: int, y: float, z: float) -> int:
 	var N: Array = doc["nodes"]
+	if i > 0 and i < N.size() - 1:
+		return _drag_interior(i, y, z)
 	var n: Dictionary = N[i]
 	var a := Vector2(y, z)
 	for j in [i - 1, i + 1]:
@@ -420,32 +425,130 @@ func _move_node(i: int, y: float, z: float) -> int:
 	_touch()
 	return out
 
-## Drag of a spine end (neck/head = last node, tail = node 0): the end follows (y, z) with the usual spacing rules,
-## which add or remove end vertebrae, and the two vertebrae behind it lean along (50 % and 25 % of the sideways part of
-## the move; the part along the segment extends by vertebrae instead), so the neck or tail bends. Returns the index of
-## the end node afterwards.
-func bend_end(i: int, y: float, z: float) -> int:
+## Interior vertebra drag with a soft chain: the vertebra goes to (y, z) and its neighbours follow with FALLOFF weights
+## (up to three each side), each placed at its original distance from the previous one, so the curve stays natural: no kinks, no
+## overlaps, segment lengths inside the chain unchanged. The step is shortened when it would stretch the first untouched
+## segment beyond .3..1.95. Parts hang on the spine by position (t), so limbs and mirrored pairs follow their vertebra.
+func _drag_interior(i: int, y: float, z: float) -> int:
 	var N: Array = doc["nodes"]
-	if i != 0 and i != N.size() - 1:
+	var old: Array = []
+	for n in N:
+		old.append(Vector2(n["y"], n["z"]))
+	var r: float = N[i]["r"]
+	var target := Vector2(clampf(y, r + .1, 20.0), clampf(z, -30.0, 30.0))
+	var delta: Vector2 = target - (old[i] as Vector2)
+	var scale := 1.0
+	for attempt in 24:
+		var pos: Array = old.duplicate()
+		pos[i] = (old[i] as Vector2) + delta * scale
+		for dir in [-1, 1]:
+			var prev: Vector2 = pos[i]
+			for k in range(1, FALLOFF.size()):
+				var j: int = i + dir * k
+				if j < 0 or j >= N.size():
+					break
+				var want: Vector2 = (old[j] as Vector2) + delta * scale * float(FALLOFF[k])
+				var len_: float = (old[j] as Vector2).distance_to(old[j - dir])
+				var v := want - prev
+				pos[j] = prev + (v.normalized() if v.length() > .0001 else ((old[j] as Vector2) - (old[j - dir] as Vector2)).normalized()) * len_
+				prev = pos[j]
+		var ok := true
+		for dir in [-1, 1]:
+			var j: int = i + dir * FALLOFF.size()
+			var last: int = j - dir
+			if j < 0 or j >= N.size() or last < 0 or last >= N.size():
+				continue
+			var d: float = (pos[last] as Vector2).distance_to(pos[j])
+			if d < .3 or d > 1.95:
+				ok = false
+		var floors_ok := true
+		for j in N.size():
+			if pos[j].x < N[j]["r"] + .1 and j != i:
+				floors_ok = false
+		if ok and floors_ok:
+			for j in N.size():
+				N[j]["y"] = pos[j].x
+				N[j]["z"] = pos[j].y
+			_touch()
+			return i
+		scale *= .85
+	return i
+
+## Drag of a spine end (neck/head = last node, tail = node 0). A31: the vertebrae never spread. The spacing stays the body's own
+## (`natural_spacing`, the mean segment length of the spine when the drag began) and the drag generates new vertebrae one by one at
+## that spacing as the pointer goes further out (the last segment stays between 0.5 and 1.5 spacings), and takes them away again
+## when it comes back, down to 4 and up to MAX_NODES_EDIT (`end_capped` tells the studio to say "límite"). Inside a drag
+## (`begin()` open) every call is computed from the document as it was at the press, so going back and forth is exact; the sideways
+## part of the move still leans the two vertebrae behind the end (50 %, 25 %). Returns the index of the end node afterwards.
+var end_capped := false
+
+func natural_spacing(N: Array) -> float:
+	var sum := 0.0
+	for k in N.size() - 1:
+		sum += Vector2(N[k + 1]["y"] - N[k]["y"], N[k + 1]["z"] - N[k]["z"]).length()
+	return clampf(sum / maxf(float(N.size() - 1), 1.0), .4, 1.2)
+
+func bend_end(i: int, y: float, z: float) -> int:
+	if i != 0 and doc["nodes"].size() > 0 and i != doc["nodes"].size() - 1 and _depth == 0:
 		return i
 	var head: bool = i != 0
-	var old := Vector2(N[i]["y"], N[i]["z"])
-	var nb: int = i - 1 if head else 1
-	var axis := (old - Vector2(N[nb]["y"], N[nb]["z"])).normalized()
+	var was_open := _depth > 0
 	begin()
-	var out := _move_node(i, y, z)
-	N = doc["nodes"]
-	var moved := Vector2(N[out]["y"], N[out]["z"]) - old
-	moved -= axis * moved.dot(axis)   # only the sideways part bends the neighbours; the axial part extends by vertebrae
+	if was_open:
+		doc = JSON.parse_string(_tx_start)       # recompute from the press: stateless in the pointer position
+	var N: Array = doc["nodes"]
+	var spacing := natural_spacing(N)
+	if not head:
+		N.reverse()                               # work on the head end; the tail is the same thing mirrored along the chain
+	var n0: int = N.size()
+	var e_old := Vector2(N[n0 - 1]["y"], N[n0 - 1]["z"])
+	var rad: float = N[n0 - 1]["r"]
+	var p := Vector2(clampf(y, rad + .1, 20.0), clampf(z, -30.0, 30.0))
+	# the anchor: the last original vertebra the pointer is not on top of (pulled in far enough, vertebrae go away; four stay)
+	var a: int = n0 - 2
+	while a > 2 and p.distance_to(Vector2(N[a]["y"], N[a]["z"])) < .5 * spacing:
+		a -= 1
+	var anchor := Vector2(N[a]["y"], N[a]["z"])
+	# sideways lean of the two vertebrae behind the anchor (the bend); the axial part grows or shrinks the chain
+	var axis := (e_old - Vector2(N[n0 - 2]["y"], N[n0 - 2]["z"])).normalized()
+	var side := (p - e_old)
+	side -= axis * side.dot(axis)
 	for step in 2:
-		var k: int = out - 1 - step if head else out + 1 + step
-		if k <= 0 or k >= N.size() - 1:
-			continue   # never drag the opposite end (only reached on a 4-node spine)
-		var w: float = .5 if step == 0 else .25
-		_move_node(k, N[k]["y"] + moved.x * w, N[k]["z"] + moved.y * w)
+		var k: int = a - step
+		if k >= 1 and k < n0 - 1 and k < a + 1:
+			var w: float = .5 if step == 0 else .25
+			var q := Vector2(N[k]["y"], N[k]["z"]) + side * w * (1.0 if k > 0 else 0.0)
+			N[k]["y"] = maxf(q.x, float(N[k]["r"]) + .1)
+			N[k]["z"] = q.y
+	anchor = Vector2(N[a]["y"], N[a]["z"])
+	var end_node: Dictionary = N[n0 - 1]
+	var r_a: float = N[a]["r"]
+	var keep: Array = N.slice(0, a + 1)
+	var d := p.distance_to(anchor)
+	var segs: int = maxi(1, int(round(d / spacing)))
+	end_capped = false
+	var room: int = MAX_NODES_EDIT - (a + 1) - 1          # generated vertebrae that still fit besides the end node
+	if segs - 1 > room:
+		segs = room + 1
+		end_capped = true
+	var dir := (p - anchor).normalized() if d > .0001 else axis
+	var span: float = minf(d, (float(segs) - 1.0 + 1.5) * spacing)     # the last segment is at most 1.5 spacings
+	var gen: Array = []
+	for k in range(1, segs):
+		var f := float(k) / float(segs)
+		var pt := anchor + dir * (spacing * float(k))
+		gen.append({"y": maxf(pt.x, 0.0), "z": pt.y, "r": lerpf(r_a, float(end_node["r"]), f)})
+	var endp := anchor + dir * span
+	end_node["y"] = maxf(endp.x, float(end_node["r"]) + .1)
+	end_node["z"] = endp.y
+	keep.append_array(gen)
+	keep.append(end_node)
+	if not head:
+		keep.reverse()
+	doc["nodes"] = keep
 	_touch()
 	end()
-	return out
+	return keep.size() - 1 if head else 0
 
 func set_node_radius(i: int, r: float) -> void:
 	begin()
