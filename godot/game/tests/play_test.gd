@@ -338,13 +338,40 @@ func _stage() -> void:
 	DirAccess.remove_absolute(ProjectSettings.globalize_path("user://play-test/saves"))
 	Scenario.save_dir = "user://saves"
 
-	print("== camera: left drag orbits, a click does not")
+	print("== camera: the left button never moves the camera (brief creature-fixes 1)")
 	var yaw_before: float = island.chase.yaw
+	var pitch_before: float = island.chase.orbit_pitch
+	var zt_before: float = island.chase.z_target
 	island.player_input.clear_destination()
-	await _drag(Vector2(640, 500), Vector2(720, 500))
+	await _drag(Vector2(640, 500), Vector2(720, 420))
 	await frames(2)
-	check(island.chase.yaw != yaw_before, "a left drag orbits the camera (yaw %.3f -> %.3f)" % [yaw_before, island.chase.yaw])
+	check(island.chase.yaw == yaw_before and island.chase.orbit_pitch == pitch_before, "a left drag does not orbit the camera (yaw %.3f -> %.3f)" % [yaw_before, island.chase.yaw])
 	check(island.player_input.destination == null, "a left drag does not set a destination")
+	var dbl := InputEventMouseButton.new()
+	dbl.position = Vector2(640, 500)
+	dbl.button_index = MOUSE_BUTTON_LEFT
+	dbl.pressed = true
+	dbl.double_click = true
+	root.push_input(dbl)
+	dbl.pressed = false
+	root.push_input(dbl)
+	await frames(2)
+	check(island.chase.z_target == zt_before, "a left double click does not zoom")
+	_click(Vector2(640, 520))
+	await frames(2)
+	check(island.chase.mouse_walk == (island.player_input.destination != null), "walking to a left click does not turn the camera")
+	var walked := 0
+	var turned := 0
+	for i in 90:
+		var y0: float = island.chase.yaw
+		var walking: bool = island.chase.mouse_walk
+		await frames(1)
+		if walking and island.chase.mouse_walk:
+			walked += 1
+			if island.chase.yaw != y0:
+				turned += 1
+	check(turned == 0, "no camera yaw change in %d frames of walking to a click" % walked)
+	island.player_input.clear_destination()
 	island.chase.reset_behind()
 	var z_before: float = island.chase.z_target
 	var zin := InputEventMouseButton.new()
@@ -668,3 +695,40 @@ func _studio_and_back() -> void:
 	check(host.body.genome.get("name", "") == "Wire Test" and starter_only, "the stage creature is the saved genome with starter parts (%d parts)" % host.body.genome.parts.size())
 	check(host.driver.controller != null and host.driver.problems.is_empty(), "the edited creature is still driven by locomotion")
 	await sim_ticks(20)
+	# brief creature-fixes 5: the built island pieces are kept between scene changes; "Jugar con esta criatura" saves and enters with them
+	check(current_scene.kit_reused and game.kit_hits >= 1, "the island pieces were taken from the kit on re-entry (hits %d)" % game.kit_hits)
+	var terrain_node = current_scene.terrain_chunks
+	game.goto_studio()
+	check(await until(func(): return current_scene != null and "model" in current_scene and current_scene.model != null, 600), "the studio opens again from the island")
+	var studio2 = current_scene
+	check(studio2.play_creature_btn != null and studio2.play_creature_btn.visible, "the studio has the Jugar con esta criatura button")
+	studio2.model.set_name_("Play Button Test")
+	studio2.play_with_creature()
+	check(await until(func(): return _scene_is("island.gd"), 600), "Jugar con esta criatura opens the island")
+	await frames(5)
+	check(current_scene.hosts[0].body.genome.get("name", "") == "Play Button Test", "the island has the creature that was just saved")
+	check(current_scene.kit_reused and current_scene.terrain_chunks == terrain_node, "and the same built terrain (not rebuilt: %d ms build)" % int(current_scene.build_ms.get("total", -1)))
+	await sim_ticks(20)
+	# brief creature-fixes 6: resting the pointer on a plant notes it (whisper, journal page, saved with the game)
+	var isl2 = current_scene
+	check(isl2.props.records.size() > 0, "the island has plants (%d records)" % isl2.props.records.size())
+	var rec: Dictionary = isl2.props.records[0]
+	var seen: String = isl2.gaze.pick(isl2.props.records, (rec.p as Vector3) + Vector3(0, float(rec.height) + 10.0, 0), Vector3.DOWN)
+	check(seen != "", "a ray down onto a plant picks a plant (%s)" % seen)
+	isl2.gaze.known.clear()
+	var noted := ""
+	for i in 40:
+		noted = isl2.gaze.tick(0.1, seen)
+		if noted != "":
+			break
+	check(noted == seen, "%.1f s on it notes it" % isl2.gaze.DWELL)
+	isl2.stage_ui.plant_noticed(noted)
+	check(isl2.stage_ui.ui.words.whisper_text.begins_with("New plant") or isl2.stage_ui.ui.words.whisper_text.begins_with("Nueva planta"), "the whisper says it (%s)" % isl2.stage_ui.ui.words.whisper_text)
+	check(isl2.stage_ui._journal_model().plants.size() == 1, "the journal model has the plant")
+	check(isl2.scenario_ctx().plants == [noted], "the save carries the plant list")
+	var built: Dictionary = preload("res://devtools/scenario.gd").build(isl2.stage, isl2.scenario_ctx(), "save", "plants", "", false)
+	check(built.json.plants == [noted], "the scenario file has the plants")
+	isl2.gaze.known.clear()
+	isl2.gaze.from_list(built.json.plants)
+	check(isl2.gaze.known.has(noted), "and loading brings them back")
+	await sim_ticks(5)

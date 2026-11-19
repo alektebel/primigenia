@@ -29,6 +29,7 @@ const FAR_GRASS_Z := 0.6          # zoom above which grass, shadows and models a
 const MODEL_OFF_Z := 0.85
 const DEN_SEEN := 60.0
 const ActionFeed := preload("res://actions/action_feed.gd")
+const PlantGaze := preload("res://game/island/plant_gaze.gd")
 
 var terrain_chunks: Node3D
 var world_env: WorldEnvironment
@@ -65,6 +66,8 @@ var _follow_clock := 0.0       # hold to follow: the mouse target is sent at mos
 const FOLLOW_PERIOD := 0.15
 var _genome: Dictionary = {}
 var _garfio_profile: Dictionary = {}   # kept so creatures spawned later (dev console, scenarios) get a body
+var gaze := PlantGaze.new()        # plants noticed by resting the pointer on them (brief creature-fixes 6)
+var _gaze_poll := 0.0
 var gesture := Gesture.new()       # the left button: click, hold or orbit drag
 var _orbit_btn := 0               # right/middle button held (1 = right, 2 = middle)
 var _mid_travel := 0.0
@@ -100,34 +103,68 @@ func _place_props(setup: Dictionary) -> void:
 func data_for_shadows():
 	return Game.data
 
+var kit_reused := false            # terrain, water, rivers, grass and props came from Game's kit instead of being built
+var build_ms := {}                # phase -> milliseconds of the last build (brief creature-fixes 5; printed once per entry)
+var _phase_t := 0
+
+# The pieces that only depend on the terrain and the quality settings: Game parks them across a scene change.
+func kit_nodes() -> Dictionary:
+	return {"terrain": terrain_chunks, "water": water, "rivers": rivers, "grass": grass, "props": props}
+
+func _phase(name: String) -> void:
+	var now := Time.get_ticks_msec()
+	build_ms[name] = now - _phase_t
+	_phase_t = now
+
 func build() -> void:
 	var data = Game.data
+	_phase_t = Time.get_ticks_msec()
+	var t_start := _phase_t
 	Clouds.apply(Game.settings.get("weather", ""))
 	world_env = WorldEnvironment.new()
 	world_env.environment = EnvironmentFactory.make_environment()
 	add_child(world_env)
 	sun = EnvironmentFactory.make_sun()
 	add_child(sun)
-	terrain_chunks = TerrainChunks.new()
-	terrain_chunks.name = "Terrain"
-	add_child(terrain_chunks)
-	terrain_chunks.build(data)
-	water = Water.new()
-	water.name = "Water"
-	add_child(water)
-	water.build(data)
-	rivers = Rivers.new()
-	rivers.name = "Rivers"
-	add_child(rivers)
-	rivers.build(data)
-	var t0 := Time.get_ticks_msec()
-	grass = Grass.new()
-	grass.name = "Grass"
-	add_child(grass)
-	grass.build(data, int(Game.settings.grass))
-	if Game.settings.get("sun_shadows", false):
-		set_sun_shadows(true)
-	print("grass built in %d ms (%d blades)" % [Time.get_ticks_msec() - t0, int(Game.settings.grass)])
+	_phase("environment")
+	var kit: Dictionary = Game.take_kit()
+	if not kit.is_empty():
+		# the terrain, water, rivers, grass and flora of the last island are still built: take them back (see Game.park_island)
+		terrain_chunks = kit.terrain
+		water = kit.water
+		rivers = kit.rivers
+		grass = kit.grass
+		props.free()
+		props = kit.props
+		for n in [terrain_chunks, water, rivers, grass]:
+			add_child(n)
+		kit_reused = true
+		_phase("kit_reused")
+	else:
+		terrain_chunks = TerrainChunks.new()
+		terrain_chunks.name = "Terrain"
+		add_child(terrain_chunks)
+		terrain_chunks.build(data)
+		_phase("terrain_meshes")
+		water = Water.new()
+		water.name = "Water"
+		add_child(water)
+		water.build(data)
+		_phase("water")
+		rivers = Rivers.new()
+		rivers.name = "Rivers"
+		add_child(rivers)
+		rivers.build(data)
+		_phase("rivers")
+		var t0 := Time.get_ticks_msec()
+		grass = Grass.new()
+		grass.name = "Grass"
+		add_child(grass)
+		grass.build(data, int(Game.settings.grass))
+		_phase("grass")
+		if Game.settings.get("sun_shadows", false):
+			set_sun_shadows(true)
+		print("grass built in %d ms (%d blades)" % [Time.get_ticks_msec() - t0, int(Game.settings.grass)])
 	RenderTier.apply_viewport(get_viewport())
 	camera = Camera3D.new()
 	camera.name = "Camera"
@@ -138,7 +175,10 @@ func build() -> void:
 	camera.current = true
 	debug_camera = camera
 	Game.camera = camera
+	_phase("camera")
 	_build_stage()
+	build_ms["total"] = Time.get_ticks_msec() - t_start
+	Game.report_entry(build_ms)
 	set_process(true)
 	Game.island_ready.emit()
 
@@ -169,11 +209,14 @@ func _build_stage() -> void:
 		return
 	stage.world.reset({"terrain": 2})     # a probe state so StageSetup can ask the C walk rule
 	var setup := StageSetup.build(Game.data, int(Game.settings.seed), pr.profile, garfio_profile, bool(Game.settings.wild), stage.world, bool(Game.settings.get("herds", true)), bool(Game.settings.get("secrets", true)))
+	stage.edit_anywhere = bool(Game.settings.get("edit_anywhere", true))
 	stage.process_priority = -10     # the world ticks before the actors read it (action timing, G77)
 	add_child(stage)
+	_phase("stage_setup")
 	props.name = "IslandProps"
 	add_child(props)
 	_place_props(setup)
+	_phase("props_flora")
 	_den = Vector2(setup.wild[0].home_x, setup.wild[0].home_z) if setup.wild.size() > 0 else null
 	var ground := Callable(Game, "visual_ground")
 	stage.ground_fn = ground
@@ -186,7 +229,9 @@ func _build_stage() -> void:
 	if stage.reset(setup) != 0:
 		push_error("the C world rejected the island setup")
 		return
+	_phase("stage_reset")
 	stage.world.nav_warm()    # fill the GO walk grid now (about 0.6 s), so no click pays for it later
+	_phase("nav_warm")
 	stage.ticked.connect(func(state: Dictionary) -> void: Game.world_ticked.emit(state))
 	stage.combat_events.connect(func(events: Array) -> void: Game.combat_events.emit(events))
 	Game.stage = stage
@@ -202,6 +247,7 @@ func _build_stage() -> void:
 		h.setup(_species_body(int(setup.wild[i].species)), i + 1, setup.wild[i].profile, ground)
 		h.set_meta("base_scale", _species_scale(int(setup.wild[i].species)))
 		hosts[i + 1] = h
+	_phase("creatures")
 	var yaw := PI
 	if setup.wild.size() > 0:
 		yaw = atan2(setup.nest.x - setup.wild[0].home_x, setup.nest.y - setup.wild[0].home_z)
@@ -245,6 +291,7 @@ func _build_stage() -> void:
 	lineage_controller.setup(self)
 	_update_actors(0.0)
 	_update_camera(0.0)
+	_phase("ui_and_rest")
 	if not Game.pending_scenario.is_empty():
 		var parsed: Dictionary = Game.pending_scenario
 		Game.pending_scenario = {}
@@ -269,7 +316,7 @@ func scenario_ctx() -> Dictionary:
 	if stage.world.has_field():
 		var info: Dictionary = stage.world.field_info()
 		isl = {"seed": info.seed, "terrain_version": CporeTerrain.version(), "terrain_hash": info.hash}
-	var ctx := {"genome": _genome, "island": isl, "camera": camera_state()}
+	var ctx := {"genome": _genome, "island": isl, "camera": camera_state(), "plants": gaze.to_list()}
 	var dev = get_tree().root.get_node_or_null("Dev")
 	if dev != null and dev.has_method("tuning_state"):
 		ctx["tuning"] = dev.tuning_state()
@@ -325,6 +372,7 @@ func load_scenario(parsed: Dictionary) -> String:
 		player_input.clear_destination()
 	if stage_ui != null:
 		stage_ui.ui.clear_selection()
+	gaze.from_list(d.get("plants", []))
 	if chase != null:
 		for k in d.get("camera", {}):
 			if chase.get(k) != null:
@@ -473,6 +521,7 @@ func _update_camera(dt: float) -> void:
 		enemy = {"x": e.x, "z": e.z}
 	var vp := get_viewport().get_visible_rect().size
 	chase.kick = bool(Game.settings.get("camera/kick", false))
+	chase.mouse_walk = player_input.destination != null      # walking to a click or following the mouse: the camera does not turn for it
 	var r: Dictionary = chase.update({"x": p.pos.x, "z": p.pos.z, "yaw": p.yaw, "speed": p.speed, "vx": p.vel.x, "vz": p.vel.z}, enemy, fighting, dt, vp.x / maxf(vp.y, 1.0))
 	camera.fov = 48.0 + float(r.fov_add)
 	camera.near = clampf(float(r.distance) * 0.012, 0.05, 40.0)       # keep the depth buffer precise at 3 km
@@ -557,6 +606,7 @@ func _process(delta: float) -> void:
 	gesture.tick(delta)
 	_update_move_marker()
 	_update_hover(delta)
+	_update_plants(delta)
 	_mouse_held = gesture.holding
 	if _mouse_held and not Game.movement_blocked():
 		_follow_clock -= delta
@@ -566,9 +616,9 @@ func _process(delta: float) -> void:
 	else:
 		_follow_clock = 0.0
 
-# Mouse (docs/godot/CAMERA-ZOOM.md section 1): wheel zooms along the one curve; a left press that moves more than
-# DRAG_PX is an orbit drag, otherwise it is a click (acted on at release) or, held, steers towards the mouse; right and
-# middle drag orbit; a middle click or Home puts the camera back behind the creature.
+# Mouse (docs/godot/CAMERA-ZOOM.md section 1): wheel zooms along the one curve; the LEFT button never moves the camera (a
+# press that moves more than DRAG_PX is ignored, otherwise it is a click acted on at release or, held, steers the creature
+# towards the mouse); right and middle drag orbit; a middle click or Home puts the camera back behind the creature.
 func _unhandled_input(event: InputEvent) -> void:
 	if stage == null or chase == null:
 		return
@@ -606,12 +656,13 @@ func _on_button(e: InputEventMouseButton) -> void:
 			chase.orbit_active = true
 		else:
 			_orbit_btn &= ~bit
-			chase.orbit_active = _orbit_btn != 0 or gesture.dragging
+			chase.orbit_active = _orbit_btn != 0
 			if e.button_index == MOUSE_BUTTON_MIDDLE and _mid_travel < Gesture.DRAG_PX:
 				chase.reset_behind()
 
 func _on_motion(e: InputEventMouseMotion) -> void:
-	var orbiting := _orbit_btn != 0 or gesture.motion(e.position)
+	gesture.motion(e.position)           # a left drag is classified (and then ignored): the left button never moves the camera
+	var orbiting := _orbit_btn != 0
 	if _orbit_btn != 0:
 		_mid_travel += e.relative.length()
 	if orbiting:
@@ -621,17 +672,13 @@ func _on_motion(e: InputEventMouseMotion) -> void:
 			player_input.frame_yaw = chase.view_yaw     # steering with the mouse while keys are held
 
 # A click: a strategic icon (select; double-click zooms back down), a creature, or the ground (walk there).
-func _click(pos: Vector2, double: bool) -> void:
+func _click(pos: Vector2, _double: bool) -> void:
 	if icons != null and icons.alpha >= 0.3:
 		var it: Dictionary = icons.pick(pos)
 		if not it.is_empty():
-			if double:
-				chase.set_zoom(chase.Z_CHASE)
 			last_click = pos
 			Game.creature_clicked.emit(it.id, it.pos)
 			return
-		if double:
-			chase.set_zoom(chase.Z_CHASE)
 	_click_ground(true, pos)
 
 func _click_ground(allow_pick: bool, mouse: Vector2, follow: bool = false) -> void:
@@ -680,6 +727,27 @@ func _update_move_marker() -> void:
 	_had_dest = has
 
 # Pointer over a creature for 0.25 s: its ring shows at 0.4 in its relationship style (docs/godot/UI-DIEGETIC.md 7.16).
+# Observing plants: the pointer resting on a plant for PlantGaze.DWELL seconds writes it into the journal. Creatures come first
+# (a hovered creature, a fight, a held button or an open book never count), so this never competes with the radial.
+func _update_plants(dt: float) -> void:
+	if camera == null or stage == null or stage_ui == null:
+		return
+	_gaze_poll += dt
+	if _gaze_poll < 0.1:
+		return
+	var step := _gaze_poll
+	_gaze_poll = 0.0
+	var id := ""
+	if not Game.movement_blocked() and not gesture.down and _hover_id < 0 and int(stage.cur.active) < 0 and selected_id <= 0:
+		var m := get_viewport().get_mouse_position()
+		id = gaze.pick(props.records, camera.project_ray_origin(m), camera.project_ray_normal(m))
+	var found := gaze.tick(step, id)
+	if found != "":
+		stage_ui.plant_noticed(found)
+
+func plant_rows() -> Array:
+	return gaze.journal_rows(preload("res://game/island/flora_placement.gd").recipes())
+
 func _update_hover(dt: float) -> void:
 	if ground_marks == null or camera == null or stage == null:
 		return

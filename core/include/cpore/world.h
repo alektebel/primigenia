@@ -257,7 +257,7 @@ typedef struct {
     /* DT0 additions (PLAN-devtools step 3). Part of the snapshot payload, except `field`, which MUST stay
      * the last member: the payload is offsetof(CpStageWorld,field) bytes. */
     CpStageMotion motion;            /* per-world copy of CP_STAGE_MOTION, changed by debug PARAM ops */
-    int32_t debug_flags,reserved;    /* CP_STAGE_FLAG_* ; reserved keeps the layout explicit */
+    int32_t debug_flags,edit_anywhere; /* CP_STAGE_FLAG_* ; edit_anywhere (0/1, never hashed, set by the host's setting) lets the genome edits skip the nest radius */
     uint64_t field_hash;             /* hash of the attached field, 0 outside FIELD mode */
     /* C1-nav: the GO / GO_NEST path (hashed while n_path>0) and derived observation outputs (not hashed). */
     float path[CP_STAGE_MAX_PATH][2];/* waypoints, the last is where the order ends */
@@ -289,6 +289,8 @@ int cp_stage_in_cave(const CpStageWorld *w,float x,float z);   /* 0 outside, 1 i
 extern const char *const CP_STAGE_SHARD_LINES_EN[CP_STAGE_SHARDS],*const CP_STAGE_SHARD_LINES_ES[CP_STAGE_SHARDS],*const CP_STAGE_SHARD_NAMES[CP_STAGE_SHARDS];
 /* Fixed site lives in setup.nest_x/z; C3 may replace that setup choice without changing any caller. */
 int cp_stage_at_nest(const CpStageWorld *w);
+int cp_stage_can_edit(const CpStageWorld *w);          /* at the nest, or anywhere when edit_anywhere is on (never in a fight, dead or lineage lost) */
+void cp_stage_set_edit_anywhere(CpStageWorld *w,int on);
 int cp_stage_walkable_from_nest(const CpStageWorld *w,float x,float z);
 int cp_stage_part_id(const char *id);
 int cp_stage_part_find(CpStageWorld *w,int part,int source);

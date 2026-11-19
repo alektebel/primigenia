@@ -150,6 +150,7 @@ func run(t) -> void:
 	_zoom_curve(t)
 	_orbit(t)
 	_gesture(t)
+	_mouse_walk(t)
 	_sky(t)
 	_icons(t)
 
@@ -376,3 +377,21 @@ func _icons(t) -> void:
 	layer.update_alpha(cam.icon_alpha_at(0.75))
 	t.check(layer.visible, "the icon layer shows above z 0.7")
 	layer.free()
+
+# Brief creature-fixes 1: walking to a left click (or following the mouse) never turns the camera by itself.
+func _mouse_walk(t) -> void:
+	var flat = func(x: float, z: float) -> float: return 0.0
+	var c = ChaseCamera.new(2.0, 0.0, flat)
+	c.mouse_walk = true
+	var yaw0: float = c.yaw
+	var mover := {"x": 0.0, "z": 0.0, "yaw": PI / 2.0, "speed": 5.0, "vx": 5.0, "vz": 0.0}
+	for i in 240:
+		mover.x += 5.0 / 60.0
+		c.update(mover, null, false, 1.0 / 60.0)
+	t.check(c.yaw == yaw0, "mouse walk: the camera yaw stays put (%.3f -> %.3f)" % [yaw0, c.yaw])
+	var k = ChaseCamera.new(2.0, 0.0, flat)
+	var mover2 := {"x": 0.0, "z": 0.0, "yaw": PI / 2.0, "speed": 5.0, "vx": 5.0, "vz": 0.0}
+	for i in 240:
+		mover2.x += 5.0 / 60.0
+		k.update(mover2, null, false, 1.0 / 60.0)
+	t.check(k.yaw != 0.0, "keys still let the camera follow (yaw %.3f)" % k.yaw)

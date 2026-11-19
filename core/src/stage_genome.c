@@ -172,7 +172,7 @@ int cp_stage_genome_form(const char *json,CpLineageForm *out){
 /* Evolve: the only nest action that spends DNA and starts a generation. Everything the genome adds
  * (new parts, higher levels, tiers when enabled) is priced here and charged atomically with the evolve. */
 int cp_stage_edit(CpStageWorld *w,const char *genome){
- if(!cp_stage_at_nest(w))return CP_STAGE_ERR_NOT_AT_NEST;
+ if(!cp_stage_can_edit(w))return CP_STAGE_ERR_NOT_AT_NEST;
  CpLineageForm f;if(cp_stage_genome_form(genome,&f))return -1;
  if(!w->ancestry.count)return -1;
  Json *j=calloc(1,sizeof *j);if(!j)return -1;j->s=genome;if(value(j)<0){free(j);return -1;}
@@ -211,7 +211,7 @@ int cp_stage_edit(CpStageWorld *w,const char *genome){
 /* Repaint, rearrange and other cosmetic edits: free, any number of times, never a new generation.
  * Rejected when the combat-relevant form (parts, levels, tiers, derived profile) would change. */
 int cp_stage_apply(CpStageWorld *w,const char *genome){
- if(!cp_stage_at_nest(w))return CP_STAGE_ERR_NOT_AT_NEST;
+ if(!cp_stage_can_edit(w))return CP_STAGE_ERR_NOT_AT_NEST;
  if(!w->ancestry.count)return -1;
  CpLineageForm f;if(cp_stage_genome_form(genome,&f))return -1;
  CpLineageForm *cur=&w->ancestry.forms[w->ancestry.count-1].form;
@@ -224,7 +224,7 @@ int cp_stage_apply(CpStageWorld *w,const char *genome){
 }
 
 int cp_stage_start_genome(CpStageWorld *w,const char *genome){
- if(!cp_stage_at_nest(w)||w->ancestry.count)return -1;
+ if(!cp_stage_can_edit(w)||w->ancestry.count)return -1;
  CpLineageForm f;if(cp_stage_genome_form(genome,&f))return -1;
  for(int i=0;i<CP_STAGE_PART_COUNT;i++)if(f.parts[i]&&!(w->parts.owned&(1ULL<<i)))return CP_STAGE_ERR_NOT_KNOWN;
  Json *j=calloc(1,sizeof *j);if(!j)return -1;j->s=genome;if(value(j)<0){free(j);return -1;}
