@@ -6,9 +6,12 @@ Types describe what a creature does; the player never chooses one in a menu.
 
 Four integer scores range from −100 to +100. For each axis, score =
 `100 * (positive - negative) / (positive + negative)`, truncating toward zero;
-a zero denominator gives 0. Scores inside **[−10,+10]** keep the previous
-generation’s letter. The founding default is S-G-I-W (provisional at all zeros).
-This dead zone provides continuity without hiding the continuous scores.
+a zero denominator gives 0. A score inside **[−10,+10]** leaves the
+axis **undetermined**, shown as "?" (a creature with no deeds is "?-?-?-?", name
+"Undetermined" / "Sin definir"): you become what you do. Once an axis has left the dead
+zone it keeps its letter through later dead-zone scores and later generations, until a
+score crosses to the other pole. The exported type index holds the letters in bits 0-3 and
+the determined axes in bits 4-7.
 All arithmetic uses uint64/int64 intermediates; UINT32_MAX deed vectors are safe.
 
 | Axis | Negative contribution | Positive contribution |
@@ -25,11 +28,11 @@ flee discriminator can replace that award producer when social/stealth arrives.
 Unbuilt actions contribute zero until their mechanics award deeds.
 
 The type is live for the current generation and frozen into its generation and
-a `type` ledger entry during evolution. Bit order in the exported type index is
+a `type` ledger entry during evolution. Letter bit order in the exported type index is
 Approach, Diet, Way of life, Temper; positive bits are S, G, I, W. Codes and
 names are exported to later stages and shown in the family tree.
 
-Each type grants **exactly one** perk. Priority is Wary → observe, otherwise
+A type, its name and its perk exist only when **all four axes are determined**; before that there is no perk (the base amount is returned unchanged). Each of the sixteen types grants **exactly one** perk. Priority is Wary → observe, otherwise
 Industrious → nest, otherwise Social → first-meeting trust, otherwise meat.
 No combat damage, movement, health, cooldown or stamina stat changes.
 

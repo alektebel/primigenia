@@ -12,8 +12,11 @@ assert {"hunter", "social"} <= set(l["traits"])
 assert l["deeds"]["observations"] == 7
 assert w.observe()["lineage"]["generation"] == 1
 assert w.lineage_award(21, 600) < 0  # swimming remains disabled
-assert w.lineage_perk(3, 1, 100) == 80
-assert w.lineage_perk(3, 1, 100) == 0
+assert w.lineage_perk(3, 1, 100) == 100  # undetermined type: no perk yet
+for deed in (1, 4, 9):  # social, gatherer, builder: all four axes decided (observations make it wary)
+    assert w.lineage_award(deed, 20, 1) == 0
+assert w.lineage_perk(3, 2, 100) == 80
+assert w.lineage_perk(3, 2, 100) == 0
 w.step()
 assert w.lineage()["deeds"]["nest_ticks"] == 1
 print("Python lineage smoke: passed")

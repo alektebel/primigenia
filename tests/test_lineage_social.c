@@ -18,7 +18,7 @@ static void run(const char *cmd,int max){
     assert(cp_stage_command(&w,cmd)==0);
     for(int i=0;i<max&&w.order.verb;i++)cp_stage_step(&w,NULL);
 }
-static int type_of(void){int sc[4];return cp_type_score(w.ledger.current,15,sc);}
+static int type_of(void){int sc[4];return cp_type_score(w.ledger.current,0,sc);}
 static void deeds(void){
     mk1(0,3,1);
     cp_stage_social_give(&w,CP_ITEM_FRUIT,4);
@@ -36,9 +36,16 @@ static void deeds(void){
     PASS("no ledger, no deeds");
 }
 static void perks(void){
-    /* default type is S-G-I-W (15): the Wary observe perk, 50 -> 40 ticks per clue */
+    /* a zero-deed creature is undetermined: no perk, 50 ticks per clue */
     mk1(0,15,1);
-    assert(type_of()==15);
+    assert(cp_type_perk(type_of())==-1);
+    assert(cp_stage_command(&w,"observe #1")==0);
+    {int t=0;while(w.social.obs_items[0]==0&&t<200){cp_stage_step(&w,NULL);t++;}assert(t>=50&&t<=52);}
+    /* all four axes decided as S-G-I-W: the Wary perk, 50 -> 40 ticks per clue */
+    mk1(0,15,1);
+    cp_stage_lineage_award(&w,CP_DEED_BEFRIENDS,20,0);cp_stage_lineage_award(&w,CP_DEED_PLANTS,20,0);
+    cp_stage_lineage_award(&w,CP_DEED_BUILDING,20,0);cp_stage_lineage_award(&w,CP_DEED_OBSERVATIONS,20,0);
+    assert(cp_type_perk(type_of())==CP_TYPE_OBSERVE);
     assert(cp_stage_command(&w,"observe #1")==0);
     int ticks=0;
     while(w.social.obs_items[0]==0&&ticks<200){cp_stage_step(&w,NULL);ticks++;}
@@ -47,7 +54,7 @@ static void perks(void){
     /* Social type: +10 trust on the first meeting only */
     mk1(0,3,1);
     cp_stage_lineage_award(&w,CP_DEED_BEFRIENDS,20,0);cp_stage_lineage_award(&w,CP_DEED_FIGHTS,20,0);
-    cp_stage_lineage_award(&w,CP_DEED_DISTANCE,50000,0);
+    cp_stage_lineage_award(&w,CP_DEED_DISTANCE,50000,0);cp_stage_lineage_award(&w,CP_DEED_PLANTS,20,0);
     assert(cp_type_perk(type_of())==CP_TYPE_TRUST);
     cp_stage_social_give(&w,CP_ITEM_FRUIT,2);
     run("gift #1 fruit",40);
@@ -58,7 +65,7 @@ static void perks(void){
     /* Hunter type: +10% carcass food per bite */
     mk1(0,3,1);
     cp_stage_lineage_award(&w,CP_DEED_KILLS,20,0);cp_stage_lineage_award(&w,CP_DEED_FIGHTS,20,0);
-    cp_stage_lineage_award(&w,CP_DEED_DISTANCE,50000,0);
+    cp_stage_lineage_award(&w,CP_DEED_DISTANCE,50000,0);cp_stage_lineage_award(&w,CP_DEED_HUNTS,20,0);
     assert(cp_type_perk(type_of())==CP_TYPE_MEAT);
     w.wild[0].dead=1;w.wild[0].hp=0;w.social.food=0;
     assert(cp_stage_command(&w,"eat #1")==0);

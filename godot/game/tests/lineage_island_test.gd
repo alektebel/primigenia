@@ -33,6 +33,13 @@ func run() -> void:
 	registry.stage_provider = func(): return island.stage
 	Commands = load("res://devtools/console/commands_creature.gd")
 	Commands.register_all(registry)
+	if "--evidence" in OS.get_cmdline_user_args():
+		# Live somewhere other than the spawn so the home range (most occupied 64 m cell) is not the origin.
+		registry.execute("tp 150 90")
+		island.stage.set_process(true)
+		for i in 60:
+			await process_frame
+		island.stage.set_process(false)
 	var bodies := CreatureMesh.seeds()
 	var keys := bodies.keys()
 	var dir := "res://../build/lineage-island"
@@ -52,6 +59,10 @@ func run() -> void:
 			check(island.save_scenario(dir + "/generation2", "save", "integration test") == "", "save generation two")
 	check(JSON.parse_string(island.stage.world.lineage()).generation == 3, "three generations on real island")
 	var cousin_id := old_n + 1
+	if "--evidence" in OS.get_cmdline_user_args():
+		var home: Array = initial.get("generations", [])
+		var gens: Array = JSON.parse_string(island.stage.world.lineage()).generations
+		check(absf(float(gens[0].home_cm[0]) - 15000.0) < 6400.0 and absf(float(gens[0].home_cm[1]) - 9000.0) < 6400.0, "cousin home is where the player lived (%s)" % str(gens[0].home_cm))
 	check(str(island.hosts[cousin_id].get_meta("lineage_body")) == str(initial.generations[0].body_json), "cousin retains founding body")
 	var controller = null
 	for child in island.get_children():

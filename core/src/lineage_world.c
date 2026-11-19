@@ -105,7 +105,7 @@ int cp_stage_evolve(CpStageWorld *w,const CpLineageForm *f){
   if(diff)cp_ledger_append(&w->ledger,w->tick,diff>0?CP_LEDGER_PART_GAINED:CP_LEDGER_PART_LOST,i,diff>0?diff:-diff,hx,hz,w->ledger.generation);
  }
  cp_ledger_append(&w->ledger,w->tick,CP_LEDGER_EVOLVED,w->ledger.generation, w->ledger.generation+1,hx,hz,0);
- int scores[4],previous=w->ancestry.count>1?w->ancestry.forms[w->ancestry.count-2].type:15;
+ int scores[4],previous=w->ancestry.count>1?w->ancestry.forms[w->ancestry.count-2].type:0;
  old->type=cp_type_score(w->ledger.current,previous,scores);
  cp_ledger_append(&w->ledger,w->tick,CP_LEDGER_TYPE,old->type,1,hx,hz,w->ledger.generation);
  w->ledger.generation++;memset(w->ledger.current,0,sizeof w->ledger.current);
@@ -143,7 +143,7 @@ int cp_stage_lineage_export(const CpStageWorld *w,char *out,size_t cap){
  int base=cp_ledger_export(&w->ledger,out,cap);if(base<0)return -1;
  size_t n=(size_t)base-1;
 #define AJ(...) do{if(n>=cap)return -1;int k=snprintf(out+n,cap-n,__VA_ARGS__);if(k<0||(size_t)k>=cap-n)return -1;n+=(size_t)k;}while(0)
- int scores[4],previous=w->ancestry.count>1?w->ancestry.forms[w->ancestry.count-2].type:15;
+ int scores[4],previous=w->ancestry.count>1?w->ancestry.forms[w->ancestry.count-2].type:0;
  int type=cp_type_score(w->ledger.current,previous,scores);char code[8];cp_type_code(type,code);
  AJ(",\"live_type\":{\"index\":%d,\"code\":\"%s\",\"name\":\"%s\",\"description\":\"%s\",\"scores\":[%d,%d,%d,%d],\"perk\":%d},\"generations\":[",type,code,cp_type_name(type),cp_type_description(type),scores[0],scores[1],scores[2],scores[3],cp_type_perk(type));
  for(unsigned i=0;i<w->ancestry.count;i++){
@@ -162,7 +162,7 @@ int cp_stage_lineage_export(const CpStageWorld *w,char *out,size_t cap){
 int cp_stage_lineage_perk(CpStageWorld *w,int kind,uint32_t serial,int amount){
  if(!w||!w->ledger.enabled||kind<0||kind>=CP_TYPE_PERKS||amount<0)return -1;
  if(!serial||serial<=w->ancestry.perk_serial[kind])return 0;
- int scores[4],prev=w->ancestry.count>1?w->ancestry.forms[w->ancestry.count-2].type:15;
+ int scores[4],prev=w->ancestry.count>1?w->ancestry.forms[w->ancestry.count-2].type:0;
  int type=cp_type_score(w->ledger.current,prev,scores);
  int result=cp_type_adjust(type,kind,amount);
  w->ancestry.perk_serial[kind]=serial;w->hash=cp_stage_hash(w);return result;
