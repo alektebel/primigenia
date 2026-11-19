@@ -98,34 +98,68 @@ func _place_props(setup: Dictionary) -> void:
 func data_for_shadows():
 	return Game.data
 
+var kit_reused := false            # terrain, water, rivers, grass and props came from Game's kit instead of being built
+var build_ms := {}                # phase -> milliseconds of the last build (brief creature-fixes 5; printed once per entry)
+var _phase_t := 0
+
+# The pieces that only depend on the terrain and the quality settings: Game parks them across a scene change.
+func kit_nodes() -> Dictionary:
+	return {"terrain": terrain_chunks, "water": water, "rivers": rivers, "grass": grass, "props": props}
+
+func _phase(name: String) -> void:
+	var now := Time.get_ticks_msec()
+	build_ms[name] = now - _phase_t
+	_phase_t = now
+
 func build() -> void:
 	var data = Game.data
+	_phase_t = Time.get_ticks_msec()
+	var t_start := _phase_t
 	Clouds.apply(Game.settings.get("weather", ""))
 	world_env = WorldEnvironment.new()
 	world_env.environment = EnvironmentFactory.make_environment()
 	add_child(world_env)
 	sun = EnvironmentFactory.make_sun()
 	add_child(sun)
-	terrain_chunks = TerrainChunks.new()
-	terrain_chunks.name = "Terrain"
-	add_child(terrain_chunks)
-	terrain_chunks.build(data)
-	water = Water.new()
-	water.name = "Water"
-	add_child(water)
-	water.build(data)
-	rivers = Rivers.new()
-	rivers.name = "Rivers"
-	add_child(rivers)
-	rivers.build(data)
-	var t0 := Time.get_ticks_msec()
-	grass = Grass.new()
-	grass.name = "Grass"
-	add_child(grass)
-	grass.build(data, int(Game.settings.grass))
-	if Game.settings.get("sun_shadows", false):
-		set_sun_shadows(true)
-	print("grass built in %d ms (%d blades)" % [Time.get_ticks_msec() - t0, int(Game.settings.grass)])
+	_phase("environment")
+	var kit: Dictionary = Game.take_kit()
+	if not kit.is_empty():
+		# the terrain, water, rivers, grass and flora of the last island are still built: take them back (see Game.park_island)
+		terrain_chunks = kit.terrain
+		water = kit.water
+		rivers = kit.rivers
+		grass = kit.grass
+		props.free()
+		props = kit.props
+		for n in [terrain_chunks, water, rivers, grass]:
+			add_child(n)
+		kit_reused = true
+		_phase("kit_reused")
+	else:
+		terrain_chunks = TerrainChunks.new()
+		terrain_chunks.name = "Terrain"
+		add_child(terrain_chunks)
+		terrain_chunks.build(data)
+		_phase("terrain_meshes")
+		water = Water.new()
+		water.name = "Water"
+		add_child(water)
+		water.build(data)
+		_phase("water")
+		rivers = Rivers.new()
+		rivers.name = "Rivers"
+		add_child(rivers)
+		rivers.build(data)
+		_phase("rivers")
+		var t0 := Time.get_ticks_msec()
+		grass = Grass.new()
+		grass.name = "Grass"
+		add_child(grass)
+		grass.build(data, int(Game.settings.grass))
+		_phase("grass")
+		if Game.settings.get("sun_shadows", false):
+			set_sun_shadows(true)
+		print("grass built in %d ms (%d blades)" % [Time.get_ticks_msec() - t0, int(Game.settings.grass)])
 	RenderTier.apply_viewport(get_viewport())
 	camera = Camera3D.new()
 	camera.name = "Camera"
@@ -136,7 +170,10 @@ func build() -> void:
 	camera.current = true
 	debug_camera = camera
 	Game.camera = camera
+	_phase("camera")
 	_build_stage()
+	build_ms["total"] = Time.get_ticks_msec() - t_start
+	Game.report_entry(build_ms)
 	set_process(true)
 	Game.island_ready.emit()
 
@@ -169,9 +206,11 @@ func _build_stage() -> void:
 	stage.edit_anywhere = bool(Game.settings.get("edit_anywhere", true))
 	stage.process_priority = -10     # the world ticks before the actors read it (action timing, G77)
 	add_child(stage)
+	_phase("stage_setup")
 	props.name = "IslandProps"
 	add_child(props)
 	_place_props(setup)
+	_phase("props_flora")
 	_den = Vector2(setup.wild[0].home_x, setup.wild[0].home_z) if setup.wild.size() > 0 else null
 	var ground := Callable(Game, "visual_ground")
 	stage.ground_fn = ground
@@ -184,7 +223,9 @@ func _build_stage() -> void:
 	if stage.reset(setup) != 0:
 		push_error("the C world rejected the island setup")
 		return
+	_phase("stage_reset")
 	stage.world.nav_warm()    # fill the GO walk grid now (about 0.6 s), so no click pays for it later
+	_phase("nav_warm")
 	stage.ticked.connect(func(state: Dictionary) -> void: Game.world_ticked.emit(state))
 	stage.combat_events.connect(func(events: Array) -> void: Game.combat_events.emit(events))
 	Game.stage = stage
@@ -200,6 +241,7 @@ func _build_stage() -> void:
 		h.setup(_species_body(int(setup.wild[i].species)), i + 1, setup.wild[i].profile, ground)
 		h.set_meta("base_scale", _species_scale(int(setup.wild[i].species)))
 		hosts[i + 1] = h
+	_phase("creatures")
 	var yaw := PI
 	if setup.wild.size() > 0:
 		yaw = atan2(setup.nest.x - setup.wild[0].home_x, setup.nest.y - setup.wild[0].home_z)
@@ -241,6 +283,7 @@ func _build_stage() -> void:
 	lineage_controller.setup(self)
 	_update_actors(0.0)
 	_update_camera(0.0)
+	_phase("ui_and_rest")
 	if not Game.pending_scenario.is_empty():
 		var parsed: Dictionary = Game.pending_scenario
 		Game.pending_scenario = {}

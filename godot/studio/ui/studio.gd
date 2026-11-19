@@ -22,6 +22,7 @@ var nest_plan: Dictionary = {}
 var nest_tiers_on := false
 var nest_cost: Label
 var nest_apply_button: Button
+var play_creature_btn: Button
 var nest_evolve_button: Button
 signal exit_requested
 
@@ -206,6 +207,17 @@ func _build_baker() -> void:
 	baker.baked.connect(_on_thumb_baked)
 	add_child(baker)
 
+## Save the creature and drop into the island with it (the island takes the newest saved genome).
+func play_with_creature() -> void:
+	var path := save_current()
+	if path == "":
+		_flash(T("No se pudo guardar"))
+		return
+	var game := get_node_or_null("/root/Game")
+	if game != null and game.has_method("enter_island_now"):
+		exit_requested.emit()
+		game.enter_island_now("studio")
+
 func _on_exit() -> void:
 	if nest_world != null:
 		exit_requested.emit()
@@ -347,6 +359,12 @@ func _build_top_bar() -> void:
 	menu_btn.tooltip_text = T("Guarda con Ctrl+S; Jugar usa la última criatura guardada")
 	menu_btn.pressed.connect(_on_exit)
 	lrow.add_child(menu_btn)
+	if nest_world == null:
+		play_creature_btn = Button.new()
+		play_creature_btn.name = "PlayCreatureButton"
+		play_creature_btn.text = "▶ " + T("Jugar con esta criatura")
+		play_creature_btn.pressed.connect(play_with_creature)
+		lrow.add_child(play_creature_btn)
 	name_edit = LineEdit.new()
 	name_edit.custom_minimum_size = Vector2(150, 0)
 	name_edit.placeholder_text = T("Ponle nombre")

@@ -692,3 +692,17 @@ func _studio_and_back() -> void:
 	check(host.body.genome.get("name", "") == "Wire Test" and starter_only, "the stage creature is the saved genome with starter parts (%d parts)" % host.body.genome.parts.size())
 	check(host.driver.controller != null and host.driver.problems.is_empty(), "the edited creature is still driven by locomotion")
 	await sim_ticks(20)
+	# brief creature-fixes 5: the built island pieces are kept between scene changes; "Jugar con esta criatura" saves and enters with them
+	check(current_scene.kit_reused and game.kit_hits >= 1, "the island pieces were taken from the kit on re-entry (hits %d)" % game.kit_hits)
+	var terrain_node = current_scene.terrain_chunks
+	game.goto_studio()
+	check(await until(func(): return current_scene != null and "model" in current_scene and current_scene.model != null, 600), "the studio opens again from the island")
+	var studio2 = current_scene
+	check(studio2.play_creature_btn != null and studio2.play_creature_btn.visible, "the studio has the Jugar con esta criatura button")
+	studio2.model.set_name_("Play Button Test")
+	studio2.play_with_creature()
+	check(await until(func(): return _scene_is("island.gd"), 600), "Jugar con esta criatura opens the island")
+	await frames(5)
+	check(current_scene.hosts[0].body.genome.get("name", "") == "Play Button Test", "the island has the creature that was just saved")
+	check(current_scene.kit_reused and current_scene.terrain_chunks == terrain_node, "and the same built terrain (not rebuilt: %d ms build)" % int(current_scene.build_ms.get("total", -1)))
+	await sim_ticks(20)
