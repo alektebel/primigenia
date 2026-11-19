@@ -457,7 +457,7 @@ func _update_camera(dt: float) -> void:
 	chase.kick = bool(Game.settings.get("camera/kick", false))
 	var r: Dictionary = chase.update({"x": p.pos.x, "z": p.pos.z, "yaw": p.yaw, "speed": p.speed, "vx": p.vel.x, "vz": p.vel.z}, enemy, fighting, dt, vp.x / maxf(vp.y, 1.0))
 	camera.fov = 48.0 + float(r.fov_add)
-	camera.near = clampf(float(r.distance) * 0.012, 0.25, 40.0)       # keep the depth buffer precise at 3 km
+	camera.near = clampf(float(r.distance) * 0.012, 0.05, 40.0)       # keep the depth buffer precise at 3 km
 	var view := _cave_camera(r, p.pos)
 	camera.position = view.position
 	camera.look_at(view.aim)

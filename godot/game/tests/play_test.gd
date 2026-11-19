@@ -589,6 +589,9 @@ func _studio_and_back() -> void:
 	check(await until(func(): return current_scene != null and "model" in current_scene and current_scene.model != null, 600), "Creator opens the studio")
 	var studio = current_scene
 	await frames(5)
+	check(str(studio.model.doc.get("name", "")) == "Hatchling", "the creator opens on the starter hatchling (%s)" % studio.model.doc.get("name", ""))
+	studio.model.new_from_seed("Merodeador")           # the interface checks below need the horn and the big body
+	await frames(5)
 	var view = studio.view
 	check(view.get_script().resource_path.ends_with("creature_view_real.gd") and view.creature != null, "the studio uses the real creature view")
 	var before_parts: int = view.genome.parts.size()

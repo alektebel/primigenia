@@ -115,7 +115,7 @@ func goto_studio() -> void:
 		push_warning("studio module not present")
 
 # Player genome source: --genome=<path> after "--", else the newest studio_dir/*.json (user://studio) that
-# parses, else the bundled Merodeador.
+# parses, else the bundled starter hatchling (G78/A29; Merodeador is the adult form and a wild species).
 func player_genome() -> Dictionary:
 	var sc_genome: Dictionary = pending_scenario.get("dict", {}).get("genome", {})
 	if not sc_genome.is_empty():
@@ -137,7 +137,7 @@ func player_genome() -> Dictionary:
 					newest_time = t
 	if newest != "":
 		return _read_genome(newest)
-	return _read_genome("res://game/data/merodeador.json")
+	return _read_genome("res://game/data/hatchling.json")
 
 func _read_genome(path: String) -> Dictionary:
 	var text := FileAccess.get_file_as_string(path)
