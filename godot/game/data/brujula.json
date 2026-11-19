@@ -1,0 +1,87 @@
+{
+ "schema": "cpore.creature/5",
+ "name": "Brujula",
+ "nodes": [
+  {
+   "y": 0.0,
+   "z": 0,
+   "r": 0.24
+  },
+  {
+   "y": 0.05,
+   "z": 0,
+   "r": 0.32
+  },
+  {
+   "y": 0.12,
+   "z": 0,
+   "r": 0.27
+  },
+  {
+   "y": 0.2,
+   "z": 0,
+   "r": 0.1
+  }
+ ],
+ "parts": [
+  {
+   "type": "romo",
+   "t": 0,
+   "ang": 0,
+   "size": 0.6,
+   "level": 1,
+   "tier": 0
+  },
+  {
+   "type": "pua",
+   "t": 0.55,
+   "ang": 0,
+   "size": 0.3,
+   "len": 0.12,
+   "level": 1,
+   "tier": 0
+  },
+  {
+   "type": "pua",
+   "t": 0.72,
+   "ang": 0.63,
+   "size": 0.25,
+   "len": 0.1,
+   "level": 1,
+   "tier": 0
+  },
+  {
+   "type": "pua",
+   "t": 0.62,
+   "ang": 0.3,
+   "size": 0.2,
+   "len": 0.1,
+   "level": 1,
+   "tier": 0
+  }
+ ],
+ "skin": {
+  "pat": 2,
+  "cA": "#8a5a32",
+  "cB": "#d8b27a",
+  "cC": "#cdb08a",
+  "wet": 0.7,
+  "scale": 7,
+  "sk": "hydro"
+ },
+ "regions": [],
+ "plan": {
+  "sym": "radial",
+  "fold": 5,
+  "star": 0.45,
+  "arm": {
+   "len": 2.3,
+   "w": 0.6,
+   "taper": 0.8,
+   "curl": 0.1,
+   "tip": "point",
+   "eye": 1,
+   "act": "tubefeet"
+  }
+ }
+}

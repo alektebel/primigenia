@@ -1,0 +1,72 @@
+{
+ "schema": "cpore.creature/5",
+ "name": "Corona",
+ "nodes": [
+  {
+   "y": 0.0,
+   "z": 0,
+   "r": 0.22
+  },
+  {
+   "y": 0.05,
+   "z": 0,
+   "r": 0.38
+  },
+  {
+   "y": 0.11,
+   "z": 0,
+   "r": 0.34
+  },
+  {
+   "y": 0.18,
+   "z": 0,
+   "r": 0.12
+  }
+ ],
+ "parts": [
+  {
+   "type": "romo",
+   "t": 0,
+   "ang": 0,
+   "size": 0.5,
+   "level": 1,
+   "tier": 0
+  },
+  {
+   "type": "pua",
+   "t": 0.7,
+   "ang": 0.52,
+   "size": 0.18,
+   "len": 0.1,
+   "level": 1,
+   "tier": 0
+  }
+ ],
+ "skin": {
+  "pat": 2,
+  "cA": "#4b4638",
+  "cB": "#a39a6c",
+  "cC": "#8f8a70",
+  "wet": 0.75,
+  "scale": 7,
+  "sk": "hydro",
+  "ps": 0.5,
+  "pc": 0.8
+ },
+ "regions": [],
+ "plan": {
+  "sym": "radial",
+  "fold": 6,
+  "star": 0.75,
+  "arm": {
+   "len": 1.1,
+   "w": 0.45,
+   "taper": 0.45,
+   "curl": 0.15,
+   "frill": 0.8,
+   "tip": "frill",
+   "eye": 0,
+   "act": "cilia"
+  }
+ }
+}

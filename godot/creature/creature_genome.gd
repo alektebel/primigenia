@@ -14,6 +14,19 @@ const RADIAL_LEG_TYPES := ["pata", "zanca", "pezuna", "leg_sprinter", "leg_sucke
 var _error := ""
 
 
+## Body plan of a validated genome with every default filled in (S1 of the radial plan). Absent `plan` = bilateral.
+## {sym: "bilateral"|"radial", fold, star, gel, arm: {len, w, taper, curl, droop, frill, tip, eye, act}}
+static func plan_of(g: Dictionary) -> Dictionary:
+	var p: Dictionary = g.get("plan", {})
+	if p.is_empty() or p.get("sym", "bilateral") != "radial":
+		return {"sym": "bilateral"}
+	var a: Dictionary = p.get("arm", {})
+	return {"sym": "radial", "fold": int(p["fold"]), "star": float(p.get("star", .3)), "gel": float(p.get("gel", 0.0)),
+		"arm": {"len": float(a.get("len", 2.5)), "w": float(a.get("w", .4)), "taper": float(a.get("taper", .8)),
+			"curl": float(a.get("curl", 0.0)), "droop": float(a.get("droop", 0.0)), "frill": float(a.get("frill", 0.0)),
+			"tip": String(a.get("tip", "point")), "eye": int(a.get("eye", 0)), "act": String(a.get("act", ""))}}
+
+
 static func parse(input, types: Dictionary) -> Dictionary:
 	var v := CreatureGenome.new()
 	return v._parse(input, types)

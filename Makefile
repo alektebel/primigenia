@@ -331,6 +331,7 @@ godot-creature-test:
 	nice -n 10 timeout 600 $(GODOT) --headless --path godot --import >/dev/null 2>&1 || true
 	nice -n 10 timeout 600 $(GODOT) --headless --path godot --script res://creature/tests/test_creature.gd
 	nice -n 10 timeout 600 $(GODOT) --headless --path godot --script res://creature/tests/test_realism.gd
+	nice -n 10 timeout 600 $(GODOT) --headless --path godot --script res://creature/tests/test_radial.gd
 godot-creature-evidence:
 	nice -n 10 timeout 600 $(GODOT) --headless --path godot --import >/dev/null 2>&1 || true
 	LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 xvfb-run -a $(GODOT) --rendering-driver opengl3 --max-fps 15 --path godot --script res://creature/tools/render_evidence.gd
