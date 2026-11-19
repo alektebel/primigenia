@@ -206,6 +206,8 @@ static func _bend_spine(creature, pose: Dictionary, desc: Dictionary) -> void:
 			var f0 := _wave(wave, clampf(u - du, 0.0, 1.0))
 			yw += atan((f1 - f0) / (2.0 * du * wl))
 		var pt := 0.0
+		if pose.has("spine_pitch"):
+			pt += float((pose.spine_pitch as Callable).call(z))
 		if tail_k.has(b):
 			yw += pose.tail.yaw * tail_k[b]
 			pt += pose.tail.pitch * tail_k[b]
