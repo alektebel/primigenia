@@ -87,3 +87,21 @@ The infrastructure of sections 3 and 5 is in; no move or status was added.
 - Evidence: `docs/evidence/godot/loadout/` (`make godot-loadout-evidence`; `hotbar_real.png` is the real two-move loadout, `hotbar.png` feeds the HUD a four-role kit and a 60 % sweep by hand because no shipped move has a cooldown yet).
 
 **Not done (by scope)**: no new moves or statuses, no learning by observing (only the hook), no signature unlock, no cooldown on any shipped move, so the cooldown rejection and sweep are exercised by tests with a test-only override (`cp_combat_test_cooldown`) and by poking the counter, not by gameplay.
+
+## 7. Actuation meta and counters (proposal, A24; sim rules designed later, owner approves)
+
+Actuation is a property of each limb (A24). Proposed roles and trade-offs:
+
+| Actuation | Natural role | Strong at | Weak at | Scaling with size |
+|---|---|---|---|---|
+| Muscle on endoskeleton | all-rounder, brawler | sustained force, stamina, regeneration | no burst | best: giants are endoskeletal |
+| Muscle in exoskeleton | tank | early armour | moult window (vulnerable), joints as weak points | poor: size ceiling |
+| Hydraulic (spider-like) | engage, assassin | explosive jumps and pounces, light fast legs | bleeding lowers pressure, hence force and speed; cold and thirst; weak pulling | poor |
+| Muscular hydrostat (tentacle, trunk, tongue) | control | grab, hold, disarm, flexible reach | cannot bear weight; cuts hurt a lot | medium |
+| Spring-latch (resilin) | signature, punish | one huge strike or jump | visible charge (interruptible), long recharge | best when small |
+| Elastic tendon | traveller, chaser | efficient long running | starting and turning | good |
+| Peristaltic body | digger, stealth | squeeze through gaps (secrets), dig, regenerate | no armour, slow in the open | medium |
+| Tube feet | wall | climb any surface, cannot be knocked back | very slow | medium |
+| Jet / cilia | water / tiny | bursts in water / silent glide | only in their medium / only small | n/a |
+
+Counters (real basis): spring-latch breaks exoskeleton (mantis shrimp vs shells); bleeding beats hydraulic; a hydrostat grabs a landing jumper; muscle punishes a spring-latch that whiffs (during its recharge); armour shrugs off a muscular brawler's claws. Mixing types costs DNA or metabolism per extra type (A24). Size growth (G78) shifts which actuations work.
