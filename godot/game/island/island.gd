@@ -32,6 +32,7 @@ var world_env: WorldEnvironment
 var sun: DirectionalLight3D
 var water: Node3D
 var rivers: Node3D
+var props := preload("res://game/island/island_props.gd").new()
 var grass: MultiMeshInstance3D
 var camera: Camera3D
 var debug_camera: Camera3D       # alias of camera (tests and evidence move it directly)
@@ -80,6 +81,14 @@ func set_sun_shadows(on: bool) -> void:
 		print("sun shadows baked in %d ms" % ms)
 	terrain_chunks.set_uniform("rock_shadows", 1.0 if on else 0.0)
 	grass.set_sun_shadows(on)
+
+func _place_props(setup: Dictionary) -> void:
+	_nest = setup.nest
+	grass.material.set_shader_parameter("nest_center", _nest)
+	var tier: int = terrain_chunks.tier
+	if Game.settings.quality == "auto" and tier == 2:
+		tier = 1
+	props.build(Game.data, setup, int(Game.terrain.seed), tier, Game.settings)
 
 func data_for_shadows():
 	return Game.data
@@ -154,7 +163,9 @@ func _build_stage() -> void:
 	var setup := StageSetup.build(Game.data, int(Game.settings.seed), pr.profile, garfio_profile, bool(Game.settings.wild), stage.world, bool(Game.settings.get("herds", true)))
 	stage.process_priority = -10     # the world ticks before the actors read it (action timing, G77)
 	add_child(stage)
-	_nest = setup.nest
+	props.name = "IslandProps"
+	add_child(props)
+	_place_props(setup)
 	_den = Vector2(setup.wild[0].home_x, setup.wild[0].home_z) if setup.wild.size() > 0 else null
 	var ground := Callable(Game, "visual_ground")
 	stage.ground_fn = ground
@@ -268,6 +279,7 @@ func load_scenario(parsed: Dictionary) -> String:
 	var d: Dictionary = parsed.dict
 	var genome: Dictionary = d.get("genome", {})
 	var setup: Dictionary = stage.world.get_setup()
+	_place_props(setup)
 	if not genome.is_empty() and genome != _genome:
 		_genome = genome
 		hosts[0].queue_free()
