@@ -1,0 +1,286 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "cenizo",
+  "name": {
+    "en": "Cenizo"
+  },
+  "world": "redtide",
+  "kind": "new",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "Dry Kiln plains, near sulfur fumaroles and fulgurite glass fields.",
+    "diet": "Abiotic chemosynthesis mats, salt-fused glass shards, sulfur fumarole gas.",
+    "active": "Staggered by thermal comfort; active when ground <310K, rests in shade of rocks.",
+    "predators": []
+  },
+  "body": "Armored hexagonal plates, fulgurite-cracker beak, heat-sink tail, flare-responsive pupils.",
+  "chains": [
+    {
+      "id": "cenizo.c1",
+      "trait": "Heat-reflective white dorsal plates",
+      "links": [
+        "Plates radiate 320K ground heat",
+        "Dry ground lacks evaporation cooling",
+        "Substellar point reaches 320K"
+      ],
+      "roots": [
+        "F13"
+      ],
+      "skill": {
+        "id": "cenizo.heat_sink",
+        "name": {
+          "en": "Heat Sink"
+        },
+        "role": "Passive",
+        "effect": "Immune to Kiln heat damage; reduce 'Overheat' risk by 50%.",
+        "numbers": {}
+      },
+      "weakness": "Cold shock; player can use ice/cool skill to stun or slow Cenizo.",
+      "observe": [
+        "Plates glowing dull red in heat, then flashing white in shade",
+        "Cenizo burying tail in cooler sand",
+        "Heat shimmer distorting view of resting Cenizo"
+      ],
+      "journal": {
+        "en": "It wears the sun's reflection."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "Specify NIR-reflective cuticle/scutes, not just ‘white’; tie activity to ground <310 K and shade/burrow tail use; narrow immunity to brief surface exposure, not indefinite 320 K contact.",
+        "fixes": [
+          "Specify NIR-reflective cuticle/scutes, not just ‘white’; tie activity to ground <310 K and shade/burrow tail use; narrow immunity to brief surface exposure, not indefinite 320 K contact."
+        ],
+        "analogues": [
+          {
+            "organism": "Saharan silver ant Cataglyphis bombycina (NIR-visible reflectance); Namib desert tenebrionid beetles (white elytra, stilt thermoregulation)",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 4
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "cenizo.c2",
+      "trait": "Sulfur-digesting endosymbiotic gut",
+      "links": [
+        "Gut ferments H₂S to energy",
+        "Fumaroles emit abundant H₂S",
+        "Stagnant lid volcanism strings fumaroles along ring"
+      ],
+      "roots": [
+        "F21",
+        "F20"
+      ],
+      "skill": {
+        "id": "cenizo.sulfur_burn",
+        "name": {
+          "en": "Sulfur Burn"
+        },
+        "role": "Engage",
+        "effect": "Deal 6 acid damage in cone; heals Cenizo based on damage dealt.",
+        "numbers": {}
+      },
+      "weakness": "Vulnerable to wind shifts that invert H₂S plume; player can use wind skill to blow gas back.",
+      "observe": [
+        "Cenizo pressing snout to fumarole vent",
+        "Belly distending with bubbling gas",
+        "Fumarole activity increasing near Cenizo nest"
+      ],
+      "journal": {
+        "en": "It drinks the planet's breath."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "Fumarole H₂S along the ring (F21) supports chemolithotrophic microbes; hosts with sulfur-oxidizing symbionts or fermentation of sulfurous mats is standard vent-shore ecology. A territorial Kiln forager eating mats plus tapping fumarole gas is energetically plausible as supplement, not sole autotrophy. Wind inversion blowing H₂S back is a real toxicity risk above ~100 ppm (F27).",
+        "fixes": [
+          "Fumarole H₂S along the ring (F21) supports chemolithotrophic microbes; hosts with sulfur-oxidizing symbionts or fermentation of sulfurous mats is standard vent-shore ecology. A territorial Kiln forager eating mats plus tapping fumarole gas is energetically plausible as supplement, not sole autotrophy. Wind inversion blowing H₂S back is a real toxicity risk above ~100 ppm (F27)."
+        ],
+        "analogues": [
+          {
+            "organism": "Riftia pachyptila and Bathymodiolus mussel sulfide-oxidizing symbionts; Beggiatoa mat grazers at seeps",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "cenizo.c3",
+      "trait": "Fulgurite-cracker mandibles",
+      "links": [
+        "Mandibles fracture glass to access salts",
+        "Flare lightning fuses salt-rich sand",
+        "Fulgurite fields store trapped nutrients"
+      ],
+      "roots": [
+        "F21"
+      ],
+      "skill": {
+        "id": "cenizo.glass_crush",
+        "name": {
+          "en": "Glass Crush"
+        },
+        "role": "Basic",
+        "effect": "Deal 5 damage and reveal hidden salt deposits; breaks terrain obstacles.",
+        "numbers": {}
+      },
+      "weakness": "Beak dulls on hard glass; player can use 'Sharpen' on allies or 'Dull' on enemies.",
+      "observe": [
+        "Cenizo striking fulgurite with precise force",
+        "Shards exploding to reveal white salt crust",
+        "Cenizo licking salt with tongue"
+      ],
+      "journal": {
+        "en": "Lightning's glass is its bread."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "Clarify diet: extract evaporite films and micro-salt pockets from fulgurite skins, not bulk glass ingestion.",
+        "fixes": [
+          "Clarify diet: extract evaporite films and micro-salt pockets from fulgurite skins, not bulk glass ingestion."
+        ],
+        "analogues": [
+          {
+            "organism": "Hyacinth macaw (Psittacula) nut cracking; sea urchin Aristotle’s lantern on mineralized substrates",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 2
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "cenizo.c4",
+      "trait": "Flare-responsive pupil constriction",
+      "links": [
+        "Pupils snap shut during UV spikes",
+        "Flares raise UV 10-100× for minutes",
+        "Quiescent UV is low but flares are hazardous"
+      ],
+      "roots": [
+        "F4"
+      ],
+      "skill": {
+        "id": "cenizo.flash_shield",
+        "name": {
+          "en": "Flash Shield"
+        },
+        "role": "Defence",
+        "effect": "Gain resistance to flare damage; reduce incoming UV/energy damage by 70%.",
+        "numbers": {}
+      },
+      "weakness": "Slow reaction time; player can use 'Blind' skill during flare to exploit delayed defense.",
+      "observe": [
+        "Sudden pupil contraction as flare warning",
+        "Cenizo shielding eyes with membrane",
+        "Retreating to crevice seconds before flare hits"
+      ],
+      "journal": {
+        "en": "It knows the sun's temper."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "Add nictitating membrane + crevice retreat as primary defence; pupils as secondary; Flash Shield triggers on pre-flare cues (F16) not instantaneous UV onset.",
+        "fixes": [
+          "Add nictitating membrane + crevice retreat as primary defence; pupils as secondary; Flash Shield triggers on pre-flare cues (F16) not instantaneous UV onset."
+        ],
+        "analogues": [
+          {
+            "organism": "Camel and desert lizard nictitating membrane/shelter behavior; human photokeratitis literature under UV spikes",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 4
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-19",
+    "by": [
+      "naturalist/qwen"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-19",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-19"
+    },
+    {
+      "date": "2026-11-19",
+      "who": "autoloop",
+      "what": "removed rejected references from analogues"
+    }
+  ],
+  "body_plan": {
+    "symmetry": "bilateral",
+    "origin": "Reptilian analog with heat-armor and chemical gut, convergent with arthropod exoskeleton for rigidity in heat."
+  },
+  "temperament": "Solitary, territorial, cautious near vents.",
+  "secrets": [
+    "Cenizo scales can be used as heat-shields; player can craft 'Thermal Armor'."
+  ],
+  "moments": [
+    "A Cenizo stands in the Kiln as a flare washes over, its plates blazing white, pupils locking tight, while it exhales a plume of sulfur that hisses on the salt-crusted ground."
+  ],
+  "journal": [
+    {
+      "en": "The Kiln is a furnace that breathes."
+    },
+    {
+      "en": "Cenizo cracks the lightning's bones."
+    }
+  ]
+}

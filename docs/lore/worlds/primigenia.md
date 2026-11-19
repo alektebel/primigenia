@@ -2,24 +2,42 @@
 
 # Primigenia (the island world)
 
-Status: **DRAFT** · kind: fictional · id: `primigenia`
+Status: **REVIEWED** · kind: fictional · id: `primigenia`
 
-- **Star:** G1-G2V, yellow-white, quiet and middle-aged
+- **Star:** G1V, yellow-white, quiet, 3.8 Gyr old, 1.05 Lsun
 - **Position:** fictional; no galactic position fixed
 - **Distance from Sol:** n/a
 
 | Fact | Group | Claim | Value | Justification | References | Status |
 |---|---|---|---|---|---|---|
-| F1 | star | A quiet, middle-aged G-type star, yellow-white | G1-G2V | the art fixes a yellow-white sun and a blue sky; a K dwarf would give an orange sky |  | active |
-| F2 | planet | Surface gravity a little above Earth's | 1.1 g | council range 1.05-1.15 g; to be fixed in the planet canon |  | active |
-| F3 | orbit | A day of about 26-27 hours with long twilights | 26.5 h | tidal braking by a large moon |  | active |
-| F4 | atmosphere | Dense air | 1.6 bar | sound carries far and echoes are long; slower falls; drag caps sprint speeds |  | active |
-| F5 | atmosphere | High oxygen partial pressure | 0.34 bar | large bodies and costly organs (glow, sonar) are affordable |  | active |
-| F6 | sky | A large, close, bright moon; strong tides; month about 30 days | 29.7 d | bright moonlit nights favour sight hunters; moonless nights are truly dark |  | active |
-| F7 | geology | An active volcanic hotspot built the island |  | explains the stratovolcano, warm ground, mineral licks and lava tubes |  | active |
-| F8 | climate | Thick valley fog most mornings |  | cold sea air over warm volcanic ground under dense air |  | active |
-| F9 | geology | Old lava-tube caves and a cave behind a waterfall |  | drained lava flows from the hotspot (F7); erosion behind the falls |  | active |
+| F1 | star | Star: a quiet G1V, yellow-white, 1.05 L☉, 3.8 Gyr old; UV 1.15× the Sun's | G1V | The art fixes a yellow-white sun and a blue sky. |  | active |
+| F2 | planet | Gravity 1.05 g (R 1.04 R⊕, M 1.14 M⊕) | 1.05 g | Slightly heavier than Earth: falls and cliffs matter; giants are allowed by oxygen, not by low gravity. |  | active |
+| F3 | orbit | Day 26 h; twilight ~38 min (thick air scatters more), long dawns and dusks | 26 h | see the claim |  | active |
+| F4 | atmosphere | Dense air: 1.6 bar | 1.6 bar | Sound speed stays ~345 m/s (it depends on temperature, not pressure), but low frequencies carry 1.6–2× farther on still, foggy dawns (temperature inversions duct them along the ground); high pitches die within tens of metres in fog and grass. Drag is 1.6× Earth's: terminal velocity ~25% lower, gliding cheap, sprinting costly. |  | active |
+| F5 | atmosphere | Oxygen 21% → pO₂ ≈ 0.34 bar (1.6× Earth's) | 0.34 bar | Large aerobic bodies and costly organs (glow, sonar, spines) are affordable. Fuels stay wet, so lightning fires are rare: fire is a drought-year event. |  | active |
+| F6 | sky | One large moon: 1.2 Lunar masses at 450,000 km; month 29.7 d; spring tides every 14.9 d | 29.7 d | Moonlit nights are bright; moonless nights are truly dark. |  | active |
+| F7 | geology | The island is a hotspot stratovolcano, 1.2 Myr old, ~2,050 m high, visible top 3.6 km across over an 8 km submarine base | 2050 m | Last eruption ~400 years ago: dormant, with fumaroles and hot springs. |  | active |
+| F8 | climate | Fog: cold upwelling sea on the west coast meets warm volcanic ground; the east start valley is a fog trap about 180 mornings a year |  | Evening convection storms on the 26 h day; lightning is frequent. |  | active |
+| F9 | geology | Rock: andesite makes steep, unstable cliffs; basalt makes lava tubes (the caves) |  | The sunken cave is a lava tube flooded by the sea; the hidden cave is a dry upper tube; the waterfall cave is an overhang in soft tuff. |  | active |
+| F10 | star | Flares: C-class about monthly, X-class about once per 40 years (an old G dwarf is quiet) | C-class monthly; X-class ~1 per 40 yr | A flare is a rare world event: auroras, UV pulses at altitude. |  | active |
+| F11 | orbit | Orbit 1.02 AU; year 367 Earth days = 339 local days; axial tilt 26.5°, eccentricity 0.02: four seasons of ~85 local days, a bit stronger than Earth's | 1.02 AU | see the claim |  | active |
+| F12 | sky | An inner sibling planet at 0.62 AU, a cloudy super-Earth: "the evening star". Being inside our orbit it is only seen near the setting or rising sun |  | (The faint line from the setting sun to it is the Petrova wink, A20.) |  | active |
+| F13 | ocean | Tides 0.4 m in open ocean but ~3.2 m on the island's shelf (shelf resonance, Bay of Fundy-style but milder): at spring low tide a causeway to the islet opens | 3.2 m | see the claim |  | active |
+| F14 | planet | Magnetic field 1.8× Earth's; surface UV 0.9× Earth's at sea level (more ozone in the thick air) but 1.4× at 2,000 m: the high slopes are a UV hazard | 1.8 x Earth field | see the claim |  | active |
+| F15 | atmosphere | Composition N₂ ~77%, O₂ 21%, Ar 1.5%, CO₂ ~0.1%, humid | 14 degC | Mean sea-level temperature 14 °C; lapse 6.2 K/km; snow above ~1,750 m in winter and in shaded gullies all year. |  | active |
+| F16 | atmosphere | Smell: molecular diffusion ~0.6× Earth's, so in still air scent trails last ~1.6× longer; in wind the advantage disappears | 0.6 x Earth diffusion | Scent is a dawn-and-fog sense. |  | active |
+| F17 | sky | Sky: deep blue zenith, milky horizon, copper sunsets (1.6× Rayleigh depth) |  | see the claim |  | active |
+| F18 | climate | Rain shadow: westerlies make the west coast wet and forested; the east meadows (the start valley) are drier in summer, with a spring |  | see the claim |  | active |
+| F19 | climate | Wind force per m/s is 1.6× Earth's: gales in winter push light creatures and favour low, heavy bodies on exposed ridges | 1.6 x Earth | see the claim |  | active |
+| F20 | ocean | Seas: salinity ~3.8%, carcasses float and drift ashore; the shallows are turbid (visibility under 10 m) from volcanic sediment and plankton, so sea creatures rely on pressure sense, touch and electric sense more than sight |  | see the claim |  | active |
+| F21 | geology | The rock spire is a hard dyke left standing by erosion; the giant tree grows at the spring where that dyke dams groundwater |  | Sea arches and islets are dykes and drowned cones the sea has not yet cut. |  | active |
+| F22 | geology | Two arrivals |  | The FIRST seed capsule fell into this world's ocean ~900 million years ago and started all life (the cell stage). The meteor crater on the island is the SECOND arrival: 600 m wide, 25 m rim, ~12,000 years old, in cohesive tuff; a ~40 m iron-nickel body carrying a second, smaller capsule (the makers' follow-up). The 5 shards lie along one bent ejecta ray. What the second capsule did is the stage's mystery (it ends at the crater with cognition). |  | active |
+| F23 | chemistry | Minerals creatures eat: salt from spray and seeps, calcium from shell beds and bone, basalt/olivine grit (gastroliths), kaolin clay (gut detox), sulfur at fumaroles |  | Poisons: arsenic and mercury in hot-spring crusts, SO₂ and H₂S near vents and in stagnant cave pools, copper in green crusts. Mineral licks are fixed points: migration corridors and ambush sites. |  | active |
+| F24 | biochemistry | One biochemistry from the seed capsule: a porphyrin photosystem, DNA-like heredity, L-amino acids, a nitrogen-fixing symbiont |  | Any carcass can feed any creature, and parts can graft between lineages. |  | active |
+| F25 | biochemistry | Plants are green by ancestry (the seed's pigment), not because green is optimal |  | Under strong UV (high slopes) and in poisonous plants they paint red-purple pigments over the green: leaf colour is an honest, readable signal of altitude stress and of alkaloids. |  | active |
+| F26 | biochemistry | Food: sugars, starchy fruit, flesh, chitin, bone, salt |  | Poison: alkaloid plants (red-veined), H₂S pools, raw sulfur (poison to eat, fuel for the fire-breathing lineage). |  | active |
+| F27 | biochemistry | The island's life is an island radiation: the island rose 1.2 Myr ago (F7) and was colonised by a few founders that rafted, swam or flew from the mainland, then split into many species (like Hawaiian honeycreepers or Galápagos finches on Earth) |  | So cousins are recognisable, convergent solutions are everywhere, giants and dwarfs appear (island rules), and some niches are still empty (room for new species). |  | active |
 
 ## Changelog
 
-- 2026-11-18 opus: draft facts from the council's planet drafts; replaced by the merged planet canon
+- 2026-11-18 opus: approved planet canon F1-F27 (tools/lore/council/primigenia_canon.md) replaces the draft facts

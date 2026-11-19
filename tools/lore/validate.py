@@ -8,7 +8,7 @@ Exit 1 on errors; warnings (unresolved relation targets of draft creatures) do n
 import argparse, os, sys
 import jsonschema
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from lorelib import ROOT, load, creature_files
+from lorelib import ROOT, load, creature_files, flora_files
 
 
 def _path(err):
@@ -111,6 +111,31 @@ def validate_all(root):
             via = r.get("via", "")
             if via and via.startswith("F") and via[1:].isdigit() and via not in all_facts:
                 errors.append(f"{fn}: $.relations[{i}].via: fact '{via}' does not exist in world '{wid}'")
+    # flora (cpore.plant/1): schema, world + roots, references, relations to known creatures/plants
+    plants = [(rel(p), load(p)) for p in flora_files(root)]
+    if plants:
+        psch = load(os.path.join(sd, "plant.schema.json"))
+        pids = {c.get("id") for _, c in plants}
+        for fn, c in plants:
+            errors += schema_errors(c, psch, fn)
+            pid = c.get("id", "")
+            if pid != os.path.basename(fn)[:-5]: errors.append(f"{fn}: $.id: id '{pid}' does not match the file name")
+            wid = c.get("world")
+            if wid not in worlds: errors.append(f"{fn}: $.world: world '{wid}' has no file lore/worlds/{wid}.json")
+            all_facts, active = worlds.get(wid, (set(), set()))
+            for i, ch in enumerate(c.get("chains", [])):
+                base = f"$.chains[{i}]"
+                if not ch.get("id", "").startswith(pid + "."): errors.append(f"{fn}: {base}.id: chain id '{ch.get('id')}' is not prefixed by '{pid}.'")
+                if ch.get("id") in chain_ids: errors.append(f"{fn}: {base}.id: duplicate chain id '{ch.get('id')}' (also in {chain_ids[ch.get('id')]})")
+                chain_ids.setdefault(ch.get("id"), fn)
+                for j, r in enumerate(ch.get("roots", [])):
+                    if r not in all_facts: errors.append(f"{fn}: {base}.roots[{j}]: fact '{r}' does not exist in world '{wid}'")
+                    elif r not in active: errors.append(f"{fn}: {base}.roots[{j}]: fact '{r}' is retired in world '{wid}'")
+                for k, a in enumerate(ch.get("plausibility", {}).get("analogues", [])):
+                    check_refs(fn, f"{base}.plausibility.analogues[{k}].refs", a.get("refs", []))
+            for i, r in enumerate(c.get("relations", [])):
+                if r.get("with", "").lower() not in targets and r.get("with") not in pids:
+                    (warnings if c.get("status") == "draft" else errors).append(f"{fn}: $.relations[{i}].with: '{r.get('with')}' is not a known creature, alias or plant")
     return errors, warnings
 
 

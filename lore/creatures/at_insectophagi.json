@@ -1,0 +1,177 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "at_insectophagi",
+  "name": {
+    "en": "Insectophagi"
+  },
+  "world": "at_garden_prairies",
+  "kind": "easter_egg",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "to be written",
+    "diet": "to be written",
+    "active": "to be written",
+    "predators": []
+  },
+  "body": "to be written",
+  "chains": [
+    {
+      "id": "at_insectophagi.c1",
+      "trait": "Leathery facial plates & worm-like tongues",
+      "links": [
+        "Harvest dense insect colonies without injury -> balmy humid understories where fungal and insect decomposition overlap -> 15°C mean temperature and stratocumulus humidity trapping sustain year-round microbial activity"
+      ],
+      "roots": [
+        "F10",
+        "F25"
+      ],
+      "skill": {
+        "id": "at_insectophagi.mound_lick",
+        "name": {
+          "en": "Mound Lick"
+        },
+        "role": "Basic",
+        "effect": "Scoops insect biomass, healing 10 HP and granting a 10% movement speed boost for 2 turns.",
+        "numbers": {}
+      },
+      "weakness": "Slow, deliberate movements make them easy targets for aerial predators.",
+      "observe": [
+        "Leathery, plate-like facial armor",
+        "Elongated, prehensile tongue flicking in the shade",
+        "Clawed hands rhythmically excavating soft soil"
+      ],
+      "journal": {
+        "en": "They don't conquer the swarm; they simply become its digestive system."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "analogues": [
+          {
+            "organism": "Pangolin (dermal facial armor); giant anteater (elongated worm-like tongue for colonial prey)",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own"
+          }
+        ],
+        "scores": {
+          "astrobio": 9,
+          "designer": 7,
+          "physicist": 8
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist",
+          "physicist"
+        ]
+      }
+    },
+    {
+      "id": "at_insectophagi.c2",
+      "trait": "Ruminant gut & coprophagic recycling",
+      "links": [
+        "Nutrient-poor alkaline loams select for rapid biomass processing -> digestive symbiosis maximizes nitrogen extraction -> shallow prairie soils and moderate tectonics limit phosphorus availability -> coprophagy closes the nutrient loop"
+      ],
+      "roots": [
+        "F12",
+        "F13",
+        "F18"
+      ],
+      "skill": {
+        "id": "at_insectophagi.ferment_gut",
+        "name": {
+          "en": "Ferment-Gut"
+        },
+        "role": "Passive",
+        "effect": "+25% resource extraction from soil and mounds; unearths hidden nutrient caches.",
+        "numbers": {}
+      },
+      "weakness": "Vulnerable to gut parasites; requires frequent defecation cycles.",
+      "observe": [
+        "Distended, segmented abdomen",
+        "Frequent low-priority defecation pauses",
+        "Symbiotic bioluminescent gut flora visible through thin fur"
+      ],
+      "journal": {
+        "en": "Waste is just food waiting for a second chance."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "Drop externally visible bioluminescent gut symbionts unless rare and non-advertising; keep coprophagy/fermentation as F18 nutrient loop only.",
+        "fixes": [
+          "Drop externally visible bioluminescent gut symbionts unless rare and non-advertising; keep coprophagy/fermentation as F18 nutrient loop only."
+        ],
+        "analogues": [
+          {
+            "organism": "European rabbit (cecotrophy); ruminants (foregut fermentation paired with Hofmann stomach ecology)",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "hofmann_1989_evolutionary"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 7,
+          "designer": 6,
+          "physicist": 9
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "council"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "at_bone_crushers",
+      "kind": "rivalry",
+      "note": "Both exploit alkaline prairie loams; Insectophagi harvest insect colonies while Bone Crushers monopolize vertebrate carrion, creating territorial friction over nutrient sources.",
+      "via": "F12"
+    },
+    {
+      "with": "at_temptors",
+      "kind": "symbiosis",
+      "note": "Temptor mound forests stabilize microclimates that sustain insect swarms; Insectophagi harvest these colonies, inadvertently aerating soil for Temptor root networks.",
+      "via": "F10"
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-19",
+    "by": [
+      "council",
+      "naturalist",
+      "physicist"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-19",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-19"
+    },
+    {
+      "date": "2026-11-19",
+      "who": "autoloop",
+      "what": "removed rejected references from analogues"
+    }
+  ],
+  "lore_ref": {
+    "file": "lore/alltomorrows.en.json",
+    "id": "insectophagi"
+  }
+}

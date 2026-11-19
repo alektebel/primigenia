@@ -1,0 +1,210 @@
+{
+  "schema": "cpore.plant/1",
+  "id": "ceniza_roja",
+  "name": {
+    "en": "Red Ash Crust",
+    "es": "Ceniza roja"
+  },
+  "world": "primigenia",
+  "status": "draft",
+  "growth_form": "moss_lichen",
+  "habitats": [
+    "Cooled lava fields",
+    "Bare basalt and tuff",
+    "Exposed crater-rim rock"
+  ],
+  "summary": "A millimetre-scale crust consortium grows over cooled volcanic rock, combining a green photosynthetic layer, mineral-weathering partners and the ancestral nitrogen fixer. Dust and dead tissue gradually accumulate around its margins. Exposed colonies develop red-purple screening, while sheltered ones remain greener (F7, F9, F14, F24, F25).",
+  "chains": [
+    {
+      "id": "ceniza_roja.c1",
+      "trait": "Adherent mineral-weathering crust with nitrogen-fixing partners",
+      "links": [
+        "Newly cooled volcanic surfaces provide mineral substrate but little organic matter or available nitrogen.",
+        "Photosynthetic partners supply carbon while microbial acids weather accessible mineral surfaces.",
+        "The ancestral symbiont fixes nitrogen using energy and protected microsites within the consortium.",
+        "Crust texture traps dust, and turnover adds organic matter to small rooting pockets."
+      ],
+      "roots": [
+        "F7",
+        "F9",
+        "F24"
+      ],
+      "play": "Find the dust-filled margins where later pioneers can establish; compare intact crust with nearby bare rock.",
+      "weakness": "Colonization requires suitable moisture and a stable cooled surface. Abrasion, trampling, deep burial and prolonged drought interrupt growth.",
+      "observe": [
+        "Fine dust remains lodged along raised crust margins after wind clears nearby rock.",
+        "A naturally lifted edge exposes a thin green living layer.",
+        "Small grass seedlings occur in accumulated debris beside older crust patches."
+      ],
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "botanist/composer-2.5; chair sol",
+        "date": "2026-11-19",
+        "summary": "Acids weather mineral surfaces gradually; the crust does not rapidly split intact basalt. Nitrogen fixation does not remove phosphorus or water limitation, and succession has no universal timetable.",
+        "analogues": [
+          {
+            "organism": "Rock-dwelling lichens and nitrogen-fixing cyanolichens",
+            "mechanism": "Lichen acids contribute to mineral weathering, while cyanobacterial associations illustrate nitrogen input within a photosynthetic consortium. [Chen and colleagues](https://doi.org/10.1016/S0341-8162(99)00085-5); [Lichen Biology](https://www.cambridge.org/core/books/lichen-biology/87CA882464AED46E121E8C79A99B4993).",
+            "refs": [
+              "chen_2000_weathering",
+              "nash_2008_lichen"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "ceniza_roja.c2",
+      "trait": "Red-purple screening above a green photosynthetic layer",
+      "links": [
+        "Exposed rock colonies receive more radiation than shaded fissure colonies, with elevated UV on high slopes.",
+        "Excess exposure can damage the photosynthetic layer.",
+        "A superficial red-purple pigment layer reduces damaging radiation reaching living cells.",
+        "The screen improves exposure tolerance but can reduce useful light and increase heating."
+      ],
+      "roots": [
+        "F14",
+        "F25"
+      ],
+      "play": "Read broad differences in exposure from neighbouring red and green colonies without treating colour as an elevation meter.",
+      "weakness": "Screening costs carbon and does not prevent overheating or dehydration; heavily screened colonies perform poorly in deep shade.",
+      "observe": [
+        "Sun-facing crust is red-purple beside greener colonies under the same rock lip.",
+        "A chipped natural edge shows green beneath the coloured surface.",
+        "Hot dry colonies look shrunken despite retaining their red screen."
+      ],
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "botanist/composer-2.5; chair sol",
+        "date": "2026-11-19",
+        "summary": "The overlay follows the seeded pigment canon. Earth lichen screens support the mechanism, not an exact pigment identity. Red here signals exposure stress; it does not imply alkaloids or a crater-wide metal anomaly.",
+        "analogues": [
+          {
+            "organism": "Pigmented saxicolous lichens, including Xanthoria",
+            "mechanism": "Cortical pigments can screen underlying photobionts; their benefits depend on exposure and carbon balance. Primigenia's red-purple chemistry is an extrapolation from this architecture. [Lichen Biology](https://www.cambridge.org/core/books/lichen-biology/87CA882464AED46E121E8C79A99B4993).",
+            "refs": [
+              "nash_2008_lichen"
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "gameplay": {
+    "food_for": [
+      "Detritivores consuming weathered crust margins and dead microbial tissue"
+    ],
+    "gift_item": null,
+    "poison": {
+      "alkaloid": false,
+      "signal": "Red-purple exposed surfaces over green tissue indicate radiation screening, without the red-veined alkaloid pattern."
+    },
+    "healing": null,
+    "cover": null,
+    "climbing": false,
+    "nest_material": null,
+    "mineral_lick": null,
+    "notes": "A soil-building community rather than a concentrated edible mineral deposit. Substrate contamination can still make a patch hazardous near geothermal seeps. Crater-rim occupancy indicates suitable rock, not the second capsule's purpose."
+  },
+  "relations": [
+    {
+      "with": "grama_de_ceniza",
+      "kind": "other",
+      "note": "Creates dust-and-litter microsites beside fissures where the grass may establish; mature grass can later shade the crust."
+    },
+    {
+      "with": "lengua_de_lava",
+      "kind": "grows_with",
+      "note": "Shares cooled lava terrain where damp nutrient-poor seeps interrupt otherwise dry surfaces."
+    },
+    {
+      "with": "babosa",
+      "kind": "eaten_by",
+      "note": "Consumes softened dead margins and associated decaying material on damp ground."
+    },
+    {
+      "with": "hierroflor",
+      "kind": "grows_with",
+      "note": "Can occupy exposed rock near crater vegetation without sharing Hierroflor's nickel specialization."
+    }
+  ],
+  "generator": {
+    "growth_form": "moss_lichen",
+    "height_m": {
+      "min": 0.001,
+      "max": 0.006
+    },
+    "trunk": "None; a tightly attached crust follows the rock surface.",
+    "branching": {
+      "angle_deg": 0,
+      "levels": 0,
+      "apical_dominance": 0,
+      "buttress": "None; structural branching parameters are inactive."
+    },
+    "leaf": {
+      "type": "No leaves; polygonal thallus areoles",
+      "size_cm": 0.4,
+      "arrangement": "Contiguous irregular plates with expanding colony margins"
+    },
+    "colour": {
+      "base": "Muted green-grey",
+      "overlay_rules": [
+        "Red-purple screening strengthens on persistently exposed surfaces.",
+        "Sheltered margins and naturally exposed inner tissue remain greener.",
+        "Dust occupies cracks rather than replacing the living pigment."
+      ]
+    },
+    "placement": {
+      "slope": "Stable rock faces, 0–70 degrees; favour moisture-retaining texture.",
+      "altitude_m": [
+        0,
+        2050
+      ],
+      "wetness": "Intermittently damp with drying intervals; not permanently submerged.",
+      "soil": "Cooled basalt and cohesive tuff with little developed soil; exclude hot active vent surfaces.",
+      "coast_distance_m": [
+        0,
+        3600
+      ],
+      "fog": "Fog wetting favours activity where droplets reach the surface.",
+      "density": "Discontinuous islands on young rock, merging locally on older suitable surfaces."
+    },
+    "seasonal": "Growth follows wet periods; dry colonies become metabolically inactive. Alpine patches remain inactive beneath persistent snow.",
+    "wind_response": "The adherent crust does not sway; airborne grit abrades exposed margins while rough patches retain dust."
+  },
+  "journal": [
+    {
+      "en": "A red skin on the stone, green underneath. Dust stays where it has taken hold.",
+      "es": "Una piel roja sobre la piedra, verde por debajo. El polvo se queda donde ha prendido."
+    }
+  ],
+  "provenance": {
+    "council_run": "flora-2026-11-19",
+    "by": [
+      "designer",
+      "mythmaker",
+      "naturalist",
+      "physicist",
+      "senses",
+      "skeptic",
+      "wildcard"
+    ],
+    "edited_by": "sol"
+  },
+  "changelog": [
+    {
+      "date": "2026-11-19",
+      "who": "flora.py",
+      "what": "flora pass: 7 voices drafted and peer-reviewed, Composer botanical referee, sol chaired and applied the fixes"
+    }
+  ],
+  "observe": [
+    "The red skin follows every hollow in the cooled stone.",
+    "Green tissue shows at a naturally broken edge.",
+    "Dust gathers where a colony meets a damp fissure."
+  ],
+  "secrets": [
+    "The best seedling microsites occur where old crust margins meet water-holding cracks, rather than at the reddest colony centres.",
+    "Similar crust on ordinary lava and crater-rim rock prevents its colour from serving as a unique meteor clue."
+  ]
+}

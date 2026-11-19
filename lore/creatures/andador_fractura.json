@@ -1,0 +1,308 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "andador_fractura",
+  "name": {
+    "en": "Andador Fractura"
+  },
+  "world": "neutronstar",
+  "kind": "new",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "Deep crust fracture zones, near glitch epicenters",
+    "diet": "Ejected neutron-rich crustal matter, glitch heat, pinned vortex decay",
+    "active": "Dormant during stable spin, hyper-active for hours post-glitch",
+    "predators": []
+  },
+  "body": "Modular defect clusters that separate and rejoin, ~1.0 μm fragmented",
+  "chains": [
+    {
+      "id": "andador_fractura.c1",
+      "trait": "Rides phonon shockwaves from crustal fractures",
+      "links": [
+        "Glitch unpinning releases massive phonon bursts",
+        "Modular clusters couple resonantly to strain waves",
+        "Sound speeds near 0.004c transport momentum efficiently"
+      ],
+      "roots": [
+        "F6",
+        "F10"
+      ],
+      "skill": {
+        "id": "andador_fractura.shock_ride",
+        "name": {
+          "en": "Shock-Ride"
+        },
+        "role": "Basic",
+        "effect": "Surf a phonon front, moving 0.5μm instantly and gaining +30% evasion against lattice-based attacks.",
+        "numbers": {}
+      },
+      "weakness": "Lands hard; sudden stoppage causes self-fracture.",
+      "observe": [
+        "Defects detach and slide along planes",
+        "Phonon echoes precede movement",
+        "Clusters reform post-ride"
+      ],
+      "journal": {
+        "en": "They don't climb; they let the earthquake carry them."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Clarify that 1.0 μm is the dispersed cluster envelope during rides, not a sustained single crystal exceeding F13 limits.",
+        "fixes": [
+          "Clarify that 1.0 μm is the dispersed cluster envelope during rides, not a sustained single crystal exceeding F13 limits."
+        ],
+        "analogues": [
+          {
+            "organism": "Ballistospore discharge and shock-assisted spore spread in fungi; littoral organisms riding wave surge—momentum on a moving substrate rather than self-locomotion.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "andador_fractura.c2",
+      "trait": "Identifies fresh neutron-rich ejecta by weak-interaction decay signatures",
+      "links": [
+        "Beta-decay cycles emit characteristic neutrinos/photons",
+        "Defect complexes tune sensitivity to specific weak-interaction cross-sections",
+        "Metabolism relies on weak-interaction cycles"
+      ],
+      "roots": [
+        "F12"
+      ],
+      "skill": {
+        "id": "andador_fractura.decay_taste",
+        "name": {
+          "en": "Decay-Taste"
+        },
+        "role": "Poke",
+        "effect": "Senses metabolic heat of nearby enemies, dealing 20% damage via targeted weak-interaction disruption.",
+        "numbers": {}
+      },
+      "weakness": "Ineffective against non-decaying inorganic debris.",
+      "observe": [
+        "Defects tilt toward heat sources",
+        "Lattice pulses at decay frequencies",
+        "Target defects shudder"
+      ],
+      "journal": {
+        "en": "They smell decay before the dust settles."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Decay-Taste: short-range phonon/thermal/chemical signature of active weak cycles and fresh ejecta surface activity; hunt Tamiz via high-frequency phonon beacons and local prompt radiation from scrub events, not neutrino flux.",
+        "fixes": [
+          "Decay-Taste: short-range phonon/thermal/chemical signature of active weak cycles and fresh ejecta surface activity; hunt Tamiz via high-frequency phonon beacons and local prompt radiation from scrub events, not neutrino flux."
+        ],
+        "analogues": [
+          {
+            "organism": "Carrion flies detecting volatiles from decay (Dethier, chemoreception); scavengers cueing on heat and radiation from fresh fallout particles—not neutrinos.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "andador_fractura.c3",
+      "trait": "Aggregates during aftershocks to share topological information",
+      "links": [
+        "Lattice conjugation requires intimate contact",
+        "Aftershocks bring fractured clusters together",
+        "Resonant tunneling at shared interfaces enables defect exchange"
+      ],
+      "roots": [
+        "F16"
+      ],
+      "skill": {
+        "id": "andador_fractura.conjugation_huddle",
+        "name": {
+          "en": "Conjugation-Huddle"
+        },
+        "role": "Social",
+        "effect": "Links 3 allies, sharing 20% of adaptive isotopic traits and reducing mutation risk by 35% for 100μs.",
+        "numbers": {}
+      },
+      "weakness": "Prolonged contact increases susceptibility to shared proton-contamination.",
+      "observe": [
+        "Defects cluster tightly",
+        "Interface sparks appear",
+        "Trait counts equalize"
+      ],
+      "journal": {
+        "en": "They hold hands in the dark and pass down tomorrow's memories."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "F16 lattice conjugation requires intimate contact; post-glitch aftershocks forcing fractured neighbors together is a believable selective window for horizontal ‘trait’ sharing. Cost of shared proton contamination (F14) is a strong evolutionary trade-off. Highly speculative genetics (F15) but consistent with world bible.",
+        "fixes": [
+          "F16 lattice conjugation requires intimate contact; post-glitch aftershocks forcing fractured neighbors together is a believable selective window for horizontal ‘trait’ sharing. Cost of shared proton contamination (F14) is a strong evolutionary trade-off. Highly speculative genetics (F15) but consistent with world bible."
+        ],
+        "analogues": [
+          {
+            "organism": "Bacterial conjugation (F+ pilus exchange) and biofilm quorum under stress; social huddling after disturbance in vertebrates—contact-gated information transfer.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "andador_fractura.c4",
+      "trait": "Seals defect fractures using rapid electron tunneling before cooling locks the lattice",
+      "links": [
+        "Glitch ejects cool matter rapidly",
+        "Electron Fermi velocity approaches c",
+        "Relativistic tunneling enables instant lattice repair"
+      ],
+      "roots": [
+        "F11",
+        "F10"
+      ],
+      "skill": {
+        "id": "andador_fractura.flash_suture",
+        "name": {
+          "en": "Flash-Suture"
+        },
+        "role": "Defence",
+        "effect": "Restores 30% lattice integrity to self or ally within 1μs, preventing structural failure.",
+        "numbers": {}
+      },
+      "weakness": "Tunneling drains metabolic reserves; overuse causes temporary quiescence.",
+      "observe": [
+        "Fissures glow briefly",
+        "Defects merge seamlessly",
+        "Lattice temperature drops as stress releases"
+      ],
+      "journal": {
+        "en": "They mend the world faster than it can break."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Define Flash-Suture as restoring internal cluster topology and interface contacts; metabolic quiescence after overuse matches finite tunnelling work budget.",
+        "fixes": [
+          "Define Flash-Suture as restoring internal cluster topology and interface contacts; metabolic quiescence after overuse matches finite tunnelling work budget."
+        ],
+        "analogues": [
+          {
+            "organism": "Rapid autotomy and re-fusion in some cnidarians; biofilm EPS bridging—local damage repair under time pressure, not geological suture.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "cristalino_filar",
+      "kind": "cousin",
+      "note": "(council kind 'commensalism') Andador rides the phonon wakes left by Cristalino's field-weaving."
+    },
+    {
+      "with": "tamiz_drip",
+      "kind": "predation",
+      "note": "Andador hunts Tamiz by tracking neutrino leakage from proton-scrubbing events."
+    },
+    {
+      "with": "cristalino_filar",
+      "kind": "cousin",
+      "note": "(council kind 'commensalism') Andador rides the phonon wakes left by Cristalino's field-weaving."
+    },
+    {
+      "with": "tamiz_drip",
+      "kind": "predation",
+      "note": "Andador hunts Tamiz by tracking neutrino leakage from proton-scrubbing events."
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-18",
+    "by": [
+      "naturalist/qwen"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-18",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-18"
+    },
+    {
+      "date": "2026-11-18",
+      "who": "autoloop",
+      "what": "removed rejected references from analogues"
+    },
+    {
+      "date": "2026-11-18",
+      "who": "import_got",
+      "what": "merged run autoloop-2026-11-18: 0 chain(s) added, 0 plausibility block(s) filled, 0 relation(s) added"
+    }
+  ],
+  "temperament": "Opportunistic, resilient, highly social during aftershocks",
+  "secrets": [
+    "They can split into 3 independent clusters to cover more ground.",
+    "Their topological memory degrades if not conjugated every 200μs.",
+    "They avoid the magnetar's magnetic equator; field shear rips their clusters apart."
+  ],
+  "moments": [
+    "The crust cracks. A sound that would shatter continents on Earth arrives as a gentle hum. Andador Fractura detaches, slides across the fracture, and reknits itself before the dust even cools."
+  ],
+  "journal": [
+    {
+      "en": "They are the world's surgeons and its scavengers."
+    },
+    {
+      "en": "Disaster is not an enemy here; it is a season."
+    }
+  ]
+}

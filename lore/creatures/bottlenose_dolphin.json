@@ -1,0 +1,222 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "bottlenose_dolphin",
+  "name": {
+    "en": "Bottlenose dolphin"
+  },
+  "world": "earth",
+  "kind": "native",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "to be written",
+    "diet": "to be written",
+    "active": "to be written",
+    "predators": []
+  },
+  "body": "to be written",
+  "chains": [
+    {
+      "id": "bottlenose_dolphin.c1",
+      "trait": "Click train through melon and jaw",
+      "links": [
+        "a fatty melon focuses broadband clicks, and a fat-filled channel in the lower jaw carries the returning echoes to the ear",
+        "in water sound travels about 1500 m/s, so echo delay resolves objects at centimetre scale",
+        "light fails within tens of metres in coastal water, so the only usable carrier is sound"
+      ],
+      "roots": [
+        "F11",
+        "F16"
+      ],
+      "skill": {
+        "id": "bottlenose_dolphin.click_map",
+        "name": {
+          "en": "Click Map"
+        },
+        "role": "Control",
+        "effect": "renders a full 3D image of everything within 100 m, including prey buried under sand and invisible or dark targets, for one turn",
+        "numbers": {}
+      },
+      "weakness": "it is listening, not looking: a loud broadband noise (engine, hammering, a bubble curtain) blanks the map for about 10 s and leaves it effectively blind",
+      "observe": [
+        "a rounded fatty forehead with no beak above the eyes",
+        "a hollow, oil-filled jawbone you can feel through the skin",
+        "a fast accelerating click train that ends in a buzz just before a strike"
+      ],
+      "journal": {
+        "en": "It sees with its forehead and hears with its chin."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "100 m full 3D map is optimistic for buried sand prey and clutter; use ~20–50 m high detail, 100 m coarse/localisation only in calm, low-noise water.",
+        "fixes": [
+          "100 m full 3D map is optimistic for buried sand prey and clutter; use ~20–50 m high detail, 100 m coarse/localisation only in calm, low-noise water."
+        ],
+        "analogues": [
+          {
+            "organism": "Tursiops truncatus biosonar — melon focusing, mandibular fat channel to ear (Au); oilbird/bat analogues for echolocation in lightless media, but cetacean receive path via jaw is distinctive",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "au_1993_sonar"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 9,
+          "designer": 9,
+          "physicist": 7,
+          "skeptic": 8
+        }
+      }
+    },
+    {
+      "id": "bottlenose_dolphin.c2",
+      "trait": "Signature whistle, a learned name",
+      "links": [
+        "each animal invents one individually distinctive frequency-modulated whistle and copies the versions of its partners",
+        "because it is learned and copied, the whistle is an arbitrary label for an individual, not a readout of mood",
+        "a group whose membership changes daily has to find specific partners again after hours apart and out of sight"
+      ],
+      "roots": [
+        "F11",
+        "F31"
+      ],
+      "skill": {
+        "id": "bottlenose_dolphin.name_call",
+        "name": {
+          "en": "Name Call"
+        },
+        "role": "Social",
+        "effect": "summons one specific ally from 2 km, re-forming a hunting party of three; allies answer even through murk where they cannot see you",
+        "numbers": {}
+      },
+      "weakness": "it answers to a name anyone can copy: play back its signature whistle and it will approach the speaker instead of its pod",
+      "observe": [
+        "the same rising whistle shape repeated after every separation",
+        "two animals exchanging whistles and converging on each other",
+        "each individual with a different whistle contour, stable across days"
+      ],
+      "journal": {
+        "en": "It gave itself a name, and it comes when you steal it."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "2 km summon is plausible for acoustic contact in open ocean but not guaranteed in noisy coastal habitat; add noise/habitat modifier halving range.",
+        "fixes": [
+          "2 km summon is plausible for acoustic contact in open ocean but not guaranteed in noisy coastal habitat; add noise/habitat modifier halving range."
+        ],
+        "analogues": [
+          {
+            "organism": "Bottlenose dolphin individually distinctive signature whistle, learned and copied — cohesion/identification (Janik & Slater; playback approach in Sayigh et al.)",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "janik_1998_context",
+              "sayigh_1999_individual"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 9,
+          "designer": 8,
+          "physicist": 8,
+          "skeptic": 9
+        }
+      }
+    },
+    {
+      "id": "bottlenose_dolphin.c3",
+      "trait": "One hemisphere asleep at a time",
+      "links": [
+        "half the brain sleeps while the other half keeps watching and keeps the blowhole above water",
+        "breathing is a decision made at the surface, so full unconsciousness would be drowning",
+        "there is no safe surface and no burrow: the water column offers rest with no cover"
+      ],
+      "roots": [
+        "F10"
+      ],
+      "skill": {
+        "id": "bottlenose_dolphin.half_watch",
+        "name": {
+          "en": "Half Watch"
+        },
+        "role": "Passive",
+        "effect": "regenerates stamina at 60% while staying fully alert to ambush; cannot be surprised during rest",
+        "numbers": {}
+      },
+      "weakness": "it is never fully off duty: after three days without a genuine rest its reactions degrade, and any stun or entangle that stops it surfacing kills it outright",
+      "observe": [
+        "one eye open, one closed, drifting in a slow circle",
+        "a surfacing rhythm that never varies, even at rest",
+        "an animal that never lies still on the bottom the way a seal can"
+      ],
+      "journal": {
+        "en": "It has never once been fully asleep in its life."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "analogues": [
+          {
+            "organism": "Cetacean unihemispheric slow-wave sleep (USWS) — blowhole vigilance while resting (Lyamin et al.; also fur seals/other marine mammals with variants)",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "lyamin_2008_cetacean"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 10,
+          "designer": 7,
+          "physicist": 9,
+          "skeptic": 8
+        }
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "common_raven",
+      "kind": "opposite",
+      "note": "Same fluid physics, inverted solutions. Raven exploits low-density, transparent air for visual soaring and cache retrieval; dolphin exploits high-density, opaque water for active sonar and pressure-resistant diving. Playable: raven's visual tracking counters dolphin's acoustic stealth, while dolphin's sonar pierces raven's visual camouflage in fog.",
+      "via": "F11"
+    },
+    {
+      "with": "humans",
+      "kind": "convergent",
+      "note": "Both solved fission-fusion sociality with vocal learning. Humans use speech and names; dolphins use signature whistles. Playable: players can teach dolphin pods human-like whistle patterns to coordinate group dives, or use human vocal mimicry to calm stressed pods.",
+      "via": "F31"
+    },
+    {
+      "with": "humans",
+      "kind": "counter",
+      "note": "Acoustic masking vs echolocation. Human vessel noise and seismic pulses scatter dolphin prey and mask signature whistles; dolphins counter by shifting click frequencies and using bubble curtains to break acoustic shadows. Playable: players can deploy low-frequency hums to disrupt dolphin sonar, or switch to silent hand signals to restore coordination."
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-18"
+  },
+  "changelog": [
+    {
+      "date": "2026-11-18",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-18"
+    }
+  ]
+}

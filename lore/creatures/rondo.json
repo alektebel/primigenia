@@ -1,0 +1,301 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "rondo",
+  "name": {
+    "en": "Rondo"
+  },
+  "world": "primigenia",
+  "kind": "native",
+  "status": "draft",
+  "stage": "creature",
+  "niche": {
+    "habitat": "Start valley meadows, fog-trap edges, and the spring basin beneath the giant tree.",
+    "diet": "Herbivore: sugary grasses, starchy fruit, and salt licks.",
+    "active": "Diurnal, peaks at dawn and dusk; bunches tightly during morning fog.",
+    "predators": [
+      "Garfio",
+      "Espinodo",
+      "Coloso (accidental trampling)"
+    ]
+  },
+  "body": "Low-slung herbivore with a paired gular sac for 90 Hz humming and a proventriculus that ferments fruit into a sour, defensive spit. They cache dried fruit in shallow depressions and huddle tightly during the dense morning fog.",
+  "chains": [
+    {
+      "id": "rondo.c1",
+      "trait": "Paired gular sac, 90 Hz hum",
+      "links": [
+        "Valley fog blinds the herd on ~180 mornings, so contact calls must work where eyes fail",
+        "A tuned throat sac couples the 90 Hz hum to the dense air, but spreading loss is frequency-blind",
+        "Dawn temperature inversion ducts low sound along the ground while fog and grass kill high pitches",
+        "Large body mass (~70 kg) and ~30 L sac resonate at 90 Hz (c/4L physics); hearing tops out at ~10 kHz",
+        "Ducted call herds into a 20 m corridor; inside 20 m, upper harmonics (>400 Hz) allow localization and calm"
+      ],
+      "roots": [
+        "F4",
+        "F8"
+      ],
+      "skill": {
+        "id": "rondo.long_hum",
+        "name": {
+          "en": "Long hum"
+        },
+        "role": "Control",
+        "effect": "Calls the herd into a 20 m corridor from up to 300 m; inside 20 m, upper harmonics allow localization and calm for 6 s. +12 befriend if answered. Honest cost: Garfio hears it but cannot locate the herd.",
+        "numbers": {}
+      },
+      "weakness": "Hearing tops out near 10 kHz: any high-pitched Whistle move (even wind through hollow reeds) reads as a calf in trouble, and the nearest adult turns and the herd follows for 8 s.",
+      "observe": [
+        "the throat sac inflates before the hum",
+        "the herd's heads turn together toward the caller",
+        "in fog the hum keeps them in contact when nothing is visible"
+      ],
+      "journal": {
+        "en": "Fog takes the light; they answer with a note you feel in your feet."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "analogues": [
+          {
+            "organism": "African bush elephant infrasound contact calls through air and substrate (Payne et al., 1986, Nature); howler monkey hypertrophied laryngeal sac amplifying low-frequency long calls (Sekulic, 1982, Am. J. Primatol.) — same pressures: herd cohesion when vision is poor; dawn temperature inversions ducting low-frequency sound along the ground are standard acoustic meteorology (from memory, unverified).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 9,
+          "designer": 9,
+          "physicist": 9,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "skeptic",
+          "wildcard"
+        ]
+      }
+    },
+    {
+      "id": "rondo.c2",
+      "trait": "Paired gular pouch, dried fruit caches",
+      "links": [
+        "Fruit season delivers sugar pulses, not a year-round staple",
+        "Paired gular pouches carry surplus home the same day with a one-way valve",
+        "East-valley summer is dry (F18) and sun-warmed andesite dries fruit without mould (F15 humidity prevents drying elsewhere)",
+        "Buried seed caches at the nest outlast the season",
+        "High-oxygen blood (F5) fuels rapid pouch peristalsis and tissue repair"
+      ],
+      "roots": [
+        "F11",
+        "F15",
+        "F18",
+        "F5",
+        "F26"
+      ],
+      "skill": {
+        "id": "rondo.fruit_gift",
+        "name": {
+          "en": "Fruit gift"
+        },
+        "role": "Social",
+        "effect": "+12 befriend; +18 in fruit season. A gift straight from the pouch is fresh for 1 day; sun-dried fruit or nuts keep 3 days.",
+        "numbers": {}
+      },
+      "weakness": "The pouch hangs bare under the throat: a grab or hit there spills the day's surplus and trust drops 10. In winter it will take offered meat instead and refuses gifts from the player's hand for the rest of the day.",
+      "observe": [
+        "a bulging gular pouch under the chin",
+        "fruit strips laid out on warm rock to dry",
+        "buried seed caches near the nest"
+      ],
+      "journal": {
+        "en": "Its gifts ripen in its throat before they are given."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Drop avian 'crop' wording for a Merodeador-grade ungulate: use paired gular or esophageal storage pouches (or a modest foregut diverticulum), not a true bird crop; keep sun-drying on warm rock and buried caches, but tie refill rate to rumen/ hindgut fermentation time so the sac is not a bottomless gift bag.",
+        "fixes": [
+          "Drop avian 'crop' wording for a Merodeador-grade ungulate: use paired gular or esophageal storage pouches (or a modest foregut diverticulum), not a true bird crop; keep sun-drying on warm rock and buried caches, but tie refill rate to rumen/ hindgut fermentation time so the sac is not a bottomless gift bag."
+        ],
+        "analogues": [
+          {
+            "organism": "Hamadryas baboon cheek pouches for same-day food transport (Kummer, 1968, Primate Societies); agouti and scatter-hoarding rodents with dried seed larders (Jansen et al., 2012, Biotropica, from memory, unverified); elevated pO₂ supporting larger gut and aerobic metabolism fits large mammal scaling (Kleiber, 1932, from memory, unverified).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 7,
+          "designer": 8,
+          "physicist": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "skeptic"
+        ]
+      }
+    },
+    {
+      "id": "rondo.c3",
+      "trait": "Night ring, fog bunching",
+      "links": [
+        "Moonless nights are truly dark, so no eye can watch all sides",
+        "Fog cuts sight to tens of metres, so a fixed fence becomes a blind target",
+        "The herd closes up and holds silent instead; only when cornered or in the dark do adults face outward, calves inside",
+        "Many ears, one wall, against a raider that bites and leaves"
+      ],
+      "roots": [
+        "F6",
+        "F8"
+      ],
+      "skill": {
+        "id": "rondo.herd_ring",
+        "name": {
+          "en": "Herd ring"
+        },
+        "role": "Defence",
+        "effect": "When cornered or on a moonless night, 3+ Rondos face outward: +40% defence, no flank bonus for attackers, 12 s. In fog they bunch and go still instead: much harder to find, -30% detection.",
+        "numbers": {}
+      },
+      "weakness": "Lure one adult out with dried fruit; the gap it leaves is exactly one body wide and stays open for 4 s.",
+      "observe": [
+        "adults face outward, calves pressed inside",
+        "when fog rolls in the herd bunches and falls silent rather than ringing",
+        "the herd holds the ring only while it cannot flee"
+      ],
+      "journal": {
+        "en": "Dark makes a fence of them; fog makes a held breath."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "analogues": [
+          {
+            "organism": "Muskox defensive ring with calves center and adults facing outward when flight is blocked (Tener, 1965, Muskoxen in Canada, from memory, unverified); bison and wildebeest defensive bunching; tighter, silent aggregation in fog/low visibility matches ungulate anti-predator optics trade-offs (Lima, 1990, Ecology).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 9,
+          "designer": 9,
+          "physicist": 9,
+          "skeptic": 7
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "skeptic"
+        ]
+      }
+    },
+    {
+      "id": "rondo.c4",
+      "trait": "Proventriculus, sour spit at threats",
+      "links": [
+        "The gular pouch splits into a fresh fore-crop and an airless fermenting pocket",
+        "Bacteria sour surplus fruit pulp to lactic/acetic acid (pH 3.5–4) instead of rotting",
+        "A muscular proventriculus with a sublingual nozzle pressurises the acid into a short jet",
+        "1.6 bar ambient pressure reduces droplet evaporation and drag, aiding the ~4 m cone",
+        "Stings eyes/nose, ends the hunt before the chase; one full feed yields two jets, the second takes 20 s to squeeze, then flat until next feeding"
+      ],
+      "roots": [
+        "F4",
+        "F5",
+        "F26"
+      ],
+      "skill": {
+        "id": "rondo.sour_spit",
+        "name": {
+          "en": "Sour spit"
+        },
+        "role": "Basic",
+        "effect": "Cone of crop ferment to ~4 m: stings eyes/nose, target -accuracy for 3 s. Filling is a telegraphed 2 s drinking motion; one full feed yields two jets, the second takes 20 s to squeeze, then flat until next feeding.",
+        "numbers": {}
+      },
+      "weakness": "Reload is the weakness: after two jets the proventriculus is empty for the rest of the day. A hard blow to the throat back-floods the fresh gular pouch, souring the day's gifts (trust -10) and leaving the player defenseless for 20 s.",
+      "observe": [
+        "the gular pouch swells while it feeds",
+        "neck extended, an aimed posture before the jet",
+        "a sour smell and flies where the spit landed"
+      ],
+      "journal": {
+        "en": "Old fruit, soured in the throat, becomes its spear."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Homologize the ferment pocket to a llama-like foregut/throat pouch that sours plant pulp anaerobically (lactate/volatile acids), not an avian crop; jet reach ~4 m is fine but effect should be eye/nose membrane irritation and distraction, not chemical defense on par with spitting cobra neurotoxin; telegraphed refill after emptying the pouch keeps the energy budget honest.",
+        "fixes": [
+          "Homologize the ferment pocket to a llama-like foregut/throat pouch that sours plant pulp anaerobically (lactate/volatile acids), not an avian crop; jet reach ~4 m is fine but effect should be eye/nose membrane irritation and distraction, not chemical defense on par with spitting cobra neurotoxin; telegraphed refill after emptying the pouch keeps the energy budget honest."
+        ],
+        "analogues": [
+          {
+            "organism": "Llama and alpaca spitting fermented rumen/oral contents at harassers (Hudson & Flindt, 2004, J. Zool.); hoatzin foregut fermentation in a herbivore foregut (Grajal et al., 1989, Auk); spitting cobras show aimable oral jets but different toxin physiology (Young et al., 2004, Science).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "designer": 8,
+          "physicist": 8,
+          "skeptic": 5
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "wildcard"
+        ]
+      }
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-18",
+    "by": [
+      "skeptic",
+      "wildcard"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-18",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-18"
+    },
+    {
+      "date": "2026-11-19",
+      "who": "import_got",
+      "what": "merged run autoloop-2026-11-19: 0 chain(s) added, 0 plausibility block(s) filled, 0 relation(s) added"
+    },
+    {
+      "date": "2026-11-19",
+      "who": "import_got",
+      "what": "merged run autoloop-2026-11-19: 0 chain(s) added, 0 plausibility block(s) filled, 0 relation(s) added"
+    },
+    {
+      "date": "2026-11-19",
+      "who": "import_got",
+      "what": "merged run autoloop-2026-11-19: 0 chain(s) added, 0 plausibility block(s) filled, 0 relation(s) added"
+    }
+  ],
+  "temperament": "Timid herd animal that communicates through low, resonant songs and flees at sudden high-pitched noises.",
+  "secrets": [
+    "Nocturnal variant",
+    "Albinos",
+    "Fossil: tiny skull",
+    "Viewpoint: fog bunching"
+  ],
+  "moments": [
+    "Dawn chorus where the herd hums in unison to mask individual locations from predators.",
+    "A sudden sour-spit volley that makes a Garfio back off.",
+    "Fog forcing them into a tight, trembling ring that amplifies their low calls."
+  ]
+}

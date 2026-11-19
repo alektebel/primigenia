@@ -256,6 +256,45 @@ static int test_slopes(void){
     CHECK(cp_stage_order(&w,&go)==0);
     return 0;
 }
+/* The player must obey the same full-gradient ceiling as wildlife, even when
+ * walking along a contour (zero directional grade). */
+static int test_player_ceiling(void){
+    make_field(1.35f,0);
+    field_world(&w,8,60,23,0);
+    CpStageInput wait={.verb=CP_STAGE_WAIT};
+    int slid=0;
+    for(int i=0;i<30;i++){cp_stage_step(&w,&wait);slid|=w.player.sliding;}
+    CHECK(slid);
+    field_world(&w,8,60,23,0);
+    CpStageInput contour={.verb=CP_STAGE_GO,.x=23,.z=30};
+    CHECK(cp_stage_order(&w,&contour)==-4);
+    return 0;
+}
+static int test_route_feedback(void){
+    char obs[16384];
+    make_field(0,0);
+    field_world(&w,4,60,0,0);
+    CpStageInput go={.verb=CP_STAGE_GO,.x=50,.z=0};
+    CHECK(cp_stage_order(&w,&go)==0);
+    /* Turn an accepted path into an impassable water wall, without moving the body. */
+    for(int j=0;j<160;j++)for(int i=100;i<110;i++)height_grid[j*160+i]=-2;
+    field.hash++;
+    for(int i=0;i<600&&w.order.verb==CP_STAGE_GO;i++)cp_stage_step(&w,NULL);
+    CHECK(w.order.verb!=CP_STAGE_GO&&w.last_error==-4);
+    cp_stage_step(&w,NULL); /* event reason survives the transient blocked flag */
+    CHECK(cp_stage_observe(&w,obs,sizeof obs)>0);
+    CHECK(strstr(obs,"\"type\":\"path_failed\"")&&strstr(obs,"\"reason\":\"unreachable\""));
+    cp_stage_ack_events(&w);
+    CHECK(cp_stage_observe(&w,obs,sizeof obs)>0&&!strstr(obs,"path_failed"));
+    make_field(0,0);
+    field_world(&w,4,60,0,0);
+    go.x=10;
+    CHECK(cp_stage_order(&w,&go)==0);
+    for(int i=0;i<200&&w.order.verb==CP_STAGE_GO;i++)cp_stage_step(&w,NULL);
+    CHECK(w.order.verb!=CP_STAGE_GO&&fabsf(w.player.x-10)<.3f);
+    CHECK(cp_stage_observe(&w,obs,sizeof obs)>0&&strstr(obs,"\"type\":\"arrived\""));
+    return 0;
+}
 static uint64_t run_script(CpStageWorld *world,uint64_t *out_hashes){
     uint64_t h=0;
     CpStageInput a={.verb=CP_STAGE_GO,.x=40,.z=30};
@@ -298,6 +337,8 @@ int main(void){
     printf("no heading snap\n");rc|=test_no_snap();
     printf("pivot rule\n");rc|=test_pivot();
     printf("slopes\n");rc|=test_slopes();
+    printf("player ceiling\n");rc|=test_player_ceiling();
+    printf("route feedback\n");rc|=test_route_feedback();
     printf("determinism\n");rc|=test_determinism();
     if(rc){fprintf(stderr,"steer_test FAILED\n");return 1;}
     printf("PASS steer (%d checks)\n",checks);

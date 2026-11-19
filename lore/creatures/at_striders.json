@@ -1,0 +1,175 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "at_striders",
+  "name": {
+    "en": "Striders"
+  },
+  "world": "at_garden_peoples",
+  "kind": "easter_egg",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "to be written",
+    "diet": "to be written",
+    "active": "to be written",
+    "predators": []
+  },
+  "body": "to be written",
+  "chains": [
+    {
+      "id": "at_striders.c1",
+      "trait": "Impossibly thin limbs & elongated neck",
+      "links": [
+        "Extreme skeletal elongation for canopy browsing",
+        "0.2g surface acceleration reducing gravitational load",
+        "Jovian moon with low planetary mass"
+      ],
+      "roots": [
+        "F5",
+        "F21"
+      ],
+      "skill": {
+        "id": "at_striders.canopy_lunge",
+        "name": {
+          "en": "Canopy Lunge"
+        },
+        "role": "Basic",
+        "effect": "Leap 15 m vertically using elastic cartilage tendons, reaching high foliage",
+        "numbers": {}
+      },
+      "weakness": "Extreme fragility; any fall >2 m fractures epiphyseal plates. High wind loads cause toppling.",
+      "observe": [
+        "Joints bending at unnatural, stick-like angles",
+        "Neck stretching vertically like a crane",
+        "Skin rippling with faint color shifts"
+      ],
+      "journal": {
+        "en": "They grow tall because the sky doesn't push back."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-19",
+        "summary": "Cap elongation with low-density trabecular bone and tendon elasticity (F5), McMahon allometry-style safety factors, and lore fragility; 15 m vertical leap is plausible only as assisted vault in 0.2 g, not Earth-like jumping.",
+        "fixes": [
+          "Cap elongation with low-density trabecular bone and tendon elasticity (F5), McMahon allometry-style safety factors, and lore fragility; 15 m vertical leap is plausible only as assisted vault in 0.2 g, not Earth-like jumping."
+        ],
+        "analogues": [
+          {
+            "organism": "Giraffe and sauropod neck/limb allometry at 1 g; low-g biomechanics parallels (from memory, unverified — exobiology textbooks on reduced-weight column loading)",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "mcmahon_1973_size"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "designer": 9,
+          "physicist": 9
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist",
+          "physicist"
+        ]
+      }
+    },
+    {
+      "id": "at_striders.c2",
+      "trait": "Heat-dumping skin flaps & chromatophores",
+      "links": [
+        "Dorsal dermal flaps and color-shifting epidermis",
+        "Low-g reduced convective cooling efficiency",
+        "High solar flux on tidally locked moon"
+      ],
+      "roots": [
+        "F5",
+        "F9",
+        "F21"
+      ],
+      "skill": {
+        "id": "at_striders.solar_flush",
+        "name": {
+          "en": "Solar Flush"
+        },
+        "role": "Engage",
+        "effect": "Dumps excess heat to heal 3 HP but reduces speed by 25% for 1 turn",
+        "numbers": {}
+      },
+      "weakness": "Overheats rapidly in shaded or cold microclimates",
+      "observe": [
+        "Thin, translucent membranes flaring between ribs",
+        "Skin flashing pale to match the sky",
+        "Leaning into wind to maximize airflow"
+      ],
+      "journal": {
+        "en": "A living sail, catching the wind like a prayer."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-19",
+        "summary": "Remove unstated tidal-lock assumption from the chain; use F5 low convective efficacy plus F9 wind exposure on open plains. Shade weakness should be ‘poor thermoregulation when flaps cannot radiate/convect’ not generic overheating in cool shade.",
+        "fixes": [
+          "Remove unstated tidal-lock assumption from the chain; use F5 low convective efficacy plus F9 wind exposure on open plains. Shade weakness should be ‘poor thermoregulation when flaps cannot radiate/convect’ not generic overheating in cool shade."
+        ],
+        "analogues": [
+          {
+            "organism": "Elephant ears and frilled lizard radiative/convective flaps; cephalopod chromatophores for reflectance",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 7,
+          "designer": 8,
+          "physicist": 9
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "at_lopsiders",
+      "kind": "opposite",
+      "note": "Striders evolve extreme verticality and fragile cartilage for 0.2g; Lopsiders evolve wide stances and paddle-limbs for 36g.",
+      "via": "F4, F5, F21"
+    },
+    {
+      "with": "at_pterosapiens",
+      "kind": "convergent",
+      "note": "Both exploit low-g/aerial niches; Striders rely on passive buoyancy and heat-dumping flaps, Pterosapiens evolve active flight with hollow bones and hyperthrophic hearts.",
+      "via": "F5, F7, F21"
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-18",
+    "by": [
+      "naturalist",
+      "physicist"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-19",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-18"
+    }
+  ],
+  "lore_ref": {
+    "file": "lore/alltomorrows.en.json",
+    "id": "striders"
+  }
+}

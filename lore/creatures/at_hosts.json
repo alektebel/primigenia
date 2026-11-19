@@ -1,0 +1,169 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "at_hosts",
+  "name": {
+    "en": "Hosts"
+  },
+  "world": "at_garden_peoples",
+  "kind": "easter_egg",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "to be written",
+    "diet": "to be written",
+    "active": "to be written",
+    "predators": []
+  },
+  "body": "to be written",
+  "chains": [
+    {
+      "id": "at_hosts.c1",
+      "trait": "Dense vascular fur patches on lumbar region",
+      "links": [
+        "High O2 partial pressure (F7) drives rapid host metabolism",
+        "Saturated humidity (F8) traps convective heat near the body",
+        "Parasite attachment sites require stable thermoregulation",
+        "Vascular fur acts as a biological heat-sink and saddle"
+      ],
+      "roots": [
+        "F7",
+        "F8"
+      ],
+      "skill": {
+        "id": "at_hosts.symbiotic_bond",
+        "name": {
+          "en": "Symbiotic Bond"
+        },
+        "role": "Social",
+        "effect": "Share 15% stamina with paired parasite over 3 turns",
+        "numbers": {}
+      },
+      "weakness": "Fur mats absorb moisture, slowing movement in dry seasons",
+      "observe": [
+        "Pulsing vascular skin under fur",
+        "Parasite attachment nodules",
+        "Heat haze above back"
+      ],
+      "journal": {
+        "en": "Evolution built a living saddle long before they invented the stirrup."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-19",
+        "summary": "Treat as short, sparse pelage over a brood-patch–like vascularized dermis (radiator, not insulator); note year-round high RH (F8) raises dermatophyte risk unless sebaceous/antimicrobial coevolution with the rider is stated.",
+        "fixes": [
+          "Treat as short, sparse pelage over a brood-patch–like vascularized dermis (radiator, not insulator); note year-round high RH (F8) raises dermatophyte risk unless sebaceous/antimicrobial coevolution with the rider is stated."
+        ],
+        "analogues": [
+          {
+            "organism": "Brood-patch vasculature in incubating birds; elephant/caribou ear countercurrent thermoregulation; oxpecker–ungulate contact zones on thin, perfused skin",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 7,
+          "designer": 7,
+          "physicist": 7
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist",
+          "physicist"
+        ]
+      }
+    },
+    {
+      "id": "at_hosts.c2",
+      "trait": "Enlarged nasal turbinates for chemical steering",
+      "links": [
+        "Dense humid air (F8) preserves volatile scent plumes",
+        "High pressure (F6) extends odor travel distance",
+        "Parasite navigation replaces host motor control",
+        "Enlarged turbinates track chemical leashes for pathfinding"
+      ],
+      "roots": [
+        "F6",
+        "F8"
+      ],
+      "skill": {
+        "id": "at_hosts.scent_trail",
+        "name": {
+          "en": "Scent Trail"
+        },
+        "role": "Control",
+        "effect": "leads host or ally 50m along chemical path",
+        "numbers": {}
+      },
+      "weakness": "Vulnerable to strong olfactory masking agents; loses navigation",
+      "observe": [
+        "Dilated nasal apertures",
+        "Head-low foraging posture",
+        "Nose-twitch tracking"
+      ],
+      "journal": {
+        "en": "Their sense of smell is a leash they never learned to break."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-19",
+        "summary": "Pair enlarged turbinates with enlarged olfactory bulbs and lore-accurate parasite steering via touch/olfaction (F17); in 85% RH some volatiles are less airborne—use both polar (dissolved) and volatile trails, not long-range monomolecular plumes alone.",
+        "fixes": [
+          "Pair enlarged turbinates with enlarged olfactory bulbs and lore-accurate parasite steering via touch/olfaction (F17); in 85% RH some volatiles are less airborne—use both polar (dissolved) and volatile trails, not long-range monomolecular plumes alone."
+        ],
+        "analogues": [
+          {
+            "organism": "Canid enlarged ethmoturbinates; rat spatial map via sniffing; parasitic manipulation of host behavior (e.g., rabies/Drosophila parasitoid analogues for steering metaphor only)",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "designer": 7,
+          "physicist": 8
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "physicist"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "at_parasites",
+      "kind": "symbiosis",
+      "note": "Hosts develop vascular fur and chemical steering to manage infestation; parasites refine abdominal suckers and pain-soothing saliva into mutualistic neural puppetry.",
+      "via": "F14, F17, F8"
+    },
+    {
+      "with": "at_symbiotes",
+      "kind": "symbiosis",
+      "note": "Symbiotes trade cognitive enhancement for host mobility; hosts gain protection and efficient resource gathering via tactile-olfactory interface.",
+      "via": "F8, F17, F7"
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-18",
+    "by": [
+      "naturalist",
+      "physicist"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-19",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-18"
+    }
+  ],
+  "lore_ref": {
+    "file": "lore/alltomorrows.en.json",
+    "id": "hosts"
+  }
+}

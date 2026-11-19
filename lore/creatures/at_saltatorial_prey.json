@@ -1,0 +1,179 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "at_saltatorial_prey",
+  "name": {
+    "en": "Saltatorial Prey"
+  },
+  "world": "at_garden_prairies",
+  "kind": "easter_egg",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "to be written",
+    "diet": "to be written",
+    "active": "to be written",
+    "predators": []
+  },
+  "body": "to be written",
+  "chains": [
+    {
+      "id": "at_saltatorial_prey.c1",
+      "trait": "Elongated, digitigrade saltatorial hindlimbs with fused metatarsals",
+      "links": [
+        "Open prairie offers zero cover; survival demands explosive acceleration",
+        "Reduced gravity lowers the energetic cost of high-striding gallops",
+        "Masseteric muscle tendons store kinetic energy for ballistic leaps",
+        "Predator pack coordination forces vertical evasion over lateral flight"
+      ],
+      "roots": [
+        "F5",
+        "F2"
+      ],
+      "skill": {
+        "id": "at_saltatorial_prey.elastic_sprint",
+        "name": {
+          "en": "Elastic Sprint"
+        },
+        "role": "Basic",
+        "effect": "Increases movement range by 50% on open ground for 1 turn.",
+        "numbers": {}
+      },
+      "weakness": "Cannot turn quickly; momentum carries them straight, making them vulnerable to flank attacks on slopes.",
+      "observe": [
+        "Legs coil like springs before a burst leap",
+        "Fused metatarsals act as rigid levers for ground push",
+        "Herds move in unison, exploiting each other's slipstreams"
+      ],
+      "journal": {
+        "en": "The prey burned their brains to save calories; now they run on instinct, a herd of legs and panic."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "analogues": [
+          {
+            "organism": "Macropodidae (red kangaroo, Macropus rufus)—elongated hindfoot, elastic Achilles/storage of strain energy in tendons; artiodactyl fused metapodials as rigid distal lever (cannon bone).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "biewener_2003_animal"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 9,
+          "designer": 9,
+          "physicist": 7
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist",
+          "physicist"
+        ]
+      }
+    },
+    {
+      "id": "at_saltatorial_prey.c2",
+      "trait": "Smaller cranial volume and fused manual digits",
+      "links": [
+        "The 'spark' of mind is energetically costly and irrelevant for fleeing herbivores",
+        "Qu-engineered synthetic proteins were pruned in fertile grasslands",
+        "Unused neural tissue generates excess heat and drains caloric intake",
+        "Caloric surplus diverted to digestive symbionts over cortical expansion"
+      ],
+      "roots": [
+        "F17",
+        "F18"
+      ],
+      "skill": {
+        "id": "at_saltatorial_prey.herd_instinct",
+        "name": {
+          "en": "Herd Instinct"
+        },
+        "role": "Passive",
+        "effect": "Herd movement reduces predator aggro range by 10% for adjacent allies.",
+        "numbers": {}
+      },
+      "weakness": "Cannot be taught tools or tricks; confused by non-patterned traps and isolated from the herd.",
+      "observe": [
+        "Eyes lack focused intent; gaze drifts randomly across the horizon",
+        "Cranial ridge recedes, leaving a blunt forehead",
+        "Calves nurse longer but grow faster than full-brained ancestors"
+      ],
+      "journal": {
+        "en": "Nothing is sacred in the evolutionary process; the mind is the first luxury shed when the grass is green."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "Fused digits read better as vestigial posthuman manual morphology under relaxed selection ( syndactyly/reduced ray count ) than as an active hop adaptation—tie explicitly to F17 brain-size selection and F18 grass nitrogen economics.",
+        "fixes": [
+          "Fused digits read better as vestigial posthuman manual morphology under relaxed selection ( syndactyly/reduced ray count ) than as an active hop adaptation—tie explicitly to F17 brain-size selection and F18 grass nitrogen economics."
+        ],
+        "analogues": [
+          {
+            "organism": "Domestication brain-size reduction (silver fox, Canidae selection experiment; reduced endocranial volume in domestic ungulates); \"expensive tissue\" trade-off between brain and gut.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "designer": 7,
+          "physicist": 9
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist",
+          "physicist"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "at_predators",
+      "kind": "predation",
+      "note": "Predators triangulate prey footfalls with independently rotating pinnae; prey counter with silent digitigrade leaping across prairie grasses.",
+      "via": "F9"
+    },
+    {
+      "with": "at_mantelopes",
+      "kind": "opposite",
+      "note": "Divergent neural retention; Mantelopes retain human encephalic volume at high metabolic cost, while prey prune neural tissue for faster grazing and survival.",
+      "via": "F17"
+    },
+    {
+      "with": "at_flyers",
+      "kind": "predation",
+      "note": "Aerial Flyers dive on prairie herds, selecting for Saltatorial Prey's high-speed leaping gait and vigilance.",
+      "via": "F21"
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-19",
+    "by": [
+      "naturalist",
+      "physicist"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-19",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-19"
+    }
+  ],
+  "lore_ref": {
+    "file": "lore/alltomorrows.en.json",
+    "id": "saltatorial-prey"
+  }
+}

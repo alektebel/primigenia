@@ -1,0 +1,174 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "at_spacers",
+  "name": {
+    "en": "Spacers"
+  },
+  "world": "at_gravital_space",
+  "kind": "easter_egg",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "Hollowed moon-sized asteroid arks at 30–100 AU, featuring a warm pressurized core, mid-tier agricultural rings, and a cryogenic rim under 1.2 bar N₂/O₂.",
+    "diet": "Closed-loop recycled biomass, fungal/algae cultures, and chemoautotrophic supplements filtered through engineered cell mats.",
+    "active": "Continuous; circadian rhythms dampened by artificial lighting and forced atmospheric circulation.",
+    "predators": [],
+    "prey": [
+      "Cultured plankton",
+      "Spore-balloons",
+      "Waste-recycling detritivores"
+    ]
+  },
+  "body": "Elongated, spindly limbs and reinforced joint valves prevent cephalad fluid pooling in microgravity, while a pressurized circulatory system maintains hemodynamic stability without hydrostatic gradients. Their modified cloacal vents expel dense atmospheric mass to generate three-dimensional thrust, turning the entire hollow asteroid into a navigable fluid.",
+  "chains": [
+    {
+      "id": "at_spacers.c1",
+      "trait": "Spindly, elongated limbs with reinforced joint valves",
+      "links": [
+        "Absence of compressive loading permits extreme skeletal elongation and low density",
+        "Microgravity eliminates hydrostatic gradients, causing cephalad fluid shift and upper-body congestion",
+        "Hollow moon-sized arks at 30–100 AU lack planetary mass to anchor biology"
+      ],
+      "roots": [
+        "F6",
+        "F15",
+        "F10"
+      ],
+      "skill": {
+        "id": "at_spacers.aerodynamic_drift",
+        "name": {
+          "en": "Aerodynamic Drift"
+        },
+        "role": "Control",
+        "effect": "Expels localized air pressure to reposition allies or enemies by 15 meters, creating temporary vacuum pockets that disrupt jet-based movement.",
+        "numbers": {}
+      },
+      "weakness": "Sudden atmospheric depressurization depletes thruster reaction mass, leaving them drifting and vulnerable for 2 turns.",
+      "observe": [
+        "See them floating effortlessly, limbs splayed like underwater dancers",
+        "Joint valves pulse rhythmically with recirculated hemolymph",
+        "Air jets shimmer in the still, forced-circulation atmosphere"
+      ],
+      "journal": {
+        "en": "They don't walk the void; they breathe it."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-19",
+        "summary": "Rename joint 'valves' to venous/lymphatic one-way check valves and dependent muscle pumps (human postural physiology, not hemolymph); treat Aerodynamic Drift as a brief pressure pulse or eddy in forced-circulation airflow, not literal vacuum pockets that would breach closed-loop O2 budgets (F8, F9).",
+        "fixes": [
+          "Rename joint 'valves' to venous/lymphatic one-way check valves and dependent muscle pumps (human postural physiology, not hemolymph); treat Aerodynamic Drift as a brief pressure pulse or eddy in forced-circulation airflow, not literal vacuum pockets that would breach closed-loop O2 budgets (F8, F9)."
+        ],
+        "analogues": [
+          {
+            "organism": "ISS crew osteopenia and disproportionate limb use in microgravity (mechanism: disuse atrophy, cephalad fluid shift); ostrich long legs show extreme elongation under loading but inverse logic applies when loading is absent.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 7,
+          "designer": 9,
+          "physicist": 9
+        }
+      }
+    },
+    {
+      "id": "at_spacers.c2",
+      "trait": "Jet-propelled cloacal vents with elongated limbs",
+      "links": [
+        "Modified sphincter expels atmospheric mass for 3D thrust",
+        "Newton's third law requires dense reaction medium for vector control",
+        "1.2 bar N₂/O₂ atmosphere provides optimal thrust density",
+        "Microgravity shell geometry eliminates compressive loading, permitting zero-inertia locomotion"
+      ],
+      "roots": [
+        "F9",
+        "F7",
+        "F6"
+      ],
+      "skill": {
+        "id": "at_spacers.atmospheric_burst",
+        "name": {
+          "en": "Atmospheric Burst"
+        },
+        "role": "Basic",
+        "effect": "Propels entity 8m in target direction, expelling 0.5 bar local pressure",
+        "numbers": {}
+      },
+      "weakness": "Rapid pressure depletion causes hypoxia and drift in adjacent arks",
+      "observe": [
+        "Flared cloacal sphincter",
+        "Vortex of expelled nitrogen",
+        "Weightless, pendular limb swing"
+      ],
+      "journal": {
+        "en": "They fly by coughing the sky."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-19",
+        "summary": "Keep thrust as short vectored bursts with immediate recharge via ark fans (F8); cap expelled volume so local ΔP stays under hypoxia threshold; locomotion is lore-given engineering plus selection for sphincter and pelvic-floor robustness, not a naturally evolved primary gait.",
+        "fixes": [
+          "Keep thrust as short vectored bursts with immediate recharge via ark fans (F8); cap expelled volume so local ΔP stays under hypoxia threshold; locomotion is lore-given engineering plus selection for sphincter and pelvic-floor robustness, not a naturally evolved primary gait."
+        ],
+        "analogues": [
+          {
+            "organism": "Cephalopod mantle jet propulsion (water as reaction mass); parallels are locomotor mode not homologous anatomy.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own"
+          }
+        ],
+        "scores": {
+          "astrobio": 7,
+          "designer": 8,
+          "physicist": 9
+        }
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "at_amphicephali",
+      "kind": "convergent",
+      "note": "Both stretch limbs and reinforce joints to dance through microgravity. Spacers jet; Amphicephali grip. Convergent elegance. -> Skill: 'Micro-g precision' (Engage)",
+      "via": "F6, F15"
+    },
+    {
+      "with": "at_asteromorphs",
+      "kind": "counter",
+      "note": "Spacers' jet-vent locomotion establishes foundational 3D vector thrust. Asteromorphs inherit and scale this into structural ark-building and sail-brain deployment, passing the skill across generations. -> Skill: 'Vector thrust inheritance' (Basic)",
+      "via": "F9, F6"
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-18"
+  },
+  "changelog": [
+    {
+      "date": "2026-11-19",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-18"
+    },
+    {
+      "date": "2026-11-18",
+      "who": "autoloop",
+      "what": "removed rejected references from analogues"
+    }
+  ],
+  "lore_ref": {
+    "file": "lore/alltomorrows.en.json",
+    "id": "spacers"
+  },
+  "temperament": "Detached and diasporic, they view planetary gravity as a biological trap and prefer the silent, boundless architecture of the void.",
+  "secrets": [
+    "Can temporarily seal cloacal vents to create localized pressure vacuums, disorienting pursuers or conserving oxygen during long transits."
+  ],
+  "moments": [
+    "Drifting through the warm core’s agricultural rings, they use precise air-jets to harvest floating spore-balloons, their elongated fingers brushing against forced-circulation fans that keep the atmosphere from stratifying."
+  ]
+}

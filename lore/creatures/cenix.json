@@ -1,0 +1,278 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "cenix",
+  "name": {
+    "en": "Ceníx"
+  },
+  "world": "silicon_cryo",
+  "kind": "new",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "Mid-stratosphere haze layer (photochemical smog)",
+    "diet": "Ionized photochemical byproducts + trace H₂",
+    "active": "Flare-activated (stochastic micro-flare windows)",
+    "predators": []
+  },
+  "body": "Balloon-like gas bladder, conductive nanowire fringes, lightning-rod proboscis, acoustic resonance chambers",
+  "chains": [
+    {
+      "id": "cenix.c1",
+      "trait": "Balloon-like gas bladder",
+      "links": [
+        "Provides passive buoyancy in dense cryo-atmosphere",
+        "1.15 bar pressure and low gravity allow float without propulsion",
+        "F8"
+      ],
+      "roots": [
+        "F8",
+        "F4"
+      ],
+      "skill": {
+        "id": "cenix.haze_float",
+        "name": {
+          "en": "Haze Float"
+        },
+        "role": "Passive",
+        "effect": "Ignores terrain drag, granting +20% evasion in open zones",
+        "numbers": {}
+      },
+      "weakness": "Vulnerable to sudden pressure drops or strong downdrafts",
+      "observe": [
+        "Oval, taut silhouette",
+        "Slow vertical drift",
+        "No visible propulsion"
+      ],
+      "journal": {
+        "en": "It walks on air, anchored by nothing but physics."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Bladder holds H₂-rich or CH₄/H₂ mix at near-ambient pressure with siloxane-impermeable lining; restrict habitat to dense haze where aerosol loading and weak solar heating reduce effective density; treat Haze Float as treading buoyant 'sick-out' layers, not open-sky independence from drag.",
+        "fixes": [
+          "Bladder holds H₂-rich or CH₄/H₂ mix at near-ambient pressure with siloxane-impermeable lining; restrict habitat to dense haze where aerosol loading and weak solar heating reduce effective density; treat Haze Float as treading buoyant 'sick-out' layers, not open-sky independence from drag."
+        ],
+        "analogues": [
+          {
+            "organism": "Portuguese man-o-war (Physalia) — gas-filled float; some spiders — electrostatic/ballooning (different physics); hydrogen-lift concepts in dense atmospheres (Titan exploration literature, engineering analogy).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "cenix.c2",
+      "trait": "Conductive nanowire fringes",
+      "links": [
+        "Captures transient ions from photolytic smog",
+        "Micro-flares ionize haze particles, creating electrochemical gradients",
+        "F3"
+      ],
+      "roots": [
+        "F3",
+        "F19"
+      ],
+      "skill": {
+        "id": "cenix.static_siphon",
+        "name": {
+          "en": "Static Siphon"
+        },
+        "role": "Engage",
+        "effect": "Drains 15% shield from targets during flare windows, converting to ally HP",
+        "numbers": {}
+      },
+      "weakness": "Ineffective in calm, un-ionized haze layers",
+      "observe": [
+        "Faint blue luminescence",
+        "Fronds vibrating to charge",
+        "Haze particles drawn inward"
+      ],
+      "journal": {
+        "en": "It drinks the storm before it breaks."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Mark highly speculative; limit Static Siphon to flare windows with pre-charged fringes; effect scales with local ion density, nil between flares.",
+        "fixes": [
+          "Mark highly speculative; limit Static Siphon to flare windows with pre-charged fringes; effect scales with local ion density, nil between flares."
+        ],
+        "analogues": [
+          {
+            "organism": "Sharks and skates (Ampullae of Lorenzini) — detect weak electric fields; electric eel (Electrophorus) — external current manipulation (warm, fast system; weak analogy at cryo rates).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "cenix.c3",
+      "trait": "Lightning-rod proboscis",
+      "links": [
+        "Channels collected ions to internal catalytic chambers",
+        "Redox metabolism requires trace oxidizers and H₂ at cryogenic temps",
+        "F15"
+      ],
+      "roots": [
+        "F15",
+        "F18"
+      ],
+      "skill": {
+        "id": "cenix.redox_lance",
+        "name": {
+          "en": "Redox Lance"
+        },
+        "role": "Poke",
+        "effect": "Fires a conductive pulse, dealing 12 shock damage and breaking stealth",
+        "numbers": {}
+      },
+      "weakness": "Loses charge quickly; requires recharging in ion-rich zones",
+      "observe": [
+        "Metallic sheen on snout",
+        "Arcing discharge on strike",
+        "Crackling ambient ozone"
+      ],
+      "journal": {
+        "en": "Its beak is a battery, and hunger is its spark."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Rebrand as microspark redox probe: deposits or strips electrons across siloxane coats, breaking 'stealth' via charge noise and local EM glint, not 12-point lightning damage.",
+        "fixes": [
+          "Rebrand as microspark redox probe: deposits or strips electrons across siloxane coats, breaking 'stealth' via charge noise and local EM glint, not 12-point lightning damage."
+        ],
+        "analogues": [
+          {
+            "organism": "Nematocyst discharge in cnidarians — single-use high-gradient poke; electric catfish (Malapterurus) — controlled discharge (warm-water).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "cenix.c4",
+      "trait": "Acoustic resonance chambers",
+      "links": [
+        "Emits low-frequency pulses for navigation in thick haze",
+        "Cold dense air favors low-frequency propagation over high frequencies",
+        "F9"
+      ],
+      "roots": [
+        "F9",
+        "F10"
+      ],
+      "skill": {
+        "id": "cenix.deep_hum",
+        "name": {
+          "en": "Deep Hum"
+        },
+        "role": "Control",
+        "effect": "Stuns enemies within 15m with resonant frequency for 1.5s",
+        "numbers": {}
+      },
+      "weakness": "Ineffective against heavily insulated or silent targets",
+      "observe": [
+        "Chamber throbbing",
+        "Vibration dust on surfaces",
+        "Slow, rhythmic pulsing"
+      ],
+      "journal": {
+        "en": "It speaks in rumbles only the cold understands."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "If targets use siloxane-linked mechanoreception, tune Deep Hum to 1–5 Hz band and brief disorientation rather than universal neuromuscular stun.",
+        "fixes": [
+          "If targets use siloxane-linked mechanoreception, tune Deep Hum to 1–5 Hz band and brief disorientation rather than universal neuromuscular stun."
+        ],
+        "analogues": [
+          {
+            "organism": "Elephants (Loxodonta) — infrasonic communication; oilbird (Steatornis) and some owls — low-frequency orientation in cave/fog-like obscurity.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-18",
+    "by": [
+      "naturalist/qwen"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-18",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-18"
+    },
+    {
+      "date": "2026-11-18",
+      "who": "import_got",
+      "what": "merged run autoloop-2026-11-18: 0 chain(s) added, 0 plausibility block(s) filled, 0 relation(s) added"
+    }
+  ],
+  "temperament": "Opportunistic, highly reactive, solitary but drawn to ion clusters",
+  "secrets": [
+    "Acoustic chambers double as pressure equalizers, allowing rapid vertical diving.",
+    "Conductive fronds store excess charge, causing spontaneous low-voltage arcs that deter predators."
+  ],
+  "moments": [
+    "A micro-flare strikes; the fog ignites with blue sparks. Ceníx ascends, fronds trembling, as the atmosphere itself becomes a meal."
+  ],
+  "journal": [
+    {
+      "en": "It lives where the air is thick enough to drown in, but thin enough to fly."
+    },
+    {
+      "en": "Hunger is a charge. Satiety is a calm."
+    }
+  ]
+}

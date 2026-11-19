@@ -1,0 +1,293 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "espinovent",
+  "name": {
+    "en": "Espinovent"
+  },
+  "world": "erid",
+  "kind": "new",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "Surface crust near episodic vent sites; subsurface burrows",
+    "diet": "Rapid assimilation of vent chemicals (NH3, H2S, metal nitrides)",
+    "active": "Quiescent for decades; blooms for hours during seismic/thermal events",
+    "predators": []
+  },
+  "body": "Crystalline silicate/nitride shell; spore-pod mechanism; vascularized radiators",
+  "chains": [
+    {
+      "id": "espinovent.c1",
+      "trait": "Crystalline nitride-carbide shell",
+      "links": [
+        "Shell precipitates rapidly from vent fluids",
+        "Reducing chemistry favors nitrides over oxides",
+        "Provides armor and mineral storage",
+        "Physical root: Reducing atmosphere and vent chemistry"
+      ],
+      "roots": [
+        "F11",
+        "F6"
+      ],
+      "skill": {
+        "id": "espinovent.silica_armor",
+        "name": {
+          "en": "Silica Armor"
+        },
+        "role": "Defence",
+        "effect": "Gains +50% armor for 8s when near heat sources; blocks elemental damage.",
+        "numbers": {}
+      },
+      "weakness": "Thermal shock cracks shell; sudden cooling causes explosive fragmentation.",
+      "observe": [
+        "Shell glows with metallic sheen",
+        "Cracks emit steam",
+        "Grows near vent deposits"
+      ],
+      "journal": {
+        "en": "It sleeps as stone until the world breathes fire."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Reducing vent fluids (F6, F11) can favor nitride/carbide precipitation over oxides; rapid biomineralization coats for dormancy resist abrasion and chemical attack during long quiescence. Full ‘crystalline armor’ grown directly from vent fluid in hours is highly speculative but analogous to fast diatom silica deposition scaled to heat pulses.",
+        "fixes": [
+          "Reducing vent fluids (F6, F11) can favor nitride/carbide precipitation over oxides; rapid biomineralization coats for dormancy resist abrasion and chemical attack during long quiescence. Full ‘crystalline armor’ grown directly from vent fluid in hours is highly speculative but analogous to fast diatom silica deposition scaled to heat pulses."
+        ],
+        "analogues": [
+          {
+            "organism": "Diatom silica frustules; vent tubeworm (Riftia) chitin tube with sulfide mineral incrustation",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "espinovent.c2",
+      "trait": "Spore-pod burst mechanism",
+      "links": [
+        "Expels clouds of crystalline spores",
+        "Disperses via seismic vibration and pressure",
+        "Colonizes new vent sites quickly",
+        "Physical root: Episodic mantle plume tectonics"
+      ],
+      "roots": [
+        "F4",
+        "F3"
+      ],
+      "skill": {
+        "id": "espinovent.spore_burst",
+        "name": {
+          "en": "Spore Burst"
+        },
+        "role": "Basic",
+        "effect": "AoE burst deals 15 damage and applies 'Metallic Dust' (reduces enemy armor by 20% for 5s).",
+        "numbers": {}
+      },
+      "weakness": "Wind shear disperses spores; silence/pressure dampening prevents trigger.",
+      "observe": [
+        "Shell swells with pressure",
+        "Vibrates intensely before bloom",
+        "Spores cling to surfaces"
+      ],
+      "journal": {
+        "en": "A flower that blooms only in death."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Emphasize spores as adhesive, dense-aerosol-settling propagules colonizing vent fractures within tens of meters, not wind-borne long-distance plumes.",
+        "fixes": [
+          "Emphasize spores as adhesive, dense-aerosol-settling propagules colonizing vent fractures within tens of meters, not wind-borne long-distance plumes."
+        ],
+        "analogues": [
+          {
+            "organism": "Explosive seed dispersal in Hura crepitans (sandbox tree); puffball fungi pulsed spore clouds on impact",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "espinovent.c3",
+      "trait": "Rapid ammonia-assimilation pathways",
+      "links": [
+        "Metabolism converts NH3 directly to biomass",
+        "Avoids oxidative fixation costs",
+        "Exploits high ammonia abundance",
+        "Physical root: Reducing atmosphere and biochemistry"
+      ],
+      "roots": [
+        "F18",
+        "F6"
+      ],
+      "skill": {
+        "id": "espinovent.vent_fuel",
+        "name": {
+          "en": "Vent Fuel"
+        },
+        "role": "Basic",
+        "effect": "Heals 20 HP and gains +3 damage for 4s when attacking near heat sources.",
+        "numbers": {}
+      },
+      "weakness": "Oxygen exposure is toxic; aerobic weapons cause rapid decay.",
+      "observe": [
+        "Sac pulses with ammonia vapor",
+        "Moves faster near vents",
+        "Exhales white mist"
+      ],
+      "journal": {
+        "en": "It drinks the poison and grows strong."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Direct NH₃ incorporation (F18) under reducing conditions avoids oxidative nitrogen fixation cost; bloom-phase growth on vent NH₃, H₂S, and metal-ion substrates is a credible chemosynthetic/heterotrophic surge metabolism.",
+        "fixes": [
+          "Direct NH₃ incorporation (F18) under reducing conditions avoids oxidative nitrogen fixation cost; bloom-phase growth on vent NH₃, H₂S, and metal-ion substrates is a credible chemosynthetic/heterotrophic surge metabolism."
+        ],
+        "analogues": [
+          {
+            "organism": "Ammonia-oxidizing and urease-heavy microbes in anoxic nitrogen-rich systems; carnivorous plants’ rapid shoot growth on pulse nutrients",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "espinovent.c4",
+      "trait": "Seismic trigger for blooming",
+      "links": [
+        "Blooms in response to ground vibration",
+        "Mantle plumes cause seismic shifts",
+        "Synchronizes life cycle with geology",
+        "Physical root: Stagnant-lid tectonics and plume activity"
+      ],
+      "roots": [
+        "F4",
+        "F3"
+      ],
+      "skill": {
+        "id": "espinovent.seismic_wake",
+        "name": {
+          "en": "Seismic Wake"
+        },
+        "role": "Signature",
+        "effect": "Summons a wave that stuns all enemies in 10m; Espinovent gains full stats and regeneration for 6s.",
+        "numbers": {}
+      },
+      "weakness": "Requires ground contact; floating/magnetic levitation negates trigger.",
+      "observe": [
+        "Shell locks when ground shakes",
+        "Awaits seismic cues",
+        "Explodes only on vibration"
+      ],
+      "journal": {
+        "en": "The mountain wakes, and the glass remembers."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Require combined cue: seismic energy plus vent chemothermal pulse; quiescence ends when local heat and NH₃ flux drop, not merely when shaking stops.",
+        "fixes": [
+          "Require combined cue: seismic energy plus vent chemothermal pulse; quiescence ends when local heat and NH₃ flux drop, not merely when shaking stops."
+        ],
+        "analogues": [
+          {
+            "organism": "Post-fire flowering in some Brassica relatives; fairy ring fungi fruiting after rainfall pulses—environmental trigger synchronization",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "Eridian Crawler",
+      "kind": "cousin",
+      "note": "(council kind 'Resource Competition') Espinovent blooms clog vents; Eridians must blast them away to access metal-rich ores."
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-18",
+    "by": [
+      "naturalist/qwen"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-18",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-18"
+    },
+    {
+      "date": "2026-11-18",
+      "who": "autoloop",
+      "what": "removed rejected references from analogues"
+    }
+  ],
+  "temperament": "Aggressive blooming; returns to inert stone after energy depletion",
+  "secrets": [
+    "Espinovent spores can be stabilized into powerful explosive charges.",
+    "Quiescent shells can be harvested as high-grade building material; living shells grant pressure immunity."
+  ],
+  "moments": [
+    "The ground hums; the Espinovent shell fractures, releasing a cloud of sparkling nitride dust that coats everything in a deadly, beautiful shimmer before it crumbles back to stone."
+  ],
+  "journal": [
+    {
+      "en": "Patience is the weapon of the stone."
+    },
+    {
+      "en": "When the world shakes, the glass remembers how to bite."
+    }
+  ]
+}

@@ -1,0 +1,176 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "at_temptors",
+  "name": {
+    "en": "Temptors"
+  },
+  "world": "at_garden_prairies",
+  "kind": "easter_egg",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "to be written",
+    "diet": "to be written",
+    "active": "to be written",
+    "predators": []
+  },
+  "body": "to be written",
+  "chains": [
+    {
+      "id": "at_temptors.c1",
+      "trait": "Rooted female cones & pheromone-driven male drones",
+      "links": [
+        "Anchor in fungal-cemented soil and centralize reproduction -> biogenic mound topography where calcareous groundwater fuses with hyphae -> dense humid air efficiently transports volatile chemical signals -> 1.1 bar pressure and stable temperature inversions minimize attenuation"
+      ],
+      "roots": [
+        "F7",
+        "F10",
+        "F12"
+      ],
+      "skill": {
+        "id": "at_temptors.mound_command",
+        "name": {
+          "en": "Mound Command"
+        },
+        "role": "Control",
+        "effect": "Releases pheromone cloud, directing nearby male Temptors to gather resources or defend for 3 turns.",
+        "numbers": {}
+      },
+      "weakness": "Sessile females cannot flee; ground-penetrating attacks bypass their pheromone shields.",
+      "observe": [
+        "Beaked, cone-shaped females fused to fungal mounds",
+        "Male foragers moving with stiff, obedient posture",
+        "Pulsating pit-like mating structures emitting faint vapor"
+      ],
+      "journal": {
+        "en": "A forest that thinks with one head, and moves with many."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "Model sessile females as rooted pelvis/hyphal cement in F12 mounds with obligate male provisioning; pheromone command range scales with humidity and inversion, not unlimited.",
+        "fixes": [
+          "Model sessile females as rooted pelvis/hyphal cement in F12 mounds with obligate male provisioning; pheromone command range scales with humidity and inversion, not unlimited."
+        ],
+        "analogues": [
+          {
+            "organism": "Deep-sea anglerfish (extreme dimorphism); ant/bees (queen pheromone regulation of workers)",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "designer": 9,
+          "physicist": 7
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist",
+          "physicist"
+        ]
+      }
+    },
+    {
+      "id": "at_temptors.c2",
+      "trait": "Olfactory pits & stiff bipedal gait",
+      "links": [
+        "Pheromone tracking across mound forests -> dense air + temp inversions carry low-frequency chemical gradients -> 15°C surface temp stabilizes volatile diffusion rates -> male sensory organs shift to narrow-band olfactory detection"
+      ],
+      "roots": [
+        "F7",
+        "F10",
+        "F25"
+      ],
+      "skill": {
+        "id": "at_temptors.scent_track",
+        "name": {
+          "en": "Scent-Track"
+        },
+        "role": "Basic",
+        "effect": "+30% movement speed when following pheromone trails; reveals hidden male drones.",
+        "numbers": {}
+      },
+      "weakness": "Easily confused by synthetic chemicals or strong winds.",
+      "observe": [
+        "Deep nasal slits along the muzzle",
+        "Rigid, upright walking posture",
+        "Twitching antennae-like sensory hairs"
+      ],
+      "journal": {
+        "en": "They navigate by breath, not by sight."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "Use volatile concentration gradients (not 'low-frequency chemical'); stiff gait = display/neuromotor drone phenotype; scent confusion in wind stays.",
+        "fixes": [
+          "Use volatile concentration gradients (not 'low-frequency chemical'); stiff gait = display/neuromotor drone phenotype; scent confusion in wind stays."
+        ],
+        "analogues": [
+          {
+            "organism": "Bombyx mori male (long-range pheromone tracking); leafcutter ant workers (trail following)",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "sukumar_2002_olfactory"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 7,
+          "designer": 8,
+          "physicist": 8
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "council"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "at_insectophagi",
+      "kind": "symbiosis",
+      "note": "Temptor mound forests stabilize microclimates that sustain insect swarms; Insectophagi harvest these colonies, inadvertently aerating soil for Temptor root networks.",
+      "via": "F10"
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-19",
+    "by": [
+      "council",
+      "naturalist",
+      "physicist"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-19",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-19"
+    },
+    {
+      "date": "2026-11-19",
+      "who": "autoloop",
+      "what": "removed rejected references from analogues"
+    }
+  ],
+  "lore_ref": {
+    "file": "lore/alltomorrows.en.json",
+    "id": "temptors"
+  }
+}

@@ -1,0 +1,260 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "pronghorn",
+  "name": {
+    "en": "Pronghorn"
+  },
+  "world": "earth",
+  "kind": "native",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "to be written",
+    "diet": "to be written",
+    "active": "to be written",
+    "predators": []
+  },
+  "body": "to be written",
+  "chains": [
+    {
+      "id": "pronghorn.c1",
+      "trait": "Oversized heart and lungs",
+      "links": [
+        "The thorax houses a heart roughly twice the mass allometry predicts, paired with massive alveolar surface area and high capillary density that shrink oxygen diffusion distance.",
+        "High myoglobin stores buffer oxygen in muscle, letting the animal hold a VO₂ max several times that of a similar mammal without accumulating lactate.",
+        "On the open grasslands where cover is absent, endurance beats sprint: a larger engine sustains minutes of flight rather than seconds of acceleration.",
+        "This matches the F29 template for open-habitat cursorial survival, though rival hypotheses cite leg length or thermoregulation."
+      ],
+      "roots": [
+        "F29"
+      ],
+      "skill": {
+        "id": "pronghorn.sustained_flight",
+        "name": {
+          "en": "Sustained Flight"
+        },
+        "role": "Engage",
+        "effect": "hold 60 km/h for three minutes across open ground, ignoring rough-terrain penalties and outlasting any pursuer that relies on anaerobic bursts",
+        "numbers": {}
+      },
+      "weakness": "it is built to run past obstacles, not over them: it will not jump a fence and instead crawls underneath, so a fenceline corners it",
+      "observe": [
+        "a chase that lasts minutes while the predator gives up in seconds",
+        "a barrel chest on legs that look too thin for it",
+        "hair snagged under the bottom wire of a fence, never over the top"
+      ],
+      "journal": {
+        "en": "It runs from a predator that has been extinct for ten thousand years."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "analogues": [
+          {
+            "organism": "Antilocapra americana — elite aerobic capacity and sustained running (Lindstedt et al.); selection context: open plains + historic cursorial predation (Byers 'ghosts of predators past')",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "lindstedt_1991_running",
+              "byers_1997_american"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 10,
+          "designer": 9,
+          "physicist": 6,
+          "skeptic": 7
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "F",
+          "3",
+          "1"
+        ]
+      }
+    },
+    {
+      "id": "pronghorn.c2",
+      "trait": "Dense winter pelage with medullated guard hairs",
+      "links": [
+        "Thick guard hairs pack densely to trap a still-air boundary layer against the skin, where thermal resistance R scales with thickness d and low conductivity k.",
+        "On the exposed continental interior, wind strips that boundary layer, so survival depends on maintaining R against convective heat loss rather than relying on hollow lumens.",
+        "F4’s axial tilt drives the annual solar swing, while inferred continental wind patterns demand a coat that can be shed when the sun returns.",
+        "The moult leaves patchy bare skin in spring, turning winter insulation into a heat trap before the new undercoat fully forms."
+      ],
+      "roots": [
+        "F4",
+        "F29"
+      ],
+      "skill": {
+        "id": "pronghorn.winter_coat",
+        "name": {
+          "en": "Winter Coat"
+        },
+        "role": "Passive",
+        "effect": "no cold penalty down to -45 °C wind chill and full stamina regeneration while bedded in snow; a distinct blue-ice Overheat meter fills twice as fast under summer sun, forcing shade or water before it tops out",
+        "numbers": {}
+      },
+      "weakness": "between the spring moult and the new coat the fur is patchy, bare skin burns and the Overheat meter runs hot: corner it in open sun at midday, or pen it behind a fence it will not jump, and the winter-proof coat becomes a summer trap",
+      "observe": [
+        "a shed guard hair snapped in two showing a fibrous core rather than a hollow tube",
+        "it stands rump to the wind while everything else faces away",
+        "in late spring the coat lifts in patchy tufts with pink bare skin showing"
+      ],
+      "journal": {
+        "en": "A desert coat worn in a blizzard, and a blizzard coat worn in the sun."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Tie -45 °C wind-chill survival to calm-to-moderate wind unless 'bedded in snow' explicitly adds microclimate; pronghorn still suffer extreme exposure during blizzards.",
+        "fixes": [
+          "Tie -45 °C wind-chill survival to calm-to-moderate wind unless 'bedded in snow' explicitly adds microclimate; pronghorn still suffer extreme exposure during blizzards."
+        ],
+        "analogues": [
+          {
+            "organism": "Pronghorn hollow guard hairs; convergent hollow/filament insulation in caribou (Rangifer) and muskox (Ovibos)",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "blix_2016_adaptations",
+              "byers_1997_american"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 9,
+          "designer": 9,
+          "physicist": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "F",
+          "3",
+          "1"
+        ]
+      }
+    },
+    {
+      "id": "pronghorn.c3",
+      "trait": "Laterally placed orbits with wide interorbital spacing",
+      "links": [
+        "The orbits sit high and far back on the skull, maximizing horizontal field of view to roughly 320° while compressing binocular overlap to a narrow wedge of about 32°.",
+        "This optical geometry sacrifices stereoscopic depth perception for early motion detection at the visual periphery.",
+        "On the treeless plains of F29, cover is absent, so spotting a moving stalker long before shape resolution dictates survival.",
+        "The trade-off leaves a blind sector directly behind and poor close-range depth judgment, forcing the animal to rely on herd vigilance and early flight."
+      ],
+      "roots": [
+        "F29"
+      ],
+      "skill": {
+        "id": "pronghorn.horizon_watch",
+        "name": {
+          "en": "Horizon Watch"
+        },
+        "role": "Control",
+        "effect": "spots a moving concealed creature at 500 m and grants the party +2 initiative; also reveals a hidden creature's position one turn early, but detection drops to 250 m in scrub",
+        "numbers": {}
+      },
+      "weakness": "the eyes trade binocular overlap for width: it is poor at judging close range and blind in a wedge directly behind, so a stalker that gets inside 40 m from downwind is invisible to it",
+      "observe": [
+        "eyes on the flanks of the head with almost no forward overlap",
+        "a head that lifts from grazing every few seconds, always the same direction",
+        "a sharp snort given at something you cannot see yet"
+      ],
+      "journal": {
+        "en": "It watches the horizon so hard it forgets to watch its feet."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "800 m 'concealed ambusher' is generous for cryptic stalker in tall grass; reserve 800 m for obvious motion on open plain; scrub halve detection. Binocular overlap ~32° (ungulate typ.) supports close-range depth weakness.",
+        "fixes": [
+          "800 m 'concealed ambusher' is generous for cryptic stalker in tall grass; reserve 800 m for obvious motion on open plain; scrub halve detection. Binocular overlap ~32° (ungulate typ.) supports close-range depth weakness."
+        ],
+        "analogues": [
+          {
+            "organism": "Pronghorn — lateral orbits, ~300°+ visual field, distance vision on open shortgrass steppe (ungulate anti-ambush template)",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "byers_1997_american"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "designer": 9,
+          "physicist": 7,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "F",
+          "3",
+          "1"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "humans",
+      "kind": "convergent",
+      "note": "Both track the same open-habitat pressure. Cenozoic cooling expanded grasslands, selecting for endurance over burst speed. Humans trade agility for striding and sweating; pronghorn trade maneuverability for massive cardio and panoramic vision. Playable: players can use human heat-dissipation to outlast pronghorn in summer, or follow pronghorn migration routes to find water.",
+      "via": "F29"
+    },
+    {
+      "with": "common_raven",
+      "kind": "symbiosis",
+      "note": "Grassland mutualism. Ravens follow herds to eat ticks and disturbed insects; pronghorn gain early warning against terrestrial predators. Playable: befriending ravens grants a 'sentinel' alert when pronghorn herds shift direction, revealing hidden water or predators.",
+      "via": "F29"
+    },
+    {
+      "with": "humans",
+      "kind": "predation",
+      "note": "Historical hunting pressure. Humans tracked pronghorn across Pleistocene-Holocene steppe corridors, using endurance and fire to exhaust them; pronghorn rely on speed and terrain to escape. Playable: players can use human pursuit tactics to corner pronghorn, or preserve migration routes to unlock stamina bonuses.",
+      "via": "F29"
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-18",
+    "by": [
+      "1",
+      "3",
+      "F"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-18",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-18"
+    },
+    {
+      "date": "2026-11-18",
+      "who": "autoloop",
+      "what": "removed rejected references from analogues"
+    }
+  ]
+}

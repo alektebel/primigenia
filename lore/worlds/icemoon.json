@@ -1,0 +1,588 @@
+{
+  "schema": "cpore.world/1",
+  "id": "icemoon",
+  "kind": "fictional",
+  "system": {
+    "star": "K2V dwarf (0.82 M☉, 0.30 L☉, 4,900 K); Vess (2.1 M_Jup, 1.3 R_Jup) orbits the star at 3.2 AU; the moon Ardent orbits Vess at 860,000 km in 3.55 days",
+    "position": "fictional",
+    "distance_ly_from_sol": null
+  },
+  "name": {
+    "en": "Ardent",
+    "es": "Ardent"
+  },
+  "status": "draft",
+  "facts": [
+    {
+      "id": "F1",
+      "group": "star",
+      "claim": "The host star is a quiet K2V dwarf of 0.82 solar masses, 0.30 solar luminosities and 4,900 K, with weak UV and a flare budget a few percent of a young M dwarf's.",
+      "justification": "Stars of this mass spin down and brake magnetically within a few hundred million years, and activity-rotation surveys show late-K dwarfs saturate at far lower X-ray and flare levels than young M dwarfs, so the ice shell is not sterilised from above by the star.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "K2V",
+      "consequences": [
+        "No UV-repair lifestyle evolves",
+        "The star is scenery; tides and the planet set every rhythm",
+        "Surface sterility, where it occurs, comes from Vess's belts rather than the star"
+      ],
+      "refs": [
+        "pizzolato_2003_activity",
+        "mamajek_hillenbrand_2008"
+      ]
+    },
+    {
+      "id": "F2",
+      "group": "orbit",
+      "claim": "Ardent orbits Vess, a 2.1-Jupiter-mass gas giant, at 860,000 km in 3.55 days with an eccentricity of 0.009, held open by a 2:1 resonance with an outer sibling moon of about 0.012 Jupiter masses at 1.37 million km (7.1-day period).",
+      "justification": "Kepler's third law with μ = 2.1 M_Jup gives 3.55 days at 8.6×10^5 km; the earlier 750,000 km figure would have given 2.9 days. Resonant forcing keeps e from damping, which is what keeps tidal heating alive.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 3.55,
+      "unit": "days",
+      "consequences": [
+        "The orbit, not the star, is the furnace",
+        "Tidal flexure is continuous and predictable",
+        "The sibling moon is a gravitational metronome and eclipse partner"
+      ],
+      "refs": [
+        "peale_1979_io",
+        "murray_dermott_1999"
+      ]
+    },
+    {
+      "id": "F3",
+      "group": "orbit",
+      "claim": "Tidal dissipation in Ardent is a few terawatts (1-5 TW), the same uncertain order as Europa's, and sustains a global liquid ocean rather than fixing its depth.",
+      "justification": "Viscoelastic flexure of an eccentric icy moon converts orbital energy into heat; published icy-moon heat budgets differ by an order of magnitude, so the range is deliberate. Heat in does not by itself determine ocean thickness, which is a separate melt-freeze balance.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "1-5",
+      "unit": "TW",
+      "consequences": [
+        "The ocean's existence is robust; its thickness is not",
+        "Melt-freeze balance with the ice shell stays speculative",
+        "No stellar seasonality drives the heat engine"
+      ],
+      "refs": [
+        "peale_1979_io",
+        "moore_schubert_2000"
+      ]
+    },
+    {
+      "id": "F4",
+      "group": "sky",
+      "claim": "Ardent is tidally locked to Vess, so its day equals its 3.55-day (85.2 h) orbit, and every orbit it crosses Vess's shadow for about 2.9 h, since the planet's 1.3-R_Jup disk spans roughly 12 degrees of sky.",
+      "justification": "Synchronous rotation is the tide-damped state for a close satellite; with a = 860,000 km the orbital speed is ~63,400 km/h and the umbra crossing takes 2R_Vess/v ≈ 2.9 h, consistent with the fixed a and R_Vess.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 2.9,
+      "unit": "hours",
+      "consequences": [
+        "A predictable 85-hour light-and-thermal cycle",
+        "Eclipses briefly cool the sub-Vess hemisphere",
+        "The planet fills the sky as a permanent landmark"
+      ],
+      "refs": [
+        "murray_dermott_1999"
+      ]
+    },
+    {
+      "id": "F5",
+      "group": "planet",
+      "claim": "Ardent is 1,560 km in radius with a bulk density of 3.0 g/cm³ and surface gravity 1.31 m/s², a differentiated rock-ice body of Europa's class.",
+      "justification": "Mass and radius from flyby-style measurements, with a rock core and an ice-plus-water envelope, reproduce the density; the derived surface gravity follows directly.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 3.0,
+      "unit": "g/cm³",
+      "consequences": [
+        "Weak gravity means tall, fragile structures and poor sediment compaction",
+        "A rock core large enough for serpentinisation",
+        "Only a tenuous exosphere can be retained"
+      ],
+      "refs": [
+        "anderson_1998_europa",
+        "carr_1998_europa"
+      ]
+    },
+    {
+      "id": "F6",
+      "group": "orbit",
+      "claim": "Ardent's obliquity is effectively zero: it sits in a Cassini state where tidal and rotational torques damp any tilt, so there are no obliquity seasons.",
+      "justification": "A satellite locked in a Cassini state has its spin axis trapped near the orbit normal; dissipation removes residual tilt on short timescales.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 0,
+      "unit": "degrees",
+      "consequences": [
+        "No obliquity seasons anywhere",
+        "Polar caps are permanent, not seasonal",
+        "Latitudinal gradients come from the star and the shell, not from tilt"
+      ],
+      "refs": [
+        "peale_1979_io",
+        "murray_dermott_1999"
+      ]
+    },
+    {
+      "id": "F7",
+      "group": "geology",
+      "claim": "The ice shell is about 8 km thick at the poles and 30 km at the equator — a highly speculative tidal-stress pattern — and beneath it a global ocean covers the rock.",
+      "justification": "A global ocean is well supported by magnetic induction and surface geology; the pole-to-equator thinning is an extrapolation from tidal-stress models and must be labelled a hypothesis, not a measurement.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "8-30",
+      "unit": "km",
+      "consequences": [
+        "The thin polar lid lets slightly more radiolysis energy reach the polar ocean roof",
+        "Equatorial upwelling or downwelling depends on the unproven thickness pattern",
+        "A polar breach would be the first place surface chemistry meets the ocean"
+      ],
+      "refs": [
+        "carr_1998_europa",
+        "kivelson_2000_europa",
+        "moore_schubert_2000"
+      ]
+    },
+    {
+      "id": "F8",
+      "group": "atmosphere",
+      "claim": "Vess's field of 100-1,000 nT induces roughly 100 nT in Ardent's conducting ocean, the signature that the ocean is global and salty.",
+      "justification": "A conducting shell in a rotating planetary field produces an induced dipole, exactly the effect Galileo measured at Europa.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 100,
+      "unit": "nT",
+      "consequences": [
+        "Ocean continuity and salinity are measurable from orbit",
+        "Magnetic compasses work underwater",
+        "The field gives animals a navigation cue"
+      ],
+      "refs": [
+        "kivelson_2000_europa"
+      ]
+    },
+    {
+      "id": "F9",
+      "group": "atmosphere",
+      "claim": "Ardent holds a thin O₂/H₂O exosphere at about 10^-12 bar, produced by radiolysis and sputtering of surface ice.",
+      "justification": "Irradiated water ice releases O₂ and water vapour; Europa's observed oxygen atmosphere is the direct analogue.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "1e-12",
+      "unit": "bar",
+      "consequences": [
+        "Atmospheric pressure is irrelevant to life; the ocean is the habitat",
+        "Sputtered water feeds a neutral torus around Vess",
+        "Surface chemistry is oxidising before anything reaches the ocean"
+      ],
+      "refs": [
+        "hall_1995_oxygen"
+      ]
+    },
+    {
+      "id": "F10",
+      "group": "atmosphere",
+      "claim": "Surface irradiation delivers of order 5 Sv/day (several Gy/day) in the first few metres of ice, varying with hemisphere and latitude and dominated by magnetospheric particles, not starlight.",
+      "justification": "Europa-class surfaces receive kGy/day-order doses; the figure is an order-of-magnitude average, highest where co-rotating plasma sweeps into the surface, and ions are stopped within metres while electrons are stopped sooner.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 5,
+      "unit": "Sv/day",
+      "consequences": [
+        "The top few metres are a sterile, oxidising rind",
+        "A few metres of ice is a genuine radiation shield",
+        "Oxidant delivery to the ocean depends on shell mixing"
+      ],
+      "refs": [
+        "cooper_2001_irradiation",
+        "hand_2007_europa"
+      ]
+    },
+    {
+      "id": "F11",
+      "group": "ocean",
+      "claim": "Sound travels at 1,480-1,520 m/s in the ocean and 3,500-3,900 m/s in the ice, so hearing works well locally, while 'tens of kilometres' of acoustic range is speculative without an attenuation model.",
+      "justification": "These are standard seawater and ice sound speeds; long-range propagation depends on frequency, salinity gradients and scattering, which are not modelled here.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "1.5",
+      "unit": "km/s",
+      "consequences": [
+        "Calling and echolocation are near-field senses",
+        "The ice-water interface is a strong acoustic mirror",
+        "Long-range signalling needs low frequencies and large bodies"
+      ],
+      "refs": [
+        "jensen_2011_ocean_acoustics"
+      ]
+    },
+    {
+      "id": "F12",
+      "group": "climate",
+      "claim": "Photosynthetic flux at the ocean roof is essentially zero under 8-30 km of ice, so no photosynthesis and no plant-like primary production exist in the ocean.",
+      "justification": "Ice attenuates light by orders of magnitude per metre; at kilometre depths the photon flux is nil regardless of the polar thinning, so the ecosystem cannot be light-fed.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 0,
+      "consequences": [
+        "All primary production is chemotrophic",
+        "Eyes, where they exist, evolved for bioluminescence and vent glow",
+        "Surface oxidants are the only sunlight-derived gift"
+      ],
+      "refs": [
+        "hand_2007_europa"
+      ]
+    },
+    {
+      "id": "F13",
+      "group": "ocean",
+      "claim": "Pressure at the ocean floor is about 1.4 kbar: 1.18 kbar from 90 km of water plus 0.1-0.35 kbar of ice, with roughly ±10% uncertainty from brine density and shell thickness.",
+      "justification": "Hydrostatic pressure ρgh with g = 1.31 m/s² gives 1.18 kbar for the water column; adding the ice lid and correcting for brine density (which scales with salinity and temperature) gives the stated range.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 1400,
+      "unit": "bar",
+      "consequences": [
+        "Pressure stabilises clathrates and forbids boiling",
+        "Gas-filled cavities are impossible except inside conduits",
+        "Proteins must be piezotolerant, though most terrestrial enzymes still function"
+      ],
+      "refs": [
+        "wagner_pruss_2002"
+      ]
+    },
+    {
+      "id": "F14",
+      "group": "ocean",
+      "claim": "At 1.4 kbar and a 271 K roof, water is far above its saturation pressure and below its critical pressure of 220 bar, so the ocean has no vapour cavities; only dissolved gases and exsolved CO₂/N₂ in conduits can form bubbles.",
+      "justification": "The vapour phase cannot exist when ambient pressure greatly exceeds the saturation pressure at 271 K; the critical pressure fixes the ceiling for any liquid-vapour coexistence.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 220,
+      "unit": "bar",
+      "consequences": [
+        "No steam explosions; vent fluids quench by mixing",
+        "Bubbles are rare and buoyancy-poor, so they are poor lift devices",
+        "Cavitation is the only routine bubble source"
+      ],
+      "refs": [
+        "wagner_pruss_2002"
+      ]
+    },
+    {
+      "id": "F15",
+      "group": "geology",
+      "claim": "High-temperature vent conduits reach 400-420 K, well above bulk serpentinisation fluids, the ocean roof sits at 271 K, and bulk salinities run 40-80 g/kg of MgSO₄-type brine.",
+      "justification": "Rock- and heat-driven conduits can exceed the ~90-150 °C of serpentinisation alone, so vent types are mixed; the salt range follows Enceladus-style salt-rich ice grain chemistry.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "400-420",
+      "unit": "K",
+      "consequences": [
+        "A ~130 K gradient across a few hundred metres",
+        "Thermophile niches exist only near conduits",
+        "Brine chemistry sets osmotic stress for all life"
+      ],
+      "refs": [
+        "kelley_2005_lostcity",
+        "postberg_2009_salts",
+        "mccollom_bach_2009"
+      ]
+    },
+    {
+      "id": "F16",
+      "group": "ocean",
+      "claim": "A halocline separates fresher buoyant melt water at the ice roof from denser brine below, and mixing across it is slow compared with biological timescales.",
+      "justification": "Fresher melt over saltier ocean is model-contested for Europa, but density stratification follows from melt delivery and salt rejection, and slow macroscopic mixing keeps the interface sharp.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "consequences": [
+        "A two-storey ocean with different chemistry",
+        "The interface concentrates life like a thermocline",
+        "Vertical migration is costly and slow"
+      ],
+      "refs": [
+        "zolotov_shock_2001_salts",
+        "carr_1998_europa"
+      ]
+    },
+    {
+      "id": "F17",
+      "group": "geology",
+      "claim": "Brine veins persist inside the ice down to about 250 K, the terrestrial sea-ice analogue, and can host microbes but not macrofauna.",
+      "justification": "Freezing sea ice retains interconnected brine channels down to eutectic temperatures; vein diameters and connectivities are far too small for large animals.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 250,
+      "unit": "K",
+      "consequences": [
+        "Life can inhabit the ice, not only the ocean",
+        "Vein communities are isolated pockets",
+        "Macrobes inside veins are physically implausible"
+      ]
+    },
+    {
+      "id": "F18",
+      "group": "planet",
+      "claim": "Escape velocity is 2.0 km/s, roughly ten times Enceladus's, so plume material falls back and the moon keeps its ocean and its chemistry.",
+      "justification": "sqrt(2gR) with g = 1.31 m/s² and R = 1,560 km gives 2.0 km/s; at that speed only rare impact ejecta escape.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 2.0,
+      "unit": "km/s",
+      "consequences": [
+        "No Enceladus-style continuous mass loss",
+        "Vented organics return to the surface",
+        "Material from Vess can still arrive by impact"
+      ],
+      "refs": [
+        "anderson_1998_europa"
+      ]
+    },
+    {
+      "id": "F19",
+      "group": "chemistry",
+      "claim": "Serpentinisation of the rock core releases H₂ and raises pH, producing a bulk ocean at pH ~6 against pH 9-11 at vents, an alkaline-acidic disequilibrium.",
+      "justification": "Olivine alteration generates H₂ and hydroxide; the resulting vent fluids are alkaline like Lost City, while the bulk ocean is buffered toward mildly acidic carbonate equilibria.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "6 vs 9-11",
+      "unit": "pH",
+      "consequences": [
+        "A proton gradient at vents is free energy",
+        "Carbonate chemistry buffers the bulk ocean",
+        "Vent chimneys precipitate carbonate"
+      ],
+      "refs": [
+        "mccollom_bach_2009",
+        "kelley_2005_lostcity",
+        "martin_russell_2007"
+      ]
+    },
+    {
+      "id": "F20",
+      "group": "chemistry",
+      "claim": "H₂ from serpentinisation plus dissolved CO₂ yields methane and acetate exergonically at 271 K, the metabolic base of the ecosystem.",
+      "justification": "Thermodynamic calculations show methanogenesis and acetogenesis are strongly favoured from H₂ and CO₂ under hydrothermal conditions, even at low temperature.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "CH4/acetate",
+      "consequences": [
+        "Methanogenesis and acetogenesis are the primary metabolisms",
+        "No light or O₂ is required",
+        "H₂ supply, not CO₂, limits production"
+      ],
+      "refs": [
+        "mccollom_bach_2009",
+        "martin_russell_2007"
+      ]
+    },
+    {
+      "id": "F21",
+      "group": "chemistry",
+      "claim": "At Vess's 3.2 AU, stellar UV is negligible beside magnetospheric radiolysis; because the polar lid is only 8 km, the polar ocean roof receives slightly more radiation and oxidant delivery than the 30 km equatorial lid.",
+      "justification": "Starlight at 3.2 AU is ~40 W/m², so surface chemistry is driven by trapped particles; the thinner lid is not transparent but does deposit slightly more energy and radiolytic product at the polar roof. Oxidant fluxes remain uncertain by orders of magnitude.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 3.2,
+      "unit": "AU",
+      "consequences": [
+        "Radiolysis outruns photolysis everywhere",
+        "Polar roof is the most oxidised habitat",
+        "A redox economy, not a sunlight economy"
+      ],
+      "refs": [
+        "hand_2007_europa",
+        "cooper_2001_irradiation"
+      ]
+    },
+    {
+      "id": "F22",
+      "group": "biochemistry",
+      "claim": "Life uses archaeal-type ether and isoprenoid lipids, whose tighter packing keeps membranes serviceable at 271 K and 1.4 kbar, at the cost of slow diffusion.",
+      "justification": "Ether-linked, methyl-branched lipids maintain a liquid-crystalline state at low temperature and high pressure, though high pressure encourages tighter packing and slows molecular motion inside the membrane.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 271,
+      "unit": "K",
+      "consequences": [
+        "Membranes resist cold and pressure",
+        "Nutrient exchange is diffusion-limited",
+        "Cells stay small unless convection stirs them"
+      ],
+      "refs": [
+        "koga_2005_ether"
+      ]
+    },
+    {
+      "id": "F23",
+      "group": "biochemistry",
+      "claim": "Core metabolism runs on Fe-S clusters, with tungsten-bearing enzymes such as ACS-type variants proposed as a highly speculative high-pressure adaptation.",
+      "justification": "Fe-S chemistry is ancient and O₂-sensitive and is the natural catalyst at hydrothermal interfaces; tungsten is used by some anaerobic microbes, but a pressure-specific tungsten enzyme is an extrapolation, not a measurement.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "consequences": [
+        "Metabolism is O₂-sensitive and archaic",
+        "Trace Ni, W and Fe are limiting nutrients",
+        "Vent rock chemistry is the metabolic template"
+      ],
+      "refs": [
+        "martin_russell_2007",
+        "mccollom_bach_2009"
+      ]
+    },
+    {
+      "id": "F24",
+      "group": "biochemistry",
+      "claim": "Enzymes at 271 K run roughly an order of magnitude slower than at 300 K, so microbial growth and turnover take years to decades; decades-to-centuries lifespans apply only to the largest symbiotic bodies and are highly speculative.",
+      "justification": "Measured metabolic rates in cold environments fall steeply with temperature; slow growth is not the same as long individual life, and 'millennia' describes population persistence, not a single organism's age.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "consequences": [
+        "Ecological succession is glacial",
+        "Disturbance recovery takes centuries",
+        "Lifespan is set by metabolism, not by an ageing clock"
+      ],
+      "refs": [
+        "price_sowers_2004"
+      ]
+    },
+    {
+      "id": "F25",
+      "group": "biochemistry",
+      "claim": "O₂ is both a toxin and a high-yield electron acceptor, so the densest communities sit at oxic-anoxic interfaces where oxidant meets reductant.",
+      "justification": "The same redox couple that powers efficient respiration damages cells, so organisms cluster where flux is high but exposure is controllable, as at terrestrial oxic-anoxic boundaries.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "consequences": [
+        "Life concentrates in thin redox boundaries",
+        "Antioxidant defences are universal",
+        "Oxidisers and reducers end up in symbiosis"
+      ],
+      "refs": [
+        "hand_2007_europa",
+        "stewart_2005_symbiosis"
+      ]
+    },
+    {
+      "id": "F26",
+      "group": "biochemistry",
+      "claim": "Primary production is chemolithoautotrophic, and the dominant animals are symbiont hosts that farm sulphide- and H₂-oxidising microbes internally, Riftia-style.",
+      "justification": "Where no light reaches, the only large biomass is built from chemical energy, and vent tubeworms show that hosting chemoautotrophs is a viable animal strategy.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "consequences": [
+        "No food chain based on sunlight",
+        "Hosts are sessile and vent-bound",
+        "Symbiont transmission is a life-history bottleneck"
+      ],
+      "refs": [
+        "stewart_2005_symbiosis",
+        "kelley_2005_lostcity"
+      ]
+    },
+    {
+      "id": "F27",
+      "group": "biochemistry",
+      "claim": "Bioluminescence peaks near 470 nm and serves signalling, luring and counter-glow against predators' own light or silhouette-hiding in vent glare, since there is no downwelling sunlight to counter-illuminate.",
+      "justification": "Marine bioluminescence is overwhelmingly blue-green because that light travels furthest in water; with no sun, the adaptive uses are signalling and camouflage against other biological or vent light, not against daylight.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 470,
+      "unit": "nm",
+      "consequences": [
+        "Light is a private channel in a dark ocean",
+        "Display evolves without any stellar light cue",
+        "Glowing lures work on both prey and predators"
+      ]
+    },
+    {
+      "id": "F28",
+      "group": "biochemistry",
+      "claim": "Senses are stratified by depth: the upper halocline and ice-proximal zone combine chemoreception, vibration sensing and dim bioluminescence vision, while the deep floor relies on chemistry and vibration with minimal vision.",
+      "justification": "Vision pays only where biological light is present; deeper and further from the ice, chemical plumes and pressure waves carry more reliable information than photons.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "consequences": [
+        "Two sensory guilds, shallow and deep",
+        "Pressure waves substitute for sight at vents",
+        "Eyes become a liability away from light sources"
+      ]
+    }
+  ],
+  "changelog": [
+    {
+      "date": "2026-11-19",
+      "who": "autoloop",
+      "what": "world canon drafted by the council chair from 28 facts (planet drafts, peer reviews, astrobio referee)"
+    },
+    {
+      "date": "2026-11-19",
+      "who": "autoloop",
+      "what": "removed rejected references; retired real facts left without references"
+    },
+    {
+      "date": "2026-11-19",
+      "who": "autoloop",
+      "what": "removed rejected references; retired real facts left without references"
+    }
+  ]
+}

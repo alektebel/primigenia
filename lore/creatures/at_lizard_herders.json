@@ -1,0 +1,180 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "at_lizard_herders",
+  "name": {
+    "en": "Lizard Herders"
+  },
+  "world": "at_garden_peoples",
+  "kind": "easter_egg",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "to be written",
+    "diet": "to be written",
+    "active": "to be written",
+    "predators": []
+  },
+  "body": "to be written",
+  "chains": [
+    {
+      "id": "at_lizard_herders.c1",
+      "trait": "Instinctive herding & grooming behavior",
+      "links": [
+        "No apex predators selected for vigilance",
+        "Stable K-dwarf light & low axial tilt lock biomass",
+        "Qu-engineered cerebellar stunting prevents heuristic learning return"
+      ],
+      "roots": [
+        "F1",
+        "F2",
+        "F3"
+      ],
+      "skill": {
+        "id": "at_lizard_herders.herder_s_call",
+        "name": {
+          "en": "Herder's Call"
+        },
+        "role": "Control",
+        "effect": "Calms large herbivore mounts within 20m and grants +2 stamina to ride",
+        "numbers": {}
+      },
+      "weakness": "Freezes when startled by sudden motion; cannot learn new evasion tactics",
+      "observe": [
+        "Blank, unblinking stare",
+        "Primate hands grooming reptile scales",
+        "Instinctive posture facing livestock"
+      ],
+      "journal": {
+        "en": "They farm the grazers that farm the grass, never wondering why the grass wins."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-19",
+        "summary": "Treat startle-freeze as a vestigial Star People anti-predator reflex (no maintenance selection on a predator-free world), and stress tactile/oral grooming cues so herding still works without vigilance learning.",
+        "fixes": [
+          "Treat startle-freeze as a vestigial Star People anti-predator reflex (no maintenance selection on a predator-free world), and stress tactile/oral grooming cues so herding still works without vigilance learning."
+        ],
+        "analogues": [
+          {
+            "organism": "Humans and macaques mutual grooming; ungulate herding in loosely social grazers (not predator-driven vigilance when predators absent)",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "roff_1992_evolution"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 7,
+          "designer": 8,
+          "physicist": 9
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist",
+          "physicist"
+        ]
+      }
+    },
+    {
+      "id": "at_lizard_herders.c2",
+      "trait": "Enlarged foregut & blank-eyed browsing",
+      "links": [
+        "Energy reallocated from visual cortex to slow fermentation",
+        "Nutrient-rich tropical understory requires minimal foraging",
+        "Baseline Earth-analogue planetary mass & stable climate"
+      ],
+      "roots": [
+        "F3",
+        "F6",
+        "F20"
+      ],
+      "skill": {
+        "id": "at_lizard_herders.instinctive_groom",
+        "name": {
+          "en": "Instinctive Groom"
+        },
+        "role": "Basic",
+        "effect": "Restores 3 HP on allied mounts and reduces stress by 25%",
+        "numbers": {}
+      },
+      "weakness": "Vulnerable to sudden environmental shifts requiring problem-solving",
+      "observe": [
+        "Flat, pupil-less eyes lacking depth perception",
+        "Enlarged, distended abdomen from slow fermentation",
+        "Cerebellar stunting evident in clumsy, uncoordinated gait"
+      ],
+      "journal": {
+        "en": "A mind designed for tools, now only good for scratching."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-19",
+        "summary": "Do not imply total loss of vision for precision grooming: use atrophied eyes plus hypertrophied whiskers/fingertip mechanoreceptors; foregut is fermentative hindgut/foregut shift like folivores, not a trade that removes all spatial vision without Qu rewrite.",
+        "fixes": [
+          "Do not imply total loss of vision for precision grooming: use atrophied eyes plus hypertrophied whiskers/fingertip mechanoreceptors; foregut is fermentative hindgut/foregut shift like folivores, not a trade that removes all spatial vision without Qu rewrite."
+        ],
+        "analogues": [
+          {
+            "organism": "Koala and sloth enlarged gut for low-quality browse; cave tetrapods (Texas blind salamander) eye regression with enhanced non-visual orientation",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "designer": 6,
+          "physicist": 8
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist",
+          "physicist"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "at_saurosapients",
+      "kind": "predation",
+      "note": "Herders instinctively farm reptiles; those reptiles radiate into Saurosapients, who later subjugate and farm the Herders in a role reversal.",
+      "via": "F3, F8, F20"
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-18",
+    "by": [
+      "naturalist",
+      "physicist"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-19",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-18"
+    },
+    {
+      "date": "2026-11-18",
+      "who": "autoloop",
+      "what": "removed rejected references from analogues"
+    }
+  ],
+  "lore_ref": {
+    "file": "lore/alltomorrows.en.json",
+    "id": "lizard-herders"
+  }
+}

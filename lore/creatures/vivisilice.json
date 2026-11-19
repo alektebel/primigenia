@@ -1,0 +1,296 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "vivisilice",
+  "name": {
+    "en": "Vivisilice"
+  },
+  "world": "silicon_cryo",
+  "kind": "new",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "Periphery of cryo-jet plumes and tidal flexure fissures",
+    "diet": "H2 flux, precipitating silanes, microbial mats",
+    "active": "Cryo-jet pulses only",
+    "predators": []
+  },
+  "body": "Rigid arachnoid crystal frame; joints filled with supercooled CH4/Ethane slush that flows only near 115 K",
+  "chains": [
+    {
+      "id": "vivisilice.c1",
+      "trait": "Rigid crystal frame",
+      "links": [
+        "Siloxane backbone brittle at 70 K",
+        "Low thermal energy restricts molecular motion",
+        "Equilibrium temperature 60–110 K"
+      ],
+      "roots": [
+        "F2",
+        "F14"
+      ],
+      "skill": {
+        "id": "vivisilice.thaw_strike",
+        "name": {
+          "en": "Thaw Strike"
+        },
+        "role": "Engage",
+        "effect": "Charges 5m dealing brittle damage; creature freezes instantly after strike, becoming immobile until next pulse.",
+        "numbers": {}
+      },
+      "weakness": "Shatters if cooled mid-strike; cannot move during inter-pulse periods.",
+      "observe": [
+        "Crystal shell reflects IR glows",
+        "Joint joints emit high-pitched hiss",
+        "Rapid silane precipitate gathering"
+      ],
+      "journal": {
+        "en": "It waits as a statue for a heartbeat of warmth, then strikes like lightning."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "At 60–110 K equilibrium (F2), siloxane and mineralized silicate matrices stay glassy and stiff; low thermal energy limits segmental flexion (F14). Weaker gravity (F4) relaxes scaling limits on a hollow arachnoid frame so a large brittle exoskeleton is structurally affordable without the crushing weight penalty familiar from terrestrial giants. Explosive engage-then-stillness fits a pulse-fed ectotherm: almost no ATP turnover between cryo-jet events (F15), then brief local warming for one strike. Predation by shattering Sifon-Hielo’s open lattice is mechanically consistent with a rigid impactor versus a porous sessile filterer.",
+        "fixes": [
+          "At 60–110 K equilibrium (F2), siloxane and mineralized silicate matrices stay glassy and stiff; low thermal energy limits segmental flexion (F14). Weaker gravity (F4) relaxes scaling limits on a hollow arachnoid frame so a large brittle exoskeleton is structurally affordable without the crushing weight penalty familiar from terrestrial giants. Explosive engage-then-stillness fits a pulse-fed ectotherm: almost no ATP turnover between cryo-jet events (F15), then brief local warming for one strike. Predation by shattering Sifon-Hielo’s open lattice is mechanically consistent with a rigid impactor versus a porous sessile filterer."
+        ],
+        "analogues": [
+          {
+            "organism": "Glass sponges (Hexactinellida) and diatom frustules — silica skeletons that are strong but brittle; arctic springtails and freeze-tolerant spiders — cold-rigid bodies with brief warm-window activity (different chemistry, same life-history logic).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "bains_2004_many"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "vivisilice.c2",
+      "trait": "Joints flow only near 115 K",
+      "links": [
+        "Supercooled solvent slush melts at 115 K",
+        "Pulse from cryo-jet raises temp",
+        "Remains below 130 K softening limit"
+      ],
+      "roots": [
+        "F12",
+        "F17"
+      ],
+      "skill": {
+        "id": "vivisilice.thaw_sprint",
+        "name": {
+          "en": "Thaw Sprint"
+        },
+        "role": "Control",
+        "effect": "Moves at 3x speed for 2 turns; cannot use skills in next turn as it refreezes.",
+        "numbers": {}
+      },
+      "weakness": "Vulnerable to wind and vibration during thaw; movement causes structural stress.",
+      "observe": [
+        "Slush liquefies in joints",
+        "Steam plume from thermal exchange",
+        "Rapid limb articulation"
+      ],
+      "journal": {
+        "en": "Its limbs liquefy into liquid glass for a brief, terrifying dance."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Treat 115 K as localized joint-cavity temperature during vent H2 exotherm and condensing plume heat, not whole-body warming; rename slush to ‘methane-rich intercrystalline film’ and drop game-absolute ‘3× speed’ in lore text unless pulses add ~15–25 K locally (Arrhenius gives large rate gains, not mammalian sprint speeds).",
+        "fixes": [
+          "Treat 115 K as localized joint-cavity temperature during vent H2 exotherm and condensing plume heat, not whole-body warming; rename slush to ‘methane-rich intercrystalline film’ and drop game-absolute ‘3× speed’ in lore text unless pulses add ~15–25 K locally (Arrhenius gives large rate gains, not mammalian sprint speeds)."
+        ],
+        "analogues": [
+          {
+            "organism": "Wood frog (Lithobates sylvatica) and many alpine insects — extracellular ice and viscous body fluids until a brief thaw permits movement; not slush joints, but the same ‘thaw-gated mobility’ constraint.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "vivisilice.c3",
+      "trait": "Rapid growth during pulse",
+      "links": [
+        "Metabolic rate accelerates with temp",
+        "Silane catalysis speeds up",
+        "Transition-metal complexes active"
+      ],
+      "roots": [
+        "F15",
+        "F13"
+      ],
+      "skill": {
+        "id": "vivisilice.silane_bloom",
+        "name": {
+          "en": "Silane Bloom"
+        },
+        "role": "Basic",
+        "effect": "Gains +2 HP and +1 damage for the remainder of the pulse phase.",
+        "numbers": {}
+      },
+      "weakness": "Growth consumes stored chemical reserves; weakens after pulse.",
+      "observe": [
+        "Crystal lattice extends rapidly",
+        "New silane deposits form",
+        "Chemical aura flares"
+      ],
+      "journal": {
+        "en": "In the warmth, it grows as much in an hour as it would in a year."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Baseline turnover at ~80 K is days–weeks (F15); a pulse that raises tissue microsites toward ~110–120 K can accelerate silane/organosilicon deposition and metal-catalyzed redox (F13, F15) by many orders of magnitude in Arrhenius terms, so ‘an hour ≈ a year’ is acceptable as documentary hyperbole if reserves are finite. Post-pulse weakening from drained storage is mandatory honest budgeting on a world where silane chemistry only runs when cryo solvents stay anhydrous and reducing (F8, F17) — HF-style recycling (F13) is highly speculative but keeps the causal chain closed.",
+        "fixes": [
+          "Baseline turnover at ~80 K is days–weeks (F15); a pulse that raises tissue microsites toward ~110–120 K can accelerate silane/organosilicon deposition and metal-catalyzed redox (F13, F15) by many orders of magnitude in Arrhenius terms, so ‘an hour ≈ a year’ is acceptable as documentary hyperbole if reserves are finite. Post-pulse weakening from drained storage is mandatory honest budgeting on a world where silane chemistry only runs when cryo solvents stay anhydrous and reducing (F8, F17) — HF-style recycling (F13) is highly speculative but keeps the causal chain closed."
+        ],
+        "analogues": [
+          {
+            "organism": "Annual plants and synchronous coral spawning — reproduction/growth compressed into a narrow favorable window; hydrothermal vent tubeworm symbiosis — burst uptake tied to ephemeral redox gradients.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "vivisilice.c4",
+      "trait": "Seeks chemical gradients",
+      "links": [
+        "Infrasonic and IR tracking",
+        "Dense fog obscures vision",
+        "Cold dense air favors low-frequency sound"
+      ],
+      "roots": [
+        "F10",
+        "F18"
+      ],
+      "skill": {
+        "id": "vivisilice.thermal_sense",
+        "name": {
+          "en": "Thermal Sense"
+        },
+        "role": "Passive",
+        "effect": "Reveals location of all creatures within 15m that have active thermal signatures.",
+        "numbers": {}
+      },
+      "weakness": "Blind to silent, non-thermal threats.",
+      "observe": [
+        "Sensory spines vibrate",
+        "Head tracks heat sources",
+        "Infrasonic hum emitted"
+      ],
+      "journal": {
+        "en": "It navigates the blind fog by listening to the world's heat and song."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Perpetual methane frost fog (F10) kills usable vision; dense N2–CH4 air favors low-frequency sound propagation over highs (F9), so infrasonic gradient tracking plus IR pits (F18) is the expected sensory stack for a jet-zone predator. Passive thermal sense out to ~15 m matches pit-organ physics (ΔT, not long-range vision). Diet on H2 flux and precipitating silanes aligns with reducing atmosphere and vent redox (F8, F15).",
+        "fixes": [
+          "Perpetual methane frost fog (F10) kills usable vision; dense N2–CH4 air favors low-frequency sound propagation over highs (F9), so infrasonic gradient tracking plus IR pits (F18) is the expected sensory stack for a jet-zone predator. Passive thermal sense out to ~15 m matches pit-organ physics (ΔT, not long-range vision). Diet on H2 flux and precipitating silanes aligns with reducing atmosphere and vent redox (F8, F15)."
+        ],
+        "analogues": [
+          {
+            "organism": "Pit vipers (Crotalus) — IR pits for warm targets in visually poor habitat; oilbird (Steatornis caripensis) and many fog-forest birds — acoustic navigation when optical range collapses.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "sifon_hielo",
+      "kind": "cousin",
+      "note": "(council kind 'Predation') Vivisilice shatters Sifon-Hielo lattices to consume trapped nutrient aerosols."
+    },
+    {
+      "with": "sifon_hielo",
+      "kind": "cousin",
+      "note": "(council kind 'Predation') Vivisilice harvests Sifon-Hielo's trapped nutrients by shattering its lattice."
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-18",
+    "by": [
+      "naturalist/qwen"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-18",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-18"
+    },
+    {
+      "date": "2026-11-18",
+      "who": "import_got",
+      "what": "merged run autoloop-2026-11-18: 0 chain(s) added, 0 plausibility block(s) filled, 0 relation(s) added"
+    }
+  ],
+  "temperament": "Explosive bursts of speed followed by eternal stillness",
+  "secrets": [
+    "Tracks tidal flexure cycles to predict pulses."
+  ],
+  "moments": [
+    "The statue twitches, a drop of methane slides off a crystal limb, and the world holds its breath."
+  ],
+  "journal": [
+    {
+      "en": "It waits as a statue for a heartbeat of warmth, then strikes like lightning."
+    },
+    {
+      "en": "Its limbs liquefy into liquid glass for a brief, terrifying dance."
+    }
+  ]
+}

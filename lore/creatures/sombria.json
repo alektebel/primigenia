@@ -1,0 +1,291 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "sombria",
+  "name": {
+    "en": "Sombría"
+  },
+  "world": "adrian",
+  "kind": "new",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "Shallow epeiric shelves / silica-reef coastlines",
+    "diet": "Benthic invertebrates / small scavengers",
+    "active": "Nocturnal (haze thins, cooler, trace O2 pools form)",
+    "predators": []
+  },
+  "body": "Camouflaged silica-moss skin, venomous barbs, wide-angled binocular eyes, low-profile body",
+  "chains": [
+    {
+      "id": "sombria.c1",
+      "trait": "Cryptic silica-moss integument skin",
+      "links": [
+        "Amber daylight makes bright colors conspicuous",
+        "Dull iron-silica pigments match substrate",
+        "Visual selection favors cryptic patterns"
+      ],
+      "roots": [
+        "F8",
+        "F13"
+      ],
+      "skill": {
+        "id": "sombria.moss_hide",
+        "name": {
+          "en": "Moss Hide"
+        },
+        "role": "Control",
+        "effect": "+40% stealth in shallow water",
+        "numbers": {}
+      },
+      "weakness": "Useless in murky water",
+      "observe": [
+        "Skin blends with reef fragments",
+        "No shadow falls over it",
+        "Moss spores drift away when it moves"
+      ],
+      "journal": {
+        "en": "Silica skin drinking the light."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Amber, red-weighted daylight (F8) makes high-chroma prey conspicuous on shallow silica-rich substrates (F13). Cryptic iron-silica pigmentation plus epibiotic 'moss' matches ambush on epeiric shelves (F10). Stealth failing in murky water is coherent because vision-based camouflage needs sufficient transmitted light structure.",
+        "fixes": [
+          "Amber, red-weighted daylight (F8) makes high-chroma prey conspicuous on shallow silica-rich substrates (F13). Cryptic iron-silica pigmentation plus epibiotic 'moss' matches ambush on epeiric shelves (F10). Stealth failing in murky water is coherent because vision-based camouflage needs sufficient transmitted light structure."
+        ],
+        "analogues": [
+          {
+            "organism": "Flatfish (Pleuronectiformes) — substrate-matching camouflage; decorator crab (Majidae) — attached epibionts for background matching.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "sombria.c2",
+      "trait": "Venomous dorsal barbs near spine",
+      "links": [
+        "Trace O2 pockets allow high metabolism",
+        "Fast strikes needed in low-oxygen zones",
+        "Burst energy enables quick subduing"
+      ],
+      "roots": [
+        "F14",
+        "F5"
+      ],
+      "skill": {
+        "id": "sombria.paralytic_strike",
+        "name": {
+          "en": "Paralytic Strike"
+        },
+        "role": "Poke",
+        "effect": "Immobilizes target, +20% damage",
+        "numbers": {}
+      },
+      "weakness": "Barb regeneration takes 12s",
+      "observe": [
+        "Barbs flash red before striking",
+        "Prey twitches once then stops",
+        "Slick trail marks the ambush"
+      ],
+      "journal": {
+        "en": "Patience is a venom."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Trace O₂ and microaerobic niches (F14, F5) favor predators that end fights quickly without prolonged aerobic exertion; neurotoxic or paralytic venom with dorsal spines is a standard shallow-marine solution. Slow barb regeneration is a reasonable cost.",
+        "fixes": [
+          "Trace O₂ and microaerobic niches (F14, F5) favor predators that end fights quickly without prolonged aerobic exertion; neurotoxic or paralytic venom with dorsal spines is a standard shallow-marine solution. Slow barb regeneration is a reasonable cost."
+        ],
+        "analogues": [
+          {
+            "organism": "Stonefish (Synanceia) — dorsal spines with potent neurotoxin; lionfish (Pterois) — envenomed fin spines for fast subdual.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "sombria.c3",
+      "trait": "Wide-angled binocular eyes on head",
+      "links": [
+        "Nocturnal hunting requires max light capture",
+        "Retinal analogs stack for sensitivity",
+        "Low-flux red light drives eye shape"
+      ],
+      "roots": [
+        "F14",
+        "F8"
+      ],
+      "skill": {
+        "id": "sombria.twilight_sight",
+        "name": {
+          "en": "Twilight Sight"
+        },
+        "role": "Basic",
+        "effect": "Reveals hidden enemies, +30% accuracy in low light",
+        "numbers": {}
+      },
+      "weakness": "Loses effectiveness in full daylight",
+      "observe": [
+        "Eyes reflect the dim horizon",
+        "Head tilts to catch moonlight",
+        "Pupils expand like black pools"
+      ],
+      "journal": {
+        "en": "Red eyes in the shallow dark."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Describe as large tubular low-light eyes with a narrow binocular strike zone plus wide monocular periphery, matching ambush in oxygen-rich shallows at dusk rather than full panoramic binocular overlap.",
+        "fixes": [
+          "Describe as large tubular low-light eyes with a narrow binocular strike zone plus wide monocular periphery, matching ambush in oxygen-rich shallows at dusk rather than full panoramic binocular overlap."
+        ],
+        "analogues": [
+          {
+            "organism": "Barn owl (Tyto alba) — low-light retina and frontal fields for strike timing; deep-sea Macrouridae — enlarged eyes for photon-starved vision.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "endler_1980_natural"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "sombria.c4",
+      "trait": "Low streamlined body profile",
+      "links": [
+        "Shallow shelves have strong tidal currents",
+        "Drag reduction conserves oxygen",
+        "Sustained swimming enabled by hydrodynamics"
+      ],
+      "roots": [
+        "F10",
+        "F9"
+      ],
+      "skill": {
+        "id": "sombria.tidal_glide",
+        "name": {
+          "en": "Tidal Glide"
+        },
+        "role": "Engage",
+        "effect": "Dashes through currents, +25% speed",
+        "numbers": {}
+      },
+      "weakness": "Cannot roll on its back, exposed belly",
+      "observe": [
+        "Body lies flat against sand",
+        "Currents part around its spine",
+        "No wake follows its strike"
+      ],
+      "journal": {
+        "en": "A shadow that cuts the tide."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Shallow epeiric shelves and shelf currents (F10) reward low-profile, benthic-hugging hydrodynamics for an ambusher that must move little but dash when prey enters range. Flattened form exposes ventral belly when rolled—a classic flatfish/stingray trade-off.",
+        "fixes": [
+          "Shallow epeiric shelves and shelf currents (F10) reward low-profile, benthic-hugging hydrodynamics for an ambusher that must move little but dash when prey enters range. Flattened form exposes ventral belly when rolled—a classic flatfish/stingray trade-off."
+        ],
+        "analogues": [
+          {
+            "organism": "Southern stingray (Hypanus americanus) — depressed body and tidal ambush; crocodilian gharial/juvenile crocs — low profile in shallow flow.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "Taumoeba",
+      "kind": "cousin",
+      "note": "(council kind 'predator-prey') Catches haze-drifters that fall into shallows; digests symbiont chambers for burst chemotrophy."
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-18",
+    "by": [
+      "naturalist/qwen"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-18",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-18"
+    },
+    {
+      "date": "2026-11-18",
+      "who": "import_got",
+      "what": "merged run autoloop-2026-11-18: 0 chain(s) added, 0 plausibility block(s) filled, 0 relation(s) added"
+    }
+  ],
+  "temperament": "Patient, solitary, highly aggressive when striking",
+  "secrets": [
+    "A sharp click on a rock mimics prey distress, luring them into ambush range."
+  ],
+  "moments": [
+    "When the haze thins and the red sun dips, they rise like submerged leaves, waiting in the oxygen-rich shallows."
+  ],
+  "journal": [
+    {
+      "en": "Patience is a venom."
+    },
+    {
+      "en": "Silica skin, red eyes, and a hunger for the shallows."
+    }
+  ]
+}

@@ -1,0 +1,295 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "sifon_hielo",
+  "name": {
+    "en": "Sifon-Hielo"
+  },
+  "world": "silicon_cryo",
+  "kind": "new",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "High-frost ridges, wind-swept plateaus",
+    "diet": "Organosilicon aerosols, spores, trace oxidizers",
+    "active": "Rare atmospheric thermal pulses",
+    "predators": []
+  },
+  "body": "Fractal lattice of porous silicates; pores open with thermal expansion",
+  "chains": [
+    {
+      "id": "sifon_hielo.c1",
+      "trait": "Fractal porous lattice",
+      "links": [
+        "Maximizes surface area",
+        "Diffusion is slow",
+        "Cold solvent viscosity"
+      ],
+      "roots": [
+        "F9",
+        "F15"
+      ],
+      "skill": {
+        "id": "sifon_hielo.frost_bloom",
+        "name": {
+          "en": "Frost Bloom"
+        },
+        "role": "Basic",
+        "effect": "Opens pores; filters air, gains nutrients, and creates a zone of lowered density that slows nearby enemies by 1 movement.",
+        "numbers": {}
+      },
+      "weakness": "Cannot move; exposed during bloom.",
+      "observe": [
+        "Lattice structure",
+        "Pore dilation",
+        "Humming vibration"
+      ],
+      "journal": {
+        "en": "A living sieve that waits for the sky to warm, then drinks the thin air."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Describe Sifon-Hielo as anchored silicate frustum with organosilicon filter biofilm; cite F10 aerosol load and F15 slow diffusion as the real selective root, not azotosomes for the whole body.",
+        "fixes": [
+          "Describe Sifon-Hielo as anchored silicate frustum with organosilicon filter biofilm; cite F10 aerosol load and F15 slow diffusion as the real selective root, not azotosomes for the whole body."
+        ],
+        "analogues": [
+          {
+            "organism": "Marine sponges (Porifera) — enormous pumped/filtered surface; lichens and kidney filaments — atmospheric and dissolved solute harvest on a rigid matrix.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "petkowski_2020_azotosomes"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "sifon_hielo.c2",
+      "trait": "Pores open on warming",
+      "links": [
+        "Thermal expansion of siloxane bonds",
+        "Solvent viscosity drops",
+        "Temp threshold 110–120 K"
+      ],
+      "roots": [
+        "F14",
+        "F17"
+      ],
+      "skill": {
+        "id": "sifon_hielo.thermal_resonance",
+        "name": {
+          "en": "Thermal Resonance"
+        },
+        "role": "Engage",
+        "effect": "Absorbs heat from a target; target takes thermal damage and Sifon-Hielo heals.",
+        "numbers": {}
+      },
+      "weakness": "Vulnerable to freezing attacks that close pores.",
+      "observe": [
+        "Pores flare open",
+        "Condensation forms and evaporates",
+        "Lattice glows faintly"
+      ],
+      "journal": {
+        "en": "Its pores flare open like a thousand tiny lungs gasping for warmth."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Specify bilayer hinges: quartz/silicate pore rim + organosilicon flap that unseals at ~110–120 K; avoid implying the entire lattice is a flexible siloxane polymer.",
+        "fixes": [
+          "Specify bilayer hinges: quartz/silicate pore rim + organosilicon flap that unseals at ~110–120 K; avoid implying the entire lattice is a flexible siloxane polymer."
+        ],
+        "analogues": [
+          {
+            "organism": "Pine and fir cone scales — humidity/temperature gated opening (mechanical, not metabolic); stomata — aperture controlled by guard-cell turgor analog via swelling polymer at threshold temperature.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "sifon_hielo.c3",
+      "trait": "Anchored by root-crystals",
+      "links": [
+        "Stability against wind",
+        "Low gravity allows height",
+        "0.86 g surface gravity"
+      ],
+      "roots": [
+        "F4"
+      ],
+      "skill": {
+        "id": "sifon_hielo.deep_root",
+        "name": {
+          "en": "Deep Root"
+        },
+        "role": "Defence",
+        "effect": "Immobile but gains +3 Defence; immune to knockback.",
+        "numbers": {}
+      },
+      "weakness": "Cannot relocate if threatened.",
+      "observe": [
+        "Root-crystals penetrate ice",
+        "Lattice remains stable in wind",
+        "No movement"
+      ],
+      "journal": {
+        "en": "Roots of crystal grip the ridge, defying the gale."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Immobile filter feeders on wind-swept cryo plateaus must anchor against dense-air gusts (F9, F10); lower gravity reduces anchorage stress (F4). Growth of ice-penetrating crystal roots is consistent with silicate biomineralization and frost wedging in ridge substrates — standard trade-off: +defence, zero relocation.",
+        "fixes": [
+          "Immobile filter feeders on wind-swept cryo plateaus must anchor against dense-air gusts (F9, F10); lower gravity reduces anchorage stress (F4). Growth of ice-penetrating crystal roots is consistent with silicate biomineralization and frost wedging in ridge substrates — standard trade-off: +defence, zero relocation."
+        ],
+        "analogues": [
+          {
+            "organism": "Barnacles and mussels — permanent adhesion in high-flow habitats; alpine cushion plants and deep taproots — wind resistance via mechanical anchorage.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "sifon_hielo.c4",
+      "trait": "Resonates with low hum",
+      "links": [
+        "Detects pulse arrival",
+        "Sound travels far",
+        "Dense atmosphere"
+      ],
+      "roots": [
+        "F9",
+        "F3"
+      ],
+      "skill": {
+        "id": "sifon_hielo.pulse_anticipation",
+        "name": {
+          "en": "Pulse Anticipation"
+        },
+        "role": "Social",
+        "effect": "Shares pulse warning with allies; allies gain +1 initiative on pulse turn.",
+        "numbers": {}
+      },
+      "weakness": "Attracts attention from thermal predators.",
+      "observe": [
+        "Lattice vibrates at low frequency",
+        "Spines align to sound",
+        "Hum increases in pitch"
+      ],
+      "journal": {
+        "en": "It sings the world's heartbeat to prepare for the thaw."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Sound speed ~260 m/s and high atmospheric density (F9) give long infrasonic range — a lattice with resonant void geometry can couple to distant pulse precursors (jet bangs, tidal flexure groans F6, rare flare-ionization transients F3). Sharing pulse timing with allies is adaptive for synchronizing bloom with Vivisilice-style predators also cueing on heat/sound. Cost: resonance advertises a warm-opening sieve to IR/infrasonic hunters (F18).",
+        "fixes": [
+          "Sound speed ~260 m/s and high atmospheric density (F9) give long infrasonic range — a lattice with resonant void geometry can couple to distant pulse precursors (jet bangs, tidal flexure groans F6, rare flare-ionization transients F3). Sharing pulse timing with allies is adaptive for synchronizing bloom with Vivisilice-style predators also cueing on heat/sound. Cost: resonance advertises a warm-opening sieve to IR/infrasonic hunters (F18)."
+        ],
+        "analogues": [
+          {
+            "organism": "African elephants (Loxodonta) — infrasonic long-range coordination; cicadas and corals — timing reproduction to periodic environmental cues (here: geothermal/atmos pulses rather than lunar light).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "vivisilice",
+      "kind": "cousin",
+      "note": "(council kind 'Predation') Vivisilice shatters Sifon-Hielo lattices to consume trapped nutrient aerosols."
+    },
+    {
+      "with": "vivisilice",
+      "kind": "cousin",
+      "note": "(council kind 'Predation') Vivisilice harvests Sifon-Hielo's trapped nutrients by shattering its lattice."
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-18",
+    "by": [
+      "naturalist/qwen"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-18",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-18"
+    },
+    {
+      "date": "2026-11-18",
+      "who": "import_got",
+      "what": "merged run autoloop-2026-11-18: 0 chain(s) added, 0 plausibility block(s) filled, 0 relation(s) added"
+    }
+  ],
+  "temperament": "Patient, reactive, bloom-like",
+  "secrets": [
+    "Can extend pulse duration by focusing geothermal heat."
+  ],
+  "moments": [
+    "A low thrum vibrates the ridge. The lattice shudders, and for a moment, the wind passes through a thousand tiny, glowing eyes."
+  ],
+  "journal": [
+    {
+      "en": "A living sieve that waits for the sky to warm, then drinks the thin air."
+    },
+    {
+      "en": "It sings the world's heartbeat to prepare for the thaw."
+    }
+  ]
+}

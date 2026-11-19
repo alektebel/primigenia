@@ -1,0 +1,292 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "merodeador",
+  "name": {
+    "en": "Merodeador"
+  },
+  "world": "primigenia",
+  "kind": "native",
+  "status": "draft",
+  "stage": "creature",
+  "niche": {
+    "habitat": "Cliff bases, lava tube entrances, leeward slopes, and hidden cave perimeters.",
+    "diet": "Carnivore/Omnivore: flesh, insects, carrion, and alkaloid plants for self-medication.",
+    "active": "Nocturnal and crepuscular; avoids midday heat and dense fog.",
+    "predators": [
+      "Espinodo",
+      "Garfio",
+      "Coloso (accidental)"
+    ],
+    "prey": [
+      "Rondo (young)",
+      "Zanco (young)",
+      "Insects",
+      "Carrion",
+      "Eggs"
+    ]
+  },
+  "body": "Belly-low prowler with silent, padded feet that dampen sound in the dense atmosphere and a flexible spine that allows it to freeze in lulls and move synchronously with the wind gusts. Its leeward ambush strategy exploits the 1.6× drag and fog to mask its approach.",
+  "chains": [
+    {
+      "id": "merodeador.c1",
+      "trait": "Belly-low prowling profile",
+      "links": [
+        "It keeps its belly at grass height, where eyes lose it",
+        "Dawn fog blinds prey most mornings, so hiding low always works",
+        "Gales shove with 1.6x Earth's force, so only low builds stayed to hunt"
+      ],
+      "roots": [
+        "F8",
+        "F19"
+      ],
+      "skill": {
+        "id": "merodeador.low_stalk",
+        "name": {
+          "en": "Low stalk"
+        },
+        "role": "Basic",
+        "effect": "-50% detection beyond 8 m while prone; speed 3 m/s.",
+        "numbers": {}
+      },
+      "weakness": "Flattened grass marks its bed; beat the bush and it bolts.",
+      "observe": [
+        "belly drag marks",
+        "flattened grass swathes",
+        "nose to ground"
+      ],
+      "journal": {
+        "en": "It hunts at the height of the grass."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Frame gales (F19) as favouring a low centre of mass and crouched stalk on exposed meadow edges, not as eliminating taller predators island-wide; tall fast hunters (e.g. Garfio-type lineages) persist in other niches.",
+        "fixes": [
+          "Frame gales (F19) as favouring a low centre of mass and crouched stalk on exposed meadow edges, not as eliminating taller predators island-wide; tall fast hunters (e.g. Garfio-type lineages) persist in other niches."
+        ],
+        "analogues": [
+          {
+            "organism": "Felids (e.g. serval, leopard): ventral-flexed stalk in grass; body held below herbivore eye height — classic ambush crypsis.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "designer": 9,
+          "physicist": 9
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "skeptic"
+        ]
+      }
+    },
+    {
+      "id": "merodeador.c2",
+      "trait": "Silent padded feet",
+      "links": [
+        "Dense air carries every footfall to prey's ears",
+        "Soft pads and placed steps kill the thump",
+        "Silence costs speed, so it walks and saves the burst"
+      ],
+      "roots": [
+        "F4"
+      ],
+      "skill": {
+        "id": "merodeador.mute_step",
+        "name": {
+          "en": "Mute step"
+        },
+        "role": "Passive",
+        "effect": "No footstep sound at a walk; running is audible at 30 m.",
+        "numbers": {}
+      },
+      "weakness": "Listen for the burst; it cannot chase quietly.",
+      "observe": [
+        "no sound on gravel",
+        "head cocked between steps",
+        "slow foot placement"
+      ],
+      "journal": {
+        "en": "You hear it only when it decides to run."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "analogues": [
+          {
+            "organism": "Felidae: soft digital and metacarpal pads damp impact sounds during slow stalk; trade-off between silent walk and audible sprint (same family, multiple species).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 9,
+          "designer": 7,
+          "physicist": 9
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "skeptic"
+        ]
+      }
+    },
+    {
+      "id": "merodeador.c3",
+      "trait": "Leeward ambush pounce",
+      "links": [
+        "Westerlies drag scent east across the meadows",
+        "It beds on the lee side, its smell blowing away from prey",
+        "Thick air punishes a missed pounce, so it strikes once, from close"
+      ],
+      "roots": [
+        "F18",
+        "F16",
+        "F4"
+      ],
+      "skill": {
+        "id": "merodeador.lee_pounce",
+        "name": {
+          "en": "Lee pounce"
+        },
+        "role": "Engage",
+        "effect": "+50% damage if unseen; 15 m range; 8 s cooldown.",
+        "numbers": {}
+      },
+      "weakness": "Circle upwind: it scents you at 30 m and aborts.",
+      "observe": [
+        "crouch on the downwind side",
+        "tail low, ears flat",
+        "nose testing the wind"
+      ],
+      "journal": {
+        "en": "It lets the wind carry the mistake away."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "analogues": [
+          {
+            "organism": "Grey wolf (Canis lupus) and African lion (Panthera leo): approach from downwind so prey scent-receptors are not alerted; single close-range spring on ambush cats.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 9,
+          "designer": 9,
+          "physicist": 9
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "skeptic"
+        ]
+      }
+    },
+    {
+      "id": "merodeador.c4",
+      "trait": "Freezes in lulls, moves with gusts",
+      "links": [
+        "Gale wind roars and grass whips, drowning eyes and ears",
+        "A low, heavy build leans into wind that staggers taller hunters",
+        "It moves with the gusts and locks still in the lulls"
+      ],
+      "roots": [
+        "F19"
+      ],
+      "skill": {
+        "id": "merodeador.prowl",
+        "name": {
+          "en": "Prowl"
+        },
+        "role": "Defence",
+        "effect": "In gales above 12 m/s, detection of it drops 60% and gusts cannot knock it back.",
+        "numbers": {}
+      },
+      "weakness": "Calm air strips the mask: track it at clear midday, when eyes win.",
+      "observe": [
+        "moves only as gusts shake the grass",
+        "frozen mid-step in a lull",
+        "leaning into wind that staggers others"
+      ],
+      "journal": {
+        "en": "It moves when the wind does; watch the lulls."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Treat as a seasonal/windy-weather tactic (winter gales, F19), not default midday behaviour; require enough body mass and low profile so gust knockback immunity is biomechanical, not magical.",
+        "fixes": [
+          "Treat as a seasonal/windy-weather tactic (winter gales, F19), not default midday behaviour; require enough body mass and low profile so gust knockback immunity is biomechanical, not magical."
+        ],
+        "analogues": [
+          {
+            "organism": "Disturbance masking in sensory ecology — animals time movement or calls to periodic environmental noise (e.g. wind, streams); from memory, unverified: Brumm & Slabbekoorn ~2005 on noise and acoustic communication. Grass ripple timed movement parallels motion-hiding while vegetation moves.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 7,
+          "designer": 8,
+          "physicist": 8
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "wildcard"
+        ]
+      }
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-18",
+    "by": [
+      "skeptic",
+      "wildcard"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-18",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-18"
+    },
+    {
+      "date": "2026-11-19",
+      "who": "import_got",
+      "what": "merged run autoloop-2026-11-19: 0 chain(s) added, 0 plausibility block(s) filled, 0 relation(s) added"
+    },
+    {
+      "date": "2026-11-19",
+      "who": "import_got",
+      "what": "merged run autoloop-2026-11-19: 0 chain(s) added, 0 plausibility block(s) filled, 0 relation(s) added"
+    },
+    {
+      "date": "2026-11-19",
+      "who": "import_got",
+      "what": "merged run autoloop-2026-11-19: 0 chain(s) added, 0 plausibility block(s) filled, 0 relation(s) added"
+    }
+  ],
+  "temperament": "Patient stalker that values silence and wind timing over speed, striking only when the odds are absolute.",
+  "secrets": [
+    "Nocturnal variant",
+    "Hidden cave: den",
+    "Fossil: tiny skull",
+    "Albinos",
+    "Ink jet (aquatic)"
+  ],
+  "moments": [
+    "Freezing perfectly still as a Zanco herd passes overhead, then surging forward in perfect sync with a sudden evening gust.",
+    "A silent pounce from a lava tube overhang that catches a lone Rondo.",
+    "Night eyes glowing faintly under the moon as it tracks a carcass drift."
+  ]
+}

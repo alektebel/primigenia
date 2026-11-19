@@ -1,0 +1,280 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "salinera",
+  "name": {
+    "en": "Salinera"
+  },
+  "world": "redtide",
+  "kind": "new",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "Mid-water column of the terminator ring ocean, drifting on vertical convection cells.",
+    "diet": "Phosphorus-rich microbial aggregates, flare-fallen nitrate particulates, anoxic brine seep-plumes.",
+    "active": "Diurnal pulse-feeding; rests during strong wind shear, bursts near vents.",
+    "predators": []
+  },
+  "body": "Gelatinous filter-sack with trailing ciliated tentacles, hyper-renal gills, bioluminescent lure nodes.",
+  "chains": [
+    {
+      "id": "salinera.c1",
+      "trait": "Ciliated filter basket expands on nutrient pulse",
+      "links": [
+        "Ciliated basket expands to trap aggregates",
+        "Phosphorus arrives only in ash pulses",
+        "Stagnant lid volcanism supplies patchy ash"
+      ],
+      "roots": [
+        "F26",
+        "F20"
+      ],
+      "skill": {
+        "id": "salinera.gill_filter",
+        "name": {
+          "en": "Gill Filter"
+        },
+        "role": "Basic",
+        "effect": "Heal 3 HP and gain +2 P to a local area; weakens in ash-poor zones.",
+        "numbers": {}
+      },
+      "weakness": "Starves in regions without recent volcanic ash or flare fallout.",
+      "observe": [
+        "Cloud of ash/dust settling on water",
+        "Basket distending and glowing faintly",
+        "Salinera growing noticeably after feeding"
+      ],
+      "journal": {
+        "en": "It eats the sky's ash when it rains salt."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "Replace diurnal schedule with event-driven feeding (ash plume, flare nitrate rain, vent-adjacent upwelling); tag Gill Filter weakness to calm-star + ash-poor intervals, not ‘night’.",
+        "fixes": [
+          "Replace diurnal schedule with event-driven feeding (ash plume, flare nitrate rain, vent-adjacent upwelling); tag Gill Filter weakness to calm-star + ash-poor intervals, not ‘night’."
+        ],
+        "analogues": [
+          {
+            "organism": "Salp (Salpidae) and pyrosome bulk filtration on plankton pulses; ascidian pharynx basket (Ciona) as structural analogue",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "luger_2015_extreme"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "salinera.c2",
+      "trait": "Hyper-renal salt glands pump concentrated brine",
+      "links": [
+        "Salt glands excrete 12% saline brine",
+        "Basin is evaporating with single outflow",
+        "Terminator ring ocean concentrates salts"
+      ],
+      "roots": [
+        "F17"
+      ],
+      "skill": {
+        "id": "salinera.salt_blast",
+        "name": {
+          "en": "Salt Blast"
+        },
+        "role": "Poke",
+        "effect": "Deal 4 damage to enemies within 3m; causes dehydration debuff.",
+        "numbers": {}
+      },
+      "weakness": "Vulnerable to freshwater shock; player can stun with water-skill.",
+      "observe": [
+        "Gills pulsing with white salt crystals",
+        "Water around Salinera turning milky and hypersaline",
+        "Evaporative mist rising from its back"
+      ],
+      "journal": {
+        "en": "It sweats brine to survive the drying sea."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "Loom mean ~6% salinity (F17) exceeds marine teleost/osmoregulator comfort without active salt export. Chloride cells in gill epithelium and nasal/salt glands in seabirds/sharks excrete concentrated NaCl brine; excreting ~12% brine is consistent with an evaporating basin inhabitant. Milky plumes and dehydration poke damage are honest osmotic weapons. Freshwater shock weakness matches hyperosmotic specialists.",
+        "fixes": [
+          "Loom mean ~6% salinity (F17) exceeds marine teleost/osmoregulator comfort without active salt export. Chloride cells in gill epithelium and nasal/salt glands in seabirds/sharks excrete concentrated NaCl brine; excreting ~12% brine is consistent with an evaporating basin inhabitant. Milky plumes and dehydration poke damage are honest osmotic weapons. Freshwater shock weakness matches hyperosmotic specialists."
+        ],
+        "analogues": [
+          {
+            "organism": "Herring gull and other seabirds (nasal salt gland); elasmobranch rectal gland; teleost gill chloride cells (Fundulus in hypersaline marshes)",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 4
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "salinera.c3",
+      "trait": "Bioluminescent mating flash attracts mates",
+      "links": [
+        "Flash synchronizes mating swarm",
+        "Low biomass limits encounter rates",
+        "Phosphorus limitation caps overall productivity"
+      ],
+      "roots": [
+        "F26"
+      ],
+      "skill": {
+        "id": "salinera.glow_signal",
+        "name": {
+          "en": "Glow Signal"
+        },
+        "role": "Social",
+        "effect": "Attract all Salinera within 20m to player or ally; grants 'Herd' buff.",
+        "numbers": {}
+      },
+      "weakness": "Attracts predators and flares; player can lure enemies using biolum lure.",
+      "observe": [
+        "Sudden synchronized green flash across colony",
+        "Individuals orienting toward light source",
+        "Rapid aggregation from dispersed positions"
+      ],
+      "journal": {
+        "en": "In the dark salt, they speak in light."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "Keep predator attraction; drop literal ‘attracts flares’ or map it to UV flare windows increasing visual predation risk.",
+        "fixes": [
+          "Keep predator attraction; drop literal ‘attracts flares’ or map it to UV flare windows increasing visual predation risk."
+        ],
+        "analogues": [
+          {
+            "organism": "Odontosyllis enopla fireworm mating swarms; deep-sea ostracod Vargula courtship flashes",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 7
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "salinera.c4",
+      "trait": "Sensitive gill cilia shut near vent plumes",
+      "links": [
+        "Gills clamp shut to block hyperoxic water",
+        "Vents emit concentrated oxygen spikes",
+        "Adapted to 8% ambient but hyperoxic spots burn tissue"
+      ],
+      "roots": [
+        "F27"
+      ],
+      "skill": {
+        "id": "salinera.vent_dodge",
+        "name": {
+          "en": "Vent Dodge"
+        },
+        "role": "Defence",
+        "effect": "Gain immunity to oxidant damage for 5 turns; move 2m away from vent.",
+        "numbers": {}
+      },
+      "weakness": "Blind to chemical plumes; player can use chemical smoke to mask vent signals.",
+      "observe": [
+        "Salinera recoiling from white vent plume",
+        "Gill cilia locking rigid",
+        "Swarm breaking formation to avoid vent zone"
+      ],
+      "journal": {
+        "en": "The vent is a fire that breathes."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "State gill lock responds to O₂ and H₂S thresholds; place vent dodge near ring fumarole seeps (F21), not generic abyssal vents; rename weakness to ‘overrides feeding when plume chemistry ambiguous’ if you keep chemical smoke.",
+        "fixes": [
+          "State gill lock responds to O₂ and H₂S thresholds; place vent dodge near ring fumarole seeps (F21), not generic abyssal vents; rename weakness to ‘overrides feeding when plume chemistry ambiguous’ if you keep chemical smoke."
+        ],
+        "analogues": [
+          {
+            "organism": "Bivalve siphon withdrawal from H₂S; estuarine fish gill remodeling under hypoxia/hyperoxia stress",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 3
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-19",
+    "by": [
+      "naturalist/qwen"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-19",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-19"
+    }
+  ],
+  "body_plan": {
+    "symmetry": "asymmetric",
+    "origin": "Modified ascidian-like filter feeder adapted to pelagic drift in high salinity."
+  },
+  "temperament": "Docile, reactive, gregarious in nutrient patches.",
+  "secrets": [
+    "Salinera tissue, when dried, can store phosphorus for weeks; player can craft 'Nutrient Paste'."
+  ],
+  "moments": [
+    "A Salinera drifts past a flare-induced nitrate rain, its basket swelling until it glows like a captured star, then dissolves the light into flesh."
+  ],
+  "journal": [
+    {
+      "en": "The Loom Sea is not water; it is salt memory."
+    },
+    {
+      "en": "Salinera filter the world's pulses."
+    }
+  ]
+}

@@ -203,16 +203,30 @@ static int water_clear(const CpStageWorld *w,float x,float z,float nx,float nz,f
     }
     return 1;
 }
-/* can_walk plus the body's climb limit: no stretch of the straight move steeper than `climb` (rise / run over about a metre).
- * The planner, its shortcuts and the waypoint following use this one rule, so a route is never one the body would stall on. */
+/* Shared planning/shortcut/following rule: directional climb, full-gradient holding limit and lateral clearance.
+ * Clearance keeps inertial steering away from bank facets that the centre line alone could skirt. */
+static void ground_grad(const CpStageWorld *w,float x,float z,float *gx,float *gz,float h);
 static int walk_ok(const CpStageWorld *w,float x,float z,float nx,float nz,float radius,float climb){
+    const float slide=climb*w->motion.stall_mul*w->motion.slide_mul;
+    const float hold=slide<CP_STEER_GRADE_MAX?slide:CP_STEER_GRADE_MAX;
     if(!cp_stage_can_walk(w,x,z,nx,nz,radius))return 0;
     const float dx=nx-x,dz=nz-z,distance=length(dx,dz);
     const int steps=(int)(distance/1.f)+1;
     float previous=cp_stage_ground(w,x,z);
     const float run=distance/steps;
-    for(int i=1;i<=steps;i++){
+    const float px=distance>0?-dz/distance:0,pz=distance>0?dx/distance:0;
+    const float hold2=hold*hold;
+    for(int i=0;i<=steps;i++){
         const float t=(float)i/steps,height=cp_stage_ground(w,x+dx*t,z+dz*t);
+        float gx,gz;
+        ground_grad(w,x+dx*t,z+dz*t,&gx,&gz,.25f);
+        if(gx*gx+gz*gz>hold2)return 0;
+        if(distance>0){
+            ground_grad(w,x+dx*t+px,z+dz*t+pz,&gx,&gz,.25f);
+            if(gx*gx+gz*gz>hold2)return 0;
+            ground_grad(w,x+dx*t-px,z+dz*t-pz,&gx,&gz,.25f);
+            if(gx*gx+gz*gz>hold2)return 0;
+        }
         if(ab(height-previous)>climb*run)return 0;
         previous=height;
     }
@@ -264,7 +278,7 @@ static int block_reason(const CpStageWorld *w,float x,float z,float nx,float nz,
 #define NAV_HEAP 16
 #else
 #define NAV_DIM 1024
-#define NAV_EXPAND 120000   /* node expansions per search; the largest seen on the island is ~23k */
+#define NAV_EXPAND 500000   /* stricter bank clearance requires larger detours than the old 120k cap */
 #define NAV_HEAP (1<<21)
 #endif
 #define NAV_CELLS ((size_t)NAV_DIM*NAV_DIM)
@@ -306,6 +320,8 @@ static int nav_ready(const CpStageWorld *w){
     CpSteerBody body;
     cp_steer_body(&w->motion,radius,w->player.legs,&body);
     sig_fl(&h,body.climb);
+    sig_fl(&h,w->motion.stall_mul);
+    sig_fl(&h,w->motion.slide_mul);
     sig_u32(&h,(uint32_t)w->setup.n_obstacles);
     for(int i=0;i<w->setup.n_obstacles;i++){
         sig_fl(&h,w->setup.obstacles[i].x);
@@ -495,12 +511,12 @@ static int plan_path(CpStageWorld *w,float tx,float tz){
         }
         if(start<0)return CP_STAGE_BLOCK_UNREACHABLE;
         /* goal cell: nearest connected cell within 3 cells (~12 m) from which the target itself is walkable,
-         * else the nearest connected cell (the target is snapped to its centre) */
+         * otherwise reject: arrival must refer to the requested destination */
         {
             const int ti=nav_index_of(tx),tj=nav_index_of(tz);
             int idxs[49];
             float d2[49];
-            int n=0,fallback=-1;
+            int n=0;
             for(int dj=-3;dj<=3;dj++)for(int di=-3;di<=3;di++){
                 const int i=ti+di,j=tj+dj;
                 if(i<0||j<0||i>=nav.dim||j>=nav.dim)continue;
@@ -515,13 +531,7 @@ static int plan_path(CpStageWorld *w,float tx,float tz){
                 const int idx=idxs[best];
                 idxs[best]=-1;
                 if(!nav_cell(w,idx))continue;
-                if(fallback<0)fallback=idx;
                 if(walk_ok(w,nav_c(idx%nav.dim),nav_c(idx/nav.dim),tx,tz,radius,nav.climb))gcell=idx;
-            }
-            if(gcell<0&&fallback>=0){
-                gcell=fallback;
-                ex=nav_c(gcell%nav.dim);
-                ez=nav_c(gcell/nav.dim);
             }
         }
         if(gcell<0)return CP_STAGE_BLOCK_UNREACHABLE;
@@ -735,12 +745,18 @@ static void start(CpStageWorld *w,int index){
 }
 /* Ground gradient (rise/run) over a 0.5 m stencil, the one the ceiling is measured with. */
 static void ground_grad(const CpStageWorld *w,float x,float z,float *gx,float *gz,float h){
-    *gx=(cp_stage_ground(w,x+h,z)-cp_stage_ground(w,x-h,z))/(2*h);
-    *gz=(cp_stage_ground(w,x,z+h)-cp_stage_ground(w,x,z-h))/(2*h);
+    if(w->setup.terrain==CP_STAGE_FIELD&&field_ok(w->field)){
+        /* The finite world positions and field are already validated: avoid four repeated dispatches. */
+        *gx=(field_ground(w->field,x+h,z)-field_ground(w->field,x-h,z))/(2*h);
+        *gz=(field_ground(w->field,x,z+h)-field_ground(w->field,x,z-h))/(2*h);
+    }
+    else{
+        *gx=(cp_stage_ground(w,x+h,z)-cp_stage_ground(w,x-h,z))/(2*h);
+        *gz=(cp_stage_ground(w,x,z+h)-cp_stage_ground(w,x,z-h))/(2*h);
+    }
 }
-/* A move onto ground steeper than CP_STEER_GRADE_MAX that is not downhill: refused for creatures (the player keeps its stall rule). */
+/* All bodies obey the same ground ceiling; an already steep spawn may escape downhill. */
 static int steep_up(const CpStageWorld *w,const CpStageCreature *c,float x,float z,float nx,float nz){
-    if(c==&w->player)return 0;
     float gx,gz;
     ground_grad(w,nx,nz,&gx,&gz,.25f);
     if(length(gx,gz)<=CP_STEER_GRADE_MAX)return 0;
@@ -760,8 +776,8 @@ static void walk(CpStageWorld *w,CpStageCreature *c,float dx,float dz,float spee
     CpSteerBody body;
     cp_steer_body(m,r,c->legs,&body);
     /* the ceiling: no creature rests on ground steeper than CP_STEER_GRADE_MAX (steep_up refuses it, the slide takes over above it).
-     * The player keeps the body's own stall and slide grades, which the planner and the GO gates are built on. */
-    if(c!=&w->player&&body.slide>CP_STEER_GRADE_MAX)body.slide=CP_STEER_GRADE_MAX;
+     * This includes the player; planned segments check this same full-gradient ceiling. */
+    if(body.slide>CP_STEER_GRADE_MAX)body.slide=CP_STEER_GRADE_MAX;
     const float grade=cp_stage_ground(w,c->x+c->fx,c->z+c->fz)-cp_stage_ground(w,c->x,c->z);
     CpSteer st={c->fx,c->fz,c->speed,c->omega,c->pivot};
     const float sf=cp_steer_slope(m,&body,grade);
@@ -1163,8 +1179,10 @@ uint64_t cp_stage_step(CpStageWorld *w,const CpStageInput *input){
                         /* the stored waypoints ran out before the goal (more than 64 corners): plan the rest */
                         following=0;
                         if(plan_path(w,gx,gz)){
-                            ev_push(w,CP_STAGE_EV_PATH_FAILED,0,0,-1,0,gx,gz);
+                            ev_push(w,CP_STAGE_EV_PATH_FAILED,0,0,-1,CP_STAGE_BLOCK_UNREACHABLE,gx,gz);
                             w->last_error=-4;
+                            w->blocked_reason=CP_STAGE_BLOCK_UNREACHABLE;
+                            w->blocked_x=gx;w->blocked_z=gz;
                             w->order=(CpStageInput){
                                 0
                             };
@@ -1248,7 +1266,7 @@ uint64_t cp_stage_step(CpStageWorld *w,const CpStageInput *input){
                 const float gx=w->order.verb==CP_STAGE_GO?w->order.x:w->setup.nest_x,gz=w->order.verb==CP_STAGE_GO?w->order.z:w->setup.nest_z;
                 const int tries=w->replans+1;
                 if(tries>4||plan_path(w,gx,gz)){
-                    ev_push(w,CP_STAGE_EV_PATH_FAILED,0,0,-1,0,gx,gz);
+                    ev_push(w,CP_STAGE_EV_PATH_FAILED,0,0,-1,CP_STAGE_BLOCK_UNREACHABLE,gx,gz);
                     w->blocked_reason=CP_STAGE_BLOCK_UNREACHABLE;
                     w->blocked_x=gx;
                     w->blocked_z=gz;
@@ -1662,7 +1680,7 @@ int cp_stage_observe_v(const CpStageWorld *w,char *out,size_t cap,int version){
                 case CP_STAGE_EV_PATH_FOUND:ADD("%s{\"tick\":%u,\"type\":\"path_found\",\"length\":%.1f,\"x\":%.3f,\"z\":%.3f}",sep,e->tick,e->value,e->x,e->z);break;
                 case CP_STAGE_EV_ARRIVED:ADD("%s{\"tick\":%u,\"type\":\"arrived\",\"x\":%.3f,\"z\":%.3f}",sep,e->tick,e->x,e->z);break;
                 case CP_STAGE_EV_FLED:ADD("%s{\"tick\":%u,\"type\":\"fled\",\"target\":%d}",sep,e->tick,e->target);break;
-                case CP_STAGE_EV_PATH_FAILED:ADD("%s{\"tick\":%u,\"type\":\"path_failed\",\"x\":%.3f,\"z\":%.3f}",sep,e->tick,e->x,e->z);break;
+                case CP_STAGE_EV_PATH_FAILED:ADD("%s{\"tick\":%u,\"type\":\"path_failed\",\"x\":%.3f,\"z\":%.3f,\"reason\":\"%s\"}",sep,e->tick,e->x,e->z,block_name((int)e->value));break;
                 default:{
                     char eb[640];
                     if(cp_stage_social_event_json(e,eb,sizeof eb))ADD("%s%s",sep,eb);

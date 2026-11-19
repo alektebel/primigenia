@@ -1,0 +1,313 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "trenza_de_fuego",
+  "name": {
+    "en": "Trenza de Fuego"
+  },
+  "world": "starlife",
+  "kind": "new",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "Photospheric flux tubes anchoring in umbrae; extends into granular upflows",
+    "diet": "Astrophage swarms and kinetic energy from granular plasma currents",
+    "active": "Constant; anchors deeply and filters the boiling photosphere",
+    "predators": []
+  },
+  "body": "A self-organized helical plasma braid (Tsytovich & Morfill 2007) with lattice-reinforced filaments. One end is a super-dense magnetic knot embedded in a sunspot flux tube; the upper body fans into grapple-filaments that reach into adjacent granule upflows. The helix distributes torsional strain from differential rotation.",
+  "chains": [
+    {
+      "id": "trenza_de_fuego.c1",
+      "trait": "Helical, braided plasma body",
+      "links": [
+        "Resists magnetic shear and torsion",
+        "Differential rotation winds flux tubes over time",
+        "Photospheric hydrodynamics and MHD",
+        "F4",
+        "F21"
+      ],
+      "roots": [
+        "F4",
+        "F21"
+      ],
+      "skill": {
+        "id": "trenza_de_fuego.braid_lock",
+        "name": {
+          "en": "Braid Lock"
+        },
+        "role": "Defence",
+        "effect": "Reduces所受 damage by 60% and resists displacement for 5s by tightening the helix against the flux tube.",
+        "numbers": {}
+      },
+      "weakness": "Slow to reconfigure; rapid magnetic reorganization can snap the braid if anchored too tightly.",
+      "observe": [
+        "The creature forms a distinct right-handed helix.",
+        "Filaments grip the glowing plasma of a granule upflow.",
+        "The anchor knot glows dimly in the umbra dark."
+      ],
+      "journal": {
+        "en": "It doesn't just live in the field; it argues with it, braid by braid, holding its ground against the star's spin."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Frame the body as a flux-rope-scale (≈10³ km, spot–granule junction) actively maintained dusty-plasma helix inside a closed tube, not a rigid braid. Tie Braid Lock to tightening linkage around the anchor knot and diamagnetic stiffening (F16) rather than ignoring reconnection; weakness on tight anchor + fast reorganization stays honest.",
+        "fixes": [
+          "Frame the body as a flux-rope-scale (≈10³ km, spot–granule junction) actively maintained dusty-plasma helix inside a closed tube, not a rigid braid. Tie Braid Lock to tightening linkage around the anchor knot and diamagnetic stiffening (F16) rather than ignoring reconnection; weakness on tight anchor + fast reorganization stays honest."
+        ],
+        "analogues": [
+          {
+            "organism": "No Earth organism resists stellar-scale torsion in plasma. Closest parallels: (1) solar magnetic flux ropes / prominences (helical field-supported plasma structures; Berger & Prior 2006, Roy Soc. Proc. A); (2) supercoiled DNA and flagellar filaments distributing torsional strain in biology (mechanism unrelated to MHD, but selection for twist management is real).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "tsytovich_2007_plasma"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "trenza_de_fuego.c2",
+      "trait": "Grasping plasma filaments in upflows",
+      "links": [
+        "Absorb kinetic energy from convective plumes",
+        "Granular convection cells provide buoyant upflows",
+        "Radiative energy transport via plasma plumes",
+        "F8",
+        "F21"
+      ],
+      "roots": [
+        "F8",
+        "F21"
+      ],
+      "skill": {
+        "id": "trenza_de_fuego.siphon_grasp",
+        "name": {
+          "en": "Siphon Grasp"
+        },
+        "role": "Basic",
+        "effect": "Drain 15 HP/s from a target in an upflow and heal self for 10 HP.",
+        "numbers": {}
+      },
+      "weakness": "Filaments lose cohesion in dead-zone downflows; cannot harvest in low-velocity regions.",
+      "observe": [
+        "Filaments glow brighter where they touch a rising granule.",
+        "The creature pulses as it drains kinetic energy.",
+        "Surrounding plasma swirls around the anchor point."
+      ],
+      "journal": {
+        "en": "The star boils, and the Trenza drinks the heat off the boil, siphoning motion into structure."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Rebrand Siphon Grasp as harvesting Astrophage enriched in upflow plumes plus coupling to magnetoacoustic perturbations in the plume (7–10 km/s regime F7), with healing tied to captured prey's energy budget (F15, F22), not wholesale theft of convective kinetic energy from the granule.",
+        "fixes": [
+          "Rebrand Siphon Grasp as harvesting Astrophage enriched in upflow plumes plus coupling to magnetoacoustic perturbations in the plume (7–10 km/s regime F7), with healing tied to captured prey's energy budget (F15, F22), not wholesale theft of convective kinetic energy from the granule."
+        ],
+        "analogues": [
+          {
+            "organism": "Filter-feeding barnacles and manta-ray gill rakers harvesting plankton concentrated in tidal/upwelling flows; hydrothermal vent fauna exploiting localized kinetic and thermal gradients rather than depleting the entire current system.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "trenza_de_fuego.c3",
+      "trait": "Dusty plasma lattice skin",
+      "links": [
+        "Withstand 63 MW/m² radiative flux",
+        "Photospheric radiative load requires scattering",
+        "Stefan-Boltzmann law at 5800 K",
+        "F6",
+        "F21"
+      ],
+      "roots": [
+        "F6",
+        "F21"
+      ],
+      "skill": {
+        "id": "trenza_de_fuego.lattice_scatter",
+        "name": {
+          "en": "Lattice Scatter"
+        },
+        "role": "Defence",
+        "effect": "Reflect 50% of incoming energy attacks back at the source for 3s.",
+        "numbers": {}
+      },
+      "weakness": "Lattice is disrupted by high-energy particle storms; effectiveness drops during flares.",
+      "observe": [
+        "Skin shimmers with a crystalline Yukawa lattice pattern.",
+        "Incoming energy beams refract at sharp angles.",
+        "The lattice hums at ultrasonic frequencies."
+      ],
+      "journal": {
+        "en": "A living crystal in a furnace, wearing the light like armor."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Restrict lattice skin to dust-loaded sheath at the umbra anchor and grapple tips inside the tube; Lattice Scatter = anisotropic Mie/Yukawa scattering and partial reradiation in a narrow band, collapsing during flare particle storms (F12). Drop ‘ultrasonic’ or describe as MHz-scale dust-lattice / ion-acoustic modes.",
+        "fixes": [
+          "Restrict lattice skin to dust-loaded sheath at the umbra anchor and grapple tips inside the tube; Lattice Scatter = anisotropic Mie/Yukawa scattering and partial reradiation in a narrow band, collapsing during flare particle storms (F12). Drop ‘ultrasonic’ or describe as MHz-scale dust-lattice / ion-acoustic modes."
+        ],
+        "analogues": [
+          {
+            "organism": "Dusty plasma crystal monolayers in laboratory discharges (Ivlev et al.); structurally coloured photonic scatterers (e.g. Morpho butterfly scales) for angle-dependent scattering—not true reflection of DEW-like attacks, but same gameplay niche as F18 radiative lattice skin.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "trenza_de_fuego.c4",
+      "trait": "Alfvénic resonance organs",
+      "links": [
+        "Tune to field vibrations for sensing",
+        "MHD waves propagate along flux tubes",
+        "Alfvén speed depends on B and density",
+        "F20",
+        "F7"
+      ],
+      "roots": [
+        "F20",
+        "F7"
+      ],
+      "skill": {
+        "id": "trenza_de_fuego.resonance_hum",
+        "name": {
+          "en": "Resonance Hum"
+        },
+        "role": "Control",
+        "effect": "Emit an Alfvén wave pulse (range 80m) that slows all enemies on the same flux tube by 40% for 4s.",
+        "numbers": {}
+      },
+      "weakness": "Requires magnetically connected targets; useless across field gaps.",
+      "observe": [
+        "Organ vibrates at the local Alfvén frequency.",
+        "Enemy plasma structures quiver and slow.",
+        "Field lines visibly ripple between source and target."
+      ],
+      "journal": {
+        "en": "It speaks in waves, and the star's magnetic skin carries its voice across the dark."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Resonance Hum: photosphere-local magnetoacoustic beat on the shared flux tube (range ≤ tube footpoint scale, ~80 m OK); slows foes by inducing destructive interference in their current paths / diamagnetic eddies (F16), not coronal Alfvén bullets. Secret ‘sing back’ low-frequency hum → coordinate prediction: tie to torsional oscillation / emerging flux timing (F4, F2) with 10 s lead time as speculative helioseismic-style coupling, labeled highly speculative.",
+        "fixes": [
+          "Resonance Hum: photosphere-local magnetoacoustic beat on the shared flux tube (range ≤ tube footpoint scale, ~80 m OK); slows foes by inducing destructive interference in their current paths / diamagnetic eddies (F16), not coronal Alfvén bullets. Secret ‘sing back’ low-frequency hum → coordinate prediction: tie to torsional oscillation / emerging flux timing (F4, F2) with 10 s lead time as speculative helioseismic-style coupling, labeled highly speculative."
+        ],
+        "analogues": [
+          {
+            "organism": "Weakly: electrosensory fish phase locking to conspecific electric fields; magnetoreception in magnetotactic bacteria and migratory birds (geomagnetic field coupling). For wave-based herd control on a conductor, lightning-related Schumann resonances are a poor fit—better game analogy is elephants’ infrasonic communication through ground, but medium here is MHD on a flux tube.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "Astrophage",
+      "kind": "cousin",
+      "note": "(council kind 'Predator') Trenza filters and consumes Astrophage swarms to prevent overgrowth on its filaments; the Astrophage gain mobility by riding Trenza's updrafts."
+    },
+    {
+      "with": "Remo de Plasma",
+      "kind": "cousin",
+      "note": "(council kind 'Competitor') Remo steals Astrophage from Trenza's filaments using speed; Trenza occasionally traps Remo in siphon-grasps."
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-18",
+    "by": [
+      "naturalist/qwen"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-18",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-18"
+    },
+    {
+      "date": "2026-11-18",
+      "who": "autoloop",
+      "what": "removed rejected references from analogues"
+    },
+    {
+      "date": "2026-11-18",
+      "who": "import_got",
+      "what": "merged run autoloop-2026-11-18: 0 chain(s) added, 0 plausibility block(s) filled, 0 relation(s) added"
+    }
+  ],
+  "temperament": "Stolid, territorial, slow to release grip",
+  "secrets": [
+    "If you play a low-frequency Alfvén hum near a Trenza, it will 'sing back', revealing its precise magnetic coordinate and allowing you to predict the next reconnection event within 10 seconds."
+  ],
+  "moments": [
+    "A solar flare strikes. The Trenza does not flee. Its helix locks, the lattice skin scatters the initial UV blast, and for ten seconds, the creature becomes a beacon, braiding the reconnection field lines into its own structure, growing in mass and complexity as the flare dies, a living knot in the star's wound."
+  ],
+  "journal": [
+    {
+      "en": "It is the anchor and the filter, the slow mind in the boiling sea."
+    },
+    {
+      "en": "You cannot blow it away; you must convince the magnetic field to let go."
+    }
+  ]
+}
