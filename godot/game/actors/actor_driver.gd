@@ -133,7 +133,31 @@ func _update_flight(_dt: float, s: Dictionary) -> void:
 	pose["swing_u"] = swing
 	pose["hips"] = hips
 	adapter.loco_apply(body, pose, desc)
+	_bank_pose(f)
 	_acting_before = false
+
+# Presentation of a banked turn on the spine: the neck rolls back against the body (gaze stabilisation: the head stays on the horizon),
+# the tail twists into the turn and fans (wider). loco_apply rewrote every bone this frame, so these are deltas on top of it.
+const TAIL_TWIST := 0.35        # share of the body roll the tail tip adds, into the turn
+const TAIL_FAN := 0.35          # tail width gain at the sharpest bank
+func _bank_pose(f: Dictionary) -> void:
+	var sk = body.skeleton
+	if sk == null:
+		return
+	var bank: float = float(f.bank)
+	var roll := -atan(bank)                                   # the body's roll about its forward axis (+ = left wing up)
+	var stab: float = 1.0 - float(f.get("head_roll", 0.0)) / roll if absf(roll) > 1e-4 else 0.0
+	var nn: int = body.neck_bones.size()
+	for a in nn:
+		var b: int = body.neck_bones[a]
+		sk.set_bone_pose_rotation(b, sk.get_bone_pose_rotation(b) * Quaternion(Vector3.BACK, -roll * stab / float(nn)))
+	var tn: int = body.tail_bones.size()
+	var amount := clampf(bank / 1.7320508, -1.0, 1.0)
+	for a in tn:
+		var b2: int = body.tail_bones[a]
+		var k := 1.0 - float(a) / float(maxi(tn, 1))          # tip first
+		sk.set_bone_pose_rotation(b2, sk.get_bone_pose_rotation(b2) * Quaternion(Vector3.BACK, roll * TAIL_TWIST * k / float(maxi(tn, 1)) * 2.0))
+		sk.set_bone_pose_scale(b2, (sk.get_bone_rest(b2) as Transform3D).basis.get_scale() * Vector3(1.0 + TAIL_FAN * absf(amount) * k, 1.0, 1.0))
 
 # The slide / tumble while C has the player airborne or sliding (player.falling): the body leans back, feet downhill, and
 # rolls a little, eased in and out so the landing settles. Presentation only.

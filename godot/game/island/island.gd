@@ -547,6 +547,7 @@ func _update_camera(dt: float) -> void:
 		chase.air_on = flight.active() and flight.model.airborne()
 		chase.air_y = p.pos.y
 		chase.air_dive = flight.model != null and flight.model.mode == "dive"
+		chase.air_bank = flight.model.bank_t if chase.air_on else 0.0
 	var enemy = null
 	if fighting:
 		var e: Dictionary = state.entities[state.active + 1]
@@ -560,6 +561,8 @@ func _update_camera(dt: float) -> void:
 	var view := _cave_camera(r, p.pos)
 	camera.position = view.position + _landing_shake(dt)
 	camera.look_at(view.aim)
+	if absf(float(r.get("roll", 0.0))) > 1e-4:
+		camera.rotate_object_local(Vector3.BACK, float(r.roll))       # the horizon tilts with part of the bank
 	player_input.view_yaw = chase.view_yaw
 	_apply_zoom_budget(chase.z)
 	icons.update_alpha(chase.icon_alpha())

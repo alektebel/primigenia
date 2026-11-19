@@ -39,6 +39,7 @@ var amp := 0.0              # 0 gliding .. 1 full stroke
 var fold := 0.0             # dive tuck
 var flare := 0.0
 var power := 1.0            # stroke size 0..1 (70..110 deg for membranes, 90..150 for sails)
+var bank := 0.0             # -1..1 share of the sharpest bank, + = banked left (left wing inner)
 var pitch := 0.0            # +1 = nose up input (more incidence), -1 = nose down
 
 
@@ -65,6 +66,7 @@ func step(dt: float, cmd: Dictionary) -> void:
 	mode = str(cmd.get("mode", mode))
 	power = clampf(float(cmd.get("power", power)), 0.0, 1.0)
 	pitch = clampf(float(cmd.get("pitch", pitch)), -1.0, 1.0)
+	bank = _ease(bank, clampf(float(cmd.get("bank", 0.0)), -1.0, 1.0), 0.12, dt)
 	var flaps: bool = bool(info.get("flaps", true))
 	deploy = _ease(deploy, 0.0 if mode == "ground" else 1.0, TAU_DEPLOY, dt)
 	amp = _ease(amp, 1.0 if (mode == "flap" and flaps) else 0.0, TAU_AMP, dt)
@@ -122,6 +124,7 @@ func channels() -> Dictionary:
 	span_f = lerpf(span_f, 1.0, flare)
 	spread_f = lerpf(spread_f, 1.0, flare)
 	return {
+		"bank": bank * deploy * (1.0 - fold) * (1.0 - flare),
 		"flap": lerpf(GROUND_FLAP, flap_f, deploy), "sweep": lerpf(GROUND_SWEEP, sweep_f, deploy),
 		"inc": lerpf(0.0, inc_f, deploy), "span": lerpf(1.0, span_f, deploy), "spread": lerpf(1.0, spread_f, deploy),
 	}
@@ -134,7 +137,16 @@ static func apply(creature, ch: Dictionary) -> void:
 		if not h.has("wing"):
 			continue
 		var w: Node3D = h.wing
-		w.basis = Basis.from_euler(Vector3(float(ch.inc), float(ch.sweep), float(ch.flap)), EULER_ORDER_YXZ) * Basis.from_scale(Vector3(float(ch.span), 1.0, 1.0))
+		# a banked turn: the inner wing is flexed (shorter, swept back) and held higher, the outer one extended. Left is +X.
+		var inner := 0.0
+		var b: float = float(ch.get("bank", 0.0))
+		if b != 0.0:
+			var left: bool = (creature.to_local(w.global_position).x >= 0.0) if creature.is_inside_tree() else (w.position.x >= 0.0)
+			inner = b if left else -b           # + = this wing is the inner one, - = the outer one
+		var span_k := float(ch.span) * (1.0 - 0.22 * inner if inner > 0.0 else 1.0 - 0.10 * inner)
+		var flap_k := float(ch.flap) + 0.18 * inner
+		var sweep_k := float(ch.sweep) + 0.30 * maxf(inner, 0.0)
+		w.basis = Basis.from_euler(Vector3(float(ch.inc), sweep_k, flap_k), EULER_ORDER_YXZ) * Basis.from_scale(Vector3(span_k, 1.0, 1.0))
 		if w.has_meta("vanes"):
 			for v in w.get_meta("vanes"):
 				if v is Node3D:

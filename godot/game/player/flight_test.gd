@@ -20,8 +20,12 @@ const FOLD_AREA := 0.4
 const POWER_PER_KG := 150.0
 const BURST := 2.0
 const V_MIN_T := 3.0
-const BANK_MAX_T := 1.0               # tan(45 deg)
-const BANK_RATE := 2.6                # 1/s
+const BANK_MAX_T := 1.7320508         # tan(60 deg): the sharpest turn
+const ROLL_RATE_T := 1.1              # d tan(bank)/dt while a turn key is held: 45 deg in about 1 s, 60 deg in 1.7 s, a tap is a gentle bank
+const ROLL_TAU := 0.2                 # s, the roll rate follows the command through this lag (roll inertia, no jerk)
+const ROLLOUT_GAIN := 2.5             # 1/s, with no input the bank decays towards level at this proportional rate...
+const ROLLOUT_MAX := 1.3              # ...but never faster than this d tan/dt
+const HEAD_STAB := 0.92               # gaze stabilisation: the head cancels this share of the body roll
 const STAMINA_DRAIN := 1.0 / 12.0     # per second of flapping (full power drains in about 12 s)
 const STAMINA_REGEN := 1.0 / 6.0      # per second on the ground
 const STAMINA_RESUME := 0.15
@@ -43,6 +47,9 @@ var mode := "ground"          # ground, glide, flap, dive, flare, skid
 var pos := Vector3.ZERO       # centre of mass, world
 var vel := Vector3.ZERO
 var bank_t := 0.0             # tan(bank angle), + = banked to the left (left wing down)
+var roll_rate := 0.0          # d bank_t / dt
+var yaw_rate := 0.0           # rad/s of the heading, + = turning left; it comes only from the horizontal part of the tilted lift
+var overbank := false         # the pull-up that holds altitude in this bank needs more than CL_MAX: the bird sinks
 var stamina := 1.0
 var yaw_dir := Vector2(0.0, 1.0)   # horizontal unit vector the body faces (x, z)
 var stalled := false
@@ -170,6 +177,7 @@ func takeoff(origin: Vector3, ground_vel: Vector3, heading: Vector2) -> Dictiona
 	vel = Vector3(h.x * v_fwd, 1.5 if run_ok else 3.0, h.y * v_fwd)
 	mode = "glide"
 	bank_t = 0.0
+	roll_rate = 0.0
 	stalled = false
 	climb_out = CLIMB_OUT_S
 	return {"ok": true, "reason": "", "burst": not run_ok}
@@ -180,7 +188,8 @@ func press_flap() -> void:
 
 
 # ---- stepping -----------------------------------------------------------------------------------------------------------------
-## input: {flap: bool (held), dive: bool, pitch: -1..1 (+1 = S, slower and floatier), steer: Vector2 or null (desired horizontal direction x, z)}
+## input: {flap: bool (held), dive: bool, pitch: -1..1 (+1 = S, slower and floatier), roll: -1..1 (+1 = roll left, -1 = right; it commands a
+## roll RATE, the bank builds while it is held and rolls out to level when it is released)}
 ## ground: Callable(x, z) -> float. Returns the events of the step: {landed, impact_vy, h_eq, damage, speed}.
 func step(dt: float, input: Dictionary, ground: Callable) -> Dictionary:
 	var ev := {"landed": false, "impact_vy": 0.0, "h_eq": 0.0, "damage": 0.0, "ended": false, "speed": 0.0}
@@ -220,16 +229,19 @@ func _fly(dt: float, input: Dictionary, ground: Callable, ev: Dictionary) -> voi
 	var q := 0.5 * RHO * v2
 	var alt := altitude(ground)
 	var want_dive: bool = bool(input.get("dive", false))
-	# bank follows the steering: lean into the turn the player asks for, wings level with no input
-	var f2 := _horizontal_dir()
-	var t_goal := 0.0
-	var steer = input.get("steer", null)
-	if steer is Vector2 and (steer as Vector2).length() > 0.01:
-		var sd: Vector2 = (steer as Vector2).normalized()
-		var leftness := sd.x * f2.y - sd.y * f2.x      # component of the wanted direction on the creature's left (+X when facing +Z)
-		var ahead := sd.x * f2.x + sd.y * f2.y
-		t_goal = clampf(leftness * 2.2, -BANK_MAX_T, BANK_MAX_T) if ahead > -0.2 else (BANK_MAX_T if leftness >= 0.0 else -BANK_MAX_T)
-	bank_t = move_toward(bank_t, t_goal, BANK_RATE * dt)
+	# roll leads, yaw follows: the keys command a roll rate; the heading changes only through the horizontal part of the banked lift
+	_horizontal_dir()
+	var roll_cmd := clampf(float(input.get("roll", 0.0)), -1.0, 1.0)
+	var rate_goal := roll_cmd * ROLL_RATE_T if absf(roll_cmd) > 0.01 else clampf(-bank_t * ROLLOUT_GAIN, -ROLLOUT_MAX, ROLLOUT_MAX)
+	roll_rate += (rate_goal - roll_rate) * minf(1.0, dt / ROLL_TAU)
+	bank_t += roll_rate * dt
+	if absf(bank_t) > BANK_MAX_T:
+		bank_t = BANK_MAX_T if bank_t > 0.0 else -BANK_MAX_T
+		roll_rate = 0.0
+	if absf(roll_cmd) <= 0.01 and absf(bank_t) < 0.004 and absf(roll_rate) < 0.02:
+		bank_t = 0.0
+		roll_rate = 0.0
+	var h0 := Vector2(vel.x, vel.z)
 	var cos_phi := 1.0 / sqrt(1.0 + bank_t * bank_t)
 	var sin_phi := bank_t * cos_phi
 	# the lift direction: perpendicular to the velocity, in the plane of the bank
@@ -267,6 +279,12 @@ func _fly(dt: float, input: Dictionary, ground: Callable, ev: Dictionary) -> voi
 		cl = clampf(l_need / maxf(q * s_full * lift_mul, 1e-6), CL_MIN, CL_MAX)
 	else:
 		mode = "glide"
+	# in a bank the bird pulls up (CL x 1/cos) to hold its altitude; past CL_MAX it cannot, and it sinks
+	overbank = false
+	if not want_dive and not flaring:
+		var cl_turn := cl / cos_phi
+		overbank = cl_turn > CL_MAX + 1e-4 and absf(bank_t) > 0.05
+		cl = minf(cl_turn, CL_MAX)
 	# flapping
 	var flapping := false
 	flap_timer = maxf(0.0, flap_timer - dt)
@@ -294,6 +312,10 @@ func _fly(dt: float, input: Dictionary, ground: Callable, ev: Dictionary) -> voi
 	stalled = (not flaring) and speed < stall_speed() * 0.95 and not flapping
 	vel += acc * dt
 	pos += vel * dt
+	var h1 := Vector2(vel.x, vel.z)
+	var hl0 := h0.length()
+	var hl1 := h1.length()
+	yaw_rate = -h0.cross(h1) / (hl0 * hl1 * dt) if hl0 > 0.5 and hl1 > 0.5 else 0.0
 	ev.speed = speed
 	# touchdown
 	var gy: float = ground.call(pos.x, pos.z)
@@ -310,6 +332,7 @@ func _fly(dt: float, input: Dictionary, ground: Callable, ev: Dictionary) -> voi
 		pos.y = gy + float(spec.com_h)
 		vel.y = 0.0
 		bank_t = 0.0
+		roll_rate = 0.0
 		mode = "skid"
 
 
@@ -340,3 +363,9 @@ func orientation() -> Basis:
 		nose_up = 0.0
 	var roll := -atan(bank_t) if mode != "skid" else 0.0
 	return Basis(Vector3.UP, atan2(yaw_dir.x, yaw_dir.y)) * Basis(Vector3.RIGHT, -nose_up) * Basis(Vector3.BACK, roll)
+
+
+## Roll (rad, + = left wing up) the head keeps against the horizon after the gaze stabilisation: a few degrees even in a 60 degree bank.
+func head_roll() -> float:
+	var roll := -atan(bank_t) if mode != "skid" else 0.0
+	return roll * (1.0 - HEAD_STAB)
