@@ -655,3 +655,15 @@ cannot do this" (C only reports known / not known) and dragging a token, allies'
 success ring that breaks into four pieces, and every posture/animation item of 7.16. The journal and family tree are stubs (veil,
 title, DNA earned).
 
+
+## 14. Field journal (G38, implemented on `c2/journal-polish`)
+
+The journal stub is replaced by a notebook (`godot/ui/journal_view.gd`; data in `journal_model.gd`; pictures in `journal_art.gd`). Paper and
+iron-gall ink, Alegreya faces, one copper accent; it is the one surface of the UI that is a thing in the player's hands rather than a sign
+on the picture, so it has a paper sheet (no rounded boxes). Opened by J or the menu entry, closed by Esc, J, T or a click outside; the world
+waits while it is open. Sections (tabs on the top edge): **Species** (live-rendered side portrait, silhouette and "? ? ?" until met; temperament,
+diet, befriended / hunted pips and the Q43 state, home range, observed clues, likes), **Parts** (46-part catalogue, found / owned / level,
+silhouettes for the undiscovered), **Secrets** (meteor shards with their line, fossils and old bones studied, the hidden cave), **Recipes**
+(unknown / hinted / known / mastered with clue slots). Left / Right or the wheel turn spreads, Tab changes section; the key legend has a
+`journal` context. Each page's source in `state()` is listed at the top of `journal_model.gd`; sections the world does not report yet hide.
+Evidence: `docs/evidence/godot/journal/` (`make godot-journal-evidence`).
