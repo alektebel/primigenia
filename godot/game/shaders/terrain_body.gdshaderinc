@@ -4,6 +4,7 @@
 #include "res://game/shaders/terrain_maps.gdshaderinc"
 #include "res://game/shaders/rock_mapping.gdshaderinc"
 #include "res://game/shaders/rock.gdshaderinc"
+#include "res://game/shaders/world_light.gdshaderinc"
 
 uniform vec3 lod_color = vec3(0.0);
 uniform float lod_debug : hint_range(0.0, 1.0) = 0.0;

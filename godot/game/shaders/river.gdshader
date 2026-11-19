@@ -1,9 +1,11 @@
 shader_type spatial;
-render_mode unshaded, blend_mix, depth_draw_opaque, cull_disabled;
+render_mode ambient_light_disabled, specular_disabled, blend_mix, depth_draw_opaque, cull_disabled;
+#define WORLD_LIT
 // River ribbons (rivers.gd): flowing water along the channel, rapids and white water where the bed drops (waterfalls),
 // soft edges, the same aerial haze as the sea. COLOR.r class/3, COLOR.g bed drop per metre, COLOR.b drainage 0..1.
 #include "res://game/shaders/look.gdshaderinc"
 #include "res://game/shaders/terrain_maps.gdshaderinc"
+#include "res://game/shaders/world_light.gdshaderinc"
 
 varying vec3 wp;
 varying vec2 st;

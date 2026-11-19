@@ -62,6 +62,12 @@ vec3 meadowColor(float t_b, float t_a, float light, float wave, vec2 xz) {
 }
 
 // 1 = lit, < 1 = under a creature (contact shadow from the occluder spheres, near centre only).
+// With the sun's shadow map on the ground (WORLD_LIT) creatures cast a real shadow, so this disc only keeps a soft contact darkening.
+#ifdef WORLD_LIT
+const float OCC_STRENGTH = 0.45;
+#else
+const float OCC_STRENGTH = 1.0;
+#endif
 float occluder_shadow(vec3 wp) {
 	if (distance(wp.xz, occ_center.xz) > 24.0) {
 		return 1.0;
@@ -78,5 +84,5 @@ float occluder_shadow(vec3 wp) {
 		float r2 = o.w * o.w;
 		sh *= mix(1.0, smoothstep(r2 * 0.5, r2 * 1.4, d2), step(0.0, tca));
 	}
-	return sh;
+	return mix(1.0, sh, OCC_STRENGTH);
 }

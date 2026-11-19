@@ -2,12 +2,14 @@ extends MultiMeshInstance3D
 # World-anchored grass: one MultiMesh of identity-transform blades; the vertex shader places each
 # blade from its stored offset (INSTANCE_CUSTOM) wrapped around `center`. Visual only.
 
+const WorldLight := preload("res://game/island/world_light.gd")
 const GRASS_SHADER := preload("res://game/shaders/grass.gdshader")
 const SEED := 8808
 const NEAR_R := 44.0
 const FAR_R := 140.0
 
 var material: ShaderMaterial
+var tier := 2                    # terrain tier (WorldLight): 1 = unshaded, 2/3 = receives the sun shadow map
 var near_count := 0
 var far_count := 0
 
@@ -73,7 +75,7 @@ func build(data, total: int) -> void:
 	mm.buffer = make_buffer(near_count, far_count)
 	multimesh = mm
 	material = ShaderMaterial.new()
-	material.shader = GRASS_SHADER
+	material.shader = WorldLight.shader_for(GRASS_SHADER, tier)
 	material.set_shader_parameter("height_tex", data.height_tex)
 	material.set_shader_parameter("level_tex", data.level_tex)
 	material.set_shader_parameter("surface_tex", data.surface_tex)

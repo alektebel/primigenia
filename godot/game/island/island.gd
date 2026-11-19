@@ -3,6 +3,7 @@ extends Node3D
 # creatures, chase camera and controls. Built in code from Game.data (set by the boot flow).
 
 const Look := preload("res://game/island/look.gd")
+const WorldLight := preload("res://game/island/world_light.gd")
 const EnvironmentFactory := preload("res://game/island/environment.gd")
 const TerrainChunks := preload("res://game/island/terrain_chunks.gd")
 const Water := preload("res://game/island/water.gd")
@@ -67,6 +68,7 @@ var gesture := Gesture.new()       # the left button: click, hold or orbit drag
 var _orbit_btn := 0               # right/middle button held (1 = right, 2 = middle)
 var _mid_travel := 0.0
 var _far := false
+var _sun_shadows_ok := true    # the sun draws a shadow map on this tier (WorldLight); low does not
 var _nest := Vector2.ZERO
 var _den = null
 var _den_seen := false
@@ -110,19 +112,28 @@ func build() -> void:
 	terrain_chunks.name = "Terrain"
 	add_child(terrain_chunks)
 	terrain_chunks.build(data)
+	var wl_tier: int = terrain_chunks.tier
+	WorldLight.configure_sun(sun, wl_tier)   # shadow reach and cascades per tier; low draws none
+	_sun_shadows_ok = WorldLight.lit(wl_tier)
+	sun.shadow_enabled = _sun_shadows_ok
 	water = Water.new()
+	water.tier = wl_tier
 	water.name = "Water"
 	add_child(water)
 	water.build(data)
 	rivers = Rivers.new()
+	rivers.tier = wl_tier
 	rivers.name = "Rivers"
 	add_child(rivers)
 	rivers.build(data)
 	var t0 := Time.get_ticks_msec()
 	grass = Grass.new()
+	grass.tier = wl_tier
 	grass.name = "Grass"
 	add_child(grass)
 	grass.build(data, int(Game.settings.grass))
+	# Low tier has no shadow map. The baked terrain sun visibility (PLAN-rock step 9) could stand in for it, but with the 16 degree sun it darkens
+	# every bank and swell of the meadow (docs/godot/WL1.md), so it stays opt-in (settings.sun_shadows) as before.
 	if Game.settings.get("sun_shadows", false):
 		set_sun_shadows(true)
 	print("grass built in %d ms (%d blades)" % [Time.get_ticks_msec() - t0, int(Game.settings.grass)])
@@ -490,7 +501,7 @@ func _apply_zoom_budget(zz: float) -> void:
 	if far != _far:
 		_far = far
 		grass.visible = not far
-		sun.shadow_enabled = not far
+		sun.shadow_enabled = _sun_shadows_ok and not far
 	var models := zz < MODEL_OFF_Z
 	for id in hosts:
 		var h = hosts[id]
