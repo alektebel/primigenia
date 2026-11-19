@@ -139,6 +139,7 @@ func _run() -> void:
 	check(tick() - t_start <= TOTAL, "the whole chain fits in %d ticks (%d used)" % [TOTAL, tick() - t_start])
 	await _shot("done")
 	print("   task completion ticks: ", task_ticks, "  world hash ", game.stage.world.hash())
+	print("e2e final tick=%d hash=%s tasks=%s" % [tick(), game.stage.world.hash(), str(task_ticks)])
 	_finish()
 
 # --- helpers: the player's hands --------------------------------------------------------------------------------------------
@@ -447,14 +448,22 @@ func _fire() -> void:
 		sui.select_id(target)
 		ui.set_mode(&"attack")
 		var f0 := tick()
+		var flame_shot := false
 		while tick() - f0 < 160 and not task_ticks.has("fire"):
 			ui._press(slot)
 			await frames(6)
+			if evidence_dir != "" and not flame_shot and state().combat.fighters.size() > 0 and int(state().combat.fighters[0].move) == 6:
+				# the evidence run slows the clock down to look at the cone: wind-up, then the active frames
+				game.stage.timescale = 1.0
+				await until(func(): return state().combat.fighters.size() > 0 and int(state().combat.fighters[0].phase) == 2, 200)
+				await frames(4)
+				await _shot("task5_flame")
+				await ticks(10)
+				await _shot("task5_burn")
+				game.stage.timescale = TIMESCALE
+				flame_shot = true
 		if int(state().active) >= 0 and not task_ticks.has("fire"):
 			await _fight_out(t0)
 	check(await wait_task("fire", 40), "task 5 done: the flamethrower was used (tick %d)" % int(task_ticks.get("fire", -1)))
 	check(int(state().dig.flames) >= 1, "C counted the flame (%d)" % int(state().dig.flames))
-	await _shot("task5_flame")
-	await ticks(8)
-	await _shot("task5_burn")
 	check(tick() - t0 <= BUDGET.fire, "within the budget of %d ticks (%d)" % [BUDGET.fire, tick() - t0])

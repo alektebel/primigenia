@@ -970,10 +970,11 @@ static int has_threat(const CpStageWorld *w){
     return 0;
 }
 static int order_apply(CpStageWorld *w,const CpStageInput *a){
-    if(!w||!a||!isfinite(a->x)||!isfinite(a->z)||a->verb<0||a->verb>CP_STAGE_DIG||a->sprint<0||a->sprint>1)return -1;
+    if(!w||!a||!isfinite(a->x)||!isfinite(a->z)||a->verb<0||a->verb>CP_STAGE_QUEST||a->sprint<0||a->sprint>1)return -1;
     if(w->parts.lost)return CP_STAGE_ERR_BUSY;
     if(a->verb==CP_STAGE_CONTINUE)return 0;
     if(w->falling&&a->verb!=CP_STAGE_HEADING&&a->verb!=CP_STAGE_WAIT)return CP_STAGE_ERR_BUSY;
+    if(a->verb==CP_STAGE_QUEST)return cp_stage_quest_award(w,a->target,a->move);
     if(a->verb==CP_STAGE_DIG){w->parts.inspect_id=w->parts.inspect_ticks=0;return cp_stage_dig_order(w,a);}
     if(a->verb>=CP_STAGE_INSPECT){int src=0;if(cp_stage_secrets_order(w,a,&src))return src;return cp_stage_parts_order(w,a);}
     w->parts.inspect_id=w->parts.inspect_ticks=0;

@@ -1,9 +1,9 @@
 {
 	"camera": {},
-	"created": "2026-11-19T23:02:13",
+	"created": "2026-11-20T00:50:31",
 	"engine": {
 		"build": "unknown",
-		"layout": "85f652e533cc6132",
+		"layout": "1ed7786f70b13535",
 		"snapshot_version": 3,
 		"stage_version": 3
 	},
@@ -221,6 +221,8 @@
 	},
 	"name": "crowd",
 	"note": "5 Garfios around the player at the nest: UI icons, nameplates and camera readability.",
+	"plants": [],
+	"quest": {},
 	"recipe": "crowd.log",
 	"setup": {
 		"cave": {
@@ -240,6 +242,7 @@
 		"obstacles": [],
 		"player": {
 			"charge": 4,
+			"fire": 0,
 			"guard": 0,
 			"hp": 100.0,
 			"mouth": 2,
@@ -268,6 +271,7 @@
 				"legs": 0,
 				"profile": {
 					"charge": 0,
+					"fire": 0,
 					"guard": 0,
 					"hp": 80.0,
 					"mouth": 3,
@@ -288,6 +292,7 @@
 				"legs": 0,
 				"profile": {
 					"charge": 0,
+					"fire": 0,
 					"guard": 0,
 					"hp": 80.0,
 					"mouth": 3,
@@ -308,6 +313,7 @@
 				"legs": 0,
 				"profile": {
 					"charge": 0,
+					"fire": 0,
 					"guard": 0,
 					"hp": 80.0,
 					"mouth": 3,
@@ -328,6 +334,7 @@
 				"legs": 0,
 				"profile": {
 					"charge": 0,
+					"fire": 0,
 					"guard": 0,
 					"hp": 80.0,
 					"mouth": 3,
@@ -348,6 +355,7 @@
 				"legs": 0,
 				"profile": {
 					"charge": 0,
+					"fire": 0,
 					"guard": 0,
 					"hp": 80.0,
 					"mouth": 3,

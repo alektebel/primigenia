@@ -52,6 +52,7 @@ func _finish() -> void:
 	await test_menu_and_onboarding()
 	await test_journal()
 	await test_audio_manager()
+	await test_first_quest_ui()
 	print("ui tests: %d checks, %d failures" % [checks, fails])
 	quit(1 if fails else 0)
 
@@ -930,3 +931,58 @@ func test_creature_bars() -> void:
 	jv.model = {}
 	ok(jv.page_count() == 1, "journal: no plants is one empty spread")
 	jv.free()
+
+# first quest: the task card, the dig chip, the Tareas tab and the minimap ping
+func test_first_quest_ui() -> void:
+	var QuestCard := preload("res://ui/quest_card.gd")
+	var DigChip := preload("res://ui/dig_chip.gd")
+	var jv = JournalView.new()
+	ok(JournalView.TABS.has("tasks") and JournalView.TABS[JournalView.TABS.size() - 1] == "tasks", "journal: the Tasks tab is last, so the others keep their positions")
+	var rows := []
+	for i in 5:
+		rows.append({"title": {"en": "T%d" % i, "es": "T%d" % i}, "hint": {"en": "h", "es": "h"}, "done": {"en": "d", "es": "d"}, "reward": 5, "status": "now" if i == 1 else ("done" if i < 1 else "later")})
+	jv.model = {"tasks": rows}
+	jv.set_tab(JournalView.TABS.find("tasks"))
+	ok(jv.page_count() == 1, "journal: five tasks fit one spread (%d)" % jv.page_count())
+	jv.model = {"tasks": rows + rows}
+	ok(jv.page_count() == 2, "journal: ten tasks take two spreads")
+	jv.free()
+	ok(Strings.t("jt_tasks") == "Tasks" and Strings.t("j_task_now") == "now", "strings: the tab and the status words (English)")
+	var card = QuestCard.new()
+	root.add_child(card)
+	var model := {"title": "First steps", "index": 1, "total": 5, "marks": [true, false, false, false, false], "finished": false,
+		"step_title": "Make a friend", "hint": "Befriend a creature of another species: sing, dance, offer a leaf.", "parts": []}
+	await process_frame
+	card.set_model(model)
+	var open_rect: Rect2 = card.card_rect()
+	ok(open_rect.position.x > 0.0 and open_rect.position.y > 0.0 and open_rect.size.x >= 280.0 and open_rect.end.x < 420.0, "task card: top-left, about 300 px wide (%s)" % open_rect)
+	card.toggle()
+	var folded: Rect2 = card.card_rect()
+	ok(card.collapsed and folded.size.y < open_rect.size.y and folded.size.x < open_rect.size.x, "task card: K folds it to a tab (%s)" % folded)
+	card.toggle()
+	ok(not card.collapsed and card.card_rect().size.y == open_rect.size.y, "task card: and opens it again, at once")
+	model.parts = [{"text": "a", "done": true}, {"text": "b", "done": false}]
+	card.set_model(model)
+	ok(card.card_rect().size.y > open_rect.size.y, "task card: a task with parts grows by a row each")
+	ok(card.mouse_filter == Control.MOUSE_FILTER_IGNORE, "task card: never takes the mouse")
+	card.free()
+	var chip = DigChip.new()
+	root.add_child(chip)
+	chip.centre = Vector2(400, 300)
+	chip._a = 1.0
+	var got := [0]
+	chip.pressed.connect(func(): got[0] += 1)
+	var click := InputEventMouseButton.new()
+	click.button_index = MOUSE_BUTTON_LEFT
+	click.pressed = true
+	click.position = Vector2(405, 302)
+	ok(chip.handle_input(click) and got[0] == 1, "dig chip: a click on the ring digs")
+	click.position = Vector2(700, 300)
+	ok(not chip.handle_input(click) and got[0] == 1, "dig chip: a click elsewhere is the world's")
+	chip.free()
+	var mm = preload("res://ui/minimap.gd").new()
+	root.add_child(mm)
+	ok(mm.quest_ping.x > 1e8, "minimap: no ping by default")
+	mm.quest_ping = Vector2(30.0, 40.0)
+	ok(mm.quest_ping.x < 1e8, "minimap: a ping can be set")
+	mm.free()

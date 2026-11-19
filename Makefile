@@ -647,9 +647,14 @@ first-quest-test: $(BUILD)/first_quest_test
 
 # First quest: the whole chain played by a bot through the real verbs (kill, befriend, dig, wings, fire gland, flamethrower)
 .PHONY: godot-first-quest-e2e godot-first-quest-evidence
+# Runs the chain twice from the same seed and compares the final tick and world hash: the bot and the world are deterministic.
 godot-first-quest-e2e: godot
-	nice -n 10 timeout 1500 $(GODOT) --headless --fixed-fps 60 --path godot --script res://game/tests/first_quest_e2e.gd -- $(E2E_ARGS)
+	nice -n 10 timeout 1500 $(GODOT) --headless --fixed-fps 60 --path godot --script res://game/tests/first_quest_e2e.gd -- $(E2E_ARGS) | tee $(BUILD)/e2e_run1.txt
+	nice -n 10 timeout 1500 $(GODOT) --headless --fixed-fps 60 --path godot --script res://game/tests/first_quest_e2e.gd -- $(E2E_ARGS) > $(BUILD)/e2e_run2.txt
+	@grep "^e2e final" $(BUILD)/e2e_run1.txt > $(BUILD)/e2e_final1.txt; grep "^e2e final" $(BUILD)/e2e_run2.txt > $(BUILD)/e2e_final2.txt; \
+	  test -s $(BUILD)/e2e_final1.txt && diff $(BUILD)/e2e_final1.txt $(BUILD)/e2e_final2.txt && echo "replay: the second run ends at the same tick and world hash"
 godot-first-quest-evidence: godot
 	@mkdir -p docs/evidence/godot/first-quest
 	LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 2400 xvfb-run -a -s "-screen 0 1280x720x24" $(GODOT) --rendering-driver opengl3 --fixed-fps 60 --resolution 1280x720 --path godot \
 	  --script res://game/tests/first_quest_e2e.gd -- evidence=$(CURDIR)/docs/evidence/godot/first-quest $(E2E_ARGS)
+	python3 tools/contact_sheet.py docs/evidence/godot/first-quest docs/evidence/godot/first-quest/contact_sheet.png 3 640

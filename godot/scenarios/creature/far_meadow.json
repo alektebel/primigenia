@@ -1,9 +1,9 @@
 {
 	"camera": {},
-	"created": "2026-11-19T23:01:34",
+	"created": "2026-11-20T00:49:55",
 	"engine": {
 		"build": "unknown",
-		"layout": "85f652e533cc6132",
+		"layout": "1ed7786f70b13535",
 		"snapshot_version": 3,
 		"stage_version": 3
 	},
@@ -221,6 +221,8 @@
 	},
 	"name": "far_meadow",
 	"note": "A slope about 500 m from the nest, no creatures near: to look at the island heights and the camera on slopes.",
+	"plants": [],
+	"quest": {},
 	"recipe": "far_meadow.log",
 	"setup": {
 		"cave": {
@@ -240,6 +242,7 @@
 		"obstacles": [],
 		"player": {
 			"charge": 4,
+			"fire": 0,
 			"guard": 0,
 			"hp": 100.0,
 			"mouth": 2,

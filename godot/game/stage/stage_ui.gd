@@ -433,6 +433,7 @@ func _journal_model() -> Dictionary:
 		_parts_catalogue = Profile.load_json("res://game/data/parts.json").get("parts", [])
 	var model: Dictionary = JournalModel.build(stage.cur, species, _chains, _parts_catalogue)
 	model["plants"] = island.plant_rows()
+	model["tasks"] = island.first_quest.task_rows() if island.first_quest != null else []
 	return model
 
 # A plant was watched long enough: the whisper and the journal page (the plants themselves are saved with the game).

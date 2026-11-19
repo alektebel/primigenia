@@ -24,7 +24,8 @@ enum { CP_STAGE_CONTINUE, CP_STAGE_WAIT, CP_STAGE_GO, CP_STAGE_HEADING,
         * order ends. Any other order cancels it. */
        CP_STAGE_BEFRIEND, CP_STAGE_GIFT, CP_STAGE_OBSERVE, CP_STAGE_INTIMIDATE,
        CP_STAGE_EAT, CP_STAGE_INSPECT, CP_STAGE_BUY_PART, CP_STAGE_BUY_LEVEL, CP_STAGE_BUY_TIER,
-       CP_STAGE_DIG };   /* DIG: no target; digs where the player stands (soft soil only), takes CP_DIG_TICKS standing still, costs stamina (first-quest, stage_dig.c) */   /* EAT: target = a carcass; bites every 10 ticks until it is gone, the player is full, or another order cancels it */
+       CP_STAGE_DIG,
+       CP_STAGE_QUEST };   /* QUEST: target = task step, move = DNA; instant, once per step (stage_dig.c); a logged input so replays agree */   /* DIG: no target; digs where the player stands (soft soil only), takes CP_DIG_TICKS standing still, costs stamina (first-quest, stage_dig.c) */   /* EAT: target = a carcass; bites every 10 ticks until it is gone, the player is full, or another order cancels it */
 #define CP_STAGE_NEST_RADIUS 12.f   /* metres from the nest within which the loadout can be changed (tunable) */
 /* Stage order codes added by A21 (-1..-6 are older): the loadout and move errors share the combat numbers. */
 enum { CP_STAGE_ERR_ON_COOLDOWN=-8, CP_STAGE_ERR_NOT_EQUIPPED=-9, CP_STAGE_ERR_BAD_SLOT=-10,

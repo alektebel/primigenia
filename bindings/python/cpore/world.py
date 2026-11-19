@@ -204,7 +204,7 @@ def input_from_mapping(action: dict) -> CpStageInput:
             "guard": CP_STAGE_GUARD,
             "dodge": CP_STAGE_DODGE,
             "loadout": CP_STAGE_LOADOUT,
-            "inspect": 16, "buy_part": 17, "buy_level": 18, "buy_tier": 19, "dig": 20,
+            "inspect": 16, "buy_part": 17, "buy_level": 18, "buy_tier": 19, "dig": 20, "quest": 21,
             "befriend": CP_STAGE_BEFRIEND,
             "gift": CP_STAGE_GIFT,
             "observe": CP_STAGE_OBSERVE,

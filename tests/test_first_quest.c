@@ -193,6 +193,12 @@ static void flame_tests(void){
     CpLineageForm form;
     OK(!cp_stage_genome_form(with_gland,&form)&&form.profile.fire==1&&form.profile.mouth==1,"a genome with a fire gland has fire level 1");
     OK(!cp_stage_genome_form(plain,&form)&&form.profile.fire==0,"without it, none");
+    /* task rewards: DNA once per step, hashed, from its own source */
+    flat_world(10);
+    {const uint64_t h0=w.hash;{CpStageInput q={.verb=CP_STAGE_QUEST,.target=2,.move=15};OK(cp_stage_order(&w,&q)==0,"the QUEST order");}
+     OK(w.social.dna_balance==15&&w.social.dna_by_source[CP_DNA_TASK]==15,"a task step pays its DNA");
+     OK(cp_stage_quest_award(&w,2,15)==-1&&cp_stage_quest_award(&w,40,5)==-1&&cp_stage_quest_award(&w,3,0)==-1,"once only, and only valid steps");
+     OK(w.hash!=h0&&w.dig.used,"the payment is part of the state hash");}
     /* at the nest: start plain, the gland is found (as in the bed), the editor buys it, the move joins the loadout */
     flat_world(11);
     OK(!cp_stage_start_genome(&w,plain),"start genome");

@@ -253,8 +253,14 @@ func _tick(state: Dictionary) -> void:
 		e.root.visible = not bool(b.dug)
 		e.puff.emitting = (not bool(b.dug)) and d < PUFF_RANGE
 		e.label.visible = (not bool(b.dug)) and d < NEAR_LABEL
+	var keep := {}
 	for h in dig.get("holes", []):
 		_build_hole(h)
+		keep["%.2f,%.2f" % [float(h.x), float(h.z)]] = true
+	for k in _holes.keys():                     # a load that goes back in time drops the holes dug since
+		if not keep.has(k):
+			_holes[k].queue_free()
+			_holes.erase(k)
 	var digging := int(dig.get("digging", 0))
 	if digging > 0:
 		# soil flies from just in front of the creature, in the direction it faces

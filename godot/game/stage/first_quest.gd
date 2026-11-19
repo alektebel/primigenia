@@ -10,6 +10,7 @@ const Strings := preload("res://ui/strings.gd")
 const Palette := preload("res://ui/palette.gd")
 
 const V_DIG := 20
+const V_QUEST := 21
 const EV_DUG := 28
 const EV_MOVE_USED := 29
 const EV_PART_FOUND := 21
@@ -27,6 +28,7 @@ var log: Array = []          # [{tick, id}] completed tasks, for tests and the e
 var _burning := {}           # entity id -> true while its host carries flames
 var _pending: Array = []     # completion announcements waiting for the previous whisper to clear
 var _announce_clock := 0.0
+var _was_digging := 0
 
 func setup(isl: Node3D) -> void:
 	island = isl
@@ -80,6 +82,10 @@ func _on_tick(state: Dictionary) -> void:
 	if enabled:
 		for id in quest.update(state):
 			_complete(id, state)
+	var digging := int(state.get("dig", {}).get("digging", 0))
+	if digging > 0 and _was_digging == 0 and island.hosts.has(0) and island.hosts[0].layer() != null:
+		island.hosts[0].layer().trigger("eat")     # the head goes down to the soil
+	_was_digging = digging
 	_refresh(state)
 	_burn_fx(state)
 	_announce_clock = maxf(_announce_clock - 0.1, 0.0)
@@ -100,16 +106,13 @@ func _dug(ev: Dictionary, state: Dictionary) -> void:
 		ui.show_message(Strings.t("dig_stopped"), "info")
 		return
 	ui.show_message(Strings.t(FIND_NAMES[clampi(find, 0, FIND_NAMES.size() - 1)]), "info")
-	# the creature lowers its head to the hole
-	if island.hosts.has(0) and island.hosts[0].layer() != null:
-		pass
 
 func _complete(id: String, state: Dictionary) -> void:
 	var i := quest.step_index(id)
 	var step: Dictionary = quest.steps()[i]
 	var dna := quest.reward_of(id)
 	if dna > 0:
-		stage.world.quest_award(i, dna)
+		stage.queue_order({"verb": V_QUEST, "target": i, "move": dna})      # an input like any other: logged, so a replay pays it too
 	var lang := Strings.language()
 	log.append({"tick": int(state.tick), "id": id})
 	_pending.append(quest.text_of(step.get("done", ""), lang))
@@ -117,6 +120,15 @@ func _complete(id: String, state: Dictionary) -> void:
 		_pending.append(Strings.t("quest_done_whisper"))
 	ui.show_moment(Strings.t("quest_task_done", [quest.text_of(step.title, lang)]), "journal")
 	task_done.emit(id)
+
+## The journal's Tareas page: [{title, hint, done, status: done|now|later, reward}] in chain order.
+func task_rows() -> Array:
+	var out: Array = []
+	for i in quest.steps().size():
+		var s: Dictionary = quest.steps()[i]
+		out.append({"title": s.title, "hint": s.hint, "done": s.done, "reward": int(s.get("reward", {}).get("dna", 0)),
+			"status": "done" if i < quest.step else ("now" if i == quest.step else "later")})
+	return out
 
 ## The card's model and the minimap ping, from the quest and the state.
 func _refresh(state: Dictionary) -> void:

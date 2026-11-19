@@ -181,7 +181,7 @@ static func load_into(parsed: Dictionary, stage, ctx: Dictionary = {}) -> Dictio
 		_apply_time(d, stage)
 		return {"ok": true, "error": "", "rebuilt": false, "note": ""}
 	var msg: String = CporeWorld.snapshot_error(rc)
-	if (rc == -3 or rc == -4) and parsed.get("recipe", "") != "":
+	if (rc == -2 or rc == -3 or rc == -4) and parsed.get("recipe", "") != "":      # -2: an older snapshot format (the migration is the recipe)
 		var rec: Dictionary = WorldLog.parse(parsed.recipe)
 		if not rec.ok:
 			return {"ok": false, "error": "scenario %s: %s, and its recipe does not parse (%s)" % [label, msg, rec.error], "rebuilt": false}
