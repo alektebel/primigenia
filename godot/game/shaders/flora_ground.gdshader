@@ -30,7 +30,7 @@ void fragment() {
 	float mask = smoothstep(0.0, 0.15, margin) * smoothstep(0.18, 0.60, islands + 0.28 * grain);
 	ALPHA = mask * (moss ? 0.94 : 0.78);
 	vec3 pigment = COLOR.rgb * (0.69 + 0.56 * islands + 0.28 * grain);
-	ALBEDO = OUTPUT_IS_SRGB ? sqrt(pigment) : pigment;
+	ALBEDO = OUTPUT_IS_SRGB ? pow(pigment, vec3(0.9)) : pigment;
 	ROUGHNESS = 0.98;
 	SPECULAR = 0.05;
 	EMISSION = glow.rgb * grain * 0.045;
