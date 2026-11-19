@@ -13,7 +13,7 @@ L ≈ 2–4 weeks; usage limits are the real clock.
 
 ---
 
-## Where we are (2026-11-17)
+## Where we are (2026-11-18)
 
 | Area | State |
 |---|---|
@@ -22,6 +22,7 @@ L ≈ 2–4 weeks; usage limits are the real clock.
 | Creature | Studio port, 46 parts, IK rig, locomotion from morphology (G73), feel pass F1 merged (2f5cf70) |
 | Combat | C tactical combat on a tick, Garfio beatable by all three seeds (42/58/76 %) |
 | UI | HUD, G75 card and radial (only attack works; befriend/observe/intimidate are placeholders), audio |
+| Lineage | C2 L0 ledger, saved deed counters, evolution console trigger, cousin bodies, family tree (J / pause), and 16 draft behavioural types implemented on `c2/lineage-cousins`; review pending. Social awards/trust/perk consumers need merge wiring. See LINEAGE.md and CREATURE-TYPES.md. |
 | In flight | Nothing. Studio parity (`9b1abb7`, gaps in STUDIO-PARITY.md), rock material F2 (`ea0e31e`/`3eb3ece`, through step 10) and action animations F3 (`0e35914`, `b232e19`, `aaa35f2`) are merged; the only open F-item is owner approval of the baked sun shadows (off by default) |
 | Missing | the P4 loop (social, DNA, parts discovery), nest, water, air, digging, secrets, journal |
 

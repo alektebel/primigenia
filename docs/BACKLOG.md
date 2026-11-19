@@ -43,6 +43,7 @@ approves the look, movement, fights and the P4 loop.
 | 8b | P4 social: befriending skills (sing, dance, charm, pose, gifts by diet), trust and bonds, defending a creature from a raid | P4.md, Q-3/4/17 | queued |
 | 8c | P4 DNA: two meters (total only rises, balance is spent), awards for befriending, kills, carcasses, exploration; progress = species resolved / 4 | P4.md, G23, Q-1/8 | queued |
 | 8d | P4 parts: discovery (drops with pity, carcasses, fossils), start inventory, tiers by DNA plus usage, mid-game editing at a minimal nest | P4.md, G37, G49, Q-2/5/6/10/11/19 | queued |
+| 8f | Lineage L0, A13 cousins, live family tree and 16 behavioural types | ARC-PLAN §7.1/9b, A13, C2 | implemented on c2/lineage-cousins; tests and reviewer report in docs/LINEAGE-REPORT.md; social award/perk wiring, visual evidence and owner approval pending |
 | 8e | P4 recipes and the first secret move, bone spines (new `espinas_dorsales` part, calcium meter, clues), through the same tourney gates | P4.md, G50–G53, Q-12/13/15/16 | queued (needs 7) |
 | 9 | Minor tasks on free models: `make check` + README, Python world binding, calibration research, vista grass-disc fix | Q22, Q9/Q10 | in progress |
 | 9b | Underwater biome art (G64) and the MVP batch of easter eggs (G65), art by parallel qwen3.6 agents (G66) | G64–G66 | in progress |
