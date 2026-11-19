@@ -132,6 +132,7 @@ static void herd(void){
     mk(3,sp,d,0);
     for(int i=0;i<3;i++){feed(i+1,CP_ITEM_FRUIT,5);}
     assert(w.social.resolution[0]==CP_RES_ALLY&&w.social.latched[0]==3);
+    assert(w.parts.discovered&(1ULL<<cp_stage_part_id("romo")));
     assert(w.social.dna_by_source[CP_DNA_ALLY]==20&&w.social.dna_by_source[CP_DNA_BOND]==24);
     assert(cp_stage_social_species_resolved(&w)==1&&cp_stage_social_species_present(&w)==1);
     PASS("ally at 3 bonded: +20 DNA, species resolved 1/1");

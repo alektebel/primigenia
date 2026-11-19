@@ -234,6 +234,7 @@ enum { CB_GROUND = 0, CB_WATER = 1 };
 typedef struct {
     uint8_t  alive, medium, team;
     CpCombatProfile prof;
+    uint8_t tiers[CB_PART_COUNT]; /* P4 form modifiers, absent at T0 */
     float    x, y;              /* position, m                                    */
     float    fx, fy;            /* facing, unit vector                            */
     float    hp, stamina;

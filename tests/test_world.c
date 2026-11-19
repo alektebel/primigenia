@@ -135,7 +135,7 @@ static void encounters(void) {
     w.combat.c[1].bleed_t=2;
     cp_stage_step(&w,NULL);
     assert(w.outcome==CP_STAGE_VICTORY && w.wild[0].dead);
-    char obs[4096];
+    char obs[16384];
     assert(cp_stage_observe(&w,obs,sizeof obs)>0 && strstr(obs,"carcass"));
     assert(cp_stage_command(&w,"attack #1 0")<0);
     reset();
@@ -147,7 +147,7 @@ static void encounters(void) {
     cp_stage_step(&w,NULL);
     assert(w.outcome==CP_STAGE_DEATH && w.respawn_ticks==20);
     for(int i=0;i<20;i++)cp_stage_step(&w,NULL);
-    assert(w.player.hp==setup.player.hp && w.player.x==setup.nest_x);
+    assert(w.player.hp==setup.player.hp*3.f/5.f && w.player.x==setup.nest_x);
     reset();
     setup.wild[0].species=0;
     setup.wild[0].z=setup.wild[0].home_z=4;

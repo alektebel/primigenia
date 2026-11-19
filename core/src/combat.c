@@ -313,6 +313,8 @@ uint64_t cp_combat_hash(const CpCombatWorld *w)
     }
     for (int i = 0; i < w->n; i++) {
         const CpCombatCreature *c = &w->c[i];
+        int tiered=0;for(int k=0;k<CB_PART_COUNT;k++)tiered|=c->tiers[k];
+        if(tiered){fu32(&f,0x54494552);for(int k=0;k<CB_PART_COUNT;k++)fu8(&f,c->tiers[k]);}
         fu8(&f, c->alive); fu8(&f, c->medium); fu8(&f, c->team);
         fu8(&f, c->prof.mouth); fu8(&f, c->prof.charge); fu8(&f, c->prof.spit);
         fu8(&f, c->prof.tail); fu8(&f, c->prof.guard);
@@ -614,9 +616,23 @@ static int in_cone(const CpCombatCreature *a, float ux, float uy, float dist, fl
     return cosang > 0.0f && lateral * dist <= CB_LATERAL_SLACK;
 }
 
+/* Form modifiers are data, indexed by the move's required part and tier. */
+typedef struct { int damage,stamina,windup,status; float block_cost,guard_factor,speed; } TierMod;
+static const TierMod TIERS[CB_PART_COUNT][3]={
+ [CB_PART_MOUTH]={{0},{.status=2},{.status=4,.stamina=1}},
+ [CB_PART_SPIT]={{0},{.status=3},{.damage=2,.windup=1}},
+ [CB_PART_CHARGE]={{0},{.status=1},{.damage=4,.stamina=2}},
+ [CB_PART_TAIL]={{0},{.status=3},{.damage=3,.windup=1}},
+ [CB_PART_GUARD]={{0},{.block_cost=.1f},{.guard_factor=.15f,.speed=.1f}}
+};
+static const TierMod *tier_mod(const CpCombatCreature *c,int part){
+ int t=c->tiers[part];return &TIERS[part][t>2?2:t];
+}
+static float move_cost(const CpCombatCreature *c,int move){return cp_combat_move_stamina(&c->prof,move)+tier_mod(c,CP_COMBAT_MOVES[move].part)->stamina;}
+static float move_damage(const CpCombatCreature *c,int move){return cp_combat_move_damage(&c->prof,move)+tier_mod(c,CP_COMBAT_MOVES[move].part)->damage;}
 static float walk_speed(const CpCombatCreature *c)
 {
-    float s = c->prof.speed;
+    float s = c->prof.speed-tier_mod(c,CB_PART_GUARD)->speed;
     if (c->medium == CB_WATER) s *= CB_WATER_SPEED;
     if (c->slow_t > 0) s *= CB_SLOW_SPEED;
     return s;
@@ -625,7 +641,7 @@ static float walk_speed(const CpCombatCreature *c)
 static void begin_move(CpCombatCreature *c, int move)
 {
     const CpCombatMove *m = &CP_COMBAT_MOVES[move];
-    float cost = cp_combat_move_stamina(&c->prof, move);
+    float cost = move_cost(c, move);
     c->stamina = cb_maxf(0.0f, c->stamina - cost);
     c->stamina_spent += cost;
     c->since_spend = 0;
@@ -633,7 +649,8 @@ static void begin_move(CpCombatCreature *c, int move)
     c->move = (int8_t)move;
     c->hit_mask = 0;
     c->ptick = 0;
-    if (m->windup)        { c->phase = CB_PH_WINDUP; c->plen = m->windup; }
+    int windup=m->windup+tier_mod(c,m->part)->windup;
+    if (windup)        { c->phase = CB_PH_WINDUP; c->plen = windup; }
     else if (m->active)   { c->phase = CB_PH_ACTIVE; c->plen = m->active; }
     else                  { c->phase = CB_PH_RECOVERY; c->plen = m->recovery; }
     c->verb_started = 1;
@@ -739,7 +756,7 @@ static void plan(CpCombatWorld *w, int i, Disp *d)
             int aligned = (c->fx * ux + c->fy * uy) >= cb_cos(m->arc * 0.25f);
             if (!aligned) { turn_toward(c, ux, uy); return; }
             if (c->cd[mv]) { turn_toward(c, ux, uy); return; }   /* recharging: hold the standing order */
-            if (c->stamina >= cp_combat_move_stamina(&c->prof, mv)) begin_move(c, mv);
+            if (c->stamina >= move_cost(c, mv)) begin_move(c, mv);
             else { turn_toward(c, ux, uy); ev_add(w, CB_EV_NO_STAMINA, i, i, mv, 0.0f); }
             return;
         }
@@ -748,11 +765,11 @@ static void plan(CpCombatWorld *w, int i, Disp *d)
         return;
     }
     case CB_V_GUARD:
-        if (c->stamina >= cp_combat_move_stamina(&c->prof, CB_GUARD)) begin_move(c, CB_GUARD);
+        if (c->stamina >= move_cost(c, CB_GUARD)) begin_move(c, CB_GUARD);
         else ev_add(w, CB_EV_NO_STAMINA, i, i, CB_GUARD, 0.0f);
         return;
     case CB_V_DODGE:
-        if (c->stamina >= cp_combat_move_stamina(&c->prof, CB_DODGE)) begin_move(c, CB_DODGE);
+        if (c->stamina >= move_cost(c, CB_DODGE)) begin_move(c, CB_DODGE);
         else ev_add(w, CB_EV_NO_STAMINA, i, i, CB_DODGE, 0.0f);
         return;
     case CB_V_FLEE: {
@@ -854,7 +871,7 @@ void cp_combat_preview(const CpCombatWorld *w, int atk, int move, int tgt, CpCom
         out->effect = e.rule->effect;
         out->counter = (e.rule->effect == CB_EFF_AVOID) ? 0.0f : e.rule->mult;
     }
-    out->damage = cp_combat_move_damage(&a->prof, move) * e.flank * e.height * out->counter;
+    out->damage = move_damage(a, move) * e.flank * e.height * out->counter;
 }
 
 /* ------------------------------------------------------------------ *
@@ -989,7 +1006,7 @@ static void resolve_hits(CpCombatWorld *w)
 #ifdef CP_COMBAT_TEST
         if (test_fixed_variance) var = 1.0f;
 #endif
-        float base = cp_combat_move_damage(&a->prof, h->move) * h->ev.flank * h->ev.height * var;
+        float base = move_damage(a, h->move) * h->ev.flank * h->ev.height * var;
         h->damage = base;
         float *pool = &stamina[h->def];
         const CpCombatCounter *r = h->ev.rule;
@@ -1007,7 +1024,8 @@ static void resolve_hits(CpCombatWorld *w)
             case CB_EFF_NEGATE:
             case CB_EFF_REDUCE: {
                 float gl = 1.0f + CB_GUARD_LEVEL_K * (float)(d->prof.guard > 0 ? d->prof.guard - 1 : 0);
-                float cost = base * r->stamina / gl;
+                const TierMod *tm=tier_mod(d,CB_PART_GUARD);
+                float cost = base * r->stamina * (1.f-tm->block_cost) / (gl+tm->guard_factor);
                 h->spent = 1;
                 if (*pool >= cost) {
                     h->payment = cost;
@@ -1079,7 +1097,7 @@ static void resolve_hits(CpCombatWorld *w)
             if (killer[h->def] < 0) killer[h->def] = h->atk;
             ev_add(w, CB_EV_HIT, h->atk, h->def, h->move, h->damage);
         }
-        if (h->status) apply_status(w, h->atk, h->def, &CP_COMBAT_MOVES[h->move]);
+        if (h->status){CpCombatMove mod=CP_COMBAT_MOVES[h->move];mod.status_ticks+=tier_mod(a,mod.part)->status;apply_status(w, h->atk, h->def, &mod);}
     }
     for (int i = 0; i < w->n; i++) {
         w->c[i].stamina = stamina[i];

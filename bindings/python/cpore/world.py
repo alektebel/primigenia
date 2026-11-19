@@ -186,6 +186,7 @@ def input_from_mapping(action: dict) -> CpStageInput:
             "guard": CP_STAGE_GUARD,
             "dodge": CP_STAGE_DODGE,
             "loadout": CP_STAGE_LOADOUT,
+            "inspect": 16, "buy_part": 17, "buy_level": 18, "buy_tier": 19,
             "befriend": CP_STAGE_BEFRIEND,
             "gift": CP_STAGE_GIFT,
             "observe": CP_STAGE_OBSERVE,
@@ -334,6 +335,18 @@ class StageWorld:
         if n < 0:
             raise RuntimeError("lineage buffer too small")
         return json.loads(buf.value[:n])
+
+    def start_genome(self, genome: dict) -> int:
+        """Install a C-validated starter body before the first nest edit."""
+        self._lib.cp_stage_start_genome.argtypes = [c_void_p, c_char_p]
+        self._lib.cp_stage_start_genome.restype = c_int32
+        return int(self._lib.cp_stage_start_genome(self._world, json.dumps(genome).encode()))
+
+    def edit(self, genome: dict) -> int:
+        """Validate and evolve at the nest; purchases use buy_part/level/tier commands."""
+        self._lib.cp_stage_edit.argtypes = [c_void_p, c_char_p]
+        self._lib.cp_stage_edit.restype = c_int32
+        return int(self._lib.cp_stage_edit(self._world, json.dumps(genome).encode()))
 
     def command(self, text: str) -> int:
         return int(self._lib.cp_stage_command(self._world, text.encode()))

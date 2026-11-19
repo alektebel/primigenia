@@ -9,7 +9,7 @@
 #define CP_STAGE_MAX_OBSTACLES 1024
 #define CP_STAGE_DAY_TICKS 12000
 #define CP_STAGE_DT .1f
-#define CP_STAGE_SNAPSHOT_VERSION 5   /* 3: player loadout (A21); 4: social layer (C2); 5: lineage ledger and ancestry */
+#define CP_STAGE_SNAPSHOT_VERSION 6   /* 3: player loadout (A21); 4: social layer (C2); 5: lineage ledger and ancestry; 6: discovery, nest shop and eggs */
 #define CP_STAGE_MAX_PATH 64      /* waypoints kept by the planner (docs/godot/NAV.md) */
 #define CP_STAGE_MAX_EVENTS 64    /* event ring since the last observe */
 
@@ -23,7 +23,7 @@ enum { CP_STAGE_CONTINUE, CP_STAGE_WAIT, CP_STAGE_GO, CP_STAGE_HEADING,
         * (CP_ITEM_*); OBSERVE and INTIMIDATE: target. All are standing orders: the player walks into range, performs it, and the
         * order ends. Any other order cancels it. */
        CP_STAGE_BEFRIEND, CP_STAGE_GIFT, CP_STAGE_OBSERVE, CP_STAGE_INTIMIDATE,
-       CP_STAGE_EAT };   /* EAT: target = a carcass; bites every 10 ticks until it is gone, the player is full, or another order cancels it */
+       CP_STAGE_EAT, CP_STAGE_INSPECT, CP_STAGE_BUY_PART, CP_STAGE_BUY_LEVEL, CP_STAGE_BUY_TIER };   /* EAT: target = a carcass; bites every 10 ticks until it is gone, the player is full, or another order cancels it */
 #define CP_STAGE_NEST_RADIUS 12.f   /* metres from the nest within which the loadout can be changed (tunable) */
 /* Stage order codes added by A21 (-1..-6 are older): the loadout and move errors share the combat numbers. */
 enum { CP_STAGE_ERR_ON_COOLDOWN=-8, CP_STAGE_ERR_NOT_EQUIPPED=-9, CP_STAGE_ERR_BAD_SLOT=-10,
@@ -49,7 +49,7 @@ enum { CP_ITEM_PLANT, CP_ITEM_FRUIT, CP_ITEM_MEAT, CP_ITEM_BONE, CP_ITEM_COUNT }
 enum { CP_REL_STRANGER, CP_REL_NEUTRAL, CP_REL_TRUSTED, CP_REL_ALLY };
 enum { CP_RES_OPEN, CP_RES_ALLY, CP_RES_HUNTED };
 /* Where a DNA award came from (the move field of a DNA event). */
-enum { CP_DNA_KILL, CP_DNA_BOND, CP_DNA_ALLY, CP_DNA_DOMINATE, CP_DNA_CARCASS, CP_DNA_EXPLORE, CP_DNA_SEEN, CP_DNA_SOURCES };
+enum { CP_DNA_KILL, CP_DNA_BOND, CP_DNA_ALLY, CP_DNA_DOMINATE, CP_DNA_CARCASS, CP_DNA_EXPLORE, CP_DNA_SEEN, CP_DNA_DUPLICATE, CP_DNA_FOSSIL, CP_DNA_OLD_CARCASS, CP_DNA_SOURCES };
 #define CP_SOC_BOND_TRUST 60      /* trust at which a creature bonds (Q-3) */
 #define CP_SOC_BEAT 12            /* ticks between beats */
 #define CP_SOC_WINDOW 2           /* rhythm window, +- ticks */
@@ -137,7 +137,7 @@ enum { CP_STAGE_EV_HIT=1, CP_STAGE_EV_KILL, CP_STAGE_EV_DEATH, CP_STAGE_EV_RESPA
        CP_STAGE_EV_PATH_FOUND, CP_STAGE_EV_ARRIVED, CP_STAGE_EV_FLED, CP_STAGE_EV_PATH_FAILED,
        /* C2 social events: by = 0, target = creature id; move/value/x/z carry the detail (see stage_social.c) */
        CP_STAGE_EV_SKILL, CP_STAGE_EV_GIFT, CP_STAGE_EV_BOND_MADE, CP_STAGE_EV_BOND_BROKEN, CP_STAGE_EV_SPECIES_RESOLVED,
-       CP_STAGE_EV_DNA, CP_STAGE_EV_OBSERVE, CP_STAGE_EV_CHAIN_DONE, CP_STAGE_EV_INTIMIDATE, CP_STAGE_EV_SOCIAL_CANCELLED, CP_STAGE_EV_EAT };
+       CP_STAGE_EV_DNA, CP_STAGE_EV_OBSERVE, CP_STAGE_EV_CHAIN_DONE, CP_STAGE_EV_INTIMIDATE, CP_STAGE_EV_SOCIAL_CANCELLED, CP_STAGE_EV_EAT, CP_STAGE_EV_PART_FOUND, CP_STAGE_EV_INSPECTED, CP_STAGE_EV_PART_BOUGHT, CP_STAGE_EV_EDIT_ACCEPTED };
 enum { CP_STAGE_BLOCK_NONE, CP_STAGE_BLOCK_CLIFF, CP_STAGE_BLOCK_WATER, CP_STAGE_BLOCK_EDGE,
        CP_STAGE_BLOCK_CREATURE, CP_STAGE_BLOCK_UNREACHABLE, CP_STAGE_BLOCK_OBSTACLE };
 typedef struct {
@@ -192,6 +192,24 @@ typedef struct {
     CpLineageResidence residence[128];
     CpLineageGeneration forms[CP_LINEAGE_GENERATIONS];
 } CpAncestry;
+/* Part ids are stable catalogue indices, shared by the codex and lineage ledger. */
+#define CP_STAGE_PART_COUNT 46
+#define CP_STAGE_PART_NODES 8
+enum { CP_PART_KILL, CP_PART_ALLY, CP_PART_CARCASS, CP_PART_FOSSIL, CP_PART_OLD_CARCASS };
+typedef struct { const char *id; int cost,mouth,charge,spit,tail,guard; } CpStagePartDef;
+extern const CpStagePartDef CP_STAGE_PARTS[CP_STAGE_PART_COUNT];
+typedef struct { float x,z; int kind,inspected; } CpStagePartNode;
+typedef struct {
+    CpRng loot,fossil;
+    uint64_t discovered,owned,starter;
+    uint8_t level[CP_STAGE_PART_COUNT],tier[CP_STAGE_PART_COUNT];
+    uint32_t hits[CP_STAGE_PART_COUNT],wins[CP_STAGE_PART_COUNT],kills[CP_STAGE_PART_COUNT];
+    uint32_t move_hits[CB_MOVE_COUNT],move_wins[CB_MOVE_COUNT];
+    int dry[4],kill_paid[CP_STAGE_MAX_WILD],ally_paid[4];
+    int used,eggs,lost,hatchling,n_nodes,inspect_id,inspect_ticks;
+    float adult_hp;
+    CpStagePartNode nodes[CP_STAGE_PART_NODES];
+} CpStageParts;
 typedef struct {
     CpStageSetup setup;
     CpRng spawn_rng,roam_rng;
@@ -224,8 +242,29 @@ typedef struct {
     CpAncestry ancestry;
     CpLedger ledger;              /* L0: opt in via cp_ledger_init; snapshot owns it */
     CpStageSocial social;            /* C2: trust, DNA, species progress, observe; hashed once `social.used` */
+    CpStageParts parts;
     const CpStageField *field;       /* not owned, not in the snapshot, set by cp_stage_attach_field */
 } CpStageWorld;
+/* Fixed site lives in setup.nest_x/z; C3 may replace that setup choice without changing any caller. */
+int cp_stage_at_nest(const CpStageWorld *w);
+int cp_stage_walkable_from_nest(const CpStageWorld *w,float x,float z);
+int cp_stage_part_id(const char *id);
+int cp_stage_part_find(CpStageWorld *w,int part,int source);
+int cp_stage_part_buy(CpStageWorld *w,int part,int kind); /* 0 part, 1 next level, 2 next tier */
+int cp_stage_edit(CpStageWorld *w,const char *genome);
+int cp_stage_start_genome(CpStageWorld *w,const char *genome);
+void cp_stage_genome_tiers(const char *body,uint8_t tiers[CB_PART_COUNT]);
+int cp_stage_genome_form(const char *json,CpLineageForm *form); /* validates /4 and /5, derives profile in C */
+void cp_stage_parts_reset(CpStageWorld *w);
+void cp_stage_parts_kill(CpStageWorld *w,int index);
+void cp_stage_parts_ally(CpStageWorld *w,int species);
+void cp_stage_parts_win(CpStageWorld *w);
+void cp_stage_parts_usage(CpStageWorld *w,int move,int won);
+void cp_stage_parts_death(CpStageWorld *w);
+void cp_stage_parts_step(CpStageWorld *w);
+int cp_stage_parts_order(CpStageWorld *w,const CpStageInput *a);
+uint64_t cp_stage_parts_hash(const CpStageWorld *w);
+int cp_stage_parts_json(const CpStageWorld *w,char *out,size_t cap);
 int cp_stage_lineage_form(CpStageWorld *w,const CpLineageForm *form,int evolve);
 int cp_stage_lineage_perk(CpStageWorld *w,int kind,uint32_t serial,int amount);
 int cp_stage_evolve(CpStageWorld *w,const CpLineageForm *form);

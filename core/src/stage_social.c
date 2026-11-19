@@ -224,6 +224,7 @@ static void award(CpStageWorld *w,int amount,int source,int target){
 static void resolve_species(CpStageWorld *w,int sp,int how,int target){
     CpStageSocial *s=&w->social;
     s->resolution[sp]=how;
+    if(how==CP_RES_ALLY)cp_stage_parts_ally(w,sp);
     push(w,CP_STAGE_EV_SPECIES_RESOLVED,target,sp,(float)how,0,0);
     award(w,20,how==CP_RES_ALLY?CP_DNA_ALLY:CP_DNA_DOMINATE,target);
 }
@@ -749,9 +750,9 @@ int cp_stage_social_creature_json(const CpStageWorld *w,int i,char *out,size_t c
 int cp_stage_social_json(const CpStageWorld *w,char *out,size_t cap){
     const CpStageSocial *s=&w->social;
     Buf b={out,cap,0,0};
-    bp(&b,"{\"dna_total\":%d,\"dna_balance\":%d,\"dna_sources\":{\"kill\":%d,\"bond\":%d,\"ally\":%d,\"dominate\":%d,\"carcass\":%d,\"explore\":%d,\"species_seen\":%d},",
+    bp(&b,"{\"dna_total\":%d,\"dna_balance\":%d,\"dna_sources\":{\"kill\":%d,\"bond\":%d,\"ally\":%d,\"dominate\":%d,\"carcass\":%d,\"explore\":%d,\"species_seen\":%d,\"duplicate_part\":%d,\"fossil\":%d,\"old_carcass\":%d},",
        s->dna_total,s->dna_balance,s->dna_by_source[CP_DNA_KILL],s->dna_by_source[CP_DNA_BOND],s->dna_by_source[CP_DNA_ALLY],s->dna_by_source[CP_DNA_DOMINATE],
-       s->dna_by_source[CP_DNA_CARCASS],s->dna_by_source[CP_DNA_EXPLORE],s->dna_by_source[CP_DNA_SEEN]);
+       s->dna_by_source[CP_DNA_CARCASS],s->dna_by_source[CP_DNA_EXPLORE],s->dna_by_source[CP_DNA_SEEN],s->dna_by_source[CP_DNA_DUPLICATE],s->dna_by_source[CP_DNA_FOSSIL],s->dna_by_source[CP_DNA_OLD_CARCASS]);
     bp(&b,"\"food\":{\"meter\":%d,\"max\":%d,\"diet\":\"%s\"},",s->food,CP_SOC_FOOD_MAX,s->diet==CP_DIET_HERBIVORE?"herbivore":s->diet==CP_DIET_CARNIVORE?"carnivore":"omnivore");
     bp(&b,"\"inventory\":{");
     for(int k=0;k<CP_ITEM_COUNT;k++)bp(&b,"%s\"%s\":%d",k?",":"",CP_STAGE_ITEM_NAMES[k],s->items[k]);
@@ -796,7 +797,7 @@ int cp_stage_social_json(const CpStageWorld *w,char *out,size_t cap){
     return b.failed?-1:(int)b.used;
 }
 static const char *source_name(int k){
-    static const char *n[CP_DNA_SOURCES]={"kill","bond","ally","dominate","carcass","explore","species_seen"};
+    static const char *n[CP_DNA_SOURCES]={"kill","bond","ally","dominate","carcass","explore","species_seen","duplicate_part","fossil","old_carcass"};
     return k>=0&&k<CP_DNA_SOURCES?n[k]:"unknown";
 }
 int cp_stage_social_event_json(const CpStageEvent *e,char *out,size_t cap){
@@ -821,6 +822,14 @@ int cp_stage_social_event_json(const CpStageEvent *e,char *out,size_t cap){
             break;
         }
         case CP_STAGE_EV_EAT:bp(&b,"{\"tick\":%u,\"type\":\"eat\",\"target\":%d,\"bites_left\":%d,\"food_gain\":%.0f,\"food\":%.0f,\"bones\":%.0f}",e->tick,e->target,e->move,e->value,e->x,e->z);break;
+        case CP_STAGE_EV_PART_FOUND:{
+            static const char *sources[]={"kill","ally","carcass","fossil","old_carcass"};
+            if(e->target<0||e->target>=CP_STAGE_PART_COUNT||e->move<0||e->move>4)return 0;
+            bp(&b,"{\"tick\":%u,\"type\":\"part_found\",\"part\":\"%s\",\"source\":\"%s\",\"duplicate\":%s}",e->tick,CP_STAGE_PARTS[e->target].id,sources[e->move],e->value?"true":"false");break;
+        }
+        case CP_STAGE_EV_INSPECTED:bp(&b,"{\"tick\":%u,\"type\":\"inspected\",\"target\":%d}",e->tick,e->target);break;
+        case CP_STAGE_EV_PART_BOUGHT:bp(&b,"{\"tick\":%u,\"type\":\"part_bought\",\"part\":\"%s\",\"kind\":%d,\"price\":%.0f}",e->tick,CP_STAGE_PARTS[e->target].id,e->move,e->value);break;
+        case CP_STAGE_EV_EDIT_ACCEPTED:bp(&b,"{\"tick\":%u,\"type\":\"edit_accepted\"}",e->tick);break;
         default:return 0;
     }
     return b.failed?0:(int)b.used;
