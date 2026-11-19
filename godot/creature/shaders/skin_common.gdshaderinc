@@ -38,6 +38,8 @@ uniform float flex = 0.0;          // knee bend 0..1, swells muscle
 uniform float seg_rings = 9.0;     // exoskeleton segments along the body
 uniform float act_phase = 0.0;
 uniform float breathe = 1.0;
+uniform float tube_feet = 0.0;     // radial arms: sucker dots on the undersides (body tube with use_uv)
+uniform float gel = 0.0;           // radial jellies (GEL defined by skin_gel.gdshader): translucency, wrap light, rim
 uniform vec4 mounts[6];            // muscle bulges on the body (hips and shoulders): xyz body rest space, w radius
 uniform int n_mounts = 0;
 
@@ -177,6 +179,15 @@ void fragment() {
 			sk = mix(sk, sk * 0.55, dots * 0.8);
 			hgt -= dots * 0.004;
 		}
+		if (tube_feet > .5 && use_uv > .5 && vUVb.x > 5.0) {              // radial arms: two rows of sucker feet along the underside
+			float across = vUVb.y / max(vUV2b.x, 0.001);                // 0 on the back .. pi on the belly midline
+			float sp = max(vUV2b.x * 1.5, 0.02);
+			vec2 q = vec2(fract((vUVb.x - 10.0) / sp) - 0.5, (across - 2.55) * 1.2);
+			float dots = 1.0 - smoothstep(0.2, 0.34, length(q));
+			float row = smoothstep(1.9, 2.4, across);
+			sk = mix(sk, sk * 0.45, dots * 0.85 * row);
+			hgt -= dots * row * 0.004;
+		}
 		vec3 view = normalize(-VERTEX);
 		// ---- roughness: dry back, damp belly, wet snout and mouth ----
 		float wetm = 0.0;
@@ -201,6 +212,12 @@ void fragment() {
 		SSS_STRENGTH = sss * (0.15 + 0.5 * thin);
 #endif
 		em += vec3(0.9, 0.35, 0.08) * loaded * 0.5;
+#ifdef GEL
+		float fres = pow(1.0 - clamp(dot(view, n), 0.0, 1.0), 2.2);
+		em += sk * (0.35 + 0.9 * fres) * gel * 0.55 + vec3(0.5, 0.75, 0.8) * fres * gel * 0.25;
+		ALPHA = clamp(mix(1.0, 0.38 + 0.55 * fres, gel), 0.0, 1.0);
+		ROUGHNESS = 0.08;
+#endif
 		EMISSION = em;
 		METALLIC = 0.0;
 		CLEARCOAT = clamp(clearcoat_amount * (1.0 + 3.0 * wetm), 0.0, 1.0);

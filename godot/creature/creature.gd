@@ -58,6 +58,9 @@ var parts: Array = []                  ## see part_entries in CREATURE.md
 var growth: Array = []                 ## {region_id, side, node}
 var stats: Dictionary = {}
 
+## Body plan (A24). "bilateral" (the default) or "radial": see creature_radial.gd. `radial` is null for bilateral.
+var plan_kind := "bilateral"
+var radial: CreatureRadial = null
 var _attachments := {}
 
 
@@ -106,6 +109,13 @@ func build(g: Dictionary) -> void:
 	if materials == null:
 		materials = CreatureMaterials.new()
 	maker = CreatureParts.new(materials, asset_dir)
+	var plan := CreatureGenome.plan_of(genome)
+	if plan["sym"] == "radial":
+		plan_kind = "radial"
+		radial = CreatureRadial.new(self)
+		radial.build(plan)
+		built.emit()
+		return
 	_sample_spine()
 	bio = CreatureBio.derive(genome, maker.is_leg, maker.lib["entries"])
 	materials.configure(bio, genome["skin"])
@@ -163,6 +173,8 @@ func build(g: Dictionary) -> void:
 
 
 func _clear() -> void:
+	plan_kind = "bilateral"
+	radial = null
 	for c in get_children():
 		remove_child(c)
 		c.free()
@@ -207,6 +219,8 @@ func _sample_spine() -> void:
 ## ang around the spine (0 = dorsal, +pi/2 = +X flank, pi = belly).
 ## Returns {p, n, t, u} in body space.
 func anchor(t: float, ang: float, pts = null) -> Dictionary:
+	if radial != null:
+		return radial.anchor(t, ang)
 	var arr: Array = rest if pts == null else pts
 	var f := clampf(t, 0, 1) * (NS - 1)
 	var i: int = min(int(f), NS - 2)
@@ -689,6 +703,8 @@ func body_volume() -> float:
 	var vol := 0.0
 	for i in range(NC, NC + NSP - 1):
 		vol += rad[i] * rad[i] * rest[i].distance_to(rest[i + 1]) * 3.14
+	if radial != null:
+		vol += radial.arm_volume()
 	return vol
 
 
@@ -710,8 +726,11 @@ func mass_data() -> Dictionary:
 		plist.append({"type": l.type, "category": "legs", "side": l.side, "size": l.part.get("size", l.width), "t": float(l.part["t"]),
 			"cost": maker.meta(l.type).get("cost", 0)})
 		llist.append({"upper": l.upper_length, "lower": l.lower_length, "width": l.width, "side": l.side, "t": float(l.part["t"])})
-	return {"segments": segs, "volume": body_volume(), "length": rest[NS - 1].distance_to(rest[0]),
+	var out := {"segments": segs, "volume": body_volume(), "length": rest[NS - 1].distance_to(rest[0]),
 		"parts": plist, "legs": llist}
+	if radial != null:
+		out["arms"] = radial.arm_data()
+	return out
 
 
 ## Animation hooks of the attached parts: [{index, type, side, hooks:{jaw, lid,

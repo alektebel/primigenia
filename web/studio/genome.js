@@ -15,8 +15,27 @@ const StudioDocument = (() => {
     Growth.validate(r);number(r.position,0,1,'regions.position');number(r.coverage,0,1,'regions.coverage');number(r.angle,-Math.PI,Math.PI,'regions.angle');
     return clone(r);
   }
+  // Radial body plan (A24): optional `plan`, absent = bilateral. Error paths match the C, Godot creature and Godot studio validators.
+  const RADIAL_LEGS=['pata','zanca','pezuna','leg_sprinter','leg_sucker','foot_spring','foot_hoof','foot_gecko'];
+  function plan(g) {
+    if(g.plan===undefined)return;
+    const p=g.plan;keys(p,['sym','fold','star','gel','arm'],'plan');
+    if(!['bilateral','radial'].includes(p.sym))fail('plan.sym');
+    const radial=p.sym==='radial';
+    if(radial||p.fold!==undefined)integer(p.fold,3,8,'plan.fold');
+    for(const [k,min,max]of [['star',0,1],['gel',0,1]])if(p[k]!==undefined)number(p[k],min,max,'plan.'+k);
+    if(p.arm!==undefined){const a=p.arm;keys(a,['len','w','taper','curl','droop','frill','tip','eye','act'],'plan.arm');
+      for(const [k,min,max]of [['len',0,6],['w',.1,1],['taper',0,1],['curl',-1,1],['droop',0,1],['frill',0,1]])if(a[k]!==undefined)number(a[k],min,max,'plan.arm.'+k);
+      if(a.tip!==undefined&&!['point','frill','bulb'].includes(a.tip))fail('plan.arm.tip');
+      if(a.eye!==undefined)integer(a.eye,0,1,'plan.arm.eye');
+      if(a.act!==undefined&&!['peristaltic','hydrostat','tubefeet','cilia'].includes(a.act))fail('plan.arm.act');}
+    if(!radial)return;
+    g.nodes.forEach((n,i)=>{if(n.z!==0||(i&&n.y<=g.nodes[i-1].y))fail('plan.nodes')});
+    for(const q of g.parts){if(RADIAL_LEGS.includes(q.type))fail('plan.legs');if(q.single!==undefined&&q.single<0)fail('parts.single')}
+    for(const r of g.regions)if(r.surface!=='torso')fail('regions.surface');
+  }
   function validate(g,types) {
-    keys(g,['schema','name','nodes','parts','skin','regions','migration'],'document');
+    keys(g,['schema','name','nodes','parts','skin','regions','migration','plan'],'document');
     if(!['cpore.creature/4','cpore.creature/5'].includes(g.schema))fail('schema');
     if(typeof g.name!=='string'||g.name.length>80||/[<>\x00-\x1f]/.test(g.name))fail('name');
     if(!Array.isArray(g.nodes)||g.nodes.length<4||g.nodes.length>32)fail('nodes');
@@ -32,6 +51,7 @@ const StudioDocument = (() => {
     keys(g.skin,['pat','cA','cB','cC','wet','scale'],'skin');integer(g.skin.pat,0,3,'skin.pat');number(g.skin.wet,0,1,'skin.wet');number(g.skin.scale,3,14,'skin.scale');
     for(const k of ['cA','cB','cC'])if(!/^#[0-9a-f]{6}$/i.test(g.skin[k]))fail('skin.'+k);
     if(!Array.isArray(g.regions)||g.regions.length>64)fail('regions');const ids=new Set();g.regions.forEach(r=>{region(r);if(ids.has(r.id))fail('regions.id');ids.add(r.id)});
+    plan(g);
     if(g.migration){keys(g.migration,['from','warnings','source'],'migration');if(![1,2,3].includes(g.migration.from)||!Array.isArray(g.migration.warnings)||g.migration.warnings.some(w=>typeof w!=='string'))fail('migration');object(g.migration.source,'migration.source')}
     return clone(g);
   }

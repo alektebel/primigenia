@@ -220,6 +220,11 @@ func _build_stage() -> void:
 	stage_ui.name = "StageUI"
 	add_child(stage_ui)
 	stage_ui.setup(self, str(genome.get("name", "Merodeador")))
+	if bool(Game.settings.wild):    # S5a: visual-only radial fauna (no C entities), see radial_fauna.gd
+		var radial_fauna := preload("res://game/island/radial_fauna.gd").new()
+		radial_fauna.name = "RadialFauna"
+		add_child(radial_fauna)
+		radial_fauna.setup(Game.data, int(Game.settings.seed), setup.nest, ground, func() -> Vector3: return camera.global_position)
 	_build_secrets(ground)      # before the part nodes: the cave fossil stands on the chamber floor, not on the rock above it
 	var part_nodes := preload("res://game/stage/part_nodes.gd").new()
 	add_child(part_nodes)

@@ -143,6 +143,8 @@ static func _yaw_of(v: Vector3) -> float:
 ## Writes a LocoController pose into the rig and solves the legs.
 ## Returns {max_sole_error} (metres) for the planted legs when `ground` is given.
 static func loco_apply(creature, pose: Dictionary, desc: Dictionary, ground: Callable = Callable()) -> Dictionary:
+	if desc.has("radial"):
+		return radial_apply(creature, pose, desc)
 	var unit: float = desc.unit
 	var root: Transform3D = pose.root
 	creature.global_transform = Transform3D(root.basis * Basis.from_scale(Vector3.ONE * unit), root.origin - Vector3.UP * float(desc.get("belly_drop", 0.0)))
@@ -227,3 +229,49 @@ static func _bend_spine(creature, pose: Dictionary, desc: Dictionary) -> void:
 
 static func _wave(w: Dictionary, u: float) -> float:
 	return w.amp * (0.4 + 0.6 * (1.0 - u)) * sin(TAU * (w.waves * u + w.phase))
+
+
+# ---------------------------------------------------------------- radial bodies (loco_radial.gd)
+
+## Body description of a radial creature (Creature.plan_kind == "radial"), metres, rest space, ground y = 0.
+static func radial_describe(creature, unit: float, density := 1000.0) -> Dictionary:
+	var r = creature.radial
+	var base: Vector3 = r._arm_point(0, 0.0)
+	var tip: Vector3 = r._arm_point(0, 1.0)
+	var root_r := Vector2(base.x, base.z).length()
+	var reach := Vector2(tip.x - base.x, tip.z - base.z).length()
+	var disc_h := 2.0 * float(r.disc_half)
+	var vol: float = creature.body_volume() * pow(unit, 3.0)
+	var desc := {"radial": {"fold": r.fold, "disc_r": float(r.max_r) * unit, "root_r": root_r * unit, "reach": reach * unit,
+		"tip_h": (tip.y + float(creature.ground_offset)) * unit, "act": String(creature.bio["arm"]["act"]),
+		"bell": float(r.gel) > 0.0 or float(r.arm["droop"]) >= .5, "bell_d": 2.0 * float(r.max_r) * unit,
+		"disc_h": disc_h * unit, "mass": vol * density * (.2 if float(r.gel) > 0.0 else .9)},
+		"unit": unit, "belly_drop": 0.0, "problems": []}
+	if reach <= 0.01:
+		desc["problems"].append("7. a radial body without arms has nothing to move")
+	return desc
+
+
+## Writes a LocoRadial pose into the rig: body placement (visual yaw and tilt), arm bone pitches and yaws, axis squeeze.
+static func radial_apply(creature, pose: Dictionary, desc: Dictionary, ground: Callable = Callable()) -> Dictionary:
+	var unit: float = desc.unit
+	var root: Transform3D = pose.root
+	creature.global_transform = Transform3D(root.basis * Basis.from_scale(Vector3.ONE * unit), root.origin)
+	var sk = creature.skeleton
+	var r = creature.radial
+	var ap: Array = pose.arm_pitch
+	var ay: Array = pose.arm_yaw
+	for k in range(r.arm_bones.size()):
+		for b in range(r.arm_bones[k].size()):
+			var bone: int = r.arm_bones[k][b]
+			var rest_q: Quaternion = (sk.get_bone_rest(bone) as Transform3D).basis.get_rotation_quaternion()
+			sk.set_bone_pose_rotation(bone, rest_q * Quaternion(Vector3.UP, ay[k][b]) * Quaternion(Vector3.RIGHT, -ap[k][b]))
+	var sq: float = pose.axis.squeeze
+	var col: float = pose.axis.collapse
+	var y0: float = (sk.get_bone_rest(r.axis_bones[0]) as Transform3D).origin.y
+	for i in range(r.axis_bones.size()):
+		var bone: int = r.axis_bones[i]
+		sk.set_bone_pose_scale(bone, Vector3(1.0 - .18 * sq, 1.0 + .1 * sq, 1.0 - .18 * sq))
+		var rp: Vector3 = (sk.get_bone_rest(bone) as Transform3D).origin
+		sk.set_bone_pose_position(bone, Vector3(rp.x, y0 + (rp.y - y0) * (1.0 - .45 * col), rp.z))
+	return {"max_sole_error": 0.0}
