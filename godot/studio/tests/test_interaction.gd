@@ -94,6 +94,7 @@ func _init() -> void:
 	await t_chain()
 	await t_ring()
 	await t_no_other_actuation_path()
+	await t_topbar()
 	print("studio interaction tests: %d checks, %d failures" % [checks, fails])
 	quit(1 if fails > 0 else 0)
 
@@ -552,3 +553,40 @@ func _walk(n: Node, out: Array) -> void:
 		if str(c.name).begins_with("LimbChoice") or str(c.name).begins_with("SkeletonChoice"):
 			out.append(c.name)
 		_walk(c, out)
+
+# ------------------------------------------------------------------ 6 top bar layout
+## The three top clusters (file, modes, play+language) never overlap, stay inside the window and keep the modes centred,
+## at the three sizes the owner uses, in both languages. Each size gets its own studio in a SubViewport of exactly that
+## size (the project stretches the root window to 1280 logical px, which would hide the narrow case).
+func t_topbar() -> void:
+	for sz in [Vector2i(1024, 600), Vector2i(1280, 720), Vector2i(1920, 1080)]:
+		var sv := SubViewport.new()
+		sv.size = sz
+		sv.render_target_update_mode = SubViewport.UPDATE_ALWAYS
+		root.add_child(sv)
+		var st = Studio.new()
+		sv.add_child(st)
+		await _frames(5)
+		for lg in ["es", "en"]:
+			st.set_lang(lg)
+			await _frames(5)
+			var tag := "%dx%d %s" % [sz.x, sz.y, lg]
+			ok(st.hud.size.x == float(sz.x), "the HUD fills the window (%s: %s)" % [tag, st.hud.size])
+			var rects := {}
+			for n in ["TopFile", "TopModes", "TopPlay"]:
+				var c: Control = st.top_bar.find_child(n, true, false)
+				rects[n] = c.get_global_rect()
+				ok(Rect2(Vector2.ZERO, Vector2(sz)).encloses(rects[n]), "%s stays inside the window (%s: %s)" % [n, tag, rects[n]])
+			ok(not rects["TopFile"].intersects(rects["TopModes"]), "file cluster and modes do not overlap (%s: %s %s)" % [tag, rects["TopFile"], rects["TopModes"]])
+			ok(not rects["TopModes"].intersects(rects["TopPlay"]), "modes and play cluster do not overlap (%s)" % tag)
+			ok(not rects["TopFile"].intersects(rects["TopPlay"]), "file and play clusters do not overlap (%s)" % tag)
+			ok(rects["TopFile"].end.x + 8.0 <= rects["TopModes"].position.x and rects["TopModes"].end.x + 8.0 <= rects["TopPlay"].position.x, "at least 8 px between clusters (%s)" % tag)
+			ok(is_equal_approx(rects["TopFile"].position.y, rects["TopModes"].position.y) and is_equal_approx(rects["TopModes"].position.y, rects["TopPlay"].position.y), "the three clusters share one top line (%s)" % tag)
+			var pb: Button = st.play_creature_btn
+			ok(pb != null and rects["TopPlay"].encloses(pb.get_global_rect()), "the play button is inside its cluster (%s)" % tag)
+			if sz.x >= 1280:
+				ok(absf(rects["TopModes"].get_center().x - sz.x / 2.0) < 2.0, "the modes are centred (%s: %.1f)" % [tag, rects["TopModes"].get_center().x])
+			var ne: LineEdit = st.name_edit
+			ok(ne.size.x >= 100.0 and rects["TopFile"].encloses(ne.get_global_rect()), "the name field keeps room to type (%s: %.0f px)" % [tag, ne.size.x])
+		sv.queue_free()
+		await _frames(2)

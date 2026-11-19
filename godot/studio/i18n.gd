@@ -5,7 +5,7 @@ var lang := "es"
 var parts: RefCounted
 
 const EN := {
-	"Jugar con esta criatura": "Play with this creature", "No se pudo guardar": "Could not save", "Modo": "Mode", "Construir": "Build", "Pintar": "Paint", "Probar": "Test", "Deshacer": "Undo", "Rehacer": "Redo",
+	"Jugar con esta criatura": "Play with this creature", "Jugar": "Play", "No se pudo guardar": "Could not save", "Modo": "Mode", "Construir": "Build", "Pintar": "Paint", "Probar": "Test", "Deshacer": "Undo", "Rehacer": "Redo",
 	"Pieza": "Part", "Piel": "Skin", "Dibujo": "Pattern", "Colores": "Colours", "Escama": "Scales", "Brillo": "Gloss", "Biología": "Biology", "Contrasombreado": "Countershading", "Tamaño del dibujo": "Pattern size", "Contraste del dibujo": "Pattern contrast", "Rosetas": "Rosettes", "Actuación": "Actuation", "Automática": "Automatic", "músculo": "muscle", "hidráulica": "hydraulic",
 	"Sin patas: esqueleto hidrostático, avanza por ondas de músculo": "no legs: hydrostatic skeleton, moves by waves of muscle", "Placas duras: músculo dentro de un exoesqueleto": "hard plates: muscle inside an exoskeleton", "Muchas patas finas: patas hidráulicas a presión": "many thin legs: pressurised hydraulic legs", "Patas gruesas: músculo sobre esqueleto interno": "thick legs: muscle on an internal skeleton",
 	"Esqueleto": "Skeleton", "esqueleto interno": "endoskeleton", "exoesqueleto": "exoskeleton", "esqueleto hidrostático": "hydrostatic skeleton", "tendón elástico": "elastic tendon", "resorte": "spring-latch", "hidrostato": "muscular hydrostat", "peristáltica": "peristaltic", "pies ambulacrales": "tube feet", "cilios": "cilia",

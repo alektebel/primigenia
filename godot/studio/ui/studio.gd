@@ -57,6 +57,7 @@ var hint_label: Label
 var panel_box: VBoxContainer
 var name_edit: LineEdit
 var undo_btn: Button
+var top_bar: HBoxContainer
 var redo_btn: Button
 var mode_buttons := {}
 var category_tabs := {}
@@ -371,12 +372,37 @@ func _build_hud() -> void:
 func T(s: String) -> String:
 	return i18n.tr_(s)
 
+## The top row: three clusters on one line, the modes centred, "Jugar" the primary action on the right.
+## Left: Menú, name, Archivo. Centre: Construir/Pintar/Probar + undo/redo. Right: Jugar con esta criatura, language.
+## The two outer clusters share the free width equally, so the modes stay centred, and nothing can overlap: on narrow
+## windows the wordy labels shorten (see _fit_top_bar) before anything is squeezed.
 func _build_top_bar() -> void:
+	var top := HBoxContainer.new()
+	top.name = "TopBar"
+	top.set_anchors_preset(Control.PRESET_TOP_WIDE)
+	top.offset_left = 14; top.offset_right = -14; top.offset_top = 14
+	top.add_theme_constant_override("separation", 10)
+	top.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	hud.add_child(top)
+	top_bar = top
+	var left_slot := HBoxContainer.new()
+	left_slot.name = "TopLeft"
+	left_slot.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	left_slot.size_flags_stretch_ratio = 1.0
+	left_slot.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	left_slot.alignment = BoxContainer.ALIGNMENT_BEGIN
+	top.add_child(left_slot)
 	var bar := PanelContainer.new()
-	bar.set_anchors_preset(Control.PRESET_CENTER_TOP)
-	bar.grow_horizontal = Control.GROW_DIRECTION_BOTH
-	bar.offset_top = 14
-	hud.add_child(bar)
+	bar.name = "TopModes"
+	bar.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
+	top.add_child(bar)
+	var right_slot := HBoxContainer.new()
+	right_slot.name = "TopRight"
+	right_slot.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	right_slot.size_flags_stretch_ratio = 1.0
+	right_slot.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	right_slot.alignment = BoxContainer.ALIGNMENT_END
+	top.add_child(right_slot)
 	var row := HBoxContainer.new()
 	row.add_theme_constant_override("separation", 6)
 	bar.add_child(row)
@@ -388,23 +414,28 @@ func _build_top_bar() -> void:
 		b.toggle_mode = true
 		b.button_group = group
 		b.button_pressed = model.mode == m[0]
-		b.custom_minimum_size = Vector2(96, 34)
+		b.custom_minimum_size = Vector2(88, 34)
 		b.pressed.connect(set_mode.bind(m[0]))
 		row.add_child(b)
 		mode_buttons[m[0]] = b
 	row.add_child(VSeparator.new())
 	undo_btn = Button.new()
+	undo_btn.name = "UndoButton"
 	undo_btn.text = "↶ " + T("Deshacer")
+	undo_btn.tooltip_text = T("Deshacer")
 	undo_btn.pressed.connect(on_undo)
 	row.add_child(undo_btn)
 	redo_btn = Button.new()
+	redo_btn.name = "RedoButton"
 	redo_btn.text = "↷ " + T("Rehacer")
+	redo_btn.tooltip_text = T("Rehacer")
 	redo_btn.pressed.connect(on_redo)
 	row.add_child(redo_btn)
-	# left corner: name, file menu
+	# left cluster: back to the menu, the name, the file menu
 	var left := PanelContainer.new()
-	left.offset_left = 14; left.offset_top = 14
-	hud.add_child(left)
+	left.name = "TopFile"
+	left.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
+	left_slot.add_child(left)
 	var lrow := HBoxContainer.new()
 	lrow.add_theme_constant_override("separation", 6)
 	left.add_child(lrow)
@@ -413,14 +444,9 @@ func _build_top_bar() -> void:
 	menu_btn.tooltip_text = T("Guarda con Ctrl+S; Jugar usa la última criatura guardada")
 	menu_btn.pressed.connect(_on_exit)
 	lrow.add_child(menu_btn)
-	if nest_world == null:
-		play_creature_btn = Button.new()
-		play_creature_btn.name = "PlayCreatureButton"
-		play_creature_btn.text = "▶ " + T("Jugar con esta criatura")
-		play_creature_btn.pressed.connect(play_with_creature)
-		lrow.add_child(play_creature_btn)
 	name_edit = LineEdit.new()
-	name_edit.custom_minimum_size = Vector2(150, 0)
+	name_edit.custom_minimum_size = Vector2(110, 0)
+	name_edit.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	name_edit.placeholder_text = T("Ponle nombre")
 	name_edit.text = str(model.doc.get("name", ""))
 	name_edit.max_length = 80
@@ -442,14 +468,26 @@ func _build_top_bar() -> void:
 	_file_menu.add_item(T("Exportar JSON"), 4)
 	_file_menu.id_pressed.connect(_on_file_menu)
 	lrow.add_child(file_btn)
-	# right corner: language
-	var lang_box := PanelContainer.new()
-	lang_box.set_anchors_preset(Control.PRESET_TOP_RIGHT)
-	lang_box.grow_horizontal = Control.GROW_DIRECTION_BEGIN
-	lang_box.offset_top = 14; lang_box.offset_right = -14
-	hud.add_child(lang_box)
+	# right cluster: the primary action, then the language
+	var right := PanelContainer.new()
+	right.name = "TopPlay"
+	right.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
+	right_slot.add_child(right)
 	var lrow2 := HBoxContainer.new()
-	lang_box.add_child(lrow2)
+	lrow2.add_theme_constant_override("separation", 6)
+	right.add_child(lrow2)
+	if nest_world == null:
+		play_creature_btn = Button.new()
+		play_creature_btn.name = "PlayCreatureButton"
+		play_creature_btn.text = "▶ " + T("Jugar con esta criatura")
+		play_creature_btn.tooltip_text = T("Jugar con esta criatura")
+		play_creature_btn.pressed.connect(play_with_creature)
+		var acc := ThemeFactory.MOSS
+		play_creature_btn.add_theme_stylebox_override("normal", ThemeFactory.box(Color(acc.r, acc.g, acc.b, .22), acc, 10, 1))
+		play_creature_btn.add_theme_stylebox_override("hover", ThemeFactory.box(Color(acc.r, acc.g, acc.b, .34), acc, 10, 1))
+		play_creature_btn.add_theme_stylebox_override("pressed", ThemeFactory.box(Color(acc.r, acc.g, acc.b, .45), acc, 10, 2))
+		lrow2.add_child(play_creature_btn)
+		lrow2.add_child(VSeparator.new())
 	for l in ["es", "en"]:
 		var b := Button.new()
 		b.text = l.to_upper()
@@ -457,6 +495,19 @@ func _build_top_bar() -> void:
 		b.button_pressed = lang == l
 		b.pressed.connect(set_lang.bind(l))
 		lrow2.add_child(b)
+	hud.resized.connect(_fit_top_bar)
+	_fit_top_bar.call_deferred()
+
+## Wordy labels give way before anything can collide: undo/redo to their arrows, "Jugar con esta criatura" to "Jugar".
+func _fit_top_bar() -> void:
+	if top_bar == null or not is_instance_valid(top_bar) or hud == null:
+		return
+	var w: float = hud.size.x
+	var wordy := w >= 1240.0
+	undo_btn.text = ("↶ " + T("Deshacer")) if w >= 1160.0 else "↶"
+	redo_btn.text = ("↷ " + T("Rehacer")) if w >= 1160.0 else "↷"
+	if play_creature_btn != null:
+		play_creature_btn.text = "▶ " + (T("Jugar con esta criatura") if wordy else T("Jugar"))
 
 func _build_palette() -> void:
 	var card := PanelContainer.new()
