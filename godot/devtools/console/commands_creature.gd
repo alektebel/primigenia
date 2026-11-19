@@ -71,7 +71,14 @@ static func register_all(r) -> void:
 		func(a): return _order(r, a), {"changes_sim": true})
 	r.register("loadout", "<slot 1-4> <move|none>", "put a known move in a hotbar slot (an order to C: only at the nest, never in a fight)",
 		func(a): return _loadout(r, a), {"changes_sim": true, "complete": func(i, p, t): return ["1", "2", "3", "4"] if i == 0 else (_move_names() + ["none"] if i == 1 else [])})
-	r.register("trait", "add <name>", "lineage traits", func(a): return fail("lineage traits arrive with L0 (C2)"))
+	r.register("evolve", "<creature-file>", "evolve into a creature and leave the previous form as a cousin", func(a):
+		var st = r.stage()
+		if st == null or a.size() != 1:
+			return fail("usage: evolve <creature-file> (start the island first)")
+		var island = st.get_parent()
+		var err: String = preload("res://game/stage/lineage_session.gd").evolve_file(island, a[0])
+		return ok("Evolved; your cousins remain in the valley.") if err == "" else fail(err), {"changes_sim": true})
+	r.register("trait", "add <name>", "lineage traits", func(a): return fail("Traits are earned through deeds. Use obs to inspect lineage progress."))
 	r.register("stage", "<name>", "jump to another stage", func(a): return fail("stage jump is DT2"))
 	r.register("hash", "", "state hash of the C world", func(a): return _with_stage(r, func(st): return ok(st.world.hash())))
 	r.register("tick", "", "world tick", func(a): return _with_stage(r, func(st): return ok(str(st.world.state().tick))))

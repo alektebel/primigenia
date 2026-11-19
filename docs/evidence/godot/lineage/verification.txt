@@ -1,0 +1,22 @@
+Verification — 2026-11-19
+
+make test: exit 0
+make smoke: exit 0 (includes Python lineage smoke)
+make tourney: passed; worst field mean 62.3%, worst pooled pair 72.2%
+World replay goldens: unchanged; match all committed world logs
+Combat goldens: unchanged; 10,000 hashes match for each of five seeds
+Native ledger/evolution/type tests: passed after final spawn changes
+Godot check-only: passed for lineage and island tests
+Godot lineage: 0 failures; 3 live portraits, scenario save/load, replay, pause and map pins
+Godot lineage island: 0 failures; actual evolve console, bodies, restore and tree
+Godot existing play test: 208 checks, 0 failures (isolated terrain cache warmed)
+
+New-code line coverage:
+lineage: 40/40 lines (100.00%) — added ledger region only
+lineage_world: 132/136 lines (97.06%)
+creature_types: 21/21 lines (100.00%)
+
+xvfb software GL capture: blocked; X11 display unavailable in sandbox
+Git add/commit: blocked; common Git metadata mounted read-only
+No screenshot and no commits were fabricated.
+Shared project Dev-console/resource shutdown warnings also reproduce with an empty script; integrated runs report additional cleanup warnings after checks.

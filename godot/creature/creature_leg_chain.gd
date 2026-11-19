@@ -38,6 +38,9 @@ var foot_pitch := 0.0         ## toe pitch (rig.js lifts -.5*sin during swing)
 var allow_stretch := false    ## stretch bones when the target is out of reach (terrain)
 
 ## Outputs of the last solve (creature space).
+var upper_mat: ShaderMaterial ## skin copies of the two segments (flex uniform), null without the realism shader
+var lower_mat: ShaderMaterial
+var _flex := -1.0
 var hip := Vector3()
 var knee := Vector3()
 var ankle := Vector3()
@@ -116,6 +119,7 @@ func solve_local(sole: Vector3, yaw_local := 0.0, pitch := 0.0) -> float:
 
 
 func _apply(yaw_local: float, pitch: float, extension: float) -> void:
+	_update_flex()
 	var sx := float(side) if mirrored_mesh else 1.0
 	upper.position = hip
 	upper.transform.basis = Basis(_arc(DOWN, (knee - hip).normalized())) * Basis.from_scale(Vector3(sx, extension, 1))
@@ -139,3 +143,17 @@ static func _arc(from: Vector3, to: Vector3) -> Quaternion:
 		var c := from.cross(to)
 		q = Quaternion(c.x, c.y, c.z, r)
 	return q.normalized()
+
+
+## Knee bend 0 (straight) .. 1: the muscle belly of the limb swells with it (skin.gdshader, muscle actuation).
+func _update_flex() -> void:
+	if upper_mat == null:
+		return
+	var a := (knee - hip).normalized()
+	var b := (ankle - knee).normalized()
+	var f := clampf((1.0 - a.dot(b)) * 1.2, 0.0, 1.0)
+	if absf(f - _flex) < .01:
+		return
+	_flex = f
+	upper_mat.set_shader_parameter("flex", f)
+	lower_mat.set_shader_parameter("flex", f)

@@ -149,10 +149,10 @@ int main(int argc,char **argv){
     const uint64_t final=cp_stage_replay_ex(&setup,NULL,0,&field,&entry,1,NULL,0,TICKS,h3);
     assert(final&&!memcmp(h1,h3,sizeof h1));
     fresh(nx,nz);
-    static uint8_t blob[1<<20];
+    uint8_t *blob=malloc(cp_stage_snapshot_size());
     for(int i=0;i<400;i++)cp_stage_step(&world,i==0?&go:NULL);
     assert(world.n_path>0);
-    int bytes=cp_stage_snapshot(&world,blob,sizeof blob);
+    int bytes=cp_stage_snapshot(&world,blob,cp_stage_snapshot_size());
     assert(bytes>0);
     memset(&twin,0,sizeof twin);
     assert(cp_stage_restore(&twin,blob,(size_t)bytes,&field)==0);

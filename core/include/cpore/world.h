@@ -2,12 +2,14 @@
 #ifndef CPORE_WORLD_H
 #define CPORE_WORLD_H
 #include "cpore/combat.h"
+#include "cpore/ledger.h"
+#include "cpore/creature_types.h"
 #define CP_STAGE_VERSION 3
 #define CP_STAGE_MAX_WILD 24
 #define CP_STAGE_MAX_OBSTACLES 1024
 #define CP_STAGE_DAY_TICKS 12000
 #define CP_STAGE_DT .1f
-#define CP_STAGE_SNAPSHOT_VERSION 4   /* 3: player loadout (A21); 4: social layer (C2) */
+#define CP_STAGE_SNAPSHOT_VERSION 5   /* 3: player loadout (A21); 4: social layer (C2); 5: lineage ledger and ancestry */
 #define CP_STAGE_MAX_PATH 64      /* waypoints kept by the planner (docs/godot/NAV.md) */
 #define CP_STAGE_MAX_EVENTS 64    /* event ring since the last observe */
 
@@ -163,7 +165,7 @@ typedef struct {
     int32_t act_verb,act_target,act_arg,act_t,act_len,act_rhythm,act_mult; /* the action under way (verb 0 = none) */
     int32_t stagger,intimidate_cd;
     int32_t food,diet;               /* hunger meter 0..100 (no starvation effect yet) and the body's diet (CP_DIET_*, omnivore by default) */
-    int32_t obs_target,obs_ticks;    /* observe: creature watched and ticks on the current clue */
+    int32_t obs_target,obs_ticks,obs_need;    /* observe: creature watched and ticks on the current clue */
     int32_t obs_items[CP_SOC_SPECIES]; /* clues revealed per species chain, 0..3 */
     uint32_t learned;                /* moves learned by observing (bit = 1 << move id) */
     int32_t kills[CP_SOC_SPECIES],latched[CP_SOC_SPECIES],resolution[CP_SOC_SPECIES],first_met[CP_SOC_SPECIES];
@@ -174,6 +176,22 @@ typedef struct {
     uint32_t species_seen;
     CpStageSocialCreature c[CP_STAGE_MAX_WILD];
 } CpStageSocial;
+typedef struct {
+    char body[CP_LINEAGE_BODY_CAP],name[80];
+    uint16_t parts[CP_LINEAGE_PARTS];
+    CpCombatProfile profile;
+} CpLineageForm;
+typedef struct {
+    CpLineageForm form;
+    uint32_t generation,traits,deeds[CP_DEED_COUNT];
+    int32_t cousin_id,home_x,home_z,temperament,diet,trust_bonus,type;
+} CpLineageGeneration;
+typedef struct { int32_t cell_x,cell_z,x,z; uint32_t ticks; } CpLineageResidence;
+typedef struct {
+    uint32_t count,n_residence,perk_serial[CP_TYPE_PERKS];
+    CpLineageResidence residence[128];
+    CpLineageGeneration forms[CP_LINEAGE_GENERATIONS];
+} CpAncestry;
 typedef struct {
     CpStageSetup setup;
     CpRng spawn_rng,roam_rng;
@@ -203,9 +221,21 @@ typedef struct {
     uint32_t ev_total,ev_acked;      /* events pushed / already shown to the agent; ring index = n % CP_STAGE_MAX_EVENTS */
     CpStageEvent events[CP_STAGE_MAX_EVENTS];
     CpCombatLoadout loadout;         /* the player's kit; copied into the fight at its start; hashed when custom */
+    CpAncestry ancestry;
+    CpLedger ledger;              /* L0: opt in via cp_ledger_init; snapshot owns it */
     CpStageSocial social;            /* C2: trust, DNA, species progress, observe; hashed once `social.used` */
     const CpStageField *field;       /* not owned, not in the snapshot, set by cp_stage_attach_field */
 } CpStageWorld;
+int cp_stage_lineage_form(CpStageWorld *w,const CpLineageForm *form,int evolve);
+int cp_stage_lineage_perk(CpStageWorld *w,int kind,uint32_t serial,int amount);
+int cp_stage_evolve(CpStageWorld *w,const CpLineageForm *form);
+int cp_stage_cousin_generation(const CpStageWorld *w,int entity_id);
+int cp_stage_species_counts_progress(const CpStageWorld *w,int entity_id);
+uint64_t cp_stage_ancestry_hash(const CpStageWorld *w);
+int cp_stage_lineage_export(const CpStageWorld *w,char *out,size_t cap);
+int cp_stage_lineage_begin(CpStageWorld *w);
+int cp_stage_lineage_award(CpStageWorld *w,int deed,uint32_t amount,uint32_t cause);
+void cp_stage_lineage_tick(CpStageWorld *w,int32_t old_x,int32_t old_z);
 void cp_stage_setup_default(CpStageSetup *s,uint32_t seed);
 int cp_stage_reset(CpStageWorld *w,const CpStageSetup *s);
 float cp_stage_height(const CpStageWorld *w,float x,float z);

@@ -13,6 +13,7 @@
     "camera_reset": {"label": "Reset camera behind the creature", "group": "Camera", "contexts": ["walk", "fight"]},
     "zoom_in": {"label": "Zoom in", "group": "Camera", "contexts": ["walk", "fight"], "hidden": true},
     "zoom_out": {"label": "Zoom out", "group": "Camera", "contexts": ["walk", "fight"], "hidden": true},
+    "family_tree": {"label": "Family tree", "group": "Menus", "contexts": ["walk", "fight", "paused"]},
     "ability_1": {"label": "Ability 1 of the mode (move, skill, roar, eat)", "group": "Fight", "contexts": ["walk", "fight"], "corner": ["fight"]},
     "ability_2": {"label": "Ability 2 of the mode", "group": "Fight", "contexts": ["walk", "fight"]},
     "ability_3": {"label": "Ability 3 of the mode", "group": "Fight", "contexts": ["walk", "fight"]},
