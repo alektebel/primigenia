@@ -1,0 +1,215 @@
+{
+  "schema": "cpore.plant/1",
+  "id": "cinta_de_marea",
+  "name": {
+    "en": "Tide Ribbon",
+    "es": "Cinta de marea"
+  },
+  "world": "primigenia",
+  "status": "draft",
+  "growth_form": "algae",
+  "habitats": [
+    "Tidal shelf",
+    "Sheltered sea-arch pools",
+    "Shallow lagoons",
+    "Illuminated sunken-cave entrance"
+  ],
+  "summary": "Flexible green strap algae attach to illuminated coastal rock. Broad holdfasts resist surge and mucilage delays drying. For generation and play, exposed blades tolerate at most four consecutive local hours of warm, clear, drying emersion before severe desiccation damage; shelter can prolong survival. Living beds stop at the sunken cave's daylight threshold (F9, F13, F20).",
+  "chains": [
+    {
+      "id": "cinta_de_marea.c1",
+      "trait": "Flexible straps and broad holdfasts",
+      "links": [
+        "Tidal currents and waves repeatedly load attached algae.",
+        "Flexible straps align with flow instead of resisting it rigidly.",
+        "Broad holdfasts distribute attachment forces while fronds create small sheltered gaps."
+      ],
+      "roots": [
+        "F13",
+        "F20",
+        "F21"
+      ],
+      "play": "Read current direction from moving blades and inspect sheltered gaps for marine feeders.",
+      "weakness": "Exceptional surge tears blades or detaches weathered substrate.",
+      "observe": [
+        "Blades flatten and reverse with surge.",
+        "Torn ribbons drift away from surviving holdfasts.",
+        "Sifon holds position behind moving fronds."
+      ],
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "botanist/composer-2.5; chair sol",
+        "date": "2026-11-19",
+        "summary": "Underwater loading comes from water flow. Shelf tidal range is neither wave height nor a universal current speed.",
+        "analogues": [
+          {
+            "organism": "Ulva and flexible bladed marine macroalgae",
+            "mechanism": "Flexible thalli reconfigure in moving water, moderating loads while retaining photosynthetic area.",
+            "refs": [
+              "hurd_2000_motion"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "cinta_de_marea.c2",
+      "trait": "Thin illuminated blades with moisture-retaining mucilage",
+      "links": [
+        "Turbid water restricts useful light to shallow illuminated sites.",
+        "Thin blades intercept light near the surface.",
+        "Mucilage and overlapping blades slow water loss during ebb.",
+        "Continued warm, clear exposure exhausts retained moisture and damages tissue."
+      ],
+      "roots": [
+        "F13",
+        "F20"
+      ],
+      "play": "Gather fresh blades early in ebb; inspect stranded tips before offering them as food.",
+      "weakness": "The exposed-blade drying limit is four consecutive local hours in warm, clear conditions; burial and permanent darkness also prevent productive growth.",
+      "observe": [
+        "Fresh ribbons cling together in a slippery film.",
+        "After prolonged clear exposure, upper tips become dull and brittle.",
+        "Attached living blades disappear at the cave's daylight threshold."
+      ],
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "botanist/composer-2.5; chair sol",
+        "date": "2026-11-19",
+        "summary": "Four hours is a fictional gameplay calibration for drying exposure, not an experimentally established tolerance or an unconditional biological timer. Pools, fog and shade alter drying; living beds remain within sufficient daylight.",
+        "analogues": [
+          {
+            "organism": "Intertidal Ulva and other periodically exposed seaweeds",
+            "mechanism": "Water retention and physiological stress resistance permit finite emersion tolerance and contribute to shore zonation.",
+            "refs": [
+              "davison_1996_stress"
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "gameplay": {
+    "food_for": [
+      "Herbivores eating mineral-rich algae",
+      "Omnivores eating fresh aquatic greens"
+    ],
+    "gift_item": "Fresh briny ribbon",
+    "poison": {
+      "alkaloid": false,
+      "signal": "Green translucent blades; dull brown stranded tissue indicates deterioration."
+    },
+    "healing": null,
+    "cover": "Submerged visual shelter for small aquatic creatures.",
+    "climbing": false,
+    "nest_material": null,
+    "mineral_lick": null,
+    "notes": "Zancuda eats blades; sifon and cuarteta consume associated suspended food. Waterborne propagules replace pollination. Four hours of warm, clear drying exposure is the specified gameplay limit, and algae do not make incoming tides safe."
+  },
+  "relations": [
+    {
+      "with": "zancuda",
+      "kind": "eaten_by",
+      "note": "Crops accessible blades while wading."
+    },
+    {
+      "with": "sifon",
+      "kind": "shelters",
+      "note": "Feeds on plankton and drifting carcass bits behind fronds."
+    },
+    {
+      "with": "cuarteta",
+      "kind": "shelters",
+      "note": "Sweeps suspended food from sheltered gaps."
+    },
+    {
+      "with": "brujula",
+      "kind": "other",
+      "note": "Collects detritus and suspension food around holdfasts."
+    },
+    {
+      "with": "salvisca",
+      "kind": "grows_with",
+      "note": "Occupies flooded rock below the terrestrial spray-zone shrub."
+    }
+  ],
+  "generator": {
+    "growth_form": "algae",
+    "height_m": {
+      "min": 0.2,
+      "max": 1.5
+    },
+    "trunk": "No trunk; broad holdfasts support flexible stipes. Height denotes extended thallus length.",
+    "branching": {
+      "angle_deg": 30,
+      "levels": 3,
+      "apical_dominance": 0,
+      "buttress": "None; attachment is by holdfast."
+    },
+    "leaf": {
+      "type": "Thin strap-like thallus blade; no true leaves",
+      "size_cm": 20,
+      "arrangement": "Irregular forks and overlapping ribbons"
+    },
+    "colour": {
+      "base": "Translucent green",
+      "overlay_rules": [
+        "Overlapping wet blades appear dark green.",
+        "Desiccated tips become dull olive-brown.",
+        "Sediment produces removable surface coatings."
+      ]
+    },
+    "placement": {
+      "slope": "Stable illuminated benches, pool sides and shelves on 0–45 degree slopes.",
+      "altitude_m": [
+        -5,
+        2
+      ],
+      "wetness": "Submerged or periodically exposed; exclude sites routinely exceeding four hours of warm, clear drying emersion without retained water.",
+      "soil": "Stable rock without persistent burial; require sufficient daylight.",
+      "coast_distance_m": [
+        0,
+        250
+      ],
+      "fog": "Slows drying but cannot replace tidal wetting.",
+      "density": "Dense sheltered photic beds thinning to zero at the cave's daylight threshold."
+    },
+    "seasonal": "Expands in cool favourable periods; storms and prolonged summer emersion reduce exposed beds.",
+    "wind_response": "Submerged blades follow water flow; exposed ribbons lie against rock and dry faster in wind."
+  },
+  "journal": [
+    {
+      "en": "The sea lays its ribbons down, then lifts them again. Eat while the stones are showing.",
+      "es": "El mar deja sus cintas y vuelve a levantarlas. Come mientras se vean las piedras."
+    }
+  ],
+  "provenance": {
+    "council_run": "flora-2026-11-19",
+    "by": [
+      "designer",
+      "mythmaker",
+      "naturalist",
+      "physicist",
+      "senses",
+      "skeptic",
+      "wildcard"
+    ],
+    "edited_by": "sol"
+  },
+  "changelog": [
+    {
+      "date": "2026-11-19",
+      "who": "flora.py",
+      "what": "flora pass: 7 voices drafted and peer-reviewed, Composer botanical referee, sol chaired and applied the fixes"
+    }
+  ],
+  "observe": [
+    "A green carpet at ebb becomes a waving bed at flood.",
+    "Zancuda leaves cropped ends along shallow margins.",
+    "Loose fragments can occur beyond the last living attached blades."
+  ],
+  "secrets": [
+    "Attached living blades identify the illuminated cave fringe.",
+    "Drifting ribbons reveal current direction without predicting the next tidal turn."
+  ]
+}

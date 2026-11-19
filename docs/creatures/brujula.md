@@ -60,7 +60,7 @@ Trait ← Dense air and 1.05g gravity increase drag on exposed bodies ← Hydros
   - Cap Adhesion to wet intertidal surfaces, sea-spray zone, and dyke faces under ~55–60°; allow only short emersion holds until the rock film dries. Drop ‘vertical cliff’ wording or gate it behind shallow-water hydraulic assist.
   - scores: astrobio 6, skeptic 4
   - Analogue: Intertidal Pisaster / Asterias spp.: tube feet and suckers on barnacle- and basalt-textured shore; bat star (Patiria) on irregular rock.: as named by the judge; no mechanism or reference recorded
-  - Analogue: real biology behind this chain: see the cited works; chain wording is the council's own (Pearse 2012 [unverified])
+  - Analogue: real biology behind this chain: see the cited works; chain wording is the council's own
   - Fix: Cap Adhesion to wet intertidal surfaces, sea-spray zone, and dyke faces under ~55–60°; allow only short emersion holds until the rock film dries. Drop ‘vertical cliff’ wording or gate it behind shallow-water hydraulic assist.
 - **Chain provenance:** council run `autoloop-2026-11-19`; by naturalist/qwen
 
@@ -79,7 +79,7 @@ Trait ← High predation pressure from raiders in shallow zones ← Arms serve a
   - Define cycle as ~29.7 d lunar month or spring–neap sequence: partial regrowth in one month, full arm in 2–3 months (tunable). Autotomy leaves a functional but weakened disc; harvested tips tie to F23 minerals, not full limb in days.
   - scores: astrobio 6, skeptic 5
   - Analogue: Linckia multifora and various Asterias: deliberate arm shedding (autotomy) and slow epimorphic regeneration; predation by crabs and fish on arms.: as named by the judge; no mechanism or reference recorded
-  - Analogue: real biology behind this chain: see the cited works; chain wording is the council's own (Pearse 2012 [unverified])
+  - Analogue: real biology behind this chain: see the cited works; chain wording is the council's own
   - Fix: Define cycle as ~29.7 d lunar month or spring–neap sequence: partial regrowth in one month, full arm in 2–3 months (tunable). Autotomy leaves a functional but weakened disc; harvested tips tie to F23 minerals, not full limb in days.
 - **Chain provenance:** council run `autoloop-2026-11-19`; by naturalist/qwen
 
@@ -131,4 +131,5 @@ council run `autoloop-2026-11-19`; by naturalist/qwen
 ## Changelog
 
 - 2026-11-19 import_got: imported from council run autoloop-2026-11-19
+- 2026-11-19 autoloop: removed rejected references from analogues
 - 2026-11-19 autoloop: removed rejected references from analogues

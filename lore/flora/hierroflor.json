@@ -1,0 +1,204 @@
+{
+  "schema": "cpore.plant/1",
+  "id": "hierroflor",
+  "name": {
+    "en": "Meteor Violet",
+    "es": "Hierroflor"
+  },
+  "world": "primigenia",
+  "status": "draft",
+  "growth_form": "herb",
+  "habitats": [
+    "Metal-rich crater-floor patches",
+    "The bent ejecta ray",
+    "Weathered ground near meteor fragments"
+  ],
+  "summary": "A 0.1–0.4 m rosette tolerates nickel released by weathering iron-nickel impact debris. It concentrates nickel in protected cellular compartments and carries violet-red, alkaloid-defended foliage. Its patch distribution helps trace the bent ejecta ray; neither colour nor absence proves a shard's position or reveals the second capsule's purpose (F22, F25, F26).",
+  "chains": [
+    {
+      "id": "hierroflor.c1",
+      "trait": "Nickel tolerance and tissue sequestration",
+      "links": [
+        "Weathering impact debris creates locally nickel-rich soil patches.",
+        "Selective transport and binding limit damage to sensitive cellular machinery.",
+        "Sequestration isolates accumulated nickel in storage compartments.",
+        "The herb persists where less tolerant competitors struggle."
+      ],
+      "roots": [
+        "F22",
+        "F24"
+      ],
+      "play": "Compare plant patches with exposed fragments and follow a sequence of suitable sites along the bent ejecta ray.",
+      "weakness": "Tolerance has limits; excessive contamination, drought or unsuitable substrate excludes the plant, leaving gaps in the botanical trail.",
+      "observe": [
+        "Dense rosettes cluster around some weathered fragments while nearby ordinary soil supports other vegetation.",
+        "Follow several patches to reveal a bend rather than a straight radial line.",
+        "Inspect an eroded patch edge to find mineral-stained debris beneath ordinary soft roots."
+      ],
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "botanist/composer-2.5; chair sol",
+        "date": "2026-11-19",
+        "summary": "Nickel accumulation is biologically credible; metallic leaves, iron-powered metabolism and automatic soil purification are excluded. The 12,000-year-old crater supports a vegetation mosaic, and five shards need not each have a plant marker.",
+        "analogues": [
+          {
+            "organism": "Nickel-hyperaccumulating Alyssum relatives",
+            "mechanism": "Metal transport, ligand binding and compartmentation permit exceptional tissue nickel loads. Transfer to meteoritic soil is an ecological extrapolation. [Krämer](https://doi.org/10.1146/annurev-arplant-042809-112156)",
+            "refs": [
+              "kramer_2010_hyperaccumulation"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "hierroflor.c2",
+      "trait": "Violet-red photoprotective and alkaloid-warning foliage",
+      "links": [
+        "Open patches expose leaves to strong light while herbivores encounter low foliage.",
+        "Protective pigments overlay green photosynthetic tissue.",
+        "Persistent red-violet veins accompany alkaloid defence.",
+        "Colour warns against eating; patch location provides the separate geological clue."
+      ],
+      "roots": [
+        "F14",
+        "F22",
+        "F25",
+        "F26"
+      ],
+      "play": "Learn to separate a poison warning from a habitat clue and avoid offering the leaves as food.",
+      "weakness": "Purple foliage is not a nickel assay; exposed leaves can become darker without a corresponding increase in soil metal.",
+      "observe": [
+        "Shaded leaves retain red-violet veins against a greener blade.",
+        "Exposed leaves carry a broader violet overlay.",
+        "Equally purple plants occur at different distances from visible impact fragments."
+      ],
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "botanist/composer-2.5; chair sol",
+        "date": "2026-11-19",
+        "summary": "The pigment analogue supports photoprotection, while the honest alkaloid warning follows F25. Colour alone does not quantify nickel, and the crater receives no invented elevation or high-altitude UV value.",
+        "analogues": [
+          {
+            "organism": "Anthocyanin-bearing leaves",
+            "mechanism": "Foliar anthocyanins provide an analogue for photoprotection and stress-associated colour; reliable alkaloid signalling is a planet-canon property. [Gould](https://pmc.ncbi.nlm.nih.gov/articles/PMC1082902/)",
+            "refs": [
+              "gould_2004_anthocyanins"
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "gameplay": {
+    "food_for": [],
+    "gift_item": null,
+    "poison": {
+      "alkaloid": true,
+      "signal": "Persistent red-violet veins warn of alkaloids; accumulated nickel adds a separate hazard that colour does not quantify."
+    },
+    "healing": null,
+    "cover": "Low rosettes obscure small ground objects but cannot conceal a standing creature.",
+    "climbing": false,
+    "nest_material": null,
+    "mineral_lick": null,
+    "notes": "Use the plant as an imperfect substrate indicator. Player-lineage alkaloid detoxification does not establish nickel tolerance. Shared biochemistry does not remove chemical toxicity, and babosa's mineral diet does not establish safe nickel accumulation."
+  },
+  "relations": [
+    {
+      "with": "player_lineage",
+      "kind": "other",
+      "note": "Learns the association between patch distribution and weathered impact debris while avoiding ingestion."
+    },
+    {
+      "with": "albinos",
+      "kind": "other",
+      "note": "The red-veined leaves fall within their established dietary avoidance; open patches also offer little sun shelter."
+    },
+    {
+      "with": "ceniza_roja",
+      "kind": "grows_with",
+      "note": "May border pioneer crusts on exposed crater rock where moisture and chemistry permit both."
+    }
+  ],
+  "generator": {
+    "growth_form": "herb",
+    "height_m": {
+      "min": 0.1,
+      "max": 0.4
+    },
+    "trunk": "None; short perennial root crown with ordinary flexible roots in weathered soil.",
+    "branching": {
+      "angle_deg": 0,
+      "levels": 0,
+      "apical_dominance": 1,
+      "buttress": "None"
+    },
+    "leaf": {
+      "type": "Waxy spoon-shaped blade with visible veins",
+      "size_cm": 10,
+      "arrangement": "Compact basal spiral rosette"
+    },
+    "colour": {
+      "base": "Green photosynthetic tissue",
+      "overlay_rules": [
+        "Persistent red-violet veins accompany alkaloid defence.",
+        "Exposed blades develop broader violet-red screening.",
+        "Do not encode nickel concentration as metallic sheen or a fixed purple intensity."
+      ]
+    },
+    "placement": {
+      "slope": "Stable crater-floor pockets and suitable deposits along the single bent ejecta ray",
+      "altitude_m": [
+        0,
+        2050
+      ],
+      "wetness": "Seasonally moist, freely draining soil; growth slows during drought",
+      "soil": "Weathered tuff locally enriched by iron-nickel debris; exclude both ordinary soils and lethal contamination extremes",
+      "coast_distance_m": [
+        0,
+        3600
+      ],
+      "fog": "No fog requirement",
+      "density": "Discontinuous substrate-controlled patches; apply the crater-and-ejecta mask before broad island bounds, since crater elevation is unspecified"
+    },
+    "seasonal": "Perennial crowns produce fresh leaves after rain and reduce exposed foliage during drought; winter response follows the crater's actual placement.",
+    "wind_response": "Low flexible leaves bend close to the ground; eroding sediment can expose or bury the root crown."
+  },
+  "journal": [
+    {
+      "en": "Violet leaves, scattered metal. Follow where it grows, not how brightly it shines.",
+      "es": "Hojas violetas, metal disperso. Sigue dónde crece, no cuánto brilla."
+    }
+  ],
+  "provenance": {
+    "council_run": "flora-2026-11-19",
+    "by": [
+      "designer",
+      "mythmaker",
+      "naturalist",
+      "physicist",
+      "senses",
+      "skeptic",
+      "wildcard"
+    ],
+    "edited_by": "sol"
+  },
+  "changelog": [
+    {
+      "date": "2026-11-19",
+      "who": "flora.py",
+      "what": "flora pass: 7 voices drafted and peer-reviewed, Composer botanical referee, sol chaired and applied the fixes"
+    }
+  ],
+  "observe": [
+    "Map several patches before inferring the ejecta ray's direction.",
+    "Compare violet intensity with shade, then compare patch location with weathered debris.",
+    "Inspect gaps in the trail for erosion or unsuitable soil rather than assuming a missing shard."
+  ],
+  "secrets": [
+    "Several patches together reveal the ejecta ray's bend, helping narrow the search for the five shards.",
+    "A dense patch may surround buried weathering debris without marking an intact shard.",
+    "Its ecology provides no answer to what the second capsule did."
+  ]
+}

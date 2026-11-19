@@ -1,0 +1,221 @@
+{
+  "schema": "cpore.plant/1",
+  "id": "soga_de_dosel",
+  "name": {
+    "en": "Canopy Rope",
+    "es": "Soga de dosel"
+  },
+  "world": "primigenia",
+  "status": "draft",
+  "growth_form": "vine",
+  "habitats": [
+    "Sheltered western forest canopy",
+    "The spring giant's branches",
+    "Sheltered riverbank woodland"
+  ],
+  "summary": "A ground-rooted woody vine attaches to bark with adhesive root pads. Climbing routes require stems at least 4 cm thick with multiple intact attachments and sound host support. Vertical reach never exceeds the actual host: at most 22 m on nieblon or 32 m on madre_de_agua. Soft fruit rewards dispersers; red-veined leaves warn of alkaloids (F18, F19, F25).",
+  "chains": [
+    {
+      "id": "soga_de_dosel.c1",
+      "trait": "Adhesive roots and mature woody cables",
+      "links": [
+        "Established trees supply support toward canopy light.",
+        "Attachment roots fasten the vine while ground roots supply water.",
+        "Woody thickening and repeated attachments distribute loads.",
+        "The host's structure and height set the climbing route's limits."
+      ],
+      "roots": [
+        "F2",
+        "F18",
+        "F19"
+      ],
+      "play": "Climb only stems at least 4 cm in diameter with multiple intact bark attachments and sound supporting branches.",
+      "weakness": "Thin shoots, detached loops and failing host branches cannot reliably bear a creature.",
+      "observe": [
+        "Root pads follow bark grooves.",
+        "A thick cable remains attached at several separate points.",
+        "A fallen host branch brings its attached vine down."
+      ],
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "botanist/composer-2.5; chair sol",
+        "date": "2026-11-19",
+        "summary": "A diameter of at least 4 cm and multiple intact attachments are necessary route conditions, not universal load guarantees. Vertical reach is capped by the actual host, with upper bounds of 22 m on nieblon and 32 m on madre_de_agua.",
+        "analogues": [
+          {
+            "organism": "Root-climbing ivy, Hedera helix",
+            "mechanism": "Attachment rootlets permit ascent on existing supports; creature-bearing mature cables are a restricted fictional extension.",
+            "refs": [
+              "darwin_1875_climbing"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "soga_de_dosel.c2",
+      "trait": "Defended foliage and separate fruit rewards",
+      "links": [
+        "Persistent leaves benefit from alkaloid defence.",
+        "Red veins mark defended foliage.",
+        "Ripe fruit softens and becomes fragrant.",
+        "Alula and rondo move seeds while feeding on pulp."
+      ],
+      "roots": [
+        "F16",
+        "F25",
+        "F26"
+      ],
+      "play": "Choose fruit by softness and scent while avoiding defended leaves.",
+      "weakness": "Soft fruit spoils rapidly and wind disperses scent cues.",
+      "observe": [
+        "Red-veined leaves remain firm beside ripe fruit.",
+        "Ripe fruit yields while unripe fruit stays hard.",
+        "Seeds appear beneath feeding perches and along rondo routes."
+      ],
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "botanist/composer-2.5; chair sol",
+        "date": "2026-11-19",
+        "summary": "Fruit rewards do not reverse the red-purple foliage warning. Scent persistence applies in still sheltered air.",
+        "analogues": [
+          {
+            "organism": "Vertebrate-dispersed fleshy-fruited plants",
+            "mechanism": "Chemical and structural differences between foliage and pulp can defend persistent tissues while rewarding seed dispersers.",
+            "refs": [
+              "herrera_1982_defense"
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "gameplay": {
+    "food_for": [
+      "Frugivores eating ripe pulp",
+      "Omnivores gathering ripe fruit"
+    ],
+    "gift_item": "Soft fragrant canopy fruit",
+    "poison": {
+      "alkaloid": true,
+      "signal": "Red-veined leaves warn of alkaloids; ripe pulp is identified by softness and scent."
+    },
+    "healing": null,
+    "cover": "Leaf curtains among supported branches.",
+    "climbing": true,
+    "nest_material": "Fine fallen stems and detached fibres.",
+    "mineral_lick": null,
+    "notes": "Enable climbing only on stems at least 4 cm thick with multiple intact bark attachments and sound host support. Cap every route at actual host height; unsupported loops are not independent aerial cables."
+  },
+  "relations": [
+    {
+      "with": "alula",
+      "kind": "eaten_by",
+      "note": "Eats ripe canopy fruit and uses supported stems between perches."
+    },
+    {
+      "with": "alula",
+      "kind": "dispersed_by",
+      "note": "Drops seeds beneath feeding perches."
+    },
+    {
+      "with": "rondo",
+      "kind": "dispersed_by",
+      "note": "Eats fallen pulp and transports surviving seeds."
+    },
+    {
+      "with": "player_lineage",
+      "kind": "other",
+      "note": "Climbs eligible multiply attached mature stems and gathers ripe fruit."
+    },
+    {
+      "with": "nieblon",
+      "kind": "grows_with",
+      "note": "Uses the host as support; vertical reach cannot exceed its actual height or 22 m."
+    },
+    {
+      "with": "madre_de_agua",
+      "kind": "grows_with",
+      "note": "Can climb the single spring giant up to its actual height, never above 32 m."
+    }
+  ],
+  "generator": {
+    "growth_form": "vine",
+    "height_m": {
+      "min": 1.0,
+      "max": 32.0
+    },
+    "trunk": "Ground-rooted woody cable, 4–12 cm thick when mature; juvenile shoots are thinner. Vertical reach follows the actual supporting host.",
+    "branching": {
+      "angle_deg": 40,
+      "levels": 4,
+      "apical_dominance": 0.75,
+      "buttress": "None; root pads attach at repeated bark contacts."
+    },
+    "leaf": {
+      "type": "Leathery pointed blade",
+      "size_cm": 15,
+      "arrangement": "Alternate leaves forming lateral curtains"
+    },
+    "colour": {
+      "base": "Deep green",
+      "overlay_rules": [
+        "Red veins mark defended foliage.",
+        "Mature cables are grey-brown.",
+        "Fruit remains muted green to cream while softening and developing scent."
+      ]
+    },
+    "placement": {
+      "slope": "Stable sheltered woodland slopes and banks with established woody hosts.",
+      "altitude_m": [
+        20,
+        1100
+      ],
+      "wetness": "Moist drained rooting ground.",
+      "soil": "Humus-filled volcanic soil and deep bank crevices.",
+      "coast_distance_m": [
+        80,
+        1700
+      ],
+      "fog": "Frequent fog supports humid attachment surfaces.",
+      "density": "Scattered rooted vines; clamp vertical reach to actual host height, at most 22 m on nieblon and 32 m on madre_de_agua. Shorter hosts impose lower caps."
+    },
+    "seasonal": "Evergreen where moist; wet periods support shoot growth and warm seasons bring patchy fruit crops.",
+    "wind_response": "Leaves streamline and lateral shoots flex; exposed unsupported spans can break."
+  },
+  "journal": [
+    {
+      "en": "The thick ropes climb the trees. Soft fruit smells sweet; red-veined leaves stay bitter.",
+      "es": "Las sogas gruesas trepan por los árboles. El fruto blando huele dulce; las hojas de venas rojas siguen amargas."
+    }
+  ],
+  "provenance": {
+    "council_run": "flora-2026-11-19",
+    "by": [
+      "designer",
+      "mythmaker",
+      "naturalist",
+      "physicist",
+      "senses",
+      "skeptic",
+      "wildcard"
+    ],
+    "edited_by": "sol"
+  },
+  "changelog": [
+    {
+      "date": "2026-11-19",
+      "who": "flora.py",
+      "what": "flora pass: 7 voices drafted and peer-reviewed, Composer botanical referee, sol chaired and applied the fixes"
+    }
+  ],
+  "observe": [
+    "Trace a cable from ground roots to multiple bark attachments.",
+    "Compare juvenile shoots with mature climbing stems.",
+    "Watch alula feed above fallen fruit visited by rondo."
+  ],
+  "secrets": [
+    "A thick hanging loop can still lack sufficient attachments.",
+    "Seedlings gather beneath alula perches and beside rondo resting places."
+  ]
+}

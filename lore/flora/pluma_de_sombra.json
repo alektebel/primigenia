@@ -1,0 +1,223 @@
+{
+  "schema": "cpore.plant/1",
+  "id": "pluma_de_sombra",
+  "name": {
+    "en": "Shade Feather",
+    "es": "Pluma de sombra"
+  },
+  "world": "primigenia",
+  "status": "draft",
+  "growth_form": "fern",
+  "habitats": [
+    "Wet western forest understory",
+    "Shaded riverbanks",
+    "Illuminated cave mouths",
+    "Waterfall-cave spray fringe"
+  ],
+  "summary": "A rhizomatous fern whose broad, divided fronds arch over damp sheltered ground. It supplies concealment and bedding, while decaying fronds feed babosa. Bruised foliage leaves a scent clue in still air; living green growth ends where cave light becomes insufficient (F8, F9, F16, F18).",
+  "chains": [
+    {
+      "id": "pluma_de_sombra.c1",
+      "trait": "Broad fronds supported by a creeping rhizome",
+      "links": [
+        "Humid woodland and spray fringes reduce drying stress beneath shelter.",
+        "Broad divided fronds intercept diffuse light reaching the ground.",
+        "A creeping rhizome stores reserves and replaces damaged fronds.",
+        "Spreading colonies trap litter and create shaded ground cover."
+      ],
+      "roots": [
+        "F8",
+        "F9",
+        "F18",
+        "F19"
+      ],
+      "play": "Gather detached fronds for bedding or move through patches under cover; disturbed fronds may reveal passage.",
+      "weakness": "Fronds wilt on exposed dry ground and tear in strong wind; stored reserves cannot sustain indefinite growth in darkness.",
+      "observe": [
+        "Fronds spread broadly beneath trees but shrink near an exposed clearing.",
+        "Curled new fronds rise beside an older broken stalk.",
+        "Green colonies thin toward a cave's permanently dark interior."
+      ],
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "botanist/composer-2.5; chair sol",
+        "date": "2026-11-19",
+        "summary": "The fern occupies humid shelter with sufficient light. Rhizomes permit recovery after damage but do not turn a photosynthetic plant into a deep-cave producer.",
+        "analogues": [
+          {
+            "organism": "Rhizomatous woodland ferns",
+            "mechanism": "Persistent rhizomes bear successive fronds and support vegetative spread; fern structure is covered in [Gifford and Foster's vascular-plant text](https://openlibrary.org/books/OL2050530M/Morphology_and_evolution_of_vascular_plants).",
+            "refs": [
+              "gifford_1989_morphology"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "pluma_de_sombra.c2",
+      "trait": "Underside spore clusters with moisture-dependent establishment",
+      "links": [
+        "Small spores develop in clusters beneath mature fronds.",
+        "Drying intervals release spores into local air movement; splash redistributes some nearby.",
+        "Spores reaching damp illuminated surfaces can establish a reproductive stage.",
+        "Persistent moisture allows fertilization and recruitment beside existing colonies."
+      ],
+      "roots": [
+        "F8",
+        "F9",
+        "F18",
+        "F24"
+      ],
+      "play": "Inspect frond undersides to identify reproductive patches and follow new growth along damp, lit cave margins.",
+      "weakness": "Continuous wetting delays dry release; spores stranded in dark or drying sites fail to establish.",
+      "observe": [
+        "Mature frond undersides carry orderly brown spore clusters.",
+        "A drying fertile frond sheds fine dust when disturbed.",
+        "Small recruits occupy damp light gaps rather than the black cave floor."
+      ],
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "botanist/composer-2.5; chair sol",
+        "date": "2026-11-19",
+        "summary": "Spore transport uses air movement and water, not the molecular-diffusion rule for scent. Earth-like reproductive structures are functional analogues within the seeded biochemistry.",
+        "analogues": [
+          {
+            "organism": "Leptosporangiate ferns",
+            "mechanism": "Sporangia release spores, while the separate gametophyte stage depends on suitable moisture; see [Gifford and Foster](https://openlibrary.org/books/OL2050530M/Morphology_and_evolution_of_vascular_plants).",
+            "refs": [
+              "gifford_1989_morphology"
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "gameplay": {
+    "food_for": [
+      "Detritivores: decaying fronds for babosa"
+    ],
+    "gift_item": "Clean detached bedding frond",
+    "poison": {
+      "alkaloid": false,
+      "signal": "Ordinary shaded foliage is green; absence of red veins does not establish edibility."
+    },
+    "healing": null,
+    "cover": "Dense arching fronds conceal low-moving creatures and obscure footprints.",
+    "climbing": false,
+    "nest_material": "Detached fronds and dry stalks",
+    "mineral_lick": null,
+    "notes": "Bruising releases a green scent that persists best in still sheltered air (F16). It neither directs spores nor carries reliably through wind."
+  },
+  "relations": [
+    {
+      "with": "babosa",
+      "kind": "eaten_by",
+      "note": "Consumes softened decaying fronds and returns nutrients to the litter."
+    },
+    {
+      "with": "merodeador",
+      "kind": "shelters",
+      "note": "Frond arches conceal its low prowling posture at woodland and cave edges."
+    },
+    {
+      "with": "player_lineage",
+      "kind": "other",
+      "note": "Collects detached bedding and reads broken stalks or bruised scent as passage clues."
+    },
+    {
+      "with": "nieblon",
+      "kind": "grows_with",
+      "note": "Occupies moist shaded ground beneath the fog-drip canopy."
+    },
+    {
+      "with": "musgo_faro",
+      "kind": "grows_with",
+      "note": "Shares illuminated damp entrance fringes without producing its own light."
+    },
+    {
+      "with": "pan_de_humus",
+      "kind": "other",
+      "note": "Dead fronds provide substrate for decomposition."
+    }
+  ],
+  "generator": {
+    "growth_form": "fern",
+    "height_m": {
+      "min": 0.3,
+      "max": 1.4
+    },
+    "trunk": "No aerial trunk; creeping shallow rhizome beneath litter.",
+    "branching": {
+      "angle_deg": 45,
+      "levels": 2,
+      "apical_dominance": 0.2,
+      "buttress": "None; rhizome and fine roots anchor each patch."
+    },
+    "leaf": {
+      "type": "Broad twice-divided arching frond",
+      "size_cm": 110,
+      "arrangement": "Loose crowns repeated along a creeping rhizome"
+    },
+    "colour": {
+      "base": "Soft medium green",
+      "overlay_rules": [
+        "Young unfurling fronds are pale green.",
+        "Mature fertile undersides bear brown spore clusters.",
+        "Dead fronds fade ochre-brown; no luminous overlay."
+      ]
+    },
+    "placement": {
+      "slope": "Sheltered banks and benches up to about 40 degrees; exclude active scour channels",
+      "altitude_m": [
+        10,
+        1250
+      ],
+      "wetness": "Continuously humid, drained ground with intermittent spray",
+      "soil": "Humus-rich volcanic soil and moist tuff pockets",
+      "coast_distance_m": [
+        40,
+        1800
+      ],
+      "fog": "Favours fog-drip shelter and waterfall humidity.",
+      "density": "Overlapping colonies interrupted by exposed rock, deep shade and active water."
+    },
+    "seasonal": "Flushes during moist mild periods; drought browns outer fronds while sheltered rhizomes persist.",
+    "wind_response": "Fronds flutter and bow in weak currents; exposed fronds split or collapse in gales."
+  },
+  "journal": [
+    {
+      "en": "Soft feathers cover the wet ground. They stop where the cave loses its light.",
+      "es": "Plumas blandas cubren el suelo húmedo. Se detienen donde la cueva pierde la luz."
+    }
+  ],
+  "provenance": {
+    "council_run": "flora-2026-11-19",
+    "by": [
+      "designer",
+      "mythmaker",
+      "naturalist",
+      "physicist",
+      "senses",
+      "skeptic",
+      "wildcard"
+    ],
+    "edited_by": "sol"
+  },
+  "changelog": [
+    {
+      "date": "2026-11-19",
+      "who": "flora.py",
+      "what": "flora pass: 7 voices drafted and peer-reviewed, Composer botanical referee, sol chaired and applied the fixes"
+    }
+  ],
+  "observe": [
+    "Compare a damp green cave mouth with the fern-free darkness beyond.",
+    "Look under mature fronds for ordered spore clusters.",
+    "Watch a displaced frond settle over a concealed merodeador trail."
+  ],
+  "secrets": [
+    "A continuous fern bed can hide a narrow low passage used by merodeador.",
+    "Fresh bruising is easiest to detect before wind or waterfall turbulence disperses the scent."
+  ]
+}

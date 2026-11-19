@@ -7408,8 +7408,9 @@
     },
     "container-title": "Nature",
     "DOI": "10.1038/373677a0",
-    "x-status": "unverified",
-    "x-note": "cited by a council model from memory; not yet checked"
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "x-checked": "2026-11-19"
   },
   {
     "id": "cooper_2001_irradiation",
@@ -7671,10 +7672,11 @@
         ]
       ]
     },
-    "container-title": "Journal of Geophysical Research",
-    "DOI": "10.1029/2000JE001413",
-    "x-status": "unverified",
-    "x-note": "cited by a council model from memory; not yet checked"
+    "container-title": "Journal of Geophysical Research: Planets",
+    "DOI": "10.1029/2000je001413",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); container-title corrected from 'Journal of Geophysical Research'; DOI added",
+    "x-checked": "2026-11-19"
   },
   {
     "id": "thomas_dieckmann_2003_seaice",
@@ -7915,8 +7917,8 @@
     "id": "pearse_2012_starfish",
     "type": "article-journal",
     "title": "Starfish Regrowth Physiology",
-    "x-status": "unverified",
-    "x-note": "cited by a council model from memory; not yet checked",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'REPLY FROM DRS. BROWN, PEARSE, PYRGOS, LIU, TOGIAS, AND PERMUTT' (Brown, 2006) title similarity 0.28",
     "author": [
       {
         "family": "Pearse",
@@ -7930,7 +7932,8 @@
         ]
       ]
     },
-    "container-title": "Annual Review of Marine Science"
+    "container-title": "Annual Review of Marine Science",
+    "x-checked": "2026-11-19"
   },
   {
     "id": "tyler_1976_chemoreception",
@@ -7952,6 +7955,773 @@
       ]
     },
     "container-title": "Symposia of the Society for Experimental Biology",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "flowers_2008_salinity",
+    "type": "article-journal",
+    "title": "Salinity tolerance in halophytes",
+    "author": [
+      {
+        "family": "Flowers",
+        "given": "Timothy J."
+      },
+      {
+        "family": "Colmer",
+        "given": "Timothy D."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2008
+        ]
+      ]
+    },
+    "container-title": "New Phytologist",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "DOI": "10.1111/j.1469-8137.2008.02531.x",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "vogel_1994_fluids",
+    "type": "book",
+    "title": "Life in Moving Fluids: The Physical Biology of Flow",
+    "author": [
+      {
+        "family": "Vogel",
+        "given": "Steven"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1994
+        ]
+      ]
+    },
+    "container-title": "Princeton University Press",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest OpenLibrary hit is 'Life in Moving Fluids' (Vogel, 1983), title similarity 1.00, author match, year off",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "hurd_2000_motion",
+    "type": "article-journal",
+    "title": "Water motion, marine macroalgal physiology, and production",
+    "author": [
+      {
+        "family": "Hurd",
+        "given": "Catriona L."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2000
+        ]
+      ]
+    },
+    "container-title": "Journal of Phycology",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "DOI": "10.1046/j.1529-8817.2000.99139.x",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "davison_1996_stress",
+    "type": "article-journal",
+    "title": "Stress tolerance in intertidal seaweeds",
+    "author": [
+      {
+        "family": "Davison",
+        "given": "Ian R."
+      },
+      {
+        "family": "Pearson",
+        "given": "Gareth A."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1996
+        ]
+      ]
+    },
+    "container-title": "Journal of Phycology",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "DOI": "10.1111/j.0022-3646.1996.00197.x",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "chen_2000_weathering",
+    "type": "article-journal",
+    "title": "Weathering of rocks induced by lichen colonization — a review",
+    "author": [
+      {
+        "family": "Chen",
+        "given": "Jie"
+      },
+      {
+        "family": "Blume",
+        "given": "Hans-Peter"
+      },
+      {
+        "family": "Beyer",
+        "given": "Lothar"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2000
+        ]
+      ]
+    },
+    "container-title": "CATENA",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "DOI": "10.1016/s0341-8162(99)00085-5",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "nash_2008_lichen",
+    "type": "book",
+    "title": "Lichen Biology",
+    "author": [
+      {
+        "family": "Nash",
+        "given": "Thomas H.",
+        "suffix": "III"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2008
+        ]
+      ]
+    },
+    "container-title": "Cambridge University Press",
+    "x-status": "verified",
+    "x-note": "verified against OpenLibrary (title 1.00); ISBN added",
+    "ISBN": "9780521871624",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "gibson_2009_grasses",
+    "type": "book",
+    "title": "Grasses and Grassland Ecology",
+    "author": [
+      {
+        "family": "Gibson",
+        "given": "David J."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2009
+        ]
+      ]
+    },
+    "container-title": "Oxford University Press",
+    "x-status": "verified",
+    "x-note": "verified against OpenLibrary (title 1.00); ISBN added",
+    "ISBN": "9781281925299",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "santi_2013_nitrogen",
+    "type": "article-journal",
+    "title": "Biological nitrogen fixation in non-legume plants",
+    "author": [
+      {
+        "family": "Santi",
+        "given": "Carole"
+      },
+      {
+        "family": "Bogusz",
+        "given": "Didier"
+      },
+      {
+        "family": "Franche",
+        "given": "Claudine"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2013
+        ]
+      ]
+    },
+    "container-title": "Annals of Botany",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "DOI": "10.1093/aob/mct048",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "dawson_1998_fog",
+    "type": "article-journal",
+    "title": "Fog in the California redwood forest: ecosystem inputs and use by plants",
+    "author": [
+      {
+        "family": "Dawson",
+        "given": "T. E."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1998
+        ]
+      ]
+    },
+    "container-title": "Oecologia",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "DOI": "10.1007/s004420050683",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "crook_1997_buttress",
+    "type": "article-journal",
+    "title": "The function of buttress roots: a comparative study of the anchorage systems of buttressed (Aglaia and Nephelium ramboutan species) and non-buttressed (Mallotus wrayi) tropical trees",
+    "author": [
+      {
+        "family": "Crook",
+        "given": "M. J."
+      },
+      {
+        "family": "Ennos",
+        "given": "A. R."
+      },
+      {
+        "family": "Banks",
+        "given": "J. R."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1997
+        ]
+      ]
+    },
+    "container-title": "Journal of Experimental Botany",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "DOI": "10.1093/jexbot/48.314.1703",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "volaire_2006_dormancy",
+    "type": "article-journal",
+    "title": "Summer Dormancy in Perennial Temperate Grasses",
+    "author": [
+      {
+        "family": "Volaire",
+        "given": "Florence"
+      },
+      {
+        "family": "Norton",
+        "given": "Mark"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2006
+        ]
+      ]
+    },
+    "container-title": "Annals of Botany",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "DOI": "10.1093/aob/mcl195",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "massey_2006_silica",
+    "type": "article-journal",
+    "title": "Silica in grasses as a defence against insect herbivores: contrasting effects on folivores and a phloem feeder",
+    "author": [
+      {
+        "family": "Massey",
+        "given": "Fergus P."
+      },
+      {
+        "family": "Ennos",
+        "given": "A. Roland"
+      },
+      {
+        "family": "Hartley",
+        "given": "Sue E."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2006
+        ]
+      ]
+    },
+    "container-title": "Journal of Animal Ecology",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "DOI": "10.1111/j.1365-2656.2006.01082.x",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "corenblit_2007_riparian",
+    "type": "article-journal",
+    "title": "Reciprocal interactions and adjustments between fluvial landforms and vegetation dynamics in river corridors: A review of complementary approaches",
+    "author": [
+      {
+        "family": "Corenblit",
+        "given": "Dov"
+      },
+      {
+        "family": "Tabacchi",
+        "given": "Eric"
+      },
+      {
+        "family": "Steiger",
+        "given": "Johannes"
+      },
+      {
+        "family": "Gurnell",
+        "given": "Angela M."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2007
+        ]
+      ]
+    },
+    "container-title": "Earth-Science Reviews",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "DOI": "10.1016/j.earscirev.2007.05.004",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "howe_1982_dispersal",
+    "type": "article-journal",
+    "title": "Ecology of Seed Dispersal",
+    "author": [
+      {
+        "family": "Howe",
+        "given": "H. F."
+      },
+      {
+        "family": "Smallwood",
+        "given": "J."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1982
+        ]
+      ]
+    },
+    "container-title": "Annual Review of Ecology and Systematics",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'Ecology of Pollination and Seed Dispersal' (Howe, 1996, doi 10.1002/9781444313642.ch9), title similarity 0.76, author match, year off",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "friedrich_2005_sulfur",
+    "type": "article-journal",
+    "title": "Prokaryotic sulfur oxidation",
+    "author": [
+      {
+        "family": "Friedrich",
+        "given": "Cornelius G."
+      },
+      {
+        "family": "Bardischewsky",
+        "given": "Frank"
+      },
+      {
+        "family": "Rother",
+        "given": "Dagmar"
+      },
+      {
+        "family": "Quentmeier",
+        "given": "Armin"
+      },
+      {
+        "family": "Fischer",
+        "given": "Jörg"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2005
+        ]
+      ]
+    },
+    "container-title": "Current Opinion in Microbiology",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "DOI": "10.1016/j.mib.2005.04.005",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "brock_1967_temperature",
+    "type": "article-journal",
+    "title": "Life at High Temperatures",
+    "author": [
+      {
+        "family": "Brock",
+        "given": "Thomas D."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1967
+        ]
+      ]
+    },
+    "container-title": "Science",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'Life at High Temperatures' (Brock, 1985, doi 10.1126/science.230.4722.132), title similarity 1.00, author match, year off",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "oliveira_2015_bioluminescence",
+    "type": "article-journal",
+    "title": "Circadian Control Sheds Light on Fungal Bioluminescence",
+    "author": [
+      {
+        "family": "Oliveira",
+        "given": "Anderson G."
+      },
+      {
+        "family": "Stevani",
+        "given": "Cassius V."
+      },
+      {
+        "family": "Waldenmaier",
+        "given": "Hans E."
+      },
+      {
+        "family": "Viviani",
+        "given": "Vadim"
+      },
+      {
+        "family": "Emerson",
+        "given": "Jillian M."
+      },
+      {
+        "family": "Loros",
+        "given": "Jennifer J."
+      },
+      {
+        "family": "Dunlap",
+        "given": "Jay C."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2015
+        ]
+      ]
+    },
+    "container-title": "Current Biology",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "DOI": "10.1016/j.cub.2015.02.021",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "proctor_2007_desiccation",
+    "type": "article-journal",
+    "title": "Desiccation-tolerance in bryophytes: a review",
+    "author": [
+      {
+        "family": "Proctor",
+        "given": "Michael C. F."
+      },
+      {
+        "family": "Oliver",
+        "given": "Melvin J."
+      },
+      {
+        "family": "Wood",
+        "given": "Andrew J."
+      },
+      {
+        "family": "Alpert",
+        "given": "Peter"
+      },
+      {
+        "family": "Stark",
+        "given": "Lloyd R."
+      },
+      {
+        "family": "Cleavitt",
+        "given": "Natalie L."
+      },
+      {
+        "family": "Mishler",
+        "given": "Brent D."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2007
+        ]
+      ]
+    },
+    "container-title": "The Bryologist",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "DOI": "10.1639/0007-2745(2007)110[595:dibar]2.0.co;2",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "smith_1987_alpine",
+    "type": "article-journal",
+    "title": "Tropical Alpine Plant Ecology",
+    "author": [
+      {
+        "family": "Smith",
+        "given": "Alan P."
+      },
+      {
+        "family": "Young",
+        "given": "Truman P."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1987
+        ]
+      ]
+    },
+    "container-title": "Annual Review of Ecology and Systematics",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "DOI": "10.1146/annurev.es.18.110187.001033",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "gould_2004_anthocyanins",
+    "type": "article-journal",
+    "title": "Nature′s Swiss Army Knife: The Diverse Protective Roles of Anthocyanins in Leaves",
+    "author": [
+      {
+        "family": "Gould",
+        "given": "Kevin S."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2004
+        ]
+      ]
+    },
+    "container-title": "BioMed Research International",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 0.99); title corrected from 'Nature's Swiss Army Knife: The Diverse Protective Roles of Anthocyanins in Leaves'; container-title corrected from 'Journal of Biomedicine and Biotechnology'; DOI added",
+    "DOI": "10.1155/s1110724304406147",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "kramer_2010_hyperaccumulation",
+    "type": "article-journal",
+    "title": "Metal Hyperaccumulation in Plants",
+    "author": [
+      {
+        "family": "Krämer",
+        "given": "Ute"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2010
+        ]
+      ]
+    },
+    "container-title": "Annual Review of Plant Biology",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "DOI": "10.1146/annurev-arplant-042809-112156",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "darwin_1875_climbing",
+    "type": "book",
+    "title": "The Movements and Habits of Climbing Plants",
+    "author": [
+      {
+        "family": "Darwin",
+        "given": "Charles"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1875
+        ]
+      ]
+    },
+    "container-title": "",
+    "x-status": "verified",
+    "x-note": "verified against OpenLibrary (title 1.00); ISBN added",
+    "ISBN": "9780898752304",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "herrera_1982_defense",
+    "type": "article-journal",
+    "title": "Defense of Ripe Fruit from Pests: Its Significance in Relation to Plant-Disperser Interactions",
+    "author": [
+      {
+        "family": "Herrera",
+        "given": "Carlos M."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1982
+        ]
+      ]
+    },
+    "container-title": "The American Naturalist",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "DOI": "10.1086/283984",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "gifford_1989_morphology",
+    "type": "book",
+    "title": "Morphology and Evolution of Vascular Plants",
+    "author": [
+      {
+        "family": "Gifford",
+        "given": "Ernest M."
+      },
+      {
+        "family": "Foster",
+        "given": "Adriance S."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1989
+        ]
+      ]
+    },
+    "container-title": "",
+    "x-status": "verified",
+    "x-note": "verified against OpenLibrary (title 1.00); ISBN added",
+    "ISBN": "9780716719465",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "ellison_2009_energetics",
+    "type": "article-journal",
+    "title": "Energetics and the evolution of carnivorous plants—Darwin's ‘most wonderful plants in the world’",
+    "author": [
+      {
+        "family": "Ellison",
+        "given": "Aaron M."
+      },
+      {
+        "family": "Gotelli",
+        "given": "Nicholas J."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2009
+        ]
+      ]
+    },
+    "container-title": "Journal of Experimental Botany",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "DOI": "10.1093/jxb/ern179",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "deacon_2006_fungal",
+    "type": "book",
+    "title": "Fungal Biology",
+    "author": [
+      {
+        "family": "Deacon",
+        "given": "J. W."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2005
+        ]
+      ]
+    },
+    "container-title": "",
+    "x-status": "verified",
+    "x-note": "verified against OpenLibrary (title 1.00); year corrected from 2006; ISBN added",
+    "ISBN": "9781405130660",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "splivallo_2011_volatiles",
+    "type": "article-journal",
+    "title": "Truffle volatiles: from chemical ecology to aroma biosynthesis",
+    "author": [
+      {
+        "family": "Splivallo",
+        "given": "Richard"
+      },
+      {
+        "family": "Ottonello",
+        "given": "Simone"
+      },
+      {
+        "family": "Mello",
+        "given": "Antonietta"
+      },
+      {
+        "family": "Karlovsky",
+        "given": "Petr"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2010
+        ]
+      ]
+    },
+    "container-title": "New Phytologist",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); year corrected from 2011; DOI added",
+    "DOI": "10.1111/j.1469-8137.2010.03523.x",
     "x-checked": "2026-11-19"
   }
 ]
