@@ -35,6 +35,7 @@ var z_target := Z_CHASE
 var strategic_distance := 3000.0 # m at z = 1 (the island; the island sets it from its size)
 var map_center := Vector2.ZERO   # where the strategic view looks (XZ)
 var free_orbit := false          # setting camera/free_orbit: the camera never returns behind by itself
+var mouse_walk := false          # the creature walks to a left click / follows the mouse: no auto-turn of the camera for that
 var orbit_active := false        # the mouse is dragging the camera right now
 var _orbited := false            # the player has orbited: the way back may pass the 110 deg "towards the camera" limit
 var _reset := false
@@ -241,7 +242,7 @@ func _follow(player: Dictionary, dt: float) -> void:
 	var away_max := PI if _orbited else AWAY_MAX       # after an orbit the way back behind the creature is allowed to pass 110 deg
 	if _reset:
 		w_goal = clampf(e / YAW_TAU, -YAW_MAX, YAW_MAX)
-	elif player.speed > 0.4 and manual == 0.0 and not free_orbit and absf(_player_rate) < PIVOT_RATE and absf(e) < away_max and steady:
+	elif player.speed > 0.4 and manual == 0.0 and not free_orbit and not mouse_walk and absf(_player_rate) < PIVOT_RATE and absf(e) < away_max and steady:
 		w_goal = clampf(e / YAW_TAU, -YAW_MAX, YAW_MAX)
 	if manual > 0.0 and not _reset:
 		yaw_rate = 0.0

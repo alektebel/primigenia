@@ -338,13 +338,40 @@ func _stage() -> void:
 	DirAccess.remove_absolute(ProjectSettings.globalize_path("user://play-test/saves"))
 	Scenario.save_dir = "user://saves"
 
-	print("== camera: left drag orbits, a click does not")
+	print("== camera: the left button never moves the camera (brief creature-fixes 1)")
 	var yaw_before: float = island.chase.yaw
+	var pitch_before: float = island.chase.orbit_pitch
+	var zt_before: float = island.chase.z_target
 	island.player_input.clear_destination()
-	await _drag(Vector2(640, 500), Vector2(720, 500))
+	await _drag(Vector2(640, 500), Vector2(720, 420))
 	await frames(2)
-	check(island.chase.yaw != yaw_before, "a left drag orbits the camera (yaw %.3f -> %.3f)" % [yaw_before, island.chase.yaw])
+	check(island.chase.yaw == yaw_before and island.chase.orbit_pitch == pitch_before, "a left drag does not orbit the camera (yaw %.3f -> %.3f)" % [yaw_before, island.chase.yaw])
 	check(island.player_input.destination == null, "a left drag does not set a destination")
+	var dbl := InputEventMouseButton.new()
+	dbl.position = Vector2(640, 500)
+	dbl.button_index = MOUSE_BUTTON_LEFT
+	dbl.pressed = true
+	dbl.double_click = true
+	root.push_input(dbl)
+	dbl.pressed = false
+	root.push_input(dbl)
+	await frames(2)
+	check(island.chase.z_target == zt_before, "a left double click does not zoom")
+	_click(Vector2(640, 520))
+	await frames(2)
+	check(island.chase.mouse_walk == (island.player_input.destination != null), "walking to a left click does not turn the camera")
+	var walked := 0
+	var turned := 0
+	for i in 90:
+		var y0: float = island.chase.yaw
+		var walking: bool = island.chase.mouse_walk
+		await frames(1)
+		if walking and island.chase.mouse_walk:
+			walked += 1
+			if island.chase.yaw != y0:
+				turned += 1
+	check(turned == 0, "no camera yaw change in %d frames of walking to a click" % walked)
+	island.player_input.clear_destination()
 	island.chase.reset_behind()
 	var z_before: float = island.chase.z_target
 	var zin := InputEventMouseButton.new()

@@ -455,6 +455,7 @@ func _update_camera(dt: float) -> void:
 		enemy = {"x": e.x, "z": e.z}
 	var vp := get_viewport().get_visible_rect().size
 	chase.kick = bool(Game.settings.get("camera/kick", false))
+	chase.mouse_walk = player_input.destination != null      # walking to a click or following the mouse: the camera does not turn for it
 	var r: Dictionary = chase.update({"x": p.pos.x, "z": p.pos.z, "yaw": p.yaw, "speed": p.speed, "vx": p.vel.x, "vz": p.vel.z}, enemy, fighting, dt, vp.x / maxf(vp.y, 1.0))
 	camera.fov = 48.0 + float(r.fov_add)
 	camera.near = clampf(float(r.distance) * 0.012, 0.25, 40.0)       # keep the depth buffer precise at 3 km
@@ -548,9 +549,9 @@ func _process(delta: float) -> void:
 	else:
 		_follow_clock = 0.0
 
-# Mouse (docs/godot/CAMERA-ZOOM.md section 1): wheel zooms along the one curve; a left press that moves more than
-# DRAG_PX is an orbit drag, otherwise it is a click (acted on at release) or, held, steers towards the mouse; right and
-# middle drag orbit; a middle click or Home puts the camera back behind the creature.
+# Mouse (docs/godot/CAMERA-ZOOM.md section 1): wheel zooms along the one curve; the LEFT button never moves the camera (a
+# press that moves more than DRAG_PX is ignored, otherwise it is a click acted on at release or, held, steers the creature
+# towards the mouse); right and middle drag orbit; a middle click or Home puts the camera back behind the creature.
 func _unhandled_input(event: InputEvent) -> void:
 	if stage == null or chase == null:
 		return
@@ -585,12 +586,13 @@ func _on_button(e: InputEventMouseButton) -> void:
 			chase.orbit_active = true
 		else:
 			_orbit_btn &= ~bit
-			chase.orbit_active = _orbit_btn != 0 or gesture.dragging
+			chase.orbit_active = _orbit_btn != 0
 			if e.button_index == MOUSE_BUTTON_MIDDLE and _mid_travel < Gesture.DRAG_PX:
 				chase.reset_behind()
 
 func _on_motion(e: InputEventMouseMotion) -> void:
-	var orbiting := _orbit_btn != 0 or gesture.motion(e.position)
+	gesture.motion(e.position)           # a left drag is classified (and then ignored): the left button never moves the camera
+	var orbiting := _orbit_btn != 0
 	if _orbit_btn != 0:
 		_mid_travel += e.relative.length()
 	if orbiting:
@@ -600,17 +602,13 @@ func _on_motion(e: InputEventMouseMotion) -> void:
 			player_input.frame_yaw = chase.view_yaw     # steering with the mouse while keys are held
 
 # A click: a strategic icon (select; double-click zooms back down), a creature, or the ground (walk there).
-func _click(pos: Vector2, double: bool) -> void:
+func _click(pos: Vector2, _double: bool) -> void:
 	if icons != null and icons.alpha >= 0.3:
 		var it: Dictionary = icons.pick(pos)
 		if not it.is_empty():
-			if double:
-				chase.set_zoom(chase.Z_CHASE)
 			last_click = pos
 			Game.creature_clicked.emit(it.id, it.pos)
 			return
-		if double:
-			chase.set_zoom(chase.Z_CHASE)
 	_click_ground(true, pos)
 
 func _click_ground(allow_pick: bool, mouse: Vector2, follow: bool = false) -> void:
