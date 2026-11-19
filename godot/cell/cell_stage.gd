@@ -219,11 +219,11 @@ func _build_top() -> void:
 	_title.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	box.add_child(_title)
 	var sp := Control.new()
-	sp.custom_minimum_size = Vector2(14, 0)
+	sp.custom_minimum_size = Vector2(22, 0)
 	box.add_child(sp)
 	for i in range(1, 5):
 		var b := _btn("", true)
-		b.custom_minimum_size = Vector2(112, 40)
+		b.custom_minimum_size = Vector2(104, 40)
 		b.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 		b.pressed.connect(func(): _apply_phase(i); _hud_t = 1.0)
 		box.add_child(b)

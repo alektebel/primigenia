@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Primigenia · Fase célula: escala</title>
+<style>
+:root{--ink:#3A352D;--sub:#6A6356;--line:#CFC3A6;--bg:#F4ECD8;--panel:#FBF7EC;--sel:#1F5F9E;--warn:#9E392C}
+*{box-sizing:border-box}
+html,body{margin:0;background:#12262D;color:var(--ink);font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+main{max-width:1120px;margin:0 auto;padding:16px;display:grid;gap:14px;grid-template-columns:minmax(0,1fr)}
+@media(min-width:920px){main{grid-template-columns:minmax(0,1.45fr) minmax(300px,1fr);align-items:start}}
+h1{font-size:20px;margin:0 0 8px;font-weight:650;color:#EDE8DA}
+.phases{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.stage{position:relative;border:1px solid #2E5560;border-radius:14px;overflow:hidden;background:#12262D;margin-top:10px}
+canvas{display:block;width:100%;aspect-ratio:1/1;touch-action:none;cursor:pointer}
+.side{display:flex;flex-direction:column;gap:12px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px}
+.hint{font-size:14px;line-height:1.45;font-weight:550;min-height:60px}
+.step{font-size:11px;font-weight:650;letter-spacing:.07em;text-transform:uppercase;color:var(--sub);margin-bottom:6px}
+.goal{margin-top:8px;font-size:13px;font-weight:650;color:var(--sel)}
+.goal.done{color:#3F6B2E}
+.bar{height:8px;border-radius:4px;background:#E9E1CB;overflow:hidden;margin-top:6px}
+.bar i{display:block;height:100%;width:0;background:#7FA65A;transition:width .2s}
+.tools{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+button{font:inherit;font-size:13px;font-weight:600;min-height:44px;padding:6px 10px;border:1px solid var(--line);border-radius:9px;background:#fff;color:var(--ink);cursor:pointer;display:flex;align-items:center;gap:8px;text-align:left}
+button small{display:block;font-size:11px;font-weight:550;color:var(--sub)}
+button[aria-pressed="true"]{border-color:var(--sel);background:#E6EFF8;box-shadow:inset 0 0 0 1px var(--sel)}
+button:focus-visible{outline:2px solid var(--sel);outline-offset:2px}
+.phases button{justify-content:center;text-align:center;padding:6px 4px;flex-direction:column;gap:0}
+.dot{width:14px;height:14px;border-radius:50%;border:1px solid var(--ink);flex:none}
+.row{display:flex;gap:8px;margin-top:8px}.row button{flex:1;justify-content:center}
+.stats{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.stat span{display:block;font-size:11px;color:var(--sub);font-weight:550}
+.stat b{font-size:18px;font-variant-numeric:tabular-nums}
+.lines{display:grid;grid-template-columns:1fr auto auto;gap:5px 12px;font-size:12.5px;align-items:baseline}
+.lines span:nth-child(3n+2){font-variant-numeric:tabular-nums;color:var(--sub)}
+.lines .s{font-weight:650;text-align:right}
+.diag{margin-top:10px;font-size:13px;line-height:1.4;font-weight:600;color:var(--warn)}
+.diag.ok{color:#3F6B2E}
+.note{font-size:12px;line-height:1.45;color:#B9C9C6;margin:0}
+.overlay{position:absolute;inset:0;display:none;align-items:center;justify-content:center;padding:16px}
+.overlay.on{display:flex}
+.sheet{background:rgba(251,247,236,.97);border:1px solid var(--line);border-radius:14px;padding:16px;max-width:430px;width:100%}
+.sheet h2{font-size:18px;margin:0 0 4px}
+.sheet p{margin:0;font-size:13px;line-height:1.45;color:var(--sub)}
+.sheet table{width:100%;border-collapse:collapse;font-size:13.5px;margin:10px 0}
+.sheet td{padding:5px 0;border-bottom:1px solid #E6DCC4}
+.sheet td:last-child{text-align:right;font-weight:650;font-variant-numeric:tabular-nums}
+</style>
+</head>
+<body>
+<main>
+<div>
+  <h1>Primigenia · fase célula</h1>
+  <div class="phases" id="phases">
+    <button type="button" data-phase="1" aria-pressed="true">1<small>Energía</small></button>
+    <button type="button" data-phase="2" aria-pressed="false">2<small>Residuos</small></button>
+    <button type="button" data-phase="3" aria-pressed="false">3<small>Membrana</small></button>
+    <button type="button" data-phase="4" aria-pressed="false">4<small>Crecer</small></button>
+  </div>
+  <div class="stage">
+    <canvas id="cv" aria-label="Protocélula animada. Usa los botones para colocar piezas."></canvas>
+    <div class="overlay" id="ov" role="dialog" aria-labelledby="ovH">
+      <div class="sheet">
+        <h2 id="ovH">Agregación: empieza la colonia</h2>
+        <p>Esta ficha es lo que llevas a la etapa colonia: tu célula pasa a ser una pieza con estos números.</p>
+        <table id="ovT"></table>
+        <p>Proteínas y genoma aún no están en el prototipo.</p>
+        <div class="row"><button type="button" id="ovGo">Seguir con esta célula</button><button type="button" id="ovNew">Empezar de nuevo</button></div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="side">
+  <div class="card"><div class="step" id="step"></div><div class="hint" id="hint" aria-live="polite"></div><div class="goal" id="goal"></div><div class="bar" id="gbarW"><i id="gbar"></i></div></div>
+  <div class="card">
+    <div class="step">Crear · toca una pieza y luego la célula</div>
+    <div class="tools" id="tools"></div>
+    <div class="row">
+      <button type="button" id="del" aria-pressed="false">Quitar</button>
+      <button type="button" id="demo">Montar ejemplo</button>
+      <button type="button" id="reset">Reiniciar</button>
+    </div>
+    <div class="row">
+      <button type="button" id="sp1" aria-pressed="true">Velocidad ×1</button>
+      <button type="button" id="sp3" aria-pressed="false">×3</button>
+      <button type="button" id="lab" aria-pressed="true">Etiquetas</button>
+    </div>
+  </div>
+  <div class="card stats">
+    <div class="stat"><span>ATP libre</span><b id="sAtp">0</b></div>
+    <div class="stat"><span>ATP / min</span><b id="sRate">0</b></div>
+    <div class="stat"><span>Glucosa / min</span><b id="sGlu">0</b></div>
+    <div class="stat"><span>Membrana</span><b id="sMem">100%</b></div>
+    <div class="stat"><span>Talla</span><b id="sTier">0</b></div>
+  </div>
+  <div class="card">
+    <div class="step">Líneas · uso medio y estado</div>
+    <div class="lines" id="lines"></div>
+    <div class="diag" id="diag"></div>
+  </div>
+  <p class="note">Simplificado: tres enzimas de glucólisis en lugar de diez, con el balance real (inviertes 2 ATP, recuperas 4). La inhibición de la hexoquinasa por su producto y el freno a la síntesis de lípidos cuando falta energía son reales; el mantenimiento de membrana en ATP es una simplificación. Cifras de prototipo.</p>
+</div>
+</main>
+<script>
+(function(){
+const cv=document.getElementById('cv'),ctx=cv.getContext('2d');
+const W=720,CX=360,CY=360,TAU=Math.PI*2,NL=180,R0=200,RSTEP=30,TIERS=5,AGG_RATE=150,AGG_HOLD=20;
+const INK='#3A352D',SUB='#6A6356',PHOS='#9179C9',ATPY='#E2C240',WARN='#9E392C',LIGHT='#E9E4D6';
+const still=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const PIECES={
+ tr:{n:'Transportador',c:2,ph:1,mem:1,col:'#6F93C4'},
+ hk:{n:'Hexoquinasa',c:2,ph:1,col:'#7FA3CF',accept:'glu',need:2,time:.6,lobes:[[-6,2,12],[8,-4,10]]},
+ ald:{n:'Aldolasa',c:3,ph:1,col:'#D4B37C',accept:'g6p',need:0,time:.5,lobes:[[-5,-3,11],[7,5,11],[10,-8,6]]},
+ pk:{n:'Piruvato quinasa',c:3,ph:1,col:'#AE97CC',accept:'tri',need:0,time:.45,lobes:[[0,0,13],[-11,7,7],[11,7,7]]},
+ ldh:{n:'Lactato DH',c:3,ph:2,col:'#C98F86',accept:'pyr',need:0,time:.4,lobes:[[-7,0,11],[7,0,11]]},
+ ex:{n:'Exportador',c:2,ph:2,mem:1,col:'#D9806F'},
+ syn:{n:'Sintasa de lípidos',c:4,ph:3,col:'#A9BF73',accept:'tri',need:1,time:.7,lobes:[[-8,-2,12],[8,2,12],[0,-10,7]]},
+ fl:{n:'Flipasa',c:3,ph:3,mem:1,col:'#7FA65A'}
+};
+const ORDER=['hk','ald','pk','ldh','syn'];
+const STC={trabaja:'#5E9E4A',recibe:'#6F93C4','sin entrada':'#8E8A82',atasco:'#D08A2E',inhibida:'#D08A2E','falta ATP':'#C0392B'};
+const STT={trabaja:'#3F6B2E',recibe:'#2F5E99','sin entrada':'#6A6356',atasco:'#9A5A12',inhibida:'#9A5A12','falta ATP':'#9E392C',montando:'#6A6356'};
+let RO=R0,RI=R0-36,ROt=R0,zoom=270/R0,zoomT=zoom;
+let scale=1,T=0,tool=null,drag=null,phase=1,speed=1,labels=true;
+let pieces=[],mols=[],fx=[],pulses=[],integ=[],logs={atp:[],glu:[],lip:[],up:[]},store=0;
+let tier=0,growth=0,sustain=0,agg=null,aggDone=false,goal={atp:0,lac:0,mem:0,done:false};
+let maintT=0,trickleT=0,rosT=0,leakT=0,upT=0;
+const R=(a,b)=>a+Math.random()*(b-a);
+const dist=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
+const rad=p=>Math.hypot(p.x-CX,p.y-CY);
+const ang=p=>Math.atan2(p.y-CY,p.x-CX);
+const pol=(r,a)=>({x:CX+r*Math.cos(a),y:CY+r*Math.sin(a)});
+const adiff=(a,b)=>{let d=Math.abs(a-b)%TAU;return d>Math.PI?TAU-d:d;};
+const MID=()=>(RO+RI)/2,FLW=()=>110/MID();
+const lidx=a=>Math.floor((((a%TAU)+TAU)%TAU)/TAU*NL)%NL;
+const isMem=p=>!!PIECES[p.type].mem;
+const pos=p=>isMem(p)?pol(MID(),p.a):p;
+const sp=p=>isMem(p)?pol(RI-14,p.a):p;
+const needG=()=>20+6*tier;
+const per=(k,s)=>logs[k].filter(t=>T-t<s).length*60/s;
+const memPct=()=>Math.round(integ.reduce((a,b)=>a+b,0)/NL*100);
+function setR(r){RO=r;RI=r-36;}
+function resize(){const d=Math.min(window.devicePixelRatio||1,2),w=cv.clientWidth||320;cv.width=cv.height=Math.round(w*d);scale=cv.width/W;}
+window.addEventListener('resize',resize);resize();
+
+function mol(type,x,y,state){const m={type,x,y,vx:R(-20,20),vy:R(-20,20),state,age:0,target:null,alpha:1,ph:R(0,TAU)};mols.push(m);return m;}
+function spawnOut(edge){const h=360/zoom+20;let x,y,k=0;do{x=edge?CX+h:CX+R(-h,h);y=CY+R(-h+10,h-10);k++;}while(Math.hypot(x-CX,y-CY)<RO+40&&k<40);return mol('glu',x,y,'out');}
+function burst(x,y,color,big){fx.push({k:'ring',x,y,t:0,color,big});}
+function floatText(x,y,text,color){fx.push({k:'txt',x,y,t:0,text,color});}
+function emitAtp(x,y,n){for(let i=0;i<n;i++){logs.atp.push(T);if(count('atp')>=70){store++;continue;}const a=mol('atp',x,y,'free'),an=R(0,TAU);a.vx=Math.cos(an)*90;a.vy=Math.sin(an)*90;}}
+function addPiece(type,x,y,free){
+ const d=PIECES[type];let p={type,born:T,built:!!free,got:0,claim:0,ph:R(0,TAU),u:0,st:'montando'};
+ if(d.mem){p.a=Math.atan2(y-CY,x-CX);p.open=0;p.cool=0;p.busy=false;}
+ else{const r=Math.hypot(x-CX,y-CY),m=RI-40;if(r>m){x=CX+(x-CX)*m/r;y=CY+(y-CY)*m/r;}
+  Object.assign(p,{x,y,sub:null,atps:[],proc:null,pulse:0,wait:0,block:''});}
+ pieces.push(p);const c=pos(p);burst(c.x,c.y,'#1F5F9E',true);return p;
+}
+function removePiece(p){
+ mols.forEach(m=>{if(m.target===p){m.target=null;if(m.state==='seek'||m.state==='dock'||m.state==='leak')m.state='free';}});
+ pieces=pieces.filter(q=>q!==p);
+}
+function reset(){
+ goal={atp:0,lac:0,mem:0,done:false};pieces=[];mols=[];fx=[];pulses=[];logs={atp:[],glu:[],lip:[],up:[]};store=0;
+ setR(R0);ROt=R0;zoom=zoomT=270/R0;tier=0;growth=0;sustain=0;agg=null;aggDone=false;hideSheet();
+ integ=new Array(NL).fill(1);
+ for(let i=0;i<30;i++)spawnOut(false);
+ for(let i=0;i<12;i++){const p=pol(R(0,RI-40),R(0,TAU));mol('atp',p.x,p.y,'free');}
+}
+function demo(){reset();const P=(t,a)=>{const q=pol(RO,a);addPiece(t,q.x,q.y,true);},E=(t,x,y)=>addPiece(t,CX+x,CY+y,true);
+ P('tr',-.35);P('tr',.35);E('hk',95,-40);E('ald',40,-70);E('pk',-30,-20);
+ if(phase>=2){E('ldh',-100,10);P('ex',Math.PI);}
+ if(phase>=3){E('syn',30,70);[.3,1.55,2.8,-2.3,-1].forEach(a=>P('fl',a));}
+}
+function nearest(list,p){let b=null,bd=1e9;for(const m of list){const d=dist(m,p);if(d<bd){bd=d;b=m;}}return b;}
+function steer(m,t,dt,acc,max){const dx=t.x-m.x,dy=t.y-m.y,d=Math.hypot(dx,dy)||1;m.vx+=dx/d*acc*dt;m.vy+=dy/d*acc*dt;const s=Math.hypot(m.vx,m.vy);if(s>max){m.vx*=max/s;m.vy*=max/s;}return d;}
+const built=t=>pieces.filter(p=>p.type===t&&p.built);
+function worstIn(fl){let b=-1,bv=.8;const w=FLW();for(let i=0;i<NL;i++){if(integ[i]<bv&&adiff(i/NL*TAU,fl.a)<w){bv=integ[i];b=i;}}return b;}
+const count=(t,s)=>mols.filter(m=>m.type===t&&(!s||m.state===s)).length;
+function grow(a){pulses.push({a,t:0,c:'#A9D46A'});if(tier>=TIERS)return;growth++;
+ if(growth>=needG()){growth=0;tier++;ROt=R0+tier*RSTEP;fx.push({k:'big',t:0,text:'La célula crece · talla '+tier});}}
+
+function finish(e){
+ const s=e.sub;e.proc=null;e.sub=null;e.pulse=1;e.wait=0;
+ mols=mols.filter(m=>!e.atps.includes(m));e.atps=[];
+ if(e.type==='hk'){s.type='g6p';s.state='free';s.target=null;s.age=0;burst(e.x,e.y,PHOS);floatText(e.x,e.y-24,'−2 ATP',WARN);logs.glu.push(T);}
+ else if(e.type==='ald'){mols=mols.filter(m=>m!==s);for(const k of[-1,1]){const t=mol('tri',e.x+k*8,e.y,'free');t.vx=k*70;t.vy=R(-30,30);}burst(e.x,e.y,'#B89B5E');}
+ else if(e.type==='pk'){s.type='pyr';s.target=null;s.age=0;
+  if(phase>=2){s.state='free';}else{s.state='exit';const r=rad(s)||1;s.ux=(s.x-CX)/r;s.uy=(s.y-CY)/r;s.sp=45;}
+  emitAtp(e.x,e.y,2);goal.atp+=2;burst(e.x,e.y,ATPY,true);floatText(e.x,e.y-24,'+2 ATP','#7A6410');}
+ else if(e.type==='ldh'){s.type='lac';s.state='free';s.target=null;s.age=0;burst(e.x,e.y,'#D9806F');}
+ else if(e.type==='syn'){s.type='lip';s.state='free';s.target=null;s.age=0;logs.lip.push(T);burst(e.x,e.y,'#7FA65A');}
+}
+
+function update(dt){
+ T+=dt;
+ if(Math.abs(ROt-RO)>.05)setR(RO+(ROt-RO)*Math.min(1,dt*1.2));
+ zoomT=agg?330/(3.05*RO):270/ROt;zoom+=(zoomT-zoom)*Math.min(1,dt*1.5);
+ const doors=pieces.filter(p=>(p.type==='tr'||p.type==='ex')&&p.built),trs=doors.filter(p=>p.type==='tr'),exs=doors.filter(p=>p.type==='ex');
+ const enz=pieces.filter(p=>!isMem(p)&&p.built),hasHK=enz.some(e=>e.type==='hk'),fls=built('fl');
+ if(count('glu','out')<Math.round(40*RO/R0))spawnOut(true);
+ if(store>0&&count('atp')<40){const p=pol(R(0,RI-30),R(0,TAU));mol('atp',p.x,p.y,'free');store--;}
+ // building with ATP
+ for(const p of pieces){if(p.built)continue;const c=PIECES[p.type].c;
+  while(p.got+p.claim<c){const a=nearest(mols.filter(m=>m.type==='atp'&&m.state==='free'),sp(p));if(!a)break;a.state='seek';a.target=p;p.claim++;}}
+ // doors (passive transport: stops when inside glucose matches outside)
+ const sc=RO/R0,inGlu=mols.filter(m=>m.type==='glu'&&(m.state==='free'||m.state==='seek'||m.state==='pass')).length;
+ for(const tr of doors){
+  tr.cool-=dt;
+  if(!tr.busy&&tr.cool<=0){
+   const mo=pol(RO+16,tr.a),mi=pol(RI-18,tr.a);
+   let g=mols.find(m=>m.state==='leak'&&m.target===tr&&dist(m,mi)<16);
+   if(g){g.state='pass';g.dir=-1;g.p=0;g.tr=tr;tr.busy=true;}
+   else if(tr.type==='tr'&&inGlu<6*sc){g=mols.find(m=>m.state==='out'&&m.type==='glu'&&dist(m,mo)<36);if(g){g.state='pass';g.dir=1;g.p=0;g.tr=tr;tr.busy=true;}}
+  }
+  if(!tr.busy)tr.open*=Math.max(0,1-6*dt);
+ }
+ // enzymes
+ const lowE=count('atp','free')+store<6,s=RO/R0,nG=count('g6p','free'),nT=count('tri','free'),nP=count('pyr','free'),nLip=count('lip','free');
+ const nL=mols.filter(m=>m.type==='lac'&&m.state!=='trail'&&m.state!=='pass').length;
+ for(const e of enz){
+  const d=PIECES[e.type];e.pulse=Math.max(0,e.pulse-dt*2.5);
+  e.block=e.type==='hk'&&nG>=6*s?'inhibida':e.type==='ald'&&nT>=10*s?'atasco':(e.type==='pk'&&phase>=2&&nP>=6*s)?'atasco':e.type==='ldh'&&nL>=8*s?'atasco':e.type==='syn'&&nLip>=6*s?'atasco':e.type==='syn'&&lowE?'inhibida':'';
+  if(!e.sub){
+   if(!e.block){
+    const m=nearest(mols.filter(m=>m.type===d.accept&&(m.state==='free'||m.state==='leak')),e);
+    if(m&&!enz.some(o=>o!==e&&!o.sub&&!o.block&&PIECES[o.type].accept===d.accept&&dist(o,m)<dist(e,m))){m.state='seek';m.target=e;e.sub=m;e.wait=0;}
+   }
+  }else if(e.sub.state==='dock'){
+   if(e.proc===null){
+    if(e.block){e.wait+=dt;}
+    else if(d.need){
+     e.atps=e.atps.filter(a=>mols.includes(a)&&a.target===e);
+     e.starved=false;while(e.atps.length<d.need){const a=nearest(mols.filter(m=>m.type==='atp'&&m.state==='free'),e);if(!a){e.starved=true;break;}a.state='seek';a.target=e;e.atps.push(a);}
+     if(e.atps.length===d.need&&e.atps.every(a=>a.state==='dock'))e.proc=0;else e.wait+=dt;
+    }else e.proc=0;
+   }else{e.proc+=dt;if(e.proc>=d.time)finish(e);}
+  }else if(!mols.includes(e.sub)||e.sub.target!==e)e.sub=null;
+  let st;
+  if(e.proc!==null)st='trabaja';else if(e.block)st=e.block;else if(e.sub&&e.sub.state==='dock')st=d.need&&e.starved&&e.wait>.4?'falta ATP':'recibe';else if(e.sub)st='recibe';else st='sin entrada';
+  e.st=st;e.u+=((st==='trabaja'?1:0)-e.u)*Math.min(1,dt/6);
+ }
+ // ATP upkeep, rescue trickle
+ const freeAtp=mols.filter(m=>m.type==='atp'&&m.state==='free');
+ maintT+=dt;if(maintT>3.5){maintT=0;if(phase<3&&freeAtp.length>10){const a=freeAtp[Math.floor(R(0,freeAtp.length))];a.state='tomem';a.ta=ang(a)+R(-.5,.5);}}
+ trickleT+=dt;if(trickleT>3){trickleT=0;if(freeAtp.length<3&&store<=0){const an=R(.8,2.3),p=pol(RI-20,an);mol('atp',p.x,p.y,'free');pulses.push({a:an,t:0,c:'#79B8AB'});}}
+ if(phase>=4){upT+=dt;if(upT>6*R0/RO){upT=0;
+  if(store>0){store--;logs.up.push(T);}
+  else if(freeAtp.length){const a=freeAtp[Math.floor(R(0,freeAtp.length))];a.state='tomem';a.ta=ang(a)+R(-.5,.5);logs.up.push(T);}
+  else{const i=Math.floor(R(0,NL));if(integ[i]>.45)integ[i]=.45;const q=pol(RO+20,i/NL*TAU);floatText(q.x,q.y,'sin ATP',WARN);}}}
+ // membrane damage
+ if(phase>=3){
+  rosT+=dt;if(rosT>9*R0/RO){rosT=0;const a=R(0,TAU),p=pol(RO+150,a),m=mol('ros',p.x,p.y,'ros');m.ta=a;}
+  const nx=integ.slice();
+  for(let i=0;i<NL;i++){const v=integ[i];if(v>0&&v<.5){nx[i]=Math.max(0,v-.03*dt);for(const j of[(i+1)%NL,(i+NL-1)%NL])if(integ[j]>=.5)nx[j]=Math.max(.49,nx[j]-.012*dt);}}
+  integ=nx;
+  const gaps=[];for(let i=0;i<NL;i++)if(integ[i]<=0)gaps.push(i);
+  leakT+=dt*Math.min(gaps.length,8);if(leakT>9&&gaps.length){leakT=0;const g=pol(RI-10,gaps[Math.floor(R(0,gaps.length))]/NL*TAU),a=nearest(freeAtp,g);
+   if(a){a.state='exit';const d=dist(a,g)||1;a.ux=(g.x-a.x)/d;a.uy=(g.y-a.y)/d;a.sp=120;floatText(g.x,g.y,'fuga',WARN);}}
+ }else integ.fill(1);
+ // aggregation trigger
+ const rate=per('atp',20);
+ if(phase>=4&&tier>=TIERS&&!aggDone){if(rate>=AGG_RATE)sustain+=dt;else sustain=Math.max(0,sustain-dt*2);if(sustain>=AGG_HOLD){aggDone=true;agg={t:0,stats:stats()};}}
+ if(agg){agg.t+=dt;if(agg.t>5.5&&!agg.shown){agg.shown=true;showSheet(agg.stats);}if(agg.fade!==undefined){agg.fade+=dt;if(agg.fade>1.5)agg=null;}}
+ // molecules
+ const h=360/zoom+30;
+ for(const m of mols){
+  m.age+=dt;
+  if(m.state==='pass'){
+   const tr=m.tr;if(!pieces.includes(tr)){m.state=m.dir>0?'out':'free';m.tr=null;continue;}
+   m.p+=dt/.7;const o=pol(RO+16,tr.a),i=pol(RI-18,tr.a),a=m.dir>0?o:i,b=m.dir>0?i:o,p=Math.min(1,m.p),q=p*p*(3-2*p);
+   m.x=a.x+(b.x-a.x)*q;m.y=a.y+(b.y-a.y)*q;tr.open=Math.sin(p*Math.PI);
+   if(m.p>=1){tr.busy=false;tr.cool=.25;m.tr=null;m.age=0;m.target=null;
+    if(m.dir>0){m.state='free';m.vx=-Math.cos(tr.a)*50;m.vy=-Math.sin(tr.a)*50;}
+    else{if(m.type==='lac')goal.lac++;m.state=m.type==='lac'?'trail':'out';m.vx=Math.cos(tr.a)*50;m.vy=Math.sin(tr.a)*50;}}
+   continue;
+  }
+  if(m.state==='dock'){const e=m.target;if(!e){m.state='free';continue;}const k=m.type==='atp'?(e.atps.indexOf(m)?1:-1):0;m.x=e.x+k*13;m.y=e.y+(k?-15:0);continue;}
+  m.vx+=R(-1,1)*160*dt;m.vy+=R(-1,1)*160*dt;m.vx*=1-1.4*dt;m.vy*=1-1.4*dt;
+  if(m.state==='out'||m.state==='trail'){
+   m.vx+=(-24-m.vx)*.4*dt;
+   const r=rad(m);if(r<RO+18){const ux=(m.x-CX)/r,uy=(m.y-CY)/r;m.x=CX+ux*(RO+18);m.y=CY+uy*(RO+18);m.vx+=ux*30;m.vy+=uy*30;}
+   if(m.state==='out')for(const tr of trs){const mo=pol(RO+16,tr.a);if(dist(m,mo)<170)steer(m,mo,dt,160,85);}
+   m.x+=m.vx*dt;m.y+=m.vy*dt;
+   if(m.state==='trail'){m.alpha=Math.max(0,1-m.age/16);if(m.alpha<=0||m.x<CX-h)m.dead=true;if(m.y<CY-h||m.y>CY+h)m.vy*=-1;continue;}
+   if(m.x<CX-h){m.x=CX+h-10;m.y=CY+R(-h+10,h-10);}if(m.x>CX+h+10)m.x=CX+h;if(m.y<CY-h||m.y>CY+h)m.vy*=-1;
+   continue;
+  }
+  if(m.state==='ros'){const t=pol(RO+6,m.ta);if(steer(m,t,dt,200,70)<10){m.dead=true;const i=lidx(m.ta);if(integ[i]>0)integ[i]=Math.min(integ[i],.45);burst(t.x,t.y,'#B4382F');}
+   m.x+=m.vx*dt;m.y+=m.vy*dt;continue;}
+  if(m.state==='exit'){m.x+=m.ux*m.sp*dt;m.y+=m.uy*m.sp*dt;const r=rad(m);m.alpha=Math.max(0,1-Math.max(0,r-RI+10)/90);if(m.alpha<=0)m.dead=true;continue;}
+  if(m.state==='tomem'){const t=pol(RI-8,m.ta);if(steer(m,t,dt,260,110)<12){m.dead=true;pulses.push({a:m.ta,t:0,c:'#7FA65A'});}m.x+=m.vx*dt;m.y+=m.vy*dt;continue;}
+  if(m.state==='seek'){const p=m.target;
+   if(!p||!pieces.includes(p)){m.state='free';m.target=null;}
+   else if(steer(m,sp(p),dt,360,160)<13){
+    if(!p.built){m.dead=true;p.got++;p.claim--;if(p.got>=PIECES[p.type].c){p.built=true;p.born=T;const c=pos(p);burst(c.x,c.y,PIECES[p.type].col,true);}continue;}
+    if(p.type==='fl'){const i=worstIn(p);if(i>=0){integ[i]=1;m.dead=true;pulses.push({a:i/NL*TAU,t:0,c:'#7FA65A'});}
+     else if(phase>=4){m.dead=true;grow(p.a);}else{m.state='free';m.target=null;}continue;}
+    m.state='dock';m.vx=m.vy=0;continue;}
+  }
+  if(m.state==='free'){
+   if(m.type==='glu'&&!hasHK&&m.age>2.5&&trs.length){m.state='leak';m.target=nearest(trs.map(t=>Object.assign(pol(RI-18,t.a),{tr:t})),m).tr;}
+   else if(m.type==='lac'&&exs.length){m.state='leak';m.target=nearest(exs.map(t=>Object.assign(pol(RI-18,t.a),{tr:t})),m).tr;}
+   else if(m.type==='lip'&&fls.length){let c=fls.filter(f=>worstIn(f)>=0);if(!c.length&&phase>=4)c=fls;if(c.length){m.state='seek';m.target=nearest(c.map(t=>Object.assign(sp(t),{tr:t})),m).tr;}}
+  }
+  if(m.state==='leak'){const tr=m.target;if(!tr||!pieces.includes(tr)){m.state='free';m.target=null;}else steer(m,pol(RI-18,tr.a),dt,160,70);}
+  m.x+=m.vx*dt;m.y+=m.vy*dt;
+  const r=rad(m),lim=RI-14;if(r>lim){const ux=(m.x-CX)/r,uy=(m.y-CY)/r;m.x=CX+ux*lim;m.y=CY+uy*lim;const vn=m.vx*ux+m.vy*uy;if(vn>0){m.vx-=1.6*vn*ux;m.vy-=1.6*vn*uy;}}
+ }
+ mols=mols.filter(m=>!m.dead);
+ if(phase===3&&built('fl').length&&memPct()>=95)goal.mem+=dt;else goal.mem=0;
+ fx.forEach(f=>f.t+=dt);fx=fx.filter(f=>f.t<(f.k==='txt'?1.1:f.k==='big'?2.6:.55));
+ pulses.forEach(p=>p.t+=dt);pulses=pulses.filter(p=>p.t<1);
+ for(const k in logs)if(logs[k].length&&T-logs[k][0]>65)logs[k]=logs[k].filter(t=>T-t<65);
+}
+
+// ---------- drawing
+function hex(x,y,s){ctx.beginPath();for(let i=0;i<6;i++){const a=Math.PI/6+i*Math.PI/3;ctx[i?'lineTo':'moveTo'](x+s*Math.cos(a),y+s*Math.sin(a));}ctx.closePath();}
+function bead(x,y,r,fill){ctx.beginPath();ctx.arc(x,y,r,0,TAU);ctx.fillStyle=fill;ctx.fill();ctx.strokeStyle=INK;ctx.lineWidth=1;ctx.stroke();}
+function drawMol(m){
+ ctx.globalAlpha=m.alpha;const x=m.x,y=m.y;
+ if(m.type==='glu'||m.type==='g6p'){ctx.save();ctx.translate(x,y);ctx.rotate(still?0:Math.sin(T*1.3+m.ph)*.25);hex(0,0,7.5);ctx.fillStyle='#fff';ctx.fill();ctx.strokeStyle=INK;ctx.lineWidth=1.4;ctx.stroke();
+  if(m.type==='g6p'){bead(9,-5,3.2,PHOS);bead(-9,5,3.2,PHOS);}ctx.restore();}
+ else if(m.type==='tri'){ctx.save();ctx.translate(x,y);ctx.rotate(m.ph+T*.6);ctx.beginPath();ctx.moveTo(-7,4);ctx.lineTo(-3.5,-4);ctx.lineTo(3.5,-4);ctx.lineTo(7,4);ctx.closePath();ctx.fillStyle='#E8D2A6';ctx.fill();ctx.strokeStyle=INK;ctx.lineWidth=1.3;ctx.stroke();bead(7,5,2.8,PHOS);ctx.restore();}
+ else if(m.type==='pyr'){ctx.beginPath();ctx.moveTo(x,y-6);ctx.lineTo(x+6,y+5);ctx.lineTo(x-6,y+5);ctx.closePath();ctx.fillStyle='#E3A777';ctx.fill();ctx.strokeStyle=INK;ctx.lineWidth=1.2;ctx.stroke();}
+ else if(m.type==='lac'){bead(x,y,5,'#D9806F');}
+ else if(m.type==='lip'){const a=m.ph+T*.8,c=Math.cos(a),s=Math.sin(a);ctx.beginPath();for(const o of[-1.9,1.9]){ctx.moveTo(x-s*o,y+c*o);ctx.lineTo(x-c*13-s*o,y-s*13+c*o);}ctx.strokeStyle='#CDBB7C';ctx.lineWidth=2;ctx.stroke();bead(x+c*3,y+s*3,4,'#9DB56A');}
+ else if(m.type==='ros'){ctx.beginPath();for(let i=0;i<10;i++){const a=i*TAU/10+T*3,r=i%2?3.4:7.5;ctx[i?'lineTo':'moveTo'](x+r*Math.cos(a),y+r*Math.sin(a));}ctx.closePath();ctx.fillStyle='#B4382F';ctx.fill();ctx.strokeStyle=INK;ctx.lineWidth=1;ctx.stroke();}
+ else{const s=Math.hypot(m.vx,m.vy)||1,ux=-m.vx/s,uy=-m.vy/s;
+  ctx.beginPath();ctx.arc(x,y,11,0,TAU);ctx.fillStyle='rgba(226,194,64,.22)';ctx.fill();
+  for(let i=3;i>=1;i--){const w=still?0:Math.sin(T*9+m.ph+i)*1.6;bead(x+ux*(4+i*4.6)-uy*w,y+uy*(4+i*4.6)+ux*w,2.3,PHOS);}
+  bead(x,y,5,ATPY);}
+ ctx.globalAlpha=1;
+}
+function back(t){const c=1.70158;t=Math.min(1,Math.max(0,t))-1;return 1+(c+1)*t*t*t+c*t*t;}
+function tag(x,y,t,c,w){ctx.fillStyle=c;ctx.font=(w||600)+' '+(11/zoom).toFixed(1)+'px Inter,system-ui,sans-serif';ctx.textAlign='center';ctx.fillText(t,x,y);}
+function drawEnz(e){
+ const d=PIECES[e.type],k=e.built?back((T-e.born)/.35):1;let sx=1,sy=1;
+ if(e.proc!==null){const j=Math.sin(e.proc*40)*.07;sx=1+j;sy=1-j;}else if(e.pulse>0){const j=Math.sin(e.pulse*Math.PI)*.22;sx=1+j;sy=1-j;}
+ ctx.save();ctx.translate(e.x,e.y);ctx.rotate(still?0:Math.sin(T*1.1+e.ph)*.06);ctx.scale(k*sx,k*sy);ctx.globalAlpha=e.built?1:.35;
+ if(e.built){ctx.shadowColor='rgba(58,53,45,.35)';ctx.shadowBlur=6*scale*zoom;ctx.shadowOffsetY=4*scale*zoom;}
+ ctx.fillStyle=INK;for(const[l,m,r]of d.lobes){ctx.beginPath();ctx.arc(l,m,r+1.3,0,TAU);ctx.fill();}
+ ctx.shadowColor='transparent';ctx.shadowBlur=0;ctx.shadowOffsetY=0;ctx.fillStyle=d.col;
+ for(const[l,m,r]of d.lobes){ctx.beginPath();ctx.arc(l,m,r,0,TAU);ctx.fill();}
+ ctx.restore();ctx.globalAlpha=1;
+ if(!e.built){tag(e.x,e.y-28,e.got+'/'+d.c+' ATP',SUB);return;}
+ bead(e.x+17,e.y-15,4.5,STC[e.st]||'#8E8A82');
+ if(e.st==='inhibida'||e.st==='atasco'||e.st==='falta ATP'){
+  ctx.beginPath();ctx.arc(e.x,e.y,27,0,TAU);ctx.strokeStyle=e.st==='falta ATP'?'rgba(192,57,43,'+(.45+.4*Math.sin(T*6))+')':'rgba(208,138,46,.75)';ctx.lineWidth=2;ctx.setLineDash([5,4]);ctx.stroke();ctx.setLineDash([]);
+  tag(e.x,e.y-32,e.st,STT[e.st]);}
+ if(labels)tag(e.x,e.y+34,d.n+' · '+Math.round(e.u*100)+' %',SUB,500);
+}
+function drawDoor(p){
+ const d=PIECES[p.type],k=p.built?back((T-p.born)/.35):1,len=p.type==='fl'?46:60;
+ ctx.save();ctx.translate(CX,CY);ctx.rotate(p.a);ctx.translate(MID(),0);ctx.scale(k,k);ctx.globalAlpha=p.built?1:.35;
+ for(const s of[-1,1]){ctx.save();ctx.translate(0,s*2);ctx.rotate(s*(p.open||0)*.22);ctx.beginPath();ctx.roundRect(-len/2,s>0?0:-11,len,11,5);ctx.fillStyle=d.col;ctx.fill();ctx.strokeStyle=INK;ctx.lineWidth=1.2;ctx.stroke();ctx.restore();}
+ ctx.restore();ctx.globalAlpha=1;
+ if(!p.built){const q=pol(RO+34,p.a);tag(q.x,q.y+4,p.got+'/'+d.c+' ATP',LIGHT);}
+}
+const HC=['#9DB56A','#CFAE55','#C4703C','#9E392C'];
+let crowdImg=null;try{const c=document.createElement('canvas');c.width=c.height=180;const q=c.getContext('2d'),cols=['#E6D3AC','#CBD7E3','#DCCFE6','#E9DCC0','#D9E2C4'];
+ for(let i=0;i<150;i++){const a=R(0,TAU),r=Math.sqrt(Math.random())*84,x=90+r*Math.cos(a),y=90+r*Math.sin(a);q.save();q.translate(x,y);q.rotate(R(0,3));q.beginPath();q.ellipse(0,0,R(2,5.5),R(1.6,4),0,0,TAU);q.fillStyle=cols[i%5];q.fill();q.restore();}crowdImg=c;}catch(_){}
+function cellBody(x,y,ro,ri,br,haloA){
+ ctx.save();ctx.shadowColor='rgba(216,240,220,'+haloA+')';ctx.shadowBlur=30*scale*zoom;ctx.beginPath();ctx.arc(x,y,ro+6+br,0,TAU);ctx.fillStyle='#F3E7CB';ctx.fill();ctx.restore();
+ const g=ctx.createRadialGradient(x-30,y-40,20,x,y,ro);g.addColorStop(0,'#FBF2DC');g.addColorStop(1,'#EAD9B2');ctx.beginPath();ctx.arc(x,y,ro+6+br,0,TAU);ctx.fillStyle=g;ctx.fill();
+ if(crowdImg){ctx.save();ctx.beginPath();ctx.arc(x,y,ri-4,0,TAU);ctx.clip();ctx.globalAlpha=.6;ctx.drawImage(crowdImg,x-ro,y-ro,2*ro,2*ro);ctx.restore();}
+ const g2=ctx.createRadialGradient(x,y,ri-46,x,y,ri);g2.addColorStop(0,'rgba(58,53,45,0)');g2.addColorStop(1,'rgba(58,53,45,.2)');ctx.beginPath();ctx.arc(x,y,ri,0,TAU);ctx.fillStyle=g2;ctx.fill();
+ ctx.beginPath();ctx.arc(x,y,(ro+ri)/2+br,0,TAU);ctx.strokeStyle='#E9DDB6';ctx.lineWidth=ro-ri;ctx.stroke();
+}
+function drawNeighbors(){
+ const e=Math.min(1,agg.t/4),k=e*e*(3-2*e),D=(2*RO+14)*(1.9-.9*k),al=(agg.fade!==undefined?Math.max(0,1-agg.fade/1.5):1)*Math.min(1,agg.t);
+ ctx.globalAlpha=al;
+ for(let j=0;j<6;j++){const a=j*TAU/6+TAU/12,x=CX+D*Math.cos(a),y=CY+D*Math.sin(a);
+  cellBody(x,y,RO,RI,0,.6);
+  const n=Math.round(TAU*RO/12);ctx.beginPath();for(let i=0;i<n;i++){const b=i/n*TAU;ctx.moveTo(x+RO*Math.cos(b)+3.8,y+RO*Math.sin(b));ctx.arc(x+RO*Math.cos(b),y+RO*Math.sin(b),3.8,0,TAU);}ctx.fillStyle='#9DB56A';ctx.fill();ctx.strokeStyle=INK;ctx.lineWidth=.8;ctx.stroke();
+  if(agg.t>4.2){for(let q=-2;q<=2;q++){const b=a+q*.05,p1=pol(RO+2,b),bx=x+(RO+2)*Math.cos(b+Math.PI),by=y+(RO+2)*Math.sin(b+Math.PI);
+   ctx.beginPath();ctx.moveTo(p1.x,p1.y);ctx.lineTo(bx,by);ctx.strokeStyle=INK;ctx.lineWidth=6;ctx.lineCap='round';ctx.stroke();ctx.strokeStyle='#E68FB5';ctx.lineWidth=3.4;ctx.stroke();}}}
+ ctx.globalAlpha=1;
+}
+function draw(){
+ ctx.setTransform(scale,0,0,scale,0,0);
+ let g=ctx.createRadialGradient(360,360,240,360,360,W*.72);g.addColorStop(0,'#2E5560');g.addColorStop(1,'#0F2229');ctx.fillStyle=g;ctx.fillRect(0,0,W,W);
+ ctx.fillStyle='rgba(143,184,184,.4)';for(let i=0;i<40;i++){const x=((i*97.3-T*(6+i%5))%W+W)%W,y=(i*53.7+Math.sin(T*.4+i)*8)%W;ctx.beginPath();ctx.arc(x,y,1.6+(i%3)*.5,0,TAU);ctx.fill();}
+ ctx.translate(360,360);ctx.scale(zoom,zoom);ctx.translate(-CX,-CY);
+ if(agg)drawNeighbors();
+ const br=still?0:Math.sin(T*.8)*1.5,m0=MID();
+ cellBody(CX,CY,RO,RI,br,.85);
+ const fw=FLW();
+ for(const f of pieces)if(f.type==='fl'){ctx.beginPath();ctx.arc(CX,CY,m0,f.a-fw,f.a+fw);ctx.strokeStyle='rgba(94,143,62,'+(f.built?.2:.08)+')';ctx.lineWidth=RO-RI+26;ctx.lineCap='butt';ctx.stroke();ctx.lineCap='round';}
+ for(const p of pulses){const w=32/m0;ctx.beginPath();ctx.arc(CX,CY,m0,p.a-w,p.a+w);ctx.strokeStyle=p.c;ctx.globalAlpha=(1-p.t)*.7;ctx.lineWidth=RO-RI+14+p.t*14;ctx.stroke();ctx.globalAlpha=1;}
+ const da=pieces.filter(isMem),skip=a=>da.some(t=>adiff(a,t.a)<((t.type==='fl'?23:30)+3)/m0);
+ const heads=[[],[],[],[]];ctx.beginPath();
+ for(const[Rb,dir]of[[RO,-1],[RI,1]]){const n=Math.round(TAU*Rb/7.4);
+  for(let i=0;i<n;i++){const a=i/n*TAU;if(skip(a))continue;const v=integ[lidx(a)];if(v<=0)continue;
+   const w=still?0:Math.sin(T*1.7+i*1.9)*1.3,c=Math.cos(a),s=Math.sin(a),r=Rb+w+br;
+   heads[v>.8?0:v>.5?1:v>.25?2:3].push(CX+c*r,CY+s*r);
+   for(const o of[-1.9,1.9]){ctx.moveTo(CX+c*(r+dir*5)-s*o,CY+s*(r+dir*5)+c*o);ctx.lineTo(CX+c*(r+dir*17)-s*o*1.2,CY+s*(r+dir*17)+c*o*1.2);}
+  }}
+ ctx.strokeStyle='#CDBB7C';ctx.lineWidth=2;ctx.lineCap='round';ctx.stroke();
+ heads.forEach((hd,b)=>{if(!hd.length)return;ctx.beginPath();for(let i=0;i<hd.length;i+=2){ctx.moveTo(hd[i]+4,hd[i+1]);ctx.arc(hd[i],hd[i+1],4,0,TAU);}ctx.fillStyle=HC[b];ctx.fill();ctx.strokeStyle=INK;ctx.lineWidth=.8;ctx.stroke();});
+ da.forEach(drawDoor);
+ ctx.setLineDash([3,5]);ctx.strokeStyle='rgba(106,99,86,.45)';ctx.lineWidth=1;
+ for(let i=0;i<2;i++)for(const a of pieces.filter(p=>p.type===ORDER[i])){const b=nearest(pieces.filter(p=>p.type===ORDER[i+1]),a);if(b){ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke();}}
+ ctx.setLineDash([]);
+ pieces.forEach(p=>!isMem(p)&&drawEnz(p));
+ mols.forEach(drawMol);
+ for(const f of fx){
+  if(f.k==='ring'){const p=f.t/.55;ctx.beginPath();ctx.arc(f.x,f.y,(f.big?16:10)+p*(f.big?34:22),0,TAU);ctx.strokeStyle=f.color;ctx.globalAlpha=1-p;ctx.lineWidth=3*(1-p)+.5;ctx.stroke();ctx.globalAlpha=1;}
+  else if(f.k==='txt'){const p=f.t/1.1;ctx.globalAlpha=1-p*p;ctx.fillStyle=f.color;ctx.font='700 '+(13/zoom).toFixed(1)+'px Inter,system-ui,sans-serif';ctx.textAlign='center';ctx.fillText(f.text,f.x,f.y-p*26);ctx.globalAlpha=1;}
+ }
+ ctx.setTransform(scale,0,0,scale,0,0);
+ for(const f of fx)if(f.k==='big'){const p=f.t/2.6;ctx.globalAlpha=Math.min(1,(1-p)*3);ctx.font='700 20px Inter,system-ui,sans-serif';ctx.textAlign='center';const w=ctx.measureText(f.text).width;
+  ctx.fillStyle='rgba(251,247,236,.94)';ctx.beginPath();ctx.roundRect(360-w/2-16,40,w+32,40,10);ctx.fill();ctx.fillStyle='#3F6B2E';ctx.fillText(f.text,360,67);ctx.globalAlpha=1;}
+ if(tool&&tool!=='del'){ctx.fillStyle='rgba(233,228,214,.95)';ctx.font='600 13px Inter,system-ui,sans-serif';ctx.textAlign='center';ctx.fillText(PIECES[tool].mem?'Toca la membrana':'Toca dentro de la célula',360,W-22);}
+}
+
+// ---------- HUD
+const $=id=>document.getElementById(id);
+const hintEl=$('hint'),stepEl=$('step'),toolsEl=$('tools');
+let lastHint='';
+const NAMES=['','Energía','Residuos','Membrana','Crecer'];
+function majority(k){const L=built(k);if(!L.length)return null;const c={};L.forEach(e=>c[e.st]=(c[e.st]||0)+1);return Object.keys(c).sort((a,b)=>c[b]-c[a])[0];}
+function diagnose(){
+ const hk=majority('hk');
+ if(hk==='falta ATP')return 'Apagón de ATP: los consumidores van por delante de la producción.';
+ if(phase>=3&&memPct()<90)return 'La membrana se rompe más rápido de lo que la reparas: más flipasas o más sintasa.';
+ if(hk==='inhibida')return 'La glucosa marcada se acumula y frena a la hexoquinasa: falta aldolasa.';
+ if(majority('ald')==='atasco')return 'Se acumulan mitades: falta piruvato quinasa.';
+ if(majority('pk')==='atasco')return 'Se acumula piruvato: falta lactato DH.';
+ if(majority('ldh')==='atasco')return 'Se acumula lactato: faltan exportadores.';
+ if(majority('syn')==='atasco')return 'Sobran lípidos sin destino: faltan flipasas.';
+ if(majority('syn')==='inhibida')return 'Poca energía: la célula frena la síntesis de lípidos hasta tener ATP de sobra.';
+ if(hk==='sin entrada')return 'Entra poca glucosa: faltan transportadores.';
+ return '';
+}
+function hud(){
+ const has=t=>pieces.some(p=>p.type===t);let h;
+ if(!has('tr'))h='Fuera hay glucosa, pero la membrana no la deja pasar. Crea un transportador en la membrana: cuesta 2 ATP.';
+ else if(!has('hk'))h='La glucosa entra… y se vuelve a escapar. Crea una hexoquinasa: gasta 2 ATP en marcarla y ya no puede salir.';
+ else if(!has('ald'))h='La glucosa marcada se acumula y tu ATP baja: de momento solo inviertes. Crea una aldolasa para partirla en dos mitades.';
+ else if(!has('pk'))h='Ya tienes mitades sueltas. Crea una piruvato quinasa: saca 2 ATP de cada mitad.';
+ else if(phase===1)h='El ciclo se sostiene: inviertes 2 ATP, recuperas 4. El punto de cada enzima dice si trabaja, espera o está atascada.';
+ else if(!has('ldh'))h='Ahora el piruvato se queda dentro. Cuando se acumula, la piruvato quinasa se atasca. Crea una lactato deshidrogenasa.';
+ else if(!has('ex'))h='El lactato también se acumula. Coloca un exportador en la membrana para sacarlo.';
+ else if(phase===2)h='La cadena fluye, pero cada pieza tiene su ritmo. Mira el uso de cada enzima: la que está al 100 % es tu cuello de botella.';
+ else if(!has('syn'))h='Los radicales libres oxidan tus lípidos y la oxidación se contagia. Crea una sintasa de lípidos: usa una mitad y 1 ATP por lípido.';
+ else if(!has('fl'))h='Los lípidos nuevos no saben dónde ir. Coloca flipasas en la membrana: cada una repara su arco verde.';
+ else if(phase===3)h='Cada mitad que va a lípidos es ATP que no ganas. ¿Otra flipasa, otra sintasa o más quinasas?';
+ else if(tier===0)h='Los lípidos que sobran tras reparar hacen crecer la célula. Más grande es más sitio, pero también más membrana, más radicales, arcos de flipasa más cortos y más ATP de mantenimiento.';
+ else if(tier<TIERS)h='Talla '+tier+'. Hay sitio para duplicar líneas. Ojo: el mantenimiento de membrana sube con el tamaño.';
+ else h='Tamaño final. Para agregarte a otras células necesitas una fábrica que produzca al menos '+AGG_RATE+' ATP por minuto de forma sostenida.';
+ if(h!==lastHint){lastHint=h;hintEl.textContent=h;}
+ stepEl.textContent='Fase '+phase+' · '+NAMES[phase];
+ const rate=Math.round(per('atp',20));
+ let gt,gv,gm,unit='';
+ if(phase===1){gt='Objetivo: produce 40 ATP';gv=goal.atp;gm=40;unit=' ATP';}
+ else if(phase===2){gt='Objetivo: exporta 12 lactatos';gv=goal.lac;gm=12;}
+ else if(phase===3){gt='Objetivo: membrana al 95 % o más durante 60 s, con flipasas';gv=Math.floor(goal.mem);gm=60;unit=' s';}
+ else if(tier<TIERS){gt='Talla '+tier+'/'+TIERS+' · lípidos para crecer';gv=growth;gm=needG();}
+ else if(!aggDone){gt='Agregación: sostén '+AGG_RATE+' ATP/min durante '+AGG_HOLD+' s (ahora '+rate+')';gv=Math.floor(sustain);gm=AGG_HOLD;unit=' s';}
+ else{gt='Agregación completada';gv=1;gm=1;}
+ if(phase<4&&gv>=gm)goal.done=true;
+ const ge=$('goal'),done=phase<4?goal.done:aggDone;ge.className='goal'+(done?' done':'');
+ ge.textContent=phase<4&&goal.done?(phase<4?'Objetivo cumplido. Pasa a la fase '+(phase+1)+'.':''):gt+(aggDone&&phase>=4?'':' · '+Math.min(gv,gm)+'/'+gm+unit);
+ $('gbar').style.width=Math.min(100,gv/gm*100)+'%';
+ $('sAtp').textContent=count('atp')+store;$('sRate').textContent=rate;$('sGlu').textContent=Math.round(per('glu',20));
+ $('sMem').textContent=memPct()+'%';$('sTier').textContent=tier+'/'+TIERS;
+ const rows=[];
+ for(const k of ORDER){const L=built(k);if(!L.length)continue;const top=majority(k),u=Math.round(L.reduce((a,e)=>a+e.u,0)/L.length*100);
+  rows.push('<span>'+PIECES[k].n+' ×'+L.length+'</span><span>'+u+' %</span><span class="s" style="color:'+STT[top]+'">'+top+'</span>');}
+ rows.push('<span>Membrana</span><span></span><span class="s">'+built('tr').length+' transp. · '+built('ex').length+' export. · '+built('fl').length+' flipasas</span>');
+ $('lines').innerHTML=rows.join('');
+ const dg=diagnose(),de=$('diag');de.className='diag'+(dg?'':' ok');de.textContent=dg||(built('hk').length?'Sin cuellos de botella graves.':'');
+}
+function stats(){const g=per('glu',60),a=per('atp',60);return[
+ ['Producción de ATP',Math.round(a)+' /min'],['Glucosa procesada',Math.round(g)+' /min'],['ATP por glucosa (bruto)',g?(a/g).toFixed(1).replace('.',','):'—'],
+ ['Lípidos fabricados',Math.round(per('lip',60))+' /min'],['Mantenimiento de membrana',Math.round(per('up',60))+' ATP/min'],['Integridad de membrana',memPct()+' %'],
+ ['Tamaño','radio ×'+(RO/R0).toFixed(2).replace('.',',')],['Piezas',String(pieces.filter(p=>p.built).length)]];}
+function showSheet(rows){$('ovT').innerHTML=rows.map(r=>'<tr><td>'+r[0]+'</td><td>'+r[1]+'</td></tr>').join('');$('ov').classList.add('on');}
+function hideSheet(){const o=document.getElementById('ov');if(o&&o.classList)o.classList.remove('on');}
+function renderTools(){
+ toolsEl.innerHTML=Object.keys(PIECES).filter(k=>PIECES[k].ph<=phase).map(k=>'<button type="button" data-tool="'+k+'" aria-pressed="'+(tool===k)+'"><span class="dot" style="background:'+PIECES[k].col+'"></span><span>'+PIECES[k].n+'<small>'+PIECES[k].c+' ATP</small></span></button>').join('');
+ $('del').setAttribute('aria-pressed',tool==='del'?'true':'false');
+}
+function setTool(t){tool=t;renderTools();}
+function setPhase(n){phase=n;goal={atp:0,lac:0,mem:0,done:false};document.querySelectorAll('[data-phase]').forEach(b=>b.setAttribute('aria-pressed',+b.dataset.phase===n?'true':'false'));renderTools();hud();}
+function setSpeed(n){speed=n;$('sp1').setAttribute('aria-pressed',n===1?'true':'false');$('sp3').setAttribute('aria-pressed',n===3?'true':'false');}
+function pt(e){const r=cv.getBoundingClientRect(),sx=(e.clientX-r.left)*W/r.width,sy=(e.clientY-r.top)*W/r.height;return{x:CX+(sx-360)/zoom,y:CY+(sy-360)/zoom};}
+function hit(p){let b=null,bd=34;for(const q of pieces){const d=dist(pos(q),p);if(d<bd){bd=d;b=q;}}return b;}
+cv.addEventListener('pointerdown',e=>{
+ const p=pt(e),h=hit(p);
+ if(tool==='del'){if(h)removePiece(h);setTool(null);return;}
+ if(tool){const r=rad(p);
+  if(PIECES[tool].mem){if(r>RI-50&&r<RO+70){addPiece(tool,p.x,p.y);setTool(null);}}
+  else if(r<RI-8){addPiece(tool,p.x,p.y);setTool(null);}
+  return;}
+ if(h){drag=h;try{cv.setPointerCapture(e.pointerId);}catch(_){}}
+});
+cv.addEventListener('pointermove',e=>{
+ if(!drag)return;const p=pt(e);
+ if(isMem(drag))drag.a=Math.atan2(p.y-CY,p.x-CX);
+ else{let x=p.x,y=p.y;const r=Math.hypot(x-CX,y-CY),m=RI-40;if(r>m){x=CX+(x-CX)*m/r;y=CY+(y-CY)*m/r;}drag.x=x;drag.y=y;}
+});
+const end=()=>{drag=null;};cv.addEventListener('pointerup',end);cv.addEventListener('pointercancel',end);
+toolsEl.addEventListener('click',e=>{const b=e.target.closest('[data-tool]');if(b)setTool(tool===b.dataset.tool?null:b.dataset.tool);});
+$('phases').addEventListener('click',e=>{const b=e.target.closest('[data-phase]');if(b)setPhase(+b.dataset.phase);});
+$('del').addEventListener('click',()=>setTool(tool==='del'?null:'del'));
+$('demo').addEventListener('click',()=>{setTool(null);demo();});
+$('reset').addEventListener('click',()=>{setTool(null);reset();});
+$('sp1').addEventListener('click',()=>setSpeed(1));$('sp3').addEventListener('click',()=>setSpeed(3));
+$('lab').addEventListener('click',e=>{labels=!labels;e.currentTarget.setAttribute('aria-pressed',labels?'true':'false');});
+$('ovGo').addEventListener('click',()=>{hideSheet();if(agg)agg.fade=0;});
+$('ovNew').addEventListener('click',()=>{hideSheet();setTool(null);reset();});
+if(!ctx.roundRect)CanvasRenderingContext2D.prototype.roundRect=function(x,y,w,h){this.rect(x,y,w,h);};
+window.__pg={setPhase,demo,addPiece,reset,get integ(){return integ;},get mols(){return mols;},get pieces(){return pieces;},get s(){return{RO,tier,growth,sustain,agg:!!agg,aggDone,store,T};},stats,pol:(r,a)=>pol(r,a)};
+reset();renderTools();
+let last=performance.now(),acc=0;
+function frame(now){const dt=Math.min(.05,(now-last)/1000);last=now;for(let i=0;i<speed;i++)update(dt);draw();acc+=dt;if(acc>.25){acc=0;hud();}requestAnimationFrame(frame);}
+hud();requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>
