@@ -9,7 +9,7 @@
 #define CP_STAGE_MAX_OBSTACLES 1024
 #define CP_STAGE_DAY_TICKS 12000
 #define CP_STAGE_DT .1f
-#define CP_STAGE_SNAPSHOT_VERSION 7   /* 3: player loadout (A21); 4: social layer (C2); 5: lineage ledger and ancestry; 6: discovery, nest shop and eggs; 7: secrets (shards, cave chamber, day/night) and 6 species */
+#define CP_STAGE_SNAPSHOT_VERSION 8   /* 3: player loadout (A21); 4: social layer (C2); 5: lineage ledger and ancestry; 6: discovery, nest shop and eggs; 7: secrets (shards, cave chamber, day/night) and 6 species; 8: run and fixed-point fall state */
 #define CP_STAGE_MAX_PATH 64      /* waypoints kept by the planner (docs/godot/NAV.md) */
 #define CP_STAGE_MAX_EVENTS 64    /* event ring since the last observe */
 
@@ -155,7 +155,7 @@ enum { CP_STAGE_EV_HIT=1, CP_STAGE_EV_KILL, CP_STAGE_EV_DEATH, CP_STAGE_EV_RESPA
        CP_STAGE_EV_SKILL, CP_STAGE_EV_GIFT, CP_STAGE_EV_BOND_MADE, CP_STAGE_EV_BOND_BROKEN, CP_STAGE_EV_SPECIES_RESOLVED,
        CP_STAGE_EV_DNA, CP_STAGE_EV_OBSERVE, CP_STAGE_EV_CHAIN_DONE, CP_STAGE_EV_INTIMIDATE, CP_STAGE_EV_SOCIAL_CANCELLED, CP_STAGE_EV_EAT, CP_STAGE_EV_PART_FOUND, CP_STAGE_EV_INSPECTED, CP_STAGE_EV_PART_BOUGHT, CP_STAGE_EV_EDIT_ACCEPTED,
        CP_STAGE_EV_SHARD_FOUND,   /* target = shard entity id (3100+k), move = shard index 0..4, value = shards found so far, x/z = where */
-       CP_STAGE_EV_CAVE };        /* move = 1 entered the passage, 2 reached the chamber */
+       CP_STAGE_EV_CAVE, CP_STAGE_EV_FELL };        /* move = 1 entered the passage, 2 reached the chamber */
 enum { CP_STAGE_BLOCK_NONE, CP_STAGE_BLOCK_CLIFF, CP_STAGE_BLOCK_WATER, CP_STAGE_BLOCK_EDGE,
        CP_STAGE_BLOCK_CREATURE, CP_STAGE_BLOCK_UNREACHABLE, CP_STAGE_BLOCK_OBSTACLE };
 typedef struct {
@@ -273,9 +273,14 @@ typedef struct {
     CpStageSocial social;            /* C2: trust, DNA, species progress, observe; hashed once `social.used` */
     CpStageParts parts;
     CpStageSecrets secrets;          /* derived at reset when setup.secrets; hashed only then */
+    /* Run stamina is separate from combat stamina; mm, mm/s for fixed-step gravity. */
+    int32_t running,run_stamina,falling,fall_y_mm,fall_v_mm_s,fall_start_mm;
+    int32_t fall_dx_mm,fall_dz_mm;
     const CpStageField *field;       /* not owned, not in the snapshot, set by cp_stage_attach_field */
 } CpStageWorld;
 /* --- C2 secrets (core/src/stage_secrets.c) --- */
+void cp_stage_set_run(CpStageWorld *w,int on);
+float cp_stage_safe_drop(const CpStageWorld *w); /* metres, 1.5 times mean leg length */
 int cp_stage_daylight(const CpStageWorld *w);                /* permille 0 (night) .. 1000 (full day), from the world clock */
 int cp_stage_creature_hidden(const CpStageWorld *w,int index); /* index 0..n-1: a nocturnal creature asleep by day (not perceivable, not targetable) */
 int cp_stage_creature_hunkered(const CpStageWorld *w,int index); /* a crepuscular creature curled up in the noon light */

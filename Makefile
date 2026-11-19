@@ -51,7 +51,8 @@ $(BUILD)/combat_golden: tests/combat_golden.c apps/combat_bots.h $(BUILD)/apps/c
 
 # Correctness regressions. Balance acceptance is a separate measured gate:
 # run make tourney as well before claiming P2 acceptance.
-test: $(BUILD)/parts_nest_test $(BUILD)/plan_test $(BUILD)/social_test $(BUILD)/world_cli $(BUILD)/world_test $(BUILD)/terrain_test $(BUILD)/cpore_test $(BUILD)/combat_test $(BUILD)/combat_tourney_test $(BUILD)/combat_golden check-core $(BUILD)/nav_test $(BUILD)/steer_test $(BUILD)/routes_test secrets-test
+test: $(BUILD)/run_fall_test $(BUILD)/parts_nest_test $(BUILD)/plan_test $(BUILD)/social_test $(BUILD)/world_cli $(BUILD)/world_test $(BUILD)/terrain_test $(BUILD)/cpore_test $(BUILD)/combat_test $(BUILD)/combat_tourney_test $(BUILD)/combat_golden check-core $(BUILD)/nav_test $(BUILD)/steer_test $(BUILD)/routes_test secrets-test
+	./$(BUILD)/run_fall_test
 	nice -n 10 ./$(BUILD)/terrain_test
 	./$(BUILD)/world_test
 	./$(BUILD)/social_test
@@ -608,3 +609,6 @@ godot-journal-nest-evidence: godot
 	for cfg in "1280 720 es" "1024 600 es" "1024 600 en"; do set -- $$cfg; \
 	  LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 600 xvfb-run -a -s "-screen 0 $$1x$$2x24" $(GODOT) --rendering-driver opengl3 --max-fps 15 --resolution $$1x$$2 --path godot \
 	    --script res://game/tests/journal_nest_evidence.gd -- $(CURDIR)/docs/evidence/godot/journal/nest $$3 _$$1x$$2_$$3 || exit 1; done
+
+$(BUILD)/run_fall_test: tests/test_run_fall.c $(HDRS) $(BUILD)/libcpore.a
+	$(CC) $(CFLAGS) $< $(BUILD)/libcpore.a -o $@ $(LDLIBS)
