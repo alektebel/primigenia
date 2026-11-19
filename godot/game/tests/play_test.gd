@@ -290,23 +290,25 @@ func _stage() -> void:
 	sui.selected_id = -1
 	ui.set_mode(&"")
 
-	print("== walk 10 s with scripted input")
+	print("== walk 6 s with scripted input")
 	var start: Vector3 = island.player_pos
 	var played0: int = int(root.get_node("Audio").played.get("step-0", 0)) + int(root.get_node("Audio").played.get("step-1", 0)) + int(root.get_node("Audio").played.get("step-2", 0))
 	island.player_input.keys_override = {"forward": true, "back": false, "left": false, "right": false, "sprint": false}
 	var t0: int = game.stage.cur.tick
-	await sim_ticks(100)
+	# 6 s, not 10: on the current island the player faces the den of the hunting Garfio 60 m away, which charges at the
+	# player; at 10 s the fight has already started and the select-and-ring steps below see an active encounter.
+	await sim_ticks(60)
 	island.player_input.keys_override = {"forward": false, "back": false, "left": false, "right": false, "sprint": false}
 	var moved := Vector2(island.player_pos.x - start.x, island.player_pos.z - start.z).length()
-	check(game.stage.cur.tick - t0 >= 100, "10 s of game time passed (%d ticks)" % (game.stage.cur.tick - t0))
+	check(game.stage.cur.tick - t0 >= 60, "6 s of game time passed (%d ticks)" % (game.stage.cur.tick - t0))
 	check(moved > 8.0, "the player walked %.1f m" % moved)
 	check(footfalls >= 6, "locomotion produced %d foot contacts" % footfalls)
 	var played1: int = int(root.get_node("Audio").played.get("step-0", 0)) + int(root.get_node("Audio").played.get("step-1", 0)) + int(root.get_node("Audio").played.get("step-2", 0))
 	check(played1 > played0, "footstep sounds played (%d)" % (played1 - played0))
 	var lowest := 1e9
 	for l in player.body.legs:
-		lowest = minf(lowest, l.foot.global_position.y - game.ground(l.foot.global_position.x, l.foot.global_position.z))
-	check(lowest > -0.03, "feet are on Game.ground (lowest %.1f mm relative)" % (lowest * 1000.0))
+		lowest = minf(lowest, l.foot.global_position.y - game.visual_ground(l.foot.global_position.x, l.foot.global_position.z))
+	check(lowest > -0.03, "feet are on the visible ground, Game.visual_ground (lowest %.1f mm relative)" % (lowest * 1000.0))
 	check(absf(player.position.y - game.ground(player.position.x, player.position.z)) < 0.05, "the actor stands on Game.ground")
 
 	print("== pause menu: save game / load game")
