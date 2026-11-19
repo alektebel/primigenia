@@ -29,6 +29,8 @@ const FLARE_BODY_LENGTHS := 1.5       # auto flare starts under this many body l
 const SAFE_DROP := 2.0                # m of equivalent drop that costs nothing (placeholder until run-fall lands its curve)
 const DAMAGE_PER_M := 6.0             # hp per metre of equivalent drop above SAFE_DROP (placeholder, same reason)
 const SKID_DECEL := 14.0              # m/s2 after touchdown
+const CLIMB_OUT_S := 1.2              # s after a takeoff with no auto flare
+const CL_CLIMB := 1.2                 # CL while climbing out or flapping near the ground
 const SUBSTEP := 1.0 / 120.0
 
 # global tuning (the F3 panel, flight/*): the owner's "fun" knobs, never per creature
@@ -44,6 +46,7 @@ var bank_t := 0.0             # tan(bank angle), + = banked to the left (left wi
 var stamina := 1.0
 var yaw_dir := Vector2(0.0, 1.0)   # horizontal unit vector the body faces (x, z)
 var stalled := false
+var climb_out := 0.0          # s left of the post-takeoff climb-out (no auto flare, climb-friendly CL)
 var flap_timer := 0.0         # s of flapping owed to a tap (one beat)
 var last_lift := 0.0
 var last_cl := 0.0
@@ -168,6 +171,7 @@ func takeoff(origin: Vector3, ground_vel: Vector3, heading: Vector2) -> Dictiona
 	mode = "glide"
 	bank_t = 0.0
 	stalled = false
+	climb_out = CLIMB_OUT_S
 	return {"ok": true, "reason": "", "burst": not run_ok}
 
 
@@ -243,11 +247,17 @@ func _fly(dt: float, input: Dictionary, ground: Callable, ev: Dictionary) -> voi
 	var pitch := clampf(float(input.get("pitch", 0.0)), -1.0, 1.0)
 	cl = lerpf(cl, CL_MAX, pitch) if pitch >= 0.0 else lerpf(cl, CL_MIN, -pitch)
 	var flaring := false
+	var wants_flap: bool = bool(input.get("flap", false)) or flap_timer > 0.0
+	var climbing := (wants_flap and bool(spec.flaps) and not _exhausted) or climb_out > 0.0
+	climb_out = maxf(0.0, climb_out - dt)
 	var flare_alt := FLARE_BODY_LENGTHS * float(spec.length)
 	if want_dive:
 		s_eff = s_full * FOLD_AREA
 		cl = CL_MIN
 		mode = "dive"
+	elif climbing and pitch <= 0.0:
+		cl = maxf(cl, minf(CL_CLIMB, CL_MAX))     # climb-friendly lift near the ground; the flare stays off
+		mode = "glide"
 	elif alt < flare_alt and vel.y < 0.0:
 		flaring = true
 		mode = "flare"
@@ -259,7 +269,6 @@ func _fly(dt: float, input: Dictionary, ground: Callable, ev: Dictionary) -> voi
 		mode = "glide"
 	# flapping
 	var flapping := false
-	var wants_flap: bool = bool(input.get("flap", false)) or flap_timer > 0.0
 	flap_timer = maxf(0.0, flap_timer - dt)
 	if wants_flap and bool(spec.flaps) and not want_dive and not _exhausted:
 		flapping = true

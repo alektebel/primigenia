@@ -53,6 +53,7 @@ func run(t) -> void:
 	_creature_wings(t)
 	_kinematics(t)
 	_physics(t)
+	_ground_takeoff(t)
 	_creator_panel(t)
 
 func _creator_panel(t) -> void:
@@ -340,3 +341,47 @@ func _physics(t) -> void:
 	var h1 := Vector2(turn.vel.x, turn.vel.z).normalized()
 	t.check(max_bank > 0.5, "banked to the left to turn left (tan bank %.2f)" % max_bank)
 	t.check(h0.x * h1.y - h0.y * h1.x < -0.2 and turn.mode != "ground", "and the heading turned left (%.2f)" % (h0.x * h1.y - h0.y * h1.x))
+
+func _ground_takeoff(t) -> void:
+	var g: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://game/data/flyer.json"))
+	var c = _creature(g)
+	var tests := {"burst": Vector3.ZERO, "run": Vector3(0, 0, 9.0)}
+	for k in tests:
+		var f := _model_for(c)
+		var r := f.takeoff(Vector3.ZERO, tests[k], Vector2(0, 1))
+		t.check(r.ok, "flat ground %s takeoff accepted" % k)
+		var best := 0.0
+		var time := 0.0
+		var landed := false
+		while time < 6.0 and f.mode != "ground":
+			var ev := f.step(1.0 / 60.0, {"flap": true}, Callable(self, "_flat"))
+			time += 1.0 / 60.0
+			best = maxf(best, f.altitude(Callable(self, "_flat")))
+			if ev.landed:
+				landed = true
+				break
+		t.check(best >= 10.0 and not landed, "flat ground %s takeoff holding flap climbs to >= 10 m in 6 s (peak %.1f m, landed %s)" % [k, best, landed])
+	# gliding without flapping still flares and lands softly
+	var f2 := _model_for(c)
+	f2.pos = Vector3(0, 30.0 + f2.spec.com_h, 0)
+	f2.vel = Vector3(0, -1.0, 14.0)
+	f2.mode = "glide"
+	var saw_flare := false
+	var res := {}
+	var tt := 0.0
+	while tt < 40.0 and f2.mode != "ground":
+		var ev2 := f2.step(1.0 / 60.0, {}, Callable(self, "_flat"))
+		tt += 1.0 / 60.0
+		saw_flare = saw_flare or f2.mode == "flare"
+		if ev2.landed:
+			res = ev2
+			break
+	t.check(saw_flare and res.has("impact_vy") and absf(res.impact_vy) < 2.5, "a glide-down without flapping flares and lands softly (impact %.2f m/s)" % float(res.get("impact_vy", -99.0)))
+	c.free()
+	var m: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://game/data/merodeador.json"))
+	m.parts.append({"type": "wing_glider", "t": 0.57, "ang": 1.1, "size": 1, "level": 1, "tier": 0})
+	var mc = _creature(m)
+	var mm := _model_for(mc)
+	var mr := mm.takeoff(Vector3.ZERO, Vector3(0, 0, 8.8), Vector2(0, 1))
+	t.check(not mr.ok and mr.reason.contains("cannot take off"), "Merodeador still cannot take off at lift_mul 1 and says why")
+	mc.free()
