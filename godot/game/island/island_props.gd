@@ -119,15 +119,15 @@ func nest_point(d, at: Vector2, base: float, angle: float, radius: float) -> Vec
 	var ripple := 0.04 * sin(5.0 * angle) + 0.022 * cos(9.0 * angle)
 	var p := Vector3(cos(angle), 0, sin(angle) * 0.82) * radius
 	var t := clampf(1.0 - absf(radius - 1.68 - ripple) / 0.72, 0.0, 1.0)
-	p.y = d.visual_ground(at.x + p.x, at.y + p.z) - base + 0.025 + smoothstep(0.0, 1.0, t) * 0.27
+	p.y = d.visual_ground(at.x + p.x, at.y + p.z) - base + 0.025 + smoothstep(0.0, 1.0, t) * 0.45
 	return p
 
 func build_nest(d, at: Vector2, world_seed: int) -> void:
 	var gen := Generator.new()
 	gen.begin(world_seed)
 	var base: float = d.visual_ground(at.x, at.y)
-	var soil := Color("7a6246").srgb_to_linear()
-	var straw := Color("b7985f").srgb_to_linear()
+	var soil := Color("7b6548").srgb_to_linear()
+	var straw := Color("c5a36a").srgb_to_linear()
 	var radii := [0.94, 1.24, 1.51, 1.70, 1.92, 2.15, 2.42]
 	var rings := []
 	for radius: float in radii:
@@ -151,26 +151,50 @@ func build_nest(d, at: Vector2, world_seed: int) -> void:
 		for j in 48:
 			var k := (j + 1) % 48
 			if i == 0:
-				gen.triangle(centre, rings[0][j], rings[0][k], soil, 0, 0.0, [Vector2.ZERO, Vector2.RIGHT, Vector2.ONE], [Vector3.UP, normals[0][j], normals[0][k]])
+				var a: Vector3 = rings[0][j]
+				var b: Vector3 = rings[0][k]
+				gen.triangle(centre, a, b, soil, -4, 0.0,
+					[Vector2.ZERO, Vector2(a.x,a.z), Vector2(b.x,b.z)], [Vector3.UP, normals[0][j], normals[0][k]])
 			else:
 				var pr: PackedVector3Array = rings[i - 1]
 				var cr: PackedVector3Array = rings[i]
 				gen.triangle(pr[j], cr[j], cr[k], soil, 0, 0.0, [Vector2.ZERO, Vector2.RIGHT, Vector2.ONE], [normals[i-1][j], normals[i][j], normals[i][k]])
 				gen.triangle(pr[j], cr[k], pr[k], soil, 0, 0.0, [Vector2.ZERO, Vector2.RIGHT, Vector2.ONE], [normals[i-1][j], normals[i][k], normals[i-1][k]])
-	for j in 320:
+	# Bent twig ribs run across the bank. Staggered lengths of dry Paja
+	# dulce wrap around them, crossing alternately above and below each rib.
+	const RIBS := 32
+	const COURSES := 15
+	for j in RIBS:
+		var angle := TAU * j / RIBS
+		var last := nest_point(d, at, base, angle, 1.06)
+		for k in range(1, 9):
+			var radius := lerpf(1.06, 2.32, k / 8.0)
+			var p := nest_point(d, at, base, angle + 0.08 * (radius - 1.06), radius)
+			p.y += 0.053
+			gen.rod(last, p, 0.027 - 0.0015 * (k-1), 0.027 - 0.0015 * k, gen.bark, 4)
+			last = p
+	for course in COURSES:
+		var radius := lerpf(1.09, 2.29, course / float(COURSES - 1))
+		for section in 8:
+			var colour := straw.darkened(gen.rng.randf_range(0.03, 0.37))
+			var start := section * 4.0 + course * 0.57
+			var last := Vector3.ZERO
+			for k in 10:
+				var rib := start + k * 0.47
+				var angle := rib * TAU / RIBS + 0.08 * (radius - 1.06)
+				var r := radius + 0.022 * sin(3.0 * angle + course * 0.6)
+				var p := nest_point(d, at, base, angle, r)
+				p.y += 0.066 + 0.039 * cos(PI * (rib + course))
+				if k > 0:
+					gen.rod(last, p, 0.034 if k > 1 else 0.017, 0.034 if k < 9 else 0.009, colour, 3)
+				last = p
+	# Pockets of pale down gather on the inner shoulder around the bare scrape.
+	for j in 56:
 		var angle := gen.rng.randf() * TAU
-		var sweep := gen.rng.randf_range(0.14, 0.38)
-		var radius := gen.rng.randf_range(1.16, 2.19)
-		var drift := gen.rng.randf_range(-0.19, 0.19)
-		var a := nest_point(d, at, base, angle, radius)
-		var mid := nest_point(d, at, base, angle + sweep * 0.5, radius + drift * 0.5)
-		var b := nest_point(d, at, base, angle + sweep, radius + drift)
-		mid.y += gen.rng.randf_range(0.024, 0.049)
-		var twig := j % 7 == 0
-		var thickness := 0.017 if twig else 0.011
-		var colour := gen.bark if twig else straw.darkened(gen.rng.randf() * 0.34)
-		gen.rod(a, mid, thickness, thickness * 0.8, colour, 3)
-		gen.rod(mid, b, thickness * 0.8, 0.003, colour, 3)
+		var r := gen.rng.randf_range(0.80, 1.21)
+		var a := nest_point(d, at, base, angle, r) + Vector3.UP * 0.027
+		var b := nest_point(d, at, base, angle + gen.rng.randf_range(0.11, 0.27), r + 0.04) + Vector3.UP * 0.053
+		gen.blade(a, b, gen.rng.randf_range(0.023, 0.047), 0.023, -3, Color("bcb299").srgb_to_linear())
 	var nest := MeshInstance3D.new()
 	nest.name = "Nest"
 	nest.mesh = gen.finish()
