@@ -140,9 +140,16 @@ static func _validate(g, types) -> bool:
 			if p["type"] == "cuerno" and not _num(p.get("curve"), -1.5, 1.5, "parts.curve"):
 				return false
 	var s = g.get("skin")
-	if not _keys(s, ["pat", "cA", "cB", "cC", "wet", "scale"], "skin"):
+	if not _keys(s, ["pat", "cA", "cB", "cC", "wet", "scale", "cs", "ps", "pc", "ros", "act"], "skin"):
 		return false
 	if not (_int(s.get("pat"), 0, 3, "skin.pat") and _num(s.get("wet"), 0, 1, "skin.wet") and _num(s.get("scale"), 3, 14, "skin.scale")):
+		return false
+	for k in [["cs", 0, 1], ["ps", .5, 2], ["pc", 0, 1]]:
+		if s.has(k[0]) and not _num(s[k[0]], k[1], k[2], "skin." + k[0]):
+			return false
+	if s.has("act") and not (s["act"] in ["auto", "muscle", "hydraulic", "exo"]):
+		return _fail("skin.act")
+	if s.has("ros") and not _int(s["ros"], 0, 1, "skin.ros"):
 		return false
 	for k in ["cA", "cB", "cC"]:
 		if not _hex_ok(s.get(k)):

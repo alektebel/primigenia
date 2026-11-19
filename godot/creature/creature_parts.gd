@@ -290,7 +290,11 @@ static func v3(a) -> Vector3:
 ## Builds the meshes of a part tree (call once the geometry is final).
 static func finalize(root: Node) -> void:
 	if root is MeshInstance3D and root.has_meta("geo"):
-		root.mesh = (root.get_meta("geo") as CreatureGeo).to_mesh()
+		var geo: CreatureGeo = root.get_meta("geo")
+		var mat = root.material_override
+		if mat is ShaderMaterial and mat.shader.resource_path.ends_with("keratin.gdshader"):
+			geo.compute_along()
+		root.mesh = geo.to_mesh()
 	for c in root.get_children():
 		finalize(c)
 

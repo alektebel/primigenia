@@ -10,19 +10,26 @@ extends RefCounted
 
 const SHADER_DIR := "res://creature/shaders/"
 
+## The realism pilot (docs/godot/CREATURE-REALISM.md): false (env CPORE_REALISM=0, or set before building) renders the
+## pre-pilot look, for before/after pictures and as a quality escape hatch.
+static var realism := OS.get_environment("CPORE_REALISM") != "0"
+
 var skin: ShaderMaterial
+var skin_body: ShaderMaterial       ## the skinned body tube: same shader, UV-mapped pattern and actuation on
+var limb_mats: Array = []           ## per-leg-segment copies of skin (flex uniform), rebuilt with each creature
+var bio: Dictionary = {}
 var skin2: ShaderMaterial
 var membrane: ShaderMaterial
 var glider: ShaderMaterial
 var insect: ShaderMaterial
 var sac: ShaderMaterial
-var bone: StandardMaterial3D
-var tooth: StandardMaterial3D
-var beak: StandardMaterial3D
+var bone: ShaderMaterial          ## keratin.gdshader kinds: horn / bone, tooth, beak
+var tooth: ShaderMaterial
+var beak: ShaderMaterial
 var eye_white: StandardMaterial3D
 var iris: StandardMaterial3D
 var pupil: StandardMaterial3D
-var dark: StandardMaterial3D
+var dark: ShaderMaterial
 var glow: StandardMaterial3D
 
 static var _shaders := {}
@@ -47,6 +54,8 @@ static func phys(hex: String, rough: float, cc: float) -> StandardMaterial3D:
 
 func _init() -> void:
 	skin = _skin_mat("skin", 1.0, .94)
+	skin_body = _skin_mat("skin", 1.0, .94)
+	skin_body.set_shader_parameter("use_uv", 1.0)
 	skin2 = _skin_mat("skin_double", 1.0, .94)
 	membrane = _skin_mat("membrane", .82, .94)
 	membrane.set_shader_parameter("clearcoat_amount", 0.0)
@@ -62,15 +71,27 @@ func _init() -> void:
 	glider.render_priority = 1
 	sac.render_priority = 1
 	insect.render_priority = 2
-	bone = phys("#bfae8a", .5, .25)
-	tooth = phys("#f7f1df", .28, .5)
-	beak = phys("#d9952f", .35, .6)
-	eye_white = phys("#f4efe6", .08, 1)
-	iris = phys("#e8a41c", .2, 1)
-	iris.emission_enabled = true
-	iris.emission = Color("#6a3a00")
-	pupil = phys("#050505", .05, 1)
-	dark = phys("#1a1210", .5, .2)
+	bone = _keratin(0.0, "#bfae8a", "#4a3822", "#cdbf9c", .5)
+	tooth = _keratin(1.0, "#f7f1df", "#6d5a3a", "#e6dcc0", .8)
+	beak = _keratin(2.0, "#d9952f", "#5a3512", "#d6a04a", .9)
+	if realism:
+		# Wet, specular eyes: a sharp clearcoat glint over a slightly veined off-white, a deeper iris without its glow.
+		eye_white = phys("#cdbf9f", .1, 1)
+		eye_white.clearcoat_roughness = .03
+		iris = phys("#8a5f1c", .25, 1)
+		iris.clearcoat_roughness = .03
+		iris.emission_enabled = true
+		iris.emission = Color("#3a2000")
+		iris.emission_energy_multiplier = .5
+		pupil = phys("#030303", .05, 1)
+		pupil.clearcoat_roughness = .02
+	else:
+		eye_white = phys("#f4efe6", .08, 1)
+		iris = phys("#e8a41c", .2, 1)
+		iris.emission_enabled = true
+		iris.emission = Color("#6a3a00")
+		pupil = phys("#050505", .05, 1)
+	dark = _keratin(0.0, "#1a1210", "#150e0a", "#4a392b", .7)   # chitin / dark horn: keratin shader, dark palette
 	glow = StandardMaterial3D.new()
 	glow.albedo_color = Color("#7fe8ff")
 	glow.emission_enabled = true
@@ -87,22 +108,93 @@ func _skin_mat(shader: String, opacity: float, rough: float) -> ShaderMaterial:
 	return m
 
 
+func _keratin(kind: float, flat_hex: String, root_hex: String, tip_hex: String, gloss: float) -> ShaderMaterial:
+	var m := ShaderMaterial.new()
+	m.shader = _shader("keratin")
+	m.set_shader_parameter("kind", kind)
+	m.set_shader_parameter("flat_col", Color(flat_hex))
+	m.set_shader_parameter("root_col", Color(root_hex))
+	m.set_shader_parameter("tip_col", Color(tip_hex))
+	m.set_shader_parameter("gloss", gloss)
+	m.set_shader_parameter("realism", 1.0 if realism else 0.0)
+	return m
+
+
 func skin_materials() -> Array:
-	return [skin, skin2, membrane, glider, insect, sac]
+	return [skin, skin_body, skin2, membrane, glider, insect, sac] + limb_mats
 
 
-## rig.js load(): palette, pattern, wetness. Clearcoat follows wetness.
+## A copy of the skin for one limb segment: part 1 upper leg, 2 lower leg. Carries its own flex uniform.
+func limb_material(part: int, seg_len: float) -> ShaderMaterial:
+	var m: ShaderMaterial = skin.duplicate()
+	m.set_shader_parameter("leg_part", float(part))
+	m.set_shader_parameter("seg_len", seg_len)
+	limb_mats.append(m)
+	return m
+
+
+## rig.js load(): palette, pattern, wetness. Clearcoat follows wetness. With the realism pilot the palette is graded
+## (CreatureBio.palette returns the player colours untouched).
 func set_skin(s: Dictionary) -> void:
+	var pal := {"cA": Color(s["cA"]), "cB": Color(s["cB"]), "cC": Color(s["cC"])}
+	if realism and not bio.is_empty():
+		pal = CreatureBio.palette(s, float(bio["toxic"]), String(bio["diet"]), float(s["wet"]))
 	for m in skin_materials():
-		m.set_shader_parameter("cA", Color(s["cA"]))
-		m.set_shader_parameter("cB", Color(s["cB"]))
-		m.set_shader_parameter("cC", Color(s["cC"]))
+		m.set_shader_parameter("cA", pal["cA"])
+		m.set_shader_parameter("cB", pal["cB"])
+		m.set_shader_parameter("cC", pal["cC"])
 		m.set_shader_parameter("uPat", float(s["pat"]))
 		m.set_shader_parameter("uWet", float(s["wet"]))
 		m.set_shader_parameter("uScale", float(s["scale"]))
-	skin.set_shader_parameter("clearcoat_amount", float(s["wet"]) * .8)
-	skin2.set_shader_parameter("clearcoat_amount", float(s["wet"]) * .8)
+		m.set_shader_parameter("realism", 1.0 if realism else 0.0)
+	# Creator controls (optional genome keys): countershading, pattern scale / contrast, rosettes.
+	var kind := int(s["pat"])
+	var br := float(bio.get("body_r", .6)) if not bio.is_empty() else .6
+	var sd: int = int(bio.get("seed", 0)) if not bio.is_empty() else 0
+	var wl: float = br * [0.0, .5, .42, 1.3][kind] * (.85 + .3 * float(sd % 7) / 6.0) * float(s.get("ps", 1.0))
+	for m in skin_materials():
+		m.set_shader_parameter("cs", float(s.get("cs", .5)))
+		m.set_shader_parameter("pc", float(s.get("pc", 1.0)))
+		m.set_shader_parameter("tur_ros", float(s.get("ros", 0)))
+		m.set_shader_parameter("tur_tile", maxf(wl * 6.0, .05))
+	var wet_cc := float(s["wet"]) * .8
+	for m in [skin, skin_body, skin2] + limb_mats:
+		m.set_shader_parameter("clearcoat_amount", wet_cc)
 	membrane.set_shader_parameter("clearcoat_amount", float(s["wet"]) * .12)
+	# Horns and claws take a trace of the skin so they belong to the animal.
+	var a: Color = pal["cA"]
+	for m in [bone, tooth, beak, dark]:
+		m.set_shader_parameter("realism", 1.0 if realism else 0.0)
+	var tint := Color(a.r, a.g, a.b)
+	bone.set_shader_parameter("root_col", Color("#4a3822").lerp(tint, .18))
+	bone.set_shader_parameter("tip_col", Color("#cdbf9c").lerp(tint, .06))
+	beak.set_shader_parameter("root_col", Color("#5a3512").lerp(tint, .1))
+
+
+## Per-creature biology (CreatureBio.derive): pattern texture and scale, actuation, detail relative to body size.
+func configure(b: Dictionary, genome_skin: Dictionary) -> void:
+	bio = b
+	limb_mats.clear()
+	var mode: float = {"muscle": 1.0, "hydraulic": 2.0, "exo": 3.0, "hydrostatic": 4.0}[b["actuation"]]
+	var kind := int(b["pat"])
+	var seed_: int = b["seed"]
+	var tex: Texture2D = null
+	if realism and kind >= 1 and kind <= 3:
+		tex = CreatureTuring.texture(seed_, kind)
+	var br: float = b["body_r"]
+	# Wavelength in metres from the body size (stripes finer than blotches), a little seed jitter; one texture tile is
+	# 6 wavelengths because the field holds about that many.
+	var wr: float = {"muscle": .35, "hydraulic": .12, "exo": 0.0, "hydrostatic": .9}[b["actuation"]]
+	var scales: float = {"muscle": 1.0, "hydraulic": .8, "exo": .35, "hydrostatic": .25}[b["actuation"]]
+	for m in skin_materials():
+		m.set_shader_parameter("turing", tex)
+		m.set_shader_parameter("tur_kind", float(kind) if tex != null else 0.0)
+		m.set_shader_parameter("body_r", br)
+		m.set_shader_parameter("act_mode", mode)
+		m.set_shader_parameter("wrinkle", wr)
+		m.set_shader_parameter("scale_amt", scales)
+		m.set_shader_parameter("act_phase", float(seed_ % 628) / 100.0)
+	set_skin(genome_skin)
 
 
 ## World direction towards the sun, used by the membrane backlight.

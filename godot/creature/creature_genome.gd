@@ -183,9 +183,18 @@ func _validate(g, types: Dictionary):
 			if p["type"] == "cuerno" and not _number(p.get("curve"), -1.5, 1.5, "parts.curve"):
 				return null
 	var skin = g.get("skin")
-	if not _keys(skin, ["pat", "cA", "cB", "cC", "wet", "scale"], "skin"):
+	if not _keys(skin, ["pat", "cA", "cB", "cC", "wet", "scale", "cs", "ps", "pc", "ros", "act"], "skin"):
 		return null
 	if not (_integer(skin.get("pat"), 0, 3, "skin.pat") and _number(skin.get("wet"), 0, 1, "skin.wet") and _number(skin.get("scale"), 3, 14, "skin.scale")):
+		return null
+	# Optional realism-pilot controls (absent = defaults): countershading, pattern scale, pattern contrast, rosettes.
+	for k in [["cs", 0, 1], ["ps", .5, 2], ["pc", 0, 1]]:
+		if skin.has(k[0]) and not _number(skin[k[0]], k[1], k[2], "skin." + k[0]):
+			return null
+	if skin.has("act") and not (skin["act"] in ["auto", "muscle", "hydraulic", "exo"]):
+		_fail("skin.act")
+		return null
+	if skin.has("ros") and not _integer(skin["ros"], 0, 1, "skin.ros"):
 		return null
 	var hex := _regex("^#[0-9a-fA-F]{6}$")
 	for k in ["cA", "cB", "cC"]:

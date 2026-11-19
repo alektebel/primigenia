@@ -353,6 +353,10 @@ func set_skin(key: String, value) -> void:
 		"wet": s[key] = clampf(value, 0.0, 1.0)
 		"scale": s[key] = clampf(value, 3.0, 14.0)
 		"cA", "cB", "cC": s[key] = str(value).to_lower()
+		"cs", "pc": s[key] = clampf(value, 0.0, 1.0)      # countershading, pattern contrast (realism pilot)
+		"ps": s[key] = clampf(value, 0.5, 2.0)            # pattern scale
+		"act": s[key] = str(value) if str(value) in ["auto", "muscle", "hydraulic", "exo"] else "auto"
+		"ros": s[key] = clampi(int(value), 0, 1)          # spots become rosettes
 	_touch()
 	end()
 

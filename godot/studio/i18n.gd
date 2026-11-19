@@ -6,7 +6,8 @@ var parts: RefCounted
 
 const EN := {
 	"Modo": "Mode", "Construir": "Build", "Pintar": "Paint", "Probar": "Test", "Deshacer": "Undo", "Rehacer": "Redo",
-	"Pieza": "Part", "Piel": "Skin", "Dibujo": "Pattern", "Colores": "Colours", "Escama": "Scales", "Brillo": "Gloss",
+	"Pieza": "Part", "Piel": "Skin", "Dibujo": "Pattern", "Colores": "Colours", "Escama": "Scales", "Brillo": "Gloss", "Biología": "Biology", "Contrasombreado": "Countershading", "Tamaño del dibujo": "Pattern size", "Contraste del dibujo": "Pattern contrast", "Rosetas": "Rosettes", "Actuación": "Actuation", "Automática": "Automatic", "músculo": "muscle", "hidráulica": "hydraulic", "exoesqueleto": "exoskeleton", "hidrostática": "hydrostatic",
+	"Sin patas: esqueleto hidrostático, avanza por ondas de músculo": "no legs: hydrostatic skeleton, moves by waves of muscle", "Placas duras: músculo dentro de un exoesqueleto": "hard plates: muscle inside an exoskeleton", "Muchas patas finas: patas hidráulicas a presión": "many thin legs: pressurised hydraulic legs", "Patas gruesas: músculo sobre esqueleto interno": "thick legs: muscle on an internal skeleton",
 	"Combinaciones": "Palettes", "Acciones": "Actions", "Giro": "Rotation", "Inclinación": "Tilt", "Tamaño": "Size",
 	"Largo": "Length", "Curva": "Curve", "Grosor": "Thickness", "Quitar pieza": "Remove part", "Ponle nombre": "Name your creature",
 	"liso": "plain", "rayas": "stripes", "manchas": "spots", "veteado": "marbled",

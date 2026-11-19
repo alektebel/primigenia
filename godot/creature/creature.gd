@@ -29,6 +29,7 @@ const ZA := Vector3(0, 0, 1)
 
 var genome: Dictionary = {}
 var warnings: Array = []
+var bio: Dictionary = {}              ## CreatureBio.derive: actuation, toxic, diet, seed, graded palette
 var materials: CreatureMaterials
 var maker: CreatureParts
 
@@ -105,8 +106,9 @@ func build(g: Dictionary) -> void:
 	if materials == null:
 		materials = CreatureMaterials.new()
 	maker = CreatureParts.new(materials, asset_dir)
-	materials.set_skin(genome["skin"])
 	_sample_spine()
+	bio = CreatureBio.derive(genome, maker.is_leg, maker.lib["entries"])
+	materials.configure(bio, genome["skin"])
 	var body_geo := CreatureGeo.alloc_tube(NS, RN)
 	frames = []
 	frames.resize(NS)
@@ -120,6 +122,18 @@ func build(g: Dictionary) -> void:
 			body_geo.skin[k * 4 + 1] = p.y
 			body_geo.skin[k * 4 + 2] = p.z
 			body_geo.skin[k * 4 + 3] = cos(float(j) / RN * 6.28318)
+	# Tube UVs for the Turing pattern, in metres: arc along the spine, arc from the dorsal midline (mirrored, so the
+	# pattern is bilaterally symmetric). UV2: ring radius and spine parameter, read by the thickness and actuation code.
+	body_geo.uv.resize(NS * RN)
+	body_geo.uv2.resize(NS * RN)
+	var arc := 0.0
+	for i in NS:
+		if i > 0:
+			arc += rest[i].distance_to(rest[i - 1])
+		for j in RN:
+			var sym := acos(clampf(cos(float(j) / RN * 6.28318), -1.0, 1.0))
+			body_geo.uv[i * RN + j] = Vector2(arc, sym * rad[i])
+			body_geo.uv2[i * RN + j] = Vector2(rad[i], float(i) / (NS - 1))
 	var has_leg := false
 	for p in genome["parts"]:
 		if maker.is_leg(p["type"]):
@@ -143,6 +157,7 @@ func build(g: Dictionary) -> void:
 	_layout_legs()
 	_build_growth()
 	_compute_stats()
+	_setup_actuation()
 	CreatureParts.finalize(self)
 	built.emit()
 
@@ -341,7 +356,7 @@ func _build_skeleton(body_geo: CreatureGeo) -> void:
 	body_mesh = MeshInstance3D.new()
 	body_mesh.name = "Body"
 	body_mesh.mesh = mesh
-	body_mesh.material_override = materials.skin
+	body_mesh.material_override = materials.skin_body
 	skeleton.add_child(body_mesh)
 	body_mesh.skeleton = NodePath("..")
 	body_mesh.skin = skeleton.create_skin_from_rest_transforms()
@@ -471,6 +486,8 @@ func _make_leg(pi: int, p: Dictionary, sg: int, A: Dictionary) -> void:
 	var b: float = max(.12, (fv - kv).length())
 	var segs := maker.make_leg(p["type"], pose, A["p"], a, b)
 	var leg := CreatureLegChain.new()
+	leg.upper_mat = _limb_skin(segs["up"], 1, a)
+	leg.lower_mat = _limb_skin(segs["lo"], 2, b)
 	leg.creature = self
 	leg.part = p
 	leg.part_index = pi
@@ -497,6 +514,39 @@ func _make_leg(pi: int, p: Dictionary, sg: int, A: Dictionary) -> void:
 	leg.rest_knee = Vector3(kv.x * sg, kv.y, kv.z)
 	leg.rest_foot = Vector3(fv.x * sg, fv.y, fv.z)
 	legs.append(leg)
+
+
+## Gives the skin meshes of one limb segment their own copy of the skin material (the flex uniform is per segment).
+func _limb_skin(seg: Node3D, part: int, seg_len: float) -> ShaderMaterial:
+	var m := materials.limb_material(part, seg_len)
+	for c in seg.get_children():
+		if c is MeshInstance3D and c.material_override == materials.skin:
+			c.material_override = m
+	return m
+
+
+## Muscle masses at the hips and shoulders, and the wet radius around the snout (body rest space), for the body shader.
+func _setup_actuation() -> void:
+	var mounts: Array = []
+	for l in legs:
+		var A := anchor(l.part["t"], l.side * l.part["ang"])
+		var pos: Vector3 = A["p"]
+		var r := mount_radius(l.part["t"]) * .8
+		var dup := false
+		for m in mounts:
+			if Vector3(m.x, m.y, m.z).distance_to(pos) < .05:
+				dup = true
+		if not dup and mounts.size() < 6:
+			mounts.append(Vector4(pos.x, pos.y, pos.z, r))
+	var packed: Array = []
+	for i in 6:
+		packed.append(mounts[i] if i < mounts.size() else Vector4())
+	var head: Vector3 = rest[NS - 1]
+	var head_r: float = rad[NS - 1]
+	for m in materials.skin_materials():
+		m.set_shader_parameter("mounts", packed)
+		m.set_shader_parameter("n_mounts", mounts.size())
+		m.set_shader_parameter("snout", Vector4(head.x, head.y, head.z, maxf(head_r * 2.2, .25)))
 
 
 ## rig.js layout(): rest knee/foot, pole, home, hang, stride and leg groups.

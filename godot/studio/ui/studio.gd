@@ -653,6 +653,31 @@ func _rebuild_panel() -> void:
 		"test": _panel_test()
 	_sync_history()
 
+## How the body moves, from the parts picked (CreatureBio): readout with the reason, and a choice when the parts allow
+## more than one class. Purely visual in this pilot (docs/godot/CREATURE-REALISM.md).
+func _actuation_section() -> void:
+	var bio: Dictionary = view.creature.bio if "creature" in view and view.creature != null else {}
+	if bio.is_empty():
+		return
+	var C = load("res://creature/creature_bio.gd")
+	var l := _note(T("Actuación") + ": " + T(C.actuation_label(bio)) + " - " + T(C.actuation_reason(bio)))
+	l.name = "ActuationReadout"
+	panel_box.add_child(l)
+	var allowed: Array = bio["allowed"]
+	if allowed.size() > 1:
+		var ob := OptionButton.new()
+		ob.name = "ActuationChoice"
+		ob.add_item(T("Automática"))
+		var cur := 0
+		for i in allowed.size():
+			ob.add_item(T(C.actuation_label({"actuation": allowed[i]})))
+		var chosen := String(model.doc["skin"].get("act", "auto"))
+		if chosen in allowed:
+			cur = allowed.find(chosen) + 1
+		ob.select(cur)
+		ob.item_selected.connect(func(i): model.set_skin("act", "auto" if i == 0 else allowed[i - 1]))
+		panel_box.add_child(ob)
+
 ## Capabilities (web #caps): 1..5 pips per stat, plus the warnings from the part set.
 func _caps_section() -> void:
 	var st: Dictionary = view.stats() if view.has_method("stats") else {}
@@ -676,6 +701,7 @@ func _caps_section() -> void:
 			pips.add_child(d)
 		row.add_child(pips)
 		panel_box.add_child(row)
+	_actuation_section()
 	for w in st.get("warn", []):
 		var wl := _note(T(String(w)))
 		wl.add_theme_color_override("font_color", Color("e8a23a"))
@@ -861,6 +887,19 @@ func _panel_paint() -> void:
 	panel_box.add_child(cols)
 	panel_box.add_child(_slider_row(T("Escama"), s["scale"], 3, 14, .5, func(v): model.set_skin("scale", v)))
 	panel_box.add_child(_slider_row(T("Brillo"), s["wet"], 0, 1, .01, func(v): model.set_skin("wet", v)))
+	# Realism pilot controls (optional genome keys, previewed live): countershading and pattern tuning.
+	panel_box.add_child(_note(T("Biología")))
+	panel_box.add_child(_slider_row(T("Contrasombreado"), s.get("cs", .5), 0, 1, .01, func(v): model.set_skin("cs", v)))
+	if int(s["pat"]) > 0:
+		panel_box.add_child(_slider_row(T("Tamaño del dibujo"), s.get("ps", 1.0), .5, 2, .05, func(v): model.set_skin("ps", v)))
+		panel_box.add_child(_slider_row(T("Contraste del dibujo"), s.get("pc", 1.0), 0, 1, .01, func(v): model.set_skin("pc", v)))
+	if int(s["pat"]) == 2:
+		var ros := CheckBox.new()
+		ros.text = T("Rosetas")
+		ros.name = "Rosettes"
+		ros.button_pressed = int(s.get("ros", 0)) == 1
+		ros.toggled.connect(func(on): model.set_skin("ros", 1 if on else 0))
+		panel_box.add_child(ros)
 	panel_box.add_child(HSeparator.new())
 	panel_box.add_child(_h2(T("Combinaciones")))
 	var chips := HFlowContainer.new()
