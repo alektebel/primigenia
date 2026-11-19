@@ -1,0 +1,329 @@
+[
+  {
+    "id": "ceniza_roja",
+    "form": "moss_lichen",
+    "height": [
+      0.001,
+      0.006
+    ],
+    "altitude": [
+      0,
+      2050
+    ],
+    "habitat": "bare_lava",
+    "chance": 0.58,
+    "colour": "79605e",
+    "spread": 0.42,
+    "angle": 0,
+    "levels": 0,
+    "leaf_cm": 0.4,
+    "patch_count": 5,
+    "patch_radius": 5,
+    "sheltered_colour": "77826c"
+  },
+  {
+    "id": "cinta_de_marea",
+    "form": "algae",
+    "height": [
+      0.2,
+      1.5
+    ],
+    "altitude": [
+      -5,
+      2
+    ],
+    "habitat": "tidal",
+    "chance": 0.55,
+    "colour": "708844",
+    "spread": 0.8,
+    "angle": 30,
+    "levels": 3,
+    "leaf_cm": 20
+  },
+  {
+    "id": "costra_de_azufre",
+    "form": "moss_lichen",
+    "height": [
+      0.001,
+      0.02
+    ],
+    "altitude": [
+      50,
+      1800
+    ],
+    "habitat": "mineral_seep",
+    "chance": 0.65,
+    "colour": "d1c591",
+    "spread": 0.6,
+    "angle": 0,
+    "levels": 0,
+    "leaf_cm": 0
+  },
+  {
+    "id": "grama_de_ceniza",
+    "form": "grass",
+    "height": [
+      0.2,
+      0.6
+    ],
+    "altitude": [
+      0,
+      2000
+    ],
+    "habitat": "lava_crack",
+    "chance": 0.75,
+    "colour": "778d79",
+    "spread": 0.7,
+    "angle": 20,
+    "levels": 1,
+    "leaf_cm": 18,
+    "patch_count": 5,
+    "patch_radius": 5
+  },
+  {
+    "id": "hierroflor",
+    "form": "herb",
+    "height": [
+      0.1,
+      0.4
+    ],
+    "altitude": [
+      0,
+      2050
+    ],
+    "habitat": "crater",
+    "chance": 0.8,
+    "colour": "557947",
+    "spread": 0.8,
+    "angle": 0,
+    "levels": 0,
+    "leaf_cm": 10,
+    "veins": "743f58",
+    "patch_count": 5,
+    "patch_radius": 5
+  },
+  {
+    "id": "lengua_de_lava",
+    "form": "rosette",
+    "height": [
+      0.1,
+      0.3
+    ],
+    "altitude": [
+      50,
+      1400
+    ],
+    "habitat": "lava_seep",
+    "chance": 0.65,
+    "colour": "72913d",
+    "spread": 1,
+    "angle": 25,
+    "levels": 1,
+    "leaf_cm": 12,
+    "tips": "955264",
+    "veins": "85415a"
+  },
+  {
+    "id": "madre_de_agua",
+    "form": "tree",
+    "height": [
+      28.0,
+      32.0
+    ],
+    "altitude": [
+      20,
+      150
+    ],
+    "habitat": "spring",
+    "chance": 1,
+    "colour": "38583b",
+    "spread": 0.52,
+    "angle": 50,
+    "levels": 6,
+    "leaf_cm": 12,
+    "fruit": "a1924e"
+  },
+  {
+    "id": "musgo_faro",
+    "form": "moss_lichen",
+    "height": [
+      0.02,
+      0.15
+    ],
+    "altitude": [
+      0,
+      800
+    ],
+    "habitat": "cave",
+    "chance": 0.7,
+    "colour": "496b44",
+    "spread": 0.42,
+    "angle": 50,
+    "levels": 2,
+    "leaf_cm": 0.4,
+    "glow": "345954"
+  },
+  {
+    "id": "nieblon",
+    "form": "tree",
+    "height": [
+      12.0,
+      22.0
+    ],
+    "altitude": [
+      80,
+      950
+    ],
+    "habitat": "forest",
+    "chance": 1,
+    "colour": "405b43",
+    "spread": 0.45,
+    "angle": 55,
+    "levels": 4,
+    "leaf_cm": 14,
+    "patch_count": 5,
+    "patch_radius": 30
+  },
+  {
+    "id": "paja_dulce",
+    "form": "grass",
+    "height": [
+      0.3,
+      1.2
+    ],
+    "altitude": [
+      20,
+      550
+    ],
+    "habitat": "meadow",
+    "chance": 0.88,
+    "colour": "909554",
+    "spread": 0.7,
+    "angle": 18,
+    "levels": 1,
+    "leaf_cm": 45,
+    "patch_count": 5,
+    "patch_radius": 5
+  },
+  {
+    "id": "pan_de_humus",
+    "form": "fungus_like",
+    "height": [
+      0.02,
+      0.18
+    ],
+    "altitude": [
+      0,
+      1300
+    ],
+    "habitat": "litter",
+    "chance": 0.22,
+    "colour": "cfbfa2",
+    "spread": 0.55,
+    "angle": 60,
+    "levels": 3,
+    "leaf_cm": 0
+  },
+  {
+    "id": "pluma_de_sombra",
+    "form": "fern",
+    "height": [
+      0.3,
+      1.4
+    ],
+    "altitude": [
+      10,
+      1250
+    ],
+    "habitat": "shade",
+    "chance": 0.6,
+    "colour": "638752",
+    "spread": 0.9,
+    "angle": 45,
+    "levels": 2,
+    "leaf_cm": 110,
+    "patch_count": 5,
+    "patch_radius": 5
+  },
+  {
+    "id": "rodela_de_nieve",
+    "form": "rosette",
+    "height": [
+      1.5,
+      3.0
+    ],
+    "altitude": [
+      1750,
+      2050
+    ],
+    "habitat": "snowline",
+    "chance": 0.8,
+    "colour": "9ca89a",
+    "spread": 0.7,
+    "angle": 0,
+    "levels": 0,
+    "leaf_cm": 150,
+    "caudex": 0.32,
+    "margin": "8b6775"
+  },
+  {
+    "id": "salvisca",
+    "form": "shrub",
+    "height": [
+      0.3,
+      1.2
+    ],
+    "altitude": [
+      0,
+      60
+    ],
+    "habitat": "spray",
+    "chance": 0.83,
+    "colour": "859b89",
+    "spread": 1.0,
+    "angle": 40,
+    "levels": 3,
+    "leaf_cm": 2
+  },
+  {
+    "id": "soga_de_dosel",
+    "form": "vine",
+    "height": [
+      1.0,
+      32.0
+    ],
+    "altitude": [
+      20,
+      1100
+    ],
+    "habitat": "host",
+    "chance": 0.47,
+    "colour": "416444",
+    "spread": 0.12,
+    "angle": 40,
+    "levels": 4,
+    "leaf_cm": 15,
+    "veins": "85415a"
+  },
+  {
+    "id": "trenza_de_ribera",
+    "form": "shrub",
+    "height": [
+      2.0,
+      6.0
+    ],
+    "altitude": [
+      10,
+      1100
+    ],
+    "habitat": "bank",
+    "chance": 0.84,
+    "colour": "658451",
+    "spread": 0.65,
+    "angle": 35,
+    "levels": 3,
+    "leaf_cm": 9,
+    "patch_count": 5,
+    "patch_radius": 5
+  }
+]
