@@ -60,7 +60,7 @@ int main(void)
     }
     seed_offset = 2000000u;
     compute_payoff(4);
-    CpCombatProfile p; cp_combat_profile_default(&p);
+    CpCombatProfile p={0}; cp_combat_profile_default(&p);
     p.mouth = p.charge = p.spit = p.tail = p.guard = 3;
     double expected = ((15.4+4.2)/10.8 + 42.0/21.6 + 18.2/14.4 + 23.8/12.0)/4;
     assert(fabs(move_stamina_value(&p)-expected) < 1e-6);
