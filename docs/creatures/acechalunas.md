@@ -95,7 +95,7 @@ Trait ← High UV hazard at altitude ← Solar UV pulses force shade avoidance �
   - scores: astrobio 8, designer 7, physicist 9
   - Analogue: Alpine and high-UV melanism in reptiles and mammals (epidermal melanin as UV shield; crepuscular activity in rock hyrax Procavia and many ungulates — textbook macroecology, unverified): as named by the judge; no mechanism or reference recorded
   - Fix: Apply Shade step bonuses in twilight, shade, and overhangs (F3 long dawns/dusks, F14 UV), not “in bright light”; open-sun weakness stays cornering on exposed ridges.
-- **Chain provenance:** council run `autoloop-2026-11-18`; by wildcard, skeptic
+- **Chain provenance:** council run `autoloop-2026-11-18`; by skeptic, wildcard
 
 ## Secrets
 
@@ -115,3 +115,4 @@ council run `autoloop-2026-11-18`; by skeptic, wildcard
 ## Changelog
 
 - 2026-11-18 import_got: imported from council run autoloop-2026-11-18
+- 2026-11-19 import_got: merged run autoloop-2026-11-19: 0 chain(s) added, 0 plausibility block(s) filled, 0 relation(s) added

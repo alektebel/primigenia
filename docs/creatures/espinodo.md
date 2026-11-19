@@ -44,7 +44,7 @@ Trait ← Thick air (F4) makes chase wars costly -> repels intruders before cont
   - scores: astrobio 7, designer 9, physicist 9, skeptic 6
   - Analogue: North American porcupine (Erethizon dorsatum)—quills detach at skin on contact/impact; African crested porcupine (Hystrix)—rattle, charge, backward presentation (Roze 1989, from memory unverified). Ankylosaurid osteoderms—fixed spikes, not detachable magazines.: as named by the judge; no mechanism or reference recorded
   - Fix: Model volley as a short-range flank/tail slap that shears pre-formed spines at abscission zones (contact + flick), not ballistic shooting; treat >5 m hits as luck/tumble; regrowth 8–12 days matches follicular quill cycles only if spines are keratin sheaths over osteoderm cores, not whole bones per shot.
-- **Chain provenance:** council run `autoloop-2026-11-18`; by skeptic, physicist, wildcard
+- **Chain provenance:** council run `autoloop-2026-11-18`; by physicist, skeptic, wildcard
 
 ### espinodo.c2: Keeled dermal plates, spines studding the seams
 
@@ -60,7 +60,7 @@ Trait ← Garfio's bite makes armour mandatory -> repels predation ← At 1.05 g
 - **Plausibility:** plausible (judge astrobio/autoloop-2026-11-18, 2026-11-18)
   - scores: astrobio 9, designer 8, physicist 10, skeptic 7
   - Analogue: Crocodilian keeled osteoderms over mobile joints; armadillo (Dasypus) transverse bands with thin flex zones; girdled lizards (Cordylidae) keeled osteoderms—selection for protection vs mass and fall risk on uneven terrain.: as named by the judge; no mechanism or reference recorded
-- **Chain provenance:** council run `autoloop-2026-11-18`; by skeptic, physicist
+- **Chain provenance:** council run `autoloop-2026-11-18`; by physicist, skeptic
 
 ### espinodo.c3: Lateral stand-off with erect spine row and creak
 
@@ -78,7 +78,7 @@ Trait ← Contact between armoured adults risks ruin -> contests settled by late
   - scores: astrobio 8, designer 9, physicist 8, skeptic 6
   - Analogue: Rattlesnake (Crotalus) caudal rattle stridulation—honest aposematic signal; broadside lateral display in bovids and mountain goats—mutual assessment without contact; agnostic lizard (Anolis) dewlap/turn broadside—posture settles contests.: as named by the judge; no mechanism or reference recorded
   - Fix: Pin creak to keratin-on-keratin or osteoderm overlap stridulation (~30–80 Hz) so F4 fog ducting is honest; bluff vs volley wind-up should differ in pulse rate or duration, not identical waveform.
-- **Chain provenance:** council run `autoloop-2026-11-18`; by skeptic, physicist, designer
+- **Chain provenance:** council run `autoloop-2026-11-18`; by designer, physicist, skeptic
 
 ### espinodo.c4: Deliberate consumption of basalt grit, salt spray, and scavenged bone
 
@@ -94,7 +94,7 @@ Trait ← Carnivorous diet lacks sodium and grinding grit -> rain-shadow interio
 - **Plausibility:** plausible (judge astrobio/autoloop-2026-11-18, 2026-11-18)
   - scores: astrobio 9, designer 7, physicist 8, skeptic 5
   - Analogue: Spotted hyena (Crocuta crocuta)—bone ingestion for Ca/P; crocodilians and birds—gastroliths in gizzard for grinding (gastrolith function, textbook); ungulates at marine salt spray and mineral licks—fixed-site geophagy.: as named by the judge; no mechanism or reference recorded
-- **Chain provenance:** council run `autoloop-2026-11-18`; by skeptic, physicist, designer
+- **Chain provenance:** council run `autoloop-2026-11-18`; by designer, physicist, skeptic
 
 ### espinodo.c5: Sit-and-wait ambush at fog-bound pinch points
 
@@ -112,7 +112,7 @@ Trait ← Armour mass (F2) makes stalking too noisy -> waits at fixed crossings 
   - scores: astrobio 8, designer 9, physicist 10, skeptic 4
   - Analogue: Nile crocodile (Crocodylus)—ambush at constrained water crossings; mandibular/foraminal dome pressure receptors for surface ripples and low-frequency sound (von During & Andres 1975, from memory unverified). Elephant seismic foot-listening at fixed corridors (O'Connell-Rodwell et al., from memory unverified).: as named by the judge; no mechanism or reference recorded
   - Fix: Replace 'hearing through jaw and feet' with integumentary low-frequency vibration receptors on mandible and plantar pads (crocodile-style), plus upwind scent discipline; whistle confusion in fog is fine if whistles are high-frequency (poor in F4 fog) while Espinodo cues are low hums.
-- **Chain provenance:** council run `autoloop-2026-11-18`; by skeptic, physicist, designer
+- **Chain provenance:** council run `autoloop-2026-11-18`; by designer, physicist, skeptic
 
 ## Secrets
 
@@ -135,3 +135,4 @@ council run `autoloop-2026-11-18`; by designer, physicist, skeptic, wildcard
 ## Changelog
 
 - 2026-11-18 import_got: imported from council run autoloop-2026-11-18
+- 2026-11-19 import_got: merged run autoloop-2026-11-19: 0 chain(s) added, 0 plausibility block(s) filled, 0 relation(s) added

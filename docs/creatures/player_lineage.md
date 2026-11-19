@@ -79,7 +79,7 @@ Trait ← Elevated pO₂ (F5) fuels expensive neural tissue and sustained enceph
   - scores: astrobio 5, designer 7
   - Analogue: Hominin manual dexterity and stone-tool learning; New Caledonian crow (Corvus moneduloides) tool geometry without primate-like PFC expansion (Hunt & Gray, from memory, unverified); Ruben et al. on aerobic capacity and neural代谢 in vertebrates (from memory, unverified).: as named by the judge; no mechanism or reference recorded
   - Fix: Treat high pO₂ (F5) and 1.05 g (F2) as enablers of gradual encephalization and manipulative digits under tool/stone use (F9, observe shards). Restrict “encoded neural catalyst” to the second capsule / crater payoff (F22), not an innate species-wide trait from the start.
-- **Chain provenance:** council run `autoloop-2026-11-18`; by wildcard, skeptic
+- **Chain provenance:** council run `autoloop-2026-11-18`; by skeptic, wildcard
 
 ### player_lineage.c4: Broad wing membranes and reinforced skeletal lattice
 
@@ -95,7 +95,7 @@ Trait ← 1.6 bar atmosphere (F4) increases aerodynamic drag and terminal veloci
 - **Plausibility:** plausible (judge astrobio/autoloop-2026-11-18, 2026-11-18)
   - scores: astrobio 8, designer 9
   - Analogue: Gliding membranes: Draco volans (agamid gliding), Malayan colugo (Galeopterus variegatus); pneumatic/lightened bone: avian skeleton (e.g. Cubo & Casinos on pneumatic bones, from memory, unverified). Dense-atmosphere gliding logic parallels Titan-aerobot design discussions (thick air, lower terminal velocity).: as named by the judge; no mechanism or reference recorded
-- **Chain provenance:** council run `autoloop-2026-11-18`; by skeptic, referee
+- **Chain provenance:** council run `autoloop-2026-11-18`; by referee, skeptic
 
 ## Secrets
 
@@ -117,3 +117,4 @@ council run `autoloop-2026-11-18`; by referee, skeptic, wildcard
 ## Changelog
 
 - 2026-11-18 import_got: imported from council run autoloop-2026-11-18
+- 2026-11-19 import_got: merged run autoloop-2026-11-19: 0 chain(s) added, 0 plausibility block(s) filled, 0 relation(s) added

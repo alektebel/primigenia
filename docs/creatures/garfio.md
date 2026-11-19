@@ -41,7 +41,7 @@ Trait ← Carcasses drift ashore and marrow is fiercely contested (F20, F26) ←
 - **Plausibility:** plausible (judge astrobio/autoloop-2026-11-18, 2026-11-18)
   - scores: astrobio 9, designer 9, physicist 7, skeptic 6
   - Analogue: Spotted hyena (Crocuta crocuta): hypertrophied cranial musculature and dentition for crushing bone and shell (Van Valkenburgh & Hertel, carnivoran bite-force literature, from memory unverified); elevated pO₂ on Primigenia (F5) matches Earth highland/large-predator aerobic jaw budgets.: as named by the judge; no mechanism or reference recorded
-- **Chain provenance:** council run `autoloop-2026-11-18`; by skeptic, designer
+- **Chain provenance:** council run `autoloop-2026-11-18`; by designer, skeptic
 
 ### garfio.c2: Low-slung hips power short burst raids
 
@@ -93,7 +93,7 @@ Trait ← Humid air (F15) causes condensation rings when the sac rapidly inflate
   - scores: astrobio 8, designer 9, physicist 5, skeptic 4
   - Analogue: Howler monkey enlarged hyoid + vocal tract for sudden low-frequency roars; sage grouse (Centrocercus) and many anurans: air-sac inflation as startle/ritual escalation (honest costly signal; Zahavi handicap principle, from memory unverified)—dense air (F4) increases near-field acoustic coupling for the same sac volume.: as named by the judge; no mechanism or reference recorded
   - Fix: Keep the boom deimatic only: no tissue injury; 6 s exhausted recovery after a single inflation matches elastic-sac physiology—do not treat it like a repeatable spammable weapon without metabolic cost.
-- **Chain provenance:** council run `autoloop-2026-11-18`; by skeptic, astrobio, designer
+- **Chain provenance:** council run `autoloop-2026-11-18`; by astrobio, designer, skeptic
 
 ## Secrets
 
@@ -116,3 +116,4 @@ council run `autoloop-2026-11-18`; by astrobio, designer, skeptic, wildcard
 ## Changelog
 
 - 2026-11-18 import_got: imported from council run autoloop-2026-11-18
+- 2026-11-19 import_got: merged run autoloop-2026-11-19: 0 chain(s) added, 0 plausibility block(s) filled, 0 relation(s) added

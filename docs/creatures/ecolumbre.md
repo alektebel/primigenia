@@ -112,7 +112,7 @@ Trait ← Biofilm needs constant moisture to thrive ← Waterfall spray keeps tu
   - scores: astrobio 8, designer 8, physicist 9
   - Analogue: Marine iguana (Amblyrhynchus cristatus): intertidal algae grazer with salt handling; endolithic/cave-wall microbial mats grazed by snails and nematodes on damp rock: as named by the judge; no mechanism or reference recorded
   - Analogue: real biology behind this chain: see the cited works; chain wording is the council's own (Lloyd 2014 [unverified])
-- **Chain provenance:** council run `autoloop-2026-11-18`; by naturalist, physicist, mythmaker
+- **Chain provenance:** council run `autoloop-2026-11-18`; by mythmaker, naturalist, physicist
 
 ### ecolumbre.c6: Syncs low hums and ventral flashes to flock
 
@@ -131,7 +131,7 @@ Trait ← Valley fog blinds eyes most mornings ← Dense air carries low frequen
   - Analogue: Oilbird (Steatornis caripensis): cave colony, low-frequency contact calls in darkness; synchronous fireflies (Pteroptyx spp.): rhythmic light coupling in dense vegetation; bats: call timing/jamming avoidance in groups: as named by the judge; no mechanism or reference recorded
   - Analogue: real biology behind this chain: see the cited works; chain wording is the council's own
   - Fix: Make low hums the main flock channel in fog; treat ventral flashes as short-range backup when humidity scatters light (not tight ceiling sync). Cap Chorus Flash energy cost and duration to match 0.34 bar pO2 budget.
-- **Chain provenance:** council run `autoloop-2026-11-18`; by designer, physicist, mythmaker
+- **Chain provenance:** council run `autoloop-2026-11-18`; by designer, mythmaker, physicist
 
 ### ecolumbre.c7: Migrates to humid lava tube before spring tides
 
@@ -150,7 +150,7 @@ Trait ← Spring tides flood the lower waterfall overhang ← Adults carry eggs 
   - Analogue: Tidal spawning cues: fiddler crabs and intertidal worms (semilunar rhythms); humid cave oviposition: cave salamanders (Eurycea) and some cave crickets in stable moist refugia: as named by the judge; no mechanism or reference recorded
   - Analogue: real biology behind this chain: see the cited works; chain wording is the council's own
   - Fix: Rename/reframe the nest site as a cool, humid upper lava tube (drip-fed microclimate), not dry air; adults move eggs there before summer desiccation peaks and only use tide rhythm to cross flooded lower tubes—not because the nest chamber is arid.
-- **Chain provenance:** council run `autoloop-2026-11-18`; by naturalist, designer, physicist
+- **Chain provenance:** council run `autoloop-2026-11-18`; by designer, naturalist, physicist
 
 ### ecolumbre.c8: Climbs alpine grit licks to shed UV-stressed keratin
 
@@ -188,7 +188,7 @@ Trait ← Waterfall updrafts trap drifting crustacean swarms ← Dense air and s
   - Analogue: Swiftlets and swallows: aerial plankton at waterfalls/cliffs; intertidal splash-zone copepods; marine bioluminescent mysids/ostracods in spray and surf (not typical in pure freshwater falls): as named by the judge; no mechanism or reference recorded
   - Analogue: real biology behind this chain: see the cited works; chain wording is the council's own
   - Fix: Prefer wind- or spray-blown marine harpacticoids/amphipods from west-coast shallows (F20) in the mist plume; if bioluminescence stays, limit it to rare tidal swarms, not everyday freshwater falls.
-- **Chain provenance:** council run `autoloop-2026-11-18`; by wildcard, physicist, mythmaker
+- **Chain provenance:** council run `autoloop-2026-11-18`; by mythmaker, physicist, wildcard
 
 ## Relations
 
@@ -229,3 +229,4 @@ council run `manual example 2026-11-18`; by opus (derivation), astrobio/composer
 - 2026-11-18 autoloop: removed rejected references from analogues
 - 2026-11-18 autoloop: removed rejected references from analogues
 - 2026-11-18 autoloop: removed rejected references from analogues
+- 2026-11-19 import_got: merged run autoloop-2026-11-19: 0 chain(s) added, 0 plausibility block(s) filled, 0 relation(s) added

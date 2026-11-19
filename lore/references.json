@@ -6505,5 +6505,92 @@
     },
     "container-title": "Proceedings of the Royal Society B",
     "x-checked": "2026-11-19"
+  },
+  {
+    "id": "astley_2012_diversity",
+    "type": "article-journal",
+    "title": "The diversity and evolution of locomotor biomechanics in brittle stars (rowing locomotion)",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'The diversity and evolution of locomotor muscle properties in anurans' (Astley, 2016, doi 10.1242/jeb.142315), title similarity 0.72, author match, year off",
+    "author": [
+      {
+        "family": "Astley",
+        "given": "H. C."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2012
+        ]
+      ]
+    },
+    "container-title": "Journal of Experimental Biology",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "dabiri_2005_propulsion",
+    "type": "article-journal",
+    "title": "Jet propulsion by jellyfish and the role of vortex formation",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Optimal Vortex Formation as a Unifying Principle in Biological Propulsion' (Dabiri, 2009) title similarity 0.30",
+    "author": [
+      {
+        "family": "Dabiri",
+        "given": "J. O."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2005
+        ]
+      ]
+    },
+    "container-title": "Journal of Experimental Biology",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "nuchter_2006_nanosecond",
+    "type": "article-journal",
+    "title": "Nanosecond-scale kinetics of nematocyst discharge",
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked",
+    "author": [
+      {
+        "family": "Nüchter",
+        "given": "T."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2006
+        ]
+      ]
+    },
+    "container-title": "Current Biology"
+  },
+  {
+    "id": "brusca_2016_invertebrates",
+    "type": "article-journal",
+    "title": "Invertebrates",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'Invertebrates' (Brusca, 2022, doi 10.1093/hesc/9780197554418.001.0001), title similarity 1.00, author match, year off",
+    "author": [
+      {
+        "family": "Brusca",
+        "given": "R. C."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2016
+        ]
+      ]
+    },
+    "container-title": "Sinauer Associates",
+    "x-checked": "2026-11-19"
   }
 ]
