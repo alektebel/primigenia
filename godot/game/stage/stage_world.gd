@@ -152,6 +152,8 @@ func step_once() -> void:
 		input = _order_queue.pop_front()
 	elif input_provider.is_valid():
 		input = input_provider.call()
+	if input.has("run"):
+		world.set_run(int(input.run) != 0)       # before the step, so it is part of that tick; the C log has no setter record
 	var h := world.step(input)
 	if h == "":
 		push_error("stage: the C world rejected an input: %s" % [input])

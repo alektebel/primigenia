@@ -277,6 +277,14 @@ func test_signs_and_words() -> void:
 	for k in 6:
 		s._process(0.5)
 	ok(not s.stamina_visible, "and hides 2 s after it is full again")
+	ok(not s.run_visible, "the run line is hidden at full")
+	ui.set_run(400, true)
+	s._process(0.1)
+	ok(s.run_visible and absf(s.run_frac - 0.4) < 0.001 and s.running, "the run line shows while running, at 40 % (%.2f)" % s.run_frac)
+	ui.set_run(1000, false)
+	for k in 6:
+		s._process(0.5)
+	ok(not s.run_visible, "and hides 2 s after the run stamina is full again")
 	ui.set_fight(true)
 	s.set_fight(true)
 	s._process(0.1)

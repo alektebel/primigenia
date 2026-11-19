@@ -443,6 +443,22 @@ func _update_actors(dt: float) -> void:
 	grass.apply_occluders(player_pos, occ)
 	grass.set_center(player_pos)
 
+# A landing after a fall: a small, short camera shake (presentation only: a decaying sine, no random numbers).
+# `impact` 0..1 is the strength (the drop beyond the safe height, saturating); a soft landing is a faint thump.
+var _shake_amp := 0.0
+var _shake_clock := 0.0
+const SHAKE_DECAY := 5.0
+const SHAKE_MAX := 0.12                # metres at the full strength
+func land_impact(impact: float) -> void:
+	_shake_amp = maxf(_shake_amp, SHAKE_MAX * clampf(impact, 0.15, 1.0))
+func _landing_shake(dt: float) -> Vector3:
+	if _shake_amp < 0.001 or Game.settings.get("camera/shake", true) == false:
+		_shake_amp = 0.0
+		return Vector3.ZERO
+	_shake_clock += dt
+	_shake_amp *= exp(-SHAKE_DECAY * dt)
+	return Vector3(0.0, sin(_shake_clock * 38.0), 0.0) * _shake_amp + camera.global_transform.basis.x * (sin(_shake_clock * 31.0) * _shake_amp * 0.5)
+
 func _update_camera(dt: float) -> void:
 	if not chase_enabled or chase == null:
 		_apply_zoom_budget(chase.z if chase != null else 0.0)    # creature visibility (hidden sleepers) must not depend on the chase camera
@@ -460,7 +476,7 @@ func _update_camera(dt: float) -> void:
 	camera.fov = 48.0 + float(r.fov_add)
 	camera.near = clampf(float(r.distance) * 0.012, 0.25, 40.0)       # keep the depth buffer precise at 3 km
 	var view := _cave_camera(r, p.pos)
-	camera.position = view.position
+	camera.position = view.position + _landing_shake(dt)
 	camera.look_at(view.aim)
 	player_input.view_yaw = chase.view_yaw
 	_apply_zoom_budget(chase.z)

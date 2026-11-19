@@ -80,6 +80,8 @@ func run(t) -> void:
 	var without := Legend.rows(&"walk", false)
 	t.check(with_dev.any(func(r): return r.dev) and not without.any(func(r): return r.dev), "Dev.enabled=false hides the dev rows")
 	t.check(without.any(func(r): return r.action == "sprint"), "player rows stay with dev tools off")
+	t.check(without.any(func(r): return r.action == "run") and Legend.action_text("run").contains("Shift"), "the legend lists Run on Shift (%s)" % Legend.action_text("run"))
+	t.check(not Legend.action_text("sprint").contains("Shift") and Legend.action_text("sprint") != "?", "the legacy burst moved off Shift (%s)" % Legend.action_text("sprint"))
 	# A rebound action shows the new key.
 	var old := InputMap.action_get_events("sprint")
 	InputMap.action_erase_events("sprint")

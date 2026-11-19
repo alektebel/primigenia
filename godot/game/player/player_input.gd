@@ -10,7 +10,7 @@ var limit := 194.9             # destinations are clamped to +-limit (the island
 var view_yaw := 0.0          # camera yaw, set by the chase camera each frame
 var destination = null       # Vector2 (x, z) or null
 var blocked: Callable = Callable()   # () -> bool, e.g. Game.movement_blocked
-var keys_override: Variant = null    # tests: {forward, back, left, right, sprint}
+var keys_override: Variant = null    # tests: {forward, back, left, right, sprint, run?}
 # Controls (settings controls/strafe_latch and controls/tank, see Game.settings):
 #  strafe_latch (default): the key frame is the camera yaw at the moment the key combination changed, so
 #    holding S or A runs in a straight line instead of circling with the auto-following camera.
@@ -23,6 +23,8 @@ var facing_yaw := 0.0        # the creature's heading, set by the island (tank m
 var position := Vector2.INF  # the creature's world x, z, set by the island (intent towards a destination)
 var _last_keys := 0
 var _tank_yaw = null
+var run_locked := false       # exhausted while Shift was held: Shift must be released before running starts again
+var _was_running := false
 const TANK_TURN := 2.2       # rad/s
 const K_FWD := 1
 const K_BACK := 2
@@ -45,7 +47,7 @@ func _read_keys() -> Dictionary:
 	return {
 		"forward": Input.is_action_pressed("move_forward"), "back": Input.is_action_pressed("move_back"),
 		"left": Input.is_action_pressed("move_left"), "right": Input.is_action_pressed("move_right"),
-		"sprint": Input.is_action_pressed("sprint"),
+		"sprint": Input.is_action_pressed("sprint"), "run": Input.is_action_pressed("run"),
 	}
 
 func set_destination(p: Vector2) -> void:
@@ -96,9 +98,17 @@ func intent_yaw() -> Variant:
 			return atan2(d.x, d.y)
 	return null
 
+# Run intent for this tick: Shift held, not blocked, not locked out by exhaustion. The world latches it (C: cp_stage_set_run).
+func _run_want(k: Dictionary, is_blocked: bool) -> int:
+	var held := bool(k.get("run", false)) and not is_blocked
+	if not held:
+		run_locked = false
+	return 1 if (held and not run_locked) else 0
+
 func sample() -> Dictionary:
 	var k := _read_keys()
 	var is_blocked: bool = blocked.is_valid() and blocked.call()
+	var run := _run_want(k, is_blocked)
 	var a := _axes(k, is_blocked)
 	var sprint := 1 if (bool(k.sprint) and not is_blocked) else 0
 	var mask := 0 if is_blocked else _mask(k)
@@ -120,14 +130,18 @@ func sample() -> Dictionary:
 			dir = camera_relative(a.x, a.y, frame_yaw if (strafe_latch and frame_yaw != null) else view_yaw)
 		_last_keys = mask
 		var h := heading(dir)
-		return {"verb": VERB_HEADING, "hx": h.x, "hz": h.y, "sprint": sprint}
+		return {"verb": VERB_HEADING, "hx": h.x, "hz": h.y, "sprint": sprint, "run": run}
 	_last_keys = mask
 	if destination != null:
 		var d: Vector2 = destination
-		return {"verb": VERB_GO, "x": d.x, "z": d.y, "sprint": int(bool(k.sprint))}
-	return {"verb": VERB_WAIT}
+		return {"verb": VERB_GO, "x": d.x, "z": d.y, "sprint": int(bool(k.sprint)), "run": run}
+	return {"verb": VERB_WAIT, "run": run}
 
 # Web: the destination is cleared once the world's standing order is no longer GO.
 func after_tick(state: Dictionary) -> void:
+	var running := bool(state.get("player", {}).get("running", false))
+	if _was_running and not running and bool(_read_keys().get("run", false)) and int(state.get("player", {}).get("stamina", 1000)) < 150:
+		run_locked = true         # ran out: no stuttering restart while Shift stays down
+	_was_running = running
 	if state.order.verb != VERB_GO:
 		destination = null
