@@ -31,6 +31,7 @@ func _init() -> void:
 	test_parts_table()
 	test_fixtures_and_migrations()
 	test_validator_rejects()
+	test_plan_cases()
 	test_every_part()
 	test_undo_redo_every_edit()
 	test_transactions()
@@ -85,6 +86,16 @@ func test_fixtures_and_migrations() -> void:
 	bad = JSON.parse_string(fixture("v1.json"))
 	bad["parts"] = []
 	ok(not Genome.parse(bad, db.by_id)["ok"], "v1 without mouth rejected")
+
+func test_plan_cases() -> void:
+	var cases = JSON.parse_string(FileAccess.get_file_as_string(root_dir.path_join("godot/creature/tests/parity/plan_cases.json")))
+	ok(typeof(cases) == TYPE_ARRAY and cases.size() >= 30, "plan_cases.json present")
+	for c in cases:
+		var r := Genome.parse(JSON.stringify(c["genome"]), db.by_id)
+		if c["error"] == null:
+			ok(r["ok"], "plan case '%s' accepted (%s)" % [c["name"], r["error"]])
+		else:
+			ok(not r["ok"] and r["error"] == c["error"], "plan case '%s' -> %s (got %s)" % [c["name"], c["error"], r["error"]])
 
 func test_validator_rejects() -> void:
 	var base := Model.seed_doc("Merodeador")
