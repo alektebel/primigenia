@@ -41,6 +41,10 @@ var chase
 var stage_ui
 var ground_marks               # GroundMarks: the white circle where you click, the rings under creatures
 var _had_dest := false
+var _hover_id := -1            # the creature under the pointer (7.16): its ring shows after 0.25 s
+var _hover_t := 0.0
+var _hover_poll := 0.0
+var _hover_mouse := Vector2(-1, -1)
 var hosts := {}                  # entity id -> ActorHost
 var chase_enabled := true
 var player_pos := Vector3.INF
@@ -416,6 +420,7 @@ func _process(delta: float) -> void:
 	_update_camera(delta)
 	gesture.tick(delta)
 	_update_move_marker()
+	_update_hover(delta)
 	_mouse_held = gesture.holding
 	if _mouse_held and not Game.movement_blocked():
 		_follow_clock -= delta
@@ -534,3 +539,32 @@ func _update_move_marker() -> void:
 		var d := Vector2(player_pos.x - ground_marks.destination().x, player_pos.z - ground_marks.destination().z).length()
 		ground_marks.clear_move(d < GroundMarks.ARRIVE_RADIUS + 1.5)
 	_had_dest = has
+
+# Pointer over a creature for 0.25 s: its ring shows at 0.4 in its relationship style (docs/godot/UI-DIEGETIC.md 7.16).
+func _update_hover(dt: float) -> void:
+	if ground_marks == null or camera == null or stage == null:
+		return
+	_hover_poll -= dt
+	if _hover_poll > 0.0:
+		return
+	_hover_poll = 0.1
+	var id := -1
+	if not Game.movement_blocked() and not gesture.down:
+		var m := get_viewport().get_mouse_position()
+		if m == _hover_mouse and _hover_id >= -1:
+			id = _hover_id
+		else:
+			_hover_mouse = m
+			var picked := Pointer.pick_entity(camera.project_ray_origin(m), camera.project_ray_normal(m), stage.cur.entities, Callable(Game, "ground"))
+			id = int(picked.id) if not picked.is_empty() else -1
+	if id != _hover_id:
+		_hover_id = id
+		_hover_t = 0.0
+	else:
+		_hover_t += 0.1
+	var want := _hover_id if _hover_t >= 0.25 else -1
+	if want >= 0 and want < stage.cur.entities.size():
+		var e: Dictionary = stage.cur.entities[want]
+		ground_marks.set_hover(want, int(e.get("relationship", 0)), bool(e.get("hostile", false)))
+	else:
+		ground_marks.set_hover(-1)

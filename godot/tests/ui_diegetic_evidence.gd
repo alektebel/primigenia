@@ -122,7 +122,7 @@ func scene_move_marker() -> void:
 	ui.onboarding.enabled = false
 	var gm = island.ground_marks
 	var frames := []
-	var click_at := Vector2(760, 540)
+	var click_at := Vector2(850, 430)
 	island._click_ground(false, click_at)
 	var goal: Vector3 = gm.destination()
 	await ticks(1)
@@ -138,7 +138,7 @@ func scene_move_marker() -> void:
 	frames.append(crop(await grab(), s3, Vector2i(420, 300)))
 	await ticks(8)
 	# hold to follow
-	var s4 := Vector2(540, 560)
+	var s4 := Vector2(520, 470)
 	island._click_ground(false, s4, true)
 	await settle(10)
 	frames.append(crop(await grab(), s4, Vector2i(420, 300)))
@@ -197,9 +197,9 @@ func thaw() -> void:
 func scene_idle() -> void:
 	thaw()
 	ui.onboarding.enabled = false
-	var screen := Vector2(800, 520)
+	var screen := Vector2(850, 430)
 	island._click_ground(false, screen)
-	await settle(30)
+	await settle(8)
 	print("move marker at ", island.ground_marks.destination(), " visible ", island.ground_marks.move_visible())
 	await shot("idle")
 	island.player_input.clear_destination()
@@ -262,10 +262,12 @@ func scene_combat() -> void:
 	var fwd: Vector3 = -island.camera.global_transform.basis.z
 	fwd.y = 0.0
 	var p: Vector3 = island.player_pos + fwd.normalized() * 6.5 + Vector3(4.5, 0, 0)
-	stage.debug_now({"op": 1, "id": gar, "x": p.x, "z": p.z})
+	var rc: int = stage.debug_now({"op": 1, "id": gar, "x": p.x, "z": p.z})
 	await ticks(3)
 	freeze()
 	await settle(6)
+	print("combat: placed Garfio rc=", rc, " at ", Vector2(stage.cur.entities[gar].x, stage.cur.entities[gar].z), " player at ", island.player_pos, " wanted ", p)
+	print("combat: screen garfio ", island.camera.unproject_position(island.hosts[gar].global_position), " player ", island.camera.unproject_position(island.hosts[0].global_position))
 	var inf: Dictionary = sui.info_for(gar)
 	inf["fight"] = true
 	ui.select(inf, false)

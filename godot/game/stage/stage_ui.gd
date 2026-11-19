@@ -332,7 +332,10 @@ func _on_tick(state: Dictionary) -> void:
 	_on_social(state)
 	if selected_id > 0 and selected_id < state.entities.size():
 		var e: Dictionary = state.entities[selected_id]
-		if (e.dead and int(e.get("meat", 0)) <= 0) or Vector2(float(e.x) - float(p.x), float(e.z) - float(p.z)).length() > 60.0:
+		if bool(e.dead) and int(ui.selected.get("carcass_meat", -1)) < 0:
+			ui.clear_selection()             # the one you selected fell: its ring breaks; the carcass can be selected next
+			island.ground_marks.break_ring()
+		elif (e.dead and int(e.get("meat", 0)) <= 0) or Vector2(float(e.x) - float(p.x), float(e.z) - float(p.z)).length() > 60.0:
 			ui.clear_selection()
 		else:
 			var inf := info_for(selected_id)
@@ -380,6 +383,9 @@ func _on_events(events: Array) -> void:
 				ui.show_damage(at + Vector3(0, 2.2, 0), ev.amount, ev.b == 0)
 				if ev.b == 0:
 					ui.flash("hit")
+					island.ground_marks.windup_hit()
+				else:
+					island.ground_marks.hit(0.0)
 			2, 3:
 				if ev.b == 0:
 					ui.flash("guard")

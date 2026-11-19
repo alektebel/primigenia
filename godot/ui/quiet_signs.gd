@@ -181,7 +181,9 @@ func _process(dt: float) -> void:
 		if _act[k] > Style.REST:
 			b = move_toward(b, 0.0, dt / Style.REST_FADE)
 		_bright[k] = b
-	_bright["seed"] = maxf(_bright["seed"] * 0.0 + (1.0 if (seed_hover or menu_open) else _bright["seed"]), 0.0) if (seed_hover or menu_open) else _bright["seed"]
+	if seed_hover or menu_open:
+		_bright["seed"] = 1.0
+		_act["seed"] = 0.0
 	for k in _delta.keys():
 		_delta[k].t += dt / 0.8
 		if _delta[k].t >= 1.0:

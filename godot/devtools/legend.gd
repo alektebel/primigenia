@@ -246,17 +246,18 @@ func _refresh() -> void:
 	_cols = HBoxContainer.new()
 	_cols.add_theme_constant_override("separation", 28)
 	_sheet_box.add_child(_cols)
-	var columns: Array = [VBoxContainer.new(), VBoxContainer.new()]
+	var columns: Array = [VBoxContainer.new(), VBoxContainer.new(), VBoxContainer.new()]
 	for col in columns:
 		_cols.add_child(col)
 	var filled := 0
-	var half := (all.size() + by_group.size()) / 2
+	var half := int(ceil(float(all.size() + by_group.size()) / 3.0))
 	var col_i := 0
 	for g in spec().get("groups", []):
 		if not by_group.has(g):
 			continue
-		if filled >= half and col_i == 0:
-			col_i = 1
+		if filled >= half and col_i < 2:
+			col_i += 1
+			filled = 0
 		var col: VBoxContainer = columns[col_i]
 		col.add_child(_row_label(g, Palette.LICHEN, 17, true))
 		filled += 1

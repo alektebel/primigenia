@@ -82,7 +82,8 @@ func _place() -> void:
 		centre = ring.centre
 		half_h = ring.body_half_height
 	if mode_chosen:
-		_anchor = centre + Vector2(half_h * 0.9 + Style.u(26.0), -half_h * 0.3)
+		var pr := clampf(half_h + Style.u(62.0), Style.u(84.0), Style.u(150.0))      # the petals' radius: the note sits beyond the gift petal
+		_anchor = centre + Vector2(pr * 0.96 + Style.u(40.0), -pr * 0.1)
 	else:
 		var side := 1.0 if centre.x < vp.x * 0.6 else -1.0
 		_anchor = centre + Vector2(sin(deg_to_rad(50.0)) * side, -cos(deg_to_rad(50.0))) * Style.u(130.0) + Vector2(0, 0)

@@ -1,6 +1,6 @@
 # Diegetic UI: marks on the ground, signs in the air
 
-Status: **design, 2026-11-19** (replaces the look of [UI.md](UI.md); the interaction model of G75 and the
+Status: **design, 2026-11-19; implemented on branch `ui/diegetic-redesign`, see section 13** (what exists is described in [UI.md](UI.md); the interaction model of G75 and the
 "select first" addendum of `docs/P4.md` stay). Implementation plan: [PLAN-ui-diegetic.md](PLAN-ui-diegetic.md).
 Mockups: [`ui-mockups/`](ui-mockups/) (static HTML/SVG, rendered to `ui-mockups/render/*.jpg`).
 
@@ -604,3 +604,54 @@ the toasts box and DNA toast box; floating "+18 trust", "In rhythm!", "Combo x1.
 5. **DNA shows the spendable balance only**; the total earned lives in the journal. Recommended.
 6. **The card moves to the journal.** In play only the name, diet and relationship show; temperament notes, likes and
    dislikes, clue counts are a journal page (J). Recommended; alternative: holding Alt over a creature shows a longer field note.
+
+## 13. Implemented (as built, 2026-11-19)
+
+Slices S0 to S8 of [PLAN-ui-diegetic.md](PLAN-ui-diegetic.md) are in; [UI.md](UI.md) describes the code and the keys.
+Evidence: `docs/evidence/godot/ui-diegetic/` (`make godot-ui-diegetic-evidence`; `sheet.jpg` puts each mockup next to the game).
+
+**The owner's answers to section 12 (they override the text above where they differ):**
+
+1. Modes are chosen with the **mouse only**: click the west half (Befriend), east half (Attack / Eat), north (Observe) or south
+   (Intimidate) of the ring. No W A S D or letter mode keys; W A S D keep walking while the ring is open. A "keyboard modes"
+   accessibility setting is **deferred** (it is not trivial: the focus order and the ring's arcs would need a key map).
+2. **No default mode.** After a selection keys 1-4 do nothing until a mode is chosen; a fight starts with the attacker selected
+   in Attack mode and no ring. Clicking the creature you are fighting keeps Attack.
+3. A **small round map** top-right (not the compass strip): coastline, rivers, the nest, the selected creature, your heading,
+   discovered `?` places (the API takes them; the game has no such data yet). It fades out when the strategic camera takes over.
+4. **Numbers are off by default** (trust, damage, vitals values); "Numbers: On" brings them back. DNA always shows its number.
+5. DNA shows the **spendable balance**; the total earned is on the journal stub.
+6. The long creature card is the journal's (`journal_data.gd`); in play only the field note.
+
+Plus the owner's original asks: the white circle where you click (fades on arrival; hold-to-follow uses a softer, gliding marker),
+a small menu icon bottom-left (the seed: settings, pause, journal and family tree stubs, key sheet), social and aggressive options
+only with a creature selected, the key legend only on F1 or during the onboarding hints.
+
+**Where the code differs from the plan:**
+
+- `Style.u(x)` is `x * ui_scale`, not `x * viewport_h / 720 * ui_scale`: the project's `canvas_items` stretch mode already
+  scales the canvas with the window height, so the plan's formula would scale twice.
+- The new ember token is `Palette.EMBER_HOT`; `Palette.EMBER` (a pale gold) is still used by the dev tools and the main menu.
+  The old panel tokens, `box()` and `make_theme()` stay for `devtools/` (console, tuning, feedback, site picker), `studio/` and the
+  main menu, which keep their own look; the game UI uses `Palette.make_diegetic_theme()`. The Alegreya font is applied by that
+  theme, not as the project default font, so the studio does not change.
+- `Game.visual_ground` does not exist on this branch: `GroundMark.visual_ground()` returns the terrain, or the water surface over
+  rivers, ponds and the sea (the ribbons lie 0.12 m above the water level and hid a ring on the bed).
+- Line widths of ground marks are given in screen pixels and converted with the camera distance (one hairline weight at every zoom).
+- The mode-ring key hints and the "key under the mode name" are gone with the keyboard choice. The ring does not fade out after a
+  choice (it hides at once; the ground ring cross-fades in `SWAP`).
+- Guard and dodge are a screen-space ring and three marks at your feet (`defence_marks.gd`), not a ground mark; the plan's
+  `set_player_ring` is not implemented. The combo pearls are drawn by `ring_fx.gd` from world points that `GroundMarks` computes.
+- Clicking deep water, a pond, the sea or ground steeper than the 51.6 degree slope ceiling orders **nothing** and shows the cut
+  "cannot go there" ring (`Island.walk_blocked`); before, the order was sent and C stopped at the shore.
+- `Game.persist_settings` (default true) lets tests and evidence avoid writing the player's settings file.
+- The fade of `modal_open`: the ring is no longer modal, so `Game.modal_open` is only the menu and the loadout sheet.
+
+**Deferred (listed in the design, not built):** the creature's white hit rim, sing sound arcs, the bite piece that flies off a ring,
+the bone glyph after the last bite, the echo ring of the beat and the doubled inner ring in the rhythm window, the world losing 15 %
+saturation and the heartbeat at low health, the death slow-down and the egg ring (death does fold in the fog and hides the signs),
+the stomach tilt of hunger, the liked/disliked dots beyond what C reports in `likes` / `dislikes`, the loadout token state "the body
+cannot do this" (C only reports known / not known) and dragging a token, allies' dots at their feet, a tired-skill bar, the intimidate
+success ring that breaks into four pieces, and every posture/animation item of 7.16. The journal and family tree are stubs (veil,
+title, DNA earned).
+

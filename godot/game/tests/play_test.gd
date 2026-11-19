@@ -415,6 +415,15 @@ func _stage() -> void:
 	await frames(50)
 	check(not gmk.move_mark.visible, "the circle fades once the destination is gone")
 	island.player_input.clear_destination()
+	var sea := Vector3.INF
+	for k in game.data.n * game.data.n:
+		if game.data.height[k] <= 0.0:
+			sea = Vector3(game.data.cell_center(k % game.data.n), 0.0, game.data.cell_center(k / game.data.n))
+			break
+	check(sea != Vector3.INF and island.walk_blocked(sea) and not island.walk_blocked(island.player_pos), "the sea is a blocked destination, the ground under the player is not")
+	gmk.move_blocked(sea)
+	await frames(3)
+	check(gmk._blocked_mark.is_shown() and not gmk.move_visible(), "a blocked click shows the cut ring, not the circle")
 
 
 # ------------------------------------------------------------------------------------------------

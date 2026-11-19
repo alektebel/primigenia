@@ -52,7 +52,7 @@ func edge_now() -> float:
 	if low_health > 0.0:
 		var p := 1.0 if Style.reduced_motion() else 0.8 + 0.2 * sin(TAU * _clock / _pulse_period)
 		base = low_health * p
-	return clampf(maxf(base * 0.78, hit * 0.25), 0.0, 1.0)
+	return clampf(maxf(base * 0.95, hit * 0.25), 0.0, 1.0)
 
 func _process(dt: float) -> void:
 	_clock += dt

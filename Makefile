@@ -426,7 +426,11 @@ lore-refcheck:
 $(BUILD)/social_test: tests/test_social.c $(HDRS) $(BUILD)/libcpore.a
 	$(CC) $(CFLAGS) $< $(BUILD)/libcpore.a -o $@ $(LDLIBS)
 
-# The diegetic UI (docs/godot/UI-DIEGETIC.md, PLAN-ui-diegetic.md): one capture per mockup state on the real island (JPG).
+# The diegetic UI (docs/godot/UI-DIEGETIC.md, PLAN-ui-diegetic.md). Render test of the ground marks (software GL), then one capture per mockup state (JPG).
+.PHONY: godot-ground-marks-render-test
+godot-ground-marks-render-test: godot
+	LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 900 xvfb-run -a -s "-screen 0 1280x720x24" \
+	  $(GODOT) --rendering-driver opengl3 --max-fps 15 --resolution 1280x720 --path godot --script res://game/tests/render_ground_marks.gd
 .PHONY: godot-ui-diegetic-evidence
 godot-ui-diegetic-evidence: godot
 	@mkdir -p docs/evidence/godot/ui-diegetic

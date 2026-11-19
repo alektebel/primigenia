@@ -304,6 +304,7 @@ func set_beat(beat_in: int, in_win: bool) -> void:
 
 ## The attacker's wind-up: an ember disc grows inside the ring; negative hides it.
 func set_windup(progress: float) -> void:
+	_windup_val = progress
 	if progress < 0.0:
 		sel_mark.set_param("disc", 0.0)
 	else:
@@ -319,8 +320,8 @@ var _hit_t := 0.0
 var _flash_t := 0.0                   # the white disc flash at a hit
 var _flash_kind: StringName = &"ember"
 var _ember_t := 0.0                   # the ring turns to ember teeth for a second (it stood its ground)
-var _beat_last := -1
-var _beat_win := false
+var _windup_val := -1.0
+var _flash_was := false
 var threat_marks := {}                # id -> GroundMark, thin toothed ember rings under who is hunting you
 var hover_mark
 var hover_id := -1
@@ -390,8 +391,12 @@ func _process_fx(dt: float) -> void:
 		m.thick_px = maxf(m.thick_px, 3.0 * (_hit_t / 0.15))
 	if _flash_t > 0.0:
 		_flash_t = maxf(_flash_t - dt, 0.0)
+		_flash_was = true
 		m.set_param("disc", 1.0)
 		m.set_param("disc_color", Palette.BONE)
+	elif _flash_was:
+		_flash_was = false
+		set_windup(_windup_val)
 	if _ember_t > 0.0:
 		_ember_t = maxf(_ember_t - dt, 0.0)
 		if _flash_kind == &"ember":
