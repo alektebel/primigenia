@@ -13,7 +13,7 @@ from .env import lib as _core_lib
 # Layout sizes from the native headers (64-bit LP64). CpStageWorld grows with the engine, so its size
 # is asked from the library (cp_stage_world_size) when the stage API is bound.
 _WORLD_BYTES = 0
-_SETUP_BYTES = 17704
+_SETUP_BYTES = 17748
 
 CP_STAGE_CONTINUE = 0
 CP_STAGE_WAIT = 1
@@ -80,6 +80,21 @@ class CpStageObstacle(ctypes.Structure):
     ]
 
 
+class CpStageCave(ctypes.Structure):
+    """The hidden cave entrance record (terrain caves[0]); half/length/radius 0 take the defaults (4, 14, 10 m)."""
+    _fields_ = [
+        ("on", c_int32),
+        ("x", c_float),
+        ("z", c_float),
+        ("fx", c_float),
+        ("fz", c_float),
+        ("floor", c_float),
+        ("half", c_float),
+        ("length", c_float),
+        ("radius", c_float),
+    ]
+
+
 class CpStageSetup(ctypes.Structure):
     _fields_ = [
         ("seed", c_uint32),
@@ -97,6 +112,9 @@ class CpStageSetup(ctypes.Structure):
         ("player_legs", c_int32),
         ("wild", CpStageSpawn * CP_STAGE_MAX_WILD),
         ("obstacles", CpStageObstacle * CP_STAGE_MAX_OBSTACLES),
+        ("secrets", c_int32),       # 1: shards from the island field (FIELD only) and the cave chamber
+        ("start_clock", c_int32),   # world clock at tick 0 (0 = midnight, 3000 = 06:00)
+        ("cave", CpStageCave),
     ]
 
 

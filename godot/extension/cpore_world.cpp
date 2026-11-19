@@ -73,6 +73,13 @@ Dictionary setup_to_dict(const CpStageSetup &s) {
         obstacles.append(od);
     }
     d["obstacles"] = obstacles;
+    d["secrets"] = int(s.secrets); d["start_clock"] = int(s.start_clock);
+    if (s.cave.on) {
+        Dictionary c;
+        c["x"] = double(s.cave.x); c["z"] = double(s.cave.z); c["fx"] = double(s.cave.fx); c["fz"] = double(s.cave.fz);
+        c["half"] = double(s.cave.half); c["length"] = double(s.cave.length); c["radius"] = double(s.cave.radius);
+        d["cave"] = c;
+    }
     return d;
 }
 
@@ -86,7 +93,8 @@ bool vec2_from(const Variant &v, float &x, float &z) {
 // Fills `s` from the dictionary over `defaults`. Returns false on any type/shape error.
 bool setup_from_dict(const Dictionary &d, CpStageSetup &s) {
     static const char *const known[] = {"seed", "terrain_seed", "terrain", "nest", "flat_height",
-                                        "water", "player", "player_legs", "wild", "obstacles"};
+                                        "water", "player", "player_legs", "wild", "obstacles",
+                                        "secrets", "start_clock", "cave"};
     const Array keys = d.keys();
     for (int i = 0; i < keys.size(); ++i) {
         bool ok = false;
@@ -129,7 +137,7 @@ bool setup_from_dict(const Dictionary &d, CpStageSetup &s) {
             if (w.has("species")) { if (!cpore::to_int(w["species"], -2147483648LL, 2147483647LL, n)) return false; c.species = int(n); }
             if (w.has("legs")) { if (!cpore::to_int(w["legs"], 0, 8, n)) return false; c.legs = int(n); }
             if (w.has("bot")) { if (!cpore::to_int(w["bot"], -2147483648LL, 2147483647LL, n)) return false; c.bot = int(n); }
-            if (c.species >= 0 && c.species < 4) c.profile = CP_STAGE_SPECIES[c.species].profile;
+            if (c.species >= 0 && c.species < CP_STAGE_SPECIES_COUNT) c.profile = CP_STAGE_SPECIES[c.species].profile;
             if (w.has("profile") && !profile_from_dict(w["profile"], c.profile)) return false;
             s.wild[i] = c;
         }
@@ -149,6 +157,23 @@ bool setup_from_dict(const Dictionary &d, CpStageSetup &s) {
             if (o.has("type")) { if (!cpore::to_int(o["type"], -2147483648LL, 2147483647LL, n)) return false; c.type = int(n); }
             s.obstacles[i] = c;
         }
+    }
+    if (d.has("secrets")) { if (!cpore::to_int(d["secrets"], 0, 1, n)) return false; s.secrets = int(n); }
+    if (d.has("start_clock")) { if (!cpore::to_int(d["start_clock"], 0, CP_STAGE_DAY_TICKS - 1, n)) return false; s.start_clock = int(n); }
+    if (d.has("cave")) {
+        // {x, z, fx, fz} of the terrain cave record (map metres and the outward unit vector); half/length/radius optional (m)
+        if (d["cave"].get_type() != Variant::DICTIONARY) return false;
+        const Dictionary c = d["cave"];
+        CpStageCave cv{};
+        cv.on = 1;
+        if (!c.has("x") || !cpore::to_float(c["x"], cv.x)) return false;
+        if (!c.has("z") || !cpore::to_float(c["z"], cv.z)) return false;
+        if (!c.has("fx") || !cpore::to_float(c["fx"], cv.fx)) return false;
+        if (!c.has("fz") || !cpore::to_float(c["fz"], cv.fz)) return false;
+        if (c.has("half") && !cpore::to_float(c["half"], cv.half)) return false;
+        if (c.has("length") && !cpore::to_float(c["length"], cv.length)) return false;
+        if (c.has("radius") && !cpore::to_float(c["radius"], cv.radius)) return false;
+        s.cave = cv;
     }
     return true;
 }
@@ -217,7 +242,7 @@ void add_social_entity(Dictionary &d, const CpStageWorld &w, int i) {
     d["temperament"] = int(CP_STAGE_SPECIES[sp].temperament);
     Array likes, dislikes;
     for (int k = 0; k < 8; ++k) {
-        const uint32_t bit = 1u << (sp * 8 + k);
+        const uint64_t bit = 1ULL << (sp * 8 + k);
         if (!(w.social.tested & bit)) continue;
         const String name = k < 4 ? String(CP_STAGE_SKILLS[k].name) : String(CP_STAGE_ITEM_NAMES[k - 4]);
         if (w.social.liked & bit) likes.append(name); else dislikes.append(name);
@@ -328,10 +353,15 @@ Dictionary CporeWorld::default_profile() {
 
 Array CporeWorld::species() {
     Array a;
-    for (int i = 0; i < 4; ++i) {
+    static const char *const ACT[] = {"diurnal", "nocturnal", "crepuscular"};
+    for (int i = 0; i < CP_STAGE_SPECIES_COUNT; ++i) {
         const CpStageSpecies &s = CP_STAGE_SPECIES[i];
         Dictionary d;
         d["id"] = i; d["name"] = String(s.name);
+        d["activity"] = int(s.activity); d["activity_name"] = String(ACT[s.activity]);
+        d["nocturnal"] = s.activity == CP_ACT_NOCTURNAL;
+        d["diet"] = i == 0 || i == 1 || i == 5 ? "herbivore" : i == 4 ? "omnivore" : "carnivore";
+        d["chain"] = String(CP_STAGE_CHAINS[i].id);
         d["speed"] = double(s.speed); d["sight"] = double(s.sight); d["roam"] = double(s.roam);
         d["hostile"] = double(s.hostile); d["temperament"] = int(s.temperament);
         d["profile"] = profile_to_dict(s.profile);
@@ -456,11 +486,41 @@ Dictionary CporeWorld::state() const {
         e["cousin_generation"]=generation;
         e["counts_progress"]=generation==0;
         if(generation){e["lineage_species_id"]=4+generation;e["trust_bonus"]=20;}
+        e["hidden"] = cp_stage_creature_hidden(&w, i) != 0;       // a nocturnal creature asleep by day: draw nothing
+        e["hunkered"] = cp_stage_creature_hunkered(&w, i) != 0;   // a crepuscular creature curled up in the noon light
+        e["activity"] = int(CP_STAGE_SPECIES[w.wild[i].species].activity);
         entities.append(e);
     }
     d["entities"] = entities;
     d["social"] = social_to_dict(w);
     {char buf[16384];if(cp_stage_parts_json(&w,buf,sizeof buf)>=0)d["parts"]=JSON::parse_string(String::utf8(buf));}
+    {
+        // C2 secrets: state().shards {total, found, mask, items[{id,index,name,found,x,z,(line,line_es once found)}], toward_crater},
+        // state().cave {enabled, entered, chamber_entered, inside, x, z, fx, fz, floor, half, length, radius, chamber_x, chamber_z},
+        // state().day {light 0..1000, phase dawn|day|dusk|night, night, hour}, state().species [per species, see species()].
+        char buf[8192];
+        if (cp_stage_secrets_json(&w, buf, sizeof buf) >= 0) {
+            const Dictionary sec = JSON::parse_string(String::utf8(buf));
+            d["secrets"] = sec;
+            d["shards"] = sec["shards"]; d["cave"] = sec["cave"]; d["day"] = sec["day"];
+        }
+        static const char *const RES[] = {"open", "ally", "hunted"};
+        Array roster;
+        for (int k = 0; k < CP_SOC_SPECIES; ++k) {
+            Dictionary e;
+            const CpStageSpecies &sp = CP_STAGE_SPECIES[k];
+            e["id"] = k; e["name"] = String(sp.name); e["activity"] = int(sp.activity);
+            e["temperament"] = int(sp.temperament);
+            e["seen"] = (w.social.species_seen & (1u << k)) != 0;
+            e["resolution"] = String(RES[w.social.resolution[k]]);
+            e["bonded"] = w.social.latched[k]; e["kills"] = w.social.kills[k]; e["observed"] = w.social.obs_items[k];
+            int present = 0, hidden = 0;
+            for (int i = 0; i < w.setup.n; ++i) if (w.wild[i].species == k) { ++present; hidden += cp_stage_creature_hidden(&w, i); }
+            e["present"] = present; e["hidden_now"] = hidden;
+            roster.append(e);
+        }
+        d["species"] = roster;
+    }
     {
         // Social events since the last state(): [{type, target, move, value, x, z, tick}]; see stage_social.c for the fields.
         Array evs, routes;

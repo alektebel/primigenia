@@ -66,7 +66,7 @@ static void validation(void) {
     setup.nest_x=INFINITY;
     assert(cp_stage_reset(&w,&setup)<0);
     setup=valid;
-    setup.wild[0].species=4;
+    setup.wild[0].species=CP_STAGE_SPECIES_COUNT;
     assert(cp_stage_reset(&w,&setup)<0);
     setup=valid;
     setup.wild[0].bot=5;
@@ -705,7 +705,7 @@ static void debug_ops(void){
     dbg_op(CP_STAGE_DBG_SPAWN,0,3,10,10,0,0);
     assert(w.setup.n==2&&w.wild[1].species==3&&w.wild[1].home_x==10&&w.wild[1].roam_ticks==40&&w.setup.wild[1].bot==-1);
     assert(!memcmp(&spawn_before,&w.spawn_rng,sizeof spawn_before)&&!memcmp(&roam_before,&w.roam_rng,sizeof roam_before));
-    dbg_op(CP_STAGE_DBG_SPAWN,0,4,10,10,0,-1);
+    dbg_op(CP_STAGE_DBG_SPAWN,0,CP_STAGE_SPECIES_COUNT,10,10,0,-1);
     dbg_op(CP_STAGE_DBG_SPAWN,0,0,1000,0,0,-4);
     while(w.setup.n<CP_STAGE_MAX_WILD)dbg_op(CP_STAGE_DBG_SPAWN,0,0,-100,-100,0,0);
     dbg_op(CP_STAGE_DBG_SPAWN,0,0,-100,-100,0,-3);
