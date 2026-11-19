@@ -8,6 +8,7 @@ const Scenario := preload("res://devtools/scenario.gd")
 signal resume_requested
 signal menu_requested
 signal save_requested
+signal family_tree_requested
 signal load_requested
 signal setting_changed(bus: String, value)
 
@@ -88,6 +89,11 @@ func _ready() -> void:
 	load_button.pressed.connect(func() -> void: load_requested.emit())
 	sl.add_child(load_button)
 	v.add_child(sl)
+	var history := Button.new()
+	history.text = "Family tree"
+	history.custom_minimum_size.y = 44
+	history.pressed.connect(func() -> void: family_tree_requested.emit())
+	v.add_child(history)
 	var b := Button.new()
 	b.text = "Return to the valley"
 	b.custom_minimum_size = Vector2(0, 44)

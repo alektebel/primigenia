@@ -17,6 +17,7 @@
     "ability_2": {"label": "Loadout move 2", "group": "Fight", "contexts": ["walk", "fight"]},
     "ability_3": {"label": "Loadout move 3", "group": "Fight", "contexts": ["walk", "fight"]},
     "ability_4": {"label": "Loadout move 4", "group": "Fight", "contexts": ["walk", "fight"]},
+    "family_tree": {"label": "Family tree", "group": "Menus", "contexts": ["walk", "fight", "paused"]},
     "loadout": {"label": "Loadout panel (at the nest)", "group": "Fight", "contexts": ["walk"]},
     "guard": {"label": "Guard", "group": "Fight", "contexts": ["walk", "fight"], "corner": ["fight"]},
     "dodge_left": {"label": "Dodge left", "group": "Fight", "contexts": ["walk", "fight"], "corner": ["fight"]},

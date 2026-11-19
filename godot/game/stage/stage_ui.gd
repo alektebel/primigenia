@@ -202,8 +202,10 @@ func info_for(id: int) -> Dictionary:
 	var h := 1.5
 	if island.hosts.has(id):
 		h = island.hosts[id].height()
-	return {"id": id, "name": sp.get("name", "Creature"), "species": sp.get("name", "Creature"),
-		"temperament": int(sp.get("temperament", 1)), "diet": 1, "relationship": 0, "resolved": 0, "resolved_total": 4,
+	var cousin: Dictionary = preload("res://game/stage/lineage_session.gd").cousin(stage.world, id)
+	var shown_name: String = str(sp.get("name", "Creature")) if cousin.is_empty() else "%s · cousin · generation %d" % [cousin.name, cousin.generation]
+	return {"id": id, "name": shown_name, "species": shown_name,
+		"temperament": int(sp.get("temperament", 1)) if cousin.is_empty() else int(cousin.temperament), "diet": 1 if cousin.is_empty() else int(cousin.diet), "relationship": 0, "resolved": 0, "resolved_total": 4,
 		"likes": "", "hp": e.hp, "hp_max": e.hp_max, "world_pos": pos + Vector3(0, h * 1.25, 0)}
 
 func _on_clicked(id: int, _pos: Vector3) -> void:
