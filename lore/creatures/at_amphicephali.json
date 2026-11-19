@@ -1,0 +1,211 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "at_amphicephali",
+  "name": {
+    "en": "Amphicephali"
+  },
+  "world": "at_gravital_space",
+  "kind": "easter_egg",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "Dense, multi-species galactic union zones; variable-gravity worlds with complex atmospheric layers and nutrient-rich atmospheric particulates.",
+    "diet": "Omnivorous filter-feeder and symbiotic nutrient-gatherer; consumes processed biological slurry, ambient chemical gradients, and cultivated microbial blooms.",
+    "active": "Continuous; shifts activity cycles to match host-star flares, union trade rhythms, and atmospheric density shifts.",
+    "predators": [
+      "Gravital sweepers",
+      "Qu remnant scavengers",
+      "Ambush predators in union peripheries"
+    ],
+    "prey": [
+      "Microbial mats",
+      "Processed nutrient blooms",
+      "Symbiotic invertebrates"
+    ]
+  },
+  "body": "Dual cranial sensory arrays with fused ganglia <- why? 360° threat detection without turning <- why? Evolved in high-biodensity union habitats where rapid negotiation and ambush avoidance are critical <- why? Complex ecological niches favor omnidirectional awareness -> SKILL: 'Dual Focus' (Engage): perceive two directions simultaneously, read micro-expressions in both heads, with a weakness to sensory overload in chaotic environments. Retractile pharyngeal manipulators <- why? Specialize mouthparts for delicate interaction without compromising feeding <- why? High-resource environments reward division of labor between intake and manipulation <- why? Dense atmospheric pressure allows precise pharyngeal thrust and tool use -> SKILL: 'Pharyngeal Weave' (Control): deploy hidden manipulators for crafting, bonding, or combat, with a weakness to vulnerability during extension.",
+  "chains": [
+    {
+      "id": "at_amphicephali.c1",
+      "trait": "Dual cranial sensory arrays with fused ganglia",
+      "links": [
+        "Distributed command avoids kinematic lag across multi-meter spines",
+        "microgravity removes hydrostatic counterweights that stabilize alignment",
+        "mass distribution anomalies and tidal forces persist",
+        "lack of gravitational loading allows neural hypertrophy (speculative)"
+      ],
+      "roots": [
+        "F6",
+        "F16"
+      ],
+      "skill": {
+        "id": "at_amphicephali.union_consensus",
+        "name": {
+          "en": "Union Consensus"
+        },
+        "role": "Control",
+        "effect": "Coordinates ally actions and reduces discord in multi-faction encounters by 2.",
+        "numbers": {}
+      },
+      "weakness": "Vulnerable to neural latency if both heads are targeted simultaneously.",
+      "observe": [
+        "Symmetrical cranial ridges aligned on opposite body ends",
+        "Twin optic slits that dilate independently",
+        "Massive cranial bulges relative to body girth"
+      ],
+      "journal": {
+        "en": "They think in chorus; one voice is never enough for a galaxy union."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-19",
+        "summary": "Keep both heads but make one chiefly sensory/communicative and the other chiefly motor/orienting, linked by a high-bandwidth fusion tract (not two independent brains); in arks, add lateral-line–style proprioception along the body wall to replace lost hydrostatic ‘which way is down’ cues.",
+        "fixes": [
+          "Keep both heads but make one chiefly sensory/communicative and the other chiefly motor/orienting, linked by a high-bandwidth fusion tract (not two independent brains); in arks, add lateral-line–style proprioception along the body wall to replace lost hydrostatic ‘which way is down’ cues."
+        ],
+        "analogues": [
+          {
+            "organism": "Octopus (per-arm local reflex and decentralized control with central override); earthworm/lamprey (segmental ganglia plus central pattern generators along a long body)",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "buzsaki_2006_rhythms"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "designer": 8,
+          "physicist": 4
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist",
+          "physicist"
+        ]
+      }
+    },
+    {
+      "id": "at_amphicephali.c2",
+      "trait": "Retractile pharyngeal manipulators emerging from cranial base",
+      "links": [
+        "Contact-protected neural core requires sealed interaction modules",
+        "primary head maintains propulsion and atmospheric sampling",
+        "1.2 bar N2-O2 atmosphere carries abrasive particulates near surfaces",
+        "absence of gravity allows extreme elongation without weight penalty"
+      ],
+      "roots": [
+        "F7",
+        "F12",
+        "F15"
+      ],
+      "skill": {
+        "id": "at_amphicephali.diplomatic_probe",
+        "name": {
+          "en": "Diplomatic Probe"
+        },
+        "role": "Engage",
+        "effect": "Extends manipulator to share data/chemical signatures, +25% trust with non-hostile factions.",
+        "numbers": {}
+      },
+      "weakness": "Extended manipulator is highly vulnerable to vacuum shear and rapid decompression events.",
+      "observe": [
+        "Folded dermal flaps behind the primary cranium",
+        "Scent-distribution pores arranged in a concentric ring",
+        "Smooth, seamless cranial armor on the contact end"
+      ],
+      "journal": {
+        "en": "A diplomat’s tongue is a tool; keep the brain out of the negotiation room."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-19",
+        "summary": "Locomotion in 0 g via sinuous contact with hull/architecture or gentle bracing, not free ‘snake flight’; sheath manipulator in keratinized or mineralized dermal flaps and keep negotiation chemistry internal (pheromone paint on the probe tip) so abrasive 1.2 bar circulated dust does not abrade the neural end.",
+        "fixes": [
+          "Locomotion in 0 g via sinuous contact with hull/architecture or gentle bracing, not free ‘snake flight’; sheath manipulator in keratinized or mineralized dermal flaps and keep negotiation chemistry internal (pheromone paint on the probe tip) so abrasive 1.2 bar circulated dust does not abrade the neural end."
+        ],
+        "analogues": [
+          {
+            "organism": "Sipunculan peanut worms (everted introvert for touch and feeding); butterfly (coiled proboscis); horseshoe crab (hard carapace isolating vulnerable mouth parts from environment)",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own"
+          }
+        ],
+        "scores": {
+          "astrobio": 7,
+          "designer": 9,
+          "physicist": 5
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist",
+          "physicist"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "at_spacers",
+      "kind": "convergent",
+      "note": "Both stretch limbs and reinforce joints to dance through microgravity. Spacers jet; Amphicephali grip. Convergent elegance. -> Skill: 'Micro-g precision' (Engage)",
+      "via": "F6, F15"
+    },
+    {
+      "with": "at_the_author",
+      "kind": "mimicry",
+      "note": "Author's chemical archival nodes and photoreceptive dermal patches mimic the dual-sensory complexity of Amphicephali fused ganglia to decode union records without the social neural architecture. -> Skill: 'Sensory decryption' (Basic)",
+      "via": "F6, F12"
+    },
+    {
+      "with": "at_the_author",
+      "kind": "predation",
+      "note": "Amphicephali's fused ganglia and pharyngeal manipulators actively harvest historical data from Author's archival nodes, treating them as living libraries to be consumed and integrated into their union. -> Skill: 'Archive siphon' (Poke)",
+      "via": "F16, F3"
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-18",
+    "by": [
+      "naturalist",
+      "physicist"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-19",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-18"
+    },
+    {
+      "date": "2026-11-18",
+      "who": "autoloop",
+      "what": "removed rejected references from analogues"
+    }
+  ],
+  "lore_ref": {
+    "file": "lore/alltomorrows.en.json",
+    "id": "amphicephali"
+  },
+  "temperament": "They negotiate first, strike second, and view biological diversity as a living ledger rather than a resource to be exhausted.",
+  "secrets": [
+    "Their fused ganglia can temporarily sync with another species' neural rhythm, enabling instant trust or forced compliance.",
+    "The retractile body is not just a tool but a dormant reproductive pod; extending it fully signals mating readiness to compatible unions."
+  ],
+  "moments": [
+    "When two heads lock in a slow, synchronized blink, they are calibrating their fused ganglia to harmonize with a partner's biofield.",
+    "A sudden retraction of the pharyngeal manipulators into the cranial base signals a breakdown in negotiations, triggering a defensive posture."
+  ]
+}

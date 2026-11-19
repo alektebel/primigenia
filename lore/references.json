@@ -5409,8 +5409,9 @@
     "container-title": "Elsevier",
     "DOI": "",
     "ISBN": "9780080534649",
-    "x-status": "unverified",
-    "x-note": "cited by a council model from memory; not yet checked"
+    "x-status": "rejected",
+    "x-note": "no candidate returned by the index",
+    "x-checked": "2026-11-19"
   },
   {
     "id": "pugh_2004_tides",
@@ -5433,7 +5434,8 @@
     "DOI": "",
     "ISBN": "9780521612975",
     "x-status": "unverified",
-    "x-note": "cited by a council model from memory; not yet checked"
+    "x-note": "ambiguous: closest OpenLibrary hit is 'Changing Sea Levels' (Pugh, 2004), title similarity 0.31, author match, year ok",
+    "x-checked": "2026-11-19"
   },
   {
     "id": "jackson_2002_geodynamics",
@@ -5455,8 +5457,9 @@
     "container-title": "Cambridge University Press",
     "DOI": "",
     "ISBN": "9780521664462",
-    "x-status": "unverified",
-    "x-note": "cited by a council model from memory; not yet checked"
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Salt Tectonics' (Jackson, 2017) title similarity 0.48",
+    "x-checked": "2026-11-19"
   },
   {
     "id": "culver_2006_subterranean",
@@ -5483,7 +5486,8 @@
     "DOI": "",
     "ISBN": "9781402046334",
     "x-status": "unverified",
-    "x-note": "cited by a council model from memory; not yet checked"
+    "x-note": "ambiguous: closest OpenLibrary hit is 'Subterranean ecosystems' (Culver, 2000), title similarity 1.00, author match, year off",
+    "x-checked": "2026-11-19"
   },
   {
     "id": "doolittle_1999_phylogenetic",
@@ -5533,8 +5537,9 @@
     "container-title": "Nature",
     "DOI": "10.1038/267614a0",
     "ISBN": "",
-    "x-status": "unverified",
-    "x-note": "cited by a council model from memory; not yet checked"
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Chemical Composition of the Edible Mushroom Pleurotus ostreatus Produced by Fermentation' (Hadar, 1986) title similarity 0.46",
+    "x-checked": "2026-11-19"
   },
   {
     "id": "haddock_2010_bioluminescence",
@@ -5795,8 +5800,8 @@
     "id": "gullan_2014_insects",
     "type": "article-journal",
     "title": "The Insects: An Outline of Entomology",
-    "x-status": "unverified",
-    "x-note": "cited by a council model from memory; not yet checked",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'ADAPTATIONS IN SCALE INSECTS' (Gullan, 1997) title similarity 0.31",
     "author": [
       {
         "family": "Gullan",
@@ -5810,7 +5815,8 @@
         ]
       ]
     },
-    "container-title": "Wiley"
+    "container-title": "Wiley",
+    "x-checked": "2026-11-19"
   },
   {
     "id": "huey_1979_integrating",
@@ -6034,6 +6040,470 @@
       ]
     },
     "container-title": "Biological Journal of the Linnean Society",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "newton_1687",
+    "type": "book",
+    "title": "Philosophiæ Naturalis Principia Mathematica",
+    "author": [
+      {
+        "family": "Newton",
+        "given": "Isaac"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1687
+        ]
+      ]
+    },
+    "container-title": "Philosophiæ Naturalis Principia Mathematica",
+    "x-status": "verified",
+    "x-note": "verified against OpenLibrary (title 1.00); no changes needed",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "wolff_1892",
+    "type": "book",
+    "title": "Die Architektur der Knochen",
+    "author": [
+      {
+        "family": "Wolff",
+        "given": "Julius"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1892
+        ]
+      ]
+    },
+    "container-title": "Architektur der Knochen",
+    "x-status": "rejected",
+    "x-note": "no candidate returned by the index",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "clement_2015",
+    "type": "article-journal",
+    "title": "Cardiovascular Deconditioning and Countermeasures in Microgravity",
+    "author": [
+      {
+        "family": "Clement",
+        "given": "George T."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2015
+        ]
+      ]
+    },
+    "container-title": "Advances in Space Research",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'Cardiovascular deconditioning in microgravity: some possible countermeasures' (Antonutto, 2003, doi 10.1007/s00421-003-0884-5), title similarity 0.82, author differs, year off",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "tsiolkovsky_1903",
+    "type": "article-journal",
+    "title": "The Exploration of Cosmic Space by Means of Reaction Devices",
+    "author": [
+      {
+        "family": "Tsiolkovsky",
+        "given": "Konstantin E."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1903
+        ]
+      ]
+    },
+    "container-title": "Izvestiya Imperatorskogo Russkogo Telegrafnogo Obshchestva",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Exploration of Solar Cosmic Ray Sources by Means of Particle Energy Spectra' (Perez-Peraza, 2018) title similarity 0.62",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "stefan_1879",
+    "type": "article-journal",
+    "title": "Studien über Strahlung",
+    "author": [
+      {
+        "family": "Stefan",
+        "given": "Josef"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1879
+        ]
+      ]
+    },
+    "container-title": "Sitzungsberichte der Kaiserlichen Akademie der Wissenschaften",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Ionisierende Strahlung' (König, 1981) title similarity 0.68",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "paxton_2011",
+    "type": "article-journal",
+    "title": "Modules for Experiments in Stellar Astrophysics (MESA)",
+    "author": [
+      {
+        "family": "Paxton",
+        "given": "Bill"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2010
+        ]
+      ]
+    },
+    "container-title": "The Astrophysical Journal Supplement Series",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); year corrected from 2011; DOI added",
+    "DOI": "10.1088/0067-0049/192/1/3",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "kennedy_2019",
+    "type": "report",
+    "title": "Human Health and Performance Risks of Space Exploration Missions",
+    "author": [
+      {
+        "family": "Kennedy",
+        "given": "Suzanne H."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2019
+        ]
+      ]
+    },
+    "container-title": "National Academies Press",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Modelling of Hepatic Alterations Health Risks in Long-Term Human Space Missions' (Perez-Poch, 2024) title similarity 0.46",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "buzsaki_2006_rhythms",
+    "type": "book",
+    "title": "Rhythms of the Brain",
+    "x-status": "verified",
+    "x-note": "verified against OpenLibrary (title 1.00); ISBN added",
+    "author": [
+      {
+        "family": "Buzsáki",
+        "given": "G."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2006
+        ]
+      ]
+    },
+    "container-title": "Oxford University Press",
+    "ISBN": "9780199828234",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "faure_2005_isotopes",
+    "type": "book",
+    "title": "Isotopes: Principles and Applications",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest OpenLibrary hit is 'Isotopes' (Faure, 2004), title similarity 0.36, author match, year ok",
+    "author": [
+      {
+        "family": "Faure",
+        "given": "G."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2005
+        ]
+      ]
+    },
+    "container-title": "Oxford University Press",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "frost_1987_bone",
+    "type": "article-journal",
+    "title": "Bone structural modeling and remodeling",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Cybernetic aspects of bone modeling and remodeling, with special reference to osteoporosis and whole‐bone strength' (Frost, 2001) title similarity 0.37",
+    "author": [
+      {
+        "family": "Frost",
+        "given": "H.M."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1987
+        ]
+      ]
+    },
+    "container-title": "Calcified Tissue International",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "hargens_2021_cardiovascular",
+    "type": "article-journal",
+    "title": "Cardiovascular deconditioning in space physiology",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Cardiovascular adaptations, fluid shifts, and countermeasures related to space flight' (Hargens, 2009) title similarity 0.48",
+    "author": [
+      {
+        "family": "Hargens",
+        "given": "A.R."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2021
+        ]
+      ]
+    },
+    "container-title": "Physiol. Rev.",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "herculanohouzel_2016_metabolic",
+    "type": "article-journal",
+    "title": "Metabolic constraints on encephalization and brain cooling",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Brain Evolution' (Herculano-Houzel, 2012) title similarity 0.27",
+    "author": [
+      {
+        "family": "Herculano-Houzel",
+        "given": "S."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2016
+        ]
+      ]
+    },
+    "container-title": "Neurosci. Biobehav. Rev.",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "ijspeert_2008_centres",
+    "type": "article-journal",
+    "title": "Centres and machines: a review of central pattern generators and robotics",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Programmable central pattern generators: an application to biped locomotion control' (Righetti, None) title similarity 0.55",
+    "author": [
+      {
+        "family": "Ijspeert",
+        "given": "A. J."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2008
+        ]
+      ]
+    },
+    "container-title": "Current Biology",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "kasting_1993_solar",
+    "type": "article-journal",
+    "title": "Solar evolution and the habitable zone timescale",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'Evolution of a Habitable Planet' (Kasting, 2012, doi 10.1017/cbo9780511902574.010), title similarity 0.63, author match, year off",
+    "author": [
+      {
+        "family": "Kasting",
+        "given": "J.F."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1993
+        ]
+      ]
+    },
+    "container-title": "Icarus",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "kumar_2021_cell",
+    "type": "article-journal",
+    "title": "Cell-free protein synthesis for synthetic biology",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Cell-Free Protein Synthesis as a Prototyping Platform for Mammalian Synthetic Biology' (, None) title similarity 0.73",
+    "author": [
+      {
+        "family": "Kumar",
+        "given": "A.P."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2021
+        ]
+      ]
+    },
+    "container-title": "Annu. Rev. Biomed. Eng.",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "leblanc_2000_spinal",
+    "type": "article-journal",
+    "title": "Spinal lengthening and muscle atrophy during space flight",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Optimization of Spinal Muscular Atrophy subject's muscle activity during gait' (Umat, 2014) title similarity 0.48",
+    "author": [
+      {
+        "family": "LeBlanc",
+        "given": "A."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2000
+        ]
+      ]
+    },
+    "container-title": "Aviat. Space Environ. Med.",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "melosh_2011_impact",
+    "type": "article-journal",
+    "title": "Impact crater mechanics: A review",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'IMPACT CRATER COLLAPSE' (Melosh, 1999, doi 10.1146/annurev.earth.27.1.385), title similarity 0.67, author match, year off",
+    "author": [
+      {
+        "family": "Melosh",
+        "given": "H. J."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2011
+        ]
+      ]
+    },
+    "container-title": "Annual Review of Earth and Planetary Sciences",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "prusiner_1998_prions",
+    "type": "article-journal",
+    "title": "Prions",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'Prions' (Prusiner, 2018, doi 10.1016/b978-0-12-801238-3.00090-8), title similarity 1.00, author match, year off",
+    "author": [
+      {
+        "family": "Prusiner",
+        "given": "S.B."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1998
+        ]
+      ]
+    },
+    "container-title": "Scientific American",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "shadwick_2016_aerodynamic",
+    "type": "article-journal",
+    "title": "Aerodynamic morphing in soft-tissue manipulators",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Aerodynamic Analyses Of Skins For Morphing Wings' (Mishriky, 2021) title similarity 0.50",
+    "author": [
+      {
+        "family": "Shadwick",
+        "given": "R. E."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2016
+        ]
+      ]
+    },
+    "container-title": "Bioinspiration & Biomimetics",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "walton_2008_mechanics",
+    "type": "article-journal",
+    "title": "Mechanics of cellular self-assembly",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Statistical Mechanics, Diffusion, and Self-Assembly' (Shinbrot, 2019) title similarity 0.64",
+    "author": [
+      {
+        "family": "Walton",
+        "given": "A.D."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2008
+        ]
+      ]
+    },
+    "container-title": "Soft Matter",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "wamplermoss_2020_optical",
+    "type": "article-journal",
+    "title": "Optical properties of fossilized melanosomes and spectral degradation",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Ultra-High Performance Microwave Spectral Filters using Optical Microcombs' (Moss, 2026) title similarity 0.38",
+    "author": [
+      {
+        "family": "Wampler-Moss",
+        "given": "J."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2020
+        ]
+      ]
+    },
+    "container-title": "Proceedings of the Royal Society B",
     "x-checked": "2026-11-19"
   }
 ]

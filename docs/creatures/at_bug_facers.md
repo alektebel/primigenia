@@ -40,7 +40,7 @@ Trait ← chitinous exoskeletons of dominant insect prey require high crushing f
   - Call plates keratinized rhamphotheca with dermal bone nodules (crocodylian osteoderm model), not full exoskeleton fusion; pincers lose fine manipulation — match gameplay.
   - scores: astrobio 8, designer 9
   - Analogue: Aye-aye (Daubentonia) percussive foraging; pangolin/large anteater crushing jaws; decapod chela reduction convergent to pincers.: as named by the judge; no mechanism or reference recorded
-  - Analogue: real biology behind this chain: see the cited works; chain wording is the council's own (Gullan 2014 [unverified])
+  - Analogue: real biology behind this chain: see the cited works; chain wording is the council's own
   - Fix: Call plates keratinized rhamphotheca with dermal bone nodules (crocodylian osteoderm model), not full exoskeleton fusion; pincers lose fine manipulation — match gameplay.
 
 ### at_bug_facers.c2: Partial ectothermy & thermoregulatory basking behavior
@@ -92,3 +92,4 @@ council run `autoloop-2026-11-18`
 ## Changelog
 
 - 2026-11-19 import_got: imported from council run autoloop-2026-11-18
+- 2026-11-18 autoloop: removed rejected references from analogues

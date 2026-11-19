@@ -1,0 +1,181 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "at_terrestrials",
+  "name": {
+    "en": "Terrestrials"
+  },
+  "world": "at_gravital_space",
+  "kind": "easter_egg",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "Planetary surfaces under 1G loading, spanning diverse biomes from tropical jungles to arid deserts and shallow seas.",
+    "diet": "Omnivorous, optimized for high-gravity digestion and nutrient density, supplemented by cultivated crops.",
+    "active": "Diurnal, aligned with host star cycles and agricultural/territorial maintenance schedules.",
+    "predators": [
+      "Large fauna",
+      "Environmental extremes"
+    ],
+    "prey": [
+      "Herbivores",
+      "Small fauna",
+      "Cultivated crops"
+    ]
+  },
+  "body": "Robust, weight-bearing frames with dense, reinforced skeletal structures counteract compressive loading, while compact cranial volumes reduce metabolic overhead in high-gravity environments. Their divergent anatomy often features elaborate veils and headgear, serving as both status markers and thermal regulators.",
+  "chains": [
+    {
+      "id": "at_terrestrials.c1",
+      "trait": "Robust, weight-bearing frames with dense, reinforced skeletal structures",
+      "links": [
+        "Asteromorph engineers deliberately stunted void-adapted lineages to withstand 1G planetary loading",
+        "Surface biomes require rapid terrestrial locomotion and high-gravity cardiovascular pumping",
+        "Compression forces favor compact, load-distributed anatomy over void-spread forms"
+      ],
+      "roots": [
+        "F18",
+        "F15",
+        "F10"
+      ],
+      "skill": {
+        "id": "at_terrestrials.gravity_anchor",
+        "name": {
+          "en": "Gravity Anchor"
+        },
+        "role": "Basic",
+        "effect": "Uses planetary mass to ground attacks and stabilize allies in combat, granting +2 to balance checks and reducing knockback distance by 4 meters for 3 turns.",
+        "numbers": {}
+      },
+      "weakness": "Immune to microgravity; become sluggish and disoriented in void environments, suffering disadvantage on agility checks until they find mass to brace against.",
+      "observe": [
+        "Watch them stride heavily, joints locking against the ground",
+        "Breathing in deep, pressurized gulps to drive blood upward",
+        "Elaborate veils and headgear suggest cultural performance masking biological pragmatism"
+      ],
+      "journal": {
+        "en": "They carry the world on their shoulders, literally."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-19",
+        "summary": "Clarify immune to microgravity means maladapted, not literally immune—osteopenia within days to weeks without loading (consistent with F18); Gravity Anchor is biomechanics on ≥0.8g, sound.",
+        "fixes": [
+          "Clarify immune to microgravity means maladapted, not literally immune—osteopenia within days to weeks without loading (consistent with F18); Gravity Anchor is biomechanics on ≥0.8g, sound."
+        ],
+        "analogues": [
+          {
+            "organism": "Post-spaceflight re-adaptation to 1g loading and Wolff's law bone remodeling in humans.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 9,
+          "physicist": 10
+        }
+      }
+    },
+    {
+      "id": "at_terrestrials.c2",
+      "trait": "Compact, reinforced skeletal frame with stunted cranial volume",
+      "links": [
+        "Dense musculature and thickened bone structure",
+        "Engineered for 1G surface loading and compressive stress",
+        "Wolff's law restores bone density under gravitational load",
+        "Asteromorph vascular constraints limit neural expansion in high-g"
+      ],
+      "roots": [
+        "F18",
+        "F15",
+        "F16"
+      ],
+      "skill": {
+        "id": "at_terrestrials.grav_adapt",
+        "name": {
+          "en": "Grav-Adapt"
+        },
+        "role": "Basic",
+        "effect": "Stabilizes stance and increases melee damage by 25% when on planetary surfaces (≥0.8g)",
+        "numbers": {}
+      },
+      "weakness": "Prolonged microgravity exposure causes rapid osteopenia and joint instability",
+      "observe": [
+        "Heavy, deliberate footfalls",
+        "Densely packed muscle striations",
+        "Elaborate thermal headgear/veils"
+      ],
+      "journal": {
+        "en": "They bow to the world that made them."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-19",
+        "summary": "Cranial stunting is deliberate Asteromorph canalization for 1g perfusion and neck/load limits (F16 inverted), not a wild evolutionary optimum; allow partial cognitive compensation via culture/tools.",
+        "fixes": [
+          "Cranial stunting is deliberate Asteromorph canalization for 1g perfusion and neck/load limits (F16 inverted), not a wild evolutionary optimum; allow partial cognitive compensation via culture/tools."
+        ],
+        "analogues": [
+          {
+            "organism": "Homo floresiensis small brain on robust skeleton under island constraints—loose convergent theme of encephalization traded for habitat loading (different mechanism: engineered vs insular dwarfism).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "physicist": 9
+        }
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "at_asteromorphs",
+      "kind": "opposite",
+      "note": "Zero-g lets Asteromorph brains bloom into sails; 1G forces Terrestrial skulls to stay compact and reinforced. Same root, opposite architecture. -> Skill: 'Cranial load tolerance' (Defence)",
+      "via": "F16"
+    },
+    {
+      "with": "at_subjects",
+      "kind": "symbiosis",
+      "note": "Subjects pump closed-loop gas-exchange cultures and modular biomass; Terrestrials provide 1G structural management and regulatory oversight. A mutualistic loop of flesh and gravity. -> Skill: 'Bio-infrastructure sync' (Social)",
+      "via": "F13, F18"
+    },
+    {
+      "with": "at_new_machines",
+      "kind": "rivalry",
+      "note": "Terrestrials enforce 1G regulatory zones on planetary surfaces. New Machines use remodelable chassis to temporarily shed gravity-dependence, bypassing Terrestrial jurisdiction and operating in void niches. -> Skill: 'Gravity bypass' (Control)",
+      "via": "F18, F5"
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-18"
+  },
+  "changelog": [
+    {
+      "date": "2026-11-19",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-18"
+    },
+    {
+      "date": "2026-11-18",
+      "who": "autoloop",
+      "what": "removed rejected references from analogues"
+    }
+  ],
+  "lore_ref": {
+    "file": "lore/alltomorrows.en.json",
+    "id": "terrestrials"
+  },
+  "temperament": "Authoritative and pragmatic, they view themselves as stewards of planetary ecosystems and enforce stability through strict hierarchical control.",
+  "secrets": [
+    "Can temporarily lower their bone density by secreting specialized enzymes, allowing brief periods of enhanced agility at the cost of structural vulnerability."
+  ],
+  "moments": [
+    "Standing on a sun-drenched savanna, they adjust their dense skeletal alignment to absorb impact from leaping prey, their veiled forms casting long shadows that signal territorial dominance to subordinate species."
+  ]
+}

@@ -40,6 +40,19 @@
 | [Symbiotes](at_symbiotes.md) | easter_egg | draft | 3 | 2 fixable, 1 plausible |
 | [Tool Breeders](at_tool_breeders.md) | easter_egg | draft | 2 | 2 plausible |
 
+## Gravital Space / Asteroid Arks (`at_gravital_space`)
+
+| Creature | Kind | Status | Chains | Verdicts |
+|---|---|---|---|---|
+| [Amphicephali](at_amphicephali.md) | easter_egg | draft | 2 | 1 fixable, 1 plausible |
+| [Asteromorphs](at_asteromorphs.md) | easter_egg | draft | 2 | 1 fixable, 1 plausible |
+| [Gravitals](at_gravitals.md) | easter_egg | draft | 2 | 1 fixable, 1 implausible |
+| [New Machines](at_new_machines.md) | easter_egg | draft | 2 | 2 fixable |
+| [Spacers](at_spacers.md) | easter_egg | draft | 2 | 2 plausible |
+| [Subjects](at_subjects.md) | easter_egg | draft | 2 | 1 fixable, 1 plausible |
+| [Terrestrials](at_terrestrials.md) | easter_egg | draft | 2 | 2 plausible |
+| [The Author](at_the_author.md) | easter_egg | draft | 2 | 1 implausible, 1 plausible |
+
 ## All Tomorrows: the Qu-shaped worlds (`at_qu_worlds`)
 
 | Creature | Kind | Status | Chains | Verdicts |

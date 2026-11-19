@@ -1,0 +1,365 @@
+{
+  "schema": "cpore.world/1",
+  "id": "at_gravital_space",
+  "kind": "third_party",
+  "system": {
+    "star": "G/K-type main-sequence star",
+    "position": "fictional",
+    "distance_ly_from_sol": null
+  },
+  "name": {
+    "en": "Gravital Space / Asteroid Arks",
+    "es": "Espacio Gravitacional / Arsénicos de Asteroide"
+  },
+  "status": "draft",
+  "facts": [
+    {
+      "id": "F1",
+      "group": "star",
+      "claim": "G or K-type main-sequence star undergoing slow luminosity increase over multi-million-year timescales.",
+      "justification": "K-type preferred for longevity and stable billion-year timeline; G-type plausible given eventual RGB expansion that motivated the Ruin Haunters' transition to the Gravitals (given by the lore). Stellar evolution models dictate the RGB phase, not Newtonian mechanics.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 1.02,
+      "unit": "solar masses",
+      "consequences": [
+        "Long stable era allows asteroid belt accumulation and ark construction.",
+        "Eventual stellar expansion drives deployment of orbital shading megastructures."
+      ],
+      "refs": [
+        "paxton_2011"
+      ]
+    },
+    {
+      "id": "F20",
+      "group": "star",
+      "claim": "Stellar phase transition from main-sequence to subgiant/red-giant branch over ~1–2 Gyr timescales.",
+      "justification": "Inferred from stellar evolution models; the RGB expansion phase provides the radiative forcing that necessitates Gravital shading structures.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 1.0,
+      "unit": "Gyr",
+      "consequences": [
+        "Drives long-term habitat migration and thermal engineering.",
+        "Forces timeline alignment with Ruin Haunter lore."
+      ],
+      "refs": [
+        "paxton_2011"
+      ]
+    },
+    {
+      "id": "F2",
+      "group": "orbit",
+      "claim": "Primary arks and sub-arks occupy outer system rims at 30–100 AU from the host star.",
+      "justification": "Inferred from 'outer rims' and 'void' descriptions; low stellar flux necessitates internal heat management and explains why habitats remain unnoticed by inner-system empires.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "30-100",
+      "unit": "AU",
+      "consequences": [
+        "Negligible external stellar heating shifts thermal burden to internal metabolism and machinery.",
+        "Stable Keplerian orbits reduce perturbation risks for long-term ark clustering."
+      ]
+    },
+    {
+      "id": "F3",
+      "group": "sky",
+      "claim": "Million-mile orbital sails block stellar radiation and create permanent shadow zones.",
+      "justification": "Given by the lore; Gravital megastructures function as thermal occlusion shields rather than simple light switches, managing radiative heat load from an expanding star. Sails primarily shade inner habitable machine worlds, not the outer rim arks.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 1600000000.0,
+      "unit": "meters",
+      "consequences": [
+        "Artificial day/night cycles require internal light-piping or bioluminescence.",
+        "Shadow navigation favors infrared/thermal sensing over visible-light ecology."
+      ]
+    },
+    {
+      "id": "F4",
+      "group": "interior",
+      "claim": "Hollowed moon-sized volumes (~1,100 km radius) produce near-zero net interior gravity via approximate spherical symmetry.",
+      "justification": "Given by the lore; Newton's shell theorem dictates that a spherically symmetric hollow mass cancels gravitational acceleration inside the cavity, though real rubble piles deviate.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 1100,
+      "unit": "km radius",
+      "consequences": [
+        "Spherical geometry favors standing acoustic modes and long-path reverberation.",
+        "Enclosed volume defines maximum habitable space without structural collapse."
+      ],
+      "refs": [
+        "newton_1687"
+      ]
+    },
+    {
+      "id": "F5",
+      "group": "interior",
+      "claim": "Shell thickness of 5–10 km is required to withstand internal atmospheric pressure against vacuum exterior.",
+      "justification": "Inferred from thin-walled pressure vessel mechanics (σ = PR/2t); silicate/metal tensile strengths of 10–20 MPa necessitate kilometer-scale thickness to contain ~1.2 bar, assuming Gravital-engineered reinforcement.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "5-10",
+      "unit": "km",
+      "consequences": [
+        "High structural mass anchors arks and limits acceleration.",
+        "Rigid shell acts as a low-loss acoustic waveguide for structure-borne sound."
+      ]
+    },
+    {
+      "id": "F6",
+      "group": "interior",
+      "claim": "Microgravity environment (10⁻⁵–10⁻² g) persists due to mass distribution anomalies, docking stress, and tidal forces.",
+      "justification": "Referee fix: perfect spheres are rare; lumpy arks, docking stress, and stellar tides create microgravity rather than absolute zero-g. Self-gravity of the massive shell sets an upper bound near the inner wall.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 1e-05,
+      "unit": "g",
+      "consequences": [
+        "Fluids drift slowly rather than pooling instantly.",
+        "Jet recoil causes measurable habitat center-of-mass drift."
+      ]
+    },
+    {
+      "id": "F19",
+      "group": "interior",
+      "claim": "Habitat zoning partitions the ark into a warm pressurized core, mid-tier agricultural zones, and a cryogenic rim.",
+      "justification": "Inferred from thermal and atmospheric constraints; heat pipes channel waste heat from metabolism and machinery outward, maintaining the core at ~1.2 bar aerobic conditions while the rim hosts cryo-volatiles.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 3,
+      "unit": "zones",
+      "consequences": [
+        "Enables distinct ecological niches within a single shell.",
+        "Requires complex fluid dynamics and thermal management infrastructure."
+      ]
+    },
+    {
+      "id": "F7",
+      "group": "atmosphere",
+      "claim": "Nitrogen-oxygen atmosphere is maintained at ~1.2 bar to support pressurized circulation and jet thrust.",
+      "justification": "Given by the lore; human/post-human biochemistry requires O₂, and higher density increases thrust per unit volume expelled while preventing fluid loss.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 1.2,
+      "unit": "bar",
+      "consequences": [
+        "Elevated O₂ partial pressure increases oxidative stress and fire risk.",
+        "Denser medium improves jet propulsion efficiency and acoustic propagation."
+      ],
+      "refs": [
+        "clement_2015"
+      ]
+    },
+    {
+      "id": "F8",
+      "group": "atmosphere",
+      "claim": "Buoyant convection is eliminated, requiring forced mechanical circulation to prevent gas stratification.",
+      "justification": "Inferred: Rayleigh number scales with gravity; at g≈0, natural convection vanishes, making CO₂/O₂ gradients inevitable without fans.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 0,
+      "unit": "Rayleigh number",
+      "consequences": [
+        "Stagnant air pockets form, demanding localized ventilation.",
+        "Jet exhaust plumes persist without rising, creating chemical/thermal trails."
+      ]
+    },
+    {
+      "id": "F9",
+      "group": "atmosphere",
+      "claim": "Locomotion relies on expelling atmospheric mass for 3D vector thrust.",
+      "justification": "Given by the lore; Newton's third law and the rocket equation dictate that thrust requires mass expulsion, making air the reaction mass. Sustained jetting depletes local pressure and O₂, creating tactical vulnerability.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "variable",
+      "unit": "m/s",
+      "consequences": [
+        "High maneuverability in 3D void without external fuel.",
+        "Local hypoxia and hypobaria occur without rapid reclamation volume."
+      ]
+    },
+    {
+      "id": "F10",
+      "group": "atmosphere",
+      "claim": "Cephalad fluid shift necessitates pressurized cardiovascular systems with reinforced valves.",
+      "justification": "Inferred from microgravity fluid dynamics; without hydrostatic gradients, blood pools in the upper body, requiring active pumps and tight volume regulation.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 1.2,
+      "unit": "bar internal",
+      "consequences": [
+        "Bulging cranial vessels and reinforced gut/heart anatomy.",
+        "Vulnerability to sudden pressure differentials and barotrauma."
+      ],
+      "refs": [
+        "clement_2015"
+      ]
+    },
+    {
+      "id": "F11",
+      "group": "geology",
+      "claim": "Interior geology is static and tectonically dead due to core and mantle removal.",
+      "justification": "Inferred: Hollowing eliminates the differentiated core/mantle that drives plate tectonics, leaving a processed, mined landscape.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 0,
+      "unit": "tectonic activity",
+      "consequences": [
+        "No mineral upwelling or natural resource replenishment.",
+        "Structural stress fractures propagate from docking impacts and thermal cycling."
+      ]
+    },
+    {
+      "id": "F12",
+      "group": "chemistry",
+      "claim": "Thermal regulation depends entirely on radiative heat rejection via external surfaces.",
+      "justification": "Inferred: Low external flux at 30–100 AU plus internal metabolism/machines means convective cooling is impossible; Stefan–Boltzmann radiation dominates. Explicit external radiators or high-conductivity pathways through the shell are required to prevent thermal bottlenecking.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "radiative",
+      "unit": "cooling mode",
+      "consequences": [
+        "Waste heat must be actively channeled to radiators.",
+        "Overheating is the primary failure mode during sustained exertion or machine operation."
+      ]
+    },
+    {
+      "id": "F13",
+      "group": "chemistry",
+      "claim": "Closed-loop nutrient cycling mandates near-perfect mass conservation and biological recycling.",
+      "justification": "Given by the lore; 'cell cultures for gas exchange and waste filtering' indicate bio-integrated industrial chemistry in a closed system. Reframed as a designed subsystem setpoint rather than a natural constant.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 99.5,
+      "unit": "% efficiency",
+      "consequences": [
+        "Waste is food; contamination causes systemic feedback.",
+        "Trace-element sequestration remains a critical failure mode."
+      ]
+    },
+    {
+      "id": "F14",
+      "group": "ocean",
+      "claim": "Peripheral cryogenic chemistry supports methane oceans and volatile ice deposits.",
+      "justification": "Given by the lore; low ambient temperatures in outer rims allow volatile condensates, enabling Titan-style non-aqueous solvents. Aligned with zoned ark geometry: cold outer galleries host CH₄ chemistry, while the core remains warm and aerobic.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 111,
+      "unit": "K boiling point",
+      "consequences": [
+        "Cryo-adapted life forms exploit methane/water ice chemistry.",
+        "Volatile chemistry enables stealth, chemical traps, and alternative metabolic pathways."
+      ]
+    },
+    {
+      "id": "F15",
+      "group": "biochemistry",
+      "claim": "Skeletal morphology is elongated and low-density due to absent compressive loading.",
+      "justification": "Inferred: Wolff's law dictates that bone density scales with mechanical stress; microgravity disuse causes osteopenia, while developmental selection favors elongated limb proportions.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "low",
+      "unit": "bone density",
+      "consequences": [
+        "Long, thin, spindly limbs optimized for reach rather than support.",
+        "Rapid structural failure and fractures in high-gravity environments."
+      ]
+    },
+    {
+      "id": "F16",
+      "group": "biochemistry",
+      "claim": "Cranial volume expands freely without gravitational structural constraints, but is capped by perfusion and cooling limits.",
+      "justification": "Inferred: Lack of gravitational loading on the skull allows neural tissue to hypertrophy, though vascular supply and heat dissipation (linked to F8 forced circulation) impose biological ceilings.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "high",
+      "unit": "encephalization",
+      "consequences": [
+        "High information processing and complex pattern recognition.",
+        "Vulnerability to magnetic/pressure shocks and high metabolic cooling demand."
+      ]
+    },
+    {
+      "id": "F17",
+      "group": "biochemistry",
+      "claim": "Metabolic pathways are modular and spliced for rapid niche switching.",
+      "justification": "Given by the lore; 'spliced as comprehensively as the Qu' and nanotech integration allow aerobic, anaerobic, and chemoautotrophic flexibility. Earth analogues show facultative metabolism, not instant module swapping, making this highly speculative.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "variable",
+      "unit": "metabolic mode",
+      "consequences": [
+        "Rapid adaptation to toxic leaks or terraforming shifts.",
+        "High caloric/energy cost limits duration of extreme metabolic states."
+      ]
+    },
+    {
+      "id": "F18",
+      "group": "biochemistry",
+      "claim": "Gravity-dependent physiology creates hard ecological specialization between void and surface lineages.",
+      "justification": "Given by the lore; Asteromorphs engineered Terrestrials for 1G loading while Spacers adapted to void, creating divergent evolutionary trajectories. Reversible adaptation without engineering is implausible over one lifetime.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "binary",
+      "unit": "gravity niche",
+      "consequences": [
+        "Terrestrials fail in microgravity; Spacers fail on planets.",
+        "Forces habitat-hopping, specialized loadouts, and engineered transitional forms."
+      ]
+    }
+  ],
+  "changelog": [
+    {
+      "date": "2026-11-18",
+      "who": "autoloop",
+      "what": "world canon drafted by the council chair from 20 facts (planet drafts, peer reviews, astrobio referee)"
+    },
+    {
+      "date": "2026-11-18",
+      "who": "autoloop",
+      "what": "removed rejected references; retired real facts left without references"
+    }
+  ],
+  "lore_source": "alltomorrows"
+}

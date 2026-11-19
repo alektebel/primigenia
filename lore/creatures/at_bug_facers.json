@@ -62,10 +62,7 @@
           },
           {
             "organism": "real biology behind this chain",
-            "mechanism": "see the cited works; chain wording is the council's own",
-            "refs": [
-              "gullan_2014_insects"
-            ]
+            "mechanism": "see the cited works; chain wording is the council's own"
           }
         ],
         "scores": {
@@ -206,6 +203,11 @@
       "date": "2026-11-19",
       "who": "import_got",
       "what": "imported from council run autoloop-2026-11-18"
+    },
+    {
+      "date": "2026-11-18",
+      "who": "autoloop",
+      "what": "removed rejected references from analogues"
     }
   ],
   "lore_ref": {

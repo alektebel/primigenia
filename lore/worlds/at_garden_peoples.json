@@ -199,9 +199,6 @@
         "Enables calcified exoskeletal reinforcement in reef fauna.",
         "Supports Tool-Breeder shell-cities and bioluminescent grids.",
         "High alkalinity buffers against acidification from volcanic outgassing."
-      ],
-      "refs": [
-        "zeebe_2001_co2"
       ]
     },
     {
@@ -239,9 +236,6 @@
         "Caves open and close on million-year cycles.",
         "Ashfalls and new terrain force migration.",
         "Tectonic stress drives geothermal vents used by chemosynthetic life."
-      ],
-      "refs": [
-        "jackson_2002_geodynamics"
       ]
     },
     {
@@ -299,9 +293,6 @@
         "Manna lakes provide instant healing and terrain alteration.",
         "Contamination spreads instantly in nutrient-rich zones.",
         "Attracts opportunistic scavengers and pests."
-      ],
-      "refs": [
-        "cohen_1977_manna"
       ]
     },
     {
@@ -462,6 +453,11 @@
       "date": "2026-11-18",
       "who": "autoloop",
       "what": "world canon drafted by the council chair from 23 facts (planet drafts, peer reviews, astrobio referee)"
+    },
+    {
+      "date": "2026-11-18",
+      "who": "autoloop",
+      "what": "removed rejected references; retired real facts left without references"
     },
     {
       "date": "2026-11-18",

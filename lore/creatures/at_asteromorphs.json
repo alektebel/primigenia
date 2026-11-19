@@ -1,0 +1,176 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "at_asteromorphs",
+  "name": {
+    "en": "Asteromorphs"
+  },
+  "world": "at_gravital_space",
+  "kind": "easter_egg",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "Cavernous weightless capitals and globular sub-arks in outer system rims, relying on radiative cooling and internal thermal zoning.",
+    "diet": "High-energy neural metabolites, recycled biomass, and phototropic/chemosynthetic cultures cultivated in microgravity.",
+    "active": "Continuous, punctuated by long meditative cycles and structural assembly phases.",
+    "predators": [],
+    "prey": [
+      "Engineered nutrient cultures",
+      "Atmospheric gas-exchange cell masses"
+    ]
+  },
+  "body": "Hypertrophied neural tissue expands freely without gravitational loading, eventually stretching into bioluminescent radiative sails that dissipate metabolic heat and modulate internal temperatures. Their insectile, multi-digit limbs split into countless thin appendages, maximizing surface area for manipulation and sail-control in the boundless void.",
+  "chains": [
+    {
+      "id": "at_asteromorphs.c1",
+      "trait": "Hypertrophied brain-tissue stretched into bioluminescent sails",
+      "links": [
+        "Extended void existence selected for massive cognitive architecture without gravitational skull loading",
+        "Ark-network expansion required fine manipulation of docking interfaces and harmonic resonance",
+        "Cavernous weightless capitals demand structural thinking beyond linear biology"
+      ],
+      "roots": [
+        "F16",
+        "F4",
+        "F3"
+      ],
+      "skill": {
+        "id": "at_asteromorphs.structural_empathy",
+        "name": {
+          "en": "Structural Empathy"
+        },
+        "role": "Social",
+        "effect": "Decodes ark network frequencies to calm or disrupt hostile entities within a 20-meter radius, granting advantage on social or command checks.",
+        "numbers": {}
+      },
+      "weakness": "Cognitive overload in high-gravity zones causes neural tissue to sag, imposing disadvantage on all actions for 3 turns.",
+      "observe": [
+        "Watch their brain-tissue ripple like bioluminescent sails in the draft",
+        "Fingers split into thousands of thin limbs tracing invisible stress lines",
+        "Silent, watchful postures suggest they're calculating load-bearing equations"
+      ],
+      "journal": {
+        "en": "They think in blueprints, speak in load-bearing sighs."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-19",
+        "summary": "Separate cognition (hypertrophied cortex/cerebellum in microgravity, F16) from sail-like vascularized membranes used for docking communication and display; bioluminescence on accessory photocytes or symbiotic culture, not firing neural tissue; drop weak F3 sail link or reframe as mimicking sail geometry for signaling only.",
+        "fixes": [
+          "Separate cognition (hypertrophied cortex/cerebellum in microgravity, F16) from sail-like vascularized membranes used for docking communication and display; bioluminescence on accessory photocytes or symbiotic culture, not firing neural tissue; drop weak F3 sail link or reframe as mimicking sail geometry for signaling only."
+        ],
+        "analogues": [
+          {
+            "organism": "Sperm whale and bottlenose dolphin enlarged brains in buoyant medium; Hawaiian bobtail squid counter-illumination via symbiotic Vibrio (display tissue distinct from brain).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 5,
+          "physicist": 6
+        }
+      }
+    },
+    {
+      "id": "at_asteromorphs.c2",
+      "trait": "Hypertrophied neural tissue forming radiative sail-brains",
+      "links": [
+        "Brain tissue expands into wing-like neural canopies",
+        "Lack of gravitational skull loading permits unbounded growth",
+        "Perfusion limits heat dissipation in dense neural tissue",
+        "Stefan-Boltzmann radiation requires maximal surface-area-to-volume ratio"
+      ],
+      "roots": [
+        "F16",
+        "F12"
+      ],
+      "skill": {
+        "id": "at_asteromorphs.cerebral_canopy",
+        "name": {
+          "en": "Cerebral Canopy"
+        },
+        "role": "Control",
+        "effect": "Project thermal plume that cools allies by 3°C and reveals hidden heat signatures within 15m radius",
+        "numbers": {}
+      },
+      "weakness": "Sustained neural firing causes rapid radiative overheating, forcing temporary hibernation",
+      "observe": [
+        "Translucent, veined brain-folds",
+        "Infrared shimmer above head",
+        "Silent, hovering posture"
+      ],
+      "journal": {
+        "en": "They think in geometry, burn in silence."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-19",
+        "summary": "Brain folds are for surface area under perfusion and cooling caps (F12, F8), not unlimited growth; radiative cooling via blood-irrigated fin-like portals architecturally separate from gray matter; overload in high-g weakness is plausible if unsupported neural mass lacks tethering fascia.",
+        "fixes": [
+          "Brain folds are for surface area under perfusion and cooling caps (F12, F8), not unlimited growth; radiative cooling via blood-irrigated fin-like portals architecturally separate from gray matter; overload in high-g weakness is plausible if unsupported neural mass lacks tethering fascia."
+        ],
+        "analogues": [
+          {
+            "organism": "African elephant ear thermoregulation via vascularized thin appendages shedding heat.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own"
+          }
+        ],
+        "scores": {
+          "astrobio": 7,
+          "physicist": 10
+        }
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "at_terrestrials",
+      "kind": "opposite",
+      "note": "Zero-g lets Asteromorph brains bloom into sails; 1G forces Terrestrial skulls to stay compact and reinforced. Same root, opposite architecture. -> Skill: 'Cranial load tolerance' (Defence)",
+      "via": "F16"
+    },
+    {
+      "with": "at_gravitals",
+      "kind": "rivalry",
+      "note": "Gravital mega-sails blot out starlight, casting permanent thermal shadows. Asteromorph radiative sail-brains evolve to reject waste heat in those gloom zones, turning a weapon into a refuge. -> Skill: 'Thermal shadow navigation' (Control)",
+      "via": "F3"
+    },
+    {
+      "with": "at_spacers",
+      "kind": "counter",
+      "note": "Spacers' jet-vent locomotion establishes foundational 3D vector thrust. Asteromorphs inherit and scale this into structural ark-building and sail-brain deployment, passing the skill across generations. -> Skill: 'Vector thrust inheritance' (Basic)",
+      "via": "F9, F6"
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-18"
+  },
+  "changelog": [
+    {
+      "date": "2026-11-19",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-18"
+    },
+    {
+      "date": "2026-11-18",
+      "who": "autoloop",
+      "what": "removed rejected references from analogues"
+    }
+  ],
+  "lore_ref": {
+    "file": "lore/alltomorrows.en.json",
+    "id": "asteromorphs"
+  },
+  "temperament": "Silent, architectural thinkers who view organic life as a temporary scaffold for cosmic expansion.",
+  "secrets": [
+    "Their sail-brains emit low-frequency electromagnetic pulses that resonate with ark docking clamps, enabling silent sub-ark assembly without mechanical aids."
+  ],
+  "moments": [
+    "Suspended in the cryogenic rim, they unfurl their neural sails to radiate excess heat into the void, their thin limbs weaving volatile methane ices into structural lattices for new ark seeds."
+  ]
+}
