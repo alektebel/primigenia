@@ -35,6 +35,13 @@ static func genome_for(id: String) -> Dictionary:
 
 ## Froude numbers worth showing: one per gait of the ladder, from the slowest gait up to the last gait's mid range.
 static func shots(morph) -> Array:
+	var out := _shots(morph)
+	var cap: float = 3.0 if morph.graviportal else 1e9
+	for o in out:
+		o[1] = minf(float(o[1]), cap)
+	return out
+
+static func _shots(morph) -> Array:
 	var lad: Array = Gait.ladder(morph)
 	if lad.is_empty():
 		return [["walk", 0.1], ["fast", 1.0], ["fastest", 3.0]]

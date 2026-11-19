@@ -102,8 +102,9 @@ func goto_island() -> void:
 func goto_cell() -> void:
 	get_tree().change_scene_to_file("res://cell/cell_stage.tscn")
 
-func goto_zoo(morphs: Array = [], course: String = "all") -> void:
+func goto_zoo(morphs: Array = [], course: String = "all", run: float = 1.0) -> void:
 	zoo_args = {"morphs": morphs, "course": course} if not morphs.is_empty() else {"course": course}
+	zoo_args["run"] = run
 	get_tree().change_scene_to_file("res://devtools/zoo/zoo.tscn")
 
 func goto_studio() -> void:
