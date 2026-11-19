@@ -92,7 +92,7 @@ func _draw() -> void:
 		if hint_keys != "":
 			kw = Style.text_width(Style.font_sans(true), hint_keys, Style.u(14.5)) + Style.u(22.0)
 		var x3 := vp.x * 0.5 - (w3 + kw) * 0.5
-		var y3 := vp.y - Style.u(44.0)
+		var y3 := vp.y - Style.u(44.0) - (Style.u(28.0) * clampf(_w_alpha, 0.0, 1.0) if whisper_text != "" else 0.0)    # above a whisper, never over it
 		if hint_keys != "":
 			var kr := Rect2(Vector2(x3, y3 - Style.u(17.0)), Vector2(kw - Style.u(8.0), Style.u(23.0)))
 			Style.polyline(self, PackedVector2Array([kr.position, kr.position + Vector2(kr.size.x, 0), kr.end, kr.position + Vector2(0, kr.size.y), kr.position]), Color(Palette.BONE, 0.8 * _h_alpha), Style.u(1.2))

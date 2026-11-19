@@ -172,7 +172,7 @@ func _build_stage() -> void:
 		var h := ActorHost.new()
 		h.name = "Wild%d" % (i + 1)
 		add_child(h)
-		h.setup(Profile.load_json("res://game/data/garfio.json"), i + 1, setup.wild[i].profile, ground)
+		h.setup(_species_body(int(setup.wild[i].species)), i + 1, setup.wild[i].profile, ground)
 		h.set_meta("base_scale", _species_scale(int(setup.wild[i].species)))
 		hosts[i + 1] = h
 	var yaw := PI
@@ -296,9 +296,22 @@ func load_scenario(parsed: Dictionary) -> String:
 		stage_ui.ui.show_message(res.note, "warn")
 	return ""
 
-# Until the other species have their own art they borrow Garfio's body, scaled by size so a herd reads as a different animal.
+# Each wild species has its own genome (res://game/data/<name>.json: Rondo, Zanco, Espinodo, Garfio), built by the same
+# procedural creature builder and realism layer as the player. The C collision radius is the same 0.6 m for all four
+# (radius_cm 0 in CP_STAGE_SPECIES), so the scale puts each body's footprint width at about that circle: Garfio's is 1.12 m
+# unscaled, Rondo 1.22 x 0.8, Zanco 1.08 x 0.75 (tall: legs and neck), Espinodo 1.72 x 0.65 (its tail hammer sticks out).
+const SPECIES_BODY := ["rondo", "zanco", "espinodo", "garfio"]
+const SPECIES_SCALE := [0.8, 0.75, 0.65, 1.0]
+static var _body_cache := {}
+
+func _species_body(species: int) -> Dictionary:
+	var k := clampi(species, 0, 3)
+	if not _body_cache.has(k):
+		_body_cache[k] = Profile.load_json("res://game/data/%s.json" % SPECIES_BODY[k])
+	return _body_cache[k].duplicate(true)
+
 func _species_scale(species: int) -> float:
-	return [0.6, 0.7, 0.9, 1.0][clampi(species, 0, 3)]
+	return SPECIES_SCALE[clampi(species, 0, 3)]
 
 # Creatures that appear after the build (console spawn, restored scenarios) get a body when their species has one.
 func _sync_hosts() -> void:
@@ -310,7 +323,7 @@ func _sync_hosts() -> void:
 		var h := ActorHost.new()
 		h.name = "Wild%d" % i
 		add_child(h)
-		var body: Dictionary = Profile.load_json("res://game/data/garfio.json") if cousin.is_empty() else JSON.parse_string(cousin.body_json)
+		var body: Dictionary = _species_body(int(es[i].species)) if cousin.is_empty() else JSON.parse_string(cousin.body_json)
 		var profile: Dictionary = _garfio_profile if cousin.is_empty() else stage.world.get_setup().wild[i - 1].profile
 		h.setup(body, i, profile, Callable(Game, "visual_ground"))
 		h.set_meta("base_scale", _species_scale(int(es[i].species)))
