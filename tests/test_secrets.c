@@ -27,7 +27,7 @@ static void setup(CpStageSetup *s,int secrets,int legs,int radius){
     cp_stage_setup_default(s,5);
     s->terrain=CP_STAGE_FIELD;s->n=0;s->nest_x=s->nest_z=0;s->player_legs=legs;
     s->player=(CpCombatProfile){2,4,0,0,0,100,100,4,(uint16_t)radius};
-    s->secrets=secrets;
+    s->secrets=secrets?3:0;
     if(secrets&&t.cave_count>0){
         const CpTerrainCave *c=&t.caves[0];
         s->cave=(CpStageCave){1,c->x_m,c->y_m,c->facing_x,c->facing_y,0,0,0,0};
@@ -161,6 +161,20 @@ static void field_tests(unsigned seed){
         assert(!cp_stage_can_walk(&w,px,pz,mx,mz,.3f));
     }
     PASS("cave walls block");
+    /* 7b. the cave alone (what the route certification uses): no shard placement, same chamber, and it is still reachable */
+    {
+        CpStageSetup cave_only=on;
+        cave_only.secrets=CP_SECRETS_CAVE;
+        reset(&w2,&on);
+        const float want_x=w2.secrets.chamber_x,want_z=w2.secrets.chamber_z;
+        reset(&w,&cave_only);
+        assert(!w.secrets.on&&w.secrets.cave_on&&w.secrets.n_shards==0);
+        assert(w.secrets.chamber_x==want_x&&w.secrets.chamber_z==want_z);
+        assert(go(&w,w.secrets.chamber_x,w.secrets.chamber_z,20000)>=0&&w.secrets.chamber_entered);
+        CpStageInput in={.verb=CP_STAGE_INSPECT,.target=CP_STAGE_SHARD_ID};
+        assert(cp_stage_order(&w,&in)<0);   /* no shards in this mode */
+    }
+    PASS("cave-only mode: chamber walkable, no shards");
     /* 8. the secrets hash is folded only when on: same world, secrets off, then on, differ; found state changes it */
     reset(&w,&off);reset(&w2,&on);
     assert(w.hash!=w2.hash);

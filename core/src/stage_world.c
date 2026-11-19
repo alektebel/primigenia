@@ -1458,7 +1458,7 @@ uint64_t cp_stage_hash(const CpStageWorld *w){
             fl(&h,w->path[i][1]);
         }
     }
-    if(w->secrets.on){uint64_t sh=cp_stage_secrets_hash(w);u32(&h,(uint32_t)sh);u32(&h,(uint32_t)(sh>>32));}
+    if(w->secrets.on||w->secrets.cave_on){uint64_t sh=cp_stage_secrets_hash(w);u32(&h,(uint32_t)sh);u32(&h,(uint32_t)(sh>>32));}
     if(w->parts.used){uint64_t ph=cp_stage_parts_hash(w);u32(&h,(uint32_t)ph);u32(&h,(uint32_t)(ph>>32));}
     if(w->social.used){
         const uint64_t sh=cp_stage_social_hash(w);

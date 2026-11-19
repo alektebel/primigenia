@@ -106,6 +106,7 @@ typedef struct {
  * corridor of half-width `half` that runs `length` m into the rock from the entrance plane and ends in a round chamber of
  * `radius` m. Inside it the walkable ground is flat at `floor` (the heightfield cannot represent a hollow). */
 typedef struct { int32_t on; float x,z,fx,fz,floor,half,length,radius; } CpStageCave;
+enum { CP_SECRETS_SHARDS=1, CP_SECRETS_CAVE=2 };   /* setup.secrets bits; the route tests use the cave alone (the shard placement walks the whole island) */
 typedef struct {
     uint32_t seed,terrain_seed;
     int32_t terrain,n,n_obstacles;
@@ -115,7 +116,7 @@ typedef struct {
     CpStageSpawn wild[CP_STAGE_MAX_WILD];
     CpStageObstacle obstacles[CP_STAGE_MAX_OBSTACLES];
     /* C2 secrets (core/src/stage_secrets.c). All zero = off, and then nothing below touches the simulation or its hash. */
-    int32_t secrets;                 /* 1: place the meteor shards from the island field (FIELD only) and open the cave chamber */
+    int32_t secrets;                 /* CP_SECRETS_* bits (FIELD only): 1 place the meteor shards from the island field, 2 open the cave chamber */
     int32_t start_clock;             /* world clock at tick 0 (0 = midnight, 3000 = 06:00); the game starts in the morning */
     CpStageCave cave;                /* the hidden cave entrance record (terrain caves[0]); chamber is derived from it */
 } CpStageSetup;
@@ -222,7 +223,7 @@ typedef struct {
     uint8_t level[CP_STAGE_PART_COUNT],tier[CP_STAGE_PART_COUNT];
     uint32_t hits[CP_STAGE_PART_COUNT],wins[CP_STAGE_PART_COUNT],kills[CP_STAGE_PART_COUNT];
     uint32_t move_hits[CB_MOVE_COUNT],move_wins[CB_MOVE_COUNT];
-    int dry[4],kill_paid[CP_STAGE_MAX_WILD],ally_paid[4];
+    int dry[CP_STAGE_SPECIES_COUNT],kill_paid[CP_STAGE_MAX_WILD],ally_paid[CP_STAGE_SPECIES_COUNT];
     int used,eggs,lost,hatchling,n_nodes,inspect_id,inspect_ticks;
     int tiers_on,clues; /* A25: tier forms are built but off by default; fossil/bone clues (2 unlock a recipe) */
     float adult_hp;

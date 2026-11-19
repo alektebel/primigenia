@@ -124,6 +124,35 @@ static int good_cell(const CpStageWorld *w,float x,float z){
 static uint32_t mix32(uint32_t a){
     a^=a>>16;a*=0x7feb352du;a^=a>>15;a*=0x846ca68bu;a^=a>>16;return a;
 }
+/* A site a two-legged body can also stand on and leave: fine slopes (0.25 m stencil, the one the planner holds bodies to) stay
+ * gentle at the site and 2 m around it. */
+static int site_ok(const CpStageWorld *w,float x,float z){
+    static const float off[5][2]={{0,0},{2,0},{-2,0},{0,2},{0,-2}};
+    for(int k=0;k<5;k++){
+        const float px=x+off[k][0],pz=z+off[k][1];
+        const float gx=(cp_stage_ground(w,px+.25f,pz)-cp_stage_ground(w,px-.25f,pz))*2,gz=(cp_stage_ground(w,px,pz+.25f)-cp_stage_ground(w,px,pz-.25f))*2;
+        if(len2(gx,gz)>.30f)return 0;
+    }
+    return 1;
+}
+/* The planner takes a straight line whenever its centre line is gentle, and a big body (4 m, six or eight legs) swings wide of it: it
+ * then walks onto the steep face that runs beside the line and stalls. A site whose straight line to the nest has a steep face within
+ * 4 m of it is not a good shard site (the nest-star routes are certified for every body). */
+static int shortcut_trap(const CpStageWorld *w,float x,float z){
+    const float dx=x-w->setup.nest_x,dz=z-w->setup.nest_z,d=len2(dx,dz);
+    if(d<1.f)return 0;
+    const float px=-dz/d*4.f,pz=dx/d*4.f;
+    const int steps=(int)(d/2.f)+1;
+    for(int i=0;i<=steps;i++){
+        const float t=(float)i/steps;
+        for(int side=-1;side<=1;side+=2){
+            const float cx=w->setup.nest_x+dx*t+px*side,cz=w->setup.nest_z+dz*t+pz*side;
+            const float gx=(cp_stage_ground(w,cx+.25f,cz)-cp_stage_ground(w,cx-.25f,cz))*2,gz=(cp_stage_ground(w,cx,cz+.25f)-cp_stage_ground(w,cx,cz-.25f))*2;
+            if(len2(gx,gz)>1.0f)return 1;
+        }
+    }
+    return 0;
+}
 /* Nearest reachable cell to (tx,tz) within `reach` metres; -1 when none. Ties go to the lowest index (rings, then row-major). */
 static int snap(const CpStageWorld *w,int dim,float tx,float tz,float reach,const float (*taken)[2],int n_taken){
     const int ci=cell_of(w,tx),cj=cell_of(w,tz),rmax=(int)(reach/CELL)+1;
@@ -132,7 +161,7 @@ static int snap(const CpStageWorld *w,int dim,float tx,float tz,float reach,cons
         const int i=ci+di,j=cj+dj;
         if(i<1||j<1||i>=dim-1||j>=dim-1||!g_ok[j*dim+i]||!g_seen[j*dim+i])continue;
         const float x=centre(w,i),z=centre(w,j),d=(x-tx)*(x-tx)+(z-tz)*(z-tz);
-        if(d>=bd)continue;
+        if(d>=bd||!site_ok(w,x,z)||shortcut_trap(w,x,z))continue;
         int near=0;
         for(int k=0;k<n_taken;k++)if(len2(x-taken[k][0],z-taken[k][1])<70.f)near=1;
         if(near)continue;
@@ -225,7 +254,9 @@ void cp_stage_secrets_reset(CpStageWorld *w){
     w->clock=(uint32_t)(w->setup.start_clock<0?0:w->setup.start_clock)%CP_STAGE_DAY_TICKS;
     if(!w->setup.secrets||w->setup.terrain!=CP_STAGE_FIELD)return;
     const CpStageCave *c=&w->setup.cave;
-    if(c->on){
+    int have_cave=0;
+    if((w->setup.secrets&CP_SECRETS_CAVE)&&c->on){
+        have_cave=1;
         s->cave_x=c->x;s->cave_z=c->z;
         const float n=len2(c->fx,c->fz);
         s->cave_fx=n>0?c->fx/n:0;s->cave_fz=n>0?c->fz/n:1;
@@ -234,25 +265,24 @@ void cp_stage_secrets_reset(CpStageWorld *w){
         s->cave_floor=cp_stage_ground(w,c->x,c->z);
         s->chamber_x=c->x-s->cave_fx*(s->cave_length+s->cave_radius);
         s->chamber_z=c->z-s->cave_fz*(s->cave_length+s->cave_radius);
-        s->cave_on=1;
     }
-    /* shards are placed on the original heights, before the cave override can change any cell */
-    const int cave=s->cave_on;
-    s->cave_on=0;
-    const int rc=place_shards(w);
-    s->cave_on=cave;
-    if(rc){s->on=0;return;}
-    s->on=1;
-    /* the fossil node inside the chamber: the extra slot after the eight random ones */
-    if(s->cave_on&&w->parts.n_nodes<=CP_STAGE_PART_NODES){
-        const int i=w->parts.n_nodes++;
-        w->parts.nodes[i]=(CpStagePartNode){s->chamber_x-s->cave_fx*2.5f,s->chamber_z-s->cave_fz*2.5f,CP_PART_FOSSIL,0};
+    if(w->setup.secrets&CP_SECRETS_SHARDS){
+        /* shards are placed on the original heights, before the cave override can change any cell */
+        if(!place_shards(w))s->on=1;
+    }
+    if(have_cave){
+        s->cave_on=1;
+        /* the fossil node inside the chamber: the extra slot after the eight random ones */
+        if(w->parts.n_nodes<=CP_STAGE_PART_NODES){
+            const int i=w->parts.n_nodes++;
+            w->parts.nodes[i]=(CpStagePartNode){s->chamber_x-s->cave_fx*2.5f,s->chamber_z-s->cave_fz*2.5f,CP_PART_FOSSIL,0};
+        }
     }
 }
 
 void cp_stage_secrets_step(CpStageWorld *w){
     CpStageSecrets *s=&w->secrets;
-    if(!s->on||!s->cave_on)return;
+    if(!s->cave_on)return;
     const int where=cp_stage_in_cave(w,w->player.x,w->player.z);
     if(where>=1&&!s->cave_entered){
         s->cave_entered=1;

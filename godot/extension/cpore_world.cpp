@@ -158,7 +158,7 @@ bool setup_from_dict(const Dictionary &d, CpStageSetup &s) {
             s.obstacles[i] = c;
         }
     }
-    if (d.has("secrets")) { if (!cpore::to_int(d["secrets"], 0, 1, n)) return false; s.secrets = int(n); }
+    if (d.has("secrets")) { if (!cpore::to_int(d["secrets"], 0, 3, n)) return false; s.secrets = int(n); }
     if (d.has("start_clock")) { if (!cpore::to_int(d["start_clock"], 0, CP_STAGE_DAY_TICKS - 1, n)) return false; s.start_clock = int(n); }
     if (d.has("cave")) {
         // {x, z, fx, fz} of the terrain cave record (map metres and the outward unit vector); half/length/radius optional (m)
