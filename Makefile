@@ -324,9 +324,19 @@ godot-studio-test:
 godot-creature-test:
 	nice -n 10 timeout 600 $(GODOT) --headless --path godot --import >/dev/null 2>&1 || true
 	nice -n 10 timeout 600 $(GODOT) --headless --path godot --script res://creature/tests/test_creature.gd
+	nice -n 10 timeout 600 $(GODOT) --headless --path godot --script res://creature/tests/test_realism.gd
 godot-creature-evidence:
 	nice -n 10 timeout 600 $(GODOT) --headless --path godot --import >/dev/null 2>&1 || true
 	LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 xvfb-run -a $(GODOT) --rendering-driver opengl3 --max-fps 15 --path godot --script res://creature/tools/render_evidence.gd
+# Opt-in high-quality renderer tier (Forward+ / Vulkan: SSAO, SSIL, soft shadows, TAA; docs/godot/CREATURE-REALISM.md).
+# Needs a Vulkan GPU, so run it on the desktop; the default tier stays GL Compatibility. Studio = the game's creator screen.
+.PHONY: godot-play-hq godot-creature-realism-shots
+godot-play-hq: godot
+	$(GODOT) --rendering-method forward_plus --rendering-driver vulkan --path godot
+# Before/after JPGs of the four pilot creatures (software GL; CPORE_REALISM=0 gives the old look). Usage: make godot-creature-realism-shots TAG=after
+godot-creature-realism-shots:
+	LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 900 xvfb-run -a $(GODOT) --rendering-driver opengl3 --max-fps 15 --path godot \
+	  --script res://creature/tools/realism_shots.gd -- $(CURDIR)/docs/evidence/godot/creature-realism $(or $(TAG),after)
 .PHONY: godot-loco-test
 godot-loco-test:
 	cd godot && timeout 300 nice -n 10 timeout 600 $(GODOT) --headless --path . --script locomotion/test/run_tests.gd

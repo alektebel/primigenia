@@ -21,6 +21,10 @@ var full := false
 static func available() -> bool:
 	return ResourceLoader.exists(ENV_SCRIPT) and ResourceLoader.exists(INC)
 
+func _ready() -> void:
+	if ResourceLoader.exists("res://creature/render_tier.gd"):
+		load("res://creature/render_tier.gd").apply_viewport(get_viewport())
+
 func _init(blade_count := 52000) -> void:
 	name = "StudioEnv"
 	full = available()

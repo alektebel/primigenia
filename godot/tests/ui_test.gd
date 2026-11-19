@@ -383,6 +383,9 @@ func test_menu_and_onboarding() -> void:
 	m.set_value("mute", true)
 	ok(AudioServer.is_bus_mute(0), "Mute writes through")
 	m.set_value("mute", false)
+	m.set_choice("renderer", 2)
+	ok(g.settings["renderer"] == "compatibility" and m.choice_index(m.row_by_key("renderer")) == 2, "the Renderer row writes the [game] renderer key (applies on restart)")
+	m.set_choice("renderer", 0)
 	# Numbers, outlines and less motion are plain settings
 	m.set_choice("numbers", 1)
 	ok(g.settings["numbers"] == true and Style.numbers(), "Numbers: On is a setting")

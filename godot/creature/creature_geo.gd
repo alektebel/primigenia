@@ -12,6 +12,8 @@ var pos := PackedVector3Array()
 var nrm := PackedVector3Array()
 var idx := PackedInt32Array()
 var skin := PackedFloat32Array()
+var uv := PackedVector2Array()      ## optional: body tube (arc along spine, arc around), keratin (along, 0)
+var uv2 := PackedVector2Array()     ## optional: body tube (ring radius, spine parameter 0 tail .. 1 head)
 
 const X0 := Vector3(1, 0, 0)
 const Y := Vector3(0, 1, 0)
@@ -23,6 +25,8 @@ func clone() -> CreatureGeo:
 	g.nrm = nrm.duplicate()
 	g.idx = idx.duplicate()
 	g.skin = skin.duplicate()
+	g.uv = uv.duplicate()
+	g.uv2 = uv2.duplicate()
 	return g
 
 
@@ -108,6 +112,108 @@ func skinify(off: Vector3, d = null) -> CreatureGeo:
 	return self
 
 
+## Keratin parts: UV.x = position along the principal axis of the mesh, 0 at the wide root, 1 at the tip.
+## Power iteration on the covariance (a few ms for the whole creature), nothing per creature is stored.
+func compute_along() -> void:
+	var n := pos.size()
+	if n < 4:
+		return
+	var c := Vector3.ZERO
+	for p in pos:
+		c += p
+	c /= n
+	var xx := 0.0
+	var xy := 0.0
+	var xz := 0.0
+	var yy := 0.0
+	var yz := 0.0
+	var zz := 0.0
+	for p in pos:
+		var d := p - c
+		xx += d.x * d.x
+		xy += d.x * d.y
+		xz += d.x * d.z
+		yy += d.y * d.y
+		yz += d.y * d.z
+		zz += d.z * d.z
+	var ax := Vector3(1, .7, .4).normalized()
+	for it in 6:
+		ax = Vector3(xx * ax.x + xy * ax.y + xz * ax.z, xy * ax.x + yy * ax.y + yz * ax.z, xz * ax.x + yz * ax.y + zz * ax.z).normalized()
+	var t := PackedFloat32Array()
+	t.resize(n)
+	var lo := 1e9
+	var hi := -1e9
+	for i in n:
+		var v := (pos[i] - c).dot(ax)
+		t[i] = v
+		lo = minf(lo, v)
+		hi = maxf(hi, v)
+	var span := maxf(hi - lo, 1e-6)
+	# The root is the end with the larger cross-section.
+	var r_lo := 0.0
+	var r_hi := 0.0
+	var n_lo := 0
+	var n_hi := 0
+	for i in n:
+		var f := (t[i] - lo) / span
+		var d := pos[i] - c
+		var rad := (d - ax * d.dot(ax)).length()
+		if f < .3:
+			r_lo += rad
+			n_lo += 1
+		elif f > .7:
+			r_hi += rad
+			n_hi += 1
+	var flip := (r_hi / maxf(n_hi, 1)) > (r_lo / maxf(n_lo, 1))
+	uv.resize(n)
+	for i in n:
+		var f := (t[i] - lo) / span
+		uv[i] = Vector2(1.0 - f if flip else f, 0.0)
+
+
+## Iris meshes: UV = coordinates in the plane of the disc, scaled to [-1, 1] at the rim, +Y of the part up the disc.
+## The disc plane is the one of smallest variance (power iteration on tr(C) I - C).
+func compute_disc() -> void:
+	var n := pos.size()
+	if n < 4:
+		return
+	var c := Vector3.ZERO
+	for p in pos:
+		c += p
+	c /= n
+	var xx := 0.0
+	var xy := 0.0
+	var xz := 0.0
+	var yy := 0.0
+	var yz := 0.0
+	var zz := 0.0
+	for p in pos:
+		var d := p - c
+		xx += d.x * d.x
+		xy += d.x * d.y
+		xz += d.x * d.z
+		yy += d.y * d.y
+		yz += d.y * d.z
+		zz += d.z * d.z
+	var tr := xx + yy + zz
+	var ax := Vector3(.3, .5, 1).normalized()
+	for it in 8:
+		ax = Vector3((tr - xx) * ax.x - xy * ax.y - xz * ax.z, -xy * ax.x + (tr - yy) * ax.y - yz * ax.z, -xz * ax.x - yz * ax.y + (tr - zz) * ax.z).normalized()
+	var up := Y - ax * Y.dot(ax)
+	if up.length_squared() < 1e-4:
+		up = X0 - ax * X0.dot(ax)
+	up = up.normalized()
+	var right := up.cross(ax).normalized()
+	var rmax := 1e-6
+	for p in pos:
+		var d := p - c
+		rmax = maxf(rmax, Vector2(d.dot(right), d.dot(up)).length())
+	uv.resize(n)
+	for i in n:
+		var d := pos[i] - c
+		uv[i] = Vector2(d.dot(right), d.dot(up)) / rmax
+
+
 func with_index_subset(from: int) -> CreatureGeo:
 	var g := clone()
 	g.idx = idx.slice(from)
@@ -121,6 +227,8 @@ func append(other: CreatureGeo) -> void:
 	skin.append_array(other.skin)
 	for i in other.idx:
 		idx.append(base + i)
+	uv.append_array(other.uv)
+	uv2.append_array(other.uv2)
 
 
 func aabb() -> AABB:
@@ -167,6 +275,10 @@ func to_arrays(bones := PackedInt32Array(), weights := PackedFloat32Array()) -> 
 			sk[i * 4 + 2] = pos[i].z
 			sk[i * 4 + 3] = nrm[i].y * .9
 	arrays[Mesh.ARRAY_CUSTOM0] = sk
+	if uv.size() == pos.size():
+		arrays[Mesh.ARRAY_TEX_UV] = uv
+	if uv2.size() == pos.size():
+		arrays[Mesh.ARRAY_TEX_UV2] = uv2
 	if not bones.is_empty():
 		arrays[Mesh.ARRAY_BONES] = bones
 		arrays[Mesh.ARRAY_WEIGHTS] = weights

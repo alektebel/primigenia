@@ -24,6 +24,7 @@ static func make_environment(exposure: float = Look.TONEMAP_EXPOSURE, white: flo
 	env.ssao_enabled = false
 	env.ssr_enabled = false
 	env.adjustment_enabled = false
+	RenderTier.apply_environment(env)   # no-op unless launched with --rendering-method forward_plus
 	return env
 
 static func make_sun() -> DirectionalLight3D:
@@ -37,4 +38,5 @@ static func make_sun() -> DirectionalLight3D:
 	sun.directional_shadow_max_distance = 80.0
 	sun.shadow_bias = 0.03          # creature_preview.gd values: low bodies (Babosa) must not float above their shadow
 	sun.shadow_normal_bias = 0.6
+	RenderTier.apply_sun(sun)
 	return sun

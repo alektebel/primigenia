@@ -16,7 +16,8 @@ const SETTINGS_PATH := "user://settings.cfg"
 var settings: Dictionary = {"seed": 1, "grass": 252000, "quality": "auto", "sun_shadows": false, "wild": true,
 	"controls/strafe_latch": true, "controls/tank": false, "camera/kick": false,
 	"ui_scale": 1.0, "language": "", "names_always": false, "numbers": false, "strong_outlines": false, "reduced_motion": false,
-	"onboarding": 0, "minimap": true}
+	"onboarding": 0, "minimap": true,
+	"renderer": "auto"}   # auto | forward_plus | compatibility, read at launch by RenderChoice (relaunches into Forward+ on discrete GPUs)
 var terrain: Dictionary = {}
 var data = null          # TerrainData
 var stage = null         # StageWorld while the island runs
@@ -32,6 +33,9 @@ var studio_dir := "user://studio"   # where the studio saves and Play looks for 
 
 func _ready() -> void:
 	load_settings()
+	if RenderChoice.maybe_relaunch():
+		get_tree().quit()
+		return
 
 func load_settings() -> void:
 	var cfg := ConfigFile.new()

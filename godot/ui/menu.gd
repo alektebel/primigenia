@@ -68,6 +68,7 @@ func _build_rows() -> void:
 		{"key": "strong_outlines", "label": "outlines", "kind": "choice", "options": ["off", "on"]},
 		{"key": "reduced_motion", "label": "less_motion", "kind": "choice", "options": ["off", "on"]},
 		{"key": "minimap", "label": "minimap", "kind": "choice", "options": ["off", "on"]},
+		{"key": "renderer", "label": "renderer", "kind": "choice", "options": ["r_auto", "r_high", "r_compat"]},
 		{"key": "master", "label": "master", "kind": "slider", "min": 0.0, "max": 1.0},
 		{"key": "music", "label": "music", "kind": "slider", "min": 0.0, "max": 1.0},
 		{"key": "sfx", "label": "sfx", "kind": "slider", "min": 0.0, "max": 1.0},
@@ -112,12 +113,16 @@ func value_of(key: String) -> Variant:
 		return audio.is_muted() if audio else false
 	if key == "language":
 		return Strings.language()
+	if key == "renderer":
+		return str(_game_settings().get("renderer", "auto"))
 	return _game_settings().get(key, false if key != "ui_scale" else 1.0)
 
 func choice_index(row: Dictionary) -> int:
 	var v: Variant = value_of(row.key)
 	if row.key == "language":
 		return 1 if v == "es" else 0
+	if row.key == "renderer":
+		return {"auto": 0, "forward_plus": 1, "compatibility": 2}.get(str(v), 0)
 	return 1 if bool(v) else 0
 
 ## Write a setting through the right place: audio buses to the audio manager, the rest to Game.settings (saved).
@@ -140,6 +145,8 @@ func set_value(key: String, v: Variant) -> void:
 func set_choice(key: String, index: int) -> void:
 	if key == "language":
 		set_value(key, "es" if index == 1 else "en")
+	elif key == "renderer":
+		set_value(key, ["auto", "forward_plus", "compatibility"][clampi(index, 0, 2)])     # read at launch: applies on restart
 	else:
 		set_value(key, index == 1)
 

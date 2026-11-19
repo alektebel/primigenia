@@ -71,6 +71,8 @@ func place(pos: Vector3, ext: float = -1.0) -> void:
 ## 0.12 m above the water level, so a ring on the river bed would be hidden under them). Game.visual_ground does not
 ## exist on this branch; when it does, this is the place to call it.
 static func visual_ground(x: float, z: float) -> float:
+	if Game.has_method("visual_ground"):
+		return Game.visual_ground(x, z)
 	var g: float = Game.ground(x, z)
 	var d = Game.data
 	if d == null:
