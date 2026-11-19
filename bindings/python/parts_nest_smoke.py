@@ -34,4 +34,5 @@ assert w.command(f'buy_part {part["id"]}') == 0
 assert w.observe()["social"]["dna_total"] == total
 assert w.edit(body) == 0
 assert len(w.lineage()["generations"]) == 2
+assert w.apply(body) == 0 and len(w.lineage()["generations"]) == 2  # cosmetic apply is free
 print("Python parts/nest smoke: passed")

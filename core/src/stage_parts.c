@@ -120,6 +120,7 @@ void cp_stage_parts_kill(CpStageWorld *w,int i){
  }
  /* No hash block on a legacy kill with no drop: the stream is folded in on first use. */
 }
+void cp_stage_set_tiers(CpStageWorld *w,int on){if(!w)return;w->parts.tiers_on=on?1:0;if(on)w->parts.used=1;w->hash=cp_stage_hash(w);}
 int cp_stage_part_buy(CpStageWorld *w,int id,int kind){
  if(!w||id<0||id>=CP_STAGE_PART_COUNT||kind<0||kind>2)return -1;
  if(!cp_stage_at_nest(w))return CP_STAGE_ERR_NOT_AT_NEST;
@@ -130,6 +131,7 @@ int cp_stage_part_buy(CpStageWorld *w,int id,int kind){
   if(!(p->owned&bit))return CP_STAGE_ERR_NOT_KNOWN;
   if(kind==1){if(p->level[id]>=5)return -1;cost=CP_STAGE_PARTS[id].cost*(1<<p->level[id]);}
   else{
+   if(!p->tiers_on)return -1;
    int t=p->tier[id];const CpStagePartDef *d=&CP_STAGE_PARTS[id];
    if(t>=2||!(d->mouth||d->charge||d->spit||d->tail||d->guard)||p->hits[id]<(t?75u:25u)||p->wins[id]<(t?10u:3u))return -1;
    cost=t?150:60;
@@ -188,7 +190,7 @@ void cp_stage_parts_step(CpStageWorld *w){
  static const char *const bones[]={"romo","zanca","pua","fauces","ojo","pata","placa","tail_spike"};
  const char *id=node->kind==CP_PART_FOSSIL?fossils[pick%8]:bones[pick%8];
  (void)roll; /* fixed two draws; surface biome currently guarantees a catalogue result */
- node->inspected=1;dna(w,8,node->kind==CP_PART_FOSSIL?CP_DNA_FOSSIL:CP_DNA_OLD_CARCASS);cp_stage_part_find(w,cp_stage_part_id(id),node->kind);
+ node->inspected=1;p->clues++;dna(w,8,node->kind==CP_PART_FOSSIL?CP_DNA_FOSSIL:CP_DNA_OLD_CARCASS);cp_stage_part_find(w,cp_stage_part_id(id),node->kind);
  event(w,CP_STAGE_EV_INSPECTED,2999+p->inspect_id,node->kind,8);p->inspect_id=p->inspect_ticks=0;
 }
 static void hu(uint64_t *h,uint32_t v){for(int i=0;i<4;i++){*h^=(uint8_t)(v>>(8*i));*h*=1099511628211ULL;}}
@@ -199,6 +201,7 @@ uint64_t cp_stage_parts_hash(const CpStageWorld *w){
  for(int i=0;i<CP_STAGE_PART_COUNT;i++){hu(&h,p->level[i]);hu(&h,p->tier[i]);hu(&h,p->hits[i]);hu(&h,p->wins[i]);hu(&h,p->kills[i]);}
  for(int i=0;i<CB_MOVE_COUNT;i++){hu(&h,p->move_hits[i]);hu(&h,p->move_wins[i]);}
  for(int i=0;i<CP_STAGE_MAX_WILD;i++)hu(&h,p->kill_paid[i]);
+ if(p->tiers_on||p->clues){hu(&h,0x41323521u);hu(&h,p->tiers_on);hu(&h,p->clues);}
  hu(&h,p->eggs);hu(&h,p->lost);hu(&h,p->hatchling);hu(&h,p->n_nodes);hu(&h,p->inspect_id);hu(&h,p->inspect_ticks);
  uint32_t f;memcpy(&f,&p->adult_hp,4);hu(&h,f);
  for(int i=0;i<p->n_nodes;i++){const CpStagePartNode *n=&p->nodes[i];memcpy(&f,&n->x,4);hu(&h,f);memcpy(&f,&n->z,4);hu(&h,f);hu(&h,n->kind);hu(&h,n->inspected);}return h;
@@ -211,7 +214,7 @@ static const char *form_name(const CpStagePartDef *d,int tier){
 int cp_stage_parts_json(const CpStageWorld *w,char *out,size_t cap){
  size_t n=0;const CpStageParts *p=&w->parts;
 #define ADD(...) do{int k=snprintf(out+n,cap>n?cap-n:0,__VA_ARGS__);if(k<0||(size_t)k>=cap-n)return -1;n+=(size_t)k;}while(0)
- ADD("{\"inspecting\":%d,\"inspect_ticks\":%d,\"eggs\":%d,\"lost\":%s,\"hatchling_ticks\":%d,\"can_edit\":%s,\"dna_balance\":%d,\"discovered\":[",p->inspect_id?2999+p->inspect_id:0,p->inspect_ticks,p->eggs,p->lost?"true":"false",p->hatchling,cp_stage_at_nest(w)?"true":"false",w->social.dna_balance);
+ ADD("{\"inspecting\":%d,\"inspect_ticks\":%d,\"eggs\":%d,\"lost\":%s,\"hatchling_ticks\":%d,\"tiers_enabled\":%s,\"clues\":%d,\"recipes\":%d,\"can_edit\":%s,\"dna_balance\":%d,\"discovered\":[",p->inspect_id?2999+p->inspect_id:0,p->inspect_ticks,p->eggs,p->lost?"true":"false",p->hatchling,p->tiers_on?"true":"false",p->clues,p->clues/2,cp_stage_at_nest(w)?"true":"false",w->social.dna_balance);
  int comma=0;for(int i=0;i<CP_STAGE_PART_COUNT;i++)if(p->discovered&(1ULL<<i)){
   const CpStagePartDef *d=&CP_STAGE_PARTS[i];int t=p->tier[i];
   ADD("%s{\"id\":\"%s\",\"index\":%d,\"cost\":%d,\"owned\":%s,\"level\":%d,\"tier\":%d,\"level_price\":%d,\"tier_price\":%d,\"hits\":%u,\"fights\":%u,\"need_hits\":%d,\"need_fights\":%d,\"form\":\"%s\",\"next_form\":\"%s\"}",comma?",":"",d->id,i,d->cost,(p->owned&(1ULL<<i))?"true":"false",p->level[i],t,p->level[i]<5?d->cost*(1<<p->level[i]):0,t<2?(t?150:60):0,p->hits[i],p->wins[i],t?75:25,t?10:3,form_name(d,t),form_name(d,t+1));comma=1;

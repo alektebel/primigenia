@@ -36,7 +36,9 @@ enum { CP_STAGE_ERR_ON_COOLDOWN=-8, CP_STAGE_ERR_NOT_EQUIPPED=-9, CP_STAGE_ERR_B
        CP_STAGE_ERR_NO_STAMINA=-19,   /* not enough stamina for the skill */
        CP_STAGE_ERR_BUSY=-20,
        CP_STAGE_ERR_DIET=-21,         /* eat: this body cannot digest that (a herbivore and meat) */
-       CP_STAGE_ERR_FULL=-22 };      /* eat: the food meter is full */
+       CP_STAGE_ERR_FULL=-22,
+       CP_STAGE_ERR_NEEDS_EVOLVE=-23, /* nest apply: the change alters parts, levels or tiers; it needs Evolve */
+       CP_STAGE_ERR_NO_DNA=-24 };    /* nest evolve: the DNA balance does not cover the purchases */      /* eat: the food meter is full */
 enum { CP_DIET_HERBIVORE, CP_DIET_CARNIVORE, CP_DIET_OMNIVORE };
 #define CP_SOC_CARCASS_BITES 4    /* bites in a carcass */
 #define CP_SOC_BITE_TICKS 10      /* ticks per bite */
@@ -207,6 +209,7 @@ typedef struct {
     uint32_t move_hits[CB_MOVE_COUNT],move_wins[CB_MOVE_COUNT];
     int dry[4],kill_paid[CP_STAGE_MAX_WILD],ally_paid[4];
     int used,eggs,lost,hatchling,n_nodes,inspect_id,inspect_ticks;
+    int tiers_on,clues; /* A25: tier forms are built but off by default; fossil/bone clues (2 unlock a recipe) */
     float adult_hp;
     CpStagePartNode nodes[CP_STAGE_PART_NODES];
 } CpStageParts;
@@ -251,7 +254,9 @@ int cp_stage_walkable_from_nest(const CpStageWorld *w,float x,float z);
 int cp_stage_part_id(const char *id);
 int cp_stage_part_find(CpStageWorld *w,int part,int source);
 int cp_stage_part_buy(CpStageWorld *w,int part,int kind); /* 0 part, 1 next level, 2 next tier */
-int cp_stage_edit(CpStageWorld *w,const char *genome);
+int cp_stage_edit(CpStageWorld *w,const char *genome);  /* Evolve: buys what the genome adds, then cp_stage_evolve once */
+int cp_stage_apply(CpStageWorld *w,const char *genome); /* free repaint/rearrange at the nest: no generation */
+void cp_stage_set_tiers(CpStageWorld *w,int on);
 int cp_stage_start_genome(CpStageWorld *w,const char *genome);
 void cp_stage_genome_tiers(const char *body,uint8_t tiers[CB_PART_COUNT]);
 int cp_stage_genome_form(const char *json,CpLineageForm *form); /* validates /4 and /5, derives profile in C */

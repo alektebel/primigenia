@@ -736,9 +736,9 @@ static void start(CpStageWorld *w,int index){
         s.c[i].team=(uint8_t)i;
     }
     cp_combat_reset(&w->combat,&s);
-    if(w->ancestry.count)cp_stage_genome_tiers(w->ancestry.forms[w->ancestry.count-1].form.body,w->combat.c[0].tiers);
+    if(w->ancestry.count&&w->parts.tiers_on)cp_stage_genome_tiers(w->ancestry.forms[w->ancestry.count-1].form.body,w->combat.c[0].tiers);
     int generation=cp_stage_cousin_generation(w,index+1);
-    if(generation>0)cp_stage_genome_tiers(w->ancestry.forms[generation-1].form.body,w->combat.c[1].tiers);
+    if(generation>0&&w->parts.tiers_on)cp_stage_genome_tiers(w->ancestry.forms[generation-1].form.body,w->combat.c[1].tiers);
     path_clear(w);
     CpBot b;
     int kind=w->setup.wild[index].bot;
@@ -876,7 +876,8 @@ static int order_apply(CpStageWorld *w,const CpStageInput *a){
     if(a->verb==CP_STAGE_ATTACK&&w->active>=0&&w->combat.c[0].cd[a->move])return CP_STAGE_ERR_ON_COOLDOWN;
     if(a->verb==CP_STAGE_DODGE&&(a->dir<0||a->dir>7))return -1;
     if(a->verb==CP_STAGE_HEADING&&a->hx==0&&a->hz==0)return -1;
-    if(w->active>=0&&(a->verb==CP_STAGE_ATTACK||a->verb==CP_STAGE_APPROACH)&&a->target!=w->active+1)return -2;
+    if(w->active>=0&&a->verb==CP_STAGE_APPROACH&&a->target!=w->active+1)return CP_STAGE_ERR_IN_FIGHT; /* same as befriend/observe/gift */
+    if(w->active>=0&&a->verb==CP_STAGE_ATTACK&&a->target!=w->active+1)return -2;
     if(w->setup.terrain==CP_STAGE_FIELD&&w->active<0&&(a->verb==CP_STAGE_GO||a->verb==CP_STAGE_GO_NEST)){
         /* the same GO again while its path runs keeps the path (clients may repeat the order every frame) */
         if(w->n_path>0&&w->order.verb==a->verb&&(a->verb==CP_STAGE_GO_NEST||(w->order.x==a->x&&w->order.z==a->z)))return 0;

@@ -1009,6 +1009,18 @@ static void double_ko_is_consistent(void) {
     }
     assert(saw_ko);
 }
+static void approach_in_fight(void){
+    /* during a fight, approach on another creature is in_fight (-14), like befriend/observe/gift */
+    CpStageSetup su;cp_stage_setup_default(&su,4);su.terrain=CP_STAGE_FLAT;su.n_obstacles=0;su.n=3;
+    for(int i=0;i<3;i++){su.wild[i].profile=CP_STAGE_SPECIES[0].profile;su.wild[i].species=0;su.wild[i].x=su.nest_x+6+i*4;su.wild[i].z=su.nest_z+6;su.wild[i].home_x=su.wild[i].x;su.wild[i].home_z=su.wild[i].z;}
+    assert(cp_stage_reset(&w,&su)==0);
+    assert(cp_stage_command(&w,"attack #1 bite")==0);
+    for(int i=0;i<400&&w.active<0;i++)cp_stage_step(&w,NULL);
+    assert(w.active==0);
+    assert(cp_stage_command(&w,"approach #2")==CP_STAGE_ERR_IN_FIGHT);
+    assert(cp_stage_command(&w,"approach #999")==-2);
+    assert(cp_stage_command(&w,"approach #1")==0);
+}
 int main(void) {
     validation();
     motion_law();
@@ -1024,6 +1036,7 @@ int main(void) {
     nav_contract();
     loadout_contract();
     double_ko_is_consistent();
+    approach_in_fight();
     reset();
     CpStageInput a={
         0

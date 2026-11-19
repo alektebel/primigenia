@@ -138,21 +138,58 @@ int cp_stage_genome_form(const char *json,CpLineageForm *out){
  *out=f;ok=1;
  done:free(j);return ok?0:-1;
 }
+/* Evolve: the only nest action that spends DNA and starts a generation. Everything the genome adds
+ * (new parts, higher levels, tiers when enabled) is priced here and charged atomically with the evolve. */
 int cp_stage_edit(CpStageWorld *w,const char *genome){
  if(!cp_stage_at_nest(w))return CP_STAGE_ERR_NOT_AT_NEST;
  CpLineageForm f;if(cp_stage_genome_form(genome,&f))return -1;
- Json *j=calloc(1,sizeof *j);if(!j)return -1;j->s=genome;if(value(j)<0){free(j);return -1;}
- int parts=field(j,0,"parts");
- for(int i=parts+1;i<j->t[parts].next;i=j->t[i].next){char id[80];text(j,field(j,i,"type"),id,sizeof id);int p=cp_stage_part_id(id);double level=1,tier=0;
-  int a=field(j,i,"level");if(a>=0)num(j,a,1,5,&level);a=field(j,i,"tier");if(a>=0)num(j,a,0,2,&tier);
-  if(!(w->parts.owned&(1ULL<<p))||level!=w->parts.level[p]||tier!=w->parts.tier[p]){free(j);return CP_STAGE_ERR_NOT_KNOWN;}
- }
- free(j);
  if(!w->ancestry.count)return -1;
- int rc=cp_stage_evolve(w,&f);if(rc)return rc;
- w->parts.used=1;w->parts.adult_hp=f.profile.hp;
- if(w->parts.hatchling){w->player.profile.hp=f.profile.hp*3.f/5.f;w->player.hp=w->player.profile.hp;}
- w->events[w->ev_total%CP_STAGE_MAX_EVENTS]=(CpStageEvent){w->tick,CP_STAGE_EV_EDIT_ACCEPTED,0,0,0,0,w->player.x,w->player.z};w->ev_total++;w->hash=cp_stage_hash(w);return 0;
+ Json *j=calloc(1,sizeof *j);if(!j)return -1;j->s=genome;if(value(j)<0){free(j);return -1;}
+ CpStageParts *pp=&w->parts;int reqL[CP_STAGE_PART_COUNT]={0},reqT[CP_STAGE_PART_COUNT]={0};
+ int parts=field(j,0,"parts"),rc=0;
+ for(int i=parts+1;i<j->t[parts].next;i=j->t[i].next){
+  char id[80];text(j,field(j,i,"type"),id,sizeof id);int p=cp_stage_part_id(id);double level=1,tier=0;
+  int a=field(j,i,"level");if(a>=0)num(j,a,1,5,&level);a=field(j,i,"tier");if(a>=0)num(j,a,0,2,&tier);
+  if(p<0||!(pp->discovered&(1ULL<<p))){rc=CP_STAGE_ERR_NOT_KNOWN;break;}
+  if(reqL[p]&&(reqL[p]!=(int)level||reqT[p]!=(int)tier)){rc=-1;break;}
+  reqL[p]=(int)level;reqT[p]=(int)tier;
+ }
+ free(j);if(rc)return rc;
+ int cost=0;
+ for(int p=0;p<CP_STAGE_PART_COUNT;p++)if(reqL[p]){
+  const CpStagePartDef *d=&CP_STAGE_PARTS[p];int owned=(pp->owned>>p)&1,cur=owned?pp->level[p]:1,ct=owned?pp->tier[p]:0;
+  if(!owned)cost+=d->cost;
+  if(reqL[p]<cur||reqT[p]<ct)return -1;
+  for(int l=cur;l<reqL[p];l++)cost+=d->cost*(1<<l);
+  if(reqT[p]>ct){
+   if(!pp->tiers_on||!(d->mouth||d->charge||d->spit||d->tail||d->guard))return -1;
+   for(int t=ct;t<reqT[p];t++){if(pp->hits[p]<(t?75u:25u)||pp->wins[p]<(t?10u:3u))return -1;cost+=t?150:60;}
+  }
+ }
+ if(cost>w->social.dna_balance)return CP_STAGE_ERR_NO_DNA;
+ CpStageParts saved=*pp;int balance=w->social.dna_balance;
+ for(int p=0;p<CP_STAGE_PART_COUNT;p++)if(reqL[p]){pp->owned|=1ULL<<p;pp->level[p]=(uint8_t)reqL[p];pp->tier[p]=(uint8_t)reqT[p];}
+ w->social.dna_balance-=cost;
+ int rc2=cp_stage_evolve(w,&f);
+ if(rc2){*pp=saved;w->social.dna_balance=balance;w->hash=cp_stage_hash(w);return rc2;}
+ w->social.used=1;pp->used=1;pp->adult_hp=f.profile.hp;
+ if(pp->hatchling){w->player.profile.hp=f.profile.hp*3.f/5.f;w->player.hp=w->player.profile.hp;}
+ w->events[w->ev_total%CP_STAGE_MAX_EVENTS]=(CpStageEvent){w->tick,CP_STAGE_EV_EDIT_ACCEPTED,0,0,0,(float)cost,w->player.x,w->player.z};w->ev_total++;w->hash=cp_stage_hash(w);return 0;
+}
+
+/* Repaint, rearrange and other cosmetic edits: free, any number of times, never a new generation.
+ * Rejected when the combat-relevant form (parts, levels, tiers, derived profile) would change. */
+int cp_stage_apply(CpStageWorld *w,const char *genome){
+ if(!cp_stage_at_nest(w))return CP_STAGE_ERR_NOT_AT_NEST;
+ if(!w->ancestry.count)return -1;
+ CpLineageForm f;if(cp_stage_genome_form(genome,&f))return -1;
+ CpLineageForm *cur=&w->ancestry.forms[w->ancestry.count-1].form;
+ const CpCombatProfile *a=&cur->profile,*b=&f.profile;
+ uint8_t ta[CB_PART_COUNT],tb[CB_PART_COUNT];cp_stage_genome_tiers(cur->body,ta);cp_stage_genome_tiers(f.body,tb);
+ if(memcmp(cur->parts,f.parts,sizeof cur->parts)||memcmp(ta,tb,sizeof ta)||a->mouth!=b->mouth||a->charge!=b->charge||a->spit!=b->spit||a->tail!=b->tail||a->guard!=b->guard||a->hp!=b->hp||a->stamina!=b->stamina||a->speed!=b->speed)return CP_STAGE_ERR_NEEDS_EVOLVE;
+ memcpy(cur->body,f.body,strlen(f.body)+1);memcpy(cur->name,f.name,strlen(f.name)+1);
+ cur->profile.radius_cm=b->radius_cm;w->player.profile.radius_cm=b->radius_cm;w->setup.player.radius_cm=b->radius_cm;
+ w->hash=cp_stage_hash(w);return 0;
 }
 
 int cp_stage_start_genome(CpStageWorld *w,const char *genome){
