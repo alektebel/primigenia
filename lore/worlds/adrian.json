@@ -1,0 +1,339 @@
+{
+  "schema": "cpore.world/1",
+  "id": "adrian",
+  "kind": "third_party",
+  "system": {
+    "star": "Tau Ceti",
+    "position": "fictional",
+    "distance_ly_from_sol": 11.9
+  },
+  "name": {
+    "en": "Adrian (Tau Ceti)",
+    "es": "Adrian (Tau Ceti)"
+  },
+  "status": "draft",
+  "facts": [
+    {
+      "id": "F1",
+      "group": "star",
+      "claim": "Tau Ceti is a G8.5V main-sequence star with a luminosity of 0.58 L☉ and sub-solar metallicity of the mature system.",
+      "justification": "Spectral classification and metallicity match SIMBAD/VizieR data, explaining the quiet stellar output and lean heavy-element inventory. (inferred)",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 0.58,
+      "unit": "L☉",
+      "consequences": [
+        "Stable photoperiods enable scheduled breeding cycles.",
+        "Metal-poor crust limits transition-metal reliance, favoring organic chelators."
+      ]
+    },
+    {
+      "id": "F2",
+      "group": "orbit",
+      "claim": "Adrian orbits at a semi-major axis of 0.59 AU, completing a revolution in approximately 200 Earth days.",
+      "justification": "Kepler’s third law applied to a ~0.78 M☉ G8V primary yields this period, placing the planet near the inner habitable zone edge. (inferred)",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 200,
+      "unit": "d",
+      "consequences": [
+        "Predictable light cycles remove panic-adaptation.",
+        "Moderate irradiance (~0.85 S⊕) allows dense atmospheric blankets without runaway greenhouse."
+      ],
+      "refs": [
+        "kopparapu_2013"
+      ]
+    },
+    {
+      "id": "F3",
+      "group": "planet",
+      "claim": "The planet has a mass of 0.94 M⊕, radius of 0.96 R⊕, and surface gravity of 0.97 g.",
+      "justification": "Mass-radius scaling for an iron-silicate composition at this luminosity and age predicts near-Earth gravity. (inferred)",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 0.97,
+      "unit": "g",
+      "consequences": [
+        "Lighter skeletal frames avoid collapse under load.",
+        "High drag in dense air penalizes blunt morphologies but favors streamlined designs."
+      ],
+      "refs": [
+        "zeng_2016"
+      ]
+    },
+    {
+      "id": "F4",
+      "group": "planet",
+      "claim": "Axial tilt is 23° and the rotation period is 22.6 hours, producing stable diurnal cycles without tidal locking.",
+      "justification": "Protoplanetary disk angular momentum and late-stage impacts set this obliquity, while free rotation is dynamically stable at this flux. (inferred)",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 23,
+      "unit": "degrees",
+      "consequences": [
+        "Pronounced but non-extreme seasons drive metabolic pacing.",
+        "Stable day/night rhythm supports circadian photoperiodic regulation."
+      ],
+      "refs": [
+        "kopparapu_2013"
+      ]
+    },
+    {
+      "id": "F17",
+      "group": "interior",
+      "claim": "A differentiated iron-silicate core sustains a dipolar magnetic field of 0.75× Earth’s, deflecting stellar wind while allowing moderate upper-atmosphere ionization.",
+      "justification": "Dynamo scaling laws for terrestrial cores predict this field strength, sufficient to preserve the atmosphere without blocking all high-energy flux. (inferred)",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 0.75,
+      "unit": "× Earth",
+      "consequences": [
+        "Neural magnetite granules evolve for magnetic navigation.",
+        "Rare stellar flares penetrate the moderated UV layer, selecting for rapid radiation shielding."
+      ],
+      "refs": [
+        "christensen_2010"
+      ]
+    },
+    {
+      "id": "F5",
+      "group": "atmosphere",
+      "claim": "The atmosphere is carbon-dioxide-rich at 1.7 bar surface pressure, composed of ~78% N₂, ~20% CO₂, and trace O₂ maintained by photolysis and volcanic outgassing.",
+      "justification": "Volcanic outgassing and carbonate-silicate cycling maintain this pressure, offsetting the star’s lower flux to sustain liquid water. (inferred)",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 1.7,
+      "unit": "bar",
+      "consequences": [
+        "High acoustic impedance favors low-frequency communication.",
+        "Dense medium increases aerodynamic drag, altering flight energetics."
+      ]
+    },
+    {
+      "id": "F6",
+      "group": "atmosphere",
+      "claim": "A persistent phototrophic haze of Astrophage aerosols blankets the lower stratosphere, scattering visible light and absorbing high-energy photons.",
+      "justification": "The microbe thrives in the CO₂-rich medium, forming a semi-permanent photophore layer that regulates surface irradiance. (given by the lore)",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "consequences": [
+        "Surface visibility rarely exceeds 200 m in open basins.",
+        "Organisms evolve matte, photon-sipping integuments to harvest scattered radiation."
+      ]
+    },
+    {
+      "id": "F7",
+      "group": "atmosphere",
+      "claim": "High CO₂ partial pressure and dense molecular weight increase atmospheric density and absorption, attenuating high frequencies while allowing low-frequency sound to travel efficiently.",
+      "justification": "Dense molecular weight and collisional relaxation dominate HF attenuation, matching elephant and alligator communication analogues. (inferred)",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "consequences": [
+        "Lineages develop infrasonic vocal sacs for long-range coordination.",
+        "Sharp ultrasonic cracks or discharges trigger panic flight responses (gameplay-optional)."
+      ]
+    },
+    {
+      "id": "F8",
+      "group": "sky",
+      "claim": "Rayleigh scattering is suppressed by CO₂ and haze, shifting peak daylight transmission to the amber and red spectrum (580–650 nm).",
+      "justification": "High molecular weight and aerosol Mie scattering filter blue/green wavelengths, leaving longer wavelengths to penetrate to the surface. (inferred)",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 650,
+      "unit": "nm",
+      "consequences": [
+        "Photoreceptors shift sensitivity toward far-red and near-IR.",
+        "Visual systems tune to amber contrast, making sudden bright flashes blinding."
+      ],
+      "refs": [
+        "pierrehumbert_2010"
+      ]
+    },
+    {
+      "id": "F9",
+      "group": "climate",
+      "claim": "High atmospheric heat capacity, CO₂ greenhouse forcing, and haze albedo dampen diurnal temperature swings, maintaining a mean surface temperature of 288 K.",
+      "justification": "Radiative forcing models show that a 1.7 bar CO₂ envelope with moderate albedo yields stable, Earth-like mean temperatures. (inferred)",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 288,
+      "unit": "K",
+      "consequences": [
+        "Organisms minimize insulation and maximize radiative surfaces.",
+        "Thermal inertia reduces the need for rapid metabolic ramping."
+      ]
+    },
+    {
+      "id": "F18",
+      "group": "climate",
+      "claim": "Persistent stratus decks and low wind shear foster stable boundary layers, reducing convective turbulence and favoring laminar flow regimes for soaring flight.",
+      "justification": "High specific heat and CO₂ density dampen extreme convection, creating predictable thermal gradients and gentle jet streams. (inferred)",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "consequences": [
+        "Creatures evolve swept, laminar flight membranes.",
+        "Low-profile body shapes reduce drag in stable atmospheric layers."
+      ],
+      "refs": [
+        "pierrehumbert_2010"
+      ]
+    },
+    {
+      "id": "F19",
+      "group": "climate",
+      "claim": "Joint radiative balance integrates stellar flux, surface pressure, pCO₂, and haze optical depth to determine equilibrium temperature, preventing orphaned thermal claims.",
+      "justification": "Coupled radiative-convective models require simultaneous solving of albedo, greenhouse opacity, and stellar input to yield stable Tₛ. (inferred)",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "consequences": [
+        "Climate feedbacks lock into narrow habitable bands.",
+        "Rapid albedo shifts from haze collapse trigger metabolic stress."
+      ]
+    },
+    {
+      "id": "F10",
+      "group": "ocean",
+      "claim": "Global oceans cover 71% of the surface with a mean depth of 3.6 km, featuring shallow epeiric shelves and deep abyssal plains.",
+      "justification": "Earth-analogue authorial uniformitarian assumption for basin morphology favors extensive shallow margins for nutrient upwelling. (inferred)",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 3.6,
+      "unit": "km",
+      "consequences": [
+        "Aquatic lineages evolve robust chemosensory arrays.",
+        "Terrestrial colonizers must solve osmotic balance in brackish transition zones."
+      ]
+    },
+    {
+      "id": "F11",
+      "group": "geology",
+      "claim": "Radiogenic heating drives moderate plate tectonics and hydrothermal vent fields, with a geothermal heat flux of 0.9× Earth’s.",
+      "justification": "Long-lived isotopes (U-238, Th-32, K-40) in an older, metal-poor mantle sustain steady seafloor spreading and plume upwellings. (inferred)",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 0.9,
+      "unit": "× Earth",
+      "consequences": [
+        "Vent-dwellers access thermal/chemical gradients for metabolic shortcuts.",
+        "Tectonic renewal constantly exposes fresh nutrients to the biosphere."
+      ],
+      "refs": [
+        "christensen_2010"
+      ]
+    },
+    {
+      "id": "F12",
+      "group": "chemistry",
+      "claim": "Dissolved CO₂ maintains a surface pH of 6.8, buffered by carbonate-silicate weathering that prevents toxic acidification.",
+      "justification": "Carbonic acid equilibrium under high partial pressure is stabilized by continuous silicate rock weathering and precipitation cycles. (inferred)",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 6.8,
+      "unit": "pH",
+      "consequences": [
+        "Calcium carbonate shells dissolve, selecting for iron-oxide and silica biomineralization.",
+        "Euryhaline osmoregulation evolves in coastal lagoons."
+      ]
+    },
+    {
+      "id": "F13",
+      "group": "chemistry",
+      "claim": "High CO₂ and acidic waters inhibit calcium carbonate shell formation, selecting for iron-oxide and silica-based biomineralization that is kinetically accessible under these conditions.",
+      "justification": "Ocean acidification lowers aragonite saturation states, making silicate and iron-oxide precipitation kinetically accessible. (inferred)",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "consequences": [
+        "Organisms precipitate mineral coats that harden in trace-metal-rich waters.",
+        "Carapaces shed during freshwater floods when ions dilute."
+      ]
+    },
+    {
+      "id": "F14",
+      "group": "biochemistry",
+      "claim": "Life utilizes standard PASTA biochemistry but employs bacteriochlorophyll analogs and retinal-based photopigments tuned to low-flux red light, with trace O₂ confined to microaerobic niches.",
+      "justification": "Convergent evolution under dim, red-shifted irradiance favors retinal proton pumps and anoxygenic electron donors like H₂ and Fe²⁺. (inferred)",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "consequences": [
+        "Primary producers use deep-penetrating pigments.",
+        "Secondary metabolizers extract energy from dissolved iron and sulfur compounds."
+      ]
+    },
+    {
+      "id": "F15",
+      "group": "biochemistry",
+      "claim": "The native microbe Taumoeba evolved to metabolize Astrophage particulates, extracting stored redox potential via enzymatic dissolution of surface photoconductors.",
+      "justification": "The microbe bridges the phototrophic haze and benthic zones, converting exotic particulate energy into stable lipids and nucleic acids. (given by the lore)",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "consequences": [
+        "Lineages domesticate Taumoeba for symbiotic chambers.",
+        "Metabolic flexibility allows toggling between chemo- and phototrophic modes."
+      ]
+    },
+    {
+      "id": "F16",
+      "group": "biochemistry",
+      "claim": "Complex lineages host intracellular Taumoeba chambers with ion-exchange membranes, enabling speculative gameplay toggling between chemo- and phototrophic modes.",
+      "justification": "Symbiotic integration provides redox buffering, allowing organisms to switch energy pathways based on light availability and chemical gradients. (inferred)",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "consequences": [
+        "Players can toggle stamina vs. speed trade-offs.",
+        "Symbiont starvation causes metabolic crashes if not fed."
+      ]
+    }
+  ],
+  "changelog": [
+    {
+      "date": "2026-11-18",
+      "who": "autoloop",
+      "what": "world canon drafted by the council chair from 19 facts (planet drafts, peer reviews, astrobio referee)"
+    },
+    {
+      "date": "2026-11-18",
+      "who": "autoloop",
+      "what": "removed rejected references; retired real facts left without references"
+    }
+  ],
+  "lore_source": "hailmary"
+}

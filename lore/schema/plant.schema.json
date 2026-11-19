@@ -1,0 +1,372 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "cpore/lore/plant.schema.json",
+  "title": "Lore plant (flora), one file per plant or functional type",
+  "type": "object",
+  "required": [
+    "schema",
+    "id",
+    "name",
+    "world",
+    "status",
+    "growth_form",
+    "habitats",
+    "summary",
+    "chains",
+    "gameplay",
+    "relations",
+    "generator",
+    "journal",
+    "provenance",
+    "changelog"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema": {
+      "const": "cpore.plant/1"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9_]+$"
+    },
+    "name": {
+      "$ref": "#/$defs/i18n"
+    },
+    "world": {
+      "type": "string",
+      "pattern": "^[a-z0-9_]+$"
+    },
+    "status": {
+      "enum": [
+        "draft",
+        "reviewed",
+        "canon"
+      ]
+    },
+    "growth_form": {
+      "enum": [
+        "tree",
+        "shrub",
+        "rosette",
+        "herb",
+        "grass",
+        "fern",
+        "moss_lichen",
+        "vine",
+        "algae",
+        "fungus_like"
+      ]
+    },
+    "habitats": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string"
+      }
+    },
+    "summary": {
+      "type": "string"
+    },
+    "chains": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/pchain"
+      }
+    },
+    "gameplay": {
+      "type": "object",
+      "description": "food_for (diets), gift_item, poison {alkaloid, signal}, healing, cover, climbing, nest_material, mineral_lick, notes",
+      "additionalProperties": true
+    },
+    "relations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "with",
+          "kind",
+          "note"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "with": {
+            "type": "string"
+          },
+          "kind": {
+            "enum": [
+              "eaten_by",
+              "pollinated_by",
+              "dispersed_by",
+              "mimics",
+              "shelters",
+              "competes",
+              "parasitised_by",
+              "symbiosis",
+              "grows_with",
+              "succeeds",
+              "other"
+            ]
+          },
+          "note": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "generator": {
+      "type": "object",
+      "required": [
+        "growth_form",
+        "height_m"
+      ],
+      "additionalProperties": true,
+      "description": "procedural-art parameters: growth_form, height_m {min,max}, trunk, branching {angle_deg,levels,apical_dominance,buttress}, leaf {type,size_cm,arrangement}, colour {base,overlay_rules}, placement {slope,altitude_m,wetness,soil,coast_distance_m,fog,density}, seasonal, wind_response",
+      "properties": {
+        "growth_form": {
+          "enum": [
+            "tree",
+            "shrub",
+            "rosette",
+            "herb",
+            "grass",
+            "fern",
+            "moss_lichen",
+            "vine",
+            "algae",
+            "fungus_like"
+          ]
+        },
+        "height_m": {
+          "type": "object",
+          "required": [
+            "min",
+            "max"
+          ],
+          "properties": {
+            "min": {
+              "type": "number"
+            },
+            "max": {
+              "type": "number"
+            }
+          }
+        }
+      }
+    },
+    "journal": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/i18n"
+      }
+    },
+    "observe": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "secrets": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "provenance": {
+      "$ref": "#/$defs/provenance"
+    },
+    "changelog": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "date",
+          "who",
+          "what"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "date": {
+            "type": "string"
+          },
+          "who": {
+            "type": "string"
+          },
+          "what": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "i18n": {
+      "type": "object",
+      "required": [
+        "en"
+      ],
+      "properties": {
+        "en": {
+          "type": "string"
+        },
+        "es": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z0-9_]+$"
+      }
+    },
+    "analogue": {
+      "type": "object",
+      "required": [
+        "organism",
+        "mechanism"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "organism": {
+          "type": "string"
+        },
+        "mechanism": {
+          "type": "string"
+        },
+        "refs": {
+          "$ref": "#/$defs/refs"
+        }
+      }
+    },
+    "plausibility": {
+      "type": "object",
+      "required": [
+        "verdict",
+        "judge",
+        "date"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "verdict": {
+          "enum": [
+            "plausible",
+            "fixable",
+            "implausible",
+            "unreviewed"
+          ]
+        },
+        "judge": {
+          "type": "string"
+        },
+        "date": {
+          "type": "string",
+          "format": "date"
+        },
+        "summary": {
+          "type": "string"
+        },
+        "analogues": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/analogue"
+          }
+        },
+        "fixes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "scores": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 10
+          }
+        }
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "council_run": {
+          "type": "string"
+        },
+        "by": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "edited_by": {
+          "type": "string"
+        }
+      }
+    },
+    "pchain": {
+      "type": "object",
+      "required": [
+        "id",
+        "trait",
+        "links",
+        "roots",
+        "play",
+        "observe",
+        "plausibility"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9_]+\\.c[0-9]+$"
+        },
+        "trait": {
+          "type": "string"
+        },
+        "links": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 5,
+          "items": {
+            "type": "string"
+          }
+        },
+        "roots": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "pattern": "^F[0-9]+$"
+          }
+        },
+        "play": {
+          "type": "string",
+          "description": "what the player can do or learn from it"
+        },
+        "weakness": {
+          "type": "string"
+        },
+        "observe": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 4,
+          "items": {
+            "type": "string"
+          }
+        },
+        "plausibility": {
+          "$ref": "#/$defs/plausibility"
+        },
+        "provenance": {
+          "$ref": "#/$defs/provenance"
+        }
+      }
+    }
+  }
+}

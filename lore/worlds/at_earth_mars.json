@@ -1,0 +1,413 @@
+{
+  "schema": "cpore.world/1",
+  "id": "at_earth_mars",
+  "kind": "third_party",
+  "system": {
+    "star": "Sol",
+    "position": "fictional",
+    "distance_ly_from_sol": null
+  },
+  "name": {
+    "en": "All Tomorrows: Earth and Mars",
+    "es": "All Tomorrows: Tierra y Marte"
+  },
+  "status": "draft",
+  "facts": [
+    {
+      "id": "F1",
+      "group": "star",
+      "claim": "Sol is a G2V main-sequence star with stable fusion output and an age of ~4.6 billion years.",
+      "justification": "Stable yellow dwarf providing reliable photosynthetic window and moderate flare activity. (given by the lore / inferred)",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "G2V",
+      "unit": "spectral class",
+      "consequences": [
+        "Predictable circadian rhythms",
+        "Stable climate baselines",
+        "Reliable solar sail navigation"
+      ],
+      "refs": [
+        "kasting_1993_how"
+      ]
+    },
+    {
+      "id": "F2",
+      "group": "orbit",
+      "claim": "Earth orbits at 1.00 AU and Mars at 1.52 AU on low-eccentricity paths.",
+      "justification": "Heliocentric orbital mechanics dictate insolation gradients and colonization travel times. (given by the lore)",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "1.00, 1.52",
+      "unit": "AU",
+      "consequences": [
+        "Seasonal migration patterns",
+        "Asymmetric terraforming timelines",
+        "Distinct planetary year lengths"
+      ],
+      "refs": [
+        "kasting_1993_how"
+      ]
+    },
+    {
+      "id": "F3",
+      "group": "climate",
+      "claim": "Mars receives approximately 43% of Earth's solar insolation due to its orbital distance.",
+      "justification": "Inverse-square law reduces photon flux at 1.52 AU, forcing photosynthetic adaptation. (inferred)",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "0.43",
+      "unit": "ratio",
+      "consequences": [
+        "Red-shifted plant pigments",
+        "Slower crop maturation",
+        "Extended photoperiod reliance"
+      ],
+      "refs": [
+        "seager_2010_exoplanet"
+      ]
+    },
+    {
+      "id": "F4",
+      "group": "planet",
+      "claim": "Earth surface gravity is 9.81 m/s² while Mars surface gravity is 3.71 m/s².",
+      "justification": "Mass and radius differentials create a 2.6× gravity split, dictating skeletal loading and locomotion. (given by the lore / inferred)",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "9.81, 3.71",
+      "unit": "m/s²",
+      "consequences": [
+        "Earth stock favors compact, load-bearing frames",
+        "Martian stock favors elongated, low-density levers",
+        "Cross-world travel requires gravity acclimation"
+      ],
+      "refs": [
+        "frost_1987_mechanostat"
+      ]
+    },
+    {
+      "id": "F5",
+      "group": "biochemistry",
+      "claim": "Martians exhibit elongated limbs and reduced bone mineral density relative to Terrestrials.",
+      "justification": "Wolff’s law and disuse osteopenia under 0.38g, combined with multi-century deliberate selection and genetic engineering, reduce bone density and elongate limbs. (given by the lore / inferred)",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "elongated",
+      "unit": "morphology",
+      "consequences": [
+        "Spring-walk bounding gait",
+        "High Earth-strain penalty",
+        "Reduced impact tolerance"
+      ],
+      "refs": [
+        "frost_1987_mechanostat"
+      ]
+    },
+    {
+      "id": "F6",
+      "group": "biochemistry",
+      "claim": "Star People possess a unified engineered physiology with enlarged associative cortices and neural plasticity.",
+      "justification": "Engineered to share biology across terraformed worlds, prioritizing neural plasticity and metabolic efficiency. (given by the lore). Highly speculative; no canon anatomy beyond “more capable unified form.”",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "unified",
+      "unit": "physiology",
+      "consequences": [
+        "Multi-stream cognitive processing",
+        "Broad environmental tolerance",
+        "High caloric demand"
+      ]
+    },
+    {
+      "id": "F7",
+      "group": "atmosphere",
+      "claim": "Earth maintains a ~1.0 bar nitrogen-oxygen atmosphere protected by a stratospheric ozone layer.",
+      "justification": "Plate tectonics and photosynthetic recycling maintain stable N₂/O₂ mix with ozone shielding. (given by the lore)",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "1.0",
+      "unit": "bar",
+      "consequences": [
+        "Efficient aerobic metabolism",
+        "Low fire risk below 23% O₂",
+        "Acoustic transmission favors mid-frequencies"
+      ],
+      "refs": [
+        "kasting_1993_how"
+      ]
+    },
+    {
+      "id": "F8",
+      "group": "atmosphere",
+      "claim": "Post-terraform Mars stabilizes at ~0.8 bar breathable nitrogen-oxygen via microbial processing and cometary volatiles.",
+      "justification": "Microbial CO₂ conversion and cometary volatiles thicken the air to breathable levels. (given by the lore / inferred). Engineering target requiring active maintenance (volatile replenishment, N₂ budget, CO₂/ice balance, escape mitigation).",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "0.8",
+      "unit": "bar",
+      "consequences": [
+        "Thicker atmosphere than pre-terraform",
+        "Lower partial O₂ requires acclimation",
+        "Extended wind reach due to scale height"
+      ],
+      "refs": [
+        "seager_2010_exoplanet",
+        "kasting_1993_how"
+      ]
+    },
+    {
+      "id": "F9",
+      "group": "atmosphere",
+      "claim": "Martian atmospheric scale height is approximately 2.6× Earth's due to lower surface gravity.",
+      "justification": "Scale height H ∝ T/mg increases with lower Martian gravity, thinning pressure gradients faster with altitude. (inferred)",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "2.6",
+      "unit": "ratio",
+      "consequences": [
+        "High-altitude zones become hypoxic faster",
+        "Thermal updrafts sustain gliders",
+        "Barometric pressure drops rapidly"
+      ],
+      "refs": [
+        "seager_2010_exoplanet"
+      ]
+    },
+    {
+      "id": "F10",
+      "group": "atmosphere",
+      "claim": "Pre-terraform thin air severely attenuates sound; post-terraform 0.8 bar atmosphere supports Earth-like mid-frequency speech transmission.",
+      "justification": "Pre-terraform low density limits acoustic coupling; post-terraform 0.8 bar density restores terrestrial mid-frequency propagation. (inferred)",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "mid-frequency",
+      "unit": "acoustic",
+      "consequences": [
+        "Long-range herd communication shifts to subsonic cues pre-terraform",
+        "Standard vocal communication viable post-terraform",
+        "Reduced high-frequency stealth in thickened air"
+      ],
+      "refs": [
+        "seager_2010_exoplanet"
+      ]
+    },
+    {
+      "id": "F11",
+      "group": "geology",
+      "claim": "Martian regolith is perchlorate-rich and locally clay-poor.",
+      "justification": "Ancient regolith retains perchlorates from atmospheric stripping and UV photolysis, requiring detoxification; locally clay-poor. (given by the lore / inferred)",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "toxic",
+      "unit": "chemistry",
+      "consequences": [
+        "Gut symbiont dependency",
+        "Corrosive brine hazards",
+        "Engineered soil binding required"
+      ]
+    },
+    {
+      "id": "F12",
+      "group": "geology",
+      "claim": "Phobos was shattered during the Earth-Mars war, creating a persistent orbital debris field.",
+      "justification": "Warfare destroyed Phobos, leaving a persistent debris ring that intersects orbital paths. (given by the lore)",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "shattered",
+      "unit": "orbital",
+      "consequences": [
+        "Orbital navigation hazards",
+        "Micrometeorite flux increase",
+        "Hidden pre-war caches"
+      ]
+    },
+    {
+      "id": "F13",
+      "group": "ocean",
+      "claim": "Martian seas are shallow and exhibit high capillary rise in regolith due to reduced hydrostatic pressure.",
+      "justification": "Shallow cometary seas exhibit high capillary rise in regolith due to reduced hydrostatic pressure. (inferred)",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "shallow",
+      "unit": "depth",
+      "consequences": [
+        "Wide tidal flats",
+        "Surface ice formation",
+        "High evaporation rates"
+      ]
+    },
+    {
+      "id": "F14",
+      "group": "chemistry",
+      "claim": "Martian flora utilizes engineered red-shifted antenna pigments to compensate for low solar flux.",
+      "justification": "Low solar flux selects for engineered red-edge antenna pigments to capture near-infrared photons. (given by the lore / inferred). Highly speculative; bacteriorhodopsin analogs are proton pumps, not oxygenic photosynthesis stand-ins.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "red-shifted",
+      "unit": "pigment",
+      "consequences": [
+        "Violet/black flora appearance",
+        "High biomass in low light",
+        "Terrestrial pest digestion failure"
+      ],
+      "refs": [
+        "seager_2010_exoplanet"
+      ]
+    },
+    {
+      "id": "F15",
+      "group": "chemistry",
+      "claim": "Early Martian fauna and colonists evolved perchlorate-reducing gut symbionts to metabolize regolith toxins.",
+      "justification": "Perchlorate-reducing gut microbiomes convert toxic salts into acute detoxification aids rather than full agricultural substrates. (inferred)",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "symbiotic",
+      "unit": "metabolism",
+      "consequences": [
+        "Drought resistance",
+        "Salt-crystallization resource",
+        "Sudden hypersalinity vulnerability"
+      ]
+    },
+    {
+      "id": "F16",
+      "group": "biochemistry",
+      "claim": "Martian lineages developed UV-hardened integument and enhanced DNA repair pathways to withstand high surface radiation.",
+      "justification": "High surface UV flux without a strong magnetosphere selects for melanin analogs and enhanced DNA repair, particularly in the pre-ozone terraforming phase. (inferred)",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "hardened",
+      "unit": "integument",
+      "consequences": [
+        "Dark epidermal camouflage",
+        "Radiation damage mitigation",
+        "Heat retention penalty"
+      ],
+      "refs": [
+        "kasting_1993_how"
+      ]
+    },
+    {
+      "id": "F17",
+      "group": "biochemistry",
+      "claim": "Star People reproduction relies on germline cryo-stasis and engineered epigenetic switches for rapid environmental acclimatization.",
+      "justification": "Automated colonization relies on germline vaults and programmable epigenetic switches for rapid multi-world adaptation. (given by the lore). Highly speculative biotech; mechanical Oedipi bonding is a psychosocial artifact, not a physical constraint.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "cryo-stasis",
+      "unit": "reproduction",
+      "consequences": [
+        "Sterilisation vs parenting choice",
+        "Mechanical Oedipi bonding risk",
+        "Identity drift under stress"
+      ]
+    },
+    {
+      "id": "F18",
+      "group": "biochemistry",
+      "claim": "Baseline human biochemistry uses carbon backbones, water solvent, and L-amino acid/D-sugar homochirality.",
+      "justification": "Carbon-water baseline with L-amino acids and D-sugars ensures universal genetic compatibility. (given by the lore)",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "homochiral",
+      "unit": "biochemistry",
+      "consequences": [
+        "Standard protein folding",
+        "Cross-species compatibility",
+        "Engineered codon reassignment possible"
+      ],
+      "refs": [
+        "kasting_1993_how"
+      ]
+    },
+    {
+      "id": "F19",
+      "group": "atmosphere",
+      "claim": "Mars lacks a global dynamo, resulting in high energetic particle flux that post-terraform habitability must mitigate.",
+      "justification": "Mars lacks a global dynamo, resulting in high energetic particle flux; post-terraform habitability requires an ozone layer plus optional engineering shields or an accepted somatic repair load. (inferred)",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "unshielded",
+      "unit": "magnetosphere",
+      "consequences": [
+        "Elevated cancer risk without shielding",
+        "Electronics require heavy radiation hardening",
+        "Surface habitats need regolith overburden"
+      ],
+      "refs": [
+        "seager_2010_exoplanet"
+      ]
+    },
+    {
+      "id": "F20",
+      "group": "atmosphere",
+      "claim": "Long-term atmospheric stability on Mars requires active replenishment or magnetic mitigation to counter solar wind stripping.",
+      "justification": "Long-term atmospheric stability on Mars requires active replenishment or magnetic mitigation to counter solar wind stripping. (inferred)",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "unstable",
+      "unit": "escape",
+      "consequences": [
+        "Terraforming is a continuous engineering project",
+        "Atmospheric loss rates dictate colonization pacing",
+        "Orbital mirrors or magnetic tethers become strategic assets"
+      ],
+      "refs": [
+        "seager_2010_exoplanet"
+      ]
+    }
+  ],
+  "changelog": [
+    {
+      "date": "2026-11-18",
+      "who": "autoloop",
+      "what": "world canon drafted by the council chair from 20 facts (planet drafts, peer reviews, astrobio referee)"
+    },
+    {
+      "date": "2026-11-18",
+      "who": "autoloop",
+      "what": "removed rejected references; retired real facts left without references"
+    }
+  ],
+  "lore_source": "alltomorrows"
+}

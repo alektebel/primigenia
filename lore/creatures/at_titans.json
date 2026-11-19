@@ -1,0 +1,181 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "at_titans",
+  "name": {
+    "en": "Titans"
+  },
+  "world": "at_garden_prairies",
+  "kind": "easter_egg",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "to be written",
+    "diet": "to be written",
+    "active": "to be written",
+    "predators": []
+  },
+  "body": "to be written",
+  "chains": [
+    {
+      "id": "at_titans.c1",
+      "trait": "Forty-meter graviportal frame with muscular lip-trunks",
+      "links": [
+        "0.88g gravity reduces skeletal stress on columnar limbs",
+        "Nutrient-poor loams select for efficient browsing and symbiotic digestion",
+        "Muscular lower lip replaces manual dexterity for harvesting",
+        "Slow tectonics preserve stable savanna grazing grounds"
+      ],
+      "roots": [
+        "F5",
+        "F18",
+        "F12",
+        "F13"
+      ],
+      "skill": {
+        "id": "at_titans.root_harvest",
+        "name": {
+          "en": "Root Harvest"
+        },
+        "role": "Engage",
+        "effect": "Uproots trees and clears a 10m area, dealing 15 damage to cover and granting 5 food.",
+        "numbers": {}
+      },
+      "weakness": "Slow movement; cannot cross deep water or narrow bridges.",
+      "observe": [
+        "Trunk curls around branches stripping leaves with muscular force",
+        "Stubby thumbs grip and tear at tree bark",
+        "Feet plant heavily, sinking slightly into loam"
+      ],
+      "journal": {
+        "en": "Titans farm the savanna, but the sky is darkening with ice."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "At 0.88 g, 40 m graviportal megagrazer is at the upper biomechanical ceiling: require avian-style air sacs or slow endothem, columnar limbs with safety factors >2, and minimal running; or shrink body length to ~28–32 m for honest scaling. Lip-trunk: fuse lower lip + nasal proboscis like Elephantidae, not a free lower lip alone.",
+        "fixes": [
+          "At 0.88 g, 40 m graviportal megagrazer is at the upper biomechanical ceiling: require avian-style air sacs or slow endothem, columnar limbs with safety factors >2, and minimal running; or shrink body length to ~28–32 m for honest scaling. Lip-trunk: fuse lower lip + nasal proboscis like Elephantidae, not a free lower lip alone."
+        ],
+        "analogues": [
+          {
+            "organism": "African savanna elephant (Loxodonta africana) graviportal stance, trunk (upper lip + nose), skull stress remodelling; extinct titanosaur sauropods for multi-ton terrestrial length (aquatic support absent here).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "mcmahon_1973_size"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "designer": 9,
+          "physicist": 9
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist",
+          "physicist"
+        ]
+      }
+    },
+    {
+      "id": "at_titans.c2",
+      "trait": "Massive resonant vocal chambers producing low-frequency booms",
+      "links": [
+        "Enormous body mass dictates low fundamental frequency",
+        "Dense atmosphere amplifies these calls across open plains",
+        "Stable K2V star and long lifespans support oral tradition preservation",
+        "Acoustic propagation maximizes social cohesion in scattered herds"
+      ],
+      "roots": [
+        "F9",
+        "F7",
+        "F1"
+      ],
+      "skill": {
+        "id": "at_titans.ancient_boom",
+        "name": {
+          "en": "Ancient Boom"
+        },
+        "role": "Control",
+        "effect": "Deters large predators within 150m and rallies allied Titans, granting +10% defense.",
+        "numbers": {}
+      },
+      "weakness": "Location broadcast; attracts aerial threats and distant enemies.",
+      "observe": [
+        "Chest expands to fill with air before a boom",
+        "Ground vibrates noticeably with the call",
+        "Herds pause and align faces toward the sound source"
+      ],
+      "journal": {
+        "en": "Myths told in booms that shake the earth; humanity dreams in low frequencies."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "Tie fundamental frequency to body size (~10–20 Hz infrasound band for largest individuals); 150 m deterrence is plausible for substrate-borne + air coupling on open savanna at 1.1 bar, not magic omnidirectional radar.",
+        "fixes": [
+          "Tie fundamental frequency to body size (~10–20 Hz infrasound band for largest individuals); 150 m deterrence is plausible for substrate-borne + air coupling on open savanna at 1.1 bar, not magic omnidirectional radar."
+        ],
+        "analogues": [
+          {
+            "organism": "African elephant infrasonic rumbles (Loxodonta); baleen whale low-frequency communication (body-size–F0 scaling).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "fitch_2000_evolution"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "designer": 10,
+          "physicist": 9
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist",
+          "physicist"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "at_mantelopes",
+      "kind": "counter",
+      "note": "Titan low-frequency booms mask Mantelope mournful harmonies, disrupting herd communication and acoustic cohesion across the prairie.",
+      "via": "F9"
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-19",
+    "by": [
+      "naturalist",
+      "physicist"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-19",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-19"
+    }
+  ],
+  "lore_ref": {
+    "file": "lore/alltomorrows.en.json",
+    "id": "titans"
+  }
+}

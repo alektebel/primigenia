@@ -1,0 +1,221 @@
+{
+  "schema": "cpore.plant/1",
+  "id": "nieblon",
+  "name": {
+    "en": "Fogcomber",
+    "es": "Nieblón"
+  },
+  "world": "primigenia",
+  "status": "draft",
+  "growth_form": "tree",
+  "habitats": [
+    "Sheltered western fog forest",
+    "Protected western benches and gullies between 80 and 950 m"
+  ],
+  "summary": "A 12–22 m evergreen of the sheltered western fog belt. Grooved leaves intercept fog, while stout trunks, conditional buttresses and flexible crowns resist wind loading. Red-veined leaves advertise alkaloids; soft green-gold fruit feeds rondo. Normal stands are absent from exposed ridgelines (F4, F8, F18, F19, F25).",
+  "chains": [
+    {
+      "id": "nieblon.c1",
+      "trait": "Grooved leaves and elongated drip tips",
+      "links": [
+        "Western fog deposits suspended droplets onto foliage.",
+        "Beads merge and drain through grooves.",
+        "Drip tips deliver intercepted water to litter and shallow roots."
+      ],
+      "roots": [
+        "F8",
+        "F18"
+      ],
+      "play": "Locate morning canopy drip and humid understory patches.",
+      "weakness": "Clear weather removes the fog-water subsidy.",
+      "observe": [
+        "Beads collect on windward leaves.",
+        "Grooves feed hanging drops.",
+        "Litter beneath branch tips darkens first."
+      ],
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "botanist/composer-2.5; chair sol",
+        "date": "2026-11-19",
+        "summary": "Leaves collect existing droplets; pressure does not generate water. Mature stands remain within the sheltered western fog belt.",
+        "analogues": [
+          {
+            "organism": "Coast redwood, Sequoia sempervirens",
+            "mechanism": "Canopy interception supplies fog water to soil and understory; grooved leaves are a fictional extension.",
+            "refs": [
+              "dawson_1998_fog"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "nieblon.c2",
+      "trait": "Conditional buttresses and flexible crowns",
+      "links": [
+        "Dense-air winds load the crown strongly.",
+        "Wet shallow soils can limit deep anchorage.",
+        "Buttresses spread overturning forces while flexible branches reduce loading.",
+        "Sheltered terrain permits tall stands that exposed ridges cannot sustain."
+      ],
+      "roots": [
+        "F4",
+        "F18",
+        "F19"
+      ],
+      "play": "Use buttress hollows and branch forks for cover or climbing; inspect damage before trusting a route.",
+      "weakness": "Undercutting, loose saturated soil, heavy vines and exposed ridge winds can overwhelm support.",
+      "observe": [
+        "Trees in shallow wet hollows have large flares.",
+        "Trees on deep drained soil have smaller flares.",
+        "Tall stands stop below an exposed ridgeline."
+      ],
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "botanist/composer-2.5; chair sol",
+        "date": "2026-11-19",
+        "summary": "Buttresses address anchorage rather than oxygen abundance. Generate normal 12–22 m trees only in sheltered stands; exclude exposed ridges instead of generating full-height windproof trees.",
+        "analogues": [
+          {
+            "organism": "Buttressed Aglaia and Nephelium trees",
+            "mechanism": "Buttress roots resist overturning; crown flexibility provides an additional means of reducing load.",
+            "refs": [
+              "crook_1997_buttress"
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "gameplay": {
+    "food_for": [
+      "Frugivores and omnivores eating ripe fruit",
+      "Detritivores consuming decomposed litter"
+    ],
+    "gift_item": "Soft green-gold fog fruit for rondo",
+    "poison": {
+      "alkaloid": true,
+      "signal": "Red-purple veins mark defended leaves; fruit ripeness uses softness and scent."
+    },
+    "healing": null,
+    "cover": "Buttress hollows, shaded trunks and low branches.",
+    "climbing": true,
+    "nest_material": "Fallen twigs and shed epiphytic fibres.",
+    "mineral_lick": null,
+    "notes": "Ripe pulp is edible despite defended foliage. Fog drip does not guarantee pure drinking water. Normal forest and canopy routes end before exposed ridges."
+  },
+  "relations": [
+    {
+      "with": "rondo",
+      "kind": "dispersed_by",
+      "note": "Carries seeds from fallen fruit at accessible forest margins."
+    },
+    {
+      "with": "alula",
+      "kind": "shelters",
+      "note": "Uses sheltered branch forks for nests and launch points."
+    },
+    {
+      "with": "albinos",
+      "kind": "shelters",
+      "note": "Finds shade without gaining tolerance to defended leaves."
+    },
+    {
+      "with": "musgo_faro",
+      "kind": "grows_with",
+      "note": "Supports damp cushions on sufficiently illuminated bark."
+    },
+    {
+      "with": "soga_de_dosel",
+      "kind": "grows_with",
+      "note": "Supports vines whose added weight and foliage can burden the host."
+    },
+    {
+      "with": "pluma_de_sombra",
+      "kind": "grows_with",
+      "note": "Fog drip sustains humid understory patches."
+    }
+  ],
+  "generator": {
+    "growth_form": "tree",
+    "height_m": {
+      "min": 12.0,
+      "max": 22.0
+    },
+    "trunk": "Stout tapering trunk with vertically furrowed grey-brown bark.",
+    "branching": {
+      "angle_deg": 55,
+      "levels": 4,
+      "apical_dominance": 0.65,
+      "buttress": "Prominent on shallow saturated soil; subdued on deep drained soil."
+    },
+    "leaf": {
+      "type": "Narrow elliptic evergreen blade with drainage grooves and drip tip",
+      "size_cm": 14,
+      "arrangement": "Alternate on flexible drooping branchlets"
+    },
+    "colour": {
+      "base": "Deep green foliage and grey-brown bark",
+      "overlay_rules": [
+        "Red-purple veins mark defended leaves.",
+        "Wet grooves catch highlights.",
+        "Ripe fruit becomes soft dull green-gold.",
+        "Epiphytes occur in irregular patches."
+      ]
+    },
+    "placement": {
+      "slope": "Sheltered western benches, lower gullies and moderate slopes; exclude exposed ridgelines, summit crests and failing cliffs.",
+      "altitude_m": [
+        80,
+        950
+      ],
+      "wetness": "Persistently humid, with locally saturated rooting pockets.",
+      "soil": "Developed volcanic soil with litter and variable rooting depth.",
+      "coast_distance_m": [
+        80,
+        1500
+      ],
+      "fog": "Frequent western fog contact.",
+      "density": "Sheltered stands interrupted by streams, storm gaps and exposed terrain; no normal-height ridge instances."
+    },
+    "seasonal": "Evergreen; favourable moisture supports foliage and fruit production. Storms create branchfall and canopy gaps.",
+    "wind_response": "Flexible outer branches bend leeward; exposed ridges are excluded from mature-tree placement."
+  },
+  "journal": [
+    {
+      "en": "The leaves comb water from passing fog. Sweet fruit below; bitter red veins above.",
+      "es": "Las hojas peinan el agua de la niebla. Abajo, fruta dulce; arriba, nervios rojos y amargos."
+    }
+  ],
+  "provenance": {
+    "council_run": "flora-2026-11-19",
+    "by": [
+      "designer",
+      "mythmaker",
+      "naturalist",
+      "physicist",
+      "senses",
+      "skeptic",
+      "wildcard"
+    ],
+    "edited_by": "sol"
+  },
+  "changelog": [
+    {
+      "date": "2026-11-19",
+      "who": "flora.py",
+      "what": "flora pass: 7 voices drafted and peer-reviewed, Composer botanical referee, sol chaired and applied the fixes"
+    }
+  ],
+  "observe": [
+    "Canopy drip falls without rain.",
+    "Red veins remain visible in green leaves.",
+    "Seedlings follow rondo routes.",
+    "Tall crowns disappear before the exposed ridge."
+  ],
+  "secrets": [
+    "Damp litter can reveal an unseen overhanging crown.",
+    "Fruit visitors identify accessible forest margins.",
+    "Large buttresses reveal shallow wet rooting ground vulnerable after storms."
+  ]
+}

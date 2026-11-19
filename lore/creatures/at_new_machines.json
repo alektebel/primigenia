@@ -1,0 +1,175 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "at_new_machines",
+  "name": {
+    "en": "New Machines"
+  },
+  "world": "at_gravital_space",
+  "kind": "easter_egg",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "Highly variable environments including void, cometary halos, tropical jungles, and methane oceans, adapted by the New Empire.",
+    "diet": "Nanite-repairable biomass, ambient energy harvesting, and adaptive metabolic cycling across aerobic and anaerobic states.",
+    "active": "Continuous, with task-specific activity spikes and leisure cycles focused on aesthetic experimentation.",
+    "predators": [
+      "Environmental hazards",
+      "Legacy system failures"
+    ],
+    "prey": [
+      "Engineered resources",
+      "Atmospheric gases",
+      "Ambient energy"
+    ]
+  },
+  "body": "Continuously remodelable nanite chassis with adaptive environmental morphs allow instant transition between void, aquatic, and arboreal forms. Disposable propulsion organs detach and regenerate, enabling rapid acceleration without long-term structural fatigue.",
+  "chains": [
+    {
+      "id": "at_new_machines.c1",
+      "trait": "Continuously remodelable nanite chassis with adaptive environmental morphs",
+      "links": [
+        "Post-war reparations stripped self-contained gravity, forcing integration of programmable matter to survive diverse biomes",
+        "Radiative heat rejection limits require dynamic surface area modulation to prevent thermal bottlenecking",
+        "Volatile outer-rim chemistry and jet thrust requirements demand temporary hyperdrives and membrane sails"
+      ],
+      "roots": [
+        "F12",
+        "F14",
+        "F9"
+      ],
+      "skill": {
+        "id": "at_new_machines.adaptive_morph",
+        "name": {
+          "en": "Adaptive Morph"
+        },
+        "role": "Engage",
+        "effect": "Reshapes limbs for environment-specific thrust or heat exchange, granting terrain bonuses that increase effective damage output by 30% for 2 turns.",
+        "numbers": {}
+      },
+      "weakness": "Nanite restructuring requires extended downtime in stable climates; sudden temperature shifts or vacuum exposure cause lattice fractures, imposing disadvantage on crafting or repair checks.",
+      "observe": [
+        "See their form ripple and reknit as they step from methane mist to vacuum",
+        "Branching craft-arms and membrane sails deploy like seasonal foliage",
+        "Nanite dust settles in geometric patterns, hinting at continuous self-repair"
+      ],
+      "journal": {
+        "en": "They wear the climate like a suit, and take it off when bored."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-19",
+        "summary": "Frame as post-war limited citizen tech without self-contained gravity; morphing obeys energy and radiative area limits (F12); methane-vacuum transitions need staged membranes and recharge downtime—already in weakness, enforce in lore.",
+        "fixes": [
+          "Frame as post-war limited citizen tech without self-contained gravity; morphing obeys energy and radiative area limits (F12); methane-vacuum transitions need staged membranes and recharge downtime—already in weakness, enforce in lore."
+        ],
+        "analogues": [
+          {
+            "organism": "Octopus whole-body shape change via hydrostatic muscular hydrostat (soft robotics analogue, not nanites).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "physicist": 9
+        }
+      }
+    },
+    {
+      "id": "at_new_machines.c2",
+      "trait": "Morphable nanotech chassis with disposable propulsion organs",
+      "links": [
+        "Chassis continuously reconfigures tool-limbs and drive-nodes",
+        "Self-contained gravity systems scrapped by victors",
+        "Mass constraints of pressure vessels lifted",
+        "Nanotech enables shape-shifting without structural fatigue limits"
+      ],
+      "roots": [
+        "F18",
+        "F5",
+        "F9"
+      ],
+      "skill": {
+        "id": "at_new_machines.form_shift",
+        "name": {
+          "en": "Form-Shift"
+        },
+        "role": "Poke",
+        "effect": "Reroutes structural integrity to grow a temporary ramjet, boosting movement speed by 60% for 4 seconds",
+        "numbers": {}
+      },
+      "weakness": "Rapid reconfiguration consumes stored nanites, requiring a 10-minute recharge cycle in dense atmosphere",
+      "observe": [
+        "Shimmering, fractal surface texture",
+        "Tool-limb proliferation in mid-air",
+        "Silent, frictionless reconfiguration"
+      ],
+      "journal": {
+        "en": "They are the clay that remembers how to be stone."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-19",
+        "summary": "Ramjet/hyperdrive growth is holiday or expedition gear grown from stored feedstock, not combat spam; 10-minute recharge in dense atmosphere aligns with F7 reaction mass—state highly speculative nanotechnology explicitly.",
+        "fixes": [
+          "Ramjet/hyperdrive growth is holiday or expedition gear grown from stored feedstock, not combat spam; 10-minute recharge in dense atmosphere aligns with F7 reaction mass—state highly speculative nanotechnology explicitly."
+        ],
+        "analogues": [
+          {
+            "organism": "Cicada subimago shed and regrow; decapod autotomy and regeneration—disposable organs at organism scale, not mechanical.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "physicist": 6
+        }
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "at_gravitals",
+      "kind": "counter",
+      "note": "Gravitals dominate via macro-gravity fields. New Machines shed mass with disposable propulsion and nanite morphs, slipping through field capture like smoke through a sieve. -> Skill: 'Mass-negation drift' (Poke)",
+      "via": "F9, F1"
+    },
+    {
+      "with": "at_terrestrials",
+      "kind": "rivalry",
+      "note": "Terrestrials enforce 1G regulatory zones on planetary surfaces. New Machines use remodelable chassis to temporarily shed gravity-dependence, bypassing Terrestrial jurisdiction and operating in void niches. -> Skill: 'Gravity bypass' (Control)",
+      "via": "F18, F5"
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-18"
+  },
+  "changelog": [
+    {
+      "date": "2026-11-19",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-18"
+    },
+    {
+      "date": "2026-11-18",
+      "who": "autoloop",
+      "what": "removed rejected references from analogues"
+    }
+  ],
+  "lore_ref": {
+    "file": "lore/alltomorrows.en.json",
+    "id": "new-machines"
+  },
+  "temperament": "Creative and fashion-conscious, they embrace their limited citizenship role while pursuing endless aesthetic and functional experimentation.",
+  "secrets": [
+    "Can temporarily overload their nanite chassis to emit a burst of localized thermal radiation, disrupting enemy sensors or melting ice barriers."
+  ],
+  "moments": [
+    "Floating in a cometary halo, they grow temporary ramjets from their chassis and shed disposable exhaust plumes, their branching arms weaving intricate patterns in the vacuum before reforming for jungle exploration."
+  ]
+}

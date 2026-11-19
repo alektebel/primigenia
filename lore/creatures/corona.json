@@ -1,0 +1,292 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "corona",
+  "name": {
+    "en": "Corona"
+  },
+  "world": "primigenia",
+  "kind": "new",
+  "status": "draft",
+  "stage": "creature",
+  "niche": {
+    "habitat": "Sunken lava tube cave (tidal zone)",
+    "diet": "Drifting carcass particles, zooplankton, small benthic invertebrates",
+    "active": "Tidal (feeds on flood, rests on ebb/slack)",
+    "predators": []
+  },
+  "body": "Low-slung radial disc with six frilled arms, ciliated sensory margins, thick protective mucus coat",
+  "chains": [
+    {
+      "id": "corona.c1",
+      "trait": "Radial frill array with six sensory arms",
+      "links": [
+        "Prey arrives from any horizontal axis",
+        "Forward-facing mouth wastes captures in cross-currents",
+        "Cave walls channel 3.2 m tidal bores"
+      ],
+      "roots": [
+        "F13"
+      ],
+      "skill": {
+        "id": "corona.radial_sweep",
+        "name": {
+          "en": "Radial Sweep"
+        },
+        "role": "Engage",
+        "effect": "Detects and pulls prey from any direction within 2.5 m (+15% hit chance in dark/turbid water).",
+        "numbers": {}
+      },
+      "weakness": "Vulnerable to frontal strikes when reorienting arms.",
+      "observe": [
+        "Six frilled arms pulsing in slack water",
+        "Disc locks onto cave floor during ebb tide",
+        "Prey drawn from blind spots"
+      ],
+      "journal": {
+        "en": "It does not face the current. The current feeds it from all sides."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "In a confined, flow-channelled tidal conduit (F13 shelf tides; F9 flooded lava tube), prey and detritus arrive from multiple headings; radial capture surfaces with flow-sensitive margins match F20’s turbid, low-visibility benthos where pressure, touch and margin chemoreception beat vision. Sixfold symmetry is uncommon in crown-group echinoderms (mostly pentamerous) but is not physically forbidden and fits a young island radiation (F27) as convergent suspension/deposit feeding, not strict echinoderm homology.",
+        "fixes": [
+          "In a confined, flow-channelled tidal conduit (F13 shelf tides; F9 flooded lava tube), prey and detritus arrive from multiple headings; radial capture surfaces with flow-sensitive margins match F20’s turbid, low-visibility benthos where pressure, touch and margin chemoreception beat vision. Sixfold symmetry is uncommon in crown-group echinoderms (mostly pentamerous) but is not physically forbidden and fits a young island radiation (F27) as convergent suspension/deposit feeding, not strict echinoderm homology."
+        ],
+        "analogues": [
+          {
+            "organism": "Feather stars/crinoids (Crinoidea) orient arms to oscillating currents; sea anemones (Actiniaria) use radial tentacle arrays in surge channels.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "corona.c2",
+      "trait": "Mucus net-capture mechanism along frilled margins",
+      "links": [
+        "Mucus nets require continuous ciliary beating",
+        "Ciliary beat needs constant ATP from aerobic respiration",
+        "Oxygen partial pressure reaches 0.34 bar via tidal flushing"
+      ],
+      "roots": [
+        "F5"
+      ],
+      "skill": {
+        "id": "corona.sticky_lash",
+        "name": {
+          "en": "Sticky Lash"
+        },
+        "role": "Basic",
+        "effect": "Shoots adhesive frill tip to snag drifting carcass bits (+20% food intake, slows target).",
+        "numbers": {}
+      },
+      "weakness": "Net tangles if struck by sharp bone or rock.",
+      "observe": [
+        "Iridescent strands stretch between frill edges",
+        "Cilia beat in synchronized waves",
+        "Carcass fragments spiral into the center"
+      ],
+      "journal": {
+        "en": "Silk without a spinneret. The sea weaves its bread."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "Reframe skill as rapid extrusion/extension and adhesion of a frill lobe (not a launched projectile); net is continuously renewed mucus on beating cilia, shed and replaced when tangled.",
+        "fixes": [
+          "Reframe skill as rapid extrusion/extension and adhesion of a frill lobe (not a launched projectile); net is continuously renewed mucus on beating cilia, shed and replaced when tangled."
+        ],
+        "analogues": [
+          {
+            "organism": "Giant larvacean (Oikopleura) mucus filter house; chaetognaths (arrow worms) secrete a mucus feeding net; sea-cucumber (Holothuroidea) sticky oral tentacles snag particles.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "corona.c3",
+      "trait": "Slow benthic crawling with radial reorientation",
+      "links": [
+        "High locomotor drag makes sprinting metabolically ruinous",
+        "Slow movement conserves energy in low-visibility tuff",
+        "1.6 bar atmosphere multiplies drag to water interface"
+      ],
+      "roots": [
+        "F4"
+      ],
+      "skill": {
+        "id": "corona.tidal_drift",
+        "name": {
+          "en": "Tidal Drift"
+        },
+        "role": "Control",
+        "effect": "Rides flood currents to reposition silently (+10 m movement, zero stamina cost).",
+        "numbers": {}
+      },
+      "weakness": "Cannot flee from fast predators during strong flow.",
+      "observe": [
+        "Low disc presses flat against tuff floor",
+        "Frills ratchet forward like a starfish",
+        "Tracks left in silt match tidal direction"
+      ],
+      "journal": {
+        "en": "Muscles too heavy for sprint. It lets the sea push it."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "Root slow movement in benthic Reynolds-number drag, sediment friction, and high cost of mucus/ciliary upkeep; keep “Tidal Drift” as passive transport in bore/flood flow, not atmospheric drag.",
+        "fixes": [
+          "Root slow movement in benthic Reynolds-number drag, sediment friction, and high cost of mucus/ciliary upkeep; keep “Tidal Drift” as passive transport in bore/flood flow, not atmospheric drag."
+        ],
+        "analogues": [
+          {
+            "organism": "Asteroidea (starfish) tube-foot crawling; sand dollars and brittle stars reorient slowly on sediment.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "corona.c4",
+      "trait": "Tidal rhythmicity with slack-tide disc collapse",
+      "links": [
+        "Slack tide removes flow cues and depletes dissolved O2",
+        "Metabolic rate must drop to survive hypoxia",
+        "Lunar gravity drives 14.9-day spring-neap cycle"
+      ],
+      "roots": [
+        "F6"
+      ],
+      "skill": {
+        "id": "corona.current_hush",
+        "name": {
+          "en": "Current Hush"
+        },
+        "role": "Defence",
+        "effect": "Collapses frills into a sealed disc during slack tide (+30% stealth, reduces detection but stops feeding).",
+        "numbers": {}
+      },
+      "weakness": "Highly vulnerable to bone spines or rock attacks when collapsed.",
+      "observe": [
+        "Frills curl inward at ebb",
+        "Center darkens as cilia slow",
+        "Heart-pulsations visible through translucent rim"
+      ],
+      "journal": {
+        "en": "It sleeps when the sea holds its breath. Wake it at your peril."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "Treat Corona as tidal-zone (periodically emersed on spring lows per F13), not permanently subtidal; collapse primarily on ebb/emersion and slack hypoxia; Espinodo (or spine-using predators) threaten mainly when the disc is exposed/glassy on tuff, aligning with the spring-low haunting beat.",
+        "fixes": [
+          "Treat Corona as tidal-zone (periodically emersed on spring lows per F13), not permanently subtidal; collapse primarily on ebb/emersion and slack hypoxia; Espinodo (or spine-using predators) threaten mainly when the disc is exposed/glassy on tuff, aligning with the spring-low haunting beat."
+        ],
+        "analogues": [
+          {
+            "organism": "Intertidal bivalves (e.g. Mytilus) gape/close with tide; emersed anemones and limpets clamp to substratum at low water; metabolic depression under hypoxia in intertidal gastropods.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "Espinodo",
+      "kind": "cousin",
+      "note": "(council kind 'Predation/Interaction') Bone spines pierce mucus nets; corona seals frills and relies on acoustic vibration cues to time collapse."
+    },
+    {
+      "with": "Rondo",
+      "kind": "cousin",
+      "note": "(council kind 'Resource') Rondo carcasses that wash into the cave provide concentrated nutrient pulses that trigger mass frill deployment."
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-19",
+    "by": [
+      "naturalist/qwen"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-19",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-19"
+    },
+    {
+      "date": "2026-11-19",
+      "who": "import_got",
+      "what": "merged run autoloop-2026-11-19: 0 chain(s) added, 0 plausibility block(s) filled, 0 relation(s) added"
+    }
+  ],
+  "body_plan": {
+    "symmetry": "radial",
+    "arms": 6,
+    "origin": "convergent radialization driven by omnidirectional tidal currents in confined lava tube"
+  },
+  "temperament": "Passive, reactive, highly sensitive to flow changes",
+  "secrets": [
+    "sunken cave",
+    "tidal rhythm",
+    "mucus net fossil"
+  ],
+  "moments": [
+    "During a spring low tide, the creature collapses into a perfect glassy disc on the exposed tuff floor. A lone Rondo calf trots over it, its hooves pressing into the sealed rim without triggering a single pulse."
+  ],
+  "journal": [
+    {
+      "en": "It does not face the current. The current feeds it from all sides."
+    },
+    {
+      "en": "Silk without a spinneret. The sea weaves its bread."
+    }
+  ]
+}

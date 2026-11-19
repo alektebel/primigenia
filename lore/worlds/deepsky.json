@@ -1,0 +1,440 @@
+{
+  "schema": "cpore.world/1",
+  "id": "deepsky",
+  "kind": "fictional",
+  "system": {
+    "star": "G2V main-sequence",
+    "position": "fictional",
+    "distance_ly_from_sol": null
+  },
+  "name": {
+    "en": "The Deep Sky",
+    "es": "El Cielo Profundo"
+  },
+  "status": "draft",
+  "facts": [
+    {
+      "id": "F1",
+      "group": "star",
+      "claim": "G2V main-sequence star with 0.95 L☉ luminosity provides reduced, red-skewing insolation (~3.5% Earth flux) at 5.2 AU.",
+      "justification": "A G2V star at this distance yields a solar-like spectrum attenuated by distance; red-shifted pigments are the adaptive response to lower photon flux, not a stellar intrinsic shift.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 0.95,
+      "unit": "L☉",
+      "consequences": [
+        "Photosynthetic pigments shift to red/NIR bands.",
+        "Long orbital period creates multi-year migration cycles.",
+        "Stable irradiation allows complex upper-atmosphere photochemistry."
+      ]
+    },
+    {
+      "id": "F21",
+      "group": "star",
+      "claim": "Stellar mass is ~1.0 M☉ consistent with G2V classification and F2 orbital period.",
+      "justification": "Luminosity of 0.95 L☉ aligns with a main-sequence solar analog; mass anchors Keplerian dynamics without requiring exotic stellar models.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 1.0,
+      "unit": "M☉",
+      "consequences": [
+        "Predictable stellar evolution timeline.",
+        "Stable irradiation supports long-term atmospheric chemistry.",
+        "Minimal flare activity compared to K/M dwarfs."
+      ],
+      "refs": [
+        "guillot_2005_interiors"
+      ]
+    },
+    {
+      "id": "F22",
+      "group": "atmosphere",
+      "claim": "Insolation factor is ~0.035 Earth at 5.2 AU, 0.95 L☉.",
+      "justification": "Inverse-square law applied to 0.95 L☉ at 5.2 AU yields ~3.5% of solar constant; anchors phototrophic limits and megafauna energy budgets.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 0.035,
+      "unit": "Earth flux",
+      "consequences": [
+        "Photosynthetic yields are low, favoring chemosynthetic hybrids.",
+        "Megafauna require slow metabolisms or colonial architectures.",
+        "Nutrient recycling efficiency dictates ecosystem carrying capacity."
+      ]
+    },
+    {
+      "id": "F2",
+      "group": "orbit",
+      "claim": "5.2 AU semi-major axis results in an 11.9-year orbital period around a ~1.0 M☉ star.",
+      "justification": "Kepler's third law dictates this period; places the planet beyond the ice line where volatile condensation supports banded accretion.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 11.9,
+      "unit": "years",
+      "consequences": [
+        "Extended seasons drive long-distance vertical migration.",
+        "Predictable insolation windows synchronize reproductive blooms.",
+        "Minimal axial tilt prevents seasonal shock, stabilizing pressure bands."
+      ],
+      "refs": [
+        "guillot_2005_interiors"
+      ]
+    },
+    {
+      "id": "F3",
+      "group": "planet",
+      "claim": "1.2 M♃ mass and 1.05 R♃ radius yield ~2.6 g surface-equivalent gravity at the 1-bar equipotential.",
+      "justification": "Hydrostatic equilibrium scaling for a cold-start gas giant at this mass-radius ratio yields higher gravity than initially estimated, increasing the metabolic cost of vertical migration.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 2.6,
+      "unit": "g",
+      "consequences": [
+        "Organisms must actively regulate displacement to avoid sinking.",
+        "Structural support shifts from skeletal to hydrostatic/buoyant.",
+        "High gravity increases metabolic cost of vertical migration and limits maximum body size."
+      ],
+      "refs": [
+        "guillot_2005_interiors"
+      ]
+    },
+    {
+      "id": "F4",
+      "group": "planet",
+      "claim": "9.8-hour rotation period with 2.5° axial tilt drives persistent zonal jets and weak seasonal variation.",
+      "justification": "Rapid spin amplifies Coriolis forces, splitting the atmosphere into permanent banded flows; low tilt ensures uniform latitudinal energy distribution.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 9.8,
+      "unit": "hours",
+      "consequences": [
+        "Horizontal navigation requires constant wind-shear reading.",
+        "Seasonal cues are replaced by vertical chemical gradients.",
+        "Rapid rotation sustains hyperactive convection and lightning."
+      ]
+    },
+    {
+      "id": "F5",
+      "group": "atmosphere",
+      "claim": "Atmosphere is 89% H₂, 10% He, 1% volatiles (CH₄, NH₃, H₂O, H₂S) by volume, establishing a strongly reducing environment.",
+      "justification": "Primordial nebular fractionation and solar-system condensation sequences dictate this composition for a Jupiter-class planet beyond the ice line.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 89,
+      "unit": "%",
+      "consequences": [
+        "Oxidative metabolisms are impossible; life relies on redox gradients.",
+        "Molecular oxygen acts as a corrosive poison to reduced membranes.",
+        "Hydrogen provides massive passive buoyancy for floaters."
+      ]
+    },
+    {
+      "id": "F6",
+      "group": "atmosphere",
+      "claim": "Condensation sequence forms ammonia ice at ~0.7 bar (~110–150 K), ammonium hydrosulfide at ~1.5 bar, and water ice/liquid at ~4 bar.",
+      "justification": "Temperature-pressure crossing points match known volatile condensation curves; these layers define the primary ecological strata and solvent microenvironments.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 0.7,
+      "unit": "bar",
+      "consequences": [
+        "Photosynthesis is restricted to upper ammonia decks (highly speculative yield).",
+        "Ammonium hydrosulfide layer hosts chemotrophic symbionts.",
+        "Water cloud layer provides liquid solvent pockets for deeper life."
+      ],
+      "refs": [
+        "sagan_salpeter_1976_particles"
+      ]
+    },
+    {
+      "id": "F7",
+      "group": "climate",
+      "claim": "Zonal wind speeds of 80–120 m/s driven by thermal wind balance across equator-to-pole gradients.",
+      "justification": "Internal heat flux combined with rapid rotation sustains these jet streams; they act as horizontal terrain and chemical transport highways.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 100,
+      "unit": "m/s",
+      "consequences": [
+        "Passive drifters are stripped without active propulsion.",
+        "Jet boundaries create chemical dead zones and nutrient traps.",
+        "Hunters exploit shear edges for ambush and burst speed."
+      ]
+    },
+    {
+      "id": "F8",
+      "group": "sky",
+      "claim": "Sound velocity is ~320–380 m/s at 1 bar with low attenuation for frequencies below 100 Hz.",
+      "justification": "Low molecular weight and high density of H₂ accelerate acoustic waves; viscosity limits high-frequency propagation, making bass waves dominant.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 350,
+      "unit": "m/s",
+      "consequences": [
+        "Long-range communication relies on infrasonic pulses.",
+        "Visual navigation is compromised by scattering haze.",
+        "Acoustic triangulation replaces line-of-sight targeting."
+      ],
+      "refs": [
+        "rasmussen_2008_infrasound"
+      ]
+    },
+    {
+      "id": "F9",
+      "group": "atmosphere",
+      "claim": "Pressure scale height is ~20–30 km in the upper troposphere, with a dry adiabatic lapse rate of ~1.5–2 K/km.",
+      "justification": "Hydrostatic equilibrium in a light H₂ envelope creates exponential pressure gradients; moist convection steepens the lapse rate locally.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 25,
+      "unit": "km",
+      "consequences": [
+        "Vertical migration spans kilometers rather than meters.",
+        "Cooking zone (>10 bar) is reached over several descent kilometers.",
+        "Thermal lag makes rapid depth changes physiologically costly."
+      ],
+      "refs": [
+        "guillot_2005_interiors"
+      ]
+    },
+    {
+      "id": "F10",
+      "group": "interior",
+      "claim": "No solid surface exists; supercritical fluid transition occurs at ~100 bar, with a metallic hydrogen dynamo core at Mbar depths.",
+      "justification": "Phase boundary between molecular and metallic hydrogen removes solid mantle analogs; the deep dynamo generates a strong dipole magnetic field.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 100,
+      "unit": "bar",
+      "consequences": [
+        "Navigation relies on magnetic flux lines only for deep migrators.",
+        "Deep interior heat drives convective updrafts.",
+        "Magnetoreception organs evolve for long-distance migration."
+      ],
+      "refs": [
+        "guillot_2005_interiors"
+      ]
+    },
+    {
+      "id": "F11",
+      "group": "chemistry",
+      "claim": "Transient aqueous-ammonia microdroplets suspended in the H₂ bath act as the primary biological solvent and reaction medium.",
+      "justification": "Convective condensation cycles in cloud decks create pressurized hydrosphere pockets; high pressure stabilizes complex polymers that would denature on Earth.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "consequences": [
+        "Intracellular biochemistry operates in water-ammonia eutectics.",
+        "Solvent availability fluctuates with convective updrafts.",
+        "Ammonia toxicity requires active detoxification or compartmentalization."
+      ],
+      "refs": [
+        "sagan_salpeter_1976_particles"
+      ]
+    },
+    {
+      "id": "F12",
+      "group": "chemistry",
+      "claim": "Steep redox gradients between H₂/CH₄/NH₃ and lightning-fixed nitrogen provide sustained chemical disequilibrium.",
+      "justification": "Reduced atmosphere and convection sustain perpetual chemical disequilibrium; lightning discharge in water clouds fixes atmospheric nitrogen into bioavailable forms.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "consequences": [
+        "Chemotrophy outcompetes phototrophy in deeper strata.",
+        "Lightning strikes create localized nutrient plumes.",
+        "Metabolic pathways rely on thioester-flavin redox chains."
+      ],
+      "refs": [
+        "sagan_salpeter_1976_particles"
+      ]
+    },
+    {
+      "id": "F13",
+      "group": "biochemistry",
+      "claim": "Hydrocarbon-amine amphiphiles or azotosome-like membranes maintain fluidity and solvent compatibility in low-temperature, reduced conditions.",
+      "justification": "Standard lipid bilayers freeze or dissolve in ammonia; nitrogen-based or amine-modified membranes remain fluid at -50°C to +80°C under pressure.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "consequences": [
+        "Membrane permeability requires active enzymatic pore regulation.",
+        "Oxidative stress from trace O₃ is negligible in bulk but localized near lightning.",
+        "Speculative biochemistry is flagged but thermodynamically stable."
+      ],
+      "refs": [
+        "sagan_salpeter_1976_particles"
+      ]
+    },
+    {
+      "id": "F14",
+      "group": "biochemistry",
+      "claim": "Red-shifted photopigments and anoxygenic photoautotrophy enable energy capture in NIR-heavy, low-photon flux upper decks.",
+      "justification": "G2V stellar spectrum peaks in near-IR; bacteriochlorophyll analogs absorb 600–900 nm, while chemosynthesis supplements energy in shadowed layers.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "consequences": [
+        "Upper-deck primary producers form dense canopy layers.",
+        "Energy density drops exponentially with depth.",
+        "Metabolic rates scale with ambient photon and gas flux."
+      ],
+      "refs": [
+        "sagan_salpeter_1976_particles"
+      ]
+    },
+    {
+      "id": "F15",
+      "group": "biochemistry",
+      "claim": "Adiabatic descent into the >10 bar cooking zone forces rapid mitotic reproduction and armored spore dispersal before thermal denaturation.",
+      "justification": "Sagan-Salpeter sinker ecology dictates that organisms drifting downward must replicate before proteins denature at high temperature/pressure along the adiabat.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 10,
+      "unit": "bar",
+      "consequences": [
+        "Adult sinkers are weak and short-lived.",
+        "Spore bursts create temporary nutrient blooms in upper decks.",
+        "Descent rate directly controls reproductive success."
+      ],
+      "refs": [
+        "sagan_salpeter_1976_particles"
+      ]
+    },
+    {
+      "id": "F16",
+      "group": "biochemistry",
+      "claim": "Metabolic H₂ production and thermal bladder regulation provide neutral buoyancy, allowing depth control against ~2.6 g gravity.",
+      "justification": "Floaters must displace gas to counteract gravity; metabolic H₂ from CO₂ reduction or thermal expansion of existing gas enables active altitude shifts.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 2.6,
+      "unit": "g",
+      "consequences": [
+        "Buoyancy control consumes significant metabolic budget.",
+        "Rapid depth changes risk bladder rupture or embolism.",
+        "Thermal lag makes sudden descents physiologically risky."
+      ],
+      "refs": [
+        "sagan_salpeter_1976_particles"
+      ]
+    },
+    {
+      "id": "F17",
+      "group": "biochemistry",
+      "claim": "Asymmetric hydrofoils and compressed gas ram-jets counteract 100 m/s shear winds, enabling active predation on passive drifters.",
+      "justification": "High Reynolds number and low-density H₂ favor active propulsion over passive gliding; jet hunters exploit wind shear for burst acceleration.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 100,
+      "unit": "m/s",
+      "consequences": [
+        "Predators require high-calorie diets to fuel jet bursts.",
+        "Exhaust plumes telegraph position to chroma-sense prey.",
+        "Momentum carry limits sharp turning in dense gas."
+      ]
+    },
+    {
+      "id": "F18",
+      "group": "biochemistry",
+      "claim": "Kilometre-scale modular gigantism and filter-maw rakers exploit low H₂ density to graze cloud plankton while coordinating via infrasound.",
+      "justification": "Air whales maximize volume-to-mass ratio to achieve neutral buoyancy; low-frequency vocal sacs enable herd synchronization across turbulent shear.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 1,
+      "unit": "km",
+      "consequences": [
+        "Slow turning radius makes them vulnerable to jet hunters.",
+        "Infrasonic coordination reduces individual metabolic stress.",
+        "Grazing creates temporary nutrient voids in wake zones."
+      ],
+      "refs": [
+        "rasmussen_2008_infrasound",
+        "sagan_salpeter_1976_particles"
+      ]
+    },
+    {
+      "id": "F19",
+      "group": "biochemistry",
+      "claim": "High-drag, low-visibility aerosol haze selects for ritualized, non-lethal duels and oath-binding to minimize injury costs in metabolically expensive environments.",
+      "justification": "Given by the lore; evolutionary pressure favors energy-efficient conflict resolution when movement is metabolically expensive and visibility is poor. (inferred)",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "consequences": [
+        "Social hierarchy is enforced through harmonic cadence matching.",
+        "Broken oaths trigger neural feedback or social exile.",
+        "Duel outcomes determine resource access and mating rights."
+      ],
+      "refs": [
+        "rasmussen_2008_infrasound"
+      ]
+    },
+    {
+      "id": "F20",
+      "group": "biochemistry",
+      "claim": "Hydrostatic pressure equalization mechanisms prevent tissue collapse during vertical migration, turning altitude changes into tactical risk/reward loops.",
+      "justification": "Pressure rises exponentially with depth; organisms must match internal/external pressure to avoid mechanical denaturation or decompression shock.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "consequences": [
+        "Vertical movement requires active pressure-syncing skills.",
+        "Deep dives unlock rare chemotrophic resources but drain health.",
+        "Rapid ascent causes embolism if venting is uncontrolled."
+      ],
+      "refs": [
+        "guillot_2005_interiors"
+      ]
+    }
+  ],
+  "changelog": [
+    {
+      "date": "2026-11-18",
+      "who": "autoloop",
+      "what": "world canon drafted by the council chair from 22 facts (planet drafts, peer reviews, astrobio referee)"
+    },
+    {
+      "date": "2026-11-18",
+      "who": "autoloop",
+      "what": "removed rejected references; retired real facts left without references"
+    }
+  ]
+}

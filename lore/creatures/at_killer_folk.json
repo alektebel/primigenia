@@ -1,0 +1,242 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "at_killer_folk",
+  "name": {
+    "en": "Killer Folk"
+  },
+  "world": "at_qu_worlds",
+  "kind": "easter_egg",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "Sheltered valleys between Qu-engineered pyramids and glass-melt plains; prefers fortified ruins and wind-tunnel corridors.",
+    "diet": "Omnivorous hunter-scout; targets domesticated livestock herds, chemosynthetic filter-mats, and metal-rich subterranean tubers.",
+    "active": "Crepuscular; hunts during amber twilight when dense air carries sound furthest and flare-UV peaks subside.",
+    "predators": [
+      "Gravital orbital drones",
+      "rival hunting clans",
+      "opportunistic carrion-scavengers"
+    ],
+    "prey": [
+      "Gracilised livestock herds",
+      "burrowing worm-descendants",
+      "crystalline biomass grazers"
+    ]
+  },
+  "body": "Rotated digits and gracile grasping hands evolved to manipulate complex tools and scale ancient Qu ruins without fracturing under 1.22g gravity. Enlarged saber teeth shifted from functional weapons to copper-infused, iridescent display traits, while their pack hunts rely on infrasonic drumming that travels for miles through silicate-laden fog and wind-tunneling architecture.",
+  "chains": [
+    {
+      "id": "at_killer_folk.c1",
+      "trait": "Rotated digits and gracile grasping hands",
+      "links": [
+        "Rotated three-finger graspers and reduced thumb-claws evolved for sustained leverage and fine manipulation.",
+        "1.22 g gravity penalizes brute-force brawling, favoring energy-efficient mechanical advantage over raw torque.",
+        "Dense 1.8 bar atmosphere increases aerodynamic drag, selecting for streamlined, low-mass limb architecture.",
+        "Ruined fortress terrain demands multi-axis digit manipulation for climbing, weapon handling, and tool cranking."
+      ],
+      "roots": [
+        "F3",
+        "F5",
+        "F8"
+      ],
+      "skill": {
+        "id": "at_killer_folk.precision_grasp",
+        "name": {
+          "en": "Precision Grasp"
+        },
+        "role": "Basic",
+        "effect": "Tool handling accuracy +25% in complex environments; enables rapid weapon switching and leverage-based strikes.",
+        "numbers": {}
+      },
+      "weakness": "Disarmed, grip torque drops sharply on improvised tools; specialized thenar muscles lack raw crushing force.",
+      "observe": [
+        "Thumb is a padded callus, not a weapon.",
+        "Fingers rotate 90° to crank rifle bolts or herding leashes.",
+        "Bow limbs held under sustained tension without fatigue."
+      ],
+      "journal": {
+        "en": "They traded muscle for leverage, turning the ghost of the claw into a handle."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Treat ‘rotation’ as wrist/forearm pronation–supination and repositioned grasping digits (predator→tool-user), not literal 90° finger torsion; tie gracilization to F3 (leverage over torque at 1.22 g) and fortress/tool ecology (F8), and drop atmosphere drag (F5) as a primary hand-shape selector—use it only for sprinting/body profile.",
+        "fixes": [
+          "Treat ‘rotation’ as wrist/forearm pronation–supination and repositioned grasping digits (predator→tool-user), not literal 90° finger torsion; tie gracilization to F3 (leverage over torque at 1.22 g) and fortress/tool ecology (F8), and drop atmosphere drag (F5) as a primary hand-shape selector—use it only for sprinting/body profile."
+        ],
+        "analogues": [
+          {
+            "organism": "Hominin canine reduction and precision grip with sustained tool use; primate thenar/opposition versus ursid crushing grip (trade precision for force).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "striedter_2005_principles"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 7,
+          "designer": 9,
+          "physicist": 4
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist",
+          "physicist"
+        ]
+      }
+    },
+    {
+      "id": "at_killer_folk.c2",
+      "trait": "Ceremonial hunts guided by infrasonic drumming",
+      "links": [
+        "Infrasonic drumming and tremor-sensing evolved to coordinate hunts and navigate fog-shrouded ruins.",
+        "High acoustic impedance channels low-frequency pulses through stone wind tunnels and pyramid bases.",
+        "Dense, aerosol-laden atmosphere scatters visible light and high-frequency vocalizations, blinding optical targeting.",
+        "High UV/X-ray flare flux restricts safe surface activity to twilight windows, forcing acoustic reliance."
+      ],
+      "roots": [
+        "F6",
+        "F7",
+        "F8",
+        "F16"
+      ],
+      "skill": {
+        "id": "at_killer_folk.tremor_sight",
+        "name": {
+          "en": "Tremor Sight"
+        },
+        "role": "Passive",
+        "effect": "Reads ground vibrations up to 80m to predict prey pathing and ambush angles; +15% detection in ruins.",
+        "numbers": {}
+      },
+      "weakness": "Reliant on low-frequency communication; high-pitched acoustic jammers or sudden structural collapses disrupt targeting and cause disorientation.",
+      "observe": [
+        "Broad nasal cavity for acoustic resonance.",
+        "Reinforced mastoid bones transmit ground vibration directly to the inner ear.",
+        "Ceremonial drumming kits etched with herd migrations and wind-tunnel acoustics."
+      ],
+      "journal": {
+        "en": "The sky burns, the stone hums, and the hunt begins where light fails and sound leads."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Keep drums and pyramid wind-tunnels as cultural/terrain amplifiers (F8, F16); ground-coupled sensing via enlarged pedal fat pads and bone conduction (mastoid/sacrum), because human cochlear hearing is weak below ~20 Hz—passive ‘Tremor Sight’ should be somatosensory + learned cueing, not pure infrasonic audition.",
+        "fixes": [
+          "Keep drums and pyramid wind-tunnels as cultural/terrain amplifiers (F8, F16); ground-coupled sensing via enlarged pedal fat pads and bone conduction (mastoid/sacrum), because human cochlear hearing is weak below ~20 Hz—passive ‘Tremor Sight’ should be somatosensory + learned cueing, not pure infrasonic audition."
+        ],
+        "analogues": [
+          {
+            "organism": "African elephant (Loxodonta africana) low-frequency rumbles and seismic reception through feet and bone conduction.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "designer": 8,
+          "physicist": 8
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "physicist"
+        ]
+      }
+    },
+    {
+      "id": "at_killer_folk.c3",
+      "trait": "Enlarged saber teeth maintained as ritual display",
+      "links": [
+        "Enamel thickened and crown height increased to catch amber twilight and project status without metabolic cost.",
+        "High-density atmosphere scatters high-frequency screams, making visual cues more reliable for long-range parley.",
+        "Hunter nobilities codified the hunt into religion, shifting selection from utility to status signaling.",
+        "Tool-use rendered functional fangs a liability in close-quarters biting contests, preserving only ornamental dentition."
+      ],
+      "roots": [
+        "F3",
+        "F6"
+      ],
+      "skill": {
+        "id": "at_killer_folk.ritual_intimidation",
+        "name": {
+          "en": "Ritual Intimidation"
+        },
+        "role": "Social",
+        "effect": "Allies gain +2 morale; Enemies hesitate, reducing attack speed by 20%.",
+        "numbers": {}
+      },
+      "weakness": "Teeth are brittle; a direct bite against hard armor or stone shatters them, leaving the individual vulnerable.",
+      "observe": [
+        "Dentition shows zero wear from food, only polishing from ritual stones.",
+        "Rivals stare at the mouth during parley, measuring the enamel gleam.",
+        "Teeth vibrate with low-hum to catch fog-mists and amplify shimmer."
+      ],
+      "journal": {
+        "en": "They traded muscle for mind, but the ghost of the claw sleeps in the wrist. Wait for the bare hand."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Model canines as honest-but-costly ornaments under sexual/social selection (polishing, gnashing rituals, not mastication); allow slight wear from soft foods; remove ‘teeth vibrate with low-hum to shimmer’ (highly speculative) and rely on F6 amber twilight glint on enamel; brittle-display weakness stays if enamel is oversized and unused in bite-kills.",
+        "fixes": [
+          "Model canines as honest-but-costly ornaments under sexual/social selection (polishing, gnashing rituals, not mastication); allow slight wear from soft foods; remove ‘teeth vibrate with low-hum to shimmer’ (highly speculative) and rely on F6 amber twilight glint on enamel; brittle-display weakness stays if enamel is oversized and unused in bite-kills."
+        ],
+        "analogues": [
+          {
+            "organism": "Musk deer (Moschus) tusk-like canines used mainly in display/fight rituals; Irish elk (Megaloceros) runaway ornament selection.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 7,
+          "designer": 8,
+          "physicist": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist"
+        ]
+      }
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-18",
+    "by": [
+      "naturalist",
+      "physicist"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-18",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-18"
+    }
+  ],
+  "lore_ref": {
+    "file": "lore/alltomorrows.en.json",
+    "id": "killer-folk"
+  },
+  "temperament": "Ritualistic and fiercely hierarchical, they treat yearly hunting duels as sacred civic duties rather than mere sustenance.",
+  "secrets": [
+    "TRAIT: Rotated digits & gracile hands <- why: 1.22g gravity demands energy-efficient locomotion and fracture resistance <- why: Qu ruins require climbing, lever-opening, and precision tool use <- PHYSICAL ROOT: 1.22g gravity + preserved architecture -> SKILL: Precision Grip (Control/Defence) stabilizes weapons, Weakness: heavy blunt force strains joints.",
+    "TRAIT: Infrasonic drumming <- why: 1.8 bar atmosphere and silicate aerosols scatter high frequencies but transmit infrasound efficiently <- why: coordinated hunting of large herds requires silent, long-range pack communication <- PHYSICAL ROOT: 1.8 bar atmosphere + acoustic waveguides -> SKILL: Resonance Call (Engage) coordinates pack and dampens prey panic, Weakness: sudden high-pitched flares cause disorientation.",
+    "TRAIT: Enlarged saber teeth <- why: tool-mediated hunting reduced predation pressure, shifting selection to sexual display <- why: copper bioavailability allows trace-metal enamel that shines in amber twilight <- PHYSICAL ROOT: copper-rich environment + cultural ritualization -> SKILL: Intimidate (Engage) triggers submission, Weakness: metabolically costly to maintain, requires high calcium/copper intake."
+  ],
+  "moments": [
+    "Watch them synchronize a pack hunt by drumming on hollowed glass pillars, sending pressure waves through the fog to herd livestock into kill zones.",
+    "Observe a young hunter displaying their iridescent sabers to win a mating right, ignoring the actual prey until the ritual concludes."
+  ]
+}

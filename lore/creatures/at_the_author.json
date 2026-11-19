@@ -1,0 +1,208 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "at_the_author",
+  "name": {
+    "en": "The Author"
+  },
+  "world": "at_gravital_space",
+  "kind": "easter_egg",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "Silent archaeological ruins, fossil-rich basins, and low-light stellar nurseries where historical data persists in mineral matrices and decaying strata.",
+    "diet": "Chemosynthetic absorber; extracts trace energy and informational compounds from weathered stone, fossilized tissue, and ambient chemical residues.",
+    "active": "Nocturnal and crepuscular; most active during low-radiation periods when spectral archival is optimal and thermal noise is minimized.",
+    "predators": [
+      "Radiation storms",
+      "Geological collapse events",
+      "Scavenger drones"
+    ],
+    "prey": [
+      "Microbial biofilms",
+      "Weathered fossilized tissue",
+      "Ambient chemical residues"
+    ]
+  },
+  "body": "Multi-banded photoreceptive dermal patches <- why? Harvest energy and data from varied spectra in dark ruins <- why? Evolved from a lineage that required passive energy capture while reading environmental history <- why? Resource-scarce archaeological zones favor spectral analysis over active hunting -> SKILL: 'Spectral Archive' (Poke): read historical data from surfaces via light absorption, with a weakness dependent on ambient light and spectrum. Chemical archival nodes <- why? Store complex historical/linguistic data chemically for millennia-long stability <- why? Neural tissue degrades, but chemical lattices persist in stable environments <- why? Long-term data preservation in a galaxy where biological memory is fleeting -> SKILL: 'Chemical Echo' (Defence/Control): imprint memories into chemical nodes, share them, or defend against neural tampering, with a weakness of slow retrieval and vulnerability to chemical solvents.",
+  "chains": [
+    {
+      "id": "at_the_author.c1",
+      "trait": "Multi-banded photoreceptive dermal patches along forelimbs",
+      "links": [
+        "Broad-spectrum spectral decoding of ancient ruins",
+        "ancient fossilized tissue retains only degraded pigment matrices",
+        "G or K-type star luminosity over multi-million-year timescales alters organic chromophores via photodegradation",
+        "radiative heat rejection and cosmic UV flux accelerate molecular bond breakage over geological time"
+      ],
+      "roots": [
+        "F1",
+        "F12"
+      ],
+      "skill": {
+        "id": "at_the_author.strata_spectrometry",
+        "name": {
+          "en": "Strata Spectrometry"
+        },
+        "role": "Control",
+        "effect": "Decodes degraded fossil chemistry, revealing 2 hidden environmental traits of a ruined biome.",
+        "numbers": {}
+      },
+      "weakness": "Requires prolonged exposure to specific stellar wavelengths; artificial light sources yield false positives.",
+      "observe": [
+        "Iridescent membrane layers over the hands",
+        "Pupils that fracture light into narrow spectral bands",
+        "Dust-resistant ocular canals"
+      ],
+      "journal": {
+        "en": "A billion years of quiet starlight turns flesh into glass; read the colors left behind."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-19",
+        "summary": "Treat patches as tunable reflectance filters plus spatial hyperspectral sampling (not literal ‘pupils on hands’); require calibration against local G/K continuum and compare to mineral matrix, since organic chromophores in fossils are sparse and biased.",
+        "fixes": [
+          "Treat patches as tunable reflectance filters plus spatial hyperspectral sampling (not literal ‘pupils on hands’); require calibration against local G/K continuum and compare to mineral matrix, since organic chromophores in fossils are sparse and biased."
+        ],
+        "analogues": [
+          {
+            "organism": "Cephalopod chromatophore/leucophore stacks (spectral control of dermal reflectance); mantis shrimp (multi-band retinal sampling—here relocated to dermal mosaic for close-up stratigraphy)",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "faure_2005_isotopes"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 7,
+          "designer": 9,
+          "physicist": 4
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "physicist",
+          "naturalist"
+        ]
+      }
+    },
+    {
+      "id": "at_the_author.c2",
+      "trait": "Chemical archival nodes integrated with neural lattice",
+      "links": [
+        "Hyper-dense storage required for billion-year observations",
+        "long-term information retention necessitates stable molecular recording",
+        "million-mile orbital sails create permanent shadow zones, reducing thermal fatigue but increasing micrometeoroid impact variance over aeons",
+        "microgravity persists due to mass distribution anomalies, requiring inertial anchoring to prevent tool slippage"
+      ],
+      "roots": [
+        "F3",
+        "F6"
+      ],
+      "skill": {
+        "id": "at_the_author.deep_archive",
+        "name": {
+          "en": "Deep Archive"
+        },
+        "role": "Defence",
+        "effect": "Safely retrieves intact specimens from unstable ruins, +40% resistance to collapse damage.",
+        "numbers": {}
+      },
+      "weakness": "Information retrieval is slow; Author cannot react quickly to sudden threats while accessing data.",
+      "observe": [
+        "Glowing chromatophores or chemical trails along neural pathways",
+        "Slow, deliberate movements when interacting with artifacts",
+        "Holding a skull with intense focus"
+      ],
+      "journal": {
+        "en": "A mind built not just to see, but to remember the echo of a billion years."
+      },
+      "plausibility": {
+        "verdict": "implausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-19",
+        "summary": "Billion-year retention cannot live in metabolizing neural tissue—use external inorganic molecular stores (e.g. mineralized or glass-encapsulated polymer/DNA-like records in ruins) that the Author reads slowly through chemosensory dermal nodes; keep gameplay ‘slow retrieval’ as interface latency, not on-line RAM.",
+        "fixes": [
+          "Billion-year retention cannot live in metabolizing neural tissue—use external inorganic molecular stores (e.g. mineralized or glass-encapsulated polymer/DNA-like records in ruins) that the Author reads slowly through chemosensory dermal nodes; keep gameplay ‘slow retrieval’ as interface latency, not on-line RAM."
+        ],
+        "analogues": [
+          {
+            "organism": "Slime mold Physarum (decentralized chemical tagging—hours/days, not aeons); subfossil environmental DNA in permafrost/sediment (thousands of years, read by sequencing not innervated memory)",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "prusiner_1998_prions",
+              "melosh_2011_impact"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 4,
+          "designer": 8,
+          "physicist": 3
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist",
+          "physicist"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "at_amphicephali",
+      "kind": "mimicry",
+      "note": "Author's chemical archival nodes and photoreceptive dermal patches mimic the dual-sensory complexity of Amphicephali fused ganglia to decode union records without the social neural architecture. -> Skill: 'Sensory decryption' (Basic)",
+      "via": "F6, F12"
+    },
+    {
+      "with": "at_amphicephali",
+      "kind": "predation",
+      "note": "Amphicephali's fused ganglia and pharyngeal manipulators actively harvest historical data from Author's archival nodes, treating them as living libraries to be consumed and integrated into their union. -> Skill: 'Archive siphon' (Poke)",
+      "via": "F16, F3"
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-18",
+    "by": [
+      "naturalist",
+      "physicist"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-19",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-18"
+    },
+    {
+      "date": "2026-11-18",
+      "who": "autoloop",
+      "what": "removed rejected references from analogues"
+    }
+  ],
+  "lore_ref": {
+    "file": "lore/alltomorrows.en.json",
+    "id": "the-author"
+  },
+  "temperament": "They treat history as a living ecosystem, documenting every fall with quiet reverence and zero moral grandstanding.",
+  "secrets": [
+    "The dermal patches can temporarily shift spectral bands to 'read' the emotional residue of a fossilized creature.",
+    "Chemical nodes can be harvested to reconstruct lost languages, but doing so permanently erases the author's own memories."
+  ],
+  "moments": [
+    "When the dermal patches flush with iridescent bands, they are actively decoding a centuries-old inscription from mineral strata.",
+    "A slow, deliberate exhale releases archival chemicals into the air, leaving a temporary scent-trail that other researchers can follow to recover fragmented data."
+  ]
+}

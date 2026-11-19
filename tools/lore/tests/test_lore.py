@@ -74,16 +74,21 @@ class ValidateTests(Base):
         dump(other, os.path.join(self.root, "lore", "creatures", "twin.json"))
         self.assertError("duplicate skill id")
 
+    def add_ghost(self):
+        self.edit(self.cp, lambda c: c.setdefault("relations", []).append({"with": "ghost creature", "kind": "rivalry", "note": "test"}))
+
     def test_relation_warning_when_draft_error_when_canon(self):
+        self.add_ghost()
         errs, warns = self.errors()
-        self.assertTrue(any("nocturnal creature" in w for w in warns))
+        self.assertTrue(any("ghost creature" in w for w in warns))
         self.edit(self.cp, lambda c: c.update(status="canon"))
         self.assertError("not a known creature id or alias")
 
     def test_alias_resolves(self):
-        self.edit(self.cp, lambda c: c.update(aliases=["nocturnal creature", "rondo"]))
+        self.add_ghost()
+        self.edit(self.cp, lambda c: c.update(aliases=["ghost creature"]))
         _, warns = self.errors()
-        self.assertEqual(warns, [])
+        self.assertFalse(any("ghost creature" in w for w in warns))
 
     def test_unknown_world(self):
         self.edit(self.cp, lambda c: c.update(world="atlantis"))
@@ -158,3 +163,18 @@ class ImportTests(Base):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class ImportMapTests(Base):
+    def test_map_ids_aliases_and_references(self):
+        g = json.load(open(os.path.join(FIX, "graph.json")))
+        name = next(iter(g["chains"]))
+        g["chains"][name][0]["references"] = [{"author": "Smith, J.", "year": 2001, "title": "Sound in dense air", "venue": "Journal of Tests"}]
+        refs = {}
+        docs = import_got.build(g, FIX, "run", "2026-01-01", "primigenia", "native",
+                                {name: {"id": "renamed", "name": {"en": "Renamed"}, "aliases": ["old name"], "lore_ref": {"file": "x.json", "id": "y"}}}, refs)
+        d = docs["renamed"]
+        self.assertEqual(d["name"], {"en": "Renamed"}); self.assertEqual(d["aliases"], ["old name"]); self.assertEqual(d["lore_ref"]["id"], "y")
+        self.assertIn("smith_2001_sound", refs)
+        self.assertEqual(refs["smith_2001_sound"]["x-status"], "unverified")
+        self.assertEqual(d["chains"][0]["plausibility"]["analogues"][-1]["refs"], ["smith_2001_sound"])

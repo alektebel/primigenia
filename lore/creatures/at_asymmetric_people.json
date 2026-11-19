@@ -1,0 +1,165 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "at_asymmetric_people",
+  "name": {
+    "en": "Asymmetric People"
+  },
+  "world": "at_garden_peoples",
+  "kind": "easter_egg",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "to be written",
+    "diet": "to be written",
+    "active": "to be written",
+    "predators": []
+  },
+  "body": "to be written",
+  "chains": [
+    {
+      "id": "at_asymmetric_people.c1",
+      "trait": "Centipedal shovel-toe distributed locomotion",
+      "links": [
+        "Transition from 36 g (F21) to lower-g required traction",
+        "Low-g environments (F5) allow elongated multi-limbed structures",
+        "Distributed weight-bearing prevents skeletal collapse",
+        "Traverse difficult terrain without penalty, ignore 50% terrain hazards"
+      ],
+      "roots": [
+        "F5",
+        "F21"
+      ],
+      "skill": {
+        "id": "at_asymmetric_people.grav_crawl",
+        "name": {
+          "en": "Grav-Crawl"
+        },
+        "role": "Basic",
+        "effect": "move 15m over rough terrain without penalty, ignore 50% terrain hazards",
+        "numbers": {}
+      },
+      "weakness": "Slow on smooth surfaces; multi-limb coordination requires Engage check to avoid entanglement",
+      "observe": [
+        "Segmented pedal arrays",
+        "Upside-down facial orientation",
+        "Stocking-like integument"
+      ],
+      "journal": {
+        "en": "They walked out of the deep squeeze by becoming a thousand legs."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-19",
+        "summary": "Frame as deliberate post-Lopsider engineering on F5 worlds, not natural selection from F21 alone; many short limbs improve substrate contact on rough low-g terrain but impose coordination tax on smooth rock—keep Engage entanglement check.",
+        "fixes": [
+          "Frame as deliberate post-Lopsider engineering on F5 worlds, not natural selection from F21 alone; many short limbs improve substrate contact on rough low-g terrain but impose coordination tax on smooth rock—keep Engage entanglement check."
+        ],
+        "analogues": [
+          {
+            "organism": "Centipede/scolopendrid distributed static stability; sea star tube-foot arrays; derived from Lopsider load-spreading ancestry under prior 36 g (F4/F21)",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 7,
+          "designer": 8,
+          "physicist": 8
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist",
+          "physicist"
+        ]
+      }
+    },
+    {
+      "id": "at_asymmetric_people.c2",
+      "trait": "Inverted facial orientation with upward sensory pits",
+      "links": [
+        "Subterranean bunker life (F21) inverted cranial orientation",
+        "Low-gravity (F5) reduces gravitational sag on appendages",
+        "Qu genetic tweaks (F14) allowed facial rotation",
+        "Detect hidden traps or chemical traces while prone"
+      ],
+      "roots": [
+        "F5",
+        "F14",
+        "F21"
+      ],
+      "skill": {
+        "id": "at_asymmetric_people.ventral_scan",
+        "name": {
+          "en": "Ventral Scan"
+        },
+        "role": "Poke",
+        "effect": "Detect hidden traps or chemical traces while prone",
+        "numbers": {}
+      },
+      "weakness": "Blind to direct frontal attacks; relies on peripheral alerts",
+      "observe": [
+        "Upward-turned snout",
+        "Buried mouth creases",
+        "Substrate-vibrating head taps"
+      ],
+      "journal": {
+        "en": "They turned their faces to the sky so jaws could feed the earth."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-19",
+        "summary": "Flounder-like cranial inversion in one generation is implausible without Qu ontogenetic rewrite (F14, highly speculative); after engineering, prone foraging makes ventral/upward pits and substrate vibration sense plausible—keep frontal blind spot weakness.",
+        "fixes": [
+          "Flounder-like cranial inversion in one generation is implausible without Qu ontogenetic rewrite (F14, highly speculative); after engineering, prone foraging makes ventral/upward pits and substrate vibration sense plausible—keep frontal blind spot weakness."
+        ],
+        "analogues": [
+          {
+            "organism": "Flatfish (*Pleuronectiformes*) orbital migration; pit-viper facial pits; American grasshopper substrate-vibration detection",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "designer": 9,
+          "physicist": 7
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist",
+          "physicist"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "at_lopsiders",
+      "kind": "rivalry",
+      "note": "Asymmetric People are engineered by Lopsiders for lower gravity, then reverse-engineer the process to exterminate their creators.",
+      "via": "F4, F5, F21"
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-18",
+    "by": [
+      "naturalist",
+      "physicist"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-19",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-18"
+    }
+  ],
+  "lore_ref": {
+    "file": "lore/alltomorrows.en.json",
+    "id": "asymmetric-people"
+  }
+}

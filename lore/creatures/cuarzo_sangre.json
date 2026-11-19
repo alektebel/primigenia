@@ -1,0 +1,319 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "cuarzo_sangre",
+  "name": {
+    "en": "Cuarzo-Sangre"
+  },
+  "world": "silicon_hot",
+  "kind": "new",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "Molten S₈–SO₂ eutectic basins, shielded from dust storms, vent plume peripheries",
+    "diet": "Dissolved silicates, sulfur polymers, grazing on chemosynthetic vent crusts",
+    "active": "Diurnal drift in sulfur currents; active during vent flares to feed on precipitated minerals",
+    "predators": []
+  },
+  "body": "Buoyant hollow aerogel-crystal hull, segmented fluid chambers, IR-gradient chemosensory fronds, silica-etching mandibles",
+  "chains": [
+    {
+      "id": "cuarzo_sangre.c1",
+      "trait": "Hollow aerogel-crystal buoyancy hull",
+      "links": [
+        "Neutral buoyancy in dense molten sulfur fluid",
+        "Low-density silicate aerogel structure reduces weight",
+        "High-gravity environment requires precise displacement",
+        "Root: Molten sulfur solvent density, 1.25g gravity, siloxane chemistry"
+      ],
+      "roots": [
+        "F3",
+        "F8",
+        "F10"
+      ],
+      "skill": {
+        "id": "cuarzo_sangre.sulfur_drift",
+        "name": {
+          "en": "Sulfur Drift"
+        },
+        "role": "Control",
+        "effect": "Moves silently through fluid currents with minimal energy; can position precisely for feeding or evasion.",
+        "numbers": {}
+      },
+      "weakness": "Hull collapses under rapid pressure changes; player can cause depth shocks.",
+      "observe": [
+        "Hull bubbles with trapped internal gas pockets that regulate buoyancy",
+        "Drifts without paddling, responding to micro-currents",
+        "Casts a refractive shadow on the sulfur basin floor"
+      ],
+      "journal": {
+        "en": "A bubble of glass swimming in a sea of fire."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Describe hull as dense-rim, foam-core silicate with few small pressurized chambers—not pure aerogel; add weakness that sulfur wetting of a breach makes chambers collapse (consistent with pressure shock weakness).",
+        "fixes": [
+          "Describe hull as dense-rim, foam-core silicate with few small pressurized chambers—not pure aerogel; add weakness that sulfur wetting of a breach makes chambers collapse (consistent with pressure shock weakness)."
+        ],
+        "analogues": [
+          {
+            "organism": "Nautilus chambered shell (gas-filled chambers for buoyancy control); diatom silica frustules (lightweight siliceous shells); Physalia physalis gas float (buoyancy via low-density internal medium).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "petkowski_2020_chemistry"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "cuarzo_sangre.c2",
+      "trait": "Internal pressure-syncing molten-salt pulse",
+      "links": [
+        "Prevents solvent exchange and hull collapse",
+        "Internal fluid pressure matches external sulfur pressure",
+        "Fragile Si–S bonds require pressure equilibrium to avoid hydrolysis-like cleavage",
+        "Root: 3.2 bar pressure, molten sulfur viscosity, Si-S bond stability"
+      ],
+      "roots": [
+        "F5",
+        "F8",
+        "F11"
+      ],
+      "skill": {
+        "id": "cuarzo_sangre.pressure_mirror",
+        "name": {
+          "en": "Pressure Mirror"
+        },
+        "role": "Defence",
+        "effect": "Reflects kinetic impact by matching fluid pressure; reduces damage from physical attacks.",
+        "numbers": {}
+      },
+      "weakness": "Puncture leaks internal salt, causing rapid internal crystallization and death.",
+      "observe": [
+        "Pulse rhythm matches external flow waves exactly",
+        "Hull flexes microscopically with pressure changes",
+        "No gas bubbles escape; system is hermetically sealed"
+      ],
+      "journal": {
+        "en": "It holds its breath in the heat, matching the world's pressure."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Rename to sulfur-eutectic or sulfur–siloxane internal phase; drop “molten salt” unless basins are explicitly chloride brines—which contradicts F8 global solvent canon.",
+        "fixes": [
+          "Rename to sulfur-eutectic or sulfur–siloxane internal phase; drop “molten salt” unless basins are explicitly chloride brines—which contradicts F8 global solvent canon."
+        ],
+        "analogues": [
+          {
+            "organism": "Deep-sea fish and invertebrate pressure adaptation (TMAO/osmolyte regulation in macrourids—from memory, unverified); brachiopod/cephalopod closed vascular systems maintaining internal pressure against seawater.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "cuarzo_sangre.c3",
+      "trait": "IR-gradient chemosensory fronds",
+      "links": [
+        "Navigation in lightless sulfur basins",
+        "Sensing chemical vent plumes for food sources",
+        "Thermal-IR photoreceptors replace visual systems",
+        "Root: No visible light penetration, chemical gradients, IR sensory biology"
+      ],
+      "roots": [
+        "F9",
+        "F14",
+        "F20"
+      ],
+      "skill": {
+        "id": "cuarzo_sangre.chem_sight",
+        "name": {
+          "en": "Chem-Sight"
+        },
+        "role": "Basic",
+        "effect": "Highlights chemical gradients, vent plumes, and prey in the sulfur fluid; reveals hidden resources.",
+        "numbers": {}
+      },
+      "weakness": "Fronds are brittle and snap in wind/dust storms; player can use dust bursts to blind them.",
+      "observe": [
+        "Fronds undulate toward vent plumes",
+        "Fronds glow IR under photoreceptor scan",
+        "Fronds are crystalline and etch chemical deposits"
+      ],
+      "journal": {
+        "en": "It tastes the heat with glass fingers, hunting the chemical ghost of life."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "F14 mandates thermal-IR and vibration over optics in haze; chemosensory fronds toward vent H₂S/SO₂/CO₂ plumes (F9, F20) are a direct selection outcome in lightless basins. Combined thermal contrast + dissolved sulfur species gradients is how a drifter finds flares and crust food. Brittleness in dust microbursts (F7) is an honest tradeoff for thin crystalline sensors.",
+        "fixes": [
+          "F14 mandates thermal-IR and vibration over optics in haze; chemosensory fronds toward vent H₂S/SO₂/CO₂ plumes (F9, F20) are a direct selection outcome in lightless basins. Combined thermal contrast + dissolved sulfur species gradients is how a drifter finds flares and crust food. Brittleness in dust microbursts (F7) is an honest tradeoff for thin crystalline sensors."
+        ],
+        "analogues": [
+          {
+            "organism": "Pit viper Crotalus IR pit organs; vampire bat infrared thermoreceptors; lobster antennule chemosensory navigation in turbulent plumes; tubeworm Riftia plume CO₂/H₂S uptake.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "cuarzo_sangre.c4",
+      "trait": "Silica-etching mandibles for vent grazing",
+      "links": [
+        "Accessing chemosynthetic colonies trapped in vent rock",
+        "Silicon-based metabolism requires hard mineral processing",
+        "Mandibles dissolve and re-precipitate sulfur flux to etch rock",
+        "Root: Siloxane chemistry, vent deposits, slow reaction rates"
+      ],
+      "roots": [
+        "F9",
+        "F10",
+        "F13"
+      ],
+      "skill": {
+        "id": "cuarzo_sangre.silicate_gnaw",
+        "name": {
+          "en": "Silicate Gnaw"
+        },
+        "role": "Poke",
+        "effect": "Deals damage to mineral targets and extracts nutrients from vent crusts.",
+        "numbers": {}
+      },
+      "weakness": "Mandibles dull on pure silica; require sulfur flux to maintain etching capability.",
+      "observe": [
+        "Mandibles drip sulfur flux onto rock",
+        "Leave glassy scratches on vent deposits",
+        "Feed on vent crusts for extended periods"
+      ],
+      "journal": {
+        "en": "It eats the rock that births it, grinding time into nutrients."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Specify mandibles as sulfur-flux-assisted abrasion (micro-fracture + thin reactive S–O film), not rapid silica dissolution; recharge mandibles only near vents or sulfur-rich prey.",
+        "fixes": [
+          "Specify mandibles as sulfur-flux-assisted abrasion (micro-fracture + thin reactive S–O film), not rapid silica dissolution; recharge mandibles only near vents or sulfur-rich prey."
+        ],
+        "analogues": [
+          {
+            "organism": "Limpet Patella radula scraping + gastrointestinal etching; shipworms (Teredo) with bacterial-assisted lignocellulose degradation—mechanical bite plus chemical partner; sulfur-oxidizers producing local acidity at mineral surfaces (from memory, unverified).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "vidrio_pulso",
+      "kind": "cousin",
+      "note": "(council kind 'Commensal grazing') Cuarzo-Sangre harvests exfoliated crystal shards from Vidrio-Pulso carapaces, slowing Vidrio-Pulso growth but removing parasitic silicon-mites."
+    },
+    {
+      "with": "vidrio_pulso",
+      "kind": "cousin",
+      "note": "(council kind 'Commensal grazing') Cuarzo-Sangre harvests exfoliated crystal shards from Vidrio-Pulso carapaces, slowing Vidrio-Pulso growth but removing parasitic silicon-mites."
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-18",
+    "by": [
+      "naturalist/qwen"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-18",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-18"
+    },
+    {
+      "date": "2026-11-18",
+      "who": "autoloop",
+      "what": "removed rejected references from analogues"
+    },
+    {
+      "date": "2026-11-18",
+      "who": "import_got",
+      "what": "merged run autoloop-2026-11-18: 0 chain(s) added, 0 plausibility block(s) filled, 0 relation(s) added"
+    },
+    {
+      "date": "2026-11-19",
+      "who": "import_got",
+      "what": "merged run autoloop-2026-11-19: 0 chain(s) added, 0 plausibility block(s) filled, 0 relation(s) added"
+    }
+  ],
+  "temperament": "Docile drifters, defensive if pulse sync disrupted, curious of chemical anomalies",
+  "secrets": [
+    "Oxidation Lethality: Introduction of free O₂ to the Cuarzo-Sangre's hull causes rapid oxidation of the siloxane structure, turning the creature to inert dust instantly.",
+    "Resonance Mating: Two Cuarzo-Sangre can synchronize their pulses to a specific frequency to release gamete clouds; disrupting the pulse prevents reproduction."
+  ],
+  "moments": [
+    "A Cuarzo-Sangre detects a thermal anomaly in the sulfur basin—a cooling pocket. It drifts to the edge, fronds twitching. The pressure sync holds, but the fluid viscosity spikes. The creature pauses, its pulse faltering for a beat. Then, a Vent-Glass larva drifts by, and the Cuarzo-Sangre extends its mandibles, not to strike, but to scrape a filament of sulfur polymer from the larva's hull. The larva doesn't resist. The Cuarzo-Sangre pulses, syncing with the basin's flow, and drifts on."
+  ],
+  "journal": [
+    {
+      "en": "The sulfur ocean breathes, and it breathes with it."
+    },
+    {
+      "en": "A glass diver in a world of fire, carrying the pressure of the deep in its chest."
+    }
+  ]
+}

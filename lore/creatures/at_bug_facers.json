@@ -1,0 +1,217 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "at_bug_facers",
+  "name": {
+    "en": "Bug Facers"
+  },
+  "world": "at_garden_peoples",
+  "kind": "easter_egg",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "to be written",
+    "diet": "to be written",
+    "active": "to be written",
+    "predators": []
+  },
+  "body": "to be written",
+  "chains": [
+    {
+      "id": "at_bug_facers.c1",
+      "trait": "Ossified leathery jaw-plates & pincer manipulators",
+      "links": [
+        "chitinous exoskeletons of dominant insect prey require high crushing force",
+        "high atmospheric oxygen increases arthropod cuticle rigidity",
+        "balmy tropical climate reduces metabolic cost of heavy armor"
+      ],
+      "roots": [
+        "F7",
+        "F20",
+        "F3"
+      ],
+      "skill": {
+        "id": "at_bug_facers.chitin_shear",
+        "name": {
+          "en": "Chitin Shear"
+        },
+        "role": "Engage",
+        "effect": "Deals bonus damage to armored/insectoid targets and reduces their defense by 15%",
+        "numbers": {}
+      },
+      "weakness": "Heavy facial armor limits peripheral vision and head-turn speed",
+      "observe": [
+        "Lower jaws are reinforced with thick, plate-like keratin",
+        "Hands and feet terminate in opposing, grinding pincer segments",
+        "They crack open nests with precise, vertical jaw snaps"
+      ],
+      "journal": {
+        "en": "They wear their prey's armor on their faces."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-19",
+        "summary": "Call plates keratinized rhamphotheca with dermal bone nodules (crocodylian osteoderm model), not full exoskeleton fusion; pincers lose fine manipulation — match gameplay.",
+        "fixes": [
+          "Call plates keratinized rhamphotheca with dermal bone nodules (crocodylian osteoderm model), not full exoskeleton fusion; pincers lose fine manipulation — match gameplay."
+        ],
+        "analogues": [
+          {
+            "organism": "Aye-aye (Daubentonia) percussive foraging; pangolin/large anteater crushing jaws; decapod chela reduction convergent to pincers.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "designer": 9
+        }
+      }
+    },
+    {
+      "id": "at_bug_facers.c2",
+      "trait": "Partial ectothermy & thermoregulatory basking behavior",
+      "links": [
+        "energy-dense hive farming reduces need for high basal metabolism",
+        "high humidity and stable diurnal temps minimize heat loss",
+        "atavistic brain expansion favors burst-digestion over sustained activity"
+      ],
+      "roots": [
+        "F15",
+        "F8",
+        "F20"
+      ],
+      "skill": {
+        "id": "at_bug_facers.ambush_metabolism",
+        "name": {
+          "en": "Ambush Metabolism"
+        },
+        "role": "Basic",
+        "effect": "Unit remains hidden and silent while regenerating stamina; strikes with +20% damage on first turn",
+        "numbers": {}
+      },
+      "weakness": "Rapid temperature drops force a mandatory resting state, halting actions",
+      "observe": [
+        "Units spread limbs wide on sun-warmed rocks before hunting",
+        "Skin shifts to darker pigments during basking, lighter during shade",
+        "Metabolic sighs are audible only when cooling down after exertion"
+      ],
+      "journal": {
+        "en": "Cold blood, warm sun, and a patience that outlasts the heat."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-19",
+        "summary": "Use facultative heterothermy during digest-heavy ambush bouts (tenrec/naked-mole-rat style), not full reptile cold blood; basking offsets F20 maritime stability, not replaces endothermy for cognition.",
+        "fixes": [
+          "Use facultative heterothermy during digest-heavy ambush bouts (tenrec/naked-mole-rat style), not full reptile cold blood; basking offsets F20 maritime stability, not replaces endothermy for cognition."
+        ],
+        "analogues": [
+          {
+            "organism": "Leatherback sea turtle regional heterothermy; Huey–Stevenson integrative ectotherm ecology framework.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "huey_1979_integrating"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "designer": 8
+        }
+      }
+    },
+    {
+      "id": "at_bug_facers.c3",
+      "trait": "Ossified mandible face-plates for nest-cracking",
+      "links": [
+        "Insectivorous diet on hive-world requires shell access",
+        "Mechanical stress on jaws during excavation",
+        "Mandibles fuse and ossify into plates",
+        "Face-plates form protective armor resembling prey"
+      ],
+      "roots": [
+        "F21"
+      ],
+      "skill": {
+        "id": "at_bug_facers.carapace_breaker",
+        "name": {
+          "en": "Carapace Breaker"
+        },
+        "role": "Engage",
+        "effect": "Ignore 50% of armor; damage structures",
+        "numbers": {}
+      },
+      "weakness": "Face-plates reduce sensory flexibility; social misreading due to rigid jaw",
+      "observe": [
+        "Jaw plates click when agitated",
+        "Body blends with stone textures",
+        "Mandibles split rock-like objects"
+      ],
+      "journal": {
+        "en": "Cracked shells and quiet jaws: the farmers who became the wall."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-19",
+        "summary": "Separate structural face-plates from sensory labial margin so rigid jaw does not break social signaling — labial pits or vibrissae at plate rim.",
+        "fixes": [
+          "Separate structural face-plates from sensory labial margin so rigid jaw does not break social signaling — labial pits or vibrissae at plate rim."
+        ],
+        "analogues": [
+          {
+            "organism": "Woodpecker shock-absorbing skull for repeated impact; turtle/beak rhamphotheca for sustained crushing.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "jerison_1973_evolution"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "designer": 7
+        }
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "at_saurosapients",
+      "kind": "convergent",
+      "note": "Both rely on partial ectothermy and low metabolic rates to conserve energy in high-humidity, stable-temperature garden worlds.",
+      "via": "F8, F20, F3"
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-18"
+  },
+  "changelog": [
+    {
+      "date": "2026-11-19",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-18"
+    },
+    {
+      "date": "2026-11-18",
+      "who": "autoloop",
+      "what": "removed rejected references from analogues"
+    }
+  ],
+  "lore_ref": {
+    "file": "lore/alltomorrows.en.json",
+    "id": "bug-facers"
+  }
+}

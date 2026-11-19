@@ -1,0 +1,292 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "babosa",
+  "name": {
+    "en": "Babosa"
+  },
+  "world": "primigenia",
+  "kind": "native",
+  "status": "draft",
+  "stage": "creature",
+  "niche": {
+    "habitat": "Damp volcanic tuff slopes, forest floor, and near fumarole seeps.",
+    "diet": "Decaying leaf litter, soft fungi, alkaloid plants, and mineral crusts.",
+    "active": "Nocturnal and crepuscular; avoids midday heat and desiccation.",
+    "predators": [
+      "Espinodo",
+      "Garfio",
+      "Carnivorous insects"
+    ],
+    "prey": [
+      "Decaying matter",
+      "Soft fungi",
+      "Mineral licks",
+      "Alkaloid shoots"
+    ]
+  },
+  "body": "A broad ventral foot and thick mucus coat minimize friction on rough basalt and trap moisture in thin mountain air. Coiling into a bitter sphere seals in water and deters predators with the same alkaloids that color high-altitude leaves.",
+  "chains": [
+    {
+      "id": "babosa.c1",
+      "trait": "Thick, alkaloid-rich mucus coat",
+      "links": [
+        "Dense air holds moisture but high slopes bake skin",
+        "Mucus traps water and blocks UV",
+        "Same coating lubricates rough andesite"
+      ],
+      "roots": [
+        "F14",
+        "F15",
+        "F20"
+      ],
+      "skill": {
+        "id": "babosa.mucus_coat",
+        "name": {
+          "en": "Mucus Coat"
+        },
+        "role": "Passive",
+        "effect": "+30% UV and heat resistance; -20% speed; leaves a slick trail.",
+        "numbers": {}
+      },
+      "weakness": "Sea salt strips the coating; a salt line forces retreat.",
+      "observe": [
+        "Shiny iridescent trail",
+        "Grit embedded in skin",
+        "Slow body ripple"
+      ],
+      "journal": {
+        "en": "It wears its own shade."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "State that alkaloids are diet-sequestered from red-veined meadow and slope forbs (F25–F26), like nudibranchs from sponges—not fully endogenous synthesis; keep iridescence from mucus glycoproteins and embedded grit (gastroliths, F23), not magic shielding.",
+        "fixes": [
+          "State that alkaloids are diet-sequestered from red-veined meadow and slope forbs (F25–F26), like nudibranchs from sponges—not fully endogenous synthesis; keep iridescence from mucus glycoproteins and embedded grit (gastroliths, F23), not magic shielding."
+        ],
+        "analogues": [
+          {
+            "organism": "Terrestrial slugs and snails (Limax, Arion, Helix): pedal and body mucus limits evaporative water loss and lubricates locomotion on rough substrata; some lineages concentrate plant/toxin-derived compounds in slime for defence (from memory, unverified). Hawaiian food-web context: slow diffusion lengthens usable scent/chemical cues in still air (F16) parallels extended trail-following ecology in gastropods.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "designer": 8
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "skeptic"
+        ]
+      }
+    },
+    {
+      "id": "babosa.c2",
+      "trait": "Sensory tentacles track chemical gradients",
+      "links": [
+        "Cluttered undergrowth limits vision",
+        "Dense air slows molecular diffusion",
+        "Scent trails persist 1.6× longer"
+      ],
+      "roots": [
+        "F16",
+        "F20"
+      ],
+      "skill": {
+        "id": "babosa.scent_read",
+        "name": {
+          "en": "Scent Read"
+        },
+        "role": "Engage",
+        "effect": "Reveals creature path within 60 m for 30 s; marks targets for allies.",
+        "numbers": {}
+      },
+      "weakness": "Heavy rain washes gradients; crossing running water breaks the link.",
+      "observe": [
+        "Tentacles sweeping low",
+        "Trail forks at a seep",
+        "Mucus tastes metallic"
+      ],
+      "journal": {
+        "en": "It reads the road after the traveller."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Cap reliable path reconstruction at ~25–40 m in still dawn/fog unless the target left a mucus or urine line; reserve 60 m for marked seeps/wind-aligned corridors. Note F16’s slower diffusion (~0.6× Earth) lengthens trail persistence in still air but slows update rate—tentacles should ‘scan’ longer, not teleport knowledge.",
+        "fixes": [
+          "Cap reliable path reconstruction at ~25–40 m in still dawn/fog unless the target left a mucus or urine line; reserve 60 m for marked seeps/wind-aligned corridors. Note F16’s slower diffusion (~0.6× Earth) lengthens trail persistence in still air but slows update rate—tentacles should ‘scan’ longer, not teleport knowledge."
+        ],
+        "analogues": [
+          {
+            "organism": "Gastropod superior (olfactory) tentacles and lip chemoreception—tracking conspecific and predator trails on mucus ribbons (Chase, 2002, Behavioural Neuroscience of Gastropods; from memory, unverified). Leopard slug (Limax maximus) trail-following and mate/localization via slime cues; earthworm-style gradient crawling is a convergent analog on chemotaxis, not homologous.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 7,
+          "designer": 9
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "skeptic"
+        ]
+      }
+    },
+    {
+      "id": "babosa.c3",
+      "trait": "Contractile body coils into a bitter mucus sphere",
+      "links": [
+        "Lacks speed and hard armour",
+        "Contracts to expose only wet, tough skin",
+        "Alkaloid-rich mucus triggers predator gag reflex"
+      ],
+      "roots": [
+        "F2",
+        "F26"
+      ],
+      "skill": {
+        "id": "babosa.hunker",
+        "name": {
+          "en": "Hunker"
+        },
+        "role": "Defence",
+        "effect": "-40% damage taken for 10 s; cannot move or attack.",
+        "numbers": {}
+      },
+      "weakness": "Flipping it exposes a soft ventral patch for 3 s before it can re-coil.",
+      "observe": [
+        "Tightly coiled sphere",
+        "Sharp bitter odor",
+        "Rigid refusal to uncoil"
+      ],
+      "journal": {
+        "en": "It answers violence by becoming a stone."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Replace ‘stone sphere’ with a tight dorsal knot: head and mantle tucked, foot shielded, copious bitter slime plug—not a uniform ball like a pill millipede (wrong clade). Gag/bitterness from sequestered alkaloids + allomones in slime; 10 s immobility costs water and mucus budget (expensive on dry east-meadow afternoons, F18).",
+        "fixes": [
+          "Replace ‘stone sphere’ with a tight dorsal knot: head and mantle tucked, foot shielded, copious bitter slime plug—not a uniform ball like a pill millipede (wrong clade). Gag/bitterness from sequestered alkaloids + allomones in slime; 10 s immobility costs water and mucus budget (expensive on dry east-meadow afternoons, F18)."
+        ],
+        "analogues": [
+          {
+            "organism": "Defensive mucus flooding in Ariolimax columbianus and related slugs (thick, distasteful secretion when poked); partial body shortening/knotting under threat (gastropod reflex). Pill millipede (Armadillidium) enrolment is the convergent ‘sphere’ analog but arthropod exoskeleton—use only as behavioural comparison, not physiology.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 7,
+          "designer": 9
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "skeptic"
+        ]
+      }
+    },
+    {
+      "id": "babosa.c4",
+      "trait": "Broad ventral foot glides over substrate",
+      "links": [
+        "Small mass cannot overcome 1.6 bar drag",
+        "Terminal velocity drops 25%",
+        "Muscular waves push against mucus-lubricated rock"
+      ],
+      "roots": [
+        "F4"
+      ],
+      "skill": {
+        "id": "babosa.mucus_slide",
+        "name": {
+          "en": "Mucus Slide"
+        },
+        "role": "Basic",
+        "effect": "+40% movement speed for 5 s; leaves a slippery trail that slows pursuers.",
+        "numbers": {}
+      },
+      "weakness": "Direct fire or concentrated salt burns the ventral foot.",
+      "observe": [
+        "Silky trail on vertical stone",
+        "Body pressed flat",
+        "Slow undulating glide"
+      ],
+      "journal": {
+        "en": "He does not run; he flows. The air is too thick to sprint."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Tie the +40% burst to a measured mucus overshoot (higher metabolic cost per metre, F4 sprint penalty returns after 5 s with extra dehydration risk); on bare andesite without grit, slightly lower bonus unless gastrolith grit in mucus (F9)—already hinted by observe cues.",
+        "fixes": [
+          "Tie the +40% burst to a measured mucus overshoot (higher metabolic cost per metre, F4 sprint penalty returns after 5 s with extra dehydration risk); on bare andesite without grit, slightly lower bonus unless gastrolith grit in mucus (F9)—already hinted by observe cues."
+        ],
+        "analogues": [
+          {
+            "organism": "Gastropod pedal-wave locomotion on a thin mucus interlayer: muscular metachronal waves reduce friction on rock and glassy surfaces (Denny, 1980, Journal of Experimental Biology—mucus mechanics; from memory, unverified). Dense atmosphere increases hydrodynamic drag on fast whole-body motion but does not block low-Re crawling; mucus lubrication is the correct exploit for Babosa’s mass and F4 drag.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 9,
+          "designer": 9
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "wildcard"
+        ]
+      }
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-18",
+    "by": [
+      "skeptic",
+      "wildcard"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-18",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-18"
+    },
+    {
+      "date": "2026-11-19",
+      "who": "import_got",
+      "what": "merged run autoloop-2026-11-19: 0 chain(s) added, 0 plausibility block(s) filled, 0 relation(s) added"
+    },
+    {
+      "date": "2026-11-19",
+      "who": "import_got",
+      "what": "merged run autoloop-2026-11-19: 0 chain(s) added, 0 plausibility block(s) filled, 0 relation(s) added"
+    },
+    {
+      "date": "2026-11-19",
+      "who": "import_got",
+      "what": "merged run autoloop-2026-11-19: 0 chain(s) added, 0 plausibility block(s) filled, 0 relation(s) added"
+    }
+  ],
+  "temperament": "Solitary and slow, but fiercely defensive when cornered or threatened.",
+  "secrets": [
+    "Dry lava tube (Hidden Cave)",
+    "Volcanic mineral lick",
+    "Ancient crawler fossil"
+  ],
+  "moments": [
+    "Rain drums on basalt; the crawler uncoils, tasting the air with paired tentacles. It finds the mineral seep, leaving a glistening trail that evaporates before the sun breaks through."
+  ]
+}

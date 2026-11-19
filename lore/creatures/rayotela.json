@@ -1,0 +1,301 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "rayotela",
+  "name": {
+    "en": "Rayotela"
+  },
+  "world": "deepsky",
+  "kind": "new",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "Water-ammonia cloud decks, charge-separation shear zones",
+    "diet": "Electrical current, ionic energy, dissolved minerals",
+    "active": "Storm peaks, diurnal",
+    "predators": []
+  },
+  "body": "Kite-shaped membrane with silver conductive veins, subdermal capacitive bladders, and grounding spikes",
+  "chains": [
+    {
+      "id": "rayotela.c1",
+      "trait": "Silver conductive veins",
+      "links": [
+        "Channel lightning current safely",
+        "Prevent tissue burn from discharge",
+        "Harvest free energy from storms"
+      ],
+      "roots": [
+        "F12"
+      ],
+      "skill": {
+        "id": "rayotela.discharge",
+        "name": {
+          "en": "Discharge"
+        },
+        "role": "Poke",
+        "effect": "Deals 20 damage to nearby enemies, consumes stored charge.",
+        "numbers": {}
+      },
+      "weakness": "Insulation or grounding breaks the circuit, disabling movement and attacks.",
+      "observe": [
+        "Edges sparking before a strike",
+        "Still floating despite high winds",
+        "Iridescent flash during mating"
+      ],
+      "journal": {
+        "en": "It eats the sky's anger and turns it into muscle."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Rename to ion-channel or carbon-vein networks that couple to storm-scale fields; harvest bioavailable ions and redox couples from flash-fixed nitrogen (F12), with game 'Discharge' unchanged mechanically.",
+        "fixes": [
+          "Rename to ion-channel or carbon-vein networks that couple to storm-scale fields; harvest bioavailable ions and redox couples from flash-fixed nitrogen (F12), with game 'Discharge' unchanged mechanically."
+        ],
+        "analogues": [
+          {
+            "organism": "Electric ray (Torpedo) and electric eel (Electrophorus): stacked electrocyte-derived membranes for controlled current; not metallic conductors.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "sagan_1976_particles"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "rayotela.c2",
+      "trait": "Subdermal capacitive bladders",
+      "links": [
+        "Store ionic charge between flashes",
+        "Buffer intermittent energy supply",
+        "Maintain depth via electrostatic repulsion"
+      ],
+      "roots": [
+        "F12",
+        "F16"
+      ],
+      "skill": {
+        "id": "rayotela.capacitor_charge",
+        "name": {
+          "en": "Capacitor Charge"
+        },
+        "role": "Basic",
+        "effect": "Stores 30 charge over 2 seconds, unlocking high-power abilities.",
+        "numbers": {}
+      },
+      "weakness": "Overcharge causes tissue damage; requires venting gas.",
+      "observe": [
+        "Bladders swelling with light before burst",
+        "Slow drift upward when charged",
+        "Humming vibration in membrane"
+      ],
+      "journal": {
+        "en": "A living battery that laughs at the storm."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Keep capacitors for charge storage and overcharge venting; tie depth control to H₂ bladder venting per F16 and treat electrostatic puffing as minor trim only, not primary buoyancy.",
+        "fixes": [
+          "Keep capacitors for charge storage and overcharge venting; tie depth control to H₂ bladder venting per F16 and treat electrostatic puffing as minor trim only, not primary buoyancy."
+        ],
+        "analogues": [
+          {
+            "organism": "Torpedinid rays: electrocyte organs store charge between pulses; floaters (jellyfish gas cavities, Sagan–Salpeter balloon organisms) regulate altitude with metabolically controlled lift gas.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "rayotela.c3",
+      "trait": "Grounding spikes",
+      "links": [
+        "Complete circuit with prey or rival",
+        "Minimize injury cost in duels",
+        "Reduce metabolic cost of conflict"
+      ],
+      "roots": [
+        "F3",
+        "F19"
+      ],
+      "skill": {
+        "id": "rayotela.grounding_zap",
+        "name": {
+          "en": "Grounding Zap"
+        },
+        "role": "Control",
+        "effect": "Stuns target for 3 seconds by discharging to ground.",
+        "numbers": {}
+      },
+      "weakness": "Spikes are brittle; break on hard impact.",
+      "observe": [
+        "Tucking spikes when resting",
+        "Dueling rivals exchanging sparks without contact",
+        "Spikes glowing red-hot after use"
+      ],
+      "journal": {
+        "en": "Duel until the sky breaks, not the body."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Reframe 'ground' as return path through target or storm pool; spikes complete the circuit at range; brittleness weakness stays. Duels = traded corona bursts, not wrestling.",
+        "fixes": [
+          "Reframe 'ground' as return path through target or storm pool; spikes complete the circuit at range; brittleness weakness stays. Duels = traded corona bursts, not wrestling."
+        ],
+        "analogues": [
+          {
+            "organism": "Electric fish hunting: head–tail dipole through prey; knife-fish jamming and ritualized spacing (weakly analogous to non-lethal duel display).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "rayotela.c4",
+      "trait": "Iridescent signaling patches",
+      "links": [
+        "Signal through aerosol haze",
+        "Attract mates in low visibility",
+        "Reflect red-shifted starlight"
+      ],
+      "roots": [
+        "F1",
+        "F7"
+      ],
+      "skill": {
+        "id": "rayotela.flash_signal",
+        "name": {
+          "en": "Flash Signal"
+        },
+        "role": "Social",
+        "effect": "Calls allies within 50m, boosting their morale by 15.",
+        "numbers": {}
+      },
+      "weakness": "Predictable pattern; enemies can mask themselves.",
+      "observe": [
+        "Patches shifting color with mood",
+        "Mating dances creating light patterns",
+        "Hiding patches when threatened"
+      ],
+      "journal": {
+        "en": "Silence speaks in light here."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "In low insolation and aerosol haze (F1, F7, F22), structural iridescence and thin-film reflectors give high-contrast, directional signals without much metabolic light production; red-skewed starlight (F14) still leaves enough flux for reflectance-based social display at short range.",
+        "fixes": [
+          "In low insolation and aerosol haze (F1, F7, F22), structural iridescence and thin-film reflectors give high-contrast, directional signals without much metabolic light production; red-skewed starlight (F14) still leaves enough flux for reflectance-based social display at short range."
+        ],
+        "analogues": [
+          {
+            "organism": "Hawaiian bobtail squid (Euprymna scolopes) iridophore signaling; Morpho butterfly wing scales (structural color in dim understory).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "soplomanta",
+      "kind": "cousin",
+      "note": "(council kind 'Commensalism') Soplomanta rides the electrostatic wake of Rayotela storms to glide for free."
+    },
+    {
+      "with": "soplomanta",
+      "kind": "cousin",
+      "note": "(council kind 'Commensalism') Rides Rayotela's storm wake."
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-18",
+    "by": [
+      "naturalist/qwen"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-18",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-18"
+    },
+    {
+      "date": "2026-11-18",
+      "who": "import_got",
+      "what": "merged run autoloop-2026-11-18: 0 chain(s) added, 0 plausibility block(s) filled, 0 relation(s) added"
+    },
+    {
+      "date": "2026-11-19",
+      "who": "import_got",
+      "what": "merged run autoloop-2026-11-19: 0 chain(s) added, 0 plausibility block(s) filled, 0 relation(s) added"
+    }
+  ],
+  "temperament": "Cautious, drawn to flashes, territorial around charge pools",
+  "secrets": [
+    "Can transfer charge to player bio-suit to boost energy regen.",
+    "Spikes can be used to ground player weapons for safety."
+  ],
+  "moments": [
+    "A swarm aligns across the horizon, each body flashing silver in perfect sequence as a distant thunderhead blooms, turning the sky into a grid of living fire."
+  ],
+  "journal": [
+    {
+      "en": "It eats the sky's anger and turns it into muscle."
+    },
+    {
+      "en": "A living lightning rod that laughs at the storm."
+    }
+  ]
+}

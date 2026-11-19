@@ -1,0 +1,215 @@
+{
+  "schema": "cpore.plant/1",
+  "id": "costra_de_azufre",
+  "name": {
+    "en": "Sulfur Crust",
+    "es": "Costra de azufre"
+  },
+  "world": "primigenia",
+  "status": "draft",
+  "growth_form": "moss_lichen",
+  "habitats": [
+    "Cooler hot-spring mixing margins",
+    "Oxygenated fumarole seep edges",
+    "Habitable geothermal rock surfaces below approximately 70 °C"
+  ],
+  "summary": "A thin microbial consortium whose growth-form label describes its appearance. Sulfur oxidizers occupy oxygenated, tolerably warm mixing zones below approximately 70 °C; green partners remain in cooler illuminated margins. Hotter centres carry abiotic sulfur and potentially arsenic-bearing deposits rather than this living film. Sosa grazes suitable margins and el_resoplido collects sulfur-bearing fragments (F7, F23, F24, F26).",
+  "chains": [
+    {
+      "id": "costra_de_azufre.c1",
+      "trait": "Sulfur-oxidizing film at oxygenated mixing boundaries",
+      "links": [
+        "Geothermal seepage supplies reduced sulfur.",
+        "Mixing introduces oxygen and lowers temperature into the consortium's habitable range.",
+        "Microbes oxidize sulfur to obtain energy for carbon fixation.",
+        "Partial oxidation can add elemental sulfur to surrounding mineral precipitates."
+      ],
+      "roots": [
+        "F5",
+        "F7",
+        "F23",
+        "F24"
+      ],
+      "play": "Recognize specialist feeding margins and collect loose sulfur-bearing fragments from accessible cooled ground.",
+      "weakness": "The film fails without sulfur, moisture or oxygen and is excluded above approximately 70 °C.",
+      "observe": [
+        "Pale veils follow cooled seep channels.",
+        "Sosa leaves scrape tracks through marginal film.",
+        "Bare yellow deposits continue inward beyond living growth."
+      ],
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "botanist/composer-2.5; chair sol",
+        "date": "2026-11-19",
+        "summary": "This consortium is confined to oxygenated mixing zones below approximately 70 °C. Hotter centres contain abiotic deposits, not this living film; sulfur oxidation may proceed to sulfate rather than accumulate sulfur.",
+        "analogues": [
+          {
+            "organism": "Sulfur-oxidizing prokaryotes",
+            "mechanism": "Oxidation of reduced sulfur conserves energy, with elemental sulfur appearing as an intermediate under suitable conditions.",
+            "refs": [
+              "friedrich_2005_sulfur"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "costra_de_azufre.c2",
+      "trait": "Cool green margins separated from bare hot centres",
+      "links": [
+        "Seep temperature and chemistry vary over short distances.",
+        "Photosynthetic partners occupy cooler illuminated surfaces.",
+        "Sulfur-oxidizing members occupy suitable warmer oxygenated margins below the upper limit.",
+        "Hotter flow removes living bands while mineral deposits remain."
+      ],
+      "roots": [
+        "F7",
+        "F23",
+        "F24"
+      ],
+      "play": "Compare living bands and abandoned mineral crusts without treating colour as a safety instrument.",
+      "weakness": "Redirected hot water kills established margins; visible bands do not reveal invisible gas or metal hazards.",
+      "observe": [
+        "Green film lies downstream of pale microbial growth.",
+        "A redirected hot trickle leaves a dead strip.",
+        "Hot central crust retains colour without living tissue."
+      ],
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "botanist/composer-2.5; chair sol",
+        "date": "2026-11-19",
+        "summary": "Approximately 70 °C is this fictional consortium's placement ceiling, not a universal limit for life. Reserve hotter centres for abiotic sulfur and arsenic-bearing crust in this entry; no new thermophile species is added.",
+        "analogues": [
+          {
+            "organism": "Thermally zoned hot-spring microbial communities",
+            "mechanism": "Organisms with differing thermal tolerances form spatial bands as water cools away from its source.",
+            "refs": [
+              "brock_1967_temperature"
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "gameplay": {
+    "food_for": [
+      "Geothermal specialists with appropriate detoxifying symbionts",
+      "Sulfur-processing specialists collecting suitable crust"
+    ],
+    "gift_item": "Loose sulfur-bearing crust fragment for el_resoplido",
+    "poison": {
+      "alkaloid": false,
+      "signal": "Yellow deposits and pale films identify geothermal resources; arsenic, mercury and gases lack dependable visible warnings."
+    },
+    "healing": null,
+    "cover": null,
+    "climbing": false,
+    "nest_material": null,
+    "mineral_lick": "Fixed specialist resource at habitable margins; unsuitable as an ordinary salt lick.",
+    "notes": "Raw sulfur, metals, SO₂ and H₂S remain distinct hazards. Living growth does not make water or air safe. Hot central abiotic crust is not living forage, and specialist feeding does not authorize access to extreme heat."
+  },
+  "relations": [
+    {
+      "with": "sosa",
+      "kind": "eaten_by",
+      "note": "Grazes suitable marginal surfaces using established heat tolerance and detoxifying symbionts."
+    },
+    {
+      "with": "el_resoplido",
+      "kind": "eaten_by",
+      "note": "Collects sulfur-bearing crust from accessible cooled margins."
+    },
+    {
+      "with": "albinos",
+      "kind": "other",
+      "note": "Avoids raw sulfur rather than using this resource as ordinary food."
+    },
+    {
+      "with": "player_lineage",
+      "kind": "other",
+      "note": "Can collect a specialist gift; alkaloid detoxification supplies no sulfur, metal or gas immunity."
+    }
+  ],
+  "generator": {
+    "growth_form": "moss_lichen",
+    "height_m": {
+      "min": 0.001,
+      "max": 0.02
+    },
+    "trunk": "Absent; adherent microbial film over mineral-coated rock.",
+    "branching": {
+      "angle_deg": 0,
+      "levels": 0,
+      "apical_dominance": 0,
+      "buttress": "Absent; structural branching is inactive."
+    },
+    "leaf": {
+      "type": "No leaves; microbial films and fine filaments",
+      "size_cm": 0,
+      "arrangement": "Seep-following marginal bands"
+    },
+    "colour": {
+      "base": "Cream-white film beside sulfur-yellow deposits",
+      "overlay_rules": [
+        "Cool illuminated margins carry green partners.",
+        "Stressed photosynthetic margins may acquire red-purple screening.",
+        "Metal contamination has no universal warning colour.",
+        "Bare mineral deposits retain colour after film loss."
+      ]
+    },
+    "placement": {
+      "slope": "Oxygenated seep terraces and cooled marginal channels; exclude active vent throats and centres above approximately 70 °C.",
+      "altitude_m": [
+        50,
+        1800
+      ],
+      "wetness": "Persistent moist mixing zones with oxygen and tolerable heat below approximately 70 °C.",
+      "soil": "Sulfur-bearing mineral-coated rock; arsenic and mercury vary by patch. Hot central deposits are abiotic terrain.",
+      "coast_distance_m": [
+        50,
+        1800
+      ],
+      "fog": "Optional; local geothermal moisture sustains films.",
+      "density": "Discontinuous patches within the habitable mixing-zone mask; no living instances in hotter centres."
+    },
+    "seasonal": "Changing seep routes and runoff redraw bands; redirected heat can kill established film.",
+    "wind_response": "Adherent film barely moves; exposed edges dry while surrounding gas plumes change direction."
+  },
+  "journal": [
+    {
+      "en": "A living skin at the poisoned spring's edge. Farther in, only crust remains.",
+      "es": "Una piel viva al borde del manantial envenenado. Más adentro solo queda costra."
+    }
+  ],
+  "provenance": {
+    "council_run": "flora-2026-11-19",
+    "by": [
+      "designer",
+      "mythmaker",
+      "naturalist",
+      "physicist",
+      "senses",
+      "skeptic",
+      "wildcard"
+    ],
+    "edited_by": "sol"
+  },
+  "changelog": [
+    {
+      "date": "2026-11-19",
+      "who": "flora.py",
+      "what": "flora pass: 7 voices drafted and peer-reviewed, Composer botanical referee, sol chaired and applied the fixes"
+    }
+  ],
+  "observe": [
+    "Sosa scrape marks expose rock beneath marginal film.",
+    "Abandoned channels retain yellow deposits.",
+    "El Resoplido selects loose crust near cooled margins.",
+    "Living bands stop before the hottest centre."
+  ],
+  "secrets": [
+    "Fresh scrape tracks reveal a specialist's marginal route.",
+    "Colourful abandoned crust can resemble productive living film.",
+    "Healthy microbes prove only that their own niche is habitable."
+  ]
+}

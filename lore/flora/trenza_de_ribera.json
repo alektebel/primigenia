@@ -1,0 +1,225 @@
+{
+  "schema": "cpore.plant/1",
+  "id": "trenza_de_ribera",
+  "name": {
+    "en": "Riverbraid",
+    "es": "Trenza de ribera"
+  },
+  "world": "primigenia",
+  "status": "draft",
+  "growth_form": "shrub",
+  "habitats": [
+    "Freshwater riverbanks",
+    "Seasonally moist gravel bars",
+    "Groundwater-connected channels and spring outflows"
+  ],
+  "summary": "A 2–6 m many-stemmed shrub with flexible flood-bent shoots and adventitious roots. It colonizes moist riverbanks and gravel bars, but regular seasonal fruiting is restricted to channels whose roots retain year-round groundwater access. Fruit draws rondo and dense stems conceal merodeador (F8, F11, F18, F21).",
+  "chains": [
+    {
+      "id": "trenza_de_ribera.c1",
+      "trait": "Flexible stems and adventitious rooting",
+      "links": [
+        "Runoff alternately buries and exposes channel-side stems.",
+        "Flexible shoots bend with flow.",
+        "Buried living nodes root in damp sediment.",
+        "Root networks retain gravel and support recovery after partial damage."
+      ],
+      "roots": [
+        "F8",
+        "F18",
+        "F21"
+      ],
+      "play": "Follow thickets along freshwater corridors and gather fallen flexible stems.",
+      "weakness": "Scour removes root mats; prolonged burial or submergence kills shoots, and disconnected bars can dry out.",
+      "observe": [
+        "New roots emerge from buried nodes.",
+        "Gravel collects downstream of stem clusters.",
+        "Bent survivors produce upright shoots after floods."
+      ],
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "botanist/composer-2.5; chair sol",
+        "date": "2026-11-19",
+        "summary": "Flood regeneration permits colonization of seasonal gravel bars without guaranteeing permanent water access or fruit. Marine tides are not the driver.",
+        "analogues": [
+          {
+            "organism": "Riparian Salix species",
+            "mechanism": "Flexible shoots, regeneration and adventitious rooting interact with freshwater flow and sediment deposition.",
+            "refs": [
+              "corenblit_2007_riparian"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "trenza_de_ribera.c2",
+      "trait": "Groundwater-dependent seasonal fruit",
+      "links": [
+        "Year-round groundwater access sustains fruit development through seasonal drying.",
+        "Soft fruit rewards rondo with water and carbohydrates.",
+        "Visitors carry surviving seeds beyond the parent thicket.",
+        "Seeds establish where moist open sediment persists."
+      ],
+      "roots": [
+        "F11",
+        "F18",
+        "F21",
+        "F24"
+      ],
+      "play": "Seek fruit-bearing thickets beside groundwater-connected channels; do not expect every shrub strip to carry a crop.",
+      "weakness": "Groundwater disconnection prevents dependable fruiting; transported seeds often fail on dry or scoured ground.",
+      "observe": [
+        "Soft green-gold fruit hangs over a spring-fed channel.",
+        "A nearby seasonal gravel-bar colony remains fruitless.",
+        "Rondo leaves seeds on moist openings beyond the thicket."
+      ],
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "botanist/composer-2.5; chair sol",
+        "date": "2026-11-19",
+        "summary": "Enable regular fruit production only where roots retain year-round groundwater connection. Water access permits a crop but does not guarantee one; softness and scent indicate ripeness.",
+        "analogues": [
+          {
+            "organism": "Animal-dispersed fleshy-fruited shrubs",
+            "mechanism": "Fruit recruits seed carriers, while water supply and deposition sites constrain reproduction and establishment.",
+            "refs": [
+              "howe_1982_dispersal"
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "gameplay": {
+    "food_for": [
+      "Frugivores eating ripe seasonal fruit",
+      "Omnivores gathering watery fruit"
+    ],
+    "gift_item": "Soft river-fruit cluster from a groundwater-connected thicket",
+    "poison": {
+      "alkaloid": false,
+      "signal": "Green foliage; softness and scent identify ripe fruit."
+    },
+    "healing": null,
+    "cover": "Dense stems conceal small creatures and predators.",
+    "climbing": false,
+    "nest_material": "Fallen flexible twigs, bark fibres and leaves.",
+    "mineral_lick": null,
+    "notes": "Only year-round groundwater-connected patches support regular seasonal fruiting. Fruit does not cure poisoning, shrub presence does not certify potable water, and slender stems do not reliably bear player weight."
+  },
+  "relations": [
+    {
+      "with": "rondo",
+      "kind": "dispersed_by",
+      "note": "Visits fruiting groundwater-connected patches and transports seeds."
+    },
+    {
+      "with": "zancuda",
+      "kind": "shelters",
+      "note": "Forages for associated aquatic greens along open freshwater margins."
+    },
+    {
+      "with": "merodeador",
+      "kind": "shelters",
+      "note": "Conceals approaches to crossings and fruit visitors."
+    },
+    {
+      "with": "paja_dulce",
+      "kind": "grows_with",
+      "note": "Forms shrub ribbons through meadow channels, including some seasonal nonfruiting bars."
+    },
+    {
+      "with": "pluma_de_sombra",
+      "kind": "grows_with",
+      "note": "Shelters ferns in persistently humid bank pockets."
+    },
+    {
+      "with": "player_lineage",
+      "kind": "other",
+      "note": "Provides craft material throughout suitable thickets and fruit only in eligible patches."
+    }
+  ],
+  "generator": {
+    "growth_form": "shrub",
+    "height_m": {
+      "min": 2.0,
+      "max": 6.0
+    },
+    "trunk": "Several slender woody stems from a shared crown; old stems arch over deposited gravel.",
+    "branching": {
+      "angle_deg": 35,
+      "levels": 3,
+      "apical_dominance": 0.3,
+      "buttress": "Absent; root mats and rooted low branches form the base."
+    },
+    "leaf": {
+      "type": "Narrow flexible lanceolate blade",
+      "size_cm": 9,
+      "arrangement": "Alternate along arching shoots"
+    },
+    "colour": {
+      "base": "Medium green leaves and olive-brown stems",
+      "overlay_rules": [
+        "Floods leave brown silt bands.",
+        "New roots are pale.",
+        "Eligible ripe fruit becomes soft muted green-gold.",
+        "Red is not a fruit-edibility cue."
+      ]
+    },
+    "placement": {
+      "slope": "Freshwater channel margins, moist gravel bars and spring-fed benches.",
+      "altitude_m": [
+        10,
+        1100
+      ],
+      "wetness": "Moist rooting sediment permits establishment; regular fruiting additionally requires year-round groundwater connection.",
+      "soil": "Channel gravel, sand and silt; exclude regularly saline tidal ground.",
+      "coast_distance_m": [
+        20,
+        1800
+      ],
+      "fog": "Optional supplement; freshwater controls distribution.",
+      "density": "Bank ribbons and bar colonies interrupted by scour; fruiting instances restricted to groundwater-connected patches."
+    },
+    "seasonal": "Wet periods support growth and resprouting. Late-summer to autumn fruiting occurs only at year-round groundwater-connected sites; other colonies are not reliable fruit sources.",
+    "wind_response": "Slender stems bow together; floods leave persistent downstream bends."
+  },
+  "journal": [
+    {
+      "en": "The river bends it and buries it. Fruit stays where its roots keep the water.",
+      "es": "El río la dobla y la entierra. El fruto queda donde las raíces conservan el agua."
+    }
+  ],
+  "provenance": {
+    "council_run": "flora-2026-11-19",
+    "by": [
+      "designer",
+      "mythmaker",
+      "naturalist",
+      "physicist",
+      "senses",
+      "skeptic",
+      "wildcard"
+    ],
+    "edited_by": "sol"
+  },
+  "changelog": [
+    {
+      "date": "2026-11-19",
+      "who": "flora.py",
+      "what": "flora pass: 7 voices drafted and peer-reviewed, Composer botanical referee, sol chaired and applied the fixes"
+    }
+  ],
+  "observe": [
+    "Pale roots emerge from branches against wet gravel.",
+    "Silt bands record earlier floods.",
+    "Compare fruiting spring-fed thickets with disconnected bars.",
+    "Seedlings recruit in moist openings."
+  ],
+  "secrets": [
+    "Vigorous fruiting shrubs can reveal a hidden groundwater-fed channel.",
+    "Bent branches preserve past flow direction.",
+    "Fruit-rich thickets can conceal a waiting merodeador."
+  ]
+}

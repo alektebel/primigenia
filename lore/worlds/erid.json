@@ -1,0 +1,461 @@
+{
+  "schema": "cpore.world/1",
+  "id": "erid",
+  "kind": "third_party",
+  "system": {
+    "star": "40 Eridani A",
+    "position": "real",
+    "distance_ly_from_sol": 16.3
+  },
+  "name": {
+    "en": "Erid",
+    "es": "Erid"
+  },
+  "status": "draft",
+  "facts": [
+    {
+      "id": "F1",
+      "group": "star",
+      "claim": "40 Eridani A is a K0.5–K1 V main-sequence star with ~0.84 M☉ mass, ~0.30 L☉ luminosity, and ~5150 K effective temperature.",
+      "justification": "Real stellar parameters corrected from misclassifications in drafts; K-dwarfs emit less far-UV than solar-type stars, reducing photodissociation pressure on surface volatiles. Reduced far-UV and generally moderate K-dwarf activity replace overstated magnetic quiescence claims.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 5150,
+      "unit": "K",
+      "consequences": [
+        "Lower far-UV flux permits stable ammonia chemistry at the surface.",
+        "Redder spectral peak shifts photosynthetic pigments toward near-IR.",
+        "Moderate stellar wind reduces atmospheric erosion rates."
+      ],
+      "refs": [
+        "gray2006_stellaruv",
+        "kasting1993_hz"
+      ]
+    },
+    {
+      "id": "F2",
+      "group": "orbit",
+      "claim": "Erid orbits at ~0.42 AU, receiving ~1.7 solar constant flux, with an orbital period of ~0.30 yr.",
+      "justification": "Energy balance model for a K-dwarf habitable zone; corrected flux calculation (0.30 L☉ / 0.42² AU ≈ 1.7 S⊕) and Keplerian period (√(0.42³/0.84) ≈ 0.30 yr) replace erroneous insolation and period values.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 0.42,
+      "unit": "AU",
+      "consequences": [
+        "Moderate diurnal temperature gradients reduce extreme weather shear.",
+        "Stable orbital period allows predictable seasonal convection.",
+        "High insolation forces reliance on albedo and greenhouse amplification for thermal equilibrium."
+      ],
+      "refs": [
+        "kasting1993_hz"
+      ]
+    },
+    {
+      "id": "F3",
+      "group": "planet",
+      "claim": "Surface gravity is ~1.35 g, consistent with a ~2.1 M🜨 super-Earth radius of ~1.25 R🜨.",
+      "justification": "Mass-radius scaling for silicate super-Earths rejects higher gravity as biomechanically prohibitive; 1.35 g balances structural load with locomotor efficiency (inferred).",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 1.35,
+      "unit": "g",
+      "consequences": [
+        "Vertical lift becomes energetically unsustainable, favoring horizontal propulsion.",
+        "Crustal compression raises geothermal gradient and stabilizes thick lithosphere.",
+        "Terminal velocity of falling debris increases, altering impact ecology."
+      ],
+      "refs": [
+        "seager2007_massradius"
+      ]
+    },
+    {
+      "id": "F4",
+      "group": "interior",
+      "claim": "The planet operates under a stagnant-lid tectonic regime, recycling heat through episodic mantle plumes rather than plate boundaries.",
+      "justification": "High surface gravity and thick lithosphere suppress continuous plate recycling; heat escapes via localized upwelling (highly speculative, inferred from super-Earth thermal models).",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "stagnant-lid",
+      "unit": "regime",
+      "consequences": [
+        "Geothermal vents cluster in isolated, long-lived hotspots.",
+        "Surface topography features buttressed shields rather than folded mountain ranges.",
+        "Metal-rich mantle plumes periodically resurface crustal ore deposits."
+      ]
+    },
+    {
+      "id": "F5",
+      "group": "atmosphere",
+      "claim": "Surface pressure averages ~40 bar, sustained by high gravity and a reducing volatile inventory.",
+      "justification": "Given by the lore ('crushing pressure'); high gravity retains primordial volatiles, while reducing chemistry prevents atmospheric escape (inferred).",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 40,
+      "unit": "bar",
+      "consequences": [
+        "Internal organs require fluid-filled cavities to prevent collapse.",
+        "Gas bladders are evolutionarily impossible; buoyancy relies on density matching.",
+        "High pressure suppresses thermal dissociation of ammonia above 350 K."
+      ],
+      "refs": [
+        "lunine1987_ammonia"
+      ]
+    },
+    {
+      "id": "F6",
+      "group": "atmosphere",
+      "claim": "The atmosphere is ammonia-rich and reducing, dominated by N₂ and H₂ with ~8% NH₃ and trace CH₄.",
+      "justification": "Given by the lore ('ammonia-rich atmosphere'); reducing conditions stabilize NH₃ and prevent oxidative weathering. 8% NH₃ represents a model steady-state sustained by volcanic outgassing and photolysis shutoff below the haze layer (inferred).",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "NH3-rich",
+      "unit": "composition",
+      "consequences": [
+        "Free oxygen is scarce; aerobic metabolism is nonviable.",
+        "Ammonia serves as the primary nitrogen source for biosynthesis.",
+        "Hydrogen abundance enables chemolithoautotrophic redox cycles."
+      ],
+      "refs": [
+        "lunine1987_ammonia"
+      ]
+    },
+    {
+      "id": "F7",
+      "group": "climate",
+      "claim": "Surface temperature is ~330 K, driven by pressure broadening and ammonia/water greenhouse effects.",
+      "justification": "Given by the lore ('hot'); 330 K maintains liquid ammonia-water eutectics while avoiding thermal dissociation limits. Energy budget closed by ~1.7 S⊕ insolation offset by high haze albedo and pressure-broadened greenhouse warming (inferred).",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 330,
+      "unit": "K",
+      "consequences": [
+        "Metabolic rates are elevated, increasing ammonia demand.",
+        "Stagnant boundary layer traps heat, favoring radiative cooling adaptations.",
+        "Thermal convection drives slow, basin-filling fog banks."
+      ],
+      "refs": [
+        "selsis2007_climate"
+      ]
+    },
+    {
+      "id": "F8",
+      "group": "sky",
+      "claim": "Perpetual ammonia-tholin haze renders the sky opaque to visible light, scattering illumination into diffuse twilight.",
+      "justification": "Photochemical aerosols and high atmospheric density scatter visible wavelengths within meters; infrared penetrates deeper. Visible range restricted to <30 m (order-of-magnitude, highly speculative), but IR/thermal windows remain for non-visual ecology (inferred).",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "opaque",
+      "unit": "optical_depth",
+      "consequences": [
+        "Visual range is restricted, eliminating optical predation at distance.",
+        "Eyes degenerate or shift to thermal/IR detection.",
+        "Surface ecosystems rely on chemosynthesis or near-IR photo-trophy."
+      ],
+      "refs": [
+        "lunine1987_ammonia"
+      ]
+    },
+    {
+      "id": "F9",
+      "group": "atmosphere",
+      "claim": "Sound travels at ~420 m/s with low-frequency propagation favoured, enabling long-range acoustic communication.",
+      "justification": "Dense NH₃/H₂/N₂ mixture increases sound speed above Earth baseline. Low-frequency waves propagate efficiently over long ranges, though molecular absorption bands in NH₃ limit specific frequency choices; kilometer-range acoustic communication is highly speculative but plausible with terrain waveguiding (inferred).",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 420,
+      "unit": "m/s",
+      "consequences": [
+        "Acoustic signaling becomes the primary long-range communication channel.",
+        "High-pitched frequencies attenuate rapidly, limiting whisper-range secrecy.",
+        "Ground-coupled vibrations travel efficiently alongside airborne sound."
+      ],
+      "refs": [
+        "kinsler2000_acoustics"
+      ]
+    },
+    {
+      "id": "F10",
+      "group": "ocean",
+      "claim": "Subsurface oceans consist of NH₃-H₂O eutectic brines, remaining liquid down to ~176 K under pressure.",
+      "justification": "Phase diagram of water-ammonia systems shows a composition-driven eutectic near 176 K; pressure shifts melting curves but does not replace eutectic logic (inferred).",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "NH3-H2O eutectic",
+      "unit": "solvent",
+      "consequences": [
+        "Marine chemistry supports ammonia-compatible lipid membranes.",
+        "Brine upwelling concentrates dissolved metals and reduced carbon.",
+        "Ice layers form only at extreme polar/altitude cold traps."
+      ],
+      "refs": [
+        "lunine1987_ammonia"
+      ]
+    },
+    {
+      "id": "F11",
+      "group": "geology",
+      "claim": "Hydrothermal vents precipitate metal nitrides and carbides, creating accessible crustal ore veins.",
+      "justification": "Reducing atmosphere and hydrothermal chemistry favor nitride/cyanide precipitation over oxide weathering. Accessible surface veins result from vent precipitation and brine leaching, with rapid passivation preventing bulk native metal exposure (highly speculative, inferred).",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "metal-rich",
+      "unit": "composition",
+      "consequences": [
+        "Surface metals are chemically reactive and require rapid sintering.",
+        "Ore deposits concentrate near vent fields, guiding settlement patterns.",
+        "Metal leaching by ammonia brines creates soluble transport complexes."
+      ],
+      "refs": [
+        "shock2001_chemistry"
+      ]
+    },
+    {
+      "id": "F12",
+      "group": "chemistry",
+      "claim": "Ammonolysis dominates surface biochemistry, with NH₂⁻ acting as the primary nucleophile instead of OH⁻.",
+      "justification": "In reducing, ammonia-dominant solvents, proton transfer and nucleophilic substitution follow NH₂⁻ pathways rather than aqueous OH⁻ chemistry. Polymer chemistry is non-terrestrial, avoiding implicit Earth-like protein folding assumptions (highly speculative, inferred).",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "ammonolysis",
+      "unit": "reaction_type",
+      "consequences": [
+        "Alternative polymer networks replace terrestrial hydrogen-bond folding.",
+        "Acid-base equilibria shift, altering metabolic pH tolerances.",
+        "Oxidative stress reactions are replaced by reductive detoxification."
+      ]
+    },
+    {
+      "id": "F13",
+      "group": "biochemistry",
+      "claim": "Life utilizes high-pressure ester or ether lipids, not cryogenic azotosomes.",
+      "justification": "Azotosomes are thermodynamically unstable above 200 K; 330 K surface conditions require pressure-stabilized ether or ester lipids. High-P lipid chemistry is highly speculative but necessary to avoid cryogenic Titan analogues (inferred).",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "high-P lipids",
+      "unit": "membrane_type",
+      "consequences": [
+        "Cell membranes remain fluid under 40 bar without cryogenic adaptation.",
+        "Ion channel kinetics are optimized for dense solvent viscosity.",
+        "Membrane repair relies on pressure-tolerant enzymatic pathways."
+      ]
+    },
+    {
+      "id": "F14",
+      "group": "biochemistry",
+      "claim": "Species evolved jaw-thoracic resonators for echolocation, compensating for zero-visibility haze.",
+      "justification": "Given by the lore ('senses and speaks by sound'); dense, opaque atmosphere makes acoustic mapping the only reliable long-range perception. Analogous to oilbird/bat echolocation, jaw/thoracic resonators compensate for zero-visibility haze (given by the lore, inferred mechanism).",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "acoustic_sensing",
+      "unit": "sensory_modality",
+      "consequences": [
+        "Visual organs are vestigial or repurposed for thermal contrast.",
+        "Communication relies on low-frequency tonal modulation.",
+        "Predator-prey dynamics are governed by acoustic stealth and jamming."
+      ],
+      "refs": [
+        "kinsler2000_acoustics"
+      ]
+    },
+    {
+      "id": "F15",
+      "group": "biochemistry",
+      "claim": "Multi-limbed, low-slung crawling minimizes gravitational torque and maximizes stability on viscous terrain.",
+      "justification": "Given by the lore ('intelligent crawling species'); 1.35 g makes bipedalism energetically prohibitive, favoring distributed load-bearing. Multi-limbed, low-slung crawling minimizes gravitational torque and maximizes stability (given by the lore, inferred scaling).",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "graviportal_crawl",
+      "unit": "locomotion",
+      "consequences": [
+        "Center of mass stays below joint axes, preventing toppling.",
+        "Locomotor stamina is conserved by horizontal propulsion mechanics.",
+        "Wide stance limits agility but enhances traction on soft substrates."
+      ],
+      "refs": [
+        "seager2007_massradius"
+      ]
+    },
+    {
+      "id": "F16",
+      "group": "biochemistry",
+      "claim": "Fluid-filled internal cavities match ambient 40 bar, preventing tissue collapse without gas bladders.",
+      "justification": "Incompressible fluids transmit ambient pressure uniformly, protecting delicate organs from crush damage. Fluid-filled internal cavities match ambient 40 bar, preventing tissue collapse without gas bladders (inferred).",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "pressure_matched",
+      "unit": "internal_structure",
+      "consequences": [
+        "Rapid decompression causes explosive tissue rupture.",
+        "Buoyancy control is impossible; movement relies on muscular propulsion.",
+        "Internal pressure equalization allows safe traversal of high-P zones."
+      ],
+      "refs": [
+        "lunine1987_ammonia"
+      ]
+    },
+    {
+      "id": "F17",
+      "group": "biochemistry",
+      "claim": "Laminated exoskeletons incorporate localized iron-nickel inlays along growth lines for fracture resistance.",
+      "justification": "High gravity fractures pure chitin; bio-scavenged metals precipitate along stress lines, mimicking chiton magnetite teeth. Localized Fe–Ni inlays along growth lines provide fracture resistance while avoiding mass penalties and surface nitridation/passivation (inferred).",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "biomineralized_inlays",
+      "unit": "carapace_composition",
+      "consequences": [
+        "Carapace yield strength increases without proportional mass penalty.",
+        "Metal inlays conduct vibration, enhancing seismic sensing.",
+        "Growth requires periodic metal-rich nutrient intake."
+      ],
+      "refs": [
+        "shock2001_chemistry"
+      ]
+    },
+    {
+      "id": "F18",
+      "group": "biochemistry",
+      "claim": "Ammonia-assimilation pathways recycle NH₃ directly into amino acids, avoiding oxidative fixation costs.",
+      "justification": "Reduced atmosphere lacks free oxygen and nitrates; direct NH₃ incorporation saves ATP compared to nitrogen fixation. Metabolic waste is urea-like, excreted as concentrated slurry (speculative, inferred).",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "NH3_assimilation",
+      "unit": "metabolism",
+      "consequences": [
+        "Metabolic waste is urea-like, excreted as concentrated slurry.",
+        "Oxidizer exposure causes cellular rupture and metabolic collapse.",
+        "Nitrogen cycling is tightly coupled to ammonia precipitation events."
+      ]
+    },
+    {
+      "id": "F19",
+      "group": "biochemistry",
+      "claim": "Vascularized carapace flaps act as supplemental radiators, shedding metabolic heat during high exertion or near geothermal hotspots.",
+      "justification": "High pressure enhances convective cooling, but dense air still traps metabolic heat in stagnant boundary layers. Vascularized carapace flaps and ammonia spray act as supplemental radiators during high exertion or near geothermal hotspots (inferred).",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "radiative_flaps",
+      "unit": "thermoregulation",
+      "consequences": [
+        "Thermal management requires periodic exposure to airflow or mist.",
+        "Flaps become brittle in cold regions, limiting habitat range.",
+        "Evaporative cooling via ammonia spray provides rapid thermal relief."
+      ],
+      "refs": [
+        "selsis2007_climate"
+      ]
+    },
+    {
+      "id": "F20",
+      "group": "biochemistry",
+      "claim": "Electroreceptive ore-sensing and cultural pressure-sintering enable metalworking without innate bio-alloying.",
+      "justification": "Given by the lore ('works metals into a super-strong material'); intelligence manifests as tool-use and thermal processing, not genetic metal-growth. Ore-sensing relies on ampullary electroreception; sintering requires localized high-temperature processing (geothermal vents, chemical exotherms, or pressure dies) to form speculative carbide–nitride ceramics (given by the lore, highly speculative technique).",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "cultural_metallurgy",
+      "unit": "intelligence_trait",
+      "consequences": [
+        "Metalworking is learned behavior, transmitted through acoustic instruction.",
+        "Ore-sensing relies on ampullary electroreception, not magical detection.",
+        "Sintering requires controlled heat sources and pressure-molded dies."
+      ],
+      "refs": [
+        "shock2001_chemistry"
+      ]
+    },
+    {
+      "id": "F21",
+      "group": "orbit",
+      "claim": "Slow diurnal rotation and moderate obliquity smooth extreme temperature gradients and drive large-scale atmospheric convection.",
+      "justification": "Tidal evolution and high atmospheric thermal inertia likely drive a slow diurnal cycle or moderate obliquity, smoothing extreme diurnal temperature gradients and driving large-scale atmospheric convection (inferred).",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "slow_rotation",
+      "unit": "rotation_state",
+      "consequences": [
+        "Diurnal temperature swings are minimized, favoring stable thermal niches.",
+        "Atmospheric circulation patterns become basin-scale rather than day-night driven.",
+        "Seasonal insolation shifts modulate vent activity and brine chemistry."
+      ],
+      "refs": [
+        "selsis2007_climate",
+        "kasting1993_hz"
+      ]
+    },
+    {
+      "id": "F22",
+      "group": "climate",
+      "claim": "Bond albedo ~0.65 and greenhouse factor ~1.8 close the planetary energy budget.",
+      "justification": "Single tuple closing the energy budget: high haze albedo (F8) offsets ~1.7 S⊕ insolation (F2), while pressure broadening and NH₃/H₂O greenhouse effects (F7) maintain 330 K surface temperature (inferred).",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 0.65,
+      "unit": "albedo",
+      "consequences": [
+        "Surface heat distribution is homogenized by atmospheric circulation.",
+        "Thermal inertia buffers against stellar variability.",
+        "Climate stability permits long-term biosphere evolution."
+      ],
+      "refs": [
+        "kasting1993_hz",
+        "selsis2007_climate"
+      ]
+    }
+  ],
+  "changelog": [
+    {
+      "date": "2026-11-18",
+      "who": "autoloop",
+      "what": "world canon drafted by the council chair from 22 facts (planet drafts, peer reviews, astrobio referee)"
+    },
+    {
+      "date": "2026-11-18",
+      "who": "autoloop",
+      "what": "removed rejected references; retired real facts left without references"
+    }
+  ],
+  "lore_source": "hailmary"
+}

@@ -1,0 +1,211 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "at_sail_people",
+  "name": {
+    "en": "Sail People"
+  },
+  "world": "at_garden_peoples",
+  "kind": "easter_egg",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "to be written",
+    "diet": "to be written",
+    "active": "to be written",
+    "predators": []
+  },
+  "body": "to be written",
+  "chains": [
+    {
+      "id": "at_sail_people.c1",
+      "trait": "Finger-sail locomotion & wind-driven cruising",
+      "links": [
+        "thermal plumes over shallow epicontinental seas create strong crosswinds",
+        "high carbonate alkalinity sustains vast pelagic fish schools",
+        "baseline 1-g gravity limits sustained flight without massive wings"
+      ],
+      "roots": [
+        "F9",
+        "F10",
+        "F3"
+      ],
+      "skill": {
+        "id": "at_sail_people.aero_sail",
+        "name": {
+          "en": "Aero-Sail"
+        },
+        "role": "Engage",
+        "effect": "Moves unit across open water at double speed, ignores terrain penalties (duration 4 turns)",
+        "numbers": {}
+      },
+      "weakness": "Calm winds ground the unit, leaving it vulnerable to melee",
+      "observe": [
+        "Hands and feet bear elongated, webbed finger-plates that catch air",
+        "Body posture is low and streamlined, riding swells rather than walking",
+        "Sails change hue to match cloud cover, reflecting ambient light"
+      ],
+      "journal": {
+        "en": "They do not swim the sea; they sail it on fingers."
+      },
+      "plausibility": {
+        "verdict": "implausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-19",
+        "summary": "Require partly buoyant bodies, body-span dorsal patagia (not finger-only area), and downwind travel while high in the swell line; cap speed boost to open shallow water and F9 wind bands.",
+        "fixes": [
+          "Require partly buoyant bodies, body-span dorsal patagia (not finger-only area), and downwind travel while high in the swell line; cap speed boost to open shallow water and F9 wind bands."
+        ],
+        "analogues": [
+          {
+            "organism": "Velella and Physalia wind-riding at water surface; flying fish glide — wind assist, not sail-area physics at primate scale without huge membrane.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own"
+          }
+        ],
+        "scores": {
+          "astrobio": 4,
+          "designer": 9
+        }
+      }
+    },
+    {
+      "id": "at_sail_people.c2",
+      "trait": "Tongue-mane manipulators & pelagic strike hunting",
+      "links": [
+        "high partial oxygen pressure elevates aerobic burst capacity",
+        "shallow, warm seas concentrate nutrient upwellings near reefs",
+        "global island fragmentation isolates prey in coastal straits"
+      ],
+      "roots": [
+        "F7",
+        "F10",
+        "F2"
+      ],
+      "skill": {
+        "id": "at_sail_people.glossal_lash",
+        "name": {
+          "en": "Glossal Lash"
+        },
+        "role": "Poke",
+        "effect": "Strikes a target within 8m for heavy bludgeoning damage, ignores armor (once per encounter)",
+        "numbers": {}
+      },
+      "weakness": "Predictable strike trajectory allows opponents to sidestep",
+      "observe": [
+        "Mouths extend into prehensile, muscle-rich tongues during feeding",
+        "Hunters coordinate in loose flotilla formations to herd schools",
+        "Bloodlust is visibly expressed as flushed cranial capillaries"
+      ],
+      "journal": {
+        "en": "The sea is a larder; the tongue is the ladle."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-19",
+        "summary": "Shorten strike range to ~1–3 m for a hyoid-powered aquatic lash; reserve 8 m for herding in water via flotilla disturbance, not tongue reach alone.",
+        "fixes": [
+          "Shorten strike range to ~1–3 m for a hyoid-powered aquatic lash; reserve 8 m for herding in water via flotilla disturbance, not tongue reach alone."
+        ],
+        "analogues": [
+          {
+            "organism": "Chameleon (Furcifer) ballistically projected tongue; woodpecker hyoid strike; humpback whale bubble-net cooperative fishing.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 7,
+          "designer": 8
+        }
+      }
+    },
+    {
+      "id": "at_sail_people.c3",
+      "trait": "Rigid finger-sails for wind-driven aquatic propulsion",
+      "links": [
+        "Scattered island geography demands efficient travel",
+        "Shallow seas allow wind interaction",
+        "Digits elongate and stiffen to support membrane",
+        "Sails replace webbing for speed"
+      ],
+      "roots": [
+        "F10",
+        "F21"
+      ],
+      "skill": {
+        "id": "at_sail_people.wind_ride",
+        "name": {
+          "en": "Wind-Ride"
+        },
+        "role": "Basic",
+        "effect": "Move 40% faster downwind; ignore current drag",
+        "numbers": {}
+      },
+      "weakness": "Immobilized in dead calm; vulnerable to headwinds",
+      "observe": [
+        "Dorsal membranes snap taut",
+        "Fingers lock into rigid struts",
+        "Body drifts forward without leg movement"
+      ],
+      "journal": {
+        "en": "They sail not on the water, but on the wind that drives the sea."
+      },
+      "plausibility": {
+        "verdict": "implausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-19",
+        "summary": "Merge with dorsal sail patagia locked by keratinized struts; fingers act as trim and reef, not primary driving surface; immobilize in calm via paddling tongue-hands.",
+        "fixes": [
+          "Merge with dorsal sail patagia locked by keratinized struts; fingers act as trim and reef, not primary driving surface; immobilize in calm via paddling tongue-hands."
+        ],
+        "analogues": [
+          {
+            "organism": "Breder’s classic fish locomotion vs. surface-drift sailors (Velella); no Earth analogue for finger-only rigid sails on a 1 g swimmer.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "breder_1926_locomotion"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 4,
+          "designer": 7
+        }
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "at_tool_breeders",
+      "kind": "rivalry",
+      "note": "Tool Breeders engineer bio-architecture in shallow reefs; Sail People exploit wind currents for pelagic cruising, competing for similar carbonate-rich waters.",
+      "via": "F10, F3, F9"
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-18"
+  },
+  "changelog": [
+    {
+      "date": "2026-11-19",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-18"
+    },
+    {
+      "date": "2026-11-18",
+      "who": "autoloop",
+      "what": "removed rejected references from analogues"
+    }
+  ],
+  "lore_ref": {
+    "file": "lore/alltomorrows.en.json",
+    "id": "sail-people"
+  }
+}

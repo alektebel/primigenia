@@ -1,0 +1,406 @@
+{
+  "schema": "cpore.world/1",
+  "id": "at_qu_worlds",
+  "kind": "third_party",
+  "system": {
+    "star": "K-type main-sequence (artificially enriched)",
+    "position": "fictional",
+    "distance_ly_from_sol": null
+  },
+  "name": {
+    "en": "All Tomorrows: the Qu-shaped worlds",
+    "es": "All Tomorrows: los mundos de los Qu"
+  },
+  "status": "draft",
+  "facts": [
+    {
+      "id": "F1",
+      "group": "star",
+      "claim": "K-type main-sequence star artificially enriched in chromospheric activity and magnetic pumping by Qu stellar-engineering.",
+      "justification": "The lore describes a 'monstrous sun' driven by flare/UV output rather than a spectral class shift; K-dwarfs with enhanced magnetic activity fit the book's description without violating hydrostatic equilibrium. Core metallicity splicing replaced with forced rotation/magnetic pumping; chromospheric engineering marked highly speculative. (inferred)",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "K2V",
+      "unit": "spectral class",
+      "consequences": [
+        "Elevated UV-C flux selects for subterranean refuge and dermal radiation shielding.",
+        "Chromospheric flares drive periodic surface sterilization cycles."
+      ],
+      "refs": [
+        "kasting_1993_habitable"
+      ]
+    },
+    {
+      "id": "F14",
+      "group": "star",
+      "claim": "Controlled stellar dimming phase over millennia, reducing luminosity by ~12% and triggering surface die-offs that forced underground refuge.",
+      "justification": "The lore describes the sun cooling, leading to the Worms' subterranean adaptation and eventual surface re-expansion as the Snake People. Explicit Qu stellar dimming tech, not natural evolution. (given by the lore / inferred mechanism)",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 12,
+      "unit": "% luminosity drop",
+      "consequences": [
+        "Estivation and torpor cycles evolve to survive prolonged cold/dark.",
+        "Surface re-colonization drives serpentine, agoraphobic morphologies."
+      ],
+      "refs": [
+        "kasting_1993_habitable",
+        "wordsworth_2016_climate"
+      ]
+    },
+    {
+      "id": "F2",
+      "group": "orbit",
+      "claim": "36-hour solar day engineered via tidal spin-orbit coupling and orbital damping to extend daylight for surface terraforming.",
+      "justification": "The lore requires extended daylight for Qu engineering; tidal locking adjustments and orbital damping are standard planetary engineering concepts. (inferred)",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 36,
+      "unit": "hours",
+      "consequences": [
+        "Extended photoperiods synchronize breeding and foraging with artificial diurnal cycles.",
+        "Slower rotation reduces Coriolis forces, simplifying global wind patterns."
+      ],
+      "refs": [
+        "kasting_1993_habitable",
+        "wordsworth_2016_climate"
+      ]
+    },
+    {
+      "id": "F3",
+      "group": "planet",
+      "claim": "1.22 g surface gravity maintained by Qu mass-dumping and modest radius compression.",
+      "justification": "Higher gravity selects for low center-of-mass architecture and distributed load-bearing, explaining the prevalence of tripedal and sprawling indigenous morphologies. Crustal thickening alone barely changes g; total mass increase is required. (inferred)",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 1.22,
+      "unit": "g",
+      "consequences": [
+        "High g favors low-profile, stable stances over upright bipedalism.",
+        "Increased skeletal density and hydrostatic leverage are required for locomotion."
+      ],
+      "refs": [
+        "alexander_2003_principles"
+      ]
+    },
+    {
+      "id": "F19",
+      "group": "biochemistry",
+      "claim": "Indigenous fauna exhibit tripedal symmetry, hydrostatic/hydrostatic-assisted musculature, and low center-of-gravity architecture optimized for 1.22 g.",
+      "justification": "Lore/given for Panderavis contrast; tripedal stance and hydrostatic support distribute load efficiently under moderate-high gravity without requiring massive skeletal density. (given by the lore)",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 3,
+      "unit": "limbs",
+      "consequences": [
+        "Low CoG prevents tipping on soft, crystalline substrates.",
+        "Hydrostatic networks allow flexible limb articulation without heavy joints."
+      ],
+      "refs": [
+        "alexander_2003_principles"
+      ]
+    },
+    {
+      "id": "F5",
+      "group": "atmosphere",
+      "claim": "1.8 bar total surface pressure, N₂-CO₂ mix with suspended silicate aerosols and trace noble gases.",
+      "justification": "Dense atmosphere raises acoustic impedance and slows convective mixing, creating stable thermal inversions and persistent ground fog. (inferred)",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 1.8,
+      "unit": "bar",
+      "consequences": [
+        "High pressure improves aerodynamic lift for gliding morphologies.",
+        "Dense air efficiently transmits low-frequency sound over kilometers."
+      ],
+      "refs": [
+        "wordsworth_2016_climate"
+      ]
+    },
+    {
+      "id": "F6",
+      "group": "sky",
+      "claim": "Amber twilight and persistent ground fog due to aerosol Mie reddening and optical depth, suppressing blue light.",
+      "justification": "Silicate dust and high CO₂ shift the visible spectrum toward red/amber via Mie scattering, extending low-contrast daylight and reducing UV penetration to the surface. Rayleigh mechanism replaced with aerosol Mie reddening. (inferred)",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 0.72,
+      "unit": "μm peak scattering",
+      "consequences": [
+        "Visual predators evolve tapetum lucidum and thermal pit organs.",
+        "Photosynthetic organisms shift pigments to capture near-infrared flux."
+      ],
+      "refs": [
+        "kiang_2006_spectral",
+        "wordsworth_2016_climate"
+      ]
+    },
+    {
+      "id": "F16",
+      "group": "atmosphere",
+      "claim": "High atmospheric density triples acoustic impedance, favoring low-frequency vocalizations and ground-coupled seismic communication over long distances.",
+      "justification": "Dense, particulate-laden air scatters high frequencies but transmits infrasound efficiently, matching the lore's emphasis on vibrational ground-music and acoustic waveguides. Adjusted multiplier to ~1.4 for 1.8 bar. (inferred)",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 1.4,
+      "unit": "impedance multiplier",
+      "consequences": [
+        "Herds coordinate via chest-rumbling hums and ground taps.",
+        "High-pitch whistles cause disorientation and break formation."
+      ],
+      "refs": [
+        "wordsworth_2016_climate",
+        "alexander_2003_principles"
+      ]
+    },
+    {
+      "id": "F4",
+      "group": "interior",
+      "claim": "42 µT planetary magnetic field guiding magnetoreceptive navigation but creating blind spots near Qu basalt foundations.",
+      "justification": "A terrestrial-grade dynamo field is plausible for a super-Earth; engineered basalt creates localized magnetic anomalies that disrupt biological compasses. (inferred)",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 42,
+      "unit": "µT",
+      "consequences": [
+        "Subterranean fauna use magnetite-based navigation for tunnel mapping.",
+        "Qu ruins act as magnetic dead zones, forcing sensory reliance on vibration."
+      ]
+    },
+    {
+      "id": "F8",
+      "group": "geology",
+      "claim": "Kilometric stone pyramids and glass-melt plains dominate topography, channeling katabatic winds and creating localized wind-tunnel acoustics.",
+      "justification": "The lore explicitly describes Qu-engineered pyramids and recarved surfaces; geometric structures naturally funnel wind and sound. (given by the lore)",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 1,
+      "unit": "km height",
+      "consequences": [
+        "Venturi-adapted hollow bones exploit pyramid updrafts for silent descent.",
+        "Wind-tunnel architecture creates standing waves for long-distance acoustic communication."
+      ],
+      "refs": [
+        "alexander_2003_principles",
+        "wordsworth_2016_climate"
+      ]
+    },
+    {
+      "id": "F9",
+      "group": "ocean",
+      "claim": "Shallow, hypersaline seas laced with geothermal copper, zinc, and sulfur runoff, supporting chemosynthetic filter mats.",
+      "justification": "Qu terraforming diverted or evaporated original oceans; geothermal vents leach heavy metals, creating metal-rich brine pools. (inferred)",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 0.05,
+      "unit": "km depth (average)",
+      "consequences": [
+        "Filter-feeding colonies evolve into living mats that strip toxins.",
+        "Shallow seas concentrate metal ions, driving copper-based respiratory evolution."
+      ],
+      "refs": [
+        "kiang_2006_spectral"
+      ]
+    },
+    {
+      "id": "F10",
+      "group": "chemistry",
+      "claim": "Chitinous-metal composite biomineralization in skeletal structures and hydrostatic muscle networks, integrating low-% structural copper salts and iron co-mineralization.",
+      "justification": "Copper bioavailability allows heavy structural integration, but requires strict chelation to prevent neurotoxicity; matches the lore's native fauna description. Replaced 15 wt% toxic bone with low-% chitinous-metal composite; iron added for magnetic sensitivity. (given by the lore / inferred mechanism)",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 2,
+      "unit": "wt% Cu in bone matrix",
+      "consequences": [
+        "High mass/inertia slows acceleration but increases blunt-force resistance.",
+        "Magnetic fields disrupt gait and cause tremors in iron-copper mineralized lineages."
+      ],
+      "refs": [
+        "alexander_2003_principles"
+      ]
+    },
+    {
+      "id": "F17",
+      "group": "geology",
+      "claim": "Tectonic recycling halted by Qu dampening rigs, leaving ancient urban foundations and glass plains exposed to slow aeolian weathering.",
+      "justification": "The lore describes dead cities and recarved surfaces; engineered seismic dampening would preserve ruins over 40 million years. Zero plate recycling still allows aeolian/chemical weathering. (given by the lore / inferred)",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 0,
+      "unit": "tectonic activity index",
+      "consequences": [
+        "Surface litter includes weathered Qu polymers and silicate composites.",
+        "Predictable fault lines concentrate geothermal heat near ruins."
+      ]
+    },
+    {
+      "id": "F7",
+      "group": "climate",
+      "claim": "20°C diurnal temperature swings dampened by atmospheric heat capacity, but high UV/X-ray flare flux drives surface sterilization.",
+      "justification": "High atmospheric density buffers temperature, yet stellar flares deliver lethal radiation pulses, forcing life into refugia or armored states. Ozone/magnetic screening modulates flare lethality; copper-oxide dermal plating replaced with melanin/carotenoid shielding + underground refugia. (inferred)",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 20,
+      "unit": "°C",
+      "consequences": [
+        "Organisms develop melanin-carotenoid dermal plating and retinal-shift pigments.",
+        "Surface activity concentrates in crepuscular windows between flare events."
+      ],
+      "refs": [
+        "kasting_1993_habitable"
+      ]
+    },
+    {
+      "id": "F11",
+      "group": "biochemistry",
+      "claim": "Hemocyanin-like oxygen transport systems selected for copper-rich aquatic/soil chemistry, trading high affinity for cold-tolerant reversibility.",
+      "justification": "Copper-based respiratory pigments scale with atmospheric density and soil copper loads; lower affinity at high pH is offset by high ambient O₂. Clarified 21% as mole fraction at 1.8 bar (~0.38 bar PO₂). (inferred)",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 21,
+      "unit": "% O2 mole fraction",
+      "consequences": [
+        "Slow metabolic rate and high stamina favor ambush predation.",
+        "Activity drops sharply below 10°C due to hemocyanin kinetics."
+      ],
+      "refs": [
+        "kiang_2006_spectral"
+      ]
+    },
+    {
+      "id": "F12",
+      "group": "biochemistry",
+      "claim": "Dormant Qu nanite lattices integrated into soil and cell membranes, acting as catalytic bridges for rapid tissue turnover and metal chelation.",
+      "justification": "The lore describes Qu genetic/nanotech legacy persisting post-departure; engineered nanites would act as metabolic catalysts in a terraformed biosphere. Patchy distribution and defined decay half-life prevent uniform magic soil. (given by the lore)",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 1,
+      "unit": "% of soil mass",
+      "consequences": [
+        "Symbiotic organisms gain accelerated repair and toxin sequestration.",
+        "Nanite decay creates inert silicon-glass dust that disrupts nerve conduction."
+      ]
+    },
+    {
+      "id": "F13",
+      "group": "biochemistry",
+      "claim": "Panderavis pandora fossil retains terrestrial calcium-phosphate bones and four-limbed vertebrate anatomy, marking it as an out-of-place Earth transplant.",
+      "justification": "The lore explicitly identifies the Panderavis as a therizinosaur lineage from Earth, contrasting sharply with the native three-limbed, copper-boned fauna. (given by the lore)",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 4,
+      "unit": "limbs",
+      "consequences": [
+        "Calcium-based skeleton limits size in high-Cu, high-g environments.",
+        "Four-limbed posture is maladaptive on soft, crystalline substrates."
+      ],
+      "refs": [
+        "alexander_2003_principles"
+      ]
+    },
+    {
+      "id": "F15",
+      "group": "biochemistry",
+      "claim": "Chemolithotrophic gut symbionts and silicon-iron matrix flora enable energy extraction from abrasive, metal-laden substrates and crystalline biomass.",
+      "justification": "Crystalline 'plants' recycle oxygen but are chemically inert to conventional digestion; symbionts secrete chelating enzymes and grinding structures. Energy derived from organics/symbiont metabolites, not silicon lattice bond energy. (inferred)",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 3,
+      "unit": "stomach chambers",
+      "consequences": [
+        "Detritivores evolve multi-chambered guts to process silica and metals.",
+        "Metal-sifting behavior neutralizes nanite residue and recovers nutrients."
+      ],
+      "refs": [
+        "kiang_2006_spectral"
+      ]
+    },
+    {
+      "id": "F18",
+      "group": "biochemistry",
+      "claim": "Copper-sulfur clusters in neural tissue and spirally coiled ganglia adapt to hypoxic, high-metal underground niches, enabling parallel spatial processing.",
+      "justification": "The lore describes Snake People with spirally coiled brains and agoraphobic tendencies; copper-based redox reactions support rapid neural processing in low-oxygen environments. Marked Cu-S neural enhancement as highly speculative; artifact 'power-ups' moved to gameplay. (given by the lore / inferred mechanism)",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 1,
+      "unit": "coil structure",
+      "consequences": [
+        "Spiral ganglia allow parallel processing of 3D spatial maps.",
+        "High metal tolerance enables consumption of Qu artifacts for power-ups."
+      ],
+      "refs": [
+        "alexander_2003_principles"
+      ]
+    },
+    {
+      "id": "F20",
+      "group": "planet",
+      "claim": "Composite world model integrating worm, colonial, ruin-haunter, killer-folk, and Panderavis environments into a single playable setting.",
+      "justification": "The LORE TEXT actually describes multiple Qu worlds; treating F1–F20 as one playable composite avoids false global predictions while preserving narrative scope. (given by the lore)",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 1,
+      "unit": "composite index",
+      "consequences": [
+        "Environmental gradients allow rapid biome shifts over short distances.",
+        "Player adaptations must account for localized Qu engineering variations."
+      ],
+      "refs": [
+        "wordsworth_2016_climate"
+      ]
+    }
+  ],
+  "changelog": [
+    {
+      "date": "2026-11-18",
+      "who": "autoloop",
+      "what": "world canon drafted by the council chair from 20 facts (planet drafts, peer reviews, astrobio referee)"
+    },
+    {
+      "date": "2026-11-18",
+      "who": "autoloop",
+      "what": "removed rejected references; retired real facts left without references"
+    }
+  ],
+  "lore_source": "alltomorrows"
+}

@@ -1,0 +1,365 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "cloud_grazers",
+  "name": {
+    "en": "Cloud grazers"
+  },
+  "world": "deepsky",
+  "kind": "new",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "Mid-cloud decks (1–2 bar), dense migratory herds",
+    "diet": "Filter-feeds on cloud plankton and chemical aerosols",
+    "active": "Continuous, follows chemical gradients and herd signals",
+    "predators": [
+      "Hunters",
+      "Jet hunters"
+    ],
+    "prey": [
+      "Cloud plankton",
+      "Chemical aerosols"
+    ]
+  },
+  "body": "Medium-sized, pod-like creatures with bristled maws that crackle with static charge. Their dual-chambered stomachs separate ammonia-rich and hydrogen-rich feeds, while low bladders keep them suspended in the dense haze.",
+  "chains": [
+    {
+      "id": "cloud_grazers.c1",
+      "trait": "Electrostatic filter-maw rakers attract plankton",
+      "links": [
+        "Low H₂ density reduces impact capture efficiency",
+        "Ambient static charge in convective clouds provides attraction force",
+        "89% hydrogen envelope amplifies triboelectric charging",
+        "Filaments siphon sub-micron organic droplets"
+      ],
+      "roots": [
+        "F5",
+        "F11"
+      ],
+      "skill": {
+        "id": "cloud_grazers.static_siphon",
+        "name": {
+          "en": "Static Siphon"
+        },
+        "role": "Basic",
+        "effect": "Passively pulls 8 plankton per second, generating 2 food/sec",
+        "numbers": {}
+      },
+      "weakness": "Charge fully neutralizes during nearby lightning strikes, forcing a 6-second feeding drought",
+      "observe": [
+        "Dorsal filaments crackle blue",
+        "Maw filters pulse with static",
+        "Dust motes curve toward mouth"
+      ],
+      "journal": {
+        "en": "They eat the sky's static breath."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Cap passive yield to aerosol-limited flux: electrostatic bias helps capture sub-micron sinkers in F11 microdroplets, but lightning reset is real; add dependence on convective charge like Earth thunderclouds, not continuous triboelectric free lunch.",
+        "fixes": [
+          "Cap passive yield to aerosol-limited flux: electrostatic bias helps capture sub-micron sinkers in F11 microdroplets, but lightning reset is real; add dependence on convective charge like Earth thunderclouds, not continuous triboelectric free lunch."
+        ],
+        "analogues": [
+          {
+            "organism": "Pollen electrostatic adherence to negatively charged bees (Urtica-style charging in flight); spiderwebs and mist nets capturing charged droplets.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 7,
+          "designer": 8,
+          "physicist": 7
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "designer",
+          "physicist",
+          "wildcard"
+        ]
+      }
+    },
+    {
+      "id": "cloud_grazers.c2",
+      "trait": "Metabolic hydrogen bladders regulate neutral float",
+      "links": [
+        "2.6 g gravity pulls everything downward",
+        "Hydrogen atmosphere offers weak lift",
+        "Metabolic reduction of CO₂ yields pure H₂",
+        "Gas expands to displace dense ambient air"
+      ],
+      "roots": [
+        "F3",
+        "F5",
+        "F16"
+      ],
+      "skill": {
+        "id": "cloud_grazers.gas_shift",
+        "name": {
+          "en": "Gas Shift"
+        },
+        "role": "Control",
+        "effect": "Adjust altitude instantly; avoid ground hazards; escape area effects.",
+        "numbers": {}
+      },
+      "weakness": "Pressure surge: Entering >10 bar zone pops bladder, taking 25 damage and disabling Gas Shift for 8s",
+      "observe": [
+        "Translucent sacs pulsing near the spine",
+        "Exhaling faint white vapors",
+        "Drifting like dandelion seeds"
+      ],
+      "journal": {
+        "en": "They carry their own sky in collapsible pockets."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": ">10 bar cooking (F15) should rupture or denature bladders and force descent/lag, not only a debuff—align pop damage with protein denaturation, not mere mechanical pop at 1-bar thinking.",
+        "fixes": [
+          ">10 bar cooking (F15) should rupture or denature bladders and force descent/lag, not only a debuff—align pop damage with protein denaturation, not mere mechanical pop at 1-bar thinking."
+        ],
+        "analogues": [
+          {
+            "organism": "Sagan-Salpeter floaters with regulated balloon metabolisms; Portuguese man-o-war pneumatophore gas float (passive, for contrast).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "designer": 9,
+          "physicist": 8
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "designer",
+          "physicist",
+          "wildcard"
+        ]
+      }
+    },
+    {
+      "id": "cloud_grazers.c3",
+      "trait": "Septate dual-stomachs split oxidized and reduced feeds",
+      "links": [
+        "Lightning fixes atmospheric nitrogen into oxidized ammonia and nitrates",
+        "Methane and hydrogen fermentation yield reduced chemical energy",
+        "Direct mixing of oxidizers and reducers causes runaway combustion or toxic byproducts",
+        "Rigid septum physically isolates gastric chambers for parallel processing"
+      ],
+      "roots": [
+        "F5",
+        "F12",
+        "F13"
+      ],
+      "skill": {
+        "id": "cloud_grazers.chemical_blend",
+        "name": {
+          "en": "Chemical Blend"
+        },
+        "role": "Engage",
+        "effect": "Ration oxidized N and reduced H₂ pools to heal 15 HP over 4s. Costs 20% of stored redox reserves.",
+        "numbers": {}
+      },
+      "weakness": "Entering high-oxidant zones or being sprayed by hunter toxins floods the oxidized chamber, forcing a 3s purge that leaves them vulnerable.",
+      "observe": [
+        "Belly glows yellow-green",
+        "Dual exhaust vents puff alternating colors",
+        "Gill slits flare rhythmically"
+      ],
+      "journal": {
+        "en": "They keep fire and water apart in their gut."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "One tract for oxidized lightning-fixed N (NH₃/NO₃⁻ analogs), one for reduced CH₄/H₂ fermentation; physical septation prevents explosive mixing. Chemical Blend healing should cost stored redox pools, not infinite sky buffet.",
+        "fixes": [
+          "One tract for oxidized lightning-fixed N (NH₃/NO₃⁻ analogs), one for reduced CH₄/H₂ fermentation; physical septation prevents explosive mixing. Chemical Blend healing should cost stored redox pools, not infinite sky buffet."
+        ],
+        "analogues": [
+          {
+            "organism": "Ruminant forestomach compartmentalization; hydrothermal vent symbioses (Riftia chemoautotroph symbionts) splitting redox pathways.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "designer": 8,
+          "physicist": 9
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "physicist",
+          "wildcard"
+        ]
+      }
+    },
+    {
+      "id": "cloud_grazers.c4",
+      "trait": "Infrasound vocal sacs synchronize herd drift",
+      "links": [
+        "High-drag aerosol haze blurs visual tracking",
+        "Dense H₂ atmosphere attenuates only high frequencies",
+        "350 m/s acoustic speed favors low-bass propagation",
+        "40 Hz pulses coordinate grazing routes"
+      ],
+      "roots": [
+        "F5",
+        "F8",
+        "F19"
+      ],
+      "skill": {
+        "id": "cloud_grazers.herd_call",
+        "name": {
+          "en": "Herd Call"
+        },
+        "role": "Control",
+        "effect": "Broadcast 40 Hz pulse, rallying 4 allies within 80m and increasing their defense by 15%",
+        "numbers": {}
+      },
+      "weakness": "Predictable resonance frequency can be disrupted by acoustic dampeners or mimicry",
+      "observe": [
+        "Throat sac inflates visibly",
+        "Air ripples propagate outward",
+        "Distant echoes bounce back in harmony"
+      ],
+      "journal": {
+        "en": "They talk in gravity's bass."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "analogues": [
+          {
+            "organism": "Humpback and fin whale 20–40 Hz coordination; African elephant long-distance rumbles through heterogeneous terrain.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 9,
+          "designer": 9,
+          "physicist": 9
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "designer",
+          "physicist",
+          "wildcard"
+        ]
+      }
+    },
+    {
+      "id": "cloud_grazers.c5",
+      "trait": "Azotosome-like membranes resist ammonia corrosion",
+      "links": [
+        "Ambient microdroplets act as biological solvent",
+        "Standard lipid bilayers freeze or dissolve at cloud temperatures",
+        "Reduced chemistry and high pressure stabilize nitrogen-based amphiphiles",
+        "Membranes maintain fluidity and osmotic balance"
+      ],
+      "roots": [
+        "F11",
+        "F13"
+      ],
+      "skill": {
+        "id": "cloud_grazers.osmotic_seal",
+        "name": {
+          "en": "Osmotic Seal"
+        },
+        "role": "Defence",
+        "effect": "Harden membrane for 4 seconds, resisting 20 chemical damage",
+        "numbers": {}
+      },
+      "weakness": "Active hardening reduces lateral flexibility, lowering dodge chance by 10%",
+      "observe": [
+        "Iridescent skin sheen",
+        "No leakage during cloud dives",
+        "Slow, deliberate movements when shielded"
+      ],
+      "journal": {
+        "en": "Their skin is a chemical shield."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Label highly speculative for F11 aqueous-ammonia microdroplets: azotosomes were proposed for liquid methane/ethane (Titan), not warm NH₃-water pockets—use amine-rich amphiphiles stable at cloud T/P per F13, with Seager cited as conceptual analogue only.",
+        "fixes": [
+          "Label highly speculative for F11 aqueous-ammonia microdroplets: azotosomes were proposed for liquid methane/ethane (Titan), not warm NH₃-water pockets—use amine-rich amphiphiles stable at cloud T/P per F13, with Seager cited as conceptual analogue only."
+        ],
+        "analogues": [
+          {
+            "organism": "Proposed azotosome vesicles in cryogenic hydrocarbons; extremophile membrane tuning in haloarchaea and acidophiles for non-Earth solvents.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own"
+          }
+        ],
+        "scores": {
+          "astrobio": 7,
+          "designer": 9,
+          "physicist": 10
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "designer",
+          "physicist"
+        ]
+      }
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-18",
+    "by": [
+      "designer",
+      "physicist",
+      "wildcard"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-18",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-18"
+    },
+    {
+      "date": "2026-11-18",
+      "who": "autoloop",
+      "what": "removed rejected references from analogues"
+    },
+    {
+      "date": "2026-11-18",
+      "who": "import_got",
+      "what": "merged run autoloop-2026-11-18: 0 chain(s) added, 0 plausibility block(s) filled, 0 relation(s) added"
+    },
+    {
+      "date": "2026-11-19",
+      "who": "import_got",
+      "what": "merged run autoloop-2026-11-19: 0 chain(s) added, 0 plausibility block(s) filled, 0 relation(s) added"
+    }
+  ],
+  "temperament": "Docile, herd-bound, and endlessly foraging.",
+  "secrets": [
+    "Electrostatic rakers <- lightning frequency <- frequent atmospheric discharge + H₂ bath -> Skill 'Static Net' (Control): discharges a localized field that clumps plankton for allies or stuns predators. Weakness: Overcharge can attract lightning; bladders are vulnerable to puncture."
+  ],
+  "moments": [
+    "A shimmering wall of bodies moving as one, maws clicking as they harvest the very air into sustenance."
+  ]
+}

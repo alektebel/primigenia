@@ -1,0 +1,301 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "soplomanta",
+  "name": {
+    "en": "Soplomanta"
+  },
+  "world": "deepsky",
+  "kind": "new",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "Zonal jet interfaces, high-shear boundaries",
+    "diet": "Kinetic energy converted via friction, trace chemicals",
+    "active": "Continuous in wind",
+    "predators": []
+  },
+  "body": "Broad flat fibrous sheet with alternating conductive and insulating bands",
+  "chains": [
+    {
+      "id": "soplomanta.c1",
+      "trait": "Broad flat membrane",
+      "links": [
+        "Maximize surface area",
+        "Capture wind shear",
+        "Harvest triboelectric charge"
+      ],
+      "roots": [
+        "F7"
+      ],
+      "skill": {
+        "id": "soplomanta.static_glide",
+        "name": {
+          "en": "Static Glide"
+        },
+        "role": "Control",
+        "effect": "Glides 2x distance using wind, ignores 10% drag.",
+        "numbers": {}
+      },
+      "weakness": "Calm zones starve it; damp air kills triboelectric effect.",
+      "observe": [
+        "Fluttering without wings",
+        "Repelling other creatures",
+        "Humming at 50Hz"
+      ],
+      "journal": {
+        "en": "A living kite that feeds on the wind's whisper."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Diet: trace organics stripped from shear plus triboelectric trickle charging a symbiotic/redox layer; 'Static Glide' stays, starvation in calm zones stays honest.",
+        "fixes": [
+          "Diet: trace organics stripped from shear plus triboelectric trickle charging a symbiotic/redox layer; 'Static Glide' stays, starvation in calm zones stays honest."
+        ],
+        "analogues": [
+          {
+            "organism": "Velella and by-the-wind sailors: flat rafts ride boundary winds; Saharan dust triboelectric charging (geophysical analog for charge separation, not food).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "sagan_1976_particles"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "soplomanta.c2",
+      "trait": "Alternating charge bands",
+      "links": [
+        "Separate electron flow",
+        "Create dipole moment",
+        "Enable electrostatic propulsion"
+      ],
+      "roots": [
+        "F5",
+        "F7"
+      ],
+      "skill": {
+        "id": "soplomanta.repulsion_push",
+        "name": {
+          "en": "Repulsion Push"
+        },
+        "role": "Basic",
+        "effect": "Pushes target or self away, dealing 8 damage and 2m displacement.",
+        "numbers": {}
+      },
+      "weakness": "Reversing bands causes confusion and loss of control.",
+      "observe": [
+        "Bands glowing different colors",
+        "Spinning to align charge",
+        "Pushing debris away without touching"
+      ],
+      "journal": {
+        "en": "Friction is its food."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Specify band materials as hydrocarbon–amine amphiphile bilayers per F13 so chemistry matches the world.",
+        "fixes": [
+          "Specify band materials as hydrocarbon–amine amphiphile bilayers per F13 so chemistry matches the world."
+        ],
+        "analogues": [
+          {
+            "organism": "Electrophorus electrocyte columns (alternating series for dipole); artificial triboelectric laminates (materials science).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "soplomanta.c3",
+      "trait": "Electrostatic propulsion",
+      "links": [
+        "Move without metabolic burn",
+        "Counter 2.6g gravity",
+        "Exploit low density gas"
+      ],
+      "roots": [
+        "F3",
+        "F7"
+      ],
+      "skill": {
+        "id": "soplomanta.charge_levitation",
+        "name": {
+          "en": "Charge Levitation"
+        },
+        "role": "Passive",
+        "effect": "Reduces fall speed by 50%, allowing safe descent.",
+        "numbers": {}
+      },
+      "weakness": "Requires constant charge; drains if wind stops.",
+      "observe": [
+        "Floating motionless in gale",
+        "Levitating upwards without flapping",
+        "Hair standing on end near player"
+      ],
+      "journal": {
+        "en": "Gravity is just a suggestion."
+      },
+      "plausibility": {
+        "verdict": "implausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Rebadge as shear loft + electrostatic trim (repulsion push, hazard sparks) and 50% fall-speed reduction as controlled drift in updrafts, not true anti-gravity levitation.",
+        "fixes": [
+          "Rebadge as shear loft + electrostatic trim (repulsion push, hazard sparks) and 50% fall-speed reduction as controlled drift in updrafts, not true anti-gravity levitation."
+        ],
+        "analogues": [
+          {
+            "organism": "Spiders ballooning on electrostatic fields: microscale aid to silk lift, not gross weight support; zonal-jet riders use wind, not ion wind.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 3,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "soplomanta.c4",
+      "trait": "Infrasound resonance",
+      "links": [
+        "Detect shear boundaries",
+        "Travel far in H2",
+        "Avoid jet collapse"
+      ],
+      "roots": [
+        "F8",
+        "F4"
+      ],
+      "skill": {
+        "id": "soplomanta.shear_sense",
+        "name": {
+          "en": "Shear Sense"
+        },
+        "role": "Engage",
+        "effect": "Reveals hidden wind currents and enemies within 40m for 5 seconds.",
+        "numbers": {}
+      },
+      "weakness": "High frequencies mask its resonance; deafening noise disorients.",
+      "observe": [
+        "Vibrating membrane at low pitch",
+        "Turning towards distant jets",
+        "Dancing to invisible rhythms"
+      ],
+      "journal": {
+        "en": "The wind sings, and it answers."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Sound speed ~350 m s⁻¹ with low attenuation below ~100 Hz (F8) makes membrane resonance a credible shear-boundary sensor; rapid rotation (F4) and jet noise provide structured low-frequency cues over tens to hundreds of metres in dense envelopes.",
+        "fixes": [
+          "Sound speed ~350 m s⁻¹ with low attenuation below ~100 Hz (F8) makes membrane resonance a credible shear-boundary sensor; rapid rotation (F4) and jet noise provide structured low-frequency cues over tens to hundreds of metres in dense envelopes."
+        ],
+        "analogues": [
+          {
+            "organism": "African elephant (Loxodonta): infrasonic communication and long-range propagation; fin whale low-frequency calls in dense medium.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "rayotela",
+      "kind": "cousin",
+      "note": "(council kind 'Commensalism') Soplomanta rides the electrostatic wake of Rayotela storms to glide for free."
+    },
+    {
+      "with": "rayotela",
+      "kind": "cousin",
+      "note": "(council kind 'Commensalism') Rides Rayotela's storm wake."
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-18",
+    "by": [
+      "naturalist/qwen"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-18",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-18"
+    },
+    {
+      "date": "2026-11-18",
+      "who": "import_got",
+      "what": "merged run autoloop-2026-11-18: 0 chain(s) added, 0 plausibility block(s) filled, 0 relation(s) added"
+    },
+    {
+      "date": "2026-11-19",
+      "who": "import_got",
+      "what": "merged run autoloop-2026-11-19: 0 chain(s) added, 0 plausibility block(s) filled, 0 relation(s) added"
+    }
+  ],
+  "temperament": "Passive drift, defensive static discharge",
+  "secrets": [
+    "Can be used to boost player thrusters via static cling.",
+    "Reveals wind direction when it flutters towards the jet."
+  ],
+  "moments": [
+    "A Soplomanta caught in a dead calm eddy slowly deflates, its silver bands turning grey as the charge bleeds away, looking like a discarded leaf waiting for a breeze that never comes."
+  ],
+  "journal": [
+    {
+      "en": "A living kite that feeds on the wind's whisper."
+    },
+    {
+      "en": "Friction is its food."
+    }
+  ]
+}

@@ -1,0 +1,173 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "at_swimmers",
+  "name": {
+    "en": "Swimmers"
+  },
+  "world": "at_garden_prairies",
+  "kind": "easter_egg",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "to be written",
+    "diet": "to be written",
+    "active": "to be written",
+    "predators": []
+  },
+  "body": "to be written",
+  "chains": [
+    {
+      "id": "at_swimmers.c1",
+      "trait": "Front flippers conceal manipulative hands and blubber lids",
+      "links": [
+        "Shallow epicontinental shelves provide abundant hiding spots",
+        "Low tidal range and calm swallow seas reduce need for specialized gills",
+        "Qu larval-stage homology preserves manual dexterity",
+        "Streamlined torsos reduce drag in dense aquatic medium"
+      ],
+      "roots": [
+        "F11",
+        "F3",
+        "F15"
+      ],
+      "skill": {
+        "id": "at_swimmers.hidden_grip",
+        "name": {
+          "en": "Hidden Grip"
+        },
+        "role": "Engage",
+        "effect": "Grab prey or objects with hands inside flippers; +20% control on aquatic targets.",
+        "numbers": {}
+      },
+      "weakness": "Hands are slow to deploy; vulnerable to ambush by fast-swimming flankers.",
+      "observe": [
+        "Flippers flex to reveal human-like fingers briefly",
+        "Blubbery lids blink slowly against the shallow sun glare",
+        "Swimmers manipulate shells with dexterous digits before slipping hands back"
+      ],
+      "journal": {
+        "en": "They hide their hands like pocket knives; one day, they'll remember why."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "Concealed hands cost drag—posit only for shallow-shelf benthic foraging (≤30–50 m dives, breath-hold), not pelagic pursuit; blubber lids are fat eyelids reducing glare, not novel optics.",
+        "fixes": [
+          "Concealed hands cost drag—posit only for shallow-shelf benthic foraging (≤30–50 m dives, breath-hold), not pelagic pursuit; blubber lids are fat eyelids reducing glare, not novel optics."
+        ],
+        "analogues": [
+          {
+            "organism": "Pinnipeds (California sea lion, Zalophus californianus) retain mobile digits and grasping in foreflippers; sea otter (Enhydra lutris) manual manipulation.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "webb_1984_form"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "designer": 9,
+          "physicist": 8
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist",
+          "physicist"
+        ]
+      }
+    },
+    {
+      "id": "at_swimmers.c2",
+      "trait": "Non-syntactic, pitch-modulated social calling",
+      "links": [
+        "Aquatic medium transmits low-frequency pulses efficiently",
+        "Nocturnal temperature inversions trap sound near surface",
+        "Pre-sapient social calling avoids metabolic cost of language centers",
+        "Nutrient-poor marine diets force energy budget toward basic locomotion"
+      ],
+      "roots": [
+        "F9",
+        "F18",
+        "F25"
+      ],
+      "skill": {
+        "id": "at_swimmers.tidal_call",
+        "name": {
+          "en": "Tidal Call"
+        },
+        "role": "Social",
+        "effect": "Summons 1 ally from water within 40m, grants +2 dive speed.",
+        "numbers": {}
+      },
+      "weakness": "Cannot understand complex commands or tool instructions.",
+      "observe": [
+        "Throat pouch vibrates rhythmically",
+        "Flock moves in tight formation",
+        "Surface breaks occur in synchronized rhythm"
+      ],
+      "journal": {
+        "en": "They speak the sea’s simple grammar."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "Drop nocturnal terrestrial temperature-inversion link for underwater calls; use reliable marine low-frequency propagation and chorusing instead; keep calls as contact/motivation-grade, not syntax.",
+        "fixes": [
+          "Drop nocturnal terrestrial temperature-inversion link for underwater calls; use reliable marine low-frequency propagation and chorusing instead; keep calls as contact/motivation-grade, not syntax."
+        ],
+        "analogues": [
+          {
+            "organism": "Harbour seal (Phoca vitulina) and bottlenose dolphin (Tursiops) individually distinctive contact calls without recursive syntax.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 7,
+          "designer": 7,
+          "physicist": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist",
+          "physicist"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "at_finger_fishers",
+      "kind": "convergent",
+      "note": "Both adapt to low-tide shallow seas; Swimmers preserve internal hands for future manipulation, while Finger Fishers elongate digits into ambulatory fish-hooks.",
+      "via": "F3"
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-19",
+    "by": [
+      "naturalist",
+      "physicist"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-19",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-19"
+    }
+  ],
+  "lore_ref": {
+    "file": "lore/alltomorrows.en.json",
+    "id": "swimmers"
+  }
+}

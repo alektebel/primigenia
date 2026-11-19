@@ -1,0 +1,212 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "at_symbiotes",
+  "name": {
+    "en": "Symbiotes"
+  },
+  "world": "at_garden_peoples",
+  "kind": "easter_egg",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "to be written",
+    "diet": "to be written",
+    "active": "to be written",
+    "predators": []
+  },
+  "body": "to be written",
+  "chains": [
+    {
+      "id": "at_symbiotes.c1",
+      "trait": "Olfactory-tactile neural puppetry interface",
+      "links": [
+        "saturated high-humidity atmosphere attenuates high-frequency vision and sound",
+        "dense canopy forests further block line-of-sight travel",
+        "baseline 1-g gravity permits sustained low-energy attachment"
+      ],
+      "roots": [
+        "F8",
+        "F3"
+      ],
+      "skill": {
+        "id": "at_symbiotes.scent_command",
+        "name": {
+          "en": "Scent-Command"
+        },
+        "role": "Control",
+        "effect": "Directs a host to move or attack with a chemical pulse (range 15m, lasts 3 turns)",
+        "numbers": {}
+      },
+      "weakness": "Volatile solvent sprays scramble pheromone trails, causing host confusion",
+      "observe": [
+        "Host stands rigidly upright while parasite manipulates limbs",
+        "Tiny ventral pads secrete a viscous, sweet-smelling gel",
+        "Hosts ignore direct visual commands but react to airborne chemical cues"
+      ],
+      "journal": {
+        "en": "They trade thoughts for flesh; a quiet negotiation in damp air."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-19",
+        "summary": "Limit fine limb control to attached symbiotes (ventral pads + saliva neuromodulators); treat 15 m airborne pulses as coarse states only (aggression, freeze, follow trail), not precise attack choreography.",
+        "fixes": [
+          "Limit fine limb control to attached symbiotes (ventral pads + saliva neuromodulators); treat 15 m airborne pulses as coarse states only (aggression, freeze, follow trail), not precise attack choreography."
+        ],
+        "analogues": [
+          {
+            "organism": "Emerald cockroach wasp (Ampulex compressa) venom-mediated motor hijack; rabies virus altering host behavior; remora/tick attachment chemistry — not remote fine puppetry.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "mainardi_2008_electrochemical"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "designer": 8,
+          "physicist": 6
+        }
+      }
+    },
+    {
+      "id": "at_symbiotes.c2",
+      "trait": "Dimorphic nesting architecture & size-specific doors",
+      "links": [
+        "parasitic attachment requires thermal buffering from host metabolism",
+        "high biomass yields constant nutrient surplus for host growth",
+        "1.1 bar atmospheric pressure supports dense forest undergrowth"
+      ],
+      "roots": [
+        "F7",
+        "F6",
+        "F21"
+      ],
+      "skill": {
+        "id": "at_symbiotes.habitat_symbiosis",
+        "name": {
+          "en": "Habitat Symbiosis"
+        },
+        "role": "Passive",
+        "effect": "Reduces supply cost for host units by 20% and grants shelter in forest biomes",
+        "numbers": {}
+      },
+      "weakness": "Firestorms dry out host blood, severing the neural link",
+      "observe": [
+        "Huts feature paired entrances: man-sized arches and palm-sized apertures",
+        "Hosts wear loosely fitted, blood-vascularized fur nesting mats",
+        "Parasites navigate by scent alone, never tripping over host gear"
+      ],
+      "journal": {
+        "en": "Architecture adapts to the rider and the ride."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-19",
+        "summary": "Label paired doors as Symbiote-built cultural architecture; keep the evolved biology on hosts (vascularized resting pelage and parasite thermoregulation on the mount).",
+        "fixes": [
+          "Label paired doors as Symbiote-built cultural architecture; keep the evolved biology on hosts (vascularized resting pelage and parasite thermoregulation on the mount)."
+        ],
+        "analogues": [
+          {
+            "organism": "Oxpecker–ungulate mutualism (roosting on host); brood-parasite nest access is cultural in humans, not selected morphology.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 7,
+          "designer": 7,
+          "physicist": 5
+        }
+      }
+    },
+    {
+      "id": "at_symbiotes.c3",
+      "trait": "Host-puppetry via chemosensory-tactile interface",
+      "links": [
+        "High O2 allows large host metabolic bodies",
+        "Dense humid air preserves scent molecules",
+        "Precise chemical contact signals enable puppetry",
+        "Speculative: Modified electrocytes enhance tactile feedback"
+      ],
+      "roots": [
+        "F7",
+        "F8",
+        "F17"
+      ],
+      "skill": {
+        "id": "at_symbiotes.sensory_hijack",
+        "name": {
+          "en": "Sensory Hijack"
+        },
+        "role": "Control",
+        "effect": "25% chance to command a hostile host unit for 2 turns",
+        "numbers": {}
+      },
+      "weakness": "Dry environments degrade signal; high wind disperses pheromones",
+      "observe": [
+        "Host freezes mid-motion",
+        "Symbiote whispers chemical command",
+        "Host eyes glaze over and turn"
+      ],
+      "journal": {
+        "en": "The mind is a tenant; the flesh, the landlord."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-19",
+        "summary": "Drop modified electrocytes for cross-species limb steering unless host lineage co-evolved electroreceptive skin; use tactile probing of host mechanoreceptors plus peptide cues at the bite/attachment site.",
+        "fixes": [
+          "Drop modified electrocytes for cross-species limb steering unless host lineage co-evolved electroreceptive skin; use tactile probing of host mechanoreceptors plus peptide cues at the bite/attachment site."
+        ],
+        "analogues": [
+          {
+            "organism": "Lamprey attachment and feeding tactile control; horsehair worm (Paragordius) gross behavior driving; hairworm/crickets — crude not tenant-in-the-skull.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "jorgensen_1994_electroreception"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 5,
+          "designer": 6,
+          "physicist": 9
+        }
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "at_hosts",
+      "kind": "symbiosis",
+      "note": "Symbiotes trade cognitive enhancement for host mobility; hosts gain protection and efficient resource gathering via tactile-olfactory interface.",
+      "via": "F8, F17, F7"
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-18"
+  },
+  "changelog": [
+    {
+      "date": "2026-11-19",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-18"
+    }
+  ],
+  "lore_ref": {
+    "file": "lore/alltomorrows.en.json",
+    "id": "symbiotes"
+  }
+}

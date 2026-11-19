@@ -1,0 +1,203 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "at_star_people",
+  "name": {
+    "en": "Star People"
+  },
+  "world": "at_earth_mars",
+  "kind": "easter_egg",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "Terraformed orbital habitats, garden colonies, and automated terraforming fronts across the spiral arm",
+    "diet": "Highly adaptable omnivore; engineered nutrient pastes, imported Earth/Mars flora, and synthetic protein matrices",
+    "active": "Circadian rhythm adjustable via epigenetic switches; active during local daylight or shift schedules",
+    "predators": [
+      "Qu bio-engineered subjects",
+      "rogue terraforming drones",
+      "psychological stressors (Mechanical Oedipi)"
+    ],
+    "prey": [
+      "Cultivated bio-masses",
+      "automated harvesters",
+      "engineered companion species"
+    ]
+  },
+  "body": "Enlarged associative cortices with neural plasticity <- Multi-world adaptation pressure + automated colonization <- Star People's engineered epigenetic switches & vault reproduction -> Neural sync (Control: rapidly learns local cues, reducing movement penalties, but causes epigenetic lag). Cryogenic germline vaults <- Instant population scaling needs <- Star People's terraforming front logistics -> Vault call (Social: awakens dormant germlines to spawn allies, but drains colony power).",
+  "chains": [
+    {
+      "id": "at_star_people.c1",
+      "trait": "Enlarged associative cortices with neural plasticity",
+      "links": [
+        "Expanded cortical folding & synaptic proliferation",
+        "Rapid multi-world environmental acclimatization",
+        "Engineered epigenetic switches & germline vaults"
+      ],
+      "roots": [
+        "F6",
+        "F17"
+      ],
+      "skill": {
+        "id": "at_star_people.cognitive_molding",
+        "name": {
+          "en": "Cognitive Molding"
+        },
+        "role": "Control",
+        "effect": "+50% skill acquisition speed, adapts to unfamiliar gravity/atmosphere within 2 encounters",
+        "numbers": {}
+      },
+      "weakness": "Neural overload in chaotic information environments; -40% accuracy under cognitive stress",
+      "observe": [
+        "Large cranial vault with prominent frontal lobes",
+        "Eyes track micro-movements with predictive saccades",
+        "Resting brainwave shows high gamma coherence"
+      ],
+      "journal": {
+        "en": "Brains built to learn everything at once, they carry the blueprint of a hundred worlds in their skulls."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Label explicitly as engineered posthuman neural architecture (F6), not evolved; cap ‘2 encounters’ acclimatization as epigenetic/learning assist, not instant homeostatic rewrite of respiration at alien O₂ partial pressures.",
+        "fixes": [
+          "Label explicitly as engineered posthuman neural architecture (F6), not evolved; cap ‘2 encounters’ acclimatization as epigenetic/learning assist, not instant homeostatic rewrite of respiration at alien O₂ partial pressures."
+        ],
+        "analogues": [
+          {
+            "organism": "Activity-dependent cortical plasticity in mammals (rodent rehabilitation models); directed enhancement is highly speculative biotech per lore",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "kolb_2015_fundamentals"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 7,
+          "designer": 7,
+          "physicist": 7
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist",
+          "physicist"
+        ]
+      }
+    },
+    {
+      "id": "at_star_people.c2",
+      "trait": "Cryogenic germline vaults for instant population scaling",
+      "links": [
+        "Dormant gamete preservation in vacuum-sealed vaults",
+        "Automated seeding & rapid demographic growth",
+        "Fast automated ships & vacuum transit"
+      ],
+      "roots": [
+        "F17"
+      ],
+      "skill": {
+        "id": "at_star_people.vault_bloom",
+        "name": {
+          "en": "Vault Bloom"
+        },
+        "role": "Signature",
+        "effect": "Instantly spawn 3 allied units in a 5m radius; cooldown 120s. Costs 40% current biomass.",
+        "numbers": {}
+      },
+      "weakness": "Vaults require stable cryo-thermal regulation; power loss causes mass germline apoptosis",
+      "observe": [
+        "Subdermal cryo-chamber ports at the clavicle",
+        "Uniform genetic markers across unrelated individuals",
+        "Low basal metabolic rate during dormancy"
+      ],
+      "journal": {
+        "en": "They leave their children in cold storage, waking them only when the soil is ready."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Treat as carried colonial biotech (vaults on ships/colonies, optional subdermal access ports), matching lore ‘construct people from stored genes’—not an innate organ that spawns units; biological weakness is cryopreserved gamete/embryo viability after power loss, not ‘mass germline apoptosis’ inside living adults.",
+        "fixes": [
+          "Treat as carried colonial biotech (vaults on ships/colonies, optional subdermal access ports), matching lore ‘construct people from stored genes’—not an innate organ that spawns units; biological weakness is cryopreserved gamete/embryo viability after power loss, not ‘mass germline apoptosis’ inside living adults."
+        ],
+        "analogues": [
+          {
+            "organism": "Human sperm/egg cryobanking; automated gene banks are technology, analogue organism: none beyond baseline Homo storage of germ cells",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "designer": 6,
+          "physicist": 8
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist",
+          "physicist"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "at_martians",
+      "kind": "convergent",
+      "note": "Perchlorate gut symbiome <- regolith detox <- Martian perchlorates -> Skill 'Soil Tamer' (Befriend). Cryo-stasis vaults <- instant population scaling <- automated colonization -> Skill 'Vault Breach' (Secret). Convergent reproductive bottlenecks for rapid acclimatization.",
+      "via": "F17"
+    },
+    {
+      "with": "at_martians",
+      "kind": "counter",
+      "note": "UV-hardened integument <- somatic DNA repair <- high surface radiation -> Skill 'Radiation Hardening' (Defence). Star People's neural plasticity <- rapid physiological reconfiguration <- engineered epigenetics -> Skill 'Cognitive Shift' (Control). Neural adaptation counters static somatic shielding.",
+      "via": "F16"
+    },
+    {
+      "with": "at_humans",
+      "kind": "opposite",
+      "note": "High-throughput aerobic engine <- immediate physical exertion <- Earth's 1.0 bar O2 -> Skill 'Endurance' (Defence). Enlarged associative cortices <- neural plasticity <- unified multi-world template -> Skill 'Adapt' (Passive). Metabolic stamina traded for cognitive flexibility.",
+      "via": "F6"
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-18",
+    "by": [
+      "naturalist",
+      "physicist"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-18",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-18"
+    },
+    {
+      "date": "2026-11-18",
+      "who": "import_got",
+      "what": "merged run autoloop-2026-11-18: 0 chain(s) added, 0 plausibility block(s) filled, 0 relation(s) added"
+    }
+  ],
+  "lore_ref": {
+    "file": "lore/alltomorrows.en.json",
+    "id": "star-people"
+  },
+  "temperament": "Curious and existentially bonded <- automated creation + optional labor <- Star People's vault reproduction & mechanical Oedipi -> prioritizes intellectual exploration over biological urgency.",
+  "secrets": [
+    "Epigenetic lag: rapid environmental shifts cause temporary neural misfires until switches stabilize",
+    "Vault dependency: population scaling halts if cryo-vaults are damaged or power fails"
+  ],
+  "moments": [
+    "Neural sync (Control): rapidly learns local environmental cues, reducing movement penalties in new biomes",
+    "Vault call (Social): awakens dormant germlines to spawn allies or scouts, but drains colony resources"
+  ]
+}

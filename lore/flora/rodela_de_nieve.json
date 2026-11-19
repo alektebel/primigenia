@@ -1,0 +1,205 @@
+{
+  "schema": "cpore.plant/1",
+  "id": "rodela_de_nieve",
+  "name": {
+    "en": "Snowshield Rosette",
+    "es": "Rodela de nieve"
+  },
+  "world": "primigenia",
+  "status": "draft",
+  "growth_form": "rosette",
+  "habitats": [
+    "Sheltered high volcanic slopes",
+    "Snowline gullies from about 1750 m",
+    "Leeward alpine gullies below the summit"
+  ],
+  "summary": "A 1.5–3 m giant rosette with ascending leaves above a 0.5–1 m caudex insulated by dead foliage. Hairy leaves close around the bud at night and red-purple margins screen radiation. Only leeward gullies support the tallest individuals; windward crater rims and summit crests are excluded (F7, F14, F15, F19, F25).",
+  "chains": [
+    {
+      "id": "rodela_de_nieve.c1",
+      "trait": "Insulated short caudex and enclosing leaves",
+      "links": [
+        "High slopes experience cold nights and seasonal snow.",
+        "Dead foliage slows heat loss from the short caudex.",
+        "Living leaves fold over the bud at night.",
+        "Leeward gullies reduce wind exposure enough to support the tallest crowns."
+      ],
+      "roots": [
+        "F7",
+        "F15",
+        "F19",
+        "F27"
+      ],
+      "play": "Use a sheltered rosette's lee for a brief pause and inspect accessible axils for seasonal water.",
+      "weakness": "Snow burial, saturated roots and removal of insulating leaves damage the plant.",
+      "observe": [
+        "Inner leaves close over the bud at dusk.",
+        "A torn skirt reveals a short caudex.",
+        "The tallest crowns occur inside leeward gullies."
+      ],
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "botanist/composer-2.5; chair sol",
+        "date": "2026-11-19",
+        "summary": "Caudex height is 0.5–1 m and total height including foliage is 1.5–3 m. Reserve the tallest plants for leeward gullies; exclude windward crater rims and summit crests.",
+        "analogues": [
+          {
+            "organism": "Espeletia and Afroalpine giant rosettes",
+            "mechanism": "Retained dead foliage and enclosing rosette leaves protect growing tissues against alpine cold.",
+            "refs": [
+              "smith_1987_alpine"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "rodela_de_nieve.c2",
+      "trait": "Hairy blades with red-purple screening",
+      "links": [
+        "High-elevation leaves receive increased UV.",
+        "Hairs scatter radiation and shelter leaf surfaces.",
+        "Red-purple pigments overlay green tissue and moderate radiation injury."
+      ],
+      "roots": [
+        "F14",
+        "F15",
+        "F25"
+      ],
+      "play": "Read exposed purple margins as a cue to high-slope stress.",
+      "weakness": "Screening reduces useful light and cannot provide a calibrated safe-exposure time.",
+      "observe": [
+        "Sun-facing margins are more purple.",
+        "Parted hairs reveal green tissue.",
+        "Sheltered inner leaves remain greener."
+      ],
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "botanist/composer-2.5; chair sol",
+        "date": "2026-11-19",
+        "summary": "Red-purple colour indicates radiation stress rather than alkaloids in this species. It provides neither healing gel nor dependable creature-sized UV protection.",
+        "analogues": [
+          {
+            "organism": "Anthocyanic alpine foliage",
+            "mechanism": "Foliar pigments can reduce light-induced injury; the combined hairy rosette design is a fictional adaptation.",
+            "refs": [
+              "gould_2004_anthocyanins"
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "gameplay": {
+    "food_for": [
+      "High-altitude herbivores browsing outer green leaves"
+    ],
+    "gift_item": "Naturally shed dry leaf",
+    "poison": {
+      "alkaloid": false,
+      "signal": "Red-purple margins indicate radiation stress without establishing alkaloid toxicity."
+    },
+    "healing": null,
+    "cover": "Small leeward pocket and partial concealment for a crouching small creature.",
+    "climbing": false,
+    "nest_material": "Naturally shed leaves; attached dead foliage remains protective insulation.",
+    "mineral_lick": null,
+    "notes": "Axil water is intermittent and not certified potable. Shelter does not provide continuous warmth or reliable UV protection."
+  },
+  "relations": [
+    {
+      "with": "zanco",
+      "kind": "eaten_by",
+      "note": "Browses reachable outer leaves below the protected bud."
+    },
+    {
+      "with": "alula",
+      "kind": "shelters",
+      "note": "Uses firm old-leaf columns as brief perches in sheltered gullies."
+    },
+    {
+      "with": "grama_de_ceniza",
+      "kind": "grows_with",
+      "note": "May adjoin grass confined to damp protected alpine fissures."
+    }
+  ],
+  "generator": {
+    "growth_form": "rosette",
+    "height_m": {
+      "min": 1.5,
+      "max": 3.0
+    },
+    "trunk": "Unbranched caudex 0.5–1 m high beneath retained dead foliage; ascending blades complete total height.",
+    "branching": {
+      "angle_deg": 0,
+      "levels": 0,
+      "apical_dominance": 1,
+      "buttress": "None; compact roots anchor in stable soil."
+    },
+    "leaf": {
+      "type": "Long hairy tapering blade with flexible base",
+      "size_cm": 150,
+      "arrangement": "Dense terminal spiral; inner blades close at night"
+    },
+    "colour": {
+      "base": "Grey-green",
+      "overlay_rules": [
+        "Exposed margins become red-purple.",
+        "Dead skirts turn buff to brown.",
+        "Purple does not encode metal contamination."
+      ]
+    },
+    "placement": {
+      "slope": "Stable sheltered alpine ground; tallest instances only in leeward gullies. Exclude active scree, windward crater rims and summit crests.",
+      "altitude_m": [
+        1750,
+        2050
+      ],
+      "wetness": "Seasonal snowmelt with freely drained roots.",
+      "soil": "Weathered andesite, volcanic grit and accumulated humus.",
+      "coast_distance_m": [
+        0,
+        3600
+      ],
+      "fog": "Occasional upslope cloud; no persistent fog requirement.",
+      "density": "Scattered sheltered groups; maximum-height plants restricted to leeward gully interiors."
+    },
+    "seasonal": "Slow evergreen growth increases after thaw; night closure operates while leaves remain unfrozen.",
+    "wind_response": "Leaves stream and bend; terrain shelter protects tall crowns, though gales still tear tips."
+  },
+  "journal": [
+    {
+      "en": "It keeps its old leaves as a coat and folds the living ones over its heart.",
+      "es": "Guarda las hojas muertas como abrigo y pliega las vivas sobre el corazón."
+    }
+  ],
+  "provenance": {
+    "council_run": "flora-2026-11-19",
+    "by": [
+      "designer",
+      "mythmaker",
+      "naturalist",
+      "physicist",
+      "senses",
+      "skeptic",
+      "wildcard"
+    ],
+    "edited_by": "sol"
+  },
+  "changelog": [
+    {
+      "date": "2026-11-19",
+      "who": "flora.py",
+      "what": "flora pass: 7 voices drafted and peer-reviewed, Composer botanical referee, sol chaired and applied the fixes"
+    }
+  ],
+  "observe": [
+    "Watch the crown close at dusk.",
+    "Compare purple outer margins with the green bud.",
+    "Find zanco bites below the crown."
+  ],
+  "secrets": [
+    "Tall rosettes identify leeward gully shelter, not a safe exposed crossing.",
+    "Removing the dry skirt causes lasting insulation damage."
+  ]
+}

@@ -1,0 +1,297 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "hunters",
+  "name": {
+    "en": "Hunters"
+  },
+  "world": "deepsky",
+  "kind": "new",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "Upper to mid-cloud decks, near jet boundaries",
+    "diet": "Carnivore (floaters, grazers)",
+    "active": "Continuous, follows prey herds and storm fronts",
+    "predators": [
+      "Jet hunters"
+    ],
+    "prey": [
+      "Floaters",
+      "Cloud grazers"
+    ]
+  },
+  "body": "Sleek, torpedo-shaped predators with jagged hydrofoils and flank-mounted acoustic arrays. They harvest static from passing storms to charge ram-jets, then dive through wind shear to snatch prey before vanishing back into the gale.",
+  "chains": [
+    {
+      "id": "hunters.c1",
+      "trait": "Compressed gas ram-jets for burst acceleration",
+      "links": [
+        "100 m/s wind shear renders passive gliding futile",
+        "Low H₂ density starves conventional hydrofoils",
+        "Metabolic CO₂ is rapidly compressed and vented",
+        "Delivers short-duration kinetic strikes"
+      ],
+      "roots": [
+        "F7",
+        "F17"
+      ],
+      "skill": {
+        "id": "hunters.ram_strike",
+        "name": {
+          "en": "Ram Strike"
+        },
+        "role": "Engage",
+        "effect": "Deals 22 damage in a 50 m radius with a 0.5 s wind-up",
+        "numbers": {}
+      },
+      "weakness": "Leaves a brief jet-wake vortex that alerts prey and breaks stealth",
+      "observe": [
+        "Expanding gas vents",
+        "Sudden directional acceleration",
+        "Torn cloud vapor and shock rings"
+      ],
+      "journal": {
+        "en": "They don't fly; they kick the atmosphere into submission."
+      },
+      "plausibility": {
+        "verdict": "unreviewed",
+        "judge": "none",
+        "date": "2026-11-18",
+        "scores": {
+          "physicist": 9
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "physicist"
+        ]
+      }
+    },
+    {
+      "id": "hunters.c2",
+      "trait": "Infrasound receptor arrays along flanks",
+      "links": [
+        "Aerosol haze reduces visual range to tens of meters",
+        "H₂ atmosphere transmits low-frequency sound over kilometers",
+        "Membrane flaps detect pressure variations below 100 Hz",
+        "Tracks floating prey by their buoyancy modulation"
+      ],
+      "roots": [
+        "F8",
+        "F19"
+      ],
+      "skill": {
+        "id": "hunters.depth_sense",
+        "name": {
+          "en": "Depth Sense"
+        },
+        "role": "Basic",
+        "effect": "Reveals stealthed floaters within 80 m and grants 10% accuracy",
+        "numbers": {}
+      },
+      "weakness": "Blind to high-frequency alarm whistles used by some prey",
+      "observe": [
+        "Wavy membrane ridges",
+        "Slow rhythmic twitching",
+        "Cloud vapor distortion around sensory arrays"
+      ],
+      "journal": {
+        "en": "They hear the heartbeat of the sky."
+      },
+      "plausibility": {
+        "verdict": "unreviewed",
+        "judge": "none",
+        "date": "2026-11-18",
+        "scores": {
+          "physicist": 10
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "physicist"
+        ]
+      }
+    },
+    {
+      "id": "hunters.c3",
+      "trait": "Electrostatic charge harvesting membranes",
+      "links": [
+        "Zonal jets mix water/ammonia clouds with lightning",
+        "Atmospheric ionization spikes during convective updrafts",
+        "Conductive surface filaments siphon stray electrons",
+        "Powers neural synapses for high-speed strikes"
+      ],
+      "roots": [
+        "F5",
+        "F7",
+        "F12"
+      ],
+      "skill": {
+        "id": "hunters.ion_surge",
+        "name": {
+          "en": "Ion Surge"
+        },
+        "role": "Poke",
+        "effect": "Converts 15% environmental lightning into a 25% damage next attack",
+        "numbers": {}
+      },
+      "weakness": "Overcharges and stuns if struck by opposing polarity storms",
+      "observe": [
+        "Static crackling aura",
+        "Sparks along membrane edges",
+        "Sudden charge buildup before attack"
+      ],
+      "journal": {
+        "en": "They wear the storm, wearing its bite as a weapon."
+      },
+      "plausibility": {
+        "verdict": "unreviewed",
+        "judge": "none",
+        "date": "2026-11-18",
+        "scores": {
+          "physicist": 7
+        },
+        "analogues": [
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "salpeter_1976_particles"
+            ]
+          }
+        ]
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "physicist"
+        ]
+      }
+    },
+    {
+      "id": "hunters.c4",
+      "trait": "Shear-wind riding tactics for energy conservation",
+      "links": [
+        "Conserve energy using wind gradients",
+        "Zonal winds vary by altitude band",
+        "Jet streams act as conveyor belts",
+        "Allows prolonged pursuit without metabolic exhaustion"
+      ],
+      "roots": [
+        "F7",
+        "F17"
+      ],
+      "skill": {
+        "id": "hunters.wind_dash",
+        "name": {
+          "en": "Wind Dash"
+        },
+        "role": "Control",
+        "effect": "Move 12m for 2 stamina, gain 1 evasion",
+        "numbers": {}
+      },
+      "weakness": "Stuck in laminar flow pockets",
+      "observe": [
+        "Gleaming hydrofoils",
+        "Gliding along wind bands",
+        "No wing flapping"
+      ],
+      "journal": {
+        "en": "Surfing the invisible river."
+      },
+      "plausibility": {
+        "verdict": "unreviewed",
+        "judge": "none",
+        "date": "2026-11-18",
+        "scores": {
+          "physicist": 9
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "designer"
+        ]
+      }
+    },
+    {
+      "id": "hunters.c5",
+      "trait": "Ritualized duel posture for conflict resolution",
+      "links": [
+        "Minimize injury cost in expensive environment",
+        "High drag limits rapid combat",
+        "Low visibility favors non-lethal resolution",
+        "Selects for honor-bound, signal-heavy confrontations"
+      ],
+      "roots": [
+        "F19",
+        "F17"
+      ],
+      "skill": {
+        "id": "hunters.oath_challenge",
+        "name": {
+          "en": "Oath Challenge"
+        },
+        "role": "Social",
+        "effect": "Force target to dodge, reduce damage by 4",
+        "numbers": {}
+      },
+      "weakness": "Cannot use if oath broken",
+      "observe": [
+        "Symmetrical stance",
+        "Ceremonial displays",
+        "Refusal to strike blind"
+      ],
+      "journal": {
+        "en": "Warriors bound by sky-law."
+      },
+      "plausibility": {
+        "verdict": "unreviewed",
+        "judge": "none",
+        "date": "2026-11-18",
+        "scores": {
+          "physicist": 10
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "designer"
+        ]
+      }
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-18",
+    "by": [
+      "designer",
+      "physicist"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-18",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-18"
+    },
+    {
+      "date": "2026-11-18",
+      "who": "import_got",
+      "what": "merged run autoloop-2026-11-18: 0 chain(s) added, 0 plausibility block(s) filled, 0 relation(s) added"
+    },
+    {
+      "date": "2026-11-19",
+      "who": "import_got",
+      "what": "merged run autoloop-2026-11-19: 0 chain(s) added, 0 plausibility block(s) filled, 0 relation(s) added"
+    }
+  ],
+  "temperament": "Fierce, ritualistic, and bound by ancient aerial codes.",
+  "secrets": [
+    "Ram-jets <- wind shear <- 100 m/s zonal jets + low H₂ density -> Skill 'Shear Dive' (Control): locks onto a jet stream, vents gas for a burst that shatters enemy formations. Weakness: Jet recharge takes time; static storms can overload their charge membranes."
+  ],
+  "moments": [
+    "A silent glide that suddenly snaps into a supersonic strike, leaving only a ringing infrasound echo and a torn hydrofoil."
+  ]
+}

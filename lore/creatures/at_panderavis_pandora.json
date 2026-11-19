@@ -1,0 +1,162 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "at_panderavis_pandora",
+  "name": {
+    "en": "Panderavis pandora"
+  },
+  "world": "at_qu_worlds",
+  "kind": "easter_egg",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "to be written",
+    "diet": "to be written",
+    "active": "to be written",
+    "predators": []
+  },
+  "body": "to be written",
+  "chains": [
+    {
+      "id": "at_panderavis_pandora.c1",
+      "trait": "Four-limbed calcium-phosphate vertebrate skeleton",
+      "links": [
+        "Terrestrial gravity and low load-bearing demands favor four limbs",
+        "1.22 g surface gravity selects for tripedal hydrostatic distribution",
+        "High gravity requires distributed skeletal architecture without massive density",
+        "Calcium-phosphate bones clash with native copper-chitin biomineralization"
+      ],
+      "roots": [
+        "F3",
+        "F13",
+        "F19"
+      ],
+      "skill": {
+        "id": "at_panderavis_pandora.fossil_strata_analysis",
+        "name": {
+          "en": "Fossil Strata Analysis"
+        },
+        "role": "Poke",
+        "effect": "Identifies out-of-place terrestrial morphology vs native tripedal adaptations with +25% accuracy.",
+        "numbers": {}
+      },
+      "weakness": "High center of mass makes it vulnerable to lateral strikes under 1.22 g.",
+      "observe": [
+        "Fossilized four-toed trackways crossing copper-dusted soil",
+        "Rake-like claw marks carving parallel furrows",
+        "Local tripedal scavengers following at a distance"
+      ],
+      "journal": {
+        "en": "A four-legged ghost in a tripedal world. Gravity demands three. It brought four from Earth."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "analogues": [
+          {
+            "organism": "Earth therizinosaurids and other graviportal tetrapods under elevated load — quadrupedal support scales with g up to ~1.25g without requiring tripedaly (elephant, sauropod limb mechanics per Biewener)",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "biewener_2003_scaling"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 9,
+          "designer": 9,
+          "physicist": 8
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist",
+          "physicist"
+        ]
+      }
+    },
+    {
+      "id": "at_panderavis_pandora.c2",
+      "trait": "Rake-like claws adapted for loose soil digging",
+      "links": [
+        "Earth therizinosaur transplant retains terrestrial bone chemistry",
+        "1.22 g gravity favors tripedal hydrostatic loading",
+        "Native copper-chitin biomineralization replaces calcium-phosphate",
+        "Rake claws adapted for loose soil digging in low-O2 trenches"
+      ],
+      "roots": [
+        "F3",
+        "F10",
+        "F13",
+        "F15"
+      ],
+      "skill": {
+        "id": "at_panderavis_pandora.furrow_dredge",
+        "name": {
+          "en": "Furrow Dredge"
+        },
+        "role": "Engage",
+        "effect": "Exposes subsurface water and chemolithotrophic symbionts, granting temporary stamina boost (25% for 40s).",
+        "numbers": {}
+      },
+      "weakness": "Inefficient bipedal/tripedal transition on native terrain; high caloric demand due to dense calcium bones.",
+      "observe": [
+        "Fossilized four-toed trackways crossing copper-dusted soil",
+        "Rake-like claw marks carving parallel furrows",
+        "Local tripedal scavengers following at a distance"
+      ],
+      "journal": {
+        "en": "A four-legged ghost in a tripedal world. It dug for water, but the ground itself was built differently."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Specify claws work on Qu-disturbed spoil and furrows, not native copper-chitin substrates; stamina boost should come from exposed symbiont patches (F15), not from breaking native lattice ‘rock-soil’.",
+        "fixes": [
+          "Specify claws work on Qu-disturbed spoil and furrows, not native copper-chitin substrates; stamina boost should come from exposed symbiont patches (F15), not from breaking native lattice ‘rock-soil’."
+        ],
+        "analogues": [
+          {
+            "organism": "Therizinosaurus-grade manual claws for excavation and browse (Lautenschlager et al. 2014 finite-element claw use); aardvark and giant anteater digging in friable soil",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "designer": 8,
+          "physicist": 7
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist",
+          "physicist"
+        ]
+      }
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-18",
+    "by": [
+      "naturalist",
+      "physicist"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-18",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-18"
+    }
+  ],
+  "lore_ref": {
+    "file": "lore/alltomorrows.en.json",
+    "id": "panderavis-pandora"
+  }
+}

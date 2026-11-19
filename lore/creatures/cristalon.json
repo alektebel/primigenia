@@ -1,0 +1,291 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "cristalon",
+  "name": {
+    "en": "Cristalón"
+  },
+  "world": "adrian",
+  "kind": "new",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "Hydrothermal chimneys / abyssal plains",
+    "diet": "Mineral slurries / chemosynthetic bacterial mats / dissolved iron",
+    "active": "Continuous (no day/night cycle at depth)",
+    "predators": []
+  },
+  "body": "Armored carapace of iron-oxide plates, tube-like gill plumes, pressure-resistant gel-filled sinuses",
+  "chains": [
+    {
+      "id": "cristalon.c1",
+      "trait": "Flared iron-oxide carapace plates",
+      "links": [
+        "Acidic ocean dissolves calcium shells",
+        "Silica and iron precipitate kinetically",
+        "Hard Fe2O3 armor replaces fragile calcite"
+      ],
+      "roots": [
+        "F12",
+        "F13"
+      ],
+      "skill": {
+        "id": "cristalon.iron_hide",
+        "name": {
+          "en": "Iron Hide"
+        },
+        "role": "Defence",
+        "effect": "+25% damage reduction from crushing attacks",
+        "numbers": {}
+      },
+      "weakness": "Heavy plates drain stamina in low gravity",
+      "observe": [
+        "Rust-red plates shift with breath",
+        "Water sizzles on contact with vent",
+        "Sediment piles at its base"
+      ],
+      "journal": {
+        "en": "Rust that breathes."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Acidic, CO₂-influenced surface waters (F12) and impaired calcification (F13) push armor toward iron and silica phases; hydrothermal margins (F11) supply Fe²⁺/sulfide chemistry for iron oxide deposition. Heavy plates cost mobility on slopes—a real trade-off, slightly exaggerated at 0.97 g but still believable for a territorial, slow grazer.",
+        "fixes": [
+          "Acidic, CO₂-influenced surface waters (F12) and impaired calcification (F13) push armor toward iron and silica phases; hydrothermal margins (F11) supply Fe²⁺/sulfide chemistry for iron oxide deposition. Heavy plates cost mobility on slopes—a real trade-off, slightly exaggerated at 0.97 g but still believable for a territorial, slow grazer."
+        ],
+        "analogues": [
+          {
+            "organism": "Hydrothermal vent gastropods and stomatopods — metal-sulfide–tolerant exoskeletons; chiton teeth — iron oxide biomineralization in marine invertebrates.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "southward_1991_evolution"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "cristalon.c2",
+      "trait": "Tubular gill plumes fringe jaw",
+      "links": [
+        "Vent plumes carry heat and chemicals",
+        "Laminar flow preserves concentration gradients",
+        "Passive filtration harvests dissolved nutrients"
+      ],
+      "roots": [
+        "F18",
+        "F11"
+      ],
+      "skill": {
+        "id": "cristalon.vent_filter",
+        "name": {
+          "en": "Vent Filter"
+        },
+        "role": "Basic",
+        "effect": "Harvests chemical nodes 30% faster",
+        "numbers": {}
+      },
+      "weakness": "Plumes clog in turbid water",
+      "observe": [
+        "Plumes sway in rhythmic pulses",
+        "Water clarity drops near mouth",
+        "Chemical wisps coil inward"
+      ],
+      "journal": {
+        "en": "Breathing the Earth's blood."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Vents deliver laminar, chemically structured plumes (F11); fringe gill or buccal filtration to harvest bacteria and dissolved metals matches standard chemosynthetic reef ecology. Clogging in turbid vent 'snow' is a realistic weakness.",
+        "fixes": [
+          "Vents deliver laminar, chemically structured plumes (F11); fringe gill or buccal filtration to harvest bacteria and dissolved metals matches standard chemosynthetic reef ecology. Clogging in turbid vent 'snow' is a realistic weakness."
+        ],
+        "analogues": [
+          {
+            "organism": "Giant tube worm (Riftia pachyptila) — plume-like branchial crown in vent flow; Pompeii worm (Alvinella pompejana) — dorsal filament structures in thermal gradients.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "cristalon.c3",
+      "trait": "Gel-filled pressure sinuses under shell",
+      "links": [
+        "3.6 km depth exerts high hydrostatic pressure",
+        "Gel displaces water to equalize stress",
+        "Structural collapse prevented by fluid balance"
+      ],
+      "roots": [
+        "F10",
+        "F9"
+      ],
+      "skill": {
+        "id": "cristalon.pressure_equalizer",
+        "name": {
+          "en": "Pressure Equalizer"
+        },
+        "role": "Passive",
+        "effect": "Immunity to depth crushing, +10% movement on slopes",
+        "numbers": {}
+      },
+      "weakness": "Rapid ascent causes sinus rupture",
+      "observe": [
+        "Shell ripples like water",
+        "No bubbles escape when pierced",
+        "Body stays perfectly neutral"
+      ],
+      "journal": {
+        "en": "Stone wrapped in liquid."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "At ~3.6 km mean ocean depth (F10) hydrostatic pressure is large; gel-filled compartments and compliant tissues redistribute stress and avoid gas spaces—a well-known deep-sea design principle. Rapid ascent barotrauma as a weakness is physically honest.",
+        "fixes": [
+          "At ~3.6 km mean ocean depth (F10) hydrostatic pressure is large; gel-filled compartments and compliant tissues redistribute stress and avoid gas spaces—a well-known deep-sea design principle. Rapid ascent barotrauma as a weakness is physically honest."
+        ],
+        "analogues": [
+          {
+            "organism": "Deep-sea fishes (e.g. snailfish, grenadiers) — reduced ossification and gelatinous connective tissues at depth; gelatinous ctenophores in the deep bathyal zone — pressure-adapted mesoglea.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "cristalon.c4",
+      "trait": "Chemosynthetic gut symbiont chambers",
+      "links": [
+        "No sunlight penetrates abyssal plains",
+        "Reliance on redox gradients from vents",
+        "Taumoeba analogs bridge exotic energy"
+      ],
+      "roots": [
+        "F15",
+        "F14"
+      ],
+      "skill": {
+        "id": "cristalon.chemotrophic_boost",
+        "name": {
+          "en": "Chemotrophic Boost"
+        },
+        "role": "Engage",
+        "effect": "Converts environmental toxins into +15 health",
+        "numbers": {}
+      },
+      "weakness": "Starves if vent chemistry shifts",
+      "observe": [
+        "Gut glows faint green",
+        "Waste plumes smell of sulfur",
+        "Skin feeds on bacterial mats"
+      ],
+      "journal": {
+        "en": "A stomach full of fire."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Abyssal habitats lack usable sunlight; outsourcing redox metabolism to endosymbionts in gut or trophosome-like chambers is the standard vent solution. Hosting Taumoeba-like symbionts (F15, F16) that process exotic redox substrates is highly speculative in detail but fits the world's symbiosis canon and gameplay chemotrophy toggle.",
+        "fixes": [
+          "Abyssal habitats lack usable sunlight; outsourcing redox metabolism to endosymbionts in gut or trophosome-like chambers is the standard vent solution. Hosting Taumoeba-like symbionts (F15, F16) that process exotic redox substrates is highly speculative in detail but fits the world's symbiosis canon and gameplay chemotrophy toggle."
+        ],
+        "analogues": [
+          {
+            "organism": "Giant tube worm (Riftia) — trophosome with chemoautotrophic sulfur-oxidizing symbionts; giant shipworm (Teredora) — wood- (and sulfide-) feeding gill symbionts.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "Taumoeba",
+      "kind": "cousin",
+      "note": "(council kind 'competitor') Competes for dissolved iron; symbiotic strains colonize carapace fissures instead."
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-18",
+    "by": [
+      "naturalist/qwen"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-18",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-18"
+    },
+    {
+      "date": "2026-11-18",
+      "who": "import_got",
+      "what": "merged run autoloop-2026-11-18: 0 chain(s) added, 0 plausibility block(s) filled, 0 relation(s) added"
+    }
+  ],
+  "temperament": "Slow, territorial, burrow-dwelling",
+  "secrets": [
+    "Striking the vent chimney with a metal tool triggers a defensive chemical spray."
+  ],
+  "moments": [
+    "Around the black smoker's mouth, they stand like rusted statues, breathing the Earth's blood into silent, gel-filled lungs."
+  ],
+  "journal": [
+    {
+      "en": "Stone that breathes."
+    },
+    {
+      "en": "Iron armor, glass eyes, and a stomach full of fire."
+    }
+  ]
+}

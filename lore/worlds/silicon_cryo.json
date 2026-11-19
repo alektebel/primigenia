@@ -1,0 +1,393 @@
+{
+  "schema": "cpore.world/1",
+  "id": "silicon_cryo",
+  "kind": "fictional",
+  "system": {
+    "star": "K2V dwarf",
+    "position": "fictional",
+    "distance_ly_from_sol": null
+  },
+  "name": {
+    "en": "Silicon cryogenic world",
+    "es": "Mundo de silicio criogénico"
+  },
+  "status": "draft",
+  "facts": [
+    {
+      "id": "F1",
+      "group": "star",
+      "claim": "Stellar luminosity is 0.42 L☉, providing stable, low-UV output that avoids photolytic shredding of surface silanes.",
+      "justification": "K2V dwarfs exhibit low magnetic activity compared to M-dwarfs, preventing atmospheric stripping and catastrophic photolysis of cryo-solvents while allowing cryogenic equilibrium at distance.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 0.42,
+      "unit": "L☉",
+      "consequences": [
+        "Predictable diurnal cycles enable slow thermal buffering.",
+        "Surface life requires UV-screening pigments or shade.",
+        "Slow photochemical prebiotic synthesis limits rapid evolutionary turnover."
+      ]
+    },
+    {
+      "id": "F2",
+      "group": "orbit",
+      "claim": "Orbital distance is 1.38 AU with a 740-day year, placing equilibrium temperature in the 60–110 K range when combined with high planetary albedo and stratospheric haze.",
+      "justification": "Kepler's third law for a ~0.72 M☉ star yields this period; high ice/cloud reflectivity (>0.85) and photochemical organic haze suppress methane greenhouse warming to maintain liquid cryo-solvents.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 1.38,
+      "unit": "AU",
+      "consequences": [
+        "Long seasons drive slow solvent migration and chemical stratification.",
+        "Extended daylight allows gradual thermal acclimatization.",
+        "Minimal orbital eccentricity prevents extreme freeze-thaw cycles."
+      ]
+    },
+    {
+      "id": "F3",
+      "group": "star",
+      "claim": "Stellar flare profile features stochastic micro-flares with a maximum energy of 10^27 erg.",
+      "justification": "K2V magnetic cycles are quiescent; rare, low-energy bursts prevent atmospheric stripping while still providing transient ionization for prebiotic chemistry.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 1027,
+      "unit": "erg",
+      "consequences": [
+        "Rare radiation spikes select for radiation-hardened lattice tissues.",
+        "Long quiet periods allow stable surface ecosystems.",
+        "Flare events trigger temporary sensory disruption in IR-sensitive fauna."
+      ]
+    },
+    {
+      "id": "F4",
+      "group": "planet",
+      "claim": "Surface gravity is 0.86 g due to a slightly compressed silicate interior and lower mass.",
+      "justification": "Reduced weight permits larger exoskeletal frames and brittle crystalline structures without metabolic collapse or structural fatigue.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 0.86,
+      "unit": "g",
+      "consequences": [
+        "Organisms evolve broader, flatter morphologies to distribute load.",
+        "Reduced gravitational stress allows fragile silicate scaffolding.",
+        "Slower fall speeds alter predator-prey interception dynamics."
+      ]
+    },
+    {
+      "id": "F5",
+      "group": "planet",
+      "claim": "Sidereal day is 14.2 hours with an 11° obliquity, driving organized mid-latitude storm bands and efficient heat redistribution.",
+      "justification": "Moderate rotation generates sufficient Coriolis force to organize weather systems without throttling convection, while mild tilt ensures predictable seasonal shifts.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 14.2,
+      "unit": "h",
+      "consequences": [
+        "Predictable wind corridors enable efficient gliding and migration.",
+        "Diurnal temperature swings of ~15 K drive moderate frost deposition cycles.",
+        "Rotation period limits rapid thermal stress on organisms."
+      ]
+    },
+    {
+      "id": "F6",
+      "group": "planet",
+      "claim": "Two mid-sized moons (radii 350 & 500 km) induce persistent crustal flexure, maintaining subsurface fluidity without violent tectonics.",
+      "justification": "Larger satellites at closer orbits generate measurable solid-body tides, sufficient to keep cryo-magma mobile while preventing catastrophic crustal fracturing.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 350,
+      "unit": "km",
+      "consequences": [
+        "Crustal strain accumulates slowly, enabling seismic sensing for migration.",
+        "Gentle flexure prevents catastrophic cryo-eruptions.",
+        "Tidal cycles regulate nutrient mixing in shallow basins."
+      ]
+    },
+    {
+      "id": "F7",
+      "group": "planet",
+      "claim": "Magnetic field strength is 0.15 Earth dipole, yielding a surface radiation dose of ~2 mSv/yr with atmospheric and ice shielding.",
+      "justification": "A stalled core dynamo yields weak shielding, but thick ice/atmosphere column provides secondary attenuation for surface macro-life.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 0.15,
+      "unit": "B⊕",
+      "consequences": [
+        "Selects for radiation-hardened silicate scales and lattice/hereditary repair analogues.",
+        "Cosmic ray spallation produces trace oxidizers in the upper atmosphere.",
+        "Low background radiation reduces mutational pressure, favoring slow genomes."
+      ],
+      "refs": [
+        "petkowski_2020_azotosomes"
+      ]
+    },
+    {
+      "id": "F8",
+      "group": "atmosphere",
+      "claim": "Surface pressure is 1.15 bar with a reducing composition: 78% N₂, 14% CH₄, 6% Ar, 1.5% H₂.",
+      "justification": "High pressure sets the boiling curve; temperature gradients determine liquid stability, while reducing chemistry suppresses oxidation and favors organosilicon stability.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 1.15,
+      "unit": "bar",
+      "consequences": [
+        "Dense gas increases acoustic impedance, enabling long-range infrasonic communication.",
+        "Reducing environment prevents spontaneous silane combustion.",
+        "Slow diffusion rates cause chemical gradients to persist for days."
+      ]
+    },
+    {
+      "id": "F9",
+      "group": "atmosphere",
+      "claim": "Speed of sound is ~260 m/s with low-frequency propagation favored over high frequencies.",
+      "justification": "Cold dense gas follows ideal gas scaling; high density boosts acoustic range, though aerosol loading attenuates high frequencies.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 260,
+      "unit": "m/s",
+      "consequences": [
+        "Visual signals are useless in perpetual methane fog.",
+        "Life evolves parabolic acoustic receptors and infrasonic vocalizations.",
+        "High-pitch sounds damp rapidly, limiting communication bandwidth."
+      ],
+      "refs": [
+        "petkowski_2020_azotosomes"
+      ]
+    },
+    {
+      "id": "F10",
+      "group": "climate",
+      "claim": "Weather features perpetual frost fog and slow frontal drizzles of liquid CH₄.",
+      "justification": "Low thermal conductivity and high latent heat of vaporization for methane sustain ground-hugging fog; slow convection limits storm energy.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "perpetual_fog_drizzle",
+      "unit": "categorical",
+      "consequences": [
+        "Navigation relies on chemical and acoustic cues rather than sight.",
+        "Fog density forces organisms to evolve streamlined, low-drag morphologies.",
+        "Slow weather patterns mean climate shifts occur over weeks, not hours."
+      ]
+    },
+    {
+      "id": "F11",
+      "group": "ocean",
+      "claim": "Solvent distribution features polar/endorheic basins of liquid N₂ (63 K) and equatorial troughs of CH₄/ethane (90–111 K).",
+      "justification": "Regional temperature gradients and the N₂/CH₄ boiling curves at 1.15 bar allow N₂ seas only in colder regions; CH₄ pools form where insolation is slightly higher.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 63,
+      "unit": "K",
+      "consequences": [
+        "Life clusters around solvent boundaries for chemical gradients.",
+        "Buoyancy varies dramatically between N₂ and CH₄ basins.",
+        "Migration follows thermal isotherms and solvent edges."
+      ],
+      "refs": [
+        "petkowski_2020_azotosomes"
+      ]
+    },
+    {
+      "id": "F12",
+      "group": "geology",
+      "claim": "Geothermal flux averages 0.08 W/m², erupting ammonia-water slurry at depth that manifests as surface frost and cryo-jets.",
+      "justification": "Radiogenic decay sustains subsurface heat; low-viscosity cryomagma forms glassy plains, but aqueous-ammonia eutectics require deep plumbing (>170 K) before flash-freezing at the surface.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 0.08,
+      "unit": "W/m²",
+      "consequences": [
+        "Hydrothermal vents create localized oases of chemical disequilibrium.",
+        "Vent emissions provide H₂ and reduced sulfur for metabolism.",
+        "Slow cooling rates allow crystalline mineral scaffolding to form."
+      ]
+    },
+    {
+      "id": "F13",
+      "group": "chemistry",
+      "claim": "Fluoride-rich cryo-volcanic gases temporarily break Si–O bonds, enabling silicon recycling.",
+      "justification": "HF analogues etch inert silicates in a reducing atmosphere, releasing reactive silicon for biological uptake; highly speculative but thermodynamically tractable in cryo-solvents.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 1,
+      "unit": "speculative",
+      "consequences": [
+        "Rare specialist organisms evolve fluoride-secreting glands.",
+        "Si-O crusts act as both barrier and resource.",
+        "Chemical weathering drives slow soil formation."
+      ],
+      "refs": [
+        "petkowski_2020_azotosomes"
+      ]
+    },
+    {
+      "id": "F14",
+      "group": "biochemistry",
+      "claim": "Biochemical backbone consists of siloxane (Si–O–Si) and organosilicon (Si–C) chains.",
+      "justification": "Cryo-solvents suppress hydrolysis and oxidation, allowing Si–O/Si–C backbones to remain flexible where carbon chains would become kinetically inert; favored by redox/solvent palette rather than temperature alone.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 1,
+      "unit": "speculative",
+      "consequences": [
+        "Metabolism operates on geological timescales.",
+        "Organisms require mineral-surface catalysis to lower activation energy.",
+        "Structural polymers self-repair via reversible cross-linking."
+      ]
+    },
+    {
+      "id": "F15",
+      "group": "biochemistry",
+      "claim": "Primary metabolism drives H₂ + trace oxidizers → energy, catalyzed by transition-metal silane complexes.",
+      "justification": "Redox gradients at vents and photolytic products provide electron donors/acceptors; Arrhenius kinetics at 80 K reduce rates by orders of magnitude, making full metabolic turnover take days to weeks, except in vent microhabitats.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 1,
+      "unit": "speculative",
+      "consequences": [
+        "Life adopts torpor states to conserve energy.",
+        "Predators evolve ambush tactics matching slow prey movement.",
+        "Slow genomes dominate due to low mutational pressure."
+      ],
+      "refs": [
+        "petkowski_2020_azotosomes"
+      ]
+    },
+    {
+      "id": "F16",
+      "group": "biochemistry",
+      "claim": "Cell membranes are azotosomes: self-consistent acrylonitrile-based structures stable in liquid N₂.",
+      "justification": "Petkowski et al. (2020) demonstrate acrylonitrile forms stable, flexible cell boundaries in cryogenic nitrogen solvents; restricted to N₂-rich basins.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 1,
+      "unit": "speculative",
+      "consequences": [
+        "Cell walls resist freezing and chemical dissolution.",
+        "Membrane fluidity depends on ambient solvent composition.",
+        "Osmotic stress drives seasonal migration toward solvent-rich zones."
+      ],
+      "refs": [
+        "petkowski_2020_azotosomes"
+      ]
+    },
+    {
+      "id": "F17",
+      "group": "biochemistry",
+      "claim": "Universal poisons are H₂O (hydrolyzes silanes), O₂ (oxidizes Si-hydrides instantly), and T > 130 K (polymer softening).",
+      "justification": "Water acts as a nucleophile against Si-H bonds; oxygen forms stable SiO₂ crusts that starve metabolism; thermal thresholds exceed cryo-stability limits.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 130,
+      "unit": "K",
+      "consequences": [
+        "Surface life avoids aqueous ice and oxidizer pockets.",
+        "Thermal stress is a primary mortality factor.",
+        "Organisms evolve strict anoxic interiors and cryo-insulation."
+      ]
+    },
+    {
+      "id": "F18",
+      "group": "biochemistry",
+      "claim": "Sensory ecology relies on infrasonic hearing, IR thermal pits, and chemical gradient tracking.",
+      "justification": "Dense fog and weak visible flux render optical vision ineffective; cold dense air favors low-frequency sound; thermal differentials provide reliable navigation cues.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 1,
+      "unit": "speculative",
+      "consequences": [
+        "Communication relies on sub-20 Hz hums.",
+        "Hunting requires patience and vibration sensing.",
+        "Sensory organs evolve electrostatic dust-catchers to maintain clarity."
+      ],
+      "refs": [
+        "petkowski_2020_azotosomes"
+      ]
+    },
+    {
+      "id": "F19",
+      "group": "atmosphere",
+      "claim": "Stratospheric haze regulation controls surface UV and greenhouse warming via photochemical smog.",
+      "justification": "Photochemical smog from CH₄ photolysis forms a high-altitude aerosol layer that scatters visible light, regulates surface UV, and suppresses methane greenhouse warming.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "organic_haze",
+      "unit": "categorical",
+      "consequences": [
+        "Drives pigment evolution for shade and UV screening.",
+        "Creates vertical chemical gradients exploited by filter-feeders.",
+        "Stabilizes thermal structure against runaway warming."
+      ]
+    },
+    {
+      "id": "F20",
+      "group": "ocean",
+      "claim": "Solvent phase boundaries define sharp liquid-vapor and liquid-liquid miscibility gaps for N₂, CH₄, and C₂H₆.",
+      "justification": "Phase diagrams for N₂, CH₄, and C₂H₆ at 1.15 bar define sharp miscibility gaps, forcing life to exploit solvent interfaces for solute exchange.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "N₂_CH₄_ethane",
+      "unit": "solvent_mix",
+      "consequences": [
+        "Drives compartmentalization and boundary-layer metabolism.",
+        "Limits cross-basin migration without specialized transport.",
+        "Selects for solvent-transport proteins and osmotic regulators."
+      ],
+      "refs": [
+        "petkowski_2020_azotosomes"
+      ]
+    }
+  ],
+  "changelog": [
+    {
+      "date": "2026-11-18",
+      "who": "autoloop",
+      "what": "world canon drafted by the council chair from 20 facts (planet drafts, peer reviews, astrobio referee)"
+    },
+    {
+      "date": "2026-11-18",
+      "who": "autoloop",
+      "what": "removed rejected references; retired real facts left without references"
+    }
+  ]
+}
