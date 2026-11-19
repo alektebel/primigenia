@@ -6,6 +6,8 @@ const CS := preload("res://cell/cell_strings.gd")
 
 signal placed(kind: String)
 signal tool_cleared
+signal removed(kind: String)
+signal moved(kind: String)
 
 const INK := Color("3A352D")
 const SUB := Color("6A6356")
@@ -19,6 +21,12 @@ var labels := true
 var paused := false
 var still := false
 var play_rect := Rect2(0, 0, 800, 720)
+const NONE := Vector2i(99, 99)
+var drag_kind := ""        # a palette card is being dragged over the board (set by the stage)
+var drag_pos := Vector2.ZERO   # ... pointer, canvas coordinates
+var drag_from := NONE      # a placed block being moved between hexes
+var drag_out := false      # ... and it is off the board: releasing removes it
+var ghost = null           # the stage's DragGhost, for the blocks picked up from the board
 var hover_hex := Vector2i(99, 99)
 var hover_pos := Vector2.ZERO
 var mouse_in := false
@@ -103,15 +111,26 @@ func _draw() -> void:
 		draw_colored_polygon(PackedVector2Array([ap + ld * 14.0, ap - ld * 6.0 + n * 11.0, ap - ld * 6.0 - n * 11.0]), Color(1.0, 0.9, 0.55, 0.55 + 0.35 * pulse))
 		_screen_text(ap + ld * 34.0 + Vector2(0, 5), CS.t("light"), Color(1.0, 0.93, 0.7, 0.9), 14)
 	# free slots while a block is armed
-	if tool != "" and tool != "del":
-		for h in sim.slots():
+	var armed := tool if (tool != "" and tool != "del") else (drag_kind if drag_kind != "" else (str(sim.cells[drag_from].kind) if drag_from != NONE and sim.cells.has(drag_from) else ""))
+	if armed != "":
+		var tgt := hex_at(drag_pos) if drag_kind != "" else hover_hex
+		var pulse := 0.5 if still else 0.5 + 0.5 * sin(tt * 4.0)
+		var dragging := drag_kind != "" or drag_from != NONE
+		var slots: Array = sim.slots()
+		if drag_from != NONE:
+			slots = slots.filter(func(q): return sim.can_move(drag_from, q) == "")
+			slots.append(drag_from)
+		for h in slots:
 			var pc := hex_center(h)
-			var hov: bool = h == hover_hex
-			_dashed_circle(pc, S * 0.82, Color(0.91, 0.89, 0.84, 0.85 if hov else 0.4), 2.0)
-			if hov:
-				var col: Color = CSim.BLOCKS[tool].col
-				col.a = 0.45
+			var hov: bool = h == tgt
+			var base_a := 0.4 + (0.2 * pulse if dragging else 0.0)
+			_dashed_circle(pc, S * 0.82, Color(0.91, 0.89, 0.84, 0.95 if hov else base_a), 2.5 if (hov or dragging) else 2.0)
+			if hov and not (drag_from != NONE and h == drag_from):
+				var col: Color = CSim.BLOCKS[armed].col
+				col.a = 0.45 if not dragging else 0.7
 				draw_circle(pc, S * 0.78, col)
+		if drag_from != NONE and sim.cells.has(drag_from):
+			draw_arc(hex_center(drag_from), S * 0.9, 0, TAU, 40, Color(0.97, 0.95, 0.88, 0.8), 2.0, true)
 	# links, then cells
 	for h in sim.cells:
 		for d in [CSim.DIRS[0], CSim.DIRS[1], CSim.DIRS[5]]:
@@ -331,6 +350,54 @@ func _draw_tip(S: float) -> void:
 	draw_string(_font, Vector2(pos.x + 12, y), st, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, Color("3F6B2E"))
 
 # ---------- input
+## Is the pointer off the board, for dropping a placed block to remove it?
+func is_outside(local: Vector2) -> bool:
+	return not play_rect.has_point(local) or not CSim.on_board(hex_at(local))
+
+## What dropping a palette card here would do: {in_play, err, ok, hex}.
+func drop_eval(kind: String, local: Vector2) -> Dictionary:
+	var inp := play_rect.has_point(local)
+	var h := hex_at(local)
+	var err: String = "outside"
+	if inp:
+		err = sim.can_place(kind, h) if CSim.on_board(h) else "far"
+	return {"in_play": inp, "err": err, "ok": inp and err == "", "hex": h}
+
+## A palette card dropped on the board. Same rules as a tap: "" when placed, else the can_place code.
+func drop_place(kind: String, local: Vector2) -> String:
+	var h := hex_at(local)
+	var err: String = sim.place(kind, h)
+	if err == "":
+		placed.emit(kind)
+	elif err in ["atp", "locked", "far", "taken"]:
+		sim.fx.append({"k": "txt", "p": h if CSim.on_board(h) else Vector2i.ZERO, "t": 0.0, "text": "no_" + err, "color": WARN})
+	return err
+
+## Esc: a block picked up from the board stays where it was.
+func cancel_drag() -> bool:
+	if drag_from == NONE:
+		return false
+	var home := hex_center(drag_from)
+	_end_piece_drag()
+	if ghost != null:
+		ghost.send_back(home + global_position)
+	return true
+
+func _end_piece_drag() -> void:
+	drag_from = NONE
+	drag_out = false
+	_set_cursor()
+
+func _set_cursor() -> void:
+	if drag_from != NONE:
+		mouse_default_cursor_shape = Control.CURSOR_DRAG
+	elif tool != "":
+		mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	elif sim != null and hover_hex != Vector2i.ZERO and sim.cells.has(hover_hex):
+		mouse_default_cursor_shape = Control.CURSOR_CAN_DROP
+	else:
+		mouse_default_cursor_shape = Control.CURSOR_ARROW
+
 func _gui_input(ev: InputEvent) -> void:
 	if sim == null:
 		return
@@ -338,10 +405,15 @@ func _gui_input(ev: InputEvent) -> void:
 		hover_pos = ev.position
 		mouse_in = true
 		hover_hex = hex_at(ev.position)
-		mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND if tool != "" else Control.CURSOR_ARROW
-	elif ev is InputEventMouseButton and ev.pressed:
+		if drag_from != NONE and ghost != null:
+			drag_out = is_outside(ev.position)
+			var err: String = sim.can_move(drag_from, hover_hex) if not drag_out else ""
+			var txt := CS.t("dr_remove") if drag_out else (CS.drop_why(err) if err != "" else "")
+			ghost.track(ev.position + global_position, err == "", txt)
+		_set_cursor()
+	elif ev is InputEventMouseButton:
 		var h := hex_at(ev.position)
-		if ev.button_index == MOUSE_BUTTON_LEFT:
+		if ev.button_index == MOUSE_BUTTON_LEFT and ev.pressed:
 			if tool == "del":
 				sim.remove_at(h)
 				_clear_tool()
@@ -352,11 +424,47 @@ func _gui_input(ev: InputEvent) -> void:
 					_clear_tool()
 				elif err in ["atp", "locked", "far", "taken"]:
 					sim.fx.append({"k": "txt", "p": h if CSim.on_board(h) else Vector2i.ZERO, "t": 0.0, "text": "no_" + err, "color": WARN})
-		elif ev.button_index == MOUSE_BUTTON_RIGHT:
-			if tool != "":
+			elif h != Vector2i.ZERO and sim.cells.has(h):
+				drag_from = h
+				drag_out = false
+				if ghost != null:
+					ghost.begin(str(sim.cells[h].kind), "colony", hex_center(h) + global_position, 1.0, hsize())
+				_set_cursor()
+		elif ev.button_index == MOUSE_BUTTON_LEFT and not ev.pressed:
+			if drag_from != NONE:
+				_drop_piece(h, ev.position)
+		elif ev.button_index == MOUSE_BUTTON_RIGHT and ev.pressed:
+			if drag_from != NONE:
+				cancel_drag()
+			elif tool != "":
 				_clear_tool()
 			else:
 				sim.remove_at(h)
+
+func _drop_piece(h: Vector2i, local: Vector2) -> void:
+	var from := drag_from
+	var kind := str(sim.cells[from].kind) if sim.cells.has(from) else ""
+	var home := hex_center(from)
+	var out := is_outside(local)
+	_end_piece_drag()
+	if kind == "":
+		if ghost != null:
+			ghost.land()
+		return
+	if out:
+		sim.remove_at(from)
+		removed.emit(kind)
+		if ghost != null:
+			ghost.land()
+	elif h != from and sim.move_block(from, h) == "":
+		moved.emit(kind)
+		if ghost != null:
+			ghost.land()
+	elif ghost != null:
+		if h == from:
+			ghost.land()
+		else:
+			ghost.send_back(home + global_position)
 
 func _clear_tool() -> void:
 	tool = ""
@@ -365,3 +473,5 @@ func _clear_tool() -> void:
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_MOUSE_EXIT:
 		mouse_in = false
+		if drag_from != NONE:
+			cancel_drag()

@@ -7,6 +7,7 @@ const CS := preload("res://cell/cell_strings.gd")
 
 signal placed(kind: String)
 signal tool_cleared
+signal removed(kind: String)
 
 const INK := Color("3A352D")
 const SUB := Color("6A6356")
@@ -27,7 +28,12 @@ var play_rect := Rect2(0, 0, 800, 720)   # where the cell is shown (the part of 
 var hover_piece = null
 var hover_pos := Vector2.ZERO
 var mouse_in := false
-var drag = null
+var drag = null           # a placed piece being moved with the pointer
+var drag_out := false     # ... and it is out of the cell: releasing removes it
+var drag_kind := ""       # a tool card is being dragged over the cell (set by the stage)
+var drag_pos := Vector2.ZERO   # ... where its pointer is, canvas coordinates
+var _drag_from_a := 0.0
+var _drag_from_pos := Vector2.ZERO
 var t_draw := 0.0         # animation clock (keeps running while paused)
 var _crowd: Array = []
 var _font: Font
@@ -171,6 +177,8 @@ func _draw() -> void:
 				_dashed_line(a.pos, b.pos, Color(0.42, 0.39, 0.34, 0.45))
 	if tool != "" and tool != "del" and mouse_in:
 		_draw_ghost()
+	if drag_kind != "":
+		_draw_drop_hint()
 	for p in sim.pieces:
 		if not sim.is_mem(p):
 			_draw_enz(p, T, tt)
@@ -211,6 +219,17 @@ func _draw() -> void:
 	if paused:
 		_center_text(CS.t("paused"), play_rect.position.y + 24.0, 18, Color(0.98, 0.9, 0.55, 0.95))
 	_draw_hover_tip()
+	_draw_remove_hint()
+
+## A placed piece dragged out of the cell: it reddens and says what releasing does.
+func _draw_remove_hint() -> void:
+	if drag == null or not drag_out:
+		return
+	_screen()
+	var sp: Vector2 = to_screen(sim.ppos(drag))
+	draw_arc(sp, 26.0 * _S, 0, TAU, 40, Color("E06A5A"), 3.0, true)
+	var tp := Vector2(clampf(hover_pos.x, play_rect.position.x + 90.0, play_rect.end.x - 90.0), clampf(hover_pos.y, play_rect.position.y + 20.0, play_rect.end.y - 50.0))
+	tag(to_sim(tp + Vector2(0, 38.0)), CS.t("dr_remove"), Color("F2A59A"), 15.0, true)
 
 func _box(c: Color) -> StyleBoxFlat:
 	var b := StyleBoxFlat.new()
@@ -435,11 +454,32 @@ func _draw_mol(m, tt: float) -> void:
 				bead(x + u * (4.0 + i * 4.6) + Vector2(-u.y, u.x) * w, 2.3, Color(PHOS, al))
 			bead(x, 5.0, Color(ATPY, al))
 
-func _draw_ghost() -> void:
-	var sp := to_sim(hover_pos)
-	var d: Dictionary = Sim.PIECES[tool]
+## While a card is dragged: where the piece can go. Membrane pieces light the ring and snap to the point of it nearest
+## the pointer; enzymes light the cytoplasm. Nothing snaps when the spot is refused (the ghost under the pointer is red).
+func _draw_drop_hint() -> void:
+	var d: Dictionary = Sim.PIECES[drag_kind]
 	var col: Color = d.col
-	col.a = 0.4
+	var pulse := 0.5 if still else 0.5 + 0.5 * sin(t_draw * 4.0)
+	var good: bool = sim.can_place(drag_kind, to_sim(drag_pos)) == ""
+	if d.has("mem"):
+		var mid: float = sim.mid()
+		var band: float = sim.RO - sim.RI + 56.0
+		draw_arc(Sim.CENTER, mid, 0, TAU, 120, Color(col.r, col.g, col.b, 0.26 + 0.12 * pulse), band, true)
+		dashed_circle(Sim.CENTER, mid, Color(1.0, 0.98, 0.9, 0.8 + 0.2 * pulse), 4.0, 16.0, 10.0)
+	else:
+		var rr: float = sim.RI - 8.0
+		draw_circle(Sim.CENTER, rr, Color(col.r, col.g, col.b, 0.07 + 0.05 * pulse))
+		dashed_circle(Sim.CENTER, rr, Color(0.97, 0.95, 0.88, 0.5 + 0.25 * pulse), 2.5, 10.0, 8.0)
+	if good:
+		_draw_ghost_at(drag_kind, to_sim(drag_pos), 0.85)
+
+func _draw_ghost() -> void:
+	_draw_ghost_at(tool, to_sim(hover_pos), 0.4)
+
+func _draw_ghost_at(kind: String, sp: Vector2, alpha: float) -> void:
+	var d: Dictionary = Sim.PIECES[kind]
+	var col: Color = d.col
+	col.a = alpha
 	if d.has("mem"):
 		var a := atan2(sp.y - Sim.CY, sp.x - Sim.CX)
 		var r: float = sim.rad(sp)
@@ -522,6 +562,53 @@ func _tip_box() -> StyleBoxFlat:
 	return _tipbox
 
 # ---------- input
+## Is the pointer (canvas coordinates) out of the cell, for dropping a placed piece to remove it?
+func is_outside(local: Vector2) -> bool:
+	return not play_rect.has_point(local) or sim.rad(to_sim(local)) > sim.RO + 80.0
+
+## What dropping a card here would do: {in_play, err, ok}. err is a CellSim.can_place code.
+func drop_eval(kind: String, local: Vector2) -> Dictionary:
+	var inp := play_rect.has_point(local)
+	var err: String = sim.can_place(kind, to_sim(local)) if inp else "outside"
+	return {"in_play": inp, "err": err, "ok": inp and err == ""}
+
+## A card dropped on the cell. Same rules as a tap: returns "" when placed, else the can_place code.
+func drop_place(kind: String, local: Vector2) -> String:
+	var sp := to_sim(local)
+	var err: String = sim.place(kind, sp)
+	if err == "":
+		placed.emit(kind)
+	elif err == "need_rib":
+		sim.float_text(sp + Vector2(0, -20), "need_rib", WARN)
+	return err
+
+func scale_px() -> float:
+	_update_base()
+	return _S
+
+## Esc (or the card drag ending elsewhere): a placed piece goes back where it was picked up.
+func cancel_drag() -> bool:
+	if drag == null:
+		return false
+	if sim.is_mem(drag):
+		drag.a = _drag_from_a
+	else:
+		drag.pos = _drag_from_pos
+	drag = null
+	drag_out = false
+	_set_cursor()
+	return true
+
+func _set_cursor() -> void:
+	if drag != null:
+		mouse_default_cursor_shape = Control.CURSOR_DRAG
+	elif tool != "":
+		mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	elif hover_piece != null:
+		mouse_default_cursor_shape = Control.CURSOR_CAN_DROP
+	else:
+		mouse_default_cursor_shape = Control.CURSOR_ARROW
+
 func _gui_input(ev: InputEvent) -> void:
 	if sim == null:
 		return
@@ -531,9 +618,10 @@ func _gui_input(ev: InputEvent) -> void:
 		var sp := to_sim(ev.position)
 		if drag != null:
 			sim.move_piece(drag, sp)
+			drag_out = is_outside(ev.position)
 		else:
 			hover_piece = sim.piece_at(sp)
-		mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND if (tool != "" or hover_piece != null) else Control.CURSOR_ARROW
+		_set_cursor()
 	elif ev is InputEventMouseButton:
 		var sp2 := to_sim(ev.position)
 		if ev.button_index == MOUSE_BUTTON_LEFT and ev.pressed:
@@ -551,8 +639,19 @@ func _gui_input(ev: InputEvent) -> void:
 					sim.float_text(sp2 + Vector2(0, -20), "need_rib", WARN)
 			elif h != null:
 				drag = h
+				drag_out = false
+				_drag_from_a = h.a
+				_drag_from_pos = h.pos
+				_set_cursor()
 		elif ev.button_index == MOUSE_BUTTON_LEFT and not ev.pressed:
+			if drag != null and drag_out:
+				var k: String = drag.type
+				sim.remove_piece(drag)
+				removed.emit(k)
 			drag = null
+			drag_out = false
+			hover_piece = null if hover_pos != ev.position else sim.piece_at(sp2)
+			_set_cursor()
 		elif ev.button_index == MOUSE_BUTTON_RIGHT and ev.pressed:
 			if tool != "":
 				_clear_tool()
@@ -567,6 +666,7 @@ func _notification(what: int) -> void:
 	if what == NOTIFICATION_MOUSE_EXIT:
 		mouse_in = false
 		drag = null
+		drag_out = false
 
 # ---------- phase 5: threat drawing (ported from art/reference/cell/malos-tiempos.html)
 func _draw_weather(sz: Vector2, tt: float) -> void:

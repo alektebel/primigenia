@@ -148,8 +148,9 @@ func total_atp() -> float:
 		s += cells[h].atp
 	return s
 
-## "" or an error: unknown, locked, taken, far, atp, done.
-func place(kind: String, h: Vector2i) -> String:
+## Why a block cannot go at h (a free hex next to the colony), without placing it: "" or unknown, locked, done, taken, far, atp.
+## `ignore` is a hex whose block is being moved (it does not count as a neighbour).
+func can_place(kind: String, h: Vector2i, ignore := Vector2i(99, 99)) -> String:
 	if not BLOCKS.has(kind):
 		return "unknown"
 	if BLOCKS[kind].get("locked", false):
@@ -158,8 +159,26 @@ func place(kind: String, h: Vector2i) -> String:
 		return "done"
 	if cells.has(h):
 		return "taken"
-	if not on_board(h) or neighbours(h).is_empty():
+	if not on_board(h):
 		return "far"
+	var near := neighbours(h)
+	near.erase(ignore)
+	if near.is_empty():
+		return "far"
+	if ignore != Vector2i(99, 99):
+		return ""
+	var best := -1.0
+	for n in near:
+		best = maxf(best, cells[n].atp)
+	if best < BLOCKS[kind].cost:
+		return "atp"
+	return ""
+
+## "" or an error (see can_place).
+func place(kind: String, h: Vector2i) -> String:
+	var err := can_place(kind, h)
+	if err != "":
+		return err
 	var cost: float = BLOCKS[kind].cost
 	var donor = null
 	var best := -1.0
@@ -167,12 +186,34 @@ func place(kind: String, h: Vector2i) -> String:
 		if cells[n].atp > best:
 			best = cells[n].atp
 			donor = n
-	if best < cost:
-		return "atp"
 	cells[donor].atp -= cost
 	cells[h] = _cell(kind, 0.0, base_hp() * BLOCKS[kind].hp)
 	fx.append({"k": "ring", "p": h, "t": 0.0, "color": BLOCKS[kind].col})
 	fx.append({"k": "txt", "p": donor, "t": 0.0, "text": "−%d ATP" % int(cost), "color": Color("9E392C")})
+	return ""
+
+## Why the block at `from` cannot move to `to` (free, still touching the colony without it): "" or founder, taken, far.
+func can_move(from: Vector2i, to: Vector2i) -> String:
+	if from == Vector2i.ZERO or not cells.has(from):
+		return "founder"
+	if from == to:
+		return ""
+	if cells.has(to):
+		return "taken"
+	if not on_board(to):
+		return "far"
+	var near := neighbours(to)
+	near.erase(from)
+	return "" if not near.is_empty() else "far"
+
+## Moves a block (with its ATP and life) to a free hex; free of charge. Returns "" or the can_move error.
+func move_block(from: Vector2i, to: Vector2i) -> String:
+	var err := can_move(from, to)
+	if err != "" or from == to:
+		return err
+	cells[to] = cells[from]
+	cells.erase(from)
+	fx.append({"k": "ring", "p": to, "t": 0.0, "color": BLOCKS[cells[to].kind].col})
 	return ""
 
 func remove_at(h: Vector2i) -> bool:

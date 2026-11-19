@@ -8,7 +8,19 @@ const CSim := preload("res://cell/colony_sim.gd")
 const TABLE := {
 	"title": ["Primigenia · cell stage", "Primigenia · fase célula"],
 	"phase": ["Phase {0} · {1}", "Fase {0} · {1}"],
-	"create": ["Create · tap a piece, then the cell", "Crear · toca una pieza y luego la célula"],
+	"create": ["Create · drag a piece onto the cell", "Crear · arrastra una pieza a la célula"],
+	"dr_where_mem": ["Only on the membrane", "Solo en la membrana"],
+	"dr_where_in": ["Only inside the cell", "Solo dentro de la célula"],
+	"dr_phase": ["Phase locked", "Fase bloqueada"],
+	"dr_colony": ["The cell is already part of a colony", "La célula ya forma parte de una colonia"],
+	"dr_atp": ["No ATP next door", "No hay ATP al lado"],
+	"dr_far": ["It must touch the colony", "Tiene que tocar la colonia"],
+	"dr_taken": ["Occupied", "Ocupado"],
+	"dr_locked": ["Coming soon", "Próximamente"],
+	"dr_done": ["The colony is finished", "La colonia está terminada"],
+	"dr_founder": ["The founder stays", "La fundadora no se mueve"],
+	"dr_remove": ["Release to remove", "Suelta para quitar"],
+	"dr_cancel": ["Release outside to cancel", "Suelta fuera para cancelar"],
 	"remove": ["Remove", "Quitar"],
 	"demo": ["Build example", "Montar ejemplo"],
 	"reset": ["Restart", "Reiniciar"],
@@ -174,7 +186,7 @@ const TABLE := {
 	"cw_hit": ["The amoeba bites the front line", "La ameba muerde la primera línea"],
 	"cw_arrived": ["You reached the light. Build up to {1} cells ({0} now)", "Has llegado a la luz. Monta hasta {1} células ({0} ahora)"],
 	"cw_soon": ["You reached the light. Something is coming…", "Has llegado a la luz. Algo se acerca…"],
-	"colony_card": ["Colony · place specialised cells around the founder", "Colonia · coloca células especializadas alrededor de la fundadora"],
+	"colony_card": ["Colony · drag cells next to the founder", "Colonia · arrastra células junto a la fundadora"],
 	"cs_atp": ["Colony ATP", "ATP de la colonia"],
 	"cs_cells": ["Cells", "Células"],
 	"cs_speed": ["Speed", "Velocidad"],
@@ -241,6 +253,21 @@ const TABLE := {
 
 static func es() -> bool:
 	return Strings.language() == "es"
+
+## Why a drop is refused (the codes of CellSim.can_place / ColonySim.can_place), in words; mem = the piece needs the membrane.
+static func drop_why(code: String, mem := false) -> String:
+	match code:
+		"where":
+			return t("dr_where_mem" if mem else "dr_where_in")
+		"phase":
+			return t("dr_phase")
+		"colony":
+			return t("dr_colony")
+		"need_rib":
+			return t("fx_need_rib")
+		"atp", "far", "taken", "locked", "done", "founder":
+			return t("dr_" + code)
+	return ""
 
 static func t(key: String, args: Array = []) -> String:
 	var row: Array = TABLE.get(key, [])
