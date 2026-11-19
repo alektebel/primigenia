@@ -282,7 +282,9 @@ def species_all():
     for i in range(len(specs)):
         r = results.get(i)
         if not r: continue
-        r["species"] = [x for x in (r["species"] if isinstance(r["species"], list) else (next((v for v in r["species"].values() if isinstance(v, list)), []) if isinstance(r["species"], dict) else [])) if isinstance(x, dict)]
+        sps = r["species"]
+        if isinstance(sps, dict): sps = [sps] if "chains" in sps else next((v for v in sps.values() if isinstance(v, list)), [])
+        r["species"] = [x for x in (sps if isinstance(sps, list) else []) if isinstance(x, dict)]
         rev = {str(x.get("name", "")).lower(): x for x in (r["review"] or []) if isinstance(x, dict)}
         bio = {str(x.get("name", "")).lower(): x for x in (r["astrobio"] or []) if isinstance(x, dict)}
         for sp in r["species"]:
