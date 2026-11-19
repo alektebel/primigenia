@@ -4,6 +4,13 @@ extends RefCounted
 ## by default the OS language when it is Spanish. Creature and move names are data and are not translated.
 
 const TABLE := {
+	"spined_fossil": ["Spined fossil", "Fósil espinoso"],
+	"quill_wounds": ["Quill-marked bones", "Huesos marcados por púas"],
+	"eat_bones": ["Eat bones", "Comer huesos"],
+	"stones": ["Eat stones", "Comer piedras"],
+	"recipe_hinted": ["Bone, jaw, spines… there is a pattern.", "Hueso, mandíbula, espinas… hay un patrón."],
+	"recipe_known": ["Back spines and a carnivore jaw turn bones into darts.", "Las espinas dorsales y la mandíbula carnívora convierten huesos en dardos."],
+	"recipe_mastered": ["The bones fly true.", "Los huesos vuelan certeros."],
 	# modes (ring)
 	"befriend": ["Befriend", "Amistad"],
 	"attack": ["Attack", "Atacar"],

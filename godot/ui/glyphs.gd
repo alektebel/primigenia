@@ -32,7 +32,7 @@ static func draw(c: CanvasItem, name: String, centre: Vector2, size_u: float, co
 
 ## Move / skill id (C name) -> glyph; a move without a glyph falls back to `attack` and logs once.
 static func for_move(id: String) -> String:
-	var g: String = {"tail_strike": "tail", "bite": "bite", "charge": "charge", "spit": "spit", "pounce": "pounce", "quill": "quill",
+	var g: String = {"claw_swipe": "fang", "peck": "bite", "quill_volley": "quill", "curl_up": "guard", "spine_volley": "bone", "tail_strike": "tail", "bite": "bite", "charge": "charge", "spit": "spit", "pounce": "pounce", "quill": "quill",
 		"stomp": "stomp", "guard": "guard", "dodge": "dodgeL", "sing": "sing", "dance": "dance", "charm": "charm", "pose": "pose",
 		"roar": "roar", "display": "display", "observe": "observe", "eat": "eat"}.get(id, "")
 	if g == "":

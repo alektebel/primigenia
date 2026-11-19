@@ -18,6 +18,7 @@ const ZA := Vector3(0, 0, 1)
 
 ## rig.js LIB metadata. cat/name/cost are replaced by parts.json entries.
 const META := {
+	"espinas_dorsales": {"p": ["size"]},
 	"fauces": {"bite": 3, "sing": 1, "p": ["size"]},
 	"romo": {"bite": 1, "sing": 3, "p": ["size"]},
 	"pico": {"bite": 2, "sing": 2, "p": ["size"]},
@@ -483,6 +484,12 @@ func _make_classic(type: String, p: Dictionary, o: Vector3) -> Node3D:
 			var L: float = p["len"]
 			var c: float = p["curve"]
 			_mesh(CreatureGeo.curve_tube(func(u): return Vector3(0, -c * L * .7 * u * u, L * u * (1 - .2 * c * u) - .06), .2 * s, 14, 12, X0), "bone", g)
+			return g
+		"espinas_dorsales":
+			var g := Node3D.new()
+			for k in 3:
+				var spike := _mesh(_cone_z(.12 * s, .6 * s, .25 * s), "bone", g)
+				spike.position.x = (k - 1) * .22 * s
 			return g
 		"pua":
 			var g := Node3D.new()

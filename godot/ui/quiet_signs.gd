@@ -18,6 +18,9 @@ const MAX_PIPS := 8
 
 # model (what the tests read)
 var hp_frac := 1.0
+var calcium := 0
+var mineral := 0
+var recipe_seen := false
 var food_frac := 0.7
 var stamina_frac := 1.0
 var hp := 0.0
@@ -149,7 +152,7 @@ func dna_center() -> Vector2:
 	return Vector2(Style.u(40.0), Style.u(38.0))
 
 func line_y(sign: String) -> float:
-	var off: float = {"stamina": 58.0, "health": 46.0, "hunger": 34.0}[sign]
+	var off: float = {"stamina": 58.0, "health": 46.0, "hunger": 34.0, "calcium": 82.0, "mineral": 94.0}[sign]
 	return size.y - Style.u(off)
 
 # --- input ---------------------------------------------------------------------------------------------------------
@@ -241,11 +244,15 @@ func _line(sign: String, frac: float, color: Color, glyph: String, thick := 0.0)
 		var dc := Color(Palette.BONE, a * (1.0 - d.t)) if gain else Color(Palette.EMBER_HOT, a * (1.0 - d.t))
 		Style.line(self, Vector2(x0 + len * lo, y), Vector2(x0 + len * hi, y), dc, Style.u(4.0 if gain else 3.0))
 	if Style.numbers():
-		var v: String = {"health": str(ceili(hp)), "hunger": str(food), "stamina": ""}.get(sign, "")
+		var v: String = {"health": str(ceili(hp)), "hunger": str(food), "stamina": "", "calcium": str(calcium), "mineral": str(mineral)}.get(sign, "")
 		if v != "":
 			Style.text(self, Style.font_sans(), Vector2(x0 + len + Style.u(8.0), y + Style.u(4.0)), v, Style.u(13.5), Color(Palette.FOG, a))
 
 func _draw_lines() -> void:
+	if recipe_seen or calcium > 0:
+		_line("calcium", float(calcium) / 100.0, Palette.BONE, "bone")
+	if mineral > 0:
+		_line("mineral", float(mineral) / 100.0, Palette.MIST, "guard")
 	if _stam_alpha > 0.01:
 		var old := modulate
 		modulate = Color(1, 1, 1, _stam_alpha)

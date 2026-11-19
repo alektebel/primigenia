@@ -210,6 +210,7 @@ func _build_stage() -> void:
 	var lineage_error := preload("res://game/stage/lineage_session.gd").install(stage, genome)
 	if lineage_error != "":
 		push_error(lineage_error)
+	stage_ui._on_tick(stage.cur)
 	for h in hosts.values():
 		h.footfall.connect(stage_ui.on_footfall)
 	stage_ui.ui.menu_requested.connect(Game.goto_menu)

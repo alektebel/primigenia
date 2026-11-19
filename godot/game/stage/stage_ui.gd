@@ -22,8 +22,8 @@ const V_DODGE := 9
 const V_LOADOUT := 10       # target = slot 1..4, move = move id or -1: instant, only at the nest (C: not_at_nest / in_fight)
 const DODGE_LEFT := 2       # web/stage: Q -> 2, E -> 6
 const DODGE_RIGHT := 6
-const MOVE_IDS := ["bite", "charge", "guard", "spit", "tail_strike", "dodge"]
-const MOVE_NAMES := ["Bite", "Charge", "Guard", "Spit", "Tail strike", "Dodge"]
+const MOVE_IDS := ["bite", "charge", "guard", "spit", "tail_strike", "dodge", "claw_swipe", "peck", "pounce", "quill_volley", "roar", "stomp", "curl_up", "spine_volley"]
+const MOVE_NAMES := ["Bite", "Charge", "Guard", "Spit", "Tail strike", "Dodge", "Claw swipe", "Peck", "Pounce", "Quill volley", "Roar", "Stomp", "Curl up", "Bone-spine frenzy"]
 
 var ui: CanvasLayer
 var island: Node3D
@@ -54,6 +54,7 @@ var _death_clock := 0.0
 var _last_pressed := -1
 var _whispers := {}                   # how many times a rule whisper was shown (only the first two)
 var _bonded_species := {}
+var _recipe_state := "unknown"
 var _pearls := 0
 
 func setup(island_node: Node3D, name_text: String) -> void:
@@ -194,7 +195,7 @@ func _loadout_abilities(lo: Dictionary) -> Array:
 			out.append({"id": "", "name": "-", "empty": true, "enabled": false, "move": -1})
 			continue
 		var m: Dictionary = _moves[id]
-		var shown := str(Modes.ABILITIES[Modes.ATTACK][0].name)
+		var shown: String = MOVE_NAMES[id] if id < MOVE_NAMES.size() else str(m.name).replace("_", " ").capitalize()
 		for a in Modes.ABILITIES[Modes.ATTACK]:
 			if a.id == m.name:
 				shown = str(a.name)
@@ -204,7 +205,7 @@ func _loadout_abilities(lo: Dictionary) -> Array:
 
 func _cooldown_fractions(state: Dictionary, abilities: Array) -> Array:
 	var fracs := []
-	var left: Array = []
+	var left: Array = state.get("loadout", {}).get("cooldowns", [])
 	for f in state.combat.fighters:
 		if int(f.world_id) == 0:
 			left = f.get("cooldowns", [])
@@ -335,6 +336,16 @@ func _on_tick(state: Dictionary) -> void:
 		if not bool(lo.can_edit):
 			ui.loadout_panel.close_panel()       # a fight started or the player walked away from the nest
 	var p: Dictionary = state.entities[0]
+	var recipes: Dictionary = state.get("recipes", {})
+	var meters: Dictionary = recipes.get("meters", {})
+	ui.signs.calcium = int(meters.get("calcium", {}).get("value", 0))
+	ui.signs.mineral = int(meters.get("mineral", {}).get("value", 0))
+	var rs: String = str(recipes.get("bone_spines", {}).get("state", "unknown"))
+	ui.signs.recipe_seen = rs != "unknown"
+	if rs != _recipe_state:
+		_recipe_state = rs
+		if rs != "unknown":
+			ui.show_message(Strings.t("recipe_" + rs))
 	ui.set_player(player_name, p.hp, p.hp_max, p.stamina, p.stamina_max)
 	_fight_selection(state)
 	_on_social(state)
@@ -382,6 +393,8 @@ func _on_events(events: Array) -> void:
 	var audio = get_tree().root.get_node_or_null("Audio")
 	for ev in events:
 		var at := _entity_pos(state, int(ev.b))
+		if int(ev.type) == 1 and int(ev.move) in [9, 13]:
+			_darts(_entity_pos(state, int(ev.a)) + Vector3.UP, at + Vector3.UP)
 		var radius := 60.0
 		var vid: int = 0 if ev.b == 0 else int(state.active) + 1
 		if vid < state.entities.size():
@@ -522,6 +535,9 @@ func _error_text(code: int) -> String:
 # the first two times (docs/godot/UI-DIEGETIC.md 7.10).
 func _refuse(code: int) -> void:
 	match code:
+		-25:
+			ui.petals.refuse(_last_pressed)
+			ui.signs.poke("calcium")
 		-8, -9, -19:                       # on_cooldown, not_equipped, no_stamina
 			ui.petals.refuse(_last_pressed)
 			if code == -19:
@@ -583,7 +599,32 @@ func _target_pos(state: Dictionary, id: int) -> Vector3:
 func _species_name(i: int) -> String:
 	return String(species[i].name) if i >= 0 and i < species.size() else "Creature"
 
+func _darts(from: Vector3, to: Vector3) -> void:
+	if from.distance_squared_to(to) < 0.01:
+		return
+	for k in 3:
+		var dart := MeshInstance3D.new()
+		var mesh := CylinderMesh.new()
+		mesh.top_radius = 0.0
+		mesh.bottom_radius = 0.035
+		mesh.height = 0.4
+		mesh.radial_segments = 4
+		dart.mesh = mesh
+		var material := StandardMaterial3D.new()
+		material.albedo_color = Palette.BONE
+		dart.material_override = material
+		island.add_child(dart)
+		dart.global_position = from + Vector3(float(k - 1) * 0.12, 0, 0)
+		dart.look_at(to)
+		dart.rotate_object_local(Vector3.RIGHT, PI / 2.0)
+		var tween := dart.create_tween()
+		tween.tween_property(dart, "global_position", to, 0.18)
+		tween.tween_callback(dart.queue_free)
+
 func _social_event(ev: Dictionary, state: Dictionary) -> void:
+	if int(ev.type) == 26:
+		_darts(_target_pos(state, int(ev.target)), Vector3(ev.x, Game.ground(ev.x, ev.z) + 1.0, ev.z))
+		return
 	if int(ev.type) == 21:
 		for part in state.get("parts", {}).get("discovered", []):
 			if int(part.index) == int(ev.target):

@@ -19,6 +19,7 @@ Dictionary profile_to_dict(const CpCombatProfile &p) {
     d["tail"] = int(p.tail); d["guard"] = int(p.guard);
     d["hp"] = double(p.hp); d["stamina"] = double(p.stamina); d["speed"] = double(p.speed);
     d["radius_cm"] = int(p.radius_cm);
+    Array extra;for(int k=0;k<8;k++)extra.append(int(p.extra[k]));d["extra"]=extra;d["carnivore"]=int(p.carnivore);
     return d;
 }
 
@@ -33,6 +34,12 @@ bool profile_from_dict(const Variant &v, CpCombatProfile &p) {
         if (!cpore::to_int(d[PROFILE_INTS[i]], 0, 255, n)) return false;  // range (<= 5) is checked by cp_stage_reset
         *levels[i] = uint8_t(n);
     }
+    if(d.has("extra")){
+        if(d["extra"].get_type()!=Variant::ARRAY)return false;
+        Array extra=d["extra"];if(extra.size()!=8)return false;
+        for(int k=0;k<8;k++){int64_t n;if(!cpore::to_int(extra[k],0,5,n))return false;p.extra[k]=uint8_t(n);}
+    }
+    if(d.has("carnivore")){int64_t n;if(!cpore::to_int(d["carnivore"],0,1,n))return false;p.carnivore=uint8_t(n);}
     if (d.has("hp") && !cpore::to_float(d["hp"], p.hp)) return false;
     if (d.has("stamina") && !cpore::to_float(d["stamina"], p.stamina)) return false;
     if (d.has("speed") && !cpore::to_float(d["speed"], p.speed)) return false;
@@ -437,6 +444,7 @@ Dictionary CporeWorld::state() const {
         Array slots;
         for (int i = 0; i < CB_LOADOUT_SLOTS; ++i) slots.append(int(w.loadout.slot[i]));
         lo["slots"] = slots;
+        Array cooldowns;for(int k=0;k<CB_MOVE_COUNT;k++)cooldowns.append(int(w.recipes.cd[k]));lo["cooldowns"]=cooldowns;
         lo["signature_slot"] = int(w.loadout.sig_slot);
         lo["known"] = int(cp_stage_known_moves(&w));
         const double dx = double(w.player.x) - double(w.setup.nest_x), dz = double(w.player.z) - double(w.setup.nest_z);
@@ -460,6 +468,7 @@ Dictionary CporeWorld::state() const {
     }
     d["entities"] = entities;
     d["social"] = social_to_dict(w);
+    {char buf[4096];if(cp_stage_recipes_json(&w,buf,sizeof buf)>=0)d["recipes"]=JSON::parse_string(String::utf8(buf));}
     {char buf[16384];if(cp_stage_parts_json(&w,buf,sizeof buf)>=0)d["parts"]=JSON::parse_string(String::utf8(buf));}
     {
         // Social events since the last state(): [{type, target, move, value, x, z, tick}]; see stage_social.c for the fields.
@@ -672,6 +681,8 @@ int CporeWorld::lineage_form(const String &body,const Dictionary &profile,const 
     if(text.length()>=CP_LINEAGE_BODY_CAP||label.length()>=80||parts.size()!=CP_LINEAGE_PARTS)return -1;
     memcpy(form.body,text.get_data(),text.length());memcpy(form.name,label.get_data(),label.length());
     if(!profile_from_dict(profile,form.profile))return -1;
+    CpLineageForm projected={};
+    if(!cp_stage_genome_form(text.get_data(),&projected)){memcpy(form.profile.extra,projected.profile.extra,8);form.profile.carnivore=projected.profile.carnivore;}
     for(int i=0;i<CP_LINEAGE_PARTS;i++){int64_t n;if(!cpore::to_int(parts[i],0,65535,n))return -1;form.parts[i]=uint16_t(n);}
     return cp_stage_lineage_form(world.get(),&form,evolve?1:0);
 }
