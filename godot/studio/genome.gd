@@ -114,7 +114,7 @@ static func _validate(g, types) -> bool:
 	if typeof(parts) != TYPE_ARRAY or parts.size() > 256:
 		return _fail("parts")
 	for p in parts:
-		if not _keys(p, ["type", "t", "ang", "size", "len", "curve", "w", "k", "f", "rot", "tilt"], "parts"):
+		if not _keys(p, ["type", "t", "ang", "size", "len", "curve", "w", "k", "f", "rot", "tilt", "act", "single", "pupil"], "parts"):
 			return false
 		if typeof(p.get("type")) != TYPE_STRING or not types.has(p["type"]):
 			return _fail("parts.type")
@@ -123,6 +123,12 @@ static func _validate(g, types) -> bool:
 		for spec in [["size", .1, 4], ["len", .1, 5], ["curve", -1.5, 1.5], ["w", .05, .8], ["rot", -PI, PI], ["tilt", -1.5, 1.5]]:
 			if p.has(spec[0]) and not _num(p[spec[0]], spec[1], spec[2], "parts." + spec[0]):
 				return false
+		if p.has("act") and not (p["act"] in ["muscle", "tendon", "spring", "hydrostat", "hydraulic", "peristaltic", "tubefeet", "cilia"]):
+			return _fail("parts.act")
+		if p.has("single") and not _int(p["single"], -1, 1, "parts.single"):
+			return false
+		if p.has("pupil") and not (p["pupil"] in ["auto", "round", "slit", "bar"]):
+			return _fail("parts.pupil")
 		if LEG_TYPES.has(p["type"]):
 			if not _num(p.get("w"), .05, .8, "parts.w"):
 				return false
@@ -140,9 +146,18 @@ static func _validate(g, types) -> bool:
 			if p["type"] == "cuerno" and not _num(p.get("curve"), -1.5, 1.5, "parts.curve"):
 				return false
 	var s = g.get("skin")
-	if not _keys(s, ["pat", "cA", "cB", "cC", "wet", "scale"], "skin"):
+	if not _keys(s, ["pat", "cA", "cB", "cC", "wet", "scale", "cs", "ps", "pc", "ros", "act", "sk"], "skin"):
 		return false
 	if not (_int(s.get("pat"), 0, 3, "skin.pat") and _num(s.get("wet"), 0, 1, "skin.wet") and _num(s.get("scale"), 3, 14, "skin.scale")):
+		return false
+	for k in [["cs", 0, 1], ["ps", .5, 2], ["pc", 0, 1]]:
+		if s.has(k[0]) and not _num(s[k[0]], k[1], k[2], "skin." + k[0]):
+			return false
+	if s.has("sk") and not (s["sk"] in ["auto", "endo", "exo", "hydro"]):
+		return _fail("skin.sk")
+	if s.has("act") and not (s["act"] in ["auto", "muscle", "hydraulic", "exo"]):
+		return _fail("skin.act")
+	if s.has("ros") and not _int(s["ros"], 0, 1, "skin.ros"):
 		return false
 	for k in ["cA", "cB", "cC"]:
 		if not _hex_ok(s.get(k)):
