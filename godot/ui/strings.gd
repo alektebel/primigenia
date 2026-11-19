@@ -195,7 +195,7 @@ const CLUES_ES := {
 	"see a herd mate flinch from the spray and leave it alone": "mira cómo un compañero de manada se encoge ante el chorro y lo deja en paz",
 	"watch it purse its mouth and shoot a thread of sap at a pursuer": "míralo fruncir la boca y lanzar un hilo de savia a quien lo persigue",
 	"watch it stand with its heavy tail low in the tall grass": "míralo quieto, con la cola pesada baja entre la hierba alta",
-	"see a herd mate bolt, and the tail whip behind it as it runs": "mira cómo un compañero de manada sale disparado y la cola azota tras él al correr",
+	"see a herd mate bolt, and the tail whip behind it as it runs": "mira cómo un compañero huye y la cola azota tras él al correr",
 	"watch the tail snap sideways at something that got too close": "míralo girar la cola de golpe contra algo que se acercó demasiado",
 	"watch it scrape its crown spines on a rock to clean them": "míralo rascar las espinas de la corona contra una roca para limpiarlas",
 	"see it rear back and dig in its hind legs against a rival": "míralo echarse atrás y clavar las patas traseras frente a un rival",

@@ -34,7 +34,11 @@ func run(t) -> void:
 		for p: Vector2 in a.cuarteta.spots:
 			t.check(Fauna.is_shallows(d, p), "cuarteta in the shallows (seed %d)" % world_seed)
 		t.check(a.cuarteta.spots.size() <= 5, "at most five bells")
-		if a.corona.cave >= 0:
+		if a.corona.get("site", "") == "tide_pool":
+			t.eq(a.corona.spots.size(), 2, "two corona on the tide-pool flat (seed %d)" % world_seed)
+			for p: Vector2 in a.corona.spots:
+				t.check(Fauna.is_tide_flat(d, p, 14.0, true), "corona on level damp ground, not a hillside (seed %d)" % world_seed)
+		elif a.corona.cave >= 0:
 			t.check(a.corona.cave >= 1, "corona never in the secrets cave (seed %d)" % world_seed)
 			t.eq(a.corona.spots.size(), 2, "two corona (seed %d)" % world_seed)
 		for line: String in a.log:

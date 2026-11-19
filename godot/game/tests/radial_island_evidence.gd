@@ -1,5 +1,5 @@
 extends SceneTree
-# The radial fauna in its island habitat (S5a): brujula on the intertidal shelf, cuarteta in the shallows, corona in the cave.
+# The radial fauna in its island habitat (S5a): brujula on the intertidal shelf, cuarteta in the shallows, corona on a tide-pool flat (a cave mouth when none).
 # LIBGL_ALWAYS_SOFTWARE=1 xvfb-run -a godot --rendering-driver opengl3 --path godot --script res://game/tests/radial_island_evidence.gd -- <out dir> [brujula cuarteta corona]
 const TerrainCache := preload("res://game/island/terrain_cache.gd")
 
@@ -61,14 +61,14 @@ func _run() -> void:
 		var views: Array = [["wide", 11.0, 4.5, 0.6], ["close", 5.5, 2.2, 0.9]]
 		if id == "cuarteta":
 			views = [["wide", 9.0, 4.0, 0.6], ["close", 4.0, 1.8, 0.9]]
-		if id == "corona":
+		if id == "corona" and fauna.placement.corona.get("site", "") == "cave":
 			views = [["wide", 5.0, 1.8, 0.5], ["close", 2.4, 1.0, 0.8]]
 		for v in views:
 			var inward: Vector2 = fauna.placement.corona.inward if id == "corona" else Vector2.ZERO
 			var yaw: float = v[3]
 			var look := c + Vector3(0, 0.2, 0)
 			var p := look + Vector3(sin(yaw) * v[1], v[2], cos(yaw) * v[1])
-			if id == "corona":
+			if id == "corona" and fauna.placement.corona.get("site", "") == "cave":
 				# stand outside the entrance (against `inward`), looking into the cave
 				var side := Vector3(-inward.y, 0, inward.x)
 				p = look + side * v[1] + Vector3(0, v[2] * .6, 0) - Vector3(inward.x, 0, inward.y) * v[1] * .3
