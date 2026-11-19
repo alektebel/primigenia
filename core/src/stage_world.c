@@ -2098,6 +2098,15 @@ int cp_stage_debug(CpStageWorld *w,const CpStageDebug *d){
             *(float *)((char *)&w->motion+p->offset)=clamp(d->v,p->min,p->max);
             break;
         }
+        case CP_STAGE_DBG_GRANT:{
+            if(d->a<-1||d->a>=CP_STAGE_PART_COUNT)return -1;
+            for(int p=d->a<0?0:d->a,end=d->a<0?CP_STAGE_PART_COUNT:d->a+1;p<end;p++){
+                w->parts.discovered|=1ULL<<p;w->parts.owned|=1ULL<<p;
+                if(w->parts.level[p]<1)w->parts.level[p]=1;
+            }
+            w->parts.used=1;
+            break;
+        }
         default:return -1;
     }
     w->hash=cp_stage_hash(w);

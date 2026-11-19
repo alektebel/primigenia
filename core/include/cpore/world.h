@@ -393,10 +393,12 @@ int cp_stage_social_parse(const char *text,CpStageInput *out,int *rc);   /* 1 = 
 int cp_stage_social_legal(const CpStageWorld *w,int verb);               /* the verb is worth listing in legal_verbs */
 /* --- debug ops (PLAN-devtools step 4): the only way the dev tools change the simulation --- */
 enum { CP_STAGE_DBG_TELEPORT=1, CP_STAGE_DBG_SPAWN, CP_STAGE_DBG_KILL, CP_STAGE_DBG_HEAL,
-       CP_STAGE_DBG_CLOCK, CP_STAGE_DBG_FLAGS, CP_STAGE_DBG_PARAM };
+       CP_STAGE_DBG_CLOCK, CP_STAGE_DBG_FLAGS, CP_STAGE_DBG_PARAM, CP_STAGE_DBG_GRANT };
 enum { CP_STAGE_FLAG_GOD=1, CP_STAGE_FLAG_AI_OFF=2 };
 /* TELEPORT id x z | SPAWN a=species x z | KILL id | HEAL id x=hp z=stamina (negative = max) | CLOCK a=tick |
- * FLAGS a=mask | PARAM a=index into CP_STAGE_PARAMS v=value (clamped). id 0 = player, 1..n = wild. */
+ * FLAGS a=mask | PARAM a=index into CP_STAGE_PARAMS v=value (clamped) |
+ * GRANT a=part id (catalogue index) or -1 for every part: discovered and owned at level >= 1 (dev builds: a creature made in the creator
+ * keeps all its parts, and the nest ownership checks accept them). id 0 = player, 1..n = wild. */
 typedef struct { int32_t op,id,a; float x,z,v; } CpStageDebug;
 typedef struct { uint32_t tick; CpStageDebug d; } CpStageDebugEntry;
 /* 0 on success, <0 and nothing changed otherwise (text: cp_stage_debug_error). Recomputes w->hash. */
