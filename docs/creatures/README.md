@@ -114,6 +114,14 @@
 | [Hidrazón](hidrazon.md) | new | draft | 4 | 1 fixable, 3 plausible |
 | [Nubezón](nubezon.md) | new | draft | 4 | 3 fixable, 1 plausible |
 
+## Ardent (`icemoon`)
+
+| Creature | Kind | Status | Chains | Verdicts |
+|---|---|---|---|---|
+| [Cryostrata lar](cryostrata_lar.md) | new | draft | 4 | 2 fixable, 2 plausible |
+| [El Susurrador de Hielo](el_susurrador_de_hielo.md) | new | draft | 4 | 2 fixable, 1 implausible, 1 plausible |
+| [Stratiforma velum](stratiforma_velum.md) | new | draft | 4 | 3 fixable, 1 plausible |
+
 ## The Neutron-Star Crust (`neutronstar`)
 
 | Creature | Kind | Status | Chains | Verdicts |

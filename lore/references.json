@@ -9091,5 +9091,182 @@
     },
     "container-title": "Springer",
     "x-checked": "2026-11-19"
+  },
+  {
+    "id": "brennen_1995_cavitation",
+    "type": "book",
+    "title": "Cavitation and Bubble Dynamics.",
+    "x-status": "verified",
+    "x-note": "verified against OpenLibrary (title 1.00); ISBN added",
+    "author": [
+      {
+        "family": "Brennen",
+        "given": "C. E."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1995
+        ]
+      ]
+    },
+    "container-title": "Oxford University Press.",
+    "ISBN": "9780195094091",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "carlson_2007_hydrothermal",
+    "type": "article-journal",
+    "title": "Hydrothermal vents and the discovery of life",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit '13. Hydrothermal Systems and the Origin of Life' (, 2000) title similarity 0.73",
+    "author": [
+      {
+        "family": "Carlson",
+        "given": "R."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2007
+        ]
+      ]
+    },
+    "container-title": "Oceanography",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "coulter_1978_piezoelectric",
+    "type": "article-journal",
+    "title": "The piezoelectric effect in collagen.",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'Piezoelectric effect in collagen structures' (Chepel', 1979, doi 10.1007/bf00860495), title similarity 0.81, author differs, year ok",
+    "author": [
+      {
+        "family": "Coulter",
+        "given": "J. E."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1978
+        ]
+      ]
+    },
+    "container-title": "Int. J. Quant. Cell Biol.",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "frankel_1998_magnetotactic",
+    "type": "article-journal",
+    "title": "Magnetotactic bacteria.",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'Magnetotactic Bacteria' (, None, doi 10.1007/springerreference_187307), title similarity 1.00, author differs, year ok",
+    "author": [
+      {
+        "family": "Frankel",
+        "given": "E. E."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1998
+        ]
+      ]
+    },
+    "container-title": "American Scientist.",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "haddock_2017_bioluminescence",
+    "type": "article-journal",
+    "title": "Bioluminescence in the ocean.",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Zooplankton and Phytoplankton Contributors to Bioluminescence in Monterey Bay' (Haddock, 2000) title similarity 0.44",
+    "author": [
+      {
+        "family": "Haddock",
+        "given": "S. H."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2017
+        ]
+      ]
+    },
+    "container-title": "Annu. Rev. Mar. Sci.",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "lee_2000_ether",
+    "type": "article-journal",
+    "title": "Ether lipids of archaea",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Ether Lipids from Thermophilic Archaea' (SUGAI, 1997) title similarity 0.72",
+    "author": [
+      {
+        "family": "Lee",
+        "given": "S."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2000
+        ]
+      ]
+    },
+    "container-title": "Microbiol. Mol. Biol. Rev.",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "smith_2018_grazing",
+    "type": "article-journal",
+    "title": "Grazing behavior on subglacial biofilms",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Supplementary material to \"Connected subglacial lake drainage beneath Thwaites Glacier, West Antarctica\"' (Smith, 2016) title similarity 0.34",
+    "author": [
+      {
+        "family": "Smith",
+        "given": "W."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2018
+        ]
+      ]
+    },
+    "container-title": "Front. Microbiol.",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "trimmer_2004_excretion",
+    "type": "article-journal",
+    "title": "Gas excretion in aquatic organisms",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Excretion of Compounds from Organisms' (Nikinmaa, 2014) title similarity 0.62",
+    "author": [
+      {
+        "family": "Trimmer",
+        "given": "D."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2004
+        ]
+      ]
+    },
+    "container-title": "J. Exp. Biol.",
+    "x-checked": "2026-11-19"
   }
 ]
