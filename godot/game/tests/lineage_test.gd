@@ -134,7 +134,6 @@ func run() -> void:
 	if "--evidence" in OS.get_cmdline_user_args():
 		var evidence_path := "res://../docs/evidence/godot/lineage"
 		DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(evidence_path))
-		root.get_texture().get_image().save_png(evidence_path + "/family-tree.png")
 		var file := FileAccess.open(evidence_path + "/lineage.json", FileAccess.WRITE)
 		file.store_string(JSON.stringify(data, "\t"))
 	print("lineage Godot: %d failures; three live portraits, save/replay and cousin pins" % failures)

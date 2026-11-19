@@ -60,6 +60,8 @@ func run() -> void:
 	check(controller != null, "tree controller attached")
 	controller.open()
 	check(controller.screen.generation_count == 3, "real island tree has three portraits")
+	if "--evidence" in OS.get_cmdline_user_args():
+		await _evidence(island, controller, cousin_id, registry)
 	controller.close()
 	var old_cousin = island.hosts[cousin_id]
 	var restored: String = island.load_scenario(Scenario.read(dir + "/generation2.json"))
@@ -71,3 +73,25 @@ func run() -> void:
 	registry.stage_provider = Callable()
 	print("lineage island: %d failures; console evolution, cousin bodies, restore and tree" % failures)
 	quit(0 if failures == 0 else 1)
+
+## Software-GL captures: a cousin standing in the valley with its card selected, then the family tree on the real island (T).
+func _evidence(island, controller, cousin_id: int, registry) -> void:
+	var out := ProjectSettings.globalize_path("res://../docs/evidence/godot/lineage")
+	DirAccess.make_dir_recursive_absolute(out)
+	controller.close()
+	var e: Dictionary = island.stage.cur.entities[cousin_id]
+	var p: Dictionary = island.stage.cur.entities[0]
+	var dir := Vector2(float(e.x) - float(p.x), float(e.z) - float(p.z))
+	print("evidence: cousin %.1f m from the player" % dir.length())
+	registry.execute("tp %.1f %.1f" % [float(e.x) - 7.0, float(e.z)])
+	island.stage.set_process(true)
+	island.stage_ui._on_clicked(cousin_id, Vector3.ZERO)
+	for i in 40:
+		await process_frame
+	root.get_texture().get_image().save_jpg(out + "/cousin-in-valley.jpg", 0.9)
+	controller.open()
+	for i in 40:
+		await process_frame
+	root.get_texture().get_image().save_jpg(out + "/family-tree-island.jpg", 0.9)
+	controller.close()
+	island.stage.set_process(false)

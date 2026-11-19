@@ -5,10 +5,10 @@ SubViewports, two cousin branch buttons, pause/menu entry, map pins, scenario
 save/load and replay hashes. A second test exercises the real island console,
 cousin actors and restoring an earlier generation. Run `make godot-lineage-test`.
 
-To capture the 1280×720 tree using xvfb and software GL, run
-`make godot-lineage-evidence`. It writes `family-tree.png` and `lineage.json` here.
-The capture was attempted in this session but X11/Wayland display creation failed
-inside the sandbox. No screenshot is included yet.
+`make godot-lineage-evidence` (xvfb, software GL) writes, from the real island test:
+`cousin-in-valley.jpg` (a cousin of the founding body 7 m away with its card selected) and
+`family-tree-island.jpg` (three generations, type badge and name, part diffs, cousin pins,
+opened with T), plus `lineage.json`. Captured 2026-11-19 after merging the social loop.
 
 The shared godot-cpp source was read-only here. For local verification it was
 copied into ignored `build/deps/godot-cpp` and the build used:

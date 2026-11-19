@@ -251,7 +251,7 @@ func info_for(id: int) -> Dictionary:
 	if island.hosts.has(id):
 		h = island.hosts[id].height()
 	var cousin: Dictionary = preload("res://game/stage/lineage_session.gd").cousin(stage.world, id)
-	var shown_name: String = str(sp.get("name", "Creature")) if cousin.is_empty() else "%s · cousin · generation %d" % [cousin.name, cousin.generation]
+	var shown_name: String = str(sp.get("name", "Creature")) if cousin.is_empty() else "%s · cousin" % cousin.name
 	var soc: Dictionary = st.get("social", {})
 	var carcass: bool = bool(e.get("dead", false))
 	return {"id": id, "name": shown_name, "species": shown_name,

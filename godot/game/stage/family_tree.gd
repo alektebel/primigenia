@@ -160,13 +160,16 @@ func _portrait(parent: Control, genome) -> void:
 	if not result.get("ok", false):
 		return
 	var radius := 1.0
+	var top := 0.0
 	for n in genome.get("nodes", []):
 		radius = maxf(radius, maxf(absf(float(n.get("z", 0))), float(n.get("r", 0))))
+		top = maxf(top, float(n.get("y", 0)) + float(n.get("r", 0)))
+	radius = maxf(radius, top * 0.55)
 	var camera := Camera3D.new()
 	vp.add_child(camera)
 	camera.projection = Camera3D.PROJECTION_ORTHOGONAL
 	camera.size = radius * 3.2
-	var target := Vector3(0, body.ground_offset + radius * 0.15, 0)
+	var target := Vector3(0, body.ground_offset + maxf(radius * 0.15, top * 0.45), 0)
 	camera.position = target + Vector3(radius * 3, radius * 1.5, radius * 3)
 	camera.look_at(target)
 	camera.current = true

@@ -453,6 +453,7 @@ godot-lineage-test: godot
 godot-lineage-evidence: godot
 	nice -n 10 timeout 60 $(GODOT) --headless --path godot --check-only --script res://game/tests/lineage_test.gd
 	LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 120 xvfb-run -a -s "-screen 0 1280x720x24" $(GODOT) --rendering-driver opengl3 --max-fps 15 --resolution 1280x720 --path godot --script res://game/tests/lineage_test.gd -- --evidence
+	LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 300 xvfb-run -a -s "-screen 0 1280x720x24" $(GODOT) --rendering-driver opengl3 --max-fps 15 --resolution 1280x720 --path godot --script res://game/tests/lineage_island_test.gd -- --evidence
 # C2 social layer (core/src/stage_social.c)
 $(BUILD)/social_test: tests/test_social.c $(HDRS) $(BUILD)/libcpore.a
 	$(CC) $(CFLAGS) $< $(BUILD)/libcpore.a -o $@ $(LDLIBS)
