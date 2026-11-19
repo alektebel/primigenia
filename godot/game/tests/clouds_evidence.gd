@@ -34,12 +34,12 @@ func _run() -> void:
 	island.chase_enabled = false
 	island.stage_ui.ui.visible = false
 	Clouds.frozen_time = 600.0
-	Clouds.apply("midday")
+	Clouds.apply({"tod": 0.5, "cover": 0.75, "fog": 0.0})
 	var cam: Camera3D = island.debug_camera
 	var p: Vector3 = island.player_pos + Vector3(0, 3, 0)
-	var views := [["a", 0.0, 0.35], ["b", 1.9, 0.5], ["c", 3.8, 0.8]]
+	var views := [["a", 0.0, 0.35, 3.0], ["e", 3.6, 0.55, 3.0]]
 	for v in views:
-		cam.global_position = p
+		cam.global_position = p + Vector3(0, v[3] - 3.0, 0)
 		cam.rotation = Vector3(v[2], v[1], 0)
 		cam.fov = 70.0
 		await settle(10)

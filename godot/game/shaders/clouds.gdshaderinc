@@ -11,32 +11,50 @@ const float CLOUD_ALT = 1800.0;        // base of the cumulus layer, metres
 const float CIRRUS_ALT = 7000.0;
 const vec2 CLOUD_WIND = vec2(4.8, 3.6); // m/s
 
+// Value noise with a quintic fade, a trig-free hash and a different rotation and offset for every octave. The old noise sat on the
+// world axes with one shared grid, so the blobs of coverage (and their shadows on the ground) came out square-cornered; rotating
+// each octave away from the others and warping the lookup (cloud_cov) leaves no grid direction to see. Range 0..1.
+const mat2 CL_ROT = mat2(vec2(0.8, 0.6), vec2(-0.6, 0.8));
+
 float cl_hash(vec2 p) {
-	p = fract(p * vec2(123.34, 456.21));
-	p += dot(p, p + 45.32);
-	return fract(p.x * p.y);
+	vec3 p3 = fract(vec3(p.xyx) * 0.1031);
+	p3 += dot(p3, p3.yzx + 33.33);
+	return fract((p3.x + p3.y) * p3.z);
 }
 
 float cl_noise(vec2 p) {
 	vec2 i = floor(p);
 	vec2 f = fract(p);
-	f = f * f * (3.0 - 2.0 * f);
+	f = f * f * f * (f * (f * 6.0 - 15.0) + 10.0);
 	return mix(mix(cl_hash(i), cl_hash(i + vec2(1.0, 0.0)), f.x), mix(cl_hash(i + vec2(0.0, 1.0)), cl_hash(i + vec2(1.0, 1.0)), f.x), f.y);
 }
 
 float cl_fbm3(vec2 p) {
-	return cl_noise(p) * 0.5 + cl_noise(p * 2.03 + 7.1) * 0.3 + cl_noise(p * 4.1 + 3.7) * 0.2;
+	float v = cl_noise(p) * 0.50;
+	p = CL_ROT * p * 2.03 + 7.1;
+	v += cl_noise(p) * 0.30;
+	p = CL_ROT * p * 2.01 + 3.7;
+	return v + cl_noise(p) * 0.20;
 }
 
 float cl_fbm5(vec2 p) {
-	return cl_noise(p) * 0.4 + cl_noise(p * 2.03 + 7.1) * 0.27 + cl_noise(p * 4.1 + 3.7) * 0.18 + cl_noise(p * 8.3 + 1.3) * 0.1 + cl_noise(p * 16.7 + 5.9) * 0.05;
+	float v = cl_noise(p) * 0.40;
+	p = CL_ROT * p * 2.03 + 7.1;
+	v += cl_noise(p) * 0.27;
+	p = CL_ROT * p * 2.01 + 3.7;
+	v += cl_noise(p) * 0.18;
+	p = CL_ROT * p * 2.02 + 1.3;
+	v += cl_noise(p) * 0.10;
+	p = CL_ROT * p * 2.04 + 5.9;
+	return v + cl_noise(p) * 0.05;
 }
 
 // Cumulus coverage 0..1 at a world xz point of the cloud layer.
 float cloud_cov(vec2 xz, bool detail) {
 	vec2 q = (xz - CLOUD_WIND * cloud_time) / 1300.0;
+	q += 0.14 * vec2(cl_noise(q * 0.7 + 11.0) - 0.5, cl_noise(q * 0.7 + 23.0) - 0.5);   // domain warp: rounds and loosens the outlines
 	float d = detail ? cl_fbm5(q) : cl_fbm3(q);
-	float th = mix(0.72, 0.30, clamp(cloud_cover, 0.0, 1.0));
+	float th = mix(0.79, 0.37, clamp(cloud_cover, 0.0, 1.0));   // value noise with the quintic fade covers more than the old one at the same threshold
 	return smoothstep(th, th + 0.2, d);
 }
 
