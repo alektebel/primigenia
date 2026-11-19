@@ -28,10 +28,12 @@ func _run() -> void:
 		entry = TerrainCache.build({"seed": 1}, CporeTerrain.new())
 	game.set_island(entry)
 	var island: Node3D = load("res://game/island/island.tscn").instantiate()
+	island.tree_entered.connect(func(): current_scene = island, CONNECT_ONE_SHOT)
 	root.add_child(island)
 	for i in 30:
 		await process_frame
 	var adapter := RenderingServer.get_video_adapter_name()
+	print("island props: ", island.props.counts, " in ", island.props.get_child_count() - 1, " batches; nest ", island.props.get_node("Nest").position)
 	var rid := root.get_viewport_rid()
 	RenderingServer.viewport_set_measure_render_time(rid, true)
 	var result := {"adapter": adapter, "tier": tier, "frames": frames, "grass": grass, "resolution": [root.size.x, root.size.y], "views": {}}
