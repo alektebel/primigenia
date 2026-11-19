@@ -374,6 +374,12 @@ class StageWorld:
         self._lib.cp_stage_apply.restype = c_int32
         return int(self._lib.cp_stage_apply(self._world, json.dumps(genome).encode()))
 
+    def set_run(self, on: bool) -> None:
+        """Toggle running (1.8 times walk speed); requires at least 150/1000 stamina."""
+        self._lib.cp_stage_set_run.argtypes = [c_void_p, c_int32]
+        self._lib.cp_stage_set_run.restype = None
+        self._lib.cp_stage_set_run(self._world, int(bool(on)))
+
     def set_tiers(self, on: bool) -> None:
         """Tier forms are built but off by default (A25)."""
         self._lib.cp_stage_set_tiers.argtypes = [c_void_p, c_int32]

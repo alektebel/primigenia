@@ -402,6 +402,7 @@ func _update_actors(dt: float) -> void:
 	for id in hosts:
 		var sm: Dictionary = stage.sample(id)
 		if id == 0:
+			sm["falling"] = bool(stage.cur.get("player", {}).get("falling", false))
 			sm["intent"] = player_input.intent_yaw()      # head and shoulders lead the body
 		var d: float = (sm.pos as Vector3).distance_to(p0)
 		var sig: Dictionary = action_signals.get(id, {})

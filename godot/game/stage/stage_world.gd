@@ -232,6 +232,9 @@ func sample(id: int, a: float = -1.0) -> Dictionary:
 	var y := 0.0
 	if ground_fn.is_valid():
 		y = ground_fn.call(pos2.x, pos2.y)
+	# C owns airborne height; the animation consumer receives falling separately.
+	if id == 0 and (bool(cur.get("player", {}).get("falling", false)) or bool(prev.get("player", {}).get("falling", false))):
+		y = lerpf(float(prev.get("player", {}).get("y", y)), float(cur.get("player", {}).get("y", y)), a)
 	return {"pos": Vector3(pos2.x, y, pos2.y), "yaw": wrapf(yaw, -PI, PI), "speed": vel2.length(), "speed_c": c.speed,
 		"vel": Vector3(vel2.x, 0.0, vel2.y)}
 

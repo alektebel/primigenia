@@ -45,6 +45,7 @@ public:
     godot::String observe();
     int nest_edit(const godot::String &body);
     int nest_apply(const godot::String &body);
+    void set_run(bool on);
     void set_tiers(bool on);
     godot::String lineage() const;
     int lineage_begin();
