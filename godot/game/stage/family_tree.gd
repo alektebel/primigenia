@@ -12,9 +12,9 @@ var _close: Button
 
 func _ready() -> void:
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	theme = Palette.make_theme()
+	theme = Palette.make_diegetic_theme()
 	var back := ColorRect.new()
-	back.color = Palette.PANEL_SOLID
+	back.color = Color(0.094, 0.133, 0.122, 0.94)      # the fog closing in, not a panel
 	back.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	add_child(back)
 	var margin := MarginContainer.new()
@@ -30,16 +30,18 @@ func _ready() -> void:
 	var title := Label.new()
 	title.text = "Your lineage"
 	title.add_theme_font_size_override("font_size", 32)
+	title.add_theme_font_override("font", load("res://ui/fonts/Alegreya-Italic.ttf"))
 	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	header.add_child(title)
 	_close = Button.new()
 	_close.text = "Return to the valley  ·  T"
 	_close.custom_minimum_size.y = 44
+	_close.flat = true
 	_close.pressed.connect(func() -> void: closed.emit())
 	header.add_child(_close)
 	var sub := Label.new()
 	sub.text = "Every body leaves a branch. Your deeds shape what comes next."
-	sub.add_theme_color_override("font_color", Palette.MUTED)
+	sub.add_theme_color_override("font_color", Palette.FOG)
 	page.add_child(sub)
 	var scroll := ScrollContainer.new()
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
@@ -63,9 +65,9 @@ func show_lineage(data: Dictionary) -> void:
 		col.add_theme_constant_override("separation", 8)
 		_row.add_child(col)
 		var current: bool = int(g.cousin_id) == 0
-		_label(col, "GENERATION %d%s" % [g.generation, "  ·  living now" if current else "  ───→"], 16, Palette.GOLD)
+		_label(col, "GENERATION %d%s" % [g.generation, "  ·  living now" if current else "  ───→"], 16, Palette.COPPER)
 		_portrait(col, JSON.parse_string(str(g.body_json)))
-		_label(col, str(g.type_code) + "  ·  " + str(g.type_name), 20, Palette.LEAF)
+		_label(col, str(g.type_code) + "  ·  " + str(g.type_name), 20, Palette.LICHEN)
 		var drift: Array = []
 		var code := str(g.type_code)
 		if previous_code != "":
@@ -73,9 +75,9 @@ func show_lineage(data: Dictionary) -> void:
 			for axis in 4:
 				if previous_code[axis * 2] != code[axis * 2]:
 					drift.append("%s %s → %s" % [axes[axis], previous_code[axis * 2], code[axis * 2]])
-		_label(col, " · ".join(drift) if not drift.is_empty() else "A new beginning" if previous_code == "" else "A familiar way of life", 14, Palette.GOLD)
+		_label(col, " · ".join(drift) if not drift.is_empty() else "A new beginning" if previous_code == "" else "A familiar way of life", 14, Palette.COPPER)
 		previous_code = code
-		_label(col, str(g.name), 15, Palette.TEXT)
+		_label(col, str(g.name), 15, Palette.BONE)
 		var gained: Array = []
 		var lost: Array = []
 		var ids := Session.part_ids()
@@ -88,7 +90,7 @@ func show_lineage(data: Dictionary) -> void:
 				gained.append("+ %s ×%d" % [part, entry.value])
 			elif entry.kind == "part_lost":
 				lost.append("− %s ×%d" % [part, entry.value])
-		_label(col, ", ".join(gained + lost) if not (gained + lost).is_empty() else "Founding body" if int(g.generation) == 1 else "Body proportions changed", 15, Palette.TEXT)
+		_label(col, ", ".join(gained + lost) if not (gained + lost).is_empty() else "Founding body" if int(g.generation) == 1 else "Body proportions changed", 15, Palette.BONE)
 		var mask: int = int(data.get("trait_mask", 0)) if current else int(g.trait_mask)
 		if current:
 			mask = 0
@@ -100,22 +102,23 @@ func show_lineage(data: Dictionary) -> void:
 			if (mask & (1 << i)) != 0 and (previous_traits & (1 << i)) == 0:
 				earned.append(trait_names[i])
 		previous_traits = mask
-		_label(col, "Traits earned: " + (", ".join(earned) if not earned.is_empty() else "still taking shape"), 15, Palette.MUTED)
+		_label(col, "Traits earned: " + (", ".join(earned) if not earned.is_empty() else "still taking shape"), 15, Palette.FOG)
 		var stem := VSeparator.new()
 		stem.custom_minimum_size = Vector2(1, 20)
 		stem.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 		col.add_child(stem)
 		if current:
-			_label(col, "You are writing this chapter.", 15, Palette.GOLD)
+			_label(col, "You are writing this chapter.", 15, Palette.COPPER)
 		else:
 			var pin := Button.new()
 			pin.text = "Cousin branch · locate on map"
 			pin.custom_minimum_size.y = 44
+			pin.flat = true
 			pin.pressed.connect(func() -> void: cousin_pin_requested.emit(g))
 			col.add_child(pin)
-			_label(col, "Home: %.0f, %.0f m · +%d trust" % [g.home_cm[0] / 100.0, g.home_cm[1] / 100.0, g.trust_bonus], 14, Palette.MUTED)
+			_label(col, "Home: %.0f, %.0f m · +%d trust" % [g.home_cm[0] / 100.0, g.home_cm[1] / 100.0, g.trust_bonus], 14, Palette.FOG)
 	if generations.is_empty():
-		_label(_row, "Your lineage begins when you enter the valley.", 20, Palette.MUTED)
+		_label(_row, "Your lineage begins when you enter the valley.", 20, Palette.FOG)
 	_close.grab_focus()
 
 func _label(parent: Node, text: String, font_size: int, color: Color) -> Label:

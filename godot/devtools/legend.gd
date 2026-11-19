@@ -1,10 +1,11 @@
 extends CanvasLayer
 ## D13 key legend (all builds). Every key name is generated from the InputMap, so a rebound key shows
 ## correctly; only the labels live in legend.json. F1 held: the full sheet, current context first.
-## F1 tapped: the corner hint (3-4 keys for the current context) toggles.
+## F1 tapped: the corner hint toggles (off by default now: the onboarding hints replace it in play).
 ## The pure functions are static so tests need no scene.
 
 const Palette := preload("res://ui/palette.gd")
+const Style := preload("res://ui/style.gd")
 const SPEC_PATH := "res://devtools/legend.json"
 const TAP_SECONDS := 0.3
 
@@ -113,14 +114,15 @@ static func fixed_entries() -> Array:
 
 # --- the node ------------------------------------------------------------------
 
-var corner_visible := true
-var corner: PanelContainer
-var sheet: PanelContainer
+var corner_visible := false          # the corner hint is only the onboarding's now; F1 held shows the sheet
+var corner: MarginContainer
+var sheet: Control               # the veil with the key columns (no panel)
 var header_extra := ""          # e.g. the tuning chip of step 10
 var _corner_box: VBoxContainer
 var _sheet_box: VBoxContainer
 var _cols: HBoxContainer
 var _held_at := -1.0
+var _pinned := false
 var _sig := ""
 
 func _init() -> void:
@@ -130,11 +132,10 @@ func _ready() -> void:
 	var root := Control.new()
 	root.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	root.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	root.theme = Palette.make_theme()
+	root.theme = Palette.make_diegetic_theme()
 	add_child(root)
-	corner = PanelContainer.new()
+	corner = MarginContainer.new()
 	corner.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	corner.add_theme_stylebox_override("panel", Palette.box(Color(Palette.PANEL, 0.7), 10, Palette.BORDER, 6))
 	corner.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_LEFT)
 	corner.grow_vertical = Control.GROW_DIRECTION_BEGIN
 	corner.offset_left = 14
@@ -143,19 +144,33 @@ func _ready() -> void:
 	_corner_box.add_theme_constant_override("separation", 1)
 	corner.add_child(_corner_box)
 	root.add_child(corner)
-	sheet = PanelContainer.new()
+	# the sheet: a veil (the fog closing in) and the columns on it; no panel, no border
+	sheet = Control.new()
 	sheet.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	sheet.add_theme_stylebox_override("panel", Palette.box(Palette.PANEL, 16, Palette.BORDER, 18))
-	sheet.set_anchors_and_offsets_preset(Control.PRESET_CENTER)
-	sheet.grow_horizontal = Control.GROW_DIRECTION_BOTH
-	sheet.grow_vertical = Control.GROW_DIRECTION_BOTH
+	sheet.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	sheet.visible = false
+	var veil := ColorRect.new()
+	veil.color = Color(0.094, 0.133, 0.122, 0.62)
+	veil.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	veil.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	sheet.add_child(veil)
+	var centre := CenterContainer.new()
+	centre.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	centre.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	sheet.add_child(centre)
 	var outer := VBoxContainer.new()
-	sheet.add_child(outer)
+	outer.add_theme_constant_override("separation", 10)
+	centre.add_child(outer)
 	_sheet_box = outer
 	_cols = HBoxContainer.new()
 	_cols.add_theme_constant_override("separation", 28)
 	root.add_child(sheet)
+	_refresh()
+
+## The key sheet pinned open (the menu's "Keys") until Esc.
+func pin_sheet(on: bool) -> void:
+	_pinned = on
+	sheet.visible = on or _held_at >= 0.0
 	_refresh()
 
 func context() -> StringName:
@@ -164,12 +179,32 @@ func context() -> StringName:
 func _dev() -> bool:
 	return Dev.enabled
 
-func _row_label(text: String, color: Color, size := 14) -> Label:
+func _row_label(text: String, color: Color, size := 14, italic := false) -> Label:
 	var l := Label.new()
 	l.text = text
 	l.add_theme_color_override("font_color", color)
 	l.add_theme_font_size_override("font_size", size)
+	if italic:
+		l.add_theme_font_override("font", Style.font_italic())
 	return l
+
+## A key as a thin rounded outline (the only place besides hints where a key cap is drawn); no fill.
+func _key_cap(text: String, color: Color) -> Control:
+	var l := _row_label(text, color, 13)
+	var st := StyleBoxFlat.new()
+	st.draw_center = false
+	st.set_border_width_all(1)
+	st.border_color = Color(color, 0.7)
+	st.set_corner_radius_all(4)
+	st.content_margin_left = 6
+	st.content_margin_right = 6
+	st.content_margin_top = 1
+	st.content_margin_bottom = 1
+	l.add_theme_stylebox_override("normal", st)
+	var box := HBoxContainer.new()
+	box.add_child(l)
+	box.custom_minimum_size = Vector2(130, 0)
+	return box
 
 func _refresh() -> void:
 	var ctx := context()
@@ -181,16 +216,16 @@ func _refresh() -> void:
 	for r in crows:
 		var h := HBoxContainer.new()
 		h.add_theme_constant_override("separation", 8)
-		h.add_child(_row_label(r.keys, Palette.GOLD, 13))
-		h.add_child(_row_label(r.label, Palette.MUTED, 13))
+		h.add_child(_row_label(r.keys, Palette.COPPER, 13))
+		h.add_child(_row_label(r.label, Palette.FOG, 13))
 		_corner_box.add_child(h)
 	if header_extra != "":
-		_corner_box.add_child(_row_label(header_extra, Palette.LEAF, 12))
+		_corner_box.add_child(_row_label(header_extra, Palette.LICHEN, 12))
 	corner.visible = corner_visible and not crows.is_empty()
 	for c in _sheet_box.get_children():
 		c.queue_free()
 		_sheet_box.remove_child(c)
-	_sheet_box.add_child(_row_label("Keys: %s%s" % [ctx, "   " + header_extra if header_extra != "" else ""], Palette.GOLD, 20))
+	_sheet_box.add_child(_row_label("Keys: %s%s" % [ctx, "   " + header_extra if header_extra != "" else ""], Palette.BONE, 23, true))
 	var all: Array = []
 	var seen := {}
 	for c in [ctx] + spec().get("contexts", []):
@@ -211,27 +246,26 @@ func _refresh() -> void:
 	_cols = HBoxContainer.new()
 	_cols.add_theme_constant_override("separation", 28)
 	_sheet_box.add_child(_cols)
-	var columns: Array = [VBoxContainer.new(), VBoxContainer.new()]
+	var columns: Array = [VBoxContainer.new(), VBoxContainer.new(), VBoxContainer.new()]
 	for col in columns:
 		_cols.add_child(col)
 	var filled := 0
-	var half := (all.size() + by_group.size()) / 2
+	var half := int(ceil(float(all.size() + by_group.size()) / 3.0))
 	var col_i := 0
 	for g in spec().get("groups", []):
 		if not by_group.has(g):
 			continue
-		if filled >= half and col_i == 0:
-			col_i = 1
+		if filled >= half and col_i < 2:
+			col_i += 1
+			filled = 0
 		var col: VBoxContainer = columns[col_i]
-		col.add_child(_row_label(g, Palette.LEAF, 14))
+		col.add_child(_row_label(g, Palette.LICHEN, 17, true))
 		filled += 1
 		for r in by_group[g]:
 			var h := HBoxContainer.new()
-			var k := _row_label(r.keys, Palette.GOLD if r.context == ctx else Palette.MUTED, 13)
-			k.custom_minimum_size = Vector2(120, 0)
-			h.add_child(k)
+			h.add_child(_key_cap(r.keys, Palette.BONE if r.context == ctx else Palette.FOG))
 			var lab: String = r.label + ("" if r.context == ctx else "  (%s)" % r.context)
-			h.add_child(_row_label(lab, Palette.TEXT if r.context == ctx else Palette.MUTED, 13))
+			h.add_child(_row_label(lab, Palette.BONE if r.context == ctx else Palette.FOG, 13))
 			col.add_child(h)
 			filled += 1
 
@@ -249,7 +283,7 @@ func _input(e: InputEvent) -> void:
 		sheet.visible = true
 		get_viewport().set_input_as_handled()
 	elif e.is_action_released("legend_hold"):
-		sheet.visible = false
+		sheet.visible = _pinned
 		if _held_at >= 0.0 and Time.get_ticks_msec() / 1000.0 - _held_at < TAP_SECONDS:
 			corner_visible = not corner_visible
 		_held_at = -1.0

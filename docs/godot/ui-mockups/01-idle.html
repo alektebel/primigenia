@@ -1,0 +1,11 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=1280">
+<title>Primigenia UI: idle, walking</title><script src="kit.js"></script></head><body><script>
+const {defence,C,arc,glyph,text,creature,groundRing,moveMarker,radial,petals,fieldNote,hud,whisper,keycap,page,P,K}=Kit;
+
+// No selection. The only marks: the corner signs and the white circle where the player clicked.
+page({title:'Idle', time:'midday',
+  world: creature(520,560,1.15,{stripes:1}) + creature(1010,404,0.42,{color:'#C9A56B',dark:'#8C6C3F',flip:1}) + creature(1080,412,0.38,{color:'#C9A56B',dark:'#8C6C3F'}),
+  marks: moveMarker(790,470,34) + hud({})
+});
+</script></body></html>

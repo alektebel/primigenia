@@ -4,14 +4,18 @@ const TreeView := preload("res://game/stage/family_tree.gd")
 const Bridge := preload("res://game/stage/stage_world.gd")
 const Scenario := preload("res://devtools/scenario.gd")
 const Controller := preload("res://game/stage/lineage_controller.gd")
-const Pause := preload("res://ui/pause_menu.gd")
 const CreatureMesh := preload("res://creature/creature.gd")
+class TestMenu extends Node:
+	var open := true
+	func close_menu() -> void:
+		open = false
 class TestUI extends Node:
+	signal family_tree_requested
 	var paused := false
-	var pause_menu
+	var menu := TestMenu.new()
 	func set_paused(value: bool) -> void:
 		paused = value
-		pause_menu.visible = value
+		menu.open = value
 class TestStageUI extends RefCounted:
 	var ui
 class TestIcons extends RefCounted:
@@ -105,8 +109,6 @@ func run() -> void:
 	island.stage_ui = TestStageUI.new()
 	var ui := TestUI.new()
 	root.add_child(ui)
-	ui.pause_menu = Pause.new()
-	ui.add_child(ui.pause_menu)
 	island.stage_ui.ui = ui
 	island.icons = TestIcons.new()
 	island.icons.pois_fn = func() -> Array: return [{"id": "nest"}]
@@ -115,7 +117,7 @@ func run() -> void:
 	var controller := Controller.new()
 	island.add_child(controller)
 	controller.setup(island)
-	ui.pause_menu.family_tree_requested.emit()
+	ui.family_tree_requested.emit()
 	check(controller.screen.visible and ui.paused, "pause menu opens family tree")
 	controller.close()
 	check(not controller.screen.visible and not ui.paused, "tree closes to gameplay")

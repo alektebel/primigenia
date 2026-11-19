@@ -18,12 +18,12 @@ func setup(owner_island) -> void:
 	screen.hide()
 	screen.closed.connect(close)
 	screen.cousin_pin_requested.connect(_pin)
-	island.stage_ui.ui.pause_menu.family_tree_requested.connect(open)
+	island.stage_ui.ui.family_tree_requested.connect(open)
 
 func open() -> void:
 	_was_paused = island.stage_ui.ui.paused
 	island.stage_ui.ui.set_paused(true)
-	island.stage_ui.ui.pause_menu.hide()
+	island.stage_ui.ui.menu.close_menu()
 	screen.show_lineage(JSON.parse_string(island.stage.world.lineage()))
 	screen.show()
 
@@ -32,11 +32,8 @@ func close() -> void:
 	island.stage_ui.ui.set_paused(_was_paused)
 
 func _unhandled_input(event: InputEvent) -> void:
-	if event.is_action_pressed("family_tree"):
-		if screen.visible:
-			close()
-		else:
-			open()
+	if event.is_action_pressed("family_tree") and screen.visible:      # opening is the UI's (T or the menu item)
+		close()
 		get_viewport().set_input_as_handled()
 	elif screen.visible and event.is_action_pressed("pause_menu"):
 		close()

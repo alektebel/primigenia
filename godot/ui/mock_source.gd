@@ -1,7 +1,7 @@
 extends RefCounted
 ## Mock data source used by tests and evidence; stands in for the stage and C world.
 
-const Card := preload("res://ui/creature_card.gd")
+const JournalData := preload("res://ui/journal_data.gd")
 
 static func creature(i: int = 0) -> Dictionary:
 	var species := ["Garfio", "Rondo", "Espinodo", "Coloso"]
@@ -15,8 +15,8 @@ static func creature(i: int = 0) -> Dictionary:
 
 static func all_combinations() -> Array:
 	var out: Array = []
-	for t in Card.TEMPERAMENTS.size():
-		for r in Card.RELATIONSHIPS.size():
+	for t in JournalData.TEMPERAMENTS.size():
+		for r in JournalData.RELATIONSHIPS.size():
 			var c := creature(t * 4 + r)
 			c["temperament"] = t
 			c["relationship"] = r

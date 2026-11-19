@@ -13,6 +13,8 @@ extends Node
 const GameUI := preload("res://ui/game_ui.gd")
 const Modes := preload("res://ui/modes.gd")
 const Palette := preload("res://ui/palette.gd")
+const Strings := preload("res://ui/strings.gd")
+const Glyphs := preload("res://ui/glyphs.gd")
 const V_WAIT := 1
 const V_ATTACK := 5
 const V_GUARD := 8
@@ -46,6 +48,13 @@ var _slope := 0.0
 var _moves: Array = []                # CporeWorld.moves(), the C move table
 var _loadout_key := ""                # last loadout state pushed to the hotbar (so it is rebuilt only on change)
 var _ambience_started := false
+var _fight_prev := false
+var _dying := false
+var _death_clock := 0.0
+var _last_pressed := -1
+var _whispers := {}                   # how many times a rule whisper was shown (only the first two)
+var _bonded_species := {}
+var _pearls := 0
 
 func setup(island_node: Node3D, name_text: String) -> void:
 	island = island_node
@@ -59,6 +68,8 @@ func setup(island_node: Node3D, name_text: String) -> void:
 	ui.name = "GameUI"
 	island.add_child(ui)
 	ui.set_camera(Game.camera)
+	ui.set_ground_marks(island.ground_marks)
+	ui.anchor_fn = _anchor
 	if Engine.has_singleton("Audio") or get_tree().root.has_node("Audio"):
 		ui.bind_audio(get_tree().root.get_node("Audio"))
 	ui.mode_changed.connect(_on_mode)
@@ -76,8 +87,8 @@ func setup(island_node: Node3D, name_text: String) -> void:
 	ui.gift_pressed.connect(give_gift)
 	ui.gift_cycle_pressed.connect(cycle_gift)
 	ui.pause_toggled.connect(_on_pause)
-	ui.save_requested.connect(func() -> void: _toast(island.save_game(), "Game saved."))
-	ui.load_requested.connect(func() -> void: _toast(island.load_game(), "Game loaded."))
+	ui.save_requested.connect(func() -> void: _toast(island.save_game(), Strings.t("saved")))
+	ui.load_requested.connect(func() -> void: _toast(island.load_game(), Strings.t("loaded")))
 	Game.creature_clicked.connect(_on_clicked)
 	Game.world_ticked.connect(_on_tick)
 	Game.combat_events.connect(_on_events)
@@ -96,10 +107,10 @@ func _on_mode(mode: StringName) -> void:
 	_pending_social = null
 
 func _on_ability(index: int, ability: Dictionary) -> void:
+	_last_pressed = index
 	if selected_id <= 0 and stage.cur.active >= 0 and ui.mode == Modes.ATTACK:
 		selected_id = stage.cur.active + 1
 	if selected_id <= 0:
-		ui.show_message("Click a creature first, then choose what to do.", "info")
 		return
 	if ui.mode == Modes.ATTACK:
 		_attack(index)
@@ -122,11 +133,10 @@ func social_order(verb: String, target: int, move: int = 0) -> void:
 
 func give_gift() -> void:
 	if selected_id <= 0:
-		ui.show_message("Click a creature first, then press G to give it a gift.", "info")
 		return
 	var items: Array = stage.cur.social.items
 	if int(items[_gift]) <= 0:
-		ui.show_message("You have no %s to give." % Modes.ITEMS[_gift], "warn")
+		ui.petals.refuse(4)
 		return
 	social_order("gift", selected_id, _gift)
 
@@ -136,7 +146,7 @@ func cycle_gift() -> void:
 		_gift = (_gift + 1) % 4
 		if int(items[_gift]) > 0:
 			break
-	ui.show_message("Gift: %s (x%d)" % [Modes.ITEMS[_gift], int(items[_gift])], "info")
+	ui.set_gift(_gift, int(items[_gift]))
 
 # Keys 1-4 fire the move in loadout slot `index` (A21), not a fixed move: the hotbar entry carries the C move id.
 func _attack(index: int) -> void:
@@ -161,15 +171,15 @@ func _attack(index: int) -> void:
 func assign_loadout(slot: int, move: int) -> void:
 	var lo: Dictionary = stage.cur.loadout
 	if not bool(lo.can_edit):
-		ui.show_message("Go back to your nest to change your moves.", "warn")
+		_refuse(-13)
 		return
 	stage.queue_order({"verb": V_LOADOUT, "target": slot + 1, "move": move})
 	attack_orders.append({"tick": stage.cur.tick, "order": "loadout %d %s" % [slot + 1, MOVE_IDS[move] if move >= 0 else "none"]})
 
 func toggle_loadout_panel() -> void:
 	var lo: Dictionary = stage.cur.loadout
-	if not ui.loadout_panel.visible and not bool(lo.can_edit):
-		ui.show_message("Go back to your nest to change your moves.", "info")
+	if not ui.loadout_panel.visible_open and not bool(lo.can_edit):
+		_refuse(-13)
 		return
 	ui.loadout_panel.refresh(lo)
 	ui.loadout_panel.toggle()
@@ -242,6 +252,16 @@ func provide() -> Dictionary:
 
 # --- selection ------------------------------------------------------------------
 
+# The rendered position and height of a creature (the host node), for the ring and the signs anchored to it.
+func _anchor(id: int) -> Dictionary:
+	if not island.hosts.has(id):
+		return {}
+	var h = island.hosts[id]
+	var p: Vector3 = h.global_position
+	p.y = Game.ground(p.x, p.z)
+	var ent: Dictionary = stage.cur.entities[id] if id < stage.cur.entities.size() else {}
+	return {"pos": p, "height": h.height() * (0.45 if bool(ent.get("dead", false)) else 1.0)}
+
 func info_for(id: int) -> Dictionary:
 	var st: Dictionary = stage.cur
 	var e: Dictionary = st.entities[id]
@@ -251,10 +271,13 @@ func info_for(id: int) -> Dictionary:
 	if island.hosts.has(id):
 		h = island.hosts[id].height()
 	var cousin: Dictionary = preload("res://game/stage/lineage_session.gd").cousin(stage.world, id)
-	var shown_name: String = str(sp.get("name", "Creature")) if cousin.is_empty() else "%s · cousin" % cousin.name
+	var shown_name: String = str(sp.get("name", "Creature")) if cousin.is_empty() else str(cousin.name)
 	var soc: Dictionary = st.get("social", {})
 	var carcass: bool = bool(e.get("dead", false))
-	return {"id": id, "name": shown_name, "species": shown_name,
+	var temper := int(e.get("temperament", sp.get("temperament", 1)))
+	return {"id": id, "name": shown_name, "species": shown_name, "cousin_generation": int(e.get("cousin_generation", 0)),
+		"radius_m": maxf(0.6, float(e.get("radius_cm", 60)) * 0.01), "height": h, "body_pos": pos + Vector3(0, h * 0.5, 0),
+		"refuses": not carcass and (int(e.get("mood", 0)) <= -20 or (temper == 2 and int(e.get("relationship", 0)) <= 0)),
 		"temperament": int(e.get("temperament", sp.get("temperament", 1))) if cousin.is_empty() else int(cousin.temperament), "diet": (1 if int(e.species) >= 2 else 0) if cousin.is_empty() else int(cousin.diet),
 		"relationship": int(e.get("relationship", 0)), "resolved": int(soc.get("resolved", 0)), "resolved_total": int(soc.get("resolved_total", 4)),
 		"trust": int(e.get("trust", 0)), "mood": int(e.get("mood", 0)), "bonded": bool(e.get("bonded", false)),
@@ -265,12 +288,33 @@ func info_for(id: int) -> Dictionary:
 func _on_clicked(id: int, _pos: Vector3) -> void:
 	if id <= 0 or id >= stage.cur.entities.size():
 		return
+	if int(stage.cur.active) >= 0 and id == int(stage.cur.active) + 1:
+		var inf := info_for(id)         # clicking the one you are fighting keeps Attack (no ring in the middle of a fight)
+		inf["fight"] = true
+		ui.select(inf, false)
+		return
 	ui.select(info_for(id), true, island.last_click)
 
 func select_id(id: int, menu_pos: Variant = null) -> void:
 	ui.select(info_for(id), true, menu_pos)
 
 # --- world -> UI ----------------------------------------------------------------
+
+# When C starts a fight the UI selects the attacker in Attack mode directly (no ring); UI state only, no order is sent.
+func _fight_selection(state: Dictionary) -> void:
+	var active: bool = int(state.active) >= 0
+	if active and not _fight_prev:
+		var aid := int(state.active) + 1
+		if aid < state.entities.size():
+			if selected_id != aid:
+				var inf := info_for(aid)
+				inf["fight"] = true
+				ui.select(inf, false)
+			elif ui.mode != Modes.ATTACK:
+				ui.set_mode(Modes.ATTACK)
+	_fight_prev = active
+	ui.set_fight(active)
+
 
 func _on_tick(state: Dictionary) -> void:
 	var lo: Dictionary = state.get("loadout", {"slots": [0, 1, 3, 4], "known": 0, "can_edit": false})
@@ -279,16 +323,21 @@ func _on_tick(state: Dictionary) -> void:
 		_loadout_key = key
 		ui.set_loadout_abilities(_loadout_abilities(lo))
 	ui.set_cooldowns(_cooldown_fractions(state, ui.loadout_abilities))
-	if ui.loadout_panel.visible:
+	ui.set_loadout_available(bool(lo.can_edit))
+	if ui.loadout_panel.visible_open:
 		ui.loadout_panel.refresh(lo)
 		if not bool(lo.can_edit):
 			ui.loadout_panel.close_panel()       # a fight started or the player walked away from the nest
 	var p: Dictionary = state.entities[0]
 	ui.set_player(player_name, p.hp, p.hp_max, p.stamina, p.stamina_max)
+	_fight_selection(state)
 	_on_social(state)
 	if selected_id > 0 and selected_id < state.entities.size():
 		var e: Dictionary = state.entities[selected_id]
-		if e.dead and int(e.get("meat", 0)) <= 0:
+		if bool(e.dead) and int(ui.selected.get("carcass_meat", -1)) < 0:
+			ui.clear_selection()             # the one you selected fell: its ring breaks; the carcass can be selected next
+			island.ground_marks.break_ring()
+		elif (e.dead and int(e.get("meat", 0)) <= 0) or Vector2(float(e.x) - float(p.x), float(e.z) - float(p.z)).length() > 60.0:
 			ui.clear_selection()
 		else:
 			var inf := info_for(selected_id)
@@ -302,15 +351,18 @@ func _on_tick(state: Dictionary) -> void:
 			tell = clampf(float(f.phase_tick) / maxf(float(f.phase_length), 1.0), 0.0, 1.0)
 			label = MOVE_NAMES[f.move] if f.move >= 0 and f.move < MOVE_NAMES.size() else ""
 	ui.set_windup(tell, label)
+	_update_world_signs(state)
 	if state.outcome != last_outcome:
 		last_outcome = state.outcome
 		match state.outcome:
 			1:
-				ui.show_message("A new trace of life. Keep exploring.", "good")
+				ui.show_moment(Strings.t("trace_of_life"), "journal")
 			2:
-				ui.show_message("Back to the nest...", "bad")
+				ui.begin_death()
+				_death_clock = 0.0
+				_dying = true
 			3:
-				ui.show_message("Safe for now. The wild creature returns home.", "info")
+				pass          # the wild creature goes home: its ring fades as it leaves, no text
 
 func _entity_pos(state: Dictionary, fighter: int) -> Vector3:
 	var id: int = 0 if fighter == 0 else int(state.active) + 1
@@ -333,6 +385,9 @@ func _on_events(events: Array) -> void:
 				ui.show_damage(at + Vector3(0, 2.2, 0), ev.amount, ev.b == 0)
 				if ev.b == 0:
 					ui.flash("hit")
+					island.ground_marks.windup_hit()
+				else:
+					island.ground_marks.hit(0.0)
 			2, 3:
 				if ev.b == 0:
 					ui.flash("guard")
@@ -355,9 +410,15 @@ func _on_pause(paused: bool) -> void:
 
 # --- per frame ------------------------------------------------------------------
 
-func _process(_dt: float) -> void:
-	Game.modal_open = ui.radial.visible or ui.paused or ui.loadout_panel.visible
-	Game.radial_open = ui.radial.visible
+func _process(dt: float) -> void:
+	if _dying:
+		_death_clock += dt
+		if _death_clock > 2.6:
+			_dying = false
+			ui.end_death()
+			ui.show_message(Strings.t("back_at_nest"), "info")
+	Game.modal_open = ui.paused or ui.loadout_panel.visible_open     # the ring is not modal: WASD keeps walking
+	Game.radial_open = ui.ring.visible
 	Game.paused_ui = ui.paused
 	var audio = get_tree().root.get_node_or_null("Audio")
 	if audio == null or island.player_pos == Vector3.INF:
@@ -401,12 +462,12 @@ func _on_social(state: Dictionary) -> void:
 	if soc.is_empty():
 		return
 	ui.set_meters(int(soc.dna_total), int(soc.dna_balance), int(soc.resolved), int(soc.resolved_total), int(soc.food), int(soc.food_max))
-	ui.hud.set_gift("%s x%d" % [Modes.ITEMS[_gift], int(soc.items[_gift])])
+	ui.set_gift(_gift, int(soc.items[_gift]))
 	# rejected order: say why
 	if _pending_sent_tick >= 0 and int(state.tick) == _pending_sent_tick + 1:
 		_pending_sent_tick = -1
 		if int(state.error) < 0:
-			ui.show_message(_error_text(int(state.error)), "warn")
+			_refuse(int(state.error))
 	# rings around the selected creature
 	var observe := -1.0
 	var beat := false
@@ -446,6 +507,62 @@ func _on_social(state: Dictionary) -> void:
 func _error_text(code: int) -> String:
 	return String(CporeWorld.order_error(code)).capitalize()
 
+# C refused an order: show it on the mark first (a petal shakes, a line bumps, the ring flashes), words second and only
+# the first two times (docs/godot/UI-DIEGETIC.md 7.10).
+func _refuse(code: int) -> void:
+	match code:
+		-8, -9, -19:                       # on_cooldown, not_equipped, no_stamina
+			ui.petals.refuse(_last_pressed)
+			if code == -19:
+				ui.signs.poke("stamina")
+		-22:                               # full
+			ui.signs.poke("hunger")
+		-21:                               # cannot digest
+			ui.petals.refuse(0)
+			_whisper_once("cannot_digest")
+		-15:                               # refuses social play
+			island.ground_marks.flash_ember()
+			_whisper_once("wont_listen")
+		-13:                               # not at the nest
+			ui.minimap.poke()
+			_whisper_once("only_nest")
+		-18:                               # staggered by a rival
+			island.ground_marks.flash_ember()
+		-14:
+			pass
+		_:
+			if code < 0:
+				ui.show_message(_error_text(code), "warn")
+
+func _whisper_once(key: String) -> void:
+	var n: int = int(_whispers.get(key, 0))
+	if n < 2:
+		_whispers[key] = n + 1
+		ui.show_message(Strings.t(key), "info")
+
+# Per tick: the round map, the rings under whoever hunts you, the fog of death.
+func _update_world_signs(state: Dictionary) -> void:
+	var p: Dictionary = state.entities[0]
+	var mm = ui.minimap
+	mm.data = Game.data
+	mm.player = Vector2(float(p.x), float(p.z))
+	mm.heading = atan2(float(p.fx), -float(p.fz))
+	mm.nest = island._nest
+	mm.target = Vector2.INF
+	if selected_id > 0 and selected_id < state.entities.size():
+		var te: Dictionary = state.entities[selected_id]
+		mm.target = Vector2(float(te.x), float(te.z))
+		mm.target_hostile = bool(te.get("hostile", false))
+	mm.fade = clampf(float(island.icons.alpha), 0.0, 1.0) if island.icons != null else 0.0
+	mm.enabled = bool(Game.settings.get("minimap", true))
+	mm.refresh()
+	var hunters := []
+	for i in range(1, state.entities.size()):
+		var e: Dictionary = state.entities[i]
+		if bool(e.get("hostile", false)) and not bool(e.dead) and Vector2(float(e.x) - float(p.x), float(e.z) - float(p.z)).length() < 40.0:
+			hunters.append(i)
+	island.ground_marks.set_threats(hunters)
+
 func _target_pos(state: Dictionary, id: int) -> Vector3:
 	if id <= 0 or id >= state.entities.size():
 		return island.player_pos
@@ -457,58 +574,69 @@ func _species_name(i: int) -> String:
 
 func _social_event(ev: Dictionary, state: Dictionary) -> void:
 	var at := _target_pos(state, int(ev.target))
+	var gm = island.ground_marks
 	match int(ev.type):
 		EV_SKILL:
 			var gain := int(ev.value)
 			var mv := int(ev.move)
+			var in_rhythm := gain > 0 and (mv & 256) != 0
 			if gain >= 0:
-				ui.show_float(at, "+%d trust" % gain, Palette.LEAF, 24)
+				ui.show_float(at, "+%d" % gain, Palette.LICHEN)
 			else:
-				ui.show_float(at, "%d trust" % gain, Palette.DANGER, 24)
-			if gain > 0 and (mv & 256) != 0:
-				ui.show_float(at + Vector3(0, 0.5, 0), "In rhythm!", Palette.GOLD, 18)
-			if gain > 0 and ((mv >> 9) & 3) > 0:
-				ui.show_float(at + Vector3(0, 1.0, 0), "Combo x%.1f" % (1.5 if ((mv >> 9) & 3) == 1 else 2.0), Palette.EMBER, 18)
+				ui.show_float(at, "%d" % gain, Palette.DANGER)
+			if in_rhythm:
+				_pearls = mini(_pearls + 1, 5)
+				gm.ripple()
+			else:
+				if _pearls > 0 or gain <= 0:
+					gm.wobble()
+				_pearls = 0
+			gm.set_pearls(_pearls)
 		EV_GIFT:
 			var d := int(ev.value)
-			ui.show_float(at, "%+d trust" % d, Palette.LEAF if d >= 0 else Palette.DANGER, 24)
-			if float(ev.x) > 0.0:
-				ui.show_message("It calms down.", "good")
-			elif d <= -20:
-				ui.show_message("That was an insult. Its herd saw it.", "bad")
+			ui.show_float(at, "%+d" % d, Palette.LICHEN if d >= 0 else Palette.DANGER)
+			if d <= -20:
+				gm.flash_ember()
 		EV_BOND_MADE:
-			ui.show_message("%s bonded!" % _species_name(int(ev.move)), "good")
+			gm.ripple()
+			_pearls = 0
+			gm.set_pearls(0)
+			var sp := int(ev.move)
+			if not _bonded_species.has(sp):
+				_bonded_species[sp] = true
+				ui.show_moment(Strings.t("bonded", [_species_name(sp)]), "befriend")
 		EV_BOND_BROKEN:
-			ui.show_message("The bond is broken. Its pack turns on you.", "bad")
+			gm.wobble()
+			ui.show_message(Strings.t("bond_broken"), "warn")
 		EV_SPECIES_RESOLVED:
-			ui.show_message("%s: %s" % [_species_name(int(ev.move)), "an alliance is made" if int(ev.value) == 1 else "dominated"], "good")
+			ui.show_moment(Strings.t("alliance" if int(ev.value) == 1 else "dominated", [_species_name(int(ev.move))]), "befriend" if int(ev.value) == 1 else "attack")
 		EV_DNA:
 			var src: int = int(ev.move)
-			ui.show_dna(int(ev.value), DNA_SOURCES[src] if src >= 0 and src < DNA_SOURCES.size() else "")
+			ui.show_dna(int(ev.value), DNA_SOURCES[src] if src >= 0 and src < DNA_SOURCES.size() else "", at)
 		EV_OBSERVE:
-			var sp := int(ev.value)
-			var clue: String = String(_chains[sp].observe[int(ev.move)]) if sp < _chains.size() else ""
-			ui.show_message("Observed: %s (%d/3)" % [clue, int(ev.x)], "info")
+			var sp2 := int(ev.value)
+			var clue: String = String(_chains[sp2].observe[int(ev.move)]) if sp2 < _chains.size() else ""
+			ui.show_clue(at, "%s: %s" % [_species_name(sp2), clue])
 		EV_CHAIN_DONE:
 			var mv2 := int(ev.move)
-			ui.show_message("You understand how it moves. Learned: %s." % (String(_moves[mv2].name).capitalize() if mv2 >= 0 and mv2 < _moves.size() else "a move"), "good")
+			var mname: String = String(_moves[mv2].name) if mv2 >= 0 and mv2 < _moves.size() else ""
+			ui.show_moment(Strings.t("learned", [mname.replace("_", " ").capitalize() if mname != "" else "?"]), Glyphs.for_move(mname) if mname != "" else "journal")
 		EV_INTIMIDATE:
+			gm.shock(island.player_pos, at, float(ev.value) > 0.0)
 			if float(ev.value) > 0.0:
-				ui.show_float(at, "It backs off!", Palette.GOLD, 24)
+				gm.ripple()
 			else:
-				ui.show_float(at, "It stands its ground", Palette.MUTED, 20)
+				gm.flash_ember()
 		EV_CANCELLED:
 			var r := int(ev.value)
 			if r == 2:
-				ui.show_message("A rival heckles you off.", "bad")
+				gm.flash_ember()
 			elif r == 5:
-				ui.show_float(at, "Seen! Back off and keep still.", Palette.EMBER, 18)
+				gm.flash_bone()
 			elif r < 0 and r != -2:
-				ui.show_message(_error_text(r), "warn")
+				_refuse(r)
 		EV_EAT:
 			var l = island.hosts[0].layer() if island.hosts.has(0) else null
 			if l != null:
 				l.trigger("eat")
-			ui.show_float(at, "+%d food" % int(ev.value), Palette.LEAF, 20)
-			if int(ev.move) <= 0:
-				ui.show_message("Nothing left of it but bones.", "info")
+			# the last bite (ev.move <= 0): the design's rising bone glyph is deferred; the ring is simply gone with the meat

@@ -1,0 +1,13 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=1280">
+<title>Primigenia UI: wild creature selected, mode ring</title><script src="kit.js"></script></head><body><script>
+const {defence,C,arc,glyph,text,creature,groundRing,moveMarker,radial,petals,fieldNote,hud,whisper,keycap,page,P,K}=Kit;
+
+// A click on a Rondo selects it: ground ring, field note, and the mode ring. The pointer is over Befriend.
+const cx=830, cy=368, gy=424;
+page({title:'Selected', time:'midday',
+  world: creature(470,585,1.15,{stripes:1}) + creature(cx,gy,0.62,{color:'#C9A56B',dark:'#8C6C3F',flip:1}),
+  marks: groundRing(cx,gy,58,{op:.9}) + radial(cx,cy,96,{hover:'befriend'}) + fieldNote(cx+128,cy-92,'Rondo',{diet:'leaf',rel:1})
+    + hud({targetBearing:46, compassHot:1})
+});
+</script></body></html>

@@ -91,6 +91,13 @@ func run(t) -> void:
 	for o in old:
 		InputMap.action_add_event("sprint", o)
 	t.check(not Legend.action_text("sprint").contains("X"), "rebinding restored")
+	# The diegetic UI: no corner hint in play (the onboarding hints replace it), the ring's gestures are listed for the radial context.
+	var lg = load("res://devtools/legend.gd").new()
+	t.check(lg.corner_visible == false, "the corner hint is off by default")
+	lg.free()
+	var radial_rows := Legend.rows(&"radial", false)
+	t.check(radial_rows.filter(func(r): return r.get("gesture", false)).size() == 4, "the radial context lists the four ring gestures (observe, befriend, intimidate, attack)")
+	t.check(not InputMap.has_action("radial_attack") and InputMap.has_action("journal") and InputMap.has_action("family_tree"), "journal and family tree actions exist, the radial_* letters are gone")
 	# Hard-coded studio keys are listed as `fixed`; flag them so the studio migrates.
 	var fixed := Legend.fixed_entries()
 	print("  NOTE legend: %d studio key(s) are still hard-coded (fixed) until the studio migrates to the InputMap" % fixed.size())

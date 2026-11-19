@@ -15,6 +15,8 @@ const SETTINGS_PATH := "user://settings.cfg"
 # creature, W forward, S reverse (overrides the latch).
 var settings: Dictionary = {"seed": 1, "grass": 252000, "quality": "auto", "sun_shadows": false, "wild": true,
 	"controls/strafe_latch": true, "controls/tank": false, "camera/kick": false,
+	"ui_scale": 1.0, "language": "", "names_always": false, "numbers": false, "strong_outlines": false, "reduced_motion": false,
+	"onboarding": 0, "minimap": true,
 	"renderer": "auto"}   # auto | forward_plus | compatibility, read at launch by RenderChoice (relaunches into Forward+ on discrete GPUs)
 var terrain: Dictionary = {}
 var data = null          # TerrainData
@@ -43,7 +45,12 @@ func load_settings() -> void:
 		if cfg.has_section_key("game", key):
 			settings[key] = cfg.get_value("game", key)
 
+## Tests and evidence set this false so they never write the player's settings file.
+var persist_settings := true
+
 func save_settings() -> void:
+	if not persist_settings:
+		return
 	var cfg := ConfigFile.new()
 	cfg.load(SETTINGS_PATH)  # keep other sections (audio)
 	for key in settings.keys():

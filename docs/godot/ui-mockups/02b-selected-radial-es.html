@@ -1,0 +1,13 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=1280">
+<title>Primigenia UI: mode ring with names, Spanish</title><script src="kit.js"></script></head><body><script>
+const {defence,C,arc,glyph,text,creature,groundRing,moveMarker,radial,petals,fieldNote,hud,whisper,keycap,page,P,K}=Kit;
+
+// Onboarding variant in Spanish: every name is shown (first selections, or the 'Names on signs: Always' setting).
+const cx=830, cy=368, gy=424;
+page({title:'Selected', time:'midday',
+  world: creature(470,585,1.15,{stripes:1}) + creature(cx,gy,0.62,{color:'#C9A56B',dark:'#8C6C3F',flip:1}),
+  marks: groundRing(cx,gy,58,{op:.9}) + radial(cx,cy,96,{labels:1,es:1}) + fieldNote(cx+128,cy-92,'Rondo',{diet:'leaf',rel:1})
+    + keycap(520,676,'Clic',40) + whisper(570,676,'en una criatura para elegirla') + hud({targetBearing:46, compassHot:1})
+});
+</script></body></html>

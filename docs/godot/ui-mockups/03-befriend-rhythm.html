@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=1280">
+<title>Primigenia UI: befriending, rhythm</title><script src="kit.js"></script></head><body><script>
+const {defence,C,arc,glyph,text,creature,groundRing,moveMarker,radial,petals,fieldNote,hud,whisper,keycap,page,P,K}=Kit;
+
+// Befriend chosen: skills on 1-4 above the Rondo. The ground ring is its trust; the thin ring closing in is the beat.
+const cx=820, cy=380, gy=438;
+const waves = arc(592,498,26,26,40,110,{w:1.6,op:.75}) + arc(592,498,42,42,45,105,{w:1.6,op:.5}) + arc(592,498,58,58,50,100,{w:1.6,op:.3});
+page({title:'Befriend', time:'dawn',
+  world: creature(500,590,1.15,{stripes:1}) + creature(cx,gy,0.62,{color:'#C9A56B',dark:'#8C6C3F',flip:1}),
+  marks: groundRing(cx,gy,60,{color:C.lichen,frac:.42,w:3})
+    + arc(cx,gy,86,86*K,0,360,{w:1.4,op:.9}) + arc(cx,gy,104,104*K,0,360,{w:1,op:.3})
+    + [0,1,2].map(i=>{const p=P(cx,gy,60,60*K,196+i*13);return '<circle cx="'+p[0].toFixed(1)+'" cy="'+p[1].toFixed(1)+'" r="3.2" fill="'+C.bone+'"/>'}).join('')
+    + waves
+    + petals(cx,cy+6,96,[{g:'sing',key:'1',liked:1,active:1,color:C.lichen},{g:'dance',key:'2',color:C.lichen},{g:'charm',key:'3',color:C.lichen},{g:'pose',key:'4',disliked:1,color:C.lichen}])
+    + (()=>{const p=P(cx,cy+6,104,104,74);return petals(p[0],p[1]+15,15,[{g:'fruit',key:'G',color:C.bone}],{r:15})+text(p[0]+13,p[1]-11,'2',{size:13.5,weight:500})})()
+    + fieldNote(cx+150,cy-2,'Rondo',{diet:'leaf',rel:2})
+    + hud({targetBearing:40})
+});
+</script></body></html>

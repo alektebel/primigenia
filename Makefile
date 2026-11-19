@@ -468,6 +468,21 @@ godot-lineage-evidence: godot
 $(BUILD)/social_test: tests/test_social.c $(HDRS) $(BUILD)/libcpore.a
 	$(CC) $(CFLAGS) $< $(BUILD)/libcpore.a -o $@ $(LDLIBS)
 
+# The diegetic UI (docs/godot/UI-DIEGETIC.md, PLAN-ui-diegetic.md). Render test of the ground marks (software GL), then one capture per mockup state (JPG).
+.PHONY: godot-ground-marks-render-test
+godot-ground-marks-render-test: godot
+	LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 900 xvfb-run -a -s "-screen 0 1280x720x24" \
+	  $(GODOT) --rendering-driver opengl3 --max-fps 15 --resolution 1280x720 --path godot --script res://game/tests/render_ground_marks.gd
+.PHONY: godot-ui-diegetic-evidence
+godot-ui-diegetic-evidence: godot
+	@mkdir -p docs/evidence/godot/ui-diegetic
+	for run in "move_marker,idle,selected,befriend,combat,carcass,low_health,menu,loadout,keys,minimap midday" \
+	  "befriend dawn" "combat evening" "sheet midday"; do \
+	  LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 1800 xvfb-run -a -s "-screen 0 1280x720x24" \
+	    $(GODOT) --rendering-driver opengl3 --max-fps 15 --resolution 1280x720 --path godot \
+	    --script res://tests/ui_diegetic_evidence.gd -- $(CURDIR)/docs/evidence/godot/ui-diegetic $$run || exit 1; \
+	done
+
 # C2 social loop through the real island and UI (software GL). Evidence strip: make godot-social-evidence
 .PHONY: godot-social-test godot-social-evidence
 godot-social-test: godot

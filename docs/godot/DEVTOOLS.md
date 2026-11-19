@@ -14,7 +14,7 @@ Implements `PLAN-devtools.md` and `PLAN-heights.md`. Code: `godot/devtools/`, C:
   ring, time control, v3 export.
 
 ## Keys (InputMap actions, physical keycodes; the legend shows the real label)
-F1 legend (hold = sheet, tap = corner hint) in all builds. Dev builds: console on the key left of 1 or F12; F2 sites picker, Ctrl+B
+F1 legend in all builds: hold = the key sheet (a veil with Alegreya text and outlined key caps, no panel; the menu's "Keys" pins it until Esc). The corner hint is off by default since the diegetic UI (docs/godot/UI-DIEGETIC.md; `legend.corner_visible`, a tap on F1 still toggles it); the onboarding hints replace it in play (D13 is the sheet only). `legend.json` lists `journal` (J) and `family_tree` (T) and the four ring gestures of the `radial` context; the `radial_*` letter actions are gone. Dev builds: console on the key left of 1 or F12; F2 sites picker, Ctrl+B
 bookmark; F3 tuning panel, F4 swap A/B; F5 quick save, F6 scenario picker; F8 feedback; P pause, `.` step, `[` `]` timescale.
 Reserved, not bound: F7 free camera, F9 scrubber, F10 overlays.
 
