@@ -7,7 +7,7 @@ var material: ShaderMaterial
 var sea: MeshInstance3D
 var lakes: MeshInstance3D
 
-# Cell indices that get a lake quad: every pond cell plus a one-cell dilation.
+# Cell indices that get a lake quad: every pond cell plus a one-cell dilation, except river cells.
 static func lake_cells(data) -> PackedInt32Array:
 	var n: int = data.n
 	var pond := PackedByteArray()
@@ -25,9 +25,21 @@ static func lake_cells(data) -> PackedInt32Array:
 					var jj := j + dj
 					if ii >= 0 and jj >= 0 and ii < n and jj < n and pond[jj * n + ii] == 1:
 						found = true
-			if found:
+			# River cells are the ribbons' water (rivers.gd, at the channel's own level): a lake quad there would lie over
+			# the channel as a flat slab with straight cell edges at the pond's level (a lighter chunk at a bend).
+			if found and not data.is_river(j * n + i):
 				out.append(j * n + i)
 	return out
+
+# Does the grid corner at the top-left of cell (i, j) touch a pond cell (the four cells around it)?
+static func _touches_pond(data, i: int, j: int) -> bool:
+	for dj in range(-1, 1):
+		for di in range(-1, 1):
+			var ii := i + di
+			var jj := j + dj
+			if ii >= 0 and jj >= 0 and ii < data.n and jj < data.n and data.is_pond(jj * data.n + ii) and not data.is_river(jj * data.n + ii):
+				return true
+	return false
 
 # Surface level of a lake quad: the highest routing level among the pond cells around it.
 static func lake_level(data, k: int) -> float:
@@ -67,6 +79,7 @@ func build(data) -> void:
 	if cells.is_empty():
 		return
 	var verts := PackedVector3Array()
+	var cols := PackedColorArray()
 	var idx := PackedInt32Array()
 	var half: float = data.cell * 0.5
 	for k in cells:
@@ -74,6 +87,12 @@ func build(data) -> void:
 		var cx: float = data.cell_center(k % data.n)
 		var cz: float = data.cell_center(k / data.n)
 		var base := verts.size()
+		# COLOR.r = 1 on corners that touch a pond cell, 0 on the outer corners of the dilation ring: the shader fades the
+		# water out across the ring instead of ending in the straight edge of the quad (INTEGRATION-QA bug 5).
+		var ci: int = k % data.n
+		var cj: int = k / data.n
+		for corner in [[-1, -1], [0, -1], [0, 0], [-1, 0]]:
+			cols.append(Color(1.0 if _touches_pond(data, ci + corner[0] + 1, cj + corner[1] + 1) else 0.0, 0.0, 0.0, 1.0))
 		verts.append(Vector3(cx - half, level, cz - half))
 		verts.append(Vector3(cx + half, level, cz - half))
 		verts.append(Vector3(cx + half, level, cz + half))
@@ -82,6 +101,7 @@ func build(data) -> void:
 	var arrays := []
 	arrays.resize(Mesh.ARRAY_MAX)
 	arrays[Mesh.ARRAY_VERTEX] = verts
+	arrays[Mesh.ARRAY_COLOR] = cols
 	arrays[Mesh.ARRAY_INDEX] = idx
 	var mesh := ArrayMesh.new()
 	mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
