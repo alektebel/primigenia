@@ -374,6 +374,9 @@ def process(w, args, opus_wait=False):
         mark("got", "none (species-only world)")
     # 3 species
     if ctx.get("species") and st["steps"].get("species") != "ok":
+        if st["steps"].get("species") == "redo":  # seeds were added: regenerate graph.json (finished seeds are cached)
+            try: os.remove(os.path.join(gdir, "species", "graph.json"))
+            except OSError: pass
         ok = retry("species", lambda: sh([PY, got, "species"], env, cwd), lambda: os.path.exists(os.path.join(gdir, "species", "graph.json")), tries=5)
         mark("species", "ok" if ok else "FAILED")
     # 4 import
