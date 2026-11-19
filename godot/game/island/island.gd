@@ -10,6 +10,8 @@ const Rivers := preload("res://game/island/rivers.gd")
 const Clouds := preload("res://game/island/clouds.gd")
 const Grass := preload("res://game/island/grass.gd")
 const StageWorld := preload("res://game/stage/stage_world.gd")
+const CaveSite := preload("res://game/island/cave_site.gd")
+const DayNight := preload("res://game/island/day_night.gd")
 const StageSetup := preload("res://game/stage/stage_setup.gd")
 const Profile := preload("res://game/stage/profile.gd")
 const PlayerInput := preload("res://game/player/player_input.gd")
@@ -30,6 +32,9 @@ const ActionFeed := preload("res://actions/action_feed.gd")
 var terrain_chunks: Node3D
 var world_env: WorldEnvironment
 var sun: DirectionalLight3D
+var day_night                  # DayNight: sun, ambient and exposure follow the C clock
+var cave_site                  # CaveSite: the hidden chamber (null/off when the world has none)
+var _hidden := {}              # entity id -> true while a nocturnal creature sleeps (draw nothing)
 var water: Node3D
 var rivers: Node3D
 var grass: MultiMeshInstance3D
@@ -151,7 +156,7 @@ func _build_stage() -> void:
 		push_error("the island field was rejected: %s" % stage.world.last_error())
 		return
 	stage.world.reset({"terrain": 2})     # a probe state so StageSetup can ask the C walk rule
-	var setup := StageSetup.build(Game.data, int(Game.settings.seed), pr.profile, garfio_profile, bool(Game.settings.wild), stage.world, bool(Game.settings.get("herds", true)))
+	var setup := StageSetup.build(Game.data, int(Game.settings.seed), pr.profile, garfio_profile, bool(Game.settings.wild), stage.world, bool(Game.settings.get("herds", true)), bool(Game.settings.get("secrets", true)))
 	stage.process_priority = -10     # the world ticks before the actors read it (action timing, G77)
 	add_child(stage)
 	_nest = setup.nest
@@ -204,6 +209,7 @@ func _build_stage() -> void:
 	stage_ui.name = "StageUI"
 	add_child(stage_ui)
 	stage_ui.setup(self, str(genome.get("name", "Merodeador")))
+	_build_secrets(ground)      # before the part nodes: the cave fossil stands on the chamber floor, not on the rock above it
 	var part_nodes := preload("res://game/stage/part_nodes.gd").new()
 	add_child(part_nodes)
 	part_nodes.setup(stage, ground)
@@ -311,18 +317,18 @@ func load_scenario(parsed: Dictionary) -> String:
 # procedural creature builder and realism layer as the player. The C collision radius is the same 0.6 m for all four
 # (radius_cm 0 in CP_STAGE_SPECIES), so the scale puts each body's footprint width at about that circle: Garfio's is 1.12 m
 # unscaled, Rondo 1.22 x 0.8, Zanco 1.08 x 0.75 (tall: legs and neck), Espinodo 1.72 x 0.65 (its tail hammer sticks out).
-const SPECIES_BODY := ["rondo", "zanco", "espinodo", "garfio"]
-const SPECIES_SCALE := [0.8, 0.75, 0.65, 1.0]
+const SPECIES_BODY := ["rondo", "zanco", "espinodo", "garfio", "acechalunas", "babosa"]
+const SPECIES_SCALE := [0.8, 0.75, 0.65, 1.0, 0.8, 0.85]
 static var _body_cache := {}
 
 func _species_body(species: int) -> Dictionary:
-	var k := clampi(species, 0, 3)
+	var k := clampi(species, 0, SPECIES_BODY.size() - 1)
 	if not _body_cache.has(k):
 		_body_cache[k] = Profile.load_json("res://game/data/%s.json" % SPECIES_BODY[k])
 	return _body_cache[k].duplicate(true)
 
 func _species_scale(species: int) -> float:
-	return SPECIES_SCALE[clampi(species, 0, 3)]
+	return SPECIES_SCALE[clampi(species, 0, SPECIES_SCALE.size() - 1)]
 
 # Creatures that appear after the build (console spawn, restored scenarios) get a body when their species has one.
 func _sync_hosts() -> void:
@@ -344,12 +350,38 @@ func _sync_hosts() -> void:
 		if stage_ui != null:
 			h.footfall.connect(stage_ui.on_footfall)
 
+# C2 secrets: the hidden cave chamber (ground rule + interior), the five shards and the day/night dressing. The C world owns all
+# three (stage_secrets.c); a world reset without secrets simply has nothing to draw.
+func _build_secrets(ground: Callable) -> void:
+	day_night = DayNight.new()
+	day_night.name = "DayNight"
+	day_night.env = world_env.environment
+	day_night.sun = sun
+	add_child(day_night)
+	day_night.apply_state(stage.cur)
+	day_night.k = float(stage.cur.get("day", {}).get("light", 1000)) / 1000.0
+	day_night.update_now()
+	stage.ticked.connect(day_night.apply_state)
+	var cave: Dictionary = stage.cur.get("cave", {})
+	cave_site = CaveSite.from_state(cave)
+	Game.data.cave_site = cave_site if cave_site.on else null
+	if cave_site.on:
+		cave_site.build(self)
+	if not stage.cur.get("shards", {}).get("items", []).is_empty():
+		var shards := preload("res://game/stage/shard_nodes.gd").new()
+		add_child(shards)
+		shards.setup(stage, ground)
+
 func _update_actors(dt: float) -> void:
 	_sync_hosts()
 	action_signals = action_feed.read(stage.prev, stage.cur, stage.alpha())
 	var tick: int = int(stage.cur.combat.tick)
 	var alpha: float = stage.alpha()
 	var p0: Vector3 = stage.sample(0).pos
+	_hidden.clear()
+	for e in stage.cur.entities:
+		if bool(e.get("hidden", false)):
+			_hidden[int(e.id)] = true
 	for id in hosts:
 		var sm: Dictionary = stage.sample(id)
 		if id == 0:
@@ -395,6 +427,7 @@ func _update_actors(dt: float) -> void:
 
 func _update_camera(dt: float) -> void:
 	if not chase_enabled or chase == null:
+		_apply_zoom_budget(chase.z if chase != null else 0.0)    # creature visibility (hidden sleepers) must not depend on the chase camera
 		return
 	var p: Dictionary = stage.sample(0)
 	var state: Dictionary = stage.cur
@@ -408,11 +441,31 @@ func _update_camera(dt: float) -> void:
 	var r: Dictionary = chase.update({"x": p.pos.x, "z": p.pos.z, "yaw": p.yaw, "speed": p.speed, "vx": p.vel.x, "vz": p.vel.z}, enemy, fighting, dt, vp.x / maxf(vp.y, 1.0))
 	camera.fov = 48.0 + float(r.fov_add)
 	camera.near = clampf(float(r.distance) * 0.012, 0.25, 40.0)       # keep the depth buffer precise at 3 km
-	camera.position = r.position
-	camera.look_at(r.aim)
+	var view := _cave_camera(r, p.pos)
+	camera.position = view.position
+	camera.look_at(view.aim)
 	player_input.view_yaw = chase.view_yaw
 	_apply_zoom_budget(chase.z)
 	icons.update_alpha(chase.icon_alpha())
+
+# Inside the hidden cave the chase camera is replaced by a close one under the roof: 6.5 m back along the chase direction and 2.4 m
+# up, pulled toward the player until it is inside the shell (or in front of the mouth, in the open air), no higher than the roof.
+func _cave_camera(r: Dictionary, player: Vector3) -> Dictionary:
+	if cave_site == null or not cave_site.on or cave_site.zone(player.x, player.z) == 0:
+		return {"position": r.position, "aim": r.aim}
+	var back := Vector3(r.position.x - player.x, 0.0, r.position.z - player.z)
+	back = Vector3(0, 0, 1) if back.length() < 0.1 else back.normalized()
+	var fl: float = cave_site.floor_h
+	var cam: Vector3 = player + back * 6.5 + Vector3(0, 2.4, 0)
+	for i in 12:
+		var roof: float = cave_site.roof_at(cam.x, cam.z)
+		if (roof < 1e8 and roof > 1.6) or cave_site.frame(cam.x, cam.z).x < -3.0:
+			break
+		cam = player + (cam - player) * 0.8
+	var roof2: float = cave_site.roof_at(cam.x, cam.z)
+	var top: float = fl + (roof2 - 0.7 if roof2 < 1e8 else 6.0)
+	cam.y = clampf(cam.y, fl + 0.6, maxf(top, fl + 1.0))
+	return {"position": cam, "aim": player + Vector3(0, 1.0, 0)}
 
 # Cheap far zoom: grass, sun shadows and creature models are off where they cannot be seen (icons replace models).
 func _apply_zoom_budget(zz: float) -> void:
@@ -422,9 +475,11 @@ func _apply_zoom_budget(zz: float) -> void:
 		grass.visible = not far
 		sun.shadow_enabled = not far
 	var models := zz < MODEL_OFF_Z
-	for h in hosts.values():
-		if h.visible != models:
-			h.visible = models
+	for id in hosts:
+		var h = hosts[id]
+		var want: bool = models and not _hidden.has(id)
+		if h.visible != want:
+			h.visible = want
 
 # Default sites for the strategic map: the nest, and the den of the wild species (a `?` until the player has come
 # within DEN_SEEN metres). The sites registry (D2) replaces this through `pois_fn` (see strategic_icons.gd).
@@ -442,7 +497,7 @@ func _icon_actors() -> Array:
 		return out
 	for id in hosts:
 		var e: Dictionary = stage.cur.entities[id]
-		if e.get("dead", false):
+		if e.get("dead", false) or bool(e.get("hidden", false)):
 			continue
 		var smp: Dictionary = stage.sample(id)
 		out.append({"id": id, "kind": "player" if id == 0 else "creature", "pos": smp.pos, "yaw": smp.yaw})

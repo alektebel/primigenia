@@ -71,6 +71,8 @@ static int replay(const char *path){
     int version,ticks;
     CpStageDebugEntry *debug=NULL;
     int n_debug=0,legs_n=-1,legs[CP_STAGE_MAX_WILD+1]={0};
+    int sec_bits=0,sec_clock=0,sec_cave=0;
+    float sec_v[7]={0};   /* C2 secrets header line: `secrets <bits> <start_clock> <cave_on> <x z fx fz half length radius>` */
     if(fscanf(f,"%31s%d",magic,&version)!=2||strcmp(magic,"CPORE_WORLD_LOG")||(version!=2&&version!=3))goto invalid;
     if(version==3){
         long mark;
@@ -84,6 +86,10 @@ static int replay(const char *path){
                 /* legs <n_wild> <player> <wild...>: leg counts (0 = 4), written only when one is set */
                 if(fscanf(f,"%d",&legs_n)!=1||legs_n<0||legs_n>CP_STAGE_MAX_WILD)goto invalid;
                 for(int i=0;i<=legs_n;i++)if(fscanf(f,"%d",&legs[i])!=1)goto invalid;
+            }
+            else if(!strcmp(word,"secrets")){
+                if(fscanf(f,"%d%d%d",&sec_bits,&sec_clock,&sec_cave)!=3||sec_bits<0||sec_bits>3||sec_clock<0||sec_clock>=CP_STAGE_DAY_TICKS)goto invalid;
+                for(int i=0;i<7;i++)if(fscanf(f,"%f",&sec_v[i])!=1)goto invalid;
             }
             else if(!strcmp(word,"field")){
                 unsigned seed;
@@ -109,6 +115,9 @@ static int replay(const char *path){
         CpStageObstacle *o=&setup.obstacles[i];
         if(fscanf(f,"%f%f%f%d",&o->x,&o->z,&o->r,&o->type)!=4)goto invalid;
     }
+    setup.secrets=sec_bits;
+    setup.start_clock=sec_clock;
+    if(sec_cave)setup.cave=(CpStageCave){1,sec_v[0],sec_v[1],sec_v[2],sec_v[3],0,sec_v[4],sec_v[5],sec_v[6]};
     if(legs_n==setup.n){
         setup.player_legs=legs[0];
         for(int i=0;i<setup.n;i++)setup.wild[i].legs=legs[i+1];

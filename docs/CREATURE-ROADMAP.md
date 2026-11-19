@@ -25,7 +25,8 @@ L ≈ 2–4 weeks; usage limits are the real clock.
 | UI | HUD, G75 card and radial: attack, **befriend, observe, intimidate and eat work** (C2 social slices, branch `c2/social-loop`, pending review); select first, then choose; DNA/species/food meters, beat ring, trust and DNA popups; audio |
 | In flight | Nothing. Studio parity (`9b1abb7`, gaps in STUDIO-PARITY.md), rock material F2 (`ea0e31e`/`3eb3ece`, through step 10) and action animations F3 (`0e35914`, `b232e19`, `aaa35f2`) are merged; the only open F-item is owner approval of the baked sun shadows (off by default) |
 | In review | **C2 social loop** (`c2/social-loop`): befriend skills, gifts, trust and bonds, observe chains that teach moves, intimidate, eat, ally/dominate per species, DNA meters, agent face and Godot UI. Deferred inside it: egg counter and hatchling respawn, raids, body-part skill requirements (see P4.md) |
-| Missing | parts discovery, tiers, recipes, nest editing, journal; water, air, digging, secrets |
+| In review | **C2 secrets** (`c2/secrets-roster`, `docs/SECRETS-REPORT.md`): 5 meteor shards along one bent ray (certified on foot), the hidden cave as a real walkable chamber with a fossil, day and night (500 ticks an hour, the game starts at 08:00), the nocturnal Acechalunas (asleep and hidden by day, +50% trust in the dark) and a sixth species, Babosa (hunkers at noon). Roster is now 6 species |
+| Missing | parts discovery polish, tiers, recipes, journal; water, air, digging, the deep secrets |
 
 ---
 

@@ -478,7 +478,7 @@ const EV_CHAIN_DONE := 17
 const EV_INTIMIDATE := 18
 const EV_CANCELLED := 19
 const EV_EAT := 20
-const DNA_SOURCES := ["kill", "bond", "ally", "dominate", "carcass", "exploration", "new species"]
+const DNA_SOURCES := ["kill", "bond", "ally", "dominate", "carcass", "exploration", "new species", "duplicate part", "fossil", "old bones", "meteor shard"]
 
 func _on_social(state: Dictionary) -> void:
 	var soc: Dictionary = state.get("social", {})
@@ -605,6 +605,16 @@ func _social_event(ev: Dictionary, state: Dictionary) -> void:
 		for part in state.get("parts", {}).get("discovered", []):
 			if int(part.index) == int(ev.target):
 				ui.show_message(Strings.t("part_found", [part.id]), "info")
+		return
+	if int(ev.type) == 25:       # shard_found: the story line, one whisper (en/es), the shard's name as the moment
+		var items: Array = state.get("shards", {}).get("items", [])
+		var k := int(ev.move)
+		if k >= 0 and k < items.size() and items[k].has("line"):
+			ui.show_message(String(items[k].line_es if Strings.language() == "es" else items[k].line), "info")
+			ui.show_moment(Strings.t("shard_found", [Strings.t("shard_%d" % k), int(ev.value)]), "journal")
+		return
+	if int(ev.type) == 26:       # the cave: the passage, then the chamber
+		ui.show_message(Strings.t("cave_chamber" if int(ev.move) == 2 else "cave_passage"), "info")
 		return
 	var at := _target_pos(state, int(ev.target))
 	var gm = island.ground_marks
