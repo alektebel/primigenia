@@ -313,6 +313,16 @@ godot-menu-evidence:
 	@mkdir -p docs/evidence/godot/stage-menu
 	LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 600 xvfb-run -a -s "-screen 0 1920x1080x24" $(GODOT) --rendering-driver opengl3 --max-fps 15 --resolution 1280x720 --path godot \
 	  --script res://game/tests/menu_evidence.gd -- $(CURDIR)/docs/evidence/godot/stage-menu
+# The cell stage (godot/cell): play it, and its headless sim tests.
+.PHONY: godot-cell godot-cell-test godot-cell-evidence
+godot-cell:
+	$(GODOT) --path godot -- --cell
+godot-cell-test:
+	nice -n 10 timeout 600 $(GODOT) --headless --path godot --script res://cell/tests/cell_test.gd
+	nice -n 10 timeout 600 $(GODOT) --headless --path godot --script res://cell/tests/cell_ui_test.gd
+godot-cell-evidence:
+	@mkdir -p docs/evidence/godot/cell
+	LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 600 xvfb-run -a $(GODOT) --rendering-driver opengl3 --path godot --script res://cell/tests/cell_evidence.gd -- $(CURDIR)/docs/evidence/godot/cell
 # DT0 dev tools (PLAN-devtools): headless unit tests, evidence screenshots, agent socket test.
 .PHONY: godot-devtools-test godot-devtools-evidence godot-agent-test
 godot-devtools-test: godot
