@@ -39,6 +39,7 @@ static var _entered_once := false        # the full entrance plays the first tim
 
 var play_button: Button      # the Criatura card (kept by that name: the play test presses it)
 var cell_button: Button      # the Celula card
+var legacy_label: Label      # "Herencia de tu celula: ..." on the Criatura card, only when Game.cell_legacy() exists
 var creator_button: Button
 var continue_button: Button  # null without a save
 var quit_button: Button
@@ -117,6 +118,13 @@ func _build() -> void:
 	genome_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 	genome_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	body.add_child(genome_label)
+	var leg: Dictionary = Game.cell_legacy()
+	if not leg.is_empty():
+		legacy_label = _label(Strings.t("cell_legacy", [" · ".join([Strings.t("leg_diet_" + str(leg.diet)), Strings.t("leg_def_" + str(leg.defense)), Strings.t("leg_size_" + str(leg.size_class))])]), 14, Palette.MUTED)
+		legacy_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+		legacy_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		legacy_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		body.add_child(legacy_label)
 	var acts := HBoxContainer.new()
 	acts.add_theme_constant_override("separation", 10)
 	body.add_child(acts)

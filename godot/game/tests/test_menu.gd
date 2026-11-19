@@ -53,7 +53,11 @@ func _run() -> void:
 		return
 	game.settings["language"] = "es"
 	game.settings["reduced_motion"] = false
+	var legacy_path := "user://cell_legacy_menu_test.json"
+	DirAccess.remove_absolute(legacy_path)
+	game.legacy_path = legacy_path
 	var m: Control = await _menu()
+	ok(m.legacy_label == null, "no cell legacy: the Criatura card shows no 'Herencia' line")
 	var cell_exists := ResourceLoader.exists("res://cell/cell_stage.tscn")
 	ok(m.play_button != null and m.cell_button != null and m.cards.size() == 2, "both playable cards exist")
 	ok(m.cell_button.disabled == not cell_exists, "Celula is disabled exactly when the cell scene is missing (scene present: %s)" % cell_exists)
@@ -125,6 +129,20 @@ func _run() -> void:
 	ok(is_equal_approx(lift2.position.y, 0.0), "reduced motion: hover does not move the card")
 	m2.queue_free()
 	game.settings["reduced_motion"] = false
+	await _frames(2)
+	# the cell's legacy shows on the Criatura card once the cell stage wrote it
+	var Legacy = load("res://cell/cell_legacy.gd")
+	Legacy.save(Legacy.derive({"atp_min": 170, "mem": 98, "tier": 3, "pieces": {"fl": 12, "spn": 4, "ldh": 3, "pk": 3}}, {"cells": 7, "defense": 1}), legacy_path)
+	game.settings["language"] = "es"
+	var m3: Control = await _menu()
+	ok(m3.legacy_label != null and m3.legacy_label.text == "Herencia de tu célula: cazador · espinas · mediano", "the Criatura card shows the legacy (%s)" % (m3.legacy_label.text if m3.legacy_label != null else "none"))
+	ok(m3.legacy_label != null and m3.play_button.get_meta("text_box").is_ancestor_of(m3.legacy_label), "on the Criatura card")
+	m3.queue_free()
+	game.settings["language"] = "en"
+	var m4: Control = await _menu()
+	ok(m4.legacy_label != null and m4.legacy_label.text == "Your cell's legacy: hunter · spines · medium", "and in English (%s)" % (m4.legacy_label.text if m4.legacy_label != null else "none"))
+	m4.queue_free()
+	DirAccess.remove_absolute(legacy_path)
 	await _frames(2)
 	print("menu tests: %d checks, %d failures" % [checks, fails])
 	quit(1 if fails else 0)

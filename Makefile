@@ -314,11 +314,13 @@ godot-menu-evidence:
 	LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 600 xvfb-run -a -s "-screen 0 1920x1080x24" $(GODOT) --rendering-driver opengl3 --max-fps 15 --resolution 1280x720 --path godot \
 	  --script res://game/tests/menu_evidence.gd -- $(CURDIR)/docs/evidence/godot/stage-menu
 # The cell stage (godot/cell): play it, and its headless sim tests.
-.PHONY: godot-cell godot-cell-test godot-cell-evidence
+.PHONY: godot-cell godot-cell-test godot-cell-evidence godot-cell2-evidence
 godot-cell:
 	$(GODOT) --path godot -- --cell
 godot-cell-test:
 	nice -n 10 timeout 600 $(GODOT) --headless --path godot --script res://cell/tests/cell_test.gd
+	nice -n 10 timeout 900 $(GODOT) --headless --path godot --script res://cell/tests/threats_test.gd
+	nice -n 10 timeout 600 $(GODOT) --headless --path godot --script res://cell/tests/colony_test.gd
 	nice -n 10 timeout 600 $(GODOT) --headless --path godot --script res://cell/tests/cell_ui_test.gd
 godot-cell-evidence:
 	@mkdir -p docs/evidence/godot/cell
@@ -627,3 +629,6 @@ godot-journal-nest-evidence: godot
 	for cfg in "1280 720 es" "1024 600 es" "1024 600 en"; do set -- $$cfg; \
 	  LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 600 xvfb-run -a -s "-screen 0 $$1x$$2x24" $(GODOT) --rendering-driver opengl3 --max-fps 15 --resolution $$1x$$2 --path godot \
 	    --script res://game/tests/journal_nest_evidence.gd -- $(CURDIR)/docs/evidence/godot/journal/nest $$3 _$$1x$$2_$$3 || exit 1; done
+godot-cell2-evidence:
+	@mkdir -p docs/evidence/godot/cell2
+	LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 900 xvfb-run -a $(GODOT) --rendering-driver opengl3 --path godot --script res://cell/tests/cell2_evidence.gd -- $(CURDIR)/docs/evidence/godot/cell2
