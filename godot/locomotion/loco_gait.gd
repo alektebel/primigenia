@@ -8,7 +8,7 @@ extends RefCounted
 const G := 9.81
 const FR_WALK_RUN := 0.5
 const FR_TROT_GALLOP := 2.5
-const FR_HEAVY_RUN := 1.4
+const FR_HEAVY_RUN := 1.8
 const HYSTERESIS := 0.05
 
 ## Per-plan ladders: [slower gait, faster gait, Fr of the change].
@@ -18,7 +18,7 @@ static func ladder(morph) -> Array:
 			return [[&"walk", &"run", FR_WALK_RUN]]
 		&"quadruped":
 			if morph.graviportal:
-				# heavy bodies never leave the ground for long: a running amble, then a heavy trot (rhino-like)
+				# heavy bodies never leave the ground for long: a running amble, then a heavy trot with no flight (duty 0.5, elephant-like)
 				return [[&"walk", &"amble", FR_WALK_RUN], [&"amble", &"trot", FR_HEAVY_RUN]]
 			return [[&"walk", &"trot", FR_WALK_RUN], [&"trot", &"gallop", FR_TROT_GALLOP]]
 		&"multi":
@@ -60,7 +60,7 @@ static func duty(gait: StringName, fr: float, heavy := false) -> float:
 		&"ripple": return clamp(0.5 * pow(f, -0.15), 0.5, 0.85)
 		&"amble": return clamp(0.45 * pow(f, -0.2), 0.3, 0.52)
 		&"run", &"trot", &"hop":
-			return clamp(0.40 * pow(f, -0.2), 0.4 if heavy else 0.2, 0.48)
+			return clamp(0.40 * pow(f, -0.2), 0.5 if heavy else 0.2, 0.5 if heavy else 0.48)
 		&"gallop": return clamp(0.36 * pow(f, -0.25), 0.15, 0.32)
 	return 1.0
 
