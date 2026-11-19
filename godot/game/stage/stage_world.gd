@@ -38,10 +38,18 @@ var achieved_scale := 1.0     # simulated seconds per real second in the last fr
 const RING_EVERY := 100
 const RING_KEEP := 8
 
+# Setting edit_anywhere: the creature may be edited away from the nest (the C rule stays; the flag is not hashed and not a
+# tick input, so the world is re-told after every reset and restore, which would otherwise bring back a snapshot's value).
+var edit_anywhere := false:
+	set(v):
+		edit_anywhere = v
+		world.set_edit_anywhere(v)
+
 func reset(setup: Dictionary) -> int:
 	var rc := world.reset(setup)
 	if rc != 0:
 		return rc
+	world.set_edit_anywhere(edit_anywhere)
 	_setup = world.get_setup()
 	cur = world.state()
 	prev = cur
@@ -65,6 +73,7 @@ func restore_from(bytes: PackedByteArray) -> int:
 	var rc := world.restore(bytes)
 	if rc != 0:
 		return rc
+	world.set_edit_anywhere(edit_anywhere)
 	_setup = world.get_setup()
 	cur = world.state()
 	prev = cur

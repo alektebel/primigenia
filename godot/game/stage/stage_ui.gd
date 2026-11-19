@@ -87,6 +87,9 @@ func setup(island_node: Node3D, name_text: String) -> void:
 	ui.loadout_panel.assign.connect(assign_loadout)
 	ui.loadout_requested.connect(toggle_loadout_panel)
 	ui.nest_requested.connect(open_nest_editor)
+	ui.menu.setting_changed.connect(func(key: String, v) -> void:
+		if key == "edit_anywhere":
+			stage.edit_anywhere = bool(v))
 	ui.gift_pressed.connect(give_gift)
 	ui.gift_cycle_pressed.connect(cycle_gift)
 	ui.pause_toggled.connect(_on_pause)
@@ -334,6 +337,7 @@ func _on_tick(state: Dictionary) -> void:
 		ui.set_loadout_abilities(_loadout_abilities(lo))
 	ui.set_cooldowns(_cooldown_fractions(state, ui.loadout_abilities))
 	ui.set_loadout_available(bool(lo.can_edit))
+	ui.set_nest_edit_available(bool(state.get("parts", {}).get("can_edit", false)))
 	if ui.loadout_panel.visible_open:
 		ui.loadout_panel.refresh(lo)
 		if not bool(lo.can_edit):

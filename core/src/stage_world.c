@@ -1816,7 +1816,7 @@ int cp_stage_observe_v(const CpStageWorld *w,char *out,size_t cap,int version){
         if(cp_stage_social_legal(w,CP_STAGE_GIFT))ADD(",\"gift\"");
     }
     if(version==2&&!w->parts.lost){
-        if(cp_stage_at_nest(w))ADD(",\"buy_part\",\"buy_level\",\"buy_tier\",\"edit\"");
+        if(cp_stage_can_edit(w))ADD(",\"buy_part\",\"buy_level\",\"buy_tier\",\"edit\"");
         for(int i=0;i<w->parts.n_nodes;i++){float dx=w->player.x-w->parts.nodes[i].x,dz=w->player.z-w->parts.nodes[i].z;
             if(!w->parts.nodes[i].inspected&&w->active<0&&!w->respawn_ticks&&dx*dx+dz*dz<=6.25f){ADD(",\"inspect\"");break;}}
         if(w->secrets.on&&w->active<0&&!w->respawn_ticks)for(int k=0;k<CP_STAGE_SHARDS;k++){float dx=w->player.x-w->secrets.shard[k][0],dz=w->player.z-w->secrets.shard[k][1];
@@ -1999,7 +1999,7 @@ uint64_t cp_stage_layout(void){
     LAY(CpStageWorld,respawn_ticks);LAY(CpStageWorld,cooldown_ticks);LAY(CpStageWorld,arena_x);
     LAY(CpStageWorld,arena_z);LAY(CpStageWorld,combat);LAY(CpStageWorld,bot);LAY(CpStageWorld,combat_orders);
     LAY(CpStageWorld,accepted);LAY(CpStageWorld,last_error);LAY(CpStageWorld,hash);LAY(CpStageWorld,motion);
-    LAY(CpStageWorld,debug_flags);LAY(CpStageWorld,reserved);LAY(CpStageWorld,field_hash);LAY(CpStageWorld,path);LAY(CpStageWorld,n_path);LAY(CpStageWorld,path_i);
+    LAY(CpStageWorld,debug_flags);LAY(CpStageWorld,edit_anywhere);LAY(CpStageWorld,field_hash);LAY(CpStageWorld,path);LAY(CpStageWorld,n_path);LAY(CpStageWorld,path_i);
     LAY(CpStageWorld,blocked_ticks);LAY(CpStageWorld,replans);LAY(CpStageWorld,path_goal_x);LAY(CpStageWorld,path_goal_z);
     LAY(CpStageWorld,blocked_reason);LAY(CpStageWorld,blocked_x);LAY(CpStageWorld,blocked_z);LAY(CpStageWorld,ev_total);
     LAY(CpStageWorld,ev_acked);LAY(CpStageWorld,events);LAY(CpStageWorld,loadout);LAY(CpStageWorld,social);LAY(CpStageWorld,ledger);LAY(CpStageWorld,ancestry);LAY(CpStageWorld,parts);LAY(CpStageWorld,secrets);LAY(CpStageWorld,field);lay(&h,sizeof(CpStageSecrets));lay(&h,sizeof(CpStageCave));lay(&h,sizeof(CpStageSocial));lay(&h,sizeof(CpStageSocialCreature));lay(&h,sizeof(CpStageEvent));

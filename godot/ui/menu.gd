@@ -50,6 +50,7 @@ var column := 0                       # 0 the list, 1 the settings
 var focus := 0                        # index in the list
 var row_focus := 0                    # index in the settings
 var loadout_available := false
+var nest_edit_available := false      # the C world accepts a creature edit here (at the nest, or anywhere with Edit anywhere)
 var rows: Array = []                  # the settings rows: {key, label, kind, options?, min, max}
 var _alpha := 0.0
 var _hover_t := 0.0
@@ -70,6 +71,7 @@ func _build_rows() -> void:
 		{"key": "strong_outlines", "label": "outlines", "kind": "choice", "options": ["off", "on"]},
 		{"key": "reduced_motion", "label": "less_motion", "kind": "choice", "options": ["off", "on"]},
 		{"key": "minimap", "label": "minimap", "kind": "choice", "options": ["off", "on"]},
+		{"key": "edit_anywhere", "label": "edit_anywhere", "kind": "choice", "options": ["off", "on"]},
 		{"key": "renderer", "label": "renderer", "kind": "choice", "options": ["r_auto", "r_high", "r_compat"]},
 		{"key": "master", "label": "master", "kind": "slider", "min": 0.0, "max": 1.0},
 		{"key": "music", "label": "music", "kind": "slider", "min": 0.0, "max": 1.0},
@@ -91,8 +93,10 @@ func item_enabled(id: String) -> bool:
 	match id:
 		"load":
 			return slot_exists()
-		"loadout", "nest_edit":
+		"loadout":
 			return loadout_available
+		"nest_edit":
+			return nest_edit_available
 		"family_tree", "journal", "keys":
 			return true
 	return true
@@ -117,7 +121,7 @@ func value_of(key: String) -> Variant:
 		return Strings.language()
 	if key == "renderer":
 		return str(_game_settings().get("renderer", "auto"))
-	return _game_settings().get(key, false if key != "ui_scale" else 1.0)
+	return _game_settings().get(key, (key == "edit_anywhere") if key != "ui_scale" else 1.0)
 
 func choice_index(row: Dictionary) -> int:
 	var v: Variant = value_of(row.key)

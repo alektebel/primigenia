@@ -57,6 +57,7 @@ const TABLE := {
 	"outlines": ["Stronger outlines", "Contornos más fuertes"],
 	"less_motion": ["Less motion", "Menos movimiento"],
 	"minimap": ["Round map", "Mapa redondo"],
+	"edit_anywhere": ["Edit anywhere", "Editar donde sea"],
 	"renderer": ["Renderer (restart)", "Render (al reiniciar)"],
 	"r_auto": ["Auto", "Auto"],
 	"r_high": ["High", "Alto"],

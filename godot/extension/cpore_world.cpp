@@ -307,6 +307,7 @@ void CporeWorld::_bind_methods() {
     ClassDB::bind_method(D_METHOD("nest_edit", "body"), &CporeWorld::nest_edit);
     ClassDB::bind_method(D_METHOD("nest_apply", "body"), &CporeWorld::nest_apply);
     ClassDB::bind_method(D_METHOD("set_tiers", "on"), &CporeWorld::set_tiers);
+    ClassDB::bind_method(D_METHOD("set_edit_anywhere", "on"), &CporeWorld::set_edit_anywhere);
     ClassDB::bind_method(D_METHOD("lineage"), &CporeWorld::lineage);
     ClassDB::bind_method(D_METHOD("lineage_form", "body", "profile", "parts", "name", "evolve"), &CporeWorld::lineage_form);
     ClassDB::bind_method(D_METHOD("lineage_perk", "kind", "serial", "amount"), &CporeWorld::lineage_perk);
@@ -741,3 +742,4 @@ int CporeWorld::lineage_perk(int kind,int serial,int amount){if(serial<=0)return
 int CporeWorld::nest_edit(const String &body){CharString text=body.utf8();return cp_stage_edit(world.get(),text.get_data());}
 int CporeWorld::nest_apply(const String &body){CharString text=body.utf8();return cp_stage_apply(world.get(),text.get_data());}
 void CporeWorld::set_tiers(bool on){cp_stage_set_tiers(world.get(),on?1:0);}
+void CporeWorld::set_edit_anywhere(bool on){cp_stage_set_edit_anywhere(world.get(),on?1:0);}

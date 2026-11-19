@@ -563,6 +563,9 @@ func _onboard(dt: float) -> void:
 	words.set_hint(h.get("text", ""), h.get("keys", ""))
 	ring.names_all = selections <= 3 or onboarding.current == 3
 
+func set_nest_edit_available(on: bool) -> void:
+	menu.nest_edit_available = on
+
 func set_loadout_available(on: bool) -> void:
 	loadout_available = on
 	menu.loadout_available = on

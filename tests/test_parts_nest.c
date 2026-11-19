@@ -18,6 +18,12 @@ static void genomes(void){
  assert(!cp_stage_edit(&w,f.body));assert(w.ancestry.count==2&&w.ancestry.forms[0].cousin_id>0);assert(w.social.dna_total==total);
  int gained=0;for(unsigned i=0;i<w.ledger.count;i++)if(w.ledger.entries[i].kind==CP_LEDGER_EVOLVED)gained++;assert(gained==1);
  w.player.x=w.setup.nest_x+13;assert(cp_stage_edit(&w,f.body)==CP_STAGE_ERR_NOT_AT_NEST);
+ /* edit_anywhere: the 12 m rule stays, the flag is explicit, never hashed, and fights still block it. */
+ {uint64_t h0=cp_stage_hash(&w);assert(!cp_stage_can_edit(&w)&&!cp_stage_at_nest(&w));
+  cp_stage_set_edit_anywhere(&w,1);assert(cp_stage_hash(&w)==h0);assert(cp_stage_can_edit(&w)&&!cp_stage_at_nest(&w));
+  w.active=0;assert(!cp_stage_can_edit(&w));assert(cp_stage_edit(&w,f.body)==CP_STAGE_ERR_NOT_AT_NEST);w.active=-1;
+  assert(!cp_stage_edit(&w,f.body));assert(w.ancestry.count==3);
+  cp_stage_set_edit_anywhere(&w,0);assert(!cp_stage_can_edit(&w)&&cp_stage_edit(&w,f.body)==CP_STAGE_ERR_NOT_AT_NEST);}
  reset(78);assert(!cp_stage_lineage_form(&w,&f,0));char changed[CP_LINEAGE_BODY_CAP];strcpy(changed,f.body);char *name=strstr(changed,"pico");memcpy(name,"romo",4);int romo=cp_stage_part_id("romo");assert(!cp_stage_part_find(&w,romo,CP_PART_FOSSIL));w.social.dna_balance=100;assert(!cp_stage_part_buy(&w,romo,0));
  assert(cp_stage_edit(&w,"{\"schema\":\"cpore.creature/5\"}")<0);
  assert(!cp_stage_edit(&w,changed));int diff=0;for(unsigned i=0;i<w.ledger.count;i++)if(w.ledger.entries[i].kind==CP_LEDGER_PART_GAINED||w.ledger.entries[i].kind==CP_LEDGER_PART_LOST)diff++;assert(diff==2);

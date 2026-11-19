@@ -900,3 +900,13 @@ func test_creature_bars() -> void:
 		bars._process(0.05)
 	ok(bars._bars.is_empty(), "bars: they fade out and go when nothing qualifies")
 	bars.free()
+	# brief creature-fixes 4: the pause settings have an "Edit anywhere" row (default on) and the menu's creature edit follows the world, not the loadout
+	var mn = preload("res://ui/menu.gd").new()
+	mn._build_rows()
+	ok(mn.rows.any(func(r): return r.key == "edit_anywhere"), "settings: the Edit anywhere row exists")
+	ok(Strings.t("edit_anywhere") != "edit_anywhere", "settings: the Edit anywhere row has a label")
+	ok(bool(mn.value_of("edit_anywhere")) == bool(root.get_node("Game").settings.get("edit_anywhere", true)) and bool(root.get_node("Game").settings.get("edit_anywhere", false)), "settings: Edit anywhere is on by default")
+	mn.loadout_available = false
+	mn.nest_edit_available = true
+	ok(mn.item_enabled("nest_edit") and not mn.item_enabled("loadout"), "menu: Edit creature is enabled by the world's can_edit, the loadout by the nest")
+	mn.free()
