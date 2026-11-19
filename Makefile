@@ -343,6 +343,14 @@ godot-studio-test:
 	@mkdir -p $(BUILD)/studio-godot
 	nice -n 10 timeout 600 $(GODOT) --headless --path godot/studio --script res://tests/test_studio.gd
 	node godot/studio/tests/node_check.js
+# Creator direct manipulation (wheel scale, joints, spine arrows, actuator ring), real view, real input path.
+.PHONY: godot-studio-ix-test godot-studio-ix-evidence
+godot-studio-ix-test:
+	nice -n 10 timeout 600 $(GODOT) --headless --path godot --script res://studio/tests/test_interaction.gd
+godot-studio-ix-evidence:
+	@mkdir -p docs/evidence/godot/creator-ix
+	LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 900 xvfb-run -a -s "-screen 0 1280x720x24" $(GODOT) --rendering-driver opengl3 --max-fps 30 --resolution 1280x720 --path godot \
+	  --script res://studio/tests/ix_evidence.gd -- $(CURDIR)/docs/evidence/godot/creator-ix
 # Godot creature module (M1a, godot/creature). Headless tests; the import step
 # refreshes Godot's class_name cache. Evidence renders use software GL only.
 .PHONY: godot-creature-test godot-creature-evidence
