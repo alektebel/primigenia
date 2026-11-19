@@ -91,7 +91,7 @@ static func impact_basin(d, world_seed: int) -> Vector2:
 			center = p
 	return center
 
-static func habitats(d, s: Dictionary, noise: FastNoiseLite, impact: Vector2) -> Array:
+static func habitats(d, s: Dictionary, noise: FastNoiseLite, impact: Vector2, reserved := []) -> Array:
 	var p: Vector2 = s.p
 	var h: float = s.h
 	var mat: int = d.material[s.k]
@@ -131,6 +131,19 @@ static func habitats(d, s: Dictionary, noise: FastNoiseLite, impact: Vector2) ->
 		zones.append_array(["forest","litter","shade"])
 	elif mat == 0 and h < 300:
 		zones.append("meadow")
+	# Start-valley habitats (east of the western fog forest, on soil, away from the sea).
+	if mat == 0 and p.x >= -110 and not s.sea:
+		if h >= 15 and h <= 400 and s.up.y > 0.94 and pocket > 0.0:
+			zones.append("hollow")
+		if near_bank and h >= 15 and h <= 350:
+			zones.append("wet_fringe")
+		if h >= 30 and h <= 550 and s.up.y > 0.8 and s.up.y < 0.96 and pocket > 0.18 and p.length() > 60:
+			zones.append("valley_edge")
+		for i in reserved.size():
+			var dist: float = p.distance_to(reserved[i])
+			if dist > 10 and dist < 80 and h >= 15 and h <= 450 and pocket > -0.2:
+				zones.append("disturbed")
+				break
 	if near_bank:
 		zones.append("shade")
 	return zones
@@ -156,6 +169,7 @@ static func generate(d, setup: Dictionary, world_seed: int, density: float, rows
 	var reserved := [setup.nest]
 	for wild in setup.wild:
 		reserved.append(Vector2(wild.x, wild.z))
+	var camps := reserved.duplicate()
 	var by_zone := {}
 	for r in rows:
 		if not by_zone.has(r.habitat):
@@ -186,7 +200,7 @@ static func generate(d, setup: Dictionary, world_seed: int, density: float, rows
 			var s := site(d, p, reserved, blocked)
 			if s.is_empty():
 				continue
-			var zones := habitats(d, s, noise, impact)
+			var zones := habitats(d, s, noise, impact, camps)
 			var mat: int = d.material[s.k]
 			if not s.sea and mat in [1, 2, 3] and rng.randf() < 0.32:
 				var kind := "scree" if mat == 2 else ("outcrop" if s.up.y < 0.81 else "boulder")
@@ -210,7 +224,7 @@ static func generate(d, setup: Dictionary, world_seed: int, density: float, rows
 				var other := site(d, q, reserved, blocked)
 				if other.is_empty() or other.h < r.altitude[0] or other.h > r.altitude[1]:
 					continue
-				if zone in habitats(d, other, noise, impact):
+				if zone in habitats(d, other, noise, impact, camps):
 					append_plant(out, r, other, rng, by_zone)
 	return out
 

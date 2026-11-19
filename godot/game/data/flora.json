@@ -1,5 +1,30 @@
 [
   {
+    "id": "caramillo",
+    "form": "tree",
+    "height": [
+      5.0,
+      9.0
+    ],
+    "altitude": [
+      30,
+      550
+    ],
+    "habitat": "valley_edge",
+    "chance": 0.3,
+    "colour": "628c4d",
+    "spread": 0.5,
+    "angle": 55,
+    "levels": 3,
+    "leaf_cm": 4,
+    "patch_count": 3,
+    "patch_radius": 22,
+    "name": {
+      "en": "Whistlewood",
+      "es": "Caramillo"
+    }
+  },
+  {
     "id": "ceniza_roja",
     "form": "moss_lichen",
     "height": [
@@ -19,7 +44,11 @@
     "leaf_cm": 0.4,
     "patch_count": 5,
     "patch_radius": 5,
-    "sheltered_colour": "77826c"
+    "sheltered_colour": "77826c",
+    "name": {
+      "en": "Ember Crust",
+      "es": "Ceniza roja"
+    }
   },
   {
     "id": "cinta_de_marea",
@@ -38,7 +67,11 @@
     "spread": 0.8,
     "angle": 30,
     "levels": 3,
-    "leaf_cm": 20
+    "leaf_cm": 20,
+    "name": {
+      "en": "Tide Ribbon",
+      "es": "Cinta de marea"
+    }
   },
   {
     "id": "costra_de_azufre",
@@ -57,7 +90,11 @@
     "spread": 0.6,
     "angle": 0,
     "levels": 0,
-    "leaf_cm": 0
+    "leaf_cm": 0,
+    "name": {
+      "en": "Sulfur Crust",
+      "es": "Costra de azufre"
+    }
   },
   {
     "id": "grama_de_ceniza",
@@ -78,7 +115,11 @@
     "levels": 1,
     "leaf_cm": 18,
     "patch_count": 5,
-    "patch_radius": 5
+    "patch_radius": 5,
+    "name": {
+      "en": "Ash Tussock",
+      "es": "Grama de ceniza"
+    }
   },
   {
     "id": "hierroflor",
@@ -100,7 +141,11 @@
     "leaf_cm": 10,
     "veins": "743f58",
     "patch_count": 5,
-    "patch_radius": 5
+    "patch_radius": 5,
+    "name": {
+      "en": "Meteor Violet",
+      "es": "Hierroflor"
+    }
   },
   {
     "id": "lengua_de_lava",
@@ -121,7 +166,11 @@
     "levels": 1,
     "leaf_cm": 12,
     "tips": "955264",
-    "veins": "85415a"
+    "veins": "85415a",
+    "name": {
+      "en": "Lava Tongue",
+      "es": "Lengua de lava"
+    }
   },
   {
     "id": "madre_de_agua",
@@ -136,12 +185,16 @@
     ],
     "habitat": "spring",
     "chance": 1,
-    "colour": "38583b",
+    "colour": "4e7a4a",
     "spread": 0.52,
     "angle": 50,
     "levels": 6,
     "leaf_cm": 12,
-    "fruit": "a1924e"
+    "fruit": "a1924e",
+    "name": {
+      "en": "Springmother",
+      "es": "Madre de agua"
+    }
   },
   {
     "id": "musgo_faro",
@@ -156,12 +209,16 @@
     ],
     "habitat": "cave",
     "chance": 0.7,
-    "colour": "496b44",
+    "colour": "5f8a4c",
     "spread": 0.42,
     "angle": 50,
     "levels": 2,
     "leaf_cm": 0.4,
-    "glow": "345954"
+    "glow": "345954",
+    "name": {
+      "en": "Beacon Moss",
+      "es": "Musgo faro"
+    }
   },
   {
     "id": "nieblon",
@@ -176,19 +233,23 @@
     ],
     "habitat": "forest",
     "chance": 1,
-    "colour": "405b43",
+    "colour": "527a50",
     "spread": 0.45,
     "angle": 55,
     "levels": 4,
     "leaf_cm": 14,
     "patch_count": 5,
-    "patch_radius": 30
+    "patch_radius": 30,
+    "name": {
+      "en": "Fogcomber",
+      "es": "Nieblón"
+    }
   },
   {
     "id": "paja_dulce",
     "form": "grass",
     "height": [
-      0.3,
+      0.08,
       1.2
     ],
     "altitude": [
@@ -203,7 +264,11 @@
     "levels": 1,
     "leaf_cm": 45,
     "patch_count": 5,
-    "patch_radius": 5
+    "patch_radius": 5,
+    "name": {
+      "en": "Sweet Straw",
+      "es": "Paja dulce"
+    }
   },
   {
     "id": "pan_de_humus",
@@ -222,7 +287,37 @@
     "spread": 0.55,
     "angle": 60,
     "levels": 3,
-    "leaf_cm": 0
+    "leaf_cm": 0,
+    "name": {
+      "en": "Humus Bread",
+      "es": "Pan de humus"
+    }
+  },
+  {
+    "id": "perlilla",
+    "form": "shrub",
+    "height": [
+      0.8,
+      2.5
+    ],
+    "altitude": [
+      15,
+      350
+    ],
+    "habitat": "wet_fringe",
+    "chance": 0.8,
+    "colour": "6c9154",
+    "spread": 0.5,
+    "angle": 50,
+    "levels": 3,
+    "leaf_cm": 4,
+    "fruit": "efead6",
+    "patch_count": 4,
+    "patch_radius": 7,
+    "name": {
+      "en": "Wellberry",
+      "es": "Perlilla"
+    }
   },
   {
     "id": "pluma_de_sombra",
@@ -243,14 +338,18 @@
     "levels": 2,
     "leaf_cm": 110,
     "patch_count": 5,
-    "patch_radius": 5
+    "patch_radius": 5,
+    "name": {
+      "en": "Shade Feather",
+      "es": "Pluma de sombra"
+    }
   },
   {
     "id": "rodela_de_nieve",
     "form": "rosette",
     "height": [
       1.5,
-      3.0
+      2.5
     ],
     "altitude": [
       1750,
@@ -264,7 +363,11 @@
     "levels": 0,
     "leaf_cm": 150,
     "caudex": 0.32,
-    "margin": "8b6775"
+    "margin": "8b6775",
+    "name": {
+      "en": "Snowshield",
+      "es": "Rodela de nieve"
+    }
   },
   {
     "id": "salvisca",
@@ -280,10 +383,14 @@
     "habitat": "spray",
     "chance": 0.83,
     "colour": "859b89",
-    "spread": 1.0,
+    "spread": 0.7,
     "angle": 40,
     "levels": 3,
-    "leaf_cm": 2
+    "leaf_cm": 2,
+    "name": {
+      "en": "Saltweeper",
+      "es": "Salvisca"
+    }
   },
   {
     "id": "soga_de_dosel",
@@ -298,12 +405,16 @@
     ],
     "habitat": "host",
     "chance": 0.47,
-    "colour": "416444",
+    "colour": "4f7a50",
     "spread": 0.12,
     "angle": 40,
     "levels": 4,
     "leaf_cm": 15,
-    "veins": "85415a"
+    "veins": "85415a",
+    "name": {
+      "en": "Canopy Rope",
+      "es": "Soga de dosel"
+    }
   },
   {
     "id": "trenza_de_ribera",
@@ -324,6 +435,64 @@
     "levels": 3,
     "leaf_cm": 9,
     "patch_count": 5,
-    "patch_radius": 5
+    "patch_radius": 5,
+    "name": {
+      "en": "Riverbraid",
+      "es": "Trenza de ribera"
+    }
+  },
+  {
+    "id": "velilla",
+    "form": "herb",
+    "height": [
+      0.15,
+      0.45
+    ],
+    "altitude": [
+      15,
+      400
+    ],
+    "habitat": "hollow",
+    "chance": 0.7,
+    "colour": "668a47",
+    "spread": 0.45,
+    "angle": 0,
+    "levels": 0,
+    "leaf_cm": 15,
+    "flower": "ece4c6",
+    "flower_centre": "2c2a29",
+    "patch_count": 6,
+    "patch_radius": 4,
+    "name": {
+      "en": "Dawnlamp",
+      "es": "Velilla"
+    }
+  },
+  {
+    "id": "vetirroja",
+    "form": "herb",
+    "height": [
+      0.3,
+      0.9
+    ],
+    "altitude": [
+      15,
+      450
+    ],
+    "habitat": "disturbed",
+    "chance": 0.7,
+    "colour": "4c7a3d",
+    "spread": 0.35,
+    "angle": 45,
+    "levels": 2,
+    "leaf_cm": 6,
+    "veins": "8e3a5c",
+    "arrangement": "opposite",
+    "patch_count": 5,
+    "patch_radius": 5,
+    "name": {
+      "en": "Redvein",
+      "es": "Vetirroja"
+    }
   }
 ]

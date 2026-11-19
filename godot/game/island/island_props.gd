@@ -14,6 +14,7 @@ var recipe := {}
 var tier := 0
 var setup_signature := []
 var counts := {}
+var records := []
 var lod_scale := 1.0
 
 func geometry(id: String, variant: int, close: bool) -> ArrayMesh:
@@ -94,7 +95,8 @@ func build(d, setup: Dictionary, world_seed: int, quality: int, settings: Dictio
 	var density := float(settings.get("flora_density", -1.0))
 	density = DENSITY[tier] if density < 0 else clampf(density, 0, 1)
 	lod_scale = clampf(float(settings.get("flora_lod_scale", 1.0)), 0.25, 3.0)
-	for item in Placement.generate(d, setup, world_seed, density, rows):
+	records = Placement.generate(d, setup, world_seed, density, rows)
+	for item in records:
 		var point: Vector3 = item.p
 		var chunk_width := minf(64 * d.cell, NEAR[tier] * lod_scale)
 		var chunk := Vector2i(floori((point.x + d.half) / chunk_width), floori((point.z + d.half) / chunk_width))
@@ -132,7 +134,7 @@ func build_nest(d, at: Vector2, world_seed: int) -> void:
 		hollow.append(inner)
 	for j in 48:
 		var k := (j + 1) % 48
-		var litter := straw.darkened(gen.rng.randf_range(0.46, 0.58))
+		var litter := straw.darkened(gen.rng.randf_range(0.18, 0.34))
 		gen.triangle(Vector3.UP * 0.035, hollow[j], hollow[k], soil)
 		gen.triangle(hollow[j], lip[j], lip[k], litter)
 		gen.triangle(hollow[j], lip[k], hollow[k], litter)
@@ -150,7 +152,7 @@ func build_nest(d, at: Vector2, world_seed: int) -> void:
 		b.y = d.visual_ground(at.x + b.x, at.y + b.z) - base + rim * gen.rng.randf_range(0.55, 1.3)
 		var twig := j % 7 == 0
 		var colour := gen.bark if twig else straw.darkened(gen.rng.randf() * 0.36)
-		gen.rod(a, b, 0.042 if twig else 0.017, 0.012 if twig else 0.006, colour, 4)
+		gen.rod(a, b, 0.027 if twig else 0.017, 0.011 if twig else 0.006, colour, 4)
 	var nest := MeshInstance3D.new()
 	nest.name = "Nest"
 	nest.mesh = gen.finish()

@@ -25,7 +25,8 @@ void fragment() {
 		if (u > 0.018 && (across > 1.0 || (abs(axis) > 0.03 && dot(leaf, leaf) > 0.77))) { discard; }
 	} else if (UV2.x > 0.5 && u > 0.09 + 0.91 * sin(pow(v, 0.78) * 3.14159)) { discard; }
 	ALBEDO = COLOR.rgb * grain;
-	ROUGHNESS = UV2.x > 0.5 ? 0.72 : 0.96;
+	ROUGHNESS = UV2.x > 0.5 ? 0.85 : 0.96;
+	SPECULAR = 0.12;   // foliage and crusts are matt; grazing Fresnel made flat blades read white
 	EMISSION = glow.rgb * 0.06 * grain;
-	BACKLIGHT = UV2.x > 0.5 ? COLOR.rgb * 0.28 : vec3(0.0);
+	BACKLIGHT = UV2.x > 0.5 ? COLOR.rgb * 0.1 : vec3(0.0);
 }
