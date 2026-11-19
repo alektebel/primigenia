@@ -14,7 +14,8 @@ const SETTINGS_PATH := "user://settings.cfg"
 # straight); off = the live camera (a held S circles). controls/tank: Spore-style steering, A/D turn the
 # creature, W forward, S reverse (overrides the latch).
 var settings: Dictionary = {"seed": 1, "grass": 252000, "quality": "auto", "sun_shadows": false, "wild": true,
-	"controls/strafe_latch": true, "controls/tank": false, "camera/kick": false}
+	"controls/strafe_latch": true, "controls/tank": false, "camera/kick": false,
+	"renderer": "auto"}   # auto | forward_plus | compatibility, read at launch by RenderChoice (relaunches into Forward+ on discrete GPUs)
 var terrain: Dictionary = {}
 var data = null          # TerrainData
 var stage = null         # StageWorld while the island runs
@@ -30,6 +31,9 @@ var studio_dir := "user://studio"   # where the studio saves and Play looks for 
 
 func _ready() -> void:
 	load_settings()
+	if RenderChoice.maybe_relaunch():
+		get_tree().quit()
+		return
 
 func load_settings() -> void:
 	var cfg := ConfigFile.new()

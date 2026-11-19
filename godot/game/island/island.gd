@@ -105,6 +105,7 @@ func build() -> void:
 	if Game.settings.get("sun_shadows", false):
 		set_sun_shadows(true)
 	print("grass built in %d ms (%d blades)" % [Time.get_ticks_msec() - t0, int(Game.settings.grass)])
+	RenderTier.apply_viewport(get_viewport())
 	camera = Camera3D.new()
 	camera.name = "Camera"
 	camera.fov = 48.0

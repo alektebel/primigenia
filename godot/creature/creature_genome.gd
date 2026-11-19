@@ -154,7 +154,7 @@ func _validate(g, types: Dictionary):
 		_fail("parts")
 		return null
 	for p in parts:
-		if not _keys(p, ["type", "t", "ang", "size", "len", "curve", "w", "k", "f", "rot", "tilt"], "parts"):
+		if not _keys(p, ["type", "t", "ang", "size", "len", "curve", "w", "k", "f", "rot", "tilt", "act", "single", "pupil"], "parts"):
 			return null
 		if typeof(p.get("type")) != TYPE_STRING or not types.has(p["type"]):
 			_fail("parts.type")
@@ -164,6 +164,14 @@ func _validate(g, types: Dictionary):
 		for spec in [["size", .1, 4], ["len", .1, 5], ["curve", -1.5, 1.5], ["w", .05, .8], ["rot", -PI, PI], ["tilt", -1.5, 1.5]]:
 			if p.has(spec[0]) and not _number(p[spec[0]], spec[1], spec[2], "parts." + spec[0]):
 				return null
+		if p.has("act") and not (p["act"] in ["muscle", "tendon", "spring", "hydrostat", "hydraulic", "peristaltic", "tubefeet", "cilia"]):
+			_fail("parts.act")
+			return null
+		if p.has("single") and not (_integer(p["single"], -1, 1, "parts.single")):
+			return null
+		if p.has("pupil") and not (p["pupil"] in ["auto", "round", "slit", "bar"]):
+			_fail("parts.pupil")
+			return null
 		if p["type"] in LEG_TYPES:
 			if not _number(p.get("w"), .05, .8, "parts.w"):
 				return null
@@ -183,9 +191,21 @@ func _validate(g, types: Dictionary):
 			if p["type"] == "cuerno" and not _number(p.get("curve"), -1.5, 1.5, "parts.curve"):
 				return null
 	var skin = g.get("skin")
-	if not _keys(skin, ["pat", "cA", "cB", "cC", "wet", "scale"], "skin"):
+	if not _keys(skin, ["pat", "cA", "cB", "cC", "wet", "scale", "cs", "ps", "pc", "ros", "act", "sk"], "skin"):
 		return null
 	if not (_integer(skin.get("pat"), 0, 3, "skin.pat") and _number(skin.get("wet"), 0, 1, "skin.wet") and _number(skin.get("scale"), 3, 14, "skin.scale")):
+		return null
+	# Optional realism-pilot controls (absent = defaults): countershading, pattern scale, pattern contrast, rosettes.
+	for k in [["cs", 0, 1], ["ps", .5, 2], ["pc", 0, 1]]:
+		if skin.has(k[0]) and not _number(skin[k[0]], k[1], k[2], "skin." + k[0]):
+			return null
+	if skin.has("sk") and not (skin["sk"] in ["auto", "endo", "exo", "hydro"]):
+		_fail("skin.sk")
+		return null
+	if skin.has("act") and not (skin["act"] in ["auto", "muscle", "hydraulic", "exo"]):
+		_fail("skin.act")
+		return null
+	if skin.has("ros") and not _integer(skin["ros"], 0, 1, "skin.ros"):
 		return null
 	var hex := _regex("^#[0-9a-fA-F]{6}$")
 	for k in ["cA", "cB", "cC"]:

@@ -115,3 +115,5 @@ Merodeador 14.1 ms, Zancuda 8.6 ms, Babosa 6.7 ms.
 
 Evidence, `docs/evidence/godot/creature/`: `merodeador_vs_threejs.png`, `g48_tail_hammer_compare.png`,
 `zancuda_vs_threejs.png`, `seeds.png`, `parts_contact_sheet.png`, `growth.png`.
+
+Realism pilot (skin detail, keratin, Turing patterns, actuation, Forward+ tier): `CREATURE-REALISM.md`.
