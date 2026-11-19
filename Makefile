@@ -511,6 +511,15 @@ godot-ui-diegetic-evidence: godot
 godot-social-test: godot
 	LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 900 xvfb-run -a -s "-screen 0 1280x720x24" \
 	  $(GODOT) --rendering-driver opengl3 --max-fps 15 --resolution 1280x720 --path godot --script res://game/tests/social_flow.gd
+# Ten simulated minutes on the real island through the real input path (software GL under xvfb); a strip of JPG frames
+# goes to docs/evidence/godot/soak/. Wall time is 15-25 minutes on a loaded machine. Script errors fail the target.
+.PHONY: godot-soak
+godot-soak: godot
+	@mkdir -p docs/evidence/godot/soak
+	LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 3000 xvfb-run -a -s "-screen 0 1280x720x24" \
+	  $(GODOT) --rendering-driver opengl3 --max-fps 15 --resolution 1280x720 --path godot \
+	  --script res://game/tests/island_soak.gd -- $(CURDIR)/docs/evidence/godot/soak $(or $(MINUTES),10) 2>&1 | tee /tmp/godot-soak.log; \
+	  ! grep -q "SCRIPT ERROR" /tmp/godot-soak.log && grep -q "^soak: .* 0 failures" /tmp/godot-soak.log
 godot-social-evidence: godot
 	@mkdir -p docs/evidence/godot/social
 	LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 900 xvfb-run -a -s "-screen 0 1280x720x24" \
