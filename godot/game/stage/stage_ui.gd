@@ -15,6 +15,8 @@ const Modes := preload("res://ui/modes.gd")
 const Palette := preload("res://ui/palette.gd")
 const Strings := preload("res://ui/strings.gd")
 const Glyphs := preload("res://ui/glyphs.gd")
+const Profile := preload("res://game/stage/profile.gd")
+const JournalModel := preload("res://ui/journal_model.gd")
 const V_WAIT := 1
 const V_ATTACK := 5
 const V_GUARD := 8
@@ -88,6 +90,9 @@ func setup(island_node: Node3D, name_text: String) -> void:
 	ui.gift_pressed.connect(give_gift)
 	ui.gift_cycle_pressed.connect(cycle_gift)
 	ui.pause_toggled.connect(_on_pause)
+	ui.journal.source = _journal_model
+	ui.journal.opened.connect(_on_journal_toggled.bind(true))
+	ui.journal.closed.connect(_on_journal_toggled.bind(false))
 	ui.save_requested.connect(func() -> void: _toast(island.save_game(), Strings.t("saved")))
 	ui.load_requested.connect(func() -> void: _toast(island.load_game(), Strings.t("loaded")))
 	Game.creature_clicked.connect(_on_clicked)
@@ -322,7 +327,6 @@ func _fight_selection(state: Dictionary) -> void:
 func _on_tick(state: Dictionary) -> void:
 	if bool(state.get("parts", {}).get("lost", false)):
 		_lineage_ended()
-	ui.stub.discovered = state.get("parts", {}).get("discovered", [])
 	var lo: Dictionary = state.get("loadout", {"slots": [0, 1, 3, 4], "known": 0, "can_edit": false})
 	var key := "%s|%d" % [lo.slots, int(lo.known)]
 	if key != _loadout_key:
@@ -411,6 +415,18 @@ func _toast(err: String, ok_text: String) -> void:
 	else:
 		ui.show_message(err, "warn")
 
+# The field journal reads the latest world state when it opens (ui/journal_model.gd says what each page reads); the world
+# waits while the book is open, as it does behind the menu.
+var _parts_catalogue: Array = []
+
+func _journal_model() -> Dictionary:
+	if _parts_catalogue.is_empty():
+		_parts_catalogue = Profile.load_json("res://game/data/parts.json").get("parts", [])
+	return JournalModel.build(stage.cur, species, _chains, _parts_catalogue)
+
+func _on_journal_toggled(open: bool) -> void:
+	stage.process_mode = Node.PROCESS_MODE_DISABLED if open or ui.paused else Node.PROCESS_MODE_INHERIT
+
 func _on_pause(paused: bool) -> void:
 	stage.process_mode = Node.PROCESS_MODE_DISABLED if paused else Node.PROCESS_MODE_INHERIT
 
@@ -423,7 +439,8 @@ func _process(dt: float) -> void:
 			_dying = false
 			ui.end_death()
 			ui.show_message(Strings.t("back_at_nest"), "info")
-	Game.modal_open = ui.paused or ui.loadout_panel.visible_open     # the ring is not modal: WASD keeps walking
+	Game.journal_open = ui.journal.open
+	Game.modal_open = ui.paused or ui.journal.open or ui.loadout_panel.visible_open     # the ring is not modal: WASD keeps walking
 	Game.radial_open = ui.ring.visible
 	Game.paused_ui = ui.paused
 	var audio = get_tree().root.get_node_or_null("Audio")
@@ -704,8 +721,9 @@ func _lineage_ended() -> void:
 	_lineage_end = CanvasLayer.new()
 	_lineage_end.layer = 40
 	island.add_child(_lineage_end)
-	var dim := ColorRect.new()
-	dim.color = Color(0.03, 0.03, 0.04, 0.82)
+	var Style := preload("res://ui/style.gd")
+	var dim := ColorRect.new()              # the fog closing in: a veil, as in the menu
+	dim.color = Color(0.094, 0.133, 0.122, 0.86)
 	dim.set_anchors_preset(Control.PRESET_FULL_RECT)
 	_lineage_end.add_child(dim)
 	var box := VBoxContainer.new()
@@ -713,21 +731,45 @@ func _lineage_ended() -> void:
 	box.grow_horizontal = Control.GROW_DIRECTION_BOTH
 	box.grow_vertical = Control.GROW_DIRECTION_BOTH
 	box.alignment = BoxContainer.ALIGNMENT_CENTER
-	box.custom_minimum_size = Vector2(520, 0)
+	box.custom_minimum_size = Vector2(560, 0)
+	box.add_theme_constant_override("separation", 18)
 	dim.add_child(box)
 	var title := Label.new()
 	title.text = Strings.t("lineage_end")
-	title.add_theme_font_size_override("font_size", 34)
+	title.add_theme_font_override("font", Style.font_italic())
+	title.add_theme_font_size_override("font_size", 40)
+	title.add_theme_color_override("font_color", Palette.BONE)
+	title.add_theme_color_override("font_outline_color", Color(Palette.INK, 0.55))
+	title.add_theme_constant_override("outline_size", 4)
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	box.add_child(title)
 	var sub := Label.new()
 	sub.text = Strings.t("lineage_end_sub")
 	sub.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	sub.add_theme_font_override("font", Style.font_sans())
+	sub.add_theme_font_size_override("font_size", 19)
+	sub.add_theme_color_override("font_color", Palette.FOG)
 	sub.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	box.add_child(sub)
 	var back := Button.new()
 	back.text = Strings.t("lineage_end_back")
+	back.flat = true
 	back.custom_minimum_size = Vector2(0, 52)
+	back.add_theme_font_override("font", Style.font_sans(true))
+	back.add_theme_font_size_override("font_size", 23)
+	back.add_theme_color_override("font_color", Palette.COPPER)
+	back.add_theme_color_override("font_hover_color", Palette.BONE)
+	back.add_theme_color_override("font_focus_color", Palette.BONE)
+	back.add_theme_color_override("font_pressed_color", Palette.BONE)
+	var line := StyleBoxFlat.new()          # focus is a copper line under the words, not a box
+	line.bg_color = Color(0, 0, 0, 0)
+	line.border_color = Palette.COPPER
+	line.border_width_bottom = 2
+	line.content_margin_bottom = 6
+	var none := StyleBoxEmpty.new()
+	back.add_theme_stylebox_override("focus", line)
+	for n in ["normal", "hover", "pressed"]:
+		back.add_theme_stylebox_override(n, none)
 	back.pressed.connect(return_to_last_save)
 	box.add_child(back)
 	back.grab_focus()

@@ -10,33 +10,33 @@ A rhizomatous fern whose broad, divided fronds arch over damp sheltered ground. 
 
 ## Causal chains
 
-### pluma_de_sombra.c1: Broad fronds supported by a creeping rhizome
+### pluma_de_sombra.c1: Broad divided fronds renewed from a creeping rhizome
 
-Trait ← Humid woodland and spray fringes reduce drying stress beneath shelter. ← Broad divided fronds intercept diffuse light reaching the ground. ← A creeping rhizome stores reserves and replaces damaged fronds. ← Spreading colonies trap litter and create shaded ground cover. ← **F8** Fog: cold upwelling sea on the west coast meets warm volcanic ground; the east start valley is a fog trap about 180 mornings a year; **F9** Rock: andesite makes steep, unstable cliffs; basalt makes lava tubes (the caves); **F18** Rain shadow: westerlies make the west coast wet and forested; the east meadows (the start valley) are drier in summer, with a spring; **F19** Wind force per m/s is 1.6× Earth's: gales in winter push light creatures and favour low, heavy bodies on exposed ridges
+Trait ← Humid woodland and sheltered spray fringes reduce drying stress where sufficient diffuse light reaches the ground. ← Large divided fronds spread light-intercepting leaflets across those illuminated gaps. ← Wind and water can tear fronds; reserves and buds on the creeping rhizome support replacement while surviving foliage replenishes carbon. ← Rhizome extension produces repeated crowns whose overlapping fronds trap litter and shade the ground. ← **F8** Fog: cold upwelling sea on the west coast meets warm volcanic ground; the east start valley is a fog trap about 180 mornings a year; **F9** Rock: andesite makes steep, unstable cliffs; basalt makes lava tubes (the caves); **F18** Rain shadow: westerlies make the west coast wet and forested; the east meadows (the start valley) are drier in summer, with a spring; **F19** Wind force per m/s is 1.6× Earth's: gales in winter push light creatures and favour low, heavy bodies on exposed ridges
 
-- **In play:** Gather detached fronds for bedding or move through patches under cover; disturbed fronds may reveal passage.
-- **Weakness:** Fronds wilt on exposed dry ground and tear in strong wind; stored reserves cannot sustain indefinite growth in darkness.
+- **In play:** Gather detached fronds for bedding or move through patches under visual cover; broken stalks and bruised scent may reveal passage.
+- **Weakness:** Fronds wilt on exposed dry ground and tear in strong wind; reserves become depleted without sufficient light and cannot sustain indefinite growth in darkness.
 - **Observe:**
-  1. Fronds spread broadly beneath trees but shrink near an exposed clearing.
+  1. Fronds spread broadly in sheltered light gaps but thin in deep shade.
   2. Curled new fronds rise beside an older broken stalk.
-  3. Green colonies thin toward a cave's permanently dark interior.
-- **Plausibility:** plausible (judge botanist/composer-2.5; chair sol, 2026-11-19)
-  - The fern occupies humid shelter with sufficient light. Rhizomes permit recovery after damage but do not turn a photosynthetic plant into a deep-cave producer.
-  - Analogue: Rhizomatous woodland ferns: Persistent rhizomes bear successive fronds and support vegetative spread; fern structure is covered in [Gifford and Foster's vascular-plant text](https://openlibrary.org/books/OL2050530M/Morphology_and_evolution_of_vascular_plants). (Gifford & Foster 1989 [verified])
+  3. Connected crowns trap litter while green growth ends toward a cave's dark interior.
+- **Plausibility:** plausible (judge strict review: sol (codex) + DeepSeek; chair sol, 2026-11-19)
+  - The fern occupies humid shelter with sufficient light. Rhizomes permit recovery after damage but do not turn a photosynthetic plant into a deep-cave producer. Strict review (2026-11-19): revised: The disconnected trait list now links light capture, damage recovery and rhizome spread to colony formation without treating one organ as the cause of another. Residual: F18 supports wet western woodland, F9 supplies entrance and overhang settings, and F19 supports a substantial wind-damage risk. Broad divided fronds and rhizome recovery are mechanically and physiologically compatible with sheltered, illuminated sites. Residual weakness: humidity alone does not establish adequate soil water or a positive carbon balance beneath a dense canopy; repeated damage can exhaust rhizome reserves. The placement and weakness clauses already impose these limits.
+  - Analogue: Common oak fern, Gymnocarpium dryopteris: A creeping rhizome bears repeated divided fronds and supports colonies in moist woodland; this is a structural growth analogue rather than proof of the fictional plant's shade or disturbance tolerances.
 
-### pluma_de_sombra.c2: Underside spore clusters with moisture-dependent establishment
+### pluma_de_sombra.c2: Underside spore clusters and water-film fertilization
 
-Trait ← Small spores develop in clusters beneath mature fronds. ← Drying intervals release spores into local air movement; splash redistributes some nearby. ← Spores reaching damp illuminated surfaces can establish a reproductive stage. ← Persistent moisture allows fertilization and recruitment beside existing colonies. ← **F8** Fog: cold upwelling sea on the west coast meets warm volcanic ground; the east start valley is a fog trap about 180 mornings a year; **F9** Rock: andesite makes steep, unstable cliffs; basalt makes lava tubes (the caves); **F18** Rain shadow: westerlies make the west coast wet and forested; the east meadows (the start valley) are drier in summer, with a spring; **F24** One biochemistry from the seed capsule: a porphyrin photosystem, DNA-like heredity, L-amino acids, a nitrogen-fixing symbiont
+Trait ← Small spores develop in clusters beneath mature fronds. ← Drying intervals release spores into local air movement; splash redistributes some nearby. ← Spores on damp illuminated surfaces can establish small photosynthetic gametophytes. ← Intermittent connected films of liquid water allow motile gametes to reach eggs; fertilized gametophytes produce young frond-bearing plants where light and moisture remain suitable. ← **F8** Fog: cold upwelling sea on the west coast meets warm volcanic ground; the east start valley is a fog trap about 180 mornings a year; **F9** Rock: andesite makes steep, unstable cliffs; basalt makes lava tubes (the caves); **F18** Rain shadow: westerlies make the west coast wet and forested; the east meadows (the start valley) are drier in summer, with a spring
 
-- **In play:** Inspect frond undersides to identify reproductive patches and follow new growth along damp, lit cave margins.
-- **Weakness:** Continuous wetting delays dry release; spores stranded in dark or drying sites fail to establish.
+- **In play:** Inspect frond undersides to identify reproductive patches and follow recruits along damp, lit cave margins that receive intermittent wetting.
+- **Weakness:** Continuous wetting delays dry spore release; humid air alone cannot supply the connected liquid-water films needed for fertilization, and dark or drying sites prevent recruitment.
 - **Observe:**
   1. Mature frond undersides carry orderly brown spore clusters.
   2. A drying fertile frond sheds fine dust when disturbed.
-  3. Small recruits occupy damp light gaps rather than the black cave floor.
-- **Plausibility:** plausible (judge botanist/composer-2.5; chair sol, 2026-11-19)
-  - Spore transport uses air movement and water, not the molecular-diffusion rule for scent. Earth-like reproductive structures are functional analogues within the seeded biochemistry.
-  - Analogue: Leptosporangiate ferns: Sporangia release spores, while the separate gametophyte stage depends on suitable moisture; see [Gifford and Foster](https://openlibrary.org/books/OL2050530M/Morphology_and_evolution_of_vascular_plants). (Gifford & Foster 1989 [verified])
+  3. Small recruits occupy intermittently wetted light gaps rather than the black cave floor.
+- **Plausibility:** plausible (judge strict review: sol (codex) + DeepSeek; chair sol, 2026-11-19)
+  - Spore transport uses air movement and water, not the molecular-diffusion rule for scent. Earth-like reproductive structures are functional analogues within the seeded biochemistry. Strict review (2026-11-19): revised: Persistent humidity was insufficient for the invoked fern life cycle, so the chain now specifies gametophytes and connected liquid-water films and removes F24 as reproductive evidence. Residual: The stipulated fern reproductive cycle is internally coherent: release during drying, establishment in light, and fertilization during connected liquid-water films. F8 and F18 support wetting opportunities, but F9 merely supplies terrain and does not establish suitable entrance microclimates. Residual weakness: the required sequence of drying and wetting may restrict successful reproduction to small patches. Neither dense air nor F16 establishes spore transport distance, and the revision correctly claims neither.
+  - Analogue: Leptosporangiate ferns: Spores establish photosynthetic gametophytes, and motile sperm require connected liquid-water films to reach eggs; this Earth-like reproductive cycle is stipulated for the fictional fern, not entailed by shared biochemistry. (Gifford & Foster 1989 [verified])
 
 ## Gameplay
 
@@ -45,17 +45,17 @@ Trait ← Small spores develop in clusters beneath mature fronds. ← Drying int
  "food_for": [
   "Detritivores: decaying fronds for babosa"
  ],
- "gift_item": "Clean detached bedding frond",
+ "gift_item": null,
  "poison": {
   "alkaloid": false,
   "signal": "Ordinary shaded foliage is green; absence of red veins does not establish edibility."
  },
  "healing": null,
- "cover": "Dense arching fronds conceal low-moving creatures and obscure footprints.",
+ "cover": "Dense arching fronds provide visual concealment for low-moving creatures and can obscure footprints; broken stems and bruised scent can still reveal passage.",
  "climbing": false,
- "nest_material": "Detached fronds and dry stalks",
+ "nest_material": "Clean detached fronds and dry stalks for player bedding or craft.",
  "mineral_lick": null,
- "notes": "Bruising releases a green scent that persists best in still sheltered air (F16). It neither directs spores nor carries reliably through wind."
+ "notes": "Bruising releases a green scent that persists best in still sheltered air (F16). Visual concealment does not erase that trail. Detached bedding is a collectible material without an established social gift recipient."
 }
 ```
 
@@ -64,10 +64,10 @@ Trait ← Small spores develop in clusters beneath mature fronds. ← Drying int
 | With | Kind | Note |
 |---|---|---|
 | babosa | eaten_by | Consumes softened decaying fronds and returns nutrients to the litter. |
-| merodeador | shelters | Frond arches conceal its low prowling posture at woodland and cave edges. |
+| merodeador | shelters | Frond arches visually conceal its low prowling posture at woodland and cave edges; disturbed foliage may retain a scent clue. |
 | player_lineage | other | Collects detached bedding and reads broken stalks or bruised scent as passage clues. |
-| nieblon | grows_with | Occupies moist shaded ground beneath the fog-drip canopy. |
-| musgo_faro | grows_with | Shares illuminated damp entrance fringes without producing its own light. |
+| nieblon | grows_with | Occupies moist shaded ground beneath the fog-drip canopy where sufficient daylight remains. |
+| musgo_faro | grows_with | Co-occurs on illuminated damp entrance fringes and may compete for space; fern growth depends on daylight, with no photosynthetic subsidy from moss light assumed. |
 | pan_de_humus | other | Dead fronds provide substrate for decomposition. |
 
 ## Generator parameters
@@ -81,15 +81,22 @@ Trait ← Small spores develop in clusters beneath mature fronds. ← Drying int
  },
  "trunk": "No aerial trunk; creeping shallow rhizome beneath litter.",
  "branching": {
-  "angle_deg": 45,
-  "levels": 2,
-  "apical_dominance": 0.2,
-  "buttress": "None; rhizome and fine roots anchor each patch."
+  "angle_deg": 0,
+  "levels": 0,
+  "apical_dominance": 0,
+  "buttress": "Unused woody-architecture fields; rhizome and fine roots anchor each patch."
+ },
+ "rhizome": {
+  "growth": "Shallow lateral extension with occasional forks during moist mild periods.",
+  "crowns": "Repeated frond crowns along the rhizome; crown count follows patch extent and available light.",
+  "recovery": "Surviving buds replace damaged fronds while stored reserves remain."
  },
  "leaf": {
   "type": "Broad twice-divided arching frond",
   "size_cm": 110,
-  "arrangement": "Loose crowns repeated along a creeping rhizome"
+  "arrangement": "Loose crowns repeated along a creeping rhizome",
+  "dissection": "Two leaflet divisions within each frond; independent of disabled woody branching.",
+  "support": "Frond length is blade length; an upright basal stipe contributes to total crown height."
  },
  "colour": {
   "base": "Soft medium green",
@@ -105,16 +112,16 @@ Trait ← Small spores develop in clusters beneath mature fronds. ← Drying int
    10,
    1250
   ],
-  "wetness": "Continuously humid, drained ground with intermittent spray",
+  "wetness": "Continuously humid, drained ground with intermittent wetting; reproductive microsites develop connected liquid-water films and also experience spore-release drying intervals.",
   "soil": "Humus-rich volcanic soil and moist tuff pockets",
   "coast_distance_m": [
    40,
    1800
   ],
   "fog": "Favours fog-drip shelter and waterfall humidity.",
-  "density": "Overlapping colonies interrupted by exposed rock, deep shade and active water."
+  "density": "Overlapping colonies in adequate diffuse daylight, interrupted by exposed rock, deep shade and active water."
  },
- "seasonal": "Flushes during moist mild periods; drought browns outer fronds while sheltered rhizomes persist.",
+ "seasonal": "Flushes during moist mild periods; drought browns outer fronds while sheltered rhizomes persist. Spore release and fertilization occupy different drying and wetting intervals.",
  "wind_response": "Fronds flutter and bow in weak currents; exposed fronds split or collapse in gales."
 }
 ```
@@ -142,3 +149,4 @@ council run `flora-2026-11-19`; by designer, mythmaker, naturalist, physicist, s
 ## Changelog
 
 - 2026-11-19 flora.py: flora pass: 7 voices drafted and peer-reviewed, Composer botanical referee, sol chaired and applied the fixes
+- 2026-11-19 flora_addendum.py: strict second review (sol + DeepSeek) applied by sol: Removed unsupported bedding gift value and made concealment explicitly visual while retaining scent consequences.; Disabled woody branching and separated rhizome spread, crown production and frond dissection.; Retained twice-divided fronds: dissection alone does not exclude woodland shade, and a compulsory weakly divided shade form is not established by the review.
