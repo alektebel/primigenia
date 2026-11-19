@@ -126,6 +126,17 @@ def main():
               "replay_log matches golden hashes for first 50 ticks")
         check(py_final == golden[49], "replay tick-49 hash matches golden")
 
+    w = StageWorld(seed=1)
+    check(w.observe()["player"] == {"running": False, "stamina": 1000, "falling": False,
+                                   "y": w.observe()["player"]["y"], "vertical_velocity": 0},
+          "run/fall defaults exposed")
+    w.set_run(True)
+    check(w.observe()["player"]["running"], "set_run reaches C")
+    w.step("heading 0")
+    check(w.observe()["player"]["stamina"] < 1000, "running movement drains stamina")
+    w.set_run(False)
+    check(not w.observe()["player"]["running"], "run release reaches C")
+
     print("\nall world smoke checks passed" if not fails else f"\n{len(fails)} failed")
     return 1 if fails else 0
 

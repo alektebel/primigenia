@@ -182,6 +182,9 @@ func set_player(pname: String, hp: float, hp_max: float, stamina: float, stamina
 	signs.set_player(hp, hp_max, stamina, stamina_max)
 	veil.low_health = lerpf(0.6, 1.0, clampf((0.30 - hp / maxf(hp_max, 1.0)) / 0.20, 0.0, 1.0)) if hp > 0.0 and hp / maxf(hp_max, 1.0) < 0.30 else 0.0
 
+func set_run(stamina_1000: int, running: bool) -> void:
+	signs.set_run(stamina_1000, running)
+
 ## info: see docs/godot/UI.md (id, name, species, temperament, diet, relationship, resolved, likes, hp, hp_max, world_pos,
 ## body_pos, height, radius_m, fight). Shows the field note and the ground ring and opens the mode ring (no mode is chosen
 ## yet) unless open_menu is false; `info.fight` with open_menu false goes straight to Attack (a fight started).

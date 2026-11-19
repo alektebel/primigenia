@@ -344,6 +344,8 @@ func _on_tick(state: Dictionary) -> void:
 			ui.loadout_panel.close_panel()       # a fight started or the player walked away from the nest
 	var p: Dictionary = state.entities[0]
 	ui.set_player(player_name, p.hp, p.hp_max, p.stamina, p.stamina_max)
+	var run: Dictionary = state.get("player", {})
+	ui.set_run(int(run.get("stamina", 1000)), bool(run.get("running", false)))
 	_fight_selection(state)
 	_update_bars(state)
 	_on_social(state)
@@ -633,6 +635,23 @@ func _target_pos(state: Dictionary, id: int) -> Vector3:
 func _species_name(i: int) -> String:
 	return String(species[i].name) if i >= 0 and i < species.size() else "Creature"
 
+const EV_FELL := 27
+
+# The landing: a camera knock, a thump (a hit sound when it hurt), the damage number over the creature and the hit flash.
+func _landed(drop_m: float, damage: float, state: Dictionary) -> void:
+	var pl: Dictionary = state.entities[0]
+	var at := Vector3(pl.x, Game.ground(pl.x, pl.z), pl.z)
+	island.land_impact(clampf(damage / 40.0 + drop_m / 40.0, 0.0, 1.0))
+	var audio = get_tree().root.get_node_or_null("Audio")
+	if audio != null:
+		if damage > 0.0:
+			audio.hit(at)
+		else:
+			audio.play_at("step-1", at, 0.5, 0.7)
+	if damage > 0.0:
+		ui.show_float(at + Vector3(0, 2.2, 0), "-%d" % int(round(damage)), Palette.EMBER_HOT)
+		ui.flash("hit")
+
 func _social_event(ev: Dictionary, state: Dictionary) -> void:
 	if int(ev.type) == 21:
 		for part in state.get("parts", {}).get("discovered", []):
@@ -645,6 +664,9 @@ func _social_event(ev: Dictionary, state: Dictionary) -> void:
 		if k >= 0 and k < items.size() and items[k].has("line"):
 			ui.show_message(String(items[k].line_es if Strings.language() == "es" else items[k].line), "info")
 			ui.show_moment(Strings.t("shard_found", [Strings.t("shard_%d" % k), int(ev.value)]), "journal")
+		return
+	if int(ev.type) == EV_FELL:  # landing after a fall: move = drop in cm, value = damage in HP
+		_landed(float(ev.move) * 0.01, float(ev.value), state)
 		return
 	if int(ev.type) == 26:       # the cave: the passage, then the chamber
 		ui.show_message(Strings.t("cave_chamber" if int(ev.move) == 2 else "cave_passage"), "info")

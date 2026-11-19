@@ -135,11 +135,27 @@ func _update_flight(_dt: float, s: Dictionary) -> void:
 	adapter.loco_apply(body, pose, desc)
 	_acting_before = false
 
+# The slide / tumble while C has the player airborne or sliding (player.falling): the body leans back, feet downhill, and
+# rolls a little, eased in and out so the landing settles. Presentation only.
+const FALL_LEAN := 0.5          # rad, backwards
+const FALL_ROLL := 0.28         # rad, side to side
+var _fall_k := 0.0
+var _fall_t := 0.0
+func _fall_pose(dt: float, falling: bool) -> Basis:
+	_fall_k = move_toward(_fall_k, 1.0 if falling else 0.0, dt / (0.18 if falling else 0.35))
+	if _fall_k <= 0.0:
+		_fall_t = 0.0
+		return Basis.IDENTITY
+	_fall_t += dt
+	var lean := -FALL_LEAN * _fall_k + sin(_fall_t * 7.0) * 0.07 * _fall_k
+	var roll := sin(_fall_t * 3.3) * FALL_ROLL * _fall_k
+	return Basis(Vector3.BACK, roll) * Basis(Vector3.RIGHT, lean)
+
 # s: StageWorld.sample() -> {pos, yaw, speed, vel}, optionally intent (the world yaw the player asks for)
 # ctx (optional): what the action layer reads, see actions/action_layer.gd
 func update(dt: float, s: Dictionary, ctx: Dictionary = {}) -> void:
 	host.position = s.pos
-	host.basis = Basis(Vector3.UP, s.yaw)
+	host.basis = Basis(Vector3.UP, s.yaw) * _fall_pose(dt, bool(s.get("falling", false)))
 	if s.has("flight") and controller != null and adapter != null:
 		_update_flight(dt, s)
 		return

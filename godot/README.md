@@ -47,7 +47,8 @@ The wild Garfio lives about 60 m from your nest; it is territorial and may come 
 | Input | Action |
 |---|---|
 | W A S D / arrows | move, camera-relative |
-| Shift | sprint |
+| Shift | run (hold; the run stamina line shows beside the vitals) |
+| Ctrl | burst (the old sprint, combat stamina) |
 | Left click, hold | walk to the pointer |
 | Left click on a creature | select it: card, marker and the radial menu (Attack, Befriend, Observe, Intimidate) |
 | Radial: click a sector, or A / B / O / I | choose the mode; it sets what keys 1-4 do. Choosing Attack starts an attack on the selection (the first move, Bite) |

@@ -17,6 +17,7 @@ const TESTS := [
 	"res://game/tests/test_profile.gd",
 	"res://game/tests/test_session.gd",
 	"res://game/tests/test_input.gd",
+	"res://game/tests/test_runfall.gd",
 	"res://game/tests/test_interp.gd",
 	"res://game/tests/test_camera.gd",
 	"res://game/tests/test_actors.gd",

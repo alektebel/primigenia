@@ -51,7 +51,8 @@ $(BUILD)/combat_golden: tests/combat_golden.c apps/combat_bots.h $(BUILD)/apps/c
 
 # Correctness regressions. Balance acceptance is a separate measured gate:
 # run make tourney as well before claiming P2 acceptance.
-test: $(BUILD)/parts_nest_test $(BUILD)/plan_test $(BUILD)/social_test $(BUILD)/world_cli $(BUILD)/world_test $(BUILD)/terrain_test $(BUILD)/cpore_test $(BUILD)/combat_test $(BUILD)/combat_tourney_test $(BUILD)/combat_golden check-core $(BUILD)/nav_test $(BUILD)/steer_test $(BUILD)/routes_test secrets-test
+test: $(BUILD)/run_fall_test $(BUILD)/parts_nest_test $(BUILD)/plan_test $(BUILD)/social_test $(BUILD)/world_cli $(BUILD)/world_test $(BUILD)/terrain_test $(BUILD)/cpore_test $(BUILD)/combat_test $(BUILD)/combat_tourney_test $(BUILD)/combat_golden check-core $(BUILD)/nav_test $(BUILD)/steer_test $(BUILD)/routes_test secrets-test
+	./$(BUILD)/run_fall_test
 	nice -n 10 ./$(BUILD)/terrain_test
 	./$(BUILD)/world_test
 	./$(BUILD)/social_test
@@ -632,3 +633,6 @@ godot-journal-nest-evidence: godot
 godot-cell2-evidence:
 	@mkdir -p docs/evidence/godot/cell2
 	LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 900 xvfb-run -a $(GODOT) --rendering-driver opengl3 --path godot --script res://cell/tests/cell2_evidence.gd -- $(CURDIR)/docs/evidence/godot/cell2
+
+$(BUILD)/run_fall_test: tests/test_run_fall.c $(HDRS) $(BUILD)/libcpore.a
+	$(CC) $(CFLAGS) $< $(BUILD)/libcpore.a -o $@ $(LDLIBS)

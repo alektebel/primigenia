@@ -306,6 +306,7 @@ void CporeWorld::_bind_methods() {
     ClassDB::bind_method(D_METHOD("observe"), &CporeWorld::observe);
     ClassDB::bind_method(D_METHOD("nest_edit", "body"), &CporeWorld::nest_edit);
     ClassDB::bind_method(D_METHOD("nest_apply", "body"), &CporeWorld::nest_apply);
+    ClassDB::bind_method(D_METHOD("set_run", "on"), &CporeWorld::set_run);
     ClassDB::bind_method(D_METHOD("set_tiers", "on"), &CporeWorld::set_tiers);
     ClassDB::bind_method(D_METHOD("set_edit_anywhere", "on"), &CporeWorld::set_edit_anywhere);
     ClassDB::bind_method(D_METHOD("lineage"), &CporeWorld::lineage);
@@ -450,6 +451,8 @@ int CporeWorld::order(const Dictionary &input) {
 
 String CporeWorld::order_error(int code) { return String(cp_stage_order_error(code)); }
 
+void CporeWorld::set_run(bool on) { cp_stage_set_run(world.get(), on); }
+
 Dictionary CporeWorld::state() const {
     const CpStageWorld &w = *world;
     Dictionary d;
@@ -459,6 +462,12 @@ Dictionary CporeWorld::state() const {
     d["respawn_ticks"] = int(w.respawn_ticks); d["cooldown_ticks"] = int(w.cooldown_ticks);
     d["error"] = int(w.last_error);
     d["arena"] = Vector2(w.arena_x, w.arena_z);
+    Dictionary player;
+    player["running"] = w.running != 0; player["stamina"] = int(w.run_stamina);
+    player["falling"] = w.falling != 0;
+    player["y"] = w.falling ? w.fall_y_mm * .001 : cp_stage_ground(&w, w.player.x, w.player.z);
+    player["vertical_velocity"] = w.fall_v_mm_s * .001;
+    d["player"] = player;
     d["order"] = order_to_dict(w.order);
     d["flags"] = int(w.debug_flags);
     {

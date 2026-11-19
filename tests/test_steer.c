@@ -214,7 +214,7 @@ static int test_slopes(void){
     walk_heading_in(&w,-1,0,60,23,20+6/.839f-1,&steady,&x_end);
     printf("  4 legs down grade 0.839: %.2f m/s\n",steady);
     CHECK(steady<flat*.8f);
-    /* legs set the steepest grade: 8 legs cross the 40 degree ramp, 2 legs stall on it */
+    /* Legs set the climb limit: 8 legs cross; direct 2-leg input repeatedly slides back off it. */
     make_field(.839f,0);
     field_world(&w,8,60,10,0);
     walk_heading(&w,1,0,200,&steady,&x_end);
@@ -223,7 +223,9 @@ static int test_slopes(void){
     field_world(&w,2,60,10,0);
     walk_heading(&w,1,0,200,&steady,&stall_x);
     printf("  40 degrees: 8 legs reach x %.1f, 2 legs stop at x %.1f (speed %.2f)\n",x_end,stall_x,steady);
-    CHECK(stall_x<x_end-15&&steady<.5f);
+    CHECK(stall_x<x_end-15);
+    int fell=0;for(unsigned i=0;i<w.ev_total&&i<CP_STAGE_MAX_EVENTS;i++)fell|=w.events[i].type==CP_STAGE_EV_FELL;
+    CHECK(fell);
     /* sliding: beyond the slide grade a body goes down the fall line without being asked; a body that holds does not */
     make_field(1.19f,0);
     field_world(&w,2,60,23,0);

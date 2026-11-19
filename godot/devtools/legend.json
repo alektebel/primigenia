@@ -4,7 +4,8 @@
   "groups": ["Move", "Camera", "Fight", "Menus", "Time", "Dev tools", "Studio"],
   "actions": {
     "move_forward": {"label": "Move", "also": ["move_left", "move_back", "move_right"], "group": "Move", "contexts": ["walk", "fight"], "corner": ["walk"]},
-    "sprint": {"label": "Sprint", "group": "Move", "contexts": ["walk", "fight"]},
+    "run": {"label": "Run", "group": "Move", "contexts": ["walk"]},
+    "sprint": {"label": "Burst", "group": "Move", "contexts": ["walk", "fight"]},
     "walk_to": {"label": "Walk there (a white circle marks it); a click on a creature only selects it", "group": "Move", "contexts": ["walk", "fight"], "corner": ["walk"]},
     "move_left": {"label": "Left", "group": "Move", "contexts": ["walk", "fight"], "hidden": true},
     "move_back": {"label": "Back", "group": "Move", "contexts": ["walk", "fight"], "hidden": true},
