@@ -99,17 +99,24 @@ func _run() -> void:
 		c /= maxi(ids.size(), 1)
 		print("acechalunas ", ids.size(), " centre ", c)
 		island.hosts[0].visible = false
-		stage.debug_now({"op": 1, "id": 0, "x": c.x - 14.0, "z": c.y - 14.0})
+		stage.debug_now({"op": 1, "id": 0, "x": c.x + float(st.cave.fx) * 26.0, "z": c.y + float(st.cave.fz) * 26.0})
 		var look := Vector3(c.x, game.visual_ground(c.x, c.y) + 1.0, c.y)
 		for phase in [["day", 4500], ["night", 11500]]:
 			stage.debug_now({"op": 5, "a": int(phase[1])})
 			await settle(25)
 			for view in ([["wide", 14.0, 0.8]] if phase[0] == "day" else [["wide", 14.0, 0.8], ["close", 6.5, 0.8]]):
-				var p2 := Vector3(c.x + sin(float(view[2])) * float(view[1]), 0, c.y + cos(float(view[2])) * float(view[1]))
+				# on the open side of the group, away from the cave mouth, looking back at them
+				var outward := Vector2(float(st.cave.fx), float(st.cave.fz))
+				var side := Vector2(-outward.y, outward.x)
+				var p2 := Vector3(c.x + (outward.x * 0.9 + side.x * 0.4) * float(view[1]), 0, c.y + (outward.y * 0.9 + side.y * 0.4) * float(view[1]))
 				p2.y = game.visual_ground(p2.x, p2.z) + 2.0
 				cam.position = p2
 				cam.look_at(look)
 				await settle(8)
+				var now: Dictionary = stage.world.state()
+				for i in ids:
+					var e: Dictionary = now.entities[i]
+					print("  ", phase[0], " id ", i, " at ", Vector2(e.x, e.z), " hidden ", e.hidden, " hp ", e.hp, " cam ", p2, " look ", look)
 				await shot(out, "acechalunas_%s_%s.jpg" % [phase[0], view[0]])
 	# --- the sixth species
 	if only.is_empty() or only.has("babosa"):

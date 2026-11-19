@@ -180,24 +180,24 @@ func build(parent: Node3D) -> Node3D:
 	mi.material_override = mat
 	mi.name = "Shell"
 	root.add_child(mi)
-	# boulders around the mouth (the cliff face), in the same rock
-	var rm := StandardMaterial3D.new()
-	rm.albedo_color = ROCK_MOUTH * 1.1
-	rm.roughness = 1.0
-	for k in 9:
-		var side := -1.0 if k % 2 == 0 else 1.0
-		var vv := side * (half * (1.05 + 0.25 * fmod(float(k) * 0.37, 1.0)) + 0.6)
-		var uu := -2.5 + 0.55 * float(k) + 0.8 * _rock(float(k), 2.0)
-		var b := MeshInstance3D.new()
-		var sp := SphereMesh.new()
-		sp.radius = 0.9 + 0.5 * absf(_rock(float(k) * 2.3, 4.0)) * 3.0
-		sp.height = sp.radius * 1.5
-		b.mesh = sp
-		b.material_override = rm
-		var w := _world(uu, vv)
-		b.position = Vector3(w.x, _floor_at(uu) + sp.radius * 0.5, w.y)
-		b.rotation = Vector3(0.3 * float(k), 0.7 * float(k), 0.1)
-		root.add_child(b)
+	# the portal: a dark fill across the arch at the entrance plane, visible only from outside (it hides the cliff face that the
+	# heightfield still has inside the opening; the player walks through it and, from inside, it is culled)
+	var portal := SurfaceTool.new()
+	portal.begin(Mesh.PRIMITIVE_TRIANGLES)
+	var pr := _ring(0.0, 1.0, 0.0)
+	var pc := _p(0.0, 0.0, _floor_at(0.0) + CEILING * 0.45)
+	for k in ARCH:
+		_tri(portal, pc, pr[k + 1], pr[k], Color(0.02, 0.02, 0.03))
+	portal.generate_normals()
+	var pmi := MeshInstance3D.new()
+	pmi.mesh = portal.commit()
+	var pmat := StandardMaterial3D.new()
+	pmat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	pmat.vertex_color_use_as_albedo = true
+	pmat.cull_mode = BaseMaterial3D.CULL_BACK
+	pmi.material_override = pmat
+	pmi.name = "Portal"
+	root.add_child(pmi)
 	# cold lights: dark inside, a faint blue-green glow from the chamber (the Acechalunas' country)
 	for spec in [[Vector3(cx, floor_h + 3.2, cz), Color(0.5, 0.85, 1.0), 3.2, radius * 2.0], [_light_pos(length * 0.45), Color(0.55, 0.7, 0.9), 1.6, 12.0], [_light_pos(2.0), Color(0.6, 0.75, 0.95), 1.0, 8.0]]:
 		var l := OmniLight3D.new()

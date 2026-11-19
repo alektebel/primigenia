@@ -427,6 +427,7 @@ func _update_actors(dt: float) -> void:
 
 func _update_camera(dt: float) -> void:
 	if not chase_enabled or chase == null:
+		_apply_zoom_budget(chase.z if chase != null else 0.0)    # creature visibility (hidden sleepers) must not depend on the chase camera
 		return
 	var p: Dictionary = stage.sample(0)
 	var state: Dictionary = stage.cur

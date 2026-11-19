@@ -136,9 +136,10 @@ func _run() -> void:
 	game = root.get_node("Game")
 	game.persist_settings = false
 	game.settings.grass = 3000
-	var entry := TerrainCache.load_entry({"seed": 1})
+	# own cache directory: the shared user://terrain can hold an island made before the route-certification terrain curation
+	var entry := TerrainCache.load_entry({"seed": 1}, "user://terrain-secrets")
 	if entry.is_empty():
-		entry = TerrainCache.build({"seed": 1}, CporeTerrain.new())
+		entry = TerrainCache.build({"seed": 1}, CporeTerrain.new(), "user://terrain-secrets")
 	game.set_island(entry)
 	game.goto_island()
 	for i in 1800:
@@ -344,6 +345,36 @@ func _run() -> void:
 				await shot("ford")
 		check(crossed, "the creature walked across the ford to %s" % ford.to)
 	island.player_input.clear_destination()
+
+	stage_name = "9. secrets: a shard by the real key, the night creature, the cave"
+	print("== 9. secrets: a shard by the real key, the night creature, the cave")
+	stage.debug_now({"op": 6, "a": 2})
+	var sh: Dictionary = stage.cur.shards.items[0]
+	stage.debug_now({"op": 1, "id": 0, "x": float(sh.x) - 1.5, "z": float(sh.z)})
+	await ticks(6)
+	await tap(KEY_E)
+	await ticks(6)
+	check(int(stage.cur.shards.found) == 1 and bool(stage.cur.shards.items[0].found), "E collects the first shard (%s)" % str(stage.cur.shards.items[0].get("line", "")).left(40))
+	var night_ids := []
+	for i in range(1, stage.cur.entities.size()):
+		if species_of(i) == 4:
+			night_ids.append(i)
+	check(night_ids.size() >= 2, "Acechalunas live on the island (%d)" % night_ids.size())
+	check(not night_ids.is_empty() and bool(stage.cur.entities[night_ids[0]].hidden), "they sleep hidden by day")
+	stage.debug_now({"op": 5, "a": 11500})
+	await ticks(4)
+	check(not night_ids.is_empty() and not bool(stage.cur.entities[night_ids[0]].hidden), "they are out at night")
+	await settle(10)
+	await shot("night")
+	var cv: Dictionary = stage.cur.cave
+	stage.debug_now({"op": 1, "id": 0, "x": float(cv.chamber_x), "z": float(cv.chamber_z)})
+	await ticks(20)
+	check(int(stage.cur.cave.inside) == 2 and bool(stage.cur.cave.chamber_entered), "the player stands in the cave chamber")
+	await settle(10)
+	await shot("cave")
+	stage.debug_now({"op": 5, "a": 4500})
+	stage.debug_now({"op": 1, "id": 0, "x": float(cv.x) + float(cv.fx) * 8.0, "z": float(cv.z) + float(cv.fz) * 8.0})
+	await ticks(10)
 
 	print("== 9. free play to fill the clock (%.1f sim minutes in all)" % sim_minutes)
 	stage.debug_now({"op": 6, "a": 0})
