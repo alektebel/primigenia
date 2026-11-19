@@ -1,0 +1,296 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "salaris",
+  "name": {
+    "en": "Salaris"
+  },
+  "world": "spectrum",
+  "kind": "new",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "Evaporite flats and shallow salt crusts",
+    "diet": "Microbial mats, crystallized salts",
+    "active": "Diurnal",
+    "predators": []
+  },
+  "body": "Hexapod with a faceted, crystalline carapace and low-profile stance",
+  "chains": [
+    {
+      "id": "salaris.c1",
+      "trait": "Specular UV-mirror carapace",
+      "links": [
+        "Matches salt UV reflectance",
+        "Avoids detection by UV-hunting predators",
+        "High UV flux drives selection for UV camouflage in open pans",
+        "F-star SED delivers high-energy photons with transparent window"
+      ],
+      "roots": [
+        "F14",
+        "F9",
+        "F13"
+      ],
+      "skill": {
+        "id": "salaris.spectral_shroud",
+        "name": {
+          "en": "Spectral Shroud"
+        },
+        "role": "Defence",
+        "effect": "Player gains ability to cloak in UV band; 90% invisibility to UV-sensitive sensors.",
+        "numbers": {}
+      },
+      "weakness": "Reflection mechanism creates polarization artifact; visible to polarization hunters.",
+      "observe": [
+        "Carapace glints blue-white under direct starlight",
+        "Moves across salt crust without breaking surface tension",
+        "Shadow on polarization sensor shows stark vector mismatch"
+      ],
+      "journal": {
+        "en": "A walking salt-crystal that hides its face in the sun's glare."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-20",
+        "summary": "Hypersaline evaporite flats are strong UV/visible reflectors; selection under F14 high UV favors matching substrate spectral albedo. A mineralized or wax-layered cuticle with oriented microfacets can approach halite-like reflectance without requiring impossible optics. Perfect 90% UV invisibility to all sensors is a gameplay exaggeration, not a hard biological limit.",
+        "fixes": [
+          "Hypersaline evaporite flats are strong UV/visible reflectors; selection under F14 high UV favors matching substrate spectral albedo. A mineralized or wax-layered cuticle with oriented microfacets can approach halite-like reflectance without requiring impossible optics. Perfect 90% UV invisibility to all sensors is a gameplay exaggeration, not a hard biological limit."
+        ],
+        "analogues": [
+          {
+            "organism": "Metallic/structural reflectors in Chrysina jewel scarabs; UV-reflective wax blooms on desert tenebrionid beetles; counter-illumination and substrate-matching in flatfish and sand fleas (spectral, not UV-perfect).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "salaris.c2",
+      "trait": "Cross-polarization artifact",
+      "links": [
+        "Crystalline alignment reflects polarized light",
+        "Hypersaline pans produce strong sky polarization",
+        "Low aerosol scattering preserves polarization patterns",
+        "Thin atmosphere and clear zenith create predictable polarization vectors"
+      ],
+      "roots": [
+        "F11",
+        "F9",
+        "F13"
+      ],
+      "skill": {
+        "id": "salaris.polari_glyph",
+        "name": {
+          "en": "Polari-Glyph"
+        },
+        "role": "Poke",
+        "effect": "Player can deploy a polarized foil that mimics Salaris artifact; attracts Salaris for 60s.",
+        "numbers": {}
+      },
+      "weakness": "Polarization hunters can track Salaris even when UV-camouflaged.",
+      "observe": [
+        "Movement leaves polarization trail on ground-scanner",
+        "Carapace facets align with zenith polarization angle",
+        "Salaris freezes when sky polarization shifts (cloud/flare)"
+      ],
+      "journal": {
+        "en": "It wears the sky's polarization like a suit, but the suit has a zipper."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-20",
+        "summary": "F11 gives strong, predictable sky polarization on clear zenith; specular reflection from horizontal crystals follows Fresnel rules, so a faceted carapace aligned to the pan can match average radiance but still differ in polarization fraction from rough salt or skylight. Predators with polarization channel gain a convergent hunting axis when UV albedo camouflage works—classic multi-channel camouflage breakdown.",
+        "fixes": [
+          "F11 gives strong, predictable sky polarization on clear zenith; specular reflection from horizontal crystals follows Fresnel rules, so a faceted carapace aligned to the pan can match average radiance but still differ in polarization fraction from rough salt or skylight. Predators with polarization channel gain a convergent hunting axis when UV albedo camouflage works—classic multi-channel camouflage breakdown."
+        ],
+        "analogues": [
+          {
+            "organism": "Mantis shrimp and cephalopod polarization vision; cuttlefish and octopus polarization camouflage that fails against polarization-sensitive hunters; butterflies with polarized wing reflections.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "salaris.c3",
+      "trait": "Rapid photolyase cycling",
+      "links": [
+        "Enzymatic repair of thymine dimers",
+        "High UV-B/C flux causes rapid DNA damage",
+        "Transparent window prevents atmospheric filtering",
+        "F-star SED plus low ozone column"
+      ],
+      "roots": [
+        "F14",
+        "F9"
+      ],
+      "skill": {
+        "id": "salaris.uv_resilience",
+        "name": {
+          "en": "UV Resilience"
+        },
+        "role": "Passive",
+        "effect": "Player reduces UV damage accumulation by 70% when near Salaris.",
+        "numbers": {}
+      },
+      "weakness": "Metabolic drain; Salaris must feed constantly, reducing stealth time.",
+      "observe": [
+        "Salaris pauses to expose ventral photolyase glands to starlight",
+        "Body temperature spikes briefly during repair",
+        "Carapace dulls slightly between UV-bursts"
+      ],
+      "journal": {
+        "en": "It drinks the light to stitch its genome back together."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-20",
+        "summary": "F14 (3.5× Earth UV-B/C) plus F9 transparent window make constitutive DNA damage likely for diurnal open-pan life. Light-driven photolyase repair is a real UV countermeasure; diurnal exposure imposes a measurable ATP cost and favors constant feeding, consistent with F17.",
+        "fixes": [
+          "F14 (3.5× Earth UV-B/C) plus F9 transparent window make constitutive DNA damage likely for diurnal open-pan life. Light-driven photolyase repair is a real UV countermeasure; diurnal exposure imposes a measurable ATP cost and favors constant feeding, consistent with F17."
+        ],
+        "analogues": [
+          {
+            "organism": "Photolyase in plants, fungi, many invertebrates and microbes; UV-tolerant halophiles in high-irradiance shallow brines.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "salaris.c4",
+      "trait": "Silent chitinous crawl",
+      "links": [
+        "Crawls without clicking or vibration",
+        "High-frequency sound attenuates rapidly in thin air",
+        "Acoustic signaling is ineffective for coordination",
+        "Low gas density suppresses HF coupling"
+      ],
+      "roots": [
+        "F10",
+        "F8"
+      ],
+      "skill": {
+        "id": "salaris.ghost_step",
+        "name": {
+          "en": "Ghost Step"
+        },
+        "role": "Basic",
+        "effect": "Player movement noise reduced by 80%; avoids vibration-sensitive predators.",
+        "numbers": {}
+      },
+      "weakness": "Silent movement requires precise balance; slips on wet salt.",
+      "observe": [
+        "No sound despite rapid leg movement",
+        "Dust does not ripple under feet",
+        "Predators hunt by sight/polarization, not sound"
+      ],
+      "journal": {
+        "en": "A shadow that refuses to make the air shake."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-20",
+        "summary": "State explicitly: quiet in air (Ghost Step), not vibration-deaf on the crust—soft pulvilli or salt-surface tension skating reduces impact pulses; wet salt slip weakness stays.",
+        "fixes": [
+          "State explicitly: quiet in air (Ghost Step), not vibration-deaf on the crust—soft pulvilli or salt-surface tension skating reduces impact pulses; wet salt slip weakness stays."
+        ],
+        "analogues": [
+          {
+            "organism": "Tiger beetles and hunting wasps with quiet adhesive tarsi; substrate-borne vibration hunting in spiders and scorpions despite quiet air steps.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "crisol",
+      "kind": "cousin",
+      "note": "(council kind 'Prey of') Salaris is the primary prey of Crisol; its UV camouflage forces Crisol to rely on polarization hunting."
+    },
+    {
+      "with": "crisol",
+      "kind": "cousin",
+      "note": "(council kind 'Hunter of') Crisol exploits Salaris's polarization artifact; a player using a polarizing filter can bypass the Crisol's gaze."
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-19",
+    "by": [
+      "naturalist/qwen"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-20",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-19"
+    }
+  ],
+  "body_plan": {
+    "symmetry": "bilateral",
+    "arms": 6,
+    "origin": "Benthic arthropod analog"
+  },
+  "temperament": "Skittish, reactive, motionless when threatened",
+  "secrets": [
+    "Salaris carapace can be coated in oil to scramble polarization vectors, hiding from Crisol.",
+    "Photolyase cycling is triggered by blue light; a blue flare can stun a Salaris in repair mode."
+  ],
+  "moments": [
+    "When the M-dwarf flare strikes, the salt pan flashes blindingly in UV; the Salaris dissolves into the brilliance, but its polarization shadow remains etched in the sand like a wound."
+  ],
+  "journal": [
+    {
+      "en": "Salaris mirrors the salt's soul in the ultraviolet."
+    },
+    {
+      "en": "The salt pan is a mirror, but the mirror lies."
+    }
+  ]
+}

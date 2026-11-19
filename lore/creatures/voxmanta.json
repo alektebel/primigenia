@@ -60,10 +60,7 @@
           },
           {
             "organism": "real biology behind this chain",
-            "mechanism": "see the cited works; chain wording is the council's own",
-            "refs": [
-              "poole_1999_infrasound"
-            ]
+            "mechanism": "see the cited works; chain wording is the council's own"
           }
         ],
         "scores": {
@@ -270,6 +267,11 @@
       "date": "2026-11-19",
       "who": "import_got",
       "what": "imported from council run autoloop-2026-11-19"
+    },
+    {
+      "date": "2026-11-19",
+      "who": "autoloop",
+      "what": "removed rejected references from analogues"
     },
     {
       "date": "2026-11-19",

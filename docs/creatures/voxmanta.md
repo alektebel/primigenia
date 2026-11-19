@@ -41,7 +41,7 @@ Trait ← High pressure CO2/N2 atmosphere lowers acoustic impedance ← Low-freq
   - Use ‘detect and roughly bearings at km scale, localize and ambush within tens of meters’; keep high-pitch deafness weakness (elephant-like upper limit).
   - scores: astrobio 8, skeptic 6
   - Analogue: African elephant infrasound communication and long-range detection (Poole); barn owl asymmetric ears for sound localization in low light.: as named by the judge; no mechanism or reference recorded
-  - Analogue: real biology behind this chain: see the cited works; chain wording is the council's own (Poole 1999 [unverified])
+  - Analogue: real biology behind this chain: see the cited works; chain wording is the council's own
   - Fix: Use ‘detect and roughly bearings at km scale, localize and ambush within tens of meters’; keep high-pitch deafness weakness (elephant-like upper limit).
 - **Chain provenance:** council run `autoloop-2026-11-19`; by naturalist/qwen
 
@@ -124,4 +124,5 @@ council run `autoloop-2026-11-19`; by naturalist/qwen
 ## Changelog
 
 - 2026-11-19 import_got: imported from council run autoloop-2026-11-19
+- 2026-11-19 autoloop: removed rejected references from analogues
 - 2026-11-19 autoloop: removed rejected references from analogues

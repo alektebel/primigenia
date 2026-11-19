@@ -41,7 +41,7 @@ Trait ← Coils generate modulated B-field for social signaling ← Near-field d
   - Cap pulse rate; tie 1.8 W to explicit body mass (~200–500 g) or to superconducting-like iron-core coils; keep range at contact–12 cm; frame as highly speculative convergent analog to electric-fish signaling, not a known terrestrial mechanism.
   - scores: astrobio 6, skeptic 6
   - Analogue: Magnetotactic bacteria (aligned magnetosome chains, passive, no pulsed signaling)—Blakemore 1975; weak compass and anomaly use in birds via radical-pair cryptochromes (not active transmitters)—Hore and Mouritsen 2016: as named by the judge; no mechanism or reference recorded
-  - Analogue: real biology behind this chain: see the cited works; chain wording is the council's own (Hore 2016 [unverified]; Ritz 2000 [verified])
+  - Analogue: real biology behind this chain: see the cited works; chain wording is the council's own (Ritz 2000 [verified])
   - Fix: Cap pulse rate; tie 1.8 W to explicit body mass (~200–500 g) or to superconducting-like iron-core coils; keep range at contact–12 cm; frame as highly speculative convergent analog to electric-fish signaling, not a known terrestrial mechanism.
 - **Chain provenance:** council run `autoloop-2026-11-19`; by naturalist/qwen
 
@@ -97,7 +97,7 @@ Trait ← Eyes contain flavin-tryptophan radical pairs sensitive to field vector
   - Reframe Auroral Read as inclination/anomaly heading sense and corridor detection, not a full visual overlay of field lines; keep copper-sky polarization (F6) as a separate visual channel.
   - scores: astrobio 6, skeptic 6
   - Analogue: European robin and other migrants—cryptochrome radical-pair compass; inclination sensitivity in vertebrate magnetoreception—Hore and Mouritsen 2016: as named by the judge; no mechanism or reference recorded
-  - Analogue: real biology behind this chain: see the cited works; chain wording is the council's own (Hore 2016 [unverified])
+  - Analogue: real biology behind this chain: see the cited works; chain wording is the council's own
   - Fix: Reframe Auroral Read as inclination/anomaly heading sense and corridor detection, not a full visual overlay of field lines; keep copper-sky polarization (F6) as a separate visual channel.
 - **Chain provenance:** council run `autoloop-2026-11-19`; by naturalist/qwen
 
@@ -129,3 +129,4 @@ council run `autoloop-2026-11-19`; by naturalist/qwen
 ## Changelog
 
 - 2026-11-19 import_got: imported from council run autoloop-2026-11-19
+- 2026-11-19 autoloop: removed rejected references from analogues

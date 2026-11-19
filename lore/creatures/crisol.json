@@ -1,0 +1,295 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "crisol",
+  "name": {
+    "en": "Crisol"
+  },
+  "world": "spectrum",
+  "kind": "new",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "Shale outcrops bordering hypersaline pans",
+    "diet": "Salaris, small invertebrates",
+    "active": "Diurnal",
+    "predators": []
+  },
+  "body": "Hexapod with chelicerae, array of infrared pit organs, and dark lens eyes",
+  "chains": [
+    {
+      "id": "crisol.c1",
+      "trait": "Polarization-pit sensory array",
+      "links": [
+        "Detects polarization vector mismatches",
+        "Background has strong, predictable polarization",
+        "Prey creates polarization artifacts against background",
+        "Thin atmosphere preserves high-contrast polarization patterns"
+      ],
+      "roots": [
+        "F11",
+        "F9",
+        "F13"
+      ],
+      "skill": {
+        "id": "crisol.polaris_sight",
+        "name": {
+          "en": "Polaris Sight"
+        },
+        "role": "Engage",
+        "effect": "Player can reveal hidden targets by detecting polarization contrast; 0.85 contrast reveal radius.",
+        "numbers": {}
+      },
+      "weakness": "Blind to UV and color cues; relies entirely on polarization geometry.",
+      "observe": [
+        "Pit organs twitch continuously, tracking sky polarization angle",
+        "Eyes are dark lenses with no color receptors",
+        "Strike direction aligns with polarization vector line"
+      ],
+      "journal": {
+        "en": "A jagged stone that reads the sky's invisible lines."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-20",
+        "summary": "Rename to polarization-specialized dorsal eyes or ommatidial bands; reserve pit organs for IR (prey thermogram on cold salt, fumarole contrast). Hunting ‘the gap’ stays—eyes read e-vector mismatch, pits confirm warm body at strike.",
+        "fixes": [
+          "Rename to polarization-specialized dorsal eyes or ommatidial bands; reserve pit organs for IR (prey thermogram on cold salt, fumarole contrast). Hunting ‘the gap’ stays—eyes read e-vector mismatch, pits confirm warm body at strike."
+        ],
+        "analogues": [
+          {
+            "organism": "Stomatopod/mantis shrimp polarization ommatidia (not pits); honeybee polarization sky compass in retina; pit viper IR pits for thermal targeting only (Gracheva et al.).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "crisol.c2",
+      "trait": "UV-blackout filter over pits",
+      "links": [
+        "Sensors shielded from UV radiation",
+        "High UV flux damages polarization-sensitive tissue",
+        "Protection prioritized over UV vision",
+        "F-star SED delivers high-energy photons"
+      ],
+      "roots": [
+        "F14",
+        "F11"
+      ],
+      "skill": {
+        "id": "crisol.uv_shielding",
+        "name": {
+          "en": "UV Shielding"
+        },
+        "role": "Defence",
+        "effect": "Player gains passive UV resistance when befriending Crisol.",
+        "numbers": {}
+      },
+      "weakness": "Cannot see UV flares or UV-camouflaged prey that lacks polarization artifact.",
+      "observe": [
+        "Pit organs have dark, opaque covers",
+        "Crisol ignores UV-intense objects",
+        "Retreats when polarization patterns scramble (flare)"
+      ],
+      "journal": {
+        "en": "It blocks the sun to see the world's true angles."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-20",
+        "summary": "If polarization moves to eyes, apply UV filters to both eye regions and pit covers; note flares scramble polarization (behavioral retreat) more than IR baseline from M-dwarf NIR (F2).",
+        "fixes": [
+          "If polarization moves to eyes, apply UV filters to both eye regions and pit covers; note flares scramble polarization (behavioral retreat) more than IR baseline from M-dwarf NIR (F2)."
+        ],
+        "analogues": [
+          {
+            "organism": "Pigmented facial scales over pit viper fossae; arthropod corneal screening pigments in high-UV deserts.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "crisol.c3",
+      "trait": "Spring-loaded cheliceral jaw",
+      "links": [
+        "Explosive strike mechanics",
+        "Low gravity allows high acceleration",
+        "Predation requires speed to catch agile prey",
+        "Surface gravity 0.99g reduces inertia costs"
+      ],
+      "roots": [
+        "F5",
+        "F13"
+      ],
+      "skill": {
+        "id": "crisol.pounce",
+        "name": {
+          "en": "Pounce"
+        },
+        "role": "Basic",
+        "effect": "Player can perform a 15m leap strike; covers distance instantly.",
+        "numbers": {}
+      },
+      "weakness": "Strike leaves predictable trajectory; prey can dodge with lateral motion.",
+      "observe": [
+        "Chelicerae lock back before strike",
+        "Launch leaves no sound, only displacement",
+        "Crisol misjudges if polarization vector is ambiguous"
+      ],
+      "journal": {
+        "en": "A spring coiled in the silence."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-20",
+        "summary": "Reframe Pounce as ~1–3 m curved lunge or strike from shale outcrop (horizontal+vertical), or ‘15 m’ as engagement range including stalking, not a single ballistic leap.",
+        "fixes": [
+          "Reframe Pounce as ~1–3 m curved lunge or strike from shale outcrop (horizontal+vertical), or ‘15 m’ as engagement range including stalking, not a single ballistic leap."
+        ],
+        "analogues": [
+          {
+            "organism": "Trap-jaw ants (Odontomachus); fast-strike mantids and mantis shrimp; salticid jump attacks (short range).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "crisol.c4",
+      "trait": "Fumarole roosting behavior",
+      "links": [
+        "Uses volcanic vents for thermoregulation",
+        "Tidal flexing drives active volcanism",
+        "Ectothermic metabolism requires heat sources",
+        "Silica-rich crust hosts fumaroles"
+      ],
+      "roots": [
+        "F12",
+        "F8"
+      ],
+      "skill": {
+        "id": "crisol.thermal_roost",
+        "name": {
+          "en": "Thermal Roost"
+        },
+        "role": "Control",
+        "effect": "Player can heal by resting near fumaroles; 10 HP/turn.",
+        "numbers": {}
+      },
+      "weakness": "Vulnerable while roosting; flares can overwhelm sensory array.",
+      "observe": [
+        "Crisol sits motionless over steam vents",
+        "Body temperature matches vent output",
+        "Moves sluggishly when away from heat"
+      ],
+      "journal": {
+        "en": "It drinks the earth's breath to power its strike."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-20",
+        "summary": "F12 active fumaroles and F20 arid heat budget give reliable microthermal hotspots; an ectothermic ambush predator gains strike-ready muscle temperature假体 while minimizing time exposed on cold salt. Vulnerability while roosting and flare-induced sensory overload are honest tradeoffs.",
+        "fixes": [
+          "F12 active fumaroles and F20 arid heat budget give reliable microthermal hotspots; an ectothermic ambush predator gains strike-ready muscle temperature假体 while minimizing time exposed on cold salt. Vulnerability while roosting and flare-induced sensory overload are honest tradeoffs."
+        ],
+        "analogues": [
+          {
+            "organism": "Basking snakes and lizards on sun-warmed rock; insects on volcanic soil thermals; desert scorpions at burrow mouths.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "salaris",
+      "kind": "cousin",
+      "note": "(council kind 'Prey of') Salaris is the primary prey of Crisol; its UV camouflage forces Crisol to rely on polarization hunting."
+    },
+    {
+      "with": "salaris",
+      "kind": "cousin",
+      "note": "(council kind 'Hunter of') Crisol exploits Salaris's polarization artifact; a player using a polarizing filter can bypass the Crisol's gaze."
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-19",
+    "by": [
+      "naturalist/qwen"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-20",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-19"
+    }
+  ],
+  "body_plan": {
+    "symmetry": "bilateral",
+    "arms": 6,
+    "origin": "Chelicerate analog"
+  },
+  "temperament": "Patient, explosive, methodical",
+  "secrets": [
+    "Crisol's pit organs overheat during prolonged tracking, glowing faintly in the thermal band.",
+    "A polarizing filter held by the player will render them invisible to Crisol's polarization sight."
+  ],
+  "moments": [
+    "The Crisol waits motionless for an hour, its pits tracking the sky's polarization line. When the Salaris steps onto the crust, the predator does not look at the prey; it looks at the gap in the sky's polarization, and strikes through the blind spot."
+  ],
+  "journal": [
+    {
+      "en": "Crisol hunts the gap between the stone and the sky."
+    },
+    {
+      "en": "The predator sees the angle, not the flesh."
+    }
+  ]
+}
