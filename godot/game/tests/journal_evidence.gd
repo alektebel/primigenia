@@ -3,12 +3,16 @@ extends SceneTree
 #   make godot-journal-evidence                 (1280x720)
 #   xvfb-run -a godot --rendering-driver opengl3 --resolution 1024x600 --path godot \
 #     --script res://game/tests/journal_evidence.gd -- <out dir> [suffix]
-# The state is the real C world's (CporeWorld.state()), with a few fields overlaid where the fresh world has nothing yet
-# (species seen / bonded / hunted, discovered parts, shard lines, recipes), so every page has something to show.
-# Shard lines and recipe clues are DRAFT placeholders, not canon.
+# The state is a real island world's (CporeWorld.state(), seed 1 with secrets on): three meteor shards are collected with the
+# real inspect order, the player is teleported into the cave chamber, and the shard lines and cave fields on the Secrets page
+# are the world's own. Overlaid where a fresh world has nothing yet: species seen / bonded / hunted, discovered parts, recipes
+# (recipe clues are DRAFT placeholders, not canon). The overflow sheets at the end are synthetic on purpose.
 
 const Model := preload("res://ui/journal_model.gd")
 const GameUI := preload("res://ui/game_ui.gd")
+const StageSetup := preload("res://game/stage/stage_setup.gd")
+const TerrainData := preload("res://game/island/terrain_data.gd")
+const Profile := preload("res://game/stage/profile.gd")
 
 var out := ""
 var suffix := ""
@@ -44,23 +48,43 @@ func _backdrop() -> void:
 	root.add_child(r)
 
 func _state() -> Dictionary:
+	var tp: Dictionary = CporeTerrain.defaults()
+	tp.seed = 1
+	var entry: Dictionary = CporeTerrain.new().generate(tp)
+	TerrainData.prepare(entry)
+	var data := TerrainData.new()
+	data.setup(entry, false)
 	var w := CporeWorld.new()
-	var setup := CporeWorld.default_setup(42)
-	assert(w.reset(setup) == 0)
+	assert(w.set_field(entry) == 0)
+	w.reset({"terrain": 2})
+	var manifest: Dictionary = Profile.load_json("res://game/data/parts.json")
+	var player: Dictionary = Profile.from_studio(Profile.load_json("res://game/data/merodeador.json"), manifest).profile
+	assert(w.reset(StageSetup.build(data, 1, player, StageSetup.garfio_profile(manifest), true, w, true)) == 0)
+	# three shards collected the way the game does it (walk beside, order inspect), then the chamber of the cave
+	for item in w.state().shards.items.slice(0, 3):
+		assert(w.debug({"op": 1, "id": 0, "x": float(item.x) - 1.0, "z": float(item.z)}) == 0)
+		assert(w.order({"verb": 16, "target": int(item.id)}) == 0)
+	var cv: Dictionary = w.state().cave
+	assert(w.debug({"op": 1, "id": 0, "x": float(cv.chamber_x), "z": float(cv.chamber_z)}) == 0)
+	w.step({})
 	var st: Dictionary = w.state()
+	print("real world: shards found ", st.shards.found, ", chamber_entered ", st.cave.chamber_entered, ", species ", st.species.size())
 	st.social.dna_total = 213
-	var rows: Array = st.social.species
+	var rows: Array = st.species
 	rows[0].seen = true
 	rows[0].bonded = 2
 	rows[0].observed = 2
 	rows[1].seen = true
 	rows[1].bonded = 3
-	rows[1].resolution = 1
+	rows[1].resolution = "ally"
 	rows[1].observed = 3
 	rows[3].seen = true
 	rows[3].kills = 3
-	rows[3].resolution = 2
+	rows[3].resolution = "hunted"
 	rows[3].observed = 1
+	rows[4].seen = true
+	rows[4].bonded = 1
+	rows[4].observed = 2
 	var disc: Array = st.parts.discovered
 	var have := {}
 	for p in disc:
@@ -86,12 +110,6 @@ func _run() -> void:
 	var catalogue: Array = JSON.parse_string(FileAccess.get_file_as_string("res://game/data/parts.json")).parts
 	var st := _state()
 	var base := Model.build(st, CporeWorld.species(), CporeWorld.chains(), catalogue)
-	# the shape state().shards and state().recipes are expected to have once the other branches land (DRAFT lines)
-	base["shards"] = [
-		{"index": 0, "found": true, "name": "", "line": {"en": "A warm grey splinter, ringing faintly when struck.", "es": "Una astilla gris y tibia que suena débilmente al golpearla."}},
-		{"index": 1, "found": true, "name": "", "line": {"en": "Far from the crater, as if something had skipped across the sky and fallen apart.", "es": "Lejos del cráter, como si algo hubiera rebotado por el cielo y se hubiera deshecho."}},
-		{"index": 2, "found": false, "name": "", "line": ""}, {"index": 3, "found": false, "name": "", "line": ""}, {"index": 4, "found": false, "name": "", "line": ""}]
-	base["cave"] = "known"
 	base["recipes"] = [
 		{"id": "bone_spines", "name": {"en": "Bone spines", "es": "Espinas óseas"}, "state": "known", "clues_seen": 2, "clues_total": 3,
 			"clues": [{"en": "An Espinodo fired a volley at a pursuer.", "es": "Un Espinodo lanzó una andanada a un perseguidor."}, {"en": "The fossil by the dry river shows back spines and a jaw.", "es": "El fósil del río seco muestra espinas en el lomo y una mandíbula."}],

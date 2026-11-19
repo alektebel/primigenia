@@ -18,14 +18,14 @@ SOCIAL_VERBS = {"befriend", "gift", "observe", "intimidate", "eat"}
 KNOWN_VERBS = {"go", "heading", "flee", "go_nest", "wait", "approach", "attack", "loadout"} | SOCIAL_VERBS
 MOVE_VERBS = {"go", "heading", "flee", "go_nest", "approach"}
 SCHEMA = "world-2"
-TOP_KEYS = ["schema", "tick", "clock", "world", "lineage", "own", "last_error", "blocked", "events_dropped", "events",
+TOP_KEYS = ["schema", "tick", "clock", "parts", "secrets", "world", "lineage", "own", "last_error", "blocked", "events_dropped", "events",
             "nearby", "legal_verbs", "loadout", "known_moves", "social", "attack_moves", "summary"]
 WORLD_KEYS = ["bound", "units", "nest", "tick_hz"]
 BLOCK_REASONS = {"cliff", "water", "edge", "creature", "unreachable", "obstacle"}
 EVENT_TYPES = {"hit", "kill", "death", "respawn", "order_rejected", "path_found", "arrived", "fled", "path_failed",
                "skill", "gift", "bond_made", "bond_broken", "species_resolved", "dna", "observe", "chain_complete", "intimidate",
-               "social_cancelled", "eat"}
-CREATURE_STATES = {"roam", "alert", "fighting", "carcass", "dead"}
+               "social_cancelled", "eat", "part_found", "inspected", "part_bought", "edit_accepted", "shard_found", "cave"}
+CREATURE_STATES = {"roam", "alert", "fighting", "carcass", "dead", "hunkered"}
 CREATURE_KEYS = ["id", "type", "species", "distance", "bearing", "hp", "hp_max", "state", "in_fight", "attackable"]
 SOCIAL_CREATURE_KEYS = CREATURE_KEYS + ["temper", "diet", "relationship", "trust", "trust_band", "bonded", "mood", "mood_n", "beat_in",
                                         "hostile", "calm", "leaving", "refuses_social", "known_likes", "known_dislikes"]

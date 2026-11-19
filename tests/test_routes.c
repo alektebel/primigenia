@@ -24,6 +24,9 @@ static void reset(float x,float z,int legs,int radius){
     CpStageSetup s;cp_stage_setup_default(&s,5);s.terrain=CP_STAGE_FIELD;s.n=0;
     s.nest_x=x;s.nest_z=z;s.player_legs=legs;
     s.player=(CpCombatProfile){2,4,0,0,0,100,100,4,(uint16_t)radius};
+    /* the hidden cave chamber is part of the walkable world (C2 secrets); shard placement is off here (it walks the whole island) */
+    s.secrets=CP_SECRETS_CAVE;
+    if(t.cave_count>0)s.cave=(CpStageCave){1,t.caves[0].x_m,t.caves[0].y_m,t.caves[0].facing_x,t.caves[0].facing_y,0,0,0,0};
     memset(&w,0,sizeof w);assert(!cp_stage_attach_field(&w,&f));assert(!cp_stage_reset(&w,&s));
 }
 static void generate(unsigned seed){
@@ -47,7 +50,7 @@ int main(int argc,char **argv){
     assert(fscanf(fp,"terrain %llx",&expected)==1&&expected==f.hash);
     char names[32][40];float x[32],z[32];int count=0,npairs=0;
     int pairs[64][2];
-    assert(fscanf(fp," places %d",&count)==1&&count==9);
+    assert(fscanf(fp," places %d",&count)==1&&count>=9&&count<=32);
     for(int i=0;i<count;i++)assert(fscanf(fp,"%39s %f %f",names[i],&x[i],&z[i])==3);
     assert(fscanf(fp," pairs %d",&npairs)==1&&npairs>0&&npairs<=64);
     for(int i=0;i<npairs;i++){
@@ -55,12 +58,36 @@ int main(int argc,char **argv){
         assert(pairs[i][0]>=0&&pairs[i][0]<count&&pairs[i][1]>=0&&pairs[i][1]<count);
     }
     fclose(fp);
+    /* The pinned shard and chamber places must be what the C world derives from this field. */
+    {
+        CpStageSetup s;cp_stage_setup_default(&s,5);s.terrain=CP_STAGE_FIELD;s.n=0;s.nest_x=s.nest_z=0;
+        s.secrets=CP_SECRETS_SHARDS|CP_SECRETS_CAVE;
+        s.cave=(CpStageCave){1,t.caves[0].x_m,t.caves[0].y_m,t.caves[0].facing_x,t.caves[0].facing_y,0,0,0,0};
+        static CpStageWorld probe;
+        memset(&probe,0,sizeof probe);assert(!cp_stage_attach_field(&probe,&f));assert(!cp_stage_reset(&probe,&s));
+        assert(probe.secrets.on&&probe.secrets.cave_on);
+        int shards=0,chamber=0;
+        for(int i=0;i<count;i++){
+            int k;
+            if(sscanf(names[i],"shard-%d",&k)==1){
+                assert(k>=1&&k<=CP_STAGE_SHARDS&&fabsf(x[i]-probe.secrets.shard[k-1][0])<.01f&&fabsf(z[i]-probe.secrets.shard[k-1][1])<.01f);
+                shards++;
+            }
+            else if(!strcmp(names[i],"cave-chamber")){
+                assert(fabsf(x[i]-probe.secrets.chamber_x)<.01f&&fabsf(z[i]-probe.secrets.chamber_z)<.01f);
+                chamber++;
+            }
+        }
+        assert(shards==CP_STAGE_SHARDS&&chamber==1);
+    }
     printf("# Routes seed %u — terrain v%d, n=%d, hash %016llx\n\n",seed,CP_TERRAIN_VERSION,f.n,(unsigned long long)f.hash);
     puts("| Body (legs/radius m) | Route | Reached | Ticks | Plan m | Walk m | Max grade | Fords | Stalls | Replans | Cold ms | Warm ms |\n|---|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|");
+    const char *only=getenv("ROUTES_ONLY");
     int failed=0,total=0;
     for(int body=0;body<9;body++)for(int pair=0;pair<npairs;pair++)for(int reverse=0;reverse<2;reverse++){
         int legs=body?2+2*((body-1)/2):4,radius=body?((body-1)%2?400:50):300;
         int a=pairs[pair][reverse],b=pairs[pair][1-reverse];
+        if(only&&!strstr(names[a],only)&&!strstr(names[b],only))continue;   /* ROUTES_ONLY=shard: a development filter, the gate runs everything */
         /* Invalidate only derived nav data through a different valid body signature. */
         reset(x[a],z[a],legs,radius==50?51:50);
         assert(cp_stage_nav_cell(&w)>0);

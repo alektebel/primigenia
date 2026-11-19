@@ -42,7 +42,8 @@ static func write(setup: Dictionary, inputs: Array, opts: Dictionary = {}) -> St
 	var any_legs := int(setup.get("player_legs", 0)) != 0
 	for w in setup.wild:
 		any_legs = any_legs or int(w.get("legs", 0)) != 0
-	var v3 := not debug.is_empty() or snapshot != "" or not field.is_empty() or any_legs
+	var any_secrets := int(setup.get("secrets", 0)) != 0 or int(setup.get("start_clock", 0)) != 0
+	var v3 := not debug.is_empty() or snapshot != "" or not field.is_empty() or any_legs or any_secrets
 	lines.append("%s %d" % [MAGIC, 3 if v3 else VERSION])
 	if snapshot != "":
 		lines.append("snapshot " + snapshot)
@@ -51,6 +52,11 @@ static func write(setup: Dictionary, inputs: Array, opts: Dictionary = {}) -> St
 		for w in setup.wild:
 			l += " %d" % int(w.get("legs", 0))
 		lines.append(l)
+	if any_secrets:
+		# C2 secrets: bits, clock at tick 0 and the cave record (x z fx fz half length radius; zeros when there is none)
+		var c: Dictionary = setup.get("cave", {})
+		lines.append("secrets %d %d %d %s %s %s %s %s %s %s" % [int(setup.get("secrets", 0)), int(setup.get("start_clock", 0)), 1 if not c.is_empty() else 0,
+			num(c.get("x", 0.0)), num(c.get("z", 0.0)), num(c.get("fx", 0.0)), num(c.get("fz", 0.0)), num(c.get("half", 0.0)), num(c.get("length", 0.0)), num(c.get("radius", 0.0))])
 	if not field.is_empty():
 		lines.append("field %d %d %s %s" % [field.seed, field.n, num(field.size_m), field.hash])
 	var nest: Vector2 = setup.nest
@@ -89,10 +95,18 @@ static func parse(text: String) -> Dictionary:
 	var snapshot := ""
 	var field := {}
 	var legs: Array = []
-	while version == 3 and cur[0] + 1 < tok.size() and (tok[cur[0]] == "snapshot" or tok[cur[0]] == "field" or tok[cur[0]] == "legs"):
+	var secrets: Array = []
+	while version == 3 and cur[0] + 1 < tok.size() and (tok[cur[0]] == "snapshot" or tok[cur[0]] == "field" or tok[cur[0]] == "legs" or tok[cur[0]] == "secrets"):
 		if tok[cur[0]] == "snapshot":
 			snapshot = tok[cur[0] + 1]
 			cur[0] += 2
+		elif tok[cur[0]] == "secrets":
+			if cur[0] + 10 >= tok.size():
+				return fail.call("bad secrets line")
+			secrets = [tok[cur[0] + 1].to_int(), tok[cur[0] + 2].to_int(), tok[cur[0] + 3].to_int()]
+			for k in 7:
+				secrets.append(tok[cur[0] + 4 + k].to_float())
+			cur[0] += 11
 		elif tok[cur[0]] == "legs":
 			var cnt: int = tok[cur[0] + 1].to_int()
 			if cur[0] + 2 + cnt >= tok.size():
@@ -148,6 +162,11 @@ static func parse(text: String) -> Dictionary:
 		setup.player_legs = legs[0]
 		for i in n_wild:
 			wild[i].legs = legs[i + 1]
+	if not secrets.is_empty():
+		setup.secrets = int(secrets[0])
+		setup.start_clock = int(secrets[1])
+		if int(secrets[2]) != 0:
+			setup.cave = {"x": secrets[3], "z": secrets[4], "fx": secrets[5], "fz": secrets[6], "half": secrets[7], "length": secrets[8], "radius": secrets[9]}
 	var obstacles := []
 	for i in n_obs:
 		var o := {}

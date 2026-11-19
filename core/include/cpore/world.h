@@ -9,7 +9,7 @@
 #define CP_STAGE_MAX_OBSTACLES 1024
 #define CP_STAGE_DAY_TICKS 12000
 #define CP_STAGE_DT .1f
-#define CP_STAGE_SNAPSHOT_VERSION 6   /* 3: player loadout (A21); 4: social layer (C2); 5: lineage ledger and ancestry; 6: discovery, nest shop and eggs */
+#define CP_STAGE_SNAPSHOT_VERSION 7   /* 3: player loadout (A21); 4: social layer (C2); 5: lineage ledger and ancestry; 6: discovery, nest shop and eggs; 7: secrets (shards, cave chamber, day/night) and 6 species */
 #define CP_STAGE_MAX_PATH 64      /* waypoints kept by the planner (docs/godot/NAV.md) */
 #define CP_STAGE_MAX_EVENTS 64    /* event ring since the last observe */
 
@@ -51,24 +51,29 @@ enum { CP_ITEM_PLANT, CP_ITEM_FRUIT, CP_ITEM_MEAT, CP_ITEM_BONE, CP_ITEM_COUNT }
 enum { CP_REL_STRANGER, CP_REL_NEUTRAL, CP_REL_TRUSTED, CP_REL_ALLY };
 enum { CP_RES_OPEN, CP_RES_ALLY, CP_RES_HUNTED };
 /* Where a DNA award came from (the move field of a DNA event). */
-enum { CP_DNA_KILL, CP_DNA_BOND, CP_DNA_ALLY, CP_DNA_DOMINATE, CP_DNA_CARCASS, CP_DNA_EXPLORE, CP_DNA_SEEN, CP_DNA_DUPLICATE, CP_DNA_FOSSIL, CP_DNA_OLD_CARCASS, CP_DNA_SOURCES };
+enum { CP_DNA_KILL, CP_DNA_BOND, CP_DNA_ALLY, CP_DNA_DOMINATE, CP_DNA_CARCASS, CP_DNA_EXPLORE, CP_DNA_SEEN, CP_DNA_DUPLICATE, CP_DNA_FOSSIL, CP_DNA_OLD_CARCASS, CP_DNA_SHARD, CP_DNA_SOURCES };
 #define CP_SOC_BOND_TRUST 60      /* trust at which a creature bonds (Q-3) */
 #define CP_SOC_BEAT 12            /* ticks between beats */
 #define CP_SOC_WINDOW 2           /* rhythm window, +- ticks */
 #define CP_SOC_OBSERVE_TICKS 50   /* ticks of unseen watching per revealed clue */
 #define CP_SOC_OBSERVE_RANGE 40.f
-#define CP_SOC_SPECIES 4
+#define CP_SOC_SPECIES 6      /* Rondo, Zanco, Espinodo, Garfio, Acechalunas, Babosa */
+#define CP_STAGE_SPECIES_COUNT 6
 #define CP_SOC_CHAIN_ITEMS 3
 #define CP_SOC_EXPLORE_MAX 40
 enum { CP_STAGE_NONE, CP_STAGE_VICTORY, CP_STAGE_DEATH, CP_STAGE_FLED };
 typedef struct { float x,z,r; int32_t type; } CpStageObstacle;
+/* Daily rhythm (W8): nocturnal species are hidden (asleep, not perceivable, not targetable) while the day is bright and
+ * wake at dusk; crepuscular ones keep out of the noon light (they hunker down: no roaming) and move at dawn, dusk and night. */
+enum { CP_ACT_DIURNAL, CP_ACT_NOCTURNAL, CP_ACT_CREPUSCULAR };
 typedef struct {
     const char *name;
     float speed,sight,roam,hostile;
     int32_t temperament;
     CpCombatProfile profile;
+    int32_t activity;   /* CP_ACT_*; 0 for the four daytime species */
 } CpStageSpecies;
-extern const CpStageSpecies CP_STAGE_SPECIES[4];
+extern const CpStageSpecies CP_STAGE_SPECIES[CP_STAGE_SPECIES_COUNT];
 /* Stage locomotion (PLAN-feel, version 2). jog = profile.speed*jog_k, sprint = jog*sprint_k, wild = speed*wild_k*jog_k. */
 typedef struct {
     float jog_k,sprint_k,wild_k;
@@ -97,6 +102,11 @@ typedef struct {
     CpCombatProfile profile;
     int32_t legs;        /* 0 = 4 */
 } CpStageSpawn;
+/* The hidden cave (G65, W18). `x,z` is the entrance cell and (fx,fz) the outward unit vector of the terrain record; the interior is a
+ * corridor of half-width `half` that runs `length` m into the rock from the entrance plane and ends in a round chamber of
+ * `radius` m. Inside it the walkable ground is flat at `floor` (the heightfield cannot represent a hollow). */
+typedef struct { int32_t on; float x,z,fx,fz,floor,half,length,radius; } CpStageCave;
+enum { CP_SECRETS_SHARDS=1, CP_SECRETS_CAVE=2 };   /* setup.secrets bits; the route tests use the cave alone (the shard placement walks the whole island) */
 typedef struct {
     uint32_t seed,terrain_seed;
     int32_t terrain,n,n_obstacles;
@@ -105,6 +115,10 @@ typedef struct {
     int32_t player_legs; /* 0 = 4 */
     CpStageSpawn wild[CP_STAGE_MAX_WILD];
     CpStageObstacle obstacles[CP_STAGE_MAX_OBSTACLES];
+    /* C2 secrets (core/src/stage_secrets.c). All zero = off, and then nothing below touches the simulation or its hash. */
+    int32_t secrets;                 /* CP_SECRETS_* bits (FIELD only): 1 place the meteor shards from the island field, 2 open the cave chamber */
+    int32_t start_clock;             /* world clock at tick 0 (0 = midnight, 3000 = 06:00); the game starts in the morning */
+    CpStageCave cave;                /* the hidden cave entrance record (terrain caves[0]); chamber is derived from it */
 } CpStageSetup;
 typedef struct {
     int32_t verb,target,move,dir,sprint;
@@ -139,7 +153,9 @@ enum { CP_STAGE_EV_HIT=1, CP_STAGE_EV_KILL, CP_STAGE_EV_DEATH, CP_STAGE_EV_RESPA
        CP_STAGE_EV_PATH_FOUND, CP_STAGE_EV_ARRIVED, CP_STAGE_EV_FLED, CP_STAGE_EV_PATH_FAILED,
        /* C2 social events: by = 0, target = creature id; move/value/x/z carry the detail (see stage_social.c) */
        CP_STAGE_EV_SKILL, CP_STAGE_EV_GIFT, CP_STAGE_EV_BOND_MADE, CP_STAGE_EV_BOND_BROKEN, CP_STAGE_EV_SPECIES_RESOLVED,
-       CP_STAGE_EV_DNA, CP_STAGE_EV_OBSERVE, CP_STAGE_EV_CHAIN_DONE, CP_STAGE_EV_INTIMIDATE, CP_STAGE_EV_SOCIAL_CANCELLED, CP_STAGE_EV_EAT, CP_STAGE_EV_PART_FOUND, CP_STAGE_EV_INSPECTED, CP_STAGE_EV_PART_BOUGHT, CP_STAGE_EV_EDIT_ACCEPTED };
+       CP_STAGE_EV_DNA, CP_STAGE_EV_OBSERVE, CP_STAGE_EV_CHAIN_DONE, CP_STAGE_EV_INTIMIDATE, CP_STAGE_EV_SOCIAL_CANCELLED, CP_STAGE_EV_EAT, CP_STAGE_EV_PART_FOUND, CP_STAGE_EV_INSPECTED, CP_STAGE_EV_PART_BOUGHT, CP_STAGE_EV_EDIT_ACCEPTED,
+       CP_STAGE_EV_SHARD_FOUND,   /* target = shard entity id (3100+k), move = shard index 0..4, value = shards found so far, x/z = where */
+       CP_STAGE_EV_CAVE };        /* move = 1 entered the passage, 2 reached the chamber */
 enum { CP_STAGE_BLOCK_NONE, CP_STAGE_BLOCK_CLIFF, CP_STAGE_BLOCK_WATER, CP_STAGE_BLOCK_EDGE,
        CP_STAGE_BLOCK_CREATURE, CP_STAGE_BLOCK_UNREACHABLE, CP_STAGE_BLOCK_OBSTACLE };
 typedef struct {
@@ -171,8 +187,8 @@ typedef struct {
     int32_t obs_items[CP_SOC_SPECIES]; /* clues revealed per species chain, 0..3 */
     uint32_t learned;                /* moves learned by observing (bit = 1 << move id) */
     int32_t kills[CP_SOC_SPECIES],latched[CP_SOC_SPECIES],resolution[CP_SOC_SPECIES],first_met[CP_SOC_SPECIES];
-    uint32_t tested;                 /* preferences tried: bit s*8+k = species s skill k (k<4) or gift k-4, sign in `liked` */
-    uint32_t liked;
+    uint64_t tested;                 /* preferences tried: bit s*8+k = species s skill k (k<4) or gift k-4, sign in `liked` */
+    uint64_t liked;
     int32_t dna_by_source[CP_DNA_SOURCES];
     int32_t n_explored,explored[CP_SOC_EXPLORE_MAX];
     uint32_t species_seen;
@@ -207,12 +223,22 @@ typedef struct {
     uint8_t level[CP_STAGE_PART_COUNT],tier[CP_STAGE_PART_COUNT];
     uint32_t hits[CP_STAGE_PART_COUNT],wins[CP_STAGE_PART_COUNT],kills[CP_STAGE_PART_COUNT];
     uint32_t move_hits[CB_MOVE_COUNT],move_wins[CB_MOVE_COUNT];
-    int dry[4],kill_paid[CP_STAGE_MAX_WILD],ally_paid[4];
+    int dry[CP_STAGE_SPECIES_COUNT],kill_paid[CP_STAGE_MAX_WILD],ally_paid[CP_STAGE_SPECIES_COUNT];
     int used,eggs,lost,hatchling,n_nodes,inspect_id,inspect_ticks;
     int tiers_on,clues; /* A25: tier forms are built but off by default; fossil/bone clues (2 unlock a recipe) */
     float adult_hp;
-    CpStagePartNode nodes[CP_STAGE_PART_NODES];
+    CpStagePartNode nodes[CP_STAGE_PART_NODES+1]; /* one extra slot: the cave chamber fossil, placed after the random nodes */
 } CpStageParts;
+#define CP_STAGE_SHARDS 5
+#define CP_STAGE_SHARD_ID 3100     /* entity ids of shards: 3100..3104 (fossil/bone nodes are 3000..3008, the nest 1000) */
+/* Secrets state (stage_secrets.c). Sites are derived from the setup and the field at reset; `found` and the cave flags are play state. */
+typedef struct {
+    int32_t on,n_shards,found_mask,found,cave_entered,chamber_entered,placed_scale;
+    float shard[CP_STAGE_SHARDS][2];
+    float crater_x,crater_z;         /* where the ejecta ray ends (not yet a landmark: the crater itself is C5) */
+    int32_t cave_on;
+    float cave_x,cave_z,cave_fx,cave_fz,cave_floor,cave_half,cave_length,cave_radius,chamber_x,chamber_z;
+} CpStageSecrets;
 typedef struct {
     CpStageSetup setup;
     CpRng spawn_rng,roam_rng;
@@ -246,8 +272,21 @@ typedef struct {
     CpLedger ledger;              /* L0: opt in via cp_ledger_init; snapshot owns it */
     CpStageSocial social;            /* C2: trust, DNA, species progress, observe; hashed once `social.used` */
     CpStageParts parts;
+    CpStageSecrets secrets;          /* derived at reset when setup.secrets; hashed only then */
     const CpStageField *field;       /* not owned, not in the snapshot, set by cp_stage_attach_field */
 } CpStageWorld;
+/* --- C2 secrets (core/src/stage_secrets.c) --- */
+int cp_stage_daylight(const CpStageWorld *w);                /* permille 0 (night) .. 1000 (full day), from the world clock */
+int cp_stage_creature_hidden(const CpStageWorld *w,int index); /* index 0..n-1: a nocturnal creature asleep by day (not perceivable, not targetable) */
+int cp_stage_creature_hunkered(const CpStageWorld *w,int index); /* a crepuscular creature curled up in the noon light */
+void cp_stage_secrets_reset(CpStageWorld *w);                /* after parts_reset: shards, cave chamber and its fossil node */
+void cp_stage_secrets_step(CpStageWorld *w);
+int cp_stage_secrets_order(CpStageWorld *w,const CpStageInput *a,int *rc); /* 1 = a shard collect order (rc is its result) */
+uint64_t cp_stage_secrets_hash(const CpStageWorld *w);
+int cp_stage_secrets_json(const CpStageWorld *w,char *out,size_t cap);
+float cp_stage_secrets_ground(const CpStageWorld *w,float x,float z,float h); /* heightfield height h, overridden inside the cave */
+int cp_stage_in_cave(const CpStageWorld *w,float x,float z);   /* 0 outside, 1 in the passage, 2 in the chamber */
+extern const char *const CP_STAGE_SHARD_LINES_EN[CP_STAGE_SHARDS],*const CP_STAGE_SHARD_LINES_ES[CP_STAGE_SHARDS],*const CP_STAGE_SHARD_NAMES[CP_STAGE_SHARDS];
 /* Fixed site lives in setup.nest_x/z; C3 may replace that setup choice without changing any caller. */
 int cp_stage_at_nest(const CpStageWorld *w);
 int cp_stage_walkable_from_nest(const CpStageWorld *w,float x,float z);

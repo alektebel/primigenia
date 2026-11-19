@@ -57,9 +57,10 @@ func _run() -> void:
 	var game = root.get_node("Game")
 	game.persist_settings = false
 	game.settings.grass = 3000
-	var entry := TerrainCache.load_entry({"seed": 1})
+	# own cache folder: the shared user://terrain can hold an island from before the route-certification terrain curation
+	var entry := TerrainCache.load_entry({"seed": 1}, "user://terrain-secrets")
 	if entry.is_empty():
-		entry = TerrainCache.build({"seed": 1}, CporeTerrain.new())
+		entry = TerrainCache.build({"seed": 1}, CporeTerrain.new(), "user://terrain-secrets")
 	game.set_island(entry)
 	game.goto_island()
 	for i in 900:
@@ -75,7 +76,7 @@ func _run() -> void:
 	var species_seen := {}
 	for i in range(1, stage.cur.entities.size()):
 		species_seen[int(stage.cur.entities[i].species)] = true
-	check(species_seen.size() == 4, "all four species are present")
+	check(species_seen.size() == 6, "all six species are present (C2 secrets added Acechalunas and Babosa)")
 	# freeze the wild so the test is about the verbs, and bring a Rondo next to the player
 	stage.debug_now({"op": 6, "a": 2})
 	var rondo := -1

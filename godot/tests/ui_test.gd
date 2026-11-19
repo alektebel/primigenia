@@ -453,25 +453,43 @@ func _key_event(code: Key) -> InputEventKey:
 # --- the field journal (G38) -------------------------------------------------------------------------------------------
 
 func _journal_state() -> Dictionary:
+	# the shape of state().species (docs/SECRETS-REPORT.md): six entries, resolution as a word
 	var species_rows := [
-		{"seen": true, "bonded": 2, "kills": 0, "resolution": 0, "observed": 2},
-		{"seen": true, "bonded": 3, "kills": 0, "resolution": 1, "observed": 3},
-		{"seen": false, "bonded": 0, "kills": 0, "resolution": 0, "observed": 0},
-		{"seen": true, "bonded": 0, "kills": 3, "resolution": 2, "observed": 1}]
-	return {"social": {"dna_total": 137, "species": species_rows},
+		{"id": 0, "name": "Rondo", "activity": 0, "temperament": 0, "seen": true, "resolution": "open", "bonded": 2, "kills": 0, "observed": 2, "present": true, "hidden_now": false},
+		{"id": 1, "name": "Zanco", "activity": 0, "temperament": 0, "seen": true, "resolution": "ally", "bonded": 3, "kills": 0, "observed": 3, "present": true, "hidden_now": false},
+		{"id": 2, "name": "Espinodo", "activity": 0, "temperament": 1, "seen": false, "resolution": "open", "bonded": 0, "kills": 0, "observed": 0, "present": true, "hidden_now": false},
+		{"id": 3, "name": "Garfio", "activity": 0, "temperament": 2, "seen": true, "resolution": "hunted", "bonded": 0, "kills": 3, "observed": 1, "present": true, "hidden_now": false},
+		{"id": 4, "name": "Acechalunas", "activity": 1, "temperament": 1, "seen": true, "resolution": "open", "bonded": 1, "kills": 0, "observed": 3, "present": true, "hidden_now": true},
+		{"id": 5, "name": "Babosa", "activity": 2, "temperament": 0, "seen": false, "resolution": "open", "bonded": 0, "kills": 0, "observed": 0, "present": true, "hidden_now": false}]
+	return {"species": species_rows, "social": {"dna_total": 137},
 		"entities": [{"species": 0, "dead": false, "likes": ["sing", "fruit"], "dislikes": ["bone"]}],
 		"parts": {"clues": 1, "recipes": 0, "discovered": [
 			{"id": "pico", "owned": true, "level": 2, "tier": 0}, {"id": "pata", "owned": true, "level": 1, "tier": 0},
 			{"id": "ojo", "owned": true, "level": 1, "tier": 0}, {"id": "cuerno", "owned": false, "level": 0, "tier": 0}],
 			"nodes": [{"kind": 3, "inspected": true}, {"kind": 3, "inspected": false}, {"kind": 4, "inspected": false}]}}
 
+# state().shards as the C world reports it: the story lines exist only once a shard is found
+func _shards_state(found: int) -> Dictionary:
+	var items := []
+	for k in 5:
+		var d := {"id": 3100 + k, "index": k, "name": ["Spark", "Trail", "Seed", "Echo", "Threshold"][k], "found": k < found, "x": 10.0 * k, "z": 5.0}
+		if k < found:
+			d["line"] = "English line %d." % k
+			d["line_es"] = "Linea en espanol %d." % k
+		items.append(d)
+	return {"total": 5, "found": found, "mask": (1 << found) - 1, "items": items, "toward_crater": {"x": 600.0, "z": 20.0}}
+
 func _species_table() -> Array:
-	return [{"name": "Rondo", "roam": 22.0, "temperament": 0}, {"name": "Zanco", "roam": 26.0, "temperament": 0},
-		{"name": "Espinodo", "roam": 24.0, "temperament": 1}, {"name": "Garfio", "roam": 30.0, "temperament": 2}]
+	return [{"name": "Rondo", "roam": 22.0, "temperament": 0, "diet": "herbivore", "activity": 0, "nocturnal": false},
+		{"name": "Zanco", "roam": 26.0, "temperament": 0, "diet": "herbivore", "activity": 0, "nocturnal": false},
+		{"name": "Espinodo", "roam": 24.0, "temperament": 1, "diet": "carnivore", "activity": 0, "nocturnal": false},
+		{"name": "Garfio", "roam": 30.0, "temperament": 2, "diet": "carnivore", "activity": 0, "nocturnal": false},
+		{"name": "Acechalunas", "roam": 28.0, "temperament": 1, "diet": "omnivore", "activity": 1, "nocturnal": true},
+		{"name": "Babosa", "roam": 12.0, "temperament": 0, "diet": "herbivore", "activity": 2, "nocturnal": false}]
 
 func _chains_table() -> Array:
 	var c := []
-	for i in 4:
+	for i in 6:
 		c.append({"observe": ["first clue %d" % i, "second clue %d" % i, "third clue %d" % i]})
 	return c
 
@@ -484,27 +502,35 @@ func test_journal() -> void:
 	# the model: pure functions of the world state
 	var st := _journal_state()
 	var m := JournalModel.build(st, _species_table(), _chains_table(), _catalogue())
-	ok(m.species.size() == 4 and m.species[0].seen and not m.species[2].seen, "journal: seen and unseen species")
+	ok(m.species.size() == 6 and m.species[0].seen and not m.species[2].seen, "journal: six species, seen and unseen")
 	ok(m.species[0].clues == ["first clue 0", "second clue 0"] and m.species[3].clues == ["first clue 3"], "journal: the revealed clues are the first n of the chain")
 	ok(m.species[0].likes == ["sing", "fruit"] and m.species[1].likes.is_empty(), "journal: likes come from a living creature of the species")
-	ok(m.species[1].resolution == 1 and m.species[3].resolution == 2 and m.species[3].kills == 3, "journal: the Q43 state of each species")
-	ok(m.species[2].diet == 1 and m.species[0].diet == 0 and m.species[3].roam == 30, "journal: diet and home range")
+	ok(m.species[1].resolution == 1 and m.species[3].resolution == 2 and m.species[3].kills == 3 and m.species[0].resolution == 0, "journal: the Q43 state of each species (resolution words from state.species)")
+	ok(m.species[2].diet == 1 and m.species[0].diet == 0 and m.species[3].roam == 30 and m.species[4].diet == 2, "journal: diet (a word in the species table) and home range")
+	ok(m.species[4].name == "Acechalunas" and m.species[4].activity == 1 and m.species[4].nocturnal and m.species[4].seen and m.species[4].clues.size() == 3, "journal: Acechalunas is the nocturnal sixth-roster page")
+	ok(m.species[5].name == "Babosa" and m.species[5].activity == 2 and not m.species[5].nocturnal and not m.species[5].seen and m.species[0].activity == 0, "journal: Babosa is crepuscular and unseen until met")
+	var old_shape := {"social": {"species": [{"seen": true, "resolution": 2, "kills": 1}]}}
+	ok(JournalModel.build(old_shape, _species_table(), _chains_table(), _catalogue()).species[0].resolution == 2, "journal: state.social.species (numeric resolution) is still read when state.species is missing")
 	ok(m.parts.size() == 46 and m.parts_found == 4 and m.parts_owned == 3, "journal: 46 catalogue parts, 4 found, 3 owned")
 	var by := {}
 	for t in m.parts:
 		by[t.id] = t
 	ok(by.pico.found and by.pico.owned and by.pico.level == 2 and by.cuerno.found and not by.cuerno.owned and not by.fauces.found, "journal: found, owned, level and undiscovered parts")
 	ok(m.shards.is_empty() and m.cave == "", "journal: no shards and no cave while the world reports none (the sections hide)")
+	ok(JournalModel.cave({"cave": {"enabled": false, "entered": true}}) == "", "journal: a world with the cave off reports no cave")
 	ok(m.fossils.size() == 3 and m.fossils[0].studied and not m.fossils[1].studied, "journal: fossils and old carcasses from the nodes")
 	ok(m.recipes.size() == 1 and m.recipes[0].state == "hinted" and m.recipes[0].clues_seen == 1, "journal: bone spines hinted after one clue (until state.recipes exists)")
 	st.parts.clues = 2
 	ok(JournalModel.recipes(st)[0].state == "known", "journal: two clues make the recipe known")
-	st["shards"] = [{"found": true, "line": {"en": "It fell.", "es": "Cayo."}}, {"found": false}, true, 0]
-	st["cave"] = {"found": true}
+	st["shards"] = _shards_state(2)
+	st["cave"] = {"enabled": true, "entered": true, "chamber_entered": false, "inside": 1}
 	st["recipes"] = [{"id": "rock_armour", "state": "mastered", "clues_seen": 3, "clues_total": 3}, {"id": "x", "state": "bogus"}]
 	var m2 := JournalModel.build(st, _species_table(), _chains_table(), _catalogue())
-	ok(m2.shards.size() == 4 and m2.shards[0].found and not m2.shards[1].found and m2.shards[2].found and not m2.shards[3].found, "journal: shards accept dicts, bools and ints")
-	ok(JournalModel.text_of(m2.shards[0].line, "es") == "Cayo." and m2.cave == "entered", "journal: localised shard line, cave entered")
+	ok(m2.shards.size() == 5 and m2.shards[0].found and m2.shards[1].found and not m2.shards[2].found and m2.shards[4].name == "Threshold", "journal: five shards from state.shards.items, two found")
+	ok(JournalModel.text_of(m2.shards[0].line, "es") == "Linea en espanol 0." and JournalModel.text_of(m2.shards[0].line, "en") == "English line 0." and m2.shards[3].line == "", "journal: the shard line is en/es once found (line_es), empty before")
+	ok(m2.cave == "entered", "journal: cave entered, chamber not yet")
+	st.cave.chamber_entered = true
+	ok(JournalModel.cave(st) == "chamber" and JournalModel.cave({"cave": {"enabled": true}}) == "unknown", "journal: cave chamber found, and a cave not yet entered is unknown")
 	ok(m2.recipes[0].state == "mastered" and m2.recipes[1].state == "unknown", "journal: recipes come from state.recipes, a bad state reads unknown")
 	# strings in both languages
 	var bad := []
@@ -522,12 +548,14 @@ func test_journal() -> void:
 	ui._unhandled_input(_key_event(KEY_J))
 	await process_frame
 	await process_frame
-	ok(jv.open and jv.tab == 0 and jv.page == 0 and jv.page_count() == 2, "journal: J opens on Species, two spreads for four species")
+	ok(jv.open and jv.tab == 0 and jv.page == 0 and jv.page_count() == 3, "journal: J opens on Species, three spreads for six species")
 	ok(jv.hit_rect("tab", 3).size.x > 0.0 and jv.hit_rect("next").size.x > 0.0 and jv.hit_rect("prev").size.x == 0.0, "journal: tabs and next arrow are drawn, no previous arrow on the first spread")
 	jv.handle_input(_key_event(KEY_RIGHT))
 	ok(jv.page == 1, "journal: Right turns the page")
 	jv.handle_input(_key_event(KEY_RIGHT))
-	ok(jv.page == 1, "journal: the last spread stays")
+	jv.handle_input(_key_event(KEY_RIGHT))
+	ok(jv.page == 2, "journal: the last spread stays")
+	jv.handle_input(_key_event(KEY_LEFT))
 	jv.handle_input(_key_event(KEY_LEFT))
 	ok(jv.page == 0, "journal: Left turns back")
 	jv.handle_input(_key_event(KEY_TAB))
@@ -579,18 +607,18 @@ func test_journal() -> void:
 	var seven := m2.duplicate(true)
 	seven["shards"] = []
 	for i in 7:
-		seven.shards.append({"index": i, "found": i < 3, "line": "x", "name": ""})
+		seven.shards.append({"index": i, "found": i < 3, "line": {"en": "x", "es": "x"}, "name": ""})
 	jv.set_model(seven)
 	jv.set_tab(2)
 	ok(jv.secret_pages().size() == 3 and jv.page_count() == 2, "journal: seven shards take two pages, the fossils a third (two spreads)")
 	jv.set_model(m2)
-	ok(jv.page_count(2) == 1, "journal: four shards and the rest fit one spread")
+	ok(jv.page_count(2) == 1, "journal: five shards and the rest fit one spread")
 	# empty world sections hide; a very long shard line is cut, not spilled
 	var long_line := ""
 	for i in 80:
 		long_line += "word%d " % i
 	var m3 := JournalModel.build(_journal_state(), _species_table(), _chains_table(), _catalogue())
-	m3["shards"] = [{"index": 0, "found": true, "line": long_line, "name": ""}, {"index": 1, "found": false, "line": "", "name": ""}]
+	m3["shards"] = [{"index": 0, "found": true, "line": {"en": long_line, "es": long_line}, "name": ""}, {"index": 1, "found": false, "line": "", "name": ""}]
 	jv.set_model(m3)
 	jv.set_tab(2)
 	jv.queue_redraw()

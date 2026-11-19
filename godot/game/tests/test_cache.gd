@@ -41,6 +41,22 @@ func run(t) -> void:
 	var path := TerrainCache.cache_path(p, DIR)
 	t.check(path.contains("-t%d-" % CporeTerrain.version()) and path.contains("-r%d-" % TerrainData.RENDER_PREP_VERSION) and path.contains("island-21-"),
 		"key contains seed, generator version and render prep version: " + path)
+	t.check(path.contains("-g%s-" % TerrainCache.generator_stamp()) and TerrainCache.generator_stamp().length() == 8, "key contains the generator stamp: " + path)
+	t.eq(TerrainCache.generator_stamp(), TerrainCache.generator_stamp(), "the stamp is stable inside a process")
+	# an island cached by another generator is not loaded, even though its file is intact (the stale-cache bug)
+	TerrainCache.stamp_override = "0ldgen00"
+	var old_path := TerrainCache.cache_path(p, DIR)
+	t.check(old_path != path and TerrainCache.save_entry(p, first.entry, DIR) and FileAccess.file_exists(old_path), "another generator stamp is another file")
+	t.check(not TerrainCache.load_entry(p, DIR).is_empty(), "that generator finds its own file")
+	TerrainCache.stamp_override = ""
+	t.check(not TerrainCache.load_entry(p, DIR).is_empty() and TerrainCache.cache_path(p, DIR) == path, "the real generator still hits its own file")
+	DirAccess.remove_absolute(old_path)
+	DirAccess.remove_absolute(path)
+	t.check(TerrainCache.load_entry(p, DIR).is_empty(), "with only a stale-stamp file around, the real generator misses (rebuilds)")
+	TerrainCache.stamp_override = "0ldgen00"
+	TerrainCache.save_entry(p, first.entry, DIR)
+	TerrainCache.stamp_override = ""
+	t.check(TerrainCache.load_entry(p, DIR).is_empty() and TerrainCache.get_or_build(p, DIR).hit == false, "stale-stamp file is ignored and the island is rebuilt")
 	t.check(TerrainCache.cache_path(_params({"erosion": 0.2}), DIR) != path, "changed erosion gives a different path")
 	t.eq(TerrainCache.cache_path({"n": 128, "seed": 21}, DIR), path, "partial params resolve to the same key")
 
