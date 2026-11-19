@@ -61,8 +61,11 @@ Other kinds return the unchanged base once. Deduplication cursors are hashed,
 saved and reset at evolution. `cp_type_adjust` is the pure, non-idempotent helper;
 producers should use the world entry point rather than re-adjusting a result.
 
-The social-loop and future nest producers must consume this interface at their
-award/action start points. Their features are deliberately not implemented here;
-these perks are fully tested C operations, but their in-game effects await those
-producers. The +20 cousin trust bonus is separate relationship metadata and is
-also consumed once by that integration.
+Wired into the social loop (`stage_social.c`, tick + 1 as serial): Social, +10 trust at
+the first meeting (`contact`; a cousin adds its +20 first, through the same trust model);
+Hunter-line, +10% food per carcass bite; Wary, a clue takes 40 instead of 50 ticks
+(`obs_need`, hashed only when set). The nest perk waits for the nest-building action,
+which does not exist yet. Deeds from the loop: bond made (befriend, once per creature),
+each gift, won intimidation, each carcass bite (meat) and each clue (observation);
+kills, fights, fled, night, nest time and distance come from `stage_world.c`.
+`tests/test_lineage_social.c` covers all of it.

@@ -94,6 +94,7 @@ uint64_t cp_stage_social_hash(const CpStageWorld *w){
     hu(&h,(uint32_t)s->act_verb);hu(&h,(uint32_t)s->act_target);hu(&h,(uint32_t)s->act_arg);hu(&h,(uint32_t)s->act_t);
     hu(&h,(uint32_t)s->act_len);hu(&h,(uint32_t)s->act_rhythm);hu(&h,(uint32_t)s->act_mult);
     hu(&h,(uint32_t)s->food);hu(&h,(uint32_t)s->diet);hu(&h,(uint32_t)s->stagger);hu(&h,(uint32_t)s->intimidate_cd);hu(&h,(uint32_t)s->obs_target);hu(&h,(uint32_t)s->obs_ticks);
+    if(s->obs_need)hu(&h,(uint32_t)s->obs_need);
     hu(&h,s->learned);hu(&h,s->tested);hu(&h,s->liked);hu(&h,s->species_seen);
     for(int i=0;i<CP_SOC_SPECIES;i++){
         hu(&h,(uint32_t)s->obs_items[i]);hu(&h,(uint32_t)s->kills[i]);hu(&h,(uint32_t)s->latched[i]);
@@ -208,6 +209,10 @@ int cp_stage_social_carcass_meat(const CpStageWorld *w,int i){
     return is_dead(&w->wild[i])?CP_SOC_CARCASS_BITES-w->social.c[i].eaten:0;
 }
 /* --- DNA --- */
+/* Lineage hooks (L0/A13). Deeds are recorded only when the ledger is on, at the point where the award succeeds. */
+static void deed(CpStageWorld *w,int kind,int target){
+    if(w->ledger.enabled)cp_stage_lineage_award(w,kind,1,(uint32_t)target);
+}
 static void award(CpStageWorld *w,int amount,int source,int target){
     CpStageSocial *s=&w->social;
     if(amount<=0)return;
@@ -233,6 +238,7 @@ static void check_bond(CpStageWorld *w,int i){
     if(!c->ever_bonded){
         c->ever_bonded=1;
         award(w,8,CP_DNA_BOND,i+1);
+        deed(w,CP_DEED_BEFRIENDS,i+1);
     }
     if(s->resolution[sp]==CP_RES_OPEN&&s->latched[sp]>=ALLY_NEED)resolve_species(w,sp,CP_RES_ALLY,i+1);
 }
@@ -246,8 +252,15 @@ static void add_mood(CpStageSocialCreature *c,int delta){
 }
 static void contact(CpStageWorld *w,int i){
     CpStageSocialCreature *c=&w->social.c[i];
+    const int first=!c->met;
     c->met=1;
     c->last_contact=(int32_t)w->tick+1;
+    if(first&&w->ledger.enabled){
+        /* first meeting: a cousin of an earlier form starts with +20 trust; a Social-type perk adds +10 (serial = tick+1, one meeting per tick) */
+        const int base=cp_stage_cousin_generation(w,i+1)?20:0;
+        const int amount=cp_stage_lineage_perk(w,CP_TYPE_TRUST,w->tick+1,base);
+        if(amount>0)add_trust(w,i,amount);
+    }
 }
 
 /* --- orders --- */
@@ -323,7 +336,7 @@ static void cancel_action(CpStageWorld *w,int reason){
 void cp_stage_social_on_fight(CpStageWorld *w,int index){
     CpStageSocial *s=&w->social;
     if(s->act_verb)cancel_action(w,3);
-    s->obs_target=s->obs_ticks=0;
+    s->obs_target=s->obs_ticks=s->obs_need=0;
     if(skill_verb(w->order.verb)||w->order.verb==CP_STAGE_OBSERVE)end_order(w);
     const int attacked=w->order.verb==CP_STAGE_ATTACK&&w->order.target==index+1;
     if(!attacked)return;
@@ -420,6 +433,7 @@ static void apply_gift(CpStageWorld *w,int i,int item){
     }
     else if(delta<=-10)add_mood(c,delta/2);
     add_trust(w,i,delta);
+    deed(w,CP_DEED_GIFTS,i+1);
     push(w,CP_STAGE_EV_GIFT,i+1,item,(float)delta,(float)calm,(float)c->trust);
 }
 static void apply_intimidate(CpStageWorld *w,int i){
@@ -434,6 +448,7 @@ static void apply_intimidate(CpStageWorld *w,int i){
     const int win=mine>theirs;
     s->intimidate_cd=INT_COOLDOWN;
     if(win){
+        deed(w,CP_DEED_INTIMIDATIONS,i+1);
         s->c[i].leave_ticks=LEAVE_TICKS;
         s->c[i].aggro_ticks=0;
     }
@@ -510,7 +525,7 @@ void cp_stage_social_step(CpStageWorld *w){
     if(s->act_verb&&(o->verb!=s->act_verb||o->target!=s->act_target))cancel_action(w,1);
     if(s->obs_target&&!(o->verb==CP_STAGE_OBSERVE&&o->target==s->obs_target)){
         if(s->obs_ticks>0)push(w,CP_STAGE_EV_SOCIAL_CANCELLED,s->obs_target,CP_STAGE_OBSERVE,1.f,0,0);
-        s->obs_target=s->obs_ticks=0;
+        s->obs_target=s->obs_ticks=s->obs_need=0;
     }
     if(w->active>=0)return;
     if(skill_verb(o->verb)){
@@ -531,7 +546,13 @@ void cp_stage_social_step(CpStageWorld *w){
             if(++s->act_t%CP_SOC_BITE_TICKS==0){
                 CpStageSocialCreature *c=&s->c[i];
                 const int before=s->food;
-                s->food=s->food+CP_SOC_BITE_FOOD>CP_SOC_FOOD_MAX?CP_SOC_FOOD_MAX:s->food+CP_SOC_BITE_FOOD;
+                int bite=CP_SOC_BITE_FOOD;
+                if(w->ledger.enabled){      /* Hunter-line types get +10% carcass food per bite */
+                    const int adj=cp_stage_lineage_perk(w,CP_TYPE_MEAT,w->tick+1,bite);
+                    if(adj>0)bite=adj;
+                    deed(w,CP_DEED_MEAT,i+1);
+                }
+                s->food=s->food+bite>CP_SOC_FOOD_MAX?CP_SOC_FOOD_MAX:s->food+bite;
                 c->eaten++;
                 if(!c->carcass_seen){c->carcass_seen=1;award(w,3,CP_DNA_CARCASS,i+1);}
                 const int left=CP_SOC_CARCASS_BITES-c->eaten;
@@ -610,13 +631,18 @@ void cp_stage_social_step(CpStageWorld *w){
         const int seen=!dead&&(cp_stage_social_hostile(w,i)||(spec->temperament==CP_STAGE_TIMID&&d<spec->sight*.5f)||d<3.f);
         if(d>CP_SOC_OBSERVE_RANGE||seen||w->player.speed>1.f){
             if(s->obs_ticks>0)push(w,CP_STAGE_EV_SOCIAL_CANCELLED,o->target,CP_STAGE_OBSERVE,5.f,0,0);
-            s->obs_ticks=0;
+            s->obs_ticks=s->obs_need=0;
             return;
         }
         s->obs_target=o->target;
-        if(++s->obs_ticks>=CP_SOC_OBSERVE_TICKS){
+        if(s->obs_ticks==0&&w->ledger.enabled){      /* clue start: a Wary-type perk shortens the watch by 20% (serial = tick+1) */
+            const int need=cp_stage_lineage_perk(w,CP_TYPE_OBSERVE,w->tick+1,CP_SOC_OBSERVE_TICKS);
+            s->obs_need=need>0&&need<CP_SOC_OBSERVE_TICKS?need:0;
+        }
+        if(++s->obs_ticks>=(s->obs_need?s->obs_need:CP_SOC_OBSERVE_TICKS)){
             const int item=s->obs_items[sp]++;
-            s->obs_ticks=0;
+            s->obs_ticks=0;s->obs_need=0;
+            deed(w,CP_DEED_OBSERVATIONS,o->target);
             push(w,CP_STAGE_EV_OBSERVE,o->target,item,(float)sp,(float)s->obs_items[sp],0);
             if(s->obs_items[sp]>=CP_SOC_CHAIN_ITEMS){
                 const int mv=CP_STAGE_CHAINS[sp].move;
@@ -753,7 +779,7 @@ int cp_stage_social_json(const CpStageWorld *w,char *out,size_t cap){
             bp(&b,"%s\"%s\"",k?",":"",CP_STAGE_CHAINS[sp].observe[k]);
         }
         bp(&b,"],\"total\":%d,\"complete\":%s,\"progress\":%d,\"progress_max\":%d",CP_SOC_CHAIN_ITEMS,n>=CP_SOC_CHAIN_ITEMS?"true":"false",
-           s->obs_target==i+1?s->obs_ticks:0,CP_SOC_OBSERVE_TICKS);
+           s->obs_target==i+1?s->obs_ticks:0,s->obs_need?s->obs_need:CP_SOC_OBSERVE_TICKS);
         if(n>=CP_SOC_CHAIN_ITEMS)bp(&b,",\"trait\":\"%s\",\"teaches\":\"%s\"",CP_STAGE_CHAINS[sp].trait,CP_STAGE_CHAINS[sp].move>=0?cp_combat_move_name(CP_STAGE_CHAINS[sp].move):"none");
         bp(&b,"}");
         comma=1;

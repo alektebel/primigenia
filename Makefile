@@ -427,10 +427,14 @@ $(BUILD)/lineage_test: tests/test_lineage_ledger.c $(HDRS) $(BUILD)/libcpore.a
 	$(CC) $(CFLAGS) $< $(BUILD)/libcpore.a -o $@ $(LDLIBS)
 test: lineage-test
 .PHONY: lineage-test
-lineage-test: $(BUILD)/lineage_test $(BUILD)/lineage_evolution_test
+lineage-test: $(BUILD)/lineage_test $(BUILD)/lineage_evolution_test $(BUILD)/lineage_social_test
+	./$(BUILD)/lineage_social_test
 	./$(BUILD)/lineage_test
 	./$(BUILD)/lineage_evolution_test
 $(BUILD)/lineage_evolution_test: tests/test_lineage_evolution.c $(HDRS) $(BUILD)/libcpore.a
+	$(CC) $(CFLAGS) $< $(BUILD)/libcpore.a -o $@ $(LDLIBS)
+
+$(BUILD)/lineage_social_test: tests/test_lineage_social.c $(HDRS) $(BUILD)/libcpore.a
 	$(CC) $(CFLAGS) $< $(BUILD)/libcpore.a -o $@ $(LDLIBS)
 
 $(BUILD)/creature_types_test: tests/test_creature_types.c $(HDRS) $(BUILD)/libcpore.a

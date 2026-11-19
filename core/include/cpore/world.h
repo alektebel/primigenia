@@ -165,7 +165,7 @@ typedef struct {
     int32_t act_verb,act_target,act_arg,act_t,act_len,act_rhythm,act_mult; /* the action under way (verb 0 = none) */
     int32_t stagger,intimidate_cd;
     int32_t food,diet;               /* hunger meter 0..100 (no starvation effect yet) and the body's diet (CP_DIET_*, omnivore by default) */
-    int32_t obs_target,obs_ticks;    /* observe: creature watched and ticks on the current clue */
+    int32_t obs_target,obs_ticks,obs_need;    /* observe: creature watched and ticks on the current clue */
     int32_t obs_items[CP_SOC_SPECIES]; /* clues revealed per species chain, 0..3 */
     uint32_t learned;                /* moves learned by observing (bit = 1 << move id) */
     int32_t kills[CP_SOC_SPECIES],latched[CP_SOC_SPECIES],resolution[CP_SOC_SPECIES],first_met[CP_SOC_SPECIES];
