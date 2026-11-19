@@ -9693,7 +9693,8 @@
     },
     "container-title": "Geophysical Journal International",
     "x-status": "unverified",
-    "x-note": "cited by a council model from memory; not yet checked"
+    "x-note": "ambiguous: closest Crossref hit is 'Convection-driven planetary dynamos' (Christensen, 2006, doi 10.1017/s1743921307000403), title similarity 0.61, author match, year ok",
+    "x-checked": "2026-11-19"
   },
   {
     "id": "pierrehumbert_2011_principles",
@@ -10712,5 +10713,250 @@
     },
     "container-title": "Journal of Materials Science",
     "x-checked": "2026-11-19"
+  },
+  {
+    "id": "ritz_2000_radical",
+    "type": "article-journal",
+    "title": "A model for photoreceptor-based magnetoreception in birds",
+    "author": [
+      {
+        "family": "Ritz",
+        "given": "T"
+      },
+      {
+        "family": "Adem",
+        "given": "S"
+      },
+      {
+        "family": "Schulten",
+        "given": "K"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2000
+        ]
+      ]
+    },
+    "container-title": "Biophysical Journal",
+    "DOI": "10.1016/s0006-3495(00)76629-x",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "hore_2016_magnetoreception",
+    "type": "article-journal",
+    "title": "The radical-pair mechanism of magnetoreception",
+    "author": [
+      {
+        "family": "Hore",
+        "given": "P. J."
+      },
+      {
+        "family": "Mouritsen",
+        "given": "H."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2016
+        ]
+      ]
+    },
+    "container-title": "Annual Review of Biophysics",
+    "DOI": "10.1146/annurev-biophys-032116-094545",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "stevenson_2010_super",
+    "type": "article-journal",
+    "title": "Planetary Magnetic Fields: Achievements and Prospects",
+    "author": [
+      {
+        "family": "Stevenson",
+        "given": "D. J."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2009
+        ]
+      ]
+    },
+    "container-title": "Space Sciences Series of ISSI",
+    "DOI": "10.1007/978-1-4419-5901-0_20",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); title corrected from 'Planetary magnetic fields'; container-title corrected from 'Earth and Planetary Science Letters'; year corrected from 2010; DOI added",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "linsky_2013_flare",
+    "type": "article-journal",
+    "title": "The UV radiation environment of nearby stars",
+    "author": [
+      {
+        "family": "Linsky",
+        "given": "J. L."
+      },
+      {
+        "family": "Ayres",
+        "given": "T. R."
+      },
+      {
+        "family": "Woods",
+        "given": "T. N."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2013
+        ]
+      ]
+    },
+    "container-title": "The Astrophysical Journal",
+    "DOI": "10.1088/0004-637X/764/2/170",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Photoevaporation of protoplanetary disks by UV photons from nearby massive stars : observations of proplyds and modeling' (Champion, None) title similarity 0.44",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "ritz_2000_model",
+    "type": "article-journal",
+    "title": "A model for photoreceptor-based magnetoreception in birds",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "author": [
+      {
+        "family": "Ritz",
+        "given": "T."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2000
+        ]
+      ]
+    },
+    "container-title": "Biophysical Journal",
+    "DOI": "10.1016/s0006-3495(00)76629-x",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "hore_2016_radical",
+    "type": "article-journal",
+    "title": "The Radical-Pair Mechanism of Magnetoreception",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 0.95); title corrected from 'Radical-pair mechanism of magnetoreception'; DOI added",
+    "author": [
+      {
+        "family": "Hore",
+        "given": "P. J."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2016
+        ]
+      ]
+    },
+    "container-title": "Annual Review of Biophysics",
+    "DOI": "10.1146/annurev-biophys-032116-094545",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "bullock_1982_electroreception",
+    "type": "article-journal",
+    "title": "Electroreception",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'Explaining Electroreception' (Bullock, None, doi 10.1007/0-387-28275-0_1), title similarity 0.74, author match, year ok",
+    "author": [
+      {
+        "family": "Bullock",
+        "given": "T.H."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1982
+        ]
+      ]
+    },
+    "container-title": "Springer-Verlag",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "frankel_1994_magnetic",
+    "type": "article-journal",
+    "title": "Magnetic interaction in magnetotactic bacteria",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'Magnetic properties of magnetotactic bacteria' (Moskowitz, 1988, doi 10.1016/0304-8853(88)90093-5), title similarity 0.81, author differs, year off",
+    "author": [
+      {
+        "family": "Frankel",
+        "given": "E.B."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1994
+        ]
+      ]
+    },
+    "container-title": "Nature",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "hagiwara_1973_electrical",
+    "type": "article-journal",
+    "title": "Electrical properties of electroreceptor organs",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Electroreceptor Organs' (, None) title similarity 0.64",
+    "author": [
+      {
+        "family": "Hagiwara",
+        "given": "S."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1973
+        ]
+      ]
+    },
+    "container-title": "Journal of General Physiology",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "hore_2016_magnetic",
+    "type": "article-journal",
+    "title": "Magnetic compasses in birds and animals",
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked",
+    "author": [
+      {
+        "family": "Hore",
+        "given": "P.J."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2016
+        ]
+      ]
+    },
+    "container-title": "Annual Review of Biophysics"
   }
 ]

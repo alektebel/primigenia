@@ -1,0 +1,312 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "cromavolante",
+  "name": {
+    "en": "Cromavolante"
+  },
+  "world": "magneto",
+  "kind": "new",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "Upper canopy near iron-rich basalt forests & magnetic anomaly plumes. Evolves here because dense copper haze & frequent flares wash out visual contrast, while strong 0.8 mT fields provide stable 3D topology. Radical-pair cryptochromes exploit this gradient to navigate & hunt regardless of light.",
+    "diet": "Electro-sensory plankton analogs, magnetotactic symbiont-rich grazers",
+    "active": "Diurnal & crepuscular, flare-responsive",
+    "predators": []
+  },
+  "body": "Broad, torsion-stiffened wings with cryptochrome-rich retinal overlay; helical bone struts for magnetic stealth; ventral photophore patches for counter-illumination.",
+  "chains": [
+    {
+      "id": "cromavolante.c1",
+      "trait": "Retinal cryptochrome overlay maps field lines",
+      "links": [
+        "Field lines provide stable 3D topology",
+        "Dense copper haze & flare scatter wash out visual contrast",
+        "Strong 0.8 mT planetary field enables radical-pair yield shifts",
+        "Quantum spin coherence in flavin pigments under geomagnetic stress"
+      ],
+      "roots": [
+        "F5",
+        "F6",
+        "F1",
+        "F12"
+      ],
+      "skill": {
+        "id": "cromavolante.magnetic_sight",
+        "name": {
+          "en": "Magnetic Sight"
+        },
+        "role": "Passive",
+        "effect": "Reveals field-line topology, navigation cost reduced by 30%",
+        "numbers": {}
+      },
+      "weakness": "Sudden flare-induced field scrambles vision; player can use UV bursts to blind it.",
+      "observe": [
+        "Copper sky haze",
+        "Wing tremors matching field shifts",
+        "Retinal flash during prey lock"
+      ],
+      "journal": {
+        "en": "It doesn't look at the tree; it looks through the iron."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "Reframe 'Magnetic Sight' as passive gradient/anomaly sense (crustal highs, iron bodies): heading cost reduction without visible field-line UI; flare weakness stays as disoriented radical-pair chemistry plus induced eddy noise in conductive tissue.",
+        "fixes": [
+          "Reframe 'Magnetic Sight' as passive gradient/anomaly sense (crustal highs, iron bodies): heading cost reduction without visible field-line UI; flare weakness stays as disoriented radical-pair chemistry plus induced eddy noise in conductive tissue."
+        ],
+        "analogues": [
+          {
+            "organism": "European robin cryptochrome-based inclination compass (Ritz et al.; Mouritsen group behavioural assays)",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "ritz_2000_model",
+              "hore_2016_magnetoreception"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "cromavolante.c2",
+      "trait": "Helical ribcage cancels magnetic dipole",
+      "links": [
+        "Predators track prey by induced bio-fields",
+        "Helical geometry averages dipole moment near zero",
+        "Reduces detection range across conductive air",
+        "1.49 g gravity demands torsional strength & magnetic stealth (highly speculative)"
+      ],
+      "roots": [
+        "F3",
+        "F16"
+      ],
+      "skill": {
+        "id": "cromavolante.magnetic_stealth",
+        "name": {
+          "en": "Magnetic Stealth"
+        },
+        "role": "Defence",
+        "effect": "Drops magnetic profile, evasion chance +40%",
+        "numbers": {}
+      },
+      "weakness": "Helical torsion limits rapid pitch changes; player can corner it in tight magnetic eddies.",
+      "observe": [
+        "Rib-cage shimmer",
+        "Smooth gliding",
+        "Lack of compass spin"
+      ],
+      "journal": {
+        "en": "A ghost in the iron wind."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "Keep helical struts for flight mechanics only; tie 'stealth' to sparse ventral magnetite in F16-like geometry or behaviour that avoids anomaly ridges—drop '+40% evasion vs magnetic predators' unless predators are explicitly magnetoreceptive hunters.",
+        "fixes": [
+          "Keep helical struts for flight mechanics only; tie 'stealth' to sparse ventral magnetite in F16-like geometry or behaviour that avoids anomaly ridges—drop '+40% evasion vs magnetic predators' unless predators are explicitly magnetoreceptive hunters."
+        ],
+        "analogues": [
+          {
+            "organism": "Torsion-resistant helical mollusc shells (structural only); magnetotactic bacteria chain alignment (magnetic minimization at micro-scale)",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "cromavolante.c3",
+      "trait": "Ventral auroral photophores for counter-illumination",
+      "links": [
+        "Prey silhouettes stand out against copper horizon",
+        "Auroral precipitation provides ambient sky glow",
+        "Specialized symbionts harvest ionizing UV & emit matching light",
+        "Radiation-buffered symbiosis enables safe bioluminescent flush"
+      ],
+      "roots": [
+        "F1",
+        "F15",
+        "F17"
+      ],
+      "skill": {
+        "id": "cromavolante.auroral_veil",
+        "name": {
+          "en": "Auroral Veil"
+        },
+        "role": "Control",
+        "effect": "Calms herbivores, attracts symbiont-rich prey, stealth +25%",
+        "numbers": {}
+      },
+      "weakness": "Photophore flush reveals position; player can overcharge it with focused light.",
+      "observe": [
+        "Pulsing belly glow",
+        "UV absorption shimmer",
+        "Silent descent"
+      ],
+      "journal": {
+        "en": "It wears the storm as a cloak."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "Tune symbiont emission to copper-amber downwelling, not blue-ocean match; overcharge weakness works if player raises local radiance above symbiont dynamic range.",
+        "fixes": [
+          "Tune symbiont emission to copper-amber downwelling, not blue-ocean match; overcharge weakness works if player raises local radiance above symbiont dynamic range."
+        ],
+        "analogues": [
+          {
+            "organism": "Hawaiian bobtail squid *Euprymna scolopes* and *Vibrio fischeri* counter-illumination (McFall-Ngai; Herring)",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "cromavolante.c4",
+      "trait": "Flare-dive reflex along field-aligned corridors",
+      "links": [
+        "X-ray flares strip atmosphere & heat surface",
+        "Field lines channel charged particles downward",
+        "Organism rides stable crustal anomaly migration corridors",
+        "Kinetic energy conversion via 13.5 h rotation & 1.49 g gravity"
+      ],
+      "roots": [
+        "F1",
+        "F18",
+        "F3",
+        "F4"
+      ],
+      "skill": {
+        "id": "cromavolante.comet_drop",
+        "name": {
+          "en": "Comet Drop"
+        },
+        "role": "Engage",
+        "effect": "Rapid descent along field line, strike damage x2.5",
+        "numbers": {}
+      },
+      "weakness": "Predictable path; player can ambush at corridor bends.",
+      "observe": [
+        "Body aligns with invisible lines",
+        "Wing membrane tenses",
+        "Sudden acceleration"
+      ],
+      "journal": {
+        "en": "It falls like a needle on a compass."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "Rename effect to dive along F18 anomaly/thermal corridors with body aligned to local B for stability; ambush at corridor bends stays; drop 'x2.5 because field line' in favour of gravity + surprise from haze-blind prey.",
+        "fixes": [
+          "Rename effect to dive along F18 anomaly/thermal corridors with body aligned to local B for stability; ambush at corridor bends stays; drop 'x2.5 because field line' in favour of gravity + surprise from haze-blind prey."
+        ],
+        "analogues": [
+          {
+            "organism": "Peregrine falcon stoop (gravity-powered strike); salmon/sea turtle geomagnetic corridor migration (gradient following, not line riding)",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "cromabuceo",
+      "kind": "cousin",
+      "note": "(council kind 'Competitor') Juveniles of Cromabuceo drop to vent plains; adults hunt dropped juveniles when magnetotactic plumes overlap."
+    },
+    {
+      "with": "Lámina-nidus",
+      "kind": "cousin",
+      "note": "(council kind 'Prey') Grazes on electro-plankton that cluster along magnetic gradient edges."
+    },
+    {
+      "with": "cromabuceo",
+      "kind": "cousin",
+      "note": "(council kind 'Predator') Adults ambush juvenile Cromavolante when they descend to feed on vent microplankton."
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-19",
+    "by": [
+      "naturalist/qwen"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-19",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-19"
+    }
+  ],
+  "body_plan": {
+    "symmetry": "bilateral",
+    "arms": 2,
+    "origin": "canopy-dwelling divergent clade"
+  },
+  "temperament": "Solitary, territorial, highly sensitive to field distortions.",
+  "secrets": [
+    "Cryptochrome density peaks in the cornea; surgical extraction yields a stable compass vial.",
+    "Mates synchronize wing-ripple frequencies to align magnetic dipoles before copulation."
+  ],
+  "moments": [
+    "At noon, when the copper haze thickens, it opens its wings and the field lines snap into focus—visible as faint, shimmering ribbons of silver dust, guiding it through the forest like a blind man reading braille."
+  ],
+  "journal": [
+    {
+      "en": "It navigates by the planet's heartbeat."
+    },
+    {
+      "en": "Flares don't blind it; they sharpen its hunger."
+    }
+  ]
+}

@@ -122,6 +122,15 @@
 | [El Susurrador de Hielo](el_susurrador_de_hielo.md) | new | draft | 4 | 2 fixable, 1 implausible, 1 plausible |
 | [Stratiforma velum](stratiforma_velum.md) | new | draft | 4 | 3 fixable, 1 plausible |
 
+## Magnetic World (`magneto`)
+
+| Creature | Kind | Status | Chains | Verdicts |
+|---|---|---|---|---|
+| [Cobrezo](cobrezo.md) | new | draft | 4 | 3 fixable, 1 plausible |
+| [Cromabuceo](cromabuceo.md) | new | draft | 4 | 2 fixable, 2 plausible |
+| [Cromavolante](cromavolante.md) | new | draft | 4 | 3 fixable, 1 plausible |
+| [Ostracilo](ostracilo.md) | new | draft | 4 | 2 fixable, 2 plausible |
+
 ## The Neutron-Star Crust (`neutronstar`)
 
 | Creature | Kind | Status | Chains | Verdicts |

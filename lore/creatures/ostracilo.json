@@ -1,0 +1,325 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "ostracilo",
+  "name": {
+    "en": "Ostracilo"
+  },
+  "world": "magneto",
+  "kind": "new",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "Deep hydrothermal vent chimneys and anoxic brine pools",
+    "diet": "Chemotrophic bacteria and small vent-fauna; extracts energy from thermal gradients",
+    "active": "Continuous; thermally driven metabolism",
+    "predators": []
+  },
+  "body": "Armored carapace with bifurcated gill-plates housing induction coils; ampullary electroreceptive pores along the snout; magnetite-reinforced joints",
+  "chains": [
+    {
+      "id": "ostracilo.c1",
+      "trait": "Gill-membrane induction coils transmit short-range pulses",
+      "links": [
+        "Coils modulate B-field to induce currents in neighbors",
+        "Conductive ocean (F9) diffuses magnetic fields in microseconds; range limited to 2 cm 'in-shield' contact",
+        "Why beats sound: Hydrothermal roar and ambient flow noise mask acoustic calls; magnetic induction provides a low-noise, directional private channel immune to water turbulence",
+        "Why beats light: Abyssal darkness; bioluminescence (F15) attracts predators and wastes energy; magnetic pulses are stealthy and energetically efficient at contact",
+        "Energy cost: 0.8 W pulse; harvested from thermal gradient via thermoelectric symbionts"
+      ],
+      "roots": [
+        "F9",
+        "F14",
+        "F15",
+        "F5"
+      ],
+      "skill": {
+        "id": "ostracilo.inductive_tap",
+        "name": {
+          "en": "Inductive Tap"
+        },
+        "role": "Poke",
+        "effect": "Contact strike; induces 5 mV shock in target and sends a magnetic confusion pulse. Target must succeed on Will or be stunned for 1 turn and lose its next action.",
+        "numbers": {}
+      },
+      "weakness": "Conductivity dependence: In low-conductivity brine pools or dry zones, range drops to 0 and induction fails.",
+      "observe": [
+        "Gill-plates pulse with rhythmic water displacement",
+        "Target creature exhibits a sudden spasm when coils touch",
+        "Water around coils shimmers due to local induction heating"
+      ],
+      "journal": {
+        "en": "A secret passed through the water's skin, felt as a ghost-spasm."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "Hard-cap Inductive Tap and social pulses to skin-to-skin contact in conductive brine; treat thermoelectric symbionts as highly speculative; note induction heating observables only at very high local |dB/dt|.",
+        "fixes": [
+          "Hard-cap Inductive Tap and social pulses to skin-to-skin contact in conductive brine; treat thermoelectric symbionts as highly speculative; note induction heating observables only at very high local |dB/dt|."
+        ],
+        "analogues": [
+          {
+            "organism": "Weakly electric fish electrocommunication and jamming responses (E-field, not B-field)—Bullock 1982; hagfish ampullary electroreception—Hagiwara 1973",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "ostracilo.c2",
+      "trait": "Ampullary pores detect bioelectric micro-fields",
+      "links": [
+        "Neuromast-like organs sense voltage gradients",
+        "Complements magnetic sense to locate prey and predators",
+        "Conductive water (F9) transmits bioelectric signals efficiently",
+        "Essential for hunting in total darkness where magnetic comms require contact"
+      ],
+      "roots": [
+        "F14",
+        "F9",
+        "F10"
+      ],
+      "skill": {
+        "id": "ostracilo.bio_electric_sense",
+        "name": {
+          "en": "Bio-Electric Sense"
+        },
+        "role": "Engage",
+        "effect": "Reveal hidden enemies within 5 m as 'glowing' outlines; grants +2 to hit prey that cannot mask bioelectric signatures.",
+        "numbers": {}
+      },
+      "weakness": "Noise: High electromagnetic interference from nearby vent activity or magnetic storms masks bioelectric signals.",
+      "observe": [
+        "Snout pores twitch rhythmically, sampling the water",
+        "Creature tracks invisible prey with precise head movements",
+        "Prey appears to glow faintly to the Ostracilo"
+      ],
+      "journal": {
+        "en": "It smells the heartbeat of the world."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "High-conductivity hydrothermal matrix (F9, F10) supports passive detection of prey muscle and epithelial dipoles at multi-meter range, matching ampullary electroreception in elasmobranchs and the world’s F14 ampullary/electrolocation stack. Vent EM noise can mask weak bioelectric cues during magnetic storms—reasonable weakness.",
+        "fixes": [
+          "High-conductivity hydrothermal matrix (F9, F10) supports passive detection of prey muscle and epithelial dipoles at multi-meter range, matching ampullary electroreception in elasmobranchs and the world’s F14 ampullary/electrolocation stack. Vent EM noise can mask weak bioelectric cues during magnetic storms—reasonable weakness."
+        ],
+        "analogues": [
+          {
+            "organism": "Shark ampullae of Lorenzini—prey bioelectric fields at meters; ray/skate passive electroreception—Bullock 1982",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "bullock_1982_electroreception"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "ostracilo.c3",
+      "trait": "Magnetite-reinforced exoskeleton for structural integrity",
+      "links": [
+        "Exoskeleton incorporates biogenic magnetite crystals",
+        "Provides torsional strength against 1.49 g gravity (F3) and hydrostatic pressure (F9)",
+        "Magnetite also reduces net magnetic signature via helical alignment (F16)",
+        "Dual benefit: armor and magnetic stealth for ambush"
+      ],
+      "roots": [
+        "F3",
+        "F9",
+        "F16",
+        "F10"
+      ],
+      "skill": {
+        "id": "ostracilo.magnetic_stealth",
+        "name": {
+          "en": "Magnetic Stealth"
+        },
+        "role": "Defence",
+        "effect": "Negate detection by magnetic senses; reduce incoming magnetic disruption damage by 50%. Cannot move or use Inductive Tap this turn.",
+        "numbers": {}
+      },
+      "weakness": "Mass: Heavier than analogues, reducing dodge chance against fast predators.",
+      "observe": [
+        "Shell plates reflect light with a dull, non-metallic sheen",
+        "Creature moves silently despite heavy armor",
+        "Magnetic anomalies deflect around its body"
+      ],
+      "journal": {
+        "en": "Its shell whispers nothing."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "Keep armor benefit primary; downgrade Magnetic Stealth to reduced detectability (weaker net moment), not anomaly deflection; accept mass/dodge penalty as stated.",
+        "fixes": [
+          "Keep armor benefit primary; downgrade Magnetic Stealth to reduced detectability (weaker net moment), not anomaly deflection; accept mass/dodge penalty as stated."
+        ],
+        "analogues": [
+          {
+            "organism": "Magnetotactic bacteria single-domain chains—Frankel, Blakemore; chiton and limpet magnetite in radular teeth—from memory, unverified",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "frankel_1994_magnetic"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "ostracilo.c4",
+      "trait": "Anomaly-tracking migration along crustal corridors",
+      "links": [
+        "Uses magnetic field gradients to navigate vent networks",
+        "Follows stable anomaly corridors (F18) to find food and thermal plumes",
+        "Avoids field spikes (F5) that could disrupt neural function",
+        "Cooperative breeding groups maintain formation via magnetic pulses"
+      ],
+      "roots": [
+        "F18",
+        "F5",
+        "F10",
+        "F9"
+      ],
+      "skill": {
+        "id": "ostracilo.corridor_glide",
+        "name": {
+          "en": "Corridor Glide"
+        },
+        "role": "Control",
+        "effect": "Move through terrain ignoring obstacles that rely on magnetic fields (e.g., magnetic barriers); allies within 3 m gain +10% movement speed.",
+        "numbers": {}
+      },
+      "weakness": "Field spikes: Sudden storm spikes (F5) can scatter the migration path, causing disorientation.",
+      "observe": [
+        "Creature aligns perfectly with invisible field lines",
+        "Group moves in unison, coordinated by subtle gill pulses",
+        "Pathing avoids areas of high magnetic noise"
+      ],
+      "journal": {
+        "en": "It walks the invisible rivers of the crust."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "Corridor Glide navigation: plausible; ally speed buff from gill pulses only within 2 cm contact chain, not 3 m through seawater.",
+        "fixes": [
+          "Corridor Glide navigation: plausible; ally speed buff from gill pulses only within 2 cm contact chain, not 3 m through seawater."
+        ],
+        "analogues": [
+          {
+            "organism": "Sea turtles and fish open-ocean magnetoreception along field intensity gradients; magnetotactic bacteria along field lines—Blakemore 1975",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "cobrezo",
+      "kind": "convergent",
+      "note": "Ostracilo evolved analogous coil-structures in a conductive medium; Cobrezo coils are air-optimized, Ostracilo coils are induction-optimized."
+    },
+    {
+      "with": "cobrezo",
+      "kind": "convergent",
+      "note": "Both use magnetic comms but in different media; Cobrezo uses air for directional pulses, Ostracilo uses induction for contact stealth."
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-19",
+    "by": [
+      "naturalist/qwen"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-19",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-19"
+    },
+    {
+      "date": "2026-11-19",
+      "who": "autoloop",
+      "what": "removed rejected references from analogues"
+    }
+  ],
+  "body_plan": {
+    "symmetry": "bilateral",
+    "arms": 2,
+    "origin": "Vent-mat grazer diverging into a predatory niche"
+  },
+  "temperament": "Patient, territorial, subtly social with kin",
+  "secrets": [
+    "Prey-stun: Inductive pulses can trigger the electroreceptors of small prey, causing a momentary paralysis at contact range.",
+    "Symbiont-harvest: Ostracilo can absorb the magnetic memory of a dead rival by consuming its coils, gaining a temporary bonus to identify magnetic traps."
+  ],
+  "moments": [
+    "In the vent's roar, a partner drifts blind, its sensors fouled by thermal shear. A single magnetic tap from the Ostracilo guides it home, a ghost-spasm in the gills that says, 'Follow,' cutting through the chaos without a sound."
+  ],
+  "journal": [
+    {
+      "en": "The water hums, but only the coils answer."
+    },
+    {
+      "en": "In the dark, the field is the only truth."
+    }
+  ]
+}
