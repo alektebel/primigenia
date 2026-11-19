@@ -88,6 +88,10 @@ const TABLE := {
 	"hint_f1": ["F1 shows every key", "F1 muestra todas las teclas"],
 	"keys_title": ["Keys", "Teclas"],
 	# journal / tree stubs
+	"fossil": ["Fossil", "Fósil"],
+	"bones": ["Bones", "Huesos"],
+	"nest_edit": ["Edit creature", "Editar criatura"],
+	"part_found": ["Discovered: {0}", "Descubierto: {0}"],
 	"journal_title": ["Journal", "Diario"],
 	"tree_title": ["Family tree", "Árbol familiar"],
 	"journal_total": ["DNA earned", "ADN ganado"],

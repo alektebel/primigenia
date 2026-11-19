@@ -6,7 +6,7 @@ extends RefCounted
 ## {ok: bool, genome: Dictionary, warnings: Array, error: String}; `error` is
 ## the same path string genome.js throws (e.g. "parts.type").
 
-const SCHEMA := "cpore.creature/4"
+const SCHEMA := "cpore.creature/5"
 const LEG_TYPES := ["pata", "zanca", "pezuna"]
 
 var _error := ""
@@ -34,9 +34,18 @@ func _parse(input, types: Dictionary) -> Dictionary:
 		g = json.data
 	if not _object(g, "document"):
 		return _result_fail(_error)
-	if not (g.get("schema") in ["cpore.creature/1", "cpore.creature/2", "cpore.creature/3", SCHEMA]):
+	if not (g.get("schema") in ["cpore.creature/1", "cpore.creature/2", "cpore.creature/3", "cpore.creature/4", SCHEMA]):
 		return _result_fail("schema")
-	var doc = g if g["schema"] == SCHEMA else _migrate(g)
+	var doc = g if g["schema"] == SCHEMA else g.duplicate(true) if g["schema"] == "cpore.creature/4" else _migrate(g)
+	if doc != null and g["schema"] != SCHEMA:
+		doc.schema = SCHEMA
+		if typeof(doc.get("parts")) != TYPE_ARRAY:
+			return _result_fail("parts")
+		for part in doc.parts:
+			if typeof(part) != TYPE_DICTIONARY:
+				return _result_fail("parts")
+			if not part.has("level"): part["level"] = 1
+			if not part.has("tier"): part["tier"] = 0
 	if doc == null:
 		return _result_fail(_error)
 	var genome = _validate(doc, types)
@@ -154,7 +163,9 @@ func _validate(g, types: Dictionary):
 		_fail("parts")
 		return null
 	for p in parts:
-		if not _keys(p, ["type", "t", "ang", "size", "len", "curve", "w", "k", "f", "rot", "tilt", "act", "single", "pupil"], "parts"):
+		if not _keys(p, ["type", "t", "ang", "size", "len", "curve", "w", "k", "f", "rot", "tilt", "act", "single", "pupil", "level", "tier"], "parts"):
+			return null
+		if not _integer(p.get("level"), 1, 5, "parts.level") or not _integer(p.get("tier"), 0, 2, "parts.tier"):
 			return null
 		if typeof(p.get("type")) != TYPE_STRING or not types.has(p["type"]):
 			_fail("parts.type")

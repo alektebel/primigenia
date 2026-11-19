@@ -60,7 +60,7 @@ func test_fixtures_and_migrations() -> void:
 		if not r["ok"]:
 			continue
 		var g: Dictionary = r["genome"]
-		ok(g["schema"] == "cpore.creature/4", f + " is v4 after parse")
+		ok(g["schema"] == "cpore.creature/5", f + " is v5 after parse")
 		if f.begins_with("v4"):
 			ok(r["warnings"].is_empty() and not g.has("migration"), "v4 has no migration block")
 		else:

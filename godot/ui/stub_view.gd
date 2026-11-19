@@ -11,6 +11,7 @@ signal closed
 
 var kind := ""                       # "journal" or "tree"
 var dna_total := 0
+var discovered: Array = []
 var open := false
 var _alpha := 0.0
 
@@ -63,6 +64,11 @@ func _draw() -> void:
 		Style.text(self, Style.font_sans(true), Vector2(c.x - lw * 0.5, y), line, Style.u(19.0), Color(Palette.COPPER, _alpha))
 		y += Style.u(30.0)
 	var s := Strings.t("journal_stub")
+	if kind == "journal" and not discovered.is_empty():
+		var names: PackedStringArray = []
+		for part in discovered:
+			names.append(str(part.id))
+		s = ", ".join(names)
 	var sw := Style.text_width(Style.font_sans(), s, Style.u(16.0))
 	Style.text(self, Style.font_sans(), Vector2(c.x - sw * 0.5, y), s, Style.u(16.0), Color(Palette.FOG, _alpha * 0.9))
 	var h := Strings.t("close_hint")

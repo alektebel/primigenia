@@ -84,6 +84,7 @@ func setup(island_node: Node3D, name_text: String) -> void:
 	ui.loadout_panel.setup(_moves)
 	ui.loadout_panel.assign.connect(assign_loadout)
 	ui.loadout_requested.connect(toggle_loadout_panel)
+	ui.nest_requested.connect(open_nest_editor)
 	ui.gift_pressed.connect(give_gift)
 	ui.gift_cycle_pressed.connect(cycle_gift)
 	ui.pause_toggled.connect(_on_pause)
@@ -221,6 +222,8 @@ func provide() -> Dictionary:
 	if s.verb == 3 or s.verb == 2:
 		_pending_attack = null
 	var st: Dictionary = stage.cur
+	if int(st.get("parts", {}).get("inspecting", 0)) != 0 and s.verb != 2 and s.verb != 3:
+		return {"verb": 0}
 	var active: bool = st.active >= 0
 	if _was_active and not active:
 		_pending_attack = null
@@ -317,6 +320,7 @@ func _fight_selection(state: Dictionary) -> void:
 
 
 func _on_tick(state: Dictionary) -> void:
+	ui.stub.discovered = state.get("parts", {}).get("discovered", [])
 	var lo: Dictionary = state.get("loadout", {"slots": [0, 1, 3, 4], "known": 0, "can_edit": false})
 	var key := "%s|%d" % [lo.slots, int(lo.known)]
 	if key != _loadout_key:
@@ -573,6 +577,11 @@ func _species_name(i: int) -> String:
 	return String(species[i].name) if i >= 0 and i < species.size() else "Creature"
 
 func _social_event(ev: Dictionary, state: Dictionary) -> void:
+	if int(ev.type) == 21:
+		for part in state.get("parts", {}).get("discovered", []):
+			if int(part.index) == int(ev.target):
+				ui.show_message(Strings.t("part_found", [part.id]), "info")
+		return
 	var at := _target_pos(state, int(ev.target))
 	var gm = island.ground_marks
 	match int(ev.type):
@@ -640,3 +649,26 @@ func _social_event(ev: Dictionary, state: Dictionary) -> void:
 			if l != null:
 				l.trigger("eat")
 			# the last bite (ev.move <= 0): the design's rising bone glyph is deferred; the ring is simply gone with the meat
+
+func open_nest_editor() -> void:
+	if not bool(stage.world.state().get("parts", {}).get("can_edit", false)):
+		_refuse(-13)
+		return
+	var editor = preload("res://studio/ui/studio.gd").new()
+	editor.nest_world = stage.world
+	editor.nest_genome = island._genome
+	stage.paused = true
+	var layer := CanvasLayer.new()
+	layer.layer = 30
+	island.add_child(layer)
+	layer.add_child(editor)
+	editor.exit_requested.connect(func() -> void:
+		stage.restore_from(stage.world.snapshot())
+		stage.paused = false
+		layer.queue_free())
+	editor.nest_confirmed.connect(func(genome: Dictionary) -> void:
+		var built = preload("res://devtools/scenario.gd").build(stage, island.scenario_ctx(), "save", "nest edit", "", false)
+		built.json.genome = genome
+		stage.paused = false
+		layer.queue_free()
+		island.load_scenario({"dict": built.json, "state": built.state, "recipe": ""}))

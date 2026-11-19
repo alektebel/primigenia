@@ -2,7 +2,7 @@ extends RefCounted
 ## Port of web/studio/genome.js (cpore.creature/4 document: validate, migrate, parse).
 ## No exceptions in GDScript: every function returns a Dictionary {ok, error, genome, warnings}.
 
-const SCHEMA := "cpore.creature/4"
+const SCHEMA := "cpore.creature/5"
 const GROWTH_VERSION := "cpore.growth/1"
 const LEG_TYPES := ["pata", "zanca", "pezuna"]
 const LEN_TYPES := ["cuerno", "asta", "pua", "tallo", "antena"]
@@ -114,7 +114,9 @@ static func _validate(g, types) -> bool:
 	if typeof(parts) != TYPE_ARRAY or parts.size() > 256:
 		return _fail("parts")
 	for p in parts:
-		if not _keys(p, ["type", "t", "ang", "size", "len", "curve", "w", "k", "f", "rot", "tilt", "act", "single", "pupil"], "parts"):
+		if not _keys(p, ["type", "t", "ang", "size", "len", "curve", "w", "k", "f", "rot", "tilt", "act", "single", "pupil", "level", "tier"], "parts"):
+			return false
+		if not _int(p.get("level"), 1, 5, "parts.level") or not _int(p.get("tier"), 0, 2, "parts.tier"):
 			return false
 		if typeof(p.get("type")) != TYPE_STRING or not types.has(p["type"]):
 			return _fail("parts.type")
@@ -308,13 +310,24 @@ static func parse(input, types) -> Dictionary:
 	if typeof(g) != TYPE_DICTIONARY:
 		return {"ok": false, "error": "document", "genome": null, "warnings": []}
 	var sch = g.get("schema")
-	if not ["cpore.creature/1", "cpore.creature/2", "cpore.creature/3", "cpore.creature/4"].has(sch):
+	if not ["cpore.creature/1", "cpore.creature/2", "cpore.creature/3", "cpore.creature/4", SCHEMA].has(sch):
 		return {"ok": false, "error": "schema", "genome": null, "warnings": []}
 	var doc = g
-	if sch != SCHEMA:
+	if sch == "cpore.creature/4":
+		doc = g.duplicate(true)
+		doc.schema = SCHEMA
+	elif sch != SCHEMA:
 		doc = _migrate(g)
 		if doc == null:
 			return {"ok": false, "error": _err, "genome": null, "warnings": []}
+	if sch != SCHEMA:
+		if typeof(doc.get("parts")) != TYPE_ARRAY:
+			return {"ok": false, "error": "parts", "genome": null, "warnings": []}
+		for part in doc.parts:
+			if typeof(part) != TYPE_DICTIONARY:
+				return {"ok": false, "error": "parts", "genome": null, "warnings": []}
+			part["level"] = 1
+			part["tier"] = 0
 	var res := validate(doc, types)
 	if not res["ok"]:
 		res["warnings"] = []

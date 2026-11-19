@@ -50,6 +50,9 @@ static func seed_doc(seed_name: String) -> Dictionary:
 	var d: Dictionary = SEEDS[seed_name].duplicate(true)
 	d["schema"] = Genome.SCHEMA
 	d["regions"] = []
+	for part in d.parts:
+		part["level"] = 1
+		part["tier"] = 0
 	return d
 
 ## Canonical text of a document (ints and floats are not distinguished, as in JSON itself).

@@ -15,7 +15,15 @@ const Env := preload("../studio_env.gd")
 const Baker := preload("../thumb_baker.gd")
 
 signal creature_saved(path: String)
+signal nest_confirmed(genome: Dictionary)
 signal exit_requested
+
+var nest_world: RefCounted
+var nest_genome: Dictionary = {}
+var nest_rows: Array = []
+var nest_status: Label
+var nest_choice: OptionButton
+var nest_actions: Array = []
 
 var model: RefCounted
 var parts_db: RefCounted
@@ -108,6 +116,9 @@ func _ready() -> void:
 	add_child(_wheel_timer)
 	_apply_model()
 	frame_creature()
+	if nest_world != null:
+		model.import_doc(nest_genome)
+		_build_nest_shop()
 
 func _process(dt: float) -> void:
 	if _flash_timer > 0.0:
@@ -187,6 +198,9 @@ func _build_baker() -> void:
 	add_child(baker)
 
 func _on_exit() -> void:
+	if nest_world != null:
+		exit_requested.emit()
+		return
 	exit_requested.emit()
 	var game := get_node_or_null("/root/Game")
 	if game != null and game.has_method("goto_menu"):
@@ -467,6 +481,9 @@ func dna_value() -> int:
 
 func _update_dna() -> void:
 	if dna_label == null:
+		return
+	if nest_world != null:
+		dna_label.text = "ADN  %d" % int(nest_world.state().social.dna_balance)
 		return
 	var v := dna_value()
 	dna_label.text = "%d / %d" % [v, DNA_BUDGET]
@@ -1035,6 +1052,8 @@ func set_lang(l: String) -> void:
 	i18n.lang = l
 	_build_hud()
 	_apply_model()
+	if nest_world != null:
+		_build_nest_shop()
 
 func toggle_play() -> void:
 	model.set_playing(not model.playing)
@@ -1520,3 +1539,92 @@ func _draw_overlay() -> void:
 			var edge := camera.unproject_position(pts[_hover_node] + camera.global_transform.basis.x * rr) + off
 			overlay.draw_arc(sp3, sp3.distance_to(edge), 0, TAU, 48, Color(ThemeFactory.AMBER, clampf(_girth_fx / .6, 0.0, 1.0)), 2.5, true)
 
+
+# The world stays paused while purchases and confirmation are validated by C.
+func _build_nest_shop() -> void:
+	nest_actions = []
+	var panel := PanelContainer.new()
+	panel.set_anchors_preset(Control.PRESET_TOP_RIGHT)
+	panel.offset_left = -380
+	panel.offset_right = -14
+	panel.offset_top = 70
+	hud.add_child(panel)
+	var rows := VBoxContainer.new()
+	panel.add_child(rows)
+	nest_status = Label.new()
+	nest_status.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	nest_status.custom_minimum_size.x = 340
+	rows.add_child(nest_status)
+	nest_choice = OptionButton.new()
+	nest_choice.custom_minimum_size.y = 44
+	rows.add_child(nest_choice)
+	for kind in 3:
+		var b := Button.new()
+		b.custom_minimum_size.y = 44
+		b.pressed.connect(_nest_buy.bind(kind))
+		rows.add_child(b)
+		nest_actions.append(b)
+	var confirm := Button.new()
+	confirm.text = "Confirmar evolución" if lang == "es" else "Confirm evolution"
+	confirm.custom_minimum_size.y = 44
+	confirm.pressed.connect(_nest_confirm)
+	rows.add_child(confirm)
+	nest_choice.item_selected.connect(func(_i: int) -> void: _nest_labels())
+	_nest_refresh()
+
+func _nest_refresh() -> void:
+	var state: Dictionary = nest_world.state()
+	nest_rows = state.parts.discovered
+	var selected := maxi(0, nest_choice.selected)
+	nest_choice.clear()
+	var unlocked := {}
+	for row in nest_rows:
+		unlocked[row.id] = row
+		nest_choice.add_item("%s · L%d / %s" % [parts_db.display_name(row.id, lang), row.level, row.form])
+	if not nest_rows.is_empty():
+		nest_choice.select(mini(selected, nest_rows.size() - 1))
+	for id in palette_buttons:
+		palette_buttons[id].visible = unlocked.has(id)
+		palette_buttons[id].disabled = not unlocked.has(id) or not bool(unlocked.get(id, {}).get("owned", false))
+	for part in model.doc.parts:
+		if unlocked.has(part.type) and unlocked[part.type].owned:
+			part["level"] = unlocked[part.type].level
+			part["tier"] = unlocked[part.type].tier
+	_update_dna()
+	_nest_labels()
+
+func _nest_labels() -> void:
+	if nest_rows.is_empty():
+		return
+	var row: Dictionary = nest_rows[nest_choice.selected]
+	nest_status.text = ("ADN %d · golpes %d / %d · victorias %d / %d" if lang == "es" else "DNA %d · hits %d / %d · wins %d / %d") % [nest_world.state().social.dna_balance, row.hits, row.need_hits, row.fights, row.need_fights]
+	nest_actions[0].text = ("Comprar pieza · %d ADN" if lang == "es" else "Buy part · %d DNA") % row.cost
+	nest_actions[0].disabled = row.owned
+	nest_actions[1].text = ("Subir nivel · %d ADN" if lang == "es" else "Next level · %d DNA") % row.level_price
+	nest_actions[1].disabled = not row.owned or row.level >= 5
+	nest_actions[2].text = ("%s · %d ADN" if lang == "es" else "%s · %d DNA") % [row.next_form.capitalize(), row.tier_price]
+	nest_actions[2].disabled = not row.owned or row.tier >= 2 or row.hits < row.need_hits or row.fights < row.need_fights
+
+func _nest_buy(kind: int) -> void:
+	var row: Dictionary = nest_rows[nest_choice.selected]
+	var rc: int = nest_world.command("%s %s" % [["buy_part", "buy_level", "buy_tier"][kind], row.id])
+	_nest_refresh()
+	if rc != 0:
+		nest_status.text = "Compra rechazada: ADN insuficiente o hito pendiente" if lang == "es" else "Purchase refused: insufficient DNA or milestone pending"
+
+func _nest_confirm() -> void:
+	_nest_refresh()
+	var doc: Dictionary = model.get_doc()
+	doc.schema = "cpore.creature/5"
+	var owned := {}
+	for row in nest_rows:
+		owned[row.id] = row
+	for part in doc.parts:
+		if owned.has(part.type):
+			part["level"] = owned[part.type].level
+			part["tier"] = owned[part.type].tier
+	var rc: int = nest_world.nest_edit(JSON.stringify(doc))
+	if rc != 0:
+		nest_status.text = "Edición rechazada (%d). Revisa las piezas y el espacio para un primo." % rc if lang == "es" else "Edit refused (%d). Check owned parts and room for a cousin." % rc
+		return
+	nest_confirmed.emit(doc)

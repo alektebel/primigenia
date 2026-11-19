@@ -17,6 +17,7 @@ signal save_requested
 signal load_requested
 signal journal_requested
 signal family_tree_requested
+signal nest_requested
 signal loadout_requested
 signal keys_requested
 signal hints_reset_requested
@@ -35,6 +36,7 @@ const ITEMS := [
 	["journal", "journal", "J"],
 	["family_tree", "family_tree", "T"],
 	["loadout", "loadout", "L"],
+	["nest_edit", "nest_edit", ""],
 	["settings", "settings", ""],
 	["keys", "keys", "F1"],
 	["save", "save", ""],
@@ -89,7 +91,7 @@ func item_enabled(id: String) -> bool:
 	match id:
 		"load":
 			return slot_exists()
-		"loadout":
+		"loadout", "nest_edit":
 			return loadout_available
 		"family_tree", "journal", "keys":
 			return true
@@ -169,6 +171,8 @@ func activate(id: String) -> void:
 			journal_requested.emit()
 		"family_tree":
 			family_tree_requested.emit()
+		"nest_edit":
+			nest_requested.emit()
 		"loadout":
 			loadout_requested.emit()
 		"settings":

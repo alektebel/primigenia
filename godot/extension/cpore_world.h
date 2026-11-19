@@ -43,6 +43,7 @@ public:
     static godot::String order_error(int code);
     godot::Dictionary state() const;
     godot::String observe();
+    int nest_edit(const godot::String &body);
     godot::String lineage() const;
     int lineage_begin();
     int lineage_perk(int kind,int serial,int amount);
