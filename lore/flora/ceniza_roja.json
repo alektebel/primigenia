@@ -13,38 +13,41 @@
     "Bare basalt and tuff",
     "Exposed crater-rim rock"
   ],
-  "summary": "A millimetre-scale crust consortium grows over cooled volcanic rock, combining a green photosynthetic layer, mineral-weathering partners and the ancestral nitrogen fixer. Dust and dead tissue gradually accumulate around its margins. Exposed colonies develop red-purple screening, while sheltered ones remain greener (F7, F9, F14, F24, F25).",
+  "summary": "A millimetre-scale crust consortium grows over stable cooled volcanic rock, combining a green photosynthetic layer, mineral-weathering partners and the ancestral nitrogen fixer. Hydrated oxygen-protected cells permit intermittent nitrogen input; dust and dead tissue gradually accumulate around colony margins. Red-purple screening strengthens with sustained exposure, especially on high slopes, while sheltered colonies remain greener (F7, F9, F14, F24, F25).",
   "chains": [
     {
       "id": "ceniza_roja.c1",
-      "trait": "Adherent mineral-weathering crust with nitrogen-fixing partners",
+      "trait": "Mineral-weathering crust with oxygen-protected nitrogen-fixing cells",
       "links": [
-        "Newly cooled volcanic surfaces provide mineral substrate but little organic matter or available nitrogen.",
-        "Photosynthetic partners supply carbon while microbial acids weather accessible mineral surfaces.",
-        "The ancestral symbiont fixes nitrogen using energy and protected microsites within the consortium.",
-        "Crust texture traps dust, and turnover adds organic matter to small rooting pockets."
+        "Exposed cooled lava and erosion surfaces provide mineral substrate but little accumulated organic matter or available nitrogen.",
+        "Photosynthetic partners supply carbon, while microbial acids slowly weather accessible mineral surfaces and may mobilize mineral-bound phosphorus.",
+        "The ancestral nitrogen fixer operates in specialized cells with restricted oxygen entry and respiratory oxygen consumption when hydration and energy supply permit.",
+        "Drying or excessive oxygen exposure suspends fixation without necessarily killing the symbiont.",
+        "Crust texture traps dust, and turnover adds organic matter to small rooting pockets; phosphorus and water can still limit development."
       ],
       "roots": [
+        "F5",
         "F7",
         "F9",
+        "F23",
         "F24"
       ],
-      "play": "Find the dust-filled margins where later pioneers can establish; compare intact crust with nearby bare rock.",
-      "weakness": "Colonization requires suitable moisture and a stable cooled surface. Abrasion, trampling, deep burial and prolonged drought interrupt growth.",
+      "play": "Find dust-filled margins where later pioneers can establish; compare hydrated active crust with dry surviving patches and nearby bare rock.",
+      "weakness": "Colonization requires suitable moisture and stable cooled rock. Nitrogen fixation stops during drying or failed oxygen protection; phosphorus shortage, local acidification, abrasion, trampling and burial interrupt development.",
       "observe": [
         "Fine dust remains lodged along raised crust margins after wind clears nearby rock.",
-        "A naturally lifted edge exposes a thin green living layer.",
+        "A naturally lifted edge exposes a thin green layer that swells after wetting, without making nitrogen fixation directly visible.",
         "Small grass seedlings occur in accumulated debris beside older crust patches."
       ],
       "plausibility": {
         "verdict": "plausible",
-        "judge": "botanist/composer-2.5; chair sol",
+        "judge": "strict review: sol (codex) + DeepSeek; chair sol",
         "date": "2026-11-19",
-        "summary": "Acids weather mineral surfaces gradually; the crust does not rapidly split intact basalt. Nitrogen fixation does not remove phosphorus or water limitation, and succession has no universal timetable.",
+        "summary": "Acids weather mineral surfaces gradually; the crust does not rapidly split intact basalt. Nitrogen fixation does not remove phosphorus or water limitation, and succession has no universal timetable. Strict review (2026-11-19): revised: Unspecified protected microsites did not explain nitrogenase survival in oxygen-rich air, so the rewrite supplies specialized oxygen protection and separates symbiont survival from active fixation. Residual: F7 and F9 support exposed volcanic substrates, and F24 supplies an ancestral nitrogen-fixing symbiont. Restricted oxygen entry plus respiratory consumption directly addresses F5's elevated oxygen. Slow weathering, conditional phosphorus mobilization and dust retention form a defensible succession mechanism. Residual weakness: oxygen protection consumes carbon and must remain effective during hydration; neither F24 nor nitrogen availability guarantees a positive nutrient balance.",
         "analogues": [
           {
             "organism": "Rock-dwelling lichens and nitrogen-fixing cyanolichens",
-            "mechanism": "Lichen acids contribute to mineral weathering, while cyanobacterial associations illustrate nitrogen input within a photosynthetic consortium. [Chen and colleagues](https://doi.org/10.1016/S0341-8162(99)00085-5); [Lichen Biology](https://www.cambridge.org/core/books/lichen-biology/87CA882464AED46E121E8C79A99B4993).",
+            "mechanism": "Mineral-weathering associations illustrate gradual substrate alteration, while specialized nitrogen-fixing cells illustrate oxygen protection; active fixation still requires hydration, energy and sufficient nutrients.",
             "refs": [
               "chen_2000_weathering",
               "nash_2008_lichen"
@@ -55,33 +58,33 @@
     },
     {
       "id": "ceniza_roja.c2",
-      "trait": "Red-purple screening above a green photosynthetic layer",
+      "trait": "Exposure-responsive red-purple screening above a green photosynthetic layer",
       "links": [
-        "Exposed rock colonies receive more radiation than shaded fissure colonies, with elevated UV on high slopes.",
-        "Excess exposure can damage the photosynthetic layer.",
-        "A superficial red-purple pigment layer reduces damaging radiation reaching living cells.",
-        "The screen improves exposure tolerance but can reduce useful light and increase heating."
+        "Exposed colonies receive more radiation than adjacent shaded fissures, and high slopes receive elevated UV, reaching approximately 1.4 times Earth's at 2,000 m.",
+        "Excess UV and visible irradiance can damage the photosynthetic layer even where planetary UV is below Earth's reference value.",
+        "A superficial red-purple layer with suitable UV and blue-light absorption reduces damaging radiation reaching living cells.",
+        "Screening strengthens under sustained exposure but costs carbon, can reduce useful light and can increase heating."
       ],
       "roots": [
         "F14",
         "F25"
       ],
-      "play": "Read broad differences in exposure from neighbouring red and green colonies without treating colour as an elevation meter.",
-      "weakness": "Screening costs carbon and does not prevent overheating or dehydration; heavily screened colonies perform poorly in deep shade.",
+      "play": "Read local exposure differences from neighbouring red and green colonies; high-slope screening is common, but colour is neither an elevation meter nor an alkaloid test.",
+      "weakness": "Screening does not prevent overheating or dehydration; heavy screening reduces performance in deep shade, and visible redness alone does not measure UV protection.",
       "observe": [
-        "Sun-facing crust is red-purple beside greener colonies under the same rock lip.",
+        "Exposed high-slope colonies show stronger red-purple screening than nearby shaded fissures.",
         "A chipped natural edge shows green beneath the coloured surface.",
         "Hot dry colonies look shrunken despite retaining their red screen."
       ],
       "plausibility": {
         "verdict": "plausible",
-        "judge": "botanist/composer-2.5; chair sol",
+        "judge": "strict review: sol (codex) + DeepSeek; chair sol",
         "date": "2026-11-19",
-        "summary": "The overlay follows the seeded pigment canon. Earth lichen screens support the mechanism, not an exact pigment identity. Red here signals exposure stress; it does not imply alkaloids or a crater-wide metal anomaly.",
+        "summary": "The overlay follows the seeded pigment canon. Earth lichen screens support the mechanism, not an exact pigment identity. Red here signals exposure stress; it does not imply alkaloids or a crater-wide metal anomaly. Strict review (2026-11-19): revised: The rewrite distinguishes altitude-related UV, local irradiance and heating while making pigment absorption explicit without imposing an unsupported Earth-relative damage threshold. Residual: F14 explicitly supplies the altitude-dependent UV exposure, and F25 supplies red-purple overlays over ancestral green pigmentation. The chain appropriately requires suitable absorption rather than assuming redness proves UV screening. Residual weakness: pigment identity and absorption spectrum remain fictional, and pigmentation integrates exposure history rather than reporting current irradiance.",
         "analogues": [
           {
             "organism": "Pigmented saxicolous lichens, including Xanthoria",
-            "mechanism": "Cortical pigments can screen underlying photobionts; their benefits depend on exposure and carbon balance. Primigenia's red-purple chemistry is an extrapolation from this architecture. [Lichen Biology](https://www.cambridge.org/core/books/lichen-biology/87CA882464AED46E121E8C79A99B4993).",
+            "mechanism": "Cortical pigments illustrate screening of underlying photosynthetic cells only; they do not establish this consortium's structure or exact pigment chemistry.",
             "refs": [
               "nash_2008_lichen"
             ]
@@ -92,19 +95,16 @@
   ],
   "gameplay": {
     "food_for": [
-      "Detritivores consuming weathered crust margins and dead microbial tissue"
+      "babosa"
     ],
     "gift_item": null,
-    "poison": {
-      "alkaloid": false,
-      "signal": "Red-purple exposed surfaces over green tissue indicate radiation screening, without the red-veined alkaloid pattern."
-    },
+    "poison": null,
     "healing": null,
     "cover": null,
     "climbing": false,
     "nest_material": null,
     "mineral_lick": null,
-    "notes": "A soil-building community rather than a concentrated edible mineral deposit. Substrate contamination can still make a patch hazardous near geothermal seeps. Crater-rim occupancy indicates suitable rock, not the second capsule's purpose."
+    "notes": "Babosa consumes softened dead margins and associated decaying material. Uniform red-purple screening lacks the red-veined alkaloid pattern and indicates exposure stress rather than toxicity. Arsenic or mercury contamination near geothermal seeps remains a separate hazard without a dependable pigment warning (F23). This is a soil-building community rather than a concentrated edible mineral deposit. Crater-rim occupancy indicates suitable rock, not the second capsule's purpose. The common name refers to an ash-like appearance, not a requirement for fresh ash."
   },
   "relations": [
     {
@@ -125,7 +125,7 @@
     {
       "with": "hierroflor",
       "kind": "grows_with",
-      "note": "Can occupy exposed rock near crater vegetation without sharing Hierroflor's nickel specialization."
+      "note": "Can occupy exposed rock beside crater vegetation; adjacency establishes no shared metal specialization."
     }
   ],
   "generator": {
@@ -149,9 +149,11 @@
     "colour": {
       "base": "Muted green-grey",
       "overlay_rules": [
-        "Red-purple screening strengthens on persistently exposed surfaces.",
-        "Sheltered margins and naturally exposed inner tissue remain greener.",
-        "Dust occupies cracks rather than replacing the living pigment."
+        "Red-purple screening responds to sustained local exposure and becomes more prevalent on exposed high slopes.",
+        "Lowland colonies usually remain greener; shaded fissures reduce screening at any altitude.",
+        "Naturally exposed inner tissue remains greener.",
+        "Dust occupies cracks rather than replacing the living pigment.",
+        "Do not use a fixed altitude cutoff or redness as a toxin detector."
       ]
     },
     "placement": {
@@ -167,9 +169,13 @@
         3600
       ],
       "fog": "Fog wetting favours activity where droplets reach the surface.",
-      "density": "Discontinuous islands on young rock, merging locally on older suitable surfaces."
+      "density": "Discontinuous colonies on suitable bare rock, merging locally where stability and wetting persist; no universal succession timetable.",
+      "substrate_contexts": [
+        "Basalt lava fields include surfaces from the eruption approximately 400 years ago or older; erosion can expose fresh bare surfaces without a new eruption (F7, F9).",
+        "The approximately 12,000-year-old crater rim is cohesive tuff; generate crust only on presently exposed stable rock, independently of time since impact (F22)."
+      ]
     },
-    "seasonal": "Growth follows wet periods; dry colonies become metabolically inactive. Alpine patches remain inactive beneath persistent snow.",
+    "seasonal": "Growth and nitrogen fixation follow suitable hydration; drying suspends fixation and metabolic activity. Alpine patches remain inactive beneath persistent snow.",
     "wind_response": "The adherent crust does not sway; airborne grit abrades exposed margins while rough patches retain dust."
   },
   "journal": [
@@ -196,6 +202,11 @@
       "date": "2026-11-19",
       "who": "flora.py",
       "what": "flora pass: 7 voices drafted and peer-reviewed, Composer botanical referee, sol chaired and applied the fixes"
+    },
+    {
+      "date": "2026-11-19",
+      "who": "flora_addendum.py",
+      "what": "strict second review (sol + DeepSeek) applied by sol: Used babosa as the supported consumer, removed the non-poison signal from poison and removed the unsupported claim about another plant's nickel specialization.; Kept the common name and clarified its descriptive meaning instead of renaming outside the requested output fields.; Rejected flows younger than approximately 400 years as a default: F7 places the last eruption approximately 400 years ago,"
     }
   ],
   "observe": [

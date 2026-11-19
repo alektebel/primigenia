@@ -4,7 +4,7 @@
 
 **Status: DRAFT** · world: [primigenia](../worlds/primigenia.md) · form: herb · id: `velilla`
 
-A corm herb raises pale cups around dark nectar discs after sustained soil wetting. Dawn flowers mark a temporary wet-season opportunity; summer dormancy leaves the meadow open.
+A corm herb raises pale cups around dark central guides and nectaries after sustained soil wetting. Flowers open during sufficiently warm, calm dawns or later mornings, marking a temporary wet-season opportunity; summer dormancy leaves the meadow open.
 
 **Habitats:** Open seasonal meadow hollows, Unshaded spring-basin outskirts, Moist tuff pockets between tussocks
 
@@ -20,43 +20,42 @@ Trait ← Seasonal drought makes continuous foliage costly ← A buried corm pre
   1. Inspect soil after rain.
   2. Watch shoots emerge.
   3. Return during summer dormancy.
-- **Plausibility:** plausible (judge botanist/composer-2.5; chair sol, 2026-11-19)
-  - Local moisture and developmental state govern flowering; blooms do not prove permanent or drinkable groundwater.
+- **Plausibility:** plausible (judge strict review: sol (codex) + DeepSeek; chair sol, 2026-11-19)
+  - Local moisture and developmental state govern flowering; blooms do not prove permanent or drinkable groundwater. Strict review (2026-11-19): Residual: F18 supplies a real summer drought pressure, and a buried reserve organ can support seasonal dormancy and emergence. Residual weakness: wetting alone does not demonstrate readiness to flower; sufficient stored reserves, suitable temperature and aerated soil are also necessary. The existing developmental-state qualification addresses this without requiring permanent groundwater.
   - Analogue: Autumn crocus, Crocus speciosus: An underground corm stores reserves across seasonal shoot dormancy; the analogue concerns storage, not edibility. (Gifford & Foster 1989 [verified])
 
-### velilla.c2: Dawn-opening pale cups with dark nectar discs
+### velilla.c2: Weather-dependent pale cups with scented nectaries and dark central guides
 
-Trait ← Cream petals contrast with green foliage under scattered daylight ← Shallow cups expose nectar and pollen to small flies ← Humid, sheltered dawn conditions favour local scent-guided visits ← **F1** Star: a quiet G1V, yellow-white, 1.05 L☉, 3.8 Gyr old; UV 1.15× the Sun's; **F3** Day 26 h; twilight ~38 min (thick air scatters more), long dawns and dusks; **F8** Fog: cold upwelling sea on the west coast meets warm volcanic ground; the east start valley is a fog trap about 180 mornings a year; **F16** Smell: molecular diffusion ~0.6× Earth's, so in still air scent trails last ~1.6× longer; in wind the advantage disappears; **F17** Sky: deep blue zenith, milky horizon, copper sunsets (1.6× Rayleigh depth); **F25** Plants are green by ancestry (the seed's pigment), not because green is optimal
+Trait ← Long twilight provides a gradual light cue, but flowers open only when temperature and wind permit visitation (F3). ← Cream petals contrast locally with green foliage once sufficient daylight reaches the patch; opaque fog limits distant visibility (F8). ← Nectar-bearing tissue beneath the dark central guide emits a faint sweet scent that persists locally in still sheltered air (F16). ← Shallow nectaries place feeding flies across low anthers and a central stigma, allowing pollen pickup and later deposition between flowers. ← Visits may begin at warm calm dawns or shift into the morning; dark guides warm only when illuminated by useful sunlight. ← **F3** Day 26 h; twilight ~38 min (thick air scatters more), long dawns and dusks; **F8** Fog: cold upwelling sea on the west coast meets warm volcanic ground; the east start valley is a fog trap about 180 mornings a year; **F16** Smell: molecular diffusion ~0.6× Earth's, so in still air scent trails last ~1.6× longer; in wind the advantage disappears
 
-- **In play:** Watch inferred hairy flies contact anthers and stigmas; use flowers as nearby landmarks.
-- **Weakness:** Opaque fog hides distant blooms; cold, wind or rain reduces visitation.
+- **In play:** Watch weather-dependent fly visits and check for contact with anthers and stigmas; use open flowers as nearby landmarks.
+- **Weakness:** Cold, strong wind, rain and opaque fog delay opening or reduce visits; scent and pale petals do not guarantee pollination.
 - **Observe:**
-  1. Find open cups near dawn.
-  2. Watch a fly touch the disc.
-  3. Return after flowers close.
-- **Plausibility:** fixable (judge botanist/composer-2.5; chair sol, 2026-11-19)
-  - Fly pollination is inferred and must be observable. White petals reflect light; dark centres warm only under suitable sunlight.
-  - Analogue: Meadow buttercup, Ranunculus acris: Open bowl flowers offer accessible reproductive surfaces to visiting insects; exact colour and dawn timing are fictional adaptations. (Gifford & Foster 1989 [verified]; Johnsen 2012 [verified])
+  1. Compare closed cups on a cold foggy dawn with open cups after the patch warms.
+  2. Watch a nectar-feeding fly brush anthers and the central stigma.
+  3. Find the faint scent at nectary tissue beneath the dark central guide.
+- **Plausibility:** fixable (judge strict review: sol (codex) + DeepSeek; chair sol, 2026-11-19)
+  - Fly pollination is inferred and must be observable. White petals reflect light; dark centres warm only under suitable sunlight. Strict review (2026-11-19): revised: Dawn activity and nectar discs were unsupported, so flowers now use scented nectaries, explicit reproductive contact and temperature- and wind-dependent opening. Still open: The dark-guide link is vacuous: a dark surface warms only when illuminated, so it cannot explain opening before useful sun, and the sentence restates its premise. No pollinator taxon is named, and the plant's core habitat is the east fog trap (F8, ~180 fog mornings/year), where fog blocks the 'sufficient daylight' cue and suppresses visitation. Cold dawn air also lowers volatile emission, so F16's still-air persistence does not by itself strengthen a dawn scent signal. The dawn specialization remains a just-so story.
+  - Analogue: Meadow buttercup, Ranunculus acris: Open bowl flowers provide accessible nectar and reproductive surfaces; the scent source, dark guide and weather-dependent opening are proposed traits of this fictional species. (Gifford & Foster 1989 [verified]; Johnsen 2012 [verified])
 
 ## Gameplay
 
 ```json
 {
  "food_for": [
-  "Corm-eating herbivores",
-  "Omnivores"
+  "player_lineage eating excavated corms"
  ],
  "gift_item": null,
  "poison": {
   "alkaloid": false,
-  "signal": "Green foliage; cream flowers with dark centres."
+  "signal": "Green foliage and cream flowers with dark central guides identify this species; colour alone does not establish edibility."
  },
  "healing": null,
  "cover": null,
  "climbing": false,
  "nest_material": "Dry scapes and leaves in small quantities.",
  "mineral_lick": null,
- "notes": "Corm removal kills that individual. Flowering indicates seasonal soil moisture."
+ "notes": "This species' sound corms are edible raw to player_lineage after removing soil and the fibrous outer tunic; no cooking is required. Corm removal kills that individual. Flowering indicates seasonal soil moisture, not permanent or potable groundwater."
 }
 ```
 
@@ -64,9 +63,8 @@ Trait ← Cream petals contrast with green foliage under scattered daylight ← 
 
 | With | Kind | Note |
 |---|---|---|
-| rondo | eaten_by | Occasionally eats exposed corms. |
-| player_lineage | eaten_by | Can excavate starchy corms. |
-| alula | other | Hunts flower visitors; pollination is not obligatory. |
+| player_lineage | eaten_by | Excavates edible starchy corms and removes soil and the fibrous tunic before eating. |
+| alula | other | Hunts flower visitors; its own visits are not required for pollination. |
 | paja_dulce | grows_with | Occupies open gaps between tussocks. |
 | grama_de_ceniza | competes | Competes in seasonally moist open soil. |
 | perlilla | competes | Expanding shrub shade suppresses flowering. |
@@ -92,11 +90,18 @@ Trait ← Cream petals contrast with green foliage under scattered daylight ← 
   "size_cm": 15,
   "arrangement": "Basal cluster"
  },
+ "flower": {
+  "nectaries": "Shallow nectar-bearing tissue beneath the dark central guide emits a faint sweet scent.",
+  "contact_geometry": "Low anthers surround the feeding approach; a central stigma projects into the same fly contact path.",
+  "opening": "Require sufficient daylight, suitable temperature and low wind; opening may begin near dawn or wait until later morning.",
+  "pollination": "Show fly contact and pollen transfer when visits occur; poor weather can leave flowers unvisited."
+ },
  "colour": {
   "base": "Green",
   "overlay_rules": [
-   "Six to nine cream petals around a charcoal disc.",
-   "Flowers 25–40 mm across; translucent, never luminous."
+   "Six to nine cream petals surround a charcoal central guide around the nectaries.",
+   "Flowers 25–40 mm across; translucent, never luminous.",
+   "Dark guides may warm under direct sunlight; no warming benefit is assigned before useful illumination."
   ]
  },
  "placement": {
@@ -111,11 +116,11 @@ Trait ← Cream petals contrast with green foliage under scattered daylight ← 
    100,
    1600
   ],
-  "fog": "Humid dawns supplement seasonal rain",
+  "fog": "Humid dawns supplement seasonal rain but can delay warming and visitation.",
   "density": "Irregular open patches"
  },
- "seasonal": "Emergence requires sustained wetting; daily opening follows dawn light and humidity within the 26-hour day.",
- "wind_response": "Scapes flex; strong wind suppresses visits."
+ "seasonal": "Emergence requires sustained wetting and developmental readiness; daily flower opening follows suitable light, temperature and wind within the 26-hour day.",
+ "wind_response": "Scapes flex; strong wind suppresses opening and visits."
 }
 ```
 
@@ -141,3 +146,4 @@ council run `flora-valley-2026-11-19`; by designer, mythmaker, naturalist, physi
 ## Changelog
 
 - 2026-11-19 flora.py: flora addendum (start valley): 7 voices drafted and peer-reviewed, Composer referee, sol chaired
+- 2026-11-19 flora_addendum.py: strict second review (sol + DeepSeek) applied by sol: The plausible corm-storage chain remains unchanged.; Rondo's corm-feeding relation was removed because its stated diet and feeding traits do not establish storage-organ feeding or excavation.; Corm edibility is an explicit species property for player_lineage; the Crocus analogue supports storage only.

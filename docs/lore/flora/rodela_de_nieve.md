@@ -4,25 +4,25 @@
 
 **Status: DRAFT** · world: [primigenia](../worlds/primigenia.md) · form: rosette · id: `rodela_de_nieve`
 
-A 1.5–3 m giant rosette with ascending leaves above a 0.5–1 m caudex insulated by dead foliage. Hairy leaves close around the bud at night and red-purple margins screen radiation. Only leeward gullies support the tallest individuals; windward crater rims and summit crests are excluded (F7, F14, F15, F19, F25).
+A 1.5–2.5 m giant rosette with ascending leaves above a 0.5–1 m caudex insulated by dead foliage. Hairy leaves close around the bud at night and red-purple margins screen radiation. Tall individuals occupy stable, sunny leeward benches and gully margins where snow clears seasonally and roots drain; perennial snow pockets and windward summit crests are excluded (F7, F14, F15, F19, F25).
 
 **Habitats:** Sheltered high volcanic slopes, Snowline gullies from about 1750 m, Leeward alpine gullies below the summit
 
 ## Causal chains
 
-### rodela_de_nieve.c1: Insulated short caudex and enclosing leaves
+### rodela_de_nieve.c1: Insulated short caudex, enclosing leaves and frost-tolerant tissues
 
-Trait ← High slopes experience cold nights and seasonal snow. ← Dead foliage slows heat loss from the short caudex. ← Living leaves fold over the bud at night. ← Leeward gullies reduce wind exposure enough to support the tallest crowns. ← **F7** The island is a hotspot stratovolcano, 1.2 Myr old, ~2,050 m high, visible top 3.6 km across over an 8 km submarine base; **F15** Composition N₂ ~77%, O₂ 21%, Ar 1.5%, CO₂ ~0.1%, humid; **F19** Wind force per m/s is 1.6× Earth's: gales in winter push light creatures and favour low, heavy bodies on exposed ridges; **F27** The island's life is an island radiation: the island rose 1.2 Myr ago (F7) and was colonised by a few founders that rafted, swam or flew from the mainland, then split into many species (like Hawaiian honeycreepers or Galápagos finches on Earth)
+Trait ← High slopes experience cold nights, seasonal snow and strong wind exposure. ← Retained dead foliage slows heat exchange around the short caudex, while living leaves close over the bud during unfrozen nights. ← These structures buffer short cold episodes; tissue frost tolerance supports survival during longer freezes without maintaining continuous warmth. ← Leeward terrain reduces wind but can accumulate snow, so tall crowns occur only where shelter, seasonal snow clearance, drainage and an adequate exposed growing season coincide. ← **F7** The island is a hotspot stratovolcano, 1.2 Myr old, ~2,050 m high, visible top 3.6 km across over an 8 km submarine base; **F15** Composition N₂ ~77%, O₂ 21%, Ar 1.5%, CO₂ ~0.1%, humid; **F19** Wind force per m/s is 1.6× Earth's: gales in winter push light creatures and favour low, heavy bodies on exposed ridges
 
-- **In play:** Use a sheltered rosette's lee for a brief pause and inspect accessible axils for seasonal water.
-- **Weakness:** Snow burial, saturated roots and removal of insulating leaves damage the plant.
+- **In play:** Use a seasonally snow-free rosette's lee for a brief pause and inspect accessible axils for intermittent water.
+- **Weakness:** Prolonged snow burial, saturated roots and removal of insulating leaves damage the plant; insulation cannot prevent indefinite freezing or replace a growing season.
 - **Observe:**
-  1. Inner leaves close over the bud at dusk.
+  1. Inner leaves close over the bud at dusk while unfrozen.
   2. A torn skirt reveals a short caudex.
-  3. The tallest crowns occur inside leeward gullies.
-- **Plausibility:** plausible (judge botanist/composer-2.5; chair sol, 2026-11-19)
-  - Caudex height is 0.5–1 m and total height including foliage is 1.5–3 m. Reserve the tallest plants for leeward gullies; exclude windward crater rims and summit crests.
-  - Analogue: Espeletia and Afroalpine giant rosettes: Retained dead foliage and enclosing rosette leaves protect growing tissues against alpine cold. (Smith & Young 1987 [verified])
+  3. Tall crowns occupy sunny sheltered margins that clear of snow, while perennial snow pockets lack established rosettes.
+- **Plausibility:** plausible (judge strict review: sol (codex) + DeepSeek; chair sol, 2026-11-19)
+  - Caudex height is 0.5–1 m and total height including foliage is 1.5–3 m. Reserve the tallest plants for leeward gullies; exclude windward crater rims and summit crests. Strict review (2026-11-19): revised: Wind shelter alone did not establish a viable growing site, so insulation is separated from frost survival and placement now requires seasonal snow clearance, drainage and sufficient growing time. Residual: F15 explicitly establishes seasonal snow, F7 limits available elevation, and F19 makes wind shelter necessary. Insulation delays cooling rather than supplying heat; the revision now assigns prolonged-freeze survival to tissue tolerance and excludes persistent burial. Residual weakness: leeward gullies can retain snow and collect cold air, so shelter alone does not establish viability. The additional requirements for sunlight, snow clearance, drainage and growing-season length make the chain defensible. Tropical giant-rosette analogues support insulation architecture, not seasonal winter survival.
+  - Analogue: Espeletia and Afroalpine giant rosettes: Retained dead foliage and enclosing leaves buffer short alpine cold episodes; these tropical-alpine analogues do not establish survival through Primigenia's seasonal snow burial, which additionally requires frost tolerance and suitable snow-clearance sites. (Smith & Young 1987 [verified])
 
 ### rodela_de_nieve.c2: Hairy blades with red-purple screening
 
@@ -34,28 +34,26 @@ Trait ← High-elevation leaves receive increased UV. ← Hairs scatter radiatio
   1. Sun-facing margins are more purple.
   2. Parted hairs reveal green tissue.
   3. Sheltered inner leaves remain greener.
-- **Plausibility:** plausible (judge botanist/composer-2.5; chair sol, 2026-11-19)
-  - Red-purple colour indicates radiation stress rather than alkaloids in this species. It provides neither healing gel nor dependable creature-sized UV protection.
+- **Plausibility:** plausible (judge strict review: sol (codex) + DeepSeek; chair sol, 2026-11-19)
+  - Red-purple colour indicates radiation stress rather than alkaloids in this species. It provides neither healing gel nor dependable creature-sized UV protection. Strict review (2026-11-19): Residual: F14 directly supports enhanced UV near 2,000 m and F25 explicitly supports red-purple screening on high slopes. The residual weakness is functional specificity: visible purple margins alone do not establish UV protection across the whole blade, and hair effectiveness depends on density, structure and spectral properties.
   - Analogue: Anthocyanic alpine foliage: Foliar pigments can reduce light-induced injury; the combined hairy rosette design is a fictional adaptation. (Gould 2004 [verified])
 
 ## Gameplay
 
 ```json
 {
- "food_for": [
-  "High-altitude herbivores browsing outer green leaves"
- ],
- "gift_item": "Naturally shed dry leaf",
+ "food_for": [],
+ "gift_item": null,
  "poison": {
   "alkaloid": false,
-  "signal": "Red-purple margins indicate radiation stress without establishing alkaloid toxicity."
+  "signal": "Red-purple margins indicate radiation stress without establishing alkaloid toxicity or leaf edibility."
  },
  "healing": null,
  "cover": "Small leeward pocket and partial concealment for a crouching small creature.",
  "climbing": false,
- "nest_material": "Naturally shed leaves; attached dead foliage remains protective insulation.",
+ "nest_material": "Naturally shed leaves for bedding; attached dead foliage remains protective insulation.",
  "mineral_lick": null,
- "notes": "Axil water is intermittent and not certified potable. Shelter does not provide continuous warmth or reliable UV protection."
+ "notes": "No supplied creature diet establishes rosette-leaf browsing. Axil water is intermittent and not certified potable. Shelter does not provide continuous warmth or reliable UV protection."
 }
 ```
 
@@ -63,9 +61,8 @@ Trait ← High-elevation leaves receive increased UV. ← Hairs scatter radiatio
 
 | With | Kind | Note |
 |---|---|---|
-| zanco | eaten_by | Browses reachable outer leaves below the protected bud. |
-| alula | shelters | Uses firm old-leaf columns as brief perches in sheltered gullies. |
-| grama_de_ceniza | grows_with | May adjoin grass confined to damp protected alpine fissures. |
+| alula | shelters | May pause on the ground beside a sheltered rosette; no talon anchorage in loose dead foliage is assumed. |
+| grama_de_ceniza | grows_with | May adjoin grass confined to damp protected alpine fissures with seasonal snow clearance. |
 
 ## Generator parameters
 
@@ -74,9 +71,9 @@ Trait ← High-elevation leaves receive increased UV. ← Hairs scatter radiatio
  "growth_form": "rosette",
  "height_m": {
   "min": 1.5,
-  "max": 3.0
+  "max": 2.5
  },
- "trunk": "Unbranched caudex 0.5–1 m high beneath retained dead foliage; ascending blades complete total height.",
+ "trunk": "Unbranched caudex 0.5–1 m high beneath retained dead foliage; ascending blades complete total height. Derive each instance's height from caudex length plus the maximum vertical leaf projection, never exceeding 2.5 m.",
  "branching": {
   "angle_deg": 0,
   "levels": 0,
@@ -86,7 +83,8 @@ Trait ← High-elevation leaves receive increased UV. ← Hairs scatter radiatio
  "leaf": {
   "type": "Long hairy tapering blade with flexible base",
   "size_cm": 150,
-  "arrangement": "Dense terminal spiral; inner blades close at night"
+  "arrangement": "Dense terminal spiral; inner blades close at night",
+  "height_rule": "Leaf inclination and curvature determine vertical reach; 150 cm blades do not automatically add 150 cm of height."
  },
  "colour": {
   "base": "Grey-green",
@@ -97,22 +95,22 @@ Trait ← High-elevation leaves receive increased UV. ← Hairs scatter radiatio
   ]
  },
  "placement": {
-  "slope": "Stable sheltered alpine ground; tallest instances only in leeward gullies. Exclude active scree, windward crater rims and summit crests.",
+  "slope": "Stable, sunny leeward benches and gully margins with seasonal snow clearance; exclude active scree, perennial snow pockets and windward summit crests.",
   "altitude_m": [
    1750,
    2050
   ],
-  "wetness": "Seasonal snowmelt with freely drained roots.",
+  "wetness": "Seasonal snowmelt with freely drained roots; exclude persistent waterlogging.",
   "soil": "Weathered andesite, volcanic grit and accumulated humus.",
   "coast_distance_m": [
    0,
-   3600
+   1800
   ],
   "fog": "Occasional upslope cloud; no persistent fog requirement.",
-  "density": "Scattered sheltered groups; maximum-height plants restricted to leeward gully interiors."
+  "density": "Scattered sheltered groups; tallest instances require wind shelter, early seasonal snow clearance, drainage and a sufficient exposed growing season."
  },
- "seasonal": "Slow evergreen growth increases after thaw; night closure operates while leaves remain unfrozen.",
- "wind_response": "Leaves stream and bend; terrain shelter protects tall crowns, though gales still tear tips."
+ "seasonal": "Slow evergreen growth increases after thaw; frost-tolerant tissues endure seasonal freezes, and night closure operates while leaves remain unfrozen. Establishment fails in perennial snow pockets.",
+ "wind_response": "Leaves stream and bend; terrain shelter reduces loading on tall crowns, though gales still tear tips."
 }
 ```
 
@@ -139,3 +137,4 @@ council run `flora-2026-11-19`; by designer, mythmaker, naturalist, physicist, s
 ## Changelog
 
 - 2026-11-19 flora.py: flora pass: 7 voices drafted and peer-reviewed, Composer botanical referee, sol chaired and applied the fixes
+- 2026-11-19 flora_addendum.py: strict second review (sol + DeepSeek) applied by sol: Reduced maximum vegetative height to 2.5 m and tied instance height to caudex length and actual leaf projection.; Removed unsupported zanco browsing without altering its grass-based diet; neighboring grasses remain its established alpine food.; Changed alula's use to brief ground shelter rather than assuming loose leaf skirts provide bark-like talon anchorage.

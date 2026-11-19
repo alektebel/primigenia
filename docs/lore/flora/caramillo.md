@@ -4,52 +4,52 @@
 
 **Status: DRAFT** · world: [primigenia](../worlds/primigenia.md) · form: tree · id: `caramillo`
 
-A stout, seasonally thinning tree carries separated foliage tiers above spreading anchoring roots. Occasional mature hollows sound in suitable wind. It provides climbable branches and shelter without forming a western fog forest.
+A stout, seasonally thinning tree carries separated foliage tiers above spreading anchoring roots. Small separated stands follow moisture-bearing fissures outside the central spring basin. Rare mature cavities hum when their openings meet suitable wind; sturdy branches provide climbing and shelter independently of cavity presence (F4, F18, F19, F21).
 
 **Habitats:** Deep-soiled lower valley margins, Sheltered slopes above subsurface seepage, Moist fissure lines outside the central spring basin
 
 ## Causal chains
 
-### caramillo.c1: Stout trunk, flexible porous crown and occasional humming hollow
+### caramillo.c1: Wind-resistant branching with rare, incidentally sounding decay cavities
 
-Trait ← Heavy-air winds impose strong bending loads ← Low leverage, crown gaps and anchoring roots limit loading ← An age-formed cavity can resonate only with suitable airflow and geometry ← **F2** Gravity 1.05 g (R 1.04 R⊕, M 1.14 M⊕); **F4** Dense air: 1.6 bar; **F19** Wind force per m/s is 1.6× Earth's: gales in winter push light creatures and favour low, heavy bodies on exposed ridges
+Trait ← At equal wind speed, dense air imposes approximately 1.6 times Earth's aerodynamic loading. ← A modest crown height, flexible branches and crown gaps reduce loading, while the fluted trunk and spreading roots resist bending. ← Separately, heart-rot sometimes leaves a connected cavity with a narrow, edged opening. ← Wind crossing a suitably oriented opening can excite the enclosed air; ordinary hollows remain silent. ← **F4** Dense air: 1.6 bar; **F19** Wind force per m/s is 1.6× Earth's: gales in winter push light creatures and favour low, heavy bodies on exposed ridges
 
-- **In play:** Climb sound branches and learn a conditional acoustic bearing.
-- **Weakness:** Decay weakens wood; calm trees are silent and storms mask sound.
+- **In play:** Climb branches with intact wood and secure attachments; locate a humming hollow when suitable wind provides a conditional bearing.
+- **Weakness:** Decay can weaken the trunk and branch attachments; calm air, unsuitable wind direction or blocked openings silence cavities, and storms mask their sound.
 - **Observe:**
-  1. Inspect roots and crown gaps.
-  2. Locate a sounding hollow.
-  3. Return in calm air.
-- **Plausibility:** fixable (judge botanist/composer-2.5; chair sol, 2026-11-19)
-  - Porosity alone produces no guaranteed tone. Approximately 80–200 Hz requires validated cavity geometry; propagation follows weather.
-  - Analogue: White willow, Salix alba: Flexible branching and mature decay cavities provide structural analogues; tuned cavity sound is a conditional physical extrapolation. (Vogel 1994 [unverified]; Fletcher 1998 [verified])
+  1. Inspect crown gaps, root flares and branch attachments.
+  2. Hear a mature cavity sound when wind crosses its opening.
+  3. Return in calm air and find the same cavity silent.
+- **Plausibility:** plausible (judge strict review: sol (codex) + DeepSeek; chair sol, 2026-11-19)
+  - Porosity alone produces no guaranteed tone. Approximately 80–200 Hz requires validated cavity geometry; propagation follows weather. Strict review (2026-11-19): revised: Wind resistance did not cause cavity resonance, so the rewrite separates structural responses from an incidental, explicitly excited acoustic mechanism. Residual: F4 and F19 support approximately 1.6 times the aerodynamic loading at equal wind speed and comparable geometry. Crown reconfiguration and reduced projected area are credible responses. Incidental cavity sound is physically possible without an adaptive explanation. Residual weakness: fluting alone does not establish bending resistance, and a narrow opening does not establish audible resonance or a particular frequency.
+  - Analogue: White willow, Salix alba: Flexible branches and mature decay cavities provide structural comparisons only; airflow-excited cavity sound is a conditional physical extrapolation and a non-adaptive byproduct. (Vogel 1994 [unverified]; Fletcher 1998 [verified])
 
-### caramillo.c2: Deep roots, small leaves and partial summer leaf shed
+### caramillo.c2: Fissure-following roots, small leaves and partial summer leaf shed
 
-Trait ← Eastern summer drought limits water supply ← Deep roots reach persistent subsurface moisture ← Small leaves and seasonal shedding reduce demand ← **F8** Fog: cold upwelling sea on the west coast meets warm volcanic ground; the east start valley is a fog trap about 180 mornings a year; **F18** Rain shadow: westerlies make the west coast wet and forested; the east meadows (the start valley) are drier in summer, with a spring; **F19** Wind force per m/s is 1.6× Earth's: gales in winter push light creatures and favour low, heavy bodies on exposed ridges
+Trait ← Eastern summer drought reduces water available in shallow soil. ← Trees establish only where local seepage or persistent moisture occupies accessible fractures beneath deep colluvium. ← Roots following these fractures can support adults after surface soil dries. ← Small leaves contribute limited foliage area, while partial summer shedding reduces whole-crown water demand; moving fog supplies supplementary wetting. ← **F8** Fog: cold upwelling sea on the west coast meets warm volcanic ground; the east start valley is a fog trap about 180 mornings a year; **F9** Rock: andesite makes steep, unstable cliffs; basalt makes lava tubes (the caves); **F18** Rain shadow: westerlies make the west coast wet and forested; the east meadows (the start valley) are drier in summer, with a spring; **F21** The rock spire is a hard dyke left standing by erosion; the giant tree grows at the spring where that dyke dams groundwater
 
-- **In play:** Compare seasonal shade and identify moisture-supported tree stands.
-- **Weakness:** Shallow dry soil prevents establishment; still fog provides little interception.
+- **In play:** Compare seasonal shade and identify stands supported by moisture-bearing fissures rather than assuming fog supplies their deep water.
+- **Weakness:** Dry, impermeable or seasonally exhausted fractures prevent establishment; still fog provides little interception and seedlings cannot yet reach adult water sources.
 - **Observe:**
-  1. Compare deep and shallow soils.
-  2. Watch summer thinning.
-  3. Find drip only during moving fog.
-- **Plausibility:** plausible (judge botanist/composer-2.5; chair sol, 2026-11-19)
-  - Subsurface water supports the tree; fog interception is supplementary and requires droplet movement.
-  - Analogue: Blue oak, Quercus douglasii: Deep-rooted woodland trees combine restricted foliage with seasonal adjustment to summer water shortage. (Vogel 1995 [verified]; Dawson 1998 [verified])
+  1. Compare trees over moist fissures with nearby shallow dry ground.
+  2. Watch the crown thin during summer drought.
+  3. Find supplementary drip during moving fog.
+- **Plausibility:** fixable (judge strict review: sol (codex) + DeepSeek; chair sol, 2026-11-19)
+  - Subsurface water supports the tree; fog interception is supplementary and requires droplet movement. Strict review (2026-11-19): revised: The original roots confused fog and wind with drought evidence, so the rewrite cites eastern seasonality and makes subsurface water a local establishment condition. Still open: F18 establishes summer drought, but small individual leaves do not establish limited total foliage area: numerous small leaves can produce a large transpiring crown. Partial shedding supplies the valid water-demand mechanism. F9 permits fractured terrain, while F21 establishes groundwater impoundment at one spring; neither establishes persistent groundwater beneath every proposed stand.
+  - Analogue: California buckeye, Aesculus californica: Seasonal drought-related leaf loss illustrates reduced summer water demand; the comparison does not establish identical leaf size or a guaranteed deep-water supply.
 
-### caramillo.c3: Winged seeds with moisture-limited recruitment
+### caramillo.c3: Winged seeds with separate dispersal and recruitment limits
 
-Trait ← Aerodynamic drag slows winged seed descent ← Wind carries samaras beyond the parent ← Sheltered moist microsites permit seedling survival ← **F4** Dense air: 1.6 bar; **F18** Rain shadow: westerlies make the west coast wet and forested; the east meadows (the start valley) are drier in summer, with a spring
+Trait ← At comparable seed mass and wing area, dense air increases aerodynamic support and slows samara descent. ← Seeds released into moving air can drift beyond the parent, while sheltered releases often land nearby. ← Shade and litter can slow surface drying, but successful recruitment also requires actual seepage, rainfall or intercepted fog water. ← Seedlings survive only in moist surface microsites until their roots reach deeper water-bearing fractures. ← **F4** Dense air: 1.6 bar; **F8** Fog: cold upwelling sea on the west coast meets warm volcanic ground; the east start valley is a fog trap about 180 mornings a year; **F18** Rain shadow: westerlies make the west coast wet and forested; the east meadows (the start valley) are drier in summer, with a spring; **F21** The rock spire is a hard dyke left standing by erosion; the giant tree grows at the spring where that dyke dams groundwater
 
-- **In play:** Track drifting samaras and find seedlings beneath nurse shrubs.
-- **Weakness:** Dispersal into exposed dry ground usually fails.
+- **In play:** Track samaras into sheltered litter pockets and compare seed arrival with subsequent seedling survival.
+- **Weakness:** Greater descent time does not guarantee greater dispersal distance; seeds landing on exposed dry ground usually fail, and seedlings lack adult access to deep moisture.
 - **Observe:**
-  1. Watch samaras descend.
-  2. Inspect sheltered seedlings.
-  3. Compare exposed landing sites.
-- **Plausibility:** plausible (judge botanist/composer-2.5; chair sol, 2026-11-19)
-  - Dense air aids descent control without guaranteeing distance or establishment.
+  1. Watch samaras drift in moving air and settle nearby in sheltered air.
+  2. Inspect seedlings in shaded, genuinely moist litter pockets.
+  3. Compare dry landing sites where seeds arrive but seedlings fail.
+- **Plausibility:** plausible (judge strict review: sol (codex) + DeepSeek; chair sol, 2026-11-19)
+  - Dense air aids descent control without guaranteeing distance or establishment. Strict review (2026-11-19): revised: The rewrite separates air density from seed geometry and distinguishes wind transport, surface moisture and adult access to deep water. Residual: F4 supports slower descent for comparable samaras, and the chain correctly separates dispersal from recruitment. Including F2's 1.05 g, a constant-coefficient terminal-speed estimate gives sqrt(1.05/1.6), approximately 0.81 times Earth's value; autorotation can alter that estimate. Residual weakness: release height, turbulence and seed geometry remain unspecified, and F21 does not independently establish water-bearing fractures away from the spring.
   - Analogue: Field maple, Acer campestre: Winged samaras use aerodynamic drag and autorotation for wind dispersal. (Howe & Smallwood 1982 [unverified]; Vogel 1994 [unverified])
 
 ## Gameplay
@@ -58,16 +58,13 @@ Trait ← Aerodynamic drag slows winged seed descent ← Wind carries samaras be
 {
  "food_for": [],
  "gift_item": null,
- "poison": {
-  "alkaloid": false,
-  "signal": "Matte green leaves."
- },
+ "poison": null,
  "healing": null,
  "cover": "Seasonal shade, lee shelter and elevated refuge.",
  "climbing": true,
  "nest_material": "Fine fallen twigs and dry leaf strips.",
  "mineral_lick": null,
- "notes": "Climbing can interrupt garfio pursuit; predators may wait below. Cavities require maturity. Trees offer no guaranteed lightning protection."
+ "notes": "Matte green leaves are a recognition cue. Climbing requires intact wood and secure branch attachments; crown porosity and hollow presence do not establish safety. Climbing can interrupt garfio pursuit, but predators may wait below. Only rare mature cavities sound, and trees offer no guaranteed lightning protection."
 }
 ```
 
@@ -79,9 +76,9 @@ Trait ← Aerodynamic drag slows winged seed descent ← Wind carries samaras be
 | acechalunas | shelters | Occupies suitable mature cavities. |
 | rondo | shelters | Rests in the lee. |
 | merodeador | other | May wait beneath occupied refuge branches. |
-| perlilla | grows_with | Shrubs shelter seedlings; mature roots later compete for water. |
+| perlilla | grows_with | Shrubs shelter seedlings where surface moisture is available; mature roots later compete for water. |
 | soga_de_dosel | other | Supports vines only to actual crown height. |
-| musgo_faro | grows_with | Restricted to persistently damp illuminated grooves. |
+| musgo_faro | grows_with | Occupies illuminated bark grooves only where seepage or intercepted moving fog maintains dampness; most trunks are too dry. |
 
 ## Generator parameters
 
@@ -92,12 +89,12 @@ Trait ← Aerodynamic drag slows winged seed descent ← Wind carries samaras be
   "min": 5.0,
   "max": 9.0
  },
- "trunk": "Fluted, 0.4–0.65 m diameter; three to five major spreading roots.",
+ "trunk": "Fluted, 0.4–0.65 m diameter; three to five major spreading roots. Generate mature decay cavities separately from structural integrity.",
  "branching": {
   "angle_deg": 55,
   "levels": 3,
   "apical_dominance": 0.45,
-  "buttress": "Low root flares"
+  "buttress": "Low root flares; climbable branches require intact load-bearing wood and secure attachments."
  },
  "leaf": {
   "type": "Small simple blade",
@@ -108,26 +105,43 @@ Trait ← Aerodynamic drag slows winged seed descent ← Wind carries samaras be
   "base": "Matte green, grey-brown bark",
   "overlay_rules": [
    "Summer foliage thins.",
-   "Age-gate dark cavities."
+   "Age-gate dark decay cavities; most are acoustically inactive.",
+   "Damp illuminated bark occurs only under a local surface-moisture mask."
   ]
  },
  "placement": {
-  "slope": "Sheltered lower slopes",
+  "slope": "Sheltered lower slopes; 9 m is the sheltered upper size, not a guaranteed outcome.",
   "altitude_m": [
    30,
    550
   ],
-  "wetness": "Reliable deep moisture",
-  "soil": "Deep colluvium or water-bearing fissures",
+  "wetness": "Persistent subsurface moisture within rooting reach; seedlings additionally require moist surface pockets.",
+  "soil": "Deep colluvium over moisture-bearing volcanic fractures; reject dry or impermeable substrates.",
   "coast_distance_m": [
    150,
    1600
   ],
-  "fog": "Supplementary interception in moving fog",
-  "density": "Small separated stands"
+  "fog": "Supplementary interception in moving fog; no automatic groundwater or damp-bark inference.",
+  "density": "Small separated stands following suitable water-bearing ground."
  },
  "seasonal": "Partial summer leaf shed; dry 30–40 mm samaras disperse seasonally.",
- "wind_response": "Asymmetric lee crown with 35–50% gaps; usually 5–8 m, reaching 9 m only in shelter."
+ "wind_response": "Flexible asymmetric crowns with 35–50% gaps reduce projected area; crown gaps alone do not certify structural safety.",
+ "acoustic_variant": {
+  "occurrence": "Rare mature heart-rot cavities; ordinary hollows remain silent.",
+  "minimum_trunk_diameter_m": 0.45,
+  "candidate_cavity_length_m": [
+   0.4,
+   1.1
+  ],
+  "candidate_aperture_diameter_cm": [
+   3,
+   8
+  ],
+  "geometry": "Connected enclosed air volume with an edged opening or neck oriented across local airflow; these dimensions are candidate design geometry, not proof of a particular frequency.",
+  "activation": "Enable sound only for geometry that supports airflow excitation and a suitable local wind direction and speed; 4–8 m/s is an initial gameplay calibration requiring acoustic validation.",
+  "frequency": "Unspecified until cavity geometry and excitation are validated.",
+  "climbing": "Evaluate wood and attachment integrity independently of sound activation."
+ }
 }
 ```
 
@@ -153,3 +167,4 @@ council run `flora-valley-2026-11-19`; by designer, mythmaker, naturalist, physi
 ## Changelog
 
 - 2026-11-19 flora.py: flora addendum (start valley): 7 voices drafted and peer-reviewed, Composer referee, sol chaired
+- 2026-11-19 flora_addendum.py: strict second review (sol + DeepSeek) applied by sol: Removed the non-poison recognition cue from poison and restricted moss occupancy to genuinely damp bark.; F18 and F21 support localized water sources, not a general aquifer or proof that every stand is fed directly by the giant-tree spring.; Did not claim quantified bending safety, a fixed root depth or guaranteed acoustic frequencies without structural and acoustic validation.

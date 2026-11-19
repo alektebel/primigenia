@@ -4,7 +4,7 @@
 
 **Status: DRAFT** · world: [primigenia](../worlds/primigenia.md) · form: shrub · id: `trenza_de_ribera`
 
-A 2–6 m many-stemmed shrub with flexible flood-bent shoots and adventitious roots. It colonizes moist riverbanks and gravel bars, but regular seasonal fruiting is restricted to channels whose roots retain year-round groundwater access. Fruit draws rondo and dense stems conceal merodeador (F8, F11, F18, F21).
+A 2–6 m many-stemmed shrub with flexible flood-bent shoots and adventitious roots. It colonizes freshwater riverbanks and gravel bars, but dependable seasonal fruiting is restricted to mapped low spring-fed reaches whose roots retain year-round groundwater access. Increasing spring day length and temperature cue flowering; water, light, nutrients and pollination determine the eventual crop. Fruit draws rondo and dense stems conceal merodeador (F11, F18, F21).
 
 **Habitats:** Freshwater riverbanks, Seasonally moist gravel bars, Groundwater-connected channels and spring outflows
 
@@ -20,23 +20,23 @@ Trait ← Runoff alternately buries and exposes channel-side stems. ← Flexible
   1. New roots emerge from buried nodes.
   2. Gravel collects downstream of stem clusters.
   3. Bent survivors produce upright shoots after floods.
-- **Plausibility:** plausible (judge botanist/composer-2.5; chair sol, 2026-11-19)
-  - Flood regeneration permits colonization of seasonal gravel bars without guaranteeing permanent water access or fruit. Marine tides are not the driver.
+- **Plausibility:** plausible (judge strict review: sol (codex) + DeepSeek; chair sol, 2026-11-19)
+  - Flood regeneration permits colonization of seasonal gravel bars without guaranteeing permanent water access or fruit. Marine tides are not the driver. Strict review (2026-11-19): Residual: Flexibility, rooting of buried nodes and recovery after partial damage form a coherent freshwater disturbance strategy. Residual weakness: neither flexibility nor roots prevent uprooting during severe scour, and sediment retention depends on establishment before a flood. F8 supplies storms and F18 supplies seasonal drying; neither specifies local discharge.
   - Analogue: Riparian Salix species: Flexible shoots, regeneration and adventitious rooting interact with freshwater flow and sediment deposition. (Corenblit et al. 2007 [verified])
 
-### trenza_de_ribera.c2: Groundwater-dependent seasonal fruit
+### trenza_de_ribera.c2: Seasonally cued fruit on perennial spring-fed reaches
 
-Trait ← Year-round groundwater access sustains fruit development through seasonal drying. ← Soft fruit rewards rondo with water and carbohydrates. ← Visitors carry surviving seeds beyond the parent thicket. ← Seeds establish where moist open sediment persists. ← **F11** Orbit 1.02 AU; year 367 Earth days = 339 local days; axial tilt 26.5°, eccentricity 0.02: four seasons of ~85 local days, a bit stronger than Earth's; **F18** Rain shadow: westerlies make the west coast wet and forested; the east meadows (the start valley) are drier in summer, with a spring; **F21** The rock spire is a hard dyke left standing by erosion; the giant tree grows at the spring where that dyke dams groundwater; **F24** One biochemistry from the seed capsule: a porphyrin photosystem, DNA-like heredity, L-amino acids, a nitrogen-fixing symbiont
+Trait ← Increasing day length and suitable temperatures during spring cue flowering in reproductively ready shrubs (F11). ← Adequate light, nutrients and pollination permit fruit set. ← On mapped low spring-fed reaches, year-round root access to groundwater reduces fruit abortion during summer drying (F18, F21). ← Soft seasonal fruit rewards rondo with water and carbohydrates. ← Some hard-coated seeds survive fruit feeding and transport, a proposed trait of this shrub. ← **F11** Orbit 1.02 AU; year 367 Earth days = 339 local days; axial tilt 26.5°, eccentricity 0.02: four seasons of ~85 local days, a bit stronger than Earth's; **F18** Rain shadow: westerlies make the west coast wet and forested; the east meadows (the start valley) are drier in summer, with a spring; **F21** The rock spire is a hard dyke left standing by erosion; the giant tree grows at the spring where that dyke dams groundwater
 
-- **In play:** Seek fruit-bearing thickets beside groundwater-connected channels; do not expect every shrub strip to carry a crop.
-- **Weakness:** Groundwater disconnection prevents dependable fruiting; transported seeds often fail on dry or scoured ground.
+- **In play:** Seek late-summer to autumn fruit on mapped perennial spring-fed reaches, while checking for an actual crop rather than treating water access as a guarantee.
+- **Weakness:** Groundwater disconnection, insufficient light or nutrients, failed pollination and unsuitable deposition sites interrupt reproduction.
 - **Observe:**
-  1. Soft green-gold fruit hangs over a spring-fed channel.
-  2. A nearby seasonal gravel-bar colony remains fruitless.
-  3. Rondo leaves seeds on moist openings beyond the thicket.
-- **Plausibility:** plausible (judge botanist/composer-2.5; chair sol, 2026-11-19)
-  - Enable regular fruit production only where roots retain year-round groundwater connection. Water access permits a crop but does not guarantee one; softness and scent indicate ripeness.
-  - Analogue: Animal-dispersed fleshy-fruited shrubs: Fruit recruits seed carriers, while water supply and deposition sites constrain reproduction and establishment. (Howe & Smallwood 1982 [unverified])
+  1. Flower buds open as spring days lengthen and temperatures rise.
+  2. Soft green-gold fruit later hangs over a mapped perennial spring-fed channel.
+  3. Rondo leaves some intact seeds on moist openings beyond the thicket.
+- **Plausibility:** fixable (judge strict review: sol (codex) + DeepSeek; chair sol, 2026-11-19)
+  - Enable regular fruit production only where roots retain year-round groundwater connection. Water access permits a crop but does not guarantee one; softness and scent indicate ripeness. Strict review (2026-11-19): revised: The chain lacked a seasonal cue and overextended groundwater evidence, so spring phenology and conditional fruiting now operate only on mapped perennial spring-fed reaches. Still open: The pivotal link is unsupported by its roots. F21 describes one dyke-dammed spring at the giant tree, not a network of perennial reach-scale aquifers, and F18 only establishes summer drying; 'mapped low spring-fed reaches' is an extrapolation. 'Adequate light, nutrients and pollination permit fruit set' is a tautology, no pollen vector is named, and 'reproductively ready' makes the F11 photoperiod link unfalsifiable.
+  - Analogue: Animal-dispersed fleshy-fruited shrubs: Seasonal flowering cues and resource supply constrain fruit production, while animal transport and suitable deposition constrain recruitment; exact cues and seed survival are proposed species traits. (Howe & Smallwood 1982 [unverified])
 
 ## Gameplay
 
@@ -64,8 +64,8 @@ Trait ← Year-round groundwater access sustains fruit development through seaso
 
 | With | Kind | Note |
 |---|---|---|
-| rondo | dispersed_by | Visits fruiting groundwater-connected patches and transports seeds. |
-| zancuda | shelters | Forages for associated aquatic greens along open freshwater margins. |
+| rondo | dispersed_by | Visits fruiting groundwater-connected patches and transports some surviving seeds. |
+| zancuda | other | On fog-damp meadow reaches, forages for soft grasses and associated aquatic greens along adjacent open freshwater margins. |
 | merodeador | shelters | Conceals approaches to crossings and fruit visitors. |
 | paja_dulce | grows_with | Forms shrub ribbons through meadow channels, including some seasonal nonfruiting bars. |
 | pluma_de_sombra | grows_with | Shelters ferns in persistently humid bank pockets. |
@@ -107,16 +107,32 @@ Trait ← Year-round groundwater access sustains fruit development through seaso
    10,
    1100
   ],
-  "wetness": "Moist rooting sediment permits establishment; regular fruiting additionally requires year-round groundwater connection.",
-  "soil": "Channel gravel, sand and silt; exclude regularly saline tidal ground.",
+  "wetness": "Moist rooting sediment permits establishment; regular fruiting additionally requires mapped perennial groundwater access.",
+  "soil": "Channel gravel, sand and silt.",
   "coast_distance_m": [
    20,
    1800
   ],
   "fog": "Optional supplement; freshwater controls distribution.",
-  "density": "Bank ribbons and bar colonies interrupted by scour; fruiting instances restricted to groundwater-connected patches."
+  "density": "Bank ribbons and bar colonies interrupted by scour.",
+  "constraints": {
+   "water_type": "freshwater",
+   "tidal_inundation": false,
+   "brackish_or_saline_root_zone": false,
+   "hydrology_validation": "Reject marine or brackish influence using mapped local tidal reach and root-zone water, regardless of coast distance."
+  }
  },
- "seasonal": "Wet periods support growth and resprouting. Late-summer to autumn fruiting occurs only at year-round groundwater-connected sites; other colonies are not reliable fruit sources.",
+ "fruiting": {
+  "site_requirement": "Explicitly mapped low spring-fed reach with year-round root-zone groundwater connection; F21 supports the spring outflow.",
+  "flowering_cue": "Increasing spring day length and suitable temperature in a reproductively ready shrub.",
+  "additional_requirements": [
+   "Adequate light",
+   "Adequate nutrients",
+   "Successful pollination"
+  ],
+  "water_rule": "Perennial groundwater is necessary for dependable crops but does not guarantee fruit set or maturation."
+ },
+ "seasonal": "Wet periods support growth and resprouting. Spring flowering can produce late-summer to autumn fruit at eligible perennial spring-fed sites; seasonal gravel-bar colonies remain unreliable fruit sources.",
  "wind_response": "Slender stems bow together; floods leave persistent downstream bends."
 }
 ```
@@ -146,3 +162,4 @@ council run `flora-2026-11-19`; by designer, mythmaker, naturalist, physicist, s
 ## Changelog
 
 - 2026-11-19 flora.py: flora pass: 7 voices drafted and peer-reviewed, Composer botanical referee, sol chaired and applied the fixes
+- 2026-11-19 flora_addendum.py: strict second review (sol + DeepSeek) applied by sol: The plausible flood-regeneration chain remains unchanged.; F24 was removed from the revised fruit chain because shared biochemistry does not establish seed dispersal or water requirements.; Spring lengthening and warming provide the seasonal cue; the suggested phrase 'after the dry season' was not adopted because the established summer drought precedes shortening autumn days.

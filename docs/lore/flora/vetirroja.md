@@ -4,58 +4,59 @@
 
 **Status: DRAFT** · world: [primigenia](../worlds/primigenia.md) · form: herb · id: `vetirroja`
 
-A bitter herb displays red-purple veins on paired green leaves. Nutrient-rich patches teach the valley's defended-leaf warning through visible foliage, grazing avoidance and specialist feeding.
+A bitter herb displays red-purple veins on paired green leaves. Nutrient-rich disturbed patches near rondo resting grounds, dung deposits and garfio feeding remains teach the valley's defended-leaf warning through visible foliage, grazing avoidance and specialist feeding. Every leaf blade is defended, including its green portions (F25, F26).
 
 **Habitats:** Enriched disturbed meadow margins, Old latrine and nest edges, Drained carcass-enriched soil
 
 ## Causal chains
 
-### vetirroja.c1: Persistent red veins and alkaloid-bearing glandular leaves
+### vetirroja.c1: Persistent red veins warning of alkaloids throughout the leaf
 
-Trait ← Seeded biochemistry associates warning pigment with defended foliage ← Alkaloids occur throughout leaves, concentrated near veins and glands ← Most grazers avoid patches while specialists tolerate limited feeding ← **F24** One biochemistry from the seed capsule: a porphyrin photosystem, DNA-like heredity, L-amino acids, a nitrogen-fixing symbiont; **F25** Plants are green by ancestry (the seed's pigment), not because green is optimal; **F26** Food: sugars, starchy fruit, flesh, chitin, bone, salt
+Trait ← Red-purple veins honestly signal defended foliage under the planet's pigment–alkaloid association (F25). ← Alkaloids occur throughout the green leaf blade as well as near veins and glands, making vein removal ineffective (F26). ← Rondo avoids the leaves, while babosa and merodeador tolerate limited feeding through their established specialist diets. ← **F25** Plants are green by ancestry (the seed's pigment), not because green is optimal; **F26** Food: sugars, starchy fruit, flesh, chitin, bone, salt
 
-- **In play:** Learn avoidance before ingestion; observe babosa and merodeador without copying their tolerance.
-- **Weakness:** Specialist herbivores still consume defended tissue.
+- **In play:** Learn whole-leaf avoidance before ingestion; observe babosa and merodeador without copying their tolerance.
+- **Weakness:** Specialists still consume defended tissue, and visible veins indicate a hazard rather than a quantitative toxin dose.
 - **Observe:**
-  1. Inspect red veins.
-  2. Watch grazers turn aside.
-  3. Observe specialist feeding.
-- **Plausibility:** fixable (judge botanist/composer-2.5; chair sol, 2026-11-19)
-  - Pigment–toxin association follows canon; no shared precursor is claimed. Green leaf portions remain poisonous.
-  - Analogue: Red-leaved Coleus, Coleus scutellarioides: Anthocyanin overlays remain visible over green photosynthetic tissue; honest alkaloid signalling is planet-specific. (Gould 2004 [verified])
+  1. Inspect red veins on young and mature leaves.
+  2. Watch rondo leave the whole leaf uneaten.
+  3. Observe babosa feeding across both veins and green leaf tissue.
+- **Plausibility:** fixable (judge strict review: sol (codex) + DeepSeek; chair sol, 2026-11-19)
+  - Pigment–toxin association follows canon; no shared precursor is claimed. Green leaf portions remain poisonous. Strict review (2026-11-19): revised: Shared biochemistry did not establish honest signalling, so F25 and F26 now support an explicit warning for alkaloids throughout the leaf blade. Still open: The warning is honest by canon (F25) and F26 names red-veined alkaloid plants, but the receiver evidence is confounded: rondo's diet is sugary grasses, starchy fruit and salt licks, so a graminivore/frugivore avoiding a dicot herb is expected whether or not it reads red veins. No creature in the chain is shown to discriminate red-purple from green; babosa follows chemical gradients and merodeador self-medicates, so neither tests the visual signal. The signal also encodes presence, not dose.
+  - Analogue: Red-leaved Coleus, Coleus scutellarioides: Anthocyanin overlays remain visible over green photosynthetic tissue; this is a pigment-only analogue, while honest alkaloid signalling comes from F25. (Gould 2004 [verified])
 
-### vetirroja.c2: Enrichment-loving patches and hooked dry propagules
+### vetirroja.c2: Enrichment-responsive growth and contact-dispersed hooked capsules
 
-Trait ← Decomposing compatible tissues enrich disturbed soil ← Available nutrients support rapid growth and nitrogen-containing defence ← Hooked propagules hitchhike on passing bodies ← **F24** One biochemistry from the seed capsule: a porphyrin photosystem, DNA-like heredity, L-amino acids, a nitrogen-fixing symbiont; **F27** The island's life is an island radiation: the island rose 1.2 Myr ago (F7) and was colonised by a few founders that rafted, swam or flew from the mainland, then split into many species (like Hawaiian honeycreepers or Galápagos finches on Earth)
+Trait ← Decomposition of dung and feeding remains releases mineral nutrients into disturbed, aerated soil. ← Roots take up those nutrients, supporting rapid growth and nitrogen-containing defence when resources permit. ← Rondo resting grounds and garfio feeding remains also create repeated animal traffic through some enriched margins. ← Capsules borne at low contact height carry small hooks that catch alula's lower plumage when it lands to hunt insects at those margins. ← Subsequent movement and preening release some intact capsules into exposed disturbed soil, where moisture and light permit recruitment. ← **F26** Food: sugars, starchy fruit, flesh, chitin, bone, salt
 
-- **In play:** Read irregular grazing halos and inspect attached seed capsules.
-- **Weakness:** Dense grass, deep shade and waterlogging suppress recruitment.
+- **In play:** Read irregular grazing fringes, inspect hooked capsules and watch visiting alula carry some away from enriched margins.
+- **Weakness:** Dense grass, deep shade and waterlogging suppress recruitment; smooth surfaces do not reliably carry capsules, and many released seeds land in unsuitable ground.
 - **Observe:**
-  1. Find an enriched bare margin.
-  2. Compare adjacent ungrazed grass.
-  3. Inspect a hooked capsule.
-- **Plausibility:** plausible (judge botanist/composer-2.5; chair sol, 2026-11-19)
-  - Nutrient enrichment explains placement without implying metal contamination or certain predator presence.
-  - Analogue: Common agrimony, Agrimonia eupatoria: Hooked fruiting structures attach to animals for external dispersal; enrichment preference is a separate fictional trait. (Howe & Smallwood 1982 [unverified])
+  1. Find vigorous plants beside an old rondo dung deposit or garfio feeding remains.
+  2. Watch low capsules catch the lower feathers of a visiting alula.
+  3. Find a released capsule in a moist disturbed opening.
+- **Plausibility:** fixable (judge strict review: sol (codex) + DeepSeek; chair sol, 2026-11-19)
+  - Nutrient enrichment explains placement without implying metal contamination or certain predator presence. Strict review (2026-11-19): revised: Enrichment did not cause hooks, so nutrient uptake and dispersal now form distinct mechanisms connected by named animal traffic, suitable attachment and eventual release. Still open: The carrier does not fit the habitat. Alula is listed for alpine slopes, rock spire, giant-tree canopy and sea arches, not valley meadow margins; a patagial glider with bark-locking talons is a poor ground-forager in tall meadow grass, so 'lands to hunt insects at those margins' is unsupported. The two halves are only correlated: enrichment explains placement, hooks explain transport, and the bridge (carrion/dung -> insects -> alula) is asserted without showing alula visits carcasses. Nutrient supply still does not cause hooked capsules.
+  - Analogue: Common agrimony, Agrimonia eupatoria: Hooked fruiting structures attach to suitable animal surfaces for external transport; nutrient response, alula contact and release sites are separately proposed species traits. (Howe & Smallwood 1982 [unverified])
 
 ## Gameplay
 
 ```json
 {
  "food_for": [
-  "Alkaloid-tolerant specialists"
+  "babosa eating defended leaves",
+  "merodeador taking occasional small amounts during self-medication"
  ],
  "gift_item": null,
  "poison": {
   "alkaloid": true,
-  "signal": "Conspicuous red-purple veins on every living leaf, including young foliage."
+  "signal": "Conspicuous red-purple veins on every living leaf warn that the whole leaf, including green tissue between veins, is defended."
  },
  "healing": null,
  "cover": null,
  "climbing": false,
  "nest_material": null,
  "mineral_lick": null,
- "notes": "Ingestion causes dose-dependent nausea and impaired movement. Known clean kaolin offers partial detoxification in play, not an instant universal cure. Teach this route before optional poisoning; specialist self-medication is observational."
+ "notes": "Ingestion causes dose-dependent nausea and impaired movement. For this species in play, known clean kaolin used soon after ingestion partially reduces uptake of alkaloids still in the gut; it does not reverse absorbed toxin or immediately remove symptoms. Residual effects depend on dose. Teach this limited response before optional poisoning; specialist self-medication is observational."
 }
 ```
 
@@ -63,11 +64,12 @@ Trait ← Decomposing compatible tissues enrich disturbed soil ← Available nut
 
 | With | Kind | Note |
 |---|---|---|
-| rondo | other | Avoids feeding and leaves irregular tall-grass fringes. |
-| zanco | other | Avoids defended foliage. |
+| rondo | other | Avoids feeding and leaves irregular tall-grass fringes; old dung deposits and disturbed resting margins can support enriched patches. |
 | albinos | other | Avoids toxic leaves and lacks normal detox capacity. |
 | babosa | eaten_by | Tolerates foliage and incorporates defensive compounds into mucus. |
 | merodeador | eaten_by | Occasionally takes small amounts during self-medication. |
+| garfio | other | Feeding remains at valley and meadow margins can enrich nearby drained soil; plant presence does not establish current predator occupancy. |
+| alula | dispersed_by | Low hooked capsules occasionally attach to lower plumage during ground-level insect hunting and later fall free or are removed by preening. |
 | grama_de_ceniza | competes | Shares enriched disturbed openings. |
 | ceniza_roja | grows_with | Crust persists on adjacent exposed rock. |
 | nieblon | other | Shares the defended red-vein warning. |
@@ -90,7 +92,7 @@ Trait ← Decomposing compatible tissues enrich disturbed soil ← Available nut
   "buttress": "None"
  },
  "leaf": {
-  "type": "Serrated, finely glandular blade",
+  "type": "Serrated, finely glandular blade; alkaloids occur throughout the blade.",
   "size_cm": 6,
   "arrangement": "Opposite pairs"
  },
@@ -98,7 +100,8 @@ Trait ← Decomposing compatible tissues enrich disturbed soil ← Available nut
   "base": "Green",
   "overlay_rules": [
    "Five to seven prominent red-purple secondary veins.",
-   "Preserve vein visibility across ages and lighting variants."
+   "Preserve vein visibility across ages and lighting variants.",
+   "Green tissue between veins remains defended."
   ]
  },
  "placement": {
@@ -108,15 +111,21 @@ Trait ← Decomposing compatible tissues enrich disturbed soil ← Available nut
    450
   ],
   "wetness": "Seasonally moist, never stagnant",
-  "soil": "Nutrient-enriched disturbed soil",
+  "soil": "Nutrient-enriched disturbed soil near old rondo dung deposits, resting margins or garfio feeding remains; exclude unsupported latrine and nest requirements.",
   "coast_distance_m": [
    100,
    1600
   ],
   "fog": "Frequent dawn fog",
-  "density": "Irregular enriched patches; first teaching patch in low-threat ground"
+  "density": "Irregular enriched patches; first teaching patch in low-threat ground, without requiring an active predator."
  },
- "seasonal": "Vigorous wet-season growth; approximately 5 mm hooked capsules mature as soil dries.",
+ "propagules": {
+  "size_mm": 5,
+  "position": "Low lateral stems within contact height of ground-foraging alula.",
+  "attachment": "Hooks catch suitable feathers; smooth skin is not a dependable carrier.",
+  "release": "Movement and preening free capsules; recruitment requires moist, exposed, aerated soil."
+ },
+ "seasonal": "Vigorous wet-season growth where nutrients permit; hooked capsules mature as soil dries.",
  "wind_response": "Stems flex; grazing halos follow local avoidance rather than fixed circles."
 }
 ```
@@ -143,3 +152,4 @@ council run `flora-valley-2026-11-19`; by designer, mythmaker, naturalist, physi
 ## Changelog
 
 - 2026-11-19 flora.py: flora addendum (start valley): 7 voices drafted and peer-reviewed, Composer referee, sol chaired
+- 2026-11-19 flora_addendum.py: strict second review (sol + DeepSeek) applied by sol: Enrichment sources now use named creatures and feeding remains rather than unsupported meadow latrines or ground nests.; The existing nest-edge habitat label denotes only an optional enriched margin if such a site is independently established; no placement requires a ground nest.; Routine zanco interaction was removed because its alpine range does not support regular encounters with this lowland h

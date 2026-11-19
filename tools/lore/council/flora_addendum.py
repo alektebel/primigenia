@@ -239,25 +239,32 @@ def step_fix():
         r = load(fp); by = {x["id"]: x for x in r.get("plants", []) if isinstance(x, dict)}
         for p in b:
             pt = by.get(p["id"])
-            if not pt: continue
+            if not pt or any("strict second review" in x.get("what", "") for x in p["changelog"]): continue
             apply_patch(p, pt)
             p["changelog"].append({"date": DATE, "who": "flora_addendum.py", "what": "strict second review (sol + DeepSeek) applied by sol: " + "; ".join(str(x) for x in (pt.get("notes") or [])[:3])[:400]})
             dump(p, os.path.join(ROOT, "lore", "flora", p["id"] + ".json"))
+    patched = {}
+    for f in sorted(glob.glob(os.path.join(RD, "patch_b*.json"))):
+        for pp in load(f).get("plants", []):
+            for cp in pp.get("chains") or []:
+                if not cp.get("drop"): patched[cp["id"]] = str(cp.get("note", ""))
     # re-check changed chains
     rp = os.path.join(RD, "recheck.json"); res = load(rp) if os.path.exists(rp) else {}
     for bi, b in enumerate(batches()):
-        todo = [p for p in b if any(c["plausibility"].get("strict_note") for c in p["chains"])]
-        if not todo or all(c["id"] in res for p in todo for c in p["chains"] if c["plausibility"].get("strict_note")): continue
+        todo = [p for p in b if any(c["id"] in patched for c in p["chains"])]
+        if not todo or all(c["id"] in res for p in todo for c in p["chains"] if c["id"] in patched): continue
         prompt = "# PLANET CANON\n" + PLANET + "\n\n" + NOTES + "\n\n# REVISED PLANTS (only chains marked [REVISED] are to be re-rated; be as strict as before)\n" + "\n\n".join(brief(p).replace("- chain " + "", "- chain ") for p in todo) + \
-                 "\n\nRevised chain ids: " + ", ".join(c["id"] for p in todo for c in p["chains"] if c["plausibility"].get("strict_note")) + "\n\n# TASK\n" + RESHAPE.replace("Cover EVERY chain of EVERY plant given.", "Cover ONLY the revised chain ids listed.")
+                 "\n\nRevised chain ids: " + ", ".join(c["id"] for p in todo for c in p["chains"] if c["id"] in patched and c["id"] not in res) + "\n\n# TASK\n" + RESHAPE.replace("Cover EVERY chain of EVERY plant given.", "Cover ONLY the revised chain ids listed.")
         v = None
         for a in range(3):
-            t = council.sol_chat(SKEPTIC, prompt)
-            if t.startswith("(failed)"): fail(f"sol re-check batch {bi} attempt {a}"); continue
+            t = council.sol_chat(SKEPTIC, prompt); who = "sol"
+            if t.startswith("(failed)"):
+                fail(f"sol re-check batch {bi} attempt {a}: failed (usage limit); falling back to DeepSeek"); t = dsk_chat(SKEPTIC, prompt); who = "deepseek"
+                if t.startswith("(failed)"): fail(f"deepseek re-check batch {bi} attempt {a}: failed"); continue
             try: v = best_json(t); break
-            except Exception as e: fail(f"sol re-check batch {bi} json {e}")
+            except Exception as e: fail(f"{who} re-check batch {bi} json {e}")
         for p in (v or {}).get("plants", []):
-            for c in p.get("chains", []): res[c["id"]] = {"verdict": norm(c.get("verdict")), "problem": c.get("problem", ""), "fix": c.get("fix", "")}
+            for c in p.get("chains", []): res[c["id"]] = {"verdict": norm(c.get("verdict")), "problem": c.get("problem", ""), "fix": c.get("fix", ""), "by": who}
         jsave("recheck.json", res)
     # write the verdicts into the plant files
     VM = {"plausible": "plausible", "needs-fix": "fixable", "implausible": "implausible"}
@@ -268,10 +275,11 @@ def step_fix():
             if c["id"] in m["chains"]:
                 first = m["chains"][c["id"]]
                 if c["id"] in res: v = res[c["id"]]["verdict"]; resid = res[c["id"]]["problem"]
-                else: v = first["verdict"] if not pl.get("strict_note") else "plausible"; resid = first["by"].get("sol", next(iter(first["by"].values())))["problem"]
+                elif c["id"] in patched: v = "needs-fix"; resid = "revised but not re-checked (reviewer unavailable)"
+                else: v = first["verdict"]; resid = first["by"].get("sol", next(iter(first["by"].values())))["problem"]
                 pl["verdict"] = VM[v]; pl["judge"] = "strict review: sol (codex) + DeepSeek; chair sol"; pl["date"] = DATE
                 base = re.sub(r"\s*Strict review.*$", "", pl["summary"], flags=re.S)
-                pl["summary"] = (base + f" Strict review ({DATE}): " + ("revised: " + pl["strict_note"] + " " if pl.get("strict_note") else "") + ("Residual: " if v == "plausible" else "Still open: ") + resid).strip()
+                pl["summary"] = (base + f" Strict review ({DATE}): " + ("revised: " + patched[c["id"]] + " " if c["id"] in patched else "") + ("Residual: " if v == "plausible" else "Still open: ") + resid).strip()
                 pl.pop("strict_note", None); chg = True
         if chg: dump(p, pth)
     finish_files()

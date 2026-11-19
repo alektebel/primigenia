@@ -4,60 +4,61 @@
 
 **Status: DRAFT** · world: [primigenia](../worlds/primigenia.md) · form: grass · id: `paja_dulce`
 
-A 0.3–1.2 m perennial tussock grass with sugary basal shoots, abrasive silica-bearing blades and deep fibrous roots. Leaves roll during water stress, and seasonal dormancy preserves basal buds through the eastern summer drought. Wind carries pollen and seeds. Rondo grazes the tender bases, while taller clumps conceal garfio along meadow margins (F5, F8, F11, F18).
+A perennial tussock grass with sugary young leaf tissue above recessed growing points, silica-bearing mature blades and deep fibrous roots. Falling root-zone water triggers leaf rolling, growth arrest and foliage loss on drained eastern meadow patches; wetter spring margins can remain green. It is rondo's principal green-season grass staple, with a summer forage gap buffered partly by dried-fruit caches carried in its paired gular pouch. Wind carries pollen and seeds, and tall unbrowsed margins conceal garfio (F8, F9, F18, F26).
 
 **Habitats:** Dry eastern meadow, Start valley, Fog-trap meadow edges
 
 ## Causal chains
 
-### paja_dulce.c1: Summer dormancy with protected basal buds
+### paja_dulce.c1: Drought-triggered growth arrest above protected basal buds
 
-Trait ← The eastern rain shadow produces seasonal soil-water shortage despite frequent dawn fog. ← Rolling leaves reduce exposed surface during developing water stress. ← Seasonal growth arrest and leaf senescence reduce summer demand. ← Protected basal buds and stored reserves support regrowth when the favourable season returns. ← **F8** Fog: cold upwelling sea on the west coast meets warm volcanic ground; the east start valley is a fog trap about 180 mornings a year; **F11** Orbit 1.02 AU; year 367 Earth days = 339 local days; axial tilt 26.5°, eccentricity 0.02: four seasons of ~85 local days, a bit stronger than Earth's; **F18** Rain shadow: westerlies make the west coast wet and forested; the east meadows (the start valley) are drier in summer, with a spring
+Trait ← On drained eastern meadow soils, summer water loss can exceed rain and fog recharge; dawn surface wetting does not necessarily replenish the deeper root zone. ← Declining root-zone water triggers stomatal restriction and longitudinal leaf rolling, sheltering stomata within a more humid leaf microclimate. ← Continued water shortage arrests new leaf production and promotes loss of older foliage, reducing demand while recessed buds remain protected by persistent sheaths. ← Reduced demand and stored reserves prolong meristem survival through the deficit, allowing surviving crowns to resume growth after sustained root-zone rewetting. ← **F8** Fog: cold upwelling sea on the west coast meets warm volcanic ground; the east start valley is a fog trap about 180 mornings a year; **F18** Rain shadow: westerlies make the west coast wet and forested; the east meadows (the start valley) are drier in summer, with a spring
 
-- **In play:** Read meadow colour and living tussock bases to distinguish seasonal dormancy from permanent dieback; revisit productive patches after the dry season.
-- **Weakness:** Repeated close grazing before reserves recover, or drought exceeding root access to water, can kill a tussock.
+- **In play:** Read rolled leaves and straw-coloured foliage as local water-stress signals; compare dry slopes with green spring margins and revisit surviving crowns after sustained rain.
+- **Weakness:** Repeated grazing before reserves recover, crown damage or drought beyond the roots' remaining water access can kill a tussock; fog alone may not end the stress.
 - **Observe:**
-  1. Blades become tightly rolled as the soil dries.
-  2. Summer clumps turn straw-coloured while their protected bases remain alive.
-  3. Fresh basal shoots emerge after sustained wet conditions return.
-- **Plausibility:** plausible (judge botanist/composer-2.5; chair sol, 2026-11-19)
-  - Dawn fog does not guarantee adequate summer root-zone water. Seasonal dormancy is distinct from temporary wilting, and regrowth requires viable buds and sufficient reserves; fire is not a reproductive trigger.
-  - Analogue: Summer-dormant Mediterranean perennial grasses, including Dactylis glomerata: Seasonal growth arrest and foliage senescence protect perennial growing tissues through summer drought. [Dormancy review](https://doi.org/10.1093/aob/mcl195). (Volaire & Norton 2006 [verified])
+  1. Blades roll as the soil beneath them dries, even when dawn fog briefly wets their surfaces.
+  2. Dry-slope clumps lose green foliage while crowns beside a persistent seep remain active.
+  3. New leaves emerge from surviving crowns after the root zone is thoroughly rewetted.
+- **Plausibility:** plausible (judge strict review: sol (codex) + DeepSeek; chair sol, 2026-11-19)
+  - Dawn fog does not guarantee adequate summer root-zone water. Seasonal dormancy is distinct from temporary wilting, and regrowth requires viable buds and sufficient reserves; fire is not a reproductive trigger. Strict review (2026-11-19): revised: The original chain left its cue undefined; the rewrite makes arrest water-triggered, separates rolling from growth arrest and states meristem survival as the payoff. Residual: F18 explicitly establishes summer drying and F8 does not guarantee root-zone recharge, so the water-deficit premise holds. Reduced transpiration, foliage loss and surviving basal buds can support recovery without invoking fire or programmed dormancy. Residual weakness: leaf rolling conserves water only insofar as its geometry shelters stomatal surfaces, and recessed buds protect against removal more directly than against dehydration. The stated limits on residual water access, reserve depletion and crown survival prevent an unsupported guarantee of drought survival.
+  - Analogue: Drought-responsive perennial tussock grasses: Leaf rolling, reduced growth, foliage loss and protected basal meristems provide a drought-survival analogy. This rewrite uses water-triggered quiescence rather than claiming an independently programmed summer dormancy.
 
-### paja_dulce.c2: Silica-defended mature blades above tender sugary shoots
+### paja_dulce.c2: Protected growing points beneath accessible young leaves and silicified older tissue
 
-Trait ← A persistent grass staple attracts repeated grazing. ← Silica deposited in mature blades increases abrasiveness and reduces feeding quality. ← Protected young bases remain more rewarding than old exposed leaves. ← **F18** Rain shadow: westerlies make the west coast wet and forested; the east meadows (the start valley) are drier in summer, with a spring; **F24** One biochemistry from the seed capsule: a porphyrin photosystem, DNA-like heredity, L-amino acids, a nitrogen-fixing symbiont; **F26** Food: sugars, starchy fruit, flesh, chitin, bone, salt
+Trait ← Repeated rondo grazing removes accessible young leaves, favouring crowns whose buds and leaf-growth zones remain recessed within basal sheaths below the usual bite height. ← Roots take up dissolved silicon where weathering of volcanic silicates and soil water make it available, depositing some in maturing blades and outer sheaths. ← Sugary young leaf portions remain accessible above the protected crown; older silicified tissue adds partial abrasion resistance without making the growing points the required feeding target. ← Light grazing leaves recessed meristems and sufficient reserves intact, allowing replacement leaves to grow; crown excavation defeats this tolerance mechanism. ← **F7** The island is a hotspot stratovolcano, 1.2 Myr old, ~2,050 m high, visible top 3.6 km across over an 8 km submarine base; **F9** Rock: andesite makes steep, unstable cliffs; basalt makes lava tubes (the caves); **F23** Minerals creatures eat: salt from spray and seeps, calcium from shell beds and bone, basalt/olivine grit (gastroliths), kaolin clay (gut detox), sulfur at fumaroles; **F26** Food: sugars, starchy fruit, flesh, chitin, bone, salt
 
-- **In play:** Harvest a few tender shoots as food or a rondo gift, leaving the growing base intact; use mature cured blades as thatch.
-- **Weakness:** Defence slows feeding rather than preventing it, and determined grazers can still remove young tissue.
+- **In play:** Cut a few soft young leaf portions at least 5 cm above the visible crown for food or a rondo gift; leave basal sheaths and whole tillers attached.
+- **Weakness:** Silica protection is partial and depends on dissolved supply; repeated defoliation exhausts reserves, while pulling tillers or excavating the crown can remove growing points.
 - **Observe:**
-  1. Old leaf margins look rough under close inspection.
-  2. Rondo parts the mature blades to reach pale basal shoots.
-  3. Grazed clumps retain coarse outer leaves around cropped centres.
-- **Plausibility:** plausible (judge botanist/composer-2.5; chair sol, 2026-11-19)
-  - Silica is a physical feeding deterrent, not an alkaloid or a wind-resistance mechanism. The analogue demonstrates effects on insect folivores; rondo's selective grazing is a fictional ecological extension.
-  - Analogue: Silica-accumulating grasses studied with leaf-chewing insects: Silica increases blade abrasiveness and can reduce herbivore feeding and digestion. [Experimental study](https://doi.org/10.1111/j.1365-2656.2006.01082.x). (Massey et al. 2006 [verified])
+  1. Mature blades have rough margins while accessible young leaf portions remain soft above the crown.
+  2. Rondo crops leaves above the persistent basal sheaths without routinely digging into them.
+  3. Lightly cropped crowns produce replacement leaves, while uprooted or excavated crowns leave damaged gaps.
+- **Plausibility:** plausible (judge strict review: sol (codex) + DeepSeek; chair sol, 2026-11-19)
+  - Silica is a physical feeding deterrent, not an alkaloid or a wind-resistance mechanism. The analogue demonstrates effects on insect folivores; rondo's selective grazing is a fictional ecological extension. Strict review (2026-11-19): revised: The original defence directed feeding toward vulnerable bases; the rewrite places edible tissue above protected growing points and treats silica as a conditional secondary contribution. Residual: Protected basal growth zones provide a coherent grazing-tolerance mechanism independently of silica. F7 and F9 establish volcanic parent material, but do not quantify plant-available silicon; F23 concerns animal mineral resources rather than silicon uptake. The rewrite appropriately makes silicification conditional on dissolved supply. F26 supports sugary food, while rondo's documented grass diet supplies the actual herbivore link. Residual uncertainty is the distribution of silicification and its effect on rondo; neither is required to explain regrowth after light grazing.
+  - Analogue: Basal-meristem grasses and silica-accumulating grasses: Protected basal growth zones support grazing tolerance. The supplied insect-feeding analogue supports possible effects of silica on herbivores, but their strength varies and does not establish reduced feeding quality for rondo; crown survival and regrowth provide the principal mechanism here.
 
 ## Gameplay
 
 ```json
 {
  "food_for": [
-  "Herbivores grazing tender grass shoots",
-  "Omnivores gathering sugary basal tissue",
-  "Detritivores consuming dead tussock litter"
+  "rondo grazes accessible young leaves during green growth.",
+  "zancuda takes soft leaves along damp meadow margins.",
+  "player_lineage gathers sugary young leaf portions above the crown.",
+  "babosa consumes decaying litter in damp tussock bases."
  ],
- "gift_item": "Small bundle of tender basal shoots for rondo",
+ "gift_item": "A small bundle of soft young leaf portions for rondo, cut at least 5 cm above the visible crown.",
  "poison": {
   "alkaloid": false,
-  "signal": "Ordinary green growth and straw-coloured dormancy; rough mature blades indicate physical defence."
+  "signal": "Ordinary green growth and straw-coloured drought foliage; rough mature blades indicate silicified tissue."
  },
  "healing": null,
- "cover": "Dense unbrowsed clumps conceal small bodies and interrupt sightlines along meadow edges.",
+ "cover": "Dense, tall, unbrowsed margins conceal small bodies and interrupt sightlines; cropped lawns and sparse drought clumps offer little concealment.",
  "climbing": false,
- "nest_material": "Dry outer blades and fallen flowering stems",
+ "nest_material": null,
  "mineral_lick": null,
- "notes": "Sugars are concentrated in accessible young tissue, not equally throughout the plant. Silica-bearing foliage is neither a medicinal mineral source nor a substitute for salt. Dry thatch is useful without implying routine meadow fires (F5)."
+ "notes": "Harvest accessible soft leaf portions without pulling whole tillers or cutting basal sheaths. The 5 cm cutting rule is a conservative gameplay clearance above the crown. Light harvest permits recovery only while water and reserves suffice. Rondo's dried-fruit caches partly buffer seasonal loss of green forage. Silica-bearing foliage is neither a medicinal mineral source nor a substitute for salt."
 }
 ```
 
@@ -65,12 +66,12 @@ Trait ← A persistent grass staple attracts repeated grazing. ← Silica deposi
 
 | With | Kind | Note |
 |---|---|---|
-| rondo | eaten_by | The principal meadow staple; rondo selects tender basal shoots and returns to recovering patches. |
-| garfio | shelters | Tall ungrazed margins conceal short approach routes toward rondo feeding patches. |
-| zancuda | eaten_by | Zancuda takes soft shoots along damp meadow margins. |
-| babosa | eaten_by | Babosa consumes decaying litter in sufficiently damp tussock bases. |
+| rondo | eaten_by | The principal green-season grass staple; rondo crops young leaves above persistent crowns, while dried-fruit caches partly buffer the drought forage gap. |
+| garfio | shelters | Tall ungrazed margins conceal short approach routes toward rondo feeding patches; cropped or sparse drought patches provide little cover. |
+| zancuda | eaten_by | Takes soft leaves along damp meadow margins. |
+| babosa | eaten_by | Consumes decaying litter in sufficiently damp tussock bases. |
 | trenza_de_ribera | grows_with | Grass gives way to riparian shrub strips where channels retain water through meadow drought. |
-| player_lineage | other | Provides harvestable shoots and nest thatch; intact basal growing points allow recovery after light harvesting. |
+| player_lineage | eaten_by | Harvests accessible young leaf portions above the crown; pulling tillers or excavating bases damages recovery. |
 
 ## Generator parameters
 
@@ -78,28 +79,28 @@ Trait ← A persistent grass staple attracts repeated grazing. ← Silica deposi
 {
  "growth_form": "grass",
  "height_m": {
-  "min": 0.3,
+  "min": 0.08,
   "max": 1.2
  },
- "trunk": "No woody trunk; tightly packed tillers arise from a persistent basal crown.",
+ "trunk": "No woody trunk; clustered tillers arise from a persistent basal crown with recessed buds and leaf-growth zones inside protective sheaths.",
  "branching": {
   "angle_deg": 18,
-  "levels": 1,
+  "levels": 0,
   "apical_dominance": 0.15,
-  "buttress": "Absent."
+  "buttress": "Absent; generate basal tillers rather than hierarchical branches."
  },
  "leaf": {
-  "type": "Long narrow blade with rough margins and reversible longitudinal rolling",
-  "size_cm": 45,
-  "arrangement": "Alternate two-ranked leaves on densely clustered tillers"
+  "type": "Long narrow blade with rough mature margins and reversible longitudinal rolling",
+  "size_cm": 30,
+  "arrangement": "Alternate two-ranked leaves on clustered tillers. Treat size_cm as the green-state nominal length: use 15–45 cm on intact growing clumps, reserving 45 cm for tall culms; shorten surviving blades to fit cropped states."
  },
  "colour": {
   "base": "Fresh green",
   "overlay_rules": [
-   "Young basal shoots are pale green.",
-   "Dormant foliage becomes muted straw-gold.",
-   "Dry outer leaves persist around living crowns.",
-   "Do not add red-purple veins as a ripeness or sweetness cue."
+   "Accessible young leaf portions are pale green above the crown.",
+   "Water-stressed foliage rolls and becomes muted straw-gold as it senesces.",
+   "Dry outer sheaths persist around living crowns.",
+   "Cropped green patches expose short leaf tips and coarse basal sheaths."
   ]
  },
  "placement": {
@@ -108,16 +109,16 @@ Trait ← A persistent grass staple attracts repeated grazing. ← Silica deposi
    20,
    550
   ],
-  "wetness": "Seasonally moist root zone followed by summer drying",
-  "soil": "Drained volcanic loam with sufficient depth for fibrous roots.",
+  "wetness": "Seasonally moist root zones followed by local summer drying; maintain active green patches where springs or seepage sustain root water.",
+  "soil": "Drained volcanic loam with sufficient depth for fibrous roots; dissolved silicon supply depends on weathering and water availability.",
   "coast_distance_m": [
    150,
    1700
   ],
-  "fog": "Frequent dawn fog, especially within the eastern valley trap.",
-  "density": "Broad meadow stands with cropped lawns, taller margins and small bare gaps."
+  "fog": "Frequent dawn fog, especially within the eastern valley trap; surface wetting does not automatically reset root-zone drought.",
+  "density": "Generate green unbrowsed stands at 0.3–1.2 m, cropped feeding routes at 0.08–0.25 m, and drought clumps with sparse living foliage beneath standing dead straw. Substantial concealment requires dense, tall, unbrowsed foliage."
  },
- "seasonal": "Strong spring growth and wind-borne reproduction; summer growth arrest and straw-coloured foliage; renewed basal growth when seasonal conditions permit.",
+ "seasonal": "Moist conditions support growth and wind-borne reproduction. Sustained root-zone drying triggers growth arrest and foliage loss; surviving crowns resume growth after sustained rewetting. Grazing height varies independently of season.",
  "wind_response": "Blades and flowering stems stream with gusts; crowns remain low and tightly rooted."
 }
 ```
@@ -147,3 +148,4 @@ council run `flora-2026-11-19`; by designer, mythmaker, naturalist, physicist, s
 ## Changelog
 
 - 2026-11-19 flora.py: flora pass: 7 voices drafted and peer-reviewed, Composer botanical referee, sol chaired and applied the fixes
+- 2026-11-19 flora_addendum.py: strict second review (sol + DeepSeek) applied by sol: Both chains change because each received at least one needs-fix verdict.; No numerical rainfall, fog-frequency or soil-water deficit is invented: the canon supplies no seasonal measurements, so water stress is a local placement and simulation condition rather than a fixed island-wide 85-day drought.; F11 is removed from the mechanism because growth arrest is drought-triggered rather than photoperi

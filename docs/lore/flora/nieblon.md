@@ -4,25 +4,25 @@
 
 **Status: DRAFT** · world: [primigenia](../worlds/primigenia.md) · form: tree · id: `nieblon`
 
-A 12–22 m evergreen of the sheltered western fog belt. Grooved leaves intercept fog, while stout trunks, conditional buttresses and flexible crowns resist wind loading. Red-veined leaves advertise alkaloids; soft green-gold fruit feeds rondo. Normal stands are absent from exposed ridgelines (F4, F8, F18, F19, F25).
+A 12–22 m evergreen of the sheltered western fog belt. Its exposed canopy intercepts fog, while grooved leaves and drip tips drain persistent surface water. Throughfall can supplement a broad root mat where the upper soil dries between wettings; saturated pockets receive no water-shortage benefit. Stout trunks, conditional buttresses and flexible crowns resist wind loading. Red-veined leaves advertise alkaloids; soft green-gold fruit feeds alula and the player's lineage. Normal stands are absent from exposed ridgelines (F8, F18, F19, F25).
 
 **Habitats:** Sheltered western fog forest, Protected western benches and gullies between 80 and 950 m
 
 ## Causal chains
 
-### nieblon.c1: Grooved leaves and elongated drip tips
+### nieblon.c1: Draining leaves above a broad fog-water receiving root mat
 
-Trait ← Western fog deposits suspended droplets onto foliage. ← Beads merge and drain through grooves. ← Drip tips deliver intercepted water to litter and shallow roots. ← **F8** Fog: cold upwelling sea on the west coast meets warm volcanic ground; the east start valley is a fog trap about 180 mornings a year; **F18** Rain shadow: westerlies make the west coast wet and forested; the east meadows (the start valley) are drier in summer, with a spring
+Trait ← The exposed western canopy intercepts existing fog droplets on leaf and twig surfaces. ← Grooves route coalesced beads toward drip tips, shortening persistent surface wetness rather than creating or necessarily increasing interception. ← Throughfall wets litter above a broad lateral fine-root mat where the rooting footprint overlaps the crown. ← When drained upper soil dries between rain events, roots absorb part of this intercepted water; already saturated pockets gain no additional drought relief. ← Leaf drainage limits persistent wet films, while conditional root uptake provides a separate water subsidy. ← **F8** Fog: cold upwelling sea on the west coast meets warm volcanic ground; the east start valley is a fog trap about 180 mornings a year; **F18** Rain shadow: westerlies make the west coast wet and forested; the east meadows (the start valley) are drier in summer, with a spring
 
-- **In play:** Locate morning canopy drip and humid understory patches.
-- **Weakness:** Clear weather removes the fog-water subsidy.
+- **In play:** Locate morning canopy drip and compare moist litter beneath the crown with nearby drained ground; use the pattern to find humid understory patches.
+- **Weakness:** Clear weather removes fog input, wind can carry drops beyond the root mat, and saturated or poorly aerated soil prevents the proposed water-shortage benefit.
 - **Observe:**
-  1. Beads collect on windward leaves.
-  2. Grooves feed hanging drops.
-  3. Litter beneath branch tips darkens first.
-- **Plausibility:** plausible (judge botanist/composer-2.5; chair sol, 2026-11-19)
-  - Leaves collect existing droplets; pressure does not generate water. Mature stands remain within the sheltered western fog belt.
-  - Analogue: Coast redwood, Sequoia sempervirens: Canopy interception supplies fog water to soil and understory; grooved leaves are a fictional extension. (Dawson 1998 [verified])
+  1. Droplets collect on exposed foliage before merging into streams along grooves.
+  2. Drops fall from leaf tips onto litter threaded with fine roots beneath the crown.
+  3. After a dry interval, drained litter under a dripping crown stays damper than an adjacent open patch, while saturated hollows show no comparable shortage.
+- **Plausibility:** plausible (judge strict review: sol (codex) + DeepSeek; chair sol, 2026-11-19)
+  - Leaves collect existing droplets; pressure does not generate water. Mature stands remain within the sheltered western fog belt. Strict review (2026-11-19): revised: The original chain conflated interception with shedding; the rewrite separates leaf drainage from conditional uptake of throughfall by roots beneath the canopy. Residual: F8 supplies a regional fog mechanism and F18 supports wet western forest, but neither establishes fog interception rates at individual stands. Grooves can retain capillary water as well as drain it; their benefit depends on surface wettability, orientation and geometry. Nevertheless, interception, drainage and conditional root uptake are correctly separated. Placement allows drained rooting patches and excludes mechanically unsuitable sites, so neither saturation nor dense-air loading under F19 breaks this chain. Residual uncertainty concerns the magnitude of drainage and usable throughfall.
+  - Analogue: Coast redwood, Sequoia sempervirens: Canopy interception and fog throughfall support the water-input analogy. Fogcomber's grooved drainage surfaces and overlapping fine-root mat are fictional specializations; neither interception nor drainage guarantees a net benefit in saturated soil. (Dawson 1998 [verified])
 
 ### nieblon.c2: Conditional buttresses and flexible crowns
 
@@ -34,8 +34,8 @@ Trait ← Dense-air winds load the crown strongly. ← Wet shallow soils can lim
   1. Trees in shallow wet hollows have large flares.
   2. Trees on deep drained soil have smaller flares.
   3. Tall stands stop below an exposed ridgeline.
-- **Plausibility:** plausible (judge botanist/composer-2.5; chair sol, 2026-11-19)
-  - Buttresses address anchorage rather than oxygen abundance. Generate normal 12–22 m trees only in sheltered stands; exclude exposed ridges instead of generating full-height windproof trees.
+- **Plausibility:** plausible (judge strict review: sol (codex) + DeepSeek; chair sol, 2026-11-19)
+  - Buttresses address anchorage rather than oxygen abundance. Generate normal 12–22 m trees only in sheltered stands; exclude exposed ridges instead of generating full-height windproof trees. Strict review (2026-11-19): Residual: F4 and F19 support greater aerodynamic loading at the same wind speed; terrain shelter, anchorage and crown reconfiguration are coherent responses. Residual weakness: F18 establishes rainfall, not shallow rooting, and buttresses cannot stabilize an entire failing soil layer. Tree height remains conditional on local soil strength and gust exposure.
   - Analogue: Buttressed Aglaia and Nephelium trees: Buttress roots resist overturning; crown flexibility provides an additional means of reducing load. (Crook et al. 1997 [verified])
 
 ## Gameplay
@@ -43,10 +43,10 @@ Trait ← Dense-air winds load the crown strongly. ← Wet shallow soils can lim
 ```json
 {
  "food_for": [
-  "Frugivores and omnivores eating ripe fruit",
-  "Detritivores consuming decomposed litter"
+  "alula and player_lineage eat ripe fruit.",
+  "babosa consumes decomposed fallen litter."
  ],
- "gift_item": "Soft green-gold fog fruit for rondo",
+ "gift_item": "Soft green-gold fog fruit for alula; gathered fruit can also be carried to rondo without implying visits to western stands.",
  "poison": {
   "alkaloid": true,
   "signal": "Red-purple veins mark defended leaves; fruit ripeness uses softness and scent."
@@ -56,7 +56,7 @@ Trait ← Dense-air winds load the crown strongly. ← Wet shallow soils can lim
  "climbing": true,
  "nest_material": "Fallen twigs and shed epiphytic fibres.",
  "mineral_lick": null,
- "notes": "Ripe pulp is edible despite defended foliage. Fog drip does not guarantee pure drinking water. Normal forest and canopy routes end before exposed ridges."
+ "notes": "Ripe pulp is edible despite defended foliage. Alula is the principal proposed fruit disperser within western stands; successful recruitment requires viable seeds reaching humid suitable soil. Fog drip does not guarantee pure drinking water. Normal forest and canopy routes end before exposed ridges or unstable rooting ground."
 }
 ```
 
@@ -64,8 +64,9 @@ Trait ← Dense-air winds load the crown strongly. ← Wet shallow soils can lim
 
 | With | Kind | Note |
 |---|---|---|
-| rondo | dispersed_by | Carries seeds from fallen fruit at accessible forest margins. |
-| alula | shelters | Uses sheltered branch forks for nests and launch points. |
+| alula | dispersed_by | Feeds in sheltered fruiting crowns that also provide branch forks and launch points. Small hard-coated seeds can survive gut passage; occasional deposition into humid litter gaps permits recruitment, while unsuitable deposits do not. |
+| player_lineage | eaten_by | Gathers ripe fallen fruit or reaches accessible fruiting branches. |
+| babosa | eaten_by | Consumes softened fallen leaf litter on the humid forest floor. |
 | albinos | shelters | Finds shade without gaining tolerance to defended leaves. |
 | musgo_faro | grows_with | Supports damp cushions on sufficiently illuminated bark. |
 | soga_de_dosel | grows_with | Supports vines whose added weight and foliage can burden the host. |
@@ -80,12 +81,12 @@ Trait ← Dense-air winds load the crown strongly. ← Wet shallow soils can lim
   "min": 12.0,
   "max": 22.0
  },
- "trunk": "Stout tapering trunk with vertically furrowed grey-brown bark.",
+ "trunk": "Stout tapering trunk with vertically furrowed grey-brown bark; broad lateral fine roots occupy suitable litter and soil beneath the crown.",
  "branching": {
   "angle_deg": 55,
   "levels": 4,
   "apical_dominance": 0.65,
-  "buttress": "Prominent on shallow saturated soil; subdued on deep drained soil."
+  "buttress": "Prominent on shallow wet soil only where the root plate is stable; subdued on deep drained soil."
  },
  "leaf": {
   "type": "Narrow elliptic evergreen blade with drainage grooves and drip tip",
@@ -102,22 +103,22 @@ Trait ← Dense-air winds load the crown strongly. ← Wet shallow soils can lim
   ]
  },
  "placement": {
-  "slope": "Sheltered western benches, lower gullies and moderate slopes; exclude exposed ridgelines, summit crests and failing cliffs.",
+  "slope": "Sheltered western benches, lower gullies and moderate slopes; exclude exposed ridgelines, summit crests, failing cliffs and benches whose supporting soil layer can slide.",
   "altitude_m": [
    80,
    950
   ],
-  "wetness": "Persistently humid, with locally saturated rooting pockets.",
-  "soil": "Developed volcanic soil with litter and variable rooting depth.",
+  "wetness": "Persistently humid, with drained upper-soil patches that can dry between wettings and separate locally saturated pockets; fog-water shortage benefits apply only to the former.",
+  "soil": "Discontinuous litter-filled benches, gullies and weathered ash pockets. Require a stable rooting volume or roots anchored into competent fractures; exclude mature trees where neither exists.",
   "coast_distance_m": [
    80,
    1500
   ],
   "fog": "Frequent western fog contact.",
-  "density": "Sheltered stands interrupted by streams, storm gaps and exposed terrain; no normal-height ridge instances."
+  "density": "Sheltered stands interrupted by streams, storm gaps, shallow unsuitable substrate and exposed terrain; no normal-height ridge instances."
  },
- "seasonal": "Evergreen; favourable moisture supports foliage and fruit production. Storms create branchfall and canopy gaps.",
- "wind_response": "Flexible outer branches bend leeward; exposed ridges are excluded from mature-tree placement."
+ "seasonal": "Evergreen; favourable moisture supports foliage and fruit production. Fog throughfall supplements drying upper soil between rain events. Storms create branchfall and canopy gaps.",
+ "wind_response": "Flexible outer branches bend leeward; exposed ridges and unstable root plates are excluded from mature-tree placement."
 }
 ```
 
@@ -146,3 +147,4 @@ council run `flora-2026-11-19`; by designer, mythmaker, naturalist, physicist, s
 ## Changelog
 
 - 2026-11-19 flora.py: flora pass: 7 voices drafted and peer-reviewed, Composer botanical referee, sol chaired and applied the fixes
+- 2026-11-19 flora_addendum.py: strict second review (sol + DeepSeek) applied by sol: The plausible c2 is unchanged; stable rooting-ground requirements are enforced through placement.; Alula replaces rondo as the proposed western disperser, without extending rondo's documented range.; Seed survival through alula and recruitment after deposition are explicit fictional species traits, not consequences established by F24.

@@ -4,24 +4,24 @@
 
 **Status: DRAFT** · world: [primigenia](../worlds/primigenia.md) · form: algae · id: `cinta_de_marea`
 
-Flexible green strap algae attach to illuminated coastal rock. Broad holdfasts resist surge and mucilage delays drying. For generation and play, exposed blades tolerate at most four consecutive local hours of warm, clear, drying emersion before severe desiccation damage; shelter can prolong survival. Living beds stop at the sunken cave's daylight threshold (F9, F13, F20).
+Flexible green strap algae attach to illuminated coastal rock. Broad holdfasts resist surge and mucilage delays drying. For generation and play, exposed blades tolerate at most four consecutive standard hours of warm, clear, drying emersion before severe desiccation damage; shelter and retained water can prolong survival. Beds thin to zero where time-integrated daylight no longer supports positive net growth at the sunken cave entrance, a placement boundary rather than a fixed canon depth (F9, F13, F20).
 
 **Habitats:** Tidal shelf, Sheltered sea-arch pools, Shallow lagoons, Illuminated sunken-cave entrance
 
 ## Causal chains
 
-### cinta_de_marea.c1: Flexible straps and broad holdfasts
+### cinta_de_marea.c1: Flow-reconfiguring straps attached by broad holdfasts
 
-Trait ← Tidal currents and waves repeatedly load attached algae. ← Flexible straps align with flow instead of resisting it rigidly. ← Broad holdfasts distribute attachment forces while fronds create small sheltered gaps. ← **F13** Tides 0.4 m in open ocean but ~3.2 m on the island's shelf (shelf resonance, Bay of Fundy-style but milder): at spring low tide a causeway to the islet opens; **F20** Seas: salinity ~3.8%, carcasses float and drift ashore; the shallows are turbid (visibility under 10 m) from volcanic sediment and plankton, so sea creatures rely on pressure sense, touch and electric sense more than sight; **F21** The rock spire is a hard dyke left standing by erosion; the giant tree grows at the spring where that dyke dams groundwater
+Trait ← The tidal shelf provides alternating inundation, while local currents and waves impose variable loads whose speeds are not specified by tidal range. ← At comparable projected area, water drag rises approximately with the square of flow speed. ← Flexible straps align with flow and reduce projected area instead of resisting it rigidly. ← Broad holdfasts distribute attachment forces over stable rock, but either attachment or substrate can still fail. ← **F13** Tides 0.4 m in open ocean but ~3.2 m on the island's shelf (shelf resonance, Bay of Fundy-style but milder): at spring low tide a causeway to the islet opens; **F21** The rock spire is a hard dyke left standing by erosion; the giant tree grows at the spring where that dyke dams groundwater
 
-- **In play:** Read current direction from moving blades and inspect sheltered gaps for marine feeders.
-- **Weakness:** Exceptional surge tears blades or detaches weathered substrate.
+- **In play:** Read local flow direction from moving blades and inspect the bed for marine feeders without treating tidal range as current speed.
+- **Weakness:** Exceptional surge tears blades or exceeds attachment strength; weathered rock can break beneath an intact holdfast.
 - **Observe:**
   1. Blades flatten and reverse with surge.
   2. Torn ribbons drift away from surviving holdfasts.
-  3. Sifon holds position behind moving fronds.
-- **Plausibility:** plausible (judge botanist/composer-2.5; chair sol, 2026-11-19)
-  - Underwater loading comes from water flow. Shelf tidal range is neither wave height nor a universal current speed.
+  3. Detached holdfasts sometimes retain fragments of broken substrate.
+- **Plausibility:** plausible (judge strict review: sol (codex) + DeepSeek; chair sol, 2026-11-19)
+  - Underwater loading comes from water flow. Shelf tidal range is neither wave height nor a universal current speed. Strict review (2026-11-19): revised: The rewrite removes turbidity as evidence for loading and separates flow reconfiguration and attachment from the independent shelter created by a bed. Residual: F13 supports alternating inundation, and F21 provides rocky coastal settings. The chain correctly derives loading from water velocity rather than atmospheric density or tidal range. Flexible reconfiguration and distributed attachment are coherent mechanisms. Residual weakness: broad holdfasts require adequate adhesion and cohesive substrate; oscillatory surge can produce acceleration and transient loads beyond the approximate steady drag relationship.
   - Analogue: Ulva and flexible bladed marine macroalgae: Flexible thalli reconfigure in moving water, moderating loads while retaining photosynthetic area. (Hurd 2000 [verified])
 
 ### cinta_de_marea.c2: Thin illuminated blades with moisture-retaining mucilage
@@ -34,8 +34,8 @@ Trait ← Turbid water restricts useful light to shallow illuminated sites. ← 
   1. Fresh ribbons cling together in a slippery film.
   2. After prolonged clear exposure, upper tips become dull and brittle.
   3. Attached living blades disappear at the cave's daylight threshold.
-- **Plausibility:** plausible (judge botanist/composer-2.5; chair sol, 2026-11-19)
-  - Four hours is a fictional gameplay calibration for drying exposure, not an experimentally established tolerance or an unconditional biological timer. Pools, fog and shade alter drying; living beds remain within sufficient daylight.
+- **Plausibility:** plausible (judge strict review: sol (codex) + DeepSeek; chair sol, 2026-11-19)
+  - Four hours is a fictional gameplay calibration for drying exposure, not an experimentally established tolerance or an unconditional biological timer. Pools, fog and shade alter drying; living beds remain within sufficient daylight. Strict review (2026-11-19): Residual: F20's turbid shallows support a restricted photic habitat, and mucilage plus overlapping blades can delay drying. Residual weakness: underwater visibility below 10 m is not a photosynthetic depth limit, and four hours is a declared gameplay calibration rather than a physiological consequence of F13 or F20. The explicit daylight and retained-water conditions keep the chain defensible.
   - Analogue: Intertidal Ulva and other periodically exposed seaweeds: Water retention and physiological stress resistance permit finite emersion tolerance and contribute to shore zonation. (Davison & Pearson 1996 [verified])
 
 ## Gameplay
@@ -43,20 +43,16 @@ Trait ← Turbid water restricts useful light to shallow illuminated sites. ← 
 ```json
 {
  "food_for": [
-  "Herbivores eating mineral-rich algae",
-  "Omnivores eating fresh aquatic greens"
+  "zancuda"
  ],
- "gift_item": "Fresh briny ribbon",
- "poison": {
-  "alkaloid": false,
-  "signal": "Green translucent blades; dull brown stranded tissue indicates deterioration."
- },
+ "gift_item": "Fresh briny ribbon for zancuda",
+ "poison": null,
  "healing": null,
  "cover": "Submerged visual shelter for small aquatic creatures.",
  "climbing": false,
  "nest_material": null,
  "mineral_lick": null,
- "notes": "Zancuda eats blades; sifon and cuarteta consume associated suspended food. Waterborne propagules replace pollination. Four hours of warm, clear drying exposure is the specified gameplay limit, and algae do not make incoming tides safe."
+ "notes": "Zancuda eats blades; sifon, cuarteta and brujula consume associated suspended food or detritus. Dull brown stranded tissue indicates deterioration rather than an intrinsic poison. Waterborne propagules replace pollination. The four-hour gameplay limit means four standard hours of warm, clear, drying exposure; local hours in the unchanged chain use the same standard hour within the 26-hour day. Fog, shade, pools, splash and retained water can prolong survival. Algae do not make incoming tides safe."
 }
 ```
 
@@ -68,7 +64,7 @@ Trait ← Turbid water restricts useful light to shallow illuminated sites. ← 
 | sifon | shelters | Feeds on plankton and drifting carcass bits behind fronds. |
 | cuarteta | shelters | Sweeps suspended food from sheltered gaps. |
 | brujula | other | Collects detritus and suspension food around holdfasts. |
-| salvisca | grows_with | Occupies flooded rock below the terrestrial spray-zone shrub. |
+| salvisca | other | A vertical zonation neighbour: the terrestrial shrub occupies spray-zone ground above the intertidal algae. |
 
 ## Generator parameters
 
@@ -79,7 +75,7 @@ Trait ← Turbid water restricts useful light to shallow illuminated sites. ← 
   "min": 0.2,
   "max": 1.5
  },
- "trunk": "No trunk; broad holdfasts support flexible stipes. Height denotes extended thallus length.",
+ "trunk": "No trunk; flexible stipes attach by holdfasts 5–15 cm across. Height denotes extended thallus length.",
  "branching": {
   "angle_deg": 30,
   "levels": 3,
@@ -105,17 +101,18 @@ Trait ← Turbid water restricts useful light to shallow illuminated sites. ← 
    -5,
    2
   ],
-  "wetness": "Submerged or periodically exposed; exclude sites routinely exceeding four hours of warm, clear drying emersion without retained water.",
-  "soil": "Stable rock without persistent burial; require sufficient daylight.",
+  "wetness": "Treat altitude as a candidate envelope relative to mean sea level, not a bed mask. Dense intertidal beds follow local low- and high-water levels; retain deeper patches only with adequate light and upper patches only in wetted pools or regularly splashed refuges. Exclude sites routinely exceeding four standard hours of warm, clear, drying emersion without retained water.",
+  "soil": "Stable rock without persistent burial; require time-integrated light sufficient for positive net growth after accounting for depth, turbidity and cave shading.",
   "coast_distance_m": [
    0,
    250
   ],
   "fog": "Slows drying but cannot replace tidal wetting.",
-  "density": "Dense sheltered photic beds thinning to zero at the cave's daylight threshold."
+  "density": "Dense sheltered photic beds thinning to zero where the light budget no longer supports positive net growth; visible daylight alone is insufficient."
  },
  "seasonal": "Expands in cool favourable periods; storms and prolonged summer emersion reduce exposed beds.",
- "wind_response": "Submerged blades follow water flow; exposed ribbons lie against rock and dry faster in wind."
+ "wind_response": "Submerged blades follow water flow; exposed ribbons lie against rock and dry faster in wind.",
+ "attachment_failure": "Detach when local hydrodynamic load exceeds holdfast attachment capacity or substrate fracture capacity; numerical thresholds require calibration rather than inference from holdfast diameter."
 }
 ```
 
@@ -142,3 +139,4 @@ council run `flora-2026-11-19`; by designer, mythmaker, naturalist, physicist, s
 ## Changelog
 
 - 2026-11-19 flora.py: flora pass: 7 voices drafted and peer-reviewed, Composer botanical referee, sol chaired and applied the fixes
+- 2026-11-19 flora_addendum.py: strict second review (sol + DeepSeek) applied by sol: Left cinta_de_marea.c2 unchanged because both reviewers rated it plausible; clarified its hour terminology and light boundary at plant level.; Rejected the proposed hour conversions: F3 gives a 26-standard-hour day but defines no alternative local hour, and dividing that day into 26 hours does not produce a longer hour.; Used zancuda alone as the supported blade consumer; general omnivory does not

@@ -13,37 +13,39 @@
     "The bent ejecta ray",
     "Weathered ground near meteor fragments"
   ],
-  "summary": "A 0.1–0.4 m rosette tolerates nickel released by weathering iron-nickel impact debris. It concentrates nickel in protected cellular compartments and carries violet-red, alkaloid-defended foliage. Its patch distribution helps trace the bent ejecta ray; neither colour nor absence proves a shard's position or reveals the second capsule's purpose (F22, F25, F26).",
+  "summary": "A 0.1–0.4 m rosette with inherited nickel tolerance occupies discontinuous weathered patches around impact debris. It binds nickel and stores it away from sensitive cellular machinery; violet-red, alkaloid-defended foliage provides a separate poison signal. Its authored local distribution helps trace the bent ejecta ray only when corroborated by debris and crater context: volcanic minerals can also supply nickel, and neither colour nor absence proves a shard's position or reveals the second capsule's purpose (F22, F23, F25, F26, F27).",
   "chains": [
     {
       "id": "hierroflor.c1",
-      "trait": "Nickel tolerance and tissue sequestration",
+      "trait": "Inherited nickel tolerance and compartmental storage",
       "links": [
-        "Weathering impact debris creates locally nickel-rich soil patches.",
-        "Selective transport and binding limit damage to sensitive cellular machinery.",
-        "Sequestration isolates accumulated nickel in storage compartments.",
-        "The herb persists where less tolerant competitors struggle."
+        "Founder standing variation supplied nickel transport, binding and storage before the island impact.",
+        "Weathering surviving iron-nickel fragments supplies suitable local nickel availability in some crater and ejecta deposits; basalt and olivine can also supply nickel elsewhere.",
+        "Selective transport and ligand binding limit exposure of sensitive cellular machinery, while vacuolar and epidermal storage isolate accumulated nickel.",
+        "Tolerance permits persistence where nickel suppresses less tolerant competitors, provided moisture and substrate remain suitable.",
+        "The crater-and-ejecta distribution is an authored local occurrence rather than evidence of physiological dependence on meteorites."
       ],
       "roots": [
         "F22",
-        "F24"
+        "F23",
+        "F27"
       ],
-      "play": "Compare plant patches with exposed fragments and follow a sequence of suitable sites along the bent ejecta ray.",
-      "weakness": "Tolerance has limits; excessive contamination, drought or unsuitable substrate excludes the plant, leaving gaps in the botanical trail.",
+      "play": "Use patches as a supporting clue only within crater and ejecta context, corroborating the route with visible impact debris.",
+      "weakness": "Nickel tolerance neither identifies its geological source nor guarantees growth; excessive contamination, drought and unsuitable substrate leave gaps unrelated to shard presence.",
       "observe": [
-        "Dense rosettes cluster around some weathered fragments while nearby ordinary soil supports other vegetation.",
-        "Follow several patches to reveal a bend rather than a straight radial line.",
-        "Inspect an eroded patch edge to find mineral-stained debris beneath ordinary soft roots."
+        "Rosettes cluster around some weathered fragments while nearby suitable-looking deposits remain empty.",
+        "Several corroborated patches and debris exposures trace a bend rather than a straight radial line.",
+        "Eroded patch edges expose weathered fragment material beneath ordinary flexible roots."
       ],
       "plausibility": {
         "verdict": "plausible",
-        "judge": "botanist/composer-2.5; chair sol",
+        "judge": "strict review: sol (codex) + DeepSeek; chair sol",
         "date": "2026-11-19",
-        "summary": "Nickel accumulation is biologically credible; metallic leaves, iron-powered metabolism and automatic soil purification are excluded. The 12,000-year-old crater supports a vegetation mosaic, and five shards need not each have a plant marker.",
+        "summary": "Nickel accumulation is biologically credible; metallic leaves, iron-powered metabolism and automatic soil purification are excluded. The 12,000-year-old crater supports a vegetation mosaic, and five shards need not each have a plant marker. Strict review (2026-11-19): revised: Made tolerance inherited, identified persistent fragments as a local weathering reservoir and separated metal physiology from the authored impact-site distribution. Residual: Inherited tolerance, selective transport and compartmental storage provide a coherent mechanism without requiring evolution after the impact. F22 establishes iron-nickel impact material and its age, but does not establish plant-available nickel concentrations; F23 likewise does not demonstrate nickel-rich soil. The remaining uncertainty is whether weathering creates sufficiently extensive patches that suppress competitors without exceeding this plant's tolerance. The authored distribution is explicitly distinguished from physiological necessity.",
         "analogues": [
           {
             "organism": "Nickel-hyperaccumulating Alyssum relatives",
-            "mechanism": "Metal transport, ligand binding and compartmentation permit exceptional tissue nickel loads. Transfer to meteoritic soil is an ecological extrapolation. [Krämer](https://doi.org/10.1146/annurev-arplant-042809-112156)",
+            "mechanism": "Selective transport, ligand binding and vacuolar or epidermal storage support nickel tolerance and accumulation; the analogue establishes neither meteorite diagnosis nor this plant's local distribution, and no defensive benefit from nickel is assumed.",
             "refs": [
               "kramer_2010_hyperaccumulation"
             ]
@@ -53,35 +55,34 @@
     },
     {
       "id": "hierroflor.c2",
-      "trait": "Violet-red photoprotective and alkaloid-warning foliage",
+      "trait": "Violet-red alkaloid-warning foliage with exposure-dependent screening",
       "links": [
-        "Open patches expose leaves to strong light while herbivores encounter low foliage.",
-        "Protective pigments overlay green photosynthetic tissue.",
-        "Persistent red-violet veins accompany alkaloid defence.",
-        "Colour warns against eating; patch location provides the separate geological clue."
+        "Persistent red-violet veins accompany alkaloid-defended tissue, providing the honest colour signal established by planet canon.",
+        "Green tissue beneath the pigments continues photosynthesis.",
+        "Exposed leaves can develop broader violet screening during high irradiance and water stress without requiring elevated UV or an assumed crater altitude.",
+        "The warning identifies defended foliage; patch location and corroborating debris provide the separate geological clue."
       ],
       "roots": [
-        "F14",
         "F22",
         "F25",
         "F26"
       ],
       "play": "Learn to separate a poison warning from a habitat clue and avoid offering the leaves as food.",
-      "weakness": "Purple foliage is not a nickel assay; exposed leaves can become darker without a corresponding increase in soil metal.",
+      "weakness": "Purple foliage is neither a nickel assay nor proof that every herbivore recognizes the warning; exposure can darken leaves without increasing soil nickel.",
       "observe": [
         "Shaded leaves retain red-violet veins against a greener blade.",
-        "Exposed leaves carry a broader violet overlay.",
+        "Exposed, drying leaves carry a broader violet overlay.",
         "Equally purple plants occur at different distances from visible impact fragments."
       ],
       "plausibility": {
         "verdict": "plausible",
-        "judge": "botanist/composer-2.5; chair sol",
+        "judge": "strict review: sol (codex) + DeepSeek; chair sol",
         "date": "2026-11-19",
-        "summary": "The pigment analogue supports photoprotection, while the honest alkaloid warning follows F25. Colour alone does not quantify nickel, and the crater receives no invented elevation or high-altitude UV value.",
+        "summary": "The pigment analogue supports photoprotection, while the honest alkaloid warning follows F25. Colour alone does not quantify nickel, and the crater receives no invented elevation or high-altitude UV value. Strict review (2026-11-19): revised: Removed the altitude-dependent UV citation and separated canonically honest alkaloid colour from exposure-related screening and unestablished herbivore learning. Residual: F25 explicitly establishes red-purple pigmentation over ancestral green tissue and an honest alkaloid signal; F26 establishes alkaloid toxicity. Photoprotection is a separate, conditional function, and F22 supplies location rather than a UV mechanism. Pigment intensity cannot establish toxin dose or nickel concentration, and strong screening can reduce available photosynthetic light. The revised chain avoids those stronger claims.",
         "analogues": [
           {
             "organism": "Anthocyanin-bearing leaves",
-            "mechanism": "Foliar anthocyanins provide an analogue for photoprotection and stress-associated colour; reliable alkaloid signalling is a planet-canon property. [Gould](https://pmc.ncbi.nlm.nih.gov/articles/PMC1082902/)",
+            "mechanism": "Foliar pigments provide an analogue for exposure-related photoprotection and stress colour; honest alkaloid signalling follows F25, while recognition by individual herbivores is not assumed.",
             "refs": [
               "gould_2004_anthocyanins"
             ]
@@ -95,14 +96,14 @@
     "gift_item": null,
     "poison": {
       "alkaloid": true,
-      "signal": "Persistent red-violet veins warn of alkaloids; accumulated nickel adds a separate hazard that colour does not quantify."
+      "signal": "Persistent red-violet veins warn of alkaloids; accumulated nickel adds a separate ingestion hazard that colour does not quantify, and player-lineage alkaloid detox enzymes do not establish nickel tolerance."
     },
     "healing": null,
     "cover": "Low rosettes obscure small ground objects but cannot conceal a standing creature.",
     "climbing": false,
     "nest_material": null,
     "mineral_lick": null,
-    "notes": "Use the plant as an imperfect substrate indicator. Player-lineage alkaloid detoxification does not establish nickel tolerance. Shared biochemistry does not remove chemical toxicity, and babosa's mineral diet does not establish safe nickel accumulation."
+    "notes": "Use the plant as an imperfect substrate indicator within the authored crater-and-ejecta distribution. Shared biochemistry does not remove toxicity, and babosa's mineral diet does not establish safe nickel accumulation. Nickel storage is described as tolerance, without an assumed defensive function."
   },
   "relations": [
     {
@@ -143,24 +144,20 @@
       "base": "Green photosynthetic tissue",
       "overlay_rules": [
         "Persistent red-violet veins accompany alkaloid defence.",
-        "Exposed blades develop broader violet-red screening.",
+        "Exposed, water-stressed blades can develop broader violet-red screening.",
         "Do not encode nickel concentration as metallic sheen or a fixed purple intensity."
       ]
     },
     "placement": {
-      "slope": "Stable crater-floor pockets and suitable deposits along the single bent ejecta ray",
-      "altitude_m": [
-        0,
-        2050
-      ],
-      "wetness": "Seasonally moist, freely draining soil; growth slows during drought",
-      "soil": "Weathered tuff locally enriched by iron-nickel debris; exclude both ordinary soils and lethal contamination extremes",
+      "slope": "Stable crater-floor pockets and suitable deposits along the single bent ejecta ray; derive elevation exclusively from terrain within that authored mask.",
+      "wetness": "Seasonally moist, freely draining soil; growth slows during drought.",
+      "soil": "Weathered tuff with tolerable local nickel availability from impact debris. Ordinary soils are omitted by the authored occurrence mask, not by an asserted physiological requirement for meteorites.",
       "coast_distance_m": [
         0,
-        3600
+        1800
       ],
-      "fog": "No fog requirement",
-      "density": "Discontinuous substrate-controlled patches; apply the crater-and-ejecta mask before broad island bounds, since crater elevation is unspecified"
+      "fog": "No fog requirement.",
+      "density": "Discontinuous patches within the intersection of the island land mask, authored crater-and-ejecta occurrence mask and suitable substrate. Never infer shard absence from a gap or authorize placement elsewhere through broad island bounds."
     },
     "seasonal": "Perennial crowns produce fresh leaves after rain and reduce exposed foliage during drought; winter response follows the crater's actual placement.",
     "wind_response": "Low flexible leaves bend close to the ground; eroding sediment can expose or bury the root crown."
@@ -189,6 +186,11 @@
       "date": "2026-11-19",
       "who": "flora.py",
       "what": "flora pass: 7 voices drafted and peer-reviewed, Composer botanical referee, sol chaired and applied the fixes"
+    },
+    {
+      "date": "2026-11-19",
+      "who": "flora_addendum.py",
+      "what": "strict second review (sol + DeepSeek) applied by sol: Retained the ceniza_roja edge relation: co-occurrence with a general pioneer does not invalidate a deliberately imperfect substrate clue.; Rejected mandatory first-time sampling by naive herbivores because F25 establishes signal honesty without specifying how avoidance develops.; Retained the poison schema and strengthened its signal text to state both nickel toxicity and the limit of player-linea"
     }
   ],
   "observe": [
