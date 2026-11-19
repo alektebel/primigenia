@@ -910,3 +910,15 @@ func test_creature_bars() -> void:
 	mn.nest_edit_available = true
 	ok(mn.item_enabled("nest_edit") and not mn.item_enabled("loadout"), "menu: Edit creature is enabled by the world's can_edit, the loadout by the nest")
 	mn.free()
+	# brief creature-fixes 6: the journal has a Plants section, four to a spread
+	var jv = JournalView.new()
+	ok(JournalView.TABS.has("plants") and Strings.t("jt_plants") != "" and Strings.t("j_plants_empty") != "" and Strings.t("plant_new", ["x"]).contains("x"), "journal: the Plants tab and its strings exist")
+	var plants := []
+	for i in 5:
+		plants.append({"id": "p%d" % i, "name": {"en": "P", "es": "P"}, "habitat_text": {"en": "h", "es": "h"}, "lore": {"en": "l", "es": "l"}})
+	jv.model = {"plants": plants}
+	jv.set_tab(JournalView.TABS.find("plants"))
+	ok(jv.page_count() == 2, "journal: five plants take two spreads (%d)" % jv.page_count())
+	jv.model = {}
+	ok(jv.page_count() == 1, "journal: no plants is one empty spread")
+	jv.free()

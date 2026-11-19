@@ -427,7 +427,16 @@ var _parts_catalogue: Array = []
 func _journal_model() -> Dictionary:
 	if _parts_catalogue.is_empty():
 		_parts_catalogue = Profile.load_json("res://game/data/parts.json").get("parts", [])
-	return JournalModel.build(stage.cur, species, _chains, _parts_catalogue)
+	var model: Dictionary = JournalModel.build(stage.cur, species, _chains, _parts_catalogue)
+	model["plants"] = island.plant_rows()
+	return model
+
+# A plant was watched long enough: the whisper and the journal page (the plants themselves are saved with the game).
+func plant_noticed(id: String) -> void:
+	for r in preload("res://game/island/flora_placement.gd").recipes():
+		if String(r.id) == id:
+			ui.show_message(Strings.t("plant_new", [String(r.name.get("es" if Strings.language() == "es" else "en", id))]), "info")
+			return
 
 func _on_journal_toggled(open: bool) -> void:
 	stage.process_mode = Node.PROCESS_MODE_DISABLED if open or ui.paused else Node.PROCESS_MODE_INHERIT

@@ -48,6 +48,7 @@ static func build(stage, ctx: Dictionary, kind: String, scenario_name: String, n
 		"wild_bodies": _bodies(st),
 		"lineage": JSON.parse_string(w.lineage()),
 		"camera": ctx.get("camera", {}),
+		"plants": ctx.get("plants", []),
 		"tuning": ctx.get("tuning", {}),
 		"time": ctx.get("time", {"timescale": stage.timescale, "paused": stage.paused}),
 	}

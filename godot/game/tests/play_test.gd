@@ -706,3 +706,26 @@ func _studio_and_back() -> void:
 	check(current_scene.hosts[0].body.genome.get("name", "") == "Play Button Test", "the island has the creature that was just saved")
 	check(current_scene.kit_reused and current_scene.terrain_chunks == terrain_node, "and the same built terrain (not rebuilt: %d ms build)" % int(current_scene.build_ms.get("total", -1)))
 	await sim_ticks(20)
+	# brief creature-fixes 6: resting the pointer on a plant notes it (whisper, journal page, saved with the game)
+	var isl2 = current_scene
+	check(isl2.props.records.size() > 0, "the island has plants (%d records)" % isl2.props.records.size())
+	var rec: Dictionary = isl2.props.records[0]
+	var seen: String = isl2.gaze.pick(isl2.props.records, (rec.p as Vector3) + Vector3(0, float(rec.height) + 10.0, 0), Vector3.DOWN)
+	check(seen != "", "a ray down onto a plant picks a plant (%s)" % seen)
+	isl2.gaze.known.clear()
+	var noted := ""
+	for i in 40:
+		noted = isl2.gaze.tick(0.1, seen)
+		if noted != "":
+			break
+	check(noted == seen, "%.1f s on it notes it" % isl2.gaze.DWELL)
+	isl2.stage_ui.plant_noticed(noted)
+	check(isl2.stage_ui.ui.words.whisper_text.begins_with("New plant") or isl2.stage_ui.ui.words.whisper_text.begins_with("Nueva planta"), "the whisper says it (%s)" % isl2.stage_ui.ui.words.whisper_text)
+	check(isl2.stage_ui._journal_model().plants.size() == 1, "the journal model has the plant")
+	check(isl2.scenario_ctx().plants == [noted], "the save carries the plant list")
+	var built: Dictionary = preload("res://devtools/scenario.gd").build(isl2.stage, isl2.scenario_ctx(), "save", "plants", "", false)
+	check(built.json.plants == [noted], "the scenario file has the plants")
+	isl2.gaze.known.clear()
+	isl2.gaze.from_list(built.json.plants)
+	check(isl2.gaze.known.has(noted), "and loading brings them back")
+	await sim_ticks(5)

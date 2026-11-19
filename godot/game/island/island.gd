@@ -28,6 +28,7 @@ const FAR_GRASS_Z := 0.6          # zoom above which grass, shadows and models a
 const MODEL_OFF_Z := 0.85
 const DEN_SEEN := 60.0
 const ActionFeed := preload("res://actions/action_feed.gd")
+const PlantGaze := preload("res://game/island/plant_gaze.gd")
 
 var terrain_chunks: Node3D
 var world_env: WorldEnvironment
@@ -63,6 +64,8 @@ var _follow_clock := 0.0       # hold to follow: the mouse target is sent at mos
 const FOLLOW_PERIOD := 0.15
 var _genome: Dictionary = {}
 var _garfio_profile: Dictionary = {}   # kept so creatures spawned later (dev console, scenarios) get a body
+var gaze := PlantGaze.new()        # plants noticed by resting the pointer on them (brief creature-fixes 6)
+var _gaze_poll := 0.0
 var gesture := Gesture.new()       # the left button: click, hold or orbit drag
 var _orbit_btn := 0               # right/middle button held (1 = right, 2 = middle)
 var _mid_travel := 0.0
@@ -308,7 +311,7 @@ func scenario_ctx() -> Dictionary:
 	if stage.world.has_field():
 		var info: Dictionary = stage.world.field_info()
 		isl = {"seed": info.seed, "terrain_version": CporeTerrain.version(), "terrain_hash": info.hash}
-	var ctx := {"genome": _genome, "island": isl, "camera": camera_state()}
+	var ctx := {"genome": _genome, "island": isl, "camera": camera_state(), "plants": gaze.to_list()}
 	var dev = get_tree().root.get_node_or_null("Dev")
 	if dev != null and dev.has_method("tuning_state"):
 		ctx["tuning"] = dev.tuning_state()
@@ -364,6 +367,7 @@ func load_scenario(parsed: Dictionary) -> String:
 		player_input.clear_destination()
 	if stage_ui != null:
 		stage_ui.ui.clear_selection()
+	gaze.from_list(d.get("plants", []))
 	if chase != null:
 		for k in d.get("camera", {}):
 			if chase.get(k) != null:
@@ -584,6 +588,7 @@ func _process(delta: float) -> void:
 	gesture.tick(delta)
 	_update_move_marker()
 	_update_hover(delta)
+	_update_plants(delta)
 	_mouse_held = gesture.holding
 	if _mouse_held and not Game.movement_blocked():
 		_follow_clock -= delta
@@ -701,6 +706,27 @@ func _update_move_marker() -> void:
 	_had_dest = has
 
 # Pointer over a creature for 0.25 s: its ring shows at 0.4 in its relationship style (docs/godot/UI-DIEGETIC.md 7.16).
+# Observing plants: the pointer resting on a plant for PlantGaze.DWELL seconds writes it into the journal. Creatures come first
+# (a hovered creature, a fight, a held button or an open book never count), so this never competes with the radial.
+func _update_plants(dt: float) -> void:
+	if camera == null or stage == null or stage_ui == null:
+		return
+	_gaze_poll += dt
+	if _gaze_poll < 0.1:
+		return
+	var step := _gaze_poll
+	_gaze_poll = 0.0
+	var id := ""
+	if not Game.movement_blocked() and not gesture.down and _hover_id < 0 and int(stage.cur.active) < 0 and selected_id <= 0:
+		var m := get_viewport().get_mouse_position()
+		id = gaze.pick(props.records, camera.project_ray_origin(m), camera.project_ray_normal(m))
+	var found := gaze.tick(step, id)
+	if found != "":
+		stage_ui.plant_noticed(found)
+
+func plant_rows() -> Array:
+	return gaze.journal_rows(preload("res://game/island/flora_placement.gd").recipes())
+
 func _update_hover(dt: float) -> void:
 	if ground_marks == null or camera == null or stage == null:
 		return
