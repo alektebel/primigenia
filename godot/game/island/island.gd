@@ -294,7 +294,6 @@ func _sync_hosts() -> void:
 		if hosts.has(i):
 			continue
 		var cousin: Dictionary = preload("res://game/stage/lineage_session.gd").cousin(stage.world, i) if int(es[i].get("cousin_generation", 0)) > 0 else {}
-			continue
 		var h := ActorHost.new()
 		h.name = "Wild%d" % i
 		add_child(h)
