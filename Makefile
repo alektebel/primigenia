@@ -452,6 +452,17 @@ godot-rock-stretch-test: godot
 	done
 
 # PLAN-feel: how the creature feels to steer (C motion rule + the real Godot pipeline), writes docs/evidence/godot/feel/measurements.json.
+# Wings and flight test mode (dev builds): `make godot-fly` plays the light winged test creature on a cliff plateau.
+.PHONY: godot-fly godot-flight-test godot-flight-evidence
+godot-fly:
+	$(GODOT) --path godot -- --scenario creature/flight_cliff
+godot-flight-test: godot
+	nice -n 10 timeout 600 $(GODOT) --headless --fixed-fps 30 --path godot --script res://game/tests/flight_evidence.gd
+godot-flight-evidence: godot
+	@mkdir -p docs/evidence/godot/wings-flight
+	LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 1800 xvfb-run -a -s "-screen 0 1280x720x24" $(GODOT) --rendering-driver opengl3 --fixed-fps 30 --resolution 1280x720 --path godot \
+	  --script res://game/tests/flight_evidence.gd -- $(CURDIR)/docs/evidence/godot/wings-flight
+
 .PHONY: godot-feel-test godot-feel-evidence
 godot-feel-test: godot
 	nice -n 10 timeout 600 $(GODOT) --headless --fixed-fps 60 --path godot --script res://game/tests/feel_test.gd -- $(CURDIR)/docs/evidence/godot/feel

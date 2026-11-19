@@ -7,6 +7,7 @@ const PartsDB := preload("../parts_db.gd")
 const I18n := preload("../i18n.gd")
 const Storage := preload("../storage.gd")
 const Genome := preload("../genome.gd")
+const WingPanel := preload("wing_panel.gd")
 const Thumbs := preload("../thumbnails.gd")
 const ThemeFactory := preload("theme_factory.gd")
 const PlaceholderView := preload("../placeholder/placeholder_view.gd")
@@ -801,6 +802,8 @@ func _panel_build() -> void:
 			pob.select(maxi(kinds.find(String(p.get("pupil", "auto"))), 0))
 			pob.item_selected.connect(func(i): model.set_part_key(sel, "pupil", kinds[i]))
 			panel_box.add_child(pob)
+		if WingPanel.is_wing(p):
+			WingPanel.build(panel_box, model, view, sel, Callable(self, "T"))
 		var del := Button.new()
 		del.text = T("Quitar pieza") + "  (Del)"
 		del.pressed.connect(on_key_delete)

@@ -1,0 +1,270 @@
+{
+	"camera": {},
+	"created": "2026-11-19T21:54:11",
+	"engine": {
+		"build": "unknown",
+		"layout": "a032a357537de2b2",
+		"snapshot_version": 3,
+		"stage_version": 3
+	},
+	"format": "primigenia.scenario/1",
+	"genome": {
+		"name": "Planeador",
+		"nodes": [
+			{
+				"r": 0.03,
+				"y": 0.272,
+				"z": -0.561
+			},
+			{
+				"r": 0.03,
+				"y": 0.289,
+				"z": -0.408
+			},
+			{
+				"r": 0.0392,
+				"y": 0.3145,
+				"z": -0.255
+			},
+			{
+				"r": 0.0686,
+				"y": 0.34,
+				"z": -0.102
+			},
+			{
+				"r": 0.0764,
+				"y": 0.3485,
+				"z": 0.068
+			},
+			{
+				"r": 0.0607,
+				"y": 0.3655,
+				"z": 0.221
+			},
+			{
+				"r": 0.045,
+				"y": 0.425,
+				"z": 0.34
+			},
+			{
+				"r": 0.0548,
+				"y": 0.4675,
+				"z": 0.459
+			}
+		],
+		"parts": [
+			{
+				"ang": 0.0,
+				"level": 1.0,
+				"size": 0.7,
+				"t": 1.0,
+				"tier": 0.0,
+				"type": "pico"
+			},
+			{
+				"ang": 0.95,
+				"level": 1.0,
+				"size": 0.8,
+				"t": 0.9,
+				"tier": 0.0,
+				"type": "ojo"
+			},
+			{
+				"ang": 2.1,
+				"f": [
+					0.068,
+					-0.23,
+					-0.009
+				],
+				"k": [
+					0.051,
+					-0.094,
+					0.068
+				],
+				"level": 1.0,
+				"t": 0.44,
+				"tier": 0.0,
+				"type": "pata",
+				"w": 0.06
+			},
+			{
+				"ang": 2.1,
+				"f": [
+					0.059,
+					-0.246,
+					0.009
+				],
+				"k": [
+					0.043,
+					-0.119,
+					-0.051
+				],
+				"level": 1.0,
+				"t": 0.7,
+				"tier": 0.0,
+				"type": "pata",
+				"w": 0.055
+			},
+			{
+				"ang": 1.3,
+				"level": 1.0,
+				"size": 1.0,
+				"t": 0.62,
+				"tier": 0.0,
+				"type": "wing_vane",
+				"wing": {
+					"anchor": "flank",
+					"breadth": 0.3,
+					"fold": "flank",
+					"mode": "forelimb",
+					"muscle": 0.18,
+					"span": 2.4,
+					"spars": 5.0
+				}
+			}
+		],
+		"regions": [],
+		"schema": "cpore.creature/5",
+		"skin": {
+			"cA": "#3f7f9a",
+			"cB": "#1d3a4a",
+			"cC": "#f0e3b8",
+			"pat": 1.0,
+			"scale": 7.0,
+			"wet": 0.2
+		}
+	},
+	"hash": "29057e3d06deed55",
+	"island": {
+		"seed": 1,
+		"terrain_hash": "7137e3ea79830ad7",
+		"terrain_version": 4
+	},
+	"kind": "scenario",
+	"lineage": {
+		"current_deeds": {
+			"befriends": 0.0,
+			"bigger_approaches": 0.0,
+			"building": 0.0,
+			"deep_dives": 0.0,
+			"digging": 0.0,
+			"distance_cm": 0.0,
+			"fights_fled": 0.0,
+			"fights_started": 0.0,
+			"flight_ticks": 0.0,
+			"foraging": 0.0,
+			"gifts": 0.0,
+			"hoarding": 0.0,
+			"hunts": 0.0,
+			"intimidations": 0.0,
+			"kills": 0.0,
+			"meat": 0.0,
+			"nest_ticks": 0.0,
+			"new_places": 0.0,
+			"night_ticks": 0.0,
+			"observations": 0.0,
+			"plants": 0.0,
+			"stealth": 0.0,
+			"swimming_ticks": 0.0,
+			"void_ticks": 0.0
+		},
+		"deeds": {
+			"befriends": 0.0,
+			"bigger_approaches": 0.0,
+			"building": 0.0,
+			"deep_dives": 0.0,
+			"digging": 0.0,
+			"distance_cm": 0.0,
+			"fights_fled": 0.0,
+			"fights_started": 0.0,
+			"flight_ticks": 0.0,
+			"foraging": 0.0,
+			"gifts": 0.0,
+			"hoarding": 0.0,
+			"hunts": 0.0,
+			"intimidations": 0.0,
+			"kills": 0.0,
+			"meat": 0.0,
+			"nest_ticks": 0.0,
+			"new_places": 0.0,
+			"night_ticks": 0.0,
+			"observations": 0.0,
+			"plants": 0.0,
+			"stealth": 0.0,
+			"swimming_ticks": 0.0,
+			"void_ticks": 0.0
+		},
+		"deeds_aggregated": 0.0,
+		"enabled": false,
+		"entries": [],
+		"format": "cpore.lineage/1",
+		"generation": 0.0,
+		"generations": [],
+		"live_type": {
+			"code": "?-?-?-?",
+			"description": "Your deeds have not yet decided what this body becomes.",
+			"index": 0.0,
+			"name": "Undetermined",
+			"perk": -1.0,
+			"scores": [
+				0.0,
+				0.0,
+				0.0,
+				0.0
+			]
+		},
+		"traits": []
+	},
+	"name": "flight_cliff",
+	"note": "The light winged test creature (Planeador) on a plateau 19 m above the valley, facing the drop. Space takes off, then Space flap, Ctrl dive, W/S pitch, A/D turn; F3 tuning has flight/lift_mul.",
+	"recipe": "flight_cliff.log",
+	"setup": {
+		"cave": {
+			"fx": -0.615702271461487,
+			"fz": -0.787978887557983,
+			"half": 0.0,
+			"length": 0.0,
+			"radius": 0.0,
+			"x": 61.5234375,
+			"z": 620.5078125
+		},
+		"flat_height": 2.0,
+		"nest": [
+			0.0,
+			0.0
+		],
+		"obstacles": [],
+		"player": {
+			"charge": 0,
+			"guard": 0,
+			"hp": 100.0,
+			"mouth": 1,
+			"radius_cm": 51,
+			"speed": 4.0,
+			"spit": 1,
+			"stamina": 100.0,
+			"tail": 0
+		},
+		"player_legs": 0,
+		"secrets": 3,
+		"seed": 1,
+		"start_clock": 4000,
+		"terrain": 2,
+		"terrain_seed": 7,
+		"water": [
+			0.0,
+			0.0,
+			0.0
+		],
+		"wild": []
+	},
+	"stage": "creature",
+	"state": "flight_cliff.cpstate",
+	"tick": 102,
+	"time": {
+		"paused": false,
+		"timescale": 1.0
+	},
+	"tuning": {},
+	"wild_bodies": {}
+}

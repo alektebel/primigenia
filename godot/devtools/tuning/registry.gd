@@ -54,6 +54,9 @@ func bind_island(isl) -> void:
 			func(): return _loco_get(prop),
 			func(v): _loco_set(prop, v))
 
+	if island.get("flight") != null:
+		island.flight.bind_tuning(self)
+
 func _controller():
 	if island == null or not island.hosts.has(0):
 		return null

@@ -18,6 +18,7 @@ const PlayerInput := preload("res://game/player/player_input.gd")
 const Pointer := preload("res://game/player/pointer.gd")
 const Gesture := preload("res://game/player/pointer_gesture.gd")
 const ChaseCamera := preload("res://game/player/chase_camera.gd")
+const FlightMode := preload("res://game/player/flight_mode.gd")
 const ActorHost := preload("res://game/actors/actor_host.gd")
 const StageUI := preload("res://game/stage/stage_ui.gd")
 const Scenario := preload("res://devtools/scenario.gd")
@@ -54,6 +55,7 @@ var _hover_mouse := Vector2(-1, -1)
 var hosts := {}                  # entity id -> ActorHost
 var chase_enabled := true
 var player_pos := Vector3.INF
+var flight                         # FlightMode: the dev-flag flight test (null before the stage is built)
 var last_click := Vector2.ZERO     # screen position of the last click that picked a creature (the radial opens there)
 var occluders_enabled := true
 var icons: CanvasLayer
@@ -144,7 +146,8 @@ func _build_stage() -> void:
 	var manifest := Profile.load_json("res://game/data/parts.json")
 	var genome: Dictionary = Game.player_genome().duplicate(true)
 	if Game.pending_scenario.is_empty():
-		genome.parts = genome.parts.filter(func(p): return p.type in ["pico", "pata", "ojo"])
+		var keep_wings: bool = FlightMode._dev_on()      # the flight test needs the wings of the creature the owner made
+		genome.parts = genome.parts.filter(func(p): return p.type in ["pico", "pata", "ojo"] or (keep_wings and str(p.type).begins_with("wing_")))
 		if not genome.parts.any(func(p): return p.type == "pico"):
 			genome.parts.append({"type": "pico", "t": 1.0, "ang": 0.0, "size": 1.0, "level": 1, "tier": 0})
 		genome.schema = "cpore.creature/5"
@@ -220,6 +223,8 @@ func _build_stage() -> void:
 	stage_ui.name = "StageUI"
 	add_child(stage_ui)
 	stage_ui.setup(self, str(genome.get("name", "Merodeador")))
+	flight = FlightMode.new()
+	flight.setup(self, stage)
 	if bool(Game.settings.wild):    # S5a: visual-only radial fauna (no C entities), see radial_fauna.gd
 		var radial_fauna := preload("res://game/island/radial_fauna.gd").new()
 		radial_fauna.name = "RadialFauna"
@@ -389,18 +394,25 @@ func _build_secrets(ground: Callable) -> void:
 		add_child(shards)
 		shards.setup(stage, ground)
 
+# The player's pose: the C world's, or the flyer's while the flight test is in the air.
+func player_sample() -> Dictionary:
+	var base: Dictionary = stage.sample(0)
+	return flight.sample(base) if flight != null else base
+
 func _update_actors(dt: float) -> void:
 	_sync_hosts()
+	if flight != null:
+		flight.tick(dt)
 	action_signals = action_feed.read(stage.prev, stage.cur, stage.alpha())
 	var tick: int = int(stage.cur.combat.tick)
 	var alpha: float = stage.alpha()
-	var p0: Vector3 = stage.sample(0).pos
+	var p0: Vector3 = player_sample().pos
 	_hidden.clear()
 	for e in stage.cur.entities:
 		if bool(e.get("hidden", false)):
 			_hidden[int(e.id)] = true
 	for id in hosts:
-		var sm: Dictionary = stage.sample(id)
+		var sm: Dictionary = stage.sample(id) if id != 0 else player_sample()
 		if id == 0:
 			sm["intent"] = player_input.intent_yaw()      # head and shoulders lead the body
 		var d: float = (sm.pos as Vector3).distance_to(p0)
@@ -427,7 +439,9 @@ func _update_actors(dt: float) -> void:
 			var ent0: Dictionary = stage.cur.entities[id]
 			var base: float = float(hosts[id].get_meta("base_scale", 1.0))
 			hosts[id].scale = Vector3.ONE * base * (0.3 + 0.7 * float(ent0.get("meat", 0)) / 4.0 if bool(ent0.get("dead", false)) else 1.0)
-	var p: Dictionary = stage.sample(0)
+	if flight != null:
+		flight.post_update(dt)
+	var p: Dictionary = player_sample()
 	player_pos = p.pos
 	var occ := []
 	if occluders_enabled:
@@ -446,9 +460,13 @@ func _update_camera(dt: float) -> void:
 	if not chase_enabled or chase == null:
 		_apply_zoom_budget(chase.z if chase != null else 0.0)    # creature visibility (hidden sleepers) must not depend on the chase camera
 		return
-	var p: Dictionary = stage.sample(0)
+	var p: Dictionary = player_sample()
 	var state: Dictionary = stage.cur
 	var fighting: bool = state.active >= 0
+	if flight != null:
+		chase.air_on = flight.active() and flight.model.airborne()
+		chase.air_y = p.pos.y
+		chase.air_dive = flight.model != null and flight.model.mode == "dive"
 	var enemy = null
 	if fighting:
 		var e: Dictionary = state.entities[state.active + 1]
@@ -553,6 +571,9 @@ func _process(delta: float) -> void:
 # middle drag orbit; a middle click or Home puts the camera back behind the creature.
 func _unhandled_input(event: InputEvent) -> void:
 	if stage == null or chase == null:
+		return
+	if flight != null and flight.handle_input(event):
+		get_viewport().set_input_as_handled()
 		return
 	if event is InputEventMouseMotion:
 		_on_motion(event as InputEventMouseMotion)
