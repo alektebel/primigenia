@@ -561,3 +561,11 @@ godot-journal-evidence: godot
 	@mkdir -p docs/evidence/godot/journal
 	LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 900 xvfb-run -a -s "-screen 0 $(or $(RES),1280x720)x24" $(GODOT) --rendering-driver opengl3 --max-fps 15 --resolution $(or $(RES),1280x720) --path godot \
 	  --script res://game/tests/journal_evidence.gd -- $(CURDIR)/docs/evidence/godot/journal $(SUFFIX)
+
+# Nest overlay layout, Esc and the end-of-lineage overlay at small-laptop sizes (software GL, JPG).
+.PHONY: godot-journal-nest-evidence
+godot-journal-nest-evidence: godot
+	@mkdir -p docs/evidence/godot/journal/nest
+	for cfg in "1280 720 es" "1024 600 es" "1024 600 en"; do set -- $$cfg; \
+	  LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 600 xvfb-run -a -s "-screen 0 $$1x$$2x24" $(GODOT) --rendering-driver opengl3 --max-fps 15 --resolution $$1x$$2 --path godot \
+	    --script res://game/tests/journal_nest_evidence.gd -- $(CURDIR)/docs/evidence/godot/journal/nest $$3 _$$1x$$2_$$3 || exit 1; done
