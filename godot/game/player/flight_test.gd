@@ -239,7 +239,7 @@ func _fly(dt: float, input: Dictionary, ground: Callable, ev: Dictionary) -> voi
 	var lift_dir := lv * cos_phi + lf * sin_phi
 	# what the wings do: dive folds, flare commands the lift for a soft touchdown, otherwise the pilot's pitch moves CL
 	var s_eff := s_full
-	var cl := cl_best()
+	var cl := cl_best() + clampf(-0.03 * vel.y, -0.25, 0.25)     # flight-path damping: the glide settles instead of ringing (phugoid)
 	var pitch := clampf(float(input.get("pitch", 0.0)), -1.0, 1.0)
 	cl = lerpf(cl, CL_MAX, pitch) if pitch >= 0.0 else lerpf(cl, CL_MIN, -pitch)
 	var flaring := false
@@ -288,7 +288,10 @@ func _fly(dt: float, input: Dictionary, ground: Callable, ev: Dictionary) -> voi
 	ev.speed = speed
 	# touchdown
 	var gy: float = ground.call(pos.x, pos.z)
-	if pos.y - float(spec.com_h) <= gy:
+	if pos.y - float(spec.com_h) <= gy and vel.y > 0.0:
+		pos.y = gy + float(spec.com_h)       # still climbing: skim the rising ground instead of landing on it
+		vel.y = minf(vel.y, 0.5 * speed)
+	elif pos.y - float(spec.com_h) <= gy:
 		var vy := vel.y
 		ev.landed = true
 		ev.impact_vy = vy

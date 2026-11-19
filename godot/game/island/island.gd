@@ -465,7 +465,7 @@ func _update_camera(dt: float) -> void:
 	var fighting: bool = state.active >= 0
 	if flight != null:
 		chase.air_on = flight.active() and flight.model.airborne()
-		chase.air_alt = flight.altitude()
+		chase.air_y = p.pos.y
 		chase.air_dive = flight.model != null and flight.model.mode == "dive"
 	var enemy = null
 	if fighting:

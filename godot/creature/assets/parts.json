@@ -929,7 +929,8 @@
         "glide"
       ],
       "attachment": "right shoulder; mirror for left",
-      "mount": "body"
+      "mount": "body",
+      "godot_only": true
     },
     {
       "id": "wing_flap",
@@ -946,7 +947,8 @@
         "glide"
       ],
       "attachment": "right shoulder; mirror for left",
-      "mount": "body"
+      "mount": "body",
+      "godot_only": true
     },
     {
       "id": "tail_hammer",

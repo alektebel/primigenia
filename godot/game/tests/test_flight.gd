@@ -53,6 +53,47 @@ func run(t) -> void:
 	_creature_wings(t)
 	_kinematics(t)
 	_physics(t)
+	_creator_panel(t)
+
+func _creator_panel(t) -> void:
+	var Model = load("res://studio/model.gd")
+	var Panel = load("res://studio/ui/wing_panel.gd")
+	var Genome = load("res://studio/genome.gd")
+	var m = Model.new()
+	var i: int = m.add_part("wing_vane", 0.62, 1.3)
+	t.check(i >= 0, "the creator can add a wing_vane")
+	var p: Dictionary = m.doc["parts"][i]
+	t.check(Panel.is_wing(p), "the panel recognises a wing")
+	t.check(not Panel.is_wing(m.doc["parts"][0]), "and not a mouth")
+	var box := VBoxContainer.new()
+	Panel.build(box, m, null, i, func(s): return s)
+	var names := {}
+	var stack: Array = [box]
+	while not stack.is_empty():
+		var n: Node = stack.pop_back()
+		names[n.name] = n
+		stack.append_array(n.get_children())
+	for k in ["WingFamily", "WingSpan", "WingBreadth", "WingSpars", "WingMuscle", "WingMode", "WingFold"]:
+		t.check(names.has(k), "the wing panel has %s" % k)
+	(names["WingSpan"] as HSlider).value_changed.emit(1.8)
+	(names["WingSpars"] as HSlider).value_changed.emit(3.0)
+	(names["WingMode"] as OptionButton).item_selected.emit(1)
+	(names["WingFamily"] as OptionButton).item_selected.emit(2)
+	var q: Dictionary = m.doc["parts"][i]
+	t.check(absf(float(q.wing.span) - 1.8) < 1e-6 and int(q.wing.spars) == 3 and q.wing.mode == "extra" and q.type == "wing_insect", "the controls write the wing block and the family (%s)" % [q])
+	var types := {}
+	for e in JSON.parse_string(FileAccess.get_file_as_string("res://game/data/parts.json")).parts:
+		types[e.id] = e
+	var gr: Dictionary = Genome.validate(m.doc, types)
+	t.check(gr.ok, "the studio validates the document with the wing block (%s)" % gr.get("error", ""))
+	var cr = _creature(m.doc.duplicate(true))
+	t.check(cr != null, "and the creature module builds it")
+	if cr != null:
+		cr.free()
+	var before: String = m.snapshot()
+	m.undo()
+	t.check(m.snapshot() != before, "a wing edit is one undoable step")
+	box.free()
 
 func _genome(t) -> void:
 	var g: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://game/data/flyer.json"))

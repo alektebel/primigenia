@@ -10,6 +10,28 @@ const RADIAL_LEG_TYPES := ["pata", "zanca", "pezuna", "leg_sprinter", "leg_sucke
 
 static var _err := ""
 
+const WING_TYPES := ["wing_glider", "wing_vane", "wing_insect", "wing_flap"]
+
+## The optional `wing` block of a wing part (same rules as creature/creature_wing.gd validate(); this project has no creature module).
+static func _wing(type, w) -> bool:
+	if typeof(w) != TYPE_DICTIONARY or not (type in WING_TYPES):
+		return _fail("parts.wing")
+	for k in w.keys():
+		if not (k in ["span", "breadth", "spars", "anchor", "mode", "fold", "muscle"]):
+			return _fail("parts.wing." + str(k))
+	for spec in [["span", 0.3, 6.0], ["breadth", 0.12, 1.2], ["muscle", 0.08, 0.25]]:
+		if w.has(spec[0]) and not _num(w[spec[0]], spec[1], spec[2], "parts.wing." + spec[0]):
+			return false
+	if w.has("spars") and not _int(w["spars"], 1, 5, "parts.wing.spars"):
+		return false
+	if w.has("anchor") and not (w["anchor"] in ["flank", "hind", "none"]):
+		return _fail("parts.wing.anchor")
+	if w.has("mode") and not (w["mode"] in ["forelimb", "extra"]):
+		return _fail("parts.wing.mode")
+	if w.has("fold") and not (w["fold"] in ["flank", "back", "spread"]):
+		return _fail("parts.wing.fold")
+	return true
+
 static func _fail(path: String) -> bool:
 	if _err == "":
 		_err = path
@@ -115,7 +137,7 @@ static func _validate(g, types) -> bool:
 	if typeof(parts) != TYPE_ARRAY or parts.size() > 256:
 		return _fail("parts")
 	for p in parts:
-		if not _keys(p, ["type", "t", "ang", "size", "len", "curve", "w", "k", "f", "rot", "tilt", "act", "single", "pupil", "level", "tier"], "parts"):
+		if not _keys(p, ["type", "t", "ang", "size", "len", "curve", "w", "k", "f", "rot", "tilt", "act", "single", "pupil", "wing", "level", "tier"], "parts"):
 			return false
 		if not _int(p.get("level"), 1, 5, "parts.level") or not _int(p.get("tier"), 0, 2, "parts.tier"):
 			return false
@@ -132,6 +154,8 @@ static func _validate(g, types) -> bool:
 			return false
 		if p.has("pupil") and not (p["pupil"] in ["auto", "round", "slit", "bar"]):
 			return _fail("parts.pupil")
+		if p.has("wing") and not _wing(p.get("type"), p["wing"]):
+			return false
 		if LEG_TYPES.has(p["type"]):
 			if not _num(p.get("w"), .05, .8, "parts.w"):
 				return false
