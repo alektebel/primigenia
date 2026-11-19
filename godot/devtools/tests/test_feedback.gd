@@ -11,6 +11,9 @@ func run(t) -> void:
 	var setup: Dictionary = CporeWorld.default_setup(42)
 	setup.terrain = 1
 	sw.reset(setup)
+	# god mode (debug op 6, flag 1): the walking player met a hostile wild creature at tick 553 and lost, which ends the world
+	# (outcome 2: no more ticks, so no ring snapshot 600 ticks old). The six-species roster of snapshot v7 makes that likely.
+	sw.debug_now({"op": 6, "a": 1})
 	sw.input_provider = func() -> Dictionary: return {"verb": 3, "hx": (int(sw.cur.tick) % 60) * 500 - 15000, "hz": 20000}
 	for i in 1000:
 		if i == 300:
