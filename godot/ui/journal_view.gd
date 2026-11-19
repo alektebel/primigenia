@@ -594,7 +594,8 @@ func _draw_shards(p: Rect2, y: float, shards: Array, mod: Color, first: bool) ->
 			draw_polyline(pts, _c(INK_FAINT, mod), 1.4, true)
 		var tx := p.position.x + Style.u(34.0)
 		var w := p.size.x - Style.u(34.0)
-		var nm := String(s.name) if String(s.name) != "" else Strings.t("j_shard_n", [int(s.index) + 1])
+		# the world names a shard in English only: the string table has the Spanish name
+		var nm := Strings.t("shard_%d" % int(s.index)) if Strings.TABLE.has("shard_%d" % int(s.index)) else (String(s.name) if String(s.name) != "" else Strings.t("j_shard_n", [int(s.index) + 1]))
 		if found:
 			_ink(Style.font_sans(true), Vector2(tx, y + Style.u(18.0)), _fit(Style.font_sans(true), nm, 16.5, w), 16.5, _c(COPPER_D, mod))
 			var line := Model.text_of(s.line, lang)
