@@ -81,13 +81,15 @@ int cp_stage_at_nest(const CpStageWorld *w){
  return dx*dx+dz*dz<=CP_STAGE_NEST_RADIUS*CP_STAGE_NEST_RADIUS;
 }
 /* Authored victim tables: repeated entries are integer weights. */
-static const char *const victim[4][6]={
+static const char *const victim[CP_STAGE_SPECIES_COUNT][6]={
  {"romo","romo","pata","ojo","cresta","placa"},
  {"zanca","zanca","pico","tail_spike","ojo","cresta"},
  {"pua","pua","cuerno","placa","fauces","tail_spike"},
- {"fauces","fauces","jaw_nipper","tail_hammer","cuerno","leg_sprinter"}
+ {"fauces","fauces","jaw_nipper","tail_hammer","cuerno","leg_sprinter"},
+ {"ojo","ojo","oreja","jaw_nipper","lure_lantern","tail_spike"},          /* Acechalunas: eyes, ears and the belly light */
+ {"antena","eye_stalk","sac_spitter","sac_spitter","bulbo","pata"}         /* Babosa */
 };
-static const char *const signature[4]={"romo","zanca","pua","fauces"};
+static const char *const signature[CP_STAGE_SPECIES_COUNT]={"romo","zanca","pua","fauces","lure_lantern","sac_spitter"};
 void cp_stage_parts_reset(CpStageWorld *w){
  CpStageParts *p=&w->parts;memset(p,0,sizeof *p);p->eggs=3;p->adult_hp=w->player.profile.hp;
  cp_rng_seed(&p->loot,w->setup.seed^0x4c4f4f54u);cp_rng_seed(&p->fossil,w->setup.seed^0x464f5353u);
@@ -113,13 +115,13 @@ int cp_stage_part_find(CpStageWorld *w,int id,int source){
  event(w,CP_STAGE_EV_PART_FOUND,id,source,duplicate);w->hash=cp_stage_hash(w);return 0;
 }
 void cp_stage_parts_ally(CpStageWorld *w,int sp){
- if(sp<0||sp>=4||w->parts.ally_paid[sp])return;
+ if(sp<0||sp>=CP_STAGE_SPECIES_COUNT||w->parts.ally_paid[sp])return;
  w->parts.ally_paid[sp]=1;cp_stage_part_find(w,cp_stage_part_id(signature[sp]),CP_PART_ALLY);
 }
 void cp_stage_parts_kill(CpStageWorld *w,int i){
  if(i<0||i>=w->setup.n||w->parts.kill_paid[i]||!cp_stage_species_counts_progress(w,i+1))return;
  CpStageParts *p=&w->parts;int sp=w->wild[i].species;
- if(sp<0||sp>=4)return;
+ if(sp<0||sp>=CP_STAGE_SPECIES_COUNT)return;
  p->kill_paid[i]=1;
  if(w->ancestry.count){const CpLineageForm *f=&w->ancestry.forms[w->ancestry.count-1].form;for(int k=0;k<CP_STAGE_PART_COUNT;k++)if(f->parts[k]&&p->kills[k]<UINT32_MAX)p->kills[k]++;}
  unsigned roll=cp_rng_u32(&p->loot)%1000,pick=cp_rng_u32(&p->loot);
@@ -213,6 +215,7 @@ static void hu(uint64_t *h,uint32_t v){for(int i=0;i<4;i++){*h^=(uint8_t)(v>>(8*
 uint64_t cp_stage_parts_hash(const CpStageWorld *w){
  const CpStageParts *p=&w->parts;uint64_t h=14695981039346656037ULL;
  for(int i=0;i<4;i++){hu(&h,p->loot.s[i]);hu(&h,p->fossil.s[i]);hu(&h,p->dry[i]);hu(&h,p->ally_paid[i]);}
+ for(int i=4;i<CP_STAGE_SPECIES_COUNT;i++)if(p->dry[i]||p->ally_paid[i]){hu(&h,0x53503435u+(uint32_t)i);hu(&h,p->dry[i]);hu(&h,p->ally_paid[i]);}   /* species 4 and 5: only once they matter */
  hu(&h,p->discovered);hu(&h,p->discovered>>32);hu(&h,p->owned);hu(&h,p->owned>>32);
  for(int i=0;i<46;i++){hu(&h,p->level[i]);hu(&h,p->tier[i]);hu(&h,p->hits[i]);hu(&h,p->wins[i]);hu(&h,p->kills[i]);}
  for(int i=0;i<6;i++){hu(&h,p->move_hits[i]);hu(&h,p->move_wins[i]);}

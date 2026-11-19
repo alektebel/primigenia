@@ -29,5 +29,11 @@ for (const f of fs.readdirSync(dir).filter(f => f.endsWith('.json')).sort()) {
     console.log('ok   ' + f);
   } catch (e) { fails++; console.error('FAIL ' + f + ': ' + e.message); }
 }
+// S1 parity table: the web validator must give the same verdict and error path as the Godot ones.
+for (const c of JSON.parse(fs.readFileSync(path.join(root, 'godot/creature/tests/parity/plan_cases.json'), 'utf8'))) {
+  checks++; let err = null;
+  try { Doc.parse(JSON.stringify(c.genome), types); } catch (e) { err = e.message; }
+  if (err !== c.error) { fails++; console.error(`FAIL plan case '${c.name}': want ${c.error} got ${err}`); }
+}
 console.log(`web validator cross-check: ${checks} files, ${fails} failures`);
 process.exit(fails || !checks ? 1 : 0);

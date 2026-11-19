@@ -27,6 +27,7 @@ func _run() -> void:
 	var t0 := Time.get_ticks_msec()
 	_test_assets()
 	_test_genome_parity()
+	_test_plan_cases()
 	_test_growth_parity()
 	_test_seeds_and_fixtures()
 	_test_growth_placement()
@@ -97,6 +98,23 @@ static func same(a, b, tol := 1e-9) -> bool:
 				return false
 		return true
 	return a == b
+
+
+const PLAN_CASES := "res://creature/tests/parity/plan_cases.json"
+
+
+## S1: the radial `plan` key. Same table as the studio test, node_check.js and tests/test_plan.c.
+func _test_plan_cases() -> void:
+	var cases = JSON.parse_string(FileAccess.get_file_as_string(PLAN_CASES))
+	check(typeof(cases) == TYPE_ARRAY and cases.size() >= 30, "plan_cases.json present")
+	var types: Dictionary = CreatureParts.library()["types"]
+	for c in cases:
+		var res := CreatureGenome.parse(c["genome"], types)
+		var want = c["error"]
+		if want == null:
+			check(res["ok"] and same(res["genome"]["plan"] if res["genome"].has("plan") else null, c["genome"].get("plan")), "plan case '%s' accepted unchanged (%s)" % [c["name"], res["error"]])
+		else:
+			check(not res["ok"] and res["error"] == want, "plan case '%s' -> %s (got %s)" % [c["name"], want, res["error"]])
 
 
 func _test_genome_parity() -> void:

@@ -105,7 +105,13 @@ func cell_center(i: int) -> float:
 	return (float(i) + 0.5) * cell - half
 
 # Exact LOD0 surface: two triangles per quad, diagonal (i+1, j) - (i, j+1). Clamped outside.
+var cave_site = null              # CaveSite (game/island/cave_site.gd) once the world has opened the hidden cave chamber
+
 func ground(x: float, z: float) -> float:
+	var h := _ground_raw(x, z)
+	return h if cave_site == null else cave_site.adjust(x, z, h)
+
+func _ground_raw(x: float, z: float) -> float:
 	var u := (x + half) / cell - 0.5
 	var v := (z + half) / cell - 0.5
 	var i := clampi(floori(u), 0, n - 2)
@@ -138,6 +144,10 @@ func _vh(i: int, j: int) -> float:
 func visual_ground(x: float, z: float) -> float:
 	if vn == 0:
 		return ground(x, z)
+	var h := _visual_raw(x, z)
+	return h if cave_site == null else cave_site.adjust(x, z, h)
+
+func _visual_raw(x: float, z: float) -> float:
 	var u := (x + half) / vcell - 0.5
 	var v := (z + half) / vcell - 0.5
 	var i := clampi(floori(u), 0, vn - 2)

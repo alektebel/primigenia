@@ -8,8 +8,23 @@ extends RefCounted
 
 const SCHEMA := "cpore.creature/5"
 const LEG_TYPES := ["pata", "zanca", "pezuna"]
+## Leg parts are forbidden on a radial body (the arms are the locomotors).
+const RADIAL_LEG_TYPES := ["pata", "zanca", "pezuna", "leg_sprinter", "leg_sucker", "foot_spring", "foot_hoof", "foot_gecko"]
 
 var _error := ""
+
+
+## Body plan of a validated genome with every default filled in (S1 of the radial plan). Absent `plan` = bilateral.
+## {sym: "bilateral"|"radial", fold, star, gel, arm: {len, w, taper, curl, droop, frill, tip, eye, act}}
+static func plan_of(g: Dictionary) -> Dictionary:
+	var p: Dictionary = g.get("plan", {})
+	if p.is_empty() or p.get("sym", "bilateral") != "radial":
+		return {"sym": "bilateral"}
+	var a: Dictionary = p.get("arm", {})
+	return {"sym": "radial", "fold": int(p["fold"]), "star": float(p.get("star", .3)), "gel": float(p.get("gel", 0.0)),
+		"arm": {"len": float(a.get("len", 2.5)), "w": float(a.get("w", .4)), "taper": float(a.get("taper", .8)),
+			"curl": float(a.get("curl", 0.0)), "droop": float(a.get("droop", 0.0)), "frill": float(a.get("frill", 0.0)),
+			"tip": String(a.get("tip", "point")), "eye": int(a.get("eye", 0)), "act": String(a.get("act", ""))}}
 
 
 static func parse(input, types: Dictionary) -> Dictionary:
@@ -136,7 +151,7 @@ func _region(r):
 
 
 func _validate(g, types: Dictionary):
-	if not _keys(g, ["schema", "name", "nodes", "parts", "skin", "regions", "migration"], "document"):
+	if not _keys(g, ["schema", "name", "nodes", "parts", "skin", "regions", "migration", "plan"], "document"):
 		return null
 	if g.get("schema") != SCHEMA:
 		_fail("schema")
@@ -235,6 +250,8 @@ func _validate(g, types: Dictionary):
 			_fail("regions.id")
 			return null
 		ids[r["id"]] = true
+	if not _plan(g):
+		return null
 	if g.has("migration") and g["migration"]:
 		var m = g["migration"]
 		if not _keys(m, ["from", "warnings", "source"], "migration"):
@@ -249,6 +266,54 @@ func _validate(g, types: Dictionary):
 		if not _object(m.get("source"), "migration.source"):
 			return null
 	return g.duplicate(true)
+
+
+## Radial body plan (A24, optional `plan` key; absent = bilateral). Error paths are shared with creature_genome.gd,
+## studio/genome.gd and web/studio/genome.js (godot/creature/tests/parity/plan_cases.json).
+func _plan(g) -> bool:
+	if not g.has("plan"):
+		return true
+	var p = g["plan"]
+	if not _keys(p, ["sym", "fold", "star", "gel", "arm"], "plan"):
+		return false
+	if not (p.get("sym") in ["bilateral", "radial"]):
+		return _fail("plan.sym")
+	var radial: bool = p["sym"] == "radial"
+	if (radial or p.has("fold")) and not _integer(p.get("fold"), 3, 8, "plan.fold"):
+		return false
+	for k in [["star", 0, 1], ["gel", 0, 1]]:
+		if p.has(k[0]) and not _number(p[k[0]], k[1], k[2], "plan." + k[0]):
+			return false
+	if p.has("arm"):
+		var a = p["arm"]
+		if not _keys(a, ["len", "w", "taper", "curl", "droop", "frill", "tip", "eye", "act"], "plan.arm"):
+			return false
+		for k in [["len", 0, 6], ["w", .1, 1], ["taper", 0, 1], ["curl", -1, 1], ["droop", 0, 1], ["frill", 0, 1]]:
+			if a.has(k[0]) and not _number(a[k[0]], k[1], k[2], "plan.arm." + k[0]):
+				return false
+		if a.has("tip") and not (a["tip"] in ["point", "frill", "bulb"]):
+			return _fail("plan.arm.tip")
+		if a.has("eye") and not _integer(a["eye"], 0, 1, "plan.arm.eye"):
+			return false
+		if a.has("act") and not (a["act"] in ["peristaltic", "hydrostat", "tubefeet", "cilia"]):
+			return _fail("plan.arm.act")
+	if not radial:
+		return true
+	var py := 0.0
+	for i in g["nodes"].size():
+		var n = g["nodes"][i]
+		if float(n["z"]) != 0.0 or (i > 0 and float(n["y"]) <= py):
+			return _fail("plan.nodes")
+		py = float(n["y"])
+	for q in g["parts"]:
+		if RADIAL_LEG_TYPES.has(q["type"]):
+			return _fail("plan.legs")
+		if q.has("single") and float(q["single"]) < 0.0:
+			return _fail("parts.single")
+	for r in g["regions"]:
+		if r["surface"] != "torso":
+			return _fail("regions.surface")
+	return true
 
 
 func _migrate(g):

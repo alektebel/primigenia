@@ -271,6 +271,46 @@ func set_param(i: int, key: String, value: float) -> void:
 	_touch()
 	end()
 
+## Wheel scaling of one part (creator direct manipulation). `factor` multiplies the part's size; a leg scales its
+## reach (knee and foot vectors) and thickness together. Clamped to the genome limits. The mirrored pair is one genome
+## entry, so both sides follow. Returns {kind: "size"|"reach", value, at_limit, changed}.
+const LEG_REACH_MIN := .5
+const LEG_REACH_MAX := 6.0
+
+func scale_part(i: int, factor: float) -> Dictionary:
+	if i < 0 or i >= doc["parts"].size():
+		return {}
+	var p: Dictionary = doc["parts"][i]
+	var out := {"kind": "size", "value": 0.0, "at_limit": false, "changed": false}
+	begin()
+	if parts_db.is_leg(p["type"]):
+		var r: Array = PartsDB.RANGES["w"]
+		var k: Array = p["k"]
+		var f: Array = p["f"]
+		var reach := Vector3(f[0], f[1], f[2]).length()
+		var fac := clampf(reach * factor, LEG_REACH_MIN, LEG_REACH_MAX) / maxf(reach, 1e-6)
+		var w := clampf(float(p.get("w", .2)) * fac, r[0], r[1])
+		var changed: bool = absf(fac - 1.0) > 1e-6
+		if changed:
+			p["k"] = [k[0] * fac, k[1] * fac, k[2] * fac]
+			p["f"] = [f[0] * fac, f[1] * fac, f[2] * fac]
+			p["w"] = w
+		out["kind"] = "reach"
+		out["value"] = reach * fac
+		out["at_limit"] = absf(fac - factor) > 1e-6
+		out["changed"] = changed
+	elif p.has("size"):
+		var r2: Array = PartsDB.RANGES["size"]
+		var want: float = float(p["size"]) * factor
+		var v := clampf(want, r2[0], r2[1])
+		out["changed"] = absf(v - float(p["size"])) > 1e-6
+		out["at_limit"] = absf(v - want) > 1e-9
+		p["size"] = v
+		out["value"] = v
+	_touch()
+	end()
+	return out
+
 ## Optional per-part genome keys of the realism round: act (limb actuation), single (-1 / 0 / 1: only that side),
 ## pupil (auto, round, slit, bar). Absent = default; "auto" / 0 remove the key so old genomes stay byte-identical.
 func set_part_key(i: int, key: String, value) -> void:
@@ -285,6 +325,46 @@ func set_part_keys(idx: Array, key: String, value) -> void:
 		_set_part_key(int(i), key, value)
 	_touch()
 	end()
+
+## The actuator ring of a limb (A24, creator direct manipulation). Four choices, each tied to the body skeleton the
+## realism layer derives (`creature_bio.gd`): muscle on bone (endo), muscle in an exoskeleton (exo), hydraulic (exo),
+## hydrostat (endo or hydro). `bio` is `creature.bio`. Returns [{id, act, skels, allowed, current}]; a choice is
+## allowed when some skeleton the body can take (`skel_cands`, or the current one) carries it.
+const RING := [["muscle", "muscle", ["endo"]], ["hydraulic", "hydraulic", ["exo"]], ["exo", "muscle", ["exo"]], ["hydrostat", "hydrostat", ["endo", "hydro"]]]
+
+func actuation_options(bio: Dictionary, i: int) -> Array:
+	var out := []
+	if bio.is_empty() or not bio["limbs"].has(i):
+		return out
+	var L: Dictionary = bio["limbs"][i]
+	var skel: String = bio["skeleton"]
+	var cands: Array = bio["skel_cands"]
+	for r in RING:
+		var ok := false
+		for s in r[2]:
+			ok = ok or s == skel or s in cands
+		var cur: bool = L["act"] == r[1] and skel in r[2]
+		out.append({"id": r[0], "act": r[1], "skels": r[2], "allowed": ok, "current": cur})
+	return out
+
+## Apply a ring choice to limb `i` in one undo step. Switches the body skeleton only when the choice needs another one.
+func set_limb_actuation(bio: Dictionary, i: int, id: String) -> bool:
+	for o in actuation_options(bio, i):
+		if o["id"] != id or not o["allowed"]:
+			continue
+		var skel: String = bio["skeleton"]
+		var cands: Array = bio["skel_cands"]
+		begin()
+		if not skel in o["skels"]:
+			for s in o["skels"]:
+				if s in cands:
+					set_skin("sk", s)
+					break
+		_set_part_key(i, "act", o["act"])
+		_touch()
+		end()
+		return true
+	return false
 
 func _set_part_key(i: int, key: String, value) -> void:
 	if i < 0 or i >= doc["parts"].size():
@@ -335,6 +415,33 @@ func _move_node(i: int, y: float, z: float) -> int:
 				if i != 0:
 					out = N.size() - 1
 	_touch()
+	return out
+
+## Drag of a spine end (neck/head = last node, tail = node 0): the end follows (y, z) with the usual spacing rules,
+## which add or remove end vertebrae, and the two vertebrae behind it lean along (50 % and 25 % of the sideways part of
+## the move; the part along the segment extends by vertebrae instead), so the neck or tail bends. Returns the index of
+## the end node afterwards.
+func bend_end(i: int, y: float, z: float) -> int:
+	var N: Array = doc["nodes"]
+	if i != 0 and i != N.size() - 1:
+		return i
+	var head: bool = i != 0
+	var old := Vector2(N[i]["y"], N[i]["z"])
+	var nb: int = i - 1 if head else 1
+	var axis := (old - Vector2(N[nb]["y"], N[nb]["z"])).normalized()
+	begin()
+	var out := _move_node(i, y, z)
+	N = doc["nodes"]
+	var moved := Vector2(N[out]["y"], N[out]["z"]) - old
+	moved -= axis * moved.dot(axis)   # only the sideways part bends the neighbours; the axial part extends by vertebrae
+	for step in 2:
+		var k: int = out - 1 - step if head else out + 1 + step
+		if k <= 0 or k >= N.size() - 1:
+			continue   # never drag the opposite end (only reached on a 4-node spine)
+		var w: float = .5 if step == 0 else .25
+		_move_node(k, N[k]["y"] + moved.x * w, N[k]["z"] + moved.y * w)
+	_touch()
+	end()
 	return out
 
 func set_node_radius(i: int, r: float) -> void:

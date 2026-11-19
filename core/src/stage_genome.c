@@ -61,12 +61,42 @@ static int keys(const Json *j,int obj,const char *allowed){
 }
 static int oneof(const Json *j,int id,const char *values){char s[80],needle[84];if(!text(j,id,s,sizeof s))return 0;snprintf(needle,sizeof needle,"|%s|",s);return strstr(values,needle)!=NULL;}
 static int hex(const Json *j,int id){char s[8];if(!text(j,id,s,sizeof s)||strlen(s)!=7||s[0]!='#')return 0;for(int k=1;k<7;k++)if(!isxdigit((unsigned char)s[k]))return 0;return 1;}
+/* Radial body plan (A24): optional `plan` object. Same rules as creature_genome.gd, studio/genome.gd and web/studio/genome.js. */
+static int plan_ok(const Json *j,int plan,int nodes,int parts,int regions){
+ if(plan<0)return 1;
+ if(!keys(j,plan,"|sym||fold||star||gel||arm|"))return 0;
+ if(!oneof(j,field(j,plan,"sym"),"|bilateral||radial|"))return 0;
+ int radial=eq(j,field(j,plan,"sym"),"radial"),fold=field(j,plan,"fold");
+ if((radial||fold>=0)&&!integer(j,fold,3,8))return 0;
+ if(!optional(j,plan,"star",0,1)||!optional(j,plan,"gel",0,1))return 0;
+ int arm=field(j,plan,"arm");
+ if(arm>=0){
+  if(!keys(j,arm,"|len||w||taper||curl||droop||frill||tip||eye||act|"))return 0;
+  if(!optional(j,arm,"len",0,6)||!optional(j,arm,"w",.1,1)||!optional(j,arm,"taper",0,1)||!optional(j,arm,"curl",-1,1)||!optional(j,arm,"droop",0,1)||!optional(j,arm,"frill",0,1))return 0;
+  int a=field(j,arm,"tip");if(a>=0&&!oneof(j,a,"|point||frill||bulb|"))return 0;
+  a=field(j,arm,"eye");if(a>=0&&!integer(j,a,0,1))return 0;
+  a=field(j,arm,"act");if(a>=0&&!oneof(j,a,"|peristaltic||hydrostat||tubefeet||cilia|"))return 0;
+ }
+ if(!radial)return 1;
+ double py=0;int first=1;
+ for(int i=nodes+1;i<j->t[nodes].next;i=j->t[i].next){double y=0,z=1;num(j,field(j,i,"y"),-5,20,&y);num(j,field(j,i,"z"),-30,30,&z);
+  if(z!=0||(!first&&y<=py))return 0;
+  first=0;py=y;
+ }
+ for(int i=parts+1;i<j->t[parts].next;i=j->t[i].next){
+  const char *legs[]={"pata","zanca","pezuna","leg_sprinter","leg_sucker","foot_spring","foot_hoof","foot_gecko"};
+  for(int k=0;k<8;k++)if(eq(j,field(j,i,"type"),legs[k]))return 0;
+  double sg=0;if(num(j,field(j,i,"single"),-1,1,&sg)&&sg<0)return 0;
+ }
+ for(int i=regions+1;i<j->t[regions].next;i=j->t[i].next)if(!eq(j,field(j,i,"surface"),"torso"))return 0;
+ return 1;
+}
 int cp_stage_genome_form(const char *json,CpLineageForm *out){
  if(!json||!out||strlen(json)>=CP_LINEAGE_BODY_CAP)return -1;
  Json *j=calloc(1,sizeof *j);if(!j)return -1;j->s=json;int ok=0;CpLineageForm f={0};
  if(value(j)!=0)goto done;
  space(j);if(j->s[j->pos])goto done;
- if(!keys(j,0,"|schema||name||nodes||parts||skin||regions||migration|"))goto done;
+ if(!keys(j,0,"|schema||name||nodes||parts||skin||regions||migration||plan|"))goto done;
  int version=eq(j,field(j,0,"schema"),"cpore.creature/5")?5:eq(j,field(j,0,"schema"),"cpore.creature/4")?4:0;if(!version)goto done;
  if(!text(j,field(j,0,"name"),f.name,sizeof f.name)||strchr(f.name,'<')||strchr(f.name,'>'))goto done;
  int nodes=field(j,0,"nodes");if(nodes<0||j->t[nodes].kind!='['||j->t[nodes].count<4||j->t[nodes].count>32)goto done;
@@ -122,6 +152,7 @@ int cp_stage_genome_form(const char *json,CpLineageForm *out){
   if(!integer(j,field(j,i,"count"),1,18)||!integer(j,field(j,i,"branches"),0,3))goto done;
   int m=field(j,i,"mirror");if(m<0||(j->t[m].kind!='t'&&j->t[m].kind!='f'))goto done;
  }
+ if(!plan_ok(j,field(j,0,"plan"),nodes,parts,regions))goto done;
  int migration=field(j,0,"migration");
  if(migration>=0){
   if(!keys(j,migration,"|from||warnings||source|")||!integer(j,field(j,migration,"from"),1,4))goto done;

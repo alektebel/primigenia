@@ -112,7 +112,7 @@ this is the paired comparison used by the structure gates.
    chosen by a deterministic ranking, with 180 m separation. Small notches
    lower only a few nearby height samples; routing is recomputed afterward.
    Cave records describe their final floor positions. There are **no tunnels
-   or chamber meshes** in this output. N<64 omits entrances rather than
+   or chamber meshes** in this output. (C2 secrets: the stage world, not the terrain generator, gives the first entrance a walkable passage and chamber, a flat-floor region over the unchanged heights; see `docs/SECRETS-REPORT.md`. The terrain output, its hashes and limits are untouched.) N<64 omits entrances rather than
    inventing sites on a grid too coarse to describe them.
 9. **Trails and fords (route certification, v4 output at n >= 512).** Every body must be able to walk from the start
    valley to the river gap and to the first cave. Two deterministic graded trails guarantee it. *Gap trail:* the gap

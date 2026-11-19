@@ -5,9 +5,11 @@ render_mode unshaded, blend_mix, depth_draw_opaque, cull_disabled;
 #include "res://game/shaders/terrain_maps.gdshaderinc"
 
 varying vec3 wp;
+varying float shore;   // lake quads: 1 inside, 0 on the outer corners of the dilation ring (sea: 1)
 
 void vertex() {
 	wp = (MODEL_MATRIX * vec4(VERTEX, 1.0)).xyz;
+	shore = COLOR.r;
 }
 
 void fragment() {
@@ -29,9 +31,12 @@ void fragment() {
 	if (distance(wp, CAMERA_POSITION_WORLD) > 600.0) {
 		alpha = 1.0;
 	}
-	if (depth < -0.3) {
+	if (depth < -0.06) {
 		discard;   // water surface below the ground: never draw it over land
 	}
+	// The foam line fades out into the shore instead of ending in the straight edge of a lake quad: with the old -0.3 m
+	// margin a flat quad over a gently sloping bank showed as a pale slab with square edges (INTEGRATION-QA bug 5).
+	alpha *= smoothstep(-0.06, 0.04, depth) * smoothstep(0.0, 0.6, shore);
 	// Far sea fades into the sky's horizon colour: the plane is cut at the camera far plane (12 km) and the
 	// sky below the horizon is that colour, so no hard line shows in the far view.
 	vec3 ray = wp - CAMERA_POSITION_WORLD;

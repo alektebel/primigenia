@@ -13,7 +13,7 @@ from .env import lib as _core_lib
 # Layout sizes from the native headers (64-bit LP64). CpStageWorld grows with the engine, so its size
 # is asked from the library (cp_stage_world_size) when the stage API is bound.
 _WORLD_BYTES = 0
-_SETUP_BYTES = 17904
+_SETUP_BYTES = 17948
 
 CP_STAGE_CONTINUE = 0
 CP_STAGE_WAIT = 1
@@ -82,6 +82,21 @@ class CpStageObstacle(ctypes.Structure):
     ]
 
 
+class CpStageCave(ctypes.Structure):
+    """The hidden cave entrance record (terrain caves[0]); half/length/radius 0 take the defaults (4, 14, 10 m)."""
+    _fields_ = [
+        ("on", c_int32),
+        ("x", c_float),
+        ("z", c_float),
+        ("fx", c_float),
+        ("fz", c_float),
+        ("floor", c_float),
+        ("half", c_float),
+        ("length", c_float),
+        ("radius", c_float),
+    ]
+
+
 class CpStageSetup(ctypes.Structure):
     _fields_ = [
         ("seed", c_uint32),
@@ -99,6 +114,9 @@ class CpStageSetup(ctypes.Structure):
         ("player_legs", c_int32),
         ("wild", CpStageSpawn * CP_STAGE_MAX_WILD),
         ("obstacles", CpStageObstacle * CP_STAGE_MAX_OBSTACLES),
+        ("secrets", c_int32),       # bits: 1 shards from the island field, 2 the cave chamber (FIELD only)
+        ("start_clock", c_int32),   # world clock at tick 0 (0 = midnight, 3000 = 06:00)
+        ("cave", CpStageCave),
     ]
 
 
@@ -297,19 +315,21 @@ def parse_world_log(path: str) -> tuple[CpStageSetup, list[CpStageLogEntry], int
 class StageWorld:
     """Single P4 world episode via cp_stage_* in libcpore.so."""
 
-    def __init__(self, seed: int = 42, lib_path: str | None = None):
+    def __init__(self, seed: int = 42, lib_path: str | None = None, start_clock: int = 0):
         self._lib = _bind_stage(_core_lib() if lib_path is None else
                                 __import__(".env", fromlist=["_load"])._load(lib_path))
         self._blob = (c_byte * _WORLD_BYTES)()
         self._world = _world_ptr(self._blob)
         self._setup = CpStageSetup()
         self._seed = int(seed) & 0xFFFFFFFF
+        self._start_clock = int(start_clock)   # world clock at tick 0: 0 = midnight, 3000 = 06:00, 4000 = 08:00 (500 ticks an hour)
         self.reset(self._seed)
 
     def reset(self, seed: int | None = None) -> dict:
         if seed is not None:
             self._seed = int(seed) & 0xFFFFFFFF
         self._lib.cp_stage_setup_default(ctypes.byref(self._setup), c_uint32(self._seed))
+        self._setup.start_clock = c_int32(self._start_clock)
         if self._lib.cp_stage_reset(self._world, ctypes.byref(self._setup)) != 0:
             raise RuntimeError("cp_stage_reset failed")
         return self.observe()

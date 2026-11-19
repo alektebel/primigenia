@@ -46,10 +46,12 @@ static const struct { int8_t skill[CP_SOC_COUNT],gift[CP_ITEM_COUNT]; } PREF[CP_
     {{12,8,6,-2},{6,12,-25,-10}},   /* Rondo, herbivore */
     {{6,12,8,4},{6,12,-25,-10}},    /* Zanco, herbivore */
     {{4,4,6,12},{-2,0,14,8}},       /* Espinodo, carnivore */
-    {{-4,2,4,10},{-4,0,16,10}}      /* Garfio, carnivore, heckler */
+    {{-4,2,4,10},{-4,0,16,10}},     /* Garfio, carnivore, heckler */
+    {{12,2,6,8},{-4,0,14,10}},      /* Acechalunas, nocturnal omnivore: answers a low call, takes meat and bone */
+    {{4,2,12,8},{12,8,-25,-10}}     /* Babosa, slow herbivore: charmed by soft approach, eats litter and fruit */
 };
-static const uint8_t HERBIVORE[CP_SOC_SPECIES]={1,1,0,0};
-static const uint8_t HECKLER[CP_SOC_SPECIES]={0,0,0,1};
+static const uint8_t HERBIVORE[CP_SOC_SPECIES]={1,1,0,0,0,1};
+static const uint8_t HECKLER[CP_SOC_SPECIES]={0,0,0,1,0,0};
 /* One A22 chain per species: three things to watch, then the move it teaches. Moves are combat move ids that exist in
  * CP_COMBAT_MOVES (a lore chain that names a move the table does not have is simply not listed here). */
 const CpStageChain CP_STAGE_CHAINS[CP_SOC_SPECIES]={
@@ -68,7 +70,15 @@ const CpStageChain CP_STAGE_CHAINS[CP_SOC_SPECIES]={
     {"garfio.c1","pins its prey with a fast bite",CB_BITE,{
         "watch it lie flat and still, jaws just clear of the ground",
         "see its head snap forward faster than the body follows",
-        "watch it hold a bite and shake before letting go"}}
+        "watch it hold a bite and shake before letting go"}},
+    {"acechalunas.c1","pins its prey from the dark with a quick bite",CB_BITE,{
+        "see its eyes shine green where the moonlight finds them",
+        "watch its head turn to a low sound long before anything is visible",
+        "watch it drop from stillness onto something small and hold it"}},
+    {"babosa.c1","coils into a bitter sphere and spits mucus at what presses it",CB_SPIT,{
+        "watch it glide over the damp tuff leaving a bright wet trail",
+        "see it curl into a tight sphere when the noon light reaches it",
+        "watch it uncoil and flick a string of mucus at a nipping beetle"}}
 };
 
 static float len2(float x,float z){return sqrtf(x*x+z*z);}
@@ -95,12 +105,17 @@ uint64_t cp_stage_social_hash(const CpStageWorld *w){
     hu(&h,(uint32_t)s->act_len);hu(&h,(uint32_t)s->act_rhythm);hu(&h,(uint32_t)s->act_mult);
     hu(&h,(uint32_t)s->food);hu(&h,(uint32_t)s->diet);hu(&h,(uint32_t)s->stagger);hu(&h,(uint32_t)s->intimidate_cd);hu(&h,(uint32_t)s->obs_target);hu(&h,(uint32_t)s->obs_ticks);
     if(s->obs_need)hu(&h,(uint32_t)s->obs_need);
-    hu(&h,s->learned);hu(&h,s->tested);hu(&h,s->liked);hu(&h,s->species_seen);
+    hu(&h,s->learned);hu(&h,(uint32_t)s->tested);hu(&h,(uint32_t)s->liked);hu(&h,s->species_seen);
+    if((s->tested|s->liked)>>32){hu(&h,(uint32_t)(s->tested>>32));hu(&h,(uint32_t)(s->liked>>32));}   /* species 4 and 5 only: older worlds keep their hash */
     for(int i=0;i<CP_SOC_SPECIES;i++){
+        if(i>=4&&!(s->obs_items[i]|s->kills[i]|s->latched[i]|s->resolution[i]|s->first_met[i]))continue;   /* the original four always count */
         hu(&h,(uint32_t)s->obs_items[i]);hu(&h,(uint32_t)s->kills[i]);hu(&h,(uint32_t)s->latched[i]);
         hu(&h,(uint32_t)s->resolution[i]);hu(&h,(uint32_t)s->first_met[i]);
     }
-    for(int i=0;i<CP_DNA_SOURCES;i++)hu(&h,(uint32_t)s->dna_by_source[i]);
+    for(int i=0;i<CP_DNA_SOURCES;i++){
+        if(i==CP_DNA_SHARD&&!s->dna_by_source[i])continue;
+        hu(&h,(uint32_t)s->dna_by_source[i]);
+    }
     hu(&h,(uint32_t)s->n_explored);
     for(int i=0;i<s->n_explored;i++)hu(&h,(uint32_t)s->explored[i]);
     for(int i=0;i<w->setup.n;i++){
@@ -160,7 +175,7 @@ int cp_stage_social_shielded(const CpStageWorld *w,int i){
  * social layer pacifies, plus a pack turned hostile by an attack on one of its bonded members. */
 int cp_stage_social_hostile(const CpStageWorld *w,int i){
     const CpStageCreature *e=&w->wild[i];
-    if(is_dead(e)||cp_stage_social_pacified(w,i))return 0;
+    if(is_dead(e)||cp_stage_social_pacified(w,i)||cp_stage_creature_hidden(w,i))return 0;
     const CpStageSpecies *sp=&CP_STAGE_SPECIES[e->species];
     const float d=dist2(&w->player,e);
     const float territory=sp->temperament==CP_STAGE_TERRITORIAL?len2(w->player.x-e->home_x,w->player.z-e->home_z):d;
@@ -301,6 +316,7 @@ int cp_stage_social_order_check(CpStageWorld *w,const CpStageInput *a){
     if(w->respawn_ticks>0)return CP_STAGE_ERR_IN_FIGHT;
     if(a->target<1||a->target>w->setup.n)return -2;
     const int i=a->target-1;
+    if(cp_stage_creature_hidden(w,i))return -2;   /* asleep: it cannot be perceived */
     if(a->verb==CP_STAGE_OBSERVE)return 0;   /* a living creature or a carcass (its remains hold clues too) */
     if(a->verb==CP_STAGE_EAT){
         if(!is_dead(&w->wild[i])||cp_stage_social_carcass_meat(w,i)<=0)return -2;
@@ -386,8 +402,8 @@ static void apply_skill(CpStageWorld *w,int i,int sk){
         return;
     }
     const int delta=PREF[sp].skill[sk];
-    s->tested|=1u<<(sp*8+sk);
-    if(delta>0)s->liked|=1u<<(sp*8+sk);else s->liked&=~(1u<<(sp*8+sk));
+    s->tested|=1ULL<<(sp*8+sk);
+    if(delta>0)s->liked|=1ULL<<(sp*8+sk);else s->liked&=~(1ULL<<(sp*8+sk));
     int gain,mult=100;
     if(delta<=0)gain=delta;
     else{
@@ -404,6 +420,11 @@ static void apply_skill(CpStageWorld *w,int i,int sk){
         const int mood=c->mood,moodf=mood>=30?150:mood>=10?125:100;
         gain=(int)((long long)delta*moodf*mult*hab/1000000LL);
         if(gain<1)gain=1;
+        /* W8, G68: a nocturnal creature trusts in the dark (+50% while the light is below a quarter) */
+        if(CP_STAGE_SPECIES[w->wild[i].species].activity==CP_ACT_NOCTURNAL&&cp_stage_daylight(w)<250){
+            gain=gain*3/2;
+            mult=mult*3/2;
+        }
     }
     c->hab_tick[sk]=t+1;
     contact(w,i);
@@ -415,8 +436,8 @@ static void apply_gift(CpStageWorld *w,int i,int item){
     CpStageSocialCreature *c=&s->c[i];
     const int sp=species_of(w,i),delta=PREF[sp].gift[item];
     s->items[item]--;
-    s->tested|=1u<<(sp*8+4+item);
-    if(delta>0)s->liked|=1u<<(sp*8+4+item);else s->liked&=~(1u<<(sp*8+4+item));
+    s->tested|=1ULL<<(sp*8+4+item);
+    if(delta>0)s->liked|=1ULL<<(sp*8+4+item);else s->liked&=~(1ULL<<(sp*8+4+item));
     contact(w,i);
     int calm=0;
     if(item==CP_ITEM_MEAT&&HERBIVORE[sp]){
@@ -495,10 +516,15 @@ static void social_events(CpStageWorld *w){
             const uint32_t d=cp_rng_u32(&s->rng);   /* one draw per drift step, always */
             if(c->mood>0)c->mood--;else if(c->mood<0)c->mood++;
             if(d&1)add_mood(c,(d&2)?1:-1);
+            /* nocturnal species shift at dusk (P4, W8): they are livelier in the dark and sullen in the light */
+            if(CP_STAGE_SPECIES[w->wild[i].species].activity==CP_ACT_NOCTURNAL&&!is_dead(&w->wild[i])){
+                if(cp_stage_daylight(w)<250&&c->mood<10)add_mood(c,1);
+                else if(cp_stage_daylight(w)>=750&&c->mood>-10)add_mood(c,-1);
+            }
         }
         if(!is_dead(&w->wild[i])){
             const int sp=w->wild[i].species;
-            if(!(s->species_seen&(1u<<sp))&&dist2(&w->player,&w->wild[i])<=30.f){
+            if(!(s->species_seen&(1u<<sp))&&dist2(&w->player,&w->wild[i])<=30.f&&!cp_stage_creature_hidden(w,i)){
                 s->species_seen|=1u<<sp;
                 s->first_met[sp]=t+1;
                 award(w,3,CP_DNA_SEEN,i+1);
@@ -747,12 +773,12 @@ int cp_stage_social_creature_json(const CpStageWorld *w,int i,char *out,size_t c
        mood_label(c->mood),c->mood,cp_stage_social_beat_in(w,i),cp_stage_social_hostile(w,i)?"true":"false",c->calm_ticks>0?"true":"false",c->leave_ticks>0?"true":"false",refuses(w,i)?"true":"false");
     bp(&b,",\"known_likes\":[");
     int n=0;
-    for(int k=0;k<8;k++)if((s->tested&(1u<<(sp*8+k)))&&(s->liked&(1u<<(sp*8+k)))){
+    for(int k=0;k<8;k++)if((s->tested&(1ULL<<(sp*8+k)))&&(s->liked&(1ULL<<(sp*8+k)))){
         bp(&b,"%s\"%s\"",n++?",":"",k<4?CP_STAGE_SKILLS[k].name:CP_STAGE_ITEM_NAMES[k-4]);
     }
     bp(&b,"],\"known_dislikes\":[");
     n=0;
-    for(int k=0;k<8;k++)if((s->tested&(1u<<(sp*8+k)))&&!(s->liked&(1u<<(sp*8+k)))){
+    for(int k=0;k<8;k++)if((s->tested&(1ULL<<(sp*8+k)))&&!(s->liked&(1ULL<<(sp*8+k)))){
         bp(&b,"%s\"%s\"",n++?",":"",k<4?CP_STAGE_SKILLS[k].name:CP_STAGE_ITEM_NAMES[k-4]);
     }
     bp(&b,"]");
@@ -761,9 +787,9 @@ int cp_stage_social_creature_json(const CpStageWorld *w,int i,char *out,size_t c
 int cp_stage_social_json(const CpStageWorld *w,char *out,size_t cap){
     const CpStageSocial *s=&w->social;
     Buf b={out,cap,0,0};
-    bp(&b,"{\"dna_total\":%d,\"dna_balance\":%d,\"dna_sources\":{\"kill\":%d,\"bond\":%d,\"ally\":%d,\"dominate\":%d,\"carcass\":%d,\"explore\":%d,\"species_seen\":%d,\"duplicate_part\":%d,\"fossil\":%d,\"old_carcass\":%d},",
+    bp(&b,"{\"dna_total\":%d,\"dna_balance\":%d,\"dna_sources\":{\"kill\":%d,\"bond\":%d,\"ally\":%d,\"dominate\":%d,\"carcass\":%d,\"explore\":%d,\"species_seen\":%d,\"duplicate_part\":%d,\"fossil\":%d,\"old_carcass\":%d,\"shard\":%d},",
        s->dna_total,s->dna_balance,s->dna_by_source[CP_DNA_KILL],s->dna_by_source[CP_DNA_BOND],s->dna_by_source[CP_DNA_ALLY],s->dna_by_source[CP_DNA_DOMINATE],
-       s->dna_by_source[CP_DNA_CARCASS],s->dna_by_source[CP_DNA_EXPLORE],s->dna_by_source[CP_DNA_SEEN],s->dna_by_source[CP_DNA_DUPLICATE],s->dna_by_source[CP_DNA_FOSSIL],s->dna_by_source[CP_DNA_OLD_CARCASS]);
+       s->dna_by_source[CP_DNA_CARCASS],s->dna_by_source[CP_DNA_EXPLORE],s->dna_by_source[CP_DNA_SEEN],s->dna_by_source[CP_DNA_DUPLICATE],s->dna_by_source[CP_DNA_FOSSIL],s->dna_by_source[CP_DNA_OLD_CARCASS],s->dna_by_source[CP_DNA_SHARD]);
     bp(&b,"\"food\":{\"meter\":%d,\"max\":%d,\"diet\":\"%s\"},",s->food,CP_SOC_FOOD_MAX,s->diet==CP_DIET_HERBIVORE?"herbivore":s->diet==CP_DIET_CARNIVORE?"carnivore":"omnivore");
     bp(&b,"\"inventory\":{");
     for(int k=0;k<CP_ITEM_COUNT;k++)bp(&b,"%s\"%s\":%d",k?",":"",CP_STAGE_ITEM_NAMES[k],s->items[k]);
@@ -808,7 +834,7 @@ int cp_stage_social_json(const CpStageWorld *w,char *out,size_t cap){
     return b.failed?-1:(int)b.used;
 }
 static const char *source_name(int k){
-    static const char *n[CP_DNA_SOURCES]={"kill","bond","ally","dominate","carcass","explore","species_seen","duplicate_part","fossil","old_carcass"};
+    static const char *n[CP_DNA_SOURCES]={"kill","bond","ally","dominate","carcass","explore","species_seen","duplicate_part","fossil","old_carcass","shard"};
     return k>=0&&k<CP_DNA_SOURCES?n[k]:"unknown";
 }
 int cp_stage_social_event_json(const CpStageEvent *e,char *out,size_t cap){
@@ -843,6 +869,10 @@ int cp_stage_social_event_json(const CpStageEvent *e,char *out,size_t cap){
         case CP_STAGE_EV_INSPECTED:bp(&b,"{\"tick\":%u,\"type\":\"inspected\",\"target\":%d}",e->tick,e->target);break;
         case CP_STAGE_EV_PART_BOUGHT:bp(&b,"{\"tick\":%u,\"type\":\"part_bought\",\"part\":\"%s\",\"kind\":%d,\"price\":%.0f}",e->tick,CP_STAGE_PARTS[e->target].id,e->move,e->value);break;
         case CP_STAGE_EV_EDIT_ACCEPTED:bp(&b,"{\"tick\":%u,\"type\":\"edit_accepted\"}",e->tick);break;
+        case CP_STAGE_EV_SHARD_FOUND:
+            if(e->move<0||e->move>=CP_STAGE_SHARDS)return 0;
+            bp(&b,"{\"tick\":%u,\"type\":\"shard_found\",\"target\":%d,\"index\":%d,\"name\":\"%s\",\"found\":%.0f,\"total\":%d,\"line\":\"%s\",\"line_es\":\"%s\"}",e->tick,e->target,e->move,CP_STAGE_SHARD_NAMES[e->move],e->value,CP_STAGE_SHARDS,CP_STAGE_SHARD_LINES_EN[e->move],CP_STAGE_SHARD_LINES_ES[e->move]);break;
+        case CP_STAGE_EV_CAVE:bp(&b,"{\"tick\":%u,\"type\":\"cave\",\"stage\":\"%s\"}",e->tick,e->move==2?"chamber":"passage");break;
         default:return 0;
     }
     return b.failed?0:(int)b.used;

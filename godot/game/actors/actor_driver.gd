@@ -8,6 +8,7 @@ extends RefCounted
 const UNIT := 1.0           # metres per rig unit (web/stage drew the rig at scale 1)
 const ACTION_PATHS := ["res://actions/action_layer.gd", "res://actions/action_body_map.gd", "res://actions/action_data.gd", "res://actions/action_rig.gd", "res://actions/action_fx.gd"]
 const LOCO_PATHS := ["res://locomotion/loco_controller.gd", "res://locomotion/loco_morphology.gd", "res://locomotion/loco_rig_adapter.gd"]
+const RADIAL_PATH := "res://locomotion/loco_radial.gd"
 
 
 signal footfall(leg: int, position: Vector3)
@@ -44,6 +45,9 @@ func _try_loco() -> void:
 			return
 	if not (body.has_method("reset_spine_pose") and "rest" in body and "legs" in body):
 		return          # not the real rig (a fake module in tests)
+	if "plan_kind" in body and body.plan_kind == "radial":
+		_try_radial()   # no fixed front: the arms are the locomotors (the action layer has no radial map yet)
+		return
 	var ctl_script = load(LOCO_PATHS[0])
 	var morph_script = load(LOCO_PATHS[1])
 	adapter = load(LOCO_PATHS[2])
@@ -57,6 +61,13 @@ func _try_loco() -> void:
 	controller = ctl_script.new(morph_script.analyse(desc), _ground)
 	controller.footfall.connect(func(leg: int, pos: Vector3) -> void: footfall.emit(leg, pos))
 	_try_actions()
+
+func _try_radial() -> void:
+	adapter = load(LOCO_PATHS[2])
+	desc = adapter.radial_describe(body, UNIT)
+	problems = desc.problems
+	controller = load(RADIAL_PATH).new(desc, _ground)
+	controller.footfall.connect(func(arm: int, pos: Vector3) -> void: footfall.emit(arm, pos))
 
 func _try_actions() -> void:
 	for p in ACTION_PATHS:

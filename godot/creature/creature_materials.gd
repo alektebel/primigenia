@@ -18,6 +18,7 @@ var skin: ShaderMaterial
 var skin_body: ShaderMaterial       ## the skinned body tube: same shader, UV-mapped pattern and actuation on
 var limb_mats: Array = []           ## per-leg-segment copies of skin (flex uniform), rebuilt with each creature
 var bio: Dictionary = {}
+var tube_feet := false              ## radial bodies with tube-foot arms: sucker dots on the arm undersides
 var skin2: ShaderMaterial
 var membrane: ShaderMaterial
 var glider: ShaderMaterial
@@ -147,6 +148,14 @@ func skin_materials() -> Array:
 	return [skin, skin_body, skin2, membrane, glider, insect, sac] + limb_mats
 
 
+## Radial gel bodies (jellyfish, plan.gel > 0): the body skin becomes the translucent skin_gel shader.
+func use_gel(amount: float) -> void:
+	var m := _skin_mat("skin_gel", 1.0, .94)
+	m.set_shader_parameter("use_uv", 1.0)
+	m.set_shader_parameter("gel", amount)
+	skin_body = m
+
+
 ## A copy of the skin for one limb segment: part 1 upper leg, 2 lower leg. Carries its own flex uniform.
 func limb_material(part: int, seg_len: float, mode: float = 1.0) -> ShaderMaterial:
 	var m: ShaderMaterial = skin.duplicate()
@@ -225,6 +234,7 @@ func configure(b: Dictionary, genome_skin: Dictionary) -> void:
 		m.set_shader_parameter("wrinkle", wr)
 		m.set_shader_parameter("scale_amt", scales)
 		m.set_shader_parameter("act_phase", float(seed_ % 628) / 100.0)
+		m.set_shader_parameter("tube_feet", 1.0 if tube_feet else 0.0)
 	set_skin(genome_skin)
 
 

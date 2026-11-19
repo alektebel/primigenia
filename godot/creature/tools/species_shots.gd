@@ -7,7 +7,7 @@ func _initialize() -> void:
 func _run() -> void:
 	var a := OS.get_cmdline_user_args()
 	var out := a[0] if a.size() > 0 else "user://species"
-	var files: Array = Array(a.slice(1)) if a.size() > 1 else ["rondo", "zanco", "espinodo", "garfio", "merodeador"]
+	var files: Array = Array(a.slice(1)) if a.size() > 1 else ["rondo", "zanco", "espinodo", "garfio", "acechalunas", "babosa", "merodeador"]
 	DirAccess.make_dir_recursive_absolute(out)
 	var stage := CreaturePreview.new(self, Vector2i(960, 540))
 	for id in files:
@@ -32,7 +32,7 @@ func _run() -> void:
 			img.save_jpg("%s/%s_%s.jpg" % [out, id, v], .9)
 		c.queue_free()
 	# lineup: the game's relative sizes (island.gd SPECIES_SCALE; the player and Garfio at 1.0), left to right
-	var lineup := [["rondo", .8], ["zanco", .75], ["espinodo", .65], ["garfio", 1.0], ["merodeador", 1.0]]
+	var lineup := [["rondo", .8], ["zanco", .75], ["espinodo", .65], ["garfio", 1.0], ["acechalunas", .8], ["babosa", .85], ["merodeador", 1.0]]
 	var cs := []
 	var x := 0.0
 	for e in lineup:

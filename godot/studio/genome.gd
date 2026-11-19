@@ -6,6 +6,7 @@ const SCHEMA := "cpore.creature/5"
 const GROWTH_VERSION := "cpore.growth/1"
 const LEG_TYPES := ["pata", "zanca", "pezuna"]
 const LEN_TYPES := ["cuerno", "asta", "pua", "tallo", "antena"]
+const RADIAL_LEG_TYPES := ["pata", "zanca", "pezuna", "leg_sprinter", "leg_sucker", "foot_spring", "foot_hoof", "foot_gecko"]
 
 static var _err := ""
 
@@ -93,7 +94,7 @@ static func validate(g, types) -> Dictionary:
 	return {"ok": true, "error": "", "genome": g.duplicate(true)}
 
 static func _validate(g, types) -> bool:
-	if not _keys(g, ["schema", "name", "nodes", "parts", "skin", "regions", "migration"], "document"):
+	if not _keys(g, ["schema", "name", "nodes", "parts", "skin", "regions", "migration", "plan"], "document"):
 		return false
 	if g.get("schema") != SCHEMA:
 		return _fail("schema")
@@ -174,6 +175,8 @@ static func _validate(g, types) -> bool:
 		if ids.has(r["id"]):
 			return _fail("regions.id")
 		ids[r["id"]] = true
+	if not _plan(g):
+		return false
 	if g.get("migration"):
 		var m = g["migration"]
 		if not _keys(m, ["from", "warnings", "source"], "migration"):
@@ -185,6 +188,53 @@ static func _validate(g, types) -> bool:
 				return _fail("migration")
 		if not _obj(m.get("source"), "migration.source"):
 			return false
+	return true
+
+## Radial body plan (A24, optional `plan` key; absent = bilateral). Error paths are shared with creature_genome.gd,
+## studio/genome.gd and web/studio/genome.js (godot/creature/tests/parity/plan_cases.json).
+static func _plan(g) -> bool:
+	if not g.has("plan"):
+		return true
+	var p = g["plan"]
+	if not _keys(p, ["sym", "fold", "star", "gel", "arm"], "plan"):
+		return false
+	if not (p.get("sym") in ["bilateral", "radial"]):
+		return _fail("plan.sym")
+	var radial: bool = p["sym"] == "radial"
+	if (radial or p.has("fold")) and not _int(p.get("fold"), 3, 8, "plan.fold"):
+		return false
+	for k in [["star", 0, 1], ["gel", 0, 1]]:
+		if p.has(k[0]) and not _num(p[k[0]], k[1], k[2], "plan." + k[0]):
+			return false
+	if p.has("arm"):
+		var a = p["arm"]
+		if not _keys(a, ["len", "w", "taper", "curl", "droop", "frill", "tip", "eye", "act"], "plan.arm"):
+			return false
+		for k in [["len", 0, 6], ["w", .1, 1], ["taper", 0, 1], ["curl", -1, 1], ["droop", 0, 1], ["frill", 0, 1]]:
+			if a.has(k[0]) and not _num(a[k[0]], k[1], k[2], "plan.arm." + k[0]):
+				return false
+		if a.has("tip") and not (a["tip"] in ["point", "frill", "bulb"]):
+			return _fail("plan.arm.tip")
+		if a.has("eye") and not _int(a["eye"], 0, 1, "plan.arm.eye"):
+			return false
+		if a.has("act") and not (a["act"] in ["peristaltic", "hydrostat", "tubefeet", "cilia"]):
+			return _fail("plan.arm.act")
+	if not radial:
+		return true
+	var py := 0.0
+	for i in g["nodes"].size():
+		var n = g["nodes"][i]
+		if float(n["z"]) != 0.0 or (i > 0 and float(n["y"]) <= py):
+			return _fail("plan.nodes")
+		py = float(n["y"])
+	for q in g["parts"]:
+		if RADIAL_LEG_TYPES.has(q["type"]):
+			return _fail("plan.legs")
+		if q.has("single") and float(q["single"]) < 0.0:
+			return _fail("parts.single")
+	for r in g["regions"]:
+		if r["surface"] != "torso":
+			return _fail("regions.surface")
 	return true
 
 static func _migrate(g: Dictionary):

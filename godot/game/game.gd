@@ -13,7 +13,7 @@ const SETTINGS_PATH := "user://settings.cfg"
 # controls/strafe_latch: WASD is relative to the camera as it was when the keys changed (a held S or A runs
 # straight); off = the live camera (a held S circles). controls/tank: Spore-style steering, A/D turn the
 # creature, W forward, S reverse (overrides the latch).
-var settings: Dictionary = {"seed": 1, "grass": 252000, "quality": "auto", "sun_shadows": false, "wild": true,
+var settings: Dictionary = {"seed": 1, "grass": 252000, "flora_density": -1.0, "flora_lod_scale": 1.0, "quality": "auto", "sun_shadows": false, "wild": true,
 	"controls/strafe_latch": true, "controls/tank": false, "camera/kick": false,
 	"ui_scale": 1.0, "language": "", "names_always": false, "numbers": false, "strong_outlines": false, "reduced_motion": false,
 	"onboarding": 0, "minimap": true,
@@ -99,8 +99,12 @@ func goto_menu() -> void:
 func goto_island() -> void:
 	get_tree().change_scene_to_file("res://game/island/island.tscn")
 
-func goto_zoo(morphs: Array = [], course: String = "all") -> void:
+func goto_cell() -> void:
+	get_tree().change_scene_to_file("res://cell/cell_stage.tscn")
+
+func goto_zoo(morphs: Array = [], course: String = "all", run: float = 1.0) -> void:
 	zoo_args = {"morphs": morphs, "course": course} if not morphs.is_empty() else {"course": course}
+	zoo_args["run"] = run
 	get_tree().change_scene_to_file("res://devtools/zoo/zoo.tscn")
 
 func goto_studio() -> void:

@@ -6,10 +6,11 @@ const Profile := preload("res://game/stage/profile.gd")
 
 const BOUND := 195.0               # the valley the nest and the encounter are searched in
 const GARFIO_DISTANCE := 60.0
+const CLOCK_START := 4000          # world clock at tick 0: 08:00 (500 ticks an hour, 0 = midnight), so a new game starts in the morning
 
 # data: TerrainData. player_profile / garfio_profile: CporeWorld profile dictionaries.
 # probe: a CporeWorld with the field attached and reset into terrain 2, so Garfio's path is also checked with the C walk rule.
-static func build(data, seed: int, player_profile: Dictionary, garfio_profile: Dictionary, with_wild: bool = true, probe = null, herds: bool = false) -> Dictionary:
+static func build(data, seed: int, player_profile: Dictionary, garfio_profile: Dictionary, with_wild: bool = true, probe = null, herds: bool = false, secrets: bool = true) -> Dictionary:
 	var setup: Dictionary = CporeWorld.default_setup(seed)
 	setup.terrain = 2
 	var nest := find_nest(data)
@@ -18,6 +19,14 @@ static func build(data, seed: int, player_profile: Dictionary, garfio_profile: D
 	setup.player = player_profile
 	setup.wild = []
 	setup.obstacles = []
+	setup.start_clock = CLOCK_START
+	if secrets:
+		# C2 secrets (docs/SECRETS-REPORT.md): the C world places the five meteor shards from the island field and opens the
+		# hidden cave chamber behind the first (gameplay) cave entrance of the terrain.
+		setup.secrets = 3
+		if data.caves.size() > 0:
+			var cave = data.caves[0]
+			setup.cave = {"x": cave.position.x, "z": cave.position.z, "fx": cave.facing.x, "fz": cave.facing.z}
 	if with_wild:
 		var home = find_home(data, nest, probe)
 		if home != null:
@@ -25,6 +34,7 @@ static func build(data, seed: int, player_profile: Dictionary, garfio_profile: D
 			setup.wild = [{"x": h.x, "z": h.y, "home_x": h.x, "home_z": h.y, "species": 3, "bot": -1, "profile": garfio_profile}]
 		if herds:
 			add_herds(setup, data, nest, probe)
+			add_night_and_slug(setup, data, nest, probe)
 	return setup
 
 # C2 (docs/P4.md 2.2): the valley holds more than Garfio so the Q43 loop has something to resolve. Rondo, Zanco and Espinodo
@@ -121,3 +131,52 @@ static func garfio_profile(manifest: Dictionary) -> Dictionary:
 	for k in tiers:
 		base[k] = tiers[k]
 	return base
+
+# C2 secrets: the nocturnal Acechalunas (species 4) sleep by day near the hidden cave: their home is on the cave's graded apron,
+# 14 m in front of the entrance. The sixth species, Babosa (species 5), grazes the damp slope of the valley.
+const NIGHT_COUNT := 3
+const SLUG_COUNT := 4
+const SLUG_DISTANCE := 125.0
+const SLUG_ARC := 0.86
+
+static func add_night_and_slug(setup: Dictionary, data, nest: Vector2, probe = null) -> void:
+	var species: Array = CporeWorld.species()
+	if setup.has("cave"):
+		var c: Dictionary = setup.cave
+		var mouth := Vector2(c.x, c.z)
+		var f := Vector2(c.fx, c.fz)
+		var perp := Vector2(-f.y, f.x)
+		var placed: Array = []
+		for d in [10.0, 14.0, 18.0, 22.0, 26.0, 30.0, 36.0]:
+			for lat in [0.0, -4.0, 4.0, -8.0, 8.0]:
+				if placed.size() >= NIGHT_COUNT:
+					break
+				var p: Vector2 = mouth + f * d + perp * lat
+				if not dry(data, p.x, p.y) or data.normal(p.x, p.y).y <= 0.8 or absf(p.x) > 1700.0 or absf(p.y) > 1700.0:
+					continue
+				var near := false
+				for q in placed:
+					if (q as Vector2).distance_to(p) < 4.0:
+						near = true
+				if not near:
+					placed.append(p)
+		for k in placed.size():
+			var base: Vector2 = placed[0]
+			setup.wild.append({"x": placed[k].x, "z": placed[k].y, "home_x": base.x, "home_z": base.y, "species": 4, "bot": -1, "profile": species[4].profile})
+	var taken: Array = []
+	for w in setup.wild:
+		taken.append(Vector2(w.home_x, w.home_z))
+	var spot = find_spot(data, nest, SLUG_DISTANCE, SLUG_ARC, probe, taken)
+	if spot == null:
+		return
+	var b: Vector2 = spot
+	var n := 0
+	for k in 12:
+		if n >= SLUG_COUNT:
+			break
+		var a := k * TAU / 12.0
+		var p := b + Vector2(sin(a), cos(a)) * (3.0 + 2.0 * (k % 3)) if k > 0 else b
+		if not dry(data, p.x, p.y) or absf(p.x) > BOUND - 1.0 or absf(p.y) > BOUND - 1.0:
+			continue
+		setup.wild.append({"x": p.x, "z": p.y, "home_x": b.x, "home_z": b.y, "species": 5, "bot": -1, "profile": species[5].profile})
+		n += 1

@@ -62,8 +62,35 @@ static func foot_info(kind: String) -> Dictionary:
 
 static func analyse(desc: Dictionary):
 	var m = new()
-	m._run(desc)
+	if desc.has("radial"):
+		m._run_radial(desc)
+	else:
+		m._run(desc)
 	return m
+
+## Radial plan (A24): disc plus arms. No legs, no ladder; `hip_height` is the disc thickness, `base_gait` the arm mode.
+var base_gait := &""
+func _run_radial(desc: Dictionary) -> void:
+	var r: Dictionary = desc["radial"]
+	plan = &"radial"
+	mass = float(r.get("mass", 1.0))
+	var rt := float(r["root_r"]) + float(r["reach"])
+	hip_height = maxf(float(r.get("disc_h", .1)), .02)
+	body_radius = float(r["disc_r"])
+	body_length = 2.0 * rt
+	track_width = 2.0 * rt
+	com = Vector3(0, hip_height * .5, 0)
+	var arms := float(r["fold"])
+	var m_arm := mass * .5 / maxf(arms, 1.0)
+	var i_y := mass * .5 * .5 * body_radius * body_radius      # disc about its axis
+	i_y += arms * m_arm * (rt * rt / 3.0 + 0.0)                 # arms as rods from the axis
+	inertia = Vector3(i_y * .5, i_y, i_y * .5)
+	legs = []
+	stations = []
+	robustness = 1.0
+	var a := String(r.get("act", "tubefeet"))
+	base_gait = &"jet" if bool(r.get("bell", false)) else (&"cilia" if a == "cilia" else &"glide")
+	proposal = {"plan": plan, "gait": base_gait}
 
 func _add(acc: Array, mm: float, p: Vector3, own: Vector3 = Vector3.ZERO) -> void:
 	acc.append([mm, p, own])

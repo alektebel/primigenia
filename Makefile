@@ -51,7 +51,7 @@ $(BUILD)/combat_golden: tests/combat_golden.c apps/combat_bots.h $(BUILD)/apps/c
 
 # Correctness regressions. Balance acceptance is a separate measured gate:
 # run make tourney as well before claiming P2 acceptance.
-test: $(BUILD)/parts_nest_test $(BUILD)/social_test $(BUILD)/world_cli $(BUILD)/world_test $(BUILD)/terrain_test $(BUILD)/cpore_test $(BUILD)/combat_test $(BUILD)/combat_tourney_test $(BUILD)/combat_golden check-core $(BUILD)/nav_test $(BUILD)/steer_test $(BUILD)/routes_test
+test: $(BUILD)/parts_nest_test $(BUILD)/plan_test $(BUILD)/social_test $(BUILD)/world_cli $(BUILD)/world_test $(BUILD)/terrain_test $(BUILD)/cpore_test $(BUILD)/combat_test $(BUILD)/combat_tourney_test $(BUILD)/combat_golden check-core $(BUILD)/nav_test $(BUILD)/steer_test $(BUILD)/routes_test secrets-test
 	nice -n 10 ./$(BUILD)/terrain_test
 	./$(BUILD)/world_test
 	./$(BUILD)/social_test
@@ -64,6 +64,7 @@ test: $(BUILD)/parts_nest_test $(BUILD)/social_test $(BUILD)/world_cli $(BUILD)/
 	./$(BUILD)/combat_test
 	./$(BUILD)/moves_recipes_test
 	./$(BUILD)/parts_nest_test
+	./$(BUILD)/plan_test
 	./$(BUILD)/combat_tourney_test
 	python3 tests/test_combat_golden.py ./$(BUILD)/combat_golden
 	python3 tools/routes/fixtures.py --check
@@ -305,6 +306,25 @@ godot-evidence: godot
 godot-ui-test:
 	nice -n 10 timeout 600 $(GODOT) --headless --path godot --script res://tests/ui_test.gd
 .PHONY: godot-ui-test
+# The stage picker (main menu), headless; the second run checks that --play skips the menu.
+.PHONY: godot-menu-test godot-menu-evidence
+godot-menu-test:
+	nice -n 10 timeout 300 $(GODOT) --headless --path godot --script res://game/tests/test_menu.gd
+	nice -n 10 timeout 300 $(GODOT) --headless --path godot --script res://game/tests/test_menu.gd -- --play
+godot-menu-evidence:
+	@mkdir -p docs/evidence/godot/stage-menu
+	LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 600 xvfb-run -a -s "-screen 0 1920x1080x24" $(GODOT) --rendering-driver opengl3 --max-fps 15 --resolution 1280x720 --path godot \
+	  --script res://game/tests/menu_evidence.gd -- $(CURDIR)/docs/evidence/godot/stage-menu
+# The cell stage (godot/cell): play it, and its headless sim tests.
+.PHONY: godot-cell godot-cell-test godot-cell-evidence
+godot-cell:
+	$(GODOT) --path godot -- --cell
+godot-cell-test:
+	nice -n 10 timeout 600 $(GODOT) --headless --path godot --script res://cell/tests/cell_test.gd
+	nice -n 10 timeout 600 $(GODOT) --headless --path godot --script res://cell/tests/cell_ui_test.gd
+godot-cell-evidence:
+	@mkdir -p docs/evidence/godot/cell
+	LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 600 xvfb-run -a $(GODOT) --rendering-driver opengl3 --path godot --script res://cell/tests/cell_evidence.gd -- $(CURDIR)/docs/evidence/godot/cell
 # DT0 dev tools (PLAN-devtools): headless unit tests, evidence screenshots, agent socket test.
 .PHONY: godot-devtools-test godot-devtools-evidence godot-agent-test
 godot-devtools-test: godot
@@ -325,6 +345,14 @@ godot-studio-test:
 	@mkdir -p $(BUILD)/studio-godot
 	nice -n 10 timeout 600 $(GODOT) --headless --path godot/studio --script res://tests/test_studio.gd
 	node godot/studio/tests/node_check.js
+# Creator direct manipulation (wheel scale, joints, spine arrows, actuator ring), real view, real input path.
+.PHONY: godot-studio-ix-test godot-studio-ix-evidence
+godot-studio-ix-test:
+	nice -n 10 timeout 600 $(GODOT) --headless --path godot --script res://studio/tests/test_interaction.gd
+godot-studio-ix-evidence:
+	@mkdir -p docs/evidence/godot/creator-ix
+	LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 900 xvfb-run -a -s "-screen 0 1280x720x24" $(GODOT) --rendering-driver opengl3 --max-fps 30 --resolution 1280x720 --path godot \
+	  --script res://studio/tests/ix_evidence.gd -- $(CURDIR)/docs/evidence/godot/creator-ix
 # Godot creature module (M1a, godot/creature). Headless tests; the import step
 # refreshes Godot's class_name cache. Evidence renders use software GL only.
 .PHONY: godot-creature-test godot-creature-evidence
@@ -332,6 +360,14 @@ godot-creature-test:
 	nice -n 10 timeout 600 $(GODOT) --headless --path godot --import >/dev/null 2>&1 || true
 	nice -n 10 timeout 600 $(GODOT) --headless --path godot --script res://creature/tests/test_creature.gd
 	nice -n 10 timeout 600 $(GODOT) --headless --path godot --script res://creature/tests/test_realism.gd
+	nice -n 10 timeout 600 $(GODOT) --headless --path godot --script res://creature/tests/test_radial.gd
+# Radial body plans (docs/godot/CREATURE-RADIAL.md): per-species views, gait strips, lineup, island habitats, bilateral guard.
+.PHONY: godot-radial-evidence
+godot-radial-evidence:
+	@mkdir -p docs/evidence/godot/radial
+	LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 xvfb-run -a $(GODOT) --rendering-driver opengl3 --path godot --script res://creature/tools/radial_evidence.gd -- $(CURDIR)/docs/evidence/godot/radial
+	LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 xvfb-run -a $(GODOT) --rendering-driver opengl3 --max-fps 15 --path godot --script res://game/tests/radial_island_evidence.gd -- $(CURDIR)/docs/evidence/godot/radial
+	nice -n 10 $(GODOT) --headless --path godot --script res://creature/tools/mesh_hashes.gd 2>&1 | grep -v "^WARN\|   at:" | tee docs/evidence/godot/radial/bilateral_unchanged.txt
 godot-creature-evidence:
 	nice -n 10 timeout 600 $(GODOT) --headless --path godot --import >/dev/null 2>&1 || true
 	LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 xvfb-run -a $(GODOT) --rendering-driver opengl3 --max-fps 15 --path godot --script res://creature/tools/render_evidence.gd
@@ -538,6 +574,9 @@ godot-zoo-evidence: godot
 	  $(GODOT) --rendering-driver opengl3 --resolution 1280x720 --path godot \
 	  --script res://devtools/tests/zoo_evidence.gd -- $(CURDIR)/docs/evidence/godot/steering
 
+$(BUILD)/plan_test: tests/test_plan.c $(HDRS) $(BUILD)/libcpore.a
+	$(CC) $(CFLAGS) $< $(BUILD)/libcpore.a -o $@ $(LDLIBS)
+
 $(BUILD)/parts_nest_test: tests/test_parts_nest.c $(HDRS) $(BUILD)/libcpore.a
 	$(CC) $(CFLAGS) $< $(BUILD)/libcpore.a -o $@ $(LDLIBS)
 
@@ -564,6 +603,14 @@ test: $(BUILD)/moves_recipes_test
 godot-moves-recipes-test:
 	$(GODOT) --headless --path godot --check-only --script res://game/tests/moves_recipes_test.gd
 	$(GODOT) --headless --path godot --script res://game/tests/moves_recipes_test.gd
+
+# C2 secrets: meteor shards, hidden cave chamber, day/night, Acechalunas and Babosa (tests/test_secrets.c)
+$(BUILD)/secrets_test: tests/test_secrets.c $(HDRS) $(BUILD)/libcpore.a
+	$(CC) $(CFLAGS) $< $(BUILD)/libcpore.a -o $@ $(LDLIBS)
+.PHONY: secrets-test
+secrets-test: $(BUILD)/secrets_test
+	nice -n 10 ./$(BUILD)/secrets_test flat
+	@failed=0; for seed in 1 7 42; do nice -n 10 ./$(BUILD)/secrets_test $$seed || failed=1; done; test $$failed -eq 0
 
 # The field journal (G38, godot/ui/journal_*.gd): every section and spread, ES and EN, plus overflow cases (software GL, JPG).
 # Small laptop: make godot-journal-evidence RES=1024x600 SUFFIX=_1024x600

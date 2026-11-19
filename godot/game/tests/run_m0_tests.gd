@@ -12,6 +12,8 @@ const TESTS := [
 	"res://game/tests/test_lod.gd",
 	"res://game/tests/test_water.gd",
 	"res://game/tests/test_grass.gd",
+	"res://game/tests/test_flora.gd",
+	"res://game/tests/test_radial_fauna.gd",
 	"res://game/tests/test_profile.gd",
 	"res://game/tests/test_session.gd",
 	"res://game/tests/test_input.gd",
@@ -22,6 +24,7 @@ const TESTS := [
 	"res://game/tests/test_ground_marks.gd",
 	"res://game/tests/test_visual.gd",
 	"res://game/tests/test_photo.gd",
+	"res://game/tests/test_secrets.gd",
 ]
 
 var checks := 0

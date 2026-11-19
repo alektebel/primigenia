@@ -23,6 +23,23 @@ const TABLE := {
 	"guard": ["Guard", "Guardia"],
 	"dodge": ["Dodge", "Esquiva"],
 	"gift": ["Gift", "Regalo"],
+	# stage picker (game/menu/main_menu.gd)
+	"tagline": ["Seeds from the dark between stars are taking root.", "Semillas de la oscuridad entre las estrellas echan raíces."],
+	"stage_cell": ["Cell", "Célula"],
+	"stage_creature": ["Creature", "Criatura"],
+	"stage_band": ["Band", "Banda"],
+	"stage_realm": ["Realm", "Reino"],
+	"stage_industry": ["Industry", "Industria"],
+	"stage_space": ["Space", "Espacio"],
+	"stage_cell_line": ["Build the metabolism of your cell.", "Construye el metabolismo de tu célula."],
+	"stage_creature_line": ["Evolve on the island.", "Evoluciona en la isla."],
+	"under_construction": ["under construction", "en construcción"],
+	"coming_soon": ["coming soon", "próximamente"],
+	"your_creature": ["Your creature: {0}", "Tu criatura: {0}"],
+	"creator": ["Creator", "Creador"],
+	"continue": ["Continue", "Continuar"],
+	"quit": ["Quit", "Salir"],
+	"loading_island": ["Preparing the island", "Preparando la isla"],
 	# menu
 	"menu": ["Menu", "Menú"],
 	"resume": ["Resume", "Seguir"],
@@ -102,6 +119,11 @@ const TABLE := {
 	"lineage_end_sub": ["No eggs are left. Your DNA and the island remember you; return to your last save.", "No quedan huevos. Tu ADN y la isla te recuerdan; vuelve a tu última partida."],
 	"lineage_end_back": ["Return to the last save", "Volver a la última partida"],
 	"part_found": ["Discovered: {0}", "Descubierto: {0}"],
+	"shard": ["Shard", "Esquirla"],
+	"shard_found": ["Meteor shard: {0} ({1} of 5)", "Esquirla del meteoro: {0} ({1} de 5)"],
+	"shard_0": ["Spark", "Chispa"], "shard_1": ["Trail", "Estela"], "shard_2": ["Seed", "Semilla"], "shard_3": ["Echo", "Eco"], "shard_4": ["Threshold", "Umbral"],
+	"cave_passage": ["The air is cold. The cave goes on.", "El aire es frío. La cueva sigue."],
+	"cave_chamber": ["A chamber under the mountain. Something glows here.", "Una cámara bajo la montaña. Algo brilla aquí."],
 	"journal_title": ["Journal", "Diario"],
 	"tree_title": ["Family tree", "Árbol familiar"],
 	"journal_total": ["DNA earned", "ADN ganado"],
@@ -126,6 +148,8 @@ const TABLE := {
 	"j_temper_0": ["Timid", "Tímida"],
 	"j_temper_1": ["Territorial", "Territorial"],
 	"j_temper_2": ["Aggressive", "Agresiva"],
+	"j_activity_1": ["Nocturnal: asleep by day, out from dusk to dawn.", "Nocturna: duerme de día, sale del anochecer al alba."],
+	"j_activity_2": ["Crepuscular: hunkers down at noon, moves at dusk, night and dawn.", "Crepuscular: se encoge al mediodía, se mueve al atardecer, de noche y al alba."],
 	"j_diet_0": ["Herbivore", "Herbívora"],
 	"j_diet_1": ["Carnivore", "Carnívora"],
 	"j_diet_2": ["Omnivore", "Omnívora"],
@@ -147,8 +171,8 @@ const TABLE := {
 	"j_fossil_todo": ["not found yet", "aún sin hallar"],
 	"j_fossil_count": ["{0} of {1} studied", "{0} de {1} estudiados"],
 	"j_cave": ["The hidden cave", "La cueva escondida"],
-	"j_cave_found": ["You have been inside.", "Has estado dentro."],
-	"j_cave_seen": ["You know where it is.", "Sabes dónde está."],
+	"j_cave_found": ["You have been inside the passage. The chamber is still to find.", "Has entrado en el pasadizo. Aún falta la cámara."],
+	"j_cave_chamber": ["You found the chamber at the end of the passage.", "Has encontrado la cámara al final del pasadizo."],
 	"j_cave_unknown": ["Rumour only", "Solo un rumor"],
 	"j_recipe_unknown": ["Unknown", "Desconocida"],
 	"j_recipe_hinted": ["Hinted", "Intuida"],
@@ -188,6 +212,34 @@ const TABLE := {
 	"rel_ally": ["Ally", "Aliado"],
 	"hungry": ["Hungry", "Hambre"],
 }
+
+## Observe clues come from core in English only (CP_STAGE_CHAINS); Spanish by the English text, which is stable. Sim state is untouched.
+const CLUES_ES := {
+	"watch it browse the sappy reeds, a hanging droplet on its muzzle": "míralo ramonear los juncos resinosos, con una gota colgando del hocico",
+	"see a herd mate flinch from the spray and leave it alone": "mira cómo un compañero de manada se encoge ante el chorro y lo deja en paz",
+	"watch it purse its mouth and shoot a thread of sap at a pursuer": "míralo fruncir la boca y lanzar un hilo de savia a quien lo persigue",
+	"watch it stand with its heavy tail low in the tall grass": "míralo quieto, con la cola pesada baja entre la hierba alta",
+	"see a herd mate bolt, and the tail whip behind it as it runs": "mira cómo un compañero huye y la cola azota tras él al correr",
+	"watch the tail snap sideways at something that got too close": "míralo girar la cola de golpe contra algo que se acercó demasiado",
+	"watch it scrape its crown spines on a rock to clean them": "míralo rascar las espinas de la corona contra una roca para limpiarlas",
+	"see it rear back and dig in its hind legs against a rival": "míralo echarse atrás y clavar las patas traseras frente a un rival",
+	"watch it drive forward head down, crown first": "míralo embestir con la cabeza gacha, la corona por delante",
+	"watch it lie flat and still, jaws just clear of the ground": "míralo tumbarse quieto y pegado al suelo, con las mandíbulas apenas despegadas",
+	"see its head snap forward faster than the body follows": "mira cómo la cabeza se lanza adelante más rápido que el cuerpo",
+	"watch it hold a bite and shake before letting go": "míralo sostener el mordisco y sacudir antes de soltar",
+	"see its eyes shine green where the moonlight finds them": "mira cómo sus ojos brillan verdes donde los alcanza la luz de la luna",
+	"watch its head turn to a low sound long before anything is visible": "míralo girar la cabeza hacia un sonido grave mucho antes de que se vea nada",
+	"watch it drop from stillness onto something small and hold it": "míralo saltar desde la quietud sobre algo pequeño y sujetarlo",
+	"watch it glide over the damp tuff leaving a bright wet trail": "míralo deslizarse por la toba húmeda dejando un rastro brillante y mojado",
+	"see it curl into a tight sphere when the noon light reaches it": "míralo enroscarse en una esfera apretada cuando le llega la luz del mediodía",
+	"watch it uncoil and flick a string of mucus at a nipping beetle": "míralo desenroscarse y lanzar un hilo de moco a un escarabajo que lo pica",
+}
+
+## A clue text in the current language (unknown text, e.g. a mod or a future chain, is shown as is).
+static func clue(en: String) -> String:
+	if language() == "es":
+		return String(CLUES_ES.get(en, en))
+	return en
 
 static func language() -> String:
 	var tree = Engine.get_main_loop()

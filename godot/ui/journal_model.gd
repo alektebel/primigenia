@@ -1,15 +1,18 @@
 extends RefCounted
 ## What the field journal shows, read from the world: pure functions of `CporeWorld.state()` (plus the static species,
-## chain and part tables), so the pages can be tested without a scene. Sections the world does not report yet
-## (shards, recipes, the cave: other branches add them) come out empty and the view hides them.
+## chain and part tables), so the pages can be tested without a scene. Sections the world does not report
+## (recipes, or shards and the cave in a world without secrets) come out empty and the view hides them.
 ##
 ## Where each page reads its state:
-##   species  state.social.species[i] {seen, bonded, kills, resolution (0 open, 1 ally, 2 hunted), observed}
-##            + CporeWorld.species()[i] {name, roam, temperament} + CporeWorld.chains()[i].observe (clue texts)
+##   species  state.species[i] {seen, bonded, kills, resolution ("open" | "ally" | "hunted"), observed, activity, hidden_now}
+##            (state.social.species[i] has the same fields with resolution 0 | 1 | 2 and is the fallback)
+##            + CporeWorld.species()[i] {name, roam, temperament, diet "herbivore" | "carnivore" | "omnivore", activity_name, nocturnal}
+##            + CporeWorld.chains()[i].observe (clue texts)
 ##            + state.entities[*] {species, likes, dislikes} (the liked/disliked tests are per species)
 ##   parts    state.parts.discovered[] {id, owned, level, tier} + the catalogue res://game/data/parts.json (46 parts)
-##   secrets  state.shards (array; dict or bool/int per shard), state.parts.nodes[] {kind 3 fossil, 4 old carcass, inspected},
-##            state.cave or state.secrets.cave {found / entered / known}
+##   secrets  state.shards {total, found, items: [{index, name, found, line, line_es}]} (line only once found),
+##            state.parts.nodes[] {kind 3 fossil, 4 old carcass, inspected},
+##            state.cave {enabled, entered (the passage), chamber_entered}
 ##   recipes  state.recipes (array {id, name, state, clues_seen, clues_total, clues[], parts_have, parts_need, diet_ok, ...});
 ##            until it exists: bone spines from state.parts.clues (1 clue hinted, 2 or more known)
 
@@ -32,7 +35,9 @@ static func build(state: Dictionary, species: Array, chains: Array, catalogue: A
 
 static func species_pages(state: Dictionary, species: Array, chains: Array) -> Array:
 	var soc: Dictionary = state.get("social", {})
-	var rows: Array = soc.get("species", [])
+	var rows: Array = state.get("species", [])
+	if rows.size() < species.size():
+		rows = soc.get("species", [])
 	var out: Array = []
 	for i in species.size():
 		var sp: Dictionary = species[i]
@@ -54,7 +59,8 @@ static func species_pages(state: Dictionary, species: Array, chains: Array) -> A
 		out.append({
 			"id": i, "name": String(sp.get("name", "?")), "body": String(sp.get("name", "")).to_lower(),
 			"seen": seen, "bonded": int(r.get("bonded", 0)), "kills": int(r.get("kills", 0)), "need": ALLY_NEED,
-			"resolution": int(r.get("resolution", 0)),
+			"resolution": resolution_of(r.get("resolution", 0)),
+			"activity": int(r.get("activity", sp.get("activity", 0))), "nocturnal": bool(sp.get("nocturnal", int(r.get("activity", 0)) == 1)),
 			"temperament": int(sp.get("temperament", 1)), "diet": diet_of(sp, i), "roam": int(round(float(sp.get("roam", 0.0)))),
 			"clues": texts, "clue_total": int(chains[i].get("observe", []).size()) if i < chains.size() else 3,
 			"likes": likes, "dislikes": dislikes,
@@ -63,9 +69,18 @@ static func species_pages(state: Dictionary, species: Array, chains: Array) -> A
 
 ## The species table has no diet field: the stage (stage_ui.info_for) takes the two heavy species as carnivores.
 static func diet_of(sp: Dictionary, index: int) -> int:
-	if sp.has("diet"):
-		return clampi(int(sp.diet), 0, 2)
+	var d: Variant = sp.get("diet", null)
+	if d is String:
+		return {"herbivore": 0, "carnivore": 1, "omnivore": 2}.get(d, 0)
+	if d != null:
+		return clampi(int(d), 0, 2)
 	return 1 if index >= 2 else 0
+
+## 0 open, 1 ally, 2 hunted, from the number (state.social) or the word (state.species).
+static func resolution_of(v: Variant) -> int:
+	if v is String:
+		return {"open": 0, "ally": 1, "hunted": 2}.get(v, 0)
+	return clampi(int(v), 0, 2)
 
 static func part_tiles(state: Dictionary, catalogue: Array) -> Array:
 	var have := {}
@@ -94,26 +109,21 @@ static func owned_count(state: Dictionary) -> int:
 			n += 1
 	return n
 
-## Shards as [{found: bool, line: {en, es} or String, name}]; [] when the world does not report any.
+## Shards as [{index, found, name, line: {en, es}}] from state.shards.items; [] when the world has none (secrets off).
+## The story line exists only once the shard is found.
 static func shards(state: Dictionary) -> Array:
 	var raw: Variant = state.get("shards", null)
-	if raw is Dictionary:
-		raw = raw.get("items", raw.get("list", []))
-	if not (raw is Array):
+	if not (raw is Dictionary):
 		return []
 	var out: Array = []
-	for i in raw.size():
-		var s: Variant = raw[i]
-		var d := {"index": i, "found": false, "line": "", "name": ""}
-		if s is Dictionary:
-			d.found = bool(s.get("found", s.get("collected", s.get("have", false))))
-			d.line = s.get("line", s.get("story", s.get("text", "")))
-			d.name = String(s.get("name", ""))
-		elif s is bool:
-			d.found = s
-		elif s is int or s is float:
-			d.found = int(s) != 0
-		out.append(d)
+	for s in raw.get("items", []):
+		if not (s is Dictionary):
+			continue
+		var found := bool(s.get("found", false))
+		out.append({
+			"index": int(s.get("index", out.size())), "found": found, "name": String(s.get("name", "")),
+			"line": {"en": String(s.get("line", "")), "es": String(s.get("line_es", s.get("line", "")))} if found else "",
+		})
 	return out
 
 ## Fossils and old carcasses of the valley: {kind, studied}; the part found is not in the state, so it is not shown.
@@ -124,18 +134,14 @@ static func fossils(state: Dictionary) -> Array:
 			out.append({"kind": int(n.kind), "studied": bool(n.get("inspected", false))})
 	return out
 
-## "" (the world says nothing), "unknown", "known" (its place is on the map) or "entered".
+## "" (no cave in this world), "unknown", "entered" (inside the passage) or "chamber" (the chamber found), from state.cave.
 static func cave(state: Dictionary) -> String:
-	var raw: Variant = state.get("cave", state.get("secrets", {}).get("cave", null) if state.get("secrets", null) is Dictionary else null)
-	if raw == null:
+	var raw: Variant = state.get("cave", null)
+	if not (raw is Dictionary) or not bool(raw.get("enabled", false)):
 		return ""
-	if raw is bool:
-		return "entered" if raw else "unknown"
-	if raw is Dictionary:
-		if bool(raw.get("entered", raw.get("found", false))):
-			return "entered"
-		return "known" if bool(raw.get("known", raw.get("seen", false))) else "unknown"
-	return ""
+	if bool(raw.get("chamber_entered", false)):
+		return "chamber"
+	return "entered" if bool(raw.get("entered", false)) else "unknown"
 
 ## Recipes as [{id, name, state: unknown|hinted|known|mastered, clues_seen, clues_total, clues: [], parts_have, parts_need, diet_ok}].
 static func recipes(state: Dictionary) -> Array:

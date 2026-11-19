@@ -1,15 +1,23 @@
 terrain f615011cb3a6bf8d
-places 9
+places 17
 nest 0 5
 Garfio 11.7054195 63.8471146
 Rondo 71.7678757 50.5452766
 Zanco 29.4424686 -100.986511
 Espinodo -96.63517 106.299767
+Acechalunas -574.207153 305.533508
+Babosa -11.7635393 129.445251
 start-valley 30 20
 lake-shore-water -75 70
 river-gap 796.289062 138.867188
 hidden-cave-entrance -575.852424 309.179477
-pairs 8
+shard-1 35.031 35.031
+shard-2 51.031 123.031
+shard-3 99.031 243.031
+shard-4 3.031 403.031
+shard-5 11.031 491.031
+cave-chamber -588.192 336.524
+pairs 16
 0 1
 0 2
 0 3
@@ -18,3 +26,11 @@ pairs 8
 0 6
 0 7
 0 8
+0 9
+0 10
+0 11
+0 12
+0 13
+0 14
+0 15
+0 16

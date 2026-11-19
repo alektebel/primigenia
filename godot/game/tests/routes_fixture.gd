@@ -29,7 +29,7 @@ func _initialize() -> void:
 			if int(spawn.species) in seen:
 				continue
 			seen.append(int(spawn.species))
-			places.append({"id": ["Rondo", "Zanco", "Espinodo", "Garfio"][int(spawn.species)], "x": spawn.home_x, "z": spawn.home_z})
+			places.append({"id": ["Rondo", "Zanco", "Espinodo", "Garfio", "Acechalunas", "Babosa"][int(spawn.species)], "x": spawn.home_x, "z": spawn.home_z})
 		var caves := []
 		for cave in entry.caves:
 			caves.append({"x": cave.position.x, "z": cave.position.z, "height": cave.position.y,
@@ -40,6 +40,14 @@ func _initialize() -> void:
 		route_places.append({"id": "lake-shore-water", "x": -75, "z": 70})
 		route_places.append({"id": "river-gap", "x": GAP[seed][0], "z": GAP[seed][1]})
 		route_places.append({"id": "hidden-cave-entrance", "x": caves[0].x + caves[0].facing_x * MOUTH_STAND_M, "z": caves[0].z + caves[0].facing_z * MOUTH_STAND_M})
+		# C2 secrets: the five shards and the hidden cave chamber, as the C world derives them from this island
+		var secrets_probe := CporeWorld.new()
+		secrets_probe.set_field(entry)
+		assert(secrets_probe.reset(setup) == 0)
+		var secrets_state: Dictionary = secrets_probe.state()
+		for item in secrets_state.shards.items:
+			route_places.append({"id": "shard-%d" % (int(item.index) + 1), "x": item.x, "z": item.z})
+		route_places.append({"id": "cave-chamber", "x": secrets_state.cave.chamber_x, "z": secrets_state.cave.chamber_z})
 		var pairs := []
 		for place in route_places.slice(1):
 			pairs.append(["nest", place.id])
