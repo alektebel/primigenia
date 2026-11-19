@@ -65,6 +65,35 @@ func _run() -> void:
 		cam.look_at(look)
 		await shot(out, "shard_%d_line.jpg" % int(it.index))
 		print("shard ", it.index, " tp ", rc, " at ", x, " ", z)
+	# --- the fossil node inside the chamber, the player waiting in the passage
+	if only.has("cavefossil"):
+		var cv2: Dictionary = st.cave
+		var nodes: Array = stage.world.state().parts.nodes
+		var node: Dictionary = nodes[nodes.size() - 1]
+		stage.debug_now({"op": 1, "id": 0, "x": float(cv2.x) - float(cv2.fx) * 6.0, "z": float(cv2.z) - float(cv2.fz) * 6.0})
+		island.chase_enabled = false
+		var from := Vector3(float(node.x) + float(cv2.fx) * 4.5 + float(cv2.fz) * 2.0, float(cv2.floor) + 2.0, float(node.z) + float(cv2.fz) * 4.5 - float(cv2.fx) * 2.0)
+		cam.position = from
+		cam.look_at(Vector3(float(node.x), float(cv2.floor) + 0.4, float(node.z)))
+		await settle(20)
+		await shot(out, "cave_fossil.jpg")
+	# --- a shard by day and by night, the player out of the frame (the glow shows in the dark)
+	if only.has("shardglow"):
+		for k in [0, 3]:
+			var it2: Dictionary = st.shards.items[k]
+			var sx := float(it2.x)
+			var sz := float(it2.z)
+			stage.debug_now({"op": 1, "id": 0, "x": sx - 40.0, "z": sz - 40.0})
+			var cp := Vector3(sx + 3.2, 0, sz + 4.4)
+			cp.y = game.visual_ground(cp.x, cp.z) + 1.5
+			var lk := Vector3(sx, game.visual_ground(sx, sz) + 0.9, sz)
+			for phase in [["day", 4500], ["night", 11500]]:
+				stage.debug_now({"op": 5, "a": int(phase[1])})
+				await settle(25)
+				cam.position = cp
+				cam.look_at(lk)
+				await settle(6)
+				await shot(out, "shard_%d_%s.jpg" % [k, phase[0]])
 	# --- the cave: outside the mouth, in the passage, in the chamber (dark inside)
 	if only.is_empty() or only.has("cave"):
 		var cv: Dictionary = stage.world.state().cave

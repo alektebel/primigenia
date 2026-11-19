@@ -209,10 +209,10 @@ func _build_stage() -> void:
 	stage_ui.name = "StageUI"
 	add_child(stage_ui)
 	stage_ui.setup(self, str(genome.get("name", "Merodeador")))
+	_build_secrets(ground)      # before the part nodes: the cave fossil stands on the chamber floor, not on the rock above it
 	var part_nodes := preload("res://game/stage/part_nodes.gd").new()
 	add_child(part_nodes)
 	part_nodes.setup(stage, ground)
-	_build_secrets(ground)
 	var lineage_error := preload("res://game/stage/lineage_session.gd").install(stage, genome)
 	if lineage_error != "":
 		push_error(lineage_error)
