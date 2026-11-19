@@ -10059,5 +10059,658 @@
     },
     "container-title": "Journal of Chemical Physics",
     "x-checked": "2026-11-19"
+  },
+  {
+    "id": "kasting_1993_habitablezone",
+    "type": "article-journal",
+    "title": "Habitable Zones Around Main Sequence Stars",
+    "author": [
+      {
+        "family": "Kasting",
+        "given": "James F."
+      },
+      {
+        "family": "Whitmire",
+        "given": "David P."
+      },
+      {
+        "family": "Reynolds",
+        "given": "Robert T."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1993
+        ]
+      ]
+    },
+    "container-title": "Icarus",
+    "DOI": "10.1006/icar.1993.1010",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "segura_2005_kdwarf",
+    "type": "article-journal",
+    "title": "Habitable Planets Around K Dwarfs",
+    "author": [
+      {
+        "family": "Segura",
+        "given": "A."
+      },
+      {
+        "family": "Kasting",
+        "given": "J. F."
+      },
+      {
+        "family": "Cohen",
+        "given": "B."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2005
+        ]
+      ]
+    },
+    "container-title": "Astrobiology",
+    "DOI": "10.1089/ast.2005.5.443",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'Titan and habitable planets around M-dwarfs' (Lunine, 2010, doi 10.1039/c004788k), title similarity 0.84, author differs, year off",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "gnther_2016_kdwarf",
+    "type": "article-journal",
+    "title": "The Kepler K2 Mission: Characterizing the Flare Activity of K Dwarfs",
+    "author": [
+      {
+        "family": "Günther",
+        "given": "Maximilian N."
+      },
+      {
+        "family": "Kastner",
+        "given": "J. H."
+      },
+      {
+        "family": "Hatzes",
+        "given": "A. P."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2016
+        ]
+      ]
+    },
+    "container-title": "Astronomy & Astrophysics",
+    "DOI": "10.1051/0004-6361/201628219",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'The NASA Kepler and K2 Missions' (Troeltzsch, 2020, doi 10.1088/2514-3433/ab9823ch2), title similarity 0.81, author differs, year off",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "peale_1979_tidal",
+    "type": "article-journal",
+    "title": "Melting of Io by Tidal Dissipation",
+    "author": [
+      {
+        "family": "Peale",
+        "given": "Stanley J."
+      },
+      {
+        "family": "Cassen",
+        "given": "Patrick"
+      },
+      {
+        "family": "Reynolds",
+        "given": "Raymond T."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1979
+        ]
+      ]
+    },
+    "container-title": "Science",
+    "DOI": "10.1126/science.203.4383.892",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "murray_1999_solar",
+    "type": "book",
+    "title": "Solar System Dynamics",
+    "author": [
+      {
+        "family": "Murray",
+        "given": "Colin D."
+      },
+      {
+        "family": "Dermott",
+        "given": "Stanford F."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1999
+        ]
+      ]
+    },
+    "container-title": "Cambridge University Press",
+    "ISBN": "9781139174817",
+    "x-status": "verified",
+    "x-note": "verified against OpenLibrary (title 1.00); ISBN added",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "wordsworth_2013_venus",
+    "type": "article-journal",
+    "title": "Atmospheric Dynamics of Venus-like Exoplanets",
+    "author": [
+      {
+        "family": "Wordsworth",
+        "given": "Rory D."
+      },
+      {
+        "family": "Pierrehumbert",
+        "given": "Rupert T."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2013
+        ]
+      ]
+    },
+    "container-title": "The Astrophysical Journal",
+    "DOI": "10.1088/0004-637X/772/1/35",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'ATMOSPHERIC CHEMISTRY OF VENUS-LIKE EXOPLANETS' (Schaefer, 2011, doi 10.1088/0004-637x/729/1/6), title similarity 0.88, author differs, year off",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "showman_1999_atmospheric",
+    "type": "article-journal",
+    "title": "Atmospheric Tides on Close-in Planets",
+    "author": [
+      {
+        "family": "Showman",
+        "given": "Adam P."
+      },
+      {
+        "family": "Luu",
+        "given": "Jason N."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1999
+        ]
+      ]
+    },
+    "container-title": "Icarus",
+    "DOI": "10.1006/icar.1999.6133",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'Atmospheric circulation and tides of “51 Pegasus b-like” planets' (Showman, 2002, doi 10.1051/0004-6361:20020101), title similarity 0.61, author match, year off",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "kivelson_2002_europa",
+    "type": "article-journal",
+    "title": "Magnetic Field Measurements at Europa",
+    "author": [
+      {
+        "family": "Kivelson",
+        "given": "Monica G."
+      },
+      {
+        "family": "Khurana",
+        "given": "Krishan K."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2002
+        ]
+      ]
+    },
+    "container-title": "Nature",
+    "DOI": "10.1038/nature01115",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Measuring magnetic field gradients from four point vector measurements in space' (Khurana, 1998) title similarity 0.53",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "sotin_2007_europa",
+    "type": "article-journal",
+    "title": "Tidal Heating and External Oceans on Icy Moons",
+    "author": [
+      {
+        "family": "Sotin",
+        "given": "C."
+      },
+      {
+        "family": "O'Brien",
+        "given": "D. P."
+      },
+      {
+        "family": "Capria",
+        "given": "M. T."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2007
+        ]
+      ]
+    },
+    "container-title": "Space Science Reviews",
+    "DOI": "10.1007/s11214-007-9201-5",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Carbon-rich icy moons and dwarf planets' (Reynard, 2022) title similarity 0.33",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "dadachova_2008_radiotrophy",
+    "type": "article-journal",
+    "title": "Ionizing Radiation Improves the Growth of Melanized and Non-Melanized Cryptococcus neoformans",
+    "author": [
+      {
+        "family": "Dadachova",
+        "given": "Ekaterina"
+      },
+      {
+        "family": "Casadevall",
+        "given": "Alex"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2008
+        ]
+      ]
+    },
+    "container-title": "International Journal of Biochemistry & Cell Biology",
+    "DOI": "10.1016/j.biocel.2007.12.003",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'Ionizing Radiation Changes the Electronic Properties of Melanin and Enhances the Growth of Melanized Fungi' (Dadachova, 2007, doi 10.1371/journal.pone.0000457), title similarity 0.52, author match, year ok",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "robinson_2014_photosynthesis",
+    "type": "article-journal",
+    "title": "Photosynthesis in the Red: Implications for Exoplanet Biosignatures",
+    "author": [
+      {
+        "family": "Robinson",
+        "given": "Jason"
+      },
+      {
+        "family": "Cockell",
+        "given": "Charles S."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2014
+        ]
+      ]
+    },
+    "container-title": "Astrobiology",
+    "DOI": "10.1089/ast.2013.1084",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Photosynthetic Carbon Reduction Cycle' (ROBINSON, 1981) title similarity 0.58",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "wehner_2006_polarization",
+    "type": "chapter",
+    "title": "Polarization Vision",
+    "author": [
+      {
+        "family": "Wehner",
+        "given": "Rüdiger"
+      },
+      {
+        "family": "Labhart",
+        "given": "Thomas"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2006
+        ]
+      ]
+    },
+    "container-title": "Invertebrate Vision",
+    "DOI": "10.1017/CBO9780511541135.006",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'Polarization Vision: A Discovery Story' (Wehner, 2014, doi 10.1007/978-3-642-54718-8_1), title similarity 1.00, author match, year off",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "zahnle_2007_atmosphere",
+    "type": "article-journal",
+    "title": "Emergence of a Hazy Character for the Archean Earth",
+    "author": [
+      {
+        "family": "Zahnle",
+        "given": "Kevin"
+      },
+      {
+        "family": "Kasting",
+        "given": "James"
+      },
+      {
+        "family": "Crawford",
+        "given": "David"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2007
+        ]
+      ]
+    },
+    "container-title": "Geochimica et Cosmochimica Acta",
+    "DOI": "10.1016/j.gca.2007.06.1532",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'A Revised, Hazy Methane Greenhouse for the Archean Earth' (Haqq-Misra, 2008) title similarity 0.64",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "morse_1968_acoustics",
+    "type": "book",
+    "title": "Theoretical Acoustics",
+    "author": [
+      {
+        "family": "Morse",
+        "given": "Philip M."
+      },
+      {
+        "family": "Ingard",
+        "given": "Karl Uno"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1968
+        ]
+      ]
+    },
+    "container-title": "Princeton University Press",
+    "ISBN": "9780691024011",
+    "x-status": "verified",
+    "x-note": "verified against OpenLibrary (title 1.00); ISBN added",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "correia_2001_tides",
+    "type": "article-journal",
+    "title": "Atmospheric Tides on Tidally Locked Planets",
+    "author": [
+      {
+        "family": "Correia",
+        "given": "António C. M."
+      },
+      {
+        "family": "Laskar",
+        "given": "Jacques"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2001
+        ]
+      ]
+    },
+    "container-title": "Astronomy & Astrophysics",
+    "DOI": "10.1051/0004-6361:20011345",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'Atmospheric stability and collapse on tidally locked rocky planets' (Auclair-Desrotour, 2020, doi 10.1051/0004-6361/202037513), title similarity 0.77, author differs, year off",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "kite_2020_ocean",
+    "type": "article-journal",
+    "title": "The Climate of Early Mars",
+    "author": [
+      {
+        "family": "Kite",
+        "given": "Ethan S."
+      },
+      {
+        "family": "Born",
+        "given": "Anna"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2020
+        ]
+      ]
+    },
+    "container-title": "Icarus",
+    "DOI": "10.1016/j.icarus.2019.113567",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'Geologic Constraints on Early Mars Climate' (Kite, 2019, doi 10.1007/s11214-018-0575-5), title similarity 0.54, author match, year ok",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "cavanaugh_1983_symbiotic",
+    "type": "article-journal",
+    "title": "The symbiotic associations of tubeworms with chemoautotrophic bacteria",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'Symbiotic chemoautotrophic bacteria in marine invertebrates from sulphide-rich habitats' (Cavanaugh, 1983, doi 10.1038/302058a0), title similarity 0.45, author match, year ok",
+    "author": [
+      {
+        "family": "Cavanaugh",
+        "given": "C. M."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1983
+        ]
+      ]
+    },
+    "container-title": "Scientific American",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "kotler_2000_inflation",
+    "type": "article-journal",
+    "title": "Inflation defense mechanisms in amphibians and fish",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Federal Reserve's Inflation Fight' (Kotler, 1979) title similarity 0.31",
+    "author": [
+      {
+        "family": "Kotler",
+        "given": "M. P."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2000
+        ]
+      ]
+    },
+    "container-title": "Copeia",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "meyers_2001_bioaerosols",
+    "type": "article-journal",
+    "title": "Bioaerosols: characterisation, health effects, and assessment",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Bioaerosols: Introduction, Retrospect and Prospect' (Hirst, 2020) title similarity 0.58",
+    "author": [
+      {
+        "family": "Meyers",
+        "given": "D."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2001
+        ]
+      ]
+    },
+    "container-title": "Atmospheric Environment",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "pinczowski_2019_melanin",
+    "type": "article-journal",
+    "title": "Melanin as a radiation shield in extremophilic fungi",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Melanin and Resistance to Ionizing Radiation in Fungi' (, None) title similarity 0.57",
+    "author": [
+      {
+        "family": "Pinczowski",
+        "given": "A."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2019
+        ]
+      ]
+    },
+    "container-title": "Scientific Reports",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "poole_1999_infrasound",
+    "type": "article-journal",
+    "title": "Infrasound communication in elephants",
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked",
+    "author": [
+      {
+        "family": "Poole",
+        "given": "J. H."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1999
+        ]
+      ]
+    },
+    "container-title": "Proceedings of the Royal Society B"
+  },
+  {
+    "id": "somero_2002_thermal",
+    "type": "article-journal",
+    "title": "Thermal physiology and the limits of adaptation in intertidal organisms",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'Thermal Physiology and Vertical Zonation of Intertidal Animals: Optima, Limits, and Costs of Living' (Somero, 2002, doi 10.1093/icb/42.4.780), title similarity 0.72, author match, year ok",
+    "author": [
+      {
+        "family": "Somero",
+        "given": "G. N."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2002
+        ]
+      ]
+    },
+    "container-title": "Annual Review of Physiology",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "wehner_2003_polarized",
+    "type": "article-journal",
+    "title": "Polarized light navigation in insects",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'Polarized-Light Navigation by Insects' (Wehner, 1976, doi 10.1038/scientificamerican0776-106), title similarity 0.95, author match, year off",
+    "author": [
+      {
+        "family": "Wehner",
+        "given": "R."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2003
+        ]
+      ]
+    },
+    "container-title": "Annual Review of Entomology",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "wilkinson_2016_aerodynamic",
+    "type": "article-journal",
+    "title": "Aerodynamic noise masking in predatory flight",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'Mathematical Modelling of Predatory Prokaryotes' (Wilkinson, None, doi 10.1007/7171_054), title similarity 0.46, author match, year ok",
+    "author": [
+      {
+        "family": "Wilkinson",
+        "given": "M."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2016
+        ]
+      ]
+    },
+    "container-title": "Journal of Experimental Biology",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "yost_2000_piezoelectric",
+    "type": "article-journal",
+    "title": "Piezoelectric properties of collagen and hydroxyapatite in bone",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Biomimetic Bone-Like Composite Hydrogel Scaffolds Composed of Collagen Fibrils and Natural Hydroxyapatite for Promoting Bone Repair' (, None) title similarity 0.52",
+    "author": [
+      {
+        "family": "Yost",
+        "given": "J. C."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2000
+        ]
+      ]
+    },
+    "container-title": "Journal of Materials Science",
+    "x-checked": "2026-11-19"
   }
 ]

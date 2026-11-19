@@ -165,6 +165,15 @@
 | [Salcarán](salcaran.md) | new | draft | 4 | 3 fixable, 1 plausible |
 | [Salinera](salinera.md) | new | draft | 4 | 2 fixable, 2 plausible |
 
+## Ring-moon of a Gas Giant (`ringmoon`)
+
+| Creature | Kind | Status | Chains | Verdicts |
+|---|---|---|---|---|
+| [Anillo-Sangre](anillo_sangre.md) | new | draft | 4 | 3 fixable, 1 plausible |
+| [Marevora](marevora.md) | new | draft | 4 | 2 fixable, 2 plausible |
+| [Nubevolar](nubevolar.md) | new | draft | 4 | 2 fixable, 2 plausible |
+| [Voxmanta](voxmanta.md) | new | draft | 4 | 2 fixable, 2 plausible |
+
 ## Rogue Planet Warmed from Inside (`rogue`)
 
 | Creature | Kind | Status | Chains | Verdicts |

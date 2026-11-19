@@ -1,0 +1,285 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "anillo_sangre",
+  "name": {
+    "en": "Anillo-Sangre"
+  },
+  "world": "ringmoon",
+  "kind": "new",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "Upper troposphere (2–5 km), within ring-shadow bands and magnetic valleys",
+    "diet": "Electro-autotrophy (static charge harvest), chemosynthetic CO₂ fixation, particulate ring-dust",
+    "active": "Continuous, but peaks during atmospheric tide shear and eclipse thermal contraction",
+    "predators": []
+  },
+  "body": "Biradial, flexible, filamentous body of piezoelectric silicate and conductive melanin-carotenoid matrix; lacks rigid skeleton, relies on turgor pressure and magnetic alignment",
+  "chains": [
+    {
+      "id": "anillo_sangre.c1",
+      "trait": "Piezoelectric filaments harvest tidal strain as metabolic voltage",
+      "links": [
+        "Moon's 58-hour orbit strains body flexibly",
+        "Silicate crystal fibers generate voltage under mechanical stress",
+        "ATP synthesis driven by harvest current"
+      ],
+      "roots": [
+        "F3",
+        "F6"
+      ],
+      "skill": {
+        "id": "anillo_sangre.strain_drive",
+        "name": {
+          "en": "Strain-Drive"
+        },
+        "role": "Basic",
+        "effect": "Grants +30% movement speed and stamina regen when body is flexed by wind gusts or player actions that pull/stretch it",
+        "numbers": {}
+      },
+      "weakness": "Rigidity: Coating in resin or freezing immobilizes filaments, cutting power source and halting regeneration",
+      "observe": [
+        "Filaments pulsing in rhythm with the giant's gravitational pull",
+        "Faint glow emanating from cracks in the body when bent",
+        "Moves faster and more erratically during high wind shear"
+      ],
+      "journal": {
+        "en": "It eats the moon's stretch."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "Power the filaments from F11 atmospheric-tide wind shear and gust flex (player stretch = same physics), with piezo/tribo as a boost layer; keep chemosynthetic CO₂ fixation and ring-dust as the main carbon/energy budget; treat the 58 h giant cycle as a behavioral sync cue (movement pulses), not literal orbital stretch eating.",
+        "fixes": [
+          "Power the filaments from F11 atmospheric-tide wind shear and gust flex (player stretch = same physics), with piezo/tribo as a boost layer; keep chemosynthetic CO₂ fixation and ring-dust as the main carbon/energy budget; treat the 58 h giant cycle as a behavioral sync cue (movement pulses), not literal orbital stretch eating."
+        ],
+        "analogues": [
+          {
+            "organism": "Piezoelectricity in mineralized tissues (e.g. bone under load); acetogens and related microbes that couple extracellular electrons to carbon fixation on cathodes—not piezo filaments.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "anillo_sangre.c2",
+      "trait": "Triboelectric fronds generate lethal electrostatic discharge",
+      "links": [
+        "Permanent atmospheric tides drive high wind shear",
+        "Friction charges filaments against insulating cuticle",
+        "Arc discharges at threshold to stun prey and deter predators"
+      ],
+      "roots": [
+        "F11",
+        "F9"
+      ],
+      "skill": {
+        "id": "anillo_sangre.arc_whip",
+        "name": {
+          "en": "Arc-Whip"
+        },
+        "role": "Poke",
+        "effect": "Deals 8 damage and stuns target for 3 seconds; charge required, depletes internal capacitor",
+        "numbers": {}
+      },
+      "weakness": "Grounding: Standing in conductive mud or water shorts the cuticle, instantly draining charge and paralyzing the creature",
+      "observe": [
+        "Sparks jumping between fronds before an attack",
+        "Prey frozen mid-leap with fur/hair standing on end",
+        "Sings a crackling hum as charge builds to threshold"
+      ],
+      "journal": {
+        "en": "The sky's lightning, bottled and angry."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "Frame Arc-Whip as a high-voltage stun/corona poke on small prey and rivals, not cloud-to-ground lightning; require charge buildup in dry ring-shadow/shear zones; weakness to mud/water grounding stays honest. Optionally note facultative feeding on fair-weather atmospheric electricity as garnish, not sole diet.",
+        "fixes": [
+          "Frame Arc-Whip as a high-voltage stun/corona poke on small prey and rivals, not cloud-to-ground lightning; require charge buildup in dry ring-shadow/shear zones; weakness to mud/water grounding stays honest. Optionally note facultative feeding on fair-weather atmospheric electricity as garnish, not sole diet."
+        ],
+        "analogues": [
+          {
+            "organism": "Electric eel (Electrophorus) — high-voltage offensive organs via electrocytes; spiders and insects that accumulate and use environmental static (e.g. electrostatic-assisted silk ballooning and prey interaction).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "anillo_sangre.c3",
+      "trait": "Polarization-sensitive eyes track ring-scattered light",
+      "links": [
+        "Ring ice and dust scatter incident starlight",
+        "Scattering produces highly polarized sky background",
+        "Ommatidia detect e-vector angle for precise compass"
+      ],
+      "roots": [
+        "F18",
+        "F12"
+      ],
+      "skill": {
+        "id": "anillo_sangre.ring_gaze",
+        "name": {
+          "en": "Ring-Gaze"
+        },
+        "role": "Engage",
+        "effect": "Reveals hidden paths, enemies, or resources through heavy haze, fog, or during the 40-minute eclipse when visual landmarks vanish",
+        "numbers": {}
+      },
+      "weakness": "Glare: Intense direct stellar flare or unfiltered starlight washes out polarization contrast, causing temporary blindness",
+      "observe": [
+        "Eyes rotating independently to sample different polarization planes",
+        "Tracks the shimmering dust of falling ring particles",
+        "Maintains straight flight through total darkness using sky polarization"
+      ],
+      "journal": {
+        "en": "It reads the compass of the rings."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "F18’s stable polarized skylight is exactly the cue animals use when the sun is obscured or haze blocks landmarks; independent eye rotation to sample e-vector angles matches known ommatidial designs. During F12’s 40 min eclipse, twilight-level ring-scattered light can still carry polarization if the rings remain in view—navigation in heavy haze/eclipse is well within arthropod-grade solutions at 0.83 g.",
+        "fixes": [
+          "F18’s stable polarized skylight is exactly the cue animals use when the sun is obscured or haze blocks landmarks; independent eye rotation to sample e-vector angles matches known ommatidial designs. During F12’s 40 min eclipse, twilight-level ring-scattered light can still carry polarization if the rings remain in view—navigation in heavy haze/eclipse is well within arthropod-grade solutions at 0.83 g."
+        ],
+        "analogues": [
+          {
+            "organism": "Honey bee and desert ant sky-compass polarization vision; dung beetle orientation when the sun is not visible.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "anillo_sangre.c4",
+      "trait": "Magnetotactic migration to induced magnetic valleys",
+      "links": [
+        "Induced magnetosphere creates localized magnetic valleys",
+        "Conductive blood and filaments align with magnetic flux",
+        "Creature steers along field lines to reach low-radiation zones"
+      ],
+      "roots": [
+        "F7",
+        "F8"
+      ],
+      "skill": {
+        "id": "anillo_sangre.flux_sense",
+        "name": {
+          "en": "Flux-Sense"
+        },
+        "role": "Control",
+        "effect": "Marks magnetic valleys on map for 30 seconds; player can command Anillo-Sangre to lead to these safe zones for radiation shielding",
+        "numbers": {}
+      },
+      "weakness": "Magnetic Dead Zones: In regions of null field, the creature loses navigation, panics, and drifts randomly, becoming vulnerable",
+      "observe": [
+        "Spins slowly to sample magnetic direction before moving",
+        "Dives into shadowed pockets where radiation instruments drop",
+        "Body aligns perfectly with invisible field lines like iron filings"
+      ],
+      "journal": {
+        "en": "It feels the giant's invisible grip."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "Treat Flux-Sense as magnetoreception plus radiation-avoidance (symbiont stress pigments, UV/rad damage cues) steering toward F7 shielded pockets; require magnetite or similar inclusions in the conductive matrix for alignment aesthetics; soften null-field panic to disorientation unless multiple cues fail. Russo (2012) is electrotaxis (electric fields), not a substitute for magnetic navigation—cite only if you add galvanotaxis toward charge gradients near vents.",
+        "fixes": [
+          "Treat Flux-Sense as magnetoreception plus radiation-avoidance (symbiont stress pigments, UV/rad damage cues) steering toward F7 shielded pockets; require magnetite or similar inclusions in the conductive matrix for alignment aesthetics; soften null-field panic to disorientation unless multiple cues fail. Russo (2012) is electrotaxis (electric fields), not a substitute for magnetic navigation—cite only if you add galvanotaxis toward charge gradients near vents."
+        ],
+        "analogues": [
+          {
+            "organism": "Magnetotactic bacteria (magnetite chains); long-distance magnetoreception in sea turtles and migratory birds—gradient/map sense rather than simple dipole alignment.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "Polvo-Vivo",
+      "kind": "cousin",
+      "note": "(council kind 'Predator-Prey') Anillo-Sangre is the apex predator of the ring-rain filter-feeder community; Polvo-Vivo graze on the same dust but cannot harvest static charge, making them easy prey for the Anillo-Sangre's arc"
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-19",
+    "by": [
+      "naturalist/qwen"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-19",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-19"
+    }
+  ],
+  "body_plan": {
+    "symmetry": "biradial",
+    "origin": "Tidal flexing selected for continuous flexible filament growth to maximize surface-to-volume ratio for triboelectric harvest and strain-energy conversion"
+  },
+  "temperament": "Solitary, territorial over high-charge updrafts; docile when fully charged, aggressive discharge when depleted",
+  "secrets": [
+    "The piezoelectric crystals in Anillo-Sangre's filaments can be harvested by the player to craft a weak 'Strain-Cell' power source, but only if the creature is captured at peak tension (after a wind shear event).",
+    "Carrying a strong magnet near the Anillo-Sangre causes it to attempt to feed on the magnetic field; the creature becomes docile and follows the player, but its discharge ability is suppressed while magnetically loaded.",
+    "Anillo-Sangre spores are highly conductive; scattering them in water creates a conductive zone that can be used by the player to trigger environmental electrical puzzles, but will short out player electronics if the zone is too large."
+  ],
+  "moments": [
+    "During the 40-minute eclipse, the Anillo-Sangre detaches a long conductive filament, impaling it onto a raised silicate spire to draw down the gas giant's accumulated charge. The creature glows like a dying star, veins of light racing through its body as it reabsorbs the lightning, then retracts the filament with a sound like tearing silk."
+  ],
+  "journal": [
+    {
+      "en": "A battery that breathes."
+    },
+    {
+      "en": "It bleeds light to keep its heart beating."
+    }
+  ]
+}
