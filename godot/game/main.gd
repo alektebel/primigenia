@@ -23,6 +23,10 @@ func _next() -> void:
 		Game.goto_menu()
 
 func _ready() -> void:
+	# `--cell` after "--": straight into the cell stage, no terrain (tests and evidence).
+	if "--cell" in OS.get_cmdline_user_args():
+		Game.goto_cell.call_deferred()
+		return
 	var sc_name := _scenario_arg()
 	if sc_name != "":
 		var parsed := Scenario.read(sc_name)

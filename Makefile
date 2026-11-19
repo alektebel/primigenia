@@ -304,6 +304,15 @@ godot-evidence: godot
 godot-ui-test:
 	nice -n 10 timeout 600 $(GODOT) --headless --path godot --script res://tests/ui_test.gd
 .PHONY: godot-ui-test
+# The cell stage (godot/cell): play it, and its headless sim tests.
+.PHONY: godot-cell godot-cell-test godot-cell-evidence
+godot-cell:
+	$(GODOT) --path godot -- --cell
+godot-cell-test:
+	nice -n 10 timeout 600 $(GODOT) --headless --path godot --script res://cell/tests/cell_test.gd
+godot-cell-evidence:
+	@mkdir -p docs/evidence/godot/cell
+	LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 600 xvfb-run -a $(GODOT) --rendering-driver opengl3 --path godot --script res://cell/tests/cell_evidence.gd -- $(CURDIR)/docs/evidence/godot/cell
 # DT0 dev tools (PLAN-devtools): headless unit tests, evidence screenshots, agent socket test.
 .PHONY: godot-devtools-test godot-devtools-evidence godot-agent-test
 godot-devtools-test: godot
