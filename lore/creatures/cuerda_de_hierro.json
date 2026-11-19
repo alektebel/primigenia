@@ -1,0 +1,319 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "cuerda_de_hierro",
+  "name": {
+    "en": "Cuerda de Hierro"
+  },
+  "world": "rogue",
+  "kind": "new",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "Hydrothermal plumes and active chimney surfaces at fluid-rock interfaces",
+    "diet": "Chemo-electric; oxidizes H2 and reduces Fe2+ while harvesting electrical current from mechanical strain on piezoelectric crystals",
+    "active": "Continuous (metabolism tied to ambient turbulence)",
+    "predators": []
+  },
+  "body": "Asymmetric tangle of black, tensile filaments embedded with magnetite crystals, reinforced by gas-filled vesicles",
+  "chains": [
+    {
+      "id": "cuerda_de_hierro.c1",
+      "trait": "Filaments of black, tensile iron-wire",
+      "links": [
+        "Hydrothermal vents leach dissolved iron and sulfides from crustal rock",
+        "Rapid cooling in fluid plumes precipitates iron as magnetite microcrystals",
+        "Organisms secrete protein scaffolds that align magnetite into load-bearing arrays",
+        "Result: Filaments achieve structural integrity against 1.53g gravity and acquire piezoelectric response"
+      ],
+      "roots": [
+        "F13",
+        "F4",
+        "F19"
+      ],
+      "skill": {
+        "id": "cuerda_de_hierro.iron_lattice",
+        "name": {
+          "en": "Iron Lattice"
+        },
+        "role": "Defence",
+        "effect": "Locks filaments into a rigid, magnetized shield; absorbs 40% of incoming kinetic damage and reflects acoustic pulses.",
+        "numbers": {}
+      },
+      "weakness": "Filaments are brittle to resonant frequencies; matching the vent's dominant vibration shatters the crystal arrays.",
+      "observe": [
+        "Filaments shimmer with a metallic sheen in bioluminescence",
+        "Joints crackle with static when the wind shifts",
+        "No mouth; filaments feed directly from the flow"
+      ],
+      "journal": {
+        "en": "It wears the mountain's blood as armor."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "Scaffold magnetite/maghemite for tensile armor and magnetism; add vent-precipitated silica (quartz) nanocrystals or collagen-like biopolymer in the matrix for piezoelectric coupling. Rename diet hook to chemolithotrophy with optional strain sensing, not magnetite-as-piezo.",
+        "fixes": [
+          "Scaffold magnetite/maghemite for tensile armor and magnetism; add vent-precipitated silica (quartz) nanocrystals or collagen-like biopolymer in the matrix for piezoelectric coupling. Rename diet hook to chemolithotrophy with optional strain sensing, not magnetite-as-piezo."
+        ],
+        "analogues": [
+          {
+            "organism": "Iron-oxidizing bacteria mineral sheaths and stalks; magnetotactic bacteria (magnetite magnetosomes, e.g. Magnetospirillum).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "cuerda_de_hierro.c2",
+      "trait": "Vibrates to harvest metabolic energy",
+      "links": [
+        "Vent plumes release heat and chemicals in turbulent, oscillating bursts",
+        "Turbulence exerts oscillating drag forces on suspended filaments",
+        "Natural selection favors filaments tuned to the plume's resonant frequency",
+        "Resonant vibration strains embedded magnetite crystals, generating piezoelectric voltage"
+      ],
+      "roots": [
+        "F13",
+        "F10",
+        "F17"
+      ],
+      "skill": {
+        "id": "cuerda_de_hierro.resonant_shriek",
+        "name": {
+          "en": "Resonant Shriek"
+        },
+        "role": "Poke",
+        "effect": "Amplifies filament vibration to emit a focused 5 kHz pulse; deals 25 damage and stuns acoustic-based foes for 2 turns.",
+        "numbers": {}
+      },
+      "weakness": "Silence is lethal; in still water, it cannot generate power and suffers 15% max HP per turn.",
+      "observe": [
+        "Filaments hum and glow faintly during vent surges",
+        "Sparks jump between adjacent crystal clusters",
+        "Movement is minimal; the creature vibrates in place"
+      ],
+      "journal": {
+        "en": "It doesn't eat; it plays the mountain until the mountain feeds it."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "Primary metabolism: hydrogenotrophic and/or Fe-oxidizing chemolithotrophy on filaments; piezoelectric strain as trigger for ion flux, symbiont exchange, or small supplementary ATP. Weakness: still flow cuts chemosynthesis and sensory lock, not 15% HP/turn from piezo starvation alone.",
+        "fixes": [
+          "Primary metabolism: hydrogenotrophic and/or Fe-oxidizing chemolithotrophy on filaments; piezoelectric strain as trigger for ion flux, symbiont exchange, or small supplementary ATP. Weakness: still flow cuts chemosynthesis and sensory lock, not 15% HP/turn from piezo starvation alone."
+        ],
+        "analogues": [
+          {
+            "organism": "Vent methanotrophs and hydrogenotrophs (chemoautotrophy); bone/collagen piezoelectricity in remodeling (Fukada-style), not primary production.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "fukada_1959_piezoelectricity"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "cuerda_de_hierro.c3",
+      "trait": "Senses pressure waves across kilometers",
+      "links": [
+        "Surface pressure is 12 bar dominated by H2 with trace He/CH4",
+        "Dense hydrogen gas and fluid transmit acoustic waves at ~1200 m/s with low attenuation",
+        "Low-frequency vibrations travel vast distances without dissipation",
+        "Sensory pits along filaments detect interference patterns in the pressure field",
+        "Creature maps predators, vents, and mates via acoustic tomography"
+      ],
+      "roots": [
+        "F7",
+        "F10",
+        "F9"
+      ],
+      "skill": {
+        "id": "cuerda_de_hierro.vibration_sense",
+        "name": {
+          "en": "Vibration Sense"
+        },
+        "role": "Basic",
+        "effect": "Reveals all units within 50m on the grid and grants +20% accuracy to ranged attacks.",
+        "numbers": {}
+      },
+      "weakness": "Cannot detect silent movers (stealth skills) or creatures insulated from vibration (heavy armor/insulation).",
+      "observe": [
+        "Filaments twitch instantly to distant impacts",
+        "Creature ignores visual stimuli but locks onto sound",
+        "Head (node) rotates to triangulate sources"
+      ],
+      "journal": {
+        "en": "In the dark, it sees the shape of sound."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "Map vent field via low-frequency particle motion in chimney throats and along crack networks; game 50 m matches plausible vent-edge sensing. Drop kilometer claim or restrict it to rare ice-fracture or basin-scale paths with narrowband hums in quiet water.",
+        "fixes": [
+          "Map vent field via low-frequency particle motion in chimney throats and along crack networks; game 50 m matches plausible vent-edge sensing. Drop kilometer claim or restrict it to rare ice-fracture or basin-scale paths with narrowband hums in quiet water."
+        ],
+        "analogues": [
+          {
+            "organism": "Fish lateral line; cephalopod and crustacean statocysts; elephant low-frequency seismic communication over long ground paths (from memory, unverified for vent noise).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "cuerda_de_hierro.c4",
+      "trait": "Floats via internal hydrogen bladders",
+      "links": [
+        "Atmospheric H2 partial pressure is ~11 bar",
+        "H2 diffuses readily into hydrophobic biological vesicles",
+        "High gravity (1.53g) demands dense support, but H2 bladders provide buoyancy",
+        "Bladders allow suspension in high-velocity plumes without sinking or dragging",
+        "Buoyancy positions filaments optimally in chemical gradients"
+      ],
+      "roots": [
+        "F7",
+        "F14",
+        "F4"
+      ],
+      "skill": {
+        "id": "cuerda_de_hierro.buoyant_shift",
+        "name": {
+          "en": "Buoyant Shift"
+        },
+        "role": "Control",
+        "effect": "Adjusts bladder volume to move 10m instantly without action cost; grants advantage on next evasion check.",
+        "numbers": {}
+      },
+      "weakness": "Rapid depressurization causes vesicle rupture; takes 30 damage if exposed to low-pressure zones.",
+      "observe": [
+        "Glowing gas pockets pulse rhythmically within filaments",
+        "Creature drifts upward when flow ceases",
+        "Skin feels spongy but resilient under pressure"
+      ],
+      "journal": {
+        "en": "It breathes the sky to dance on the water."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "Gas vesicles only in low-pressure chimney or plume zones above the benthos, or pressure-compensated lipid-dominated vacuoles plus rheophilic tethering in flow. Buoyant Shift as micro-lift in vent updraft, not neutral buoyancy at 250 MPa. Weakness: violent decompression or breach of high-pressure vesicles, not generic low-pressure surface exposure unless the creature is carried up a chimney.",
+        "fixes": [
+          "Gas vesicles only in low-pressure chimney or plume zones above the benthos, or pressure-compensated lipid-dominated vacuoles plus rheophilic tethering in flow. Buoyant Shift as micro-lift in vent updraft, not neutral buoyancy at 250 MPa. Weakness: violent decompression or breach of high-pressure vesicles, not generic low-pressure surface exposure unless the creature is carried up a chimney."
+        ],
+        "analogues": [
+          {
+            "organism": "Fish swim bladder (O2/N2); some deep taxa use lipid floatation instead of gas at depth (from memory, unverified).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "Silt-Crawler",
+      "kind": "cousin",
+      "note": "(council kind 'predator') Silt-Crawlers ignore Cuerda de Hierro, mistaking the vibrating filaments for inert rock; the creature benefits from this camouflage."
+    },
+    {
+      "with": "Vent-Limpet",
+      "kind": "cousin",
+      "note": "(council kind 'commensal') Vent-Limpets graze on bacteria that colonize the Cuerda's filaments; the Cuerda tolerates this as the grazing stimulates flow."
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-19",
+    "by": [
+      "naturalist/qwen"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-19",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-19"
+    },
+    {
+      "date": "2026-11-19",
+      "who": "autoloop",
+      "what": "removed rejected references from analogues"
+    }
+  ],
+  "body_plan": {
+    "symmetry": "asymmetric"
+  },
+  "temperament": "Resonant, defensive, symbiotic with vent flow; highly sensitive to vibration",
+  "secrets": [
+    "Tuning a skill to the creature's resonant frequency calms it and reveals a vent cache rich in rare minerals.",
+    "Its magnetite crystals can be harvested to craft gear with unique acoustic properties.",
+    "A dried specimen, if placed near a vent, will slowly rehydrate and resume vibrating, acting as a perpetual warning beacon."
+  ],
+  "moments": [
+    "You approach a 'rock formation' near a vent. The filaments are so still they look like mineral deposits. When you step on a loose stone, the Cuerda wakes. It doesn't attack you; it latches onto your tool, harvests the kinetic energy of your movement, and glows brighter. You realize the 'monster' is just a harp string, and you've been strumming it."
+  ],
+  "journal": [
+    {
+      "en": "It doesn't eat food; it eats gravity's song."
+    },
+    {
+      "en": "The iron in its veins remembers every eruption."
+    }
+  ]
+}

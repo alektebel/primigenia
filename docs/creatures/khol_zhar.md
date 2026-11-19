@@ -41,7 +41,7 @@ Trait ← Standing wave radiation pressure counters 1.85g gravity ← 10-bar atm
   - Highly speculative cohesion, honest physics: treat 10 bar air as the lift medium—lightened, gas-pocketed or aerosol-laden gelatin with neutral/slight aerostatic buoyancy in anticyclone updrafts (fog-canyon habitat)—and use the hum only to phase-lock zooids into a stiff lattice (spacing, orientation, predator-confusion), not to cancel gravity. Shrink zooids to cm-scale filter units, or hybridize with cheap dense-air gliding between anticyclone cells.
   - scores: astrobio 6, skeptic 6
   - Analogue: Laboratory ultrasonic levitation moves milligram droplets and beads (Gor’kov-type acoustic trapping); synchronizing oscillators include Photinus firefly flash entrainment and weakly electric fish jamming/phase behavior—not antigravity.: as named by the judge; no mechanism or reference recorded
-  - Analogue: real biology behind this chain: see the cited works; chain wording is the council's own (Marston 2018 [unverified])
+  - Analogue: real biology behind this chain: see the cited works; chain wording is the council's own
   - Fix: Highly speculative cohesion, honest physics: treat 10 bar air as the lift medium—lightened, gas-pocketed or aerosol-laden gelatin with neutral/slight aerostatic buoyancy in anticyclone updrafts (fog-canyon habitat)—and use the hum only to phase-lock zooids into a stiff lattice (spacing, orientation, predator-confusion), not to cancel gravity. Shrink zooids to cm-scale filter units, or hybridize with cheap dense-air gliding between anticyclone cells.
 - **Chain provenance:** council run `autoloop-2026-11-19`; by naturalist/qwen
 
@@ -129,4 +129,5 @@ council run `autoloop-2026-11-19`; by naturalist/qwen
 ## Changelog
 
 - 2026-11-19 import_got: imported from council run autoloop-2026-11-19
+- 2026-11-19 autoloop: removed rejected references from analogues
 - 2026-11-19 autoloop: removed rejected references from analogues

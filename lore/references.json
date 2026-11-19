@@ -9544,8 +9544,8 @@
     "id": "marston_2018_acoustic",
     "type": "article-journal",
     "title": "Acoustic radiation pressure and streaming in viscous fluids",
-    "x-status": "unverified",
-    "x-note": "cited by a council model from memory; not yet checked",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Radiation pressure and acoustic streaming' (Duck, None) title similarity 0.64",
     "author": [
       {
         "family": "Marston",
@@ -9559,7 +9559,8 @@
         ]
       ]
     },
-    "container-title": "Annual Review of Fluid Mechanics"
+    "container-title": "Annual Review of Fluid Mechanics",
+    "x-checked": "2026-11-19"
   },
   {
     "id": "seibel_2009_piezolytes",
@@ -9581,6 +9582,482 @@
       ]
     },
     "container-title": "Integrative and Comparative Biology",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "kite_2017_habitable",
+    "type": "article-journal",
+    "title": "Habitable Planets around Rogue Planets",
+    "author": [
+      {
+        "family": "Kite",
+        "given": "E. S."
+      },
+      {
+        "family": "Jacobs",
+        "given": "G. S."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2017
+        ]
+      ]
+    },
+    "container-title": "The Astrophysical Journal",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Habitable planets around the Sun and other stars' (Kasting, 2007) title similarity 0.74",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "segura_2005_mdw",
+    "type": "article-journal",
+    "title": "Habitable Planets around M Dwarfs",
+    "author": [
+      {
+        "family": "Segura",
+        "given": "A."
+      },
+      {
+        "family": "Kasting",
+        "given": "J. F."
+      },
+      {
+        "family": "Cohen",
+        "given": "M."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2005
+        ]
+      ]
+    },
+    "container-title": "Astrobiology",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'Titan and habitable planets around M-dwarfs' (Lunine, 2010, doi 10.1039/c004788k), title similarity 0.87, author differs, year off",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "zeng_2016_earth",
+    "type": "article-journal",
+    "title": "Earth-Size Planets in the Habitable Zone",
+    "author": [
+      {
+        "family": "Zeng",
+        "given": "L."
+      },
+      {
+        "family": "Sasselov",
+        "given": "D."
+      },
+      {
+        "family": "Jacobson",
+        "given": "S. A."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2016
+        ]
+      ]
+    },
+    "container-title": "Proceedings of the National Academy of Sciences",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Search for Earth-like planets in the habitable zone of M-dwarfs' (Astudillo-Defru, None) title similarity 0.74",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "christensen_2006_scaling",
+    "type": "article-journal",
+    "title": "Scaling Properties of Convection-Driven Dynamos",
+    "author": [
+      {
+        "family": "Christensen",
+        "given": "U. R."
+      },
+      {
+        "family": "Aubert",
+        "given": "J."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2006
+        ]
+      ]
+    },
+    "container-title": "Geophysical Journal International",
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked"
+  },
+  {
+    "id": "pierrehumbert_2011_principles",
+    "type": "book",
+    "title": "Principles of Planetary Climate",
+    "author": [
+      {
+        "family": "Pierrehumbert",
+        "given": "R. T."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2010
+        ]
+      ]
+    },
+    "container-title": "Cambridge University Press",
+    "x-status": "verified",
+    "x-note": "verified against OpenLibrary (title 1.00); year corrected from 2011; ISBN added",
+    "ISBN": "9780511780783",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "lunine_2009_icy",
+    "type": "chapter",
+    "title": "The Nature of Icy Satellite Surfaces",
+    "author": [
+      {
+        "family": "Lunine",
+        "given": "J. I."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2009
+        ]
+      ]
+    },
+    "container-title": "Encyclopedia of the Solar System",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Cassini-Huygens Investigations of Satellite Surfaces and Interiors' (Lunine, 2003) title similarity 0.49",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "vance_2018_ocean",
+    "type": "article-journal",
+    "title": "Ocean Worlds: A Comparative Study",
+    "author": [
+      {
+        "family": "Vance",
+        "given": "A."
+      },
+      {
+        "family": "Pappalardo",
+        "given": "R. T."
+      },
+      {
+        "family": "Hand",
+        "given": "K. P."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2018
+        ]
+      ]
+    },
+    "container-title": "Space Science Reviews",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'The Habitability of Icy Ocean Worlds in the Solar System' (Vance, 2017, doi 10.1007/978-3-319-30648-3_63-1), title similarity 0.43, author match, year ok",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "hemingway_2020_ocean",
+    "type": "article-journal",
+    "title": "The Limits of Ocean and Lake Ice",
+    "author": [
+      {
+        "family": "Hemingway",
+        "given": "J. J."
+      },
+      {
+        "family": "Kite",
+        "given": "E. S."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2020
+        ]
+      ]
+    },
+    "container-title": "Geophysical Research Letters",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'The Ice‐Ocean Governor: Ice‐Ocean Stress Feedback Limits Beaufort Gyre Spin‐Up' (Meneghello, 2018) title similarity 0.45",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "hand_2007_europan",
+    "type": "article-journal",
+    "title": "Radiolytic Production of Oxidants on Europa and the Implications for Biology",
+    "author": [
+      {
+        "family": "Hand",
+        "given": "K. P."
+      },
+      {
+        "family": "Chyba",
+        "given": "C. F."
+      },
+      {
+        "family": "Dworkin",
+        "given": "J. P."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2007
+        ]
+      ]
+    },
+    "container-title": "Icarus",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'Clathrate Hydrates of Oxidants in the Ice Shell of Europa' (Hand, 2006, doi 10.1089/ast.2006.6.463), title similarity 0.38, author match, year ok",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "russell_2006_alkaline",
+    "type": "article-journal",
+    "title": "The Emergence of Life from Iron Sulphur World Chemistry",
+    "author": [
+      {
+        "family": "Russell",
+        "given": "M. J."
+      },
+      {
+        "family": "Hall",
+        "given": "A. J."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2006
+        ]
+      ]
+    },
+    "container-title": "Philosophical Transactions of the Royal Society B",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'On the emergence of life via catalytic iron‐sulphide membranes' (Russell, 1993, doi 10.1111/j.1365-3121.1993.tb00267.x), title similarity 0.62, author match, year off",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "schrenk_2013_vent",
+    "type": "article-journal",
+    "title": "Hydrothermal Systems and the Origins of Life",
+    "author": [
+      {
+        "family": "Schrenk",
+        "given": "M. O."
+      },
+      {
+        "family": "Martin",
+        "given": "G. W."
+      },
+      {
+        "family": "Baross",
+        "given": "J. A."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2013
+        ]
+      ]
+    },
+    "container-title": "Nature Geoscience",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Thermodynamics of strecker synthesis in hydrothermal systems' (Schulte, 1995) title similarity 0.38",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "amend_2001_energetics",
+    "type": "article-journal",
+    "title": "Energetics of Overall Metabolic Reactions",
+    "author": [
+      {
+        "family": "Amend",
+        "given": "J. P."
+      },
+      {
+        "family": "Shock",
+        "given": "E. L."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2001
+        ]
+      ]
+    },
+    "container-title": "Astrobiology",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'Energetics of overall metabolic reactions of thermophilic and hyperthermophilic Archaea and Bacteria' (Amend, 2001, doi 10.1111/j.1574-6976.2001.tb00576.x), title similarity 0.58, author match, year ok",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "mccollom_2013_serp",
+    "type": "article-journal",
+    "title": "Abiotic Synthesis of Organics in Alkaline Hydrothermal Vents",
+    "author": [
+      {
+        "family": "McCollom",
+        "given": "T. M."
+      },
+      {
+        "family": "Seewald",
+        "given": "J. S."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2013
+        ]
+      ]
+    },
+    "container-title": "Annual Review of Earth and Planetary Sciences",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'Abiotic Synthesis of Organic Compounds in Deep‐Sea Hydrothermal Environments' (McCollom, 2007, doi 10.1002/chin.200720264), title similarity 0.79, author match, year off",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "yoshida_2012_piezophile",
+    "type": "article-journal",
+    "title": "Piezophilic Microorganisms",
+    "author": [
+      {
+        "family": "Yoshida",
+        "given": "T."
+      },
+      {
+        "family": "Kawaguchi",
+        "given": "T."
+      },
+      {
+        "family": "Kato",
+        "given": "C."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2012
+        ]
+      ]
+    },
+    "container-title": "Microbes and Environments",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'Piezophilic or Barophilic Microorganisms' (Kanekar, 2022, doi 10.1007/978-981-19-1573-4_9), title similarity 0.79, author differs, year off",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "schut_2020_h2",
+    "type": "article-journal",
+    "title": "Hydrogen Metabolism in the Deep Biosphere",
+    "author": [
+      {
+        "family": "Schut",
+        "given": "G. J."
+      },
+      {
+        "family": "van der Zaan",
+        "given": "C. J."
+      },
+      {
+        "family": "Stams",
+        "given": "A. J. M."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2020
+        ]
+      ]
+    },
+    "container-title": "FEMS Microbiology Reviews",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Deep Biosphere of' (, None) title similarity 0.48",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "fukada_1959_piezoelectricity",
+    "type": "article-journal",
+    "title": "Piezoelectricity of bone",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'Piezoelectricity of biopolymers' (FUKADA, 1995, doi 10.1016/0006-355x(95)00039-c), title similarity 0.84, author match, year off",
+    "author": [
+      {
+        "family": "Fukada",
+        "given": "E."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1959
+        ]
+      ]
+    },
+    "container-title": "Journal of the Physical Society of Japan",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "kirschvink_1979_field",
+    "type": "article-journal",
+    "title": "Low-field magnetic superparamagnetism of magnetite",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Quantitative reanalysis of classic pigeon homing experiments rejects a liver-based magnetic compass based on superparamagnetism' (Kirschvink, 2026) title similarity 0.40",
+    "author": [
+      {
+        "family": "Kirschvink",
+        "given": "J. L."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1979
+        ]
+      ]
+    },
+    "container-title": "Proceedings of the National Academy of Sciences",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "thibault_2000_collision",
+    "type": "article-journal",
+    "title": "Collision-induced absorption in H2-He mixtures",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Collision-induced fundamental band of H2 in H2He and H2Ne mixtures at different temperatures' (Reddy, 1973) title similarity 0.57",
+    "author": [
+      {
+        "family": "Thibault",
+        "given": "F."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2000
+        ]
+      ]
+    },
+    "container-title": "Journal of Chemical Physics",
     "x-checked": "2026-11-19"
   }
 ]

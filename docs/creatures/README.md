@@ -165,6 +165,15 @@
 | [Salcarán](salcaran.md) | new | draft | 4 | 3 fixable, 1 plausible |
 | [Salinera](salinera.md) | new | draft | 4 | 2 fixable, 2 plausible |
 
+## Rogue Planet Warmed from Inside (`rogue`)
+
+| Creature | Kind | Status | Chains | Verdicts |
+|---|---|---|---|---|
+| [Brumascara](brumascara.md) | new | draft | 4 | 3 fixable, 1 plausible |
+| [Cortezón](cortezon.md) | new | draft | 4 | 2 fixable, 2 plausible |
+| [Cuerda de Hierro](cuerda_de_hierro.md) | new | draft | 4 | 4 fixable |
+| [Velaescura](velaescura.md) | new | draft | 4 | 1 fixable, 3 plausible |
+
 ## Silicon cryogenic world (`silicon_cryo`)
 
 | Creature | Kind | Status | Chains | Verdicts |

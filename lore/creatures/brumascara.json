@@ -1,0 +1,289 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "brumascara",
+  "name": {
+    "en": "Brumascara"
+  },
+  "world": "rogue",
+  "kind": "new",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "0.5-3 km altitude, under ice canopy, in thermal plumes",
+    "diet": "Filter-feeds airborne microbes, dissolves radiolytic peroxides",
+    "active": "Soaring on convection currents",
+    "predators": []
+  },
+  "body": "Buoyant gas bladder, thin membranous wings, streamlined neck",
+  "chains": [
+    {
+      "id": "brumascara.c1",
+      "trait": "Bladder filled with H2 and CH4",
+      "links": [
+        "Low molecular weight gas provides lift",
+        "Dense hydrogen atmosphere enables buoyancy",
+        "Primordial H2 envelope exceeds escape velocity"
+      ],
+      "roots": [
+        "F7",
+        "F3",
+        "F1"
+      ],
+      "skill": {
+        "id": "brumascara.gas_float",
+        "name": {
+          "en": "Gas Float"
+        },
+        "role": "Basic",
+        "effect": "Reduces fall damage to zero, enables passive altitude maintenance",
+        "numbers": {}
+      },
+      "weakness": "Vulnerable to puncture wounds releasing lift gas",
+      "observe": [
+        "Translucent abdominal sac",
+        "Slow vertical drifting",
+        "Balanced wing adjustments"
+      ],
+      "journal": {
+        "en": "They wear their own sky."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "Make float primarily dynamic/soaring (see Thermal Soar) with optional metabolically warmed bladder (lower ρ) or trace lighter volatiles in fissure gas (highly speculative). Game: passive altitude hold = riding updrafts; bladder = emergency lift after deliberate H2 vent, not perpetual lighter-than-local-H2.",
+        "fixes": [
+          "Make float primarily dynamic/soaring (see Thermal Soar) with optional metabolically warmed bladder (lower ρ) or trace lighter volatiles in fissure gas (highly speculative). Game: passive altitude hold = riding updrafts; bladder = emergency lift after deliberate H2 vent, not perpetual lighter-than-local-H2."
+        ],
+        "analogues": [
+          {
+            "organism": "Sky balloons use heated air (lower density than ambient); diving beetles carry compressible gas stores for different functions—not neutral buoyancy in a same-composition atmosphere.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "brumascara.c2",
+      "trait": "Wings span four meters to ride thermals",
+      "links": [
+        "High gravity requires large lift area",
+        "1.53g increases structural load limits",
+        "Mantle convection creates thermal plumes"
+      ],
+      "roots": [
+        "F4",
+        "F3",
+        "F1"
+      ],
+      "skill": {
+        "id": "brumascara.thermal_soar",
+        "name": {
+          "en": "Thermal Soar"
+        },
+        "role": "Engage",
+        "effect": "Rides updrafts for unlimited stamina, gains 10m altitude per second",
+        "numbers": {}
+      },
+      "weakness": "Helpless in calm, stagnant air pockets",
+      "observe": [
+        "Wings locked in thermal capture",
+        "Altitude gain without flapping",
+        "Dust trails from wingtips"
+      ],
+      "journal": {
+        "en": "They dance on heat they cannot touch."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "Clarify ecology: sub-atmospheric H2 sky above F12, fed by fissure thermals. Scale body mass vs 4 m wings explicitly; stall in dead air stays as weakness.",
+        "fixes": [
+          "Clarify ecology: sub-atmospheric H2 sky above F12, fed by fissure thermals. Scale body mass vs 4 m wings explicitly; stall in dead air stays as weakness."
+        ],
+        "analogues": [
+          {
+            "organism": "Condor dynamic soaring and alpine raptors exploiting orographic and thermal lift—energy from wind fields, not neutral buoyancy.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "brumascara.c3",
+      "trait": "Sensory cilia detect chemical plumes",
+      "links": [
+        "Tracks geothermal vents from altitude",
+        "Vent gases disperse in dense air",
+        "High pressure slows molecular diffusion"
+      ],
+      "roots": [
+        "F13",
+        "F10",
+        "F7"
+      ],
+      "skill": {
+        "id": "brumascara.scent_track",
+        "name": {
+          "en": "Scent Track"
+        },
+        "role": "Control",
+        "effect": "Highlights vent sources on map, attracts friendly specimens",
+        "numbers": {}
+      },
+      "weakness": "Overwhelmed by mixed chemical signals near complex fissures",
+      "observe": [
+        "Cilia twitching rapidly",
+        "Circular search patterns",
+        "Head oriented downwind"
+      ],
+      "journal": {
+        "en": "They read the atmosphere like a map."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "Chemotaxis toward H2/CH4/sulfur vent tracers in a reducing atmosphere is well selected; high pressure slows diffusion but convection in F13 plumes creates trackable filaments.",
+        "fixes": [
+          "Chemotaxis toward H2/CH4/sulfur vent tracers in a reducing atmosphere is well selected; high pressure slows diffusion but convection in F13 plumes creates trackable filaments."
+        ],
+        "analogues": [
+          {
+            "organism": "Silkworm moth pheromone plume tracking with antennae cilia; albatross olfactory navigation toward productive patches.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "brumascara.c4",
+      "trait": "Membrane seals against H2 diffusion",
+      "links": [
+        "Prevents gas loss in high partial pressure",
+        "11 bar H2 environment drives diffusion",
+        "Piezophilic membranes resist gas dissolution"
+      ],
+      "roots": [
+        "F14",
+        "F14",
+        "F18"
+      ],
+      "skill": {
+        "id": "brumascara.seal_bladder",
+        "name": {
+          "en": "Seal Bladder"
+        },
+        "role": "Defence",
+        "effect": "Blocks gas leakage for 20s, restores 50% bladder capacity",
+        "numbers": {}
+      },
+      "weakness": "Sealing mechanism consumes extra oxygen during flight",
+      "observe": [
+        "Glossy cuticle sheen",
+        "Taut wing joints",
+        "No visible gas venting"
+      ],
+      "journal": {
+        "en": "They keep their sky locked inside."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "Seal skill = partial permeability reduction plus rapid bladder turnover, cost paid as ATP/reducing-equivalent budget, not O2. Fluorescent cilia barometer (secret) stays speculative but fine if tied to radiolytic peroxides F12/F15, not O2 breathing.",
+        "fixes": [
+          "Seal skill = partial permeability reduction plus rapid bladder turnover, cost paid as ATP/reducing-equivalent budget, not O2. Fluorescent cilia barometer (secret) stays speculative but fine if tied to radiolytic peroxides F12/F15, not O2 breathing."
+        ],
+        "analogues": [
+          {
+            "organism": "Piezophile and methanogen membrane adaptations limiting gas flux; nylon/H2-barrier engineering analog (synthetic)—biology never reaches perfect barrier.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "none",
+      "kind": "cousin",
+      "note": "(council kind 'baseline') No existing fauna yet. This lineage establishes the first trophic tiers."
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-19",
+    "by": [
+      "naturalist/qwen"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-19",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-19"
+    }
+  ],
+  "body_plan": {
+    "symmetry": "bilateral",
+    "arms": 2,
+    "origin": "oceanic ascendant"
+  },
+  "temperament": "Curious, migratory, drawn to warm air",
+  "secrets": [
+    "They can intentionally vent H2 to perform rapid vertical darts when threatened.",
+    "Cilia patterns change color via fluorescence when exposed to radiolytic peroxides, acting as internal barometers."
+  ],
+  "moments": [
+    "A thermal column catches it, and the creature hangs motionless in the dark, a pale teardrop suspended in a sea of 12-bar silence."
+  ],
+  "journal": [
+    {
+      "en": "They wear their own sky."
+    },
+    {
+      "en": "Wind is not a force here; it is a river."
+    }
+  ]
+}

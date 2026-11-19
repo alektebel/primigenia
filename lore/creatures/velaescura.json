@@ -1,0 +1,288 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "velaescura",
+  "name": {
+    "en": "Velaescura"
+  },
+  "world": "rogue",
+  "kind": "new",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "2-8 km depth, turbulent hydrothermal plumes",
+    "diet": "Suspended chemosynthetic detritus, bacterial flocs",
+    "active": "Continuous (circadian null)",
+    "predators": []
+  },
+  "body": "Streamlined, pressure-equalized sac with lateral hydrodynamic fins",
+  "chains": [
+    {
+      "id": "velaescura.c1",
+      "trait": "Gill rakers filter chemosynthetic snow",
+      "links": [
+        "Dense atmosphere carries vent aerosols upward",
+        "Hydrothermal plumes release organic detritus",
+        "Radiogenic heat drives convective transport"
+      ],
+      "roots": [
+        "F7",
+        "F13",
+        "F1"
+      ],
+      "skill": {
+        "id": "velaescura.filter_feed",
+        "name": {
+          "en": "Filter Feed"
+        },
+        "role": "Basic",
+        "effect": "Converts organic snow into 15 stamina, passive regeneration in plumes",
+        "numbers": {}
+      },
+      "weakness": "Cannot distinguish toxic vent plumes from food sources",
+      "observe": [
+        "Visible particulate trails in water",
+        "Synchronized gill raking motion",
+        "Plume updraft turbulence"
+      ],
+      "journal": {
+        "en": "They eat the sky's ash, patient as stone."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "Vent plumes export particulate organic carbon (microbial flocs, mineral-associated detritus) into the water column; mid-depth suspension feeding on that flux matches chemosynthesis-only F17 production and turbulent F13 transport. Toxic plume confusion is realistic (H2S, metals, pH swings).",
+        "fixes": [
+          "Vent plumes export particulate organic carbon (microbial flocs, mineral-associated detritus) into the water column; mid-depth suspension feeding on that flux matches chemosynthesis-only F17 production and turbulent F13 transport. Toxic plume confusion is realistic (H2S, metals, pH swings)."
+        ],
+        "analogues": [
+          {
+            "organism": "Deep-sea sponges and polychaetes near hydrothermal vents filtering particulate and microbial snow (mechanism: mucous nets and gill/mouth filter structures).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "velaescura.c2",
+      "trait": "Lateral line detects pressure shifts at long range",
+      "links": [
+        "High sound speed reduces acoustic attenuation",
+        "Dense hydrogen atmosphere transmits efficiently",
+        "Planetary pressure traps acoustic energy"
+      ],
+      "roots": [
+        "F10",
+        "F7",
+        "F11"
+      ],
+      "skill": {
+        "id": "velaescura.echo_track",
+        "name": {
+          "en": "Echo Track"
+        },
+        "role": "Control",
+        "effect": "Reveals all entities within 50m, slows their movement by 20%",
+        "numbers": {}
+      },
+      "weakness": "Sudden loud noises cause temporary disorientation",
+      "observe": [
+        "Ripple patterns on water surface",
+        "Rhythmic sensory quivering",
+        "Directional head turns"
+      ],
+      "journal": {
+        "en": "They hear the dark before they see it."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "Root causality in water-column acoustics and pressure-gradient hydrodynamics (F11, F13), not F10. Rename skill to passive hydrodynamic mapping; reserve long-range 'hearing the dark' to vent thumps and convective surges in plume water. Optional: weak active sonar only if paired with a sound-producing organ and fat-modified tissues.",
+        "fixes": [
+          "Root causality in water-column acoustics and pressure-gradient hydrodynamics (F11, F13), not F10. Rename skill to passive hydrodynamic mapping; reserve long-range 'hearing the dark' to vent thumps and convective surges in plume water. Optional: weak active sonar only if paired with a sound-producing organ and fat-modified tissues."
+        ],
+        "analogues": [
+          {
+            "organism": "Deep-sea fish lateral-line neuromasts detecting low-frequency flow and distant mechanical disturbances (e.g. macrourid grenadiers); separate from bat/oilbird aerial echolocation.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "velaescura.c3",
+      "trait": "Internal fluid matches external hydrostatic pressure",
+      "links": [
+        "25 km water column generates extreme load",
+        "Deep ocean pressure crushes gas bladders",
+        "High gravity maintains dense water column"
+      ],
+      "roots": [
+        "F11",
+        "F20",
+        "F4"
+      ],
+      "skill": {
+        "id": "velaescura.pressure_equalize",
+        "name": {
+          "en": "Pressure Equalize"
+        },
+        "role": "Passive",
+        "effect": "Immunity to crush damage, allows diving to 20 km depth",
+        "numbers": {}
+      },
+      "weakness": "Cannot survive rapid pressure drops near ice fractures",
+      "observe": [
+        "Incompressible body shape",
+        "Lack of air pockets",
+        "Slow, deliberate movement"
+      ],
+      "journal": {
+        "en": "They carry the ocean's weight without complaint."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "At several km depth, gas compartments would implode; isotonic, pressure-balanced body fluids and gelatinous or low-compressibility tissues match F20. Slow movement and fracture decompression vulnerability follow barotrauma physics.",
+        "fixes": [
+          "At several km depth, gas compartments would implode; isotonic, pressure-balanced body fluids and gelatinous or low-compressibility tissues match F20. Slow movement and fracture decompression vulnerability follow barotrauma physics."
+        ],
+        "analogues": [
+          {
+            "organism": "Hadal and abyssal fauna without swim bladders—piezophile amphipods and gelatinous deep-sea organisms maintaining osmotic/hydrostatic parity with seawater.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "velaescura.c4",
+      "trait": "Dorsal fin ripples at low frequency",
+      "links": [
+        "Low temperature reduces metabolic rate",
+        "Cold-adapted enzymes require less energy",
+        "Geothermal heat maintains cool but stable temps"
+      ],
+      "roots": [
+        "F16",
+        "F1",
+        "F11"
+      ],
+      "skill": {
+        "id": "velaescura.slow_glide",
+        "name": {
+          "en": "Slow Glide"
+        },
+        "role": "Basic",
+        "effect": "Moves at 2 m/s with zero stamina cost for 10 seconds",
+        "numbers": {}
+      },
+      "weakness": "Cannot accelerate quickly when startled",
+      "observe": [
+        "Undulating fin wave",
+        "Minimal water displacement",
+        "Eyes fixed forward"
+      ],
+      "journal": {
+        "en": "Patience is their primary muscle."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "Near-freezing F16 kinetics favor low-cost undulatory cruise in a food-sparse, chemosynthetic-detritus niche; poor burst escape when startled is expected for passive filter feeders.",
+        "fixes": [
+          "Near-freezing F16 kinetics favor low-cost undulatory cruise in a food-sparse, chemosynthetic-detritus niche; poor burst escape when startled is expected for passive filter feeders."
+        ],
+        "analogues": [
+          {
+            "organism": "Antarctic notothenioids and other cold-adapted swimmers with economical slow muscle undulation at ~0°C-class temperatures.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "none",
+      "kind": "cousin",
+      "note": "(council kind 'baseline') No existing fauna yet. This lineage establishes the first trophic tiers."
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-19",
+    "by": [
+      "naturalist/qwen"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-19",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-19"
+    }
+  ],
+  "body_plan": {
+    "symmetry": "bilateral",
+    "origin": "vent-migrant"
+  },
+  "temperament": "Docile filter-feeder, easily startled by pressure waves",
+  "secrets": [
+    "Their lateral line can mimic vent pulse rhythms to lure prey closer.",
+    "They store excess chemosynthetic fats in crystalline nodules that glow faintly blue under pressure."
+  ],
+  "moments": [
+    "When a vent erupts, they bloom like pale flowers, drinking the fire's breath until the water runs clear again."
+  ],
+  "journal": [
+    {
+      "en": "They eat the sky's ash, patient as stone."
+    },
+    {
+      "en": "In the dark, hunger is a quiet tide."
+    }
+  ]
+}
