@@ -320,6 +320,8 @@ func _fight_selection(state: Dictionary) -> void:
 
 
 func _on_tick(state: Dictionary) -> void:
+	if bool(state.get("parts", {}).get("lost", false)):
+		_lineage_ended()
 	ui.stub.discovered = state.get("parts", {}).get("discovered", [])
 	var lo: Dictionary = state.get("loadout", {"slots": [0, 1, 3, 4], "known": 0, "can_edit": false})
 	var key := "%s|%d" % [lo.slots, int(lo.known)]
@@ -667,13 +669,69 @@ func open_nest_editor() -> void:
 	layer.layer = 30
 	island.add_child(layer)
 	layer.add_child(editor)
+	var reload := func(genome: Dictionary) -> void:
+		stage.paused = false                 # the scenario records the time state: save it running
+		var built = preload("res://devtools/scenario.gd").build(stage, island.scenario_ctx(), "save", "nest edit", "", false)
+		built.json.genome = genome
+		layer.queue_free()
+		island.load_scenario({"dict": built.json, "state": built.state, "recipe": ""})
+		stage.paused = false                 # a loaded scenario starts paused; the nest edit resumes play
 	editor.exit_requested.connect(func() -> void:
+		if not editor.applied_genome.is_empty():
+			reload.call(editor.applied_genome)       # free repaint/rearrange kept on leaving
+			return
 		stage.restore_from(stage.world.snapshot())
 		stage.paused = false
 		layer.queue_free())
-	editor.nest_confirmed.connect(func(genome: Dictionary) -> void:
-		var built = preload("res://devtools/scenario.gd").build(stage, island.scenario_ctx(), "save", "nest edit", "", false)
-		built.json.genome = genome
-		stage.paused = false
-		layer.queue_free()
-		island.load_scenario({"dict": built.json, "state": built.state, "recipe": ""}))
+	editor.nest_confirmed.connect(func(genome: Dictionary) -> void: reload.call(genome))
+
+# A25: no eggs left. The stage is frozen by C; show the end of the lineage and return to the last save.
+var _lineage_end: CanvasLayer
+func _lineage_ended() -> void:
+	if _lineage_end != null:
+		return
+	stage.paused = true
+	_lineage_end = CanvasLayer.new()
+	_lineage_end.layer = 40
+	island.add_child(_lineage_end)
+	var dim := ColorRect.new()
+	dim.color = Color(0.03, 0.03, 0.04, 0.82)
+	dim.set_anchors_preset(Control.PRESET_FULL_RECT)
+	_lineage_end.add_child(dim)
+	var box := VBoxContainer.new()
+	box.set_anchors_preset(Control.PRESET_CENTER)
+	box.grow_horizontal = Control.GROW_DIRECTION_BOTH
+	box.grow_vertical = Control.GROW_DIRECTION_BOTH
+	box.alignment = BoxContainer.ALIGNMENT_CENTER
+	box.custom_minimum_size = Vector2(520, 0)
+	dim.add_child(box)
+	var title := Label.new()
+	title.text = Strings.t("lineage_end")
+	title.add_theme_font_size_override("font_size", 34)
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	box.add_child(title)
+	var sub := Label.new()
+	sub.text = Strings.t("lineage_end_sub")
+	sub.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	sub.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	box.add_child(sub)
+	var back := Button.new()
+	back.text = Strings.t("lineage_end_back")
+	back.custom_minimum_size = Vector2(0, 52)
+	back.pressed.connect(return_to_last_save)
+	box.add_child(back)
+	back.grab_focus()
+
+## Loads the last save (no wipe, no new game). Without a save the stage goes back to the menu.
+func return_to_last_save() -> String:
+	var err: String = island.load_game()
+	if err != "":
+		var game := get_node_or_null("/root/Game")
+		if game != null and game.has_method("goto_menu"):
+			game.goto_menu()
+		return err
+	if _lineage_end != null:
+		_lineage_end.queue_free()
+		_lineage_end = null
+	stage.paused = false
+	return ""

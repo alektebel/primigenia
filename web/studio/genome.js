@@ -67,7 +67,7 @@ const StudioDocument = (() => {
     const g=typeof input==='string'?JSON.parse(input):input;object(g,'document');
     if(!['cpore.creature/1','cpore.creature/2','cpore.creature/3','cpore.creature/4','cpore.creature/5'].includes(g.schema))fail('schema');
     const doc=clone(['cpore.creature/4','cpore.creature/5'].includes(g.schema)?g:migrate(g));
-    if(doc.schema==='cpore.creature/4'){doc.schema='cpore.creature/5';for(const p of doc.parts){p.level=1;p.tier=0}}
+    if(doc.schema==='cpore.creature/4'){doc.schema='cpore.creature/5';if(Array.isArray(doc.parts))for(const p of doc.parts)if(p&&typeof p==='object'){p.level=1;p.tier=0}}
     const genome=validate(doc,types);
     return {genome,warnings:genome.migration?.warnings||[]};
   }

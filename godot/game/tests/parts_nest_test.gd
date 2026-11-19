@@ -45,6 +45,23 @@ func run() -> void:
 	counts[2] = 1
 	assert(w.lineage_form(JSON.stringify(starter), profile.profile, counts, starter.name, false) == 0)
 	assert(editor.model.import_doc(starter).ok)
+	# A25: repaint is a free apply (no generation); a level-up needs Evolve and is priced before it is spent
+	assert(not editor.nest_actions[2].visible)
+	var paint: Dictionary = editor.model.get_doc()
+	paint.skin.cA = "#ff0000"
+	editor.model.import_doc(paint)
+	var dna_before: int = w.state().social.dna_balance
+	editor._nest_apply()
+	assert(editor.applied_genome.skin.cA == "#ff0000")
+	assert(JSON.parse_string(w.lineage()).generations.size() == 1 and w.state().social.dna_balance == dna_before)
+	editor.nest_choice.select(0)
+	editor._nest_try(0)
+	assert(editor.nest_pending_cost() > 0 and editor.nest_evolve_button.text.contains(str(editor.nest_pending_cost())))
+	editor._nest_apply()
+	assert(editor.nest_status.text.contains("Evolucionar"))
+	assert(JSON.parse_string(w.lineage()).generations.size() == 1)
+	editor._nest_try(1)
+	assert(editor.nest_pending_cost() == 0)
 	var confirmed := [false]
 	editor.nest_confirmed.connect(func(_g: Dictionary) -> void: confirmed[0] = true)
 	editor._nest_confirm()

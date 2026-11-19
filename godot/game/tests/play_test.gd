@@ -258,21 +258,21 @@ func _stage() -> void:
 	var sui = island.stage_ui
 	ui.set_mode(&"attack")            # no default mode: the loadout slots show once Attack is chosen
 	var lo0: Dictionary = game.stage.cur.loadout
-	# Merodeador has a mouth and horns only: it knows bite and charge (parts decide what a creature can slot)
-	check(lo0.slots == [0, 1, -1, -1] and lo0.can_edit and int(lo0.known) == 0b11, "the player starts at the nest with its default loadout (%s, known %d)" % [lo0.slots, lo0.known])
-	check(ui.abilities.size() == 4 and ui.abilities[0].move == 0 and ui.abilities[1].move == 1 and ui.abilities[2].get("empty", false), "the hotbar carries the C move ids of the slots")
-	check(ui.petals.id_at(0) == "bite" and ui.petals.glyph_at(0) == "bite" and ui.petals.id_at(1) == "charge" and ui.petals.state_at(3) == &"empty", "the petals show the glyph of each loadout move and a dashed empty slot (%s / %s)" % [ui.petals.id_at(0), ui.petals.id_at(1)])
-	sui.assign_loadout(0, 1)                  # charge into slot 1: bite is displaced out of the loadout
+	# A25: a new run starts with the starter parts (pico, pata, ojo): it knows bite and spit (parts decide what a creature can slot)
+	check(lo0.slots == [0, 3, -1, -1] and lo0.can_edit and int(lo0.known) == 0b1001, "the player starts at the nest with its default loadout (%s, known %d)" % [lo0.slots, lo0.known])
+	check(ui.abilities.size() == 4 and ui.abilities[0].move == 0 and ui.abilities[1].move == 3 and ui.abilities[2].get("empty", false), "the hotbar carries the C move ids of the slots")
+	check(ui.petals.id_at(0) == "bite" and ui.petals.glyph_at(0) == "bite" and ui.petals.id_at(1) == "spit" and ui.petals.state_at(3) == &"empty", "the petals show the glyph of each loadout move and a dashed empty slot (%s / %s)" % [ui.petals.id_at(0), ui.petals.id_at(1)])
+	sui.assign_loadout(0, 3)                  # spit into slot 1: bite is displaced out of the loadout
 	await sim_ticks(2)
-	check(game.stage.cur.loadout.slots == [1, -1, -1, -1], "a loadout order reached C and moved the move (%s)" % [game.stage.cur.loadout.slots])
-	check(ui.petals.id_at(0) == "charge" and ui.petals.state_at(1) == &"empty", "the petals rebuilt: slot 1 is the charge, slot 2 empty")
+	check(game.stage.cur.loadout.slots == [3, -1, -1, -1], "a loadout order reached C and moved the move (%s)" % [game.stage.cur.loadout.slots])
+	check(ui.petals.id_at(0) == "spit" and ui.petals.state_at(1) == &"empty", "the petals rebuilt: slot 1 is the spit, slot 2 empty")
 	sui.assign_loadout(2, 4)                  # tail_strike: this creature has no tail, C says not_known
 	await sim_ticks(1)                        # (the next tick's walking input would overwrite the error)
-	check(game.stage.cur.loadout.slots == [1, -1, -1, -1] and game.stage.world.order_error(int(game.stage.cur.error)) == "not_known", "a move the body cannot do is refused by C (%s)" % game.stage.world.order_error(int(game.stage.cur.error)))
+	check(game.stage.cur.loadout.slots == [3, -1, -1, -1] and game.stage.world.order_error(int(game.stage.cur.error)) == "not_known", "a move the body cannot do is refused by C (%s)" % game.stage.world.order_error(int(game.stage.cur.error)))
 	sui.selected_id = 1
 	var orders0: int = sui.attack_orders.size()
 	_key(KEY_1)
-	check(sui.attack_orders.size() > orders0 and str(sui.attack_orders.back().order) == "attack #1 charge", "key 1 fires the move in slot 1 (%s)" % [sui.attack_orders.back()])
+	check(sui.attack_orders.size() > orders0 and str(sui.attack_orders.back().order) == "attack #1 spit", "key 1 fires the move in slot 1 (%s)" % [sui.attack_orders.back()])
 	sui._pending_attack = null
 	orders0 = sui.attack_orders.size()
 	_key(KEY_2)
@@ -282,9 +282,9 @@ func _stage() -> void:
 	await frames(2)
 	check(game.modal_open, "an open panel blocks movement input (modal_open)")
 	ui.loadout_panel.choose(0, 0)
-	ui.loadout_panel.choose(1, 1)
+	ui.loadout_panel.choose(1, 3)
 	await sim_ticks(3)
-	check(game.stage.cur.loadout.slots == [0, 1, -1, -1], "the panel restored the default through C orders (%s)" % [game.stage.cur.loadout.slots])
+	check(game.stage.cur.loadout.slots == [0, 3, -1, -1], "the panel restored the default through C orders (%s)" % [game.stage.cur.loadout.slots])
 	ui.loadout_panel.close_panel()
 	await frames(2)
 	sui.selected_id = -1
@@ -472,8 +472,17 @@ func _actions_end(island, st: Dictionary) -> void:
 	check(n_player >= 2, "the player's attacks landed %d times, the enemy's %d" % [n_player, n_enemy])
 	var worst := 0
 	var matched := 0
+	var last_frame := 0
 	for kind in [0, 1]:
 		for hf in st.hits[kind]:
+			last_frame = maxi(last_frame, int(hf))
+	var skipped := 0
+	for kind in [0, 1]:
+		for hf in st.hits[kind]:
+			if int(hf) == last_frame and st.hits[0].has(last_frame) != st.hits[1].has(last_frame):
+				skipped += 1     # the lethal last hit ends the fight: its layer never plays an impact
+				matched += 1
+				continue
 			var best := 1000000
 			for i in st.impacts[kind]:
 				best = mini(best, absi(int(i) - int(hf)))
@@ -649,6 +658,8 @@ func _studio_and_back() -> void:
 	check(await until(func(): return _scene_is("island.gd"), 600), "Play opens the stage again")
 	await frames(5)
 	var host = current_scene.hosts[0]
-	check(host.body.genome.get("name", "") == "Wire Test" and host.body.genome.parts.size() == before_parts + 1, "the stage creature is the saved genome (%d parts)" % host.body.genome.parts.size())
+	# A25: a new run starts from the saved creature's body but with the starter parts only (pico, pata, ojo)
+	var starter_only: bool = host.body.genome.parts.all(func(p): return p.type in ["pico", "pata", "ojo"])
+	check(host.body.genome.get("name", "") == "Wire Test" and starter_only, "the stage creature is the saved genome with starter parts (%d parts)" % host.body.genome.parts.size())
 	check(host.driver.controller != null and host.driver.problems.is_empty(), "the edited creature is still driven by locomotion")
 	await sim_ticks(20)

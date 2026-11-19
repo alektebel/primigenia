@@ -117,7 +117,12 @@ func _test_genome_parity() -> void:
 		check(again["ok"] and same(again["genome"], res["genome"]), "v%d migration round trip" % v)
 	var glb = JSON.parse_string(FileAccess.get_file_as_string(_abs(FIXTURES + "v4-glb-parts.json")))
 	var r4 := CreatureGenome.parse(glb, types)
-	check(r4["ok"] and same(r4["genome"], glb) and r4["warnings"].is_empty(), "saved /4 GLB-part document stays exact")
+	var up: Dictionary = glb.duplicate(true)
+	up.schema = "cpore.creature/5"
+	for part in up.parts:
+		part.level = 1
+		part.tier = 0
+	check(r4["ok"] and same(r4["genome"], up) and r4["warnings"].is_empty(), "saved /4 GLB-part document upgrades to /5 with level 1 tier 0 and is otherwise exact")
 	for c in exp["errors"]:
 		var res := CreatureGenome.parse(c["doc"], types)
 		if c["error"] == null:
