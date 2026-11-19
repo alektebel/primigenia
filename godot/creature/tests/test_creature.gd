@@ -49,7 +49,7 @@ func _test_assets() -> void:
 	check(lib["ok"], "part library loads (failures: %s %s)" % [lib["failures"], lib["error"]])
 	var table: Dictionary = lib["table"]
 	check(table.get("schema") == "cpore.studio-parts/1", "parts.json schema")
-	check(table["parts"].size() == 46, "46 parts in parts.json (got %d)" % table["parts"].size())
+	check(table["parts"].size() == 47, "47 parts in parts.json (got %d)" % table["parts"].size())
 	for entry in table["parts"]:
 		check(lib["entries"].has(entry["id"]), "library entry " + entry["id"])
 		if entry.has("file"):
@@ -379,7 +379,7 @@ func _test_every_part() -> void:
 			check(verts > 0, "%s on %s has geometry" % [id, seed_name])
 			_creature_ok(c, id + "@" + seed_name)
 			count += 1
-	check(count == 92, "46 parts x 2 seeds built (got %d)" % count)
+	check(count == 94, "47 parts x 2 seeds built (got %d)" % count)
 	c.queue_free()
 
 

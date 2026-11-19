@@ -489,7 +489,7 @@ func test_journal() -> void:
 	ok(m.species[0].likes == ["sing", "fruit"] and m.species[1].likes.is_empty(), "journal: likes come from a living creature of the species")
 	ok(m.species[1].resolution == 1 and m.species[3].resolution == 2 and m.species[3].kills == 3, "journal: the Q43 state of each species")
 	ok(m.species[2].diet == 1 and m.species[0].diet == 0 and m.species[3].roam == 30, "journal: diet and home range")
-	ok(m.parts.size() == 46 and m.parts_found == 4 and m.parts_owned == 3, "journal: 46 catalogue parts, 4 found, 3 owned")
+	ok(m.parts.size() == 47 and m.parts_found == 4 and m.parts_owned == 3, "journal: 47 catalogue parts, 4 found, 3 owned")
 	var by := {}
 	for t in m.parts:
 		by[t.id] = t

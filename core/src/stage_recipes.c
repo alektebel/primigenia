@@ -106,7 +106,9 @@ uint64_t cp_stage_recipes_hash(const CpStageWorld *w){
 int cp_stage_recipes_json(const CpStageWorld *w,char *out,size_t cap){
  const CpStageRecipes *r=&w->recipes;static const char *const states[]={"unknown","hinted","known","mastered"};size_t n=0;
 #define ADD(...) do{int k=snprintf(out+n,cap>n?cap-n:0,__VA_ARGS__);if(k<0||(size_t)k>=cap-n)return -1;n+=k;}while(0)
- ADD("{\"bone_spines\":{\"state\":\"%s\",\"clues\":%d,\"ready\":%s,\"move\":\"spine_volley\",\"parts\":[{\"id\":\"espinas_dorsales\",\"level\":2},{\"id\":\"fauces\",\"level\":2}],\"diet\":\"carnivore\",\"spend\":20},\"meters\":{\"calcium\":{\"value\":%d,\"cap\":100},\"mineral\":{\"value\":%d,\"cap\":100}},\"stones\":[",states[r->state],((r->clues&1)!=0)+((r->clues&2)!=0)+((r->clues&4)!=0),cp_stage_recipe_ready(w)?"true":"false",r->calcium,r->mineral);
+ const CpCombatProfile *pp=&w->player.profile;
+ int have=(pp->extra[7]>=CP_STAGE_RECIPES[0].level[0])+(pp->mouth>=CP_STAGE_RECIPES[0].level[1]);
+ ADD("{\"bone_spines\":{\"state\":\"%s\",\"clues\":%d,\"parts_have\":%d,\"parts_need\":2,\"diet_ok\":%s,\"ready\":%s,\"move\":\"spine_volley\",\"parts\":[{\"id\":\"espinas_dorsales\",\"level\":2},{\"id\":\"fauces\",\"level\":2}],\"diet\":\"carnivore\",\"spend\":20},\"meters\":{\"calcium\":{\"value\":%d,\"cap\":100},\"mineral\":{\"value\":%d,\"cap\":100}},\"stones\":[",states[r->state],((r->clues&1)!=0)+((r->clues&2)!=0)+((r->clues&4)!=0),have,pp->carnivore?"true":"false",cp_stage_recipe_ready(w)?"true":"false",r->calcium,r->mineral);
  for(int i=0;i<r->n_stones;i++)ADD("%s{\"id\":%d,\"x\":%.3f,\"z\":%.3f,\"units\":%d}",i?",":"",4000+i,r->stones[i].x,r->stones[i].z,4-r->stones[i].inspected);
  ADD("],\"old_carcasses\":[");
  for(int i=0;i<w->parts.n_nodes;i++)ADD("%s{\"id\":%d,\"units\":%d}",i?",":"",3000+i,r->old_units[i]);
