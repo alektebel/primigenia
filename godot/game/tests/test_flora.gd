@@ -100,6 +100,13 @@ func run(t) -> void:
 		has_scrape = has_scrape or uv.x == -4
 	t.check(has_down and has_scrape, "nest down and scraped-earth hollow")
 	t.eq(nest_mesh.get_surface_count(), 1, "nest weave shares a single surface")
+	var nest_tris: int = nest_mesh.surface_get_arrays(0)[Mesh.ARRAY_VERTEX].size() / 3
+	print("  nest triangles: ", nest_tris)
+	t.check(nest_tris > 7000 and nest_tris < 12000, "nest triangle budget similar to pass 3 (9.4k)")
+	var nest_a: PackedVector3Array = nest_mesh.surface_get_arrays(0)[Mesh.ARRAY_VERTEX]
+	props.get_node("Nest").free()
+	props.build_nest(d, setup.nest, 1)
+	t.check(props.get_node("Nest").mesh.surface_get_arrays(0)[Mesh.ARRAY_VERTEX] == nest_a, "nest is deterministic")
 	props.free()
 	var start := Time.get_ticks_usec()
 	var a := Placement.generate(d, setup, 1, 0.34, rows)
