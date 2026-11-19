@@ -244,6 +244,12 @@ func _on_exit() -> void:
 	if game != null and game.has_method("goto_menu"):
 		game.goto_menu()
 
+## The part of the stage not covered by the side panels (A31): both spine arrows must be grabbable there.
+func free_viewport() -> Rect2:
+	var left_edge := 276.0
+	var right_edge: float = stage.size.x - 290.0
+	return Rect2(left_edge, 70.0, maxf(right_edge - left_edge, 200.0), maxf(stage.size.y - 70.0 - 90.0, 200.0))
+
 func frame_creature() -> void:
 	var pts: PackedVector3Array = view.spine_node_positions()
 	if pts.size() >= 2:
@@ -253,6 +259,37 @@ func frame_creature() -> void:
 	_target = _target_goal
 	_dist = _dist_goal
 	_place_camera()
+	_fit_arrows()
+
+## Centre the spine arrows in the free viewport and move the camera back until both sit inside it with a margin.
+func _fit_arrows() -> void:
+	var free := free_viewport().grow(-34.0)
+	for it in 30:
+		var arr := spine_arrows()
+		if arr.size() < 2:
+			return
+		var lo := Vector2(1e9, 1e9)
+		var hi := Vector2(-1e9, -1e9)
+		for k in arr:
+			lo = lo.min(arr[k]["pos"])
+			hi = hi.max(arr[k]["pos"])
+		var inside: bool = lo.x >= free.position.x and hi.x <= free.end.x and lo.y >= free.position.y and hi.y <= free.end.y
+		var mid := (lo + hi) / 2.0
+		var want := free.get_center()
+		if inside and mid.distance_to(want) < 14.0:
+			break
+		if not inside and (hi.x - lo.x > free.size.x or hi.y - lo.y > free.size.y):
+			_dist = minf(_dist * 1.08, DIST_MAX)
+		else:
+			# slide the view target sideways/up so the arrows' midpoint lands on the centre of the free area
+			var per_px: float = 2.0 * tan(deg_to_rad(camera.fov) / 2.0) * _dist / maxf(stage.size.y, 1.0)
+			var right := camera.global_transform.basis.x
+			var up := camera.global_transform.basis.y
+			var shift := mid - want
+			_target += right * shift.x * per_px - up * shift.y * per_px
+		_dist_goal = _dist
+		_target_goal = _target
+		_place_camera()
 
 func _place_camera() -> void:
 	var cp := cos(_pitch)
@@ -1557,6 +1594,7 @@ func _stage_motion(e: InputEventMouseMotion) -> void:
 					var o2: Vector2 = _drag["off"]
 					idx = model.bend_end(idx, re[0].y + re[1].y * se - o2.x, re[0].z + re[1].z * se - o2.y)
 					view.set_active_node(idx)
+					_set_hint("Columna: %d vértebras · límite" % model.doc["nodes"].size() if model.end_capped else "")
 		"joint":
 			var r3 := _stage_ray(pos)
 			var res: Dictionary = view.leg_drag(_drag["leg"], _drag["joint"], _drag["side"], r3[0], r3[1], -camera.global_transform.basis.z)
@@ -1660,7 +1698,7 @@ func _open_ring(i: int, animate := true) -> bool:
 	var labels := {"muscle": "Músculo", "hydraulic": "Hidráulico", "exo": "Exoesqueleto", "hydrostat": "Hidrostático"}
 	for o in opts:
 		o["label"] = T(labels[o["id"]])
-		o["why"] = T("Este cuerpo no puede llevar esa actuación")
+		o["why"] = T(ring_why(o))
 	_ring = Ring.new()
 	_ring.name = "ActuatorRing"
 	add_child(_ring)
@@ -1670,6 +1708,14 @@ func _open_ring(i: int, animate := true) -> bool:
 	_ring.hint.connect(func(t): _set_hint(t))
 	_ring.closed.connect(func(): _ring = null; _ring_part = -1)
 	return true
+
+## Why a ring choice is dimmed (A31): it needs the body skeleton the body cannot take. Spanish source text, translated by T.
+func ring_why(o: Dictionary) -> String:
+	if "exo" in o.get("skels", []) and not "endo" in o.get("skels", []):
+		return "Necesita exoesqueleto: añade placas"
+	if "endo" in o.get("skels", []):
+		return "Necesita esqueleto interno: quita las placas"
+	return "Este cuerpo no puede llevar esa actuación"
 
 func _ring_picked(id: String) -> void:
 	if _ring_part >= 0:

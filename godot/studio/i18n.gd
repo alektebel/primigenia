@@ -33,6 +33,7 @@ const EN := {
 	"Espejo": "Mirror", "Semilla": "Seed", "Nueva variante": "New variant", "Detalles artísticos; no cambian las capacidades.": "Artistic details; they do not change abilities.",
 	"Músculo": "Muscle", "Hidráulico": "Hydraulic", "Exoesqueleto": "Exoskeleton", "Hidrostático": "Hydrostatic", "límite": "limit",
 	"Este cuerpo no puede llevar esa actuación": "This body cannot carry that actuation",
+	"Necesita exoesqueleto: añade placas": "Needs an exoskeleton: add plates", "Necesita esqueleto interno: quita las placas": "Needs an internal skeleton: remove the plates",
 	"Rueda sobre una pieza para escalarla · arrastra una articulación o las flechas de la columna · clic en una pata para elegir su actuador": "Scroll over a part to scale it · drag a joint or the spine arrows · click a limb to choose its actuator",
 	"Morder": "Bite", "Cantar": "Sing", "Correr": "Run", "Andar": "Walk",
 	"Reproducir": "Play", "Parar": "Stop", "Animación": "Animation",

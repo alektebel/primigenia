@@ -6,6 +6,7 @@ extends CanvasLayer
 
 const Palette := preload("res://ui/palette.gd")
 const Style := preload("res://ui/style.gd")
+const Strings := preload("res://ui/strings.gd")
 const SPEC_PATH := "res://devtools/legend.json"
 const TAP_SECONDS := 0.3
 
@@ -216,8 +217,8 @@ func _refresh() -> void:
 	for r in crows:
 		var h := HBoxContainer.new()
 		h.add_theme_constant_override("separation", 8)
-		h.add_child(_row_label(r.keys, Palette.COPPER, 13))
-		h.add_child(_row_label(r.label, Palette.FOG, 13))
+		h.add_child(_row_label(Strings.legend(r.keys), Palette.COPPER, 13))
+		h.add_child(_row_label(Strings.legend(r.label), Palette.FOG, 13))
 		_corner_box.add_child(h)
 	if header_extra != "":
 		_corner_box.add_child(_row_label(header_extra, Palette.LICHEN, 12))
@@ -225,7 +226,7 @@ func _refresh() -> void:
 	for c in _sheet_box.get_children():
 		c.queue_free()
 		_sheet_box.remove_child(c)
-	_sheet_box.add_child(_row_label("Keys: %s%s" % [ctx, "   " + header_extra if header_extra != "" else ""], Palette.BONE, 23, true))
+	_sheet_box.add_child(_row_label("%s: %s%s" % [Strings.legend("Keys"), Strings.legend(String(ctx)), "   " + header_extra if header_extra != "" else ""], Palette.BONE, 23, true))
 	var all: Array = []
 	var seen := {}
 	for c in [ctx] + spec().get("contexts", []):
@@ -259,12 +260,12 @@ func _refresh() -> void:
 			col_i += 1
 			filled = 0
 		var col: VBoxContainer = columns[col_i]
-		col.add_child(_row_label(g, Palette.LICHEN, 17, true))
+		col.add_child(_row_label(Strings.legend(g), Palette.LICHEN, 17, true))
 		filled += 1
 		for r in by_group[g]:
 			var h := HBoxContainer.new()
-			h.add_child(_key_cap(r.keys, Palette.BONE if r.context == ctx else Palette.FOG))
-			var lab: String = r.label + ("" if r.context == ctx else "  (%s)" % r.context)
+			h.add_child(_key_cap(Strings.legend(r.keys), Palette.BONE if r.context == ctx else Palette.FOG))
+			var lab: String = Strings.legend(r.label) + ("" if r.context == ctx else "  (%s)" % Strings.legend(String(r.context)))
 			h.add_child(_row_label(lab, Palette.BONE if r.context == ctx else Palette.FOG, 13))
 			col.add_child(h)
 			filled += 1

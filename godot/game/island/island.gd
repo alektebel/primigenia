@@ -182,13 +182,26 @@ func build() -> void:
 	set_process(true)
 	Game.island_ready.emit()
 
+## Dev builds: the player owns every part of the creature it brought (C debug op GRANT, part ids = the manifest order).
+func _grant_genome_parts(genome: Dictionary) -> void:
+	var ids: Array = preload("res://game/stage/lineage_session.gd").part_ids()
+	var done := {}
+	for p in genome.get("parts", []):
+		var id: int = ids.find(str(p.type))
+		if id >= 0 and not done.has(id):
+			done[id] = true
+			stage.debug_now({"op": 8, "id": 0, "a": id})
+
 func _build_stage() -> void:
 	var manifest := Profile.load_json("res://game/data/parts.json")
 	var genome: Dictionary = Game.player_genome().duplicate(true)
 	if Game.pending_scenario.is_empty():
-		var keep_wings: bool = FlightMode._dev_on()      # the flight test needs the wings of the creature the owner made
-		genome.parts = genome.parts.filter(func(p): return p.type in ["pico", "pata", "ojo"] or (keep_wings and str(p.type).begins_with("wing_")))
-		if not genome.parts.any(func(p): return p.type == "pico"):
+		# A25 trims the creature to the starter parts. A31: in dev builds ("Jugar con esta criatura" in the studio, a creature saved from
+		# the creator) every part stays, and the C world is told the player owns them (debug op GRANT, logged), so the nest checks accept it.
+		var keep_all: bool = FlightMode._dev_on()
+		if not keep_all:
+			genome.parts = genome.parts.filter(func(p): return p.type in ["pico", "pata", "ojo"])
+		if not genome.parts.any(func(p): return p.type == "pico") and not keep_all:
 			genome.parts.append({"type": "pico", "t": 1.0, "ang": 0.0, "size": 1.0, "level": 1, "tier": 0})
 		genome.schema = "cpore.creature/5"
 		for part in genome.parts:
@@ -283,6 +296,8 @@ func _build_stage() -> void:
 	var lineage_error := preload("res://game/stage/lineage_session.gd").install(stage, genome)
 	if lineage_error != "":
 		push_error(lineage_error)
+	if Game.pending_scenario.is_empty() and FlightMode._dev_on():
+		_grant_genome_parts(genome)
 	for h in hosts.values():
 		h.footfall.connect(stage_ui.on_footfall)
 	stage_ui.ui.menu_requested.connect(Game.goto_menu)

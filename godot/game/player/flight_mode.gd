@@ -10,6 +10,7 @@ extends RefCounted
 
 const FlightTest := preload("res://game/player/flight_test.gd")
 const LocoWing := preload("res://locomotion/loco_wing.gd")
+const Strings := preload("res://ui/strings.gd")
 const DBG_TELEPORT := 1
 const HUD_FADE := 4.0
 
@@ -56,6 +57,11 @@ func setup(isl, stg) -> void:
 func available() -> bool:
 	return enabled and Engine.get_main_loop() != null and _dev_on()
 
+## A31: `lift_mul` is a dev-only knob (D4, the global fun gain). Outside dev builds the gain is always 1: physics decides who flies.
+## Dev builds are `Dev.enabled` (debug build by default, `--dev` / `--no-dev` override; devtools/dev.gd compute_enabled).
+func lift_gain() -> float:
+	return _lift_mul if _dev_on() else 1.0
+
 static func _dev_on() -> bool:
 	var tree := Engine.get_main_loop() as SceneTree
 	if tree == null:
@@ -94,7 +100,7 @@ func _ensure_model() -> bool:
 		model.lift_mul = keep.lift_mul
 		model.power_mul = keep.power_mul
 		model.cd0_mul = keep.cd0_mul
-	model.lift_mul = _lift_mul
+	model.lift_mul = lift_gain()
 	model.power_mul = _power_mul
 	model.cd0_mul = _cd0_mul
 	wing = LocoWing.new(float(morph.mass), infos[0] if not infos.is_empty() else {})
@@ -305,11 +311,11 @@ func _update_hud() -> void:
 	var lines := PackedStringArray()
 	if model.active():
 		var ground: Callable = Callable(Game, "visual_ground")
-		lines.append("FLIGHT  %s   V %.1f m/s   alt %.1f m   sink %+.1f m/s   stamina %d%%" % [model.mode, model.vel.length(), model.altitude(ground), model.vel.y, int(model.stamina * 100.0)])
-		lines.append("L/D %.1f   stall %.1f m/s%s   Space flap, Ctrl dive, W/S pitch, A/D turn" % [model.glide_ratio(), model.stall_speed(), "  STALLING" if model.stalled else ""])
+		lines.append("%s  %s   %s" % [Strings.t("fl_flight"), model.mode, Strings.t("fl_speed", ["%.1f" % model.vel.length(), "%.1f" % model.altitude(ground), "%+.1f" % model.vel.y, int(model.stamina * 100.0)])])
+		lines.append("L/D %.1f   %s %.1f m/s%s   %s" % [model.glide_ratio(), Strings.t("stall"), model.stall_speed(), "  " + Strings.t("fl_stalling") if model.stalled else "", Strings.t("fl_controls")])
 	else:
 		var r := model.report()
-		lines.append("Flight test: Space takes off.  %s.  loading %.0f N/m2, stall %.1f m/s, L/D %.1f, %.0f W vs %.0f W needed" % [str(r.capability).to_upper(), r.wing_loading, r.stall, r.ld, r.power, r.p_req if r.p_req < INF else -1.0])
+		lines.append("%s  %s.  %s" % [Strings.t("fl_test"), str(r.capability).to_upper(), Strings.t("fl_report", ["%.0f" % r.wing_loading, "%.1f" % r.stall, "%.1f" % r.ld, "%.0f" % r.power, "%.0f" % (r.p_req if r.p_req < INF else -1.0)])])
 	if message_t > 0.0 and message != "":
 		lines.append(message)
 	_hud.text = "\n".join(lines)
@@ -328,7 +334,7 @@ func _set_mul(which: String, v: float) -> void:
 		"power": _power_mul = v
 		"cd0": _cd0_mul = v
 	if model != null:
-		model.lift_mul = _lift_mul
+		model.lift_mul = lift_gain()
 		model.power_mul = _power_mul
 		model.cd0_mul = _cd0_mul
 

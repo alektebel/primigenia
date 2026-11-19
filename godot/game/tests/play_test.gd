@@ -691,6 +691,10 @@ func _studio_and_back() -> void:
 	check(await until(func(): return _scene_is("main_menu.gd"), 600), "the studio returns to the menu")
 	var g: Dictionary = game.player_genome()
 	check(g.get("name", "") == "Wire Test" and g.parts.size() == before_parts + 1, "Play will use the saved genome (%s, %d parts)" % [g.get("name", ""), g.parts.size()])
+	var dev_node = game.get_node_or_null("/root/Dev")
+	var dev_was: bool = dev_node != null and dev_node.enabled
+	if dev_node != null:
+		dev_node.enabled = false       # normal build: the A25 rule
 	_press(current_scene.play_button)
 	check(await until(func(): return _scene_is("island.gd"), 600), "Play opens the stage again")
 	await frames(5)
@@ -707,11 +711,28 @@ func _studio_and_back() -> void:
 	check(await until(func(): return current_scene != null and "model" in current_scene and current_scene.model != null, 600), "the studio opens again from the island")
 	var studio2 = current_scene
 	check(studio2.play_creature_btn != null and studio2.play_creature_btn.visible, "the studio has the Jugar con esta criatura button")
+	if dev_node != null:
+		dev_node.enabled = dev_was
+	studio2.model.add_part("cuerno", 0.72, 0.8)       # a part that is not a starter part
+	var saved_types := {}
+	for sp in studio2.model.doc.parts:
+		saved_types[str(sp.type)] = true
 	studio2.model.set_name_("Play Button Test")
 	studio2.play_with_creature()
 	check(await until(func(): return _scene_is("island.gd"), 600), "Jugar con esta criatura opens the island")
 	await frames(5)
 	check(current_scene.hosts[0].body.genome.get("name", "") == "Play Button Test", "the island has the creature that was just saved")
+	# A31: in dev builds the creature keeps all its parts and C knows the player owns them (normal builds: the A25 rule above)
+	var kept_types := {}
+	for kp in current_scene.hosts[0].body.genome.parts:
+		kept_types[str(kp.type)] = true
+	check(dev_node != null and dev_was and kept_types.has("cuerno") and kept_types.keys().all(func(k): return saved_types.has(k)) and saved_types.keys().all(func(k): return kept_types.has(k)), "dev build: Jugar con esta criatura keeps all %d part types (%d kept)" % [saved_types.size(), kept_types.size()])
+	await sim_ticks(2)
+	var owned_ids := {}
+	for row in game.stage.cur.parts.discovered:
+		if bool(row.owned):
+			owned_ids[str(row.id)] = true
+	check(kept_types.keys().all(func(k): return owned_ids.has(k) or not preload("res://game/stage/lineage_session.gd").part_ids().has(k) or preload("res://game/stage/lineage_session.gd").part_ids().find(k) >= 46), "and C marks those parts owned (%d owned)" % owned_ids.size())
 	check(current_scene.kit_reused and current_scene.terrain_chunks == terrain_node, "and the same built terrain (not rebuilt: %d ms build)" % int(current_scene.build_ms.get("total", -1)))
 	await sim_ticks(20)
 	# brief creature-fixes 6: resting the pointer on a plant notes it (whisper, journal page, saved with the game)

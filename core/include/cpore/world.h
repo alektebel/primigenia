@@ -10,6 +10,9 @@
 #define CP_STAGE_DAY_TICKS 12000
 #define CP_STAGE_DT .1f
 #define CP_STAGE_SNAPSHOT_VERSION 8   /* 3: player loadout (A21); 4: social layer (C2); 5: lineage ledger and ancestry; 6: discovery, nest shop and eggs; 7: secrets (shards, cave chamber, day/night) and 6 species; 8: run and fixed-point fall state */
+/* A31 fall damage: 10 HP per metre beyond the safe drop, capped at 60 % of max HP unless the fall is free (air above 2x the safe drop). */
+#define CP_FALL_CAP_PERMILLE 600
+#define CP_FALL_FREE_X 2
 #define CP_STAGE_MAX_PATH 64      /* waypoints kept by the planner (docs/godot/NAV.md) */
 #define CP_STAGE_MAX_EVENTS 64    /* event ring since the last observe */
 
@@ -390,10 +393,12 @@ int cp_stage_social_parse(const char *text,CpStageInput *out,int *rc);   /* 1 = 
 int cp_stage_social_legal(const CpStageWorld *w,int verb);               /* the verb is worth listing in legal_verbs */
 /* --- debug ops (PLAN-devtools step 4): the only way the dev tools change the simulation --- */
 enum { CP_STAGE_DBG_TELEPORT=1, CP_STAGE_DBG_SPAWN, CP_STAGE_DBG_KILL, CP_STAGE_DBG_HEAL,
-       CP_STAGE_DBG_CLOCK, CP_STAGE_DBG_FLAGS, CP_STAGE_DBG_PARAM };
+       CP_STAGE_DBG_CLOCK, CP_STAGE_DBG_FLAGS, CP_STAGE_DBG_PARAM, CP_STAGE_DBG_GRANT };
 enum { CP_STAGE_FLAG_GOD=1, CP_STAGE_FLAG_AI_OFF=2 };
 /* TELEPORT id x z | SPAWN a=species x z | KILL id | HEAL id x=hp z=stamina (negative = max) | CLOCK a=tick |
- * FLAGS a=mask | PARAM a=index into CP_STAGE_PARAMS v=value (clamped). id 0 = player, 1..n = wild. */
+ * FLAGS a=mask | PARAM a=index into CP_STAGE_PARAMS v=value (clamped) |
+ * GRANT a=part id (catalogue index) or -1 for every part: discovered and owned at level >= 1 (dev builds: a creature made in the creator
+ * keeps all its parts, and the nest ownership checks accept them). id 0 = player, 1..n = wild. */
 typedef struct { int32_t op,id,a; float x,z,v; } CpStageDebug;
 typedef struct { uint32_t tick; CpStageDebug d; } CpStageDebugEntry;
 /* 0 on success, <0 and nothing changed otherwise (text: cp_stage_debug_error). Recomputes w->hash. */
@@ -407,6 +412,12 @@ extern const int CP_STAGE_PARAM_COUNT;
 uint64_t cp_stage_replay_ex(const CpStageSetup *setup,const uint8_t *snapshot,size_t snap_len,const CpStageField *field,
                             const CpStageLogEntry *log,int count,const CpStageDebugEntry *dbg,int dbg_count,
                             uint32_t ticks,uint64_t *hashes);
+/* Input log v4: the run toggle of a tick (`on` 0/1, applied with cp_stage_set_run after that tick's debug ops, before its order and
+ * step, as the Godot session does). Entries carry absolute world ticks, ascending. cp_stage_replay_ex is this with no run entries. */
+typedef struct { uint32_t tick; int32_t on; } CpStageRunEntry;
+uint64_t cp_stage_replay_run(const CpStageSetup *setup,const uint8_t *snapshot,size_t snap_len,const CpStageField *field,
+                             const CpStageLogEntry *log,int count,const CpStageDebugEntry *dbg,int dbg_count,
+                             const CpStageRunEntry *runs,int run_count,uint32_t ticks,uint64_t *hashes);
 uint64_t cp_stage_step(CpStageWorld *w,const CpStageInput *input);
 uint64_t cp_stage_hash(const CpStageWorld *w);
 /* Returns bytes excluding NUL, or -1 on insufficient capacity. */

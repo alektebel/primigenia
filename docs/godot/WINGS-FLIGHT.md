@@ -18,7 +18,7 @@ beat, hold = flap, release = glide. **Ctrl** dive (wings fold to 40 % of the spa
 **A / D** turn (the bank follows). Landing is an automatic flare below 1.5 body lengths of altitude.
 
 Merodeador (6 t) cannot fly by physics (stall about 120 m/s): the HUD and `fly report` say so. Raise `flight/lift_mul` to about 60
-to try it anyway (D4: a global fun knob, never per creature).
+to try it anyway (D4: a global fun knob, never per creature). Dev builds only (A31): `FlightMode.lift_gain()` is 1 whenever `Dev.enabled` is false, so in normal play physics alone decides who flies.
 
 ## Genome: the `wing` block
 

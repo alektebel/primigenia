@@ -31,6 +31,23 @@ static void genomes(void){
  assert(cp_stage_genome_form("{\"schema\":\"cpore.creature/5\",\"schema\":null}",&normalized)<0);
  printf("evolution hash %016" PRIx64 "\n",cp_stage_hash(&w));
 }
+/* A31 dev grant: a body with parts the player never found is refused at the nest until GRANT marks them owned. */
+static void dev_grant(void){
+ reset(91);CpLineageForm f;assert(!cp_stage_genome_form(body,&f));assert(!cp_stage_lineage_form(&w,&f,0));
+ char wings[CP_LINEAGE_BODY_CAP];strcpy(wings,f.body);
+ char *t=strstr(wings,"pico");assert(t);memmove(t+11,t+4,strlen(t+4)+1);memcpy(t,"wing_glider",11);
+ assert(strstr(wings,"wing_glider"));
+ CpStageDebug bad={.op=CP_STAGE_DBG_GRANT,.a=CP_STAGE_PART_COUNT};assert(cp_stage_debug(&w,&bad)<0);
+ bad.a=-2;assert(cp_stage_debug(&w,&bad)<0);
+ w.social.dna_balance=500;
+ assert(cp_stage_edit(&w,wings)==CP_STAGE_ERR_NOT_KNOWN);
+ uint64_t h0=cp_stage_hash(&w);
+ CpStageDebug g={.op=CP_STAGE_DBG_GRANT,.a=cp_stage_part_id("wing_glider")};assert(cp_stage_debug(&w,&g)==0);
+ assert(cp_stage_hash(&w)!=h0&&(w.parts.owned>>g.a&1)&&(w.parts.discovered>>g.a&1)&&w.parts.level[g.a]==1);
+ assert(cp_stage_edit(&w,wings)==0);          /* the creature keeps its wing */
+ CpStageDebug all={.op=CP_STAGE_DBG_GRANT,.a=-1};assert(cp_stage_debug(&w,&all)==0);
+ for(int i=0;i<CP_STAGE_PART_COUNT;i++)assert((w.parts.owned>>i&1)&&w.parts.level[i]>=1);
+}
 static void tiers(void){
  static CpCombatWorld c;CpCombatSetup s={0};s.n=2;s.flat=1;s.seed=1;
  for(int i=0;i<2;i++){cp_combat_profile_default(&s.c[i].prof);s.c[i].x=10+i*2;s.c[i].y=10;s.c[i].fx=i?-1:1;s.c[i].team=i;}
@@ -93,7 +110,7 @@ static void a25(void){
 }
 
 int main(void){
- genomes();a25();tiers();saved_inspection();
+ genomes();dev_grant();a25();tiers();saved_inspection();
  reset(1);char json[16384];assert(cp_stage_parts_json(&w,json,sizeof json)>0&&strstr(json,"discovered"));assert(w.parts.eggs==3);assert(cp_stage_at_nest(&w));
  int p=cp_stage_part_id("cuerno");assert(p>=0);assert(cp_stage_part_buy(&w,p,0)<0);
  assert(!cp_stage_part_find(&w,p,CP_PART_FOSSIL));int total=w.social.dna_total;
