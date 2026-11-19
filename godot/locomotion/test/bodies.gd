@@ -17,6 +17,12 @@ static func _pair(z: float, x: float, y: float, upper: float, lower: float, radi
 		out.append(l)
 	return out
 
+## Radial fakes (S3): the description LocoRigAdapter.radial_describe produces, for fold 4/5/6.
+static func radial_body(fold: int, act := "tubefeet", bell := false) -> Dictionary:
+	var disc_r := 0.3
+	return {"radial": {"fold": fold, "disc_r": disc_r, "root_r": disc_r * 0.75, "reach": 0.9, "tip_h": 0.03, "act": act, "bell": bell,
+		"bell_d": 0.8, "disc_h": 0.1, "mass": 2.0}, "unit": 1.0, "belly_drop": 0.0, "problems": []}
+
 static func names() -> Array:
 	return ["biped", "horizontal_biped", "light_quadruped", "heavy_quadruped", "hexapod", "wader", "legless"]
 

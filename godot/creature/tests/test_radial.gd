@@ -44,6 +44,7 @@ func _run() -> void:
 	_test_every_part()
 	_test_folds()
 	_test_build_time()
+	_test_rig()
 	print("radial tests: %d checks, %d failures (%d ms)" % [checks, failures.size(), Time.get_ticks_msec() - t0])
 	quit(0 if failures.is_empty() else 1)
 
@@ -250,6 +251,33 @@ func _test_build_time() -> void:
 		ts.sort()
 		print("radial build time %s: median %.1f ms" % [id, ts[2]])
 		check(ts[2] < 90.0, "%s warm build %.1f ms" % [id, ts[2]])
+		c.queue_free()
+
+
+## S3 on the real rig: describe, step the gait generator, write the pose into the skeleton.
+func _test_rig() -> void:
+	var Adapter = load("res://locomotion/loco_rig_adapter.gd")
+	var Radial = load("res://locomotion/loco_radial.gd")
+	for id in SPECIES:
+		var c := _build(_genome(id))
+		var desc: Dictionary = Adapter.radial_describe(c, 1.0)
+		check(desc.problems.is_empty() and desc.radial.fold == c.radial.fold, id + " radial_describe contract")
+		var loco = Radial.new(desc, func(_x, _z): return 0.0)
+		loco.reset(Vector3.ZERO, 0.3)
+		var rest_tip: Vector3 = c.skeleton.get_bone_global_pose(c.radial.arm_bones[0][5]).origin
+		var moved := 0.0
+		var ok := true
+		for i in 240:
+			loco.step(1.0 / 60.0, Vector3(0, 0, i / 60.0), 0.3, Vector3(sin(.3), 0, cos(.3)) * (1.2 if id == "brujula" else .3))
+			Adapter.loco_apply(c, loco.pose, desc)
+			for k in c.radial.fold:
+				var o: Vector3 = c.skeleton.get_bone_global_pose(c.radial.arm_bones[k][5]).origin
+				ok = ok and o.is_finite()
+				moved = maxf(moved, o.distance_to(c.skeleton.get_bone_global_rest(c.radial.arm_bones[k][5]).origin))
+		check(ok, id + " arm bones stay finite while moving")
+		check(moved > .001, "%s arms move (%.3f m)" % [id, moved])
+		var reach: float = c.rest_aabb().size.x
+		check(is_finite(reach) and reach > .3, id + " mesh stays sane while posed")
 		c.queue_free()
 
 

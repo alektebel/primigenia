@@ -12,6 +12,7 @@ const Support = preload("../loco_support.gd")
 const Adapter = preload("../loco_rig_adapter.gd")
 const Ctl = preload("../loco_controller.gd")
 const Fake = preload("fake_creature.gd")
+const Radial = preload("../loco_radial.gd")
 
 const PLANS := ["biped", "horizontal_biped", "light_quadruped", "heavy_quadruped", "hexapod", "wader"]
 const SLIDE_LIMIT := 0.02
@@ -46,6 +47,7 @@ func _init() -> void:
 	test_proposal()
 	test_quality()
 	test_adapter()
+	test_radial()
 	out["checks"] = checks
 	out["failures"] = fails
 	var path := ProjectSettings.globalize_path("res://").path_join("../docs/evidence/godot/locomotion/measurements.json")
@@ -713,3 +715,104 @@ func test_adapter() -> void:
 			bent = true
 	check(bent, "spine bones receive girdle, tail and neck rotations")
 	fake.queue_free()
+
+
+# ---------------------------------------------------------------- radial bodies (S3)
+
+func _radial_run(desc: Dictionary, v: float, secs: float, ground: Callable = Callable(), yaw0 := 0.0, spin := 0.0) -> Dictionary:
+	var l = Radial.new(desc, ground)
+	var pos := Vector3.ZERO
+	var yaw := yaw0
+	l.reset(pos, yaw)
+	var nan := false
+	var worst_dev := 0.0
+	var foot_events := [0]
+	l.footfall.connect(func(_a, _p): foot_events[0] += 1)
+	var dist := 0.0
+	var neigh_ok := true
+	var rear_ok := true
+	var steps := int(secs * 60.0)
+	for i in range(steps):
+		yaw += spin / 60.0
+		var vel := Vector3(sin(yaw), 0.0, cos(yaw)) * v
+		pos += vel / 60.0
+		dist += v / 60.0
+		l.step(1.0 / 60.0, pos, yaw, vel)
+		var p: Dictionary = l.pose
+		for k in range(l.fold):
+			for b in range(6):
+				if not (is_finite(p.arm_pitch[k][b]) and is_finite(p.arm_yaw[k][b])):
+					nan = true
+		var t: Transform3D = p.root
+		if not (t.origin.is_finite() and t.basis.x.is_finite() and t.basis.z.is_finite()):
+			nan = true
+		var dev := absf(Radial.wrap_pi(yaw - (p.body_yaw + TAU * p.lead / l.fold)))
+		worst_dev = maxf(worst_dev, dev)
+		if p.mode == &"row" and l.fold >= 4:
+			var ks: Array = []
+			var rear: Array = []
+			for k in range(l.fold):
+				if absi(l.rel(k)) == 1:
+					ks.append(k)
+				elif l.rel(k) != 0:
+					rear.append(k)
+			if p.contact[ks[0]] != p.contact[ks[1]] or absf(p.arm_yaw[ks[0]][0] + p.arm_yaw[ks[1]][0]) > 1e-4:
+				neigh_ok = false
+			for k in rear:
+				if p.contact[k]:
+					rear_ok = false
+	return {"nan": nan, "dev": worst_dev, "events": foot_events[0], "dist": dist, "neigh": neigh_ok, "rear": rear_ok, "loco": l}
+
+func test_radial() -> void:
+	print("radial bodies (loco_radial.gd)")
+	var flat: Callable = func(_x, _z): return 0.0
+	for fold in [4, 5, 6]:
+		var desc: Dictionary = Bodies.radial_body(fold)
+		var m = Morph.analyse(desc)
+		check(m.plan == &"radial" and m.legs.is_empty() and m.mass > 0.0 and m.hip_height > 0.0, "fold %d: LocoMorphology plan radial (%s)" % [fold, m.base_gait])
+		check(desc.problems.is_empty(), "fold %d: the rig contract holds" % fold)
+		for v in [0.2, 0.8, 1.5]:
+			var r1 := _radial_run(desc, v, 10.0, flat)
+			check(not r1.nan, "fold %d: no NaN at %.1f m/s for 600 steps" % [fold, v])
+		var spin := _radial_run(desc, 0.0, 12.0, flat, 0.0, 1.3)
+		check(not spin.nan, "fold %d: no NaN spinning in place" % fold)
+		# yaw sweep 0..2 pi: the lead arm is always within pi/fold (+2 deg) of the heading
+		var sweep := _radial_run(desc, 0.4, 10.0, flat, 0.0, TAU / 10.0)
+		check(sweep.dev <= PI / fold + deg_to_rad(2.0), "fold %d: yaw sweep, lead arm within pi/fold + 2 deg of the heading (%.1f deg)" % [fold, rad_to_deg(sweep.dev)])
+		# row: neighbours of the lead in phase, rear arms never planted; footfalls per metre = 2 f / v
+		var row := _radial_run(desc, 1.2, 20.0, flat)
+		check(row.loco.mode == &"row", "fold %d: 1.2 m/s rows" % fold)
+		check(row.neigh, "fold %d: the two arms next to the lead row in phase" % fold)
+		check(row.rear, "fold %d: the rear arms do not plant during rowing" % fold)
+		var f: float = clampf(1.2 / (0.6 * 0.9), 0.4, 2.0)
+		var want: float = 2.0 * f * float(row.dist) / 1.2
+		check(absf(row.events - want) <= 0.1 * want + 2.0, "fold %d: footfalls %d vs %.1f expected (2 f per cycle pair, f = %.2f Hz)" % [fold, row.events, want, f])
+	# the lead arm switches at the sector midpoints
+	var d5: Dictionary = Bodies.radial_body(5)
+	var l5 = Radial.new(d5, flat)
+	l5.reset(Vector3.ZERO, 0.0)
+	var below: int = (l5._lead_for(PI / 5.0 - 0.02))
+	var above: int = (l5._lead_for(PI / 5.0 + 0.02))
+	check(below == 0 and above == 1, "the lead arm switches at the sector midpoint pi/fold (%d -> %d)" % [below, above])
+	# arm tips on a 20 degree slope in glide
+	var slope: Callable = func(_x, z): return tan(deg_to_rad(20.0)) * z
+	var g := _radial_run(d5, 0.3, 8.0, slope)
+	var lg = g.loco
+	var worst := 0.0
+	for k in range(5):
+		if lg.pose.contact[k]:
+			var tw: Vector3 = lg.pose.tip[k]
+			worst = maxf(worst, absf(tw.y - lg.tip_h - slope.call(tw.x, tw.z)))
+	check(worst < 0.03, "glide on a 20 degree slope: planted arm tips within 3 cm of the ground (%.1f mm)" % (worst * 1000.0))
+	# jet: pulse rate and a bounded squeeze; cilia: collapse over ~2 s
+	var jet := _radial_run(Bodies.radial_body(4, "hydrostat", true), 0.25, 8.0, flat)
+	check(jet.loco.mode == &"jet" and not jet.nan, "bells jet")
+	var f_jet: float = 0.5 * sqrt(0.8 / 0.8)
+	check(absf(jet.loco.row_hz - f_jet) < 0.01, "jet pulse %.2f Hz = 0.5 x (0.8 m / D)^0.5" % jet.loco.row_hz)
+	var cil := Radial.new(Bodies.radial_body(6, "cilia"), flat)
+	cil.reset(Vector3.ZERO, 0.0)
+	cil.hunker = true
+	for i in range(180):
+		cil.step(1.0 / 60.0, Vector3.ZERO, 0.0, Vector3.ZERO)
+	check(cil.mode == &"cilia" and cil.pose.axis.collapse > 0.9, "cilia bodies collapse at slack tide while hunkered (%.2f)" % cil.pose.axis.collapse)
+	out["radial"] = {"row_footfalls": 1}
