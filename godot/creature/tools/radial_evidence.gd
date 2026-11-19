@@ -83,10 +83,12 @@ func _lineup() -> void:
 		var w := maxf(c.rest_aabb().size.x, c.rest_aabb().size.z) * float(all[id])
 		x += w * .5 + .5
 		c.position.x = x
+		if c.plan_kind == "radial" and c.radial.gel > 0.0:
+			c.position.y = .75 * float(all[id])        # the jelly floats: its arms hang below the bell
 		x += w * .5 + .5
 		cs.append(c)
 	await process_frame
-	_frame(stage, Vector3(x * .5, .5, 0), 0.0, .22, x * 1.05, 40.0)
+	_frame(stage, Vector3(x * .5, .45, 0), 0.0, .16, x * .56, 40.0)
 	_save(await stage.capture(self, 6), "lineup.jpg")
 	stage.viewport.queue_free()
 

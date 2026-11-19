@@ -13,6 +13,7 @@ const TESTS := [
 	"res://game/tests/test_water.gd",
 	"res://game/tests/test_grass.gd",
 	"res://game/tests/test_flora.gd",
+	"res://game/tests/test_radial_fauna.gd",
 	"res://game/tests/test_profile.gd",
 	"res://game/tests/test_session.gd",
 	"res://game/tests/test_input.gd",

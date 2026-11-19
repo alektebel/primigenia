@@ -45,6 +45,7 @@ func _run() -> void:
 	_test_folds()
 	_test_build_time()
 	_test_rig()
+	_test_driver()
 	print("radial tests: %d checks, %d failures (%d ms)" % [checks, failures.size(), Time.get_ticks_msec() - t0])
 	quit(0 if failures.is_empty() else 1)
 
@@ -279,6 +280,32 @@ func _test_rig() -> void:
 		var reach: float = c.rest_aabb().size.x
 		check(is_finite(reach) and reach > .3, id + " mesh stays sane while posed")
 		c.queue_free()
+
+
+## The actor driver picks loco_radial for a radial body (S3), and a legged body still gets the usual controller.
+func _test_driver() -> void:
+	var Driver = load("res://game/actors/actor_driver.gd")
+	var c := _build(_genome("brujula"))
+	var host := Node3D.new()
+	root.add_child(host)
+	var d = Driver.new()
+	d.setup(host, c, false, func(_x, _z): return 0.0)
+	check(d.controller != null and d.controller.get_script() == load("res://locomotion/loco_radial.gd"), "ActorDriver uses loco_radial for a radial body")
+	check(d.layer == null and d.problems.is_empty(), "no action layer for radial bodies yet, no contract problems")
+	var before := c.global_position
+	for i in 120:
+		d.update(1.0 / 60.0, {"pos": Vector3(0, 0, i * .02), "yaw": 0.0, "speed": 1.2, "vel": Vector3(0, 0, 1.2)})
+	check(c.global_position.is_finite() and c.global_position.distance_to(before) > .5, "the driven creature follows the world position")
+	host.queue_free()
+	c.queue_free()
+	var m := _build(Creature.seeds()["Merodeador"])
+	var h2 := Node3D.new()
+	root.add_child(h2)
+	var d2 = Driver.new()
+	d2.setup(h2, m, false, func(_x, _z): return 0.0)
+	check(d2.controller != null and d2.controller.get_script() == load("res://locomotion/loco_controller.gd"), "a bilateral body still gets the legged controller")
+	h2.queue_free()
+	m.queue_free()
 
 
 class RadialDir:

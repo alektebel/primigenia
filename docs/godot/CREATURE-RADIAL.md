@@ -38,3 +38,18 @@ Same interface as `loco_controller` (`reset`, `set_intent`, `step`, `pose`, `foo
 `row` (brittle-star rowing; the arm next to the heading leads), `jet` (bell pulse), `cilia` (glide with a margin ripple,
 slack-tide collapse). There is no fixed front: the visual `body_yaw` counter-rotates the body against the host yaw, so
 the animal never turns more than pi/fold; it only changes its lead arm.
+
+## The three wild species (S5a: visual only)
+
+`godot/game/data/{brujula,cuarteta,corona}.json` (cpore.creature/5 with a radial `plan`); `godot/game/island/radial_fauna.gd`
+places them on the island with no C entity (no stats, no combat, no snapshot; every golden is untouched). Placement is
+data (`RadialFauna.plan(terrain, world_seed, nest)`), deterministic like `flora_placement.gd`:
+
+| species | where | animals | motion |
+|---|---|---|---|
+| brujula (pentaradial star) | nearest intertidal shelf from the nest: ground .15..1.8 m, normal.y >= .9, within 30 m of the sea | 4, 3..6 m round a pool point | glide, now and then a rowing burst |
+| cuarteta (4-arm bell, gel .7) | sea cells 1..6 m deep, 15..60 m off the shelf | 5, bell top at y = -0.12 | jet along a seeded loop |
+| corona (6-arm disc) | the cave with the lowest entrance floor that is not `caves[0]` (the secrets cave); nearest the coast when no floor is below 25 m | 2, 3..6 m inside | cilia glide, hunkers while waiting |
+
+Culled beyond 80 m. Hooked from `island.gd` in one block (only when wild creatures are on). The lore test checks
+`body_plan.arms == plan.fold`. Evidence: `make godot-radial-evidence` (docs/evidence/godot/radial/).

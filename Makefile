@@ -332,6 +332,13 @@ godot-creature-test:
 	nice -n 10 timeout 600 $(GODOT) --headless --path godot --script res://creature/tests/test_creature.gd
 	nice -n 10 timeout 600 $(GODOT) --headless --path godot --script res://creature/tests/test_realism.gd
 	nice -n 10 timeout 600 $(GODOT) --headless --path godot --script res://creature/tests/test_radial.gd
+# Radial body plans (docs/godot/CREATURE-RADIAL.md): per-species views, gait strips, lineup, island habitats, bilateral guard.
+.PHONY: godot-radial-evidence
+godot-radial-evidence:
+	@mkdir -p docs/evidence/godot/radial
+	LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 xvfb-run -a $(GODOT) --rendering-driver opengl3 --path godot --script res://creature/tools/radial_evidence.gd -- $(CURDIR)/docs/evidence/godot/radial
+	LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 xvfb-run -a $(GODOT) --rendering-driver opengl3 --max-fps 15 --path godot --script res://game/tests/radial_island_evidence.gd -- $(CURDIR)/docs/evidence/godot/radial
+	nice -n 10 $(GODOT) --headless --path godot --script res://creature/tools/mesh_hashes.gd 2>&1 | grep -v "^WARN\|   at:" | tee docs/evidence/godot/radial/bilateral_unchanged.txt
 godot-creature-evidence:
 	nice -n 10 timeout 600 $(GODOT) --headless --path godot --import >/dev/null 2>&1 || true
 	LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 xvfb-run -a $(GODOT) --rendering-driver opengl3 --max-fps 15 --path godot --script res://creature/tools/render_evidence.gd
