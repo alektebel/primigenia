@@ -65,3 +65,21 @@ Snapshot format is now **2** (the world struct grew before `field`; layout finge
 - A target in a pocket enclosed from the player costs up to 120k expansions (~15 ms warm) before `unreachable`.
 - Replans are bounded (4); a creature standing on the route is not an obstacle.
 - The Python harness runs ANALYTIC terrain, so agentplay does not exercise the pathfinder.
+
+## Route certification worktree (C1, 2026-11-19)
+
+`make test` now includes the strict curated route graph for seeds 1, 7 and 42. It is **red**:
+see [ROUTES-REPORT](../ROUTES-REPORT.md), [fixture definitions](../../tests/routes/README.md)
+and [seed 1 evidence](../evidence/routes/seed1.md). Passing the seeded far-target NAV gate does not certify caves or every morphology.
+
+Planning checks the complete ground gradient, bounded by the body's slide threshold and the 1.26 ceiling,
+at the centre and 1 m either side of each sampled segment, as well as directional climb and water clearance.
+The cache signature includes the stall/slide multipliers. The bounded search cap is 500,000 expansions
+(previously 120,000); paths around steep banks can be substantially longer and slower to plan.
+Player movement now uses the same ceiling and slide cap as wild movement. Terrain bytes are unchanged.
+
+A goal without a walkable final connection is rejected; it is no longer silently snapped to a nearby cell.
+`arrived` consequently refers to the requested destination. `path_failed` retains its existing event type/coordinates
+and adds a `reason` string, independent of the transient `blocked` field. Chunk-continuation failure also sets
+`blocked` and `last_error`. Godot state now exposes `route_events` alongside `social_events`, delivered once per
+state reader; the UI displays `Arrived` or `Blocked: <reason>`. Agent observation acknowledgement does not consume UI outcomes.

@@ -6,7 +6,7 @@
 		"steepest_deg": 51.1
 	},
 	"grid": {
-		"blocked": 0,
+		"blocked": 2,
 		"runs": [
 			{
 				"grid": [
@@ -20,49 +20,49 @@
 					-934.1,
 					-1148.5
 				],
-				"ticks": 2956
+				"ticks": 2979
 			},
 			{
 				"grid": [
 					1,
 					0
 				],
-				"left_m": 1.9,
+				"left_m": 1.6,
 				"reason": "",
 				"result": "arrived",
 				"target": [
 					-641.5,
 					-1308.5
 				],
-				"ticks": 3008
+				"ticks": 3127
 			},
 			{
 				"grid": [
 					2,
 					0
 				],
-				"left_m": 1.6,
+				"left_m": 1.8,
 				"reason": "",
 				"result": "arrived",
 				"target": [
 					-24.0,
 					-1300.0
 				],
-				"ticks": 2786
+				"ticks": 5662
 			},
 			{
 				"grid": [
 					3,
 					0
 				],
-				"left_m": 2.0,
+				"left_m": 1.6,
 				"reason": "",
 				"result": "arrived",
 				"target": [
 					650.0,
 					-1252.0
 				],
-				"ticks": 3392
+				"ticks": 6033
 			},
 			{
 				"grid": [
@@ -76,7 +76,7 @@
 					1070.9,
 					-1070.9
 				],
-				"ticks": 3552
+				"ticks": 5346
 			},
 			{
 				"grid": [
@@ -90,21 +90,21 @@
 					-1322.2,
 					-424.1
 				],
-				"ticks": 2913
+				"ticks": 3735
 			},
 			{
 				"grid": [
 					1,
 					1
 				],
-				"left_m": 1.8,
+				"left_m": 2.0,
 				"reason": "",
 				"result": "arrived",
 				"target": [
 					-650.0,
 					-457.3
 				],
-				"ticks": 1365
+				"ticks": 1381
 			},
 			{
 				"grid": [
@@ -125,56 +125,56 @@
 					3,
 					1
 				],
-				"left_m": 1.7,
+				"left_m": 2.0,
 				"reason": "",
 				"result": "arrived",
 				"target": [
 					650.0,
 					-373.3
 				],
-				"ticks": 1637
+				"ticks": 6445
 			},
 			{
 				"grid": [
 					4,
 					1
 				],
-				"left_m": 1.8,
+				"left_m": 2.0,
 				"reason": "",
 				"result": "arrived",
 				"target": [
 					1300.0,
 					-433.3
 				],
-				"ticks": 3224
+				"ticks": 3988
 			},
 			{
 				"grid": [
 					0,
 					2
 				],
-				"left_m": 1.8,
+				"left_m": 1.7,
 				"reason": "",
 				"result": "arrived",
 				"target": [
 					-1300.0,
 					433.3
 				],
-				"ticks": 2721
+				"ticks": 5471
 			},
 			{
 				"grid": [
 					1,
 					2
 				],
-				"left_m": 1.8,
-				"reason": "",
-				"result": "arrived",
+				"left_m": 781.2,
+				"reason": "unreachable: unreachable",
+				"result": "blocked",
 				"target": [
 					-650.0,
 					433.3
 				],
-				"ticks": 1518
+				"ticks": 0
 			},
 			{
 				"grid": [
@@ -195,14 +195,14 @@
 					3,
 					2
 				],
-				"left_m": 1.7,
-				"reason": "",
-				"result": "arrived",
+				"left_m": 801.8,
+				"reason": "unreachable: unreachable",
+				"result": "blocked",
 				"target": [
 					683.3,
 					419.6
 				],
-				"ticks": 1905
+				"ticks": 0
 			},
 			{
 				"grid": [
@@ -223,28 +223,28 @@
 					0,
 					3
 				],
-				"left_m": 1.6,
+				"left_m": 1.8,
 				"reason": "",
 				"result": "arrived",
 				"target": [
 					-712.4,
 					1056.6
 				],
-				"ticks": 2604
+				"ticks": 2670
 			},
 			{
 				"grid": [
 					1,
 					3
 				],
-				"left_m": 1.8,
+				"left_m": 1.6,
 				"reason": "",
 				"result": "arrived",
 				"target": [
 					-631.6,
 					1255.7
 				],
-				"ticks": 2826
+				"ticks": 2941
 			},
 			{
 				"grid": [
@@ -258,7 +258,7 @@
 					32.1,
 					1377.6
 				],
-				"ticks": 3385
+				"ticks": 4040
 			},
 			{
 				"grid": [
@@ -272,29 +272,29 @@
 					662.0,
 					1300.0
 				],
-				"ticks": 3331
+				"ticks": 5503
 			},
 			{
 				"grid": [
 					4,
 					3
 				],
-				"left_m": 2.0,
+				"left_m": 1.8,
 				"reason": "",
 				"result": "arrived",
 				"target": [
 					1139.3,
 					912.0
 				],
-				"ticks": 3201
+				"ticks": 3222
 			}
 		],
 		"stuck": 0
 	},
 	"timing_us_per_step": {
-		"field": 11.8,
-		"flat": 7.6,
-		"note": "measured through the GDScript call, so it includes marshalling",
+		"field": 20.1,
+		"flat": 13.6,
+		"note": "median of three interleaved 10000-step trials per mode; includes GDScript marshalling",
 		"steps": 10000,
 		"wild": 24
 	},
