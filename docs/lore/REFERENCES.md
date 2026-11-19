@@ -2,7 +2,7 @@
 
 # References
 
-## Verified (106)
+## Verified (107)
 
 - `adler_1971_vacuum_birefringence`: Adler 1971. Photon Splitting and Photon Dispersion in a Strong Magnetic Field. *Annals of Physics*. DOI: 10.1016/0003-4916(71)90154-0. Checked 2026-11-18. Note: verified against Crossref (title 1.00); DOI added. Cited by: neutronstar F18.
 - `aiello_wheeler_1995_expensive`: Aiello 1995. The expensive-tissue hypothesis: the brain and the digestive system in human and primate evolution. *Current Anthropology*. DOI: 10.1086/204350. Checked 2026-11-18. Note: verified against Crossref (title 1.00); DOI added. Cited by: earth F27.
@@ -79,6 +79,7 @@
 - `napier_1956_prehensile`: Napier 1956. The prehensile movements of the human hand. *The Journal of Bone and Joint Surgery. British volume*. DOI: 10.1302/0301-620x.38b4.902. Checked 2026-11-18. Note: verified against Crossref (title 1.00); container-title corrected from 'Journal of Bone and Joint Surgery (British Volume)'; DOI added. Cited by: earth F25, humans.
 - `newton_1687`: Newton 1687. Philosophiæ Naturalis Principia Mathematica. *Philosophiæ Naturalis Principia Mathematica*. Checked 2026-11-19. Note: verified against OpenLibrary (title 1.00); no changes needed. Cited by: at_gravital_space F4.
 - `nies_1999_microbial`: Nies 1999. Microbial heavy-metal resistance. *Applied Microbiology and Biotechnology*. DOI: 10.1007/s002530051457. Checked 2026-11-18. Note: verified against Crossref (title 1.00); container-title corrected from 'Antonie van Leeuwenhoek'; DOI added. Cited by: sosa.
+- `nuchter_2006_nanosecond`: Nüchter 2006. Nanosecond-scale kinetics of nematocyst discharge. *Current Biology*. DOI: 10.1016/j.cub.2006.03.089. Checked 2026-11-19. Note: verified against Crossref (title 1.00); DOI added.
 - `orr_2005_acidification`: Orr 2005. Anthropogenic ocean acidification over the twenty-first century and its impact on calcifying organisms. *Nature*. DOI: 10.1038/nature04095. Checked 2026-11-18. Note: verified against Crossref (title 1.00); DOI added. Cited by: earth F16.
 - `parkers_1955`: Parker 1955. Hydromagnetic dynamo models. *The Astrophysical Journal*. DOI: 10.1086/146087. Checked 2026-11-18. Note: verified against Crossref (title 1.00); DOI added. Cited by: starlife F4.
 - `paxton_2011`: Paxton 2010. Modules for Experiments in Stellar Astrophysics (MESA). *The Astrophysical Journal Supplement Series*. DOI: 10.1088/0067-0049/192/1/3. Checked 2026-11-19. Note: verified against Crossref (title 1.00); year corrected from 2011; DOI added. Cited by: at_gravital_space F1, at_gravital_space F20.
@@ -111,7 +112,7 @@
 - `yakovlev_pethick_2004_ns_cooling`: Yakovlev & Pethick 2004. Neutron Star Cooling. *Annual Review of Astronomy and Astrophysics*. DOI: 10.1146/annurev.astro.42.053102.134013. Checked 2026-11-18. Note: verified against Crossref (title 1.00); DOI added. Cited by: neutronstar F1, neutronstar F12.
 - `zachos_2001_cenozoic`: Zachos 2001. Trends, rhythms, and aberrations in global climate 65 Ma to present. *Science*. DOI: 10.1126/science.1059412. Checked 2026-11-18. Note: verified against Crossref (title 1.00); DOI added. Cited by: earth F29.
 
-## Unverified (65)
+## Unverified (64)
 
 - `alberts_2014_mbc`: Alberts 2014. Molecular Biology of the Cell. Checked 2026-11-19. Note: ambiguous: closest OpenLibrary hit is 'Molecular Biology of the Cell' (Alberts, 1983), title similarity 1.00, author match, year off. Cited by: earth F21.
 - `alberts_et_al_2014`: Alberts et al. 2014. Molecular Biology of the Cell. *Garland Science*. ISBN: 978-0-8153-4432-2. Checked 2026-11-19. Note: ambiguous: closest OpenLibrary hit is 'Molecular Biology of the Cell' (Alberts, 1983), title similarity 1.00, author match, year off. Cited by: at_garden_prairies F14.
@@ -158,7 +159,6 @@
 - `meyers_2008_biological`: Meyers 2008. Biological materials: functional structures and properties. *Progress of Materials Science*. Checked 2026-11-19. Note: ambiguous: closest Crossref hit is 'Biological Materials Science' (Meyers, 2014, doi 10.1017/cbo9780511862397), title similarity 0.83, author match, year off. Cited by: eridians.
 - `mller_1990_electric`: Møller 1990. Electric Fish. *Academic Press*. Checked 2026-11-19. Note: ambiguous: closest OpenLibrary hit is 'Electric fishes' (Moller, 1995), title similarity 0.93, author differs, year off. Cited by: sifon.
 - `us_standard_1976`: NOAA/NASA/USAF 1976. U.S. Standard Atmosphere, 1976. Checked 2026-11-19. Note: ambiguous: closest Crossref hit is 'THE STANDARD ATMOSPHERE' (, 1976, doi 10.1016/b978-0-08-020414-7.50016-2), title similarity 0.78, author differs, year ok. Cited by: earth F11.
-- `nuchter_2006_nanosecond`: Nüchter 2006. Nanosecond-scale kinetics of nematocyst discharge. *Current Biology*. Note: cited by a council model from memory; not yet checked.
 - `parker_1988_solar`: Parker 1988. Solar Physics: An Introduction. *Springer-Verlag*. Checked 2026-11-19. Note: ambiguous: closest Crossref hit is 'The Future of Solar Physics' (Parker, 1985, doi 10.1007/978-94-009-4588-3_30), title similarity 0.65, author match, year off. Cited by: astrophage.
 - `pennycuick_2008_modelling`: Pennycuick 2008. Modelling the Flying Bird. *Academic Press*. Checked 2026-11-19. Note: ambiguous: closest OpenLibrary hit is 'Modelling the flying bird' (Pennycuick, 1992), title similarity 1.00, author match, year off. Cited by: alula, common_raven.
 - `petit_luzum_2010_iers`: Petit & Luzum 2010. IERS Conventions (2010). Checked 2026-11-19. Note: ambiguous: closest Crossref hit is 'Relativity in the IERS Conventions' (Petit, 2009, doi 10.1017/s1743921309990093), title similarity 0.64, author match, year ok. Cited by: earth F7.

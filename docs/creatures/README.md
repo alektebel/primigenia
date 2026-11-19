@@ -115,6 +115,8 @@
 | [Alula](alula.md) | new | draft | 4 | 2 fixable, 2 plausible |
 | [Babosa](babosa.md) | native | draft | 4 | 4 plausible |
 | [Coloso](coloso.md) | native | draft | 4 | 1 fixable, 3 plausible |
+| [Corona](corona.md) | new | draft | 4 | 3 fixable, 1 plausible |
+| [Cuarteta](cuarteta.md) | new | draft | 4 | 3 fixable, 1 plausible |
 | [Ecolumbre](ecolumbre.md) | native | draft | 9 | 3 fixable, 6 plausible |
 | [El Resoplido](el_resoplido.md) | new | draft | 4 | 2 fixable, 2 plausible |
 | [Espinodo](espinodo.md) | native | draft | 5 | 5 plausible |

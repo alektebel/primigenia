@@ -1,0 +1,293 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "cuarteta",
+  "name": {
+    "en": "Cuarteta"
+  },
+  "world": "primigenia",
+  "kind": "new",
+  "status": "draft",
+  "stage": "creature",
+  "niche": {
+    "habitat": "Coastal shallows, sea-arch surges, and tidal flats (0–15 m depth)",
+    "diet": "Dissolved proteins, plankton, floating carcass fragments",
+    "active": "Nocturnal and crepuscular; rests in rock crevices during midday convection storms",
+    "predators": []
+  },
+  "body": "Translucent gelatinous bell, 0.8 m diameter, four thick oral arms trailing beneath",
+  "chains": [
+    {
+      "id": "cuarteta.c1",
+      "trait": "Radial symmetry with four sweeping arms",
+      "links": [
+        "Arms intercept drifting food from any angle",
+        "drifting body lacks a turning radius",
+        "turbid shallows hide directional cues",
+        "F20 volcanic sediment and plankton choke visibility"
+      ],
+      "roots": [
+        "F20",
+        "F13"
+      ],
+      "skill": {
+        "id": "cuarteta.drift_pulse",
+        "name": {
+          "en": "Drift Pulse"
+        },
+        "role": "Basic",
+        "effect": "Surges forward 15m along a straight arc, ignoring terrain drag",
+        "numbers": {}
+      },
+      "weakness": "Wide turn radius makes its path predictable, easy to dodge",
+      "observe": [
+        "bell ripples without rotation",
+        "arms trail in equal arcs",
+        "no fixed head or tail"
+      ],
+      "journal": {
+        "en": "It does not face the current; the current faces it."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "Tie Drift Pulse to F13 spring-surge timing and along-shelf drift; cap burst distance at a strong pulse (~5–8 m), not 15 m drag-free. Keep weakness (predictable arc) as limited asymmetric bell flexion, not 'rotation' of a radial body.",
+        "fixes": [
+          "Tie Drift Pulse to F13 spring-surge timing and along-shelf drift; cap burst distance at a strong pulse (~5–8 m), not 15 m drag-free. Keep weakness (predictable arc) as limited asymmetric bell flexion, not 'rotation' of a radial body."
+        ],
+        "analogues": [
+          {
+            "organism": "Moon jelly and other scyphozoans (Aurelia): radial bell, oral arms/trailing tissues, current-assisted drift in productive coastal water.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "cuarteta.c2",
+      "trait": "Bioluminescent cnidocytes line the oral arms",
+      "links": [
+        "Stinging cells paralyze floating prey instantly",
+        "high metabolic cost to maintain neurotoxin",
+        "1.6× oxygen makes costly cellular weapons affordable",
+        "F5 high pO₂ and F24 porphyrin biochemistry"
+      ],
+      "roots": [
+        "F5",
+        "F24"
+      ],
+      "skill": {
+        "id": "cuarteta.sting_lash",
+        "name": {
+          "en": "Sting Lash"
+        },
+        "role": "Engage",
+        "effect": "Releases a 2m shockwave of toxins, draining 12% target HP and slowing movement by 40%",
+        "numbers": {}
+      },
+      "weakness": "Glow betrays position in dark water; cooldown leaves arms bare",
+      "observe": [
+        "pulsed blue flash",
+        "prey seizes and floats",
+        "arm tips swell then flatten"
+      ],
+      "journal": {
+        "en": "A pocket of lightning held in a glass vial."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "Reframe Sting Lash as a 2 m cloud of discharged nematocysts/venom threads on arm sweep (Engage), not a shockwave. Cooldown 'bare arms' = depleted nematocyst bands. Keep glow-as-weakness in moonlit (F6) and clear shallows.",
+        "fixes": [
+          "Reframe Sting Lash as a 2 m cloud of discharged nematocysts/venom threads on arm sweep (Engage), not a shockwave. Cooldown 'bare arms' = depleted nematocyst bands. Keep glow-as-weakness in moonlit (F6) and clear shallows."
+        ],
+        "analogues": [
+          {
+            "organism": "Atolla and other luminous medusae (prey attraction); cubozoan and scyphozoan nematocyst batteries on tentacles/oral arms.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "cuarteta.c3",
+      "trait": "Hydrostatic bell pulsing drives jet propulsion",
+      "links": [
+        "Bell contraction forces water rearward",
+        "thrust equals drag in dense stratified water",
+        "heavy air drives convection storms that mix shallow water",
+        "F4 dense atmosphere and F8 evening convection"
+      ],
+      "roots": [
+        "F4",
+        "F8"
+      ],
+      "skill": {
+        "id": "cuarteta.jet_burst",
+        "name": {
+          "en": "Jet Burst"
+        },
+        "role": "Control",
+        "effect": "Forces a 20m backward dash, creating a pressure wake that disrupts enemy balance by 25%",
+        "numbers": {}
+      },
+      "weakness": "Loud pressure wave attracts larger predators and triggers nearby prey flight",
+      "observe": [
+        "bell compresses fully",
+        "water kicks in a ring",
+        "body surges backward"
+      ],
+      "journal": {
+        "en": "A living bell that rings only when it runs."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "Optional lore tighten: Jet Burst 20 m is a gameplay stretch—note in-doc as athletic pulse chain; weakness (acoustic/v pressure cueing predators) stays as plausible wake + low-frequency pulse detection (F20 pressure sense in other species).",
+        "fixes": [
+          "Optional lore tighten: Jet Burst 20 m is a gameplay stretch—note in-doc as athletic pulse chain; weakness (acoustic/v pressure cueing predators) stays as plausible wake + low-frequency pulse detection (F20 pressure sense in other species)."
+        ],
+        "analogues": [
+          {
+            "organism": "Aurelia aurita and other hydromedusae/scyphozoans: rhythmic bell pulsing, escape pulses, wake vortices.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "cuarteta.c4",
+      "trait": "Radial electroreceptor and chemosensory rings",
+      "links": [
+        "Sensory hairs line each arm uniformly",
+        "detect electric fields and dissolved proteins",
+        "sight fails in sediment-choked shallows",
+        "F20 reliance on pressure, touch, and electric sense"
+      ],
+      "roots": [
+        "F20"
+      ],
+      "skill": {
+        "id": "cuarteta.sensory_ring",
+        "name": {
+          "en": "Sensory Ring"
+        },
+        "role": "Passive",
+        "effect": "Reveals hidden prey and traps within 10m, increasing first-attack hit chance by 30%",
+        "numbers": {}
+      },
+      "weakness": "Hypersensitive to lightning strikes during evening storms, causing disorientation",
+      "observe": [
+        "arm tips twitch independently",
+        "water ripples around tips",
+        "no eyes or nostrils visible"
+      ],
+      "journal": {
+        "en": "It tastes the dark and hears the spark."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "Label electroreception 'highly speculative island convergence' or downgrade to enhanced lateral-line–like mechanoreception + chemosense. Sensory Ring: 10 m prey reveal via odor plumes in still dawn fog-equivalent stagnant pools is fine; vs live fish, rely on injury effluent and carcass ions. Storm weakness = temporary receptor saturation from sferics, not literal 'hearing lightning'.",
+        "fixes": [
+          "Label electroreception 'highly speculative island convergence' or downgrade to enhanced lateral-line–like mechanoreception + chemosense. Sensory Ring: 10 m prey reveal via odor plumes in still dawn fog-equivalent stagnant pools is fine; vs live fish, rely on injury effluent and carcass ions. Storm weakness = temporary receptor saturation from sferics, not literal 'hearing lightning'."
+        ],
+        "analogues": [
+          {
+            "organism": "Hydra and sea anemone tentacle chemosense; for electroreception analogue (convergent, not homologous): paddlefish and shark ampullary systems detecting bioelectric fields in turbid water.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "Rondo",
+      "kind": "cousin",
+      "note": "(council kind 'Scavenger') Drifts along migration routes to harvest parasites and shed tissue."
+    },
+    {
+      "with": "Garfio",
+      "kind": "cousin",
+      "note": "(council kind 'Predator') Garfio raids Cuarteta in shallow surges, but bell pulses can startle and break bite holds."
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-19",
+    "by": [
+      "naturalist/qwen"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-19",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-19"
+    }
+  ],
+  "body_plan": {
+    "symmetry": "radial",
+    "arms": 4,
+    "origin": "Diverged from benthic anthozoan ancestors during the island's first marine radiation"
+  },
+  "temperament": "Solitary, cautious, reactive",
+  "secrets": [
+    "Ink Jet: Absorbs volcanic ash during cave collapses to create a thick, conductive smoke screen.",
+    "Albino Variant: Lacks pore pigment, glows brighter under moonlight, grants +20% befriending at night."
+  ],
+  "moments": [
+    "When the spring tide recedes, the Cuarteta collapses into a gelatinous knot on the wet rock, arms folded like a closed flower. For an hour, it is nearly stone, waiting for the water to remember it."
+  ],
+  "journal": [
+    {
+      "en": "It does not hunt; it waits for the world to swim into it."
+    },
+    {
+      "en": "The bell remembers every strike, every storm, every drifting bone."
+    }
+  ]
+}

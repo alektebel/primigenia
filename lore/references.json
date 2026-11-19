@@ -6554,8 +6554,8 @@
     "id": "nuchter_2006_nanosecond",
     "type": "article-journal",
     "title": "Nanosecond-scale kinetics of nematocyst discharge",
-    "x-status": "unverified",
-    "x-note": "cited by a council model from memory; not yet checked",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
     "author": [
       {
         "family": "Nüchter",
@@ -6569,7 +6569,9 @@
         ]
       ]
     },
-    "container-title": "Current Biology"
+    "container-title": "Current Biology",
+    "DOI": "10.1016/j.cub.2006.03.089",
+    "x-checked": "2026-11-19"
   },
   {
     "id": "brusca_2016_invertebrates",
