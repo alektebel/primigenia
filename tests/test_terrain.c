@@ -6,7 +6,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-typedef struct { CpTerrain t; CpTerrainWorkspace w; float *mem; } Fixture;
+typedef struct { CpTerrain t; CpTerrainWorkspace w; float *mem; uint8_t *riv; } Fixture;
 static Fixture fixture(int n) {
     Fixture f = {0}; size_t nn = (size_t)n*n;
     f.mem = calloc(nn*8, sizeof(float)); assert(f.mem);
@@ -16,6 +16,7 @@ static Fixture fixture(int n) {
     f.w.ups= (int32_t *)(f.mem+5*nn);
     f.w.queue= (int32_t *)(f.mem+6*nn);
     f.t.material=(uint8_t *)(f.mem+7*nn);
+    f.riv=calloc(nn,1); assert(f.riv); f.t.river=f.riv;
     return f;
 }
 static void validation(void) {
@@ -45,7 +46,7 @@ static void validation(void) {
     assert(cp_terrain_generate(&p,NULL,NULL,NULL,NULL)==CP_TERR_ERR_BUFFER);
     Fixture f=fixture(8); p.n=8;
     assert(cp_terrain_generate(&p,&f.t,NULL,NULL,NULL)==CP_TERR_ERR_BUFFER);
-    free(f.mem);
+    free(f.mem);free(f.riv);
 }
 typedef struct { int stage, done, calls; } Progress;
 static void progress(int stage,int done,int total,void *user) {
@@ -111,7 +112,7 @@ static void small(void) {
         assert(f.w.ups[cell]++==0);
         /* Epsilon fill: water always has somewhere strictly lower to go, and
          * the sea and the map edge are the only outlets. */
-        if(f.w.recv[cell]>=0)assert(f.w.scratch[cell]>f.w.scratch[f.w.recv[cell]]);
+        if(f.w.recv[cell]>=0){ if(!f.t.river[cell] && !f.t.river[f.w.recv[cell]]) assert(f.w.scratch[cell]>f.w.scratch[f.w.recv[cell]]); }
         else assert(f.t.height[cell]<=0 || cell%p.n==0 || cell/p.n==0 || cell%p.n==p.n-1 || cell/p.n==p.n-1);
         if(f.t.height[cell]>0)assert(f.w.scratch[cell]>=f.t.height[cell]);
     }
@@ -136,7 +137,7 @@ static void small(void) {
     p.cliff_deg=75;p.col_x=0;p.col_y=0;p.island_radius_m=400000.f;
     assert(cp_terrain_generate(&p,&f.t,&f.w,NULL,NULL)==0);
     for(int i=0;i<64;i++)assert(isfinite(f.t.height[i]));
-    free(f.mem);
+    free(f.mem);free(f.riv);
 }
 /* Actual connected sublevel sets, not just a low sample on the gap or rim.
  * Four-connected flood below `level`; true when it reaches the sea or the map
@@ -237,7 +238,7 @@ static void guarantees(int gentle) {
         assert(!escapes(&f,&p,centre,100.f,1)); assert(escapes(&f,&p,centre,300.f,1));
         printf("W12 seed %" PRIu32 ": %.2f%% flat within 90m; lake holds >=10m; river gap <= start+5m; col between 100 and 300m; peak %.2fm\n",p.seed,100.*flat/total,peak);
     }
-    free(f.mem);
+    free(f.mem);free(f.riv);
 }
 /* Postprocessing must preserve the upper faces and protected floor byte for
  * byte; the layout switch alone must change geometry on the same seed. */
@@ -245,7 +246,7 @@ static void deltas(void) {
     CpTerrainParams p; cp_terrain_params_default(&p);
     p.n=256; p.stream_iters=0; p.droplets=0; p.thermal_iters=0; p.seed=42;
     p.gentle_bases=p.layout_variety=p.cliff_bands=0;
-    p.sea_cliffs=p.hard_rock=p.volcano=p.caves=0;
+    p.sea_cliffs=p.hard_rock=p.volcano=p.caves=p.rivers=0;
     Fixture a=fixture(p.n),b=fixture(p.n);
     assert(cp_terrain_generate(&p,&a.t,&a.w,NULL,NULL)==0);
     for(int delta=0;delta<3;delta++) {
@@ -264,11 +265,11 @@ static void deltas(void) {
         printf("delta %d: %d changed cells\n",delta,changes);
         assert(changes>0);
     }
-    free(a.mem); free(b.mem);
+    free(a.mem);free(a.riv);free(b.mem);free(b.riv);
 }
 /* The public output is enough for renderers; no mesh/tunnel dependency. */
 static void geology(void) {
-    CpTerrainParams p; cp_terrain_params_default(&p); p.n=256; p.volcano=1;
+    CpTerrainParams p; cp_terrain_params_default(&p); p.n=256; p.volcano=1; p.rivers=0;
     Fixture a=fixture(p.n),b=fixture(p.n);
     assert(cp_terrain_generate(&p,&a.t,&a.w,NULL,NULL)==0);
     assert(a.t.cave_count>=3 && a.t.cave_count<=6);
@@ -300,12 +301,12 @@ static void geology(void) {
     p.volcano=0;
     assert(cp_terrain_generate(&p,&b.t,&b.w,NULL,NULL)==0);
     for(int i=0;i<p.n*p.n;i++) assert(b.t.material[i]!=CP_TERR_MAT_VOLCANIC);
-    free(a.mem);free(b.mem);
+    free(a.mem);free(a.riv);free(b.mem);free(b.riv);
 }
 static void independent_features(void) {
     CpTerrainParams p;cp_terrain_params_default(&p);p.n=256;p.seed=42;
     p.gentle_bases=p.layout_variety=p.cliff_bands=0;
-    p.sea_cliffs=p.hard_rock=p.volcano=p.caves=0;
+    p.sea_cliffs=p.hard_rock=p.volcano=p.caves=p.rivers=0;
     Fixture a=fixture(p.n),b=fixture(p.n);
     p.stream_iters=p.droplets=p.thermal_iters=0;
     assert(cp_terrain_generate(&p,&a.t,&a.w,NULL,NULL)==0);
@@ -325,10 +326,59 @@ static void independent_features(void) {
     double sum=0;
     for(int i=0;i<p.n*p.n;i++)sum+=b.t.height[i]-a.t.height[i];
     assert(sum>0); /* Resistant layers leave more rock after the same work. */
-    free(a.mem);free(b.mem);
+    free(a.mem);free(a.riv);free(b.mem);free(b.riv);
+}
+/* v4 rivers: a few channels and streams, carved only downward, the lake untouched, water levels the world can read, and no new
+ * wall: the dry land the start can walk to (4-connected, deep water blocked) loses at most 1.5%. */
+static int reach(const Fixture *f,int n,const uint8_t *block,int start) {
+    int *q=malloc((size_t)n*n*sizeof *q),*seen=calloc((size_t)n*n,sizeof *seen),qn=0,count=0; assert(q&&seen);
+    q[qn++]=start; seen[start]=1;
+    for(int h=0;h<qn;h++) {
+        int i=q[h],x=i%n,y=i/n; count++;
+        const int dx[4]={1,-1,0,0},dy[4]={0,0,1,-1};
+        for(int d=0;d<4;d++) {
+            int xx=x+dx[d],yy=y+dy[d],j;
+            if(xx<0||yy<0||xx>=n||yy>=n)continue;
+            j=yy*n+xx;
+            if(seen[j]||!(f->t.height[j]>0.f)||block[j])continue;
+            seen[j]=1; q[qn++]=j;
+        }
+    }
+    free(q);free(seen);return count;
+}
+static void rivers_test(void) {
+    const uint32_t seeds[]={1,7,42};
+    for(int k=0;k<3;k++) {
+        CpTerrainParams p; cp_terrain_params_default(&p); p.n=256; p.seed=seeds[k];
+        Fixture a=fixture(p.n),b=fixture(p.n);
+        int nn=p.n*p.n,counts[4]={0},deep_neg=0; float maxcut=0;
+        p.rivers=0; assert(cp_terrain_generate(&p,&a.t,&a.w,NULL,NULL)==0);
+        p.rivers=1; assert(cp_terrain_generate(&p,&b.t,&b.w,NULL,NULL)==0);
+        uint64_t hash=cp_terrain_hash(&b.t); assert(cp_terrain_generate(&p,&b.t,&b.w,NULL,NULL)==0 && cp_terrain_hash(&b.t)==hash);
+        assert(cp_terrain_hash(&a.t)!=hash);
+        float cell=p.size_m/p.n,half=p.size_m*.5f; uint8_t *block_a=calloc(nn,1),*block_b=calloc(nn,1); assert(block_a&&block_b);
+        for(int i=0;i<nn;i++) {
+            counts[b.riv[i]&3]++; assert((b.riv[i]&3)<=3 && (b.riv[i]>>2)<=8 && a.riv[i]==0);
+            if(b.riv[i]) { int dd=(b.riv[i]>>2)-1; if(dd>=0){ const int DX8[8]={1,1,0,-1,-1,-1,0,1},DY8[8]={0,1,1,1,0,-1,-1,-1}; assert(b.w.recv[i]==i+DY8[dd]*p.n+DX8[dd]); } }
+            if(b.t.height[i]>a.t.height[i]+1e-6f) deep_neg++;
+            if(a.t.height[i]-b.t.height[i]>maxcut) maxcut=a.t.height[i]-b.t.height[i];
+            if(b.riv[i]) { float d=b.w.scratch[i]-b.t.height[i],want=(b.riv[i]&3)==3?1.2f:(b.riv[i]&3)==2?.6f:.35f;
+                assert(fabsf(d-want)<1e-3f); }
+            if((b.riv[i]&3)==CP_TERR_RIVER_DEEP) block_b[i]=1;
+            float wx=((i%p.n)+.5f)*cell-half-p.lake_x_m,wy=((i/p.n)+.5f)*cell-half-p.lake_y_m;
+            if(wx*wx+wy*wy<p.lake_radius_m*p.lake_radius_m*1.25f*1.25f) assert(a.t.height[i]==b.t.height[i]);
+        }
+        assert(deep_neg==0); assert(maxcut<3.f);
+        assert(counts[1]+counts[2]+counts[3]>150 && counts[1]+counts[2]+counts[3]<nn/8);
+        int start=(p.n/2)*p.n+p.n/2-8; while(!(b.t.height[start]>0.f)||block_b[start])start++;
+        int ra=reach(&a,p.n,block_a,start),rb=reach(&b,p.n,block_b,start);
+        printf("rivers seed %u: stream %d shallow %d deep %d; max cut %.2f m; reachable land %d -> %d\n",p.seed,counts[1],counts[2],counts[3],maxcut,ra,rb);
+        assert(rb>=ra*0.985);
+        free(block_a);free(block_b);free(a.mem);free(a.riv);free(b.mem);free(b.riv);
+    }
 }
 int main(int argc,char **argv) {
-    validation(); helpers(); deltas(); geology(); independent_features(); small();
+    validation(); helpers(); deltas(); geology(); independent_features(); small(); rivers_test();
     if(argc>1 && !strcmp(argv[1],"--heavy")) guarantees(argc>2 && !strcmp(argv[2],"--gentle"));
     puts("terrain: PASS"); return 0;
 }

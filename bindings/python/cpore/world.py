@@ -27,6 +27,15 @@ CP_STAGE_GUARD = 8
 CP_STAGE_DODGE = 9
 CP_STAGE_LOADOUT = 10   # target = slot 1..4, move = move id or -1 (empty); instant, only near the nest, never in a fight
 
+CP_STAGE_BEFRIEND = 11  # target + move = skill (SOCIAL_SKILLS)
+CP_STAGE_GIFT = 12      # target + move = item (SOCIAL_ITEMS)
+CP_STAGE_OBSERVE = 13
+CP_STAGE_INTIMIDATE = 14
+CP_STAGE_EAT = 15
+
+SOCIAL_SKILLS = {"sing": 0, "dance": 1, "charm": 2, "pose": 3}
+SOCIAL_ITEMS = {"plant": 0, "fruit": 1, "meat": 2, "bone": 3}
+
 CP_STAGE_MAX_WILD = 24
 CP_STAGE_MAX_OBSTACLES = 1024
 
@@ -175,11 +184,21 @@ def input_from_mapping(action: dict) -> CpStageInput:
             "guard": CP_STAGE_GUARD,
             "dodge": CP_STAGE_DODGE,
             "loadout": CP_STAGE_LOADOUT,
+            "befriend": CP_STAGE_BEFRIEND,
+            "gift": CP_STAGE_GIFT,
+            "observe": CP_STAGE_OBSERVE,
+            "intimidate": CP_STAGE_INTIMIDATE,
+            "eat": CP_STAGE_EAT,
         }[verb]
+    move = action.get("move", 0)
+    if verb == CP_STAGE_BEFRIEND and "skill" in action:
+        move = SOCIAL_SKILLS[action["skill"]] if isinstance(action["skill"], str) else action["skill"]
+    if verb == CP_STAGE_GIFT and "item" in action:
+        move = SOCIAL_ITEMS[action["item"]] if isinstance(action["item"], str) else action["item"]
     return CpStageInput(
         int(verb),
         int(action.get("target", 0)),
-        int(action.get("move", 0)),
+        int(move),
         int(action.get("dir", 0)),
         int(1 if action.get("sprint") else 0),
         int(action.get("hx", 0)),

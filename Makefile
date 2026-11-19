@@ -29,6 +29,8 @@ $(BUILD)/libcpore.so: $(CORE_OBJ)
 
 $(BUILD)/cpore_test: tests/test_core.c $(HDRS) $(BUILD)/libcpore.a
 	$(CC) $(CFLAGS) $< $(BUILD)/libcpore.a -o $@ $(LDLIBS)
+$(BUILD)/steer_test: tests/test_steer.c $(HDRS) $(BUILD)/libcpore.a
+	$(CC) $(CFLAGS) $< $(BUILD)/libcpore.a -o $@ $(LDLIBS)
 $(BUILD)/cpore_bench: apps/bench.c $(HDRS) $(BUILD)/libcpore.a
 	$(CC) $(CFLAGS) $< $(BUILD)/libcpore.a -o $@ $(LDLIBS)
 
@@ -49,12 +51,14 @@ $(BUILD)/combat_golden: tests/combat_golden.c apps/combat_bots.h $(BUILD)/apps/c
 
 # Correctness regressions. Balance acceptance is a separate measured gate:
 # run make tourney as well before claiming P2 acceptance.
-test: $(BUILD)/world_cli $(BUILD)/world_test $(BUILD)/terrain_test $(BUILD)/cpore_test $(BUILD)/combat_test $(BUILD)/combat_tourney_test $(BUILD)/combat_golden check-core $(BUILD)/nav_test
+test: $(BUILD)/social_test $(BUILD)/world_cli $(BUILD)/world_test $(BUILD)/terrain_test $(BUILD)/cpore_test $(BUILD)/combat_test $(BUILD)/combat_tourney_test $(BUILD)/combat_golden check-core $(BUILD)/nav_test $(BUILD)/steer_test
 	nice -n 10 ./$(BUILD)/terrain_test
 	./$(BUILD)/world_test
+	./$(BUILD)/social_test
 	nice -n 10 ./$(BUILD)/nav_test
+	./$(BUILD)/steer_test
 	@for g in world-1 world-42 world-987654321 world-debug-42 world-field-1; do ./$(BUILD)/world_cli --replay tests/golden/$$g.log | diff -q - tests/golden/$$g.hashes >/dev/null || { echo "world_cli replay of $$g differs from its .hashes"; exit 1; }; done; echo "world_cli replays match the golden hashes"
-	@sed "s/ b255c92a5b85e43d/ b255c92a5b85e43e/" tests/golden/world-field-1.log > $(BUILD)/world-field-bad.log; ! ./$(BUILD)/world_cli --replay $(BUILD)/world-field-bad.log 2>$(BUILD)/world-field-bad.err >/dev/null && grep -q "terrain hash mismatch" $(BUILD)/world-field-bad.err && echo "a field log with an edited hash is refused"
+	@sed "s/ 5ef8636377460348/ 5ef8636377460345/" tests/golden/world-field-1.log > $(BUILD)/world-field-bad.log; ! ./$(BUILD)/world_cli --replay $(BUILD)/world-field-bad.log 2>$(BUILD)/world-field-bad.err >/dev/null && grep -q "terrain hash mismatch" $(BUILD)/world-field-bad.err && echo "a field log with an edited hash is refused"
 	python3 tests/test_terrain_metrics.py
 	./$(BUILD)/cpore_test
 	./$(BUILD)/combat_test
@@ -68,6 +72,7 @@ smoke: lib $(BUILD)/world_cli
 	python3 bindings/python/smoke_test.py
 	python3 bindings/python/world_smoke.py
 	python3 bindings/python/lineage_smoke.py
+	python3 bindings/python/social_smoke.py
 
 # The core may only depend on libc/libm: fail if any core object pulls in more.
 check-core: $(BUILD)/libcpore.so
@@ -155,7 +160,7 @@ $(BUILD)/terrain_test: tests/test_terrain.c $(HDRS) $(BUILD)/libcpore.a
 terrain-test: $(BUILD)/terrain_test $(BUILD)/terrain_cli
 	nice -n 10 ./$(BUILD)/terrain_test --heavy
 
-TERRAIN_EXPORTS := '[_ct_config,_ct_deltas,_ct_features,_ct_material,_ct_cave_count,_ct_caves,_ct_volcano,_ct_generate,_ct_map,_ct_hash,_ct_version,_ct_size]'
+TERRAIN_EXPORTS := '[_ct_config,_ct_deltas,_ct_features,_ct_rivers,_ct_river,_ct_material,_ct_cave_count,_ct_caves,_ct_volcano,_ct_generate,_ct_map,_ct_hash,_ct_version,_ct_size]'
 wasm: $(BUILD)/wasm/cpore_terrain.mjs $(BUILD)/wasm/cpore_terrain.wasm
 $(BUILD)/wasm/cpore_terrain.mjs $(BUILD)/wasm/cpore_terrain.wasm &: $(TERRAIN_SRC) apps/terrain_wasm_api.c $(HDRS) Makefile
 	@mkdir -p $(dir $@)
@@ -444,3 +449,23 @@ godot-lineage-test: godot
 godot-lineage-evidence: godot
 	nice -n 10 timeout 60 $(GODOT) --headless --path godot --check-only --script res://game/tests/lineage_test.gd
 	LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 120 xvfb-run -a -s "-screen 0 1280x720x24" $(GODOT) --rendering-driver opengl3 --max-fps 15 --resolution 1280x720 --path godot --script res://game/tests/lineage_test.gd -- --evidence
+# C2 social layer (core/src/stage_social.c)
+$(BUILD)/social_test: tests/test_social.c $(HDRS) $(BUILD)/libcpore.a
+	$(CC) $(CFLAGS) $< $(BUILD)/libcpore.a -o $@ $(LDLIBS)
+
+# C2 social loop through the real island and UI (software GL). Evidence strip: make godot-social-evidence
+.PHONY: godot-social-test godot-social-evidence
+godot-social-test: godot
+	LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 900 xvfb-run -a -s "-screen 0 1280x720x24" \
+	  $(GODOT) --rendering-driver opengl3 --max-fps 15 --resolution 1280x720 --path godot --script res://game/tests/social_flow.gd
+godot-social-evidence: godot
+	@mkdir -p docs/evidence/godot/social
+	LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 900 xvfb-run -a -s "-screen 0 1280x720x24" \
+	  $(GODOT) --rendering-driver opengl3 --max-fps 15 --resolution 1280x720 --path godot --script res://game/tests/social_flow.gd -- $(CURDIR)/docs/evidence/godot/social
+
+.PHONY: godot-zoo-evidence
+godot-zoo-evidence: godot
+	@mkdir -p docs/evidence/godot/steering
+	LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 600 xvfb-run -a -s "-screen 0 1280x720x24" \
+	  $(GODOT) --rendering-driver opengl3 --resolution 1280x720 --path godot \
+	  --script res://devtools/tests/zoo_evidence.gd -- $(CURDIR)/docs/evidence/godot/steering

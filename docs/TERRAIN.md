@@ -1,4 +1,4 @@
-# Eroded terrain (W11–W18, generator version 3)
+# Eroded terrain (W11–W18 + rivers, generator version 4)
 
 The default is **v2 + cliffs + caves** (W20 owner choice in the task brief), using the v2+ generator in
 `core/include/cpore/terrain.h` and `core/src/terrain.c`. It retains v2's massif
@@ -242,3 +242,24 @@ uint32 seeds; high rock walls retain v2's steep character; D8 floor channels
 are routing rather than fully carved riverbeds; cave notches cannot represent
 overhangs; renderers still need cave interiors and volcanic smoke. Islets,
 whole-island biome/game placement and W13 caching belong to later integration.
+
+## Version 4: rivers and the smoother look (branch terrain/look-hydro)
+
+**Rivers** (new, `rivers` switch, default 1, CLI `--rivers`, `build/terrain_cli`): the D8 flow is carved into deterministic channels with bank
+profiles, a class map (stream / shallow / deep) and water levels the C world reads. Full description, thresholds and tests:
+[HYDROLOGY.md](godot/HYDROLOGY.md). `CP_TERRAIN_VERSION` is 4; the dump appends the n*n river map after the caves. The lake, river gap and
+high col guarantees hold on seeds 1, 7, 42, 99, 1234, 31337 (`terrain_test --heavy`). With `--rivers 0` the generator is v3 bytes plus the version word.
+
+**Why the mountains looked "voxel"** (diagnosis from `docs/evidence/godot/look/before/`, same cameras as `s2/` and `after/`):
+1. *Shading facets.* The fragment normal came from central differences of the **triangulated** surface, so each 3.5 m triangle had a nearly constant normal.
+   With the toon light ramp (`landRamp`, `rock_light`) each facet read as a flat polygon; on sand and scree the diagonals were visible. Fix: C1 Catmull-Rom
+   gradient of the height texels (`ground_normal`, mirrored by `TerrainData.smooth_normal`). The geometry stays the exact triangle surface, so the sim and
+   `ground()` agree to the millimetre (deviation 0); a Catmull-Rom *height* differs from the triangle surface by p99 0.5 m on this island (max 6 m at cliff steps), too much for foot placement
+   without changing the C sim (which the C branches own), so only the normal is smoothed. Test: unit, upward, continuous across cell borders (below 0.1 degrees at a border), median 1.3 degrees from the triangle normal.
+2. *Polygonal far silhouettes.* LOD steps of 28 and 56 m triangles began at 1.2 km, exactly where the mountains are. Fix: LOD ranges 250/550/1200/2600 -> 300/700/1500/3200 m and a vertex
+   **geomorph** (`lod_step`, `morph_range`): vertices slide onto the next lattice between 0.6 and 0.9 of the switch distance, so the swap happens between identical surfaces (no pop).
+3. *Hard cell borders* in the material: the generator's per-cell material was already blended bilinearly (`material_weights`); the remaining blob edges are the thresholds of the
+   classification (slope/altitude steps), unchanged here.
+4. *Missing sub-cell detail.* The rock tiers already add triplanar strata and a detail normal (docs/godot/ROCK.md); no geometric micro-relief was added, because the sim ignores it and feet must stay on `ground()`.
+
+Wetness now also comes from the river map (wet banks). Evidence: `docs/evidence/godot/look/`. Deferred: raising the generator to n=2048 (measured in the report, not forced), geometric micro-relief on rock, softer classification thresholds.

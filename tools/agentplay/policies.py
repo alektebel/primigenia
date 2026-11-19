@@ -18,6 +18,8 @@ PERSONAS = {
     "chaos": "Your goal: stress-test the game interface. Try odd and edge-case commands: invalid ids, "
              "huge numbers, negative numbers, misspelled verbs, spam the same verb, mix valid and "
              "invalid commands. Vary what you try each turn. Never stop trying.",
+    "friend": "Your goal: befriend the creatures instead of fighting them. Learn what each species likes (try sing, dance, charm, pose and gifts and read known_likes), hit the beat, "
+              "bond three of one species, observe creatures to learn how they move, and eat carcasses when hungry.",
     "newcomer": "You have never seen this game and nobody explained its goal. Try things to learn what "
                 "is going on. In every reply add a NOTE: line saying what you do not understand or "
                 "what information you wish you had.",
@@ -30,6 +32,11 @@ Commands (one per turn; the last accepted order keeps running until you give a n
   approach #ID      walk toward creature ID
   attack #ID MOVE   attack creature ID with a move from attack_moves (its name, any case, or its index number); an unknown move gives last_error unknown_move, a move outside your loadout not_equipped, one still recharging on_cooldown
   loadout SLOT MOVE put a known move (name, or its index number; "none" empties the slot) in attack slot SLOT 1-4; only near the nest and never during a fight, listed in legal_verbs as "loadout" when allowed. Errors: not_at_nest, in_fight, not_known, unknown_move, invalid slot
+  befriend #ID SKILL perform a social skill on creature ID: sing (range 8 m, likes vary by species), dance (5 m), charm (4 m), pose (10 m); you walk into range first. Skill details are in social.skills. Errors: refuses (it is hostile, aggressive and not yet calmed, or in a bad mood), staggered, no_stamina, in_fight (nobody in a fight can be befriended), unknown_skill_or_item
+  gift #ID ITEM     give plant, fruit, meat or bone from social.inventory (range 2.5 m). A fitting gift (carnivores like meat and bone, herbivores plant and fruit; meat to a herbivore is an insult) raises trust, and a liked gift calms an aggressive creature for a while. Errors: no_item
+  observe #ID       stand still unseen within 40 m of a creature (or its carcass): every 50 ticks a clue of that species' chain is revealed (social.observe); three clues complete the chain and teach you a move (see known_moves). You are seen if the creature is hostile, a timid one is closer than half its sight, or you move
+  intimidate #ID    a display contest at up to 12 m: success makes the creature leave (no trust change, no DNA, no kill); then a cooldown
+  eat #ID           eat a carcass (id with type carcass, meat > 0) within reach: a bite every 10 ticks raises your food meter; the first bite of a carcass pays DNA; any other order stops it. Errors: cannot_digest, full
   flee              run away from the nearest creature (error no_threat if none is within 30 m)
   go_nest           return to the nest (safe place)
   wait              stand still
@@ -42,6 +49,8 @@ Only verbs in legal_verbs are available. Observation fields:
   loadout: {{slots: your 4 attack slots in order (a move name or null), signature_slot (1-4 or null), can_edit (true at the nest outside a fight), nest_radius_m}}; guard and dodge are always available and never in a slot
   known_moves: the attack moves you may put in a slot
   attack_moves: your known attack moves, each {{index, id (same as index), name, role (basic|engage|poke|control|defence|signature), stamina_cost, range_m (reach from your centre to the target's surface), windup_ticks, active_ticks, recover_ticks, cooldown_ticks (recharge time after each use), cooldown_left (ticks until it can start again, 0 = ready), equipped (in a slot: only equipped moves can be used), slot (1-4 or null), usable (equipped, ready, enough stamina and free to act now), target_in_range (nearest valid target is within range_m, or null if none)}}; use name or index in "attack #ID MOVE"
+  social: dna_total (only rises) and dna_balance, food {{meter,max,diet}}, inventory of gifts, progress {{resolved,total}} species (each species is resolved by allying 3 of its members through befriending, or dominating it by killing 3; the first to complete closes the other), species list, observe chains (revealed clues), skills, beat_ticks (12) and rhythm_window (2), action (what you are performing)
+  creatures in nearby also carry: temper (timid|territorial|aggressive), diet, relationship (stranger|neutral|trusted|ally), trust 0-100 (60 bonds the creature; the bond stays even if trust fades), trust_band, mood and mood_n, beat_in (ticks until its next beat: a sing or dance whose active frame lands within 2 ticks of the beat pays x1.5), hostile, calm, refuses_social, known_likes and known_dislikes (only what you tried). Repeating the same skill on the same creature within 300 ticks pays 50% then 25%; a different skill within 20 ticks of the last stacks a combo (x1.5 then x2.0, total timing and combo capped at x2.0). Attacking a creature lowers its herd's trust and breaks its bond. Events: skill, gift, bond_made, bond_broken, species_resolved, dna, observe, chain_complete, intimidate, social_cancelled, eat
   nearby: creatures and carcasses (id, species, distance, bearing in degrees relative to your facing, positive = clockwise/right, hp, hp_max, state roam|alert|fighting|carcass|dead, in_fight, attackable = in reach of at least one of your attack moves right now), the nest, rocks and trees within 40 m
 Reply format:
 ACTION: <one command>
@@ -80,7 +89,7 @@ def parse_reply(text: str):
         return _clean(m.group(1)), note, "action"
     for line in t.splitlines():
         line = line.strip().strip("`").strip()
-        if re.match(r"^(go|heading|approach|attack|loadout|flee|go_nest|wait)\b", line, re.I):
+        if re.match(r"^(go|heading|approach|attack|loadout|flee|go_nest|wait|befriend|gift|observe|intimidate|eat)\b", line, re.I):
             return _clean(line), note, "line"
     return None, note, "unparsed"
 
@@ -111,6 +120,13 @@ class ScriptedPolicy:
                     return "approach #1", None
                 return f"attack #1 {moves[self.i % len(moves)]}", None
             return "approach #1", None
+        if p == "friend":
+            tgt = min(live, key=lambda n: n["distance"], default=None)
+            if tgt is None:
+                return f"heading {self.rng.uniform(0, 360):.0f}", None
+            skills = [k["name"] for k in o["social"]["skills"]]
+            cmd = [f"befriend #{tgt['id']} {skills[self.i % len(skills)]}", f"observe #{tgt['id']}", f"gift #{tgt['id']} fruit"][self.i % 3]
+            return cmd, None
         if p == "explorer":
             if self.i % 4 == 1:
                 self.dir = self.rng.uniform(0, 360)
@@ -137,6 +153,11 @@ class RandomPolicy:
              "approach": lambda: f"approach #{r.choice(ids)}",
              "attack": lambda: f"attack #{r.choice(ids)} {r.choice(moves)}",
              "loadout": lambda: f"loadout {r.choice([1, 2, 3, 4, 4, 5, 0, -1])} {r.choice(moves + ['none'])}",
+             "befriend": lambda: f"befriend #{r.choice(ids)} {r.choice(['sing', 'dance', 'charm', 'pose', 'yodel', '9'])}",
+             "gift": lambda: f"gift #{r.choice(ids)} {r.choice(['plant', 'fruit', 'meat', 'bone', 'rock'])}",
+             "observe": lambda: f"observe #{r.choice(ids)}",
+             "intimidate": lambda: f"intimidate #{r.choice(ids)}",
+             "eat": lambda: f"eat #{r.choice(ids)}",
              "bogus": lambda: r.choice(["", "dance", "go", "attack #1", "heading", "go 1", "wait now", "ATTACK #1 bite", "go_nest please"]),
              }.get(v, lambda: v)()
         return c, None

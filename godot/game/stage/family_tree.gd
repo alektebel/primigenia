@@ -33,7 +33,7 @@ func _ready() -> void:
 	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	header.add_child(title)
 	_close = Button.new()
-	_close.text = "Return to the valley  ·  J"
+	_close.text = "Return to the valley  ·  T"
 	_close.custom_minimum_size.y = 44
 	_close.pressed.connect(func() -> void: closed.emit())
 	header.add_child(_close)

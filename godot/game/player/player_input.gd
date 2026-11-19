@@ -51,6 +51,14 @@ func _read_keys() -> Dictionary:
 func set_destination(p: Vector2) -> void:
 	destination = Vector2(clampf(p.x, -limit, limit), clampf(p.y, -limit, limit))
 
+# Hold to follow: the mouse target is re-sent while the button is held; a move of less than `min_move` metres is ignored,
+# so a still mouse does not replan the path every tick.
+func follow_to(p: Vector2, min_move: float = 0.6) -> void:
+	var q := Vector2(clampf(p.x, -limit, limit), clampf(p.y, -limit, limit))
+	if destination != null and (destination as Vector2).distance_to(q) < min_move:
+		return
+	destination = q
+
 func clear_destination() -> void:
 	destination = null
 

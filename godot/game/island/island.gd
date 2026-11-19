@@ -6,6 +6,8 @@ const Look := preload("res://game/island/look.gd")
 const EnvironmentFactory := preload("res://game/island/environment.gd")
 const TerrainChunks := preload("res://game/island/terrain_chunks.gd")
 const Water := preload("res://game/island/water.gd")
+const Rivers := preload("res://game/island/rivers.gd")
+const Clouds := preload("res://game/island/clouds.gd")
 const Grass := preload("res://game/island/grass.gd")
 const StageWorld := preload("res://game/stage/stage_world.gd")
 const StageSetup := preload("res://game/stage/stage_setup.gd")
@@ -28,6 +30,7 @@ var terrain_chunks: Node3D
 var world_env: WorldEnvironment
 var sun: DirectionalLight3D
 var water: Node3D
+var rivers: Node3D
 var grass: MultiMeshInstance3D
 var camera: Camera3D
 var debug_camera: Camera3D       # alias of camera (tests and evidence move it directly)
@@ -43,6 +46,8 @@ var occluders_enabled := true
 var icons: CanvasLayer
 var pois_fn: Callable            # sites hook for the strategic map (see strategic_icons.gd; D2 registry plugs in here)
 var _mouse_held := false
+var _follow_clock := 0.0       # hold to follow: the mouse target is sent at most every FOLLOW_PERIOD s
+const FOLLOW_PERIOD := 0.15
 var _genome: Dictionary = {}
 var _garfio_profile: Dictionary = {}   # kept so creatures spawned later (dev console, scenarios) get a body
 var gesture := Gesture.new()       # the left button: click, hold or orbit drag
@@ -74,6 +79,7 @@ func data_for_shadows():
 
 func build() -> void:
 	var data = Game.data
+	Clouds.apply(Game.settings.get("weather", ""))
 	world_env = WorldEnvironment.new()
 	world_env.environment = EnvironmentFactory.make_environment()
 	add_child(world_env)
@@ -87,6 +93,10 @@ func build() -> void:
 	water.name = "Water"
 	add_child(water)
 	water.build(data)
+	rivers = Rivers.new()
+	rivers.name = "Rivers"
+	add_child(rivers)
+	rivers.build(data)
 	var t0 := Time.get_ticks_msec()
 	grass = Grass.new()
 	grass.name = "Grass"
@@ -125,7 +135,7 @@ func _build_stage() -> void:
 		push_error("the island field was rejected: %s" % stage.world.last_error())
 		return
 	stage.world.reset({"terrain": 2})     # a probe state so StageSetup can ask the C walk rule
-	var setup := StageSetup.build(Game.data, int(Game.settings.seed), pr.profile, garfio_profile, bool(Game.settings.wild), stage.world)
+	var setup := StageSetup.build(Game.data, int(Game.settings.seed), pr.profile, garfio_profile, bool(Game.settings.wild), stage.world, bool(Game.settings.get("herds", true)))
 	stage.process_priority = -10     # the world ticks before the actors read it (action timing, G77)
 	add_child(stage)
 	_nest = setup.nest
@@ -155,6 +165,7 @@ func _build_stage() -> void:
 		h.name = "Wild%d" % (i + 1)
 		add_child(h)
 		h.setup(Profile.load_json("res://game/data/garfio.json"), i + 1, setup.wild[i].profile, ground)
+		h.set_meta("base_scale", _species_scale(int(setup.wild[i].species)))
 		hosts[i + 1] = h
 	var yaw := PI
 	if setup.wild.size() > 0:
@@ -251,7 +262,7 @@ func load_scenario(parsed: Dictionary) -> String:
 			var e: Dictionary = stage.cur.entities[id]
 			var cousin: Dictionary = preload("res://game/stage/lineage_session.gd").cousin(stage.world, id) if int(e.get("cousin_generation", 0)) > 0 else {}
 			if cousin.is_empty():
-				remove = int(e.species) != 3 or hosts[id].has_meta("lineage_body")
+				remove = hosts[id].has_meta("lineage_body")
 			else:
 				remove = str(hosts[id].get_meta("lineage_body", "")) != str(cousin.body_json)
 		if remove:
@@ -272,6 +283,10 @@ func load_scenario(parsed: Dictionary) -> String:
 		stage_ui.ui.show_message(res.note, "warn")
 	return ""
 
+# Until the other species have their own art they borrow Garfio's body, scaled by size so a herd reads as a different animal.
+func _species_scale(species: int) -> float:
+	return [0.6, 0.7, 0.9, 1.0][clampi(species, 0, 3)]
+
 # Creatures that appear after the build (console spawn, restored scenarios) get a body when their species has one.
 func _sync_hosts() -> void:
 	var es: Array = stage.cur.entities
@@ -279,7 +294,6 @@ func _sync_hosts() -> void:
 		if hosts.has(i):
 			continue
 		var cousin: Dictionary = preload("res://game/stage/lineage_session.gd").cousin(stage.world, i) if int(es[i].get("cousin_generation", 0)) > 0 else {}
-		if int(es[i].species) != 3 and cousin.is_empty():
 			continue
 		var h := ActorHost.new()
 		h.name = "Wild%d" % i
@@ -287,6 +301,7 @@ func _sync_hosts() -> void:
 		var body: Dictionary = Profile.load_json("res://game/data/garfio.json") if cousin.is_empty() else JSON.parse_string(cousin.body_json)
 		var profile: Dictionary = _garfio_profile if cousin.is_empty() else stage.world.get_setup().wild[i - 1].profile
 		h.setup(body, i, profile, Callable(Game, "ground"))
+		h.set_meta("base_scale", _species_scale(int(es[i].species)))
 		if not cousin.is_empty():
 			h.set_meta("lineage_body", str(cousin.body_json))
 		hosts[i] = h
@@ -316,11 +331,17 @@ func _update_actors(dt: float) -> void:
 			ctx["target"] = {"id": tid, "pos": ts.pos, "radius": float(ent.get("radius_cm", 60)) * 0.01, "height": th.height(), "spheres": th.occluders() if d < 40.0 else []}
 		if id == 0:
 			ctx["dodge_dir"] = int(dodge_hint.dir) if Time.get_ticks_msec() < int(dodge_hint.until) else 0
-			if ui_mode == &"observe" and selected_id > 0:
+			if int(stage.cur.order.verb) == 13:      # C is running the player's observe order
 				ctx["mode"] = "observe"
 		elif ui_mode == &"befriend" and id == selected_id and not bool(sig.get("in_fight", false)) and d < 12.0:
 			ctx["attend"] = true
 		hosts[id].update(dt, sm, ctx)
+		if id > 0:
+			# the driver sets the host basis (yaw) every frame, so the size goes on after it: a species' size, and a carcass
+			# shrinks as it is eaten (4 bites)
+			var ent0: Dictionary = stage.cur.entities[id]
+			var base: float = float(hosts[id].get_meta("base_scale", 1.0))
+			hosts[id].scale = Vector3.ONE * base * (0.3 + 0.7 * float(ent0.get("meat", 0)) / 4.0 if bool(ent0.get("dead", false)) else 1.0)
 	var p: Dictionary = stage.sample(0)
 	player_pos = p.pos
 	var occ := []
@@ -352,7 +373,7 @@ func _update_camera(dt: float) -> void:
 	camera.fov = 48.0 + float(r.fov_add)
 	camera.near = clampf(float(r.distance) * 0.012, 0.25, 40.0)       # keep the depth buffer precise at 3 km
 	camera.position = r.position
-	camera.look_at(r.target)
+	camera.look_at(r.aim)
 	player_input.view_yaw = chase.view_yaw
 	_apply_zoom_budget(chase.z)
 	icons.update_alpha(chase.icon_alpha())
@@ -401,6 +422,7 @@ func _sync_controls() -> void:
 		player_input.position = Vector2(e.x, e.z)
 
 func _process(delta: float) -> void:
+	Clouds.set_time(Time.get_ticks_msec() * 0.001)
 	if stage == null:
 		return
 	_sync_controls()
@@ -409,7 +431,12 @@ func _process(delta: float) -> void:
 	gesture.tick(delta)
 	_mouse_held = gesture.holding
 	if _mouse_held and not Game.movement_blocked():
-		_click_ground(false, get_viewport().get_mouse_position())
+		_follow_clock -= delta
+		if _follow_clock <= 0.0:
+			_follow_clock = FOLLOW_PERIOD
+			_click_ground(false, get_viewport().get_mouse_position(), true)
+	else:
+		_follow_clock = 0.0
 
 # Mouse (docs/godot/CAMERA-ZOOM.md section 1): wheel zooms along the one curve; a left press that moves more than
 # DRAG_PX is an orbit drag, otherwise it is a click (acted on at release) or, held, steers towards the mouse; right and
@@ -474,7 +501,7 @@ func _click(pos: Vector2, double: bool) -> void:
 			chase.set_zoom(chase.Z_CHASE)
 	_click_ground(true, pos)
 
-func _click_ground(allow_pick: bool, mouse: Vector2) -> void:
+func _click_ground(allow_pick: bool, mouse: Vector2, follow: bool = false) -> void:
 	var ground := Callable(Game, "ground")
 	if allow_pick:
 		var picked := Pointer.pick_entity(camera.project_ray_origin(mouse), camera.project_ray_normal(mouse), stage.cur.entities, ground)
@@ -483,6 +510,11 @@ func _click_ground(allow_pick: bool, mouse: Vector2) -> void:
 			last_click = mouse
 			Game.creature_clicked.emit(picked.id, picked.pos)
 			return
+	if allow_pick and stage_ui != null and selected_id > 0:
+		stage_ui.ui.clear_selection()       # a click on empty ground deselects (and walks there)
 	var hit = Pointer.ground_hit(camera, mouse, ground, maxf(900.0, chase.distance * 2.0))
 	if hit != null:
-		player_input.set_destination(Vector2(hit.x, hit.z))
+		if follow:
+			player_input.follow_to(Vector2(hit.x, hit.z))
+		else:
+			player_input.set_destination(Vector2(hit.x, hit.z))

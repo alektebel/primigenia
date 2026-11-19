@@ -1,0 +1,175 @@
+cpore combat tourney  (tick 10 Hz, seeds/cell 40, payoff duels/cell 400)
+
+seed offset 0 (payoff base 1000; field base 5000)
+
+== Move-vs-move payoff, 400 duels per cell: move policies, 7 m apart,
+   paired seats and start offsets, 12 s; neutral builds (all parts L3, hp 100000 so nobody dies)
+   guard closes and blocks; dodge reads contact; both take funded bite punishes; ranged moves space
+
+-- raw: row's damage dealt minus column's (hp)
+row \ col           bite      charge       guard        spit tail_strike       dodge    row mean
+bite                0.00       -2.81     -136.44      -14.50       11.01      104.94       -6.30
+charge              2.81        0.00      151.24     -117.28       37.63        0.00       12.40
+guard             136.44     -151.24        0.00      -90.55       49.25        0.00       -9.35
+spit               14.50      117.28       90.55        0.00      -19.07      -56.88       24.40
+tail_strike       -11.01      -37.63      -49.25       19.07        0.00       48.95       -4.98
+dodge            -104.94        0.00        0.00       56.88      -48.95        0.00      -16.17
+
+-- resource-adjusted: raw minus 1.751620 hp per stamina point the row spent, plus the same for the column
+row \ col           bite      charge       guard        spit tail_strike       dodge    row mean
+bite                0.00      -47.64     -178.51       65.72      -40.88       93.26      -18.01
+charge             47.64        0.00      130.99     -165.48       62.85      -16.82        9.86
+guard             178.51     -130.99        0.00      106.89       90.75      -14.71       38.41
+spit              -65.72      165.48     -106.89        0.00     -110.32      -85.83      -33.88
+tail_strike        40.88      -62.85      -90.75      110.32        0.00       25.83        3.91
+dodge             -93.26       16.82       14.71       85.83      -25.83        0.00       -0.29
+
+-- raw standard errors (independent seat-pair means)
+row \ col           bite      charge       guard        spit tail_strike       dodge    row mean
+bite                0.00        0.43        0.35        1.49        0.57        6.69        1.59
+charge              0.43        0.00        0.26        2.12        0.52        0.00        0.55
+guard               0.35        0.26        0.00        0.24        0.41        0.00        0.21
+spit                1.49        2.12        0.24        0.00        2.99        0.59        1.24
+tail_strike         0.57        0.52        0.41        2.99        0.00        0.41        0.82
+dodge               6.69        0.00        0.00        0.59        0.41        0.00        1.28
+
+-- resource standard errors (independent seat-pair means)
+row \ col           bite      charge       guard        spit tail_strike       dodge    row mean
+bite                0.00        0.81        0.39        1.64        0.61        4.27        1.29
+charge              0.81        0.00        0.27        2.94        0.52        0.00        0.76
+guard               0.39        0.27        0.00        0.70        0.46        0.00        0.30
+spit                1.64        2.94        0.70        0.00        2.84        0.45        1.43
+tail_strike         0.61        0.52        0.46        2.84        0.00        0.41        0.81
+dodge               4.27        0.00        0.00        0.45        0.41        0.00        0.85
+
+== Dominance check (tolerance 2*SE + 0.5 hp)
+-- raw matrix (acceptance gate)
+   no move weakly dominates any other
+-- resource-adjusted matrix (acceptance gate)
+   no move weakly dominates any other
+   raw equilibrium mix (regret matching, 200k iters), game value 0.00:  bite 1.8%  charge 8.0%  guard 2.7%  spit 24.1%  tail_strike 63.3%  dodge 0.0%
+  PASS  raw equilibrium uses >=4 moves at >=1% weight (observed 5/6)
+   resource equilibrium mix (regret matching, 200k iters), game value 0.00:  bite 17.6%  charge 29.9%  guard 11.7%  spit 11.3%  tail_strike 0.0%  dodge 29.5%
+  PASS  resource equilibrium uses >=4 moves at >=1% weight (observed 5/6)
+  PASS  no move weakly dominates another (raw damage payoff)
+  PASS  no move weakly dominates another (resource-adjusted payoff)
+
+== Strategy round robin: 5 profiles x 5 profiles x 40 seeds per ordered pair, both sides, 900-tick cap
+   score of row against column (win = 1, draw = 0.5), pooled over all profile pairings
+
+row \ col       idle    random    greedy   counter
+idle           0.500     0.000     0.000     0.000
+random         1.000     0.462     0.044     0.015
+greedy         1.000     0.959     0.503     0.312
+counter        1.000     0.987     0.684     0.507
+
+== Elo (strategies; max-likelihood fit with one pseudo-game per pair, mean 1000)
+   counter       1696
+   greedy        1557
+   random        1003
+   idle          -257
+
+== Canaries (both seats; draw = half a score, reported separately)
+  PASS  idle scores zero vs random on BOTH seats (draws fail)
+   idle left vs random  score 0.0000 draws 0/1000; idle right score 0.0000 draws 0/1000
+  PASS  idle scores zero vs greedy on BOTH seats (draws fail)
+   idle left vs greedy  score 0.0000 draws 0/1000; idle right score 0.0000 draws 0/1000
+  PASS  idle scores zero vs counter on BOTH seats (draws fail)
+   idle left vs counter score 0.0000 draws 0/1000; idle right score 0.0000 draws 0/1000
+  PASS  random scores <5% vs greedy on BOTH seats
+   random left vs greedy  score 0.0445 draws 5/1000; random right score 0.0415 draws 3/1000
+  PASS  random scores <5% vs counter on BOTH seats
+   random left vs counter score 0.0145 draws 3/1000; random right score 0.0130 draws 2/1000
+
+== Full build pairwise tables (row score; both seats pooled, draws = 0.5)
+
+   random vs random
+   row / col        brawler     spitter        tank  skirmisher  allrounder
+   brawler            0.500       0.613       0.406       0.512       0.469
+   spitter            0.388       0.500       0.500       0.362       0.450
+   tank               0.594       0.500       0.500       0.569       0.669
+   skirmisher         0.487       0.637       0.431       0.500       0.644
+   allrounder         0.531       0.550       0.331       0.356       0.500
+
+   random vs greedy
+   row / col        brawler     spitter        tank  skirmisher  allrounder
+   brawler            0.025       0.037       0.019       0.212       0.037
+   spitter            0.075       0.006       0.013       0.119       0.025
+   tank               0.013       0.000       0.000       0.131       0.050
+   skirmisher         0.025       0.013       0.013       0.025       0.025
+   allrounder         0.019       0.037       0.000       0.138       0.019
+
+   random vs counter
+   row / col        brawler     spitter        tank  skirmisher  allrounder
+   brawler            0.006       0.000       0.037       0.031       0.037
+   spitter            0.013       0.031       0.000       0.031       0.000
+   tank               0.025       0.025       0.000       0.000       0.013
+   skirmisher         0.025       0.000       0.000       0.000       0.050
+   allrounder         0.000       0.000       0.000       0.000       0.019
+
+   greedy vs random
+   row / col        brawler     spitter        tank  skirmisher  allrounder
+   brawler            0.975       0.925       0.988       0.975       0.981
+   spitter            0.963       0.994       1.000       0.988       0.963
+   tank               0.981       0.988       1.000       0.988       1.000
+   skirmisher         0.787       0.881       0.869       0.975       0.863
+   allrounder         0.963       0.975       0.950       0.975       0.981
+
+   greedy vs greedy
+   row / col        brawler     spitter        tank  skirmisher  allrounder
+   brawler            0.500       0.000       0.975       1.000       0.381
+   spitter            1.000       0.500       1.000       1.000       1.000
+   tank               0.025       0.000       0.500       1.000       0.013
+   skirmisher         0.000       0.000       0.000       0.500       0.500
+   allrounder         0.619       0.000       0.988       0.500       0.500
+
+   greedy vs counter
+   row / col        brawler     spitter        tank  skirmisher  allrounder
+   brawler            0.500       0.000       0.963       0.000       0.400
+   spitter            0.212       0.500       0.000       1.000       1.000
+   tank               0.062       0.000       0.500       0.000       0.013
+   skirmisher         0.000       0.000       0.000       0.500       0.500
+   allrounder         0.694       0.000       0.000       0.500       0.500
+
+   counter vs random
+   row / col        brawler     spitter        tank  skirmisher  allrounder
+   brawler            0.994       0.988       0.975       0.975       1.000
+   spitter            1.000       0.969       0.975       1.000       1.000
+   tank               0.963       1.000       1.000       1.000       1.000
+   skirmisher         0.969       0.969       1.000       1.000       1.000
+   allrounder         0.963       1.000       0.988       0.950       0.981
+
+   counter vs greedy
+   row / col        brawler     spitter        tank  skirmisher  allrounder
+   brawler            0.500       0.787       0.938       1.000       0.306
+   spitter            1.000       0.500       1.000       1.000       1.000
+   tank               0.037       1.000       0.500       1.000       1.000
+   skirmisher         1.000       0.000       1.000       0.500       0.500
+   allrounder         0.600       0.000       0.988       0.500       0.500
+
+   counter vs counter
+   row / col        brawler     spitter        tank  skirmisher  allrounder
+   brawler            0.500       0.662       0.938       0.000       0.381
+   spitter            0.338       0.500       0.000       1.000       1.000
+   tank               0.062       1.000       0.500       0.000       0.025
+   skirmisher         1.000       0.000       1.000       0.500       0.500
+   allrounder         0.619       0.000       0.975       0.500       0.500
+
+== Build scores pooled over ALL nine strategy pairings
+   row / col        brawler     spitter        tank  skirmisher  allrounder  field mean
+   brawler            0.500       0.446       0.693       0.523       0.444       0.526
+   spitter            0.554       0.500       0.499       0.722       0.715       0.623
+   tank               0.307       0.501       0.500       0.521       0.420       0.437
+   skirmisher         0.477       0.278       0.479       0.500       0.509       0.436
+   allrounder         0.556       0.285       0.580       0.491       0.500       0.478
+
+== Elo (builds, all strategy pairings, both seats)
+   brawler         1015
+   spitter         1070
+   tank             965
+   skirmisher       964
+   allrounder       987
+  PASS  no build field mean exceeds 65% (worst 62.3%)
+  PASS  no pooled build pair exceeds 90% (worst 72.2%)
+
+tourney checks passed

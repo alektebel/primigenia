@@ -150,6 +150,7 @@ func run(t) -> void:
 	_zoom_curve(t)
 	_orbit(t)
 	_gesture(t)
+	_sky(t)
 	_icons(t)
 
 # ---- CAMERA-ZOOM s4 -------------------------------------------------------------------------------
@@ -298,6 +299,36 @@ func _orbit(t) -> void:
 		ch.update(still, null, false, 0.05)
 	t.check(absf(wrapf(ch.yaw - (still.yaw + PI), -PI, PI)) < 0.05 and absf(ch.z - ChaseCamera.Z_CHASE) < 0.01 and absf(ch.orbit_pitch) < 0.01, "reset: behind the creature, default zoom, level pitch")
 
+# Looking up at the sky (CAMERA-ZOOM s5): orbit pitch far below zero, camera never under the terrain.
+func _sky(t) -> void:
+	var hill = func(x: float, z: float) -> float: return 10.0 + 0.5 * x + 3.0 * sin(z * 0.2)
+	var still := {"x": 0.0, "z": 0.0, "yaw": 0.0, "speed": 0.0}
+	var c = ChaseCamera.new(2.0, PI, hill)
+	for i in 20:
+		c.update(still, null, false, 0.05)
+	var level: Dictionary = c.update(still, null, false, 0.05)
+	t.check(level.aim.is_equal_approx(level.target), "sky: level view aims at the creature")
+	c.orbit_active = true
+	c.orbit(0.0, -1000.0)          # drag up a long way
+	c.orbit_active = false
+	t.check(c.orbit_pitch <= -1.2, "sky: the orbit pitch goes well below the horizon (%.2f)" % c.orbit_pitch)
+	var worst_clear := 1e9
+	var max_up := -1e9
+	for i in 40:
+		var r: Dictionary = c.update(still, null, false, 0.05)
+		var gy: float = hill.call(r.position.x, r.position.z)
+		worst_clear = minf(worst_clear, r.position.y - gy)
+		max_up = maxf(max_up, (r.aim.y - r.position.y) / maxf((r.aim - r.position).length(), 0.001))
+	t.check(worst_clear >= 0.64, "sky: the camera never goes under the terrain (%.2f m clear)" % worst_clear)
+	t.check(max_up > 0.8 and c.look_pitch >= ChaseCamera.LOOK_MIN - 1e-6, "sky: the aim is %.0f deg above the horizon, within the -60 deg limit" % rad_to_deg(asin(clampf(max_up, -1.0, 1.0))))
+	c.reset_behind()
+	for i in 80:
+		c.update(still, null, false, 0.05)
+	t.check(absf(c.orbit_pitch) < 0.02 and c.look_pitch > 0.1, "sky: reset brings the view back behind the creature")
+	var tilt = ChaseCamera.new(2.0, PI, func(x: float, z: float) -> float: return 0.0)
+	tilt.orbit(0.0, -100000.0)
+	t.check(tilt.orbit_pitch >= ChaseCamera.ORBIT_PITCH_MIN - 1e-6, "sky: the orbit pitch is clamped")
+
 func _gesture(t) -> void:
 	var g := Gesture.new()
 	g.press(Vector2(100, 100))
@@ -319,6 +350,12 @@ func _gesture(t) -> void:
 	g.motion(Vector2(30, 0))
 	g.tick(1.0)
 	t.check(not g.holding, "a drag never turns into a hold")
+	g.press(Vector2(0, 0))
+	g.tick(0.2)
+	t.check(g.holding, "0.2 s without moving is a hold")
+	t.check(not g.motion(Vector2(200, 50)), "moving the mouse during a hold steers it, it is not an orbit")
+	t.check(g.holding and not g.dragging, "a hold survives mouse motion")
+	t.eq(g.release(), "hold", "release ends the hold")
 
 func _icons(t) -> void:
 	var cam = ChaseCamera.new(2.0, 0.0, func(x: float, z: float) -> float: return 0.0)

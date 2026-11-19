@@ -54,3 +54,13 @@ dialogs on a real display (only software screenshots), the F5 quick-save write p
 ## Known limits
 GO orders plan around cliffs (A* on the walk grid; 20/20 far targets reached on the island, `docs/godot/NAV.md`); `tp` into water or an obstacle is refused;
 thumbnails in the picker are DT1; `tune`/scenario loads of another island regenerate it only through the cache.
+
+## Locomotion zoo (`devtools/zoo/`)
+
+Console: `zoo [mite,trotter,hero,giant,longneck,centipede,hexapod | all] [figure8|zigzag|steps|uturn|ramps|all]`, `zoo exit`
+(or Esc). Standalone: `godot --path godot res://devtools/zoo/zoo.tscn -- --zoo=mite,giant --course=uturn`. Each creature has its
+own C world on one synthetic field (lanes 24 m wide; ramps of 10, 20, 30, 40 and 50 degrees, a stair pyramid, a slalom, a U-turn
+lane, a figure-8) and runs the same scripted orders, so you watch the real steering. HUD per creature: legs, radius, speed, yaw
+rate, turn radius, grade, state (run, turn, pivot, climb, descend, stalled, slide). Keys: Space pause, +/- speed, 1-9 follow, 0 all.
+Bodies are the Merodeador scaled or re-legged (`zoo_genomes.gd`). Test: `test_zoo.gd`; evidence: `devtools/tests/zoo_evidence.gd`
+(`make godot-zoo-evidence`).

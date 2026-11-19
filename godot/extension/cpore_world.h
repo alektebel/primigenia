@@ -20,6 +20,7 @@ class CporeWorld : public godot::RefCounted {
     bool field_attached = false;
     godot::Dictionary field_meta;
     godot::String error_text;
+    mutable uint32_t social_events_seen = 0;   // CpStageWorld.ev_total at the last state(): social events newer than this are reported once
 
 protected:
     static void _bind_methods();
@@ -31,6 +32,7 @@ public:
     static godot::Dictionary default_profile();
     static godot::Array species();
     static godot::Array moves();
+    static godot::Array chains();   // the A22 observe chain of each species: {id, trait, move, observe: [3 clues]}
     int reset(const godot::Dictionary &setup);
     godot::Dictionary get_setup() const;
     godot::String step(const godot::Dictionary &input);

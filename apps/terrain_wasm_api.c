@@ -6,6 +6,7 @@
 #define MAX_N 1024
 static float arena[4 * MAX_N * MAX_N];
 static uint8_t materials[MAX_N * MAX_N];
+static uint8_t river_map[MAX_N * MAX_N];
 static int32_t indices[3 * MAX_N * MAX_N];
 static CpTerrainParams params;
 static CpTerrain terrain;
@@ -29,6 +30,7 @@ int ct_config(uint32_t seed, int n, int droplets, int thermal,
     int rc=cp_terrain_validate(&params); if(rc) return rc;
     int nn=n*n;
     terrain.material=materials;
+    terrain.river=river_map;
     terrain.height=arena; terrain.flow=arena+nn; terrain.sediment=arena+2*nn;
     workspace.scratch=arena+3*nn;
     workspace.recv=indices;
@@ -49,6 +51,12 @@ int ct_features(float coast, float rock, float volcano, float caves) {
     params.sea_cliffs=coast;params.hard_rock=rock;params.volcano=volcano;params.caves=caves;
     int rc=cp_terrain_validate(&params);if(rc)configured=0;return rc;
 }
+int ct_rivers(float rivers) {
+    if (!configured) return CP_TERR_ERR_BUFFER;
+    params.rivers=rivers;
+    int rc=cp_terrain_validate(&params);if(rc)configured=0;return rc;
+}
+uint8_t *ct_river(void) { return configured ? terrain.river : 0; }
 uint8_t *ct_material(void) { return configured ? terrain.material : 0; }
 int ct_cave_count(void) { return configured ? terrain.cave_count : 0; }
 CpTerrainCave *ct_caves(void) { return configured ? terrain.caves : 0; }

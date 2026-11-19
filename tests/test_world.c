@@ -1,4 +1,5 @@
 #include "cpore/world.h"
+#include "cpore/steer.h"
 #include <assert.h>
 #include <math.h>
 #include <stdio.h>
@@ -314,8 +315,8 @@ static void motion_law(void) {
         assert(dyaw<=.7f+1e-4f);
     }
     assert(w.player.fx*fx0+w.player.fz*fz0<-.95f);
-    /* A pivot from near rest reverses within ceil(pi/(rate*.1))+1 ticks. */
-    reset();setup.n=0;setup.player.radius_cm=340;assert(cp_stage_reset(&w,&setup)==0);
+    /* A pivot (bodies up to pivot_r) from near rest reverses within ceil(pi/(rate*.1))+1 ticks plus the yaw ramp (steering v3). */
+    reset();setup.n=0;setup.player.radius_cm=120;assert(cp_stage_reset(&w,&setup)==0);
     a=heading_to(w.player.fx,w.player.fz,0);
     for(int i=0;i<2;i++)cp_stage_step(&w,&a);
     a=(CpStageInput){.verb=CP_STAGE_WAIT};
@@ -324,7 +325,7 @@ static void motion_law(void) {
     fx0=w.player.fx;fz0=w.player.fz;
     float r=cp_combat_body_radius(&w.player.profile),turn0=fminf(m->turn_max,fmaxf(m->turn_min,m->turn_k*sqrtf(9.81f/r)));
     float pr=fminf(m->pivot_max,fmaxf(3,m->pivot_mul*turn0));
-    int ticks=(int)ceilf(3.14159265f/(pr*.1f))+1,ok=0;
+    int ticks=(int)ceilf(3.14159265f/(pr*.1f))+1+(int)ceilf(pr/(w.motion.ang_k*9.81f/r)/.1f),ok=0;
     a=heading_to(-fx0,-fz0,0);
     for(int i=0;i<ticks;i++)cp_stage_step(&w,&a);
     ok=w.player.fx*fx0+w.player.fz*fz0<-.98f;
@@ -439,7 +440,7 @@ static void snapshots(void){
                 assert(h==golden_hash[i]);
                 assert(h==cp_stage_step(&snap_a,&golden_in[i]));
             }
-            char oa[8192],ob[8192];
+            char oa[32768],ob[32768];
             assert(cp_stage_observe(&snap_a,oa,sizeof oa)>0&&cp_stage_observe(&snap_b,ob,sizeof ob)>0&&!strcmp(oa,ob));
         }
     }
@@ -574,9 +575,10 @@ static void field_mode(void){
     field_world(0,-60,0);
     walk_dist(0,32767,40);
     float up=walk_dist(0,32767,30);
-    /* walk(): step = v/(1+.65*slope), and the eased speed is the reduced one, so the steady ratio is
-     * (ease/(1-(1-ease)/(1+k)))/(1+k) with k = .65*tan(10 deg) (about .84), not just 1/(1+k) */
-    const float k=.65f*.17632698f,ease=CP_STAGE_MOTION.ease,predicted=(ease/(1-(1-ease)/(1+k)))/(1+k);
+    /* the steady speed is the jog times the steer.c slope factor for a 10 degree grade (4 legs, the default body) */
+    CpSteerBody body;
+    cp_steer_body(&w.motion,cp_combat_body_radius(&w.player.profile),w.player.legs,&body);
+    const float predicted=cp_steer_slope(&w.motion,&body,.17632698f);
     assert(up<flat&&fabsf(up/flat-predicted)<.015f);
     /* wall, pond, sea */
     field_build(1);
@@ -726,7 +728,7 @@ static void debug_ops(void){
     dbg_op(CP_STAGE_DBG_FLAGS,0,3,0,0,0,0);
     assert(w.debug_flags==3);
     dbg_op(CP_STAGE_DBG_FLAGS,0,0,0,0,0,0);
-    assert(CP_STAGE_PARAM_COUNT==14&&!strcmp(CP_STAGE_PARAMS[0].name,"jog_k"));
+    assert(CP_STAGE_PARAM_COUNT==27&&!strcmp(CP_STAGE_PARAMS[0].name,"jog_k"));
     for(int i=0;i<CP_STAGE_PARAM_COUNT;i++){
         const float def=*(const float *)((const char *)&CP_STAGE_MOTION+CP_STAGE_PARAMS[i].offset);
         assert(def>=CP_STAGE_PARAMS[i].min&&def<=CP_STAGE_PARAMS[i].max&&!strcmp(CP_STAGE_PARAMS[i].group,"movement"));

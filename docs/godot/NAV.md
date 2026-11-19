@@ -53,6 +53,7 @@ Snapshot format is now **2** (the world struct grew before `field`; layout finge
 ## Numbers (this laptop, seed 1 island, n 1024, `make nav-test`)
 
 - 20 seeded far targets (500-1600 m from the nest, dry gentle ground): **20/20 reached** (arrival < 3 m), 5-30 waypoints. Before: 10 of 20 grid targets stuck at cliffs. The Godot grid test (`godot-heights-test`, the same 5x4 grid as before) also reaches 20/20.
+- Rivers (terrain v4): deep river cells (1.2 m, > 0.7 m) are one cell wide and carved diagonally, so a plan could thread the corner between two of them and the steering body (yaw inertia) then drove into the channel and stalled (5/20 on seed 1 after the C1 + hydrology merge). `walk_ok` (planner, shortcuts, waypoint following) now also requires blocking water to be at least body radius + 1 m away on both sides of the line (`water_clear`, field terrain only). Streams and shallow fords (depth <= 0.7) stay walkable; deep cells stay blocked until swimming (C4). Seed 1: 20/20, seed 7: 20/20, seed 42: 19/20; the island keeps 99.99% of its land reachable at cell level (4-connected, deep blocked), so no extra fords are needed.
 - Plan time with the lazily filled grid (cold, includes cell fill): mean 8.0 ms, **worst 25.9 ms** (over the 20 ms goal); with the grid warm: **worst 3.4 ms**, mean 1.5 ms; full warm 620 ms once at load. Unreachable sea target: 0.03 ms.
 - Static memory of the planner: about 29 MB of BSS (untouched pages cost nothing); none in wasm.
 

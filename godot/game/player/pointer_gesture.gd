@@ -1,9 +1,12 @@
 extends RefCounted
-# Left-button gesture of the stage: a press that moves more than DRAG_PX is an orbit drag; one that stays put is a click
-# (acted on at release), or, held for HOLD_WALK, a hold that keeps steering towards the mouse (docs/godot/CAMERA-ZOOM.md s1).
+# Left-button gesture of the stage (docs/godot/CAMERA-ZOOM.md s1, docs/godot/FEEL.md "Hold to follow"):
+#   - a press that moves more than DRAG_PX before HOLD_WALK is an orbit drag;
+#   - one that stays put and is released before HOLD_WALK is a click (acted on at release: walk there / pick);
+#   - one that stays put for HOLD_WALK becomes a HOLD: the creature follows the mouse for as long as the button is down,
+#     and moving the mouse then steers it (it never turns into an orbit; release to orbit again).
 
 const DRAG_PX := 6.0
-const HOLD_WALK := 0.2
+const HOLD_WALK := 0.15
 
 var down := false
 var dragging := false
@@ -22,7 +25,7 @@ func press(pos: Vector2, is_double: bool = false) -> void:
 
 # Mouse moved to `pos` with the button down: true while the gesture is an orbit drag.
 func motion(pos: Vector2) -> bool:
-	if down and not dragging and pos.distance_to(press_pos) > DRAG_PX:
+	if down and not dragging and not holding and pos.distance_to(press_pos) > DRAG_PX:
 		dragging = true
 		holding = false
 	return dragging

@@ -37,11 +37,11 @@ save/read/load, hash restoration and segment replay. Existing goldens unchanged;
 tournament passes. Trust awards await social merge wiring. Independent cousin
 breeding/genome drift and renaming remain later A13 work.
 
-**S3 — family tree.** J and the pause menu open a horizontal generation timeline
+**S3 — family tree.** T and the pause menu open a horizontal generation timeline
 using the existing palette. Each body renders live into its own SubViewport.
 Nodes show part diffs, new traits, type badge/name, generation and drift from the
 previous type. Cousin branch buttons center the strategic map and replace its
-selected home pin without teleporting the player. D13 legend includes J.
+selected home pin without teleporting the player. D13 legend includes T.
 Intended commit: `feat(ui): add live lineage portraits and cousin map pins`.
 
 S3 verification: check-only parsing and headless lineage tests pass with three

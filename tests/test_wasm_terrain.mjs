@@ -33,7 +33,7 @@ for (const [seed,n] of [[1,256],[7,256],[42,256],[99,256],[1234,256],[31337,256]
     for(const key of ['position','facing','size'])for(let j=0;j<v[key].length;j++)assert.ok(Math.abs(v[key][j]-features.caves[i][key][j])<1e-5);
     assert.equal(v.waterfall,Boolean(features.caves[i].waterfall));
   }
-  assert.equal(t.size,3600);assert.equal(t.version,3);
+  assert.equal(t.size,3600);assert.equal(t.version,4);
   assert.ok(t.level.every((v,i)=>t.height[i]<=0||v>=t.height[i]),'water level under the ground');
   console.log(`seed ${seed} N=${n}: ${t.hash}; native ${native[1]}s, WASM ${t.seconds.toFixed(4)}s`);
   rows.push({seed,n,hash:t.hash,native_seconds:Number(native[1]),wasm_seconds:t.seconds});
@@ -50,11 +50,11 @@ for (const [coast,rock,volcano,caves] of [[0,0,0,0],[1,0,0,0],[0,1,0,0],[0,0,1,0
 }
 // Map bytes from original v2 (0386bb8), independent of v3's hash schema.
 const baseline = JSON.parse(readFileSync('tests/golden/terrain-v2-maps.json', 'utf8'));
-const unchanged = engine.generate({seed:baseline.seed,n:baseline.n,gentle:0,variety:0,bands:0,coast:0,rock:0,volcano:0,caves:0});
+const unchanged = engine.generate({seed:baseline.seed,n:baseline.n,gentle:0,variety:0,bands:0,coast:0,rock:0,volcano:0,caves:0,rivers:0});
 mkdirSync('build/terrain',{recursive:true});
 const baselinePath = 'build/terrain/v2-regression.bin';
 execFileSync('nice', ['-n','10','build/terrain_cli','dump','--seed',String(baseline.seed),'--n',String(baseline.n),'--out',baselinePath,
-  ...['gentle-bases','layout-variety','cliff-bands','sea-cliffs','hard-rock','volcano','caves'].flatMap(name=>['--'+name,'0'])]);
+  ...['gentle-bases','layout-variety','cliff-bands','sea-cliffs','hard-rock','volcano','caves','rivers'].flatMap(name=>['--'+name,'0'])]);
 const baselineNative = readFileSync(baselinePath), mapBytes = baseline.n*baseline.n*4;
 for (const [i,name] of ['height','flow','sediment'].entries()) {
   const bytes = Buffer.from(unchanged[name].buffer, unchanged[name].byteOffset, mapBytes);

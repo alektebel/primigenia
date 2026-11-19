@@ -5,6 +5,8 @@
 // which pre-inverts Godot's (calibrated) ACES: Godot then reproduces the hero's display colour.
 // All constants mirror game/island/look.gd (a test compares them).
 
+#include "res://game/shaders/clouds.gdshaderinc"
+
 const vec3 SUN_DIR = vec3(-0.6259115, 0.2826697, -0.7268649);
 const vec3 AIR_COOL = vec3(0.34, 0.58, 0.88);
 const vec3 AIR_WARM = vec3(0.96, 0.74, 0.46);
@@ -58,7 +60,13 @@ vec3 aerial(vec3 c, vec3 wp, vec3 cam) {
 	float optical = path * (1.0 - exp(-path / 240.0)) * AIR_DENSITY * dot(rho, vec3(0.1667, 0.6666, 0.1667));
 	float sunward = pow(max(dot(dir, SUN_DIR), 0.0), 3.0);
 	vec3 haze = mix(AIR_COOL, AIR_WARM, sunward);
-	return mix(c, haze, 1.0 - exp(-optical));
+	c = mix(c, haze, 1.0 - exp(-optical));
+	float fog = ground_fog(wp, cam);
+	if (fog > 0.0) {
+		vec3 fog_col = mix(vec3(0.93, 0.86, 0.84), vec3(0.86, 0.90, 0.96), smoothstep(0.0, 0.6, sky_tod)) * mix(1.0, 0.95, smoothstep(0.6, 1.0, sky_tod));
+		c = mix(c, fog_col, fog * 0.9);
+	}
+	return c;
 }
 
 // Horizon colour of the sky dome (same numbers as SKY_HZ / SKY_GLOW in sky.gdshader, a test compares them), in

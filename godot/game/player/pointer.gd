@@ -37,8 +37,8 @@ static func pick_entity(origin: Vector3, dir: Vector3, entities: Array, ground: 
 	var best := {}
 	var best_t := 1e9
 	for e in entities:
-		if e.id == 0 or e.dead:
-			continue
+		if e.id == 0 or (e.dead and int(e.get("meat", 0)) <= 0):
+			continue      # the dead are only pickable while their carcass has meat (Eat, Observe)
 		var r: float = maxf(0.6, e.get("radius_cm", 60) / 100.0)
 		var centre := Vector3(e.x, ground.call(e.x, e.z) + r * 0.8, e.z)
 		var oc := centre - origin

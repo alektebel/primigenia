@@ -14,11 +14,25 @@ uniform int rock_debug = 0;
 
 varying vec3 wp;
 
+// Geomorph (terrain_chunks.gd): this LOD's grid step in cells and the distance T at which the chunk drops to the next LOD
+// (0 for the coarsest). Vertices slide onto the coarser lattice between 0.6 T and 0.9 T, so a switch (at 0.9 T down, 1.1 T up)
+// happens between identical surfaces and does not pop.
+uniform int lod_step = 1;
+uniform float morph_range = 0.0;
+
 void vertex() {
 	// UV2.x = 1 marks skirt vertices; UV2.y carries the skirt depth in metres.
 	vec2 xz = (MODEL_MATRIX * vec4(VERTEX, 1.0)).xz;
 	ivec2 ij = clamp(ivec2(round((xz + MAP_HALF) / MAP_CELL - 0.5)), ivec2(0), ivec2(MAP_N - 1));
-	VERTEX.y = texelFetch(height_tex, ij, 0).r - UV2.x * UV2.y;
+	float hv = texelFetch(height_tex, ij, 0).r;
+	if (morph_range > 0.0) {
+		float d = distance(vec3(xz.x, hv, xz.y), CAMERA_POSITION_WORLD);
+		float t = smoothstep(0.6 * morph_range, 0.9 * morph_range, d);
+		if (t > 0.0) {
+			hv = mix(hv, ground_coarse(xz, lod_step * 2), t);
+		}
+	}
+	VERTEX.y = hv - UV2.x * UV2.y;
 	wp = (MODEL_MATRIX * vec4(VERTEX, 1.0)).xyz;
 }
 
@@ -102,7 +116,7 @@ void fragment() {
 		ALBEDO = min(dbg * 0.97, vec3(0.97));   // raw: read it under a linear tone map (the stretch test does)
 	} else {
 		vec4 rl = texture(relief_tex, (xz + MAP_HALF) / (MAP_CELL * float(MAP_N)));
-		float vis = mix(1.0, rl.a, rock_shadows);   // baked terrain shadow (step 9), 1 when the switch is off
+		float vis = mix(1.0, rl.a, rock_shadows) * cloud_shadow(wp, SUN_DIR);   // baked terrain shadow (step 9) and the cloud layer's shadow
 		float light = max(dot(gn, SUN_DIR), 0.0) * vis;
 		float wave = meadowWave(xz, TIME);
 		float msh = min(occluder_shadow(wp), vis);

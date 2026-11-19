@@ -51,6 +51,7 @@ Dictionary setup_to_dict(const CpStageSetup &s) {
     d["flat_height"] = double(s.flat_height);
     d["water"] = Vector3(s.water_x, s.water_z, s.water_radius);
     d["player"] = profile_to_dict(s.player);
+    d["player_legs"] = int(s.player_legs);
     Array wild;
     for (int i = 0; i < s.n; ++i) {
         const CpStageSpawn &c = s.wild[i];
@@ -59,6 +60,7 @@ Dictionary setup_to_dict(const CpStageSetup &s) {
         w["home_x"] = double(c.home_x); w["home_z"] = double(c.home_z);
         w["species"] = int(c.species); w["bot"] = int(c.bot);
         w["profile"] = profile_to_dict(c.profile);
+        w["legs"] = int(c.legs);
         wild.append(w);
     }
     d["wild"] = wild;
@@ -83,7 +85,7 @@ bool vec2_from(const Variant &v, float &x, float &z) {
 // Fills `s` from the dictionary over `defaults`. Returns false on any type/shape error.
 bool setup_from_dict(const Dictionary &d, CpStageSetup &s) {
     static const char *const known[] = {"seed", "terrain_seed", "terrain", "nest", "flat_height",
-                                        "water", "player", "wild", "obstacles"};
+                                        "water", "player", "player_legs", "wild", "obstacles"};
     const Array keys = d.keys();
     for (int i = 0; i < keys.size(); ++i) {
         bool ok = false;
@@ -105,6 +107,7 @@ bool setup_from_dict(const Dictionary &d, CpStageSetup &s) {
         s.water_x = w.x; s.water_z = w.y; s.water_radius = w.z;
     }
     if (d.has("player") && !profile_from_dict(d["player"], s.player)) return false;
+    if (d.has("player_legs")) { if (!cpore::to_int(d["player_legs"], 0, 8, n)) return false; s.player_legs = int(n); }
     if (d.has("wild")) {
         if (d["wild"].get_type() != Variant::ARRAY) return false;
         const Array wild = d["wild"];
@@ -123,6 +126,7 @@ bool setup_from_dict(const Dictionary &d, CpStageSetup &s) {
             if (w.has("home_x") && !cpore::to_float(w["home_x"], c.home_x)) return false;
             if (w.has("home_z") && !cpore::to_float(w["home_z"], c.home_z)) return false;
             if (w.has("species")) { if (!cpore::to_int(w["species"], -2147483648LL, 2147483647LL, n)) return false; c.species = int(n); }
+            if (w.has("legs")) { if (!cpore::to_int(w["legs"], 0, 8, n)) return false; c.legs = int(n); }
             if (w.has("bot")) { if (!cpore::to_int(w["bot"], -2147483648LL, 2147483647LL, n)) return false; c.bot = int(n); }
             if (c.species >= 0 && c.species < 4) c.profile = CP_STAGE_SPECIES[c.species].profile;
             if (w.has("profile") && !profile_from_dict(w["profile"], c.profile)) return false;
@@ -191,9 +195,60 @@ Dictionary entity(const CpStageCreature &c, int id) {
     d["home_x"] = double(c.home_x); d["home_z"] = double(c.home_z);
     d["goal_x"] = double(c.goal_x); d["goal_z"] = double(c.goal_z);
     d["species"] = int(c.species); d["dead"] = bool(c.dead); d["pivot"] = int(c.pivot);
+    d["omega"] = double(c.omega); d["grade"] = double(c.grade); d["legs"] = int(c.legs); d["sliding"] = bool(c.sliding);
     d["returning"] = bool(c.returning); d["roam_ticks"] = int(c.roam_ticks);
     d["hp_max"] = double(c.profile.hp); d["stamina_max"] = double(c.profile.stamina);
     d["radius_cm"] = int(c.profile.radius_cm);
+    return d;
+}
+
+// The C2 social layer as plain data (docs/P4.md section 2): per-creature fields go into the entity dictionaries,
+// the player's side (DNA, species progress, food, observe chains, the action under way) into `social`.
+void add_social_entity(Dictionary &d, const CpStageWorld &w, int i) {
+    const CpStageSocialCreature &c = w.social.c[i];
+    d["trust"] = int(c.trust); d["mood"] = int(c.mood); d["bonded"] = bool(c.bonded);
+    d["relationship"] = cp_stage_social_relationship(&w, i);
+    d["beat_in"] = cp_stage_social_beat_in(&w, i);
+    d["hostile"] = cp_stage_social_hostile(&w, i) != 0;
+    d["calm"] = c.calm_ticks > 0; d["leaving"] = c.leave_ticks > 0;
+    d["meat"] = cp_stage_social_carcass_meat(&w, i);
+    const int sp = w.wild[i].species;
+    d["temperament"] = int(CP_STAGE_SPECIES[sp].temperament);
+    Array likes, dislikes;
+    for (int k = 0; k < 8; ++k) {
+        const uint32_t bit = 1u << (sp * 8 + k);
+        if (!(w.social.tested & bit)) continue;
+        const String name = k < 4 ? String(CP_STAGE_SKILLS[k].name) : String(CP_STAGE_ITEM_NAMES[k - 4]);
+        if (w.social.liked & bit) likes.append(name); else dislikes.append(name);
+    }
+    d["likes"] = likes; d["dislikes"] = dislikes;
+}
+
+Dictionary social_to_dict(const CpStageWorld &w) {
+    const CpStageSocial &s = w.social;
+    Dictionary d;
+    d["used"] = s.used != 0;
+    d["dna_total"] = s.dna_total; d["dna_balance"] = s.dna_balance;
+    d["food"] = s.food; d["food_max"] = CP_SOC_FOOD_MAX; d["diet"] = s.diet;
+    Array items;
+    for (int k = 0; k < CP_ITEM_COUNT; ++k) items.append(s.items[k]);
+    d["items"] = items;
+    d["resolved"] = cp_stage_social_species_resolved(&w); d["resolved_total"] = cp_stage_social_species_present(&w);
+    Array sp;
+    for (int k = 0; k < CP_SOC_SPECIES; ++k) {
+        Dictionary e;
+        e["bonded"] = s.latched[k]; e["kills"] = s.kills[k]; e["resolution"] = s.resolution[k];
+        e["observed"] = s.obs_items[k]; e["seen"] = (s.species_seen & (1u << k)) != 0;
+        sp.append(e);
+    }
+    d["species"] = sp;
+    d["observe_target"] = s.obs_target; d["observe_ticks"] = s.obs_ticks; d["observe_ticks_max"] = CP_SOC_OBSERVE_TICKS;
+    d["learned"] = int64_t(s.learned);
+    d["stagger"] = s.stagger; d["intimidate_cooldown"] = s.intimidate_cd;
+    Dictionary act;
+    act["verb"] = s.act_verb; act["target"] = s.act_target; act["arg"] = s.act_arg; act["t"] = s.act_t; act["len"] = s.act_len;
+    act["windup"] = s.act_mult;
+    d["action"] = act;
     return d;
 }
 
@@ -213,6 +268,7 @@ void CporeWorld::_bind_methods() {
     ClassDB::bind_static_method("CporeWorld", D_METHOD("default_profile"), &CporeWorld::default_profile);
     ClassDB::bind_static_method("CporeWorld", D_METHOD("species"), &CporeWorld::species);
     ClassDB::bind_static_method("CporeWorld", D_METHOD("moves"), &CporeWorld::moves);
+    ClassDB::bind_static_method("CporeWorld", D_METHOD("chains"), &CporeWorld::chains);
     ClassDB::bind_static_method("CporeWorld", D_METHOD("order_error", "code"), &CporeWorld::order_error);
     ClassDB::bind_method(D_METHOD("reset", "setup"), &CporeWorld::reset);
     ClassDB::bind_method(D_METHOD("get_setup"), &CporeWorld::get_setup);
@@ -280,6 +336,20 @@ Array CporeWorld::species() {
     return a;
 }
 
+Array CporeWorld::chains() {
+    Array a;
+    for (int i = 0; i < CP_SOC_SPECIES; ++i) {
+        const CpStageChain &c = CP_STAGE_CHAINS[i];
+        Dictionary d;
+        d["species"] = i; d["id"] = String(c.id); d["trait"] = String(c.trait); d["move"] = c.move;
+        Array clues;
+        for (int k = 0; k < CP_SOC_CHAIN_ITEMS; ++k) clues.append(String(c.observe[k]));
+        d["observe"] = clues;
+        a.append(d);
+    }
+    return a;
+}
+
 // The move table (A21): id, name, role (index and name), cooldown in ticks, level-1 stamina, reach, whether it can sit in a slot.
 Array CporeWorld::moves() {
     Array a;
@@ -309,6 +379,7 @@ int CporeWorld::reset(const Dictionary &setup) {
     }
     // cp_stage_reset validates before it touches the world, so a failure keeps the old state.
     const int rc = cp_stage_reset(world.get(), &s);
+    if (rc == 0) social_events_seen = 0;
     if (rc) error_text = "the stage setup was rejected (a value is out of range or outside the playable bound)";
     return rc;
 }
@@ -375,7 +446,8 @@ Dictionary CporeWorld::state() const {
     Array entities;
     entities.append(entity(w.player, 0));
     for (int i = 0; i < w.setup.n; ++i) {
-        Dictionary e=entity(w.wild[i],i+1);
+        Dictionary e = entity(w.wild[i], i + 1);
+        add_social_entity(e, w, i);
         const int generation=cp_stage_cousin_generation(&w,i+1);
         e["cousin_generation"]=generation;
         e["counts_progress"]=generation==0;
@@ -383,6 +455,23 @@ Dictionary CporeWorld::state() const {
         entities.append(e);
     }
     d["entities"] = entities;
+    d["social"] = social_to_dict(w);
+    {
+        // Social events since the last state(): [{type, target, move, value, x, z, tick}]; see stage_social.c for the fields.
+        Array evs;
+        uint32_t first = social_events_seen;
+        if (first > w.ev_total || w.ev_total - first > CP_STAGE_MAX_EVENTS) first = w.ev_total > CP_STAGE_MAX_EVENTS ? w.ev_total - CP_STAGE_MAX_EVENTS : 0;
+        for (uint32_t k = first; k < w.ev_total; ++k) {
+            const CpStageEvent &e = w.events[k % CP_STAGE_MAX_EVENTS];
+            if (e.type < CP_STAGE_EV_SKILL) continue;
+            Dictionary ev;
+            ev["type"] = int(e.type); ev["tick"] = int64_t(e.tick); ev["target"] = int(e.target); ev["move"] = int(e.move);
+            ev["value"] = double(e.value); ev["x"] = double(e.x); ev["z"] = double(e.z);
+            evs.append(ev);
+        }
+        social_events_seen = w.ev_total;
+        d["social_events"] = evs;
+    }
     Dictionary combat;
     combat["tick"] = int(w.combat.tick);
     Array fighters;
@@ -442,6 +531,7 @@ PackedByteArray CporeWorld::snapshot() const {
 int CporeWorld::restore(const PackedByteArray &bytes) {
     const int rc = cp_stage_restore(world.get(), bytes.ptr(), size_t(bytes.size()), field_attached ? &field : nullptr);
     error_text = rc ? String(cp_stage_snapshot_error(rc)) : String();
+    if (rc == 0) social_events_seen = world->ev_total;
     return rc;
 }
 

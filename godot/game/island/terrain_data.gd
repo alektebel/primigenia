@@ -1,10 +1,10 @@
 extends RefCounted
 # Terrain arrays plus everything the renderers and gameplay derive from them.
 # One ground() function serves creatures, camera collision, pointer, grass and stage setup;
-# it is the exact surface of the LOD0 mesh (same triangle diagonal).
+# it is the exact surface of the LOD0 mesh (same triangle diagonal). Only the shading normal is smoothed (smooth_normal).
 
 # Bump when the derived maps (surface and relief RGBA8, chunk bounds) change; part of the cache key.
-const RENDER_PREP_VERSION := 2
+const RENDER_PREP_VERSION := 3
 const CHUNK_CELLS := 64
 
 var n: int = 0
@@ -15,6 +15,7 @@ var height: PackedFloat32Array
 var flow: PackedFloat32Array
 var water_level: PackedFloat32Array
 var material: PackedByteArray
+var river: PackedByteArray        # CP_TERR_RIVER_*: 0 none, 1 stream, 2 shallow river, 3 deep river (terrain v4)
 var surface: PackedByteArray      # RGBA8: R material id, G grass mask, B cavity, A wetness
 var relief: PackedByteArray       # RGBA8: R fine curvature, G broad curvature (> 128 concave), B sediment, A sun visibility
 var chunk_bounds: PackedFloat32Array
@@ -44,6 +45,7 @@ func setup(entry: Dictionary, build_textures: bool = true) -> void:
 	flow = entry.flow
 	water_level = entry.water_level
 	material = entry.material
+	river = entry.get("river", PackedByteArray())
 	surface = entry.surface
 	relief = entry.relief
 	chunk_bounds = entry.chunk_bounds
@@ -97,6 +99,44 @@ func normal(x: float, z: float) -> Vector3:
 	var dz := ground(x, z + cell) - ground(x, z - cell)
 	return Vector3(-dx, 2.0 * cell, -dz).normalized()
 
+# Shading normal of the terrain shaders (terrain_maps.gdshaderinc ground_normal): Catmull-Rom bicubic gradient of the height
+# texels. Smooth (C1) across cells; the geometry itself remains the triangle surface of ground().
+func smooth_normal(x: float, z: float) -> Vector3:
+	var u := (x + half) / cell - 0.5
+	var v := (z + half) / cell - 0.5
+	var i := floori(u)
+	var j := floori(v)
+	var fx := u - float(i)
+	var fy := v - float(j)
+	var wx := _cr(fx)
+	var wy := _cr(fy)
+	var dx := _cr_d(fx)
+	var dy := _cr_d(fy)
+	var gx := 0.0
+	var gz := 0.0
+	for b in 4:
+		var row := 0.0
+		var rowd := 0.0
+		for a in 4:
+			var hh := _hc(i + a - 1, j + b - 1)
+			row += wx[a] * hh
+			rowd += dx[a] * hh
+		gx += rowd * wy[b]
+		gz += row * dy[b]
+	return Vector3(-gx / cell, 1.0, -gz / cell).normalized()
+
+func _hc(i: int, j: int) -> float:
+	return height[clampi(j, 0, n - 1) * n + clampi(i, 0, n - 1)]
+
+static func _cr(f: float) -> Array:
+	var f2 := f * f
+	var f3 := f2 * f
+	return [(-f3 + 2.0 * f2 - f) * 0.5, (3.0 * f3 - 5.0 * f2 + 2.0) * 0.5, (-3.0 * f3 + 4.0 * f2 + f) * 0.5, (f3 - f2) * 0.5]
+
+static func _cr_d(f: float) -> Array:
+	var f2 := f * f
+	return [(-3.0 * f2 + 4.0 * f - 1.0) * 0.5, (9.0 * f2 - 10.0 * f) * 0.5, (-9.0 * f2 + 8.0 * f + 1.0) * 0.5, (3.0 * f2 - 2.0 * f) * 0.5]
+
 func is_sea(k: int) -> bool:
 	return height[k] <= 0.0
 
@@ -108,5 +148,13 @@ func cell_index(x: float, z: float) -> int:
 	var j := clampi(floori((z + half) / cell), 0, n - 1)
 	return j * n + i
 
+# River class of cell k (0 none, 1 stream, 2 shallow, 3 deep); 0 when the entry has no river map.
+func river_class(k: int) -> int:
+	return river[k] & 3 if river.size() == n * n else 0
+
+func is_river(k: int) -> bool:
+	return river_class(k) > 0
+
+# Water the C world blocks on: deep river, lake or sea (depth > 0.7 m; shallow river is 0.6 m and walkable).
 func is_pond_at(x: float, z: float) -> bool:
 	return is_pond(cell_index(x, z))

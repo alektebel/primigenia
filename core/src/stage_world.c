@@ -1,4 +1,5 @@
 #include "cpore/world.h"
+#include "cpore/steer.h"
 #include "../../apps/combat_bots.h"
 #include <math.h>
 #include <stdio.h>
@@ -185,6 +186,43 @@ int cp_stage_can_walk(const CpStageWorld *w,float x,float z,float nx,float nz,fl
     }
     return 1;
 }
+/* A body does not follow a planned line to the centimetre (yaw inertia, turn radius), so a route may not skim blocking water:
+ * the planner, its shortcuts and the waypoint following also want `clear` metres of dry-enough ground either side of the line.
+ * Carved deep rivers are one cell wide, so without this a plan threads the corner between two deep cells and the body drives
+ * into the channel. Field terrain only (the other terrains have no narrow channels). */
+#define WATER_MARGIN 1.f
+static int water_clear(const CpStageWorld *w,float x,float z,float nx,float nz,float clear){
+    if(w->setup.terrain!=CP_STAGE_FIELD)return 1;
+    const float dx=nx-x,dz=nz-z,distance=length(dx,dz);
+    if(distance<1e-4f)return 1;
+    const float px=-dz/distance*clear,pz=dx/distance*clear;
+    const int steps=(int)(distance/1.f)+1;
+    for(int i=0;i<=steps;i++){
+        const float t=(float)i/steps,cx=x+dx*t,cz=z+dz*t;
+        if(cp_stage_water_depth(w,cx+px,cz+pz)>.7f||cp_stage_water_depth(w,cx-px,cz-pz)>.7f)return 0;
+    }
+    return 1;
+}
+/* can_walk plus the body's climb limit: no stretch of the straight move steeper than `climb` (rise / run over about a metre).
+ * The planner, its shortcuts and the waypoint following use this one rule, so a route is never one the body would stall on. */
+static int walk_ok(const CpStageWorld *w,float x,float z,float nx,float nz,float radius,float climb){
+    if(!cp_stage_can_walk(w,x,z,nx,nz,radius))return 0;
+    const float dx=nx-x,dz=nz-z,distance=length(dx,dz);
+    const int steps=(int)(distance/1.f)+1;
+    float previous=cp_stage_ground(w,x,z);
+    const float run=distance/steps;
+    for(int i=1;i<=steps;i++){
+        const float t=(float)i/steps,height=cp_stage_ground(w,x+dx*t,z+dz*t);
+        if(ab(height-previous)>climb*run)return 0;
+        previous=height;
+    }
+    return water_clear(w,x,z,nx,nz,radius+WATER_MARGIN);
+}
+static float player_climb(const CpStageWorld *w){
+    CpSteerBody body;
+    cp_steer_body(&w->motion,cp_combat_body_radius(&w->player.profile),w->player.legs,&body);
+    return body.climb;
+}
 /* --- C1-nav: events, block reasons, the walk grid and the GO planner (docs/godot/NAV.md) ---------------- */
 static void ev_push(CpStageWorld *w,int type,int by,int target,int move,float value,float x,float z){
     w->events[w->ev_total%CP_STAGE_MAX_EVENTS]=(CpStageEvent){w->tick,type,by,target,move,value,x,z};
@@ -239,7 +277,7 @@ static int32_t nav_cells[NAV_EXPAND+2];
 static struct {
     uint64_t sig;
     int dim,valid;
-    float cs,bound,radius;
+    float cs,bound,radius,climb;
     uint32_t gen;
 } nav;
 static const int NAV_DX[8]={1,1,0,-1,-1,-1,0,1},NAV_DZ[8]={0,1,1,1,0,-1,-1,-1};
@@ -265,6 +303,9 @@ static int nav_ready(const CpStageWorld *w){
     sig_u32(&h,(uint32_t)(uintptr_t)w->field->height);
     sig_u32(&h,(uint32_t)((uint64_t)(uintptr_t)w->field->height>>32));
     sig_fl(&h,radius);
+    CpSteerBody body;
+    cp_steer_body(&w->motion,radius,w->player.legs,&body);
+    sig_fl(&h,body.climb);
     sig_u32(&h,(uint32_t)w->setup.n_obstacles);
     for(int i=0;i<w->setup.n_obstacles;i++){
         sig_fl(&h,w->setup.obstacles[i].x);
@@ -280,6 +321,7 @@ static int nav_ready(const CpStageWorld *w){
     nav.cs=2*bound/dim;
     nav.bound=bound;
     nav.radius=radius;
+    nav.climb=body.climb;
     nav.valid=1;
     memset(nav_mask,0,(size_t)dim*dim*sizeof *nav_mask);
     return 1;
@@ -310,7 +352,8 @@ static int nav_edge(const CpStageWorld *w,int idx,int d){
     const int fi=from%nav.dim,fj=from/nav.dim;
     uint8_t m=nav_mask[from];
     if(!(m&(16u<<dir))){
-        const int ok=cp_stage_can_walk(w,nav_c(fi),nav_c(fj),nav_c(fi+NAV_DX[dir]),nav_c(fj+NAV_DZ[dir]),nav.radius);
+        /* an edge steeper than the player's body can climb is no edge (the walk cost below also prefers flatter routes) */
+        const int ok=walk_ok(w,nav_c(fi),nav_c(fj),nav_c(fi+NAV_DX[dir]),nav_c(fj+NAV_DZ[dir]),nav.radius,nav.climb);
         m|=(uint8_t)((16u<<dir)|(ok?1u<<dir:0));
         nav_mask[from]=m;
     }
@@ -401,7 +444,8 @@ static int nav_astar(const CpStageWorld *w,int start,int goal){
         for(int d=0;d<8;d++){
             if(!(m&(1u<<d)))continue;
             const int n=(j+NAV_DZ[d])*nav.dim+i+NAV_DX[d];
-            const int ng=nav_g[idx]+((d&1)?14:10);
+            const float rise=cp_stage_ground(w,nav_c(i+NAV_DX[d]),nav_c(j+NAV_DZ[d]))-cp_stage_ground(w,nav_c(i),nav_c(j));
+            const int ng=nav_g[idx]+((d&1)?14:10)+(int)(ab(rise)/nav.cs*6);   /* a steeper step costs more: 6 per unit of grade */
             if(nav_stamp[n]==nav.gen&&ng>=nav_g[n])continue;
             nav_stamp[n]=nav.gen;
             nav_g[n]=ng;
@@ -426,7 +470,7 @@ static int plan_path(CpStageWorld *w,float tx,float tz){
     if(!nav_ready(w)||!isfinite(tx)||!isfinite(tz))return CP_STAGE_BLOCK_UNREACHABLE;
     float ex=tx,ez=tz;
     int count=0;
-    if(!cp_stage_can_walk(w,sx,sz,tx,tz,radius)){
+    if(!walk_ok(w,sx,sz,tx,tz,radius,nav.climb)){
         /* start cell: the nearest cell centre of the 5x5 block the player can walk to */
         const int ci=nav_index_of(sx),cj=nav_index_of(sz);
         int start=-1,gcell=-1;
@@ -446,7 +490,7 @@ static int plan_path(CpStageWorld *w,float tx,float tz){
                 for(int k=0;k<n;k++)if(idxs[k]>=0&&(best<0||d2[k]<d2[best]||(d2[k]==d2[best]&&idxs[k]<idxs[best])))best=k;
                 const int idx=idxs[best];
                 idxs[best]=-1;
-                if(cp_stage_can_walk(w,sx,sz,nav_c(idx%nav.dim),nav_c(idx/nav.dim),radius)&&nav_cell(w,idx))start=idx;
+                if(walk_ok(w,sx,sz,nav_c(idx%nav.dim),nav_c(idx/nav.dim),radius,nav.climb)&&nav_cell(w,idx))start=idx;
             }
         }
         if(start<0)return CP_STAGE_BLOCK_UNREACHABLE;
@@ -472,7 +516,7 @@ static int plan_path(CpStageWorld *w,float tx,float tz){
                 idxs[best]=-1;
                 if(!nav_cell(w,idx))continue;
                 if(fallback<0)fallback=idx;
-                if(cp_stage_can_walk(w,nav_c(idx%nav.dim),nav_c(idx/nav.dim),tx,tz,radius))gcell=idx;
+                if(walk_ok(w,nav_c(idx%nav.dim),nav_c(idx/nav.dim),tx,tz,radius,nav.climb))gcell=idx;
             }
             if(gcell<0&&fallback>=0){
                 gcell=fallback;
@@ -506,7 +550,7 @@ static int plan_path(CpStageWorld *w,float tx,float tz){
         while(lo<m-1){
             int j=anchor+t;
             if(j>m-1)j=m-1;
-            if(cp_stage_can_walk(w,ax,az,point_x(j,count,sx,ex),point_z(j,count,sz,ez),radius)){
+            if(walk_ok(w,ax,az,point_x(j,count,sx,ex),point_z(j,count,sz,ez),radius,nav.climb)){
                 lo=j;
                 t*=2;
             }
@@ -517,7 +561,7 @@ static int plan_path(CpStageWorld *w,float tx,float tz){
         }
         while(hi>0&&hi-lo>1){
             const int mid=(lo+hi)/2;
-            if(cp_stage_can_walk(w,ax,az,point_x(mid,count,sx,ex),point_z(mid,count,sz,ez),radius))lo=mid;
+            if(walk_ok(w,ax,az,point_x(mid,count,sx,ex),point_z(mid,count,sz,ez),radius,nav.climb))lo=mid;
             else hi=mid;
         }
         const float bx=point_x(lo,count,sx,ex),bz=point_z(lo,count,sz,ez);
@@ -606,11 +650,13 @@ int cp_stage_reset(CpStageWorld *w,const CpStageSetup *s){
     w->motion=CP_STAGE_MOTION;
     w->field_hash=field?field->hash:0;
     w->setup=copy;
+    cp_stage_social_reset(w);
     w->active=-1;
     cp_rng_seed(&w->spawn_rng,copy.seed^0x53504157u);
     cp_rng_seed(&w->roam_rng,copy.seed^0x524f414du);
     seed_noise(w);
     creature(&w->player,copy.nest_x,copy.nest_z,-1,&copy.player);
+    w->player.legs=copy.player_legs;
     cp_combat_loadout_default(&w->loadout,&copy.player);
     for(int i=0;i<copy.n;i++){
         const CpStageSpawn *c=&copy.wild[i];
@@ -618,6 +664,7 @@ int cp_stage_reset(CpStageWorld *w,const CpStageSetup *s){
         w->wild[i].home_x=c->home_x;
         w->wild[i].home_z=c->home_z;
         w->wild[i].fz=-1;
+        w->wild[i].legs=c->legs;
         w->wild[i].roam_ticks=10+(int)(cp_rng_u32(&w->spawn_rng)%40);
     }
     w->hash=cp_stage_hash(w);
@@ -646,6 +693,7 @@ static CpBot bot_load(const CpStageBot *s){
     return b;
 }
 static void start(CpStageWorld *w,int index){
+    cp_stage_social_on_fight(w,index);
     CpStageCreature *e=&w->wild[index],*p=&w->player;
     w->arena_x=(p->x+e->x)/2;
     w->arena_z=(p->z+e->z)/2;
@@ -685,75 +733,83 @@ static void start(CpStageWorld *w,int index){
     w->started++;
     w->outcome=0;
 }
+/* Ground gradient (rise/run) over a 0.5 m stencil, the one the ceiling is measured with. */
+static void ground_grad(const CpStageWorld *w,float x,float z,float *gx,float *gz,float h){
+    *gx=(cp_stage_ground(w,x+h,z)-cp_stage_ground(w,x-h,z))/(2*h);
+    *gz=(cp_stage_ground(w,x,z+h)-cp_stage_ground(w,x,z-h))/(2*h);
+}
+/* A move onto ground steeper than CP_STEER_GRADE_MAX that is not downhill: refused for creatures (the player keeps its stall rule). */
+static int steep_up(const CpStageWorld *w,const CpStageCreature *c,float x,float z,float nx,float nz){
+    if(c==&w->player)return 0;
+    float gx,gz;
+    ground_grad(w,nx,nz,&gx,&gz,.25f);
+    if(length(gx,gz)<=CP_STEER_GRADE_MAX)return 0;
+    ground_grad(w,x,z,&gx,&gz,.25f);   /* already on such ground (spawned, slid onto it): only downhill is allowed, the slide takes it from there */
+    return length(gx,gz)<=CP_STEER_GRADE_MAX||cp_stage_ground(w,nx,nz)>=cp_stage_ground(w,x,z);
+}
 const CpStageMotion CP_STAGE_MOTION={
-    1.3f,1.7f,.6f,15.f,20.f,.6f,1.1f,1.5f,4.5f,11.8f,.3f,2.f,7.f,.4f
+    1.3f,1.7f,.6f,15.f,20.f,.6f,1.1f,1.5f,4.5f,11.8f,.3f,2.f,7.f,.4f,
+    1.4f,.35f,.03f,.25f,3.2f,1.5f,.8f,.55f,1.35f,1.4f,1.1f,8.f,.15f
 };
-/* Stage locomotion (CP_STAGE_VERSION 2, PLAN-feel). Speed eases toward the wanted speed with an
- * acceleration and a braking cap; the yaw rate is limited by body size (turn0), by lateral grip at
- * speed, and by a slow pivot used only from near rest. Turn: rotate a unit vector by at most
- * `limit` radians with small-angle polynomials, so the angular speed is bounded and deterministic
- * (only + - * / and sqrtf, identical natively and in WASM). */
+/* Stage locomotion (CP_STAGE_VERSION 3). The decisions (yaw acceleration, turn radius from grip and size, braking into
+ * corners, pivot, slope speed and slide) live in core/src/steer.c; this moves the body with them. The heading turns with
+ * an angular velocity, so a new target never snaps it (docs/godot/LOCOMOTION.md, "Steering"). */
 static void walk(CpStageWorld *w,CpStageCreature *c,float dx,float dz,float speed,float jog){
     const CpStageMotion *m=&w->motion;
-    float n=length(dx,dz),ox=c->x,oz=c->z,old=c->speed,turn=0,r=cp_combat_body_radius(&c->profile);
-    float dot=1,cross=0;
-    if(n>.00001f){
-        dx/=n;
-        dz/=n;
-        dot=c->fx*dx+c->fz*dz;
-        cross=c->fz*dx-c->fx*dz;
+    const float ox=c->x,oz=c->z,old=c->speed,r=cp_combat_body_radius(&c->profile);
+    CpSteerBody body;
+    cp_steer_body(m,r,c->legs,&body);
+    /* the ceiling: no creature rests on ground steeper than CP_STEER_GRADE_MAX (steep_up refuses it, the slide takes over above it).
+     * The player keeps the body's own stall and slide grades, which the planner and the GO gates are built on. */
+    if(c!=&w->player&&body.slide>CP_STEER_GRADE_MAX)body.slide=CP_STEER_GRADE_MAX;
+    const float grade=cp_stage_ground(w,c->x+c->fx,c->z+c->fz)-cp_stage_ground(w,c->x,c->z);
+    CpSteer st={c->fx,c->fz,c->speed,c->omega,c->pivot};
+    const float sf=cp_steer_slope(m,&body,grade);
+    const float v=cp_steer_tick(m,&body,&st,dx,dz,speed,jog,sf);
+    c->fx=st.fx;
+    c->fz=st.fz;
+    c->pivot=st.pivot;
+    c->omega=st.omega;
+    c->grade=grade;
+    const float step=v*.1f,nx=c->x+c->fx*step,nz=c->z+c->fz*step;
+    if(steep_up(w,c,c->x,c->z,nx,nz)){
+        /* the cell ahead is above the ceiling and higher than here: refuse it (the same predicate the slide below uses) */
     }
-    float turn0=clamp(m->turn_k*sqrtf(9.81f/r),m->turn_min,m->turn_max),pivot_v=m->pivot_k*jog;
-    if(n>.00001f&&!c->pivot&&dot<-.5f&&old<=pivot_v)c->pivot=1;
-    if(c->pivot&&(dot>.5f||n<=.00001f))c->pivot=0;
-    float wt=speed*clamp(n,0,1);
-    if(c->pivot)wt=0;
-    else if(n>.00001f&&dot>=0)wt*=(1-m->turn_slow)+m->turn_slow*dot;
-    else if(n>.00001f)wt*=(1-m->turn_slow)*clamp(1+2*dot,0,1);  /* behind: plant and brake, continuous at 90 degrees */
-    float dv=(wt-old)*m->ease;
-    dv=clamp(dv,-m->brake*.1f,m->accel*.1f);
-    float v=old+dv;
-    if(v<.015f&&wt<.015f)v=0;
-    if(n>.00001f){
-        float rate=turn0;
-        if(c->pivot)rate=clamp(m->pivot_mul*turn0,3,m->pivot_max);
-        else if(v>.001f&&m->grip/v<rate)rate=m->grip/v;
-        float limit=rate*.1f,co=1-limit*limit/2+limit*limit*limit*limit/24;
-        if(dot>=co){
-            turn=cross;
-            c->fx=dx;
-            c->fz=dz;
-        }
-        else {
-            float si=limit-limit*limit*limit/6+limit*limit*limit*limit*limit/120;
-            float sign=cross<0?-1:1;
-            float fx=c->fx*co+c->fz*si*sign;
-            c->fz=c->fz*co-c->fx*si*sign;
-            c->fx=fx;
-            turn=limit*sign;
-        }
-        float norm=length(c->fx,c->fz);
-        c->fx/=norm;
-        c->fz/=norm;
-    }
-    float slope=ab(cp_stage_ground(w,c->x+c->fx,c->z+c->fz)-cp_stage_ground(w,c->x,c->z));
-    float step=v*.1f/(1+slope*.65f),nx=c->x+c->fx*step,nz=c->z+c->fz*step;
-    if(cp_stage_can_walk(w,c->x,c->z,nx,nz,r)){
+    else if(cp_stage_can_walk(w,c->x,c->z,nx,nz,r)){
         c->x=nx;
         c->z=nz;
     }
     else {
-        if(cp_stage_can_walk(w,c->x,c->z,nx,c->z,r))c->x=nx;
-        if(cp_stage_can_walk(w,c->x,c->z,c->x,nz,r))c->z=nz;
+        if(!steep_up(w,c,c->x,c->z,nx,c->z)&&cp_stage_can_walk(w,c->x,c->z,nx,c->z,r))c->x=nx;
+        if(!steep_up(w,c,c->x,c->z,c->x,nz)&&cp_stage_can_walk(w,c->x,c->z,c->x,nz,r))c->z=nz;
     }
     if(c==&w->player&&step>.02f&&length(c->x-ox,c->z-oz)<step*.5f&&!w->blocked_reason){
         w->blocked_reason=block_reason(w,ox,oz,nx,nz,r);
         w->blocked_x=nx;
         w->blocked_z=nz;
     }
+    else if(c==&w->player&&speed>.5f&&sf<=0&&!w->blocked_reason){
+        /* too steep to climb: report it like a wall so the order replans, and gives up after four tries */
+        w->blocked_reason=CP_STAGE_BLOCK_CLIFF;
+        w->blocked_x=nx;
+        w->blocked_z=nz;
+    }
     c->speed=length(c->x-ox,c->z-oz)*10;
     c->acceleration=(c->speed-old)*10;
-    c->turn_rate=turn*10;
+    c->turn_rate=c->omega;
+    /* ground steeper than the body can hold: it slides down the fall line (deterministic; the walk above has already stopped) */
+    float gx,gz;
+    ground_grad(w,c->x,c->z,&gx,&gz,.5f);
+    const float g=length(gx,gz),vs=cp_steer_slide(m,&body,g);
+    c->sliding=0;
+    if(vs>0&&g>.00001f){
+        const float sx=c->x-gx/g*vs*.1f,sz=c->z-gz/g*vs*.1f;
+        if(cp_stage_can_walk(w,c->x,c->z,sx,sz,r)){
+            c->x=sx;
+            c->z=sz;
+            c->sliding=1;
+        }
+    }
 }
 /* the one death predicate: the flag set at fight resolution, or no hp left */
 static int creature_is_dead(const CpStageCreature *e){
@@ -764,7 +820,7 @@ static int has_threat(const CpStageWorld *w){
     return 0;
 }
 static int order_apply(CpStageWorld *w,const CpStageInput *a){
-    if(!w||!a||!isfinite(a->x)||!isfinite(a->z)||a->verb<0||a->verb>CP_STAGE_LOADOUT||a->sprint<0||a->sprint>1)return -1;
+    if(!w||!a||!isfinite(a->x)||!isfinite(a->z)||a->verb<0||a->verb>CP_STAGE_EAT||a->sprint<0||a->sprint>1)return -1;
     if(a->verb==CP_STAGE_CONTINUE)return 0;
     if(a->verb==CP_STAGE_LOADOUT){
         if(a->target<1||a->target>CB_LOADOUT_SLOTS)return CP_STAGE_ERR_BAD_SLOT;
@@ -777,6 +833,14 @@ static int order_apply(CpStageWorld *w,const CpStageInput *a){
         if(rc)return rc;
         w->loadout=next;
         w->hash=cp_stage_hash(w);
+        return 0;
+    }
+    if(a->verb>=CP_STAGE_BEFRIEND){
+        const int rc=cp_stage_social_order_check(w,a);
+        if(rc)return rc;
+        path_clear(w);
+        w->order=*a;
+        w->social.used=1;
         return 0;
     }
     if(a->verb==CP_STAGE_GO&&(!isfinite(a->x)||!isfinite(a->z)||ab(a->x)>cp_stage_bound(w)||ab(a->z)>cp_stage_bound(w)))return -1;
@@ -835,6 +899,7 @@ static void finish(CpStageWorld *w,int outcome){
         e->dead=1;
         if(w->ledger.enabled)cp_ledger_deed(&w->ledger,w->tick,CP_DEED_KILLS,1,(int32_t)(e->x*100),(int32_t)(e->z*100),id);
         ev_push(w,CP_STAGE_EV_KILL,0,id,-1,0,e->x,e->z);
+        cp_stage_social_on_kill(w,id-1);
     }
     else e->returning=1;
     if(outcome!=CP_STAGE_VICTORY){
@@ -1009,8 +1074,7 @@ static void wild_tick(CpStageWorld *w,int skip,int engage){
             tx=e->goal_x;
             tz=e->goal_z;
         }
-        float territory=s->temperament==CP_STAGE_TERRITORIAL?length(w->player.x-e->home_x,w->player.z-e->home_z):d;
-        int hostile=s->temperament!=CP_STAGE_TIMID&&d<s->sight&&territory<s->hostile+cp_combat_body_radius(&e->profile)&&!w->cooldown_ticks;
+        int hostile=cp_stage_social_hostile(w,i);   /* the temperament rule, minus what the social layer pacifies */
         if(e->returning){
             tx=e->home_x;
             tz=e->home_z;
@@ -1018,6 +1082,10 @@ static void wild_tick(CpStageWorld *w,int skip,int engage){
         else if(hostile){
             tx=w->player.x;
             tz=w->player.z;
+        }
+        else if(cp_stage_social_leaving(w,i)){
+            tx=e->x+(e->x-w->player.x);
+            tz=e->z+(e->z-w->player.z);
         }
         else if(s->temperament==CP_STAGE_TIMID&&d<s->sight*.5f){
             tx=e->x+(e->x-w->player.x);
@@ -1028,7 +1096,7 @@ static void wild_tick(CpStageWorld *w,int skip,int engage){
         walk(w,e,tx-e->x,tz-e->z,espeed,jog);
         if(e->returning&&length(e->x-e->home_x,e->z-e->home_z)<.6f)e->returning=0;
         int targeted=(w->order.verb==CP_STAGE_ATTACK&&w->order.target==i+1);
-        if(engage&&w->active<0&&!e->returning&&!w->cooldown_ticks&&(hostile||targeted)&&dist(&w->player,e)<5.5f)start(w,i);
+        if(engage&&w->active<0&&!e->returning&&!w->cooldown_ticks&&((hostile&&!cp_stage_social_shielded(w,i))||targeted)&&dist(&w->player,e)<5.5f)start(w,i);
     }
 }
 uint64_t cp_stage_step(CpStageWorld *w,const CpStageInput *input){
@@ -1068,16 +1136,28 @@ uint64_t cp_stage_step(CpStageWorld *w,const CpStageInput *input){
                 while(w->path_i<w->n_path-1){
                     const float *wp=w->path[w->path_i],*nx=w->path[w->path_i+1];
                     const float d=length(wp[0]-w->player.x,wp[1]-w->player.z);
-                    if(d<1.5f||(d<8&&cp_stage_can_walk(w,w->player.x,w->player.z,nx[0],nx[1],pr)))w->path_i++;
+                    const float look=w->motion.look_min+w->motion.look_k*w->player.speed;
+                    const int passed=(w->player.x-wp[0])*(nx[0]-wp[0])+(w->player.z-wp[1])*(nx[1]-wp[1])>0;
+                    if(d<1.5f||((d<(look>8?look:8)||passed)&&walk_ok(w,w->player.x,w->player.z,nx[0],nx[1],pr,player_climb(w))))w->path_i++;
                     else break;
                 }
                 const float *wp=w->path[w->path_i];
                 dx=wp[0]-w->player.x;
                 dz=wp[1]-w->player.z;
                 remaining=length(dx,dz);
+                const float wdx=dx,wdz=dz;
+                {
+                    /* pure pursuit: steer at the point `look` metres ahead on the path, so corners become arcs */
+                    float cx,cz;
+                    cp_steer_carrot((const float (*)[2])w->path,w->n_path,w->path_i,w->player.x,w->player.z,w->motion.look_min+w->motion.look_k*w->player.speed,&cx,&cz);
+                    if(walk_ok(w,w->player.x,w->player.z,cx,cz,cp_combat_body_radius(&w->player.profile),player_climb(w))){
+                        dx=cx-w->player.x;
+                        dz=cz-w->player.z;
+                    }
+                }
                 for(int k=w->path_i;k<w->n_path-1;k++)remaining+=length(w->path[k+1][0]-w->path[k][0],w->path[k+1][1]-w->path[k][1]);
                 following=1;
-                if(w->path_i==w->n_path-1&&length(dx,dz)<.16f){
+                if(w->path_i==w->n_path-1&&length(wdx,wdz)<.16f){
                     dx=dz=0;
                     if(length(w->path_goal_x-wp[0],w->path_goal_z-wp[1])>.5f){
                         /* the stored waypoints ran out before the goal (more than 64 corners): plan the rest */
@@ -1131,6 +1211,19 @@ uint64_t cp_stage_step(CpStageWorld *w,const CpStageInput *input){
                 }
             }
         }
+        else if(a->verb>=CP_STAGE_BEFRIEND&&a->verb<=CP_STAGE_EAT){
+            /* social verbs: walk into range, then stand still while performing (observe never moves) */
+            if(a->target>=1&&a->target<=w->setup.n&&(a->verb==CP_STAGE_EAT||!creature_is_dead(&w->wild[a->target-1]))&&a->verb!=CP_STAGE_OBSERVE){
+                const CpStageCreature *t=&w->wild[a->target-1];
+                dx=t->x-w->player.x;
+                dz=t->z-w->player.z;
+                remaining=length(dx,dz);
+                if(w->social.act_verb||remaining<=cp_stage_social_reach(w,a)){
+                    dx=dz=0;
+                    remaining=0;
+                }
+            }
+        }
         else if(a->verb==CP_STAGE_FLEE){
             int nearest=-1;
             float d=100000;
@@ -1171,6 +1264,7 @@ uint64_t cp_stage_step(CpStageWorld *w,const CpStageInput *input){
         w->player.stamina=clamp(w->player.stamina+(sprint?-1.4f:1),0,w->player.profile.stamina);
         if(w->cooldown_ticks>0)w->cooldown_ticks--;
     }
+    cp_stage_social_step(w);
     wild_tick(w,skip,engage);
     cp_stage_lineage_tick(w,lineage_x,lineage_z);
     w->tick++;
@@ -1220,6 +1314,9 @@ static void ent(uint64_t *h,const CpStageCreature *c){
     u32(h,c->returning);
     u32(h,c->roam_ticks);
     prof(h,&c->profile);
+    fl(h,c->omega);
+    u32(h,c->legs);
+    u32(h,c->sliding);
 }
 uint64_t cp_stage_hash(const CpStageWorld *w){
     uint64_t h=14695981039346656037ULL;
@@ -1312,6 +1409,11 @@ uint64_t cp_stage_hash(const CpStageWorld *w){
             fl(&h,w->path[i][1]);
         }
     }
+    if(w->social.used){
+        const uint64_t sh=cp_stage_social_hash(w);
+        u32(&h,(uint32_t)sh);
+        u32(&h,(uint32_t)(sh>>32));
+    }
     if(s->terrain==CP_STAGE_FIELD){
         u32(&h,(uint32_t)w->field_hash);
         u32(&h,(uint32_t)(w->field_hash>>32));
@@ -1320,8 +1422,8 @@ uint64_t cp_stage_hash(const CpStageWorld *w){
     return h;
 }
 uint16_t cp_stage_known_moves(const CpStageWorld *w){
-    /* hook: learning by observing (A21 section 4) ORs its learned moves in here */
-    return cp_combat_known_default(&w->player.profile);
+    /* learning by observing (A21 section 4, A22): moves of completed observe chains are OR-ed in */
+    return (uint16_t)(cp_combat_known_default(&w->player.profile)|(uint16_t)w->social.learned);
 }
 static int parse_text(const char *text,CpStageInput *out){
     CpStageInput a={
@@ -1388,7 +1490,11 @@ static int parse_text(const char *text,CpStageInput *out){
         a.hx=(int16_t)(x*32767);
         a.hz=(int16_t)(z*32767);
     }
-    else rc=-1;
+    else{
+        int soc_rc=0;
+        if(cp_stage_social_parse(text,&a,&soc_rc))rc=soc_rc;
+        else rc=-1;
+    }
 done:
     *out=a;
     return rc;
@@ -1435,6 +1541,14 @@ const char *cp_stage_order_error(int code){
         case CP_STAGE_ERR_UNKNOWN_MOVE:return "unknown_move";
         case CP_STAGE_ERR_NOT_AT_NEST:return "not_at_nest";
         case CP_STAGE_ERR_IN_FIGHT:return "in_fight";
+        case CP_STAGE_ERR_REFUSES:return "refuses (hostile, aggressive and not calmed, or in a bad mood)";
+        case CP_STAGE_ERR_NO_ITEM:return "no_item";
+        case CP_STAGE_ERR_BAD_SKILL:return "unknown_skill_or_item";
+        case CP_STAGE_ERR_STAGGERED:return "staggered";
+        case CP_STAGE_ERR_NO_STAMINA:return "no_stamina";
+        case CP_STAGE_ERR_BUSY:return "busy (cooldown)";
+        case CP_STAGE_ERR_DIET:return "cannot_digest (diet)";
+        case CP_STAGE_ERR_FULL:return "full";
         default:return "invalid command or value";
     }
 }
@@ -1549,7 +1663,12 @@ int cp_stage_observe_v(const CpStageWorld *w,char *out,size_t cap,int version){
                 case CP_STAGE_EV_ARRIVED:ADD("%s{\"tick\":%u,\"type\":\"arrived\",\"x\":%.3f,\"z\":%.3f}",sep,e->tick,e->x,e->z);break;
                 case CP_STAGE_EV_FLED:ADD("%s{\"tick\":%u,\"type\":\"fled\",\"target\":%d}",sep,e->tick,e->target);break;
                 case CP_STAGE_EV_PATH_FAILED:ADD("%s{\"tick\":%u,\"type\":\"path_failed\",\"x\":%.3f,\"z\":%.3f}",sep,e->tick,e->x,e->z);break;
-                default:ADD("%s{\"tick\":%u,\"type\":\"unknown\"}",sep,e->tick);break;
+                default:{
+                    char eb[640];
+                    if(cp_stage_social_event_json(e,eb,sizeof eb))ADD("%s%s",sep,eb);
+                    else ADD("%s{\"tick\":%u,\"type\":\"unknown\"}",sep,e->tick);
+                    break;
+                }
             }
         }
         ADD("],");
@@ -1561,11 +1680,29 @@ int cp_stage_observe_v(const CpStageWorld *w,char *out,size_t cap,int version){
         if(d>40)continue;
         if(version==2){
             const char *state=creature_state(w,i);
-            ADD("%s{\"id\":%d,\"type\":\"%s\",\"species\":\"%s\",\"distance\":%.6f,\"bearing\":%.6f,\"hp\":%.6f,\"hp_max\":%.6f,\"state\":\"%s\",\"in_fight\":%s,\"attackable\":%s",comma?",":"",i+1,creature_is_dead(e)?"carcass":"creature",CP_STAGE_SPECIES[e->species].name,d,bearing(&w->player,e->x,e->z),e->hp,e->profile.hp,state,w->active==i?"true":"false",creature_attackable(w,i)?"true":"false");
-            const int generation=cp_stage_cousin_generation(w,i+1);
-            if(generation)ADD(",\"cousin_generation\":%d,\"lineage_species_id\":%d,\"counts_progress\":false",generation,4+generation);
-            ADD("}");
-
+            ADD("%s{\"id\":%d,\"type\":\"%s\",\"species\":\"%s\",\"distance\":%.6f,\"bearing\":%.6f,\"hp\":%.6f,\"hp_max\":%.6f,\"state\":\"%s\",\"in_fight\":%s,\"attackable\":%s}",comma?",":"",i+1,creature_is_dead(e)?"carcass":"creature",CP_STAGE_SPECIES[e->species].name,d,bearing(&w->player,e->x,e->z),e->hp,e->profile.hp,state,w->active==i?"true":"false",creature_attackable(w,i)?"true":"false");
+            {
+                const int generation=cp_stage_cousin_generation(w,i+1);
+                if(generation){
+                    used--;
+                    ADD(",\"cousin_generation\":%d,\"lineage_species_id\":%d,\"counts_progress\":false}",generation,4+generation);
+                }
+            }
+            if(creature_is_dead(e)){
+                char sb[256];
+                if(cp_stage_social_carcass_json(w,i,sb,sizeof sb)>0){
+                    used--;
+                    ADD("%s}",sb);
+                }
+            }
+            else{
+                char sb[1024];
+                if(cp_stage_social_creature_json(w,i,sb,sizeof sb)>0){
+                    /* splice the social fields in before the closing brace */
+                    used--;
+                    ADD("%s}",sb);
+                }
+            }
         }
         else ADD("%s{\"id\":%d,\"type\":\"%s\",\"species\":\"%s\",\"distance\":%.6f,\"bearing\":%.6f}",comma?",":"",i+1,creature_is_dead(e)?"carcass":"creature",CP_STAGE_SPECIES[e->species].name,d,bearing(&w->player,e->x,e->z));
         comma=1;
@@ -1591,6 +1728,13 @@ int cp_stage_observe_v(const CpStageWorld *w,char *out,size_t cap,int version){
     for(int i=0;i<CB_MOVE_COUNT;i++)if(attack_move_ok(w,i)&&cp_combat_loadout_slot_of(&w->loadout,i)>=0)attacks++;
     if(target)ADD(",\"approach\"");
     if(target&&attacks)ADD(",\"attack\"");
+    if(version==2){
+        if(cp_stage_social_legal(w,CP_STAGE_BEFRIEND))ADD(",\"befriend\"");
+        if(cp_stage_social_legal(w,CP_STAGE_OBSERVE))ADD(",\"observe\"");
+        if(cp_stage_social_legal(w,CP_STAGE_INTIMIDATE))ADD(",\"intimidate\"");
+        if(cp_stage_social_legal(w,CP_STAGE_EAT))ADD(",\"eat\"");
+        if(cp_stage_social_legal(w,CP_STAGE_GIFT))ADD(",\"gift\"");
+    }
     if(version==2&&w->active<0&&length(w->player.x-w->setup.nest_x,w->player.z-w->setup.nest_z)<=CP_STAGE_NEST_RADIUS)ADD(",\"loadout\"");   /* only at the nest, never in a fight */
     ADD("]");
     if(version==2){
@@ -1612,6 +1756,11 @@ int cp_stage_observe_v(const CpStageWorld *w,char *out,size_t cap,int version){
             kc++;
         }
         ADD("]");
+        {
+            char *sb=malloc(16384);
+            if(sb&&cp_stage_social_json(w,sb,16384)>0)ADD(",\"social\":%s",sb);
+            free(sb);
+        }
     }
     ADD(",\"attack_moves\":[");
     comma=0;
@@ -1646,7 +1795,11 @@ const CpStageParam CP_STAGE_PARAMS[]={
     MOTION_PARAM(accel,2.f,60.f),MOTION_PARAM(brake,2.f,60.f),MOTION_PARAM(ease,.05f,1.f),
     MOTION_PARAM(turn_k,.2f,3.f),MOTION_PARAM(turn_min,.5f,10.f),MOTION_PARAM(turn_max,.5f,10.f),
     MOTION_PARAM(grip,3.f,50.f),MOTION_PARAM(pivot_k,.05f,1.f),MOTION_PARAM(pivot_mul,.5f,8.f),
-    MOTION_PARAM(pivot_max,2.f,20.f),MOTION_PARAM(turn_slow,0.f,1.f)
+    MOTION_PARAM(pivot_max,2.f,20.f),MOTION_PARAM(turn_slow,0.f,1.f),
+    MOTION_PARAM(ang_k,.1f,5.f),MOTION_PARAM(grip_mass,0.f,2.f),MOTION_PARAM(acc_mass,0.f,2.f),
+    MOTION_PARAM(creep,0.f,1.f),MOTION_PARAM(pivot_r,0.f,5.f),MOTION_PARAM(look_min,.2f,10.f),
+    MOTION_PARAM(look_k,0.f,3.f),MOTION_PARAM(climb_base,.1f,2.f),MOTION_PARAM(climb_legs,0.f,3.f),MOTION_PARAM(stall_mul,1.f,3.f),
+    MOTION_PARAM(slide_mul,1.f,3.f),MOTION_PARAM(slide_k,0.f,30.f),MOTION_PARAM(down_gain,0.f,1.f)
 };
 const int CP_STAGE_PARAM_COUNT=(int)(sizeof CP_STAGE_PARAMS/sizeof *CP_STAGE_PARAMS);
 static int spot_ok(const CpStageWorld *w,float x,float z,float radius){
@@ -1762,16 +1915,16 @@ uint64_t cp_stage_layout(void){
     LAY(CpStageWorld,debug_flags);LAY(CpStageWorld,reserved);LAY(CpStageWorld,field_hash);LAY(CpStageWorld,path);LAY(CpStageWorld,n_path);LAY(CpStageWorld,path_i);
     LAY(CpStageWorld,blocked_ticks);LAY(CpStageWorld,replans);LAY(CpStageWorld,path_goal_x);LAY(CpStageWorld,path_goal_z);
     LAY(CpStageWorld,blocked_reason);LAY(CpStageWorld,blocked_x);LAY(CpStageWorld,blocked_z);LAY(CpStageWorld,ev_total);
-    LAY(CpStageWorld,ev_acked);LAY(CpStageWorld,events);LAY(CpStageWorld,loadout);LAY(CpStageWorld,ledger);LAY(CpStageWorld,ancestry);LAY(CpStageWorld,field);lay(&h,sizeof(CpStageEvent));
+    LAY(CpStageWorld,ev_acked);LAY(CpStageWorld,events);LAY(CpStageWorld,loadout);LAY(CpStageWorld,social);LAY(CpStageWorld,ledger);LAY(CpStageWorld,ancestry);LAY(CpStageWorld,field);lay(&h,sizeof(CpStageSocial));lay(&h,sizeof(CpStageSocialCreature));lay(&h,sizeof(CpStageEvent));
     LAY(CpStageSetup,seed);LAY(CpStageSetup,terrain_seed);LAY(CpStageSetup,terrain);LAY(CpStageSetup,n);
     LAY(CpStageSetup,n_obstacles);LAY(CpStageSetup,nest_x);LAY(CpStageSetup,nest_z);LAY(CpStageSetup,flat_height);
-    LAY(CpStageSetup,water_x);LAY(CpStageSetup,water_z);LAY(CpStageSetup,water_radius);LAY(CpStageSetup,player);
+    LAY(CpStageSetup,water_x);LAY(CpStageSetup,water_z);LAY(CpStageSetup,water_radius);LAY(CpStageSetup,player);LAY(CpStageSetup,player_legs);
     LAY(CpStageSetup,wild);LAY(CpStageSetup,obstacles);
     LAY(CpStageCreature,x);LAY(CpStageCreature,z);LAY(CpStageCreature,fx);LAY(CpStageCreature,fz);
     LAY(CpStageCreature,hp);LAY(CpStageCreature,stamina);LAY(CpStageCreature,speed);LAY(CpStageCreature,acceleration);
     LAY(CpStageCreature,turn_rate);LAY(CpStageCreature,home_x);LAY(CpStageCreature,home_z);LAY(CpStageCreature,goal_x);
     LAY(CpStageCreature,goal_z);LAY(CpStageCreature,species);LAY(CpStageCreature,dead);LAY(CpStageCreature,pivot);
-    LAY(CpStageCreature,returning);LAY(CpStageCreature,roam_ticks);LAY(CpStageCreature,profile);
+    LAY(CpStageCreature,returning);LAY(CpStageCreature,roam_ticks);LAY(CpStageCreature,profile);LAY(CpStageCreature,omega);LAY(CpStageCreature,legs);LAY(CpStageCreature,sliding);
     LAY(CpCombatWorld,rng);LAY(CpCombatWorld,seed);LAY(CpCombatWorld,tick);LAY(CpCombatWorld,n);LAY(CpCombatWorld,hill);
     LAY(CpCombatWorld,n_hills);LAY(CpCombatWorld,c);LAY(CpCombatWorld,ev);LAY(CpCombatWorld,n_ev);LAY(CpCombatWorld,hash);
     LAY(CpCombatCreature,alive);LAY(CpCombatCreature,medium);LAY(CpCombatCreature,team);LAY(CpCombatCreature,prof);

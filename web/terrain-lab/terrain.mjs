@@ -9,7 +9,7 @@ export async function createTerrain(options = {}, url = '../../build/wasm/cpore_
   return {
     module,
     generate(request = {}) {
-      const { seed, n, stream, droplets, thermal, warp, ridge, erosion, base, gentle, variety, bands, coast, rock, volcano, caves } = { ...DEFAULTS, ...request };
+      const { seed, n, stream, droplets, thermal, warp, ridge, erosion, base, gentle, variety, bands, coast, rock, volcano, caves, rivers } = { ...DEFAULTS, ...request };
       if (!Number.isInteger(seed) || seed < 0 || seed > 0xffffffff) throw Error('Seed must be an integer from 0 to 4294967295.');
       if (!Number.isInteger(n) || n < 8 || n > 1024) throw Error('Map size must be an integer from 8 to 1024.');
       if (!Number.isInteger(droplets) || droplets < 0 || droplets > 2000000 ||
@@ -22,6 +22,7 @@ export async function createTerrain(options = {}, url = '../../build/wasm/cpore_
       if (module._ct_deltas && module._ct_deltas(gentle,variety,bands)) throw Error('Invalid terrain deltas.');
       if (![coast,rock,volcano,caves].every(v => Number.isFinite(v) && v >= 0 && v <= 1)) throw Error('Terrain features must be from 0 to 1.');
       if (module._ct_features && module._ct_features(coast,rock,volcano,caves)) throw Error('Invalid terrain features.');
+      if (module._ct_rivers && module._ct_rivers(Number.isFinite(rivers) ? rivers : 1)) throw Error('Invalid rivers switch.');
       const start = performance.now();
       const result = module._ct_generate();
       const seconds = (performance.now() - start) / 1000;

@@ -18,11 +18,11 @@ func run(t) -> void:
 		var sh: Shader = load("res://game/shaders/terrain_%s.gdshader" % n)
 		t.check(sh != null and sh.code.contains("#define ROCK_TIER") and sh.code.contains("terrain_body.gdshaderinc"), "terrain_%s.gdshader is a tier variant of the body" % n)
 	t.check(not (load("res://game/shaders/terrain_high.gdshader") as Shader).code.contains("cull_disabled"), "the grid shader culls back faces (only the skirt copy does not)")
-	t.eq(Chunks.lod_for(260.0, 0), 0, "260 m stays LOD 0 (hysteresis)")
-	t.eq(Chunks.lod_for(276.0, 0), 1, "276 m from LOD 0 goes to LOD 1")
+	t.eq(Chunks.lod_for(320.0, 0), 0, "320 m stays LOD 0 (hysteresis)")
+	t.eq(Chunks.lod_for(340.0, 0), 1, "340 m from LOD 0 goes to LOD 1")
 	t.eq(Chunks.lod_for(1000.0, 0), 2, "1 km is LOD 2")
-	t.eq(Chunks.lod_for(240.0, 1), 1, "240 m stays LOD 1 coming from 1 (10 % margin)")
-	t.eq(Chunks.lod_for(224.0, 1), 0, "224 m returns to LOD 0")
+	t.eq(Chunks.lod_for(280.0, 1), 1, "280 m stays LOD 1 coming from 1 (10 % margin)")
+	t.eq(Chunks.lod_for(260.0, 1), 0, "260 m returns to LOD 0")
 	t.eq(Chunks.lod_for(9000.0, 0), 4, "far is LOD 4")
 	var sizes := [65, 33, 17, 9, 5]
 	for i in 5:

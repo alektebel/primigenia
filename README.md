@@ -1,11 +1,46 @@
-# Primigenia (codename cpore)
+<h1 align="center">Primigenia</h1>
 
-A **Spore-like evolution game** (cell → creature → tribe → civ → space) and an
-**RL environment / LLM benchmark** built on a deterministic C simulation core.
-The goal: how fast can an agent win the full arc?
+<p align="center">
+  <b>Start in a tide pool. Walk out of the sea. Reach the stars.<br>Whatever you became on the way comes with you.</b>
+</p>
 
-MIT-licensed code, CC BY 4.0 art, fully original naming. **Not affiliated with
-Maxis or EA** — an independent fan tribute.
+<p align="center">
+  <a href="https://diegoatencia.dev/primigenia/"><img src="docs/media/first-valley.gif" alt="A red, spined creature runs across green ridges in the first valley at dawn" width="760"></a>
+  <br>
+  <sub>The first valley, creature stage, desktop build. <a href="https://diegoatencia.dev/primigenia/">Full video and the idea behind the game →</a></sub>
+</p>
+
+<p align="center">
+  <img alt="status: creature stage in progress" src="https://img.shields.io/badge/status-creature%20stage%20in%20progress-8fcf4e?style=flat-square">
+  <img alt="engine: Godot 4.7" src="https://img.shields.io/badge/engine-Godot%204.7-478cbf?style=flat-square&logo=godotengine&logoColor=white">
+  <img alt="core: C, libc + libm only" src="https://img.shields.io/badge/core-C%20(libc%20%2B%20libm)-555555?style=flat-square&logo=c&logoColor=white">
+  <img alt="agents: LLM + RL" src="https://img.shields.io/badge/agents-LLM%20%2B%20RL-e5482f?style=flat-square">
+  <a href="LICENSE"><img alt="code: MIT" src="https://img.shields.io/badge/code-MIT-f3c58f?style=flat-square"></a>
+  <a href="LICENSE-ART.md"><img alt="art: CC BY 4.0" src="https://img.shields.io/badge/art-CC%20BY%204.0-f3c58f?style=flat-square"></a>
+</p>
+
+An **evolution game** across six stages, **cell → creature → band → realm →
+industry → space**, where what you became early still matters among the stars.
+An aquatic lineage settles ocean worlds without terraforming them. A
+void-adapted one flies unpressurised ships. A silk-spinner reaches the space
+elevator early.
+
+It is also an **RL environment and LLM benchmark**. Everything runs on one
+deterministic C simulation (same seed and inputs give the same world, bit for
+bit), so humans in the Godot build, language models through JSON and verbs, and
+RL policies through float vectors all play the same game. The headline question:
+**how fast can an agent win the full arc?**
+
+| | |
+|---|---|
+| **Playable now** | The creature stage: the island, the creature studio, combat, and the social loop (befriend, observe, intimidate, eat) |
+| **Designed** | Cell, Band, Realm, Industry and Space ([docs/ARC-PLAN.md](docs/ARC-PLAN.md)) |
+| **Agents** | Python ctypes binding, Gymnasium envs, PufferLib binding, and the `TextLand` LLM face |
+| **Trust** | Every run writes a replay that anyone can re-simulate bit for bit |
+
+MIT-licensed code, CC BY 4.0 art, fully original naming. An independent fan
+tribute to the evolution games that inspired it; **not affiliated with Maxis or
+EA**.
 
 ---
 

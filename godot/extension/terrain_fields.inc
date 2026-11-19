@@ -45,4 +45,5 @@
     F32(hard_rock) \
     F32(volcano) \
     F32(caves) \
-    F32(cliff_deg)
+    F32(cliff_deg) \
+    F32(rivers)
