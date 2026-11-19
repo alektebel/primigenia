@@ -89,6 +89,12 @@ static func register_all(r) -> void:
 		func(a): return _runvis(r, a), {"complete": func(i, p, t): return ["off", "2.5"] if i == 0 else []})
 	r.register("overlay", "path [on|off]", "debug overlays (off by default): path = the planned GO route drawn on the ground",
 		func(a): return _overlay(r, a), {"complete": func(i, p, t): return ["path"] if i == 0 else (["on", "off"] if i == 1 else [])})
+	r.register("quest", "status | skip | reset", "the first task chain: its state, complete the current task without a reward, or start over",
+		func(a): return _quest(r, a), {"changes_sim": true, "complete": func(i, p, t): return ["status", "skip", "reset"] if i == 0 else []})
+	r.register("dig", "", "dig where you stand (an order to C: soft soil, standing still for two seconds, costs stamina)",
+		func(a): return _with_stage(r, func(st):
+			st.queue_order({"verb": 20})
+			return ok("dig ordered")), {"changes_sim": true})
 	r.register("clear", "", "clear the console", func(a): return {"ok": true, "out": "", "error": "", "clear": true}, {"dev": false})
 
 static func _with_stage(r, fn: Callable) -> Dictionary:
@@ -363,3 +369,21 @@ static func _loadout(r, a: PackedStringArray) -> Dictionary:
 	if a.size() != 2:
 		return fail("usage: loadout <slot 1-4> <move|none>, for example: loadout 1 tail_strike")
 	return _order(r, PackedStringArray(["loadout", a[0], a[1]]))
+
+static func _quest(r, a: PackedStringArray) -> Dictionary:
+	return _with_stage(r, func(st):
+		var island = st.get_parent()
+		var fq = island.get("first_quest") if island != null else null
+		if fq == null:
+			return fail("the task chain is not running (start the island first)")
+		var sub: String = a[0] if a.size() > 0 else "status"
+		match sub:
+			"status":
+				return ok(fq.quest.status(st.cur))
+			"skip":
+				var id: String = fq.skip()
+				return ok("skipped '%s'. %s" % [id, fq.quest.status(st.cur)]) if id != "" else ok("the chain is done")
+			"reset":
+				fq.reset_quest()
+				return ok(fq.quest.status(st.cur))
+		return fail("usage: quest status | skip | reset"))

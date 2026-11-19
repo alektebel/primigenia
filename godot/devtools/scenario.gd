@@ -49,6 +49,7 @@ static func build(stage, ctx: Dictionary, kind: String, scenario_name: String, n
 		"lineage": JSON.parse_string(w.lineage()),
 		"camera": ctx.get("camera", {}),
 		"plants": ctx.get("plants", []),
+		"quest": ctx.get("quest", {}),
 		"tuning": ctx.get("tuning", {}),
 		"time": ctx.get("time", {"timescale": stage.timescale, "paused": stage.paused}),
 	}

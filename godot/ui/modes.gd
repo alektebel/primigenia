@@ -53,6 +53,9 @@ const ABILITIES := {
 	],
 }
 
+## Moves a loadout can hold that are not one of the four starting attack moves: shown by name on the hotbar when slotted.
+const EXTRA_MOVES := {"flame": "Flamethrower"}
+
 static func is_mode(m) -> bool:
 	return StringName(m) in ALL or StringName(m) == EAT or StringName(m) == NONE
 

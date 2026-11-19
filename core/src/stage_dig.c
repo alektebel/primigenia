@@ -128,6 +128,14 @@ void cp_stage_dig_step(CpStageWorld *w){
     w->hash=cp_stage_hash(w);
 }
 void cp_stage_dig_flame(CpStageWorld *w){w->dig.flames++;w->dig.used=1;}
+int cp_stage_quest_award(CpStageWorld *w,int step,int dna){
+    if(!w||step<0||step>=32||dna<=0||dna>1000||(w->dig.quest_paid&(1u<<step)))return -1;
+    CpStageDig *d=&w->dig;
+    d->quest_paid|=1u<<step;d->used=1;
+    w->social.used=1;w->social.dna_total+=dna;w->social.dna_balance+=dna;w->social.dna_by_source[CP_DNA_TASK]+=dna;
+    event(w,CP_STAGE_EV_DNA,0,CP_DNA_TASK,(float)dna,(float)w->social.dna_total,(float)w->social.dna_balance);
+    w->hash=cp_stage_hash(w);return 0;
+}
 
 static void hu(uint64_t *h,uint32_t v){for(int i=0;i<4;i++){*h^=(uint8_t)(v>>(8*i));*h*=1099511628211ULL;}}
 static void hf(uint64_t *h,float v){uint32_t b=0;if(v!=0.f)memcpy(&b,&v,4);hu(h,b);}
@@ -135,7 +143,7 @@ uint64_t cp_stage_dig_hash(const CpStageWorld *w){
     const CpStageDig *d=&w->dig;uint64_t h=14695981039346656037ULL;
     for(int i=0;i<4;i++)hu(&h,d->rng.s[i]);
     hu(&h,(uint32_t)d->n_beds);hu(&h,(uint32_t)d->n_holes);hu(&h,(uint32_t)d->dug_total);hu(&h,(uint32_t)d->act_t);hu(&h,(uint32_t)d->flames);
-    hu(&h,(uint32_t)d->wing_found);hu(&h,(uint32_t)d->fire_found);hf(&h,d->act_x);hf(&h,d->act_z);
+    hu(&h,(uint32_t)d->wing_found);hu(&h,(uint32_t)d->fire_found);hu(&h,d->quest_paid);hf(&h,d->act_x);hf(&h,d->act_z);
     for(int i=0;i<d->n_beds;i++){hf(&h,d->bed[i].x);hf(&h,d->bed[i].z);hu(&h,(uint32_t)d->bed[i].kind);hu(&h,(uint32_t)d->bed[i].dug);}
     for(int i=0;i<d->n_holes&&i<CP_STAGE_HOLES;i++){hf(&h,d->hole[i].x);hf(&h,d->hole[i].z);hu(&h,(uint32_t)d->hole[i].find);}
     return h;

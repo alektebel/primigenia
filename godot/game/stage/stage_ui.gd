@@ -24,8 +24,8 @@ const V_DODGE := 9
 const V_LOADOUT := 10       # target = slot 1..4, move = move id or -1: instant, only at the nest (C: not_at_nest / in_fight)
 const DODGE_LEFT := 2       # web/stage: Q -> 2, E -> 6
 const DODGE_RIGHT := 6
-const MOVE_IDS := ["bite", "charge", "guard", "spit", "tail_strike", "dodge"]
-const MOVE_NAMES := ["Bite", "Charge", "Guard", "Spit", "Tail strike", "Dodge"]
+const MOVE_IDS := ["bite", "charge", "guard", "spit", "tail_strike", "dodge", "flame"]
+const MOVE_NAMES := ["Bite", "Charge", "Guard", "Spit", "Tail strike", "Dodge", "Flamethrower"]
 
 var ui: CanvasLayer
 var island: Node3D
@@ -206,6 +206,8 @@ func _loadout_abilities(lo: Dictionary) -> Array:
 		for a in Modes.ABILITIES[Modes.ATTACK]:
 			if a.id == m.name:
 				shown = str(a.name)
+		if Modes.EXTRA_MOVES.has(str(m.name)):
+			shown = str(Modes.EXTRA_MOVES[str(m.name)])
 		out.append({"id": str(m.name), "name": shown, "move": id, "role": str(m.role_name), "stamina": int(m.stamina),
 			"cooldown": int(m.cooldown)})
 	return out
@@ -494,7 +496,7 @@ const EV_CHAIN_DONE := 17
 const EV_INTIMIDATE := 18
 const EV_CANCELLED := 19
 const EV_EAT := 20
-const DNA_SOURCES := ["kill", "bond", "ally", "dominate", "carcass", "exploration", "new species", "duplicate part", "fossil", "old bones", "meteor shard"]
+const DNA_SOURCES := ["kill", "bond", "ally", "dominate", "carcass", "exploration", "new species", "duplicate part", "fossil", "old bones", "meteor shard", "task"]
 
 func _on_social(state: Dictionary) -> void:
 	var soc: Dictionary = state.get("social", {})

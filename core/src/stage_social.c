@@ -113,7 +113,7 @@ uint64_t cp_stage_social_hash(const CpStageWorld *w){
         hu(&h,(uint32_t)s->resolution[i]);hu(&h,(uint32_t)s->first_met[i]);
     }
     for(int i=0;i<CP_DNA_SOURCES;i++){
-        if(i==CP_DNA_SHARD&&!s->dna_by_source[i])continue;
+        if((i==CP_DNA_SHARD||i==CP_DNA_TASK)&&!s->dna_by_source[i])continue;
         hu(&h,(uint32_t)s->dna_by_source[i]);
     }
     hu(&h,(uint32_t)s->n_explored);
@@ -823,7 +823,7 @@ int cp_stage_social_json(const CpStageWorld *w,char *out,size_t cap){
     return b.failed?-1:(int)b.used;
 }
 static const char *source_name(int k){
-    static const char *n[CP_DNA_SOURCES]={"kill","bond","ally","dominate","carcass","explore","species_seen","duplicate_part","fossil","old_carcass","shard"};
+    static const char *n[CP_DNA_SOURCES]={"kill","bond","ally","dominate","carcass","explore","species_seen","duplicate_part","fossil","old_carcass","shard","task"};
     return k>=0&&k<CP_DNA_SOURCES?n[k]:"unknown";
 }
 int cp_stage_social_event_json(const CpStageEvent *e,char *out,size_t cap){

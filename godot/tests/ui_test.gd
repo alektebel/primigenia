@@ -750,11 +750,11 @@ func test_loadout_ui() -> void:
 	ok(req.size() == 1, "key L asks for the loadout sheet")
 	panel.open_panel()
 	ok(ui.veil.flat_amount > 0.3 and ui.veil.flat_amount < 0.5, "a light veil (0.42) comes with the sheet")
-	ok(panel.token_count() == 4, "one token per slottable move, not guard or dodge (%d)" % panel.token_count())
+	ok(panel.token_count() == 5, "one token per slottable move, not guard or dodge (%d)" % panel.token_count())
 	var names := []
 	for i in panel.token_count():
 		names.append(panel.token_id(i))
-	ok(names == ["bite", "charge", "spit", "tail_strike"], "tokens are the four attack moves (%s)" % [names])
+	ok(names == ["bite", "charge", "spit", "tail_strike", "flame"], "tokens are the four attack moves and the flamethrower (%s)" % [names])
 	ok(panel.token_glyph(0) == "bite" and panel.token_glyph(1) == "charge" and panel.token_glyph(2) == "", "a known move is a token with a glyph; one not learned has none (no spoiler)")
 	ok(panel.token_enabled(0) and not panel.token_enabled(2), "a move not known cannot be chosen")
 	var shapes2 := {}
@@ -827,7 +827,7 @@ func test_audio_manager() -> void:
 func test_foundations() -> void:
 	for n in Glyphs.NAMES:
 		ok(Glyphs.has(n), "glyph %s loads" % n)
-	ok(Glyphs.NAMES.size() == 33, "33 glyphs")
+	ok(Glyphs.NAMES.size() == 35, "35 glyphs")
 	for id in ["bite", "charge", "spit", "tail_strike", "sing", "dance", "charm", "pose", "roar", "display", "observe", "eat", "guard", "dodge"]:
 		ok(Glyphs.has(Glyphs.for_move(id)), "move %s has a glyph" % id)
 	for i in 4:

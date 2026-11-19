@@ -644,3 +644,12 @@ $(BUILD)/first_quest_test: tests/test_first_quest.c $(HDRS) $(BUILD)/libcpore.a
 first-quest-test: $(BUILD)/first_quest_test
 	nice -n 10 ./$(BUILD)/first_quest_test flat
 	@failed=0; for seed in 1 7 42; do nice -n 10 ./$(BUILD)/first_quest_test $$seed || failed=1; done; test $$failed -eq 0
+
+# First quest: the whole chain played by a bot through the real verbs (kill, befriend, dig, wings, fire gland, flamethrower)
+.PHONY: godot-first-quest-e2e godot-first-quest-evidence
+godot-first-quest-e2e: godot
+	nice -n 10 timeout 1500 $(GODOT) --headless --fixed-fps 60 --path godot --script res://game/tests/first_quest_e2e.gd -- $(E2E_ARGS)
+godot-first-quest-evidence: godot
+	@mkdir -p docs/evidence/godot/first-quest
+	LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 2400 xvfb-run -a -s "-screen 0 1280x720x24" $(GODOT) --rendering-driver opengl3 --fixed-fps 60 --resolution 1280x720 --path godot \
+	  --script res://game/tests/first_quest_e2e.gd -- evidence=$(CURDIR)/docs/evidence/godot/first-quest $(E2E_ARGS)

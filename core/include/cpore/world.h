@@ -54,7 +54,7 @@ enum { CP_ITEM_PLANT, CP_ITEM_FRUIT, CP_ITEM_MEAT, CP_ITEM_BONE, CP_ITEM_COUNT }
 enum { CP_REL_STRANGER, CP_REL_NEUTRAL, CP_REL_TRUSTED, CP_REL_ALLY };
 enum { CP_RES_OPEN, CP_RES_ALLY, CP_RES_HUNTED };
 /* Where a DNA award came from (the move field of a DNA event). */
-enum { CP_DNA_KILL, CP_DNA_BOND, CP_DNA_ALLY, CP_DNA_DOMINATE, CP_DNA_CARCASS, CP_DNA_EXPLORE, CP_DNA_SEEN, CP_DNA_DUPLICATE, CP_DNA_FOSSIL, CP_DNA_OLD_CARCASS, CP_DNA_SHARD, CP_DNA_SOURCES };
+enum { CP_DNA_KILL, CP_DNA_BOND, CP_DNA_ALLY, CP_DNA_DOMINATE, CP_DNA_CARCASS, CP_DNA_EXPLORE, CP_DNA_SEEN, CP_DNA_DUPLICATE, CP_DNA_FOSSIL, CP_DNA_OLD_CARCASS, CP_DNA_SHARD, CP_DNA_TASK, CP_DNA_SOURCES };
 #define CP_SOC_BOND_TRUST 60      /* trust at which a creature bonds (Q-3) */
 #define CP_SOC_BEAT 12            /* ticks between beats */
 #define CP_SOC_WINDOW 2           /* rhythm window, +- ticks */
@@ -258,6 +258,7 @@ typedef struct { float x,z; int32_t find; } CpStageHole;
 typedef struct {
     CpRng rng;                       /* the finds of ordinary soil; its own stream, seeded from the world seed */
     int32_t used,n_beds,n_holes,dug_total,act_t,flames,wing_found,fire_found;
+    uint32_t quest_paid;             /* bit k: the DNA reward of task step k was paid (cp_stage_quest_award) */
     float act_x,act_z;
     CpStageBed bed[CP_STAGE_BEDS];
     CpStageHole hole[CP_STAGE_HOLES];
@@ -306,6 +307,7 @@ typedef struct {
 void cp_stage_dig_reset(CpStageWorld *w);
 int cp_stage_dig_order(CpStageWorld *w,const CpStageInput *a);
 void cp_stage_dig_step(CpStageWorld *w);
+int cp_stage_quest_award(CpStageWorld *w,int step,int dna);   /* pays a task step's DNA once; 0, or -1 when invalid or already paid */
 void cp_stage_dig_flame(CpStageWorld *w);                      /* the player started the flamethrower */
 int cp_stage_soft_soil(const CpStageWorld *w,float x,float z); /* diggable here: dry, gentle, outside the cave */
 uint64_t cp_stage_dig_hash(const CpStageWorld *w);

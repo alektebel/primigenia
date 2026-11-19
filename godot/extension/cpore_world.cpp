@@ -11,12 +11,12 @@ using namespace godot;
 
 namespace {
 
-const char *const PROFILE_INTS[] = {"mouth", "charge", "spit", "tail", "guard"};
+const char *const PROFILE_INTS[] = {"mouth", "charge", "spit", "tail", "guard", "fire"};
 
 Dictionary profile_to_dict(const CpCombatProfile &p) {
     Dictionary d;
     d["mouth"] = int(p.mouth); d["charge"] = int(p.charge); d["spit"] = int(p.spit);
-    d["tail"] = int(p.tail); d["guard"] = int(p.guard);
+    d["tail"] = int(p.tail); d["guard"] = int(p.guard); d["fire"] = int(p.fire);
     d["hp"] = double(p.hp); d["stamina"] = double(p.stamina); d["speed"] = double(p.speed);
     d["radius_cm"] = int(p.radius_cm);
     return d;
@@ -26,8 +26,8 @@ Dictionary profile_to_dict(const CpCombatProfile &p) {
 bool profile_from_dict(const Variant &v, CpCombatProfile &p) {
     if (v.get_type() != Variant::DICTIONARY) return false;
     const Dictionary d = v;
-    uint8_t *levels[] = {&p.mouth, &p.charge, &p.spit, &p.tail, &p.guard};
-    for (int i = 0; i < 5; ++i) {
+    uint8_t *levels[] = {&p.mouth, &p.charge, &p.spit, &p.tail, &p.guard, &p.fire};
+    for (int i = 0; i < 6; ++i) {
         if (!d.has(PROFILE_INTS[i])) continue;
         int64_t n;
         if (!cpore::to_int(d[PROFILE_INTS[i]], 0, 255, n)) return false;  // range (<= 5) is checked by cp_stage_reset
@@ -307,6 +307,7 @@ void CporeWorld::_bind_methods() {
     ClassDB::bind_method(D_METHOD("nest_edit", "body"), &CporeWorld::nest_edit);
     ClassDB::bind_method(D_METHOD("nest_apply", "body"), &CporeWorld::nest_apply);
     ClassDB::bind_method(D_METHOD("set_run", "on"), &CporeWorld::set_run);
+    ClassDB::bind_method(D_METHOD("quest_award", "step", "dna"), &CporeWorld::quest_award);
     ClassDB::bind_method(D_METHOD("set_tiers", "on"), &CporeWorld::set_tiers);
     ClassDB::bind_method(D_METHOD("set_edit_anywhere", "on"), &CporeWorld::set_edit_anywhere);
     ClassDB::bind_method(D_METHOD("lineage"), &CporeWorld::lineage);
@@ -397,6 +398,7 @@ Array CporeWorld::moves() {
         d["cooldown"] = int(m.cooldown); d["stamina"] = double(m.stamina); d["reach"] = double(m.reach);
         d["windup"] = int(m.windup); d["active"] = int(m.active); d["recovery"] = int(m.recovery);
         d["slottable"] = !(m.flags & CB_F_SELF);
+        d["arc"] = double(m.arc); d["damage"] = double(m.damage); d["status"] = int(m.status); d["status_ticks"] = int(m.status_ticks);
         a.append(d);
     }
     return a;
@@ -452,6 +454,7 @@ int CporeWorld::order(const Dictionary &input) {
 String CporeWorld::order_error(int code) { return String(cp_stage_order_error(code)); }
 
 void CporeWorld::set_run(bool on) { cp_stage_set_run(world.get(), on); }
+int CporeWorld::quest_award(int step, int dna) { return cp_stage_quest_award(world.get(), step, dna); }
 
 Dictionary CporeWorld::state() const {
     const CpStageWorld &w = *world;
@@ -504,6 +507,7 @@ Dictionary CporeWorld::state() const {
     d["entities"] = entities;
     d["social"] = social_to_dict(w);
     {char buf[16384];if(cp_stage_parts_json(&w,buf,sizeof buf)>=0)d["parts"]=JSON::parse_string(String::utf8(buf));}
+    {char buf[8192];if(cp_stage_dig_json(&w,buf,sizeof buf)>=0)d["dig"]=JSON::parse_string(String::utf8(buf));}   // first-quest: beds, holes, the dig in progress
     {
         // C2 secrets: state().shards {total, found, mask, items[{id,index,name,found,x,z,(line,line_es once found)}], toward_crater},
         // state().cave {enabled, entered, chamber_entered, inside, x, z, fx, fz, floor, half, length, radius, chamber_x, chamber_z},
@@ -567,6 +571,7 @@ Dictionary CporeWorld::state() const {
             f["fx"] = double(c.fx); f["fz"] = double(c.fy);
             f["hp"] = double(c.hp); f["stamina"] = double(c.stamina);
             f["move"] = int(c.move); f["phase"] = int(c.phase);
+            f["burn"] = int(c.burn_t); f["bleed"] = int(c.bleed_t); f["slow"] = int(c.slow_t); f["stun"] = int(c.stun_t);
             f["phase_tick"] = int(c.ptick); f["phase_length"] = int(c.plen);
             Array cd;
             for (int k = 0; k < CB_MOVE_COUNT; ++k) cd.append(int(c.cd[k]));
