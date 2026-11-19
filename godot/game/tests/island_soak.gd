@@ -24,6 +24,9 @@ var events_seen: Array = []
 var nan_seen := 0
 var strip := 0
 var last_us := 0
+var stage_name := "setup"
+var worst_ms := 0.0
+var worst_stage := ""
 
 func check(ok: bool, what: String) -> bool:
 	checks += 1
@@ -61,7 +64,11 @@ func ticks(n: int) -> void:
 func _frame_check() -> void:
 	var now := Time.get_ticks_usec()
 	if last_us > 0:
-		frame_ms.append(float(now - last_us) / 1000.0)
+		var ms := float(now - last_us) / 1000.0
+		frame_ms.append(ms)
+		if ms > worst_ms:
+			worst_ms = ms
+			worst_stage = stage_name
 	last_us = now
 	if stage.cur.is_empty():
 		return
@@ -151,6 +158,7 @@ func _run() -> void:
 	check(stage.cur.entities.size() >= 12, "island populated (%d entities)" % stage.cur.entities.size())
 	await shot("island_start")
 
+	stage_name = "1. befriend a Rondo to a bond, with rhythm"
 	print("== 1. befriend a Rondo to a bond, with rhythm")
 	stage.debug_now({"op": 6, "a": 2})      # AI off while the verbs are tested
 	var rondo := first_of(0)
@@ -190,6 +198,7 @@ func _run() -> void:
 	check(bond_events.size() >= 1, "a bond_made event arrived (%d)" % bond_events.size())
 	await shot("bond_made")
 
+	stage_name = "2. observe a Zanco chain"
 	print("== 2. observe a Zanco chain")
 	ui.clear_selection()
 	var zanco := first_of(1)
@@ -206,6 +215,7 @@ func _run() -> void:
 	check(int(stage.cur.social.species[1].observed) == 3 and learned != 0, "three clues on the Zanco chain teach a move (learned mask %d)" % learned)
 	ui.clear_selection()
 
+	stage_name = "3. fight and kill a Garfio"
 	print("== 3. fight and kill a Garfio")
 	stage.debug_now({"op": 6, "a": 0})
 	var garfio := 1
@@ -227,6 +237,7 @@ func _run() -> void:
 	check(dead, "Garfio was killed in %d rounds" % rounds)
 	stage.debug_now({"op": 6, "a": 2})
 
+	stage_name = "4. eat the carcass"
 	print("== 4. eat the carcass")
 	ui.clear_selection()
 	await ticks(3)
@@ -240,6 +251,7 @@ func _run() -> void:
 	await shot("eat_carcass")
 	ui.clear_selection()
 
+	stage_name = "5. family tree (T)"
 	print("== 5. family tree (T)")
 	await tap(KEY_T)
 	await settle(6)
@@ -254,6 +266,7 @@ func _run() -> void:
 		ui.set_paused(false)
 	await settle(2)
 
+	stage_name = "6. menu and settings"
 	print("== 6. menu and settings")
 	await tap(KEY_ESCAPE)
 	await settle(4)
@@ -276,6 +289,7 @@ func _run() -> void:
 	await settle(4)
 	check(not ui.paused, "Esc resumes")
 
+	stage_name = "7. hold-to-follow and a far click with the marker"
 	print("== 7. hold-to-follow and a far click with the marker")
 	stage.debug_now({"op": 1, "id": 0, "x": float(stage.cur.entities[0].x), "z": float(stage.cur.entities[0].z)})
 	island.chase.reset_behind()
@@ -310,6 +324,7 @@ func _run() -> void:
 	var far_dist := Vector2(island.player_pos.x - before_pos.x, island.player_pos.z - before_pos.z).length()
 	check(far_dist > held_dist, "the far click keeps walking (%.1f m from the start)" % far_dist)
 
+	stage_name = "8. cross a ford"
 	print("== 8. cross a ford")
 	var ford := find_ford()
 	if ford.is_empty():
@@ -364,7 +379,10 @@ func _run() -> void:
 	var p99: float = frame_ms[int(frame_ms.size() * 0.99)] if frame_ms.size() > 0 else 0.0
 	var worst: float = frame_ms.back() if frame_ms.size() > 0 else 0.0
 	print("frame ms: median %.0f, p99 %.0f, worst %.0f over %d frames" % [med, p99, worst, frame_ms.size()])
-	check(worst < 20000.0 and med < 2000.0, "frame times are sane on software GL (median %.0f ms, worst %.0f ms)" % [med, worst])
+	print("worst frame was in stage: ", worst_stage)
+	# headless has no rasteriser: strict. Windowed software GL (llvmpipe, a loaded CPU) is slow by nature: only catch hangs.
+	var headless := DisplayServer.get_name() == "headless"
+	check(worst < (3000.0 if headless else 120000.0) and med < (50.0 if headless else 5000.0), "frame times are sane (median %.0f ms, worst %.0f ms, %s)" % [med, worst, "headless" if headless else "software GL"])
 	print("simulated %.1f min in %.0f s wall (%d frames), final tick %d" % [float(int(stage.cur.tick) - tick0) / 600.0, wall, frame_ms.size(), int(stage.cur.tick)])
 	print("soak: %d checks, %d failures" % [checks, failures])
 	quit(1 if failures else 0)
