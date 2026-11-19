@@ -2,6 +2,8 @@
 #ifndef CPORE_WORLD_H
 #define CPORE_WORLD_H
 #include "cpore/combat.h"
+#include "cpore/ledger.h"
+#include "cpore/creature_types.h"
 #define CP_STAGE_VERSION 2
 #define CP_STAGE_MAX_WILD 24
 #define CP_STAGE_MAX_OBSTACLES 1024
@@ -90,6 +92,22 @@ typedef struct {
     float value,x,z;               /* damage (HIT), path length in metres (PATH_FOUND), error code (ORDER_REJECTED) */
 } CpStageEvent;
 typedef struct {
+    char body[CP_LINEAGE_BODY_CAP],name[80];
+    uint16_t parts[CP_LINEAGE_PARTS];
+    CpCombatProfile profile;
+} CpLineageForm;
+typedef struct {
+    CpLineageForm form;
+    uint32_t generation,traits,deeds[CP_DEED_COUNT];
+    int32_t cousin_id,home_x,home_z,temperament,diet,trust_bonus,type;
+} CpLineageGeneration;
+typedef struct { int32_t cell_x,cell_z,x,z; uint32_t ticks; } CpLineageResidence;
+typedef struct {
+    uint32_t count,n_residence,perk_serial[CP_TYPE_PERKS];
+    CpLineageResidence residence[128];
+    CpLineageGeneration forms[CP_LINEAGE_GENERATIONS];
+} CpAncestry;
+typedef struct {
     CpStageSetup setup;
     CpRng spawn_rng,roam_rng;
     uint8_t noise[512]; /* derived from terrain_seed; not hashed twice */
@@ -118,8 +136,20 @@ typedef struct {
     uint32_t ev_total,ev_acked;      /* events pushed / already shown to the agent; ring index = n % CP_STAGE_MAX_EVENTS */
     CpStageEvent events[CP_STAGE_MAX_EVENTS];
     CpCombatLoadout loadout;         /* the player's kit; copied into the fight at its start; hashed when custom */
+    CpAncestry ancestry;
+    CpLedger ledger;              /* L0: opt in via cp_ledger_init; snapshot owns it */
     const CpStageField *field;       /* not owned, not in the snapshot, set by cp_stage_attach_field */
 } CpStageWorld;
+int cp_stage_lineage_form(CpStageWorld *w,const CpLineageForm *form,int evolve);
+int cp_stage_lineage_perk(CpStageWorld *w,int kind,uint32_t serial,int amount);
+int cp_stage_evolve(CpStageWorld *w,const CpLineageForm *form);
+int cp_stage_cousin_generation(const CpStageWorld *w,int entity_id);
+int cp_stage_species_counts_progress(const CpStageWorld *w,int entity_id);
+uint64_t cp_stage_ancestry_hash(const CpStageWorld *w);
+int cp_stage_lineage_export(const CpStageWorld *w,char *out,size_t cap);
+int cp_stage_lineage_begin(CpStageWorld *w);
+int cp_stage_lineage_award(CpStageWorld *w,int deed,uint32_t amount,uint32_t cause);
+void cp_stage_lineage_tick(CpStageWorld *w,int32_t old_x,int32_t old_z);
 void cp_stage_setup_default(CpStageSetup *s,uint32_t seed);
 int cp_stage_reset(CpStageWorld *w,const CpStageSetup *s);
 float cp_stage_height(const CpStageWorld *w,float x,float z);

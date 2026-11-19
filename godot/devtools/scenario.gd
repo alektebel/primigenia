@@ -46,7 +46,7 @@ static func build(stage, ctx: Dictionary, kind: String, scenario_name: String, n
 		"state": scenario_name.get_file() + ".cpstate", "tick": int(st.tick), "hash": st.hash,
 		"genome": ctx.get("genome", {}),
 		"wild_bodies": _bodies(st),
-		"lineage": {"format": "cpore.lineage/0", "traits": []},
+		"lineage": JSON.parse_string(w.lineage()),
 		"camera": ctx.get("camera", {}),
 		"tuning": ctx.get("tuning", {}),
 		"time": ctx.get("time", {"timescale": stage.timescale, "paused": stage.paused}),
