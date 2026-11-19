@@ -835,6 +835,20 @@ func test_foundations() -> void:
 	ok(Strings.t("befriend") == "Amistad" and Strings.t("learned", ["Salto"]) == "Aprendido: Salto", "Spanish strings with arguments")
 	g.settings["language"] = "en"
 	ok(Strings.t("befriend") == "Befriend" and Strings.t("learned", ["Pounce"]) == "Learned: Pounce", "English strings with arguments")
+	# every observe clue of the core chains has a Spanish text (read from the C table; sim state is untouched)
+	var src := FileAccess.open(ProjectSettings.globalize_path("res://").path_join("../core/src/stage_social.c"), FileAccess.READ)
+	if src != null:
+		var rx := RegEx.new()
+		rx.compile("\"((?:watch|see) [^\"]+)\"")
+		var found := 0
+		g.settings["language"] = "es"
+		for m in rx.search_all(src.get_as_text()):
+			var en := m.get_string(1)
+			found += 1
+			ok(Strings.clue(en) != en and Strings.clue(en) != "", "clue in Spanish: %s" % en)
+		g.settings["language"] = "en"
+		ok(found == 18 and Strings.CLUES_ES.size() == 18, "18 observe clues found in core and all in the table (%d)" % found)
+		ok(Strings.clue("watch it purse its mouth and shoot a thread of sap at a pursuer") == "watch it purse its mouth and shoot a thread of sap at a pursuer", "English clue unchanged")
 	g.settings["language"] = old_lang
 	var old_scale = g.settings.get("ui_scale", 1.0)
 	g.settings["ui_scale"] = 1.0

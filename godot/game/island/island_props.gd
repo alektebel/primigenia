@@ -122,6 +122,16 @@ func nest_point(d, at: Vector2, base: float, angle: float, radius: float) -> Vec
 	p.y = d.visual_ground(at.x + p.x, at.y + p.z) - base + 0.025 + smoothstep(0.0, 1.0, t) * 0.45
 	return p
 
+# The bank height under a local xz point (the same cross-section as nest_point), plus a layer offset.
+func nest_pile(d, at: Vector2, base: float, q: Vector2, layer: float) -> Vector3:
+	var radius := Vector2(q.x, q.y / 0.82).length()
+	var angle := atan2(q.y / 0.82, q.x)
+	var p := nest_point(d, at, base, angle, radius)
+	p.x = q.x
+	p.z = q.y
+	p.y += layer
+	return p
+
 func build_nest(d, at: Vector2, world_seed: int) -> void:
 	var gen := Generator.new()
 	gen.begin(world_seed)
@@ -160,38 +170,54 @@ func build_nest(d, at: Vector2, world_seed: int) -> void:
 				var cr: PackedVector3Array = rings[i]
 				gen.triangle(pr[j], cr[j], cr[k], soil, 0, 0.0, [Vector2.ZERO, Vector2.RIGHT, Vector2.ONE], [normals[i-1][j], normals[i][j], normals[i][k]])
 				gen.triangle(pr[j], cr[k], pr[k], soil, 0, 0.0, [Vector2.ZERO, Vector2.RIGHT, Vector2.ONE], [normals[i-1][j], normals[i][k], normals[i-1][k]])
-	# Bent twig ribs run across the bank. Staggered lengths of dry Paja
-	# dulce wrap around them, crossing alternately above and below each rib.
-	const RIBS := 32
-	const COURSES := 15
-	for j in RIBS:
-		var angle := TAU * j / RIBS
-		var last := nest_point(d, at, base, angle, 1.06)
-		for k in range(1, 9):
-			var radius := lerpf(1.06, 2.32, k / 8.0)
-			var p := nest_point(d, at, base, angle + 0.08 * (radius - 1.06), radius)
-			p.y += 0.053
-			gen.rod(last, p, 0.027 - 0.0015 * (k-1), 0.027 - 0.0015 * k, gen.bark, 4)
+	# An irregular heap, not a lattice: thousands of loose Paja dulce strands and a few twigs thrown down at random
+	# (seeded, so the same nest every run). Lengths, bearings, gaps and layers all vary; the rim is frayed.
+	for n in 980:          # straw laid on the bank; thicker and denser towards the crest, scattered thin inside
+		var rr := clampf(1.7 + gen.rng.randfn(0.0, 0.42), 0.95, 2.42)
+		var th := gen.rng.randf() * TAU
+		var c := Vector2(cos(th), sin(th) * 0.82) * rr
+		var dir := Vector2.from_angle(th + PI * 0.5 + gen.rng.randfn(0.0, 0.8))   # mostly around the bank, often askew
+		var len := gen.rng.randf_range(0.22, 0.95)
+		var layer := gen.rng.randf_range(0.0, 0.085) * clampf(1.5 - absf(rr - 1.75), 0.0, 1.0) + 0.02
+		var wob := gen.rng.randf_range(-0.12, 0.12)
+		var colour := straw.darkened(gen.rng.randf_range(0.0, 0.42))
+		var w := gen.rng.randf_range(0.011, 0.026)
+		var last := nest_pile(d, at, base, c, layer)
+		var segs := 2 + (n & 1)
+		for k in range(1, segs + 1):
+			var f := float(k) / segs
+			var q := c + dir * len * f + dir.orthogonal() * wob * sin(PI * f)
+			if q.length() > 2.6:
+				break
+			var p := nest_pile(d, at, base, q, layer + 0.012 * sin(f * 3.0 + n))
+			gen.rod(last, p, w, w * (0.45 if k == segs else 0.9), colour, 3)
 			last = p
-	for course in COURSES:
-		var radius := lerpf(1.09, 2.29, course / float(COURSES - 1))
-		for section in 8:
-			var colour := straw.darkened(gen.rng.randf_range(0.03, 0.37))
-			var start := section * 4.0 + course * 0.57
-			var last := Vector3.ZERO
-			for k in 10:
-				var rib := start + k * 0.47
-				var angle := rib * TAU / RIBS + 0.08 * (radius - 1.06)
-				var r := radius + 0.022 * sin(3.0 * angle + course * 0.6)
-				var p := nest_point(d, at, base, angle, r)
-				p.y += 0.066 + 0.039 * cos(PI * (rib + course))
-				if k > 0:
-					gen.rod(last, p, 0.034 if k > 1 else 0.017, 0.034 if k < 9 else 0.009, colour, 3)
-				last = p
+	for n in 34:           # twigs: stouter, darker, a few poking out over the rim
+		var th := gen.rng.randf() * TAU
+		var rr := gen.rng.randf_range(1.25, 2.35)
+		var c := Vector2(cos(th), sin(th) * 0.82) * rr
+		var dir := Vector2.from_angle(gen.rng.randf() * TAU)
+		var len := gen.rng.randf_range(0.35, 0.95)
+		var rise := gen.rng.randf_range(0.0, 0.16) if rr > 2.0 else 0.0
+		var a := nest_pile(d, at, base, c, 0.06 + gen.rng.randf() * 0.04)
+		var m := nest_pile(d, at, base, c + dir * len * 0.55, 0.07 + rise * 0.4) + Vector3(gen.rng.randf_range(-0.03, 0.03), 0, 0)
+		var z := nest_pile(d, at, base, c + dir * len, 0.06 + rise)
+		var tw := gen.rng.randf_range(0.022, 0.04)
+		var wood := gen.bark.lerp(straw, gen.rng.randf_range(0.0, 0.3))
+		gen.rod(a, m, tw, tw * 0.8, wood, 4)
+		gen.rod(m, z, tw * 0.8, tw * 0.35, wood, 4)
+	for n in 160:          # frayed rim: loose straw ends leaving the lip, flopping outwards and up
+		var th := gen.rng.randf() * TAU
+		var rr := gen.rng.randf_range(2.0, 2.4)
+		var c := Vector2(cos(th), sin(th) * 0.82) * rr
+		var out := Vector2.from_angle(th + gen.rng.randfn(0.0, 0.7)) * Vector2(1, 0.82)
+		var a := nest_pile(d, at, base, c, 0.04)
+		var b := a + Vector3(out.x, 0, out.y) * gen.rng.randf_range(0.12, 0.38) + Vector3.UP * gen.rng.randf_range(-0.02, 0.1)
+		gen.rod(a, b, 0.013, 0.004, straw.darkened(gen.rng.randf_range(0.05, 0.4)), 3)
 	# Pockets of pale down gather on the inner shoulder around the bare scrape.
-	for j in 56:
+	for j in 90:
 		var angle := gen.rng.randf() * TAU
-		var r := gen.rng.randf_range(0.80, 1.21)
+		var r := gen.rng.randf_range(0.80, 1.45)
 		var a := nest_point(d, at, base, angle, r) + Vector3.UP * 0.027
 		var b := nest_point(d, at, base, angle + gen.rng.randf_range(0.11, 0.27), r + 0.04) + Vector3.UP * 0.053
 		gen.blade(a, b, gen.rng.randf_range(0.023, 0.047), 0.023, -3, Color("bcb299").srgb_to_linear())

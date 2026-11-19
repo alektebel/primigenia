@@ -49,7 +49,7 @@ data (`RadialFauna.plan(terrain, world_seed, nest)`), deterministic like `flora_
 |---|---|---|---|
 | brujula (pentaradial star) | nearest intertidal shelf from the nest: ground .15..1.8 m, normal.y >= .9, within 30 m of the sea | 4, 3..6 m round a pool point | glide, now and then a rowing burst |
 | cuarteta (4-arm bell, gel .7) | sea cells 1..6 m deep, 15..60 m off the shelf | 5, bell top at y = -0.12 | jet along a seeded loop |
-| corona (6-arm disc) | the cave with the lowest entrance floor that is not `caves[0]` (the secrets cave); nearest the coast when no floor is below 25 m | 2, 3..6 m inside | cilia glide, hunkers while waiting |
+| corona (6-arm disc) | a level tide-pool flat at the water's edge (ground 0.1..1.6 m, level within 25 cm over a 3 m ring, sea within 10 m), the nearest to the lowest tidal cave mouth, 20 m from the brujula pool; chosen on a 6 m grid, deterministic, logged. Caves are only notches in steep slopes, so the old cave rule (lowest entrance floor that is not `caves[0]`, 3..6 m inside) is now only the fallback when no flat exists | 2, 1.6..3.5 m round the flat | cilia glide, hunkers while waiting |
 
 Culled beyond 80 m. Hooked from `island.gd` in one block (only when wild creatures are on). The lore test checks
 `body_plan.arms == plan.fold`. Evidence: `make godot-radial-evidence` (docs/evidence/godot/radial/).

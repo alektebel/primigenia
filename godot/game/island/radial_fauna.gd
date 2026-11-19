@@ -6,7 +6,8 @@ extends Node3D
 #
 #   brujula   an intertidal shelf: ground .15..1.8 m, within 30 m of the sea, gentle; 4 animals 3..6 m apart round a pool point
 #   cuarteta  coastal shallows: sea cells 1..6 m deep, 15..60 m off the shelf; 5 bells, bell top at y = -0.4, a seeded loop
-#   corona    the lowest tidal cave floor that is not the secrets cave (caves[0]); 2 animals 3..6 m inside the entrance
+#   corona    a level tide-pool flat at the water edge nearest the lowest tidal cave mouth (caves are only slope notches);
+#             falls back to that cave (not the secrets cave) 3..6 m inside the entrance
 
 const Look := preload("res://game/island/look.gd")
 const Radial := preload("res://locomotion/loco_radial.gd")
@@ -126,9 +127,40 @@ static func plan(d, world_seed: int, nest: Vector2) -> Dictionary:
 	out.cuarteta.spots = bells
 	if bells.is_empty():
 		out.log.append("radial fauna: no coastal shallows, no cuarteta")
-	# corona: the lowest tidal entrance floor among the caves that are not the secrets cave
+	# corona: the lore habitat is a sunken tidal lava tube (lore/creatures/corona.json niche), but the cave meshes are only
+	# notches in steep slopes, which made the disc cling to a hillside. Until real cave meshes exist it takes the lore's
+	# damp, tidal alternative: a level tide-pool flat at the water's edge, as near as possible to the lowest tidal cave
+	# mouth (the tube it would live in), away from the brujula pool. The cave rule below stays as the fallback.
+	var anchor: Vector2 = nest
 	var best := -1
 	var best_floor := 1e9
+	for i in range(1, d.caves.size()):
+		var f: float = d.caves[i].position.y
+		if f < best_floor:
+			best_floor = f
+			best = i
+	if best >= 0:
+		anchor = Vector2(d.caves[best].position.x, d.caves[best].position.z)
+	var pool_at = find_tide_flat(d, world_seed, anchor, nest, pool)
+	if pool_at != null:
+		var rng2 := _rng(world_seed, "corona")
+		var spots2 := _around(d, rng2, pool_at, COUNT.corona, 1.6, 3.5, func(p): return is_tide_flat(d, p, 14.0, true), 2.0)
+		if spots2.size() == COUNT.corona:
+			var toward := Vector2.RIGHT
+			var bd := 1e9
+			for k in 16:       # inward = the direction away from the nearest sea
+				var dir := Vector2.from_angle(TAU * k / 16.0)
+				for r in [2.0, 4.0, 6.0, 8.0, 10.0, 12.0]:
+					var q: Vector2 = pool_at + dir * r
+					if d.is_sea(d.cell_index(q.x, q.y)) and r < bd:
+						bd = r
+						toward = dir
+			out.corona = {"cave": -1, "site": "tide_pool", "pool": pool_at, "spots": spots2, "inward": -toward}
+			out.log.append("radial fauna: corona on a tide-pool flat at (%.0f, %.0f), %.0f m from the lowest tidal cave mouth (caves are slope notches)" % [pool_at.x, pool_at.y, pool_at.distance_to(anchor)])
+			return out
+	out.log.append("radial fauna: no level tide-pool flat for corona, falling back to a cave mouth")
+	best = -1
+	best_floor = 1e9
 	for i in range(1, d.caves.size()):
 		var f: float = d.caves[i].position.y
 		if f < best_floor:
@@ -168,8 +200,57 @@ static func plan(d, world_seed: int, nest: Vector2) -> Dictionary:
 					clear = false
 			if clear:
 				spots.append(c.p)
-		out.corona = {"cave": best, "spots": spots, "inward": inward}
+		out.corona = {"cave": best, "site": "cave", "spots": spots, "inward": inward}
 	return out
+
+
+## A level, damp tide-pool flat: low gentle ground that is dry land but has the sea within `reach` metres.
+static func is_tide_flat(d, p: Vector2, reach := 10.0, loose := false) -> bool:
+	if not _free_ground(d, p):
+		return false
+	var h: float = d.ground(p.x, p.y)
+	if h < 0.1 or h > 1.6 or d.normal(p.x, p.y).y < (0.95 if loose else 0.97):
+		return false
+	for k in 8:     # level all round (a 3 m ring within 25 cm), so not a gully or a slope foot
+		var q: Vector2 = p + Vector2.from_angle(TAU * k / 8.0) * 3.0
+		if absf(d.ground(q.x, q.y) - h) > (0.45 if loose else 0.25) or d.normal(q.x, q.y).y < (0.92 if loose else 0.96):
+			return false
+	for k in 8:
+		var dir := Vector2.from_angle(TAU * k / 8.0)
+		var r := 1.5
+		while r <= reach:
+			var q: Vector2 = p + dir * r
+			if absf(q.x) < d.half and absf(q.y) < d.half and d.is_sea(d.cell_index(q.x, q.y)):
+				return true
+			r += 1.5
+	return false
+
+
+## The tide-pool flat nearest `anchor`: a 6 m grid over the island, nearest wins, ties go to the first in scan order from a
+## seeded row (so two equal flats differ per world); at least 20 m from the brujula pool and 15 m from the nest.
+static func find_tide_flat(d, world_seed: int, anchor: Vector2, nest: Vector2, pool: Variant) -> Variant:
+	var strict = _scan_flat(d, world_seed, anchor, nest, pool, false)
+	return strict if strict != null else _scan_flat(d, world_seed, anchor, nest, pool, true)
+
+
+static func _scan_flat(d, world_seed: int, anchor: Vector2, nest: Vector2, pool: Variant, loose: bool) -> Variant:
+	var step := 6.0
+	var count := int((d.half - 8.0) * 2.0 / step)
+	var start := _rng(world_seed, "corona_flat").randi() % maxi(count, 1)
+	var best = null
+	var best_d := 1e18
+	for ri in count:
+		var z: float = -d.half + 8.0 + float((start + ri) % count) * step
+		for ci in count:
+			var p := Vector2(-d.half + 8.0 + float(ci) * step, z)
+			var dd := p.distance_squared_to(anchor)
+			if dd >= best_d or not is_tide_flat(d, p, 10.0, loose):
+				continue
+			if p.distance_to(nest) < 15.0 or (pool != null and p.distance_to(pool) < 20.0):
+				continue
+			best_d = dd
+			best = p
+	return best
 
 
 static func _coast_distance(d, p: Vector2) -> float:
