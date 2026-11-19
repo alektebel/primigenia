@@ -370,9 +370,9 @@ func set_phase(n: int) -> void:
 		threats.on = true
 		threats.wait = wait_first
 
-## Places a piece the player chose. Returns "" on success, else an error code:
-## "unknown", "phase" (not unlocked yet), "where" (membrane pieces need the membrane, enzymes the inside), "colony".
-func place(kind: String, p: Vector2) -> String:
+## Why a piece cannot go at p, without placing it. "" when it can, else: "unknown", "phase" (not unlocked yet),
+## "colony", "need_rib", "where" (membrane pieces need the membrane, enzymes the inside).
+func can_place(kind: String, p: Vector2) -> String:
 	if not PIECES.has(kind):
 		return "unknown"
 	var d: Dictionary = PIECES[kind]
@@ -388,6 +388,13 @@ func place(kind: String, p: Vector2) -> String:
 			return "where"
 	elif not r < RI - 8.0:
 		return "where"
+	return ""
+
+## Places a piece the player chose. Returns "" on success, else an error code (see can_place).
+func place(kind: String, p: Vector2) -> String:
+	var err := can_place(kind, p)
+	if err != "":
+		return err
 	add_piece(kind, p)
 	return ""
 

@@ -7,6 +7,7 @@ const Sim := preload("res://cell/cell_sim.gd")
 const Canvas := preload("res://cell/cell_canvas.gd")
 const CS := preload("res://cell/cell_strings.gd")
 const CSim := preload("res://cell/colony_sim.gd")
+const Ghost := preload("res://cell/drag_ghost.gd")
 const CCanvas := preload("res://cell/colony_canvas.gd")
 const Legacy := preload("res://cell/cell_legacy.gd")
 
@@ -18,6 +19,7 @@ const SEL := Color("1F5F9E")
 const WARN := Color("9E392C")
 const GOOD := Color("3F6B2E")
 const STEP := 1.0 / 60.0
+const DRAG_START := 6.0     # px the pointer travels before a press on a card becomes a drag (a tap stays a tap)
 const SIDE_W := 392.0
 
 var sim
@@ -82,6 +84,9 @@ var _key_help: Label
 var _theme: Theme
 var _dot_cache := {}
 var _prev_content := {}
+var ghost: Control           # the piece that follows the pointer during a drag
+var _cd := {}                # the card press in progress: {kind, card, start, active, dead}
+var _swallow_frame := -1     # frame of a drag release: the card's own "pressed" is ignored then
 
 func _ready() -> void:
 	sim = Sim.new(int(Time.get_ticks_msec()) & 0xFFFF if not _has_seed_arg() else _seed_arg(), 1)
@@ -98,6 +103,7 @@ func _ready() -> void:
 	canvas.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	canvas.placed.connect(func(_k): _refresh_tools(); _hud_t = 1.0)
 	canvas.tool_cleared.connect(_refresh_tools)
+	canvas.removed.connect(func(_k): _hud_t = 1.0)
 	add_child(canvas)
 	ccanvas = CCanvas.new()
 	ccanvas.still = canvas.still
@@ -105,9 +111,15 @@ func _ready() -> void:
 	ccanvas.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	ccanvas.placed.connect(func(_k): _refresh_tools(); _hud_t = 1.0)
 	ccanvas.tool_cleared.connect(_refresh_tools)
+	ccanvas.removed.connect(func(_k): _hud_t = 1.0)
+	ccanvas.moved.connect(func(_k): _hud_t = 1.0)
 	add_child(ccanvas)
 	_build_top()
 	_build_side()
+	ghost = Ghost.new()
+	ghost.instant = canvas.still
+	add_child(ghost)
+	ccanvas.ghost = ghost
 	_build_agg()
 	_build_legacy()
 	_build_menu()
@@ -544,7 +556,8 @@ func _refresh_tools() -> void:
 			b.expand_icon = false
 			b.add_theme_constant_override("icon_max_width", 14)
 			b.tooltip_text = CS.role(Sim.PIECES, k)
-			b.pressed.connect(func(): _set_tool("" if canvas.tool == k else k))
+			b.pressed.connect(func(): _card_tap(func(): _set_tool("" if canvas.tool == k else k)))
+			_wire_card(b, k)
 			_tools_grid.add_child(b)
 			_tool_btns[k] = b
 	for k in _tool_btns:
@@ -553,6 +566,115 @@ func _refresh_tools() -> void:
 		b2.tooltip_text = CS.role(Sim.PIECES, k)
 		b2.set_pressed_no_signal(canvas.tool == k)
 	_del_btn.set_pressed_no_signal(canvas.tool == "del")
+
+# ---------- drag a card onto the cell (Emil's gestures: the ghost is the pointer, release hands over to ease-out)
+func _card_tap(tap: Callable) -> void:
+	if Engine.get_process_frames() == _swallow_frame:
+		_refresh_tools()      # the release of a drag is not a tap: put the toggle back
+		return
+	tap.call()
+
+func _wire_card(b: Button, kind: String) -> void:
+	b.mouse_default_cursor_shape = Control.CURSOR_CAN_DROP if not b.disabled else Control.CURSOR_ARROW
+	b.gui_input.connect(func(ev: InputEvent): _card_input(b, kind, ev))
+
+func _card_input(b: Button, kind: String, ev: InputEvent) -> void:
+	if b.disabled:
+		return
+	if ev is InputEventMouseButton and ev.button_index == MOUSE_BUTTON_LEFT:
+		if ev.pressed:
+			_cd = {"kind": kind, "card": b, "start": ev.global_position, "active": false, "dead": false}
+		else:
+			if bool(_cd.get("active", false)):
+				_swallow_frame = Engine.get_process_frames()
+				_drag_release(ev.global_position)
+				b.accept_event()
+			elif not _cd.is_empty() and bool(_cd.get("dead", false)):
+				_swallow_frame = Engine.get_process_frames()
+			_cd = {}
+	elif ev is InputEventMouseMotion and not _cd.is_empty() and _cd.card == b and not _cd.dead:
+		if not _cd.active:
+			if (ev.button_mask & MOUSE_BUTTON_MASK_LEFT) != 0 and _cd.start.distance_to(ev.global_position) >= DRAG_START:
+				_drag_begin(ev.global_position)
+		if _cd.active:
+			_drag_move(ev.global_position)
+
+func _cur_canvas() -> Control:
+	return ccanvas if _phase6 else canvas
+
+func is_dragging() -> bool:
+	return bool(_cd.get("active", false))
+
+func _drag_begin(gp: Vector2) -> void:
+	_cd.active = true
+	var kind: String = _cd.kind
+	_set_tool("")
+	var cv := _cur_canvas()
+	cv.drag_kind = kind
+	cv.drag_pos = gp - cv.global_position
+	if _phase6:
+		ghost.begin(kind, "colony", gp, 1.0, ccanvas.hsize())
+	else:
+		ghost.begin(kind, "cell", gp, canvas.scale_px())
+	var card: Button = _cd.card
+	card.mouse_default_cursor_shape = Control.CURSOR_DRAG
+	card.modulate.a = 0.55
+	_drag_move(gp)
+
+func _drag_eval(kind: String, gp: Vector2) -> Dictionary:
+	var cv := _cur_canvas()
+	var e: Dictionary = cv.drop_eval(kind, gp - cv.global_position)
+	var mem: bool = not _phase6 and Sim.PIECES[kind].has("mem")
+	e["why"] = CS.t("dr_cancel") if not e.in_play else CS.drop_why(e.err, mem)
+	return e
+
+func _drag_move(gp: Vector2) -> void:
+	var kind: String = _cd.kind
+	var cv := _cur_canvas()
+	cv.drag_pos = gp - cv.global_position
+	var e := _drag_eval(kind, gp)
+	ghost.track(gp, e.ok or not e.in_play, e.why if not e.ok else "")
+	var card: Button = _cd.card
+	card.mouse_default_cursor_shape = Control.CURSOR_DRAG if (e.ok or not e.in_play) else Control.CURSOR_FORBIDDEN
+
+func _drag_end_state() -> void:
+	var card = _cd.get("card")
+	if is_instance_valid(card):
+		card.mouse_default_cursor_shape = Control.CURSOR_CAN_DROP
+		card.modulate.a = 1.0
+	canvas.drag_kind = ""
+	ccanvas.drag_kind = ""
+
+func _drag_release(gp: Vector2) -> void:
+	var kind: String = _cd.kind
+	var card: Button = _cd.card
+	var cv := _cur_canvas()
+	var e := _drag_eval(kind, gp)
+	_drag_end_state()
+	_cd.active = false
+	if e.ok:
+		var err: String = cv.drop_place(kind, gp - cv.global_position)
+		if err == "":
+			ghost.land()
+			_refresh_tools()
+			return
+	elif e.in_play:
+		cv.drop_place(kind, gp - cv.global_position)   # refused: the stage says why where it was dropped
+	ghost.send_back(card.global_position + card.size / 2.0)
+	_refresh_tools()
+
+## Esc during a drag: the ghost eases back to its card (or the picked-up piece returns), nothing is placed.
+func cancel_drag() -> bool:
+	if is_dragging():
+		var card: Button = _cd.card
+		_drag_end_state()
+		_cd.active = false
+		_cd.dead = true
+		ghost.send_back(card.global_position + card.size / 2.0)
+		return true
+	if canvas.cancel_drag():
+		return true
+	return ccanvas.cancel_drag()
 
 func _apply_phase(n: int) -> void:
 	if n == 5 and not sim.threats_unlocked():
@@ -670,7 +792,9 @@ func _unhandled_input(ev: InputEvent) -> void:
 			if not menu_open:
 				_lab.button_pressed = not _lab.button_pressed
 		KEY_ESCAPE:
-			if _active_tool() != "" and not menu_open:
+			if cancel_drag():
+				pass
+			elif _active_tool() != "" and not menu_open:
 				_set_tool("")
 			else:
 				_toggle_menu(not menu_open)
@@ -853,7 +977,8 @@ func _refresh_colony_tools() -> void:
 			b.expand_icon = false
 			b.add_theme_constant_override("icon_max_width", 14)
 			b.disabled = d.get("locked", false)
-			b.pressed.connect(func(): _set_tool("" if ccanvas.tool == k else k))
+			b.pressed.connect(func(): _card_tap(func(): _set_tool("" if ccanvas.tool == k else k)))
+			_wire_card(b, k)
 			_tools_grid.add_child(b)
 			_ctool_btns[k] = b
 	for k in _ctool_btns:
