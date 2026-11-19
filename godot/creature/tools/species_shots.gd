@@ -31,4 +31,26 @@ func _run() -> void:
 			var img: Image = await stage.capture(self, 4)
 			img.save_jpg("%s/%s_%s.jpg" % [out, id, v], .9)
 		c.queue_free()
+	# lineup: the game's relative sizes (island.gd SPECIES_SCALE; the player and Garfio at 1.0), left to right
+	var lineup := [["rondo", .8], ["zanco", .75], ["espinodo", .65], ["garfio", 1.0], ["merodeador", 1.0]]
+	var cs := []
+	var x := 0.0
+	for e in lineup:
+		var g = JSON.parse_string(FileAccess.get_file_as_string("res://game/data/%s.json" % e[0]))
+		var c := Creature.new()
+		stage.world_root.add_child(c)
+		c.load_genome(g)
+		c.scale = Vector3.ONE * float(e[1])
+		c.position = Vector3(x, 0, 0)
+		x += 3.6 if e[0] != "garfio" else 5.2
+		cs.append(c)
+	for i in 4:
+		await process_frame
+	var mid := Vector3(x * .5 - 2.0, 1.2, 0)
+	stage.orbit(mid, .35, .12, x * .95, 40.0)
+	var img: Image = await stage.capture(self, 4)
+	img.save_jpg("%s/lineup.jpg" % out, .9)
+	stage.orbit(mid, 1.5708, .08, x * 1.0, 40.0)
+	img = await stage.capture(self, 4)
+	img.save_jpg("%s/lineup_side.jpg" % out, .9)
 	quit()
