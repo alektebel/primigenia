@@ -52,6 +52,7 @@ void CporeTerrain::_bind_methods() {
     ClassDB::bind_static_method("CporeTerrain", D_METHOD("validate", "params"), &CporeTerrain::validate);
     ClassDB::bind_static_method("CporeTerrain", D_METHOD("hash", "data"), &CporeTerrain::hash);
     ClassDB::bind_static_method("CporeTerrain", D_METHOD("surface_maps", "data"), &CporeTerrain::surface_maps);
+    ClassDB::bind_static_method("CporeTerrain", D_METHOD("visual_maps", "data", "options"), &CporeTerrain::visual_maps);
     ClassDB::bind_static_method("CporeTerrain", D_METHOD("sun_visibility", "data", "sun"), &CporeTerrain::sun_visibility);
     ClassDB::bind_method(D_METHOD("generate", "params"), &CporeTerrain::generate);
     ClassDB::bind_method(D_METHOD("progress"), &CporeTerrain::progress);

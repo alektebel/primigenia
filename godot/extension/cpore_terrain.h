@@ -24,5 +24,7 @@ public:
     // Optional baked sun visibility (PLAN-rock step 9, off by default): n*n bytes, 255 lit .. 0 shadowed, for a sun direction given as
     // the vector towards the sun in Godot world axes (x east, y up, z south). Ray-marched at half resolution, blurred 3x3, upsampled.
     // Presentation only: not part of the terrain hash, not cached. Returns an empty array for invalid input.
+    // Visual erosion (terrain v5, visual_terrain.cpp): a 4x finer heightfield (uint16) bounded against the sim plus erosion maps.
+    static godot::Dictionary visual_maps(const godot::Dictionary &data, const godot::Dictionary &options);
     static godot::PackedByteArray sun_visibility(const godot::Dictionary &data, const godot::Vector3 &sun);
 };

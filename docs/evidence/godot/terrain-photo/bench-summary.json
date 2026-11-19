@@ -1,0 +1,25 @@
+{
+ "note": "llvmpipe (software), medium tier, 1280x720, 15 frames after 5 warm-up, 60000 grass, interleaved runs on a loaded machine: a relative ratio only, never a GPU number",
+ "mean_ms": {
+  "chase": {
+   "v5": 1001,
+   "photo": 1270,
+   "ratio": 1.27
+  },
+  "mid": {
+   "v5": 480,
+   "photo": 821,
+   "ratio": 1.71
+  },
+  "far": {
+   "v5": 704,
+   "photo": 688,
+   "ratio": 0.98
+  },
+  "cliff_lit": {
+   "v5": 547,
+   "photo": 1216,
+   "ratio": 2.22
+  }
+ }
+}

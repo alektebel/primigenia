@@ -18,15 +18,15 @@ func run(t) -> void:
 		var sh: Shader = load("res://game/shaders/terrain_%s.gdshader" % n)
 		t.check(sh != null and sh.code.contains("#define ROCK_TIER") and sh.code.contains("terrain_body.gdshaderinc"), "terrain_%s.gdshader is a tier variant of the body" % n)
 	t.check(not (load("res://game/shaders/terrain_high.gdshader") as Shader).code.contains("cull_disabled"), "the grid shader culls back faces (only the skirt copy does not)")
-	t.eq(Chunks.lod_for(320.0, 0), 0, "320 m stays LOD 0 (hysteresis)")
-	t.eq(Chunks.lod_for(340.0, 0), 1, "340 m from LOD 0 goes to LOD 1")
-	t.eq(Chunks.lod_for(1000.0, 0), 2, "1 km is LOD 2")
-	t.eq(Chunks.lod_for(280.0, 1), 1, "280 m stays LOD 1 coming from 1 (10 % margin)")
-	t.eq(Chunks.lod_for(260.0, 1), 0, "260 m returns to LOD 0")
-	t.eq(Chunks.lod_for(9000.0, 0), 4, "far is LOD 4")
-	var sizes := [65, 33, 17, 9, 5]
-	for i in 5:
-		var mesh: ArrayMesh = Chunks.build_lod_mesh(Chunks.STEPS[i], 3.5)
+	t.eq(Chunks.lod_for(140.0, 0), 0, "140 m stays LOD 0 (hysteresis)")
+	t.eq(Chunks.lod_for(150.0, 0), 1, "150 m from LOD 0 goes to LOD 1")
+	t.eq(Chunks.lod_for(1000.0, 0), 3, "1 km is LOD 3")
+	t.eq(Chunks.lod_for(120.0, 1), 1, "120 m stays LOD 1 coming from 1 (10 % margin)")
+	t.eq(Chunks.lod_for(110.0, 1), 0, "110 m returns to LOD 0")
+	t.eq(Chunks.lod_for(9000.0, 0), 6, "far is LOD 6")
+	var sizes := [257, 129, 65, 33, 17, 9, 5]
+	for i in 7:
+		var mesh: ArrayMesh = Chunks.build_lod_mesh(Chunks.STEPS[i], 0.87890625)
 		var v: PackedVector3Array = mesh.surface_get_arrays(0)[Mesh.ARRAY_VERTEX]
 		t.eq(v.size(), sizes[i] * sizes[i], "LOD %d grid vertices" % i)
 		var s: PackedVector3Array = mesh.surface_get_arrays(1)[Mesh.ARRAY_VERTEX]
@@ -54,10 +54,16 @@ func run(t) -> void:
 		for ci in d.chunks_per_side:
 			var mn: float = d.chunk_bounds[(cj * d.chunks_per_side + ci) * 2]
 			var mx: float = d.chunk_bounds[(cj * d.chunks_per_side + ci) * 2 + 1]
-			var box := AABB(Vector3(0, mn - 64, 0), Vector3(64 * d.cell, mx - mn + 64, 64 * d.cell))
+			var box := AABB(Vector3(0, mn - 64, 0), Vector3(64 * d.cell, mx - mn + 80, 64 * d.cell))   # as built in terrain_chunks.gd
 			for b in range(0, 65, 4):
 				for a in range(0, 65, 4):
 					var hv: float = d.height[mini(cj * 64 + b, 127) * 128 + mini(ci * 64 + a, 127)]
 					if hv < box.position.y or hv > box.end.y:
+						out += 1
+			# the visual heights of the chunk (visual_ground) are inside too
+			for b in range(0, 225, 16):
+				for a in range(0, 225, 16):
+					var hv2: float = d.visual_ground(d.cell_center(ci * 64) - d.cell * 0.5 + a * d.vcell, d.cell_center(cj * 64) - d.cell * 0.5 + b * d.vcell)
+					if hv2 < box.position.y or hv2 > box.end.y:
 						out += 1
 	t.eq(out, 0, "chunk culling boxes contain their heights")

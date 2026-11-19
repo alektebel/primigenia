@@ -1,7 +1,7 @@
 extends SceneTree
 # Terrain benchmark: godot --path godot --script res://game/tests/bench_terrain.gd -- <out dir> [tier] [frames] [warmup] [grass]
 # (make godot-rock-bench; run it on the real GPU, windowed). vsync off, uncapped. Per view it prints the mean and p95 frame
-# time and, when the backend reports it, the GPU render time. Writes <out dir>/bench-<tier>-<adapter>.json.
+# time and, when the backend reports it, the GPU render time. BENCH_VIEWS=chase,mid restricts the views. Writes <out dir>/bench-<tier>-<adapter>.json.
 
 const TerrainCache := preload("res://game/island/terrain_cache.gd")
 const Views := preload("res://game/tests/rock_views.gd")
@@ -35,7 +35,14 @@ func _run() -> void:
 	var rid := root.get_viewport_rid()
 	RenderingServer.viewport_set_measure_render_time(rid, true)
 	var result := {"adapter": adapter, "tier": tier, "frames": frames, "grass": grass, "resolution": [root.size.x, root.size.y], "views": {}}
-	for v in ["chase", "mid", "far", "cliff_lit"]:
+	var views: PackedStringArray = OS.get_environment("BENCH_VIEWS").split(",", false) if OS.get_environment("BENCH_VIEWS") != "" else PackedStringArray(["chase", "mid", "far", "cliff_lit"])
+	# BENCH_SET="name=value,..." sets float shader uniforms of the terrain materials (A/B runs without editing shaders).
+	for kv in OS.get_environment("BENCH_SET").split(",", false):
+		var kvp := kv.split("=")
+		island.terrain_chunks.set_uniform(kvp[0], float(kvp[1]))
+	if OS.get_environment("BENCH_ANISO") != "":
+		root.anisotropic_filtering_level = int(OS.get_environment("BENCH_ANISO")) as Viewport.AnisotropicFiltering   # 0 off, 1 2x, 2 4x, 3 8x, 4 16x
+	for v in views:
 		Views.apply(island, game.data, v)
 		for i in warm:
 			await process_frame

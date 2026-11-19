@@ -65,6 +65,10 @@ func set_island(entry: Dictionary) -> void:
 func ground(x: float, z: float) -> float:
 	return data.ground(x, z) if data != null else 0.0
 
+# The surface the player sees (terrain v5 visual heightfield): creature feet and bodies, the camera and the pointer use it; the C sim keeps ground().
+func visual_ground(x: float, z: float) -> float:
+	return data.visual_ground(x, z) if data != null else 0.0
+
 func movement_blocked() -> bool:
 	if modal_open or console_open:
 		return true

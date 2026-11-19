@@ -78,6 +78,7 @@ func build(data, total: int) -> void:
 	material.set_shader_parameter("level_tex", data.level_tex)
 	material.set_shader_parameter("surface_tex", data.surface_tex)
 	material.set_shader_parameter("relief_tex", data.relief_tex)
+	data.bind_visual(material)
 	material.set_shader_parameter("MAP_N", data.n)
 	material.set_shader_parameter("MAP_CELL", data.cell)
 	material.set_shader_parameter("MAP_HALF", data.half)

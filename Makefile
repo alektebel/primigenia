@@ -381,6 +381,29 @@ godot-rock-bench-sw: godot
 	@mkdir -p $(ROCK_OUT)
 	LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 1800 xvfb-run -a -s "-screen 0 1280x720x24" $(GODOT) --rendering-driver opengl3 --resolution 1280x720 --path godot \
 	  --script res://game/tests/bench_terrain.gd -- $(ROCK_OUT) $(TIER) 40 10 60000
+# Terrain v5 (visual erosion, docs/TERRAIN.md): generator timings and memory (CPU), look frames (8 views + 4 close-ups, software GL) and the GPU
+# benchmark the owner runs on the RTX (make godot-terrain-bench TIER=high; windowed, vsync off; writes docs/evidence/godot/terrain-v5/bench-*.json).
+.PHONY: godot-visual-bench godot-terrain-look godot-terrain-bench
+# v5's frames stay in terrain-v5/after (the "before" of the photographic materials, docs/godot/ROCK.md).
+LOOK_OUT ?= $(CURDIR)/docs/evidence/godot/terrain-photo/after
+BENCH_OUT ?= $(CURDIR)/docs/evidence/godot/terrain-photo
+LOOK_VIEWS ?= cliff_lit,cliff_shade,ridge,scree,valley,coast,far,river,mid,close_gully,close_scree,close_cliff,close_bank,close_cave
+godot-visual-bench: godot
+	@mkdir -p docs/evidence/godot/terrain-v5
+	nice -n 10 timeout 900 $(GODOT) --headless --path godot --script res://game/tests/bench_visual.gd -- 1 $(CURDIR)/docs/evidence/godot/terrain-v5/bench-visual-gen.json
+godot-terrain-look: godot
+	@mkdir -p $(LOOK_OUT)
+	LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 1700 xvfb-run -a -s "-screen 0 1280x720x24" $(GODOT) --rendering-driver opengl3 --max-fps 15 --resolution 1280x720 --path godot \
+	  --script res://game/tests/look_evidence.gd -- $(LOOK_OUT) $(LOOK_VIEWS)
+godot-terrain-bench: godot
+	@mkdir -p $(BENCH_OUT)
+	nice -n 5 timeout 1800 $(GODOT) --path godot --resolution 1920x1080 --script res://game/tests/bench_terrain.gd -- $(BENCH_OUT) $(TIER)
+# The same benchmark under llvmpipe (a few frames, a relative ratio against another checkout's run, never a GPU number).
+.PHONY: godot-terrain-bench-sw
+godot-terrain-bench-sw: godot
+	@mkdir -p $(BENCH_OUT)
+	LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 1800 xvfb-run -a -s "-screen 0 1280x720x24" $(GODOT) --rendering-driver opengl3 --resolution 1280x720 --path godot \
+	  --script res://game/tests/bench_terrain.gd -- $(BENCH_OUT) $(TIER) 40 10 60000
 # The stretch, sign and strata tests, once per quality tier (low, medium, high).
 godot-rock-stretch-test: godot
 	for t in low medium high; do \
