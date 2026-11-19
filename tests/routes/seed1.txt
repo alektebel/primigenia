@@ -1,4 +1,4 @@
-terrain 4d0d207c890bf378
+terrain 7137e3ea79830ad7
 places 9
 nest 0 0
 Garfio 22.9610062 55.4327698
@@ -7,8 +7,8 @@ Zanco 58.9409485 -92.8760681
 Espinodo -118.20591 -75.0157547
 start-valley 30 20
 lake-shore-water -75 70
-river-gap 800 120
-hidden-cave-entrance 747.070312 377.929688
+river-gap 796.289062 138.867188
+hidden-cave-entrance 57.8292239 615.779939
 pairs 8
 0 1
 0 2

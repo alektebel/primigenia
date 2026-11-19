@@ -7,12 +7,17 @@ StageSetup nest and herd home positions, every generated cave record and the vol
 `route_places` and `required_pairs` define the required graph. Every pair is tested in both directions,
 with all nine bodies: Merodeador (4 legs, radius 3 m), and 2/4/6/8 legs at radii 0.5 and 4 m.
 The graph is a nest-centred star: round trips to each home range, the start valley, water, river gap and hidden cave.
+Terrain curation (docs/TERRAIN.md item 9) guarantees the last two: **river-gap** is the per-seed gap checkpoint (the lowest dry
+cell on the 809 m circle around the start; `(796.29,138.87)` seeds 1 and 42, `(768.16,258.40)` seed 7, pinned in
+`routes_fixture.gd`; the earlier `(800,120)` lay on a 114 m massif on seed 7) and **hidden-cave-entrance** is the mouth stand
+point, 6 m in front of the first entrance record along its facing. The entrance cell itself stays a steep rock face by design
+(terrain guarantee slope > 0.8; the rock behind it is never graded), so the certified endpoint is the apron in front of it.
 No assertion claims that every arbitrary pair of island coordinates is connected.
 
 The five nest/encounter/home points come directly from `StageSetup.build(..., herds=true)` using the real
 profile and probe. The start-valley checkpoint is (30,20); lake shore/water approach is (-75,70), east of
-the lake centred at (-150,70); river-gap checkpoint is (800,120), along the default pass direction (1,.15).
-The hidden-cave requirement uses **the first generated entrance's actual coordinates**, not a nearby snapped point.
+the lake centred at (-150,70).
+The hidden-cave endpoint is derived from the first generated entrance record (`caves[0]` + 6 m x facing), not a snapped point.
 Other cave records are retained for later curation; interiors do not exist in the height field.
 
 `seed*.txt` is the C-readable derivative. `tools/routes/fixtures.py --check` checks it against the JSON.
@@ -30,8 +35,8 @@ Missing gameplay placements, explicitly **TODO**, not certified:
 | Crater rim | (-500,-750), all three seeds | Proposed high-col/range site only. `volcano=0` by default; all actual volcano/crater descriptors are zero. Enable and curate a volcano before certifying a rim. |
 | Meteor shard | (30,20), all three seeds | Proposed starter-valley discovery site; no shard positions exist in core/game data. |
 
-Do not turn these TODOs into fake successful trips to (0,0). Do not replace a failing cave endpoint with a
-reachable apron and call the entrance certified. The current failures are retained in `docs/evidence/routes/`.
+Do not turn these TODOs into fake successful trips to (0,0). The cave endpoint is the apron the terrain curation grades in
+front of the entrance; certifying the exact steep notch cell is deliberately not claimed. Results are in `docs/evidence/routes/`.
 
 ## Measurements
 

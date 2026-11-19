@@ -3,6 +3,11 @@ extends SceneTree
 const StageSetup := preload("res://game/stage/stage_setup.gd")
 const TerrainData := preload("res://game/island/terrain_data.gd")
 const Profile := preload("res://game/stage/profile.gd")
+# River-gap checkpoints: the lowest dry cell on the 809 m circle around the start (core/src/terrain.c gap_trail), where the
+# graded trail passes. They depend on the terrain, so they are pinned beside its hash and re-pinned with it.
+const GAP := {1: [796.2890625, 138.8671875], 7: [768.1640625, 258.3984375], 42: [796.2890625, 138.8671875]}
+const MOUTH_STAND_M := 6.0
+
 func _initialize() -> void:
 	var output := OS.get_cmdline_user_args()[0]
 	var manifest: Dictionary = Profile.load_json("res://game/data/parts.json")
@@ -33,8 +38,8 @@ func _initialize() -> void:
 		var route_places := places.duplicate(true)
 		route_places.append({"id": "start-valley", "x": 30, "z": 20})
 		route_places.append({"id": "lake-shore-water", "x": -75, "z": 70})
-		route_places.append({"id": "river-gap", "x": 800, "z": 120})
-		route_places.append({"id": "hidden-cave-entrance", "x": caves[0].x, "z": caves[0].z})
+		route_places.append({"id": "river-gap", "x": GAP[seed][0], "z": GAP[seed][1]})
+		route_places.append({"id": "hidden-cave-entrance", "x": caves[0].x + caves[0].facing_x * MOUTH_STAND_M, "z": caves[0].z + caves[0].facing_z * MOUTH_STAND_M})
 		var pairs := []
 		for place in route_places.slice(1):
 			pairs.append(["nest", place.id])
