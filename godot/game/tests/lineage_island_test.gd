@@ -3,7 +3,8 @@ extends SceneTree
 const Cache := preload("res://game/island/terrain_cache.gd")
 const CreatureMesh := preload("res://creature/creature.gd")
 const Registry := preload("res://devtools/console/registry.gd")
-const Commands := preload("res://devtools/console/commands_creature.gd")
+var Commands = null
+
 const Scenario := preload("res://devtools/scenario.gd")
 var failures := 0
 func check(ok: bool, message: String) -> void:
@@ -30,6 +31,7 @@ func run() -> void:
 	var original_wild = island.hosts[1]
 	var registry := Registry.new()
 	registry.stage_provider = func(): return island.stage
+	Commands = load("res://devtools/console/commands_creature.gd")
 	Commands.register_all(registry)
 	var bodies := CreatureMesh.seeds()
 	var keys := bodies.keys()
