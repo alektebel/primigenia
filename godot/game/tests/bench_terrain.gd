@@ -23,6 +23,8 @@ func _run() -> void:
 	var game = root.get_node("Game")
 	game.settings.grass = grass
 	game.settings.quality = tier
+	if OS.get_environment("BENCH_FLORA") == "0":
+		game.settings.flora_density = 0.0   # flora off (the nest and spring landmark stay) for the on/off comparison
 	var entry := TerrainCache.load_entry({"seed": 1})
 	if entry.is_empty():
 		entry = TerrainCache.build({"seed": 1}, CporeTerrain.new())

@@ -13,6 +13,7 @@ func run(t) -> void:
 		ids[r.id] = true
 		var canon: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://../lore/flora/"+r.id+".json"))
 		t.eq(r.form, canon.growth_form,"growth form "+r.id)
+		t.eq(r.name, canon.name,"bilingual name "+r.id)
 		t.eq(r.height, [canon.generator.height_m.min, canon.generator.height_m.max],"height "+r.id)
 		var a := Generator.new().plant(r, 7, true)
 		var b := Generator.new().plant(r, 7, true)
@@ -46,7 +47,7 @@ func run(t) -> void:
 			violations += 1
 	t.eq(violations, 0,"all roots clear water, steep facets, nest and spawns")
 	t.eq(counts.get("madre_de_agua", 0), 1,"single spring tree")
-	for id in ["nieblon","paja_dulce","scree","outcrop","boulder"]:
+	for id in ["nieblon","paja_dulce","scree","outcrop","boulder","velilla","vetirroja","perlilla","caramillo"]:
 		t.check(counts.get(id, 0)>0,"placed "+id)
 	print("  flora seed 1 ", counts)
 	lava_habitats(t, d)
