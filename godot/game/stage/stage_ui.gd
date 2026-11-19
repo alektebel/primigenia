@@ -341,6 +341,7 @@ func _on_tick(state: Dictionary) -> void:
 	var p: Dictionary = state.entities[0]
 	ui.set_player(player_name, p.hp, p.hp_max, p.stamina, p.stamina_max)
 	_fight_selection(state)
+	_update_bars(state)
 	_on_social(state)
 	if selected_id > 0 and selected_id < state.entities.size():
 		var e: Dictionary = state.entities[selected_id]
@@ -590,6 +591,25 @@ func _update_world_signs(state: Dictionary) -> void:
 		if bool(e.get("hostile", false)) and not bool(e.dead) and Vector2(float(e.x) - float(p.x), float(e.z) - float(p.z)).length() < 40.0:
 			hunters.append(i)
 	island.ground_marks.set_threats(hunters)
+
+# Health lines (ui/creature_bars.gd): every creature that is hostile, in the fight or selected, with its distance to the player.
+func _update_bars(state: Dictionary) -> void:
+	var p: Dictionary = state.entities[0]
+	var fighting := {}
+	for f in state.combat.fighters:
+		fighting[int(f.world_id)] = true
+	var rows: Array = []
+	for i in range(1, state.entities.size()):
+		var e: Dictionary = state.entities[i]
+		if bool(e.dead):
+			continue
+		var focus: bool = fighting.has(i) or i == selected_id
+		var hostile: bool = bool(e.get("hostile", false))
+		if not focus and not hostile:
+			continue
+		rows.append({"id": i, "hp": e.hp, "hp_max": e.hp_max, "hostile": hostile, "focus": focus,
+			"dist": Vector2(float(e.x) - float(p.x), float(e.z) - float(p.z)).length()})
+	ui.bars.set_creatures(rows)
 
 func _target_pos(state: Dictionary, id: int) -> Vector3:
 	if id <= 0 or id >= state.entities.size():

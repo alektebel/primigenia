@@ -14,6 +14,7 @@ const Motes := preload("res://ui/motes.gd")
 const Words := preload("res://ui/words.gd")
 const Veil := preload("res://ui/veil.gd")
 const RingFx := preload("res://ui/ring_fx.gd")
+const CreatureBars := preload("res://ui/creature_bars.gd")
 const Note := preload("res://ui/field_note.gd")
 const Menu := preload("res://ui/menu.gd")
 const Stub := preload("res://ui/stub_view.gd")
@@ -55,6 +56,7 @@ var motes
 var words
 var veil
 var ring_fx
+var bars                            # CreatureBars: health lines over hostile, fighting and selected creatures
 var menu
 var stub
 var journal
@@ -64,7 +66,12 @@ var loadout_abilities: Array = []   # the 4 hotbar entries of Attack mode once t
 var audio
 var camera: Camera3D
 var ground_marks                    # GroundMarks (the rings on the ground), set by the stage
-var anchor_fn := Callable()         # (id) -> {pos: Vector3 (feet), height: float}; the stage gives the rendered position
+# (id) -> {pos: Vector3 (feet), height: float}; the stage gives the rendered position
+var anchor_fn := Callable():
+	set(v):
+		anchor_fn = v
+		if bars != null:
+			bars.anchor_fn = v
 var fight := false
 var player_name := ""
 var dying := false
@@ -99,6 +106,10 @@ func _ready() -> void:
 	root.add_child(defence)
 	ring_fx = RingFx.new()
 	root.add_child(ring_fx)
+	bars = CreatureBars.new()
+	root.add_child(bars)
+	bars.anchor_fn = anchor_fn
+	bars.camera = camera
 	words = Words.new()
 	root.add_child(words)
 	motes = Motes.new()
@@ -153,6 +164,8 @@ func set_camera(cam: Camera3D) -> void:
 	camera = cam
 	words.camera = cam
 	ring_fx.camera = cam
+	if bars != null:
+		bars.camera = cam
 
 func set_ground_marks(gm) -> void:
 	ground_marks = gm
