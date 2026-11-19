@@ -6,6 +6,20 @@ extends SceneTree
 const TerrainCache := preload("res://game/island/terrain_cache.gd")
 const Views := preload("res://game/tests/rock_views.gd")
 
+# Resident geometry across the whole island. The two LOD totals are separate
+# because the renderer selects a range and culls spatial batches per view.
+func flora_budget(props: Node3D) -> Dictionary:
+	var budget := {"placements": props.records.size(), "batches": 0, "instance_slots": 0,
+		"near_triangles": 0, "far_triangles": 0}
+	for child in props.get_children():
+		if child is MultiMeshInstance3D:
+			var mm: MultiMesh = child.multimesh
+			budget.batches += 1
+			budget.instance_slots += mm.instance_count
+			var lod := "near_triangles" if child.visibility_range_begin == 0.0 else "far_triangles"
+			budget[lod] += mm.instance_count * (mm.mesh.surface_get_array_index_len(0) / 3)
+	return budget
+
 func _initialize() -> void:
 	_run.call_deferred()
 
@@ -39,6 +53,8 @@ func _run() -> void:
 	var rid := root.get_viewport_rid()
 	RenderingServer.viewport_set_measure_render_time(rid, true)
 	var result := {"adapter": adapter, "tier": tier, "frames": frames, "grass": grass, "resolution": [root.size.x, root.size.y], "views": {}}
+	result["flora"] = flora_budget(island.props)
+	print("flora budget: ", result.flora)
 	var views: PackedStringArray = OS.get_environment("BENCH_VIEWS").split(",", false) if OS.get_environment("BENCH_VIEWS") != "" else PackedStringArray(["chase", "mid", "far", "cliff_lit"])
 	# BENCH_SET="name=value,..." sets float shader uniforms of the terrain materials (A/B runs without editing shaders).
 	for kv in OS.get_environment("BENCH_SET").split(",", false):

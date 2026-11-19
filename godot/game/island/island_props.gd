@@ -18,7 +18,8 @@ var records := []
 var lod_scale := 1.0
 
 func geometry(id: String, variant: int, close: bool) -> ArrayMesh:
-	var key := [id, variant, close]
+	var woody: bool = recipe.get(id, {}).get("form", "") in ["tree", "shrub"]
+	var key := [id, variant, close, tier if woody and close else 0]
 	if meshes.has(key):
 		return meshes[key]
 	var gen := Generator.new()
@@ -40,7 +41,7 @@ func geometry(id: String, variant: int, close: bool) -> ArrayMesh:
 		var r: Dictionary = recipe[id].duplicate()
 		if variant == 0 and r.has("sheltered_colour"):
 			r.colour = r.sheltered_colour
-		mesh = gen.plant(r, shape_seed, close)
+		mesh = gen.plant(r, shape_seed, close, tier)
 	meshes[key] = mesh
 	return mesh
 
@@ -60,7 +61,7 @@ func batch(items: Array, close: bool, tall: bool) -> void:
 		var footprint := h
 		var up := Vector3.UP
 		if form == "moss_lichen":
-			footprint = maxf(0.48, h)
+			footprint = 0.70 + 0.35 * obj.height / float(recipe[obj.id].height[1])
 		if form in ["rock","moss_lichen","fungus_like","rosette","herb","grass"]:
 			up = obj.up
 		var basis := Basis(Quaternion(Vector3.UP, up)) * Basis(Vector3.UP, obj.yaw)
@@ -112,47 +113,64 @@ func build(d, setup: Dictionary, world_seed: int, quality: int, settings: Dictio
 			batch(groups[key], false, true)
 	build_nest(d, setup.nest, world_seed)
 
+# The earth and the weave follow the same rounded cross-section. Short fibres
+# cross the ridge tangentially without spanning the hollow.
+func nest_point(d, at: Vector2, base: float, angle: float, radius: float) -> Vector3:
+	var ripple := 0.04 * sin(5.0 * angle) + 0.022 * cos(9.0 * angle)
+	var p := Vector3(cos(angle), 0, sin(angle) * 0.82) * radius
+	var t := clampf(1.0 - absf(radius - 1.68 - ripple) / 0.72, 0.0, 1.0)
+	p.y = d.visual_ground(at.x + p.x, at.y + p.z) - base + 0.025 + smoothstep(0.0, 1.0, t) * 0.27
+	return p
+
 func build_nest(d, at: Vector2, world_seed: int) -> void:
 	var gen := Generator.new()
 	gen.begin(world_seed)
 	var base: float = d.visual_ground(at.x, at.y)
-	var soil := Color("61503b").srgb_to_linear()
+	var soil := Color("7a6246").srgb_to_linear()
 	var straw := Color("b7985f").srgb_to_linear()
-	var ring := []
-	var lip := []
-	var hollow := []
-	for j in 48:
-		var p := gen.radial(TAU * j / 48) * gen.rng.randf_range(2.32, 2.53)
-		p.z *= 0.82
-		p.y = d.visual_ground(at.x + p.x, at.y + p.z) - base + 0.045
-		ring.append(p)
-		var ridge := p * 0.70
-		var inner := p * 0.46
-		ridge.y = d.visual_ground(at.x + ridge.x, at.y + ridge.z) - base + gen.rng.randf_range(0.39, 0.47)
-		inner.y = d.visual_ground(at.x + inner.x, at.y + inner.z) - base + 0.065
-		lip.append(ridge)
-		hollow.append(inner)
-	for j in 48:
-		var k := (j + 1) % 48
-		var litter := straw.darkened(gen.rng.randf_range(0.18, 0.34))
-		gen.triangle(Vector3.UP * 0.035, hollow[j], hollow[k], soil)
-		gen.triangle(hollow[j], lip[j], lip[k], litter)
-		gen.triangle(hollow[j], lip[k], hollow[k], litter)
-		gen.triangle(lip[j], ring[j], ring[k], litter)
-		gen.triangle(lip[j], ring[k], lip[k], litter)
-	for j in 540:
+	var radii := [0.94, 1.24, 1.51, 1.70, 1.92, 2.15, 2.42]
+	var rings := []
+	for radius: float in radii:
+		var ring := PackedVector3Array()
+		for j in 48:
+			ring.append(nest_point(d, at, base, TAU * j / 48, radius))
+		rings.append(ring)
+	# Smooth vertex normals from the neighbouring ring and angular samples, so the bed reads as one rounded earth surface.
+	var centre := Vector3.UP * 0.025
+	var normals := []
+	for i in rings.size():
+		var nr := PackedVector3Array()
+		for j in 48:
+			var inner: Vector3 = rings[i - 1][j] if i > 0 else centre
+			var outer: Vector3 = rings[i + 1][j] if i + 1 < rings.size() else rings[i][j] + (rings[i][j] - inner)
+			var around: Vector3 = rings[i][(j + 1) % 48] - rings[i][(j + 47) % 48]
+			var n := (outer - inner).cross(around)
+			nr.append((n if n.y > 0.0 else -n).normalized())
+		normals.append(nr)
+	for i in rings.size():
+		for j in 48:
+			var k := (j + 1) % 48
+			if i == 0:
+				gen.triangle(centre, rings[0][j], rings[0][k], soil, 0, 0.0, [Vector2.ZERO, Vector2.RIGHT, Vector2.ONE], [Vector3.UP, normals[0][j], normals[0][k]])
+			else:
+				var pr: PackedVector3Array = rings[i - 1]
+				var cr: PackedVector3Array = rings[i]
+				gen.triangle(pr[j], cr[j], cr[k], soil, 0, 0.0, [Vector2.ZERO, Vector2.RIGHT, Vector2.ONE], [normals[i-1][j], normals[i][j], normals[i][k]])
+				gen.triangle(pr[j], cr[k], pr[k], soil, 0, 0.0, [Vector2.ZERO, Vector2.RIGHT, Vector2.ONE], [normals[i-1][j], normals[i][k], normals[i-1][k]])
+	for j in 320:
 		var angle := gen.rng.randf() * TAU
-		var radius := gen.rng.randf_range(1.12, 2.15)
-		var a := gen.radial(angle) * radius
-		var b := gen.radial(angle + gen.rng.randf_range(0.21, 0.64)) * (radius + gen.rng.randf_range(-0.18, 0.18))
-		var rim := 0.08 + 0.49 * maxf(0.0, 1.0 - absf(radius - 1.68) * 1.9) * gen.rng.randf_range(0.65, 1.0)
-		a.z *= 0.82
-		b.z *= 0.82
-		a.y = d.visual_ground(at.x + a.x, at.y + a.z) - base + rim
-		b.y = d.visual_ground(at.x + b.x, at.y + b.z) - base + rim * gen.rng.randf_range(0.55, 1.3)
+		var sweep := gen.rng.randf_range(0.14, 0.38)
+		var radius := gen.rng.randf_range(1.16, 2.19)
+		var drift := gen.rng.randf_range(-0.19, 0.19)
+		var a := nest_point(d, at, base, angle, radius)
+		var mid := nest_point(d, at, base, angle + sweep * 0.5, radius + drift * 0.5)
+		var b := nest_point(d, at, base, angle + sweep, radius + drift)
+		mid.y += gen.rng.randf_range(0.024, 0.049)
 		var twig := j % 7 == 0
-		var colour := gen.bark if twig else straw.darkened(gen.rng.randf() * 0.36)
-		gen.rod(a, b, 0.027 if twig else 0.017, 0.011 if twig else 0.006, colour, 4)
+		var thickness := 0.017 if twig else 0.011
+		var colour := gen.bark if twig else straw.darkened(gen.rng.randf() * 0.34)
+		gen.rod(a, mid, thickness, thickness * 0.8, colour, 3)
+		gen.rod(mid, b, thickness * 0.8, 0.003, colour, 3)
 	var nest := MeshInstance3D.new()
 	nest.name = "Nest"
 	nest.mesh = gen.finish()

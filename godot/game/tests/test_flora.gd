@@ -8,6 +8,7 @@ const Cache := preload("res://game/island/terrain_cache.gd")
 func run(t) -> void:
 	var rows := Placement.recipes()
 	var ids := {}
+	var props := preload("res://game/island/island_props.gd").new()
 	for r in rows:
 		t.check(not ids.has(r.id),"unique flora id "+r.id)
 		ids[r.id] = true
@@ -19,6 +20,37 @@ func run(t) -> void:
 		var b := Generator.new().plant(r, 7, true)
 		t.eq(hash(a.surface_get_arrays(0)), hash(b.surface_get_arrays(0)),"identical mesh "+r.id)
 		t.check(a.get_aabb().size.y > 0,"mesh extent "+r.id)
+		if r.form == "moss_lichen":
+			t.eq(a.surface_get_array_index_len(0), 36, "one thin colony fan " + r.id)
+			var mat := a.surface_get_material(0) as ShaderMaterial
+			t.eq(mat.shader, Generator.GROUND_COVER, "terrain layer material " + r.id)
+			t.eq(mat.get_shader_parameter("moss"), r.has("glow"), "colony pigment " + r.id)
+		if r.id == "nieblon":
+			props.recipe[r.id] = r
+			var previous := 0
+			var far_mesh := props.geometry(r.id, 0, false)
+			for q in 3:
+				props.tier = q
+				var mesh := props.geometry(r.id, 0, true)
+				var triangles := mesh.surface_get_array_index_len(0) / 3
+				t.check(triangles > previous, "tier increases near tree detail %d" % q)
+				t.eq(mesh, props.geometry(r.id, 0, true), "shared near mesh %d" % q)
+				t.eq(far_mesh, props.geometry(r.id, 0, false), "shared distant silhouette %d" % q)
+				previous = triangles
+			props.tier = 0
+			var arrays := props.geometry(r.id, 0, true).surface_get_arrays(0)
+			var normals: PackedVector3Array = arrays[Mesh.ARRAY_NORMAL]
+			var styles: PackedVector2Array = arrays[Mesh.ARRAY_TEX_UV2]
+			var indices: PackedInt32Array = arrays[Mesh.ARRAY_INDEX]
+			var rounded_bark := false
+			var rounded_leaves := false
+			for i in range(0, indices.size(), 3):
+				var first := indices[i]
+				if normals[first].dot(normals[indices[i + 1]]) < 0.99:
+					rounded_bark = rounded_bark or styles[first].x < 0.0
+					rounded_leaves = rounded_leaves or styles[first].x > 1.5
+			t.check(rounded_bark and rounded_leaves, "interpolated bark and crown normals")
+	props.free()
 	var canon_files := DirAccess.get_files_at(ProjectSettings.globalize_path("res://").path_join("../lore/flora").simplify_path())
 	t.check(canon_files.size() >= rows.size(),"read lore directory")
 	for file in canon_files:
