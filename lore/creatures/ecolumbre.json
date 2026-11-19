@@ -1,74 +1,698 @@
 {
   "schema": "cpore.creature/1",
   "id": "ecolumbre",
-  "name": {"en": "Ecolumbre", "es": "Ecolumbre"},
+  "name": {
+    "en": "Ecolumbre",
+    "es": "Ecolumbre"
+  },
   "world": "primigenia",
   "kind": "native",
   "status": "draft",
   "stage": "creature",
-  "niche": {"habitat": "deep lava-tube caves, the cave behind the waterfall, fog-filled gullies at dawn", "diet": "cave moss and fungi, small grazers",
-            "active": "night and dawn fog; feeds at the meadow edge on moonless nights", "predators": ["nocturnal creature"], "prey": []},
+  "niche": {
+    "habitat": "deep lava-tube caves, the cave behind the waterfall, fog-filled gullies at dawn",
+    "diet": "cave moss and fungi, small grazers",
+    "active": "night and dawn fog; feeds at the meadow edge on moonless nights",
+    "predators": [
+      "nocturnal creature"
+    ],
+    "prey": []
+  },
   "body": "small and light, dark back, glowing belly patches (ventral photophores), large ear-like click resonators, short legs for tube floors",
   "temperament": "timid, flock-living, curious about light",
   "chains": [
-    {"id": "ecolumbre.c1", "trait": "sees with sound",
-     "links": ["it lives where light never arrives: lava tubes and fog-filled gullies", "dense air carries sharp, far echoes"],
-     "roots": ["F4", "F8", "F9"],
-     "skill": {"id": "ecolumbre.echo_sight", "name": {"en": "Echo sight", "es": "Vista de eco"}, "role": "Passive",
-               "effect": "a ping outlines creatures through fog and cave walls", "numbers": {"duration_s": 3, "range_m": 40}},
-     "weakness": "a roar blinds it like a flashbang",
-     "observe": ["watch it cross a pitch-dark tube without hesitating", "hear the clicks speed up near walls", "roar near it and see it freeze"],
-     "journal": {"en": "Sees with its ears.", "es": "Ve con los oídos."},
-     "plausibility": {"verdict": "plausible", "judge": "astrobio/composer-2.5", "date": "2026-11-18",
-                      "summary": "echolocation in dark caves is common on Earth; flocks should stagger clicks to avoid confusion",
-                      "analogues": [{"organism": "oilbird (Steatornis caripensis), cave swiftlets", "mechanism": "audible click echolocation in caves", "refs": ["brinklov_2013_oilbird"]}],
-                      "fixes": ["narrowband, staggered clicks in flocks"]}},
-    {"id": "ecolumbre.c2", "trait": "talks with light",
-     "links": ["vocal calls would mask its own and the flock's echolocation", "long echoes in lava tubes in dense air", "glow chemistry comes from the cave fungi it eats"],
-     "roots": ["F4", "F5", "F9"],
-     "skill": {"id": "ecolumbre.flash_code", "name": {"en": "Flash code", "es": "Código de luz"}, "role": "Social",
-               "effect": "befriend by copying its light pattern; needs a glow part", "numbers": {"range_m": 25}},
-     "weakness": "it stops talking when a sight hunter is near",
-     "observe": ["see a flock flash deep in a tube", "notice the clicks pause while it flashes", "see its belly, not its back, light up"],
-     "journal": {"en": "It sings with its skin.", "es": "Canta con la piel."},
-     "plausibility": {"verdict": "fixable", "judge": "astrobio/composer-2.5", "date": "2026-11-18",
-                      "summary": "a separate channel against acoustic masking is credible, but only as a dim, ventral, brief, refuge-bound signal",
-                      "analogues": [{"organism": "weakly electric fish", "mechanism": "jamming avoidance by switching channel/frequency", "refs": ["heiligenberg_1991_electric"]},
-                                    {"organism": "Hawaiian bobtail squid (Euprymna scolopes)", "mechanism": "ventral light hidden from predators", "refs": ["mcfallngai_2000_squid"]}],
-                      "fixes": ["ventral photophores and sub-second bursts", "possibly a UV or polarised channel the predator sees poorly"]}},
-    {"id": "ecolumbre.c3", "trait": "only speaks on moonless nights and deep inside",
-     "links": ["moonlight drowns its signal and lights up its silhouette for sight hunters", "the predator hunts moonlit edges"],
-     "roots": ["F6"],
-     "skill": {"id": "ecolumbre.dark_window", "name": {"en": "Dark window", "es": "Ventana oscura"}, "role": "Passive",
-               "effect": "befriending it is only possible on moonless nights or deep in the tubes", "numbers": {}},
-     "weakness": "on bright nights it hides deep and cannot be met",
-     "observe": ["visit on a bright night: silence", "visit on a moonless night: flashing at the meadow edge", "follow it deep on a bright night: it flashes there"],
-     "journal": {"en": "Silent in the cave. Why would something that loud keep quiet?", "es": "Callada en la cueva. ¿Por qué algo tan ruidoso calla?"},
-     "plausibility": {"verdict": "plausible", "judge": "astrobio/composer-2.5", "date": "2026-11-18",
-                      "summary": "lunar and depth gating is adaptive: signal when contrast is high and risk is low",
-                      "analogues": [{"organism": "Photinus fireflies", "mechanism": "species-specific flash windows", "refs": ["lewis_2008_fireflies"]}],
-                      "fixes": ["also gate on fog thickness and depth inside the tube"]}},
-    {"id": "ecolumbre.c4", "trait": "a predator fakes its light code",
-     "links": ["its code is a reliable signal of a meal", "the predator sees its flashes at cave mouths"],
-     "roots": ["F6", "F9"],
-     "skill": {"id": "ecolumbre.code_check", "name": {"en": "Code check", "es": "Contraseña"}, "role": "Defence",
-               "effect": "deep in the tubes the flock confirms identity by clicks, which a mimic outside cannot fake", "numbers": {}},
-     "weakness": "at the waterfall entrance a fake lure can draw it (and the player) out",
-     "observe": ["see a friendly flash at the cave mouth", "follow it and meet the nocturnal creature", "notice real flocks answer flashes with clicks"],
-     "journal": {"en": "Not every light is a friend.", "es": "No toda luz es amiga."},
-     "plausibility": {"verdict": "plausible", "judge": "astrobio/composer-2.5", "date": "2026-11-18",
-                      "summary": "a mimic-lure arms race is well documented; limit the lure to places with line of sight",
-                      "analogues": [{"organism": "Photuris fireflies", "mechanism": "femme-fatale aggressive mimicry of Photinus codes", "refs": ["lloyd_1965_photuris", "lewis_2008_fireflies"]}],
-                      "fixes": ["lure works only at gully mouths and the waterfall entrance"]}}
+    {
+      "id": "ecolumbre.c1",
+      "trait": "sees with sound",
+      "links": [
+        "it lives where light never arrives: lava tubes and fog-filled gullies",
+        "dense air carries sharp, far echoes"
+      ],
+      "roots": [
+        "F4",
+        "F8",
+        "F9"
+      ],
+      "skill": {
+        "id": "ecolumbre.echo_sight",
+        "name": {
+          "en": "Echo sight",
+          "es": "Vista de eco"
+        },
+        "role": "Passive",
+        "effect": "a ping outlines creatures through fog and cave walls",
+        "numbers": {
+          "duration_s": 3,
+          "range_m": 40
+        }
+      },
+      "weakness": "a roar blinds it like a flashbang",
+      "observe": [
+        "watch it cross a pitch-dark tube without hesitating",
+        "hear the clicks speed up near walls",
+        "roar near it and see it freeze"
+      ],
+      "journal": {
+        "en": "Sees with its ears.",
+        "es": "Ve con los oídos."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/composer-2.5",
+        "date": "2026-11-18",
+        "summary": "echolocation in dark caves is common on Earth; flocks should stagger clicks to avoid confusion",
+        "analogues": [
+          {
+            "organism": "oilbird (Steatornis caripensis), cave swiftlets",
+            "mechanism": "audible click echolocation in caves",
+            "refs": [
+              "brinklov_2013_oilbird"
+            ]
+          }
+        ],
+        "fixes": [
+          "narrowband, staggered clicks in flocks"
+        ]
+      }
+    },
+    {
+      "id": "ecolumbre.c2",
+      "trait": "talks with light",
+      "links": [
+        "vocal calls would mask its own and the flock's echolocation",
+        "long echoes in lava tubes in dense air",
+        "glow chemistry comes from the cave fungi it eats"
+      ],
+      "roots": [
+        "F4",
+        "F5",
+        "F9"
+      ],
+      "skill": {
+        "id": "ecolumbre.flash_code",
+        "name": {
+          "en": "Flash code",
+          "es": "Código de luz"
+        },
+        "role": "Social",
+        "effect": "befriend by copying its light pattern; needs a glow part",
+        "numbers": {
+          "range_m": 25
+        }
+      },
+      "weakness": "it stops talking when a sight hunter is near",
+      "observe": [
+        "see a flock flash deep in a tube",
+        "notice the clicks pause while it flashes",
+        "see its belly, not its back, light up"
+      ],
+      "journal": {
+        "en": "It sings with its skin.",
+        "es": "Canta con la piel."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/composer-2.5",
+        "date": "2026-11-18",
+        "summary": "a separate channel against acoustic masking is credible, but only as a dim, ventral, brief, refuge-bound signal",
+        "analogues": [
+          {
+            "organism": "weakly electric fish",
+            "mechanism": "jamming avoidance by switching channel/frequency",
+            "refs": [
+              "heiligenberg_1991_electric"
+            ]
+          },
+          {
+            "organism": "Hawaiian bobtail squid (Euprymna scolopes)",
+            "mechanism": "ventral light hidden from predators",
+            "refs": [
+              "mcfallngai_2000_squid"
+            ]
+          }
+        ],
+        "fixes": [
+          "ventral photophores and sub-second bursts",
+          "possibly a UV or polarised channel the predator sees poorly"
+        ]
+      }
+    },
+    {
+      "id": "ecolumbre.c3",
+      "trait": "only speaks on moonless nights and deep inside",
+      "links": [
+        "moonlight drowns its signal and lights up its silhouette for sight hunters",
+        "the predator hunts moonlit edges"
+      ],
+      "roots": [
+        "F6"
+      ],
+      "skill": {
+        "id": "ecolumbre.dark_window",
+        "name": {
+          "en": "Dark window",
+          "es": "Ventana oscura"
+        },
+        "role": "Passive",
+        "effect": "befriending it is only possible on moonless nights or deep in the tubes",
+        "numbers": {}
+      },
+      "weakness": "on bright nights it hides deep and cannot be met",
+      "observe": [
+        "visit on a bright night: silence",
+        "visit on a moonless night: flashing at the meadow edge",
+        "follow it deep on a bright night: it flashes there"
+      ],
+      "journal": {
+        "en": "Silent in the cave. Why would something that loud keep quiet?",
+        "es": "Callada en la cueva. ¿Por qué algo tan ruidoso calla?"
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/composer-2.5",
+        "date": "2026-11-18",
+        "summary": "lunar and depth gating is adaptive: signal when contrast is high and risk is low",
+        "analogues": [
+          {
+            "organism": "Photinus fireflies",
+            "mechanism": "species-specific flash windows",
+            "refs": [
+              "lewis_2008_fireflies"
+            ]
+          }
+        ],
+        "fixes": [
+          "also gate on fog thickness and depth inside the tube"
+        ]
+      }
+    },
+    {
+      "id": "ecolumbre.c4",
+      "trait": "a predator fakes its light code",
+      "links": [
+        "its code is a reliable signal of a meal",
+        "the predator sees its flashes at cave mouths"
+      ],
+      "roots": [
+        "F6",
+        "F9"
+      ],
+      "skill": {
+        "id": "ecolumbre.code_check",
+        "name": {
+          "en": "Code check",
+          "es": "Contraseña"
+        },
+        "role": "Defence",
+        "effect": "deep in the tubes the flock confirms identity by clicks, which a mimic outside cannot fake",
+        "numbers": {}
+      },
+      "weakness": "at the waterfall entrance a fake lure can draw it (and the player) out",
+      "observe": [
+        "see a friendly flash at the cave mouth",
+        "follow it and meet the nocturnal creature",
+        "notice real flocks answer flashes with clicks"
+      ],
+      "journal": {
+        "en": "Not every light is a friend.",
+        "es": "No toda luz es amiga."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/composer-2.5",
+        "date": "2026-11-18",
+        "summary": "a mimic-lure arms race is well documented; limit the lure to places with line of sight",
+        "analogues": [
+          {
+            "organism": "Photuris fireflies",
+            "mechanism": "femme-fatale aggressive mimicry of Photinus codes",
+            "refs": [
+              "lloyd_1965_photuris",
+              "lewis_2008_fireflies"
+            ]
+          }
+        ],
+        "fixes": [
+          "lure works only at gully mouths and the waterfall entrance"
+        ]
+      }
+    },
+    {
+      "id": "ecolumbre.c5",
+      "trait": "Grazes wet biofilm and salt crusts on tuff",
+      "links": [
+        "Biofilm needs constant moisture to thrive",
+        "Waterfall spray keeps tuff overhang perpetually damp",
+        "Spring is dammed by a hard basalt dyke",
+        "Aquifer recharges from high alpine slopes"
+      ],
+      "roots": [
+        "F9",
+        "F21",
+        "F15",
+        "F23"
+      ],
+      "skill": {
+        "id": "ecolumbre.salt_crush",
+        "name": {
+          "en": "Salt-Crush"
+        },
+        "role": "Basic",
+        "effect": "Cracks tuff to extract biofilm and salt; restores +10 Biomass and +5 HP.",
+        "numbers": {}
+      },
+      "weakness": "Drought thins crusts and biofilm; foraging yields drop by 40%.",
+      "observe": [
+        "Scrapes jaw against wet wall",
+        "Eats grey-green paste",
+        "Cracks white salt efflorescence"
+      ],
+      "journal": {
+        "en": "They lick the stone where the water weeps."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "analogues": [
+          {
+            "organism": "Marine iguana (Amblyrhynchus cristatus): intertidal algae grazer with salt handling; endolithic/cave-wall microbial mats grazed by snails and nematodes on damp rock",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "lloyd_2014_microbial"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "designer": 8,
+          "physicist": 9
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "mythmaker",
+          "naturalist",
+          "physicist"
+        ]
+      }
+    },
+    {
+      "id": "ecolumbre.c6",
+      "trait": "Syncs low hums and ventral flashes to flock",
+      "links": [
+        "Valley fog blinds eyes most mornings",
+        "Dense air carries low frequencies far and far",
+        "Ventral photophores flash in sync with throat hums",
+        "Marks position and coordinates movement without collision"
+      ],
+      "roots": [
+        "F4",
+        "F8",
+        "F16",
+        "F3"
+      ],
+      "skill": {
+        "id": "ecolumbre.chorus_flash",
+        "name": {
+          "en": "Chorus Flash"
+        },
+        "role": "Control",
+        "effect": "Emits synchronized light pulses and hums. Calms allies within 15m, grants +20% evasion for 8s.",
+        "numbers": {}
+      },
+      "weakness": "Sudden high-pitched sounds break sync; flock freezes and loses evasion.",
+      "observe": [
+        "Staggered light pulses across cave ceiling",
+        "Low throat hums matching pulse intervals",
+        "Individuals spacing exactly wing-widths apart"
+      ],
+      "journal": {
+        "en": "Fog steals sight. They trade it for rhythm."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Make low hums the main flock channel in fog; treat ventral flashes as short-range backup when humidity scatters light (not tight ceiling sync). Cap Chorus Flash energy cost and duration to match 0.34 bar pO2 budget.",
+        "fixes": [
+          "Make low hums the main flock channel in fog; treat ventral flashes as short-range backup when humidity scatters light (not tight ceiling sync). Cap Chorus Flash energy cost and duration to match 0.34 bar pO2 budget."
+        ],
+        "analogues": [
+          {
+            "organism": "Oilbird (Steatornis caripensis): cave colony, low-frequency contact calls in darkness; synchronous fireflies (Pteroptyx spp.): rhythmic light coupling in dense vegetation; bats: call timing/jamming avoidance in groups",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own"
+          }
+        ],
+        "scores": {
+          "astrobio": 7,
+          "designer": 9,
+          "physicist": 8
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "designer",
+          "mythmaker",
+          "physicist"
+        ]
+      }
+    },
+    {
+      "id": "ecolumbre.c7",
+      "trait": "Migrates to humid lava tube before spring tides",
+      "links": [
+        "Spring tides flood the lower waterfall overhang",
+        "Adults carry eggs to a drip-fed upper lava tube",
+        "Summer heat dries lower zones but upper stays cool",
+        "Tidal rhythm dictates safe migration windows"
+      ],
+      "roots": [
+        "F9",
+        "F13"
+      ],
+      "skill": {
+        "id": "ecolumbre.tide_crawl",
+        "name": {
+          "en": "Tide Crawl"
+        },
+        "role": "Engage",
+        "effect": "Sprints along wet walls, gaining +30% movement speed and wall-walking for 4s. Drops a decoy egg that taunts nearby enemies for 3s. If destroyed, releases a 1s stun cloud.",
+        "numbers": {}
+      },
+      "weakness": "Egg sacs are brittle; rocks or strong bites pop them. Neap tides strand larvae.",
+      "observe": [
+        "Carries white egg in mouth",
+        "Taps tuff walls in 14-day rhythm",
+        "Shallow depressions in cool upper cave"
+      ],
+      "journal": {
+        "en": "They time life to the sea."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Rename/reframe the nest site as a cool, humid upper lava tube (drip-fed microclimate), not dry air; adults move eggs there before summer desiccation peaks and only use tide rhythm to cross flooded lower tubes—not because the nest chamber is arid.",
+        "fixes": [
+          "Rename/reframe the nest site as a cool, humid upper lava tube (drip-fed microclimate), not dry air; adults move eggs there before summer desiccation peaks and only use tide rhythm to cross flooded lower tubes—not because the nest chamber is arid."
+        ],
+        "analogues": [
+          {
+            "organism": "Tidal spawning cues: fiddler crabs and intertidal worms (semilunar rhythms); humid cave oviposition: cave salamanders (Eurycea) and some cave crickets in stable moist refugia",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own"
+          }
+        ],
+        "scores": {
+          "astrobio": 5,
+          "designer": 8,
+          "physicist": 7
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "designer",
+          "naturalist",
+          "physicist"
+        ]
+      }
+    },
+    {
+      "id": "ecolumbre.c8",
+      "trait": "Climbs alpine grit licks to shed UV-stressed keratin",
+      "links": [
+        "1.05g gravity makes high climbs costly",
+        "Summer UV spikes at altitude strip old armor",
+        "Migration to shaded snowline gullies at dawn/dusk minimizes heat stress",
+        "Ingesting olivine grit repairs keratin and hardens new growth"
+      ],
+      "roots": [
+        "F2",
+        "F14",
+        "F15",
+        "F23"
+      ],
+      "skill": {
+        "id": "ecolumbre.sun_shed",
+        "name": {
+          "en": "Sun Shed"
+        },
+        "role": "Poke",
+        "effect": "Rubs against basalt outcrops. Removes one debuff, grants 15% flat damage reduction for 10s as new keratin hardens.",
+        "numbers": {}
+      },
+      "weakness": "Vulnerable while shedding; attacks during this window deal +30% damage.",
+      "observe": [
+        "Patches of missing keratin on flanks",
+        "Scraped basalt boulders with smooth grooves",
+        "Dust clouds around migrating groups"
+      ],
+      "journal": {
+        "en": "They climb to burn. Grit heals."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Molt abrasion at shaded alpine basalt grit licks near snowline gullies (F15), chiefly at dawn/dusk—not midday 1.4× UV exposure; frame the climb as mineral/Ca uptake plus keratin filing, with UV only as the seasonal trigger to shed.",
+        "fixes": [
+          "Molt abrasion at shaded alpine basalt grit licks near snowline gullies (F15), chiefly at dawn/dusk—not midday 1.4× UV exposure; frame the climb as mineral/Ca uptake plus keratin filing, with UV only as the seasonal trigger to shed."
+        ],
+        "analogues": [
+          {
+            "organism": "Decapod crustaceans: mineral reservoir and hardening at ecdysis; geophagy at mineral licks in herbivorous reptiles and birds; insular reptiles: episodic sloughing after sun/UV exposure",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "designer": 9,
+          "physicist": 8
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "designer",
+          "mythmaker",
+          "physicist"
+        ]
+      }
+    },
+    {
+      "id": "ecolumbre.c9",
+      "trait": "Scoops bioluminescent crustaceans from waterfall spray",
+      "links": [
+        "Waterfall updrafts trap drifting crustacean swarms",
+        "Dense air and spray create a feeding ring",
+        "Creatures scoop prey with broad keratinous snouts",
+        "Roost behind the fall where noise masks bio-signatures"
+      ],
+      "roots": [
+        "F9",
+        "F21",
+        "F20",
+        "F4"
+      ],
+      "skill": {
+        "id": "ecolumbre.mist_scoop",
+        "name": {
+          "en": "Mist-scoop"
+        },
+        "role": "Defence",
+        "effect": "Snatch prey from spray; +10% restore. Dive into spray to become invisible to sound and sight for 3s.",
+        "numbers": {}
+      },
+      "weakness": "Wind shear scatters updraft. Vibration sense detects movement through water.",
+      "observe": [
+        "Dips snout into spray; glowing gut visible",
+        "Prey ring clusters form a shimmering halo",
+        "Motionless in waterfall spray"
+      ],
+      "journal": {
+        "en": "They drink the waterfall's breath."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Prefer wind- or spray-blown marine harpacticoids/amphipods from west-coast shallows (F20) in the mist plume; if bioluminescence stays, limit it to rare tidal swarms, not everyday freshwater falls.",
+        "fixes": [
+          "Prefer wind- or spray-blown marine harpacticoids/amphipods from west-coast shallows (F20) in the mist plume; if bioluminescence stays, limit it to rare tidal swarms, not everyday freshwater falls."
+        ],
+        "analogues": [
+          {
+            "organism": "Swiftlets and swallows: aerial plankton at waterfalls/cliffs; intertidal splash-zone copepods; marine bioluminescent mysids/ostracods in spray and surf (not typical in pure freshwater falls)",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own"
+          }
+        ],
+        "scores": {
+          "astrobio": 7,
+          "designer": 8,
+          "physicist": 8
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "mythmaker",
+          "physicist",
+          "wildcard"
+        ]
+      }
+    }
   ],
   "relations": [
-    {"with": "nocturnal creature", "kind": "predation", "via": "F6", "note": "the moonlit sit-and-wait hunter; learned to fake the light code"},
-    {"with": "rondo", "kind": "opposite", "via": "F4", "note": "same dense, echoing air: Rondo talks by long hums, Ecolumbre keeps sound for seeing and talks with light"}
+    {
+      "with": "nocturnal creature",
+      "kind": "predation",
+      "via": "F6",
+      "note": "the moonlit sit-and-wait hunter; learned to fake the light code"
+    },
+    {
+      "with": "rondo",
+      "kind": "opposite",
+      "via": "F4",
+      "note": "same dense, echoing air: Rondo talks by long hums, Ecolumbre keeps sound for seeing and talks with light"
+    },
+    {
+      "with": "Rondo",
+      "kind": "counter",
+      "note": "Ecolumbre's low hums travel through valley fog (F4) and soothe Rondo herds (Rondo loves song +12), allowing the player or Ecolumbre to approach safely.",
+      "via": "F4"
+    },
+    {
+      "with": "Zanco",
+      "kind": "opposite",
+      "note": "Zanco relies on speed and long legs (Zancuda) to flee; Ecolumbre relies on climbing and tube-hiding (Babosa/Merodeador build). Zanco avoids tides; Ecolumbre migrates with them.",
+      "via": "F2"
+    },
+    {
+      "with": "Espinodo",
+      "kind": "predation",
+      "note": "Espinodo is a carnivore that eats meat and bone (F26); Ecolumbre is a soft-bodied grazer/crustacean-eater, making it prey.",
+      "via": "F24"
+    },
+    {
+      "with": "Garfio",
+      "kind": "counter",
+      "note": "Garfio heckles and interrupts courtship with noise; Ecolumbre's low hums (F4) carry far and are harder to mask, maintaining flock sync against disruption.",
+      "via": "F4"
+    },
+    {
+      "with": "Coloso",
+      "kind": "symbiosis",
+      "note": "Ecolumbre grazes biofilm and salt crusts (F23) on Coloso's skin, providing cleaning service; Coloso offers shelter or transport to mineral licks.",
+      "via": "F23"
+    },
+    {
+      "with": "Player",
+      "kind": "mimicry",
+      "note": "Player species can mimic Ecolumbre's ventral flashes and low hums to befriended flocks or calm Rondo herds.",
+      "via": "F4"
+    },
+    {
+      "with": "Nocturnal Creature",
+      "kind": "opposite",
+      "note": "Nocturnal creature has night variant bonus; Ecolumbre syncs to tides and uses flashes in twilight/dawn (F3), avoiding deep night competition.",
+      "via": "F3"
+    },
+    {
+      "with": "Albinos",
+      "kind": "rivalry",
+      "note": "Albinos lack pigment; Ecolumbre thrives at UV-stressed grit licks (F14) where albinos suffer higher damage, securing access to mineral licks.",
+      "via": "F14"
+    }
   ],
-  "journal": [{"en": "Juveniles only click; the full light language comes with the breeding season.", "es": "Las crías solo chasquean; el lenguaje de luz llega con la época de cría."}],
-  "secrets": ["the waterfall-cave flock teaches Echo sight to a patient observer"],
-  "moments": ["the first time a 'friendly' light at the cave mouth turns out to be a hunter"],
-  "game": {"teaches": ["ecolumbre.echo_sight", "ecolumbre.flash_code"]},
-  "provenance": {"council_run": "manual example 2026-11-18", "by": ["opus (derivation)", "astrobio/composer-2.5 (review)"], "edited_by": "opus"},
-  "changelog": [{"date": "2026-11-18", "who": "opus", "what": "first example of the standard, from the owner's concept 'sees sound, talks with light'"}]
+  "journal": [
+    {
+      "en": "Juveniles only click; the full light language comes with the breeding season.",
+      "es": "Las crías solo chasquean; el lenguaje de luz llega con la época de cría."
+    }
+  ],
+  "secrets": [
+    "the waterfall-cave flock teaches Echo sight to a patient observer"
+  ],
+  "moments": [
+    "the first time a 'friendly' light at the cave mouth turns out to be a hunter"
+  ],
+  "game": {
+    "teaches": [
+      "ecolumbre.echo_sight",
+      "ecolumbre.flash_code"
+    ]
+  },
+  "provenance": {
+    "council_run": "manual example 2026-11-18",
+    "by": [
+      "opus (derivation)",
+      "astrobio/composer-2.5 (review)"
+    ],
+    "edited_by": "opus"
+  },
+  "changelog": [
+    {
+      "date": "2026-11-18",
+      "who": "opus",
+      "what": "first example of the standard, from the owner's concept 'sees sound, talks with light'"
+    },
+    {
+      "date": "2026-11-18",
+      "who": "import_got",
+      "what": "merged run autoloop-2026-11-18: 5 chain(s) added, 0 plausibility block(s) filled, 8 relation(s) added"
+    },
+    {
+      "date": "2026-11-18",
+      "who": "autoloop",
+      "what": "removed rejected references from analogues"
+    },
+    {
+      "date": "2026-11-18",
+      "who": "autoloop",
+      "what": "removed rejected references from analogues"
+    },
+    {
+      "date": "2026-11-18",
+      "who": "autoloop",
+      "what": "removed rejected references from analogues"
+    },
+    {
+      "date": "2026-11-19",
+      "who": "import_got",
+      "what": "merged run autoloop-2026-11-19: 0 chain(s) added, 0 plausibility block(s) filled, 0 relation(s) added"
+    },
+    {
+      "date": "2026-11-19",
+      "who": "import_got",
+      "what": "merged run autoloop-2026-11-19: 0 chain(s) added, 0 plausibility block(s) filled, 0 relation(s) added"
+    },
+    {
+      "date": "2026-11-19",
+      "who": "import_got",
+      "what": "merged run autoloop-2026-11-19: 0 chain(s) added, 0 plausibility block(s) filled, 0 relation(s) added"
+    }
+  ]
 }

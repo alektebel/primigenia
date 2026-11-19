@@ -1,0 +1,309 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "quemador",
+  "name": {
+    "en": "Quemador"
+  },
+  "world": "silicon_hot",
+  "kind": "new",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "Exposed basalt ridges and wind-scoured plateaus.",
+    "diet": "Dormant stasis-creatures, mineral crusts, chemical runoff from vents.",
+    "active": "Cooler phases/night (surface temp ~150-200°C), tracks vent plumes via IR.",
+    "predators": []
+  },
+  "body": "Tripedal armored form with thermal-IR photoreceptors, low-friction silicone pads, and piezoelectric strike limbs.",
+  "chains": [
+    {
+      "id": "quemador.c1",
+      "trait": "Dorsal thermal-IR photoreceptor array",
+      "links": [
+        "Tracks heat signatures of vents and prey through haze",
+        "Dense aerosols and thermal inversions block visible light",
+        "K2V star emits IR-rich output that penetrates sulfur haze"
+      ],
+      "roots": [
+        "F1",
+        "F14",
+        "F7"
+      ],
+      "skill": {
+        "id": "quemador.heat_track",
+        "name": {
+          "en": "Heat-track"
+        },
+        "role": "Poke",
+        "effect": "+25% range on attacks, reveals stealth",
+        "numbers": {}
+      },
+      "weakness": "Overheating above 400°C melts silicone pads and cracks lattice genetics.",
+      "observe": [
+        "Tripedal gait leaving polished grooves in rock",
+        "Dorsal array pulsing amber with thermal focus",
+        "Forelimbs cocking silently before glass-shattering strikes"
+      ],
+      "journal": {
+        "en": "They read the stone's memory and break the cold to feed."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "F14 mandates thermal-IR over vision in aerosol haze; F1 K-dwarf IR flux and vent/hot-cold contrast make prey and plume tracking viable on F7 highlands during 150–200°C ‘cool’ phases. Pit-style long-wave sensing fits ambush ecology.",
+        "fixes": [
+          "F14 mandates thermal-IR over vision in aerosol haze; F1 K-dwarf IR flux and vent/hot-cold contrast make prey and plume tracking viable on F7 highlands during 150–200°C ‘cool’ phases. Pit-style long-wave sensing fits ambush ecology."
+        ],
+        "analogues": [
+          {
+            "organism": "Pit viper Crotalus infrared pits (TRPA1 heat detection); jewel beetle Melanophila acuminata IR sensing of forest fires.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "quemador.c2",
+      "trait": "Low-friction silicone pads",
+      "links": [
+        "Provides traction on glassy wind-polished rock",
+        "High gravity and abrasive silica winds create slick surfaces",
+        "Fluid-based feet would freeze or shatter on contact"
+      ],
+      "roots": [
+        "F3",
+        "F15",
+        "F18"
+      ],
+      "skill": {
+        "id": "quemador.glass_slide",
+        "name": {
+          "en": "Glass-slide"
+        },
+        "role": "Engage",
+        "effect": "+30% dodge chance on rocky terrain, grants movement through hazards",
+        "numbers": {}
+      },
+      "weakness": "Overheating above 400°C melts silicone pads and cracks lattice genetics.",
+      "observe": [
+        "Tripedal gait leaving polished grooves in rock",
+        "Dorsal array pulsing amber with thermal focus",
+        "Forelimbs cocking silently before glass-shattering strikes"
+      ],
+      "journal": {
+        "en": "They read the stone's memory and break the cold to feed."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "F18 silicone pads on F3 1.25 g glassy wind-polished terrain are consistent with siloxane stability at moderate Highland temps when F11 oxidizers/water are absent; traction on slick silicate is a credible selection pressure.",
+        "fixes": [
+          "F18 silicone pads on F3 1.25 g glassy wind-polished terrain are consistent with siloxane stability at moderate Highland temps when F11 oxidizers/water are absent; traction on slick silicate is a credible selection pressure."
+        ],
+        "analogues": [
+          {
+            "organism": "Tree frog adhesive toe pads (different chemistry but same friction problem); snail mucus trails on rock—here cross-linked siloxane sacrificial layer.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "quemador.c3",
+      "trait": "Piezoelectric strike forelimbs",
+      "links": [
+        "Delivers high-impact blows to crack dormant carapaces",
+        "Cooling prey vitrify their shells into glass",
+        "Dense air dissipates kinetic energy quickly, requiring focused impact"
+      ],
+      "roots": [
+        "F6",
+        "F15",
+        "F18"
+      ],
+      "skill": {
+        "id": "quemador.shatter_strike",
+        "name": {
+          "en": "Shatter-strike"
+        },
+        "role": "Basic",
+        "effect": "Ignores 50% armor, +35% damage vs stasis/dormant",
+        "numbers": {}
+      },
+      "weakness": "Overheating above 400°C melts silicone pads and cracks lattice genetics.",
+      "observe": [
+        "Tripedal gait leaving polished grooves in rock",
+        "Dorsal array pulsing amber with thermal focus",
+        "Forelimbs cocking silently before glass-shattering strikes"
+      ],
+      "journal": {
+        "en": "They read the stone's memory and break the cold to feed."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Shatter-strike = mineralized hammer plus elastic latch release; piezo forelimbs trigger release and detect shell resonance, with 50% armor bypass tied to striking dormant/glassy targets.",
+        "fixes": [
+          "Shatter-strike = mineralized hammer plus elastic latch release; piezo forelimbs trigger release and detect shell resonance, with 50% armor bypass tied to striking dormant/glassy targets."
+        ],
+        "analogues": [
+          {
+            "organism": "Mantis shrimp Odontodactylus scyllarus saddle spring and latch strike; woodpecker shock-adapted skull—not piezo-powered blows.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "petkowski_2020_water"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "quemador.c4",
+      "trait": "Seismic pulse throat organ",
+      "links": [
+        "Maps underground stasis pockets via ground vibrations",
+        "Low-frequency waves travel kilometers in crustal material",
+        "Line-of-sight navigation fails in perpetual thermal haze"
+      ],
+      "roots": [
+        "F6",
+        "F16"
+      ],
+      "skill": {
+        "id": "quemador.ground_listen",
+        "name": {
+          "en": "Ground-listen"
+        },
+        "role": "Control",
+        "effect": "Slows enemy movement, reveals hidden terrain/creatures",
+        "numbers": {}
+      },
+      "weakness": "Overheating above 400°C melts silicone pads and cracks lattice genetics.",
+      "observe": [
+        "Tripedal gait leaving polished grooves in rock",
+        "Dorsal array pulsing amber with thermal focus",
+        "Forelimbs cocking silently before glass-shattering strikes"
+      ],
+      "journal": {
+        "en": "They read the stone's memory and break the cold to feed."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "F6 crust-coupled low frequencies and F16 communication canon support echoseismic mapping of stasis pockets under ridge rock; solitary ambush predator benefits from substrate listening when F7 haze blinds optics.",
+        "fixes": [
+          "F6 crust-coupled low frequencies and F16 communication canon support echoseismic mapping of stasis pockets under ridge rock; solitary ambush predator benefits from substrate listening when F7 haze blinds optics."
+        ],
+        "analogues": [
+          {
+            "organism": "Elephant seismic detection; blind mole rat substrate vibration navigation; golden mole head-drumming (loose analogue).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "cenizor",
+      "kind": "cousin",
+      "note": "(council kind 'predator') Quemador patrols vent perimeters, hunting stasis-bound Cenizor that failed to migrate during cooling."
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-18",
+    "by": [
+      "naturalist/qwen"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-18",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-18"
+    },
+    {
+      "date": "2026-11-18",
+      "who": "autoloop",
+      "what": "removed rejected references from analogues"
+    },
+    {
+      "date": "2026-11-18",
+      "who": "import_got",
+      "what": "merged run autoloop-2026-11-18: 0 chain(s) added, 0 plausibility block(s) filled, 0 relation(s) added"
+    },
+    {
+      "date": "2026-11-19",
+      "who": "import_got",
+      "what": "merged run autoloop-2026-11-19: 0 chain(s) added, 0 plausibility block(s) filled, 0 relation(s) added"
+    }
+  ],
+  "temperament": "Solitary, patient, ambush-oriented, highly reactive to seismic vibrations.",
+  "secrets": [
+    "Player can use Infrasound/Seismic skills to mimic stasis pulses, luring Quemador into ambush traps.",
+    "Their IR array can be calibrated to reveal hidden geothermal vents, granting permanent heat-boost bonuses."
+  ],
+  "moments": [
+    "It does not hunt by sight. It listens to the stone, feels the faint tremor of a sleeping heart, and steps forward into the heat until the glass breaks."
+  ],
+  "journal": [
+    {
+      "en": "They read the stone's memory and break the cold to feed."
+    },
+    {
+      "en": "A tripedal shadow, a silent strike, and the ridge remembers them."
+    }
+  ]
+}

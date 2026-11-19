@@ -1,0 +1,231 @@
+{
+  "schema": "cpore.plant/1",
+  "id": "pan_de_humus",
+  "name": {
+    "en": "Humus Bread",
+    "es": "Pan de humus"
+  },
+  "world": "primigenia",
+  "status": "draft",
+  "growth_form": "fungus_like",
+  "habitats": [
+    "Wet aerated forest litter",
+    "Cave mouths",
+    "Unflooded upper lava tubes receiving organic debris",
+    "Aerated waterfall-cave deposits",
+    "Sunken-cave splash debris above prolonged immersion"
+  ],
+  "summary": "A nonphotosynthetic decomposer fruits as pale cushions on damp, oxygenated organic deposits. Dark-tube colonies require imported carbon and never occupy permanently anaerobic cave pools. Fruit-like scent attracts occasional rondo investigation and small bites that move spores; the cushions are not its staple food. Suitable tissue feeds ecolumbre and babosa and emits no light (F9, F16, F23, F24).",
+  "chains": [
+    {
+      "id": "pan_de_humus.c1",
+      "trait": "Digestive filaments in aerated organic deposits",
+      "links": [
+        "Litter, carcass fragments and transported debris provide chemical energy.",
+        "Filaments digest material externally and absorb breakdown products.",
+        "Moisture and oxygen support growth without daylight.",
+        "Carbon-starved rock and permanently anaerobic pools exclude colonies."
+      ],
+      "roots": [
+        "F9",
+        "F20",
+        "F23",
+        "F24"
+      ],
+      "play": "Trace a dark-cave patch to its imported organic substrate without treating its presence as proof of safe air.",
+      "weakness": "Colonies fail when carbon or moisture runs out, under prolonged seawater immersion or in permanently anaerobic H₂S pools.",
+      "observe": [
+        "Pale threads penetrate softened organic debris.",
+        "Growth ends at clean bare rock.",
+        "Cushions stop above a stagnant pool rather than covering its submerged floor."
+      ],
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "botanist/composer-2.5; chair sol",
+        "date": "2026-11-19",
+        "summary": "Dark growth consumes imported organic carbon and requires a suitable oxygenated substrate. Explicitly exclude permanently anaerobic pools and prolonged immersion; an unflooded tube can still contain humid substrate.",
+        "analogues": [
+          {
+            "organism": "Saprotrophic filamentous fungi",
+            "mechanism": "Extracellular digestion and absorption support growth on organic substrates without photosynthesis.",
+            "refs": [
+              "deacon_2006_fungal"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "pan_de_humus.c2",
+      "trait": "Fruit-scented cushions recruiting occasional spore carriers",
+      "links": [
+        "Mature accessible cushions release fruit-like volatiles.",
+        "Still sheltered air retains a local scent patch.",
+        "Rondo investigates, noses or takes a small bite, picking up spores.",
+        "Subsequent movement transfers spores to other suitable deposits."
+      ],
+      "roots": [
+        "F16",
+        "F24",
+        "F27"
+      ],
+      "play": "Watch brief rondo visits near entrances and distinguish scented cushions from actual fruit.",
+      "weakness": "Wind disperses scent, and inaccessible deep colonies cannot depend on rondo transport.",
+      "observe": [
+        "A pale cushion smells fruity without containing seeds.",
+        "Rondo noses it and leaves only a small bite.",
+        "Spore dust clings to its damp muzzle."
+      ],
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "botanist/composer-2.5; chair sol",
+        "date": "2026-11-19",
+        "summary": "Rondo is an occasional sampler and spore carrier, not a staple fungivore. Fruit mimicry is a fictional specialization; deep colonies cannot assume visits from an inaccessible surface animal.",
+        "analogues": [
+          {
+            "organism": "Aromatic animal-dispersed truffle fungi",
+            "mechanism": "Fungal volatiles mediate animal attraction; precise fruit mimicry and external muzzle transport are proposed extensions.",
+            "refs": [
+              "splivallo_2011_volatiles"
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "gameplay": {
+    "food_for": [
+      "Fungivores eating suitable fresh tissue",
+      "Herbivores taking occasional small investigative bites",
+      "Marine particle feeders receiving washed-out decomposition material"
+    ],
+    "gift_item": "Fresh humus cushion from clean aerated litter",
+    "poison": {
+      "alkaloid": false,
+      "signal": "Pale tissue lacks an alkaloid warning; substrate contamination and decay remain separate concerns."
+    },
+    "healing": null,
+    "cover": null,
+    "climbing": false,
+    "nest_material": null,
+    "mineral_lick": null,
+    "notes": "Fresh fungal tissue is distinct from its decomposing substrate. Rondo takes occasional small bites rather than relying on cushions as a staple. No colonies occur in permanently anaerobic cave pools; pale bodies reflect light and never glow."
+  },
+  "relations": [
+    {
+      "with": "ecolumbre",
+      "kind": "eaten_by",
+      "note": "Grazes suitable tissue in aerated organic-fed cave patches."
+    },
+    {
+      "with": "babosa",
+      "kind": "eaten_by",
+      "note": "Consumes soft cushions and decomposing litter."
+    },
+    {
+      "with": "rondo",
+      "kind": "dispersed_by",
+      "note": "Brief visits, nosing and occasional small bites pick up spores; this is not a staple food relationship."
+    },
+    {
+      "with": "corona",
+      "kind": "other",
+      "note": "May receive decomposition particles washed from tidal-fringe organic deposits."
+    },
+    {
+      "with": "cuarteta",
+      "kind": "other",
+      "note": "Intercepts suspended organic breakdown material carried into coastal water."
+    },
+    {
+      "with": "pluma_de_sombra",
+      "kind": "other",
+      "note": "Decomposes shed fronds in suitable humid deposits."
+    },
+    {
+      "with": "musgo_faro",
+      "kind": "grows_with",
+      "note": "Shares some aerated entrance deposits while remaining nonluminous."
+    }
+  ],
+  "generator": {
+    "growth_form": "fungus_like",
+    "height_m": {
+      "min": 0.02,
+      "max": 0.18
+    },
+    "trunk": "No trunk; fleshy cushions emerge from substrate filaments.",
+    "branching": {
+      "angle_deg": 60,
+      "levels": 3,
+      "apical_dominance": 0.05,
+      "buttress": "None; branching describes filaments, not woody limbs."
+    },
+    "leaf": {
+      "type": "None; rounded porous fruiting surface",
+      "size_cm": 0,
+      "arrangement": "Loose cushion groups over organic material"
+    },
+    "colour": {
+      "base": "Ivory to pale oatmeal",
+      "overlay_rules": [
+        "Mature spore-bearing areas develop tan dust.",
+        "Waterlogged or spent cushions darken and collapse.",
+        "No bioluminescence or moon-phase colour change."
+      ]
+    },
+    "placement": {
+      "slope": "Protected litter floors, debris-catching benches and ledges above stagnant pools.",
+      "altitude_m": [
+        0,
+        1300
+      ],
+      "wetness": "Humid oxygenated substrate without prolonged immersion; exclude permanently anaerobic cave pools and H₂S-bearing stagnant pool substrates.",
+      "soil": "Aerated dead leaves, wood, carcass material or imported organic sediment.",
+      "coast_distance_m": [
+        0,
+        1800
+      ],
+      "fog": "Supports entrance humidity; deep growth follows local moisture, oxygen and carbon delivery.",
+      "density": "Patchy colonies bounded by suitable organic deposits; absent from clean rock and permanently anaerobic pools."
+    },
+    "seasonal": "Fruits after moisture pulses and fresh organic delivery; deep colonies follow substrate inputs rather than sunlight.",
+    "wind_response": "Low cushions move little; exposed edges dry and loose spores disperse in air."
+  },
+  "journal": [
+    {
+      "en": "Pale bread grows on what the cave receives. It smells of fruit, but makes no light.",
+      "es": "Pan pálido crece sobre lo que recibe la cueva. Huele a fruta, pero no da luz."
+    }
+  ],
+  "provenance": {
+    "council_run": "flora-2026-11-19",
+    "by": [
+      "designer",
+      "mythmaker",
+      "naturalist",
+      "physicist",
+      "senses",
+      "skeptic",
+      "wildcard"
+    ],
+    "edited_by": "sol"
+  },
+  "changelog": [
+    {
+      "date": "2026-11-19",
+      "who": "flora.py",
+      "what": "flora pass: 7 voices drafted and peer-reviewed, Composer botanical referee, sol chaired and applied the fixes"
+    }
+  ],
+  "observe": [
+    "Trace filaments into their food substrate.",
+    "Compare a visited entrance cushion with an inaccessible deep colony.",
+    "Remove the light and watch pale cushions disappear.",
+    "Check that colonies remain above stagnant flooded deposits."
+  ],
+  "secrets": [
+    "A fresh deep colony points toward an organic delivery route.",
+    "Splash-zone cushions reveal debris accumulation above prolonged tidal flooding."
+  ]
+}

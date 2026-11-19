@@ -1,0 +1,397 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "humans",
+  "name": {
+    "en": "Humans"
+  },
+  "world": "earth",
+  "kind": "native",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "to be written",
+    "diet": "to be written",
+    "active": "to be written",
+    "predators": []
+  },
+  "body": "to be written",
+  "chains": [
+    {
+      "id": "humans.c1",
+      "trait": "Striding biped with bowl-shaped pelvis",
+      "links": [
+        "One straight leg swings under the body each step and tips forward like an inverted pendulum, trading potential for kinetic energy <- The valgus knee tucks that stance leg beneath the centre of mass and the short bowl pelvis steadies it with little side-to-side sway, so walking undercuts a knuckle-walk though not every other mammal's walk <- Gravity (9.8 m s^-2, F6) fixes the load each stance leg must counter <- Root: F23 bowl pelvis, valgus knee and Laetoli heel strike",
+        "Taking weight-bearing off the forelimbs frees both hands to carry provisions, tools and infants instead <- The same bowl pelvis narrows the birth canal, so infants are born helpless and must be carried for years; carrying, sweat cooling and running on a recoiling arch, not cheap distance alone, are what the package pays for <- Root: F27 secondary altricial infants and obligatory cooperative breeding"
+      ],
+      "roots": [
+        "F23",
+        "F6",
+        "F27"
+      ],
+      "skill": {
+        "id": "humans.stride",
+        "name": {
+          "en": "Stride"
+        },
+        "role": "Basic",
+        "effect": "Walking a steady 1.5 m s^-1 (20 m in about 13 s) refills the stamina bar instead of draining it, with both hands free to carry up to 15 kg; only sprinting, up to 5 m s^-1, burns stamina fast.",
+        "numbers": {}
+      },
+      "weakness": "The bowl pelvis is both hip joint and birth canal: a hip hit halves move speed and caps carried load at 5 kg until it heals, wide loads will not fit through gaps it must pass, and every birth costs the group a rest day - aim for the hips, or wait for a labour.",
+      "observe": [
+        "A single-file trail of footprints with a deep heel strike and a pushed-off big toe",
+        "A bowl-shaped fossil pelvis barely wider than the ribcage",
+        "An adult hauling food, a tool and an infant too young to walk"
+      ],
+      "journal": {
+        "en": "Two legs free the hands; the bill comes due at birth."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "analogues": [
+          {
+            "organism": "Homo sapiens / Australopithecus afarensis — inverted-pendulum striding gait with valgus knee and obstetric pelvis (same lineage as Laetoli trackmaker)",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "bramble_2004_endurance",
+              "leakey_1979_pliocene"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 10,
+          "designer": 8,
+          "physicist": 9,
+          "skeptic": 7
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "skeptic",
+          "senses"
+        ]
+      }
+    },
+    {
+      "id": "humans.c2",
+      "trait": "Bare skin with millions of eccrine glands",
+      "links": [
+        "Furless skin turns the whole body surface into a wet radiator <- Evaporative cooling is driven by air dryness, not breathing, so heat loss no longer caps muscle work <- A biped can therefore stay active at noon when furred competitors must lie in shade <- Root: 1361 W m^-2 solar flux at 1 AU sets the relentless heat load the body must dump",
+        "Every minute of that cooling is paid in water <- After 45 minutes it needs about 1.5 L or takes a dehydration penalty <- Root: F24 eccrine density"
+      ],
+      "roots": [
+        "F24",
+        "F2",
+        "F12"
+      ],
+      "skill": {
+        "id": "humans.midday_push",
+        "name": {
+          "en": "Midday Push"
+        },
+        "role": "Passive",
+        "effect": "Ignore heat exhaustion for 45 minutes of hard work, and keep tracking a scent trail at running pace under full sun.",
+        "numbers": {}
+      },
+      "weakness": "Every minute of that cooling is paid in water: after 45 minutes it needs about 1.5 L or takes a dehydration penalty, and salt loss makes it slower to heal.",
+      "observe": [
+        "Wet footprints that dry to a ring of salt",
+        "It keeps working at noon while furred animals are flat in the shade",
+        "It never pants, even when its chest is heaving"
+      ],
+      "journal": {
+        "en": "The only hunter that pays for its speed in drinking water."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Label 'outwork furred pursuers at noon' as hypothesis, not established fact (F24). Passive could be 'extended heat-work window' with clear water debt, not guaranteed superiority over all diurnal competitors.",
+        "fixes": [
+          "Label 'outwork furred pursuers at noon' as hypothesis, not established fact (F24). Passive could be 'extended heat-work window' with clear water debt, not guaranteed superiority over all diurnal competitors."
+        ],
+        "analogues": [
+          {
+            "organism": "Human eccrine-dominated thermoregulation (Wheeler); partial analogue — horse sweating and tongue/lung evaporative cooling in other endurance mammals, but not whole-body furless eccrine radiator",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "bramble_2004_endurance",
+              "wheeler_1991_thermoregulatory"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "designer": 9,
+          "physicist": 8,
+          "skeptic": 7
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "skeptic",
+          "senses"
+        ]
+      }
+    },
+    {
+      "id": "humans.c3",
+      "trait": "Rotatable thumb with precision pinch",
+      "links": [
+        "A saddle joint at the thumb base swings the pad round to face every fingertip <- The opposition geometry trades brute force for finely metered fingertip torque at low joint stress, so a precise pinch spends less energy than a power grip <- Small hard energy-dense packets - nuts, shellfish, marrow, knappable stone - reward that fine control every single day <- Root: F25 rotatable saddle-joint thumb and precision grip",
+        "Bipedalism took load-bearing off the forelimb, leaving the hand free to make precision a daily habit <- Chimpanzees and capuchins pinch too; what is new here is the degree of control and how often it is used, not the trick itself <- Root: F23 forelimbs freed by the striding bipedal package"
+      ],
+      "roots": [
+        "F25",
+        "F23"
+      ],
+      "skill": {
+        "id": "humans.pinch",
+        "name": {
+          "en": "Pinch"
+        },
+        "role": "Control",
+        "effect": "In one action, open a seed, shellfish or knapped flake for food or a tool no other creature on the tile can use; the brute-force crush alternative takes two actions but breaks thick shells and jammed locks that the pinch cannot.",
+        "numbers": {}
+      },
+      "weakness": "Precision is bought with crush force: a thick shell or a locked joint defeats the pinch, and a grip on the wrist or a pinned thumb disables the hand entirely.",
+      "observe": [
+        "A thumb pad worn flat and shiny at the tip",
+        "A stone struck at one consistent angle, leaving a row of identical flakes",
+        "A midden of cracked nutshells too small for any jaw on the tile"
+      ],
+      "journal": {
+        "en": "It can pick a lock and cannot open a jar."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "analogues": [
+          {
+            "organism": "Homo sapiens hand — trapeziometacarpal saddle joint and precision grip (Napier); convergent fine manipulation in capuchins (Cebus) and chimpanzees at lower duty cycle",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "napier_1956_prehensile",
+              "marzke_2000_evolution"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 10,
+          "designer": 8,
+          "physicist": 9,
+          "skeptic": 8
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "skeptic"
+        ]
+      }
+    },
+    {
+      "id": "humans.c4",
+      "trait": "Hearth fire and cooked food",
+      "links": [
+        "Held flame gelatinises starch and denatures protein outside the body, so tubers and tough meat pay more net calories per bite <- The measured gain is food- and method-specific: starch and collagen gain the most, fat can lose <- Combustion spreads only above roughly 16% O2, so the same air the creature breathes decides where cooking is even possible <- Root: F14 atmosphere at 21% O2 and F28 habitual fire",
+        "A ringed hearth is external digestion and a night guard post that predators learn to keep clear of <- Any shorter-gut-for-bigger-brain trade it permits is the debated expensive-tissue hypothesis, speculative and not settled <- Root: F28 habitual cooking from at least ~400 ka"
+      ],
+      "roots": [
+        "F28",
+        "F14"
+      ],
+      "skill": {
+        "id": "humans.hearth",
+        "name": {
+          "en": "Hearth"
+        },
+        "role": "Signature",
+        "effect": "A maintained fire repels predators within 30 m all night and cooks tubers or tough meat for about +40% net calories (fatty food gains little), one watch per catch; smoke drifts downwind as a visible, scented cone that can mask the camp's scent or deliberately signal allies.",
+        "numbers": {}
+      },
+      "weakness": "The flame dies without dry fuel or below about 16% O2, so rain, a soaked woodpile or thin air ends cooking and night defence, and anything downwind can follow the smoke cone straight to the camp.",
+      "observe": [
+        "Charred bone and heat-cracked stone in a ring of cobbles",
+        "Starch grains split open in a way only heat produces",
+        "A camp that sleeps on the ground instead of in a tree"
+      ],
+      "journal": {
+        "en": "It brought a small sun indoors, then complained about the smoke."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "State +40% as upper-bound, food-specific (starch/collagen gain most; fat often little) per Carmody & Wrangham. Keep expensive-tissue brain–gut trade explicitly 'speculative' in skill text.",
+        "fixes": [
+          "State +40% as upper-bound, food-specific (starch/collagen gain most; fat often little) per Carmody & Wrangham. Keep expensive-tissue brain–gut trade explicitly 'speculative' in skill text."
+        ],
+        "analogues": [
+          {
+            "organism": "Homo habituality with fire (~400 ka+); metabolic effect of cooking — gelatinisation/denaturation (Wrangham group); no non-human analogue for controlled hearth cooking",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "wrangham_2003_cooking",
+              "carmody_2009_energetic"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 9,
+          "designer": 9,
+          "physicist": 9,
+          "skeptic": 8
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "skeptic",
+          "senses"
+        ]
+      }
+    },
+    {
+      "id": "humans.c5",
+      "trait": "Voluntary breath control and speech",
+      "links": [
+        "A steady, controlled exhale stacks into formant patterns - F1 and F2 fall as the vocal tract lengthens - so one breath can carry a three-step plan, not just an alarm <- FOXP2 tunes basal-ganglia sequencing of tongue, lips and breath, one contributor among many loci alongside orofacial motor control and social learning <- A descended larynx is not the trick itself: red deer and koalas lower theirs and never speak <- Root: F26 breath control, vocal learning and FOXP2 as one contributor",
+        "Scattered allies beyond sightlines and after dark still need shared plans, and gesture and gaze - the ape fallback - cannot cross 150 m or a ridge <- A shout carries roughly 150 m in open air, a number set by how 343 m s^-1 sound fades with distance, not by why the voice evolved <- Root: F11 sound speed in air sets the honest range"
+      ],
+      "roots": [
+        "F26",
+        "F11"
+      ],
+      "skill": {
+        "id": "humans.name_the_plan",
+        "name": {
+          "en": "Name the plan"
+        },
+        "role": "Social",
+        "effect": "Share a 3-step plan with allies out of line of sight to about 150 m in open air (roughly half that in scrub); the murmur variant reaches only ~75 m but cannot be intercepted by enemies.",
+        "numbers": {}
+      },
+      "weakness": "Every shout is loud and honest: enemies in earshot hear the plan too and can ambush whoever answers, and the murmur variant covers only ~75 m, so a patient scout can slip inside it.",
+      "observe": [
+        "A long call delivered on one steady, controlled exhale",
+        "Turn-taking: one voice answering another in rhythm, without overlap",
+        "Different calls for different dangers"
+      ],
+      "journal": {
+        "en": "They rehearse tomorrow at the fire, and the wind sells every word."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Give plan-sharing range as ~50–150 m open air (terrain, humidity, voice effort); cite inverse-square + ground effect rather than fixing 150 m. Note murmur ~75 m is order-of-magnitude OK.",
+        "fixes": [
+          "Give plan-sharing range as ~50–150 m open air (terrain, humidity, voice effort); cite inverse-square + ground effect rather than fixing 150 m. Note murmur ~75 m is order-of-magnitude OK."
+        ],
+        "analogues": [
+          {
+            "organism": "Human spoken language — laryngeal motor control, vocal learning, FOXP2 as one of many loci (not speech-only); descended larynx also in red deer/koalas without language (Fitch & Reby)",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "lai_2001_forkhead",
+              "fitch_2001_descended"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 9,
+          "designer": 8,
+          "physicist": 8,
+          "skeptic": 7
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "senses"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "pronghorn",
+      "kind": "convergent",
+      "note": "Both track the same open-habitat pressure. Cenozoic cooling expanded grasslands, selecting for endurance over burst speed. Humans trade agility for striding and sweating; pronghorn trade maneuverability for massive cardio and panoramic vision. Playable: players can use human heat-dissipation to outlast pronghorn in summer, or follow pronghorn migration routes to find water.",
+      "via": "F29"
+    },
+    {
+      "with": "bottlenose_dolphin",
+      "kind": "convergent",
+      "note": "Both solved fission-fusion sociality with vocal learning. Humans use speech and names; dolphins use signature whistles. Playable: players can teach dolphin pods human-like whistle patterns to coordinate group dives, or use human vocal mimicry to calm stressed pods.",
+      "via": "F31"
+    },
+    {
+      "with": "bottlenose_dolphin",
+      "kind": "counter",
+      "note": "Acoustic masking vs echolocation. Human vessel noise and seismic pulses scatter dolphin prey and mask signature whistles; dolphins counter by shifting click frequencies and using bubble curtains to break acoustic shadows. Playable: players can deploy low-frequency hums to disrupt dolphin sonar, or switch to silent hand signals to restore coordination."
+    },
+    {
+      "with": "common_raven",
+      "kind": "mimicry",
+      "note": "Fire exploitation. Ravens drop smoldering twigs into dry grass to flush prey, mimicking human controlled burns. Humans counter with smoke screens and firebreaks to drive ravens from caches. Playable: players can use raven fire-flushing to reveal hidden resources, but must manage smoke drift to avoid alerting rival factions.",
+      "via": "F28"
+    },
+    {
+      "with": "pronghorn",
+      "kind": "predation",
+      "note": "Historical hunting pressure. Humans tracked pronghorn across Pleistocene-Holocene steppe corridors, using endurance and fire to exhaust them; pronghorn rely on speed and terrain to escape. Playable: players can use human pursuit tactics to corner pronghorn, or preserve migration routes to unlock stamina bonuses.",
+      "via": "F29"
+    },
+    {
+      "with": "common_raven",
+      "kind": "counter",
+      "note": "Vocal and tool transfer. Humans demonstrate fire-starting and cache-hiding; ravens observe, imitate, and improve the techniques, teaching players how to outsmart spatial traps. Playable: players can learn raven cache-retrieval patterns to find hidden resources, or use human teaching to train raven allies for distraction.",
+      "via": "F28"
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-18",
+    "by": [
+      "senses",
+      "skeptic"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-18",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-18"
+    }
+  ],
+  "aliases": [
+    "human",
+    "Homo sapiens"
+  ]
+}

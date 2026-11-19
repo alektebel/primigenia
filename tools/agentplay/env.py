@@ -18,7 +18,7 @@ SOCIAL_VERBS = {"befriend", "gift", "observe", "intimidate", "eat"}
 KNOWN_VERBS = {"go", "heading", "flee", "go_nest", "wait", "approach", "attack", "loadout"} | SOCIAL_VERBS
 MOVE_VERBS = {"go", "heading", "flee", "go_nest", "approach"}
 SCHEMA = "world-2"
-TOP_KEYS = ["schema", "tick", "clock", "world", "own", "last_error", "blocked", "events_dropped", "events",
+TOP_KEYS = ["schema", "tick", "clock", "world", "lineage", "own", "last_error", "blocked", "events_dropped", "events",
             "nearby", "legal_verbs", "loadout", "known_moves", "social", "attack_moves", "summary"]
 WORLD_KEYS = ["bound", "units", "nest", "tick_hz"]
 BLOCK_REASONS = {"cliff", "water", "edge", "creature", "unreachable", "obstacle"}
@@ -53,6 +53,36 @@ ERR_TEXT = {0: "ok", -1: "invalid command or value", -2: "invalid or unavailable
             -18: "staggered", -19: "no_stamina", -20: "busy (cooldown)", -21: "cannot_digest (diet)", -22: "full"}
 
 
+# AGENTPLAY_HERDS=1: the island's herds (Rondo x4, Zanco x4, Espinodo x3; profiles from CP_STAGE_SPECIES) around the nest, so the
+# social verbs have someone to talk to. The island puts them 85-140 m out (stage_setup.gd add_herds); here they are 22-45 m out
+# because the text agent only sees nearby creatures. Off by default so old baselines stay comparable.
+HERD_PLAN = [  # species, count, distance, bearing (rad), profile (mouth, charge, spit, tail, guard, hp, stamina, speed)
+    (0, 4, 24.0, 1.1, (0, 0, 2, 0, 0, 60, 100, 4.4)),
+    (1, 4, 34.0, 3.6, (0, 0, 2, 1, 0, 70, 100, 5.2)),
+    (2, 3, 45.0, 5.2, (2, 1, 0, 2, 1, 100, 100, 4.0)),
+]
+
+
+def make_world(seed: int) -> StageWorld:
+    w = StageWorld(seed=seed)
+    if os.environ.get("AGENTPLAY_HERDS") == "1":
+        s = w._setup
+        n = s.n
+        for sp, count, dist, ang, pr in HERD_PLAN:
+            cx, cz = math.sin(ang) * dist, math.cos(ang) * dist
+            for k in range(count):
+                a = k * math.tau / count
+                x, z = cx + math.sin(a) * 3.5 * (k > 0), cz + math.cos(a) * 3.5 * (k > 0)
+                sp_ = s.wild[n]
+                sp_.x, sp_.z, sp_.home_x, sp_.home_z, sp_.species, sp_.bot = x, z, cx, cz, sp, -1
+                p = sp_.profile
+                p.mouth, p.charge, p.spit, p.tail, p.guard, p.hp, p.stamina, p.speed, p.radius_cm = *pr, 0
+                n += 1
+        s.n = n
+        w._lib.cp_stage_reset(w._world, ctypes.byref(s))
+    return w
+
+
 def clone_world(w: StageWorld) -> StageWorld:
     c = object.__new__(StageWorld)
     c._lib = w._lib
@@ -71,7 +101,7 @@ class Episode:
     def __init__(self, seed: int, ticks_per_turn: int = 20):
         self.seed = seed
         self.tpt = ticks_per_turn
-        self.w = StageWorld(seed=seed)
+        self.w = make_world(seed)
         self.ops: list[str | None] = []        # per-turn command (None = continue)
         self.tick_hashes: list[int] = []
         self.bugs: list[dict] = []
@@ -338,7 +368,7 @@ class Episode:
     # ---- determinism ---------------------------------------------------
     def replay_check(self) -> dict:
         try:
-            w2 = StageWorld(seed=self.seed)
+            w2 = make_world(self.seed)
             hashes = []
             for cmd in self.ops:
                 if cmd is not None:

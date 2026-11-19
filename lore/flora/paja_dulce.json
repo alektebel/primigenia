@@ -1,0 +1,224 @@
+{
+  "schema": "cpore.plant/1",
+  "id": "paja_dulce",
+  "name": {
+    "en": "Sweet Straw",
+    "es": "Paja dulce"
+  },
+  "world": "primigenia",
+  "status": "draft",
+  "growth_form": "grass",
+  "habitats": [
+    "Dry eastern meadow",
+    "Start valley",
+    "Fog-trap meadow edges"
+  ],
+  "summary": "A 0.3–1.2 m perennial tussock grass with sugary basal shoots, abrasive silica-bearing blades and deep fibrous roots. Leaves roll during water stress, and seasonal dormancy preserves basal buds through the eastern summer drought. Wind carries pollen and seeds. Rondo grazes the tender bases, while taller clumps conceal garfio along meadow margins (F5, F8, F11, F18).",
+  "chains": [
+    {
+      "id": "paja_dulce.c1",
+      "trait": "Summer dormancy with protected basal buds",
+      "links": [
+        "The eastern rain shadow produces seasonal soil-water shortage despite frequent dawn fog.",
+        "Rolling leaves reduce exposed surface during developing water stress.",
+        "Seasonal growth arrest and leaf senescence reduce summer demand.",
+        "Protected basal buds and stored reserves support regrowth when the favourable season returns."
+      ],
+      "roots": [
+        "F8",
+        "F11",
+        "F18"
+      ],
+      "play": "Read meadow colour and living tussock bases to distinguish seasonal dormancy from permanent dieback; revisit productive patches after the dry season.",
+      "weakness": "Repeated close grazing before reserves recover, or drought exceeding root access to water, can kill a tussock.",
+      "observe": [
+        "Blades become tightly rolled as the soil dries.",
+        "Summer clumps turn straw-coloured while their protected bases remain alive.",
+        "Fresh basal shoots emerge after sustained wet conditions return."
+      ],
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "botanist/composer-2.5; chair sol",
+        "date": "2026-11-19",
+        "summary": "Dawn fog does not guarantee adequate summer root-zone water. Seasonal dormancy is distinct from temporary wilting, and regrowth requires viable buds and sufficient reserves; fire is not a reproductive trigger.",
+        "analogues": [
+          {
+            "organism": "Summer-dormant Mediterranean perennial grasses, including Dactylis glomerata",
+            "mechanism": "Seasonal growth arrest and foliage senescence protect perennial growing tissues through summer drought. [Dormancy review](https://doi.org/10.1093/aob/mcl195).",
+            "refs": [
+              "volaire_2006_dormancy"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "paja_dulce.c2",
+      "trait": "Silica-defended mature blades above tender sugary shoots",
+      "links": [
+        "A persistent grass staple attracts repeated grazing.",
+        "Silica deposited in mature blades increases abrasiveness and reduces feeding quality.",
+        "Protected young bases remain more rewarding than old exposed leaves."
+      ],
+      "roots": [
+        "F18",
+        "F24",
+        "F26"
+      ],
+      "play": "Harvest a few tender shoots as food or a rondo gift, leaving the growing base intact; use mature cured blades as thatch.",
+      "weakness": "Defence slows feeding rather than preventing it, and determined grazers can still remove young tissue.",
+      "observe": [
+        "Old leaf margins look rough under close inspection.",
+        "Rondo parts the mature blades to reach pale basal shoots.",
+        "Grazed clumps retain coarse outer leaves around cropped centres."
+      ],
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "botanist/composer-2.5; chair sol",
+        "date": "2026-11-19",
+        "summary": "Silica is a physical feeding deterrent, not an alkaloid or a wind-resistance mechanism. The analogue demonstrates effects on insect folivores; rondo's selective grazing is a fictional ecological extension.",
+        "analogues": [
+          {
+            "organism": "Silica-accumulating grasses studied with leaf-chewing insects",
+            "mechanism": "Silica increases blade abrasiveness and can reduce herbivore feeding and digestion. [Experimental study](https://doi.org/10.1111/j.1365-2656.2006.01082.x).",
+            "refs": [
+              "massey_2006_silica"
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "gameplay": {
+    "food_for": [
+      "Herbivores grazing tender grass shoots",
+      "Omnivores gathering sugary basal tissue",
+      "Detritivores consuming dead tussock litter"
+    ],
+    "gift_item": "Small bundle of tender basal shoots for rondo",
+    "poison": {
+      "alkaloid": false,
+      "signal": "Ordinary green growth and straw-coloured dormancy; rough mature blades indicate physical defence."
+    },
+    "healing": null,
+    "cover": "Dense unbrowsed clumps conceal small bodies and interrupt sightlines along meadow edges.",
+    "climbing": false,
+    "nest_material": "Dry outer blades and fallen flowering stems",
+    "mineral_lick": null,
+    "notes": "Sugars are concentrated in accessible young tissue, not equally throughout the plant. Silica-bearing foliage is neither a medicinal mineral source nor a substitute for salt. Dry thatch is useful without implying routine meadow fires (F5)."
+  },
+  "relations": [
+    {
+      "with": "rondo",
+      "kind": "eaten_by",
+      "note": "The principal meadow staple; rondo selects tender basal shoots and returns to recovering patches."
+    },
+    {
+      "with": "garfio",
+      "kind": "shelters",
+      "note": "Tall ungrazed margins conceal short approach routes toward rondo feeding patches."
+    },
+    {
+      "with": "zancuda",
+      "kind": "eaten_by",
+      "note": "Zancuda takes soft shoots along damp meadow margins."
+    },
+    {
+      "with": "babosa",
+      "kind": "eaten_by",
+      "note": "Babosa consumes decaying litter in sufficiently damp tussock bases."
+    },
+    {
+      "with": "trenza_de_ribera",
+      "kind": "grows_with",
+      "note": "Grass gives way to riparian shrub strips where channels retain water through meadow drought."
+    },
+    {
+      "with": "player_lineage",
+      "kind": "other",
+      "note": "Provides harvestable shoots and nest thatch; intact basal growing points allow recovery after light harvesting."
+    }
+  ],
+  "generator": {
+    "growth_form": "grass",
+    "height_m": {
+      "min": 0.3,
+      "max": 1.2
+    },
+    "trunk": "No woody trunk; tightly packed tillers arise from a persistent basal crown.",
+    "branching": {
+      "angle_deg": 18,
+      "levels": 1,
+      "apical_dominance": 0.15,
+      "buttress": "Absent."
+    },
+    "leaf": {
+      "type": "Long narrow blade with rough margins and reversible longitudinal rolling",
+      "size_cm": 45,
+      "arrangement": "Alternate two-ranked leaves on densely clustered tillers"
+    },
+    "colour": {
+      "base": "Fresh green",
+      "overlay_rules": [
+        "Young basal shoots are pale green.",
+        "Dormant foliage becomes muted straw-gold.",
+        "Dry outer leaves persist around living crowns.",
+        "Do not add red-purple veins as a ripeness or sweetness cue."
+      ]
+    },
+    "placement": {
+      "slope": "Valley floors, gentle eastern slopes and sheltered meadow benches.",
+      "altitude_m": [
+        20,
+        550
+      ],
+      "wetness": "Seasonally moist root zone followed by summer drying",
+      "soil": "Drained volcanic loam with sufficient depth for fibrous roots.",
+      "coast_distance_m": [
+        150,
+        1700
+      ],
+      "fog": "Frequent dawn fog, especially within the eastern valley trap.",
+      "density": "Broad meadow stands with cropped lawns, taller margins and small bare gaps."
+    },
+    "seasonal": "Strong spring growth and wind-borne reproduction; summer growth arrest and straw-coloured foliage; renewed basal growth when seasonal conditions permit.",
+    "wind_response": "Blades and flowering stems stream with gusts; crowns remain low and tightly rooted."
+  },
+  "journal": [
+    {
+      "en": "The sweet part grows low. Summer takes the green, but leaves the heart.",
+      "es": "Lo dulce crece abajo. El verano se lleva el verde, pero deja el corazón."
+    }
+  ],
+  "provenance": {
+    "council_run": "flora-2026-11-19",
+    "by": [
+      "designer",
+      "mythmaker",
+      "naturalist",
+      "physicist",
+      "senses",
+      "skeptic",
+      "wildcard"
+    ],
+    "edited_by": "sol"
+  },
+  "changelog": [
+    {
+      "date": "2026-11-19",
+      "who": "flora.py",
+      "what": "flora pass: 7 voices drafted and peer-reviewed, Composer botanical referee, sol chaired and applied the fixes"
+    }
+  ],
+  "observe": [
+    "Rondo grazing creates low green lawns beside taller coarse clumps.",
+    "Wind releases pollen from exposed flowering stems.",
+    "Dead outer blades shelter living basal buds during summer.",
+    "Brief dew wetting can brighten dry blades without ending dormancy."
+  ],
+  "secrets": [
+    "A straw-coloured tussock with a firm living base can recover; colour alone does not reveal its condition.",
+    "Repeatedly clipped paths mark rondo feeding circuits and places where garfio may wait.",
+    "The best thatch comes from detached outer leaves, allowing the living crown to remain intact."
+  ]
+}

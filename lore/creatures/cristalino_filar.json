@@ -1,0 +1,313 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "cristalino_filar",
+  "name": {
+    "en": "Cristalino Filar"
+  },
+  "world": "neutronstar",
+  "kind": "new",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "Outer crust near dipole flux-tube gradients",
+    "diet": "Magnetospheric particle veneer, magnetic reconnection sparks",
+    "active": "Synchronized with flare cycles, microsecond bursts",
+    "predators": []
+  },
+  "body": "Anisotropic defect filaments aligned to B-field, ~0.5 μm long",
+  "chains": [
+    {
+      "id": "cristalino_filar.c1",
+      "trait": "Filaments align strictly along magnetic flux tubes",
+      "links": [
+        "Alignment minimizes Zeeman energy in supercritical field",
+        "Degenerate electrons condense into spin-polarized states",
+        "Magnetic energy density exceeds thermal energy density"
+      ],
+      "roots": [
+        "F4"
+      ],
+      "skill": {
+        "id": "cristalino_filar.flux_weave",
+        "name": {
+          "en": "Flux-Weave"
+        },
+        "role": "Control",
+        "effect": "Aligns adjacent lattice defects along a chosen B-field vector, granting +30% tunneling efficiency to allies in a 0.2μm radius.",
+        "numbers": {}
+      },
+      "weakness": "Sudden field inversion flips alignment, causing a 20μs metabolic stall.",
+      "observe": [
+        "Filaments point uniformly during quiet spin",
+        "Defects orient instantly during flare onset",
+        "No cross-field movement observed"
+      ],
+      "journal": {
+        "en": "They don't walk; they let the field carry them."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "In B ≫ B_c (F4), orientation that minimizes Zeeman/magnetic free energy is a real condensed-matter constraint; lattice defect ensembles with anisotropic strain could evolve stable alignment along flux tubes. At ~0.5 μm the body sits at the upper edge of F13’s quasi-crystalline defect-complex limit but is not ruled out. Sudden polarity/shear reversals disrupting alignment is physically credible.",
+        "fixes": [
+          "In B ≫ B_c (F4), orientation that minimizes Zeeman/magnetic free energy is a real condensed-matter constraint; lattice defect ensembles with anisotropic strain could evolve stable alignment along flux tubes. At ~0.5 μm the body sits at the upper edge of F13’s quasi-crystalline defect-complex limit but is not ruled out. Sudden polarity/shear reversals disrupting alignment is physically credible."
+        ],
+        "analogues": [
+          {
+            "organism": "Magnetotactic bacteria (e.g. Magnetospirillum) use magnetosome chains to align with Earth’s geomagnetic field and reduce reorientation cost (Blakemore, magnetotaxis, 1970s).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "chamel_2012_neutron"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "cristalino_filar.c2",
+      "trait": "Captures reconnection sparks via Zeeman-split electron shells",
+      "links": [
+        "Spark energy excites spin-polarized electrons",
+        "Zeeman splitting creates discrete absorption bands",
+        "Stellar spin drives stochastic magnetic reconnection"
+      ],
+      "roots": [
+        "F2",
+        "F4"
+      ],
+      "skill": {
+        "id": "cristalino_filar.spark_siphon",
+        "name": {
+          "en": "Spark-Siphon"
+        },
+        "role": "Basic",
+        "effect": "Converts 15% of incoming flare energy into metabolic ATP-equivalents (weak-interaction cycles).",
+        "numbers": {}
+      },
+      "weakness": "Overloads during giant flares, triggering local proton-capture risk and lattice stress.",
+      "observe": [
+        "Lattice hums at flare onset",
+        "Electron density spikes at spark impact",
+        "Defects darken post-consumption"
+      ],
+      "journal": {
+        "en": "They drink the star's tantrums."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Reframe Spark-Siphon as harvesting impulsive reconnection in the local particle veneer (μm-scale), with yield tied to spark dwell time and defect cross-section; giant flares remain hazard/overload (F14 proton-capture risk), not a steady 15% of flare energy.",
+        "fixes": [
+          "Reframe Spark-Siphon as harvesting impulsive reconnection in the local particle veneer (μm-scale), with yield tied to spark dwell time and defect cross-section; giant flares remain hazard/overload (F14 proton-capture risk), not a steady 15% of flare energy."
+        ],
+        "analogues": [
+          {
+            "organism": "Chemolithotrophs harvesting redox spikes at mineral–fluid interfaces (e.g. sulfur oxidizers at hydrothermal gradients)—not optical absorption in Zeeman ladders, but same niche logic: ephemeral high-energy events at a boundary.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "cristalino_filar.c3",
+      "trait": "Communicates via coherent phonon harmonics along crystal planes",
+      "links": [
+        "Dense lattice enables ultra-fast phonon propagation",
+        "Phonons carry phase information over meters",
+        "High bulk modulus yields sound speeds near 0.004c"
+      ],
+      "roots": [
+        "F6"
+      ],
+      "skill": {
+        "id": "cristalino_filar.phonon_hymn",
+        "name": {
+          "en": "Phonon-Hymn"
+        },
+        "role": "Social",
+        "effect": "Sends a calibrated lattice vibration that syncs ally metabolic cycles, reducing glitch-stress by 25% for 50μs.",
+        "numbers": {}
+      },
+      "weakness": "Phonon echoes are easily distorted by micro-fractures, causing miscommunication.",
+      "observe": [
+        "Lattice rings after interaction",
+        "Defects pause to listen for echoes",
+        "No visual gestures used"
+      ],
+      "journal": {
+        "en": "A song travels a kilometer before fading. They hear it in a breath."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Cap reliable social range to tens–hundreds of μm without fracture repeaters; reserve ‘km’ reach for rare quiet-crystal corridors or aligned phonon waveguides, and state echo distortion (already weakness) as the main range limiter.",
+        "fixes": [
+          "Cap reliable social range to tens–hundreds of μm without fracture repeaters; reserve ‘km’ reach for rare quiet-crystal corridors or aligned phonon waveguides, and state echo distortion (already weakness) as the main range limiter."
+        ],
+        "analogues": [
+          {
+            "organism": "Substrate-borne vibration communication in insects (e.g. treehoppers, tremulation on plant stems); seismic/heavy-footfall signalling in elephants (O’Connell-Rodwell et al., ~2000)—channel physics differ, same ‘vibrate the medium’ logic.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "haensel_2008_physics"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "cristalino_filar.c4",
+      "trait": "Reroutes magnetic field lines to deflect neutron-rich ejecta",
+      "links": [
+        "High conductivity enables flux-tube screening",
+        "Ejected matter follows rigid field lines",
+        "Super-critical B enforces magnetic rigidity"
+      ],
+      "roots": [
+        "F4",
+        "F10"
+      ],
+      "skill": {
+        "id": "cristalino_filar.field_bulwark",
+        "name": {
+          "en": "Field-Bulwark"
+        },
+        "role": "Defence",
+        "effect": "Creates a temporary flux-tube shield, absorbing 40% of micro-glitch ejecta damage.",
+        "numbers": {}
+      },
+      "weakness": "Shield drains topological charge, leaving hereditary information temporarily scrambled.",
+      "observe": [
+        "Defects cluster in a ring",
+        "Ejecta veers around them",
+        "Lattice temperature spikes locally"
+      ],
+      "journal": {
+        "en": "They stand in the line of fire and let the field part the sea."
+      },
+      "plausibility": {
+        "verdict": "implausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Replace with passive flux-tube ‘rafting’: align and interlock defects so ejecta and charged splash follow helical motion along B, reducing direct impact on the cluster; optional speculative cost on F15 topological charge from maintaining a metastable current filament, not ‘creating a shield’ that bends global lines.",
+        "fixes": [
+          "Replace with passive flux-tube ‘rafting’: align and interlock defects so ejecta and charged splash follow helical motion along B, reducing direct impact on the cluster; optional speculative cost on F15 topological charge from maintaining a metastable current filament, not ‘creating a shield’ that bends global lines."
+        ],
+        "analogues": [
+          {
+            "organism": "None meaningful at organism scale; superconducting Meissner screening deflects field over penetration depth—condensed-matter analogue, not evolution.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 3,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "tamiz_drip",
+      "kind": "symbiosis",
+      "note": "Cristalino channels magnetic energy that stabilizes Tamiz's phase-boundary metabolism."
+    },
+    {
+      "with": "andador_fractura",
+      "kind": "cousin",
+      "note": "(council kind 'commensalism') Andador rides the phonon wakes left by Cristalino's field-weaving."
+    },
+    {
+      "with": "tamiz_drip",
+      "kind": "symbiosis",
+      "note": "Cristalino channels magnetic energy that stabilizes Tamiz's phase-boundary metabolism."
+    },
+    {
+      "with": "andador_fractura",
+      "kind": "cousin",
+      "note": "(council kind 'commensalism') Andador rides the phonon wakes left by Cristalino's field-weaving."
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-18",
+    "by": [
+      "naturalist/qwen"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-18",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-18"
+    },
+    {
+      "date": "2026-11-18",
+      "who": "import_got",
+      "what": "merged run autoloop-2026-11-18: 0 chain(s) added, 0 plausibility block(s) filled, 0 relation(s) added"
+    }
+  ],
+  "temperament": "Patient, territorial, highly communicative via phonon harmonics",
+  "secrets": [
+    "Cut a filament and it rewinds to its original alignment within 3μs.",
+    "Their topological knots can store up to 12 bits of hereditary data.",
+    "They refuse to conjugate near glitch epicenters; the vortices scramble their flux-tube memory."
+  ],
+  "moments": [
+    "During a magnetar flare, the crust lights up like a stained-glass window. The filaments stand rigid, drinking the gamma rain, while the lattice itself sings a chord that vibrates in your bones."
+  ],
+  "journal": [
+    {
+      "en": "They build cathedrals out of magnetic fields."
+    },
+    {
+      "en": "Patience here is measured in microseconds, but the patience lasts epochs."
+    }
+  ]
+}

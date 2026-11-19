@@ -1,0 +1,309 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "player_lineage",
+  "name": {
+    "en": "The player's lineage and cousins",
+    "es": "El linaje del jugador y sus primos"
+  },
+  "world": "primigenia",
+  "kind": "native",
+  "status": "draft",
+  "stage": "creature",
+  "niche": {
+    "habitat": "Highly adaptable; traverses valley meadows, alpine cliffs, and coastal islets.",
+    "diet": "Omnivore; fruits, flesh, bone, salt, and detoxified alkaloids.",
+    "active": "Diurnal, with flexible shifts based on lineage branch and season.",
+    "predators": [
+      "Garfio",
+      "Espinodo",
+      "Environmental hazards"
+    ],
+    "prey": [
+      "Small herbivores",
+      "Fruit",
+      "Carrion",
+      "Insects"
+    ]
+  },
+  "body": "A reinforced skeletal lattice and broad wing membranes exploit dense air for cheap gliding and controlled landings, while high aerobic capacity fuels sustained flight and manipulative forelimbs. Shared glycan markers enable flexible tissue integration between cousins, allowing rapid dietary shifts and detox adaptation.",
+  "chains": [
+    {
+      "id": "player_lineage.c1",
+      "trait": "Mildly acidic gut and inducible detox enzymes",
+      "links": [
+        "Shared seed biochemistry (F24) provides overlapping metabolic pathways across island lineages",
+        "High pO₂ (F5) supports costly, inducible cytochrome-style detoxification for low-conc H₂S and arsenic seeps (F23)",
+        "Mildly acidic stomach (pH 3–4) optimizes protein breakdown while limiting universal toxin tolerance",
+        "Broad diet emerges, but alkaloid-rich foliage remains hazardous"
+      ],
+      "roots": [
+        "F24",
+        "F23",
+        "F26",
+        "F5"
+      ],
+      "skill": {
+        "id": "player_lineage.adaptive_gut",
+        "name": {
+          "en": "Adaptive Gut"
+        },
+        "role": "Passive",
+        "effect": "Extract +30% calories from any carcass or fruit; tolerates low-conc H₂S and arsenic seeps via inducible enzymes.",
+        "numbers": {}
+      },
+      "weakness": "Alkaloid-rich red-veined plants (F25) cause cramps and skin-tint warning; must read leaf pigments before consumption.",
+      "observe": [
+        "red-veined foliage",
+        "carcass selection",
+        "absence of regurgitation"
+      ],
+      "journal": {
+        "en": "It eats the island whole, yet the island’s poisons still bite."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Keep mildly acidic gastric pH (roughly 3–4) for protein digestion; treat F24 as shared seed biochemistry so pathways overlap among island radiations, not literal identity in every species. Reserve “ignores minor toxins” for inducible CYP-style detox (alkaloids still hit hard per F26).",
+        "fixes": [
+          "Keep mildly acidic gastric pH (roughly 3–4) for protein digestion; treat F24 as shared seed biochemistry so pathways overlap among island radiations, not literal identity in every species. Reserve “ignores minor toxins” for inducible CYP-style detox (alkaloids still hit hard per F26)."
+        ],
+        "analogues": [
+          {
+            "organism": "Wild boar (Sus scrofa) opportunistic omnivory and broad digestive flexibility; koala (Phascolarctos cinereus) specialized detox for plant secondary compounds — opposite pole for why universal tolerance is limited (from memory, unverified).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "designer": 8
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "skeptic"
+        ]
+      }
+    },
+    {
+      "id": "player_lineage.c2",
+      "trait": "Shared glycan markers and flexible tissue integration",
+      "links": [
+        "Single ancestral seed biochemistry (F24) dictates shared cell-surface glycans across island fauna",
+        "Permissive immune recognition allows graft compatibility between close cousins or fresh carcasses",
+        "Rejection probability scales with dietary mismatch (carnivore part on herbivore) and post-mortem delay",
+        "Arsenic or metal exposure (F23) further raises rejection risk"
+      ],
+      "roots": [
+        "F24",
+        "F23",
+        "F27"
+      ],
+      "skill": {
+        "id": "player_lineage.graft",
+        "name": {
+          "en": "Graft"
+        },
+        "role": "Engage",
+        "effect": "Attach one found carcass part for +1 move slot; rejection chance scales with dietary mismatch and carcass age.",
+        "numbers": {}
+      },
+      "weakness": "A rejected graft burns 10 DNA and causes temporary mobility loss; test on cousins first. Heavy metal/arsenic exposure increases rejection.",
+      "observe": [
+        "scarless seam lines",
+        "foreign tissue twitches",
+        "cousin with mismatched spine"
+      ],
+      "journal": {
+        "en": "The island lends its parts. I wear them. We are the same."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Anchor tolerance to seed-derived shared cell-surface glycans (F24), not identical MHC across all carnivores and herbivores. Allow grafts mainly between close cousins or fresh carcasses; raise rejection after metal/arsenic exposure (F23) or long post-mortem delay.",
+        "fixes": [
+          "Anchor tolerance to seed-derived shared cell-surface glycans (F24), not identical MHC across all carnivores and herbivores. Allow grafts mainly between close cousins or fresh carcasses; raise rejection after metal/arsenic exposure (F23) or long post-mortem delay."
+        ],
+        "analogues": [
+          {
+            "organism": "Colonial tunicate fusion compatibility (Botryllus schlosseri allorecognition/locus control; De Tomaso et al., from memory unverified); sponge cell reaggregation (e.g. dissociated Spongilla) as limbless graft analogue.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 5,
+          "designer": 9
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "skeptic"
+        ]
+      }
+    },
+    {
+      "id": "player_lineage.c3",
+      "trait": "High aerobic capacity and manipulative forelimbs",
+      "links": [
+        "Elevated pO₂ (F5) fuels expensive neural tissue and sustained encephalization",
+        "1.05 g gravity (F2) selects for precise balance, grip strength, and fine motor control",
+        "Stone tools and shard observation (F9, F22) demand dexterous manipulation",
+        "Opposable digits and expanded cognition evolve as a gradual payoff, not an innate catalyst"
+      ],
+      "roots": [
+        "F5",
+        "F2",
+        "F9",
+        "F22"
+      ],
+      "skill": {
+        "id": "player_lineage.craft_tool",
+        "name": {
+          "en": "Craft Tool"
+        },
+        "role": "Control",
+        "effect": "Unlock new moves and modify DNA slots; locks allocation for 5 seconds to prevent mutation drift.",
+        "numbers": {}
+      },
+      "weakness": "Neural processing drains stamina at 2× rate; must rest or feed after three uses.",
+      "observe": [
+        "shard emits low-frequency hum",
+        "fingers flex and grasp",
+        "eyes track object geometry"
+      ],
+      "journal": {
+        "en": "The stone speaks. I listen. My hands open. The world becomes a thing I can hold."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Treat high pO₂ (F5) and 1.05 g (F2) as enablers of gradual encephalization and manipulative digits under tool/stone use (F9, observe shards). Restrict “encoded neural catalyst” to the second capsule / crater payoff (F22), not an innate species-wide trait from the start.",
+        "fixes": [
+          "Treat high pO₂ (F5) and 1.05 g (F2) as enablers of gradual encephalization and manipulative digits under tool/stone use (F9, observe shards). Restrict “encoded neural catalyst” to the second capsule / crater payoff (F22), not an innate species-wide trait from the start."
+        ],
+        "analogues": [
+          {
+            "organism": "Hominin manual dexterity and stone-tool learning; New Caledonian crow (Corvus moneduloides) tool geometry without primate-like PFC expansion (Hunt & Gray, from memory, unverified); Ruben et al. on aerobic capacity and neural代谢 in vertebrates (from memory, unverified).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 5,
+          "designer": 7
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "skeptic",
+          "wildcard"
+        ]
+      }
+    },
+    {
+      "id": "player_lineage.c4",
+      "trait": "Broad wing membranes and reinforced skeletal lattice",
+      "links": [
+        "1.6 bar atmosphere (F4) increases aerodynamic drag and terminal velocity drops 25%",
+        "Falls become survivable while sprinting grows energetically costly due to air resistance",
+        "Island radiation (F27) fills the aerial niche with membrane-supported gliding",
+        "Reinforced lattice offsets drag forces and stabilizes thermal soaring"
+      ],
+      "roots": [
+        "F4",
+        "F2",
+        "F27"
+      ],
+      "skill": {
+        "id": "player_lineage.aerodynamic_glide",
+        "name": {
+          "en": "Aerodynamic Glide"
+        },
+        "role": "Basic",
+        "effect": "Reduce fall damage by 60% and glide up to 40 m; sprint stamina drains 1.6× faster.",
+        "numbers": {}
+      },
+      "weakness": "High drag makes sudden direction changes costly; wind gusts push off-course.",
+      "observe": [
+        "membranous flaps under arms",
+        "hollow bone fractures",
+        "creature drifts on thermal updraft"
+      ],
+      "journal": {
+        "en": "The air is thick. Falling is slow. Running is expensive. We learn to fall gracefully."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "analogues": [
+          {
+            "organism": "Gliding membranes: Draco volans (agamid gliding), Malayan colugo (Galeopterus variegatus); pneumatic/lightened bone: avian skeleton (e.g. Cubo & Casinos on pneumatic bones, from memory, unverified). Dense-atmosphere gliding logic parallels Titan-aerobot design discussions (thick air, lower terminal velocity).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "designer": 9
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "referee",
+          "skeptic"
+        ]
+      }
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-18",
+    "by": [
+      "referee",
+      "skeptic",
+      "wildcard"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-18",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-18"
+    },
+    {
+      "date": "2026-11-19",
+      "who": "import_got",
+      "what": "merged run autoloop-2026-11-19: 0 chain(s) added, 0 plausibility block(s) filled, 0 relation(s) added"
+    },
+    {
+      "date": "2026-11-19",
+      "who": "import_got",
+      "what": "merged run autoloop-2026-11-19: 0 chain(s) added, 0 plausibility block(s) filled, 0 relation(s) added"
+    },
+    {
+      "date": "2026-11-19",
+      "who": "import_got",
+      "what": "merged run autoloop-2026-11-19: 0 chain(s) added, 0 plausibility block(s) filled, 0 relation(s) added"
+    }
+  ],
+  "aliases": [
+    "player lineage",
+    "cousins"
+  ],
+  "temperament": "Curious and socially flexible, using mimicry, posing, and gifts to navigate complex food webs.",
+  "secrets": [
+    "All fossil sites",
+    "Hidden cave",
+    "Nocturnal creature",
+    "Albinos",
+    "Viewpoints",
+    "Void-adapted lineage"
+  ],
+  "moments": [
+    "The cousin watches from a lava tube overhang, forelimbs tracing the air. A low hum vibrates through the dense fog; the herd answers. The player steps forward, offering a fruit, reading the cousin’s posture like a field guide."
+  ]
+}

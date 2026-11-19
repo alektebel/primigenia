@@ -1,0 +1,216 @@
+{
+  "schema": "cpore.plant/1",
+  "id": "lengua_de_lava",
+  "name": {
+    "en": "Lava Tongue",
+    "es": "Lengua de lava"
+  },
+  "world": "primigenia",
+  "status": "draft",
+  "growth_form": "rosette",
+  "habitats": [
+    "Sheltered freshwater seeps on cooled young lava",
+    "Damp nutrient-poor volcanic fissures"
+  ],
+  "summary": "A 0.1–0.3 m photosynthetic rosette with sticky red-veined traps. Insects supplement mineral nutrition on seep-fed young lava. Scent works best in sheltered dawn air; sustained wind or rain makes trapping ineffective. The species does not occupy rich meadow soils (F7, F9, F16, F24, F25).",
+  "chains": [
+    {
+      "id": "lengua_de_lava.c1",
+      "trait": "Sticky insect-digesting leaves",
+      "links": [
+        "Seep-fed lava cracks provide water but little developed soil.",
+        "Photosynthesis supplies carbon while mineral nutrients remain scarce.",
+        "Mucilage captures small insects and digestive secretions release nutrients.",
+        "Absorption supplements nitrogen and phosphorus supply."
+      ],
+      "roots": [
+        "F7",
+        "F9",
+        "F24"
+      ],
+      "play": "Inspect captures to understand why the plant occupies damp bare-rock fissures.",
+      "weakness": "Sustained wind dries or fouls droplets, and sustained rain dilutes or washes them away; traps become ineffective until suitable conditions and secretions return.",
+      "observe": [
+        "Fresh droplets stand on sheltered leaves.",
+        "Small insects stick while large visitors escape.",
+        "After prolonged rain, washed traps hold few new captures."
+      ],
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "botanist/composer-2.5; chair sol",
+        "date": "2026-11-19",
+        "summary": "Carnivory supplements nutrients rather than replacing photosynthesis. Restrict plants to seep-fed nutrient-poor cooled lava; sustained wind and rain suppress effective capture.",
+        "analogues": [
+          {
+            "organism": "Drosera and Pinguicula sticky-trap plants",
+            "mechanism": "Prey-derived nutrients can offset the costs of traps in nutrient-poor habitats.",
+            "refs": [
+              "ellison_2009_energetics"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "lengua_de_lava.c2",
+      "trait": "Scented traps with red-veined defence",
+      "links": [
+        "Trap secretions provide nearby insects with a food-like scent cue.",
+        "Still sheltered air allows the cue to persist.",
+        "Alkaloid-rich tissue discourages browsing.",
+        "Red veins mark defended foliage while specialists exploit trapped prey."
+      ],
+      "roots": [
+        "F16",
+        "F25",
+        "F26"
+      ],
+      "play": "Find active traps at still dawn and watch acechalunas steal captured insects.",
+      "weakness": "Sustained wind disrupts scent and capture; sustained rain dilutes secretions. Prey theft further reduces nutrient return.",
+      "observe": [
+        "Insects approach during a still dawn interval.",
+        "Red veins remain beneath clear secretions.",
+        "Acechalunas removes prey without swallowing leaves."
+      ],
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "botanist/composer-2.5; chair sol",
+        "date": "2026-11-19",
+        "summary": "Warning veins indicate alkaloids. Trapping is effective only during suitable sheltered intervals; persistent seep moisture does not protect aerial traps from wind or rain.",
+        "analogues": [
+          {
+            "organism": "Glandular carnivorous plants",
+            "mechanism": "Secretory traps incur construction and maintenance costs; the scent timing and warning pattern are fictional specializations.",
+            "refs": [
+              "ellison_2009_energetics"
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "gameplay": {
+    "food_for": [
+      "Insectivores stealing trapped prey",
+      "Specialist omnivores taking small self-medication samples"
+    ],
+    "gift_item": null,
+    "poison": {
+      "alkaloid": true,
+      "signal": "Red veins warn of alkaloid-rich tissue and mucilage."
+    },
+    "healing": null,
+    "cover": null,
+    "climbing": false,
+    "nest_material": null,
+    "mineral_lick": null,
+    "notes": "Merodeador sampling does not establish a safe player remedy. Traps cannot restrain creatures. Disable effective capture during sustained wind or rain; plants remain confined to seep-fed young lava rather than meadow soil."
+  },
+  "relations": [
+    {
+      "with": "merodeador",
+      "kind": "eaten_by",
+      "note": "Occasionally samples defended foliage for established self-medication."
+    },
+    {
+      "with": "acechalunas",
+      "kind": "other",
+      "note": "Steals small trapped insects, reducing plant nutrient return."
+    },
+    {
+      "with": "ceniza_roja",
+      "kind": "grows_with",
+      "note": "Occurs beside crust margins where fresh seepage reaches cooled lava."
+    },
+    {
+      "with": "grama_de_ceniza",
+      "kind": "competes",
+      "note": "Shares damp fissures; growing tussocks can shade rosettes."
+    },
+    {
+      "with": "player_lineage",
+      "kind": "other",
+      "note": "Demonstrates defended foliage and nutrient-poor seep habitat."
+    }
+  ],
+  "generator": {
+    "growth_form": "rosette",
+    "height_m": {
+      "min": 0.1,
+      "max": 0.3
+    },
+    "trunk": "Short ground-hugging crown in a damp fissure.",
+    "branching": {
+      "angle_deg": 25,
+      "levels": 1,
+      "apical_dominance": 0.9,
+      "buttress": "None; fine roots occupy existing cracks."
+    },
+    "leaf": {
+      "type": "Fleshy tongue-shaped blade with stalked glands",
+      "size_cm": 12,
+      "arrangement": "Basal spiral rosette"
+    },
+    "colour": {
+      "base": "Bright green",
+      "overlay_rules": [
+        "Red-purple veins mark defended tissue.",
+        "Clear droplets reflect ambient light without glowing.",
+        "Old prey remains form sparse brown flecks.",
+        "Sustained rain washes down droplets; sustained wind dries or fouls them."
+      ]
+    },
+    "placement": {
+      "slope": "Sheltered seep-fed ledges and fissures on stable cooled young lava.",
+      "altitude_m": [
+        50,
+        1400
+      ],
+      "wetness": "Persistent thin freshwater seepage without prolonged submersion.",
+      "soil": "Shallow nutrient-poor volcanic grit; exclude meadow loam, rich humus and hot vent crust.",
+      "coast_distance_m": [
+        120,
+        1800
+      ],
+      "fog": "Dawn humidity reduces drying; sufficient daylight remains necessary.",
+      "density": "Small colonies restricted to individual seep lines and sheltered cracks."
+    },
+    "seasonal": "Expands traps while seepage persists; contracts toward the crown when water supply weakens. Capture resumes after weather damage only when secretions recover.",
+    "wind_response": "Low leaves remain attached, but sustained wind dries scent-bearing droplets and makes trapping ineffective."
+  },
+  "journal": [
+    {
+      "en": "Sticky tongues drink the seep and catch insects. Red veins warn against a mouthful.",
+      "es": "Lenguas pegajosas beben del rezume y atrapan insectos. Las venas rojas advierten antes del bocado."
+    }
+  ],
+  "provenance": {
+    "council_run": "flora-2026-11-19",
+    "by": [
+      "designer",
+      "mythmaker",
+      "naturalist",
+      "physicist",
+      "senses",
+      "skeptic",
+      "wildcard"
+    ],
+    "edited_by": "sol"
+  },
+  "changelog": [
+    {
+      "date": "2026-11-19",
+      "who": "flora.py",
+      "what": "flora pass: 7 voices drafted and peer-reviewed, Composer botanical referee, sol chaired and applied the fixes"
+    }
+  ],
+  "observe": [
+    "Find sticky rosettes along damp cracks in bare lava.",
+    "Compare active sheltered traps with rain-washed leaves.",
+    "Watch insect approaches decline in persistent wind."
+  ],
+  "secrets": [
+    "Frequent acechalunas visits can empty apparently productive traps.",
+    "A surviving contracted crown can mark a seep temporarily withdrawn below the rock."
+  ]
+}

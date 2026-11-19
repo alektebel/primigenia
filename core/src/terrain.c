@@ -1185,6 +1185,19 @@ static void cliff_bands(const CpTerrainParams *p, float *height, float *slope)
     }
 }
 
+/* Route certification (docs/ROUTES-REPORT.md): deterministic graded trails. The workspace is reused strictly
+ * between flow_accum calls: cost = queue, distance = ups, path = recv, profile = scratch, and the output
+ * material bytes hold the network mask until material_map overwrites them. */
+#define TR_INF 0x3fffffff
+#define TRAIL_SLOPE 0.30f
+#define ACCESS_COST_UNIT 20000.f
+static void trail_costs(const CpTerrainParams *p, const CpTerrain *t, int32_t *cost);
+static void trail_sweep(int n, const int32_t *cost, int32_t *dist);
+static int trail_walk(int n, const int32_t *cost, const int32_t *dist, int from, int32_t *out, int cap, int *src);
+static void trail_carve(const CpTerrainParams *p, CpTerrain *t, const CpTerrainWorkspace *ws, const int32_t *path, int count,
+                        int pin, float fx, float fy);
+static int trail_ok(const CpTerrainParams *p) { return p->n >= 512; }
+
 /* Candidates use the final routed river and local rock face, never the
  * protected start/lake. Reserve the first entrance for a real waterfall if
  * one exists. No random retry loop and no fabricated waterfall flag. */
@@ -1195,6 +1208,17 @@ static void cave_entrances(const CpTerrainParams *p, CpTerrain *t, const CpTerra
     if (!(p->caves>0.f) || p->n<64) return;
     int n=p->n,nn=n*n,target=3+(int)(hash2(0,19,p->seed)%4u);
     float cell=p->size_m/(float)n,half=p->size_m*.5f;
+    /* The first entrance is the gameplay cave: it must be reachable on foot from the start, so its site is ranked by
+     * how cheaply a graded trail joins the network already carved from the start (the gap trail). */
+    const int access=trail_ok(p);
+    int32_t *adist=ws->ups,*acost=ws->queue;
+    if(access) {
+        trail_costs(p,t,acost);
+        for(int i=0;i<nn;i++)adist[i]=t->material[i]?0:TR_INF;
+        adist[(n/2)*n+n/2]=0;   /* the start valley, whatever the rivers did */
+        trail_sweep(n,acost,adist);
+    }
+    int cave0_path=0;
     for (int c=0;c<target;c++) {
         int best=-1,waterfall=0; float best_score=-1.f;
         for (int y=2;y<n-2;y++) for (int x=2;x<n-2;x++) {
@@ -1218,7 +1242,17 @@ static void cave_entrances(const CpTerrainParams *p, CpTerrain *t, const CpTerra
                 h-t->height[r]>maxf(4.f,cell*.8f) && t->height[r]>0.f;
             float score=hash01(i,21,p->seed);
             if(c==0 && fall)score+=2.f+t->flow[i];
-            if (score>best_score) {best_score=score;best=i;waterfall=c==0 && fall;}
+            if(c==0 && access) {
+                if(adist[i]>=TR_INF/2)continue;
+                score-=(float)adist[i]*(1.f/ACCESS_COST_UNIT);
+            }
+            if (score>best_score) {
+                if(c==0 && access) {
+                    int src,len=trail_walk(n,acost,adist,i,NULL,0,&src);
+                    if(len<0 || absf(t->height[i]-t->height[src])>.8f*TRAIL_SLOPE*(float)len*cell)continue;
+                }
+                best_score=score;best=i;waterfall=c==0 && fall;
+            }
         }
         if(best<0)break;
         CpTerrainCave *v=&t->caves[t->cave_count++];
@@ -1241,6 +1275,13 @@ static void cave_entrances(const CpTerrainParams *p, CpTerrain *t, const CpTerra
             if(q<1.f)t->height[yy*n+xx]-=p->caves*minf(3.f,v->height_m*.45f)*(1.f-q)*(1.f-q);
         }
         v->z_m=t->height[best];
+        if(c==0 && access)cave0_path=best;
+    }
+    if(access && cave0_path) {
+        /* The approach: a graded trail from the entrance floor to the network, cut into whatever the face is. */
+        int32_t *path=ws->recv;
+        int src,len=trail_walk(n,acost,adist,cave0_path,path,nn,&src);
+        if(len>1)trail_carve(p,t,ws,path,len,cave0_path,t->caves[0].facing_x,t->caves[0].facing_y);
     }
     (void)nn;
 }
@@ -1351,6 +1392,8 @@ static void river_water(const CpTerrainParams *p, CpTerrain *t, const CpTerrainW
     for (int i = 0; i < nn; i++) {
         int c = river_class(t->flow[i] * (float)nn * cell2);
         float h = t->height[i], wd;
+        /* A trail that crosses a deep river fords it: inside the corridor core the class is shallow. */
+        if (c == CP_TERR_RIVER_DEEP && t->material[i] == 1) c = CP_TERR_RIVER_SHALLOW;
         if (c == CP_TERR_RIVER_NONE || !(h > 0.5f) || ws->scratch[i] - h > 0.3f) continue;
         wd = c == CP_TERR_RIVER_DEEP ? 1.2f : c == CP_TERR_RIVER_SHALLOW ? 0.6f : 0.35f;
         if (t->river) {
@@ -1359,6 +1402,268 @@ static void river_water(const CpTerrainParams *p, CpTerrain *t, const CpTerrainW
             t->river[i] = (uint8_t)(c | ((d < 8 && r >= 0 ? d + 1 : 0) << 2));   /* bits 2..5: receiver direction + 1, 0 = outlet */
         }
         ws->scratch[i] = h + wd;
+    }
+    /* Fords: where a trail corridor meets standing or deep water (pits in the bed, ponds at a sill) its bed rises to a
+     * shoal 0.55 m below the surface, so the crossing is wet but always wadeable. */
+    for (int i = 0; i < nn; i++)
+        if (t->material[i] == 1 && t->height[i] > .5f && ws->scratch[i] - t->height[i] > .6f)
+            t->height[i] = ws->scratch[i] - .55f;
+}
+
+/* ---- trails (route certification) ----------------------------------------------------------------------- */
+
+static float trail_grad(const float *h, int n, int x, int y, float cell)
+{
+    int x0 = x > 0 ? x - 1 : x, x1 = x < n - 1 ? x + 1 : x, y0 = y > 0 ? y - 1 : y, y1 = y < n - 1 ? y + 1 : y;
+    float gx = (h[y * n + x1] - h[y * n + x0]) / ((float)(x1 - x0) * cell);
+    float gy = (h[y1 * n + x] - h[y0 * n + x]) / ((float)(y1 - y0) * cell);
+    return sqrtf(gx * gx + gy * gy);
+}
+
+/* Per-cell cost of walking (integer, 10 = flat dry land): steep ground is dear, deep river and the protected lake bowl
+ * are nearly forbidden, rivers are dear along their length (a crossing is fine) and the sea is closed. */
+static void trail_costs(const CpTerrainParams *p, const CpTerrain *t, int32_t *cost)
+{
+    int n = p->n, nn = n * n;
+    float cell = p->size_m / (float)n, half = p->size_m * .5f, cell2 = cell * cell, lr = p->lake_radius_m * 1.25f;
+    for (int y = 0; y < n; y++) for (int x = 0; x < n; x++) {
+        int i = y * n + x, c = 10;
+        float q = trail_grad(t->height, n, x, y, cell) - .35f, area = t->flow[i] * (float)nn * cell2;
+        if (q > 0.f) c += (int)(q * q * 400.f + q * 40.f);
+        if (area >= RIVER_DEEP_M2) c += 4000;
+        else if (area >= RIVER_SHALLOW_M2) c += 200;
+        else if (area >= RIVER_STREAM_M2) c += 20;
+        if (!(t->height[i] > .5f)) c += 100000;
+        /* keep clear of real rivers: the corridor around a trail cannot be graded next to a channel it must not touch */
+        if (x >= 2 && y >= 2 && x < n - 2 && y < n - 2) {
+            int near_river = 0;
+            for (int dy = -2; dy <= 2 && !near_river; dy++) for (int dx = -2; dx <= 2; dx++)
+                if (t->flow[i + dy * n + dx] * (float)nn * cell2 >= RIVER_SHALLOW_M2) { near_river = 1; break; }
+            if (near_river) c += 120;
+        }
+        {
+            float lx = ((float)x + .5f) * cell - half - p->lake_x_m, ly = ((float)y + .5f) * cell - half - p->lake_y_m;
+            if (lx * lx + ly * ly < lr * lr) c += 4000;
+        }
+        cost[i] = c;
+    }
+}
+
+static int trail_step(const int32_t *cost, int a, int b, int diag)
+{
+    int base = (cost[a] + cost[b]) / 2;
+    return diag ? base * 7 / 5 : base;
+}
+
+/* Cost-to-network by raster sweeps (no heap: the workspace is all there is). dist is 0 on sources, TR_INF elsewhere. */
+static void trail_sweep(int n, const int32_t *cost, int32_t *dist)
+{
+    for (int pass = 0; pass < 600; pass++) {
+        int changed = 0;
+        for (int s = 0; s < 4; s++) {
+            int y0 = s & 1 ? n - 1 : 0, y1 = s & 1 ? -1 : n, dy = s & 1 ? -1 : 1;
+            int x0 = s & 2 ? n - 1 : 0, x1 = s & 2 ? -1 : n, dx = s & 2 ? -1 : 1;
+            for (int y = y0; y != y1; y += dy) for (int x = x0; x != x1; x += dx) {
+                int i = y * n + x, best = dist[i];
+                if (cost[i] >= 100000) continue;   /* the sea is a wall */
+                static const int NB[4][3] = { {-1, 0, 0}, {-1, -1, 1}, {0, -1, 0}, {1, -1, 1} };
+                for (int k = 0; k < 4; k++) {
+                    int nx = x + NB[k][0] * dx, ny = y + NB[k][1] * dy, j;
+                    if ((unsigned)nx >= (unsigned)n || (unsigned)ny >= (unsigned)n) continue;
+                    j = ny * n + nx;
+                    if (dist[j] >= TR_INF) continue;
+                    int v = dist[j] + trail_step(cost, i, j, NB[k][2]);
+                    if (v < best) best = v;
+                }
+                if (best < dist[i]) { dist[i] = best; changed = 1; }
+            }
+        }
+        if (!changed) break;
+    }
+}
+
+/* Follows strictly falling distance from a cell to a source. Writes cells to out (when not NULL), returns the count
+ * (-1 when it cannot reach a source) and the source cell. */
+static int trail_walk(int n, const int32_t *cost, const int32_t *dist, int from, int32_t *out, int cap, int *src)
+{
+    int k = 0, cur = from, limit = n * n;
+    if (dist[from] >= TR_INF) return -1;
+    for (;;) {
+        if (out && k < cap) out[k] = cur;
+        k++;
+        if (dist[cur] == 0 || k > limit) break;
+        int x = cur % n, y = cur / n, best = -1, bv = TR_INF;
+        for (int d = 0; d < 8; d++) {
+            int nx = x + DX[d], ny = y + DY[d], j;
+            if ((unsigned)nx >= (unsigned)n || (unsigned)ny >= (unsigned)n) continue;
+            j = ny * n + nx;
+            if (dist[j] >= dist[cur]) continue;
+            int v = dist[j] + trail_step(cost, cur, j, d & 1);
+            if (v < bv) { bv = v; best = j; }
+        }
+        if (best < 0) return -1;
+        cur = best;
+    }
+    if (src) *src = cur;
+    return dist[cur] == 0 && k <= limit && (!out || k <= cap) ? k : -1;
+}
+
+#define TRAIL_HALF_M  11.f
+#define TRAIL_BLEND_M 12.f
+
+/* A cell on or beside a shallow-or-deeper river cell: its heights keep the channel and banks the river carved, so the trail
+ * never dams, re-routes or ponds a river. */
+static int trail_wet(const CpTerrain *t, int n, int i, float cell2)
+{
+    int x = i % n, y = i / n, nn = n * n;
+    for (int dy = -1; dy <= 1; dy++) for (int dx = -1; dx <= 1; dx++) {
+        int xx = x + dx, yy = y + dy;
+        if ((unsigned)xx >= (unsigned)n || (unsigned)yy >= (unsigned)n) continue;
+        if (t->flow[yy * n + xx] * (float)nn * cell2 >= RIVER_SHALLOW_M2) return 1;
+    }
+    return 0;
+}
+
+/* Grades the ground along a path: a profile as close to the old heights as the slope limit allows, anchored at both
+ * ends and wherever the path crosses a river (so channels keep their beds), stamped as a flat-bottomed corridor that
+ * blends into the old ground. The corridor core joins the network mask. */
+static void trail_carve(const CpTerrainParams *p, CpTerrain *t, const CpTerrainWorkspace *ws, const int32_t *path, int count,
+                        int pin, float fx, float fy)
+{
+    int n = p->n, nn = n * n;
+    float cell = p->size_m / (float)n, half = p->size_m * .5f, cell2 = cell * cell, lr = p->lake_radius_m * 1.25f;
+    float *hp = ws->scratch, *qx, *qy;
+    int32_t *stamp = ws->ups;
+    if (count < 2 || (size_t)count * 3 > (size_t)nn) return;
+    qx = hp + count; qy = qx + count;
+    for (int k = 0; k < count; k++) {
+        hp[k] = t->height[path[k]];
+        qx[k] = (float)(path[k] % n) * cell; qy[k] = (float)(path[k] / n) * cell;
+    }
+    /* the centreline: the 8-connected zigzag smoothed, ends fixed, so slopes along it are not inflated by the grid */
+    for (int pass = 0; pass < 8; pass++)
+        for (int k = 1; k < count - 1; k++) {
+            qx[k] = .25f * qx[k - 1] + .5f * qx[k] + .25f * qx[k + 1];
+            qy[k] = .25f * qy[k - 1] + .5f * qy[k] + .25f * qy[k + 1];
+        }
+#define TR_ANCHOR(k) ((k) == 0 || (k) == count - 1 || trail_wet(t, n, path[k], cell2))
+#define TR_D(k, j) sqrtf((qx[k] - qx[j]) * (qx[k] - qx[j]) + (qy[k] - qy[j]) * (qy[k] - qy[j]))
+    for (int pass = 0; pass < 120; pass++) {
+        float change = 0.f;
+        for (int k = 1; k < count; k++) {
+            if (TR_ANCHOR(k)) continue;
+            float lim = TRAIL_SLOPE * TR_D(k, k - 1), v = clampf(hp[k], hp[k - 1] - lim, hp[k - 1] + lim);
+            change += absf(v - hp[k]); hp[k] = v;
+        }
+        for (int k = count - 2; k >= 0; k--) {
+            if (TR_ANCHOR(k)) continue;
+            float lim = TRAIL_SLOPE * TR_D(k, k + 1), v = clampf(hp[k], hp[k + 1] - lim, hp[k + 1] + lim);
+            change += absf(v - hp[k]); hp[k] = v;
+        }
+        if (change < .01f) break;
+    }
+    for (int pass = 0; pass < 3; pass++)
+        for (int k = 1; k < count - 1; k++) if (!TR_ANCHOR(k)) hp[k] = .25f * hp[k - 1] + .5f * hp[k] + .25f * hp[k + 1];
+    for (int k = 0; k < count; k++) if (hp[k] < .6f && t->height[path[k]] > .5f) hp[k] = .6f;
+    memset(stamp, 0, (size_t)nn * sizeof *stamp);
+    {
+        /* Each cell takes the profile height at its nearest point on the polyline (linear along a segment), so the
+         * corridor is a continuous ramp, not a staircase of per-cell plateaus. */
+        float R = TRAIL_HALF_M + TRAIL_BLEND_M;
+        int rc = (int)(R / cell) + 2;
+        for (int k = 0; k + 1 < count; k++) {
+            float sx = qx[k + 1] - qx[k], sy = qy[k + 1] - qy[k], sl = sx * sx + sy * sy;
+            int x0 = (int)(fminf(qx[k], qx[k + 1]) / cell) - rc, x1 = (int)(fmaxf(qx[k], qx[k + 1]) / cell) + rc;
+            int y0 = (int)(fminf(qy[k], qy[k + 1]) / cell) - rc, y1 = (int)(fmaxf(qy[k], qy[k + 1]) / cell) + rc;
+            for (int yy = y0; yy <= y1; yy++) for (int xx = x0; xx <= x1; xx++) {
+                float px, py, u, r, hv;
+                int j, wb, dq, key;
+                if ((unsigned)xx >= (unsigned)n || (unsigned)yy >= (unsigned)n) continue;
+                px = (float)xx * cell - qx[k]; py = (float)yy * cell - qy[k];
+                u = sl > 0.f ? clampf((px * sx + py * sy) / sl, 0.f, 1.f) : 0.f;
+                r = sqrtf((px - u * sx) * (px - u * sx) + (py - u * sy) * (py - u * sy));
+                if (r >= R) continue;
+                j = yy * n + xx;
+                wb = (int)((1.f - smoothstep(TRAIL_HALF_M, R, r)) * 255.f + .5f);
+                dq = (int)(r / R * 1023.f);
+                key = (wb << 10) | (1023 - dq);
+                if (key > (stamp[j] & 0x3FFFF)) {
+                    hv = hp[k] + (hp[k + 1] - hp[k]) * u;
+                    stamp[j] = ((int)(hv * 8.f + .5f) << 18) | key;
+                }
+            }
+        }
+    }
+    for (int i = 0; i < nn; i++) {
+        int wb = (stamp[i] >> 10) & 255;
+        float old = t->height[i], target = (float)(stamp[i] >> 18) * (1.f / 8.f), w = (float)wb * (1.f / 255.f);
+        if (!wb || !(old > .5f)) continue;
+        if (wb == 255) t->material[i] = 1;
+        if (trail_wet(t, n, i, cell2)) continue;
+        if (pin >= 0) {
+            /* the rock behind an entrance stays: only ground in front of its plane is graded */
+            float dx = (float)(i % n - pin % n) * cell, dy = (float)(i / n - pin / n) * cell;
+            if (dx * fx + dy * fy < .5f * cell) continue;
+        }
+        {
+            float lx = ((float)(i % n) + .5f) * cell - half - p->lake_x_m, ly = ((float)(i / n) + .5f) * cell - half - p->lake_y_m;
+            if (lx * lx + ly * ly < lr * lr) continue;
+        }
+        t->height[i] = old + (target - old) * w;
+    }
+#undef TR_ANCHOR
+#undef TR_D
+}
+
+/* The river gap, guaranteed on foot. The gap is where the range is lowest: the lowest dry cell on the circle of radius
+ * 809 m around the start (the long-published checkpoint distance; (800,120) on seeds 1 and 42, elsewhere wherever the
+ * warped range actually opens). A graded trail joins the start valley to it and continues to the nearest river mouth. */
+static void gap_trail(const CpTerrainParams *p, CpTerrain *t, const CpTerrainWorkspace *ws)
+{
+    int n = p->n, nn = n * n;
+    float cell = p->size_m / (float)n, half = p->size_m * .5f, cell2 = cell * cell;
+    BaseCtx c; base_ctx(p, &c);
+    int32_t *cost = ws->queue, *dist = ws->ups, *path = ws->recv;
+    float rad = minf(809.f, .926f * c.crest0);
+    int ix = (int)((0.f + half) / cell), nest = ix * n + ix, w1 = -1, mouth = -1;
+    memset(t->material, 0, (size_t)nn);
+    {
+        /* 720 steps of 0.5 degrees by rotation: no trig, identical on every platform */
+        float ux = 1.f, uy = 0.f, best = 1.0e9f;
+        const float cs = 0.99996192306f, sn = 0.00872653550f;
+        for (int a = 0; a < 720; a++) {
+            int x = (int)((ux * rad + half) / cell), y = (int)((uy * rad + half) / cell);
+            if (x > 1 && y > 1 && x < n - 2 && y < n - 2) {
+                int i = y * n + x;
+                float h = t->height[i], sc = h;
+                /* the checkpoint is dry land beside the river, not its bed */
+                for (int dy = -2; dy <= 2; dy++) for (int dx = -2; dx <= 2; dx++)
+                    if (t->flow[i + dy * n + dx] * (float)nn * cell2 >= RIVER_STREAM_M2) sc += 6.f;
+                if (h > 1.2f && sc < best) { best = sc; w1 = i; }
+            }
+            { float tx = ux * cs - uy * sn; uy = ux * sn + uy * cs; ux = tx; }
+        }
+    }
+    if (w1 < 0) return;
+    trail_costs(p, t, cost);
+    {
+        /* one path, carved once: mouth -> checkpoint -> start. The two legs are traced on the uncarved costs. */
+        int len2 = 0, len1 = 0;
+        for (int i = 0; i < nn; i++) dist[i] = TR_INF;
+        dist[w1] = 0;
+        trail_sweep(n, cost, dist);
+        {
+            int32_t bd = TR_INF;
+            for (int i = 0; i < nn; i++)
+                if (t->height[i] > .8f && t->height[i] <= 2.f && dist[i] < bd) { bd = dist[i]; mouth = i; }
+        }
+        if (mouth >= 0) len2 = trail_walk(n, cost, dist, mouth, path, nn, NULL);
+        if (len2 < 1) { len2 = 1; path[0] = w1; }
+        for (int i = 0; i < nn; i++) dist[i] = TR_INF;
+        dist[nest] = 0;
+        trail_sweep(n, cost, dist);
+        len1 = trail_walk(n, cost, dist, w1, path + len2 - 1, nn - len2 + 1, NULL);
+        if (len1 > 0 && len2 + len1 - 1 > 1) trail_carve(p, t, ws, path, len2 + len1 - 1, -1, 0.f, 0.f);
     }
 }
 
@@ -1515,12 +1820,25 @@ int cp_terrain_generate(const CpTerrainParams *p, CpTerrain *out,
         flow_accum(out->height, n, p->size_m, p->seed, out->flow, ws->scratch,
                    ws->recv, ws->ups, ws->queue, NULL, NULL);
     }
+    memset(out->material, 0, (size_t)nn);
+    if (p->rivers > 0.f && trail_ok(p)) {
+        gap_trail(p, out, ws);
+        flow_accum(out->height, n, p->size_m, p->seed, out->flow, ws->scratch,
+                   ws->recv, ws->ups, ws->queue, NULL, NULL);
+    }
     cave_entrances(p,out,ws);
     if(out->cave_count) flow_accum(out->height,n,p->size_m,p->seed,out->flow,ws->scratch,
                                   ws->recv,ws->ups,ws->queue,NULL,NULL);
-    material_map(p,out);
+    /* river_water first: it reads the corridor mask the trails left in the material bytes, which material_map then overwrites */
     if (p->rivers > 0.f && n >= 64) river_water(p, out, ws);
     else if (out->river) memset(out->river, 0, (size_t)nn);
+    /* trails and fords may have set the floor of an entrance after it was recorded; the record is always the final floor */
+    for (int c = 0; c < out->cave_count; c++) {
+        CpTerrainCave *v = &out->caves[c];
+        int cx = (int)((v->x_m + p->size_m * .5f) / (p->size_m / (float)n)), cy = (int)((v->y_m + p->size_m * .5f) / (p->size_m / (float)n));
+        if (cx >= 0 && cy >= 0 && cx < n && cy < n) v->z_m = out->height[cy * n + cx];
+    }
+    material_map(p,out);
     notify(fn, user, CP_TERR_STAGE_DONE, 1, 1);
     return CP_TERR_OK;
 }

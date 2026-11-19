@@ -1,0 +1,324 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "sosa",
+  "name": {
+    "en": "Sosa"
+  },
+  "world": "primigenia",
+  "kind": "new",
+  "status": "draft",
+  "stage": "creature",
+  "niche": {
+    "habitat": "Volcano slopes, Fumaroles, Hidden cave",
+    "diet": "Sulfur, kaolin clay, arsenic, mercury, salt",
+    "active": "Nocturnal and crepuscular",
+    "predators": []
+  },
+  "body": "Babosa (crawling slug-like with thick keratin)",
+  "chains": [
+    {
+      "id": "sosa.c1",
+      "trait": "Sulfur-secreting glands puffing white vapor near vents",
+      "links": [
+        "Fumaroles emit sulfur gas and raw sulfur deposits",
+        "Sulfur is toxic to most but fuel for specialized metabolism",
+        "Glands evolve to store and secrete sulfur for defense",
+        "Sulfur coat deters predators and preserves skin"
+      ],
+      "roots": [
+        "F23",
+        "F26"
+      ],
+      "skill": {
+        "id": "sosa.sulfur_spray",
+        "name": {
+          "en": "Sulfur Spray"
+        },
+        "role": "Basic",
+        "effect": "Sprays sulfur cloud; damages vision and stamina of attackers; ignites if near fire.",
+        "numbers": {}
+      },
+      "weakness": "Limited supply; must return to vents to recharge; smell reveals position.",
+      "observe": [
+        "Glands along back puff white vapor when threatened.",
+        "Sight of sulfur makes nearby creatures gag or flee.",
+        "Creature licks raw sulfur crusts from rock."
+      ],
+      "journal": {
+        "en": "It wears the mountain's breath as a second skin."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Glands emit H₂S/SO₂-rich mist or fine sulfur powder from ingested crusts (recharge at fumaroles); reserve true combustion synergy for the flamethrower secret lineage on drought/fire years (F5, F15).",
+        "fixes": [
+          "Glands emit H₂S/SO₂-rich mist or fine sulfur powder from ingested crusts (recharge at fumaroles); reserve true combustion synergy for the flamethrower secret lineage on drought/fire years (F5, F15)."
+        ],
+        "analogues": [
+          {
+            "organism": "Bombardier beetle (Brachinus): exothermic quinone spray—not sulfur, but precedent for directed chemical defense; vent shrimp accumulate sulfur bacteria on carapace.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "sosa.c2",
+      "trait": "Detox gut symbionts processing arsenic and mercury crusts",
+      "links": [
+        "Hot springs contain arsenic and mercury poisons",
+        "Niche competition forces utilization of toxic resources",
+        "Symbiotic bacteria evolve to metabolize toxins",
+        "Sosa becomes immune to poisons that kill others"
+      ],
+      "roots": [
+        "F23"
+      ],
+      "skill": {
+        "id": "sosa.poison_immunity",
+        "name": {
+          "en": "Poison Immunity"
+        },
+        "role": "Passive",
+        "effect": "Immune to arsenic, mercury, and sulfur poisoning; can eat toxic food.",
+        "numbers": {}
+      },
+      "weakness": "Starves if toxic minerals are absent; vulnerable to non-toxic starvation.",
+      "observe": [
+        "Eats bright orange arsenic crust without distress.",
+        "Gills do not flare; skin remains calm.",
+        "Other creatures avoid the crust; Sosa thrives."
+      ],
+      "journal": {
+        "en": "Poison is bread; the crust is its only home."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Arsenic: symbiont reduction + host thiol sequestration; mercury: bind and slowly shed in keratin/slime, not complete metabolism; starvation without licks stays.",
+        "fixes": [
+          "Arsenic: symbiont reduction + host thiol sequestration; mercury: bind and slowly shed in keratin/slime, not complete metabolism; starvation without licks stays."
+        ],
+        "analogues": [
+          {
+            "organism": "Arsenic-tolerant microbes in Mono Lake–type habitats; parrots and macaws geophagy at clay licks (detox/adsorption, not full metal catabolism).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "nies_1999_microbial"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "sosa.c3",
+      "trait": "Heat-resistant keratin steaming on hot rock",
+      "links": [
+        "Volcano slopes have high temperature near vents",
+        "Thermal stress damages cells and proteins",
+        "Heat shock proteins and thick keratin evolve for protection",
+        "Sosa can bask on hot rock to regulate metabolism"
+      ],
+      "roots": [
+        "F7"
+      ],
+      "skill": {
+        "id": "sosa.heat_resist",
+        "name": {
+          "en": "Heat Resist"
+        },
+        "role": "Passive",
+        "effect": "Immune to fire and heat damage; moves faster in volcanic zones.",
+        "numbers": {}
+      },
+      "weakness": "Overheats in direct sun or warm meadows; stamina drain.",
+      "observe": [
+        "Walks on hot rock; skin steams slightly.",
+        "Active in steam vents; rests in heat.",
+        "No burns from contact with warm tuff."
+      ],
+      "journal": {
+        "en": "The stone is cool to its belly."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Passive resist = warm geothermal substrate and radiant heat near vents; stamina penalty in sunlit meadows (F15); full fire resist only via evolved flamethrower secret using dietary sulfur (F26).",
+        "fixes": [
+          "Passive resist = warm geothermal substrate and radiant heat near vents; stamina penalty in sunlit meadows (F15); full fire resist only via evolved flamethrower secret using dietary sulfur (F26)."
+        ],
+        "analogues": [
+          {
+            "organism": "Desert lizards on hot sand; alvinellid worms at vent gradients (much hotter—do not copy their limit); garden snail epiphragm keratin against desiccation, extended here for thermal shielding.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "hochachka_2002_biochemical"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "sosa.c4",
+      "trait": "Gastrolith cache of basalt grit and kaolin clay",
+      "links": [
+        "Mineral diet requires grinding for nutrient release",
+        "Lack of teeth or chewing surfaces necessitates grit",
+        "Stomach stones evolve for digestion and mineral intake",
+        "Grit also aids in detoxification by binding toxins"
+      ],
+      "roots": [
+        "F23"
+      ],
+      "skill": {
+        "id": "sosa.gastroliths",
+        "name": {
+          "en": "Gastroliths"
+        },
+        "role": "Defence",
+        "effect": "Reduces damage from bites; restores stamina when eating minerals.",
+        "numbers": {}
+      },
+      "weakness": "Heavy stomach slows movement; must regurgitate if overfed.",
+      "observe": [
+        "Burps stones after eating.",
+        "Stomach visibly hard and heavy.",
+        "Creature licks salt and clay licks."
+      ],
+      "journal": {
+        "en": "It eats the cliff to digest the world."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "F23 basalt grit and kaolin align with canon mineral diet; gastroliths grind low-nutrient stone and clay; kaolin adsorbs alkaloids/toxins (pairs with poison immunity chain). Mass cost slowing a Babosa crawler is realistic.",
+        "fixes": [
+          "F23 basalt grit and kaolin align with canon mineral diet; gastroliths grind low-nutrient stone and clay; kaolin adsorbs alkaloids/toxins (pairs with poison immunity chain). Mass cost slowing a Babosa crawler is realistic."
+        ],
+        "analogues": [
+          {
+            "organism": "Crocodilian and gallinaceous bird gastroliths; parrot and macaw clay licks in the Amazon.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "Coloso",
+      "kind": "cousin",
+      "note": "(council kind 'Mimicry') Coloso rests on volcano slopes; Sosa licks salt near Coloso's path. Coloso ignores Sosa unless provoked."
+    },
+    {
+      "with": "Espinodo",
+      "kind": "cousin",
+      "note": "(council kind 'Deterrent') Espinodo avoids Sosa; Sosa's sulfur coat is toxic to Espinodo's sensitive nose and spine."
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-18",
+    "by": [
+      "naturalist/qwen"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-18",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-18"
+    },
+    {
+      "date": "2026-11-18",
+      "who": "autoloop",
+      "what": "removed rejected references from analogues"
+    },
+    {
+      "date": "2026-11-19",
+      "who": "import_got",
+      "what": "merged run autoloop-2026-11-19: 0 chain(s) added, 0 plausibility block(s) filled, 0 relation(s) added"
+    },
+    {
+      "date": "2026-11-19",
+      "who": "import_got",
+      "what": "merged run autoloop-2026-11-19: 0 chain(s) added, 0 plausibility block(s) filled, 0 relation(s) added"
+    },
+    {
+      "date": "2026-11-19",
+      "who": "import_got",
+      "what": "merged run autoloop-2026-11-19: 0 chain(s) added, 0 plausibility block(s) filled, 0 relation(s) added"
+    }
+  ],
+  "temperament": "Solitary, hostile, venomous",
+  "secrets": [
+    "Flamethrower",
+    "Hidden cave"
+  ],
+  "moments": [
+    "Steam hisses from the hidden cave mouth; inside, a Sosa grinds its teeth on a hot rock, glowing faintly orange in the dark as sulfur vapors curl around its keratin shell."
+  ],
+  "journal": [
+    {
+      "en": "It eats poison and heat. The mountain feeds it, and it feeds the fire."
+    },
+    {
+      "en": "It holds the secret of the flame in its gut; sulfur and stone."
+    }
+  ]
+}

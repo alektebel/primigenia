@@ -33,6 +33,7 @@ func _run() -> void:
 	_test_build_robustness()
 	_test_every_part()
 	_test_rig()
+	_test_species_bodies()
 	print("creature tests: %d checks, %d failures (%d ms)" % [checks, failures.size(), Time.get_ticks_msec() - t0])
 	quit(0 if failures.is_empty() else 1)
 
@@ -431,3 +432,21 @@ func _test_rig() -> void:
 	check(before.is_finite(), "eye placed")
 	check(c.animation_hooks().size() >= 3, "animation hooks (jaw, lids)")
 	c.queue_free()
+
+
+## The island's species have their own genomes (game/data): each loads, and the silhouettes differ (height / length / width).
+func _test_species_bodies() -> void:
+	var seen := []
+	for id in ["rondo", "zanco", "espinodo", "garfio", "merodeador"]:
+		var g = JSON.parse_string(FileAccess.get_file_as_string("res://game/data/%s.json" % id))
+		var c := Creature.new()
+		root.add_child(c)
+		var r: Dictionary = c.load_genome(g)
+		check(r["ok"], "species body %s loads (%s)" % [id, r.get("error", "")])
+		if r["ok"]:
+			var a: AABB = c.rest_aabb()
+			check(a.size.y > .5 and a.size.x < 4 and is_finite(a.size.z), "species body %s has a sane size" % id)
+			var key := Vector3(snappedf(a.size.y / a.size.z, .1), 0, 0)
+			check(not seen.has(key) or id == "merodeador", "species body %s differs in proportion" % id)
+			seen.append(key)
+		c.queue_free()

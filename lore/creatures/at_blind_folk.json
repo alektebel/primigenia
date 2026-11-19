@@ -1,0 +1,173 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "at_blind_folk",
+  "name": {
+    "en": "Blind Folk"
+  },
+  "world": "at_garden_peoples",
+  "kind": "easter_egg",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "to be written",
+    "diet": "to be written",
+    "active": "to be written",
+    "predators": []
+  },
+  "body": "to be written",
+  "chains": [
+    {
+      "id": "at_blind_folk.c1",
+      "trait": "Smooth eye-patches & enlarged auditory pavilions",
+      "links": [
+        "Complete ocular regression and auditory hypertrophy",
+        "Perpetual darkness in kilometre-high shelter caves",
+        "Karst aquifer networks with isothermal microclimates"
+      ],
+      "roots": [
+        "F13",
+        "F21"
+      ],
+      "skill": {
+        "id": "at_blind_folk.cave_echo",
+        "name": {
+          "en": "Cave Echo"
+        },
+        "role": "Poke",
+        "effect": "Reveals hidden enemies within 30m and deals 2 psychic damage to disoriented foes",
+        "numbers": {}
+      },
+      "weakness": "Blind to high-frequency whistles and sudden visual cues",
+      "observe": [
+        "Flared nostrils and twitching whiskers",
+        "Mobile ears swiveling like satellite dishes",
+        "Smooth, featureless skin where eyes should be"
+      ],
+      "journal": {
+        "en": "They navigate the dark by listening to the world breathe."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-19",
+        "analogues": [
+          {
+            "organism": "Cavefish and troglobitic salamanders (regressive eye loss); oilbird and cave swiftlet acoustic navigation in reverberant cavities",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own"
+          }
+        ],
+        "scores": {
+          "astrobio": 9,
+          "designer": 9,
+          "physicist": 9
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist"
+        ]
+      }
+    },
+    {
+      "id": "at_blind_folk.c2",
+      "trait": "Adult freeze & infant banshee screams",
+      "links": [
+        "Reversed predator-evasion strategy for high-reverb environments",
+        "Saturated boundary layer attenuates high frequencies",
+        "Dense atmospheric convection and karst waveguides"
+      ],
+      "roots": [
+        "F8",
+        "F23"
+      ],
+      "skill": {
+        "id": "at_blind_folk.banshee_wail",
+        "name": {
+          "en": "Banshee Wail"
+        },
+        "role": "Engage",
+        "effect": "Stuns sonic predators within 25m for 2 turns",
+        "numbers": {}
+      },
+      "weakness": "Sudden silence causes panic and loss of orientation",
+      "observe": [
+        "Adults standing perfectly still mid-stride",
+        "Infants emitting focused, piercing vocalizations",
+        "Tactile fingers tracing cave walls"
+      ],
+      "journal": {
+        "en": "In the dark, silence is death. So they scream."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-19",
+        "summary": "Tie the reversed strategy explicitly to F23 narrowband echolocation by ceiling-dwelling predators (giant blind bats/insects), not generic ‘sonic predators’; adult freeze reduces echo cross-section, infant screams function as alarm/beacon in karst waveguides.",
+        "fixes": [
+          "Tie the reversed strategy explicitly to F23 narrowband echolocation by ceiling-dwelling predators (giant blind bats/insects), not generic ‘sonic predators’; adult freeze reduces echo cross-section, infant screams function as alarm/beacon in karst waveguides."
+        ],
+        "analogues": [
+          {
+            "organism": "Oilbird/strswiftlet burst vocalizations in caves; bat freeze-or-minimize-motion responses during jamming/approach (loose parallel)",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "fenton_1982_acoustic"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "designer": 7,
+          "physicist": 10
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist",
+          "physicist"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "at_tool_breeders",
+      "kind": "counter",
+      "note": "Blind Folk use narrowband banshee screams for sonar in high-reverb caves; Tool Breeders use bioluminescent signaling networks that would blind/disorient Blind Folk if they surfaced.",
+      "via": "F8, F16, F23"
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-18",
+    "by": [
+      "naturalist",
+      "physicist"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-19",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-18"
+    },
+    {
+      "date": "2026-11-18",
+      "who": "autoloop",
+      "what": "removed rejected references from analogues"
+    }
+  ],
+  "lore_ref": {
+    "file": "lore/alltomorrows.en.json",
+    "id": "blind-folk"
+  }
+}

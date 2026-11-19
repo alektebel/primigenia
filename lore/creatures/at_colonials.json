@@ -1,0 +1,166 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "at_colonials",
+  "name": {
+    "en": "Colonials"
+  },
+  "world": "at_qu_worlds",
+  "kind": "easter_egg",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "to be written",
+    "diet": "to be written",
+    "active": "to be written",
+    "predators": []
+  },
+  "body": "to be written",
+  "chains": [
+    {
+      "id": "at_colonials.c1",
+      "trait": "Disembodied skin-muscle filter mats with retained eyes",
+      "links": [
+        "Qu waste streams provide constant organic slurry",
+        "Dormant nanites enable rapid tissue turnover and metal chelation",
+        "Punishment mandates conscious witness via retained vision",
+        "Asexual and sexual reproduction maximizes colonization speed"
+      ],
+      "roots": [
+        "F9",
+        "F12",
+        "F17"
+      ],
+      "skill": {
+        "id": "at_colonials.waste_absorption",
+        "name": {
+          "en": "Waste Absorption"
+        },
+        "role": "Defence",
+        "effect": "Neutralizes environmental toxins and nanite decay radiation, granting damage reduction (40% for 60s).",
+        "numbers": {}
+      },
+      "weakness": "Physically fragile; limited mobility makes them easy targets for kinetic attacks.",
+      "observe": [
+        "Quilt-like fields of human flesh stretching to horizons",
+        "Weeping eyes embedded in muscle tissue",
+        "Shimmering nanite dust settling on shorelines"
+      ],
+      "journal": {
+        "en": "They learned to eat poison and keep their eyes open. A mercy the Qu denied them, and a curse that outlived the Qu."
+      },
+      "plausibility": {
+        "verdict": "implausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Frame as Qu punitive somatic engineering, not natural selection; survival via filter-feeding on waste slurry is plausible, but conscious witnessing eyes are a designed constraint—gameplay ‘witness’ mechanic, not an adaptive optimum.",
+        "fixes": [
+          "Frame as Qu punitive somatic engineering, not natural selection; survival via filter-feeding on waste slurry is plausible, but conscious witnessing eyes are a designed constraint—gameplay ‘witness’ mechanic, not an adaptive optimum."
+        ],
+        "analogues": [
+          {
+            "organism": "Marine filter mats/sponges (choanocyte channels); freshwater sponge gemmules; no Earth analogue for distributed conscious epidermis",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 4,
+          "designer": 9,
+          "physicist": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist",
+          "physicist"
+        ]
+      }
+    },
+    {
+      "id": "at_colonials.c2",
+      "trait": "Living filter mats and nervous-net cultures",
+      "links": [
+        "High-pressure brine pools demand passive nutrient extraction",
+        "1.8 bar atmosphere with geothermal metal runoff suspends particulates",
+        "Dense air triples acoustic impedance, favoring ground vibration sensing",
+        "Hemocyanin-like oxygen transport systems selected for copper-rich aquatic/soil chemistry"
+      ],
+      "roots": [
+        "F5",
+        "F9",
+        "F11",
+        "F16"
+      ],
+      "skill": {
+        "id": "at_colonials.biofilter_assimilation",
+        "name": {
+          "en": "Biofilter Assimilation"
+        },
+        "role": "Basic",
+        "effect": "Converts contaminated soil/water into temporary stamina and reduces radiation damage by 30%.",
+        "numbers": {}
+      },
+      "weakness": "Vulnerable to rapid desiccation when atmospheric humidity drops below 40%.",
+      "observe": [
+        "Quilt-like flesh fields",
+        "Suspended nutrient webs",
+        "Geothermal vent runoff"
+      ],
+      "journal": {
+        "en": "They don't walk. They spread. Forty million years of witnessing taught them patience, not legs."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Tie hemocyanin benefit to brine/vent margins (F9,F11), not generic 1.8 bar air; desiccation weakness fits intertidal mat analogues—keep them shore/waste-bound, not continent-spanning mobile organisms.",
+        "fixes": [
+          "Tie hemocyanin benefit to brine/vent margins (F9,F11), not generic 1.8 bar air; desiccation weakness fits intertidal mat analogues—keep them shore/waste-bound, not continent-spanning mobile organisms."
+        ],
+        "analogues": [
+          {
+            "organism": "Tunicate/jelly mat filter feeders in metal-rich estuaries; hemocyanin in decapods and mollusks in hypoxic, copper-loaded waters (Linder copper physiology)",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "linder_1991_copper"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "designer": 8,
+          "physicist": 7
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist",
+          "physicist"
+        ]
+      }
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-18",
+    "by": [
+      "naturalist",
+      "physicist"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-18",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-18"
+    }
+  ],
+  "lore_ref": {
+    "file": "lore/alltomorrows.en.json",
+    "id": "colonials"
+  }
+}

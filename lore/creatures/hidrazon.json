@@ -1,0 +1,294 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "hidrazon",
+  "name": {
+    "en": "Hidrazón"
+  },
+  "world": "erid",
+  "kind": "new",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "Subsurface NH3-H2O eutectic oceans, near hydrothermal vent fields",
+    "diet": "Chemosynthetic grazers, smaller swimmers, ammonia-rich brine fauna",
+    "active": "24/7; activity peaks near thermal gradients",
+    "predators": []
+  },
+  "body": "Streamlined, fluid-filled body; laminated iron-nickel carapace; electroreceptive rostrum; jaw-thoracic resonator",
+  "chains": [
+    {
+      "id": "hidrazon.c1",
+      "trait": "Fluid-filled internal cavities matching pressure",
+      "links": [
+        "Body contains no gas bladders",
+        "Internal fluids equalize with 40-bar ambient",
+        "Prevents tissue collapse under crush pressure",
+        "Physical root: High surface pressure and fluid mechanics"
+      ],
+      "roots": [
+        "F16",
+        "F5"
+      ],
+      "skill": {
+        "id": "hidrazon.pressure_match",
+        "name": {
+          "en": "Pressure Match"
+        },
+        "role": "Passive",
+        "effect": "Immunity to pressure damage and environmental hazards; -20% fall damage.",
+        "numbers": {}
+      },
+      "weakness": "Rapid temperature changes cause thermal stress; heat sources attract predators.",
+      "observe": [
+        "Body has no air pockets",
+        "Skin is smooth, non-porous",
+        "Moves without buoyancy shift"
+      ],
+      "journal": {
+        "en": "A knife of bone and iron in the blue dark."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "At ~40 bar (F5), gas-filled spaces would implode; pressure-matched fluid compartments (F16) are the standard deep/high-pressure solution and avoid swim-bladder pathology when moving through pressure gradients in vent-connected brines.",
+        "fixes": [
+          "At ~40 bar (F5), gas-filled spaces would implode; pressure-matched fluid compartments (F16) are the standard deep/high-pressure solution and avoid swim-bladder pathology when moving through pressure gradients in vent-connected brines."
+        ],
+        "analogues": [
+          {
+            "organism": "Hadal amphipods and abyssal fishes lacking gas swim bladders; gelatinous deep-sea fauna with isotonic/internal pressure support",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "hidrazon.c2",
+      "trait": "Electroreceptive rostrum snout",
+      "links": [
+        "Snout detects bioelectric fields",
+        "Prey and ores emit micro-currents",
+        "Hunts in total darkness of deep brine",
+        "Physical root: Metal-rich crust and reducing chemistry"
+      ],
+      "roots": [
+        "F11",
+        "F20"
+      ],
+      "skill": {
+        "id": "hidrazon.ore_sense",
+        "name": {
+          "en": "Ore Sense"
+        },
+        "role": "Passive",
+        "effect": "Reveals hidden ores and camouflaged enemies within 15m; reveals weak points.",
+        "numbers": {}
+      },
+      "weakness": "Strong electromagnetic fields scramble detection; magnetic interference causes disorientation.",
+      "observe": [
+        "Snout twitches toward metal",
+        "Ampullary pores glow faintly",
+        "Hunts near vent minerals"
+      ],
+      "journal": {
+        "en": "It tastes the world's heartbeat."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Split ‘Ore Sense’ into (1) prey galvanic detection—plausible—and (2) vent-brine redox/ionic ‘ore proximity’ sensing within ~meters, not passive EM from silent rock.",
+        "fixes": [
+          "Split ‘Ore Sense’ into (1) prey galvanic detection—plausible—and (2) vent-brine redox/ionic ‘ore proximity’ sensing within ~meters, not passive EM from silent rock."
+        ],
+        "analogues": [
+          {
+            "organism": "Great white shark (Carcharodon carcharias) ampullae of Lorenzini; platypus (Ornithorhynchus anatinus) bill electroreception",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "hidrazon.c3",
+      "trait": "Jaw-thoracic resonator clicker",
+      "links": [
+        "Clicker produces sharp pulses",
+        "Dense fluid transmits sound efficiently",
+        "Maps surroundings via echolocation",
+        "Physical root: Sound propagation in dense atmosphere/fluid"
+      ],
+      "roots": [
+        "F9",
+        "F14"
+      ],
+      "skill": {
+        "id": "hidrazon.sonar_screech",
+        "name": {
+          "en": "Sonar Screech"
+        },
+        "role": "Control",
+        "effect": "Stuns enemies for 3s and reveals their position; deals 12 sonic damage.",
+        "numbers": {}
+      },
+      "weakness": "Soft terrain absorbs sound; silent prey or sound-dampening fields evade detection.",
+      "observe": [
+        "Thorax vibrates before attack",
+        "Head darts to map echoes",
+        "Clicks repeat faster when hunting"
+      ],
+      "journal": {
+        "en": "The dark is just a shape it knows."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Echolocation in opaque fluid is favored where vision fails; NH₃–H₂O brines (F10) support sound transmission with different absorption than air but remain usable at short–medium range for ambush predators. Thoracic/jaw coupling matches F14’s resonator logic extended into subsurface media.",
+        "fixes": [
+          "Echolocation in opaque fluid is favored where vision fails; NH₃–H₂O brines (F10) support sound transmission with different absorption than air but remain usable at short–medium range for ambush predators. Thoracic/jaw coupling matches F14’s resonator logic extended into subsurface media."
+        ],
+        "analogues": [
+          {
+            "organism": "Bottlenose dolphin (Tursiops truncatus) and other odontocetes: narrowband clicks for high-resolution sonar in turbid water",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "hidrazon.c4",
+      "trait": "Laminated carapace with Fe-Ni inlays",
+      "links": [
+        "Carapace resists fracture",
+        "High gravity stresses skeletal structure",
+        "Bio-scavenged metals reinforce stress lines",
+        "Physical root: Super-Earth gravity and metal bioavailability"
+      ],
+      "roots": [
+        "F3",
+        "F17",
+        "F11"
+      ],
+      "skill": {
+        "id": "hidrazon.iron_shell",
+        "name": {
+          "en": "Iron Shell"
+        },
+        "role": "Defence",
+        "effect": "Reduces all incoming damage by 35%; blocks critical hits.",
+        "numbers": {}
+      },
+      "weakness": "Inlays fatigue after repeated impact; heavy attacks cause structural cracks.",
+      "observe": [
+        "Plates shift along growth lines",
+        "Metallic veins visible at joints",
+        "Impacts ring with metal tone"
+      ],
+      "journal": {
+        "en": "Armored against the weight of worlds."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "1.35 g (F3) raises skeletal stresses; localized Fe–Ni along growth laminae (F17) from vent-available metals (F11) is convergent with bio-scavenged reinforcement without making the whole exoskeleton metallic. Fatigue at inlays after repeated impact is realistic.",
+        "fixes": [
+          "1.35 g (F3) raises skeletal stresses; localized Fe–Ni along growth laminae (F17) from vent-available metals (F11) is convergent with bio-scavenged reinforcement without making the whole exoskeleton metallic. Fatigue at inlays after repeated impact is realistic."
+        ],
+        "analogues": [
+          {
+            "organism": "Chiton magnetite tooth platelets; crayfish calcium carbonate cuticle with mineral zoning under load",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "Eridian Crawler",
+      "kind": "cousin",
+      "note": "(council kind 'Predator') Hidrazón may snatch juvenile Eridians near vent shafts; Eridians use sonic lures to deter them."
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-18",
+    "by": [
+      "naturalist/qwen"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-18",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-18"
+    },
+    {
+      "date": "2026-11-18",
+      "who": "autoloop",
+      "what": "removed rejected references from analogues"
+    }
+  ],
+  "temperament": "Ambush predator; solitary; highly territorial via acoustic maps",
+  "secrets": [
+    "Hidrazón blood is a super-conductive brine; can craft high-efficiency electrical conduits.",
+    "Eating Hidrazón meat grants temporary pressure resistance but causes ammonia toxicity over time."
+  ],
+  "moments": [
+    "In the black water, a flash of bio-electric blue illuminates a snout filled with needle-teeth; the sound of a clicker click echoes like a gunshot in the fluid."
+  ],
+  "journal": [
+    {
+      "en": "The deep ocean is a cathedral of pressure."
+    },
+    {
+      "en": "We build our walls high; the Hidrazón builds its teeth."
+    }
+  ]
+}

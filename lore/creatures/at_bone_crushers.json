@@ -1,0 +1,179 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "at_bone_crushers",
+  "name": {
+    "en": "Bone Crushers"
+  },
+  "world": "at_garden_prairies",
+  "kind": "easter_egg",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "to be written",
+    "diet": "to be written",
+    "active": "to be written",
+    "predators": []
+  },
+  "body": "to be written",
+  "chains": [
+    {
+      "id": "at_bone_crushers.c1",
+      "trait": "Enormous scavenging beaks & vicious thumb claws",
+      "links": [
+        "Crack calcified bone and rip carrion hides -> seasonal drought cycles create episodic die-offs across alkaline prairies -> 18° axial tilt driving predictable resource pulses and seasonal droughts"
+      ],
+      "roots": [
+        "F2",
+        "F5",
+        "F12"
+      ],
+      "skill": {
+        "id": "at_bone_crushers.bone_snap",
+        "name": {
+          "en": "Bone Snap"
+        },
+        "role": "Poke",
+        "effect": "Shatters bones to access marrow, dealing 25% damage and applying a 15% vulnerability buff to targets for 2 turns.",
+        "numbers": {}
+      },
+      "weakness": "Beak becomes brittle and prone to fracture if diet lacks sufficient calcium cycling.",
+      "observe": [
+        "Three-meter hairy frame casting long shadows",
+        "Massive, tooth-derived beak snapping shut with hydraulic force",
+        "Thumb claws digging into putrefying remains"
+      ],
+      "journal": {
+        "en": "They turn death into a feast, and a feast into a cage."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "Note calcium demands on enamel-derived beak and tie brittleness weakness to drought-limited F12 mineral cycling, not vague diet alone.",
+        "fixes": [
+          "Note calcium demands on enamel-derived beak and tie brittleness weakness to drought-limited F12 mineral cycling, not vague diet alone."
+        ],
+        "analogues": [
+          {
+            "organism": "Spotted hyena (bone crushing); bearded vulture (osteophagy); extinct phorusrhacids (large beaked terrestrial predators)",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "designer": 8,
+          "physicist": 9
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist",
+          "physicist"
+        ]
+      }
+    },
+    {
+      "id": "at_bone_crushers.c2",
+      "trait": "Thermoregulatory snouts & carrion-scent glands",
+      "links": [
+        "High caloric requirement for bone processing -> 22% O2 and 1.1 bar pressure support high aerobic output -> K2V spectrum delivers steady visible light but low UV cooling -> heat dissipation shifts to cranial glands and vascularized snouts"
+      ],
+      "roots": [
+        "F5",
+        "F7",
+        "F8"
+      ],
+      "skill": {
+        "id": "at_bone_crushers.carrion_screech",
+        "name": {
+          "en": "Carrion Screech"
+        },
+        "role": "Signature",
+        "effect": "-20% enemy aggression within 50m; marks territory and deters rivals via chemical and auditory display.",
+        "numbers": {}
+      },
+      "weakness": "High caloric requirement; starves rapidly if large kills are older than 3 days.",
+      "observe": [
+        "Vascularized, sweat-pore-rich snout",
+        "Glandular secretions staining the fur",
+        "Low-frequency vocal sac inflation"
+      ],
+      "journal": {
+        "en": "They smell the future, and eat it."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "Keep carrion-age starvation and gland/deterrence; verify Mainardi-style chemical signaling or cite as unverified.",
+        "fixes": [
+          "Keep carrion-age starvation and gland/deterrence; verify Mainardi-style chemical signaling or cite as unverified."
+        ],
+        "analogues": [
+          {
+            "organism": "Turkey vulture and other cathartids (carrion detection, urohidrosis/thermoregulatory flushing); howler monkey (low-frequency territorial vocal sac)",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own"
+          }
+        ],
+        "scores": {
+          "astrobio": 7,
+          "designer": 9,
+          "physicist": 5
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "council"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "at_insectophagi",
+      "kind": "rivalry",
+      "note": "Both exploit alkaline prairie loams; Insectophagi harvest insect colonies while Bone Crushers monopolize vertebrate carrion, creating territorial friction over nutrient sources.",
+      "via": "F12"
+    },
+    {
+      "with": "at_predators",
+      "kind": "counter",
+      "note": "Predator pinnae detect Bone Crusher carrion-scent gland sprays, allowing them to intercept scavengers or avoid contaminated kills.",
+      "via": "F7"
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-19",
+    "by": [
+      "council",
+      "naturalist",
+      "physicist"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-19",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-19"
+    },
+    {
+      "date": "2026-11-19",
+      "who": "autoloop",
+      "what": "removed rejected references from analogues"
+    }
+  ],
+  "lore_ref": {
+    "file": "lore/alltomorrows.en.json",
+    "id": "bone-crushers"
+  }
+}

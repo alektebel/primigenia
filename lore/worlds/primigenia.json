@@ -2,19 +2,346 @@
   "schema": "cpore.world/1",
   "id": "primigenia",
   "kind": "fictional",
-  "system": {"star": "G1-G2V, yellow-white, quiet and middle-aged", "position": "fictional; no galactic position fixed", "distance_ly_from_sol": null},
-  "name": {"en": "Primigenia (the island world)", "es": "Primigenia (el mundo de la isla)"},
-  "status": "draft",
+  "system": {
+    "star": "G1V, yellow-white, quiet, 3.8 Gyr old, 1.05 Lsun",
+    "position": "fictional; no galactic position fixed",
+    "distance_ly_from_sol": null
+  },
+  "name": {
+    "en": "Primigenia (the island world)",
+    "es": "Primigenia (el mundo de la isla)"
+  },
+  "status": "reviewed",
   "facts": [
-    {"id": "F1", "group": "star", "claim": "A quiet, middle-aged G-type star, yellow-white", "value": "G1-G2V", "justification": "the art fixes a yellow-white sun and a blue sky; a K dwarf would give an orange sky", "status": "active", "provenance": {"council": "planet drafts skeptic/deepseek, senses/glm"}},
-    {"id": "F2", "group": "planet", "claim": "Surface gravity a little above Earth's", "value": 1.1, "unit": "g", "justification": "council range 1.05-1.15 g; to be fixed in the planet canon", "status": "active"},
-    {"id": "F3", "group": "orbit", "claim": "A day of about 26-27 hours with long twilights", "value": 26.5, "unit": "h", "justification": "tidal braking by a large moon", "status": "active"},
-    {"id": "F4", "group": "atmosphere", "claim": "Dense air", "value": 1.6, "unit": "bar", "justification": "sound carries far and echoes are long; slower falls; drag caps sprint speeds", "status": "active"},
-    {"id": "F5", "group": "atmosphere", "claim": "High oxygen partial pressure", "value": 0.34, "unit": "bar", "justification": "large bodies and costly organs (glow, sonar) are affordable", "status": "active"},
-    {"id": "F6", "group": "sky", "claim": "A large, close, bright moon; strong tides; month about 30 days", "value": 29.7, "unit": "d", "justification": "bright moonlit nights favour sight hunters; moonless nights are truly dark", "status": "active"},
-    {"id": "F7", "group": "geology", "claim": "An active volcanic hotspot built the island", "justification": "explains the stratovolcano, warm ground, mineral licks and lava tubes", "status": "active"},
-    {"id": "F8", "group": "climate", "claim": "Thick valley fog most mornings", "justification": "cold sea air over warm volcanic ground under dense air", "status": "active"},
-    {"id": "F9", "group": "geology", "claim": "Old lava-tube caves and a cave behind a waterfall", "justification": "drained lava flows from the hotspot (F7); erosion behind the falls", "status": "active"}
+    {
+      "id": "F1",
+      "group": "star",
+      "claim": "Star: a quiet G1V, yellow-white, 1.05 L☉, 3.8 Gyr old; UV 1.15× the Sun's",
+      "justification": "The art fixes a yellow-white sun and a blue sky.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee; merged by opus",
+        "canon_text": "tools/lore/council/primigenia_canon.md"
+      },
+      "value": "G1V"
+    },
+    {
+      "id": "F2",
+      "group": "planet",
+      "claim": "Gravity 1.05 g (R 1.04 R⊕, M 1.14 M⊕)",
+      "justification": "Slightly heavier than Earth: falls and cliffs matter; giants are allowed by oxygen, not by low gravity.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee; merged by opus",
+        "canon_text": "tools/lore/council/primigenia_canon.md"
+      },
+      "value": 1.05,
+      "unit": "g"
+    },
+    {
+      "id": "F3",
+      "group": "orbit",
+      "claim": "Day 26 h; twilight ~38 min (thick air scatters more), long dawns and dusks",
+      "justification": "see the claim",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee; merged by opus",
+        "canon_text": "tools/lore/council/primigenia_canon.md"
+      },
+      "value": 26,
+      "unit": "h"
+    },
+    {
+      "id": "F4",
+      "group": "atmosphere",
+      "claim": "Dense air: 1.6 bar",
+      "justification": "Sound speed stays ~345 m/s (it depends on temperature, not pressure), but low frequencies carry 1.6–2× farther on still, foggy dawns (temperature inversions duct them along the ground); high pitches die within tens of metres in fog and grass. Drag is 1.6× Earth's: terminal velocity ~25% lower, gliding cheap, sprinting costly.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee; merged by opus",
+        "canon_text": "tools/lore/council/primigenia_canon.md"
+      },
+      "value": 1.6,
+      "unit": "bar"
+    },
+    {
+      "id": "F5",
+      "group": "atmosphere",
+      "claim": "Oxygen 21% → pO₂ ≈ 0.34 bar (1.6× Earth's)",
+      "justification": "Large aerobic bodies and costly organs (glow, sonar, spines) are affordable. Fuels stay wet, so lightning fires are rare: fire is a drought-year event.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee; merged by opus",
+        "canon_text": "tools/lore/council/primigenia_canon.md"
+      },
+      "value": 0.34,
+      "unit": "bar"
+    },
+    {
+      "id": "F6",
+      "group": "sky",
+      "claim": "One large moon: 1.2 Lunar masses at 450,000 km; month 29.7 d; spring tides every 14.9 d",
+      "justification": "Moonlit nights are bright; moonless nights are truly dark.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee; merged by opus",
+        "canon_text": "tools/lore/council/primigenia_canon.md"
+      },
+      "value": 29.7,
+      "unit": "d"
+    },
+    {
+      "id": "F7",
+      "group": "geology",
+      "claim": "The island is a hotspot stratovolcano, 1.2 Myr old, ~2,050 m high, visible top 3.6 km across over an 8 km submarine base",
+      "justification": "Last eruption ~400 years ago: dormant, with fumaroles and hot springs.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee; merged by opus",
+        "canon_text": "tools/lore/council/primigenia_canon.md"
+      },
+      "value": 2050,
+      "unit": "m"
+    },
+    {
+      "id": "F8",
+      "group": "climate",
+      "claim": "Fog: cold upwelling sea on the west coast meets warm volcanic ground; the east start valley is a fog trap about 180 mornings a year",
+      "justification": "Evening convection storms on the 26 h day; lightning is frequent.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee; merged by opus",
+        "canon_text": "tools/lore/council/primigenia_canon.md"
+      }
+    },
+    {
+      "id": "F9",
+      "group": "geology",
+      "claim": "Rock: andesite makes steep, unstable cliffs; basalt makes lava tubes (the caves)",
+      "justification": "The sunken cave is a lava tube flooded by the sea; the hidden cave is a dry upper tube; the waterfall cave is an overhang in soft tuff.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee; merged by opus",
+        "canon_text": "tools/lore/council/primigenia_canon.md"
+      }
+    },
+    {
+      "id": "F10",
+      "group": "star",
+      "claim": "Flares: C-class about monthly, X-class about once per 40 years (an old G dwarf is quiet)",
+      "justification": "A flare is a rare world event: auroras, UV pulses at altitude.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee; merged by opus",
+        "canon_text": "tools/lore/council/primigenia_canon.md"
+      },
+      "value": "C-class monthly; X-class ~1 per 40 yr"
+    },
+    {
+      "id": "F11",
+      "group": "orbit",
+      "claim": "Orbit 1.02 AU; year 367 Earth days = 339 local days; axial tilt 26.5°, eccentricity 0.02: four seasons of ~85 local days, a bit stronger than Earth's",
+      "justification": "see the claim",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee; merged by opus",
+        "canon_text": "tools/lore/council/primigenia_canon.md"
+      },
+      "value": 1.02,
+      "unit": "AU"
+    },
+    {
+      "id": "F12",
+      "group": "sky",
+      "claim": "An inner sibling planet at 0.62 AU, a cloudy super-Earth: \"the evening star\". Being inside our orbit it is only seen near the setting or rising sun",
+      "justification": "(The faint line from the setting sun to it is the Petrova wink, A20.)",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee; merged by opus",
+        "canon_text": "tools/lore/council/primigenia_canon.md"
+      }
+    },
+    {
+      "id": "F13",
+      "group": "ocean",
+      "claim": "Tides 0.4 m in open ocean but ~3.2 m on the island's shelf (shelf resonance, Bay of Fundy-style but milder): at spring low tide a causeway to the islet opens",
+      "justification": "see the claim",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee; merged by opus",
+        "canon_text": "tools/lore/council/primigenia_canon.md"
+      },
+      "value": 3.2,
+      "unit": "m"
+    },
+    {
+      "id": "F14",
+      "group": "planet",
+      "claim": "Magnetic field 1.8× Earth's; surface UV 0.9× Earth's at sea level (more ozone in the thick air) but 1.4× at 2,000 m: the high slopes are a UV hazard",
+      "justification": "see the claim",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee; merged by opus",
+        "canon_text": "tools/lore/council/primigenia_canon.md"
+      },
+      "value": 1.8,
+      "unit": "x Earth field"
+    },
+    {
+      "id": "F15",
+      "group": "atmosphere",
+      "claim": "Composition N₂ ~77%, O₂ 21%, Ar 1.5%, CO₂ ~0.1%, humid",
+      "justification": "Mean sea-level temperature 14 °C; lapse 6.2 K/km; snow above ~1,750 m in winter and in shaded gullies all year.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee; merged by opus",
+        "canon_text": "tools/lore/council/primigenia_canon.md"
+      },
+      "value": 14,
+      "unit": "degC"
+    },
+    {
+      "id": "F16",
+      "group": "atmosphere",
+      "claim": "Smell: molecular diffusion ~0.6× Earth's, so in still air scent trails last ~1.6× longer; in wind the advantage disappears",
+      "justification": "Scent is a dawn-and-fog sense.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee; merged by opus",
+        "canon_text": "tools/lore/council/primigenia_canon.md"
+      },
+      "value": 0.6,
+      "unit": "x Earth diffusion"
+    },
+    {
+      "id": "F17",
+      "group": "sky",
+      "claim": "Sky: deep blue zenith, milky horizon, copper sunsets (1.6× Rayleigh depth)",
+      "justification": "see the claim",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee; merged by opus",
+        "canon_text": "tools/lore/council/primigenia_canon.md"
+      }
+    },
+    {
+      "id": "F18",
+      "group": "climate",
+      "claim": "Rain shadow: westerlies make the west coast wet and forested; the east meadows (the start valley) are drier in summer, with a spring",
+      "justification": "see the claim",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee; merged by opus",
+        "canon_text": "tools/lore/council/primigenia_canon.md"
+      }
+    },
+    {
+      "id": "F19",
+      "group": "climate",
+      "claim": "Wind force per m/s is 1.6× Earth's: gales in winter push light creatures and favour low, heavy bodies on exposed ridges",
+      "justification": "see the claim",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee; merged by opus",
+        "canon_text": "tools/lore/council/primigenia_canon.md"
+      },
+      "value": 1.6,
+      "unit": "x Earth"
+    },
+    {
+      "id": "F20",
+      "group": "ocean",
+      "claim": "Seas: salinity ~3.8%, carcasses float and drift ashore; the shallows are turbid (visibility under 10 m) from volcanic sediment and plankton, so sea creatures rely on pressure sense, touch and electric sense more than sight",
+      "justification": "see the claim",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee; merged by opus",
+        "canon_text": "tools/lore/council/primigenia_canon.md"
+      }
+    },
+    {
+      "id": "F21",
+      "group": "geology",
+      "claim": "The rock spire is a hard dyke left standing by erosion; the giant tree grows at the spring where that dyke dams groundwater",
+      "justification": "Sea arches and islets are dykes and drowned cones the sea has not yet cut.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee; merged by opus",
+        "canon_text": "tools/lore/council/primigenia_canon.md"
+      }
+    },
+    {
+      "id": "F22",
+      "group": "geology",
+      "claim": "Two arrivals",
+      "justification": "The FIRST seed capsule fell into this world's ocean ~900 million years ago and started all life (the cell stage). The meteor crater on the island is the SECOND arrival: 600 m wide, 25 m rim, ~12,000 years old, in cohesive tuff; a ~40 m iron-nickel body carrying a second, smaller capsule (the makers' follow-up). The 5 shards lie along one bent ejecta ray. What the second capsule did is the stage's mystery (it ends at the crater with cognition).",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee; merged by opus",
+        "canon_text": "tools/lore/council/primigenia_canon.md"
+      }
+    },
+    {
+      "id": "F23",
+      "group": "chemistry",
+      "claim": "Minerals creatures eat: salt from spray and seeps, calcium from shell beds and bone, basalt/olivine grit (gastroliths), kaolin clay (gut detox), sulfur at fumaroles",
+      "justification": "Poisons: arsenic and mercury in hot-spring crusts, SO₂ and H₂S near vents and in stagnant cave pools, copper in green crusts. Mineral licks are fixed points: migration corridors and ambush sites.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee; merged by opus",
+        "canon_text": "tools/lore/council/primigenia_canon.md"
+      }
+    },
+    {
+      "id": "F24",
+      "group": "biochemistry",
+      "claim": "One biochemistry from the seed capsule: a porphyrin photosystem, DNA-like heredity, L-amino acids, a nitrogen-fixing symbiont",
+      "justification": "Any carcass can feed any creature, and parts can graft between lineages.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee; merged by opus",
+        "canon_text": "tools/lore/council/primigenia_canon.md"
+      }
+    },
+    {
+      "id": "F25",
+      "group": "biochemistry",
+      "claim": "Plants are green by ancestry (the seed's pigment), not because green is optimal",
+      "justification": "Under strong UV (high slopes) and in poisonous plants they paint red-purple pigments over the green: leaf colour is an honest, readable signal of altitude stress and of alkaloids.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee; merged by opus",
+        "canon_text": "tools/lore/council/primigenia_canon.md"
+      }
+    },
+    {
+      "id": "F26",
+      "group": "biochemistry",
+      "claim": "Food: sugars, starchy fruit, flesh, chitin, bone, salt",
+      "justification": "Poison: alkaloid plants (red-veined), H₂S pools, raw sulfur (poison to eat, fuel for the fire-breathing lineage).",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee; merged by opus",
+        "canon_text": "tools/lore/council/primigenia_canon.md"
+      }
+    },
+    {
+      "id": "F27",
+      "group": "biochemistry",
+      "claim": "The island's life is an island radiation: the island rose 1.2 Myr ago (F7) and was colonised by a few founders that rafted, swam or flew from the mainland, then split into many species (like Hawaiian honeycreepers or Galápagos finches on Earth)",
+      "justification": "So cousins are recognisable, convergent solutions are everywhere, giants and dwarfs appear (island rules), and some niches are still empty (room for new species).",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee; merged by opus",
+        "canon_text": "tools/lore/council/primigenia_canon.md"
+      }
+    }
   ],
-  "changelog": [{"date": "2026-11-18", "who": "opus", "what": "draft facts from the council's planet drafts; replaced by the merged planet canon"}]
+  "changelog": [
+    {
+      "date": "2026-11-18",
+      "who": "opus",
+      "what": "approved planet canon F1-F27 (tools/lore/council/primigenia_canon.md) replaces the draft facts"
+    }
+  ]
 }

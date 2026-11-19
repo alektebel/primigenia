@@ -1,0 +1,378 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "espinodo",
+  "name": {
+    "en": "Espinodo"
+  },
+  "world": "primigenia",
+  "kind": "native",
+  "status": "draft",
+  "stage": "creature",
+  "niche": {
+    "habitat": "Alpine slopes, cliff bases, fog-bound pinch points, and mineral lick corridors.",
+    "diet": "Carnivore/Scavenger: flesh, bone, basalt grit, and salt spray.",
+    "active": "Diurnal and crepuscular; ambushes in fog and waits out midday heat.",
+    "predators": [
+      "Coloso (accidental)",
+      "Garfio (competitive exclusion)",
+      "Merodeador (stealth)"
+    ],
+    "prey": [
+      "Rondo",
+      "Zanco (young/small)",
+      "Carrion"
+    ]
+  },
+  "body": "Armoured predator with loosely socketed flank spines and keeled dermal plates that interlock like chainmail. They deliberately consume basalt grit and scavenged bone to grind tough prey and detoxify alkaloids, while their sit-wait ambush strategy exploits the dense fog that blinds visual predators.",
+  "chains": [
+    {
+      "id": "espinodo.c1",
+      "trait": "Loosely socketed spines flicked from flank sockets",
+      "links": [
+        "Thick air (F4) makes chase wars costly -> repels intruders before contact",
+        "elastic ligament recoil detaches keratin-sheathed spines on flank slam (2–3 m reach)",
+        "follicular regrowth (8–12 days) tied to bone/carcass calcium (F23)",
+        "spent sockets appear as dark pits until refilled"
+      ],
+      "roots": [
+        "F4",
+        "F23",
+        "F20"
+      ],
+      "skill": {
+        "id": "espinodo.spine_volley",
+        "name": {
+          "en": "Spine Volley"
+        },
+        "role": "Poke",
+        "effect": "Flicks 4 spines in a 90° flank/rear arc via elastic recoil; honest reach 2.5 m, beyond tumbles for 1 dmg; re-cock telegraphed by spine-tension shimmer; full magazine (10–12) regrows at bone/carcass sites over 8–12 days.",
+        "numbers": {}
+      },
+      "weakness": "Sockets aim sideways/back; face head-on to dodge. Two volleys empty magazine; dark empty sockets mean defenceless until bone-fed. Sidestep on shimmer wind-up.",
+      "observe": [
+        "Shoulder sockets swivelling toward flanks",
+        "Lodged spines and chewed carcasses on coast",
+        "Dark empty sockets after spent volley"
+      ],
+      "journal": {
+        "en": "It throws its own bones. Only so many bones to throw."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Model volley as a short-range flank/tail slap that shears pre-formed spines at abscission zones (contact + flick), not ballistic shooting; treat >5 m hits as luck/tumble; regrowth 8–12 days matches follicular quill cycles only if spines are keratin sheaths over osteoderm cores, not whole bones per shot.",
+        "fixes": [
+          "Model volley as a short-range flank/tail slap that shears pre-formed spines at abscission zones (contact + flick), not ballistic shooting; treat >5 m hits as luck/tumble; regrowth 8–12 days matches follicular quill cycles only if spines are keratin sheaths over osteoderm cores, not whole bones per shot."
+        ],
+        "analogues": [
+          {
+            "organism": "North American porcupine (Erethizon dorsatum)—quills detach at skin on contact/impact; African crested porcupine (Hystrix)—rattle, charge, backward presentation (Roze 1989, from memory unverified). Ankylosaurid osteoderms—fixed spikes, not detachable magazines.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 7,
+          "designer": 9,
+          "physicist": 9,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "physicist",
+          "skeptic",
+          "wildcard"
+        ]
+      }
+    },
+    {
+      "id": "espinodo.c2",
+      "trait": "Keeled dermal plates, spines studding the seams",
+      "links": [
+        "Garfio's bite makes armour mandatory -> repels predation",
+        "At 1.05 g (F2), uphill mass is costly -> plates grow thin and keeled",
+        "Heavy shell restricts movement to coast/dyke springs -> shuns alpine slopes",
+        "Plate and spine share calcium store (F23) -> full magazine yields thinner plates"
+      ],
+      "roots": [
+        "F2",
+        "F4",
+        "F9",
+        "F23"
+      ],
+      "skill": {
+        "id": "espinodo.spine_wall",
+        "name": {
+          "en": "Spine Wall"
+        },
+        "role": "Defence",
+        "effect": "Hunker: crouch, tuck head, present keeled shoulder; 60% less front damage while stamina drains (~10 s); attackers biting in take 3 bleed from seam spines; rear stays open.",
+        "numbers": {}
+      },
+      "weakness": "Hunkering turns slowly; heavy footfalls telegraph shifts. Circle to rear, no plate/bleed. Full spine magazine = thin pale plates; bide time until seams are spent.",
+      "observe": [
+        "Pale seams between keeled plates",
+        "Spine rows standing proud in seams",
+        "Heavy footfall thuds when it hunkers"
+      ],
+      "journal": {
+        "en": "It wears the mountain on its back — paper-thin, and only on the front."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "analogues": [
+          {
+            "organism": "Crocodilian keeled osteoderms over mobile joints; armadillo (Dasypus) transverse bands with thin flex zones; girdled lizards (Cordylidae) keeled osteoderms—selection for protection vs mass and fall risk on uneven terrain.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 9,
+          "designer": 8,
+          "physicist": 10,
+          "skeptic": 7
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "physicist",
+          "skeptic"
+        ]
+      }
+    },
+    {
+      "id": "espinodo.c3",
+      "trait": "Lateral stand-off with erect spine row and creak",
+      "links": [
+        "Contact between armoured adults risks ruin -> contests settled by lateral posture",
+        "side-on shows thickest shoulder plate, hides bare throat -> strength signal plus concealment",
+        "spine-socket friction (~30–80 Hz) ducts along fog (F4, F8) -> low creak carries",
+        "resident wins ties via home-lick calcium advantage -> storm wind (F19) overrides pose -> visual shimmer distinguishes threat from bluff"
+      ],
+      "roots": [
+        "F4",
+        "F8",
+        "F19",
+        "F23"
+      ],
+      "skill": {
+        "id": "espinodo.pose_off",
+        "name": {
+          "en": "Pose-off"
+        },
+        "role": "Control",
+        "effect": "Hold lateral pose 3 s: smaller or unowned Espinodo stands down, resident wins ties; hungry or storm-battered one charges after 1 s socket-creak cue.",
+        "numbers": {}
+      },
+      "weakness": "Sockets creak same for bluff/re-cock; learn pulse rate. Storm wind (F19) or mid-meal ignores pose; watch wind particles and hunched feeding, back away.",
+      "observe": [
+        "Head high, shoulder turned toward you",
+        "Spine row rising then socket creak",
+        "Scuffed ground where resident posed before"
+      ],
+      "journal": {
+        "en": "The pose is the fight, most days."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Pin creak to keratin-on-keratin or osteoderm overlap stridulation (~30–80 Hz) so F4 fog ducting is honest; bluff vs volley wind-up should differ in pulse rate or duration, not identical waveform.",
+        "fixes": [
+          "Pin creak to keratin-on-keratin or osteoderm overlap stridulation (~30–80 Hz) so F4 fog ducting is honest; bluff vs volley wind-up should differ in pulse rate or duration, not identical waveform."
+        ],
+        "analogues": [
+          {
+            "organism": "Rattlesnake (Crotalus) caudal rattle stridulation—honest aposematic signal; broadside lateral display in bovids and mountain goats—mutual assessment without contact; agnostic lizard (Anolis) dewlap/turn broadside—posture settles contests.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "designer": 9,
+          "physicist": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "designer",
+          "physicist",
+          "skeptic"
+        ]
+      }
+    },
+    {
+      "id": "espinodo.c4",
+      "trait": "Deliberate consumption of basalt grit, salt spray, and scavenged bone",
+      "links": [
+        "Carnivorous diet lacks sodium and grinding grit -> rain-shadow interior is sodium-poor (F23)",
+        "coastal licks become obligate -> gastroliths grind bone/hide",
+        "high pO₂ (F5) fuels rapid osteoderm regeneration -> migration corridors form around licks",
+        "bone/grit grants +1 armour for 1 day, meat grants stamina only -> resource scaling required"
+      ],
+      "roots": [
+        "F5",
+        "F23",
+        "F20"
+      ],
+      "skill": {
+        "id": "espinodo.bone_feast",
+        "name": {
+          "en": "Bone Feast"
+        },
+        "role": "Engage",
+        "effect": "Consume meat/bone/grit: restores stamina; bone/grit grants +1 armour for 1 day, meat grants stamina only.",
+        "numbers": {}
+      },
+      "weakness": "Digestion slows movement by 15% for 10 s; vulnerable while chewing. Must seek specific licks for armour; meat alone leaves it soft.",
+      "observe": [
+        "Jaw grinding on stone chips",
+        "Salt-licking at coastal spray",
+        "Dragging bone fragments"
+      ],
+      "journal": {
+        "en": "It eats the cliff to wear the cliff."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "analogues": [
+          {
+            "organism": "Spotted hyena (Crocuta crocuta)—bone ingestion for Ca/P; crocodilians and birds—gastroliths in gizzard for grinding (gastrolith function, textbook); ungulates at marine salt spray and mineral licks—fixed-site geophagy.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 9,
+          "designer": 7,
+          "physicist": 8,
+          "skeptic": 5
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "designer",
+          "physicist",
+          "skeptic"
+        ]
+      }
+    },
+    {
+      "id": "espinodo.c5",
+      "trait": "Sit-and-wait ambush at fog-bound pinch points",
+      "links": [
+        "Armour mass (F2) makes stalking too noisy -> waits at fixed crossings (F13, F23)",
+        "dawn fog ducts low sound along ground (F4, F8) -> blinds eyes but carries vibration",
+        "sits downwind so own scent blows away from prey (F16) -> integumentary receptors detect approach",
+        "slow breathing vanishes breath mist -> sharp whistle freezes it in fog -> ambush ends at fog lift"
+      ],
+      "roots": [
+        "F2",
+        "F4",
+        "F8",
+        "F13",
+        "F16"
+      ],
+      "skill": {
+        "id": "espinodo.fog_lurk",
+        "name": {
+          "en": "Fog Lurk"
+        },
+        "role": "Basic",
+        "effect": "Motionless at crossing: detection radius -50% (ears only), first strike +40%; breath-mist visual vanishes; ambush ends when fog lifts.",
+        "numbers": {}
+      },
+      "weakness": "Cannot localise a sharp whistle in fog — puff one and it freezes, listening; startle call warns neighbours. Must sit downwind; cross on clear middays or read wind lean at spring.",
+      "observe": [
+        "Breath mist gone beside still shape",
+        "Jaw pressed to wet rock listening",
+        "Sits on downwind side of crossing"
+      ],
+      "journal": {
+        "en": "It becomes the mist. I wait. It moves."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Replace 'hearing through jaw and feet' with integumentary low-frequency vibration receptors on mandible and plantar pads (crocodile-style), plus upwind scent discipline; whistle confusion in fog is fine if whistles are high-frequency (poor in F4 fog) while Espinodo cues are low hums.",
+        "fixes": [
+          "Replace 'hearing through jaw and feet' with integumentary low-frequency vibration receptors on mandible and plantar pads (crocodile-style), plus upwind scent discipline; whistle confusion in fog is fine if whistles are high-frequency (poor in F4 fog) while Espinodo cues are low hums."
+        ],
+        "analogues": [
+          {
+            "organism": "Nile crocodile (Crocodylus)—ambush at constrained water crossings; mandibular/foraminal dome pressure receptors for surface ripples and low-frequency sound (von During & Andres 1975, from memory unverified). Elephant seismic foot-listening at fixed corridors (O'Connell-Rodwell et al., from memory unverified).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "designer": 9,
+          "physicist": 10,
+          "skeptic": 4
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "designer",
+          "physicist",
+          "skeptic"
+        ]
+      }
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-18",
+    "by": [
+      "designer",
+      "physicist",
+      "skeptic",
+      "wildcard"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-18",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-18"
+    },
+    {
+      "date": "2026-11-19",
+      "who": "import_got",
+      "what": "merged run autoloop-2026-11-19: 0 chain(s) added, 0 plausibility block(s) filled, 0 relation(s) added"
+    },
+    {
+      "date": "2026-11-19",
+      "who": "import_got",
+      "what": "merged run autoloop-2026-11-19: 0 chain(s) added, 0 plausibility block(s) filled, 0 relation(s) added"
+    },
+    {
+      "date": "2026-11-19",
+      "who": "import_got",
+      "what": "merged run autoloop-2026-11-19: 0 chain(s) added, 0 plausibility block(s) filled, 0 relation(s) added"
+    }
+  ],
+  "temperament": "Territorial and patient, they rely on posture and spine displays to deter rivals before committing to a strike.",
+  "secrets": [
+    "Rock armour: basalt grit",
+    "Bone spines: flank sockets",
+    "Fossil: tiny skull",
+    "Hidden cave: mineral cache",
+    "Albinos"
+  ],
+  "moments": [
+    "A lateral standoff where erect spine rows and creaking plates signal readiness to a passing Garfio.",
+    "The deliberate crunch of basalt grit and bone to maintain digestive efficiency.",
+    "A sudden spine volley that pins a fleeing Zanco to the tuff."
+  ]
+}

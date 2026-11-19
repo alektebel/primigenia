@@ -1,0 +1,324 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "vidrio_pulso",
+  "name": {
+    "en": "Vidrio-Pulso"
+  },
+  "world": "silicon_hot",
+  "kind": "new",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "Geothermal vent fields, silica-dust microburst zones, thermal inversion layers",
+    "diet": "Oxidation of H₂S and FeS₂ using SO₂ gradients; dissolves dissolved silicates to grow carapace",
+    "active": "Constant, low-frequency metabolic hum; locomotion restricted to vent proximity",
+    "predators": []
+  },
+  "body": "Towering translucent siloxane-carbonate tower (3-6m), internal channel pulsing amber molten-sulfur fluid, piezoelectric thermal joints, lattice-defect growth rings",
+  "chains": [
+    {
+      "id": "vidrio_pulso.c1",
+      "trait": "Towering translucent siloxane-carbonate carapace",
+      "links": [
+        "Abrasion resistance against wind-scoured silica dust",
+        "Structural support against 1.25g gravity",
+        "Thermal mass buffers against inversion cooling",
+        "Root: Dense N₂/CO₂ atmosphere, abrasive dust storms, high gravity, silicate chemistry"
+      ],
+      "roots": [
+        "F3",
+        "F5",
+        "F7",
+        "F15"
+      ],
+      "skill": {
+        "id": "vidrio_pulso.silica_hull",
+        "name": {
+          "en": "Silica Hull"
+        },
+        "role": "Defence",
+        "effect": "Absorbs kinetic impact by redistributing stress through crystal lattice; reduces damage by 40% but fractures under rapid cooling.",
+        "numbers": {}
+      },
+      "weakness": "Rapid cooling below 130°C causes vitrification and catastrophic fracturing of the carapace (F11, F17).",
+      "observe": [
+        "Dust accumulates in ridges and is shed by piezoelectric vibration",
+        "Amber fluid pulses slowly through translucent flanks",
+        "Base fuses with rock via exuded molten sulfur flux"
+      ],
+      "journal": {
+        "en": "A living geode that drinks the heat and wears the storm as armor."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Rename to siloxane–sulfur–silicate composite carapace; treat carbonate only as passive vent precipitate in the base fuse, not as part of the living polymer.",
+        "fixes": [
+          "Rename to siloxane–sulfur–silicate composite carapace; treat carbonate only as passive vent precipitate in the base fuse, not as part of the living polymer."
+        ],
+        "analogues": [
+          {
+            "organism": "Deep-sea hydrothermal vent chimney fauna and structures (Riftia pachyptila tube worms on sulfide/carbonate chimneys; protists and biofilms precipitating minerals at vents)—mineral armor from environment, not carbonate biochemistry.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "vidrio_pulso.c2",
+      "trait": "Slow pulse of molten S₈–SO₂ internal fluid",
+      "links": [
+        "Transport of metabolites in high-viscosity non-aqueous solvent",
+        "Continuous flow compensates for slow anoxic reaction rates",
+        "Internal pressure matches external atmospheric pressure to prevent collapse",
+        "Root: Molten sulfur eutectic solvent, high viscosity, slow chemosynthesis, 3.2 bar pressure"
+      ],
+      "roots": [
+        "F5",
+        "F8",
+        "F13"
+      ],
+      "skill": {
+        "id": "vidrio_pulso.sulfur_circulation",
+        "name": {
+          "en": "Sulfur Circulation"
+        },
+        "role": "Passive",
+        "effect": "Heals structural damage over time by precipitating siloxane from internal fluid; requires proximity to sulfur sources.",
+        "numbers": {}
+      },
+      "weakness": "Pulse stalls if fluid viscosity increases due to cooling; player can introduce cold agent to induce dormancy.",
+      "observe": [
+        "Pulse frequency slows during thermal inversions",
+        "Fluid glows faintly IR from exothermic redox reactions",
+        "No gas bubbles escape; system is closed and anoxic"
+      ],
+      "journal": {
+        "en": "Its blood is liquid fire, moving with the patience of magma."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Internal circulation of a non-aqueous, vent-stable fluid matches F8 (regional S₈–SO₂ eutectic 150–250 °C) and F13 (slow H₂S/FeS₂ oxidation via SO₂ gradients). High viscosity and slow reaction rates favor visible, low-frequency pulsing rather than fast vasculature; pressure equilibration at 3.2 bar (F5) reduces implosive collapse of a tall, thin-walled tower. Closed, anoxic loop is consistent with F11. No Earth organism uses molten sulfur as blood; energy budget is necessarily low (F19). Amber IR glow from exothermic redox in the conduit is physically fine.",
+        "fixes": [
+          "Internal circulation of a non-aqueous, vent-stable fluid matches F8 (regional S₈–SO₂ eutectic 150–250 °C) and F13 (slow H₂S/FeS₂ oxidation via SO₂ gradients). High viscosity and slow reaction rates favor visible, low-frequency pulsing rather than fast vasculature; pressure equilibration at 3.2 bar (F5) reduces implosive collapse of a tall, thin-walled tower. Closed, anoxic loop is consistent with F11. No Earth organism uses molten sulfur as blood; energy budget is necessarily low (F19). Amber IR glow from exothermic redox in the conduit is physically fine."
+        ],
+        "analogues": [
+          {
+            "organism": "Giant tube worm Riftia (closed circulatory symbiosis in vent chemistry, very slow turnover); anoxygenic sulfur bacteria in elemental sulfur films (Beggiatoa, Thiomargarita)—sulfur redox transport, not molten solvent.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "petkowski_2020_chemistry"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "vidrio_pulso.c3",
+      "trait": "Piezoelectric thermal-expansion joints",
+      "links": [
+        "Accommodates thermal cycling without fracturing crystal lattice",
+        "Converts thermal stress gradients into bio-electric signals",
+        "Drives micro-movements and fluid pumping via stress-induced voltage",
+        "Root: Extreme diurnal/inversion temperature swings, piezoelectric biology, high activation energy metabolism"
+      ],
+      "roots": [
+        "F7",
+        "F13",
+        "F18"
+      ],
+      "skill": {
+        "id": "vidrio_pulso.thermal_shock",
+        "name": {
+          "en": "Thermal Shock"
+        },
+        "role": "Engage",
+        "effect": "Exploits temperature differential to release a burst of piezoelectric charge; stuns vibration-sensitive enemies but risks self-joint fracture.",
+        "numbers": {}
+      },
+      "weakness": "Vulnerable to sudden cooling events; rapid heat loss shatters joints and halts metabolism.",
+      "observe": [
+        "Joints flex with audible creaking as ambient temperature shifts",
+        "Faint blue piezo-sparks jump between joint plates",
+        "Creature moves faster when vent flares heat the air"
+      ],
+      "journal": {
+        "en": "It walks on the spark of cooling rock, turning heat into motion."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Limit piezo bursts to localized joint platelets of ordered silicate microcrystals; state that pumping is mostly passive thermal convection with piezo only as sensory/micro-actuation, not main metabolic power.",
+        "fixes": [
+          "Limit piezo bursts to localized joint platelets of ordered silicate microcrystals; state that pumping is mostly passive thermal convection with piezo only as sensory/micro-actuation, not main metabolic power."
+        ],
+        "analogues": [
+          {
+            "organism": "Quartz and bone piezoelectricity (stress–voltage in crystalline/apatite matrices; Fukada-type effects in mineralized tissues—from memory, unverified); arthropod exoskeleton articulations (sliding membranes between sclerites) for thermal/mechanical cycling.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "vidrio_pulso.c4",
+      "trait": "Lattice-defect growth rings as hereditary archive",
+      "links": [
+        "Crystal defects store genetic information resistant to geothermal stress",
+        "Growth rings record environmental history and selection events",
+        "Defects propagate via physical contact or fluid fusion with neighbors",
+        "Root: Solid-state silicate heredity, vent chemical stability, slow replication rates"
+      ],
+      "roots": [
+        "F9",
+        "F12",
+        "F20"
+      ],
+      "skill": {
+        "id": "vidrio_pulso.lattice_memory",
+        "name": {
+          "en": "Lattice Memory"
+        },
+        "role": "Social",
+        "effect": "Player can interface to read environmental history; reveals trait evolution of the region and unlocks hidden skill trees.",
+        "numbers": {}
+      },
+      "weakness": "Trauma to the core crystal resets growth rings, losing hereditary data and regressing traits.",
+      "observe": [
+        "Rings show color shifts corresponding to past sulfur concentrations",
+        "Rings form perpendicular to the fluid pulse channel",
+        "Defects glow brighter under IR photoreceptor scan"
+      ],
+      "journal": {
+        "en": "Every ring is a memory of fire, written in the language of cracks."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Split trait: (1) growth rings = readable environmental log (plausible); (2) heredity = separate slow silicate template replication at the base—tag in UI as highly speculative; fusion transfers only adaptive defect motifs after long contact, not full skill trees.",
+        "fixes": [
+          "Split trait: (1) growth rings = readable environmental log (plausible); (2) heredity = separate slow silicate template replication at the base—tag in UI as highly speculative; fusion transfers only adaptive defect motifs after long contact, not full skill trees."
+        ],
+        "analogues": [
+          {
+            "organism": "Tree rings and coral/ mollusk shell banding (environmental chronology, not nucleic inheritance); bacterial cell-wall inheritance and prion-like templating (minimal analog for template copying—not lattice genetics).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "cuarzo_sangre",
+      "kind": "cousin",
+      "note": "(council kind 'Commensal grazing') Cuarzo-Sangre harvests exfoliated crystal shards from Vidrio-Pulso carapaces, slowing Vidrio-Pulso growth but removing parasitic silicon-mites."
+    },
+    {
+      "with": "cuarzo_sangre",
+      "kind": "cousin",
+      "note": "(council kind 'Commensal grazing') Cuarzo-Sangre harvests exfoliated crystal shards from Vidrio-Pulso carapaces, slowing Vidrio-Pulso growth but removing parasitic silicon-mites."
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-18",
+    "by": [
+      "naturalist/qwen"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-18",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-18"
+    },
+    {
+      "date": "2026-11-18",
+      "who": "autoloop",
+      "what": "removed rejected references from analogues"
+    },
+    {
+      "date": "2026-11-18",
+      "who": "import_got",
+      "what": "merged run autoloop-2026-11-18: 0 chain(s) added, 0 plausibility block(s) filled, 0 relation(s) added"
+    },
+    {
+      "date": "2026-11-19",
+      "who": "import_got",
+      "what": "merged run autoloop-2026-11-19: 0 chain(s) added, 0 plausibility block(s) filled, 0 relation(s) added"
+    }
+  ],
+  "temperament": "Stoic, vibration-sensitive, reactive to thermal spikes",
+  "secrets": [
+    "Resonance Kill: High-frequency sound (whistles) matches the natural vibration mode of the siloxane lattice; sustained pitch shatters the carapace instantly.",
+    "Lattice Merging: Two Vidrio-Pulso touching for extended periods can exchange defect patterns via physical fusion, enabling horizontal gene transfer of adaptive traits."
+  ],
+  "moments": [
+    "A thermal inversion drops the temperature toward 130°C. The Vidrio-Pulso's pulse slows to a crawl, its amber glow dimming. The creature folds its joints, becoming a silent, frosted statue. A Cuarzo-Sangre drifts up, sensing the residual heat signature, and rests its hollow hull against the Vidrio-Pulso's flanks. The crystal creature's dormant lattice hums faintly, sharing waste heat. The pulse returns only when a vent flares nearby, reigniting the amber heart."
+  ],
+  "journal": [
+    {
+      "en": "It stands as a monument to the slow chemistry of heat."
+    },
+    {
+      "en": "To break its crystal is to silence a million years of growth."
+    }
+  ]
+}

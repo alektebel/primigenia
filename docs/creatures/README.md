@@ -2,8 +2,187 @@
 
 # Creatures
 
+## Adrian (Tau Ceti) (`adrian`)
+
+| Creature | Kind | Status | Chains | Verdicts |
+|---|---|---|---|---|
+| [Aurorán](auroran.md) | new | draft | 4 | 2 fixable, 2 plausible |
+| [Cristalón](cristalon.md) | new | draft | 4 | 4 plausible |
+| [Sombría](sombria.md) | new | draft | 4 | 1 fixable, 3 plausible |
+| [Taumoeba](taumoeba.md) | easter_egg | draft | 5 | 2 fixable, 3 plausible |
+
+## All Tomorrows: Earth and Mars (`at_earth_mars`)
+
+| Creature | Kind | Status | Chains | Verdicts |
+|---|---|---|---|---|
+| [Humans](at_humans.md) | easter_egg | draft | 3 | 3 plausible |
+| [Martians](at_martians.md) | easter_egg | draft | 3 | 3 plausible |
+| [Star People](at_star_people.md) | easter_egg | draft | 2 | 1 fixable, 1 plausible |
+
+## All Tomorrows: garden-world peoples (`at_garden_peoples`)
+
+| Creature | Kind | Status | Chains | Verdicts |
+|---|---|---|---|---|
+| [Asymmetric People](at_asymmetric_people.md) | easter_egg | draft | 2 | 1 fixable, 1 plausible |
+| [Blind Folk](at_blind_folk.md) | easter_egg | draft | 2 | 2 plausible |
+| [Bug Facers](at_bug_facers.md) | easter_egg | draft | 3 | 1 fixable, 2 plausible |
+| [Hedonists](at_hedonists.md) | easter_egg | draft | 2 | 2 plausible |
+| [Hosts](at_hosts.md) | easter_egg | draft | 2 | 2 plausible |
+| [Lizard Herders](at_lizard_herders.md) | easter_egg | draft | 2 | 1 fixable, 1 plausible |
+| [Lopsiders](at_lopsiders.md) | easter_egg | draft | 2 | 2 fixable |
+| [Modular People](at_modular_people.md) | easter_egg | draft | 2 | 2 fixable |
+| [Parasites](at_parasites.md) | easter_egg | draft | 2 | 2 plausible |
+| [Pterosapiens](at_pterosapiens.md) | easter_egg | draft | 2 | 2 plausible |
+| [Sail People](at_sail_people.md) | easter_egg | draft | 3 | 2 implausible, 1 plausible |
+| [Satyriacs](at_satyriacs.md) | easter_egg | draft | 3 | 3 plausible |
+| [Saurosapients](at_saurosapients.md) | easter_egg | draft | 2 | 1 fixable, 1 plausible |
+| [Striders](at_striders.md) | easter_egg | draft | 2 | 2 plausible |
+| [Symbiotes](at_symbiotes.md) | easter_egg | draft | 3 | 2 fixable, 1 plausible |
+| [Tool Breeders](at_tool_breeders.md) | easter_egg | draft | 2 | 2 plausible |
+
+## All Tomorrows: garden prairies and shores (`at_garden_prairies`)
+
+| Creature | Kind | Status | Chains | Verdicts |
+|---|---|---|---|---|
+| [Bone Crushers](at_bone_crushers.md) | easter_egg | draft | 2 | 2 plausible |
+| [Finger Fishers](at_finger_fishers.md) | easter_egg | draft | 2 | 1 fixable, 1 plausible |
+| [Flyers](at_flyers.md) | easter_egg | draft | 2 | 1 fixable, 1 plausible |
+| [Hand Flappers](at_hand_flappers.md) | easter_egg | draft | 2 | 2 plausible |
+| [Insectophagi](at_insectophagi.md) | easter_egg | draft | 2 | 2 plausible |
+| [Mantelopes](at_mantelopes.md) | easter_egg | draft | 2 | 2 plausible |
+| [Predators](at_predators.md) | easter_egg | draft | 2 | 2 plausible |
+| [Saltatorial Prey](at_saltatorial_prey.md) | easter_egg | draft | 2 | 2 plausible |
+| [Swimmers](at_swimmers.md) | easter_egg | draft | 2 | 2 plausible |
+| [Temptors](at_temptors.md) | easter_egg | draft | 2 | 1 fixable, 1 plausible |
+| [Titans](at_titans.md) | easter_egg | draft | 2 | 1 fixable, 1 plausible |
+
+## Gravital Space / Asteroid Arks (`at_gravital_space`)
+
+| Creature | Kind | Status | Chains | Verdicts |
+|---|---|---|---|---|
+| [Amphicephali](at_amphicephali.md) | easter_egg | draft | 2 | 1 fixable, 1 plausible |
+| [Asteromorphs](at_asteromorphs.md) | easter_egg | draft | 2 | 1 fixable, 1 plausible |
+| [Gravitals](at_gravitals.md) | easter_egg | draft | 2 | 1 fixable, 1 implausible |
+| [New Machines](at_new_machines.md) | easter_egg | draft | 2 | 2 fixable |
+| [Spacers](at_spacers.md) | easter_egg | draft | 2 | 2 plausible |
+| [Subjects](at_subjects.md) | easter_egg | draft | 2 | 1 fixable, 1 plausible |
+| [Terrestrials](at_terrestrials.md) | easter_egg | draft | 2 | 2 plausible |
+| [The Author](at_the_author.md) | easter_egg | draft | 2 | 1 implausible, 1 plausible |
+
+## All Tomorrows: the Qu-shaped worlds (`at_qu_worlds`)
+
+| Creature | Kind | Status | Chains | Verdicts |
+|---|---|---|---|---|
+| [Colonials](at_colonials.md) | easter_egg | draft | 2 | 1 fixable, 1 implausible |
+| [Killer Folk](at_killer_folk.md) | easter_egg | draft | 3 | 3 plausible |
+| [Panderavis pandora](at_panderavis_pandora.md) | easter_egg | draft | 2 | 2 plausible |
+| [Qu](at_qu.md) | easter_egg | draft | 2 | 1 fixable, 1 plausible |
+| [Ruin Haunters](at_ruin_haunters.md) | easter_egg | draft | 2 | 1 fixable, 1 plausible |
+| [Snake People](at_snake_people.md) | easter_egg | draft | 2 | 1 fixable, 1 plausible |
+| [Worms](at_worms.md) | easter_egg | draft | 2 | 2 plausible |
+
+## The Deep Sky (`deepsky`)
+
+| Creature | Kind | Status | Chains | Verdicts |
+|---|---|---|---|---|
+| [Air whales](air_whales.md) | new | draft | 4 | 4 unreviewed |
+| [Carmesa](carmesa.md) | new | draft | 4 | 3 fixable, 1 plausible |
+| [Cloud grazers](cloud_grazers.md) | new | draft | 5 | 1 fixable, 4 plausible |
+| [Floaters](floaters.md) | new | draft | 5 | 5 unreviewed |
+| [Hunters](hunters.md) | new | draft | 5 | 5 unreviewed |
+| [Jet hunters](jet_hunters.md) | new | draft | 5 | 1 fixable, 4 plausible |
+| [Oathbound](oathbound.md) | cameo | draft | 5 | 2 fixable, 3 plausible |
+| [Rayotela](rayotela.md) | new | draft | 4 | 3 fixable, 1 plausible |
+| [Sinkers](sinkers.md) | new | draft | 5 | 5 unreviewed |
+| [Soplomanta](soplomanta.md) | new | draft | 4 | 1 fixable, 1 implausible, 2 plausible |
+
+## Earth (Sol) (`earth`)
+
+| Creature | Kind | Status | Chains | Verdicts |
+|---|---|---|---|---|
+| [Bottlenose dolphin](bottlenose_dolphin.md) | native | draft | 3 | 3 plausible |
+| [Common raven](common_raven.md) | native | draft | 3 | 3 plausible |
+| [Humans](humans.md) | native | draft | 5 | 5 plausible |
+| [Pronghorn](pronghorn.md) | native | draft | 3 | 3 plausible |
+
+## Erid (`erid`)
+
+| Creature | Kind | Status | Chains | Verdicts |
+|---|---|---|---|---|
+| [Eridians](eridians.md) | easter_egg | draft | 5 | 1 fixable, 4 plausible |
+| [Espinovent](espinovent.md) | new | draft | 4 | 2 fixable, 2 plausible |
+| [Hidrazón](hidrazon.md) | new | draft | 4 | 1 fixable, 3 plausible |
+| [Nubezón](nubezon.md) | new | draft | 4 | 3 fixable, 1 plausible |
+
+## The Neutron-Star Crust (`neutronstar`)
+
+| Creature | Kind | Status | Chains | Verdicts |
+|---|---|---|---|---|
+| [Andador Fractura](andador_fractura.md) | new | draft | 4 | 2 fixable, 2 plausible |
+| [Cristalino Filar](cristalino_filar.md) | new | draft | 4 | 2 fixable, 1 implausible, 1 plausible |
+| [Tamiz Drip](tamiz_drip.md) | new | draft | 4 | 2 fixable, 2 plausible |
+| [Vibra-Losa](vibra_losa.md) | new | draft | 4 | 4 fixable |
+
 ## Primigenia (the island world) (`primigenia`)
 
 | Creature | Kind | Status | Chains | Verdicts |
 |---|---|---|---|---|
-| [Ecolumbre](ecolumbre.md) | native | draft | 4 | 1 fixable, 3 plausible |
+| [Acechalunas](acechalunas.md) | native | draft | 4 | 4 plausible |
+| [Albinos](albinos.md) | native | draft | 5 | 1 fixable, 4 plausible |
+| [Alula](alula.md) | new | draft | 4 | 2 fixable, 2 plausible |
+| [Babosa](babosa.md) | native | draft | 4 | 4 plausible |
+| [Brújula](brujula.md) | new | draft | 4 | 2 fixable, 2 plausible |
+| [Coloso](coloso.md) | native | draft | 4 | 1 fixable, 3 plausible |
+| [Corona](corona.md) | new | draft | 4 | 3 fixable, 1 plausible |
+| [Cuarteta](cuarteta.md) | new | draft | 4 | 3 fixable, 1 plausible |
+| [Ecolumbre](ecolumbre.md) | native | draft | 9 | 3 fixable, 6 plausible |
+| [El Resoplido](el_resoplido.md) | new | draft | 4 | 2 fixable, 2 plausible |
+| [Espinodo](espinodo.md) | native | draft | 5 | 5 plausible |
+| [Garfio](garfio.md) | native | draft | 4 | 4 plausible |
+| [Merodeador](merodeador.md) | native | draft | 4 | 4 plausible |
+| [The player's lineage and cousins](player_lineage.md) | native | draft | 4 | 3 fixable, 1 plausible |
+| [Rondo](rondo.md) | native | draft | 4 | 4 plausible |
+| [Sifón](sifon.md) | new | draft | 4 | 2 fixable, 2 plausible |
+| [Sosa](sosa.md) | new | draft | 4 | 3 fixable, 1 plausible |
+| [Zanco](zanco.md) | native | draft | 4 | 4 plausible |
+| [Zancuda](zancuda.md) | native | draft | 4 | 4 plausible |
+
+## Kirr (`redtide`)
+
+| Creature | Kind | Status | Chains | Verdicts |
+|---|---|---|---|---|
+| [Altañuela](altanuela.md) | new | draft | 4 | 3 fixable, 1 plausible |
+| [Cantobrisa](cantobrisa.md) | new | draft | 4 | 2 fixable, 2 plausible |
+| [Cenizo](cenizo.md) | new | draft | 4 | 2 fixable, 2 plausible |
+| [Salcarán](salcaran.md) | new | draft | 4 | 3 fixable, 1 plausible |
+| [Salinera](salinera.md) | new | draft | 4 | 2 fixable, 2 plausible |
+
+## Silicon cryogenic world (`silicon_cryo`)
+
+| Creature | Kind | Status | Chains | Verdicts |
+|---|---|---|---|---|
+| [Ceníx](cenix.md) | new | draft | 4 | 3 fixable, 1 plausible |
+| [Corrienta](corrienta.md) | new | draft | 4 | 2 fixable, 2 plausible |
+| [Escarchón](escarchon.md) | new | draft | 4 | 2 fixable, 2 plausible |
+| [Sifon-Hielo](sifon_hielo.md) | new | draft | 4 | 2 fixable, 2 plausible |
+| [Vivisilice](vivisilice.md) | new | draft | 4 | 1 fixable, 3 plausible |
+
+## Silicon Hot World (`silicon_hot`)
+
+| Creature | Kind | Status | Chains | Verdicts |
+|---|---|---|---|---|
+| [Azufraja](azufraja.md) | new | draft | 4 | 3 fixable, 1 plausible |
+| [Cenizor](cenizor.md) | new | draft | 4 | 2 fixable, 2 plausible |
+| [Cuarzo-Sangre](cuarzo_sangre.md) | new | draft | 4 | 3 fixable, 1 plausible |
+| [Laja-Tres](laja_tres.md) | new | draft | 4 | 2 fixable, 2 plausible |
+| [Quemador](quemador.md) | new | draft | 4 | 1 fixable, 3 plausible |
+| [Vidrio-Pulso](vidrio_pulso.md) | new | draft | 4 | 3 fixable, 1 plausible |
+
+## The Star World (Photospheres and Coronae) (`starlife`)
+
+| Creature | Kind | Status | Chains | Verdicts |
+|---|---|---|---|---|
+| [Astrophage](astrophage.md) | easter_egg | draft | 5 | 3 fixable, 2 implausible |
+| [Seda Coronal](seda_coronal.md) | new | draft | 4 | 4 fixable |
+| [Trenza de Fuego](trenza_de_fuego.md) | new | draft | 4 | 4 fixable |
+| [Trenza Magnética](trenza_magnetica.md) | new | draft | 4 | 3 fixable, 1 plausible |

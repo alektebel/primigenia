@@ -1,0 +1,203 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "at_gravitals",
+  "name": {
+    "en": "Gravitals"
+  },
+  "world": "at_gravital_space",
+  "kind": "easter_egg",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "Planetary surfaces and inner-system orbits, heavily shaded by million-mile orbital sails to manage stellar radiative forcing.",
+    "diet": "Geothermal taps, stellar radiation harvesting, and atmospheric processing via gravity-moulded containment fields.",
+    "active": "Continuous, synchronized with stellar cycles and machine-world maintenance schedules.",
+    "predators": [
+      "Asteromorphs (historically)",
+      "Stellar flares (early phase)"
+    ]
+  },
+  "body": "Spherical gravity-manipulating chassis with field emitters replace limbs, allowing them to mould terrain and generate artificial pressure gradients without mechanical joints. Quantum neural cores housed in self-repairing nanotech bodies maintain human consciousness while shedding biological fragility.",
+  "chains": [
+    {
+      "id": "at_gravitals.c1",
+      "trait": "Spherical gravity-manipulating chassis with field emitters",
+      "links": [
+        "Expanding stellar luminosity rendered biological reconstruction impossible under thermal stress",
+        "Million-mile orbital sails created permanent shadow zones requiring stable habitats",
+        "Spherical geometry maximizes structural integrity against tidal stresses while concentrating field generators",
+        "Mechanical limbs replaced by field-effectors to manage tidal stresses"
+      ],
+      "roots": [
+        "F1",
+        "F3",
+        "F6",
+        "F20"
+      ],
+      "skill": {
+        "id": "at_gravitals.tidal_anchoring",
+        "name": {
+          "en": "Tidal Anchoring"
+        },
+        "role": "Defence",
+        "effect": "Generates a localized gravity well that pins fast, jet-based enemies, reducing their movement speed by 50% and negating airborne advantages for 2 turns.",
+        "numbers": {}
+      },
+      "weakness": "Gravity-field harmonics can be disrupted by dense mass concentrations (e.g., ark docking), causing a 1-turn system reboot and vulnerability to kinetic strikes.",
+      "observe": [
+        "Note the perfect sphere gleaming against the sail-shadow",
+        "Dust spirals warp and accelerate toward its surface",
+        "No visible appendages; motion is purely field-driven and silent"
+      ],
+      "journal": {
+        "en": "They trade flesh for gravity, and call it evolution."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-19",
+        "summary": "Grade as Ruin Haunter engineered metamorphosis under stellar forcing (F1, F20, F3), not natural selection; replace 'evolution' framing with directed replacement of biology; gravity-well combat is sci-fi tech—state highly speculative beyond known physics.",
+        "fixes": [
+          "Grade as Ruin Haunter engineered metamorphosis under stellar forcing (F1, F20, F3), not natural selection; replace 'evolution' framing with directed replacement of biology; gravity-well combat is sci-fi tech—state highly speculative beyond known physics."
+        ],
+        "analogues": [
+          {
+            "organism": "No organism; closest habitable-zone logic is stellar luminosity-driven habitat migration/shading (planetary science, not life history).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "kasting_1993_solar"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "physicist": 5
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist",
+          "physicist"
+        ]
+      }
+    },
+    {
+      "id": "at_gravitals.c2",
+      "trait": "Quantum neural cores in self-repairing nanotech bodies",
+      "links": [
+        "Biological reconstruction impossible under thermal stress",
+        "Quantum computing requires cryogenic stability and closed-loop recycling",
+        "Nanotech bodies remodel continuously to reject waste heat",
+        "Modular metabolic pathways enable instant substrate switching"
+      ],
+      "roots": [
+        "F17",
+        "F12",
+        "F13"
+      ],
+      "skill": {
+        "id": "at_gravitals.nanite_reconfiguration",
+        "name": {
+          "en": "Nanite Reconfiguration"
+        },
+        "role": "Signature",
+        "effect": "Reroutes structural integrity to grow a temporary ramjet, boosting movement speed by 60% for 4 seconds.",
+        "numbers": {}
+      },
+      "weakness": "Rapid reconfiguration consumes stored nanites, requiring a 10-minute recharge cycle in dense atmosphere.",
+      "observe": [
+        "Shimmering, fractal surface texture ripples as they step from methane mist to vacuum",
+        "Tool-limb proliferation occurs in mid-air with silent friction",
+        "Nanite dust settles in geometric patterns, hinting at continuous self-repair"
+      ],
+      "journal": {
+        "en": "They wear the climate like a suit, and take it off when bored."
+      },
+      "plausibility": {
+        "verdict": "implausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-19",
+        "summary": "Reserve full quantum-core + universal nanite remodeling for late Gravitals or New Machines per lore; early Gravitals retain organic brains in spheres (F12 cryo/radiator needs); remove F17 instant metabolic module-swapping from this chain—it is biological, not machine.",
+        "fixes": [
+          "Reserve full quantum-core + universal nanite remodeling for late Gravitals or New Machines per lore; early Gravitals retain organic brains in spheres (F12 cryo/radiator needs); remove F17 instant metabolic module-swapping from this chain—it is biological, not machine."
+        ],
+        "analogues": [
+          {
+            "organism": "No Earth analogue for quantum minds; self-repair at tissue scale loosely parallels echinoderm mutable collagenous tissue (mechanical, not nanofactory).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own"
+          }
+        ],
+        "scores": {
+          "astrobio": 4,
+          "physicist": 7
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "physicist",
+          "naturalist"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "at_asteromorphs",
+      "kind": "rivalry",
+      "note": "Gravital mega-sails blot out starlight, casting permanent thermal shadows. Asteromorph radiative sail-brains evolve to reject waste heat in those gloom zones, turning a weapon into a refuge. -> Skill: 'Thermal shadow navigation' (Control)",
+      "via": "F3"
+    },
+    {
+      "with": "at_new_machines",
+      "kind": "counter",
+      "note": "Gravitals dominate via macro-gravity fields. New Machines shed mass with disposable propulsion and nanite morphs, slipping through field capture like smoke through a sieve. -> Skill: 'Mass-negation drift' (Poke)",
+      "via": "F9, F1"
+    },
+    {
+      "with": "at_subjects",
+      "kind": "opposite",
+      "note": "Subjects use open modular splicing for rapid niche switching; Gravitals use closed-loop quantum cores for static stability. Opposite adaptability strategies under identical biochemical roots. -> Skill: 'Metabolic flexibility' (Engage)",
+      "via": "F17"
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-18",
+    "by": [
+      "naturalist",
+      "physicist"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-19",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-18"
+    },
+    {
+      "date": "2026-11-18",
+      "who": "autoloop",
+      "what": "removed rejected references from analogues"
+    }
+  ],
+  "lore_ref": {
+    "file": "lore/alltomorrows.en.json",
+    "id": "gravitals"
+  },
+  "temperament": "Pragmatic and insular, they view organic life as inefficient architecture and prioritize structural permanence over biological continuity.",
+  "secrets": [
+    "Can temporarily invert local gravity fields to suspend debris or enemy projectiles, creating a momentary still zone for tactical advantage."
+  ],
+  "moments": [
+    "Hovering above a shaded machine-world, they adjust their gravity emitters to compress atmospheric gases into liquid reservoirs, their spherical forms casting perfect geometric shadows across the landscape."
+  ]
+}

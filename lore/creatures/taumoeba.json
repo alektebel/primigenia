@@ -1,0 +1,386 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "taumoeba",
+  "name": {
+    "en": "Taumoeba"
+  },
+  "world": "adrian",
+  "kind": "easter_egg",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "Lower stratosphere haze layer and turbulent boundary interfaces where Astrophage aerosols suspend (F6), drifting in stable laminar flows (F18).",
+    "diet": "Astrophage particulates metabolized via enzymatic dissolution (F15); dissolved redox gradients accessed through ion-exchange membranes (F16).",
+    "active": "Diurnal; peaks during high irradiance when Astrophage flux is maximal (F6, F14), switching to chemo-mode in deep haze shadows (F16).",
+    "predators": [
+      "Stratospheric filter-skimmers",
+      "Laminar-drift grazers"
+    ],
+    "prey": [
+      "Astrophage"
+    ]
+  },
+  "body": "A gelatinous sphere of hygroscopic vesicles encased in a silica-reinforced lattice (F13), drifting like a microscopic dandelion in the amber haze (F8). Enzymatic pits line the surface to dissolve photoconductors (F15), while mucilage rafts ripple along the flanks to couple with low-frequency pressure waves in the dense air (F7).",
+  "chains": [
+    {
+      "id": "taumoeba.c1",
+      "trait": "Hygroscopic vesicles tune aerosol buoyancy",
+      "links": [
+        "Internal gas vesicles exclude liquid to lower colony density",
+        "Hygroscopic Astrophage particles bind atmospheric water vapor",
+        "Sub-10 µm droplet nuclei form stable bioaerosols",
+        "Dense 1.7 bar atmosphere dampens terminal velocity"
+      ],
+      "roots": [
+        "F3",
+        "F5",
+        "F6"
+      ],
+      "skill": {
+        "id": "taumoeba.colony_drift",
+        "name": {
+          "en": "Colony Drift"
+        },
+        "role": "Passive",
+        "effect": "Rises 0.5 m/s through haze layers without stamina cost; cannot function in clear-air zones.",
+        "numbers": {}
+      },
+      "weakness": "Punctured vesicles cause rapid descent; vulnerable to kinetic impact or static discharge.",
+      "observe": [
+        "Translucent internal bladders expand rhythmically",
+        "Cells cluster in dense aerosol plumes",
+        "Silent hovering despite flagellar vibration"
+      ],
+      "journal": {
+        "en": "They eat the sky and float on the digestion."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Treat haze drift as buoyancy inside hygroscopic Astrophage–water microdroplets (vesicles exclude liquid phase and tune density), plus passive lofting as sub‑10 µm aerosol; drop the claim that 1.7 bar CO₂ alone amplifies “lift per volume” for a cell in open gas—Stokes/ballistic limits still dominate unless the organism is a droplet nucleus or colonial raft.",
+        "fixes": [
+          "Treat haze drift as buoyancy inside hygroscopic Astrophage–water microdroplets (vesicles exclude liquid phase and tune density), plus passive lofting as sub‑10 µm aerosol; drop the claim that 1.7 bar CO₂ alone amplifies “lift per volume” for a cell in open gas—Stokes/ballistic limits still dominate unless the organism is a droplet nucleus or colonial raft."
+        ],
+        "analogues": [
+          {
+            "organism": "Cyanobacteria gas vesicles (e.g. Anabaena, Microcystis)—Walsby floatation regulation in aquatic media; airborne microbes as bioaerosols (Bacillus/Aspergillus spores) lofted by convection without vesicles.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "designer": 7,
+          "physicist": 9
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "mythmaker",
+          "physicist"
+        ]
+      }
+    },
+    {
+      "id": "taumoeba.c2",
+      "trait": "Enzymatic pits dissolve photoconductor surfaces",
+      "links": [
+        "Metabolic dissolution of Astrophage conductors",
+        "Haze aerosols store stellar flux as chemical potential",
+        "G8.5V star provides low-flux red light",
+        "Microbe evolved specialized hydrolases to break exotic bonds"
+      ],
+      "roots": [
+        "F1",
+        "F6",
+        "F15"
+      ],
+      "skill": {
+        "id": "taumoeba.digest",
+        "name": {
+          "en": "Digest"
+        },
+        "role": "Basic",
+        "effect": "Consumes 1 Astrophage biomass to restore 15 Health and grant temporary Speed boost.",
+        "numbers": {}
+      },
+      "weakness": "Oxygen toxicity; O2 pockets denature digestive enzymes and paralyze feeding.",
+      "observe": [
+        "Acidic secretion drips onto contact targets",
+        "Glowing metabolic core after feeding",
+        "Avoidance of clear blue patches lacking haze"
+      ],
+      "journal": {
+        "en": "They drink the light, turning exotic dust into flesh."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Frame digestion as extracellular dissolution/chelator-assisted stripping of Astrophage surface coatings and redox polymers (analogous to mineral weathering), not a bespoke “photoconductor” enzymatic pathway unless lore defines bond chemistry; keep O₂ sensitivity as inhibition of outer-membrane oxidases in microaerobic niches.",
+        "fixes": [
+          "Frame digestion as extracellular dissolution/chelator-assisted stripping of Astrophage surface coatings and redox polymers (analogous to mineral weathering), not a bespoke “photoconductor” enzymatic pathway unless lore defines bond chemistry; keep O₂ sensitivity as inhibition of outer-membrane oxidases in microaerobic niches."
+        ],
+        "analogues": [
+          {
+            "organism": "Acidophilic iron-oxidizers and silicate-weathering bacteria (e.g. Thiobacillus ferrooxidans, mineral-attached soil consortia) — Nelson-style bacterial mineral dissolution.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own"
+          }
+        ],
+        "scores": {
+          "astrobio": 7,
+          "designer": 9,
+          "physicist": 8
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist",
+          "physicist",
+          "wildcard"
+        ]
+      }
+    },
+    {
+      "id": "taumoeba.c3",
+      "trait": "Ion-exchange membranes isolate metabolic chambers",
+      "links": [
+        "Compartmentalized redox buffering via ion gradients",
+        "Adaptation to fluctuating light and chemical flux",
+        "23° axial tilt creates stable diurnal cycles",
+        "Hosts require metabolic buffering against day-night shifts"
+      ],
+      "roots": [
+        "F4",
+        "F16"
+      ],
+      "skill": {
+        "id": "taumoeba.toggle",
+        "name": {
+          "en": "Toggle"
+        },
+        "role": "Control",
+        "effect": "Switches to Chemo-mode: heals 2 HP/turn but moves slowly, or Photo-mode: moves fast but deals 3 damage to self.",
+        "numbers": {}
+      },
+      "weakness": "Symbiont harvestable; predators can drain chamber energy, leaving Taumoeba immobile.",
+      "observe": [
+        "Internal bioluminescence pulses sync with light changes",
+        "Membrane shimmering during metabolic shifts",
+        "Release of spores when crushed"
+      ],
+      "journal": {
+        "en": "A tiny refinery of incompatible chemistries, kept apart by thin membranes."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Clarify that “Toggle” is facultative mixotrophy: separate cytoplasmic or invagination compartments with proton/sodium motifs (not full synthetic ion-exchange polymers); align F16 by noting other lineages later domesticate the same machinery as endosymbionts—this trait is ancestral compartmentalization in Taumoeba, not the host–symbiont version.",
+        "fixes": [
+          "Clarify that “Toggle” is facultative mixotrophy: separate cytoplasmic or invagination compartments with proton/sodium motifs (not full synthetic ion-exchange polymers); align F16 by noting other lineages later domesticate the same machinery as endosymbionts—this trait is ancestral compartmentalization in Taumoeba, not the host–symbiont version."
+        ],
+        "analogues": [
+          {
+            "organism": "Anoxygenic phototrophs with intracytoplasmic membranes (Rhodobacter spheroides); mixotrophic protists (Euglena); mitochondrial/H+ gradient segregation (general textbook endosymbiosis).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own"
+          }
+        ],
+        "scores": {
+          "astrobio": 7,
+          "designer": 8,
+          "physicist": 9
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "designer",
+          "naturalist",
+          "wildcard"
+        ]
+      }
+    },
+    {
+      "id": "taumoeba.c4",
+      "trait": "Mucilage rafts couple near-field pressure waves",
+      "links": [
+        "Colonial mucilage transmits substrate-borne vibrations efficiently",
+        "Dense 1.7 bar CO₂ suppresses high-frequency attenuation",
+        "Coordinated gas-flux pulsing creates standing pressure waves",
+        "Swarm aligns to map-wide resonance peaks"
+      ],
+      "roots": [
+        "F5",
+        "F7"
+      ],
+      "skill": {
+        "id": "taumoeba.chorus_hum",
+        "name": {
+          "en": "Chorus Hum"
+        },
+        "role": "Social",
+        "effect": "Emits a pressure pulse that pulls all allies within map range into a swarm (+20% defense). Propagation relies on dense haze or wet ground to couple near-field vibrations.",
+        "numbers": {}
+      },
+      "weakness": "Sonic Disruption: ultrasonic bursts scramble mucilage coupling and break swarm formation.",
+      "observe": [
+        "Cilia align perfectly to distant vibrations",
+        "Swarming in coherent geometric patterns",
+        "Unaffected by silent flares but react to hums"
+      ],
+      "journal": {
+        "en": "They dance to the world's low hum."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Micron cilia cannot efficiently radiate or receive multi‑metre infrasound in air; use short-range coupling (contact vibration in colonial mucilage rafts, shear within dense boundary layer, or substrate-borne LF through haze decks). “Chorus Hum” as coordinated colony oscillation or gas-flux pulsing that creates detectable near-field pressure changes, not long-range sonic calls.",
+        "fixes": [
+          "Micron cilia cannot efficiently radiate or receive multi‑metre infrasound in air; use short-range coupling (contact vibration in colonial mucilage rafts, shear within dense boundary layer, or substrate-borne LF through haze decks). “Chorus Hum” as coordinated colony oscillation or gas-flux pulsing that creates detectable near-field pressure changes, not long-range sonic calls."
+        ],
+        "analogues": [
+          {
+            "organism": "Ciliate mechanosensory cilia (Paramecium avoidance/trichocyst triggering); elephant Loxodonta infrasound for long-range LF in dense air is the habitat analogue, not the cellular emitter.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 5,
+          "designer": 9,
+          "physicist": 9
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "mythmaker",
+          "wildcard"
+        ]
+      }
+    },
+    {
+      "id": "taumoeba.c5",
+      "trait": "Silica-reinforced walls withstand carbonic acid pH",
+      "links": [
+        "Silica precipitation resists soft membrane dissolution",
+        "Ocean pH buffered at 6.8 by carbonic acid",
+        "High CO2 partial pressure limits calcium carbonate saturation",
+        "Kinetic accessibility of iron-oxide and silica biomineralization"
+      ],
+      "roots": [
+        "F12",
+        "F13"
+      ],
+      "skill": {
+        "id": "taumoeba.silica_crust",
+        "name": {
+          "en": "Silica Crust"
+        },
+        "role": "Defence",
+        "effect": "-25% damage taken from Acid and Chemical attacks.",
+        "numbers": {}
+      },
+      "weakness": "Heavy shell reduces movement speed by 15%; vulnerable to high-frequency vibration that shatters coats.",
+      "observe": [
+        "Translucent rigid membrane with glassy texture",
+        "Shedding microscopic flakes during acidic rain",
+        "Thriving in droplets that dissolve softer cells"
+      ],
+      "journal": {
+        "en": "Glass bones in a vinegar sea."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "pH 6.8 is mildly acidic (not vinegar); silica frustule gives chemical resistance vs aragonite undersaturation (F13) but adds mass—consistent with slower motility. HF “shattering” is gameplay exaggeration unless tied to resonant colonial plates; diatom frustules are brittle under mechanical stress more than ultrasound in water films.",
+        "fixes": [
+          "pH 6.8 is mildly acidic (not vinegar); silica frustule gives chemical resistance vs aragonite undersaturation (F13) but adds mass—consistent with slower motility. HF “shattering” is gameplay exaggeration unless tied to resonant colonial plates; diatom frustules are brittle under mechanical stress more than ultrasound in water films."
+        ],
+        "analogues": [
+          {
+            "organism": "Diatoms (siliceous frustules); silicifying bacteria and radiolarian-style SiO₂ deposition under low carbonate saturation.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "designer": 8,
+          "physicist": 10
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "mythmaker",
+          "physicist"
+        ]
+      }
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-18",
+    "by": [
+      "designer",
+      "mythmaker",
+      "naturalist",
+      "physicist",
+      "wildcard"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-18",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-18"
+    },
+    {
+      "date": "2026-11-18",
+      "who": "autoloop",
+      "what": "removed rejected references from analogues"
+    },
+    {
+      "date": "2026-11-18",
+      "who": "autoloop",
+      "what": "removed rejected references from analogues"
+    },
+    {
+      "date": "2026-11-18",
+      "who": "import_got",
+      "what": "merged run autoloop-2026-11-18: 0 chain(s) added, 0 plausibility block(s) filled, 0 relation(s) added"
+    }
+  ],
+  "lore_ref": {
+    "file": "lore/hailmary.en.json",
+    "id": "taumoeba"
+  },
+  "temperament": "A placid, buoyant filter-feeder that drifts with the laminar flow (F18), indifferent until chemical spikes trigger a synchronized metabolic shift (F16).",
+  "secrets": [
+    "Symbiotic chambers: Taumoeba can integrate into host cells, granting the ability to toggle between chemo- and phototrophic energy pathways (F16).",
+    "Acoustic memory: Mucilage rafts can store low-frequency pressure pulses, replaying them to mimic predator calls or coordinate swarm movements (F7)."
+  ],
+  "moments": [
+    "The colony swells its vesicles with atmospheric moisture, riding a thermal updraft to breach the densest core of the Astrophage haze (F6, F18).",
+    "A low thrum vibrates through the silica walls as the Taumoeba couple the pressure wave of a distant hydrothermal vent, signaling a shift in local redox chemistry (F11, F7)."
+  ]
+}

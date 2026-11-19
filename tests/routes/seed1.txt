@@ -1,0 +1,20 @@
+terrain 7137e3ea79830ad7
+places 9
+nest 0 0
+Garfio 22.9610062 55.4327698
+Rondo 79.2743149 30.6689186
+Zanco 58.9409485 -92.8760681
+Espinodo -118.20591 -75.0157547
+start-valley 30 20
+lake-shore-water -75 70
+river-gap 796.289062 138.867188
+hidden-cave-entrance 57.8292239 615.779939
+pairs 8
+0 1
+0 2
+0 3
+0 4
+0 5
+0 6
+0 7
+0 8

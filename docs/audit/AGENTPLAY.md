@@ -15,6 +15,8 @@ python3 tools/agentplay/play.py --policy random   --persona chaos    --seed 3 --
 python3 tools/agentplay/batch.py --policy llm --seeds 5 --turns 80
 python3 tools/agentplay/batch.py --policy scripted --seeds 5 --turns 200
 python3 tools/agentplay/batch.py --report-only   # rebuild this file from tools/agentplay/runs/
+# the island's herds around the nest (Rondo/Zanco/Espinodo at 24-45 m), so the social verbs have targets
+AGENTPLAY_HERDS=1 python3 tools/agentplay/batch.py --policy llm --seeds 5 --turns 70 --personas friend explorer fighter chaos
 # shrink / re-check a bug repro
 python3 tools/agentplay/repro.py --seed S --tpt 20 --turns T --kind stuck --ops '[[0,"heading 90"]]'
 ```

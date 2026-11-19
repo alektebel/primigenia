@@ -1,0 +1,328 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "el_resoplido",
+  "name": {
+    "en": "El Resoplido"
+  },
+  "world": "primigenia",
+  "kind": "new",
+  "status": "draft",
+  "stage": "creature",
+  "niche": {
+    "habitat": "Fumarole slopes, lava tube entrances, hot spring terraces near the stratovolcano",
+    "diet": "Carcasses, sulfur crusts, basalt grit, mineral seeps",
+    "active": "Day (warm hours), thermals only",
+    "predators": []
+  },
+  "body": "Babosa (slug-like crawler) with a vast, insulating dorsal gas-bladder and ventral heat-pads; lacks limbs for walking, moves by clinging and drifting",
+  "chains": [
+    {
+      "id": "el_resoplido.c1",
+      "trait": "Dorsal gas-bladder for buoyancy",
+      "links": [
+        "Bladder provides lift in dense air",
+        "Hot air density contrast creates buoyancy",
+        "1.6 bar atmosphere amplifies mass displacement",
+        "Volcanic heat provides constant thermal source"
+      ],
+      "roots": [
+        "F4",
+        "F7"
+      ],
+      "skill": {
+        "id": "el_resoplido.thermal_lift",
+        "name": {
+          "en": "Thermal Lift"
+        },
+        "role": "Defence",
+        "effect": "Inflates bladder using body heat or warm rock contact; reduces terminal velocity by 50% and allows gliding on thermals for 8 seconds.",
+        "numbers": {}
+      },
+      "weakness": "Wind and cold rapidly cool the bladder, causing immediate loss of lift and a dangerous drop; fire ruptures the bladder.",
+      "observe": [
+        "See creature press ventral pads against hot rock",
+        "Watch dorsal frill expand as air is heated",
+        "Observe it detach and drift horizontally on rising warm air"
+      ],
+      "journal": {
+        "en": "It doesn't walk. It huffs, heats, and hangs in the air like a rag caught on a thermal."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Reframe skill as volcanic assisted soaring: bladder is a large insulated dorsal chamber passively pre-heated on ventral pads; creature achieves partial buoyancy + extended glide on slope thermals (F7), not full unpowered flight. Cap volume ~3–8× body for gameplay; require hot-rock contact to recharge; moonless cold nights (haunting moment) collapse lift—already consistent.",
+        "fixes": [
+          "Reframe skill as volcanic assisted soaring: bladder is a large insulated dorsal chamber passively pre-heated on ventral pads; creature achieves partial buoyancy + extended glide on slope thermals (F7), not full unpowered flight. Cap volume ~3–8× body for gameplay; require hot-rock contact to recharge; moonless cold nights (haunting moment) collapse lift—already consistent."
+        ],
+        "analogues": [
+          {
+            "organism": "Ballooning spiders (e.g. Linyphiidae: silk + wind, not hot-air bladders); Portuguese man-of-war (Physalia: gas float for surface buoyancy, different medium); hang-glider/soarer using ridge thermals (physics only, not homology).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "el_resoplido.c2",
+      "trait": "Sulfur-crusted gut symbionts",
+      "links": [
+        "Digests toxic sulfur crusts for sulfur and minerals",
+        "Symbionts convert H2S/SO2 to usable sulfate and detoxify",
+        "Fumarole crusts are poison to most life but abundant",
+        "Volcanic gases seep from dyke and tuff fractures"
+      ],
+      "roots": [
+        "F23",
+        "F7"
+      ],
+      "skill": {
+        "id": "el_resoplido.sulfur_crunch",
+        "name": {
+          "en": "Sulfur Crunch"
+        },
+        "role": "Engage",
+        "effect": "Eat sulfur crusts from environment or carcass; restores 30% health and removes all toxin damage, but risks choking if eaten raw.",
+        "numbers": {}
+      },
+      "weakness": "Cannot digest raw sulfur quickly; raw sulfur gifts cause choking damage; gut flora crashes if diet lacks sulfur for too long.",
+      "observe": [
+        "Find missing sulfur crusts near vent",
+        "See creature scrape orange crusts with rasping tongue",
+        "Carcass with sulfur-digested bones only"
+      ],
+      "journal": {
+        "en": "The poison is its pantry. It eats the mountain's breath and breathes back clean air."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Fumarole crusts rich in sulfur, SO₂/H₂S (F23) are toxic to generalists (F26) but abundant; specialist scavenger with chemolithotrophic or sulfur-oxidizing gut symbionts is a standard island-radiation niche (F27). Detoxifying vent minerals while eating carcass flesh matches one shared biochemistry (F24). Risk of choking on elemental sulfur without symbiont priming matches slow oxidation kinetics.",
+        "fixes": [
+          "Fumarole crusts rich in sulfur, SO₂/H₂S (F23) are toxic to generalists (F26) but abundant; specialist scavenger with chemolithotrophic or sulfur-oxidizing gut symbionts is a standard island-radiation niche (F27). Detoxifying vent minerals while eating carcass flesh matches one shared biochemistry (F24). Risk of choking on elemental sulfur without symbiont priming matches slow oxidation kinetics."
+        ],
+        "analogues": [
+          {
+            "organism": "Giant tubeworm Riftia pachyptila and vestimentiferans with thioautotrophic bacterial symbionts (sulfide oxidation); shallow-water sulfide-oxidizing symbioses in lucinid and vesicomyid clams; terrestrial/soil sulfur bacteria associations in some detritivores (weaker analogue).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "el_resoplido.c3",
+      "trait": "Timid drift-away escape",
+      "links": [
+        "Avoids Garfio and Espinodo",
+        "Predators hunt on ground and in low air",
+        "Open slopes are lethal for slow walkers",
+        "Island radiation favors niche partitioning"
+      ],
+      "roots": [
+        "F2",
+        "F26"
+      ],
+      "skill": {
+        "id": "el_resoplido.gale_escape",
+        "name": {
+          "en": "Gale Escape"
+        },
+        "role": "Defence",
+        "effect": "On wind or attack, inflate bladder instantly and let wind carry away; breaks enemy lock and avoids damage.",
+        "numbers": {}
+      },
+      "weakness": "In calm weather or closed caves, it cannot escape; vulnerable to ambush and entrapment.",
+      "observe": [
+        "See creature inflate and blow sideways on threat",
+        "Watch it cling to cliff face before drifting",
+        "Garfio bites empty air as prey vanishes upwind"
+      ],
+      "journal": {
+        "en": "Fear makes it light. A sudden noise turns it into a balloon."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Name effect wind-borne escape: requires minimum wind (game threshold) + partially inflated bladder; does not break predator lock in dead calm or enclosed lava tubes.",
+        "fixes": [
+          "Name effect wind-borne escape: requires minimum wind (game threshold) + partially inflated bladder; does not break predator lock in dead calm or enclosed lava tubes."
+        ],
+        "analogues": [
+          {
+            "organism": "Ballooning spider juvenile dispersal (wind + silk parachute); nectar bats and insects dropping from thermals when convection fails (behavioural parallel only).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "el_resoplido.c4",
+      "trait": "Ventral heat-pads and insulating blubber",
+      "links": [
+        "Efficient heat transfer from rock to bladder",
+        "Insulation minimizes radiative heat loss",
+        "High UV and cold nights demand thermal efficiency",
+        "Dense air increases convective cooling"
+      ],
+      "roots": [
+        "F14",
+        "F4"
+      ],
+      "skill": {
+        "id": "el_resoplido.rock_warm",
+        "name": {
+          "en": "Rock Warm"
+        },
+        "role": "Passive",
+        "effect": "Rests on hot rock to restore bladder heat; passive health regen and lift recovery over time.",
+        "numbers": {}
+      },
+      "weakness": "Must find specific hot rocks; cannot use move in water or on cold stone; exposed during rest.",
+      "observe": [
+        "Creature presses flat belly to glowing vent rock",
+        "Bladder shrinks as heat is stored in tissue",
+        "Thermal pattern shows warm ventral patch"
+      ],
+      "journal": {
+        "en": "It sleeps on the fire, belly to stone, dreaming of the wind."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Ectothermic basking on fumarole-heated andesite/basalt (F9, F7) with high conductive heat uptake through ventral surface is sound; insulation limits convective loss in 1.6 bar dense air (F4) and at night/UV-exposed slopes (F14). Links bladder recharge to observable behaviour without violating energy budget if lift is passive storage, not constant metabolic furnacing.",
+        "fixes": [
+          "Ectothermic basking on fumarole-heated andesite/basalt (F9, F7) with high conductive heat uptake through ventral surface is sound; insulation limits convective loss in 1.6 bar dense air (F4) and at night/UV-exposed slopes (F14). Links bladder recharge to observable behaviour without violating energy budget if lift is passive storage, not constant metabolic furnacing."
+        ],
+        "analogues": [
+          {
+            "organism": "Marine iguana (Amblyrhynchus cristatus) ventral basking after cold foraging; many lizards and snakes using sun-warmed rock; deep-sea vent fauna using proton motive force from symbionts while host regulates position near redox gradient.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "Garfio",
+      "kind": "cousin",
+      "note": "(council kind 'Predator/Prey') Garfio attacks Resoplido at takeoff; Resoplido's drift escape is the only reliable counter to Garfio's charge."
+    },
+    {
+      "with": "Zanco",
+      "kind": "cousin",
+      "note": "(council kind 'Commensal') Zanco grubs up insects near vents, which Resoplido catches mid-air with its wide throat; Zanco ignores the drifters."
+    },
+    {
+      "with": "Espinodo",
+      "kind": "cousin",
+      "note": "(council kind 'Competition') Both compete for sulfur-mineral carcasses; Espinodo's armor protects Resoplido from smaller scavengers but not from heat."
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-18",
+    "by": [
+      "naturalist/qwen"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-18",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-18"
+    },
+    {
+      "date": "2026-11-18",
+      "who": "autoloop",
+      "what": "removed rejected references from analogues"
+    },
+    {
+      "date": "2026-11-18",
+      "who": "autoloop",
+      "what": "removed rejected references from analogues"
+    },
+    {
+      "date": "2026-11-19",
+      "who": "import_got",
+      "what": "merged run autoloop-2026-11-19: 0 chain(s) added, 0 plausibility block(s) filled, 0 relation(s) added"
+    },
+    {
+      "date": "2026-11-19",
+      "who": "import_got",
+      "what": "merged run autoloop-2026-11-19: 0 chain(s) added, 0 plausibility block(s) filled, 0 relation(s) added"
+    },
+    {
+      "date": "2026-11-19",
+      "who": "import_got",
+      "what": "merged run autoloop-2026-11-19: 0 chain(s) added, 0 plausibility block(s) filled, 0 relation(s) added"
+    }
+  ],
+  "temperament": "Timid, drifts away on updrafts, curled in sleep",
+  "secrets": [
+    "Volcano secret: Flamethrower move (evolved H2S metabolism).",
+    "Secret: Eat sulfur crusts to detoxify and unlock sulfur adaptation.",
+    "Secret: Found in hidden lava tube near fumaroles."
+  ],
+  "moments": [
+    "On moonless nights, when the thermals die, dozens drop from the slopes like stones, curling into ragged knots on the lava flow. You can walk right up to one, thinking it dead, only for a sudden gust to restart its slow, floating wake."
+  ],
+  "journal": [
+    {
+      "en": "El Resoplido. The mountain's ghost. It eats sulfur, sleeps on rock, and lives in the updraft."
+    },
+    {
+      "en": "Secret: Eat sulfur from carcass. Volcano area. Unlocks H2S resistance and Flamethrower move."
+    }
+  ]
+}

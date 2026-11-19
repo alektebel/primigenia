@@ -1,0 +1,185 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "at_mantelopes",
+  "name": {
+    "en": "Mantelopes"
+  },
+  "world": "at_garden_prairies",
+  "kind": "easter_egg",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "to be written",
+    "diet": "to be written",
+    "active": "to be written",
+    "predators": []
+  },
+  "body": "to be written",
+  "chains": [
+    {
+      "id": "at_mantelopes.c1",
+      "trait": "Complex, mournful vocal harmonies from throat sac",
+      "links": [
+        "Dense atmosphere and temperature inversions allow sound to carry miles",
+        "K2V stable light cycle and prairie openness favor auditory communication",
+        "Herds maintain cohesion and mourn loss via long-range acoustic signals",
+        "Qu-gene locks preserve neural architecture for complex vocal processing"
+      ],
+      "roots": [
+        "F9",
+        "F7",
+        "F1"
+      ],
+      "skill": {
+        "id": "at_mantelopes.desolate_chant",
+        "name": {
+          "en": "Desolate Chant"
+        },
+        "role": "Social",
+        "effect": "Calms allied Mantelopes and reveals hidden enemies within 100m via sound waves.",
+        "numbers": {}
+      },
+      "weakness": "Attracts predators; song stops if vocal cords are damaged.",
+      "observe": [
+        "Throat sac inflates to resonance frequency",
+        "Herds gather and hum in dissonant harmony",
+        "Ears twitch toward distant echoes of their own calls"
+      ],
+      "journal": {
+        "en": "A library of song trapped in a grazer's throat; they sing the history of a people they can no longer remember."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "Describe as long-duration, low-frequency chorus with formant shifts from an inflated laryngeal air sac (individuals overlap calls), not intentional multipart harmony; cap effective \"reveal\" range at hundreds of metres only downwind/in inversion conditions, not miles every night.",
+        "fixes": [
+          "Describe as long-duration, low-frequency chorus with formant shifts from an inflated laryngeal air sac (individuals overlap calls), not intentional multipart harmony; cap effective \"reveal\" range at hundreds of metres only downwind/in inversion conditions, not miles every night."
+        ],
+        "analogues": [
+          {
+            "organism": "Howler monkey (Alouatta) hyoid/throat amplification for long-range low calls; sage-grouse (Centrocercus) inflatable esophageal air sacs for display vocals.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "fitch_2004_acoustic"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 7,
+          "designer": 9,
+          "physicist": 9
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist",
+          "physicist"
+        ]
+      }
+    },
+    {
+      "id": "at_mantelopes.c2",
+      "trait": "Human neural architecture in quadrupedal grazer frame",
+      "links": [
+        "Qu grafted synthetic proteins preserve encephalic volume",
+        "Sterile plains remove predation pressure to prune unused tissue",
+        "15°C climate traps cranial heat, imposing metabolic tax",
+        "Caloric deficit selects against brain mass over time"
+      ],
+      "roots": [
+        "F15",
+        "F17",
+        "F25"
+      ],
+      "skill": {
+        "id": "at_mantelopes.lingering_thought",
+        "name": {
+          "en": "Lingering Thought"
+        },
+        "role": "Control",
+        "effect": "Use a Mantelope to solve puzzles or decode Qu ruins; grants insight into past civilizations.",
+        "numbers": {}
+      },
+      "weakness": "Suffers overheating in direct sun; must rest in shade or risk heat stroke.",
+      "observe": [
+        "Large eyes dart with confusion between quad movement and mental tasks",
+        "Calves with smaller heads graze faster and reach maturity sooner",
+        "Adults lie listless, conserving energy for neural maintenance"
+      ],
+      "journal": {
+        "en": "The world falls silent not because the singers are gone, but because the half-minded grow faster."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "Add explicit heat-dissipation limiter (no elephantine pinnae): shade-rest mechanic is required; selection gradient on calf head size should be fast (10²–10³ generations), not subtle.",
+        "fixes": [
+          "Add explicit heat-dissipation limiter (no elephantine pinnae): shade-rest mechanic is required; selection gradient on calf head size should be fast (10²–10³ generations), not subtle."
+        ],
+        "analogues": [
+          {
+            "organism": "Island/rule and feral ungulate brain shrinkage; philosophical analogue to locked-in cognition without motor affordance (clinical locked-in syndrome—conceptual only).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "designer": 8,
+          "physicist": 8
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist",
+          "physicist"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "at_saltatorial_prey",
+      "kind": "opposite",
+      "note": "Divergent neural retention; Mantelopes retain human encephalic volume at high metabolic cost, while prey prune neural tissue for faster grazing and survival.",
+      "via": "F17"
+    },
+    {
+      "with": "at_titans",
+      "kind": "counter",
+      "note": "Titan low-frequency booms mask Mantelope mournful harmonies, disrupting herd communication and acoustic cohesion across the prairie.",
+      "via": "F9"
+    },
+    {
+      "with": "at_hand_flappers",
+      "kind": "mimicry",
+      "note": "Hand Flappers mimic Mantelope mournful harmonies to infiltrate herds and steal grazing time, exploiting acoustic overlap in dense air.",
+      "via": "F9"
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-19",
+    "by": [
+      "naturalist",
+      "physicist"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-19",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-19"
+    }
+  ],
+  "lore_ref": {
+    "file": "lore/alltomorrows.en.json",
+    "id": "mantelopes"
+  }
+}

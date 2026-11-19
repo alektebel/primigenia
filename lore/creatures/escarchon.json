@@ -1,0 +1,275 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "escarchon",
+  "name": {
+    "en": "Escarchón"
+  },
+  "world": "silicon_cryo",
+  "kind": "new",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "Geothermal frost-plains & vent chimneys (0.08 W/m² flux)",
+    "diet": "Fluoride-etched silicate glass + trace H2",
+    "active": "Diurnal (slow metabolic cycle aligned to vent output)",
+    "predators": []
+  },
+  "body": "Low-slung, plate-armored siloxane carapace with broad ventral rasping pads and IR thermal pits",
+  "chains": [
+    {
+      "id": "escarchon.c1",
+      "trait": "Broad ventral rasping pads",
+      "links": [
+        "Scrapes fluoride-etched cryo-glass for reactive silicon",
+        "HF volcanic gases break inert Si–O bonds in reducing air",
+        "F13"
+      ],
+      "roots": [
+        "F13"
+      ],
+      "skill": {
+        "id": "escarchon.glass_grind",
+        "name": {
+          "en": "Glass Grind"
+        },
+        "role": "Basic",
+        "effect": "Degrades enemy silicate armor by 15% over 3s, releasing H2 fuel for allies",
+        "numbers": {}
+      },
+      "weakness": "Pad joints stiffen below 60 K, slowing attack speed by 40%",
+      "observe": [
+        "Pale striations on vent rocks",
+        "Slow grinding vocalizations",
+        "Frost rings around mouth"
+      ],
+      "journal": {
+        "en": "It doesn't eat; it slowly digests the mountain."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Frame diet as scraping vent-deposited, fluoride-etched silicate scale and organosilicon mat at chimneys; tie H₂ release to abrading Si–H biomineral coatings, not intact quartz. Slow Glass Grind to match vent diurnal heat (F12), not 3s full armor strip.",
+        "fixes": [
+          "Frame diet as scraping vent-deposited, fluoride-etched silicate scale and organosilicon mat at chimneys; tie H₂ release to abrading Si–H biomineral coatings, not intact quartz. Slow Glass Grind to match vent diurnal heat (F12), not 3s full armor strip."
+        ],
+        "analogues": [
+          {
+            "organism": "Limpets and chitons (Patellogastropoda, Polyplacophora) — radula and odontophore scrape biofilms and rock; fluoride etching parallels industrial HF glass frosting (not biological).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "escarchon.c2",
+      "trait": "Low-slung, plate-armored carapace",
+      "links": [
+        "Distributes mechanical stress across brittle siloxane plates",
+        "Low gravity permits larger exoskeletal frames without collapse",
+        "F4"
+      ],
+      "roots": [
+        "F4"
+      ],
+      "skill": {
+        "id": "escarchon.frost_plate",
+        "name": {
+          "en": "Frost Plate"
+        },
+        "role": "Defence",
+        "effect": "Shields party from one thermal shock, reflecting 20% heat damage back",
+        "numbers": {}
+      },
+      "weakness": "High-frequency sounds fracture plate seams, causing stagger",
+      "observe": [
+        "Geometric plate overlap",
+        "Frost accumulation patterns",
+        "Low center of gravity stance"
+      ],
+      "journal": {
+        "en": "Built like a moving glacier, patience is its only armor."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Reduced gravity (F4) eases loading on a broad, brittle siloxane/silicate plate exoskeleton (F14). Low stance lowers overturning torque on frost plains and distributes stress across overlaps — sensible for territorial, slow grazers near vents.",
+        "fixes": [
+          "Reduced gravity (F4) eases loading on a broad, brittle siloxane/silicate plate exoskeleton (F14). Low stance lowers overturning torque on frost plains and distributes stress across overlaps — sensible for territorial, slow grazers near vents."
+        ],
+        "analogues": [
+          {
+            "organism": "Giant isopods (Bathynomus) and trilobite-derived plate arrangements — distributed exoskeletal stress in low-energy lifestyles.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "escarchon.c3",
+      "trait": "Flank IR thermal pits",
+      "links": [
+        "Detects subtle heat differentials in perpetual fog",
+        "Dense N₂/CH₄ atmosphere and low visible flux blind optical sight",
+        "F10"
+      ],
+      "roots": [
+        "F10",
+        "F18"
+      ],
+      "skill": {
+        "id": "escarchon.thermal_track",
+        "name": {
+          "en": "Thermal Track"
+        },
+        "role": "Engage",
+        "effect": "Marks hidden enemies within 30m, increasing ally accuracy by 25%",
+        "numbers": {}
+      },
+      "weakness": "Blinded by uniform ambient heat sources (e.g., thermal vents)",
+      "observe": [
+        "Clustered dark pits along flanks",
+        "Head-tilting toward warmth",
+        "Heat haze distortion around eyes"
+      ],
+      "journal": {
+        "en": "It sees what it feels, and the feeling is always hunger."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Perpetual frost fog and weak visible flux (F10, F19) make optical hunting poor; sub-degree thermal contrast near vents and prey metabolic micro-heats (F15) is a reliable cue. Confusion near uniform vent fields matches saturation limits of IR sensors.",
+        "fixes": [
+          "Perpetual frost fog and weak visible flux (F10, F19) make optical hunting poor; sub-degree thermal contrast near vents and prey metabolic micro-heats (F15) is a reliable cue. Confusion near uniform vent fields matches saturation limits of IR sensors."
+        ],
+        "analogues": [
+          {
+            "organism": "Pit vipers (Crotalus) — loreal pit IR thermoreception; vampire bats (Desmodus) — heat-sensitive lip pits for capillary targeting.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "escarchon.c4",
+      "trait": "Slow grinding locomotion",
+      "links": [
+        "Metabolic cycles span days to weeks at cryogenic temperatures",
+        "Arrhenius kinetics at 80 K reduce reaction rates by orders of magnitude",
+        "F15"
+      ],
+      "roots": [
+        "F15"
+      ],
+      "skill": {
+        "id": "escarchon.enduring_pace",
+        "name": {
+          "en": "Enduring Pace"
+        },
+        "role": "Passive",
+        "effect": "Reduces stamina drain by 30%, but movement speed is capped at 2 m/s",
+        "numbers": {}
+      },
+      "weakness": "Cannot evade rapid strikes or sudden environmental shifts",
+      "observe": [
+        "Deliberate, rhythmic step placement",
+        "Visible breath-frost plumes",
+        "Muscle-tension pulses every few seconds"
+      ],
+      "journal": {
+        "en": "Speed is a luxury the cold denies; endurance is its currency."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Set routine speed to ~0.05–0.3 m/s; allow brief slightly faster grinding only on warmed vent skirts (>90 K). Passive stamina discount reflects low duty cycle, not marathon running.",
+        "fixes": [
+          "Set routine speed to ~0.05–0.3 m/s; allow brief slightly faster grinding only on warmed vent skirts (>90 K). Passive stamina discount reflects low duty cycle, not marathon running."
+        ],
+        "analogues": [
+          {
+            "organism": "Galápagos tortoise and deep-sea holothurians — extreme energy thrift; vent-endemic snails (e.g. Alvinichon) — localized heat boosts activity only near fluid.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-18",
+    "by": [
+      "naturalist/qwen"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-18",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-18"
+    },
+    {
+      "date": "2026-11-18",
+      "who": "import_got",
+      "what": "merged run autoloop-2026-11-18: 0 chain(s) added, 0 plausibility block(s) filled, 0 relation(s) added"
+    }
+  ],
+  "temperament": "Patient, territorial, moves with grinding precision",
+  "secrets": [
+    "Its rasping pads secrete a mild acid that temporarily liquefies CH₄, creating slip-angles for escape.",
+    "The IR pits can detect the metabolic heat of prey hiding under ice."
+  ],
+  "moments": [
+    "A sudden vent burst turns the fog glass-white; it doesn't flinch, only opens its pads and waits for the wind to carry the new chemistry."
+  ],
+  "journal": [
+    {
+      "en": "Patience is not a virtue here. It is a thermodynamic necessity."
+    },
+    {
+      "en": "It remembers the mountain's heat long after the vent goes cold."
+    }
+  ]
+}

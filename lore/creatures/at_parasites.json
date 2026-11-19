@@ -1,0 +1,171 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "at_parasites",
+  "name": {
+    "en": "Parasites"
+  },
+  "world": "at_garden_peoples",
+  "kind": "easter_egg",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "to be written",
+    "diet": "to be written",
+    "active": "to be written",
+    "predators": []
+  },
+  "body": "to be written",
+  "chains": [
+    {
+      "id": "at_parasites.c1",
+      "trait": "Abdominal suckers & pain-soothing salivary glands",
+      "links": [
+        "Specialized attachment organs and immunosuppressive secretions",
+        "Qu genetic splitting creating distinct parasitic lineages",
+        "Host immune system driving co-evolutionary arms race"
+      ],
+      "roots": [
+        "F14",
+        "F17"
+      ],
+      "skill": {
+        "id": "at_parasites.nociceptor_dampening",
+        "name": {
+          "en": "Nociceptor Dampening"
+        },
+        "role": "Passive",
+        "effect": "Reduce host agitation by 40%, allowing safe extraction of nutrients without combat",
+        "numbers": {}
+      },
+      "weakness": "Salivary enzymes are thermally unstable; high surface temperatures degrade secretion efficiency",
+      "observe": [
+        "Circular, muscular suckers lining the ventral surface",
+        "Glandular maw secreting clear, viscous fluid upon contact",
+        "Host skin showing localized vascular dilation around attachment sites"
+      ],
+      "journal": {
+        "en": "They drink the host's peace to steal its life."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-19",
+        "analogues": [
+          {
+            "organism": "Ticks and leeches attachment; amphetamine-like host manipulation in some trematodes and rabies-like behavioral modulation (loose); saliva immunomodulation in blood feeders",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "krause_2015_parasite"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 9,
+          "designer": 8,
+          "physicist": 8
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist",
+          "physicist"
+        ]
+      }
+    },
+    {
+      "id": "at_parasites.c2",
+      "trait": "Womb-infesting endoparasite lineage",
+      "links": [
+        "Intrauterine development and sterile abortion mimicry",
+        "Qu bioengineering targeting reproductive capacity",
+        "Host learning to burn or drown parasites"
+      ],
+      "roots": [
+        "F14",
+        "F18"
+      ],
+      "skill": {
+        "id": "at_parasites.silent_gestation",
+        "name": {
+          "en": "Silent Gestation"
+        },
+        "role": "Control",
+        "effect": "Converts 1 host unit into a temporary parasite carrier with +3 stealth",
+        "numbers": {}
+      },
+      "weakness": "Hosts that discover infection will violently purge them",
+      "observe": [
+        "Minute, worm-like forms within host abdomen",
+        "Sterile, non-viable offspring left behind",
+        "Hosts performing ritual cleansing baths"
+      ],
+      "journal": {
+        "en": "A life borrowed from the womb, returned to the dark."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-19",
+        "summary": "Mark as highly speculative Qu split (F14/F18): endometrial/trophoblast mimic or early-embryo hijack, not a stable natural species strategy; sterilising hosts selects against extreme forms post-Qu, matching lore purge by hosts.",
+        "fixes": [
+          "Mark as highly speculative Qu split (F14/F18): endometrial/trophoblast mimic or early-embryo hijack, not a stable natural species strategy; sterilising hosts selects against extreme forms post-Qu, matching lore purge by hosts."
+        ],
+        "analogues": [
+          {
+            "organism": "Microsporidian and some parasitoid wasp embryonic attack as distant mechanistic parallels; brood parasitism (cuckoo) at behavioural level only",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "ewald_1983_evolution"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 7,
+          "designer": 7,
+          "physicist": 8
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "at_hosts",
+      "kind": "symbiosis",
+      "note": "Hosts develop vascular fur and chemical steering to manage infestation; parasites refine abdominal suckers and pain-soothing saliva into mutualistic neural puppetry.",
+      "via": "F14, F17, F8"
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-18",
+    "by": [
+      "naturalist",
+      "physicist"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-19",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-18"
+    }
+  ],
+  "lore_ref": {
+    "file": "lore/alltomorrows.en.json",
+    "id": "parasites"
+  }
+}

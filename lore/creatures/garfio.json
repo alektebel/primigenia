@@ -1,0 +1,310 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "garfio",
+  "name": {
+    "en": "Garfio"
+  },
+  "world": "primigenia",
+  "kind": "native",
+  "status": "draft",
+  "stage": "creature",
+  "niche": {
+    "habitat": "Valley edges, meadow borders, raiding routes, and near carcass drift lines.",
+    "diet": "Carnivore: flesh, bone, chitin, and scavenged meat.",
+    "active": "Diurnal, opportunistic raider; peaks during evening storms or fog breaks.",
+    "predators": [
+      "Coloso (accidental)",
+      "Espinodo (defensive)",
+      "Merodeador (stealth ambush)"
+    ],
+    "prey": [
+      "Rondo",
+      "Zanco",
+      "Young Merodeador",
+      "Carrion"
+    ]
+  },
+  "body": "Low-slung raider with a short, wide skull built for crushing bone and chitin, and powerful hip joints that power short, explosive bursts through dense air. Their ragged, low-frequency call acts as an acoustic jammer to interrupt rival courtship, while an elastic throat sac delivers a deimatic startle boom.",
+  "chains": [
+    {
+      "id": "garfio.c1",
+      "trait": "Short, wide skull crushes bone and chitin",
+      "links": [
+        "Carcasses drift ashore and marrow is fiercely contested (F20, F26)",
+        "Rapidly fracturing bone and chitin wins the meal before rivals arrive (F4)",
+        "High pO₂ supports dense jaw muscles and a tall coronoid process for quick snaps (F5)",
+        "Shattering Espinodo plates is a tactical payoff, not the evolutionary driver"
+      ],
+      "roots": [
+        "F2",
+        "F4",
+        "F5",
+        "F20",
+        "F26"
+      ],
+      "skill": {
+        "id": "garfio.crack_bite",
+        "name": {
+          "en": "Crack Bite"
+        },
+        "role": "Engage",
+        "effect": "Deals 18 damage, ignores 50% armour (bone and Espinodo plates only), 0.4 s audio click and forward lunge telegraph the strike, 0.8 s wind-up, 4 s cooldown.",
+        "numbers": {}
+      },
+      "weakness": "The 0.4 s click and head drop telegraph the lunge; sidestep and strike the exposed flank for +25% damage.",
+      "observe": [
+        "Jaw click at 0.4s",
+        "Head drops before lunge",
+        "Deep tooth pits in bone"
+      ],
+      "journal": {
+        "en": "It bites like it is breaking a shell."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "analogues": [
+          {
+            "organism": "Spotted hyena (Crocuta crocuta): hypertrophied cranial musculature and dentition for crushing bone and shell (Van Valkenburgh & Hertel, carnivoran bite-force literature, from memory unverified); elevated pO₂ on Primigenia (F5) matches Earth highland/large-predator aerobic jaw budgets.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 9,
+          "designer": 9,
+          "physicist": 7,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "designer",
+          "skeptic"
+        ]
+      }
+    },
+    {
+      "id": "garfio.c2",
+      "trait": "Low-slung hips power short burst raids",
+      "links": [
+        "Raids win by ambush and theft, never by long chases",
+        "1.6× drag punishes tall, frontal bodies and caps sprints to a few seconds",
+        "1.05 g makes each stride costly, so power sits in the hips and elastic tendons, not long limbs",
+        "Gales at 1.6× wind force weed out tall, light builds on the open east meadows"
+      ],
+      "roots": [
+        "F2",
+        "F4",
+        "F19"
+      ],
+      "skill": {
+        "id": "garfio.raid_dash",
+        "name": {
+          "en": "Raid Dash"
+        },
+        "role": "Basic",
+        "effect": "From a belly-low crouch, bursts to 14 m/s for 3 s (~40 m) while the stamina bar visibly drains; then speed drops 40% for 8 s with a buckling-knees animation.",
+        "numbers": {}
+      },
+      "weakness": "The crouch start telegraphs the burst: hover just outside reach for 3 s, then strike while its knees buckle and the stamina bar refills; broken ground still kills its cornering.",
+      "observe": [
+        "Belly-low crouch before every lunge",
+        "Coiled stillness, then 3 heartbeats of speed",
+        "Buckling knees and heaving chest after"
+      ],
+      "journal": {
+        "en": "Three heartbeats of courage, then arithmetic."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "analogues": [
+          {
+            "organism": "Wolverine (Gulo gulo) and similar mustelids: low, power-forward chassis, short explosive charges and theft/ambush rather than cursorial pursuit—fits 1.6× aerodynamic drag and brief sprint caps (F4) plus 1.05 g stride cost (F2).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "designer": 8,
+          "physicist": 6,
+          "skeptic": 7
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "skeptic"
+        ]
+      }
+    },
+    {
+      "id": "garfio.c3",
+      "trait": "Ragged, low-frequency call interrupts rival displays",
+      "links": [
+        "Steals mates and food from distracted targets",
+        "Dense air carries low-frequency interruptions across the fog trap",
+        "Morning fog and temperature inversions duct sound, making acoustic dominance critical"
+      ],
+      "roots": [
+        "F4",
+        "F8"
+      ],
+      "skill": {
+        "id": "garfio.heckle",
+        "name": {
+          "en": "Heckle"
+        },
+        "role": "Control",
+        "effect": "Interrupts courtship or ritual within 30 m for 5 s; target loses 10 befriend.",
+        "numbers": {}
+      },
+      "weakness": "Two courting creatures can mob it; bring a partner and it flees after 4 s.",
+      "observe": [
+        "Ragged call",
+        "Dives between dancers",
+        "Stolen fruit on carcass"
+      ],
+      "journal": {
+        "en": "It is the reason courtship has witnesses."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Anchor the heckle in ~80–250 Hz (or brief infrasonic pulses): F4/F8 duct low frequencies in fog; a ragged high call would not carry or dominate and would contradict canon sensory ecology.",
+        "fixes": [
+          "Anchor the heckle in ~80–250 Hz (or brief infrasonic pulses): F4/F8 duct low frequencies in fog; a ragged high call would not carry or dominate and would contradict canon sensory ecology."
+        ],
+        "analogues": [
+          {
+            "organism": "Howler monkeys (Alouatta): low-frequency, long-range social/vocal contest in forest acoustics; lek and chorus frogs: call overlap and acoustic masking in dense soundscapes (Wells, frog behavioral ecology, from memory unverified)—mechanism is interference and attention theft, not mimetic deceit.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "designer": 9,
+          "physicist": 9,
+          "skeptic": 7
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "skeptic",
+          "wildcard"
+        ]
+      }
+    },
+    {
+      "id": "garfio.c4",
+      "trait": "Elastic throat sac booms a deimatic startle",
+      "links": [
+        "Humid air (F15) causes condensation rings when the sac rapidly inflates",
+        "Sudden low-frequency boom triggers a flinch reflex in pose-reading rivals within 10 m",
+        "Elastic recoil and dense atmosphere couple the sound efficiently without tissue damage (F4)",
+        "High pO₂ funds the rapid recovery phase after the single inflation (F5)"
+      ],
+      "roots": [
+        "F4",
+        "F5",
+        "F15"
+      ],
+      "skill": {
+        "id": "garfio.pose_shriek",
+        "name": {
+          "en": "Pose Shriek"
+        },
+        "role": "Signature",
+        "effect": "Inflates throat sac: visible condensation ring expands to 40 m; pose-reading creatures within 10 m flinch and cancel one action for 1.5 s. Costs 15% stamina, applies 50% speed reduction to self for 3 s.",
+        "numbers": {}
+      },
+      "weakness": "The expanding ring telegraphs the 40 m cone; stand outside it to avoid the flinch, then strike during the 3 s speed penalty.",
+      "observe": [
+        "Spined crest rises with the pose",
+        "Throat sac balloons in one blink",
+        "Condensation ring marks the boom's cone"
+      ],
+      "journal": {
+        "en": "It answers every pose with a bigger one."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Keep the boom deimatic only: no tissue injury; 6 s exhausted recovery after a single inflation matches elastic-sac physiology—do not treat it like a repeatable spammable weapon without metabolic cost.",
+        "fixes": [
+          "Keep the boom deimatic only: no tissue injury; 6 s exhausted recovery after a single inflation matches elastic-sac physiology—do not treat it like a repeatable spammable weapon without metabolic cost."
+        ],
+        "analogues": [
+          {
+            "organism": "Howler monkey enlarged hyoid + vocal tract for sudden low-frequency roars; sage grouse (Centrocercus) and many anurans: air-sac inflation as startle/ritual escalation (honest costly signal; Zahavi handicap principle, from memory unverified)—dense air (F4) increases near-field acoustic coupling for the same sac volume.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "designer": 9,
+          "physicist": 5,
+          "skeptic": 4
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "astrobio",
+          "designer",
+          "skeptic"
+        ]
+      }
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-18",
+    "by": [
+      "astrobio",
+      "designer",
+      "skeptic",
+      "wildcard"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-18",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-18"
+    },
+    {
+      "date": "2026-11-19",
+      "who": "import_got",
+      "what": "merged run autoloop-2026-11-19: 0 chain(s) added, 0 plausibility block(s) filled, 0 relation(s) added"
+    },
+    {
+      "date": "2026-11-19",
+      "who": "import_got",
+      "what": "merged run autoloop-2026-11-19: 0 chain(s) added, 0 plausibility block(s) filled, 0 relation(s) added"
+    },
+    {
+      "date": "2026-11-19",
+      "who": "import_got",
+      "what": "merged run autoloop-2026-11-19: 0 chain(s) added, 0 plausibility block(s) filled, 0 relation(s) added"
+    }
+  ],
+  "temperament": "Aggressive heckler that thrives on chaos and interrupts social displays to create raiding opportunities.",
+  "secrets": [
+    "Fossil: tiny skull",
+    "Hidden cave: carrion cache",
+    "Nocturnal variant",
+    "Albinos",
+    "Bone crushing: skull"
+  ],
+  "moments": [
+    "A ragged boom that shatters a Rondo's courtship song, drawing the herd's attention while the Garfio flanks.",
+    "A low-slung sprint that kicks up dust and grass, ending in a bone-crushing bite.",
+    "A deimatic throat-puff that startles a Zanco into a fatal misstep on the scree."
+  ]
+}

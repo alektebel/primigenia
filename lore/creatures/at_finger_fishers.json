@@ -1,0 +1,177 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "at_finger_fishers",
+  "name": {
+    "en": "Finger Fishers"
+  },
+  "world": "at_garden_prairies",
+  "kind": "easter_egg",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "to be written",
+    "diet": "to be written",
+    "active": "to be written",
+    "predators": []
+  },
+  "body": "to be written",
+  "chains": [
+    {
+      "id": "at_finger_fishers.c1",
+      "trait": "Needle teeth & flexible hooked digits",
+      "links": [
+        "Precise prey extraction without crushing -> calm shallow swallow seas where brute force triggers escape -> minimal tidal flux across epicontinental shelves -> low tidal amplitude from lunar mass/distance"
+      ],
+      "roots": [
+        "F3",
+        "F11",
+        "F23"
+      ],
+      "skill": {
+        "id": "at_finger_fishers.tide_snare",
+        "name": {
+          "en": "Tide-Snare"
+        },
+        "role": "Engage",
+        "effect": "Extends digit hooks to pin aquatic prey within 3m, dealing 15% damage and rooting target for 1 turn.",
+        "numbers": {}
+      },
+      "weakness": "Digits snap if caught in sudden tidal surges or river floods.",
+      "observe": [
+        "Pale, lanky silhouette against shallow water",
+        "Fingers splayed into translucent, hook-like digits",
+        "Long, thin muzzle dipping into murk"
+      ],
+      "journal": {
+        "en": "They do not chase the tide; they become its rakes."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "Specify keratinized hook tips, elongated but hominin phalanx limits, and tendon-lock grasp—calm F3/F11 shelves favor pierce-and-hold over crush.",
+        "fixes": [
+          "Specify keratinized hook tips, elongated but hominin phalanx limits, and tendon-lock grasp—calm F3/F11 shelves favor pierce-and-hold over crush."
+        ],
+        "analogues": [
+          {
+            "organism": "Great blue heron (spearing); aye-aye (elongated probing digit); three-toed sloth (hooked terminal phalanges)",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "webb_1975_hydrodynamics"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "designer": 7,
+          "physicist": 9
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist",
+          "physicist"
+        ]
+      }
+    },
+    {
+      "id": "at_finger_fishers.c2",
+      "trait": "Refractive eye placement & lateral line sensitivity",
+      "links": [
+        "Shallow water glare & low contrast -> K2V spectrum filtered through stratocumulus decks -> 1.1 bar atmosphere & 15°C surface temp maintain stable optical refraction -> visual acuity shifts to horizontal polarization detection"
+      ],
+      "roots": [
+        "F1",
+        "F7",
+        "F10",
+        "F25"
+      ],
+      "skill": {
+        "id": "at_finger_fishers.polar_gaze",
+        "name": {
+          "en": "Polar-Gaze"
+        },
+        "role": "Passive",
+        "effect": "+20% detection of submerged prey in shallow water; ignores surface glare.",
+        "numbers": {}
+      },
+      "weakness": "Disoriented in turbid floodwaters or heavy rain.",
+      "observe": [
+        "Eyes positioned high on the skull",
+        "Horizontal slit pupils",
+        "Lateral line ridges along the jaw"
+      ],
+      "journal": {
+        "en": "They see the world in ripples, not shapes."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "Replace jaw 'lateral line' with hypertrophied vibrissae or infraorbital canal sensitivity; tie glare mitigation to ripple/polarization at the air–water interface, not K2V cloud filtering.",
+        "fixes": [
+          "Replace jaw 'lateral line' with hypertrophied vibrissae or infraorbital canal sensitivity; tie glare mitigation to ripple/polarization at the air–water interface, not K2V cloud filtering."
+        ],
+        "analogues": [
+          {
+            "organism": "American crocodile (high eyes at shore); cuttlefish and fiddler crabs (polarization vision in shallow water)",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "designer": 9,
+          "physicist": 9
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "council"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "at_swimmers",
+      "kind": "convergent",
+      "note": "Both adapt to low-tide shallow seas; Swimmers preserve internal hands for future manipulation, while Finger Fishers elongate digits into ambulatory fish-hooks.",
+      "via": "F3"
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-19",
+    "by": [
+      "council",
+      "naturalist",
+      "physicist"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-19",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-19"
+    },
+    {
+      "date": "2026-11-19",
+      "who": "autoloop",
+      "what": "removed rejected references from analogues"
+    }
+  ],
+  "lore_ref": {
+    "file": "lore/alltomorrows.en.json",
+    "id": "finger-fishers"
+  }
+}

@@ -1,0 +1,288 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "common_raven",
+  "name": {
+    "en": "Common raven"
+  },
+  "world": "earth",
+  "kind": "native",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "to be written",
+    "diet": "to be written",
+    "active": "to be written",
+    "predators": []
+  },
+  "body": "to be written",
+  "chains": [
+    {
+      "id": "common_raven.c1",
+      "trait": "Opportunistic thermal soaring over broken ground",
+      "links": [
+        "a resident scavenger must patrol a huge home range of broken terrain to find the rare carrion that is its pay",
+        "sun heats sunlit rock, scree and cliff faces far faster than valley shade, so those slopes exhale rising thermals while cool ground does not",
+        "so the raven flaps between lift sources and glides the legs between them, letting warm air pay for most of the climbing muscle"
+      ],
+      "roots": [
+        "F2",
+        "F6",
+        "F12"
+      ],
+      "skill": {
+        "id": "common_raven.ride",
+        "name": {
+          "en": "Ride"
+        },
+        "role": "Basic",
+        "effect": "while the lift indicator shows rising air, gliding legs cost 90% less stamina and the raven can commute 40 km per rest cycle, spotting carrion from 3 km mid-glide without spending a search action",
+        "numbers": {}
+      },
+      "weakness": "no sun, no lift: under overcast or rain the indicator goes dark and range halves, and at night it is a slow flapper on the ground where anything can reach it",
+      "observe": [
+        "wings held flat and motionless only while circling above sun-warmed rock",
+        "a flap-flap-glide rhythm across a shaded valley, then wings lock open on the next bright slope",
+        "a bird losing height over cold water and regaining it the moment it crosses a sunlit scree"
+      ],
+      "journal": {
+        "en": "It buys altitude with sun on stone, and pays in muscle whenever the sun clocks off."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "40 km per rest cycle is plausible for dispersing juveniles but not every individual every day; tie long commute to sunny, broken terrain biomes only.",
+        "fixes": [
+          "40 km per rest cycle is plausible for dispersing juveniles but not every individual every day; tie long commute to sunny, broken terrain biomes only."
+        ],
+        "analogues": [
+          {
+            "organism": "Corvus corax — flap-glide and thermal soaring over rugged terrain; scavenger wide-ranging (Pennycuick flight energetics; raven ecology Heinrich)",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "pennycuick_2008_modelling"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 9,
+          "designer": 9,
+          "physicist": 8,
+          "skeptic": 7
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "s",
+          "k",
+          "e",
+          "p",
+          "t",
+          "i",
+          "c"
+        ]
+      }
+    },
+    {
+      "id": "common_raven.c2",
+      "trait": "Scatter-hoards, re-hides when watched",
+      "links": [
+        "hundreds of separate stores are each remembered by the landmark beside them",
+        "a bird that was watched while hiding returns later and moves the food somewhere else",
+        "a store is only worth having if its location stays secret from other minds",
+        "and winter food is patchy, frozen and contested, which is what makes hiding worth the memory"
+      ],
+      "roots": [
+        "F4",
+        "F20",
+        "F29"
+      ],
+      "skill": {
+        "id": "common_raven.pilfer",
+        "name": {
+          "en": "Pilfer"
+        },
+        "role": "Signature",
+        "effect": "locates any hidden cache within 50 m, including the player's own stash, and relocates its own hoard so that scrying shows the old site",
+        "numbers": {}
+      },
+      "weakness": "its memory is landmark-bound: move the stones and it loses its own hoard, and if it knows it is being watched it abandons a good cache, so a visible observer costs it food",
+      "observe": [
+        "a bird pressing food into the ground, then looking up and around",
+        "the same morsel reappearing in a different place an hour later",
+        "a scatter of small pits under a shrub, most of them empty"
+      ],
+      "journal": {
+        "en": "It hides food from you, then hides the hiding from you."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "50 m cache find is strong; frame as landmark vicinity search unless player cache has scent/sign cue. Re-hiding when watched is better documented as strategic recaching under observer risk in corvids broadly.",
+        "fixes": [
+          "50 m cache find is strong; frame as landmark vicinity search unless player cache has scent/sign cue. Re-hiding when watched is better documented as strategic recaching under observer risk in corvids broadly."
+        ],
+        "analogues": [
+          {
+            "organism": "Common raven caching and competitor-sensitive behaviour (Heinrich); tactical cache protection/raid sensitivity in Corvus corax (Bugnyar & Kotrschal)",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "heinrich_1998_influence",
+              "bugnyar_2002_observational"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 9,
+          "designer": 9,
+          "physicist": 7,
+          "skeptic": 8
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "s",
+          "k",
+          "e",
+          "p",
+          "t",
+          "i",
+          "c"
+        ]
+      }
+    },
+    {
+      "id": "common_raven.c3",
+      "trait": "Beak-wrestling and drop-catch juvenile play",
+      "links": [
+        "a long juvenile period before territory acquisition selects for extended neural plasticity and social learning",
+        "this extended apprenticeship requires low-cost rehearsal of precise motor sequences and tolerance thresholds",
+        "beak-wrestling and object drop-catch practice aerial tracking, grip control, and partner reliability without injury or caloric waste",
+        "this cheap assay of coordination builds cooperative bonds for adult cache defense, though the direct survival payoff remains speculative biology"
+      ],
+      "roots": [
+        "F31",
+        "F29"
+      ],
+      "skill": {
+        "id": "common_raven.play",
+        "name": {
+          "en": "Play"
+        },
+        "role": "Social",
+        "effect": "one safe turn with no damage: bonds one ally (+1 loyalty) and, as explicit game magic rather than biology, reveals one hidden item or trap within 10m; either bird may break play for 1 turn to gain alertness and a 20% speed boost for the next 2 turns",
+        "numbers": {}
+      },
+      "weakness": "play is loud, slow and conspicuous: a playing pair is distracted and will not flee mid-game, so a stalking predator or player catches both; breaking play costs a turn, so timing it wrong still leaves an opening",
+      "observe": [
+        "two birds gripping each other's beaks and pulling without injury",
+        "a stick dropped, caught, carried up and dropped again, over and over",
+        "a bird sliding down a snowbank and walking back up to do it again"
+      ],
+      "journal": {
+        "en": "It practises being clever in public and calls it fun."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Keep 'reveals hidden trait' explicitly as game-only magic (chain already flags). Survival function of play (motor/social rehearsal) remains plausible but not proven for each game type.",
+        "fixes": [
+          "Keep 'reveals hidden trait' explicitly as game-only magic (chain already flags). Survival function of play (motor/social rehearsal) remains plausible but not proven for each game type."
+        ],
+        "analogues": [
+          {
+            "organism": "Corvus corax juvenile allo play (beak-fencing, object play) — social bonding and motor practice (Heinrich); planning cognition in corvids (Kabadayi & Osvath) separate from play mechanics",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "diamond_2003_comparative"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "designer": 7,
+          "physicist": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "s",
+          "k",
+          "e",
+          "p",
+          "t",
+          "i",
+          "c"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "bottlenose_dolphin",
+      "kind": "opposite",
+      "note": "Same fluid physics, inverted solutions. Raven exploits low-density, transparent air for visual soaring and cache retrieval; dolphin exploits high-density, opaque water for active sonar and pressure-resistant diving. Playable: raven's visual tracking counters dolphin's acoustic stealth, while dolphin's sonar pierces raven's visual camouflage in fog.",
+      "via": "F11"
+    },
+    {
+      "with": "pronghorn",
+      "kind": "symbiosis",
+      "note": "Grassland mutualism. Ravens follow herds to eat ticks and disturbed insects; pronghorn gain early warning against terrestrial predators. Playable: befriending ravens grants a 'sentinel' alert when pronghorn herds shift direction, revealing hidden water or predators.",
+      "via": "F29"
+    },
+    {
+      "with": "humans",
+      "kind": "mimicry",
+      "note": "Fire exploitation. Ravens drop smoldering twigs into dry grass to flush prey, mimicking human controlled burns. Humans counter with smoke screens and firebreaks to drive ravens from caches. Playable: players can use raven fire-flushing to reveal hidden resources, but must manage smoke drift to avoid alerting rival factions.",
+      "via": "F28"
+    },
+    {
+      "with": "humans",
+      "kind": "counter",
+      "note": "Vocal and tool transfer. Humans demonstrate fire-starting and cache-hiding; ravens observe, imitate, and improve the techniques, teaching players how to outsmart spatial traps. Playable: players can learn raven cache-retrieval patterns to find hidden resources, or use human teaching to train raven allies for distraction.",
+      "via": "F28"
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-18",
+    "by": [
+      "c",
+      "e",
+      "i",
+      "k",
+      "p",
+      "s",
+      "t"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-18",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-18"
+    },
+    {
+      "date": "2026-11-18",
+      "who": "autoloop",
+      "what": "removed rejected references from analogues"
+    }
+  ]
+}

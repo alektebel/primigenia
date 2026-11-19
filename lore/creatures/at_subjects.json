@@ -1,0 +1,175 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "at_subjects",
+  "name": {
+    "en": "Subjects"
+  },
+  "world": "at_gravital_space",
+  "kind": "easter_egg",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "Machine worlds, artificial ecologies, and newly seeded planets under Terrestrial caretakers, often in closed-loop or terraformed zones.",
+    "diet": "Highly modular; shifts between aerobic, anaerobic, and chemoautotrophic modes based on environmental availability.",
+    "active": "Task-dependent, often synchronized with caretaker directives or ecological maintenance cycles.",
+    "predators": [
+      "Environmental hazards",
+      "Caretaker culling (if rebellious)"
+    ],
+    "prey": [
+      "Engineered biomass",
+      "Waste-processing cultures",
+      "Atmospheric gases"
+    ]
+  },
+  "body": "Modular, chimeric bio-fabrication shifts between forms on command, allowing rapid niche switching in closed-loop or terraformed environments. Dermal gas-exchange cultures replace lungs, maximizing surface area for efficient oxygen and CO₂ cycling in low-flow atmospheres.",
+  "chains": [
+    {
+      "id": "at_subjects.c1",
+      "trait": "Modular, chimeric bio-fabrication shifting between forms on command",
+      "links": [
+        "Gravital apathy and pity led to extensive genetic splicing, turning biology into a programmable substrate",
+        "Closed-loop ark systems demanded near-perfect nutrient recycling across zoned biomes",
+        "Forced mechanical circulation prevents gas stratification, requiring organisms that actively filter and convert waste"
+      ],
+      "roots": [
+        "F17",
+        "F13",
+        "F8"
+      ],
+      "skill": {
+        "id": "at_subjects.symbiotic_weave",
+        "name": {
+          "en": "Symbiotic Weave"
+        },
+        "role": "Engage",
+        "effect": "Splices subject genomes to purify toxins or heal allies, drawing on stored reserves to restore 8 health points and grant temporary resistance to environmental hazards.",
+        "numbers": {}
+      },
+      "weakness": "High metabolic cost during rapid niche-switching leaves them vulnerable to starvation, imposing disadvantage on strength checks until they consume nutrients.",
+      "observe": [
+        "See them shift from caretaker to consumer mid-breath",
+        "Tissues bloom and wither like controlled flora in the forced airflow",
+        "Polydactyl hands and filter-gills operate in seamless, rhythmic succession"
+      ],
+      "journal": {
+        "en": "They are the galaxy's living recycling plant."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-19",
+        "summary": "Morphing is Gravital/Asteromorph germline programming and epigenetic gates, not instant natural selection; shift time scale hours to days with high calorie cost (contradicts F17 'instant' unless labeled highly speculative); Symbiotic Weave as curated microbiome/chimeric organoids, not on-the-fly whole-body rewrite.",
+        "fixes": [
+          "Morphing is Gravital/Asteromorph germline programming and epigenetic gates, not instant natural selection; shift time scale hours to days with high calorie cost (contradicts F17 'instant' unless labeled highly speculative); Symbiotic Weave as curated microbiome/chimeric organoids, not on-the-fly whole-body rewrite."
+        ],
+        "analogues": [
+          {
+            "organism": "Hydractinia sympodialis allorecognition and colonial remodeling; ant/termite discrete castes from one genome (developmental, not mid-breath).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 5,
+          "physicist": 9
+        }
+      }
+    },
+    {
+      "id": "at_subjects.c2",
+      "trait": "Polymorphic biomass allocation with dermal gas-exchange cultures",
+      "links": [
+        "Tissue rapidly reorganizes into niche-specific forms",
+        "Closed-loop life support mandates near-perfect mass conservation",
+        "Waste heat and CO₂ require integrated biological filtration",
+        "Modular metabolic pathways enable instant substrate switching"
+      ],
+      "roots": [
+        "F13",
+        "F8",
+        "F17"
+      ],
+      "skill": {
+        "id": "at_subjects.biomass_reshape",
+        "name": {
+          "en": "Biomass Reshape"
+        },
+        "role": "Engage",
+        "effect": "Converts 1.2kg of local biomass into a support structure or gas-filtering sponge, restoring 5 HP to adjacent allies",
+        "numbers": {}
+      },
+      "weakness": "Rapid phenotypic shifting drains glucose reserves, causing temporary metabolic collapse if not fed",
+      "observe": [
+        "Shifting tissue folds",
+        "Dermal capillary networks pulsing with fluid",
+        "Nutrient slurry intake ports"
+      ],
+      "journal": {
+        "en": "They are never finished being what they are."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-19",
+        "summary": "Dermal gas-exchange as engineered algal or cell-culture laminates (matches lore cell cultures); limit rapid reshape to redistribution of existing biomass (muscle/hydroskeleton), not de novo organs; tie starvation weakness to F13 recycling lag when reserves are drawn down.",
+        "fixes": [
+          "Dermal gas-exchange as engineered algal or cell-culture laminates (matches lore cell cultures); limit rapid reshape to redistribution of existing biomass (muscle/hydroskeleton), not de novo organs; tie starvation weakness to F13 recycling lag when reserves are drawn down."
+        ],
+        "analogues": [
+          {
+            "organism": "Amphibian cutaneous respiration (Rana spp.); closed-loop bioreactors in CELSS-style life support (engineered ecology, not wild evolution).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own"
+          }
+        ],
+        "scores": {
+          "astrobio": 7,
+          "physicist": 9
+        }
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "at_terrestrials",
+      "kind": "symbiosis",
+      "note": "Subjects pump closed-loop gas-exchange cultures and modular biomass; Terrestrials provide 1G structural management and regulatory oversight. A mutualistic loop of flesh and gravity. -> Skill: 'Bio-infrastructure sync' (Social)",
+      "via": "F13, F18"
+    },
+    {
+      "with": "at_gravitals",
+      "kind": "opposite",
+      "note": "Subjects use open modular splicing for rapid niche switching; Gravitals use closed-loop quantum cores for static stability. Opposite adaptability strategies under identical biochemical roots. -> Skill: 'Metabolic flexibility' (Engage)",
+      "via": "F17"
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-18"
+  },
+  "changelog": [
+    {
+      "date": "2026-11-19",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-18"
+    },
+    {
+      "date": "2026-11-18",
+      "who": "autoloop",
+      "what": "removed rejected references from analogues"
+    }
+  ],
+  "lore_ref": {
+    "file": "lore/alltomorrows.en.json",
+    "id": "subjects"
+  },
+  "temperament": "Adaptable and compliant, they thrive as functional components of engineered ecosystems rather than independent agents.",
+  "secrets": [
+    "Can temporarily fuse dermal cultures into dense filtration mats, purifying toxic atmospheres or creating breathable micro-environments for allies."
+  ],
+  "moments": [
+    "Drifting through a methane-ocean habitat, they reshape their limbs into paddle-like appendages and deploy gas-exchange membranes to harvest dissolved volatiles, their bodies shifting seamlessly between aquatic and aerial morphs."
+  ]
+}

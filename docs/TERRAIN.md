@@ -114,7 +114,23 @@ this is the paired comparison used by the structure gates.
    Cave records describe their final floor positions. There are **no tunnels
    or chamber meshes** in this output. N<64 omits entrances rather than
    inventing sites on a grid too coarse to describe them.
-9. **Material classification.** The final height, slope, aspect, sediment and
+9. **Trails and fords (route certification, v4 output at n >= 512).** Every body must be able to walk from the start
+   valley to the river gap and to the first cave. Two deterministic graded trails guarantee it. *Gap trail:* the gap
+   checkpoint is the lowest dry cell (away from the river bed) on the 809 m circle around the start (`(796.3,138.9)` on seeds 1
+   and 42, `(768.2,258.4)` on seed 7: the long-published `(800,120)` was only ever valid where the range happens to open
+   there, it sits on a 114 m massif on seed 7). The cheapest walk (integer costs, raster sweeps, no heap, no allocation) joins
+   the start, the checkpoint and the nearest river mouth. *Cave approach:* the first (gameplay) entrance ranks its candidate
+   sites by the cost of the graded trail that joins them to the network, still preferring a waterfall, and the trail is cut
+   to the entrance floor. A trail is a profile that follows the old heights as closely as a **0.30 slope limit** allows
+   (anchored at both ends and wherever it passes a river), on a smoothed centreline, stamped as a flat-bottomed corridor
+   (11 m half width, 12 m blend) that is never graded next to a shallow-or-deeper river or inside the protected lake bowl.
+   The rock behind an entrance is not touched: only ground in front of its plane is graded, so the entrance cell stays a
+   steep face (slope > 0.8) with a walkable apron in front of it (the route certification stands 6 m in front of the entrance). Where a corridor core meets deep or
+   standing water the crossing is a ford: deep class becomes shallow and pits rise to a shoal 0.55 m below the surface.
+   Slope 0.30 is below the two-leg directional climb (0.457 for the 4 m body) and its holding limit (0.70). Cost: about
+   +1.5 s at n=1024 (three cost fields). Gap trail and ford apply when `rivers>0`, the cave trail when `caves>0`.
+   Cave records report the final floor after trails and fords.
+10. **Material classification.** The final height, slope, aspect, sediment and
    volcanic footprint produce the material map. Water remains a separate
    surface inferred from height/routing level.
 

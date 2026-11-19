@@ -1,0 +1,159 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "at_worms",
+  "name": {
+    "en": "Worms"
+  },
+  "world": "at_qu_worlds",
+  "kind": "easter_egg",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "to be written",
+    "diet": "to be written",
+    "active": "to be written",
+    "predators": []
+  },
+  "body": "to be written",
+  "chains": [
+    {
+      "id": "at_worms.c1",
+      "trait": "Pinprick eyes and minimised central nervous system",
+      "links": [
+        "Stellar dimming forced surface die-offs",
+        "Subterranean refuge requires metabolic austerity",
+        "Constant darkness and high acoustic impedance nullify vision/hearing",
+        "Nervous tissue atrophy conserves energy for chemolithotrophic digestion"
+      ],
+      "roots": [
+        "F14",
+        "F7",
+        "F16",
+        "F15"
+      ],
+      "skill": {
+        "id": "at_worms.substrate_sense",
+        "name": {
+          "en": "Substrate Sense"
+        },
+        "role": "Basic",
+        "effect": "Detects safe tunneling paths through dense soil and avoids Qu nanite hotspots (50m cone).",
+        "numbers": {}
+      },
+      "weakness": "Disoriented by sudden bright light or sharp high-frequency vibrations.",
+      "observe": [
+        "Pale, translucent skin lacking pigment",
+        "Tiny vestigial digging appendages",
+        "Glass plains and dead cities overhead"
+      ],
+      "journal": {
+        "en": "They traded sight and sound for survival. In the dark, a nervous system is a luxury they couldn't afford."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "Prefer chemosensory/mechanosensory tunneling over ‘avoiding nanite hotspots’ unless F12 is explicitly toxic to them; rename hotspot avoidance to instinctive aversion to engineered interface residues.",
+        "fixes": [
+          "Prefer chemosensory/mechanosensory tunneling over ‘avoiding nanite hotspots’ unless F12 is explicitly toxic to them; rename hotspot avoidance to instinctive aversion to engineered interface residues."
+        ],
+        "analogues": [
+          {
+            "organism": "Cavefish Astyanax mexicanus eye and brain regression; olm Proteus anguinus reduced vision and sensory economy in perpetual darkness (Culver cave adaptation)",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "designer": 8,
+          "physicist": 8
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist",
+          "physicist"
+        ]
+      }
+    },
+    {
+      "id": "at_worms.c2",
+      "trait": "Pinprick eyes and reduced nervous system",
+      "links": [
+        "Surface sterilization from flare flux forces deep refuge",
+        "Engineered K2V star with enhanced chromospheric activity pulses UV/X-ray",
+        "Dense atmosphere buffers temperature but cannot block high-energy radiation",
+        "Dormant nanite lattices integrated into soil and cell membranes act as catalytic bridges"
+      ],
+      "roots": [
+        "F1",
+        "F7",
+        "F12"
+      ],
+      "skill": {
+        "id": "at_worms.subterranean_echo_tracking",
+        "name": {
+          "en": "Subterranean Echo Tracking"
+        },
+        "role": "Control",
+        "effect": "Detects worm burrows via ground-coupled infrasound in dense air, silencing targets for 2 turns.",
+        "numbers": {}
+      },
+      "weakness": "Blind to surface light, panics when exposed to direct stellar radiation.",
+      "observe": [
+        "Pale dermal layers",
+        "Tiny digging vestiges",
+        "Abandoned surface ruins"
+      ],
+      "journal": {
+        "en": "They dig because the sky burns. Their nerves retreated inward, long before the sun cooled."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-18",
+        "summary": "This chain mixes flare-driven refuge with a player-facing ‘echo tracking’ skill aimed at worms; split so worms use substrate vibration/chemoreception only, and infrasound tracking is a separate predator or player move tied to F16.",
+        "fixes": [
+          "This chain mixes flare-driven refuge with a player-facing ‘echo tracking’ skill aimed at worms; split so worms use substrate vibration/chemoreception only, and infrasound tracking is a separate predator or player move tied to F16."
+        ],
+        "analogues": [
+          {
+            "organism": "Naked mole-rat subterranean colony orientation with poor vision and heavy somatosensory/chemical navigation; tremor reception in some burrowing mammals",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 7,
+          "designer": 7,
+          "physicist": 5
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist",
+          "physicist"
+        ]
+      }
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-18",
+    "by": [
+      "naturalist",
+      "physicist"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-18",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-18"
+    }
+  ],
+  "lore_ref": {
+    "file": "lore/alltomorrows.en.json",
+    "id": "worms"
+  }
+}

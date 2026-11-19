@@ -51,7 +51,7 @@ $(BUILD)/combat_golden: tests/combat_golden.c apps/combat_bots.h $(BUILD)/apps/c
 
 # Correctness regressions. Balance acceptance is a separate measured gate:
 # run make tourney as well before claiming P2 acceptance.
-test: $(BUILD)/parts_nest_test $(BUILD)/social_test $(BUILD)/world_cli $(BUILD)/world_test $(BUILD)/terrain_test $(BUILD)/cpore_test $(BUILD)/combat_test $(BUILD)/combat_tourney_test $(BUILD)/combat_golden check-core $(BUILD)/nav_test $(BUILD)/steer_test
+test: $(BUILD)/parts_nest_test $(BUILD)/social_test $(BUILD)/world_cli $(BUILD)/world_test $(BUILD)/terrain_test $(BUILD)/cpore_test $(BUILD)/combat_test $(BUILD)/combat_tourney_test $(BUILD)/combat_golden check-core $(BUILD)/nav_test $(BUILD)/steer_test $(BUILD)/routes_test
 	nice -n 10 ./$(BUILD)/terrain_test
 	./$(BUILD)/world_test
 	./$(BUILD)/social_test
@@ -65,6 +65,8 @@ test: $(BUILD)/parts_nest_test $(BUILD)/social_test $(BUILD)/world_cli $(BUILD)/
 	./$(BUILD)/parts_nest_test
 	./$(BUILD)/combat_tourney_test
 	python3 tests/test_combat_golden.py ./$(BUILD)/combat_golden
+	python3 tools/routes/fixtures.py --check
+	@failed=0; for seed in 1 7 42; do nice -n 10 ./$(BUILD)/routes_test $$seed || failed=1; done; test $$failed -eq 0
 tourney: $(BUILD)/combat_tourney
 	./$(BUILD)/combat_tourney
 bench: $(BUILD)/cpore_bench
@@ -513,6 +515,15 @@ godot-ui-diegetic-evidence: godot
 godot-social-test: godot
 	LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 900 xvfb-run -a -s "-screen 0 1280x720x24" \
 	  $(GODOT) --rendering-driver opengl3 --max-fps 15 --resolution 1280x720 --path godot --script res://game/tests/social_flow.gd
+# Ten simulated minutes on the real island through the real input path (software GL under xvfb); a strip of JPG frames
+# goes to docs/evidence/godot/soak/. Wall time is 15-25 minutes on a loaded machine. Script errors fail the target.
+.PHONY: godot-soak
+godot-soak: godot
+	@mkdir -p docs/evidence/godot/soak
+	LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 3000 xvfb-run -a -s "-screen 0 1280x720x24" \
+	  $(GODOT) --rendering-driver opengl3 --max-fps 15 --resolution 1280x720 --path godot \
+	  --script res://game/tests/island_soak.gd -- $(CURDIR)/docs/evidence/godot/soak $(or $(MINUTES),10) 2>&1 | tee /tmp/godot-soak.log; \
+	  ! grep -q "SCRIPT ERROR" /tmp/godot-soak.log && grep -q "^soak: .* 0 failures" /tmp/godot-soak.log
 godot-social-evidence: godot
 	@mkdir -p docs/evidence/godot/social
 	LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 900 xvfb-run -a -s "-screen 0 1280x720x24" \
@@ -532,3 +543,13 @@ $(BUILD)/parts_nest_test: tests/test_parts_nest.c $(HDRS) $(BUILD)/libcpore.a
 godot-parts-nest-test:
 	$(GODOT) --headless --path godot --check-only --script res://game/tests/parts_nest_test.gd
 	$(GODOT) --headless --path godot --script res://game/tests/parts_nest_test.gd
+# C1 curated round trips, actual steering and deterministic trajectory replay.
+$(BUILD)/routes_test: tests/test_routes.c $(HDRS) $(BUILD)/libcpore.a
+	$(CC) $(CFLAGS) $< $(BUILD)/libcpore.a -o $@ $(LDLIBS)
+.PHONY: routes-test
+routes-test: $(BUILD)/routes_test
+	python3 tools/routes/fixtures.py --check
+	@failed=0; for seed in 1 7 42; do nice -n 10 ./$(BUILD)/routes_test $$seed || failed=1; done; test $$failed -eq 0
+.PHONY: godot-route-events-test
+godot-route-events-test: godot
+	nice -n 10 timeout 120 $(GODOT) --headless --path godot --script res://game/tests/test_route_events.gd

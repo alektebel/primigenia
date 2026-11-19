@@ -1,0 +1,342 @@
+{
+  "schema": "cpore.world/1",
+  "id": "silicon_hot",
+  "kind": "fictional",
+  "system": {
+    "star": "K2V dwarf",
+    "position": "fictional",
+    "distance_ly_from_sol": null
+  },
+  "name": {
+    "en": "Silicon Hot World",
+    "es": "Mundo de silicio caliente"
+  },
+  "status": "draft",
+  "facts": [
+    {
+      "id": "F1",
+      "group": "star",
+      "claim": "Primary star is a K2V main-sequence dwarf with 0.38 L☉ luminosity and 5200 K effective temperature.",
+      "justification": "K-dwarfs provide stable, IR-rich output without the lethal flare sterilization common to M-types, maintaining the required 150–450°C thermal equilibrium. Mass-luminosity relations for ~0.75–0.85 M☉ stars support this output.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 0.38,
+      "unit": "L☉",
+      "consequences": [
+        "Photosynthetic analogs harvest scattered IR and thermal gradients rather than visible light.",
+        "Stellar UV is filtered by atmospheric aerosols, reducing surface radiation hazards."
+      ]
+    },
+    {
+      "id": "F2",
+      "group": "orbit",
+      "claim": "Planet orbits at 0.42 AU with a 118-day year and a 43-hour sidereal rotation period.",
+      "justification": "Keplerian period for a 0.75 M☉ K2V star; explicit sidereal rotation avoids tidal resonance ambiguities and locking. Eccentricity (0.08) drives moderate annual thermal swings.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 118,
+      "unit": "days",
+      "consequences": [
+        "Slow diurnal cycle favors thermal inertia adaptations and predictable heating patterns.",
+        "Seasonal migration corridors form as surface temperatures shift across the solvent stability window."
+      ]
+    },
+    {
+      "id": "F3",
+      "group": "planet",
+      "claim": "Planetary radius is 1.15 R🜨 with surface gravity of 1.25 g.",
+      "justification": "Iron-sulfide enriched mantle raises bulk density; gravity is sufficient to retain a thick atmosphere without rapid Jeans escape. Contrarian alternative: lower gravity would require impossibly thick volatile envelopes.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 1.25,
+      "unit": "g",
+      "consequences": [
+        "Selection favors low-profile, dense body plans and heavy mineralized armor.",
+        "High gravity demands precise footing and energy-efficient locomotion mechanics."
+      ]
+    },
+    {
+      "id": "F5",
+      "group": "atmosphere",
+      "claim": "Surface pressure is 3.2 bar with composition N₂ 55%, CO₂ 28%, SO₂ 8%, and trace H₂O (<0.1%).",
+      "justification": "Volcanic degassing outpaces atmospheric escape; low water activity is mandatory to prevent rapid hydrolysis of Si–O/Si–S bonds. Atmospheric mass scales with surface gravity and escape velocity.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 3.2,
+      "unit": "bar",
+      "consequences": [
+        "Dense medium attenuates high-frequency sound, limiting acoustic range to low frequencies.",
+        "Visual range is restricted to ~300 m by SO₂ aerosol scattering and thermal haze."
+      ]
+    },
+    {
+      "id": "F6",
+      "group": "atmosphere",
+      "claim": "Sound speed is ~500 m/s; low-frequency waves (<100 Hz) travel >2 km via ground-coupled seismic transmission.",
+      "justification": "High atmospheric density and crustal rigidity compress acoustic wavelengths; ground-coupled propagation minimizes atmospheric scattering losses. Airborne infrasound attenuates faster than seismic waves.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 500,
+      "unit": "m/s",
+      "consequences": [
+        "Infrasound communication dominates ecological networks across calderas.",
+        "Navigation relies on ground vibrations and thermal echoes rather than line-of-sight."
+      ]
+    },
+    {
+      "id": "F7",
+      "group": "climate",
+      "claim": "Thermal inversions lock heat near the ground; convective plumes generate silica-dust microbursts.",
+      "justification": "Low obliquity and slow rotation stabilize circulation cells; greenhouse saturation traps IR while abrasive winds scour open terrain. Contrarian alternative: higher tilt would drive chaotic seasonal collapse.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 4,
+      "unit": "degrees tilt",
+      "consequences": [
+        "Persistent amber haze forces reliance on non-visual sensory modalities.",
+        "Wind-scoured surfaces select for abrasion-resistant, glassy exoskeletons."
+      ]
+    },
+    {
+      "id": "F8",
+      "group": "ocean",
+      "claim": "No liquid water oceans; primary solvent is regional molten S₈–SO₂ eutectic stable between 150–250°C.",
+      "justification": "Elemental sulfur liquidity straddles the planetary temperature window in shielded basins; pressure expands the liquid range, providing a non-aqueous medium for ion transport. Global oceans are thermodynamically impossible.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 150,
+      "unit": "°C",
+      "consequences": [
+        "Metabolism depends on sulfur redox gradients rather than aqueous chemistry.",
+        "Rapid cooling crystallizes the solvent, severing metabolic chains and inducing dormancy."
+      ],
+      "refs": [
+        "petkowski_bains_seager_2020_solvents"
+      ]
+    },
+    {
+      "id": "F4",
+      "group": "geology",
+      "claim": "Two moons orbit at resonant periods (~3 and ~8 days), driving continuous crustal flexure.",
+      "justification": "Tidal stress from resonant lunar orbits sustains mantle convection and volcanism, compensating for low axial tilt. Moon masses are speculative but required to maintain orbital stability within the Hill sphere.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 2,
+      "unit": "moons",
+      "consequences": [
+        "Predictable geothermal pulse cycles regulate vent activity and mineral deposition.",
+        "Crustal stress fractures create permanent sulfur-silicate fumarole networks."
+      ]
+    },
+    {
+      "id": "F9",
+      "group": "geology",
+      "claim": "Geothermal vents spew reduced H₂S, FeS₂, and supercritical CO₂ pockets across basaltic-silicate crust.",
+      "justification": "Tidal flexing and radiogenic decay drive localized high heat flux (kW/m² at vents); chemosynthetic redox gradients replace photosynthesis. Mean flux is low, but hotspot gradients are extreme.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 0.15,
+      "unit": "W/m²",
+      "consequences": [
+        "Biomass clusters tightly around vent fields due to patchy energy distribution.",
+        "Supercritical CO₂ mixing enables rapid phase changes for propulsion and defense."
+      ]
+    },
+    {
+      "id": "F10",
+      "group": "chemistry",
+      "claim": "Biochemical backbones are siloxane (Si–O–Si) chains crosslinked with sulfur and nitrogen.",
+      "justification": "Temperatures >150°C thermally cleave many C–C bonds but leave Si–O intact; low H₂O activity prevents hydrolysis. Polymer flexibility requires bulky sulfur side-groups to prevent premature vitrification.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 150,
+      "unit": "°C",
+      "consequences": [
+        "Metabolism is slow and high-energy, favoring crystalline growth over cellular division.",
+        "Polymer stability relies on defect-patterned lattices rather than enzymatic scaffolding."
+      ]
+    },
+    {
+      "id": "F11",
+      "group": "chemistry",
+      "claim": "Free O₂, liquid H₂O, and rapid cooling are lethal to silicon-based organisms.",
+      "justification": "Oxidation converts reactive Si backbones to inert SiO₂ dust; H₂O hydrolyzes Si–S/Si–H bonds; thermal gradients fracture glassy exoskeletons. Contrarian alternative: oxidizing atmospheres would sterilize the surface.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 0,
+      "unit": "% O₂",
+      "consequences": [
+        "Life avoids oxidizing environments and clean-air zones.",
+        "Sudden temperature drops trigger rapid structural failure, creating environmental vulnerability windows."
+      ]
+    },
+    {
+      "id": "F12",
+      "group": "biochemistry",
+      "claim": "Heritable information is stored via defect-patterned silicate lattices rather than nucleic acids.",
+      "justification": "Replaces DNA/RNA analogs; crystal lattice defects store stable, high-T genetic data that survives geothermal stress. Highly speculative per Bains (2004); no known replication mechanism exists.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "consequences": [
+        "Reproduction involves geode-like spore ejection into vent plumes.",
+        "Lineage tracking requires spectral analysis of shell fracture patterns."
+      ]
+    },
+    {
+      "id": "F13",
+      "group": "biochemistry",
+      "claim": "Metabolism oxidizes H₂S and FeS₂ using SO₂ redox gradients without free oxygen.",
+      "justification": "Anoxic, sulfur-rich interfacial films enable electron transfer analogous to anoxygenic sulfur bacteria; catalysis requires high activation energy, slowing reaction rates. Contrarian alternative: aqueous metabolism would hydrolyze the solvent.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "consequences": [
+        "Excretion produces acidic sulfur aerosols that corrode terrain and deter predators.",
+        "Metabolic waste accumulates as crystalline byproducts, requiring periodic molting."
+      ]
+    },
+    {
+      "id": "F14",
+      "group": "biochemistry",
+      "claim": "Sensory systems rely on thermal-IR photoreceptors and piezoelectric vibration receptors.",
+      "justification": "Scattered amber glow blocks visible spectrum; dense air and crustal transmission favor low-frequency seismic and thermal contrast over optical cues. Contrarian alternative: visual systems would be blinded by thermal haze.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "consequences": [
+        "Navigation and hunting depend on heat contrast and ground vibration mapping.",
+        "Visual UI is replaced by thermal/acoustic echolocation in gameplay."
+      ]
+    },
+    {
+      "id": "F15",
+      "group": "biochemistry",
+      "claim": "Organisms possess heavy silica-sulfur composite carapaces with thermal-expansion joints.",
+      "justification": "High pressure and abrasive winds select for dense, abrasion-resistant mineralized tissue; thermal cycling demands flexible, sliding joints. Rejects 'cool armor' trope in favor of thermomechanical stress distribution.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "consequences": [
+        "Armor absorbs impact but increases thermal mass, slowing heating/cooling cycles.",
+        "Rapid cooling shatters shells, enabling environmental takedowns via vent proximity."
+      ]
+    },
+    {
+      "id": "F16",
+      "group": "biochemistry",
+      "claim": "Communication occurs via infrasound throat organs and seismic pulse transmission.",
+      "justification": "Low-frequency sound and ground vibrations carry kilometers in dense, scattering atmosphere; line-of-sight is unreliable in haze. Contrarian alternative: optical communication would fail in persistent aerosol layers.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "consequences": [
+        "Long-range coordination is possible across calderas and fissures.",
+        "Acoustic camouflage requires matching background hum frequencies to avoid detection."
+      ]
+    },
+    {
+      "id": "F17",
+      "group": "biochemistry",
+      "claim": "Thermal stasis dormancy is triggered by cooling events below 130°C.",
+      "justification": "Si-O bond kinetics and solvent viscosity increase dramatically below this threshold; vitrification of interfacial films halts metabolism without cell death. Contrarian alternative: active metabolism at lower temperatures would require impossible catalysts.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 130,
+      "unit": "°C",
+      "consequences": [
+        "Creatures enter geode-like sleep during cool periods, conserving energy.",
+        "Recovery requires re-heating near vents, creating strategic vulnerability windows."
+      ]
+    },
+    {
+      "id": "F18",
+      "group": "biochemistry",
+      "claim": "Locomotion utilizes piezoelectric limb joints and low-friction silicone pads.",
+      "justification": "High gravity and glassy terrain demand precise footing; crystal lattices convert mechanical stress to bioelectric signals for movement. Contrarian alternative: fluid-based hydraulics would fail under thermal stress.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "consequences": [
+        "Movement generates subtle EM pulses that may disrupt sensitive electroreception.",
+        "Fine silica dust jams joints, requiring regular polishing or symbiotic cleaning."
+      ]
+    },
+    {
+      "id": "F19",
+      "group": "biochemistry",
+      "claim": "Surface physics is model-informed; life solvents, siloxane heredity, and vent metabolisms are highly speculative per Bains (2004) and Petkowski et al. (2020).",
+      "justification": "Explicit player-facing disclaimer; geological and atmospheric parameters are constrained by first-principles physics, while biochemical pathways remain speculative extrapolations. Contrarian alternative: treating speculation as fact breaks immersion.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "consequences": [
+        "Gameplay mechanics prioritize environmental interaction over biological realism.",
+        "Lore should distinguish between established astrobiology and speculative worldbuilding."
+      ],
+      "refs": [
+        "petkowski_bains_seager_2020_solvents"
+      ]
+    },
+    {
+      "id": "F20",
+      "group": "biochemistry",
+      "claim": "No water-linked oxygenic photosynthesis; energy is derived from S/CO₂/IR-gradient and vent chemosynthesis only.",
+      "justification": "Closes gap between stellar output and metabolic constraints; anoxic, dry conditions preclude water-splitting phototrophy. Contrarian alternative: oxygenic photosynthesis would oxidize the entire biosphere.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "consequences": [
+        "Primary producers are chemolithoautotrophs clustered at fumaroles.",
+        "Food webs are built on sulfur redox and thermal gradients rather than solar carbon fixation."
+      ],
+      "refs": [
+        "petkowski_bains_seager_2020_solvents"
+      ]
+    }
+  ],
+  "changelog": [
+    {
+      "date": "2026-11-18",
+      "who": "autoloop",
+      "what": "world canon drafted by the council chair from 20 facts (planet drafts, peer reviews, astrobio referee)"
+    },
+    {
+      "date": "2026-11-18",
+      "who": "autoloop",
+      "what": "removed rejected references; retired real facts left without references"
+    }
+  ]
+}

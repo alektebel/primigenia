@@ -1,0 +1,169 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "at_saurosapients",
+  "name": {
+    "en": "Saurosapients"
+  },
+  "world": "at_garden_peoples",
+  "kind": "easter_egg",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "to be written",
+    "diet": "to be written",
+    "active": "to be written",
+    "predators": []
+  },
+  "body": "to be written",
+  "chains": [
+    {
+      "id": "at_saurosapients.c1",
+      "trait": "Ectothermic muscle bundles with low metabolic rate",
+      "links": [
+        "Tropical garden stable diurnal temps (F20)",
+        "High humidity (F8) traps ambient warmth",
+        "External heat pays the metabolic tab",
+        "Slow deliberate movements conserve energy for cognitive bursts"
+      ],
+      "roots": [
+        "F8",
+        "F20"
+      ],
+      "skill": {
+        "id": "at_saurosapients.thermal_soak",
+        "name": {
+          "en": "Thermal Soak"
+        },
+        "role": "Engage",
+        "effect": "recover 20% stamina in direct sunlight over 1 turn",
+        "numbers": {}
+      },
+      "weakness": "Cold environments or night combat cause metabolic slowdown; -50% action economy",
+      "observe": [
+        "Flat basking postures",
+        "Dark-scaled heat absorption",
+        "Slow deliberate steps"
+      ],
+      "journal": {
+        "en": "They let the sun pay the metabolic tab so claws could build empires."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-19",
+        "summary": "Keep ‘Thermal Soak’ to sunlit windows within F20 ±5–10 °C; tropical humidity (F8) aids night warmth retention but cloudy/wet basking still costs a turn—matches lore cold-blooded constraint without implying full inactivity all night in a tropical garden.",
+        "fixes": [
+          "Keep ‘Thermal Soak’ to sunlit windows within F20 ±5–10 °C; tropical humidity (F8) aids night warmth retention but cloudy/wet basking still costs a turn—matches lore cold-blooded constraint without implying full inactivity all night in a tropical garden."
+        ],
+        "analogues": [
+          {
+            "organism": "Large tropical varanids and crocodilians: behaviorally thermoregulated ectothermy with cognitive bursts after warming",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 9,
+          "designer": 8,
+          "physicist": 9
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist",
+          "physicist"
+        ]
+      }
+    },
+    {
+      "id": "at_saurosapients.c2",
+      "trait": "Vertical jaw strike for cranial mass",
+      "links": [
+        "Apex hunting requires depth perception and bite force",
+        "High O2 partial pressure (F7) sustains dense muscle tissue",
+        "Vertical mandible hinge maximizes cranial leverage",
+        "Piercing attack ignores armor on first strike"
+      ],
+      "roots": [
+        "F7",
+        "F21"
+      ],
+      "skill": {
+        "id": "at_saurosapients.jaw_snap",
+        "name": {
+          "en": "Jaw Snap"
+        },
+        "role": "Signature",
+        "effect": "piercing attack, ignores 30% armor, 2x damage on first turn",
+        "numbers": {}
+      },
+      "weakness": "Jaw hinge stress fractures under high-g or sudden impact; Defence required",
+      "observe": [
+        "Upward-gaping mandibles",
+        "Forward-facing ocular orbits",
+        "Muscular neck crests"
+      ],
+      "journal": {
+        "en": "Their skulls are leverage engines, built to snap herbivores in half."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-19",
+        "summary": "Theropod-like predators already use a vertical jaw hinge; emphasize enlarged temporal fossae, rostral bite point, and neck crest for inertial strike (tyrannosaurid/power- bite model), not a novel hinge axis; tie high O2 (F7) to sustained grappling, not magic armor bypass.",
+        "fixes": [
+          "Theropod-like predators already use a vertical jaw hinge; emphasize enlarged temporal fossae, rostral bite point, and neck crest for inertial strike (tyrannosaurid/power- bite model), not a novel hinge axis; tie high O2 (F7) to sustained grappling, not magic armor bypass."
+        ],
+        "analogues": [
+          {
+            "organism": "Tyrannosaurid bite force and binocular hunting in theropods; varanid crushing bite",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "designer": 9,
+          "physicist": 8
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "physicist"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "at_bug_facers",
+      "kind": "convergent",
+      "note": "Both rely on partial ectothermy and low metabolic rates to conserve energy in high-humidity, stable-temperature garden worlds.",
+      "via": "F8, F20, F3"
+    },
+    {
+      "with": "at_lizard_herders",
+      "kind": "predation",
+      "note": "Herders instinctively farm reptiles; those reptiles radiate into Saurosapients, who later subjugate and farm the Herders in a role reversal.",
+      "via": "F3, F8, F20"
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-18",
+    "by": [
+      "naturalist",
+      "physicist"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-19",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-18"
+    }
+  ],
+  "lore_ref": {
+    "file": "lore/alltomorrows.en.json",
+    "id": "saurosapients"
+  }
+}

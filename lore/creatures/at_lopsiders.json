@@ -1,0 +1,173 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "at_lopsiders",
+  "name": {
+    "en": "Lopsiders"
+  },
+  "world": "at_garden_peoples",
+  "kind": "easter_egg",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "to be written",
+    "diet": "to be written",
+    "active": "to be written",
+    "predators": []
+  },
+  "body": "to be written",
+  "chains": [
+    {
+      "id": "at_lopsiders.c1",
+      "trait": "Three paddle-limbs & one spindly tool arm",
+      "links": [
+        "Extreme limb reduction for weight distribution",
+        "36g surface acceleration demanding low center of mass",
+        "Qu metric manipulation creating super-dense crust"
+      ],
+      "roots": [
+        "F4"
+      ],
+      "skill": {
+        "id": "at_lopsiders.gravity_crawl",
+        "name": {
+          "en": "Gravity Crawl"
+        },
+        "role": "Basic",
+        "effect": "Moves across steep terrain without falling and grants +3 carry weight",
+        "numbers": {}
+      },
+      "weakness": "Vulnerable to sudden weight loss or low-gravity zones",
+      "observe": [
+        "Broad, splayed limb pads pressing flat",
+        "One arm extended holding crude tools",
+        "Body resting heavily on the substrate"
+      ],
+      "journal": {
+        "en": "They don't walk. They press."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-19",
+        "summary": "State openly that 36 g (F4) is non-natural and requires Qu skeletal/muscle redesign (neotenous low-profile body, pad-like limbs, no Earth-primate limb loads); game crawl skill is substrate-pressing, not upright walking.",
+        "fixes": [
+          "State openly that 36 g (F4) is non-natural and requires Qu skeletal/muscle redesign (neotenous low-profile body, pad-like limbs, no Earth-primate limb loads); game crawl skill is substrate-pressing, not upright walking."
+        ],
+        "analogues": [
+          {
+            "organism": "Low, sprawled body plans under extreme load (sea cucumber, starfish crawling) as posture analogues only; tool use with single manipulator like elephant trunk/single-arm necessity",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "currey_2002_bones"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "designer": 8,
+          "physicist": 9
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist",
+          "physicist"
+        ]
+      }
+    },
+    {
+      "id": "at_lopsiders.c2",
+      "trait": "Asymmetric face & upward-bulging eye",
+      "links": [
+        "Unilateral ocular placement and vertical mandible",
+        "36g gravity crushing bilateral symmetry and forcing dorsal vision",
+        "High atmospheric pressure shaping vocal cords and jaws"
+      ],
+      "roots": [
+        "F4",
+        "F6"
+      ],
+      "skill": {
+        "id": "at_lopsiders.dorsal_scan",
+        "name": {
+          "en": "Dorsal Scan"
+        },
+        "role": "Poke",
+        "effect": "Gains +2 perception against overhead threats within 40m",
+        "numbers": {}
+      },
+      "weakness": "Cannot track fast-moving prey at ground level without turning",
+      "observe": [
+        "One eye staring straight up at the sky",
+        "Jaw hinging vertically to crush stone",
+        "Asymmetric ear pits tilted toward vibration"
+      ],
+      "journal": {
+        "en": "A face carved by crushing weight, looking up for mercy."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-18",
+        "date": "2026-11-19",
+        "summary": "Do not claim 36 g alone ‘crushes bilateral symmetry’; credit Qu morphological sculpting for vertical jaw and unilateral dorsal eye, with a selectable advantage of scanning overhead clearance in bunker/squat architecture on F4.",
+        "fixes": [
+          "Do not claim 36 g alone ‘crushes bilateral symmetry’; credit Qu morphological sculpting for vertical jaw and unilateral dorsal eye, with a selectable advantage of scanning overhead clearance in bunker/squat architecture on F4."
+        ],
+        "analogues": [
+          {
+            "organism": "Flatfish orbital migration is developmental, not gravity-driven (illustrates extreme craniofacial asymmetry via ontogeny, not weight)",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 5,
+          "designer": 8,
+          "physicist": 7
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-18",
+        "by": [
+          "naturalist"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "at_asymmetric_people",
+      "kind": "rivalry",
+      "note": "Asymmetric People are engineered by Lopsiders for lower gravity, then reverse-engineer the process to exterminate their creators.",
+      "via": "F4, F5, F21"
+    },
+    {
+      "with": "at_striders",
+      "kind": "opposite",
+      "note": "Striders evolve extreme verticality and fragile cartilage for 0.2g; Lopsiders evolve wide stances and paddle-limbs for 36g.",
+      "via": "F4, F5, F21"
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-18",
+    "by": [
+      "naturalist",
+      "physicist"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-19",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-18"
+    }
+  ],
+  "lore_ref": {
+    "file": "lore/alltomorrows.en.json",
+    "id": "lopsiders"
+  }
+}

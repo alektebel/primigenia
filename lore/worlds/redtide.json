@@ -1,0 +1,527 @@
+{
+  "schema": "cpore.world/1",
+  "id": "redtide",
+  "kind": "fictional",
+  "system": {
+    "star": "Vessa, an M4V red dwarf: 0.25 M☉, 0.25 R☉, T_eff 3200 K, L 0.006 L☉",
+    "position": "fictional",
+    "distance_ly_from_sol": null
+  },
+  "name": {
+    "en": "Kirr",
+    "es": "Kirr"
+  },
+  "status": "draft",
+  "facts": [
+    {
+      "id": "F1",
+      "group": "star",
+      "claim": "Vessa is an M4V dwarf of 0.25 M☉ and 0.25 R☉ at 3200 K, radiating 0.006 L☉.",
+      "justification": "Stefan–Boltzmann from the stated radius and temperature gives 0.25² × (3200/5772)⁴ = 0.0059 L☉, which agrees with M-dwarf mass–luminosity relations.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 0.006,
+      "unit": "L_sun",
+      "consequences": [
+        "Total flux at the planet is Earth-like, so liquid water needs no exotic greenhouse — but every photon is dear.",
+        "Only a narrow ring, not a whole hemisphere, is warm enough for open water; the rest is desert or ice."
+      ],
+      "refs": [
+        "mann_2015",
+        "kopparapu_2013"
+      ]
+    },
+    {
+      "id": "F2",
+      "group": "star",
+      "claim": "About 89% of Vessa's light is near-infrared (0.7–1.4 µm), 10% visible (0.4–0.7 µm) and 0.4% ultraviolet (<0.4 µm), peaking near 0.9 µm.",
+      "justification": "Planck integrals for a 3200 K blackbody over those bins put the peak at 0.9 µm and leave almost nothing below 400 nm.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "89% NIR",
+      "consequences": [
+        "Vision and photosynthesis both peak in the near-infrared; visible colour is a minor channel.",
+        "UV-blocking pigments are cheap but rarely needed between flares; flare windows (F11) are the exception."
+      ],
+      "refs": [
+        "mann_2015",
+        "segura_2005"
+      ]
+    },
+    {
+      "id": "F3",
+      "group": "orbit",
+      "claim": "Kirr orbits at 0.077 AU in 15.5 days, synchronously locked, receiving 1.0 S⊕.",
+      "justification": "Kepler's third law for 0.25 M☉ at 0.077 AU gives 15.6 d, and 0.006/0.077² = 1.0 S⊕; the orbit sits near the inner edge of the conservative habitable zone.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 15.5,
+      "unit": "d",
+      "consequences": [
+        "The year is the day: one hemisphere never sees the star set and the other never sees it rise.",
+        "Creatures have no seasonal calendar — only position relative to the ring.",
+        "Earth-like flux is viable only because dayside cloud feedback (F13) lifts albedo; without it, this inner-edge orbit would likely run away (Kopparapu 2013)."
+      ],
+      "refs": [
+        "kopparapu_2013"
+      ]
+    },
+    {
+      "id": "F4",
+      "group": "star",
+      "claim": "Vessa alternates between calm and active epochs; in active epochs it fires up to about one M-flare per 20 days and a 10³³ erg superflare every ~200 years, raising UV 10–100× for minutes to hours.",
+      "justification": "Kepler flare statistics show flare frequency falls steeply with age, so 1 per 20 d is an active-star upper bound at 1.5 Gyr; the rate is a range, not an ephemeris, and the exact value is speculative.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "≤1 per 20 d",
+      "consequences": [
+        "Life must shield, repair or hide on a minutes-to-hours cadence during active epochs.",
+        "Flares are the only unpredictable clock; spawning, dormancy and migration key to them.",
+        "Calm centuries let expensive shields atrophy, so the next angry epoch is a selection event."
+      ],
+      "refs": [
+        "davenport_2014",
+        "segura_2010"
+      ]
+    },
+    {
+      "id": "F5",
+      "group": "planet",
+      "claim": "Kirr is 1.6 M⊕ at 1.15 R⊕, giving 11.9 m/s² (1.21 g), density 5.8 g/cm³ and escape velocity 13.2 km/s.",
+      "justification": "GM/R² and M/(4/3 πR³) close from the stated mass and radius; the escape velocity follows from the same two numbers.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 1.21,
+      "unit": "g",
+      "consequences": [
+        "1.21 g makes falls and tall bodies costly; low, wide and armoured shapes are favoured.",
+        "Dense air plus high gravity rewards low wing loading: gliding is cheap, sustained flapping is expensive."
+      ]
+    },
+    {
+      "id": "F6",
+      "group": "planet",
+      "claim": "Axial obliquity is under 1°, damped by stellar tides, so Kirr has no seasons.",
+      "justification": "Tidal obliquity damping is fast at this separation, so precession and tilt are suppressed to near zero.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "<1",
+      "unit": "deg",
+      "consequences": [
+        "No seasons: territories, spawning grounds and rain shadows stay put for millions of years.",
+        "A lineage specialised on one patch can never wait out a bad century somewhere else."
+      ],
+      "refs": [
+        "goldreich_soter_1966"
+      ]
+    },
+    {
+      "id": "F7",
+      "group": "planet",
+      "claim": "Kirr has no moon: the star's static tidal bulge is only ~100 m (10⁻⁵ R), so there is no tidal heating and no cyclic tide table; the permanent bulge still sets a static geoid shoreline.",
+      "justification": "(M★/M_p)(R/a)³R gives ~1.3×10⁻⁵ R ≈ 90–100 m; a static bulge does no work, so no flexing heat follows.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 100,
+      "unit": "m",
+      "consequences": [
+        "No cyclic tide table: spawning, foraging and shore exposure follow seiches and weather, not a moon.",
+        "The permanent bulge fixes a static strandline, so 'intertidal' means a fixed geoid shore rather than a daily one."
+      ],
+      "refs": [
+        "goldreich_soter_1966"
+      ]
+    },
+    {
+      "id": "F8",
+      "group": "planet",
+      "claim": "The surface field is ~0.35 G (35 µT), a slow-rotation dynamo weaker than Earth's; the dipole is roughly spin-aligned with an unknown, speculative tilt, so auroral precipitation concentrates near the day and night poles and the ring sees less of it.",
+      "justification": "Dynamo efficiency falls with rotation rate, so a 15.5-day spin yields a weaker field than Earth's despite a larger radiogenic budget; the aligned dipole is speculative and real fields tilt and drift.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 0.35,
+      "unit": "G",
+      "consequences": [
+        "Auroral particle precipitation concentrates near the day and night poles; the quieter ring is a refuge only as an explicit gameplay abstraction.",
+        "The day pole carries a permanent aurora and is a hazard biome; the night pole's aurora is buried under ice."
+      ],
+      "refs": [
+        "christensen_aubert_2006"
+      ]
+    },
+    {
+      "id": "F9",
+      "group": "atmosphere",
+      "claim": "Sea-level pressure is 1.7 bar: 84% N₂, 8% O₂ (0.136 bar), 1.2% CO₂ (0.020 bar), 6% Ar, 0.5–3% H₂O.",
+      "justification": "A locked planet needs around a bar of N₂ to keep the night side from runaway freezing, and a 1.6 M⊕ world outgasses proportionally more than Earth; the 6% Ar is a chosen outgassing value, not a derived one, and CO₂ is capped by the polar frost (F19).",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 1.7,
+      "unit": "bar",
+      "consequences": [
+        "pO₂ of 0.136 bar supports large animals but not open flame.",
+        "A dense inert carrier makes breathing easy; managing CO₂ and water balance is the hard part."
+      ],
+      "refs": [
+        "merlis_leconte_2010"
+      ]
+    },
+    {
+      "id": "F10",
+      "group": "atmosphere",
+      "claim": "Air density is 2.05 kg/m³ at 285 K with a 7 km scale height, and sound travels at 341 m/s — set by temperature and mean molecular weight, not pressure — so low-frequency calls carry up to 2–3× farther near the humid surface while treble still decays in tens of metres.",
+      "justification": "Ideal-gas density from 1.7 bar and 285 K; c = √(γRT/µ) gives 341 m/s, and greater density plus humidity lowers low-frequency absorption — the gain is in absorption and near-surface gradients, not in c itself.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 341,
+      "unit": "m/s",
+      "consequences": [
+        "Bass carries for kilometres near the ground; treble dies quickly, so language, warning and courtship are low.",
+        "Acoustic signalling is reliable enough that eyes can be small and colour can be private."
+      ]
+    },
+    {
+      "id": "F11",
+      "group": "atmosphere",
+      "claim": "The ozone column is ~200 DU, about two-thirds of Earth's; quiescent UV-B at the surface stays modest, but flare NOx can deplete the ozone for months to a few years.",
+      "justification": "With 8% O₂ the ozone layer is thinner than Earth's, and flare-driven NOx destroys it far faster than it heals; the red-heavy spectrum keeps steady UV-B low, so flares are the main shock.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 200,
+      "unit": "DU",
+      "consequences": [
+        "UV is a forecast, not a constant: flare windows, not the steady sky, decide when exposed rock is lethal.",
+        "A flare leaves a months-long UV window that resets which species can live on exposed rock."
+      ],
+      "refs": [
+        "segura_2010"
+      ]
+    },
+    {
+      "id": "F12",
+      "group": "climate",
+      "claim": "There are two winds: surface air flows night-to-day at 12–18 m/s (katabatic off the cold side) while the upper return near 8–12 km flows day-to-night at 50–60 m/s and carries the clouds.",
+      "justification": "GCMs of locked planets give a cold low-level outflow toward the hot pole and a warm upper return; the single 'day-to-night surface wind' of the brief is the high road only.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "12–18 / 50–60",
+      "unit": "m/s",
+      "consequences": [
+        "Two roads, two hazards: the low road is slow and downwind, the high road fast and upwind.",
+        "Only volant or buoyant life can ride the upper return for a free ~80 km a day; walkers cannot."
+      ],
+      "refs": [
+        "merlis_leconte_2010",
+        "wordsworth_2015"
+      ]
+    },
+    {
+      "id": "F13",
+      "group": "climate",
+      "claim": "A dayside cloud deck raises albedo to ~0.5, holding the substellar surface near 300 K, with dry Kiln ground at 320 K, the ring at 275–290 K, the Hush edge at 190 K and the antestellar pole at 150 K.",
+      "justification": "Cloud feedback keeps the hot pole from boiling; dry ground runs hotter than wet ground at the same flux because it cannot cool by evaporation, and on a 1.15 R⊕ sphere the 275–290 K band spans ~11° of arc, which yields the 1,400 km width of F17.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "150–320",
+      "unit": "K",
+      "consequences": [
+        "The ring is the only place where liquid water, tolerable temperature and usable light overlap: the map is a band.",
+        "The driest, brightest ground is also the hottest, so open dayside is a heat desert, not a beach."
+      ],
+      "refs": [
+        "yang_cowan_abbot_2013",
+        "leconte_2013"
+      ]
+    },
+    {
+      "id": "F14",
+      "group": "climate",
+      "claim": "The 15.5-day spin makes Coriolis 15× weaker than Earth's, so the rain-bearing convergence is pinned in place at continent scale and classic mid-latitude cyclones are suppressed.",
+      "justification": "Coriolis scales with spin rate, and a 15.5-day rotation is 15 times slower than Earth's day; weak rotation supports fewer, broader, slower systems and a stationary cell rather than travelling cyclones.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 15,
+      "unit": "x weaker",
+      "consequences": [
+        "Storms stand still: a rain shadow, once made, stays made and can be engineered.",
+        "Weather cannot be outrun, only predicted — and predictions are shared with everyone."
+      ],
+      "refs": [
+        "merlis_leconte_2010",
+        "leconte_2013"
+      ]
+    },
+    {
+      "id": "F15",
+      "group": "sky",
+      "claim": "Star elevation depends only on colatitude: the star stands ~90° overhead at the substellar point, ~0° at the terminator, and stays below the horizon across the nightside; only the ring sees chronic low Sun and backlight.",
+      "justification": "A 1:1 lock with obliquity under 1° fixes the star's elevation as a function of angular distance from the substellar point, not as a constant for the whole planet.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "90→0",
+      "unit": "deg elevation",
+      "consequences": [
+        "Backlit silhouettes belong to the ring, not the whole planet: stealth there means using shade or getting above the light.",
+        "The substellar Kiln has eternal noon with almost no shadow shift, so heat, not darkness, sets the schedule.",
+        "The Hush is genuinely dark; nightside life navigates by starlight, aurora and thermal cues."
+      ]
+    },
+    {
+      "id": "F16",
+      "group": "sky",
+      "claim": "Vessa's ~35-day rotation carries starspot groups across the disc and dims the world by about 3% on a quasi-period near 35 days.",
+      "justification": "The star rotates more slowly than the planet orbits, so spots recur on the stellar rotation period; the period is statistical, not an ephemeris, because spot groups are not permanent.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 35,
+      "unit": "d",
+      "consequences": [
+        "A ~35-day dimming is the closest thing to a calendar; a lineage that reads it can predict spawning and famine.",
+        "When the star is spotless the clock fails, and everything that spawned on it spawns wrong."
+      ]
+    },
+    {
+      "id": "F17",
+      "group": "ocean",
+      "claim": "The Loom Sea is a ~1,400 km-wide ring ocean at the terminator, with a mean depth of 900 m and 6% salinity — an evaporating basin with a single outflow.",
+      "justification": "On a 1.15 R⊕ sphere the terminator circumference is ~46,000 km, and the 275–290 K band (F13) spans ~11° of arc, ~1,400 km; with one drain, dissolved salt concentrates to roughly twice Earth's seawater.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 1400,
+      "unit": "km wide",
+      "consequences": [
+        "A 6% brine is drinkable only with salt glands or recycling kidneys; fresh water is a shoreline resource.",
+        "One outflow means one drain: the sea's chemistry is set by whatever the ring weathers."
+      ]
+    },
+    {
+      "id": "F18",
+      "group": "ocean",
+      "claim": "The nightside Hush is a 2–3 km ice sheet running from 190 K at its edge to 150 K at the pole; the ocean drew down into it over the first ~1 Gyr, and today residual outgassing nearly balances the cold trap, so sea level falls only ~1 m per 200,000 years.",
+      "justification": "With 13.2 km/s escape and 1.7 bar, thermal loss is slow (Luger & Barnes 2015); the canonical budget is condensation drawdown early, then near-balance, which replaces the contradictory '900 m lasts 180 Myr' versus 'stripped by 1.5 Gyr' story.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 200000,
+      "unit": "yr per m",
+      "consequences": [
+        "Stranded reefs, salt roads and old quays are quarries, maps and nest sites.",
+        "A lineage bound to the shore is eventually stranded by it."
+      ],
+      "refs": [
+        "luger_barnes_2015"
+      ]
+    },
+    {
+      "id": "F19",
+      "group": "geology",
+      "claim": "A 400 km-wide CO₂ ice lens sits at the antestellar point: at 0.020 bar CO₂ frosts near 155 K and the pole runs 150 K, which holds atmospheric CO₂ down to the 1.2% of F9.",
+      "justification": "The CO₂ saturation curve puts the frost point just above the pole temperature, so the cap is stable and acts as a thermostat; its size follows from the polar cold trap and geothermal heat flux.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 400,
+      "unit": "km wide",
+      "consequences": [
+        "The CO₂ cap is a thermostat: it holds the greenhouse at 1.2% and keeps the climate from running away.",
+        "The antestellar pole is a dry cold desert of CO₂ frost, not an ice sea."
+      ]
+    },
+    {
+      "id": "F20",
+      "group": "interior",
+      "claim": "The interior runs a stagnant lid with episodic resurfacing: radiogenic heat only, no tidal heating and no plate cycle, so volcanism is hotspot volcanism rather than a conveyor.",
+      "justification": "With no moon and near-zero eccentricity there is no tidal flexing; stagnant lid is the common but not mandatory outcome, so resurfacing is episodic rather than absent and flare-driven surface chemistry still runs (F21).",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "consequences": [
+        "No plate conveyor: nutrients are recycled locally at hotspots, so biomes are islands in a basalt sea.",
+        "Long-lived crust means old, weathered, phosphorus-poor ground wherever there is no fresh lava."
+      ]
+    },
+    {
+      "id": "F21",
+      "group": "geology",
+      "claim": "The surface is basalt plains, sulfate and chloride evaporites, sulfur fumaroles strung along the ring, and fulgurite glass fields in the Kiln where rare flare lightning fused salt-rich sand.",
+      "justification": "An evaporating ring basin leaves salts; hotspot volcanism supplies sulfur; rare flare lightning on dry salt sand fuses glass, so fulgurites are a Kiln specialty rather than global pavement.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "consequences": [
+        "Sulfur fumaroles are oases strung along the ring, and their chemistry sets who lives where.",
+        "Fulgurite glass is the only manufactured-looking material on the planet — a trade good and a tool stone."
+      ]
+    },
+    {
+      "id": "F22",
+      "group": "chemistry",
+      "claim": "Primary energy comes from 850 nm photons, H₂S at fumaroles and Fe²⁺ in anoxic brine, while flares supply pulsed oxidized nitrogen (nitrate/nitrite) that rains out as fixed nitrogen.",
+      "justification": "Vent chemotrophy follows Earth analogues (Riftia, Beggiatoa, Fe²⁺ seeps); flare nitrogen fixation follows Segura et al. 2010, while Airapetian et al. 2016 is cited for the mechanism only, not for its young-Sun rates, and HCN remains optional and speculative.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "consequences": [
+        "Two food webs share one ring: light-fed mats on top, sulfur- and iron-fed mats at the vents.",
+        "Fixed nitrogen arrives in pulses after flares, so the whole web fattens on the star's schedule."
+      ],
+      "refs": [
+        "airapetian_2016",
+        "segura_2010"
+      ]
+    },
+    {
+      "id": "F23",
+      "group": "chemistry",
+      "claim": "With pO₂ at 0.136 bar, below the ~0.15 bar threshold for sustained flame, Kirr has no wildfire biome and no open-flame technology; only localized hot-spot oxidation and sulfur smoulder occur in the Kiln after flare lightning.",
+      "justification": "Belcher & McElwain put the sustained-fire limit near 0.15 bar pO₂ depending on fuel and total pressure; Kirr sits just below it, so dry fuel may char but flame does not spread (the margin is narrow and speculative).",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 0.136,
+      "unit": "bar pO2",
+      "consequences": [
+        "No cooking, no smelting, no fire-hardened wood: technology must begin with chemistry, stone and salt.",
+        "The first industrial revolution will be chemical, not thermal, and salt will be its first strategic material."
+      ],
+      "refs": [
+        "belcher_mcelwain_2008"
+      ]
+    },
+    {
+      "id": "F24",
+      "group": "biochemistry",
+      "claim": "Water is the solvent: at 1.7 bar it has a ~100 K liquid range, and the ring sits in the middle of it; nightside brine stays liquid only by salt depression.",
+      "justification": "Water is the only common solvent with that liquid range at this pressure, and the ring's 275–290 K sits inside it; brine eutectics on the night side are speculative but chemically standard.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "consequences": [
+        "The 100 K liquid range gives the ring a wide safety margin between freezing and boiling.",
+        "Nightside life needs antifreeze or brine; dayside life needs to shed heat, not keep it."
+      ]
+    },
+    {
+      "id": "F25",
+      "group": "biochemistry",
+      "claim": "Anoxygenic NIR photosynthesis runs at 830–880 nm; oxygenic water-splitting appears late and only at ≤750 nm, yielding ~25% less ATP per photon, so oxygen accumulation stayed slow.",
+      "justification": "Far-red pigments match the 0.9 µm peak and support anoxygenic mats (F22), but two-photosystem water splitting at 830–880 nm is highly speculative — 750 nm is the demonstrated biological limit — so O₂ evolution is appended at shorter wavelengths.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "830–880",
+      "unit": "nm",
+      "consequences": [
+        "Far-red leaves look black to visible eyes and mirror-bright in the near-infrared.",
+        "Low ATP per photon selects for large, cheap, flat light collectors rather than fast metabolism."
+      ],
+      "refs": [
+        "segura_2005"
+      ]
+    },
+    {
+      "id": "F26",
+      "group": "biochemistry",
+      "claim": "Productivity is phosphorus-limited: phosphorus arrives only in volcanic ash from F20 hotspots and in weathered flare nitrate, so life blooms in pulses rather than seasons.",
+      "justification": "No plate cycle means no broad continental weathering source, so the supply is patchy and event-driven (speculative), which also caps oxygen and biomass; ash pulses tie to F20 hotspots and flare nitrogen to F22.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "consequences": [
+        "Life blooms after ash falls and nitrate rains, not on an annual cycle.",
+        "Phosphorus scarcity caps body size and population, keeping the biosphere patchy."
+      ]
+    },
+    {
+      "id": "F27",
+      "group": "biochemistry",
+      "claim": "The poisons are H₂S above ~100 ppm, arsenic-rich brine at anoxic seeps, and oxygen above ~0.25 bar in hyperoxic microhabitats such as vents and photosynthetic mats — not in the 8% ambient air.",
+      "justification": "Fumaroles emit H₂S and anoxic seeps leach arsenic; a biosphere adapted to 8% O₂ treats a concentrated O₂ plume as an oxidant burn while ambient air stays breathable.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 100,
+      "unit": "ppm H2S",
+      "consequences": [
+        "H₂S and arsenic seeps are lethal boundaries, so vent ecology is zoned by chemistry, not distance.",
+        "An oxygen vent is a poison plume to anaerobes and a bonanza to aerobes: a movable frontier."
+      ]
+    },
+    {
+      "id": "F28",
+      "group": "star",
+      "claim": "Quiescent erythemal UV at the surface is only ~5–10% of Earth's noon value because the 3200 K spectrum emits little below 320 nm even with only 200 DU of ozone, so the UV hazard is flare windows rather than solar elevation.",
+      "justification": "The Planck tail plus a thin O₃ column keeps steady UV-B low (Segura et al. 2005, 2010), and M-dwarf UV is dominated by flares and chromospheric emission (France et al. 2016).",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "5–10% of Earth",
+      "consequences": [
+        "Shade and thin cover suffice between flares; exposed tissue is built for the worst month of the decade, not the average day.",
+        "Rhythms key to flare forecast and the ~35-day spot cycle (F16), not to sun angle."
+      ],
+      "refs": [
+        "segura_2005",
+        "segura_2010",
+        "france_2016"
+      ]
+    }
+  ],
+  "changelog": [
+    {
+      "date": "2026-11-19",
+      "who": "autoloop",
+      "what": "world canon drafted by the council chair from 28 facts (planet drafts, peer reviews, astrobio referee)"
+    },
+    {
+      "date": "2026-11-19",
+      "who": "autoloop",
+      "what": "removed rejected references; retired real facts left without references"
+    }
+  ]
+}

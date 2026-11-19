@@ -1,0 +1,326 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "salcaran",
+  "name": {
+    "en": "Salcarán"
+  },
+  "world": "redtide",
+  "kind": "new",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "Loom Sea fringe, saline crusts & fulgurite glass fields",
+    "diet": "Oxidized nitrogen mats, vent tube biomass, dissolved phosphates",
+    "active": "Constant, wind-riding crepuscular peaks",
+    "predators": []
+  },
+  "body": "Bilateral, 1.2m span, carapace 8cm thick, chitinous-mineral composite",
+  "chains": [
+    {
+      "id": "salcaran.c1",
+      "trait": "Broad, low-profile iron-carbonate shell",
+      "links": [
+        "Dense 1.7 bar air amplifies wind drag on tall profiles",
+        "15.5-day tidal lock pins flow to steady night-to-day current",
+        "1.21g gravity demands low center of mass to prevent tumbling"
+      ],
+      "roots": [
+        "F9",
+        "F10",
+        "F12",
+        "F14"
+      ],
+      "skill": {
+        "id": "salcaran.wind_rake",
+        "name": {
+          "en": "Wind-Rake"
+        },
+        "role": "Defence",
+        "effect": "Crouch flat, reducing incoming wind/damage by 60% and gaining traction. Lasts 4s. Cooldown 12s.",
+        "numbers": {}
+      },
+      "weakness": "Cannot rotate quickly; blind to frontal strikes and overhead threats.",
+      "observe": [
+        "Shell ridges align strictly with prevailing wind",
+        "Gait keeps center of mass within 10cm of ground",
+        "Ventral plates scrape salt flats with each step"
+      ],
+      "journal": {
+        "en": "The wind does not ask permission; it takes. So the body becomes a kite that learned to bite."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "Cap dorsoventral thickness at ~2–4 cm of chambered composite with siderite/magnetite veins; keep 8 cm as lateral ridge height or salt-armour lip. Name the mineral phase ‘ferruginous carbonate’ rather than stoichiometric siderite everywhere.",
+        "fixes": [
+          "Cap dorsoventral thickness at ~2–4 cm of chambered composite with siderite/magnetite veins; keep 8 cm as lateral ridge height or salt-armour lip. Name the mineral phase ‘ferruginous carbonate’ rather than stoichiometric siderite everywhere."
+        ],
+        "analogues": [
+          {
+            "organism": "Fiddler and ghost crabs (Ocypodidae): flattened carapace and low posture on wind-exposed beaches; chitons (e.g. Cryptochiton) for iron oxide/mineral reinforcement in radular teeth.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "alexander_2003_principles"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 5
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "salcaran.c2",
+      "trait": "Lateral stride with crossed limb pairs",
+      "links": [
+        "Head-on wind causes limb buckling under high density",
+        "Sideways posture reduces frontal cross-section by 70%",
+        "Weak Coriolis prevents cyclical wind shifts across the ring"
+      ],
+      "roots": [
+        "F10",
+        "F12",
+        "F14"
+      ],
+      "skill": {
+        "id": "salcaran.drift_step",
+        "name": {
+          "en": "Drift-Step"
+        },
+        "role": "Control",
+        "effect": "Move laterally at high speed with 40% reduced stamina cost, slide under 50cm obstacles. Duration 5s. Cooldown 8s.",
+        "numbers": {}
+      },
+      "weakness": "Cannot move forward quickly; vulnerable to frontal grapples.",
+      "observe": [
+        "Gait pattern forms perfect X-shapes across salt crust",
+        "Shell wear concentrated on lateral carapace edges",
+        "Movement always aligns parallel to thermal updrafts"
+      ],
+      "journal": {
+        "en": "Walking forward is a fool's bargain. The wind owns the path; you just borrow it."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "Decapod-style sideways walking minimizes frontal area into a steady wind and is a known solution on abrasive shores. Weak Coriolis and stationary Hadley-style circulation (F12, F14) favor learning one prevailing direction instead of tracking shifting synoptic weather. Ten appendages on a bilateral plan matches a detritivore→scavenger decapod-grade tagma (4+4 walking legs + chelae + mouthparts) without requiring novel physics.",
+        "fixes": [
+          "Decapod-style sideways walking minimizes frontal area into a steady wind and is a known solution on abrasive shores. Weak Coriolis and stationary Hadley-style circulation (F12, F14) favor learning one prevailing direction instead of tracking shifting synoptic weather. Ten appendages on a bilateral plan matches a detritivore→scavenger decapod-grade tagma (4+4 walking legs + chelae + mouthparts) without requiring novel physics."
+        ],
+        "analogues": [
+          {
+            "organism": "Brachyuran and anomuran crabs: lateral gait, leg pairs offset in alternating tetrapod/tripod patterns leaving X- or Y-shaped tracks on sand (Carcinus, Uca).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 5
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "salcaran.c3",
+      "trait": "Folded ventral plate beneath thorax",
+      "links": [
+        "Constant directional flow strips heat and abrades soft tissue",
+        "Curling abdomen underneath creates a sealed aerodynamic underbelly",
+        "Stable high-pressure baseline maintains internal fluid balance"
+      ],
+      "roots": [
+        "F9",
+        "F12",
+        "F13"
+      ],
+      "skill": {
+        "id": "salcaran.tuck_shell",
+        "name": {
+          "en": "Tuck-Shell"
+        },
+        "role": "Passive",
+        "effect": "When stationary, abdomen forms secondary armoured floor, +50% resist acid/radiation from flare fallout. Passive.",
+        "numbers": {}
+      },
+      "weakness": "Slow to deploy claws, limited sensory input from below.",
+      "observe": [
+        "Ventral folding mechanism locks with a audible click",
+        "Heat-shielding posture exposes only dorsal spines to wind",
+        "Claw deployment channels exclusively from thoracic sockets"
+      ],
+      "journal": {
+        "en": "The belly is a secret kept from the sky. Hide it, or lose it."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "Tie Tuck-Shell primarily to abrasion, acid brine, and nitrate-salt crust contact; move meaningful flare UV/radiation buffer to the arsenic-rich shell lattice + freeze behavior in the secret, with modest (not +50%) cuticular shielding when dorsum alone faces the sky.",
+        "fixes": [
+          "Tie Tuck-Shell primarily to abrasion, acid brine, and nitrate-salt crust contact; move meaningful flare UV/radiation buffer to the arsenic-rich shell lattice + freeze behavior in the secret, with modest (not +50%) cuticular shielding when dorsum alone faces the sky."
+        ],
+        "analogues": [
+          {
+            "organism": "Pill woodlice (Armadillidium vulgare) conglobation; horseshoe crab (Limulus) opisthosomal dorsal shield over ventral book gills; limpets pressing foot to rock in splash zone.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "vogel_1994_life"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 3
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "salcaran.c4",
+      "trait": "Asymmetric crushing and gripping chelae",
+      "links": [
+        "Phosphorus-limited chemotrophy mats grow flat and stubborn",
+        "Dense air allows high-leverage hydraulic pincer force",
+        "Evaporite crust and fulgurite glass demand crushing force"
+      ],
+      "roots": [
+        "F21",
+        "F22",
+        "F26"
+      ],
+      "skill": {
+        "id": "salcaran.pincer_clamp",
+        "name": {
+          "en": "Pincer-Clamp"
+        },
+        "role": "Engage",
+        "effect": "Grapple and crush, 2x damage to armoured/shelled targets, can pry open hydrothermal fissures. Cooldown 3s.",
+        "numbers": {}
+      },
+      "weakness": "Slow strike speed, high stamina drain.",
+      "observe": [
+        "Claw asymmetry matches vent tube diameters",
+        "Crushed silica residue coats the grinding molar edges",
+        "Feeding strikes occur in rhythmic bursts aligned with wind gusts"
+      ],
+      "journal": {
+        "en": "To break the crust, you do not hit. You press until the world yields."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "Attribute extra clamp stamina to hyperoxic ring habit + mineral-reinforced claw cuticle, not ‘dense air hydraulics.’ Keep 2× damage vs armoured targets as a game affordance but note strike speed stays slow (muscle limited at 1.21g).",
+        "fixes": [
+          "Attribute extra clamp stamina to hyperoxic ring habit + mineral-reinforced claw cuticle, not ‘dense air hydraulics.’ Keep 2× damage vs armoured targets as a game affordance but note strike speed stays slow (muscle limited at 1.21g)."
+        ],
+        "analogues": [
+          {
+            "organism": "Coconut crab (Birgus latro) asymmetric powerful claws for cracking hard substrates; fiddler crab (Uca) one enlarged chela; Asian shore crab handling hard-shelled prey.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 3
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "Kiln-runner",
+      "kind": "cousin",
+      "note": "(council kind 'Competitor') Both harvest vent tubes; runners take the upper fissures, crabs hold the salt crusts where wind stabilizes their stance."
+    },
+    {
+      "with": "carmesa",
+      "kind": "convergent",
+      "via": "carcinisation",
+      "note": "both converged on the crab body plan from unrelated lineages (Borradaile 1916; Keiler, Wirkner and Richter 2017; Wolfe, Luque and Bracken-Grissom 2021)"
+    },
+    {
+      "with": "laja_tres",
+      "kind": "convergent",
+      "via": "carcinisation",
+      "note": "both converged on the crab body plan from unrelated lineages (Borradaile 1916; Keiler, Wirkner and Richter 2017; Wolfe, Luque and Bracken-Grissom 2021)"
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-19",
+    "by": [
+      "naturalist/qwen"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-19",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-19"
+    },
+    {
+      "date": "2026-11-19",
+      "who": "autoloop",
+      "what": "carcinisation links to 2 creature(s)"
+    }
+  ],
+  "carcinised": true,
+  "body_plan": {
+    "symmetry": "bilateral",
+    "arms": 10,
+    "origin": "Segmented detritivore lineage that abandoned vertical crawling for lateral gliding"
+  },
+  "temperament": "Cautiously aggressive, highly territorial, wind-synchronized",
+  "secrets": [
+    "Crabs can sense flare UV shifts hours early via trace arsenic in their shell; they burrow deeper, triggering a hidden passive that grants radiation resistance.",
+    "Their claws secrete a phosphorus-concentrating enzyme; feeding them phosphorus-rich bait makes them docile and grants bonus XP for mining vents.",
+    "When wind drops below 3 m/s, they become sluggish and lose their wind-rake ability, revealing a slow, vulnerable forward-walking gait."
+  ],
+  "moments": [
+    "During a flare window, the sky turns copper. The crabs freeze, tucking their abdomens as nitrate rain hisses on the glass fields, their shells drinking the fixed nitrogen like a drought-struck crop."
+  ],
+  "journal": [
+    {
+      "en": "Carcinisation is the universe's joke: flatten, widen, and tuck the tail, or be blown into the night. It's a stretch to call them crabs, but drag coefficients don't care about taxonomy."
+    },
+    {
+      "en": "Watch how they walk: not away from the wind, but across it. They do not fight the storm. They ride it."
+    },
+    {
+      "en": "Again."
+    }
+  ]
+}
