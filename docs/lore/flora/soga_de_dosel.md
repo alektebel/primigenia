@@ -4,59 +4,60 @@
 
 **Status: DRAFT** · world: [primigenia](../worlds/primigenia.md) · form: vine · id: `soga_de_dosel`
 
-A ground-rooted woody vine attaches to bark with adhesive root pads. Climbing routes require stems at least 4 cm thick with multiple intact attachments and sound host support. Vertical reach never exceeds the actual host: at most 22 m on nieblon or 32 m on madre_de_agua. Soft fruit rewards dispersers; red-veined leaves warn of alkaloids (F18, F19, F25).
+A ground-rooted woody vine attaches to bark with adhesive root pads. Climbing requires mature stems at least 4 cm thick and a route qualified for the creature's mass, movement and current wind. Vertical reach never exceeds the actual host: at most 22 m on nieblon or 32 m on madre_de_agua. Sheltered western forest and the eastern spring support separate populations; ripe pulp rewards dispersers while red-veined leaves warn of alkaloids (F2, F18, F19, F21, F25).
 
 **Habitats:** Sheltered western forest canopy, The spring giant's branches, Sheltered riverbank woodland
 
 ## Causal chains
 
-### soga_de_dosel.c1: Adhesive roots and mature woody cables
+### soga_de_dosel.c1: Adhesive roots and load-qualified mature woody cables
 
-Trait ← Established trees supply support toward canopy light. ← Attachment roots fasten the vine while ground roots supply water. ← Woody thickening and repeated attachments distribute loads. ← The host's structure and height set the climbing route's limits. ← **F2** Gravity 1.05 g (R 1.04 R⊕, M 1.14 M⊕); **F18** Rain shadow: westerlies make the west coast wet and forested; the east meadows (the start valley) are drier in summer, with a spring; **F19** Wind force per m/s is 1.6× Earth's: gales in winter push light creatures and favour low, heavy bodies on exposed ridges
+Trait ← Western forest hosts and the spring giant supply support toward canopy light (F18, F21). ← Attachment roots fasten the vine while ground roots supply water. ← Woody thickening and repeated attachments distribute loads, but bark peel, unsupported spans and host branches remain failure points. ← Each playable segment requires a qualified maximum creature mass and wind limit accounting for attachment condition, span, host support and dynamic loading under 1.05 g (F2, F19). ← Only qualified segments within those limits form climbing routes, capped by the actual supporting host. ← **F2** Gravity 1.05 g (R 1.04 R⊕, M 1.14 M⊕); **F18** Rain shadow: westerlies make the west coast wet and forested; the east meadows (the start valley) are drier in summer, with a spring; **F19** Wind force per m/s is 1.6× Earth's: gales in winter push light creatures and favour low, heavy bodies on exposed ridges; **F21** The rock spire is a hard dyke left standing by erosion; the giant tree grows at the spring where that dyke dams groundwater
 
-- **In play:** Climb only stems at least 4 cm in diameter with multiple intact bark attachments and sound supporting branches.
-- **Weakness:** Thin shoots, detached loops and failing host branches cannot reliably bear a creature.
+- **In play:** Use stems at least 4 cm thick only where route qualification permits the creature's mass, movement and current wind.
+- **Weakness:** Diameter alone cannot establish safety; unqualified segments, peeling pads, failing branches and wind above the route limit disable climbing.
 - **Observe:**
-  1. Root pads follow bark grooves.
-  2. A thick cable remains attached at several separate points.
+  1. Root pads follow bark grooves at several separate contacts.
+  2. Detached pads and long unsupported spans interrupt otherwise thick cables.
   3. A fallen host branch brings its attached vine down.
-- **Plausibility:** plausible (judge botanist/composer-2.5; chair sol, 2026-11-19)
-  - A diameter of at least 4 cm and multiple intact attachments are necessary route conditions, not universal load guarantees. Vertical reach is capped by the actual host, with upper bounds of 22 m on nieblon and 32 m on madre_de_agua.
-  - Analogue: Root-climbing ivy, Hedera helix: Attachment rootlets permit ascent on existing supports; creature-bearing mature cables are a restricted fictional extension. (Darwin 1875 [verified])
+- **Plausibility:** fixable (judge strict review: sol (codex) + DeepSeek; chair sol, 2026-11-19)
+  - A diameter of at least 4 cm and multiple intact attachments are necessary route conditions, not universal load guarantees. Vertical reach is capped by the actual host, with upper bounds of 22 m on nieblon and 32 m on madre_de_agua. Strict review (2026-11-19): revised: The diameter filter did not establish carrying capacity, so climbing now requires segment-specific load and wind qualification alongside host support. Still open: Circular and unquantified. The trait is 'load-qualified cables' and the mechanism is 'segments are qualified', so the chain never derives carrying capacity. F2's 1.05 g is only 5% above Earth and is negligible beside impact loads (a 2 m fall reaches ~6 m/s at any g); the real limits are root-pad peel strength on bark and bending/shear of a tapering 4-12 cm cable, neither stated. F19's 1.6x wind force per m/s is applied only to the creature, although the vine's own leaf curtains are a sail. Host height caps reach but says nothing about strength.
+  - Analogue: Root-climbing ivy, Hedera helix: Attachment rootlets permit ascent on existing supports; creature-bearing cable strength and route load ratings are explicitly fictional properties requiring separate qualification. (Darwin 1875 [verified])
 
-### soga_de_dosel.c2: Defended foliage and separate fruit rewards
+### soga_de_dosel.c2: Defended leaves and separately provisioned dispersal fruit
 
-Trait ← Persistent leaves benefit from alkaloid defence. ← Red veins mark defended foliage. ← Ripe fruit softens and becomes fragrant. ← Alula and rondo move seeds while feeding on pulp. ← **F16** Smell: molecular diffusion ~0.6× Earth's, so in still air scent trails last ~1.6× longer; in wind the advantage disappears; **F25** Plants are green by ancestry (the seed's pigment), not because green is optimal; **F26** Food: sugars, starchy fruit, flesh, chitin, bone, salt
+Trait ← At the spring giant, coloso browses canopy foliage but avoids this vine's defended leaves (F21, F25). ← Alkaloids occupy leaf blades and their glands; red veins warn of the whole leaf's defence. ← Fruit develops through a separate reward pathway, producing ripe pulp with alkaloid concentrations low enough for alula, rondo and player_lineage. ← Ripe pulp softens and becomes fragrant, with scent persisting locally in still sheltered air (F16). ← Hard-coated seeds can survive alula swallowing them or dropping them after pulp feeding; rondo moves some fallen seeds, with abandoned caches providing occasional secondary dispersal. ← **F16** Smell: molecular diffusion ~0.6× Earth's, so in still air scent trails last ~1.6× longer; in wind the advantage disappears; **F21** The rock spire is a hard dyke left standing by erosion; the giant tree grows at the spring where that dyke dams groundwater; **F25** Plants are green by ancestry (the seed's pigment), not because green is optimal; **F26** Food: sugars, starchy fruit, flesh, chitin, bone, salt
 
-- **In play:** Choose fruit by softness and scent while avoiding defended leaves.
-- **Weakness:** Soft fruit spoils rapidly and wind disperses scent cues.
+- **In play:** Gather this species' edible ripe pulp by softness and scent, avoid its defended leaves, and watch where fruit feeders leave intact seeds.
+- **Weakness:** Soft fruit spoils rapidly, wind disperses scent cues, and crushed seeds or deposits without suitable soil fail to recruit.
 - **Observe:**
-  1. Red-veined leaves remain firm beside ripe fruit.
-  2. Ripe fruit yields while unripe fruit stays hard.
-  3. Seeds appear beneath feeding perches and along rondo routes.
-- **Plausibility:** plausible (judge botanist/composer-2.5; chair sol, 2026-11-19)
-  - Fruit rewards do not reverse the red-purple foliage warning. Scent persistence applies in still sheltered air.
-  - Analogue: Vertebrate-dispersed fleshy-fruited plants: Chemical and structural differences between foliage and pulp can defend persistent tissues while rewarding seed dispersers. (Herrera 1982 [verified])
+  1. Coloso leaves red-veined vine foliage among browsed canopy leaves.
+  2. Alula takes soft fruit while firm unripe fruit remains.
+  3. Intact seeds occur beneath feeding perches and occasionally in abandoned rondo caches.
+- **Plausibility:** fixable (judge strict review: sol (codex) + DeepSeek; chair sol, 2026-11-19)
+  - Fruit rewards do not reverse the red-purple foliage warning. Scent persistence applies in still sheltered air. Strict review (2026-11-19): revised: Leaf defence and fruit rewards lacked separate mechanisms, so tissue-specific chemistry, a named browser and conditional viable-seed dispersal now connect each module. Still open: The leaf/fruit chemical split is asserted, not mechanised: F25/F26 support red-veined defended leaves, but nothing explains how alkaloids stay in leaf blades and glands while ripe pulp falls below a consumer-safe dose. Coloso is used as the avoiding browser, yet no colour vision is documented for it, and F25's 'readable' signal is not shown to be read by a giant. The scent link is placed in a 22-32 m canopy, where F19 wind defeats F16's still-air persistence. The poison flag covers the whole plant next to edible pulp.
+  - Analogue: Vertebrate-dispersed fleshy-fruited plants: Separate chemical investment in foliage and ripe pulp can combine leaf defence with dispersal rewards; hard coats and gut-passage survival are proposed traits of this fictional species. (Herrera 1982 [verified])
 
 ## Gameplay
 
 ```json
 {
  "food_for": [
-  "Frugivores eating ripe pulp",
-  "Omnivores gathering ripe fruit"
+  "alula eating ripe pulp",
+  "rondo eating fallen ripe pulp",
+  "player_lineage gathering ripe pulp"
  ],
  "gift_item": "Soft fragrant canopy fruit",
  "poison": {
   "alkaloid": true,
-  "signal": "Red-veined leaves warn of alkaloids; ripe pulp is identified by softness and scent."
+  "signal": "Red veins warn that the whole leaf is defended; this species' mature ripe pulp has low alkaloid concentrations suitable for its named consumers."
  },
  "healing": null,
  "cover": "Leaf curtains among supported branches.",
  "climbing": true,
  "nest_material": "Fine fallen stems and detached fibres.",
  "mineral_lick": null,
- "notes": "Enable climbing only on stems at least 4 cm thick with multiple intact bark attachments and sound host support. Cap every route at actual host height; unsupported loops are not independent aerial cables."
+ "notes": "Softness and scent identify ripeness within this known species. Eat pulp and discard seeds; seed edibility is not established. Climbing requires mature stems at least 4 cm thick, intact attachments and qualified segment limits for creature mass, movement and wind. Unqualified segments remain disabled. Cap every route at actual host height."
 }
 ```
 
@@ -64,10 +65,11 @@ Trait ← Persistent leaves benefit from alkaloid defence. ← Red veins mark de
 
 | With | Kind | Note |
 |---|---|---|
-| alula | eaten_by | Eats ripe canopy fruit and uses supported stems between perches. |
-| alula | dispersed_by | Drops seeds beneath feeding perches. |
-| rondo | dispersed_by | Eats fallen pulp and transports surviving seeds. |
-| player_lineage | other | Climbs eligible multiply attached mature stems and gathers ripe fruit. |
+| alula | eaten_by | Eats ripe canopy pulp and uses supported perches. |
+| alula | dispersed_by | Drops intact seeds beneath feeding perches or passes swallowed hard-coated seeds; suitable deposition is still required. |
+| rondo | dispersed_by | Moves some surviving seeds while feeding on fallen pulp; abandoned caches provide occasional secondary dispersal, while chewed seeds are lost. |
+| coloso | other | Browses reachable canopy foliage at the spring giant but avoids red-veined vine leaves. |
+| player_lineage | other | Climbs segments qualified for its mass, movement and current wind, and gathers ripe pulp. |
 | nieblon | grows_with | Uses the host as support; vertical reach cannot exceed its actual height or 22 m. |
 | madre_de_agua | grows_with | Can climb the single spring giant up to its actual height, never above 32 m. |
 
@@ -80,7 +82,7 @@ Trait ← Persistent leaves benefit from alkaloid defence. ← Red veins mark de
   "min": 1.0,
   "max": 32.0
  },
- "trunk": "Ground-rooted woody cable, 4–12 cm thick when mature; juvenile shoots are thinner. Vertical reach follows the actual supporting host.",
+ "trunk": "Ground-rooted woody cable; juvenile shoots are thinner than 4 cm and cannot form climbing routes. Mature cables are 4–12 cm thick, but thickness alone does not enable climbing.",
  "branching": {
   "angle_deg": 40,
   "levels": 4,
@@ -95,7 +97,7 @@ Trait ← Persistent leaves benefit from alkaloid defence. ← Red veins mark de
  "colour": {
   "base": "Deep green",
   "overlay_rules": [
-   "Red veins mark defended foliage.",
+   "Red veins mark defence throughout the leaf blade.",
    "Mature cables are grey-brown.",
    "Fruit remains muted green to cream while softening and developing scent."
   ]
@@ -106,17 +108,40 @@ Trait ← Persistent leaves benefit from alkaloid defence. ← Red veins mark de
    20,
    1100
   ],
-  "wetness": "Moist drained rooting ground.",
+  "wetness": "Moist drained rooting ground; eastern populations require locally sustained spring or riverbank moisture.",
   "soil": "Humus-filled volcanic soil and deep bank crevices.",
   "coast_distance_m": [
    80,
    1700
   ],
   "fog": "Frequent fog supports humid attachment surfaces.",
-  "density": "Scattered rooted vines; clamp vertical reach to actual host height, at most 22 m on nieblon and 32 m on madre_de_agua. Shorter hosts impose lower caps."
+  "density": "Scattered rooted vines with explicit supporting hosts."
+ },
+ "height_constraint": {
+  "rule": "Sample height only within the smaller of actual host height and the host-specific cap; reject placements with an upper bound below 1 m.",
+  "host_caps_m": {
+   "nieblon": 22,
+   "madre_de_agua": 32
+  },
+  "other_hosts": "Use actual host height, never exceeding the species maximum of 32 m."
+ },
+ "climbing_segments": {
+  "required_instance_fields": [
+   "maturity",
+   "diameter_cm",
+   "unsupported_span_m",
+   "attachment_condition",
+   "host_support_condition",
+   "max_creature_mass_kg",
+   "max_wind_speed_m_s",
+   "qualified_movement_modes"
+  ],
+  "qualification": "Assign positive mass and wind limits only after assessing cable strength, bark attachment, unsupported span, host support and dynamic loads at 1.05 g with F19 wind loading.",
+  "default": "Missing or unqualified limits disable climbing.",
+  "eligibility": "Require maturity, diameter at least 4 cm, multiple intact attachments, sound host support, creature mass within the segment rating, permitted movement and wind within the segment limit."
  },
  "seasonal": "Evergreen where moist; wet periods support shoot growth and warm seasons bring patchy fruit crops.",
- "wind_response": "Leaves streamline and lateral shoots flex; exposed unsupported spans can break."
+ "wind_response": "Leaves streamline and lateral shoots flex; exposed unsupported spans can break, and climbing closes above each segment's qualified wind limit."
 }
 ```
 
@@ -143,3 +168,4 @@ council run `flora-2026-11-19`; by designer, mythmaker, naturalist, physicist, s
 ## Changelog
 
 - 2026-11-19 flora.py: flora pass: 7 voices drafted and peer-reviewed, Composer botanical referee, sol chaired and applied the fixes
+- 2026-11-19 flora_addendum.py: strict second review (sol + DeepSeek) applied by sol: F18 supports western forest placement; F21 supports the eastern spring giant without making the whole eastern valley wet.; The 1 m lower height bound permits young or short instances and no longer implies climbing eligibility.; Seed-coat survival, tissue-specific alkaloid allocation and load-qualified cables are proposed species traits rather than consequences of shared biochemistry.

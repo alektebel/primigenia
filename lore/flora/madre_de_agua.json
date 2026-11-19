@@ -2,7 +2,7 @@
   "schema": "cpore.plant/1",
   "id": "madre_de_agua",
   "name": {
-    "en": "Mother of Water",
+    "en": "Springmother",
     "es": "Madre de agua"
   },
   "world": "primigenia",
@@ -11,7 +11,7 @@
   "habitats": [
     "The single dyke-dammed spring basin in the low eastern valley"
   ],
-  "summary": "Exactly one landmark tree stands 28–32 m above the low eastern valley's dyke-dammed spring. Its 2–3 m diameter trunk at breast height, broad buttresses and flexible crown support its size. Groundwater sustains dry-season fruit for rondo, reachable foliage feeds coloso and sheltered forks hold alula nests (F18, F19, F21).",
+  "summary": "Exactly one landmark tree stands 28–32 m above the low eastern valley's dyke-dammed spring. Its 2–3 m diameter trunk, broad buttresses and flexible crown help resist wind and overturning without guaranteeing storm survival. This self-compatible individual can set fruit without another local adult; its species also has mainland populations. Groundwater supports a conditional dry-season crop for rondo, low peripheral foliage feeds coloso and sheltered crown forks hold alula nests (F18, F19, F21, F26, F27).",
   "chains": [
     {
       "id": "madre_de_agua.c1",
@@ -37,9 +37,9 @@
       ],
       "plausibility": {
         "verdict": "plausible",
-        "judge": "botanist/composer-2.5; chair sol",
+        "judge": "strict review: sol (codex) + DeepSeek; chair sol",
         "date": "2026-11-19",
-        "summary": "Keep exactly one landmark individual, 28–32 m tall with 2–3 m diameter at breast height and substantial buttresses. Place it only at the low eastern spring basin; oxygen does not explain its height.",
+        "summary": "Keep exactly one landmark individual, 28–32 m tall with 2–3 m diameter at breast height and substantial buttresses. Place it only at the low eastern spring basin; oxygen does not explain its height. Strict review (2026-11-19): Residual: F21 explicitly places the giant tree at the dyke-dammed spring, and a 28–32 m tree with a 2–3 m trunk is not mechanically extraordinary at F2's 1.05 g. F19's '1.6× Earth's' wind force makes crown reconfiguration and anchorage relevant. Residual weakness: trunk diameter and buttresses alone cannot demonstrate storm stability without crown area, wood properties, root spread and soil strength; flexible branches can also concentrate damaging oscillations.",
         "analogues": [
           {
             "organism": "Buttressed Aglaia and Nephelium trees",
@@ -53,38 +53,36 @@
     },
     {
       "id": "madre_de_agua.c2",
-      "trait": "Dry-season fruit at a permanent spring",
+      "trait": "Self-compatible dry-season fruit at a permanent spring",
       "links": [
         "Eastern meadow grasses cure during summer.",
-        "Groundwater and stored resources permit seasonal fruit development.",
-        "Rondo visits fleshy fruit and transports some seeds.",
-        "Seed movement does not create another landmark giant."
+        "Groundwater and stored resources permit dry-season fruit development when reproductive conditions are suitable.",
+        "Self-compatibility allows the single local landmark adult to set seeded fruit without a second adult, although compatible pollen must still reach receptive flowers.",
+        "Rondo eats ripe pulp and transports some intact fruit; discarded viable seeds and unrecovered caches can move seeds beyond the crown.",
+        "Seed transport does not demonstrate recruitment, and successful seedlings are not additional landmark giants."
       ],
       "roots": [
         "F11",
         "F18",
         "F21",
-        "F24"
+        "F26"
       ],
-      "play": "Collect ripe fallen fruit and read tracks before entering the shaded feeding hub.",
-      "weakness": "Predictable fruit attracts predators, and damage or reproductive failure can prevent a crop.",
+      "play": "Collect ripe fallen fruit and read tracks before entering the shaded feeding hub; distinguish carried seeds from established seedlings.",
+      "weakness": "Water and self-compatibility do not guarantee pollination or a crop; predictable fruit attracts predators, and most transported seeds may fail to establish.",
       "observe": [
         "Soft scented fruit falls beside straw-coloured meadow.",
-        "Rondo carries fruit beyond the crown.",
-        "Seeds occur along routes without another giant tree."
+        "Rondo carries intact fruit and leaves some viable seeds with discarded pulp or in unrecovered caches.",
+        "Transported seeds occur beyond the crown without demonstrating a new mature tree."
       ],
       "plausibility": {
         "verdict": "plausible",
-        "judge": "botanist/composer-2.5; chair sol",
+        "judge": "strict review: sol (codex) + DeepSeek; chair sol",
         "date": "2026-11-19",
-        "summary": "Groundwater permits rather than guarantees fruiting. Dispersed seeds do not authorize duplicate landmark instances.",
+        "summary": "Groundwater permits rather than guarantees fruiting. Dispersed seeds do not authorize duplicate landmark instances. Strict review (2026-11-19): revised: Replaced the irrelevant fruit citation, supplied self-compatible reproduction and specified viable seed transport without equating it with recruitment or duplicate landmarks. Residual: F18 supplies summer drying, F21 the groundwater subsidy and F26 edible fruit; rondo's stated fruit diet and caches support handling and possible seed transport. Self-compatibility removes the need for another genotype but does not ensure pollen transfer, successful fertilization or freedom from inbreeding effects. The chain explicitly retains pollination and resource conditions and separates dispersal from recruitment. Dry-season fruiting is therefore an allowed species strategy, not a necessary consequence of the spring.",
         "analogues": [
           {
-            "organism": "Animal-dispersed fleshy-fruited trees",
-            "mechanism": "Fruit rewards recruit mobile seed carriers; establishment depends on conditions beyond transport.",
-            "refs": [
-              "howe_1982_dispersal"
-            ]
+            "organism": "Self-compatible, animal-dispersed fleshy-fruited trees",
+            "mechanism": "Self-compatible reproduction permits a lone adult to produce seeded fruit, while pulp handling and unrecovered caches can transport viable seeds; establishment remains a separate filter."
           }
         ]
       }
@@ -92,9 +90,9 @@
   ],
   "gameplay": {
     "food_for": [
-      "Frugivores eating ripe fruit",
-      "Herbivores browsing reachable foliage",
-      "Omnivores gathering ripe fruit"
+      "Rondo eating ripe fruit",
+      "Coloso browsing accessible low peripheral foliage",
+      "Player lineage gathering ripe fruit"
     ],
     "gift_item": "Ripe spring fruit for rondo",
     "poison": {
@@ -106,7 +104,7 @@
     "climbing": true,
     "nest_material": "Shed leaves and small fallen twigs.",
     "mineral_lick": null,
-    "notes": "Exactly one fixed spring landmark. Climbing requires reachable holds or mature attached vines; branch failure and falls remain consequential at 1.05 g."
+    "notes": "Exactly one mature spring landmark is generated. Coloso can browse only foliage intersecting its actual neck-and-mouth reach from stable ground; the 28–32 m crown is not wholly accessible. Alula uses protected forks for shelter. Climbing requires reachable holds or mature attached vines; branch failure and falls remain consequential at 1.05 g."
   },
   "relations": [
     {
@@ -117,12 +115,12 @@
     {
       "with": "rondo",
       "kind": "dispersed_by",
-      "note": "Moves seeds without establishing another landmark giant."
+      "note": "Moves viable seeds in carried fruit, discarded pulp and unrecovered caches; transport does not establish successful recruitment."
     },
     {
       "with": "coloso",
       "kind": "eaten_by",
-      "note": "Browses reachable foliage during spring visits."
+      "note": "Browses only low peripheral foliage within its actual reach from stable spring-basin ground."
     },
     {
       "with": "alula",
@@ -151,7 +149,7 @@
       "min": 28.0,
       "max": 32.0
     },
-    "trunk": "Exactly one massive trunk, 2–3 m diameter at breast height, with rough bark and buttresses rising 2–4 m along its base.",
+    "trunk": "Exactly one landmark trunk, 2–3 m diameter at breast height, with rough bark and buttresses rising 2–4 m along its base.",
     "branching": {
       "angle_deg": 50,
       "levels": 6,
@@ -172,21 +170,17 @@
       ]
     },
     "placement": {
-      "slope": "Only the designated low eastern spring-basin landmark beside the groundwater-damming dyke.",
-      "altitude_m": [
-        20,
-        150
-      ],
+      "slope": "Only the designated low eastern spring-basin landmark beside the groundwater-damming dyke; snap altitude directly to the authored spring terrain point.",
       "wetness": "Reliable groundwater with aerated roots above permanent saturation.",
       "soil": "Deep stable mineral soil and humus adjoining the dyke.",
       "coast_distance_m": [
         0,
-        3600
+        1800
       ],
       "fog": "Valley fog is supplementary; groundwater supplies the tree.",
-      "density": "Exactly one instance at the authored spring point. The 20–150 m low-valley range is an editorial placement allowance, not a measured canon elevation; snap the individual to the spring-basin terrain elevation."
+      "density": "Exactly one mature landmark instance at the authored spring point inside mapped land. This instance rule does not make the species a singleton: mainland populations exist, and transported seeds or small recruits never instantiate another landmark giant."
     },
-    "seasonal": "Evergreen with a concentrated dry-season fruit crop, subject to resource and reproductive failure.",
+    "seasonal": "Evergreen and self-compatible, with a concentrated dry-season fruit crop conditional on pollen transfer, resources and reproductive success.",
     "wind_response": "Fine branches yield under gusts while the massive buttressed base resists overturning; extreme storms can break limbs."
   },
   "journal": [
@@ -213,6 +207,16 @@
       "date": "2026-11-19",
       "who": "flora.py",
       "what": "flora pass: 7 voices drafted and peer-reviewed, Composer botanical referee, sol chaired and applied the fixes"
+    },
+    {
+      "date": "2026-11-19",
+      "who": "flora_addendum.py",
+      "what": "strict second review (sol + DeepSeek) applied by sol: Left c1 unchanged because both reviewers rated it plausible; its mechanical account remains qualitative rather than proof of storm stability.; Clarified that exactly one applies to the mature landmark, with self-compatibility resolving local fruit production and mainland populations supplying species context.; Removed the invented altitude allowance and constrained shoreline distance through the a"
+    },
+    {
+      "date": "2026-11-19",
+      "who": "flora_addendum.py",
+      "what": "bilingual name pass"
     }
   ],
   "observe": [

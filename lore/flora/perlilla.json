@@ -1,0 +1,227 @@
+{
+  "schema": "cpore.plant/1",
+  "id": "perlilla",
+  "name": {
+    "en": "Wellberry",
+    "es": "Perlilla"
+  },
+  "world": "primigenia",
+  "status": "draft",
+  "growth_form": "shrub",
+  "habitats": [
+    "Groundwater-accessible spring-basin fringes",
+    "Moist pockets along the groundwater-damming dyke",
+    "Lower meadow margins with persistent capillary moisture"
+  ],
+  "summary": "A multistemmed shrub bearing low clusters of soft, wax-white fruit containing sugar and starch. Root-accessible groundwater supports photosynthesis and fruit filling as the eastern meadow begins drying. Fruiting patches indicate subsurface moisture, while carried fruit and abandoned caches connect feeding to dispersal; harvest order relative to other species is not fixed.",
+  "chains": [
+    {
+      "id": "perlilla.c1",
+      "trait": "Low, seasonal carbohydrate-rich fruit",
+      "links": [
+        "Four seasons include an eastern summer drying period.",
+        "Dyke-retained groundwater supplies selected root zones as surface soil dries.",
+        "Continued root water permits stomatal opening and photosynthetic carbon gain during suitable daylight conditions.",
+        "Sugars and stored starch fill low fruit clusters where water, light and reserves remain sufficient; maturation follows local flowering and seasonal drying."
+      ],
+      "roots": [
+        "F11",
+        "F18",
+        "F21",
+        "F26"
+      ],
+      "play": "Harvest ripe fruit for food and gifts; compare productive shrubs with dry meadow.",
+      "weakness": "Falling groundwater, deep shade or depleted reserves reduce fruit filling; fog alone cannot sustain the crop.",
+      "observe": [
+        "Find low fruit beside moist soil.",
+        "Compare a dry, fruitless margin.",
+        "Follow marked clusters through the seasonal drying transition."
+      ],
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "strict review: sol (codex) + DeepSeek; chair sol",
+        "date": "2026-11-19",
+        "summary": "Fruit production requires persistent root water; its timing is conditional rather than a fixed calendar event. Strict review (2026-11-19): revised: The chain lacked photosynthetic carbon supply and overstated seasonal timing, so fruit filling now depends on water, light and reserves without a fixed harvest order. Residual: F18 establishes summer drying and F21 establishes groundwater impoundment at the dyke; neither establishes productive groundwater access throughout the placement envelope. The chain survives because fruit filling and placement explicitly require accessible root water, light and reserves. Residual weakness: continued water supply permits carbon gain but does not establish flowering cues, pollination success or a particular ripening date.",
+        "analogues": [
+          {
+            "organism": "Black elder, Sambucus nigra",
+            "mechanism": "Animal-accessible fleshy fruit rewards seed transport; the analogy concerns fruit dispersal, not wax-white colour, groundwater dependence or harvest timing.",
+            "refs": [
+              "howe_1982_dispersal"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "perlilla.c2",
+      "trait": "Pale waxy berries, ripe scent and cache-tolerant hard seeds",
+      "links": [
+        "Wax-white fruit reflects available light against green foliage without emitting light.",
+        "Ripe volatiles persist locally in sheltered, still dawn air.",
+        "Rondo carry fruit to drying caches, moving enclosed hard seeds away from the parent shrub.",
+        "Some intact seeds tolerate cache drying and escape consumption; recruitment requires later wetting, persistent root-zone moisture and sufficient light."
+      ],
+      "roots": [
+        "F16",
+        "F18",
+        "F21"
+      ],
+      "play": "Follow fruit-carrying rondo, offer sound berries, and revisit abandoned caches after rain.",
+      "weakness": "Wind disrupts scent trails; damaged fruit spoils, many cached seeds are eaten, and prolonged drying can destroy viability.",
+      "observe": [
+        "Watch a rondo carry berries.",
+        "Inspect an abandoned cache for intact seeds among dried pulp.",
+        "Find seedlings at a persistently moist, illuminated cache after rain."
+      ],
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "strict review: sol (codex) + DeepSeek; chair sol",
+        "date": "2026-11-19",
+        "summary": "Fruit reflects light without glowing. Dispersal provides opportunities, not guaranteed germination or universal gut survival. Strict review (2026-11-19): revised: Decorative star and sky citations and unsupported gut passage were removed, making cache transport and conditional seed survival the dispersal mechanism. Residual: Rondo's stated fruit caching supplies an actual transport mechanism. F16 supports local scent persistence under the stipulated sheltered conditions, while F18 and F21 constrain recruitment habitat. Residual weakness: seed hardness does not itself establish desiccation tolerance, and abandoned caches may rarely coincide with suitable establishment sites. The revision appropriately stipulates tolerance for some seeds and makes recruitment conditional; guava supports fruit-mediated transport, not the caching mechanism.",
+        "analogues": [
+          {
+            "organism": "Common guava, Psidium guajava",
+            "mechanism": "Aromatic soft pulp surrounds small hard seeds transported by fruit consumers; rondo caching and seed tolerance of cache drying are stipulated fictional traits rather than claims about this analogue.",
+            "refs": [
+              "howe_1982_dispersal",
+              "herrera_1982_defense"
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "gameplay": {
+    "food_for": [
+      "Rondo consuming ripe fruit",
+      "Player lineage consuming ripe fruit",
+      "Babosa consuming softened, decaying falls"
+    ],
+    "gift_item": "Sound ripe Wellberry cluster for receptive rondo",
+    "poison": {
+      "alkaloid": false,
+      "signal": "Plain green foliage and wax-white ripe fruit; absence of red veins alone does not establish edibility."
+    },
+    "healing": null,
+    "cover": "Low concealment among clustered stems.",
+    "climbing": false,
+    "nest_material": "Dry slender twigs.",
+    "mineral_lick": null,
+    "notes": "Ripe fruit supports befriending receptive rondo. Spoiled berries lose gift value. Fruit edibility is established for the named consumers, not inferred from foliage colour."
+  },
+  "relations": [
+    {
+      "with": "rondo",
+      "kind": "dispersed_by",
+      "note": "Carried fruit moves seeds; some intact seeds escape consumption in abandoned caches and recruit in suitable moist sites."
+    },
+    {
+      "with": "player_lineage",
+      "kind": "eaten_by",
+      "note": "Consumes fruit and carries gift clusters."
+    },
+    {
+      "with": "babosa",
+      "kind": "eaten_by",
+      "note": "Consumes softened, decaying falls."
+    },
+    {
+      "with": "paja_dulce",
+      "kind": "grows_with",
+      "note": "Shares moist meadow fringes."
+    },
+    {
+      "with": "trenza_de_ribera",
+      "kind": "competes",
+      "note": "Overlapping roots compete for wet soil and light."
+    },
+    {
+      "with": "madre_de_agua",
+      "kind": "competes",
+      "note": "Independent roots draw from the same groundwater reservoir; competition increases as that reservoir falls."
+    }
+  ],
+  "generator": {
+    "growth_form": "shrub",
+    "height_m": {
+      "min": 0.8,
+      "max": 2.5
+    },
+    "trunk": "Three to seven grey-brown woody stems; thin persistent fruit calyces.",
+    "branching": {
+      "angle_deg": 50,
+      "levels": 3,
+      "apical_dominance": 0.3,
+      "buttress": "None"
+    },
+    "leaf": {
+      "type": "Small ovate blade",
+      "size_cm": 4,
+      "arrangement": "Alternate"
+    },
+    "colour": {
+      "base": "Green leaves, grey-brown wood",
+      "overlay_rules": [
+        "Ripe berries wax-white, 10–15 mm across.",
+        "Bruised fallen fruit browns; no emission."
+      ]
+    },
+    "placement": {
+      "slope": "Gentle footslopes and sheltered dyke pockets; jointly filter elevation and coast distance against actual terrain.",
+      "altitude_m": [
+        15,
+        350
+      ],
+      "wetness": "Persistent root-accessible moisture; drained surface",
+      "soil": "Deep tuff-derived soil",
+      "coast_distance_m": [
+        100,
+        1600
+      ],
+      "fog": "Frequent dawn fog; no irrigation guarantee",
+      "density": "Small groundwater-gated clumps; distance and elevation bounds do not authorize every combination."
+    },
+    "seasonal": "Flowers before the local drying transition; fruit maturation follows flowering, water availability and carbon supply within the seasonal cycle. Each berry encloses one or two small seeds.",
+    "wind_response": "Flexible stems bend; fruit clusters on low lateral branches chiefly 0.3–1 m above ground remain partly sheltered beneath taller stems."
+  },
+  "journal": [
+    {
+      "en": "White berries scent the dawn. The herd carries some away; a few return as bushes.",
+      "es": "Las bayas blancas perfuman el alba. La manada se lleva algunas; unas pocas vuelven hechas arbustos."
+    }
+  ],
+  "provenance": {
+    "council_run": "flora-valley-2026-11-19",
+    "by": [
+      "designer",
+      "mythmaker",
+      "naturalist",
+      "physicist",
+      "senses",
+      "skeptic",
+      "wildcard"
+    ],
+    "edited_by": "sol"
+  },
+  "changelog": [
+    {
+      "date": "2026-11-19",
+      "who": "flora.py",
+      "what": "flora addendum (start valley): 7 voices drafted and peer-reviewed, Composer referee, sol chaired"
+    },
+    {
+      "date": "2026-11-19",
+      "who": "flora_addendum.py",
+      "what": "strict second review (sol + DeepSeek) applied by sol: Removed zanco browsing and berry gifts because its supplied diet and alpine habitat do not support them.; Removed the unverified harvest comparison with madre_de_agua and made shared-water competition explicit.; Cache-drying tolerance is a fictional species trait; neither F16 nor the shared biochemistry establishes seed survival."
+    }
+  ],
+  "observe": [
+    "Follow a rondo carrying pale fruit.",
+    "Compare productive moist patches with dry margins.",
+    "Offer ripe fruit and revisit abandoned caches."
+  ],
+  "secrets": [
+    "A moist abandoned cache can establish a new patch after rain."
+  ]
+}

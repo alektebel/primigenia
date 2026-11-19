@@ -4,61 +4,62 @@
 
 **Status: DRAFT** · world: [primigenia](../worlds/primigenia.md) · form: grass · id: `grama_de_ceniza`
 
-A 0.2–0.6 m pioneer bunchgrass rooted in sediment-filled volcanic fissures. Basal buds replace cropped leaves, rolled blades moderate water loss, and root associates supply nitrogen. Alpine populations occur only in damp protected cracks, never on open scree crowns or exposed crests (F7, F19, F24).
+A 0.2–0.6 m pioneer bunchgrass rooted in sediment-filled volcanic fissures. Inherited basal buds replace cropped leaves, rolled blades moderate water loss, and oxygen-protected root associates conditionally supply nitrogen. Alpine populations reach about 1,900 m only in damp, sheltered snowbed fissures; winter snow covers dormant crowns, and summer drying can briefly roll their blades. Open scree crowns and exposed crests remain excluded (F7, F15, F18, F19, F24).
 
 **Habitats:** Cracks in cooled lava, Stable young scoria pockets, Damp protected fissures at alpine lava-field margins
 
 ## Causal chains
 
-### grama_de_ceniza.c1: Protected basal growing points
+### grama_de_ceniza.c1: Inherited protected basal growing points
 
-Trait ← Wind-driven grit and browsing repeatedly remove exposed foliage. ← Basal sheaths shelter growing points near the ground. ← Surviving buds replace blades when water and reserves permit. ← **F7** The island is a hotspot stratovolcano, 1.2 Myr old, ~2,050 m high, visible top 3.6 km across over an 8 km submarine base; **F19** Wind force per m/s is 1.6× Earth's: gales in winter push light creatures and favour low, heavy bodies on exposed ridges
+Trait ← The founder lineage already carried basal growing points sheltered within leaf sheaths. ← Zanco crops accessible alpine shoots, while rondo can crop shoots at low meadow margins. ← Eastern summer drying cures exposed blades and limits further growth. ← Sheltered basal buds permit replacement after partial grazing or seasonal dieback when water and reserves return. ← **F15** Composition N₂ ~77%, O₂ 21%, Ar 1.5%, CO₂ ~0.1%, humid; **F18** Rain shadow: westerlies make the west coast wet and forested; the east meadows (the start valley) are drier in summer, with a spring; **F27** The island's life is an island radiation: the island rose 1.2 Myr ago (F7) and was colonised by a few founders that rafted, swam or flew from the mainland, then split into many species (like Hawaiian honeycreepers or Galápagos finches on Earth)
 
 - **In play:** Recognize living grazed crowns and gather detached dry blades.
-- **Weakness:** Repeated premature grazing exhausts reserves; uprooting destroys the protected crown.
+- **Weakness:** Repeated premature grazing exhausts reserves; uprooting, prolonged drought or burial can kill the protected crown.
 - **Observe:**
-  1. Green shoots rise within cropped sheaths.
-  2. Leaves bend while crowns remain inside fissures.
+  1. Green shoots rise within cropped sheaths after moisture returns.
+  2. Dry outer blades surround a living basal crown.
   3. Zanco grazes accessible alpine shoots.
-- **Plausibility:** plausible (judge botanist/composer-2.5; chair sol, 2026-11-19)
-  - Basal recovery is conditional. Alpine crowns require damp, protected fissures; neither meristems nor flexible leaves permit occupation of exposed scree crowns.
+- **Plausibility:** plausible (judge strict review: sol (codex) + DeepSeek; chair sol, 2026-11-19)
+  - Basal recovery is conditional. Alpine crowns require damp, protected fissures; neither meristems nor flexible leaves permit occupation of exposed scree crowns. Strict review (2026-11-19): revised: Removed unsupported recurrent grit abrasion and described basal recovery as an inherited trait retained under named grazing and seasonal drying. Residual: Protected basal buds explain conditional recovery, not unlimited grazing tolerance. F27 supports inherited founder traits but does not establish this particular anatomy; it remains a specified lineage trait. F18 supports seasonal drying, while the creature diets support the proposed grazers. Recovery still depends on retained reserves, growing-season length and surviving crowns.
   - Analogue: Perennial Festuca-like bunchgrasses: Basal meristems and tillering permit recovery from partial defoliation when resources remain available. (Gibson 2009 [verified])
 
 ### grama_de_ceniza.c2: Rolled blades and fissure-following roots
 
-Trait ← Young lava retains usable moisture mainly within protected cracks. ← Fibrous roots exploit fissures and bind trapped sediment. ← Leaf rolling reduces exposure during water stress. ← Alpine survival is restricted to persistently damp, sheltered rooting pockets. ← **F7** The island is a hotspot stratovolcano, 1.2 Myr old, ~2,050 m high, visible top 3.6 km across over an 8 km submarine base; **F9** Rock: andesite makes steep, unstable cliffs; basalt makes lava tubes (the caves); **F18** Rain shadow: westerlies make the west coast wet and forested; the east meadows (the start valley) are drier in summer, with a spring; **F19** Wind force per m/s is 1.6× Earth's: gales in winter push light creatures and favour low, heavy bodies on exposed ridges
+Trait ← Occupied volcanic fissures contain stable sediment and receive enough rain or snowmelt to sustain rooted crowns. ← Fibrous roots exploit existing fractures and bind retained sediment without creating a water supply. ← Eastern lowland pockets dry during summer, and alpine snowmelt pockets can undergo brief surface drying between replenishment events. ← Blades roll during these drying intervals; alpine establishment still requires sheltered pockets that remain damp enough below the surface. ← **F7** The island is a hotspot stratovolcano, 1.2 Myr old, ~2,050 m high, visible top 3.6 km across over an 8 km submarine base; **F15** Composition N₂ ~77%, O₂ 21%, Ar 1.5%, CO₂ ~0.1%, humid; **F18** Rain shadow: westerlies make the west coast wet and forested; the east meadows (the start valley) are drier in summer, with a spring; **F19** Wind force per m/s is 1.6× Earth's: gales in winter push light creatures and favour low, heavy bodies on exposed ridges
 
 - **In play:** Locate sediment-retaining cracks from tussock positions without assuming drinking water is accessible.
-- **Weakness:** Open scree, dry smooth lava and exposed alpine crowns provide inadequate anchorage or moisture.
+- **Weakness:** Rolling only moderates water loss; prolonged root-zone drying, mobile scoria and exposed alpine crowns exclude the grass.
 - **Observe:**
-  1. Tufts trace cracks across otherwise bare slabs.
-  2. Blades roll as rooting pockets dry.
-  3. High-slope tufts disappear where damp fissures give way to exposed scree.
-- **Plausibility:** plausible (judge botanist/composer-2.5; chair sol, 2026-11-19)
-  - Roots exploit existing fractures. At alpine elevations, damp fissures are mandatory; stable sheltered pockets may adjoin rodela_de_nieve without extending grass onto ridge crowns.
+  1. Tufts trace sediment-filled cracks across otherwise bare slabs.
+  2. Blades roll during dry intervals and reopen after replenishment.
+  3. High-slope tufts occur beside snowmelt-fed pockets but disappear onto exposed scree.
+- **Plausibility:** plausible (judge strict review: sol (codex) + DeepSeek; chair sol, 2026-11-19)
+  - Roots exploit existing fractures. At alpine elevations, damp fissures are mandatory; stable sheltered pockets may adjoin rodela_de_nieve without extending grass onto ridge crowns. Strict review (2026-11-19): revised: Replaced universally moisture-retaining cracks with explicitly supplied rooting pockets and distinguished brief leaf-water stress from the damp subsurface needed for alpine survival. Residual: Roots exploiting sediment-filled fractures and reversible leaf rolling form a coherent water-budget mechanism. F7 supplies volcanic terrain, F18 seasonal drying and F19 increased wind loading; none independently establishes damp alpine refuges. Their existence remains a local placement assumption that the generator explicitly requires. Snow cover alone does not guarantee sufficient summer moisture.
   - Analogue: Fine-leaved tussock grasses: Fibrous roots and rolled narrow leaves help exploit patchy moisture while moderating exposure. (Gibson 2009 [verified])
 
-### grama_de_ceniza.c3: Carbon-fed nitrogen-fixing root associates
+### grama_de_ceniza.c3: Carbon-fed nitrogen fixation in oxygen-buffered root biofilms
 
-Trait ← Young volcanic rooting pockets contain little accumulated nitrogen. ← The inherited partner fixes nitrogen using host carbon and protected microsites. ← Root turnover and litter transfer nutrients into developing substrate. ← **F7** The island is a hotspot stratovolcano, 1.2 Myr old, ~2,050 m high, visible top 3.6 km across over an 8 km submarine base; **F24** One biochemistry from the seed capsule: a porphyrin photosystem, DNA-like heredity, L-amino acids, a nitrogen-fixing symbiont
+Trait ← Some recently colonized volcanic pockets contain little available nitrogen; older enriched pockets need less additional fixation. ← The inherited symbiont forms hydrated, diffusion-limited aggregates along sheltered roots. ← Aggregate barriers restrict oxygen entry while local microbial respiration maintains low-oxygen interiors despite the high atmospheric oxygen partial pressure. ← Host carbon supports respiration and fixation only while moisture, mineral cofactors and reserves permit a net nitrogen benefit. ← Root turnover and litter transfer some acquired nitrogen into developing substrate. ← **F5** Oxygen 21% → pO₂ ≈ 0.34 bar (1.6× Earth's); **F7** The island is a hotspot stratovolcano, 1.2 Myr old, ~2,050 m high, visible top 3.6 km across over an 8 km submarine base; **F24** One biochemistry from the seed capsule: a porphyrin photosystem, DNA-like heredity, L-amino acids, a nitrogen-fixing symbiont
 
-- **In play:** Compare old tussock margins with bare fissures to recognize developing soil.
-- **Weakness:** Fixation requires water, energy and mineral cofactors; drought and defoliation reduce its benefit.
+- **In play:** Compare old tussock margins with bare fissures to recognize developing soil without treating every healthy tuft as evidence of active fixation.
+- **Weakness:** Drying disrupts the hydrated oxygen barrier; grazing reduces carbon supply, and fixation declines when soil nitrogen makes its carbon cost uneconomic.
 - **Observe:**
-  1. Healthy tufts occupy thin-soil cracks.
-  2. Old margins contain dark litter among volcanic grit.
-  3. Seedlings recruit in retained debris.
-- **Plausibility:** plausible (judge botanist/composer-2.5; chair sol, 2026-11-19)
-  - F24 supplies the inherited association. Fixation neither removes other nutrient limits nor creates a mineral lick.
-  - Analogue: Grasses with root-associated diazotrophs: Microbial associations can supply nitrogen to non-legumes, with effectiveness dependent on host and environment. (Santi et al. 2013 [verified])
+  1. Moist root surfaces carry thin microbial films among retained grit.
+  2. Old tussock margins contain dark litter and finer sediment.
+  3. Heavily cropped or droughted tufts recover slowly even where root associates remain present.
+- **Plausibility:** plausible (judge strict review: sol (codex) + DeepSeek; chair sol, 2026-11-19)
+  - F24 supplies the inherited association. Fixation neither removes other nutrient limits nor creates a mineral lick. Strict review (2026-11-19): revised: Specified the oxygen-protection mechanism and restricted substantial fixation to moist nitrogen-poor pockets where host carbon can cover its cost. Residual: F24 explicitly supplies an inherited nitrogen-fixing symbiont, and respiratory oxygen consumption inside hydrated diffusion barriers addresses the challenge of F5's approximately 0.34 bar oxygen. The unresolved constraint is quantitative: aggregate geometry, oxygen supply and respiratory carbon demand must permit fixation without starving the association. The stated conditional activity avoids assuming that every occupied pocket achieves this balance.
+  - Analogue: Root-associated diazotrophs in hydrated microbial aggregates: Diffusion barriers and local respiratory oxygen consumption can protect oxygen-sensitive nitrogen fixation, at a carbon cost; their effectiveness under Primigenia's oxygen conditions is a specified specialization.
 
 ## Gameplay
 
 ```json
 {
  "food_for": [
-  "Herbivores eating pioneer shoots",
-  "Detritivores eating dead blades"
+  "Zanco eating accessible alpine shoots",
+  "Rondo eating shoots at low valley meadow margins",
+  "Babosa eating damp dead blades"
  ],
  "gift_item": "Tender ash-grass shoots",
  "poison": {
@@ -70,7 +71,7 @@ Trait ← Young volcanic rooting pockets contain little accumulated nitrogen. �
  "climbing": false,
  "nest_material": "Detached dry blades and flowering stems.",
  "mineral_lick": null,
- "notes": "Wind carries pollen and seeds. Alpine shoots feed zanco only where damp protected fissures support growth; open scree crowns remain excluded."
+ "notes": "Wind carries pollen and seeds. Alpine shoots feed zanco during the snow-free growing season in sheltered damp fissures; rondo feeds only where lowland tufts meet meadow habitat."
 }
 ```
 
@@ -78,11 +79,12 @@ Trait ← Young volcanic rooting pockets contain little accumulated nitrogen. �
 
 | With | Kind | Note |
 |---|---|---|
-| zanco | eaten_by | Grazes alpine shoots in accessible damp fissures. |
+| zanco | eaten_by | Grazes accessible alpine shoots during the snow-free growing season. |
+| rondo | eaten_by | Crops lowland shoots where stable volcanic fissures meet valley meadow margins. |
 | babosa | eaten_by | Consumes damp dead blades. |
-| ceniza_roja | succeeds | Can establish beside crust-enriched fissures without requiring crust at every site. |
-| lengua_de_lava | grows_with | Shares damp volcanic cracks; the rosette favours seep-fed sites. |
-| rodela_de_nieve | grows_with | Occurs in damp cracks adjoining stable sheltered alpine soil pockets, away from exposed scree crowns. |
+| ceniza_roja | grows_with | Can establish beside crust-enriched fissures without requiring crust at every site. |
+| lengua_de_lava | grows_with | Shares damp volcanic cracks; the rosette favours nutrient-poor seep-fed sites. |
+| rodela_de_nieve | grows_with | Occurs in damp snowbed cracks adjoining stable sheltered alpine soil pockets, away from exposed scree crowns. |
 | player_lineage | other | Provides nest lining and clues to sediment-retaining cracks. |
 
 ## Generator parameters
@@ -115,21 +117,21 @@ Trait ← Young volcanic rooting pockets contain little accumulated nitrogen. �
   ]
  },
  "placement": {
-  "slope": "Stable fissures and scoria pockets on 0–35 degree slopes; alpine placement requires damp sheltered cracks. Exclude open scree crowns, active scree and exposed crests.",
+  "slope": "Fissures and scoria pockets on 0–35 degree slopes, subject independently to local substrate stability, adequate rooting sediment and moisture. Exclude mobile scoria, active burial or erosion paths, open scree crowns and exposed crests.",
   "altitude_m": [
    0,
-   2000
+   1900
   ],
-  "wetness": "Seasonal root-zone moisture at lower elevations; damp protected fissures mandatory in alpine terrain; no permanent flooding.",
-  "soil": "Dust, fine scoria and developing humus within cooled volcanic fractures.",
+  "wetness": "Seasonal root-zone moisture at lower elevations; alpine pockets require reliable rain or snowmelt replenishment and damp subsurface refuges despite brief surface drying. No permanent flooding.",
+  "soil": "Retained dust, fine scoria and developing humus within stable cooled volcanic fractures.",
   "coast_distance_m": [
    20,
-   3600
+   1800
   ],
   "fog": "Reduces drying but does not replace root-zone moisture.",
-  "density": "Isolated tufts and loose patches; alpine distribution follows damp fissures only."
+  "density": "Apply the actual island land mask and distance-to-shore map first; isolated tufts and loose patches follow suitable fissures, with alpine occupancy restricted to sheltered snowbed pockets."
  },
- "seasonal": "Flushes after rain or snowmelt; drought dormancy preserves viable crowns where possible.",
+ "seasonal": "Flushes after rain or snowmelt. Alpine crowns become dormant under winter snow, which shelters them from wind and direct UV; foliage is exposed during the snow-free growing season. Drought dormancy preserves viable crowns only while reserves and residual moisture suffice.",
  "wind_response": "Leaves stream leeward while sheltered crowns remain anchored; flowering stems may break."
 }
 ```
@@ -157,3 +159,4 @@ council run `flora-2026-11-19`; by designer, mythmaker, naturalist, physicist, s
 ## Changelog
 
 - 2026-11-19 flora.py: flora pass: 7 voices drafted and peer-reviewed, Composer botanical referee, sol chaired and applied the fixes
+- 2026-11-19 flora_addendum.py: strict second review (sol + DeepSeek) applied by sol: The 1,900 m ceiling is an editorial habitat limit, not a new measured canon boundary.; Replaced the ambiguous succession relation with co-occurrence and named the grazers supported by their established diets.; Shore distance is measured inside the actual land mask; its numeric ceiling does not authorize placement outside mapped land.
