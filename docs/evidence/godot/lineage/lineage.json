@@ -191,7 +191,7 @@
 		},
 		{
 			"cause": 1.0,
-			"id": 14.0,
+			"id": 16.0,
 			"kind": "type",
 			"tick": 3.0,
 			"value": 1.0,
@@ -344,7 +344,7 @@
 		},
 		{
 			"cause": 2.0,
-			"id": 15.0,
+			"id": 17.0,
 			"kind": "type",
 			"tick": 6.0,
 			"value": 1.0,
@@ -370,9 +370,9 @@
 			"temperament": 2.0,
 			"trait_mask": 1.0,
 			"trust_bonus": 20.0,
-			"type": 14.0,
-			"type_code": "A-G-I-W",
-			"type_name": "Moss Architect"
+			"type": 16.0,
+			"type_code": "A-?-?-?",
+			"type_name": "Undetermined"
 		},
 		{
 			"body_json": "{\"name\":\"Junco\",\"nodes\":[{\"r\":0.08,\"y\":2.8,\"z\":-1.9},{\"r\":0.35,\"y\":2.9,\"z\":-1.1},{\"r\":0.72,\"y\":2.9,\"z\":-0.2},{\"r\":0.6,\"y\":3.0,\"z\":0.6},{\"r\":0.3,\"y\":3.6,\"z\":1.1},{\"r\":0.24,\"y\":4.4,\"z\":1.25},{\"r\":0.26,\"y\":5.1,\"z\":1.5},{\"r\":0.36,\"y\":5.35,\"z\":2}],\"parts\":[{\"ang\":0,\"size\":1,\"t\":1,\"type\":\"pico\"},{\"ang\":1.1,\"size\":1.25,\"t\":0.92,\"type\":\"ojo\"},{\"ang\":2.2,\"f\":[0.18,-2.2,0.05],\"k\":[0.1,-1.05,0.45],\"t\":0.4,\"type\":\"zanca\",\"w\":0.14},{\"ang\":0,\"size\":1.3,\"t\":0.42,\"type\":\"aleta\"},{\"ang\":0.35,\"len\":0.9,\"size\":1,\"t\":0.9,\"type\":\"antena\"},{\"ang\":0,\"size\":0.9,\"t\":0.93,\"type\":\"cresta\"}],\"regions\":[],\"schema\":\"cpore.creature/4\",\"skin\":{\"cA\":\"#3d5fa8\",\"cB\":\"#8a4fb0\",\"cC\":\"#f0e6c8\",\"pat\":3,\"scale\":9,\"wet\":0.45}}",
@@ -389,9 +389,9 @@
 			"temperament": 0.0,
 			"trait_mask": 3.0,
 			"trust_bonus": 20.0,
-			"type": 15.0,
-			"type_code": "S-G-I-W",
-			"type_name": "Patient Gardener"
+			"type": 17.0,
+			"type_code": "S-?-?-?",
+			"type_name": "Undetermined"
 		},
 		{
 			"body_json": "{\"name\":\"Junco\",\"nodes\":[{\"r\":0.15,\"y\":0.5,\"z\":-2},{\"r\":0.5,\"y\":0.6,\"z\":-1.1},{\"r\":0.72,\"y\":0.7,\"z\":-0.1},{\"r\":0.66,\"y\":0.8,\"z\":0.9},{\"r\":0.5,\"y\":1.2,\"z\":1.6},{\"r\":0.5,\"y\":1.5,\"z\":2.1}],\"parts\":[{\"ang\":0,\"size\":1.2,\"t\":1,\"type\":\"romo\"},{\"ang\":0.5,\"len\":0.8,\"size\":1.2,\"t\":0.88,\"type\":\"tallo\"},{\"ang\":0,\"size\":0.9,\"t\":0,\"type\":\"maza\"},{\"ang\":0,\"size\":1,\"t\":0.4,\"type\":\"placa\"},{\"ang\":0,\"size\":1.1,\"t\":0.55,\"type\":\"placa\"}],\"regions\":[],\"schema\":\"cpore.creature/4\",\"skin\":{\"cA\":\"#5d8a3a\",\"cB\":\"#203818\",\"cC\":\"#e9e2a8\",\"pat\":2,\"scale\":11,\"wet\":0.7}}",
@@ -409,16 +409,16 @@
 			"trait_mask": 0.0,
 			"trust_bonus": 0.0,
 			"type": -1.0,
-			"type_code": "S-G-I-W",
-			"type_name": "Patient Gardener"
+			"type_code": "S-?-?-?",
+			"type_name": "Undetermined"
 		}
 	],
 	"live_type": {
-		"code": "S-G-I-W",
-		"description": "Tends a shared home with patient attention.",
-		"index": 15.0,
-		"name": "Patient Gardener",
-		"perk": 3.0,
+		"code": "S-?-?-?",
+		"description": "Your deeds have not yet decided what this body becomes.",
+		"index": 17.0,
+		"name": "Undetermined",
+		"perk": -1.0,
 		"scores": [
 			0.0,
 			0.0,
