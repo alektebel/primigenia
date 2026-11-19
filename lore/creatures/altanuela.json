@@ -1,0 +1,282 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "altanuela",
+  "name": {
+    "en": "Altañuela"
+  },
+  "world": "redtide",
+  "kind": "new",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "Upper atmosphere, below cloud deck, within day-to-night return flow.",
+    "diet": "Condensation nuclei, aerosolized nitrate, IR-scavenging microbes.",
+    "active": "Continuous gliding; flares trigger feeding frenzy and NOx absorption.",
+    "predators": []
+  },
+  "body": "Kite-like membrane, long tail, gas bladder, near-infrared crest sensors.",
+  "chains": [
+    {
+      "id": "altanuela.c1",
+      "trait": "Enormous aspect-ratio wings",
+      "links": [
+        "Wings generate lift in 50-60 m/s flow",
+        "Upper return circulation flows day-to-night",
+        "Weak Coriolis pins large wind systems"
+      ],
+      "roots": [
+        "F12",
+        "F14"
+      ],
+      "skill": {
+        "id": "altanuela.thermal_glide",
+        "name": {
+          "en": "Thermal Glide"
+        },
+        "role": "Basic",
+        "effect": "Move 10m without action; gain altitude in wind currents.",
+        "numbers": {}
+      },
+      "weakness": "Wing shear in turbulence; player can use 'Storm' skill to damage flight.",
+      "observe": [
+        "Wings held rigid against return wind",
+        "Altañuela circling in upper air columns",
+        "Cloud streaking past wingspan"
+      ],
+      "journal": {
+        "en": "It rides the wind home."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "Reframe Thermal Glide as ‘shear kite’ along return jet and cloud-deck interface; Storm weakness targets shear collapse, not generic turbulence only.",
+        "fixes": [
+          "Reframe Thermal Glide as ‘shear kite’ along return jet and cloud-deck interface; Storm weakness targets shear collapse, not generic turbulence only."
+        ],
+        "analogues": [
+          {
+            "organism": "Wandering albatross Diomedea exulans dynamic soaring in wind shear; frigatebird Fregata minimal flapping in trade-wind stacks",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 4
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "altanuela.c2",
+      "trait": "NOx-absorbing skin patches",
+      "links": [
+        "Skin fixes atmospheric nitrogen from NOx",
+        "Flares supply pulsed oxidized nitrogen",
+        "Nitrate rains out after flare events"
+      ],
+      "roots": [
+        "F22"
+      ],
+      "skill": {
+        "id": "altanuela.nitrogen_drip",
+        "name": {
+          "en": "Nitrogen Drip"
+        },
+        "role": "Social",
+        "effect": "Fertilize a 5m radius, boosting plant growth by +3 P over 3 turns.",
+        "numbers": {}
+      },
+      "weakness": "Starves during quiescent periods; player can use 'Calm Star' skill to reduce growth.",
+      "observe": [
+        "Skin darkening and bubbling during flare",
+        "Altañuela tilting to catch falling 'rain'",
+        "Greenish sheen developing on patches"
+      ],
+      "journal": {
+        "en": "It drinks the flare's breath."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "Rename to nitrate-scavenging dermal symbiosis: skin film traps flare fallout nitrate; Nitrogen Drip excretes processed N, not atmospheric N-fixation.",
+        "fixes": [
+          "Rename to nitrate-scavenging dermal symbiosis: skin film traps flare fallout nitrate; Nitrogen Drip excretes processed N, not atmospheric N-fixation."
+        ],
+        "analogues": [
+          {
+            "organism": "Epiphytic nitrogen-assimilating bacteria on leaves (not true N-fix on vertebrate skin); marine aerosol nitrate uptake in microbial mats",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 3
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "altanuela.c3",
+      "trait": "Near-infrared crest sensors",
+      "links": [
+        "Crest detects 0.9 µm star peak",
+        "M-dwarf spectrum peaks in NIR",
+        "Visible light is scarce"
+      ],
+      "roots": [
+        "F2"
+      ],
+      "skill": {
+        "id": "altanuela.nir_sight",
+        "name": {
+          "en": "NIR Sight"
+        },
+        "role": "Basic",
+        "effect": "Reveal stealth and IR signatures in 15m radius; ignore visible light camouflage.",
+        "numbers": {}
+      },
+      "weakness": "Blinded by visible light; player can use 'Flash' or 'Bright Light' to stun.",
+      "observe": [
+        "Crest twitching toward star direction",
+        "Altañuela tracking IR heat signatures",
+        "Eyes reflecting deep red, not visible"
+      ],
+      "journal": {
+        "en": "It sees the sun's blood."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "Define crest as irradiance/compass organ for Vessa’s NIR disk; NIR Sight reveals heat/IR beacons and star-aligned movement, not fine camouflage breaking in visible band; stun with bright visible overload only if crest lacks shade.",
+        "fixes": [
+          "Define crest as irradiance/compass organ for Vessa’s NIR disk; NIR Sight reveals heat/IR beacons and star-aligned movement, not fine camouflage breaking in visible band; stun with bright visible overload only if crest lacks shade."
+        ],
+        "analogues": [
+          {
+            "organism": "Deep-sea dragonfish long-wave photosensitivity; pit viper infrared heat detection (different mechanism but shows NIR channel use)",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 5
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "altanuela.c4",
+      "trait": "Gas bladder buoyancy control",
+      "links": [
+        "Bladder adjusts density for neutral buoyancy",
+        "Dense air reduces lift requirement",
+        "2.05 kg/m³ density aids floatation"
+      ],
+      "roots": [
+        "F10"
+      ],
+      "skill": {
+        "id": "altanuela.buoyancy_shift",
+        "name": {
+          "en": "Buoyancy Shift"
+        },
+        "role": "Defence",
+        "effect": "Gain 'Drift' status; take 50% less wind damage, but movement speed halved.",
+        "numbers": {}
+      },
+      "weakness": "Rapid depressurization; player can use 'Puncture' to deflate bladder.",
+      "observe": [
+        "Bladder inflating/deflating subtly",
+        "Altañuela hovering without wingbeats",
+        "Tail sinking or rising with gas shift"
+      ],
+      "journal": {
+        "en": "The air holds it like water."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "Either drop true neutral buoyancy and keep bladder as pressure buoyancy trim in cloud convection, or specify symbiont-produced light gas and cap effect at slow drift/half wind damage—not hover without wind.",
+        "fixes": [
+          "Either drop true neutral buoyancy and keep bladder as pressure buoyancy trim in cloud convection, or specify symbiont-produced light gas and cap effect at slow drift/half wind damage—not hover without wind."
+        ],
+        "analogues": [
+          {
+            "organism": "Physalia physalis gas-filled pneumatophore (coelenterate, not vertebrate); fish swim bladder buoyancy (aquatic, not aerial analogue)",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 3
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-19",
+    "by": [
+      "naturalist/qwen"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-19",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-19"
+    },
+    {
+      "date": "2026-11-19",
+      "who": "autoloop",
+      "what": "removed rejected references from analogues"
+    }
+  ],
+  "body_plan": {
+    "symmetry": "bilateral",
+    "origin": "Aerial filter-grader convergent with pterosaur, utilizing dense air and high winds for low-energy drift."
+  },
+  "temperament": "Drifting, gregarious, calm until flare.",
+  "secrets": [
+    "Altañuela gas bladder fluid can be harvested to create 'Buoyancy Gas'; player can use for platforming."
+  ],
+  "moments": [
+    "A flock of Altañuela silhouettes against the fixed star, crest sensors pulsing as a flare warning triggers a collective dive into the cloud deck, where they feast on the falling nitrogen."
+  ],
+  "journal": [
+    {
+      "en": "The sky is a river of wind."
+    },
+    {
+      "en": "Altañuela graze the clouds."
+    }
+  ]
+}

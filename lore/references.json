@@ -6638,5 +6638,567 @@
     },
     "container-title": "Astrobiology",
     "x-checked": "2026-11-19"
+  },
+  {
+    "id": "mann_2015",
+    "type": "article-journal",
+    "title": "How to Constrain Your M Dwarf: Measuring Effective Temperature, Bolometric Luminosity, Mass, and Radius",
+    "author": [
+      {
+        "family": "Mann",
+        "given": "Andrew W."
+      },
+      {
+        "family": "Feiden",
+        "given": "Gregory A."
+      },
+      {
+        "family": "Gaidos",
+        "given": "Eric"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2015
+        ]
+      ]
+    },
+    "container-title": "The Astrophysical Journal",
+    "DOI": "10.1088/0004-637X/804/2/64",
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked"
+  },
+  {
+    "id": "goldreich_soter_1966",
+    "type": "article-journal",
+    "title": "Q in the Solar System",
+    "author": [
+      {
+        "family": "Goldreich",
+        "given": "Peter"
+      },
+      {
+        "family": "Soter",
+        "given": "Steven"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1966
+        ]
+      ]
+    },
+    "container-title": "Icarus",
+    "DOI": "10.1016/0019-1035(66)90051-0",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "christensen_aubert_2006",
+    "type": "article-journal",
+    "title": "Scaling properties of convection-driven dynamos in rotating spherical shells and application to planetary magnetic fields",
+    "author": [
+      {
+        "family": "Christensen",
+        "given": "Ulrich R."
+      },
+      {
+        "family": "Aubert",
+        "given": "Julien"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2006
+        ]
+      ]
+    },
+    "container-title": "Geophysical Journal International",
+    "DOI": "10.1111/j.1365-246x.2006.03009.x",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "kasting_1993",
+    "type": "article-journal",
+    "title": "Earth's Early Atmosphere",
+    "author": [
+      {
+        "family": "Kasting",
+        "given": "James F."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1993
+        ]
+      ]
+    },
+    "container-title": "Science",
+    "DOI": "10.1126/science.11536547",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Early Earth Atmosphere and Oceans' (Kasting, 2019) title similarity 0.56",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "merlis_leconte_2010",
+    "type": "article-journal",
+    "title": "Atmospheric Dynamics of Earth‐Like Tidally Locked Aquaplanets",
+    "author": [
+      {
+        "family": "Merlis",
+        "given": "Timothy M."
+      },
+      {
+        "family": "Leconte",
+        "given": "Jeremy"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2010
+        ]
+      ]
+    },
+    "container-title": "Journal of Advances in Modeling Earth Systems",
+    "DOI": "10.3894/james.2010.2.13",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 0.99); title corrected from 'Atmospheric Dynamics of Earth-like Tidally Locked Aquaplanets'; DOI added",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "wordsworth_2015",
+    "type": "article-journal",
+    "title": "Atmospheric Heat Redistribution and Collapse on Tidally Locked Rocky Planets",
+    "author": [
+      {
+        "family": "Wordsworth",
+        "given": "Robin"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2015
+        ]
+      ]
+    },
+    "container-title": "The Astrophysical Journal",
+    "DOI": "10.1088/0004-637x/806/2/180",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "leconte_2013",
+    "type": "article-journal",
+    "title": "3D climate modeling of close-in land planets: circulation patterns, climate moist bistability, and habitability",
+    "author": [
+      {
+        "family": "Leconte",
+        "given": "Jeremy"
+      },
+      {
+        "family": "Forget",
+        "given": "Francois"
+      },
+      {
+        "family": "Charnay",
+        "given": "Benjamin"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2013
+        ]
+      ]
+    },
+    "container-title": "Astronomy &amp; Astrophysics",
+    "DOI": "10.1051/0004-6361/201321042",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); container-title corrected from 'Astronomy & Astrophysics'; DOI added",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "yang_cowan_abbot_2013",
+    "type": "article-journal",
+    "title": "Stabilizing Cloud Feedback Dramatically Expands the Habitable Zone of Tidally Locked Planets",
+    "author": [
+      {
+        "family": "Yang",
+        "given": "Jun"
+      },
+      {
+        "family": "Cowan",
+        "given": "Nicolas B."
+      },
+      {
+        "family": "Abbot",
+        "given": "Dorian S."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2013
+        ]
+      ]
+    },
+    "container-title": "The Astrophysical Journal",
+    "DOI": "10.1088/2041-8205/771/2/l45",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); container-title corrected from 'The Astrophysical Journal Letters'; DOI added",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "luger_barnes_2015",
+    "type": "article-journal",
+    "title": "Extreme Water Loss and Abiotic O2 on Planets in the Habitable Zone",
+    "author": [
+      {
+        "family": "Luger",
+        "given": "Rodrigo"
+      },
+      {
+        "family": "Barnes",
+        "given": "Rory"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2015
+        ]
+      ]
+    },
+    "container-title": "Astrobiology",
+    "DOI": "10.1089/ast.2014.1198",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'Extreme Water Loss and Abiotic O 2 Buildup on Planets Throughout the Habitable Zones of M Dwarfs' (Luger, 2015, doi 10.1089/ast.2014.1231), title similarity 0.79, author match, year ok",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "segura_2005",
+    "type": "article-journal",
+    "title": "Biosignatures from Earth-like planets around M dwarfs",
+    "author": [
+      {
+        "family": "Segura",
+        "given": "Antigona"
+      },
+      {
+        "family": "Kasting",
+        "given": "James F."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2005
+        ]
+      ]
+    },
+    "container-title": "Astrobiology",
+    "DOI": "10.1089/ast.2005.5.706",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "segura_2010",
+    "type": "article-journal",
+    "title": "The Effect of a Strong Stellar Flare on the Atmospheric Chemistry of an Earth-like Planet Orbiting an M Dwarf",
+    "author": [
+      {
+        "family": "Segura",
+        "given": "Antigona"
+      },
+      {
+        "family": "Kasting",
+        "given": "James F."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2010
+        ]
+      ]
+    },
+    "container-title": "Astrobiology",
+    "DOI": "10.1089/ast.2009.0376",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "davenport_2014",
+    "type": "article-journal",
+    "title": "The Kepler Catalog of Stellar Flares",
+    "author": [
+      {
+        "family": "Davenport",
+        "given": "James R. A."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2014
+        ]
+      ]
+    },
+    "container-title": "The Astrophysical Journal Supplement Series",
+    "DOI": "10.1088/0067-0049/213/2/26",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'THE KEPLER CATALOG OF STELLAR FLARES' (Davenport, 2016, doi 10.3847/0004-637x/829/1/23), title similarity 1.00, author match, year off",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "airapetian_2016",
+    "type": "article-journal",
+    "title": "Prebiotic chemistry and atmospheric warming of early Earth by an active young Sun",
+    "author": [
+      {
+        "family": "Airapetian",
+        "given": "Vladimir S."
+      },
+      {
+        "family": "Glocer",
+        "given": "Alex"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2016
+        ]
+      ]
+    },
+    "container-title": "Nature Geoscience",
+    "DOI": "10.1038/ngeo2719",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "belcher_mcelwain_2008",
+    "type": "article-journal",
+    "title": "Limits for Combustion in Low O 2 Redefine Paleoatmospheric Predictions for the Mesozoic",
+    "author": [
+      {
+        "family": "Belcher",
+        "given": "Claire M."
+      },
+      {
+        "family": "McElwain",
+        "given": "Jennifer C."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2008
+        ]
+      ]
+    },
+    "container-title": "Science",
+    "DOI": "10.1126/science.1160978",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 0.99); title corrected from 'Limits for Combustion in Low O2 Redefine Paleoatmospheric Predictions for the Mesozoic'; DOI added",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "france_2016",
+    "type": "article-journal",
+    "title": "The MUSCLES Treasury Survey. I. Motivation and Overview",
+    "author": [
+      {
+        "family": "France",
+        "given": "Kevin"
+      },
+      {
+        "family": "Loyd",
+        "given": "R. O. Parke"
+      },
+      {
+        "family": "Youngblood",
+        "given": "Allison"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2016
+        ]
+      ]
+    },
+    "container-title": "The Astrophysical Journal",
+    "DOI": "10.3847/0004-637x/820/2/89",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "airapetian_2016_impact",
+    "type": "article-journal",
+    "title": "Impact of superflares on the atmospheres of low-mass stars and habitability of orbiting planets",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'On the nature of small planets orbiting low-mass stars' (Luque, 2022) title similarity 0.39",
+    "author": [
+      {
+        "family": "Airapetian",
+        "given": "V.S."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2016
+        ]
+      ]
+    },
+    "container-title": "ApJ",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "fletcher_1936_acoustics",
+    "type": "article-journal",
+    "title": "Acoustics",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Guest editorial' (Fletcher, 1995) title similarity 0.33",
+    "author": [
+      {
+        "family": "Fletcher",
+        "given": "H."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1936
+        ]
+      ]
+    },
+    "container-title": "D. Van Nostrand",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "luger_2015_extreme",
+    "type": "article-journal",
+    "title": "Extreme water loss and atmospheric evolution of close-in Earths",
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked",
+    "author": [
+      {
+        "family": "Luger",
+        "given": "R."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2015
+        ]
+      ]
+    },
+    "container-title": "Icarus"
+  },
+  {
+    "id": "rothman_2020_chemolithoautotrophy",
+    "type": "article-journal",
+    "title": "Chemolithoautotrophy in hydrothermal systems",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'chemolithoautotrophy, n.' (, 2023) title similarity 0.67",
+    "author": [
+      {
+        "family": "Rothman",
+        "given": "D.H."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2020
+        ]
+      ]
+    },
+    "container-title": "Nature Geoscience",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "segura_2010_effects",
+    "type": "article-journal",
+    "title": "Effects of stellar flares on atmospheres",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Radio Emission from Stellar Flares' (Kuijpers, 1989) title similarity 0.49",
+    "author": [
+      {
+        "family": "Segura",
+        "given": "A."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2010
+        ]
+      ]
+    },
+    "container-title": "A&A",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "segura_2010_impact",
+    "type": "article-journal",
+    "title": "Impact of stellar flares on habitability of planets around active K and M dwarfs",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'THE IMPACT OF STELLAR ROTATION ON THE DETECTABILITY OF HABITABLE PLANETS AROUND M DWARFS' (Newton, 2016) title similarity 0.70",
+    "author": [
+      {
+        "family": "Segura",
+        "given": "A."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2010
+        ]
+      ]
+    },
+    "container-title": "Astrobiology",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "vogel_1994_life",
+    "type": "article-journal",
+    "title": "Life in Moving Fluids",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); container-title corrected from 'New Science Library'; year corrected from 1994; DOI added",
+    "author": [
+      {
+        "family": "Vogel",
+        "given": "S."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1995
+        ]
+      ]
+    },
+    "container-title": "Physics Today",
+    "DOI": "10.1063/1.2807982",
+    "x-checked": "2026-11-19"
   }
 ]

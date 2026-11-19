@@ -130,6 +130,16 @@
 | [Zanco](zanco.md) | native | draft | 4 | 4 plausible |
 | [Zancuda](zancuda.md) | native | draft | 4 | 4 plausible |
 
+## Kirr (`redtide`)
+
+| Creature | Kind | Status | Chains | Verdicts |
+|---|---|---|---|---|
+| [Altañuela](altanuela.md) | new | draft | 4 | 3 fixable, 1 plausible |
+| [Cantobrisa](cantobrisa.md) | new | draft | 4 | 2 fixable, 2 plausible |
+| [Cenizo](cenizo.md) | new | draft | 4 | 2 fixable, 2 plausible |
+| [Salcarán](salcaran.md) | new | draft | 4 | 3 fixable, 1 plausible |
+| [Salinera](salinera.md) | new | draft | 4 | 2 fixable, 2 plausible |
+
 ## Silicon cryogenic world (`silicon_cryo`)
 
 | Creature | Kind | Status | Chains | Verdicts |
