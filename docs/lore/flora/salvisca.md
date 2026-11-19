@@ -4,7 +4,7 @@
 
 **Status: DRAFT** · world: [primigenia](../worlds/primigenia.md) · form: shrub · id: `salvisca`
 
-A sprawling evergreen succulent shrub, 0.3–1.2 m tall, with salt-beaded leaves and rooted woody runners. It occupies drained spray-zone ground above mean high tide, supplying salt and low shaded cover. Storm washover can kill patches; it is not a submerged coastal plant (F19, F20, F23).
+A sprawling evergreen succulent shrub, 0.3–1.2 m tall, with salt-secreting leaves and woody runners rooting at sediment-covered nodes. It occupies drained spray-zone ground above recurring spring-tide inundation and ordinary wave runup, offering limited low shade. Salt crusts are harvestable mainly after dry weather; fog redissolves them and rain can wash them away. Exceptional storm washover can kill patches (F13, F19, F20, F23).
 
 **Habitats:** Coastal spray belt above mean high tide, Drained upper-shore pockets, Sea-arch and islet margins above regular inundation
 
@@ -12,51 +12,51 @@ A sprawling evergreen succulent shrub, 0.3–1.2 m tall, with salt-beaded leaves
 
 ### salvisca.c1: Salt-secreting glands and succulent leaves
 
-Trait ← Marine spray loads foliage and rooting ground with salt. ← Ion compartmentation and gland secretion control internal salt concentrations. ← Fleshy leaves store water while secreted droplets evaporate into collectible crystals. ← **F20** Seas: salinity ~3.8%, carcasses float and drift ashore; the shallows are turbid (visibility under 10 m) from volcanic sediment and plankton, so sea creatures rely on pressure sense, touch and electric sense more than sight; **F23** Minerals creatures eat: salt from spray and seeps, calcium from shell beds and bone, basalt/olivine grit (gastroliths), kaolin clay (gut detox), sulfur at fumaroles
+Trait ← Marine spray loads foliage and rooting ground with salt. ← Ion compartmentation and gland secretion control internal salt concentrations; the plant's benefit is ion balance. ← Fleshy leaves store water obtained through roots, while sufficiently dry afternoons or dry spells let secreted droplets form crusts on exposed margins. ← Fog and humid conditions redissolve crusts into brine, and rain can wash the salt away; creatures harvest a secretion byproduct rather than a plant-provided food reward. ← **F15** Composition N₂ ~77%, O₂ 21%, Ar 1.5%, CO₂ ~0.1%, humid; **F20** Seas: salinity ~3.8%, carcasses float and drift ashore; the shallows are turbid (visibility under 10 m) from volcanic sediment and plankton, so sea creatures rely on pressure sense, touch and electric sense more than sight; **F23** Minerals creatures eat: salt from spray and seeps, calcium from shell beds and bone, basalt/olivine grit (gastroliths), kaolin clay (gut detox), sulfur at fumaroles
 
-- **In play:** Scrape dry leaf margins for salt and inspect browsed tips for coloso visits.
-- **Weakness:** Rain removes collectible crystals; prolonged flooding overwhelms roots, and storm washover can kill whole patches.
+- **In play:** Collect leaf-margin salt after dry weather and watch for coloso taking surface salt without assuming foliage browsing.
+- **Weakness:** Salt secretion costs water and energy; humid weather limits dry yield, rain removes salt, and prolonged flooding or exceptional storm washover can kill patches.
 - **Observe:**
-  1. Clear droplets gather beside old white crystals.
-  2. Rain washes the rims away while leaves remain firm.
-  3. Coloso strips reachable succulent tips.
-- **Plausibility:** plausible (judge botanist/composer-2.5; chair sol, 2026-11-19)
-  - Rooting sites remain above mean high tide in the spray belt. Salt tolerance does not confer regular submergence tolerance; salt is a mineral reward rather than an alkaloid defence.
-  - Analogue: Salt-excreting Limonium species and succulent coastal halophytes: Ion regulation, compartmentation, secretion and succulence provide complementary mechanisms for tolerating saline terrestrial habitats. (Flowers & Colmer 2008 [verified])
+  1. Exposed margins develop white crusts after a dry afternoon.
+  2. Fog turns crusts into droplets; rain washes salt away while leaves remain firm.
+  3. Coloso occasionally licks accessible leaf-surface salt.
+- **Plausibility:** fixable (judge strict review: sol (codex) + DeepSeek; chair sol, 2026-11-19)
+  - Rooting sites remain above mean high tide in the spray belt. Salt tolerance does not confer regular submergence tolerance; salt is a mineral reward rather than an alkaloid defence. Strict review (2026-11-19): revised: Collectible crystals were treated as the default, so salt harvest is now conditional on dry weather and secretion is identified as ion regulation rather than a food reward. Still open: The ion-regulation mechanism is credible, and F20 and F23 support marine salt exposure and creature salt collection. The weather-to-crust link is insufficiently specified: F15's humid climate does not mean every humid interval redissolves crystals. Deliquescence depends on salt composition, temperature and a humidity threshold; actual fog wetting can dissolve deposits directly. As written, the chain and generator can remove harvestable crust whenever air is labelled humid, including conditions in which crystals would persist.
+  - Analogue: Salt-excreting Limonium species and succulent coastal halophytes: Ion compartmentation, gland secretion and water storage support saline terrestrial life; dry surface deposits depend on local humidity and evaporation and do not imply a feeding mutualism. (Flowers & Colmer 2008 [verified])
 
-### salvisca.c2: Low woody runners with multiple rooting points
+### salvisca.c2: Low woody runners rooting at sediment-covered nodes
 
-Trait ← Dense-air winds impose strong loads on coastal shoots. ← A low crown reduces projected area and bending leverage. ← Buried nodes distribute anchorage and support shaded spaces beneath overlapping branches. ← **F4** Dense air: 1.6 bar; **F19** Wind force per m/s is 1.6× Earth's: gales in winter push light creatures and favour low, heavy bodies on exposed ridges
+Trait ← Dense-air winds impose strong loads on coastal shoots. ← Low crowns shorten the lever arm through which wind bends stems, even where sprawling plants occupy a broad ground area. ← Surface runners form adventitious roots where shallow sediment covers nodes and roots reach stable substrate. ← Distributed anchorage supports overlapping low branches that provide limited visual concealment and shade. ← **F4** Dense air: 1.6 bar; **F19** Wind force per m/s is 1.6× Earth's: gales in winter push light creatures and favour low, heavy bodies on exposed ridges
 
-- **In play:** Use mature crowns for low visual cover and shade.
-- **Weakness:** Scour can undermine rooting pockets; low crowns conceal only suitably small bodies.
+- **In play:** Use mature crowns for low visual cover and limited shade where body size and canopy density permit.
+- **Weakness:** Unburied nodes provide no additional root anchorage; scour can undermine rooted pockets, and low crowns conceal only suitably small bodies.
 - **Observe:**
   1. Seaward branches lie lower than sheltered shoots.
-  2. A buried runner roots at several nodes.
-  3. Albinos rest beneath the canopy.
-- **Plausibility:** plausible (judge botanist/composer-2.5; chair sol, 2026-11-19)
-  - Low geometry and distributed anchorage reduce wind damage without preventing storm losses. Shade does not erase scent trails.
-  - Analogue: Prostrate coastal shrubs: Reduced projected area, flexible reconfiguration and distributed rooting limit mechanical loading. (Vogel 1994 [unverified])
+  2. Sediment-covered runner nodes carry roots into stable ground.
+  3. Small zancuda use overlapping branches as visual cover above their tidal feeding grounds.
+- **Plausibility:** plausible (judge strict review: sol (codex) + DeepSeek; chair sol, 2026-11-19)
+  - Low geometry and distributed anchorage reduce wind damage without preventing storm losses. Shade does not erase scent trails. Strict review (2026-11-19): revised: The chain confused spreading area with reduced wind loading and assumed every node was buried, so it now specifies short leverage and conditional rooting at sediment-covered nodes. Residual: F4 and F19 support increased aerodynamic loading at a given wind speed. Lower crowns shorten bending leverage without necessarily reducing projected area, and rooted nodes can distribute anchorage. Residual weakness: this benefit depends on substrate resistance and actual root establishment; a connected mat over loose sediment can fail collectively. The revision requires stable rooting pockets and acknowledges scour mortality. Concealment remains conditional on creature size rather than being established for every zancuda.
+  - Analogue: Prostrate coastal shrubs: Low height shortens bending leverage, flexible shoots reconfigure under wind, and runners gain distributed anchorage where covered nodes root into stable substrate. (Vogel 1994 [unverified])
 
 ## Gameplay
 
 ```json
 {
  "food_for": [
-  "Herbivores browsing succulent tips",
-  "Omnivores seeking salt"
+  "Coloso collecting surface salt",
+  "Player lineage collecting salt; foliage consumption is not established"
  ],
- "gift_item": "Leaf-margin salt crust",
+ "gift_item": "Dry leaf-margin salt crust for a receptive salt-seeking creature",
  "poison": {
   "alkaloid": false,
-  "signal": "Glaucous green leaves with white salt beads; no persistent red-veined alkaloid warning."
+  "signal": "Glaucous green leaves with salt droplets or dry white crusts; no red-veined alkaloid warning, but colour does not establish edibility and excessive salt intake is hazardous."
  },
  "healing": null,
- "cover": "Low visual cover and shade beneath sprawling crowns.",
+ "cover": "Limited low visual cover and shade beneath overlapping crowns; useful only where body size and canopy density permit.",
  "climbing": false,
  "nest_material": "Dry fine twigs above the storm-wrack line.",
- "mineral_lick": "Salt crystals on leaves and older stems.",
- "notes": "Excess consumption imposes a salt load. Rain reduces harvest without inherently causing wilt. Repeated tidal flooding excludes establishment."
+ "mineral_lick": "Leaf and stem salt crusts chiefly after dry weather; fog redissolves them and rain can wash them away.",
+ "notes": "Salt collection does not establish foliage edibility or a benefit to the plant. Salt load limits consumption. Root water is still necessary despite succulence. Recurring tidal inundation and ordinary wave runup exclude establishment; exceptional storm washover remains a mortality event."
 }
 ```
 
@@ -64,10 +64,9 @@ Trait ← Dense-air winds impose strong loads on coastal shoots. ← A low crown
 
 | With | Kind | Note |
 |---|---|---|
-| coloso | eaten_by | Browses succulent tips and obtains surface salt. |
-| albinos | shelters | Provides coastal shade; each albino retains its base species' diet. |
-| zancuda | shelters | Conceals small individuals above tidal feeding grounds. |
-| cinta_de_marea | grows_with | Forms the terrestrial spray belt above regularly flooded algae. |
+| coloso | other | Occasionally takes accessible leaf-surface salt; routine low shoot browsing is not assumed. |
+| zancuda | shelters | Dense overlapping branches conceal suitably small individuals above tidal feeding grounds. |
+| cinta_de_marea | other | Occupies the terrestrial spray belt above the regularly flooded algal zone rather than sharing its inundated substrate. |
 
 ## Generator parameters
 
@@ -78,12 +77,12 @@ Trait ← Dense-air winds impose strong loads on coastal shoots. ← A low crown
   "min": 0.3,
   "max": 1.2
  },
- "trunk": "Several short woody bases connected by surface runners.",
+ "trunk": "Several short woody bases connected by surface runners; nodes root where shallow accumulated sediment covers them.",
  "branching": {
   "angle_deg": 40,
   "levels": 3,
   "apical_dominance": 0.15,
-  "buttress": "None; buried nodes form adventitious roots."
+  "buttress": "None; sediment-covered nodes form adventitious roots where stable substrate is available."
  },
  "leaf": {
   "type": "Fleshy oval succulent",
@@ -93,8 +92,9 @@ Trait ← Dense-air winds impose strong loads on coastal shoots. ← A low crown
  "colour": {
   "base": "Glaucous green",
   "overlay_rules": [
-   "White crystals accumulate at gland-bearing margins after drying.",
-   "Rain removes the crystals without changing living leaf colour.",
+   "White crystals accumulate at gland-bearing margins only under sufficiently dry conditions.",
+   "Fog and humid air can redissolve crusts into clear salt droplets.",
+   "Rain washes salt away without inherently changing living leaf colour.",
    "Old wood becomes grey."
   ]
  },
@@ -104,17 +104,17 @@ Trait ← Dense-air winds impose strong loads on coastal shoots. ← A low crown
    0,
    60
   ],
-  "wetness": "Drained spray-zone ground strictly above local mean high tide; exclude regularly flooded sites.",
-  "soil": "Rock fissures, coarse sand and sediment pockets without active geothermal contamination.",
+  "wetness": "Drained spray-zone ground outside modeled recurring spring-high-water inundation and ordinary wave runup; allow only exceptional storm washover.",
+  "soil": "Rock fissures, coarse sand and sediment pockets without active geothermal contamination; anchoring roots must reach stable substrate.",
   "coast_distance_m": [
    0,
    80
   ],
-  "fog": "Tolerates marine fog, which alone does not create salt crystals.",
-  "density": "Irregular sprawling patches within the above-high-tide habitat mask."
+  "fog": "Tolerates marine fog; fog redissolves dry salt deposits and does not guarantee root water.",
+  "density": "Irregular sprawling patches filtered by local tidal inundation, wave exposure and stable rooting pockets."
  },
- "seasonal": "Evergreen; grows after sustained rain. Winter storms remove tips and can kill washed-over patches.",
- "wind_response": "Outer shoots flex near the ground; crowns become asymmetric toward shelter."
+ "seasonal": "Evergreen; grows after sustained rain. Salt crusts develop during sufficiently dry intervals. Winter storms remove tips and can kill washed-over patches.",
+ "wind_response": "Outer shoots flex near the ground; low height shortens bending leverage. Crowns become asymmetric toward shelter, with reduced exposed-side height but no assumed reduction in total projected area."
 }
 ```
 
@@ -141,3 +141,4 @@ council run `flora-2026-11-19`; by designer, mythmaker, naturalist, physicist, s
 ## Changelog
 
 - 2026-11-19 flora.py: flora pass: 7 voices drafted and peer-reviewed, Composer botanical referee, sol chaired and applied the fixes
+- 2026-11-19 flora_addendum.py: strict second review (sol + DeepSeek) applied by sol: Replaced mean-high-tide placement with a local spring-tide and ordinary-wave inundation mask consistent with F13; exceptional storms can still kill plants.; Separated salt collection from unsupported succulent browsing and removed generic foliage-consumer claims.; Removed albino shelter because exposed low coastal crowns do not establish the shaded refuge its lore requires.

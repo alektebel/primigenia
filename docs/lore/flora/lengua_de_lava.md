@@ -4,59 +4,59 @@
 
 **Status: DRAFT** · world: [primigenia](../worlds/primigenia.md) · form: rosette · id: `lengua_de_lava`
 
-A 0.1–0.3 m photosynthetic rosette with sticky red-veined traps. Insects supplement mineral nutrition on seep-fed young lava. Scent works best in sheltered dawn air; sustained wind or rain makes trapping ineffective. The species does not occupy rich meadow soils (F7, F9, F16, F24, F25).
+A 0.1–0.3 m photosynthetic rosette with sticky red-veined traps occupies well-lit, phosphorus-poor freshwater seeps on mapped cooled lava from the last eruption. Roots remain wet beside the seep while traps stand above flow and splash. Separate scent glands attract nearby insects during sheltered dawn intervals; fog supports hydration but can dilute adhesive, so capture often improves after surfaces dry later in the day. Sustained wind or rain suppresses trapping (F7, F8, F16, F24, F25).
 
 **Habitats:** Sheltered freshwater seeps on cooled young lava, Damp nutrient-poor volcanic fissures
 
 ## Causal chains
 
-### lengua_de_lava.c1: Sticky insect-digesting leaves
+### lengua_de_lava.c1: Sticky insect-digesting leaves at phosphorus-poor seeps
 
-Trait ← Seep-fed lava cracks provide water but little developed soil. ← Photosynthesis supplies carbon while mineral nutrients remain scarce. ← Mucilage captures small insects and digestive secretions release nutrients. ← Absorption supplements nitrogen and phosphorus supply. ← **F7** The island is a hotspot stratovolcano, 1.2 Myr old, ~2,050 m high, visible top 3.6 km across over an 8 km submarine base; **F9** Rock: andesite makes steep, unstable cliffs; basalt makes lava tubes (the caves); **F24** One biochemistry from the seed capsule: a porphyrin photosystem, DNA-like heredity, L-amino acids, a nitrogen-fixing symbiont
+Trait ← Occupied seep margins receive reliable freshwater and adequate daylight but have low bioavailable phosphorus, locally bound to weathered volcanic iron and aluminium surfaces. ← Seep water can supply base cations without removing this phosphorus limitation. ← Photosynthesis supports trap construction; the inherited nitrogen-fixing partner cannot supply phosphorus and its carbon cost further limits nitrogen delivery. ← Mucilage captures small insects, and digestive secretions release nutrients that the leaves absorb. ← Prey phosphorus supplements the principal limiting nutrient, with prey nitrogen providing an additional benefit where nitrogen supply is also inadequate. ← **F7** The island is a hotspot stratovolcano, 1.2 Myr old, ~2,050 m high, visible top 3.6 km across over an 8 km submarine base; **F24** One biochemistry from the seed capsule: a porphyrin photosystem, DNA-like heredity, L-amino acids, a nitrogen-fixing symbiont
 
-- **In play:** Inspect captures to understand why the plant occupies damp bare-rock fissures.
-- **Weakness:** Sustained wind dries or fouls droplets, and sustained rain dilutes or washes them away; traps become ineffective until suitable conditions and secretions return.
+- **In play:** Inspect captures at well-lit seep margins to understand how prey supplements a specifically nutrient-limited rooting habitat.
+- **Weakness:** Traps pay only where nutrient gains offset their costs; shade, nutrient enrichment, prey theft, wind and washed adhesive can erase the benefit.
 - **Observe:**
-  1. Fresh droplets stand on sheltered leaves.
+  1. Fresh adhesive droplets stand on leaves above the seep's flow and splash.
   2. Small insects stick while large visitors escape.
-  3. After prolonged rain, washed traps hold few new captures.
-- **Plausibility:** plausible (judge botanist/composer-2.5; chair sol, 2026-11-19)
-  - Carnivory supplements nutrients rather than replacing photosynthesis. Restrict plants to seep-fed nutrient-poor cooled lava; sustained wind and rain suppress effective capture.
-  - Analogue: Drosera and Pinguicula sticky-trap plants: Prey-derived nutrients can offset the costs of traps in nutrient-poor habitats. (Ellison & Gotelli 2009 [verified])
+  3. After fog deposition or prolonged rain, diluted traps hold few new captures until secretion recovers.
+- **Plausibility:** plausible (judge strict review: sol (codex) + DeepSeek; chair sol, 2026-11-19)
+  - Carnivory supplements nutrients rather than replacing photosynthesis. Restrict plants to seep-fed nutrient-poor cooled lava; sustained wind and rain suppress effective capture. Strict review (2026-11-19): revised: Replaced generic mineral scarcity with explicit local phosphorus limitation and explained why nitrogen fixation and seep-delivered cations do not remove the benefit of prey. Residual: The chain identifies a nutrient that F24's nitrogen-fixing symbiont cannot supply and makes carnivory conditional on light, prey return and trap costs. F7 establishes young volcanic deposits, but does not establish phosphorus limitation at particular seeps. Fresh volcanic material and groundwater could also supply phosphorus, so local sorption and low available phosphorus remain additional habitat assumptions. The generator explicitly requires them rather than treating every lava seep as suitable.
+  - Analogue: Drosera and Pinguicula sticky-trap plants: Prey-derived nutrients can offset trap costs in well-lit nutrient-poor habitats; local phosphorus binding and limited symbiont contribution specify why that trade-off applies here. (Ellison & Gotelli 2009 [verified])
 
-### lengua_de_lava.c2: Scented traps with red-veined defence
+### lengua_de_lava.c2: Separate short-range scent glands and red-veined tissue defence
 
-Trait ← Trap secretions provide nearby insects with a food-like scent cue. ← Still sheltered air allows the cue to persist. ← Alkaloid-rich tissue discourages browsing. ← Red veins mark defended foliage while specialists exploit trapped prey. ← **F16** Smell: molecular diffusion ~0.6× Earth's, so in still air scent trails last ~1.6× longer; in wind the advantage disappears; **F25** Plants are green by ancestry (the seed's pigment), not because green is optimal; **F26** Food: sugars, starchy fruit, flesh, chitin, bone, salt
+Trait ← Separate attractant glands release a food-like volatile cue near largely alkaloid-free adhesive surfaces. ← Continued secretion and weak local air movement carry the cue over short distances during sheltered dawn intervals; slower diffusion does not create a long-range lure. ← Alkaloids remain concentrated in internal veins and margins, whose red-purple colour marks defended tissue. ← Fog deposition can dilute adhesive even while roots and leaves remain hydrated, separating favourable scent intervals from effective capture windows. ← Acechalunas can remove accessible protruding prey while avoiding bites into defended leaves; prey theft reduces the plant's nutrient return. ← **F8** Fog: cold upwelling sea on the west coast meets warm volcanic ground; the east start valley is a fog trap about 180 mornings a year; **F16** Smell: molecular diffusion ~0.6× Earth's, so in still air scent trails last ~1.6× longer; in wind the advantage disappears; **F25** Plants are green by ancestry (the seed's pigment), not because green is optimal; **F26** Food: sugars, starchy fruit, flesh, chitin, bone, salt
 
-- **In play:** Find active traps at still dawn and watch acechalunas steal captured insects.
-- **Weakness:** Sustained wind disrupts scent and capture; sustained rain dilutes secretions. Prey theft further reduces nutrient return.
+- **In play:** Watch nearby insects approach during sheltered dawn intervals, then inspect recovering traps later and observe acechalunas taking accessible prey.
+- **Weakness:** Wind disperses the local volatile cue and dries or fouls adhesive; fog deposition and rain dilute traps, while damaged defended tissue can contaminate otherwise accessible prey.
 - **Observe:**
-  1. Insects approach during a still dawn interval.
-  2. Red veins remain beneath clear secretions.
-  3. Acechalunas removes prey without swallowing leaves.
-- **Plausibility:** plausible (judge botanist/composer-2.5; chair sol, 2026-11-19)
-  - Warning veins indicate alkaloids. Trapping is effective only during suitable sheltered intervals; persistent seep moisture does not protect aerial traps from wind or rain.
-  - Analogue: Glandular carnivorous plants: Secretory traps incur construction and maintenance costs; the scent timing and warning pattern are fictional specializations. (Ellison & Gotelli 2009 [verified])
+  1. Insects approach from nearby vegetation during a sheltered dawn interval.
+  2. Red veins and margins remain distinct from clear adhesive and separate attractant glands.
+  3. Acechalunas picks protruding prey from intact leaves without biting the red-veined tissue.
+- **Plausibility:** plausible (judge strict review: sol (codex) + DeepSeek; chair sol, 2026-11-19)
+  - Warning veins indicate alkaloids. Trapping is effective only during suitable sheltered intervals; persistent seep moisture does not protect aerial traps from wind or rain. Strict review (2026-11-19): revised: Separated volatile attraction from adhesive secretion, restricted scent reach and confined alkaloids away from exposed trapping surfaces so prey theft requires avoidance rather than invented tolerance. Residual: Short-range volatile attraction, tissue-restricted defence and prey theft can coexist. F25–F26 support defended red-veined tissue but do not establish toxin exclusion from adhesive or an insect response to the volatile; these are specified specializations. F16's slower molecular diffusion alone cannot establish improved attraction, and the revision appropriately relies on continued secretion and weak air movement. Residual uncertainty concerns actual prey contamination and whether suitable insect activity overlaps intact adhesive and dawn-active acechalunas.
+  - Analogue: Glandular carnivorous plants: Distinct gland functions allow volatile attraction and adhesive capture to operate separately; tissue-restricted alkaloids and careful prey theft are specified local specializations rather than assumed toxin tolerance. (Ellison & Gotelli 2009 [verified])
 
 ## Gameplay
 
 ```json
 {
  "food_for": [
-  "Insectivores stealing trapped prey",
-  "Specialist omnivores taking small self-medication samples"
+  "Acechalunas taking accessible trapped insects without biting defended tissue",
+  "Merodeador occasionally taking very small foliage samples within its existing alkaloid tolerance"
  ],
  "gift_item": null,
  "poison": {
   "alkaloid": true,
-  "signal": "Red veins warn of alkaloid-rich tissue and mucilage."
+  "signal": "Red-purple veins and margins warn of alkaloid-rich internal tissue; adhesive surfaces are largely alkaloid-free, but damaged leaves can contaminate prey."
  },
  "healing": null,
  "cover": null,
  "climbing": false,
  "nest_material": null,
  "mineral_lick": null,
- "notes": "Merodeador sampling does not establish a safe player remedy. Traps cannot restrain creatures. Disable effective capture during sustained wind or rain; plants remain confined to seep-fed young lava rather than meadow soil."
+ "notes": "Merodeador's occasional sampling has uncertain benefit and can cause adverse effects; it establishes no safe player remedy. Traps cannot restrain creatures. Suppress effective capture while adhesive is diluted, washed, dried or fouled; recovery requires suitable weather and renewed secretion."
 }
 ```
 
@@ -64,9 +64,9 @@ Trait ← Trap secretions provide nearby insects with a food-like scent cue. ←
 
 | With | Kind | Note |
 |---|---|---|
-| merodeador | eaten_by | Occasionally samples defended foliage for established self-medication. |
-| acechalunas | other | Steals small trapped insects, reducing plant nutrient return. |
-| ceniza_roja | grows_with | Occurs beside crust margins where fresh seepage reaches cooled lava. |
+| merodeador | eaten_by | Occasionally takes very small samples within its existing tolerance; benefit is uncertain and adverse effects remain possible. |
+| acechalunas | other | Takes accessible protruding insects from intact traps while avoiding defended leaf tissue; this does not establish alkaloid tolerance. |
+| ceniza_roja | grows_with | Occurs beside crust margins where freshwater reaches suitable phosphorus-poor cooled lava. |
 | grama_de_ceniza | competes | Shares damp fissures; growing tussocks can shade rosettes. |
 | player_lineage | other | Demonstrates defended foliage and nutrient-poor seep habitat. |
 
@@ -79,7 +79,7 @@ Trait ← Trap secretions provide nearby insects with a food-like scent cue. ←
   "min": 0.1,
   "max": 0.3
  },
- "trunk": "Short ground-hugging crown in a damp fissure.",
+ "trunk": "Short ground-hugging crown beside a damp seep fissure, with roots supplied below elevated trap leaves.",
  "branching": {
   "angle_deg": 25,
   "levels": 1,
@@ -87,36 +87,32 @@ Trait ← Trap secretions provide nearby insects with a food-like scent cue. ←
   "buttress": "None; fine roots occupy existing cracks."
  },
  "leaf": {
-  "type": "Fleshy tongue-shaped blade with stalked glands",
+  "type": "Fleshy tongue-shaped blade with adhesive glands, separate volatile attractant glands and defended internal veins and margins",
   "size_cm": 12,
   "arrangement": "Basal spiral rosette"
  },
  "colour": {
   "base": "Bright green",
   "overlay_rules": [
-   "Red-purple veins mark defended tissue.",
-   "Clear droplets reflect ambient light without glowing.",
+   "Red-purple veins and margins mark defended tissue.",
+   "Clear adhesive droplets reflect ambient light without glowing.",
    "Old prey remains form sparse brown flecks.",
-   "Sustained rain washes down droplets; sustained wind dries or fouls them."
+   "Fog deposition and sustained rain dilute adhesive; sustained wind dries or fouls it."
   ]
  },
  "placement": {
-  "slope": "Sheltered seep-fed ledges and fissures on stable cooled young lava.",
-  "altitude_m": [
-   50,
-   1400
-  ],
-  "wetness": "Persistent thin freshwater seepage without prolonged submersion.",
-  "soil": "Shallow nutrient-poor volcanic grit; exclude meadow loam, rich humus and hot vent crust.",
+  "slope": "Sheltered ledges beside freshwater seep fissures on stable cooled lava within the mapped deposits of the eruption about 400 years ago; derive elevation from those mapped sites.",
+  "wetness": "Persistent freshwater supplies roots, while crowns and trap surfaces remain above flowing water, splash and prolonged submersion.",
+  "soil": "Shallow volcanic grit with explicitly low bioavailable phosphorus through local binding to weathered iron and aluminium surfaces; exclude nutrient-rich meadow loam, rich humus and hot vent crust.",
   "coast_distance_m": [
    120,
    1800
   ],
-  "fog": "Dawn humidity reduces drying; sufficient daylight remains necessary.",
-  "density": "Small colonies restricted to individual seep lines and sheltered cracks."
+  "fog": "Humidity helps hydration, but deposited droplets can dilute adhesive; require adequate daylight and intervals for effective trapping.",
+  "density": "Small colonies only where the island land mask, mapped last-eruption lava, freshwater seep margins, low available phosphorus and sufficient light intersect."
  },
- "seasonal": "Expands traps while seepage persists; contracts toward the crown when water supply weakens. Capture resumes after weather damage only when secretions recover.",
- "wind_response": "Low leaves remain attached, but sustained wind dries scent-bearing droplets and makes trapping ineffective."
+ "seasonal": "Expands traps while seepage persists and contracts toward the crown when water supply weakens. Scent can peak during sheltered dawn intervals; capture often improves later as deposited moisture clears, provided wind remains weak. Weather-damaged traps resume capture only after secretions recover.",
+ "wind_response": "Low leaves remain attached, but sustained wind disperses the volatile cue and dries or fouls adhesive, making trapping ineffective."
 }
 ```
 
@@ -143,3 +139,4 @@ council run `flora-2026-11-19`; by designer, mythmaker, naturalist, physicist, s
 ## Changelog
 
 - 2026-11-19 flora.py: flora pass: 7 voices drafted and peer-reviewed, Composer botanical referee, sol chaired and applied the fixes
+- 2026-11-19 flora_addendum.py: strict second review (sol + DeepSeek) applied by sol: Local phosphorus binding and separate gland functions are explicit flora mechanisms, not additional claims supplied by the cited planet facts.; Used mapped deposits of the eruption about 400 years ago; rejected post-eruption flows because F7 supplies no later eruption.; Fog dilution depends on actual water deposition; neither dense air nor the valley's fog frequency guarantees that every trap is w

@@ -8817,7 +8817,7 @@
     "type": "article-journal",
     "title": "Comparative hearing: mammals",
     "x-status": "unverified",
-    "x-note": "cited by a council model from memory; not yet checked",
+    "x-note": "ambiguous: closest Crossref hit is 'Comparative Hearing: Mammals' (, 1994, doi 10.1007/978-1-4612-2700-7), title similarity 1.00, author differs, year off",
     "author": [
       {
         "family": "Fay",
@@ -8831,7 +8831,8 @@
         ]
       ]
     },
-    "container-title": "Springer"
+    "container-title": "Springer",
+    "x-checked": "2026-11-19"
   },
   {
     "id": "fitch_2000_evolution",
@@ -8987,8 +8988,8 @@
     "id": "sukumar_2002_olfactory",
     "type": "article-journal",
     "title": "Olfactory Ecology in Terrestrial Mammals",
-    "x-status": "unverified",
-    "x-note": "cited by a council model from memory; not yet checked",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Olfactory and thermoregulatory capacities in small terrestrial mammals : a turbinal bone approach' (Martinez, None) title similarity 0.64",
     "author": [
       {
         "family": "Sukumar"
@@ -9001,7 +9002,8 @@
         ]
       ]
     },
-    "container-title": "Annual Review of Ecology and Systematics"
+    "container-title": "Annual Review of Ecology and Systematics",
+    "x-checked": "2026-11-19"
   },
   {
     "id": "taylor_2001_thermoregulation",

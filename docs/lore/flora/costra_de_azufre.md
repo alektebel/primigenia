@@ -4,7 +4,7 @@
 
 **Status: DRAFT** · world: [primigenia](../worlds/primigenia.md) · form: moss_lichen · id: `costra_de_azufre`
 
-A thin microbial consortium whose growth-form label describes its appearance. Sulfur oxidizers occupy oxygenated, tolerably warm mixing zones below approximately 70 °C; green partners remain in cooler illuminated margins. Hotter centres carry abiotic sulfur and potentially arsenic-bearing deposits rather than this living film. Sosa grazes suitable margins and el_resoplido collects sulfur-bearing fragments (F7, F23, F24, F26).
+A thin microbial consortium whose growth-form label describes its appearance. Sulfur oxidizers occupy moist boundaries where reduced sulfur and oxygen overlap below this consortium's fictional approximately 70 °C ceiling; green partners require cooler, adequately illuminated and chemically tolerable patches. Their bands may overlap or break apart. Hotter centres carry abiotic sulfur and may contain arsenic- and mercury-bearing crusts; colour does not establish contamination or living activity. Sosa grazes suitable margins and el_resoplido collects accessible sulfur-bearing fragments (F7, F23, F24, F26).
 
 **Habitats:** Cooler hot-spring mixing margins, Oxygenated fumarole seep edges, Habitable geothermal rock surfaces below approximately 70 °C
 
@@ -20,22 +20,22 @@ Trait ← Geothermal seepage supplies reduced sulfur. ← Mixing introduces oxyg
   1. Pale veils follow cooled seep channels.
   2. Sosa leaves scrape tracks through marginal film.
   3. Bare yellow deposits continue inward beyond living growth.
-- **Plausibility:** plausible (judge botanist/composer-2.5; chair sol, 2026-11-19)
-  - This consortium is confined to oxygenated mixing zones below approximately 70 °C. Hotter centres contain abiotic deposits, not this living film; sulfur oxidation may proceed to sulfate rather than accumulate sulfur.
+- **Plausibility:** plausible (judge strict review: sol (codex) + DeepSeek; chair sol, 2026-11-19)
+  - This consortium is confined to oxygenated mixing zones below approximately 70 °C. Hotter centres contain abiotic deposits, not this living film; sulfur oxidation may proceed to sulfate rather than accumulate sulfur. Strict review (2026-11-19): Residual: F7 and F23 support geothermal reduced-sulfur sources, while F5's pO₂ of approximately 0.34 bar supplies a potential oxidant. Sulfur-driven autotrophy and conditional elemental-sulfur accumulation are coherent. Residual weakness: atmospheric oxygen does not guarantee oxygen delivery inside a wet film; sulfide supply, diffusion and consumption determine the active boundary and whether sulfur accumulates or proceeds to sulfate.
   - Analogue: Sulfur-oxidizing prokaryotes: Oxidation of reduced sulfur conserves energy, with elemental sulfur appearing as an intermediate under suitable conditions. (Friedrich et al. 2005 [verified])
 
-### costra_de_azufre.c2: Cool green margins separated from bare hot centres
+### costra_de_azufre.c2: Overlapping microbial patches controlled by temperature, redox conditions and light
 
-Trait ← Seep temperature and chemistry vary over short distances. ← Photosynthetic partners occupy cooler illuminated surfaces. ← Sulfur-oxidizing members occupy suitable warmer oxygenated margins below the upper limit. ← Hotter flow removes living bands while mineral deposits remain. ← **F7** The island is a hotspot stratovolcano, 1.2 Myr old, ~2,050 m high, visible top 3.6 km across over an 8 km submarine base; **F23** Minerals creatures eat: salt from spray and seeps, calcium from shell beds and bone, basalt/olivine grit (gastroliths), kaolin clay (gut detox), sulfur at fumaroles; **F24** One biochemistry from the seed capsule: a porphyrin photosystem, DNA-like heredity, L-amino acids, a nitrogen-fixing symbiont
+Trait ← Seep temperature, reduced sulfur, oxygen delivery, acidity and illumination vary over short distances. ← Sulfur oxidizers occupy moist sulfur–oxygen overlap zones within their tolerated temperatures, including suitable cool patches. ← Green partners occupy sufficiently illuminated, chemically tolerable surfaces at approximately 10–40 °C, a fictional placement range for this consortium. ← These requirements produce overlapping or discontinuous patches rather than a compulsory green-to-warmer-oxidizer sequence. ← Hot pulses kill established patches and leave mineral crust, while persistent gradients determine subsequent zonation. ← **F5** Oxygen 21% → pO₂ ≈ 0.34 bar (1.6× Earth's); **F7** The island is a hotspot stratovolcano, 1.2 Myr old, ~2,050 m high, visible top 3.6 km across over an 8 km submarine base; **F23** Minerals creatures eat: salt from spray and seeps, calcium from shell beds and bone, basalt/olivine grit (gastroliths), kaolin clay (gut detox), sulfur at fumaroles; **F24** One biochemistry from the seed capsule: a porphyrin photosystem, DNA-like heredity, L-amino acids, a nitrogen-fixing symbiont
 
-- **In play:** Compare living bands and abandoned mineral crusts without treating colour as a safety instrument.
-- **Weakness:** Redirected hot water kills established margins; visible bands do not reveal invisible gas or metal hazards.
+- **In play:** Compare living patches and abandoned mineral crusts without treating band order or colour as a safety instrument.
+- **Weakness:** Heat pulses, failed oxygen delivery, acidification or persistent shading can exclude living partners; visible growth does not reveal gas or metal hazards.
 - **Observe:**
-  1. Green film lies downstream of pale microbial growth.
+  1. Green patches overlap pale films only where light and cooled flow permit.
   2. A redirected hot trickle leaves a dead strip.
   3. Hot central crust retains colour without living tissue.
-- **Plausibility:** plausible (judge botanist/composer-2.5; chair sol, 2026-11-19)
-  - Approximately 70 °C is this fictional consortium's placement ceiling, not a universal limit for life. Reserve hotter centres for abiotic sulfur and arsenic-bearing crust in this entry; no new thermophile species is added.
+- **Plausibility:** plausible (judge strict review: sol (codex) + DeepSeek; chair sol, 2026-11-19)
+  - Approximately 70 °C is this fictional consortium's placement ceiling, not a universal limit for life. Reserve hotter centres for abiotic sulfur and arsenic-bearing crust in this entry; no new thermophile species is added. Strict review (2026-11-19): revised: The original imposed an unsupported warmer oxidizer band, so the rewrite supplies separate partner masks and allows overlapping, discontinuous zonation. Residual: F7 and F23 support geothermal chemical gradients, F5 supplies atmospheric oxygen, and F24 permits green photosynthetic partners. Independent overlapping habitat requirements repair the unsupported compulsory thermal sequence. Residual weakness: atmospheric oxygen does not establish delivery inside the film, and the 10–40 °C and approximately 70 °C limits are declared fictional tolerances rather than deductions from these facts. The generator explicitly acknowledges both limitations.
   - Analogue: Thermally zoned hot-spring microbial communities: Organisms with differing thermal tolerances form spatial bands as water cools away from its source. (Brock 1967 [unverified])
 
 ## Gameplay
@@ -43,20 +43,17 @@ Trait ← Seep temperature and chemistry vary over short distances. ← Photosyn
 ```json
 {
  "food_for": [
-  "Geothermal specialists with appropriate detoxifying symbionts",
-  "Sulfur-processing specialists collecting suitable crust"
+  "sosa",
+  "el_resoplido"
  ],
  "gift_item": "Loose sulfur-bearing crust fragment for el_resoplido",
- "poison": {
-  "alkaloid": false,
-  "signal": "Yellow deposits and pale films identify geothermal resources; arsenic, mercury and gases lack dependable visible warnings."
- },
+ "poison": null,
  "healing": null,
  "cover": null,
  "climbing": false,
  "nest_material": null,
  "mineral_lick": "Fixed specialist resource at habitable margins; unsuitable as an ordinary salt lick.",
- "notes": "Raw sulfur, metals, SO₂ and H₂S remain distinct hazards. Living growth does not make water or air safe. Hot central abiotic crust is not living forage, and specialist feeding does not authorize access to extreme heat."
+ "notes": "Sosa grazes suitable marginal surfaces; el_resoplido collects accessible sulfur-bearing fragments, which does not establish that the film itself is its food. Poison is null for intrinsic plant alkaloids, not a declaration that the mixed crust is edible. Raw sulfur is poisonous to ordinary consumers, and arsenic, mercury, SO₂ and H₂S remain distinct environmental hazards (F23, F26). Player_lineage can collect a specialist gift but has no established sulfur, metal or gas immunity. Living growth does not make water or air safe, and specialist feeding does not authorize access to extreme heat."
 }
 ```
 
@@ -88,33 +85,38 @@ Trait ← Seep temperature and chemistry vary over short distances. ← Photosyn
  "leaf": {
   "type": "No leaves; microbial films and fine filaments",
   "size_cm": 0,
-  "arrangement": "Seep-following marginal bands"
+  "arrangement": "Seep-following overlapping or discontinuous patches"
  },
  "colour": {
   "base": "Cream-white film beside sulfur-yellow deposits",
   "overlay_rules": [
-   "Cool illuminated margins carry green partners.",
-   "Stressed photosynthetic margins may acquire red-purple screening.",
+   "Green partners appear only within their separate temperature, light and chemistry mask.",
+   "Exposed high-slope photosynthetic patches may develop stronger red-purple screening.",
+   "Yellow deposits do not prove living sulfur oxidation; elemental sulfur can be abiotic or a conditional metabolic intermediate.",
    "Metal contamination has no universal warning colour.",
    "Bare mineral deposits retain colour after film loss."
   ]
  },
  "placement": {
-  "slope": "Oxygenated seep terraces and cooled marginal channels; exclude active vent throats and centres above approximately 70 °C.",
+  "slope": "Moist seep terraces and cooled marginal channels; exclude active vent throats and living instances above approximately 70 °C.",
   "altitude_m": [
    50,
    1800
   ],
-  "wetness": "Persistent moist mixing zones with oxygen and tolerable heat below approximately 70 °C.",
+  "wetness": "Persistent moisture and local delivery of required substrates; atmospheric oxygen alone does not establish oxygen inside a wet film.",
   "soil": "Sulfur-bearing mineral-coated rock; arsenic and mercury vary by patch. Hot central deposits are abiotic terrain.",
   "coast_distance_m": [
    50,
    1800
   ],
-  "fog": "Optional; local geothermal moisture sustains films.",
-  "density": "Discontinuous patches within the habitable mixing-zone mask; no living instances in hotter centres."
+  "fog": "Optional; local geothermal moisture sustains films, while steam can reduce useful light.",
+  "density": "Discontinuous patches generated from separate partner masks; overlap is allowed and simple band order is not required.",
+  "sulfur_oxidizer_mask": "Require reduced sulfur, moisture and delivered oxygen to overlap below the fictional consortium ceiling of approximately 70 °C; do not impose a warmer-than-green requirement.",
+  "photosynthetic_partner_mask": "Require approximately 10–40 °C, sufficient time-integrated light for positive net growth and tolerable acidity; these are fictional partner-specific placement conditions.",
+  "chemistry": "Track acidity and neutralizing flow rather than imposing a universal pH range. Sulfide oxidation toward sulfate can acidify margins and weather substrate, excluding green partners where buffering is inadequate.",
+  "snow": "Above approximately 1,750 m in winter, retain exposed active patches only where local geothermal heat prevents snow cover; altitude alone does not guarantee snow-free ground."
  },
- "seasonal": "Changing seep routes and runoff redraw bands; redirected heat can kill established film.",
+ "seasonal": "Changing seep routes and runoff redraw patches; redirected heat can kill established film. Snow and light availability independently limit exposed photosynthetic growth.",
  "wind_response": "Adherent film barely moves; exposed edges dry while surrounding gas plumes change direction."
 }
 ```
@@ -144,3 +146,4 @@ council run `flora-2026-11-19`; by designer, mythmaker, naturalist, physicist, s
 ## Changelog
 
 - 2026-11-19 flora.py: flora pass: 7 voices drafted and peer-reviewed, Composer botanical referee, sol chaired and applied the fixes
+- 2026-11-19 flora_addendum.py: strict second review (sol + DeepSeek) applied by sol: Left costra_de_azufre.c1 and its analogue unchanged because both reviewers rated the chain plausible.; Sulfur oxidizers are members of the seeded biosphere under F24's shared biochemistry; F24 does not itself demonstrate the sulfur-oxidation pathway.; Added independent partner masks, acidity effects and conditional snow-free placement; the approximately 70 °C ceiling and 10–40 °C green-partner ran
