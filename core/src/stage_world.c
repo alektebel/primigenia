@@ -298,6 +298,7 @@ static int block_reason(const CpStageWorld *w,float x,float z,float nx,float nz,
 #endif
 #define NAV_CELLS ((size_t)NAV_DIM*NAV_DIM)
 static uint8_t nav_mask[NAV_CELLS];
+static float nav_gr[NAV_CELLS];   /* memoised ground height at the cell centre (NaN = not yet sampled); same value cp_stage_ground returns */
 static int32_t nav_g[NAV_CELLS];
 static uint32_t nav_stamp[NAV_CELLS];
 static uint8_t nav_dir[NAV_CELLS];
@@ -355,6 +356,7 @@ static int nav_ready(const CpStageWorld *w){
     nav.climb=body.climb;
     nav.valid=1;
     memset(nav_mask,0,(size_t)dim*dim*sizeof *nav_mask);
+    memset(nav_gr,0xFF,(size_t)dim*dim*sizeof *nav_gr);
     return 1;
 }
 float cp_stage_nav_cell(const CpStageWorld *w){
@@ -393,13 +395,28 @@ static int nav_edge(const CpStageWorld *w,int idx,int d){
 /* The 8 passability bits of a cell (bit d = may step in direction d). */
 static uint16_t nav_cell(const CpStageWorld *w,int idx){
     uint16_t m=0;
+    {   /* fast path: interior cell whose 4 forward edges and the 4 neighbours' forward edges are all memoised */
+        const int d=nav.dim,i=idx%d;
+        if(i>0&&i<d-1&&idx>=d&&idx<d*d-d){
+            const uint8_t f=nav_mask[idx],e=nav_mask[idx-1],nw=nav_mask[idx-d-1],n=nav_mask[idx-d],ne=nav_mask[idx-d+1];
+            if((f&0xF0)==0xF0&&(e&0x10)&&(nw&0x20)&&(n&0x40)&&(ne&0x80))
+                return (uint16_t)((f&15)|((e&1)<<4)|(((nw>>1)&1)<<5)|(((n>>2)&1)<<6)|(((ne>>3)&1)<<7));
+        }
+    }
     for(int d=0;d<8;d++)if(nav_edge(w,idx,d))m|=(uint16_t)(1u<<d);
     return m;
 }
-static int nav_h(int idx,int gi,int gj){
-    const int i=idx%nav.dim,j=idx/nav.dim;
+static float nav_ground(const CpStageWorld *w,int i,int j){
+    float *g=&nav_gr[j*nav.dim+i];
+    if(*g!=*g)*g=cp_stage_ground(w,nav_c(i),nav_c(j));
+    return *g;
+}
+static int nav_hij(int i,int j,int gi,int gj){
     const int dx=i>gi?i-gi:gi-i,dz=j>gj?j-gj:gj-j;
     return 10*(dx>dz?dx:dz)+4*(dx<dz?dx:dz);
+}
+static int nav_h(int idx,int gi,int gj){
+    return nav_hij(idx%nav.dim,idx/nav.dim,gi,gj);
 }
 static size_t heap_n;
 static int heap_push(uint64_t key){
@@ -475,13 +492,13 @@ static int nav_astar(const CpStageWorld *w,int start,int goal){
         for(int d=0;d<8;d++){
             if(!(m&(1u<<d)))continue;
             const int n=(j+NAV_DZ[d])*nav.dim+i+NAV_DX[d];
-            const float rise=cp_stage_ground(w,nav_c(i+NAV_DX[d]),nav_c(j+NAV_DZ[d]))-cp_stage_ground(w,nav_c(i),nav_c(j));
+            const float rise=nav_ground(w,i+NAV_DX[d],j+NAV_DZ[d])-nav_ground(w,i,j);
             const int ng=nav_g[idx]+((d&1)?14:10)+(int)(ab(rise)/nav.cs*6);   /* a steeper step costs more: 6 per unit of grade */
             if(nav_stamp[n]==nav.gen&&ng>=nav_g[n])continue;
             nav_stamp[n]=nav.gen;
             nav_g[n]=ng;
             nav_dir[n]=(uint8_t)d;
-            uint64_t hn=(uint64_t)nav_h(n,gi,gj);
+            uint64_t hn=(uint64_t)nav_hij(i+NAV_DX[d],j+NAV_DZ[d],gi,gj);
             if(hn>65535)hn=65535;
             if(heap_push((((uint64_t)ng+hn)<<36)|(hn<<20)|(uint64_t)n))return -1;
         }
@@ -609,7 +626,10 @@ static int plan_path(CpStageWorld *w,float tx,float tz){
 }
 int cp_stage_nav_warm(const CpStageWorld *w){
     if(!w||!nav_ready(w))return 0;
-    for(int idx=0;idx<nav.dim*nav.dim;idx++)nav_cell(w,idx);
+    for(int idx=0;idx<nav.dim*nav.dim;idx++){
+        nav_cell(w,idx);
+        nav_ground(w,idx%nav.dim,idx/nav.dim);
+    }
     return nav.dim;
 }
 int cp_stage_path(const CpStageWorld *w,float *xz,int cap){
