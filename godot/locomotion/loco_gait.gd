@@ -8,6 +8,7 @@ extends RefCounted
 const G := 9.81
 const FR_WALK_RUN := 0.5
 const FR_TROT_GALLOP := 2.5
+const FR_HEAVY_RUN := 1.8
 const HYSTERESIS := 0.05
 
 ## Per-plan ladders: [slower gait, faster gait, Fr of the change].
@@ -17,7 +18,8 @@ static func ladder(morph) -> Array:
 			return [[&"walk", &"run", FR_WALK_RUN]]
 		&"quadruped":
 			if morph.graviportal:
-				return [[&"walk", &"amble", FR_WALK_RUN]]
+				# heavy bodies never leave the ground for long: a running amble, then a heavy trot with no flight (duty 0.5, elephant-like)
+				return [[&"walk", &"amble", FR_WALK_RUN], [&"amble", &"trot", FR_HEAVY_RUN]]
 			return [[&"walk", &"trot", FR_WALK_RUN], [&"trot", &"gallop", FR_TROT_GALLOP]]
 		&"multi":
 			return []
@@ -28,7 +30,7 @@ static func base_gait(morph) -> StringName:
 	match morph.plan:
 		&"legless": return &"slither"
 		&"monopod": return &"hop"
-		&"multi": return &"tripod"
+		&"multi": return &"ripple" if morph.stations.size() >= 4 else &"tripod"
 		_: return &"walk"
 
 static func froude(speed: float, hip_height: float) -> float:
@@ -50,13 +52,15 @@ static func select(morph, prev: StringName, fr: float) -> StringName:
 	return names[k]
 
 ## Fraction of the stride a foot spends on the ground.
-static func duty(gait: StringName, fr: float) -> float:
+static func duty(gait: StringName, fr: float, heavy := false) -> float:
 	var f: float = max(fr, 1e-4)
 	match gait:
 		&"walk": return clamp(0.47 * pow(f, -0.18), 0.53, 0.88)
 		&"tripod": return clamp(0.47 * pow(f, -0.18), 0.5, 0.85)
+		&"ripple": return clamp(0.5 * pow(f, -0.15), 0.5, 0.85)
 		&"amble": return clamp(0.45 * pow(f, -0.2), 0.3, 0.52)
-		&"run", &"trot", &"hop": return clamp(0.40 * pow(f, -0.2), 0.2, 0.48)
+		&"run", &"trot", &"hop":
+			return clamp(0.40 * pow(f, -0.2), 0.5 if heavy else 0.2, 0.5 if heavy else 0.48)
 		&"gallop": return clamp(0.36 * pow(f, -0.25), 0.15, 0.32)
 	return 1.0
 
@@ -66,6 +70,7 @@ static func bounce(gait: StringName) -> float:
 	match gait:
 		&"walk": return 0.0
 		&"tripod": return 0.25
+		&"ripple": return 0.2
 		&"amble": return 0.6
 		&"slither": return 0.0
 	return 1.0
@@ -104,6 +109,13 @@ static func offsets(gait: StringName, morph) -> PackedFloat32Array:
 					p = (0.0 if hind else 0.30) + (0.10 if left else 0.0) + (0.02 if (left and not hind) else 0.0)
 			out[i] = fposmod(p, 1.0)
 		return out
+	if morph.plan == &"multi" and gait == &"ripple":
+		# metachronal wave: each station lands a little after the one behind it, the two sides in antiphase
+		var ns: int = morph.stations.size()
+		for i in range(n):
+			var l: Dictionary = legs[i]
+			out[i] = fposmod(float(l.station) * (0.75 / ns) + (0.0 if l.side >= 0 else 0.5), 1.0)
+		return out
 	if morph.plan == &"multi":
 		# alternating tripod (tetrapod for 8 legs...): neighbours along the body
 		# and across it are in antiphase.
@@ -121,3 +133,18 @@ static func offsets(gait: StringName, morph) -> PackedFloat32Array:
 		out[i] = fposmod(0.5 * k, 1.0)
 		k += 1
 	return out
+
+## Spine flexion in a gallop (rad of arch: + brings head and tail down, - lifts them) over the stride phase.
+## Gathered after the hind push (flexion) and stretched in the flight (extension), as in a bounding mammal.
+static func spine_flex(gait: StringName, phase: float, fr: float) -> float:
+	if gait != &"gallop":
+		return 0.0
+	var amp: float = clamp(0.045 * pow(max(fr, 0.1) / 2.5, 0.3), 0.0, 0.11)
+	return amp * sin(TAU * (phase - 0.15))
+
+## Forward lean of the body in a run (rad, nose down), from the Froude number.
+static func run_lean(plan: StringName, gait: StringName, fr: float) -> float:
+	if gait != &"run":
+		return 0.0
+	var k := 0.16 if plan == &"upright_biped" else 0.07
+	return k * smoothstep(0.4, 3.0, fr)

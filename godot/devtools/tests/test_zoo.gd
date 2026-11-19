@@ -62,3 +62,30 @@ func run(t) -> void:
 	t.check(top[0] < Course.BASE_H + 2.5, "the 2 legged body stalls at the foot of the 40 degree ramp (%.1f m)" % top[0])
 	zr.queue_free()
 	t.check(Zoo.parse_args(PackedStringArray(["--zoo=mite,giant", "--course=uturn"])).morphs == ["mite", "giant"], "zoo arguments parse")
+	# run mode: sprint orders and a visual speed multiplier; the C hashes are the sprint run's, the shown speed is bigger
+	var zw = _zoo(["trotter"], "figure8", host)
+	var zs = Zoo.new()
+	zs.with_visuals = false
+	zs.auto_build = false
+	zs.morph_ids = ["trotter"]
+	zs.course_name = "figure8"
+	zs.run_speed = 2.0
+	host.add_child(zs)
+	zs.build()
+	var sw_walk = zw.runners[0].sw
+	var sw_run = zs.runners[0].sw
+	for tick in 120:
+		zw.step_ticks(1)
+		zs.step_ticks(1)
+	var d_walk: float = Vector2(zw.stats(0).x - Course.lane_x(0, 1), zw.stats(0).z - Course.START_Z).length()
+	var d_c: float = Vector2(zs.stats(0).x - Course.lane_x(0, 1), zs.stats(0).z - Course.START_Z).length()
+	t.check(d_c > d_walk * 1.2, "run mode sends sprint orders: the C world covers more ground (%.1f vs %.1f m)" % [d_c, d_walk])
+	var seen: Vector3 = sw_run.sample(0, 1.0).pos
+	var c_pos := Vector3(sw_run.cur.entities[0].x, seen.y, sw_run.cur.entities[0].z)
+	t.check(seen.distance_to(c_pos) > 1.0, "the shown position runs ahead of the C one by the visual multiplier (%.1f m)" % seen.distance_to(c_pos))
+	t.check(sw_run.sample(0, 0.5).speed > sw_run.cur.entities[0].speed * 1.5, "the shown speed is multiplied")
+	sw_run.set_vis_speed(1.0)
+	t.check(sw_run.sample(0, 1.0).pos.distance_to(c_pos) < 0.01, "runvis off drops the offset")
+	t.check(sw_walk.sample(0, 1.0).pos.distance_to(Vector3(sw_walk.cur.entities[0].x, sw_walk.sample(0, 1.0).pos.y, sw_walk.cur.entities[0].z)) < 0.01, "without it the shown position is the C one")
+	zw.queue_free()
+	zs.queue_free()

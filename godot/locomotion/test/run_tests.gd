@@ -36,6 +36,7 @@ func _init() -> void:
 	test_morphology()
 	test_gait_tables()
 	test_foot_slide()
+	test_run_gaits()
 	test_stability()
 	test_transitions()
 	test_footfall_patterns()
@@ -170,6 +171,86 @@ func test_foot_slide() -> void:
 		table[name] = row
 		check(worst < SLIDE_LIMIT, "%s: worst slide %.2f mm over %d steps in %d scenarios" % [name, worst * 1000.0, nsteps, scenarios.size()])
 	out["foot_slide_mm"] = table
+
+# ---------------------------------------------------------------- run gaits (run-gait track)
+func test_run_gaits() -> void:
+	print("run gaits: speed = stride x cadence, aerial phase, slide, posture")
+	var table := {}
+	# plan -> [Froude, gait expected]
+	var cases := {"biped": [[1.5, &"run"], [3.5, &"run"]], "horizontal_biped": [[1.8, &"run"], [3.5, &"run"]],
+		"light_quadruped": [[1.2, &"trot"], [5.0, &"gallop"], [10.0, &"gallop"]], "hexapod": [[1.5, &"tripod"], [3.0, &"tripod"]],
+		"wader": [[1.5, &"run"]]}
+	for plan in cases:
+		for c in cases[plan]:
+			var s = Sim.new(Bodies.get_body(plan))
+			var v: float = s.speed_for_froude(c[0])
+			s.run(14.0, func(_t): return v)
+			check(s.ctl.gait == c[1], "%s Fr %.1f: gait %s (want %s)" % [plan, c[0], s.ctl.gait, c[1]])
+			var prod: float = s.ctl.cadence * s.ctl.stride
+			check(abs(prod - v) < 0.04 * v, "%s Fr %.1f: stride x cadence = %.2f vs speed %.2f m/s" % [plan, c[0], prod, v])
+			var sl: float = s.max_slide(4.0)
+			check(sl < SLIDE_LIMIT, "%s Fr %.1f: slide %.2f mm" % [plan, c[0], sl * 1000.0])
+			var air := 0
+			for f in s.frames:
+				if f.t > 8.0 and f.n == 0:
+					air += 1
+			if c[1] == &"run" or c[1] == &"gallop":
+				check(air > 0, "%s Fr %.1f: aerial phase (%d frames with no foot down)" % [plan, c[0], air])
+			table["%s@%.1f" % [plan, c[0]]] = {"gait": str(s.ctl.gait), "cadence": r(s.ctl.cadence, 2), "stride": r(s.ctl.stride, 2), "air_frames": air, "slide_mm": r(sl * 1000.0, 2)}
+	out["run_gaits"] = table
+	# posture: gallop arches the spine and returns to straight at a walk; a run leans the body forward
+	var g = Sim.new(Bodies.get_body("light_quadruped"))
+	var v5: float = g.speed_for_froude(6.0)
+	var lo := 0.0
+	var hi := 0.0
+	g.run(8.0, func(_t): return v5)
+	for k in 240:
+		g.run(1.0 / 60.0, func(_t): return v5)
+		lo = min(lo, g.ctl.pose.flex)
+		hi = max(hi, g.ctl.pose.flex)
+	check(hi > 0.02 and lo < -0.02 and hi < 0.15 and lo > -0.15, "gallop flexes and extends the spine within 0.15 rad (%.3f..%.3f)" % [lo, hi])
+	var w = Sim.new(Bodies.get_body("light_quadruped"))
+	w.run(6.0, func(_t): return w.speed_for_froude(0.15))
+	check(abs(w.ctl.pose.flex) < 0.002 and abs(w.ctl.spine_pitch(0.4)) < 0.01, "walk keeps the spine straight")
+	var b = Sim.new(Bodies.get_body("biped"))
+	b.run(6.0, func(_t): return b.speed_for_froude(0.15))
+	var p_walk: float = b.ctl.pose.pitch
+	b.run(8.0, func(_t): return b.speed_for_froude(3.0))
+	check(b.ctl.pose.pitch - p_walk > 0.06, "biped run pitches the body forward (%.3f -> %.3f rad)" % [p_walk, b.ctl.pose.pitch])
+	# the bounce is never exactly periodic
+	var ys := []
+	var s2 = Sim.new(Bodies.get_body("light_quadruped"))
+	s2.run(6.0, func(_t): return s2.speed_for_froude(1.2))
+	var peaks := []
+	var prev_y := 0.0
+	var prev_d := 0.0
+	for k in 1200:
+		s2.run(1.0 / 60.0, func(_t): return s2.speed_for_froude(1.2))
+		var y: float = s2.ctl.pose.bounce
+		var d := y - prev_y
+		if prev_d > 0.0 and d <= 0.0:
+			peaks.append(prev_y)
+		prev_y = y
+		prev_d = d
+	var pmin: float = peaks.min() if peaks.size() > 3 else 0.0
+	var pmax: float = peaks.max() if peaks.size() > 3 else 0.0
+	check(peaks.size() > 6 and pmax - pmin > 0.04 * pmax, "bounce height varies between strides (%d peaks, %.1f %% spread)" % [peaks.size(), 100.0 * (pmax - pmin) / maxf(pmax, 1e-6)])
+	# ladders of the new gaits, on analysed-like dictionaries
+	var heavy := {"plan": &"quadruped", "graviportal": true}
+	var lad: Array = Gait.ladder(heavy)
+	check(lad.size() == 2 and lad[1][1] == &"trot", "heavy quadrupeds amble, then trot (no gallop)")
+	check(Gait.select(heavy, &"walk", 3.0) == &"trot" and Gait.duty(&"trot", 3.0, true) >= 0.4 and Gait.duty(&"trot", 3.0, false) < 0.4, "heavy trot keeps a longer foot contact")
+	var legs := []
+	for st in 4:
+		for sd in [1, -1]:
+			legs.append({"station": st, "side": sd})
+	var multi := {"plan": &"multi", "stations": [{}, {}, {}, {}], "legs": legs}
+	check(Gait.base_gait(multi) == &"ripple", "four or more stations ripple")
+	var rp := Gait.offsets(&"ripple", multi)
+	var wave_ok := true
+	for st in 3:
+		wave_ok = wave_ok and rp[2 * (st + 1)] > rp[2 * st] and abs(rp[2 * st + 1] - rp[2 * st] - 0.5) < 1e-5
+	check(wave_ok, "ripple: each station lands after the one behind, sides in antiphase")
 
 # ---------------------------------------------------------------- stability
 func test_stability() -> void:

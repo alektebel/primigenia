@@ -35,6 +35,27 @@ var paused := false
 var max_steps_per_frame := 60
 var achieved_scale := 1.0     # simulated seconds per real second in the last frame (< timescale when capped)
 
+# Dev: look at the player moving `vis_speed` times faster than the C world moves it (console `runvis`). Pure presentation:
+# the shown position gains an offset that grows by (vis_speed - 1) times each tick's displacement, so the animation sees
+# run speeds before the C sim can produce them. 1.0 = off, and the offset is dropped.
+var vis_speed := 1.0
+var _vis_off_prev := Vector2.ZERO
+var _vis_off := Vector2.ZERO
+
+func set_vis_speed(k: float) -> void:
+	vis_speed = clampf(k, 1.0, 6.0)
+	if vis_speed == 1.0:
+		_vis_off_prev = Vector2.ZERO
+		_vis_off = Vector2.ZERO
+
+func _vis_tick() -> void:
+	_vis_off_prev = _vis_off
+	if vis_speed == 1.0 or cur.entities.is_empty() or prev.entities.is_empty():
+		return
+	var d := Vector2(cur.entities[0].x - prev.entities[0].x, cur.entities[0].z - prev.entities[0].z)
+	if d.length() <= JUMP:
+		_vis_off += d * (vis_speed - 1.0)
+
 const RING_EVERY := 100
 const RING_KEEP := 8
 
@@ -138,6 +159,7 @@ func step_once() -> void:
 	pprev = prev
 	prev = cur
 	cur = world.state()
+	_vis_tick()
 	log_inputs.append(input.duplicate())
 	hashes.append(h)
 	if int(cur.tick) % RING_EVERY == 0:
@@ -232,6 +254,11 @@ func sample(id: int, a: float = -1.0) -> Dictionary:
 	var y := 0.0
 	if ground_fn.is_valid():
 		y = ground_fn.call(pos2.x, pos2.y)
+	if id == 0 and vis_speed != 1.0:
+		pos2 += _vis_off_prev.lerp(_vis_off, a)
+		vel2 += (_vis_off - _vis_off_prev) / DT
+		if ground_fn.is_valid():
+			y = ground_fn.call(pos2.x, pos2.y)
 	return {"pos": Vector3(pos2.x, y, pos2.y), "yaw": wrapf(yaw, -PI, PI), "speed": vel2.length(), "speed_c": c.speed,
 		"vel": Vector3(vel2.x, 0.0, vel2.y)}
 
