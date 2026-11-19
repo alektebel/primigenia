@@ -1740,9 +1740,10 @@ const char *cp_stage_order_error(int code){
 }
 /* Per tick, in this order: debug ops of the tick, then the order input of the tick, then the step.
  * Log and debug entries carry absolute world ticks (== replay index when starting from a setup). */
-uint64_t cp_stage_replay_ex(const CpStageSetup *setup,const uint8_t *snapshot,size_t snap_len,const CpStageField *field,
-                            const CpStageLogEntry *log,int count,const CpStageDebugEntry *dbg,int dbg_count,
-                            uint32_t ticks,uint64_t *hashes){
+uint64_t cp_stage_replay_run(const CpStageSetup *setup,const uint8_t *snapshot,size_t snap_len,const CpStageField *field,
+                             const CpStageLogEntry *log,int count,const CpStageDebugEntry *dbg,int dbg_count,
+                             const CpStageRunEntry *runs,int run_count,uint32_t ticks,uint64_t *hashes){
+    if(run_count<0||(run_count&&!runs))return 0;
     if(count<0||(count&&!log)||dbg_count<0||(dbg_count&&!dbg))return 0;
     CpStageWorld replay;
     memset(&replay,0,sizeof replay);
@@ -1758,7 +1759,8 @@ uint64_t cp_stage_replay_ex(const CpStageSetup *setup,const uint8_t *snapshot,si
     }
     for(int i=0;i<count;i++)if(log[i].tick<first||log[i].tick-first>=ticks||(i&&log[i].tick<log[i-1].tick))return 0;
     for(int i=0;i<dbg_count;i++)if(dbg[i].tick<first||dbg[i].tick-first>=ticks||(i&&dbg[i].tick<dbg[i-1].tick))return 0;
-    int cursor=0,dcursor=0;
+    for(int i=0;i<run_count;i++)if(runs[i].tick<first||runs[i].tick-first>=ticks||(i&&runs[i].tick<runs[i-1].tick))return 0;
+    int cursor=0,dcursor=0,rcursor=0;
     for(uint32_t k=0;k<ticks;k++){
         const uint32_t tick=first+k;
         while(dcursor<dbg_count&&dbg[dcursor].tick==tick)cp_stage_debug(&replay,&dbg[dcursor++].d);
@@ -1770,12 +1772,18 @@ uint64_t cp_stage_replay_ex(const CpStageSetup *setup,const uint8_t *snapshot,si
 }
 uint64_t cp_stage_replay(const CpStageSetup *setup,const CpStageLogEntry *log,int count,uint32_t ticks,uint64_t *hashes){
     return cp_stage_replay_ex(setup,NULL,0,NULL,log,count,NULL,0,ticks,hashes);
+        while(rcursor<run_count&&runs[rcursor].tick==tick){cp_stage_set_run(&replay,runs[rcursor].on);rcursor++;}
 }
 static const char *block_name(int r){
     switch(r){
         case CP_STAGE_BLOCK_CLIFF:return "cliff";
         case CP_STAGE_BLOCK_WATER:return "water";
         case CP_STAGE_BLOCK_EDGE:return "edge";
+uint64_t cp_stage_replay_ex(const CpStageSetup *setup,const uint8_t *snapshot,size_t snap_len,const CpStageField *field,
+                            const CpStageLogEntry *log,int count,const CpStageDebugEntry *dbg,int dbg_count,
+                            uint32_t ticks,uint64_t *hashes){
+    return cp_stage_replay_run(setup,snapshot,snap_len,field,log,count,dbg,dbg_count,NULL,0,ticks,hashes);
+}
         case CP_STAGE_BLOCK_CREATURE:return "creature";
         case CP_STAGE_BLOCK_UNREACHABLE:return "unreachable";
         case CP_STAGE_BLOCK_OBSTACLE:return "obstacle";

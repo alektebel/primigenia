@@ -410,6 +410,12 @@ uint64_t cp_stage_replay_ex(const CpStageSetup *setup,const uint8_t *snapshot,si
 uint64_t cp_stage_step(CpStageWorld *w,const CpStageInput *input);
 uint64_t cp_stage_hash(const CpStageWorld *w);
 /* Returns bytes excluding NUL, or -1 on insufficient capacity. */
+/* Input log v4: the run toggle of a tick (`on` 0/1, applied with cp_stage_set_run after that tick's debug ops, before its order and
+ * step, as the Godot session does). Entries carry absolute world ticks, ascending. cp_stage_replay_ex is this with no run entries. */
+typedef struct { uint32_t tick; int32_t on; } CpStageRunEntry;
+uint64_t cp_stage_replay_run(const CpStageSetup *setup,const uint8_t *snapshot,size_t snap_len,const CpStageField *field,
+                             const CpStageLogEntry *log,int count,const CpStageDebugEntry *dbg,int dbg_count,
+                             const CpStageRunEntry *runs,int run_count,uint32_t ticks,uint64_t *hashes);
 int cp_stage_observe(const CpStageWorld *w,char *out,size_t cap);   /* schema "world-2" */
 int cp_stage_observe_v(const CpStageWorld *w,char *out,size_t cap,int version);   /* 1 = the old "world-1" text, 2 = world-2 */
 /* --- snapshot / restore (PLAN-devtools step 3) ---

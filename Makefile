@@ -59,6 +59,7 @@ test: $(BUILD)/run_fall_test $(BUILD)/parts_nest_test $(BUILD)/plan_test $(BUILD
 	nice -n 10 ./$(BUILD)/nav_test
 	./$(BUILD)/steer_test
 	@for g in world-1 world-42 world-987654321 world-debug-42 world-field-1; do ./$(BUILD)/world_cli --replay tests/golden/$$g.log | diff -q - tests/golden/$$g.hashes >/dev/null || { echo "world_cli replay of $$g differs from its .hashes"; exit 1; }; done; echo "world_cli replays match the golden hashes"
+	sh tests/check_log_v4.sh $(BUILD)/world_cli tests/golden/world-42.log $(BUILD)
 	@sed "s/ 5ef8636377460348/ 5ef8636377460345/" tests/golden/world-field-1.log > $(BUILD)/world-field-bad.log; ! ./$(BUILD)/world_cli --replay $(BUILD)/world-field-bad.log 2>$(BUILD)/world-field-bad.err >/dev/null && grep -q "terrain hash mismatch" $(BUILD)/world-field-bad.err && echo "a field log with an edited hash is refused"
 	python3 tests/test_terrain_metrics.py
 	./$(BUILD)/cpore_test

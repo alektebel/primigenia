@@ -7,6 +7,7 @@ const StageSetup := preload("res://game/stage/stage_setup.gd")
 const Profile := preload("res://game/stage/profile.gd")
 const TerrainData := preload("res://game/island/terrain_data.gd")
 const RockViews := preload("res://game/tests/rock_views.gd")
+const WorldLog := preload("res://game/stage/world_log.gd")
 
 func run(t) -> void:
 	var p: Dictionary = CporeTerrain.defaults()
@@ -65,3 +66,40 @@ func run(t) -> void:
 	t.check(saw_falling, "direct movement on a 55-65 degree face starts a fall")
 	t.check(fell and not bool(sw.cur.player.falling), "the fall ends with a fell event (type 27), damage %.1f" % damage)
 	t.check(sw.sample(0).has("pos"), "sample() still interpolates after a fall")
+	_log_v4(t, sw)
+
+# Input log v4: the run column is written, parses back, and world_cli replays the session (run toggles included) to the same hashes.
+func _log_v4(t, sw) -> void:
+	var text: String = sw.export_log()
+	t.check(text.begins_with("CPORE_WORLD_LOG 4"), "a session that ran exports a v4 log")
+	var parsed: Dictionary = WorldLog.parse(text)
+	t.check(parsed.ok and parsed.version == 4 and parsed.inputs.size() == sw.log_inputs.size(), "the v4 log parses back")
+	var runs := 0
+	for i in parsed.inputs:
+		runs += int(i.get("run", 0))
+	t.check(runs > 20, "the run column carries the toggles (%d ticks running)" % runs)
+	t.eq(WorldLog.write(parsed.setup, parsed.inputs, {"debug": parsed.debug, "field": parsed.field}), text, "write(parse(v4 log)) is stable")
+	var dir := ProjectSettings.globalize_path("user://devtools-test")
+	DirAccess.make_dir_recursive_absolute(dir)
+	var path := dir.path_join("run-v4.log")
+	var f := FileAccess.open(path, FileAccess.WRITE)
+	f.store_string(text)
+	f.close()
+	var r: Dictionary = t.exec(t.build_path("world_cli"), ["--replay", path])
+	t.eq(r.rc, 0, "world_cli --replay accepts the v4 log")
+	var lines: PackedStringArray = str(r.out).strip_edges().split("\n")
+	var bad := 0
+	for i in mini(lines.size(), sw.hashes.size()):
+		if lines[i].strip_edges() != sw.hashes[i]:
+			bad += 1
+	t.check(lines.size() == sw.hashes.size() and bad == 0, "world_cli replays the run session to the Godot hashes (%d lines, %d mismatches)" % [lines.size(), bad])
+	# the same inputs without any run: v3 text (no run column), still parses and replays
+	var plain: Array = []
+	for i in sw.log_inputs:
+		var c: Dictionary = i.duplicate()
+		c.erase("run")
+		plain.append(c)
+	var v3: String = WorldLog.write(parsed.setup, plain, {"debug": parsed.debug, "field": parsed.field})
+	var p3: Dictionary = WorldLog.parse(v3)
+	t.check(v3.begins_with("CPORE_WORLD_LOG 3") and p3.ok and p3.version == 3 and not p3.inputs[0].has("run"), "no run set: a v3 log, no run column")
+	DirAccess.remove_absolute(path)
