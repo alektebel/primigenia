@@ -17,6 +17,7 @@ const RingFx := preload("res://ui/ring_fx.gd")
 const Note := preload("res://ui/field_note.gd")
 const Menu := preload("res://ui/menu.gd")
 const Stub := preload("res://ui/stub_view.gd")
+const JournalView := preload("res://ui/journal_view.gd")
 const Onboarding := preload("res://ui/onboarding.gd")
 const LoadoutSheet := preload("res://ui/loadout_sheet.gd")
 
@@ -56,6 +57,7 @@ var veil
 var ring_fx
 var menu
 var stub
+var journal
 var onboarding
 var loadout_panel
 var loadout_abilities: Array = []   # the 4 hotbar entries of Attack mode once the stage knows the loadout
@@ -105,6 +107,8 @@ func _ready() -> void:
 	root.add_child(menu)
 	stub = Stub.new()
 	root.add_child(stub)
+	journal = JournalView.new()
+	root.add_child(journal)
 	onboarding = Onboarding.new(get_node_or_null("/root/Game"))
 	loadout_panel = LoadoutSheet.new()
 	root.add_child(loadout_panel)
@@ -138,6 +142,9 @@ func _ready() -> void:
 	menu.setting_changed.connect(_on_setting)
 	menu.hints_reset_requested.connect(func() -> void: onboarding.reset())
 	stub.closed.connect(func() -> void: veil.set_flat(0.62 if paused else 0.0))
+	journal.closed.connect(func() -> void:
+		menu.modulate.a = 1.0
+		veil.set_flat(0.62 if paused else 0.0))
 	set_mode(mode)
 
 # --- stage -> UI -------------------------------------------------------------------------------------------------
@@ -351,25 +358,31 @@ func set_paused(on: bool) -> void:
 	else:
 		menu.close_menu()
 		stub.open = false
+		journal.close_view()
 		veil.set_flat(0.0)
 	signs.menu_open = on
 	if audio:
 		audio.set_paused(on)
 	pause_toggled.emit(on)
 
-## Journal (J) or family tree (T): their pages are a later design; the view is a veil with a title.
+## Journal (J: the field journal, ui/journal_view.gd) or family tree (T: the real tree opens itself; the stub is the fallback).
 func open_view(kind: String) -> void:
 	if kind != "journal":
 		family_tree_requested.emit()        # the real tree (game/stage/lineage_controller.gd) opens itself
 		if not family_tree_requested.get_connections().is_empty():
 			return
-	else:
-		journal_requested.emit()
-	stub.open_view(kind, signs.dna_total)
-	veil.set_flat(0.5)
+		stub.open_view(kind, signs.dna_total)
+		veil.set_flat(0.5)
+		return
+	journal_requested.emit()
+	if paused:
+		menu.modulate.a = 0.0               # the menu steps aside while the book is open
+	journal.open_view()
+	veil.set_flat(0.62)
 
 func close_view() -> void:
 	stub.close_view()
+	journal.close_view()
 	veil.set_flat(0.62 if paused else 0.0)
 
 ## The key sheet (F1 held shows it too): pinned open from the menu until Esc.
@@ -420,7 +433,9 @@ func _track_ring(fallback: Vector2 = Vector2.ZERO) -> void:
 func _process(dt: float) -> void:
 	_onboard(dt)
 	veil.death = move_toward(veil.death, 1.0 if dying else 0.0, dt / 1.2)
-	signs.fade_all = veil.death
+	var book: float = journal.modulate.a if journal.visible else 0.0     # the signs and the map step back behind the open book
+	signs.fade_all = maxf(veil.death, book)
+	minimap.modulate.a = 1.0 - book
 	if not selected.is_empty():
 		_track_ring()
 		petals.centre = ring.centre
@@ -454,6 +469,10 @@ func _unhandled_input(e: InputEvent) -> void:
 	if keys_pinned and e is InputEventKey and e.pressed and e.is_action_pressed("pause_menu"):
 		_unpin_keys()
 		get_viewport().set_input_as_handled()
+		return
+	if journal.open:
+		if journal.handle_input(e):
+			get_viewport().set_input_as_handled()
 		return
 	if stub.open:
 		if stub.handle_input(e):
@@ -527,7 +546,7 @@ func _unpin_keys() -> void:
 func _onboard(dt: float) -> void:
 	var sit := {"ring": ring.visible, "mode": mode != Modes.NONE, "fight": fight,
 		"carcass": int(selected.get("carcass_meat", -1)) >= 0, "nest": loadout_available}
-	var h: Dictionary = onboarding.update(dt, sit) if not paused and not stub.open and not dying else {}
+	var h: Dictionary = onboarding.update(dt, sit) if not paused and not stub.open and not journal.open and not dying else {}
 	words.set_hint(h.get("text", ""), h.get("keys", ""))
 	ring.names_all = selections <= 3 or onboarding.current == 3
 

@@ -553,3 +553,11 @@ routes-test: $(BUILD)/routes_test
 .PHONY: godot-route-events-test
 godot-route-events-test: godot
 	nice -n 10 timeout 120 $(GODOT) --headless --path godot --script res://game/tests/test_route_events.gd
+
+# The field journal (G38, godot/ui/journal_*.gd): every section and spread, ES and EN, plus overflow cases (software GL, JPG).
+# Small laptop: make godot-journal-evidence RES=1024x600 SUFFIX=_1024x600
+.PHONY: godot-journal-evidence
+godot-journal-evidence: godot
+	@mkdir -p docs/evidence/godot/journal
+	LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 900 xvfb-run -a -s "-screen 0 $(or $(RES),1280x720)x24" $(GODOT) --rendering-driver opengl3 --max-fps 15 --resolution $(or $(RES),1280x720) --path godot \
+	  --script res://game/tests/journal_evidence.gd -- $(CURDIR)/docs/evidence/godot/journal $(SUFFIX)

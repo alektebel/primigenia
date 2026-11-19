@@ -3,6 +3,8 @@ extends SceneTree
 
 const Modes := preload("res://ui/modes.gd")
 const JournalData := preload("res://ui/journal_data.gd")
+const JournalModel := preload("res://ui/journal_model.gd")
+const JournalView := preload("res://ui/journal_view.gd")
 const Note := preload("res://ui/field_note.gd")
 const Mock := preload("res://ui/mock_source.gd")
 const GameUI := preload("res://ui/game_ui.gd")
@@ -46,6 +48,7 @@ func _finish() -> void:
 	await test_loadout_ui()
 	await test_signs_and_words()
 	await test_menu_and_onboarding()
+	await test_journal()
 	await test_audio_manager()
 	print("ui tests: %d checks, %d failures" % [checks, fails])
 	quit(1 if fails else 0)
@@ -408,11 +411,11 @@ func test_menu_and_onboarding() -> void:
 	ui.journal_requested.connect(func(): reqs.append("journal"))
 	ui.family_tree_requested.connect(func(): reqs.append("tree"))
 	ui._unhandled_input(_key_event(KEY_J))
-	ok(reqs == ["journal"] and ui.stub.open, "J opens the journal view")
-	ui.stub.handle_input(_key_event(KEY_ESCAPE))
-	ok(not ui.stub.open, "Esc closes it")
+	ok(reqs == ["journal"] and ui.journal.open and not ui.stub.open, "J opens the field journal")
+	ui.journal.handle_input(_key_event(KEY_ESCAPE))
+	ok(not ui.journal.open, "Esc closes it")
 	ui._unhandled_input(_key_event(KEY_T))
-	ok(reqs == ["journal", "tree"] and not ui.stub.open, "T asks for the family tree (the real view, game/stage/lineage_controller.gd, opens it; the stub is only a fallback)")
+	ok(reqs == ["journal", "tree"] and not ui.stub.open and not ui.journal.open, "T asks for the family tree (the real view, game/stage/lineage_controller.gd, opens it; the stub is only a fallback)")
 	ui.close_view()
 	# onboarding
 	var ob = Onboarding.new(null)
@@ -446,6 +449,183 @@ func _key_event(code: Key) -> InputEventKey:
 	key.physical_keycode = code
 	key.pressed = true
 	return key
+
+# --- the field journal (G38) -------------------------------------------------------------------------------------------
+
+func _journal_state() -> Dictionary:
+	var species_rows := [
+		{"seen": true, "bonded": 2, "kills": 0, "resolution": 0, "observed": 2},
+		{"seen": true, "bonded": 3, "kills": 0, "resolution": 1, "observed": 3},
+		{"seen": false, "bonded": 0, "kills": 0, "resolution": 0, "observed": 0},
+		{"seen": true, "bonded": 0, "kills": 3, "resolution": 2, "observed": 1}]
+	return {"social": {"dna_total": 137, "species": species_rows},
+		"entities": [{"species": 0, "dead": false, "likes": ["sing", "fruit"], "dislikes": ["bone"]}],
+		"parts": {"clues": 1, "recipes": 0, "discovered": [
+			{"id": "pico", "owned": true, "level": 2, "tier": 0}, {"id": "pata", "owned": true, "level": 1, "tier": 0},
+			{"id": "ojo", "owned": true, "level": 1, "tier": 0}, {"id": "cuerno", "owned": false, "level": 0, "tier": 0}],
+			"nodes": [{"kind": 3, "inspected": true}, {"kind": 3, "inspected": false}, {"kind": 4, "inspected": false}]}}
+
+func _species_table() -> Array:
+	return [{"name": "Rondo", "roam": 22.0, "temperament": 0}, {"name": "Zanco", "roam": 26.0, "temperament": 0},
+		{"name": "Espinodo", "roam": 24.0, "temperament": 1}, {"name": "Garfio", "roam": 30.0, "temperament": 2}]
+
+func _chains_table() -> Array:
+	var c := []
+	for i in 4:
+		c.append({"observe": ["first clue %d" % i, "second clue %d" % i, "third clue %d" % i]})
+	return c
+
+func _catalogue() -> Array:
+	return JSON.parse_string(FileAccess.get_file_as_string("res://game/data/parts.json")).parts
+
+func test_journal() -> void:
+	var g = root.get_node("Game")
+	g.settings["language"] = "en"
+	# the model: pure functions of the world state
+	var st := _journal_state()
+	var m := JournalModel.build(st, _species_table(), _chains_table(), _catalogue())
+	ok(m.species.size() == 4 and m.species[0].seen and not m.species[2].seen, "journal: seen and unseen species")
+	ok(m.species[0].clues == ["first clue 0", "second clue 0"] and m.species[3].clues == ["first clue 3"], "journal: the revealed clues are the first n of the chain")
+	ok(m.species[0].likes == ["sing", "fruit"] and m.species[1].likes.is_empty(), "journal: likes come from a living creature of the species")
+	ok(m.species[1].resolution == 1 and m.species[3].resolution == 2 and m.species[3].kills == 3, "journal: the Q43 state of each species")
+	ok(m.species[2].diet == 1 and m.species[0].diet == 0 and m.species[3].roam == 30, "journal: diet and home range")
+	ok(m.parts.size() == 46 and m.parts_found == 4 and m.parts_owned == 3, "journal: 46 catalogue parts, 4 found, 3 owned")
+	var by := {}
+	for t in m.parts:
+		by[t.id] = t
+	ok(by.pico.found and by.pico.owned and by.pico.level == 2 and by.cuerno.found and not by.cuerno.owned and not by.fauces.found, "journal: found, owned, level and undiscovered parts")
+	ok(m.shards.is_empty() and m.cave == "", "journal: no shards and no cave while the world reports none (the sections hide)")
+	ok(m.fossils.size() == 3 and m.fossils[0].studied and not m.fossils[1].studied, "journal: fossils and old carcasses from the nodes")
+	ok(m.recipes.size() == 1 and m.recipes[0].state == "hinted" and m.recipes[0].clues_seen == 1, "journal: bone spines hinted after one clue (until state.recipes exists)")
+	st.parts.clues = 2
+	ok(JournalModel.recipes(st)[0].state == "known", "journal: two clues make the recipe known")
+	st["shards"] = [{"found": true, "line": {"en": "It fell.", "es": "Cayo."}}, {"found": false}, true, 0]
+	st["cave"] = {"found": true}
+	st["recipes"] = [{"id": "rock_armour", "state": "mastered", "clues_seen": 3, "clues_total": 3}, {"id": "x", "state": "bogus"}]
+	var m2 := JournalModel.build(st, _species_table(), _chains_table(), _catalogue())
+	ok(m2.shards.size() == 4 and m2.shards[0].found and not m2.shards[1].found and m2.shards[2].found and not m2.shards[3].found, "journal: shards accept dicts, bools and ints")
+	ok(JournalModel.text_of(m2.shards[0].line, "es") == "Cayo." and m2.cave == "entered", "journal: localised shard line, cave entered")
+	ok(m2.recipes[0].state == "mastered" and m2.recipes[1].state == "unknown", "journal: recipes come from state.recipes, a bad state reads unknown")
+	# strings in both languages
+	var bad := []
+	for k in Strings.TABLE:
+		if (k.begins_with("j_") or k.begins_with("jt_")) and (String(Strings.TABLE[k][0]) == "" or String(Strings.TABLE[k][1]) == ""):
+			bad.append(k)
+	ok(bad.is_empty(), "journal: every string has English and Spanish %s" % [bad])
+	# the view through the game UI
+	var ui := GameUI.new()
+	root.add_child(ui)
+	await process_frame
+	var jv = ui.journal
+	jv.size = Vector2(1280, 720)
+	jv.source = func() -> Dictionary: return m
+	ui._unhandled_input(_key_event(KEY_J))
+	await process_frame
+	await process_frame
+	ok(jv.open and jv.tab == 0 and jv.page == 0 and jv.page_count() == 2, "journal: J opens on Species, two spreads for four species")
+	ok(jv.hit_rect("tab", 3).size.x > 0.0 and jv.hit_rect("next").size.x > 0.0 and jv.hit_rect("prev").size.x == 0.0, "journal: tabs and next arrow are drawn, no previous arrow on the first spread")
+	jv.handle_input(_key_event(KEY_RIGHT))
+	ok(jv.page == 1, "journal: Right turns the page")
+	jv.handle_input(_key_event(KEY_RIGHT))
+	ok(jv.page == 1, "journal: the last spread stays")
+	jv.handle_input(_key_event(KEY_LEFT))
+	ok(jv.page == 0, "journal: Left turns back")
+	jv.handle_input(_key_event(KEY_TAB))
+	ok(jv.tab == 1 and jv.page == 0 and jv.page_count() >= 3, "journal: Tab goes to Parts, which has several spreads (%d)" % jv.page_count())
+	var click := InputEventMouseButton.new()
+	click.button_index = MOUSE_BUTTON_LEFT
+	click.pressed = true
+	click.position = jv.hit_rect("tab", 2).get_center()
+	jv.handle_input(click)
+	ok(jv.tab == 2, "journal: a click on a tab changes section")
+	var wheel := InputEventMouseButton.new()
+	wheel.button_index = MOUSE_BUTTON_WHEEL_DOWN
+	wheel.pressed = true
+	jv.handle_input(wheel)
+	ok(jv.page == 0, "journal: Secrets is one spread, the wheel does not run past it")
+	var shift_tab := _key_event(KEY_TAB)
+	shift_tab.shift_pressed = true
+	jv.handle_input(shift_tab)
+	ok(jv.tab == 1, "journal: Shift+Tab goes back")
+	# every section and spread in both languages draws without cutting anything short on a normal sheet
+	jv.set_model(m2)
+	for lang in ["en", "es"]:
+		g.settings["language"] = lang
+		for t in 4:
+			jv.set_tab(t)
+			for pg in jv.page_count():
+				jv.page = pg
+				jv.queue_redraw()
+				await process_frame
+				ok(jv.truncated == 0, "journal: %s section %d spread %d fits without ellipsis (%d cut)" % [lang, t, pg, jv.truncated])
+	g.settings["language"] = "en"
+	# sheet geometry on the two small-laptop canvases (the canvas expands to 1280 x 720 or taller)
+	for sz in [Vector2(1280, 720), Vector2(1280, 750), Vector2(1280, 960)]:
+		jv.size = sz
+		var sheet: Rect2 = jv._compute_sheet()
+		var pr: Array = jv.pages_rects(sheet)
+		var inside := Rect2(Vector2.ZERO, sz).encloses(sheet.grow(Style.u(40.0)))
+		ok(inside and pr[0].end.x < pr[1].position.x and pr[0].size.y > Style.u(300.0), "journal: the sheet and its two pages fit a %s canvas" % sz)
+	jv.size = Vector2(1280, 720)
+	# wrapping: bounded lines, an ellipsis when cut, nothing wider than the column
+	var f := Style.font_sans()
+	var lines: Array = jv.wrap_text(f, "one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen", 16.0, 160.0, 2)
+	ok(lines.size() == 2 and String(lines[1]).ends_with("…"), "journal: wrap cuts at max_lines with an ellipsis")
+	var wide := false
+	for l in lines:
+		wide = wide or f.get_string_size(l, HORIZONTAL_ALIGNMENT_LEFT, -1, int(round(Style.u(16.0)))).x > 160.5
+	ok(not wide, "journal: wrapped lines are not wider than the column")
+	ok(jv.wrap_text(f, "short", 16.0, 160.0, 2) == ["short"], "journal: a short line is untouched")
+	var seven := m2.duplicate(true)
+	seven["shards"] = []
+	for i in 7:
+		seven.shards.append({"index": i, "found": i < 3, "line": "x", "name": ""})
+	jv.set_model(seven)
+	jv.set_tab(2)
+	ok(jv.secret_pages().size() == 3 and jv.page_count() == 2, "journal: seven shards take two pages, the fossils a third (two spreads)")
+	jv.set_model(m2)
+	ok(jv.page_count(2) == 1, "journal: four shards and the rest fit one spread")
+	# empty world sections hide; a very long shard line is cut, not spilled
+	var long_line := ""
+	for i in 80:
+		long_line += "word%d " % i
+	var m3 := JournalModel.build(_journal_state(), _species_table(), _chains_table(), _catalogue())
+	m3["shards"] = [{"index": 0, "found": true, "line": long_line, "name": ""}, {"index": 1, "found": false, "line": "", "name": ""}]
+	jv.set_model(m3)
+	jv.set_tab(2)
+	jv.queue_redraw()
+	await process_frame
+	ok(jv.truncated >= 1, "journal: an overlong shard story is cut with an ellipsis, not spilled (%d)" % jv.truncated)
+	jv.set_model({})
+	for t in 4:
+		jv.set_tab(t)
+		jv.queue_redraw()
+		await process_frame
+	ok(jv.open, "journal: an empty model draws every section (the empty line) without errors")
+	# closing: Esc, J, and a click outside the sheet
+	jv.set_model(m)
+	jv.handle_input(_key_event(KEY_ESCAPE))
+	ok(not jv.open, "journal: Esc closes")
+	ui._unhandled_input(_key_event(KEY_J))
+	ok(jv.open, "journal: J opens again")
+	ui._unhandled_input(_key_event(KEY_J))
+	ok(not jv.open, "journal: J closes")
+	ui.open_view("journal")
+	var out := InputEventMouseButton.new()
+	out.button_index = MOUSE_BUTTON_LEFT
+	out.pressed = true
+	out.position = Vector2(4, 4)
+	jv.handle_input(out)
+	ok(not jv.open, "journal: a click outside the sheet closes")
+	# from the menu: the menu steps aside and comes back
+	ui.set_paused(true)
+	ui.open_view("journal")
+	ok(jv.open and is_zero_approx(ui.menu.modulate.a), "journal: opened from the menu, the menu hides")
+	jv.close_view()
+	ok(not jv.open and is_equal_approx(ui.menu.modulate.a, 1.0) and ui.paused, "journal: closing returns to the menu")
+	ui.set_paused(false)
+	ui.queue_free()
+	await process_frame
 
 # A21: keys 1-4 fire the loadout slots (not fixed moves); role shapes, cooldown rings, the loadout sheet.
 func test_loadout_ui() -> void:
