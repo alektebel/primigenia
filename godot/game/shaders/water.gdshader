@@ -1,8 +1,10 @@
 shader_type spatial;
-render_mode unshaded, blend_mix, depth_draw_opaque, cull_disabled;
+render_mode ambient_light_disabled, specular_disabled, blend_mix, depth_draw_opaque, cull_disabled;
+#define WORLD_LIT
 // Sea and lakes: hero water (valle-primigenio.html) with depth from the exact ground.
 #include "res://game/shaders/look.gdshaderinc"
 #include "res://game/shaders/terrain_maps.gdshaderinc"
+#include "res://game/shaders/world_light.gdshaderinc"
 
 varying vec3 wp;
 varying float shore;   // lake quads: 1 inside, 0 on the outer corners of the dilation ring (sea: 1)

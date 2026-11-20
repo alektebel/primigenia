@@ -639,6 +639,18 @@ godot-journal-nest-evidence: godot
 	for cfg in "1280 720 es" "1024 600 es" "1024 600 en"; do set -- $$cfg; \
 	  LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 600 xvfb-run -a -s "-screen 0 $$1x$$2x24" $(GODOT) --rendering-driver opengl3 --max-fps 15 --resolution $$1x$$2 --path godot \
 	    --script res://game/tests/journal_nest_evidence.gd -- $(CURDIR)/docs/evidence/godot/journal/nest $$3 _$$1x$$2_$$3 || exit 1; done
+
+# World-look evidence (docs/godot/WORLD-LOOK-WL1.md): shared cameras for every world-look slice, software GL.
+# make godot-world-look OUT=dir [QUALITY=low|medium|high] [SHOTS=prefixes]
+.PHONY: godot-world-look
+WL_OUT ?= $(CURDIR)/docs/evidence/godot/world-look/after
+WL_QUALITY ?= medium
+WL_SHOTS ?= valley_chase,valley_east,vista_wide,riverbank,forest_floor,madre_spring,tier_valley,rk_,sh_
+godot-world-look: godot
+	@mkdir -p $(WL_OUT)
+	LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 1800 xvfb-run -a -s "-screen 0 1280x720x24" $(GODOT) --rendering-driver opengl3 --max-fps 15 --resolution 1280x720 --path godot \
+	  --script res://game/tests/world_look_evidence.gd -- $(WL_OUT) $(WL_QUALITY) base $(WL_SHOTS)
+
 godot-cell2-evidence:
 	@mkdir -p docs/evidence/godot/cell2
 	LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 900 xvfb-run -a $(GODOT) --rendering-driver opengl3 --path godot --script res://cell/tests/cell2_evidence.gd -- $(CURDIR)/docs/evidence/godot/cell2
