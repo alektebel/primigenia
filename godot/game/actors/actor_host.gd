@@ -64,6 +64,10 @@ func update(dt: float, s: Dictionary, ctx: Dictionary = {}) -> void:
 	_speed = s.speed
 	driver.update(dt, s, ctx)
 
+## Bodies without an action layer (radial): a small squash on every bite so the meal still reads.
+func driver_eat_pulse() -> void:
+	driver.eat_pulse()
+
 func layer():
 	return driver.layer
 

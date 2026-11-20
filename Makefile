@@ -645,3 +645,9 @@ godot-cell2-evidence:
 
 $(BUILD)/run_fall_test: tests/test_run_fall.c $(HDRS) $(BUILD)/libcpore.a
 	$(CC) $(CFLAGS) $< $(BUILD)/libcpore.a -o $@ $(LDLIBS)
+
+.PHONY: godot-eat-evidence
+godot-eat-evidence:
+	@mkdir -p docs/evidence/godot/eat-loading
+	cd godot && LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 1200 xvfb-run -a $(GODOT) --rendering-driver opengl3 --resolution 1280x720 --path . \
+	  --script actions/test/eat_capture.gd -- out=$(CURDIR)/docs/evidence/godot/eat-loading $(ARGS)

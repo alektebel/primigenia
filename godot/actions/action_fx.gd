@@ -74,3 +74,37 @@ static func ring_pose(m: MeshInstance3D, u: float, _k := 0) -> void:
 	var s := maxf(0.01, r * e)
 	m.scale = Vector3(s, maxf(0.02, s * 0.3), s)
 	(m.material_override as StandardMaterial3D).albedo_color = Color(tint, 0.7 * (1.0 - u) * smoothstep(0.0, 0.08, u))
+
+## Crumbs and torn chunks of a bite: one-shot CPU particles (cosmetic, frees itself). `size` ~ the food's size in metres.
+static func crumbs(parent: Node, at: Vector3, tint: Color, size: float, last := false) -> Node3D:
+	var p := CPUParticles3D.new()
+	var quad := BoxMesh.new()
+	quad.size = Vector3.ONE * clampf(0.035 * size + 0.012, 0.015, 0.09)
+	p.mesh = quad
+	var mat := StandardMaterial3D.new()
+	mat.albedo_color = tint
+	mat.roughness = 1.0
+	quad.material = mat
+	p.emitting = false
+	p.one_shot = true
+	p.amount = 18 if last else 10
+	p.lifetime = 0.7
+	p.explosiveness = 1.0
+	p.direction = Vector3.UP
+	p.spread = 70.0
+	p.initial_velocity_min = 0.6 + 0.8 * size
+	p.initial_velocity_max = 1.6 + 1.6 * size
+	p.gravity = Vector3(0, -9.8, 0)
+	p.angular_velocity_min = -300.0
+	p.angular_velocity_max = 300.0
+	p.scale_amount_min = 0.5
+	p.scale_amount_max = 1.2
+	p.top_level = true
+	parent.add_child(p)
+	p.global_position = at
+	p.emitting = true
+	p.restart()
+	var tw := p.create_tween()
+	tw.tween_interval(1.2)
+	tw.tween_callback(p.queue_free)
+	return p

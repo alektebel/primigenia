@@ -34,6 +34,8 @@ var yaw := 0.0
 var vel := Vector3.ZERO
 var speed_override := 0.0
 var _raw: Dictionary
+var eat_t0 := -1                    # sf.tick at which the scripted C eat action began (-1: not eating)
+var food_pos := Vector3.ZERO
 
 static func load_raw() -> Dictionary:
 	return Data.load_all("res://actions/data")
@@ -66,6 +68,8 @@ func build(parent: Node, seed_name: String, raw: Dictionary) -> void:
 func ctx() -> Dictionary:
 	var tgt := {"id": 1, "pos": Vector3(0, 0, dist), "radius": 0.6, "height": target_h}
 	var d := {"sig": sig.get(0, {}), "tick": sf.tick, "alpha": acc / 0.1, "pos": pos, "yaw": yaw, "speed": speed_override, "vel": vel, "target": tgt, "beat_phase": 0, "mode": ""}
+	if eat_t0 >= 0:
+		d["eat"] = {"mode": "act", "t": sf.tick - eat_t0, "target": 1, "kind": "carcass", "pos": food_pos}
 	d.merge(ctx_extra, true)
 	return d
 

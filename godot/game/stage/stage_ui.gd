@@ -734,9 +734,13 @@ func _social_event(ev: Dictionary, state: Dictionary) -> void:
 			elif r < 0 and r != -2:
 				_refuse(r)
 		EV_EAT:
+			# the meal animation follows the C eat action (island ctx.eat); the bite itself only adds the chunk, crumbs and sound
 			var l = island.hosts[0].layer() if island.hosts.has(0) else null
+			island.on_eat_bite(int(ev.target), int(ev.move))
 			if l != null:
-				l.trigger("eat")
+				l.eat_bite(int(ev.move))
+			elif island.hosts.has(0):
+				island.hosts[0].driver_eat_pulse()
 			# the last bite (ev.move <= 0): the design's rising bone glyph is deferred; the ring is simply gone with the meat
 
 func open_nest_editor() -> void:

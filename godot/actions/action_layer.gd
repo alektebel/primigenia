@@ -32,6 +32,7 @@ var idle_on := true          # tests switch the idle layer (breathing, look-arou
 var rng := RandomNumberGenerator.new()
 var _pending: Array = []     # cosmetic triggers waiting for the next tick boundary
 var _last_tick := -1
+var _dt_hint := 0.016
 var _alt := 0
 var _ctx: Dictionary = {}
 var _acc_prev := Vector3.ZERO
@@ -229,6 +230,7 @@ func update(dt: float, ctx: Dictionary) -> void:
 	if not enabled:
 		return
 	_ctx = ctx
+	_dt_hint = dt
 	time += dt
 	var sig: Dictionary = ctx.get("sig", {})
 	var tick: int = ctx.get("tick", 0)
@@ -239,6 +241,7 @@ func update(dt: float, ctx: Dictionary) -> void:
 		for p in _pending:
 			_start_cosmetic(p[0], p[1], tick, ctx)
 		_pending.clear()
+	_handle_eat(ctx)
 	_handle_stances(sig, ctx)
 	_idle_update(dt, sig)
 	# advance
@@ -255,6 +258,8 @@ func update(dt: float, ctx: Dictionary) -> void:
 				i.removed = true
 		if i.kind == "c_move" and not i.ending:
 			pass
+		elif i.get("slaved", false):
+			pass          # the eat meal: tau is set from the C eat action every frame (_handle_eat)
 		elif i.id != "idle_base" and i.kind != "stance":
 			i.tau += dt / Clock.DT / i.tscale
 			if not i.act.hold:
@@ -414,6 +419,55 @@ func _start_cosmetic(id: String, args: Dictionary, tick: int, ctx: Dictionary) -
 	i.grid_shift = Clock.grid_shift(tick, int(act.w), int(act.a), int(ctx.get("beat_phase", 0)))
 	for k in args:
 		i[k] = args[k]
+
+## The meal (eat verb). ctx.eat = {mode: "act", t: C act tick, pos: food point, kind: "carcass" | "plant" | ...}.
+## While C runs the eat action the instance's tau follows its tick (first bite = ticks 0..10, then the 10..20 loop), so a bite
+## lands on the C bite tick; when C ends or cancels it the instance plays its recovery, and a C move (a fight) cancels it.
+const EAT_LOOP := 10.0
+func eat_tau(act: Dictionary, t: int, alpha: float) -> float:
+	var te := float(t) if t < int(EAT_LOOP) else EAT_LOOP + float((t - int(EAT_LOOP)) % int(EAT_LOOP))
+	return float(act.w) + te + alpha
+
+func eating() -> bool:
+	return not _slaved_eat().is_empty()
+
+func _slaved_eat() -> Dictionary:
+	for i in inst:
+		if i.id == "eat" and i.get("slaved", false) and not i.fading and not i.removed:
+			return i
+	return {}
+
+func _handle_eat(ctx: Dictionary) -> void:
+	var eat: Dictionary = ctx.get("eat", {})
+	var cur := _slaved_eat()
+	var mode: String = str(eat.get("mode", ""))
+	var sig: Dictionary = ctx.get("sig", {})
+	if not actions.has("eat"):
+		return
+	var act: Dictionary = actions.eat
+	if mode != "act" or sig.get("move", -1) >= 0 or sig.get("dead", false):
+		if not cur.is_empty():
+			cur.slaved = false                    # C ended it: the recovery (swallow, head up) plays out, then it fades
+			if mode != "act" and sig.get("move", -1) < 0:
+				cur.tau = float(act.w) + float(act.a)
+			elif sig.get("move", -1) >= 0:
+				_fade(cur, 0.08)
+		return
+	if cur.is_empty():
+		if float(ctx.get("speed", 0.0)) > 0.03 * sqrt(G * map.height):
+			return
+		var i := _start(act, "cosmetic")
+		if i.is_empty():
+			return
+		i.slaved = true
+		i.tau = float(act.w)
+		i.grid_shift = 0.0
+		cur = i
+	cur.tau = eat_tau(act, int(eat.get("t", 0)), float(ctx.get("alpha", 0.0)))
+
+## A C bite landed (EV_EAT): the layer announces it for the crumbs, the chunk and the sound at the mouth.
+func eat_bite(bites_left: int, kind := "carcass") -> void:
+	action_event.emit("eat_bite", {"entity": entity_id, "left": bites_left, "kind": kind, "mouth": _mouth_world})
 
 func _handle_stances(sig: Dictionary, ctx: Dictionary) -> void:
 	var want := {}
@@ -611,6 +665,9 @@ func _goal_point(kind: String, pose: Dictionary) -> Variant:
 		"away":
 			return pos - (tpos - pos).normalized() * 5.0 if has_t else pos - fwd * 5.0
 		"item":
+			var food: Dictionary = _ctx.get("eat", {})
+			if food.has("pos"):
+				return food.pos
 			return pos + fwd * map.height * 0.5
 	return null
 

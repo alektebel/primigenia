@@ -172,6 +172,10 @@ func block(pos: Vector3) -> void:
 func dodge(pos: Vector3) -> void:
 	play_at("dodge", pos, 0.35)
 
+## A soft bite of a meal: the block thud pitched up and quiet, a little lower for the last (bigger) tear.
+func eat_bite(pos: Vector3, last := false) -> void:
+	play_at("step-2" if streams.has("step-2") else "hit", pos, 0.2 if not last else 0.26, 1.5 if not last else 1.25)
+
 func spit(pos: Vector3) -> void:
 	play_at("spit", pos, 0.4)
 

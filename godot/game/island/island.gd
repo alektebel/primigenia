@@ -477,6 +477,48 @@ func player_sample() -> Dictionary:
 	var base: Dictionary = stage.sample(0)
 	return flight.sample(base) if flight != null else base
 
+# A carcass shrinks by a quarter of its meat per C bite: eased (not a pop), pulled in a little by each bite, and gone with the last.
+var _food_scale := {}
+var _bite_pulse := {}
+func _carcass_scale(id: int, meat: int, dt: float) -> float:
+	var want := (0.3 + 0.7 * float(meat) / 4.0) if meat > 0 else 0.0
+	var cur: float = _food_scale.get(id, want)
+	cur = lerpf(cur, want, 1.0 - exp(-9.0 * dt)) if want < cur else want
+	if absf(cur - want) < 0.004:
+		cur = want
+	_food_scale[id] = cur
+	var pulse: float = _bite_pulse.get(id, 0.0)
+	_bite_pulse[id] = maxf(0.0, pulse - dt * 5.0)
+	return cur * (1.0 - 0.07 * pulse)
+
+## A C bite landed on carcass `target` (`left` bites remain): the pulse, the crumbs, the chunk flying off and a soft sound.
+func on_eat_bite(target: int, left: int) -> void:
+	_bite_pulse[target] = 1.0
+	if not hosts.has(target):
+		return
+	var at: Vector3 = hosts[target].global_position + Vector3.UP * 0.25 * hosts[target].scale.y
+	var tint := Color(0.52, 0.18, 0.15)
+	var sz := 0.5 * hosts[target].scale.y
+	preload("res://actions/action_fx.gd").crumbs(self, at, tint, sz, left <= 0)
+	var audio = get_node_or_null("/root/Audio")
+	if audio != null and audio.has_method("eat_bite"):
+		audio.eat_bite(at, left <= 0)
+
+## What the player's layer reads while C runs the eat action: {mode: "act", t, target, pos (the food), kind}.
+func _eat_ctx() -> Dictionary:
+	var act = stage.cur.get("social", {}).get("action", null)
+	if typeof(act) != TYPE_DICTIONARY or str(act.get("verb", "")) != "eat":
+		return {}
+	var tid := int(act.get("target", -1))
+	if tid < 0 or tid >= stage.cur.entities.size():
+		return {}
+	var food: Vector3 = stage.sample(tid).pos
+	var pp: Vector3 = player_sample().pos
+	var toward := Vector3(pp.x - food.x, 0.0, pp.z - food.z).normalized()
+	var meat := float(stage.cur.entities[tid].get("meat", 0))
+	var r := 0.35 * (0.3 + 0.7 * meat / 4.0) * float(hosts[tid].get_meta("base_scale", 1.0)) if hosts.has(tid) else 0.2
+	return {"mode": "act", "t": int(act.get("t", 0)), "target": tid, "kind": "carcass", "pos": food + toward * r + Vector3.UP * r * 0.8}
+
 func _update_actors(dt: float) -> void:
 	_sync_hosts()
 	if flight != null:
@@ -509,6 +551,12 @@ func _update_actors(dt: float) -> void:
 			ctx["dodge_dir"] = int(dodge_hint.dir) if Time.get_ticks_msec() < int(dodge_hint.until) else 0
 			if int(stage.cur.order.verb) == 13:      # C is running the player's observe order
 				ctx["mode"] = "observe"
+			var eat := _eat_ctx()
+			if not eat.is_empty():
+				ctx["eat"] = eat
+				if hosts.has(int(eat.target)) and not ctx.has("target"):
+					var th2: Node3D = hosts[int(eat.target)]
+					ctx["target"] = {"id": int(eat.target), "pos": stage.sample(int(eat.target)).pos, "radius": 0.5, "height": th2.height(), "spheres": []}
 		elif ui_mode == &"befriend" and id == selected_id and not bool(sig.get("in_fight", false)) and d < 12.0:
 			ctx["attend"] = true
 		hosts[id].update(dt, sm, ctx)
@@ -517,7 +565,13 @@ func _update_actors(dt: float) -> void:
 			# shrinks as it is eaten (4 bites)
 			var ent0: Dictionary = stage.cur.entities[id]
 			var base: float = float(hosts[id].get_meta("base_scale", 1.0))
-			hosts[id].scale = Vector3.ONE * base * (0.3 + 0.7 * float(ent0.get("meat", 0)) / 4.0 if bool(ent0.get("dead", false)) else 1.0)
+			if bool(ent0.get("dead", false)):
+				var cs := _carcass_scale(id, int(ent0.get("meat", 0)), dt)
+				hosts[id].scale = Vector3.ONE * base * maxf(cs, 0.001)
+				if cs <= 0.02 and int(ent0.get("meat", 0)) <= 0:
+					_hidden[id] = true            # eaten to the bone: gone
+			else:
+				hosts[id].scale = Vector3.ONE * base
 	if flight != null:
 		flight.post_update(dt)
 	var p: Dictionary = player_sample()
