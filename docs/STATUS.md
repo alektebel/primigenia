@@ -21,6 +21,7 @@ Reference clips: gorilla knuckle-walk (tracker X3, owner's Downloads) and Spore 
 | `art/wl6-cave-mesher` | cpore-wt/wl6-cave | Codex C++ mesher, uncommitted | Sonnet art + integration |
 | `tools/gaitopt` | cpore-wt/gaitopt | Codex, pilot failed (6/10 bodies fall) | Paused; M1b balance spike pending owner (D-02) |
 | `docs/continuity` | cpore-wt/continuity | this setup | Owner approval to merge |
+| `tools/loco-score` | cpore-wt/loco-score | Sonnet subagent building the L0 scorecard (brief `docs/briefs/loco-score.md`, 9095d8c), started 2026-11-21 | Review evidence; then the blind A/B page in the tracker |
 
 **Old unmerged branches (5+ days, need triage: merge, or close):** art-food, art-meteor, art-nest, art-remains, art-species, art-underwater (78 dirty), dem, feel-camera (10 dirty), idol, loco (5 dirty), m-e2e, m-ecology, m-garfio, m-vista, w11-alpine. Run `tools/agents/agents.sh status` for the live list.
 
