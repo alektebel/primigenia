@@ -147,6 +147,15 @@
 | [Tamiz Drip](tamiz_drip.md) | new | draft | 4 | 2 fixable, 2 plausible |
 | [Vibra-Losa](vibra_losa.md) | new | draft | 4 | 4 fixable |
 
+## The Ochre Reach (`oddities`)
+
+| Creature | Kind | Status | Chains | Verdicts |
+|---|---|---|---|---|
+| [Ceniza-Polipo](ceniza_polipo.md) | new | draft | 4 | 3 fixable, 1 plausible |
+| [Centellón](centellon.md) | new | draft | 4 | 3 fixable, 1 plausible |
+| [Sifonera de Pluma](sifonera_de_pluma.md) | new | draft | 4 | 2 fixable, 2 plausible |
+| [Vaelen-tok](vaelen_tok.md) | new | draft | 4 | 3 fixable, 1 plausible |
+
 ## Primigenia (the island world) (`primigenia`)
 
 | Creature | Kind | Status | Chains | Verdicts |

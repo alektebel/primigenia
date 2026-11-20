@@ -1,0 +1,290 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "centellon",
+  "name": {
+    "en": "Centellón"
+  },
+  "world": "oddities",
+  "kind": "new",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "Mid-tropospheric convective belts (5–10 km altitude), persistent cumulonimbus anvils",
+    "diet": "Atmospheric ions, lightning-fixed nitrates/sulfates, suspended aerosol organics, dissolved storm-water droplets",
+    "active": "Diurnal (peak during daytime thermals and afternoon squalls)",
+    "predators": []
+  },
+  "body": "1.8 m wingspan, biradial symmetry, four tapering charge-siphon arms, internal gas-foam lattice, sulfur-ceramic dermal plates, blue-green bioluminescent gut lining",
+  "chains": [
+    {
+      "id": "centellon.c1",
+      "trait": "Tapered, graphite-like siphon arms that crackle",
+      "links": [
+        "Corona discharge strips atmospheric ions",
+        "Ion flux drives proton pumps in dermal tissue",
+        "Proton gradient synthesizes ATP"
+      ],
+      "roots": [
+        "F9",
+        "F11",
+        "F12"
+      ],
+      "skill": {
+        "id": "centellon.spark_tap",
+        "name": {
+          "en": "Spark Tap"
+        },
+        "role": "Basic",
+        "effect": "Drain 15% HP from target to restore 12 stamina",
+        "numbers": {}
+      },
+      "weakness": "Prolonged contact with water shorts the siphon circuit, reducing ATP yield by 40%",
+      "observe": [
+        "Iridescent ozone aura on forelimbs",
+        "Soil pitting near roosts",
+        "Sudden static hum in calm air"
+      ],
+      "journal": {
+        "en": "It doesn't bite; it drinks the air."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-20",
+        "summary": "Rename arms to sulfide-reinforced conductive quills, not literal graphite. State that Spark Tap / corona stripping yields a small ATP top-up only during active cells (F11+F12), with proton pumps tuned to storm ion density; keep aerosol and nitrate ingestion as the main energy budget.",
+        "fixes": [
+          "Rename arms to sulfide-reinforced conductive quills, not literal graphite. State that Spark Tap / corona stripping yields a small ATP top-up only during active cells (F11+F12), with proton pumps tuned to storm ion density; keep aerosol and nitrate ingestion as the main energy budget."
+        ],
+        "analogues": [
+          {
+            "organism": "Sharpened masts and tree tips show corona in strong fields (atmospheric electricity); electric fish (e.g. Amazonian knifefish) use ion pumps and electrocytes for transmembrane charge, but power is metabolic, not harvested from the fair-weather field.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 5
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "centellon.c2",
+      "trait": "Internal aerogel lattice of sulfur-reinforced gas vesicles",
+      "links": [
+        "Gas vesicles trap warm convective air",
+        "Sulfur crosslinks prevent collapse at pressure shifts",
+        "Low density enables thermal soaring"
+      ],
+      "roots": [
+        "F9",
+        "F15",
+        "F10"
+      ],
+      "skill": {
+        "id": "centellon.thermal_glide",
+        "name": {
+          "en": "Thermal Glide"
+        },
+        "role": "Passive",
+        "effect": "Lose only 0.3 stamina per second while gliding; gains altitude from updrafts",
+        "numbers": {}
+      },
+      "weakness": "Heavy precipitation saturates vesicles, increasing descent rate by 3x",
+      "observe": [
+        "Translucent ventral glow",
+        "Drifting without wingbeat for minutes",
+        "Leaving fine sulfate dust when grounded"
+      ],
+      "journal": {
+        "en": "A living kite woven from storm and stone."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-20",
+        "summary": "Clarify the lattice reduces body density for gliding (like avian pneumaticity), not neutral buoyancy in 2.1 bar air; cite F15 only as contrast with deep-ocean collapse, not as an atmospheric ceiling.",
+        "fixes": [
+          "Clarify the lattice reduces body density for gliding (like avian pneumaticity), not neutral buoyancy in 2.1 bar air; cite F15 only as contrast with deep-ocean collapse, not as an atmospheric ceiling."
+        ],
+        "analogues": [
+          {
+            "organism": "Gas vesicles in planktonic cyanobacteria (e.g. Anabaena); pneumatized bone and air sacs in soaring birds (vultures/condors) for density reduction without neutral buoyancy in air.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 3
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "centellon.c3",
+      "trait": "Bio-conductive melanin-sulfide chains in the gut lining",
+      "links": [
+        "Plasma electrons reduce environmental nitrates",
+        "Sulfide chains catalyze electron transfer to coenzymes",
+        "Fuels chemosynthetic digestion in dark gut"
+      ],
+      "roots": [
+        "F12",
+        "F17",
+        "F19"
+      ],
+      "skill": {
+        "id": "centellon.ion_digest",
+        "name": {
+          "en": "Ion Digest"
+        },
+        "role": "Engage",
+        "effect": "Convert a successful melee strike into a 20-second DoT that heals you for 8% of damage dealt",
+        "numbers": {}
+      },
+      "weakness": "Anoxic refuges cause rapid metabolic acidosis; must surface or expose gut to air every 3 cycles",
+      "observe": [
+        "Faint blue-green bioluminescence during feeding",
+        "Exhaled plumes of acidic vapor",
+        "Preference for dark storm clouds"
+      ],
+      "journal": {
+        "en": "It cooks lightning into flesh."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-20",
+        "summary": "Replace ‘plasma electrons reduce environmental nitrates’ with ‘ingests lightning-fixed nitrate and sulfate in droplets; melanin–sulfide chains and Fe–S proteins shuttle electrons from H2S/organosulfur (F17) to those oxidants in gut epithelium or symbionts.’ Mark whole-body chemosynthesis as highly speculative unless symbiotic.",
+        "fixes": [
+          "Replace ‘plasma electrons reduce environmental nitrates’ with ‘ingests lightning-fixed nitrate and sulfate in droplets; melanin–sulfide chains and Fe–S proteins shuttle electrons from H2S/organosulfur (F17) to those oxidants in gut epithelium or symbionts.’ Mark whole-body chemosynthesis as highly speculative unless symbiotic."
+        ],
+        "analogues": [
+          {
+            "organism": "Beggiatoa / Thiomargarita sulfur-oxidizing and nitrate-respiring bacteria; terrestrial ‘ball lightning’ nitrogen narratives aside, standard lightning NOx → rain nitrate is the Earth analogue for the food input.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 4
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "centellon.c4",
+      "trait": "Opaque, iron-nickel sulfide dermal plates",
+      "links": [
+        "Plates block crustal gamma and alpha rays",
+        "Iron-nickel matrix catalyzes ROS scavenging",
+        "Enables sustained daytime storm exposure"
+      ],
+      "roots": [
+        "F6",
+        "F1",
+        "F5"
+      ],
+      "skill": {
+        "id": "centellon.storm_shield",
+        "name": {
+          "en": "Storm Shield"
+        },
+        "role": "Defence",
+        "effect": "Reduce incoming elemental damage by 25% while in rain or cloud cover",
+        "numbers": {}
+      },
+      "weakness": "Plates are brittle under high-impact kinetic strikes; cracking them causes radiation leak stun to the creature",
+      "observe": [
+        "Matte black, pitted carapace",
+        "Static cling to nearby rocks",
+        "Avoids open sunlit plains"
+      ],
+      "journal": {
+        "en": "Armored against the sky's silent fire."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-20",
+        "summary": "Reframe plates as alpha/radon-daughter and abrasive aerosol (F10) shields at roosts, plus catalytic ROS quenching—not a gamma vault. Tie Storm Shield gameplay to slugs, hail, and charged droplets rather than ‘radiation leak stun’ from cracked plates unless the lore keeps trapped radon daughter grains in plate pores (then say so explicitly).",
+        "fixes": [
+          "Reframe plates as alpha/radon-daughter and abrasive aerosol (F10) shields at roosts, plus catalytic ROS quenching—not a gamma vault. Tie Storm Shield gameplay to slugs, hail, and charged droplets rather than ‘radiation leak stun’ from cracked plates unless the lore keeps trapped radon daughter grains in plate pores (then say so explicitly)."
+        ],
+        "analogues": [
+          {
+            "organism": "Magnetotactic bacteria (greigite/magnetite in membrane vesicles); chiton and limpet iron-mineral teeth (biomineralized iron oxides/sulfides).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 3
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "Sky Reef filter-feeders",
+      "kind": "cousin",
+      "note": "(council kind 'competition') Competes for suspended aerosol organics but avoids direct conflict by occupying higher convective tiers"
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-19",
+    "by": [
+      "naturalist/qwen"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-20",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-19"
+    }
+  ],
+  "body_plan": {
+    "symmetry": "biradial",
+    "arms": 4,
+    "origin": "diverged from a benthic filter-feeding lineage that colonized convective updrafts during the late Aridification; convergent with aerial jellyfish but reinforced for charge capture"
+  },
+  "temperament": "Patient, drift-predatory, highly territorial over updraft corridors, docile to non-threatening low-energy life",
+  "secrets": [
+    "If you stand downwind of a roosting adult during a calm evening, the static charge will make your hair stand up and your tools hum.",
+    "Cracking its dermal plates releases trapped ionized gas that can be condensed into a potent fertilizer for Ochre Reach crops.",
+    "Its blue-green bioluminescence matches the atmospheric transmission window; ancient navigators used herds of them as living compasses during fog season."
+  ],
+  "moments": [
+    "A squall breaks at dusk; it uncurls its siphon arms, and the storm answers. For three seconds, the air itself glows blue-green as it feeds, leaving only the smell of ozone and wet stone."
+  ],
+  "journal": [
+    {
+      "en": "First sight: a silhouette stitching through cumulonimbus anvils, trailing faint blue sparks."
+    },
+    {
+      "en": "Second sight: roosting in sulfur vents, plates blackened, siphons twitching at the barometric drop."
+    }
+  ]
+}
