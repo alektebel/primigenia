@@ -71,6 +71,6 @@ Tests: 4 checks in `test_flora.gd` (scale table, span against the full nest, sin
 
 ## Counts
 
-godot-test 1118, godot-ui-test 882, godot-actions-test 383, godot-menu-test 32 (+1 with `--play`), godot-bridge-test 42,
+godot-test 1138 (after merging main), godot-ui-test 882, godot-actions-test 383, godot-menu-test 32 (+1 with `--play`), godot-bridge-test 42, godot-studio-test 914,
 godot-play-test 237, godot-entry-test 23, all 0 failures. The `order`, `free RefCounted` and `%` script errors printed by godot-test and
 godot-ui-test come from `test_input`, `test_flight` and a UI string format, not from this work.
