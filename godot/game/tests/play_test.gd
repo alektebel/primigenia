@@ -57,6 +57,13 @@ func until(cond: Callable, budget := 1800) -> bool:
 		n += 1
 	return cond.call()
 
+## Like until, with a wall-clock budget: the island builds under a loading screen on worker threads (seconds, however many frames spin).
+func until_ms(cond: Callable, budget_ms := 90000) -> bool:
+	var t0 := Time.get_ticks_msec()
+	while not cond.call() and Time.get_ticks_msec() - t0 < budget_ms:
+		await process_frame
+	return cond.call()
+
 func _initialize() -> void:
 	OS.add_logger(log)
 	_run.call_deferred()
@@ -212,6 +219,9 @@ func _bone_signs(c, desc: Dictionary, m) -> void:
 # 2. main -> menu -> Play -> stage
 # ------------------------------------------------------------------------------------------------
 func _scene_is(script_name: String) -> bool:
+	# the island is entered through the loading screen and builds across frames: it counts once it is built
+	if script_name == "island.gd" and current_scene != null and "_building" in current_scene and current_scene._building:
+		return false
 	return current_scene != null and current_scene.get_script() != null and current_scene.get_script().resource_path.ends_with(script_name)
 
 func _press(button: Button) -> void:
@@ -224,7 +234,7 @@ func _stage() -> void:
 	var menu = current_scene
 	check(menu.play_button != null and menu.creator_button != null, "menu has Play and Creator")
 	_press(menu.play_button)
-	check(await until(func(): return _scene_is("island.gd"), 600), "Play opens the stage")
+	check(await until_ms(func(): return _scene_is("island.gd")), "Play opens the stage")
 	var island = current_scene
 	await frames(5)
 	var ui = island.stage_ui.ui
@@ -697,7 +707,7 @@ func _studio_and_back() -> void:
 	if dev_node != null:
 		dev_node.enabled = false       # normal build: the A25 rule
 	_press(current_scene.play_button)
-	check(await until(func(): return _scene_is("island.gd"), 600), "Play opens the stage again")
+	check(await until_ms(func(): return _scene_is("island.gd")), "Play opens the stage again")
 	await frames(5)
 	var host = current_scene.hosts[0]
 	# A25: a new run starts from the saved creature's body but with the starter parts only (pico, pata, ojo)
@@ -720,7 +730,7 @@ func _studio_and_back() -> void:
 		saved_types[str(sp.type)] = true
 	studio2.model.set_name_("Play Button Test")
 	studio2.play_with_creature()
-	check(await until(func(): return _scene_is("island.gd"), 600), "Jugar con esta criatura opens the island")
+	check(await until_ms(func(): return _scene_is("island.gd")), "Jugar con esta criatura opens the island")
 	await frames(5)
 	check(current_scene.hosts[0].body.genome.get("name", "") == "Play Button Test", "the island has the creature that was just saved")
 	# A31: in dev builds the creature keeps all its parts and C knows the player owns them (normal builds: the A25 rule above)

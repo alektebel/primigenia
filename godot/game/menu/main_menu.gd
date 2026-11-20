@@ -55,7 +55,6 @@ var _fade: ColorRect
 var _title: Label
 var _tagline: Label
 var _rise: Array[Control] = []           # entrance targets: the cards and the strip
-var _loading: Node = null
 
 func _ready() -> void:
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -496,28 +495,7 @@ func continue_game() -> void:
 	_leave(_enter_island)
 
 func _enter_island() -> void:
-	var params := {"seed": int(Game.settings.seed)}
-	if Game.data != null and int(Game.terrain.get("seed", Game.settings.seed)) == int(Game.settings.seed):
-		Game.goto_island()
-		return
-	var entry := TerrainCache.load_entry(params)
-	if not entry.is_empty():
-		Game.set_island(entry)
-		Game.goto_island()
-		return
-	var screen := LoadingScene.instantiate()
-	_loading = screen
-	add_child(screen)
-	screen.finished.connect(_on_generated)
-	screen.start(params)
-
-func _on_generated(entry: Dictionary) -> void:
-	if entry.get("error", -1) != 0:
-		push_error("terrain generation failed: %s" % [entry.get("error")])
-		get_tree().quit(1)
-		return
-	Game.set_island(entry)
-	Game.goto_island()
+	Game.enter_island("menu")       # the one loading screen: terrain if needed, then the island build (game/loading/entry_veil.gd)
 
 func _save_exists() -> bool:
 	return FileAccess.file_exists("%s/%s.json" % [Scenario.save_dir, Scenario.SAVE_SLOT])

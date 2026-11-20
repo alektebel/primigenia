@@ -55,29 +55,11 @@ static func lake_level(data, k: int) -> float:
 				level = maxf(level, data.water_level[jj * n + ii])
 	return level
 
-func build(data) -> void:
-	material = ShaderMaterial.new()
-	material.shader = WATER_SHADER
-	material.set_shader_parameter("height_tex", data.height_tex)
-	material.set_shader_parameter("level_tex", data.level_tex)
-	material.set_shader_parameter("surface_tex", data.surface_tex)
-	material.set_shader_parameter("MAP_N", data.n)
-	material.set_shader_parameter("MAP_CELL", data.cell)
-	material.set_shader_parameter("MAP_HALF", data.half)
-	var plane := PlaneMesh.new()
-	plane.size = Vector2(40000.0, 40000.0)
-	plane.subdivide_width = 1
-	plane.subdivide_depth = 1
-	sea = MeshInstance3D.new()
-	sea.name = "Sea"
-	sea.mesh = plane
-	sea.material_override = material
-	sea.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-	sea.custom_aabb = AABB(Vector3(-20000, -100, -20000), Vector3(40000, 200, 40000))
-	add_child(sea)
-	var cells := lake_cells(data)
+## The lake quads of the island as {verts, cols, idx} ({} when there is no pond). Pure data: safe on a worker thread.
+static func lake_arrays(data) -> Dictionary:
+	var cells: PackedInt32Array = lake_cells(data)
 	if cells.is_empty():
-		return
+		return {}
 	var verts := PackedVector3Array()
 	var cols := PackedColorArray()
 	var idx := PackedInt32Array()
@@ -98,6 +80,35 @@ func build(data) -> void:
 		verts.append(Vector3(cx + half, level, cz + half))
 		verts.append(Vector3(cx - half, level, cz + half))
 		idx.append_array([base, base + 1, base + 2, base, base + 2, base + 3])
+	return {"verts": verts, "cols": cols, "idx": idx}
+
+## `lakes_in`: the lake mesh data when already computed (`lake_arrays`, on a worker thread, see island.gd); else computed here.
+func build(data, lakes_in = null) -> void:
+	material = ShaderMaterial.new()
+	material.shader = WATER_SHADER
+	material.set_shader_parameter("height_tex", data.height_tex)
+	material.set_shader_parameter("level_tex", data.level_tex)
+	material.set_shader_parameter("surface_tex", data.surface_tex)
+	material.set_shader_parameter("MAP_N", data.n)
+	material.set_shader_parameter("MAP_CELL", data.cell)
+	material.set_shader_parameter("MAP_HALF", data.half)
+	var plane := PlaneMesh.new()
+	plane.size = Vector2(40000.0, 40000.0)
+	plane.subdivide_width = 1
+	plane.subdivide_depth = 1
+	sea = MeshInstance3D.new()
+	sea.name = "Sea"
+	sea.mesh = plane
+	sea.material_override = material
+	sea.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	sea.custom_aabb = AABB(Vector3(-20000, -100, -20000), Vector3(40000, 200, 40000))
+	add_child(sea)
+	var la: Dictionary = lake_arrays(data) if lakes_in == null else lakes_in
+	if la.is_empty():
+		return
+	var verts: PackedVector3Array = la.verts
+	var cols: PackedColorArray = la.cols
+	var idx: PackedInt32Array = la.idx
 	var arrays := []
 	arrays.resize(Mesh.ARRAY_MAX)
 	arrays[Mesh.ARRAY_VERTEX] = verts

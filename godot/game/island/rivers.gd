@@ -59,7 +59,8 @@ static func chains(data) -> Array:
 static func width_for(area_m2: float) -> float:
 	return maxf(2.6, 1.0 + 0.012 * sqrt(area_m2))
 
-func build(data) -> void:
+## `chains_in`: the channels when already computed (worker thread, see island.gd).
+func build(data, chains_in = null) -> void:
 	if data.river.size() != data.n * data.n:
 		return
 	var verts := PackedVector3Array()
@@ -68,7 +69,7 @@ func build(data) -> void:
 	var idx := PackedInt32Array()
 	var cell2: float = data.cell * data.cell
 	var nn: float = data.n * data.n
-	for chain in chains(data):
+	for chain in (chains(data) if chains_in == null else chains_in):
 		var m: int = chain.size()
 		var px := PackedFloat32Array()
 		var pz := PackedFloat32Array()

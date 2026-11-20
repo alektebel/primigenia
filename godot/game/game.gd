@@ -107,19 +107,13 @@ func report_entry(phases: Dictionary) -> void:
 	for k in phases:
 		parts.append("%s %d" % [k, int(phases[k])])
 	print("island entry (%s): %d ms since goto_island; build %s" % [entry_from, total, ", ".join(parts)])
+	if phases.has("kit_reused"):
+		last_kit_entry_ms = total
+	_entry_finished()
 
 # The island from a place with no loading screen (the studio): the terrain in memory, else the cache, else generated now.
 func enter_island_now(from: String = "") -> void:
-	var params := {"seed": int(settings.seed)}
-	if data == null or int(terrain.get("seed", settings.seed)) != int(settings.seed):
-		var entry := TerrainCache.load_entry(params)
-		if entry.is_empty():
-			entry = TerrainCache.build(params, CporeTerrain.new())
-		if entry.get("error", 0) != 0:
-			push_error("terrain generation failed: %s" % [entry.get("error")])
-			return
-		set_island(entry)
-	goto_island(from)
+	enter_island(from)
 
 # --- the island kit (brief creature-fixes 5) ---------------------------------------------------------------
 # The built island pieces that depend only on the terrain and the quality settings (terrain meshes and materials, water,
@@ -190,39 +184,103 @@ var applied_legacy: Dictionary = {}
 func begin_creature(plain := false) -> void:
 	creature_legacy = {} if plain else cell_legacy()
 
-const LoadingScene := preload("res://game/loading/loading_screen.tscn")
 
 ## The island entry of a NEW game started away from the menu (the cell bridge): the terrain cache or the loading screen, then the island.
 ## `host` is the control the loading screen is added to.
-func enter_island_new(host: Control) -> void:
-	var params := {"seed": int(settings.seed)}
-	if data != null and int(terrain.get("seed", settings.seed)) == int(settings.seed):
-		goto_island("cell")
-		return
-	var entry: Dictionary = TerrainCache.load_entry(params)
-	if not entry.is_empty():
-		set_island(entry)
-		goto_island("cell")
-		return
-	var screen := LoadingScene.instantiate()
-	host.add_child(screen)
-	screen.finished.connect(func(e: Dictionary) -> void:
-		if e.get("error", -1) != 0:
-			push_error("terrain generation failed: %s" % [e.get("error")])
-			get_tree().quit(1)
-			return
-		set_island(e)
-		goto_island("cell"))
-	screen.start(params)
+func enter_island_new(_host: Control = null) -> void:
+	enter_island("cell")
 
 func goto_menu() -> void:
 	park_island()
 	get_tree().change_scene_to_file("res://game/menu/main_menu.tscn")
 
-func goto_island(from: String = "") -> void:
-	park_island()
+# --- the island entry loading screen (game/loading/entry_veil.gd) ---------------------------------------------------------
+const EntryVeil := preload("res://game/loading/entry_veil.gd")
+const FAST_ENTRY_MS := 500                 # an entry that took less than this with the kit does not show the screen again
+var veil: CanvasLayer = null               # the screen of the entry in progress (null: none, the build runs in one go)
+var last_kit_entry_ms := -1                # how long the last entry took that reused the kit
+var entry_screens: Array = []              # [{from, shown: bool, kit: bool}] one row per entry (tests read it)
+
+func peek_kit() -> bool:
+	return not _kit.is_empty() and _kit.key == kit_key()
+
+## Does this entry get the screen? Yes, unless the kit is parked and the last kit entry was fast.
+func entry_screen_wanted() -> bool:
+	return not (peek_kit() and last_kit_entry_ms >= 0 and last_kit_entry_ms < FAST_ENTRY_MS)
+
+func entry_plan(phases: Array) -> void:
+	if veil != null and is_instance_valid(veil):
+		veil.set_plan(phases)
+
+func entry_phase(name: String) -> void:
+	if veil != null and is_instance_valid(veil):
+		veil.phase_done(name)
+
+func _entry_finished() -> void:
+	if veil != null and is_instance_valid(veil):
+		veil.island_ready()
+	veil = null
+
+## Starts the screen (terrain generation inside it when the terrain is not in memory yet) and then changes to the island.
+## Every way into the island goes through here (menu, cell bridge, studio, load, --play).
+func enter_island(from: String = "") -> void:
+	var params := {"seed": int(settings.seed)}
+	var have := data != null and int(terrain.get("seed", settings.seed)) == int(settings.seed)
+	if not have:
+		var cached := TerrainCache.load_entry(params)
+		if not cached.is_empty():
+			set_island(cached)
+			have = true
+	if have:
+		goto_island(from)
+		return
+	entry_screens.append({"from": from if from != "" else "menu", "shown": true, "kit": false})
+	_open_veil(from, params, true)
+
+func _open_veil(from: String, params: Dictionary, need_terrain: bool) -> void:
+	if veil != null and is_instance_valid(veil):
+		return
+	veil = EntryVeil.new()
+	get_tree().root.add_child.call_deferred(veil)      # the root may be busy setting up (a scene's _ready)
+	veil.begin.call_deferred(from if from != "" else "menu", params, need_terrain)
+	if need_terrain:
+		veil.terrain_done.connect(func(e: Dictionary) -> void:
+			if e.get("error", -1) != 0:
+				push_error("terrain generation failed: %s" % [e.get("error")])
+				get_tree().quit(1)
+				return
+			set_island(e)
+			_change_to_island(from))
+	else:
+		_change_to_island(from)
+
+func _change_to_island(from: String) -> void:
 	entry_t0 = Time.get_ticks_msec()
-	entry_from = from if from != "" else ("studio" if get_tree().current_scene != null and get_tree().current_scene.scene_file_path.contains("/studio/") else "menu")
+	entry_from = from if from != "" else "menu"
+	# two frames so the screen is on the display before the build starts
+	await get_tree().process_frame
+	await get_tree().process_frame
+	# the island scene (and the scripts it preloads) loads on a worker thread so the screen keeps animating
+	const PATH := "res://game/island/island.tscn"
+	if ResourceLoader.load_threaded_request(PATH) == OK:
+		while ResourceLoader.load_threaded_get_status(PATH) == ResourceLoader.THREAD_LOAD_IN_PROGRESS:
+			await get_tree().process_frame
+		var packed = ResourceLoader.load_threaded_get(PATH)
+		if packed is PackedScene:
+			get_tree().change_scene_to_packed(packed)
+			return
+	get_tree().change_scene_to_file(PATH)
+
+func goto_island(from: String = "") -> void:
+	park_island()           # the kit leaves the running island first: it decides whether this entry needs the screen
+	var f := from if from != "" else ("studio" if get_tree().current_scene != null and get_tree().current_scene.scene_file_path.contains("/studio/") else "menu")
+	var wanted := entry_screen_wanted()
+	entry_screens.append({"from": f, "shown": wanted, "kit": peek_kit()})
+	if wanted:
+		_open_veil(f, {}, false)
+		return
+	entry_t0 = Time.get_ticks_msec()
+	entry_from = f
 	get_tree().change_scene_to_file("res://game/island/island.tscn")
 
 var cell_jump_end: Dictionary = {}   # dev (`cell finish`): the cell stage opens straight on its end card with this legacy
