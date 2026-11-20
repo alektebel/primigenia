@@ -101,11 +101,88 @@ func _on_action_event(ev: String, data: Dictionary) -> void:
 		var flight := maxf(0.05, (float(act.get("w", 6.0)) - float(data.get("tau", 0.0))) * 0.1)
 		_fx_script.spit_blob(host.get_parent(), from, to, flight, map.height * 0.5 if map != null else 1.0)
 
+## After a flight the controller starts from where the creature landed (its feet were never on the ground in between).
+func rebase() -> void:
+	_started = false
+
+# Flying (flight test): the controller is not stepped (its feet would plant on the ground far below). The last ground pose is
+# re-rooted on the flyer's attitude and the legs are tucked under the body; the wings are written by the flight mode.
+func _update_flight(_dt: float, s: Dictionary) -> void:
+	var f: Dictionary = s.flight
+	var r: Basis = f.basis
+	var com_local: Vector3 = controller.morph.com
+	var pose: Dictionary = controller.pose.duplicate()
+	if pose.is_empty():
+		return
+	var root := Transform3D(r, (f.com as Vector3) - r * com_local)
+	pose["root"] = root
+	var feet: Array = []
+	var contact: Array = []
+	var swing: Array = []
+	var hips: PackedVector3Array = PackedVector3Array()
+	for j in desc.legs.size():
+		var leg: Dictionary = desc.legs[j]
+		var reach: float = float(leg.upper) + float(leg.lower)
+		var hip: Vector3 = root * (leg.hip as Vector3)
+		hips.append(hip)
+		feet.append(hip + r * Vector3(0.0, -0.4 * reach, -0.28 * reach))     # tucked: knees up, feet under the belly
+		contact.append(false)
+		swing.append(0.5)
+	pose["feet"] = feet
+	pose["contact"] = contact
+	pose["swing_u"] = swing
+	pose["hips"] = hips
+	adapter.loco_apply(body, pose, desc)
+	_bank_pose(f)
+	_acting_before = false
+
+# Presentation of a banked turn on the spine: the neck rolls back against the body (gaze stabilisation: the head stays on the horizon),
+# the tail twists into the turn and fans (wider). loco_apply rewrote every bone this frame, so these are deltas on top of it.
+const TAIL_TWIST := 0.35        # share of the body roll the tail tip adds, into the turn
+const TAIL_FAN := 0.35          # tail width gain at the sharpest bank
+func _bank_pose(f: Dictionary) -> void:
+	var sk = body.skeleton
+	if sk == null:
+		return
+	var bank: float = float(f.bank)
+	var roll := -atan(bank)                                   # the body's roll about its forward axis (+ = left wing up)
+	var stab: float = 1.0 - float(f.get("head_roll", 0.0)) / roll if absf(roll) > 1e-4 else 0.0
+	var nn: int = body.neck_bones.size()
+	for a in nn:
+		var b: int = body.neck_bones[a]
+		sk.set_bone_pose_rotation(b, sk.get_bone_pose_rotation(b) * Quaternion(Vector3.BACK, -roll * stab / float(nn)))
+	var tn: int = body.tail_bones.size()
+	var amount := clampf(bank / 1.7320508, -1.0, 1.0)
+	for a in tn:
+		var b2: int = body.tail_bones[a]
+		var k := 1.0 - float(a) / float(maxi(tn, 1))          # tip first
+		sk.set_bone_pose_rotation(b2, sk.get_bone_pose_rotation(b2) * Quaternion(Vector3.BACK, roll * TAIL_TWIST * k / float(maxi(tn, 1)) * 2.0))
+		sk.set_bone_pose_scale(b2, (sk.get_bone_rest(b2) as Transform3D).basis.get_scale() * Vector3(1.0 + TAIL_FAN * absf(amount) * k, 1.0, 1.0))
+
+# The slide / tumble while C has the player airborne or sliding (player.falling): the body leans back, feet downhill, and
+# rolls a little, eased in and out so the landing settles. Presentation only.
+const FALL_LEAN := 0.5          # rad, backwards
+const FALL_ROLL := 0.28         # rad, side to side
+var _fall_k := 0.0
+var _fall_t := 0.0
+func _fall_pose(dt: float, falling: bool) -> Basis:
+	_fall_k = move_toward(_fall_k, 1.0 if falling else 0.0, dt / (0.18 if falling else 0.35))
+	if _fall_k <= 0.0:
+		_fall_t = 0.0
+		return Basis.IDENTITY
+	_fall_t += dt
+	var lean := -FALL_LEAN * _fall_k + sin(_fall_t * 7.0) * 0.07 * _fall_k
+	var roll := sin(_fall_t * 3.3) * FALL_ROLL * _fall_k
+	return Basis(Vector3.BACK, roll) * Basis(Vector3.RIGHT, lean)
+
 # s: StageWorld.sample() -> {pos, yaw, speed, vel}, optionally intent (the world yaw the player asks for)
 # ctx (optional): what the action layer reads, see actions/action_layer.gd
 func update(dt: float, s: Dictionary, ctx: Dictionary = {}) -> void:
 	host.position = s.pos
-	host.basis = Basis(Vector3.UP, s.yaw)
+	host.basis = Basis(Vector3.UP, s.yaw) * _fall_pose(dt, bool(s.get("falling", false)))
+	if s.has("flight") and controller != null and adapter != null:
+		_update_flight(dt, s)
+		return
 	if is_placeholder:
 		if body.has_method("animate"):
 			body.animate(dt, s.speed)

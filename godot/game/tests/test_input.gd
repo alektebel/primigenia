@@ -35,6 +35,21 @@ func run(t) -> void:
 	inp.keys_override = {"forward": true, "back": false, "left": false, "right": false, "sprint": true}
 	var s: Dictionary = inp.sample()
 	t.eq([s.verb, s.hx, s.hz, s.sprint], [3, 0, -32767, 1], "W with view yaw 0 heads -Z, sprinting")
+	# Run (Shift): its own intent, apart from the legacy sprint; exhaustion needs a release before running restarts
+	var rk := {"forward": true, "back": false, "left": false, "right": false, "sprint": false, "run": true}
+	var ri = PlayerInput.new()
+	ri.keys_override = rk
+	var rs: Dictionary = ri.sample()
+	t.eq([rs.verb, rs.sprint, rs.run], [3, 0, 1], "Shift is run, not the legacy sprint")
+	ri.after_tick({"player": {"running": true, "stamina": 5}})
+	ri.after_tick({"player": {"running": false, "stamina": 0}, "order": {"verb": 3}})
+	t.eq(ri.sample().run, 0, "exhausted with Shift held: run stays off")
+	ri.keys_override = {"forward": true, "back": false, "left": false, "right": false, "sprint": false, "run": false}
+	ri.sample()
+	ri.keys_override = rk
+	t.eq(ri.sample().run, 1, "released and pressed again: run is wanted again")
+	ri.keys_override = {"forward": false, "back": false, "left": false, "right": false, "sprint": false, "run": true}
+	t.eq(ri.sample().get("run", -1), 1, "a standing player still sends the run intent (the toggle is latched in C)")
 	inp.set_destination(Vector2(500, -500))
 	t.check((inp.destination as Vector2).distance_to(Vector2(194.9, -194.9)) < 1e-4, "destinations are clamped to +-194.9")
 	inp.keys_override = {"forward": false, "back": false, "left": false, "right": false, "sprint": false}

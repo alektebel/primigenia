@@ -15,6 +15,7 @@ var manual := 0.0
 const Z_CHASE := 0.15            # the default gameplay view
 const Z_KEYS := [0.0, 0.15, 0.40, 0.70, 1.0]
 const KEY_DIST_H := [1.8, 4.0, 12.0]       # body heights, for z 0, 0.15, 0.40
+const MIN_DISTANCE := 1.6                  # m: the closest view never gets nearer than this, whatever the body (a 0.65 m hatchling)
 const KEY_PITCH_DEG := [8.0, 15.0, 35.0, 55.0, 70.0]
 const TACTICAL_DISTANCE := 150.0           # m at z 0.7
 const ICON_Z := 0.7              # strategic icons start to fade in above this
@@ -35,6 +36,7 @@ var z_target := Z_CHASE
 var strategic_distance := 3000.0 # m at z = 1 (the island; the island sets it from its size)
 var map_center := Vector2.ZERO   # where the strategic view looks (XZ)
 var free_orbit := false          # setting camera/free_orbit: the camera never returns behind by itself
+var mouse_walk := false          # the creature walks to a left click / follows the mouse: no auto-turn of the camera for that
 var orbit_active := false        # the mouse is dragging the camera right now
 var _orbited := false            # the player has orbited: the way back may pass the 110 deg "towards the camera" limit
 var _reset := false
@@ -59,6 +61,17 @@ var ENGAGE_TOL := 0.3491     # rad (20 deg)
 var kick := false              # optional speed cues (settings camera/kick): wider fov and boom near sprint speed
 var top_speed := 8.84
 var fov_add := 0.0
+# Flight (F1): the island sets `air_y` (world height of the flyer) and `air_on`; the camera pulls back x1.6, rises with the
+# flyer and widens the fov by 8 degrees in a dive; it eases back to the chase curve in 0.5 s after landing. Roll is not followed.
+var air_y := 0.0          # world height of the flyer's feet-level origin
+var air_on := false
+var air_dive := false
+var air_bank := 0.0       # tan of the flyer's bank (+ = left); the camera rolls ROLL_FOLLOW of it, eased
+const ROLL_FOLLOW := 0.3  # share of the bank angle the view rolls: the horizon tilt reads without turning the view over
+const AIR_YAW_TAU := 0.7  # s: in the air the view yaw closes 1/e of its error to the flight path in this time (a smooth lag)
+var roll := 0.0           # the view's roll about its forward axis (rad, + = left side down), output of update()
+var _air_k := 0.0
+var _air_dive_k := 0.0
 var yaw_rate := 0.0            # the auto-follow's angular velocity (rad/s)
 var _vel_s := Vector2.ZERO
 var _clock := 0.0
@@ -78,7 +91,7 @@ func _init(creature_height: float, start_yaw: float, ground_fn: Callable) -> voi
 
 # ---- the zoom curve (pure functions of z) ---------------------------------------------------------
 func _key_distances() -> Array:
-	var d: Array = [height * KEY_DIST_H[0], height * KEY_DIST_H[1], height * KEY_DIST_H[2], maxf(TACTICAL_DISTANCE, height * KEY_DIST_H[2] * 1.5), 0.0]
+	var d: Array = [maxf(MIN_DISTANCE, height * KEY_DIST_H[0]), height * KEY_DIST_H[1], height * KEY_DIST_H[2], maxf(TACTICAL_DISTANCE, height * KEY_DIST_H[2] * 1.5), 0.0]
 	d[4] = maxf(strategic_distance, d[3] * 2.0)
 	return d
 
@@ -170,7 +183,12 @@ func update(player: Dictionary, enemy, fighting: bool, dt: float, aspect: float 
 	# the discrete first-order follow (player moved first, then eased) lags by dt (1-k)/k = about tau - dt/2: lead by exactly that
 	var kf := 1.0 - exp(-dt / POS_TAU) if dt > 0.0 else 1.0
 	var lead := LEAD if dt <= 0.0 else dt * (1.0 - kf) / kf
-	var tgt := Vector3(player.x + _vel_s.x * lead, ground.call(player.x, player.z) + h * 1.5, player.z + _vel_s.y * lead)
+	var roll_goal := ROLL_FOLLOW * atan(air_bank) if air_on else 0.0
+	roll = roll_goal if dt <= 0.0 else lerpf(roll, roll_goal, 1.0 - exp(-dt / 0.35))
+	_air_k = lerpf(_air_k, 1.0 if air_on else 0.0, 1.0 - exp(-dt / (0.3 if air_on else 0.17)) if dt > 0.0 else 1.0)
+	_air_dive_k = lerpf(_air_dive_k, 1.0 if (air_on and air_dive) else 0.0, 1.0 - exp(-dt / 0.25) if dt > 0.0 else 1.0)
+	var ground_y: float = ground.call(player.x, player.z)
+	var tgt := Vector3(player.x + _vel_s.x * lead, lerpf(ground_y + h * 1.5, maxf(air_y, ground_y) + h * 0.8, _air_k), player.z + _vel_s.y * lead)
 	if mb > 0.0:
 		tgt.x = lerpf(tgt.x, map_center.x, mb)
 		tgt.z = lerpf(tgt.z, map_center.y, mb)
@@ -182,6 +200,8 @@ func update(player: Dictionary, enemy, fighting: bool, dt: float, aspect: float 
 	_kick_k = lerpf(_kick_k, kick_goal, 1.0 - exp(-dt / 0.3) if dt > 0.0 else 1.0)
 	fov_add = 5.0 * _kick_k - 8.0 * smoothstep(0.7, 1.0, z)       # a flatter, map-like view at the far end
 	desired *= 1.0 + 0.06 * _kick_k
+	desired *= 1.0 + 0.6 * _air_k
+	fov_add += 8.0 * _air_dive_k
 	if fighting and enemy != null:
 		tgt.x = (player.x + enemy.x) / 2.0
 		tgt.z = (player.z + enemy.z) / 2.0
@@ -220,7 +240,7 @@ func update(player: Dictionary, enemy, fighting: bool, dt: float, aspect: float 
 	if look_pitch < pitch:
 		var f := -look_pitch
 		aim = pos + Vector3(-sin(view_yaw) * cos(f), sin(f), -cos(view_yaw) * cos(f)) * 20.0
-	return {"fov_add": fov_add, "position": pos, "target": tv, "aim": aim, "look_pitch": look_pitch, "yaw": view_yaw, "pitch": pitch, "distance": boom, "actual_distance": length, "z": z}
+	return {"fov_add": fov_add, "position": pos, "target": tv, "aim": aim, "look_pitch": look_pitch, "yaw": view_yaw, "pitch": pitch, "distance": boom, "actual_distance": length, "z": z, "roll": roll}
 
 # Auto-follow of the creature's heading with a rate cap and an acceleration cap. It does not swing when the creature
 # runs towards the camera (more than 110 degrees away), pivots, has not held its heading for a quarter of a second
@@ -238,10 +258,14 @@ func _follow(player: Dictionary, dt: float) -> void:
 	_vel_s = v if dt <= 0.0 else _vel_s.lerp(v, 1.0 - exp(-dt / VEL_TAU))
 	var e := wrapf(pyaw + PI - yaw, -PI, PI)
 	var w_goal := 0.0
+	var air := air_on and not _reset
 	var away_max := PI if _orbited else AWAY_MAX       # after an orbit the way back behind the creature is allowed to pass 110 deg
 	if _reset:
 		w_goal = clampf(e / YAW_TAU, -YAW_MAX, YAW_MAX)
-	elif player.speed > 0.4 and manual == 0.0 and not free_orbit and absf(_player_rate) < PIVOT_RATE and absf(e) < away_max and steady:
+	elif air and manual == 0.0 and not free_orbit and absf(e) < away_max:
+		# flying: the view follows the flight path continuously (a steady turn never counts as "steady" on the ground), smooth lag
+		w_goal = clampf(e / AIR_YAW_TAU, -YAW_MAX, YAW_MAX)
+	elif player.speed > 0.4 and manual == 0.0 and not free_orbit and not mouse_walk and absf(_player_rate) < PIVOT_RATE and absf(e) < away_max and steady:
 		w_goal = clampf(e / YAW_TAU, -YAW_MAX, YAW_MAX)
 	if manual > 0.0 and not _reset:
 		yaw_rate = 0.0

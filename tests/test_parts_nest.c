@@ -18,12 +18,35 @@ static void genomes(void){
  assert(!cp_stage_edit(&w,f.body));assert(w.ancestry.count==2&&w.ancestry.forms[0].cousin_id>0);assert(w.social.dna_total==total);
  int gained=0;for(unsigned i=0;i<w.ledger.count;i++)if(w.ledger.entries[i].kind==CP_LEDGER_EVOLVED)gained++;assert(gained==1);
  w.player.x=w.setup.nest_x+13;assert(cp_stage_edit(&w,f.body)==CP_STAGE_ERR_NOT_AT_NEST);
+ /* edit_anywhere: the 12 m rule stays, the flag is explicit, never hashed, and fights still block it. */
+ {uint64_t h0=cp_stage_hash(&w);assert(!cp_stage_can_edit(&w)&&!cp_stage_at_nest(&w));
+  cp_stage_set_edit_anywhere(&w,1);assert(cp_stage_hash(&w)==h0);assert(cp_stage_can_edit(&w)&&!cp_stage_at_nest(&w));
+  w.active=0;assert(!cp_stage_can_edit(&w));assert(cp_stage_edit(&w,f.body)==CP_STAGE_ERR_NOT_AT_NEST);w.active=-1;
+  assert(!cp_stage_edit(&w,f.body));assert(w.ancestry.count==3);
+  cp_stage_set_edit_anywhere(&w,0);assert(!cp_stage_can_edit(&w)&&cp_stage_edit(&w,f.body)==CP_STAGE_ERR_NOT_AT_NEST);}
  reset(78);assert(!cp_stage_lineage_form(&w,&f,0));char changed[CP_LINEAGE_BODY_CAP];strcpy(changed,f.body);char *name=strstr(changed,"pico");memcpy(name,"romo",4);int romo=cp_stage_part_id("romo");assert(!cp_stage_part_find(&w,romo,CP_PART_FOSSIL));w.social.dna_balance=100;assert(!cp_stage_part_buy(&w,romo,0));
  assert(cp_stage_edit(&w,"{\"schema\":\"cpore.creature/5\"}")<0);
  assert(!cp_stage_edit(&w,changed));int diff=0;for(unsigned i=0;i<w.ledger.count;i++)if(w.ledger.entries[i].kind==CP_LEDGER_PART_GAINED||w.ledger.entries[i].kind==CP_LEDGER_PART_LOST)diff++;assert(diff==2);
  strcpy(changed,f.body);name=strstr(changed,"\"level\":1");name[8]='9';assert(cp_stage_genome_form(changed,&normalized)<0);
  assert(cp_stage_genome_form("{\"schema\":\"cpore.creature/5\",\"schema\":null}",&normalized)<0);
  printf("evolution hash %016" PRIx64 "\n",cp_stage_hash(&w));
+}
+/* A31 dev grant: a body with parts the player never found is refused at the nest until GRANT marks them owned. */
+static void dev_grant(void){
+ reset(91);CpLineageForm f;assert(!cp_stage_genome_form(body,&f));assert(!cp_stage_lineage_form(&w,&f,0));
+ char wings[CP_LINEAGE_BODY_CAP];strcpy(wings,f.body);
+ char *t=strstr(wings,"pico");assert(t);memmove(t+11,t+4,strlen(t+4)+1);memcpy(t,"wing_glider",11);
+ assert(strstr(wings,"wing_glider"));
+ CpStageDebug bad={.op=CP_STAGE_DBG_GRANT,.a=CP_STAGE_PART_COUNT};assert(cp_stage_debug(&w,&bad)<0);
+ bad.a=-2;assert(cp_stage_debug(&w,&bad)<0);
+ w.social.dna_balance=500;
+ assert(cp_stage_edit(&w,wings)==CP_STAGE_ERR_NOT_KNOWN);
+ uint64_t h0=cp_stage_hash(&w);
+ CpStageDebug g={.op=CP_STAGE_DBG_GRANT,.a=cp_stage_part_id("wing_glider")};assert(cp_stage_debug(&w,&g)==0);
+ assert(cp_stage_hash(&w)!=h0&&(w.parts.owned>>g.a&1)&&(w.parts.discovered>>g.a&1)&&w.parts.level[g.a]==1);
+ assert(cp_stage_edit(&w,wings)==0);          /* the creature keeps its wing */
+ CpStageDebug all={.op=CP_STAGE_DBG_GRANT,.a=-1};assert(cp_stage_debug(&w,&all)==0);
+ for(int i=0;i<CP_STAGE_PART_COUNT;i++)assert((w.parts.owned>>i&1)&&w.parts.level[i]>=1);
 }
 static void tiers(void){
  static CpCombatWorld c;CpCombatSetup s={0};s.n=2;s.flat=1;s.seed=1;
@@ -87,7 +110,7 @@ static void a25(void){
 }
 
 int main(void){
- genomes();a25();tiers();saved_inspection();
+ genomes();dev_grant();a25();tiers();saved_inspection();
  reset(1);char json[16384];assert(cp_stage_parts_json(&w,json,sizeof json)>0&&strstr(json,"discovered"));assert(w.parts.eggs==3);assert(cp_stage_at_nest(&w));
  int p=cp_stage_part_id("cuerno");assert(p>=0);assert(cp_stage_part_buy(&w,p,0)<0);
  assert(!cp_stage_part_find(&w,p,CP_PART_FOSSIL));int total=w.social.dna_total;
@@ -106,6 +129,10 @@ int main(void){
  reset(11);int ally=cp_stage_part_id("romo");cp_stage_parts_ally(&w,0);assert(w.parts.discovered&(1ULL<<ally));int bank=w.social.dna_balance;cp_stage_parts_ally(&w,0);assert(w.social.dna_balance==bank);
  reset(12);cp_stage_set_tiers(&w,1);int pico=cp_stage_part_id("pico");w.social.dna_balance=100000;int costs[]={0,2,4,8,16};for(int lv=2;lv<=5;lv++){int old=w.social.dna_balance;assert(!cp_stage_part_buy(&w,pico,1));assert(old-w.social.dna_balance==CP_STAGE_PARTS[pico].cost*costs[lv-1]);}assert(cp_stage_part_buy(&w,pico,1)<0);
  w.parts.hits[pico]=74;w.parts.wins[pico]=10;w.parts.tier[pico]=1;assert(cp_stage_part_buy(&w,pico,2)<0);w.parts.hits[pico]=75;bank=w.social.dna_balance;assert(!cp_stage_part_buy(&w,pico,2));assert(bank-w.social.dna_balance==150);
+ /* the cell's legacy (A32): a diet and one owned starter part, both optional; none = untouched */
+ reset(13);{uint64_t h0=cp_stage_hash(&w);int pua=cp_stage_part_id("pua");assert(cp_stage_legacy_apply(&w,-1,-1)==0&&cp_stage_hash(&w)==h0);assert(!(w.parts.owned&(1ULL<<pua)));
+  assert(cp_stage_legacy_apply(&w,CP_DIET_CARNIVORE,pua)==0);assert(w.social.diet==CP_DIET_CARNIVORE);assert((w.parts.owned&(1ULL<<pua))&&(w.parts.discovered&(1ULL<<pua))&&(w.parts.starter&(1ULL<<pua))&&w.parts.level[pua]==1);assert(cp_stage_hash(&w)!=h0);
+  assert(cp_stage_legacy_apply(&w,7,-1)<0&&cp_stage_legacy_apply(&w,-1,CP_STAGE_PART_COUNT)<0);}
  printf("shop hash %016" PRIx64 "\n",cp_stage_hash(&w));
  puts("parts/nest rules PASS");return 0;
 }

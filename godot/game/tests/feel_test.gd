@@ -453,7 +453,10 @@ func finite_all(d) -> bool:
 func _run() -> void:
 	var game = root.get_node("Game")
 	var manifest := Profile.load_json("res://game/data/parts.json")
-	genome = game.player_genome()
+	# The gates were calibrated on Merodeador (6 t, amble/trot at play speeds). The starter is the 35 kg hatchling, which gallops at
+	# 4 m/s (Fr 6): pass `hatchling` after the output dir to run the same measurements on it (see docs/godot/HATCHLING.md).
+	var path := "res://game/data/hatchling.json" if "hatchling" in OS.get_cmdline_user_args() else "res://game/data/merodeador.json"
+	genome = game._read_genome(path)
 	var pr := Profile.from_studio(genome, manifest)
 	if not pr.ok:
 		push_error("no profile")

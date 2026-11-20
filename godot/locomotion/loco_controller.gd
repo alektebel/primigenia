@@ -74,6 +74,7 @@ var _neck_y := Vector2.ZERO
 var _tail_p := Vector2.ZERO
 var _tail_y := Vector2.ZERO
 var _drop := 0.0
+var _flex := Vector2.ZERO        # spine arch (rad), gallop
 var _hip_loc: Array = []          # hips in body space after the girdle yaw
 var _st_yaw := PackedFloat32Array()
 var _st_x := PackedFloat32Array()
@@ -172,7 +173,7 @@ func reset(pos: Vector3, yaw: float) -> void:
 		l.phi = 0.0
 		l.dir = basis.z
 		l.ball = Vector3(f.x, l.g_to, f.z) + basis.z * m.toe
-	for s in ["_b", "_c", "_sx", "_sz", "_y", "_p", "_lean", "_bank", "_neck_p", "_neck_y", "_tail_p", "_tail_y"]:
+	for s in ["_flex", "_b", "_c", "_sx", "_sz", "_y", "_p", "_lean", "_bank", "_neck_p", "_neck_y", "_tail_p", "_tail_y"]:
 		set(s, Vector2.ZERO)
 	_a = Vector2(_gy(pos.x, pos.z), 0.0)
 	_drop = 0.0
@@ -249,7 +250,7 @@ func _sub(h: float, p: Vector3, yaw: float, v: Vector3, settle: bool) -> void:
 		gait_changed.emit(old, gait, fr)
 	var legless: bool = _legs.is_empty()
 	var f_nat_c := 0.25 * sqrt(G / _ref_h)
-	var duty_t := Gait.duty(gait, fr_g)
+	var duty_t := Gait.duty(gait, fr_g, morph.graviportal)
 	var stride_t := Gait.stride_length(gait, fr_g, _ref_h) * _stride_mult
 	# slopes: shorter strides uphill (more) and downhill (less)
 	stride_t *= 1.0 / (1.0 + 1.6 * grade) if grade > 0.0 else 1.0 / (1.0 - 0.6 * grade)
@@ -526,7 +527,9 @@ func _sub(h: float, p: Vector3, yaw: float, v: Vector3, settle: bool) -> void:
 	_sz = _spring(_sz, tz, ws, 1.0, h)
 	# --- 11. spring-mass: vertical bounce and pitch from the leg forces
 	var wc: float = 0.45 * TAU * max(f_eff, f_nat)
-	var drive := bounce * _moving
+	# a real bounce is never the same twice: slow, incommensurate modulation of the drive (+-7 %)
+	var irregular := 1.0 + 0.045 * sin(TAU * phase * 0.5 + 1.3) + 0.03 * sin(TAU * phase * 0.31 + 0.4)
+	var drive := bounce * _moving * irregular
 	var zc: float = clamp(_zeta * 0.7, 0.4, 1.0)
 	var den := 1.0 + 2.0 * zc * wc * h + wc * wc * h * h
 	# only the fluctuation of the leg forces about their running mean moves the
@@ -550,7 +553,8 @@ func _sub(h: float, p: Vector3, yaw: float, v: Vector3, settle: bool) -> void:
 			if morph.stations.size() >= 2:
 				wb = max(morph.stations[-1].z - morph.stations[0].z, 0.1)
 			lean_t = 0.6 * a_fwd * morph.com.y / (G * wb)
-	lean_t = clamp(lean_t, -0.25, 0.25)
+	lean_t -= Gait.run_lean(morph.plan, gait, fr) * _moving
+	lean_t = clamp(lean_t, -0.3, 0.25)
 	var bank_k: float = float(BANK_K.get(morph.plan, 0.35)) * bank_gain / 0.7
 	var bank_max: float = float(BANK_MAX.get(morph.plan, 0.2))
 	var bank_t: float = clamp(-atan(_speed_f * _yawrate / G) * bank_k, -bank_max, bank_max)
@@ -589,13 +593,15 @@ func _sub(h: float, p: Vector3, yaw: float, v: Vector3, settle: bool) -> void:
 		if intent_yaw != null and float(st.z) > morph.com.z:
 			yw += clamp(0.25 * d_int, -0.3, 0.3) * (float(st.z) - morph.com.z) / (0.5 * max(morph.body_length, 0.1))
 		_st_yaw[k] = lerpf(_st_yaw[k], yw, _lp(0.04, h))
+	var flex_t: float = Gait.spine_flex(gait, phase, fr) * _moving
+	_flex = _spring(_flex, flex_t, 45.0, 0.8, h)
 	for k in range(morph.stations.size()):
 		_st_x[k] = _spine_x(morph.stations[k].z)
 	for i in range(_legs.size()):
 		var ms: Dictionary = morph.legs[i]
 		var zs: float = morph.stations[ms.station].z
 		var dloc: Vector3 = Basis(Vector3.UP, _st_yaw[ms.station]) * (ms.hip - Vector3(0.0, 0.0, zs))
-		_hip_loc[i] = Vector3(_st_x[ms.station], 0.0, zs) + dloc
+		_hip_loc[i] = Vector3(_st_x[ms.station], _flex_y(zs), zs) + dloc
 	# --- 14. legs must reach: pull the body down, lift a foot that cannot
 	var drop := 0.0
 	for i in range(_legs.size()):
@@ -670,7 +676,7 @@ func _sub(h: float, p: Vector3, yaw: float, v: Vector3, settle: bool) -> void:
 		swing_u.append(l.u if l.swing else 0.0)
 	pose = {
 		"root": root, "feet": feet, "foot_pitch": foot_pitch, "contact_point": contact_point, "foot_dir": foot_dir, "contact": contact, "swing_u": swing_u,
-		"station_yaw": st_yaw.duplicate(), "station_z": _station_z(), "hips": _hips_world(root), "spine_at": spine_at,
+		"station_yaw": st_yaw.duplicate(), "station_z": _station_z(), "hips": _hips_world(root), "spine_at": spine_at, "spine_pitch": spine_pitch,"flex": _flex.x,
 		"neck": {"pitch": _neck_p.x, "yaw": _neck_y.x, "roll": -0.8 * roll},
 		"tail": {"pitch": _tail_p.x, "yaw": _tail_y.x},
 		"wave": {"amp": wave_amp, "phase": _wave_phase, "waves": 1.5},
@@ -755,6 +761,18 @@ func _cap_fix(base: Vector3, caps: PackedFloat32Array, scs: PackedFloat32Array, 
 			db -= kk * zi / sz_
 			dc -= kk * xi / sx_
 	return Vector3(da, db, dc)
+
+## Spine arch: constant curvature about the centre of mass (flex rad over the half length). Absolute pitch about +X
+## of the spine at z in the rig's convention (nose up = negative), and the height of the arch there.
+func _flex_half() -> float:
+	return max(0.5 * morph.body_length, 0.1)
+
+func spine_pitch(z: float) -> float:
+	return _flex.x / _flex_half() * (z - morph.com.z)
+
+func _flex_y(z: float) -> float:
+	var dz: float = z - morph.com.z
+	return -0.5 * _flex.x / _flex_half() * dz * dz
 
 ## Lateral offset (metres, +left) of the spine at arc coordinate u (0 tail tip,
 ## 1 head) for legless undulation. Zero for legged bodies.

@@ -69,6 +69,12 @@ int cp_stage_at_nest(const CpStageWorld *w){
  float dx=w->player.x-w->setup.nest_x,dz=w->player.z-w->setup.nest_z;
  return dx*dx+dz*dz<=CP_STAGE_NEST_RADIUS*CP_STAGE_NEST_RADIUS;
 }
+int cp_stage_can_edit(const CpStageWorld *w){
+ if(!w)return 0;
+ if(cp_stage_at_nest(w))return 1;
+ return w->edit_anywhere&&w->active<0&&!w->respawn_ticks&&!w->parts.lost;
+}
+void cp_stage_set_edit_anywhere(CpStageWorld *w,int on){if(w)w->edit_anywhere=on?1:0;}
 /* Authored victim tables: repeated entries are integer weights. */
 static const char *const victim[CP_STAGE_SPECIES_COUNT][6]={
  {"romo","romo","pata","ojo","cresta","placa"},
@@ -95,6 +101,16 @@ void cp_stage_parts_reset(CpStageWorld *w){
   int near=0;for(int i=0;i<p->n_nodes;i++){float a=x-p->nodes[i].x,b=z-p->nodes[i].z;if(a*a+b*b<16)near=1;}
   if(!near){int i=p->n_nodes++;p->nodes[i]=(CpStagePartNode){x,z,i%2?CP_PART_OLD_CARCASS:CP_PART_FOSSIL,0};}
  }
+}
+/* The cell's legacy (DESIGN A26/A32): the starting diet (CP_DIET_*, -1 keeps the default) and one starting part (a catalogue id, -1 none),
+ * owned, discovered and a starter at level 1, so the nest shop and the evolve rules treat it like the first three. Called once after a reset;
+ * a world that never calls it is bit-identical to before. */
+int cp_stage_legacy_apply(CpStageWorld *w,int diet,int part){
+ if(!w||diet<-1||diet>CP_DIET_OMNIVORE||part<-1||part>=CP_STAGE_PART_COUNT)return -1;
+ if(diet>=0){w->social.diet=diet;w->social.used=1;}
+ if(part>=0){CpStageParts *p=&w->parts;p->starter|=1ULL<<part;p->discovered|=1ULL<<part;p->owned|=1ULL<<part;if(p->level[part]<1)p->level[part]=1;p->used=1;}
+ w->hash=cp_stage_hash(w);
+ return 0;
 }
 int cp_stage_part_find(CpStageWorld *w,int id,int source){
  if(!w||id<0||id>=CP_STAGE_PART_COUNT||source<0||source>CP_PART_OLD_CARCASS)return -1;
@@ -125,7 +141,7 @@ void cp_stage_parts_kill(CpStageWorld *w,int i){
 void cp_stage_set_tiers(CpStageWorld *w,int on){if(!w)return;w->parts.tiers_on=on?1:0;if(on)w->parts.used=1;w->hash=cp_stage_hash(w);}
 int cp_stage_part_buy(CpStageWorld *w,int id,int kind){
  if(!w||id<0||id>=CP_STAGE_PART_COUNT||kind<0||kind>2)return -1;
- if(!cp_stage_at_nest(w))return CP_STAGE_ERR_NOT_AT_NEST;
+ if(!cp_stage_can_edit(w))return CP_STAGE_ERR_NOT_AT_NEST;
  CpStageParts *p=&w->parts;uint64_t bit=1ULL<<id;int cost;
  if(!(p->discovered&bit))return CP_STAGE_ERR_NOT_KNOWN;
  if(kind==0){if(p->owned&bit)return -1;cost=CP_STAGE_PARTS[id].cost;}
@@ -217,7 +233,7 @@ static const char *form_name(const CpStagePartDef *d,int tier){
 int cp_stage_parts_json(const CpStageWorld *w,char *out,size_t cap){
  size_t n=0;const CpStageParts *p=&w->parts;
 #define ADD(...) do{int k=snprintf(out+n,cap>n?cap-n:0,__VA_ARGS__);if(k<0||(size_t)k>=cap-n)return -1;n+=(size_t)k;}while(0)
- ADD("{\"inspecting\":%d,\"inspect_ticks\":%d,\"eggs\":%d,\"lost\":%s,\"hatchling_ticks\":%d,\"tiers_enabled\":%s,\"clues\":%d,\"recipes\":%d,\"can_edit\":%s,\"dna_balance\":%d,\"discovered\":[",p->inspect_id?2999+p->inspect_id:0,p->inspect_ticks,p->eggs,p->lost?"true":"false",p->hatchling,p->tiers_on?"true":"false",p->clues,p->clues/2,cp_stage_at_nest(w)?"true":"false",w->social.dna_balance);
+ ADD("{\"inspecting\":%d,\"inspect_ticks\":%d,\"eggs\":%d,\"lost\":%s,\"hatchling_ticks\":%d,\"tiers_enabled\":%s,\"clues\":%d,\"recipes\":%d,\"can_edit\":%s,\"dna_balance\":%d,\"discovered\":[",p->inspect_id?2999+p->inspect_id:0,p->inspect_ticks,p->eggs,p->lost?"true":"false",p->hatchling,p->tiers_on?"true":"false",p->clues,p->clues/2,cp_stage_can_edit(w)?"true":"false",w->social.dna_balance);
  int comma=0;for(int i=0;i<CP_STAGE_PART_COUNT;i++)if(p->discovered&(1ULL<<i)){
   const CpStagePartDef *d=&CP_STAGE_PARTS[i];int t=p->tier[i];
   ADD("%s{\"id\":\"%s\",\"index\":%d,\"cost\":%d,\"owned\":%s,\"level\":%d,\"tier\":%d,\"level_price\":%d,\"tier_price\":%d,\"hits\":%u,\"fights\":%u,\"need_hits\":%d,\"need_fights\":%d,\"form\":\"%s\",\"next_form\":\"%s\"}",comma?",":"",d->id,i,d->cost,(p->owned&(1ULL<<i))?"true":"false",p->level[i],t,p->level[i]<5?d->cost*(1<<p->level[i]):0,t<2?(t?150:60):0,p->hits[i],p->wins[i],t?75:25,t?10:3,form_name(d,t),form_name(d,t+1));comma=1;

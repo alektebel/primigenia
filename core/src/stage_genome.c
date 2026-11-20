@@ -172,7 +172,7 @@ int cp_stage_genome_form(const char *json,CpLineageForm *out){
 /* Evolve: the only nest action that spends DNA and starts a generation. Everything the genome adds
  * (new parts, higher levels, tiers when enabled) is priced here and charged atomically with the evolve. */
 int cp_stage_edit(CpStageWorld *w,const char *genome){
- if(!cp_stage_at_nest(w))return CP_STAGE_ERR_NOT_AT_NEST;
+ if(!cp_stage_can_edit(w))return CP_STAGE_ERR_NOT_AT_NEST;
  CpLineageForm f;if(cp_stage_genome_form(genome,&f))return -1;
  if(!w->ancestry.count)return -1;
  Json *j=calloc(1,sizeof *j);if(!j)return -1;j->s=genome;if(value(j)<0){free(j);return -1;}
@@ -211,7 +211,7 @@ int cp_stage_edit(CpStageWorld *w,const char *genome){
 /* Repaint, rearrange and other cosmetic edits: free, any number of times, never a new generation.
  * Rejected when the combat-relevant form (parts, levels, tiers, derived profile) would change. */
 int cp_stage_apply(CpStageWorld *w,const char *genome){
- if(!cp_stage_at_nest(w))return CP_STAGE_ERR_NOT_AT_NEST;
+ if(!cp_stage_can_edit(w))return CP_STAGE_ERR_NOT_AT_NEST;
  if(!w->ancestry.count)return -1;
  CpLineageForm f;if(cp_stage_genome_form(genome,&f))return -1;
  CpLineageForm *cur=&w->ancestry.forms[w->ancestry.count-1].form;
@@ -224,7 +224,7 @@ int cp_stage_apply(CpStageWorld *w,const char *genome){
 }
 
 int cp_stage_start_genome(CpStageWorld *w,const char *genome){
- if(!cp_stage_at_nest(w)||w->ancestry.count)return -1;
+ if(!cp_stage_can_edit(w)||w->ancestry.count)return -1;
  CpLineageForm f;if(cp_stage_genome_form(genome,&f))return -1;
  for(int i=0;i<CP_STAGE_PART_COUNT;i++)if(f.parts[i]&&!(w->parts.owned&(1ULL<<i)))return CP_STAGE_ERR_NOT_KNOWN;
  Json *j=calloc(1,sizeof *j);if(!j)return -1;j->s=genome;if(value(j)<0){free(j);return -1;}
@@ -249,4 +249,25 @@ void cp_stage_genome_tiers(const char *body,uint8_t tiers[CB_PART_COUNT]){
   const CpStagePartDef *d=&CP_STAGE_PARTS[p];int has[]={0,d->mouth==2,d->charge,d->spit,d->tail,d->guard};
   for(int k=1;k<CB_PART_COUNT;k++)if(has[k]&&tiers[k]<(int)t)tiers[k]=(uint8_t)t;
  }free(j);
+}
+
+/* The rig uses the two bone lengths k and f-k. Legacy setups have no genome;
+ * their morphology proxy is a leg length of two collision radii. */
+float cp_stage_safe_drop(const CpStageWorld *w){
+ float fallback=3*cp_combat_body_radius(&w->player.profile);
+ if(!w->ancestry.count)return fallback;
+ Json *j=calloc(1,sizeof *j);if(!j)return fallback;
+ j->s=w->ancestry.forms[w->ancestry.count-1].form.body;
+ if(value(j)!=0){free(j);return fallback;}
+ int parts=field(j,0,"parts"),n=0;float sum=0;
+ if(parts>=0)for(int i=parts+1;i<j->t[parts].next;i=j->t[i].next){
+  if(!oneof(j,field(j,i,"type"),"|pata||zanca||pezuna||leg_sprinter||leg_sucker||foot_spring||foot_hoof||foot_gecko|"))continue;
+  double k[3]={0,-.7,0},f[3]={0,-1.5,0};
+  int kt=field(j,i,"k"),ft=field(j,i,"f");
+  if(kt>=0&&j->t[kt].count==3)for(int a=0,t=kt+1;a<3;a++,t=j->t[t].next)num(j,t,-20,20,&k[a]);
+  if(ft>=0&&j->t[ft].count==3)for(int a=0,t=ft+1;a<3;a++,t=j->t[t].next)num(j,t,-20,20,&f[a]);
+  float a=0,b=0;for(int d=0;d<3;d++){a+=(float)(k[d]*k[d]);b+=(float)((f[d]-k[d])*(f[d]-k[d]));}
+  sum+=sqrtf(a)+sqrtf(b);n++;
+ }
+ free(j);return n?1.5f*sum/n:fallback;
 }

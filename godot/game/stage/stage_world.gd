@@ -35,13 +35,42 @@ var paused := false
 var max_steps_per_frame := 60
 var achieved_scale := 1.0     # simulated seconds per real second in the last frame (< timescale when capped)
 
+# Dev: look at the player moving `vis_speed` times faster than the C world moves it (console `runvis`). Pure presentation:
+# the shown position gains an offset that grows by (vis_speed - 1) times each tick's displacement, so the animation sees
+# run speeds before the C sim can produce them. 1.0 = off, and the offset is dropped.
+var vis_speed := 1.0
+var _vis_off_prev := Vector2.ZERO
+var _vis_off := Vector2.ZERO
+
+func set_vis_speed(k: float) -> void:
+	vis_speed = clampf(k, 1.0, 6.0)
+	if vis_speed == 1.0:
+		_vis_off_prev = Vector2.ZERO
+		_vis_off = Vector2.ZERO
+
+func _vis_tick() -> void:
+	_vis_off_prev = _vis_off
+	if vis_speed == 1.0 or cur.entities.is_empty() or prev.entities.is_empty():
+		return
+	var d := Vector2(cur.entities[0].x - prev.entities[0].x, cur.entities[0].z - prev.entities[0].z)
+	if d.length() <= JUMP:
+		_vis_off += d * (vis_speed - 1.0)
+
 const RING_EVERY := 100
 const RING_KEEP := 8
+
+# Setting edit_anywhere: the creature may be edited away from the nest (the C rule stays; the flag is not hashed and not a
+# tick input, so the world is re-told after every reset and restore, which would otherwise bring back a snapshot's value).
+var edit_anywhere := false:
+	set(v):
+		edit_anywhere = v
+		world.set_edit_anywhere(v)
 
 func reset(setup: Dictionary) -> int:
 	var rc := world.reset(setup)
 	if rc != 0:
 		return rc
+	world.set_edit_anywhere(edit_anywhere)
 	_setup = world.get_setup()
 	cur = world.state()
 	prev = cur
@@ -51,6 +80,15 @@ func reset(setup: Dictionary) -> int:
 	hashes = PackedStringArray()
 	_reset_log(false)
 	return 0
+
+## The cell's legacy (cell/cell_legacy.gd) right after a reset: the starting diet and the owned starter part. Returns the rc.
+func apply_legacy(diet: int, part: String) -> int:
+	var rc: int = world.apply_legacy(diet, part)
+	if rc == 0:
+		cur = world.state()
+		prev = cur
+		pprev = cur
+	return rc
 
 func _reset_log(from_snapshot: bool) -> void:
 	log_debug = []
@@ -65,6 +103,7 @@ func restore_from(bytes: PackedByteArray) -> int:
 	var rc := world.restore(bytes)
 	if rc != 0:
 		return rc
+	world.set_edit_anywhere(edit_anywhere)
 	_setup = world.get_setup()
 	cur = world.state()
 	prev = cur
@@ -131,6 +170,8 @@ func step_once() -> void:
 		input = _order_queue.pop_front()
 	elif input_provider.is_valid():
 		input = input_provider.call()
+	if input.has("run"):
+		world.set_run(int(input.run) != 0)       # before the step, so it is part of that tick; the C log has no setter record
 	var h := world.step(input)
 	if h == "":
 		push_error("stage: the C world rejected an input: %s" % [input])
@@ -138,6 +179,7 @@ func step_once() -> void:
 	pprev = prev
 	prev = cur
 	cur = world.state()
+	_vis_tick()
 	log_inputs.append(input.duplicate())
 	hashes.append(h)
 	if int(cur.tick) % RING_EVERY == 0:
@@ -232,6 +274,14 @@ func sample(id: int, a: float = -1.0) -> Dictionary:
 	var y := 0.0
 	if ground_fn.is_valid():
 		y = ground_fn.call(pos2.x, pos2.y)
+	if id == 0 and vis_speed != 1.0:
+		pos2 += _vis_off_prev.lerp(_vis_off, a)
+		vel2 += (_vis_off - _vis_off_prev) / DT
+		if ground_fn.is_valid():
+			y = ground_fn.call(pos2.x, pos2.y)
+	# C owns airborne height; the animation consumer receives falling separately.
+	if id == 0 and (bool(cur.get("player", {}).get("falling", false)) or bool(prev.get("player", {}).get("falling", false))):
+		y = lerpf(float(prev.get("player", {}).get("y", y)), float(cur.get("player", {}).get("y", y)), a)
 	return {"pos": Vector3(pos2.x, y, pos2.y), "yaw": wrapf(yaw, -PI, PI), "speed": vel2.length(), "speed_c": c.speed,
 		"vel": Vector3(vel2.x, 0.0, vel2.y)}
 

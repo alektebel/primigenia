@@ -9,7 +9,7 @@ orbit around the creature. Mechanics reference only (Q4): no assets or UI copied
 | Input | Effect |
 |---|---|
 | **Scroll** | Continuous zoom along one curve: over-the-shoulder → chase → high → **strategic map**. Smooth (eased), with a fast flick going farther |
-| **Left drag** (moved more than ~6 px) | Orbit around the creature: yaw around its vertical axis, pitch within limits. A plain left **click** still moves the creature (G57); the drag threshold tells them apart |
+| **Left drag** (moved more than ~6 px) | Nothing. The left button never moves the camera (creature-fixes 1, CREATURE-FIXES.md); a plain left **click** moves the creature (G57) and the drag threshold only stops a drag from counting as a click |
 | **Right / middle drag** | Orbit too (already bound to `camera_orbit`) |
 | **Middle click / Home** | Reset behind the creature at the default distance |
 | **Q / E** (optional) | Rotate in steps without the mouse |
@@ -34,7 +34,7 @@ of view and what gets drawn:
 - Terrain collision: the camera never goes underground or inside cliffs; it slides
   up along the slope.
 - At high zoom, **icons replace models** (PA-style strategic zoom). Clicking an
-  icon selects it (the G75 card); double-clicking zooms back down onto it.
+  icon selects it (the G75 card); a double click does nothing extra (the left button never moves the camera).
 - Time keeps running at every zoom (pause is separate, D7).
 - The same camera becomes the **Band command view** later (ARC-PLAN §2): scroll out
   to command, scroll in to act.

@@ -26,6 +26,9 @@ var dirty := false
 var selected_region := -1             # index into doc.regions (UI state, not in the history)
 
 const SEEDS := {
+	"Hatchling": {"name": "Hatchling", "nodes": [{"y": 0.256, "z": -0.544, "r": 0.03}, {"y": 0.272, "z": -0.396, "r": 0.033}, {"y": 0.296, "z": -0.247, "r": 0.066}, {"y": 0.32, "z": -0.099, "r": 0.115}, {"y": 0.328, "z": 0.066, "r": 0.135}, {"y": 0.344, "z": 0.215, "r": 0.107}, {"y": 0.4, "z": 0.33, "r": 0.11}, {"y": 0.44, "z": 0.446, "r": 0.134}],
+		"parts": [{"type": "pico", "t": 1, "ang": 0, "size": 0.3}, {"type": "ojo", "t": 0.9, "ang": 0.95, "size": 0.314}, {"type": "pata", "t": 0.44, "ang": 2.1, "w": 0.05, "k": [0.05, -0.091, 0.066], "f": [0.066, -0.223, -0.008]}, {"type": "pata", "t": 0.7, "ang": 2.1, "w": 0.05, "k": [0.041, -0.115, -0.05], "f": [0.058, -0.239, 0.008]}],
+		"skin": {"pat": 1, "cA": "#b0553a", "cB": "#2a1414", "cC": "#e6cfa0", "wet": 0.4, "scale": 4}},
 	"Merodeador": {"name": "Merodeador", "nodes": [{"y": 1.6, "z": -3.3, "r": .06}, {"y": 1.7, "z": -2.4, "r": .2}, {"y": 1.85, "z": -1.5, "r": .4}, {"y": 2.0, "z": -.6, "r": .7}, {"y": 2.05, "z": .4, "r": .78}, {"y": 2.15, "z": 1.3, "r": .62}, {"y": 2.5, "z": 2.0, "r": .46}, {"y": 2.75, "z": 2.7, "r": .56}],
 		"parts": [{"type": "fauces", "t": 1, "ang": 0, "size": 1.15}, {"type": "ojo", "t": .9, "ang": .95, "size": 1}, {"type": "cuerno", "t": .87, "ang": .4, "size": 1, "len": .9, "curve": .6}, {"type": "pata", "t": .44, "ang": 2.1, "w": .23, "k": [.3, -.55, .4], "f": [.4, -1.35, -.05]}, {"type": "pata", "t": .7, "ang": 2.1, "w": .2, "k": [.25, -.7, -.3], "f": [.35, -1.45, .05]}, {"type": "pua", "t": .5, "ang": 0, "size": 1, "len": .5}, {"type": "pua", "t": .58, "ang": 0, "size": 1, "len": .6}, {"type": "pua", "t": .66, "ang": 0, "size": 1, "len": .5}],
 		"skin": {"pat": 1, "cA": "#9a3b28", "cB": "#2a1414", "cC": "#e6cfa0", "wet": .3, "scale": 7}},
@@ -271,6 +274,46 @@ func set_param(i: int, key: String, value: float) -> void:
 	_touch()
 	end()
 
+## Wheel scaling of one part (creator direct manipulation). `factor` multiplies the part's size; a leg scales its
+## reach (knee and foot vectors) and thickness together. Clamped to the genome limits. The mirrored pair is one genome
+## entry, so both sides follow. Returns {kind: "size"|"reach", value, at_limit, changed}.
+const LEG_REACH_MIN := .5
+const LEG_REACH_MAX := 6.0
+
+func scale_part(i: int, factor: float) -> Dictionary:
+	if i < 0 or i >= doc["parts"].size():
+		return {}
+	var p: Dictionary = doc["parts"][i]
+	var out := {"kind": "size", "value": 0.0, "at_limit": false, "changed": false}
+	begin()
+	if parts_db.is_leg(p["type"]):
+		var r: Array = PartsDB.RANGES["w"]
+		var k: Array = p["k"]
+		var f: Array = p["f"]
+		var reach := Vector3(f[0], f[1], f[2]).length()
+		var fac := clampf(reach * factor, LEG_REACH_MIN, LEG_REACH_MAX) / maxf(reach, 1e-6)
+		var w := clampf(float(p.get("w", .2)) * fac, r[0], r[1])
+		var changed: bool = absf(fac - 1.0) > 1e-6
+		if changed:
+			p["k"] = [k[0] * fac, k[1] * fac, k[2] * fac]
+			p["f"] = [f[0] * fac, f[1] * fac, f[2] * fac]
+			p["w"] = w
+		out["kind"] = "reach"
+		out["value"] = reach * fac
+		out["at_limit"] = absf(fac - factor) > 1e-6
+		out["changed"] = changed
+	elif p.has("size"):
+		var r2: Array = PartsDB.RANGES["size"]
+		var want: float = float(p["size"]) * factor
+		var v := clampf(want, r2[0], r2[1])
+		out["changed"] = absf(v - float(p["size"])) > 1e-6
+		out["at_limit"] = absf(v - want) > 1e-9
+		p["size"] = v
+		out["value"] = v
+	_touch()
+	end()
+	return out
+
 ## Optional per-part genome keys of the realism round: act (limb actuation), single (-1 / 0 / 1: only that side),
 ## pupil (auto, round, slit, bar). Absent = default; "auto" / 0 remove the key so old genomes stay byte-identical.
 func set_part_key(i: int, key: String, value) -> void:
@@ -285,6 +328,46 @@ func set_part_keys(idx: Array, key: String, value) -> void:
 		_set_part_key(int(i), key, value)
 	_touch()
 	end()
+
+## The actuator ring of a limb (A24, creator direct manipulation). Four choices, each tied to the body skeleton the
+## realism layer derives (`creature_bio.gd`): muscle on bone (endo), muscle in an exoskeleton (exo), hydraulic (exo),
+## hydrostat (endo or hydro). `bio` is `creature.bio`. Returns [{id, act, skels, allowed, current}]; a choice is
+## allowed when some skeleton the body can take (`skel_cands`, or the current one) carries it.
+const RING := [["muscle", "muscle", ["endo"]], ["hydraulic", "hydraulic", ["exo"]], ["exo", "muscle", ["exo"]], ["hydrostat", "hydrostat", ["endo", "hydro"]]]
+
+func actuation_options(bio: Dictionary, i: int) -> Array:
+	var out := []
+	if bio.is_empty() or not bio["limbs"].has(i):
+		return out
+	var L: Dictionary = bio["limbs"][i]
+	var skel: String = bio["skeleton"]
+	var cands: Array = bio["skel_cands"]
+	for r in RING:
+		var ok := false
+		for s in r[2]:
+			ok = ok or s == skel or s in cands
+		var cur: bool = L["act"] == r[1] and skel in r[2]
+		out.append({"id": r[0], "act": r[1], "skels": r[2], "allowed": ok, "current": cur})
+	return out
+
+## Apply a ring choice to limb `i` in one undo step. Switches the body skeleton only when the choice needs another one.
+func set_limb_actuation(bio: Dictionary, i: int, id: String) -> bool:
+	for o in actuation_options(bio, i):
+		if o["id"] != id or not o["allowed"]:
+			continue
+		var skel: String = bio["skeleton"]
+		var cands: Array = bio["skel_cands"]
+		begin()
+		if not skel in o["skels"]:
+			for s in o["skels"]:
+				if s in cands:
+					set_skin("sk", s)
+					break
+		_set_part_key(i, "act", o["act"])
+		_touch()
+		end()
+		return true
+	return false
 
 func _set_part_key(i: int, key: String, value) -> void:
 	if i < 0 or i >= doc["parts"].size():
@@ -304,8 +387,13 @@ func move_node(i: int, y: float, z: float) -> int:
 	end()
 	return out
 
+## Weights of the vertebrae either side of a dragged one (A31): the chain follows with a soft falloff over three vertebrae.
+const FALLOFF := [1.0, .62, .32, .12]
+
 func _move_node(i: int, y: float, z: float) -> int:
 	var N: Array = doc["nodes"]
+	if i > 0 and i < N.size() - 1:
+		return _drag_interior(i, y, z)
 	var n: Dictionary = N[i]
 	var a := Vector2(y, z)
 	for j in [i - 1, i + 1]:
@@ -336,6 +424,131 @@ func _move_node(i: int, y: float, z: float) -> int:
 					out = N.size() - 1
 	_touch()
 	return out
+
+## Interior vertebra drag with a soft chain: the vertebra goes to (y, z) and its neighbours follow with FALLOFF weights
+## (up to three each side), each placed at its original distance from the previous one, so the curve stays natural: no kinks, no
+## overlaps, segment lengths inside the chain unchanged. The step is shortened when it would stretch the first untouched
+## segment beyond .3..1.95. Parts hang on the spine by position (t), so limbs and mirrored pairs follow their vertebra.
+func _drag_interior(i: int, y: float, z: float) -> int:
+	var N: Array = doc["nodes"]
+	var old: Array = []
+	for n in N:
+		old.append(Vector2(n["y"], n["z"]))
+	var r: float = N[i]["r"]
+	var target := Vector2(clampf(y, r + .1, 20.0), clampf(z, -30.0, 30.0))
+	var delta: Vector2 = target - (old[i] as Vector2)
+	var scale := 1.0
+	for attempt in 24:
+		var pos: Array = old.duplicate()
+		pos[i] = (old[i] as Vector2) + delta * scale
+		for dir in [-1, 1]:
+			var prev: Vector2 = pos[i]
+			for k in range(1, FALLOFF.size()):
+				var j: int = i + dir * k
+				if j < 0 or j >= N.size():
+					break
+				var want: Vector2 = (old[j] as Vector2) + delta * scale * float(FALLOFF[k])
+				var len_: float = (old[j] as Vector2).distance_to(old[j - dir])
+				var v := want - prev
+				pos[j] = prev + (v.normalized() if v.length() > .0001 else ((old[j] as Vector2) - (old[j - dir] as Vector2)).normalized()) * len_
+				prev = pos[j]
+		var ok := true
+		for dir in [-1, 1]:
+			var j: int = i + dir * FALLOFF.size()
+			var last: int = j - dir
+			if j < 0 or j >= N.size() or last < 0 or last >= N.size():
+				continue
+			var d: float = (pos[last] as Vector2).distance_to(pos[j])
+			if d < .3 or d > 1.95:
+				ok = false
+		var floors_ok := true
+		for j in N.size():
+			if pos[j].x < N[j]["r"] + .1 and j != i:
+				floors_ok = false
+		if ok and floors_ok:
+			for j in N.size():
+				N[j]["y"] = pos[j].x
+				N[j]["z"] = pos[j].y
+			_touch()
+			return i
+		scale *= .85
+	return i
+
+## Drag of a spine end (neck/head = last node, tail = node 0). A31: the vertebrae never spread. The spacing stays the body's own
+## (`natural_spacing`, the mean segment length of the spine when the drag began) and the drag generates new vertebrae one by one at
+## that spacing as the pointer goes further out (the last segment stays between 0.5 and 1.5 spacings), and takes them away again
+## when it comes back, down to 4 and up to MAX_NODES_EDIT (`end_capped` tells the studio to say "límite"). Inside a drag
+## (`begin()` open) every call is computed from the document as it was at the press, so going back and forth is exact; the sideways
+## part of the move still leans the two vertebrae behind the end (50 %, 25 %). Returns the index of the end node afterwards.
+var end_capped := false
+
+func natural_spacing(N: Array) -> float:
+	var sum := 0.0
+	for k in N.size() - 1:
+		sum += Vector2(N[k + 1]["y"] - N[k]["y"], N[k + 1]["z"] - N[k]["z"]).length()
+	return clampf(sum / maxf(float(N.size() - 1), 1.0), .4, 1.2)
+
+func bend_end(i: int, y: float, z: float) -> int:
+	if i != 0 and doc["nodes"].size() > 0 and i != doc["nodes"].size() - 1 and _depth == 0:
+		return i
+	var head: bool = i != 0
+	var was_open := _depth > 0
+	begin()
+	if was_open:
+		doc = JSON.parse_string(_tx_start)       # recompute from the press: stateless in the pointer position
+	var N: Array = doc["nodes"]
+	var spacing := natural_spacing(N)
+	if not head:
+		N.reverse()                               # work on the head end; the tail is the same thing mirrored along the chain
+	var n0: int = N.size()
+	var e_old := Vector2(N[n0 - 1]["y"], N[n0 - 1]["z"])
+	var rad: float = N[n0 - 1]["r"]
+	var p := Vector2(clampf(y, rad + .1, 20.0), clampf(z, -30.0, 30.0))
+	# the anchor: the last original vertebra the pointer is not on top of (pulled in far enough, vertebrae go away; four stay)
+	var a: int = n0 - 2
+	while a > 2 and p.distance_to(Vector2(N[a]["y"], N[a]["z"])) < .5 * spacing:
+		a -= 1
+	var anchor := Vector2(N[a]["y"], N[a]["z"])
+	# sideways lean of the two vertebrae behind the anchor (the bend); the axial part grows or shrinks the chain
+	var axis := (e_old - Vector2(N[n0 - 2]["y"], N[n0 - 2]["z"])).normalized()
+	var side := (p - e_old)
+	side -= axis * side.dot(axis)
+	for step in 2:
+		var k: int = a - step
+		if k >= 1 and k < n0 - 1 and k < a + 1:
+			var w: float = .5 if step == 0 else .25
+			var q := Vector2(N[k]["y"], N[k]["z"]) + side * w * (1.0 if k > 0 else 0.0)
+			N[k]["y"] = maxf(q.x, float(N[k]["r"]) + .1)
+			N[k]["z"] = q.y
+	anchor = Vector2(N[a]["y"], N[a]["z"])
+	var end_node: Dictionary = N[n0 - 1]
+	var r_a: float = N[a]["r"]
+	var keep: Array = N.slice(0, a + 1)
+	var d := p.distance_to(anchor)
+	var segs: int = maxi(1, int(round(d / spacing)))
+	end_capped = false
+	var room: int = MAX_NODES_EDIT - (a + 1) - 1          # generated vertebrae that still fit besides the end node
+	if segs - 1 > room:
+		segs = room + 1
+		end_capped = true
+	var dir := (p - anchor).normalized() if d > .0001 else axis
+	var span: float = minf(d, (float(segs) - 1.0 + 1.5) * spacing)     # the last segment is at most 1.5 spacings
+	var gen: Array = []
+	for k in range(1, segs):
+		var f := float(k) / float(segs)
+		var pt := anchor + dir * (spacing * float(k))
+		gen.append({"y": maxf(pt.x, 0.0), "z": pt.y, "r": lerpf(r_a, float(end_node["r"]), f)})
+	var endp := anchor + dir * span
+	end_node["y"] = maxf(endp.x, float(end_node["r"]) + .1)
+	end_node["z"] = endp.y
+	keep.append_array(gen)
+	keep.append(end_node)
+	if not head:
+		keep.reverse()
+	doc["nodes"] = keep
+	_touch()
+	end()
+	return keep.size() - 1 if head else 0
 
 func set_node_radius(i: int, r: float) -> void:
 	begin()

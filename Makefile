@@ -51,13 +51,15 @@ $(BUILD)/combat_golden: tests/combat_golden.c apps/combat_bots.h $(BUILD)/apps/c
 
 # Correctness regressions. Balance acceptance is a separate measured gate:
 # run make tourney as well before claiming P2 acceptance.
-test: $(BUILD)/parts_nest_test $(BUILD)/plan_test $(BUILD)/social_test $(BUILD)/world_cli $(BUILD)/world_test $(BUILD)/terrain_test $(BUILD)/cpore_test $(BUILD)/combat_test $(BUILD)/combat_tourney_test $(BUILD)/combat_golden check-core $(BUILD)/nav_test $(BUILD)/steer_test $(BUILD)/routes_test secrets-test
+test: $(BUILD)/run_fall_test $(BUILD)/parts_nest_test $(BUILD)/plan_test $(BUILD)/social_test $(BUILD)/world_cli $(BUILD)/world_test $(BUILD)/terrain_test $(BUILD)/cpore_test $(BUILD)/combat_test $(BUILD)/combat_tourney_test $(BUILD)/combat_golden check-core $(BUILD)/nav_test $(BUILD)/steer_test $(BUILD)/routes_test secrets-test
+	./$(BUILD)/run_fall_test
 	nice -n 10 ./$(BUILD)/terrain_test
 	./$(BUILD)/world_test
 	./$(BUILD)/social_test
 	nice -n 10 ./$(BUILD)/nav_test
 	./$(BUILD)/steer_test
 	@for g in world-1 world-42 world-987654321 world-debug-42 world-field-1; do ./$(BUILD)/world_cli --replay tests/golden/$$g.log | diff -q - tests/golden/$$g.hashes >/dev/null || { echo "world_cli replay of $$g differs from its .hashes"; exit 1; }; done; echo "world_cli replays match the golden hashes"
+	sh tests/check_log_v4.sh $(BUILD)/world_cli tests/golden/world-42.log $(BUILD)
 	@sed "s/ 5ef8636377460348/ 5ef8636377460345/" tests/golden/world-field-1.log > $(BUILD)/world-field-bad.log; ! ./$(BUILD)/world_cli --replay $(BUILD)/world-field-bad.log 2>$(BUILD)/world-field-bad.err >/dev/null && grep -q "terrain hash mismatch" $(BUILD)/world-field-bad.err && echo "a field log with an edited hash is refused"
 	python3 tests/test_terrain_metrics.py
 	./$(BUILD)/cpore_test
@@ -305,20 +307,25 @@ godot-ui-test:
 	nice -n 10 timeout 600 $(GODOT) --headless --path godot --script res://tests/ui_test.gd
 .PHONY: godot-ui-test
 # The stage picker (main menu), headless; the second run checks that --play skips the menu.
-.PHONY: godot-menu-test godot-menu-evidence
+.PHONY: godot-menu-test godot-menu-evidence godot-bridge-test
 godot-menu-test:
 	nice -n 10 timeout 300 $(GODOT) --headless --path godot --script res://game/tests/test_menu.gd
 	nice -n 10 timeout 300 $(GODOT) --headless --path godot --script res://game/tests/test_menu.gd -- --play
+# The cell -> creature bridge, headless end to end (docs/godot/CELL-BRIDGE.md).
+godot-bridge-test: godot
+	nice -n 10 timeout 900 $(GODOT) --headless --fixed-fps 60 --path godot --script res://game/tests/test_bridge.gd
 godot-menu-evidence:
 	@mkdir -p docs/evidence/godot/stage-menu
 	LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 600 xvfb-run -a -s "-screen 0 1920x1080x24" $(GODOT) --rendering-driver opengl3 --max-fps 15 --resolution 1280x720 --path godot \
 	  --script res://game/tests/menu_evidence.gd -- $(CURDIR)/docs/evidence/godot/stage-menu
 # The cell stage (godot/cell): play it, and its headless sim tests.
-.PHONY: godot-cell godot-cell-test godot-cell-evidence
+.PHONY: godot-cell godot-cell-test godot-cell-evidence godot-cell2-evidence
 godot-cell:
 	$(GODOT) --path godot -- --cell
 godot-cell-test:
 	nice -n 10 timeout 600 $(GODOT) --headless --path godot --script res://cell/tests/cell_test.gd
+	nice -n 10 timeout 900 $(GODOT) --headless --path godot --script res://cell/tests/threats_test.gd
+	nice -n 10 timeout 600 $(GODOT) --headless --path godot --script res://cell/tests/colony_test.gd
 	nice -n 10 timeout 600 $(GODOT) --headless --path godot --script res://cell/tests/cell_ui_test.gd
 godot-cell-evidence:
 	@mkdir -p docs/evidence/godot/cell
@@ -343,6 +350,19 @@ godot-studio-test:
 	@mkdir -p $(BUILD)/studio-godot
 	nice -n 10 timeout 600 $(GODOT) --headless --path godot/studio --script res://tests/test_studio.gd
 	node godot/studio/tests/node_check.js
+# Creator direct manipulation (wheel scale, joints, spine arrows, actuator ring), real view, real input path.
+.PHONY: godot-studio-ix-test godot-studio-ix-evidence
+godot-studio-ix-test:
+	nice -n 10 timeout 600 $(GODOT) --headless --path godot --script res://studio/tests/test_interaction.gd
+godot-studio-ix-evidence:
+	@mkdir -p docs/evidence/godot/creator-ix
+	LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 900 xvfb-run -a -s "-screen 0 1280x720x24" $(GODOT) --rendering-driver opengl3 --max-fps 30 --resolution 1280x720 --path godot \
+	  --script res://studio/tests/ix_evidence.gd -- $(CURDIR)/docs/evidence/godot/creator-ix
+godot-owner-evidence:
+	@mkdir -p docs/evidence/godot/owner-tweaks
+	LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 900 xvfb-run -a -s "-screen 0 1280x720x24" $(GODOT) --rendering-driver opengl3 --max-fps 30 --resolution 1280x720 --path godot \
+	  --script res://studio/tests/owner_evidence.gd -- $(CURDIR)/docs/evidence/godot/owner-tweaks
+.PHONY: godot-owner-evidence
 # Godot creature module (M1a, godot/creature). Headless tests; the import step
 # refreshes Godot's class_name cache. Evidence renders use software GL only.
 .PHONY: godot-creature-test godot-creature-evidence
@@ -444,6 +464,17 @@ godot-rock-stretch-test: godot
 	done
 
 # PLAN-feel: how the creature feels to steer (C motion rule + the real Godot pipeline), writes docs/evidence/godot/feel/measurements.json.
+# Wings and flight test mode (dev builds): `make godot-fly` plays the light winged test creature on a cliff plateau.
+.PHONY: godot-fly godot-flight-test godot-flight-evidence
+godot-fly:
+	$(GODOT) --path godot -- --scenario creature/flight_cliff
+godot-flight-test: godot
+	nice -n 10 timeout 600 $(GODOT) --headless --fixed-fps 30 --path godot --script res://game/tests/flight_evidence.gd
+godot-flight-evidence: godot
+	@mkdir -p docs/evidence/godot/wings-flight
+	LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 1800 xvfb-run -a -s "-screen 0 1280x720x24" $(GODOT) --rendering-driver opengl3 --fixed-fps 30 --resolution 1280x720 --path godot \
+	  --script res://game/tests/flight_evidence.gd -- $(CURDIR)/docs/evidence/godot/wings-flight
+
 .PHONY: godot-feel-test godot-feel-evidence
 godot-feel-test: godot
 	nice -n 10 timeout 600 $(GODOT) --headless --fixed-fps 60 --path godot --script res://game/tests/feel_test.gd -- $(CURDIR)/docs/evidence/godot/feel
@@ -619,3 +650,10 @@ godot-world-look: godot
 	@mkdir -p $(WL_OUT)
 	LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 1800 xvfb-run -a -s "-screen 0 1280x720x24" $(GODOT) --rendering-driver opengl3 --max-fps 15 --resolution 1280x720 --path godot \
 	  --script res://game/tests/world_look_evidence.gd -- $(WL_OUT) $(WL_QUALITY) base $(WL_SHOTS)
+
+godot-cell2-evidence:
+	@mkdir -p docs/evidence/godot/cell2
+	LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 900 xvfb-run -a $(GODOT) --rendering-driver opengl3 --path godot --script res://cell/tests/cell2_evidence.gd -- $(CURDIR)/docs/evidence/godot/cell2
+
+$(BUILD)/run_fall_test: tests/test_run_fall.c $(HDRS) $(BUILD)/libcpore.a
+	$(CC) $(CFLAGS) $< $(BUILD)/libcpore.a -o $@ $(LDLIBS)

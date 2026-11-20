@@ -7,12 +7,14 @@ const PartsDB := preload("../parts_db.gd")
 const I18n := preload("../i18n.gd")
 const Storage := preload("../storage.gd")
 const Genome := preload("../genome.gd")
+const WingPanel := preload("wing_panel.gd")
 const Thumbs := preload("../thumbnails.gd")
 const ThemeFactory := preload("theme_factory.gd")
 const PlaceholderView := preload("../placeholder/placeholder_view.gd")
 const RealView := preload("../creature_view_real.gd")
 const Env := preload("../studio_env.gd")
 const Baker := preload("../thumb_baker.gd")
+const Ring := preload("actuator_ring.gd")
 
 signal creature_saved(path: String)
 signal nest_confirmed(genome: Dictionary)
@@ -22,6 +24,7 @@ var nest_plan: Dictionary = {}
 var nest_tiers_on := false
 var nest_cost: Label
 var nest_apply_button: Button
+var play_creature_btn: Button
 var nest_evolve_button: Button
 signal exit_requested
 
@@ -54,6 +57,7 @@ var hint_label: Label
 var panel_box: VBoxContainer
 var name_edit: LineEdit
 var undo_btn: Button
+var top_bar: HBoxContainer
 var redo_btn: Button
 var mode_buttons := {}
 var category_tabs := {}
@@ -91,6 +95,16 @@ var _load_menu: PopupMenu
 var _file_mode := ""
 var _ghost: TextureRect
 var _spine_hover := false
+var _hover_leg := -1                  # limb under the cursor: its joint handles show and can be grabbed
+var _arrow_hot := ""                  # "head" | "tail" | "": spine arrow handle under the cursor
+var _scale_fx := {}                   # wheel readout: {pos: Vector2 (stage), text, limit, t}
+var _ring: Control
+var _ring_part := -1
+const CLICK_PX := 4.0
+const CLICK_MS := 200
+const HANDLE_PX := 14.0
+const ARROW_PX := 18.0
+const ARROW_NEAR_PX := 56.0
 var _drop_fx := {}                    # {point: Vector3 (view space), t: seconds}
 var _flash_dna := 0.0
 var _girth_fx := 0.0
@@ -112,6 +126,7 @@ func _ready() -> void:
 	var game := get_node_or_null("/root/Game")
 	storage = Storage.new(str(game.studio_dir) if game != null and "studio_dir" in game else "user://studio")
 	model = Model.new(parts_db)
+	model.new_from_seed("Hatchling", false)       # the starter body (A29); Merodeador stays a seed in the list
 	model.changed.connect(_on_model_changed)
 	model.selection_changed.connect(_on_selection_changed)
 	model.history_changed.connect(_sync_history)
@@ -140,6 +155,10 @@ func _process(dt: float) -> void:
 		if _drop_fx["t"] > .5:
 			_drop_fx = {}
 	_girth_fx = maxf(0.0, _girth_fx - dt)
+	if not _scale_fx.is_empty():
+		_scale_fx["t"] -= dt
+		if _scale_fx["t"] <= 0.0:
+			_scale_fx = {}
 	if view.is_playing() if view.has_method("is_playing") else false:
 		var bp: Vector3 = view.body_position()
 		_theta = atan2(bp.z, bp.x - Env.PATH_CENTER.x)
@@ -206,6 +225,17 @@ func _build_baker() -> void:
 	baker.baked.connect(_on_thumb_baked)
 	add_child(baker)
 
+## Save the creature and drop into the island with it (the island takes the newest saved genome).
+func play_with_creature() -> void:
+	var path := save_current()
+	if path == "":
+		_flash(T("No se pudo guardar"))
+		return
+	var game := get_node_or_null("/root/Game")
+	if game != null and game.has_method("enter_island_now"):
+		exit_requested.emit()
+		game.enter_island_now("studio")
+
 func _on_exit() -> void:
 	if nest_world != null:
 		exit_requested.emit()
@@ -214,6 +244,12 @@ func _on_exit() -> void:
 	var game := get_node_or_null("/root/Game")
 	if game != null and game.has_method("goto_menu"):
 		game.goto_menu()
+
+## The part of the stage not covered by the side panels (A31): both spine arrows must be grabbable there.
+func free_viewport() -> Rect2:
+	var left_edge := 276.0
+	var right_edge: float = stage.size.x - 290.0
+	return Rect2(left_edge, 70.0, maxf(right_edge - left_edge, 200.0), maxf(stage.size.y - 70.0 - 90.0, 200.0))
 
 func frame_creature() -> void:
 	var pts: PackedVector3Array = view.spine_node_positions()
@@ -224,6 +260,37 @@ func frame_creature() -> void:
 	_target = _target_goal
 	_dist = _dist_goal
 	_place_camera()
+	_fit_arrows()
+
+## Centre the spine arrows in the free viewport and move the camera back until both sit inside it with a margin.
+func _fit_arrows() -> void:
+	var free := free_viewport().grow(-34.0)
+	for it in 30:
+		var arr := spine_arrows()
+		if arr.size() < 2:
+			return
+		var lo := Vector2(1e9, 1e9)
+		var hi := Vector2(-1e9, -1e9)
+		for k in arr:
+			lo = lo.min(arr[k]["pos"])
+			hi = hi.max(arr[k]["pos"])
+		var inside: bool = lo.x >= free.position.x and hi.x <= free.end.x and lo.y >= free.position.y and hi.y <= free.end.y
+		var mid := (lo + hi) / 2.0
+		var want := free.get_center()
+		if inside and mid.distance_to(want) < 14.0:
+			break
+		if not inside and (hi.x - lo.x > free.size.x or hi.y - lo.y > free.size.y):
+			_dist = minf(_dist * 1.08, DIST_MAX)
+		else:
+			# slide the view target sideways/up so the arrows' midpoint lands on the centre of the free area
+			var per_px: float = 2.0 * tan(deg_to_rad(camera.fov) / 2.0) * _dist / maxf(stage.size.y, 1.0)
+			var right := camera.global_transform.basis.x
+			var up := camera.global_transform.basis.y
+			var shift := mid - want
+			_target += right * shift.x * per_px - up * shift.y * per_px
+		_dist_goal = _dist
+		_target_goal = _target
+		_place_camera()
 
 func _place_camera() -> void:
 	var cp := cos(_pitch)
@@ -305,12 +372,37 @@ func _build_hud() -> void:
 func T(s: String) -> String:
 	return i18n.tr_(s)
 
+## The top row: three clusters on one line, the modes centred, "Jugar" the primary action on the right.
+## Left: Menú, name, Archivo. Centre: Construir/Pintar/Probar + undo/redo. Right: Jugar con esta criatura, language.
+## The two outer clusters share the free width equally, so the modes stay centred, and nothing can overlap: on narrow
+## windows the wordy labels shorten (see _fit_top_bar) before anything is squeezed.
 func _build_top_bar() -> void:
+	var top := HBoxContainer.new()
+	top.name = "TopBar"
+	top.set_anchors_preset(Control.PRESET_TOP_WIDE)
+	top.offset_left = 14; top.offset_right = -14; top.offset_top = 14
+	top.add_theme_constant_override("separation", 10)
+	top.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	hud.add_child(top)
+	top_bar = top
+	var left_slot := HBoxContainer.new()
+	left_slot.name = "TopLeft"
+	left_slot.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	left_slot.size_flags_stretch_ratio = 1.0
+	left_slot.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	left_slot.alignment = BoxContainer.ALIGNMENT_BEGIN
+	top.add_child(left_slot)
 	var bar := PanelContainer.new()
-	bar.set_anchors_preset(Control.PRESET_CENTER_TOP)
-	bar.grow_horizontal = Control.GROW_DIRECTION_BOTH
-	bar.offset_top = 14
-	hud.add_child(bar)
+	bar.name = "TopModes"
+	bar.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
+	top.add_child(bar)
+	var right_slot := HBoxContainer.new()
+	right_slot.name = "TopRight"
+	right_slot.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	right_slot.size_flags_stretch_ratio = 1.0
+	right_slot.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	right_slot.alignment = BoxContainer.ALIGNMENT_END
+	top.add_child(right_slot)
 	var row := HBoxContainer.new()
 	row.add_theme_constant_override("separation", 6)
 	bar.add_child(row)
@@ -322,23 +414,28 @@ func _build_top_bar() -> void:
 		b.toggle_mode = true
 		b.button_group = group
 		b.button_pressed = model.mode == m[0]
-		b.custom_minimum_size = Vector2(96, 34)
+		b.custom_minimum_size = Vector2(88, 34)
 		b.pressed.connect(set_mode.bind(m[0]))
 		row.add_child(b)
 		mode_buttons[m[0]] = b
 	row.add_child(VSeparator.new())
 	undo_btn = Button.new()
+	undo_btn.name = "UndoButton"
 	undo_btn.text = "↶ " + T("Deshacer")
+	undo_btn.tooltip_text = T("Deshacer")
 	undo_btn.pressed.connect(on_undo)
 	row.add_child(undo_btn)
 	redo_btn = Button.new()
+	redo_btn.name = "RedoButton"
 	redo_btn.text = "↷ " + T("Rehacer")
+	redo_btn.tooltip_text = T("Rehacer")
 	redo_btn.pressed.connect(on_redo)
 	row.add_child(redo_btn)
-	# left corner: name, file menu
+	# left cluster: back to the menu, the name, the file menu
 	var left := PanelContainer.new()
-	left.offset_left = 14; left.offset_top = 14
-	hud.add_child(left)
+	left.name = "TopFile"
+	left.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
+	left_slot.add_child(left)
 	var lrow := HBoxContainer.new()
 	lrow.add_theme_constant_override("separation", 6)
 	left.add_child(lrow)
@@ -348,7 +445,8 @@ func _build_top_bar() -> void:
 	menu_btn.pressed.connect(_on_exit)
 	lrow.add_child(menu_btn)
 	name_edit = LineEdit.new()
-	name_edit.custom_minimum_size = Vector2(150, 0)
+	name_edit.custom_minimum_size = Vector2(110, 0)
+	name_edit.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	name_edit.placeholder_text = T("Ponle nombre")
 	name_edit.text = str(model.doc.get("name", ""))
 	name_edit.max_length = 80
@@ -370,14 +468,26 @@ func _build_top_bar() -> void:
 	_file_menu.add_item(T("Exportar JSON"), 4)
 	_file_menu.id_pressed.connect(_on_file_menu)
 	lrow.add_child(file_btn)
-	# right corner: language
-	var lang_box := PanelContainer.new()
-	lang_box.set_anchors_preset(Control.PRESET_TOP_RIGHT)
-	lang_box.grow_horizontal = Control.GROW_DIRECTION_BEGIN
-	lang_box.offset_top = 14; lang_box.offset_right = -14
-	hud.add_child(lang_box)
+	# right cluster: the primary action, then the language
+	var right := PanelContainer.new()
+	right.name = "TopPlay"
+	right.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
+	right_slot.add_child(right)
 	var lrow2 := HBoxContainer.new()
-	lang_box.add_child(lrow2)
+	lrow2.add_theme_constant_override("separation", 6)
+	right.add_child(lrow2)
+	if nest_world == null:
+		play_creature_btn = Button.new()
+		play_creature_btn.name = "PlayCreatureButton"
+		play_creature_btn.text = "▶ " + T("Jugar con esta criatura")
+		play_creature_btn.tooltip_text = T("Jugar con esta criatura")
+		play_creature_btn.pressed.connect(play_with_creature)
+		var acc := ThemeFactory.MOSS
+		play_creature_btn.add_theme_stylebox_override("normal", ThemeFactory.box(Color(acc.r, acc.g, acc.b, .22), acc, 10, 1))
+		play_creature_btn.add_theme_stylebox_override("hover", ThemeFactory.box(Color(acc.r, acc.g, acc.b, .34), acc, 10, 1))
+		play_creature_btn.add_theme_stylebox_override("pressed", ThemeFactory.box(Color(acc.r, acc.g, acc.b, .45), acc, 10, 2))
+		lrow2.add_child(play_creature_btn)
+		lrow2.add_child(VSeparator.new())
 	for l in ["es", "en"]:
 		var b := Button.new()
 		b.text = l.to_upper()
@@ -385,6 +495,19 @@ func _build_top_bar() -> void:
 		b.button_pressed = lang == l
 		b.pressed.connect(set_lang.bind(l))
 		lrow2.add_child(b)
+	hud.resized.connect(_fit_top_bar)
+	_fit_top_bar.call_deferred()
+
+## Wordy labels give way before anything can collide: undo/redo to their arrows, "Jugar con esta criatura" to "Jugar".
+func _fit_top_bar() -> void:
+	if top_bar == null or not is_instance_valid(top_bar) or hud == null:
+		return
+	var w: float = hud.size.x
+	var wordy := w >= 1240.0
+	undo_btn.text = ("↶ " + T("Deshacer")) if w >= 1160.0 else "↶"
+	redo_btn.text = ("↷ " + T("Rehacer")) if w >= 1160.0 else "↷"
+	if play_creature_btn != null:
+		play_creature_btn.text = "▶ " + (T("Jugar con esta criatura") if wordy else T("Jugar"))
 
 func _build_palette() -> void:
 	var card := PanelContainer.new()
@@ -683,8 +806,9 @@ func _rebuild_panel() -> void:
 	_sync_history()
 
 ## A24: skeleton per body, actuation per limb. Readout "Actuación: <class> - <why>" for the body and for every limb,
-## a choice only where the part form is ambiguous, and the count of actuation types (informational: the cost is a
-## later sim rule). Purely visual for now (docs/godot/CREATURE-REALISM.md).
+## the count of actuation types (informational: the cost is a
+## later sim rule). Purely visual for now (docs/godot/CREATURE-REALISM.md). Read-only here: a limb's actuation is
+## changed only by clicking the limb (the actuator ring); there is no menu in this panel.
 func _actuation_section() -> void:
 	var bio: Dictionary = view.creature.bio if "creature" in view and view.creature != null else {}
 	if bio.is_empty():
@@ -694,17 +818,6 @@ func _actuation_section() -> void:
 	var sk := _note(T("Esqueleto") + ": " + T(C.label(bio["skeleton"])) + " - " + T(bio["skel_why"]))
 	sk.name = "SkeletonReadout"
 	panel_box.add_child(sk)
-	var cands: Array = bio["skel_cands"]
-	if cands.size() > 1:
-		var ob := OptionButton.new()
-		ob.name = "SkeletonChoice"
-		ob.add_item(T("Automática"))
-		for c in cands:
-			ob.add_item(T(C.label(c)))
-		var cur := String(model.doc["skin"].get("sk", "auto"))
-		ob.select(cands.find(cur) + 1 if cur in cands else 0)
-		ob.item_selected.connect(func(i): model.set_skin("sk", "auto" if i == 0 else cands[i - 1]))
-		panel_box.add_child(ob)
 	# Identical limbs (same part type, actuation and reason) share one row and one choice.
 	var groups := {}
 	var order: Array = []
@@ -721,17 +834,6 @@ func _actuation_section() -> void:
 		var row := _note(T(parts_db_name(L["type"])) + (" x%d" % ids.size() if ids.size() > 1 else "") + ": " + T("Actuación") + ": " + T(C.label(L["act"])) + " - " + T(L["why"]))
 		row.name = "Limb_%d" % ids[0]
 		panel_box.add_child(row)
-		if L["cands"].size() > 1:
-			var ob2 := OptionButton.new()
-			ob2.name = "LimbChoice_%d" % ids[0]
-			ob2.add_item(T("Automática"))
-			for c in L["cands"]:
-				ob2.add_item(T(C.label(c)))
-			var stored := String(model.doc["parts"][ids[0]].get("act", ""))
-			ob2.select(L["cands"].find(stored) + 1 if stored in L["cands"] else 0)
-			var lc: Array = L["cands"]
-			ob2.item_selected.connect(func(i): model.set_part_keys(ids, "act", "auto" if i == 0 else lc[i - 1]))
-			panel_box.add_child(ob2)
 	var n := int(bio["act_types"])
 	if n > 0:
 		var mix := _note(("%d " % n) + (T("tipo de actuación") if n == 1 else T("tipos de actuación")) + (": +%d " % (n - 1) + T("metabolismo") if n > 1 else ""))
@@ -806,6 +908,8 @@ func _panel_build() -> void:
 			pob.select(maxi(kinds.find(String(p.get("pupil", "auto"))), 0))
 			pob.item_selected.connect(func(i): model.set_part_key(sel, "pupil", kinds[i]))
 			panel_box.add_child(pob)
+		if WingPanel.is_wing(p):
+			WingPanel.build(panel_box, model, view, sel, Callable(self, "T"))
 		var del := Button.new()
 		del.text = T("Quitar pieza") + "  (Del)"
 		del.pressed.connect(on_key_delete)
@@ -1123,7 +1227,7 @@ func _fill_load_menu() -> void:
 
 func _on_file_menu(id: int) -> void:
 	match id:
-		0: model.new_from_seed("Merodeador"); frame_creature()
+		0: model.new_from_seed("Hatchling"); frame_creature()
 		1: save_current()
 		3: _open_dialog("import")
 		4: _open_dialog("export")
@@ -1147,7 +1251,7 @@ func _set_hint(t: String) -> void:
 		return
 	if t == "":
 		match model.mode:
-			"build": t = "Pasa el cursor por el cuerpo para ver la columna · arrastra una vértebra para esculpir · rueda sobre ella para engordar"
+			"build": t = "Rueda sobre una pieza para escalarla · arrastra una articulación o las flechas de la columna · clic en una pata para elegir su actuador"
 			"paint": t = "Arrastra para girar la cámara"
 			"test": t = "Tu criatura camina sola: nada está animado a mano"
 	hint_label.text = T(t)
@@ -1161,6 +1265,9 @@ func _set_hover(n: int) -> void:
 	_hover_node = n
 	if n < 0:
 		_spine_hover = false
+		_arrow_hot = ""
+		_hover_leg = -1
+		view.set_hover_leg(-1)
 		view.set_hover_node(-1)
 		view.set_hover_part(-1)
 		view.set_bead_hot(false)
@@ -1294,6 +1401,7 @@ func _over_hud(global_pos: Vector2) -> bool:
 	return false
 
 func _cancel_drag() -> void:
+	_close_ring()
 	if _drag.get("tx", false):
 		model.cancel()
 	if _drag.get("kind", "") == "part":
@@ -1338,13 +1446,59 @@ func _handles() -> Dictionary:
 		else:
 			out["rot"] = c + Vector2(cos(p.get("rot", 0.0)), -sin(p.get("rot", 0.0))) * 52.0
 		out["tilt"] = c + Vector2(-64.0, -p.get("tilt", 0.0) * 40.0)
-	else:
-		var js := []
-		for h in view.leg_handles(model.selected):
-			if not camera.is_position_behind(h.pos):
-				js.append({"joint": h.joint, "side": h.side, "screen": camera.unproject_position(h.pos)})
-		out["joints"] = js
 	return out
+
+## Joint handles of the limb under the cursor, else of the selected leg: always live, no mode switch.
+func _joint_handles() -> Array:
+	var js := []
+	if model.mode != "build" or model.playing:
+		return js
+	var leg: int = view.handle_leg()
+	if leg < 0:
+		return js
+	for h in view.leg_handles(leg):
+		if not camera.is_position_behind(h.pos):
+			js.append({"joint": h.joint, "side": h.side, "screen": camera.unproject_position(h.pos), "leg": leg})
+	return js
+
+func _near_joint(pos: Vector2) -> Dictionary:
+	for j in _joint_handles():
+		if pos.distance_to(j["screen"]) < HANDLE_PX:
+			return j
+	return {}
+
+## The two spine arrows: {head|tail: {pos, dir, node, off}} in stage pixels. head = last node (neck and head), tail = node 0.
+func spine_arrows() -> Dictionary:
+	var out := {}
+	if model.mode != "build" or model.playing:
+		return out
+	var pts: PackedVector3Array = view.spine_node_positions()
+	var N: Array = model.doc["nodes"]
+	if pts.size() < 4 or pts.size() != N.size():
+		return out
+	for head in [true, false]:
+		var i: int = pts.size() - 1 if head else 0
+		var j: int = i - 1 if head else 1
+		var d3 := (pts[i] - pts[j]).normalized()
+		var off3 := d3 * (maxf(float(N[i]["r"]), .15) + .7)
+		if camera.is_position_behind(pts[i] + off3):
+			continue
+		var sp := camera.unproject_position(pts[i])
+		var sa := camera.unproject_position(pts[i] + off3)
+		var dir := (sa - sp).normalized() if sa.distance_to(sp) > 1.0 else Vector2.RIGHT
+		out["head" if head else "tail"] = {"pos": sa, "dir": dir, "node": i, "off": Vector2(off3.y, off3.z)}
+	return out
+
+func _arrow_at(pos: Vector2, radius: float) -> String:
+	var best := ""
+	var bd := radius
+	var arr := spine_arrows()
+	for k in arr:
+		var d: float = pos.distance_to(arr[k]["pos"])
+		if d < bd:
+			bd = d
+			best = k
+	return best
 
 func _click() -> void:
 	if _click_sound != null and _click_sound.stream != null:
@@ -1376,11 +1530,21 @@ func _stage_press(e: InputEventMouseButton) -> void:
 			model.begin()
 			_drag = {"kind": "tilt", "tx": true, "origin": hs["c"]}
 			return
-		for j in hs.get("joints", []):
-			if pos.distance_to(j["screen"]) < 14.0:
-				model.begin()
-				_drag = {"kind": "joint", "tx": true, "joint": j["joint"], "side": j["side"]}
-				return
+	var jh := _near_joint(pos)
+	if not jh.is_empty():
+		if jh["leg"] != model.selected:
+			model.select(jh["leg"])
+		model.begin()
+		_drag = {"kind": "joint", "tx": true, "joint": jh["joint"], "side": jh["side"], "leg": jh["leg"]}
+		return
+	var ak := _arrow_at(pos, ARROW_PX) if (_spine_hover or view.spine_alpha() > .3) else ""
+	if ak != "":
+		var arr: Dictionary = spine_arrows()[ak]
+		model.begin()
+		_drag = {"kind": "end", "tx": true, "head": ak == "head", "off": arr["off"]}
+		view.set_active_node(arr["node"])
+		_set_hint("Suelta para fijar")
+		return
 	var r := _stage_ray(pos)
 	var n: int = view.hit_node(r[0], r[1])
 	if n >= 0:
@@ -1392,7 +1556,7 @@ func _stage_press(e: InputEventMouseButton) -> void:
 	var pi: int = view.hit_part(r[0], r[1])
 	if pi >= 0:
 		model.select(pi)
-		_drag = {"kind": "part", "part": pi, "start": pos, "moved": false}
+		_drag = {"kind": "part", "part": pi, "start": pos, "moved": false, "t0": Time.get_ticks_msec()}
 		return
 	_drag = {"kind": "cam", "last": pos, "moved": false}
 
@@ -1407,21 +1571,29 @@ func _stage_motion(e: InputEventMouseMotion) -> void:
 				var n: int = view.hit_node(r[0], r[1])
 				var hs := _handles()
 				var bead: bool = hs.has("rot") and pos.distance_to(hs["rot"]) < 14.0
-				var joint := false
-				for j in hs.get("joints", []):
-					joint = joint or pos.distance_to(j["screen"]) < 14.0
-				var pi: int = -1 if (n >= 0 or bead or joint) else view.hit_part(r[0], r[1])
+				var joint: bool = not _near_joint(pos).is_empty()
+				var raw: int = view.hit_part(r[0], r[1])
+				var leg: int = raw if (raw >= 0 and parts_db.is_leg(model.doc["parts"][raw]["type"])) else -1
+				if leg < 0 and joint:
+					leg = _hover_leg      # the foot handle can sit off the mesh: keep the leg while the pointer is on it
+				if leg != _hover_leg:
+					_hover_leg = leg
+					view.set_hover_leg(leg)
+				var arrow := _arrow_at(pos, ARROW_PX) if (_spine_hover or view.spine_alpha() > .3) else ""
+				var pi: int = -1 if (n >= 0 or bead or joint or arrow != "") else raw
 				var over_body: bool = n >= 0 or not view.hit_body(r[0], r[1]).is_empty()
 				_hover_node = n
 				view.set_hover_node(n)
 				view.set_hover_part(pi)
 				view.set_bead_hot(bead)
-				_spine_hover = over_body
+				_arrow_hot = arrow
+				# the arrows sit just beyond the body: stay in "spine hover" while travelling to them
+				_spine_hover = over_body or arrow != "" or (_spine_hover and _arrow_at(pos, ARROW_NEAR_PX) != "")
 				view.set_spine_visible(_spine_hover)
 				if _pending_type != "":
 					stage.mouse_default_cursor_shape = Control.CURSOR_CAN_DROP if not view.hit_body(r[0], r[1]).is_empty() else Control.CURSOR_FORBIDDEN
 				else:
-					stage.mouse_default_cursor_shape = Control.CURSOR_MOVE if (n >= 0 or bead or joint) else (Control.CURSOR_POINTING_HAND if pi >= 0 else Control.CURSOR_DRAG)
+					stage.mouse_default_cursor_shape = Control.CURSOR_MOVE if (n >= 0 or bead or joint or arrow != "") else (Control.CURSOR_POINTING_HAND if pi >= 0 else Control.CURSOR_DRAG)
 			elif model.mode != "build":
 				stage.mouse_default_cursor_shape = Control.CURSOR_DRAG
 		"cam":
@@ -1437,7 +1609,7 @@ func _stage_motion(e: InputEventMouseMotion) -> void:
 					_drag["node"] = model.move_node(_drag["node"], o.y + d.y * s, o.z + d.z * s)
 					view.set_active_node(_drag["node"])
 		"part":
-			if not _drag["moved"] and pos.distance_to(_drag["start"]) < 5.0:
+			if not _drag["moved"] and pos.distance_to(_drag["start"]) < CLICK_PX:
 				return
 			if not _drag["moved"]:
 				_drag["moved"] = true
@@ -1464,11 +1636,21 @@ func _stage_motion(e: InputEventMouseMotion) -> void:
 			_set_hint("Gira la pieza alrededor de su base")
 		"tilt":
 			model.set_param(model.selected, "tilt", -(pos.y - _drag["origin"].y) / 40.0)
+		"end":
+			var re := _stage_ray(pos)
+			if absf(re[1].x) > 1e-4:
+				var se: float = -re[0].x / re[1].x
+				if se > 0.0:
+					var idx: int = model.doc["nodes"].size() - 1 if _drag["head"] else 0
+					var o2: Vector2 = _drag["off"]
+					idx = model.bend_end(idx, re[0].y + re[1].y * se - o2.x, re[0].z + re[1].z * se - o2.y)
+					view.set_active_node(idx)
+					_set_hint("Columna: %d vértebras · límite" % model.doc["nodes"].size() if model.end_capped else "")
 		"joint":
 			var r3 := _stage_ray(pos)
-			var res: Dictionary = view.leg_drag(model.selected, _drag["joint"], _drag["side"], r3[0], r3[1], -camera.global_transform.basis.z)
+			var res: Dictionary = view.leg_drag(_drag["leg"], _drag["joint"], _drag["side"], r3[0], r3[1], -camera.global_transform.basis.z)
 			if not res.is_empty():
-				model.set_leg_joint(model.selected, res["key"], res["value"])
+				model.set_leg_joint(_drag["leg"], res["key"], res["value"])
 			_set_hint("El pie se desliza por el suelo" if _drag["joint"] == "f" else "Suelta para fijar la rodilla")
 
 func _stage_release(_e: InputEventMouseButton) -> void:
@@ -1480,6 +1662,9 @@ func _stage_release(_e: InputEventMouseButton) -> void:
 			if not d["moved"] and model.mode == "build":
 				model.select(-1)
 		"part":
+			if not d["moved"]:
+				if Time.get_ticks_msec() - int(d.get("t0", 0)) <= CLICK_MS:
+					_open_ring(d["part"])
 			if d["moved"]:
 				view.hide_part(-1, false)
 				if d.get("over", true):
@@ -1490,14 +1675,14 @@ func _stage_release(_e: InputEventMouseButton) -> void:
 					model.end()
 					_click()
 				_set_hint("")
-		"node", "rot", "tilt", "joint":
+		"node", "rot", "tilt", "joint", "end":
 			model.end()
 			view.set_active_node(-1)
 			_set_hint("")
 	overlay.queue_redraw()
 
 func _stage_wheel(dir: float, pos: Vector2) -> void:
-	if model.mode == "build":
+	if model.mode == "build" and not model.playing:
 		var r := _stage_ray(pos)
 		var n: int = view.hit_node(r[0], r[1])
 		if n >= 0:
@@ -1506,11 +1691,20 @@ func _stage_wheel(dir: float, pos: Vector2) -> void:
 			model.set_node_radius(n, model.doc["nodes"][n]["r"] * (1.0 + dir * .08))
 			return
 		var pi: int = view.hit_part(r[0], r[1])
-		if pi >= 0 and pi == model.selected and model.doc["parts"][pi].has("size"):
-			_wheel_tx()
-			model.set_param(pi, "size", model.doc["parts"][pi]["size"] * (1.0 + dir * .06))
+		if pi >= 0 and pi < model.doc["parts"].size():
+			wheel_scale_part(pi, dir, pos)
 			return
 	_dist_goal = clampf(_dist_goal * (1.0 - dir * .08), DIST_MIN, DIST_MAX)
+
+## Wheel over a part scales it (up = in = bigger), clamped to the genome limits, both sides of a pair together.
+func wheel_scale_part(pi: int, dir: float, pos := Vector2.ZERO) -> Dictionary:
+	_wheel_tx()
+	var res: Dictionary = model.scale_part(pi, 1.0 + dir * .06)
+	if res.is_empty():
+		return res
+	var label := T("Largo") if res["kind"] == "reach" else T("Tamaño")
+	_scale_fx = {"pos": pos, "text": "%s %.2f" % [label, res["value"]], "limit": res["at_limit"], "t": 1.2}
+	return res
 
 func _wheel_tx() -> void:
 	if not _wheel_open:
@@ -1523,10 +1717,77 @@ func _close_wheel_tx() -> void:
 		_wheel_open = false
 		model.end()
 
+# =================================================================== actuator ring
+## A click (not a drag) on a limb opens the ring of actuators around it.
+func _limb_bio() -> Dictionary:
+	if "creature" in view and view.creature != null and view.creature.bio is Dictionary:
+		return view.creature.bio
+	return {}
+
+func _limb_centre(i: int) -> Vector2:
+	var a: Dictionary = view.part_anchor(i)
+	if a.is_empty():
+		return Vector2.ZERO
+	var pts := [camera.unproject_position(a["pos"])]
+	if parts_db.is_leg(model.doc["parts"][i]["type"]):
+		for h in view.leg_handles(i):
+			if h.joint == "f" and h.side == 1 and not camera.is_position_behind(h.pos):
+				pts.append(camera.unproject_position(h.pos))
+	var c := Vector2.ZERO
+	for q in pts:
+		c += q
+	return c / float(pts.size()) + stage.global_position - global_position
+
+func _open_ring(i: int, animate := true) -> bool:
+	if model.mode != "build" or model.playing:
+		return false
+	var bio := _limb_bio()
+	var opts: Array = model.actuation_options(bio, i)
+	if opts.is_empty():
+		return false
+	_close_ring()
+	var labels := {"muscle": "Músculo", "hydraulic": "Hidráulico", "exo": "Exoesqueleto", "hydrostat": "Hidrostático"}
+	for o in opts:
+		o["label"] = T(labels[o["id"]])
+		o["why"] = T(ring_why(o))
+	_ring = Ring.new()
+	_ring.name = "ActuatorRing"
+	add_child(_ring)
+	_ring_part = i
+	_ring.open(_limb_centre(i), opts, animate)
+	_ring.picked.connect(_ring_picked)
+	_ring.hint.connect(func(t): _set_hint(t))
+	_ring.closed.connect(func(): _ring = null; _ring_part = -1)
+	return true
+
+## Why a ring choice is dimmed (A31): it needs the body skeleton the body cannot take. Spanish source text, translated by T.
+func ring_why(o: Dictionary) -> String:
+	if "exo" in o.get("skels", []) and not "endo" in o.get("skels", []):
+		return "Necesita exoesqueleto: añade placas"
+	if "endo" in o.get("skels", []):
+		return "Necesita esqueleto interno: quita las placas"
+	return "Este cuerpo no puede llevar esa actuación"
+
+func _ring_picked(id: String) -> void:
+	if _ring_part >= 0:
+		model.set_limb_actuation(_limb_bio(), _ring_part, id)
+		_click()
+
+func _close_ring() -> void:
+	if _ring != null and is_instance_valid(_ring):
+		_ring.close()
+	_ring = null
+	_ring_part = -1
+
+func ring_open() -> bool:
+	return _ring != null and is_instance_valid(_ring)
+
 # =================================================================== overlay (handles, ghost, placement cursor)
 func _draw_overlay() -> void:
 	var off := stage.global_position - overlay.global_position
 	var hs := _handles()
+	_draw_arrows(off)
+	_draw_scale_readout(off)
 	if hs.has("tilt"):
 		# blue tilt slider (Godot-only; the web studio has a slider for it)
 		var tc: Vector2 = hs["c"] + off + Vector2(-64, 0)
@@ -1739,3 +2000,35 @@ func _nest_confirm() -> void:
 			nest_status.text = "Edición rechazada (%d). Revisa las piezas, hitos y el espacio para un primo." % rc if lang == "es" else "Evolution refused (%d). Check parts, milestones and room for a cousin." % rc
 		return
 	nest_confirmed.emit(doc)
+
+func _draw_arrows(off: Vector2) -> void:
+	var alpha: float = view.spine_alpha()
+	var dragging: bool = _drag.get("kind", "") == "end"
+	if alpha < .05 and not dragging:
+		return
+	var arr := spine_arrows()
+	for k in arr:
+		var a: Dictionary = arr[k]
+		var hot: bool = _arrow_hot == k or (dragging and (_drag["head"] == (k == "head")))
+		var col: Color = ThemeFactory.AMBER if hot else ThemeFactory.PAPER
+		col.a = clampf(alpha if not dragging else 1.0, 0.0, 1.0) * (1.0 if hot else .8)
+		var c: Vector2 = a["pos"] + off
+		var d: Vector2 = a["dir"]
+		var n := Vector2(-d.y, d.x)
+		var sz := 18.0 if hot else 15.0
+		var ink := Color(ThemeFactory.INK, col.a * .85)
+		overlay.draw_line(c - d * sz * 1.6, c, ink, 7.0, true)
+		overlay.draw_colored_polygon(PackedVector2Array([c + d * (sz + 3.0), c - d * sz * .3 + n * (sz * .8 + 3.0), c - d * sz * .3 - n * (sz * .8 + 3.0)]), ink)
+		overlay.draw_line(c - d * sz * 1.6, c, Color(col, col.a * .9), 3.5, true)
+		overlay.draw_colored_polygon(PackedVector2Array([c + d * sz, c - d * sz * .3 + n * sz * .8, c - d * sz * .3 - n * sz * .8]), col)
+
+func _draw_scale_readout(off: Vector2) -> void:
+	if _scale_fx.is_empty():
+		return
+	var font := ThemeDB.fallback_font
+	var text: String = _scale_fx["text"] + (" · " + T("límite") if _scale_fx["limit"] else "")
+	var a := clampf(float(_scale_fx["t"]) / .3, 0.0, 1.0)
+	var sz := font.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, 13)
+	var p: Vector2 = _scale_fx["pos"] + off + Vector2(16, -22)
+	overlay.draw_rect(Rect2(p - Vector2(7, sz.y - 2), sz + Vector2(14, 8)), Color(ThemeFactory.GLASS, .9 * a))
+	overlay.draw_string(font, p, text, HORIZONTAL_ALIGNMENT_LEFT, -1, 13, Color(ThemeFactory.AMBER if _scale_fx["limit"] else ThemeFactory.PAPER, a))

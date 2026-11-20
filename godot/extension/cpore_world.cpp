@@ -300,13 +300,16 @@ void CporeWorld::_bind_methods() {
     ClassDB::bind_method(D_METHOD("get_setup"), &CporeWorld::get_setup);
     ClassDB::bind_method(D_METHOD("step", "input"), &CporeWorld::step);
     ClassDB::bind_method(D_METHOD("command", "text"), &CporeWorld::command);
+    ClassDB::bind_method(D_METHOD("apply_legacy", "diet", "part"), &CporeWorld::apply_legacy);
     ClassDB::bind_method(D_METHOD("command_input", "text"), &CporeWorld::command_input);
     ClassDB::bind_method(D_METHOD("order", "input"), &CporeWorld::order);
     ClassDB::bind_method(D_METHOD("state"), &CporeWorld::state);
     ClassDB::bind_method(D_METHOD("observe"), &CporeWorld::observe);
     ClassDB::bind_method(D_METHOD("nest_edit", "body"), &CporeWorld::nest_edit);
     ClassDB::bind_method(D_METHOD("nest_apply", "body"), &CporeWorld::nest_apply);
+    ClassDB::bind_method(D_METHOD("set_run", "on"), &CporeWorld::set_run);
     ClassDB::bind_method(D_METHOD("set_tiers", "on"), &CporeWorld::set_tiers);
+    ClassDB::bind_method(D_METHOD("set_edit_anywhere", "on"), &CporeWorld::set_edit_anywhere);
     ClassDB::bind_method(D_METHOD("lineage"), &CporeWorld::lineage);
     ClassDB::bind_method(D_METHOD("lineage_form", "body", "profile", "parts", "name", "evolve"), &CporeWorld::lineage_form);
     ClassDB::bind_method(D_METHOD("lineage_perk", "kind", "serial", "amount"), &CporeWorld::lineage_perk);
@@ -426,6 +429,15 @@ String CporeWorld::step(const Dictionary &input) {
     return cpore::hash_text(cp_stage_step(world.get(), &in));
 }
 
+int CporeWorld::apply_legacy(int diet, const String &part) {
+    int id = -1;
+    if (!part.is_empty()) {
+        id = cp_stage_part_id(part.utf8().get_data());
+        if (id < 0) return -1;
+    }
+    return cp_stage_legacy_apply(world.get(), diet, id);
+}
+
 int CporeWorld::command(const String &text) { return cp_stage_command(world.get(), text.utf8().get_data()); }
 
 Dictionary CporeWorld::command_input(const String &text) const {
@@ -449,6 +461,8 @@ int CporeWorld::order(const Dictionary &input) {
 
 String CporeWorld::order_error(int code) { return String(cp_stage_order_error(code)); }
 
+void CporeWorld::set_run(bool on) { cp_stage_set_run(world.get(), on); }
+
 Dictionary CporeWorld::state() const {
     const CpStageWorld &w = *world;
     Dictionary d;
@@ -458,6 +472,12 @@ Dictionary CporeWorld::state() const {
     d["respawn_ticks"] = int(w.respawn_ticks); d["cooldown_ticks"] = int(w.cooldown_ticks);
     d["error"] = int(w.last_error);
     d["arena"] = Vector2(w.arena_x, w.arena_z);
+    Dictionary player;
+    player["running"] = w.running != 0; player["stamina"] = int(w.run_stamina);
+    player["falling"] = w.falling != 0;
+    player["y"] = w.falling ? w.fall_y_mm * .001 : cp_stage_ground(&w, w.player.x, w.player.z);
+    player["vertical_velocity"] = w.fall_v_mm_s * .001;
+    d["player"] = player;
     d["order"] = order_to_dict(w.order);
     d["flags"] = int(w.debug_flags);
     {
@@ -741,3 +761,4 @@ int CporeWorld::lineage_perk(int kind,int serial,int amount){if(serial<=0)return
 int CporeWorld::nest_edit(const String &body){CharString text=body.utf8();return cp_stage_edit(world.get(),text.get_data());}
 int CporeWorld::nest_apply(const String &body){CharString text=body.utf8();return cp_stage_apply(world.get(),text.get_data());}
 void CporeWorld::set_tiers(bool on){cp_stage_set_tiers(world.get(),on?1:0);}
+void CporeWorld::set_edit_anywhere(bool on){cp_stage_set_edit_anywhere(world.get(),on?1:0);}
