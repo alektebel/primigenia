@@ -22,7 +22,7 @@ same way) and grazing is not wired.
   pop) and is hidden once it is eaten to the bone (it used to stay at 30%). Each bite: crumbs (`action_fx.crumbs`, CPU particles, more on
   the last bite) and a soft sound (`Audio.eat_bite`, the step sample pitched up, quiet). The DNA popup at the end is the existing `EV_DNA`.
 * Radial bodies and any body without an action layer: `actor_driver.eat_pulse` (a quick dip and rebound of the body per bite).
-* Tests (`make godot-actions-test`, 383 checks, 0 failures; 322 before the round-2 data, 61 new in `_t_eat` over the 4 real bodies): tau
+* Tests (`make godot-actions-test`, 383 checks, 0 failures; 345 before, 38 new in `_t_eat` over the 4 real bodies): tau
   follows the C tick exactly (error 0), the head goes down, the mouth reaches the food, the 10-tick loop is seamless, `eat_bite` fires
   once, the end is clean (weight 0, head and jaw at rest), a fight cancels it, and `trigger("eat")` still plays one finite meal.
 * Evidence: `docs/evidence/godot/eat-loading/eat_hatchling.png`, `eat_merodeador.png` (`make godot-eat-evidence`): rows carcass and

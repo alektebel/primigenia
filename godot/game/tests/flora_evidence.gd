@@ -125,6 +125,10 @@ func close_up(id: String) -> void:
 	var look: Vector3 = p + Vector3.UP * (hh * 0.45 if not patch else 0.0)
 	await shot("plant_" + id, eye, look, 55.0)
 
+# Hook for subclasses (world_look_evidence.gd): more shots after the base set, before the plant close-ups.
+func _extra(_nest_pos: Vector3) -> void:
+	pass
+
 func _run() -> void:
 	var args := OS.get_cmdline_user_args()
 	out_dir = args[0] if args.size() > 0 else "/tmp/flora-evidence"
@@ -138,6 +142,8 @@ func _run() -> void:
 	DirAccess.make_dir_recursive_absolute(out_dir)
 	root.size = Vector2i(int(OS.get_environment("FLORA_W")) if OS.get_environment("FLORA_W") != "" else 1280, int(OS.get_environment("FLORA_H")) if OS.get_environment("FLORA_H") != "" else 720)
 	game = root.get_node("Game")
+	# Pin the cloud layer so the cloud shadows on the ground are the same in every run (before/after frames compare pixel for pixel).
+	preload("res://game/island/clouds.gd").frozen_time = float(OS.get_environment("FLORA_CLOUD_T")) if OS.get_environment("FLORA_CLOUD_T") != "" else 40.0
 	game.settings.grass = int(OS.get_environment("FLORA_GRASS")) if OS.get_environment("FLORA_GRASS") != "" else 120000
 	game.settings.quality = quality
 	game.settings.wild = true
@@ -244,6 +250,10 @@ func _run() -> void:
 			var c: Vector3 = meteor.p
 			var e := c + downhill(meteor) * 2.4
 			await shot("meteor_plants", Vector3(e.x, ground(e) + 0.9, e.z), c, 62.0)
+	await _extra(np)
+	if not only.is_empty() and not only.has("plant_"):
+		quit(0)   # a prefix list without plant_ asks for named frames only: skip the plant close-ups
+		return
 	for id in ["ceniza_roja","cinta_de_marea","costra_de_azufre","grama_de_ceniza","hierroflor","lengua_de_lava","madre_de_agua","musgo_faro","nieblon","paja_dulce","pan_de_humus","pluma_de_sombra","rodela_de_nieve","salvisca","soga_de_dosel","trenza_de_ribera","perlilla","velilla","caramillo","vetirroja"]:
 		await close_up(id)
 	quit(0)

@@ -1,9 +1,11 @@
 shader_type spatial;
-render_mode unshaded, cull_disabled, world_vertex_coords;
+render_mode ambient_light_disabled, specular_disabled, cull_disabled, world_vertex_coords;
+#define WORLD_LIT
 // World-anchored wind grass (hero GRASS_V9): each blade has a fixed world position found by
 // wrapping its stored offset into the torus of side 2R around `center`.
 #include "res://game/shaders/land.gdshaderinc"
 #include "res://game/shaders/terrain_maps.gdshaderinc"
+#include "res://game/shaders/world_light.gdshaderinc"
 
 uniform vec2 nest_center = vec2(-10000.0);
 uniform vec3 center = vec3(0.0);

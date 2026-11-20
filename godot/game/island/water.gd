@@ -1,9 +1,11 @@
 extends Node3D
 # Sea (one big plane at y = 0) and lakes (CPU mesh over pond cells at their routing water level).
 
+const WorldLight := preload("res://game/island/world_light.gd")
 const WATER_SHADER := preload("res://game/shaders/water.gdshader")
 
 var material: ShaderMaterial
+var tier := 2                    # terrain tier (WorldLight): 1 = unshaded, 2/3 = receives the sun shadow map
 var sea: MeshInstance3D
 var lakes: MeshInstance3D
 
@@ -85,7 +87,7 @@ static func lake_arrays(data) -> Dictionary:
 ## `lakes_in`: the lake mesh data when already computed (`lake_arrays`, on a worker thread, see island.gd); else computed here.
 func build(data, lakes_in = null) -> void:
 	material = ShaderMaterial.new()
-	material.shader = WATER_SHADER
+	material.shader = WorldLight.shader_for(WATER_SHADER, tier)
 	material.set_shader_parameter("height_tex", data.height_tex)
 	material.set_shader_parameter("level_tex", data.level_tex)
 	material.set_shader_parameter("surface_tex", data.surface_tex)

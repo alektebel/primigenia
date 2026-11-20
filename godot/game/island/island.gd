@@ -3,6 +3,7 @@ extends Node3D
 # creatures, chase camera and controls. Built in code from Game.data (set by the boot flow).
 
 const Look := preload("res://game/island/look.gd")
+const WorldLight := preload("res://game/island/world_light.gd")
 const EnvironmentFactory := preload("res://game/island/environment.gd")
 const TerrainChunks := preload("res://game/island/terrain_chunks.gd")
 const Water := preload("res://game/island/water.gd")
@@ -74,6 +75,7 @@ var gesture := Gesture.new()       # the left button: click, hold or orbit drag
 var _orbit_btn := 0               # right/middle button held (1 = right, 2 = middle)
 var _mid_travel := 0.0
 var _far := false
+var _sun_shadows_ok := true    # the sun draws a shadow map on this tier (WorldLight); low does not
 var _nest := Vector2.ZERO
 var _den = null
 var _den_seen := false
@@ -185,14 +187,17 @@ func build() -> void:
 		add_child(terrain_chunks)
 		terrain_chunks.build(data)
 		_phase("terrain_meshes")
+		var tier0: int = terrain_chunks.tier
 		await _slice()
 		water = Water.new()
+		water.tier = tier0
 		water.name = "Water"
 		add_child(water)
 		water.build(data, await _offload(func() -> Dictionary: return Water.lake_arrays(data)))
 		_phase("water")
 		await _slice()
 		rivers = Rivers.new()
+		rivers.tier = tier0
 		rivers.name = "Rivers"
 		add_child(rivers)
 		rivers.build(data, await _offload(func() -> Array: return Rivers.chains(data)))
@@ -200,14 +205,21 @@ func build() -> void:
 		await _slice()
 		var t0 := Time.get_ticks_msec()
 		grass = Grass.new()
+		grass.tier = tier0
 		grass.name = "Grass"
 		add_child(grass)
 		grass.build(data, int(Game.settings.grass))
 		_phase("grass")
 		await _slice()
-		if Game.settings.get("sun_shadows", false):
-			set_sun_shadows(true)
 		print("grass built in %d ms (%d blades)" % [Time.get_ticks_msec() - t0, int(Game.settings.grass)])
+	var wl_tier: int = terrain_chunks.tier
+	WorldLight.configure_sun(sun, wl_tier)   # shadow reach and cascades per tier; low draws none
+	_sun_shadows_ok = WorldLight.lit(wl_tier)
+	sun.shadow_enabled = _sun_shadows_ok
+	# Low tier has no shadow map. The baked terrain sun visibility (PLAN-rock step 9) could stand in for it, but with the 16 degree sun it darkens
+	# every bank and swell of the meadow (docs/godot/WL1.md), so it stays opt-in (settings.sun_shadows) as before.
+	if Game.settings.get("sun_shadows", false):
+		set_sun_shadows(true)
 	RenderTier.apply_viewport(get_viewport())
 	camera = Camera3D.new()
 	camera.name = "Camera"
@@ -730,7 +742,7 @@ func _apply_zoom_budget(zz: float) -> void:
 	if far != _far:
 		_far = far
 		grass.visible = not far
-		sun.shadow_enabled = not far
+		sun.shadow_enabled = _sun_shadows_ok and not far
 	var models := zz < MODEL_OFF_Z
 	for id in hosts:
 		var h = hosts[id]
