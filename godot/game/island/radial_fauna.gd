@@ -265,16 +265,20 @@ static func _coast_distance(d, p: Vector2) -> float:
 
 # ------------------------------------------------------------------ nodes
 
-func setup(d, world_seed: int, nest: Vector2, ground: Callable, camera_fn: Callable = Callable()) -> void:
+## `plan_in`: the placement when already computed off the main thread (`plan`, see island.gd); a frame passes between creatures
+## while a loading screen is up.
+func setup(d, world_seed: int, nest: Vector2, ground: Callable, camera_fn: Callable = Callable(), plan_in = null) -> void:
 	_ground = ground
 	_cam = camera_fn
-	placement = plan(d, world_seed, nest)
+	placement = plan(d, world_seed, nest) if plan_in == null else plan_in
 	for line in placement.log:
 		print(line)
 	for id in ["brujula", "cuarteta", "corona"]:
 		var spots: Array = placement[id].spots
 		for i in spots.size():
 			_spawn(id, i, spots[i], world_seed)
+			if Game.veil != null and is_instance_valid(Game.veil):
+				await get_tree().process_frame
 
 
 static func _genome(id: String) -> Dictionary:

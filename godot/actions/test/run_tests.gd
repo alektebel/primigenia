@@ -57,6 +57,7 @@ func _run() -> void:
 	await _t_round2()
 	await _t_idle()
 	await _t_cosmetic()
+	await _t_eat()
 	_t_readonly()
 	check(log.errors.is_empty(), "no engine errors (%d)" % log.errors.size())
 	for e in log.errors.slice(0, 5):
@@ -1056,6 +1057,82 @@ func _t_cosmetic() -> void:
 # ---------------------------------------------------------------------------------------------
 # section 4: the layer only reads the world
 # ---------------------------------------------------------------------------------------------
+# ---------------------------------------------------------------------------------------------
+# the meal: the eat action follows the C eat ticks
+# ---------------------------------------------------------------------------------------------
+func _t_eat() -> void:
+	print("-- eat")
+	var act: Dictionary = Data.compile(Data.resolve(raw.eat, []))
+	check(act.w == 3.0 and act.a == 20.0 and act.r == 3.0, "eat: 3 + 20 + 3 ticks (first bite 0..10, then the 10..20 loop)")
+	for name in BODIES:
+		var h = _build(name)
+		h.layer.idle_on = false
+		h.sf.end_fight()
+		h.run(0.5)
+		var ea: Dictionary = h.layer.actions.eat
+		var caps_txt := ",".join(h.map.caps.filter(func(c): return c in ["beak", "proboscis", "fauces"]))
+		h.food_pos = Vector3(0, 0.15, h.map.length * 0.45)
+		var bites: Array = []
+		h.layer.action_event.connect(func(n: String, d: Dictionary) -> void:
+			if n == "eat_bite":
+				bites.append(d))
+		h.eat_t0 = h.sf.tick
+		var tau_bad := 0.0
+		var pitch_max := 0.0
+		var pitch_rest: float = h.layer._out.get("head.pitch", 0.0)
+		var jaw_min_after := 9.0
+		var min_d := 1e9
+		var rest_d: float = h.mouth_world().distance_to(h.food_pos)
+		var was_eating := false
+		var ticks_seen := 0
+		for i in int(4.6 * 60.0):
+			h.frame(1.0 / 60.0)
+			var cur: Dictionary = h.layer._slaved_eat()
+			if not cur.is_empty():
+				was_eating = true
+				var t: int = h.sf.tick - h.eat_t0
+				tau_bad = maxf(tau_bad, absf(cur.tau - h.layer.eat_tau(ea, t, h.acc / 0.1)))
+				pitch_max = maxf(pitch_max, float(h.layer._out.get("head.pitch", 0.0)))
+				min_d = minf(min_d, h.mouth_world().distance_to(h.food_pos))
+				if h.sf.tick - h.eat_t0 == 10 or h.sf.tick - h.eat_t0 == 20:
+					ticks_seen += 1
+		check(was_eating and h.layer.eating(), "%s eat (%s): the meal instance runs while C eats" % [name, caps_txt])
+		check(tau_bad < 1e-6, "%s eat: tau follows the C act tick (max error %.6f)" % [name, tau_bad])
+		check(pitch_max > pitch_rest + 0.25, "%s eat: the head goes down to the food (pitch %.2f -> %.2f)" % [name, pitch_rest, pitch_max])
+		check(min_d < rest_d, "%s eat: the mouth gets closer to the food (%.2f -> %.2f m)" % [name, rest_d, min_d])
+		# the wrap: tau at act tick 20 equals tau at tick 10 (the loop is seamless)
+		check(absf(h.layer.eat_tau(ea, 20, 0.0) - h.layer.eat_tau(ea, 10, 0.0)) < 1e-9 and h.layer.eat_tau(ea, 35, 0.5) == h.layer.eat_tau(ea, 15, 0.5), "%s eat: loop of 10 ticks after the first bite" % name)
+		# the C bite lands on the tear: the layer announces it for the crumbs
+		h.layer.eat_bite(2)
+		check(bites.size() == 1 and int(bites[0].left) == 2, "%s eat: eat_bite is announced once with the bites left" % name)
+		# a clean end: C ends the action, the swallow plays out and the instance is gone
+		h.eat_t0 = -1
+		h.run(1.2)
+		check(not h.layer.eating() and h.layer._find_id("eat").is_empty() and h.layer.weight_of("eat") < 0.01, "%s eat: ends cleanly after C ends it (weight %.3f)" % [name, h.layer.weight_of("eat")])
+		check(float(h.layer._out.get("head.pitch", 0.0)) < 0.2 and float(h.layer._out.get("jaw.open", 0.0)) < 0.2, "%s eat: head and jaw back at rest" % name)
+		# interruptible by a fight
+		h.eat_t0 = h.sf.tick
+		h.run(1.5)
+		var eating_now: bool = h.layer.eating()
+		h.sf.in_fight = true
+		h.sf.begin(0, 0)
+		h.run(0.25)
+		check(eating_now and not h.layer.eating() and h.layer.weight_of("eat") < 0.05, "%s eat: a C move (fight) cancels the meal (weight %.3f)" % [name, h.layer.weight_of("eat")])
+		h.free_all()
+		await process_frame
+	# the legacy cosmetic trigger still plays one finite meal
+	var h2 = _build("Merodeador")
+	h2.layer.idle_on = false
+	h2.sf.end_fight()
+	h2.run(0.4)
+	h2.layer.trigger("eat")
+	h2.run(0.3)
+	var started: bool = not h2.layer._find_id("eat").is_empty()
+	h2.run(3.5)
+	check(started and h2.layer._find_id("eat").is_empty(), "eat: trigger() still plays one finite meal")
+	h2.free_all()
+	await process_frame
+
 func _t_readonly() -> void:
 	print("-- read only")
 	var bad := []

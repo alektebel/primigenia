@@ -175,11 +175,26 @@ func _fall_pose(dt: float, falling: bool) -> Basis:
 	var roll := sin(_fall_t * 3.3) * FALL_ROLL * _fall_k
 	return Basis(Vector3.BACK, roll) * Basis(Vector3.RIGHT, lean)
 
+var _eat_squash := 0.0
+## Fallback of the meal for a body with no action layer: a quick dip-and-rebound of the body on each bite (decays in update).
+func eat_pulse() -> void:
+	_eat_squash = 1.0
+
+func _eat_fallback(dt: float) -> void:
+	if layer != null or body == null or not (body is Node3D):
+		return
+	var was := _eat_squash > 0.0
+	_eat_squash = maxf(0.0, _eat_squash - dt * 4.0)
+	if was or _eat_squash > 0.0:
+		var k := _eat_squash * _eat_squash
+		(body as Node3D).scale = Vector3(1.0 + 0.06 * k, 1.0 - 0.10 * k, 1.0 + 0.06 * k)
+
 # s: StageWorld.sample() -> {pos, yaw, speed, vel}, optionally intent (the world yaw the player asks for)
 # ctx (optional): what the action layer reads, see actions/action_layer.gd
 func update(dt: float, s: Dictionary, ctx: Dictionary = {}) -> void:
 	host.position = s.pos
 	host.basis = Basis(Vector3.UP, s.yaw) * _fall_pose(dt, bool(s.get("falling", false)))
+	_eat_fallback(dt)
 	if s.has("flight") and controller != null and adapter != null:
 		_update_flight(dt, s)
 		return

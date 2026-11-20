@@ -657,3 +657,19 @@ godot-cell2-evidence:
 
 $(BUILD)/run_fall_test: tests/test_run_fall.c $(HDRS) $(BUILD)/libcpore.a
 	$(CC) $(CFLAGS) $< $(BUILD)/libcpore.a -o $@ $(LDLIBS)
+
+.PHONY: godot-eat-evidence
+godot-eat-evidence:
+	@mkdir -p docs/evidence/godot/eat-loading
+	cd godot && LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 1200 xvfb-run -a $(GODOT) --rendering-driver opengl3 --resolution 1280x720 --path . \
+	  --script actions/test/eat_capture.gd -- out=$(CURDIR)/docs/evidence/godot/eat-loading $(ARGS)
+
+# The island entry loading screen, headless (docs/godot/EAT-LOADING.md).
+.PHONY: godot-entry-test
+godot-entry-test: godot
+	nice -n 10 timeout 900 $(GODOT) --headless --path godot --script res://game/tests/test_entry_loading.gd
+.PHONY: godot-entry-evidence
+godot-entry-evidence: godot
+	@mkdir -p docs/evidence/godot/eat-loading
+	LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 1800 xvfb-run -a -s "-screen 0 1280x720x24" $(GODOT) --rendering-driver opengl3 --resolution 1280x720 --path godot \
+	  --script res://game/tests/entry_evidence.gd -- out=$(CURDIR)/docs/evidence/godot/eat-loading

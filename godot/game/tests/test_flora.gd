@@ -107,6 +107,23 @@ func run(t) -> void:
 	props.get_node("Nest").free()
 	props.build_nest(d, setup.nest, 1)
 	t.check(props.get_node("Nest").mesh.surface_get_arrays(0)[Mesh.ARRAY_VERTEX] == nest_a, "nest is deterministic")
+	# the nest follows the player's body: a hatchling's nest is smaller, the Merodeador's is the full one
+	var kh: float = props.nest_scale_for(50.0)
+	t.check(is_equal_approx(props.nest_scale_for(300.0), 1.0) and kh > 0.39 and kh < 0.45 and props.nest_scale_for(900.0) == 1.0 and props.nest_scale_for(0.0) == 1.0, "nest scale: 1.0 for the Merodeador (300 cm), %.2f for the hatchling (50 cm), never above 1" % kh)
+	var extent := func(m: ArrayMesh) -> float:
+		var far := 0.0
+		for v in m.surface_get_arrays(0)[Mesh.ARRAY_VERTEX]:
+			far = maxf(far, Vector2(v.x, v.z).length())
+		return far
+	var full_r: float = extent.call(props.get_node("Nest").mesh)
+	props.set_nest_scale(kh, d, setup.nest, 1)
+	var small: ArrayMesh = props.get_node("Nest").mesh
+	var small_r: float = extent.call(small)
+	t.check(small_r < full_r * (kh + 0.12) and small_r > full_r * (kh - 0.12), "the hatchling nest spans %.2f m against %.2f m (scale %.2f)" % [small_r, full_r, kh])
+	var small_a: PackedVector3Array = small.surface_get_arrays(0)[Mesh.ARRAY_VERTEX]
+	t.check(small_a.size() > 0 and props.get_child_count() == 1, "the rescale replaces the nest (one Nest node)")
+	props.set_nest_scale(1.0, d, setup.nest, 1)
+	t.check(props.get_node("Nest").mesh.surface_get_arrays(0)[Mesh.ARRAY_VERTEX] == nest_a, "growing back rebuilds the exact full nest")
 	props.free()
 	var start := Time.get_ticks_usec()
 	var a := Placement.generate(d, setup, 1, 0.34, rows)

@@ -23,7 +23,9 @@ func _initialize() -> void:
 
 func until(cond: Callable, budget := 3000) -> bool:
 	var n := 0
-	while not cond.call() and n < budget:
+	var t0 := Time.get_ticks_msec()
+	# a frame budget, and for the long waits (the island builds under a loading screen, on worker threads) a wall-clock one
+	while not cond.call() and ((budget < 9000 and n < budget) or (budget >= 9000 and Time.get_ticks_msec() - t0 < 90000)):
 		await process_frame
 		n += 1
 	return cond.call()
@@ -34,7 +36,12 @@ func _key(code: int) -> void:
 	e.pressed = true
 	root.push_input(e)
 
+var _entries_seen := 0         # entry_log rows before the entry being waited for (the previous island stays current under the loading screen)
 func _island() -> Node:
+	if game.entry_log.size() <= _entries_seen:
+		return null
+	if current_scene != null and "_building" in current_scene and current_scene._building:
+		return null        # the island builds across frames under the loading screen
 	return current_scene if current_scene != null and current_scene.scene_file_path.ends_with("island.tscn") else null
 
 func _run() -> void:
@@ -160,6 +167,7 @@ func _plain() -> void:
 	print("== plain start (sin herencia) and the menu")
 	game.begin_creature(true)
 	ok(game.creature_legacy.is_empty(), "plain: nothing queued")
+	_entries_seen = game.entry_log.size()
 	game.goto_island("menu")
 	ok(await until(func(): return _island() != null and game.stage != null and game.stage.cur.has("tick") and int(game.stage.cur.tick) >= 3, 9000), "the plain island is entered")
 	var isl := _island()
