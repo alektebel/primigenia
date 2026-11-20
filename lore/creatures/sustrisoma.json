@@ -1,0 +1,308 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "sustrisoma",
+  "name": {
+    "en": "Sustrisoma"
+  },
+  "world": "mycelia",
+  "kind": "new",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "Hyphal overburden & karst exhalation zones where network source-sink dynamics concentrate resources",
+    "diet": "Chemoautotrophic symbiont; digests fungal exudates, ion gradients, and spore dust via external enzymatic hydrolysis. 'Wants' network stability and spore dispersal over personal reproduction.",
+    "active": "Nocturnal and crepuscular; activity pulses match chemical diffusion cycles (hours to days)",
+    "predators": []
+  },
+  "body": "Ribbon-like, segmented chitin-glucan carapace with melanin streaks; ventral ciliated chemosensory pits; slow cytoplasmic circulation. Evolved as a biological modem to interface with the network’s slow chemical and contested electrical signalling.",
+  "chains": [
+    {
+      "id": "sustrisoma.c1",
+      "trait": "Reads fungal chemical gradients",
+      "links": [
+        "High receptor density",
+        "Slow diffusion limits signal range",
+        "2.0 bar atmosphere increases gas viscosity"
+      ],
+      "roots": [
+        "F6",
+        "F9"
+      ],
+      "skill": {
+        "id": "sustrisoma.chemoreflex_pulse",
+        "name": {
+          "en": "Chemoreflex Pulse"
+        },
+        "role": "Passive",
+        "effect": "Reveals hidden resource paths within an 8m radius",
+        "numbers": {}
+      },
+      "weakness": "Sudden VOC bursts blind receptors for 2 turns",
+      "observe": [
+        "Ciliated ripples along flanks",
+        "Melanin bands shift hue",
+        "Follows slow vapor trails"
+      ],
+      "journal": {
+        "en": "It doesn't hunt; it listens to the soil breathe."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-20",
+        "summary": "Anchor roots in F6, F7, F8 and F14; Passive ‘8 m radius’ matches local chemical diffusion, not continent-scale sensing. Keep electrical reading optional and contested (F14), not primary.",
+        "fixes": [
+          "Anchor roots in F6, F7, F8 and F14; Passive ‘8 m radius’ matches local chemical diffusion, not continent-scale sensing. Keep electrical reading optional and contested (F14), not primary."
+        ],
+        "analogues": [
+          {
+            "organism": "Collembola and nematodes chemotax toward fungal volatiles and root exudates along concentration fronts.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "adamatzky_2022_action"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "sustrisoma.c2",
+      "trait": "Crawls at network flow speed",
+      "links": [
+        "Bradykinetic locomotion",
+        "Hyphal traction requires moisture",
+        "Dense aerosol haze traps ground heat"
+      ],
+      "roots": [
+        "F8"
+      ],
+      "skill": {
+        "id": "sustrisoma.hyphal_sync",
+        "name": {
+          "en": "Hyphal Sync"
+        },
+        "role": "Social",
+        "effect": "Shares movement speed with allies, reducing stamina drain by 40%",
+        "numbers": {}
+      },
+      "weakness": "Desiccates if exposed to bare rock for >3 turns",
+      "observe": [
+        "Leaves damp trace marks",
+        "Moves in tidal rhythm",
+        "Pulses with substrate tension"
+      ],
+      "journal": {
+        "en": "Time moves differently here, and so does it."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-20",
+        "summary": "Bradykinetic creeping on the order of metres per hour fits oligotrophic external-digestion foraging (F13, F16) and tracking slow resource fronts (F14, F19). Hyphal overburden and karst exhalation moisture support traction; rapid desiccation on bare carbonate (F10, F17) is a credible trade-off at 15 m visibility and patchy humidity.",
+        "fixes": [
+          "Bradykinetic creeping on the order of metres per hour fits oligotrophic external-digestion foraging (F13, F16) and tracking slow resource fronts (F14, F19). Hyphal overburden and karst exhalation moisture support traction; rapid desiccation on bare carbonate (F10, F17) is a credible trade-off at 15 m visibility and patchy humidity."
+        ],
+        "analogues": [
+          {
+            "organism": "Deep-sea deposit-feeding holothurians and terrestrial millipedes in damp litter move slowly enough to track decay and fungal fronts.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "sustrisoma.c3",
+      "trait": "Secretes alkaloid neutralizers",
+      "links": [
+        "Alkaloid tolerance",
+        "Gut microbiome specialization",
+        "Fungal antibiotic competition"
+      ],
+      "roots": [
+        "F13",
+        "F15"
+      ],
+      "skill": {
+        "id": "sustrisoma.symbiotic_shield",
+        "name": {
+          "en": "Symbiotic Shield"
+        },
+        "role": "Defence",
+        "effect": "Converts incoming toxin damage into network resistance boost (+3 for 2 turns)",
+        "numbers": {}
+      },
+      "weakness": "Melanin-rich zones denature gut enzymes permanently",
+      "observe": [
+        "Foams bitter sap when stressed",
+        "Shrinks into hyphal knots",
+        "Ignores predatory strikes near fungal borders"
+      ],
+      "journal": {
+        "en": "It wears the enemy's armor as a courtesy."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-20",
+        "summary": "Defence = localized neutralization/buffering on a hyphal patch (F20 scale), mutual benefit via cleared feeding surface, not continent-wide immunity. Soften weakness to temporary enzyme inhibition or microbiome die-off in melanin-hotspots, not permanent denaturation everywhere.",
+        "fixes": [
+          "Defence = localized neutralization/buffering on a hyphal patch (F20 scale), mutual benefit via cleared feeding surface, not continent-wide immunity. Soften weakness to temporary enzyme inhibition or microbiome die-off in melanin-hotspots, not permanent denaturation everywhere."
+        ],
+        "analogues": [
+          {
+            "organism": "Woodrats and gut microbes handling plant toxins; attine ants managing fungal pathogens and antibiotics in the fungus garden.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "simard_1997_transfer"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "sustrisoma.c4",
+      "trait": "Mirrors continental resource shifts",
+      "links": [
+        "Pigment migration",
+        "Seasonal carbon redistribution",
+        "K2V luminosity & 600-day orbit"
+      ],
+      "roots": [
+        "F1",
+        "F2",
+        "F19"
+      ],
+      "skill": {
+        "id": "sustrisoma.network_resonance",
+        "name": {
+          "en": "Network Resonance"
+        },
+        "role": "Control",
+        "effect": "Plays VOC/electrical patch to redirect network flow by 15% over 3 turns, drains 20 stamina",
+        "numbers": {}
+      },
+      "weakness": "Sensitive to sudden pressure drops from frontal systems",
+      "observe": [
+        "Veins darken before rain",
+        "Shimmers during spore rains",
+        "Aligns spine with karst cracks"
+      ],
+      "journal": {
+        "en": "A living barometer dressed in fungal silk."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-20",
+        "summary": "Control = timed local VOC/enzyme perturbation on one patch with days-long feedback (F19–F20), at most biasing nearby source–sink, not steering continental flow. Pigment mirroring encodes historical starvation (secret/lore) rather than real-time steering; flag electrical secrets highly speculative.",
+        "fixes": [
+          "Control = timed local VOC/enzyme perturbation on one patch with days-long feedback (F19–F20), at most biasing nearby source–sink, not steering continental flow. Pigment mirroring encodes historical starvation (secret/lore) rather than real-time steering; flag electrical secrets highly speculative."
+        ],
+        "analogues": [
+          {
+            "organism": "Long-cycle nutrient tracking like periodical cicadas and mast fruiting consumers; barometric sensitivity in honey bees and fish.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "Siltfilter",
+      "kind": "cousin",
+      "note": "(council kind 'commensal') Siltfilter grazes on the same benthic detritus, inadvertently clearing hyphal paths; Sustrisoma rides the siltfilter’s gill rakers to reach higher nutrient fronts."
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-19",
+    "by": [
+      "naturalist/qwen"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-20",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-19"
+    },
+    {
+      "date": "2026-11-19",
+      "who": "autoloop",
+      "what": "removed rejected references from analogues"
+    }
+  ],
+  "body_plan": {
+    "symmetry": "bilateral",
+    "origin": "descended from benthic detritivores that colonized hyphal overburden"
+  },
+  "temperament": "Patient, resource-equilibrium seeking, easily startled by sudden pH or voltage shifts. Behaves less like an individual and more like a distributed node in the mycelial ‘mind’.",
+  "secrets": [
+    "If the player administers a precise electrical micro-pulse, the creature will temporarily broadcast the network’s resource map, but the feedback delay can cause stamina rot if not timed with the creature’s bradykinetic rhythm.",
+    "Its melanin patterns encode historical carbon flows; reading them backwards reveals where the network previously starved.",
+    "It avoids places where the player’s enzyme patches were too acidic, leaving behind crystalline salt rings that mark safe zones."
+  ],
+  "moments": [
+    "When the first rain falls, its melanin bands pulse in perfect unison with the fungal network, and for a moment it feels less like an animal and more like the forest’s own slow heartbeat."
+  ],
+  "journal": [
+    {
+      "en": "It doesn't think; it remembers the soil."
+    },
+    {
+      "en": "To talk to the network, you must first learn to wait."
+    }
+  ]
+}

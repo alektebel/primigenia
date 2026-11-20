@@ -59,7 +59,7 @@ Trait ← Prevents water ice crystallization ← Ammonia lowers freezing point t
   - Keep circulation peristaltic/microbial-film slow; Thaw Injection targets F14 pockets, not open vacuum. Replace 'smell in the air' with detectable ballistic NH3 trace at the vent mouth. Highly speculative macroscopic brine engine.
   - scores: astrobio 6, skeptic 6
   - Analogue: Riftia tubeworm vent circulation and symbiont chemistry (energy-rich, not cryogenic); Arctic fish antifreeze glycoproteins (freezing-point depression principle, different molecule).: as named by the judge; no mechanism or reference recorded
-  - Analogue: real biology behind this chain: see the cited works; chain wording is the council's own (Jonsson 2008 [unverified])
+  - Analogue: real biology behind this chain: see the cited works; chain wording is the council's own
   - Fix: Keep circulation peristaltic/microbial-film slow; Thaw Injection targets F14 pockets, not open vacuum. Replace 'smell in the air' with detectable ballistic NH3 trace at the vent mouth. Highly speculative macroscopic brine engine.
 - **Chain provenance:** council run `autoloop-2026-11-19`; by naturalist/qwen
 
@@ -129,3 +129,4 @@ council run `autoloop-2026-11-19`; by naturalist/qwen
 ## Changelog
 
 - 2026-11-20 import_got: imported from council run autoloop-2026-11-19
+- 2026-11-19 autoloop: removed rejected references from analogues

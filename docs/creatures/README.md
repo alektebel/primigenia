@@ -131,6 +131,13 @@
 | [Cromavolante](cromavolante.md) | new | draft | 4 | 3 fixable, 1 plausible |
 | [Ostracilo](ostracilo.md) | new | draft | 4 | 2 fixable, 2 plausible |
 
+## Mycelial World (`mycelia`)
+
+| Creature | Kind | Status | Chains | Verdicts |
+|---|---|---|---|---|
+| [Lombardo](lombardo.md) | new | draft | 4 | 1 fixable, 3 plausible |
+| [Sustrisoma](sustrisoma.md) | new | draft | 4 | 3 fixable, 1 plausible |
+
 ## The Neutron-Star Crust (`neutronstar`)
 
 | Creature | Kind | Status | Chains | Verdicts |

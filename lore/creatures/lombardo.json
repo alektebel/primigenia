@@ -1,0 +1,325 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "lombardo",
+  "name": {
+    "en": "Lombardo"
+  },
+  "world": "mycelia",
+  "kind": "new",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "Shallow tidal karst shelves and hyphal-overburdened basalt plains",
+    "diet": "Chitin-glucan rhizomorphs, detrital slurry, carbonate minerals, opportunistic carrion",
+    "active": "Crepuscular and diurnal (tracks low-UV bands, avoids thermal peak)",
+    "predators": []
+  },
+  "body": "Broad, flattened carapace; laterally angled legs; asymmetrical chelae; ventrally tucked abdomen; low sensory antennae; melanin-streaked edges",
+  "chains": [
+    {
+      "id": "lombardo.c1",
+      "trait": "Broad, flattened carapace fused to thoracic segments",
+      "links": [
+        "Reduces tipping on slick fungal substrates",
+        "Minimizes profile in dense karst fissures",
+        "Shields ventral organs from crushing debris",
+        "Driven by 1.2g gravity and pervasive basalt-karst terrain"
+      ],
+      "roots": [
+        "F3",
+        "F10"
+      ],
+      "skill": {
+        "id": "lombardo.shell_slide",
+        "name": {
+          "en": "Shell Slide"
+        },
+        "role": "Defence",
+        "effect": "Reduces incoming damage by 30% and grants 2 turns of cover.",
+        "numbers": {}
+      },
+      "weakness": "Vulnerable to top-down strikes and high-impact blows that exploit the broad profile.",
+      "observe": [
+        "Glossy dorsal plate fused to body",
+        "Low profile against karst wall",
+        "Melanic edge banding"
+      ],
+      "journal": {
+        "en": "Why flat? Gravity and stone demand it."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-20",
+        "summary": "Under 1.2g (F3), a low, wide exoskeleton lowers the center of mass and contact stress on slick, uneven karst–hyphal substrates (F10). A fused dorsal shield protects against abrasive particulate load in the 15 m visibility regime (F8) and matches chitin–glucan armour chemistry (F13). Fused thoracic shields are standard in many pancrustacean-grade lineages; convergent flattening appears in unrelated terrestrial arthropods under similar ‘don’t roll off the rock’ selection.",
+        "fixes": [
+          "Under 1.2g (F3), a low, wide exoskeleton lowers the center of mass and contact stress on slick, uneven karst–hyphal substrates (F10). A fused dorsal shield protects against abrasive particulate load in the 15 m visibility regime (F8) and matches chitin–glucan armour chemistry (F13). Fused thoracic shields are standard in many pancrustacean-grade lineages; convergent flattening appears in unrelated terrestrial arthropods under similar ‘don’t roll off the rock’ selection."
+        ],
+        "analogues": [
+          {
+            "organism": "Terrestrial isopods (Oniscus, Porcellio)—dorsally flattened tergal plates for crevice stability; horseshoe crab (Limulus)—broad fused prosomal carapace over soft ventral structures.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "lombardo.c2",
+      "trait": "Lateroposterior walking (crab-like lateral stride)",
+      "links": [
+        "Aligns body axis with narrow karst fissures",
+        "Reduces joint stress on jagged basalt floors",
+        "Forces lateral locomotion under 1.2g gravity",
+        "Evolved from vertical-climbing ancestors reoriented for ground-hugging travel"
+      ],
+      "roots": [
+        "F3",
+        "F10"
+      ],
+      "skill": {
+        "id": "lombardo.lateral_step",
+        "name": {
+          "en": "Lateral Step"
+        },
+        "role": "Basic",
+        "effect": "Moves sideways at full speed without turning penalty; navigates gaps 0.5m wide.",
+        "numbers": {}
+      },
+      "weakness": "Struggles on smooth vertical surfaces; blind-side vulnerable.",
+      "observe": [
+        "Legs bent laterally",
+        "Walks parallel to ridge",
+        "Never turns broadside to open space"
+      ],
+      "journal": {
+        "en": "They don't march; they sidestep fate."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-20",
+        "summary": "State explicitly that Lombardo’s ancestors were already arthropod-grade with regionalized thorax and paired appendages; ‘12 arms’ = six bilateral pairs of thoracic walking appendages plus chelae (tagmosis), not a novel limb inventory. Soft-ped ancestral vertical climbing can persist as the stated weakness on smooth vertical karst.",
+        "fixes": [
+          "State explicitly that Lombardo’s ancestors were already arthropod-grade with regionalized thorax and paired appendages; ‘12 arms’ = six bilateral pairs of thoracic walking appendages plus chelae (tagmosis), not a novel limb inventory. Soft-ped ancestral vertical climbing can persist as the stated weakness on smooth vertical karst."
+        ],
+        "analogues": [
+          {
+            "organism": "Brachyuran and anomuran ‘crabs’ (multiple carcinisation events); coconut crab (Birgus latro)—terrestrial sideways gait on rough terrain; some lithobiomorph centipedes—lateral undulation in cracks (partial analogue for fissure travel, not crab gait).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "lombardo.c3",
+      "trait": "Ventrally tucked, segmented abdomen beneath carapace",
+      "links": [
+        "Shields soft gills and reproductive ducts in dusty karst",
+        "Streamlines rear for sliding into hollows",
+        "Prevents snagging on hyphal cords under 1.2g",
+        "Maintains low center of gravity during rapid retreats"
+      ],
+      "roots": [
+        "F8",
+        "F10",
+        "F13"
+      ],
+      "skill": {
+        "id": "lombardo.hide_tuck",
+        "name": {
+          "en": "Hide Tuck"
+        },
+        "role": "Defence",
+        "effect": "Retract abdomen to seal ventral side, granting camouflage and reducing detection by 50% while stationary.",
+        "numbers": {}
+      },
+      "weakness": "Immobility while tucked; slow recovery time.",
+      "observe": [
+        "Abdomen hidden under shell",
+        "Gill rakers visible only when breathing",
+        "Retreats head-first"
+      ],
+      "journal": {
+        "en": "A folded ledger of eggs and gills, kept close."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-20",
+        "summary": "Tidal karst shelves expose ventral respiratory and reproductive surfaces to drying, dust, and debris when mats retract. Retracting a segmented abdomen under the carapace is a mechanical solution that also tucks presumed book-gill or gill-raker surfaces—consistent with semi-aquatic grazing next to anoxic sediments (F11) and particulate haze (F8). Low CoG aids rapid retreat along the ground plane at 1.2g.",
+        "fixes": [
+          "Tidal karst shelves expose ventral respiratory and reproductive surfaces to drying, dust, and debris when mats retract. Retracting a segmented abdomen under the carapace is a mechanical solution that also tucks presumed book-gill or gill-raker surfaces—consistent with semi-aquatic grazing next to anoxic sediments (F11) and particulate haze (F8). Low CoG aids rapid retreat along the ground plane at 1.2g."
+        ],
+        "analogues": [
+          {
+            "organism": "Decapod crabs—abdomen flexed beneath cephalothorax; woodlice (Armadillidium)—conglobation protects ventral appendices and pleopods (stronger analogue for ‘tuck while stationary’).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "lombardo.c4",
+      "trait": "Asymmetrical chelate claws (one crusher, one picker)",
+      "links": [
+        "Manipulates dense chitin-glucan fungal biomass",
+        "Cracks carbonate micro-crevices for mineral intake",
+        "Replaces visual hunting with tactile probing in 15m haze",
+        "Driven by external enzymatic digestion and persistent atmospheric particulate load"
+      ],
+      "roots": [
+        "F7",
+        "F8",
+        "F13"
+      ],
+      "skill": {
+        "id": "lombardo.crush_claw",
+        "name": {
+          "en": "Crush Claw"
+        },
+        "role": "Engage",
+        "effect": "Applies 150% force to shatter chitinous armor or fungal nodules; extracts high-nutrient paste.",
+        "numbers": {}
+      },
+      "weakness": "High metabolic cost; claws jam in wet hyphal mats; slow strike speed.",
+      "observe": [
+        "One claw oversized and pitted",
+        "Frequent grinding against stone",
+        "Chemical antennae sweep between joints"
+      ],
+      "journal": {
+        "en": "Why claws? Stone and fungus demand both keys and hammers."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-20",
+        "summary": "Optionally tie asymmetry to handedness fixed at metamorphosis (as in many decapods) rather than reversible per encounter—keeps mechanistic honesty without changing the Crush Claw skill.",
+        "fixes": [
+          "Optionally tie asymmetry to handedness fixed at metamorphosis (as in many decapods) rather than reversible per encounter—keeps mechanistic honesty without changing the Crush Claw skill."
+        ],
+        "analogues": [
+          {
+            "organism": "American lobster (Homarus americanus)—asymmetric crusher/cutter chelae; fiddler crabs (Uca)—extreme chela asymmetry (social/sexual selection, but shows developmental decoupling of claw function); land crabs and crayfish—processing hard detritus and carbonate-rich intake.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "Siltfilter",
+      "kind": "cousin",
+      "note": "(council kind 'Commensal') Lombardo scavenges nutrient paste left behind by Siltfilter benthic grinders; in return, the Lombardo's crushing claws clear carbonate blockages that trap Siltfilter nests."
+    },
+    {
+      "with": "carapaz",
+      "kind": "convergent",
+      "via": "carcinisation",
+      "note": "both converged on the crab body plan from unrelated lineages (Borradaile 1916; Keiler, Wirkner and Richter 2017; Wolfe, Luque and Bracken-Grissom 2021)"
+    },
+    {
+      "with": "carmesa",
+      "kind": "convergent",
+      "via": "carcinisation",
+      "note": "both converged on the crab body plan from unrelated lineages (Borradaile 1916; Keiler, Wirkner and Richter 2017; Wolfe, Luque and Bracken-Grissom 2021)"
+    },
+    {
+      "with": "laja_tres",
+      "kind": "convergent",
+      "via": "carcinisation",
+      "note": "both converged on the crab body plan from unrelated lineages (Borradaile 1916; Keiler, Wirkner and Richter 2017; Wolfe, Luque and Bracken-Grissom 2021)"
+    },
+    {
+      "with": "salcaran",
+      "kind": "convergent",
+      "via": "carcinisation",
+      "note": "both converged on the crab body plan from unrelated lineages (Borradaile 1916; Keiler, Wirkner and Richter 2017; Wolfe, Luque and Bracken-Grissom 2021)"
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-19",
+    "by": [
+      "naturalist/qwen"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-20",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-19"
+    },
+    {
+      "date": "2026-11-19",
+      "who": "autoloop",
+      "what": "carcinisation links to 4 creature(s)"
+    }
+  ],
+  "carcinised": true,
+  "body_plan": {
+    "symmetry": "bilateral",
+    "arms": 12,
+    "origin": "Highly speculative convergence: terrestrial gravity and karst topography mimic crustacean benthic pressures, driving independent evolution of a craboid form from vertical-climbing detritivore ancestors."
+  },
+  "temperament": "Cautious, territorial, low-metabolism, tactile-reactive",
+  "secrets": [
+    "Their crushed chitin-glucan paste can be harvested to craft temporary enzymatic coatings that accelerate fungal growth.",
+    "They avoid hydrothermal vent plumes not from heat, but because geothermal H₂S disrupts their chemical antennae navigation.",
+    "During the 600-day apogee, their carapaces molt simultaneously, leaving hollow shells that resonate at 340 m/s when wind passes through."
+  ],
+  "moments": [
+    "At low tide, when the fungal mats retract and the karst dries, a hundred Lombardo cluster in the exposed fissures. Their tucked abdomens rise and fall in unison, a slow, chitinous breathing that echoes like distant rain."
+  ],
+  "journal": [
+    {
+      "en": "A broad-shelled detritivore that navigates fungal karst with practiced lateral grace."
+    },
+    {
+      "en": "Carcinisation? Evolution really does have a favorite body plan."
+    },
+    {
+      "en": "Again."
+    }
+  ]
+}

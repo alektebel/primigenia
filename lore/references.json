@@ -11339,8 +11339,9 @@
     },
     "container-title": "Current Biology",
     "DOI": "10.1016/j.cub.2008.06.048",
-    "x-status": "unverified",
-    "x-note": "cited by a council model from memory; not yet checked"
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "x-checked": "2026-11-20"
   },
   {
     "id": "herbst_van_dishoeck_2009_ism",
@@ -11442,8 +11443,8 @@
     "id": "jonsson_2008_tardigrades",
     "type": "article-journal",
     "title": "Tardigrades survive exposure to space in low Earth orbit",
-    "x-status": "unverified",
-    "x-note": "cited by a council model from memory; not yet checked",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
     "author": [
       {
         "family": "Jonsson",
@@ -11457,7 +11458,9 @@
         ]
       ]
     },
-    "container-title": "Current Biology"
+    "container-title": "Current Biology",
+    "DOI": "10.1016/j.cub.2008.06.048",
+    "x-checked": "2026-11-20"
   },
   {
     "id": "dyson_1979_time",
@@ -11531,8 +11534,8 @@
     "id": "jonsson_2008_survival",
     "type": "article-journal",
     "title": "Survival of tardigrades to outer space",
-    "x-status": "unverified",
-    "x-note": "cited by a council model from memory; not yet checked",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Restraining an Arms Race in Outer Space' (Meyer, 2022) title similarity 0.60",
     "author": [
       {
         "family": "Jonsson",
@@ -11546,6 +11549,301 @@
         ]
       ]
     },
-    "container-title": "Current Biology"
+    "container-title": "Current Biology",
+    "x-checked": "2026-11-20"
+  },
+  {
+    "id": "adamatzky_2022",
+    "type": "article-journal",
+    "title": "Bio-computing with fungi",
+    "author": [
+      {
+        "family": "Adamatzky",
+        "given": "Andrew"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2022
+        ]
+      ]
+    },
+    "container-title": "Royal Society Open Science",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'Fungi Anaesthesia' (Adamatzky, 2023, doi 10.1007/978-3-031-38336-6_5), title similarity 0.24, author match, year ok",
+    "x-checked": "2026-11-20"
+  },
+  {
+    "id": "karst_2023",
+    "type": "article-journal",
+    "title": "The mycorrhizal symbiosis is not a mutualistic internet",
+    "author": [
+      {
+        "family": "Karst",
+        "given": "Johannes"
+      },
+      {
+        "family": "Babikova",
+        "given": "Zuzana"
+      },
+      {
+        "family": "Bever",
+        "given": "Jane D."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2023
+        ]
+      ]
+    },
+    "container-title": "Nature Ecology & Evolution",
+    "DOI": "10.1038/s41559-023-02068-8",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Root metabolome of plant–arbuscular mycorrhizal symbiosis mirrors the mutualistic or parasitic mycorrhizal phenotype' (Kaur, 2022) title similarity 0.54",
+    "x-checked": "2026-11-20"
+  },
+  {
+    "id": "simard_1997",
+    "type": "article-journal",
+    "title": "Net flow of carbon between individual plants of boreal forest trees and mycorrhizae",
+    "author": [
+      {
+        "family": "Simard",
+        "given": "Suzanne W."
+      },
+      {
+        "family": "Jones",
+        "given": "David E."
+      },
+      {
+        "family": "Myrold",
+        "given": "David D."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1997
+        ]
+      ]
+    },
+    "container-title": "Nature",
+    "DOI": "10.1038/38167",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Estimating the net carbon balance of boreal open woodland afforestation: A case-study in Québec’s closed-crown boreal forest' (Gaboury, 2009) title similarity 0.45",
+    "x-checked": "2026-11-20"
+  },
+  {
+    "id": "ferguson_2003",
+    "type": "article-journal",
+    "title": "A single individual of the fungus covers more than 15 acres",
+    "author": [
+      {
+        "family": "Ferguson",
+        "given": "Bruce A."
+      },
+      {
+        "family": "Huyck",
+        "given": "C. L."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2003
+        ]
+      ]
+    },
+    "container-title": "Mycologia",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Trump charged under Espionage Act – which covers a lot more crimes than just spying' (Ferguson, 2023) title similarity 0.43",
+    "x-checked": "2026-11-20"
+  },
+  {
+    "id": "cox_2000",
+    "type": "book",
+    "title": "Allen's Astrophysical Quantities",
+    "author": [
+      {
+        "family": "Cox",
+        "given": "Alan N."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2001
+        ]
+      ]
+    },
+    "container-title": "Springer",
+    "x-status": "verified",
+    "x-note": "verified against OpenLibrary (title 1.00); year corrected from 2000; ISBN added",
+    "ISBN": "9781461211860",
+    "x-checked": "2026-11-20"
+  },
+  {
+    "id": "catling_2017",
+    "type": "book",
+    "title": "Atmospheric Evolution on Inhabited and Lifeless Worlds",
+    "author": [
+      {
+        "family": "Catling",
+        "given": "David C."
+      },
+      {
+        "family": "Kasting",
+        "given": "Jeffrey F."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2016
+        ]
+      ]
+    },
+    "container-title": "Cambridge University Press",
+    "x-status": "verified",
+    "x-note": "verified against OpenLibrary (title 1.00); year corrected from 2017; ISBN added",
+    "ISBN": "9781139020558",
+    "x-checked": "2026-11-20"
+  },
+  {
+    "id": "white_2001",
+    "type": "book",
+    "title": "Karst Hydrogeology and Geomorphology",
+    "author": [
+      {
+        "family": "White",
+        "given": "Wayne"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2001
+        ]
+      ]
+    },
+    "container-title": "John Wiley & Sons",
+    "x-status": "rejected",
+    "x-note": "no candidate returned by the index",
+    "x-checked": "2026-11-20"
+  },
+  {
+    "id": "simard_1997_transfer",
+    "type": "article-journal",
+    "title": "Net transfer of carbon between ectomycorrhizal tree species in the field",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "author": [
+      {
+        "family": "Simard",
+        "given": "S. W."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1997
+        ]
+      ]
+    },
+    "container-title": "Nature",
+    "DOI": "10.1038/41557",
+    "x-checked": "2026-11-20"
+  },
+  {
+    "id": "karst_2023_positive",
+    "type": "article-journal",
+    "title": "Positive citation bias and overinterpreted results lead to misinformation on common mycorrhizal networks in forests",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); container-title corrected from 'Nature Ecology and Evolution'; DOI added",
+    "author": [
+      {
+        "family": "Karst",
+        "given": "J."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2023
+        ]
+      ]
+    },
+    "container-title": "Nature Ecology &amp; Evolution",
+    "DOI": "10.1038/s41559-023-01986-1",
+    "x-checked": "2026-11-20"
+  },
+  {
+    "id": "adamatzky_2022_language",
+    "type": "article-journal",
+    "title": "Language of fungi derived from their electrical spiking activity",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "author": [
+      {
+        "family": "Adamatzky",
+        "given": "A."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2022
+        ]
+      ]
+    },
+    "container-title": "Royal Society Open Science",
+    "DOI": "10.1098/rsos.211926",
+    "x-checked": "2026-11-20"
+  },
+  {
+    "id": "adamatzky_2022_action",
+    "type": "article-journal",
+    "title": "Action potentials in fungi",
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked",
+    "author": [
+      {
+        "family": "Adamatzky",
+        "given": "A."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2022
+        ]
+      ]
+    },
+    "container-title": "Royal Society Open Science"
+  },
+  {
+    "id": "ferguson_2003_clonal",
+    "type": "article-journal",
+    "title": "Clonal size and age of Armillaria ostoyae",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Armillaria ostoyae (armillaria root rot)' (, 2021) title similarity 0.61",
+    "author": [
+      {
+        "family": "Ferguson",
+        "given": "A."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2003
+        ]
+      ]
+    },
+    "container-title": "Mycologia",
+    "x-checked": "2026-11-20"
   }
 ]

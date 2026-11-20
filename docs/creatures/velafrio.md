@@ -60,7 +60,7 @@ Trait ← Shields internal brine from GCR dose ← Melanin-like pigments dissipa
   - Describe the membrane as a sparse colonial veil: living pigment nodes linked by glass-state matrix, active only during flybys; Radiolytic Soak vents dose into pigment granules and brine sinks, matching weakness plume (F11 ballistic). Mark highly speculative for cathedral-scale macrostructure.
   - scores: astrobio 6, skeptic 6
   - Analogue: Tardigrade tun formation and radiation survival in space exposure (Jonsson et al. 2008, Current Biology); fungal melanin radiation-shielding pigment (highly speculative at this scale).: as named by the judge; no mechanism or reference recorded
-  - Analogue: real biology behind this chain: see the cited works; chain wording is the council's own (Jonsson 2008 [unverified])
+  - Analogue: real biology behind this chain: see the cited works; chain wording is the council's own
   - Fix: Describe the membrane as a sparse colonial veil: living pigment nodes linked by glass-state matrix, active only during flybys; Radiolytic Soak vents dose into pigment granules and brine sinks, matching weakness plume (F11 ballistic). Mark highly speculative for cathedral-scale macrostructure.
 - **Chain provenance:** council run `autoloop-2026-11-19`; by naturalist/qwen
 
@@ -130,3 +130,4 @@ council run `autoloop-2026-11-19`; by naturalist/qwen
 ## Changelog
 
 - 2026-11-20 import_got: imported from council run autoloop-2026-11-19
+- 2026-11-19 autoloop: removed rejected references from analogues
