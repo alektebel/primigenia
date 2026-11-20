@@ -55,10 +55,10 @@ func _build_bed(b: Dictionary) -> void:
 	var cx: float = b.x
 	var cz: float = b.z
 	var wing := int(b.kind) == 0
-	var patch := _mat(Color("8b8a4d") if wing else Color("7c8a52"), 1.0)         # paler, drier grass than the meadow
-	var dry := _mat(Color("b9a47a"), 1.0)
+	var patch := _mat(Color("5d6030") if wing else Color("4f6030"), 1.0)         # paler, drier grass than the meadow (dark values: the island sun is strong)
+	var dry := _mat(Color("6e5c3c"), 1.0)
 	var crack := _mat(Color("2a2118"), 1.0)
-	var bone := _mat(Color("e4d8b9"), 0.75)
+	var bone := _mat(Color("a79b80"), 0.8)
 	var glass := _mat(Color("1b2128"), 0.12, 0.55)
 	var r: float = b.r
 	# patches of dry soil, each on the ground under it
@@ -68,7 +68,7 @@ func _build_bed(b: Dictionary) -> void:
 		var x := cx + cos(a) * d
 		var z := cz + sin(a) * d
 		var disc := CylinderMesh.new()
-		disc.top_radius = rng.randf_range(0.55, 1.0)
+		disc.top_radius = rng.randf_range(0.4, 0.8)
 		disc.bottom_radius = disc.top_radius
 		disc.height = 0.03
 		disc.radial_segments = 14
@@ -91,8 +91,8 @@ func _build_bed(b: Dictionary) -> void:
 		var x := cx + cos(a) * d
 		var z := cz + sin(a) * d
 		var cap := CapsuleMesh.new()
-		cap.radius = rng.randf_range(0.035, 0.06)
-		cap.height = rng.randf_range(0.35, 0.7)
+		cap.radius = rng.randf_range(0.025, 0.045)
+		cap.height = rng.randf_range(0.25, 0.5)
 		cap.radial_segments = 8
 		cap.rings = 3
 		_piece(root, cap, bone, Vector3(x, ground.call(x, z) + 0.12, z), Vector3(rng.randf_range(-0.9, 0.9), rng.randf() * TAU, rng.randf_range(-0.9, 0.9)))

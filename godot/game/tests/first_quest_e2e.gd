@@ -18,7 +18,7 @@ class ErrorLog extends Logger:
 # Tick budgets per task (the whole chain must fit in TOTAL), at 10 ticks per second of game time.
 const BUDGET := {"hunt": 4500, "friend": 5000, "dig": 800, "wings": 2500, "fire": 2500}
 const TOTAL := 14000
-const TIMESCALE := 16.0
+var TIMESCALE := 16.0
 
 var checks := 0
 var failures := 0
@@ -75,6 +75,8 @@ func _initialize() -> void:
 	for a in OS.get_cmdline_user_args():
 		if a.begins_with("seed="):
 			seed_n = int(a.substr(5))
+		elif a.begins_with("scale="):
+			TIMESCALE = float(a.substr(6))
 		elif a.begins_with("evidence="):
 			evidence_dir = a.substr(9)
 	_run.call_deferred()
