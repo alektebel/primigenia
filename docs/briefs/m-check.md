@@ -1,0 +1,13 @@
+# Minor task: one command to verify everything, and a README that explains how to play
+1. Makefile: add `make check` that runs, in order, make test, make wasm-test, make terrain-test, make studio-test and make stage-test. It starts `python3 -m http.server 8765 --bind 127.0.0.1` from the repo root itself for the browser suites (only if the port is free; stops it afterwards even on failure), and fails if NODE_PATH lacks playwright, with a clear message. Add `make serve` (python3 -m http.server 8090 --bind 127.0.0.1) and `make play` that prints the URLs.
+2. README.md: rewrite the top so a newcomer understands in one screen: what Primigenia is (Spore-like evolution game + LLM/RL benchmark on a deterministic C core; MIT code, CC BY 4.0 art, independent fan tribute with original naming), how to build (make; make wasm with `source ~/emsdk/emsdk_env.sh`), how to play (make serve, then /web/stage/ and /web/studio/, controls from docs/evidence/stage/polish/README.md), how to verify (make check), and where the docs are (docs/DESIGN.md, docs/BACKLOG.md, docs/P4.md, docs/COMBAT.md, docs/WORLD.md, docs/TERRAIN.md). Keep the existing Layout/Build sections accurate (update paths that changed). Do not invent features; check each claim against the repo.
+Run `make check` once at the end and report the result honestly (nice -n 10).
+## Rules for this task (read first)
+- Project: "Primigenia" (codename cpore), a Spore-like game + LLM/RL benchmark. Decisions live in docs/DESIGN.md (§9 G1–G62 and §10 W1–W13 are the newest; G and W win over Q). Do not contradict them. P4 spec of record: docs/P4.md.
+- Never modify anything under art/reference/ (byte-identical references).
+- Browser screenshots: headless Chromium with SOFTWARE WebGL only: args ['--use-angle=swiftshader','--enable-unsafe-swiftshader'], executablePath ~/.cache/ms-playwright/chromium-1254/chrome-linux64/chrome. Playwright: NODE_PATH=/home/diego/Desarrollo/cpore-wt/_agent/node_modules . Never use GPU flags. Run every browser/heavy process with `nice -n 10` and always close the browser. Keep renders to the minimum you need (the owner's laptop fans matter).
+- Emscripten: `source ~/emsdk/emsdk_env.sh`.
+- Do not install system packages, do not download SDKs, do not push, do not touch other git worktrees or branches.
+- Commit your work on the current branch in small, clear commits as you go (the session may be killed; uncommitted work is lost). Imperative subject, body says what and why.
+- Report honestly: if something is not done or not verified, say so. Do not fabricate measurements.
+- Finish with a short report: what you built, files changed, commands run and their results, open issues.

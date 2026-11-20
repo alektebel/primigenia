@@ -1,0 +1,12 @@
+# Minor task: creature-stage calibration research (DESIGN.md Q14, Q22)
+Read docs/DESIGN.md Q14 and Q22 (and Q43, G23, G37 for the creature-stage loop) and docs/P4.md. Q22: the game is not bought; docs/CALIBRATION.md is compiled from public sources (wikis, guides, timestamped let's-play videos) describing how Spore's creature stage plays, to calibrate Primigenia's numbers.
+Write docs/CALIBRATION.md: for Spore's creature stage, what is publicly documented about: stage length in minutes for a typical player; DNA point awards (befriend, kill, eat, find parts) and the progression thresholds; how many species/nests are in the area and how many to ally/extinct; part unlock counts by source (skeletons, eggs/epic); health/attack/social stat values per part level; ability cooldown durations; epic creature behaviour; pack/ally limits. For every number: the source URL (prefer the Spore wiki on Fandom/strategywiki and dated guides; videos with timestamp) and how confident it is. Then a table mapping each to the Primigenia parameter it calibrates (P4.md tables, G23, G37, Q43) with a recommended value and the reason. Mark clearly what could not be found. Never invent numbers or sources; if you cannot fetch a page, say so.
+## Rules for this task (read first)
+- Project: "Primigenia" (codename cpore), a Spore-like game + LLM/RL benchmark. Decisions live in docs/DESIGN.md (§9 G1–G62 and §10 W1–W13 are the newest; G and W win over Q). Do not contradict them. P4 spec of record: docs/P4.md.
+- Never modify anything under art/reference/ (byte-identical references).
+- Browser screenshots: headless Chromium with SOFTWARE WebGL only: args ['--use-angle=swiftshader','--enable-unsafe-swiftshader'], executablePath ~/.cache/ms-playwright/chromium-1254/chrome-linux64/chrome. Playwright: NODE_PATH=/home/diego/Desarrollo/cpore-wt/_agent/node_modules . Never use GPU flags. Run every browser/heavy process with `nice -n 10` and always close the browser. Keep renders to the minimum you need (the owner's laptop fans matter).
+- Emscripten: `source ~/emsdk/emsdk_env.sh`.
+- Do not install system packages, do not download SDKs, do not push, do not touch other git worktrees or branches.
+- Commit your work on the current branch in small, clear commits as you go (the session may be killed; uncommitted work is lost). Imperative subject, body says what and why.
+- Report honestly: if something is not done or not verified, say so. Do not fabricate measurements.
+- Finish with a short report: what you built, files changed, commands run and their results, open issues.

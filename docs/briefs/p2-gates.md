@@ -1,0 +1,18 @@
+# Task P2-gates: make `make tourney` pass (branch p2-gates, continue on it)
+
+A previous agent (Fable) started this and was stopped to save usage. Its commits on this branch: 7a3204b "Add whiff stagger to avoid rows and a punish-only defensive policy" and a WIP commit of unverified edits. Review them critically (keep, fix or revert).
+
+Goal: the P2 move-level balance gates pass; DESIGN.md G55 makes this a prerequisite for P4, and G53 says future secret moves must pass the same gates, so the gates must stay principled.
+Read: docs/COMBAT.md entirely (especially "Remaining balance conflict" and the tournament: raw and resource-adjusted payoff matrices, regret-matching equilibrium, weak-dominance with tolerance 2*max(SE)+0.5 HP, support gate, canaries, bot field), core/src/combat.c (move and counter tables), apps/combat_bots.c, apps/combat_tourney.c, tests, docs/DESIGN.md G16/G18/G23/G36/G53/G55/Q24/Q52 and the P0–P2 deepened criteria, docs/P4.md balance gates B1–B8.
+Known failures before this branch: raw: spit weakly dominates dodge (repeated dodge deals no damage); resource: dodge weakly dominates bite; both equilibria use only 3 moves (support gate).
+Method: diagnose structurally first and write it down. Prefer data-table fixes that give every move a role in a cycle with stamina as cost (e.g. dodge grants a short punish window; guard beats bite, loses to charge; spit beaten by approach+dodge; tail sweeps punish dodge spam). A gate definition may change only with a written game-theoretic justification in COMBAT.md (e.g. value dodge by the punish it enables, or a two-step commitment matrix); never weaken a gate just to pass. Determinism contract unchanged (+ - * / sqrtf, CpRng streams, canonical hash, native == WASM). Golden logs may be re-recorded only for deliberate rule changes, explained in the commit and COMBAT.md. Keep build balance caps (field mean ≤ 65%, worst pair ≤ 90%), every canary, and the stage winnability window 35–80% (tests/stage_winnability.mjs; tune only Garfio species data if moved). Fixed seed set with standard errors; confirm on a fresh held-out seed set.
+Done: make tourney exits 0; make test, make wasm-test pass; make stage-test passes (python3 -m http.server 8765 --bind 127.0.0.1 from the repo root); COMBAT.md documents the final table, reasoning, matrices, equilibrium mixes with support, held-out confirmation.
+## Rules for this task (read first)
+- Project: "Primigenia" (codename cpore), a Spore-like game + LLM/RL benchmark. Decisions live in docs/DESIGN.md (§9 G1–G62 and §10 W1–W13 are the newest; G and W win over Q). Do not contradict them. P4 spec of record: docs/P4.md.
+- Never modify anything under art/reference/ (byte-identical references).
+- Browser screenshots: headless Chromium with SOFTWARE WebGL only: args ['--use-angle=swiftshader','--enable-unsafe-swiftshader'], executablePath ~/.cache/ms-playwright/chromium-1254/chrome-linux64/chrome. Playwright: NODE_PATH=/home/diego/Desarrollo/cpore-wt/_agent/node_modules . Never use GPU flags. Run every browser/heavy process with `nice -n 10` and always close the browser. Keep renders to the minimum you need (the owner's laptop fans matter).
+- Emscripten: `source ~/emsdk/emsdk_env.sh`.
+- Do not install system packages, do not download SDKs, do not push, do not touch other git worktrees or branches.
+- Commit your work on the current branch in small, clear commits as you go (the session may be killed; uncommitted work is lost). Imperative subject, body says what and why.
+- Report honestly: if something is not done or not verified, say so. Do not fabricate measurements.
+- Finish with a short report: what you built, files changed, commands run and their results, open issues.

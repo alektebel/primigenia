@@ -1,0 +1,2 @@
+# Continue: your previous session on this branch was cut by a usage limit.
+Re-read the original brief /home/diego/Desarrollo/cpore-wt/_agent/briefs/p2-gates.md, then inspect `git log` and `git status` in this worktree: commit any sound uncommitted work first (or fix/revert it), then finish everything the original brief asks, and give the final report. Note: the main branch has since merged the C world (G56, docs/WORLD.md) and palette C (G63); do not merge main yourself, just keep your scope.
