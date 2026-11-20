@@ -12,6 +12,7 @@ extends RefCounted
 ## Leg parts are built by make_leg() instead (they are IK chains).
 
 const DEFAULT_ASSET_DIR := "res://creature/assets/"
+const WingData := preload("res://creature/creature_wing.gd")
 const X0 := Vector3(1, 0, 0)
 const Y := Vector3(0, 1, 0)
 const ZA := Vector3(0, 0, 1)
@@ -45,6 +46,8 @@ const META := {
 	"eye_triad": {"responsive": true},
 	"wing_glider": {"mount": "upright", "body_minimum": .8, "responsive": true},
 	"wing_insect": {"mount": "upright", "body_minimum": .8, "responsive": true},
+	"wing_vane": {"mount": "upright", "body_minimum": .8, "responsive": true},
+	"wing_flap": {"mount": "upright", "body_minimum": .8, "responsive": true},
 	"frill_fan": {"responsive": true},
 	"sac_spitter": {"mount": "body", "responsive": true},
 	"arm_grasper": {"mount": "upright", "body_minimum": .65, "responsive": true},
@@ -579,8 +582,14 @@ func _make_creator(type: String, p: Dictionary, off: Vector3, r: float, context:
 	if m.has("body_minimum"):
 		radius = max(r, float(context["body"]) * m["body_minimum"])
 	var s: float = p.get("size", 1.0) * radius / .6
+	if WingData.is_wing(type):
+		var wp: Dictionary = WingData.params(type, p)
+		if float(wp.span) > 0.0:
+			s = float(p.get("size", 1.0)) * float(wp.span) / float(WingData.family(type).base_tip)   # the genome states the span in metres
 	var g := _creator_shape(type, p, r, s, context)
 	_scale_tree(g, s, off, true)
+	if WingData.is_wing(type) and g.has_meta("wing_base"):
+		g.set_meta("wing_info", WingData.info(type, p, float(g.get_meta("wing_base").area), s, 1.0))
 	g.set_meta("mount_radius", r)
 	g.set_meta("part_scale", s)
 	return g
@@ -595,6 +604,113 @@ func _scale_tree(n: Node, s: float, off: Vector3, is_root: bool) -> void:
 		geo.skinify(off, .42 if n.get_meta("material_region", "") == "membrane" else null)
 	for c in n.get_children():
 		_scale_tree(c, s, off, false)
+
+
+# ---- wings (creature_wing.gd for the families and the optional `wing` block) -----------------------------------------
+
+## The unit-size outlines of a wing family, the chord factor `zk` applied to z. {polys: [[Vector3]], ...}
+func _wing_layout(type: String, w: Dictionary, zk: float) -> Dictionary:
+	var Z := func(v: Vector3) -> Vector3: return Vector3(v.x, v.y, v.z * zk)
+	var out := {"polys": [], "fingers": [], "vanes": [], "ribs": []}
+	match type:
+		"wing_glider":
+			var fingers := [Vector3(.5, .5, .35), Vector3(1.35, .85, .15), Vector3(2.25, .9, -.5), Vector3(1.85, .6, -1.3), Vector3(.9, .25, -1.65)]
+			var tail := [Vector3(.35, .06, -1.2), Vector3(0, -.12, -.8)]
+			if w.anchor == "hind":
+				tail = [Vector3(.4, .02, -1.65), Vector3(0, -.12, -1.25)]
+			elif w.anchor == "none":
+				tail = [Vector3(.3, .06, -.95), Vector3(0, -.1, -.5)]
+			var outline := [Vector3(0, 0, .08), fingers[0], fingers[1], fingers[2], Vector3(1.75, .65, -.75), fingers[3], Vector3(1.25, .34, -1.15), fingers[4]] + tail
+			out.polys.append(outline.map(Z))
+			var n := clampi(int(w.spars), 1, 5)
+			for i in n:
+				out.fingers.append(Z.call(fingers[int(roundf(float(i) * 4.0 / float(maxi(n - 1, 1)))) if n > 1 else 2]))
+		"wing_insect":
+			var fore := [Vector3(0, 0, 0), Vector3(.7, .6, .6), Vector3(1.65, .92, .7), Vector3(2.25, 1, .35), Vector3(1.55, .65, .15), Vector3(.45, .2, -.05)]
+			var hind := [Vector3(0, -.04, -.12), Vector3(.5, .1, -.45), Vector3(1.3, .4, -.75), Vector3(1.7, .48, -1.2), Vector3(1.1, .2, -1.35), Vector3(.3, -.05, -.65)]
+			out.polys.append(fore.map(Z))
+			out.polys.append(hind.map(Z))
+			for q in [fore[2], fore[3], fore[4], hind[2], hind[3]]:
+				out.fingers.append(Z.call(q))
+		"wing_vane":
+			# An arm panel to a wrist, then a fan of stiff vanes (each a leaf on its own hinge so the fan can close).
+			out.polys.append([Vector3(0, 0, .2), Vector3(.5, .22, .28), Vector3(.95, .3, .2), Vector3(.95, .22, -.75), Vector3(.5, .1, -.8), Vector3(0, -.05, -.55)].map(Z))
+			var n := clampi(int(w.spars), 1, 5)
+			for i in n:
+				var u := 0.5 if n == 1 else float(i) / float(n - 1)
+				var psi := deg_to_rad(lerpf(10.0, -55.0, u))
+				var vlen := 1.05 - 0.2 * absf(u - 0.35)
+				var wd := 0.26 * zk
+				out.vanes.append({"pivot": Z.call(Vector3(.95, .28, .1)), "angle": -psi, "len": vlen, "width": wd,
+					"poly": [Vector3(0, 0, -wd * .5), Vector3(vlen * .5, .03, -wd * .55), Vector3(vlen, 0, 0), Vector3(vlen * .5, .03, wd * .55), Vector3(0, 0, wd * .5)]})
+		"wing_flap":
+			# Skin stretched on a fan of ribs from the shoulder, scalloped between the rib tips.
+			var n := clampi(int(w.spars), 1, 5)
+			var tips := []
+			for i in n:
+				var u := 0.5 if n == 1 else float(i) / float(n - 1)
+				var psi := deg_to_rad(lerpf(25.0, -105.0, u))
+				tips.append(Z.call(Vector3(1.6 * cos(psi), .12, 1.6 * sin(psi) + .1)))
+			var outline := [Z.call(Vector3(0, 0, .1))]
+			for i in n:
+				outline.append(tips[i])
+				if i < n - 1:
+					var mid: Vector3 = ((tips[i] as Vector3) + (tips[i + 1] as Vector3)) * .5
+					outline.append(Vector3(mid.x * .82, .06, (mid.z - .1 * zk) * .82 + .1 * zk))
+			out.polys.append(outline)
+			out.ribs = tips
+	return out
+
+
+func _wing_area(layout: Dictionary) -> float:
+	var a := 0.0
+	for poly in layout.polys:
+		a += WingData.polygon_area(poly)
+	for v in layout.vanes:
+		a += WingData.polygon_area(v.poly)
+	return a
+
+
+func _wing_shape(type: String, p: Dictionary, g: Node3D) -> void:
+	var w: Dictionary = WingData.params(type, p)
+	var wing := _group(g, "wing")
+	g.set_meta("wing", wing)
+	_tissue(CreatureGeo.ell(.16, .18, .22), "skin", g)
+	var zk := 1.0
+	if float(w.breadth) > 0.0:
+		var fam: Dictionary = WingData.family(type)
+		var a0 := _wing_area(_wing_layout(type, w, 1.0))
+		zk = float(w.breadth) / maxf(a0 / (float(fam.base_tip) * float(fam.base_tip)), 1e-4)
+	var layout := _wing_layout(type, w, zk)
+	g.set_meta("wing_base", {"area": _wing_area(layout), "zk": zk})
+	match type:
+		"wing_glider":
+			_sail(layout.polys[0], wing, "glider")
+			for f in layout.fingers:
+				_tissue(CreatureGeo.sweep([Vector3.ZERO, Vector3(f.x * .48, f.y * .65 + .08, f.z * .48), f], [.045, .032, .009]), "keratin", wing)
+		"wing_insect":
+			_sail(layout.polys[0], wing, "insect")
+			_sail(layout.polys[1], wing, "insect")
+			for q in layout.fingers:
+				_tissue(CreatureGeo.sweep([Vector3.ZERO, q * .5, q], [.023, .016, .005]), "keratin", wing)
+				_tissue(CreatureGeo.sweep([q * .45, Vector3(q.x * .72, q.y * .7, q.z * .72 + .1), Vector3(q.x * .85, q.y * .85, q.z * .85 + .14)], [.009, .007, .003]), "keratin", wing)
+		"wing_vane":
+			_sail(layout.polys[0], wing, "membrane")
+			_tissue(CreatureGeo.sweep([Vector3.ZERO, Vector3(.45, .2, .1 * zk), Vector3(.95, .28, .1 * zk)], [.05, .04, .03]), "keratin", wing)
+			var nodes := []
+			for v in layout.vanes:
+				var vg := _group(wing, "vane")
+				vg.position = v.pivot
+				vg.rotation.y = v.angle
+				vg.set_meta("rest_angle", v.angle)
+				_sail(v.poly, vg, "membrane")
+				_tissue(CreatureGeo.sweep([Vector3.ZERO, Vector3(v.len * .5, .02, 0), Vector3(v.len, 0, 0)], [.02, .015, .005]), "keratin", vg)
+				nodes.append(vg)
+			wing.set_meta("vanes", nodes)
+		"wing_flap":
+			_sail(layout.polys[0], wing, "membrane")
+			for t in layout.ribs:
+				_tissue(CreatureGeo.sweep([Vector3(0, 0, .1 * zk), Vector3(t.x * .5, .08, (t.z - .1 * zk) * .5 + .1 * zk), t], [.04, .03, .008]), "keratin", wing)
 
 
 func _creator_shape(type: String, p: Dictionary, r: float, s: float, context: Dictionary) -> Node3D:
@@ -650,25 +766,8 @@ func _creator_shape(type: String, p: Dictionary, r: float, s: float, context: Di
 				var e := _group(g, "eye")
 				e.position = Vector3(x, 0, .23 if x == 0.0 else .16)
 				_eyeball(e, .17, Vector3.ZERO, str(p.get("pupil", "auto")))
-		"wing_glider", "wing_insect":
-			var wing := _group(g, "wing")
-			g.set_meta("wing", wing)
-			_tissue(CreatureGeo.ell(.16, .18, .22), "skin", g)
-			if type == "wing_glider":
-				# Five spread fingers, with scalloped trailing webs returning to the flank.
-				var fingers := [Vector3(.5, .5, .35), Vector3(1.35, .85, .15), Vector3(2.25, .9, -.5), Vector3(1.85, .6, -1.3), Vector3(.9, .25, -1.65)]
-				_sail([Vector3(0, 0, .08), fingers[0], fingers[1], fingers[2], Vector3(1.75, .65, -.75), fingers[3], Vector3(1.25, .34, -1.15), fingers[4], Vector3(.35, .06, -1.2), Vector3(0, -.12, -.8)], wing, "glider")
-				for f in fingers:
-					_tissue(CreatureGeo.sweep([Vector3.ZERO, Vector3(f.x * .48, f.y * .65 + .08, f.z * .48), f], [.045, .032, .009]), "keratin", wing)
-			else:
-				# Fore- and hindwings fan apart, leaving a visible notch between the sails.
-				var fore := [Vector3(0, 0, 0), Vector3(.7, .6, .6), Vector3(1.65, .92, .7), Vector3(2.25, 1, .35), Vector3(1.55, .65, .15), Vector3(.45, .2, -.05)]
-				var hind := [Vector3(0, -.04, -.12), Vector3(.5, .1, -.45), Vector3(1.3, .4, -.75), Vector3(1.7, .48, -1.2), Vector3(1.1, .2, -1.35), Vector3(.3, -.05, -.65)]
-				_sail(fore, wing, "insect")
-				_sail(hind, wing, "insect")
-				for q in [fore[2], fore[3], fore[4], hind[2], hind[3]]:
-					_tissue(CreatureGeo.sweep([Vector3.ZERO, q * .5, q], [.023, .016, .005]), "keratin", wing)
-					_tissue(CreatureGeo.sweep([q * .45, Vector3(q.x * .72, q.y * .7, q.z * .72 + .1), Vector3(q.x * .85, q.y * .85, q.z * .85 + .14)], [.009, .007, .003]), "keratin", wing)
+		"wing_glider", "wing_insect", "wing_vane", "wing_flap":
+			_wing_shape(type, p, g)
 		"frill_fan":
 			var fan := _group(g, "fan")
 			g.set_meta("sway", fan)

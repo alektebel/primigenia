@@ -50,7 +50,8 @@ func _test_assets() -> void:
 	check(lib["ok"], "part library loads (failures: %s %s)" % [lib["failures"], lib["error"]])
 	var table: Dictionary = lib["table"]
 	check(table.get("schema") == "cpore.studio-parts/1", "parts.json schema")
-	check(table["parts"].size() == 47, "47 parts in parts.json (got %d)" % table["parts"].size())
+	var web_parts: Array = table["parts"].filter(func(e): return not bool(e.get("godot_only", false)))
+	check(web_parts.size() == 47 and table["parts"].size() == 49, "47 web parts + 2 Godot-only wings in parts.json (got %d / %d)" % [web_parts.size(), table["parts"].size()])
 	for entry in table["parts"]:
 		check(lib["entries"].has(entry["id"]), "library entry " + entry["id"])
 		if entry.has("file"):
@@ -61,7 +62,8 @@ func _test_assets() -> void:
 	# The copies must not drift from web/studio (when the web tree is present).
 	var web := _abs(WEB_STUDIO + "parts.json")
 	if FileAccess.file_exists(web):
-		check(FileAccess.get_sha256(web) == FileAccess.get_sha256(CreatureParts.DEFAULT_ASSET_DIR + "parts.json"), "parts.json matches web/studio")
+		var web_table = JSON.parse_string(FileAccess.get_file_as_string(web))
+		check(web_table["parts"] == web_parts, "parts.json holds every web/studio part unchanged (plus the Godot-only wings)")
 		check(FileAccess.get_sha256(_abs(WEB_STUDIO + "parts/manifest.json")) == FileAccess.get_sha256(CreatureParts.DEFAULT_ASSET_DIR + "parts/manifest.json"), "manifest.json matches web/studio")
 	# Material regions of the GLB slots, as in docs/evidence/studio-v4-materials.md.
 	var want := {"eye_stalk/Golden iris": "eye", "eye_stalk/Tidal teal skin": "skin", "lure_lantern/Lantern chartreuse": "glow",
@@ -397,7 +399,7 @@ func _test_every_part() -> void:
 			check(verts > 0, "%s on %s has geometry" % [id, seed_name])
 			_creature_ok(c, id + "@" + seed_name)
 			count += 1
-	check(count == 94, "47 parts x 2 seeds built (got %d)" % count)
+	check(count == 98, "49 parts x 2 seeds built (got %d)" % count)
 	c.queue_free()
 
 

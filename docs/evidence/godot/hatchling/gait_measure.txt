@@ -1,0 +1,4 @@
+hatchling  walk         Fr 0.15 v 0.62 gait walk    cadence 1.80 stride 0.34  cad*stride 0.62 duty 0.66
+hatchling  trot         Fr 1.12 v 1.68 gait trot    cadence 2.91 stride 0.58  cad*stride 1.68 duty 0.39
+hatchling  gallop       Fr 5.50 v 3.73 gait gallop  cadence 4.14 stride 0.90  cad*stride 3.73 duty 0.24
+hatchling  gallop fast  Fr 12.50 v 5.63 gait gallop  cadence 4.81 stride 1.17  cad*stride 5.63 duty 0.19

@@ -13,7 +13,7 @@ const Genomes := preload("res://devtools/zoo/zoo_genomes.gd")
 
 const CELL := Vector2i(360, 220)
 const FRAMES := 8
-const MORPHS := ["hero", "mite", "giant", "hexapod", "centipede", "trotter"]
+const MORPHS := ["hero", "hatchling", "mite", "giant", "hexapod", "centipede", "trotter"]
 
 var out_dir := ""
 var only := ""
@@ -31,6 +31,8 @@ func _initialize() -> void:
 static func genome_for(id: String) -> Dictionary:
 	if id == "hero":
 		return JSON.parse_string(FileAccess.get_file_as_string("res://game/data/merodeador.json"))
+	if id == "hatchling":
+		return JSON.parse_string(FileAccess.get_file_as_string("res://game/data/hatchling.json"))
 	return Genomes.genome(id)
 
 ## Froude numbers worth showing: one per gait of the ladder, from the slowest gait up to the last gait's mid range.

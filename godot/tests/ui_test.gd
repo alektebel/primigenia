@@ -13,6 +13,7 @@ const Palette := preload("res://ui/palette.gd")
 const Style := preload("res://ui/style.gd")
 const Glyphs := preload("res://ui/glyphs.gd")
 const Strings := preload("res://ui/strings.gd")
+const CreatureBars := preload("res://ui/creature_bars.gd")
 const Onboarding := preload("res://ui/onboarding.gd")
 const AudioManager := preload("res://audio/audio_manager.gd")
 const Settings := preload("res://audio/audio_settings.gd")
@@ -39,6 +40,7 @@ func _initialize() -> void:
 	test_ring_geometry()
 	test_minimap()
 	test_social_ui()
+	test_creature_bars()
 	test_volumes()
 	test_sounds()
 	call_deferred("_finish")
@@ -277,6 +279,14 @@ func test_signs_and_words() -> void:
 	for k in 6:
 		s._process(0.5)
 	ok(not s.stamina_visible, "and hides 2 s after it is full again")
+	ok(not s.run_visible, "the run line is hidden at full")
+	ui.set_run(400, true)
+	s._process(0.1)
+	ok(s.run_visible and absf(s.run_frac - 0.4) < 0.001 and s.running, "the run line shows while running, at 40 % (%.2f)" % s.run_frac)
+	ui.set_run(1000, false)
+	for k in 6:
+		s._process(0.5)
+	ok(not s.run_visible, "and hides 2 s after the run stamina is full again")
 	ui.set_fight(true)
 	s.set_fight(true)
 	s._process(0.1)
@@ -860,3 +870,63 @@ func test_foundations() -> void:
 	for f in ["OFL-AlegreyaSans.txt", "OFL-Alegreya.txt"]:
 		ok(FileAccess.file_exists("res://ui/fonts/" + f), "licence %s sits next to the fonts" % f)
 	ok(Modes.NONE == &"" and Modes.is_mode(Modes.NONE), "Modes.NONE exists")
+
+# Health lines over hostile / fighting / selected creatures (brief creature-fixes 2).
+func test_creature_bars() -> void:
+	var B = CreatureBars.BarState
+	var b = B.new()
+	b.set_value(0.5)
+	ok(b.shown == 1.0 and b.lost == 1.0, "bar: a hit does not jump, the value starts where it was")
+	b.tick(0.1)
+	ok(b.shown < 1.0 and b.shown > 0.5, "bar: 100 ms into the tick-down it is between (%.3f)" % b.shown)
+	ok(b.shown < 1.0 - 0.5 * 0.5, "bar: ease-out is more than half way at half the time (%.3f)" % b.shown)
+	b.tick(0.1)
+	ok(is_equal_approx(b.shown, 0.5), "bar: 200 ms later it has arrived (%.3f)" % b.shown)
+	ok(b.lost > 0.99, "bar: the lost segment is still there after the value arrives (%.3f)" % b.lost)
+	b.tick(0.3)
+	ok(b.lost > 0.5, "bar: the lost segment waits ~0.35 s (%.3f at 0.4 s)" % b.lost)
+	for i in 30:
+		b.tick(0.05)
+	ok(is_equal_approx(b.lost, 0.5), "bar: and then closes (%.3f)" % b.lost)
+	b.set_value(0.9)
+	ok(b.lost == 0.9 or b.lost >= 0.9, "bar: healing raises the lost end with it, no ghost below")
+	ok(is_equal_approx(CreatureBars.distance_alpha(10.0, false), 1.0) and CreatureBars.distance_alpha(60.0, false) == 0.0, "bars: fade by distance (full near, gone far)")
+	ok(CreatureBars.distance_alpha(60.0, true) >= 0.8, "bars: the fight or the selection keeps its bar at any distance")
+	var bars = CreatureBars.new()
+	root.add_child(bars)
+	var rows := []
+	for i in range(1, 21):
+		rows.append({"id": i, "hp": 10.0, "hp_max": 20.0, "hostile": i <= 10, "focus": i == 15, "dist": 5.0 + i * 3.0})
+	bars.set_creatures(rows)
+	for i in 30:
+		bars._process(0.05)
+	ok(bars.visible_count() <= CreatureBars.MAX_BARS, "bars: a crowd draws at most %d (%d)" % [CreatureBars.MAX_BARS, bars.visible_count()])
+	ok(bars._bars.has(15), "bars: the selected creature always has its bar")
+	ok(not bars._bars.has(18), "bars: a far, peaceful creature has none")
+	bars.set_creatures([])
+	for i in 30:
+		bars._process(0.05)
+	ok(bars._bars.is_empty(), "bars: they fade out and go when nothing qualifies")
+	bars.free()
+	# brief creature-fixes 4: the pause settings have an "Edit anywhere" row (default on) and the menu's creature edit follows the world, not the loadout
+	var mn = preload("res://ui/menu.gd").new()
+	mn._build_rows()
+	ok(mn.rows.any(func(r): return r.key == "edit_anywhere"), "settings: the Edit anywhere row exists")
+	ok(Strings.t("edit_anywhere") != "edit_anywhere", "settings: the Edit anywhere row has a label")
+	ok(bool(mn.value_of("edit_anywhere")) == bool(root.get_node("Game").settings.get("edit_anywhere", true)) and bool(root.get_node("Game").settings.get("edit_anywhere", false)), "settings: Edit anywhere is on by default")
+	mn.loadout_available = false
+	mn.nest_edit_available = true
+	ok(mn.item_enabled("nest_edit") and not mn.item_enabled("loadout"), "menu: Edit creature is enabled by the world's can_edit, the loadout by the nest")
+	mn.free()
+	# brief creature-fixes 6: the journal has a Plants section, four to a spread
+	var jv = JournalView.new()
+	ok(JournalView.TABS.has("plants") and Strings.t("jt_plants") != "" and Strings.t("j_plants_empty") != "" and Strings.t("plant_new", ["x"]).contains("x"), "journal: the Plants tab and its strings exist")
+	var plants := []
+	for i in 5:
+		plants.append({"id": "p%d" % i, "name": {"en": "P", "es": "P"}, "habitat_text": {"en": "h", "es": "h"}, "lore": {"en": "l", "es": "l"}})
+	jv.model = {"plants": plants}
+	jv.set_tab(JournalView.TABS.find("plants"))
+	ok(jv.page_count() == 2, "journal: five plants take two spreads (%d)" % jv.page_count())
+	jv.model = {}
+	ok(jv.page_count() == 1, "journal: no plants is one empty spread")
+	jv.free()

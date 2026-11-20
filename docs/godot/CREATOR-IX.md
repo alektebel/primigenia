@@ -22,5 +22,12 @@ All four interactions live in `godot/studio/ui/studio.gd` (input), `studio/model
 Tests: `make godot-studio-test` (887 checks), `make godot-studio-ix-test` (85 checks, real view, real input path).
 Evidence: `make godot-studio-ix-evidence` -> `docs/evidence/godot/creator-ix/` (wheel, joint, spine, ring sequences).
 
-Known limits: on the default framing the tail arrow can sit under the right panel (not grabbable there); the ring picks
+A31 changes: (a) `frame_creature` fits both spine arrows inside `free_viewport()` (the stage between the side panels);
+(b) `Model.bend_end` no longer stretches the spine: the spacing stays the body's own (`natural_spacing`), dragging out generates
+vertebrae one by one and dragging back removes them (computed from the press state, so exact), 4..14, `end_capped` -> hint "límite";
+(c) dragging an interior vertebra moves its neighbours with falloff weights 1, .62, .32, .12 along the chain, segment lengths kept,
+limbs follow by position t, one undo step; (d) a dimmed ring choice says why on hover ("Necesita exoesqueleto: añade placas" / "Needs an
+exoskeleton: add plates"), bubble plus hint line. Evidence: `make godot-owner-evidence` -> `docs/evidence/godot/owner-tweaks/`.
+
+Known limits: the ring picks
 change the whole body skeleton when needed, which re-derives the other limbs.

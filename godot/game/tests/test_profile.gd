@@ -23,7 +23,17 @@ func run(t) -> void:
 	t.eq(Profile.js_round(2.5), 3, "js_round half up")
 	var bad: Dictionary = Profile.from_studio({"schema": "x"}, manifest)
 	t.check(not bad.ok, "wrong schema is rejected")
-	var pairs := {"res://game/data/parts.json": "web/studio/parts.json", "res://game/data/garfio.json": "web/stage/species/garfio.json",
+	# The Godot part table is the web one plus the Godot-only wings (wing_vane, wing_flap: procedural, no web builder).
+	var gp: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://game/data/parts.json"))
+	var wp: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(root.path_join("web/studio/parts.json")))
+	var extras := ["wing_vane", "wing_flap"]
+	var kept: Array = gp.parts.filter(func(e): return not (e.id in extras))
+	t.eq(kept, wp.parts, "res://game/data/parts.json holds every web part unchanged")
+	t.eq(gp.parts.size() - kept.size(), extras.size(), "and exactly the Godot-only wings on top")
+	for k in gp:
+		if k != "parts":
+			t.eq(gp[k], wp[k], "parts.json key %s is the web one" % k)
+	var pairs := {"res://game/data/garfio.json": "web/stage/species/garfio.json",
 		"res://game/data/garfio-combat.json": "web/stage/species/garfio-combat.json"}
 	for copy in pairs:
 		t.eq(FileAccess.get_file_as_bytes(copy), FileAccess.get_file_as_bytes(root.path_join(pairs[copy])), copy + " is byte-equal to " + pairs[copy])

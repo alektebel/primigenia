@@ -150,6 +150,7 @@ func run(t) -> void:
 	_zoom_curve(t)
 	_orbit(t)
 	_gesture(t)
+	_mouse_walk(t)
 	_sky(t)
 	_icons(t)
 
@@ -173,6 +174,10 @@ func _zoom_curve(t) -> void:
 		pp = p
 	t.check(mono, "zoom curve: distance and pitch strictly increase with z over 101 samples")
 	t.check(absf(cam.curve_distance(0.4) - 12.0 * h) < 1e-9 and absf(cam.curve_pitch(0.4) - deg_to_rad(35.0)) < 1e-9, "zoom curve: z 0.4 is 12h at 35 deg")
+	# the starter hatchling is 0.65 m tall: the closest view stays at 1.6 m, and the curve is still increasing
+	var small = ChaseCamera.new(0.65, 0.0, flat)
+	t.check(absf(small.curve_distance(0.0) - 1.6) < 1e-9 and small.curve_distance(0.15) > 1.6 and small.curve_distance(0.4) > small.curve_distance(0.15), "zoom curve: a 0.65 m hatchling keeps the 1.6 m closest view (%.2f)" % small.curve_distance(0.0))
+	t.check(absf(cam.curve_distance(0.0) - 1.8 * h) < 1e-9, "zoom curve: a 2 m creature keeps 1.8 body heights at z 0")
 	t.check(absf(cam.curve_distance(0.7) - 150.0) < 1e-9 and absf(cam.curve_pitch(0.7) - deg_to_rad(55.0)) < 1e-9, "zoom curve: z 0.7 is 150 m at 55 deg")
 	# a giant creature still gets an increasing curve
 	var big = ChaseCamera.new(40.0, 0.0, flat)
@@ -372,3 +377,21 @@ func _icons(t) -> void:
 	layer.update_alpha(cam.icon_alpha_at(0.75))
 	t.check(layer.visible, "the icon layer shows above z 0.7")
 	layer.free()
+
+# Brief creature-fixes 1: walking to a left click (or following the mouse) never turns the camera by itself.
+func _mouse_walk(t) -> void:
+	var flat = func(x: float, z: float) -> float: return 0.0
+	var c = ChaseCamera.new(2.0, 0.0, flat)
+	c.mouse_walk = true
+	var yaw0: float = c.yaw
+	var mover := {"x": 0.0, "z": 0.0, "yaw": PI / 2.0, "speed": 5.0, "vx": 5.0, "vz": 0.0}
+	for i in 240:
+		mover.x += 5.0 / 60.0
+		c.update(mover, null, false, 1.0 / 60.0)
+	t.check(c.yaw == yaw0, "mouse walk: the camera yaw stays put (%.3f -> %.3f)" % [yaw0, c.yaw])
+	var k = ChaseCamera.new(2.0, 0.0, flat)
+	var mover2 := {"x": 0.0, "z": 0.0, "yaw": PI / 2.0, "speed": 5.0, "vx": 5.0, "vz": 0.0}
+	for i in 240:
+		mover2.x += 5.0 / 60.0
+		k.update(mover2, null, false, 1.0 / 60.0)
+	t.check(k.yaw != 0.0, "keys still let the camera follow (yaw %.3f)" % k.yaw)

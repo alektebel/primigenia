@@ -1,9 +1,9 @@
 {
 	"camera": {},
-	"created": "2026-11-19T11:45:58",
+	"created": "2026-11-20T02:28:04",
 	"engine": {
 		"build": "unknown",
-		"layout": "a032a357537de2b2",
+		"layout": "f29ec83602f24649",
 		"snapshot_version": 3,
 		"stage_version": 3
 	},
@@ -145,6 +145,7 @@
 		"terrain_version": 4
 	},
 	"kind": "scenario",
+	"legacy": {},
 	"lineage": {
 		"current_deeds": {
 			"befriends": 0.0,
@@ -221,6 +222,7 @@
 	},
 	"name": "garfio_close",
 	"note": "The player is 8 m from Garfio, not fighting yet. Good for the first exchange and for combat tuning.",
+	"plants": [],
 	"recipe": "garfio_close.log",
 	"setup": {
 		"cave": {
@@ -239,7 +241,18 @@
 		],
 		"obstacles": [],
 		"player": {
+			"carnivore": 0,
 			"charge": 4,
+			"extra": [
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0
+			],
 			"guard": 0,
 			"hp": 100.0,
 			"mouth": 2,
@@ -267,7 +280,18 @@
 				"home_z": 55.4327697753906,
 				"legs": 0,
 				"profile": {
+					"carnivore": 0,
 					"charge": 0,
+					"extra": [
+						0,
+						0,
+						0,
+						0,
+						0,
+						0,
+						0,
+						0
+					],
 					"guard": 0,
 					"hp": 90.0,
 					"mouth": 2,

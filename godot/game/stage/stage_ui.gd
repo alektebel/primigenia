@@ -88,6 +88,9 @@ func setup(island_node: Node3D, name_text: String) -> void:
 	ui.loadout_panel.assign.connect(assign_loadout)
 	ui.loadout_requested.connect(toggle_loadout_panel)
 	ui.nest_requested.connect(open_nest_editor)
+	ui.menu.setting_changed.connect(func(key: String, v) -> void:
+		if key == "edit_anywhere":
+			stage.edit_anywhere = bool(v))
 	ui.gift_pressed.connect(give_gift)
 	ui.gift_cycle_pressed.connect(cycle_gift)
 	ui.pause_toggled.connect(_on_pause)
@@ -335,6 +338,7 @@ func _on_tick(state: Dictionary) -> void:
 		ui.set_loadout_abilities(_loadout_abilities(lo))
 	ui.set_cooldowns(_cooldown_fractions(state, ui.loadout_abilities))
 	ui.set_loadout_available(bool(lo.can_edit))
+	ui.set_nest_edit_available(bool(state.get("parts", {}).get("can_edit", false)))
 	if ui.loadout_panel.visible_open:
 		ui.loadout_panel.refresh(lo)
 		if not bool(lo.can_edit):
@@ -351,7 +355,10 @@ func _on_tick(state: Dictionary) -> void:
 		if rs != "unknown":
 			ui.show_message(Strings.t("recipe_" + rs))
 	ui.set_player(player_name, p.hp, p.hp_max, p.stamina, p.stamina_max)
+	var run: Dictionary = state.get("player", {})
+	ui.set_run(int(run.get("stamina", 1000)), bool(run.get("running", false)))
 	_fight_selection(state)
+	_update_bars(state)
 	_on_social(state)
 	if selected_id > 0 and selected_id < state.entities.size():
 		var e: Dictionary = state.entities[selected_id]
@@ -435,7 +442,16 @@ var _parts_catalogue: Array = []
 func _journal_model() -> Dictionary:
 	if _parts_catalogue.is_empty():
 		_parts_catalogue = Profile.load_json("res://game/data/parts.json").get("parts", [])
-	return JournalModel.build(stage.cur, species, _chains, _parts_catalogue)
+	var model: Dictionary = JournalModel.build(stage.cur, species, _chains, _parts_catalogue)
+	model["plants"] = island.plant_rows()
+	return model
+
+# A plant was watched long enough: the whisper and the journal page (the plants themselves are saved with the game).
+func plant_noticed(id: String) -> void:
+	for r in preload("res://game/island/flora_placement.gd").recipes():
+		if String(r.id) == id:
+			ui.show_message(Strings.t("plant_new", [String(r.name.get("es" if Strings.language() == "es" else "en", id))]), "info")
+			return
 
 func _on_journal_toggled(open: bool) -> void:
 	stage.process_mode = Node.PROCESS_MODE_DISABLED if open or ui.paused else Node.PROCESS_MODE_INHERIT
@@ -607,6 +623,25 @@ func _update_world_signs(state: Dictionary) -> void:
 			hunters.append(i)
 	island.ground_marks.set_threats(hunters)
 
+# Health lines (ui/creature_bars.gd): every creature that is hostile, in the fight or selected, with its distance to the player.
+func _update_bars(state: Dictionary) -> void:
+	var p: Dictionary = state.entities[0]
+	var fighting := {}
+	for f in state.combat.fighters:
+		fighting[int(f.world_id)] = true
+	var rows: Array = []
+	for i in range(1, state.entities.size()):
+		var e: Dictionary = state.entities[i]
+		if bool(e.dead):
+			continue
+		var focus: bool = fighting.has(i) or i == selected_id
+		var hostile: bool = bool(e.get("hostile", false))
+		if not focus and not hostile:
+			continue
+		rows.append({"id": i, "hp": e.hp, "hp_max": e.hp_max, "hostile": hostile, "focus": focus,
+			"dist": Vector2(float(e.x) - float(p.x), float(e.z) - float(p.z)).length()})
+	ui.bars.set_creatures(rows)
+
 func _target_pos(state: Dictionary, id: int) -> Vector3:
 	if id <= 0 or id >= state.entities.size():
 		return island.player_pos
@@ -638,8 +673,25 @@ func _darts(from: Vector3, to: Vector3) -> void:
 		tween.tween_property(dart, "global_position", to, 0.18)
 		tween.tween_callback(dart.queue_free)
 
+const EV_FELL := 27
+
+# The landing: a camera knock, a thump (a hit sound when it hurt), the damage number over the creature and the hit flash.
+func _landed(drop_m: float, damage: float, state: Dictionary) -> void:
+	var pl: Dictionary = state.entities[0]
+	var at := Vector3(pl.x, Game.ground(pl.x, pl.z), pl.z)
+	island.land_impact(clampf(damage / 40.0 + drop_m / 40.0, 0.0, 1.0))
+	var audio = get_tree().root.get_node_or_null("Audio")
+	if audio != null:
+		if damage > 0.0:
+			audio.hit(at)
+		else:
+			audio.play_at("step-1", at, 0.5, 0.7)
+	if damage > 0.0:
+		ui.show_float(at + Vector3(0, 2.2, 0), "-%d" % int(round(damage)), Palette.EMBER_HOT)
+		ui.flash("hit")
+
 func _social_event(ev: Dictionary, state: Dictionary) -> void:
-	if int(ev.type) == 28:   # CP_STAGE_EV_VOLLEY
+	if int(ev.type) == 29:   # CP_STAGE_EV_VOLLEY
 		_darts(_target_pos(state, int(ev.target)), Vector3(ev.x, Game.ground(ev.x, ev.z) + 1.0, ev.z))
 		return
 	if int(ev.type) == 21:
@@ -653,6 +705,9 @@ func _social_event(ev: Dictionary, state: Dictionary) -> void:
 		if k >= 0 and k < items.size() and items[k].has("line"):
 			ui.show_message(String(items[k].line_es if Strings.language() == "es" else items[k].line), "info")
 			ui.show_moment(Strings.t("shard_found", [Strings.t("shard_%d" % k), int(ev.value)]), "journal")
+		return
+	if int(ev.type) == EV_FELL:  # landing after a fall: move = drop in cm, value = damage in HP
+		_landed(float(ev.move) * 0.01, float(ev.value), state)
 		return
 	if int(ev.type) == 26:       # the cave: the passage, then the chamber
 		ui.show_message(Strings.t("cave_chamber" if int(ev.move) == 2 else "cave_passage"), "info")

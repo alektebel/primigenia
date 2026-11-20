@@ -39,7 +39,9 @@ static var _entered_once := false        # the full entrance plays the first tim
 
 var play_button: Button      # the Criatura card (kept by that name: the play test presses it)
 var cell_button: Button      # the Celula card
+var legacy_label: Label      # "Herencia de tu celula: ..." on the Criatura card, only when Game.cell_legacy() exists
 var creator_button: Button
+var plain_button: Button     # "Sin herencia": a new creature game that ignores the cell's legacy; null without a legacy
 var continue_button: Button  # null without a save
 var quit_button: Button
 var genome_label: Label
@@ -117,11 +119,21 @@ func _build() -> void:
 	genome_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 	genome_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	body.add_child(genome_label)
+	var leg: Dictionary = Game.cell_legacy()
+	if not leg.is_empty():
+		legacy_label = _label(Strings.t("cell_legacy", [" · ".join([Strings.t("leg_diet_" + str(leg.diet)), Strings.t("leg_def_" + str(leg.defense)), Strings.t("leg_size_" + str(leg.size_class))])]), 14, Palette.MUTED)
+		legacy_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+		legacy_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		legacy_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		body.add_child(legacy_label)
 	var acts := HBoxContainer.new()
 	acts.add_theme_constant_override("separation", 10)
 	body.add_child(acts)
 	creator_button = _action(Strings.t("creator"), func() -> void: _leave(Game.goto_studio))
 	acts.add_child(creator_button)
+	if not leg.is_empty():
+		plain_button = _action(Strings.t("no_legacy"), play_plain)
+		acts.add_child(plain_button)
 	if _save_exists():
 		continue_button = _action(Strings.t("continue"), continue_game)
 		acts.add_child(continue_button)
@@ -331,14 +343,14 @@ func _wire_focus() -> void:
 	# Down from the Criatura card goes to its actions, Up comes back
 	play_button.focus_neighbor_bottom = creator_button.get_path()
 	creator_button.focus_neighbor_top = play_button.get_path()
-	creator_button.focus_neighbor_left = creator_button.get_path()
-	if continue_button != null:
-		creator_button.focus_neighbor_right = continue_button.get_path()
-		continue_button.focus_neighbor_left = creator_button.get_path()
-		continue_button.focus_neighbor_top = play_button.get_path()
-		continue_button.focus_neighbor_right = continue_button.get_path()
-	else:
-		creator_button.focus_neighbor_right = creator_button.get_path()
+	var acts: Array[Button] = [creator_button]
+	for extra in [plain_button, continue_button]:
+		if extra != null:
+			acts.append(extra)
+	for i in acts.size():
+		acts[i].focus_neighbor_left = acts[maxi(i - 1, 0)].get_path()
+		acts[i].focus_neighbor_right = acts[mini(i + 1, acts.size() - 1)].get_path()
+		acts[i].focus_neighbor_top = play_button.get_path()
 
 # --- card motion -------------------------------------------------------------------------------------------------
 
@@ -462,6 +474,12 @@ func _play_cell() -> void:
 
 ## Criatura: the terrain is loaded only now. A cache hit goes straight in; a miss shows the loading screen.
 func play_creature() -> void:
+	Game.begin_creature()          # a new game uses the cell's legacy when there is one
+	_leave(_enter_island)
+
+## Criatura without the legacy: the plain hatchling.
+func play_plain() -> void:
+	Game.begin_creature(true)
 	_leave(_enter_island)
 
 func continue_game() -> void:
@@ -470,6 +488,7 @@ func continue_game() -> void:
 		push_warning("continue: %s" % parsed.error)
 		return
 	Game.pending_scenario = parsed
+	Game.creature_legacy = {}
 	var isl: Dictionary = parsed.dict.get("island", {})
 	if isl.has("seed") and int(isl.seed) != int(Game.settings.seed):
 		Game.settings.seed = int(isl.seed)

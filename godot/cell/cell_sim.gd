@@ -43,9 +43,33 @@ const PIECES := {
 		"role": ["Usa una mitad y 1 ATP para fabricar un lípido. Se frena con poca energía.", "Uses one half and 1 ATP to make a lipid. Brakes when energy is low."]},
 	"fl": {"n": ["Flipasa", "Flippase"], "c": 3, "ph": 3, "mem": true, "col": Color("7FA65A"),
 		"role": ["Mete los lípidos nuevos en la membrana: repara su arco verde o, si no hay daño, hace crecer la célula.", "Inserts new lipids into the membrane: repairs its green arc or, with no damage, grows the cell."]},
+	# phase 5: threats. Ribosomes build the counter proteins (and eat 1 ATP per 5 s while one is under construction).
+	"rib": {"n": ["Ribosoma", "Ribosome"], "c": 4, "ph": 5, "col": Color("C97FA8"), "lobes": [[0, 5, 12], [2, -8, 9]],
+		"role": ["Fabrica las proteínas de defensa: sin un ribosoma libre no se puede empezar ninguna. Gasta 1 ATP cada 5 s mientras trabaja. Los fagos lo secuestran y el antibiótico lo bloquea.", "Builds the defence proteins: none can be started without a free ribosome. Spends 1 ATP every 5 s while working. Phages hijack it and the antibiotic blocks it."]},
+	"cas": {"n": ["Cas (CRISPR)", "Cas (CRISPR)"], "c": 4, "ph": 5, "col": Color("3F8F86"), "lobes": [[-5, 0, 10], [7, -5, 7], [7, 6, 7]],
+		"role": ["Corta el ADN del fago en un ribosoma secuestrado (tarda unos segundos). Aprende: la segunda vez lo corta antes de que llegue.", "Cuts phage DNA inside a hijacked ribosome (takes a few seconds). It learns: the second time it cuts before the DNA arrives."]},
+	"pump": {"n": ["Bomba de expulsión", "Efflux pump"], "c": 4, "ph": 5, "mem": true, "col": Color("B58BC9"),
+		"role": ["Expulsa el antibiótico de uno en uno, gastando 1 ATP por molécula.", "Pumps the antibiotic out one molecule at a time, spending 1 ATP per molecule."]},
+	"cat": {"n": ["Catalasa", "Catalase"], "c": 3, "ph": 5, "col": Color("D9A23C"), "lobes": [[-6, 2, 11], [7, -3, 9], [6, 8, 6]],
+		"role": ["Neutraliza un radical libre cada 0,2 s antes de que toque la membrana. Más flipasas reparan lo que se escape.", "Neutralises one free radical every 0.2 s before it touches the membrane. More flippases repair what slips through."]},
+	"spn": {"n": ["Espinas", "Spines"], "c": 2, "ph": 5, "mem": true, "col": Color("8C7D5A"),
+		"role": ["Pinchos en la membrana. Con 3 o más, la ameba los nota y se suelta enseguida.", "Spikes on the membrane. With 3 or more, the amoeba feels them and lets go at once."]},
 }
+## The four threats in the order they arrive, and the timings (seconds) of one threat.
+const THREAT_ORDER := ["phage", "abx", "ox", "amoeba"]
+const WARN_T := 10.0
+const SETTLE_T := 8.0
+const MEM_MIN := 60                  # membrane % that must hold through a threat
+const HIT_T := {"phage": 36.0, "abx": 18.0, "ox": 10.0, "amoeba": 14.0}
+const HIJACK_T := 14.0
+const CAS_CUT_T := 4.0
+const THREAT_MOLS := ["dna", "abx", "baby", "frag"]
 const ORDER := ["hk", "ald", "pk", "ldh", "syn"]
-const PHASE_NAMES := [["", ""], ["Energía", "Energy"], ["Residuos", "Waste"], ["Membrana", "Membrane"], ["Crecer", "Grow"]]
+const LINE_ORDER := ["hk", "ald", "pk", "ldh", "syn", "rib", "cas", "cat"]
+const PHASE_NAMES := [["", ""], ["Energía", "Energy"], ["Residuos", "Waste"], ["Membrana", "Membrane"], ["Crecer", "Grow"], ["Amenazas", "Threats"], ["Colonia", "Colony"]]
+const SIM_PHASES := 5          # phase 6 (the colony) is colony_sim.gd
+## Counter pieces: their proteins are built by a free ribosome, so they cannot be started without one.
+const COUNTERS := ["cas", "pump", "cat", "spn"]
 
 class Piece extends RefCounted:
 	var type := ""
@@ -70,6 +94,12 @@ class Piece extends RefCounted:
 	var wait := 0.0
 	var block := ""
 	var starved := false
+	# phase 5
+	var hij := 0.0          # >0: a phage hijacked this ribosome (seconds left before lysis)
+	var abx := 0            # antibiotic molecules stuck on this piece
+	var ox := 0.0           # >0: oxidised enzyme (seconds left)
+	var off := Vector2.ZERO # Cas: how far it has gone to cut DNA (drawn offset)
+	var cdelay := 0.0
 
 class Mol extends RefCounted:
 	var type := ""
@@ -97,6 +127,7 @@ var ROt := R0
 var zoom := 270.0 / R0
 var zoomT := 270.0 / R0
 var T := 0.0
+var phi := 0.0              # lateral slide of the lipids
 var phase := 1
 var pieces: Array = []
 var mols: Array = []
@@ -116,6 +147,15 @@ var trickle_t := 0.0
 var ros_t := 0.0
 var leak_t := 0.0
 var up_t := 0.0
+var threats := {}           # phase 5 schedule, see _reset_threats()
+var phages: Array = []      # {x, y, state "in"/"land"/"empty"/"gone", al, a}
+var amoeba = null           # null or {x, y, a, state "come"/"bite"/"flee", bite, engulf, contact}
+var tide := 0.0             # antibiotic tide tint 0..1
+var flash := 0.0            # oxidation warning flash 0..1
+var ox_a := 0.0             # angle the oxidation wave comes from
+var cas_primed := false
+var wait_first := 30.0
+var wait_gap := 20.0
 var events: Array = []      # cheap one-shot notes for the view (sounds/toasts), cleared by take_events()
 
 func _init(seed_: int = 1, phase_: int = 1) -> void:
@@ -146,8 +186,13 @@ func mid() -> float:
 func flw() -> float:
 	return 110.0 / mid()
 
+## The membrane is fluid (as in the prototype): lipid i sits at lang(i), and the whole bilayer slides sideways at 0.035 rad/s
+## while doors, enzymes and radicals stay put. Damage belongs to the lipid, not to the angle.
+func lang(i: int) -> float:
+	return float(i) / NL * TAU + phi
+
 func lidx(a: float) -> int:
-	return int(floor(fposmod(a, TAU) / TAU * NL)) % NL
+	return ((int(round((a - phi) / TAU * NL)) % NL) + NL) % NL
 
 func is_mem(p: Piece) -> bool:
 	return PIECES[p.type].has("mem")
@@ -280,7 +325,7 @@ func remove_piece(p: Piece) -> void:
 
 func reset(phase_: int = -1) -> void:
 	if phase_ > 0:
-		phase = clampi(phase_, 1, 4)
+		phase = clampi(phase_, 1, SIM_PHASES)
 	rng.seed = seed_value
 	goal_state = {"atp": 0, "lac": 0, "mem": 0.0, "done": false}
 	pieces = []
@@ -290,6 +335,7 @@ func reset(phase_: int = -1) -> void:
 	logs = {"atp": [], "glu": [], "lip": [], "up": []}
 	store = 0
 	T = 0.0
+	phi = 0.0
 	set_r(R0)
 	ROt = R0
 	zoom = 270.0 / R0
@@ -312,14 +358,21 @@ func reset(phase_: int = -1) -> void:
 	for i in 12:
 		var p := pol(R(0, RI - 40), R(0, TAU))
 		new_mol("atp", p, "free")
+	_reset_threats()
+	if phase >= 5:
+		threats.on = true
 
 func set_phase(n: int) -> void:
-	phase = clampi(n, 1, 4)
+	phase = clampi(n, 1, SIM_PHASES)
 	goal_state = {"atp": 0, "lac": 0, "mem": 0.0, "done": false}
+	if phase >= 5 and not threats.on:
+		_reset_threats()
+		threats.on = true
+		threats.wait = wait_first
 
-## Places a piece the player chose. Returns "" on success, else an error code:
-## "unknown", "phase" (not unlocked yet), "where" (membrane pieces need the membrane, enzymes the inside), "colony".
-func place(kind: String, p: Vector2) -> String:
+## Why a piece cannot go at p, without placing it. "" when it can, else: "unknown", "phase" (not unlocked yet),
+## "colony", "need_rib", "where" (membrane pieces need the membrane, enzymes the inside).
+func can_place(kind: String, p: Vector2) -> String:
 	if not PIECES.has(kind):
 		return "unknown"
 	var d: Dictionary = PIECES[kind]
@@ -327,12 +380,21 @@ func place(kind: String, p: Vector2) -> String:
 		return "phase"
 	if agg != null:
 		return "colony"
+	if COUNTERS.has(kind) and built_of("rib").is_empty():
+		return "need_rib"
 	var r := rad(p)
 	if d.has("mem"):
 		if not (r > RI - 50.0 and r < RO + 70.0):
 			return "where"
 	elif not r < RI - 8.0:
 		return "where"
+	return ""
+
+## Places a piece the player chose. Returns "" on success, else an error code (see can_place).
+func place(kind: String, p: Vector2) -> String:
+	var err := can_place(kind, p)
+	if err != "":
+		return err
 	add_piece(kind, p)
 	return ""
 
@@ -379,6 +441,21 @@ func demo() -> void:
 		E.call("syn", 30, 70)
 		for a in [0.3, 1.55, 2.8, -2.3, -1.0]:
 			P.call("fl", a)
+	if phase >= 5:
+		# what a player brings from phase 4: three lines of every enzyme, many flippases, doors (the aggregation test factory)
+		var g := RandomNumberGenerator.new()
+		g.seed = 5
+		for k in 3:
+			for t in ["hk", "ald", "pk", "ldh", "syn"]:
+				add_piece(t, CENTER + Vector2.from_angle(g.randf() * TAU) * g.randf_range(20, 120), true)
+		for a in [0.0, 0.7, 1.4, 2.1, 2.8, 3.5, 4.2, 4.9, 5.6, 0.35, 1.05, 1.75]:
+			P.call("fl", a)
+		for a in [-0.8, 0.8, 1.2, 2.0, 2.5, -1.3]:
+			P.call("tr", a)
+		for a in [PI, 3.5, 2.6]:
+			P.call("ex", a)
+		E.call("rib", -140, 60)
+		E.call("rib", 120, 80)
 
 func grow(a: float) -> void:
 	pulses.append({"a": a, "t": 0.0, "c": Color("A9D46A")})
@@ -454,7 +531,7 @@ func worst_in(fl: Piece) -> int:
 	var bv := 0.8
 	var w := flw()
 	for i in NL:
-		if integ[i] < bv and adiff(float(i) / NL * TAU, fl.a) < w:
+		if integ[i] < bv and adiff(lang(i), fl.a) < w:
 			bv = integ[i]
 			b = i
 	return b
@@ -483,6 +560,7 @@ func _lip_nearest(list: Array, m: Mol):
 # ---------- the step
 func step(dt: float) -> void:
 	T += dt
+	phi = fposmod(phi + dt * 0.035, TAU)
 	if absf(ROt - RO) > 0.05:
 		set_r(RO + (ROt - RO) * minf(1.0, dt * 1.2))
 	zoomT = 330.0 / (3.05 * RO) if agg != null else 270.0 / ROt
@@ -490,7 +568,7 @@ func step(dt: float) -> void:
 	var doors: Array = pieces.filter(func(p): return (p.type == "tr" or p.type == "ex") and p.built)
 	var trs: Array = doors.filter(func(p): return p.type == "tr")
 	var exs: Array = doors.filter(func(p): return p.type == "ex")
-	var enz: Array = pieces.filter(func(p): return not is_mem(p) and p.built)
+	var enz: Array = pieces.filter(func(p): return not is_mem(p) and p.built and PIECES[p.type].has("accept"))
 	var has_hk := enz.any(func(e): return e.type == "hk")
 	var fls := built_of("fl")
 	if count("glu", "out") < int(round(40.0 * RO / R0)):
@@ -498,9 +576,12 @@ func step(dt: float) -> void:
 	if store > 0 and count("atp") < 40:
 		new_mol("atp", pol(R(0, RI - 30), R(0, TAU)), "free")
 		store -= 1
-	# building with ATP
+	# building with ATP (counter proteins need a free ribosome)
+	var rib_ok := built_of("rib").any(func(r): return r.hij <= 0.0 and r.abx == 0)
 	for p in pieces:
 		if p.built:
+			continue
+		if COUNTERS.has(p.type) and not rib_ok:
 			continue
 		var c: int = PIECES[p.type].c
 		while p.got + p.claim < c:
@@ -576,6 +657,11 @@ func step(dt: float) -> void:
 			blk = "atasco"
 		elif e.type == "syn" and low_e:
 			blk = "inhibida"
+		if e.ox > 0.0:
+			e.ox = maxf(0.0, e.ox - dt)
+			blk = "oxidada"
+		if e.abx > 0:
+			blk = "bloqueada"
 		e.block = blk
 		if e.sub == null:
 			if e.block == "":
@@ -664,7 +750,7 @@ func step(dt: float) -> void:
 				var i := int(R(0, NL))
 				if integ[i] > 0.45:
 					integ[i] = 0.45
-				float_text(pol(RO + 20.0, float(i) / NL * TAU), "sin ATP", Color("9E392C"))
+				float_text(pol(RO + 20.0, lang(i)), "sin ATP", Color("9E392C"))
 	# membrane damage
 	if phase >= 3:
 		ros_t += dt
@@ -689,7 +775,7 @@ func step(dt: float) -> void:
 		leak_t += dt * minf(gaps.size(), 8)
 		if leak_t > 9.0 and gaps.size() > 0:
 			leak_t = 0.0
-			var gp := pol(RI - 10.0, float(gaps[int(R(0, gaps.size()))]) / NL * TAU)
+			var gp := pol(RI - 10.0, lang(gaps[int(R(0, gaps.size()))]))
 			var a4 = nearest(free_atp, gp)
 			if a4 != null:
 				a4.state = "exit"
@@ -718,6 +804,8 @@ func step(dt: float) -> void:
 			agg.fade += dt
 			if agg.fade > 1.5:
 				agg = null
+	if phase >= 5:
+		_step_threats(dt)
 	# molecules
 	var h := 360.0 / zoom + 30.0
 	for m in mols:
@@ -739,6 +827,9 @@ func step(dt: float) -> void:
 
 func _step_mol(m: Mol, dt: float, h: float, trs: Array, exs: Array, fls: Array, has_hk: bool) -> void:
 	m.age += dt
+	if THREAT_MOLS.has(m.type):
+		_step_threat_mol(m, dt)
+		return
 	if m.state == "pass":
 		var tr: Piece = m.tr
 		if not pieces.has(tr):
@@ -814,10 +905,20 @@ func _step_mol(m: Mol, dt: float, h: float, trs: Array, exs: Array, fls: Array, 
 		var t := pol(RO + 6.0, m.ta)
 		if steer(m, t, dt, 200.0, 70.0) < 10.0:
 			m.dead = true
+			if _catalase_take(m.p):
+				return
 			var ix := lidx(m.ta)
-			if integ[ix] > 0.0:
+			var strong := m.prog > 0.5
+			if strong:
+				for o in range(-3, 4):
+					var j := (ix + o + NL) % NL
+					if integ[j] > 0.0:
+						integ[j] = minf(integ[j], 0.05)
+			elif integ[ix] > 0.0:
 				integ[ix] = minf(integ[ix], 0.45)
 			burst(t, Color("B4382F"))
+			if strong and R(0, 1) < 0.12:
+				_oxidise_enzyme(m.p)
 		m.p += m.v * dt
 		return
 	if m.state == "exit":
@@ -854,7 +955,7 @@ func _step_mol(m: Mol, dt: float, h: float, trs: Array, exs: Array, fls: Array, 
 				if wi >= 0:
 					integ[wi] = 1.0
 					m.dead = true
-					pulses.append({"a": float(wi) / NL * TAU, "t": 0.0, "c": Color("7FA65A")})
+					pulses.append({"a": lang(wi), "t": 0.0, "c": Color("7FA65A")})
 				elif phase >= 4:
 					m.dead = true
 					grow(p2.a)
@@ -896,6 +997,577 @@ func _step_mol(m: Mol, dt: float, h: float, trs: Array, exs: Array, fls: Array, 
 		if vn > 0.0:
 			m.v -= u3 * 1.6 * vn
 
+# ---------- phase 5: threats (port of the four scenes of art/reference/cell/malos-tiempos.html, as events against the factory)
+## A threat goes wait -> warn (WARN_T seconds, with a visible sign) -> hit -> settle, then a verdict: it is survived when the
+## membrane never fell under MEM_MIN % meanwhile. A failed threat comes back after wait_gap seconds. Order: THREAT_ORDER.
+const GENOME := Vector2(292.0, 262.0)   # where the genome ring is drawn and where stray phage DNA goes
+var _genome_p: Piece = null
+
+func _reset_threats() -> void:
+	threats = {"on": false, "idx": 0, "stage": "wait", "t": 0.0, "wait": wait_first, "min": 100, "results": ["", "", "", ""],
+		"tries": 0, "blocked": "", "a": 0.0, "n": 0, "acc": 0.0, "pore": 0.0, "cas_t": 0.0, "done": false, "p2": false}
+	phages = []
+	amoeba = null
+	tide = 0.0
+	flash = 0.0
+	cas_primed = false
+	_genome_p = Piece.new()
+	_genome_p.type = "gen"
+	_genome_p.pos = GENOME
+	_genome_p.built = true
+
+## Starts (or restarts) the schedule; `first` is the wait before the first warning.
+func start_threats(first: float = -1.0, idx: int = 0) -> void:
+	_reset_threats()
+	threats.on = true
+	threats.idx = clampi(idx, 0, 3)
+	threats.wait = wait_first if first < 0.0 else first
+
+func threat_kind() -> String:
+	return THREAT_ORDER[mini(int(threats.idx), 3)]
+
+func threat_info() -> Dictionary:
+	var th := threats
+	var kind := threat_kind()
+	var eta := 0.0
+	match th.stage:
+		"wait": eta = th.wait - th.t
+		"warn": eta = WARN_T - th.t
+		"hit": eta = float(HIT_T[kind]) - th.t
+		"settle": eta = SETTLE_T - th.t
+	var counter: String = {"phage": "cas", "abx": "pump", "ox": "cat", "amoeba": "spn"}[kind]
+	return {"on": th.on, "kind": kind, "stage": th.stage, "eta": maxf(0.0, eta), "idx": th.idx, "results": th.results.duplicate(),
+		"done": th.done, "blocked": th.blocked, "a": ox_a if kind == "ox" else th.a, "min": th.min, "tries": th.tries, "counter": counter,
+		"has_counter": has_piece(counter) or (kind == "amoeba" and tier >= 3)}
+
+func _hint5() -> Dictionary:
+	var th := threats
+	if not has_piece("rib"):
+		return {"key": "h_rib", "args": []}
+	if th.done:
+		return {"key": "h_threats_done", "args": []}
+	var kind := threat_kind()
+	match th.stage:
+		"warn", "hit":
+			return {"key": "h_w_" + kind, "args": [piece_name(th.blocked) if th.blocked != "" else "-"]}
+		"settle":
+			return {"key": "h_settle", "args": []}
+	var info := threat_info()
+	if not info.has_counter:
+		return {"key": "h_n_" + kind, "args": []}
+	return {"key": "h_ready", "args": []}
+
+func _cas_ready() -> bool:
+	for c in built_of("cas"):
+		if c.abx == 0:
+			return true
+	return false
+
+func _catalase_take(at: Vector2) -> bool:
+	for c in built_of("cat"):
+		if c.cool <= 0.0:
+			c.cool = 0.2
+			c.pulse = 1.0
+			burst(at, Color("D9A23C"))
+			return true
+	return false
+
+func _oxidise_enzyme(at: Vector2) -> void:
+	var cand: Array = pieces.filter(func(q): return not is_mem(q) and q.built and PIECES[q.type].has("accept") and q.ox <= 0.0)
+	var e = nearest(cand, at)
+	if e != null:
+		e.ox = 8.0
+		float_text(e.pos + Vector2(0, -26), "oxidada", Color("9E392C"))
+
+func _lysis(a: float, w: float, lvl: float) -> void:
+	for i in NL:
+		if adiff(lang(i), a) < w:
+			integ[i] = minf(integ[i], lvl)
+	burst(pol(RO, a), Color("B4382F"), true)
+	float_text(pol(RO + 24.0, a), "lisis", Color("9E392C"))
+	pulses.append({"a": a, "t": 0.0, "c": Color("B4382F")})
+
+func _step_threats(dt: float) -> void:
+	var th := threats
+	# piece bookkeeping that runs whatever the stage is
+	_threat_pieces(dt)
+	_move_phages(dt)
+	_move_amoeba(dt)
+	_pumps(dt)
+	_hijacks(dt)
+	_abx_pores(dt)
+	if not th.on or th.done:
+		return
+	var kind := threat_kind()
+	th.t += dt
+	if th.stage != "wait":
+		th.min = mini(int(th.min), mem_pct())
+	match th.stage:
+		"wait":
+			if th.t >= th.wait:
+				th.stage = "warn"
+				th.t = 0.0
+				th.min = mem_pct()
+				_warn_begin(kind)
+				events.append("warn")
+		"warn":
+			if kind == "abx":
+				tide = th.t / WARN_T
+			elif kind == "ox":
+				flash = th.t / WARN_T
+			if th.t >= WARN_T:
+				th.stage = "hit"
+				th.t = 0.0
+				th.n = 0
+				th.acc = 0.0
+				_hit_begin(kind)
+				events.append("hit")
+		"hit":
+			_hit_step(kind, dt)
+			if kind == "ox":
+				flash = 1.0 - th.t / float(HIT_T[kind])
+			if th.t >= float(HIT_T[kind]):
+				th.stage = "settle"
+				th.t = 0.0
+		"settle":
+			if kind == "abx":
+				tide = maxf(0.0, 1.0 - th.t / SETTLE_T)
+			flash = 0.0
+			if th.t >= SETTLE_T:
+				_verdict(kind)
+
+func _verdict(kind: String) -> void:
+	var th := threats
+	var ok: bool = int(th.min) >= MEM_MIN
+	th.results[th.idx] = "ok" if ok else "fail"
+	# clean what the threat left
+	phages = []
+	amoeba = null
+	tide = 0.0
+	flash = 0.0
+	for m in mols:
+		if m.type == "abx" or m.type == "dna" or m.type == "baby":
+			m.dead = true
+	for q in pieces:
+		q.abx = 0
+		q.hij = 0.0
+	th.stage = "wait"
+	th.t = 0.0
+	th.wait = wait_gap
+	if ok:
+		th.idx += 1
+		events.append("threat_ok")
+		if th.idx >= 4:
+			th.done = true
+			th.idx = 3
+			events.append("threats_done")
+	else:
+		th.tries += 1
+		events.append("threat_fail")
+
+func _warn_begin(kind: String) -> void:
+	var th := threats
+	match kind:
+		"phage":
+			var trs := built_of("tr")
+			var a := (trs[0].a if not trs.is_empty() else R(0, TAU)) as float
+			th.a = a
+			th.p2 = false
+			_spawn_phage(a, WARN_T)
+		"abx":
+			th.blocked = ""
+			if not built_of("rib").is_empty():
+				th.blocked = "rib"
+			else:
+				for k in ORDER:
+					if not built_of(k).is_empty():
+						th.blocked = k
+						break
+		"ox":
+			ox_a = R(0, TAU)
+		"amoeba":
+			var a2 := R(0, TAU)
+			th.a = a2
+			var far := 360.0 / zoom + 170.0
+			var p1 := pol(RO + 40.0, a2)
+			var p0 := CENTER + Vector2(cos(a2 + 0.35), sin(a2 + 0.35)) * (RO + 40.0 + far)
+			amoeba = {"x": p0.x, "y": p0.y, "p0": p0, "p1": p1, "a": a2, "state": "come", "t": 0.0, "bite": 0.0, "engulf": 0.0, "hold": 0.0, "contact": false, "fl": 0.0}
+
+func _spawn_phage(a: float, dur: float) -> void:
+	var p1 := pol(RO + 26.0, a)
+	var p0 := pol(RO + 26.0 + 240.0, a + 0.45)
+	phages.append({"x": p0.x, "y": p0.y, "p0": p0, "p1": p1, "state": "in", "al": 1.0, "t": 0.0, "dur": dur, "land": 0.0, "inj": false, "a": a})
+
+func _hit_begin(kind: String) -> void:
+	if kind == "amoeba" and amoeba != null:
+		amoeba.state = "bite"
+		amoeba.contact = true
+
+func _hit_step(kind: String, dt: float) -> void:
+	var th := threats
+	match kind:
+		"phage":
+			if not th.p2 and th.t >= 6.0:
+				th.p2 = true
+				_spawn_phage(th.a, 8.0)
+		"abx":
+			th.acc += dt
+			if th.n < 8 and th.acc >= 0.5:
+				th.acc = 0.0
+				th.n += 1
+				var h := 360.0 / zoom + 14.0
+				var m := new_mol("abx", Vector2(CX + h, CY + R(-120, 120)), "in")
+				m.v = Vector2.ZERO
+		"ox":
+			th.acc += dt
+			if th.n < 80 and th.acc >= 0.1:
+				th.acc = 0.0
+				th.n += 1
+				var ta := ox_a + R(-1.7, 1.7)
+				var m2 := new_mol("ros", pol(RO + 150.0, ta), "ros")
+				m2.ta = ta
+				m2.prog = 1.0
+
+func _threat_pieces(dt: float) -> void:
+	var counters_building := pieces.any(func(q): return not q.built and COUNTERS.has(q.type))
+	for q in pieces:
+		if not q.built or is_mem(q) and q.type != "pump" and q.type != "spn":
+			continue
+		match q.type:
+			"rib":
+				q.pulse = maxf(0.0, q.pulse - dt * 2.5)
+				var st := "listo"
+				if q.hij > 0.0:
+					st = "secuestrada"
+				elif q.abx > 0:
+					st = "bloqueada"
+				elif counters_building:
+					st = "trabaja"
+					q.wait += dt
+					if q.wait >= 5.0:
+						q.wait = 0.0
+						var a = nearest(mols.filter(func(m): return m.type == "atp" and m.state == "free"), q.pos)
+						if a != null:
+							a.dead = true
+							float_text(q.pos + Vector2(0, -24), "−1 ATP", Color("9E392C"))
+				q.st = st
+				q.u += ((1.0 if st == "trabaja" else 0.0) - q.u) * minf(1.0, dt / 6.0)
+			"cas":
+				q.pulse = maxf(0.0, q.pulse - dt * 2.5)
+				q.st = "bloqueada" if q.abx > 0 else ("trabaja" if q.off.length() > 4.0 else "listo")
+				q.u += ((1.0 if q.st == "trabaja" else 0.0) - q.u) * minf(1.0, dt / 6.0)
+			"cat":
+				q.pulse = maxf(0.0, q.pulse - dt * 2.5)
+				q.cool = maxf(0.0, q.cool - dt)
+				q.st = "trabaja" if q.cool > 0.0 else "listo"
+				q.u += ((1.0 if q.st == "trabaja" else 0.0) - q.u) * minf(1.0, dt / 6.0)
+			"pump":
+				q.open *= maxf(0.0, 1.0 - 6.0 * dt)
+				q.st = "trabaja" if q.cool > 0.0 else "listo"
+			"spn":
+				q.st = "listo"
+
+func _move_phages(dt: float) -> void:
+	for f in phages:
+		match f.state:
+			"in":
+				f.t += dt
+				var k := minf(1.0, f.t / f.dur)
+				var q: Vector2 = f.p0.lerp(f.p1, k)
+				f.x = q.x
+				f.y = q.y
+				if k >= 1.0:
+					f.state = "land"
+					f.land = 0.0
+			"land":
+				f.land += dt
+				if f.land >= 1.0 and not f.inj and threats.stage != "warn":
+					f.inj = true
+					f.state = "empty"
+					f.land = 0.0
+					_inject(f.a)
+			"empty":
+				f.land += dt
+				if f.land >= 3.0:
+					f.state = "gone"
+			"gone":
+				f.x += 30.0 * dt
+				f.y -= 50.0 * dt
+				f.al = maxf(0.0, f.al - dt * 0.5)
+	phages = phages.filter(func(f): return f.al > 0.0)
+
+func _inject(a: float) -> void:
+	for t in built_of("tr"):
+		if adiff(t.a, a) < 0.05:
+			t.open = 1.0
+	var cand: Array = built_of("rib").filter(func(r): return r.hij <= 0.0 and not mols.any(func(m): return m.type == "dna" and m.target == r))
+	var tgt = null
+	if cand.is_empty():
+		tgt = _genome_p
+	else:
+		tgt = cand[int(R(0, cand.size())) % cand.size()]
+	var m := new_mol("dna", pol(RI - 16.0, a), "go")
+	m.v = Vector2.ZERO
+	m.target = tgt
+	m.sp = 70.0
+	m.prog = 0.0
+	burst(pol(RO + 20.0, a), Color("5FA36B"), true)
+	float_text(pol(RO + 44.0, a), "inyecta", Color("3F7A4A"))
+
+func _hijacks(dt: float) -> void:
+	var th := threats
+	var list: Array = built_of("rib")
+	list.append(_genome_p)
+	var cutting = null
+	for r in list:
+		if r.hij <= 0.0:
+			continue
+		r.hij -= dt
+		r.cool += dt
+		if r.cool >= 3.0:
+			r.cool = 0.0
+			var a = nearest(mols.filter(func(m): return m.type == "atp" and m.state == "free"), r.pos)
+			if a != null:
+				a.dead = true
+		if int(r.hij * 0.8) != int((r.hij + dt) * 0.8) and count("baby") < 4:
+			var b := new_mol("baby", r.pos, "free")
+			b.ta = 6.0
+		if r.hij <= 0.0:
+			_lysis(ang(r.pos), 0.9, 0.2)
+			events.append("lysis")
+			if r != _genome_p:
+				remove_piece(r)
+		elif cutting == null:
+			cutting = r
+	var cas_list: Array = built_of("cas").filter(func(c): return c.abx == 0)
+	if cutting != null and not cas_list.is_empty():
+		th.cas_t += dt
+		var c: Piece = cas_list[0]
+		var d: Vector2 = cutting.pos - c.pos
+		c.off = d.limit_length(maxf(d.length() - 22.0, 0.0)) * minf(1.0, th.cas_t / 1.2)
+		if th.cas_t >= (CAS_CUT_T if not cas_primed else 1.5):
+			th.cas_t = 0.0
+			cutting.hij = 0.0
+			cas_primed = true
+			c.pulse = 1.0
+			burst(cutting.pos, Color("3F8F86"), true)
+			float_text(cutting.pos + Vector2(0, -30), "cortado", Color("2F6E67"))
+			events.append("cut")
+			for m in mols:
+				if m.type == "baby":
+					m.state = "exit"
+					m.u = Vector2.from_angle(R(0, TAU))
+					m.sp = 20.0
+					m.age = 0.0
+					m.ta = 1.2
+	else:
+		th.cas_t = 0.0
+		for c in built_of("cas"):
+			c.off = c.off * maxf(0.0, 1.0 - 4.0 * dt)
+
+func _abx_pores(dt: float) -> void:
+	var n := 0
+	for m in mols:
+		if m.type == "abx" and (m.state == "stuck" or m.state == "free"):
+			n += 1
+	if n == 0:
+		return
+	threats.pore += dt * n
+	if threats.pore >= 1.4:
+		threats.pore -= 1.4
+		var i := int(R(0, NL))
+		integ[i] = minf(integ[i], 0.3)
+
+func _pumps(dt: float) -> void:
+	for pm in built_of("pump"):
+		pm.cool = maxf(0.0, pm.cool - dt)
+		if pm.cool > 0.0:
+			continue
+		var cands: Array = mols.filter(func(m): return m.type == "abx" and (m.state == "stuck" or m.state == "free"))
+		if cands.is_empty():
+			continue
+		var at: Vector2 = pol(RI - 18.0, pm.a)
+		var atp = nearest(mols.filter(func(m): return m.type == "atp" and m.state == "free"), at)
+		if atp == null:
+			continue
+		atp.dead = true
+		burst(atp.p, Color("E2C240"))
+		pm.cool = 0.6
+		var ab = nearest(cands, at)
+		if ab.state == "stuck" and ab.target != null:
+			ab.target.abx = maxi(0, ab.target.abx - 1)
+		ab.state = "pump"
+		ab.target = pm
+
+func _move_amoeba(dt: float) -> void:
+	var am = amoeba
+	if am == null:
+		return
+	var th := threats
+	var spiked := built_of("spn").size() >= 3
+	var big := tier >= 3
+	match am.state:
+		"come":
+			am.t += dt
+			var k := minf(1.0, am.t / WARN_T)
+			k = 1.0 - (1.0 - k) * (1.0 - k)
+			var q: Vector2 = am.p0.lerp(am.p1, k)
+			am.x = q.x
+			am.y = q.y
+		"bite":
+			if spiked:
+				am.hold += dt
+				if am.hold >= 1.5:
+					am.state = "flee"
+					float_text(pol(RO + 30.0, am.a), "pinchos", Color("3F6B2E"))
+			else:
+				am.bite += dt
+				am.hold += dt
+				if big and am.hold >= 6.0:
+					am.state = "flee"
+					float_text(pol(RO + 30.0, am.a), "grande", Color("3F6B2E"))
+				elif am.bite >= 0.5:
+					am.bite = 0.0
+					for i in NL:
+						if adiff(lang(i), am.a) < 0.5 and integ[i] > 0.0:
+							integ[i] = maxf(0.0, integ[i] - 0.2)
+					pulses.append({"a": am.a, "t": 0.0, "c": Color("9E392C")})
+					am.engulf += 0.5 / 9.0
+					if am.engulf >= 1.0 and not big:
+						_lysis(am.a, 1.5, 0.1)
+						float_text(pol(RO + 44.0, am.a), "engullida", Color("9E392C"))
+						am.state = "flee"
+		"flee":
+			am.fl += dt
+			am.contact = false
+			am.x += cos(am.a) * 70.0 * dt
+			am.y += sin(am.a) * 70.0 * dt
+			if am.fl > 7.0:
+				amoeba = null
+	if amoeba != null:
+		amoeba.contact = amoeba.state == "bite"
+
+func _step_threat_mol(m: Mol, dt: float) -> void:
+	var h := 360.0 / zoom + 30.0
+	match m.type:
+		"dna":
+			var tgt: Piece = m.target
+			if tgt == null or (tgt != _genome_p and not pieces.has(tgt)):
+				m.target = _genome_p
+				tgt = _genome_p
+			var d: Vector2 = tgt.pos - m.p
+			var dl := maxf(d.length(), 0.0001)
+			var stp := minf(dl, m.sp * dt)
+			m.p += d / dl * stp + Vector2(-d.y, d.x) / dl * sin(m.age * 10.0) * 14.0 * dt
+			m.prog += stp
+			m.v = d / dl * 40.0
+			if cas_primed and _cas_ready() and m.prog >= 36.0:
+				m.dead = true
+				burst(m.p, Color("3F8F86"), true)
+				float_text(m.p + Vector2(0, -22), "cortado", Color("2F6E67"))
+				for k in [-1, 1]:
+					var fr := new_mol("frag", m.p, "exit")
+					fr.u = Vector2(k * 0.8, R(-0.6, 0.6))
+					fr.sp = 40.0
+					fr.ta = 1.4
+					fr.age = 0.0
+				for c in built_of("cas"):
+					c.pulse = 1.0
+					c.off = (m.p - c.pos).limit_length(120.0)
+				events.append("cut")
+			elif dl < 6.0:
+				m.dead = true
+				tgt.hij = HIJACK_T
+				tgt.cool = 0.0
+				threats.cas_t = 0.0
+				tgt.pulse = 1.0
+				burst(tgt.pos, Color("5FA36B"), true)
+				float_text(tgt.pos + Vector2(0, -30), "secuestrado", Color("9E392C"))
+				events.append("hijack")
+		"baby":
+			if m.state == "exit":
+				m.p += m.u * m.sp * dt
+			else:
+				m.v += Vector2(R(-1, 1), R(-1, 1)) * 140.0 * dt
+				m.v *= 1.0 - 1.4 * dt
+				m.p += m.v * dt
+				var r := rad(m.p)
+				if r > RI - 14.0:
+					m.p = CENTER + (m.p - CENTER) / maxf(r, 0.0001) * (RI - 14.0)
+			if m.ta > 0.0 and m.age >= m.ta:
+				m.alpha = maxf(0.0, 1.0 - (m.age - m.ta) / 0.8)
+				if m.alpha <= 0.0:
+					m.dead = true
+		"frag":
+			m.p += m.u * m.sp * dt
+			m.alpha = maxf(0.0, 1.0 - m.age / m.ta)
+			if m.alpha <= 0.0:
+				m.dead = true
+		"abx":
+			match m.state:
+				"in":
+					var d2 := CENTER - m.p
+					m.p += d2 / maxf(d2.length(), 0.0001) * 60.0 * dt + Vector2(R(-1, 1), R(-1, 1)) * 25.0 * dt
+					if rad(m.p) < RI - 14.0:
+						_abx_bind(m)
+				"stuck":
+					var t: Piece = m.target
+					if t == null or not pieces.has(t):
+						m.target = null
+						m.state = "free"
+					else:
+						m.p = t.pos + m.u
+				"free":
+					m.v += Vector2(R(-1, 1), R(-1, 1)) * 140.0 * dt
+					m.v *= 1.0 - 1.4 * dt
+					m.p += m.v * dt
+					var r2 := rad(m.p)
+					if r2 > RI - 14.0:
+						m.p = CENTER + (m.p - CENTER) / maxf(r2, 0.0001) * (RI - 14.0)
+				"pump":
+					var pm: Piece = m.target
+					if pm == null or not pieces.has(pm):
+						m.state = "free"
+						m.target = null
+					else:
+						var mi := pol(RI - 18.0, pm.a)
+						var dd := mi - m.p
+						var l2 := maxf(dd.length(), 0.0001)
+						m.p += dd / l2 * minf(l2, 150.0 * dt)
+						if l2 < 8.0:
+							pm.open = 1.0
+							m.state = "exit"
+							m.u = Vector2(cos(pm.a), sin(pm.a))
+							m.sp = 150.0
+							m.age = 0.0
+							m.ta = 1.3
+				"exit":
+					m.p += m.u * m.sp * dt
+					m.alpha = maxf(0.0, 1.0 - m.age / m.ta)
+					if m.alpha <= 0.0:
+						m.dead = true
+			if (m.state == "stuck" or m.state == "free") and m.age > 26.0:
+				if m.state == "stuck" and m.target != null:
+					m.target.abx = maxi(0, m.target.abx - 1)
+				m.dead = true
+
+func _abx_bind(m: Mol) -> void:
+	var kind: String = threats.blocked
+	var best = null
+	for q in pieces:
+		if q.type == kind and q.built and q.abx < 4 and (best == null or q.abx < best.abx):
+			best = q
+	if best == null:
+		m.state = "free"
+		m.v = Vector2(R(-20, 20), R(-20, 20))
+		return
+	m.state = "stuck"
+	m.target = best
+	m.u = Vector2(R(-14, 14), R(-14, 12))
+	best.abx += 1
+	best.pulse = 1.0
+	burst(best.pos, Color("7A5BB8"))
+
 # ---------- read side for the HUD, tests and the aggregation sheet
 func majority(k: String) -> String:
 	var L := built_of(k)
@@ -917,6 +1589,8 @@ func diagnose() -> String:
 	var hk := majority("hk")
 	if hk == "falta ATP":
 		return "d_blackout"
+	if phase >= 5 and threats.stage == "wait" and threats.tries > 0 and not threats.done and threats.results[threats.idx] == "fail":
+		return "d_threat"
 	if phase >= 3 and mem_pct() < 90:
 		return "d_membrane"
 	if hk == "inhibida":
@@ -945,6 +1619,8 @@ func has_piece(t: String) -> bool:
 func hint() -> Dictionary:
 	var k := ""
 	var args: Array = []
+	if phase >= 5:
+		return _hint5()
 	if not has_piece("tr"):
 		k = "h_tr"
 	elif not has_piece("hk"):
@@ -999,6 +1675,11 @@ func goal() -> Dictionary:
 		gv = int(floor(goal_state.mem))
 		gm = GOAL_MEM_SECONDS
 		unit = "s"
+	elif phase >= 5:
+		id = "g_threats"
+		args = [MEM_MIN]
+		gv = threats.results.count("ok")
+		gm = 4
 	elif tier < TIERS:
 		id = "g_grow"
 		args = [tier, TIERS]
@@ -1017,7 +1698,9 @@ func goal() -> Dictionary:
 	if phase < 4 and gv >= gm:
 		goal_state.done = true
 	var done: bool = goal_state.done if phase < 4 else agg_done
-	return {"id": id, "args": args, "v": mini(gv, gm), "max": gm, "unit": unit, "done": done, "next_phase": phase + 1 if phase < 4 else 0}
+	if phase >= 5:
+		done = threats.done
+	return {"id": id, "args": args, "v": mini(gv, gm), "max": gm, "unit": unit, "done": done, "next_phase": phase + 1 if phase < 6 and (phase < 4 or done) else 0}
 
 func stats() -> Dictionary:
 	return {"atp": count("atp") + store, "atp_min": int(round(per("atp", 20.0))), "glu_min": int(round(per("glu", 20.0))),
@@ -1026,7 +1709,7 @@ func stats() -> Dictionary:
 ## Per-enzyme usage: [{"type", "n", "use" 0..100, "status"}], then the membrane row as {"type":"membrane","tr","ex","fl"}.
 func lines() -> Array:
 	var rows: Array = []
-	for k in ORDER:
+	for k in LINE_ORDER:
 		var L := built_of(k)
 		if L.is_empty():
 			continue
@@ -1055,7 +1738,33 @@ func aggregation() -> Dictionary:
 		return {"active": false, "shown": false, "t": 0.0, "fade": -1.0, "done": agg_done, "stats": []}
 	return {"active": true, "shown": agg.shown and not agg.has("fade"), "t": agg.t, "fade": agg.get("fade", -1.0), "done": agg_done, "stats": agg.stats}
 
+## The numeric sheet of the cell that the colony and the creature inherit (counts of built pieces, rates per minute).
+func legacy_sheet() -> Dictionary:
+	var counts := {}
+	for p in pieces:
+		if p.built:
+			counts[p.type] = int(counts.get(p.type, 0)) + 1
+	var g := per("glu", 60.0)
+	var a := per("atp", 60.0)
+	return {"atp_min": int(round(a)), "glu_min": int(round(g)), "atp_per_glu": snappedf(a / g, 0.1) if g > 0.0 else 0.0,
+		"lip_min": int(round(per("lip", 60.0))), "up_min": int(round(per("up", 60.0))), "mem": mem_pct(),
+		"size": snappedf(RO / R0, 0.01), "tier": tier, "pieces": counts}
+
 ## "Seguir con esta célula": the card closes and the neighbours fade.
 func continue_colony() -> void:
 	if agg != null:
 		agg["fade"] = 0.0
+
+## Phase 5 opens after the aggregation; phase 6 once the four threats are survived.
+func set_tier(n: int) -> void:
+	tier = clampi(n, 0, TIERS)
+	ROt = R0 + tier * RSTEP
+	set_r(ROt)
+	zoom = 270.0 / ROt
+	zoomT = zoom
+
+func threats_unlocked() -> bool:
+	return agg_done or phase >= 5
+
+func colony_unlocked() -> bool:
+	return bool(threats.get("done", false))

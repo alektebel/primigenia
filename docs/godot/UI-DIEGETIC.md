@@ -168,6 +168,7 @@ keep UI sounds low and short, under 300 ms, no high bleeps.
 |---|---|---|---|---|---|---|---|
 | Menu seed (bottom-left) | o | o | o | o | o | o | O |
 | Health, hunger (bottom-left) | o | o | o | O health | O hunger | O health, pulsing | o |
+| Run line (above stamina, `stomp` glyph, MIST; EMBER under 15 %) | - (shown while running or below full, gone 2 s after full) | - | - | - | - | - | - |
 | Stamina line | - (shown only below full) | - | - | O | - | O | - |
 | DNA + species pips (top-left) | o | o | o | o | O on gain | o | o |
 | Compass (top centre) | o | O (target mark) | o | o | o | o | o |
@@ -667,3 +668,14 @@ silhouettes for the undiscovered), **Secrets** (meteor shards with their line, f
 (unknown / hinted / known / mastered with clue slots). Left / Right or the wheel turn spreads, Tab changes section; the key legend has a
 `journal` context. Each page's source in `state()` is listed at the top of `journal_model.gd`; sections the world does not report yet hide.
 Evidence: `docs/evidence/godot/journal/` (`make godot-journal-evidence`).
+
+
+## Run and fall (run-fall branch)
+
+- **Run**: Shift held (the `run` action) sends `run: 1` with each input; `StageWorld.step_once` calls `CporeWorld.set_run` before the tick.
+  The C sim runs the body at 1.8 x its walk speed and drains a separate 0..1000 stamina; below 150 it cannot start, at 0 it stops and
+  Shift must be released (`PlayerInput.run_locked`). The old Shift sprint (combat stamina, flee-like burst) is now **Ctrl** (`sprint`, "Burst").
+  The run line sits above the stamina line (`QuietSigns.set_run`). The input log (v3 text) has no field for it: replays of a run need a snapshot.
+- **Fall**: while `player.falling` the host leans back and rolls (`actor_driver._fall_pose`); the `fell` event (type 27, `move` = drop cm,
+  `value` = damage HP) gives a small camera shake (`island.land_impact`), a thump (hit sound when it hurt), a `-N` number and the hit flash.
+  Evidence: `docs/evidence/godot/run-fall/`.

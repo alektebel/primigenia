@@ -28,6 +28,9 @@ var hp_max := 1.0
 var food := 0
 var food_max := 100
 var stamina_visible := false
+var run_frac := 1.0                 # the run stamina (C player.stamina / 1000), a separate line above the combat stamina
+var running := false
+var run_visible := false
 var low_health := false
 var dna_balance := 0
 var dna_total := 0
@@ -42,8 +45,11 @@ var fade_all := 0.0                 # 1 = every sign hidden (the death fog), 0 =
 var _shown_hp := 1.0
 var _shown_food := 0.7
 var _shown_stam := 1.0
-var _act := {"seed": 0.0, "health": 0.0, "hunger": 0.0, "stamina": 0.0, "dna": 0.0}   # seconds since the last change
-var _bright := {"seed": 0.0, "health": 0.0, "hunger": 0.0, "stamina": 0.0, "dna": 0.0}
+var _shown_run := 1.0
+var _run_full_t := 0.0
+var _run_alpha := 0.0
+var _act := {"seed": 0.0, "health": 0.0, "hunger": 0.0, "stamina": 0.0, "run": 0.0, "dna": 0.0}   # seconds since the last change
+var _bright := {"seed": 0.0, "health": 0.0, "hunger": 0.0, "stamina": 0.0, "run": 0.0, "dna": 0.0}
 var _delta := {}                    # sign -> {from, to, t, gain}
 var _dna_shown := 0
 var _dna_held := 0                  # DNA whose mote is still flying: not yet in the shown number
@@ -79,6 +85,14 @@ func set_player(hp_now: float, hp_cap: float, stamina: float, stamina_cap: float
 	if absf(sf - stamina_frac) > 0.004:
 		_changed("stamina", stamina_frac, sf)
 	stamina_frac = sf
+
+## Run stamina 0..1000 and whether the body is running. Shown while running or below full; gone 2 s after it is full.
+func set_run(stamina_1000: int, is_running: bool) -> void:
+	var rf := clampf(float(stamina_1000) / 1000.0, 0.0, 1.0)
+	if absf(rf - run_frac) > 0.004:
+		_act["run"] = 0.0
+	run_frac = rf
+	running = is_running
 
 ## DNA total (journal only), balance (the number), species resolved of those present, food.
 func set_meters(total: int, balance: int, resolved: int, present: int, food_now: int, food_cap: int) -> void:
@@ -152,7 +166,7 @@ func dna_center() -> Vector2:
 	return Vector2(Style.u(40.0), Style.u(38.0))
 
 func line_y(sign: String) -> float:
-	var off: float = {"stamina": 58.0, "health": 46.0, "hunger": 34.0, "calcium": 82.0, "mineral": 94.0}[sign]
+	var off: float = {"run": 70.0, "stamina": 58.0, "health": 46.0, "hunger": 34.0, "calcium": 82.0, "mineral": 94.0}[sign]
 	return size.y - Style.u(off)
 
 # --- input ---------------------------------------------------------------------------------------------------------
@@ -178,6 +192,7 @@ func _process(dt: float) -> void:
 	_shown_hp = Style.follow(_shown_hp, hp_frac, dt)
 	_shown_food = Style.follow(_shown_food, food_frac, dt)
 	_shown_stam = Style.follow(_shown_stam, stamina_frac, dt)
+	_shown_run = Style.follow(_shown_run, run_frac, dt)
 	for k in _act:
 		_act[k] += dt
 		var b: float = _bright[k]
@@ -203,6 +218,10 @@ func _process(dt: float) -> void:
 		_stam_full_t += dt
 	stamina_visible = want or _stam_full_t < 2.0
 	_stam_alpha = Style.approach(_stam_alpha, 1.0 if stamina_visible else 0.0, dt, Style.IN if stamina_visible else Style.OUT)
+	var run_want := running or run_frac < 0.995
+	_run_full_t = 0.0 if run_want else _run_full_t + dt
+	run_visible = run_want or _run_full_t < 2.0
+	_run_alpha = Style.approach(_run_alpha, 1.0 if run_visible else 0.0, dt, Style.IN if run_visible else Style.OUT)
 	queue_redraw()
 
 func _draw() -> void:
@@ -249,6 +268,11 @@ func _line(sign: String, frac: float, color: Color, glyph: String, thick := 0.0)
 			Style.text(self, Style.font_sans(), Vector2(x0 + len + Style.u(8.0), y + Style.u(4.0)), v, Style.u(13.5), Color(Palette.FOG, a))
 
 func _draw_lines() -> void:
+	if _run_alpha > 0.01:
+		var oldr := modulate
+		modulate = Color(1, 1, 1, _run_alpha)
+		_line("run", _shown_run, Palette.MIST if run_frac > 0.15 else Palette.EMBER_HOT, "stomp")
+		modulate = oldr
 	if recipe_seen or calcium > 0:
 		_line("calcium", float(calcium) / 100.0, Palette.BONE, "bone")
 	if mineral > 0:

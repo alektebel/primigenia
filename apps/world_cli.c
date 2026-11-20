@@ -63,7 +63,8 @@ static int profile(FILE *f,CpCombatProfile *p){
 /* Log v2: header, setup, one input per tick. Log v3 (PLAN-devtools step 4) adds, right after the header, an
  * optional `snapshot <file>` line (path relative to the log: restore it instead of resetting from the setup;
  * the per-tick inputs then start at the snapshot's tick) and, after the inputs, `<n_debug>` followed by
- * `tick op id a x z v` lines (absolute world ticks; applied before that tick's input). */
+ * `tick op id a x z v` lines (absolute world ticks; applied before that tick's input). Log v4 is v3 with a tenth column
+ * on every input line, `run` (0/1: the run toggle wanted at that tick, set before the step like the Godot session does). */
 static int replay(const char *path){
     FILE *f=fopen(path,"r");
     if(!f)return 1;
@@ -73,8 +74,8 @@ static int replay(const char *path){
     int n_debug=0,legs_n=-1,legs[CP_STAGE_MAX_WILD+1]={0};
     int sec_bits=0,sec_clock=0,sec_cave=0;
     float sec_v[7]={0};   /* C2 secrets header line: `secrets <bits> <start_clock> <cave_on> <x z fx fz half length radius>` */
-    if(fscanf(f,"%31s%d",magic,&version)!=2||strcmp(magic,"CPORE_WORLD_LOG")||(version!=2&&version!=3))goto invalid;
-    if(version==3){
+    if(fscanf(f,"%31s%d",magic,&version)!=2||strcmp(magic,"CPORE_WORLD_LOG")||(version<2||version>4))goto invalid;
+    if(version>=3){
         long mark;
         for(;;){
             mark=ftell(f);
@@ -140,31 +141,32 @@ static int replay(const char *path){
     else if(cp_stage_reset(&world,&setup))goto invalid;
     if(fscanf(f,"%d",&ticks)!=1||ticks<0||ticks>1000000)goto invalid;
     CpStageInput *inputs=calloc((size_t)ticks+1,sizeof *inputs);
-    if(!inputs)goto invalid;
+    int *runs=calloc((size_t)ticks+1,sizeof *runs);   /* v4: the run toggle wanted at each tick (set before the step) */
+    if(!inputs||!runs){free(inputs);free(runs);goto invalid;}
     for(int i=0;i<ticks;i++){
         CpStageInput *a=&inputs[i];
         int hx,hz;
-        if(fscanf(f,"%d%d%d%d%d%d%d%f%f",&a->verb,&a->target,&a->move,&a->dir,&a->sprint,&hx,&hz,&a->x,&a->z)!=9||hx< -32768||hx>32767||hz< -32768||hz>32767){
-            free(inputs);
+        if(fscanf(f,"%d%d%d%d%d%d%d%f%f",&a->verb,&a->target,&a->move,&a->dir,&a->sprint,&hx,&hz,&a->x,&a->z)!=9||hx< -32768||hx>32767||hz< -32768||hz>32767||(version==4&&(fscanf(f,"%d",&runs[i])!=1||(runs[i]&~1)))){
+            free(inputs);free(runs);
             goto invalid;
         }
         a->hx=hx;
         a->hz=hz;
     }
-    if(version==3){
+    if(version>=3){
         if(fscanf(f,"%d",&n_debug)!=1||n_debug<0||n_debug>1000000){
-            free(inputs);
+            free(inputs);free(runs);
             goto invalid;
         }
         debug=calloc((size_t)n_debug+1,sizeof *debug);
         if(!debug){
-            free(inputs);
+            free(inputs);free(runs);
             goto invalid;
         }
         for(int i=0;i<n_debug;i++){
             CpStageDebugEntry *e=&debug[i];
             if(fscanf(f,"%"SCNu32"%d%d%d%f%f%f",&e->tick,&e->d.op,&e->d.id,&e->d.a,&e->d.x,&e->d.z,&e->d.v)!=7||(i&&e->tick<debug[i-1].tick)){
-                free(inputs);
+                free(inputs);free(runs);
                 goto invalid;
             }
         }
@@ -175,13 +177,13 @@ static int replay(const char *path){
     }
     while(ch==' '||ch=='\n'||ch=='\t'||ch=='\r');
     if(ch!=EOF){
-        free(inputs);
+        free(inputs);free(runs);
         goto invalid;
     }
     int cursor=0;
     if(n_debug&&debug[0].tick<world.tick){
         fprintf(stderr,"debug op at tick %"PRIu32" is before the first replayed tick %"PRIu32"\n",debug[0].tick,world.tick);
-        free(inputs);
+        free(inputs);free(runs);
         goto invalid_quiet;
     }
     for(int i=0;i<ticks;i++){
@@ -189,14 +191,15 @@ static int replay(const char *path){
             int rc=cp_stage_debug(&world,&debug[cursor].d);
             if(rc){
                 fprintf(stderr,"debug op %d at tick %"PRIu32" was rejected: %s (a log only holds accepted ops)\n",debug[cursor].d.op,debug[cursor].tick,cp_stage_debug_error(rc));
-                free(inputs);
+                free(inputs);free(runs);
                 goto invalid_quiet;
             }
             cursor++;
         }
+        if(version==4)cp_stage_set_run(&world,runs[i]);
         printf("%016"PRIx64"\n",cp_stage_step(&world,&inputs[i]));
     }
-    free(inputs);
+    free(inputs);free(runs);
     free(debug);
     fclose(f);
     return 0;

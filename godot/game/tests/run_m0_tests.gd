@@ -17,6 +17,7 @@ const TESTS := [
 	"res://game/tests/test_profile.gd",
 	"res://game/tests/test_session.gd",
 	"res://game/tests/test_input.gd",
+	"res://game/tests/test_runfall.gd",
 	"res://game/tests/test_interp.gd",
 	"res://game/tests/test_camera.gd",
 	"res://game/tests/test_actors.gd",
@@ -25,6 +26,9 @@ const TESTS := [
 	"res://game/tests/test_visual.gd",
 	"res://game/tests/test_photo.gd",
 	"res://game/tests/test_secrets.gd",
+	"res://game/tests/test_hatchling.gd",
+	"res://game/tests/test_flight.gd",
+	"res://game/tests/test_plant_gaze.gd",
 ]
 
 var checks := 0

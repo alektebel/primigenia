@@ -1,9 +1,9 @@
 {
 	"camera": {},
-	"created": "2026-11-19T11:46:31",
+	"created": "2026-11-20T02:29:43",
 	"engine": {
 		"build": "unknown",
-		"layout": "a032a357537de2b2",
+		"layout": "f29ec83602f24649",
 		"snapshot_version": 3,
 		"stage_version": 3
 	},
@@ -145,6 +145,7 @@
 		"terrain_version": 4
 	},
 	"kind": "scenario",
+	"legacy": {},
 	"lineage": {
 		"current_deeds": {
 			"befriends": 0.0,
@@ -221,6 +222,7 @@
 	},
 	"name": "water_edge",
 	"note": "On the shore with a GO order to unreachable dry ground across shallow water: snap, unreachable and blocked readouts.",
+	"plants": [],
 	"recipe": "water_edge.log",
 	"setup": {
 		"cave": {
@@ -239,7 +241,18 @@
 		],
 		"obstacles": [],
 		"player": {
+			"carnivore": 0,
 			"charge": 4,
+			"extra": [
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0
+			],
 			"guard": 0,
 			"hp": 100.0,
 			"mouth": 2,

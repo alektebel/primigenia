@@ -8,6 +8,7 @@ signal combat_events(events: Array)
 signal creature_clicked(id: int, world_pos: Vector3)
 
 const TerrainData := preload("res://game/island/terrain_data.gd")
+const TerrainCache := preload("res://game/island/terrain_cache.gd")
 const SETTINGS_PATH := "user://settings.cfg"
 
 # controls/strafe_latch: WASD is relative to the camera as it was when the keys changed (a held S or A runs
@@ -16,7 +17,7 @@ const SETTINGS_PATH := "user://settings.cfg"
 var settings: Dictionary = {"seed": 1, "grass": 252000, "flora_density": -1.0, "flora_lod_scale": 1.0, "quality": "auto", "sun_shadows": false, "wild": true,
 	"controls/strafe_latch": true, "controls/tank": false, "camera/kick": false,
 	"ui_scale": 1.0, "language": "", "names_always": false, "numbers": false, "strong_outlines": false, "reduced_motion": false,
-	"onboarding": 0, "minimap": true,
+	"onboarding": 0, "minimap": true, "edit_anywhere": true,
 	"renderer": "auto"}   # auto | forward_plus | compatibility, read at launch by RenderChoice (relaunches into Forward+ on discrete GPUs)
 var terrain: Dictionary = {}
 var data = null          # TerrainData
@@ -93,21 +94,151 @@ func legend_context() -> StringName:
 		return &"studio"
 	return &"walk"
 
+var entry_t0 := 0                          # ticks (ms) when the last goto_island began
+var entry_log: Array = []                  # [{from, ms (scene change + build), phases}] of every island entry (tests read it)
+var entry_from := ""
+
+# The island prints its per-phase build times here (brief creature-fixes 5).
+func report_entry(phases: Dictionary) -> void:
+	var total := Time.get_ticks_msec() - entry_t0 if entry_t0 > 0 else int(phases.get("total", 0))
+	var row := {"from": entry_from, "ms": total, "phases": phases.duplicate()}
+	entry_log.append(row)
+	var parts: PackedStringArray = []
+	for k in phases:
+		parts.append("%s %d" % [k, int(phases[k])])
+	print("island entry (%s): %d ms since goto_island; build %s" % [entry_from, total, ", ".join(parts)])
+
+# The island from a place with no loading screen (the studio): the terrain in memory, else the cache, else generated now.
+func enter_island_now(from: String = "") -> void:
+	var params := {"seed": int(settings.seed)}
+	if data == null or int(terrain.get("seed", settings.seed)) != int(settings.seed):
+		var entry := TerrainCache.load_entry(params)
+		if entry.is_empty():
+			entry = TerrainCache.build(params, CporeTerrain.new())
+		if entry.get("error", 0) != 0:
+			push_error("terrain generation failed: %s" % [entry.get("error")])
+			return
+		set_island(entry)
+	goto_island(from)
+
+# --- the island kit (brief creature-fixes 5) ---------------------------------------------------------------
+# The built island pieces that depend only on the terrain and the quality settings (terrain meshes and materials, water,
+# rivers, grass, the flora and rock batches) are kept in memory when the island scene goes away, and handed back to the next
+# island, so entering again from the menu, the studio or a load does not rebuild them. They wait outside the tree.
+var _kit: Dictionary = {}            # {key: Array, nodes: {name: Node}}
+var kit_hits := 0                    # how many islands were built from the kit (tests read it)
+
+func kit_key() -> Array:
+	return [data.get_instance_id() if data != null else 0, int(settings.get("grass", 0)), str(settings.get("quality", "auto")),
+		bool(settings.get("sun_shadows", false)), float(settings.get("flora_density", -1.0)), float(settings.get("flora_lod_scale", 1.0)),
+		bool(settings.get("wild", true))]
+
+# Called before any scene change: if the running scene is an island, its kit nodes move out of it.
+func park_island() -> void:
+	var scene := get_tree().current_scene if is_inside_tree() else null
+	if scene == null or not scene.has_method("kit_nodes") or data == null:
+		return
+	drop_kit()
+	var nodes: Dictionary = scene.kit_nodes()
+	for n in nodes.values():
+		if n != null and n.get_parent() != null:
+			n.get_parent().remove_child(n)
+	_kit = {"key": kit_key(), "nodes": nodes}
+
+# The parked pieces when they fit the current settings and terrain, else {} (and they are freed).
+func take_kit() -> Dictionary:
+	if _kit.is_empty():
+		return {}
+	if _kit.key != kit_key():
+		drop_kit()
+		return {}
+	var nodes: Dictionary = _kit.nodes
+	_kit = {}
+	kit_hits += 1
+	return nodes
+
+func drop_kit() -> void:
+	if _kit.is_empty():
+		return
+	for n in _kit.nodes.values():
+		if n != null and is_instance_valid(n):
+			n.free()
+	_kit = {}
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_WM_CLOSE_REQUEST or what == NOTIFICATION_PREDELETE:
+		drop_kit()
+
+# What the cell stage passes on (docs/CELL-STAGE.md): {} when the player has not finished the cell yet.
+const CellLegacy := preload("res://cell/cell_legacy.gd")
+var legacy_path := CellLegacy.PATH
+
+func cell_legacy() -> Dictionary:
+	return CellLegacy.read(legacy_path)
+
+func save_cell_legacy(d: Dictionary) -> bool:
+	if not persist_settings:
+		return false
+	return CellLegacy.save(d, legacy_path)
+
+## The bridge (docs/godot/CELL-BRIDGE.md): the legacy the NEXT new creature game consumes ({} = a plain hatchling). The island reads it
+## when it builds a game that is not a loaded scenario and moves it to applied_legacy, which the journal's family tree shows as the root.
+var creature_legacy: Dictionary = {}
+var applied_legacy: Dictionary = {}
+
+## Starts a new creature game from the saved legacy (plain = ignore it).
+func begin_creature(plain := false) -> void:
+	creature_legacy = {} if plain else cell_legacy()
+
+const LoadingScene := preload("res://game/loading/loading_screen.tscn")
+
+## The island entry of a NEW game started away from the menu (the cell bridge): the terrain cache or the loading screen, then the island.
+## `host` is the control the loading screen is added to.
+func enter_island_new(host: Control) -> void:
+	var params := {"seed": int(settings.seed)}
+	if data != null and int(terrain.get("seed", settings.seed)) == int(settings.seed):
+		goto_island("cell")
+		return
+	var entry: Dictionary = TerrainCache.load_entry(params)
+	if not entry.is_empty():
+		set_island(entry)
+		goto_island("cell")
+		return
+	var screen := LoadingScene.instantiate()
+	host.add_child(screen)
+	screen.finished.connect(func(e: Dictionary) -> void:
+		if e.get("error", -1) != 0:
+			push_error("terrain generation failed: %s" % [e.get("error")])
+			get_tree().quit(1)
+			return
+		set_island(e)
+		goto_island("cell"))
+	screen.start(params)
+
 func goto_menu() -> void:
+	park_island()
 	get_tree().change_scene_to_file("res://game/menu/main_menu.tscn")
 
-func goto_island() -> void:
+func goto_island(from: String = "") -> void:
+	park_island()
+	entry_t0 = Time.get_ticks_msec()
+	entry_from = from if from != "" else ("studio" if get_tree().current_scene != null and get_tree().current_scene.scene_file_path.contains("/studio/") else "menu")
 	get_tree().change_scene_to_file("res://game/island/island.tscn")
 
+var cell_jump_end: Dictionary = {}   # dev (`cell finish`): the cell stage opens straight on its end card with this legacy
+
 func goto_cell() -> void:
+	park_island()
 	get_tree().change_scene_to_file("res://cell/cell_stage.tscn")
 
 func goto_zoo(morphs: Array = [], course: String = "all", run: float = 1.0) -> void:
+	park_island()
 	zoo_args = {"morphs": morphs, "course": course} if not morphs.is_empty() else {"course": course}
 	zoo_args["run"] = run
 	get_tree().change_scene_to_file("res://devtools/zoo/zoo.tscn")
 
 func goto_studio() -> void:
+	park_island()
 	var path := "res://studio/ui/studio.tscn"
 	if ResourceLoader.exists(path):
 		get_tree().change_scene_to_file(path)
@@ -115,7 +246,7 @@ func goto_studio() -> void:
 		push_warning("studio module not present")
 
 # Player genome source: --genome=<path> after "--", else the newest studio_dir/*.json (user://studio) that
-# parses, else the bundled Merodeador.
+# parses, else the bundled starter hatchling (G78/A29; Merodeador is the adult form and a wild species).
 func player_genome() -> Dictionary:
 	var sc_genome: Dictionary = pending_scenario.get("dict", {}).get("genome", {})
 	if not sc_genome.is_empty():
@@ -137,7 +268,7 @@ func player_genome() -> Dictionary:
 					newest_time = t
 	if newest != "":
 		return _read_genome(newest)
-	return _read_genome("res://game/data/merodeador.json")
+	return _read_genome("res://game/data/hatchling.json")
 
 func _read_genome(path: String) -> Dictionary:
 	var text := FileAccess.get_file_as_string(path)

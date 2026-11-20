@@ -5,7 +5,7 @@ var lang := "es"
 var parts: RefCounted
 
 const EN := {
-	"Modo": "Mode", "Construir": "Build", "Pintar": "Paint", "Probar": "Test", "Deshacer": "Undo", "Rehacer": "Redo",
+	"Jugar con esta criatura": "Play with this creature", "Jugar": "Play", "No se pudo guardar": "Could not save", "Modo": "Mode", "Construir": "Build", "Pintar": "Paint", "Probar": "Test", "Deshacer": "Undo", "Rehacer": "Redo",
 	"Pieza": "Part", "Piel": "Skin", "Dibujo": "Pattern", "Colores": "Colours", "Escama": "Scales", "Brillo": "Gloss", "Biología": "Biology", "Contrasombreado": "Countershading", "Tamaño del dibujo": "Pattern size", "Contraste del dibujo": "Pattern contrast", "Rosetas": "Rosettes", "Actuación": "Actuation", "Automática": "Automatic", "músculo": "muscle", "hidráulica": "hydraulic",
 	"Sin patas: esqueleto hidrostático, avanza por ondas de músculo": "no legs: hydrostatic skeleton, moves by waves of muscle", "Placas duras: músculo dentro de un exoesqueleto": "hard plates: muscle inside an exoskeleton", "Muchas patas finas: patas hidráulicas a presión": "many thin legs: pressurised hydraulic legs", "Patas gruesas: músculo sobre esqueleto interno": "thick legs: muscle on an internal skeleton",
 	"Esqueleto": "Skeleton", "esqueleto interno": "endoskeleton", "exoesqueleto": "exoskeleton", "esqueleto hidrostático": "hydrostatic skeleton", "tendón elástico": "elastic tendon", "resorte": "spring-latch", "hidrostato": "muscular hydrostat", "peristáltica": "peristaltic", "pies ambulacrales": "tube feet", "cilios": "cilia",
@@ -33,6 +33,7 @@ const EN := {
 	"Espejo": "Mirror", "Semilla": "Seed", "Nueva variante": "New variant", "Detalles artísticos; no cambian las capacidades.": "Artistic details; they do not change abilities.",
 	"Músculo": "Muscle", "Hidráulico": "Hydraulic", "Exoesqueleto": "Exoskeleton", "Hidrostático": "Hydrostatic", "límite": "limit",
 	"Este cuerpo no puede llevar esa actuación": "This body cannot carry that actuation",
+	"Necesita exoesqueleto: añade placas": "Needs an exoskeleton: add plates", "Necesita esqueleto interno: quita las placas": "Needs an internal skeleton: remove the plates",
 	"Rueda sobre una pieza para escalarla · arrastra una articulación o las flechas de la columna · clic en una pata para elegir su actuador": "Scroll over a part to scale it · drag a joint or the spine arrows · click a limb to choose its actuator",
 	"Morder": "Bite", "Cantar": "Sing", "Correr": "Run", "Andar": "Walk",
 	"Reproducir": "Play", "Parar": "Stop", "Animación": "Animation",

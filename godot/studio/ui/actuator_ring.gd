@@ -113,6 +113,23 @@ func _draw() -> void:
 		else:                     # left and right: beside the button, away from the limb
 			lp = c + Vector2(BTN_R + 8.0 if dirv.x > 0.0 else -(BTN_R + 8.0) - w, 4.0)
 		draw_string(font, lp, lab, HORIZONTAL_ALIGNMENT_LEFT, -1, 12, Color(ThemeFactory.AMBER if o["current"] else ThemeFactory.PAPER, a))
+	_draw_why(font)
+
+## The reason a dimmed choice is dimmed, drawn beside the hovered button (the hint line says it too).
+func _draw_why(font: Font) -> void:
+	if _hover < 0 or _hover >= options.size() or options[_hover]["allowed"]:
+		return
+	var why := String(options[_hover].get("why", ""))
+	if why == "":
+		return
+	var w := font.get_string_size(why, HORIZONTAL_ALIGNMENT_LEFT, -1, 13).x + 16.0
+	var c := button_center(_hover)
+	var at := Vector2(clampf(c.x - w / 2.0, 8.0, maxf(size.x - w - 8.0, 8.0)), c.y + BTN_R + 24.0)
+	if c.y > center.y + 1.0:
+		at.y = c.y + BTN_R + 30.0
+	draw_rect(Rect2(at, Vector2(w, 24.0)), Color(ThemeFactory.INK, .92))
+	draw_rect(Rect2(at, Vector2(w, 24.0)), Color(ThemeFactory.AMBER, .6), false, 1.0)
+	draw_string(font, at + Vector2(8.0, 17.0), why, HORIZONTAL_ALIGNMENT_LEFT, -1, 13, ThemeFactory.PAPER)
 
 func _icon(id: String, c: Vector2, s: float, col: Color) -> void:
 	match ICONS.get(id, -1):

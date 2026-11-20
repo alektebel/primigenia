@@ -89,6 +89,8 @@ static func part_tiles(state: Dictionary, catalogue: Array) -> Array:
 			have[String(p.get("id", ""))] = p
 	var out: Array = []
 	for c in catalogue:
+		if bool(c.get("godot_only", false)):
+			continue        # parts the C world's 46-part catalogue does not have (wing_vane, wing_flap): nothing to find in the world yet
 		var id := String(c.get("id", ""))
 		var h: Dictionary = have.get(id, {})
 		out.append({

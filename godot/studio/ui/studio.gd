@@ -7,6 +7,7 @@ const PartsDB := preload("../parts_db.gd")
 const I18n := preload("../i18n.gd")
 const Storage := preload("../storage.gd")
 const Genome := preload("../genome.gd")
+const WingPanel := preload("wing_panel.gd")
 const Thumbs := preload("../thumbnails.gd")
 const ThemeFactory := preload("theme_factory.gd")
 const PlaceholderView := preload("../placeholder/placeholder_view.gd")
@@ -23,6 +24,7 @@ var nest_plan: Dictionary = {}
 var nest_tiers_on := false
 var nest_cost: Label
 var nest_apply_button: Button
+var play_creature_btn: Button
 var nest_evolve_button: Button
 signal exit_requested
 
@@ -55,6 +57,7 @@ var hint_label: Label
 var panel_box: VBoxContainer
 var name_edit: LineEdit
 var undo_btn: Button
+var top_bar: HBoxContainer
 var redo_btn: Button
 var mode_buttons := {}
 var category_tabs := {}
@@ -123,6 +126,7 @@ func _ready() -> void:
 	var game := get_node_or_null("/root/Game")
 	storage = Storage.new(str(game.studio_dir) if game != null and "studio_dir" in game else "user://studio")
 	model = Model.new(parts_db)
+	model.new_from_seed("Hatchling", false)       # the starter body (A29); Merodeador stays a seed in the list
 	model.changed.connect(_on_model_changed)
 	model.selection_changed.connect(_on_selection_changed)
 	model.history_changed.connect(_sync_history)
@@ -221,6 +225,17 @@ func _build_baker() -> void:
 	baker.baked.connect(_on_thumb_baked)
 	add_child(baker)
 
+## Save the creature and drop into the island with it (the island takes the newest saved genome).
+func play_with_creature() -> void:
+	var path := save_current()
+	if path == "":
+		_flash(T("No se pudo guardar"))
+		return
+	var game := get_node_or_null("/root/Game")
+	if game != null and game.has_method("enter_island_now"):
+		exit_requested.emit()
+		game.enter_island_now("studio")
+
 func _on_exit() -> void:
 	if nest_world != null:
 		exit_requested.emit()
@@ -229,6 +244,12 @@ func _on_exit() -> void:
 	var game := get_node_or_null("/root/Game")
 	if game != null and game.has_method("goto_menu"):
 		game.goto_menu()
+
+## The part of the stage not covered by the side panels (A31): both spine arrows must be grabbable there.
+func free_viewport() -> Rect2:
+	var left_edge := 276.0
+	var right_edge: float = stage.size.x - 290.0
+	return Rect2(left_edge, 70.0, maxf(right_edge - left_edge, 200.0), maxf(stage.size.y - 70.0 - 90.0, 200.0))
 
 func frame_creature() -> void:
 	var pts: PackedVector3Array = view.spine_node_positions()
@@ -239,6 +260,37 @@ func frame_creature() -> void:
 	_target = _target_goal
 	_dist = _dist_goal
 	_place_camera()
+	_fit_arrows()
+
+## Centre the spine arrows in the free viewport and move the camera back until both sit inside it with a margin.
+func _fit_arrows() -> void:
+	var free := free_viewport().grow(-34.0)
+	for it in 30:
+		var arr := spine_arrows()
+		if arr.size() < 2:
+			return
+		var lo := Vector2(1e9, 1e9)
+		var hi := Vector2(-1e9, -1e9)
+		for k in arr:
+			lo = lo.min(arr[k]["pos"])
+			hi = hi.max(arr[k]["pos"])
+		var inside: bool = lo.x >= free.position.x and hi.x <= free.end.x and lo.y >= free.position.y and hi.y <= free.end.y
+		var mid := (lo + hi) / 2.0
+		var want := free.get_center()
+		if inside and mid.distance_to(want) < 14.0:
+			break
+		if not inside and (hi.x - lo.x > free.size.x or hi.y - lo.y > free.size.y):
+			_dist = minf(_dist * 1.08, DIST_MAX)
+		else:
+			# slide the view target sideways/up so the arrows' midpoint lands on the centre of the free area
+			var per_px: float = 2.0 * tan(deg_to_rad(camera.fov) / 2.0) * _dist / maxf(stage.size.y, 1.0)
+			var right := camera.global_transform.basis.x
+			var up := camera.global_transform.basis.y
+			var shift := mid - want
+			_target += right * shift.x * per_px - up * shift.y * per_px
+		_dist_goal = _dist
+		_target_goal = _target
+		_place_camera()
 
 func _place_camera() -> void:
 	var cp := cos(_pitch)
@@ -320,12 +372,37 @@ func _build_hud() -> void:
 func T(s: String) -> String:
 	return i18n.tr_(s)
 
+## The top row: three clusters on one line, the modes centred, "Jugar" the primary action on the right.
+## Left: Menú, name, Archivo. Centre: Construir/Pintar/Probar + undo/redo. Right: Jugar con esta criatura, language.
+## The two outer clusters share the free width equally, so the modes stay centred, and nothing can overlap: on narrow
+## windows the wordy labels shorten (see _fit_top_bar) before anything is squeezed.
 func _build_top_bar() -> void:
+	var top := HBoxContainer.new()
+	top.name = "TopBar"
+	top.set_anchors_preset(Control.PRESET_TOP_WIDE)
+	top.offset_left = 14; top.offset_right = -14; top.offset_top = 14
+	top.add_theme_constant_override("separation", 10)
+	top.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	hud.add_child(top)
+	top_bar = top
+	var left_slot := HBoxContainer.new()
+	left_slot.name = "TopLeft"
+	left_slot.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	left_slot.size_flags_stretch_ratio = 1.0
+	left_slot.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	left_slot.alignment = BoxContainer.ALIGNMENT_BEGIN
+	top.add_child(left_slot)
 	var bar := PanelContainer.new()
-	bar.set_anchors_preset(Control.PRESET_CENTER_TOP)
-	bar.grow_horizontal = Control.GROW_DIRECTION_BOTH
-	bar.offset_top = 14
-	hud.add_child(bar)
+	bar.name = "TopModes"
+	bar.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
+	top.add_child(bar)
+	var right_slot := HBoxContainer.new()
+	right_slot.name = "TopRight"
+	right_slot.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	right_slot.size_flags_stretch_ratio = 1.0
+	right_slot.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	right_slot.alignment = BoxContainer.ALIGNMENT_END
+	top.add_child(right_slot)
 	var row := HBoxContainer.new()
 	row.add_theme_constant_override("separation", 6)
 	bar.add_child(row)
@@ -337,23 +414,28 @@ func _build_top_bar() -> void:
 		b.toggle_mode = true
 		b.button_group = group
 		b.button_pressed = model.mode == m[0]
-		b.custom_minimum_size = Vector2(96, 34)
+		b.custom_minimum_size = Vector2(88, 34)
 		b.pressed.connect(set_mode.bind(m[0]))
 		row.add_child(b)
 		mode_buttons[m[0]] = b
 	row.add_child(VSeparator.new())
 	undo_btn = Button.new()
+	undo_btn.name = "UndoButton"
 	undo_btn.text = "↶ " + T("Deshacer")
+	undo_btn.tooltip_text = T("Deshacer")
 	undo_btn.pressed.connect(on_undo)
 	row.add_child(undo_btn)
 	redo_btn = Button.new()
+	redo_btn.name = "RedoButton"
 	redo_btn.text = "↷ " + T("Rehacer")
+	redo_btn.tooltip_text = T("Rehacer")
 	redo_btn.pressed.connect(on_redo)
 	row.add_child(redo_btn)
-	# left corner: name, file menu
+	# left cluster: back to the menu, the name, the file menu
 	var left := PanelContainer.new()
-	left.offset_left = 14; left.offset_top = 14
-	hud.add_child(left)
+	left.name = "TopFile"
+	left.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
+	left_slot.add_child(left)
 	var lrow := HBoxContainer.new()
 	lrow.add_theme_constant_override("separation", 6)
 	left.add_child(lrow)
@@ -363,7 +445,8 @@ func _build_top_bar() -> void:
 	menu_btn.pressed.connect(_on_exit)
 	lrow.add_child(menu_btn)
 	name_edit = LineEdit.new()
-	name_edit.custom_minimum_size = Vector2(150, 0)
+	name_edit.custom_minimum_size = Vector2(110, 0)
+	name_edit.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	name_edit.placeholder_text = T("Ponle nombre")
 	name_edit.text = str(model.doc.get("name", ""))
 	name_edit.max_length = 80
@@ -385,14 +468,26 @@ func _build_top_bar() -> void:
 	_file_menu.add_item(T("Exportar JSON"), 4)
 	_file_menu.id_pressed.connect(_on_file_menu)
 	lrow.add_child(file_btn)
-	# right corner: language
-	var lang_box := PanelContainer.new()
-	lang_box.set_anchors_preset(Control.PRESET_TOP_RIGHT)
-	lang_box.grow_horizontal = Control.GROW_DIRECTION_BEGIN
-	lang_box.offset_top = 14; lang_box.offset_right = -14
-	hud.add_child(lang_box)
+	# right cluster: the primary action, then the language
+	var right := PanelContainer.new()
+	right.name = "TopPlay"
+	right.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
+	right_slot.add_child(right)
 	var lrow2 := HBoxContainer.new()
-	lang_box.add_child(lrow2)
+	lrow2.add_theme_constant_override("separation", 6)
+	right.add_child(lrow2)
+	if nest_world == null:
+		play_creature_btn = Button.new()
+		play_creature_btn.name = "PlayCreatureButton"
+		play_creature_btn.text = "▶ " + T("Jugar con esta criatura")
+		play_creature_btn.tooltip_text = T("Jugar con esta criatura")
+		play_creature_btn.pressed.connect(play_with_creature)
+		var acc := ThemeFactory.MOSS
+		play_creature_btn.add_theme_stylebox_override("normal", ThemeFactory.box(Color(acc.r, acc.g, acc.b, .22), acc, 10, 1))
+		play_creature_btn.add_theme_stylebox_override("hover", ThemeFactory.box(Color(acc.r, acc.g, acc.b, .34), acc, 10, 1))
+		play_creature_btn.add_theme_stylebox_override("pressed", ThemeFactory.box(Color(acc.r, acc.g, acc.b, .45), acc, 10, 2))
+		lrow2.add_child(play_creature_btn)
+		lrow2.add_child(VSeparator.new())
 	for l in ["es", "en"]:
 		var b := Button.new()
 		b.text = l.to_upper()
@@ -400,6 +495,19 @@ func _build_top_bar() -> void:
 		b.button_pressed = lang == l
 		b.pressed.connect(set_lang.bind(l))
 		lrow2.add_child(b)
+	hud.resized.connect(_fit_top_bar)
+	_fit_top_bar.call_deferred()
+
+## Wordy labels give way before anything can collide: undo/redo to their arrows, "Jugar con esta criatura" to "Jugar".
+func _fit_top_bar() -> void:
+	if top_bar == null or not is_instance_valid(top_bar) or hud == null:
+		return
+	var w: float = hud.size.x
+	var wordy := w >= 1240.0
+	undo_btn.text = ("↶ " + T("Deshacer")) if w >= 1160.0 else "↶"
+	redo_btn.text = ("↷ " + T("Rehacer")) if w >= 1160.0 else "↷"
+	if play_creature_btn != null:
+		play_creature_btn.text = "▶ " + (T("Jugar con esta criatura") if wordy else T("Jugar"))
 
 func _build_palette() -> void:
 	var card := PanelContainer.new()
@@ -800,6 +908,8 @@ func _panel_build() -> void:
 			pob.select(maxi(kinds.find(String(p.get("pupil", "auto"))), 0))
 			pob.item_selected.connect(func(i): model.set_part_key(sel, "pupil", kinds[i]))
 			panel_box.add_child(pob)
+		if WingPanel.is_wing(p):
+			WingPanel.build(panel_box, model, view, sel, Callable(self, "T"))
 		var del := Button.new()
 		del.text = T("Quitar pieza") + "  (Del)"
 		del.pressed.connect(on_key_delete)
@@ -1117,7 +1227,7 @@ func _fill_load_menu() -> void:
 
 func _on_file_menu(id: int) -> void:
 	match id:
-		0: model.new_from_seed("Merodeador"); frame_creature()
+		0: model.new_from_seed("Hatchling"); frame_creature()
 		1: save_current()
 		3: _open_dialog("import")
 		4: _open_dialog("export")
@@ -1535,6 +1645,7 @@ func _stage_motion(e: InputEventMouseMotion) -> void:
 					var o2: Vector2 = _drag["off"]
 					idx = model.bend_end(idx, re[0].y + re[1].y * se - o2.x, re[0].z + re[1].z * se - o2.y)
 					view.set_active_node(idx)
+					_set_hint("Columna: %d vértebras · límite" % model.doc["nodes"].size() if model.end_capped else "")
 		"joint":
 			var r3 := _stage_ray(pos)
 			var res: Dictionary = view.leg_drag(_drag["leg"], _drag["joint"], _drag["side"], r3[0], r3[1], -camera.global_transform.basis.z)
@@ -1638,7 +1749,7 @@ func _open_ring(i: int, animate := true) -> bool:
 	var labels := {"muscle": "Músculo", "hydraulic": "Hidráulico", "exo": "Exoesqueleto", "hydrostat": "Hidrostático"}
 	for o in opts:
 		o["label"] = T(labels[o["id"]])
-		o["why"] = T("Este cuerpo no puede llevar esa actuación")
+		o["why"] = T(ring_why(o))
 	_ring = Ring.new()
 	_ring.name = "ActuatorRing"
 	add_child(_ring)
@@ -1648,6 +1759,14 @@ func _open_ring(i: int, animate := true) -> bool:
 	_ring.hint.connect(func(t): _set_hint(t))
 	_ring.closed.connect(func(): _ring = null; _ring_part = -1)
 	return true
+
+## Why a ring choice is dimmed (A31): it needs the body skeleton the body cannot take. Spanish source text, translated by T.
+func ring_why(o: Dictionary) -> String:
+	if "exo" in o.get("skels", []) and not "endo" in o.get("skels", []):
+		return "Necesita exoesqueleto: añade placas"
+	if "endo" in o.get("skels", []):
+		return "Necesita esqueleto interno: quita las placas"
+	return "Este cuerpo no puede llevar esa actuación"
 
 func _ring_picked(id: String) -> void:
 	if _ring_part >= 0:

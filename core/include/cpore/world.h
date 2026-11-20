@@ -9,7 +9,10 @@
 #define CP_STAGE_MAX_OBSTACLES 1024
 #define CP_STAGE_DAY_TICKS 12000
 #define CP_STAGE_DT .1f
-#define CP_STAGE_SNAPSHOT_VERSION 7   /* 3: player loadout (A21); 4: social layer (C2); 5: lineage ledger and ancestry; 6: discovery, nest shop and eggs; 7: secrets (shards, cave chamber, day/night) and 6 species */
+#define CP_STAGE_SNAPSHOT_VERSION 9   /* 3: player loadout (A21); 4: social layer (C2); 5: lineage ledger and ancestry; 6: discovery, nest shop and eggs; 7: secrets (shards, cave chamber, day/night) and 6 species; 8: run and fixed-point fall state; 9: + recipes, calcium, mineral, stones (C2 moves/recipes) */
+/* A31 fall damage: 10 HP per metre beyond the safe drop, capped at 60 % of max HP unless the fall is free (air above 2x the safe drop). */
+#define CP_FALL_CAP_PERMILLE 600
+#define CP_FALL_FREE_X 2
 #define CP_STAGE_MAX_PATH 64      /* waypoints kept by the planner (docs/godot/NAV.md) */
 #define CP_STAGE_MAX_EVENTS 64    /* event ring since the last observe */
 
@@ -156,7 +159,10 @@ enum { CP_STAGE_EV_HIT=1, CP_STAGE_EV_KILL, CP_STAGE_EV_DEATH, CP_STAGE_EV_RESPA
        CP_STAGE_EV_DNA, CP_STAGE_EV_OBSERVE, CP_STAGE_EV_CHAIN_DONE, CP_STAGE_EV_INTIMIDATE, CP_STAGE_EV_SOCIAL_CANCELLED, CP_STAGE_EV_EAT, CP_STAGE_EV_PART_FOUND, CP_STAGE_EV_INSPECTED, CP_STAGE_EV_PART_BOUGHT, CP_STAGE_EV_EDIT_ACCEPTED,
        CP_STAGE_EV_SHARD_FOUND,   /* target = shard entity id (3100+k), move = shard index 0..4, value = shards found so far, x/z = where; numeric id 25 is used by the Godot UI */
        CP_STAGE_EV_CAVE,          /* move = 1 entered the passage, 2 reached the chamber (numeric id 26) */
-       CP_STAGE_EV_RECIPE, CP_STAGE_EV_VOLLEY };
+       CP_STAGE_EV_FELL,          /* numeric id 27 (owner fall) */
+       CP_STAGE_EV_RECIPE,        /* numeric id 28 */
+       CP_STAGE_EV_VOLLEY };      /* numeric id 29 */
+
 enum { CP_STAGE_BLOCK_NONE, CP_STAGE_BLOCK_CLIFF, CP_STAGE_BLOCK_WATER, CP_STAGE_BLOCK_EDGE,
        CP_STAGE_BLOCK_CREATURE, CP_STAGE_BLOCK_UNREACHABLE, CP_STAGE_BLOCK_OBSTACLE };
 typedef struct {
@@ -269,7 +275,7 @@ typedef struct {
     /* DT0 additions (PLAN-devtools step 3). Part of the snapshot payload, except `field`, which MUST stay
      * the last member: the payload is offsetof(CpStageWorld,field) bytes. */
     CpStageMotion motion;            /* per-world copy of CP_STAGE_MOTION, changed by debug PARAM ops */
-    int32_t debug_flags,reserved;    /* CP_STAGE_FLAG_* ; reserved keeps the layout explicit */
+    int32_t debug_flags,edit_anywhere; /* CP_STAGE_FLAG_* ; edit_anywhere (0/1, never hashed, set by the host's setting) lets the genome edits skip the nest radius */
     uint64_t field_hash;             /* hash of the attached field, 0 outside FIELD mode */
     /* C1-nav: the GO / GO_NEST path (hashed while n_path>0) and derived observation outputs (not hashed). */
     float path[CP_STAGE_MAX_PATH][2];/* waypoints, the last is where the order ends */
@@ -286,9 +292,14 @@ typedef struct {
     CpStageParts parts;
     CpStageRecipes recipes;
     CpStageSecrets secrets;          /* derived at reset when setup.secrets; hashed only then */
+    /* Run stamina is separate from combat stamina; mm, mm/s for fixed-step gravity. */
+    int32_t running,run_stamina,falling,fall_y_mm,fall_v_mm_s,fall_start_mm;
+    int32_t fall_dx_mm,fall_dz_mm;
     const CpStageField *field;       /* not owned, not in the snapshot, set by cp_stage_attach_field */
 } CpStageWorld;
 /* --- C2 secrets (core/src/stage_secrets.c) --- */
+void cp_stage_set_run(CpStageWorld *w,int on);
+float cp_stage_safe_drop(const CpStageWorld *w); /* metres, 1.5 times mean leg length */
 int cp_stage_daylight(const CpStageWorld *w);                /* permille 0 (night) .. 1000 (full day), from the world clock */
 int cp_stage_creature_hidden(const CpStageWorld *w,int index); /* index 0..n-1: a nocturnal creature asleep by day (not perceivable, not targetable) */
 int cp_stage_creature_hunkered(const CpStageWorld *w,int index); /* a crepuscular creature curled up in the noon light */
@@ -315,8 +326,11 @@ uint64_t cp_stage_recipes_hash(const CpStageWorld *w);
 int cp_stage_recipes_json(const CpStageWorld *w,char *out,size_t cap);
 int cp_stage_at_nest(const CpStageWorld *w);
 int cp_stage_route_from_nest(CpStageWorld *w,float x,float z); /* read-only planner probe */
+int cp_stage_can_edit(const CpStageWorld *w);          /* at the nest, or anywhere when edit_anywhere is on (never in a fight, dead or lineage lost) */
+void cp_stage_set_edit_anywhere(CpStageWorld *w,int on);
 int cp_stage_walkable_from_nest(const CpStageWorld *w,float x,float z);
 int cp_stage_part_id(const char *id);
+int cp_stage_legacy_apply(CpStageWorld *w,int diet,int part); /* the cell's legacy: starting diet (-1 keep) and one owned starter part (-1 none) */
 int cp_stage_part_find(CpStageWorld *w,int part,int source);
 int cp_stage_part_buy(CpStageWorld *w,int part,int kind); /* 0 part, 1 next level, 2 next tier */
 int cp_stage_edit(CpStageWorld *w,const char *genome);  /* Evolve: buys what the genome adds, then cp_stage_evolve once */
@@ -409,10 +423,12 @@ int cp_stage_social_parse(const char *text,CpStageInput *out,int *rc);   /* 1 = 
 int cp_stage_social_legal(const CpStageWorld *w,int verb);               /* the verb is worth listing in legal_verbs */
 /* --- debug ops (PLAN-devtools step 4): the only way the dev tools change the simulation --- */
 enum { CP_STAGE_DBG_TELEPORT=1, CP_STAGE_DBG_SPAWN, CP_STAGE_DBG_KILL, CP_STAGE_DBG_HEAL,
-       CP_STAGE_DBG_CLOCK, CP_STAGE_DBG_FLAGS, CP_STAGE_DBG_PARAM };
+       CP_STAGE_DBG_CLOCK, CP_STAGE_DBG_FLAGS, CP_STAGE_DBG_PARAM, CP_STAGE_DBG_GRANT };
 enum { CP_STAGE_FLAG_GOD=1, CP_STAGE_FLAG_AI_OFF=2 };
 /* TELEPORT id x z | SPAWN a=species x z | KILL id | HEAL id x=hp z=stamina (negative = max) | CLOCK a=tick |
- * FLAGS a=mask | PARAM a=index into CP_STAGE_PARAMS v=value (clamped). id 0 = player, 1..n = wild. */
+ * FLAGS a=mask | PARAM a=index into CP_STAGE_PARAMS v=value (clamped) |
+ * GRANT a=part id (catalogue index) or -1 for every part: discovered and owned at level >= 1 (dev builds: a creature made in the creator
+ * keeps all its parts, and the nest ownership checks accept them). id 0 = player, 1..n = wild. */
 typedef struct { int32_t op,id,a; float x,z,v; } CpStageDebug;
 typedef struct { uint32_t tick; CpStageDebug d; } CpStageDebugEntry;
 /* 0 on success, <0 and nothing changed otherwise (text: cp_stage_debug_error). Recomputes w->hash. */
@@ -426,6 +442,12 @@ extern const int CP_STAGE_PARAM_COUNT;
 uint64_t cp_stage_replay_ex(const CpStageSetup *setup,const uint8_t *snapshot,size_t snap_len,const CpStageField *field,
                             const CpStageLogEntry *log,int count,const CpStageDebugEntry *dbg,int dbg_count,
                             uint32_t ticks,uint64_t *hashes);
+/* Input log v4: the run toggle of a tick (`on` 0/1, applied with cp_stage_set_run after that tick's debug ops, before its order and
+ * step, as the Godot session does). Entries carry absolute world ticks, ascending. cp_stage_replay_ex is this with no run entries. */
+typedef struct { uint32_t tick; int32_t on; } CpStageRunEntry;
+uint64_t cp_stage_replay_run(const CpStageSetup *setup,const uint8_t *snapshot,size_t snap_len,const CpStageField *field,
+                             const CpStageLogEntry *log,int count,const CpStageDebugEntry *dbg,int dbg_count,
+                             const CpStageRunEntry *runs,int run_count,uint32_t ticks,uint64_t *hashes);
 uint64_t cp_stage_step(CpStageWorld *w,const CpStageInput *input);
 uint64_t cp_stage_hash(const CpStageWorld *w);
 /* Returns bytes excluding NUL, or -1 on insufficient capacity. */
