@@ -15,6 +15,8 @@ const AgentServer := preload("res://devtools/agent/agent_server.gd")
 const SitePicker := preload("res://devtools/site_picker.gd")
 const PathOverlay := preload("res://devtools/path_overlay.gd")
 const OptionsHud := preload("res://devtools/tuning/options_hud.gd")
+const FlagMode := preload("res://devtools/notes/flag_mode.gd")
+const NoteCommands := preload("res://devtools/notes/note_commands.gd")
 const OptionDefs := preload("res://devtools/tuning/option_defs.gd")
 
 ## 1. Dev tools ON in every debug build (the editor and `godot --path godot`); `--dev` forces on in any
@@ -37,6 +39,7 @@ var feedback: CanvasLayer
 var tuning                    # TuningRegistry (entries appear when the island is ready)
 var tuning_panel: CanvasLayer
 var options_hud: CanvasLayer  # F10 option mode
+var flag: CanvasLayer         # flag mode and in-game notes (Shift+F8)
 var sites                     # Sites for the running island (built when it is ready)
 var console: CanvasLayer     # console.console.registry is the command registry (also used by the agent socket)
 
@@ -77,6 +80,10 @@ func _ready() -> void:
 		options_hud.name = "OptionsHud"
 		options_hud.tuning = tuning
 		add_child(options_hud)
+		flag = FlagMode.new()
+		flag.name = "FlagMode"
+		add_child(flag)
+		NoteCommands.register(console.registry, flag)
 		if "--agent" in OS.get_cmdline_user_args():
 			agent = AgentServer.new()
 			agent.name = "AgentServer"

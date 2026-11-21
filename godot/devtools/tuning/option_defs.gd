@@ -70,6 +70,10 @@ static func _overlays(reg, console_registry) -> void:
 			if o != null:
 				o.set_enabled(v == "on"), false,
 		{"desc": "the planned GO route drawn on the ground."})
+	reg.add_choice("notes", "overlays", ["off", "on"], "off",
+		func(): return "on" if Dev.flag != null and Dev.flag.pins_overlay else "off",
+		func(v): if Dev.flag != null: Dev.flag.set_pins_overlay(v == "on"), false,
+		{"desc": "pins on every open note (always shown in flag mode, Shift+F8)."})
 	reg.add_choice("legend", "overlays", ["off", "on"], "off",
 		func(): return "on" if Dev.legend != null and Dev.legend.corner_visible else "off",
 		func(v): if Dev.legend != null: Dev.legend.corner_visible = (v == "on"), false,

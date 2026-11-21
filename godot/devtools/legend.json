@@ -40,6 +40,7 @@
     "dev_quicksave": {"label": "Quick save scenario", "group": "Dev tools", "dev": true, "contexts": ["walk", "fight"]},
     "dev_quickload": {"label": "Scenario picker", "group": "Dev tools", "dev": true, "contexts": ["walk", "fight"]},
     "dev_options": {"label": "Option mode (1-9 group, Up/Down option, Left/Right value, Backspace reset, Ctrl+1-4 save, Alt+1-4 recall)", "group": "Dev tools", "dev": true, "contexts": ["walk", "fight"]},
+    "dev_flag": {"label": "Flag mode: click a creature, plant, prop or spot to leave a note (Tab tag, Shift+Tab severity, Enter saves)", "group": "Dev tools", "dev": true, "contexts": ["walk", "fight"]},
     "dev_feedback": {"label": "Feedback (note + replay)", "group": "Dev tools", "dev": true, "contexts": ["walk", "fight", "studio"]},
     "time_pause": {"label": "Pause time", "group": "Time", "dev": true, "contexts": ["walk", "fight"]},
     "time_step": {"label": "Step one tick (paused)", "group": "Time", "dev": true, "contexts": ["walk", "fight"]},

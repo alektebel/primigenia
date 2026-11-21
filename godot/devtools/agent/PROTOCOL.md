@@ -15,6 +15,8 @@ Lock-step: the stage never advances by itself while the agent mode is on; only `
 | `{"cmd":"screenshot"}` | `{"ok":true,"path":"/abs/shot-000123.png"}`; headless: error "no renderer (run under xvfb without --headless)" |
 | `{"cmd":"scenario_save","name":".."}` / `{"cmd":"scenario_load","name":".."}` | ok / the scenario error sentence |
 | `{"cmd":"verify"}` | replays the session log from its start in a fresh world: `{"ok":true,"match":true,"ticks":n}` |
+| `{"cmd":"opt"}` / `{"cmd":"opt","set":{"light":"day"}}` / `"preset":2` / `"reset":true` | `{"ok":true,"options":{non-default choices and numbers},"line":"light day"}` (F10 option mode) |
+| `{"cmd":"notes","all":false}` / `{"cmd":"note_done","note":"a1b2c3","fix":"<commit>"}` / `{"cmd":"note_add","text":"..","tags":["bug"],"severity":2}` | in-game notes: index rows, ok, `{"ok":true,"note_id":..}` (flag mode) |
 | `{"cmd":"quit"}` | ok, then the process exits 0 |
 
 `obs` is `cp_stage_observe` (schema `world-2`; every `observe` command also acknowledges the events it lists, so the next one shows only what happened after it; the same text the Python binding's `StageWorld.observe()` returns) plus `tick`, `fighting`,

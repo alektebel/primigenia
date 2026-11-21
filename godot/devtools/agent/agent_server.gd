@@ -8,6 +8,8 @@ extends Node
 const WorldLog := preload("res://game/stage/world_log.gd")
 const Scenario := preload("res://devtools/scenario.gd")
 const Feedback := preload("res://devtools/feedback.gd")
+const NoteStore := preload("res://devtools/notes/note_store.gd")
+const NoteCommands := preload("res://devtools/notes/note_commands.gd")
 
 const PROTOCOL := 1
 const STUCK_TICKS := 30
@@ -150,6 +152,16 @@ func _dispatch(req: Dictionary) -> Dictionary:
 			if bool(req.get("reset", false)):
 				tn.apply({"format": tn.FORMAT, "values": {}})
 			return {"ok": true, "options": tn.current_values(), "line": tn.choices_line()}
+		"notes":
+			var all_notes: Array = NoteStore.list(Dev.flag.store_dir(), not bool(req.get("all", false)))
+			return {"ok": true, "notes": all_notes.map(func(n): return NoteStore.index_row(n))}
+		"note_done":
+			var ne: String = NoteStore.mark_done(Dev.flag.store_dir(), str(req.get("note", "")), str(req.get("fix", "")))
+			Dev.flag.reload()
+			return {"ok": ne == "", "error": ne}
+		"note_add":
+			var nres: Dictionary = NoteCommands.add(Dev.flag, str(req.get("text", "")), req.get("tags", []), int(req.get("severity", 2)))
+			return {"ok": nres.ok, "error": nres.error, "note_id": nres.get("id", "")}
 		"act":
 			if req.has("order"):
 				var res: Dictionary = st.world.command_input(str(req.order))

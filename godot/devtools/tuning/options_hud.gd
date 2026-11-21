@@ -90,7 +90,7 @@ func close() -> void:
 	if not is_open:
 		return
 	is_open = false
-	Game.options_open = false
+	Game.options_open = Dev.flag != null and Dev.flag.active
 	_refresh()
 
 func toggle() -> void:

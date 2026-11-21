@@ -140,6 +140,14 @@ func _ready() -> void:
 	edit.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	edit.wrap_mode = TextEdit.LINE_WRAPPING_BOUNDARY
 	box.add_child(edit)
+	var flag := Button.new()
+	flag.text = "Flag something (Shift+F8)"
+	flag.pressed.connect(func():
+		close(false)
+		var d = get_node_or_null("/root/Dev")
+		if d != null and d.flag != null:
+			d.flag.enter())
+	box.add_child(flag)
 	add_child(panel)
 
 func open() -> void:
@@ -186,7 +194,7 @@ func save_now(note: String) -> String:
 func _input(e: InputEvent) -> void:
 	if not (e is InputEventKey) or not e.pressed or e.echo or not Dev.enabled:
 		return
-	if e.is_action_pressed("dev_feedback") and not is_open and not Game.console_open:
+	if e.is_action_pressed("dev_feedback") and not e.shift_pressed and not is_open and not Game.console_open and not Game.options_open:
 		open()
 		get_viewport().set_input_as_handled()
 	elif is_open and e.keycode == KEY_ESCAPE:

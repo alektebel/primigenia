@@ -1,0 +1,42 @@
+{
+	"build": "unknown",
+	"camera": {
+		"distance": 2.65488958358765,
+		"fov": 48.0,
+		"orbit_pitch": 0.0,
+		"pitch": 0.261799387799149,
+		"pos": [
+			-0.98,
+			42.81,
+			-2.37
+		],
+		"yaw": -2.74889355458867,
+		"z_target": 0.15
+	},
+	"created": "2026-11-21T15:52:34",
+	"fix": "",
+	"format": "primigenia.note/1",
+	"hour": 0.19,
+	"id": "770178",
+	"options": {},
+	"pos": [
+		3.3,
+		41.03,
+		14.81
+	],
+	"severity": 2,
+	"stamp": "20261121-155234",
+	"status": "open",
+	"tags": [
+		"look"
+	],
+	"target": {
+		"id": 24,
+		"kind": "creature",
+		"name": "Garfio #24",
+		"part": "",
+		"species": "Garfio"
+	},
+	"text": "legs cross when it turns toward the water",
+	"tick": 94
+}

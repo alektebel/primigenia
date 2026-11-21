@@ -15,7 +15,7 @@ Implements `PLAN-devtools.md` and `PLAN-heights.md`. Code: `godot/devtools/`, C:
 
 ## Keys (InputMap actions, physical keycodes; the legend shows the real label)
 F1 legend in all builds: hold = the key sheet (a veil with Alegreya text and outlined key caps, no panel; the menu's "Keys" pins it until Esc). The corner hint is off by default since the diegetic UI (docs/godot/UI-DIEGETIC.md; `legend.corner_visible`, a tap on F1 still toggles it); the onboarding hints replace it in play (D13 is the sheet only). `legend.json` lists `journal` (J) and `family_tree` (T) and the four ring gestures of the `radial` context; the `radial_*` letter actions are gone. Dev builds: console on the key left of 1 or F12; F2 sites picker, Ctrl+B
-bookmark; F3 tuning panel, F4 swap A/B; F5 quick save, F6 scenario picker; F8 feedback; F10 option mode; P pause, `.` step, `[` `]` timescale.
+bookmark; F3 tuning panel, F4 swap A/B; F5 quick save, F6 scenario picker; F8 feedback; F10 option mode; Shift+F8 flag mode; P pause, `.` step, `[` `]` timescale.
 Reserved, not bound: F7 free camera, F9 scrubber.
 
 ## Formats
@@ -42,6 +42,23 @@ dusk 18:12, night 0:00; the clock debug op), `view` (default, close, mid, far, t
 built, so it applies at the next island start), `path` and `legend` overlays, `gait` (today; `froude` disabled "after the gait port"), plus every numeric entry.
 TODO options: gait selection by Froude (needs `loco_gait.gd` port), footfall markers and nav grid overlays (do not exist at run time), skin variants beyond v1/pre-v1,
 live quality rebuild, free camera (F7), weather, time scale as a choice, creature scale, flora density.
+
+## Flag mode and in-game notes (Shift+F8, DT-NOTE)
+Flag things in the world and leave a note. Code: `godot/devtools/notes/` (`flag_mode.gd` the mode, box and pins, `note_pick.gd` the picker,
+`note_store.gd` the files, `note_commands.gd` the console); `tools/feedback/notes.py` for agents.
+Shift+F8 (or "Flag something" in the F8 dialog) enters it; Esc leaves. Game input is suspended (`Game.options_open`, shared with the F10 HUD; leaving one keeps
+the other's suspension). The label at the cursor says what is under the mouse: `creature: sp #id` (the body is one sphere, so the `part` stays empty until a part
+collider exists), `prop` (remains of a dead creature, the nest, finds and stones, meteor shards), `plant` (flora id), `water` or `terrain`.
+A click opens the note box: one text line, Tab cycles the tag (none, bug, look, motion, idea, lore), Shift+Tab the severity 1-3, Enter saves, Esc cancels.
+Pins (a small coloured dot on a stem: green 1, gold 2, red 3) mark open notes above their target; a creature's pin follows its body, the others stay at the spot.
+They show in flag mode or when the F10 Overlays `notes` option is on. Hover a pin for its text; click it to edit; Ctrl+D in the box marks it done.
+Storage: `feedback/notes/<stamp>-<id>/` (git-ignored; falls back to `user://feedback/notes/`; `--notes-dir=<path>` overrides) with `note.json`
+(`primigenia.note/1`: text, tags, severity, target {kind, id, species, part, name}, pos, tick, hour, camera, options (the active F10 choices), build, status
+`open` or `done`, fix), `screenshot.jpg`, `crop.jpg` (384x256 around the target), `scenario.json/.cpstate/.log` (load it to be at that moment) and one line per
+note in `feedback/notes/index.jsonl`. The screenshot is taken with the flag UI hidden.
+Agents: `python3 tools/feedback/notes.py list [--all]`, `show <id>`, `done <id> "<fix commit>"`, `export-md [--all]` (Markdown table for STATUS and the
+tracker); console `notes [all]`, `note show|done|add ...`, `flag [on|off]`; agent socket `{"cmd":"notes","all":false}`, `{"cmd":"note_done","note":..,"fix":..}`,
+`{"cmd":"note_add","text":..,"tags":[..],"severity":2}`.
 
 ## Curated scenarios (`godot/scenarios/creature/`)
 
