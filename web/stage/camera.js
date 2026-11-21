@@ -14,7 +14,7 @@ export class ChaseCamera {
  zoom(delta){this.distance=clamp(this.distance+delta,this.minDistance,this.maxDistance)}
  update({player,enemy,fighting=false,groundY,dt=0,aspect=1.6}){
   this.manual=Math.max(0,this.manual-dt);
-  if(player.speed>.4&&!this.manual)this.yaw+=angle(player.yaw+Math.PI-this.yaw)*(1-Math.exp(-dt/.4));
+  if(player.speed>.4&&!this.manual)this.yaw+=angle(player.yaw+Math.PI-this.viewYaw)*(1-Math.exp(-dt/.4));
   const wide=clamp((this.distance/this.height-6)/6,0,1);
   this.pitch=clamp(.24+wide*.6+this.orbitPitch,.04,1.15);
   const h=this.height,target={x:player.x,y:groundY(player.x,player.z)+h*1.5,z:player.z};

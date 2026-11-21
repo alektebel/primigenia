@@ -18,6 +18,9 @@ shot=camera.update({player:p,groundY:ridge,dt:0,aspect:1.6});assert(shot.positio
 const fight=new ChaseCamera({height:3,yaw:Math.PI});
 shot=fight.update({player:p,enemy:{...p,x:16},fighting:true,groundY:flat,dt:0,aspect:1.6});
 assert.equal(shot.target.x,8);assert(shot.distance>18);
+const fightYaw=shot.yaw;
+for(let i=0;i<60;i++)fight.update({player:{...p,yaw:fightYaw-Math.PI,speed:2},enemy:{...p,x:16},fighting:true,groundY:flat,dt:1/60,aspect:1.6});
+assert(Math.abs(fight.viewYaw-fightYaw)<1e-9,'walking toward the displayed view does not spiral the combat camera');
 shot=fight.update({player:p,groundY:flat,dt:2,aspect:1.6});assert(shot.target.x<.01);assert(Math.abs(shot.distance-18)<.1);
 for(const move of [0,1,2,3,4,5])assert(moveTell(move).name&&moveTell(move).color);
 assert.equal(new Set([0,1,3,4].map(m=>moveTell(m).color)).size,4);
