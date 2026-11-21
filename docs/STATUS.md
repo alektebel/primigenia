@@ -31,6 +31,8 @@ Reference clips: gorilla knuckle-walk (tracker X3, owner's Downloads) and Spore 
 
 **Old unmerged branches (5+ days, need triage: merge, or close):** art-food, art-meteor, art-nest, art-remains, art-species, art-underwater (78 dirty), dem, feel-camera (10 dirty), idol, loco (5 dirty), m-e2e, m-ecology, m-garfio, m-vista, w11-alpine. Run `tools/agents/agents.sh status` for the live list.
 
+**Lore (after the integration lands `lore/autoloop-2`):** (1) technosphere pass: every world gets its heat-path fact per A37 / `lore/rules/technosphere.md` (council proposes, astrobio referee judges); (2) resume the autoloop for the 4 paused worlds (wheels died mid-run at shutdown; orbital, metallic, deepinterior queued); (3) tech-tree council A30 on top. Fix the 2 validate errors in void/mycelia/oddities.
+
 ## Background jobs (die on shutdown)
 - Lore autoloop: `tools/agents/agents.sh restart lore` (worktree lore-autoloop2).
 - Codex resume of species-v8 / gaitopt: only when the owner wants them continued.
