@@ -5,7 +5,7 @@ Updated 2026-11-21 (continuity, resources, motion canon A34, autonomy A33, score
 ## Focus now
 **Procedural creature movement that looks like the references.** Order (research plan `docs/research/procedural-locomotion.md`, tracker stages M0–M6):
 1. **L0 scorecard — merged 39e28bc** (`make godot-loco-score`, 32 s; baseline label 9095d8c: every body fails head pitch, leg extension, foot slip; gallop has no flight phase; pivots on U-turns). Measures measure each body × scenario in the zoo (head pitch, shoulder/hip ratio, torso roll vs hand plants, foot slip, footfall diagram, turn radius) and compare against keypoints measured on the reference clips. Owner approved 2026-11-21 (D-01).
-2. L1 posture and head → torso roll → arms that walk (D-12, reach rule) → turning → gallop → slopes → eat/dig/idle → many legs/perf.
+2. **L1 posture merged** (head level, roll, slip fixed; leg extension 0.84–0.88 and bob 13% short of target: needs C speed per body, D-26; small knee-flip rise on trotter steps). Next → torso roll → arms that walk (D-12, reach rule) → turning → gallop → slopes → eat/dig/idle → many legs/perf.
 
 Reference clips: gorilla knuckle-walk (tracker X3, owner's Downloads) and Spore captures in `~/Desarrollo/cpore-refs/spore-captures/` (never commit). Capture tool: `docs/research/loco_review.gd`.
 
@@ -20,12 +20,12 @@ Reference clips: gorilla knuckle-walk (tracker X3, owner's Downloads) and Spore 
 | Branch | Worktree | State | Next step |
 |---|---|---|---|
 | `art/skin-v1` | cpore-wt/skin-v1 | Sonnet subagent: creature skin v1 (plastic shine, night readability, dawn/dusk warmth; lab → Godot), brief `docs/briefs/skin-v1.md`, started 2026-11-21 | Review compare vs look baseline; merge under A33 if targets pass and nothing regresses |
+| `art/creature-fit` | cpore-wt/creature-fit | Sonnet subagent: parts fit (floating teeth, cartoon eye, ball-joint limbs, pattern scale, horn), part-fit check first, brief `docs/briefs/creature-fit.md` | Review, merge under A33; then render 3–4 starter designs for the owner |
 | `c2/moves-recipes` | cpore-wt/c2-moves | WIP b0ed502, main merged, clean | Run godot play, flight, devtools, bridge, menu, moves-recipes, studio; finish MOVES-RECIPES-REPORT table; merge |
 | `c2/first-quest` | cpore-wt/first-quest | WIP ab2cefd, e2e green (chain ends tick 2904), clean | After moves merges: renumber DUG/MOVE_USED after 29, snapshot 10; flame evidence; results table |
 | `c2/species-v8` | cpore-wt/species-v8 | Codex, 34 dirty files | Sonnet commits + integrates; events after first-quest |
 | `art/wl6-cave-mesher` | cpore-wt/wl6-cave | Codex C++ mesher, uncommitted | Sonnet art + integration |
 | `tools/gaitopt` | cpore-wt/gaitopt | Codex, pilot failed (6/10 bodies fall) | Paused; M1b balance spike pending owner (D-02) |
-| `anim/l1-posture` | cpore-wt/l1-posture | Sonnet subagent: L1 posture + head + torso + foot slip (brief `docs/briefs/l1-posture.md`), started 2026-11-21 | Review scorecard compare vs 9095d8c; merge under A33 if numbers improve and nothing in canon §5 regresses |
 
 **Old unmerged branches (5+ days, need triage: merge, or close):** art-food, art-meteor, art-nest, art-remains, art-species, art-underwater (78 dirty), dem, feel-camera (10 dirty), idol, loco (5 dirty), m-e2e, m-ecology, m-garfio, m-vista, w11-alpine. Run `tools/agents/agents.sh status` for the live list.
 
