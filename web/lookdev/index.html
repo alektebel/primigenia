@@ -1,0 +1,304 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Primigenia look-dev lab</title>
+<!--
+  three.js look-dev lab (docs/briefs/look-score.md phase 2, DESIGN A35). A lab, never kept in sync with Godot: iterate skin shaders
+  fast here, ship them in Godot. Variant 0 is today's Godot creature skin (godot/creature/shaders/skin_common.gdshaderinc, realism
+  pilot): countershading, mottle/stripes, scales (worley), pores, wrinkles, dry back / damp belly roughness, fake subsurface wrap
+  light, thin clearcoat. Omitted on the proxy: limb/exoskeleton actuation modes, the baked Turing texture (procedural stripes
+  instead), the wet snout. The day cycle numbers come from godot/game/island/day_night.gd and look.gd.
+  URL: ?t=dawn|midday|dusk|night (or 0..1 light) &q=low|medium|high &v=0.. &cam=close|chase|far &still=1 (no animation, for capture)
+  three.js r128 from cdnjs, same version as web/studio. No other dependency.
+-->
+<style>
+:root{--bg:#14161a;--panel:rgba(24,27,32,.92);--ink:#e8e6df;--dim:#9aa0a6;--line:rgba(255,255,255,.14);--amber:#e8a41c}
+@media (prefers-color-scheme:light){:root{--bg:#eceae4;--panel:rgba(250,248,242,.94);--ink:#1d1f22;--dim:#5b6066;--line:rgba(0,0,0,.16)}}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font:13px/1.4 system-ui,sans-serif;overflow:hidden}
+#stage{position:fixed;inset:0}
+#stage canvas{display:block;width:100%;height:100%}
+.panel{position:fixed;top:12px;left:12px;width:270px;max-height:calc(100% - 24px);overflow:auto;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:12px 14px}
+.panel h1{font-size:14px;margin:0 0 8px}
+.panel label{display:block;margin:10px 0 3px;color:var(--dim);font-size:12px}
+.panel input[type=range]{width:100%}
+.panel select,.seg button{font:inherit;color:inherit;background:rgba(127,127,127,.14);border:1px solid var(--line);border-radius:8px;padding:5px 9px}
+.panel select{width:100%}
+.seg{display:flex;flex-wrap:wrap;gap:5px}
+.seg button{cursor:pointer;transition:transform 160ms ease-out}
+.seg button:active{transform:scale(.97)}
+.seg button[aria-pressed=true]{background:var(--amber);border-color:var(--amber);color:#1a1200;font-weight:600}
+.note{margin-top:10px;color:var(--dim);font-size:11px}
+#readout{position:fixed;right:12px;bottom:10px;color:var(--dim);font-size:11px;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:3px 8px}
+@media (max-width:700px){.panel{position:static;width:auto;margin:8px;max-height:none}#stage{position:relative;height:60vh}html,body{overflow:auto}}
+body.capture .panel,body.capture #readout{display:none}
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+</head>
+<body>
+<div id="stage"></div>
+<div class="panel" id="panel">
+  <h1>Look-dev lab</h1>
+  <label>Time of day</label>
+  <div class="seg" id="tods"></div>
+  <input type="range" id="light" min="0" max="1" step="0.01" value="1" aria-label="Day light 0 night to 1 midday">
+  <label>Quality</label>
+  <div class="seg" id="quals"></div>
+  <label>Skin shader variant</label>
+  <select id="variant"></select>
+  <label>Camera</label>
+  <div class="seg" id="cams"></div>
+  <label>Body colours (player hues)</label>
+  <div class="seg"><input type="color" id="cA" value="#b8523a"><input type="color" id="cB" value="#2a1812"><input type="color" id="cC" value="#d8cdb8"></div>
+  <p class="note" id="vnote"></p>
+  <p class="note">Lab only: not kept in sync with Godot (A35). The sun direction is fixed like the game's hero look.</p>
+</div>
+<div id="readout"></div>
+<script>
+"use strict";
+const Q = new URLSearchParams(location.search);
+const STILL = Q.has("still");
+if (STILL) document.body.classList.add("capture");
+
+/* ---------- the game's numbers (look.gd, day_night.gd) ---------- */
+const SUN_DIR = new THREE.Vector3(-0.62, 0.28, -0.72).normalize();
+const SUN_COLOR = new THREE.Color(1.0, 0.812, 0.604);       // CREATURE_SUN_COLOR
+const DUSK = new THREE.Color(1.0, 0.52, 0.30), MOON = new THREE.Color(0.55, 0.68, 1.0);
+const NIGHT_AMB = new THREE.Color(0.28, 0.36, 0.72), DAY_AMB = new THREE.Color(0.62, 0.75, 0.92);
+const SUN_ENERGY = 4.4, AMB_ENERGY = 1.5, EXPOSURE = 0.926;
+const TODS = { dawn: 0.50, midday: 1.0, dusk: 0.50, night: 0.0 };
+const SKY = { dawn: [0xe9b88a, 0x8aa6d6, 0x3a5aa0], midday: [0xf2d6b2, 0x86b1ec, 0x2a64c6], dusk: [0xf0985a, 0x7a7fc0, 0x2c3a78], night: [0x1a2038, 0x0c1226, 0x050812] };
+const smooth = (a, b, x) => { x = Math.min(1, Math.max(0, (x - a) / (b - a))); return x * x * (3 - 2 * x); };
+const mix = (a, b, t) => a + (b - a) * t;
+
+/* ---------- skin shader variants ---------- */
+// A variant is { name, note, fragment, emissive?, clearcoat, ccRough }: GLSL spliced into MeshPhysicalMaterial. `fragment` (colour stage) sets
+// `vec3 sk` (albedo), `float bp` (height for the normal) and `float rgh` (roughness); `emissive` (after the normal is known) adds to
+// totalEmissiveRadiance. Add a variant = add an entry.
+const SKIN_COMMON = `
+uniform vec3 cA,cB,cC; uniform float uScale,uWet,uPat,uDetail; uniform vec3 uSunDir;
+varying vec3 vObjP; varying vec3 vObjN;
+float h3(vec3 p){p=fract(p*.3183099+.1);p*=17.;return fract(p.x*p.y*p.z*(p.x+p.y+p.z));}
+float n3(vec3 x){vec3 i=floor(x),f=fract(x);f=f*f*(3.-2.*f);return mix(mix(mix(h3(i),h3(i+vec3(1.,0.,0.)),f.x),mix(h3(i+vec3(0.,1.,0.)),h3(i+vec3(1.,1.,0.)),f.x),f.y),mix(mix(h3(i+vec3(0.,0.,1.)),h3(i+vec3(1.,0.,1.)),f.x),mix(h3(i+vec3(0.,1.,1.)),h3(i+vec3(1.,1.,1.)),f.x),f.y),f.z);}
+vec2 wor(vec3 x){vec3 p=floor(x),f=fract(x);float a=8.,b=8.;for(int k=-1;k<=1;k++)for(int j=-1;j<=1;j++)for(int i=-1;i<=1;i++){vec3 g=vec3(float(i),float(j),float(k));vec3 o=vec3(h3(p+g),h3(p+g+17.3),h3(p+g+41.7));vec3 r=g+o-f;float d=dot(r,r);if(d<a){b=a;a=d;}else if(d<b){b=d;}}return sqrt(vec2(a,b));}
+vec3 pN(vec3 sp,vec3 sn,vec2 dH){vec3 sx=dFdx(sp),sy=dFdy(sp),r1=cross(sy,sn),r2=cross(sn,sx);float det=dot(sx,r1);vec3 g=sign(det)*(dH.x*r1+dH.y*r2);return normalize(abs(det)*sn-g);}
+`;
+const VARIANTS = [
+  { name: "0  Godot today (realism pilot skin)",
+    note: "Port of skin_common.gdshaderinc: countershading, stripes + mottle, worley scales, pores, wrinkles, dry/damp roughness, wrap-light subsurface, thin clearcoat.",
+    fragment: `
+      vec3 rp=vObjP; float dd=vObjN.y*.9;
+      float freq=uScale*1.7*(0.7/0.6);
+      float px=length(fwidth(rp))*freq; float fade=1.-smoothstep(.22,.8,px);
+      float nn=n3(rp*1.3/.6*.7)+.5*n3(rp*2.9/.6*.7);
+      float tex=.5+.5*sin(rp.z*5.2+(nn-.75)*3.4);
+      float mk=smoothstep(.46,.6,tex); mk*=smoothstep(-.4,.3,dd);
+      float cs=.5, pc=1.;
+      sk=mix(cA,cC,(1.-smoothstep(-.6,.3,dd))*clamp(.35+.65*cs,0.,1.));
+      sk*=1.-.18*cs*smoothstep(.2,1.,dd)+.08*cs*(1.-smoothstep(-.8,0.,dd));
+      sk*=.9+.2*smoothstep(.3,1.1,nn);
+      sk=mix(sk,cB,mk*.92*pc);
+      vec2 w1=wor(rp*freq*uDetail);
+      float sh=smoothstep(0.,.2,w1.y-w1.x), plate=smoothstep(0.,.55,w1.y-w1.x);
+      float pores=n3(rp*freq*5.), cre=n3(rp*freq*.45+n3(rp*freq*.2)*3.);
+      float wr=1.-abs(2.*cre-1.);
+      float hgt=(1.*plate*.085+pores*.025+.35*wr*wr*.22)*fade/freq*uDetail;
+      sk*=mix(1.,mix(.86,1.,sh),.7*fade*uDetail)*(.95+.1*pores);
+      bp=hgt;
+      float dry=mix(.86,.45,uWet);
+      rgh=clamp(dry*mix(1.,.78,smoothstep(.2,-.6,dd))*(1.-.12*plate)+(pores-.5)*.12,.07,1.);
+    `, emissive: `
+      float thin=.35; float sss=.45;
+      vec3 Lw=normalize(mat3(viewMatrix)*uSunDir); float ndl=dot(normal,Lw);
+      float wrap=clamp((ndl+.5)/1.5,0.,1.)-clamp(ndl,0.,1.);
+      vec3 blood=sk*vec3(1.,.52,.36)*1.4+vec3(.02,0.,0.);
+      totalEmissiveRadiance+=sk*pow(1.-clamp(dot(normalize(vViewPosition),normal),0.,1.),3.)*.18+blood*wrap*sss*(.25+.75*thin);
+    `, clearcoat: 0.24, ccRough: 0.4 },
+  { name: "1  Flat reference (no detail)",
+    note: "Plain countershaded colour, uniform matte roughness: the floor every variant should beat.",
+    fragment: `
+      float dd=vObjN.y*.9;
+      sk=mix(cA,cC,1.-smoothstep(-.6,.3,dd));
+      rgh=.8; bp=0.;
+    `, clearcoat: 0.0, ccRough: 0.5 },
+];
+
+function skinMaterial(variantIndex, quality) {
+  const V = VARIANTS[variantIndex];
+  const m = new THREE.MeshPhysicalMaterial({ roughness: .6, metalness: 0, clearcoat: V.clearcoat, clearcoatRoughness: V.ccRough });
+  m.extensions = { derivatives: true };
+  m.userData.u = {
+    cA: { value: new THREE.Color("#b8523a").convertSRGBToLinear() }, cB: { value: new THREE.Color("#2a1812").convertSRGBToLinear() },
+    cC: { value: new THREE.Color("#d8cdb8").convertSRGBToLinear() }, uScale: { value: 7 }, uWet: { value: .2 },
+    uPat: { value: 1 }, uDetail: { value: quality === "low" ? 0.0001 : 1 }, uSunDir: { value: SUN_DIR.clone() },
+  };
+  m.customProgramCacheKey = () => "skin" + variantIndex + quality;
+  m.onBeforeCompile = (s) => {
+    Object.assign(s.uniforms, m.userData.u);
+    s.vertexShader = "varying vec3 vObjP; varying vec3 vObjN;\n" + s.vertexShader.replace("#include <begin_vertex>", "#include <begin_vertex>\nvObjP=position; vObjN=normal;");
+    s.fragmentShader = SKIN_COMMON + s.fragmentShader
+      .replace("#include <color_fragment>", "vec3 sk=vec3(.5); float bp=0.; float rgh=.6;\n" + V.fragment + "\ndiffuseColor.rgb=sk;")
+      .replace("#include <roughnessmap_fragment>", "#include <roughnessmap_fragment>\nroughnessFactor=rgh;")
+      .replace("#include <normal_fragment_maps>", "#include <normal_fragment_maps>\nnormal=pN(-vViewPosition,normal,vec2(dFdx(bp),dFdy(bp)));")
+      .replace("#include <emissivemap_fragment>", "#include <emissivemap_fragment>\n" + (V.emissive || ""));
+  };
+  return m;
+}
+
+/* ---------- scene ---------- */
+const stage = document.getElementById("stage");
+const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
+renderer.outputEncoding = THREE.sRGBEncoding;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+stage.appendChild(renderer.domElement);
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(40, 1, .05, 2000);
+const sun = new THREE.DirectionalLight(0xffffff, 1);
+sun.castShadow = true;
+sun.shadow.camera.left = -6; sun.shadow.camera.right = 6; sun.shadow.camera.top = 6; sun.shadow.camera.bottom = -6; sun.shadow.camera.near = 1; sun.shadow.camera.far = 60;
+sun.shadow.bias = -0.0004; sun.shadow.normalBias = .03;
+scene.add(sun, sun.target);
+const hemi = new THREE.HemisphereLight(0xffffff, 0x6a6a5c, 1);
+scene.add(hemi);
+
+// sky dome: three-colour gradient per time of day plus a sun glow towards SUN_DIR
+const skyU = { top: { value: new THREE.Color() }, mid: { value: new THREE.Color() }, hz: { value: new THREE.Color() }, sunDir: { value: SUN_DIR }, glow: { value: 1 } };
+const sky = new THREE.Mesh(new THREE.SphereGeometry(900, 32, 16), new THREE.ShaderMaterial({
+  side: THREE.BackSide, depthWrite: false, uniforms: skyU,
+  vertexShader: "varying vec3 vD; void main(){vD=normalize(position);gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}",
+  fragmentShader: "uniform vec3 top,mid,hz,sunDir; uniform float glow; varying vec3 vD; void main(){float h=clamp(vD.y,0.,1.);vec3 c=mix(hz,mid,smoothstep(0.,.25,h));c=mix(c,top,smoothstep(.2,.9,h));float s=max(dot(normalize(vD),normalize(sunDir)),0.);c+=vec3(1.,.62,.3)*pow(s,24.)*.6*glow+vec3(1.,.9,.7)*pow(s,900.)*3.*glow;gl_FragColor=vec4(c,1.);}",
+}));
+scene.add(sky);
+
+// ground patch: the game's meadow greens (G0/G1), blade-scale noise, lit by the same sun
+const groundMat = new THREE.MeshStandardMaterial({ roughness: 1, metalness: 0 });
+groundMat.onBeforeCompile = (s) => {
+  s.vertexShader = "varying vec3 vWp;\n" + s.vertexShader.replace("#include <begin_vertex>", "#include <begin_vertex>\nvWp=(modelMatrix*vec4(position,1.)).xyz;");
+  s.fragmentShader = "varying vec3 vWp;\nfloat gh(vec2 p){p=fract(p*vec2(.1031,.1030));p+=dot(p,p.yx+33.33);return fract((p.x+p.y)*p.x);}\nfloat gn(vec2 x){vec2 i=floor(x),f=fract(x);f=f*f*(3.-2.*f);return mix(mix(gh(i),gh(i+vec2(1,0)),f.x),mix(gh(i+vec2(0,1)),gh(i+vec2(1,1)),f.x),f.y);}\n" + s.fragmentShader.replace("#include <color_fragment>",
+    "float n1=gn(vWp.xz*.35)*.6+gn(vWp.xz*1.7)*.3+gn(vWp.xz*9.)*.25; vec3 g0=vec3(.090,.225,.040),g1=vec3(.185,.335,.075); diffuseColor.rgb=mix(g0,g1,smoothstep(.2,1.,n1));");
+};
+const ground = new THREE.Mesh(new THREE.PlaneGeometry(600, 600), groundMat);
+ground.rotation.x = -Math.PI / 2; ground.receiveShadow = true;
+scene.add(ground);
+
+/* ---------- creature proxy: capsule body, head ellipsoid, four limbs, tail ---------- */
+const creature = new THREE.Group();
+scene.add(creature);
+const parts = [];
+function addPart(geo, pos, rot) {
+  const mesh = new THREE.Mesh(geo, skinMat);
+  mesh.position.copy(pos); if (rot) mesh.rotation.set(rot[0], rot[1], rot[2]);
+  mesh.castShadow = mesh.receiveShadow = true; mesh.frustumCulled = false;
+  creature.add(mesh); parts.push(mesh);
+}
+function buildCreature() {
+  for (const p of parts) { creature.remove(p); p.geometry.dispose(); }
+  parts.length = 0;
+  const seg = state.quality === "low" ? [10, 6] : [32, 24];
+  const bodyG = new THREE.SphereGeometry(1, seg[0], seg[1]); bodyG.scale(.62, .6, 1.5);
+  addPart(bodyG, new THREE.Vector3(0, 1.0, 0));
+  const headG = new THREE.SphereGeometry(1, seg[0], seg[1]); headG.scale(.34, .3, .5);
+  addPart(headG, new THREE.Vector3(0, 1.15, 1.55), [.25, 0, 0]);
+  const tailG = new THREE.CylinderGeometry(.05, .28, 1.5, seg[0] / 2 | 0 || 8, 4); tailG.rotateX(Math.PI / 2 + .25);
+  addPart(tailG, new THREE.Vector3(0, .9, -1.9));
+  for (const [x, z] of [[-.5, .8], [.5, .8], [-.5, -.8], [.5, -.8]]) {
+    const upper = new THREE.CylinderGeometry(.14, .1, .7, 14, 3); addPart(upper, new THREE.Vector3(x, .55, z), [0, 0, x < 0 ? .12 : -.12]);
+    const foot = new THREE.SphereGeometry(1, 14, 10); foot.scale(.16, .08, .24); addPart(foot, new THREE.Vector3(x * 1.1, .08, z + .06));
+  }
+}
+
+/* ---------- state ---------- */
+const state = { tod: "midday", light: 1.0, quality: "medium", variant: 0, cam: "close" };
+let skinMat = skinMaterial(0, "medium");
+
+function applyLight() {
+  const k = state.light;
+  const warm = k > .35 ? SUN_COLOR.clone().lerp(DUSK, (1 - k) / .65) : DUSK.clone().lerp(MOON, 1 - k / .35);
+  const day = smooth(0, .8, k);
+  sun.color.copy(warm);
+  sun.intensity = SUN_ENERGY * mix(.12, 1, day) * .40;     // Godot energy 4.4 is in its own units (about 2x the three.js studio's 2.2 at the world tone map); scaled to read like the Godot frames
+  hemi.color.copy(NIGHT_AMB.clone().lerp(DAY_AMB, day));
+  hemi.groundColor.set(0x6a6a5c);
+  hemi.intensity = AMB_ENERGY * mix(.55, 1, day) * .35;
+  renderer.toneMappingExposure = EXPOSURE * mix(.5, 1, day) * 1.1;
+  sun.position.copy(SUN_DIR).multiplyScalar(40);
+  const t = state.tod;
+  const pal = SKY[t in SKY ? t : (k > .7 ? "midday" : k > .15 ? "dusk" : "night")];
+  skyU.hz.value.set(pal[0]).convertSRGBToLinear(); skyU.mid.value.set(pal[1]).convertSRGBToLinear(); skyU.top.value.set(pal[2]).convertSRGBToLinear();
+  skyU.glow.value = mix(.25, 1, day);
+  scene.fog = new THREE.Fog(new THREE.Color(pal[0]).convertSRGBToLinear(), 60, 420);
+  groundMat.color.setScalar(mix(.35, 1, day));
+}
+function applyQuality() {
+  const q = state.quality;
+  renderer.setPixelRatio(1);
+  sun.shadow.mapSize.set(q === "low" ? 512 : q === "medium" ? 1024 : 2048, q === "low" ? 512 : q === "medium" ? 1024 : 2048);
+  if (sun.shadow.map) { sun.shadow.map.dispose(); sun.shadow.map = null; }
+  sun.castShadow = q !== "low";
+  buildSkin();
+}
+function buildSkin() {
+  const old = skinMat;
+  skinMat = skinMaterial(state.variant, state.quality);
+  const c = (id) => new THREE.Color(document.getElementById(id).value).convertSRGBToLinear();
+  skinMat.userData.u.cA.value.copy(c("cA")); skinMat.userData.u.cB.value.copy(c("cB")); skinMat.userData.u.cC.value.copy(c("cC"));
+  for (const p of parts) p.material = skinMat;
+  old.dispose();
+  document.getElementById("vnote").textContent = VARIANTS[state.variant].note;
+}
+function applyCam() {
+  const c = state.cam;
+  const cams = { close: [[2.3, 1.5, 5.0], [0, .95, .8], 36], chase: [[-3.4, 2.2, -6.4], [0, .9, 0], 40], far: [[14, 6, 20], [0, .8, 0], 40] };
+  const [p, l, f] = cams[c];
+  camera.position.set(...p); camera.lookAt(...l); camera.fov = f; camera.updateProjectionMatrix();
+}
+function resize() {
+  const w = stage.clientWidth || innerWidth, h = stage.clientHeight || innerHeight;
+  renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix();
+}
+addEventListener("resize", () => { resize(); render(); });
+
+function segButtons(id, items, get, set) {
+  const el = document.getElementById(id); el.innerHTML = "";
+  for (const it of items) {
+    const b = document.createElement("button"); b.textContent = it; b.type = "button";
+    b.addEventListener("click", () => { set(it); sync(); });
+    el.appendChild(b);
+  }
+  el._sync = () => [...el.children].forEach((b) => b.setAttribute("aria-pressed", String(b.textContent === get())));
+}
+function sync() { for (const id of ["tods", "quals", "cams"]) document.getElementById(id)._sync(); document.getElementById("light").value = state.light; document.getElementById("variant").value = state.variant; render(); }
+segButtons("tods", Object.keys(TODS), () => state.tod, (t) => { state.tod = t; state.light = TODS[t]; applyLight(); });
+segButtons("quals", ["low", "medium", "high"], () => state.quality, (q) => { state.quality = q; applyQuality(); buildCreature(); });
+segButtons("cams", ["close", "chase", "far"], () => state.cam, (c) => { state.cam = c; applyCam(); });
+const vsel = document.getElementById("variant");
+VARIANTS.forEach((v, i) => { const o = document.createElement("option"); o.value = i; o.textContent = v.name; vsel.appendChild(o); });
+vsel.addEventListener("change", () => { state.variant = +vsel.value; buildSkin(); render(); });
+document.getElementById("light").addEventListener("input", (e) => { state.light = +e.target.value; state.tod = "custom"; applyLight(); sync(); });
+for (const id of ["cA", "cB", "cC"]) document.getElementById(id).addEventListener("input", () => { buildSkin(); render(); });
+
+function render() {
+  renderer.render(scene, camera);
+  document.getElementById("readout").textContent = `${state.tod} light ${state.light.toFixed(2)} | ${state.quality} | variant ${state.variant} | ${renderer.info.render.calls} draws`;
+  window.__rendered = (window.__rendered || 0) + 1;
+}
+
+// boot
+const qt = Q.get("t");
+if (qt) { if (qt in TODS) { state.tod = qt; state.light = TODS[qt]; } else { state.tod = "custom"; state.light = +qt; } }
+if (Q.get("q")) state.quality = Q.get("q");
+if (Q.get("v")) state.variant = +Q.get("v");
+if (Q.get("cam")) state.cam = Q.get("cam");
+resize(); applyQuality(); buildCreature(); applyLight(); applyCam(); sync();
+window.__ready = true;
+if (!STILL) {
+  let t0 = performance.now();
+  (function loop(t) { creature.position.y = 0; creature.rotation.y = Math.sin((t - t0) * .0004) * .35; render(); requestAnimationFrame(loop); })(t0);
+}
+</script>
+</body>
+</html>
