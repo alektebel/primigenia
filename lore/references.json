@@ -13088,5 +13088,103 @@
     "x-status": "verified",
     "x-note": "verified against Crossref (title 1.00), 2026-11-21",
     "x-checked": "2026-11-21"
+  },
+  {
+    "id": "lindeman_1942_trophic_dynamic",
+    "type": "article-journal",
+    "title": "The Trophic‐Dynamic Aspect of Ecology",
+    "author": [
+      {
+        "family": "Lindeman",
+        "given": "Raymond L."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1942
+        ]
+      ]
+    },
+    "container-title": "Ecology",
+    "DOI": "10.2307/1930126",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 0.99); title corrected from 'The trophic-dynamic aspect of ecology'; DOI added",
+    "x-checked": "2026-11-21"
+  },
+  {
+    "id": "pauly_christensen_1995_primary_production",
+    "type": "article-journal",
+    "title": "Primary production required to sustain global fisheries",
+    "author": [
+      {
+        "family": "Pauly",
+        "given": "Daniel"
+      },
+      {
+        "family": "Christensen",
+        "given": "Villy"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1995
+        ]
+      ]
+    },
+    "container-title": "Nature",
+    "DOI": "10.1038/376279b0",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "x-checked": "2026-11-21"
+  },
+  {
+    "id": "carbone_gittleman_2002_carnivore_density",
+    "type": "article-journal",
+    "title": "A common rule for the scaling of carnivore density",
+    "author": [
+      {
+        "family": "Carbone",
+        "given": "Chris"
+      },
+      {
+        "family": "Gittleman",
+        "given": "John L."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2002
+        ]
+      ]
+    },
+    "container-title": "Science",
+    "DOI": "10.1126/science.1067994",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "x-checked": "2026-11-21"
+  },
+  {
+    "id": "kleiber_1932_body_size",
+    "type": "article-journal",
+    "title": "Body size and metabolism",
+    "author": [
+      {
+        "family": "Kleiber",
+        "given": "Max"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1932
+        ]
+      ]
+    },
+    "container-title": "Hilgardia",
+    "x-status": "unverified",
+    "x-note": "cited by the food-web sheet from memory; not yet checked"
   }
 ]

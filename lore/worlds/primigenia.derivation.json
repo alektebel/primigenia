@@ -1,0 +1,670 @@
+{
+  "schema": "cpore.derivation/1",
+  "world": "primigenia",
+  "date": "2026-11-21",
+  "rule": "lore/rules/derivation.md",
+  "premises": "Fixed by the owner or the canon: star L 1.05 Lsun, orbit 1.02 AU, planet 1.14 Mearth and 1.04 Rearth, 1.6 bar air with 21% O2 (volcanic island, wet fuels), 26 h day, 367 d year. Everything else below is derived from them in order.",
+  "violation": {
+    "what": "Life arrived on two seed capsules from outside the planet (the makers), so all of it shares one biochemistry (a porphyrin photosystem, DNA-like heredity, L-amino acids, a nitrogen-fixing symbiont) and one ancestor.",
+    "why": "Primigenia's own lore (F22, F24; meteor shards, W10). Water and panspermia are allowed in this world because its lore says so; derivation.md forbids them as a default elsewhere.",
+    "where_in_play": "Any carcass feeds any creature, parts graft between lineages (F24)."
+  },
+  "retrieved": null,
+  "items": [
+    {
+      "id": "D1",
+      "key": "star_luminosity",
+      "claim": "Star: quiet G1V, 1.05 Lsun, 3.8 Gyr.",
+      "role": "premise",
+      "confidence": "estimated",
+      "value": 1.05,
+      "unit": "Lsun",
+      "facts": [
+        "F1"
+      ],
+      "source": "Chosen premise: the art fixes a yellow-white sun.",
+      "consequence": "Sets the energy input to every producer."
+    },
+    {
+      "id": "D2",
+      "key": "orbit",
+      "claim": "Orbit 1.02 AU, eccentricity 0.02, tilt 26.5 deg.",
+      "role": "premise",
+      "confidence": "estimated",
+      "value": 1.02,
+      "unit": "AU",
+      "facts": [
+        "F11"
+      ],
+      "source": "Chosen premise."
+    },
+    {
+      "id": "D3",
+      "key": "star_mass",
+      "claim": "Star mass about 1.05 Msun, derived from the 367-day year at 1.02 AU (Kepler III).",
+      "role": "derived",
+      "confidence": "estimated",
+      "value": 1.05,
+      "unit": "Msun",
+      "facts": [
+        "F11"
+      ],
+      "after": [
+        "D1",
+        "D2"
+      ],
+      "formula": "P[yr] = sqrt(a^3 / M)",
+      "check": {
+        "kind": "orbital_period_days",
+        "inputs": {
+          "orbit_au": 1.02,
+          "star_mass_sun": 1.05
+        },
+        "expect": 367,
+        "tol": 0.01
+      },
+      "consequence": "A 1.05 Msun star at 3.8 Gyr is consistent with 1.05 Lsun only roughly (stars this massive are somewhat brighter by now); mass is the less certain input."
+    },
+    {
+      "id": "D4",
+      "key": "insolation",
+      "claim": "Stellar flux 1.009 times Earth's.",
+      "role": "derived",
+      "confidence": "derived",
+      "value": 1.009,
+      "unit": "S_earth",
+      "facts": [
+        "F1",
+        "F11"
+      ],
+      "after": [
+        "D1",
+        "D2"
+      ],
+      "formula": "S = L / a^2",
+      "check": {
+        "kind": "insolation_earth",
+        "inputs": {
+          "luminosity_sun": 1.05,
+          "orbit_au": 1.02
+        },
+        "expect": 1.0092,
+        "tol": 0.005
+      },
+      "consequence": "Earth-like energy budget: the producers' photon supply is the same as Earth's, so what differs is air, rock and chemistry."
+    },
+    {
+      "id": "D5",
+      "key": "equilibrium_temperature",
+      "claim": "Equilibrium temperature about 255 K at an assumed Bond albedo of 0.30.",
+      "role": "derived",
+      "confidence": "estimated",
+      "value": 255.2,
+      "unit": "K",
+      "facts": [
+        "F1",
+        "F11"
+      ],
+      "after": [
+        "D4"
+      ],
+      "formula": "T = (L (1-A) / (16 pi sigma d^2))^(1/4)",
+      "check": {
+        "kind": "equilibrium_temperature_k",
+        "inputs": {
+          "luminosity_sun": 1.05,
+          "bond_albedo": 0.3,
+          "orbit_au": 1.02
+        },
+        "expect": 255.2,
+        "tol": 0.01
+      },
+      "consequence": "Without a greenhouse the island would freeze; the air must supply about 32 K (D9)."
+    },
+    {
+      "id": "D6",
+      "key": "surface_gravity",
+      "claim": "Surface gravity 1.055 g from 1.14 Mearth and 1.04 Rearth.",
+      "role": "premise",
+      "confidence": "derived",
+      "value": 1.05,
+      "unit": "g",
+      "facts": [
+        "F2"
+      ],
+      "formula": "g = G M / R^2",
+      "check": {
+        "kind": "surface_gravity_g",
+        "inputs": {
+          "mass_earth": 1.14,
+          "radius_earth": 1.04
+        },
+        "expect": 1.05,
+        "tol": 0.01
+      },
+      "consequence": "Falls and cliffs matter; body-size ceiling is set by oxygen, not gravity (D17)."
+    },
+    {
+      "id": "D7",
+      "key": "local_days_per_year",
+      "claim": "One year is 339 local days of 26 h.",
+      "role": "derived",
+      "confidence": "derived",
+      "value": 339,
+      "unit": "days",
+      "facts": [
+        "F3",
+        "F11"
+      ],
+      "after": [
+        "D3"
+      ],
+      "formula": "N = year[h] / day[h]",
+      "check": {
+        "kind": "local_days_per_year",
+        "inputs": {
+          "year_earth_days": 367,
+          "day_hours": 26
+        },
+        "expect": 339,
+        "tol": 0.005
+      },
+      "consequence": "Four seasons of about 85 local days: the plant and breeding calendar."
+    },
+    {
+      "id": "D8",
+      "key": "atmosphere",
+      "claim": "Air 1.6 bar: N2 77%, O2 21%, Ar 1.5%, CO2 0.1%, humid; mean molar mass 28.9 g/mol.",
+      "role": "premise",
+      "confidence": "estimated",
+      "value": 1.6,
+      "unit": "bar",
+      "facts": [
+        "F4",
+        "F5",
+        "F15"
+      ],
+      "source": "Chosen premise (owner, F5: 21% O2, wet fuels).",
+      "consequence": "Density, pO2 and drag below all follow from this one number."
+    },
+    {
+      "id": "D9",
+      "key": "greenhouse",
+      "claim": "The air must warm the surface by about 32 K to reach the stated 14 C mean; Earth manages 33 K with a thinner, drier air, so a denser, humid air easily does.",
+      "role": "derived",
+      "confidence": "derived",
+      "value": 32,
+      "unit": "K",
+      "facts": [
+        "F15"
+      ],
+      "after": [
+        "D5",
+        "D8"
+      ],
+      "formula": "dT = T_surface (287.15 K) - T_eq (255.2 K)",
+      "check": {
+        "kind": "range",
+        "inputs": {
+          "value": 31.95,
+          "lo": 25,
+          "hi": 45
+        }
+      }
+    },
+    {
+      "id": "D10",
+      "key": "partial_pressure_o2",
+      "claim": "pO2 = 0.336 bar, 1.6 times Earth's.",
+      "role": "derived",
+      "confidence": "derived",
+      "value": 0.336,
+      "unit": "bar",
+      "facts": [
+        "F5"
+      ],
+      "after": [
+        "D8"
+      ],
+      "formula": "pO2 = x_O2 * P",
+      "check": {
+        "kind": "partial_pressure_o2_bar",
+        "inputs": {
+          "o2_fraction": 0.21,
+          "pressure_bar": 1.6
+        },
+        "expect": 0.336,
+        "tol": 0.005
+      },
+      "consequence": "Large aerobic bodies and costly organs are affordable (F5); fast aerobic decomposition (D28)."
+    },
+    {
+      "id": "D11",
+      "key": "air_density",
+      "claim": "Air density 1.58 times Earth's sea level.",
+      "role": "derived",
+      "confidence": "derived",
+      "value": 1.58,
+      "facts": [
+        "F4"
+      ],
+      "after": [
+        "D8"
+      ],
+      "formula": "rho = P M / (R T), relative to 1.013 bar, 288 K, 28.97 g/mol",
+      "check": {
+        "kind": "air_density_ratio",
+        "inputs": {
+          "pressure_bar": 1.6,
+          "temperature_k": 287.15,
+          "mean_molar_mass_g": 28.9
+        },
+        "expect": 1.6,
+        "tol": 0.02
+      },
+      "consequence": "Drag 1.6x (F4), wind force per m/s 1.6x (F19): low heavy bodies on ridges, cheap gliding."
+    },
+    {
+      "id": "D12",
+      "key": "sound_speed",
+      "claim": "Sound speed about 340 m/s at 14 C; F4 says about 345 (within 1.5%).",
+      "role": "derived",
+      "confidence": "derived",
+      "value": 340,
+      "unit": "m/s",
+      "facts": [
+        "F4"
+      ],
+      "after": [
+        "D8"
+      ],
+      "formula": "c = sqrt(gamma R T / M)",
+      "check": {
+        "kind": "sound_speed_ms",
+        "inputs": {
+          "gamma": 1.4,
+          "temperature_k": 287.15,
+          "mean_molar_mass_g": 28.9
+        },
+        "expect": 345,
+        "tol": 0.02
+      }
+    },
+    {
+      "id": "D13",
+      "key": "scale_height",
+      "claim": "Atmospheric scale height 8.0 km.",
+      "role": "derived",
+      "confidence": "derived",
+      "value": 8.0,
+      "unit": "km",
+      "facts": [
+        "F4"
+      ],
+      "after": [
+        "D6",
+        "D8"
+      ],
+      "formula": "H = R T / (M g)",
+      "check": {
+        "kind": "scale_height_km",
+        "inputs": {
+          "temperature_k": 287.15,
+          "mean_molar_mass_g": 28.9,
+          "gravity_g": 1.055
+        },
+        "expect": 8.0,
+        "tol": 0.02
+      },
+      "consequence": "At 2,050 m the pressure is still about 77% of sea level: the summit is thin but breathable."
+    },
+    {
+      "id": "D14",
+      "key": "water_boiling_point",
+      "claim": "Water boils at 113.3 C at sea level (1.6 bar).",
+      "role": "derived",
+      "confidence": "derived",
+      "value": 113.3,
+      "unit": "C",
+      "facts": [
+        "F4"
+      ],
+      "after": [
+        "D8"
+      ],
+      "formula": "IAPWS saturation curve at 1.6 bar",
+      "check": {
+        "kind": "boiling_point_c",
+        "inputs": {
+          "pressure_bar": 1.6
+        },
+        "expect": 113.3,
+        "tol": 0.005
+      },
+      "consequence": "Hot springs and fumarole condensate run hotter than on Earth; microbial mats still stop near 70 C (F23)."
+    },
+    {
+      "id": "D15",
+      "key": "light_gas_escape",
+      "claim": "Hydrogen escape parameter about 7.7 at an assumed 1,000 K exobase (Earth about 7.0): H leaks slowly, heavier gases and He are kept.",
+      "role": "derived",
+      "confidence": "estimated",
+      "value": 7.7,
+      "facts": [
+        "F2",
+        "F4"
+      ],
+      "after": [
+        "D6"
+      ],
+      "formula": "lambda = v_esc^2 m / (2 k T_exo), r = R + 500 km",
+      "check": {
+        "kind": "jeans_lambda",
+        "inputs": {
+          "radius_earth": 1.04,
+          "mass_earth": 1.14,
+          "exobase_km": 500,
+          "exobase_temperature_k": 1000,
+          "particle_mass_amu": 1
+        },
+        "expect": 7.67,
+        "tol": 0.02
+      },
+      "consequence": "A dense N2-O2 air is stable over 3.8 Gyr; reduced H2 does not accumulate, so fuels stay organic and wet."
+    },
+    {
+      "id": "D16",
+      "key": "terminal_velocity",
+      "claim": "Terminal velocity of a falling body is about 18% lower than on Earth; F4 says about 25%.",
+      "role": "derived",
+      "confidence": "derived",
+      "facts": [
+        "F4"
+      ],
+      "after": [
+        "D6",
+        "D11"
+      ],
+      "formula": "v_t ~ sqrt(g / rho)",
+      "check": {
+        "kind": "terminal_velocity_ratio",
+        "inputs": {
+          "gravity_g": 1.055,
+          "air_density_ratio": 1.58
+        },
+        "expect": 0.75,
+        "tol": 0.03
+      },
+      "known_discrepancy": "F4 says about 25% lower; the same ratio recomputes to about 18% (v ratio 0.82). Suggested fix: change F4 to 'about 18-20%'. Not changed here (world canon is the owner's)."
+    },
+    {
+      "id": "D17",
+      "key": "wind_force",
+      "claim": "Wind force at a given speed 1.58 times Earth's, matching F19's 1.6.",
+      "role": "derived",
+      "confidence": "derived",
+      "value": 1.58,
+      "facts": [
+        "F19"
+      ],
+      "after": [
+        "D11"
+      ],
+      "formula": "q = rho v^2 / 2 scales with rho",
+      "check": {
+        "kind": "air_density_ratio",
+        "inputs": {
+          "pressure_bar": 1.6,
+          "temperature_k": 287.15,
+          "mean_molar_mass_g": 28.9
+        },
+        "expect": 1.6,
+        "tol": 0.02
+      }
+    },
+    {
+      "id": "D18",
+      "key": "scent_diffusion",
+      "claim": "Molecular diffusion about 0.63 times Earth's (D scales with 1/P), F16 says 0.6.",
+      "role": "derived",
+      "confidence": "derived",
+      "value": 0.63,
+      "facts": [
+        "F16"
+      ],
+      "after": [
+        "D8"
+      ],
+      "formula": "D ~ 1/P at fixed T",
+      "check": {
+        "kind": "ratio",
+        "inputs": {
+          "a": 1.0,
+          "b": 1.58
+        },
+        "expect": 0.6,
+        "tol": 0.06
+      },
+      "consequence": "Scent trails last longer in still air; the dawn-and-fog sense (F16)."
+    },
+    {
+      "id": "D19",
+      "key": "moon_period",
+      "claim": "A 1.2 Luna moon at 450,000 km orbits in 32.4 days; F6 says 29.7. About 425,000 km would give 29.7 days.",
+      "role": "derived",
+      "confidence": "derived",
+      "facts": [
+        "F6"
+      ],
+      "after": [
+        "D6"
+      ],
+      "formula": "T = 2 pi sqrt(a^3 / G (M_p + M_m))",
+      "check": {
+        "kind": "moon_period_days",
+        "inputs": {
+          "orbit_km": 450000,
+          "planet_mass_earth": 1.14,
+          "moon_mass_luna": 1.2
+        },
+        "expect": 29.7,
+        "tol": 0.03
+      },
+      "known_discrepancy": "The 29.7 d month and the 450,000 km distance in F6 disagree by 9% (sidereal 32.4 d; the synodic month would be longer still). Fix: set the distance to about 425,000 km, or call 29.7 d a rounded figure. Tides (F13) are only mildly affected. Not changed here."
+    },
+    {
+      "id": "D20",
+      "key": "lapse_rate",
+      "claim": "Mean lapse 6.2 K/km lies between the moist-adiabatic range and the dry adiabat g/cp = 10.3 K/km.",
+      "role": "derived",
+      "confidence": "derived",
+      "value": 6.2,
+      "unit": "K/km",
+      "facts": [
+        "F15"
+      ],
+      "after": [
+        "D6"
+      ],
+      "formula": "dry adiabat = g / cp, cp about 1005 J/kg/K",
+      "check": {
+        "kind": "range",
+        "inputs": {
+          "value": 6.2,
+          "lo": 4.0,
+          "hi": 10.3
+        }
+      },
+      "consequence": "Snow above about 1,750 m in winter (3 C annual mean there) and the UV zone of the high slopes (F14)."
+    },
+    {
+      "id": "D21",
+      "key": "fire_gate",
+      "claim": "O2 21% is above the 18% open-fire threshold (Balbi and Frank 2023) and below runaway burning; wet fuels keep wildfire a drought-year event.",
+      "role": "derived",
+      "confidence": "derived",
+      "facts": [
+        "F5"
+      ],
+      "after": [
+        "D10"
+      ],
+      "source": "lore/rules/technosphere.md; reference balbi_frank_2023_oxygen_bottleneck. Upper bound 30% is an estimate.",
+      "check": {
+        "kind": "range",
+        "inputs": {
+          "value": 21,
+          "lo": 18,
+          "hi": 30
+        }
+      },
+      "consequence": "Open fire is available (technosphere path open); creature flame is affordable (flame lineage burns raw sulfur, F26)."
+    },
+    {
+      "id": "D22",
+      "key": "chemical_energy",
+      "claim": "Hotspot volcanism (F7) keeps fumaroles and seeps supplying reduced sulfur (H2S, S0) that meets the 21% O2: H2S + 2 O2 -> SO4(2-) + 2 H+ releases roughly 800 kJ/mol, enough to feed sulfur-oxidising chemosynthetic producers.",
+      "role": "derived",
+      "confidence": "estimated",
+      "facts": [
+        "F7",
+        "F23",
+        "F5"
+      ],
+      "after": [
+        "D10"
+      ],
+      "source": "Standard free energy of sulfide oxidation by O2 (textbook: Madigan, Brock Biology of Microorganisms); value from memory, unverified.",
+      "consequence": "Producers that do not need light: crusts at fumaroles (costra_de_azufre), vent seeps in the shallows, iron and sulfur films in flooded lava tubes (F9)."
+    },
+    {
+      "id": "D23",
+      "key": "photosynthesis_and_pigments",
+      "claim": "One photosystem from the seed (F24) and UV 1.15x at the star, 0.9x at sea level and 1.4x at 2,000 m (F14): producers are green by ancestry, with red-purple UV screens on the high slopes and black melanin-like crusts where UV is highest.",
+      "role": "derived",
+      "confidence": "derived",
+      "facts": [
+        "F1",
+        "F14",
+        "F24",
+        "F25"
+      ],
+      "after": [
+        "D4"
+      ],
+      "source": "F25 pigment-signal rule; UV screening pigments as in Earth alpine plants and lichens.",
+      "consequence": "Colour is an honest signal (altitude, alkaloids); black and red producers exist."
+    },
+    {
+      "id": "D24",
+      "key": "turbid_water_light",
+      "claim": "Shallows are turbid (visibility under 10 m, F20): sediment and plankton absorb blue-violet and leave a narrow yellow-green to red window, so deeper shallow producers carry red and brown accessory pigments (as red algae and cyanobacteria do on Earth).",
+      "role": "derived",
+      "confidence": "estimated",
+      "facts": [
+        "F20"
+      ],
+      "after": [
+        "D23"
+      ],
+      "source": "Kirk, Light and Photosynthesis in Aquatic Ecosystems (3rd ed., 2011), coastal water types; chromatic adaptation in red algae. From memory, unverified.",
+      "consequence": "Red and brown (non-green) producers in the shallows and the sunken cave mouth."
+    },
+    {
+      "id": "D25",
+      "key": "energy_transfer",
+      "claim": "Energy passes up one level at about 10% (Lindeman 1942; Pauly and Christensen 1995). Endotherms keep only about 1-2%, so warm-blooded predators are rarer than a pure 10% rule says. Starting value, to be checked by tracker test L-TROPHIC.",
+      "role": "derived",
+      "confidence": "estimated",
+      "after": [
+        "D4",
+        "D22"
+      ],
+      "formula": "E(n+1) = 0.1 E(n)",
+      "source": "lindeman_1942_trophic_dynamic; pauly_christensen_1995_primary_production",
+      "consequence": "Pyramid spawn weights: apex rare, grazers common (docs/lore/primigenia-food-web.md)."
+    },
+    {
+      "id": "D26",
+      "key": "apex_count",
+      "claim": "Carnivore biomass is about 1% of the prey biomass (Carbone and Gittleman 2002: about 90 kg of carnivore per 10,000 kg of prey). On an island of roughly 35 km2 (a 2,050 m cone about 3.5 km in radius, estimated) with about 5,000 kg/km2 of large herbivores, all large predators together weigh under 2 t: a handful of apex adults (about 6 at 250 kg), not packs.",
+      "role": "derived",
+      "confidence": "speculative",
+      "facts": [
+        "F7"
+      ],
+      "after": [
+        "D25"
+      ],
+      "formula": "B_carn = 0.009 * B_prey * area",
+      "source": "carbone_gittleman_2002_carnivore_density; island area and prey density are estimates.",
+      "consequence": "Apex animals are named individuals and set pieces, with very low spawn weight; two or three apex species are all the island can feed."
+    },
+    {
+      "id": "D27",
+      "key": "scavengers",
+      "claim": "Carcasses float and drift ashore (F20) and any carcass can feed any creature (F24): a shore scavenger guild, plus soaring scavengers on thermals, where gliding in dense air is cheap (F4).",
+      "role": "derived",
+      "confidence": "derived",
+      "facts": [
+        "F4",
+        "F20",
+        "F24"
+      ],
+      "after": [
+        "D11",
+        "D26"
+      ],
+      "consequence": "At least three scavenger niches: wrack and carcass line, forest floor, highland thermals."
+    },
+    {
+      "id": "D28",
+      "key": "decomposers",
+      "claim": "Wet fuels and rare fire (F5) mean litter and dead wood are not burned off but rotted; pO2 1.6x (D10) speeds aerobic decay: a large decomposer guild of fungi and detritivores (litter, dung, wrack, wood, cave guano).",
+      "role": "derived",
+      "confidence": "derived",
+      "facts": [
+        "F5",
+        "F8",
+        "F18"
+      ],
+      "after": [
+        "D10"
+      ],
+      "consequence": "At least three decomposer niches in the forest, meadow, shore and caves."
+    },
+    {
+      "id": "D29",
+      "key": "parasites",
+      "claim": "One biochemistry for all lineages (F24) lets a parasite use hosts across lineages; dense herds (rondo bunches) and wet air favour ectoparasites, and the shared nitrogen-fixing symbiont is not a barrier.",
+      "role": "derived",
+      "confidence": "derived",
+      "facts": [
+        "F24",
+        "F8"
+      ],
+      "after": [
+        "D27"
+      ],
+      "consequence": "Ectoparasite on herds, parasitoid on insects, gill parasite in the shallows, one parasitic plant: each gives the player a cleaning or avoidance job."
+    },
+    {
+      "id": "D30",
+      "key": "empty_niches",
+      "claim": "The island radiation (F27) left niches empty (insect herbivores, pollinators, scavengers, apex, parasites), which the batch fills; island rules produce giants and dwarfs.",
+      "role": "derived",
+      "confidence": "derived",
+      "facts": [
+        "F27"
+      ],
+      "after": [
+        "D25",
+        "D27",
+        "D28",
+        "D29"
+      ],
+      "consequence": "The 2026-11-21 random batch (docs/lore/primigenia-food-web.md)."
+    }
+  ],
+  "audit": "Recomputed by tools/lore/derivation.py (run by tools/lore/validate.py). Two known discrepancies in the canon are reported as warnings: D16 (terminal velocity F4) and D19 (moon period F6)."
+}

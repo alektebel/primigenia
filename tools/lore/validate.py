@@ -31,7 +31,7 @@ def validate_all(root):
     if refs is None: errors.append("lore/references.json: missing")
     wdir = os.path.join(root, "lore", "worlds")
     worlds = {}  # id -> (all fact ids, active fact ids)
-    wfiles = sorted(os.path.join(wdir, n) for n in os.listdir(wdir) if n.endswith(".json")) if os.path.isdir(wdir) else []
+    wfiles = sorted(os.path.join(wdir, n) for n in os.listdir(wdir) if n.endswith(".json") and not n.endswith(".derivation.json")) if os.path.isdir(wdir) else []
     if not wfiles: errors.append("lore/worlds: no world files")
     status = {}
     if refs is not None:
