@@ -1,0 +1,64 @@
+{
+ "checks": [
+  {
+   "actual": 0.0,
+   "failure": "Too much bloom or blur",
+   "id": "bloom",
+   "metric": "clip_frac",
+   "op": "<",
+   "source": "starting value: at most 2% of pixels clipped to white (luminance >= 250); LOOK.md 7 'clipped-highlight fraction'",
+   "value": 0.02,
+   "verdict": "PASS"
+  },
+  {
+   "actual": 0.0707,
+   "failure": "Creature does not read at distance",
+   "id": "creature_readability",
+   "metric": "dist_contrast",
+   "op": ">=",
+   "shots": [
+    "creature_dist"
+   ],
+   "source": "starting value: |mean L of the creature - mean L of the ring around it|/255 >= 0.10 at strategic zoom; LOOK.md 5 'creature-vs-ground value contrast'",
+   "value": 0.1,
+   "verdict": "FAIL"
+  },
+  {
+   "actual": 0.1357,
+   "failure": "Light does not follow the day cycle",
+   "id": "day_cycle_night",
+   "metric": "tod_lum_ratio",
+   "op": "<",
+   "source": "starting value: night mean luminance at most half of midday for the same shot; LOOK.md 3 'readable night' still needs the other checks",
+   "tods": [
+    "night"
+   ],
+   "value": 0.5,
+   "verdict": "PASS"
+  }
+ ],
+ "info": {
+  "kind": "dist",
+  "shot": "creature_dist",
+  "tier": "medium",
+  "tod": "night"
+ },
+ "metrics": {
+  "clip_frac": 0.0,
+  "contrast": 0.1725,
+  "crush_frac": 0.46227,
+  "dist_contrast": 0.0707,
+  "hf_noise": 3.1884,
+  "lum_mean": 19.45,
+  "mask_frac": 0.00295,
+  "mean_b": 12.05,
+  "mean_r": 15.45,
+  "sat_mean": 0.6282,
+  "sat_over": 0.08901,
+  "sat_p95": 0.8902,
+  "sharp_p99": 126,
+  "spec_frac": 0.0,
+  "tod_lum_ratio": 0.1357
+ },
+ "name": "medium_night_creature_dist"
+}

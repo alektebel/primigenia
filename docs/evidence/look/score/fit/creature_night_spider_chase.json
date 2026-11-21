@@ -1,0 +1,104 @@
+{
+ "checks": [
+  {
+   "actual": 0.1216,
+   "failure": "Flat light, no shadows",
+   "id": "creature_flat_light",
+   "kinds": [
+    "creature"
+   ],
+   "metric": "contrast",
+   "op": ">=",
+   "source": "starting value: creature pixels (p95-p5)/255 >= 0.30 at every time of day; LOOK.md 7 and 5 (subtle rim, readable night)",
+   "value": 0.3,
+   "verdict": "FAIL"
+  },
+  {
+   "actual": 0.74153,
+   "failure": "Flat light, no shadows",
+   "id": "creature_crushed",
+   "kinds": [
+    "creature"
+   ],
+   "metric": "crush_frac",
+   "op": "<",
+   "source": "starting value: at most 25% of creature pixels at luminance <= 12 ('readable night', LOOK.md 3)",
+   "value": 0.25,
+   "verdict": "FAIL"
+  },
+  {
+   "actual": 0.00022,
+   "failure": "Too much bloom or blur",
+   "id": "bloom",
+   "metric": "clip_frac",
+   "op": "<",
+   "source": "starting value: at most 2% of pixels clipped to white (luminance >= 250); LOOK.md 7 'clipped-highlight fraction'",
+   "value": 0.02,
+   "verdict": "PASS"
+  },
+  {
+   "actual": 1.225,
+   "failure": "Noisy, dirty textures",
+   "id": "noise_creature",
+   "kinds": [
+    "creature"
+   ],
+   "metric": "hf_noise",
+   "op": "<",
+   "source": "starting value: same limit on creature pixels (silhouette edges included, so loose)",
+   "value": 6.0,
+   "verdict": "PASS"
+  },
+  {
+   "actual": 0.00148,
+   "failure": "Plastic shine",
+   "id": "plastic_shine",
+   "kinds": [
+    "creature"
+   ],
+   "metric": "spec_frac",
+   "op": "<",
+   "source": "starting value: under 1% of creature pixels are white specular glints (V>0.95, S<0.2); LOOK.md 7 (full check is specular/roughness range per material, not measurable from an image)",
+   "value": 0.01,
+   "verdict": "PASS"
+  },
+  {
+   "actual": 0.1325,
+   "failure": "Light does not follow the day cycle",
+   "id": "day_cycle_night",
+   "metric": "tod_lum_ratio",
+   "op": "<",
+   "source": "starting value: night mean luminance at most half of midday for the same shot; LOOK.md 3 'readable night' still needs the other checks",
+   "tods": [
+    "night"
+   ],
+   "value": 0.5,
+   "verdict": "PASS"
+  }
+ ],
+ "info": {
+  "creature": "spider",
+  "kind": "creature",
+  "shot": "spider_chase",
+  "tier": "any",
+  "tod": "night",
+  "view": "chase"
+ },
+ "metrics": {
+  "clip_frac": 0.00022,
+  "contrast": 0.1216,
+  "crush_frac": 0.74153,
+  "hf_noise": 1.225,
+  "lum_mean": 11.23,
+  "mask_frac": 0.10623,
+  "mean_b": 18.33,
+  "mean_r": 9.75,
+  "sat_mean": 0.497,
+  "sat_over": 0.01662,
+  "sat_p95": 0.7529,
+  "sharp_p99": 176,
+  "spec_frac": 0.00148,
+  "tod_lum_ratio": 0.1325
+ },
+ "name": "creature_night_spider_chase"
+}
