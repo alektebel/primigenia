@@ -61,6 +61,12 @@ void fragment() {
 		vec2 leaf = vec2(along, abs(axis) * (fern ? 2.5 : 2.15) - 0.32);
 		float leaflet = max(0.77 - dot(leaf, leaf), 0.03 - abs(axis));
 		coverage = edge_coverage(max(0.018 - u, min(1.0 - across, leaflet)));
+		// Detail fade by distance: where the leaflet pattern is below ~2 px it only shimmers (hatching, alpha-to-coverage dither),
+		// so the crown turns into its solid envelope, a little darker for the gaps it hides (forest floor noise, world-light round 2).
+		float resolved_leaf = 1.0 - smoothstep(0.2, 0.55, fwidth(across * count));
+		coverage = mix(edge_coverage(max(0.018 - u, 1.0 - across)), coverage, resolved_leaf);
+		pigment *= mix(0.86, 1.0, resolved_leaf);
+		pigment = mix(vec3(dot(pigment, vec3(0.2126, 0.7152, 0.0722))), pigment, 0.82);   // calmer crown chroma, hue kept
 		pigment *= vec3(1.0 + 0.09 * pigment_shift, 1.0, 1.0 - 0.07 * pigment_shift) * (0.92 + 0.14 * v);
 		// A crown carries a continuous lighting normal through both faces.
 		if (!fern && !FRONT_FACING) { NORMAL = -NORMAL; }
