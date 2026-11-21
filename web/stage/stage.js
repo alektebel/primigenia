@@ -110,9 +110,8 @@ function targetGround(){
 }
 function poseRig(rig,entity,previous,dt,index){
  const a=sim.alpha,x=mix(previous.x,entity.x,a),z=mix(previous.z,entity.z,a),turn=Math.atan2(Math.sin(entity.yaw-previous.yaw),Math.cos(entity.yaw-previous.yaw)),facing=previous.yaw+turn*a;
- const fx=Math.sin(facing),fz=Math.cos(facing),slope=clamp((env.groundY(x+fx,z+fz)-env.groundY(x-fx,z-fz))/2,-.5,.5);
  const target=index===0?(selected?sim.enemy:sim.destination):sim.player;
- rig.setWorld({x,z,yaw:facing,groundY:env.groundY,speed:entity.speed||0,pitch:-Math.atan(slope)-clamp((entity.acceleration||0)*.008,-.07,.07),roll:clamp(-(entity.turnRate||0)*(entity.speed||0)*.012,-.16,.16),lookTarget:target,turnRate:entity.turnRate||0,onFootContact:p=>audio.footstep(p,entity.speed,(index?sim.enemyProfile:sim.profile).radiusCm||60)});
+ rig.setWorld({x,z,yaw:facing,groundY:env.groundY,speed:entity.speed||0,acceleration:entity.acceleration||0,lookTarget:target,turnRate:entity.turnRate||0,onFootContact:p=>audio.footstep(p,entity.speed,(index?sim.enemyProfile:sim.profile).radiusCm||60)});
  const state=sim.encounter?.current[index];
  rig.biteT=state?.phase===1?.18:state?.phase===2?.3:state?.phase===3?.08:0;rig.update(dt);
  if(sim.encounter&&state?.phase){const progress=clamp((state.ptick+sim.alpha)/Math.max(1,state.plen),0,1),tell=moveTell(state.move),pulse=state.phase===1?Math.sin(progress*Math.PI/2)*tell.pitch:state.phase===2?.22:(1-progress)*.15;
