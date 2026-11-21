@@ -195,12 +195,16 @@ static func measure(c: Creature) -> Dictionary:
 		var bins := PackedFloat32Array()
 		bins.resize(20)
 		for mi in ms:
+			var k_hip := true
 			for v in (mi.get_meta("geo") as CreatureGeo).pos:
 				var u := clampf(-v.y / l.upper_length, 0.0, .999)
+				# The first 10% is the hip ring at the skin (the fillet that merges into the torso); a ball shows below it.
+				if u < .1 and k_hip:
+					continue
 				var k := int(u * 20)
 				bins[k] = maxf(bins[k], Vector2(v.x, v.z).length())
 		var top := 0.0
-		for k in 12:
+		for k in range(2, 12):
 			top = maxf(top, bins[k])
 		var knee := bins[19]   # the lower ring of the tube sits exactly at the knee
 		var bulge := top / maxf(knee, 1e-5)
