@@ -51,6 +51,7 @@ enum {
     CB_DODGE,
     CB_CLAW_SWIPE, CB_PECK, CB_POUNCE, CB_QUILL_VOLLEY, CB_ROAR, CB_STOMP,
     CB_CURL_UP, CB_SPINE_VOLLEY,
+    CB_FLAME,         /* first-quest: the fire gland's cone (core/src/combat.c); after the 14 tourney moves */
     CB_MOVE_COUNT
 };
 #define CB_MOVE_NONE  (-1)
@@ -61,7 +62,7 @@ enum { CB_ROLE_BASIC = 0, CB_ROLE_ENGAGE, CB_ROLE_POKE, CB_ROLE_CONTROL, CB_ROLE
 const char *cp_combat_role_name(int role);
 
 /* statuses a move can apply */
-enum { CB_ST_NONE = 0, CB_ST_STUN, CB_ST_BLEED, CB_ST_SLOW, CB_ST_FEAR, CB_ST_KNOCKDOWN, CB_ST_COUNT };
+enum { CB_ST_NONE = 0, CB_ST_STUN, CB_ST_BLEED, CB_ST_SLOW, CB_ST_FEAR, CB_ST_KNOCKDOWN, CB_ST_BURN, CB_ST_COUNT };
 
 /* move flags */
 #define CB_F_RANGED   0x01   /* hit-scan along the facing: nearest enemy in the ray   */
@@ -76,7 +77,7 @@ enum { CB_ST_NONE = 0, CB_ST_STUN, CB_ST_BLEED, CB_ST_SLOW, CB_ST_FEAR, CB_ST_KN
 /* which profile part gates a move */
 enum { CB_PART_NONE = 0, CB_PART_MOUTH, CB_PART_CHARGE, CB_PART_SPIT,
        CB_PART_TAIL, CB_PART_GUARD, CB_PART_CLAW, CB_PART_BEAK, CB_PART_LEGS,
-       CB_PART_QUILL, CB_PART_THROAT, CB_PART_HEAVY, CB_PART_ROCK, CB_PART_BACKSPINE, CB_PART_COUNT };
+       CB_PART_QUILL, CB_PART_THROAT, CB_PART_HEAVY, CB_PART_ROCK, CB_PART_BACKSPINE, CB_PART_FIRE, CB_PART_COUNT };
 
 typedef struct {
     const char *name;
@@ -150,6 +151,9 @@ typedef struct {
     uint16_t radius_cm;
     uint8_t extra[8]; /* claw, beak, strong legs, quills, throat, heavy legs, rock, back spines */
     uint8_t carnivore; /* derived from genome mouths, not host diet */
+    /* The fire gland level (0 = none). Last member, written to the hash only when nonzero, so positional
+     * initialisers and every existing hash stay as they were. */
+    uint8_t fire;
 } CpCombatProfile;
 
 /* Resolved metres. Default values return the CB_RADIUS literal. */
@@ -259,6 +263,8 @@ typedef struct {
     uint8_t fear_t, fear_src, calcium, mineral;
     uint16_t volleys;
     int8_t   bleed_src;         /* who gets credit for the bleed damage, -1 none  */
+    uint8_t  burn_t;            /* ticks of burning left (hashed only while nonzero) */
+    int8_t   burn_src;          /* who gets credit for the burn damage, -1 none     */
 
     CpCombatLoadout lo;         /* hashed only when not the default                      */
     uint16_t cd[CB_MOVE_COUNT]; /* ticks left before each move can start again; hashed

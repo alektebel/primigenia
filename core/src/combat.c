@@ -17,6 +17,7 @@ void cp_combat_test_hit_variance(int enabled) { test_fixed_variance = enabled; }
  * Tuning constants that are not per-move data.
  * ------------------------------------------------------------------ */
 #define CB_BLEED_DPT      0.6f    /* hp per tick while bleeding               */
+#define CB_BURN_DPT       0.5f    /* hp per tick while burning (the flame)    */
 #define CB_REGEN          1.6f    /* stamina per idle tick                     */
 #define CB_REGEN_DELAY    4       /* ticks after spending before regen starts  */
 #define CB_WATER_SPEED    0.6f
@@ -63,7 +64,9 @@ const CpCombatMove CP_COMBAT_MOVES[CB_MOVE_COUNT] = {
   { "stomp", 7,1,6, 2.5f,6.28318531f,18,22, CB_ST_KNOCKDOWN,6,CB_F_SWEEP, CB_PART_HEAVY,CB_ROLE_CONTROL,0,0,12 },
   { "curl_up", 1,14,2, 0,6.28318531f,1,0, CB_ST_NONE,0,CB_F_GUARD, CB_PART_ROCK,CB_ROLE_DEFENCE,0,0,0 },
   { "spine_volley", 5,1,3, 7,.3f,6,16, CB_ST_BLEED,8,CB_F_RANGED, CB_PART_BACKSPINE,CB_ROLE_SIGNATURE,20,2,30 },
-
+  /* first-quest: the fire gland's flamethrower. A short cone (sweep: every enemy in it, once per use), a small direct
+   * burn, then the burning status (0.5 hp per tick for 4 s), a long cooldown. Poke role: it hurts without closing in. */
+  { "flame",       6, 6, 5,  3.5f, 0.90f, 14.0f,  5.0f, CB_ST_BURN,   40, CB_F_SWEEP,                              CB_PART_FIRE, CB_ROLE_POKE, 0, 0, 60 },
 };
 
 /* ------------------------------------------------------------------ *
@@ -93,7 +96,9 @@ const CpCombatCounter CP_COMBAT_COUNTERS[] = {
   { CB_CHARGE, CB_STOMP, CB_PH_BIT(CB_PH_WINDUP), CB_EFF_INTERRUPT,4,0,1,0 },
   { CB_CHARGE, CB_CURL_UP, CB_PH_BIT(CB_PH_ACTIVE), CB_EFF_BREAK,5,0,.6f,20 },
   { -1, CB_CURL_UP, CB_PH_BIT(CB_PH_ACTIVE), CB_EFF_REDUCE,5,0,.25f,.1f },
-
+  { CB_FLAME,      CB_GUARD,  CB_PH_BIT(CB_PH_ACTIVE),                 CB_EFF_REDUCE,    5,  0.0f, 0.50f,  0.10f },
+  { CB_BITE,       CB_FLAME,  CB_PH_BIT(CB_PH_WINDUP) | CB_PH_BIT(CB_PH_ACTIVE),
+                                                                      CB_EFF_INTERRUPT, 4,  2.0f, 1.25f, 0.0f },
 };
 const int CP_COMBAT_N_COUNTERS = (int)(sizeof(CP_COMBAT_COUNTERS) / sizeof(CP_COMBAT_COUNTERS[0]));
 
@@ -157,6 +162,7 @@ void cp_combat_profile_default(CpCombatProfile *p)
 {
     memset(p,0,sizeof *p);
     p->mouth = p->charge = p->spit = p->tail = p->guard = 2;
+    p->fire = 0;
     p->hp = 100.0f; p->stamina = 100.0f; p->speed = 4.0f;
     p->radius_cm = 0;   /* CB_RADIUS; omitted from the canonical hash */
 }
@@ -169,6 +175,7 @@ int cp_combat_part_level(const CpCombatProfile *p, int part)
     case CB_PART_SPIT:   return p->spit;
     case CB_PART_TAIL:   return p->tail;
     case CB_PART_GUARD:  return p->guard;
+    case CB_PART_FIRE:   return p->fire;
     default:             return part>=CB_PART_CLAW&&part<CB_PART_COUNT?p->extra[part-CB_PART_CLAW]:1;     /* CB_PART_NONE: always available */
     }
 }
@@ -202,7 +209,7 @@ int cp_combat_move_available(const CpCombatCreature *c, int move)
 }
 
 #ifdef CP_COMBAT_TEST
-static int cb_cd_override[CB_MOVE_COUNT] = { -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1 };
+static int cb_cd_override[CB_MOVE_COUNT] = { [0 ... CB_MOVE_COUNT - 1] = -1 };
 void cp_combat_test_cooldown(int move, int ticks)
 {
     if (move >= 0 && move < CB_MOVE_COUNT) cb_cd_override[move] = ticks;
@@ -356,6 +363,8 @@ uint64_t cp_combat_hash(const CpCombatWorld *w)
             fu8(&f, (uint8_t)(c->prof.radius_cm >> 8));
         }
         ff(&f, c->x); ff(&f, c->y); ff(&f, c->fx); ff(&f, c->fy);
+        if (c->prof.fire) { fu32(&f, 0x46495245); fu8(&f, c->prof.fire); }
+        if (c->burn_t) { fu32(&f, 0x4255524e); fu8(&f, c->burn_t); fu8(&f, (uint8_t)c->burn_src); }
         ff(&f, c->hp); ff(&f, c->stamina);
         fu8(&f, (uint8_t)c->move); fu8(&f, c->phase); fu8(&f, c->ptick); fu8(&f, c->plen);
         fu8(&f, c->hit_mask); ff(&f, c->dash_x); ff(&f, c->dash_y);
@@ -406,6 +415,7 @@ static void clamp_prof(CpCombatProfile *p)
     if (p->spit   > CB_PART_MAX_LEVEL) p->spit   = CB_PART_MAX_LEVEL;
     if (p->tail   > CB_PART_MAX_LEVEL) p->tail   = CB_PART_MAX_LEVEL;
     if (p->guard  > CB_PART_MAX_LEVEL) p->guard  = CB_PART_MAX_LEVEL;
+    if (p->fire   > CB_PART_MAX_LEVEL) p->fire   = CB_PART_MAX_LEVEL;
     p->hp      = cb_clampf(p->hp, 1.0f, 100000.0f);
     p->stamina = cb_clampf(p->stamina, 1.0f, 100000.0f);
     p->speed   = cb_clampf(p->speed, 0.5f, 12.0f);
@@ -477,6 +487,7 @@ void cp_combat_reset(CpCombatWorld *w, const CpCombatSetup *s)
         c->since_spend = 255;
         c->verb_target = -1;
         c->bleed_src = -1;
+        c->burn_src = -1;
         c->died_tick = -1;
     }
     w->hash = cp_combat_hash(w);
@@ -610,7 +621,7 @@ static void kill(CpCombatWorld *w, int i, int killer)
     CpCombatCreature *c = &w->c[i];
     c->alive = 0; c->hp = 0.0f;
     cancel_move(c);
-    c->verb = CB_V_IDLE; c->fear_t=0;c->stun_t = c->bleed_t = c->slow_t = 0; c->bleed_src = -1;
+    c->verb = CB_V_IDLE; c->fear_t=0;c->stun_t = c->bleed_t = c->slow_t = c->burn_t = 0; c->bleed_src = c->burn_src = -1;
     c->died_tick = w->tick;
     if (killer >= 0 && killer < w->n) w->c[killer].kills++;
     ev_add(w, CB_EV_DEATH, killer >= 0 ? killer : 255, i, CB_MOVE_NONE, 0.0f);
@@ -1014,6 +1025,10 @@ static void apply_status(CpCombatWorld *w, int atk, int def, const CpCombatMove 
         }
         break;
     case CB_ST_SLOW:  if (d->slow_t  < m->status_ticks) d->slow_t  = m->status_ticks; break;
+    case CB_ST_BURN:
+        if (d->burn_t < m->status_ticks) d->burn_t = m->status_ticks;
+        d->burn_src = (int8_t)atk;
+        break;
     }
 }
 
@@ -1168,6 +1183,16 @@ uint64_t cp_combat_step(CpCombatWorld *w)
         if (c->hp <= 0.0f) kill(w, i, c->bleed_src);
     }
 
+    /* 1b. burning (the flame): the same bookkeeping as bleeding */
+    for (int i = 0; i < w->n; i++) {
+        CpCombatCreature *c = &w->c[i];
+        if (!c->alive || c->burn_t == 0) continue;
+        c->hp -= CB_BURN_DPT;
+        c->dmg_taken += CB_BURN_DPT;
+        if (c->burn_src >= 0 && c->burn_src < w->n) w->c[c->burn_src].dmg_dealt += CB_BURN_DPT;
+        if (c->hp <= 0.0f) kill(w, i, c->burn_src);
+    }
+
     /* 2. verbs decide: walk, turn, or launch a move */
     for (int i = 0; i < w->n; i++) plan(w, i, &disp[i]);
 
@@ -1204,6 +1229,7 @@ uint64_t cp_combat_step(CpCombatWorld *w)
         if (c->stun_t)  c->stun_t--;
         if (c->slow_t)  c->slow_t--;
         if (c->bleed_t) c->bleed_t--;
+        if (c->burn_t)  c->burn_t--;
         if (c->phase == CB_PH_IDLE && !disp[i].sprinted && c->since_spend >= CB_REGEN_DELAY) {
             float rg = disp[i].walked ? CB_REGEN * 0.5f : CB_REGEN;
             c->stamina = c->stamina + rg;

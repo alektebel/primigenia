@@ -1,9 +1,9 @@
 {
 	"camera": {},
-	"created": "2026-11-20T02:28:04",
+	"created": "2026-11-21T05:01:02",
 	"engine": {
 		"build": "unknown",
-		"layout": "f29ec83602f24649",
+		"layout": "0d0b439c3a31e0e3",
 		"snapshot_version": 3,
 		"stage_version": 3
 	},
@@ -140,9 +140,9 @@
 	},
 	"hash": "567b4b2531f98890",
 	"island": {
-		"seed": 1,
+		"seed": 1.0,
 		"terrain_hash": "7137e3ea79830ad7",
-		"terrain_version": 4
+		"terrain_version": 4.0
 	},
 	"kind": "scenario",
 	"legacy": {},
@@ -223,6 +223,7 @@
 	"name": "garfio_close",
 	"note": "The player is 8 m from Garfio, not fighting yet. Good for the first exchange and for combat tuning.",
 	"plants": [],
+	"quest": {},
 	"recipe": "garfio_close.log",
 	"setup": {
 		"cave": {
@@ -253,6 +254,7 @@
 				0,
 				0
 			],
+			"fire": 0,
 			"guard": 0,
 			"hp": 100.0,
 			"mouth": 2,
@@ -292,6 +294,7 @@
 						0,
 						0
 					],
+					"fire": 0,
 					"guard": 0,
 					"hp": 90.0,
 					"mouth": 2,

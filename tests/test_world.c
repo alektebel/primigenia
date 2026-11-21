@@ -11,7 +11,7 @@ static void reset(void) {
     cp_stage_setup_default(&setup,42);
     setup.terrain=CP_STAGE_FLAT;
     setup.n=1;
-    setup.wild[0].profile=(CpCombatProfile){2,1,0,1,0,100,100,4,0};setup.wild[0].bot=2;
+    setup.wild[0].profile=(CpCombatProfile){2,1,0,1,0,100,100,4,0,0};setup.wild[0].bot=2;
     setup.nest_x=setup.nest_z=0;
     setup.wild[0].x=setup.wild[0].home_x=0;
     setup.wild[0].z=setup.wild[0].home_z=18;

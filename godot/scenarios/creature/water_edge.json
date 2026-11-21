@@ -1,9 +1,9 @@
 {
 	"camera": {},
-	"created": "2026-11-20T02:29:43",
+	"created": "2026-11-21T05:01:06",
 	"engine": {
 		"build": "unknown",
-		"layout": "f29ec83602f24649",
+		"layout": "0d0b439c3a31e0e3",
 		"snapshot_version": 3,
 		"stage_version": 3
 	},
@@ -140,9 +140,9 @@
 	},
 	"hash": "d2a78103afac903d",
 	"island": {
-		"seed": 1,
+		"seed": 1.0,
 		"terrain_hash": "7137e3ea79830ad7",
-		"terrain_version": 4
+		"terrain_version": 4.0
 	},
 	"kind": "scenario",
 	"legacy": {},
@@ -223,6 +223,7 @@
 	"name": "water_edge",
 	"note": "On the shore with a GO order to unreachable dry ground across shallow water: snap, unreachable and blocked readouts.",
 	"plants": [],
+	"quest": {},
 	"recipe": "water_edge.log",
 	"setup": {
 		"cave": {
@@ -253,6 +254,7 @@
 				0,
 				0
 			],
+			"fire": 0,
 			"guard": 0,
 			"hp": 100.0,
 			"mouth": 2,

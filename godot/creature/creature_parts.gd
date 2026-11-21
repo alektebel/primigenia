@@ -50,6 +50,7 @@ const META := {
 	"wing_flap": {"mount": "upright", "body_minimum": .8, "responsive": true},
 	"frill_fan": {"responsive": true},
 	"sac_spitter": {"mount": "body", "responsive": true},
+	"fire_gland": {"mount": "body", "responsive": true},
 	"arm_grasper": {"mount": "upright", "body_minimum": .65, "responsive": true},
 	"arm_smasher": {"mount": "upright", "body_minimum": .65, "responsive": true},
 	"tail_paddle": {"mount": "body", "body_minimum": 1, "responsive": true},
@@ -779,6 +780,15 @@ func _creator_shape(type: String, p: Dictionary, r: float, s: float, context: Di
 			_sail([Vector3.ZERO] + edge, fan)
 			for i in [0, 6, 12, 18, 24]:
 				_tissue(CreatureGeo.sweep([Vector3.ZERO, edge[i] * .5, edge[i]], [.035, .027, .008]), "keratin", fan)
+		"fire_gland":
+			# first-quest: the throat organ of the flamethrower. A warm sac under the jaw with a lit seam, a short horny nozzle
+			# that points forward, and an ember at its mouth (the fire cone starts there).
+			_tissue(CreatureGeo.ell(.26, .2, .24, 0, -.16, -.08), "skin", g)
+			_tissue(CreatureGeo.ell(.17, .13, .18, 0, -.13, -.06), "glow", g)
+			for side in [-1.0, 1.0]:
+				_tissue(CreatureGeo.sweep([Vector3(side * .12, -.1, -.2), Vector3(side * .2, -.2, -.02), Vector3(side * .16, -.16, .2)], [.035, .03, .02]), "keratin", g)
+			_tissue(CreatureGeo.sweep([Vector3(0, -.12, .08), Vector3(0, -.1, .32), Vector3(0, -.07, .56)], [.12, .08, .045]), "keratin", g)
+			_tissue(CreatureGeo.ell(.05, .05, .02, 0, -.07, .56), "glow", g)
 		"sac_spitter":
 			_tissue(CreatureGeo.ell(.24, .18, .16, 0, -.12, -.06), "skin", g)
 			var sacs := []

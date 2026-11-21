@@ -51,7 +51,7 @@ $(BUILD)/combat_golden: tests/combat_golden.c apps/combat_bots.h $(BUILD)/apps/c
 
 # Correctness regressions. Balance acceptance is a separate measured gate:
 # run make tourney as well before claiming P2 acceptance.
-test: $(BUILD)/run_fall_test $(BUILD)/parts_nest_test $(BUILD)/plan_test $(BUILD)/social_test $(BUILD)/world_cli $(BUILD)/world_test $(BUILD)/terrain_test $(BUILD)/cpore_test $(BUILD)/combat_test $(BUILD)/combat_tourney_test $(BUILD)/combat_golden check-core $(BUILD)/nav_test $(BUILD)/steer_test $(BUILD)/routes_test secrets-test
+test: $(BUILD)/run_fall_test $(BUILD)/parts_nest_test $(BUILD)/plan_test $(BUILD)/social_test $(BUILD)/world_cli $(BUILD)/world_test $(BUILD)/terrain_test $(BUILD)/cpore_test $(BUILD)/combat_test $(BUILD)/combat_tourney_test $(BUILD)/combat_golden check-core $(BUILD)/nav_test $(BUILD)/steer_test $(BUILD)/routes_test secrets-test first-quest-test
 	./$(BUILD)/run_fall_test
 	nice -n 10 ./$(BUILD)/terrain_test
 	./$(BUILD)/world_test
@@ -715,3 +715,24 @@ godot-entry-evidence: godot
 	@mkdir -p docs/evidence/godot/eat-loading
 	LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 1800 xvfb-run -a -s "-screen 0 1280x720x24" $(GODOT) --rendering-driver opengl3 --resolution 1280x720 --path godot \
 	  --script res://game/tests/entry_evidence.gd -- out=$(CURDIR)/docs/evidence/godot/eat-loading
+# First quest: digging, fossil beds, the fire gland and the flamethrower (tests/test_first_quest.c)
+$(BUILD)/first_quest_test: tests/test_first_quest.c $(HDRS) $(BUILD)/libcpore.a
+	$(CC) $(CFLAGS) $< $(BUILD)/libcpore.a -o $@ $(LDLIBS)
+.PHONY: first-quest-test
+first-quest-test: $(BUILD)/first_quest_test
+	nice -n 10 ./$(BUILD)/first_quest_test flat
+	@failed=0; for seed in 1 7 42; do nice -n 10 ./$(BUILD)/first_quest_test $$seed || failed=1; done; test $$failed -eq 0
+
+# First quest: the whole chain played by a bot through the real verbs (kill, befriend, dig, wings, fire gland, flamethrower)
+.PHONY: godot-first-quest-e2e godot-first-quest-evidence
+# Runs the chain twice from the same seed and compares the final tick and world hash: the bot and the world are deterministic.
+godot-first-quest-e2e: godot
+	nice -n 10 timeout 1500 $(GODOT) --headless --fixed-fps 60 --path godot --script res://game/tests/first_quest_e2e.gd -- $(E2E_ARGS) | tee $(BUILD)/e2e_run1.txt
+	nice -n 10 timeout 1500 $(GODOT) --headless --fixed-fps 60 --path godot --script res://game/tests/first_quest_e2e.gd -- $(E2E_ARGS) > $(BUILD)/e2e_run2.txt
+	@grep "^e2e final" $(BUILD)/e2e_run1.txt > $(BUILD)/e2e_final1.txt; grep "^e2e final" $(BUILD)/e2e_run2.txt > $(BUILD)/e2e_final2.txt; \
+	  test -s $(BUILD)/e2e_final1.txt && diff $(BUILD)/e2e_final1.txt $(BUILD)/e2e_final2.txt && echo "replay: the second run ends at the same tick and world hash"
+godot-first-quest-evidence: godot
+	@mkdir -p docs/evidence/godot/first-quest
+	LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 2400 xvfb-run -a -s "-screen 0 1280x720x24" $(GODOT) --rendering-driver opengl3 --fixed-fps 60 --resolution 1280x720 --path godot \
+	  --script res://game/tests/first_quest_e2e.gd -- evidence=$(CURDIR)/docs/evidence/godot/first-quest $(E2E_ARGS)
+	python3 tools/contact_sheet.py docs/evidence/godot/first-quest docs/evidence/godot/first-quest/contact_sheet.png 3 640

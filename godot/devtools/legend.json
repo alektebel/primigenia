@@ -4,6 +4,8 @@
   "groups": ["Move", "Camera", "Fight", "Menus", "Time", "Dev tools", "Studio"],
   "actions": {
     "move_forward": {"label": "Move", "also": ["move_left", "move_back", "move_right"], "group": "Move", "contexts": ["walk", "fight"], "corner": ["walk"]},
+    "dig": {"label": "Dig (on soft soil, standing still for two seconds)", "group": "Move", "contexts": ["walk"]},
+    "quest_card": {"label": "Fold or open the task card", "group": "Menus", "contexts": ["walk", "fight"]},
     "run": {"label": "Run", "group": "Move", "contexts": ["walk"]},
     "sprint": {"label": "Burst", "group": "Move", "contexts": ["walk", "fight"]},
     "walk_to": {"label": "Walk there (a white circle marks it); a click on a creature only selects it", "group": "Move", "contexts": ["walk", "fight"], "corner": ["walk"]},

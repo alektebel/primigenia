@@ -85,9 +85,22 @@ func _try_actions() -> void:
 	_fx_script = load(ACTION_PATHS[4])
 	layer.action_event.connect(_on_action_event)
 
+const _flame_script := preload("res://game/actors/flame_fx.gd")
+
 func _on_action_event(ev: String, data: Dictionary) -> void:
 	if ev == "cry" and data.get("id", "") == "roar" and layer != null and host.is_inside_tree() and map != null:
 		_fx_script.roar_ring(host.get_parent(), host.global_position, 1.6 * map.height + 0.8)
+		return
+	if ev == "flame_start" and layer != null and host.is_inside_tree():
+		var mouth: Vector3 = layer._mouth_world
+		var fwd := Vector3(sin(host.rotation.y), 0.0, cos(host.rotation.y))
+		var tgt: Dictionary = layer._ctx.get("target", {})
+		if not tgt.is_empty() and tgt.has("pos"):
+			var to: Vector3 = (tgt.pos as Vector3) - host.global_position
+			to.y = 0.0
+			if to.length() > 0.05:
+				fwd = to.normalized()
+		_flame_script.flame_cone(host.get_parent(), mouth, fwd, 0.6)
 		return
 	if ev == "spit_release" and layer != null and host.is_inside_tree():
 		var from: Vector3 = layer._mouth_world

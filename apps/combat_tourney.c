@@ -7,6 +7,9 @@
  * their ceiling check, and the canaries. Exits 1 if any check fails.
  * Everything is deterministic: same arguments, same output. */
 #include "combat_bots.h"
+/* The tournament balances the six base moves. The flame needs the fire gland (a part no tournament build has), so it is left
+ * out of the matrix; its own tests live in tests/test_combat.c and tests/test_first_quest.c. */
+#define CB_TOURNEY_MOVES CB_FLAME
 
 #include <math.h>
 #include <stdio.h>
@@ -35,7 +38,7 @@ static double stamina_value;
 static double move_stamina_value(const CpCombatProfile *p)
 {
     double total = 0; int n = 0;
-    for (int m = 0; m < CB_MOVE_COUNT; m++) {
+    for (int m = 0; m < CB_TOURNEY_MOVES; m++) {
         if (CP_COMBAT_MOVES[m].flags & (CB_F_SELF|CB_F_GUARD)) continue;
         double damage = cp_combat_move_damage(p, m);
         if (CP_COMBAT_MOVES[m].status == CB_ST_BLEED)
@@ -47,10 +50,10 @@ static double move_stamina_value(const CpCombatProfile *p)
     }
     return total / n;
 }
-static double payoff[CB_MOVE_COUNT][CB_MOVE_COUNT];     /* raw hp margin            */
-static double payoff_se[CB_MOVE_COUNT][CB_MOVE_COUNT];
-static double payr[CB_MOVE_COUNT][CB_MOVE_COUNT];       /* resource-adjusted        */
-static double payr_se[CB_MOVE_COUNT][CB_MOVE_COUNT];
+static double payoff[CB_TOURNEY_MOVES][CB_TOURNEY_MOVES];     /* raw hp margin            */
+static double payoff_se[CB_TOURNEY_MOVES][CB_TOURNEY_MOVES];
+static double payr[CB_TOURNEY_MOVES][CB_TOURNEY_MOVES];       /* resource-adjusted        */
+static double payr_se[CB_TOURNEY_MOVES][CB_TOURNEY_MOVES];
 
 static void compute_payoff(int duels)
 {
@@ -60,8 +63,8 @@ static void compute_payoff(int duels)
     p.hp = 100000.0f; p.stamina = 100.0f; p.speed = 4.0f; p.radius_cm = 0; /* default radius */
 
     stamina_value = move_stamina_value(&p);
-    for (int a = 0; a < CB_MOVE_COUNT; a++)
-        for (int b = 0; b < CB_MOVE_COUNT; b++) {
+    for (int a = 0; a < CB_TOURNEY_MOVES; a++)
+        for (int b = 0; b < CB_TOURNEY_MOVES; b++) {
             double sum = 0.0, sq = 0.0, sumr = 0.0, sqr = 0.0;
             double pair_v = 0, pair_r = 0;
             for (int s = 0; s < duels; s++) {
@@ -114,45 +117,45 @@ static void compute_payoff(int duels)
 }
 
 /* Zero-sum value and the row player's equilibrium mix by regret matching. */
-static void solve_game(double P[CB_MOVE_COUNT][CB_MOVE_COUNT], double *value, double mix[CB_MOVE_COUNT])
+static void solve_game(double P[CB_TOURNEY_MOVES][CB_TOURNEY_MOVES], double *value, double mix[CB_TOURNEY_MOVES])
 {
-    double rr[CB_MOVE_COUNT] = { 0 }, cr[CB_MOVE_COUNT] = { 0 };
-    double rs[CB_MOVE_COUNT] = { 0 };
+    double rr[CB_TOURNEY_MOVES] = { 0 }, cr[CB_TOURNEY_MOVES] = { 0 };
+    double rs[CB_TOURNEY_MOVES] = { 0 };
     double rsum = 0.0;
     const int iters = 200000;
     for (int it = 0; it < iters; it++) {
-        double rp[CB_MOVE_COUNT], cp_[CB_MOVE_COUNT], rt = 0, ct = 0;
-        for (int i = 0; i < CB_MOVE_COUNT; i++) {
+        double rp[CB_TOURNEY_MOVES], cp_[CB_TOURNEY_MOVES], rt = 0, ct = 0;
+        for (int i = 0; i < CB_TOURNEY_MOVES; i++) {
             rp[i] = rr[i] > 0 ? rr[i] : 0; rt += rp[i];
             cp_[i] = cr[i] > 0 ? cr[i] : 0; ct += cp_[i];
         }
-        for (int i = 0; i < CB_MOVE_COUNT; i++) {
-            rp[i] = rt > 0 ? rp[i] / rt : 1.0 / CB_MOVE_COUNT;
-            cp_[i] = ct > 0 ? cp_[i] / ct : 1.0 / CB_MOVE_COUNT;
+        for (int i = 0; i < CB_TOURNEY_MOVES; i++) {
+            rp[i] = rt > 0 ? rp[i] / rt : 1.0 / CB_TOURNEY_MOVES;
+            cp_[i] = ct > 0 ? cp_[i] / ct : 1.0 / CB_TOURNEY_MOVES;
         }
-        double ru[CB_MOVE_COUNT], cu[CB_MOVE_COUNT], v = 0;
-        for (int i = 0; i < CB_MOVE_COUNT; i++) {
+        double ru[CB_TOURNEY_MOVES], cu[CB_TOURNEY_MOVES], v = 0;
+        for (int i = 0; i < CB_TOURNEY_MOVES; i++) {
             ru[i] = cu[i] = 0;
-            for (int j = 0; j < CB_MOVE_COUNT; j++) { ru[i] += P[i][j] * cp_[j]; cu[i] += -P[j][i] * rp[j]; }
+            for (int j = 0; j < CB_TOURNEY_MOVES; j++) { ru[i] += P[i][j] * cp_[j]; cu[i] += -P[j][i] * rp[j]; }
         }
-        for (int i = 0; i < CB_MOVE_COUNT; i++) v += rp[i] * ru[i];
+        for (int i = 0; i < CB_TOURNEY_MOVES; i++) v += rp[i] * ru[i];
         double cv = 0;
-        for (int i = 0; i < CB_MOVE_COUNT; i++) cv += cp_[i] * cu[i];
-        for (int i = 0; i < CB_MOVE_COUNT; i++) { rr[i] += ru[i] - v; cr[i] += cu[i] - cv; rs[i] += rp[i]; }
+        for (int i = 0; i < CB_TOURNEY_MOVES; i++) cv += cp_[i] * cu[i];
+        for (int i = 0; i < CB_TOURNEY_MOVES; i++) { rr[i] += ru[i] - v; cr[i] += cu[i] - cv; rs[i] += rp[i]; }
         rsum += 1.0;
     }
     double v = 0;
-    for (int i = 0; i < CB_MOVE_COUNT; i++) mix[i] = rs[i] / rsum;
-    for (int i = 0; i < CB_MOVE_COUNT; i++)
-        for (int j = 0; j < CB_MOVE_COUNT; j++) v += mix[i] * mix[j] * P[i][j];
+    for (int i = 0; i < CB_TOURNEY_MOVES; i++) mix[i] = rs[i] / rsum;
+    for (int i = 0; i < CB_TOURNEY_MOVES; i++)
+        for (int j = 0; j < CB_TOURNEY_MOVES; j++) v += mix[i] * mix[j] * P[i][j];
     *value = v;
 }
 
 /* A weakly dominates B: >= everywhere (within noise tol), > somewhere (beyond tol). */
-static int dominates(double (*P)[CB_MOVE_COUNT], double (*SE)[CB_MOVE_COUNT], int a, int b)
+static int dominates(double (*P)[CB_TOURNEY_MOVES], double (*SE)[CB_TOURNEY_MOVES], int a, int b)
 {
     int strict = 0;
-    for (int j = 0; j < CB_MOVE_COUNT; j++) {
+    for (int j = 0; j < CB_TOURNEY_MOVES; j++) {
         double tol = 2.0 * (SE[a][j] > SE[b][j] ? SE[a][j] : SE[b][j]) + 0.5;
         if (P[a][j] < P[b][j] - tol) return 0;
         if (P[a][j] > P[b][j] + tol) strict = 1;
@@ -160,24 +163,24 @@ static int dominates(double (*P)[CB_MOVE_COUNT], double (*SE)[CB_MOVE_COUNT], in
     return strict;
 }
 
-static void print_matrix(double (*P)[CB_MOVE_COUNT])
+static void print_matrix(double (*P)[CB_TOURNEY_MOVES])
 {
     printf("%-12s", "row \\ col");
-    for (int b = 0; b < CB_MOVE_COUNT; b++) printf("%12s", cp_combat_move_name(b));
+    for (int b = 0; b < CB_TOURNEY_MOVES; b++) printf("%12s", cp_combat_move_name(b));
     printf("%12s\n", "row mean");
-    for (int a = 0; a < CB_MOVE_COUNT; a++) {
+    for (int a = 0; a < CB_TOURNEY_MOVES; a++) {
         printf("%-12s", cp_combat_move_name(a));
         double m = 0;
-        for (int b = 0; b < CB_MOVE_COUNT; b++) { printf("%12.2f", P[a][b]); m += P[a][b]; }
-        printf("%12.2f\n", m / CB_MOVE_COUNT);
+        for (int b = 0; b < CB_TOURNEY_MOVES; b++) { printf("%12.2f", P[a][b]); m += P[a][b]; }
+        printf("%12.2f\n", m / CB_TOURNEY_MOVES);
     }
 }
 
-static int dominance(double (*P)[CB_MOVE_COUNT], double (*SE)[CB_MOVE_COUNT])
+static int dominance(double (*P)[CB_TOURNEY_MOVES], double (*SE)[CB_TOURNEY_MOVES])
 {
     int any = 0;
-    for (int a = 0; a < CB_MOVE_COUNT; a++)
-        for (int b = 0; b < CB_MOVE_COUNT; b++) {
+    for (int a = 0; a < CB_TOURNEY_MOVES; a++)
+        for (int b = 0; b < CB_TOURNEY_MOVES; b++) {
             if (a == b || !dominates(P, SE, a, b)) continue;
             printf("   %s weakly dominates %s\n", cp_combat_move_name(a), cp_combat_move_name(b));
             any = 1;
@@ -188,10 +191,10 @@ static int dominance(double (*P)[CB_MOVE_COUNT], double (*SE)[CB_MOVE_COUNT])
 
 /* Ignore regret-matching initialization dust: a move must hold at least
  * one percent of the average strategy to count toward the four-move gate. */
-static int equilibrium_support(const double mix[CB_MOVE_COUNT])
+static int equilibrium_support(const double mix[CB_TOURNEY_MOVES])
 {
     int n = 0;
-    for (int m = 0; m < CB_MOVE_COUNT; m++) n += mix[m] >= 0.01;
+    for (int m = 0; m < CB_TOURNEY_MOVES; m++) n += mix[m] >= 0.01;
     return n;
 }
 
@@ -227,10 +230,10 @@ static void report_payoff(int duels)
     printf("-- resource-adjusted matrix (acceptance gate)\n");
     int resource_dominant = dominance(payr, payr_se);
     for (int r = 0; r < 2; r++) {
-        double value, mix[CB_MOVE_COUNT];
+        double value, mix[CB_TOURNEY_MOVES];
         solve_game(r ? payr : payoff, &value, mix);
         printf("   %s equilibrium mix (regret matching, 200k iters), game value %.2f:", r ? "resource" : "raw", value);
-        for (int a = 0; a < CB_MOVE_COUNT; a++) printf("  %s %.1f%%", cp_combat_move_name(a), mix[a] * 100.0);
+        for (int a = 0; a < CB_TOURNEY_MOVES; a++) printf("  %s %.1f%%", cp_combat_move_name(a), mix[a] * 100.0);
         printf("\n");
         int support = equilibrium_support(mix);
         if(r)b3_res_w=mix[CB_SPINE_VOLLEY];else b3_raw_w=mix[CB_SPINE_VOLLEY];

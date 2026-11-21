@@ -990,6 +990,24 @@
       "cosmetic": true,
       "illustrative_abilities": [],
       "cost": 30
+    },
+    {
+      "id": "fire_gland",
+      "category": "weapons",
+      "name": {
+        "es": "Glándula ígnea",
+        "en": "Fire gland"
+      },
+      "dna_cost": 30,
+      "source": "procedural",
+      "c_type": "CP4_FIRE",
+      "cosmetic": true,
+      "illustrative_abilities": [
+        "flamethrower"
+      ],
+      "attachment": "throat, under the jaw",
+      "mount": "body",
+      "godot_only": true
     }
   ],
   "attachment_frame": {

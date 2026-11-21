@@ -50,6 +50,7 @@ var stage: Node
 var player_input
 var chase
 var stage_ui
+var first_quest                  # FirstQuest: the task chain, the dig verb and the flame's burn (game/stage/first_quest.gd)
 var ground_marks               # GroundMarks: the white circle where you click, the rings under creatures
 var _had_dest := false
 var _hover_id := -1            # the creature under the pointer (7.16): its ring shows after 0.25 s
@@ -397,6 +398,10 @@ func _build_stage() -> void:
 	add_child(lineage_controller)
 	lineage_controller.setup(self)
 	await _slice()
+	first_quest = preload("res://game/stage/first_quest.gd").new()
+	first_quest.name = "FirstQuest"
+	add_child(first_quest)
+	first_quest.setup(self)
 	_update_actors(0.0)
 	await _slice()
 	_update_camera(0.0)
@@ -427,6 +432,8 @@ func scenario_ctx() -> Dictionary:
 		var info: Dictionary = stage.world.field_info()
 		isl = {"seed": info.seed, "terrain_version": CporeTerrain.version(), "terrain_hash": info.hash}
 	var ctx := {"genome": _genome, "legacy": Game.applied_legacy, "island": isl, "camera": camera_state(), "plants": gaze.to_list()}
+	if first_quest != null:
+		ctx["quest"] = first_quest.to_dict()
 	var dev = get_tree().root.get_node_or_null("Dev")
 	if dev != null and dev.has_method("tuning_state"):
 		ctx["tuning"] = dev.tuning_state()
@@ -485,6 +492,8 @@ func load_scenario(parsed: Dictionary) -> String:
 	if stage_ui != null:
 		stage_ui.ui.clear_selection()
 	gaze.from_list(d.get("plants", []))
+	if first_quest != null:
+		first_quest.from_dict(d.get("quest", {}))
 	if chase != null:
 		for k in d.get("camera", {}):
 			if chase.get(k) != null:

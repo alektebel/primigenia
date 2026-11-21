@@ -134,6 +134,7 @@ int cp_stage_genome_form(const char *json,CpLineageForm *out){
   }
   if(d->mouth==2)f.profile.carnivore=1;
 #undef STAT
+  if(!strcmp(name,"fire_gland")){int v=(int)f.profile.fire+(int)lv;f.profile.fire=(uint8_t)(v>5?5:v);}   /* the throat organ of the flamethrower */
  }
  int skin=field(j,0,"skin");if(!keys(j,skin,"|pat||cA||cB||cC||wet||scale||cs||ps||pc||ros||act||sk|"))goto done;
  if(!integer(j,field(j,skin,"pat"),0,3)||!num(j,field(j,skin,"wet"),0,1,NULL)||!num(j,field(j,skin,"scale"),3,14,NULL))goto done;
@@ -224,7 +225,7 @@ int cp_stage_apply(CpStageWorld *w,const char *genome){
  CpLineageForm *cur=&w->ancestry.forms[w->ancestry.count-1].form;
  const CpCombatProfile *a=&cur->profile,*b=&f.profile;
  uint8_t ta[CB_PART_COUNT],tb[CB_PART_COUNT];cp_stage_genome_tiers(cur->body,ta);cp_stage_genome_tiers(f.body,tb);
- if(memcmp(a->extra,b->extra,sizeof a->extra)||a->carnivore!=b->carnivore||memcmp(cur->parts,f.parts,sizeof cur->parts)||memcmp(ta,tb,sizeof ta)||a->mouth!=b->mouth||a->charge!=b->charge||a->spit!=b->spit||a->tail!=b->tail||a->guard!=b->guard||a->hp!=b->hp||a->stamina!=b->stamina||a->speed!=b->speed)return CP_STAGE_ERR_NEEDS_EVOLVE;
+ if(memcmp(a->extra,b->extra,sizeof a->extra)||a->carnivore!=b->carnivore||memcmp(cur->parts,f.parts,sizeof cur->parts)||memcmp(ta,tb,sizeof ta)||a->mouth!=b->mouth||a->charge!=b->charge||a->spit!=b->spit||a->tail!=b->tail||a->guard!=b->guard||a->fire!=b->fire||a->hp!=b->hp||a->stamina!=b->stamina||a->speed!=b->speed)return CP_STAGE_ERR_NEEDS_EVOLVE;
  memcpy(cur->body,f.body,strlen(f.body)+1);memcpy(cur->name,f.name,strlen(f.name)+1);
  cur->profile.radius_cm=b->radius_cm;w->player.profile.radius_cm=b->radius_cm;w->setup.player.radius_cm=b->radius_cm;
  w->hash=cp_stage_hash(w);return 0;
@@ -253,7 +254,7 @@ void cp_stage_genome_tiers(const char *body,uint8_t tiers[CB_PART_COUNT]){
  for(int i=parts+1;i<j->t[parts].next;i=j->t[i].next){
   char id[80];if(!text(j,field(j,i,"type"),id,sizeof id))continue;
   int p=cp_stage_part_id(id);double t=0;if(p<0||!num(j,field(j,i,"tier"),0,2,&t))continue;
-  const CpStagePartDef *d=&CP_STAGE_PARTS[p];int has[CB_PART_COUNT]={0,d->mouth==2,d->charge,d->spit,d->tail,d->guard};
+  const CpStagePartDef *d=&CP_STAGE_PARTS[p];int has[CB_PART_COUNT]={0,d->mouth==2,d->charge,d->spit,d->tail,d->guard,0};
   for(int k=1;k<CB_PART_COUNT;k++)if(has[k]&&tiers[k]<(int)t)tiers[k]=(uint8_t)t;
  }free(j);
 }

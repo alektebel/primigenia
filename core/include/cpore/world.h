@@ -9,7 +9,7 @@
 #define CP_STAGE_MAX_OBSTACLES 1024
 #define CP_STAGE_DAY_TICKS 12000
 #define CP_STAGE_DT .1f
-#define CP_STAGE_SNAPSHOT_VERSION 9   /* 3: player loadout (A21); 4: social layer (C2); 5: lineage ledger and ancestry; 6: discovery, nest shop and eggs; 7: secrets (shards, cave chamber, day/night) and 6 species; 8: run and fixed-point fall state; 9: + recipes, calcium, mineral, stones (C2 moves/recipes) */
+#define CP_STAGE_SNAPSHOT_VERSION 10   /* 3: player loadout (A21); 4: social layer (C2); 5: lineage ledger and ancestry; 6: discovery, nest shop and eggs; 7: secrets (shards, cave chamber, day/night) and 6 species; 8: run and fixed-point fall state; 9: + recipes, calcium, mineral, stones (C2 moves/recipes); 10: digging (holes, fossil beds) and the fire gland (first-quest) */
 /* A31 fall damage: 10 HP per metre beyond the safe drop, capped at 60 % of max HP unless the fall is free (air above 2x the safe drop). */
 #define CP_FALL_CAP_PERMILLE 600
 #define CP_FALL_FREE_X 2
@@ -26,7 +26,9 @@ enum { CP_STAGE_CONTINUE, CP_STAGE_WAIT, CP_STAGE_GO, CP_STAGE_HEADING,
         * (CP_ITEM_*); OBSERVE and INTIMIDATE: target. All are standing orders: the player walks into range, performs it, and the
         * order ends. Any other order cancels it. */
        CP_STAGE_BEFRIEND, CP_STAGE_GIFT, CP_STAGE_OBSERVE, CP_STAGE_INTIMIDATE,
-       CP_STAGE_EAT, CP_STAGE_INSPECT, CP_STAGE_BUY_PART, CP_STAGE_BUY_LEVEL, CP_STAGE_BUY_TIER };   /* EAT: target = a carcass; bites every 10 ticks until it is gone, the player is full, or another order cancels it */
+       CP_STAGE_EAT, CP_STAGE_INSPECT, CP_STAGE_BUY_PART, CP_STAGE_BUY_LEVEL, CP_STAGE_BUY_TIER,
+       CP_STAGE_DIG,
+       CP_STAGE_QUEST };   /* QUEST: target = task step, move = DNA; instant, once per step (stage_dig.c); a logged input so replays agree */   /* DIG: no target; digs where the player stands (soft soil only), takes CP_DIG_TICKS standing still, costs stamina (first-quest, stage_dig.c) */   /* EAT: target = a carcass; bites every 10 ticks until it is gone, the player is full, or another order cancels it */
 #define CP_STAGE_NEST_RADIUS 12.f   /* metres from the nest within which the loadout can be changed (tunable) */
 /* Stage order codes added by A21 (-1..-6 are older): the loadout and move errors share the combat numbers. */
 enum { CP_STAGE_ERR_ON_COOLDOWN=-8, CP_STAGE_ERR_NOT_EQUIPPED=-9, CP_STAGE_ERR_BAD_SLOT=-10,
@@ -41,7 +43,9 @@ enum { CP_STAGE_ERR_ON_COOLDOWN=-8, CP_STAGE_ERR_NOT_EQUIPPED=-9, CP_STAGE_ERR_B
        CP_STAGE_ERR_DIET=-21,         /* eat: this body cannot digest that (a herbivore and meat) */
        CP_STAGE_ERR_FULL=-22,
        CP_STAGE_ERR_NEEDS_EVOLVE=-23, /* nest apply: the change alters parts, levels or tiers; it needs Evolve */
-       CP_STAGE_ERR_NO_DNA=-24 };    /* nest evolve: the DNA balance does not cover the purchases */      /* eat: the food meter is full */
+       CP_STAGE_ERR_NO_DNA=-24,
+       CP_STAGE_ERR_HARD_GROUND=-27,  /* dig: not soft soil (rock, steep ground, water, cave) */
+       CP_STAGE_ERR_ALREADY_DUG=-28 };  /* dig: there is a hole here already */    /* nest evolve: the DNA balance does not cover the purchases */      /* eat: the food meter is full */
 enum { CP_DIET_HERBIVORE, CP_DIET_CARNIVORE, CP_DIET_OMNIVORE };
 #define CP_SOC_CARCASS_BITES 4    /* bites in a carcass */
 #define CP_SOC_BITE_TICKS 5      /* ticks per bite */
@@ -54,7 +58,7 @@ enum { CP_ITEM_PLANT, CP_ITEM_FRUIT, CP_ITEM_MEAT, CP_ITEM_BONE, CP_ITEM_COUNT }
 enum { CP_REL_STRANGER, CP_REL_NEUTRAL, CP_REL_TRUSTED, CP_REL_ALLY };
 enum { CP_RES_OPEN, CP_RES_ALLY, CP_RES_HUNTED };
 /* Where a DNA award came from (the move field of a DNA event). */
-enum { CP_DNA_KILL, CP_DNA_BOND, CP_DNA_ALLY, CP_DNA_DOMINATE, CP_DNA_CARCASS, CP_DNA_EXPLORE, CP_DNA_SEEN, CP_DNA_DUPLICATE, CP_DNA_FOSSIL, CP_DNA_OLD_CARCASS, CP_DNA_SHARD, CP_DNA_SOURCES };
+enum { CP_DNA_KILL, CP_DNA_BOND, CP_DNA_ALLY, CP_DNA_DOMINATE, CP_DNA_CARCASS, CP_DNA_EXPLORE, CP_DNA_SEEN, CP_DNA_DUPLICATE, CP_DNA_FOSSIL, CP_DNA_OLD_CARCASS, CP_DNA_SHARD, CP_DNA_TASK, CP_DNA_SOURCES };
 #define CP_SOC_BOND_TRUST 60      /* trust at which a creature bonds (Q-3) */
 #define CP_SOC_BEAT 12            /* ticks between beats */
 #define CP_SOC_WINDOW 2           /* rhythm window, +- ticks */
@@ -161,7 +165,9 @@ enum { CP_STAGE_EV_HIT=1, CP_STAGE_EV_KILL, CP_STAGE_EV_DEATH, CP_STAGE_EV_RESPA
        CP_STAGE_EV_CAVE,          /* move = 1 entered the passage, 2 reached the chamber (numeric id 26) */
        CP_STAGE_EV_FELL,          /* numeric id 27 (owner fall) */
        CP_STAGE_EV_RECIPE,        /* numeric id 28 */
-       CP_STAGE_EV_VOLLEY };      /* numeric id 29 */
+       CP_STAGE_EV_VOLLEY,        /* numeric id 29 */
+       CP_STAGE_EV_DUG,        /* numeric id 30: target = hole index, move = CP_FIND_* (-1 = the dig was interrupted), value = bed index or -1, x/z = the hole */
+       CP_STAGE_EV_MOVE_USED };  /* numeric id 31: the player started a combat move: move = move id, value = 1 */
 
 enum { CP_STAGE_BLOCK_NONE, CP_STAGE_BLOCK_CLIFF, CP_STAGE_BLOCK_WATER, CP_STAGE_BLOCK_EDGE,
        CP_STAGE_BLOCK_CREATURE, CP_STAGE_BLOCK_UNREACHABLE, CP_STAGE_BLOCK_OBSTACLE };
@@ -218,7 +224,7 @@ typedef struct {
     CpLineageGeneration forms[CP_LINEAGE_GENERATIONS];
 } CpAncestry;
 /* Part ids are stable catalogue indices, shared by the codex and lineage ledger. */
-#define CP_STAGE_PART_COUNT 47
+#define CP_STAGE_PART_COUNT 49   /* 47 (moves/recipes) + wing_vane, fire_gland (first-quest) */
 #define CP_STAGE_PART_NODES 8
 enum { CP_PART_KILL, CP_PART_ALLY, CP_PART_CARCASS, CP_PART_FOSSIL, CP_PART_OLD_CARCASS };
 typedef struct { const char *id; int cost,mouth,charge,spit,tail,guard; } CpStagePartDef;
@@ -257,6 +263,25 @@ typedef struct {
     int32_t cave_on;
     float cave_x,cave_z,cave_fx,cave_fz,cave_floor,cave_half,cave_length,cave_radius,chamber_x,chamber_z;
 } CpStageSecrets;
+/* Digging (core/src/stage_dig.c): fossil beds placed at reset, holes the player leaves, the dig in progress. Everything is
+ * integer or + - * /, derived from the seed and the field, and hashed only once a dig was accepted (`used`). */
+#define CP_STAGE_BEDS 4
+#define CP_STAGE_HOLES 16
+#define CP_DIG_TICKS 20          /* 2 s standing still */
+#define CP_DIG_STAMINA 12.f
+#define CP_BED_RADIUS 3.f
+enum { CP_BED_WING, CP_BED_BONE };
+enum { CP_FIND_NONE, CP_FIND_GRUB, CP_FIND_PEBBLE, CP_FIND_WING_FOSSIL, CP_FIND_BONE_FOSSIL };
+typedef struct { float x,z,r; int32_t kind,dug; } CpStageBed;
+typedef struct { float x,z; int32_t find; } CpStageHole;
+typedef struct {
+    CpRng rng;                       /* the finds of ordinary soil; its own stream, seeded from the world seed */
+    int32_t used,n_beds,n_holes,dug_total,act_t,flames,wing_found,fire_found;
+    uint32_t quest_paid;             /* bit k: the DNA reward of task step k was paid (cp_stage_quest_award) */
+    float act_x,act_z;
+    CpStageBed bed[CP_STAGE_BEDS];
+    CpStageHole hole[CP_STAGE_HOLES];
+} CpStageDig;
 typedef struct {
     CpStageSetup setup;
     CpRng spawn_rng,roam_rng;
@@ -295,8 +320,19 @@ typedef struct {
     /* Run stamina is separate from combat stamina; mm, mm/s for fixed-step gravity. */
     int32_t running,run_stamina,falling,fall_y_mm,fall_v_mm_s,fall_start_mm;
     int32_t fall_dx_mm,fall_dz_mm;
+    CpStageDig dig;                  /* first-quest: fossil beds, holes, the dig in progress (snapshot 9) */
     const CpStageField *field;       /* not owned, not in the snapshot, set by cp_stage_attach_field */
 } CpStageWorld;
+/* --- first-quest digging (core/src/stage_dig.c) --- */
+void cp_stage_dig_reset(CpStageWorld *w);
+int cp_stage_dig_order(CpStageWorld *w,const CpStageInput *a);
+void cp_stage_dig_step(CpStageWorld *w);
+int cp_stage_quest_award(CpStageWorld *w,int step,int dna);   /* pays a task step's DNA once; 0, or -1 when invalid or already paid */
+void cp_stage_dig_flame(CpStageWorld *w);                      /* the player started the flamethrower */
+int cp_stage_soft_soil(const CpStageWorld *w,float x,float z); /* diggable here: dry, gentle, outside the cave */
+uint64_t cp_stage_dig_hash(const CpStageWorld *w);
+int cp_stage_dig_json(const CpStageWorld *w,char *out,size_t cap);
+int cp_stage_dig_observe(const CpStageWorld *w,char *out,size_t cap);   /* the agent's view: progress, holes, and the cue of any bed within 30 m (no coordinates of the far ones) */
 /* --- C2 secrets (core/src/stage_secrets.c) --- */
 void cp_stage_set_run(CpStageWorld *w,int on);
 float cp_stage_safe_drop(const CpStageWorld *w); /* metres, 1.5 times mean leg length */

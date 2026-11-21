@@ -8,11 +8,11 @@ int main(void)
 {
     /* Solver initialization leaves tiny weights on unused moves. Those do
      * not establish a meaningful mixed strategy. */
-    double mix[CB_MOVE_COUNT] = {0.34, 0.33, 0.329999, 0.000001, 0, 0};
+    double mix[CB_TOURNEY_MOVES] = {0.34, 0.33, 0.329999, 0.000001, 0, 0};
     assert(equilibrium_support(mix) == 3);
     mix[0] = 0.25; mix[1] = 0.25; mix[2] = 0.25; mix[3] = 0.25;
     assert(equilibrium_support(mix) == 4);
-    double P[CB_MOVE_COUNT][CB_MOVE_COUNT] = {{0}}, se[CB_MOVE_COUNT][CB_MOVE_COUNT] = {{0}};
+    double P[CB_TOURNEY_MOVES][CB_TOURNEY_MOVES] = {{0}}, se[CB_TOURNEY_MOVES][CB_TOURNEY_MOVES] = {{0}};
     P[0][0] = 2;
     assert(dominates(P, se, 0, 1));
     P[0][1] = -2;
@@ -65,7 +65,7 @@ int main(void)
     double expected = ((15.4+4.2)/10.8 + 42.0/21.6 + 18.2/14.4 + 23.8/12.0)/4;
     assert(fabs(move_stamina_value(&p)-expected) < 1e-6);
 
-    for (int a = 0; a < CB_MOVE_COUNT; a++) for (int b = 0; b < CB_MOVE_COUNT; b++) {
+    for (int a = 0; a < CB_TOURNEY_MOVES; a++) for (int b = 0; b < CB_TOURNEY_MOVES; b++) {
         assert(fabs(payoff[a][b] + payoff[b][a]) < 1e-9);
         assert(fabs(payr[a][b] + payr[b][a]) < 1e-9);
         if (a == b) assert(payoff_se[a][b] == 0 && payr_se[a][b] == 0);

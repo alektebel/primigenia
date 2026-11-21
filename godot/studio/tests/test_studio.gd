@@ -47,11 +47,11 @@ func _init() -> void:
 func test_parts_table() -> void:
 	var web := FileAccess.get_file_as_string(root_dir.path_join("web/studio/parts.json"))
 	var mine := FileAccess.get_file_as_string("res://data/parts.json")
-	# the Godot table is the web one plus the Godot-only wings (entries flagged godot_only: wing_vane, wing_flap)
+	# the Godot table is the web one plus the Godot-only parts (entries flagged godot_only: wing_vane, wing_flap, fire_gland)
 	var wj: Dictionary = JSON.parse_string(web)
 	var mj: Dictionary = JSON.parse_string(mine)
 	var kept: Array = mj.parts.filter(func(e): return not bool(e.get("godot_only", false)))
-	var same: bool = kept == wj.parts and mj.parts.size() - kept.size() <= 2
+	var same: bool = kept == wj.parts and mj.parts.size() - kept.size() <= 3
 	for k in mj:
 		if k != "parts" and mj[k] != wj.get(k):
 			same = false

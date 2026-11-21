@@ -24,8 +24,8 @@ const V_DODGE := 9
 const V_LOADOUT := 10       # target = slot 1..4, move = move id or -1: instant, only at the nest (C: not_at_nest / in_fight)
 const DODGE_LEFT := 2       # web/stage: Q -> 2, E -> 6
 const DODGE_RIGHT := 6
-const MOVE_IDS := ["bite", "charge", "guard", "spit", "tail_strike", "dodge", "claw_swipe", "peck", "pounce", "quill_volley", "roar", "stomp", "curl_up", "spine_volley"]
-const MOVE_NAMES := ["Bite", "Charge", "Guard", "Spit", "Tail strike", "Dodge", "Claw swipe", "Peck", "Pounce", "Quill volley", "Roar", "Stomp", "Curl up", "Bone-spine frenzy"]
+const MOVE_IDS := ["bite", "charge", "guard", "spit", "tail_strike", "dodge", "claw_swipe", "peck", "pounce", "quill_volley", "roar", "stomp", "curl_up", "spine_volley", "flame"]
+const MOVE_NAMES := ["Bite", "Charge", "Guard", "Spit", "Tail strike", "Dodge", "Claw swipe", "Peck", "Pounce", "Quill volley", "Roar", "Stomp", "Curl up", "Bone-spine frenzy", "Flamethrower"]
 
 var ui: CanvasLayer
 var island: Node3D
@@ -207,6 +207,8 @@ func _loadout_abilities(lo: Dictionary) -> Array:
 		for a in Modes.ABILITIES[Modes.ATTACK]:
 			if a.id == m.name:
 				shown = str(a.name)
+		if Modes.EXTRA_MOVES.has(str(m.name)):
+			shown = str(Modes.EXTRA_MOVES[str(m.name)])
 		out.append({"id": str(m.name), "name": shown, "move": id, "role": str(m.role_name), "stamina": int(m.stamina),
 			"cooldown": int(m.cooldown)})
 	return out
@@ -444,6 +446,7 @@ func _journal_model() -> Dictionary:
 		_parts_catalogue = Profile.load_json("res://game/data/parts.json").get("parts", [])
 	var model: Dictionary = JournalModel.build(stage.cur, species, _chains, _parts_catalogue)
 	model["plants"] = island.plant_rows()
+	model["tasks"] = island.first_quest.task_rows() if island.first_quest != null else []
 	return model
 
 # A plant was watched long enough: the whisper and the journal page (the plants themselves are saved with the game).
@@ -507,7 +510,7 @@ const EV_CHAIN_DONE := 17
 const EV_INTIMIDATE := 18
 const EV_CANCELLED := 19
 const EV_EAT := 20
-const DNA_SOURCES := ["kill", "bond", "ally", "dominate", "carcass", "exploration", "new species", "duplicate part", "fossil", "old bones", "meteor shard"]
+const DNA_SOURCES := ["kill", "bond", "ally", "dominate", "carcass", "exploration", "new species", "duplicate part", "fossil", "old bones", "meteor shard", "task"]
 
 func _on_social(state: Dictionary) -> void:
 	var soc: Dictionary = state.get("social", {})

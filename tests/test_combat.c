@@ -19,6 +19,14 @@ static CpCombatWorld pair(float dist)
     return w;
 }
 
+/* The flame needs a fire gland, which the default profile does not have (so every older golden stays as it was). */
+static void with_fire(CpCombatWorld *w, int i)
+{
+    w->c[i].prof.fire = 2;
+    cp_combat_loadout_default(&w->c[i].lo, &w->c[i].prof);
+    cp_combat_loadout_set(&w->c[i].lo, 0, CB_FLAME);    /* the four slots are full of the older moves: the flame takes the first */
+}
+
 /* Pin phases to isolate each resolution rule from bot/timing decisions. */
 static void phase(CpCombatCreature *c, int move, int ph)
 {
@@ -317,6 +325,7 @@ static void bot_counters(void)
                 int response = (r->effect == CB_EFF_BREAK || r->effect == CB_EFF_INTERRUPT) ? attack : r->defend;
                 int threat = response == attack ? r->defend : attack;
                 CpCombatWorld w = pair(1.6f);
+                if (threat == CB_FLAME) with_fire(&w, 0);
                 CpBot bot; bot_init(&bot, BOT_COUNTER, 42); bot.reaction = delay;
                 /* Isolate this row's equipment; every action still goes through
                  * bot_decide/order/step, starting from a real observed wind-up. */
@@ -326,6 +335,8 @@ static void bot_counters(void)
                 if (response == CB_SPIT) w.c[1].prof.spit = 2;
                 if (response == CB_TAIL_STRIKE) w.c[1].prof.tail = 2;
                 if (response == CB_GUARD) w.c[1].prof.guard = 2;
+                w.c[1].prof.fire = 0;
+                if (response == CB_FLAME) with_fire(&w, 1);
                 if (threat == CB_DODGE) cp_combat_dodge(&w, 0, 0);
                 else if (threat == CB_GUARD) cp_combat_guard(&w, 0);
                 else cp_combat_attack(&w, 0, 1, threat);
@@ -351,12 +362,12 @@ static void bot_counters(void)
                     }
                     if (w.c[0].hits || w.c[0].interrupted || executed) break;
                 }
-                if (r->effect == CB_EFF_AVOID) CHECK(executed == (delay <= 2 || attack == CB_CHARGE || attack == CB_SPIT),
+                if (r->effect == CB_EFF_AVOID) CHECK(executed == (delay <= 2 || attack == CB_CHARGE || attack == CB_SPIT || attack == CB_FLAME),
                     "dodge execution window is checked for each offensive move");
                 all &= executed;
             }
             printf(" %d", all);
-            int expected = r->defend == CB_DODGE && r->attack == CB_TAIL_STRIKE ? 0 : (r->effect == CB_EFF_AVOID || r->effect == CB_EFF_NEGATE || r->effect == CB_EFF_REDUCE) ? delay <= 2 : 1;
+            int expected = r->defend == CB_DODGE && r->attack == CB_TAIL_STRIKE ? 0 : (r->effect == CB_EFF_AVOID || r->effect == CB_EFF_NEGATE || r->effect == CB_EFF_REDUCE) ? (delay <= 2 || r->attack == CB_FLAME) : 1;
             CHECK(all == expected, "counter row execution matches its documented reaction window");
         }
         puts("");
@@ -519,9 +530,11 @@ static void geometry_and_setup(void)
     phase(&w.c[1], CB_DODGE, CB_PH_WINDUP); cp_combat_step(&w);
     CHECK(w.c[1].hp < 100 && !w.c[1].dodged, "dodge wind-up is vulnerable");
 
-    for (int move = 0; move < CB_CLAW_SWIPE; move++) {
+    for (int move = 0; move < CB_MOVE_COUNT; move++) {
+        if (move >= CB_CLAW_SWIPE && move != CB_FLAME) continue;
         const CpCombatMove *m = &CP_COMBAT_MOVES[move];
         w = pair(1.6f);
+        if (move == CB_FLAME) with_fire(&w, 0);
         if (move == CB_GUARD) cp_combat_guard(&w, 0);
         else if (move == CB_DODGE) cp_combat_dodge(&w, 0, 0);
         else cp_combat_attack(&w, 0, 1, move);
@@ -539,7 +552,7 @@ static void geometry_and_setup(void)
     }
     CpCombatSetup s = {0}; s.n = 99; s.flat = 1;
     for (int i = 0; i < CB_MAX_CREATURES; i++) {
-        s.c[i].prof = (CpCombatProfile){255,255,255,255,255, -5, -1, 100, 0};
+        s.c[i].prof = (CpCombatProfile){255,255,255,255,255, -5, -1, 100, 0, 0};
         s.c[i].x = 100; s.c[i].y = 100;
     }
     cp_combat_reset(&w, &s);
@@ -699,6 +712,7 @@ static void loadout_and_cooldowns(void)
     CHECK(lo->known == ((1u << CB_BITE) | (1u << CB_CHARGE) | (1u << CB_SPIT) | (1u << CB_TAIL_STRIKE)),
           "known moves are the moves whose part level is above zero");
     for (int i = 0; i < CB_CLAW_SWIPE; i++) CHECK(CP_COMBAT_MOVES[i].cooldown == 0, "every shipped move has cooldown 0");
+    CHECK(CP_COMBAT_MOVES[CB_FLAME].cooldown == 60, "the flame has a 60 tick cooldown");
     CHECK(CP_COMBAT_MOVES[CB_TAIL_STRIKE].role == CB_ROLE_CONTROL && CP_COMBAT_MOVES[CB_DODGE].role == CB_ROLE_DEFENCE,
           "moves carry a role");
 

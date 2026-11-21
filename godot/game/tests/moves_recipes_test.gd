@@ -37,7 +37,7 @@ func run() -> void:
 	signs.mineral = 25
 	assert(signs.line_y("calcium") != signs.line_y("mineral"))
 	signs.free()
-	assert(CporeWorld.moves().size() == 14)
+	assert(CporeWorld.moves().size() == 15)
 	w = null
 	print("Godot moves/recipes: PASS")
 	quit()

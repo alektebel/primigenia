@@ -53,6 +53,8 @@ const CpStagePartDef CP_STAGE_PARTS[CP_STAGE_PART_COUNT]={
  {"wing_insect",24,0,0,0,0,0},
  {"tail_hammer",16,0,0,0,1,0},
  {"espinas_dorsales",30,0,0,0,0,0},
+ {"wing_vane",24,0,0,0,0,0},
+ {"fire_gland",30,0,0,0,0,0},   /* first-quest: the throat organ of the flamethrower (CB_FLAME) */
 };
 /* Stable catalogue indices; each bit grants the corresponding C2 body capability.
  * The recipe move still requires its second part, diet, clues and calcium. */
@@ -237,6 +239,7 @@ uint64_t cp_stage_parts_hash(const CpStageWorld *w){
  for(int i=0;i<6;i++){hu(&h,p->move_hits[i]);hu(&h,p->move_wins[i]);}
  int extra=p->level[46]|p->tier[46]|p->hits[46]|p->wins[46]|p->kills[46];
  for(int i=6;i<CB_MOVE_COUNT;i++)extra|=p->move_hits[i]|p->move_wins[i];
+ for(int i=47;i<CP_STAGE_PART_COUNT;i++)if(p->level[i]||p->tier[i]||p->hits[i]||p->wins[i]||p->kills[i]){hu(&h,0x46513032u+(uint32_t)i);hu(&h,p->level[i]);hu(&h,p->tier[i]);hu(&h,p->hits[i]);hu(&h,p->wins[i]);hu(&h,p->kills[i]);}   /* first-quest parts: only once they matter, so older goldens hold */
  if(extra){hu(&h,0x43325054);hu(&h,p->level[46]);hu(&h,p->tier[46]);hu(&h,p->hits[46]);hu(&h,p->wins[46]);hu(&h,p->kills[46]);for(int i=6;i<CB_MOVE_COUNT;i++){hu(&h,p->move_hits[i]);hu(&h,p->move_wins[i]);}}
  for(int i=0;i<CP_STAGE_MAX_WILD;i++)hu(&h,p->kill_paid[i]);
  if(p->tiers_on||p->clues){hu(&h,0x41323521u);hu(&h,p->tiers_on);hu(&h,p->clues);}

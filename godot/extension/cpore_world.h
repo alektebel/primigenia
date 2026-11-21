@@ -48,6 +48,7 @@ public:
     int nest_edit(const godot::String &body);
     int nest_apply(const godot::String &body);
     void set_run(bool on);
+    int quest_award(int step, int dna);
     void set_tiers(bool on);
     void set_edit_anywhere(bool on);
     godot::String lineage() const;

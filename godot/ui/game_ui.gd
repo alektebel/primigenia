@@ -21,6 +21,8 @@ const Stub := preload("res://ui/stub_view.gd")
 const JournalView := preload("res://ui/journal_view.gd")
 const Onboarding := preload("res://ui/onboarding.gd")
 const LoadoutSheet := preload("res://ui/loadout_sheet.gd")
+const QuestCard := preload("res://ui/quest_card.gd")
+const DigChip := preload("res://ui/dig_chip.gd")
 
 signal mode_changed(mode: StringName)
 signal ability_pressed(index: int, ability: Dictionary)
@@ -62,6 +64,9 @@ var stub
 var journal
 var onboarding
 var loadout_panel
+var dig_chip                        # DigChip: the dig entry at the player's feet
+signal dig_pressed
+var quest_card                      # QuestCard: the task note, top-left (first-quest)
 var loadout_abilities: Array = []   # the 4 hotbar entries of Attack mode once the stage knows the loadout
 var audio
 var camera: Camera3D
@@ -95,6 +100,11 @@ func _ready() -> void:
 	root.add_child(signs)
 	minimap = Minimap.new()
 	root.add_child(minimap)
+	quest_card = QuestCard.new()
+	root.add_child(quest_card)
+	dig_chip = DigChip.new()
+	root.add_child(dig_chip)
+	dig_chip.pressed.connect(func() -> void: dig_pressed.emit())
 	note = Note.new()
 	root.add_child(note)
 	ring = Ring.new()
@@ -452,6 +462,7 @@ func _process(dt: float) -> void:
 	var book: float = journal.modulate.a if journal.visible else 0.0     # the signs and the map step back behind the open book
 	signs.fade_all = maxf(veil.death, book)
 	minimap.modulate.a = 1.0 - book
+	quest_card.hide_now = paused or journal.visible or stub.open or dying or loadout_panel.visible_open
 	if not selected.is_empty():
 		_track_ring()
 		petals.centre = ring.centre
@@ -505,7 +516,7 @@ func _unhandled_input(e: InputEvent) -> void:
 			get_viewport().set_input_as_handled()
 		return
 	if e is InputEventMouseButton or e is InputEventMouseMotion:
-		if signs.handle_input(e) or ring.handle_input(e) or petals.handle_input(e) or defence.handle_input(e):
+		if dig_chip.handle_input(e) or signs.handle_input(e) or ring.handle_input(e) or petals.handle_input(e) or defence.handle_input(e):
 			get_viewport().set_input_as_handled()
 		return
 	if not (e is InputEventKey) or not e.pressed or e.echo:
@@ -518,6 +529,9 @@ func _unhandled_input(e: InputEvent) -> void:
 		else:
 			set_paused(true)
 		get_viewport().set_input_as_handled()
+		return
+	if e.is_action_pressed("quest_card"):
+		quest_card.toggle()        # a key press folds it at once: no animation on keyboard-triggered actions
 		return
 	if e.is_action_pressed("journal"):
 		open_view("journal")

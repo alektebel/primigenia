@@ -26,7 +26,7 @@ static void generate(unsigned seed){
 static void setup(CpStageSetup *s,int secrets,int legs,int radius){
     cp_stage_setup_default(s,5);
     s->terrain=CP_STAGE_FIELD;s->n=0;s->nest_x=s->nest_z=0;s->player_legs=legs;
-    s->player=(CpCombatProfile){2,4,0,0,0,100,100,4,(uint16_t)radius};
+    s->player=(CpCombatProfile){2,4,0,0,0,100,100,4,(uint16_t)radius,0};
     s->secrets=secrets?3:0;
     if(secrets&&t.cave_count>0){
         const CpTerrainCave *c=&t.caves[0];
