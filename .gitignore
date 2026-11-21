@@ -7,7 +7,7 @@ data/creatures/
 art/generated/
 node_modules/
 godot/.godot/
-feedback/
+/feedback/
 godot/devtools/build.txt
 godot/scenarios/creature/quick-*
 

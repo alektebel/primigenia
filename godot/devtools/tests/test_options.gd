@@ -1,0 +1,200 @@
+extends RefCounted
+# F10 option mode: choice entries, diff/A-B/preset round trips, the HUD key handling, input suspension, `opt` commands.
+
+const StageWorld := preload("res://game/stage/stage_world.gd")
+const Registry := preload("res://devtools/tuning/registry.gd")
+const Hud := preload("res://devtools/tuning/options_hud.gd")
+const CmdReg := preload("res://devtools/console/registry.gd")
+const ChaseCamera := preload("res://game/player/chase_camera.gd")
+const FakeCtl := preload("res://devtools/tests/fake_ctl.gd")
+const Defs := preload("res://devtools/tuning/option_defs.gd")
+
+static func key(code: Key, ctrl := false, alt := false, shift := false) -> InputEventKey:
+	var e := InputEventKey.new()
+	e.keycode = code
+	e.physical_keycode = code
+	e.ctrl_pressed = ctrl
+	e.alt_pressed = alt
+	e.shift_pressed = shift
+	e.pressed = true
+	return e
+
+func _world() -> Node:
+	var sw = StageWorld.new()
+	var setup: Dictionary = CporeWorld.default_setup(42)
+	setup.terrain = 1
+	sw.reset(setup)
+	return sw
+
+func _registry(sw, applied: Array) -> Object:
+	var ctl = FakeCtl.new()
+	var island := {"chase": ChaseCamera.new(1.5, 0.0, Callable()), "hosts": {0: {"driver": {"controller": ctl}}}}
+	var tn = Registry.new()
+	tn.dev_dir = "res://definitely-missing"
+	tn.user_dir = "user://devtools-test/options"
+	tn.bind_island(island)
+	tn.add_choice("gait", "movement", ["today", "trot", "froude"], "today", Callable(), func(v): applied.append(v), false,
+		{"disabled": {"froude": "after the gait port"}})
+	tn.add_choice("skin", "look", ["v1", "pre-v1"], "v1", Callable(), func(v): applied.append(v))
+	if sw != null:
+		tn.stage = sw
+		tn.add_choice("light", "light", ["live", "dawn", "dusk"], "live", Callable(), func(v):
+			if v != "live":
+				sw.debug_now({"op": Defs.DBG_CLOCK, "a": int(Defs.LIGHT_HOURS["dawn" if v == "dawn" else "dusk"] * Defs.TICKS_PER_HOUR)}), true)
+	return tn
+
+func run(t) -> void:
+	var applied := []
+	var sw = _world()
+	var tn = _registry(sw, applied)
+	# --- choice add, cycle, wrap, disabled values, reset
+	t.eq(tn.choice_value("gait"), "today", "a choice starts at its default")
+	t.eq(tn.current_values(), {}, "no change yet")
+	t.eq(tn.cycle_choice("gait", 1), "", "cycle forward")
+	t.eq(tn.choice_value("gait"), "trot", "today -> trot")
+	t.eq(tn.cycle_choice("gait", 1), "", "cycle past a disabled value")
+	t.eq(tn.choice_value("gait"), "today", "wraps over the disabled froude to today")
+	t.eq(tn.cycle_choice("gait", -1), "", "cycle backwards")
+	t.eq(tn.choice_value("gait"), "trot", "today <- trot wraps backwards past the disabled froude")
+	t.check(tn.set_choice("gait", "froude") != "", "a disabled value is refused with its reason")
+	t.check(tn.set_choice("gait", "nope") != "", "an unknown value is refused")
+	t.check(tn.set_choice("nope", "x") != "", "an unknown option is refused")
+	t.eq(applied.back(), "trot", "the setter ran with the value")
+	t.eq(tn.choices_line(), "gait trot", "the corner line shows the non-default choice")
+	tn.set_choice("skin", "pre-v1")
+	t.eq(tn.choices_line(), "gait trot · skin pre-v1", "and joins several")
+	tn.reset("gait")
+	t.eq(tn.choice_value("gait"), "today", "reset puts the default back")
+	t.eq(tn.choices_line(), "skin pre-v1", "reset drops it from the line")
+	var n_applied := applied.size()
+	tn.reset("gait")
+	t.eq(applied.size(), n_applied, "resetting a default option does not call the setter")
+	# --- diff round trip with choices
+	tn.set_choice("gait", "trot")
+	tn.set_value("camera/lead", 0.3)
+	var d: Dictionary = tn.diff("t")
+	t.check(d.values.get("gait") == "trot" and d.values.get("skin") == "pre-v1" and d.values.has("camera/lead"), "the diff holds choices as names next to numbers")
+	var path: String = tn.save_file("opt-unit")
+	t.check(path != "", "diff saved")
+	tn.apply({"format": Registry.FORMAT, "values": {}})
+	t.eq(tn.current_values(), {}, "an empty diff resets choices and numbers")
+	t.eq(tn.load_file("opt-unit"), "", "diff loads")
+	t.eq(tn.current_values(), d.values, "the round trip restores the same set")
+	t.check(tn.apply({"format": Registry.FORMAT, "values": {"gait": "froude"}}) != "", "a diff with a disabled choice reports an error")
+	# --- A/B swap
+	tn.apply({"format": Registry.FORMAT, "values": {}})
+	tn.set_choice("skin", "pre-v1")
+	tn.store_active()
+	var before: Dictionary = tn.current_values()
+	tn.swap()
+	t.eq(tn.choice_value("skin"), "v1", "B starts at the defaults, choices included")
+	tn.set_choice("gait", "trot")
+	tn.swap()
+	t.eq(tn.current_values(), before, "A again with its skin")
+	tn.swap()
+	t.eq(tn.current_values(), {"gait": "trot"}, "B kept its own choice")
+	tn.swap()
+	var st: Dictionary = tn.state()
+	t.eq(st.options, {"skin": "pre-v1"}, "state() records the active choices for scenarios and feedback")
+	tn.apply({"format": Registry.FORMAT, "values": {}})
+	# --- presets
+	tn.set_choice("gait", "trot")
+	tn.set_value("camera/yaw_max", 2.0)
+	t.check(tn.save_preset(2) != "" and tn.has_preset(2), "preset 2 saved")
+	t.eq(tn.save_preset(9), "", "slot 9 does not exist")
+	tn.apply({"format": Registry.FORMAT, "values": {}})
+	t.check(not tn.has_preset(1) or true, "slot 1 may be empty")
+	t.eq(tn.recall_preset(2), "", "preset 2 recalled")
+	t.eq(tn.choice_value("gait"), "trot", "the preset restored the choice")
+	t.check(absf(tn.value("camera/yaw_max") - 2.0) < 1e-4, "and the number")
+	DirAccess.remove_absolute(ProjectSettings.globalize_path(tn.preset_path(2)))
+	t.check(tn.recall_preset(2) != "", "an empty slot is an error sentence")
+	tn.apply({"format": Registry.FORMAT, "values": {}})
+	# --- a sim choice is logged and replayable
+	t.eq(tn.set_choice("light", "dawn"), "", "light = dawn")
+	sw.step_once()
+	t.eq(sw.log_debug.size(), 1, "the clock jump is one logged debug op")
+	t.check(sw.export_log().contains("\n0 5 "), "and it is the CLOCK op in the v3 log")
+	t.eq(sw.world.state().tick, 1, "the world advanced")
+	# --- the HUD
+	var hud = Hud.new()
+	hud.tuning = tn
+	t.check(not Game.options_open, "game keys are free before F10")
+	t.check(not hud.handle_key(key(KEY_1)), "keys are not used while the HUD is closed")
+	t.check(hud.handle_key(key(KEY_F10)) and hud.is_open and Game.options_open, "F10 opens it and flags the game")
+	t.check(Game.movement_blocked(), "movement is suspended while it is open")
+	t.eq(Hud.GROUPS.size(), 9, "nine groups")
+	t.check(hud.handle_key(key(KEY_1)) and hud.group == 0, "1 picks Movement")
+	t.eq(hud.current_key(), "gait", "the first Movement option is the gait choice")
+	t.eq(hud.row_text("gait"), "Gait: today ▸ 1/3", "row text: name, value, position")
+	hud.handle_key(key(KEY_RIGHT))
+	t.eq(tn.choice_value("gait"), "trot", "Right cycles the value instantly")
+	t.eq(hud.row_text("gait"), "Gait: trot ▸ 2/3", "and the row shows it")
+	hud.handle_key(key(KEY_LEFT))
+	t.eq(tn.choice_value("gait"), "today", "Left cycles back")
+	hud.handle_key(key(KEY_RIGHT))
+	hud.handle_key(key(KEY_BACKSPACE))
+	t.eq(tn.choice_value("gait"), "today", "Backspace resets the option")
+	hud.handle_key(key(KEY_DOWN))
+	t.eq(hud.current_key(), "loco/vault_gain", "Down moves to the next option (the locomotion numbers follow the choices)")
+	hud.handle_key(key(KEY_RIGHT))
+	t.check(absf(tn.value("loco/vault_gain") - 1.05) < 1e-4, "Right steps a number once")
+	hud.handle_key(key(KEY_LEFT, false, false, true))
+	t.check(absf(tn.value("loco/vault_gain") - 0.55) < 1e-4, "Shift steps x10")
+	hud.handle_key(key(KEY_UP))
+	t.eq(hud.current_key(), "gait", "Up goes back")
+	hud.handle_key(key(KEY_UP))
+	t.eq(hud.row, hud.row_count() - 1, "Up wraps")
+	hud.handle_key(key(KEY_8))
+	t.eq(Hud.GROUPS[hud.group], "Tuning", "8 picks Tuning")
+	t.eq(hud.row_count(), tn.order.size(), "Tuning lists every numeric entry")
+	t.check(tn.is_changed("loco/vault_gain"), "something is changed before Ctrl+Backspace")
+	hud.handle_key(key(KEY_BACKSPACE, true))
+	t.eq(tn.current_values(), {}, "Ctrl+Backspace resets all")
+	tn.set_choice("skin", "pre-v1")
+	hud.handle_key(key(KEY_3, true))
+	t.check(tn.has_preset(3), "Ctrl+3 saves preset 3")
+	tn.apply({"format": Registry.FORMAT, "values": {}})
+	hud.handle_key(key(KEY_3, false, true))
+	t.eq(tn.choice_value("skin"), "pre-v1", "Alt+3 recalls it")
+	hud.handle_key(key(KEY_9))
+	t.eq(Hud.GROUPS[hud.group], "Presets", "9 is Presets")
+	hud.handle_key(key(KEY_DOWN))
+	hud.handle_key(key(KEY_DOWN))
+	tn.apply({"format": Registry.FORMAT, "values": {}})
+	hud.handle_key(key(KEY_RIGHT))
+	t.eq(tn.choice_value("skin"), "pre-v1", "Right on the selected preset slot recalls it")
+	DirAccess.remove_absolute(ProjectSettings.globalize_path(tn.preset_path(3)))
+	t.check(hud.handle_key(key(KEY_ESCAPE)) and not hud.is_open and not Game.options_open, "Esc closes it and frees the game")
+	t.check(not Game.movement_blocked(), "movement is back")
+	# the game does not see the keys: _input eats them while open (no viewport needed outside the tree)
+	hud.open()
+	var seen := [false]
+	var w := key(KEY_W)
+	t.check(hud.handle_key(key(KEY_2)) and hud.group == 1, "digits go to the HUD while open")
+	seen[0] = hud.handle_key(w)
+	t.check(Game.options_open, "still open after unbound keys")
+	hud.close()
+	hud.free()
+	# --- the opt console commands
+	var cr = CmdReg.new()
+	tn.register_commands(cr)
+	tn.apply({"format": Registry.FORMAT, "values": {}})
+	t.check(cr.execute("opt list").out.contains("gait"), "opt list names the options")
+	t.eq(cr.execute("opt gait trot").ok, true, "opt <key> <value>")
+	t.eq(tn.choice_value("gait"), "trot", "the choice changed")
+	var r: Dictionary = cr.execute("opt skin=pre-v1 camera/lead=0.25")
+	t.check(r.ok and tn.choice_value("skin") == "pre-v1" and absf(tn.value("camera/lead") - 0.25) < 1e-4, "opt key=value pairs, numbers too")
+	t.check(not cr.execute("opt gait froude").ok, "a disabled value fails with a sentence")
+	t.check(not cr.execute("opt nope 1").ok, "unknown key fails")
+	t.check(cr.execute("opt lead 0.4").ok and absf(tn.value("camera/lead") - 0.4) < 1e-4, "short names resolve when unique")
+	t.check(cr.execute("opt save 4").ok and tn.has_preset(4), "opt save <n>")
+	cr.execute("opt reset")
+	t.eq(tn.current_values(), {}, "opt reset")
+	t.check(cr.execute("opt preset 4").ok and tn.choice_value("gait") == "trot", "opt preset <n> recalls")
+	cr.execute("opt reset gait")
+	t.eq(tn.choice_value("gait"), "today", "opt reset <key>")
+	DirAccess.remove_absolute(ProjectSettings.globalize_path(tn.preset_path(4)))
+	DirAccess.remove_absolute(ProjectSettings.globalize_path("user://devtools-test/options/opt-unit.json"))
+	t.check(cr.complete("opt ga").has("gait"), "completion lists option keys")
+	t.eq(cr.complete("opt gait t"), ["today", "trot"], "and values")

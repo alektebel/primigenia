@@ -102,7 +102,7 @@ static func write(stage, ctx: Dictionary, note: String, dir: String, meta_extra:
 	var meta := {"build": Scenario.build_text(), "godot": Engine.get_version_info().string, "seed": ctx.get("island", {}).get("seed", 0),
 		"tick": cur_tick, "hash": stage.world.state().hash, "timescale": stage.timescale, "paused": stage.paused,
 		"legend_context": String(meta_extra.get("legend_context", "")), "fps_avg": meta_extra.get("fps_avg", 0.0), "note": note,
-		"os": OS.get_name(), "screenshot": shot, "replay_from_tick": int(start.tick) if start != null else first_tick}
+		"os": OS.get_name(), "options": ctx.get("tuning", {}).get("options", {}), "screenshot": shot, "replay_from_tick": int(start.tick) if start != null else first_tick}
 	var mf := FileAccess.open(dir.path_join("meta.json"), FileAccess.WRITE)
 	mf.store_string(JSON.stringify(meta, "\t"))
 	mf.close()
@@ -140,6 +140,14 @@ func _ready() -> void:
 	edit.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	edit.wrap_mode = TextEdit.LINE_WRAPPING_BOUNDARY
 	box.add_child(edit)
+	var flag := Button.new()
+	flag.text = "Flag something (Shift+F8)"
+	flag.pressed.connect(func():
+		close(false)
+		var d = get_node_or_null("/root/Dev")
+		if d != null and d.flag != null:
+			d.flag.enter())
+	box.add_child(flag)
 	add_child(panel)
 
 func open() -> void:
@@ -186,7 +194,7 @@ func save_now(note: String) -> String:
 func _input(e: InputEvent) -> void:
 	if not (e is InputEventKey) or not e.pressed or e.echo or not Dev.enabled:
 		return
-	if e.is_action_pressed("dev_feedback") and not is_open and not Game.console_open:
+	if e.is_action_pressed("dev_feedback") and not e.shift_pressed and not is_open and not Game.console_open and not Game.options_open:
 		open()
 		get_viewport().set_input_as_handled()
 	elif is_open and e.keycode == KEY_ESCAPE:
