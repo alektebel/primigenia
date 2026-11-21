@@ -44,11 +44,12 @@ uniform float gel = 0.0;           // radial jellies (GEL defined by skin_gel.gd
 uniform vec4 mounts[6];            // muscle bulges on the body (hips and shoulders): xyz body rest space, w radius
 uniform int n_mounts = 0;
 
+const float MOON_FAR = 5.0;
 const float BOUNCE = 0.14;
 const float SKY_FLOOR = 0.035;
-const float MOON_FILL = 0.45;
-const float MOON_FLOOR = 0.15;
-const float MOON_RIM = 1.2;
+const float MOON_FILL = 0.2;
+const float MOON_FLOOR = 0.17;
+const float MOON_RIM = 1.8;
 
 varying vec4 vSkin;
 varying vec2 vUVb;
@@ -220,7 +221,8 @@ void fragment() {
 		// skin v1: ground bounce on the sides and belly (the dry skin no longer mirrors the sky, so the shade side keeps its colour from the ground).
 		float ny = (INV_VIEW_MATRIX * vec4(n, 0.0)).y;
 		em += sk * BOUNCE * smoothstep(0.5, -0.7, ny) + cA * SKY_FLOOR;
-		em += moon_k * (sk * MOON_FILL + cA * MOON_FLOOR) + sk * moon_k * ( MOON_RIM * pow(1.0 - clamp(dot(view, n), 0.0, 1.0), 2.5) * moonside);
+		float far_k = 1.0 + MOON_FAR * smoothstep(12.0, 45.0, length(VERTEX));   // readable at strategic distance (LOOK.md 5)
+		em += far_k * moon_k * (sk * MOON_FILL + cA * MOON_FLOOR) + sk * moon_k * ( MOON_RIM * pow(1.0 - clamp(dot(view, n), 0.0, 1.0), 2.5) * moonside);
 #ifdef RENDERER_FORWARD_PLUS
 		SSS_STRENGTH = sss * (0.15 + 0.5 * thin);
 #endif

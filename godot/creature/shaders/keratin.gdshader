@@ -57,6 +57,6 @@ void fragment() {
 		vec3 Lw = normalize((VIEW_MATRIX * vec4(sun_dir, 0.0)).xyz);
 		float thru = pow(clamp(-dot(n, Lw), 0.0, 1.0), 1.3);
 		float rim = pow(1.0 - clamp(dot(view, n), 0.0, 1.0), 3.0);
-		EMISSION = tip_col * vec3(1.0, 0.7, 0.45) * (thru * 0.35 * tipmix + rim * 0.06) + (col * 0.4 + tip_col * 0.12) * moon_k + col * moon_k * ( 1.2 * rim * (0.55 + 0.45 * dot(n, Lw)));
+		EMISSION = tip_col * vec3(1.0, 0.7, 0.45) * (thru * 0.35 * tipmix + rim * 0.06) + (col * 0.3 + tip_col * 0.16) * moon_k * (1.0 + 5.0 * smoothstep(12.0, 45.0, length(VERTEX))) + col * moon_k * ( 1.8 * rim * (0.55 + 0.45 * dot(n, Lw)));
 	}
 }
