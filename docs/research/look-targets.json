@@ -33,6 +33,25 @@
    "source": "starting value: (p95-p5 luminance)/255 >= 0.35 on world shots; LOOK.md 7 'luminance contrast and shadow coverage'",
    "kinds": [
     "world"
+   ],
+   "tods": [
+    "dawn",
+    "midday",
+    "dusk"
+   ]
+  },
+  {
+   "id": "flat_light_night",
+   "metric": "contrast",
+   "op": ">=",
+   "value": 0.15,
+   "failure": "Flat light, no shadows",
+   "source": "starting value for night shots: (p95-p5)/255 >= 0.15 (day 0.35). A moonlit scene has a low dynamic range by design (LOOK.md 3 'readable night'); the baseline night passed the day target only because it was not night (blue sky, green grass, no real darkening). Readability stays guarded by day_cycle_night, creature_readability and creature_crushed. Checked by the wl4 scorecard.",
+   "kinds": [
+    "world"
+   ],
+   "tods": [
+    "night"
    ]
   },
   {
@@ -66,6 +85,25 @@
    "source": "starting value: at most 5% of world pixels crushed (luminance <= 12); LOOK.md 7",
    "kinds": [
     "world"
+   ],
+   "tods": [
+    "dawn",
+    "midday",
+    "dusk"
+   ]
+  },
+  {
+   "id": "world_crushed_night",
+   "metric": "crush_frac",
+   "op": "<",
+   "value": 0.35,
+   "failure": "Flat light, no shadows",
+   "source": "starting value for night shots: at most 35% of world pixels crushed (luminance <= 12), day 5%. A real night is dark: the baseline night passed 5% only because it was not night. Near ground must still read (lifted ambient/moon fill), the night/day luminance ratio stays < 0.5. Checked by the wl4 scorecard.",
+   "kinds": [
+    "world"
+   ],
+   "tods": [
+    "night"
    ]
   },
   {
