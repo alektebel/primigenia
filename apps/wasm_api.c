@@ -21,7 +21,7 @@ static uint32_t hash_words[2];
 int cb_layout(int index)
 {
     const int values[] = {
-        3, sizeof(CpCombatSetup), OFF(CpCombatSetup, seed), OFF(CpCombatSetup, n),
+        4, sizeof(CpCombatSetup), OFF(CpCombatSetup, seed), OFF(CpCombatSetup, n),
         OFF(CpCombatSetup, flat), OFF(CpCombatSetup, c), sizeof(CpCombatSpawn),
         OFF(CpCombatSpawn, prof), OFF(CpCombatSpawn, x), OFF(CpCombatSpawn, y),
         OFF(CpCombatSpawn, fx), OFF(CpCombatSpawn, fy), OFF(CpCombatSpawn, medium),

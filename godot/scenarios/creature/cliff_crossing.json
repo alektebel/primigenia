@@ -1,9 +1,9 @@
 {
 	"camera": {},
-	"created": "2026-11-19T23:01:44",
+	"created": "2026-11-20T02:29:13",
 	"engine": {
 		"build": "unknown",
-		"layout": "85f652e533cc6132",
+		"layout": "f29ec83602f24649",
 		"snapshot_version": 3,
 		"stage_version": 3
 	},
@@ -145,6 +145,7 @@
 		"terrain_version": 4
 	},
 	"kind": "scenario",
+	"legacy": {},
 	"lineage": {
 		"current_deeds": {
 			"befriends": 0.0,
@@ -221,6 +222,7 @@
 	},
 	"name": "cliff_crossing",
 	"note": "Below a cliff with a GO target on the rim (~127 m detour, 7 waypoints): path overlay and A* routing.",
+	"plants": [],
 	"recipe": "cliff_crossing.log",
 	"setup": {
 		"cave": {
@@ -239,7 +241,18 @@
 		],
 		"obstacles": [],
 		"player": {
+			"carnivore": 0,
 			"charge": 4,
+			"extra": [
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0
+			],
 			"guard": 0,
 			"hp": 100.0,
 			"mouth": 2,

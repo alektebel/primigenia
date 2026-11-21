@@ -1,8 +1,8 @@
 /* Plain ES module; serve the repository root so ../../build/wasm is available.
  * All typed views are borrowed scratch buffers. Copy before the next query. */
 export const LAYOUT = Object.freeze([
-  3, 364, 0, 4, 8, 12, 44, 0, 24, 28, 32, 36, 40, 41,
-  24, 0, 1, 2, 3, 4, 8, 12, 16, 20, 8, 0, 1, 2, 3, 17, 5, 14, 8, 64, 10, 40, 40, 4, 6,
+  4, 524, 0, 4, 8, 12, 64, 0, 32, 36, 40, 44, 48, 49,
+  32, 0, 1, 2, 3, 4, 8, 12, 16, 20, 8, 0, 1, 2, 3, 17, 5, 14, 8, 64, 10, 40, 40, 4, 6,
 ]);
 export const MOVE = Object.freeze({ BITE: 0, CHARGE: 1, GUARD: 2, SPIT: 3, TAIL: 4, DODGE: 5 });
 export const VERB = Object.freeze({ IDLE: 0, APPROACH: 1, ATTACK: 2, GUARD: 3, DODGE: 4, FLEE: 5, MOVE: 6 });

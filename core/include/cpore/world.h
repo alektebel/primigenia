@@ -9,7 +9,7 @@
 #define CP_STAGE_MAX_OBSTACLES 1024
 #define CP_STAGE_DAY_TICKS 12000
 #define CP_STAGE_DT .1f
-#define CP_STAGE_SNAPSHOT_VERSION 8   /* 3: player loadout (A21); 4: social layer (C2); 5: lineage ledger and ancestry; 6: discovery, nest shop and eggs; 7: secrets (shards, cave chamber, day/night) and 6 species; 8: run and fixed-point fall state */
+#define CP_STAGE_SNAPSHOT_VERSION 9   /* 3: player loadout (A21); 4: social layer (C2); 5: lineage ledger and ancestry; 6: discovery, nest shop and eggs; 7: secrets (shards, cave chamber, day/night) and 6 species; 8: run and fixed-point fall state; 9: + recipes, calcium, mineral, stones (C2 moves/recipes) */
 /* A31 fall damage: 10 HP per metre beyond the safe drop, capped at 60 % of max HP unless the fall is free (air above 2x the safe drop). */
 #define CP_FALL_CAP_PERMILLE 600
 #define CP_FALL_FREE_X 2
@@ -44,7 +44,7 @@ enum { CP_STAGE_ERR_ON_COOLDOWN=-8, CP_STAGE_ERR_NOT_EQUIPPED=-9, CP_STAGE_ERR_B
        CP_STAGE_ERR_NO_DNA=-24 };    /* nest evolve: the DNA balance does not cover the purchases */      /* eat: the food meter is full */
 enum { CP_DIET_HERBIVORE, CP_DIET_CARNIVORE, CP_DIET_OMNIVORE };
 #define CP_SOC_CARCASS_BITES 4    /* bites in a carcass */
-#define CP_SOC_BITE_TICKS 10      /* ticks per bite */
+#define CP_SOC_BITE_TICKS 5      /* ticks per bite */
 #define CP_SOC_BITE_FOOD 12       /* food per bite of meat */
 #define CP_SOC_FOOD_MAX 100
 #define CP_SOC_FOOD_START 70
@@ -157,8 +157,12 @@ enum { CP_STAGE_EV_HIT=1, CP_STAGE_EV_KILL, CP_STAGE_EV_DEATH, CP_STAGE_EV_RESPA
        /* C2 social events: by = 0, target = creature id; move/value/x/z carry the detail (see stage_social.c) */
        CP_STAGE_EV_SKILL, CP_STAGE_EV_GIFT, CP_STAGE_EV_BOND_MADE, CP_STAGE_EV_BOND_BROKEN, CP_STAGE_EV_SPECIES_RESOLVED,
        CP_STAGE_EV_DNA, CP_STAGE_EV_OBSERVE, CP_STAGE_EV_CHAIN_DONE, CP_STAGE_EV_INTIMIDATE, CP_STAGE_EV_SOCIAL_CANCELLED, CP_STAGE_EV_EAT, CP_STAGE_EV_PART_FOUND, CP_STAGE_EV_INSPECTED, CP_STAGE_EV_PART_BOUGHT, CP_STAGE_EV_EDIT_ACCEPTED,
-       CP_STAGE_EV_SHARD_FOUND,   /* target = shard entity id (3100+k), move = shard index 0..4, value = shards found so far, x/z = where */
-       CP_STAGE_EV_CAVE, CP_STAGE_EV_FELL };        /* move = 1 entered the passage, 2 reached the chamber */
+       CP_STAGE_EV_SHARD_FOUND,   /* target = shard entity id (3100+k), move = shard index 0..4, value = shards found so far, x/z = where; numeric id 25 is used by the Godot UI */
+       CP_STAGE_EV_CAVE,          /* move = 1 entered the passage, 2 reached the chamber (numeric id 26) */
+       CP_STAGE_EV_FELL,          /* numeric id 27 (owner fall) */
+       CP_STAGE_EV_RECIPE,        /* numeric id 28 */
+       CP_STAGE_EV_VOLLEY };      /* numeric id 29 */
+
 enum { CP_STAGE_BLOCK_NONE, CP_STAGE_BLOCK_CLIFF, CP_STAGE_BLOCK_WATER, CP_STAGE_BLOCK_EDGE,
        CP_STAGE_BLOCK_CREATURE, CP_STAGE_BLOCK_UNREACHABLE, CP_STAGE_BLOCK_OBSTACLE };
 typedef struct {
@@ -214,11 +218,12 @@ typedef struct {
     CpLineageGeneration forms[CP_LINEAGE_GENERATIONS];
 } CpAncestry;
 /* Part ids are stable catalogue indices, shared by the codex and lineage ledger. */
-#define CP_STAGE_PART_COUNT 46
+#define CP_STAGE_PART_COUNT 47
 #define CP_STAGE_PART_NODES 8
 enum { CP_PART_KILL, CP_PART_ALLY, CP_PART_CARCASS, CP_PART_FOSSIL, CP_PART_OLD_CARCASS };
 typedef struct { const char *id; int cost,mouth,charge,spit,tail,guard; } CpStagePartDef;
 extern const CpStagePartDef CP_STAGE_PARTS[CP_STAGE_PART_COUNT];
+extern const uint16_t CP_STAGE_PART_MOVES[CP_STAGE_PART_COUNT]; /* C2 morphology requirements */
 typedef struct { float x,z; int kind,inspected; } CpStagePartNode;
 typedef struct {
     CpRng loot,fossil;
@@ -232,6 +237,16 @@ typedef struct {
     float adult_hp;
     CpStagePartNode nodes[CP_STAGE_PART_NODES+1]; /* one extra slot: the cave chamber fossil, placed after the random nodes */
 } CpStageParts;
+enum { CP_RECIPE_UNKNOWN, CP_RECIPE_HINTED, CP_RECIPE_KNOWN, CP_RECIPE_MASTERED };
+#define CP_STONE_NODES 6
+typedef struct {
+    int used,state,clues,calcium,mineral,eat_node,eat_ticks,n_stones;
+    CpRng stone_rng;
+    CpStagePartNode stones[CP_STONE_NODES];
+    uint16_t cd[CB_MOVE_COUNT];
+    uint8_t old_units[CP_STAGE_PART_NODES];
+    uint8_t wild_calcium[CP_STAGE_MAX_WILD],quill_carcass[CP_STAGE_MAX_WILD];
+} CpStageRecipes;
 #define CP_STAGE_SHARDS 5
 #define CP_STAGE_SHARD_ID 3100     /* entity ids of shards: 3100..3104 (fossil/bone nodes are 3000..3008, the nest 1000) */
 /* Secrets state (stage_secrets.c). Sites are derived from the setup and the field at reset; `found` and the cave flags are play state. */
@@ -275,6 +290,7 @@ typedef struct {
     CpLedger ledger;              /* L0: opt in via cp_ledger_init; snapshot owns it */
     CpStageSocial social;            /* C2: trust, DNA, species progress, observe; hashed once `social.used` */
     CpStageParts parts;
+    CpStageRecipes recipes;
     CpStageSecrets secrets;          /* derived at reset when setup.secrets; hashed only then */
     /* Run stamina is separate from combat stamina; mm, mm/s for fixed-step gravity. */
     int32_t running,run_stamina,falling,fall_y_mm,fall_v_mm_s,fall_start_mm;
@@ -296,7 +312,20 @@ float cp_stage_secrets_ground(const CpStageWorld *w,float x,float z,float h); /*
 int cp_stage_in_cave(const CpStageWorld *w,float x,float z);   /* 0 outside, 1 in the passage, 2 in the chamber */
 extern const char *const CP_STAGE_SHARD_LINES_EN[CP_STAGE_SHARDS],*const CP_STAGE_SHARD_LINES_ES[CP_STAGE_SHARDS],*const CP_STAGE_SHARD_NAMES[CP_STAGE_SHARDS];
 /* Fixed site lives in setup.nest_x/z; C3 may replace that setup choice without changing any caller. */
+typedef struct {const char *id,*source;int cap,refill,spend;} CpStageMeterDef;
+typedef struct {const char *id;int part[2],level[2],diet,move,meter;} CpStageRecipeDef;
+extern const CpStageMeterDef CP_STAGE_METERS[2];
+extern const CpStageRecipeDef CP_STAGE_RECIPES[1];
+void cp_stage_recipes_reset(CpStageWorld *w);
+void cp_stage_recipes_step(CpStageWorld *w);
+void cp_stage_recipe_clue(CpStageWorld *w,int source);
+int cp_stage_recipe_ready(const CpStageWorld *w);
+void cp_stage_meter_add(CpStageWorld *w,int meter,int amount);
+int cp_stage_stone_eat(CpStageWorld *w,int target);
+uint64_t cp_stage_recipes_hash(const CpStageWorld *w);
+int cp_stage_recipes_json(const CpStageWorld *w,char *out,size_t cap);
 int cp_stage_at_nest(const CpStageWorld *w);
+int cp_stage_route_from_nest(CpStageWorld *w,float x,float z); /* read-only planner probe */
 int cp_stage_can_edit(const CpStageWorld *w);          /* at the nest, or anywhere when edit_anywhere is on (never in a fight, dead or lineage lost) */
 void cp_stage_set_edit_anywhere(CpStageWorld *w,int on);
 int cp_stage_walkable_from_nest(const CpStageWorld *w,float x,float z);

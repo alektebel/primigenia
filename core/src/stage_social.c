@@ -63,10 +63,10 @@ const CpStageChain CP_STAGE_CHAINS[CP_SOC_SPECIES]={
         "watch it stand with its heavy tail low in the tall grass",
         "see a herd mate bolt, and the tail whip behind it as it runs",
         "watch the tail snap sideways at something that got too close"}},
-    {"espinodo.c1","lowers its spiny head and rams",CB_CHARGE,{
-        "watch it scrape its crown spines on a rock to clean them",
-        "see it rear back and dig in its hind legs against a rival",
-        "watch it drive forward head down, crown first"}},
+    {"espinodo.c1","fires bone-fed dorsal spines",CB_QUILL_VOLLEY,{
+        "watch a volley of dorsal spines fly, leaving pale quill wounds",
+        "see it gnaw carcass bones to replenish its calcium",
+        "watch its jaw and back spines work together: bone becomes a dart"}},
     {"garfio.c1","pins its prey with a fast bite",CB_BITE,{
         "watch it lie flat and still, jaws just clear of the ground",
         "see its head snap forward faster than the body follows",
@@ -581,6 +581,7 @@ void cp_stage_social_step(CpStageWorld *w){
                 }
                 s->food=s->food+bite>CP_SOC_FOOD_MAX?CP_SOC_FOOD_MAX:s->food+bite;
                 c->eaten++;
+                cp_stage_meter_add(w,0,CP_STAGE_METERS[0].refill);
                 if(!c->carcass_seen){c->carcass_seen=1;award(w,3,CP_DNA_CARCASS,i+1);}
                 const int left=CP_SOC_CARCASS_BITES-c->eaten;
                 if(left<=0)s->items[CP_ITEM_BONE]++;
@@ -668,6 +669,14 @@ void cp_stage_social_step(CpStageWorld *w){
         }
         if(++s->obs_ticks>=(s->obs_need?s->obs_need:CP_SOC_OBSERVE_TICKS)){
             const int item=s->obs_items[sp]++;
+            if(sp==2){
+                if(!dead&&w->recipes.wild_calcium[i]>=20){
+                    w->recipes.wild_calcium[i]-=20;w->recipes.used=1;
+                    push(w,CP_STAGE_EV_VOLLEY,i+1,CB_SPINE_VOLLEY,20,w->wild[i].x+w->wild[i].fx*7,w->wild[i].z+w->wild[i].fz*7);
+                    cp_stage_recipe_clue(w,0);
+                }
+                if(dead&&w->recipes.quill_carcass[i])cp_stage_recipe_clue(w,2);
+            }
             s->obs_ticks=0;s->obs_need=0;
             deed(w,CP_DEED_OBSERVATIONS,o->target);
             push(w,CP_STAGE_EV_OBSERVE,o->target,item,(float)sp,(float)s->obs_items[sp],0);
@@ -717,6 +726,8 @@ int cp_stage_social_legal(const CpStageWorld *w,int verb){
     const CpStageSocial *s=&w->social;
     if(w->active>=0||w->respawn_ticks>0)return 0;
     if(verb==CP_STAGE_EAT){
+        for(int i=0;i<w->recipes.n_stones;i++)if(w->recipes.stones[i].inspected<4&&w->recipes.mineral<100)return 1;
+        for(int i=0;i<w->parts.n_nodes;i++)if(w->parts.nodes[i].inspected&&w->recipes.old_units[i]&&w->recipes.calcium<100&&s->diet!=CP_DIET_HERBIVORE)return 1;
         for(int i=0;i<w->setup.n;i++)if(cp_stage_social_carcass_meat(w,i)>0)return s->diet!=CP_DIET_HERBIVORE&&s->food<CP_SOC_FOOD_MAX;
         return 0;
     }
@@ -847,6 +858,8 @@ int cp_stage_social_event_json(const CpStageEvent *e,char *out,size_t cap){
             bp(&b,"{\"tick\":%u,\"type\":\"social_cancelled\",\"target\":%d,\"reason\":\"%s\"}",e->tick,e->target,why);
             break;
         }
+        case CP_STAGE_EV_RECIPE:bp(&b,"{\"tick\":%u,\"type\":\"recipe_state\",\"recipe\":\"bone_spines\",\"state\":%d,\"source\":%d}",e->tick,e->move,e->target);break;
+        case CP_STAGE_EV_VOLLEY:bp(&b,"{\"tick\":%u,\"type\":\"spine_volley\",\"target\":%d,\"x\":%.3f,\"z\":%.3f}",e->tick,e->target,e->x,e->z);break;
         case CP_STAGE_EV_EAT:bp(&b,"{\"tick\":%u,\"type\":\"eat\",\"target\":%d,\"bites_left\":%d,\"food_gain\":%.0f,\"food\":%.0f,\"bones\":%.0f}",e->tick,e->target,e->move,e->value,e->x,e->z);break;
         case CP_STAGE_EV_PART_FOUND:{
             static const char *sources[]={"kill","ally","carcass","fossil","old_carcass"};

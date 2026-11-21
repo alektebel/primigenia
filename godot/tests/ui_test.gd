@@ -521,7 +521,7 @@ func test_journal() -> void:
 	ok(m.species[5].name == "Babosa" and m.species[5].activity == 2 and not m.species[5].nocturnal and not m.species[5].seen and m.species[0].activity == 0, "journal: Babosa is crepuscular and unseen until met")
 	var old_shape := {"social": {"species": [{"seen": true, "resolution": 2, "kills": 1}]}}
 	ok(JournalModel.build(old_shape, _species_table(), _chains_table(), _catalogue()).species[0].resolution == 2, "journal: state.social.species (numeric resolution) is still read when state.species is missing")
-	ok(m.parts.size() == 46 and m.parts_found == 4 and m.parts_owned == 3, "journal: 46 catalogue parts, 4 found, 3 owned")
+	ok(m.parts.size() == 47 and m.parts_found == 4 and m.parts_owned == 3, "journal: 47 catalogue parts, 4 found, 3 owned")
 	var by := {}
 	for t in m.parts:
 		by[t.id] = t
@@ -750,11 +750,11 @@ func test_loadout_ui() -> void:
 	ok(req.size() == 1, "key L asks for the loadout sheet")
 	panel.open_panel()
 	ok(ui.veil.flat_amount > 0.3 and ui.veil.flat_amount < 0.5, "a light veil (0.42) comes with the sheet")
-	ok(panel.token_count() == 4, "one token per slottable move, not guard or dodge (%d)" % panel.token_count())
+	ok(panel.token_count() == 12, "one token per slottable move, not guard or dodge (%d)" % panel.token_count())
 	var names := []
 	for i in panel.token_count():
 		names.append(panel.token_id(i))
-	ok(names == ["bite", "charge", "spit", "tail_strike"], "tokens are the four attack moves (%s)" % [names])
+	ok(names == ["bite", "charge", "spit", "tail_strike", "claw_swipe", "peck", "pounce", "quill_volley", "roar", "stomp", "curl_up", "spine_volley"], "tokens are the four attack moves (%s)" % [names])
 	ok(panel.token_glyph(0) == "bite" and panel.token_glyph(1) == "charge" and panel.token_glyph(2) == "", "a known move is a token with a glyph; one not learned has none (no spoiler)")
 	ok(panel.token_enabled(0) and not panel.token_enabled(2), "a move not known cannot be chosen")
 	var shapes2 := {}

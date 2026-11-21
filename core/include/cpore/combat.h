@@ -49,6 +49,8 @@ enum {
     CB_SPIT,
     CB_TAIL_STRIKE,
     CB_DODGE,
+    CB_CLAW_SWIPE, CB_PECK, CB_POUNCE, CB_QUILL_VOLLEY, CB_ROAR, CB_STOMP,
+    CB_CURL_UP, CB_SPINE_VOLLEY,
     CB_MOVE_COUNT
 };
 #define CB_MOVE_NONE  (-1)
@@ -59,7 +61,7 @@ enum { CB_ROLE_BASIC = 0, CB_ROLE_ENGAGE, CB_ROLE_POKE, CB_ROLE_CONTROL, CB_ROLE
 const char *cp_combat_role_name(int role);
 
 /* statuses a move can apply */
-enum { CB_ST_NONE = 0, CB_ST_STUN, CB_ST_BLEED, CB_ST_SLOW, CB_ST_COUNT };
+enum { CB_ST_NONE = 0, CB_ST_STUN, CB_ST_BLEED, CB_ST_SLOW, CB_ST_FEAR, CB_ST_KNOCKDOWN, CB_ST_COUNT };
 
 /* move flags */
 #define CB_F_RANGED   0x01   /* hit-scan along the facing: nearest enemy in the ray   */
@@ -73,7 +75,8 @@ enum { CB_ST_NONE = 0, CB_ST_STUN, CB_ST_BLEED, CB_ST_SLOW, CB_ST_COUNT };
 
 /* which profile part gates a move */
 enum { CB_PART_NONE = 0, CB_PART_MOUTH, CB_PART_CHARGE, CB_PART_SPIT,
-       CB_PART_TAIL, CB_PART_GUARD, CB_PART_COUNT };
+       CB_PART_TAIL, CB_PART_GUARD, CB_PART_CLAW, CB_PART_BEAK, CB_PART_LEGS,
+       CB_PART_QUILL, CB_PART_THROAT, CB_PART_HEAVY, CB_PART_ROCK, CB_PART_BACKSPINE, CB_PART_COUNT };
 
 typedef struct {
     const char *name;
@@ -89,6 +92,7 @@ typedef struct {
     uint8_t  flags;                     /* CB_F_*                                */
     uint8_t  part;                      /* CB_PART_*                             */
     uint8_t  role;                      /* CB_ROLE_*                             */
+    uint8_t meter_cost, max_targets; /* calcium cost; 0 means normal target rules */
     uint16_t cooldown;                  /* ticks before the move can start again,
                                            counted from the tick it starts; 0 = none */
 } CpCombatMove;
@@ -112,6 +116,7 @@ enum {
     CB_EFF_REDUCE,      /* damage x mult, status suppressed; same block/riposte rule */
     CB_EFF_BREAK,       /* damage x mult, defender's move cancelled, defender
                            pays `stamina` flat (to 0) and is staggered `ticks`   */
+    CB_EFF_PIERCE,      /* reduced damage, status retained, no riposte */
     CB_EFF_INTERRUPT    /* damage x mult, defender's move cancelled, defender
                            staggered `ticks`; also cancels the defender's own
                            hit in the same tick                                  */
@@ -143,6 +148,8 @@ typedef struct {
      * default-radius worlds stay bit-identical to the golden logs.
      * 60*0.01f is not bit-identical to 0.6f; do not recompute the default. */
     uint16_t radius_cm;
+    uint8_t extra[8]; /* claw, beak, strong legs, quills, throat, heavy legs, rock, back spines */
+    uint8_t carnivore; /* derived from genome mouths, not host diet */
 } CpCombatProfile;
 
 /* Resolved metres. Default values return the CB_RADIUS literal. */
@@ -220,6 +227,7 @@ enum {
     CB_ERR_NOT_EQUIPPED = -9,  /* attack move is not in the loadout             */
     CB_ERR_BAD_SLOT = -10,     /* slot must be 0..3 (text: 1..4); signature rules */
     CB_ERR_NOT_KNOWN = -11,    /* loadout: the creature does not know the move  */
+    CB_ERR_NO_METER = -25,
     CB_ERR_UNKNOWN_MOVE = -12  /* loadout: not an attack move id                */
 };
 const char *cp_combat_order_error(int code);
@@ -248,6 +256,8 @@ typedef struct {
 
     /* statuses and stamina bookkeeping, in ticks */
     uint8_t  stun_t, bleed_t, slow_t, since_spend;
+    uint8_t fear_t, fear_src, calcium, mineral;
+    uint16_t volleys;
     int8_t   bleed_src;         /* who gets credit for the bleed damage, -1 none  */
 
     CpCombatLoadout lo;         /* hashed only when not the default                      */
@@ -279,7 +289,8 @@ enum {
     CB_EV_INTERRUPTED,   /* b's move was cancelled by a                           */
     CB_EV_STUNNED,       /* b stunned by a                                        */
     CB_EV_DEATH,         /* b died (a = killer or 255)                            */
-    CB_EV_NO_STAMINA     /* a could not afford its move                           */
+    CB_EV_NO_STAMINA,    /* a could not afford its move */
+    CB_EV_NO_METER
 };
 typedef struct {
     uint8_t type, a, b;
@@ -313,6 +324,7 @@ typedef struct {
     uint8_t medium, team;
     uint8_t has_loadout;        /* 1: use `loadout` as given; 0: the default loadout    */
     CpCombatLoadout loadout;
+    uint8_t calcium,mineral;
 } CpCombatSpawn;
 
 typedef struct {

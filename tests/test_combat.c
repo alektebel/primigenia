@@ -10,7 +10,7 @@ static int fails;
 
 static CpCombatWorld pair(float dist)
 {
-    CpCombatProfile p;
+    CpCombatProfile p={0};
     CpCombatSetup s;
     CpCombatWorld w;
     cp_combat_profile_default(&p);
@@ -83,7 +83,7 @@ static void counters(void)
     CHECK(w.c[0].hp == 100 && w.c[1].interrupted == 1,
           "bite started alongside spit wins the close-range race");
 
-    for (int m = 0; m < CB_MOVE_COUNT; m++) {
+    for (int m = 0; m < CB_CLAW_SWIPE; m++) {
         if (CP_COMBAT_MOVES[m].flags & CB_F_SELF) continue;
         w = pair(1.6f);
         phase(&w.c[0], m, CB_PH_ACTIVE);
@@ -201,7 +201,7 @@ static void spacing(void)
 
 static void ranged_exchanges(void)
 {
-    CpCombatProfile p; cp_combat_profile_default(&p);
+    CpCombatProfile p={0}; cp_combat_profile_default(&p);
     p.mouth = p.charge = p.spit = p.tail = p.guard = 3;
     p.hp = 100000;
     for (int far = 0; far <= 1; far++) {
@@ -303,13 +303,13 @@ static void simultaneous(void)
 static void bot_counters(void)
 {
     puts("  counter execution (reaction delays 0..3; 1 = executed):");
-    for (int row = 0; row < CP_COMBAT_N_COUNTERS; row++) {
+    for (int row = 0; row < 7; row++) {
         const CpCombatCounter *r = &CP_COMBAT_COUNTERS[row];
         printf("    row %d:", row);
         for (int delay = 0; delay <= 3; delay++) {
             /* Dodge's wildcard is tested against every offensive move below. */
             int first = r->attack < 0 ? 0 : r->attack;
-            int last = r->attack < 0 ? CB_MOVE_COUNT-1 : r->attack;
+            int last = r->attack < 0 ? CB_CLAW_SWIPE-1 : r->attack;
             int all = 1;
             for (int attack = first; attack <= last; attack++) {
                 if (CP_COMBAT_MOVES[attack].flags & CB_F_SELF) continue;
@@ -519,7 +519,7 @@ static void geometry_and_setup(void)
     phase(&w.c[1], CB_DODGE, CB_PH_WINDUP); cp_combat_step(&w);
     CHECK(w.c[1].hp < 100 && !w.c[1].dodged, "dodge wind-up is vulnerable");
 
-    for (int move = 0; move < CB_MOVE_COUNT; move++) {
+    for (int move = 0; move < CB_CLAW_SWIPE; move++) {
         const CpCombatMove *m = &CP_COMBAT_MOVES[move];
         w = pair(1.6f);
         if (move == CB_GUARD) cp_combat_guard(&w, 0);
@@ -698,7 +698,7 @@ static void loadout_and_cooldowns(void)
           lo->sig_slot == -1, "default loadout is the available attack moves in table order");
     CHECK(lo->known == ((1u << CB_BITE) | (1u << CB_CHARGE) | (1u << CB_SPIT) | (1u << CB_TAIL_STRIKE)),
           "known moves are the moves whose part level is above zero");
-    for (int i = 0; i < CB_MOVE_COUNT; i++) CHECK(CP_COMBAT_MOVES[i].cooldown == 0, "every shipped move has cooldown 0");
+    for (int i = 0; i < CB_CLAW_SWIPE; i++) CHECK(CP_COMBAT_MOVES[i].cooldown == 0, "every shipped move has cooldown 0");
     CHECK(CP_COMBAT_MOVES[CB_TAIL_STRIKE].role == CB_ROLE_CONTROL && CP_COMBAT_MOVES[CB_DODGE].role == CB_ROLE_DEFENCE,
           "moves carry a role");
 

@@ -36,11 +36,13 @@ static double move_stamina_value(const CpCombatProfile *p)
 {
     double total = 0; int n = 0;
     for (int m = 0; m < CB_MOVE_COUNT; m++) {
-        if (CP_COMBAT_MOVES[m].flags & CB_F_SELF) continue;
+        if (CP_COMBAT_MOVES[m].flags & (CB_F_SELF|CB_F_GUARD)) continue;
         double damage = cp_combat_move_damage(p, m);
         if (CP_COMBAT_MOVES[m].status == CB_ST_BLEED)
             damage += 0.6 * (CP_COMBAT_MOVES[m].status_ticks - 1);
-        double rate = damage / cp_combat_move_stamina(p, m);
+        double cost=cp_combat_move_stamina(p,m);
+        if(cost<=0)continue;
+        double rate = damage / cost;
         total += rate; n++;
     }
     return total / n;
@@ -52,7 +54,8 @@ static double payr_se[CB_MOVE_COUNT][CB_MOVE_COUNT];
 
 static void compute_payoff(int duels)
 {
-    CpCombatProfile p;                     /* neutral: every part level 3 */
+    CpCombatProfile p={0};                     /* neutral: every part level 3 */
+    memset(p.extra,3,sizeof p.extra);p.carnivore=1;
     p.mouth = p.charge = p.spit = p.tail = p.guard = 3;
     p.hp = 100000.0f; p.stamina = 100.0f; p.speed = 4.0f; p.radius_cm = 0; /* default radius */
 
@@ -64,9 +67,21 @@ static void compute_payoff(int duels)
             for (int s = 0; s < duels; s++) {
                 CpCombatSetup su;
                 duel_setup(&su, seed_offset + 1000u + (uint32_t)(s/2), &p, &p, 7.0f);
+                for(int seat=0;seat<2;seat++){
+                    int mv=seat==(s%2)?a:b;
+                    CpCombatSpawn *sp=&su.c[seat];sp->has_loadout=1;sp->calcium=100;
+                    cp_combat_loadout_default(&sp->loadout,&sp->prof);sp->loadout.known|=1u<<CB_SPINE_VOLLEY;
+                    sp->loadout.sig_slot=3;sp->loadout.slot[3]=CB_SPINE_VOLLEY;
+                    if(mv!=CB_GUARD&&mv!=CB_DODGE&&mv!=CB_SPINE_VOLLEY)cp_combat_loadout_set(&sp->loadout,mv==CB_BITE?0:1,mv);
+                }
                 CpBot b0, b1;
                 bot_init(&b0, BOT_SPAM, (uint32_t)s); b0.spam_move = s%2 ? b : a; b0.delay = (s/2) % 4;
                 bot_init(&b1, BOT_SPAM, (uint32_t)s + 7777u); b1.spam_move = s%2 ? a : b; b1.delay = (s/8) % 7;
+                /* A Signature move has a long cooldown, so nobody plays it as a whole policy: the row plays it
+                 * when ready and bites otherwise (its recipe needs a carnivore jaw at mouth level 2+, so every
+                 * kit that holds it has bite). Chosen by role, so later signatures inherit it. */
+                b0.filler = CP_COMBAT_MOVES[b0.spam_move].role==CB_ROLE_SIGNATURE ? CB_BITE : CB_MOVE_NONE;
+                b1.filler = CP_COMBAT_MOVES[b1.spam_move].role==CB_ROLE_SIGNATURE ? CB_BITE : CB_MOVE_NONE;
                 /* Timed reads are averaged over reaction delays 0..3, the
                  * span the wind-ups are budgeted for; both seats share one. */
                 b0.reaction = b1.reaction = (s/8) % 4;
@@ -75,6 +90,11 @@ static void compute_payoff(int duels)
                 int row = s%2, col = 1-row;
                 double v = (double)r.dealt[row] - (double)r.dealt[col];
                 double vr = v - stamina_value * ((double)r.spent[row] - (double)r.spent[col]);
+                /* Calcium value follows the nominal level-3 volley plus fresh bleed. */
+                const CpCombatMove *spine=&CP_COMBAT_MOVES[CB_SPINE_VOLLEY];
+                double ca_value=.25*(cp_combat_move_damage(&p,CB_SPINE_VOLLEY)+.6*(spine->status_ticks-1))/spine->meter_cost;
+                /* Charge the actual number of volleys started, including interrupted wind-ups. */
+                vr-=ca_value*(r.calcium_spent[row]-r.calcium_spent[col]);
                 if (s%2 == 0) { pair_v = v; pair_r = vr; }
                 else {
                     /* The two seats share a seed. Estimate uncertainty from
@@ -175,11 +195,21 @@ static int equilibrium_support(const double mix[CB_MOVE_COUNT])
     return n;
 }
 
+/* B3 for a meter-limited signature (spine_volley): a, raw equilibrium weight in [1%,35%] (viable, never the
+ * centre); b, resource equilibrium weight <= 35% (upper bound only: the resource matrix prices sprint spacing at
+ * the attack exchange rate and zeroes every cooldown ranged move, and a payoff duel never binds the meter);
+ * c, full meter beats empty by 3..20 points of field mean. */
+static double b3_raw_w, b3_res_w;
+static int b3_ok(double raw_w,double res_w,double gain){
+    return raw_w>=.01&&raw_w<=.35&&res_w<=.35&&gain>=.03&&gain<=.20;
+}
+
 static void report_payoff(int duels)
 {
     printf("== Move-vs-move payoff, %d duels per cell: move policies, 7 m apart,\n", duels);
     printf("   paired seats and start offsets, 12 s; neutral builds (all parts L3, hp 100000 so nobody dies)\n");
-    printf("   guard closes and blocks; dodge reads contact; both take funded bite punishes; ranged moves space\n\n");
+    printf("   guard closes and blocks; dodge reads contact; both take funded bite punishes; ranged moves space\n");
+    printf("   signature rows play the signature when ready, bite otherwise\n\n");
     printf("-- raw: row's damage dealt minus column's (hp)\n");
     print_matrix(payoff);
     printf("\n-- resource-adjusted: raw minus %.6f hp per stamina point the row spent, plus the same for the column\n",
@@ -203,11 +233,15 @@ static void report_payoff(int duels)
         for (int a = 0; a < CB_MOVE_COUNT; a++) printf("  %s %.1f%%", cp_combat_move_name(a), mix[a] * 100.0);
         printf("\n");
         int support = equilibrium_support(mix);
+        if(r)b3_res_w=mix[CB_SPINE_VOLLEY];else b3_raw_w=mix[CB_SPINE_VOLLEY];
         char msg[160];
-        snprintf(msg, sizeof msg, "%s equilibrium uses >=4 moves at >=1%% weight (observed %d/6)",
+        snprintf(msg, sizeof msg, "%s equilibrium uses >=4 moves at >=1%% weight (observed %d/14)",
                  r ? "resource" : "raw", support);
         check(support >= 4, msg);
     }
+    {char m[160];
+     snprintf(m,sizeof m,"B3a raw signature weight in [1%%,35%%] (observed %.1f%%)",b3_raw_w*100);check(b3_raw_w>=.01&&b3_raw_w<=.35,m);
+     snprintf(m,sizeof m,"B3b resource signature weight <=35%% (observed %.1f%%)",b3_res_w*100);check(b3_res_w<=.35,m);}
     check(!raw_dominant, "no move weakly dominates another (raw damage payoff)");
     check(!resource_dominant, "no move weakly dominates another (resource-adjusted payoff)");
 }
@@ -404,6 +438,73 @@ static void report_builds(void)
     check(pair_worst <= 0.90, msg);
 }
 
+/* Additive P4 field: every eligible carnivore carries the same recipe. */
+#define NP4 (N_PROFILES+1)
+static void spine_setup(CpCombatSetup *s,int p,int q,int meter,uint32_t seed,int swap){
+ CpCombatProfile profiles[NP4];memcpy(profiles,PROFILES,sizeof PROFILES);
+ profiles[N_PROFILES]=(CpCombatProfile){.mouth=3,.guard=1,.hp=100,.stamina=100,.speed=4};
+ for(int k=0;k<NP4;k++)if(k!=1){profiles[k].extra[7]=3;profiles[k].carnivore=1;}
+ duel_setup(s,seed,&profiles[swap?q:p],&profiles[swap?p:q],START_DIST);
+ for(int k=0;k<2;k++)if(s->c[k].prof.carnivore){
+  CpCombatSpawn *c=&s->c[k];c->calcium=meter;c->has_loadout=1;
+  cp_combat_loadout_default(&c->loadout,&c->prof);c->loadout.known|=1u<<CB_SPINE_VOLLEY;
+  c->loadout.sig_slot=3;c->loadout.slot[3]=CB_SPINE_VOLLEY;
+ }
+}
+static void report_spines(int seeds){
+ double exhausted_spiner=0,exhausted_all=0,full_spiner=0;
+ puts("\n== P4 spines field (all nine strategy pairs, paired seats; calcium 100 / 60 / 0)");
+ for(int mode=0;mode<3;mode++){
+  int meter=mode==0?100:mode==1?60:0,limit_ok=1;
+  Tally field[NP4][NP4]={0};
+  for(int p=0;p<NP4;p++)for(int q=p+1;q<NP4;q++)for(int a=1;a<4;a++)for(int b=1;b<4;b++)for(int k=0;k<seeds;k++)for(int swap=0;swap<2;swap++){
+   CpCombatSetup s;uint32_t seed=seed_offset+90000u+(p*NP4+q)*1000+k;
+   spine_setup(&s,p,q,meter,seed,swap);CpBot b0,b1;
+   bot_init(&b0,STRAT[swap?b:a],seed+1);bot_init(&b1,STRAT[swap?a:b],seed+2);
+   CpDuelResult r;duel_run(&s,&b0,&b1,DUEL_TICKS,NULL,0,NULL,NULL,&r);
+   if(meter==60&&(r.volleys[0]>3||r.volleys[1]>3))limit_ok=0;
+   double score=r.winner<0?.5:r.winner==swap?1:0;tally(&field[p][q],score);tally(&field[q][p],1-score);
+  }
+  double worst=0,pair=0,win[NP4*NP4]={0},games[NP4*NP4]={0},rating[NP4];
+  printf("  meter=%d\n  %-12s",meter,"row / col"); /* header below names remain stable */
+  for(int p=0;p<NP4;p++)printf(" %12s",p==N_PROFILES?"spiner":PROFILE_NAME[p]);
+  puts("        mean");
+  for(int p=0;p<NP4;p++){
+   double total=0,n=0;printf("  %-12s",p==N_PROFILES?"spiner":PROFILE_NAME[p]);
+   for(int q=0;q<NP4;q++){
+    double value=p==q?.5:rate(&field[p][q]);printf(" %12.3f",value);
+    if(p!=q){total+=field[p][q].wins;n+=field[p][q].games;if(value>pair)pair=value;}
+    win[p*NP4+q]=field[p][q].wins;games[p*NP4+q]=field[p][q].games;
+   }
+   double mean=total/n;printf(" %10.3f\n",mean);if(mean>worst)worst=mean;
+   if(mode==0&&p==N_PROFILES)full_spiner=mean;
+   if(mode==2&&p==N_PROFILES)exhausted_spiner=mean;
+   if(mode==2&&p==4)exhausted_all=mean;
+  }
+  elo_fit(NP4,win,games,rating);printf("  Elo:");for(int p=0;p<NP4;p++)printf(" %s=%.0f",p==N_PROFILES?"spiner":PROFILE_NAME[p],rating[p]);puts("");
+  if(mode==0){check(worst<=.65,"B4 full-meter field cap <=65%");check(pair<=.90,"B4 full-meter pair cap <=90%");}
+  if(mode==1)check(limit_ok,"B6 calcium 60 permits at most three volleys in 900 ticks");
+ }
+ check(exhausted_spiner<exhausted_all,"B6 exhausted spiner field mean below allrounder");
+ {char m[160];double gain=full_spiner-exhausted_spiner;
+  snprintf(m,sizeof m,"B3c spines field gain (meter 100 vs 0) in [3,20] points (observed %.1f)",gain*100);
+  check(gain>=.03&&gain<=.20,m);
+  check(b3_ok(b3_raw_w,b3_res_w,gain),"B3 a, b and c hold together");}
+ double premium[2]={0};int games=0;
+ for(int p=0;p<N_PROFILES;p++)for(int k=0;k<seeds;k++)for(int swap=0;swap<2;swap++){
+  for(int naive=0;naive<2;naive++){
+   uint32_t seed=seed_offset+190000+p*1000+k;CpCombatSetup s;spine_setup(&s,N_PROFILES,p,100,seed,swap);
+   /* The surprise control faces the original kits; B4 separately arms every carnivore. */
+   s.c[1-swap].prof=PROFILES[p];s.c[1-swap].has_loadout=0;s.c[1-swap].calcium=0;
+   CpBot b[2];bot_init(&b[swap],BOT_COUNTER,seed+1);bot_init(&b[1-swap],naive?BOT_COUNTER_NAIVE:BOT_COUNTER,seed+2);
+   CpDuelResult r;duel_run(&s,&b[0],&b[1],DUEL_TICKS,NULL,0,NULL,NULL,&r);premium[naive]+=r.winner<0?.5:r.winner==swap?1:0;
+  }games++;
+ }
+ printf("  B5 spiner vs informed %.3f, naive %.3f; surprise premium %.3f\n",premium[0]/games,premium[1]/games,(premium[1]-premium[0])/games);
+ check((premium[1]-premium[0])/games>=.05&&premium[0]/games<=.60,"B5 surprise >=5 points; informed field <=60%");
+ puts("  B7 tiers disabled by parts.tiers_on; tier-2 acceptance is required before enabling them");
+}
+
 int main(int argc, char **argv)
 {
     int seeds = argc > 1 ? atoi(argv[1]) : 40;
@@ -427,6 +528,7 @@ int main(int argc, char **argv)
     round_robin(seeds);
     report_strategies(seeds);
     report_builds();
+    report_spines(seeds);
     printf("\n%s\n", fails ? "tourney checks FAILED" : "tourney checks passed");
     return fails ? 1 : 0;
 }

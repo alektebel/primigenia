@@ -976,6 +976,20 @@
         }
       ],
       "shape_ref": "parts/tail_hammer.glb"
+    },
+    {
+      "id": "espinas_dorsales",
+      "category": "weapons",
+      "name": {
+        "es": "Espinas dorsales",
+        "en": "Back spines"
+      },
+      "dna_cost": 8,
+      "source": "procedural",
+      "c_type": "CP4_BACKSPINE",
+      "cosmetic": true,
+      "illustrative_abilities": [],
+      "cost": 30
     }
   ],
   "attachment_frame": {

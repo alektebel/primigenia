@@ -4,6 +4,13 @@ extends RefCounted
 ## by default the OS language when it is Spanish. Creature and move names are data and are not translated.
 
 const TABLE := {
+	"spined_fossil": ["Spined fossil", "Fósil espinoso"],
+	"quill_wounds": ["Quill-marked bones", "Huesos marcados por púas"],
+	"eat_bones": ["Eat bones", "Comer huesos"],
+	"stones": ["Eat stones", "Comer piedras"],
+	"recipe_hinted": ["Bone, jaw, spines… there is a pattern.", "Hueso, mandíbula, espinas… hay un patrón."],
+	"recipe_known": ["Back spines and a carnivore jaw turn bones into darts.", "Las espinas dorsales y la mandíbula carnívora convierten huesos en dardos."],
+	"recipe_mastered": ["The bones fly true.", "Los huesos vuelan certeros."],
 	# modes (ring)
 	"befriend": ["Befriend", "Amistad"],
 	"attack": ["Attack", "Atacar"],
@@ -262,9 +269,9 @@ const CLUES_ES := {
 	"watch it stand with its heavy tail low in the tall grass": "míralo quieto, con la cola pesada baja entre la hierba alta",
 	"see a herd mate bolt, and the tail whip behind it as it runs": "mira cómo un compañero huye y la cola azota tras él al correr",
 	"watch the tail snap sideways at something that got too close": "míralo girar la cola de golpe contra algo que se acercó demasiado",
-	"watch it scrape its crown spines on a rock to clean them": "míralo rascar las espinas de la corona contra una roca para limpiarlas",
-	"see it rear back and dig in its hind legs against a rival": "míralo echarse atrás y clavar las patas traseras frente a un rival",
-	"watch it drive forward head down, crown first": "míralo embestir con la cabeza gacha, la corona por delante",
+	"watch a volley of dorsal spines fly, leaving pale quill wounds": "mira volar una salva de espinas dorsales que dejan pálidas heridas de púa",
+	"see it gnaw carcass bones to replenish its calcium": "míralo roer huesos de carroña para reponer su calcio",
+	"watch its jaw and back spines work together: bone becomes a dart": "mira cómo la mandíbula y las espinas del lomo trabajan juntas: el hueso se vuelve dardo",
 	"watch it lie flat and still, jaws just clear of the ground": "míralo tumbarse quieto y pegado al suelo, con las mandíbulas apenas despegadas",
 	"see its head snap forward faster than the body follows": "mira cómo la cabeza se lanza adelante más rápido que el cuerpo",
 	"watch it hold a bite and shake before letting go": "míralo sostener el mordisco y sacudir antes de soltar",

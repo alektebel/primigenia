@@ -387,6 +387,7 @@ func _build_stage() -> void:
 	await _slice()
 	if lineage_error != "":
 		push_error(lineage_error)
+	stage_ui._on_tick(stage.cur)
 	if Game.pending_scenario.is_empty() and FlightMode._dev_on():
 		_grant_genome_parts(genome)
 	for h in hosts.values():

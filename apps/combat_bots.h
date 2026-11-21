@@ -13,6 +13,7 @@ enum {
     BOT_GREEDY,        /* best expected damage per committed tick          */
     BOT_COUNTER,       /* answers the opponent's current wind-up with its counter   */
     BOT_SPAM,          /* fixed attack, or defence plus a safe punish (payoff matrix)            */
+    BOT_COUNTER_NAIVE, /* legacy counter rows only, P4 surprise control */
     BOT_KIND_COUNT
 };
 
@@ -20,6 +21,8 @@ typedef struct {
     int      kind;
     CpRng    rng;
     int      spam_move;      /* BOT_SPAM                                            */
+    int      filler;         /* BOT_SPAM: move used while spam_move is unavailable;
+                                CB_MOVE_NONE = idle (default)                       */
     int      delay;          /* ticks to wait before the first order                */
     int      reaction;       /* COUNTER/SPAM: sees a wind-up once it is this many
                                 ticks old (default 2, i.e. 200 ms)                  */
@@ -43,6 +46,7 @@ typedef struct {
     float  hp[2];            /* final hp                                            */
     float  dealt[2];         /* damage dealt                                        */
     float  spent[2];         /* stamina spent                                       */
+    int    calcium_spent[2],volleys[2];
     int    n_hashes;
 } CpDuelResult;
 

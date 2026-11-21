@@ -60,7 +60,7 @@ int main(void)
     }
     seed_offset = 2000000u;
     compute_payoff(4);
-    CpCombatProfile p; cp_combat_profile_default(&p);
+    CpCombatProfile p={0}; cp_combat_profile_default(&p);
     p.mouth = p.charge = p.spit = p.tail = p.guard = 3;
     double expected = ((15.4+4.2)/10.8 + 42.0/21.6 + 18.2/14.4 + 23.8/12.0)/4;
     assert(fabs(move_stamina_value(&p)-expected) < 1e-6);
@@ -69,6 +69,33 @@ int main(void)
         assert(fabs(payoff[a][b] + payoff[b][a]) < 1e-9);
         assert(fabs(payr[a][b] + payr[b][a]) < 1e-9);
         if (a == b) assert(payoff_se[a][b] == 0 && payr_se[a][b] == 0);
+    }
+    /* B3 truth table */
+    assert(b3_ok(0.13,0,0.094));
+    assert(!b3_ok(0.005,0,0.094));
+    assert(!b3_ok(0.36,0,0.094));
+    assert(!b3_ok(0.13,0.36,0.094));
+    assert(!b3_ok(0.13,0,0.02));
+    assert(!b3_ok(0.13,0,0.21));
+    /* BOT_SPAM filler: default idles while the volley is cooling; filler=bite bites between volleys */
+    for(int with_filler=0;with_filler<2;with_filler++){
+        CpCombatProfile np={0};memset(np.extra,3,sizeof np.extra);np.carnivore=1;
+        np.mouth=np.charge=np.spit=np.tail=np.guard=3;np.hp=100000.0f;np.stamina=100.0f;np.speed=4.0f;
+        CpCombatSetup su;duel_setup(&su,1234u,&np,&np,7.0f);
+        for(int seat=0;seat<2;seat++){
+            CpCombatSpawn *sp=&su.c[seat];sp->has_loadout=1;sp->calcium=100;
+            cp_combat_loadout_default(&sp->loadout,&sp->prof);sp->loadout.known|=1u<<CB_SPINE_VOLLEY;
+            sp->loadout.sig_slot=3;sp->loadout.slot[3]=CB_SPINE_VOLLEY;
+        }
+        CpBot b0,b1;bot_init(&b0,BOT_SPAM,1);bot_init(&b1,BOT_SPAM,2);
+        assert(b0.filler==CB_MOVE_NONE);
+        b0.spam_move=CB_SPINE_VOLLEY;b0.filler=with_filler?CB_BITE:CB_MOVE_NONE;
+        b1.spam_move=CB_BITE;
+        static CpCombatLogEntry lg[4096];int nl=0,bites=0;
+        CpDuelResult r;duel_run(&su,&b0,&b1,120,lg,4096,&nl,NULL,&r);
+        for(int i=0;i<nl;i++)if(lg[i].id==0&&lg[i].act.verb==CB_V_ATTACK&&lg[i].act.move==CB_BITE)bites++;
+        assert(r.volleys[0]<=4&&r.volleys[0]>=1);
+        if(with_filler)assert(bites>0);else assert(bites==0);
     }
     puts("combat tournament arithmetic: passed (balance acceptance runs via make tourney)");
     return 0;

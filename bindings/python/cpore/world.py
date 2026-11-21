@@ -13,7 +13,7 @@ from .env import lib as _core_lib
 # Layout sizes from the native headers (64-bit LP64). CpStageWorld grows with the engine, so its size
 # is asked from the library (cp_stage_world_size) when the stage API is bound.
 _WORLD_BYTES = 0
-_SETUP_BYTES = 17748
+_SETUP_BYTES = 17948
 
 CP_STAGE_CONTINUE = 0
 CP_STAGE_WAIT = 1
@@ -54,7 +54,9 @@ class CpCombatProfile(ctypes.Structure):
         ("stamina", c_float),
         ("speed", c_float),
         ("radius_cm", c_uint16),
-        ("_pad2", c_uint16),
+        ("extra", c_uint8 * 8),
+        ("carnivore", c_uint8),
+        ("_pad2", c_uint8),
     ]
 
 
@@ -241,7 +243,7 @@ def _parse_profile(tokens, idx):
         mouth, charge, spit, tail, guard,
         (c_uint8 * 3)(),
         c_float(hp), c_float(stamina), c_float(speed),
-        c_uint16(radius), c_uint16(0),
+        c_uint16(radius), (c_uint8 * 8)(), c_uint8(0), c_uint8(0),
     )
     return prof, idx + 9
 

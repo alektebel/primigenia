@@ -64,6 +64,7 @@ test: $(BUILD)/run_fall_test $(BUILD)/parts_nest_test $(BUILD)/plan_test $(BUILD
 	python3 tests/test_terrain_metrics.py
 	./$(BUILD)/cpore_test
 	./$(BUILD)/combat_test
+	./$(BUILD)/moves_recipes_test
 	./$(BUILD)/parts_nest_test
 	./$(BUILD)/plan_test
 	./$(BUILD)/combat_tourney_test
@@ -80,6 +81,7 @@ smoke: lib $(BUILD)/world_cli
 	python3 bindings/python/lineage_smoke.py
 	python3 bindings/python/social_smoke.py
 	python3 bindings/python/parts_nest_smoke.py
+	python3 bindings/python/moves_recipes_smoke.py
 
 # The core may only depend on libc/libm: fail if any core object pulls in more.
 check-core: $(BUILD)/libcpore.so
@@ -192,7 +194,7 @@ WORLD_EXPORTS := '[_cw_version,_cw_config,_cw_profile,_cw_spawn,_cw_obstacle,_cw
 wasm: $(BUILD)/wasm/cpore_world.mjs $(BUILD)/wasm/cpore_world.wasm
 $(BUILD)/wasm/cpore_world.mjs $(BUILD)/wasm/cpore_world.wasm &: $(WORLD_SRC) apps/world_wasm_api.c apps/wasm_api.c apps/combat_bots.h $(HDRS) Makefile
 	@mkdir -p $(dir $@)
-	$(EMCC_RUN) $(WASM_FLAGS) $(WORLD_SRC) apps/world_wasm_api.c --no-entry -sMODULARIZE=1 -sEXPORT_ES6=1 -sENVIRONMENT=web,node -sEXPORTED_FUNCTIONS=$(WORLD_EXPORTS) -sEXPORTED_RUNTIME_METHODS=HEAP8,HEAPU8,HEAPU32,UTF8ToString -o $(BUILD)/wasm/cpore_world.mjs
+	$(EMCC_RUN) $(WASM_FLAGS) -sINITIAL_MEMORY=134217728 -sSTACK_SIZE=8388608 -sALLOW_MEMORY_GROWTH=1 $(WORLD_SRC) apps/world_wasm_api.c --no-entry -sMODULARIZE=1 -sEXPORT_ES6=1 -sENVIRONMENT=web,node -sEXPORTED_FUNCTIONS=$(WORLD_EXPORTS) -sEXPORTED_RUNTIME_METHODS=HEAP8,HEAPU8,HEAPU32,UTF8ToString -o $(BUILD)/wasm/cpore_world.mjs
 $(BUILD)/world_cli: apps/world_cli.c $(HDRS) $(BUILD)/libcpore.a
 	$(CC) $(CFLAGS) $< $(BUILD)/libcpore.a -o $@ $(LDLIBS)
 world-test: $(BUILD)/world_test $(BUILD)/world_cli wasm
@@ -626,6 +628,15 @@ routes-test: $(BUILD)/routes_test
 .PHONY: godot-route-events-test
 godot-route-events-test: godot
 	nice -n 10 timeout 120 $(GODOT) --headless --path godot --script res://game/tests/test_route_events.gd
+
+$(BUILD)/moves_recipes_test: tests/test_moves_recipes.c $(HDRS) $(BUILD)/libcpore.a
+	$(CC) $(CFLAGS) -DCP_COMBAT_TEST $< core/src/combat.c $(BUILD)/libcpore.a -o $@ $(LDLIBS)
+test: $(BUILD)/moves_recipes_test
+
+.PHONY: godot-moves-recipes-test
+godot-moves-recipes-test:
+	$(GODOT) --headless --path godot --check-only --script res://game/tests/moves_recipes_test.gd
+	$(GODOT) --headless --path godot --script res://game/tests/moves_recipes_test.gd
 
 # C2 secrets: meteor shards, hidden cave chamber, day/night, Acechalunas and Babosa (tests/test_secrets.c)
 $(BUILD)/secrets_test: tests/test_secrets.c $(HDRS) $(BUILD)/libcpore.a
