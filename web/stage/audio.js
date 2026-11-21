@@ -46,7 +46,7 @@ export class StageAudio{
   const cry=(name,id,volume=.5)=>{const p=entities[id];if(!p)return;this.play(name,{position:p,volume,rate:Math.max(.6,Math.min(1.6,1.25/Math.sqrt((profiles[id].radiusCm||60)/100)))})};
   if(sim.started>this.started){cry('aggro',1,.7);this.started=sim.started}
   for(const event of sim.events){if(event.type===1){cry('hurt',event.b,.35);this.play('hit',{position:entities[event.b],volume:.5})}
-   if(event.type===2||event.type===3)this.play('block',{position:entities[event.b],volume:.5});
+   if(event.type===2)this.play('block',{position:entities[event.b],volume:.5});
    if(event.type===4)this.play('dodge',{position:entities[event.b],volume:.35});
    if(event.type===7)cry('death',event.b,.7);
   }
