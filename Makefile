@@ -378,11 +378,16 @@ godot-owner-evidence:
 # Godot creature module (M1a, godot/creature). Headless tests; the import step
 # refreshes Godot's class_name cache. Evidence renders use software GL only.
 .PHONY: godot-creature-test godot-creature-evidence
+.PHONY: godot-creature-fit
+# Part-fit check (docs/briefs/creature-fit.md): floating parts, teeth in the mouth, eyes in sockets, limb-root blend; 4 pilots + 10 seeded genomes.
+godot-creature-fit:
+	nice -n 10 timeout 600 $(GODOT) --headless --path godot --script res://creature/tests/test_fit.gd
 godot-creature-test:
 	nice -n 10 timeout 600 $(GODOT) --headless --path godot --import >/dev/null 2>&1 || true
 	nice -n 10 timeout 600 $(GODOT) --headless --path godot --script res://creature/tests/test_creature.gd
 	nice -n 10 timeout 600 $(GODOT) --headless --path godot --script res://creature/tests/test_realism.gd
 	nice -n 10 timeout 600 $(GODOT) --headless --path godot --script res://creature/tests/test_radial.gd
+	nice -n 10 timeout 600 $(GODOT) --headless --path godot --script res://creature/tests/test_fit.gd
 # Radial body plans (docs/godot/CREATURE-RADIAL.md): per-species views, gait strips, lineup, island habitats, bilateral guard.
 .PHONY: godot-radial-evidence
 godot-radial-evidence:

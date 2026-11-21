@@ -9,7 +9,7 @@ const Adapter := preload("res://locomotion/loco_rig_adapter.gd")
 
 func run(t) -> void:
 	var game_script := FileAccess.get_file_as_string("res://game/game.gd")
-	t.check(game_script.contains('return _read_genome("res://game/data/hatchling.json")'), "the default player genome is the hatchling")
+	t.check(game_script.contains('const STARTER := "hatchling"') and game_script.contains('return _read_genome(STARTER_FILES[STARTER])'), "the default player genome is the hatchling")
 	var g: Dictionary = Profile.load_json("res://game/data/hatchling.json")
 	var c = load("res://creature/creature.gd").new()
 	t.root.add_child(c)

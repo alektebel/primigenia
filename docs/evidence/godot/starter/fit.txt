@@ -1,0 +1,5 @@
+start0 dna 85 parts 4 | len 1.18 hip 0.26 mass 36.0 plan quadruped | fit fails 0 (float 0 teeth 0 eyes 0 limbs 0) horn 0.00/0.00 bulge 1.36
+startA dna 100 parts 7 | len 1.20 hip 0.52 mass 42.4 plan quadruped | fit fails 0 (float 0 teeth 0 eyes 0 limbs 0) horn 1.82/0.24 bulge 1.36
+startB dna 85 parts 6 | len 1.51 hip 0.59 mass 38.3 plan quadruped | fit fails 0 (float 0 teeth 0 eyes 0 limbs 0) horn 0.00/0.00 bulge 1.36
+startC dna 108 parts 7 | len 1.29 hip 0.27 mass 45.4 plan quadruped | fit fails 0 (float 0 teeth 0 eyes 0 limbs 0) horn 1.61/0.00 bulge 1.36
+startD dna 114 parts 6 | len 1.13 hip 0.59 mass 53.1 plan quadruped | fit fails 0 (float 0 teeth 0 eyes 0 limbs 0) horn 0.00/0.00 bulge 1.36

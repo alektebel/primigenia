@@ -44,6 +44,10 @@ fog_amount={
 "type": "float",
 "value": 0.0
 }
+moon_k={
+"type": "float",
+"value": 0.0
+}
 
 [display]
 
