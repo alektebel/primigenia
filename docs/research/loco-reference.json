@@ -22,6 +22,7 @@
   },
   "mapping": {"hero": "gorilla_knuckle", "giant": "gorilla_knuckle"},
   "universal": [
+    {"id": "limp", "metric": "limp_index", "op": "<=", "value": 1.15, "scenarios": ["walk"], "bodies": "all", "source": "M1 limp brief: starting value, paired left/right footfall root drop and planted-side roll max/min; validate by owner before/after clip. Gallop leads and terrain compensation can be asymmetric."},
     {"id": "knee_flip", "metric": "knee_flip_frac", "op": "==", "value": 0, "scenarios": "all", "bodies": "all", "source": "owner movement canon 2026-11-21: legs never bend the wrong way (knee against its rest bend direction on any stance leg)"},
     {"id": "foot_penetration", "metric": "foot_penetration_cm.p95", "op": "<", "value": 1, "scenarios": "all", "bodies": "all", "source": "owner movement canon 2026-11-21: feet and knees do not go through the ground (p95 depth under 1 cm)"},
     {"id": "foot_slip", "metric": "foot_slip_cm.p95", "op": "<", "value": 3, "scenarios": "all", "bodies": "all", "source": "brief loco-score: foot slip p95 under 3 cm"},
@@ -38,6 +39,7 @@
     {"id": "climb_posture", "metric": "climb_posture_shift_deg", "op": ">=", "value": 5, "scenarios": ["climb"], "bodies": "all", "source": "starting value: the back slope on a climb differs from the walk's by at least 5 deg (derived: |back_slope climb - back_slope walk|)"}
   ],
   "known_problems": {
+    "uneven left/right footfall drops or roll": ["limp"],
     "head pitched to the sky": ["head_pitch"],
     "crouched legs": ["leg_extension"],
     "gallop is a fast walk": ["air_gallop"],

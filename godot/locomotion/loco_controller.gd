@@ -20,7 +20,7 @@ const BANK_MAX := {&"quadruped": 0.20, &"multi": 0.20, &"horizontal_biped": 0.30
 const GAIT_DWELL := 0.3         # s: shortest time between gait changes
 const FORCE_GAP := 0.0        # s: at most one forced lift-off per gap
 const STRAIGHT := 0.985         # longest a leg is allowed to get, as a share of its length
-const STRAIGHT_QUAD := 0.96      # quadruped hips ride high: leave margin for the spring lag so the reach guard (drop, heel pop) rarely fires
+const STRAIGHT_QUAD := 0.958     # M1 starting value: spring/IK reach margin; checked by walk slip and steps knee-flip scorecards
 const PLANE_CADENCE_K := 3.0    # the hip plane spring is at least this many times the stride frequency
 const CADENCE_MAX_F := 7.0      # stride frequency cap for quadrupeds, in units of the natural frequency 0.25 sqrt(g/h)
 ## Gait roll amplitude (rad) per plan: the trunk rolls toward the planted front foot, peaking soon after its touchdown
@@ -585,7 +585,10 @@ func _sub(h: float, p: Vector3, yaw: float, v: Vector3, settle: bool) -> void:
 		for i in range(_legs.size()):
 			var lg: Dictionary = _legs[i]
 			if morph.legs[i].station == front_st and not lg.swing and morph.legs[i].side != 0:
-				gr_t -= float(morph.legs[i].side) * sin(PI * clampf(lg.s / 0.5, 0.0, 1.0))
+				# M1 starting value: amble lean peaks 0.10 stride after each
+				# plant, independently of its longer contact (scorecard roll lag).
+				var pulse: float = lg.s * duty / 0.20 if gait == &"amble" else lg.s / 0.5
+				gr_t -= float(morph.legs[i].side) * sin(PI * clampf(pulse, 0.0, 1.0))
 		gr_t *= float(GAIT_ROLL.get(morph.plan, 0.0)) * float(GAIT_ROLL_K.get(gait, 0.6)) * _moving
 	# the gait roll plus the turning bank never exceed the plan's bank limit (the roll is one-sided only while banking hard)
 	var bmax: float = float(BANK_MAX.get(morph.plan, 0.2))
@@ -643,7 +646,9 @@ func _sub(h: float, p: Vector3, yaw: float, v: Vector3, settle: bool) -> void:
 		var lmax: float = 0.995 * m.length
 		# heel-off: raise the heel just as far as the leg needs to reach the ball
 		var phi_need := 0.0
-		if hw.distance_to(_ankle_at(l, m, 0.0)) > lmax:
+		# The amble keeps its sole planted; reach is resolved by body drop.
+		# Heel rotation here adds a second contact motion and reads as a hitch.
+		if gait != &"amble" and hw.distance_to(_ankle_at(l, m, 0.0)) > lmax:
 			var lo := 0.0
 			var hi := deg_to_rad(60.0)
 			if hw.distance_to(_ankle_at(l, m, hi)) > lmax:

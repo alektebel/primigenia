@@ -7,6 +7,7 @@ import glob, json, os, sys
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "docs", "evidence", "loco", "score")
 # metric path -> (kind, target): 'min' lower is better, 'max' higher is better, 'near' closer to target is better
 DIRECTION = {
+    "limp_index": ("near", 1.0),
     "head_pitch_deg.mean": ("near", 0), "head_yaw_vs_body_deg.p95": ("min", 0), "shoulder_hip_ratio": ("near", 1.35), "back_slope_deg": ("near", 22),
     "torso_roll_deg": ("near", 7), "roll_plant_lag": ("near", 0), "torso_bob_frac": ("near", 0.04), "foot_slip_cm.p95": ("min", 0),
     "foot_slip_cm.mean": ("min", 0), "leg_extension": ("near", 0.95), "foot_spacing_ratio": ("max", 0), "pivot_frac": ("min", 0),

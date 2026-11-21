@@ -95,20 +95,20 @@ def main():
     json.dump({"label": os.path.basename(os.path.normpath(d)), "rows": rows}, open(os.path.join(d, "summary.json"), "w"), indent=1, sort_keys=True)
     L = ["# Locomotion scorecard `%s`" % os.path.basename(os.path.normpath(d)), "",
          "Rows: body x scenario. PASS/FAIL against `docs/research/loco-reference.json`; `-` = not measurable (reason in the case JSON). Verdict = failed/checked.", "",
-         "| body | scenario | head pitch mean/p95 | shoulder/hip | back slope | roll deg | roll lag | bob % | slip p95 cm | duty | airborne | leg ext | foot spacing | pivot | stall | turn R m | knee flip | pen p95 cm | symmetry | verdict |",
-         "|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|"]
+         "| body | scenario | head pitch mean/p95 | shoulder/hip | back slope | roll deg | roll lag | bob % | slip p95 cm | duty | airborne | leg ext | foot spacing | pivot | stall | turn R m | knee flip | pen p95 cm | symmetry | limp index | verdict |",
+         "|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|"]
     for r in rows:
         m = r["metrics"]
         hp = m.get("head_pitch_deg")
         bob = m.get("torso_bob_frac")
         nf = sum(1 for x in r["checks"] if x["verdict"] == "FAIL")
         nc = sum(1 for x in r["checks"] if x["verdict"] != "N/A")
-        L.append("| %s | %s | %s | %s | %s | %s | %s | %s | %s | %s | %s | %s | %s | %s | %s | %s | %s | %s | %s | %s |" % (
+        L.append("| %s | %s | %s | %s | %s | %s | %s | %s | %s | %s | %s | %s | %s | %s | %s | %s | %s | %s | %s | %s | %s |" % (
             r["body"], r["scenario"], "%s / %s" % (fmt(hp["mean"], 1), fmt(hp["p95"], 1)) if hp else "-", fmt(m.get("shoulder_hip_ratio")), fmt(m.get("back_slope_deg"), 1),
             fmt(m.get("torso_roll_deg"), 1), fmt(m.get("roll_plant_lag")), fmt(bob * 100 if bob is not None else None, 1),
             fmt((m.get("foot_slip_cm") or {}).get("p95"), 1) if m.get("foot_slip_cm") else "-", fmt((m.get("duty_factor") or {}).get("mean")) if m.get("duty_factor") else "-",
             fmt(m.get("airborne_frac")), fmt(m.get("leg_extension")), fmt(m.get("foot_spacing_ratio")), fmt(m.get("pivot_frac")), fmt(m.get("stall_frac")),
-            fmt(m.get("min_turn_radius_m"), 1), fmt(m.get("knee_flip_frac")), fmt((m.get("foot_penetration_cm") or {}).get("p95")), fmt(m.get("gait_symmetry")), ("**FAIL** %d/%d" % (nf, nc)) if nf else ("PASS 0/%d" % nc)))
+            fmt(m.get("min_turn_radius_m"), 1), fmt(m.get("knee_flip_frac")), fmt((m.get("foot_penetration_cm") or {}).get("p95")), fmt(m.get("gait_symmetry")), fmt(m.get("limp_index")), ("**FAIL** %d/%d" % (nf, nc)) if nf else ("PASS 0/%d" % nc)))
     L += ["", "## Known problems and the checks that catch them", "", "| known problem | checks | failing rows / checked rows |", "|---|---|---|"]
     for prob, ids in targets["known_problems"].items():
         f = c_ = 0
