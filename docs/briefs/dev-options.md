@@ -45,3 +45,20 @@ Read first:
 - `make godot-devtools-test`, `make godot-test`, `make godot-ui-test`, `make godot-play-test` all green. The feel numbers are unchanged with option mode closed.
 - Evidence: software-GL screenshots (xvfb, `LIBGL_ALWAYS_SOFTWARE=1`, `timeout`, `nice -n 10`; never the GPU) of the HUD open on two groups, plus the corner line, in `docs/evidence/godot/dev-options/`. Update `docs/godot/DEVTOOLS.md` (keys, formats) and `legend.json` (F10).
 - Commit on `devtools/options`; do not merge. Before stopping for any reason, commit WIP. Report: keys, options registered, tests, screenshots, TODO options.
+
+## Phase 2: in-game notes (owner request 2026-11-21, after F10 option mode is committed and green)
+The owner wants to flag things in the game and leave notes on them. Tracker test: DT-NOTE (new). Defaults chosen by Claude; record as starting choices.
+- **Flag mode.** F8 stays the general feedback bundle. Shift+F8, or the F8 dialog's "Flag something", enters flag mode:
+  - the cursor shows what is under the mouse, ray-picked: creature (species, individual id, body part if a part collider exists), plant or flora, prop or artifact (meteor shard, fossil bed, nest, food, remains), or a terrain or water point;
+  - a click opens a small note box: one text line, optional tags (bug, look, motion, idea, lore) cycled with Tab, severity 1-3;
+  - Enter saves, Esc cancels; game input is suspended while typing, with the same mechanism as the F10 HUD (`Game.options_open`).
+- **Storage.** `feedback/notes/<stamp>-<id>/` (git-ignored, falling back to `user://feedback/notes/`):
+  - `note.json` (`primigenia.note/1`): text, tags, severity, target {kind, id, species, part, name}, world position, C tick and clock hour, camera pose, active F10 options, build hash, status "open";
+  - a full screenshot and a crop around the target;
+  - a scenario snapshot so an agent can reload that exact moment;
+  - `feedback/notes/index.jsonl`, one line per note.
+- **Pins in the world.** Small pins above the target; they follow a creature that moves, otherwise stay at the position. Visible only in flag mode, or toggled from the F10 Overlays group. Hovering a pin shows its text; clicking it edits the note or marks it done.
+- **For agents:** `tools/feedback/notes.py` with `list` (open, newest first), `show <id>`, `done <id> "<fix commit>"`, `export-md` (a Markdown table for STATUS and the tracker); console `notes` and `note done <id>`; the agent socket gets the same.
+- **Tests:** pick on each kind, note round trip, input suspension, pins attached to moving creatures, the index line, `notes.py` list/done/export.
+- **Evidence:** software-GL screenshots of flag mode hovering a creature, the note box and pins, in `docs/evidence/godot/dev-options/`. Update `docs/godot/DEVTOOLS.md` and `legend.json`.
+- Commit each phase separately.

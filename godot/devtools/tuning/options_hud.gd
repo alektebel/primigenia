@@ -36,7 +36,7 @@ func _ready() -> void:
 	_hud = VBoxContainer.new()
 	_hud.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_hud.add_theme_constant_override("separation", 2)
-	_hud.position = Vector2(18, 16)
+	_hud.position = Vector2(18, 190)    # below the task card
 	_hud.visible = false
 	_root.add_child(_hud)
 	_line = Label.new()

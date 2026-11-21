@@ -69,5 +69,5 @@
     {"label": "Delete part", "keys": "Del / Backspace", "group": "Studio", "contexts": ["studio"]},
     {"label": "Nudge part", "keys": "Arrows", "group": "Studio", "contexts": ["studio"]}
   ],
-  "reserved": {"F7": "free camera (DT1)", "F9": "scrubber (DT1)", "F10": "overlays (DT1)"}
+  "reserved": {"F7": "free camera (DT1)", "F9": "scrubber (DT1)"}
 }

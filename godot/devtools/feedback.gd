@@ -102,7 +102,7 @@ static func write(stage, ctx: Dictionary, note: String, dir: String, meta_extra:
 	var meta := {"build": Scenario.build_text(), "godot": Engine.get_version_info().string, "seed": ctx.get("island", {}).get("seed", 0),
 		"tick": cur_tick, "hash": stage.world.state().hash, "timescale": stage.timescale, "paused": stage.paused,
 		"legend_context": String(meta_extra.get("legend_context", "")), "fps_avg": meta_extra.get("fps_avg", 0.0), "note": note,
-		"os": OS.get_name(), "screenshot": shot, "replay_from_tick": int(start.tick) if start != null else first_tick}
+		"os": OS.get_name(), "options": ctx.get("tuning", {}).get("options", {}), "screenshot": shot, "replay_from_tick": int(start.tick) if start != null else first_tick}
 	var mf := FileAccess.open(dir.path_join("meta.json"), FileAccess.WRITE)
 	mf.store_string(JSON.stringify(meta, "\t"))
 	mf.close()

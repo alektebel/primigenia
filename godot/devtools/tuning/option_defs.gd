@@ -54,7 +54,8 @@ static func _camera(reg, island) -> void:
 		false, {"desc": "zoom presets of the chase camera (z 0, 0.15, 0.40, 0.70)."})
 
 static func _world(reg) -> void:
-	reg.add_choice("quality", "world", ["auto", "low", "medium", "high"], "auto",
+	var cur := str(Game.settings.get("quality", "auto"))     # the default is what the player's settings file says
+	reg.add_choice("quality", "world", ["auto", "low", "medium", "high"], cur,
 		func(): return str(Game.settings.get("quality", "auto")),
 		func(v): Game.settings["quality"] = v, false,
 		{"desc": "render tier; it is read when the island is built, so it applies at the next island start."})
