@@ -20,6 +20,19 @@ const BANK_MAX := {&"quadruped": 0.20, &"multi": 0.20, &"horizontal_biped": 0.30
 const GAIT_DWELL := 0.3         # s: shortest time between gait changes
 const FORCE_GAP := 0.0        # s: at most one forced lift-off per gap
 const STRAIGHT := 0.985         # longest a leg is allowed to get, as a share of its length
+const STRAIGHT_QUAD := 0.96      # quadruped hips ride high: leave margin for the spring lag so the reach guard (drop, heel pop) rarely fires
+const PLANE_CADENCE_K := 3.0    # the hip plane spring is at least this many times the stride frequency
+const CADENCE_MAX_F := 7.0      # stride frequency cap for quadrupeds, in units of the natural frequency 0.25 sqrt(g/h)
+## Gait roll amplitude (rad) per plan: the trunk rolls toward the planted front foot, peaking soon after its touchdown
+## (Spore gorilla knuckle-walk reference ~7 deg, docs/canon/MOTION.md section 1); scaled by gait below.
+const GAIT_ROLL := {&"quadruped": 0.15, &"horizontal_biped": 0.06, &"upright_biped": 0.05, &"multi": 0.04, &"monopod": 0.0, &"legless": 0.0}
+const GAIT_ROLL_K := {&"walk": 1.0, &"amble": 1.0, &"tripod": 1.0, &"ripple": 1.0, &"run": 0.7, &"trot": 0.8, &"hop": 0.5, &"gallop": 0.55}
+const TOUCHDOWN_REACH := 0.97  # a foot lands within this share of its leg length from where the hip will be (a late touchdown overstretches the leg: heel-off pop = slip)
+const TALL := 1.0               # share of the pendulum rise a bouncing gait still takes (1 = straight stance legs in any gait)
+const ERECT_FLOOR := 1.0        # sprawled legs vault like straight ones (their lateral offset is part of the leg length)
+const REACH_K_QUAD := 0.60      # quadrupeds: stance legs stay within this share of their length from vertical (hips ride high, legs ~0.9+ of full length)
+const REACH_K_OTHER := 0.6
+const CROUCH_MAX_QUAD := 0.03   # quadrupeds hardly crouch (size rule, docs/canon/MOTION.md section 2): the stride is clipped instead
 
 signal footfall(leg: int, position: Vector3)
 signal liftoff(leg: int, position: Vector3)
@@ -69,6 +82,7 @@ var _y := Vector2.ZERO          # spring-mass vertical bounce
 var _p := Vector2.ZERO          # spring-mass pitch
 var _lean := Vector2.ZERO       # pitch from acceleration
 var _bank := Vector2.ZERO       # roll from turning
+var _gr := Vector2.ZERO         # roll from the weight moving onto the planted front foot (gorilla-style sway)
 var _neck_p := Vector2.ZERO
 var _neck_y := Vector2.ZERO
 var _tail_p := Vector2.ZERO
@@ -173,7 +187,7 @@ func reset(pos: Vector3, yaw: float) -> void:
 		l.phi = 0.0
 		l.dir = basis.z
 		l.ball = Vector3(f.x, l.g_to, f.z) + basis.z * m.toe
-	for s in ["_flex", "_b", "_c", "_sx", "_sz", "_y", "_p", "_lean", "_bank", "_neck_p", "_neck_y", "_tail_p", "_tail_y"]:
+	for s in ["_flex", "_b", "_c", "_sx", "_sz", "_y", "_p", "_lean", "_bank", "_gr", "_neck_p", "_neck_y", "_tail_p", "_tail_y"]:
 		set(s, Vector2.ZERO)
 	_a = Vector2(_gy(pos.x, pos.z), 0.0)
 	_drop = 0.0
@@ -261,16 +275,17 @@ func _sub(h: float, p: Vector3, yaw: float, v: Vector3, settle: bool) -> void:
 	# so only the leg angle limits the stride. A bouncing gait needs the hips
 	# low enough for a straight leg to reach touchdown and lift-off: crouch,
 	# then clip the stride to what the legs allow.
-	var crouch_max := 0.18
+	var crouch_max := CROUCH_MAX_QUAD if morph.plan == &"quadruped" else 0.18
 	var crouch_t := 0.0
 	_y_amp = max(abs(_y.x), _y_amp * exp(-h * max(cadence, f_nat_c)))
 	for i in range(_legs.size()):
 		var m: Dictionary = morph.legs[i]
-		var lr: float = STRAIGHT * m.length
+		var lr: float = (STRAIGHT_QUAD if morph.plan == &"quadruped" else STRAIGHT) * m.length
 		var lr_e: float = lr + 0.6 * m.toe     # toe-off adds reach
 		var off_x: float = abs(m.home.x - m.hip.x)     # sprawl
 		var off: float = abs(m.home.z - m.hip.z)       # feet carried ahead of or behind the hip
-		var d_lim: float = sqrt(max(0.36 * lr * lr - off_x * off_x, 0.0)) - off
+		var reach_k: float = REACH_K_QUAD if morph.plan == &"quadruped" else REACH_K_OTHER
+		var d_lim: float = sqrt(max(reach_k * reach_k * lr * lr - off_x * off_x, 0.0)) - off
 		var d_half: float = 0.5 * duty_t * stride_t / 0.92
 		if d_half > d_lim:
 			stride_t = max(2.0 * 0.92 * d_lim, 0.1 * _ref_h) / duty_t
@@ -284,6 +299,8 @@ func _sub(h: float, p: Vector3, yaw: float, v: Vector3, settle: bool) -> void:
 				stride_t = max(2.0 * 0.92 * (d_max - off), 0.1 * _ref_h) / duty_t
 			need = crouch_max
 		crouch_t = max(crouch_t, need)
+	if morph.plan == &"quadruped":
+		stride_t = maxf(stride_t, (_speed_f / (CADENCE_MAX_F * f_nat_c)))      # never faster than a few natural frequencies: a frantic scurry is worse than a bent leg
 	if pivoting:
 		crouch_t = min(crouch_t + 0.05, crouch_max)
 	var f_nat := f_nat_c
@@ -360,10 +377,10 @@ func _sub(h: float, p: Vector3, yaw: float, v: Vector3, settle: bool) -> void:
 			var target: Vector3 = p + v * t_mid + Basis(Vector3.UP, yaw_p) * home_l
 			# keep the touchdown inside the leg's reach from where the hip will be
 			var hip_td: Vector3 = hip_now + v * t_td
-			var lr: float = 0.97 * m.length
+			var lr: float = TOUCHDOWN_REACH * m.length
 			# hip height at touchdown: rest height less the crouch, less the
 			# pendulum sag of a straight leg half a step from vertical
-			var lstr: float = STRAIGHT * m.length
+			var lstr: float = (STRAIGHT_QUAD if morph.plan == &"quadruped" else STRAIGHT) * m.length
 			var half_step: float = 0.5 * duty * stride
 			var vault_td: float = (lstr - sqrt(max(lstr * lstr - half_step * half_step, 0.0))) * (1.0 - bounce)
 			var hh: float = max(m.rest_h * (1.0 - crouch) - vault_td, 0.5 * m.rest_h)
@@ -457,7 +474,7 @@ func _sub(h: float, p: Vector3, yaw: float, v: Vector3, settle: bool) -> void:
 				var ramp_s: float = smoothstep(0.5, 1.0, l.u)
 				if ramp_s > 0.0:
 					var hn_s: Vector3 = p + basis * Vector3(_hip_loc[i].x, 0.0, _hip_loc[i].z) + left * _sx.x + fwd * _sz.x + v * l.t_td
-					var lp_s: float = STRAIGHT * m.length
+					var lp_s: float = (STRAIGHT_QUAD if morph.plan == &"quadruped" else STRAIGHT) * m.length
 					var d_s: float = min(Vector2(l.target.x - hn_s.x, l.target.z - hn_s.z).length(), 0.95 * lp_s)
 					caps[i] = l.g_to + sqrt(lp_s * lp_s - d_s * d_s) - m.rest_h
 					scs[i] = ramp_s
@@ -465,14 +482,14 @@ func _sub(h: float, p: Vector3, yaw: float, v: Vector3, settle: bool) -> void:
 				# inverted pendulum: the hip may not be higher than a straight leg
 				# allows (sprawled legs are not pendulums: they vault less)
 				var hn: Vector3 = p + basis * Vector3(_hip_loc[i].x, 0.0, _hip_loc[i].z) + left * _sx.x + fwd * _sz.x
-				var lp: float = STRAIGHT * m.length
+				var lp: float = (STRAIGHT_QUAD if morph.plan == &"quadruped" else STRAIGHT) * m.length
 				var d: float = min(Vector2(l.foot.x - hn.x, l.foot.z - hn.z).length(), 0.95 * lp)
-				var erect: float = 1.0 - clamp(abs(m.home.x - m.hip.x) / (0.5 * lp), 0.0, 1.0)
+				var erect: float = lerpf(1.0 - clamp(abs(m.home.x - m.hip.x) / (0.5 * lp), 0.0, 1.0), 1.0, ERECT_FLOOR if morph.plan == &"quadruped" else 0.0)
 				cap_e = sqrt(lp * lp - d * d) - m.rest_h
 				e = l.foot.y - m.ankle
 				caps[i] = e + cap_e
 				scs[i] = (1.0 - bounce) * erect + bounce
-				walk_w = (1.0 - bounce) * vault_gain * erect
+				walk_w = lerpf(1.0 - bounce, 1.0, TALL if morph.plan == &"quadruped" else 0.0) * vault_gain * erect
 				w += m.share * l.load * nl
 				var wl: float = m.share * l.load
 				cx += at.x * wl
@@ -506,9 +523,10 @@ func _sub(h: float, p: Vector3, yaw: float, v: Vector3, settle: bool) -> void:
 	if settle:
 		_a = Vector2(a_t, 0.0); _b = Vector2(b_t, 0.0); _c = Vector2(c_t, 0.0)
 	else:
-		_a = _spring(_a, a_t, _omega, _zeta, h)
-		_b = _spring(_b, b_t, _omega, _zeta, h)
-		_c = _spring(_c, c_t, _omega * 0.7, _zeta, h)
+		var w_pl: float = maxf(_omega, PLANE_CADENCE_K * TAU * f_eff) if morph.plan == &"quadruped" else _omega       # the hips must follow the legs' vault at this cadence
+		_a = _spring(_a, a_t, w_pl, _zeta, h)
+		_b = _spring(_b, b_t, w_pl, _zeta, h)
+		_c = _spring(_c, c_t, w_pl * 0.7, _zeta, h)
 	var a_o: float = _a.x
 	var b_o: float = _b.x
 	var c_o: float = _c.x
@@ -529,7 +547,7 @@ func _sub(h: float, p: Vector3, yaw: float, v: Vector3, settle: bool) -> void:
 	var wc: float = 0.45 * TAU * max(f_eff, f_nat)
 	# a real bounce is never the same twice: slow, incommensurate modulation of the drive (+-7 %)
 	var irregular := 1.0 + 0.045 * sin(TAU * phase * 0.5 + 1.3) + 0.03 * sin(TAU * phase * 0.31 + 0.4)
-	var drive := bounce * _moving * irregular
+	var drive := bounce * _moving * irregular * (0.5 if morph.graviportal else 1.0)       # heavy bodies bob less (canon: the ground takes the hit, the body does not float)
 	var zc: float = clamp(_zeta * 0.7, 0.4, 1.0)
 	var den := 1.0 + 2.0 * zc * wc * h + wc * wc * h * h
 	# only the fluctuation of the leg forces about their running mean moves the
@@ -560,10 +578,22 @@ func _sub(h: float, p: Vector3, yaw: float, v: Vector3, settle: bool) -> void:
 	var bank_t: float = clamp(-atan(_speed_f * _yawrate / G) * bank_k, -bank_max, bank_max)
 	_lean = _spring(_lean, lean_t, _omega * 0.4, 1.0, h)
 	_bank = _spring(_bank, bank_t, _omega * 0.4, 1.0, h)
+	# gait roll: each front foot, soon after touchdown (stance share 0..0.5), pulls the trunk toward its own side
+	var gr_t := 0.0
+	if not legless and not pivoting:
+		var front_st: int = morph.stations.size() - 1
+		for i in range(_legs.size()):
+			var lg: Dictionary = _legs[i]
+			if morph.legs[i].station == front_st and not lg.swing and morph.legs[i].side != 0:
+				gr_t -= float(morph.legs[i].side) * sin(PI * clampf(lg.s / 0.5, 0.0, 1.0))
+		gr_t *= float(GAIT_ROLL.get(morph.plan, 0.0)) * float(GAIT_ROLL_K.get(gait, 0.6)) * _moving
+	# the gait roll plus the turning bank never exceed the plan's bank limit (the roll is one-sided only while banking hard)
+	var bmax: float = float(BANK_MAX.get(morph.plan, 0.2))
+	_gr = _spring(_gr, clampf(gr_t, -bmax - _bank.x, bmax - _bank.x), maxf(TAU * f_eff * 4.0, _omega), 0.9, h)
 	# --- 13. compose the body transform
 	var slope_b := b_o + _p.x + _lean.x
 	var pitch := -atan(slope_b)                    # rotation about +X (left)
-	var roll := atan(c_o) + _bank.x               # rotation about +Z (forward)
+	var roll := atan(c_o) + _bank.x + _gr.x               # rotation about +Z (forward)
 	var piv := Vector3(0.0, morph.com.y, morph.com.z)
 	var height: float = a_o + b_o * morph.com.z + _y.x - crouch * _ref_h
 	if legless:
@@ -617,7 +647,9 @@ func _sub(h: float, p: Vector3, yaw: float, v: Vector3, settle: bool) -> void:
 			var lo := 0.0
 			var hi := deg_to_rad(60.0)
 			if hw.distance_to(_ankle_at(l, m, hi)) > lmax:
-				phi_need = hi
+				# the heel cannot fix it (for a foot whose ankle is higher than its toe is long a heel raise even moves the
+				# ankle away): do not pop the heel 60 deg at touchdown (a 15 cm foot slip), the body drop below handles it
+				phi_need = 0.0
 			else:
 				for _k in range(8):
 					var mid := 0.5 * (lo + hi)
