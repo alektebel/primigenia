@@ -29,6 +29,7 @@ Done by me: determinism/RNG review (no libm trig in the new files, `+ - * / sqrt
 | `make test` | PASS (exit 0), includes `moves_recipes_test`, world replay/snapshot, social, parts/nest, combat goldens, routes certification 144/144 reached and replayed identically for seeds 1, 7, 42. |
 | `make smoke` | PASS (lineage, social, parts/nest, moves/recipes Python smokes). |
 | `make tourney` | **FAILS on one gate family** (see below); everything else passes. |
+| Integration branch 2026-11-21 (software, after merge into integrate/wip) | `make test smoke tourney` PASS (tourney exit 0, routes 288/288); godot-test 1138/0, ui 896/0, play 237/0, flight 22/0, devtools 895/0, bridge 42/0, menu 32+1/0, moves-recipes PASS, studio 926/0 |
 | Godot `--check-only` | clean for all changed scripts. |
 | `godot-test` | 593 checks, 0 failures |
 | `godot-ui-test` | 716 checks, 0 failures (after updating the part count to 47) |
