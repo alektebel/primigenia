@@ -220,11 +220,11 @@ function applyLight() {
   const warm = k > .35 ? SUN_COLOR.clone().lerp(DUSK, (1 - k) / .65) : DUSK.clone().lerp(MOON, 1 - k / .35);
   const day = smooth(0, .8, k);
   sun.color.copy(warm);
-  sun.intensity = SUN_ENERGY * mix(.12, 1, day) * .62;     // Godot energy 4.4 is in its own units; .62 matches the three.js lighting scale of the studio (SUN 2.2 vs 4.4 doubled in Godot)
+  sun.intensity = SUN_ENERGY * mix(.12, 1, day) * .40;     // Godot energy 4.4 is in its own units (about 2x the three.js studio's 2.2 at the world tone map); scaled to read like the Godot frames
   hemi.color.copy(NIGHT_AMB.clone().lerp(DAY_AMB, day));
   hemi.groundColor.set(0x6a6a5c);
-  hemi.intensity = AMB_ENERGY * mix(.55, 1, day) * .5;
-  renderer.toneMappingExposure = EXPOSURE * mix(.5, 1, day) * 1.5;
+  hemi.intensity = AMB_ENERGY * mix(.55, 1, day) * .35;
+  renderer.toneMappingExposure = EXPOSURE * mix(.5, 1, day) * 1.1;
   sun.position.copy(SUN_DIR).multiplyScalar(40);
   const t = state.tod;
   const pal = SKY[t in SKY ? t : (k > .7 ? "midday" : k > .15 ? "dusk" : "night")];
@@ -252,7 +252,7 @@ function buildSkin() {
 }
 function applyCam() {
   const c = state.cam;
-  const cams = { close: [[1.7, 1.35, 3.6], [0, 1.1, 1.1], 36], chase: [[-3.4, 2.2, -6.4], [0, .9, 0], 40], far: [[14, 6, 20], [0, .8, 0], 40] };
+  const cams = { close: [[2.3, 1.5, 5.0], [0, .95, .8], 36], chase: [[-3.4, 2.2, -6.4], [0, .9, 0], 40], far: [[14, 6, 20], [0, .8, 0], 40] };
   const [p, l, f] = cams[c];
   camera.position.set(...p); camera.lookAt(...l); camera.fov = f; camera.updateProjectionMatrix();
 }
