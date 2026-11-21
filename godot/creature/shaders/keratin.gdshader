@@ -11,6 +11,7 @@ uniform vec3 tip_col : source_color = vec3(0.86, 0.78, 0.60);
 uniform vec3 flat_col : source_color = vec3(0.75, 0.68, 0.54);
 uniform float gloss = 0.5;
 uniform float ridge_freq = 26.0;
+global uniform float moon_k;   // 0 day .. 1 night (day_night.gd): moonlight fill and rim, the part's own colour
 uniform vec3 sun_dir = vec3(-0.62, 0.3, -0.72);
 
 varying float vAlong;
@@ -47,15 +48,15 @@ void fragment() {
 		float hgt = (ridge * ridge_w * 0.0025 + fibre * 0.0012) * (0.6 + a);
 		vec3 n = pN(VERTEX, NORMAL, vec2(dFdx(hgt), dFdy(hgt)));
 		NORMAL = n;
-		ROUGHNESS = clamp(mix(0.55, 0.22, gloss) + (fibre - 0.5) * 0.18 - tipmix * 0.08, 0.08, 1.0);
+		ROUGHNESS = clamp(mix(0.72, 0.42, gloss) + (fibre - 0.5) * 0.18 - tipmix * 0.08, 0.08, 1.0);
 		METALLIC = 0.0;
-		CLEARCOAT = 0.25 * gloss + (kind > 1.5 ? 0.25 : 0.0);
-		CLEARCOAT_ROUGHNESS = 0.18;
+		CLEARCOAT = 0.08 * gloss + (kind > 1.5 ? 0.12 : 0.0);
+		CLEARCOAT_ROUGHNESS = 0.3;
 		// translucent keratin: a warm glow of light passing through the thin tip
 		vec3 view = normalize(-VERTEX);
 		vec3 Lw = normalize((VIEW_MATRIX * vec4(sun_dir, 0.0)).xyz);
 		float thru = pow(clamp(-dot(n, Lw), 0.0, 1.0), 1.3);
 		float rim = pow(1.0 - clamp(dot(view, n), 0.0, 1.0), 3.0);
-		EMISSION = tip_col * vec3(1.0, 0.7, 0.45) * (thru * 0.35 * tipmix + rim * 0.06);
+		EMISSION = tip_col * vec3(1.0, 0.7, 0.45) * (thru * 0.35 * tipmix + rim * 0.06) + (col * 0.3 + tip_col * 0.16) * moon_k * (1.0 + 5.0 * smoothstep(12.0, 45.0, length(VERTEX))) + col * moon_k * ( 1.8 * rim * (0.55 + 0.45 * dot(n, Lw)));
 	}
 }

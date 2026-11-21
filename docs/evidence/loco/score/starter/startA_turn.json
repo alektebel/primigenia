@@ -1,0 +1,89 @@
+{
+  "body": "startA",
+  "fps": 30.0,
+  "frames": 1260,
+  "metrics": {
+    "airborne_frac": 0.3317,
+    "back_slope_deg": 7.32,
+    "body_pitch_deg": 0.15,
+    "cadence_hz": 7.031,
+    "duty_factor": {
+      "mean": 0.2484,
+      "per_foot": [
+        0.2456,
+        0.2496,
+        0.2504,
+        0.248
+      ]
+    },
+    "foot_penetration_cm": {
+      "max": 0.0,
+      "mean": 0.0,
+      "p95": 0.0
+    },
+    "foot_slip_cm": {
+      "mean": 0.34,
+      "p95": 2.21,
+      "stances": 35
+    },
+    "foot_spacing_ratio": 0.6301,
+    "footfall": {
+      "contact": [
+        "10001000",
+        "10001000",
+        "00100010",
+        "01000100"
+      ],
+      "dt": 0.03333,
+      "labels": [
+        "L0",
+        "R0",
+        "L1",
+        "R1"
+      ],
+      "start_frame": 3,
+      "stride_frames": 4
+    },
+    "gait_frac": {
+      "gallop": 0.9595,
+      "trot": 0.0262,
+      "walk": 0.0143
+    },
+    "gait_symmetry": 1.258,
+    "ground_slope_deg": 0.0,
+    "head_pitch_deg": {
+      "mean": -4.74,
+      "p95": -0.94
+    },
+    "head_yaw_vs_body_deg": {
+      "mean": 1.33,
+      "p95": 8.6
+    },
+    "knee_flip_frac": 0.0,
+    "leg_extension": 0.8551,
+    "min_turn_radius_m": 0.23,
+    "moving_frac": 0.9952,
+    "pitch_follow": null,
+    "pivot_frac": 0.0095,
+    "pivot_frac_of_turns": 0.1667,
+    "roll_plant_lag": -0.003,
+    "shoulder_hip_ratio": 1.1193,
+    "slide_frac": 0.0,
+    "speed_mean_mps": 5.0722,
+    "stall_frac": 0.0,
+    "stall_state_frac": 0.0,
+    "steep_slope_deg": null,
+    "stride_len_m": 0.718,
+    "stuck_frac": 0.0,
+    "torso_bob_cm": 1.05,
+    "torso_bob_frac": 0.0187,
+    "torso_roll_deg": 1.54
+  },
+  "reasons": {
+    "pitch_follow": "fewer than 10 moving frames on a slope steeper than 0.1: nothing to follow",
+    "steep_slope_deg": "fewer than 10 moving frames on a slope steeper than 0.1: nothing to follow"
+  },
+  "scenario": "turn",
+  "start_tick": 0,
+  "ticks": 420
+}

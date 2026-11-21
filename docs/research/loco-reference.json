@@ -2,7 +2,7 @@
   "version": 1,
   "note": "Targets for the L0 locomotion scorecard (tools/loco/summary.py). Gorilla numbers are eyeballed from the side-view frames of the owner's reference clip (kept outside the repo); replace them with a keypoint measurement. Metric paths use dots: foot_slip_cm.p95.",
   "bodies": {
-    "mite": {"legs": 2}, "trotter": {"legs": 4}, "hero": {"legs": 4}, "giant": {"legs": 4},
+    "mite": {"legs": 2}, "trotter": {"legs": 4}, "hero": {"legs": 4}, "start0": {"legs": 4}, "startA": {"legs": 4}, "startB": {"legs": 4}, "startC": {"legs": 4}, "startD": {"legs": 4}, "giant": {"legs": 4},
     "longneck": {"legs": 4}, "centipede": {"legs": 8}, "hexapod": {"legs": 6}
   },
   "references": {

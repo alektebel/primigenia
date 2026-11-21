@@ -9,6 +9,10 @@ Updated 2026-11-21 (continuity, resources, motion canon A34, autonomy A33, score
 
 Reference clips: gorilla knuckle-walk (tracker X3, owner's Downloads) and Spore captures in `~/Desarrollo/cpore-refs/spore-captures/` (never commit). Capture tool: `docs/research/loco_review.gd`.
 
+**Skin v1 merged ed646ab** (plastic shine 6→0 fails, night crush 8→5, flat light 8→2; night/dist readability metric is wrong: mask includes shadow+nest → fix to creature-only mask; beetle stays dark by palette; dawn/dusk warmth remainder = capture/world light, D-25).
+
+**Creature fit merged c012d75** (part-fit check; teeth, eyes, limbs fixed). Follow-ups: limb pattern UVs along the limb axis + belly mix cap 0.5 (skin shader, next skin round); horn position via the starter genome.
+
 **Visual scorecard merged 0c9b70d** (`make godot-look-score`, ~9 min; baseline weak spots: flat world day cycle, night readability, creature shine, bloom at the spring, forest floor noise/saturation, low/medium parity). Lab: `web/lookdev/index.html`.
 
 **Canons:** `docs/canon/MOTION.md` (A34), `docs/canon/LOOK.md` (A36). Open with 48 h auto-accept: D-22 (motion refs), D-24 (look refs), D-25 (world day cycle next).
@@ -19,8 +23,9 @@ Reference clips: gorilla knuckle-walk (tracker X3, owner's Downloads) and Spore 
 ## Branches in flight
 | Branch | Worktree | State | Next step |
 |---|---|---|---|
-| `art/skin-v1` | cpore-wt/skin-v1 | Sonnet subagent: creature skin v1 (plastic shine, night readability, dawn/dusk warmth; lab → Godot), brief `docs/briefs/skin-v1.md`, started 2026-11-21 | Review compare vs look baseline; merge under A33 if targets pass and nothing regresses |
-| `art/creature-fit` | cpore-wt/creature-fit | Sonnet subagent: parts fit (floating teeth, cartoon eye, ball-joint limbs, pattern scale, horn), part-fit check first, brief `docs/briefs/creature-fit.md` | Review, merge under A33; then render 3–4 starter designs for the owner |
+| `art/starter-design` | cpore-wt/starter-design | Sonnet subagent: 4 starter candidates (A sturdy, B runner, C armoured sprawler, D knuckle-walker) + today's hero, scorecard + fit + renders; brief `docs/briefs/starter-design.md` | Owner picks in the tracker; Claude switches the default |
+| `anim/limp` | cpore-wt/limp | Codex sol: why the hero limps after L1 (bob per stride vs per step, duty 0.41, broken footfall diagram), limp index metric; brief `docs/briefs/limp.md`; cannot commit | Sonnet/Claude commits, review compare vs ffea2c1 |
+| `integrate/wip-2026-11-21` | cpore-wt/integrate | Sonnet integrator: commits stranded WIP, merges moves → first-quest → species-v8 → cave → 17 older branches, tests after each (owner: "merge all the WIP") | Review `docs/INTEGRATION-2026-11-21.md`, fast-forward main |
 | `c2/moves-recipes` | cpore-wt/c2-moves | WIP b0ed502, main merged, clean | Run godot play, flight, devtools, bridge, menu, moves-recipes, studio; finish MOVES-RECIPES-REPORT table; merge |
 | `c2/first-quest` | cpore-wt/first-quest | WIP ab2cefd, e2e green (chain ends tick 2904), clean | After moves merges: renumber DUG/MOVE_USED after 29, snapshot 10; flame evidence; results table |
 | `c2/species-v8` | cpore-wt/species-v8 | Codex, 34 dirty files | Sonnet commits + integrates; events after first-quest |
@@ -28,6 +33,8 @@ Reference clips: gorilla knuckle-walk (tracker X3, owner's Downloads) and Spore 
 | `tools/gaitopt` | cpore-wt/gaitopt | Codex, pilot failed (6/10 bodies fall) | Paused; M1b balance spike pending owner (D-02) |
 
 **Old unmerged branches (5+ days, need triage: merge, or close):** art-food, art-meteor, art-nest, art-remains, art-species, art-underwater (78 dirty), dem, feel-camera (10 dirty), idol, loco (5 dirty), m-e2e, m-ecology, m-garfio, m-vista, w11-alpine. Run `tools/agents/agents.sh status` for the live list.
+
+**Lore (after the integration lands `lore/autoloop-2`):** (1) technosphere pass: every world gets its heat-path fact per A37 / `lore/rules/technosphere.md` (council proposes, astrobio referee judges); (2) resume the autoloop for the 4 paused worlds (wheels died mid-run at shutdown; orbital, metallic, deepinterior queued); (3) tech-tree council A30 on top. Fix the 2 validate errors in void/mycelia/oddities.
 
 ## Background jobs (die on shutdown)
 - Lore autoloop: `tools/agents/agents.sh restart lore` (worktree lore-autoloop2).

@@ -15,7 +15,14 @@ const INFO := {
 	"longneck": {"label": "longneck (long neck)", "speed": 4.0},
 	"centipede": {"label": "centipede (8 legs)", "speed": 3.6},
 	"hexapod": {"label": "hexapod (6 legs)", "speed": 3.8},
+	# starter candidates (docs/evidence/godot/starter): files in game/data/starters, speed 4.0 = Game's profile.speed
+	"start0": {"label": "start0 (today's hatchling)", "speed": 4.0, "file": "res://game/data/hatchling.json"},
+	"startA": {"label": "startA (grazer-hunter)", "speed": 4.0, "file": "res://game/data/starters/a_grazer.json"},
+	"startB": {"label": "startB (lean runner)", "speed": 4.0, "file": "res://game/data/starters/b_runner.json"},
+	"startC": {"label": "startC (armoured sprawler)", "speed": 4.0, "file": "res://game/data/starters/c_sprawler.json"},
+	"startD": {"label": "startD (knuckle-walker)", "speed": 4.0, "file": "res://game/data/starters/d_knuckle.json"},
 }
+const STARTER_SET := ["start0", "startA", "startB", "startC", "startD"]
 const DEFAULT_SET := ["mite", "trotter", "giant", "longneck", "centipede", "hero"]
 
 static func ids() -> Array:
@@ -66,6 +73,10 @@ static func _with_legs(g: Dictionary, pairs: int, t0: float, t1: float, leg_len:
 	return out
 
 static func genome(id: String) -> Dictionary:
+	if INFO.has(id) and INFO[id].has("file"):
+		var gs: Dictionary = Profile.load_json(INFO[id].file)
+		gs.name = INFO[id].label
+		return gs
 	var base: Dictionary = Profile.load_json(BASE)
 	var g: Dictionary
 	match id:
