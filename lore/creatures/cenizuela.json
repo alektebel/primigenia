@@ -1,0 +1,293 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "cenizuela",
+  "name": {
+    "en": "Cenizuela"
+  },
+  "world": "primigenia",
+  "kind": "new",
+  "status": "draft",
+  "stage": "creature",
+  "niche": {
+    "habitat": "forest",
+    "diet": "pan_de_humus, pluma_de_sombra, detritus",
+    "active": "nocturno",
+    "predators": [
+      "acechalunas",
+      "mantohoja"
+    ],
+    "trophic": "decomposer",
+    "role": "detritivore"
+  },
+  "body": "4.2 cm length, 0.8 g mass",
+  "chains": [
+    {
+      "id": "cenizuela.c1",
+      "trait": "Six jointed legs with a low, sprawled stance",
+      "links": [
+        "Trait: six jointed legs with a low, sprawled stance",
+        "Why: stable on shifting debris requires low center of gravity",
+        "Why: forest floor accumulates deep, unstable litter",
+        "Why: 1.6 bar atmosphere traps heat & holds water vapor (F4, F18)"
+      ],
+      "roots": [
+        "F4",
+        "F18"
+      ],
+      "skill": {
+        "id": "cenizuela.low_crawl",
+        "name": {
+          "en": "Low crawl"
+        },
+        "role": "Basic",
+        "effect": "Moves 1.5× faster through root mats and leaf litter without sinking or alerting surface predators.",
+        "numbers": {}
+      },
+      "weakness": "Exposed on open ground; dense air makes running costly (F4, D16).",
+      "observe": [
+        "watching it step over roots",
+        "wings folded flat against abdomen",
+        "tracking it through fog"
+      ],
+      "journal": {
+        "en": "Six legs for a world of three dimensions: roots, soil, and air."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/foodweb-2026-11-21",
+        "date": "2026-11-21",
+        "summary": "A 4.2 cm, 0.8 g forest-floor detritivore on deep, wet litter (D28, F18) benefits from a low center of mass and many contact points on shifting root mats; 1.05 g and 1.6× drag (F4, D16) favor crawling over sprinting. Island radiation with empty invertebrate niches (D30, F27) can plausibly produce a hexapod litter specialist alongside Babosa.",
+        "fixes": [
+          "A 4.2 cm, 0.8 g forest-floor detritivore on deep, wet litter (D28, F18) benefits from a low center of mass and many contact points on shifting root mats; 1.05 g and 1.6× drag (F4, D16) favor crawling over sprinting. Island radiation with empty invertebrate niches (D30, F27) can plausibly produce a hexapod litter specialist alongside Babosa."
+        ],
+        "analogues": [
+          {
+            "organism": "Wood cockroach / ground-beetle litter fauna (low, sprawled runners on decaying leaf pack); convergent low profile also in woodlice (Porcellio) though not hexapods.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 4
+        }
+      },
+      "provenance": {
+        "council_run": "foodweb-2026-11-21",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "cenizuela.c2",
+      "trait": "Broad, translucent forewings for silent gliding",
+      "links": [
+        "Trait: broad, translucent forewings for silent gliding",
+        "Why: minimizes energy expenditure on a caloric-poor diet",
+        "Why: relies on aerodynamic lift rather than power flapping",
+        "Why: air is 1.6 times denser than Earth's (D11, F4)"
+      ],
+      "roots": [
+        "F4"
+      ],
+      "skill": {
+        "id": "cenizuela.silent_glide",
+        "name": {
+          "en": "Silent glide"
+        },
+        "role": "Control",
+        "effect": "Drifts 30 m downwind on thermal updrafts, landing softly on canopy or forest floor.",
+        "numbers": {}
+      },
+      "weakness": "Heavy rain or strong gusts knock it from the air (F19, D17).",
+      "observe": [
+        "sudden glide from branch",
+        "wings catching updraft",
+        "landing without sound"
+      ],
+      "journal": {
+        "en": "Wings not for speed, but for saving every joule of a rotten diet."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/foodweb-2026-11-21",
+        "date": "2026-11-21",
+        "summary": "Reframe skill as short silent glide/descent (5–15 m) from fallen wood or pluma de sombra stems to litter, optionally extended downwind only after climbing; drop ‘thermal updrafts’ or restrict to edge/gap convection. Keep forewings as glide membranes (tegmina-like), not power flapping.",
+        "fixes": [
+          "Reframe skill as short silent glide/descent (5–15 m) from fallen wood or pluma de sombra stems to litter, optionally extended downwind only after climbing; drop ‘thermal updrafts’ or restrict to edge/gap convection. Keep forewings as glide membranes (tegmina-like), not power flapping."
+        ],
+        "analogues": [
+          {
+            "organism": "Gliding ants (e.g. Cephalotes) and arboreal gliding inacs—membranous spread for controlled fall, not hawk-like soaring; silent membrane flight vs noisy stridulation in many orthopteroids.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 3
+        }
+      },
+      "provenance": {
+        "council_run": "foodweb-2026-11-21",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "cenizuela.c3",
+      "trait": "Chitinous mouthparts coated in alkaloid-neutralizing enzymes",
+      "links": [
+        "Trait: chitinous mouthparts coated in alkaloid-neutralizing enzymes",
+        "Why: breaks down defensive red-veined compounds & tough cellulose",
+        "Why: high-altitude plants wash downhill with runoff",
+        "Why: strong UV at 2,000 m forces red-purple UV screens (D25, F25, F1)"
+      ],
+      "roots": [
+        "F25",
+        "F1"
+      ],
+      "skill": {
+        "id": "cenizuela.acid_digest",
+        "name": {
+          "en": "Acid digest"
+        },
+        "role": "Engage",
+        "effect": "Dissolves tough litter and extracts nutrients, bypassing chewing; bypasses plant alkaloids.",
+        "numbers": {}
+      },
+      "weakness": "Ineffective on fresh meat or salt licks; gut pH crashes on non-alkaloid foods.",
+      "observe": [
+        "feeding on red-veined moss",
+        "enzymatic sheen on jaws",
+        "excreting pale paste"
+      ],
+      "journal": {
+        "en": "It wears the forest's poison as a tool."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/foodweb-2026-11-21",
+        "date": "2026-11-21",
+        "summary": "Name skill ‘Enzyme leach’ or salivary pre-digestion instead of strong acid unless you add a sealed crop; limit bypass to decayed red-veined detritus, not live Vetirroja.",
+        "fixes": [
+          "Name skill ‘Enzyme leach’ or salivary pre-digestion instead of strong acid unless you add a sealed crop; limit bypass to decayed red-veined detritus, not live Vetirroja."
+        ],
+        "analogues": [
+          {
+            "organism": "Generalist detritivores and dead-leaf feeders (e.g. some scarab and tenebrionid larvae) with gut enzymes and symbionts for polyphenols/alkaloids in senescent litter; not full fresh-plant specialist like milkweed feeders.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 2
+        }
+      },
+      "provenance": {
+        "council_run": "foodweb-2026-11-21",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "cenizuela.c4",
+      "trait": "Antennae packed with chemosensory pores; active only after dusk",
+      "links": [
+        "Trait: antennae packed with chemosensory pores; active only after dusk",
+        "Why: tracks food by molecular plumes in still air",
+        "Why: scent diffusion slows as air cools & stabilizes",
+        "Why: 26 h day & thick air cause cool nocturnal pooling (D18, F3, F4)"
+      ],
+      "roots": [
+        "F3",
+        "F4"
+      ],
+      "skill": {
+        "id": "cenizuela.scent_track",
+        "name": {
+          "en": "Scent track"
+        },
+        "role": "Poke",
+        "effect": "Locks onto litter plumes within 40 m, ignoring visual decoys and surface noise.",
+        "numbers": {}
+      },
+      "weakness": "Blinded by bright daylight; antennae clog in wet spray.",
+      "observe": [
+        "antennae twitching",
+        "emerging only at twilight",
+        "following invisible line"
+      ],
+      "journal": {
+        "en": "It reads the dark like a map written in rot."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/foodweb-2026-11-21",
+        "date": "2026-11-21",
+        "summary": "Reduce claimed 40 m lock to ~15–25 m for general rot plumes, up to ~40 m only in still, humid night air or fog (F16); note antennae clog in evening storms (F8) as additional weakness.",
+        "fixes": [
+          "Reduce claimed 40 m lock to ~15–25 m for general rot plumes, up to ~40 m only in still, humid night air or fog (F16); note antennae clog in evening storms (F8) as additional weakness."
+        ],
+        "analogues": [
+          {
+            "organism": "Nocturnal cockroach olfaction (Periplaneta) and large-antennaed moths tracking low-volatility compounds; cricket/beetle crepuscular activity on litter.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 7
+        }
+      },
+      "provenance": {
+        "council_run": "foodweb-2026-11-21",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "alula",
+      "kind": "predation",
+      "note": "Hunted by fruit-eating gliders that snatch them from the forest floor."
+    }
+  ],
+  "provenance": {
+    "council_run": "foodweb-2026-11-21",
+    "by": [
+      "naturalist/qwen"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-21",
+      "who": "import_got",
+      "what": "imported from council run foodweb-2026-11-21"
+    }
+  ],
+  "body_plan": {
+    "symmetry": "bilateral",
+    "arms": 6,
+    "origin": "insect-like hexapod"
+  },
+  "temperament": "docile, secretive",
+  "secrets": [
+    "Nocturnal variant bonus applies: befriend attempts in darkness gain +12 charm.",
+    "Rare albinos exist: pale individuals avoid toxic red-veined plants but lose UV camouflage."
+  ],
+  "moments": [
+    "When the fog lifts at dawn, you see them resting beneath a fallen leaf like discarded velvet masks, their wings still catching the last of the night's breath."
+  ],
+  "journal": [
+    {
+      "en": "Six legs for a world of three dimensions: roots, soil, and air."
+    },
+    {
+      "en": "It reads the dark like a map written in rot."
+    }
+  ]
+}

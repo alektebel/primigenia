@@ -1,0 +1,311 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "cascarudo",
+  "name": {
+    "en": "Cascarudo"
+  },
+  "world": "primigenia",
+  "kind": "new",
+  "status": "draft",
+  "stage": "creature",
+  "niche": {
+    "habitat": "caves",
+    "diet": "rondo dung, carcass leavings, pan_de_humus fungal growths, detritus",
+    "active": "nocturnal",
+    "predators": [
+      "ciegotela"
+    ],
+    "trophic": "decomposer",
+    "role": "detritivore",
+    "prey": [
+      "rondo"
+    ]
+  },
+  "body": "4.2 cm length, 0.8 g mass",
+  "chains": [
+    {
+      "id": "cascarudo.c1",
+      "trait": "Membranous wings folded under rigid fore-shields",
+      "links": [
+        "Atmosphere 1.6 bar (D8) creates high drag",
+        "Low Reynolds number flight",
+        "Short burst lift sufficient",
+        "Reduces metabolic cost for cave transit"
+      ],
+      "roots": [
+        "F4",
+        "F19"
+      ],
+      "skill": {
+        "id": "cascarudo.short_glide",
+        "name": {
+          "en": "Short Glide"
+        },
+        "role": "Basic",
+        "effect": "Dashes 2.5m in dense air, bypassing 1m vertical gap",
+        "numbers": {}
+      },
+      "weakness": "Loud roars disrupt wing control",
+      "observe": [
+        "Wings catching cave drafts",
+        "Veins flexing against density",
+        "Short aerial hops between stalactites"
+      ],
+      "journal": {
+        "en": "Wings like paper. The air is thick enough to swim."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/foodweb-2026-11-21",
+        "date": "2026-11-21",
+        "summary": "At ~4.2 cm and ~0.8 g the beast sits in small-beetle mass class where powered and burst flight is routine on Earth; 1.6 bar air raises air density ~1.58×, which increases lift per wing area at low Reynolds number and favours short hops over sustained flight—matching a cave detritivore that only needs to cross vertical gaps when carrion or dung patches appear. Rigid fore-shields (elytra analogues) protect folded wings from abrasion and condensation on basalt in lava tubes (F9); episodic bonanzas (waterfall-cave carcass rains) can select retained flight even in otherwise dark caves, as with carrion-oriented insects elsewhere rather than full troglobitic wing loss.",
+        "fixes": [
+          "At ~4.2 cm and ~0.8 g the beast sits in small-beetle mass class where powered and burst flight is routine on Earth; 1.6 bar air raises air density ~1.58×, which increases lift per wing area at low Reynolds number and favours short hops over sustained flight—matching a cave detritivore that only needs to cross vertical gaps when carrion or dung patches appear. Rigid fore-shields (elytra analogues) protect folded wings from abrasion and condensation on basalt in lava tubes (F9); episodic bonanzas (waterfall-cave carcass rains) can select retained flight even in otherwise dark caves, as with carrion-oriented insects elsewhere rather than full troglobitic wing loss."
+        ],
+        "analogues": [
+          {
+            "organism": "Scarab dung beetles (e.g. Scarabaeinae): elytra covering hind wings, burst flight to resources; cave cockroaches and cave crickets (Rhaphidophoridae) with partially retained jumping/gliding escape flight in hypogean habitats.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "foodweb-2026-11-21",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "cascarudo.c2",
+      "trait": "Enlarged antennae with reduced eyes",
+      "links": [
+        "Deep cave darkness limits vision",
+        "Molecular diffusion 0.6x Earth (D16) extends scent",
+        "Chemoreception favored for food locating",
+        "Antennae house primary chemoreceptors"
+      ],
+      "roots": [
+        "F3",
+        "F16"
+      ],
+      "skill": {
+        "id": "cascarudo.scent_trail",
+        "name": {
+          "en": "Scent Trail"
+        },
+        "role": "Poke",
+        "effect": "Tracks dung scent for 3s, reveals hidden carcass fragments",
+        "numbers": {}
+      },
+      "weakness": "Sudden bright light blinds and freezes it",
+      "observe": [
+        "Antennae sampling stagnant air",
+        "Eyes recessed under carapace",
+        "Moving by touch in total dark"
+      ],
+      "journal": {
+        "en": "It reads the dark. Scent hangs longer where the wind sleeps."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/foodweb-2026-11-21",
+        "date": "2026-11-21",
+        "summary": "Deep cave and nocturnal activity cap useful vision; chemoreception and mechanoreception on antennae locate dung, carcass leavings, and fungal patches in still, humid tube air. Molecular diffusion ~0.6× Earth (F16/D18) lengthens odour persistence in stagnant pockets, so long antennae sampling a larger volume per sweep are favoured over large compound eyes; recessed eyes fit stygobiont-style regression without total blindness if animals occasionally leave to cave mouths or follow moisture drafts.",
+        "fixes": [
+          "Deep cave and nocturnal activity cap useful vision; chemoreception and mechanoreception on antennae locate dung, carcass leavings, and fungal patches in still, humid tube air. Molecular diffusion ~0.6× Earth (F16/D18) lengthens odour persistence in stagnant pockets, so long antennae sampling a larger volume per sweep are favoured over large compound eyes; recessed eyes fit stygobiont-style regression without total blindness if animals occasionally leave to cave mouths or follow moisture drafts."
+        ],
+        "analogues": [
+          {
+            "organism": "Cave crickets and troglobitic beetles (reduced eyes, elongated antennae); ants and many coprophages where antennae are primary chemosensory organs.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "foodweb-2026-11-21",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "cascarudo.c3",
+      "trait": "Six jointed legs and chitinous carapace",
+      "links": [
+        "Surface gravity 1.05g (D6) increases weight",
+        "Dense air (D8) provides buoyant drag",
+        "Exoskeleton bears load instead of muscle",
+        "Six legs distribute stress on wet basalt"
+      ],
+      "roots": [
+        "F2",
+        "F4",
+        "F9"
+      ],
+      "skill": {
+        "id": "cascarudo.grip_crawl",
+        "name": {
+          "en": "Grip Crawl"
+        },
+        "role": "Basic",
+        "effect": "Climbs vertical basalt at 0.5 m/s using hooked tarsi",
+        "numbers": {}
+      },
+      "weakness": "Vulnerable when flipped on open ground",
+      "observe": [
+        "Hooked tarsi gripping wet stone",
+        "Carapace deflecting condensation",
+        "Six-pointed stability on slopes"
+      ],
+      "journal": {
+        "en": "Six points of contact. The heavy air keeps them low."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/foodweb-2026-11-21",
+        "date": "2026-11-21",
+        "summary": "Replace “buoyant drag” with “higher drag and lower terminal velocity in 1.6 bar air stabilise drops from the ceiling and short glides”; keep six legs and carapace as stated.",
+        "fixes": [
+          "Replace “buoyant drag” with “higher drag and lower terminal velocity in 1.6 bar air stabilise drops from the ceiling and short glides”; keep six legs and carapace as stated."
+        ],
+        "analogues": [
+          {
+            "organism": "Cave-adapted cockroaches and cave crickets: six legs, hooked tarsi on slick rock; terrestrial isopods and millipedes are detritivore analogues but hexapody is the standard insect-grade fix for this size on rubble.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "foodweb-2026-11-21",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "cascarudo.c4",
+      "trait": "Gut symbionts for fibrous waste processing",
+      "links": [
+        "Cave floor lacks fresh plants",
+        "Rapid decomposition (D28) recycles nutrients",
+        "Fungal symbionts break down tough cellulose",
+        "Gut processes rondo dung and carcass bits"
+      ],
+      "roots": [
+        "F24"
+      ],
+      "skill": {
+        "id": "cascarudo.process_scavenge",
+        "name": {
+          "en": "Process Scavenge"
+        },
+        "role": "Engage",
+        "effect": "Consumes carcass/dung in 4s, yields bone and chitin fragments",
+        "numbers": {}
+      },
+      "weakness": "Exposed and immobile while feeding",
+      "observe": [
+        "Mandibles grinding soft matter",
+        "Clustered around fresh droppings",
+        "Gut pulsing with fungal glow"
+      ],
+      "journal": {
+        "en": "They turn waste to wealth. One gut, many secrets."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/foodweb-2026-11-21",
+        "date": "2026-11-21",
+        "summary": "If “gut pulsing with fungal glow” is literal bioluminescence inside the gut, mark highly speculative—chemiluminescence in gut symbionts is rare; safer as observer confusion with phosphorescent foxfire on pan_de_humus outside the body, or drop the glow.",
+        "fixes": [
+          "If “gut pulsing with fungal glow” is literal bioluminescence inside the gut, mark highly speculative—chemiluminescence in gut symbionts is rare; safer as observer confusion with phosphorescent foxfire on pan_de_humus outside the body, or drop the glow."
+        ],
+        "analogues": [
+          {
+            "organism": "Dung beetles and coprophagic fly larvae with rich gut microbiomes; termites and ruminants for fibrolytic symbiosis; pill-woodlice and terrestrial isopods for detritus recycling (less specialized but same niche logic).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "foodweb-2026-11-21",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "rondo",
+      "kind": "prey",
+      "note": "Feeds on rondo dung and fallen carcass leavings"
+    },
+    {
+      "with": "babosa",
+      "kind": "predation",
+      "note": "Cave-dwelling slug patrols entrances and snatches them with mucus-coated tongues"
+    },
+    {
+      "with": "ecolumbre",
+      "kind": "predation",
+      "note": "Cave omnivore hunts them in dark crevices"
+    }
+  ],
+  "provenance": {
+    "council_run": "foodweb-2026-11-21",
+    "by": [
+      "naturalist/qwen"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-21",
+      "who": "import_got",
+      "what": "imported from council run foodweb-2026-11-21"
+    },
+    {
+      "date": "2026-11-21",
+      "who": "foodweb.py fix",
+      "what": "removed rejected references and non-existent root facts (roots recovered from the derivation items cited in the links, else F27)"
+    }
+  ],
+  "body_plan": {
+    "symmetry": "bilateral",
+    "origin": "convergent arthropod morphology from seed-lineage polysaccharide cuticle"
+  },
+  "temperament": "skittish, fast crawler, slow flyer, clusters around food",
+  "secrets": [
+    "nocturnal creature",
+    "hidden cave",
+    "fossil"
+  ],
+  "moments": [
+    "When a carcass drifts down the waterfall cave shaft, hundreds drop from the ceiling like rain, their wings humming in the damp air as they form a living, chittering carpet over the meat."
+  ],
+  "journal": [
+    {
+      "en": "They fall when meat falls. The cave floor is a feast, if you know how to listen."
+    },
+    {
+      "en": "Six legs, no eyes, all stomach. They turn waste to wealth in the dark."
+    }
+  ]
+}

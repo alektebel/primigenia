@@ -1,0 +1,316 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "pellizcador",
+  "name": {
+    "en": "Pellizcador"
+  },
+  "world": "primigenia",
+  "kind": "new",
+  "status": "draft",
+  "stage": "creature",
+  "niche": {
+    "habitat": "Meadow",
+    "diet": "Carnivore; blood, lymph, and skin secretions of grazers.",
+    "active": "Day",
+    "predators": [
+      "bello_pico"
+    ],
+    "trophic": "parasite",
+    "role": "parasite",
+    "prey": [
+      "rondo"
+    ]
+  },
+  "body": "4 cm long, 2 g mass.",
+  "chains": [
+    {
+      "id": "pellizcador.c1",
+      "trait": "Flattened, low-profile carapace",
+      "links": [
+        "Prevents tumbling in gusts",
+        "Dense air (D4) exerts 1.6x wind force per m/s",
+        "Stable grip on moving herds"
+      ],
+      "roots": [
+        "F4",
+        "F19"
+      ],
+      "skill": {
+        "id": "pellizcador.anchor_grip",
+        "name": {
+          "en": "Anchor grip"
+        },
+        "role": "Passive",
+        "effect": "+60% chance to stay on host during movement.",
+        "numbers": {}
+      },
+      "weakness": "Exposed to overhead pecking.",
+      "observe": [
+        "Flat black carapace",
+        "Clinging to Rondo fur",
+        "Survives gale-force wind"
+      ],
+      "journal": {
+        "en": "They do not blow away; they become part of the herd's shadow."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/foodweb-2026-11-21",
+        "date": "2026-11-21",
+        "summary": "Keep the flat carapace; reconcile flavour text with physics: on-host they stay anchored; a meadow crosswind can still strip unattached individuals (your haunting moment is fine if only migrants/off-host animals lift — not animals glued to fur).",
+        "fixes": [
+          "Keep the flat carapace; reconcile flavour text with physics: on-host they stay anchored; a meadow crosswind can still strip unattached individuals (your haunting moment is fine if only migrants/off-host animals lift — not animals glued to fur)."
+        ],
+        "analogues": [
+          {
+            "organism": "Ixodid ticks (e.g. Ixodes): scutum and flat idiosoma pressed against skin; follicle-dwelling mites show the same geometry.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 7
+        }
+      },
+      "provenance": {
+        "council_run": "foodweb-2026-11-21",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "pellizcador.c2",
+      "trait": "Piercing-sucking chelicerae and blood-feeding",
+      "links": [
+        "High metabolic cost to maintain fluid intake",
+        "Elevated partial pressure of oxygen (D10) supports rapid tissue regeneration",
+        "Sustained blood meals from large hosts"
+      ],
+      "roots": [
+        "F5"
+      ],
+      "skill": {
+        "id": "pellizcador.tap_feed",
+        "name": {
+          "en": "Tap feed"
+        },
+        "role": "Basic",
+        "effect": "-15% host stamina, +5 player charm if applied before courtship.",
+        "numbers": {}
+      },
+      "weakness": "Leaves a visible puncture; host grooming removes them.",
+      "observe": [
+        "Stylet piercing skin",
+        "Swollen abdomen after feeding",
+        "Rondo swats at flank"
+      ],
+      "journal": {
+        "en": "A sip here, a sip there, until the giant stumbles."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/foodweb-2026-11-21",
+        "date": "2026-11-21",
+        "summary": "None required; optionally note co-evolved host grooming (rondo swats) as the main fitness cost, as with ox-pecker/tick systems on Earth.",
+        "fixes": [
+          "None required; optionally note co-evolved host grooming (rondo swats) as the main fitness cost, as with ox-pecker/tick systems on Earth."
+        ],
+        "analogues": [
+          {
+            "organism": "Hard ticks (Ixodida): hypostome/stylet feeding, slow intermittent meals; bird lice and hippoboscid flies for herd-associated blood feeding.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 3
+        }
+      },
+      "provenance": {
+        "council_run": "foodweb-2026-11-21",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "pellizcador.c3",
+      "trait": "Diurnal activity and UV-absorbing pigments",
+      "links": [
+        "Avoids midday desiccation and DNA damage",
+        "1.15x solar UV flux at surface (D1)",
+        "Active at dawn/dusk, hides under grass blades at noon"
+      ],
+      "roots": [
+        "F1"
+      ],
+      "skill": {
+        "id": "pellizcador.sun_bask",
+        "name": {
+          "en": "Sun-bask"
+        },
+        "role": "Control",
+        "effect": "+10% movement speed at dawn, -20% at midday.",
+        "numbers": {}
+      },
+      "weakness": "Immobilized by sudden rain or heavy fog.",
+      "observe": [
+        "Dark red-purple cuticle",
+        "Hiding under grass at noon",
+        "Eager in morning mist"
+      ],
+      "journal": {
+        "en": "They wear the sun's warning color and hide when it is brightest."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/foodweb-2026-11-21",
+        "date": "2026-11-21",
+        "summary": "Cite F14 for meadow UV (moderate, not super-Earth extreme); keep dawn/dusk activity + grass-shelter at noon. Red-purple pigment can echo slope-plant honest signalling (F25) as convergent parasite camouflage among vetirroja/red-vein meadow plants.",
+        "fixes": [
+          "Cite F14 for meadow UV (moderate, not super-Earth extreme); keep dawn/dusk activity + grass-shelter at noon. Red-purple pigment can echo slope-plant honest signalling (F25) as convergent parasite camouflage among vetirroja/red-vein meadow plants."
+        ],
+        "analogues": [
+          {
+            "organism": "Melanin and ommochrome UV screens in beetles and spiders; many ticks quest at dawn/dusk and retreat from desiccating sun.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 3
+        }
+      },
+      "provenance": {
+        "council_run": "foodweb-2026-11-21",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "pellizcador.c4",
+      "trait": "Palp-based chemoreception",
+      "links": [
+        "Scent molecules diffuse slower in still, humid air (D18)",
+        "0.6x molecular diffusion coefficient (D18)",
+        "Long-lasting trails in morning fog guide them to herds"
+      ],
+      "roots": [
+        "F4",
+        "F16"
+      ],
+      "skill": {
+        "id": "pellizcador.scent_track",
+        "name": {
+          "en": "Scent track"
+        },
+        "role": "Poke",
+        "effect": "Reveals host location through grass for 15 seconds.",
+        "numbers": {}
+      },
+      "weakness": "Useless in strong crosswinds or heavy rain.",
+      "observe": [
+        "Waving palps",
+        "Following a trail to Rondo",
+        "Confused by sudden wind"
+      ],
+      "journal": {
+        "en": "Morning fog is their highway. In the thick white air, they read scent trails like roads leading straight to the herds."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/foodweb-2026-11-21",
+        "date": "2026-11-21",
+        "summary": "None required; game '15 s reveal' is a fair compression of plume-following in fog, not literal teleporting knowledge.",
+        "fixes": [
+          "None required; game '15 s reveal' is a fair compression of plume-following in fog, not literal teleporting knowledge."
+        ],
+        "analogues": [
+          {
+            "organism": "Ticks and mites: Haller's organ and foreleg/palp odour detection toward CO2, ammonia, and host kairomones; wolf spiders track silk and odour plumes.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 8
+        }
+      },
+      "provenance": {
+        "council_run": "foodweb-2026-11-21",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "rondo",
+      "kind": "prey",
+      "note": "Feeds on blood and skin secretions from Rondo herds."
+    },
+    {
+      "with": "zanco",
+      "kind": "prey",
+      "note": "Attacks Zanco flanks during migration."
+    },
+    {
+      "with": "alula",
+      "kind": "predation",
+      "note": "Alula picks them off host fur and grass blades."
+    }
+  ],
+  "provenance": {
+    "council_run": "foodweb-2026-11-21",
+    "by": [
+      "naturalist/qwen"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-21",
+      "who": "import_got",
+      "what": "imported from council run foodweb-2026-11-21"
+    },
+    {
+      "date": "2026-11-21",
+      "who": "foodweb.py fix",
+      "what": "removed rejected references and non-existent root facts (roots recovered from the derivation items cited in the links, else F27)"
+    }
+  ],
+  "body_plan": {
+    "symmetry": "bilateral",
+    "arms": 8,
+    "origin": "Arachnoid chelicerate analog"
+  },
+  "temperament": "Skittish, clinging",
+  "secrets": [
+    "Observe 3 Pellizcador clusters on a Rondo. Unlocks move: 'Scent track' (Poke) and reveals their role in the food web."
+  ],
+  "moments": [
+    "During a Rondo migration, a sudden crosswind strips the meadow floor. Thousands of Pellizcadores lift off like black dust, catching the thermal updrafts to ride ahead of the herd, a silent, drifting cloud seeking the next meal."
+  ],
+  "journal": [
+    {
+      "en": "They do not bite; they sip. Their stylets vanish into the fur, leaving only a pinprick and a thirst."
+    },
+    {
+      "en": "Morning fog is their highway. In the thick white air, they read scent trails like roads leading straight to the herds."
+    }
+  ]
+}

@@ -1,0 +1,139 @@
+{
+  "schema": "cpore.plant/1",
+  "id": "drifting_ash",
+  "name": {
+    "en": "Drifting Ash",
+    "es": "Ceniza_flotante"
+  },
+  "world": "primigenia",
+  "status": "draft",
+  "growth_form": "algae",
+  "habitats": [
+    "shallows"
+  ],
+  "summary": "Dense colonies of microscopic cells drift in the turbid shallows (F20). Their red-brown accessory pigments harvest the yellow-green and red light window that suspended volcanic sediment scatters (D23, D24). As a foundational producer, it converts dissolved minerals and sunlight into rapid biomass that fuels filter feeders and detritivores across the coastal food web (D25).",
+  "chains": [
+    {
+      "id": "drifting_ash.c1",
+      "trait": "Red-brown mucilaginous colonies",
+      "links": [
+        "Turbid shallows absorb blue-violet light (F20, D24)",
+        "Green-only photosystems cannot harvest enough photons",
+        "Selection favors red-brown accessory pigments to capture the yellow-green/red window (D23, D24)",
+        "Pigmented cells cluster in sticky mucilage to retain position in low-visibility water"
+      ],
+      "roots": [
+        "F20"
+      ],
+      "play": "Observe the water tint to locate nutrient-rich patches; use 'Scoop' to gather a mucilage clump for a +5 nutrient gift to aquatic omnivores.",
+      "weakness": "Bloom collapse if clear water returns, stripping the red-brown pigments' advantage.",
+      "observe": [
+        "Water tints rusty red",
+        "Sticky films coat submerged rocks",
+        "Cells cluster in dense clouds"
+      ],
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/foodweb-2026-11-21",
+        "date": "2026-11-21",
+        "summary": "Planktonic microalgae with red-brown accessory pigments in a sediment-narrowed spectral window match D23–D24 and F20 and underpin shallow filter-feeder chains (D25). Mucilaginous colonies and tidal drift are coherent with F6 shelf dynamics.",
+        "analogues": [
+          {
+            "organism": "Coastal diatoms and dinoflagellates in turbid shelves",
+            "mechanism": "Accessory pigments (fucoxanthin, peridinin) harvest green–red light when blue is scattered or absorbed by particles (Siegel et al., ocean-color literature, from memory, unverified). N₂-fixing symbionts parallel Richelia–diatom associations."
+          }
+        ]
+      }
+    },
+    {
+      "id": "drifting_ash.c2",
+      "trait": "Rapid tidal drift & symbiotic nitrogen fixation",
+      "links": [
+        "Volcanic island leaches soluble phosphates but fixes atmospheric nitrogen via endosymbionts (F24)",
+        "High metabolic turnover matches filter-feeder consumption rates (D25)",
+        "Mucilage releases slowly as water flows through tidal channels (F6)",
+        "Blooms drift shoreward, delivering protein to benthic grazers"
+      ],
+      "roots": [
+        "F24",
+        "F6"
+      ],
+      "play": "Place a clump downcurrent to attract corona and sifón; use 'Attract' to pull them into range for easy observation or befriending.",
+      "weakness": "Non-adapted herbivores suffer gut irritation from concentrated symbiont alkaloids.",
+      "observe": [
+        "Currents pull red ribbons toward shore",
+        "Filter feeders cluster downcurrent",
+        "Mucilage dissolves into milky suspension"
+      ],
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/foodweb-2026-11-21",
+        "date": "2026-11-21",
+        "summary": "Planktonic microalgae with red-brown accessory pigments in a sediment-narrowed spectral window match D23–D24 and F20 and underpin shallow filter-feeder chains (D25). Mucilaginous colonies and tidal drift are coherent with F6 shelf dynamics.",
+        "analogues": [
+          {
+            "organism": "Coastal diatoms and dinoflagellates in turbid shelves",
+            "mechanism": "Accessory pigments (fucoxanthin, peridinin) harvest green–red light when blue is scattered or absorbed by particles (Siegel et al., ocean-color literature, from memory, unverified). N₂-fixing symbionts parallel Richelia–diatom associations."
+          }
+        ]
+      }
+    }
+  ],
+  "gameplay": {
+    "food_for": [
+      "hilachuela"
+    ],
+    "gift_item": "Algae mucilage",
+    "poison": "Concentrated symbiont alkaloids",
+    "healing": null,
+    "cover": null,
+    "climbing": false,
+    "nest_material": null,
+    "mineral_lick": null,
+    "notes": "Food-web batch 2026-11-21; eaters are listed in lore/foodweb/primigenia.json."
+  },
+  "relations": [],
+  "generator": {
+    "growth_form": "algae",
+    "height_m": {
+      "min": 0.001,
+      "max": 0.05
+    },
+    "colour": {
+      "base": "Base green by ancestry, overlaid with red-brown accessory pigments that absorb the yellow-green and red wavelengths surviving the turbid water column (D23, D24)."
+    }
+  },
+  "journal": [
+    {
+      "en": "Turbid water hides the red blooms; filter feeders thrive where the sediment hangs.",
+      "es": "El agua turbia oculta las mareas rojas; los filtradores prosperan donde el sedimento se mantiene."
+    }
+  ],
+  "observe": [
+    "Water tints rusty red",
+    "Sticky films coat submerged rocks",
+    "Cells cluster in dense clouds",
+    "Currents pull red ribbons toward shore"
+  ],
+  "secrets": [
+    "A fossil of compressed mucilage clusters in the tidal flat shale reveals the bloom's ancient density.",
+    "Hidden cave: stagnant pools preserve the blooms as dark sediment mats that glow faintly under night eyes."
+  ],
+  "provenance": {
+    "council_run": "foodweb-2026-11-21",
+    "by": [
+      "naturalist"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-21",
+      "who": "foodweb.py",
+      "what": "food-web batch slot P03 (producer/photosynthetic, shallows); qwen draft, Composer botanist referee"
+    }
+  ],
+  "niche": {
+    "trophic": "producer",
+    "role": "photosynthetic"
+  }
+}

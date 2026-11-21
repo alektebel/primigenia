@@ -20,8 +20,8 @@
       ],
       "new": false,
       "spawn": {
-        "meadow": 21.645,
-        "spring": 38.168
+        "meadow": 7.871,
+        "spring": 13.831
       }
     },
     "zanco": {
@@ -32,11 +32,12 @@
         "highlands"
       ],
       "eats": [
-        "grama_de_ceniza"
+        "grama_de_ceniza",
+        "lengua_de_lava"
       ],
       "new": false,
       "spawn": {
-        "highlands": 40.981
+        "highlands": 40.965
       }
     },
     "coloso": {
@@ -53,8 +54,8 @@
       ],
       "new": false,
       "spawn": {
-        "shore": 35.461,
-        "spring": 38.168
+        "shore": 13.656,
+        "spring": 13.831
       }
     },
     "zancuda": {
@@ -71,8 +72,8 @@
       ],
       "new": false,
       "spawn": {
-        "meadow": 21.645,
-        "shore": 35.461
+        "meadow": 7.871,
+        "shore": 13.656
       }
     },
     "sosa": {
@@ -84,7 +85,8 @@
         "caves"
       ],
       "eats": [
-        "costra_de_azufre"
+        "costra_de_azufre",
+        "manto_negro"
       ],
       "new": false,
       "spawn": {
@@ -101,11 +103,13 @@
         "shallows"
       ],
       "eats": [
-        "detritus"
+        "detritus",
+        "pozo_de_agua",
+        "ceniza_ciega"
       ],
       "new": false,
       "spawn": {
-        "shallows": 45.455,
+        "shallows": 14.874,
         "caves": 13.661
       }
     },
@@ -118,11 +122,12 @@
         "caves"
       ],
       "eats": [
-        "detritus"
+        "detritus",
+        "sangre_de_hierro"
       ],
       "new": false,
       "spawn": {
-        "shallows": 45.455,
+        "shallows": 14.874,
         "caves": 13.661
       }
     },
@@ -134,11 +139,13 @@
         "shallows"
       ],
       "eats": [
-        "carrion"
+        "carrion",
+        "aguijuela",
+        "hilachuela"
       ],
       "new": false,
       "spawn": {
-        "shallows": 4.545
+        "shallows": 2.231
       }
     },
     "brujula": {
@@ -150,12 +157,14 @@
         "shallows"
       ],
       "eats": [
-        "carrion"
+        "carrion",
+        "zancarril",
+        "lengua_de_marea"
       ],
       "new": false,
       "spawn": {
-        "shore": 7.092,
-        "shallows": 4.545
+        "shore": 1.366,
+        "shallows": 2.231
       }
     },
     "acechalunas": {
@@ -168,14 +177,18 @@
         "caves"
       ],
       "eats": [
-        "ecolumbre",
-        "carrion"
+        "carrion",
+        "sosa",
+        "el_resoplido",
+        "cenizuela",
+        "gusano_ceniza",
+        "mantohoja"
       ],
       "new": false,
       "spawn": {
-        "forest": 7.092,
-        "caves": 4.098,
-        "highlands": 4.098
+        "forest": 3.935,
+        "caves": 2.049,
+        "highlands": 4.097
       }
     },
     "merodeador": {
@@ -191,12 +204,15 @@
       "eats": [
         "rondo",
         "zanco",
-        "carrion"
+        "albinos",
+        "carrion",
+        "ecolumbre",
+        "ciegotela"
       ],
       "new": false,
       "spawn": {
-        "meadow": 0.144,
-        "forest": 0.709,
+        "meadow": 0.131,
+        "forest": 0.394,
         "caves": 0.41,
         "highlands": 0.137
       }
@@ -215,15 +231,15 @@
         "rondo",
         "zanco",
         "zancuda",
-        "albinos",
         "babosa",
-        "carrion"
+        "carrion",
+        "chispilla"
       ],
       "new": false,
       "spawn": {
-        "meadow": 0.144,
-        "shore": 0.709,
-        "spring": 0.763,
+        "meadow": 0.131,
+        "shore": 0.41,
+        "spring": 0.415,
         "highlands": 0.137
       }
     },
@@ -239,14 +255,13 @@
         "rondo",
         "zanco",
         "zancuda",
-        "albinos",
         "babosa",
         "acechalunas",
         "carrion"
       ],
       "new": false,
       "spawn": {
-        "meadow": 0.144,
+        "meadow": 0.131,
         "highlands": 0.137
       }
     },
@@ -265,8 +280,8 @@
       ],
       "new": false,
       "spawn": {
-        "caves": 1.23,
-        "highlands": 1.23,
+        "caves": 0.615,
+        "highlands": 0.615,
         "vents": 1.478
       }
     },
@@ -292,10 +307,10 @@
       ],
       "new": false,
       "spawn": {
-        "meadow": 43.291,
-        "forest": 70.923,
-        "caves": 40.983,
-        "highlands": 40.984,
+        "meadow": 19.678,
+        "forest": 19.68,
+        "caves": 20.491,
+        "highlands": 20.483,
         "vents": 49.261
       }
     },
@@ -326,11 +341,12 @@
       "eats": [
         "nieblon",
         "soga_de_dosel",
-        "carrion"
+        "carrion",
+        "cancro_madera"
       ],
       "new": false,
       "spawn": {
-        "forest": 7.092,
+        "forest": 3.935,
         "caves": 6.148
       }
     },
@@ -344,12 +360,14 @@
       ],
       "eats": [
         "nieblon",
-        "soga_de_dosel"
+        "soga_de_dosel",
+        "alfombrilla",
+        "brincaniebla"
       ],
       "new": false,
       "spawn": {
-        "forest": 7.092,
-        "highlands": 6.148
+        "forest": 3.935,
+        "highlands": 6.145
       }
     },
     "player_lineage": {
@@ -375,11 +393,11 @@
       ],
       "new": false,
       "spawn": {
-        "meadow": 12.987,
-        "forest": 7.092,
-        "shore": 21.277,
-        "spring": 22.901,
-        "highlands": 6.148
+        "meadow": 11.806,
+        "forest": 3.935,
+        "shore": 12.29,
+        "spring": 12.448,
+        "highlands": 6.145
       }
     },
     "caramillo": {
@@ -408,8 +426,8 @@
       "eats": [],
       "new": false,
       "spawn": {
-        "highlands": 29.412,
-        "vents": 76.923
+        "highlands": 22.729,
+        "vents": 43.479
       }
     },
     "cinta_de_marea": {
@@ -425,8 +443,8 @@
       "new": false,
       "spawn": {
         "shore": 50.0,
-        "shallows": 100.0,
-        "caves": 28.572
+        "shallows": 43.479,
+        "caves": 23.255
       }
     },
     "costra_de_azufre": {
@@ -439,7 +457,7 @@
       "eats": [],
       "new": false,
       "spawn": {
-        "vents": 23.077
+        "vents": 13.043
       }
     },
     "grama_de_ceniza": {
@@ -454,7 +472,7 @@
       "new": false,
       "spawn": {
         "meadow": 19.231,
-        "highlands": 29.412
+        "highlands": 22.727
       }
     },
     "hierroflor": {
@@ -468,7 +486,7 @@
       "new": false,
       "defended": true,
       "spawn": {
-        "highlands": 5.882
+        "highlands": 4.545
       }
     },
     "lengua_de_lava": {
@@ -481,7 +499,7 @@
       "eats": [],
       "new": false,
       "spawn": {
-        "highlands": 5.882
+        "highlands": 4.545
       }
     },
     "madre_de_agua": {
@@ -508,8 +526,8 @@
       "eats": [],
       "new": false,
       "spawn": {
-        "forest": 22.223,
-        "caves": 28.571
+        "forest": 19.922,
+        "caves": 23.256
       }
     },
     "nieblon": {
@@ -522,7 +540,7 @@
       "eats": [],
       "new": false,
       "spawn": {
-        "forest": 22.222
+        "forest": 19.92
       }
     },
     "paja_dulce": {
@@ -551,8 +569,8 @@
       ],
       "new": false,
       "spawn": {
-        "forest": 11.111,
-        "caves": 14.286
+        "forest": 9.96,
+        "caves": 11.628
       }
     },
     "perlilla": {
@@ -581,8 +599,8 @@
       "eats": [],
       "new": false,
       "spawn": {
-        "forest": 22.222,
-        "caves": 28.571
+        "forest": 19.92,
+        "caves": 23.256
       }
     },
     "rodela_de_nieve": {
@@ -595,7 +613,7 @@
       "eats": [],
       "new": false,
       "spawn": {
-        "highlands": 29.412
+        "highlands": 22.727
       }
     },
     "salvisca": {
@@ -622,7 +640,7 @@
       "eats": [],
       "new": false,
       "spawn": {
-        "forest": 22.222,
+        "forest": 19.92,
         "spring": 16.667
       }
     },
@@ -666,6 +684,729 @@
       "defended": true,
       "spawn": {
         "meadow": 3.846
+      }
+    },
+    "ciegotela": {
+      "kind": "creature",
+      "level": "secondary_consumer",
+      "role": "small_predator",
+      "habitats": [
+        "caves"
+      ],
+      "eats": [
+        "babosa",
+        "corona",
+        "cascarudo"
+      ],
+      "new": true,
+      "slot": "S10",
+      "size": "small",
+      "plan": "legs8plus",
+      "activity": "dawn_dusk",
+      "spawn": {
+        "caves": 2.049
+      }
+    },
+    "enterrador": {
+      "kind": "creature",
+      "level": "scavenger",
+      "role": "scavenger",
+      "habitats": [
+        "forest",
+        "meadow"
+      ],
+      "eats": [
+        "carrion",
+        "detritus",
+        "pan_de_humus"
+      ],
+      "new": true,
+      "slot": "S16",
+      "size": "insect",
+      "plan": "legs6",
+      "activity": "night",
+      "spawn": {
+        "meadow": 1.181,
+        "forest": 1.181
+      }
+    },
+    "zancarril": {
+      "kind": "creature",
+      "level": "scavenger",
+      "role": "scavenger",
+      "habitats": [
+        "shallows",
+        "caves"
+      ],
+      "eats": [
+        "carrion",
+        "detritus"
+      ],
+      "new": true,
+      "slot": "S28",
+      "size": "small",
+      "plan": "legs8plus",
+      "activity": "night",
+      "spawn": {
+        "shallows": 1.339,
+        "caves": 0.615
+      }
+    },
+    "morrudo": {
+      "kind": "creature",
+      "level": "tertiary_consumer",
+      "role": "mid_predator",
+      "habitats": [
+        "shallows"
+      ],
+      "eats": [
+        "brujula",
+        "cuarteta"
+      ],
+      "new": true,
+      "slot": "S11",
+      "size": "medium",
+      "plan": "legs0",
+      "activity": "dawn_dusk",
+      "spawn": {
+        "shallows": 0.223
+      }
+    },
+    "aguijuela": {
+      "kind": "creature",
+      "level": "parasite",
+      "role": "parasite",
+      "habitats": [
+        "shallows"
+      ],
+      "eats": [
+        "cuarteta"
+      ],
+      "new": true,
+      "slot": "S24",
+      "size": "insect",
+      "plan": "legs8plus",
+      "activity": "night",
+      "spawn": {
+        "shallows": 4.462
+      }
+    },
+    "cazanoche": {
+      "kind": "creature",
+      "level": "apex_predator",
+      "role": "apex_predator",
+      "habitats": [
+        "forest",
+        "meadow"
+      ],
+      "eats": [
+        "carrion",
+        "merodeador",
+        "rondo",
+        "espinodo",
+        "bello_pico",
+        "zancuilla"
+      ],
+      "new": true,
+      "slot": "S12",
+      "size": "large",
+      "plan": "legs4",
+      "activity": "night",
+      "spawn": {
+        "meadow": 0.039,
+        "forest": 0.039
+      }
+    },
+    "pataosca": {
+      "kind": "creature",
+      "level": "decomposer",
+      "role": "detritivore",
+      "habitats": [
+        "shore",
+        "shallows"
+      ],
+      "eats": [
+        "detritus"
+      ],
+      "new": true,
+      "slot": "S20",
+      "size": "small",
+      "plan": "legs8plus",
+      "activity": "night",
+      "spawn": {
+        "shore": 40.964,
+        "shallows": 44.624
+      }
+    },
+    "alfombrilla": {
+      "kind": "creature",
+      "level": "primary_consumer",
+      "role": "grazer",
+      "habitats": [
+        "forest",
+        "meadow"
+      ],
+      "eats": [
+        "musgo_faro",
+        "nieblon",
+        "paja_dulce"
+      ],
+      "new": true,
+      "slot": "S01",
+      "size": "insect",
+      "plan": "legs6",
+      "activity": "dawn_dusk",
+      "spawn": {
+        "meadow": 7.871,
+        "forest": 19.677
+      }
+    },
+    "alariz": {
+      "kind": "creature",
+      "level": "scavenger",
+      "role": "scavenger",
+      "habitats": [
+        "highlands"
+      ],
+      "eats": [
+        "carrion",
+        "detritus"
+      ],
+      "new": true,
+      "slot": "S17",
+      "size": "large",
+      "plan": "legs2",
+      "activity": "day",
+      "spawn": {
+        "highlands": 0.615
+      }
+    },
+    "cegacima": {
+      "kind": "creature",
+      "level": "apex_predator",
+      "role": "apex_predator",
+      "habitats": [
+        "highlands"
+      ],
+      "eats": [
+        "carrion",
+        "zanco",
+        "garfio",
+        "alula",
+        "alariz"
+      ],
+      "new": true,
+      "slot": "S14",
+      "size": "large",
+      "plan": "legs2",
+      "activity": "day",
+      "spawn": {
+        "highlands": 0.041
+      }
+    },
+    "llorona": {
+      "kind": "creature",
+      "level": "primary_consumer",
+      "role": "granivore",
+      "habitats": [
+        "meadow"
+      ],
+      "eats": [
+        "grama_de_ceniza",
+        "paja_dulce",
+        "perlilla",
+        "velilla"
+      ],
+      "new": true,
+      "slot": "S02",
+      "size": "small",
+      "plan": "legs4",
+      "activity": "night",
+      "spawn": {
+        "meadow": 7.871
+      }
+    },
+    "chispilla": {
+      "kind": "creature",
+      "level": "secondary_consumer",
+      "role": "insectivore",
+      "habitats": [
+        "spring"
+      ],
+      "eats": [
+        "alasucena"
+      ],
+      "new": true,
+      "slot": "S08",
+      "size": "small",
+      "plan": "legs4",
+      "activity": "dawn_dusk",
+      "spawn": {
+        "spring": 4.149
+      }
+    },
+    "alasucena": {
+      "kind": "creature",
+      "level": "primary_consumer",
+      "role": "nectarivore",
+      "habitats": [
+        "meadow",
+        "spring"
+      ],
+      "eats": [
+        "caramillo",
+        "perlilla",
+        "velilla"
+      ],
+      "new": true,
+      "slot": "S03",
+      "size": "small",
+      "plan": "legs2",
+      "activity": "dawn_dusk",
+      "spawn": {
+        "meadow": 7.871,
+        "spring": 13.831
+      }
+    },
+    "cascarudo": {
+      "kind": "creature",
+      "level": "decomposer",
+      "role": "detritivore",
+      "habitats": [
+        "caves"
+      ],
+      "eats": [
+        "detritus",
+        "dung",
+        "pan_de_humus"
+      ],
+      "new": true,
+      "slot": "S21",
+      "size": "insect",
+      "plan": "legs6",
+      "activity": "night",
+      "spawn": {
+        "caves": 20.492
+      }
+    },
+    "lengua_de_marea": {
+      "kind": "creature",
+      "level": "primary_consumer",
+      "role": "algae_scraper",
+      "habitats": [
+        "shore"
+      ],
+      "eats": [
+        "cinta_de_marea",
+        "salvisca"
+      ],
+      "new": true,
+      "slot": "S04",
+      "size": "small",
+      "plan": "legs0",
+      "activity": "night",
+      "spawn": {
+        "shore": 13.656
+      }
+    },
+    "hilachuela": {
+      "kind": "creature",
+      "level": "primary_consumer",
+      "role": "filter_feeder",
+      "habitats": [
+        "shallows"
+      ],
+      "eats": [
+        "cinta_de_marea",
+        "drifting_ash"
+      ],
+      "new": true,
+      "slot": "S06",
+      "size": "insect",
+      "plan": "legs0",
+      "activity": "dawn_dusk",
+      "spawn": {
+        "shallows": 14.874
+      }
+    },
+    "cenizuela": {
+      "kind": "creature",
+      "level": "decomposer",
+      "role": "detritivore",
+      "habitats": [
+        "forest"
+      ],
+      "eats": [
+        "detritus",
+        "pan_de_humus",
+        "pluma_de_sombra"
+      ],
+      "new": true,
+      "slot": "S19",
+      "size": "insect",
+      "plan": "legs6",
+      "activity": "night",
+      "spawn": {
+        "forest": 19.677
+      }
+    },
+    "pellizcador": {
+      "kind": "creature",
+      "level": "parasite",
+      "role": "parasite",
+      "habitats": [
+        "meadow"
+      ],
+      "eats": [
+        "rondo"
+      ],
+      "new": true,
+      "slot": "S22",
+      "size": "insect",
+      "plan": "legs8plus",
+      "activity": "day",
+      "spawn": {
+        "meadow": 3.935
+      }
+    },
+    "garra_marea": {
+      "kind": "creature",
+      "level": "scavenger",
+      "role": "scavenger",
+      "habitats": [
+        "shore"
+      ],
+      "eats": [
+        "carrion",
+        "cinta_de_marea",
+        "detritus"
+      ],
+      "new": true,
+      "slot": "S15",
+      "size": "small",
+      "plan": "legs8plus",
+      "activity": "tidal",
+      "spawn": {
+        "shore": 1.229
+      }
+    },
+    "pelotero": {
+      "kind": "creature",
+      "level": "decomposer",
+      "role": "detritivore",
+      "habitats": [
+        "meadow",
+        "spring"
+      ],
+      "eats": [
+        "detritus",
+        "dung",
+        "grama_de_ceniza"
+      ],
+      "new": true,
+      "slot": "S18",
+      "size": "insect",
+      "plan": "legs6",
+      "activity": "day",
+      "spawn": {
+        "meadow": 19.677,
+        "spring": 41.495
+      }
+    },
+    "gusano_ceniza": {
+      "kind": "creature",
+      "level": "decomposer",
+      "role": "detritivore",
+      "habitats": [
+        "highlands"
+      ],
+      "eats": [
+        "rodela_de_nieve",
+        "cicatriz_alta"
+      ],
+      "new": true,
+      "slot": "S27",
+      "size": "insect",
+      "plan": "legs0",
+      "activity": "day",
+      "spawn": {
+        "highlands": 20.483
+      }
+    },
+    "rastron": {
+      "kind": "creature",
+      "level": "secondary_consumer",
+      "role": "egg_thief",
+      "habitats": [
+        "shore"
+      ],
+      "eats": [
+        "carrion",
+        "garra_marea"
+      ],
+      "new": true,
+      "slot": "S09",
+      "size": "small",
+      "plan": "legs4",
+      "activity": "night",
+      "spawn": {
+        "shore": 1.366
+      }
+    },
+    "limosilla": {
+      "kind": "creature",
+      "level": "tertiary_consumer",
+      "role": "cleaner",
+      "habitats": [
+        "shallows"
+      ],
+      "eats": [
+        "aguijuela",
+        "pataosca"
+      ],
+      "new": true,
+      "slot": "S25",
+      "size": "small",
+      "plan": "legs0",
+      "activity": "day",
+      "spawn": {
+        "shallows": 0.223
+      },
+      "eats_chair": [
+        "aguijuela",
+        "pataosca"
+      ]
+    },
+    "sombra_de_la_marea": {
+      "kind": "creature",
+      "level": "apex_predator",
+      "role": "apex_predator",
+      "habitats": [
+        "shallows",
+        "shore"
+      ],
+      "eats": [
+        "brujula",
+        "corona",
+        "cuarteta",
+        "sifon",
+        "morrudo",
+        "rastron",
+        "limosilla"
+      ],
+      "new": true,
+      "slot": "S13",
+      "size": "large",
+      "plan": "legs0",
+      "activity": "tidal",
+      "spawn": {
+        "shore": 0.041,
+        "shallows": 0.045
+      }
+    },
+    "mantohoja": {
+      "kind": "creature",
+      "level": "parasite",
+      "role": "parasitoid",
+      "habitats": [
+        "forest"
+      ],
+      "eats": [
+        "alfombrilla",
+        "cenizuela"
+      ],
+      "new": true,
+      "slot": "S23",
+      "size": "insect",
+      "plan": "legs6",
+      "activity": "day",
+      "spawn": {
+        "forest": 3.935
+      }
+    },
+    "bello_pico": {
+      "kind": "creature",
+      "level": "secondary_consumer",
+      "role": "cleaner",
+      "habitats": [
+        "meadow",
+        "shore"
+      ],
+      "eats": [
+        "pellizcador",
+        "enterrador"
+      ],
+      "new": true,
+      "slot": "S26",
+      "size": "small",
+      "plan": "legs2",
+      "activity": "day",
+      "spawn": {
+        "meadow": 1.968,
+        "shore": 1.366
+      },
+      "eats_chair": [
+        "enterrador"
+      ]
+    },
+    "zancuilla": {
+      "kind": "creature",
+      "level": "secondary_consumer",
+      "role": "insectivore",
+      "habitats": [
+        "meadow"
+      ],
+      "eats": [
+        "llorona",
+        "pelotero"
+      ],
+      "new": true,
+      "slot": "S07",
+      "size": "small",
+      "plan": "legs2",
+      "activity": "dawn_dusk",
+      "spawn": {
+        "meadow": 1.968
+      }
+    },
+    "pozo_de_agua": {
+      "kind": "plant",
+      "level": "producer",
+      "role": "chemosynthetic",
+      "habitats": [
+        "shallows"
+      ],
+      "eats": [],
+      "new": true,
+      "slot": "P01",
+      "spawn": {
+        "shallows": 13.043
+      }
+    },
+    "sangre_de_hierro": {
+      "kind": "plant",
+      "level": "producer",
+      "role": "chemosynthetic",
+      "habitats": [
+        "caves"
+      ],
+      "eats": [],
+      "new": true,
+      "slot": "P02",
+      "spawn": {
+        "caves": 6.977
+      }
+    },
+    "drifting_ash": {
+      "kind": "plant",
+      "level": "producer",
+      "role": "photosynthetic",
+      "habitats": [
+        "shallows"
+      ],
+      "eats": [],
+      "new": true,
+      "slot": "P03",
+      "spawn": {
+        "shallows": 43.478
+      }
+    },
+    "manto_negro": {
+      "kind": "plant",
+      "level": "producer",
+      "role": "photosynthetic",
+      "habitats": [
+        "vents"
+      ],
+      "eats": [],
+      "new": true,
+      "slot": "P04",
+      "spawn": {
+        "vents": 43.478
+      }
+    },
+    "cicatriz_alta": {
+      "kind": "plant",
+      "level": "producer",
+      "role": "photosynthetic",
+      "habitats": [
+        "highlands"
+      ],
+      "eats": [],
+      "new": true,
+      "slot": "P05",
+      "spawn": {
+        "highlands": 22.727
+      }
+    },
+    "suspiro": {
+      "kind": "plant",
+      "level": "parasite",
+      "role": "parasite",
+      "habitats": [
+        "forest"
+      ],
+      "eats": [
+        "nieblon"
+      ],
+      "new": true,
+      "slot": "P06",
+      "defended": true,
+      "spawn": {
+        "forest": 0.398
+      }
+    },
+    "cancro_madera": {
+      "kind": "plant",
+      "level": "decomposer",
+      "role": "fungal_decomposer",
+      "habitats": [
+        "forest"
+      ],
+      "eats": [
+        "detritus"
+      ],
+      "new": true,
+      "slot": "P07",
+      "spawn": {
+        "forest": 9.96
+      }
+    },
+    "ceniza_ciega": {
+      "kind": "plant",
+      "level": "decomposer",
+      "role": "fungal_decomposer",
+      "habitats": [
+        "caves"
+      ],
+      "eats": [
+        "detritus"
+      ],
+      "new": true,
+      "slot": "P08",
+      "spawn": {
+        "caves": 11.628
+      }
+    },
+    "brincaniebla": {
+      "kind": "creature",
+      "level": "primary_consumer",
+      "role": "browser",
+      "habitats": [
+        "forest"
+      ],
+      "eats": [
+        "pluma_de_sombra",
+        "nieblon",
+        "soga_de_dosel"
+      ],
+      "new": true,
+      "slot": "S05",
+      "size": "small",
+      "plan": "legs4",
+      "activity": "night",
+      "spawn": {
+        "forest": 19.677
       }
     }
   },

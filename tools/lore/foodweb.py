@@ -18,7 +18,7 @@ MAIN = ["meadow", "forest", "shore", "shallows", "caves", "spring", "highlands"]
 ROLES = ["photosynthetic", "chemosynthetic", "mixotroph", "grazer", "browser", "frugivore", "granivore", "nectarivore", "filter_feeder", "algae_scraper", "insectivore", "small_predator", "egg_thief", "mid_predator",
          "apex_predator", "scavenger", "detritivore", "fungal_decomposer", "parasite", "parasitoid", "omnivore", "cleaner", "seed_disperser", "pollinator"]
 MUTUALIST = {"cleaner", "seed_disperser", "pollinator"}
-RANK = {"producer": 1, "decomposer": 1.5, "primary_consumer": 2, "parasite": 2.5, "secondary_consumer": 3, "scavenger": 3, "omnivore": 3, "tertiary_consumer": 4, "apex_predator": 5}
+RANK = {"producer": 1, "decomposer": 1.5, "primary_consumer": 2, "parasite": 2.5, "secondary_consumer": 3, "scavenger": 2.8, "omnivore": 3, "tertiary_consumer": 4, "apex_predator": 5}
 # Starting values (tracker test L-TROPHIC): about 10% transfer per level (Lindeman 1942), derivation sheet D25. Scavenger, decomposer, parasite, omnivore are placed on the level whose flux feeds them.
 LEVEL_W = {"primary_consumer": 100.0, "decomposer": 100.0, "omnivore": 30.0, "secondary_consumer": 10.0, "parasite": 10.0, "scavenger": 3.0, "tertiary_consumer": 1.0, "apex_predator": 0.1}
 PLANT_W = {"photosynthetic": 10.0, "chemosynthetic": 3.0, "mixotroph": 2.0, "fungal_decomposer": 5.0, "parasite": 1.0}
@@ -113,10 +113,10 @@ def check_web(root, world="primigenia"):
     for h in H:
         for kind in ("creature", "plant"):
             ids = [i for i, m in M.items() if m["kind"] == kind and h in m["habitats"]]
-            if ids and abs(sum(M[i]["spawn"].get(h, 0) for i in ids) - 100) > 0.01: errors.append(f"{fn}: {h}/{kind}: spawn weights sum to {sum(M[i]['spawn'].get(h, 0) for i in ids):.3f}, not 100")
+            if ids and abs(sum(M[i].get("spawn", {}).get(h, 0) for i in ids) - 100) > 0.01: errors.append(f"{fn}: {h}/{kind}: spawn weights sum to {sum(M[i]['spawn'].get(h, 0) for i in ids):.3f}, not 100")
         lv = {}
         for i, m in M.items():
-            if m["kind"] == "creature" and h in m["habitats"] and m["level"] in ("primary_consumer", "secondary_consumer", "tertiary_consumer", "apex_predator"): lv.setdefault(m["level"], []).append(M[i]["spawn"][h])
+            if m["kind"] == "creature" and h in m["habitats"] and m["level"] in ("primary_consumer", "secondary_consumer", "tertiary_consumer", "apex_predator"): lv.setdefault(m["level"], []).append(M[i].get("spawn", {}).get(h, 0))
         order = [max(lv[l]) for l in ("primary_consumer", "secondary_consumer", "tertiary_consumer", "apex_predator") if l in lv]
         if order != sorted(order, reverse=True): errors.append(f"{fn}: {h}: pyramid not monotonic {order}")
     # quotas

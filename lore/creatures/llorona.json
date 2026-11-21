@@ -1,0 +1,297 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "llorona",
+  "name": {
+    "en": "Llorona"
+  },
+  "world": "primigenia",
+  "kind": "new",
+  "status": "draft",
+  "stage": "creature",
+  "niche": {
+    "habitat": "meadow",
+    "diet": "paja_dulce, velilla, perlilla, grama_de_ceniza",
+    "active": "Nocturnal",
+    "predators": [
+      "zancuilla"
+    ],
+    "trophic": "primary_consumer",
+    "role": "granivore"
+  },
+  "body": "42 cm length, 380 g mass",
+  "chains": [
+    {
+      "id": "llorona.c1",
+      "trait": "Large tapetum lucidum and wide pupils",
+      "links": [
+        "Enlarged ocular globes with reflective tapetum layer",
+        "339 local days demand extended low-light foraging cycles (D7)",
+        "Dense 1.6 bar atmosphere scatters blue wavelengths, lowering nocturnal contrast (F4)",
+        "D7, F4"
+      ],
+      "roots": [
+        "F3",
+        "F4"
+      ],
+      "skill": {
+        "id": "llorona.nocturnal_focus",
+        "name": {
+          "en": "Nocturnal Focus"
+        },
+        "role": "Basic",
+        "effect": "Increases hit chance and observe speed by 15% in darkness or fog",
+        "numbers": {}
+      },
+      "weakness": "Blinded by sudden bright flashes or lightning strikes",
+      "observe": [
+        "Eye shine in moonlight",
+        "Head swiveling toward faint rustles",
+        "Ears cupped against the wind"
+      ],
+      "journal": {
+        "en": "It tracks wind shifts by the angle of its ears."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/foodweb-2026-11-21",
+        "date": "2026-11-21",
+        "summary": "Root nocturnality in predation (merodeador, diurnal grazers), summer daytime heat and desiccation on the dry east meadow (F18), and exploitation of seed drops at dusk; keep D7 only for seasonal cache timing. Optionally note reduced activity on moonless nights unless olfaction compensates (D18, F16).",
+        "fixes": [
+          "Root nocturnality in predation (merodeador, diurnal grazers), summer daytime heat and desiccation on the dry east meadow (F18), and exploitation of seed drops at dusk; keep D7 only for seasonal cache timing. Optionally note reduced activity on moonless nights unless olfaction compensates (D18, F16)."
+        ],
+        "analogues": [
+          {
+            "organism": "European rabbit and many murid rodents — reflective tapetum and large pupils for low-light foraging; tarsiers and bushbabies for exaggerated night eyes at similar body scale.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 5
+        }
+      },
+      "provenance": {
+        "council_run": "foodweb-2026-11-21",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "llorona.c2",
+      "trait": "High-crowned, laterally grinding molars",
+      "links": [
+        "Robust coronoid muscles and flat, enamel-rich cheek teeth",
+        "10% energy transfer across trophic levels forces selection of dense caloric sources (D25)",
+        "Dry meadow summer concentrates carbohydrate-rich grass heads and fruit pits (F18)",
+        "D25, F18"
+      ],
+      "roots": [
+        "F2"
+      ],
+      "skill": {
+        "id": "llorona.seedcrack",
+        "name": {
+          "en": "Seedcrack"
+        },
+        "role": "Engage",
+        "effect": "Deals bonus damage to armoured prey and breaks objects like bones or stone",
+        "numbers": {}
+      },
+      "weakness": "Slow chewing process, leaves it vulnerable while feeding",
+      "observe": [
+        "Jaw working side-to-side",
+        "Cracked seed shells left near burrows",
+        "Dust and husk on fur"
+      ],
+      "journal": {
+        "en": "It stores tomorrow's hunger in today's dirt."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/foodweb-2026-11-21",
+        "date": "2026-11-21",
+        "summary": "Hypsodont, flat cheek teeth with lateral grinding are a standard adaptation to abrasive, cellulose-rich and grit-laden plant food. Granivory on grass seeds and fruit pits (paja_dulce, velilla, perlilla, grama_de_ceniza) is a high-calorie primary-consumer strategy consistent with tight trophic transfer (D25) and summer-concentrated seed heads on the rain-shadow meadow (F18). Slightly higher gravity (F2) mildly favors robust jaws but is not the main driver.",
+        "fixes": [
+          "Hypsodont, flat cheek teeth with lateral grinding are a standard adaptation to abrasive, cellulose-rich and grit-laden plant food. Granivory on grass seeds and fruit pits (paja_dulce, velilla, perlilla, grama_de_ceniza) is a high-calorie primary-consumer strategy consistent with tight trophic transfer (D25) and summer-concentrated seed heads on the rain-shadow meadow (F18). Slightly higher gravity (F2) mildly favors robust jaws but is not the main driver."
+        ],
+        "analogues": [
+          {
+            "organism": "Muroidea granivores (voles, pocket gophers) — hypsodont molars for grass and seed wear; kangaroo rats — seed specialists with cheek teeth adapted to hard seeds.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 4
+        }
+      },
+      "provenance": {
+        "council_run": "foodweb-2026-11-21",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "llorona.c3",
+      "trait": "Muscular forelimbs and expandable cheek pouches",
+      "links": [
+        "Digitigrade forelegs with curved claws and distensible buccal sacs",
+        "Dense air imposes 1.6x drag, making burrowing thermally efficient (D11)",
+        "Seasonal drought requires underground seed storage to avoid spoilage (F18)",
+        "D11, F18"
+      ],
+      "roots": [
+        "F2",
+        "F4"
+      ],
+      "skill": {
+        "id": "llorona.cache",
+        "name": {
+          "en": "Cache"
+        },
+        "role": "Control",
+        "effect": "Stores food items in a shallow mound, restoring stamina and granting temporary cover",
+        "numbers": {}
+      },
+      "weakness": "Foraging leaves visible soil mounds that predators can track",
+      "observe": [
+        "Pouches bulging mid-stride",
+        "Rapid digging motions at dusk",
+        "Mounds of cleared earth at den entrances"
+      ],
+      "journal": {
+        "en": "Cheek pouches swell before it digs a shallow cache and sleeps."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/foodweb-2026-11-21",
+        "date": "2026-11-21",
+        "summary": "Replace the D11 drag-to-burrow link with: summer drought and seed perishability (F18), need to hide food from merodeador, and microclimate underground. Keep visible mounds as a deliberate tradeoff (shallow caches vs deep larders).",
+        "fixes": [
+          "Replace the D11 drag-to-burrow link with: summer drought and seed perishability (F18), need to hide food from merodeador, and microclimate underground. Keep visible mounds as a deliberate tradeoff (shallow caches vs deep larders)."
+        ],
+        "analogues": [
+          {
+            "organism": "Hamster and chipmunk (buccal pouches and scatter-hoarding); kangaroo rat — forelimb digging and subterranean seed caches in arid grassland.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 4
+        }
+      },
+      "provenance": {
+        "council_run": "foodweb-2026-11-21",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "llorona.c4",
+      "trait": "Prominent scent glands and low-frequency vocal sacs",
+      "links": [
+        "Ventral glandular patches and inflatable laryngeal structures",
+        "Molecular diffusion at 0.6x rate means chemical markers persist longer (D18)",
+        "Low-frequency calls propagate farther in 1.6 bar air than high pitches (F4)",
+        "D18, F4"
+      ],
+      "roots": [
+        "F3",
+        "F19"
+      ],
+      "skill": {
+        "id": "llorona.scent_mark",
+        "name": {
+          "en": "Scent Mark"
+        },
+        "role": "Social",
+        "effect": "Leaves a chemical trail that allies can follow (+20% befriend chance if followed)",
+        "numbers": {}
+      },
+      "weakness": "Wind disperses markers quickly, confusing rivals",
+      "observe": [
+        "Rubs cheeks on stones",
+        "Soft chimes echoing at dusk",
+        "Glandular secretion on grass stems"
+      ],
+      "journal": {
+        "en": "It marks territory with wind-borne whispers."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/foodweb-2026-11-21",
+        "date": "2026-11-21",
+        "summary": "Describe vocalization as low hum, moan, or subsonic puff at dusk, not chime; reserve high chitter for alarm (dies quickly in fog per F4, matching a weakness). Align haunting moment with a fading twilight rumble timed to wind lulls.",
+        "fixes": [
+          "Describe vocalization as low hum, moan, or subsonic puff at dusk, not chime; reserve high chitter for alarm (dies quickly in fog per F4, matching a weakness). Align haunting moment with a fading twilight rumble timed to wind lulls."
+        ],
+        "analogues": [
+          {
+            "organism": "European rabbit — chin and inguinal gland territorial marking; beaver and koala — low-frequency vocal sacs that carry in dense vegetation; prairie dog — territorial calls (higher pitch, but principle of long-distance meadow signaling).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 5
+        }
+      },
+      "provenance": {
+        "council_run": "foodweb-2026-11-21",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "merodeador",
+      "kind": "predation",
+      "note": "Ambushes at cache sites and follows night trails"
+    },
+    {
+      "with": "paja_dulce",
+      "kind": "prey",
+      "note": "Cracks mature seed heads and strips fruit pits"
+    }
+  ],
+  "provenance": {
+    "council_run": "foodweb-2026-11-21",
+    "by": [
+      "naturalist/qwen"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-21",
+      "who": "import_got",
+      "what": "imported from council run foodweb-2026-11-21"
+    }
+  ],
+  "body_plan": {
+    "symmetry": "bilateral",
+    "origin": "digitigrade quadruped"
+  },
+  "temperament": "Timid, cautious, territorial",
+  "secrets": [
+    "Nocturnal variant",
+    "Viewpoint: meadow ridge at dusk",
+    "3rd fossil"
+  ],
+  "moments": [
+    "Under a waxing moon, it pauses mid-forage, presses its cheek pouches against the wind, and lets out a soft, resonant chime that echoes across the meadow—each note perfectly timed to the fading twilight."
+  ],
+  "journal": [
+    {
+      "en": "It stores tomorrow's hunger in today's dirt."
+    },
+    {
+      "en": "Cheek pouches swell before it digs a shallow cache and sleeps."
+    }
+  ]
+}

@@ -161,24 +161,52 @@
 | Creature | Kind | Status | Chains | Verdicts |
 |---|---|---|---|---|
 | [Acechalunas](acechalunas.md) | native | draft | 4 | 4 plausible |
+| [Aguijuela](aguijuela.md) | new | draft | 4 | 2 fixable, 2 plausible |
+| [Alariz](alariz.md) | new | draft | 4 | 2 fixable, 2 plausible |
+| [Alasucena](alasucena.md) | new | draft | 4 | 3 fixable, 1 plausible |
 | [Albinos](albinos.md) | native | draft | 5 | 1 fixable, 4 plausible |
+| [Alfombrilla](alfombrilla.md) | new | draft | 4 | 3 fixable, 1 plausible |
 | [Alula](alula.md) | new | draft | 4 | 2 fixable, 2 plausible |
 | [Babosa](babosa.md) | native | draft | 4 | 4 plausible |
+| [Bello-pico](bello_pico.md) | new | draft | 4 | 2 fixable, 2 plausible |
+| [Brincaniebla](brincaniebla.md) | new | draft | 4 | 2 fixable, 2 plausible |
 | [Brújula](brujula.md) | new | draft | 4 | 2 fixable, 2 plausible |
+| [Cascarudo](cascarudo.md) | new | draft | 4 | 1 fixable, 3 plausible |
+| [Cazanoche](cazanoche.md) | new | draft | 4 | 2 fixable, 2 plausible |
+| [Cegacima](cegacima.md) | new | draft | 4 | 1 fixable, 3 plausible |
+| [Cenizuela](cenizuela.md) | new | draft | 4 | 2 fixable, 2 plausible |
+| [Chispilla](chispilla.md) | new | draft | 4 | 2 fixable, 2 plausible |
+| [Ciegotela](ciegotela.md) | new | draft | 4 | 2 fixable, 2 plausible |
 | [Coloso](coloso.md) | native | draft | 4 | 1 fixable, 3 plausible |
 | [Corona](corona.md) | new | draft | 4 | 3 fixable, 1 plausible |
 | [Cuarteta](cuarteta.md) | new | draft | 4 | 3 fixable, 1 plausible |
 | [Ecolumbre](ecolumbre.md) | native | draft | 9 | 3 fixable, 6 plausible |
 | [El Resoplido](el_resoplido.md) | new | draft | 4 | 2 fixable, 2 plausible |
+| [Enterrador](enterrador.md) | new | draft | 4 | 3 fixable, 1 plausible |
 | [Espinodo](espinodo.md) | native | draft | 5 | 5 plausible |
 | [Garfio](garfio.md) | native | draft | 4 | 4 plausible |
+| [Garra marea](garra_marea.md) | new | draft | 4 | 3 fixable, 1 plausible |
+| [Gusano Ceniza](gusano_ceniza.md) | new | draft | 4 | 2 fixable, 2 plausible |
+| [Hilachuela](hilachuela.md) | new | draft | 4 | 4 fixable |
+| [Lengua de marea](lengua_de_marea.md) | new | draft | 4 | 2 fixable, 2 plausible |
+| [Limosilla](limosilla.md) | new | draft | 4 | 2 fixable, 2 plausible |
+| [Llorona](llorona.md) | new | draft | 4 | 3 fixable, 1 plausible |
+| [MantoHoja](mantohoja.md) | new | draft | 4 | 1 fixable, 3 plausible |
 | [Merodeador](merodeador.md) | native | draft | 4 | 4 plausible |
+| [Morrudo](morrudo.md) | new | draft | 4 | 2 fixable, 2 plausible |
+| [Pataosca](pataosca.md) | new | draft | 4 | 2 fixable, 2 plausible |
+| [Pellizcador](pellizcador.md) | new | draft | 4 | 1 fixable, 3 plausible |
+| [Pelotero](pelotero.md) | new | draft | 4 | 3 fixable, 1 plausible |
 | [The player's lineage and cousins](player_lineage.md) | native | draft | 4 | 3 fixable, 1 plausible |
+| [Rastrón](rastron.md) | new | draft | 4 | 2 fixable, 2 plausible |
 | [Rondo](rondo.md) | native | draft | 4 | 4 plausible |
 | [Sifón](sifon.md) | new | draft | 4 | 2 fixable, 2 plausible |
+| [Sombra de la Marea](sombra_de_la_marea.md) | new | draft | 4 | 2 fixable, 2 plausible |
 | [Sosa](sosa.md) | new | draft | 4 | 3 fixable, 1 plausible |
+| [Zancarril](zancarril.md) | new | draft | 4 | 3 fixable, 1 plausible |
 | [Zanco](zanco.md) | native | draft | 4 | 4 plausible |
 | [Zancuda](zancuda.md) | native | draft | 4 | 4 plausible |
+| [Zancuilla](zancuilla.md) | new | draft | 4 | 1 fixable, 3 plausible |
 
 ## Kirr (`redtide`)
 

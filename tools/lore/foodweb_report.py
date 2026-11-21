@@ -5,7 +5,7 @@
 Outputs: docs/lore/primigenia-food-web.md, docs/evidence/lore/food-web.jpg (+ .svg), docs/evidence/lore/food-web-contact-sheet.jpg
 """
 import os, subprocess, sys, textwrap
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__))); sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "council"))
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "council")); sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from lorelib import ROOT, load
 import foodweb as fw
 from foodweb_classify import H, LEVELS
@@ -66,7 +66,7 @@ def diagram(M, N, out_svg):
         o.append(f'<text x="{x:.0f}" y="{y+5:.0f}" font-size="13" text-anchor="middle" fill="#fff">{N[i][:16]}</text>')
     for k, lv in enumerate(LEVELS):
         o.append(f'<rect x="{60 + k * 250}" y="{Hh - 28}" width="16" height="16" fill="{LCOL[lv]}"/><text x="{82 + k * 250}" y="{Hh - 15}" font-size="15" fill="#333">{LAB[lv]}</text>')
-    o.append(f'<text x="{W-420}" y="{Hh-45}" font-size="15" fill="#333">outlined = new in the 2026-11-21 batch; pale = existing</text></svg>')
+    o.append(f'<text x="{W-560}" y="{Hh-75}" font-size="15" fill="#333">outlined = new in the 2026-11-21 batch; pale = existing</text></svg>')
     open(out_svg, "w").write("\n".join(o))
 
 

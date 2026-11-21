@@ -1,0 +1,144 @@
+{
+  "schema": "cpore.plant/1",
+  "id": "cicatriz_alta",
+  "name": {
+    "en": "Cicatriz alta",
+    "es": "Cicatriz_alta"
+  },
+  "world": "primigenia",
+  "status": "draft",
+  "growth_form": "moss_lichen",
+  "habitats": [
+    "highlands"
+  ],
+  "summary": "Above 1,750 m, intense UV radiation (F14, D23) filters out most visible light and threatens cellular DNA. This crustose lichen spreads across wind-scoured basalt, using melanoidin screens to shield its chlorobiont layer while capturing wind-blown volcanic aerosols (F7, F23). It forms the primary photosynthetic anchor in the alpine zone, feeding specialized scrapers and decomposers, and shares the high-altitude mineral niche with chemosynthetic crusts (D22) but relies on photon capture instead.",
+  "chains": [
+    {
+      "id": "cicatriz_alta.c1",
+      "trait": "Dense black melanin-like crust",
+      "links": [
+        "Altitude exceeds 1,750 m where atmospheric filtering drops to 0.6× sea-level UV (F14, D20)",
+        "Melanoidin pigments accumulate in the upper cortex to absorb and scatter ionizing radiation",
+        "Photosynthetic layer is shielded but light-starved, restricting growth to wind-sheltered rock fissures"
+      ],
+      "roots": [
+        "F14"
+      ],
+      "play": "Scrape for UV paste: grants temporary photoprotection during midday highland exploration",
+      "weakness": "Ingesting raw crust causes nausea and blocks low-light photosynthesis if applied to eyes",
+      "observe": [
+        "Charcoal-black, tightly adherent to basalt",
+        "Pale green tissue exposed only when cracked",
+        "No scent, tastes metallic"
+      ],
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/foodweb-2026-11-21",
+        "date": "2026-11-21",
+        "summary": "Crustose, melanised lichen on alpine basalt as primary producer matches F14/D23 high-UV alpine niche and F7/F23 aerosol deposition. Mineral veins and scraper specialists (sosa, babosa) fit F23 lick ecology.",
+        "fixes": [
+          "Correct the UV chain: at ~1,750–2,050 m surface UV is ~1.4× sea level (F14), not reduced. Melanoidin/cortical pigments shield against excess UV while a thin green algal layer photosynthesises in fissures. “Melanoidin toxicity” is weak—rely on arsenic/copper from aerosols (F23) for grazer deterrence."
+        ],
+        "analogues": [
+          {
+            "organism": "Antarctic cryptoendolithic and alpine umbilicate lichens",
+            "mechanism": "Dark fungal pigments and mineral crusts reduce UV damage to the photobiont layer (Friedmann, 1982; Büdel et al., 2008, from memory, unverified). Lichens accumulate airborne metals without roots."
+          }
+        ]
+      }
+    },
+    {
+      "id": "cicatriz_alta.c2",
+      "trait": "Calcite and heavy-metal accumulation in thallus",
+      "links": [
+        "Cold upwelling fog and wind-blown volcanic aerosols deposit dissolved minerals on exposed basalt (F8, F7)",
+        "Lichen absorbs these aerosols through surface moisture films without roots",
+        "Minerals precipitate into the thallus, creating a concentrated nutrient matrix",
+        "Forms a fixed, high-value resource patch in an otherwise barren alpine zone"
+      ],
+      "roots": [
+        "F8",
+        "F7",
+        "F23"
+      ],
+      "play": "Mine for lick dust: restores salt balance for herds, or use to mark trails and reduce predation risk",
+      "weakness": "Concentrates arsenic and copper; raw consumption causes vomiting in non-specialists",
+      "observe": [
+        "Crust fractures into polygonal plates",
+        "Yellow mineral veins cross the black surface",
+        "Grazers pause here to scrape rock with tongues"
+      ],
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/foodweb-2026-11-21",
+        "date": "2026-11-21",
+        "summary": "Crustose, melanised lichen on alpine basalt as primary producer matches F14/D23 high-UV alpine niche and F7/F23 aerosol deposition. Mineral veins and scraper specialists (sosa, babosa) fit F23 lick ecology.",
+        "fixes": [
+          "Correct the UV chain: at ~1,750–2,050 m surface UV is ~1.4× sea level (F14), not reduced. Melanoidin/cortical pigments shield against excess UV while a thin green algal layer photosynthesises in fissures. “Melanoidin toxicity” is weak—rely on arsenic/copper from aerosols (F23) for grazer deterrence."
+        ],
+        "analogues": [
+          {
+            "organism": "Antarctic cryptoendolithic and alpine umbilicate lichens",
+            "mechanism": "Dark fungal pigments and mineral crusts reduce UV damage to the photobiont layer (Friedmann, 1982; Büdel et al., 2008, from memory, unverified). Lichens accumulate airborne metals without roots."
+          }
+        ]
+      }
+    }
+  ],
+  "gameplay": {
+    "food_for": [
+      "gusano_ceniza"
+    ],
+    "gift_item": "Black crust paste",
+    "poison": "Melanoidin toxicity (nausea and photophobia if ingested raw)",
+    "healing": null,
+    "cover": null,
+    "climbing": false,
+    "nest_material": null,
+    "mineral_lick": null,
+    "notes": "Food-web batch 2026-11-21; eaters are listed in lore/foodweb/primigenia.json."
+  },
+  "relations": [],
+  "generator": {
+    "growth_form": "moss_lichen",
+    "height_m": {
+      "min": 0.002,
+      "max": 0.04
+    },
+    "colour": {
+      "base": "Black/dark charcoal-grey base with yellow-white mineral veins; black melanoidin screens absorb and scatter excess UV at high altitude (F14, D23), while precipitated calcium and sulfur form surface veins."
+    }
+  },
+  "journal": [
+    {
+      "en": "Black rock-skin. Eats sun, spits minerals. Safe only for scrapers.",
+      "es": "Piel negra de roca. Come sol, escupe minerales. Solo segura para raspadores."
+    }
+  ],
+  "observe": [
+    "Charcoal-black, tightly adherent to basalt",
+    "Pale green tissue exposed only when cracked",
+    "No scent, tastes metallic",
+    "Crust fractures into polygonal plates"
+  ],
+  "secrets": [
+    "Scraping deep reveals a living pale-green photosynthetic layer beneath the dead black crust"
+  ],
+  "provenance": {
+    "council_run": "foodweb-2026-11-21",
+    "by": [
+      "naturalist"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-21",
+      "who": "foodweb.py",
+      "what": "food-web batch slot P05 (producer/photosynthetic, highlands); qwen draft, Composer botanist referee"
+    }
+  ],
+  "niche": {
+    "trophic": "producer",
+    "role": "photosynthetic"
+  }
+}

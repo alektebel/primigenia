@@ -209,6 +209,145 @@ def roster_table(M):
     return "\n".join(lines)
 
 
+def sanitize(M, fw):
+    """Drop eats that break the rules (no shared habitat, eater not above its food); returns how many were dropped."""
+    n = 0
+    for i, m in M.items():
+        keep = []
+        for e in m.get("eats", []):
+            if e in M:
+                ok = set(m["habitats"]) & set(M[e]["habitats"])
+                if ok and fw.RANK[m["level"]] <= fw.RANK[M[e]["level"]] and m["level"] not in ("decomposer", "scavenger", "omnivore", "parasite") and M[e]["level"] != "parasite": ok = False
+                if m["level"] in ("decomposer", "scavenger") and M[e]["kind"] == "creature" and m["level"] == "decomposer": ok = False
+                if not ok: n += 1; continue
+            keep.append(e)
+        m["eats"] = keep
+    return n
+
+
+def tidy(M):
+    """Role rules the model-written diets broke (chair's pass): insectivores eat small animals only, scavengers eat carrion and wrack not live animals, predators do not eat detritus, parasites eat hosts, parasitoids eat insects."""
+    res = ("carrion", "detritus", "dung"); n = 0
+    for i, m in M.items():
+        if m["kind"] != "creature" or not m.get("new"): continue
+        old = list(m["eats"]); r = m["role"]; e = list(old)
+        if r == "insectivore": e = [x for x in e if x in M and M[x]["kind"] == "creature" and M[x].get("size") in ("insect", "small") and M[x]["level"] in ("primary_consumer", "decomposer", "scavenger", "parasite")]
+        elif r == "scavenger": e = [x for x in e if x in res or (x in M and M[x]["kind"] == "plant")]
+        elif r == "cleaner": e = [x for x in e if x in M and M[x]["level"] == "parasite"]
+        elif r in ("small_predator", "egg_thief", "mid_predator", "apex_predator"): e = [x for x in e if x != "detritus"]
+        elif r == "parasite": e = [x for x in e if x in M and M[x]["kind"] == "creature" and M[x]["level"] in ("primary_consumer", "decomposer", "secondary_consumer")]
+        elif r == "parasitoid": e = [x for x in e if x in M and M[x]["kind"] == "creature" and M[x].get("size") == "insect" and M[x]["level"] in ("primary_consumer", "decomposer")]
+        if e != old: m["eats"] = e; n += 1
+    return n
+
+
+def complete(M, fw):
+    """Deterministic repair of what the ecologist seat left open (the chair's pass): every consumer gets food, every non-apex species a predator, by role and habitat. Edges added here are listed in members[id]['eats_chair']."""
+    share = lambda a, b: bool(set(M[a]["habitats"]) & set(M[b]["habitats"]))
+    size_rank = {"insect": 0, "small": 1, "medium": 2, "large": 3, "giant": 4}
+    sz = lambda i: size_rank.get(M[i].get("size"), 1 if M[i]["kind"] == "creature" else 0)
+    eaten = lambda i: [j for j, m in M.items() if i in m.get("eats", []) and share(i, j)]
+    added = []
+    def add(pred, prey):
+        if prey not in M[pred]["eats"]: M[pred]["eats"].append(prey); M[pred].setdefault("eats_chair", []).append(prey); added.append((pred, prey))
+    PRIM_FOOD = {"grazer": ("grass", "herb", "rosette", "shrub", "fern", "algae", "vine", "tree"), "browser": ("tree", "shrub", "vine", "fern", "herb"), "frugivore": ("tree", "shrub", "vine"), "granivore": ("grass", "herb", "shrub"),
+                 "nectarivore": ("herb", "shrub", "tree"), "algae_scraper": ("algae", "moss_lichen"), "filter_feeder": ("algae",)}
+    def plant_form(i): return load(os.path.join(ROOT, "lore", "flora", i + ".json"))["growth_form"]
+    for _ in range(6):
+        # 1. consumers with nothing to eat
+        for i, m in M.items():
+            if (m["kind"] == "creature" or m["level"] in ("parasite", "decomposer")) and not m.get("eats"):
+                role, lv = m["role"], m["level"]
+                if m["kind"] == "plant":  # parasitic plant: a host tree or shrub; decomposers: detritus
+                    hosts = [j for j in M if M[j]["kind"] == "plant" and share(i, j) and plant_form(j) in ("tree", "shrub") and j != i and M[j]["level"] == "producer"]
+                    add(i, hosts[0] if lv == "parasite" and hosts else "detritus"); continue
+                if lv == "decomposer": add(i, "detritus"); continue
+                if role == "cleaner":
+                    pr = [j for j in M if M[j]["kind"] == "creature" and M[j]["level"] == "parasite" and share(i, j)]; [add(i, h) for h in pr[:3]]; continue
+                if role == "insectivore" or role == "parasitoid":
+                    pr = [j for j in M if M[j]["kind"] == "creature" and share(i, j) and j != i and M[j].get("size") in (("insect",) if role == "parasitoid" else ("insect", "small")) and M[j]["level"] in ("primary_consumer", "decomposer")]
+                    pr.sort(key=lambda j: (len(eaten(j)), j)); [add(i, h) for h in pr[:3]]; continue
+                if lv == "parasite":
+                    hosts = [j for j in M if M[j]["kind"] == "creature" and share(i, j) and j != i and M[j]["level"] in ("primary_consumer", "decomposer") and sz(j) >= sz(i)]
+                    hosts.sort(key=lambda j: (abs(sz(j) - sz(i) - 1), j)); [add(i, h) for h in hosts[:2]]; continue
+                if role in PRIM_FOOD:
+                    pl = [j for j in M if M[j]["kind"] == "plant" and M[j]["level"] == "producer" and share(i, j) and plant_form(j) in PRIM_FOOD[role] and not M[j].get("defended")]
+                    pl.sort(key=lambda j: (len(eaten(j)), j)); [add(i, h) for h in pl[:3]]
+                    if role == "filter_feeder": add(i, "detritus")
+                    continue
+                if lv in ("secondary_consumer", "tertiary_consumer", "apex_predator", "scavenger"):
+                    low = {"secondary_consumer": ("primary_consumer", "decomposer", "parasite"), "tertiary_consumer": ("secondary_consumer", "primary_consumer", "decomposer"), "apex_predator": ("tertiary_consumer", "secondary_consumer", "primary_consumer")}.get(lv, ())
+                    if lv == "scavenger": add(i, "carrion"); continue
+                    pr = [j for j in M if M[j]["kind"] == "creature" and M[j]["level"] in low and share(i, j) and j != i and sz(j) < sz(i) + (1 if lv == "secondary_consumer" else 2)]
+                    pr.sort(key=lambda j: (len(eaten(j)), j)); [add(i, h) for h in pr[:3]]
+        # 2. dead ends
+        for i, m in M.items():
+            if m["level"] == "apex_predator" or i in ("coloso", "player_lineage") or eaten(i): continue
+            r = fw.RANK[m["level"]]
+            if m["kind"] == "plant" and m.get("defended"): continue
+            if m["kind"] == "plant":
+                f = plant_form(i)
+                cand = [j for j in M if M[j]["kind"] == "creature" and M[j]["level"] in ("primary_consumer", "omnivore") and share(i, j) and (M[j]["role"] in PRIM_FOOD and f in PRIM_FOOD[M[j]["role"]] or M[j]["level"] == "omnivore")]
+                if m["role"] == "chemosynthetic" or f in ("moss_lichen", "algae", "fungus_like"):
+                    cand += [j for j in M if M[j]["kind"] == "creature" and M[j]["role"] in ("algae_scraper", "filter_feeder", "detritivore") and share(i, j)]
+                if m["role"] == "fungal_decomposer": cand += [j for j in M if M[j]["kind"] == "creature" and M[j]["level"] == "decomposer" and share(i, j)]
+            else:
+                above = {"primary_consumer": ("secondary_consumer", "tertiary_consumer", "omnivore"), "decomposer": ("secondary_consumer", "tertiary_consumer"), "parasite": ("secondary_consumer", "tertiary_consumer"),
+                         "secondary_consumer": ("tertiary_consumer", "apex_predator"), "tertiary_consumer": ("apex_predator",), "scavenger": ("tertiary_consumer", "apex_predator", "secondary_consumer"), "omnivore": ("tertiary_consumer", "apex_predator")}.get(m["level"], ())
+                cand = [j for j in M if M[j]["kind"] == "creature" and M[j]["level"] in above and share(i, j) and j != i and sz(j) >= sz(i) - (0 if M[j]["level"] != "secondary_consumer" else 0)]
+                if m["role"] in ("cleaner",): cand = [j for j in cand if M[j]["level"] in ("tertiary_consumer", "apex_predator")]
+            cand = [j for j in cand if j != i and not (M[j]["kind"] == "plant")]
+            cand.sort(key=lambda j: (len(M[j].get("eats", [])), j))
+            if cand: add(cand[0], i)
+        errs, _ = fw.check_web(ROOT)
+        if not [e for e in errs if "dead end" in e or "nothing to eat" in e]: break
+    return added
+
+
+def _complete_cmd():
+    import importlib.util
+    from lorelib import dump
+    spec = importlib.util.spec_from_file_location('lore_foodweb', os.path.join(LORE, 'foodweb.py')); fw = importlib.util.module_from_spec(spec); spec.loader.exec_module(fw)
+    p = os.path.join(ROOT, "lore", "foodweb", "primigenia.json"); web = load(p); M = web["members"]
+    print("dropped invalid eats:", sanitize(M, fw), "| role-tidied:", tidy(M))
+    for m in M.values(): m.pop("eats_chair", None)
+    sp = fw.spawn_weights(M)
+    for i in M: M[i]["spawn"] = sp[i]
+    dump(web, p)
+    added = complete(M, fw); sp = fw.spawn_weights(M)
+    for i in M: M[i]["spawn"] = sp[i]
+    dump(web, p); print("chair added", len(added), "edges"); fw.apply_web(ROOT)
+
+
+def fix_main():
+    """Make the new drafts pass validate: drop rejected references, drop roots that are not world facts (map D-items to their facts, else F27), 'F28'-style invented facts included."""
+    import datetime
+    from lorelib import dump
+    date = datetime.date.today().isoformat()
+    refs = {r["id"]: r.get("x-status") for r in load(os.path.join(ROOT, "lore", "references.json"))}
+    bad = {i for i, st in refs.items() if st == "rejected"}
+    facts = {f["id"] for f in load(os.path.join(ROOT, "lore", "worlds", "primigenia.json"))["facts"] if f["status"] == "active"}
+    der = {it["id"]: it.get("facts", []) for it in load(os.path.join(ROOT, "lore", "worlds", "primigenia.derivation.json"))["items"]}
+    web = load(os.path.join(ROOT, "lore", "foodweb", "primigenia.json"))["members"]; n_ref = n_root = 0
+    for i, m in web.items():
+        if not m.get("new"): continue
+        f = os.path.join(ROOT, "lore", "creatures" if m["kind"] == "creature" else "flora", i + ".json"); d = load(f); ch0 = False
+        for ch in d["chains"]:
+            for a in ch.get("plausibility", {}).get("analogues", []):
+                if set(a.get("refs", [])) & bad:
+                    a["refs"] = [r for r in a["refs"] if r not in bad]; n_ref += 1; ch0 = True
+                    if not a["refs"]: del a["refs"]
+            r = [x for x in ch.get("roots", []) if x in facts]
+            if len(r) != len(ch.get("roots", [])) or not r:
+                if not r:
+                    txt = " ".join([ch.get("trait", "")] + ch.get("links", []))
+                    for dm in re.findall(r"\bD([0-9]{1,2})\b", txt): r += [x for x in der.get("D" + dm, []) if x in facts and x not in r]
+                    if not r: r = ["F27"]
+                ch["roots"] = r; n_root += 1; ch0 = True
+        if ch0: d["changelog"].append({"date": date, "who": "foodweb.py fix", "what": "removed rejected references and non-existent root facts (roots recovered from the derivation items cited in the links, else F27)"}); dump(d, f)
+    print("references removed from", n_ref, "analogues; roots fixed in", n_root, "chains")
+
+
 def edges_main():
     """Ecologist seat: complete the web. Loops: foodweb.check -> errors -> qwen proposes edges -> merge -> check (max 4 rounds)."""
     os.environ["LORE_RUNS_DIR"] = RD; os.environ["LORE_CTX"] = os.path.join(RD, "ctx.json")
@@ -220,6 +359,7 @@ def edges_main():
     p = os.path.join(ROOT, "lore", "foodweb", "primigenia.json")
     for rnd in range(4):
         web = load(p); M = web["members"]
+        print("dropped invalid eats:", sanitize(M, fw))
         sp = fw.spawn_weights(M)
         for i in M: M[i]["spawn"] = sp[i]
         dump(web, p); fw.apply_web(ROOT)
@@ -231,12 +371,13 @@ def edges_main():
                 "\n\nPROBLEMS found by the checker:\n" + "\n".join(errs[:60]) +
                 "\n\nRules: a consumer eats only species that share one of its habitats and sit at a lower trophic level (producer < decomposer < primary < secondary/scavenger < tertiary < apex); resources are carrion, detritus, dung. "
                 "Every species except apex animals (and coloso, player_lineage) must be eaten by at least one species in its habitat. Every new consumer eats 1-5 foods. Do not make cycles. Apex animals eat tertiary, secondary and primary consumers. "
-                "Do not widen a species' habitats. Output ONLY JSON: {\"set_eats\": {id: [full list of what it eats]}} for every species whose list must change; only new species (new in the roster comment) and the species named in the problems may change.")
+                "Do not widen a species' habitats. Output ONLY JSON: {\"set_eats\": {id: [full list of what it eats]}} for every species whose list must change; any species may change, but for existing species (those without a size in the roster) only ADD foods: never remove their current list. To fix a dead end, add the dead-end species to the eats list of a predator that shares its habitat and sits above it (an existing mid predator or a new apex is fine).")
         t = ask("naturalist", ADV["naturalist"] + "\n\n" + CANON, task, temp=0.3, max_tokens=9000)
         try: v = best_json(t)["set_eats"]
         except Exception as e: print("edges unparsable", e); continue
         for i, lst in v.items():
             if i in M and isinstance(lst, list): M[i]["eats"] = sorted({x for x in lst if x in M or x in ("carrion", "detritus", "dung")})
+        sanitize(M, fw)
         dump(web, p)
     print("web still has problems after 4 rounds; patch by hand")
 
@@ -263,5 +404,7 @@ if __name__ == "__main__":
     elif cmd == "base": base_web()
     elif cmd == "merge": merge_main()
     elif cmd == "edges": edges_main()
+    elif cmd == "fix": fix_main()
+    elif cmd == "complete": _complete_cmd()
     elif cmd == "flora": flora_main()
     else: sys.exit(__doc__)

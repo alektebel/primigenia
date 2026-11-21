@@ -1,0 +1,138 @@
+{
+  "schema": "cpore.plant/1",
+  "id": "sangre_de_hierro",
+  "name": {
+    "en": "Sangre de hierro",
+    "es": "Iron Blood"
+  },
+  "world": "primigenia",
+  "status": "draft",
+  "growth_form": "moss_lichen",
+  "habitats": [
+    "caves"
+  ],
+  "summary": "A metallic rust mat coating the basalt walls of flooded lava tubes and damp fissures (F9). It oxidises hydrogen sulfide from fumaroles using the abundant oxygen to fix carbon, forming a dense iron-sulfur crust (D22, F5). The film glitters with ochre and black flecks, providing a rare calorie source in the dark.",
+  "chains": [
+    {
+      "id": "sangre_de_hierro.c1",
+      "trait": "Iron-sulfur chemosynthetic mat",
+      "links": [
+        "Fumarolic H2S seeps into flooded lava tubes (F9, D22)",
+        "High ambient O2 (F5) makes sulfur oxidation highly exergonic",
+        "Iron in basalt water oxidises to rust",
+        "Forms a thick, nutritious, yet toxic film"
+      ],
+      "roots": [
+        "F5",
+        "F9"
+      ],
+      "play": "Gift to *Sosa* to befriend; scrape for iron grit.",
+      "weakness": "Accumulates arsenic and mercury; causes poisoning if eaten raw.",
+      "observe": [
+        "Serves as a navigational beacon for *Sosa* in the dark",
+        "Glitters under moonlight",
+        "Thickens near active seeps"
+      ],
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/foodweb-2026-11-21",
+        "date": "2026-11-21",
+        "summary": "Iron- and sulfur-oxidising biofilms on damp basalt in lava tubes fit D22, F9, and F5: O₂-rich cave air drives exergonic sulfur and Fe(II) oxidation, yielding rust-colored ochre crusts and a dark calorie source where light is absent.",
+        "analogues": [
+          {
+            "organism": "Leptothrix ochracea / Gallionella iron-oxidising bacteria",
+            "mechanism": "Microaerophilic Fe-oxidisers deposit Fe oxyhydroxide sheaths; co-occurring sulfur oxidisers use cave seeps (Emerson & Moyer, 2002, from memory, unverified). Arsenic and mercury co-precipitate or absorb on Fe phases as on Earth vent precipitates."
+          }
+        ]
+      }
+    },
+    {
+      "id": "sangre_de_hierro.c2",
+      "trait": "Cave grazer niche and mineral cycle",
+      "links": [
+        "Caves lack photosynthesis (F9)",
+        "Energy is scarce in the dark",
+        "Chemosynthetic films provide calories",
+        "Specialist grazers evolve scraping mouths to harvest them"
+      ],
+      "roots": [
+        "F9"
+      ],
+      "play": "Befriend *Sosa* by offering the film.",
+      "weakness": "Grows only near heat; useless in cold caves.",
+      "observe": [
+        "*Sosa* herds migrate along film patches",
+        "Film supports a guild of cave parasites",
+        "Grows faster near *Sosa* waste"
+      ],
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/foodweb-2026-11-21",
+        "date": "2026-11-21",
+        "summary": "Iron- and sulfur-oxidising biofilms on damp basalt in lava tubes fit D22, F9, and F5: O₂-rich cave air drives exergonic sulfur and Fe(II) oxidation, yielding rust-colored ochre crusts and a dark calorie source where light is absent.",
+        "analogues": [
+          {
+            "organism": "Leptothrix ochracea / Gallionella iron-oxidising bacteria",
+            "mechanism": "Microaerophilic Fe-oxidisers deposit Fe oxyhydroxide sheaths; co-occurring sulfur oxidisers use cave seeps (Emerson & Moyer, 2002, from memory, unverified). Arsenic and mercury co-precipitate or absorb on Fe phases as on Earth vent precipitates."
+          }
+        ]
+      }
+    }
+  ],
+  "gameplay": {
+    "food_for": [
+      "sifon"
+    ],
+    "gift_item": "sangre_de_hierro",
+    "poison": "arsenic and mercury",
+    "healing": null,
+    "cover": null,
+    "climbing": false,
+    "nest_material": null,
+    "mineral_lick": null,
+    "notes": "Food-web batch 2026-11-21; eaters are listed in lore/foodweb/primigenia.json."
+  },
+  "relations": [],
+  "generator": {
+    "growth_form": "moss_lichen",
+    "height_m": {
+      "min": 0.001,
+      "max": 0.002
+    },
+    "colour": {
+      "base": "Metallic rust-red with black speckles. Iron oxidation yields the ochre-red base (D22); dark inorganic polymers and sulfur compounds add the black flecks. No photosynthetic pigment; the colour signals high sulfur and iron content."
+    }
+  },
+  "journal": [
+    {
+      "en": "Rust-blood: iron and sulfur fuel the dark; grazers feast, touchers die.",
+      "es": "Sangre de hierro: hierro y azufre alimentan la oscuridad; pastan los *Sosa*, mueren los codiciosos."
+    }
+  ],
+  "observe": [
+    "Serves as a navigational beacon for *Sosa* in the dark",
+    "Glitters under moonlight",
+    "Thickens near active seeps",
+    "*Sosa* herds migrate along film patches"
+  ],
+  "secrets": [
+    "viewpoint"
+  ],
+  "provenance": {
+    "council_run": "foodweb-2026-11-21",
+    "by": [
+      "naturalist"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-21",
+      "who": "foodweb.py",
+      "what": "food-web batch slot P02 (producer/chemosynthetic, caves); qwen draft, Composer botanist referee"
+    }
+  ],
+  "niche": {
+    "trophic": "producer",
+    "role": "chemosynthetic"
+  }
+}

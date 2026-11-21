@@ -1,0 +1,148 @@
+{
+  "schema": "cpore.plant/1",
+  "id": "pozo_de_agua",
+  "name": {
+    "en": "Pozo de agua",
+    "es": "Pozo_de_agua"
+  },
+  "world": "primigenia",
+  "status": "draft",
+  "growth_form": "algae",
+  "habitats": [
+    "shallows"
+  ],
+  "summary": "A dense, gelatinous mat of chemosynthetic microbes anchored to submerged basalt near vent seeps. It harvests energy from H2S and O2 to fix carbon (D22), thriving where sunlight is blocked by turbid water (F20, D24). Its slimy texture and mineral-rich crust protect it from grazers and desiccation at low tide.",
+  "chains": [
+    {
+      "id": "pozo_de_agua.c1",
+      "trait": "Gelatinous matrix",
+      "links": [
+        "Dense, humid air with high diffusion resistance (F4, F16) means water loss is slow, but submerged mats risk desiccation at low tide.",
+        "Volcanic vents provide warmth and reduced chemicals (D22), but tidal cycles expose the shallows.",
+        "A polysaccharide gel matrix retains water, buffers temperature, and traps sulfide-rich water.",
+        "Result: A tough, slippery mat that survives air exposure and filters suspended particles."
+      ],
+      "roots": [
+        "F4",
+        "F16",
+        "F13"
+      ],
+      "play": "Skill 'Slip & Glide' (Defence): Player can use the mat to reduce friction when sliding down slopes or escaping predators. Weakness: 'Sticky Trap' (Control): Player can entangle weak legs or slow movement by touching the gel.",
+      "weakness": "Dries out and becomes brittle if exposed to air for more than a few hours during extreme low tides.",
+      "observe": [
+        "Mat pulses slightly with vent gas.",
+        "Gel strands stretch but do not break.",
+        "Small crustaceans burrow inside the gel."
+      ],
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/foodweb-2026-11-21",
+        "date": "2026-11-21",
+        "summary": "Vent-linked H₂S–O₂ chemosynthetic mats in turbid intertidal basalt are well grounded (D22, F20, F23). Gel polysaccharides suit brief low-tide exposure (F13). Trace As/Hg bioaccumulation matches hot-spring crust chemistry.",
+        "fixes": [
+          "Treat as a layered or mixed mat: anoxic bottom with sulfur-oxidising bacteria, aerobic gel surface; drop or restrict green photosystems to thin sunlit fringes—turbid shallows give little PAR. Submerged surfaces need weak UV-screen selection; use screens only on emersed pads. Bioluminescence is active emission, not moon reflection; vent flow requirement is standard for chemolithotrophs."
+        ],
+        "analogues": [
+          {
+            "organism": "Beggiatoa / Thiomargarita-type sulfur-oxidising bacterial mats",
+            "mechanism": "Colorless sulfur bacteria oxidise H₂S with O₂ or nitrate at oxic–anoxic interfaces; exopolysaccharide sheaths retain moisture and trap sulfide (Jørgensen & Nelson, 2004, from memory, unverified)."
+          }
+        ]
+      }
+    },
+    {
+      "id": "pozo_de_agua.c2",
+      "trait": "Chemosynthetic core",
+      "links": [
+        "Shallow water is turbid with volcanic sediment and plankton (F20), limiting light penetration.",
+        "Vent seeps emit H2S and meet O2-rich water (D22, F4).",
+        "Microbes oxidize H2S to fix carbon, independent of sunlight.",
+        "Result: A producer that grows faster in the dark near vents than in sunlit turbid water."
+      ],
+      "roots": [
+        "F20",
+        "F4"
+      ],
+      "play": "Skill 'Vent Taste' (Observe): Player can detect vent locations by eating the mat and sensing sulfide traces. Weakness: 'Oxygen Starvation' (Control): In stagnant water without flow, the mat dies, removing a resource.",
+      "weakness": "Requires constant flow of vent fluids; buried by sediment or cut off from seeps, it starves.",
+      "observe": [
+        "Bubbles of gas rise from the mat surface.",
+        "Mat glows faintly blue in moonlight (bioluminescent symbiont).",
+        "Sulfur crystals form on the mat's upper surface."
+      ],
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/foodweb-2026-11-21",
+        "date": "2026-11-21",
+        "summary": "Vent-linked H₂S–O₂ chemosynthetic mats in turbid intertidal basalt are well grounded (D22, F20, F23). Gel polysaccharides suit brief low-tide exposure (F13). Trace As/Hg bioaccumulation matches hot-spring crust chemistry.",
+        "fixes": [
+          "Treat as a layered or mixed mat: anoxic bottom with sulfur-oxidising bacteria, aerobic gel surface; drop or restrict green photosystems to thin sunlit fringes—turbid shallows give little PAR. Submerged surfaces need weak UV-screen selection; use screens only on emersed pads. Bioluminescence is active emission, not moon reflection; vent flow requirement is standard for chemolithotrophs."
+        ],
+        "analogues": [
+          {
+            "organism": "Beggiatoa / Thiomargarita-type sulfur-oxidising bacterial mats",
+            "mechanism": "Colorless sulfur bacteria oxidise H₂S with O₂ or nitrate at oxic–anoxic interfaces; exopolysaccharide sheaths retain moisture and trap sulfide (Jørgensen & Nelson, 2004, from memory, unverified)."
+          }
+        ]
+      }
+    }
+  ],
+  "gameplay": {
+    "food_for": [
+      "corona"
+    ],
+    "gift_item": "Sulfur-rich gel mass",
+    "poison": "Trace arsenic and mercury absorbed from vent crusts (F23); safe for small grazers, toxic to large predators if eaten in quantity.",
+    "healing": null,
+    "cover": null,
+    "climbing": false,
+    "nest_material": null,
+    "mineral_lick": null,
+    "notes": "Food-web batch 2026-11-21; eaters are listed in lore/foodweb/primigenia.json."
+  },
+  "relations": [],
+  "generator": {
+    "growth_form": "algae",
+    "height_m": {
+      "min": 0.005,
+      "max": 0.02
+    },
+    "colour": {
+      "base": "Olive-green base with iridescent yellow-green sheen; green photosystems from the seed (F24) are overlaid by UV-absorbing red-purple screens on exposed surfaces (D25), while the dense gel protects the mat from desiccation and retains heat from vents (D22)."
+    }
+  },
+  "journal": [
+    {
+      "en": "Soft skin that breathes fire. Eats the poison, gives life.",
+      "es": "Piel blanda que respira fuego. Come el veneno, da vida."
+    }
+  ],
+  "observe": [
+    "Mat pulses slightly with vent gas.",
+    "Gel strands stretch but do not break.",
+    "Small crustaceans burrow inside the gel.",
+    "Bubbles of gas rise from the mat surface."
+  ],
+  "secrets": [
+    "Hidden cave: The mat grows thickly in the waterfall cave where fresh water mixes with seawater vents.",
+    "Fossil: A preserved mat fossil found in the alpine slopes, proving vents existed there millions of years ago.",
+    "Nocturnal: The mat's bioluminescence is visible at night, attracting nocturnal grazers."
+  ],
+  "provenance": {
+    "council_run": "foodweb-2026-11-21",
+    "by": [
+      "naturalist"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-21",
+      "who": "foodweb.py",
+      "what": "food-web batch slot P01 (producer/chemosynthetic, shallows); qwen draft, Composer botanist referee"
+    }
+  ],
+  "niche": {
+    "trophic": "producer",
+    "role": "chemosynthetic"
+  }
+}

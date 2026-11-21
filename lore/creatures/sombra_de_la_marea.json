@@ -1,0 +1,327 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "sombra_de_la_marea",
+  "name": {
+    "en": "Sombra de la Marea"
+  },
+  "world": "primigenia",
+  "kind": "new",
+  "status": "draft",
+  "stage": "creature",
+  "niche": {
+    "habitat": "shallows, shore",
+    "diet": "Carnivore: drifting carcasses, brujula, cuarteta, and young grazers that wade.",
+    "active": "Feeds at low tide when water recedes, ambushing stranded prey and waders.",
+    "predators": [],
+    "trophic": "apex_predator",
+    "role": "apex_predator",
+    "prey": [
+      "brujula",
+      "corona",
+      "cuarteta",
+      "sifon",
+      "morrudo",
+      "rastron",
+      "limosilla"
+    ]
+  },
+  "body": "3.2 m length, 85 kg",
+  "chains": [
+    {
+      "id": "sombra_de_la_marea.c1",
+      "trait": "Limbless, muscular hydrostat body",
+      "links": [
+        "Turbid shallows dense with kelp and jagged basalt",
+        "Limbs would snag and betray position in three-dimensional tangles",
+        "Undulatory propulsion allows silent navigation through obstacles"
+      ],
+      "roots": [
+        "F20",
+        "F24",
+        "F4"
+      ],
+      "skill": {
+        "id": "sombra_de_la_marea.undulatory_lunge",
+        "name": {
+          "en": "Undulatory Lunge"
+        },
+        "role": "Engage",
+        "effect": "+25% burst speed in kelp and rocky cover.",
+        "numbers": {}
+      },
+      "weakness": "Slower acceleration on open, flat sand.",
+      "observe": [
+        "Sees it slide through kelp without disturbing silt",
+        "Sees it coil tightly before striking",
+        "Hears a faint wet drag followed by a sharp crack"
+      ],
+      "journal": {
+        "en": "It flows through the dark water like smoke."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/foodweb-2026-11-21",
+        "date": "2026-11-21",
+        "summary": "In F20 turbid shelf habitat, obstacle-rich three-dimensional cover favours undulatory swimmers over walking limbs; F24 shared vertebrate biochemistry allows a limbless elasmobranch- or anguilliform-grade plan. At 3.2 m and ~85 kg the mass is within range of large moray-grade predators and below island-wide apex budgets (D26), so it can be shelf-top without breaking pyramid rules (D25). Dense air (F4) mainly matters on exposed crawling, not underwater thrust.",
+        "fixes": [
+          "In F20 turbid shelf habitat, obstacle-rich three-dimensional cover favours undulatory swimmers over walking limbs; F24 shared vertebrate biochemistry allows a limbless elasmobranch- or anguilliform-grade plan. At 3.2 m and ~85 kg the mass is within range of large moray-grade predators and below island-wide apex budgets (D26), so it can be shelf-top without breaking pyramid rules (D25). Dense air (F4) mainly matters on exposed crawling, not underwater thrust."
+        ],
+        "analogues": [
+          {
+            "organism": "Green moray (Gymnothorax funebris) and giant moray (G. javanicus): long muscular hydrostat, reef-structure navigation without paired limbs.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 7
+        }
+      },
+      "provenance": {
+        "council_run": "foodweb-2026-11-21",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "sombra_de_la_marea.c2",
+      "trait": "Electroreceptive rostrum",
+      "links": [
+        "Visual range <10m in sediment-choked shallows",
+        "Prey generate weak bioelectric fields through gill movement",
+        "Snout concentrates ampullae-like organs to track hidden targets"
+      ],
+      "roots": [
+        "F20",
+        "F24"
+      ],
+      "skill": {
+        "id": "sombra_de_la_marea.current_sense",
+        "name": {
+          "en": "Current Sense"
+        },
+        "role": "Basic",
+        "effect": "Highlights prey and decoys through murky water.",
+        "numbers": {}
+      },
+      "weakness": "Disrupted by heavy lightning during storms.",
+      "observe": [
+        "Snout twitches rapidly when prey is hidden",
+        "Tracks movement in opaque water with no visual cue",
+        "Sees it ignore decoy bubbles to strike the real target"
+      ],
+      "journal": {
+        "en": "It reads the silence where eyes fail."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/foodweb-2026-11-21",
+        "date": "2026-11-21",
+        "summary": "F20 explicitly shifts shallow marine foraging toward non-visual senses; weak dipole fields from gill ventilation and muscle activity in small prey (brújula, cuarteta, juvenile filter feeders) are detectable at close range with ampullae-like organs, as on Earth. Rostral clustering improves aiming in <10 m visibility without requiring unreal field strengths.",
+        "fixes": [
+          "F20 explicitly shifts shallow marine foraging toward non-visual senses; weak dipole fields from gill ventilation and muscle activity in small prey (brújula, cuarteta, juvenile filter feeders) are detectable at close range with ampullae-like organs, as on Earth. Rostral clustering improves aiming in <10 m visibility without requiring unreal field strengths."
+        ],
+        "analogues": [
+          {
+            "organism": "Bonnethead and scalloped hammerhead sharks: expanded cephalofoil/rostrum concentrating ampullae of Lorenzini for prey localization in sediment-rich water.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "bullock_2005_electroreception"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 8
+        }
+      },
+      "provenance": {
+        "council_run": "foodweb-2026-11-21",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "sombra_de_la_marea.c3",
+      "trait": "Substrate-crawling at low tide",
+      "links": [
+        "3.2m tidal range exposes wide shelf at low tide",
+        "Prey stranded in pools or crawling on wet sand",
+        "Powerful ventral muscles and flexible ribs allow concertina dragging"
+      ],
+      "roots": [
+        "F13",
+        "F2"
+      ],
+      "skill": {
+        "id": "sombra_de_la_marea.mud_crawler",
+        "name": {
+          "en": "Mud Crawler"
+        },
+        "role": "Poke",
+        "effect": "Moves across exposed shore, knocking over small enemies.",
+        "numbers": {}
+      },
+      "weakness": "Exposed to sun and rapid dehydration on dry sand.",
+      "observe": [
+        "Drags heavy body over wet rocks using ventral ridges",
+        "Buries itself in shallow pools waiting for water to return",
+        "Leaves a wide, straight trench in the mud"
+      ],
+      "journal": {
+        "en": "The water leaves, but the hunter remains."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/foodweb-2026-11-21",
+        "date": "2026-11-21",
+        "summary": "Scope crawling to low intertidal wet zone and pool-to-pool bursts (≤ tens of metres per tide); treat dry sand as lethal/no-go except emergency retreat. Slow Mud Crawler to match concertina mechanics; keep wader ambush in anchored pools.",
+        "fixes": [
+          "Scope crawling to low intertidal wet zone and pool-to-pool bursts (≤ tens of metres per tide); treat dry sand as lethal/no-go except emergency retreat. Slow Mud Crawler to match concertina mechanics; keep wader ambush in anchored pools."
+        ],
+        "analogues": [
+          {
+            "organism": "Moray eels briefly crossing wet reef flats; beaching predation in killer whales and some sharks is episodic, not routine locomotion—closer match is tide-pool ambush by large eels and octopus on intertidal benches.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 5
+        }
+      },
+      "provenance": {
+        "council_run": "foodweb-2026-11-21",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "sombra_de_la_marea.c4",
+      "trait": "Dense red muscle for high metabolism",
+      "links": [
+        "1.6 bar atmosphere raises dissolved O2 in seawater",
+        "Higher partial pressure supports massive aerobic tissue",
+        "Enables rapid strikes and quick recovery between lunges"
+      ],
+      "roots": [
+        "F5"
+      ],
+      "skill": {
+        "id": "sombra_de_la_marea.aerobic_edge",
+        "name": {
+          "en": "Aerobic Edge"
+        },
+        "role": "Passive",
+        "effect": "Resists fatigue and recovers stamina faster in water.",
+        "numbers": {}
+      },
+      "weakness": "Overheats quickly if forced onto dry land.",
+      "observe": [
+        "Gills flare rapidly and rhythmically after striking",
+        "Seeks shaded pools to vent excess heat",
+        "Breathes heavily when forced onto dry sand"
+      ],
+      "journal": {
+        "en": "It burns the air itself to fuel the chase."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/foodweb-2026-11-21",
+        "date": "2026-11-21",
+        "summary": "Phrase the root as elevated pO₂ and dissolved O₂ at the air–sea interface, not ‘1.6 bar alone.’ Keep Passive stamina bonus in water only; on exposed shore, rapid fatigue and heat stress (already listed weakness) should dominate.",
+        "fixes": [
+          "Phrase the root as elevated pO₂ and dissolved O₂ at the air–sea interface, not ‘1.6 bar alone.’ Keep Passive stamina bonus in water only; on exposed shore, rapid fatigue and heat stress (already listed weakness) should dominate."
+        ],
+        "analogues": [
+          {
+            "organism": "Pelagic sharks and tunas: regional red (aerobic) muscle for repeated bursts; salmonid lateral red muscle for sustained swimming.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 3
+        }
+      },
+      "provenance": {
+        "council_run": "foodweb-2026-11-21",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "brujula",
+      "kind": "prey",
+      "note": "Ambushed in kelp thickets and tidal pools."
+    },
+    {
+      "with": "cuarteta",
+      "kind": "prey",
+      "note": "Snapped up in the shallows' turbid margins."
+    },
+    {
+      "with": "sifon",
+      "kind": "prey",
+      "note": "Filtered sifons are caught before they retreat to deep water."
+    },
+    {
+      "with": "corona",
+      "kind": "prey",
+      "note": "Juvenile filter-feeders are taken from drifting carcass clouds."
+    }
+  ],
+  "provenance": {
+    "council_run": "foodweb-2026-11-21",
+    "by": [
+      "naturalist/qwen"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-21",
+      "who": "import_got",
+      "what": "imported from council run foodweb-2026-11-21"
+    },
+    {
+      "date": "2026-11-21",
+      "who": "foodweb.py fix",
+      "what": "removed rejected references and non-existent root facts (roots recovered from the derivation items cited in the links, else F27)"
+    }
+  ],
+  "body_plan": {
+    "symmetry": "bilateral",
+    "origin": "limbless vertebrate analogue"
+  },
+  "temperament": "Patient ambush predator, irritable when disturbed.",
+  "secrets": [
+    "Electroreceptive rostrum tip can be harvested to build 'Sense' gear (Passive/Basic) that highlights prey in water.",
+    "Its tough, slick skin yields a 'Hydrodynamic' part that reduces drag (Defence) for aquatic builds.",
+    "Found near high-tide carcass lines: it caches large kills in kelp mats for later."
+  ],
+  "moments": [
+    "At dawn, when the tide drops to its lowest, it drags its massive body across the exposed, glistening shelf. It stops perfectly still in a shallow pool, its rostrum twitching like a radar dish, waiting for the first grazing zanco to lower its head to drink. The only sound is the wet drag of its belly and the distant crash of the surf."
+  ],
+  "journal": [
+    {
+      "en": "It moves like smoke and strikes like a whip."
+    },
+    {
+      "en": "The tide retreats, and so does its patience."
+    }
+  ]
+}

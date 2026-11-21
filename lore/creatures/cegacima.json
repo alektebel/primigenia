@@ -1,0 +1,296 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "cegacima",
+  "name": {
+    "en": "Cegacima"
+  },
+  "world": "primigenia",
+  "kind": "new",
+  "status": "draft",
+  "stage": "creature",
+  "niche": {
+    "habitat": "highlands",
+    "diet": "Carnivore: Zanco, Rondo, carrion",
+    "active": "Day",
+    "predators": [],
+    "trophic": "apex_predator",
+    "role": "apex_predator",
+    "prey": [
+      "zanco",
+      "garfio",
+      "alula",
+      "alariz"
+    ]
+  },
+  "body": "60 kg, 2.8 m",
+  "chains": [
+    {
+      "id": "cegacima.c1",
+      "trait": "Broad wings that flex like sails.",
+      "links": [
+        "Dense air (D11)",
+        "Drag 1.6x",
+        "High lift generation",
+        "Broad wings efficient"
+      ],
+      "roots": [
+        "F4"
+      ],
+      "skill": {
+        "id": "cegacima.thermal_soar",
+        "name": {
+          "en": "Thermal Soar"
+        },
+        "role": "Passive",
+        "effect": "Glides effortlessly, saves stamina.",
+        "numbers": {}
+      },
+      "weakness": "Grounded in calm air, must wait for wind or thermals.",
+      "observe": [
+        "Wingspan folds tight against the wind.",
+        "Circles without flapping.",
+        "Rests on cliff edges facing the breeze."
+      ],
+      "journal": {
+        "en": "It does not fly; it rides the air like a stone on a stream."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/foodweb-2026-11-21",
+        "date": "2026-11-21",
+        "summary": "Either raise wingspan to ~5.5–7 m for 60 kg, or cut mass to ~12–18 kg if wingspan must stay ~2.8–3.5 m; keep ‘calm = grounded’ as obligate-soarer honesty. Optionally note patagial camber control like harrier or stork, not true sail reefing.",
+        "fixes": [
+          "Either raise wingspan to ~5.5–7 m for 60 kg, or cut mass to ~12–18 kg if wingspan must stay ~2.8–3.5 m; keep ‘calm = grounded’ as obligate-soarer honesty. Optionally note patagial camber control like harrier or stork, not true sail reefing."
+        ],
+        "analogues": [
+          {
+            "organism": "Andean condor (Vultur gryphus) broad-wing thermal soaring; wandering albatross dynamic soaring in strong winds—both obligate soarers with low wing loading.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 4
+        }
+      },
+      "provenance": {
+        "council_run": "foodweb-2026-11-21",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "cegacima.c2",
+      "trait": "Polarized-light vision in the upper retina.",
+      "links": [
+        "D23 UV at altitude",
+        "Polarized sky background",
+        "Contrast enhancement",
+        "Detects prey silhouettes"
+      ],
+      "roots": [
+        "F14"
+      ],
+      "skill": {
+        "id": "cegacima.sky_lock",
+        "name": {
+          "en": "Sky Lock"
+        },
+        "role": "Basic",
+        "effect": "Highlights moving prey in fog or against clouds.",
+        "numbers": {}
+      },
+      "weakness": "Disoriented by direct glare of the yellow-white sun.",
+      "observe": [
+        "Head tilts to catch the sky reflection.",
+        "Eyes narrow when the sun is high.",
+        "Tracks prey against the bright horizon."
+      ],
+      "journal": {
+        "en": "It sees the sky's hidden lines, not just the beast below."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/foodweb-2026-11-21",
+        "date": "2026-11-21",
+        "summary": "A sky-facing dorsal retina fits a glide-hunter that picks silhouettes against the hemisphere. Polarization鼓起 contrast at hazy horizons (Rayleigh sky pattern, F17) complements, rather than replaces, acute vision in clear midday. Highland UV (F14/D23) favors protected ventral retina and a specialized dorsal tier—consistent with dual-purpose sky navigation and overhead search. Midday yellow-white sun glare as a weakness is realistic.",
+        "fixes": [
+          "A sky-facing dorsal retina fits a glide-hunter that picks silhouettes against the hemisphere. Polarization鼓起 contrast at hazy horizons (Rayleigh sky pattern, F17) complements, rather than replaces, acute vision in clear midday. Highland UV (F14/D23) favors protected ventral retina and a specialized dorsal tier—consistent with dual-purpose sky navigation and overhead search. Midday yellow-white sun glare as a weakness is realistic."
+        ],
+        "analogues": [
+          {
+            "organism": "Honeybee dorsal rim area sky-polarization compass; homing pigeon polarization-sensitive retinal mechanisms (weaker than insects but documented in birds).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 3
+        }
+      },
+      "provenance": {
+        "council_run": "foodweb-2026-11-21",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "cegacima.c3",
+      "trait": "Curved, serrated beak with a hollow core.",
+      "links": [
+        "Wind force (D17)",
+        "Air resistance during strike",
+        "Need to slice wind",
+        "Aerodynamic beak"
+      ],
+      "roots": [
+        "F19"
+      ],
+      "skill": {
+        "id": "cegacima.wind_cut",
+        "name": {
+          "en": "Wind Cut"
+        },
+        "role": "Engage",
+        "effect": "Strikes from glide, beak slices through defenses.",
+        "numbers": {}
+      },
+      "weakness": "Beak tips easily on basalt rocks.",
+      "observe": [
+        "Beak gleams with a smooth curve.",
+        "Cracks bone with a twist.",
+        "Avoids rocky perches."
+      ],
+      "journal": {
+        "en": "Its beak is a blade, honed by the wind it cuts."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/foodweb-2026-11-21",
+        "date": "2026-11-21",
+        "summary": "Hollow keratin/bone structure cuts head mass—important for any heavy glider. Streamlined rostrum lowers profile drag during fast stoop/strike in 1.6× wind force (F19/D17). Tomial serrations aid gripping flesh on fleeing ungulate-sized prey (Zanco/Rondo) without锻造 a heavy crushing bill. Brittleness on basalt is credible; raptor bills remodel via keratin growth.",
+        "fixes": [
+          "Hollow keratin/bone structure cuts head mass—important for any heavy glider. Streamlined rostrum lowers profile drag during fast stoop/strike in 1.6× wind force (F19/D17). Tomial serrations aid gripping flesh on fleeing ungulate-sized prey (Zanco/Rondo) without锻造 a heavy crushing bill. Brittleness on basalt is credible; raptor bills remodel via keratin growth."
+        ],
+        "analogues": [
+          {
+            "organism": "Toco toucan (Ramphastos toco) lightweight hollow bill; red merganser serrated tomium for gripping; gannet streamlined bill in plunge diving.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 3
+        }
+      },
+      "provenance": {
+        "council_run": "foodweb-2026-11-21",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "cegacima.c4",
+      "trait": "Muscular legs with locking talons.",
+      "links": [
+        "Gravity 1.05g (D6)",
+        "Stronger muscles needed for launch",
+        "Reinforced talons"
+      ],
+      "roots": [
+        "F2"
+      ],
+      "skill": {
+        "id": "cegacima.clutch",
+        "name": {
+          "en": "Clutch"
+        },
+        "role": "Poke",
+        "effect": "Grabs prey mid-air or on ground.",
+        "numbers": {}
+      },
+      "weakness": "Struggles on uneven ground.",
+      "observe": [
+        "Legs coil before a leap.",
+        "Talons lock onto prey.",
+        "Stumbles on loose scree."
+      ],
+      "journal": {
+        "en": "Even a bird of the wind must grip the earth to kill."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/foodweb-2026-11-21",
+        "date": "2026-11-21",
+        "summary": "1.05 g (D6/F2) slightly increases launch weight but is minor next to aerodynamic constraints. Raptorial foot musculature plus flexor tendon ‘lock’ is a standard perching/grappling adaptation for strike-and-hold predation from cliffs or short ground sprints. Awkwardness on scree matches long-legged soarers with reduced terrestrial agility.",
+        "fixes": [
+          "1.05 g (D6/F2) slightly increases launch weight but is minor next to aerodynamic constraints. Raptorial foot musculature plus flexor tendon ‘lock’ is a standard perching/grappling adaptation for strike-and-hold predation from cliffs or short ground sprints. Awkwardness on scree matches long-legged soarers with reduced terrestrial agility."
+        ],
+        "analogues": [
+          {
+            "organism": "Golden eagle (Aquila chrysaetos) hindlimb strike and digital flexor locking; secretary bird (Sagittarius serpentarius) powerful legs but poor balance on rubble.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 4
+        }
+      },
+      "provenance": {
+        "council_run": "foodweb-2026-11-21",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "Zanco",
+      "kind": "prey",
+      "note": "Hunts fast highland runners."
+    },
+    {
+      "with": "Rondo",
+      "kind": "prey",
+      "note": "Ambushes herd stragglers."
+    }
+  ],
+  "provenance": {
+    "council_run": "foodweb-2026-11-21",
+    "by": [
+      "naturalist/qwen"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-21",
+      "who": "import_got",
+      "what": "imported from council run foodweb-2026-11-21"
+    }
+  ],
+  "body_plan": {
+    "symmetry": "bilateral",
+    "arms": 2,
+    "origin": "Bipedal bird-like form, large membranous wings"
+  },
+  "temperament": "Patient hunter, ruthless in the air",
+  "secrets": [
+    "High ridge viewpoint"
+  ],
+  "moments": [
+    "The wind stops. A shadow drops. Silence falls over the Zanco herd."
+  ],
+  "journal": [
+    {
+      "en": "It does not fly; it rides the air like a stone on a stream."
+    },
+    {
+      "en": "It sees the sky's hidden lines, not just the beast below."
+    }
+  ]
+}

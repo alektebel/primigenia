@@ -1,0 +1,144 @@
+{
+  "schema": "cpore.plant/1",
+  "id": "cancro_madera",
+  "name": {
+    "en": "Cancro madera",
+    "es": "Cancro de Madera"
+  },
+  "world": "primigenia",
+  "status": "draft",
+  "growth_form": "fungus_like",
+  "habitats": [
+    "forest"
+  ],
+  "summary": "Un hongo polípero que disuelve madera muerta. El oxígeno alto (F5, D10) potencia enzimas oxidativas que licúan la lignina, permitiendo un crecimiento rápido en la biomasa forestal. La geometría de repisa responde al arrastre del aire denso (D11) y al viento (F19), canalizando ráfagas para expulsar esporas. Color crema y marrón; sin clorofila, la melanina da resistencia estructural y protección UV en los bordes (D23). La pasta blanda alimenta omnívoros y carroñeros; las hifas compiten con otros descomponedores.",
+  "chains": [
+    {
+      "id": "cancro_madera.c1",
+      "trait": "Lignina disolvente y carne blanda",
+      "links": [
+        "Hifas penetran madera muerta",
+        "pO2 alto (D10) permite oxidación rápida de polímeros sin calor",
+        "Extracción eficiente de nutrientes de la biomasa forestal densa"
+      ],
+      "roots": [
+        "F5"
+      ],
+      "play": "Regalo: Pasta fúngica (nutrición rápida y calmante). El jugador puede usar 'Pasta' para alimentar a un omnívoro o calmarlo. Habilidad: 'Mordisco blando' (Básico: inflige poco daño pero no gasta carne dura; útil contra presas blindadas).",
+      "weakness": "Fragil en borrascas secas; el viento (F19) sacude los sombreros pesados y los desprende si el micelio no está bien anclado.",
+      "observe": [
+        "Sombreros orientados contra el viento.",
+        "Hilos blancos brillan tenuemente con visión nocturna.",
+        "Carroñeros roen los bordes donde las enzimas ablandan la madera."
+      ],
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/foodweb-2026-11-21",
+        "date": "2026-11-21",
+        "summary": "Aerobic white-rot–style ligninolysis in wet forest litter fits D10/D28: elevated pO₂ supports oxidative lignin breakdown without fire. Bracket morphology and storm dislodgement suit F19 and D11.",
+        "fixes": [
+          "Shelf fungi do not meaningfully “compress” to blast spores like puffballs; dense air instead increases drag and can carry spores farther once released. Keep soft enzyme-rich tissue as scavenger/omnivore bait; storm vulnerability via wind loading at 1.6× force is fine."
+        ],
+        "analogues": [
+          {
+            "organism": "Trametes / Ganoderma bracket polypores",
+            "mechanism": "Extracellular peroxidases and laccases depolymerise lignin using O₂ (Floudas et al., 2012, from memory, unverified). Spores are passively shed into turbulent boundary-layer airflow."
+          }
+        ]
+      }
+    },
+    {
+      "id": "cancro_madera.c2",
+      "trait": "Geometría de repisa y estallido de esporas",
+      "links": [
+        "Aire denso (D11) ejerce arrastre 1.6×",
+        "Forma de repisa canaliza el flujo de aire",
+        "La presión del viento comprime la repisa y expulsa esporas"
+      ],
+      "roots": [
+        "F19",
+        "F2"
+      ],
+      "play": "Movimiento: 'Estallido de esporas' (Control: nubosidad que confunde a depredadores pequeños o reduce visibilidad a corta distancia). El jugador puede imitar el estallido para distraer o intimidar.",
+      "weakness": "Aire estancado atrapa esporas; la repisa se asfixia en grietas sin ventilación.",
+      "observe": [
+        "Esporas caen lentamente en remolinos.",
+        "Repisas se curvan bajo ráfagas.",
+        "Cicatrices blancas en troncos marcan zonas de reproducción."
+      ],
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/foodweb-2026-11-21",
+        "date": "2026-11-21",
+        "summary": "Aerobic white-rot–style ligninolysis in wet forest litter fits D10/D28: elevated pO₂ supports oxidative lignin breakdown without fire. Bracket morphology and storm dislodgement suit F19 and D11.",
+        "fixes": [
+          "Shelf fungi do not meaningfully “compress” to blast spores like puffballs; dense air instead increases drag and can carry spores farther once released. Keep soft enzyme-rich tissue as scavenger/omnivore bait; storm vulnerability via wind loading at 1.6× force is fine."
+        ],
+        "analogues": [
+          {
+            "organism": "Trametes / Ganoderma bracket polypores",
+            "mechanism": "Extracellular peroxidases and laccases depolymerise lignin using O₂ (Floudas et al., 2012, from memory, unverified). Spores are passively shed into turbulent boundary-layer airflow."
+          }
+        ]
+      }
+    }
+  ],
+  "gameplay": {
+    "food_for": [
+      "albinos"
+    ],
+    "gift_item": "Pasta fúngica",
+    "poison": null,
+    "healing": null,
+    "cover": null,
+    "climbing": false,
+    "nest_material": null,
+    "mineral_lick": null,
+    "notes": "Food-web batch 2026-11-21; eaters are listed in lore/foodweb/primigenia.json."
+  },
+  "relations": [],
+  "generator": {
+    "growth_form": "fungus_like",
+    "height_m": {
+      "min": 0.03,
+      "max": 0.4
+    },
+    "colour": {
+      "base": "Crema y marrón; sin clorofila, usa melanina para rigidez estructural y protección UV en los bordes del bosque (D23). El color crema indica tejido blando rico en enzimas y humedad."
+    }
+  },
+  "journal": [
+    {
+      "en": "Cancro de Madera: disuelve madera con aire denso; regala pasta blanda.",
+      "es": "Cancro de Madera: disuelve madera con aire denso; regala pasta blanda."
+    }
+  ],
+  "observe": [
+    "Sombreros orientados contra el viento.",
+    "Hilos blancos brillan tenuemente con visión nocturna.",
+    "Carroñeros roen los bordes donde las enzimas ablandan la madera.",
+    "Esporas caen lentamente en remolinos."
+  ],
+  "secrets": [
+    "Pieza de cuerpo: Carcasa blanda (escudo ligero contra mordiscos).",
+    "Fósil: Tronco colonizado por hifas antiguas.",
+    "Sabor: La pasta calma a los omnívoros."
+  ],
+  "provenance": {
+    "council_run": "foodweb-2026-11-21",
+    "by": [
+      "naturalist"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-21",
+      "who": "foodweb.py",
+      "what": "food-web batch slot P07 (decomposer/fungal_decomposer, forest); qwen draft, Composer botanist referee"
+    }
+  ],
+  "niche": {
+    "trophic": "decomposer",
+    "role": "fungal_decomposer"
+  }
+}
