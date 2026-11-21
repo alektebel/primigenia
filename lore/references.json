@@ -9091,5 +9091,34 @@
     },
     "container-title": "Springer",
     "x-checked": "2026-11-19"
+  },
+  {
+    "id": "balbi_frank_2023_oxygen_bottleneck",
+    "type": "article-journal",
+    "title": "The oxygen bottleneck for technospheres",
+    "author": [
+      {
+        "family": "Balbi",
+        "given": "Amedeo"
+      },
+      {
+        "family": "Frank",
+        "given": "Adam"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2023,
+          12,
+          28
+        ]
+      ]
+    },
+    "container-title": "Nature Astronomy",
+    "DOI": "10.1038/s41550-023-02112-8",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00), 2026-11-21",
+    "x-checked": "2026-11-21"
   }
 ]
