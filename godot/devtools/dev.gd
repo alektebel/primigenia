@@ -14,6 +14,8 @@ const Feedback := preload("res://devtools/feedback.gd")
 const AgentServer := preload("res://devtools/agent/agent_server.gd")
 const SitePicker := preload("res://devtools/site_picker.gd")
 const PathOverlay := preload("res://devtools/path_overlay.gd")
+const OptionsHud := preload("res://devtools/tuning/options_hud.gd")
+const OptionDefs := preload("res://devtools/tuning/option_defs.gd")
 
 ## 1. Dev tools ON in every debug build (the editor and `godot --path godot`); `--dev` forces on in any
 ##    build, `--no-dev` forces off.
@@ -34,6 +36,7 @@ var agent: Node               # AgentServer when started with --agent
 var feedback: CanvasLayer
 var tuning                    # TuningRegistry (entries appear when the island is ready)
 var tuning_panel: CanvasLayer
+var options_hud: CanvasLayer  # F10 option mode
 var sites                     # Sites for the running island (built when it is ready)
 var console: CanvasLayer     # console.console.registry is the command registry (also used by the agent socket)
 
@@ -70,6 +73,10 @@ func _ready() -> void:
 		tuning_panel.name = "TuningPanel"
 		tuning_panel.tuning = tuning
 		add_child(tuning_panel)
+		options_hud = OptionsHud.new()
+		options_hud.name = "OptionsHud"
+		options_hud.tuning = tuning
+		add_child(options_hud)
 		if "--agent" in OS.get_cmdline_user_args():
 			agent = AgentServer.new()
 			agent.name = "AgentServer"
@@ -93,8 +100,18 @@ func _on_island_ready() -> void:
 	var isl = get_tree().current_scene
 	if isl != null and isl.get("flight") != null:
 		isl.flight.register_console(console.registry)
+	OptionDefs.register(tuning, isl, console.registry)
+	_apply_opts_arg()
 	picker.sites = sites
 	picker.registry = console.registry
+
+## `-- --opts="light=day skin=v1"` sets option-mode variants once the island is ready (scorecards, agents).
+func _apply_opts_arg() -> void:
+	for a in OS.get_cmdline_user_args():
+		if a.begins_with("--opts="):
+			var r: Dictionary = console.registry.execute("opt " + a.substr(7).strip_edges())
+			if not r.ok:
+				push_warning("--opts: " + str(r.error))
 
 ## Both A/B slots and the active one, recorded by scenarios and feedback bundles.
 func tuning_state() -> Dictionary:

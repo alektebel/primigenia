@@ -27,6 +27,7 @@ var modal_open := false  # set by UI modules (radial, pause)
 var radial_open := false # set with modal_open by StageUI, for the key legend context
 var paused_ui := false
 var journal_open := false # the field journal is open (key legend context "journal")
+var options_open := false # the F10 option HUD (devtools/tuning/options_hud.gd): game keys are suspended while it is open
 var console_open := false # the dev console (devtools/console) sets this while it has the keyboard
 var zoo_args: Dictionary = {}           # {morphs, course} for the locomotion zoo (devtools/zoo), set by the `zoo` console command
 var pending_scenario: Dictionary = {}   # a read() scenario (devtools/scenario.gd) the island applies once it is built
@@ -72,7 +73,7 @@ func visual_ground(x: float, z: float) -> float:
 	return data.visual_ground(x, z) if data != null else 0.0
 
 func movement_blocked() -> bool:
-	if modal_open or console_open:
+	if modal_open or console_open or options_open:
 		return true
 	var vp := get_viewport()
 	return vp != null and vp.gui_get_focus_owner() != null

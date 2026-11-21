@@ -135,6 +135,21 @@ func _dispatch(req: Dictionary) -> Dictionary:
 		"console":
 			var r: Dictionary = Dev.console.registry.execute(str(req.get("text", "")))
 			return {"ok": r.ok, "out": r.out, "error": r.error}
+		"opt":
+			# {"cmd":"opt"} lists; {"cmd":"opt","set":{"light":"day"}} or {"cmd":"opt","preset":2} change; {"cmd":"opt","reset":true}
+			var tn = Dev.tuning
+			if req.has("set") and typeof(req.set) == TYPE_DICTIONARY:
+				for k in req.set:
+					var oe: String = tn.set_option(str(k), str(req.set[k]))
+					if oe != "":
+						return {"ok": false, "error": oe}
+			if req.has("preset"):
+				var pe: String = tn.recall_preset(int(req.preset))
+				if pe != "":
+					return {"ok": false, "error": pe}
+			if bool(req.get("reset", false)):
+				tn.apply({"format": tn.FORMAT, "values": {}})
+			return {"ok": true, "options": tn.current_values(), "line": tn.choices_line()}
 		"act":
 			if req.has("order"):
 				var res: Dictionary = st.world.command_input(str(req.order))

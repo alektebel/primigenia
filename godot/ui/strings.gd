@@ -376,6 +376,7 @@ const LEGEND_ES := {
 	"Step one tick (paused)": "Avanzar un tic (en pausa)",
 	"Swap tuning A/B": "Cambiar ajuste A/B",
 	"Tuning panel": "Panel de ajustes",
+	"Option mode (1-9 group, Up/Down option, Left/Right value, Backspace reset, Ctrl+1-4 save, Alt+1-4 recall)": "Modo opciones (1-9 grupo, arriba/abajo opcion, izquierda/derecha valor, Retroceso restablece, Ctrl+1-4 guarda, Alt+1-4 recupera)",
 	"Undo": "Deshacer",
 	"Walk there (a white circle marks it); a click on a creature only selects it": "Ir allí (lo marca un círculo blanco); un clic en una criatura solo la selecciona",
 	"Zoom down to it (map view icons)": "Acercar hasta ello (iconos del mapa)",
