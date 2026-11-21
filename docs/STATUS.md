@@ -25,11 +25,12 @@ Launch on the RTX: `__NV_PRIME_RENDER_OFFLOAD=1 __GLX_VENDOR_LIBRARY_NAME=nvidia
 | Branch | State | Next step |
 |---|---|---|
 | `w11-alpine` | skipped by the integrator (rewrites terrain v4 heights/goldens, drainage unresolved) | Owner: merge or close |
+| `anim/gait-lab` | paused by the owner 2026-11-21; brief only (`docs/briefs/gait-lab.md`, 63115fd): three.js 4×4 lab, 16 mutated bodies walking side by side, gait by Froude | Resume when the owner asks: relaunch a Sonnet agent with the brief |
 | `tools/gaitopt` | merged as tooling; pilot failed (6/10 bodies fall) | Paused; D-02 |
 
 Integration follow-ups (owner): wild slot reserve for cousins (radial animals capped at 23 of 24); Garfio no longer charges before the first evolve; cave mesher not wired into the island; untracked debug files in cpore-wt/art-underwater.
 
-**Lore (`lore/autoloop-2` merged):** (1) technosphere pass: every world gets its heat-path fact per A37 / `lore/rules/technosphere.md` (council proposes, astrobio referee judges); (2) resume the autoloop for the 4 paused worlds (wheels died mid-run at shutdown; orbital, metallic, deepinterior queued); (3) tech-tree council A30 on top. Fix the 2 validate errors in void/mycelia/oddities.
+**Lore (`lore/autoloop-2` merged):** (0) **NEW, owner 2026-11-21: Primigenia full food web**, a random batch covering every trophic level (producers through apex, scavengers, decomposers, parasites, mutualists), brief `docs/briefs/trophic-web.md`; first lore item; (0c) **NEW, owner 2026-11-21: 40 real exoplanets, renamed, reverse-engineered for life** (Opus data/seeds/review, Codex pipeline kind `exoplanet`, council writes), brief `docs/briefs/exoplanets-40.md`, after the food web; (0b) **D-28 proposal**: oxygen gates every flame (creature flamethrower → steam/acid jet below ~16% O₂ or underwater, wildfire ≥18%, industry on charge at low O₂), in `lore/rules/technosphere.md`, 48 h auto-accept; (1) technosphere pass: every world gets its heat-path fact per A37 / `lore/rules/technosphere.md` (council proposes, astrobio referee judges); (2) resume the autoloop for the 4 paused worlds (wheels died mid-run at shutdown; orbital, metallic, deepinterior queued); (3) tech-tree council A30 on top. Fix the 2 validate errors in void/mycelia/oddities.
 
 ## Background jobs (die on shutdown)
 - Lore autoloop: `tools/agents/agents.sh restart lore` (worktree lore-autoloop2).
