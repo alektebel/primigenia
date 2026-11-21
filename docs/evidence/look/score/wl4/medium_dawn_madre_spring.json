@@ -1,0 +1,154 @@
+{
+ "checks": [
+  {
+   "actual": 0.0157,
+   "failure": "Oversaturated colour",
+   "id": "saturation_over",
+   "kinds": [
+    "world"
+   ],
+   "metric": "sat_over",
+   "op": "<",
+   "source": "starting value: at most 10% of lit pixels above S 0.85 (HSV); LOOK.md 7 'saturation histogram vs palette limits'; palette limit not yet set by the owner",
+   "value": 0.1,
+   "verdict": "PASS"
+  },
+  {
+   "actual": 0.6588,
+   "failure": "Oversaturated colour",
+   "id": "saturation_p95",
+   "kinds": [
+    "world"
+   ],
+   "metric": "sat_p95",
+   "op": "<=",
+   "source": "starting value: p95 saturation of lit pixels <= 0.90; LOOK.md 7",
+   "value": 0.9,
+   "verdict": "PASS"
+  },
+  {
+   "actual": 0.549,
+   "failure": "Flat light, no shadows",
+   "id": "flat_light",
+   "kinds": [
+    "world"
+   ],
+   "metric": "contrast",
+   "op": ">=",
+   "source": "starting value: (p95-p5 luminance)/255 >= 0.35 on world shots; LOOK.md 7 'luminance contrast and shadow coverage'",
+   "tods": [
+    "dawn",
+    "midday",
+    "dusk"
+   ],
+   "value": 0.35,
+   "verdict": "PASS"
+  },
+  {
+   "actual": 0.0,
+   "failure": "Flat light, no shadows",
+   "id": "world_crushed",
+   "kinds": [
+    "world"
+   ],
+   "metric": "crush_frac",
+   "op": "<",
+   "source": "starting value: at most 5% of world pixels crushed (luminance <= 12); LOOK.md 7",
+   "tods": [
+    "dawn",
+    "midday",
+    "dusk"
+   ],
+   "value": 0.05,
+   "verdict": "PASS"
+  },
+  {
+   "actual": 0.0,
+   "failure": "Too much bloom or blur",
+   "id": "bloom",
+   "metric": "clip_frac",
+   "op": "<",
+   "source": "starting value: at most 2% of pixels clipped to white (luminance >= 250); LOOK.md 7 'clipped-highlight fraction'",
+   "value": 0.02,
+   "verdict": "PASS"
+  },
+  {
+   "actual": 1.8372,
+   "failure": "Noisy, dirty textures",
+   "id": "noise_world",
+   "kinds": [
+    "world"
+   ],
+   "metric": "hf_noise",
+   "op": "<",
+   "source": "starting value: mean |L - blur1(L)| < 6 grey levels at 1280x720; LOOK.md 7 'high-frequency energy at game distance'",
+   "value": 6.0,
+   "verdict": "PASS"
+  },
+  {
+   "actual": 200,
+   "failure": "Too much bloom or blur",
+   "id": "blur",
+   "metric": "sharp_p99",
+   "op": ">=",
+   "source": "starting value: p99 of |Laplacian| >= 120 by day (dawn, midday, dusk); LOOK.md 7 sharpness",
+   "tods": [
+    "dawn",
+    "midday",
+    "dusk"
+   ],
+   "value": 120,
+   "verdict": "PASS"
+  },
+  {
+   "actual": 0.0617,
+   "failure": "Visible tiling",
+   "id": "tiling",
+   "kinds": [
+    "world"
+   ],
+   "metric": "tiling",
+   "op": "<",
+   "source": "starting value: max normalised 2-D autocorrelation of the detrended ground strip at lags >= 32 px < 0.30; LOOK.md 7 'repetition detection on wide shots'",
+   "value": 0.3,
+   "verdict": "PASS"
+  },
+  {
+   "actual": 1.3904,
+   "failure": "Light does not follow the day cycle",
+   "id": "day_cycle_warmth",
+   "metric": "warmth_shift",
+   "op": ">",
+   "source": "starting value: dawn and dusk are at least 5% warmer (mean R/B) than midday; LOOK.md 3 'warm dawn and dusk'",
+   "tods": [
+    "dawn",
+    "dusk"
+   ],
+   "value": 1.05,
+   "verdict": "PASS"
+  }
+ ],
+ "info": {
+  "kind": "world",
+  "shot": "madre_spring",
+  "tier": "medium",
+  "tod": "dawn"
+ },
+ "metrics": {
+  "clip_frac": 0.0,
+  "contrast": 0.549,
+  "crush_frac": 0.0,
+  "hf_noise": 1.8372,
+  "lum_mean": 100.54,
+  "mean_b": 94.82,
+  "mean_r": 109.88,
+  "sat_mean": 0.3865,
+  "sat_over": 0.0157,
+  "sat_p95": 0.6588,
+  "sharp_p99": 200,
+  "spec_frac": 2e-05,
+  "tiling": 0.0617,
+  "warmth_shift": 1.3904
+ },
+ "name": "medium_dawn_madre_spring"
+}
