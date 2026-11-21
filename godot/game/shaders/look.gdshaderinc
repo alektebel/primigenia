@@ -111,7 +111,7 @@ vec3 scene_out(vec3 lin, vec3 wp, vec3 cam) {
 	// Moonlight is nearly colourless: the night world keeps a third of its chroma (sun_vis 0 at night, 1 by day).
 	// Dawn and dusk (warm low sun: sun_color red over blue) calm the world's chroma, hue kept: the warm key made the grass over-saturated.
 	float warm_key = smoothstep(0.1, 0.5, sun_color.r - sun_color.b);
-	lin = mix(vec3(dot(lin, vec3(0.2126, 0.7152, 0.0722))), lin, mix(0.3, 1.0, sun_vis) * mix(1.0, 0.62, warm_key));
+	lin = mix(vec3(dot(lin, vec3(0.2126, 0.7152, 0.0722))), lin, mix(0.3, 1.0, sun_vis) * mix(1.0, 0.8, warm_key));
 	return godot_albedo(tm_inv(srgb_decode(aerial(srgb_encode(tm(lin * sun_color + ambient_color)), wp, cam))));
 }
 

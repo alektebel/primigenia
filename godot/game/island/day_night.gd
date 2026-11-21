@@ -5,7 +5,7 @@ extends Node
 const Look := preload("res://game/island/look.gd")
 const DUSK := Color(1.0, 0.52, 0.30)
 const MOON := Color(0.55, 0.68, 1.0)
-const NIGHT_AMBIENT := Color(0.42, 0.50, 0.70)
+const NIGHT_AMBIENT := Color(0.28, 0.36, 0.72)
 var env: Environment
 var sun: DirectionalLight3D
 var k := 1.0           # smoothed light 0..1
@@ -95,7 +95,7 @@ func update_now() -> void:
 	sun.transform = Transform3D(Basis.looking_at(-(pal.sun_dir as Vector3), Vector3.UP), Vector3.ZERO)
 	RenderingServer.global_shader_parameter_set("moon_k", 1.0 - day)   # creature skins: moonlight fill and rim (skin v1)
 	sun.light_color = warm
-	sun.light_energy = Look.CREATURE_SUN_ENERGY * lerpf(0.2, 1.0, day) * (1.0 - inside)
+	sun.light_energy = Look.CREATURE_SUN_ENERGY * lerpf(0.12, 1.0, day) * (1.0 - inside)
 	env.ambient_light_color = NIGHT_AMBIENT.lerp(Look.CREATURE_AMBIENT_COLOR, day)
-	env.ambient_light_energy = Look.CREATURE_AMBIENT_ENERGY * lerpf(2.0, 1.0, day) * lerpf(1.0, 0.3, inside)
+	env.ambient_light_energy = Look.CREATURE_AMBIENT_ENERGY * lerpf(0.65, 1.0, day) * lerpf(1.0, 0.3, inside)
 	env.tonemap_exposure = Look.TONEMAP_EXPOSURE * lerpf(0.68, 1.0, day) * lerpf(1.0, 0.8, inside)

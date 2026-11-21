@@ -2,6 +2,7 @@ shader_type spatial;
 render_mode cull_disabled, alpha_to_coverage;
 uniform vec4 leaf_margin : source_color = vec4(0.44, 0.24, 0.34, 1.0);
 // UV2.x selects scraped soil (-4), down (-3), hairy leaf (-2), bark (-1), solid tissue (0), a blade (1), or a compound spray.
+global uniform vec3 ambient_color;   // the world's night fill (day_night.gd), 0 by day
 varying float pigment_shift;
 varying vec3 wood_tangent;
 
@@ -80,5 +81,6 @@ void fragment() {
 	ALBEDO = OUTPUT_IS_SRGB ? pow(pigment, vec3(0.64)) : pigment;
 	ROUGHNESS = style > 0.5 ? 0.85 : 0.96;
 	SPECULAR = 0.12;
+	EMISSION = ALBEDO * ambient_color * 22.0;   // night fill for trees and shrubs (the creature stage keeps its own lights)
 	BACKLIGHT = style > 0.5 ? ALBEDO * 0.22 : vec3(0.0);
 }
