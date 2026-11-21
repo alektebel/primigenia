@@ -5,6 +5,8 @@ Owner request 2026-11-21: "design a first batch of random creatures occupying al
 ## Starting point
 Primigenia has 19 creatures (`lore/creatures/*.json`, world `primigenia`) and 21 flora (`lore/flora/`). Diets are free text (`niche.diet`, `prey`, `predators`), with no trophic level field, so the gaps are unknown.
 
+Method: `lore/rules/derivation.md`. Primigenia's derivation sheet comes first (F5: volcanic island, 21% O₂), then producers, then each level up.
+
 ## Steps (council: chair + astrobio referee + ecologist seat; A22 first principles, A37 technosphere untouched)
 1. **Classify what exists.** Give every Primigenia creature and plant one level plus a role:
    - producers: photosynthetic, chemosynthetic at the vents/sulphur crusts

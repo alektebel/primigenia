@@ -1,6 +1,6 @@
-# Brief (lore council): 40 real exoplanets, renamed, reverse-engineered for life
+# Brief (lore council): 40 real exoplanets, renamed, life derived forward from their physics
 
-Owner request 2026-11-21: "put in the list some 40 different exoplanets discovered to date, named after the real name a bit modified, and reverse-engineer how creatures should be on that planet to exist, using the council, Codex and Opus to manage it." Tracker test: L-EXO40. Feeds the Space stage (A22: the player must be able to predict life from physics) and the tech trees (A30, A37 technosphere, D-28 oxygen and flame).
+Owner request 2026-11-21: "put in the list some 40 different exoplanets discovered to date, named after the real name a bit modified, and reverse-engineer how creatures should be on that planet to exist, using the council, Codex and Opus to manage it." Tracker test: L-EXO40. **Method: `lore/rules/derivation.md` (Weir): derive forward from the measured data; biosphere before creatures; derivation sheet per world; at most one declared violation.** Feeds the Space stage (A22: the player must be able to predict life from physics) and the tech trees (A30, A37 technosphere, D-28 oxygen and flame).
 
 ## Roles (AGENTS.md)
 - **Opus** plans and manages: picks the planets and their real data, writes the seeds, reviews the council's output. No project code.
@@ -27,7 +27,7 @@ Owner request 2026-11-21: "put in the list some 40 different exoplanets discover
 
 ## Step 2 — Codex: exoplanet kind in the pipeline
 - The seed accepts a `real` block (the measured fields above), and the planet stage must start from these values: it may fill gaps but never contradict them.
-- New frame section for `exoplanet`, the reverse-engineering chain. For each world, derive in this order:
+- New frame section for `exoplanet`, the forward derivation chain (`lore/rules/derivation.md`). The planet stage writes `lore/worlds/<id>.derivation.json` first; the validator recomputes gravity, equilibrium temperature, scale height, water boiling point at pressure, Jeans escape and the O₂ thresholds, and fails on mismatch. For each world, derive in this order:
   1. the energy source (light spectrum at the surface, tidal heat, chemistry, radiolysis)
   2. the solvent and temperature window
   3. pressure and gravity, and from them body size, posture and limb count
@@ -36,7 +36,7 @@ Owner request 2026-11-21: "put in the list some 40 different exoplanets discover
   6. oxygen and oxidisers, which gate flame and metal (A37, D-28)
   7. the hazards (flares, radiation, storms)
 
-  The creatures follow from that chain. Every creature trait must cite which planet parameter forces it.
+  The creatures follow from that chain. Every creature trait must cite a sheet key (`because:`); producers and the food web come before the playable creatures.
 - The validator flags any creature trait without a parameter link, and any value that contradicts the `real` block.
 - Tests for the new kind; existing worlds must not change.
 

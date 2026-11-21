@@ -52,6 +52,7 @@ Project skills that turn the "use" and "trial" items into procedures: `.claude/s
 | X2 | "UI Moments" video, 36 loading animations | later | Pick one or two for the loading screen / creator "thinking" state; Emil rules. Local copy: `~/Desarrollo/cpore-refs/videos/ui-moments-loading-36.mp4` |
 | X3 | Spore gorilla knuckle-walk video | use: main motion reference | Head level, shoulders above hips, knuckle-walk on long arms, torso rolls with each hand plant. Local copy: `~/Desarrollo/cpore-refs/videos/spore-gorilla-knucklewalk.mp4` (never commit) |
 | X4 | Second twimg video from the Blender article (`lmv4sHs8MDBAgsS5.mp4`) | not downloaded | Download to `~/Desarrollo/cpore-refs/videos/` to assess |
+| X5 | Andy Weir's world-building method (owner's research notes, 2026-11-21): Physics Today "Science inspires, but does not limit"; Scientific American podcast "The real science behind Project Hail Mary"; Huge Conversations (Cleo Abram) transcript; Film Threat; IFLScience; Planetary Radio Book Club | use: lore method | Derive forward from a few fixed constraints, biosphere before characters, auditable numbers in a spreadsheet, at most one physics violation, internal coherence over source data. Written as `lore/rules/derivation.md`. Medium confidence on the exact Erid figures (from summaries) |
 
 ## The agent-driven Blender article (summary)
 Source: owner paste 2026-11-20 (keno "GPT Dot" builds itself and a Tesla Roadster scene in Blender; Hirokazu Yokohara's AI-only Blender test; rewind's Claude + Blender + Unreal + Meshy game pipeline, "every tool one job").
