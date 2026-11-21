@@ -102,6 +102,138 @@ def flora_main():
     print("flora done")
 
 
+def slug(t):
+    from lorelib import slug as _s
+    return _s(t)
+
+
+def plant_doc(slot, v, ver, date, run):
+    """council plant JSON (PLANT_SCHEMA) + botanist verdict -> cpore.plant/1 draft"""
+    name = str(v.get("name", slot["slot"])).strip(); pid = slug(name)
+    gf = v.get("growth_form") if v.get("growth_form") in ("tree", "shrub", "rosette", "herb", "grass", "fern", "moss_lichen", "vine", "algae", "fungus_like") else "moss_lichen"
+    hmin, hmax = float(v.get("height_min_m") or 0.001), float(v.get("height_max_m") or 0.05)
+    chains = []
+    for n, ch in enumerate(v["chains"][:4], 1):
+        pl = {"verdict": "unreviewed", "judge": "none", "date": date}
+        if ver and ver.get("verdict") in ("plausible", "fixable", "implausible"):
+            pl = {"verdict": ver["verdict"], "judge": f"astrobio/{run}", "date": date}
+            if ver.get("summary"): pl["summary"] = str(ver["summary"])
+            if ver.get("fix"): pl["fixes"] = [str(ver["fix"])]
+            if ver.get("analogue"): pl["analogues"] = [{"organism": str(ver["analogue"]), "mechanism": str(ver.get("analogue_mechanism") or "as named by the referee; no reference recorded")}]
+        chains.append({"id": f"{pid}.c{n}", "trait": str(ch.get("trait", "")), "links": [str(x) for x in ch.get("links", [])][:5] or ["(none)"],
+                       "roots": [r for r in ch.get("roots", []) if re.fullmatch(r"F[0-9]+", str(r))] or ["F24"], "play": str(ch.get("play", "")), "weakness": str(ch.get("weakness", "")),
+                       "observe": [str(x) for x in ch.get("observe", [])][:4] or ["(nothing recorded)"], "plausibility": pl})
+    jr = {"en": str(v.get("journal", ""))}; 
+    if v.get("journal_es"): jr["es"] = str(v["journal_es"])
+    doc = {"schema": "cpore.plant/1", "id": pid, "name": {"en": name, **({"es": str(v["name_es"])} if v.get("name_es") else {})}, "world": "primigenia", "status": "draft", "growth_form": gf,
+           "habitats": [str(x) for x in v.get("habitats", slot["habitats"])] or slot["habitats"], "summary": str(v.get("summary", "")), "chains": chains,
+           "gameplay": {"food_for": [], "gift_item": v.get("gift_item"), "poison": v.get("poison"), "healing": None, "cover": None, "climbing": False, "nest_material": None, "mineral_lick": None, "notes": "Food-web batch 2026-11-21; eaters are listed in lore/foodweb/primigenia.json."},
+           "relations": [], "generator": {"growth_form": gf, "height_m": {"min": hmin, "max": max(hmax, hmin)}, "colour": {"base": str(v.get("colour", ""))}},
+           "journal": [jr], "observe": [str(x) for c in v["chains"][:2] for x in c.get("observe", [])][:4], "secrets": [str(x) for x in v.get("secrets", [])],
+           "provenance": {"council_run": run, "by": ["naturalist"]}, "changelog": [{"date": date, "who": "foodweb.py", "what": f"food-web batch slot {slot['slot']} ({slot['level']}/{slot['role']}, {', '.join(slot['habitats'])}); qwen draft, Composer botanist referee"}]}
+    return doc
+
+
+def merge_main():
+    """Import the council's species and plants as lore drafts and add them to the web (level/role/habitats from the slot, eats from the model's own relations and diet)."""
+    import subprocess, datetime
+    from lorelib import dump
+    date = datetime.date.today().isoformat(); run = f"foodweb-{date}"
+    gdir = os.path.join(RD, "got", "species")
+    subprocess.run([sys.executable, os.path.join(LORE, "import_got.py"), os.path.join(gdir, "graph.json"), "--world", "primigenia", "--kind", "new", "--run", run], check=True)
+    sys.path.insert(0, HERE)
+    os.environ["LORE_RUNS_DIR"] = RD
+    import autoloop
+    autoloop.patch_profiles({"id": "primigenia", "stage": "creature"}, RD, {})
+    p = os.path.join(ROOT, "lore", "foodweb", "primigenia.json"); web = load(p); M = web["members"]
+    # slot -> species names
+    slot_names = {}
+    for f in glob.glob(os.path.join(gdir, "6_species_S*_FOOD_WEB_SLOT_*.json")):
+        if f.endswith("_review.json") or f.endswith("_astrobio.json"): continue
+        sid = os.path.basename(f).split("_")[2]; d = load(f)
+        d = d if isinstance(d, list) else next((x for x in d.values() if isinstance(x, list)), [d]) if isinstance(d, dict) else []
+        slot_names[sid] = [x.get("name") for x in d if isinstance(x, dict) and x.get("name")]
+    by_slot = {s["slot"]: s for s in DRAW["creature_slots"]}
+    names = {}
+    for sid, ns in slot_names.items():
+        sl = by_slot.get(sid)
+        if not sl: continue
+        for n in ns[:1]:
+            cid = slug(n); f = os.path.join(ROOT, "lore", "creatures", cid + ".json")
+            if not os.path.exists(f): print("missing creature file", cid); continue
+            c = load(f); names[n.lower()] = cid; names[c["name"]["en"].lower()] = cid
+            M[cid] = {"kind": "creature", "level": sl["level"], "role": sl["role"], "habitats": sl["habitats"], "eats": M.get(cid, {}).get("eats", []), "new": True, "slot": sl["slot"],
+                      "size": sl["size"], "plan": sl["plan"], "activity": sl["activity"]}
+    # plants
+    fd = os.path.join(RD, "flora"); ver = load(os.path.join(fd, "referee.json")) if os.path.exists(os.path.join(fd, "referee.json")) else {}
+    for sl in DRAW["plant_slots"]:
+        f = os.path.join(fd, sl["slot"] + ".json")
+        if not os.path.exists(f): print("no plant for", sl["slot"]); continue
+        doc = plant_doc(sl, load(f), ver.get(sl["slot"]), date, run); pf = os.path.join(ROOT, "lore", "flora", doc["id"] + ".json")
+        if not os.path.exists(pf): dump(doc, pf)
+        M[doc["id"]] = {"kind": "plant", "level": sl["level"], "role": sl["role"], "habitats": sl["habitats"], "eats": M.get(doc["id"], {}).get("eats", ["detritus"] if sl["level"] == "decomposer" else []), "new": True, "slot": sl["slot"],
+                        **({"defended": True} if sl["role"] == "parasite" else {})}
+        names[doc["name"]["en"].lower()] = doc["id"]
+    # initial eats from each new creature's relations (kind prey) and diet words
+    for cid, m in M.items():
+        if m["kind"] != "creature" or not m.get("new"): continue
+        c = load(os.path.join(ROOT, "lore", "creatures", cid + ".json")); eats = set(m.get("eats", []))
+        for r in c.get("relations", []):
+            w = str(r.get("with", "")); t = M.get(w) and w or names.get(w.lower()) or (slug(w) if slug(w) in M else None)
+            if t and r.get("kind") == "prey": eats.add(t)
+            if t and r.get("kind") == "predation": M[t].setdefault("eats", []); 
+            if t and r.get("kind") == "predation" and cid not in M[t]["eats"] and M[t]["kind"] == "creature": M[t]["eats"].append(cid)
+        d = c["niche"]["diet"].lower()
+        for tok in ("carrion", "detritus", "dung"):
+            if tok in d: eats.add(tok)
+        for k in M:
+            if k != cid and len(k) > 4 and re.search(r"\b" + re.escape(k) + r"\b", d): eats.add(k)
+        m["eats"] = sorted(e for e in eats if e in M or e in ("carrion", "detritus", "dung"))
+    dump(web, p); print("web now has", len(M), "members")
+
+
+def roster_table(M):
+    lines = []
+    for i, m in M.items():
+        extra = ""
+        if m.get("new") and m["kind"] == "creature":
+            c = load(os.path.join(ROOT, "lore", "creatures", i + ".json")); extra = f" | size {m.get('size')}, diet: {c['niche']['diet'][:90]}"
+        lines.append(f"{i} | {m['kind']} | {m['level']}/{m['role']} | {','.join(m['habitats'])} | eats now: {','.join(m.get('eats', [])) or '-'}{extra}")
+    return "\n".join(lines)
+
+
+def edges_main():
+    """Ecologist seat: complete the web. Loops: foodweb.check -> errors -> qwen proposes edges -> merge -> check (max 4 rounds)."""
+    os.environ["LORE_RUNS_DIR"] = RD; os.environ["LORE_CTX"] = os.path.join(RD, "ctx.json")
+    import council
+    from council import ask, best_json, ADV, CANON
+    import importlib.util
+    spec = importlib.util.spec_from_file_location('lore_foodweb', os.path.join(LORE, 'foodweb.py')); fw = importlib.util.module_from_spec(spec); spec.loader.exec_module(fw)
+    from lorelib import dump
+    p = os.path.join(ROOT, "lore", "foodweb", "primigenia.json")
+    for rnd in range(4):
+        web = load(p); M = web["members"]
+        sp = fw.spawn_weights(M)
+        for i in M: M[i]["spawn"] = sp[i]
+        dump(web, p); fw.apply_web(ROOT)
+        errs, _ = fw.check_web(ROOT)
+        errs = [e for e in errs if "niche.trophic" not in e and "needs at least" not in e and "no new" not in e]
+        if not errs: print("web consistent after", rnd, "rounds"); return
+        print("round", rnd, len(errs), "problems", flush=True)
+        task = ("You are the ecologist of the council. Complete Primigenia's food web. ROSTER (id | kind | level/role | habitats | what it eats now):\n" + roster_table(M) +
+                "\n\nPROBLEMS found by the checker:\n" + "\n".join(errs[:60]) +
+                "\n\nRules: a consumer eats only species that share one of its habitats and sit at a lower trophic level (producer < decomposer < primary < secondary/scavenger < tertiary < apex); resources are carrion, detritus, dung. "
+                "Every species except apex animals (and coloso, player_lineage) must be eaten by at least one species in its habitat. Every new consumer eats 1-5 foods. Do not make cycles. Apex animals eat tertiary, secondary and primary consumers. "
+                "Do not widen a species' habitats. Output ONLY JSON: {\"set_eats\": {id: [full list of what it eats]}} for every species whose list must change; only new species (new in the roster comment) and the species named in the problems may change.")
+        t = ask("naturalist", ADV["naturalist"] + "\n\n" + CANON, task, temp=0.3, max_tokens=9000)
+        try: v = best_json(t)["set_eats"]
+        except Exception as e: print("edges unparsable", e); continue
+        for i, lst in v.items():
+            if i in M and isinstance(lst, list): M[i]["eats"] = sorted({x for x in lst if x in M or x in ("carrion", "detritus", "dung")})
+        dump(web, p)
+    print("web still has problems after 4 rounds; patch by hand")
+
+
 def base_web():
     """Existing 19 creatures + 20 plants -> members of lore/foodweb/primigenia.json (new members are added by foodweb.py merge)."""
     from foodweb_classify import EATS, NO_PREDATOR
@@ -122,5 +254,7 @@ if __name__ == "__main__":
     cmd = sys.argv[1] if len(sys.argv) > 1 else ""
     if cmd == "ctx": build_ctx()
     elif cmd == "base": base_web()
+    elif cmd == "merge": merge_main()
+    elif cmd == "edges": edges_main()
     elif cmd == "flora": flora_main()
     else: sys.exit(__doc__)
