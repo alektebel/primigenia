@@ -132,6 +132,16 @@ static func _tooth_base(c: Creature, mi: MeshInstance3D) -> Vector3:
 	return _body_xf(c, mi) * base
 
 
+## Radius of the first ring of a tube mesh (the root of a horn: curve_tube, 12 vertices per ring).
+static func _tube_root_radius(mi: MeshInstance3D) -> float:
+	var pos: PackedVector3Array = (mi.get_meta("geo") as CreatureGeo).pos
+	var cen := Vector3.ZERO
+	for j in 12:
+		cen += pos[j]
+	cen /= 12.0
+	return (pos[0] - cen).length()
+
+
 ## Full measurement of one built creature. {parts:[...], eyes:[...], teeth:{...}, limbs:[...], horns:[...], summary:{...}}
 static func measure(c: Creature) -> Dictionary:
 	var ring := body_ring_positions(c)
@@ -185,7 +195,8 @@ static func measure(c: Creature) -> Dictionary:
 				box = b if first else box.merge(b)
 				first = false
 			out["horns"].append({"type": e["type"], "t": e["t"], "length": box.get_longest_axis_size(), "head_r": head_r,
-				"length_ratio": box.get_longest_axis_size() / head_r})
+				"length_ratio": box.get_longest_axis_size() / head_r,
+				"base_ratio": _tube_root_radius(meshes[0]) / head_r if e["type"] == "cuerno" else 0.0})
 	# Limb roots: the thickest cross-section in the top 60% of the upper segment against the cross-section just above
 	# the knee. A ball or thigh blob at the hip reads as a separate piece (ratio well above 1); a taper is near 1.
 	for l in c.legs:
@@ -233,11 +244,13 @@ static func measure(c: Creature) -> Dictionary:
 			bad_limbs += 1
 		worst_emerge = maxf(worst_emerge, l["emerge"])
 	var worst_horn := 0.0
+	var worst_base := 0.0
 	for h in out["horns"]:
 		worst_horn = maxf(worst_horn, h["length_ratio"])
+		worst_base = maxf(worst_base, h["base_ratio"])
 	out["summary"] = {"parts": out["parts"].size(), "floating": floating, "teeth": out["teeth"].size(), "teeth_out": bad_teeth,
 		"worst_tooth_r": worst_tooth, "eyes": out["eyes"].size(), "eyes_bad": bad_eyes, "limbs": out["limbs"].size(),
-		"limbs_bad": bad_limbs, "worst_emerge": worst_emerge, "worst_horn_ratio": worst_horn}
+		"limbs_bad": bad_limbs, "worst_emerge": worst_emerge, "worst_horn_ratio": worst_horn, "worst_horn_base": worst_base}
 	return out
 
 

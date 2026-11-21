@@ -375,6 +375,7 @@ godot-creature-test:
 	nice -n 10 timeout 600 $(GODOT) --headless --path godot --script res://creature/tests/test_creature.gd
 	nice -n 10 timeout 600 $(GODOT) --headless --path godot --script res://creature/tests/test_realism.gd
 	nice -n 10 timeout 600 $(GODOT) --headless --path godot --script res://creature/tests/test_radial.gd
+	nice -n 10 timeout 600 $(GODOT) --headless --path godot --script res://creature/tests/test_fit.gd
 # Radial body plans (docs/godot/CREATURE-RADIAL.md): per-species views, gait strips, lineup, island habitats, bilateral guard.
 .PHONY: godot-radial-evidence
 godot-radial-evidence:

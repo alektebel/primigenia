@@ -21,7 +21,7 @@ func _run() -> void:
 		list.append([id, Creatures.genome(id)])
 	for s in SEEDS:
 		list.append(["seed%d" % s, CreatureFit.random_genome(s)])
-	print("%-8s %5s %5s | %-9s %-9s | %-9s | %-12s | %s" % ["creature", "parts", "float", "teeth out", "worst r", "eyes bad", "limbs bad/bulge", "horn len/head"])
+	print("%-8s %5s %5s | %-9s %-9s | %-9s | %-12s | %s" % ["creature", "parts", "float", "teeth out", "worst r", "eyes bad", "limbs bad/bulge", "horn len/base"])
 	for e in list:
 		var c := Creature.new()
 		root.add_child(c)
@@ -32,7 +32,7 @@ func _run() -> void:
 			continue
 		var m := CreatureFit.measure(c)
 		var s: Dictionary = m["summary"]
-		print("%-8s %5d %5d | %3d/%-5d %-9.2f | %2d/%-6d | %2d/%-2d %-7.2f | %.2f" % [e[0], s["parts"], s["floating"], s["teeth_out"], s["teeth"], s["worst_tooth_r"], s["eyes_bad"], s["eyes"], s["limbs_bad"], s["limbs"], s["worst_emerge"], s["worst_horn_ratio"]])
+		print("%-8s %5d %5d | %3d/%-5d %-9.2f | %2d/%-6d | %2d/%-2d %-7.2f | %.2f/%.2f" % [e[0], s["parts"], s["floating"], s["teeth_out"], s["teeth"], s["worst_tooth_r"], s["eyes_bad"], s["eyes"], s["limbs_bad"], s["limbs"], s["worst_emerge"], s["worst_horn_ratio"], s["worst_horn_base"]])
 		for p in m["parts"]:
 			if p["floating"]:
 				print("    FLOATING %s side %d gap %.3f (tol %.3f)" % [p["type"], p["side"], p["gap"], p["tol"]])

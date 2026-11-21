@@ -315,7 +315,7 @@ func make(p: Dictionary, off: Vector3, r := .6, context := {}) -> Node3D:
 		return _make_glb(type, p, off)
 	if m.get("responsive", false):
 		return _make_creator(type, p, off, r, context)
-	var g := _make_classic(type, p, off)
+	var g := _make_classic(type, p, off, r)
 	if m.get("category") == "mouths":
 		# Older procedural mouths sit .3*size behind the mount.
 		var inner := _group(null, "inner")
@@ -423,7 +423,7 @@ static func _cone_z(r: float, h: float, z: float) -> CreatureGeo:
 	return CreatureGeo.cone(r, h, 10).rotate_x(PI / 2).translate(0, 0, z)
 
 
-func _make_classic(type: String, p: Dictionary, o: Vector3) -> Node3D:
+func _make_classic(type: String, p: Dictionary, o: Vector3, mount_r := .6) -> Node3D:
 	var s: float = p.get("size", 1.0)
 	match type:
 		"fauces", "romo", "pico":
@@ -493,7 +493,7 @@ func _make_classic(type: String, p: Dictionary, o: Vector3) -> Node3D:
 			var g := Node3D.new()
 			var L: float = p["len"]
 			var c: float = p["curve"]
-			_mesh(CreatureGeo.curve_tube(func(u): return Vector3(0, -c * L * .7 * u * u, L * u * (1 - .2 * c * u) - .06), .2 * s, 14, 12, X0), "bone", g)
+			_mesh(CreatureGeo.curve_tube(func(u): return Vector3(0, -c * L * .7 * u * u, L * u * (1 - .2 * c * u) - .06), minf(.2 * s, .24 * mount_r), 14, 12, X0), "bone", g)   # base thickness follows the head it grows from
 			return g
 		"pua":
 			var g := Node3D.new()
