@@ -1,0 +1,309 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "rastron",
+  "name": {
+    "en": "Rastrón"
+  },
+  "world": "primigenia",
+  "kind": "new",
+  "status": "draft",
+  "stage": "creature",
+  "niche": {
+    "habitat": "shore",
+    "diet": "carrion, detritus, plankton, eggs",
+    "active": "nocturnal",
+    "predators": [
+      "sombra_de_la_marea"
+    ],
+    "trophic": "secondary_consumer",
+    "role": "egg_thief",
+    "prey": [
+      "garra_marea"
+    ]
+  },
+  "body": "15 cm length, 0.7 kg mass",
+  "chains": [
+    {
+      "id": "rastron.c1",
+      "trait": "Elongated snout with mobile rhinarium",
+      "links": [
+        "Avoids diurnal wind and heat",
+        "Dense 1.6 bar air slows molecular diffusion",
+        "Scent trails persist 1.6× longer in still night air"
+      ],
+      "roots": [
+        "F3",
+        "F6"
+      ],
+      "skill": {
+        "id": "rastron.night_sniff",
+        "name": {
+          "en": "Night Sniff"
+        },
+        "role": "Basic",
+        "effect": "Tracks scent trails for 15s, reveals hidden eggs and carrion markers.",
+        "numbers": {}
+      },
+      "weakness": "Loud noises disrupt tracking; sensitive to strong chemical sprays.",
+      "observe": [
+        "Lifts nose to wind",
+        "Taps snout on damp rock",
+        "Follows invisible line through wrack"
+      ],
+      "journal": {
+        "en": "They don't hunt by sight. The thick air carries the salt and decay where the eyes fail."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/foodweb-2026-11-21",
+        "date": "2026-11-21",
+        "summary": "Nocturnal shore foraging on carrion and eggs fits F16/D18: still night air and fog-prone dawns extend scent usability when F20 turbidity and moonless nights (F6) weaken vision. A tactile, mobile rhinarium is a standard tetrapod solution for close-range chemotaxis without large eyes. At 15 cm, diffusion-limited scent patches in wrack lines are a real search problem worth specialized rostral tissue.",
+        "fixes": [
+          "Nocturnal shore foraging on carrion and eggs fits F16/D18: still night air and fog-prone dawns extend scent usability when F20 turbidity and moonless nights (F6) weaken vision. A tactile, mobile rhinarium is a standard tetrapod solution for close-range chemotaxis without large eyes. At 15 cm, diffusion-limited scent patches in wrack lines are a real search problem worth specialized rostral tissue."
+        ],
+        "analogues": [
+          {
+            "organism": "Star-nosed mole (Eimer’s organ for touch–smell fusion at short range); canids and procyonids (mobile rhinarium on intertidal carrion)",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "vogel_1994_life"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "foodweb-2026-11-21",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "rastron.c2",
+      "trait": "Hinged jaw with calcite-softening salivary glands",
+      "links": [
+        "Niche targets hard-shelled intertidal eggs",
+        "Mechanical cracking is energetically costly in 1.05 g gravity",
+        "Evolved acidic saliva to dissolve calcium carbonate shells"
+      ],
+      "roots": [
+        "F2"
+      ],
+      "skill": {
+        "id": "rastron.shell_soften",
+        "name": {
+          "en": "Shell Soften"
+        },
+        "role": "Engage",
+        "effect": "Sprays acidic saliva on target, breaks defense in 8s, leaves sour taste.",
+        "numbers": {}
+      },
+      "weakness": "Saliva depletes quickly; using it on bone yields no extra nutrients.",
+      "observe": [
+        "Clicks jaws before striking",
+        "Licks rock then mouth",
+        "Swallows whole, no chewing"
+      ],
+      "journal": {
+        "en": "They melt stone to reach the white inside. A clever trick, until the acid burns their own tongue."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/foodweb-2026-11-21",
+        "date": "2026-11-21",
+        "summary": "Target thin intertidal egg chorions or low-calcite spawn collars (not thick avian eggs). Chain root: jaw force vs shell thickness + D25 energy cost, not F2 alone. Saliva = mild acid (pH ~4–5) plus proteases; paired weakness: keratinized tongue/gum linings or brief bursts only (already in lore).",
+        "fixes": [
+          "Target thin intertidal egg chorions or low-calcite spawn collars (not thick avian eggs). Chain root: jaw force vs shell thickness + D25 energy cost, not F2 alone. Saliva = mild acid (pH ~4–5) plus proteases; paired weakness: keratinized tongue/gum linings or brief bursts only (already in lore)."
+        ],
+        "analogues": [
+          {
+            "organism": "Egg-eating snakes (Dasypeltis spp.: hinged gape, oral specializations, gastric dissolution of shell); some colubrids pierce and swallow shell fragments",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "foodweb-2026-11-21",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "rastron.c3",
+      "trait": "Splayed forelimbs with keratinized gripping pads",
+      "links": [
+        "Shore habitat features wet, slick basalt and tidal scour",
+        "High wind force per m/s pushes light bodies",
+        "Low center of gravity and strong grip essential"
+      ],
+      "roots": [
+        "F4"
+      ],
+      "skill": {
+        "id": "rastron.grip_climb",
+        "name": {
+          "en": "Grip Climb"
+        },
+        "role": "Defence",
+        "effect": "Climbs vertical wet surfaces in 4s, escapes grapples and falls safely.",
+        "numbers": {}
+      },
+      "weakness": "Pads lose adhesion in dry, dusty highlands; vulnerable to heatstroke inland.",
+      "observe": [
+        "Sprints up vertical rock",
+        "Pads flare against spray",
+        "Hangs upside down in crevices"
+      ],
+      "journal": {
+        "en": "Wet stone would fling them off, but their feet stick like damp paper. A shore-born grip."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/foodweb-2026-11-21",
+        "date": "2026-11-21",
+        "summary": "Low-profile shore tetrapod on slick basalt during F13 tidal scour and F19/D17 gale fits selection for wide stance, low centre of mass, and wet-surface adhesion. Dense air (F4) makes aerial escape costly for a 0.7 kg body, so clinging and crevice refuge are honest. Inland dry heat failure is the expected specialist trade-off.",
+        "fixes": [
+          "Low-profile shore tetrapod on slick basalt during F13 tidal scour and F19/D17 gale fits selection for wide stance, low centre of mass, and wet-surface adhesion. Dense air (F4) makes aerial escape costly for a 0.7 kg body, so clinging and crevice refuge are honest. Inland dry heat failure is the expected specialist trade-off."
+        ],
+        "analogues": [
+          {
+            "organism": "Marine iguana (intertidal grip); geckos and anoles (keratin pad microstructure on wet surfaces); rocky-shore crabs (parallel niche, different phylum)",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "biewener_2003_animal"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "foodweb-2026-11-21",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "rastron.c4",
+      "trait": "Ampullae-like electroreceptors in snout and forelimbs",
+      "links": [
+        "Nocturnal tide pools have low visibility and turbid water",
+        "Mechanical vibration and bioelectric fields reveal trapped prey",
+        "Evolved electroreceptive pits to detect heartbeats and struggling larvae"
+      ],
+      "roots": [
+        "F20",
+        "F6"
+      ],
+      "skill": {
+        "id": "rastron.tide_sense",
+        "name": {
+          "en": "Tide Sense"
+        },
+        "role": "Poke",
+        "effect": "Pulses ground/water, reveals hidden targets in 6s radius, stuns if too close.",
+        "numbers": {}
+      },
+      "weakness": "Useless on dry land; electrical storms cause temporary confusion.",
+      "observe": [
+        "Presses snout to water",
+        "Freezes when waves crash",
+        "Twitches forepaws in rhythm"
+      ],
+      "journal": {
+        "en": "They listen to the water's pulse. In the dark, every heartbeat is a drum."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/foodweb-2026-11-21",
+        "date": "2026-11-21",
+        "summary": "Keep passive pits for tide-pool and damp wrack only; skill = short-range reveal of hidden eggs/invertebrates, no discharge. Drop stun or gate it as ‘highly speculative’ optional deep-secret. Observe behaviour: snout pressed to water, freeze on wave noise (vibration masking), not rhythmic paw ‘pulses’.",
+        "fixes": [
+          "Keep passive pits for tide-pool and damp wrack only; skill = short-range reveal of hidden eggs/invertebrates, no discharge. Drop stun or gate it as ‘highly speculative’ optional deep-secret. Observe behaviour: snout pressed to water, freeze on wave noise (vibration masking), not rhythmic paw ‘pulses’."
+        ],
+        "analogues": [
+          {
+            "organism": "Platypus and echidna (bill/beak electroreceptors in turbid water); sharks and rays (ampullae of Lorenzini, passive); paddlefish (rostral electroreception)",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "foodweb-2026-11-21",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "brujula",
+      "kind": "predation",
+      "note": "Ambushes near wrack lines where rastrons crack eggs."
+    },
+    {
+      "with": "garfio",
+      "kind": "predation",
+      "note": "Snatches stray juveniles during spring tide openings."
+    }
+  ],
+  "provenance": {
+    "council_run": "foodweb-2026-11-21",
+    "by": [
+      "naturalist/qwen"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-21",
+      "who": "import_got",
+      "what": "imported from council run foodweb-2026-11-21"
+    }
+  ],
+  "body_plan": {
+    "symmetry": "bilateral",
+    "arms": 4,
+    "origin": "tetrapod colonization"
+  },
+  "temperament": "cautious, opportunistic, stealthy",
+  "secrets": [
+    "Find a tide pool with a cluster of pale eggs to unlock the 'Shell Soften' move early.",
+    "Spot one standing perfectly still on a vertical spray-slick cliff to reveal 'Grip Climb'."
+  ],
+  "moments": [
+    "On a moonless night, a cluster of them presses against a wet basalt wall, snouts trembling in unison, reading the silent language of decay and salt."
+  ],
+  "journal": [
+    {
+      "en": "The tide recedes, leaving treasures in the dark."
+    },
+    {
+      "en": "They steal the future, one softened shell at a time."
+    }
+  ]
+}

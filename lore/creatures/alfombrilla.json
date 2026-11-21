@@ -1,0 +1,316 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "alfombrilla",
+  "name": {
+    "en": "Alfombrilla"
+  },
+  "world": "primigenia",
+  "kind": "new",
+  "status": "draft",
+  "stage": "creature",
+  "niche": {
+    "habitat": "forest, meadow",
+    "diet": "Herbivore: soft leaf tissue of nieblon, paja_dulce, and musgo_faro.",
+    "active": "dawn and dusk",
+    "predators": [
+      "alula",
+      "mantohoja"
+    ],
+    "trophic": "primary_consumer",
+    "role": "grazer"
+  },
+  "body": "4.2 cm length, 0.8 g mass",
+  "chains": [
+    {
+      "id": "alfombrilla.c1",
+      "trait": "Micro-wings beat at high frequency.",
+      "links": [
+        "Dense air (1.6 bar, D8) increases drag and lift at small scales.",
+        "High metabolic turnover requires efficient aerial dispersal between food patches.",
+        "Dawn cooling (D9) increases air density further, boosting wing loading and flight stability.",
+        "F4, F3"
+      ],
+      "roots": [
+        "F4",
+        "F3"
+      ],
+      "skill": {
+        "id": "alfombrilla.drift_glide",
+        "name": {
+          "en": "Drift Glide"
+        },
+        "role": "Basic",
+        "effect": "Move 30m with 1 stamina; silent in fog.",
+        "numbers": {}
+      },
+      "weakness": "Stamina drains fast in dry midday air.",
+      "observe": [
+        "Wings blurring in dawn light",
+        "Drifting on thermal updrafts",
+        "Landing silently on leaf veins"
+      ],
+      "journal": {
+        "en": "They don't fly; they sail the thick dawn."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/foodweb-2026-11-21",
+        "date": "2026-11-21",
+        "summary": "Reframe as crepuscular **wing-assisted jumping + Drift Glide** (F4): 1–3 s of high-frequency beat to clear the litter layer, then expose large micro-wings and ride dawn ground fog / weak updrafts for ≤30 m. Midday weakness stays (lower humidity, thermals, higher evaporative cost). Do not claim dense air makes flapping ‘efficient’—claim it makes **gliding distance per beat** favourable. Optionally note six leg-pairs as reduced wings + walking legs (hexapod baseline, D30 empty herbivore-insect niche).",
+        "fixes": [
+          "Reframe as crepuscular **wing-assisted jumping + Drift Glide** (F4): 1–3 s of high-frequency beat to clear the litter layer, then expose large micro-wings and ride dawn ground fog / weak updrafts for ≤30 m. Midday weakness stays (lower humidity, thermals, higher evaporative cost). Do not claim dense air makes flapping ‘efficient’—claim it makes **gliding distance per beat** favourable. Optionally note six leg-pairs as reduced wings + walking legs (hexapod baseline, D30 empty herbivore-insect niche)."
+        ],
+        "analogues": [
+          {
+            "organism": "Thrips and chalcid wasps use clap-and-fling at high wingbeat frequency; aphids and spiders use wind-assisted ‘ballooning’ between plants; ant queens and many beetles make short dispersal hops rather than continuous flight (Ellington’s insect flight framework).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "ellington_1984_aerodynamics"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 4
+        }
+      },
+      "provenance": {
+        "council_run": "foodweb-2026-11-21",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "alfombrilla.c2",
+      "trait": "Broad-spectrum compound eyes track dim movement.",
+      "links": [
+        "Morning fog scatters yellow-white sunlight (F17, F8).",
+        "Dense air dampens high-frequency sounds, shifting communication to visuals.",
+        "Low-light conditions select for rhodopsin-rich retinas and reduced photoreceptor density.",
+        "F3, F8, F4"
+      ],
+      "roots": [
+        "F3",
+        "F8",
+        "F4"
+      ],
+      "skill": {
+        "id": "alfombrilla.fog_vision",
+        "name": {
+          "en": "Fog Vision"
+        },
+        "role": "Passive",
+        "effect": "See prey and threats through fog at +20% range.",
+        "numbers": {}
+      },
+      "weakness": "Blinded by direct sun glare or sudden flares (F10).",
+      "observe": [
+        "Eyes reflecting low dawn light",
+        "Tracking drifting swarm fragments",
+        "Dilated in fog, pinched in bright sun"
+      ],
+      "journal": {
+        "en": "Their eyes are wet lenses for the dim world."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/foodweb-2026-11-21",
+        "date": "2026-11-21",
+        "summary": "Crepuscular activity (F3 26 h day, F8 ~180 foggy dawns) selects for motion vision in dim, scatter-dominated light (F17). For a skittish leaf grazer at swarm edge, compound eyes that pool signal in low light fit fog-trap ecology better than reliance on high calls that attenuate in grass and fog (F4). Meadow/shore predators (acechalunas, alula) are silhouette threats at dawn—motion detection is adaptive. Sun glare and rare UV spikes from flares (F10) plus high-slope UV habit elsewhere on the island (F14) justify midday/blindness weakness without breaking island UV budget at sea level (F14 0.9× at coast).",
+        "fixes": [
+          "Crepuscular activity (F3 26 h day, F8 ~180 foggy dawns) selects for motion vision in dim, scatter-dominated light (F17). For a skittish leaf grazer at swarm edge, compound eyes that pool signal in low light fit fog-trap ecology better than reliance on high calls that attenuate in grass and fog (F4). Meadow/shore predators (acechalunas, alula) are silhouette threats at dawn—motion detection is adaptive. Sun glare and rare UV spikes from flares (F10) plus high-slope UV habit elsewhere on the island (F14) justify midday/blindness weakness without breaking island UV budget at sea level (F14 0.9× at coast)."
+        ],
+        "analogues": [
+          {
+            "organism": "Cockroach (Periplaneta) and nocturnal/crepuscular moth compound eyes for motion in dim light; mantid ommatidia for prey tracking at dusk.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 2
+        }
+      },
+      "provenance": {
+        "council_run": "foodweb-2026-11-21",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "alfombrilla.c3",
+      "trait": "Mass feeding synchronizes leaf consumption.",
+      "links": [
+        "High pO2 accelerates plant alkaloid production (F5, F25).",
+        "Concentrated feeding overwhelms plant chemical defenses via throughput.",
+        "Swarm saturation reduces individual predation risk via predator gape limits (D25).",
+        "F26, D25"
+      ],
+      "roots": [
+        "F5",
+        "F25"
+      ],
+      "skill": {
+        "id": "alfombrilla.leaf_swarm",
+        "name": {
+          "en": "Leaf Swarm"
+        },
+        "role": "Engage",
+        "effect": "Consume a plant object rapidly; gain +5 mass, attract nearby predators.",
+        "numbers": {}
+      },
+      "weakness": "Leaves a chewed trail that alerts ground carnivores.",
+      "observe": [
+        "Hundreds converging on a single leaf",
+        "Mandibles working in rhythmic waves",
+        "Leaf skeletonization leaving red veins"
+      ],
+      "journal": {
+        "en": "One mouth is a pest; a hundred is a storm."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/foodweb-2026-11-21",
+        "date": "2026-11-21",
+        "summary": "Chain: alkaloid spike ← synchronized wounding ← many mouths ← dawn fog cover ← F8/F16. Drop pO₂→alkaloid rate; keep F25 ‘honest red veins’ as post-damage warning and Albombrilla albino secret (avoid toxic patches). Cap swarm density per plant object for biomass; +5 mass is gameplay fudge unless individuals are much lighter (~50–100 mg) for true carpet swarms.",
+        "fixes": [
+          "Chain: alkaloid spike ← synchronized wounding ← many mouths ← dawn fog cover ← F8/F16. Drop pO₂→alkaloid rate; keep F25 ‘honest red veins’ as post-damage warning and Albombrilla albino secret (avoid toxic patches). Cap swarm density per plant object for biomass; +5 mass is gameplay fudge unless individuals are much lighter (~50–100 mg) for true carpet swarms."
+        ],
+        "analogues": [
+          {
+            "organism": "Locust and Mormon cricket outbreak synchrony; rose sawfly and Japanese beetle group skeletonization overwhelming per-plant induced defenses.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 3
+        }
+      },
+      "provenance": {
+        "council_run": "foodweb-2026-11-21",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "alfombrilla.c4",
+      "trait": "Woven egg sacs anchor to plant axils.",
+      "links": [
+        "Dense air slows moisture diffusion, but egg membranes still desiccate without micro-forest cover.",
+        "Forest understory maintains stable humidity near stems (F28).",
+        "Anchoring prevents swarm dispersal during night convection storms (F8).",
+        "F16, D9"
+      ],
+      "roots": [
+        "F16"
+      ],
+      "skill": {
+        "id": "alfombrilla.silk_bind",
+        "name": {
+          "en": "Silk Bind"
+        },
+        "role": "Defence",
+        "effect": "Secure a cluster of eggs to a stem; +3 defense against wind.",
+        "numbers": {}
+      },
+      "weakness": "Stationary target for aerial predators like alula.",
+      "observe": [
+        "Fine silk threads stitching leaf axils",
+        "Translucent eggs glistening with humidity",
+        "Adults patrolling the silk cluster"
+      ],
+      "journal": {
+        "en": "They tie their future to the green stem."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/foodweb-2026-11-21",
+        "date": "2026-11-21",
+        "summary": "Root anchoring in **F19 storms + F8 convection**, with axils as micro-greenhouse (F18 meadow/forest edge). Silk Bind = modified salivary/tarsal protein (cite convergence, not unique spider silk). Game carcass ‘six legs’ matches insect hexapod; rename flavour text if ‘six arms’ means three pairs of walking legs only. +3 defense vs wind is honest; vs alula needs crypsis or hairy silk, not just glue.",
+        "fixes": [
+          "Root anchoring in **F19 storms + F8 convection**, with axils as micro-greenhouse (F18 meadow/forest edge). Silk Bind = modified salivary/tarsal protein (cite convergence, not unique spider silk). Game carcass ‘six legs’ matches insect hexapod; rename flavour text if ‘six arms’ means three pairs of walking legs only. +3 defense vs wind is honest; vs alula needs crypsis or hairy silk, not just glue."
+        ],
+        "analogues": [
+          {
+            "organism": "Embioptera (webspinners) silk from foretarsi; gregarious sawfly larvae silk matrices; lacewing eggs on stalks (different tactic, same ‘anchor off substrate’ pressure).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 3
+        }
+      },
+      "provenance": {
+        "council_run": "foodweb-2026-11-21",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "acechalunas",
+      "kind": "predation",
+      "note": "Dawn hunters stalk alfombrilla swarms on forest edges."
+    },
+    {
+      "with": "alula",
+      "kind": "predation",
+      "note": "Omnivorous frugivores snatch swarming alfombrilla for protein."
+    }
+  ],
+  "provenance": {
+    "council_run": "foodweb-2026-11-21",
+    "by": [
+      "naturalist/qwen"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-21",
+      "who": "import_got",
+      "what": "imported from council run foodweb-2026-11-21"
+    },
+    {
+      "date": "2026-11-21",
+      "who": "foodweb.py fix",
+      "what": "removed rejected references and non-existent root facts (roots recovered from the derivation items cited in the links, else F27)"
+    }
+  ],
+  "body_plan": {
+    "symmetry": "bilateral",
+    "arms": 6,
+    "origin": "arthropod-like"
+  },
+  "temperament": "skittish, swarming, herd-like",
+  "secrets": [
+    "Collect all six legs from carcasses to unlock Silk Bind.",
+    "Find the albino variant: pure white swarm that avoids red-veined plants.",
+    "Watch a full dawn-to-dusk cycle from a high meadow viewpoint to see the swarm synchronize with fog density."
+  ],
+  "moments": [
+    "At first light, the meadow edge shimmers as a low fog rolls in. The alfombrilla emerge from the leaf litter, not crawling but drifting on the damp air, a living carpet of green-grey wings settling onto the grass tips. When a shadow crosses the sun, they vanish into the dew in a single synchronized ripple, leaving only bent stems and silence."
+  ],
+  "journal": [
+    {
+      "en": "They don't graze; they tide in and out."
+    },
+    {
+      "en": "The forest floor breathes with them."
+    }
+  ]
+}

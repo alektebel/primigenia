@@ -222,5 +222,9 @@
   "secrets": [
     "The best seedling microsites occur where old crust margins meet water-holding cracks, rather than at the reddest colony centres.",
     "Similar crust on ordinary lava and crater-rim rock prevents its colour from serving as a unique meteor clue."
-  ]
+  ],
+  "niche": {
+    "trophic": "producer",
+    "role": "photosynthetic"
+  }
 }

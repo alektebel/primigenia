@@ -16,7 +16,9 @@
       "Garfio",
       "Espinodo",
       "Merodeador"
-    ]
+    ],
+    "trophic": "primary_consumer",
+    "role": "grazer"
   },
   "body": "Tall stilt-walker with elongated metapodials that absorb shock and keep the body clear of ground fog and biting insects. Their neck-sway balance display counters the 1.6× wind force on exposed ridges, while their rhythmic stomp-dance doubles as a ground-drum alarm.",
   "chains": [

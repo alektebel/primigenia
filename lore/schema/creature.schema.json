@@ -325,6 +325,49 @@
           "items": {
             "type": "string"
           }
+        },
+        "trophic": {
+          "enum": [
+            "producer",
+            "primary_consumer",
+            "secondary_consumer",
+            "tertiary_consumer",
+            "apex_predator",
+            "scavenger",
+            "decomposer",
+            "parasite",
+            "omnivore"
+          ],
+          "description": "optional: trophic level (lore/foodweb, docs/lore/primigenia-food-web.md)"
+        },
+        "role": {
+          "enum": [
+            "photosynthetic",
+            "chemosynthetic",
+            "mixotroph",
+            "grazer",
+            "browser",
+            "frugivore",
+            "granivore",
+            "nectarivore",
+            "filter_feeder",
+            "algae_scraper",
+            "insectivore",
+            "small_predator",
+            "egg_thief",
+            "mid_predator",
+            "apex_predator",
+            "scavenger",
+            "detritivore",
+            "fungal_decomposer",
+            "parasite",
+            "parasitoid",
+            "omnivore",
+            "cleaner",
+            "seed_disperser",
+            "pollinator"
+          ],
+          "description": "optional: ecological role within the level"
         }
       }
     },

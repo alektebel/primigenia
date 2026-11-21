@@ -202,5 +202,9 @@
     "Several patches together reveal the ejecta ray's bend, helping narrow the search for the five shards.",
     "A dense patch may surround buried weathering debris without marking an intact shard.",
     "Its ecology provides no answer to what the second capsule did."
-  ]
+  ],
+  "niche": {
+    "trophic": "producer",
+    "role": "photosynthetic"
+  }
 }

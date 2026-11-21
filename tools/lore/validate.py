@@ -31,7 +31,7 @@ def validate_all(root):
     if refs is None: errors.append("lore/references.json: missing")
     wdir = os.path.join(root, "lore", "worlds")
     worlds = {}  # id -> (all fact ids, active fact ids)
-    wfiles = sorted(os.path.join(wdir, n) for n in os.listdir(wdir) if n.endswith(".json")) if os.path.isdir(wdir) else []
+    wfiles = sorted(os.path.join(wdir, n) for n in os.listdir(wdir) if n.endswith(".json") and not n.endswith(".derivation.json")) if os.path.isdir(wdir) else []
     if not wfiles: errors.append("lore/worlds: no world files")
     status = {}
     if refs is not None:
@@ -136,6 +136,11 @@ def validate_all(root):
             for i, r in enumerate(c.get("relations", [])):
                 if r.get("with", "").lower() not in targets and r.get("with") not in pids:
                     (warnings if c.get("status") == "draft" else errors).append(f"{fn}: $.relations[{i}].with: '{r.get('with')}' is not a known creature, alias or plant")
+    # derivation sheets (lore/rules/derivation.md) and the food web (docs/briefs/trophic-web.md)
+    from derivation import validate_derivations
+    from foodweb import check_web
+    e, w = validate_derivations(root); errors += e; warnings += w
+    e, w = check_web(root); errors += e; warnings += w
     return errors, warnings
 
 

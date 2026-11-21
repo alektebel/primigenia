@@ -22,7 +22,9 @@
       "Zanco",
       "Young Merodeador",
       "Carrion"
-    ]
+    ],
+    "trophic": "tertiary_consumer",
+    "role": "mid_predator"
   },
   "body": "Low-slung raider with a short, wide skull built for crushing bone and chitin, and powerful hip joints that power short, explosive bursts through dense air. Their ragged, low-frequency call acts as an acoustic jammer to interrupt rival courtship, while an elastic throat sac delivers a deimatic startle boom.",
   "chains": [

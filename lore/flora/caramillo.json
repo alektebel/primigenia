@@ -273,5 +273,9 @@
   ],
   "secrets": [
     "Most mature trees never develop a sounding cavity."
-  ]
+  ],
+  "niche": {
+    "trophic": "producer",
+    "role": "photosynthetic"
+  }
 }

@@ -1,0 +1,276 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "brincaniebla",
+  "name": {
+    "en": "Brincaniebla"
+  },
+  "world": "primigenia",
+  "kind": "new",
+  "status": "draft",
+  "stage": "creature",
+  "niche": {
+    "habitat": "to be written",
+    "diet": "to be written",
+    "active": "to be written",
+    "predators": [
+      "alula"
+    ],
+    "trophic": "primary_consumer",
+    "role": "browser"
+  },
+  "body": "to be written",
+  "chains": [
+    {
+      "id": "brincaniebla.c1",
+      "trait": "large, reflective tapetum lucidum eyes",
+      "links": [
+        "trait: large, reflective tapetum lucidum eyes gather faint light",
+        "why: nocturnal activity avoids diurnal herbivore competition",
+        "why: D11 dense air scatters daylight, reducing contrast in fog",
+        "why: F8 cold sea meets warm volcanic ground creates persistent morning fog"
+      ],
+      "roots": [
+        "F6",
+        "F8"
+      ],
+      "skill": {
+        "id": "brincaniebla.dusk_gaze",
+        "name": {
+          "en": "Dusk Gaze"
+        },
+        "role": "Poke",
+        "effect": "Highlights fruit clusters and safe branches in darkness, +12% forage success",
+        "numbers": {}
+      },
+      "weakness": "Dazzled by sudden bright flashes and direct moonlight on snow",
+      "observe": [
+        "pupils dilate fully in low light",
+        "retinal tapetum reflects green eye-shine",
+        "forages only during moonless hours"
+      ],
+      "journal": {
+        "en": "It waits for dark to climb. Light betrays it, but darkness hides it."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/foodweb-2026-11-21",
+        "date": "2026-11-21",
+        "summary": "Keep tapetum and Dusk Gaze. Align observe text with predation: forage mainly under closed canopy or in fog-dawn(F8/F3), not exposed moonless skylines where acechalunas hunts; moon-on-snow dazzle weakness stays.",
+        "fixes": [
+          "Keep tapetum and Dusk Gaze. Align observe text with predation: forage mainly under closed canopy or in fog-dawn(F8/F3), not exposed moonless skylines where acechalunas hunts; moon-on-snow dazzle weakness stays."
+        ],
+        "analogues": [
+          {
+            "organism": "Kinkajou (Potos flavus) and northern greater galago (Otolemur garnettii): nocturnal arboreal frugivores with strong eye-shine from tapetum lucidum.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "mainster_2007_vertebrate"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 5
+        }
+      },
+      "provenance": {
+        "council_run": "foodweb-2026-11-21",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "brincaniebla.c2",
+      "trait": "short limbs with padded, non-retractile digits",
+      "links": [
+        "trait: short limbs with padded, non-retractile digits grip bark",
+        "why: frequent branch falls are survivable due to air resistance",
+        "why: D11 air density provides 1.6× drag, lowering terminal velocity",
+        "why: F4 dense atmosphere makes aerial descent low-risk"
+      ],
+      "roots": [
+        "F4"
+      ],
+      "skill": {
+        "id": "brincaniebla.soft_landing",
+        "name": {
+          "en": "Soft Landing"
+        },
+        "role": "Defence",
+        "effect": "Reduces fall damage by 70% and stabilizes instantly on impact",
+        "numbers": {}
+      },
+      "weakness": "Struggles on smooth, vertical rock faces and slick tuff",
+      "observe": [
+        "toes splay to distribute weight on curved branches",
+        "hisses softly when slipping",
+        "never builds nests above 10 m"
+      ],
+      "journal": {
+        "en": "Gravity is a suggestion here. The air catches it before the ground does."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/foodweb-2026-11-21",
+        "date": "2026-11-21",
+        "summary": "Soft Landing: tie bonus to small mass + 1.6× drag + controlled splay/glide among twigs, cap at modest reduction (e.g. 25–40% in lore), not 70%. Haunting drop: highest branch to lower canopy ok; full ground drop only from moderate height or during fog when acechalunas is less visual.",
+        "fixes": [
+          "Soft Landing: tie bonus to small mass + 1.6× drag + controlled splay/glide among twigs, cap at modest reduction (e.g. 25–40% in lore), not 70%. Haunting drop: highest branch to lower canopy ok; full ground drop only from moderate height or during fog when acechalunas is less visual."
+        ],
+        "analogues": [
+          {
+            "organism": "Silky anteater (Cyclopes didactylus) and woolly opossum (Caluromys spp.): short limbs, soft pads, branch gripping; parachute frogs (Rhacophorus) show drag-assisted descent but need expanded surfaces, not pads alone.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 3
+        }
+      },
+      "provenance": {
+        "council_run": "foodweb-2026-11-21",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "brincaniebla.c3",
+      "trait": "highly efficient alveolar lungs with cross-current exchange",
+      "links": [
+        "trait: highly efficient alveolar lungs with cross-current exchange oxygenate blood",
+        "why: high pO₂ supports active nocturnal foraging and larger neural tissue",
+        "why: D10 partial pressure of oxygen is 1.6× Earth's standard",
+        "why: F5 elevated oxygen allows costly aerobic organs without overheating"
+      ],
+      "roots": [
+        "F5"
+      ],
+      "skill": {
+        "id": "brincaniebla.sustained_pace",
+        "name": {
+          "en": "Sustained Pace"
+        },
+        "role": "Basic",
+        "effect": "Maintains climb and sprint speed for 20% longer without fatigue",
+        "numbers": {}
+      },
+      "weakness": "Overheats quickly in direct afternoon sun and humid still air",
+      "observe": [
+        "flanks rise and fall steadily during rest",
+        "tongue lolls only after exertion",
+        "bouts of high activity followed by prolonged grooming"
+      ],
+      "journal": {
+        "en": "It breathes thick air like wine. The oxygen fuels its endless climbing."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/foodweb-2026-11-21",
+        "date": "2026-11-21",
+        "summary": "Replace cross-current with high capillary density, elevated hematocrit, or efficient tidal ventilation exploiting 1.6× pO₂; rename skill effect to modest stamina (10–15%) unless a highly speculative flying-ancestor relic is flagged in secrets.",
+        "fixes": [
+          "Replace cross-current with high capillary density, elevated hematocrit, or efficient tidal ventilation exploiting 1.6× pO₂; rename skill effect to modest stamina (10–15%) unless a highly speculative flying-ancestor relic is flagged in secrets."
+        ],
+        "analogues": [
+          {
+            "organism": "Two-toed sloth (Choloepus): low-energy arboreal herbivore with adequate mammalian lungs at sea-level O₂; bar-headed goose (Anser indicus) shows high-altitude O₂ uptake via hemoglobin more than novel lung geometry.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 2
+        }
+      },
+      "provenance": {
+        "council_run": "foodweb-2026-11-21",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "brincaniebla.c4",
+      "trait": "elongated snout and complex foregut fermentation chamber",
+      "links": [
+        "trait: elongated snout and complex foregut fermentation chamber process tough leaves",
+        "why: slower molecular diffusion preserves scent trails for navigation",
+        "why: D18 reduced diffusion rate extends olfactory map accuracy in still air",
+        "why: F16 atmospheric composition and humidity slow scent dispersal"
+      ],
+      "roots": [
+        "F16"
+      ],
+      "skill": {
+        "id": "brincaniebla.scent_trail",
+        "name": {
+          "en": "Scent Trail"
+        },
+        "role": "Control",
+        "effect": "Follows preserved scent pathways to known fruiting trees, +10% movement efficiency",
+        "numbers": {}
+      },
+      "weakness": "Disoriented by strong volcanic updrafts or heavy rain washing trails",
+      "observe": [
+        "nose twitches rhythmically sampling air currents",
+        "cheek pouches bulge with fermented pulp",
+        "defecates in specific latrine branches away from feeding zones"
+      ],
+      "journal": {
+        "en": "It reads the air like a map. Scent is its compass, fermentation its engine."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/foodweb-2026-11-21",
+        "date": "2026-11-21",
+        "summary": "If cheek pouches hold fermented pulp, specify non-ruminant foregut (single-chambered enlargement) or shift storage to cecal feces reingestion; keep latrine branches as social/spatial memory, not required for fermentation.",
+        "fixes": [
+          "If cheek pouches hold fermented pulp, specify non-ruminant foregut (single-chambered enlargement) or shift storage to cecal feces reingestion; keep latrine branches as social/spatial memory, not required for fermentation."
+        ],
+        "analogues": [
+          {
+            "organism": "Colobus monkeys (Colobus spp.): foregut fermentation of leaves; aye-aye and kinkajou (Daubentonia madagascariensis / Potos flavus): elongated snout and dependence on olfaction in forest darkness.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 3
+        }
+      },
+      "provenance": {
+        "council_run": "foodweb-2026-11-21",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "acechalunas",
+      "kind": "predation",
+      "note": "Nocturnal raptor hunts the Nieblón on dark moonless nights."
+    }
+  ],
+  "provenance": {
+    "council_run": "foodweb-2026-11-21",
+    "by": [
+      "naturalist/qwen"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-21",
+      "who": "import_got",
+      "what": "imported from council run foodweb-2026-11-21"
+    }
+  ]
+}

@@ -1,0 +1,148 @@
+{
+  "schema": "cpore.plant/1",
+  "id": "ceniza_ciega",
+  "name": {
+    "en": "Ceniza Ciega",
+    "es": "Ceniza Ciega"
+  },
+  "world": "primigenia",
+  "status": "draft",
+  "growth_form": "fungus_like",
+  "habitats": [
+    "caves"
+  ],
+  "summary": "A fungal decomposer that thrives in lava-tube caves where carcasses and guano accumulate. Driven by the dense, oxygen-rich air that accelerates aerobic decay (F5, D28), it rapidly softens bone and chitin while processing the sulfur-rich byproducts of chemosynthetic vent crusts (D22). Its melanin caps shield against toxic gases, and its nutrient-dense fruiting bodies recycle matter exclusively back to cave decomposers, with no direct herbivore consumption.",
+  "chains": [
+    {
+      "id": "ceniza_ciega.c1",
+      "trait": "Rapid enzymatic breakdown of sulfur-impregnated carcasses and guano",
+      "links": [
+        "Dense, humid cave air traps moisture and slows diffusion (F4, F16)",
+        "Fungal hyphae exploit high pO2 to run aerobic metabolism (F5)",
+        "Enzymes rapidly hydrolyse chitin, bone, and sulfur-rich detritus from chemosynthetic crusts (D22, D28)",
+        "Nutrients mineralize for the cave food web"
+      ],
+      "roots": [
+        "F4",
+        "F5",
+        "F16"
+      ],
+      "play": "Enzymatic seep (Control/Observe): softens tough carcasses and bone piles, making them accessible to weaker players and scavengers.",
+      "weakness": "Hyphae desiccate quickly if vent gases shift or sudden air flow dries the cave floor.",
+      "observe": [
+        "Fungal mats form concentric rings around carcasses",
+        "Enzymatic seep releases ammonia and mineral vapours",
+        "Hyphae penetrate bone crevices within hours"
+      ],
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/foodweb-2026-11-21",
+        "date": "2026-11-21",
+        "summary": "O₂-fuelled cave saprotrophy on guano, chitin, and sulfur-impregnated detritus matches F5, D28, D22, and F23 mineral seeps. Melanised fruiting bodies for metal-rich microsites are consistent with D23.",
+        "fixes": [
+          "Bone softening in hours is fast for large carcasses—scale to days for big bones, hours for small chitin bits. Filter feeders (corona, sifón) should consume spores and enzymatic particulates, not intact mushrooms. Restrict strong growth to basalt tubes with volcanic seep chemistry (F9), not pure limestone."
+        ],
+        "analogues": [
+          {
+            "organism": "Guano-cycle fungi (e.g. Aspergillus, Mortierella in bat caves)",
+            "mechanism": "Aerobic hyphae secrete proteases and chitinases; melanin and cell walls bind metals in contaminated substrates (Gadd, 2007, from memory, unverified)."
+          }
+        ]
+      }
+    },
+    {
+      "id": "ceniza_ciega.c2",
+      "trait": "Melanin-rich black caps and stipes",
+      "links": [
+        "Cave floors contain arsenic, mercury, and H2S from fumaroles (F23)",
+        "Melanin binds heavy metals and dissipates chemical stress",
+        "Pigment replaces photosynthetic chlorophyll lost in darkness (D23, D24)",
+        "Caps shield reproductive spores from toxic microenvironments"
+      ],
+      "roots": [
+        "F23",
+        "F22"
+      ],
+      "play": "Metal-binding (Defence): reduces poison accumulation when foraging near contaminated vent pools or mineral seeps.",
+      "weakness": "Growth halts in pure limestone caves lacking volcanic mineral seeps.",
+      "observe": [
+        "Black caps form only near active mineral seeps",
+        "Spores release in dense, sweet-smelling clouds",
+        "Hyphae weave through basalt grit like roots"
+      ],
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/foodweb-2026-11-21",
+        "date": "2026-11-21",
+        "summary": "O₂-fuelled cave saprotrophy on guano, chitin, and sulfur-impregnated detritus matches F5, D28, D22, and F23 mineral seeps. Melanised fruiting bodies for metal-rich microsites are consistent with D23.",
+        "fixes": [
+          "Bone softening in hours is fast for large carcasses—scale to days for big bones, hours for small chitin bits. Filter feeders (corona, sifón) should consume spores and enzymatic particulates, not intact mushrooms. Restrict strong growth to basalt tubes with volcanic seep chemistry (F9), not pure limestone."
+        ],
+        "analogues": [
+          {
+            "organism": "Guano-cycle fungi (e.g. Aspergillus, Mortierella in bat caves)",
+            "mechanism": "Aerobic hyphae secrete proteases and chitinases; melanin and cell walls bind metals in contaminated substrates (Gadd, 2007, from memory, unverified)."
+          }
+        ]
+      }
+    }
+  ],
+  "gameplay": {
+    "food_for": [
+      "corona"
+    ],
+    "gift_item": null,
+    "poison": null,
+    "healing": null,
+    "cover": null,
+    "climbing": false,
+    "nest_material": null,
+    "mineral_lick": null,
+    "notes": "Food-web batch 2026-11-21; eaters are listed in lore/foodweb/primigenia.json."
+  },
+  "relations": [],
+  "generator": {
+    "growth_form": "fungus_like",
+    "height_m": {
+      "min": 0.05,
+      "max": 0.3
+    },
+    "colour": {
+      "base": "Pale cream to sooty black. Without photosynthesis in perpetual darkness (D24), chlorophyll is lost; melanin replaces it for structural integrity and trace-metal/chemical binding in mineral-rich cave environments (D23)."
+    }
+  },
+  "journal": [
+    {
+      "en": "Cave rot: breaks bone, drinks sulfur, feeds the dark.",
+      "es": "Podredumbre de cueva: deshuesa, bebe azufre, alimenta la oscuridad."
+    }
+  ],
+  "observe": [
+    "Fungal mats form concentric rings around carcasses",
+    "Enzymatic seep releases ammonia and mineral vapours",
+    "Hyphae penetrate bone crevices within hours",
+    "Black caps form only near active mineral seeps"
+  ],
+  "secrets": [
+    "hidden cave",
+    "fossil",
+    "nocturnal creature"
+  ],
+  "provenance": {
+    "council_run": "foodweb-2026-11-21",
+    "by": [
+      "naturalist"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-21",
+      "who": "foodweb.py",
+      "what": "food-web batch slot P08 (decomposer/fungal_decomposer, caves); qwen draft, Composer botanist referee"
+    }
+  ],
+  "niche": {
+    "trophic": "decomposer",
+    "role": "fungal_decomposer"
+  }
+}

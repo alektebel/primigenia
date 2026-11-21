@@ -1,0 +1,298 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "ciegotela",
+  "name": {
+    "en": "Ciegotela"
+  },
+  "world": "primigenia",
+  "kind": "new",
+  "status": "draft",
+  "stage": "creature",
+  "niche": {
+    "habitat": "caves",
+    "diet": "babosa, ecolumbre, corona, carcass",
+    "active": "dawn and dusk",
+    "predators": [
+      "merodeador"
+    ],
+    "trophic": "secondary_consumer",
+    "role": "small_predator",
+    "prey": [
+      "babosa",
+      "corona",
+      "cascarudo"
+    ]
+  },
+  "body": "5 cm carapace, 180 g",
+  "chains": [
+    {
+      "id": "ciegotela.c1",
+      "trait": "Eight jointed legs grip smooth basalt",
+      "links": [
+        "Grips vertical tuff without slipping",
+        "Rock transmits ground tremors efficiently",
+        "D2 gravity demands strong grip"
+      ],
+      "roots": [
+        "F2",
+        "F9"
+      ],
+      "skill": {
+        "id": "ciegotela.grip_tremor_sense",
+        "name": {
+          "en": "Grip & Tremor Sense"
+        },
+        "role": "Passive",
+        "effect": "Stays on walls, detects prey 2m away via vibration",
+        "numbers": {}
+      },
+      "weakness": "Disoriented by loud, sudden roars that mask tremors",
+      "observe": [
+        "Legs braced on ceiling",
+        "Body stills at footstep",
+        "Prey twitches in web"
+      ],
+      "journal": {
+        "en": "It watches the rock for footsteps."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/foodweb-2026-11-21",
+        "date": "2026-11-21",
+        "summary": "At 1.05 g (F2), a wall-clinging ambusher needs strong attachment on steep lava-tube basalt (F9); andesite/basalt transmits seismic surface waves efficiently, so substrate vibration is a credible prey cue. ~180 g at ~5 cm prosoma scale matches very large mygalomorph spiders on Earth (mass is high but within what elevated pO₂ (D10/F5) and island gigantism (F27/D30) can pay for in tracheal oxygen delivery—Graham et al. on Palaeozoic hyperoxia and insect size.",
+        "fixes": [
+          "At 1.05 g (F2), a wall-clinging ambusher needs strong attachment on steep lava-tube basalt (F9); andesite/basalt transmits seismic surface waves efficiently, so substrate vibration is a credible prey cue. ~180 g at ~5 cm prosoma scale matches very large mygalomorph spiders on Earth (mass is high but within what elevated pO₂ (D10/F5) and island gigantism (F27/D30) can pay for in tracheal oxygen delivery—Graham et al. on Palaeozoic hyperoxia and insect size."
+        ],
+        "analogues": [
+          {
+            "organism": "Tarantulas and amblypygids (whip spiders): scopulae/claws on rock, vibration-sensitive slit sensilla and leg microtrichobia for prey localization.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 5
+        }
+      },
+      "provenance": {
+        "council_run": "foodweb-2026-11-21",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "ciegotela.c2",
+      "trait": "Silk snare spun across cave fissures",
+      "links": [
+        "Spinnerets extrude liquid protein threads",
+        "D11 dense air reduces drag on strands",
+        "D8 thick atmosphere keeps nets from sagging"
+      ],
+      "roots": [
+        "F24"
+      ],
+      "skill": {
+        "id": "ciegotela.silk_snare",
+        "name": {
+          "en": "Silk Snare"
+        },
+        "role": "Control",
+        "effect": "Pins prey, +30% catch rate, prevents escape",
+        "numbers": {}
+      },
+      "weakness": "Flammable; wind or fire breaks the web",
+      "observe": [
+        "Spinnerets extruding thread",
+        "Net catches falling debris",
+        "Prey struggles but held"
+      ],
+      "journal": {
+        "en": "It waits in the dark, net ready."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/foodweb-2026-11-21",
+        "date": "2026-11-21",
+        "summary": "Derive sag control from short fissure spans, high-tension cribellate or flagelliform silk, and very humid air slowing protein-thread drying—not from reduced drag. Mention opportunistic spans across cave breathing vents where airflow is predictable at dawn/dusk.",
+        "fixes": [
+          "Derive sag control from short fissure spans, high-tension cribellate or flagelliform silk, and very humid air slowing protein-thread drying—not from reduced drag. Mention opportunistic spans across cave breathing vents where airflow is predictable at dawn/dusk."
+        ],
+        "analogues": [
+          {
+            "organism": "Meta menardi and allied cave orb-weavers; net-casting spiders (Deinopis) for fissure-spanning snares.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 4
+        }
+      },
+      "provenance": {
+        "council_run": "foodweb-2026-11-21",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "ciegotela.c3",
+      "trait": "Active only at dawn and dusk",
+      "links": [
+        "Emerges when thermals reverse inward",
+        "D19 wind force drives surface detritus",
+        "F3 26-hour day creates long twilight"
+      ],
+      "roots": [
+        "F8",
+        "F3",
+        "F19"
+      ],
+      "skill": {
+        "id": "ciegotela.crepuscular_ambush",
+        "name": {
+          "en": "Crepuscular Ambush"
+        },
+        "role": "Basic",
+        "effect": "+40% first strike chance at dawn/dusk",
+        "numbers": {}
+      },
+      "weakness": "Hides or freezes in bright midday light",
+      "observe": [
+        "Hides in crevice at noon",
+        "Stirs as light fades",
+        "Strikes as surface sounds drift in"
+      ],
+      "journal": {
+        "en": "It hunts the fading light."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/foodweb-2026-11-21",
+        "date": "2026-11-21",
+        "summary": "Tie the schedule explicitly to prey commute and cave-mouth airflow/stack-effect reversal at twilight, not D19 moon tides or generic 'wind drives detritus' (weak for an in-cave trapper).",
+        "fixes": [
+          "Tie the schedule explicitly to prey commute and cave-mouth airflow/stack-effect reversal at twilight, not D19 moon tides or generic 'wind drives detritus' (weak for an in-cave trapper)."
+        ],
+        "analogues": [
+          {
+            "organism": "Crepuscular orb-weavers and cave-harvestmen at twilight; trogloxene insects commuting at cave entrance zones.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 3
+        }
+      },
+      "provenance": {
+        "council_run": "foodweb-2026-11-21",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "ciegotela.c4",
+      "trait": "Dark carapace retains cave moisture",
+      "links": [
+        "Melanin-like pigment absorbs trace heat",
+        "D10 high oxygen fuels rapid chitin repair",
+        "F15 humid air slows cuticle drying"
+      ],
+      "roots": [
+        "F15"
+      ],
+      "skill": {
+        "id": "ciegotela.desiccation_resistance",
+        "name": {
+          "en": "Desiccation Resistance"
+        },
+        "role": "Defence",
+        "effect": "-20% stamina drain in dry zones, regenerates shell faster",
+        "numbers": {}
+      },
+      "weakness": "Overheats if exposed to direct sun or vents",
+      "observe": [
+        "Shell gleams damply",
+        "Avoids dry tuff patches",
+        "Molts in damp corner"
+      ],
+      "journal": {
+        "en": "It drinks the air through its shell."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/foodweb-2026-11-21",
+        "date": "2026-11-21",
+        "summary": "Replace 'drinks the air through its shell' with epicuticular wax + hydrophilic microstructure holding a surface water film; optional F14 UV-screen pigment when it hunts the flooded entrance. Drop D25 from this chain—it is about trophic transfer, not integument physiology.",
+        "fixes": [
+          "Replace 'drinks the air through its shell' with epicuticular wax + hydrophilic microstructure holding a surface water film; optional F14 UV-screen pigment when it hunts the flooded entrance. Drop D25 from this chain—it is about trophic transfer, not integument physiology."
+        ],
+        "analogues": [
+          {
+            "organism": "Cave terrestrial isopods and spiders: lipoprotein wax layers and melanism in entrance zones; springtails in moist litter.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 2
+        }
+      },
+      "provenance": {
+        "council_run": "foodweb-2026-11-21",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "babosa",
+      "kind": "prey",
+      "note": "Primary decomposer; rich in gut contents and symbionts."
+    },
+    {
+      "with": "acechalunas",
+      "kind": "predation",
+      "note": "Scavenges snared individuals or competes for carcasses."
+    }
+  ],
+  "provenance": {
+    "council_run": "foodweb-2026-11-21",
+    "by": [
+      "naturalist/qwen"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-21",
+      "who": "import_got",
+      "what": "imported from council run foodweb-2026-11-21"
+    }
+  ],
+  "body_plan": {
+    "symmetry": "bilateral",
+    "arms": 8,
+    "origin": "arthropod-like, evolved independently from the seed's porphyrin-based DNA"
+  },
+  "temperament": "patient, opportunistic",
+  "secrets": [
+    "a hidden cave",
+    "the nocturnal creature"
+  ],
+  "moments": [
+    "When a carcass drifts from the shallows into the flooded cave, the entire colony drops their nets in unison, vibrating the basalt like a struck bell."
+  ],
+  "journal": [
+    {
+      "en": "It waits in the dark, net ready."
+    },
+    {
+      "en": "It hunts the fading light."
+    }
+  ]
+}

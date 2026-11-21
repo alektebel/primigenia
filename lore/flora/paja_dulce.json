@@ -221,5 +221,9 @@
     "A straw-coloured tussock with a firm living base can recover; colour alone does not reveal its condition.",
     "Repeatedly clipped paths mark rondo feeding circuits and places where garfio may wait.",
     "The best thatch comes from detached outer leaves, allowing the living crown to remain intact."
-  ]
+  ],
+  "niche": {
+    "trophic": "producer",
+    "role": "photosynthetic"
+  }
 }

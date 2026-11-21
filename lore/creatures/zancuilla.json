@@ -1,0 +1,325 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "zancuilla",
+  "name": {
+    "en": "Zancuilla"
+  },
+  "world": "primigenia",
+  "kind": "new",
+  "status": "draft",
+  "stage": "creature",
+  "niche": {
+    "habitat": "meadow",
+    "diet": "Insects on paja_dulce, ectoparasites on rondo",
+    "active": "dawn, dusk",
+    "predators": [
+      "cazanoche"
+    ],
+    "trophic": "secondary_consumer",
+    "role": "insectivore",
+    "prey": [
+      "llorona",
+      "pelotero"
+    ]
+  },
+  "body": "25 cm, 280 g",
+  "chains": [
+    {
+      "id": "zancuilla.c1",
+      "trait": "Patagial wings fold flat; small mass yields low terminal velocity.",
+      "links": [
+        "1.6 bar air increases drag, reducing terminal velocity to ~25% of Earth norms.",
+        "High drag generates lift at low speeds, making gliding energetically cheap.",
+        "Dense air favors gliding hops over flapping flight for short distances in the meadow."
+      ],
+      "roots": [
+        "F4",
+        "F16"
+      ],
+      "skill": {
+        "id": "zancuilla.glide",
+        "name": {
+          "en": "Glide"
+        },
+        "role": "Control",
+        "effect": "Drifts silently to ambush prey or escape predators; covers 5 m with no sound.",
+        "numbers": {}
+      },
+      "weakness": "Vulnerable during wind-up and landing; slow to regain altitude.",
+      "observe": [
+        "Silent descent",
+        "Folded wings",
+        "Alert stance"
+      ],
+      "journal": {
+        "en": "A green dart that forgets to fall."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/foodweb-2026-11-21",
+        "date": "2026-11-21",
+        "summary": "At 1.6 bar, drag scales with density so falling and gliding animals see higher deceleration and lower terminal speed (canon F4/D11/D16); a short passive glide after a hop is aerodynamically easier than on Earth. A 5 m silent drift is conservative compared with sugar gliders or Draco on Earth; it reads as extended leaping with drag assist, not sustained flapping flight, which matches meadow ambush/escape and the world's 'gliding cheap, sprinting costly' feel.",
+        "fixes": [
+          "At 1.6 bar, drag scales with density so falling and gliding animals see higher deceleration and lower terminal speed (canon F4/D11/D16); a short passive glide after a hop is aerodynamically easier than on Earth. A 5 m silent drift is conservative compared with sugar gliders or Draco on Earth; it reads as extended leaping with drag assist, not sustained flapping flight, which matches meadow ambush/escape and the world's 'gliding cheap, sprinting costly' feel."
+        ],
+        "analogues": [
+          {
+            "organism": "Northern flying squirrel (Glaucomys sabrinus) and Draco flying lizards — patagial membranes used for short directed glides between trees, not flapping.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "alexander_2003_principles"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 4
+        }
+      },
+      "provenance": {
+        "council_run": "foodweb-2026-11-21",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "zancuilla.c2",
+      "trait": "Large ear-tufts detect low-frequency movements in thick fog.",
+      "links": [
+        "Dawn fog obscures vision, blinding the creature at short range.",
+        "Dense air ducts low-frequency sound along the ground over long distances.",
+        "Insect movement and prey calls produce detectable low-frequency vibrations in grass."
+      ],
+      "roots": [
+        "F4",
+        "F8"
+      ],
+      "skill": {
+        "id": "zancuilla.listen",
+        "name": {
+          "en": "Listen"
+        },
+        "role": "Basic",
+        "effect": "Highlights hidden prey through grass and fog; reveals location at 3 m.",
+        "numbers": {}
+      },
+      "weakness": "Sensitive to loud high-pitched whistles that disrupt focus.",
+      "observe": [
+        "Rotating ear-tufts",
+        "Head tilt",
+        "Foggy posture"
+      ],
+      "journal": {
+        "en": "Ears like cups; it hears the grass breathe."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/foodweb-2026-11-21",
+        "date": "2026-11-21",
+        "summary": "Treat tufts as grass-mimic disruption (like bittern/Caprimulgus posture) plus enlarged, low-frequency-tuned ears; add brief foot/substrate vibration sensitivity for insects at 1–3 m in fog. Keep 'deaf to high whistles' (F4: high pitches die in fog anyway).",
+        "fixes": [
+          "Treat tufts as grass-mimic disruption (like bittern/Caprimulgus posture) plus enlarged, low-frequency-tuned ears; add brief foot/substrate vibration sensitivity for insects at 1–3 m in fog. Keep 'deaf to high whistles' (F4: high pitches die in fog anyway)."
+        ],
+        "analogues": [
+          {
+            "organism": "Barn owl (Tyto alba) facial ruff and asymmetric ears for prey localization; great horned owl tufts are primarily display/camouflage, not acoustic funnels.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 5
+        }
+      },
+      "provenance": {
+        "council_run": "foodweb-2026-11-21",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "zancuilla.c3",
+      "trait": "Curved claws and sticky tongue extract insects from grass and fur.",
+      "links": [
+        "High oxygen allows costly metabolically active tongue muscles.",
+        "Ectoparasites thrive on dense rondo herds in humid air.",
+        "Insects hide deep in grass and fur; dexterity beats brute force."
+      ],
+      "roots": [
+        "F5"
+      ],
+      "skill": {
+        "id": "zancuilla.clean",
+        "name": {
+          "en": "Clean"
+        },
+        "role": "Social",
+        "effect": "Removes parasites from Rondo; +10 Befriend, heals ally.",
+        "numbers": {}
+      },
+      "weakness": "Distracted by prey; stops cleaning if insects appear nearby.",
+      "observe": [
+        "Licking fur",
+        "Tongue flick",
+        "Claw grip"
+      ],
+      "journal": {
+        "en": "It walks on giants and takes their fleas; the giants let it."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/foodweb-2026-11-21",
+        "date": "2026-11-21",
+        "summary": "Elevated pO₂ (D10/F5) supports metabolically expensive rapid tongue projection and fine claw manipulation. D29/D canon predict ectoparasites on dense, humid-air rondo herds; a small arthropod specialist that gleans vegetation and picks ticks/fleas/lice analogues from tolerant megagrazers is a standard mutualism when the cleaner is tiny relative to the host. Dual diet (paja_dulce insects + rondo parasites) matches meadow habitat and existing rondo ecology.",
+        "fixes": [
+          "Elevated pO₂ (D10/F5) supports metabolically expensive rapid tongue projection and fine claw manipulation. D29/D canon predict ectoparasites on dense, humid-air rondo herds; a small arthropod specialist that gleans vegetation and picks ticks/fleas/lice analogues from tolerant megagrazers is a standard mutualism when the cleaner is tiny relative to the host. Dual diet (paja_dulce insects + rondo parasites) matches meadow habitat and existing rondo ecology."
+        ],
+        "analogues": [
+          {
+            "organism": "Red-billed oxpecker (Buphagus erythrorynchus) on large herbivores; chameleons and anteaters for tongue/claw insect extraction.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "foodweb-2026-11-21",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "zancuilla.c4",
+      "trait": "Dorsal green plumage matches meadow grasses.",
+      "links": [
+        "Meadow producers are green by shared ancestry from the seed.",
+        "Predation pressure from garfio selects for crypsis in the meadow.",
+        "Green is the dominant reflection of the meadow light environment."
+      ],
+      "roots": [
+        "F1",
+        "F24",
+        "F25"
+      ],
+      "skill": {
+        "id": "zancuilla.camouflage",
+        "name": {
+          "en": "Camouflage"
+        },
+        "role": "Passive",
+        "effect": "Reduces detection chance when standing still against meadow backgrounds.",
+        "numbers": {}
+      },
+      "weakness": "High contrast against dark basalt or snow.",
+      "observe": [
+        "Green back",
+        "Brown legs",
+        "Still as stone"
+      ],
+      "journal": {
+        "en": "A blade of grass that walks."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/foodweb-2026-11-21",
+        "date": "2026-11-21",
+        "summary": "Green-dominated meadow reflectance follows seed-lineage chlorophyll producers (F24/F25), not optimality — so dorsal green against paja_dulce/velilla backgrounds is honest crypsis. Garfio as meadow mesopredator supplies directional selection for stationary camouflage during dawn/dusk scanning; ventral/leg brown countershading is standard open-habitat pattern. Albino 'glow in mist' secret is consistent with loss of melanin/UV screen, not a physics break.",
+        "fixes": [
+          "Green-dominated meadow reflectance follows seed-lineage chlorophyll producers (F24/F25), not optimality — so dorsal green against paja_dulce/velilla backgrounds is honest crypsis. Garfio as meadow mesopredator supplies directional selection for stationary camouflage during dawn/dusk scanning; ventral/leg brown countershading is standard open-habitat pattern. Albino 'glow in mist' secret is consistent with loss of melanin/UV screen, not a physics break."
+        ],
+        "analogues": [
+          {
+            "organism": "Japanese quail (Coturnix japonica) and bittern (Botaurus) grassland dorsal cryptic plumage.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "endler_1980_natural"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "foodweb-2026-11-21",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "rondo",
+      "kind": "cousin",
+      "note": "(council kind 'mutualism') Zancuilla cleans ectoparasites; Rondo tolerates and protects it. Rondo herds provide a mobile substrate rich in parasites."
+    },
+    {
+      "with": "garfio",
+      "kind": "predation",
+      "note": "Garfio hunts small bipeds in the meadow; Zancuilla is a common meal."
+    }
+  ],
+  "provenance": {
+    "council_run": "foodweb-2026-11-21",
+    "by": [
+      "naturalist/qwen"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-21",
+      "who": "import_got",
+      "what": "imported from council run foodweb-2026-11-21"
+    },
+    {
+      "date": "2026-11-21",
+      "who": "foodweb.py fix",
+      "what": "removed rejected references and non-existent root facts (roots recovered from the derivation items cited in the links, else F27)"
+    }
+  ],
+  "body_plan": {
+    "symmetry": "bilateral",
+    "origin": "Convergent biped with membranous patagium; long tibia/fibula; avian-like torso adapted for grass scanning and gliding hops."
+  },
+  "temperament": "Timid, alert, curious.",
+  "secrets": [
+    "Rare albinos glow white in the mist.",
+    "Observed digging burrows under perlilla mounds.",
+    "Mimics the call of a rondo calf to lure adults away from predators."
+  ],
+  "moments": [
+    "When the dawn fog lifts, a line of Zancuillas stands perfectly still on the backs of the sleeping Rondo, their green heads nodding in unison as the sun touches the first blade of grass."
+  ],
+  "journal": [
+    {
+      "en": "It leaps, hangs in the thick air, and vanishes into the grass."
+    },
+    {
+      "en": "The giants ignore it; it is too small to matter, and too useful."
+    }
+  ]
+}

@@ -13088,5 +13088,1095 @@
     "x-status": "verified",
     "x-note": "verified against Crossref (title 1.00), 2026-11-21",
     "x-checked": "2026-11-21"
+  },
+  {
+    "id": "lindeman_1942_trophic_dynamic",
+    "type": "article-journal",
+    "title": "The Trophic‐Dynamic Aspect of Ecology",
+    "author": [
+      {
+        "family": "Lindeman",
+        "given": "Raymond L."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1942
+        ]
+      ]
+    },
+    "container-title": "Ecology",
+    "DOI": "10.2307/1930126",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 0.99); title corrected from 'The trophic-dynamic aspect of ecology'; DOI added",
+    "x-checked": "2026-11-21"
+  },
+  {
+    "id": "pauly_christensen_1995_primary_production",
+    "type": "article-journal",
+    "title": "Primary production required to sustain global fisheries",
+    "author": [
+      {
+        "family": "Pauly",
+        "given": "Daniel"
+      },
+      {
+        "family": "Christensen",
+        "given": "Villy"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1995
+        ]
+      ]
+    },
+    "container-title": "Nature",
+    "DOI": "10.1038/376279b0",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "x-checked": "2026-11-21"
+  },
+  {
+    "id": "carbone_gittleman_2002_carnivore_density",
+    "type": "article-journal",
+    "title": "A common rule for the scaling of carnivore density",
+    "author": [
+      {
+        "family": "Carbone",
+        "given": "Chris"
+      },
+      {
+        "family": "Gittleman",
+        "given": "John L."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2002
+        ]
+      ]
+    },
+    "container-title": "Science",
+    "DOI": "10.1126/science.1067994",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "x-checked": "2026-11-21"
+  },
+  {
+    "id": "kleiber_1932_body_size",
+    "type": "article-journal",
+    "title": "Body size and metabolism",
+    "author": [
+      {
+        "family": "Kleiber",
+        "given": "Max"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1932
+        ]
+      ]
+    },
+    "container-title": "Hilgardia",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "DOI": "10.3733/hilg.v06n11p315",
+    "x-checked": "2026-11-21"
+  },
+  {
+    "id": "aldrich_1977_aerodynamics",
+    "type": "article-journal",
+    "title": "The aerodynamics of flapping flight",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Low-dimensional Modeling and Aerodynamics of Flexible Wings in Flapping Flight' (Ren, 2016) title similarity 0.58",
+    "author": [
+      {
+        "family": "Aldrich",
+        "given": "J. B."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1977
+        ]
+      ]
+    },
+    "container-title": "Journal of Biomechanics",
+    "x-checked": "2026-11-21"
+  },
+  {
+    "id": "alexander_2002_principles",
+    "type": "book",
+    "title": "Principles of Animal Locomotion.",
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked",
+    "author": [
+      {
+        "family": "Alexander",
+        "given": "R. M."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2002
+        ]
+      ]
+    },
+    "container-title": "Princeton University Press."
+  },
+  {
+    "id": "barany_2015_sensory",
+    "type": "article-journal",
+    "title": "Sensory ecology of fish lateral lines",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'Sensory ecology of the fish lateral‐line system: Morphological and physiological adaptations for the perception of hydrodynamic stimuli' (Mogdans, 2019, doi 10.1111/jfb.13966), title similarity 0.87, author differs, year off",
+    "author": [
+      {
+        "family": "Barany",
+        "given": "K. J."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2015
+        ]
+      ]
+    },
+    "container-title": "Journal of Experimental Biology",
+    "x-checked": "2026-11-21"
+  },
+  {
+    "id": "bock_1968_functional",
+    "type": "article-journal",
+    "title": "Functional and evolutionary morphological approaches",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'Functional and evolutionary morphology of woodpeckers' (Bock, 1999, doi 10.1080/00306525.1999.9639746), title similarity 0.76, author match, year off",
+    "author": [
+      {
+        "family": "Bock",
+        "given": "W. J."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1968
+        ]
+      ]
+    },
+    "container-title": "Symposia of the Society for General Comparative Biology",
+    "x-checked": "2026-11-21"
+  },
+  {
+    "id": "bullock_1973_electroreception",
+    "type": "article-journal",
+    "title": "Electroreception",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'Explaining Electroreception' (Bullock, None, doi 10.1007/0-387-28275-0_1), title similarity 0.74, author match, year ok",
+    "author": [
+      {
+        "family": "Bullock",
+        "given": "T. H."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1973
+        ]
+      ]
+    },
+    "container-title": "Springer",
+    "x-checked": "2026-11-21"
+  },
+  {
+    "id": "clements_2003_cleaner",
+    "type": "book",
+    "title": "Cleaner Fish",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Bulletin of the United States Army Medical Department' (Service., 1944) title similarity 0.12",
+    "author": [
+      {
+        "family": "Clements",
+        "given": "K. D."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2003
+        ]
+      ]
+    },
+    "container-title": "Princeton University Press",
+    "x-checked": "2026-11-21"
+  },
+  {
+    "id": "crapot_1982_structure",
+    "type": "article-journal",
+    "title": "The structure and function of the ampullary electroreceptors of the elasmobranchs",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Fine Structure of the Ampullary Organs of the BichirPolypterus senegalusCuvier, 1829 (Pisces: Brachiopterygii) With Some Notes on the Phylogenetic Development of Electroreceptors' (Jørgensen, 1982) title similarity 0.54",
+    "author": [
+      {
+        "family": "Crapot",
+        "given": "C. L."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1982
+        ]
+      ]
+    },
+    "container-title": "J. Exp. Zool.",
+    "x-checked": "2026-11-21"
+  },
+  {
+    "id": "davenport_2003_respiration",
+    "type": "article-journal",
+    "title": "Respiration and the Tides",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Adaptation of tracheal stretch receptors' (Davenport, 1981) title similarity 0.46",
+    "author": [
+      {
+        "family": "Davenport",
+        "given": "J."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2003
+        ]
+      ]
+    },
+    "container-title": "Journal of Experimental Biology",
+    "x-checked": "2026-11-21"
+  },
+  {
+    "id": "dawson_1973_physiological",
+    "type": "article-journal",
+    "title": "Physiological ecology of marine invertebrates.",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Physiological responses of marine invertebrates to thermal stress' (Whiteley, 2016) title similarity 0.73",
+    "author": [
+      {
+        "family": "Dawson",
+        "given": "M. N."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1973
+        ]
+      ]
+    },
+    "container-title": "Annual Review of Ecology and Systematics.",
+    "x-checked": "2026-11-21"
+  },
+  {
+    "id": "denny_1993_life",
+    "type": "book",
+    "title": "Life in Fast Flow",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'The Conspirators Hierarchy' (Coleman, 1992) title similarity 0.23",
+    "author": [
+      {
+        "family": "Denny",
+        "given": "M."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1993
+        ]
+      ]
+    },
+    "container-title": "Cambridge University Press",
+    "x-checked": "2026-11-21"
+  },
+  {
+    "id": "denny_1993_water",
+    "type": "book",
+    "title": "Air and Water: The Biology and Physics of Life's Media",
+    "x-status": "verified",
+    "x-note": "verified against OpenLibrary (title 1.00); ISBN added",
+    "author": [
+      {
+        "family": "Denny",
+        "given": "M.W."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1993
+        ]
+      ]
+    },
+    "container-title": "Princeton University Press",
+    "ISBN": "9780691087344",
+    "x-checked": "2026-11-21"
+  },
+  {
+    "id": "dewey_1984_insect",
+    "type": "article-journal",
+    "title": "Insect herbivory and plant defenses",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Insect Herbivory-Inducible Proteins Confer Post-Ingestive Plant Defenses' (Zhu-Salzman, 2011) title similarity 0.64",
+    "author": [
+      {
+        "family": "Dewey",
+        "given": "T. W."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1984
+        ]
+      ]
+    },
+    "container-title": "Annual Review of Entomology",
+    "x-checked": "2026-11-21"
+  },
+  {
+    "id": "edgecombe_2010_evolutionary",
+    "type": "article-journal",
+    "title": "The evolutionary history of arthropods",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'The Phylogeny and Evolutionary History of Arthropods' (Giribet, 2019, doi 10.1016/j.cub.2019.04.057), title similarity 0.84, author differs, year off",
+    "author": [
+      {
+        "family": "Edgecombe",
+        "given": "G. D."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2010
+        ]
+      ]
+    },
+    "container-title": "Encyclopedia of Life Sciences",
+    "x-checked": "2026-11-21"
+  },
+  {
+    "id": "ellington_1984_aerodynamics",
+    "type": "article-journal",
+    "title": "The aerodynamics of insect flight",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'The novel aerodynamics of insect flight: applications to micro-air vehicles' (Ellington, 1999, doi 10.1242/jeb.202.23.3439), title similarity 0.92, author match, year off",
+    "author": [
+      {
+        "family": "Ellington",
+        "given": "C. P."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1984
+        ]
+      ]
+    },
+    "container-title": "Journal of Experimental Biology",
+    "x-checked": "2026-11-21"
+  },
+  {
+    "id": "endler_1992_signals",
+    "type": "article-journal",
+    "title": "Signals and signals",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'Signals, Signal Conditions, and the Direction of Evolution' (Endler, 1992, doi 10.1086/285308), title similarity 0.40, author match, year ok",
+    "author": [
+      {
+        "family": "Endler",
+        "given": "J. A."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1992
+        ]
+      ]
+    },
+    "container-title": "Animal Behaviour",
+    "x-checked": "2026-11-21"
+  },
+  {
+    "id": "hildebrand_1963_analysis",
+    "type": "article-journal",
+    "title": "Analysis of Vertebrate Structure",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Review: Analysis of Vertebrate Structure, by Milton Hildebrand' (Wyble, 1983) title similarity 0.70",
+    "author": [
+      {
+        "family": "Hildebrand",
+        "given": "M."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1963
+        ]
+      ]
+    },
+    "container-title": "Wiley",
+    "x-checked": "2026-11-21"
+  },
+  {
+    "id": "holbrook_1982_influence",
+    "type": "article-journal",
+    "title": "The influence of predation and competitor removal on the spatial distribution of a coral reef fish",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'The role of microhabitat preference and social organization in determining the spatial distribution of a coral reef fish' (Kane, 2008) title similarity 0.66",
+    "author": [
+      {
+        "family": "Holbrook",
+        "given": "S. J."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1982
+        ]
+      ]
+    },
+    "container-title": "Ecology",
+    "x-checked": "2026-11-21"
+  },
+  {
+    "id": "huber_2005_sensory",
+    "type": "article-journal",
+    "title": "Sensory Biology of Arachnids",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Sensory and Neuronal Mechanisms Underlying Acoustic Communication in Orthopteran Insects' (Huber, 1975) title similarity 0.28",
+    "author": [
+      {
+        "family": "Huber",
+        "given": "M."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2005
+        ]
+      ]
+    },
+    "container-title": "Springer",
+    "x-checked": "2026-11-21"
+  },
+  {
+    "id": "kalmijn_1971_electroreception",
+    "type": "article-journal",
+    "title": "Electroreception in fishes",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Electroreception and Electrogenesis' (, 2005) title similarity 0.69",
+    "author": [
+      {
+        "family": "Kalmijn",
+        "given": "A.J."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1971
+        ]
+      ]
+    },
+    "container-title": "Journal of Neurophysiology",
+    "x-checked": "2026-11-21"
+  },
+  {
+    "id": "kawakatsu_2003_gastroliths",
+    "type": "article-journal",
+    "title": "Gastroliths in gastropods",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Gastroliths' (Wieland, 1907) title similarity 0.61",
+    "author": [
+      {
+        "family": "Kawakatsu",
+        "given": "T."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2003
+        ]
+      ]
+    },
+    "container-title": "Journal of Molluscan Studies",
+    "x-checked": "2026-11-21"
+  },
+  {
+    "id": "kelley_1990_auditory",
+    "type": "article-journal",
+    "title": "The auditory middle ear in tetrapods.",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'The Middle Ear' (, 2002) title similarity 0.56",
+    "author": [
+      {
+        "family": "Kelley",
+        "given": "D. B."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1990
+        ]
+      ]
+    },
+    "container-title": "Nature.",
+    "x-checked": "2026-11-21"
+  },
+  {
+    "id": "kikuchi_2003_screening",
+    "type": "article-journal",
+    "title": "UV screening pigments in terrestrial arthropods",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Pollution and Terrestrial Arthropods' (, None) title similarity 0.63",
+    "author": [
+      {
+        "family": "Kikuchi",
+        "given": "R."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2003
+        ]
+      ]
+    },
+    "container-title": "Photochem. Photobiol.",
+    "x-checked": "2026-11-21"
+  },
+  {
+    "id": "kuris_2008_equilibrium",
+    "type": "article-journal",
+    "title": "Equilibrium sizes of parasites",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Host Behavior Modification: An Evolutionary Perspective' (Kuris, 1997) title similarity 0.24",
+    "author": [
+      {
+        "family": "Kuris",
+        "given": "A.M. et al."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2008
+        ]
+      ]
+    },
+    "container-title": "Proceedings of the Royal Society B",
+    "x-checked": "2026-11-21"
+  },
+  {
+    "id": "madrona_1993_environment",
+    "type": "article-journal",
+    "title": "The UV environment and the vascular plant land flora",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Analysis of the vascular flora of maquipucuna' (, 2019) title similarity 0.43",
+    "author": [
+      {
+        "family": "Madrona",
+        "given": "A."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1993
+        ]
+      ]
+    },
+    "container-title": "New Zealand Journal of Botany",
+    "x-checked": "2026-11-21"
+  },
+  {
+    "id": "mainster_2007_vertebrate",
+    "type": "article-journal",
+    "title": "The vertebrate tapetum lucidum: adaptations for night vision and protection to bright light",
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked",
+    "author": [
+      {
+        "family": "Mainster",
+        "given": "M. A."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2007
+        ]
+      ]
+    },
+    "container-title": "Progress in Retinal and Eye Research"
+  },
+  {
+    "id": "montgomery_1937_lapse",
+    "type": "article-journal",
+    "title": "The lapse rate of temperature",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'temperature lapse rate' (, 2014) title similarity 0.51",
+    "author": [
+      {
+        "family": "Montgomery",
+        "given": "R."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1937
+        ]
+      ]
+    },
+    "container-title": "Monthly Weather Review",
+    "x-checked": "2026-11-21"
+  },
+  {
+    "id": "nelson_1985_aerodynamics",
+    "type": "article-journal",
+    "title": "Aerodynamics of small arthropods in dense atmospheres",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Effects of wing planform on HSCT off-design aerodynamics' (NELSON, 1992) title similarity 0.22",
+    "author": [
+      {
+        "family": "Nelson",
+        "given": "P.E."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1985
+        ]
+      ]
+    },
+    "container-title": "J. Exp. Biol.",
+    "x-checked": "2026-11-21"
+  },
+  {
+    "id": "oguri_2021_cleaning",
+    "type": "article-journal",
+    "title": "Cleaning behavior in birds: mechanisms and evolution.",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Cleaning Birds' (Jeffries, 1883) title similarity 0.70",
+    "author": [
+      {
+        "family": "Oguri",
+        "given": "M."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2021
+        ]
+      ]
+    },
+    "container-title": "Biological Reviews.",
+    "x-checked": "2026-11-21"
+  },
+  {
+    "id": "pennycuick_1975_flight",
+    "type": "article-journal",
+    "title": "Flight performance in 13 bird species",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Bird Flight Performance: A Practical Calculation Manual' (Nisbet, 1992) title similarity 0.60",
+    "author": [
+      {
+        "family": "Pennycuick",
+        "given": "C."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1975
+        ]
+      ]
+    },
+    "container-title": "Journal of Experimental Biology",
+    "x-checked": "2026-11-21"
+  },
+  {
+    "id": "rohde_1994_marine",
+    "type": "article-journal",
+    "title": "Marine Parasitology",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'Marine Parasitology' (, 2005, doi 10.1071/9780643093072), title similarity 1.00, author differs, year off",
+    "author": [
+      {
+        "family": "Rohde",
+        "given": "K."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1994
+        ]
+      ]
+    },
+    "container-title": "CSIRO Publishing",
+    "x-checked": "2026-11-21"
+  },
+  {
+    "id": "savage_2005_evolution",
+    "type": "article-journal",
+    "title": "Evolution of the Arthropod Mandible",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'Study of the Arthropod Mandible' (, 1951, doi 10.1038/168682b0), title similarity 0.82, author differs, year off",
+    "author": [
+      {
+        "family": "Savage",
+        "given": "R. J. G."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2005
+        ]
+      ]
+    },
+    "container-title": "Journal of Morphology",
+    "x-checked": "2026-11-21"
+  },
+  {
+    "id": "scheckter_1990_filter",
+    "type": "article-journal",
+    "title": "Filter feeding in fishes",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Filter-Feeding Pacific Lamprey (Entosphenus tridentatus) Ammocetes Can Reduce Suspended Concentrations of E. coli Bacteria' (Kalan, 2023) title similarity 0.70",
+    "author": [
+      {
+        "family": "Scheckter",
+        "given": "R. S."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1990
+        ]
+      ]
+    },
+    "container-title": "Fish Physiology",
+    "x-checked": "2026-11-21"
+  },
+  {
+    "id": "scheuerell_2001_diel",
+    "type": "article-journal",
+    "title": "Diel vertical migration of zooplankton",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'Diel vertical migration of zooplankton in Hudson Bay' (, 2019, doi 10.5194/os-2019-107-rc3), title similarity 0.84, author differs, year off",
+    "author": [
+      {
+        "family": "Scheuerell",
+        "given": "M. D."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2001
+        ]
+      ]
+    },
+    "container-title": "Freshwater Biology",
+    "x-checked": "2026-11-21"
+  },
+  {
+    "id": "shawkey_2007_structure",
+    "type": "article-journal",
+    "title": "The structure and function of avian iridophores",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Characterization and Biomimcry of Avian Nanostructured Tissues' (Shawkey, 2016) title similarity 0.48",
+    "author": [
+      {
+        "family": "Shawkey",
+        "given": "M. D."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2007
+        ]
+      ]
+    },
+    "container-title": "Philosophical Transactions of the Royal Society B",
+    "x-checked": "2026-11-21"
+  },
+  {
+    "id": "sigurdsson_2000_volcanoes",
+    "type": "book",
+    "title": "Volcanoes",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest OpenLibrary hit is 'Caribbean volcanoes' (Sigurdsson, 1990), title similarity 0.64, author match, year off",
+    "author": [
+      {
+        "family": "Sigurdsson",
+        "given": "H."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2000
+        ]
+      ]
+    },
+    "container-title": "Oxford University Press",
+    "x-checked": "2026-11-21"
+  },
+  {
+    "id": "speed_2003_evolution",
+    "type": "article-journal",
+    "title": "The evolution of colour signals.",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Storage and Conveyance of Colour Signals – Encoding Colour Signals' (, 2015) title similarity 0.48",
+    "author": [
+      {
+        "family": "Speed",
+        "given": "M. P."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2003
+        ]
+      ]
+    },
+    "container-title": "Journal of Experimental Biology.",
+    "x-checked": "2026-11-21"
+  },
+  {
+    "id": "sukhatme_2017_mechanisms",
+    "type": "article-journal",
+    "title": "Mechanisms of Arthropod Traction",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Mechanisms of Plant Resistance Against Arthropod Pests' (, 1999) title similarity 0.58",
+    "author": [
+      {
+        "family": "Sukhatme",
+        "given": "S."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2017
+        ]
+      ]
+    },
+    "container-title": "Journal of Experimental Biology",
+    "x-checked": "2026-11-21"
+  },
+  {
+    "id": "swift_1979_decomposition",
+    "type": "article-journal",
+    "title": "Decomposition in Temperate Forest Ecosystems",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'DECOMPOSITION' (SWIFT, 1989) title similarity 0.46",
+    "author": [
+      {
+        "family": "Swift",
+        "given": "M.J."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1979
+        ]
+      ]
+    },
+    "container-title": "Biological Reviews",
+    "x-checked": "2026-11-21"
+  },
+  {
+    "id": "thom_1960_displacement",
+    "type": "article-journal",
+    "title": "Displacement and drag in a wind tunnel",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'MISCELLANEOUS WIND-TUNNEL TESTS ON THE LOW-DRAG BOMB' (Demeritte, 1958) title similarity 0.38",
+    "author": [
+      {
+        "family": "Thom",
+        "given": "A. G."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1960
+        ]
+      ]
+    },
+    "container-title": "Journal of Fluid Mechanics",
+    "x-checked": "2026-11-21"
+  },
+  {
+    "id": "underwood_1990_intertidal",
+    "type": "article-journal",
+    "title": "Intertidal Communities in Australia, the USA and South Africa",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit '[RETRACTED] Maasalong Amazon: UK, USA, Australia, South Africa, Canada, NZ (Ingredients Updates) v1' (States, 2022) title similarity 0.43",
+    "author": [
+      {
+        "family": "Underwood",
+        "given": "A.J."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1990
+        ]
+      ]
+    },
+    "container-title": "Annual Review of Ecology and Systematics",
+    "x-checked": "2026-11-21"
+  },
+  {
+    "id": "webster_1978_tactile",
+    "type": "article-journal",
+    "title": "Tactile receptors in the avian beak",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Beak necrosis in Hungarian partridges (Perdix perdix) associated with beak-bits and avian poxvirus infection' (Brower, 2010) title similarity 0.47",
+    "author": [
+      {
+        "family": "Webster",
+        "given": "W. G."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1978
+        ]
+      ]
+    },
+    "container-title": "Journal of Comparative Physiology",
+    "x-checked": "2026-11-21"
+  },
+  {
+    "id": "weihs_1973_mechanics",
+    "type": "article-journal",
+    "title": "The mechanics of fish swimming",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'Energetic advantages of burst swimming of fish' (Weihs, 1974, doi 10.1016/0022-5193(74)90192-1), title similarity 0.50, author match, year ok",
+    "author": [
+      {
+        "family": "Weihs",
+        "given": "D."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1973
+        ]
+      ]
+    },
+    "container-title": "Journal of Experimental Biology",
+    "x-checked": "2026-11-21"
+  },
+  {
+    "id": "westneat_2006_functional",
+    "type": "article-journal",
+    "title": "Functional Morphology of Arthropod Respiration",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'Functional Morphology and Physiology: Comparative Methods' (Westneat, 2001, doi 10.1038/npg.els.0001817), title similarity 0.68, author match, year off",
+    "author": [
+      {
+        "family": "Westneat",
+        "given": "M. W."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2006
+        ]
+      ]
+    },
+    "container-title": "Journal of Experimental Biology",
+    "x-checked": "2026-11-21"
+  },
+  {
+    "id": "wigglesworth_1972_physiology",
+    "type": "book",
+    "title": "The Physiology of Insect Blood",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'The cell and the organism' (Ramsay, 1961) title similarity 0.33",
+    "author": [
+      {
+        "family": "Wigglesworth",
+        "given": "V.B."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1972
+        ]
+      ]
+    },
+    "container-title": "Cambridge Univ. Press.",
+    "x-checked": "2026-11-21"
+  },
+  {
+    "id": "wigglesworth_1972_principles",
+    "type": "article-journal",
+    "title": "The Principles of Insect Physiology",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "author": [
+      {
+        "family": "Wigglesworth",
+        "given": "V. B."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1972
+        ]
+      ]
+    },
+    "container-title": "Edward Arnold",
+    "DOI": "10.1007/978-94-009-5973-6",
+    "x-checked": "2026-11-21"
   }
 ]

@@ -213,5 +213,9 @@
   "secrets": [
     "Attached living blades identify the illuminated cave fringe.",
     "Drifting ribbons reveal current direction without predicting the next tidal turn."
-  ]
+  ],
+  "niche": {
+    "trophic": "producer",
+    "role": "photosynthetic"
+  }
 }

@@ -1,0 +1,308 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "alariz",
+  "name": {
+    "en": "Alariz"
+  },
+  "world": "primigenia",
+  "kind": "new",
+  "status": "draft",
+  "stage": "creature",
+  "niche": {
+    "habitat": "highlands",
+    "diet": "carrion, bone, detritus",
+    "active": "day",
+    "predators": [
+      "cegacima"
+    ],
+    "trophic": "scavenger",
+    "role": "scavenger",
+    "prey": [
+      "rondo"
+    ]
+  },
+  "body": "2.4 m length, 85 kg",
+  "chains": [
+    {
+      "id": "alariz.c1",
+      "trait": "Broad, high-aspect-ratio wings",
+      "links": [
+        "Dense 1.6 bar air increases lift per wing area",
+        "Sun-warmed volcanic rock generates daily thermal updrafts",
+        "Sparse highland carrion requires wide foraging ranges"
+      ],
+      "roots": [
+        "F4",
+        "F7"
+      ],
+      "skill": {
+        "id": "alariz.thermal_soar",
+        "name": {
+          "en": "Thermal Soar"
+        },
+        "role": "Control",
+        "effect": "Gain 20m altitude by following wind columns, costs no stamina",
+        "numbers": {}
+      },
+      "weakness": "Ground-bound in thick fog or windless dawn when thermals fail",
+      "observe": [
+        "Wind ripples shimmering over dark basalt ridges",
+        "It banking silently in a rising spiral",
+        "Feather edges flaring to catch the updraft"
+      ],
+      "journal": {
+        "en": "It reads the mountain’s breath before it reads the sky."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/foodweb-2026-11-21",
+        "date": "2026-11-21",
+        "summary": "Either cut mass to ~12–22 kg for a 2.4 m wingspan high-aspect soarer, or keep ~85 kg but specify wingspan ~5.5–7 m+ and stress punctuated thermal hopping plus ridge soaring (not condor-effortless all-day float); optionally note partial quadruped/biped launch from cliffs (F2) to limit takeoff power",
+        "fixes": [
+          "Either cut mass to ~12–22 kg for a 2.4 m wingspan high-aspect soarer, or keep ~85 kg but specify wingspan ~5.5–7 m+ and stress punctuated thermal hopping plus ridge soaring (not condor-effortless all-day float); optionally note partial quadruped/biped launch from cliffs (F2) to limit takeoff power"
+        ],
+        "analogues": [
+          {
+            "organism": "Andean condor (Vultur gryphus) and griffon vulture (Gyps fulvus)—thermal-soaring obligate scavengers; lammergeier adds bone-focused carrion guild overlap",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "pennycuick_2008_modelling"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 7
+        }
+      },
+      "provenance": {
+        "council_run": "foodweb-2026-11-21",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "alariz.c2",
+      "trait": "Large eyes with UV-absorbing screens",
+      "links": [
+        "High-altitude UV radiation reaches 1.4× sea level values",
+        "Diurnal hunting demands high contrast vision",
+        "Eyes evolved large corneas and tapetum for ground detection"
+      ],
+      "roots": [
+        "F14",
+        "F1",
+        "F11"
+      ],
+      "skill": {
+        "id": "alariz.carion_sight",
+        "name": {
+          "en": "Carion Sight"
+        },
+        "role": "Poke",
+        "effect": "Reveal hidden carcasses within 250m and mark bone deposits",
+        "numbers": {}
+      },
+      "weakness": "Blinded by sudden glare or dense morning fog",
+      "observe": [
+        "Nictitating membrane sweeping across a glossy pupil",
+        "Head tilting to isolate shapes against bright sky",
+        "Salt crystals on distant bones flashing under sun"
+      ],
+      "journal": {
+        "en": "Its eyes are tuned to the mountain’s harsh light."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/foodweb-2026-11-21",
+        "date": "2026-11-21",
+        "summary": "Keep large eyes + UV-absorbing corneal/lenticular pigments or cone oil droplets (D23 parallel); replace tapetum with dual foveae or area centralis for ground/carion search; optionally weaker tapetum benefit only for dawn-fog foraging (F8/F16), with glare vulnerability retained",
+        "fixes": [
+          "Keep large eyes + UV-absorbing corneal/lenticular pigments or cone oil droplets (D23 parallel); replace tapetum with dual foveae or area centralis for ground/carion search; optionally weaker tapetum benefit only for dawn-fog foraging (F8/F16), with glare vulnerability retained"
+        ],
+        "analogues": [
+          {
+            "organism": "Turkey vulture (Cathartes aura) and African white-backed vulture (Gyps africanus) for distance carrion vision; reindeer (Rangifer tarandus) for UV-blocking lens/pigment at high exposure (terrestrial analog for UV screen, not tapetum)",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 4
+        }
+      },
+      "provenance": {
+        "council_run": "foodweb-2026-11-21",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "alariz.c3",
+      "trait": "Pneumatized, hollow bone structure",
+      "links": [
+        "Surface gravity is 1.05× Earth standard",
+        "Dense atmosphere lowers terminal velocity and reduces fall impact",
+        "Bones fused, hollowed, and air-sac connected to lungs"
+      ],
+      "roots": [
+        "F2"
+      ],
+      "skill": {
+        "id": "alariz.light_frame",
+        "name": {
+          "en": "Light Frame"
+        },
+        "role": "Defence",
+        "effect": "Take 30% less fall damage and move silently in air",
+        "numbers": {}
+      },
+      "weakness": "Vulnerable to direct blunt strikes and heavy impact",
+      "observe": [
+        "Feathering gaps that hum softly in wind",
+        "Soft landing on a narrow cliff lip",
+        "Pulsing air sac visible at the throat base"
+      ],
+      "journal": {
+        "en": "A skeleton of air and stone, it trades hardness for the sky."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/foodweb-2026-11-21",
+        "date": "2026-11-21",
+        "summary": "Hollow, air-sac-linked pneumatic skeleton is the standard mass-reduction package for volant vertebrates; it trades impact resistance for lower wing loading. Slightly higher gravity (F2, D6) works against it but is modest (+5%); denser air (F4) and lower terminal velocity (D16/F4) reduce fall injury risk, aligning with the stated fall-damage mitigation. Elevated pO2 (D10/F5) supports the aerobic cost of flight muscles and digestion in a large flier.",
+        "fixes": [
+          "Hollow, air-sac-linked pneumatic skeleton is the standard mass-reduction package for volant vertebrates; it trades impact resistance for lower wing loading. Slightly higher gravity (F2, D6) works against it but is modest (+5%); denser air (F4) and lower terminal velocity (D16/F4) reduce fall injury risk, aligning with the stated fall-damage mitigation. Elevated pO2 (D10/F5) supports the aerobic cost of flight muscles and digestion in a large flier."
+        ],
+        "analogues": [
+          {
+            "organism": "Birds universally (e.g. chicken/songbird pneumatic vertebrae and long bones); ostrich retains reduced pneumaticity; pterosaurs as extinct analog for extreme pneumatization",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 5
+        }
+      },
+      "provenance": {
+        "council_run": "foodweb-2026-11-21",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "alariz.c4",
+      "trait": "Muscular gizzard with basalt grit",
+      "links": [
+        "Highland diet consists of tough hides and dry bones",
+        "1.6× oxygen supports rapid aerobic digestion",
+        "Ingests volcanic grit from mineral seeps to macerate food"
+      ],
+      "roots": [
+        "F27"
+      ],
+      "skill": {
+        "id": "alariz.grit_mill",
+        "name": {
+          "en": "Grit Mill"
+        },
+        "role": "Basic",
+        "effect": "Chew bone and tough flesh, recover 15 stamina per meal",
+        "numbers": {}
+      },
+      "weakness": "Requires regular access to volcanic grit or suffers indigestion",
+      "observe": [
+        "Pecking at basalt outcrops and licking salt seeps",
+        "Crushing a femur against a rock ledge",
+        "Mineral crust staining the base of its beak"
+      ],
+      "journal": {
+        "en": "It carries the mountain in its belly."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/foodweb-2026-11-21",
+        "date": "2026-11-21",
+        "summary": "Carrion-plus-bone diet (D27) selects for gastric mill function; ingested silicate grit is widespread on Earth for grinding tough plant matter and bone fragments. Volcanic highlands supply basalt grit and mineral seeps (F23, D23—same pressure as espinodo/gastrolith lore). Higher oxygen partial pressure (D10) supports faster aerobic gut metabolism; unchanged need to visit grit sources is realistic (gastrolith residency time is limited in birds).",
+        "fixes": [
+          "Carrion-plus-bone diet (D27) selects for gastric mill function; ingested silicate grit is widespread on Earth for grinding tough plant matter and bone fragments. Volcanic highlands supply basalt grit and mineral seeps (F23, D23—same pressure as espinodo/gastrolith lore). Higher oxygen partial pressure (D10) supports faster aerobic gut metabolism; unchanged need to visit grit sources is realistic (gastrolith residency time is limited in birds)."
+        ],
+        "analogues": [
+          {
+            "organism": "Lammergeier/bearded vulture (Gypaetus barbatus) bone consumption; galliform gizzard + grit (e.g. domestic fowl); crocodilian gastroliths for grinding",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 5
+        }
+      },
+      "provenance": {
+        "council_run": "foodweb-2026-11-21",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "rondo",
+      "kind": "prey",
+      "note": "Consumes fallen or injured herd members on highland slopes"
+    },
+    {
+      "with": "garfio",
+      "kind": "predation",
+      "note": "Garfio will intercept fledglings or attack exhausted adults landing on cliffs"
+    }
+  ],
+  "provenance": {
+    "council_run": "foodweb-2026-11-21",
+    "by": [
+      "naturalist/qwen"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-21",
+      "who": "import_got",
+      "what": "imported from council run foodweb-2026-11-21"
+    },
+    {
+      "date": "2026-11-21",
+      "who": "foodweb.py fix",
+      "what": "removed rejected references and non-existent root facts (roots recovered from the derivation items cited in the links, else F27)"
+    }
+  ],
+  "body_plan": {
+    "symmetry": "bilateral",
+    "arms": 2,
+    "origin": "Derived from a bipedal predator lineage that shifted to aerial scavenging"
+  },
+  "temperament": "Opportunistic, patient, territorial over updrafts, avoids live predators",
+  "secrets": [
+    "Fossilized wing bones found in the sunken lava tube",
+    "Albino variant with translucent feathers spotted on the windward cliff edge"
+  ],
+  "moments": [
+    "On a windless evening, it stands on a basalt outcrop, wings taut against the cooling air, waiting for tomorrow’s thermals to rise while carrion drifts silently in the fog below."
+  ],
+  "journal": [
+    {
+      "en": "It reads the mountain’s breath before it reads the sky."
+    },
+    {
+      "en": "Where others see stone, it sees a ladder to the clouds."
+    }
+  ]
+}

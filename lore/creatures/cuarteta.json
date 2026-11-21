@@ -12,7 +12,9 @@
     "habitat": "Coastal shallows, sea-arch surges, and tidal flats (0–15 m depth)",
     "diet": "Dissolved proteins, plankton, floating carcass fragments",
     "active": "Nocturnal and crepuscular; rests in rock crevices during midday convection storms",
-    "predators": []
+    "predators": [],
+    "trophic": "secondary_consumer",
+    "role": "small_predator"
   },
   "body": "Translucent gelatinous bell, 0.8 m diameter, four thick oral arms trailing beneath",
   "chains": [

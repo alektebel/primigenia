@@ -1,0 +1,288 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "mantohoja",
+  "name": {
+    "en": "MantoHoja"
+  },
+  "world": "primigenia",
+  "kind": "new",
+  "status": "draft",
+  "stage": "creature",
+  "niche": {
+    "habitat": "forest",
+    "diet": "leaf_insect_nymphs",
+    "active": "day",
+    "predators": [
+      "acechalunas"
+    ],
+    "trophic": "parasite",
+    "role": "parasitoid",
+    "prey": [
+      "alfombrilla",
+      "cenizuela"
+    ]
+  },
+  "body": "4.8 cm, 0.12 g",
+  "chains": [
+    {
+      "id": "mantohoja.c1",
+      "trait": "Broad wings for tight canopy turns",
+      "links": [
+        "High air density increases lift and drag",
+        "Forest understory demands low-speed maneuverability",
+        "Broad wings generate vortex control at 1.6 bar"
+      ],
+      "roots": [
+        "F4"
+      ],
+      "skill": {
+        "id": "mantohoja.drift_dash",
+        "name": {
+          "en": "Drift-Dash"
+        },
+        "role": "Basic",
+        "effect": "Short burst flight using dense air, moves 8 m and loses 5 stamina",
+        "numbers": {}
+      },
+      "weakness": "Wing joints stiffen in cold damp, slowing takeoff",
+      "observe": [
+        "Wings beat slowly but powerfully",
+        "Hovers motionless for seconds",
+        "Dives vertically through gaps"
+      ],
+      "journal": {
+        "en": "Built for thick air, not long distance."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/foodweb-2026-11-21",
+        "date": "2026-11-21",
+        "summary": "At ~1.58× sea-level air density (F4, D11), the same wing area and speed produce more lift and drag, so understory flight can stay slow and still supported—matching the world’s “gliding cheap, sprint costly” feel and the need for gap-threading in forest without extreme wing loading. A 4.8 cm, ~0.12 g hexapod is in the size class of large parasitoid wasps or small mantises where broad wings and low-speed hovering are used for station-keeping near hosts; cold-damp joint stiffening is a standard ectotherm limitation.",
+        "fixes": [
+          "At ~1.58× sea-level air density (F4, D11), the same wing area and speed produce more lift and drag, so understory flight can stay slow and still supported—matching the world’s “gliding cheap, sprint costly” feel and the need for gap-threading in forest without extreme wing loading. A 4.8 cm, ~0.12 g hexapod is in the size class of large parasitoid wasps or small mantises where broad wings and low-speed hovering are used for station-keeping near hosts; cold-damp joint stiffening is a standard ectotherm limitation."
+        ],
+        "analogues": [
+          {
+            "organism": "Forest-dwelling ichneumonid and braconid parasitoid wasps (e.g. host-searching flight in cluttered vegetation); praying mantises for low-speed maneuvering broad-winged flight in canopy.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "foodweb-2026-11-21",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "mantohoja.c2",
+      "trait": "Curved ovipositor injects egg into host",
+      "links": [
+        "Universal porphyrin-DNA biochemistry shares host enzymes",
+        "Larval gut secretes localized immunosuppressants",
+        "Egg implants inside host abdomen"
+      ],
+      "roots": [
+        "F24"
+      ],
+      "skill": {
+        "id": "mantohoja.silent_strike",
+        "name": {
+          "en": "Silent Strike"
+        },
+        "role": "Poke",
+        "effect": "Inserts egg into target, stuns host for 3s, +15% hatch success",
+        "numbers": {}
+      },
+      "weakness": "Exposed abdomen during laying invites counterattacks",
+      "observe": [
+        "Adult approaches host from below",
+        "Abdomen curves upward, needle extends",
+        "Host twitches once, then resumes feeding"
+      ],
+      "journal": {
+        "en": "Surgeon’s hand, silent needle."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/foodweb-2026-11-21",
+        "date": "2026-11-21",
+        "summary": "Keep the curved ovipositor and abdominal implant; attribute immunosuppression and teratosis to venom/symbionts delivered with the egg (or a latent egg coat), then larva consumes hemolymph and fat body—same Silent Strike gameplay, honest mechanism.",
+        "fixes": [
+          "Keep the curved ovipositor and abdominal implant; attribute immunosuppression and teratosis to venom/symbionts delivered with the egg (or a latent egg coat), then larva consumes hemolymph and fat body—same Silent Strike gameplay, honest mechanism."
+        ],
+        "analogues": [
+          {
+            "organism": "Ichneumonidae and Braconidae parasitoid wasps stinging caterpillar or hemipteran nymph hosts; polydnavirus-associated immune suppression in parasitic Hymenoptera.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "foodweb-2026-11-21",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "mantohoja.c3",
+      "trait": "Green-red mottled wing camouflage",
+      "links": [
+        "Canopy light filters through red-purple UV screens",
+        "Prey leaf-insects reflect similar spectral bands",
+        "Matching foliage reduces visual detection"
+      ],
+      "roots": [
+        "F25"
+      ],
+      "skill": {
+        "id": "mantohoja.foliage_blend",
+        "name": {
+          "en": "Foliage Blend"
+        },
+        "role": "Defence",
+        "effect": "Chance to avoid 1 detection attempt, +10 stealth",
+        "numbers": {}
+      },
+      "weakness": "Fails against predators that use motion or smell",
+      "observe": [
+        "Wings fold flat against bark",
+        "Pattern fractures under dappled sun",
+        "Indistinguishable from new leaf growth"
+      ],
+      "journal": {
+        "en": "Painted in the canopy’s own light."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/foodweb-2026-11-21",
+        "date": "2026-11-21",
+        "summary": "Canopy light filtered through red-purple UV-screen pigments (F25) plus green ancestral photosynthetic tones produces broken, red-shifted dapple that leaf herbivores and their mimics already match; dorsal-wing flattening on bark or twigs defeats mid-canopy visual search while the predator weakness (motion/smell) matches merodeador and other non-visual hunters.",
+        "fixes": [
+          "Canopy light filtered through red-purple UV-screen pigments (F25) plus green ancestral photosynthetic tones produces broken, red-shifted dapple that leaf herbivores and their mimics already match; dorsal-wing flattening on bark or twigs defeats mid-canopy visual search while the predator weakness (motion/smell) matches merodeador and other non-visual hunters."
+        ],
+        "analogues": [
+          {
+            "organism": "Phasmatodea leaf insects and stick insects (spectral and outline disruption on live foliage); understory butterflies with ventral camouflage.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "foodweb-2026-11-21",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "mantohoja.c4",
+      "trait": "Long-range scent tracking at dawn",
+      "links": [
+        "Molecular diffusion drops to 0.6x in dense humid air",
+        "Chemical trails persist longer in still valleys",
+        "Dawn fog traps odors near forest floor"
+      ],
+      "roots": [
+        "F16"
+      ],
+      "skill": {
+        "id": "mantohoja.scent_trail",
+        "name": {
+          "en": "Scent Trail"
+        },
+        "role": "Engage",
+        "effect": "Marks host path, reveals movement for 12s, +20% tracking",
+        "numbers": {}
+      },
+      "weakness": "Wind shifts scramble chemical maps",
+      "observe": [
+        "Antennae sweep in slow arcs",
+        "Head tilts toward lingering air currents",
+        "Flight straightens toward odor source"
+      ],
+      "journal": {
+        "en": "Breathes the forest’s invisible map."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/foodweb-2026-11-21",
+        "date": "2026-11-21",
+        "summary": "Reframe “long-range” as longer trail persistence and sharper still-air gradients at dawn rather than kilometer-scale detection—keeps the +20% tracking buff without implying super-diffusion.",
+        "fixes": [
+          "Reframe “long-range” as longer trail persistence and sharper still-air gradients at dawn rather than kilometer-scale detection—keeps the +20% tracking buff without implying super-diffusion."
+        ],
+        "analogues": [
+          {
+            "organism": "Parasitoid wasps locating hosts via herbivore-induced plant volatiles and host cuticular hydrocarbons; male silk moths following concentrated pheromone plumes in stable night air (mechanism analogous, different chemistry).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "foodweb-2026-11-21",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "merodeador",
+      "kind": "predation",
+      "note": "Predator patrols canopy, snaps adults mid-flight."
+    }
+  ],
+  "provenance": {
+    "council_run": "foodweb-2026-11-21",
+    "by": [
+      "naturalist/qwen"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-21",
+      "who": "import_got",
+      "what": "imported from council run foodweb-2026-11-21"
+    }
+  ],
+  "body_plan": {
+    "symmetry": "bilateral",
+    "origin": "hexapod"
+  },
+  "temperament": "solitary",
+  "secrets": [
+    "Hidden under a rotting log, a cluster of empty, translucent egg shells.",
+    "Dawn fog concentrates the scent trail near the waterfall cave entrance."
+  ],
+  "moments": [
+    "A leaf-insect freezes mid-chew. Its abdomen swells slightly. Hours later, the skin splits from within."
+  ],
+  "journal": [
+    {
+      "en": "Tiny surgeon, silent needle."
+    },
+    {
+      "en": "The host feeds; the larva grows."
+    }
+  ]
+}

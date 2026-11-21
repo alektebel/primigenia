@@ -1,0 +1,306 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "pelotero",
+  "name": {
+    "en": "Pelotero"
+  },
+  "world": "primigenia",
+  "kind": "new",
+  "status": "draft",
+  "stage": "creature",
+  "niche": {
+    "habitat": "meadow",
+    "diet": "grama_de_ceniza stems, rondo dung, meadow detritus",
+    "active": "day",
+    "predators": [
+      "zancuilla"
+    ],
+    "trophic": "decomposer",
+    "role": "detritivore",
+    "prey": [
+      "rondo"
+    ]
+  },
+  "body": "3.2 cm length, 0.4 g mass",
+  "chains": [
+    {
+      "id": "pelotero.c1",
+      "trait": "Six jointed legs and low, wide carapace",
+      "links": [
+        "Stable footing required in tall grass and uneven litter",
+        "Low center of gravity prevents lateral tumbling",
+        "Dense air amplifies wind force per meter per second on exposed meadows"
+      ],
+      "roots": [
+        "F4",
+        "F19"
+      ],
+      "skill": {
+        "id": "pelotero.wind_anchor",
+        "name": {
+          "en": "Wind-Anchor"
+        },
+        "role": "Defence",
+        "effect": "Hitches to grass stems, +40% survival in gales during the 26 h day/night cycle",
+        "numbers": {}
+      },
+      "weakness": "Stationary for 3 seconds, vulnerable to bite attacks",
+      "observe": [
+        "Watch it lock its tarsi into grass blades when the breeze picks up.",
+        "Count six legs; the middle pair acts as stabilizers rather than climbers.",
+        "See its wide, flattened back catch the wind without rolling over."
+      ],
+      "journal": {
+        "en": "It doesn't fight the wind; it becomes part of the meadow."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/foodweb-2026-11-21",
+        "date": "2026-11-21",
+        "summary": "A 3.2 cm, 0.4 g hexapod in tall meadow grass matches island detritivore size and the empty small-invertebrate decomposer niche (D28, D30). A low, wide body lowers the center of gravity on uneven litter; tarsal gripping on stems is standard for plant-dwelling Coleoptera. F19’s 1.6× wind loading matters most in exposed swards and during frontal gales; grass canopy shelters much of the litter layer, but open-patch anchoring still pays off.",
+        "fixes": [
+          "A 3.2 cm, 0.4 g hexapod in tall meadow grass matches island detritivore size and the empty small-invertebrate decomposer niche (D28, D30). A low, wide body lowers the center of gravity on uneven litter; tarsal gripping on stems is standard for plant-dwelling Coleoptera. F19’s 1.6× wind loading matters most in exposed swards and during frontal gales; grass canopy shelters much of the litter layer, but open-patch anchoring still pays off."
+        ],
+        "analogues": [
+          {
+            "organism": "Broad-bodied scarab and tenebrionid dung/litter beetles (e.g. Scarabaeidae on pasture) that brace on substrate rather than resist wind in open air.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 4
+        }
+      },
+      "provenance": {
+        "council_run": "foodweb-2026-11-21",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "pelotero.c2",
+      "trait": "Acidic gut secretions and symbiotic rot-bacteria",
+      "links": [
+        "Breaks down tough lignin and cellulose in dried grass and dung",
+        "Symbiotic microbes accelerate aerobic decay of organic matter",
+        "High partial pressure of oxygen fuels bacterial metabolism and spore turnover"
+      ],
+      "roots": [
+        "F27"
+      ],
+      "skill": {
+        "id": "pelotero.rapid_breakdown",
+        "name": {
+          "en": "Rapid Breakdown"
+        },
+        "role": "Basic",
+        "effect": "Consumes detritus, converts to +15% local plant growth over 2 days",
+        "numbers": {}
+      },
+      "weakness": "Excretes nutrient-rich pellets that attract scavengers and mid-predators",
+      "observe": [
+        "Notice the glistening secretion that softens dried stems on contact.",
+        "Watch pellets form in minutes, not days, as microbes digest.",
+        "See the faint bacterial shimmer in its translucent abdomen during feeding."
+      ],
+      "journal": {
+        "en": "A walking compost bin, turning yesterday's waste into tomorrow's grass."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/foodweb-2026-11-21",
+        "date": "2026-11-21",
+        "summary": "Limit claims to bacterial-assisted digestion of dung fiber, softened grama_de_ceniza parenchyma, and engagement with pellet-surface fungi; drop explicit lignin breakdown or tie it to fungal hyphae ingested with detritus. Pellets attract scavengers—keep as honest ecological leak, not a bug.",
+        "fixes": [
+          "Limit claims to bacterial-assisted digestion of dung fiber, softened grama_de_ceniza parenchyma, and engagement with pellet-surface fungi; drop explicit lignin breakdown or tie it to fungal hyphae ingested with detritus. Pellets attract scavengers—keep as honest ecological leak, not a bug."
+        ],
+        "analogues": [
+          {
+            "organism": "Dung beetle larvae and scarab gut microbiomes on herbivore feces; rove beetles (Staphylinidae) in decaying litter—cellulose-focused gut flora, not termite-grade lignin breakdown.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 5
+        }
+      },
+      "provenance": {
+        "council_run": "foodweb-2026-11-21",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "pelotero.c3",
+      "trait": "Fine tracheal network and spiracle valves",
+      "links": [
+        "Extracts oxygen efficiently at low mass without massive body cavities",
+        "High pO₂ allows passive tracheal diffusion across short distances",
+        "Reduced spiracle size minimizes water loss in clear midday sun"
+      ],
+      "roots": [
+        "F5"
+      ],
+      "skill": {
+        "id": "pelotero.o2_burst",
+        "name": {
+          "en": "O2-Burst"
+        },
+        "role": "Engage",
+        "effect": "Sprints 8m in 1.5s using stored tracheal pressure, +20% chase speed",
+        "numbers": {}
+      },
+      "weakness": "Valves seal in fog; loses burst capability and moves sluggishly in dense air/moisture",
+      "observe": [
+        "Spot the tiny side openings that open and close rhythmically.",
+        "Observe rapid leg pumping before a sprint to flush the tracheal system.",
+        "Note it retreats under leaf litter when the valley fog rolls in."
+      ],
+      "journal": {
+        "en": "It breathes the thin air of the afternoon, but flees the heavy fog."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/foodweb-2026-11-21",
+        "date": "2026-11-21",
+        "summary": "Rename O2-Burst to tidal spiracle flushing + short escape dash (~0.5–1.5 m/s for <1 s). Weakness in fog: cuticular wetting/cooling and lower meadow litter temperature, not spiracles sealing against hypoxia.",
+        "fixes": [
+          "Rename O2-Burst to tidal spiracle flushing + short escape dash (~0.5–1.5 m/s for <1 s). Weakness in fog: cuticular wetting/cooling and lower meadow litter temperature, not spiracles sealing against hypoxia."
+        ],
+        "analogues": [
+          {
+            "organism": "Locust/schistocerca-style tidal tracheal ventilation (Weis-Fogh); dung beetles’ intermittent flight and short escape runs, not sustained cheetah-like sprints.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "wigglesworth_1972_principles"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 4
+        }
+      },
+      "provenance": {
+        "council_run": "foodweb-2026-11-21",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "pelotero.c4",
+      "trait": "Dark melanin-rich cuticle with UV-absorbing pigments",
+      "links": [
+        "Shields internal tissues from seasonal UV pulses and photodamage",
+        "Dense air scatters blue light but concentrates ground-level UV in dry seasons",
+        "East-side meadows lack cloud cover to filter radiation during summer clearings"
+      ],
+      "roots": [
+        "F1",
+        "F14",
+        "F18"
+      ],
+      "skill": {
+        "id": "pelotero.sun_plated",
+        "name": {
+          "en": "Sun-Plated"
+        },
+        "role": "Defence",
+        "effect": "-30% radiation damage during midday, +10% camouflage on dark soil",
+        "numbers": {}
+      },
+      "weakness": "Absorbs heat; overheats during peak sun, forces midday shelter-seeking",
+      "observe": [
+        "See its glossy black back shimmer and reflect harsh light.",
+        "Watch it retreat to grass shadows precisely at solar noon.",
+        "Notice how predator bites stick to its hard, dark shell without penetrating."
+      ],
+      "journal": {
+        "en": "It wears the sun's assault as armor, paying for it with heat."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/foodweb-2026-11-21",
+        "date": "2026-11-21",
+        "summary": "Root Sun-Plated in heat–armor trade-off and bite resistance; keep modest UV benefit for clear summer midday, not F14 summit logic. Albino secret: fair—less heat stress at dawn fog (F8), higher desiccation/UV risk in open sun—still playable at 0.9× baseline UV.",
+        "fixes": [
+          "Root Sun-Plated in heat–armor trade-off and bite resistance; keep modest UV benefit for clear summer midday, not F14 summit logic. Albino secret: fair—less heat stress at dawn fog (F8), higher desiccation/UV risk in open sun—still playable at 0.9× baseline UV."
+        ],
+        "analogues": [
+          {
+            "organism": "Dark telephorid and scarab beetles on exposed soil/dung; melanin as shield and heat load (classic ectotherm trade-off).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 3
+        }
+      },
+      "provenance": {
+        "council_run": "foodweb-2026-11-21",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "rondo",
+      "kind": "prey",
+      "note": "consumes undigested grass pellets and fecal matter to access concentrated nutrients"
+    },
+    {
+      "with": "acechalunas",
+      "kind": "predation",
+      "note": "small predator that snaps them up if caught foraging in open patches"
+    }
+  ],
+  "provenance": {
+    "council_run": "foodweb-2026-11-21",
+    "by": [
+      "naturalist/qwen"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-21",
+      "who": "import_got",
+      "what": "imported from council run foodweb-2026-11-21"
+    },
+    {
+      "date": "2026-11-21",
+      "who": "foodweb.py fix",
+      "what": "removed rejected references and non-existent root facts (roots recovered from the derivation items cited in the links, else F27)"
+    }
+  ],
+  "body_plan": {
+    "symmetry": "bilateral",
+    "origin": "insect-like hexapod, short membranous wings"
+  },
+  "temperament": "skittish, industrious",
+  "secrets": [
+    "Albino variant lacks melanin, thrives in cooler dawn fog but burns if caught in midday clear skies."
+  ],
+  "moments": [
+    "When a herd of Rondos shifts, a sudden wind rolls through the grass, and thousands of them lock their legs, turning the meadow floor into a living, shimmering carpet that holds fast against the gale."
+  ],
+  "journal": [
+    {
+      "en": "It turns waste into wealth, one pellet at a time."
+    },
+    {
+      "en": "Under the yellow-white sun, black backs gleam like scattered beetles."
+    }
+  ]
+}

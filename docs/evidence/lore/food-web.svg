@@ -1,0 +1,294 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2400" height="1500" viewBox="0 0 2400 1500" font-family="Liberation Sans, sans-serif">
+<rect width="2400" height="1500" fill="#fbf8f1"/>
+<text x="60" y="40" font-size="26" font-weight="bold" fill="#222">Primigenia food web (arrows run from the eaten to the eater; columns are the first habitat of each species; top = apex, bottom = producers)</text>
+<text x="60" y="1460" font-size="22" fill="#555" font-weight="bold">meadow</text><line x1="60" y1="60" x2="60" y2="1430" stroke="#ddd"/>
+<text x="455" y="1460" font-size="22" fill="#555" font-weight="bold">forest</text><line x1="455" y1="60" x2="455" y2="1430" stroke="#ddd"/>
+<text x="942" y="1460" font-size="22" fill="#555" font-weight="bold">shore</text><line x1="942" y1="60" x2="942" y2="1430" stroke="#ddd"/>
+<text x="1215" y="1460" font-size="22" fill="#555" font-weight="bold">shallows</text><line x1="1215" y1="60" x2="1215" y2="1430" stroke="#ddd"/>
+<text x="1519" y="1460" font-size="22" fill="#555" font-weight="bold">caves</text><line x1="1519" y1="60" x2="1519" y2="1430" stroke="#ddd"/>
+<text x="1732" y="1460" font-size="22" fill="#555" font-weight="bold">spring</text><line x1="1732" y1="60" x2="1732" y2="1430" stroke="#ddd"/>
+<text x="1854" y="1460" font-size="22" fill="#555" font-weight="bold">highlands</text><line x1="1854" y1="60" x2="1854" y2="1430" stroke="#ddd"/>
+<text x="2218" y="1460" font-size="22" fill="#555" font-weight="bold">vents</text><line x1="2218" y1="60" x2="2218" y2="1430" stroke="#ddd"/>
+<path d="M208,1324 C208,1157 389,1157 389,990" fill="none" stroke="#c9a227" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M1793,1324 C1793,1157 389,1157 389,990" fill="none" stroke="#c9a227" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M1752,1290 C1752,1140 389,1140 389,990" fill="none" stroke="#c9a227" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M861,1290 C861,1140 389,1140 389,990" fill="none" stroke="#c9a227" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M2006,1290 C2006,1140 389,1140 389,990" fill="none" stroke="#c9a227" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M1833,1290 C1833,1140 389,1140 389,990" fill="none" stroke="#c9a227" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M2006,1290 C2006,1140 2036,1140 2036,990" fill="none" stroke="#c9a227" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M2127,1290 C2127,1140 2036,1140 2036,990" fill="none" stroke="#c9a227" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M1752,1290 C1752,1140 987,1140 987,990" fill="none" stroke="#c9a227" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M861,1290 C861,1140 987,1140 987,990" fill="none" stroke="#c9a227" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M1010,1290 C1010,1140 1170,1140 1170,990" fill="none" stroke="#c9a227" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M208,1324 C208,1157 1170,1157 1170,990" fill="none" stroke="#c9a227" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M2249,1290 C2249,1140 2279,1140 2279,990" fill="none" stroke="#c9a227" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M2310,1324 C2310,1157 2279,1157 2279,990" fill="none" stroke="#c9a227" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M1443,1324 C1443,1157 1626,1157 1626,990" fill="none" stroke="#c9a227" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M1679,1174 C1679,1082 1626,1082 1626,990" fill="none" stroke="#c9a227" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M1679,1324 C1679,1174 1443,1174 1443,1024" fill="none" stroke="#c9a227" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M1367,840 C1367,690 1367,690 1367,540" fill="none" stroke="#d9822b" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M1291,990 C1291,765 1367,765 1367,540" fill="none" stroke="#d9822b" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M1367,390 C1367,465 1010,465 1010,540" fill="none" stroke="#d9822b" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M1078,1024 C1078,782 1010,782 1010,540" fill="none" stroke="#d9822b" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M2279,990 C2279,765 2036,765 2036,540" fill="none" stroke="#d9822b" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M2279,390 C2279,465 2036,465 2036,540" fill="none" stroke="#d9822b" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M759,1140 C759,840 2036,840 2036,540" fill="none" stroke="#d9822b" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M2036,1140 C2036,840 2036,840 2036,540" fill="none" stroke="#d9822b" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M577,840 C577,690 2036,690 2036,540" fill="none" stroke="#d9822b" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M389,990 C389,615 698,615 698,240" fill="none" stroke="#c0453a" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M2036,990 C2036,615 698,615 698,240" fill="none" stroke="#c0453a" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M577,690 C577,465 698,465 698,240" fill="none" stroke="#c0453a" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M1626,690 C1626,465 698,465 698,240" fill="none" stroke="#c0453a" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M1626,540 C1626,390 698,390 698,240" fill="none" stroke="#c0453a" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M389,990 C389,615 258,615 258,240" fill="none" stroke="#c0453a" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M2036,990 C2036,615 258,615 258,240" fill="none" stroke="#c0453a" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M1170,990 C1170,615 258,615 258,240" fill="none" stroke="#c0453a" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M516,1140 C516,690 258,690 258,240" fill="none" stroke="#c0453a" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M1793,540 C1793,390 258,390 258,240" fill="none" stroke="#c0453a" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M389,990 C389,615 2036,615 2036,240" fill="none" stroke="#c0453a" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M2036,990 C2036,615 2036,615 2036,240" fill="none" stroke="#c0453a" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M1170,990 C1170,615 2036,615 2036,240" fill="none" stroke="#c0453a" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M516,1140 C516,690 2036,690 2036,240" fill="none" stroke="#c0453a" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M2036,540 C2036,390 2036,390 2036,240" fill="none" stroke="#c0453a" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M2249,1290 C2249,840 2279,840 2279,390" fill="none" stroke="#6b6f76" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M881,1174 C881,1157 516,1157 516,1140" fill="none" stroke="#8a5a3c" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M1572,1290 C1572,1215 516,1215 516,1140" fill="none" stroke="#8a5a3c" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M698,1324 C698,1232 516,1232 516,1140" fill="none" stroke="#8a5a3c" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M2006,1290 C2006,1215 516,1215 516,1140" fill="none" stroke="#8a5a3c" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M406,1324 C406,1232 516,1232 516,1140" fill="none" stroke="#8a5a3c" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M1884,1290 C1884,1215 516,1215 516,1140" fill="none" stroke="#8a5a3c" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M1572,1290 C1572,990 1626,990 1626,690" fill="none" stroke="#9b7bb8" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M881,1174 C881,932 1626,932 1626,690" fill="none" stroke="#9b7bb8" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M536,1290 C536,990 577,990 577,690" fill="none" stroke="#9b7bb8" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M861,1290 C861,990 577,990 577,690" fill="none" stroke="#9b7bb8" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M638,1174 C638,932 577,932 577,690" fill="none" stroke="#9b7bb8" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M536,1290 C536,1007 820,1007 820,724" fill="none" stroke="#9b7bb8" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M861,1290 C861,1007 820,1007 820,724" fill="none" stroke="#9b7bb8" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M577,990 C577,857 820,857 820,724" fill="none" stroke="#9b7bb8" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M820,1024 C820,874 820,874 820,724" fill="none" stroke="#9b7bb8" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M1793,1324 C1793,1007 258,1007 258,690" fill="none" stroke="#9b7bb8" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M536,1290 C536,990 258,990 258,690" fill="none" stroke="#9b7bb8" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M861,1290 C861,990 258,990 258,690" fill="none" stroke="#9b7bb8" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M307,1290 C307,990 258,990 258,690" fill="none" stroke="#9b7bb8" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M208,1324 C208,1007 258,1007 258,690" fill="none" stroke="#9b7bb8" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M1752,1290 C1752,990 258,990 258,690" fill="none" stroke="#9b7bb8" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M1833,1290 C1833,990 258,990 258,690" fill="none" stroke="#9b7bb8" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M516,1140 C516,840 1626,840 1626,540" fill="none" stroke="#d9822b" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M1626,990 C1626,765 1626,765 1626,540" fill="none" stroke="#d9822b" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M1572,1140 C1572,840 1626,840 1626,540" fill="none" stroke="#d9822b" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M881,1174 C881,782 698,782 698,390" fill="none" stroke="#6b6f76" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M1010,540 C1010,407 1443,407 1443,274" fill="none" stroke="#c0453a" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M1367,540 C1367,407 1443,407 1443,274" fill="none" stroke="#c0453a" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M1367,540 C1367,690 1367,690 1367,840" fill="none" stroke="#3a7ca5" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M698,240 C698,165 698,165 698,90" fill="none" stroke="#7a1f5c" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M389,990 C389,540 698,540 698,90" fill="none" stroke="#7a1f5c" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M2036,240 C2036,165 698,165 698,90" fill="none" stroke="#7a1f5c" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M159,540 C159,315 698,315 698,90" fill="none" stroke="#7a1f5c" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M356,574 C356,332 698,332 698,90" fill="none" stroke="#7a1f5c" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M1572,1290 C1572,1140 577,1140 577,990" fill="none" stroke="#c9a227" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M536,1290 C536,1140 577,1140 577,990" fill="none" stroke="#c9a227" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M208,1324 C208,1157 577,1157 577,990" fill="none" stroke="#c9a227" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M2036,990 C2036,540 2036,540 2036,90" fill="none" stroke="#7a1f5c" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M258,240 C258,165 2036,165 2036,90" fill="none" stroke="#7a1f5c" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M820,724 C820,407 2036,407 2036,90" fill="none" stroke="#7a1f5c" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M2036,390 C2036,240 2036,240 2036,90" fill="none" stroke="#7a1f5c" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M2006,1290 C2006,1157 258,1157 258,1024" fill="none" stroke="#c9a227" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M208,1324 C208,1174 258,1174 258,1024" fill="none" stroke="#c9a227" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M1793,1324 C1793,1174 258,1174 258,1024" fill="none" stroke="#c9a227" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M307,1290 C307,1157 258,1157 258,1024" fill="none" stroke="#c9a227" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M126,990 C126,765 1793,765 1793,540" fill="none" stroke="#d9822b" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M109,1290 C109,1140 126,1140 126,990" fill="none" stroke="#c9a227" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M1793,1324 C1793,1157 126,1157 126,990" fill="none" stroke="#c9a227" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M307,1290 C307,1140 126,1140 126,990" fill="none" stroke="#c9a227" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M881,1174 C881,1157 1572,1157 1572,1140" fill="none" stroke="#8a5a3c" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M1010,1290 C1010,1157 1078,1157 1078,1024" fill="none" stroke="#c9a227" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M1147,1324 C1147,1174 1078,1174 1078,1024" fill="none" stroke="#c9a227" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M1010,1290 C1010,1140 1291,1140 1291,990" fill="none" stroke="#c9a227" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M1291,1290 C1291,1140 1291,1140 1291,990" fill="none" stroke="#c9a227" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M881,1174 C881,1157 759,1157 759,1140" fill="none" stroke="#8a5a3c" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M698,1324 C698,1232 759,1232 759,1140" fill="none" stroke="#8a5a3c" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M389,990 C389,915 258,915 258,840" fill="none" stroke="#3a7ca5" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M1010,1290 C1010,840 1078,840 1078,390" fill="none" stroke="#6b6f76" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M2006,1290 C2006,1215 258,1215 258,1140" fill="none" stroke="#8a5a3c" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M2188,1324 C2188,1232 2036,1232 2036,1140" fill="none" stroke="#8a5a3c" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M1945,1324 C1945,1232 2036,1232 2036,1140" fill="none" stroke="#8a5a3c" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M1078,390 C1078,482 1147,482 1147,574" fill="none" stroke="#d9822b" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M1367,840 C1367,540 1291,540 1291,240" fill="none" stroke="#c0453a" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M1078,1140 C1078,690 1291,690 1291,240" fill="none" stroke="#c0453a" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M1010,540 C1010,315 1367,315 1367,90" fill="none" stroke="#7a1f5c" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M1626,990 C1626,540 1367,540 1367,90" fill="none" stroke="#7a1f5c" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M1367,540 C1367,315 1367,315 1367,90" fill="none" stroke="#7a1f5c" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M1443,1024 C1443,557 1367,557 1367,90" fill="none" stroke="#7a1f5c" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M1443,274 C1443,182 1367,182 1367,90" fill="none" stroke="#7a1f5c" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M1147,574 C1147,332 1367,332 1367,90" fill="none" stroke="#7a1f5c" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M1291,240 C1291,165 1367,165 1367,90" fill="none" stroke="#7a1f5c" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M577,990 C577,915 577,915 577,840" fill="none" stroke="#3a7ca5" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M759,1140 C759,990 577,990 577,840" fill="none" stroke="#3a7ca5" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M258,840 C258,690 159,690 159,540" fill="none" stroke="#d9822b" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M698,390 C698,465 159,465 159,540" fill="none" stroke="#d9822b" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M258,1024 C258,799 356,799 356,574" fill="none" stroke="#d9822b" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M258,1140 C258,857 356,857 356,574" fill="none" stroke="#d9822b" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M536,1290 C536,1082 820,1082 820,874" fill="none" stroke="#3a7ca5" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M698,1324 C698,1174 820,1174 820,1024" fill="none" stroke="#c9a227" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M536,1290 C536,1157 820,1157 820,1024" fill="none" stroke="#c9a227" stroke-opacity="0.35" stroke-width="1.4"/>
+<path d="M861,1290 C861,1157 820,1157 820,1024" fill="none" stroke="#c9a227" stroke-opacity="0.35" stroke-width="1.4"/>
+<rect x="337" y="977" width="104" height="26" rx="5" fill="#c9a227" fill-opacity="0.55" stroke="none" stroke-width="1.2"/>
+<text x="389" y="995" font-size="13" text-anchor="middle" fill="#fff">Rondo</text>
+<rect x="1984" y="977" width="104" height="26" rx="5" fill="#c9a227" fill-opacity="0.55" stroke="none" stroke-width="1.2"/>
+<text x="2036" y="995" font-size="13" text-anchor="middle" fill="#fff">Zanco</text>
+<rect x="935" y="977" width="104" height="26" rx="5" fill="#c9a227" fill-opacity="0.55" stroke="none" stroke-width="1.2"/>
+<text x="987" y="995" font-size="13" text-anchor="middle" fill="#fff">Coloso</text>
+<rect x="1118" y="977" width="104" height="26" rx="5" fill="#c9a227" fill-opacity="0.55" stroke="none" stroke-width="1.2"/>
+<text x="1170" y="995" font-size="13" text-anchor="middle" fill="#fff">Zancuda</text>
+<rect x="2227" y="977" width="104" height="26" rx="5" fill="#c9a227" fill-opacity="0.55" stroke="none" stroke-width="1.2"/>
+<text x="2279" y="995" font-size="13" text-anchor="middle" fill="#fff">Sosa</text>
+<rect x="1574" y="977" width="104" height="26" rx="5" fill="#c9a227" fill-opacity="0.55" stroke="none" stroke-width="1.2"/>
+<text x="1626" y="995" font-size="13" text-anchor="middle" fill="#fff">Corona</text>
+<rect x="1391" y="1011" width="104" height="26" rx="5" fill="#c9a227" fill-opacity="0.55" stroke="none" stroke-width="1.2"/>
+<text x="1443" y="1029" font-size="13" text-anchor="middle" fill="#fff">Sifón</text>
+<rect x="1315" y="527" width="104" height="26" rx="5" fill="#d9822b" fill-opacity="0.55" stroke="none" stroke-width="1.2"/>
+<text x="1367" y="545" font-size="13" text-anchor="middle" fill="#fff">Cuarteta</text>
+<rect x="958" y="527" width="104" height="26" rx="5" fill="#d9822b" fill-opacity="0.55" stroke="none" stroke-width="1.2"/>
+<text x="1010" y="545" font-size="13" text-anchor="middle" fill="#fff">Brújula</text>
+<rect x="1984" y="527" width="104" height="26" rx="5" fill="#d9822b" fill-opacity="0.55" stroke="none" stroke-width="1.2"/>
+<text x="2036" y="545" font-size="13" text-anchor="middle" fill="#fff">Acechalunas</text>
+<rect x="646" y="227" width="104" height="26" rx="5" fill="#c0453a" fill-opacity="0.55" stroke="none" stroke-width="1.2"/>
+<text x="698" y="245" font-size="13" text-anchor="middle" fill="#fff">Merodeador</text>
+<rect x="206" y="227" width="104" height="26" rx="5" fill="#c0453a" fill-opacity="0.55" stroke="none" stroke-width="1.2"/>
+<text x="258" y="245" font-size="13" text-anchor="middle" fill="#fff">Garfio</text>
+<rect x="1984" y="227" width="104" height="26" rx="5" fill="#c0453a" fill-opacity="0.55" stroke="none" stroke-width="1.2"/>
+<text x="2036" y="245" font-size="13" text-anchor="middle" fill="#fff">Espinodo</text>
+<rect x="2227" y="377" width="104" height="26" rx="5" fill="#6b6f76" fill-opacity="0.55" stroke="none" stroke-width="1.2"/>
+<text x="2279" y="395" font-size="13" text-anchor="middle" fill="#fff">El Resoplido</text>
+<rect x="464" y="1127" width="104" height="26" rx="5" fill="#8a5a3c" fill-opacity="0.55" stroke="none" stroke-width="1.2"/>
+<text x="516" y="1145" font-size="13" text-anchor="middle" fill="#fff">Babosa</text>
+<rect x="1574" y="677" width="104" height="26" rx="5" fill="#9b7bb8" fill-opacity="0.55" stroke="none" stroke-width="1.2"/>
+<text x="1626" y="695" font-size="13" text-anchor="middle" fill="#fff">Ecolumbre</text>
+<rect x="525" y="677" width="104" height="26" rx="5" fill="#9b7bb8" fill-opacity="0.55" stroke="none" stroke-width="1.2"/>
+<text x="577" y="695" font-size="13" text-anchor="middle" fill="#fff">Albinos</text>
+<rect x="768" y="711" width="104" height="26" rx="5" fill="#9b7bb8" fill-opacity="0.55" stroke="none" stroke-width="1.2"/>
+<text x="820" y="729" font-size="13" text-anchor="middle" fill="#fff">Alula</text>
+<rect x="206" y="677" width="104" height="26" rx="5" fill="#9b7bb8" fill-opacity="0.55" stroke="none" stroke-width="1.2"/>
+<text x="258" y="695" font-size="13" text-anchor="middle" fill="#fff">The player's lin</text>
+<rect x="57" y="1277" width="104" height="26" rx="5" fill="#3f8f4f" fill-opacity="0.55" stroke="none" stroke-width="1.2"/>
+<text x="109" y="1295" font-size="13" text-anchor="middle" fill="#fff">Whistlewood</text>
+<rect x="1832" y="1277" width="104" height="26" rx="5" fill="#3f8f4f" fill-opacity="0.55" stroke="none" stroke-width="1.2"/>
+<text x="1884" y="1295" font-size="13" text-anchor="middle" fill="#fff">Ember Crust</text>
+<rect x="958" y="1277" width="104" height="26" rx="5" fill="#3f8f4f" fill-opacity="0.55" stroke="none" stroke-width="1.2"/>
+<text x="1010" y="1295" font-size="13" text-anchor="middle" fill="#fff">Tide Ribbon</text>
+<rect x="2197" y="1277" width="104" height="26" rx="5" fill="#3f8f4f" fill-opacity="0.55" stroke="none" stroke-width="1.2"/>
+<text x="2249" y="1295" font-size="13" text-anchor="middle" fill="#fff">Sulfur Crust</text>
+<rect x="1954" y="1277" width="104" height="26" rx="5" fill="#3f8f4f" fill-opacity="0.55" stroke="none" stroke-width="1.2"/>
+<text x="2006" y="1295" font-size="13" text-anchor="middle" fill="#fff">Ash Tussock</text>
+<rect x="2014" y="1311" width="104" height="26" rx="5" fill="#3f8f4f" fill-opacity="0.55" stroke="none" stroke-width="1.2"/>
+<text x="2066" y="1329" font-size="13" text-anchor="middle" fill="#fff">Meteor Violet</text>
+<rect x="2075" y="1277" width="104" height="26" rx="5" fill="#3f8f4f" fill-opacity="0.55" stroke="none" stroke-width="1.2"/>
+<text x="2127" y="1295" font-size="13" text-anchor="middle" fill="#fff">Lava Tongue</text>
+<rect x="1700" y="1277" width="104" height="26" rx="5" fill="#3f8f4f" fill-opacity="0.55" stroke="none" stroke-width="1.2"/>
+<text x="1752" y="1295" font-size="13" text-anchor="middle" fill="#fff">Springmother</text>
+<rect x="1520" y="1277" width="104" height="26" rx="5" fill="#3f8f4f" fill-opacity="0.55" stroke="none" stroke-width="1.2"/>
+<text x="1572" y="1295" font-size="13" text-anchor="middle" fill="#fff">Beacon Moss</text>
+<rect x="484" y="1277" width="104" height="26" rx="5" fill="#3f8f4f" fill-opacity="0.55" stroke="none" stroke-width="1.2"/>
+<text x="536" y="1295" font-size="13" text-anchor="middle" fill="#fff">Fogcomber</text>
+<rect x="156" y="1311" width="104" height="26" rx="5" fill="#3f8f4f" fill-opacity="0.55" stroke="none" stroke-width="1.2"/>
+<text x="208" y="1329" font-size="13" text-anchor="middle" fill="#fff">Sweet Straw</text>
+<rect x="829" y="1161" width="104" height="26" rx="5" fill="#8a5a3c" fill-opacity="0.55" stroke="none" stroke-width="1.2"/>
+<text x="881" y="1179" font-size="13" text-anchor="middle" fill="#fff">Humus Bread</text>
+<rect x="1741" y="1311" width="104" height="26" rx="5" fill="#3f8f4f" fill-opacity="0.55" stroke="none" stroke-width="1.2"/>
+<text x="1793" y="1329" font-size="13" text-anchor="middle" fill="#fff">Wellberry</text>
+<rect x="646" y="1311" width="104" height="26" rx="5" fill="#3f8f4f" fill-opacity="0.55" stroke="none" stroke-width="1.2"/>
+<text x="698" y="1329" font-size="13" text-anchor="middle" fill="#fff">Shade Feather</text>
+<rect x="2136" y="1311" width="104" height="26" rx="5" fill="#3f8f4f" fill-opacity="0.55" stroke="none" stroke-width="1.2"/>
+<text x="2188" y="1329" font-size="13" text-anchor="middle" fill="#fff">Snowshield</text>
+<rect x="1095" y="1311" width="104" height="26" rx="5" fill="#3f8f4f" fill-opacity="0.55" stroke="none" stroke-width="1.2"/>
+<text x="1147" y="1329" font-size="13" text-anchor="middle" fill="#fff">Saltweeper</text>
+<rect x="809" y="1277" width="104" height="26" rx="5" fill="#3f8f4f" fill-opacity="0.55" stroke="none" stroke-width="1.2"/>
+<text x="861" y="1295" font-size="13" text-anchor="middle" fill="#fff">Canopy Rope</text>
+<rect x="1781" y="1277" width="104" height="26" rx="5" fill="#3f8f4f" fill-opacity="0.55" stroke="none" stroke-width="1.2"/>
+<text x="1833" y="1295" font-size="13" text-anchor="middle" fill="#fff">Riverbraid</text>
+<rect x="255" y="1277" width="104" height="26" rx="5" fill="#3f8f4f" fill-opacity="0.55" stroke="none" stroke-width="1.2"/>
+<text x="307" y="1295" font-size="13" text-anchor="middle" fill="#fff">Dawnlamp</text>
+<rect x="354" y="1311" width="104" height="26" rx="5" fill="#3f8f4f" fill-opacity="0.55" stroke="none" stroke-width="1.2"/>
+<text x="406" y="1329" font-size="13" text-anchor="middle" fill="#fff">Redvein</text>
+<rect x="1574" y="527" width="104" height="26" rx="5" fill="#d9822b" fill-opacity="1" stroke="#000" stroke-width="1.2"/>
+<text x="1626" y="545" font-size="13" text-anchor="middle" fill="#fff">Ciegotela</text>
+<rect x="646" y="377" width="104" height="26" rx="5" fill="#6b6f76" fill-opacity="1" stroke="#000" stroke-width="1.2"/>
+<text x="698" y="395" font-size="13" text-anchor="middle" fill="#fff">Enterrador</text>
+<rect x="1315" y="377" width="104" height="26" rx="5" fill="#6b6f76" fill-opacity="1" stroke="#000" stroke-width="1.2"/>
+<text x="1367" y="395" font-size="13" text-anchor="middle" fill="#fff">Zancarril</text>
+<rect x="1391" y="261" width="104" height="26" rx="5" fill="#c0453a" fill-opacity="1" stroke="#000" stroke-width="1.2"/>
+<text x="1443" y="279" font-size="13" text-anchor="middle" fill="#fff">Morrudo</text>
+<rect x="1315" y="827" width="104" height="26" rx="5" fill="#3a7ca5" fill-opacity="1" stroke="#000" stroke-width="1.2"/>
+<text x="1367" y="845" font-size="13" text-anchor="middle" fill="#fff">Aguijuela</text>
+<rect x="646" y="77" width="104" height="26" rx="5" fill="#7a1f5c" fill-opacity="1" stroke="#000" stroke-width="1.2"/>
+<text x="698" y="95" font-size="13" text-anchor="middle" fill="#fff">Cazanoche</text>
+<rect x="1026" y="1127" width="104" height="26" rx="5" fill="#8a5a3c" fill-opacity="1" stroke="#000" stroke-width="1.2"/>
+<text x="1078" y="1145" font-size="13" text-anchor="middle" fill="#fff">Pataosca</text>
+<rect x="525" y="977" width="104" height="26" rx="5" fill="#c9a227" fill-opacity="1" stroke="#000" stroke-width="1.2"/>
+<text x="577" y="995" font-size="13" text-anchor="middle" fill="#fff">Alfombrilla</text>
+<rect x="1984" y="377" width="104" height="26" rx="5" fill="#6b6f76" fill-opacity="1" stroke="#000" stroke-width="1.2"/>
+<text x="2036" y="395" font-size="13" text-anchor="middle" fill="#fff">Alariz</text>
+<rect x="1984" y="77" width="104" height="26" rx="5" fill="#7a1f5c" fill-opacity="1" stroke="#000" stroke-width="1.2"/>
+<text x="2036" y="95" font-size="13" text-anchor="middle" fill="#fff">Cegacima</text>
+<rect x="206" y="1011" width="104" height="26" rx="5" fill="#c9a227" fill-opacity="1" stroke="#000" stroke-width="1.2"/>
+<text x="258" y="1029" font-size="13" text-anchor="middle" fill="#fff">Llorona</text>
+<rect x="1741" y="527" width="104" height="26" rx="5" fill="#d9822b" fill-opacity="1" stroke="#000" stroke-width="1.2"/>
+<text x="1793" y="545" font-size="13" text-anchor="middle" fill="#fff">Chispilla</text>
+<rect x="74" y="977" width="104" height="26" rx="5" fill="#c9a227" fill-opacity="1" stroke="#000" stroke-width="1.2"/>
+<text x="126" y="995" font-size="13" text-anchor="middle" fill="#fff">Alasucena</text>
+<rect x="1520" y="1127" width="104" height="26" rx="5" fill="#8a5a3c" fill-opacity="1" stroke="#000" stroke-width="1.2"/>
+<text x="1572" y="1145" font-size="13" text-anchor="middle" fill="#fff">Cascarudo</text>
+<rect x="1026" y="1011" width="104" height="26" rx="5" fill="#c9a227" fill-opacity="1" stroke="#000" stroke-width="1.2"/>
+<text x="1078" y="1029" font-size="13" text-anchor="middle" fill="#fff">Lengua de marea</text>
+<rect x="1239" y="977" width="104" height="26" rx="5" fill="#c9a227" fill-opacity="1" stroke="#000" stroke-width="1.2"/>
+<text x="1291" y="995" font-size="13" text-anchor="middle" fill="#fff">Hilachuela</text>
+<rect x="707" y="1127" width="104" height="26" rx="5" fill="#8a5a3c" fill-opacity="1" stroke="#000" stroke-width="1.2"/>
+<text x="759" y="1145" font-size="13" text-anchor="middle" fill="#fff">Cenizuela</text>
+<rect x="206" y="827" width="104" height="26" rx="5" fill="#3a7ca5" fill-opacity="1" stroke="#000" stroke-width="1.2"/>
+<text x="258" y="845" font-size="13" text-anchor="middle" fill="#fff">Pellizcador</text>
+<rect x="1026" y="377" width="104" height="26" rx="5" fill="#6b6f76" fill-opacity="1" stroke="#000" stroke-width="1.2"/>
+<text x="1078" y="395" font-size="13" text-anchor="middle" fill="#fff">Garra marea</text>
+<rect x="206" y="1127" width="104" height="26" rx="5" fill="#8a5a3c" fill-opacity="1" stroke="#000" stroke-width="1.2"/>
+<text x="258" y="1145" font-size="13" text-anchor="middle" fill="#fff">Pelotero</text>
+<rect x="1984" y="1127" width="104" height="26" rx="5" fill="#8a5a3c" fill-opacity="1" stroke="#000" stroke-width="1.2"/>
+<text x="2036" y="1145" font-size="13" text-anchor="middle" fill="#fff">Gusano Ceniza</text>
+<rect x="1095" y="561" width="104" height="26" rx="5" fill="#d9822b" fill-opacity="1" stroke="#000" stroke-width="1.2"/>
+<text x="1147" y="579" font-size="13" text-anchor="middle" fill="#fff">Rastrón</text>
+<rect x="1239" y="227" width="104" height="26" rx="5" fill="#c0453a" fill-opacity="1" stroke="#000" stroke-width="1.2"/>
+<text x="1291" y="245" font-size="13" text-anchor="middle" fill="#fff">Limosilla</text>
+<rect x="1315" y="77" width="104" height="26" rx="5" fill="#7a1f5c" fill-opacity="1" stroke="#000" stroke-width="1.2"/>
+<text x="1367" y="95" font-size="13" text-anchor="middle" fill="#fff">Sombra de la Mar</text>
+<rect x="525" y="827" width="104" height="26" rx="5" fill="#3a7ca5" fill-opacity="1" stroke="#000" stroke-width="1.2"/>
+<text x="577" y="845" font-size="13" text-anchor="middle" fill="#fff">MantoHoja</text>
+<rect x="107" y="527" width="104" height="26" rx="5" fill="#d9822b" fill-opacity="1" stroke="#000" stroke-width="1.2"/>
+<text x="159" y="545" font-size="13" text-anchor="middle" fill="#fff">Bello-pico</text>
+<rect x="304" y="561" width="104" height="26" rx="5" fill="#d9822b" fill-opacity="1" stroke="#000" stroke-width="1.2"/>
+<text x="356" y="579" font-size="13" text-anchor="middle" fill="#fff">Zancuilla</text>
+<rect x="1391" y="1311" width="104" height="26" rx="5" fill="#3f8f4f" fill-opacity="1" stroke="#000" stroke-width="1.2"/>
+<text x="1443" y="1329" font-size="13" text-anchor="middle" fill="#fff">Pozo de agua</text>
+<rect x="1627" y="1311" width="104" height="26" rx="5" fill="#3f8f4f" fill-opacity="1" stroke="#000" stroke-width="1.2"/>
+<text x="1679" y="1329" font-size="13" text-anchor="middle" fill="#fff">Sangre de hierro</text>
+<rect x="1239" y="1277" width="104" height="26" rx="5" fill="#3f8f4f" fill-opacity="1" stroke="#000" stroke-width="1.2"/>
+<text x="1291" y="1295" font-size="13" text-anchor="middle" fill="#fff">Drifting Ash</text>
+<rect x="2258" y="1311" width="104" height="26" rx="5" fill="#3f8f4f" fill-opacity="1" stroke="#000" stroke-width="1.2"/>
+<text x="2310" y="1329" font-size="13" text-anchor="middle" fill="#fff">Manto negro</text>
+<rect x="1893" y="1311" width="104" height="26" rx="5" fill="#3f8f4f" fill-opacity="1" stroke="#000" stroke-width="1.2"/>
+<text x="1945" y="1329" font-size="13" text-anchor="middle" fill="#fff">Cicatriz alta</text>
+<rect x="768" y="861" width="104" height="26" rx="5" fill="#3a7ca5" fill-opacity="1" stroke="#000" stroke-width="1.2"/>
+<text x="820" y="879" font-size="13" text-anchor="middle" fill="#fff">Suspiro</text>
+<rect x="586" y="1161" width="104" height="26" rx="5" fill="#8a5a3c" fill-opacity="1" stroke="#000" stroke-width="1.2"/>
+<text x="638" y="1179" font-size="13" text-anchor="middle" fill="#fff">Cancro madera</text>
+<rect x="1627" y="1161" width="104" height="26" rx="5" fill="#8a5a3c" fill-opacity="1" stroke="#000" stroke-width="1.2"/>
+<text x="1679" y="1179" font-size="13" text-anchor="middle" fill="#fff">Ceniza Ciega</text>
+<rect x="768" y="1011" width="104" height="26" rx="5" fill="#c9a227" fill-opacity="1" stroke="#000" stroke-width="1.2"/>
+<text x="820" y="1029" font-size="13" text-anchor="middle" fill="#fff">Brincaniebla</text>
+<rect x="60" y="1472" width="16" height="16" fill="#3f8f4f"/><text x="82" y="1485" font-size="15" fill="#333">Producers</text>
+<rect x="310" y="1472" width="16" height="16" fill="#c9a227"/><text x="332" y="1485" font-size="15" fill="#333">Primary consumers</text>
+<rect x="560" y="1472" width="16" height="16" fill="#d9822b"/><text x="582" y="1485" font-size="15" fill="#333">Secondary consumers</text>
+<rect x="810" y="1472" width="16" height="16" fill="#c0453a"/><text x="832" y="1485" font-size="15" fill="#333">Tertiary (mid) predators</text>
+<rect x="1060" y="1472" width="16" height="16" fill="#7a1f5c"/><text x="1082" y="1485" font-size="15" fill="#333">Apex predators</text>
+<rect x="1310" y="1472" width="16" height="16" fill="#6b6f76"/><text x="1332" y="1485" font-size="15" fill="#333">Scavengers</text>
+<rect x="1560" y="1472" width="16" height="16" fill="#8a5a3c"/><text x="1582" y="1485" font-size="15" fill="#333">Decomposers</text>
+<rect x="1810" y="1472" width="16" height="16" fill="#3a7ca5"/><text x="1832" y="1485" font-size="15" fill="#333">Parasites</text>
+<rect x="2060" y="1472" width="16" height="16" fill="#9b7bb8"/><text x="2082" y="1485" font-size="15" fill="#333">Omnivores</text>
+<text x="1840" y="1425" font-size="15" fill="#333">outlined = new in the 2026-11-21 batch; pale = existing</text></svg>

@@ -161,6 +161,28 @@ class ImportTests(Base):
         self.assertTrue(os.path.exists(os.path.join(self.root, "lore", "creatures", "nocturnal_creature.json")))
 
 
+class DerivationFoodwebTests(unittest.TestCase):
+    def test_derivation_kinds(self):
+        sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
+        from derivation import compute, check_sheet
+        self.assertAlmostEqual(compute("boiling_point_c", {"pressure_bar": 1.01325}), 100.0, delta=0.1)
+        self.assertAlmostEqual(compute("surface_gravity_g", {"mass_earth": 1, "radius_earth": 1}), 1.0, delta=0.01)
+        bad = {"items": [{"id": "D1", "key": "g", "claim": "x", "confidence": "derived", "formula": "f", "check": {"kind": "surface_gravity_g", "inputs": {"mass_earth": 1, "radius_earth": 1}, "expect": 2.0}}]}
+        self.assertEqual(len(check_sheet(bad)[0]), 1)
+        bad["items"][0]["known_discrepancy"] = "documented"
+        e, w = check_sheet(bad); self.assertEqual((len(e), len(w)), (0, 1))
+
+    def test_pyramid_weights_sum_to_100_and_fall(self):
+        from foodweb import spawn_weights
+        M = {"a": {"kind": "creature", "level": "primary_consumer", "role": "grazer", "habitats": ["meadow"]},
+             "b": {"kind": "creature", "level": "primary_consumer", "role": "grazer", "habitats": ["meadow"]},
+             "c": {"kind": "creature", "level": "secondary_consumer", "role": "small_predator", "habitats": ["meadow"]},
+             "d": {"kind": "creature", "level": "apex_predator", "role": "apex_predator", "habitats": ["meadow"]}}
+        w = spawn_weights(M)
+        self.assertAlmostEqual(sum(w[i]["meadow"] for i in M), 100, delta=0.01)
+        self.assertGreater(w["a"]["meadow"], w["c"]["meadow"]); self.assertGreater(w["c"]["meadow"], w["d"]["meadow"])
+
+
 if __name__ == "__main__":
     unittest.main()
 

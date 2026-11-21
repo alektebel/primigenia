@@ -1,0 +1,331 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "garra_marea",
+  "name": {
+    "en": "Garra marea"
+  },
+  "world": "primigenia",
+  "kind": "new",
+  "status": "draft",
+  "stage": "creature",
+  "niche": {
+    "habitat": "shore, shallows",
+    "diet": "Carrion, detritus, drifting carcass particles, salt spray, small benthic invertebrates",
+    "active": "Tidal cycle; feeds during low tide on exposed wrack and during high tide in shallow spray.",
+    "predators": [
+      "rastron"
+    ],
+    "trophic": "scavenger",
+    "role": "scavenger"
+  },
+  "body": "Length 15 cm, mass 0.8 kg.",
+  "chains": [
+    {
+      "id": "garra_marea.c1",
+      "trait": "Eight jointed legs for traction on shifting sand and wet rock.",
+      "links": [
+        "High wave energy and tidal flux create unstable substrates.",
+        "Need stable grip and rapid retreat to avoid being swept away.",
+        "Eight legs provide multi-point contact and redundancy for traction.",
+        "Dense air and wet sand terrain favor low, stable body plans."
+      ],
+      "roots": [
+        "F4",
+        "F13",
+        "F20"
+      ],
+      "skill": {
+        "id": "garra_marea.wrack_scuttle",
+        "name": {
+          "en": "Wrack Scuttle"
+        },
+        "role": "Basic",
+        "effect": "Move 20% faster on shore/wrack terrain.",
+        "numbers": {}
+      },
+      "weakness": "Slow on dry inland terrain due to high weight-to-surface-area ratio.",
+      "observe": [
+        "See legs churning sand with rapid, alternating movements.",
+        "See speed advantage on wet rock versus dry ground.",
+        "See group feeding where legs overlap and coordinate."
+      ],
+      "journal": {
+        "en": "Eight legs for eight sides of the wrack."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/foodweb-2026-11-21",
+        "date": "2026-11-21",
+        "summary": "Define 15 cm as carapace (cephalothorax) length with ~25–35 cm leg span, or cut mass to ~0.15–0.35 kg if total body length is 15 cm; keep eight walking legs as convergent arthropodomorph tag, not a copy of any one Earth clade.",
+        "fixes": [
+          "Define 15 cm as carapace (cephalothorax) length with ~25–35 cm leg span, or cut mass to ~0.15–0.35 kg if total body length is 15 cm; keep eight walking legs as convergent arthropodomorph tag, not a copy of any one Earth clade."
+        ],
+        "analogues": [
+          {
+            "organism": "Shore crab (Ocypode) and slater/isopod (Ligia) rapid retreat on wet sand; horseshoe crab (Limulus) multiple walking limbs on unstable tidal flats.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "alexander_2002_principles"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 4
+        }
+      },
+      "provenance": {
+        "council_run": "foodweb-2026-11-21",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "garra_marea.c2",
+      "trait": "Sensory hairs on legs detect distant carrion scent.",
+      "links": [
+        "Carcasses drift and wash ashore, creating patchy, ephemeral resources.",
+        "Need to locate food quickly before competitors arrive.",
+        "Scent diffusion is slow but trails last longer in still air.",
+        "Chemosensory adaptation on extremities allows ground-level tracking."
+      ],
+      "roots": [
+        "F20",
+        "F4"
+      ],
+      "skill": {
+        "id": "garra_marea.scent_trail",
+        "name": {
+          "en": "Scent Trail"
+        },
+        "role": "Engage",
+        "effect": "Reveal carcass direction and freshness to the player.",
+        "numbers": {}
+      },
+      "weakness": "Wind changes direction easily, breaking scent trails and disorienting the creature.",
+      "observe": [
+        "See legs twitching and sampling the air before moving.",
+        "See reaction to wind shift as it turns to follow the scent.",
+        "See following a line of scent along the wet sand."
+      ],
+      "journal": {
+        "en": "It reads the air with its feet."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/foodweb-2026-11-21",
+        "date": "2026-11-21",
+        "summary": "Patchy, tide-delivered carrion (F20, D27) rewards fast localisation; lower pressure slows molecular diffusion but still air and fog extend usable trails (D18, F16), so ground-level sampling on legs/antennae beats elevated nostrils in spray. Competitors and wind shifts match real shoreline chemosensory trade-offs.",
+        "fixes": [
+          "Patchy, tide-delivered carrion (F20, D27) rewards fast localisation; lower pressure slows molecular diffusion but still air and fog extend usable trails (D18, F16), so ground-level sampling on legs/antennae beats elevated nostrils in spray. Competitors and wind shifts match real shoreline chemosensory trade-offs."
+        ],
+        "analogues": [
+          {
+            "organism": "Blue crab (Callinectes sapidus) and lobster (Homarus) aesthetasc/antennule chemoreception; isopod and amphipod antennal/truncal chemotaxis along wrack (from memory, unverified).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "foodweb-2026-11-21",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "garra_marea.c3",
+      "trait": "Hardened exoskeleton with salt-accumulating glands.",
+      "links": [
+        "High salinity spray and marine diet create osmoregulation challenges.",
+        "Need to excrete excess salt to maintain cellular function.",
+        "Evolved glands to excrete salt onto the shell surface.",
+        "Dense, protective shell provides defense against predators and abrasion."
+      ],
+      "roots": [
+        "F20",
+        "F19"
+      ],
+      "skill": {
+        "id": "garra_marea.tide_hiss",
+        "name": {
+          "en": "Tide Hiss"
+        },
+        "role": "Control",
+        "effect": "Intimidate smaller creatures by hissing air through spiracles.",
+        "numbers": {}
+      },
+      "weakness": "Vulnerable when molting; soft shell offers no protection.",
+      "observe": [
+        "See white salt crystals coating the carapace.",
+        "See hissing sound as air is forced through spiracles.",
+        "See soft, pale shell after a recent molt."
+      ],
+      "journal": {
+        "en": "White crystals mark its armor."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/foodweb-2026-11-21",
+        "date": "2026-11-21",
+        "summary": "Excrete salt via antennal/coxal glands onto carapace (white efflorescence); intimidation hiss from compressed branchial chamber/opercula or stridulatory ridges, not spiracles. State explicitly amphibious intertidal physiology (gills + cuticle waterproofing), aligned with low-tide wrack / high-tide spray activity.",
+        "fixes": [
+          "Excrete salt via antennal/coxal glands onto carapace (white efflorescence); intimidation hiss from compressed branchial chamber/opercula or stridulatory ridges, not spiracles. State explicitly amphibious intertidal physiology (gills + cuticle waterproofing), aligned with low-tide wrack / high-tide spray activity."
+        ],
+        "analogues": [
+          {
+            "organism": "Ghost crab (Ocypode) gill moisture and opercular reflexes; seabird salt glands (functional analogue, not homologue); horseshoe crab (Limulus) book gills.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 3
+        }
+      },
+      "provenance": {
+        "council_run": "foodweb-2026-11-21",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "garra_marea.c4",
+      "trait": "Bright warning coloration on carapace.",
+      "links": [
+        "High scavenger density increases risk of predation by apex species.",
+        "Need to avoid being eaten by dominant predators.",
+        "Aposematic coloration warns of toxicity or hardness.",
+        "Diet includes toxic wrack or sulfur crusts; metabolic sequestration of toxins."
+      ],
+      "roots": [
+        "F27",
+        "F7",
+        "F23"
+      ],
+      "skill": {
+        "id": "garra_marea.aposematism",
+        "name": {
+          "en": "Aposematism"
+        },
+        "role": "Passive",
+        "effect": "Deters low-level attackers from initiating combat.",
+        "numbers": {}
+      },
+      "weakness": "Predators like Espinodo or Garfio ignore warning colors due to hunger or dominance.",
+      "observe": [
+        "See red and black pattern on the carapace.",
+        "See predators avoid approaching the creature.",
+        "See it consuming toxic red-veined plants or sulfur crusts."
+      ],
+      "journal": {
+        "en": "Painted to say: do not eat."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/foodweb-2026-11-21",
+        "date": "2026-11-21",
+        "summary": "Tie red-black carapace to sequestered alkaloids from vetirroja in wrack or bioaccumulated arsenic/copper from vent-tainted carrion (F23), not routine sulfur crust consumption; allow apex mid-predators (Garfio, Espinodo) to ignore colour when starving (D26), so Passive aposematism deters brújula-sized threats only.",
+        "fixes": [
+          "Tie red-black carapace to sequestered alkaloids from vetirroja in wrack or bioaccumulated arsenic/copper from vent-tainted carrion (F23), not routine sulfur crust consumption; allow apex mid-predators (Garfio, Espinodo) to ignore colour when starving (D26), so Passive aposematism deters brújula-sized threats only."
+        ],
+        "analogues": [
+          {
+            "organism": "Harlequin beetle (Coleorrhyncha) on carrion with warning pattern; nudibranch sea slugs sequester sponge/cnidarian toxins; monarch butterfly (Danaus plexippus) cardenolide sequestration from plants.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 4
+        }
+      },
+      "provenance": {
+        "council_run": "foodweb-2026-11-21",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "Brújula",
+      "kind": "predation",
+      "note": "Brújula preys on Garra_marea when solitary."
+    },
+    {
+      "with": "Garfio",
+      "kind": "predation",
+      "note": "Garfio attacks Garra_marea to steal carcasses."
+    },
+    {
+      "with": "Carrion",
+      "kind": "prey",
+      "note": "Primary food source; strips carcasses rapidly."
+    },
+    {
+      "with": "Cinta_de_marea",
+      "kind": "prey",
+      "note": "Eats algae in the splash zone."
+    }
+  ],
+  "provenance": {
+    "council_run": "foodweb-2026-11-21",
+    "by": [
+      "naturalist/qwen"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-21",
+      "who": "import_got",
+      "what": "imported from council run foodweb-2026-11-21"
+    },
+    {
+      "date": "2026-11-21",
+      "who": "foodweb.py fix",
+      "what": "removed rejected references and non-existent root facts (roots recovered from the derivation items cited in the links, else F27)"
+    }
+  ],
+  "body_plan": {
+    "symmetry": "bilateral",
+    "arms": 8,
+    "origin": "Convergent arthropod-like evolution for high traction and rapid maneuvering on wet, shifting substrates."
+  },
+  "temperament": "Voracious, skittish, communal when food is present.",
+  "secrets": [
+    "Molting Ground",
+    "Tide Cache",
+    "Sunset Scuttle"
+  ],
+  "moments": [
+    "A massive carcass drifts ashore at dawn. The Garra_marea swarm in a clicking frenzy, eight legs churning the sand, hissing as they compete. They strip the meat in minutes, leaving only bone and cartilage for the larger scavengers. The tide returns, washing away the scent, and the Garra_marea retreat into their crevices, waiting for the next gift of the sea."
+  ],
+  "journal": [
+    {
+      "en": "Eight legs for eight sides of the wrack."
+    },
+    {
+      "en": "It reads the air with its feet."
+    }
+  ]
+}

@@ -12,7 +12,9 @@
     "habitat": "Intertidal shelves and shallow lagoons behind sea arches and islets (F13, F21)",
     "diet": "Filter-suspension, mollusk crusts, drifting carrion, salt-rich detritus",
     "active": "Diurnal, tidal-cycle driven (high tide active, low tide sealed)",
-    "predators": []
+    "predators": [],
+    "trophic": "secondary_consumer",
+    "role": "small_predator"
   },
   "body": "Pentaradial disc with five long, hydrostatic arms; central mouth; suction-cupped tube feet; no head; extensive central nerve ring",
   "chains": [

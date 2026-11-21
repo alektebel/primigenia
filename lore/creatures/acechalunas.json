@@ -23,7 +23,9 @@
       "Birds",
       "Insects",
       "Eggs"
-    ]
+    ],
+    "trophic": "secondary_consumer",
+    "role": "small_predator"
   },
   "body": "Oversized pupils and a reflective tapetum capture photons in moonlit or starlit dark, while broad tympanic membranes isolate prey movements through dense fog and wind. Ventral photophores pulse rhythmically for silent intraspecific communication, and melanin-rich shields protect against nocturnal UV reflection and temperature swings.",
   "chains": [

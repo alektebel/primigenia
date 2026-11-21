@@ -244,5 +244,9 @@
   ],
   "secrets": [
     "Its patches reveal enrichment, not nickel, impact shards or a guaranteed ambush."
-  ]
+  ],
+  "niche": {
+    "trophic": "producer",
+    "role": "photosynthetic"
+  }
 }

@@ -1,0 +1,321 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "zancarril",
+  "name": {
+    "en": "Zancarril"
+  },
+  "world": "primigenia",
+  "kind": "new",
+  "status": "draft",
+  "stage": "creature",
+  "niche": {
+    "habitat": "shallows, caves",
+    "diet": "carrion, detritus, plankton",
+    "active": "nocturnal",
+    "predators": [
+      "brujula"
+    ],
+    "trophic": "scavenger",
+    "role": "scavenger"
+  },
+  "body": "Length: 12 cm; Mass: 450 g",
+  "chains": [
+    {
+      "id": "zancarril.c1",
+      "trait": "Eight jointed legs with curved claws",
+      "links": [
+        "To grip uneven basalt and climb vertical lava tube walls",
+        "The island is a stratovolcano with basalt caves (F9)",
+        "F9"
+      ],
+      "roots": [
+        "F9"
+      ],
+      "skill": {
+        "id": "zancarril.climb",
+        "name": {
+          "en": "Climb"
+        },
+        "role": "Basic",
+        "effect": "Climb vertical surfaces and navigate tight cave crevices. (+5 to move on cliffs).",
+        "numbers": {}
+      },
+      "weakness": "Slow movement speed on smooth sand.",
+      "observe": [
+        "Climbs vertical basalt wall",
+        "Crawls upside down in lava tube",
+        "Legs hook into crevice"
+      ],
+      "journal": {
+        "en": "It walks where gravity fears to tread."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/foodweb-2026-11-21",
+        "date": "2026-11-21",
+        "summary": "Eight-legged bilateral climbers fit island basalt lava tubes (F9) and intertidal rock (F13). Dense air (F4) increases drag but hooked claws on uneven andesite/basalt are a standard solution for cave and reef edges; eight contacts spread load on a ~450 g body at 1.05 g (F2). Fits scavenger niche D27 alongside wrack and benthic carrion (F20).",
+        "fixes": [
+          "Eight-legged bilateral climbers fit island basalt lava tubes (F9) and intertidal rock (F13). Dense air (F4) increases drag but hooked claws on uneven andesite/basalt are a standard solution for cave and reef edges; eight contacts spread load on a ~450 g body at 1.05 g (F2). Fits scavenger niche D27 alongside wrack and benthic carrion (F20)."
+        ],
+        "analogues": [
+          {
+            "organism": "Horseshoe crab (Limulus polyphemus) — multiple walking legs with gaffed tips on rocky shores; giant isopod Bathynomus spp. — eight pereopods gripping rubble on carcass falls; Amblypygi (whip spiders) — adhesive hooks on vertical cave walls.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "edgecombe_2010_evolutionary"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "foodweb-2026-11-21",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "zancarril.c2",
+      "trait": "Powerful, serrated mandibles for shredding hides",
+      "links": [
+        "To process large chunks of sinking carcasses quickly",
+        "Carcasses drift and sink in the turbid shallows (F20)",
+        "F20"
+      ],
+      "roots": [
+        "F20"
+      ],
+      "skill": {
+        "id": "zancarril.shred",
+        "name": {
+          "en": "Shred"
+        },
+        "role": "Engage",
+        "effect": "Tear flesh from carcass, increasing food value. (+2 food value).",
+        "numbers": {}
+      },
+      "weakness": "Loud crunching noise attracts predators.",
+      "observe": [
+        "Shredding a carcass piece",
+        "Mandibles working side-to-side",
+        "Dropping tiny bone fragments"
+      ],
+      "journal": {
+        "en": "A living garbage disposal on eight legs."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/foodweb-2026-11-21",
+        "date": "2026-11-21",
+        "summary": "State heritage explicitly: either gnathobases/mandibles on a peracarid crustacean founder (F27), or heavy chelicerae with teeth-like projections on a xiphosuran-derived form; drop 'mandible' if the lineage is strictly arachnid.",
+        "fixes": [
+          "State heritage explicitly: either gnathobases/mandibles on a peracarid crustacean founder (F27), or heavy chelicerae with teeth-like projections on a xiphosuran-derived form; drop 'mandible' if the lineage is strictly arachnid."
+        ],
+        "analogues": [
+          {
+            "organism": "Bathynomus giant isopods — serrated gnathopods/mandibles on whale-fall and carrion; coconut crab Birgus latro — powerful mouthparts stripping carcass tissue; terrestrial isopods (Porcellio) — mandibles on detritus.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "savage_2005_evolution"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "foodweb-2026-11-21",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "zancarril.c3",
+      "trait": "Giant compound eyes and chemosensory palps",
+      "links": [
+        "To navigate dark caves and detect scent trails in turbid water",
+        "Caves are dark and shallows are turbid (F9, F20)",
+        "F9, F20"
+      ],
+      "roots": [
+        "F9",
+        "F20"
+      ],
+      "skill": {
+        "id": "zancarril.scavenge_sense",
+        "name": {
+          "en": "Scavenge Sense"
+        },
+        "role": "Poke",
+        "effect": "Track carcass scent upwind or underwater. (+10 to find food).",
+        "numbers": {}
+      },
+      "weakness": "Disoriented by bright sun.",
+      "observe": [
+        "Palps twitching in still air",
+        "Eyes reflecting moonlight",
+        "Moving towards drifting debris"
+      ],
+      "journal": {
+        "en": "It smells the past in the water."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/foodweb-2026-11-21",
+        "date": "2026-11-21",
+        "summary": "Anchor to F27 founder: xiphosuran or cave amphipod/isopod; use 'antennules' for crustaceans or 'pedipalp chemosensors' for chelicerates; size eyes as 'large for the clade' not insect-scale 'giant' unless diurnal cave mouth activity is added.",
+        "fixes": [
+          "Anchor to F27 founder: xiphosuran or cave amphipod/isopod; use 'antennules' for crustaceans or 'pedipalp chemosensors' for chelicerates; size eyes as 'large for the clade' not insect-scale 'giant' unless diurnal cave mouth activity is added."
+        ],
+        "analogues": [
+          {
+            "organism": "Limulus — large compound eyes plus lateral eyes for low-light shore behaviour; cave crayfish (e.g. Orconectes australis packardi) — reduced vision with enhanced antennule chemoreception; lysianassid amphipods — antennules locating carrion in darkness.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "foodweb-2026-11-21",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "zancarril.c4",
+      "trait": "Thick, plated carapace with gill-slits along the abdomen",
+      "links": [
+        "To withstand crushing pressure in tide pools and high O2 respiration",
+        "Dense air and high oxygen (F5) and tidal ranges (F13)",
+        "F5, F13"
+      ],
+      "roots": [
+        "F5",
+        "F13"
+      ],
+      "skill": {
+        "id": "zancarril.armour",
+        "name": {
+          "en": "Armour"
+        },
+        "role": "Defence",
+        "effect": "Resist bite damage from small predators. (+2 armor).",
+        "numbers": {}
+      },
+      "weakness": "Slow movement speed.",
+      "observe": [
+        "Shell reflecting green water",
+        "Gill-slits pulsing",
+        "Hiding under a rock"
+      ],
+      "journal": {
+        "en": "An ironclad ghost of the shallow reefs."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/foodweb-2026-11-21",
+        "date": "2026-11-21",
+        "summary": "Replace derivation link 'crushing pressure' with wave buffeting, predation bites, and desiccation stress during low tide; specify pleopod/book gills derived under D10; note moult vulnerability for gameplay. Mass 450 g at 12 cm is heavy but plausible for a compact armoured marine scavenger (compare dense isopods)—optional journal mention, not a separate violation.",
+        "fixes": [
+          "Replace derivation link 'crushing pressure' with wave buffeting, predation bites, and desiccation stress during low tide; specify pleopod/book gills derived under D10; note moult vulnerability for gameplay. Mass 450 g at 12 cm is heavy but plausible for a compact armoured marine scavenger (compare dense isopods)—optional journal mention, not a separate violation."
+        ],
+        "analogues": [
+          {
+            "organism": "Rock/isopod Ligia spp. — armoured shore form with pleopod gills and tidal stranding; Limulus — hinged carapace and book gills in intertidal zone; porcelain crab or grapsoid crabs — thick carapace in wave-swept pools.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "westneat_2006_functional"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "foodweb-2026-11-21",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "carrion",
+      "kind": "prey",
+      "note": "Shreds sinking carcasses."
+    },
+    {
+      "with": "garfio",
+      "kind": "predation",
+      "note": "Garfio snaps it up while hunting."
+    }
+  ],
+  "provenance": {
+    "council_run": "foodweb-2026-11-21",
+    "by": [
+      "naturalist/qwen"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-21",
+      "who": "import_got",
+      "what": "imported from council run foodweb-2026-11-21"
+    },
+    {
+      "date": "2026-11-21",
+      "who": "foodweb.py fix",
+      "what": "removed rejected references and non-existent root facts (roots recovered from the derivation items cited in the links, else F27)"
+    }
+  ],
+  "body_plan": {
+    "symmetry": "bilateral",
+    "arms": 8,
+    "origin": "crustacean-like arachnid"
+  },
+  "temperament": "timid",
+  "secrets": [
+    "Secret: Albinos lack shell pigment."
+  ],
+  "moments": [
+    "On a moonless night, a cluster of them climbs the vertical wall of the sunken cave, their legs hooked tight, waiting for the tide to bring a floating deer."
+  ],
+  "journal": [
+    {
+      "en": "It walks where gravity fears to tread."
+    },
+    {
+      "en": "A living garbage disposal on eight legs."
+    }
+  ]
+}

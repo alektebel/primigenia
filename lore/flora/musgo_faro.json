@@ -222,5 +222,9 @@
   "secrets": [
     "A luminous thread extending beyond the green cushion follows trapped organic matter into a crevice; it does not reveal a sunless photosynthetic garden.",
     "The brightest wet patch may be a dependable ecolumbre feeding stop."
-  ]
+  ],
+  "niche": {
+    "trophic": "producer",
+    "role": "photosynthetic"
+  }
 }
