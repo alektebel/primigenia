@@ -140,7 +140,14 @@ def merge_main():
     from lorelib import dump
     date = datetime.date.today().isoformat(); run = f"foodweb-{date}"
     gdir = os.path.join(RD, "got", "species")
-    subprocess.run([sys.executable, os.path.join(LORE, "import_got.py"), os.path.join(gdir, "graph.json"), "--world", "primigenia", "--kind", "new", "--run", run], check=True)
+    # ids must not collide with any creature or plant file (a creature "Nieblón" would clash with the tree nieblon, chain ids included)
+    cmap = {}
+    for nm in load(os.path.join(gdir, "graph.json"))["chains"]:
+        cid = slug(nm)
+        if os.path.exists(os.path.join(ROOT, "lore", "creatures", cid + ".json")) and load(os.path.join(ROOT, "lore", "creatures", cid + ".json")).get("world") != "primigenia" or os.path.exists(os.path.join(ROOT, "lore", "flora", cid + ".json")):
+            cmap[nm] = {"id": cid + "_isleno", "name": {"en": nm + " (isleño)"}}; print("renamed", nm, "->", cmap[nm]["id"])
+    mp = os.path.join(RD, "import_map.json"); json.dump(cmap, open(mp, "w"))
+    subprocess.run([sys.executable, os.path.join(LORE, "import_got.py"), os.path.join(gdir, "graph.json"), "--world", "primigenia", "--kind", "new", "--run", run, "--map", mp], check=True)
     sys.path.insert(0, HERE)
     os.environ["LORE_RUNS_DIR"] = RD
     import autoloop
@@ -151,7 +158,7 @@ def merge_main():
     for f in glob.glob(os.path.join(gdir, "6_species_S*_FOOD_WEB_SLOT_*.json")):
         if f.endswith("_review.json") or f.endswith("_astrobio.json"): continue
         sid = os.path.basename(f).split("_")[2]; d = load(f)
-        d = d if isinstance(d, list) else next((x for x in d.values() if isinstance(x, list)), [d]) if isinstance(d, dict) else []
+        d = d if isinstance(d, list) else ([d] if isinstance(d, dict) and "chains" in d else next((x for x in d.values() if isinstance(x, list)), []) if isinstance(d, dict) else [])
         slot_names[sid] = [x.get("name") for x in d if isinstance(x, dict) and x.get("name")]
     by_slot = {s["slot"]: s for s in DRAW["creature_slots"]}
     names = {}
@@ -159,7 +166,7 @@ def merge_main():
         sl = by_slot.get(sid)
         if not sl: continue
         for n in ns[:1]:
-            cid = slug(n); f = os.path.join(ROOT, "lore", "creatures", cid + ".json")
+            cid = cmap.get(n, {}).get("id") or slug(n); f = os.path.join(ROOT, "lore", "creatures", cid + ".json")
             if not os.path.exists(f): print("missing creature file", cid); continue
             c = load(f); names[n.lower()] = cid; names[c["name"]["en"].lower()] = cid
             M[cid] = {"kind": "creature", "level": sl["level"], "role": sl["role"], "habitats": sl["habitats"], "eats": M.get(cid, {}).get("eats", []), "new": True, "slot": sl["slot"],
