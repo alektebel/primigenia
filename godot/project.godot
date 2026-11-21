@@ -48,6 +48,42 @@ moon_k={
 "type": "float",
 "value": 0.0
 }
+sun_dir={
+"type": "vec3",
+"value": Vector3(-0.6259115, 0.2826697, -0.7268649)
+}
+sun_color={
+"type": "vec3",
+"value": Vector3(1, 1, 1)
+}
+sun_vis={
+"type": "float",
+"value": 1.0
+}
+sky_zenith={
+"type": "vec3",
+"value": Vector3(0.13, 0.39, 0.84)
+}
+sky_mid={
+"type": "vec3",
+"value": Vector3(0.52, 0.7, 0.93)
+}
+sky_horizon={
+"type": "vec3",
+"value": Vector3(0.95, 0.84, 0.7)
+}
+sky_glow={
+"type": "vec3",
+"value": Vector3(1, 0.62, 0.3)
+}
+ambient_color={
+"type": "vec3",
+"value": Vector3(0, 0, 0)
+}
+fog_color={
+"type": "vec3",
+"value": Vector3(0.34, 0.58, 0.88)
+}
 
 [display]
 

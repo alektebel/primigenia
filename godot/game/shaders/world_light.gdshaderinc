@@ -11,7 +11,8 @@
 #endif
 void light() {
 	if (LIGHT_IS_DIRECTIONAL) {
-		DIFFUSE_LIGHT += mix(WORLD_SHADOW_TINT, vec3(1.0), ATTENUATION);
+		// At night the shadow is the moon's, soft and ambient-filled: a much lighter tint keeps the near ground readable (round 2).
+		DIFFUSE_LIGHT += mix(mix(vec3(0.78, 0.82, 0.94), WORLD_SHADOW_TINT, sun_vis), vec3(1.0), ATTENUATION);
 	}
 }
 #endif

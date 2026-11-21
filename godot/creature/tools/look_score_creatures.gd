@@ -6,6 +6,7 @@ extends SceneTree
 const Creatures := preload("res://creature/tools/realism_creatures.gd")
 const DayNight := preload("res://game/island/day_night.gd")
 const LIGHT := {"dawn": 0.50, "midday": 1.0, "dusk": 0.50, "night": 0.0}
+const HOUR := {"dawn": 6.8, "midday": 12.5, "dusk": 18.2, "night": 0.0}
 
 func _initialize() -> void:
 	_run.call_deferred()
@@ -35,6 +36,7 @@ func _run() -> void:
 			await process_frame
 		for tod in LIGHT:
 			dn.k = LIGHT[tod]
+			dn.force_hour = HOUR[tod]
 			dn.update_now()
 			for v in views:
 				var p: Array = views[v]

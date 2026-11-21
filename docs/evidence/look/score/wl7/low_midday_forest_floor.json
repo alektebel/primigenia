@@ -1,0 +1,155 @@
+{
+ "checks": [
+  {
+   "actual": 0.00013,
+   "failure": "Oversaturated colour",
+   "id": "saturation_over",
+   "kinds": [
+    "world"
+   ],
+   "metric": "sat_over",
+   "op": "<",
+   "source": "starting value: at most 10% of lit pixels above S 0.85 (HSV); LOOK.md 7 'saturation histogram vs palette limits'; palette limit not yet set by the owner",
+   "value": 0.1,
+   "verdict": "PASS"
+  },
+  {
+   "actual": 0.5255,
+   "failure": "Oversaturated colour",
+   "id": "saturation_p95",
+   "kinds": [
+    "world"
+   ],
+   "metric": "sat_p95",
+   "op": "<=",
+   "source": "starting value: p95 saturation of lit pixels <= 0.90; LOOK.md 7",
+   "value": 0.9,
+   "verdict": "PASS"
+  },
+  {
+   "actual": 0.6588,
+   "failure": "Flat light, no shadows",
+   "id": "flat_light",
+   "kinds": [
+    "world"
+   ],
+   "metric": "contrast",
+   "op": ">=",
+   "source": "starting value: (p95-p5 luminance)/255 >= 0.35 on world shots; LOOK.md 7 'luminance contrast and shadow coverage'",
+   "tods": [
+    "dawn",
+    "midday",
+    "dusk"
+   ],
+   "value": 0.35,
+   "verdict": "PASS"
+  },
+  {
+   "actual": 1e-05,
+   "failure": "Flat light, no shadows",
+   "id": "world_crushed",
+   "kinds": [
+    "world"
+   ],
+   "metric": "crush_frac",
+   "op": "<",
+   "source": "starting value: at most 5% of world pixels crushed (luminance <= 12); LOOK.md 7",
+   "tods": [
+    "dawn",
+    "midday",
+    "dusk"
+   ],
+   "value": 0.05,
+   "verdict": "PASS"
+  },
+  {
+   "actual": 0.00078,
+   "failure": "Too much bloom or blur",
+   "id": "bloom",
+   "metric": "clip_frac",
+   "op": "<",
+   "source": "starting value: at most 2% of pixels clipped to white (luminance >= 250); LOOK.md 7 'clipped-highlight fraction'",
+   "value": 0.02,
+   "verdict": "PASS"
+  },
+  {
+   "actual": 1.6764,
+   "failure": "Noisy, dirty textures",
+   "id": "noise_world",
+   "kinds": [
+    "world"
+   ],
+   "metric": "hf_noise",
+   "op": "<",
+   "source": "starting value: mean |L - blur1(L)| < 6 grey levels at 1280x720; LOOK.md 7 'high-frequency energy at game distance'",
+   "value": 6.0,
+   "verdict": "PASS"
+  },
+  {
+   "actual": 254,
+   "failure": "Too much bloom or blur",
+   "id": "blur",
+   "metric": "sharp_p99",
+   "op": ">=",
+   "source": "starting value: p99 of |Laplacian| >= 120 by day (dawn, midday, dusk); LOOK.md 7 sharpness",
+   "tods": [
+    "dawn",
+    "midday",
+    "dusk"
+   ],
+   "value": 120,
+   "verdict": "PASS"
+  },
+  {
+   "actual": null,
+   "failure": "Visible tiling",
+   "id": "tiling",
+   "kinds": [
+    "world"
+   ],
+   "metric": "tiling",
+   "op": "<",
+   "source": "starting value: max normalised 2-D autocorrelation of the detrended ground strip at lags >= 32 px < 0.30; LOOK.md 7 'repetition detection on wide shots'",
+   "value": 0.3,
+   "verdict": "N/A"
+  },
+  {
+   "actual": 0.318,
+   "failure": "Low tier is not the same game",
+   "id": "tier_parity",
+   "kinds": [
+    "world"
+   ],
+   "metric": "tier_delta",
+   "op": "<",
+   "source": "starting value: mean |difference| of 32x18 luminance thumbnails low vs medium < 0.10; LOOK.md 6",
+   "tiers": [
+    "low"
+   ],
+   "value": 0.1,
+   "verdict": "FAIL"
+  }
+ ],
+ "info": {
+  "kind": "world",
+  "shot": "forest_floor",
+  "tier": "low",
+  "tod": "midday"
+ },
+ "metrics": {
+  "clip_frac": 0.00078,
+  "contrast": 0.6588,
+  "crush_frac": 1e-05,
+  "hf_noise": 1.6764,
+  "lum_mean": 129.65,
+  "mean_b": 132.26,
+  "mean_r": 127.32,
+  "sat_mean": 0.2619,
+  "sat_over": 0.00013,
+  "sat_p95": 0.5255,
+  "sharp_p99": 254,
+  "spec_frac": 0.08339,
+  "tier_delta": 0.318
+ },
+ "name": "low_midday_forest_floor"
+}

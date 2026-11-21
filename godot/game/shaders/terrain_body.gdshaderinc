@@ -153,7 +153,7 @@ void fragment() {
 			dbg = vec3(rock_cap(wp), rock_bed_faces(wp), fract(rock_bed_phase(wp, rt3, 1.0)));
 		} else if (rock_debug == 4) {
 			RockTex rt4 = rock_sample(map_ctx(wp, gn), distance(wp, CAMERA_POSITION_WORLD), 0.0, 0.0, 1.0, 0.0);
-			dbg = vec3(dot(normalize(gn + rt4.tilt), SUN_DIR) * 0.5 + 0.5);
+			dbg = vec3(dot(normalize(gn + rt4.tilt), sun_dir) * 0.5 + 0.5);
 		} else if (rock_debug == 12) {
 			dbg = erosion_maps(xz, 0.0).rgb;   // R flow, G deposition, B talus apron
 		} else if (rock_debug == 13) {
@@ -163,7 +163,7 @@ void fragment() {
 		} else if (rock_debug == 8) {
 			// Ramp bands of the rock light (the toon steps), for the flicker test: R above 0.17, G above 0.55, B lit mask.
 			RockTex rt8 = rock_sample(map_ctx(wp, gn), distance(wp, CAMERA_POSITION_WORLD), 0.0, 0.0, 1.0, 0.0);
-			float l8 = max(dot(normalize(gn + rt8.tilt), SUN_DIR), 0.0);
+			float l8 = max(dot(normalize(gn + rt8.tilt), sun_dir), 0.0);
 			dbg = vec3(step(0.17, l8), step(0.55, l8), step(0.35, l8));
 		} else if (rock_debug == 6) {
 			// Masks for the evidence metrics: R rock cell (the generator's, unblended), G snow actually drawn, B face steeper than
@@ -196,7 +196,7 @@ void fragment() {
 		} else if (rock_debug == 8) {
 			// Ramp bands of the rock light (the toon steps), for the flicker test: R above 0.17, G above 0.55, B lit mask.
 			RockTex rt8 = rock_sample(map_ctx(wp, gn), distance(wp, CAMERA_POSITION_WORLD), 0.0, 0.0, 1.0, 0.0);
-			float l8 = max(dot(normalize(gn + rt8.tilt), SUN_DIR), 0.0);
+			float l8 = max(dot(normalize(gn + rt8.tilt), sun_dir), 0.0);
 			dbg = vec3(step(0.17, l8), step(0.55, l8), step(0.35, l8));
 		} else if (rock_debug == 6) {
 			// Masks for the evidence metrics: R rock cell, G snow, B face steeper than 55 degrees.
@@ -210,8 +210,8 @@ void fragment() {
 		ALBEDO = min(dbg * 0.97, vec3(0.97));   // raw: read it under a linear tone map (the stretch test does)
 	} else {
 		vec4 rl = texture(relief_tex, (xz + MAP_HALF) / (MAP_CELL * float(MAP_N)));
-		float vis = mix(1.0, rl.a, rock_shadows) * cloud_shadow(wp, SUN_DIR);   // baked terrain shadow (step 9) and the cloud layer's shadow
-		float light = max(dot(gn, SUN_DIR), 0.0) * vis;
+		float vis = mix(1.0, rl.a, rock_shadows) * cloud_shadow(wp, sun_dir);   // baked terrain shadow (step 9) and the cloud layer's shadow
+		float light = max(dot(gn, sun_dir), 0.0) * vis;
 		float wave = meadowWave(xz, TIME);
 		float msh = min(occluder_shadow(wp), vis);
 		vec4 sb = surface_bilinear(xz);   // G grass, B cavity, A wetness
@@ -297,6 +297,8 @@ void fragment() {
 		land *= mix(vec3(1.0), WET_TINT, smoothstep(0.0, 0.4, wet) * 0.6);
 		// River channels: only a faint dark-green trace through the meadow (the hero shows none), not a blue strip.
 		land = mix(land, CHANNEL * landRamp(light), smoothstep(0.4, 0.6, wet) * 0.1);
+		// Ground seen from near: calmer chroma with distance from the camera (forest floor read as oversaturated and busy).
+		land = mix(vec3(dot(land, vec3(0.2126, 0.7152, 0.0722))), land, mix(1.0, 0.7, smoothstep(1.0, 14.0, dist0)));
 		ALBEDO = scene_out(land, wp, CAMERA_POSITION_WORLD);
 		if (lod_debug > 0.5) {
 			ALBEDO = godot_albedo(mix(land, lod_color, 0.7));   // no haze: LOD colours stay readable

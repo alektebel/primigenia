@@ -33,7 +33,7 @@ void vertex() {
 	float hg = mix(0.48 + 0.75 * clump, 0.3 + 0.4 * clump, lod) * rolling * mask * fade;
 	float ground = vground_tri(base) - 0.025;
 	vec3 gn = ground_normal(base);
-	float light = max(dot(gn, SUN_DIR), 0.0);
+	float light = max(dot(gn, sun_dir), 0.0);
 	float vis = mix(1.0, texture(relief_tex, (base + MAP_HALF) / (MAP_CELL * float(MAP_N))).a, rock_shadows);
 	light *= vis;
 	float sh = vis;
@@ -75,7 +75,7 @@ void fragment() {
 	float wave = meadowWave(xz, TIME);
 	vec3 c = meadowColor(tone(xz), 1.0, v_light, wave, xz) * mix(TUFT0, TUFT1, v_clump) * mix(BLADE_LO, BLADE_HI, smoothstep(0.0, 1.0, v_h)) * mix(SH_K, 1.0, v_sh);
 	c *= mix(S_TINT, vec3(1.0), v_sh);
-	float back = pow(max(dot(normalize(wp - CAMERA_POSITION_WORLD), SUN_DIR), 0.0), 4.0);
+	float back = pow(max(dot(normalize(wp - CAMERA_POSITION_WORLD), sun_dir), 0.0), 4.0);
 	c += vec3(0.14, 0.2, 0.035) * v_h * v_h * back * v_sh;
 	ALBEDO = scene_out(c, wp, CAMERA_POSITION_WORLD);
 }
