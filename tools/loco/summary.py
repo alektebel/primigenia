@@ -4,7 +4,7 @@ Usage: summary.py <label dir> [targets.json]"""
 import json, os, sys
 
 SCEN = ["walk", "gallop", "turn", "climb", "steps"]
-BODIES = ["mite", "trotter", "hero", "giant", "longneck", "centipede", "hexapod"]
+BODIES = ["mite", "trotter", "hero", "giant", "longneck", "centipede", "hexapod", "start0", "startA", "startB", "startC", "startD"]
 HERE = os.path.dirname(os.path.abspath(__file__))
 DEFAULT_TARGETS = os.path.join(HERE, "..", "..", "docs", "research", "loco-reference.json")
 

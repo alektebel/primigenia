@@ -1,0 +1,84 @@
+{
+  "body": "start0",
+  "fps": 30.0,
+  "frames": 720,
+  "metrics": {
+    "airborne_frac": 0.3792,
+    "back_slope_deg": 8.55,
+    "body_pitch_deg": 2.09,
+    "cadence_hz": 5.996,
+    "duty_factor": {
+      "mean": 0.2,
+      "per_foot": [
+        0.2042,
+        0.1972,
+        0.2014,
+        0.1972
+      ]
+    },
+    "foot_penetration_cm": {
+      "max": 0.0,
+      "mean": 0.0,
+      "p95": 0.0
+    },
+    "foot_slip_cm": null,
+    "foot_spacing_ratio": 0.9055,
+    "footfall": {
+      "contact": [
+        "1001000000",
+        "1000000010",
+        "0100100000",
+        "0000001001"
+      ],
+      "dt": 0.03333,
+      "labels": [
+        "L0",
+        "R0",
+        "L1",
+        "R1"
+      ],
+      "start_frame": 3,
+      "stride_frames": 5
+    },
+    "gait_frac": {
+      "gallop": 1.0
+    },
+    "gait_symmetry": 1.682,
+    "ground_slope_deg": 0.0,
+    "head_pitch_deg": {
+      "mean": -2.62,
+      "p95": -0.51
+    },
+    "head_yaw_vs_body_deg": {
+      "mean": 1.88,
+      "p95": 7.74
+    },
+    "knee_flip_frac": 0.0,
+    "leg_extension": 0.7799,
+    "min_turn_radius_m": 1.82,
+    "moving_frac": 1.0,
+    "pitch_follow": null,
+    "pivot_frac": 0.0,
+    "pivot_frac_of_turns": 0.0,
+    "roll_plant_lag": -0.007,
+    "shoulder_hip_ratio": 1.2247,
+    "slide_frac": 0.0,
+    "speed_mean_mps": 5.1424,
+    "stall_frac": 0.0,
+    "stall_state_frac": 0.0,
+    "steep_slope_deg": null,
+    "stride_len_m": 0.859,
+    "stuck_frac": 0.0,
+    "torso_bob_cm": 2.67,
+    "torso_bob_frac": 0.0931,
+    "torso_roll_deg": 2.7
+  },
+  "reasons": {
+    "foot_slip_cm": "no complete stance (touchdown and lift-off) in this window",
+    "pitch_follow": "fewer than 10 moving frames on a slope steeper than 0.1: nothing to follow",
+    "steep_slope_deg": "fewer than 10 moving frames on a slope steeper than 0.1: nothing to follow"
+  },
+  "scenario": "walk",
+  "start_tick": 40,
+  "ticks": 240
+}
