@@ -14,6 +14,9 @@ Primigenia (internal codename **cpore**) is a creature-evolution game: Godot 4.7
 | Task briefs | `docs/briefs/<task>.md`, committed with the branch that does the work |
 | Evidence (captures, numbers) | `docs/evidence/<area>/` (JPG, not PNG) |
 | Agent launch and status | `tools/agents/agents.sh` |
+| Tools, repos, references the owner shared, with verdicts | `docs/RESOURCES.md` |
+| Procedures (project skills; plain Markdown, any agent can read them) | `.claude/skills/cpore-motion` (movement), `cpore-assets` (props, icons, palettes), `cpore-media` (video/frames/side-by-side) |
+| Reference videos and Spore captures (never commit) | `~/Desarrollo/cpore-refs/` |
 
 ## Who writes what
 - **Opus and Fable plan; they do not write project code.** Plans and briefs only.
