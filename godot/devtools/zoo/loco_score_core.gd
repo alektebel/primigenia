@@ -27,6 +27,51 @@ const SCENARIOS := ["walk", "gallop", "turn", "climb", "steps"]
 static var last_rec: Dictionary = {}   # raw samples of the last case (debugging)
 const BACK_OFF_TICKS := 20           # recording starts this long before the wanted state shows
 
+# Compare paired feet, never front against hind. Sample the peak-to-trough root
+# drop near touchdown from the preceding stride peak, and roll toward the
+# planted side over the following quarter stride.
+# This is phase-local: a once-per-stride dip produces unequal alternating steps.
+# Denominator floors (1 mm / 0.1 degree) avoid division by zero; no added motion.
+static func _limp(rec: Dictionary, legs: Array, touch: Array, T: int, height: Array, roll: Array) -> Dictionary:
+	var feet := []
+	var pairs := {}
+	for j in legs.size():
+		var drops := []
+		var rolls := []
+		for f in touch[j]:
+			var a: int = int(f) - maxi(1, T / 10)
+			var b: int = int(f) + maxi(1, T / 10) + 1
+			if a < T or b >= height.size() - T or float(rec.speed[f]) <= MOVING_SPEED:
+				continue
+			var hs: Array = height.slice(a, b)
+			var peak: Array = height.slice(int(f) - T, int(f) + 1)
+			var lean := 0.0
+			for q in range(int(f), int(f) + maxi(1, T / 4) + 1):
+				lean = maxf(lean, -float(roll[q]) * float(legs[j].side))
+			drops.append(maxf(0.0, float(peak.max()) - float(hs.min())))
+			rolls.append(lean)
+		var foot := {"side": legs[j].side, "pair": legs[j].pair, "samples": drops.size(),
+			"drop_cm": _r(_mean(drops) * 100.0, 3), "roll_deg": _r(_mean(rolls), 3)}
+		feet.append(foot)
+		if not drops.is_empty() and int(legs[j].side) != 0:
+			var pair: int = legs[j].pair
+			if not pairs.has(pair):
+				pairs[pair] = {}
+			pairs[pair][int(legs[j].side)] = foot
+	var drop_ratio := 1.0
+	var roll_ratio := 1.0
+	var count := 0
+	for pair in pairs.values():
+		if not pair.has(1) or not pair.has(-1):
+			continue
+		count += 1
+		var l: Dictionary = pair[1]
+		var r: Dictionary = pair[-1]
+		drop_ratio = maxf(drop_ratio, maxf(maxf(l.drop_cm, r.drop_cm), 0.1) / maxf(minf(l.drop_cm, r.drop_cm), 0.1))
+		roll_ratio = maxf(roll_ratio, maxf(maxf(l.roll_deg, r.roll_deg), 0.1) / maxf(minf(l.roll_deg, r.roll_deg), 0.1))
+	return {"index": _r(maxf(drop_ratio, roll_ratio)), "drop_ratio": _r(drop_ratio),
+		"roll_ratio": _r(roll_ratio), "paired": count, "per_foot": feet}
+
 # ---- the run ---------------------------------------------------------------------------------------
 static func _find_start(parent: Node, body: String, cfg: Dictionary) -> int:
 	if cfg.want.is_empty():
@@ -254,7 +299,7 @@ static func analyse(rec: Dictionary, legs: Array, r: Dictionary) -> Dictionary:
 	else:
 		m["min_turn_radius_m"] = _r(rmin, 2)
 	if nl == 0:
-		for k in ["knee_flip_frac", "foot_penetration_cm", "gait_symmetry", "head_pitch_deg", "head_yaw_vs_body_deg", "shoulder_hip_ratio", "back_slope_deg", "torso_roll_deg", "roll_plant_lag", "torso_bob_cm", "torso_bob_frac",
+		for k in ["knee_flip_frac", "foot_penetration_cm", "gait_symmetry", "head_pitch_deg", "head_yaw_vs_body_deg", "shoulder_hip_ratio", "back_slope_deg", "torso_roll_deg", "roll_plant_lag", "torso_bob_cm", "torso_bob_frac", "limp_index", "limp",
 				"foot_slip_cm", "duty_factor", "airborne_frac", "footfall", "stride_len_m", "cadence_hz", "leg_extension", "foot_spacing_ratio"]:
 			m[k] = null
 			why[k] = "no walking legs on the rig"
@@ -521,12 +566,18 @@ static func analyse(rec: Dictionary, legs: Array, r: Dictionary) -> Dictionary:
 		why["pitch_follow"] = "fewer than 10 moving frames on a slope steeper than 0.1: nothing to follow"
 		why["steep_slope_deg"] = why["pitch_follow"]
 	if T < 4 or n < 4 * T:
-		for k in ["torso_roll_deg", "roll_plant_lag", "torso_bob_cm", "torso_bob_frac"]:
+		for k in ["torso_roll_deg", "roll_plant_lag", "torso_bob_cm", "torso_bob_frac", "limp_index", "limp"]:
 			m[k] = null
 			why[k] = "no stride cycle long enough in this window (needs 4 strides of frames)"
 	else:
 		var droll := _detrend(roll, 2 * T)
 		var dbob := _detrend(bobh, 2 * T)
+		var limp := _limp(rec, legs, touch, T, dbob, droll)
+		m["limp"] = limp if limp.paired > 0 else null
+		m["limp_index"] = limp.index if limp.paired > 0 else null
+		if limp.paired == 0:
+			why["limp_index"] = "no paired left/right touchdowns with a full measurement window"
+			why["limp"] = why["limp_index"]
 		var lo := T
 		var hi := n - T
 		var rr := droll.slice(lo, hi)
@@ -600,9 +651,9 @@ static func analyse(rec: Dictionary, legs: Array, r: Dictionary) -> Dictionary:
 		var f_end := mini(n, f_start + 2 * T)
 		var seqs := []
 		for j in nl:
-			var sstr := ""
+			var samples := []
 			for i in range(f_start, f_end):
-				sstr += "1" if rec.contact[i][j] == 1 else "0"
-			seqs.append(sstr)
+				samples.append(rec.contact[i][j] == 1)
+			seqs.append(samples)
 		m["footfall"] = {"labels": ff_labels, "dt": _r(dt, 5), "start_frame": f_start, "stride_frames": T, "contact": seqs}
 	return {"metrics": m, "reasons": why}

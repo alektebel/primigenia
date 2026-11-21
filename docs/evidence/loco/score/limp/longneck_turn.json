@@ -1,0 +1,210 @@
+{
+  "body": "longneck",
+  "fps": 30.0,
+  "frames": 1260,
+  "metrics": {
+    "airborne_frac": 0.0,
+    "back_slope_deg": 19.27,
+    "body_pitch_deg": -0.01,
+    "cadence_hz": 3.028,
+    "duty_factor": {
+      "mean": 0.5173,
+      "per_foot": [
+        0.5341,
+        0.5008,
+        0.5447,
+        0.4894
+      ]
+    },
+    "foot_penetration_cm": {
+      "max": 0.0,
+      "mean": 0.0,
+      "p95": 0.0
+    },
+    "foot_slip_cm": {
+      "mean": 0.12,
+      "p95": 0.0,
+      "stances": 506
+    },
+    "foot_spacing_ratio": 0.719,
+    "footfall": {
+      "contact": [
+        [
+          true,
+          true,
+          true,
+          true,
+          true,
+          false,
+          false,
+          false,
+          false,
+          false,
+          true,
+          true,
+          true,
+          true,
+          true,
+          false,
+          false,
+          false,
+          false,
+          true
+        ],
+        [
+          false,
+          false,
+          false,
+          false,
+          false,
+          true,
+          true,
+          true,
+          true,
+          true,
+          false,
+          false,
+          false,
+          false,
+          true,
+          true,
+          true,
+          true,
+          true,
+          false
+        ],
+        [
+          false,
+          false,
+          false,
+          false,
+          false,
+          true,
+          true,
+          true,
+          true,
+          true,
+          false,
+          false,
+          false,
+          false,
+          true,
+          true,
+          true,
+          true,
+          true,
+          false
+        ],
+        [
+          true,
+          true,
+          true,
+          true,
+          true,
+          false,
+          false,
+          false,
+          false,
+          false,
+          true,
+          true,
+          true,
+          true,
+          false,
+          false,
+          false,
+          false,
+          false,
+          true
+        ]
+      ],
+      "dt": 0.03333,
+      "labels": [
+        "L0",
+        "R0",
+        "L1",
+        "R1"
+      ],
+      "start_frame": 9,
+      "stride_frames": 10
+    },
+    "gait_frac": {
+      "amble": 0.0429,
+      "trot": 0.9206,
+      "walk": 0.0365
+    },
+    "gait_symmetry": 1.016,
+    "ground_slope_deg": 0.0,
+    "head_pitch_deg": {
+      "mean": -5.76,
+      "p95": -3.2
+    },
+    "head_yaw_vs_body_deg": {
+      "mean": 11.87,
+      "p95": 136.41
+    },
+    "knee_flip_frac": 0.0,
+    "leg_extension": 0.8829,
+    "limp": {
+      "drop_ratio": 1.1368,
+      "index": 1.1368,
+      "paired": 2,
+      "per_foot": [
+        {
+          "drop_cm": 4.486,
+          "pair": 0,
+          "roll_deg": 0.079,
+          "samples": 121,
+          "side": 1
+        },
+        {
+          "drop_cm": 3.946,
+          "pair": 0,
+          "roll_deg": 0.096,
+          "samples": 124,
+          "side": -1
+        },
+        {
+          "drop_cm": 3.874,
+          "pair": 1,
+          "roll_deg": 4.929,
+          "samples": 123,
+          "side": 1
+        },
+        {
+          "drop_cm": 4.245,
+          "pair": 1,
+          "roll_deg": 4.95,
+          "samples": 121,
+          "side": -1
+        }
+      ],
+      "roll_ratio": 1.0043
+    },
+    "limp_index": 1.1368,
+    "min_turn_radius_m": 0.33,
+    "moving_frac": 0.9762,
+    "pitch_follow": null,
+    "pivot_frac": 0.031,
+    "pivot_frac_of_turns": 0.4333,
+    "roll_plant_lag": 0.128,
+    "shoulder_hip_ratio": 1.5552,
+    "slide_frac": 0.0,
+    "speed_mean_mps": 5.0628,
+    "stall_frac": 0.0,
+    "stall_state_frac": 0.0,
+    "steep_slope_deg": null,
+    "stride_len_m": 1.637,
+    "stuck_frac": 0.0,
+    "torso_bob_cm": 5.35,
+    "torso_bob_frac": 0.036,
+    "torso_roll_deg": 5.24
+  },
+  "reasons": {
+    "pitch_follow": "fewer than 10 moving frames on a slope steeper than 0.1: nothing to follow",
+    "steep_slope_deg": "fewer than 10 moving frames on a slope steeper than 0.1: nothing to follow"
+  },
+  "scenario": "turn",
+  "start_tick": 0,
+  "ticks": 420
+}

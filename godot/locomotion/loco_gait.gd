@@ -58,7 +58,9 @@ static func duty(gait: StringName, fr: float, heavy := false) -> float:
 		&"walk": return clamp(0.47 * pow(f, -0.18), 0.53, 0.88)
 		&"tripod": return clamp(0.47 * pow(f, -0.18), 0.5, 0.85)
 		&"ripple": return clamp(0.5 * pow(f, -0.15), 0.5, 0.85)
-		&"amble": return clamp(0.45 * pow(f, -0.2), 0.3, 0.52)
+		# M1 starting value: an amble keeps overlapping support like a walk;
+		# a sub-half duty made the hero hop between lateral couplets.
+		&"amble": return clamp(0.55 * pow(f, -0.1), 0.53, 0.65)
 		&"run", &"trot", &"hop":
 			return clamp(0.40 * pow(f, -0.2), 0.5 if heavy else 0.2, 0.5 if heavy else 0.48)
 		&"gallop": return clamp(0.36 * pow(f, -0.25), 0.15, 0.32)

@@ -9,7 +9,10 @@ ROW, LEFT, W, PAD = 22, 46, 640, 10
 
 
 def rows_of(ff):
-    return list(zip(ff["labels"], ff["contact"]))
+    # Accept legacy bit strings and native boolean arrays. In particular,
+    # bool("0") is true in Python; decode legacy strings explicitly.
+    return [(lab, [v == "1" if isinstance(v, str) else bool(v) for v in seq])
+            for lab, seq in zip(ff["labels"], ff["contact"])]
 
 
 def draw(title, ff, ref):
@@ -29,9 +32,9 @@ def draw(title, ff, ref):
             fw = W / max(1, frames)
             i = 0
             while i < len(seq):
-                if seq[i] == "1":
+                if seq[i]:
                     j = i
-                    while j < len(seq) and seq[j] == "1":
+                    while j < len(seq) and seq[j]:
                         j += 1
                     out.append('<rect x="%.1f" y="%d" width="%.1f" height="%d" fill="#2b6cb0"/>' % (LEFT + i * fw, y + 2, (j - i) * fw, ROW - 6))
                     i = j
