@@ -34,8 +34,8 @@ Reference clips: gorilla knuckle-walk (tracker X3, owner's Downloads) and Spore 
 - Codex resume of species-v8 / gaitopt: only when the owner wants them continued.
 
 ## Next free ids
-- C events: moves takes FELL=27, RECIPE=28, VOLLEY=29 → next free **30** (first-quest DUG, MOVE_USED).
-- Snapshot version: moves = 9 → next **10**.
+- C events: next free **32** (moves FELL 27, RECIPE 28, VOLLEY 29; first-quest DUG 30, MOVE_USED 31; integration branch).
+- Snapshot version: integration branch = 11 → next **12**.
 
 ## Waiting on the owner (tracker)
 - Decisions D-02 … D-20 (D-12 arms reach rule, D-19 game-design skill as brief template, D-20 Blender props trial).
