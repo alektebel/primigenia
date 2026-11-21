@@ -45,7 +45,7 @@ void fragment() {
 	vec3 c = mix(vec3(0.07, 0.30, 0.50), vec3(0.30, 0.64, 0.68), shallow * 0.8 + 0.2 * ripple);
 	float fr = pow(1.0 - max(dot(V, n), 0.0), 4.0);
 	c = mix(c, vec3(0.78, 0.9, 0.97), fr * 0.5);
-	c += vec3(1.0, 0.95, 0.8) * pow(max(dot(n, normalize(V + SUN_DIR)), 0.0), 120.0) * 0.8;
+	c += vec3(1.0, 0.95, 0.8) * pow(max(dot(n, normalize(V + sun_dir)), 0.0), 120.0) * 0.8 * sun_vis;
 	float foam = max(rapid * smoothstep(0.45, 0.8, ripple), fall * 0.9);
 	foam = max(foam, smoothstep(0.78, 1.0, abs(st.y)) * 0.35);
 	c = mix(c, vec3(0.95, 0.98, 1.0), clamp(foam, 0.0, 1.0));

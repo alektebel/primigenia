@@ -79,7 +79,7 @@ float occluder_shadow(vec3 wp) {
 			continue;
 		}
 		vec3 oc = o.xyz - wp;
-		float tca = dot(oc, SUN_DIR);
+		float tca = dot(oc, sun_dir);
 		float d2 = dot(oc, oc) - tca * tca;
 		float r2 = o.w * o.w;
 		sh *= mix(1.0, smoothstep(r2 * 0.5, r2 * 1.4, d2), step(0.0, tca));

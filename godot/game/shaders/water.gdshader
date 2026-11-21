@@ -26,7 +26,7 @@ void fragment() {
 	n = normalize(mix(n, vec3(0.0, 1.0, 0.0), smoothstep(120.0, 450.0, distance(wp, CAMERA_POSITION_WORLD))));   // calm far water: no moire
 	float fr = pow(1.0 - max(dot(V, n), 0.0), 4.0);
 	c = mix(c, vec3(0.8, 0.91, 0.97), fr * 0.5);
-	c += vec3(1.0, 0.95, 0.8) * pow(max(dot(n, normalize(V + SUN_DIR)), 0.0), 160.0);
+	c += vec3(1.0, 0.95, 0.8) * pow(max(dot(n, normalize(V + sun_dir)), 0.0), 160.0) * sun_vis;
 	float foam = 1.0 - smoothstep(0.0, 0.22, depth + sin(t * 1.4 + q.x * 0.8 + q.y * 0.6) * 0.06);
 	c = mix(c, vec3(1.0), foam * 0.85);
 	float alpha = max(mix(0.6, 0.96, smoothstep(0.0, 3.0, depth)), foam);

@@ -7,6 +7,17 @@
 
 #include "res://game/shaders/clouds.gdshaderinc"
 
+// The values below are the midday defaults (a test compares them with look.gd). The live ones are the shader globals that
+// game/island/day_night.gd drives from the day cycle (sun_dir, sun_color, sky_*, ambient_color, fog_color, sun_vis).
+global uniform vec3 sun_dir;      // towards the sun (the moon at night), normalised
+global uniform vec3 sun_color;    // multiplier on the world's linear scene colour: tint and brightness of the light (1,1,1 at midday)
+global uniform float sun_vis;     // 1 sun disc and glow, 0 night
+global uniform vec3 sky_zenith;
+global uniform vec3 sky_mid;
+global uniform vec3 sky_horizon;
+global uniform vec3 sky_glow;
+global uniform vec3 ambient_color; // linear light added to everything (the moonlit fill), 0 at midday
+global uniform vec3 fog_color;     // the cool haze of the aerial perspective
 const vec3 SUN_DIR = vec3(-0.6259115, 0.2826697, -0.7268649);
 const vec3 AIR_COOL = vec3(0.34, 0.58, 0.88);
 const vec3 AIR_WARM = vec3(0.96, 0.74, 0.46);
@@ -58,13 +69,13 @@ vec3 aerial(vec3 c, vec3 wp, vec3 cam) {
 	vec3 rho = exp(-heights / AIR_FALLOFF);
 	float path = max(d - AIR_START, 0.0);
 	float optical = path * (1.0 - exp(-path / 240.0)) * AIR_DENSITY * dot(rho, vec3(0.1667, 0.6666, 0.1667));
-	float sunward = pow(max(dot(dir, SUN_DIR), 0.0), 3.0);
-	vec3 haze = mix(AIR_COOL, AIR_WARM, sunward);
+	float sunward = pow(max(dot(dir, sun_dir), 0.0), 3.0);
+	vec3 haze = mix(fog_color, AIR_WARM * min(sun_color, vec3(1.0)), sunward * sun_vis);
 	c = mix(c, haze, 1.0 - exp(-optical));
 	float fog = ground_fog(wp, cam);
 	if (fog > 0.0) {
 		vec3 fog_col = mix(vec3(0.93, 0.86, 0.84), vec3(0.86, 0.90, 0.96), smoothstep(0.0, 0.6, sky_tod)) * mix(1.0, 0.95, smoothstep(0.6, 1.0, sky_tod));
-		c = mix(c, fog_col, fog * 0.9);
+		c = mix(c, fog_col * mix(vec3(0.10, 0.14, 0.24), vec3(1.0), sun_vis), fog * 0.9);
 	}
 	return c;
 }
@@ -76,8 +87,8 @@ const vec3 HORIZON_HZ = vec3(0.95, 0.84, 0.70);
 const vec3 HORIZON_GLOW = vec3(1.0, 0.62, 0.3);
 vec3 horizon_color(vec3 dir) {
 	vec3 n0 = normalize(vec3(dir.x, 0.0, dir.z) + vec3(1e-6, 0.0, 0.0));
-	float s = max(dot(n0, SUN_DIR), 0.0);
-	return min(HORIZON_HZ + HORIZON_GLOW * pow(s, 7.0) * 0.55, vec3(1.0));
+	float s = max(dot(n0, sun_dir), 0.0);
+	return min(sky_horizon + sky_glow * pow(s, 7.0) * 0.55, vec3(1.0));
 }
 
 // The Compatibility renderer converts what a shader writes to ALBEDO/COLOR with its own
@@ -97,7 +108,7 @@ vec3 godot_albedo(vec3 lin) {
 
 // Linear scene colour -> value to write to ALBEDO so the screen shows the hero's display colour.
 vec3 scene_out(vec3 lin, vec3 wp, vec3 cam) {
-	return godot_albedo(tm_inv(srgb_decode(aerial(srgb_encode(tm(lin)), wp, cam))));
+	return godot_albedo(tm_inv(srgb_decode(aerial(srgb_encode(tm(lin * sun_color + ambient_color)), wp, cam))));
 }
 
 // A colour already in display space (sky dome, hero ShaderMaterials) -> ALBEDO/COLOR.

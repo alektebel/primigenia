@@ -10,10 +10,10 @@ extends "res://game/tests/flora_evidence.gd"
 const DayNight := preload("res://game/island/day_night.gd")
 const Clouds := preload("res://game/island/clouds.gd")
 const TODS := {
-	"dawn": {"light": 0.50, "cloud": {"tod": 0.0, "cover": 0.55, "fog": 0.8}},
-	"midday": {"light": 1.0, "cloud": {"tod": 0.5, "cover": 0.55, "fog": 0.0}},
-	"dusk": {"light": 0.50, "cloud": {"tod": 1.0, "cover": 0.55, "fog": 0.0}},
-	"night": {"light": 0.0, "cloud": {"tod": 1.0, "cover": 0.55, "fog": 0.0}},
+	"dawn": {"light": 0.50, "hour": 6.8, "cloud": {"tod": 0.0, "cover": 0.55, "fog": 0.8}},
+	"midday": {"light": 1.0, "hour": 12.5, "cloud": {"tod": 0.5, "cover": 0.55, "fog": 0.0}},
+	"dusk": {"light": 0.50, "hour": 18.2, "cloud": {"tod": 1.0, "cover": 0.55, "fog": 0.0}},
+	"night": {"light": 0.0, "hour": 0.0, "cloud": {"tod": 1.0, "cover": 0.55, "fog": 0.0}},
 }
 # Chase zoom of the creature-at-distance shot (0 closest .. 1 farthest; the model is replaced by an icon from 0.85, but the hatchling is a few pixels long above 0.6; env LOOK_DIST_ZOOM overrides for experiments).
 var DIST_ZOOM := float(OS.get_environment("LOOK_DIST_ZOOM")) if OS.get_environment("LOOK_DIST_ZOOM") != "" else 0.45
@@ -26,6 +26,7 @@ func set_tod(t: String) -> void:
 	Clouds.apply(d.cloud)
 	var dn: Node = island.day_night
 	dn.force_light = d.light
+	dn.force_hour = d.hour
 	dn.k = d.light
 	dn.update_now()
 
