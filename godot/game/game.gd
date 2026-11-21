@@ -303,6 +303,10 @@ func goto_studio() -> void:
 	else:
 		push_warning("studio module not present")
 
+# The starter body: ONE LINE to switch it (docs/evidence/godot/starter/README.md). Values: hatchling (today), a_grazer, b_runner, c_sprawler, d_knuckle.
+const STARTER := "hatchling"
+const STARTER_FILES := {"hatchling": "res://game/data/hatchling.json", "a_grazer": "res://game/data/starters/a_grazer.json", "b_runner": "res://game/data/starters/b_runner.json", "c_sprawler": "res://game/data/starters/c_sprawler.json", "d_knuckle": "res://game/data/starters/d_knuckle.json"}
+
 # Player genome source: --genome=<path> after "--", else the newest studio_dir/*.json (user://studio) that
 # parses, else the bundled starter hatchling (G78/A29; Merodeador is the adult form and a wild species).
 func player_genome() -> Dictionary:
@@ -326,7 +330,7 @@ func player_genome() -> Dictionary:
 					newest_time = t
 	if newest != "":
 		return _read_genome(newest)
-	return _read_genome("res://game/data/hatchling.json")
+	return _read_genome(STARTER_FILES[STARTER])
 
 func _read_genome(path: String) -> Dictionary:
 	var text := FileAccess.get_file_as_string(path)

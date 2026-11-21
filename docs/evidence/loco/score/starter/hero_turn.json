@@ -1,0 +1,88 @@
+{
+  "body": "hero",
+  "fps": 30.0,
+  "frames": 1260,
+  "metrics": {
+    "airborne_frac": 0.0,
+    "back_slope_deg": 6.49,
+    "body_pitch_deg": -0.88,
+    "cadence_hz": 1.605,
+    "duty_factor": {
+      "mean": 0.414,
+      "per_foot": [
+        0.4113,
+        0.4204,
+        0.4261,
+        0.3982
+      ]
+    },
+    "foot_penetration_cm": {
+      "max": 0.0,
+      "mean": 0.0,
+      "p95": 0.0
+    },
+    "foot_slip_cm": {
+      "mean": 0.19,
+      "p95": 0.0,
+      "stances": 268
+    },
+    "foot_spacing_ratio": 0.828,
+    "footfall": {
+      "contact": [
+        "11111111000000000001111111000000000001",
+        "00000000001111111000000000001111111000",
+        "00001111111100000000001111111100000000",
+        "11000000000001111111100000000000111111"
+      ],
+      "dt": 0.03333,
+      "labels": [
+        "L0",
+        "R0",
+        "L1",
+        "R1"
+      ],
+      "start_frame": 14,
+      "stride_frames": 19
+    },
+    "gait_frac": {
+      "amble": 0.9397,
+      "walk": 0.0603
+    },
+    "gait_symmetry": 1.003,
+    "ground_slope_deg": 0.0,
+    "head_pitch_deg": {
+      "mean": -2.81,
+      "p95": 1.38
+    },
+    "head_yaw_vs_body_deg": {
+      "mean": 4.8,
+      "p95": 37.58
+    },
+    "knee_flip_frac": 0.0,
+    "leg_extension": 0.8744,
+    "min_turn_radius_m": 0.4,
+    "moving_frac": 0.9667,
+    "pitch_follow": null,
+    "pivot_frac": 0.0405,
+    "pivot_frac_of_turns": 0.4359,
+    "roll_plant_lag": 0.131,
+    "shoulder_hip_ratio": 1.1488,
+    "slide_frac": 0.0,
+    "speed_mean_mps": 5.0614,
+    "stall_frac": 0.0,
+    "stall_state_frac": 0.0,
+    "steep_slope_deg": null,
+    "stride_len_m": 3.069,
+    "stuck_frac": 0.0,
+    "torso_bob_cm": 8.56,
+    "torso_bob_frac": 0.0459,
+    "torso_roll_deg": 6.17
+  },
+  "reasons": {
+    "pitch_follow": "fewer than 10 moving frames on a slope steeper than 0.1: nothing to follow",
+    "steep_slope_deg": "fewer than 10 moving frames on a slope steeper than 0.1: nothing to follow"
+  },
+  "scenario": "turn",
+  "start_tick": 0,
+  "ticks": 420
+}

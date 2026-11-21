@@ -118,6 +118,12 @@ func _init(db: RefCounted = null, view_node: Node3D = null) -> void:
 	parts_db = db if db else PartsDB.new()
 	view = view_node
 
+## The seed of the starter body: Game.STARTER (one line to switch), "Hatchling" without the autoload.
+func _starter_seed() -> String:
+	var game := get_node_or_null("/root/Game")
+	var key: String = str(game.STARTER) if game != null and "STARTER" in game else "hatchling"
+	return Model.STARTER_SEEDS.get(key, "Hatchling")
+
 func _ready() -> void:
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	theme = ThemeFactory.make()
@@ -126,7 +132,7 @@ func _ready() -> void:
 	var game := get_node_or_null("/root/Game")
 	storage = Storage.new(str(game.studio_dir) if game != null and "studio_dir" in game else "user://studio")
 	model = Model.new(parts_db)
-	model.new_from_seed("Hatchling", false)       # the starter body (A29); Merodeador stays a seed in the list
+	model.new_from_seed(_starter_seed(), false)       # the starter body (A29); Merodeador stays a seed in the list
 	model.changed.connect(_on_model_changed)
 	model.selection_changed.connect(_on_selection_changed)
 	model.history_changed.connect(_sync_history)
@@ -1227,7 +1233,7 @@ func _fill_load_menu() -> void:
 
 func _on_file_menu(id: int) -> void:
 	match id:
-		0: model.new_from_seed("Hatchling"); frame_creature()
+		0: model.new_from_seed(_starter_seed()); frame_creature()
 		1: save_current()
 		3: _open_dialog("import")
 		4: _open_dialog("export")
