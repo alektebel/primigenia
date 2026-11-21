@@ -289,6 +289,13 @@ const TABLE := {
 
 ## Observe clues come from core in English only (CP_STAGE_CHAINS); Spanish by the English text, which is stable. Sim state is untouched.
 const CLUES_ES := {
+	"watch its five arms probe in every direction without a fixed front": "mira cómo sus cinco brazos exploran en todas direcciones, sin un frente fijo",
+	"see its tube feet fasten the disc to the wet rock": "mira cómo sus pies ambulacrales fijan el disco a la roca mojada",
+	"watch it release its grip: a strike can reach the soft underside between raised arms": "míralo soltar su agarre: un golpe puede alcanzar la cara inferior blanda entre los brazos alzados",
+	"watch its six frilled arms collect drifting particles": "mira cómo sus seis brazos con flecos recogen partículas a la deriva",
+	"see its sensory cirri fold when the pool is disturbed": "mira cómo pliega los cirros sensoriales cuando se agita la poza",
+	"watch the arms sweep outward as it slips away": "mira cómo barre hacia fuera con los brazos al alejarse",
+
 	"watch it browse the sappy reeds, a hanging droplet on its muzzle": "míralo ramonear los juncos resinosos, con una gota colgando del hocico",
 	"see a herd mate flinch from the spray and leave it alone": "mira cómo un compañero de manada se encoge ante el chorro y lo deja en paz",
 	"watch it purse its mouth and shoot a thread of sap at a pursuer": "míralo fruncir la boca y lanzar un hilo de savia a quien lo persigue",

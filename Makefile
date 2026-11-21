@@ -736,3 +736,9 @@ godot-first-quest-evidence: godot
 	LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 2400 xvfb-run -a -s "-screen 0 1280x720x24" $(GODOT) --rendering-driver opengl3 --fixed-fps 60 --resolution 1280x720 --path godot \
 	  --script res://game/tests/first_quest_e2e.gd -- evidence=$(CURDIR)/docs/evidence/godot/first-quest $(E2E_ARGS)
 	python3 tools/contact_sheet.py docs/evidence/godot/first-quest docs/evidence/godot/first-quest/contact_sheet.png 3 640
+$(BUILD)/radial_species_test: tests/test_radial_species.c $(HDRS) $(BUILD)/libcpore.a
+	$(CC) $(CFLAGS) $< $(BUILD)/libcpore.a -o $@ $(LDLIBS)
+.PHONY: radial-species-test
+radial-species-test: $(BUILD)/radial_species_test
+	./$(BUILD)/radial_species_test
+test: radial-species-test

@@ -417,6 +417,8 @@ func _stage() -> void:
 	check(not ui.ring.visible and ui.mode == &"attack", "clicking the east side of the ring chooses Attack and closes it")
 	check(ui.petals.count() == 4 and ui.defence.shown, "Attack shows the four petals and the guard and dodge marks")
 	check(ui.abilities.size() == 4 and ui.abilities[0].id == "bite", "keys 1-4 carry the attack moves")
+	# species-v8 (A31): Garfio takes no initiative during its grace minute and until the first evolution, so the player starts the fight
+	ui._press(0)
 	check(await until(func(): return game.stage.cur.active >= 0, 2400), "an encounter starts (active = %d)" % game.stage.cur.active)
 	await sim_ticks(2)
 	ui.clear_selection()

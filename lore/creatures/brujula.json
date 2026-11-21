@@ -40,14 +40,15 @@
         "effect": "Turns 360° threat arc visible, +20% intimidation, -30% sprint speed",
         "numbers": {}
       },
-      "weakness": "Player can flank and deliver frontal impact to stun before retreat",
+      "weakness": "Strike the soft underside between raised arms while the tube feet release their grip",
       "observe": [
         "Watch it align arms with incoming swell",
         "See it orient toward distant predator",
         "Note feeding without a fixed front"
       ],
       "journal": {
-        "en": "No front. No back. Just five equal claims on the world."
+        "en": "No front. No back. Five equal claims on the world. When the tube feet release, the soft underside between raised arms is exposed.",
+        "es": "Sin frente ni espalda. Cinco formas iguales de reclamar el mundo. Al soltar los pies ambulacrales, queda expuesta la cara inferior blanda entre los brazos alzados."
       },
       "plausibility": {
         "verdict": "plausible",

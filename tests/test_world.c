@@ -112,6 +112,7 @@ static void encounters(void) {
     reset();
     setup.wild[0].z=setup.wild[0].home_z=4;
     assert(cp_stage_reset(&w,&setup)==0);
+    w.tick=CP_STAGE_GRACE_TICKS; /* encounter rules after the new-game grace minute */
     cp_stage_step(&w,NULL);
     assert(w.active==0);
     CpStageInput a={
@@ -141,6 +142,7 @@ static void encounters(void) {
     reset();
     setup.wild[0].z=setup.wild[0].home_z=4;
     assert(cp_stage_reset(&w,&setup)==0);
+    w.tick=CP_STAGE_GRACE_TICKS; /* encounter rules after the new-game grace minute */
     cp_stage_step(&w,NULL);
     w.combat.c[0].hp=.1f;
     w.combat.c[0].bleed_t=2;
@@ -159,6 +161,7 @@ static void encounters(void) {
     setup.wild[0].species=2;
     setup.wild[0].z=setup.wild[0].home_z=4;
     assert(cp_stage_reset(&w,&setup)==0);
+    w.tick=CP_STAGE_GRACE_TICKS; /* encounter rules after the new-game grace minute */
     cp_stage_step(&w,NULL);
     assert(w.active==0);
 }
@@ -170,6 +173,7 @@ static void multiple_creatures(void) {
     setup.wild[1].species=0;
     setup.wild[1].x=setup.wild[1].home_x=60;
     assert(cp_stage_reset(&w,&setup)==0);
+    w.tick=CP_STAGE_GRACE_TICKS; /* AI encounter after the grace minute */
     cp_stage_step(&w,NULL);
     assert(w.active==0);
     w.wild[1].roam_ticks=1;
@@ -645,6 +649,7 @@ static void field_fight(void){
     setup.wild[0].z=setup.wild[0].home_z=24;
     setup.wild[0].species=3;
     assert(cp_stage_reset(&w,&setup)==0);
+    w.tick=CP_STAGE_GRACE_TICKS; /* this test exercises an established fight at a cliff */
     CpStageInput into={.verb=CP_STAGE_HEADING,.hx=0,.hz=32767};
     int fight_ticks=0;
     float pz_max=-1000;
@@ -669,6 +674,7 @@ static void field_fight(void){
     setup.terrain=CP_STAGE_FLAT;setup.flat_height=10;setup.nest_x=40;setup.nest_z=28;
     setup.wild[0].x=setup.wild[0].home_x=40;setup.wild[0].z=setup.wild[0].home_z=24;
     assert(cp_stage_reset(&w,&setup)==0);
+    w.tick=CP_STAGE_GRACE_TICKS; /* this test exercises an established fight at a cliff */
     float far=0;
     for(int i=0;i<80;i++){cp_stage_step(&w,&into);if(w.player.z>far)far=w.player.z;}
     assert(far>cc(40));
@@ -741,6 +747,7 @@ static void debug_ops(void){
     reset();
     setup.wild[0].z=setup.wild[0].home_z=4;
     assert(cp_stage_reset(&w,&setup)==0);
+    w.tick=CP_STAGE_GRACE_TICKS; /* AI encounter after the grace minute */
     cp_stage_step(&w,NULL);
     assert(w.active==0);
     dbg_op(CP_STAGE_DBG_TELEPORT,0,0,5,5,0,-2);
@@ -755,6 +762,7 @@ static void debug_ops(void){
         reset();
         setup.wild[0].z=setup.wild[0].home_z=4;
         assert(cp_stage_reset(&w,&setup)==0);
+        w.tick=CP_STAGE_GRACE_TICKS; /* the god-mode test starts after the grace minute */
         if(god)dbg_op(CP_STAGE_DBG_FLAGS,0,CP_STAGE_FLAG_GOD,0,0,0,0);
         cp_stage_step(&w,NULL);
         w.combat.c[0].hp=.1f;
@@ -848,6 +856,7 @@ static void nav_contract(void) {
     reset();
     setup.wild[0].z=setup.wild[0].home_z=4;
     assert(cp_stage_reset(&w,&setup)==0);
+    w.tick=CP_STAGE_GRACE_TICKS; /* AI encounter after the grace minute */
     cp_stage_step(&w,NULL);
     assert(w.active==0);
     assert(cp_stage_observe(&w,obs,sizeof obs)>0 && strstr(obs,"\"state\":\"fighting\"") && strstr(obs,"\"in_fight\":true") && strstr(obs,"\"hp_max\""));

@@ -48,10 +48,12 @@ static const struct { int8_t skill[CP_SOC_COUNT],gift[CP_ITEM_COUNT]; } PREF[CP_
     {{4,4,6,12},{-2,0,14,8}},       /* Espinodo, carnivore */
     {{-4,2,4,10},{-4,0,16,10}},     /* Garfio, carnivore, heckler */
     {{12,2,6,8},{-4,0,14,10}},      /* Acechalunas, nocturnal omnivore: answers a low call, takes meat and bone */
-    {{4,2,12,8},{12,8,-25,-10}}     /* Babosa, slow herbivore: charmed by soft approach, eats litter and fruit */
+    {{4,2,12,8},{12,8,-25,-10}},
+    {{4,4,8,12},{2,0,14,8}}, /* Brujula: detritus and carrion, territorial pool */
+    {{8,2,12,4},{-4,0,14,8}} /* Corona: passive benthic filter feeder */     /* Babosa, slow herbivore: charmed by soft approach, eats litter and fruit */
 };
-static const uint8_t HERBIVORE[CP_SOC_SPECIES]={1,1,0,0,0,1};
-static const uint8_t HECKLER[CP_SOC_SPECIES]={0,0,0,1,0,0};
+static const uint8_t HERBIVORE[CP_SOC_SPECIES]={1,1,0,0,0,1,0,0};
+static const uint8_t HECKLER[CP_SOC_SPECIES]={0,0,0,1,0,0,0,0};
 /* One A22 chain per species: three things to watch, then the move it teaches. Moves are combat move ids that exist in
  * CP_COMBAT_MOVES (a lore chain that names a move the table does not have is simply not listed here). */
 const CpStageChain CP_STAGE_CHAINS[CP_SOC_SPECIES]={
@@ -78,7 +80,15 @@ const CpStageChain CP_STAGE_CHAINS[CP_SOC_SPECIES]={
     {"babosa.c1","coils into a bitter sphere and spits mucus at what presses it",CB_SPIT,{
         "watch it glide over the damp tuff leaving a bright wet trail",
         "see it curl into a tight sphere when the noon light reaches it",
-        "watch it uncoil and flick a string of mucus at a nipping beetle"}}
+        "watch it uncoil and flick a string of mucus at a nipping beetle"}},
+    {"brujula.c1","braces its radial arms against a blow",CB_GUARD,{
+        "watch its five arms probe in every direction without a fixed front",
+        "see its tube feet fasten the disc to the wet rock",
+        "watch it release its grip: a strike can reach the soft underside between raised arms"}},
+    {"corona.c1","sweeps its frilled arms around the disc",CB_TAIL_STRIKE,{
+        "watch its six frilled arms collect drifting particles",
+        "see its sensory cirri fold when the pool is disturbed",
+        "watch the arms sweep outward as it slips away"}}
 };
 
 static float len2(float x,float z){return sqrtf(x*x+z*z);}
@@ -176,6 +186,8 @@ int cp_stage_social_shielded(const CpStageWorld *w,int i){
 int cp_stage_social_hostile(const CpStageWorld *w,int i){
     const CpStageCreature *e=&w->wild[i];
     if(is_dead(e)||cp_stage_social_pacified(w,i)||cp_stage_creature_hidden(w,i))return 0;
+    if(e->species==3&&w->tick<(w->grace_until?w->grace_until:CP_STAGE_GRACE_TICKS)&&
+       w->social.c[i].aggro_ticks<=0)return 0; /* patrol during grace; an attack still provokes it */
     const CpStageSpecies *sp=&CP_STAGE_SPECIES[e->species];
     const float d=dist2(&w->player,e);
     const float territory=sp->temperament==CP_STAGE_TERRITORIAL?len2(w->player.x-e->home_x,w->player.z-e->home_z):d;
@@ -769,7 +781,7 @@ int cp_stage_social_creature_json(const CpStageWorld *w,int i,char *out,size_t c
     const int sp=species_of(w,i);
     Buf b={out,cap,0,0};
     bp(&b,",\"temper\":\"%s\",\"diet\":\"%s\",\"relationship\":\"%s\",\"trust\":%d,\"trust_band\":\"%s\",\"bonded\":%s,\"mood\":\"%s\",\"mood_n\":%d,\"beat_in\":%d,\"hostile\":%s,\"calm\":%s,\"leaving\":%s,\"refuses_social\":%s",
-       TEMPER[CP_STAGE_SPECIES[sp].temperament],HERBIVORE[sp]?"herbivore":"carnivore",REL[cp_stage_social_relationship(w,i)],c->trust,trust_band(c),c->bonded?"true":"false",
+       TEMPER[CP_STAGE_SPECIES[sp].temperament],HERBIVORE[sp]?"herbivore":(sp==4||sp==6)?"omnivore":"carnivore",REL[cp_stage_social_relationship(w,i)],c->trust,trust_band(c),c->bonded?"true":"false",
        mood_label(c->mood),c->mood,cp_stage_social_beat_in(w,i),cp_stage_social_hostile(w,i)?"true":"false",c->calm_ticks>0?"true":"false",c->leave_ticks>0?"true":"false",refuses(w,i)?"true":"false");
     bp(&b,",\"known_likes\":[");
     int n=0;

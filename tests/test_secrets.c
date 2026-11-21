@@ -191,10 +191,10 @@ static void flat(int clock,int n,const int *species){
     assert(!cp_stage_reset(&w,&fs));
 }
 static void flat_tests(void){
-    assert(CP_STAGE_SPECIES_COUNT==6&&!strcmp(CP_STAGE_SPECIES[4].name,"Acechalunas")&&!strcmp(CP_STAGE_SPECIES[5].name,"Babosa"));
+    assert(CP_STAGE_SPECIES_COUNT==8&&!strcmp(CP_STAGE_SPECIES[4].name,"Acechalunas")&&!strcmp(CP_STAGE_SPECIES[5].name,"Babosa"));
     assert(CP_STAGE_SPECIES[4].activity==CP_ACT_NOCTURNAL&&CP_STAGE_SPECIES[5].activity==CP_ACT_CREPUSCULAR);
     for(int i=0;i<4;i++)assert(CP_STAGE_SPECIES[i].activity==CP_ACT_DIURNAL);
-    PASS("six species, with their daily rhythm");
+    PASS("eight species, with their daily rhythm");
     /* the clock: 500 ticks an hour, dawn 05-07, dusk 18-20 */
     const int sp[]={4};
     flat(0,1,sp);assert(cp_stage_daylight(&w)==0);

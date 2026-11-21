@@ -9,7 +9,10 @@
 #define CP_STAGE_MAX_OBSTACLES 1024
 #define CP_STAGE_DAY_TICKS 12000
 #define CP_STAGE_DT .1f
-#define CP_STAGE_SNAPSHOT_VERSION 10   /* 3: player loadout (A21); 4: social layer (C2); 5: lineage ledger and ancestry; 6: discovery, nest shop and eggs; 7: secrets (shards, cave chamber, day/night) and 6 species; 8: run and fixed-point fall state; 9: + recipes, calcium, mineral, stones (C2 moves/recipes); 10: digging (holes, fossil beds) and the fire gland (first-quest) */
+#define CP_STAGE_GRACE_TICKS 600 /* 60 seconds at 10 Hz */
+#define CP_STAGE_WAKE_RADIUS 6.f
+#define CP_STAGE_WAKE_TICKS 150 /* 15 seconds since the last approach */
+#define CP_STAGE_SNAPSHOT_VERSION 11   /* 3: player loadout (A21); 4: social layer (C2); 5: lineage ledger and ancestry; 6: discovery, nest shop and eggs; 7: secrets (shards, cave chamber, day/night) and 6 species; 8: run and fixed-point fall state; 9: + recipes, calcium, mineral, stones (C2 moves/recipes); 10: digging (holes, fossil beds) and the fire gland (first-quest); 11: 8 species (brujula, corona), Garfio grace and Acechalunas wake clocks (species-v8) */
 /* A31 fall damage: 10 HP per metre beyond the safe drop, capped at 60 % of max HP unless the fall is free (air above 2x the safe drop). */
 #define CP_FALL_CAP_PERMILLE 600
 #define CP_FALL_FREE_X 2
@@ -64,8 +67,8 @@ enum { CP_DNA_KILL, CP_DNA_BOND, CP_DNA_ALLY, CP_DNA_DOMINATE, CP_DNA_CARCASS, C
 #define CP_SOC_WINDOW 2           /* rhythm window, +- ticks */
 #define CP_SOC_OBSERVE_TICKS 50   /* ticks of unseen watching per revealed clue */
 #define CP_SOC_OBSERVE_RANGE 40.f
-#define CP_SOC_SPECIES 6      /* Rondo, Zanco, Espinodo, Garfio, Acechalunas, Babosa */
-#define CP_STAGE_SPECIES_COUNT 6
+#define CP_SOC_SPECIES 8      /* Rondo, Zanco, Espinodo, Garfio, Acechalunas, Babosa, Brujula, Corona */
+#define CP_STAGE_SPECIES_COUNT 8
 #define CP_SOC_CHAIN_ITEMS 3
 #define CP_SOC_EXPLORE_MAX 40
 enum { CP_STAGE_NONE, CP_STAGE_VICTORY, CP_STAGE_DEATH, CP_STAGE_FLED };
@@ -321,6 +324,7 @@ typedef struct {
     int32_t running,run_stamina,falling,fall_y_mm,fall_v_mm_s,fall_start_mm;
     int32_t fall_dx_mm,fall_dz_mm;
     CpStageDig dig;                  /* first-quest: fossil beds, holes, the dig in progress (snapshot 9) */
+    uint32_t grace_until,wake_until[CP_STAGE_MAX_WILD]; /* v8 AI clocks; zero keeps legacy hashes */
     const CpStageField *field;       /* not owned, not in the snapshot, set by cp_stage_attach_field */
 } CpStageWorld;
 /* --- first-quest digging (core/src/stage_dig.c) --- */
@@ -337,7 +341,7 @@ int cp_stage_dig_observe(const CpStageWorld *w,char *out,size_t cap);   /* the a
 void cp_stage_set_run(CpStageWorld *w,int on);
 float cp_stage_safe_drop(const CpStageWorld *w); /* metres, 1.5 times mean leg length */
 int cp_stage_daylight(const CpStageWorld *w);                /* permille 0 (night) .. 1000 (full day), from the world clock */
-int cp_stage_creature_hidden(const CpStageWorld *w,int index); /* index 0..n-1: a nocturnal creature asleep by day (not perceivable, not targetable) */
+int cp_stage_creature_hidden(const CpStageWorld *w,int index); /* index 0..n-1: asleep by day, unless approached within 6 m or recently awake */
 int cp_stage_creature_hunkered(const CpStageWorld *w,int index); /* a crepuscular creature curled up in the noon light */
 void cp_stage_secrets_reset(CpStageWorld *w);                /* after parts_reset: shards, cave chamber and its fossil node */
 void cp_stage_secrets_step(CpStageWorld *w);

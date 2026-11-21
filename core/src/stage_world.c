@@ -43,7 +43,9 @@ const CpStageSpecies CP_STAGE_SPECIES[CP_STAGE_SPECIES_COUNT]={
         "Babosa",2.4f,16,14,0,CP_STAGE_TIMID,{
             0,0,2,0,2,80,100,2.4f,0,0
         },CP_ACT_CREPUSCULAR
-    }
+    },
+    {"Brujula",2.0f,14,10,0,CP_STAGE_TERRITORIAL,{0,0,0,0,2,70,100,2.0f,0},CP_ACT_DIURNAL},
+    {"Corona",1.4f,10,8,0,CP_STAGE_TIMID,{0,0,1,0,1,50,100,1.4f,0},CP_ACT_CREPUSCULAR}
 };
 static float clamp(float x,float a,float b){
     return x<a?a:x>b?b:x;
@@ -1276,8 +1278,17 @@ static void fight(CpStageWorld *w){
     }
 }
 static void wild_tick(CpStageWorld *w,int skip,int engage){
+    /* Respawn is emitted before AI runs. Keep this clock here so player movement stays independent. */
+    for(uint32_t n=0;n<w->ev_total&&n<CP_STAGE_MAX_EVENTS;n++){
+        const CpStageEvent *ev=&w->events[(w->ev_total-1-n)%CP_STAGE_MAX_EVENTS];
+        if(ev->tick!=w->tick)break;
+        if(ev->type==CP_STAGE_EV_RESPAWN)w->grace_until=w->tick+CP_STAGE_GRACE_TICKS;
+    }
     for(int i=0;i<w->setup.n;i++){
         CpStageCreature *e=&w->wild[i];
+        if(CP_STAGE_SPECIES[e->species].activity==CP_ACT_NOCTURNAL&&!e->dead&&
+           (i==w->active||dist(e,&w->player)<=CP_STAGE_WAKE_RADIUS))
+            w->wake_until[i]=w->tick+CP_STAGE_WAKE_TICKS;
         if(e->dead||i==skip)continue;
         if(w->debug_flags&CP_STAGE_FLAG_AI_OFF){
             /* Debug AI_OFF: the wild neither walk, roam (no RNG draw) nor attack; the player can still start a fight. */
@@ -1324,7 +1335,9 @@ static void wild_tick(CpStageWorld *w,int skip,int engage){
             tx=e->x+(e->x-w->player.x);
             tz=e->z+(e->z-w->player.z);
         }
-        float jog=e->profile.speed*w->motion.wild_k*w->motion.jog_k,espeed=jog;
+        float jog=e->profile.speed*(e->species>=6?1.f:w->motion.wild_k*w->motion.jog_k),espeed=jog;
+        /* A star probes slowly on tube feet, and rows at full speed when driven off or provoked. */
+        if(e->species==6&&!hostile&&!e->returning&&!cp_stage_social_leaving(w,i))espeed=.3f;
         if(length(tx-e->x,tz-e->z)<.4f||(cp_stage_creature_hunkered(w,i)&&!hostile))espeed=0;   /* hunkered: curled up in the noon light */
         walk(w,e,tx-e->x,tz-e->z,espeed,jog);
         if(e->returning&&length(e->x-e->home_x,e->z-e->home_z)<.6f)e->returning=0;
@@ -1681,6 +1694,8 @@ uint64_t cp_stage_hash(const CpStageWorld *w){
         u32(&h,(uint32_t)(w->field_hash>>32));
     }
     if(w->ledger.enabled){uint64_t lh=cp_ledger_hash(&w->ledger);u32(&h,(uint32_t)lh);u32(&h,(uint32_t)(lh>>32));uint64_t ah=cp_stage_ancestry_hash(w);u32(&h,(uint32_t)ah);u32(&h,(uint32_t)(ah>>32));}
+    if(w->grace_until){u32(&h,0x47524143u);u32(&h,w->grace_until);}
+    for(int i=0;i<s->n;i++)if(w->wake_until[i]){u32(&h,0x57414b45u+(uint32_t)i);u32(&h,w->wake_until[i]);}
     return h;
 }
 uint16_t cp_stage_known_moves(const CpStageWorld *w){
@@ -2222,7 +2237,7 @@ uint64_t cp_stage_layout(void){
     LAY(CpStageWorld,blocked_ticks);LAY(CpStageWorld,replans);LAY(CpStageWorld,path_goal_x);LAY(CpStageWorld,path_goal_z);
     LAY(CpStageWorld,blocked_reason);LAY(CpStageWorld,blocked_x);LAY(CpStageWorld,blocked_z);LAY(CpStageWorld,ev_total);
     LAY(CpStageWorld,running);LAY(CpStageWorld,run_stamina);LAY(CpStageWorld,falling);LAY(CpStageWorld,fall_y_mm);LAY(CpStageWorld,fall_v_mm_s);LAY(CpStageWorld,fall_start_mm);LAY(CpStageWorld,fall_dx_mm);LAY(CpStageWorld,fall_dz_mm);
-    LAY(CpStageWorld,ev_acked);LAY(CpStageWorld,events);LAY(CpStageWorld,loadout);LAY(CpStageWorld,social);LAY(CpStageWorld,ledger);LAY(CpStageWorld,ancestry);LAY(CpStageWorld,parts);LAY(CpStageWorld,recipes);LAY(CpStageWorld,secrets);LAY(CpStageWorld,dig);LAY(CpStageWorld,field);lay(&h,sizeof(CpStageSecrets));lay(&h,sizeof(CpStageCave));lay(&h,sizeof(CpStageSocial));lay(&h,sizeof(CpStageSocialCreature));lay(&h,sizeof(CpStageEvent));
+    LAY(CpStageWorld,ev_acked);LAY(CpStageWorld,events);LAY(CpStageWorld,loadout);LAY(CpStageWorld,social);LAY(CpStageWorld,ledger);LAY(CpStageWorld,ancestry);LAY(CpStageWorld,parts);LAY(CpStageWorld,recipes);LAY(CpStageWorld,secrets);LAY(CpStageWorld,dig);LAY(CpStageWorld,grace_until);LAY(CpStageWorld,wake_until);LAY(CpStageWorld,field);lay(&h,sizeof(CpStageSecrets));lay(&h,sizeof(CpStageCave));lay(&h,sizeof(CpStageSocial));lay(&h,sizeof(CpStageSocialCreature));lay(&h,sizeof(CpStageEvent));
     LAY(CpStageSetup,seed);LAY(CpStageSetup,terrain_seed);LAY(CpStageSetup,terrain);LAY(CpStageSetup,n);
     LAY(CpStageSetup,n_obstacles);LAY(CpStageSetup,nest_x);LAY(CpStageSetup,nest_z);LAY(CpStageSetup,flat_height);
     LAY(CpStageSetup,water_x);LAY(CpStageSetup,water_z);LAY(CpStageSetup,water_radius);LAY(CpStageSetup,player);LAY(CpStageSetup,player_legs);

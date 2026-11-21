@@ -26,7 +26,7 @@ func _initialize() -> void:
 		var places := [{"id": "nest", "x": setup.nest.x, "z": setup.nest.y}]
 		var seen := []
 		for spawn in setup.wild:
-			if int(spawn.species) in seen:
+			if int(spawn.species) >= 6 or int(spawn.species) in seen:
 				continue
 			seen.append(int(spawn.species))
 			places.append({"id": ["Rondo", "Zanco", "Espinodo", "Garfio", "Acechalunas", "Babosa"][int(spawn.species)], "x": spawn.home_x, "z": spawn.home_z})

@@ -57,7 +57,8 @@ int cp_stage_daylight(const CpStageWorld *w){
 int cp_stage_creature_hidden(const CpStageWorld *w,int i){
     if(i<0||i>=w->setup.n||w->active==i)return 0;
     const CpStageCreature *e=&w->wild[i];
-    return CP_STAGE_SPECIES[e->species].activity==CP_ACT_NOCTURNAL&&!e->dead&&cp_stage_daylight(w)>=500;
+    return CP_STAGE_SPECIES[e->species].activity==CP_ACT_NOCTURNAL&&!e->dead&&cp_stage_daylight(w)>=500&&w->tick>=w->wake_until[i]&&
+        (w->player.x-e->x)*(w->player.x-e->x)+(w->player.z-e->z)*(w->player.z-e->z)>CP_STAGE_WAKE_RADIUS*CP_STAGE_WAKE_RADIUS;
 }
 int cp_stage_creature_hunkered(const CpStageWorld *w,int i){
     if(i<0||i>=w->setup.n||w->active==i)return 0;
