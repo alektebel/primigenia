@@ -9,6 +9,8 @@ Updated 2026-11-21 (continuity, resources, motion canon A34, autonomy A33, score
 
 Reference clips: gorilla knuckle-walk (tracker X3, owner's Downloads) and Spore captures in `~/Desarrollo/cpore-refs/spore-captures/` (never commit). Capture tool: `docs/research/loco_review.gd`.
 
+**Skin v1 merged ed646ab** (plastic shine 6→0 fails, night crush 8→5, flat light 8→2; night/dist readability metric is wrong: mask includes shadow+nest → fix to creature-only mask; beetle stays dark by palette; dawn/dusk warmth remainder = capture/world light, D-25).
+
 **Creature fit merged c012d75** (part-fit check; teeth, eyes, limbs fixed). Follow-ups: limb pattern UVs along the limb axis + belly mix cap 0.5 (skin shader, next skin round); horn position via the starter genome.
 
 **Visual scorecard merged 0c9b70d** (`make godot-look-score`, ~9 min; baseline weak spots: flat world day cycle, night readability, creature shine, bloom at the spring, forest floor noise/saturation, low/medium parity). Lab: `web/lookdev/index.html`.
@@ -21,7 +23,6 @@ Reference clips: gorilla knuckle-walk (tracker X3, owner's Downloads) and Spore 
 ## Branches in flight
 | Branch | Worktree | State | Next step |
 |---|---|---|---|
-| `art/skin-v1` | cpore-wt/skin-v1 | Sonnet subagent: creature skin v1 (plastic shine, night readability, dawn/dusk warmth; lab → Godot), brief `docs/briefs/skin-v1.md`, started 2026-11-21 | Review compare vs look baseline; merge under A33 if targets pass and nothing regresses |
 | `art/starter-design` | cpore-wt/starter-design | Sonnet subagent: 4 starter candidates (A sturdy, B runner, C armoured sprawler, D knuckle-walker) + today's hero, scorecard + fit + renders; brief `docs/briefs/starter-design.md` | Owner picks in the tracker; Claude switches the default |
 | `anim/limp` | cpore-wt/limp | Codex sol: why the hero limps after L1 (bob per stride vs per step, duty 0.41, broken footfall diagram), limp index metric; brief `docs/briefs/limp.md`; cannot commit | Sonnet/Claude commits, review compare vs ffea2c1 |
 | `integrate/wip-2026-11-21` | cpore-wt/integrate | Sonnet integrator: commits stranded WIP, merges moves → first-quest → species-v8 → cave → 17 older branches, tests after each (owner: "merge all the WIP") | Review `docs/INTEGRATION-2026-11-21.md`, fast-forward main |
