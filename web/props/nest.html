@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Art Nest — Preview</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #000; overflow: hidden; font-family: system-ui, sans-serif; }
+  canvas { display: block; }
+  #hud {
+    position: absolute; top: 12px; left: 12px; z-index: 10;
+    background: rgba(0,0,0,0.75); color: #ccc; padding: 10px 14px;
+    border-radius: 8px; font-size: 12px; line-height: 1.6;
+    pointer-events: none; max-width: 360px;
+  }
+  #hud h2 { font-size: 14px; color: #f0c860; margin-bottom: 4px; }
+  #hud .label { color: #aaa; }
+  #hud .val { color: #fff; }
+  #hud .label-line { color: #7a9a4a; }
+  #hud .err { color: #ff6b6b; margin-top: 6px; display: block; }
+  #info {
+    position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%);
+    background: rgba(0,0,0,0.6); color: #999; padding: 6px 14px;
+    border-radius: 6px; font-size: 11px; z-index: 10;
+  }
+</style>
+</head>
+<body>
+
+<div id="hud">
+  <h2>Art Nest — Preview</h2>
+  <div><span class="label">Variants:</span> <span class="val" id="infoVariants">loading…</span></div>
+  <div><span class="label">Palette:</span> <span class="val label-line">C "Current+" (G63)</span></div>
+  <div><span class="label">Shader:</span> <span class="val">Toon (6-band ramp)</span></div>
+  <div><span class="label">Draw calls:</span> <span class="val" id="dc">—</span></div>
+  <div><span class="label">Triangles:</span> <span class="val" id="tris">—</span></div>
+  <div><span class="label">FPS:</span> <span class="val" id="fps">—</span></div>
+  <div id="errBox" class="err" style="display:none"></div>
+</div>
+<div id="info">Orbit: left-click drag | Zoom: scroll | Pan: right-click drag</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+
+<script type="module">
+window.onerror = (msg) => {
+  const el = document.getElementById('errBox');
+  el.style.display = 'block';
+  el.textContent = 'ERR: ' + msg;
+};
+
+import { buildNest, allVariants } from './nest.js';
+document.getElementById('infoVariants').textContent = 'OK';
+
+const scene = new THREE.Scene();
+scene.fog = new THREE.Fog(0xdcdcdc, 20, 60);
+scene.background = new THREE.Color(0xdcdcdc);
+
+const camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 0.1, 500);
+camera.position.set(6, 5, 8);
+camera.lookAt(0, 0.5, 0);
+
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.0;
+renderer.outputEncoding = THREE.sRGBEncoding;
+document.body.appendChild(renderer.domElement);
+
+const controls = new THREE.OrbitControls(camera, renderer.domElement);
+controls.target.set(0, 0.5, 0);
+controls.enableDamping = true;
+controls.dampingFactor = 0.08;
+controls.minDistance = 2;
+controls.maxDistance = 30;
+controls.maxPolarAngle = Math.PI * 0.48;
+controls.update();
+
+// Golden light
+scene.add(new THREE.HemisphereLight(0xa8ccf8, 0x6a6a5c, 0.5));
+const sun = new THREE.DirectionalLight(0xffd6a0, 3.2);
+sun.position.set(-5, 3, -7);
+sun.castShadow = true;
+sun.shadow.mapSize.set(2048, 2048);
+sun.shadow.camera.left = -10; sun.shadow.camera.right = 10;
+sun.shadow.camera.top = 6; sun.shadow.camera.bottom = -6;
+sun.shadow.camera.near = 0.5; sun.shadow.camera.far = 30;
+sun.shadow.bias = -0.0004;
+scene.add(sun);
+scene.add(new THREE.AmbientLight(0x404040, 0.25));
+
+try {
+  const allNests = allVariants(THREE, 42);
+  scene.add(allNests);
+  console.log('Nest scene built');
+
+  let drawCalls = 0, triangles = 0;
+  allNests.traverse((obj) => {
+    if (obj.isMesh || obj.isInstancedMesh) {
+      drawCalls++;
+      if (obj.isInstancedMesh) {
+        const geo = obj.geometry;
+        triangles += geo.index ? geo.index.count / 3 * obj.count : geo.attributes.position ? geo.attributes.position.count / 3 * obj.count : 0;
+      } else {
+        const geo = obj.geometry;
+        triangles += geo.index ? geo.index.count / 3 : geo.attributes.position ? geo.attributes.position.count / 3 : 0;
+      }
+    }
+  });
+  document.getElementById('dc').textContent = drawCalls;
+  document.getElementById('tris').textContent = Math.round(triangles).toLocaleString();
+  console.log('Draw calls:', drawCalls, 'Triangles:', Math.round(triangles));
+} catch (err) {
+  const el = document.getElementById('errBox');
+  el.style.display = 'block';
+  el.textContent = 'Build error: ' + err.message;
+  console.error(err);
+}
+
+let frameCount = 0, lastTime = performance.now();
+function animate(time) {
+  requestAnimationFrame(animate);
+  controls.update();
+  frameCount++;
+  if (time - lastTime >= 1000) { document.getElementById('fps').textContent = frameCount; frameCount = 0; lastTime = time; }
+  renderer.render(scene, camera);
+}
+animate();
+
+window.addEventListener('resize', () => {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+});
+</script>
+</body>
+</html>
