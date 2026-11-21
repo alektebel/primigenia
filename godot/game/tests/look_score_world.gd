@@ -10,9 +10,9 @@ extends "res://game/tests/flora_evidence.gd"
 const DayNight := preload("res://game/island/day_night.gd")
 const Clouds := preload("res://game/island/clouds.gd")
 const TODS := {
-	"dawn": {"light": 0.30, "cloud": {"tod": 0.0, "cover": 0.55, "fog": 0.8}},
+	"dawn": {"light": 0.50, "cloud": {"tod": 0.0, "cover": 0.55, "fog": 0.8}},
 	"midday": {"light": 1.0, "cloud": {"tod": 0.5, "cover": 0.55, "fog": 0.0}},
-	"dusk": {"light": 0.30, "cloud": {"tod": 1.0, "cover": 0.55, "fog": 0.0}},
+	"dusk": {"light": 0.50, "cloud": {"tod": 1.0, "cover": 0.55, "fog": 0.0}},
 	"night": {"light": 0.0, "cloud": {"tod": 1.0, "cover": 0.55, "fog": 0.0}},
 }
 var tier := ""
@@ -28,15 +28,22 @@ func set_tod(t: String) -> void:
 	dn.update_now()
 
 func grab(name: String) -> Image:
-	await settle(5)
+	await settle(2)
 	var t0 := Time.get_ticks_usec()
-	for i in 3:
+	for i in 2:
 		await process_frame
-	times[name] = float(Time.get_ticks_usec() - t0) / 3000.0
+	times[name] = float(Time.get_ticks_usec() - t0) / 2000.0
 	await RenderingServer.frame_post_draw
 	var img := root.get_texture().get_image()
 	img.convert(Image.FORMAT_RGB8)
 	return img
+
+func hide_ui(n: Node) -> void:
+	for c in n.get_children():
+		if c is CanvasLayer:
+			c.visible = false
+		else:
+			hide_ui(c)
 
 func add_cam(name: String, pos: Vector3, look: Vector3, fov: float) -> void:
 	cams.append({"name": name, "pos": pos, "look": look, "fov": fov})
@@ -62,6 +69,7 @@ func _run() -> void:
 	island.tree_entered.connect(func(): current_scene = island, CONNECT_ONE_SHOT)
 	root.add_child(island)
 	await settle(40)
+	hide_ui(root)   # HUD and strategic icons are not part of the look
 	var nest: Vector2 = island._nest
 	var np := Vector3(nest.x, ground(Vector3(nest.x, 0, nest.y)), nest.y)
 	# Fixed camera rules (same as flora_evidence.gd / world_look_evidence.gd).
@@ -87,25 +95,30 @@ func _run() -> void:
 		for zz in [["valley_chase", 0.35], ["creature_dist", 0.8]]:
 			island.chase_enabled = true
 			island.chase.set_zoom(zz[1], true)
-			await settle(10)
+			await settle(6)
 			var nm := "%s_%s_%s" % [tier, tod, zz[0]]
 			var img := await grab(nm)
-			img.save_jpg(out_dir.path_join(nm + ".jpg"), 0.92)
+			img.save_jpg(out_dir.path_join(nm + ".jpg"), 0.85)
 			if zz[0] == "creature_dist":
 				island.hosts[0].visible = false
-				await settle(3)
+				await settle(2)
 				await RenderingServer.frame_post_draw
 				var bg := root.get_texture().get_image()
 				bg.convert(Image.FORMAT_RGB8)
 				island.hosts[0].visible = true
+				var sp: Vector2 = island.camera.unproject_position(island.hosts[0].global_position + Vector3.UP * 0.4)
+				var r := Rect2i(int(sp.x) - 80, int(sp.y) - 80, 160, 160).intersection(Rect2i(0, 0, img.get_width(), img.get_height()))
 				var px := img.get_data()
 				var pb := bg.get_data()
+				var w := img.get_width()
 				var md := PackedByteArray()
-				md.resize(img.get_width() * img.get_height())
-				for i in md.size():
-					var d := absi(px[i * 3] - pb[i * 3]) + absi(px[i * 3 + 1] - pb[i * 3 + 1]) + absi(px[i * 3 + 2] - pb[i * 3 + 2])
-					md[i] = 255 if d > 12 else 0
-				var mask := Image.create_from_data(img.get_width(), img.get_height(), false, Image.FORMAT_L8, md)
+				md.resize(w * img.get_height())
+				for y in range(r.position.y, r.end.y):
+					for x in range(r.position.x, r.end.x):
+						var i := y * w + x
+						var d := absi(px[i * 3] - pb[i * 3]) + absi(px[i * 3 + 1] - pb[i * 3 + 1]) + absi(px[i * 3 + 2] - pb[i * 3 + 2])
+						md[i] = 255 if d > 12 else 0
+				var mask := Image.create_from_data(w, img.get_height(), false, Image.FORMAT_L8, md)
 				mask.save_png(out_dir.path_join(nm + "_mask.png"))
 			print("wrote ", nm)
 		island.chase_enabled = false
@@ -116,7 +129,7 @@ func _run() -> void:
 			island.camera.look_at(c.look)
 			var nm := "%s_%s_%s" % [tier, tod, c.name]
 			var img := await grab(nm)
-			img.save_jpg(out_dir.path_join(nm + ".jpg"), 0.92)
+			img.save_jpg(out_dir.path_join(nm + ".jpg"), 0.85)
 			print("wrote ", nm)
 	var f := FileAccess.open(out_dir.path_join("times_%s.json" % tier), FileAccess.WRITE)
 	f.store_string(JSON.stringify(times, "  ", true))

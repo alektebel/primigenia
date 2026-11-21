@@ -1,0 +1,193 @@
+{
+ "version": 1,
+ "note": "Targets for the visual scorecard (tools/look/score.py). Every value is a starting value: it cites LOOK.md section 7 for what it guards and is to be tightened when the owner supplies references (LOOK.md 8) and the first improvements land. A target that every shot passes is too loose.",
+ "checks": [
+  {
+   "id": "saturation_over",
+   "metric": "sat_over",
+   "op": "<",
+   "value": 0.1,
+   "failure": "Oversaturated colour",
+   "source": "starting value: at most 10% of lit pixels above S 0.85 (HSV); LOOK.md 7 'saturation histogram vs palette limits'; palette limit not yet set by the owner",
+   "kinds": [
+    "world"
+   ]
+  },
+  {
+   "id": "saturation_p95",
+   "metric": "sat_p95",
+   "op": "<=",
+   "value": 0.9,
+   "failure": "Oversaturated colour",
+   "source": "starting value: p95 saturation of lit pixels <= 0.90; LOOK.md 7",
+   "kinds": [
+    "world"
+   ]
+  },
+  {
+   "id": "flat_light",
+   "metric": "contrast",
+   "op": ">=",
+   "value": 0.35,
+   "failure": "Flat light, no shadows",
+   "source": "starting value: (p95-p5 luminance)/255 >= 0.35 on world shots; LOOK.md 7 'luminance contrast and shadow coverage'",
+   "kinds": [
+    "world"
+   ]
+  },
+  {
+   "id": "creature_flat_light",
+   "metric": "contrast",
+   "op": ">=",
+   "value": 0.3,
+   "failure": "Flat light, no shadows",
+   "source": "starting value: creature pixels (p95-p5)/255 >= 0.30 at every time of day; LOOK.md 7 and 5 (subtle rim, readable night)",
+   "kinds": [
+    "creature"
+   ]
+  },
+  {
+   "id": "creature_crushed",
+   "metric": "crush_frac",
+   "op": "<",
+   "value": 0.25,
+   "failure": "Flat light, no shadows",
+   "source": "starting value: at most 25% of creature pixels at luminance <= 12 ('readable night', LOOK.md 3)",
+   "kinds": [
+    "creature"
+   ]
+  },
+  {
+   "id": "world_crushed",
+   "metric": "crush_frac",
+   "op": "<",
+   "value": 0.05,
+   "failure": "Flat light, no shadows",
+   "source": "starting value: at most 5% of world pixels crushed (luminance <= 12); LOOK.md 7",
+   "kinds": [
+    "world"
+   ]
+  },
+  {
+   "id": "bloom",
+   "metric": "clip_frac",
+   "op": "<",
+   "value": 0.02,
+   "failure": "Too much bloom or blur",
+   "source": "starting value: at most 2% of pixels clipped to white (luminance >= 250); LOOK.md 7 'clipped-highlight fraction'"
+  },
+  {
+   "id": "noise_world",
+   "metric": "hf_noise",
+   "op": "<",
+   "value": 6.0,
+   "failure": "Noisy, dirty textures",
+   "source": "starting value: mean |L - blur1(L)| < 6 grey levels at 1280x720; LOOK.md 7 'high-frequency energy at game distance'",
+   "kinds": [
+    "world"
+   ]
+  },
+  {
+   "id": "noise_creature",
+   "metric": "hf_noise",
+   "op": "<",
+   "value": 6.0,
+   "failure": "Noisy, dirty textures",
+   "source": "starting value: same limit on creature pixels (silhouette edges included, so loose)",
+   "kinds": [
+    "creature"
+   ]
+  },
+  {
+   "id": "blur",
+   "metric": "sharp_p99",
+   "op": ">=",
+   "value": 120,
+   "failure": "Too much bloom or blur",
+   "source": "starting value: p99 of |Laplacian| >= 120 by day (dawn, midday, dusk); LOOK.md 7 sharpness",
+   "tods": [
+    "dawn",
+    "midday",
+    "dusk"
+   ]
+  },
+  {
+   "id": "tiling",
+   "metric": "tiling",
+   "op": "<",
+   "value": 0.3,
+   "failure": "Visible tiling",
+   "source": "starting value: max normalised 2-D autocorrelation of the detrended ground strip at lags >= 32 px < 0.30; LOOK.md 7 'repetition detection on wide shots'",
+   "kinds": [
+    "world"
+   ]
+  },
+  {
+   "id": "plastic_shine",
+   "metric": "spec_frac",
+   "op": "<",
+   "value": 0.01,
+   "failure": "Plastic shine",
+   "source": "starting value: under 1% of creature pixels are white specular glints (V>0.95, S<0.2); LOOK.md 7 (full check is specular/roughness range per material, not measurable from an image)",
+   "kinds": [
+    "creature"
+   ]
+  },
+  {
+   "id": "creature_readability",
+   "metric": "dist_contrast",
+   "op": ">=",
+   "value": 0.1,
+   "failure": "Creature does not read at distance",
+   "source": "starting value: |mean L of the creature - mean L of the ring around it|/255 >= 0.10 at strategic zoom; LOOK.md 5 'creature-vs-ground value contrast'",
+   "shots": [
+    "creature_dist"
+   ]
+  },
+  {
+   "id": "tier_parity",
+   "metric": "tier_delta",
+   "op": "<",
+   "value": 0.1,
+   "failure": "Low tier is not the same game",
+   "source": "starting value: mean |difference| of 32x18 luminance thumbnails low vs medium < 0.10; LOOK.md 6",
+   "tiers": [
+    "low"
+   ],
+   "kinds": [
+    "world"
+   ]
+  },
+  {
+   "id": "day_cycle_night",
+   "metric": "tod_lum_ratio",
+   "op": "<",
+   "value": 0.5,
+   "failure": "Light does not follow the day cycle",
+   "source": "starting value: night mean luminance at most half of midday for the same shot; LOOK.md 3 'readable night' still needs the other checks",
+   "tods": [
+    "night"
+   ]
+  },
+  {
+   "id": "day_cycle_warmth",
+   "metric": "warmth_shift",
+   "op": ">",
+   "value": 1.05,
+   "failure": "Light does not follow the day cycle",
+   "source": "starting value: dawn and dusk are at least 5% warmer (mean R/B) than midday; LOOK.md 3 'warm dawn and dusk'",
+   "tods": [
+    "dawn",
+    "dusk"
+   ]
+  }
+ ],
+ "not_measurable": [
+  "Plastic shine as specular/roughness per material (needs the material parameters, only a glint-fraction proxy is measured)",
+  "Black cartoon outlines (never used; no check)",
+  "Creature skin wet/matte rules (LOOK.md 4): a design rule, not an image statistic",
+  "Frame time is wall clock on software GL under a shared CPU (llvmpipe): informational and only comparable between runs on a similarly loaded machine; it does not show real GPU fps",
+  "Sun direction and terrain light are fixed by the hero look: dawn and dusk differ only by sky/cloud tint and the creature light, so the light-per-time-of-day checks measure what the game does today",
+  "Creature close-ups are on the studio preview stage (CreaturePreview) with the game's day_night light numbers, not inside the island; the game's own terrain bounce and fog are absent"
+ ]
+}

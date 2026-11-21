@@ -10,10 +10,13 @@ Metric definitions (all on 1280x720 JPG, luminance = Rec.601 L in 0..255 unless 
   sat_mean, sat_p95, sat_over   HSV saturation 0..1 over pixels with V>0.15; sat_over = fraction with S>0.85
   contrast                      (p95 - p5) of luminance / 255; shadow/flat-light proxy
   clip_frac, crush_frac         fraction of luminance >= 250 (bloom proxy) and <= 12 (crushed shadow)
+  spec_frac                     fraction of pixels with V>0.95 and S<0.2 (white specular glints: plastic-shine proxy; creature shots only are checked)
   hf_noise                      mean |L - gaussian_blur(L, r=1)|: pixel-scale texture energy at game distance (noise / dirt proxy)
   sharp_p99                     p99 of |Laplacian(L)|: edge strength, low = blurred
   tiling                        wide ground strip, detrended, max normalised autocorrelation at lags >= 12 px at 1/4 scale (repetition)
   dist_contrast                 creature_dist: |mean L(creature) - mean L(ring of background around it)| / 255
+  tod_lum_ratio                 night shots: mean luminance / the same shot at midday (the day cycle must darken the world)
+  warmth_shift                  dawn/dusk shots: (mean R / mean B) / the same at midday (warm light at the day's ends)
   tier_delta                    mean |difference| of 32x18 thumbnails, low vs medium of the same shot (0..1); low must look like the same game
 """
 import glob, json, math, os, sys
@@ -57,13 +60,9 @@ def tiling_score(lum):
     if var < 1e-6:
         return 0.0
     best = 0.0
-    for dy in range(0, 13, 2):
+    for dy in range(6, min(sh - 6, 15), 2):          # 2-D lattice only: streaks along one axis (rivers, bands) do not count
         for dx in range(-sw // 2, sw // 2 + 1, 2):
-            if dy == 0 and dx < 12 and dx > -12:
-                continue
-            if dy == 0 and dx < 0:
-                continue
-            if dy > 0 and abs(dx) < 12 and dy < 12 and (dx * dx + dy * dy) < 144:
+            if abs(dx) < 8:
                 continue
             s = 0.0
             n = 0
@@ -98,11 +97,20 @@ def measure(path, mask_path=None, wide=False):
         m["sat_mean"] = round(sum(i * c for i, c in enumerate(hs)) / n / 255, 4)
         m["sat_p95"] = round(pct(hs, 0.95) / 255, 4)
         m["sat_over"] = round(sum(hs[218:]) / n, 5)   # S > 0.85
+    spec = ImageChops.multiply(V.point(lambda v: 255 if v > 242 else 0), S.point(lambda v: 255 if v < 51 else 0))
+    if mask is not None:
+        spec = ImageChops.multiply(spec, mask.point(lambda v: 255 if v > 0 else 0))
+    hsp = spec.histogram(mask=use if False else (mask.point(lambda v: 255 if v > 0 else 0) if mask is not None else None))
+    if sum(hsp):
+        m["spec_frac"] = round(hsp[255] / sum(hsp), 5)
     lum = im.convert("L")
     hl = lum.histogram(mask=mask.point(lambda v: 255 if v > 0 else 0) if mask is not None else None)
     n = sum(hl)
     if n:
         m["lum_mean"] = round(sum(i * c for i, c in enumerate(hl)) / n, 2)
+        rch, _, bch = im.split()
+        m["mean_r"] = round(sum(i * c for i, c in enumerate(rch.histogram(mask=mask.point(lambda v: 255 if v > 0 else 0) if mask is not None else None))) / n, 2)
+        m["mean_b"] = round(sum(i * c for i, c in enumerate(bch.histogram(mask=mask.point(lambda v: 255 if v > 0 else 0) if mask is not None else None))) / n, 2)
         m["contrast"] = round((pct(hl, 0.95) - pct(hl, 0.05)) / 255, 4)
         m["clip_frac"] = round(sum(hl[250:]) / n, 5)
         m["crush_frac"] = round(sum(hl[:13]) / n, 5)
@@ -182,18 +190,30 @@ def main():
             o = os.path.join(d, "medium_%s_%s.jpg" % (info["tod"], info["shot"]))
             if os.path.exists(o):
                 m["tier_delta"] = thumb_delta(os.path.join(d, name + ".jpg"), o)
+        rows.append({"name": name, "info": info, "metrics": m})
+    # day-cycle metrics: the same shot at another time of day (LOOK.md section 3: light follows the day cycle)
+    by = {(r["info"]["tier"], r["info"]["shot"], r["info"]["tod"]): r["metrics"] for r in rows}
+    for r in rows:
+        i, m = r["info"], r["metrics"]
+        ref = by.get((i["tier"], i["shot"], "midday"))
+        if not ref or "lum_mean" not in m or "lum_mean" not in ref or not ref["lum_mean"]:
+            continue
+        if i["tod"] == "night":
+            m["tod_lum_ratio"] = round(m["lum_mean"] / ref["lum_mean"], 4)
+        if i["tod"] in ("dawn", "dusk") and m.get("mean_b") and ref.get("mean_b"):
+            m["warmth_shift"] = round((m["mean_r"] / m["mean_b"]) / (ref["mean_r"] / ref["mean_b"]), 4)
+    for r in rows:
         checks = []
         for chk in targets["checks"]:
-            if not applies(chk, info):
+            if not applies(chk, r["info"]):
                 continue
-            v = get(m, chk["metric"])
+            v = get(r["metrics"], chk["metric"])
             if v is None:
                 checks.append(dict(chk, actual=None, verdict="N/A"))
             else:
                 checks.append(dict(chk, actual=v, verdict="PASS" if judge(chk["op"], v, chk["value"]) else "FAIL"))
-        row = {"name": name, "info": info, "metrics": m, "checks": checks}
-        json.dump(row, open(os.path.join(d, name + ".json"), "w"), indent=1, sort_keys=True)
-        rows.append(row)
+        r["checks"] = checks
+        json.dump(r, open(os.path.join(d, r["name"] + ".json"), "w"), indent=1, sort_keys=True)
     perf = {}
     for f in sorted(glob.glob(os.path.join(d, "times_*.json"))):
         t = json.load(open(f))
@@ -227,7 +247,7 @@ def write_md(d, summ, targets):
         bad = [(n, c) for n, c in cs if c["verdict"] == "FAIL"]
         fails_by_id[cid] = bad
         better_low = ch["op"] in ("<", "<=")
-        worst = (max if better_low else min)(cs, key=lambda x: x[1]["actual"] * (1 if better_low else -1)) if bad else None
+        worst = (max if better_low else min)(cs, key=lambda x: x[1]["actual"]) if bad else None
         L.append("| %s | %s | %s %s | %d | %s | %s |" % (cid, ch["failure"], ch["op"], ch["value"], len(cs), ("**%d**" % len(bad)) if bad else "0",
                  ("%s = %s" % (worst[0], worst[1]["actual"])) if worst else "-"))
     L += ["", "## Weak spots today (failing checks)", ""]
@@ -242,13 +262,13 @@ def write_md(d, summ, targets):
     L += ["| tier | median ms/frame | p95 ms | fps (median) | shots timed |", "|---|---|---|---|---|"]
     for t, p in summ["perf"].items():
         L.append("| %s | %s | %s | %s | %s |" % (t, p["frames_ms_median"], p["frames_ms_p95"], p["fps_median"], p["shots"]))
-    L += ["", "## Per shot", "", "| shot | sat p95 | sat>0.85 | contrast | clip | crush | hf noise | sharp p99 | tiling | dist contrast | tier delta | fails |", "|---|---|---|---|---|---|---|---|---|---|---|---|"]
+    L += ["", "## Per shot", "", "| shot | sat p95 | sat>0.85 | contrast | clip | crush | hf noise | sharp p99 | tiling | dist contrast | tier delta | night/day lum | warmth | fails |", "|---|---|---|---|---|---|---|---|---|---|---|---|---|---|"]
     f = lambda v: "-" if v is None else str(v)
     for r in rows:
         m = r["metrics"]
         nf = [c["id"] for c in r["checks"] if c["verdict"] == "FAIL"]
-        L.append("| %s | %s | %s | %s | %s | %s | %s | %s | %s | %s | %s | %s |" % (r["name"], f(m.get("sat_p95")), f(m.get("sat_over")), f(m.get("contrast")), f(m.get("clip_frac")),
-                 f(m.get("crush_frac")), f(m.get("hf_noise")), f(m.get("sharp_p99")), f(m.get("tiling")), f(m.get("dist_contrast")), f(m.get("tier_delta")), ("**" + ", ".join(nf) + "**") if nf else "-"))
+        L.append("| %s | %s | %s | %s | %s | %s | %s | %s | %s | %s | %s | %s | %s | %s |" % (r["name"], f(m.get("sat_p95")), f(m.get("sat_over")), f(m.get("contrast")), f(m.get("clip_frac")),
+                 f(m.get("crush_frac")), f(m.get("hf_noise")), f(m.get("sharp_p99")), f(m.get("tiling")), f(m.get("dist_contrast")), f(m.get("tier_delta")), f(m.get("tod_lum_ratio")), f(m.get("warmth_shift")), ("**" + ", ".join(nf) + "**") if nf else "-"))
     L += ["", "## Not measurable", ""] + ["- " + s for s in targets.get("not_measurable", [])]
     open(os.path.join(d, "summary.md"), "w").write("\n".join(L) + "\n")
 

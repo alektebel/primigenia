@@ -68,7 +68,7 @@ const SUN_COLOR = new THREE.Color(1.0, 0.812, 0.604);       // CREATURE_SUN_COLO
 const DUSK = new THREE.Color(1.0, 0.52, 0.30), MOON = new THREE.Color(0.55, 0.68, 1.0);
 const NIGHT_AMB = new THREE.Color(0.28, 0.36, 0.72), DAY_AMB = new THREE.Color(0.62, 0.75, 0.92);
 const SUN_ENERGY = 4.4, AMB_ENERGY = 1.5, EXPOSURE = 0.926;
-const TODS = { dawn: 0.30, midday: 1.0, dusk: 0.30, night: 0.0 };
+const TODS = { dawn: 0.50, midday: 1.0, dusk: 0.50, night: 0.0 };
 const SKY = { dawn: [0xe9b88a, 0x8aa6d6, 0x3a5aa0], midday: [0xf2d6b2, 0x86b1ec, 0x2a64c6], dusk: [0xf0985a, 0x7a7fc0, 0x2c3a78], night: [0x1a2038, 0x0c1226, 0x050812] };
 const smooth = (a, b, x) => { x = Math.min(1, Math.max(0, (x - a) / (b - a))); return x * x * (3 - 2 * x); };
 const mix = (a, b, t) => a + (b - a) * t;

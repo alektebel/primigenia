@@ -677,9 +677,10 @@ godot-look-score: godot
 	    --script res://game/tests/look_score_world.gd -- $(LOOK_DIR) $$q > $(LOOK_DIR)/.log_$$q.txt 2>&1 & pids="$$pids $$!"; sleep 5; done; \
 	LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 900 xvfb-run -a -s "-screen 0 1280x720x24" $(GODOT) --rendering-driver opengl3 --fixed-fps 30 --resolution 1280x720 --path godot \
 	  --script res://creature/tools/look_score_creatures.gd -- $(LOOK_DIR) > $(LOOK_DIR)/.log_creatures.txt 2>&1 & pids="$$pids $$!"; \
-	fail=0; for p in $$pids; do wait $$p || fail=1; done; rm -f $(LOOK_DIR)/.log_*.txt.bak; \
+	fail=0; for p in $$pids; do wait $$p || fail=1; done; \
 	test $$fail = 0 || { echo "look-score capture failed (logs in $(LOOK_DIR)/.log_*.txt)"; exit 1; }
 	python3 tools/look/score.py $(LOOK_DIR)
+	@rm -f $(LOOK_DIR)/.log_*.txt
 
 godot-cell2-evidence:
 	@mkdir -p docs/evidence/godot/cell2

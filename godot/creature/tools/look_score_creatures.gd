@@ -5,7 +5,7 @@ extends SceneTree
 ## Writes <out>/creature_<tod>_<id>_<view>.jpg
 const Creatures := preload("res://creature/tools/realism_creatures.gd")
 const DayNight := preload("res://game/island/day_night.gd")
-const LIGHT := {"dawn": 0.30, "midday": 1.0, "dusk": 0.30, "night": 0.0}
+const LIGHT := {"dawn": 0.50, "midday": 1.0, "dusk": 0.50, "night": 0.0}
 
 func _initialize() -> void:
 	_run.call_deferred()
@@ -42,7 +42,7 @@ func _run() -> void:
 				var img: Image = await stage.capture(self, 4)
 				img.convert(Image.FORMAT_RGB8)
 				var nm := "%s/creature_%s_%s_%s" % [out, tod, id, v]
-				img.save_jpg(nm + ".jpg", .92)
+				img.save_jpg(nm + ".jpg", .85)
 				# Mask: pixels that change when the creature is hidden (the preview floor and sky are not the game's, so metrics use the creature only).
 				c.visible = false
 				var bg: Image = await stage.capture(self, 2)
