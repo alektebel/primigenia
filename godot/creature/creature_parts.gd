@@ -347,11 +347,19 @@ func _mouth(kind: String, p: Dictionary, off: Vector3) -> Node3D:
 	var hr: float = .55 * p["size"]
 	var jaw := _group(g, "jaw")
 	g.set_meta("jaw", jaw)
-	var teeth := func(par: Node3D, zs: Array, xw: float, y: float, up: bool):
+	# Teeth stand on the rim of the jaw ellipsoid they belong to (base slightly inside it), not on a straight line:
+	# the mouth narrows towards the snout tip, so a fixed x would leave the front teeth outside the head.
+	var teeth := func(par: Node3D, zs: Array, c: Vector3, r: Vector3, up: bool):
 		for sx in [-1.0, 1.0]:
 			for i in zs.size():
+				var w := clampf((zs[i] - c.z) / r.z, -.85, .85)
+				var ring := sqrt(1.0 - w * w)
+				var a := .8 if up else .75
+				var x: float = sx * r.x * ring * cos(a) * .9
+				var y: float = c.y + (1.0 if up else -1.0) * r.y * ring * sin(a) * .9
+				var z: float = c.z + w * r.z
 				var t := _mesh(CreatureGeo.cone(hr * .055, hr * (.2 + .06 * (i % 2)), 8).translate(0, hr * .1, 0), "tooth", par)
-				t.position = Vector3(sx * xw * (1 - i * .07), y, zs[i])
+				t.position = Vector3(x, y, z)
 				set_euler(t, 0.0 if up else PI, 0, sx * (-.12 if up else .12))
 	if kind == "fauces":
 		_mesh(CreatureGeo.ell(hr * .62, hr * .44, hr * 1.3, 0, hr * .1, hr * .55).skinify(off, .3), "skin", g)
@@ -360,11 +368,11 @@ func _mouth(kind: String, p: Dictionary, off: Vector3) -> Node3D:
 		var zs := []
 		for z in [.35, .65, .95, 1.25, 1.5, 1.7]:
 			zs.append(z * hr)
-		teeth.call(g, zs, hr * .47, -hr * .12, false)
+		teeth.call(g, zs, Vector3(0, hr * .1, hr * .55), Vector3(hr * .62, hr * .44, hr * 1.3), false)
 		var zj := []
 		for z in zs:
 			zj.append(z + hr * .1)
-		teeth.call(jaw, zj, hr * .4, hr * .1, true)
+		teeth.call(jaw, zj, Vector3(0, 0, hr * .75), Vector3(hr * .52, hr * .2, hr * 1.15), true)
 		for sx in [-1, 1]:
 			_mesh(CreatureGeo.ell(hr * .05, hr * .035, hr * .07, sx * hr * .17, hr * .3, hr * 1.68), "dark", g)
 	elif kind == "romo":

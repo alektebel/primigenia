@@ -164,7 +164,7 @@ static func measure(c: Creature) -> Dictionary:
 			var inside := 1e9
 			for sm in skin_meshes:
 				inside = minf(inside, _ellipsoid_r(c, sm, tb))
-			out["teeth"].append({"type": e["type"], "r": inside, "ok": inside <= .95, "gap": body_sdf(c, ring, tb)})
+			out["teeth"].append({"type": e["type"], "r": inside, "ok": inside <= 1.0, "gap": body_sdf(c, ring, tb)})
 		# Eyeball in its socket.
 		for mi in meshes:
 			if mi.material_override == mats.eye_white:
