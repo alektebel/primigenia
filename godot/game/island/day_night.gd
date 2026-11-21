@@ -24,7 +24,7 @@ const SUNSET := 19.0
 const SUN_MAX_DEG := 38.0
 const MID_AZ := Vector3(-0.6259115, 0.0, -0.7268649)   # horizontal direction of the sun at noon (the old fixed sun's azimuth)
 # key colours: low sun (dawn, dusk), full day, night. sun_color is the multiplier on the world's linear colour.
-const K_SUN := {"low": Vector3(1.18, 0.86, 0.58), "day": Vector3(1.0, 1.0, 1.0), "night": Vector3(0.60, 0.73, 1.0)}
+const K_SUN := {"low": Vector3(1.18, 0.86, 0.58), "day": Vector3(1.0, 1.0, 1.0), "night": Vector3(0.68, 0.82, 1.05)}
 const K_ZENITH := {"low": Vector3(0.30, 0.33, 0.58), "day": Vector3(0.13, 0.39, 0.84), "night": Vector3(0.035, 0.055, 0.13)}   # low: slight off-Earth violet
 const K_MID := {"low": Vector3(0.62, 0.50, 0.66), "day": Vector3(0.52, 0.70, 0.93), "night": Vector3(0.05, 0.08, 0.17)}
 const K_HORIZON := {"low": Vector3(0.95, 0.72, 0.58), "day": Vector3(0.95, 0.84, 0.70), "night": Vector3(0.11, 0.15, 0.26)}

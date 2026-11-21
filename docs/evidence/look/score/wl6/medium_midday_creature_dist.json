@@ -1,0 +1,65 @@
+{
+ "checks": [
+  {
+   "actual": 0.00051,
+   "failure": "Too much bloom or blur",
+   "id": "bloom",
+   "metric": "clip_frac",
+   "op": "<",
+   "source": "starting value: at most 2% of pixels clipped to white (luminance >= 250); LOOK.md 7 'clipped-highlight fraction'",
+   "value": 0.02,
+   "verdict": "PASS"
+  },
+  {
+   "actual": 255,
+   "failure": "Too much bloom or blur",
+   "id": "blur",
+   "metric": "sharp_p99",
+   "op": ">=",
+   "source": "starting value: p99 of |Laplacian| >= 120 by day (dawn, midday, dusk); LOOK.md 7 sharpness",
+   "tods": [
+    "dawn",
+    "midday",
+    "dusk"
+   ],
+   "value": 120,
+   "verdict": "PASS"
+  },
+  {
+   "actual": 0.3555,
+   "failure": "Creature does not read at distance",
+   "id": "creature_readability",
+   "metric": "dist_contrast",
+   "op": ">=",
+   "shots": [
+    "creature_dist"
+   ],
+   "source": "starting value: |mean L of the creature - mean L of the ring around it|/255 >= 0.10 at strategic zoom; LOOK.md 5 'creature-vs-ground value contrast'",
+   "value": 0.1,
+   "verdict": "PASS"
+  }
+ ],
+ "info": {
+  "kind": "dist",
+  "shot": "creature_dist",
+  "tier": "medium",
+  "tod": "midday"
+ },
+ "metrics": {
+  "clip_frac": 0.00051,
+  "contrast": 0.698,
+  "crush_frac": 0.0,
+  "dist_contrast": 0.3555,
+  "hf_noise": 25.3848,
+  "lum_mean": 156.52,
+  "mask_frac": 0.00848,
+  "mean_b": 88.37,
+  "mean_r": 174.51,
+  "sat_mean": 0.5377,
+  "sat_over": 0.04042,
+  "sat_p95": 0.8275,
+  "sharp_p99": 255,
+  "spec_frac": 0.0032
+ },
+ "name": "medium_midday_creature_dist"
+}
