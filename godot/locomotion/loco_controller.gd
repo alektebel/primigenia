@@ -26,9 +26,10 @@ const CADENCE_MAX_F := 7.0      # stride frequency cap for quadrupeds, in units 
 ## (Spore gorilla knuckle-walk reference ~7 deg, docs/canon/MOTION.md section 1); scaled by gait below.
 const GAIT_ROLL := {&"quadruped": 0.15, &"horizontal_biped": 0.06, &"upright_biped": 0.05, &"multi": 0.04, &"monopod": 0.0, &"legless": 0.0}
 const GAIT_ROLL_K := {&"walk": 1.0, &"amble": 1.0, &"tripod": 1.0, &"ripple": 1.0, &"run": 0.7, &"trot": 0.8, &"hop": 0.5, &"gallop": 0.55}
+const TOUCHDOWN_REACH := 0.92  # a foot lands within this share of its leg length from where the hip will be (a late touchdown overstretches the leg: heel-off pop = slip)
 const TALL := 1.0               # share of the pendulum rise a bouncing gait still takes (1 = straight stance legs in any gait)
 const ERECT_FLOOR := 1.0        # sprawled legs vault like straight ones (their lateral offset is part of the leg length)
-const REACH_K_QUAD := 0.40      # quadrupeds: stance legs stay within this share of their length from vertical (hips ride high, legs ~0.9+ of full length)
+const REACH_K_QUAD := 0.34      # quadrupeds: stance legs stay within this share of their length from vertical (hips ride high, legs ~0.9+ of full length)
 const REACH_K_OTHER := 0.6
 const CROUCH_MAX_QUAD := 0.03   # quadrupeds hardly crouch (size rule, docs/canon/MOTION.md section 2): the stride is clipped instead
 
@@ -375,7 +376,7 @@ func _sub(h: float, p: Vector3, yaw: float, v: Vector3, settle: bool) -> void:
 			var target: Vector3 = p + v * t_mid + Basis(Vector3.UP, yaw_p) * home_l
 			# keep the touchdown inside the leg's reach from where the hip will be
 			var hip_td: Vector3 = hip_now + v * t_td
-			var lr: float = 0.97 * m.length
+			var lr: float = TOUCHDOWN_REACH * m.length
 			# hip height at touchdown: rest height less the crouch, less the
 			# pendulum sag of a straight leg half a step from vertical
 			var lstr: float = STRAIGHT * m.length
@@ -630,12 +631,27 @@ func _sub(h: float, p: Vector3, yaw: float, v: Vector3, settle: bool) -> void:
 		_hip_loc[i] = Vector3(_st_x[ms.station], _flex_y(zs), zs) + dloc
 	# --- 14. legs must reach: pull the body down, lift a foot that cannot
 	var drop := 0.0
+	# first the body drop a flat foot needs, so the heel is only raised for what the drop cannot fix (a heel raise on a
+	# foot whose ankle is higher than its toe is long pops the foot 60 deg at touchdown: foot slip)
+	var drop0 := 0.0
+	for i in range(_legs.size()):
+		var l0: Dictionary = _legs[i]
+		if l0.swing:
+			continue
+		var m0: Dictionary = morph.legs[i]
+		var hw0: Vector3 = root * (_hip_loc[i] as Vector3)
+		var lmax0: float = 0.995 * m0.length
+		var a0: Vector3 = _ankle_at(l0, m0, 0.0)
+		var dh0 := Vector2(hw0.x - a0.x, hw0.z - a0.z).length()
+		if dh0 * dh0 + (hw0.y - a0.y) * (hw0.y - a0.y) > lmax0 * lmax0:
+			drop0 = max(drop0, min((hw0.y - a0.y) - sqrt(max(lmax0 * lmax0 - dh0 * dh0, 0.0)), 0.6 * _ref_h))
+	var drop_pre: float = max(drop0, _drop * exp(-h / 0.12))
 	for i in range(_legs.size()):
 		var l: Dictionary = _legs[i]
 		if l.swing:
 			continue
 		var m: Dictionary = morph.legs[i]
-		var hw: Vector3 = root * (_hip_loc[i] as Vector3)
+		var hw: Vector3 = root * (_hip_loc[i] as Vector3) - Vector3.UP * drop_pre
 		var lmax: float = 0.995 * m.length
 		# heel-off: raise the heel just as far as the leg needs to reach the ball
 		var phi_need := 0.0
