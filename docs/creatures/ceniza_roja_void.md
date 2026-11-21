@@ -2,7 +2,7 @@
 
 # Ceniza Roja
 
-**Status: DRAFT** · world: [void](../lore/worlds/void.md) · kind: new · stage: space · id: `ceniza_roja`
+**Status: DRAFT** · world: [void](../lore/worlds/void.md) · kind: new · stage: space · id: `ceniza_roja_void`
 
 ## Niche
 
@@ -21,12 +21,12 @@ Filamentous mat of ether-linked lipids embedded with melanin-like pigment grains
 
 | Chain | Trait | Links | Roots (planet facts) | Skill | Role | Effect | Weakness |
 |---|---|---|---|---|---|---|---|
-| ceniza_roja.c1 | Melanin-rich armor grains shield DNA | Prevents high-LET ionization tracks from shattering helices ← Unshielded cosmic rays deliver lethal doses even in vacuum ← F8 | **F8** Unshielded surface radiation dose ~0.8 Sv/year from high-LET cosmic rays.; **F15** GCR radiolysis of surface ice continuously generates H₂, H₂O₂, and solvated electrons. | Radiolytic Shielding (`ceniza_roja.radiolytic_shielding`) | Passive | Reduces DNA damage accumulation by 60% while exposed to GCR flux; allows longer drift times. | Melanin saturation. After ~500 years of unshielded exposure, accumulated damage outpaces repair; lineage must land in a shielded niche or risk extinction. |
-| ceniza_roja.c2 | Aerogel-like silica-ice lattice | Allows ejection by tiny outgassing torques and microgravity ← Surface grains escape at velocities near thermal kinetic energy ← F5 | **F5** Surface gravity ~0.00013 g (0.0013 m/s²).; **F6** Chaotic tumbling rotation with no stable axis or predictable seasons. | Ballistic Seed (`ceniza_roja.ballistic_seed`) | Basic | Eject propagule to drift toward target world. Success chance +25% if target is within 0.5 ly and velocity matches relative drift. | Requires trigger. Propagules only eject during chaotic tumbling events or transient outgassing; player must wait for spin state changes. |
-| ceniza_roja.c3 | Ballistic chemical pheromone bursts | Signals safe landing zones and colony aggregation in straight lines ← No turbulence or plume formation in hard vacuum ← F11 | **F11** Molecular diffusion is ballistic; chemical signals travel in straight lines until intercepted. | Direct Signal (`ceniza_roja.direct_signal`) | Social | Place chemical beacon; allied Ceniza units within line-of-sight instantly migrate to beacon with +40% speed. | Line-of-sight only. Signal blocks if an obstacle (asteroid, moon) intercepts the straight path. |
-| ceniza_roja.c4 | Trehalose glass tun formation | Suspends metabolism for millennia during energy gaps ← Radiolytic fuels and solvents are scarce and patchy ← F3 | **F19** Cryptobiotic stasis (tun formation) allows metabolic suspension for centuries during energy or solvent gaps.; **F3** Stellar flybys and molecular cloud passages occur on staggered timescales. | Cryptobiotic Stasis (`ceniza_roja.cryptobiotic_stasis`) | Defence | Enter tun state. Immune to radiation and cold damage for 10,000 years; metabolism halted. Recovery costs 20% biomass. | Slow recovery. Takes 50 years of radiolytic recharge to restore full biomass after waking; vulnerable during this period. |
+| ceniza_roja_void.c1 | Melanin-rich armor grains shield DNA | Prevents high-LET ionization tracks from shattering helices ← Unshielded cosmic rays deliver lethal doses even in vacuum ← F8 | **F8** Unshielded surface radiation dose ~0.8 Sv/year from high-LET cosmic rays.; **F15** GCR radiolysis of surface ice continuously generates H₂, H₂O₂, and solvated electrons. | Radiolytic Shielding (`ceniza_roja_void.radiolytic_shielding`) | Passive | Reduces DNA damage accumulation by 60% while exposed to GCR flux; allows longer drift times. | Melanin saturation. After ~500 years of unshielded exposure, accumulated damage outpaces repair; lineage must land in a shielded niche or risk extinction. |
+| ceniza_roja_void.c2 | Aerogel-like silica-ice lattice | Allows ejection by tiny outgassing torques and microgravity ← Surface grains escape at velocities near thermal kinetic energy ← F5 | **F5** Surface gravity ~0.00013 g (0.0013 m/s²).; **F6** Chaotic tumbling rotation with no stable axis or predictable seasons. | Ballistic Seed (`ceniza_roja_void.ballistic_seed`) | Basic | Eject propagule to drift toward target world. Success chance +25% if target is within 0.5 ly and velocity matches relative drift. | Requires trigger. Propagules only eject during chaotic tumbling events or transient outgassing; player must wait for spin state changes. |
+| ceniza_roja_void.c3 | Ballistic chemical pheromone bursts | Signals safe landing zones and colony aggregation in straight lines ← No turbulence or plume formation in hard vacuum ← F11 | **F11** Molecular diffusion is ballistic; chemical signals travel in straight lines until intercepted. | Direct Signal (`ceniza_roja_void.direct_signal`) | Social | Place chemical beacon; allied Ceniza units within line-of-sight instantly migrate to beacon with +40% speed. | Line-of-sight only. Signal blocks if an obstacle (asteroid, moon) intercepts the straight path. |
+| ceniza_roja_void.c4 | Trehalose glass tun formation | Suspends metabolism for millennia during energy gaps ← Radiolytic fuels and solvents are scarce and patchy ← F3 | **F19** Cryptobiotic stasis (tun formation) allows metabolic suspension for centuries during energy or solvent gaps.; **F3** Stellar flybys and molecular cloud passages occur on staggered timescales. | Cryptobiotic Stasis (`ceniza_roja_void.cryptobiotic_stasis`) | Defence | Enter tun state. Immune to radiation and cold damage for 10,000 years; metabolism halted. Recovery costs 20% biomass. | Slow recovery. Takes 50 years of radiolytic recharge to restore full biomass after waking; vulnerable during this period. |
 
-### ceniza_roja.c1: Melanin-rich armor grains shield DNA
+### ceniza_roja_void.c1: Melanin-rich armor grains shield DNA
 
 Trait ← Prevents high-LET ionization tracks from shattering helices ← Unshielded cosmic rays deliver lethal doses even in vacuum ← F8 ← F8, F15
 
@@ -44,7 +44,7 @@ Trait ← Prevents high-LET ionization tracks from shattering helices ← Unshie
   - Fix: Reframe as strong reduction of secondary (radiolytic) damage and UV, not linear-energy-transfer track dose; pair with shallow burial in the ice veneer or symbiotic shielding from Coraza Peregrina; cap unshielded drift before saturation (~0.8 Sv/y from F8) to match the 500-year weakness.
 - **Chain provenance:** council run `autoloop-2026-11-19`; by naturalist/qwen
 
-### ceniza_roja.c2: Aerogel-like silica-ice lattice
+### ceniza_roja_void.c2: Aerogel-like silica-ice lattice
 
 Trait ← Allows ejection by tiny outgassing torques and microgravity ← Surface grains escape at velocities near thermal kinetic energy ← F5 ← F5, F6
 
@@ -62,7 +62,7 @@ Trait ← Allows ejection by tiny outgassing torques and microgravity ← Surfac
   - Fix: Treat Ballistic Seed as same-nucleus or same-swarm ejection (regolith across fractures, between tumbling faces); reserve interstellar success bonuses to the Coraza symbiosis or rare flyby outburst windows; drop or soften ly-scale targeting unless velocity and encounter geometry are explicit.
 - **Chain provenance:** council run `autoloop-2026-11-19`; by naturalist/qwen
 
-### ceniza_roja.c3: Ballistic chemical pheromone bursts
+### ceniza_roja_void.c3: Ballistic chemical pheromone bursts
 
 Trait ← Signals safe landing zones and colony aggregation in straight lines ← No turbulence or plume formation in hard vacuum ← F11 ← F11
 
@@ -80,7 +80,7 @@ Trait ← Signals safe landing zones and colony aggregation in straight lines �
   - Fix: Limit Direct Signal to (1) shallow fractures with adsorbed/brine films during flyby or landing activation, or (2) co-released sublimates that form a short-lived, confined vapor sheet; allies respond by tun rupture and passive roll/detachment along the flux gradient, not sprinting in vacuum. Keep line-of-sight blocking as stated.
 - **Chain provenance:** council run `autoloop-2026-11-19`; by naturalist/qwen
 
-### ceniza_roja.c4: Trehalose glass tun formation
+### ceniza_roja_void.c4: Trehalose glass tun formation
 
 Trait ← Suspends metabolism for millennia during energy gaps ← Radiolytic fuels and solvents are scarce and patchy ← F3 ← F19, F3
 
@@ -125,3 +125,4 @@ council run `autoloop-2026-11-19`; by naturalist/qwen
 ## Changelog
 
 - 2026-11-20 import_got: imported from council run autoloop-2026-11-19
+- 2026-11-21 trophic-web task: id renamed ceniza_roja -> ceniza_roja_void: it collided with the Primigenia flora ceniza_roja (duplicate chain ids failed validate)

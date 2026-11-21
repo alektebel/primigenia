@@ -43,6 +43,8 @@ SLOTS = [
  ("S23", "parasite", "parasitoid", ["forest"], "parasitoid of leaf insects", ["legs6"], ["insect"], ["day"]),
  ("S24", "parasite", "parasite", ["shallows"], "gill and skin parasite of fish and jellies", ["legs8plus"], ["insect", "small"], ["night"]),
  ("S25", "tertiary_consumer", "cleaner", ["shallows"], "cleaner of the sea apex and other fish: mutualist", ["legs0"], ["small"], ["day"]),
+ ("S27", "decomposer", "detritivore", ["highlands"], "eats winter-killed rosette litter and frozen carcasses on cold slopes", ["legs6", "legs0"], ["insect"], ["day"]),
+ ("S28", "scavenger", "scavenger", ["shallows", "caves"], "carcass-sink scavenger of the shelf floor and the sunken cave (carcasses sink or drift, F20)", ["legs8plus"], ["small"], ["night"]),
  ("S26", "secondary_consumer", "cleaner", ["meadow", "shore"], "bird that cleans parasites off big animals: mutualist", ["legs2"], ["small"], ["day"]),
 ]
 # plant slots (producers, decomposers, one parasite)

@@ -259,6 +259,6 @@
 
 | Creature | Kind | Status | Chains | Verdicts |
 |---|---|---|---|---|
-| [Ceniza Roja](ceniza_roja.md) | new | draft | 4 | 3 fixable, 1 plausible |
+| [Ceniza Roja](ceniza_roja_void.md) | new | draft | 4 | 3 fixable, 1 plausible |
 | [Polvorín](polvorin.md) | new | draft | 4 | 2 fixable, 2 plausible |
 | [Velafrío](velafrio.md) | new | draft | 4 | 4 fixable |

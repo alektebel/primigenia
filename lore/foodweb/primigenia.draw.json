@@ -405,6 +405,35 @@
    "n_rejected": 3
   },
   {
+   "slot": "S27",
+   "level": "decomposer",
+   "role": "detritivore",
+   "habitats": [
+    "highlands"
+   ],
+   "hint": "eats winter-killed rosette litter and frozen carcasses on cold slopes",
+   "plan": "legs0",
+   "size": "insect",
+   "activity": "day",
+   "rejected": [],
+   "n_rejected": 0
+  },
+  {
+   "slot": "S28",
+   "level": "scavenger",
+   "role": "scavenger",
+   "habitats": [
+    "shallows",
+    "caves"
+   ],
+   "hint": "carcass-sink scavenger of the shelf floor and the sunken cave (carcasses sink or drift, F20)",
+   "plan": "legs8plus",
+   "size": "small",
+   "activity": "night",
+   "rejected": [],
+   "n_rejected": 0
+  },
+  {
    "slot": "S26",
    "level": "secondary_consumer",
    "role": "cleaner",
