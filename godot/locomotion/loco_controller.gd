@@ -20,6 +20,13 @@ const BANK_MAX := {&"quadruped": 0.20, &"multi": 0.20, &"horizontal_biped": 0.30
 const GAIT_DWELL := 0.3         # s: shortest time between gait changes
 const FORCE_GAP := 0.0        # s: at most one forced lift-off per gap
 const STRAIGHT := 0.985         # longest a leg is allowed to get, as a share of its length
+const PLANE_CADENCE_K := 3.0    # the hip plane spring is at least this many times the stride frequency
+const CADENCE_MAX_F := 7.0      # stride frequency cap for quadrupeds, in units of the natural frequency 0.25 sqrt(g/h)
+const TALL := 1.0               # share of the pendulum rise a bouncing gait still takes (1 = straight stance legs in any gait)
+const ERECT_FLOOR := 1.0        # sprawled legs vault like straight ones (their lateral offset is part of the leg length)
+const REACH_K_QUAD := 0.40      # quadrupeds: stance legs stay within this share of their length from vertical (hips ride high, legs ~0.9+ of full length)
+const REACH_K_OTHER := 0.6
+const CROUCH_MAX_QUAD := 0.03   # quadrupeds hardly crouch (size rule, docs/canon/MOTION.md section 2): the stride is clipped instead
 
 signal footfall(leg: int, position: Vector3)
 signal liftoff(leg: int, position: Vector3)
@@ -261,7 +268,7 @@ func _sub(h: float, p: Vector3, yaw: float, v: Vector3, settle: bool) -> void:
 	# so only the leg angle limits the stride. A bouncing gait needs the hips
 	# low enough for a straight leg to reach touchdown and lift-off: crouch,
 	# then clip the stride to what the legs allow.
-	var crouch_max := 0.18
+	var crouch_max := CROUCH_MAX_QUAD if morph.plan == &"quadruped" else 0.18
 	var crouch_t := 0.0
 	_y_amp = max(abs(_y.x), _y_amp * exp(-h * max(cadence, f_nat_c)))
 	for i in range(_legs.size()):
@@ -270,7 +277,8 @@ func _sub(h: float, p: Vector3, yaw: float, v: Vector3, settle: bool) -> void:
 		var lr_e: float = lr + 0.6 * m.toe     # toe-off adds reach
 		var off_x: float = abs(m.home.x - m.hip.x)     # sprawl
 		var off: float = abs(m.home.z - m.hip.z)       # feet carried ahead of or behind the hip
-		var d_lim: float = sqrt(max(0.36 * lr * lr - off_x * off_x, 0.0)) - off
+		var reach_k: float = REACH_K_QUAD if morph.plan == &"quadruped" else REACH_K_OTHER
+		var d_lim: float = sqrt(max(reach_k * reach_k * lr * lr - off_x * off_x, 0.0)) - off
 		var d_half: float = 0.5 * duty_t * stride_t / 0.92
 		if d_half > d_lim:
 			stride_t = max(2.0 * 0.92 * d_lim, 0.1 * _ref_h) / duty_t
@@ -284,6 +292,8 @@ func _sub(h: float, p: Vector3, yaw: float, v: Vector3, settle: bool) -> void:
 				stride_t = max(2.0 * 0.92 * (d_max - off), 0.1 * _ref_h) / duty_t
 			need = crouch_max
 		crouch_t = max(crouch_t, need)
+	if morph.plan == &"quadruped":
+		stride_t = maxf(stride_t, (_speed_f / (CADENCE_MAX_F * f_nat_c)))      # never faster than a few natural frequencies: a frantic scurry is worse than a bent leg
 	if pivoting:
 		crouch_t = min(crouch_t + 0.05, crouch_max)
 	var f_nat := f_nat_c
@@ -467,12 +477,12 @@ func _sub(h: float, p: Vector3, yaw: float, v: Vector3, settle: bool) -> void:
 				var hn: Vector3 = p + basis * Vector3(_hip_loc[i].x, 0.0, _hip_loc[i].z) + left * _sx.x + fwd * _sz.x
 				var lp: float = STRAIGHT * m.length
 				var d: float = min(Vector2(l.foot.x - hn.x, l.foot.z - hn.z).length(), 0.95 * lp)
-				var erect: float = 1.0 - clamp(abs(m.home.x - m.hip.x) / (0.5 * lp), 0.0, 1.0)
+				var erect: float = lerpf(1.0 - clamp(abs(m.home.x - m.hip.x) / (0.5 * lp), 0.0, 1.0), 1.0, ERECT_FLOOR)
 				cap_e = sqrt(lp * lp - d * d) - m.rest_h
 				e = l.foot.y - m.ankle
 				caps[i] = e + cap_e
 				scs[i] = (1.0 - bounce) * erect + bounce
-				walk_w = (1.0 - bounce) * vault_gain * erect
+				walk_w = lerpf(1.0 - bounce, 1.0, TALL) * vault_gain * erect
 				w += m.share * l.load * nl
 				var wl: float = m.share * l.load
 				cx += at.x * wl
@@ -506,9 +516,10 @@ func _sub(h: float, p: Vector3, yaw: float, v: Vector3, settle: bool) -> void:
 	if settle:
 		_a = Vector2(a_t, 0.0); _b = Vector2(b_t, 0.0); _c = Vector2(c_t, 0.0)
 	else:
-		_a = _spring(_a, a_t, _omega, _zeta, h)
-		_b = _spring(_b, b_t, _omega, _zeta, h)
-		_c = _spring(_c, c_t, _omega * 0.7, _zeta, h)
+		var w_pl: float = maxf(_omega, PLANE_CADENCE_K * TAU * f_eff) if morph.plan == &"quadruped" else _omega       # the hips must follow the legs' vault at this cadence
+		_a = _spring(_a, a_t, w_pl, _zeta, h)
+		_b = _spring(_b, b_t, w_pl, _zeta, h)
+		_c = _spring(_c, c_t, w_pl * 0.7, _zeta, h)
 	var a_o: float = _a.x
 	var b_o: float = _b.x
 	var c_o: float = _c.x
