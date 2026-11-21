@@ -21,6 +21,8 @@ Reference clips: gorilla knuckle-walk (tracker X3, owner's Downloads) and Spore 
 |---|---|---|---|
 | `art/skin-v1` | cpore-wt/skin-v1 | Sonnet subagent: creature skin v1 (plastic shine, night readability, dawn/dusk warmth; lab → Godot), brief `docs/briefs/skin-v1.md`, started 2026-11-21 | Review compare vs look baseline; merge under A33 if targets pass and nothing regresses |
 | `art/creature-fit` | cpore-wt/creature-fit | Sonnet subagent: parts fit (floating teeth, cartoon eye, ball-joint limbs, pattern scale, horn), part-fit check first, brief `docs/briefs/creature-fit.md` | Review, merge under A33; then render 3–4 starter designs for the owner |
+| `anim/limp` | cpore-wt/limp | Codex sol: why the hero limps after L1 (bob per stride vs per step, duty 0.41, broken footfall diagram), limp index metric; brief `docs/briefs/limp.md`; cannot commit | Sonnet/Claude commits, review compare vs ffea2c1 |
+| `integrate/wip-2026-11-21` | cpore-wt/integrate | Sonnet integrator: commits stranded WIP, merges moves → first-quest → species-v8 → cave → 17 older branches, tests after each (owner: "merge all the WIP") | Review `docs/INTEGRATION-2026-11-21.md`, fast-forward main |
 | `c2/moves-recipes` | cpore-wt/c2-moves | WIP b0ed502, main merged, clean | Run godot play, flight, devtools, bridge, menu, moves-recipes, studio; finish MOVES-RECIPES-REPORT table; merge |
 | `c2/first-quest` | cpore-wt/first-quest | WIP ab2cefd, e2e green (chain ends tick 2904), clean | After moves merges: renumber DUG/MOVE_USED after 29, snapshot 10; flame evidence; results table |
 | `c2/species-v8` | cpore-wt/species-v8 | Codex, 34 dirty files | Sonnet commits + integrates; events after first-quest |
