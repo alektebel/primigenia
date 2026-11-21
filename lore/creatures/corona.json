@@ -12,7 +12,9 @@
     "habitat": "Sunken lava tube cave (tidal zone)",
     "diet": "Drifting carcass particles, zooplankton, small benthic invertebrates",
     "active": "Tidal (feeds on flood, rests on ebb/slack)",
-    "predators": []
+    "predators": [],
+    "trophic": "primary_consumer",
+    "role": "filter_feeder"
   },
   "body": "Low-slung radial disc with six frilled arms, ciliated sensory margins, thick protective mucus coat",
   "chains": [

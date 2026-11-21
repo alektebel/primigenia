@@ -15,15 +15,15 @@ CREATURES = {
  "cuarteta": ("secondary_consumer", "small_predator", ["shallows"]),
  "brujula": ("secondary_consumer", "small_predator", ["shore", "shallows"]),
  "acechalunas": ("secondary_consumer", "small_predator", ["highlands", "forest", "caves"]),
- "merodeador": ("tertiary_consumer", "mid_predator", ["forest", "highlands", "caves"]),
- "garfio": ("tertiary_consumer", "mid_predator", ["meadow", "spring", "shore"]),
- "espinodo": ("tertiary_consumer", "mid_predator", ["highlands"]),
+ "merodeador": ("tertiary_consumer", "mid_predator", ["forest", "highlands", "caves", "meadow"]),
+ "garfio": ("tertiary_consumer", "mid_predator", ["meadow", "spring", "shore", "highlands"]),
+ "espinodo": ("tertiary_consumer", "mid_predator", ["highlands", "meadow"]),
  "el_resoplido": ("scavenger", "scavenger", ["vents", "highlands", "caves"]),
- "babosa": ("decomposer", "detritivore", ["forest", "caves", "vents"]),
+ "babosa": ("decomposer", "detritivore", ["forest", "caves", "vents", "highlands", "meadow"]),
  "ecolumbre": ("omnivore", "omnivore", ["caves"]),
  "albinos": ("omnivore", "omnivore", ["forest", "caves"]),
  "alula": ("omnivore", "seed_disperser", ["forest", "highlands"]),
- "player_lineage": ("omnivore", "omnivore", ["meadow", "forest", "highlands", "shore"]),
+ "player_lineage": ("omnivore", "omnivore", ["meadow", "forest", "highlands", "shore", "spring"]),
 }
 # plants: id: (level, role, habitats, defended)
 FLORA = {
@@ -48,3 +48,27 @@ FLORA = {
  "velilla": ("producer", "photosynthetic", ["meadow", "spring"], False),
  "vetirroja": ("producer", "photosynthetic", ["meadow"], True),
 }
+
+RESOURCES = ["carrion", "detritus", "dung"]
+# who eats what (existing species), from niche.diet / gameplay.food_for; new species get their edges from the ecologist seat (foodweb.py edges)
+EATS = {
+ "rondo": ["paja_dulce", "perlilla", "madre_de_agua", "soga_de_dosel", "grama_de_ceniza", "trenza_de_ribera"],
+ "zanco": ["grama_de_ceniza"],
+ "coloso": ["madre_de_agua", "soga_de_dosel"],
+ "zancuda": ["cinta_de_marea", "paja_dulce"],
+ "sosa": ["costra_de_azufre"],
+ "corona": ["detritus"], "sifon": ["detritus"], "cuarteta": ["carrion"], "brujula": ["carrion"],
+ "acechalunas": ["ecolumbre", "carrion"],
+ "merodeador": ["rondo", "zanco", "carrion"],
+ "garfio": ["rondo", "zanco", "zancuda", "albinos", "babosa", "carrion"],
+ "espinodo": ["rondo", "zanco", "zancuda", "albinos", "babosa", "acechalunas", "carrion"],
+ "el_resoplido": ["carrion", "costra_de_azufre"],
+ "babosa": ["detritus", "pan_de_humus", "musgo_faro", "pluma_de_sombra", "grama_de_ceniza", "vetirroja", "ceniza_roja"],
+ "ecolumbre": ["musgo_faro", "pan_de_humus"],
+ "albinos": ["nieblon", "soga_de_dosel", "carrion"],
+ "alula": ["nieblon", "soga_de_dosel"],
+ "player_lineage": ["perlilla", "nieblon", "soga_de_dosel", "velilla", "paja_dulce", "madre_de_agua", "trenza_de_ribera", "carrion"],
+ "pan_de_humus": ["detritus"],
+ "lengua_de_lava": [],
+}
+NO_PREDATOR = {"coloso": "island giant (F27): adults have no predator; the carcass goes to scavengers", "player_lineage": "the player's lineage: not a prey species in the web"}

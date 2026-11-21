@@ -22,7 +22,9 @@
       "Soft fungi",
       "Mineral licks",
       "Alkaloid shoots"
-    ]
+    ],
+    "trophic": "decomposer",
+    "role": "detritivore"
   },
   "body": "A broad ventral foot and thick mucus coat minimize friction on rough basalt and trap moisture in thin mountain air. Coiling into a bitter sphere seals in water and deters predators with the same alkaloids that color high-altitude leaves.",
   "chains": [

@@ -23,7 +23,9 @@
       "Fruit",
       "Carrion",
       "Insects"
-    ]
+    ],
+    "trophic": "omnivore",
+    "role": "omnivore"
   },
   "body": "A reinforced skeletal lattice and broad wing membranes exploit dense air for cheap gliding and controlled landings, while high aerobic capacity fuels sustained flight and manipulative forelimbs. Shared glycan markers enable flexible tissue integration between cousins, allowing rapid dietary shifts and detox adaptation.",
   "chains": [

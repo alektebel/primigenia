@@ -12,7 +12,9 @@
     "habitat": "Alpine slopes, Rock spire, Giant tree canopy, Sea arches",
     "diet": "Fruit, small prey, insects",
     "active": "Diurnal",
-    "predators": []
+    "predators": [],
+    "trophic": "omnivore",
+    "role": "seed_disperser"
   },
   "body": "Merodeador (winged adaptation: patagium, hooked talons)",
   "chains": [

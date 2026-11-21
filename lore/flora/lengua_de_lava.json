@@ -215,5 +215,9 @@
   "secrets": [
     "Frequent acechalunas visits can empty apparently productive traps.",
     "A surviving contracted crown can mark a seep temporarily withdrawn below the rock."
-  ]
+  ],
+  "niche": {
+    "trophic": "producer",
+    "role": "mixotroph"
+  }
 }

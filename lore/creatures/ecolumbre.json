@@ -16,7 +16,9 @@
     "predators": [
       "nocturnal creature"
     ],
-    "prey": []
+    "prey": [],
+    "trophic": "omnivore",
+    "role": "omnivore"
   },
   "body": "small and light, dark back, glowing belly patches (ventral photophores), large ear-like click resonators, short legs for tube floors",
   "temperament": "timid, flock-living, curious about light",

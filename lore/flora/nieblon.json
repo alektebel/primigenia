@@ -229,5 +229,9 @@
     "Damp litter can reveal an unseen overhanging crown.",
     "Fruit visitors identify accessible forest margins.",
     "Large buttresses reveal shallow wet rooting ground vulnerable after storms."
-  ]
+  ],
+  "niche": {
+    "trophic": "producer",
+    "role": "photosynthetic"
+  }
 }

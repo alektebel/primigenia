@@ -264,5 +264,9 @@
   "secrets": [
     "A grey dormant tuft may retain a living crown.",
     "Sheltered older tussocks can nurse seedlings where exposed neighbouring cracks remain bare."
-  ]
+  ],
+  "niche": {
+    "trophic": "producer",
+    "role": "photosynthetic"
+  }
 }

@@ -227,5 +227,9 @@
   "secrets": [
     "A continuous fern bed can hide a narrow low passage used by merodeador.",
     "Fresh bruising is easiest to detect before wind or waterfall turbulence disperses the scent."
-  ]
+  ],
+  "niche": {
+    "trophic": "producer",
+    "role": "photosynthetic"
+  }
 }

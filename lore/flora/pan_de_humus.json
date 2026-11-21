@@ -223,5 +223,9 @@
   "secrets": [
     "A fresh deep colony points toward an organic delivery route.",
     "Splash-zone cushions reveal debris accumulation above prolonged tidal flooding."
-  ]
+  ],
+  "niche": {
+    "trophic": "decomposer",
+    "role": "fungal_decomposer"
+  }
 }

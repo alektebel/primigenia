@@ -102,8 +102,25 @@ def flora_main():
     print("flora done")
 
 
+def base_web():
+    """Existing 19 creatures + 20 plants -> members of lore/foodweb/primigenia.json (new members are added by foodweb.py merge)."""
+    from foodweb_classify import EATS, NO_PREDATOR
+    p = os.path.join(ROOT, "lore", "foodweb", "primigenia.json")
+    web = load(p) if os.path.exists(p) else {"schema": "cpore.foodweb/1", "world": "primigenia", "members": {}}
+    web.update({"date": "2026-11-21", "habitats": H, "main_habitats": ["meadow", "forest", "shore", "shallows", "caves", "spring", "highlands"], "resources": ["carrion", "detritus", "dung"],
+                "seed": DRAW["seed"], "no_predator": NO_PREDATOR})
+    for i, (lv, role, hb) in EXC.items():
+        web["members"].setdefault(i, {}).update({"kind": "creature", "level": lv, "role": role, "habitats": hb, "eats": EATS.get(i, []), "new": False})
+    for i, (lv, role, hb, df) in EXF.items():
+        m = web["members"].setdefault(i, {}); m.update({"kind": "plant", "level": lv, "role": role, "habitats": hb, "eats": EATS.get(i, []), "new": False})
+        if df: m["defended"] = True
+    from lorelib import dump
+    dump(web, p); print("base web:", len(web["members"]), "members")
+
+
 if __name__ == "__main__":
     cmd = sys.argv[1] if len(sys.argv) > 1 else ""
     if cmd == "ctx": build_ctx()
+    elif cmd == "base": base_web()
     elif cmd == "flora": flora_main()
     else: sys.exit(__doc__)

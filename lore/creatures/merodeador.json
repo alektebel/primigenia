@@ -23,7 +23,9 @@
       "Insects",
       "Carrion",
       "Eggs"
-    ]
+    ],
+    "trophic": "tertiary_consumer",
+    "role": "mid_predator"
   },
   "body": "Belly-low prowler with silent, padded feet that dampen sound in the dense atmosphere and a flexible spine that allows it to freeze in lulls and move synchronously with the wind gusts. Its leeward ambush strategy exploits the 1.6× drag and fog to mask its approach.",
   "chains": [

@@ -12,7 +12,9 @@
     "habitat": "Volcano slopes, Fumaroles, Hidden cave",
     "diet": "Sulfur, kaolin clay, arsenic, mercury, salt",
     "active": "Nocturnal and crepuscular",
-    "predators": []
+    "predators": [],
+    "trophic": "primary_consumer",
+    "role": "algae_scraper"
   },
   "body": "Babosa (crawling slug-like with thick keratin)",
   "chains": [

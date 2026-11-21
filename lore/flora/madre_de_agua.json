@@ -227,5 +227,9 @@
   "secrets": [
     "Fruit-fall patches also provide ambush cover for garfio.",
     "A secure vine route reveals the spring outflow without implying the tree created it."
-  ]
+  ],
+  "niche": {
+    "trophic": "producer",
+    "role": "photosynthetic"
+  }
 }

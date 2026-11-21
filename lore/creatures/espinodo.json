@@ -21,7 +21,9 @@
       "Rondo",
       "Zanco (young/small)",
       "Carrion"
-    ]
+    ],
+    "trophic": "tertiary_consumer",
+    "role": "mid_predator"
   },
   "body": "Armoured predator with loosely socketed flank spines and keeled dermal plates that interlock like chainmail. They deliberately consume basalt grit and scavenged bone to grind tough prey and detoxify alkaloids, while their sit-wait ambush strategy exploits the dense fog that blinds visual predators.",
   "chains": [

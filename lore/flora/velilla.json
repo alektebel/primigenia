@@ -226,5 +226,9 @@
   ],
   "secrets": [
     "Adjacent hollows can flower weeks apart when their soils retain water differently."
-  ]
+  ],
+  "niche": {
+    "trophic": "producer",
+    "role": "photosynthetic"
+  }
 }
