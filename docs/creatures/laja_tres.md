@@ -107,6 +107,8 @@ Trait ← Pries supercritical CO₂/SO₂ vents to access chemosynthetic redox g
 | Sulfur-Skimmer | cousin |  | (council kind 'Competition') Competes for vent crustaceans and mineral crusts; Laja-Tres dominate high-wind ridges, Skimmers hold low-vent flats. |
 | carmesa | convergent | carcinisation | both converged on the crab body plan from unrelated lineages (Borradaile 1916; Keiler, Wirkner and Richter 2017; Wolfe, Luque and Bracken-Grissom 2021) |
 | salcaran | convergent | carcinisation | both converged on the crab body plan from unrelated lineages (Borradaile 1916; Keiler, Wirkner and Richter 2017; Wolfe, Luque and Bracken-Grissom 2021) |
+| carapaz | convergent | carcinisation | both converged on the crab body plan from unrelated lineages (Borradaile 1916; Keiler, Wirkner and Richter 2017; Wolfe, Luque and Bracken-Grissom 2021) |
+| lombardo | convergent | carcinisation | both converged on the crab body plan from unrelated lineages (Borradaile 1916; Keiler, Wirkner and Richter 2017; Wolfe, Luque and Bracken-Grissom 2021) |
 
 ## Journal
 
@@ -132,4 +134,6 @@ council run `autoloop-2026-11-19`; by naturalist/qwen
 - 2026-11-19 import_got: imported from council run autoloop-2026-11-19
 - 2026-11-19 autoloop: carcinisation links to 1 creature(s)
 - 2026-11-19 autoloop: removed rejected references from analogues
+- 2026-11-19 autoloop: carcinisation links to 1 creature(s)
+- 2026-11-19 autoloop: carcinisation links to 1 creature(s)
 - 2026-11-19 autoloop: carcinisation links to 1 creature(s)

@@ -1,0 +1,378 @@
+{
+  "schema": "cpore.world/1",
+  "id": "magneto",
+  "kind": "fictional",
+  "system": {
+    "star": "K2V orange dwarf",
+    "position": "fictional",
+    "distance_ly_from_sol": null
+  },
+  "name": {
+    "en": "Magnetic World",
+    "es": "Mundo magnético"
+  },
+  "status": "draft",
+  "facts": [
+    {
+      "id": "F1",
+      "group": "star",
+      "claim": "K2V dwarf luminosity 0.42 L☉ with mass ~0.70 M☉ and age 120 Myr drives frequent energetic UV/X-ray flares.",
+      "justification": "Young K-dwarfs retain rapid rotation and active coronae that produce regular flare events while maintaining a multi-billion-year habitable window (stellar lifetime, not current age).",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 0.42,
+      "unit": "L☉",
+      "consequences": [
+        "Photosynthetic pigments shift to near-IR absorption bands.",
+        "Periodic atmospheric ionization selects for radiation-resistant symbionts.",
+        "UV spikes force hyper-efficient DNA repair pathways."
+      ],
+      "refs": [
+        "kasting_1993_habitable"
+      ]
+    },
+    {
+      "id": "F2",
+      "group": "orbit",
+      "claim": "Orbital distance 0.65 AU yields a 205-day year around a 0.70 M☉ host.",
+      "justification": "Keplerian period placement avoids runaway greenhouse while maintaining temperate surface conditions for liquid water, supported by atmospheric greenhouse tuning (F7).",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 0.65,
+      "unit": "AU",
+      "consequences": [
+        "Moderate diurnal temperature swings reduce thermal stress.",
+        "Predictable seasonal flare cycles synchronize breeding and migration.",
+        "Tidal locking is avoided, preserving atmospheric circulation."
+      ],
+      "refs": [
+        "kasting_1993_habitable"
+      ]
+    },
+    {
+      "id": "F19",
+      "group": "orbit",
+      "claim": "Companion moon mass 0.02 M🜨 at 25 R🜨 drives minor tidal forcing.",
+      "justification": "A small, distant satellite provides sufficient gravitational torque to maintain the <0.5 m tidal range observed in F9 without inducing tidal locking.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 0.02,
+      "unit": "M🜨",
+      "consequences": [
+        "Tidal pumping enhances shallow-water nutrient mixing.",
+        "Lunar phases modulate nocturnal predation and breeding cycles.",
+        "Orbital stability prevents extreme eccentricity spikes."
+      ]
+    },
+    {
+      "id": "F3",
+      "group": "planet",
+      "claim": "Super-Earth mass 2.6 M🜨 and radius 1.32 R🜨 produce 1.49 g surface gravity.",
+      "justification": "Higher mass sustains internal radiogenic heating and plate tectonics without crushing atmospheric retention or preventing flight.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 2.6,
+      "unit": "M🜨",
+      "consequences": [
+        "High limb loads favor robust, composite skeletal structures.",
+        "Dense atmosphere retention enables low-frequency acoustic propagation.",
+        "Enhanced volcanic outgassing replenishes surface volatiles."
+      ],
+      "refs": [
+        "stevenson_2010_super"
+      ]
+    },
+    {
+      "id": "F4",
+      "group": "planet",
+      "claim": "Axial tilt 9° and rotation period 13.5 hours sustain a vigorous dynamo.",
+      "justification": "Rapid spin drives core convection while low obliquity minimizes extreme seasonal insolation shifts.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 13.5,
+      "unit": "h",
+      "consequences": [
+        "Strong Coriolis deflection shapes stable zonal jet streams.",
+        "Vestibular systems evolve to track rotational acceleration and magnetic storm onset.",
+        "Diurnal magnetic field variations remain predictable."
+      ],
+      "refs": [
+        "stevenson_2010_super"
+      ]
+    },
+    {
+      "id": "F5",
+      "group": "planet",
+      "claim": "Equatorial surface magnetic field 0.8 mT with storm spikes ≤10 mT.",
+      "justification": "Young age and fast rotation drive a strong dynamo; macrobiological induction does not cap planetary fields, but life adapts to avoid neural tetany and eddy heating in local gradients.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 0.8,
+      "unit": "mT",
+      "consequences": [
+        "Intense radiation belts at 2–5 R🜨 deflect solar wind but increase polar and orbital radiation risk.",
+        "Navigation relies on inclination and gradient sensing rather than magnitude.",
+        "Ferromagnetic gear causes mechanical drag and sensory interference."
+      ],
+      "refs": [
+        "blakemore_1975_magnetotactic",
+        "hore_2016_magnetoreception"
+      ]
+    },
+    {
+      "id": "F20",
+      "group": "climate",
+      "claim": "Equilibrium temperature ~285 K with greenhouse warming to ~300 K surface.",
+      "justification": "Teq calculated from 0.42 L☉ at 0.65 AU, offset by 10% CO₂ and 12% O₂ partial pressures plus water cloud albedo, yields temperate conditions consistent with liquid water.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 285,
+      "unit": "K",
+      "consequences": [
+        "Seasonal temperature swings remain moderate.",
+        "Atmospheric circulation patterns drive predictable wind and precipitation belts.",
+        "Surface habitability window spans millennia."
+      ],
+      "refs": [
+        "kasting_1993_habitable"
+      ]
+    },
+    {
+      "id": "F6",
+      "group": "sky",
+      "claim": "Rayleigh scattering shifts zenith to copper-amber tones and makes sky polarization strong near quadrature.",
+      "justification": "Dense atmosphere combined with K-star peak emission enhances short-wavelength scattering and e-vector alignment across the dome.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "consequences": [
+        "Visual systems evolve polarization-sensitive retinal cones.",
+        "Camouflage evolves to scramble e-vectors rather than match color.",
+        "Weather fronts and wind shear are readable via polarization gradients."
+      ]
+    },
+    {
+      "id": "F7",
+      "group": "atmosphere",
+      "claim": "Surface pressure 2.6 bar with composition 72% N₂, 12% O₂, 10% CO₂, 6% Ar.",
+      "justification": "High escape velocity retains volatiles; CO₂ greenhouse offsets stellar deficit; O₂ supports combustion and aerobic respiration.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 2.6,
+      "unit": "bar",
+      "consequences": [
+        "Low-frequency sound (<2 kHz) travels kilometers with minimal attenuation.",
+        "High-frequency attenuation limits close-range vocalizations.",
+        "Dense air increases drag, capping maximum glider size.",
+        "High O₂ partial pressure elevates fire risk during dry seasons."
+      ]
+    },
+    {
+      "id": "F8",
+      "group": "atmosphere",
+      "claim": "Sound speed ~370 m/s with high acoustic impedance.",
+      "justification": "Ideal gas law dictates sound speed depends on temperature and mean molecular weight, not pressure; ~370 m/s implies a surface temperature near 330 K.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 370,
+      "unit": "m/s",
+      "consequences": [
+        "Infrasonic communication dominates long-range social signaling.",
+        "Predator strikes are timed to ambient wind harmonics.",
+        "Low-frequency events produce tangible controller/screen vibration feedback."
+      ]
+    },
+    {
+      "id": "F9",
+      "group": "ocean",
+      "claim": "Global mean ocean depth 2.8 km with salinity 38 PSU.",
+      "justification": "Super-Earth crustal flexure creates shallower basins than Earth; hydrothermal leaching maintains high ionic conductivity.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 2.8,
+      "unit": "km",
+      "consequences": [
+        "Conductive seawater enables electroreception at ranges up to tens of meters.",
+        "Steep redox gradients support chemosynthetic vent ecosystems.",
+        "Tidal range <0.5 m limits coastal mixing and nutrient upwelling."
+      ]
+    },
+    {
+      "id": "F10",
+      "group": "geology",
+      "claim": "Crust rich in Fe²⁺, magnetite, pyrrhotite, and sulfides.",
+      "justification": "Reducing mantle and oxygenated surface drive banded-iron analogue deposition; hydrothermal plumes concentrate magnetic minerals via redox gradients.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "consequences": [
+        "Biomineralization favors iron-oxide composites for structure and sensing.",
+        "Chelating agents act as potent neurotoxins by stripping iron.",
+        "Ore deposits guide migratory routes and settlement patterns."
+      ]
+    },
+    {
+      "id": "F11",
+      "group": "chemistry",
+      "claim": "Metabolic zoning dictated by Fe³⁺ toxicity threshold of 5 mM.",
+      "justification": "Water stability under pressure and iron-sulfur chemistry enable electron tunneling, but free ferrous/ferric ions cause oxidative stress at high concentrations; 5 mM serves as a nominal EC50 band.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 5,
+      "unit": "mM",
+      "consequences": [
+        "Anaerobic vent niches host chemolithoautotrophs to avoid oxygenated iron precipitation.",
+        "Oxidative stress drives hyper-efficient DNA repair mechanisms.",
+        "Food chains link phototrophs to iron-oxidizers to macro-predators."
+      ]
+    },
+    {
+      "id": "F12",
+      "group": "biochemistry",
+      "claim": "Cryptochrome radical-pair magnetoreception for heading and anomaly detection.",
+      "justification": "Quantum spin-coherence of flavin-tryptophan radical pairs modulates reaction yields by geomagnetic inclination and intensity gradients.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "consequences": [
+        "Passive heading sense and magnetic anomaly mapping replace visual landmarks.",
+        "Vision is dazzled by polarized flashes or intense auroral glare.",
+        "Navigation fails in magnetic null zones or during rapid field fluctuations."
+      ],
+      "refs": [
+        "ritz_2000_radical",
+        "hore_2016_magnetoreception"
+      ]
+    },
+    {
+      "id": "F13",
+      "group": "biochemistry",
+      "claim": "Magnetotactic bacterial symbionts in digestive tracts optimize iron trafficking and calibrate host magnetoreception.",
+      "justification": "Microscopic magnetite chains align with the local field, sequestering dietary iron and providing a stable internal reference for the host’s radical-pair sensors.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "consequences": [
+        "Digestive efficiency buffs from iron-rich diets.",
+        "Vulnerable to chelator poisoning which strips symbiont alignment.",
+        "Internal alignment creates weak dipole signatures readable by predators."
+      ],
+      "refs": [
+        "blakemore_1975_magnetotactic"
+      ]
+    },
+    {
+      "id": "F14",
+      "group": "biochemistry",
+      "claim": "Ampullary electroreception and galvanic discharge for prey tracking and combat.",
+      "justification": "Neuromast-like organs detect bioelectric micro-fields and induced voltage shifts in conductive media, enabling active and passive electrolocation.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "consequences": [
+        "Prey tracking via muscle twitch and heartbeat detection.",
+        "Combat utilizes controlled discharge stuns that overload magnetic sensors.",
+        "Effectiveness drops in highly conductive water or during geomagnetic quiet."
+      ]
+    },
+    {
+      "id": "F15",
+      "group": "biochemistry",
+      "claim": "Auroral photophore counter-illumination for camouflage and UV harvesting.",
+      "justification": "Bioluminescent symbionts match ambient sky glow from particle precipitation, hiding silhouettes against the copper horizon, while specialized photopigments convert ionizing UV into chemical energy.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "consequences": [
+        "Stealth camouflage in open terrain and shallow waters.",
+        "Healing pulse generation from absorbed auroral radiation.",
+        "Useless in deep caves or during magnetic storms that wash out background gradients."
+      ]
+    },
+    {
+      "id": "F16",
+      "group": "biochemistry",
+      "claim": "Helical shell geometry for torsional strength and reduced magnetic signature.",
+      "justification": "Homogeneous helical demagnetization factors average net dipole moment near zero while maintaining structural integrity against high-g impacts; magnetic stealth is highly speculative.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "consequences": [
+        "Magnetic invisibility to sensor-equipped predators (highly speculative).",
+        "Movement remains silent to magnetic detection systems.",
+        "Vulnerable to physical crushing if the shell fractures or molts."
+      ]
+    },
+    {
+      "id": "F17",
+      "group": "biochemistry",
+      "claim": "Radiation-buffered symbiosis and rapid DNA repair for belt exposure.",
+      "justification": "Ionizing radiation from trapped belts and flares selects for melanin-like radioprotectants and double-strand break rejoining enzymes.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "consequences": [
+        "Health regeneration scales with ambient ionizing flux, reflecting faster DNA repair in radioresistant lineages rather than flux-powered healing.",
+        "Players position in storm fronts or polar ovals to recover.",
+        "Repair stalls in fluctuating fields or neutral-ion environments."
+      ]
+    },
+    {
+      "id": "F18",
+      "group": "biochemistry",
+      "claim": "Field-aligned resource migration along stable crustal anomaly corridors.",
+      "justification": "Crustal magnetic anomalies superposed on the dipole field guide movement toward thermal plumes and iron deposits without relying on geographic poles or celestial navigation.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "consequences": [
+        "High-speed travel along stable flux lines reduces stamina drain.",
+        "Navigation disrupted by artificial EM emitters or solar flares.",
+        "Pack-sharing waypoints cut travel time and coordinate herd movements."
+      ]
+    }
+  ],
+  "changelog": [
+    {
+      "date": "2026-11-19",
+      "who": "autoloop",
+      "what": "world canon drafted by the council chair from 20 facts (planet drafts, peer reviews, astrobio referee)"
+    },
+    {
+      "date": "2026-11-19",
+      "who": "autoloop",
+      "what": "removed rejected references; retired real facts left without references"
+    }
+  ]
+}

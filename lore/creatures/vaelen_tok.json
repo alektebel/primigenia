@@ -1,0 +1,286 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "vaelen_tok",
+  "name": {
+    "en": "Vaelen-tok"
+  },
+  "world": "oddities",
+  "kind": "new",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "10–22 km altitude, within convective storm anvils and fair-weather electrostatic layers",
+    "diet": "Chemosynthetic sulfate aerosols, lightning-ionized nitrates, electrochemical metabolites",
+    "active": "Dusk-to-dawn, storm-peak active",
+    "predators": []
+  },
+  "body": "1.8 m hollow geodesic frame of conductive iron-sulfide and chitin, three buoyant gas bladders, electrostatic discharge nodes along the dorsal ridge",
+  "chains": [
+    {
+      "id": "vaelen_tok.c1",
+      "trait": "Posterior decoy detaches on lightning strike",
+      "links": [
+        "Electrostatic repulsion between charged segments",
+        "Atmospheric electric field reaches 3 kV/m during storms",
+        "Frequent deep cumulonimbus with 15 flashes/km²/yr"
+      ],
+      "roots": [
+        "F11",
+        "F12"
+      ],
+      "skill": {
+        "id": "vaelen_tok.charge_leap",
+        "name": {
+          "en": "Charge Leap"
+        },
+        "role": "Control",
+        "effect": "leaps 8m vertically by shedding decoy, costs 15 stamina",
+        "numbers": {}
+      },
+      "weakness": "Grounded by heavy rain or low-humidity air; decoy drifts away and must be regrown over 3 days",
+      "observe": [
+        "Static bristles stand upright",
+        "Gap forms between torso and tail",
+        "Ozone smell follows detachment"
+      ],
+      "journal": {
+        "en": "It throws away its own tail just to run away."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-20",
+        "summary": "Reframe as corona-proximity autotomy: dorsal nodes concentrate charge; rapid shedding drops mass and a posterior ‘decoy’ bearing higher curvature—thrust from elastic recoil + updraft, not repulsion alone. Direct strikes remain a rare fatality; gameplay ‘Charge Leap’ triggers on field surge + storm updraft, not on being the strike channel.",
+        "fixes": [
+          "Reframe as corona-proximity autotomy: dorsal nodes concentrate charge; rapid shedding drops mass and a posterior ‘decoy’ bearing higher curvature—thrust from elastic recoil + updraft, not repulsion alone. Direct strikes remain a rare fatality; gameplay ‘Charge Leap’ triggers on field surge + storm updraft, not on being the strike channel."
+        ],
+        "analogues": [
+          {
+            "organism": "Autotomy in gekkonid lizards (predator escape); spider ballooning and electric-field-mediated launch (ballooning silk); squid arm autotomy under attack",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 3
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "vaelen_tok.c2",
+      "trait": "Iron-sulfide conductive body lattice",
+      "links": [
+        "Conductive biomineralization replaces silica/calcium",
+        "Sulfur-rich volcanic outgassing and high crustal radiation",
+        "Sustained volcanism enriches surface iron and sulfur"
+      ],
+      "roots": [
+        "F17",
+        "F6"
+      ],
+      "skill": {
+        "id": "vaelen_tok.conduct_path",
+        "name": {
+          "en": "Conduct Path"
+        },
+        "role": "Engage",
+        "effect": "routes ambient lightning current to stun prey/allies within 6m, deals 12 damage",
+        "numbers": {}
+      },
+      "weakness": "Poor insulation in calm air; slow recharge without storm proximity, easily disrupted by water",
+      "observe": [
+        "Metallic sheen on exoskeleton",
+        "Sparks jump between nodes",
+        "Dull red glow when charged"
+      ],
+      "journal": {
+        "en": "Its bones are just lightning rods."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-20",
+        "summary": "Limit ‘Conduct Path’ to corona stun: localized ionization and kV-scale micro-discharges between nodes in 1–3 kV/m air, stunning small targets within ~6 m without carrying cloud-to-ground current through the torso. Add hydrocarbon/wax insulation on the gut and bladder linings; keep lattice as exposed dorsal spines only. Drop any room-temperature superconductor idea (implausible for Fe–S biominerals).",
+        "fixes": [
+          "Limit ‘Conduct Path’ to corona stun: localized ionization and kV-scale micro-discharges between nodes in 1–3 kV/m air, stunning small targets within ~6 m without carrying cloud-to-ground current through the torso. Add hydrocarbon/wax insulation on the gut and bladder linings; keep lattice as exposed dorsal spines only. Drop any room-temperature superconductor idea (implausible for Fe–S biominerals)."
+        ],
+        "analogues": [
+          {
+            "organism": "Greigite chain biomineralization in magnetotactic bacteria; pyrite-associated microbial mats in sulfidic environments; chiton and limpet iron–oxide/mineral teeth",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 4
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "vaelen_tok.c3",
+      "trait": "Blue-green bioluminescence timed to dusk",
+      "links": [
+        "Emission peaks at 480 nm for atmospheric transmission",
+        "Ochre haze scatters yellow-red light but transmits blue-green",
+        "Aerosol extinction shifts skylight to ochre, leaving blue-green window"
+      ],
+      "roots": [
+        "F10",
+        "F23"
+      ],
+      "skill": {
+        "id": "vaelen_tok.signal_flash",
+        "name": {
+          "en": "Signal Flash"
+        },
+        "role": "Social",
+        "effect": "flashes 480nm light to mark territory or calm rivals, 10m radius",
+        "numbers": {}
+      },
+      "weakness": "Useless in thick fog or direct sunlight; attracts photo-sensitive predators and competitors",
+      "observe": [
+        "Pulsing cyan nodes along spine",
+        "Flash synchronizes with distant thunder",
+        "Attracts smaller filter-feeders"
+      ],
+      "journal": {
+        "en": "It paints the sky with cold fire."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-20",
+        "summary": "World canon (F23) already selects blue-green (470–520 nm) emitters active dusk-to-night because ochre forward scattering (F10) swamps longer wavelengths by day while a blue-green transmission window opens after dark. A stratospheric social/signaling flash at ~480 nm is the same physical logic as pelagic bioluminescence, only shifted upward in habitat.",
+        "fixes": [
+          "World canon (F23) already selects blue-green (470–520 nm) emitters active dusk-to-night because ochre forward scattering (F10) swamps longer wavelengths by day while a blue-green transmission window opens after dark. A stratospheric social/signaling flash at ~480 nm is the same physical logic as pelagic bioluminescence, only shifted upward in habitat."
+        ],
+        "analogues": [
+          {
+            "organism": "Fireflies and marine ostracod courtship flashes; counter-illuminating cephalopods (e.g. Hawaiian bobtail squid) matching downwelling spectral window",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 8
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "vaelen_tok.c4",
+      "trait": "Porous aerosol filter membranes",
+      "links": [
+        "High surface-area intake traps sub-micron chemolithotrophs",
+        "2.1 bar atmosphere holds fine volcanic/sulfate aerosols",
+        "Sustained volcanism plus photochemistry maintains redox aerosol layer"
+      ],
+      "roots": [
+        "F13",
+        "F7",
+        "F9"
+      ],
+      "skill": {
+        "id": "vaelen_tok.siphon_draft",
+        "name": {
+          "en": "Siphon Draft"
+        },
+        "role": "Basic",
+        "effect": "passively harvests nutrients from wind, grants +5 stamina regen while airborne",
+        "numbers": {}
+      },
+      "weakness": "Clogged by heavy rain or high dust; requires constant updraft maintenance or ground roosting",
+      "observe": [
+        "Gills flare during updrafts",
+        "Yellow-orange particles trapped in mesh",
+        "Slow, rhythmic pulsing"
+      ],
+      "journal": {
+        "en": "It drinks the sky's dust."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-20",
+        "summary": "State diet as heterotrophy on sky-reef-derived aggregates plus symbiont-supplied carbon in gut crypts; membranes trap microbial biofilms on sulfate dust, not ‘eating rock dust’ directly. Tie ‘Siphon Draft’ stamina regen to storm updrafts (F11) that concentrate particles. Note metabolic ceiling: filter area and calm-air clogging (rain/dust) are real limits at 1.36 g if the animal ever roosts at the surface.",
+        "fixes": [
+          "State diet as heterotrophy on sky-reef-derived aggregates plus symbiont-supplied carbon in gut crypts; membranes trap microbial biofilms on sulfate dust, not ‘eating rock dust’ directly. Tie ‘Siphon Draft’ stamina regen to storm updrafts (F11) that concentrate particles. Note metabolic ceiling: filter area and calm-air clogging (rain/dust) are real limits at 1.36 g if the animal ever roosts at the surface."
+        ],
+        "analogues": [
+          {
+            "organism": "Salps and appendicularians (mucous mesh filter feeders); sponge and baleen suspension feeding; Riftia pachyptila sulfide-oxidizing symbionts for chemosynthetic carbon",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 5
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "Ochre-grazer",
+      "kind": "cousin",
+      "note": "(council kind 'commensal') Cleans ectoparasites using conductive shock; grazers follow storm tracks for safety."
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-19",
+    "by": [
+      "naturalist/qwen"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-20",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-19"
+    }
+  ],
+  "body_plan": {
+    "symmetry": "bilateral",
+    "origin": "pelagic-epipelagic filter-feeder lineage that colonized the upper troposphere"
+  },
+  "temperament": "Cautiously reactive, highly sensitive to charge gradients, generally non-predatory unless grounded",
+  "secrets": [
+    "The 'decoy' tail is not waste; it is a dormant embryo that hatches into a juvenile when it lands in a nutrient-rich thermal.",
+    "Their conductive lattice can be harvested as a stable, room-temperature superconductor if flash-frozen in liquid nitrogen.",
+    "They do not fear the storm; they wait for it, because without the charge, their hearts stop pumping."
+  ],
+  "moments": [
+    "When the first lightning of the season strikes, the entire sky reef shivers, and thousands of them shed their tails in unison, a silent, ozone-scented storm of flying decoys."
+  ],
+  "journal": [
+    {
+      "en": "Not built to endure. Built to leap."
+    },
+    {
+      "en": "The sky is not empty; it is a charged reef."
+    }
+  ]
+}

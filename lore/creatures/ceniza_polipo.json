@@ -1,0 +1,291 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "ceniza_polipo",
+  "name": {
+    "en": "Ceniza-Polipo"
+  },
+  "world": "oddities",
+  "kind": "new",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "20–25 km redox layer; persistent volcanic plumes; high-altitude convective bands",
+    "diet": "Atmospheric H2S, SO2, CH4, and photochemical oxidants via epidermal symbionts",
+    "active": "Continuous drift; foraging bursts during storms and dusk",
+    "predators": []
+  },
+  "body": "Wide, rigid sail membrane reinforced by silica spicules; dense iron-sulfur core; porous epidermis housing symbiont clusters; conductive spines along leading edges",
+  "chains": [
+    {
+      "id": "ceniza_polipo.c1",
+      "trait": "Wide, silica-reinforced sail drifts on dense air",
+      "links": [
+        "High gravity (1.36 g) demands maximum lift efficiency",
+        "Dense atmosphere (2.5 kg/m³) enables drag-based lift",
+        "Volcanic emissions supply abundant silica aerosols",
+        "Colony incorporates silica into membrane skeleton to catch wind and filter particles simultaneously"
+      ],
+      "roots": [
+        "F4",
+        "F9",
+        "F17"
+      ],
+      "skill": {
+        "id": "ceniza_polipo.aerodynamic_drift",
+        "name": {
+          "en": "Aerodynamic Drift"
+        },
+        "role": "Passive",
+        "effect": "Glides 25m without energy cost when in updrafts or dense air pockets.",
+        "numbers": {}
+      },
+      "weakness": "Grounded by still air; cannot climb without thermal or wind uplift.",
+      "observe": [
+        "Membrane holds rigid convex shape against wind",
+        "Silica spicules glitter in starlight",
+        "No beating wings; drifts like a stone in water"
+      ],
+      "journal": {
+        "en": "[Speculative] The reef swims the sky on a wing of ash, trading agility for endurance."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-20",
+        "summary": "State explicitly: colony is neutrally buoyant or slightly positive in the redox layer via porous volume and metabolic gases; surface 2.5 kg/m³ matters for acoustic impedance and sub-cloud dynamics, while altitude holding is updraft- and storm-dependent (weakness already). Drop “drag-based lift” as a substitute for reduced gravity; use “convective loft + low bulk density.”",
+        "fixes": [
+          "State explicitly: colony is neutrally buoyant or slightly positive in the redox layer via porous volume and metabolic gases; surface 2.5 kg/m³ matters for acoustic impedance and sub-cloud dynamics, while altitude holding is updraft- and storm-dependent (weakness already). Drop “drag-based lift” as a substitute for reduced gravity; use “convective loft + low bulk density.”"
+        ],
+        "analogues": [
+          {
+            "organism": "Portuguese man-o’-war float and sail; glass sponges (silica spicule skeleton); thistledown and spider ballooning for passive aerial transport.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 2
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "ceniza_polipo.c2",
+      "trait": "Epidermal symbionts oxidize H2S into metabolic energy",
+      "links": [
+        "Low O2 (6%) limits aerobic respiration efficiency",
+        "Redox layer provides high flux of H2S and SO2",
+        "Symbionts use H2S/O2 or H2S/oxidant couples for high-energy thioester chemistry",
+        "Colony integrates sulfide-scavenging bacteria into epidermal pores to feed directly from air"
+      ],
+      "roots": [
+        "F13",
+        "F17",
+        "F24"
+      ],
+      "skill": {
+        "id": "ceniza_polipo.chemosynthetic_feed",
+        "name": {
+          "en": "Chemosynthetic Feed"
+        },
+        "role": "Basic",
+        "effect": "Heals 8 HP/s and generates 5% O2 for allies when near volcanic vents or storm outflow.",
+        "numbers": {}
+      },
+      "weakness": "Starves rapidly if H2S/SO2 supply is blocked; symbionts die in clean air.",
+      "observe": [
+        "Porous skin hisses faintly as gas exchanges",
+        "Bioluminescent glow pulses in symbiont clusters",
+        "Odor of rotten eggs near colony"
+      ],
+      "journal": {
+        "en": "[Speculative] Its skin breathes fire without flame, turning poison into sustenance."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-20",
+        "summary": "Tone down ally O₂ to a small halo or storm-time pulse unless symbionts are oxygenic; note symbiont failure below a redox flux threshold (already in weakness).",
+        "fixes": [
+          "Tone down ally O₂ to a small halo or storm-time pulse unless symbionts are oxygenic; note symbiont failure below a redox flux threshold (already in weakness)."
+        ],
+        "analogues": [
+          {
+            "organism": "Riftia pachyptila and other vestimentiferans with intracellular sulfide-oxidizing symbionts; Beggiatoa and Thiomicrospira colorless sulfur bacteria on H₂S gradients.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 5
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "ceniza_polipo.c3",
+      "trait": "Sharp spines act as lightning rods and charge sensors",
+      "links": [
+        "Frequent lightning (15 flashes/km²/yr) creates local electric fields",
+        "Fair-weather 150 V/m rises to 1–3 kV/m under cells",
+        "Colony evolves conductive spines to sense voltage gradients and ride updrafts",
+        "Spines also discharge stored charge to stun predators and attract prey to bio-lights"
+      ],
+      "roots": [
+        "F11",
+        "F12"
+      ],
+      "skill": {
+        "id": "ceniza_polipo.corona_lash",
+        "name": {
+          "en": "Corona Lash"
+        },
+        "role": "Engage",
+        "effect": "Electrifies all targets within 15m for 4s; pulls enemies toward colony and disarms ranged attacks.",
+        "numbers": {}
+      },
+      "weakness": "Spines attract destructive lightning strikes; players can use grounded rods to redirect bolts.",
+      "observe": [
+        "Sparks jump between spines during storms",
+        "Ozone smell intensifies near colony",
+        "Colony tilts toward storm centers and charge sources"
+      ],
+      "journal": {
+        "en": "[Speculative] It wears the storm's anger as a crown, harvesting the sky's wrath."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-20",
+        "summary": "Reframe Engage as orientation (tilt toward cells/updrafts), prey attraction via bioluminescence (F23), and painful corona/tactile zap at contact—not battlefield-wide air arcs. Keep “lightning rod” risk as primary hazard.",
+        "fixes": [
+          "Reframe Engage as orientation (tilt toward cells/updrafts), prey attraction via bioluminescence (F23), and painful corona/tactile zap at contact—not battlefield-wide air arcs. Keep “lightning rod” risk as primary hazard."
+        ],
+        "analogues": [
+          {
+            "organism": "Weak atmospheric E-field coupling in arthropods (e.g. bee/foraging context); weakly electric fish electroreception and jamming (water, not air corona weapons); physics of point corona on sharp conductors.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 4
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "ceniza_polipo.c4",
+      "trait": "Iron-rich core stores spores and provides ballast",
+      "links": [
+        "High gravity pulls spores fast; ballast needed for controlled descent",
+        "Iron core provides mass for spore dispersal to ground",
+        "Iron and sulfides shield sensitive spores from high background radiation (0.01 mSv/h)",
+        "Colony releases spores in bursts when injured or at end of life cycle"
+      ],
+      "roots": [
+        "F4",
+        "F6",
+        "F13"
+      ],
+      "skill": {
+        "id": "ceniza_polipo.spore_bomb",
+        "name": {
+          "en": "Spore Bomb"
+        },
+        "role": "Poke",
+        "effect": "Drops iron-core spore cloud; damages and blinds area for 6s; spores linger for 10s.",
+        "numbers": {}
+      },
+      "weakness": "Core damage is fatal; piercing attacks or sonic resonance can crack the core.",
+      "observe": [
+        "Descent is heavy and metallic",
+        "Core hums with low-frequency vibration",
+        "Ash cloud bursts contain glowing metallic flecks"
+      ],
+      "journal": {
+        "en": "[Speculative] A heart of stone beats in the cloud, anchoring the reef's future."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-20",
+        "summary": "Specify core as compact spore cyst with magnetite–pyrite matrix, not bulk metallic heart; spore release on senescence/injury is plausible, “sonic crack core” is **highly speculative**—prefer thermal or desiccation cracking at dusk cooling tied to F3 weak seasons + altitude temperature swing.",
+        "fixes": [
+          "Specify core as compact spore cyst with magnetite–pyrite matrix, not bulk metallic heart; spore release on senescence/injury is plausible, “sonic crack core” is **highly speculative**—prefer thermal or desiccation cracking at dusk cooling tied to F3 weak seasons + altitude temperature swing."
+        ],
+        "analogues": [
+          {
+            "organism": "Magnetotactic bacteria (intracellular magnetite chains); fungal and plant spores with mineral coats; submarine/ballast logic (dense payload, buoyant superstructure).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 3
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "Aero-Wasp",
+      "kind": "cousin",
+      "note": "(council kind 'Parasite') Aero-Wasp larvae tunnel into the iron core to mine ballast material, causing the colony to sink and starve. Players can lure wasps to damage reefs or harvest larvae to craft ballast-weights."
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-19",
+    "by": [
+      "naturalist/qwen"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-20",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-19"
+    }
+  ],
+  "body_plan": {
+    "symmetry": "biradial",
+    "origin": "Aerosol colony aggregation"
+  },
+  "temperament": "Passive drifter; lashes out when highly charged; vulnerable to acoustic shock and ground-level isolation",
+  "secrets": [
+    "The iron core yields 'Magnetite-Chunks' when harvested; used to craft high-density ballast weights or magnetic resistors for player gear.",
+    "Symbionts can be extracted to create a temporary 'Sulfur-Resist' buff, but the extract degrades rapidly without continuous H2S supply."
+  ],
+  "moments": [
+    "At dusk, the iron core thermally cracks as the temperature drops, releasing a reverse snowstorm of blue-green bioluminescent spores that drift through the ochre haze like falling stars, illuminating the reef's silhouette against the darkening sky."
+  ],
+  "journal": [
+    {
+      "en": "[Speculative] The reef does not grow on rock; it grows on the breath of the world, filtering the volcano's sigh."
+    },
+    {
+      "en": "A sky-fish with no fins, eating the storm's electricity and the air's sulfur."
+    }
+  ]
+}

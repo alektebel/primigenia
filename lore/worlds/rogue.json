@@ -1,0 +1,431 @@
+{
+  "schema": "cpore.world/1",
+  "id": "rogue",
+  "kind": "fictional",
+  "system": {
+    "star": "None (Rogue)",
+    "position": "fictional",
+    "distance_ly_from_sol": null
+  },
+  "name": {
+    "en": "Rogue Planet Warmed from Inside",
+    "es": "Planeta errante calentado desde dentro"
+  },
+  "status": "draft",
+  "facts": [
+    {
+      "id": "F1",
+      "group": "interior",
+      "claim": "Internal radiogenic heat flux sustains mantle convection and hydrothermal networks without stellar input.",
+      "justification": "Enriched U/Th/K decay and residual accretion heat in a 3 M⊕ silicate-iron core maintain a geothermal gradient sufficient to prevent global cryogenic freeze, though highly speculative without stellar EUV history.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 0.15,
+      "unit": "W/m²",
+      "consequences": [
+        "Drives global hydrothermal vent density",
+        "Sets baseline metabolic energy budget",
+        "Prevents total ice-shell collapse"
+      ],
+      "refs": [
+        "turcotte_2014_geodynamics"
+      ]
+    },
+    {
+      "id": "F2",
+      "group": "orbit",
+      "claim": "Zero stellar flux and galactic drift decouple climate from celestial mechanics.",
+      "justification": "The planet drifts through the galactic halo; absence of a host star eliminates years, seasons, and circadian light cycles.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 0.0,
+      "unit": "W/m²",
+      "consequences": [
+        "Eliminates seasonal migration patterns",
+        "Forces reliance on geothermal gradients for navigation",
+        "Stabilizes long-term atmospheric composition"
+      ],
+      "refs": [
+        "segura_2005_mdw"
+      ]
+    },
+    {
+      "id": "F3",
+      "group": "planet",
+      "claim": "3.0 M⊕ mass with ~1.40 R⊕ radius provides sufficient gravity to retain a thick primordial hydrogen atmosphere.",
+      "justification": "Silicate-metal differentiation compresses the interior; mass-radius scaling for terrestrial composition prevents hydrodynamic escape over gigayear timescales, though formation history is highly speculative.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 3.0,
+      "unit": "M⊕",
+      "consequences": [
+        "Enables retention of light gases",
+        "Supports lightweight skeletal structures relative to Earth",
+        "Maintains long-term atmospheric pressure"
+      ]
+    },
+    {
+      "id": "F4",
+      "group": "planet",
+      "claim": "Surface gravity of 1.53 g⊕ increases structural load limits while permitting dense-H₂ buoyant gliding.",
+      "justification": "Calculated via g = GM/R²; higher than Earth but low enough to permit dense tissue support and low-center-of-mass locomotion.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 1.53,
+      "unit": "g⊕",
+      "consequences": [
+        "Favors benthic, grounded movement",
+        "Selects for reinforced collagen or chitin-silica composites",
+        "Limits maximum vertical leap height"
+      ],
+      "refs": [
+        "segura_2005_mdw"
+      ]
+    },
+    {
+      "id": "F5",
+      "group": "planet",
+      "claim": "28.0-hour rotation period drives atmospheric Coriolis forces and sustains a convective dynamo.",
+      "justification": "Conserved angular momentum from formation; fast enough to generate Coriolis forces for magnetic field generation despite weak stellar wind.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 28.0,
+      "unit": "h",
+      "consequences": [
+        "Drives super-rotating atmospheric circulation",
+        "Prevents atmospheric collapse on the anti-stellar hemisphere",
+        "Modulates convective plume timing"
+      ],
+      "refs": [
+        "christensen_2006_scaling"
+      ]
+    },
+    {
+      "id": "F6",
+      "group": "planet",
+      "claim": "2.0° axial tilt stabilizes climate and eliminates seasonal disruption of thermal gradients.",
+      "justification": "Minimal obliquity locks temperature gradients to latitude and depth rather than orbital position. Merged into F2 due to zero insolation context.",
+      "status": "retired",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 2.0,
+      "unit": "°",
+      "consequences": [
+        "Simplifies ecological zoning to vertical bands",
+        "Stabilizes ice-shell thickness globally",
+        "Removes seasonal breeding triggers"
+      ],
+      "refs": [
+        "pierrehumbert_2011_principles"
+      ]
+    },
+    {
+      "id": "F7",
+      "group": "atmosphere",
+      "claim": "12.0 bar surface pressure dominated by H₂ enables collision-induced absorption greenhouse warming.",
+      "justification": "H₂ accumulation outpaces escape; thick column required for H₂-H₂ and H₂-He collision pairs to trap geothermal infrared radiation. Trace gases (CH₄, N₂) modulate CIA opacity.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 12.0,
+      "unit": "bar",
+      "consequences": [
+        "Dense medium transmits low-frequency sound efficiently",
+        "Increases fluid drag on locomotion",
+        "Requires pressure-equalizing internal anatomy"
+      ],
+      "refs": [
+        "pierrehumbert_2011_principles"
+      ]
+    },
+    {
+      "id": "F8",
+      "group": "atmosphere",
+      "claim": "Collision-induced absorption raises surface temperature by ~85 K above baseline radiogenic equilibrium.",
+      "justification": "H₂ CIA greenhouse effect traps outgoing infrared, maintaining surface temperatures between 270–285 K without stellar heating. Highly speculative; depends on F1 flux, H₂ column opacity, and atmospheric structure.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 85.0,
+      "unit": "K",
+      "consequences": [
+        "Maintains global liquid-water ocean",
+        "Creates stable thermal stratification",
+        "Drives continuous vertical convection cells"
+      ],
+      "refs": [
+        "pierrehumbert_2011_principles"
+      ]
+    },
+    {
+      "id": "F9",
+      "group": "sky",
+      "claim": "Perpetual darkness limits visible light to <0.001 lux from bioluminescence and Milky Way background.",
+      "justification": "No stellar photons reach the surface; only faint glow from ice fluorescence, bioluminescence, and thermal scattering exists. Thermal IR is sensed via separate physiological channels.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 0.0008,
+      "unit": "lux",
+      "consequences": [
+        "Vision is non-functional for navigation",
+        "Selects for echolocation and chemosensation",
+        "Bioluminescence becomes primary social signal"
+      ],
+      "refs": [
+        "russell_2006_alkaline"
+      ]
+    },
+    {
+      "id": "F10",
+      "group": "sky",
+      "claim": "Low molecular weight H₂ and high pressure transmit acoustic waves at ~1,200 m/s.",
+      "justification": "Ideal-gas scaling in dense hydrogen at ~275 K with He/CH₄ mix yields high sound speed; acoustic impedance rises with density, reducing low-frequency attenuation.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 1200.0,
+      "unit": "m/s",
+      "consequences": [
+        "Instant echoes break stealth tactics",
+        "Favors infrasonic communication and resonance-based stunning",
+        "High-frequency sounds attenuate quickly"
+      ],
+      "refs": [
+        "pierrehumbert_2011_principles"
+      ]
+    },
+    {
+      "id": "F11",
+      "group": "ocean",
+      "claim": "25.0 km deep liquid H₂O ocean persists due to radiogenic melting and pressure suppression of boiling.",
+      "justification": "Geothermal heat flux melts the ice base; high hydrostatic pressure maintains liquid state at ~273–276 K.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 25.0,
+      "unit": "km",
+      "consequences": [
+        "Creates vast anoxic benthic zones",
+        "Concentrates biomass around hydrothermal plumes",
+        "Enables deep-diving pressure-adapted megafauna"
+      ],
+      "refs": [
+        "vance_2018_ocean"
+      ]
+    },
+    {
+      "id": "F12",
+      "group": "ocean",
+      "claim": "12.0 km thick ice shell shields the surface from cosmic radiation and limits energy to radiolysis products.",
+      "justification": "Conductive heat loss through the ice balances mantle flux; fractures at fissures create localized thermal windows. Convective lid likely present given F1 flux.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 12.0,
+      "unit": "km",
+      "consequences": [
+        "Shields surface from cosmic radiation",
+        "Limits surface energy to oxidant seepage",
+        "Drives chemosynthetic reliance on vent-derived reductants"
+      ],
+      "refs": [
+        "vance_2018_ocean",
+        "hand_2007_europan"
+      ]
+    },
+    {
+      "id": "F13",
+      "group": "geology",
+      "claim": "Focused hydrothermal vent flux of 0.38 W/m² creates redox-rich plumes with steep chemical gradients.",
+      "justification": "Mantle plumes and ridge volcanism release H₂, CH₄, Fe²⁺, and H₂S, establishing localized high-energy oases. This value applies to active vent fields, not planetary mean.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 0.38,
+      "unit": "W/m²",
+      "consequences": [
+        "Establishes localized high-energy oases",
+        "Drives chemolithoautotrophic primary production",
+        "Creates steep micro-gradients for niche specialization"
+      ],
+      "refs": [
+        "russell_2006_alkaline"
+      ]
+    },
+    {
+      "id": "F14",
+      "group": "chemistry",
+      "claim": "High atmospheric H₂ partial pressure (~11.0 bar) provides abundant electron donor for hydrogenotrophic metabolism.",
+      "justification": "Reducing volatile inventory maintained by serpentinization and outgassing; H₂ dominates composition and suppresses oxidative stress.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 11.0,
+      "unit": "bar",
+      "consequences": [
+        "Enables symbiotic H₂-grazing gut flora",
+        "Suppresses aerobic respiration pathways",
+        "Allows passive atmospheric nutrient uptake via specialized integument"
+      ],
+      "refs": [
+        "amend_2001_energetics",
+        "mccollom_2013_serp"
+      ]
+    },
+    {
+      "id": "F15",
+      "group": "chemistry",
+      "claim": "Surface radiation dose averages ~0.01 µSv/h due to H₂ and ice attenuation, with local spikes near radon seepage.",
+      "justification": "12-bar H₂ blanket and 12 km ice crust attenuate cosmic muons; local dose elevated only near crustal radon and vent aerosols.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 1e-05,
+      "unit": "mSv/h",
+      "consequences": [
+        "Low background mutation rate stabilizes lineages",
+        "Selects for robust DNA repair mechanisms",
+        "Drives metallothionein detox pathway evolution"
+      ],
+      "refs": [
+        "hand_2007_europan",
+        "segura_2005_mdw"
+      ]
+    },
+    {
+      "id": "F19",
+      "group": "interior",
+      "claim": "Ice shell regime is convective-lid with conductive boundary layer, allowing 12 km thickness under 0.15 W/m² flux.",
+      "justification": "Internal heat drives ice convection, thinning the effective conductive layer and permitting thicker shells without freezing the ocean.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 12.0,
+      "unit": "km",
+      "consequences": [
+        "Modulates heat loss efficiency",
+        "Drives ice-ocean chemical exchange",
+        "Stabilizes global thermal gradients"
+      ],
+      "refs": [
+        "vance_2018_ocean",
+        "pierrehumbert_2011_principles"
+      ]
+    },
+    {
+      "id": "F20",
+      "group": "ocean",
+      "claim": "Ocean floor pressure reaches ~250 MPa, driving benthic megafauna physiology and membrane adaptation.",
+      "justification": "25 km water column plus ice load generates extreme hydrostatic pressure, requiring pressure-equalizing anatomy and piezophilic biochemistry.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 250.0,
+      "unit": "MPa",
+      "consequences": [
+        "Enforces benthic lifestyle for large organisms",
+        "Selects for TMAO and piezolyte accumulation",
+        "Limits vertical migration range"
+      ],
+      "refs": [
+        "vance_2018_ocean"
+      ]
+    },
+    {
+      "id": "F16",
+      "group": "biochemistry",
+      "claim": "Low-temperature adapted enzyme kinetics and antifreeze glycoproteins maintain catalytic efficiency at ~275 K.",
+      "justification": "Cold-adapted proteins retain flexibility at low thermal energy; antifreeze compounds prevent intracellular ice nucleation. Analogous to Antarctic notothenioid fish glycoproteins.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 275.0,
+      "unit": "K",
+      "consequences": [
+        "Metabolic rates are inherently slow",
+        "Favors ambush predation and energy conservation",
+        "Rapid metabolic surges risk protein denaturation"
+      ],
+      "refs": [
+        "amend_2001_energetics",
+        "yoshida_2012_piezophile"
+      ]
+    },
+    {
+      "id": "F17",
+      "group": "biochemistry",
+      "claim": "Primary production relies on reverse acetyl-CoA and reductive TCA cycles driven by vent H₂/CH₄ and CO₂.",
+      "justification": "No photons available; life fixes carbon via chemosynthetic pathways utilizing redox gradients from hydrothermal fluids. Production is strictly vent-areal, not global.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 0.0,
+      "unit": "W/m²",
+      "consequences": [
+        "Biomass pyramid is flattened and vent-dependent",
+        "Energy transfer efficiency is low",
+        "Selects for large body sizes and slow growth"
+      ],
+      "refs": [
+        "russell_2006_alkaline"
+      ]
+    },
+    {
+      "id": "F18",
+      "group": "biochemistry",
+      "claim": "Piezophilic membranes use branched ether-lipids and rigid sterol-like rings to resist crushing pressure and gas dissolution.",
+      "justification": "High pressure at ocean floor and H₂ partial pressure select for rigid membrane structures that maintain fluidity and prevent leakage. Cited for deep-form physiology.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 250.0,
+      "unit": "MPa",
+      "consequences": [
+        "Membranes resist crushing depth and gas dissolution",
+        "Limits oxygen permeability, reinforcing anoxia",
+        "Enables pressure-equalizing swim bladder evolution"
+      ],
+      "refs": [
+        "yoshida_2012_piezophile"
+      ]
+    }
+  ],
+  "changelog": [
+    {
+      "date": "2026-11-19",
+      "who": "autoloop",
+      "what": "world canon drafted by the council chair from 20 facts (planet drafts, peer reviews, astrobio referee)"
+    },
+    {
+      "date": "2026-11-19",
+      "who": "autoloop",
+      "what": "removed rejected references; retired real facts left without references"
+    }
+  ]
+}

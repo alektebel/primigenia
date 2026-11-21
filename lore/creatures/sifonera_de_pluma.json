@@ -1,0 +1,299 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "sifonera_de_pluma",
+  "name": {
+    "en": "Sifonera de Pluma"
+  },
+  "world": "oddities",
+  "kind": "new",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "Subglacial ocean near cryovolcanic vents on the inner moon",
+    "diet": "Chemosynthetic biomass, dissolved H2/H2S, organic detritus",
+    "active": "Continuous",
+    "predators": []
+  },
+  "body": "Translucent gelatinous medusa-analogue with six ruffled filter-fronds, ventral chemoreceptor pores, and a dorsal bioluminescent lure",
+  "chains": [
+    {
+      "id": "sifonera_de_pluma.c1",
+      "trait": "Ruffled filter-fronds maximize surface area",
+      "links": [
+        "Ruffled fronds maximize surface area",
+        "High flux of particulate organics from vent plumes",
+        "Tidal heating drives cryovolcanic eruptions and plumes"
+      ],
+      "roots": [
+        "F18"
+      ],
+      "skill": {
+        "id": "sifonera_de_pluma.filter_cycle",
+        "name": {
+          "en": "Filter-Cycle"
+        },
+        "role": "Basic",
+        "effect": "Cycles fronds to clear clogs and restore efficiency by 40%",
+        "numbers": {}
+      },
+      "weakness": "Fronds tangle in dense debris flows from icequakes",
+      "observe": [
+        "Six fronds pulsing rhythmically to draw water inward",
+        "Ruffled edges catching dark particulate snow",
+        "Steady expansion and contraction of the bell"
+      ],
+      "journal": {
+        "en": "It wears the vent's breath like a gossamer coat, sifting fire and life in the dark."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-20",
+        "summary": "Cryovolcanic and hydrothermal plumes on a tidally heated ice moon (F18) carry particulate organic matter and microbial flocs, analogous to marine snow and vent-associated particles on Earth; a gelatinous zooplankton-grade filter feeder that increases capture area is mechanically sound at moon-ocean pressures if structures are mucus-supported webs rather than rigid grids. At 1.36 g on the planet this body plan would not work on land; in a subsurface ocean buoyancy support makes large soft filters feasible.",
+        "fixes": [
+          "Cryovolcanic and hydrothermal plumes on a tidally heated ice moon (F18) carry particulate organic matter and microbial flocs, analogous to marine snow and vent-associated particles on Earth; a gelatinous zooplankton-grade filter feeder that increases capture area is mechanically sound at moon-ocean pressures if structures are mucus-supported webs rather than rigid grids. At 1.36 g on the planet this body plan would not work on land; in a subsurface ocean buoyancy support makes large soft filters feasible."
+        ],
+        "analogues": [
+          {
+            "organism": "Larvacean Oikopleura mucous house and giant larvacean filters; salp pylosome chains; sponges and cold-seep barnacles on particulate and bacterial flux.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 5
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "sifonera_de_pluma.c2",
+      "trait": "Ventral chemoreceptor pores detect gradients",
+      "links": [
+        "Ventral pores detect chemical/electric gradients",
+        "Hydrothermal vents create steep redox and charge gradients",
+        "Tidal heating fuels vent chemistry and plume structure"
+      ],
+      "roots": [
+        "F18",
+        "F19"
+      ],
+      "skill": {
+        "id": "sifonera_de_pluma.scent_track",
+        "name": {
+          "en": "Scent-Track"
+        },
+        "role": "Engage",
+        "effect": "Reveal direction and distance to nearest active vent plume",
+        "numbers": {}
+      },
+      "weakness": "Overwhelmed by strong chemical noise or sudden pH shifts",
+      "observe": [
+        "Ventral pores quivering and orienting toward vent water",
+        "Body tilts to align pores with chemical trails",
+        "Ripples in pore clusters track plume boundaries"
+      ],
+      "journal": {
+        "en": "A living compass nose, it tastes the world's hidden heartbeat."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-20",
+        "summary": "H2S, H2, CH4 and redox boundaries at vents (F18, F19) produce steep chemical microgradients; vent animals orient to plumes using chemoreception, often combined with flow sensing. Electric microgradients can exist across redox interfaces but are weaker than chemistry for macroscopic navigation; pores quivering toward enriched water is consistent with selection for plume-tracking.",
+        "fixes": [
+          "H2S, H2, CH4 and redox boundaries at vents (F18, F19) produce steep chemical microgradients; vent animals orient to plumes using chemoreception, often combined with flow sensing. Electric microgradients can exist across redox interfaces but are weaker than chemistry for macroscopic navigation; pores quivering toward enriched water is consistent with selection for plume-tracking."
+        ],
+        "analogues": [
+          {
+            "organism": "Rimicaris exoculata and other vent shrimp chemo- and thermosensitive receptors; nematode and polychaete vent orientation to H2S; salmonid olfactory gradient tracking (mechanism: chemoreception).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 5
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "sifonera_de_pluma.c3",
+      "trait": "Dorsal bioluminescent lure deters grazers",
+      "links": [
+        "Dorsal lure deters benthic grazers or signals safety",
+        "Subglacial ocean is perpetually dark with no ambient light",
+        "Tidal heating sustains the moon's ice shell and darkness"
+      ],
+      "roots": [
+        "F18",
+        "F23"
+      ],
+      "skill": {
+        "id": "sifonera_de_pluma.lure_shine",
+        "name": {
+          "en": "Lure-Shine"
+        },
+        "role": "Social",
+        "effect": "Flash blue-green bioluminescence to attract prey or calm nearby allies",
+        "numbers": {}
+      },
+      "weakness": "Lure reveals position to larger predators and competitors",
+      "observe": [
+        "Blue-green bioluminescence flares when stressed or feeding",
+        "Lure glow matches the world's transmission window",
+        "Glow intensity correlates with plume proximity"
+      ],
+      "journal": {
+        "en": "In the endless dark, it flashes a warning that doubles as a whisper of warning."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-20",
+        "summary": "Pick one primary function: vent-proximity feeding lure (attracts small scavengers into fronds) or predator/startle flash; cite moon darkness (F18) not F23 sky window unless you state convergent 470–520 nm chemistry. Drop ‘deter grazers’ unless the lure is aposematic on toxic vent-associated prey.",
+        "fixes": [
+          "Pick one primary function: vent-proximity feeding lure (attracts small scavengers into fronds) or predator/startle flash; cite moon darkness (F18) not F23 sky window unless you state convergent 470–520 nm chemistry. Drop ‘deter grazers’ unless the lure is aposematic on toxic vent-associated prey."
+        ],
+        "analogues": [
+          {
+            "organism": "Anglerfish Lophiiformes esca (lure attracts prey); deep-sea ostracod Vargula hilgendorfii flash startle; ophiuroid luminescent arm autotomy to distract predators.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 4
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "sifonera_de_pluma.c4",
+      "trait": "Gelatinous, gas-veined body relies on buoyancy",
+      "links": [
+        "Gelatinous body relies on buoyancy over skeletal support",
+        "Low structural load allows soft tissue in water",
+        "Small moon mass yields low surface gravity and weak tidal stress on body"
+      ],
+      "roots": [
+        "F16"
+      ],
+      "skill": {
+        "id": "sifonera_de_pluma.float_hold",
+        "name": {
+          "en": "Float-Hold"
+        },
+        "role": "Control",
+        "effect": "Lock body density to hover motionless in currents for 20s",
+        "numbers": {}
+      },
+      "weakness": "Body ruptures under mechanical stress or rapid pressure changes",
+      "observe": [
+        "Translucent gelatinous bell distending with gas vesicles",
+        "Slow, drifting movement with minimal limb effort",
+        "Fronds trailing loosely without rigid support"
+      ],
+      "journal": {
+        "en": "A bubble of flesh, it forgets it is solid, suspended in the moon's cold blood."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-20",
+        "summary": "Root trait in moon low g + hydrostatic support, not F16. Replace gas veins with lipid-rich mesoglea or ammonium-ion jelly for near-neutral buoyancy; add weakness to rapid pressure swings from cryovolcanic paroxysms. Treat gel-stored thermal energy from plumes (secret) as highly speculative—prefer high vent tolerance and slow metabolism unless you model explicit heat-storage polymers like some desert seeds, which has no strong vent-animal analogue.",
+        "fixes": [
+          "Root trait in moon low g + hydrostatic support, not F16. Replace gas veins with lipid-rich mesoglea or ammonium-ion jelly for near-neutral buoyancy; add weakness to rapid pressure swings from cryovolcanic paroxysms. Treat gel-stored thermal energy from plumes (secret) as highly speculative—prefer high vent tolerance and slow metabolism unless you model explicit heat-storage polymers like some desert seeds, which has no strong vent-animal analogue."
+        ],
+        "analogues": [
+          {
+            "organism": "Deep-sea medusae and ctenophores (mesoglea, no gas bladders); cyanobacteria gas vesicles (only viable at low hydrostatic pressure—micro-scale analogue only).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 3
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "Rock-scourer",
+      "kind": "cousin",
+      "note": "(council kind 'Opportunist') Sifonera drifts over grazer tracks to catch biomass and detritus knocked loose from ice walls"
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-19",
+    "by": [
+      "naturalist/qwen"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-20",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-19"
+    },
+    {
+      "date": "2026-11-19",
+      "who": "autoloop",
+      "what": "removed rejected references from analogues"
+    }
+  ],
+  "body_plan": {
+    "symmetry": "radial",
+    "arms": 6,
+    "origin": "Siphonophore/Ctenophore analogue"
+  },
+  "temperament": "Passive, reactive to plume chemistry",
+  "secrets": [
+    "Highly speculative: The gel matrix stores thermal energy from plumes, allowing the creature to survive brief vent closures and maintain filtration during cooling periods."
+  ],
+  "moments": [
+    "It hangs in the dark like a ghost of the vent, drinking the fire to sustain a body of water and dreams, its light pulsing a slow rhythm against the crushing silence."
+  ],
+  "journal": [
+    {
+      "en": "It hangs in the dark like a ghost of the vent, drinking the fire to sustain a body of water and dreams."
+    },
+    {
+      "en": "Six fronds, six tastes, one slow life filtering the world's blood."
+    }
+  ]
+}

@@ -1,0 +1,303 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "voxmanta",
+  "name": {
+    "en": "Voxmanta"
+  },
+  "world": "ringmoon",
+  "kind": "new",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "Deep fog valleys and ring-shadow basins",
+    "diet": "Ambush predation on grazers and gliders",
+    "active": "Nocturnal and eclipse-active; hides during thermal tide peaks",
+    "predators": []
+  },
+  "body": "Sessile mantle with three parabolic ear-lobes; expandable wind-shear wing membranes; melanin-rich scales for radiation and acoustic damping.",
+  "chains": [
+    {
+      "id": "voxmanta.c1",
+      "trait": "Parabolic ear-lobes track 5km infrasound with independent rotation",
+      "links": [
+        "High pressure CO2/N2 atmosphere lowers acoustic impedance",
+        "Low-frequency sound attenuates over distances >5km",
+        "Predator uses infrasound to locate prey; prey cannot localize source due to diffraction"
+      ],
+      "roots": [
+        "F10"
+      ],
+      "skill": {
+        "id": "voxmanta.infrasense",
+        "name": {
+          "en": "Infrasense"
+        },
+        "role": "Control",
+        "effect": "Reveals all hidden enemies within 50m and prevents their first attack of the turn; Voxmanta gains +3 Defence against sonic attacks.",
+        "numbers": {}
+      },
+      "weakness": "Deaf to high-pitched sounds; sudden whistles or sonic blasts stun it.",
+      "observe": [
+        "Lobes rotate independently, tracking faint hums.",
+        "Stalks prey silently across fog banks.",
+        "Prey freezes and clamps down when the hum reaches a specific pitch."
+      ],
+      "journal": {
+        "en": "A silence that screams at the ears; it hunts the sound before the sound reaches you."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "Use ‘detect and roughly bearings at km scale, localize and ambush within tens of meters’; keep high-pitch deafness weakness (elephant-like upper limit).",
+        "fixes": [
+          "Use ‘detect and roughly bearings at km scale, localize and ambush within tens of meters’; keep high-pitch deafness weakness (elephant-like upper limit)."
+        ],
+        "analogues": [
+          {
+            "organism": "African elephant infrasound communication and long-range detection (Poole); barn owl asymmetric ears for sound localization in low light.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "voxmanta.c2",
+      "trait": "Wing membranes generate wind-shear vortices to mask approach",
+      "links": [
+        "Giant-driven atmospheric tides create permanent wind shear",
+        "Wing vortices match ambient turbulence spectrum",
+        "Acoustic signature masked by self-generated turbulence"
+      ],
+      "roots": [
+        "F11"
+      ],
+      "skill": {
+        "id": "voxmanta.shear_hide",
+        "name": {
+          "en": "Shear Hide"
+        },
+        "role": "Defence",
+        "effect": "Grants 'Stealth' vs sound-based detection and reduces incoming wind damage by 50% for 4 turns; expires if air is still.",
+        "numbers": {}
+      },
+      "weakness": "Fails in still air or enclosed spaces; wind direction must match.",
+      "observe": [
+        "Wings ripple continuously, matching wind gusts.",
+        "Attacks only during peak thermal tide wind shear.",
+        "No sound of movement until the strike unfolds."
+      ],
+      "journal": {
+        "en": "It wears the wind like a cloak, becoming the silence between the gusts."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "Replace active vortex matching with passive low-noise membrane geometry and hunting only when environmental wind masks footfall; Shear Hide expires in still air (already in weakness).",
+        "fixes": [
+          "Replace active vortex matching with passive low-noise membrane geometry and hunting only when environmental wind masks footfall; Shear Hide expires in still air (already in weakness)."
+        ],
+        "analogues": [
+          {
+            "organism": "Barn owl silent flight—serrated leading edge, soft fringe, low wing loading (Lilley/Kroo line of work); nightjar and heron slow stalking in wind noise.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "wilkinson_2016_aerodynamic"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "voxmanta.c3",
+      "trait": "Melanin-rich scales dampen bio-acoustics and shield radiation",
+      "links": [
+        "Chronic ionizing stress selects for melanin deposition",
+        "Melanin increases acoustic impedance mismatch at tissue boundary",
+        "Simultaneous radiation shielding and sound absorption"
+      ],
+      "roots": [
+        "F8"
+      ],
+      "skill": {
+        "id": "voxmanta.silent_damp",
+        "name": {
+          "en": "Silent Damp"
+        },
+        "role": "Passive",
+        "effect": "Reduces movement noise by 70% and halves radiation damage; reduces movement speed by 20% due to mass.",
+        "numbers": {}
+      },
+      "weakness": "Heavy scales limit agility; shedding is required to recover speed.",
+      "observe": [
+        "Dark, matte patches on joints and mantle edges.",
+        "Favors high-radiation zones near magnetic valleys.",
+        "Moves with deliberate, heavy grace."
+      ],
+      "journal": {
+        "en": "Black scales that drink the storm and swallow the footsteps."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "Radiation: melanin-rich scales (passive). Stealth: porous fringe tissue and heavy mantle—not melanin mechanism; keep −20% speed from mass.",
+        "fixes": [
+          "Radiation: melanin-rich scales (passive). Stealth: porous fringe tissue and heavy mantle—not melanin mechanism; keep −20% speed from mass."
+        ],
+        "analogues": [
+          {
+            "organism": "Melanized extremophile fungi for ionizing environments; moth scales and owl plumage for acoustic absorption; pangolin/armor mass ↔ speed tradeoff.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "voxmanta.c4",
+      "trait": "Mantle inflates to fill tidal cavity and camouflage as rock",
+      "links": [
+        "Tidal locking creates regular pressure changes in sub-aquatic zones",
+        "Mantle cavity expands to match external pressure and volume",
+        "Textured inflation mimics local geology perfectly"
+      ],
+      "roots": [
+        "F3"
+      ],
+      "skill": {
+        "id": "voxmanta.tide_blow",
+        "name": {
+          "en": "Tide-Blow"
+        },
+        "role": "Engage",
+        "effect": "Inflates to become 'Unstoppable' (cannot be displaced) and grants +4 Defence; next attack deals 20 damage but leaves Voxmanta 'Deflated' (-50% speed) for 3 turns.",
+        "numbers": {}
+      },
+      "weakness": "Cannot deflate quickly; vulnerable to burst damage while inflated.",
+      "observe": [
+        "Matches rock texture perfectly when stationary.",
+        "Inflates at high-tide pressure peaks.",
+        "Shudders and deflates with a wet sigh after the strike."
+      ],
+      "journal": {
+        "en": "It becomes the stone, waits for the shadow, and opens its throat."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "Tie inflation to ocean tidal pools and F11 surge channels, not only 58 h giant orbit; camouflage as mismatched ‘rock lump’ not cryptographic geology.",
+        "fixes": [
+          "Tie inflation to ocean tidal pools and F11 surge channels, not only 58 h giant orbit; camouflage as mismatched ‘rock lump’ not cryptographic geology."
+        ],
+        "analogues": [
+          {
+            "organism": "Pufferfish and swell toads inflation; amphibian puffing; intertidal chitons and anemones filling crevice volume.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-19",
+    "by": [
+      "naturalist/qwen"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-19",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-19"
+    },
+    {
+      "date": "2026-11-19",
+      "who": "autoloop",
+      "what": "removed rejected references from analogues"
+    },
+    {
+      "date": "2026-11-19",
+      "who": "autoloop",
+      "what": "removed rejected references from analogues"
+    }
+  ],
+  "body_plan": {
+    "symmetry": "radial",
+    "origin": "Sub-aquatic to semi-aquatic ambush adaptation"
+  },
+  "temperament": "Patient ambush predator; strikes only when prey is within infrasound range.",
+  "secrets": [
+    "The infrasound dish can be focused to shatter fragile crystal deposits, revealing hidden nutrient veins.",
+    "Melanin scales can be used to craft acoustic-dampening armor that reduces incoming sonic damage.",
+    "The wind-shear camouflage can be exploited by the player to hide allies in plain sight during strong tides."
+  ],
+  "moments": [
+    "The fog parts silently. The prey does not hear the approach, only feels the infrasound hum vibrating in its marrow, and by the time the parabolic ears rotate to locate the sound, the mantle has already unfolded, swallowing the world in a dark, damp gape."
+  ],
+  "journal": [
+    {
+      "en": "A silence that screams at the ears."
+    },
+    {
+      "en": "It hunts the sound before the sound reaches you."
+    }
+  ]
+}

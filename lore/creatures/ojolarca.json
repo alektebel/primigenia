@@ -1,0 +1,305 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "ojolarca",
+  "name": {
+    "en": "Ojolarca"
+  },
+  "world": "spectrum",
+  "kind": "new",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "Equatorial rift cliffs & updraft corridors",
+    "diet": "Thermally active vertebrates, canopy insects, mineral-rich nectar",
+    "active": "Diurnal & crepuscular",
+    "predators": []
+  },
+  "body": "Streamlined aerodynamic frame, massive compound eyes with fused corneal lenses, paired thermal pit organs, polarization-sensitive wing membranes",
+  "chains": [
+    {
+      "id": "ojolarca.c1",
+      "trait": "Massive, fused-cornea visual array spanning UV to thermal bands",
+      "links": [
+        "Broadband resolution requires large aperture diameter",
+        "Diffraction limit scales linearly with wavelength",
+        "Thin atmosphere delivers unfiltered 210–5000 nm flux",
+        "Transparent spectral window & F-type stellar SED"
+      ],
+      "roots": [
+        "F1",
+        "F9"
+      ],
+      "skill": {
+        "id": "ojolarca.spectral_lock",
+        "name": {
+          "en": "Spectral Lock"
+        },
+        "role": "Basic",
+        "effect": "Highlights prey, mineral deposits, and thermal vents across 210–5000 nm for 8 seconds, revealing hidden paths or weaknesses",
+        "numbers": {}
+      },
+      "weakness": "Large corneal mass causes rapid aerodynamic drag and metabolic heat buildup during M-dwarf flares",
+      "observe": [
+        "Corneal curvature shifts from blue to amber under flare",
+        "Thermal pits flare red when targeting warm-blooded prey",
+        "Wings tilt to align microvilli with sky polarization vectors"
+      ],
+      "journal": {
+        "en": "It does not just watch the sky; it weighs every photon like a stone."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-20",
+        "summary": "Retitle/limit Spectral Lock to photon bands ~210–1000 nm (UV, visible, NIR reflectance/emission where retinal opsins or similar still apply); keep ~10 μm prey/vent mapping on pit organs only (Heat Trace). Optional highly speculative: separate dorsal 'NIR-bright' facets for 900 nm bias (F2), not LWIR in the eye.",
+        "fixes": [
+          "Retitle/limit Spectral Lock to photon bands ~210–1000 nm (UV, visible, NIR reflectance/emission where retinal opsins or similar still apply); keep ~10 μm prey/vent mapping on pit organs only (Heat Trace). Optional highly speculative: separate dorsal 'NIR-bright' facets for 900 nm bias (F2), not LWIR in the eye."
+        ],
+        "analogues": [
+          {
+            "organism": "Stomatopod compound eyes with regionalized spectral/polarization channels (not LWIR); pit viper/boa eyes for short-wave vision plus separate pit organs for IR—never one retinal stack spanning UV to 10 μm.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "thoen_2014_polarization"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "ojolarca.c2",
+      "trait": "Dorsal polarization-sensitive ommatidia for celestial compass use",
+      "links": [
+        "Rayleigh scattering creates predictable zenith polarization patterns",
+        "Low aerosol loading preserves high contrast polarization vectors",
+        "Sparse cloud cover & thin atmosphere maintain stable sky maps",
+        "Atmospheric transparency & low particulate loading"
+      ],
+      "roots": [
+        "F9",
+        "F11"
+      ],
+      "skill": {
+        "id": "ojolarca.sky_compass",
+        "name": {
+          "en": "Sky Compass"
+        },
+        "role": "Control",
+        "effect": "Aligns flight path with polarization vectors to navigate rift valleys with 92% accuracy, ignoring magnetic drift",
+        "numbers": {}
+      },
+      "weakness": "Overcast or ash-choked skies scramble polarization maps, causing disorientation",
+      "observe": [
+        "Dorsal eye facets rotate independently to track zenith",
+        "Flight paths straighten when aligned with polarized skylight",
+        "Landing posture mimics wind direction via microvilli alignment"
+      ],
+      "journal": {
+        "en": "It reads the sky like braille, tracing invisible lines that never bend."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-20",
+        "summary": "Rayleigh sky polarization with high zenith contrast (F11) and low aerosol load (F9) matches known animal navigation: dorsal rim or specialized ommatidia track polarization e-vector patterns for compass bearing, independent of weak planetary magnetism (F7). Sparse cloud and rift-corridor flight make polarization more reliable than magnetic cues. Overcast/ash disruption is a realistic weakness.",
+        "fixes": [
+          "Rayleigh sky polarization with high zenith contrast (F11) and low aerosol load (F9) matches known animal navigation: dorsal rim or specialized ommatidia track polarization e-vector patterns for compass bearing, independent of weak planetary magnetism (F7). Sparse cloud and rift-corridor flight make polarization more reliable than magnetic cues. Overcast/ash disruption is a realistic weakness."
+        ],
+        "analogues": [
+          {
+            "organism": "Honeybee and desert ant dorsal polarization vision for skylight compass; monarch and dung beetle polarization navigation.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "ojolarca.c3",
+      "trait": "Paired infrared pit organs flanking the snout for heat mapping",
+      "links": [
+        "Long-wave IR requires thermal differential detection, not photon capture",
+        "900 nm NIR bias lacks thermal contrast for retinal imaging",
+        "TRPA1 channels detect ambient heat maps via membrane deformation",
+        "Binary star NIR output & atmospheric transparency"
+      ],
+      "roots": [
+        "F2",
+        "F9",
+        "F15"
+      ],
+      "skill": {
+        "id": "ojolarca.heat_trace",
+        "name": {
+          "en": "Heat Trace"
+        },
+        "role": "Engage",
+        "effect": "Marks warm targets and geothermal vents within 15 m, enabling ambush strikes or safe resting zones",
+        "numbers": {}
+      },
+      "weakness": "Pit organs suffer thermal noise from direct sunlight; must use shadows or burrow to reset baseline",
+      "observe": [
+        "Snout tilts downward to scan ground heat signatures",
+        "Pit membranes flush blue when cooled, red when warmed",
+        "Hunts only when self-cast shadows cover prey"
+      ],
+      "journal": {
+        "en": "It feels the world’s breath before it sees the creature breathing it."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-20",
+        "summary": "Split ranges: ~2–4 m for thermally active vertebrates/insects in shadow; up to ~15 m for large vents/warm rock faces. Mark volant pit-predator as highly speculative—justify via secondarily aerial lineage from pit-equipped cliff gliders/hunters on F12 rifts, not primary bird analogue.",
+        "fixes": [
+          "Split ranges: ~2–4 m for thermally active vertebrates/insects in shadow; up to ~15 m for large vents/warm rock faces. Mark volant pit-predator as highly speculative—justify via secondarily aerial lineage from pit-equipped cliff gliders/hunters on F12 rifts, not primary bird analogue."
+        ],
+        "analogues": [
+          {
+            "organism": "Crotalus rattlesnake pit organ TRPA1 infrared detection; boas and pythons labial/IR labial pits (ground-hunting, not volant).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "gracheva_2010_molecular"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "ojolarca.c4",
+      "trait": "Dermal melanin-analogues and rapid photolyase enzyme cycling",
+      "links": [
+        "High UV-B/C flux causes rapid thymine dimering in DNA",
+        "Cross-linked polymers scatter UV while dissipating heat as IR",
+        "Enzymatic repair consumes metabolic budget proportional to flare frequency",
+        "F-star SED & thin ozone column"
+      ],
+      "roots": [
+        "F1",
+        "F14",
+        "F17"
+      ],
+      "skill": {
+        "id": "ojolarca.solar_shield",
+        "name": {
+          "en": "Solar Shield"
+        },
+        "role": "Defence",
+        "effect": "Activates dermal UV-scattering polymers to reduce flare damage by 70% for 12 seconds, at the cost of 30% movement speed",
+        "numbers": {}
+      },
+      "weakness": "Prolonged flare activity depletes photolyase reserves, leaving tissues vulnerable to mutation and fatigue",
+      "observe": [
+        "Skin shifts from iridescent blue to matte gray under flares",
+        "Eyes squint partially via nictitating UV filters",
+        "Resting posture minimizes surface area to direct sun"
+      ],
+      "journal": {
+        "en": "It wears the sun’s violence like armor, paying for it in blood."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-20",
+        "summary": "If lineage is framed as mammal-like aerial vertebrate, note placental mammals largely lack photolyase (rely on NER)—either invoke avian/reptilian biochemistry for Ojolarca or add 'photolyase-retaining' highly speculative deep ancestry.",
+        "fixes": [
+          "If lineage is framed as mammal-like aerial vertebrate, note placental mammals largely lack photolyase (rely on NER)—either invoke avian/reptilian biochemistry for Ojolarca or add 'photolyase-retaining' highly speculative deep ancestry."
+        ],
+        "analogues": [
+          {
+            "organism": "Cyanobacteria and plants with photolyase + UV-screening pigments; reptiles and birds with epidermal melanin and behavioural shade-seeking under high UV.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "Cieloscopa",
+      "kind": "cousin",
+      "note": "(council kind 'predator-prey') Ojolarca hunts Cieloscopa near rift edges but spares mature individuals that signal mutualistic nectar exchange"
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-19",
+    "by": [
+      "naturalist/qwen"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-20",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-19"
+    }
+  ],
+  "body_plan": {
+    "symmetry": "bilateral",
+    "arms": 2,
+    "origin": "Aerial vertebrate analogue"
+  },
+  "temperament": "Calculating, territorial, highly observant",
+  "secrets": [
+    "The fused cornea can temporarily split into three independent apertures, allowing it to track two targets and one polarized signal simultaneously, but causes severe metabolic exhaustion.",
+    "Pit organs can be temporarily blinded by coincident UV flares, forcing the creature to rely on low-frequency vocal sacs for 30 seconds while sensors reset."
+  ],
+  "moments": [
+    "At dawn, the rift wind carries it upward on a thermal column. Its eyes lock onto a single polarized star, and for a breath it hangs perfectly still, a living instrument tuning itself to the sky before diving into the glare."
+  ],
+  "journal": [
+    {
+      "en": "It trades sharpness for survival, squinting at a world that never blinks."
+    },
+    {
+      "en": "It reads the water’s skin like a courtship letter, written in invisible ink."
+    }
+  ]
+}

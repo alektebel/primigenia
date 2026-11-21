@@ -1,0 +1,305 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "cromabuceo",
+  "name": {
+    "en": "Cromabuceo"
+  },
+  "world": "magneto",
+  "kind": "new",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "Hydrothermal vent plains & iron-sulfide mudflats. Evolves here because vent plumes obscure geographic landmarks & 38 PSU conductivity amplifies bio-voltages. Magnetotactic symbionts & ampullary organs exploit the dense ionic medium to track prey & navigate stable crustal anomaly corridors.",
+    "diet": "Conductive fluid grazers, magnetotactic bacterial colonies, electro-receptive invertebrates",
+    "active": "Nocturnal & flare-peak, tide-quiet",
+    "predators": []
+  },
+  "body": "Low-profile armored carapace, ampullary electroreceptor snout, magnetotactic gut symbionts as internal compass, radial feeding appendages.",
+  "chains": [
+    {
+      "id": "cromabuceo.c1",
+      "trait": "Ampullary snout maps conductivity & induced voltage",
+      "links": [
+        "Prey move through conductive hydrothermal plumes",
+        "Electric fish analog electrocommunication detects micro-fields",
+        "Ion-rich fluid (38 PSU) amplifies bio-voltage",
+        "Ampullary organs sense induced potential shifts"
+      ],
+      "roots": [
+        "F9",
+        "F14"
+      ],
+      "skill": {
+        "id": "cromabuceo.conductivity_sense",
+        "name": {
+          "en": "Conductivity Sense"
+        },
+        "role": "Basic",
+        "effect": "Reveals prey voltage signatures, hunting range +50m",
+        "numbers": {}
+      },
+      "weakness": "Saturated by high-salinity pools; player can dump conductive salts to blind it.",
+      "observe": [
+        "Snout twitches toward heat vents",
+        "Electrode flickers",
+        "Prey panic trails"
+      ],
+      "journal": {
+        "en": "It tastes the current in the mud."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "Cap 'hunting range +50 m' to plume-edge/burrow proximity (~few metres to tens of metres in gradient-rich mud); salt-dump weakness valid if player homogenizes local conductivity and washes out gradients.",
+        "fixes": [
+          "Cap 'hunting range +50 m' to plume-edge/burrow proximity (~few metres to tens of metres in gradient-rich mud); salt-dump weakness valid if player homogenizes local conductivity and washes out gradients."
+        ],
+        "analogues": [
+          {
+            "organism": "Marine skates and rays ampullae of Lorenzini; weakly electric gymnotiform prey detection",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "cromabuceo.c2",
+      "trait": "Magnetotactic gut symbionts as heading reference",
+      "links": [
+        "Vent plumes obscure geographic landmarks",
+        "Magnetotactic bacteria form internal chains",
+        "Align with local field to sequester iron & calibrate radical-pair sensors",
+        "Host digestive tract hosts stable symbiont colonies"
+      ],
+      "roots": [
+        "F13",
+        "F18"
+      ],
+      "skill": {
+        "id": "cromabuceo.iron_compass",
+        "name": {
+          "en": "Iron Compass"
+        },
+        "role": "Control",
+        "effect": "Navigates vent mazes without error, resource migration cost halved",
+        "numbers": {}
+      },
+      "weakness": "Symbiont chains disrupt if gut pH shifts; player can use acid sprays to disorient.",
+      "observe": [
+        "Shimmering gut visible through translucent carapace",
+        "Steady heading despite vent swirls"
+      ],
+      "journal": {
+        "en": "A living compass inside a shell of iron."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "Halve navigation claim to 'reduced disorientation in vent fog' and iron-trafficking buff; acid spray disrupts symbiont chains and Fe²⁺ uptake (F11 toxicity zoning)—keep weakness.",
+        "fixes": [
+          "Halve navigation claim to 'reduced disorientation in vent fog' and iron-trafficking buff; acid spray disrupts symbiont chains and Fe²⁺ uptake (F11 toxicity zoning)—keep weakness."
+        ],
+        "analogues": [
+          {
+            "organism": "Magnetospirillum/magnetotactic consortium in metazoan gut (speculative); honeybee intestinal microbiome affects behaviour (weak analogy)",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "blakemore_1975_magnetotactic"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "cromabuceo.c3",
+      "trait": "Radial arm ripples induce galvanic traps",
+      "links": [
+        "Prey rely on electroreception",
+        "Arm muscles generate controlled galvanic discharges",
+        "Symbiont iron-buffering prevents self-harm",
+        "Active electrolocation creates localized field distortion"
+      ],
+      "roots": [
+        "F14",
+        "F13"
+      ],
+      "skill": {
+        "id": "cromabuceo.galvanic_snare",
+        "name": {
+          "en": "Galvanic Snare"
+        },
+        "role": "Poke",
+        "effect": "Releases low-voltage pulse, stuns conductive prey, +25% capture rate",
+        "numbers": {}
+      },
+      "weakness": "Pulse drains metabolic energy; player can lure it into low-conductivity dry mud to exhaust it.",
+      "observe": [
+        "Arm membranes stiffen",
+        "Water ripples distort",
+        "Prey go rigid"
+      ],
+      "journal": {
+        "en": "It doesn't chase; it makes the water strike first."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "Specify sub-lethal mV–low-V pulses for small conductive invertebrate prey, not fish-killing scales; +25% capture only within ~1–2 body lengths in mud brine.",
+        "fixes": [
+          "Specify sub-lethal mV–low-V pulses for small conductive invertebrate prey, not fish-killing scales; +25% capture only within ~1–2 body lengths in mud brine."
+        ],
+        "analogues": [
+          {
+            "organism": "Numbfish *Narke* and torpedo ray electric organ discharges; stargazer *Uranoscopus* shocking ambush",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "cromabuceo.c4",
+      "trait": "Carapace tessellation matches magnetic anomaly gradients",
+      "links": [
+        "High Fe²⁺ crust creates patchy field strength",
+        "Hematite/magnetite plates shift orientation to average local dipole",
+        "Reduces magnetic signature & provides camouflage",
+        "Iron-rich sediment deposition forms stable crust"
+      ],
+      "roots": [
+        "F10",
+        "F5"
+      ],
+      "skill": {
+        "id": "cromabuceo.anomaly_blend",
+        "name": {
+          "en": "Anomaly Blend"
+        },
+        "role": "Defence",
+        "effect": "Matches local field gradient, detection chance -60%",
+        "numbers": {}
+      },
+      "weakness": "Plate alignment lags behind rapid field spikes; player can trigger storm flares to misalign it.",
+      "observe": [
+        "Carapace plates click into place",
+        "Shadow vanishes in copper light",
+        "Perfect stillness"
+      ],
+      "journal": {
+        "en": "It wears the ground's magnetic skin."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "Defence = visual/magnetic noise texture mimicking sediment anomaly clutter via fixed tessellation, not real-time plate tracking; flare misalignment affects magnetoreceptive predators only if plates carry remanent magnetite—lag weakness becomes 'storms scramble remanent signature until moult.'",
+        "fixes": [
+          "Defence = visual/magnetic noise texture mimicking sediment anomaly clutter via fixed tessellation, not real-time plate tracking; flare misalignment affects magnetoreceptive predators only if plates carry remanent magnetite—lag weakness becomes 'storms scramble remanent signature until moult.'"
+        ],
+        "analogues": [
+          {
+            "organism": "Chiton iron-mineral teeth; magnetotactic magnetite crystal orientation; cuttlefish adaptive camouflage (visual only)",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "cromavolante",
+      "kind": "cousin",
+      "note": "(council kind 'Competitor') Juveniles of Cromabuceo drop to vent plains; adults hunt dropped juveniles when magnetotactic plumes overlap."
+    },
+    {
+      "with": "cromavolante",
+      "kind": "cousin",
+      "note": "(council kind 'Predator') Adults ambush juvenile Cromavolante when they descend to feed on vent microplankton."
+    },
+    {
+      "with": "Siderobacter",
+      "kind": "cousin",
+      "note": "(council kind 'Symbiont') Magnetotactic colonies provide internal compass & dietary iron, traded for stable gut pH."
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-19",
+    "by": [
+      "naturalist/qwen"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-19",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-19"
+    }
+  ],
+  "body_plan": {
+    "symmetry": "biradial",
+    "arms": 4,
+    "origin": "vent-ventral divergent clade"
+  },
+  "temperament": "Patient, ambush, highly reactive to conductivity gradients.",
+  "secrets": [
+    "Gut symbionts can be harvested as living compass needles; they align to the player's magnetic skill.",
+    "Courtship involves two specimens linking arms to form a galvanic circuit, pulsing in sync with the planetary dynamo."
+  ],
+  "moments": [
+    "When the auroral flares hit, the mudflats glow not with light, but with invisible tension. Its armored back shivers as the field lines rewrite themselves above it, and it adjusts its plates like a camera focusing on a ghost."
+  ],
+  "journal": [
+    {
+      "en": "It hunts by the planet's pulse."
+    },
+    {
+      "en": "Iron in its gut, iron on its back, iron in the mud."
+    }
+  ]
+}

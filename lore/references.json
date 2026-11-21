@@ -266,7 +266,7 @@
     },
     "x-status": "unverified",
     "x-note": "ambiguous: closest Crossref hit is 'Relativity in the IERS Conventions' (Petit, 2009, doi 10.1017/s1743921309990093), title similarity 0.64, author match, year ok",
-    "x-checked": "2026-11-19"
+    "x-checked": "2026-11-20"
   },
   {
     "id": "stephenson_morrison_1995_rotation",
@@ -357,7 +357,7 @@
     "container-title": "Earth, Planets and Space",
     "x-status": "unverified",
     "x-note": "ambiguous: closest Crossref hit is 'Special issue “International Geomagnetic Reference Field—the twelfth generation”' (Thébault, 2015, doi 10.1186/s40623-015-0313-0), title similarity 0.84, author match, year ok",
-    "x-checked": "2026-11-19"
+    "x-checked": "2026-11-20"
   },
   {
     "id": "noaa_2024_co2",
@@ -422,7 +422,7 @@
     },
     "x-status": "unverified",
     "x-note": "ambiguous: closest Crossref hit is 'THE STANDARD ATMOSPHERE' (, 1976, doi 10.1016/b978-0-08-020414-7.50016-2), title similarity 0.78, author differs, year ok",
-    "x-checked": "2026-11-19"
+    "x-checked": "2026-11-20"
   },
   {
     "id": "kinsler_2000_acoustics",
@@ -787,7 +787,7 @@
     },
     "x-status": "unverified",
     "x-note": "ambiguous: closest OpenLibrary hit is 'Molecular Biology of the Cell' (Alberts, 1983), title similarity 1.00, author match, year off",
-    "x-checked": "2026-11-19"
+    "x-checked": "2026-11-20"
   },
   {
     "id": "mitchell_1961_chemiosmotic",
@@ -1297,7 +1297,7 @@
       ]
     },
     "container-title": "Behaviour 140: 1091-1111",
-    "x-checked": "2026-11-19"
+    "x-checked": "2026-11-20"
   },
   {
     "id": "fitch_2001_descended",
@@ -1547,7 +1547,7 @@
       ]
     },
     "container-title": "Academic Press",
-    "x-checked": "2026-11-19"
+    "x-checked": "2026-11-20"
   },
   {
     "id": "sayigh_1999_individual",
@@ -1639,7 +1639,7 @@
     "DOI": "10.1007/s11207-006-0152-1",
     "x-status": "unverified",
     "x-note": "ambiguous: closest Crossref hit is 'Epiphenomenalism revisited' (Gray, 2006, doi 10.1093/acprof:oso/9780198520917.003.0009), title similarity 0.62, author match, year ok",
-    "x-checked": "2026-11-19"
+    "x-checked": "2026-11-20"
   },
   {
     "id": "seager2007_massradius",
@@ -1701,7 +1701,7 @@
     "DOI": "10.1016/0019-1035(87)90108-3",
     "x-status": "unverified",
     "x-note": "ambiguous: closest Crossref hit is 'The origin and evolution of Titan' (Lunine, 2025, doi 10.1016/b978-0-323-99161-2.00008-5), title similarity 0.61, author match, year off",
-    "x-checked": "2026-11-19"
+    "x-checked": "2026-11-20"
   },
   {
     "id": "kinsler2000_acoustics",
@@ -1877,7 +1877,7 @@
     "container-title": "Astrobiology",
     "x-status": "unverified",
     "x-note": "ambiguous: closest Crossref hit is 'The Early Earth vs. The Origin of Life' (Shock, 2000, doi 10.2307/j.ctv1v7zdrp.33), title similarity 0.44, author match, year ok",
-    "x-checked": "2026-11-19"
+    "x-checked": "2026-11-20"
   },
   {
     "id": "bada_2003_origins",
@@ -1987,7 +1987,7 @@
       ]
     },
     "container-title": "Progress of Materials Science",
-    "x-checked": "2026-11-19"
+    "x-checked": "2026-11-20"
   },
   {
     "id": "steele_2012_ammonia",
@@ -2208,7 +2208,7 @@
     "DOI": "10.1016/j.epsl.2016.04.030",
     "x-status": "unverified",
     "x-note": "ambiguous: closest Crossref hit is 'MASS–RADIUS RELATION FOR ROCKY PLANETS BASED ON PREM' (Zeng, 2016, doi 10.3847/0004-637x/819/2/127), title similarity 0.80, author match, year ok",
-    "x-checked": "2026-11-19"
+    "x-checked": "2026-11-20"
   },
   {
     "id": "wordsworth_2021",
@@ -2315,7 +2315,7 @@
     "DOI": "10.1111/j.1365-246X.2010.04599.x",
     "x-status": "unverified",
     "x-note": "ambiguous: closest Crossref hit is 'Dynamo Scaling Laws and Applications to the Planets' (Christensen, 2009, doi 10.1007/978-1-4419-5901-0_17), title similarity 0.44, author match, year ok",
-    "x-checked": "2026-11-19"
+    "x-checked": "2026-11-20"
   },
   {
     "id": "rothschild_2013",
@@ -2496,7 +2496,7 @@
       ]
     },
     "container-title": "Evolution",
-    "x-checked": "2026-11-19"
+    "x-checked": "2026-11-20"
   },
   {
     "id": "southward_1991_evolution",
@@ -2518,7 +2518,7 @@
       ]
     },
     "container-title": "Nature",
-    "x-checked": "2026-11-19"
+    "x-checked": "2026-11-20"
   },
   {
     "id": "weisfogh_1973_mechanics",
@@ -2706,7 +2706,7 @@
     "DOI": "10.1121/1.2960321",
     "x-status": "unverified",
     "x-note": "ambiguous: closest Crossref hit is 'Communication in Personal Media' (Rasmussen, 2014, doi 10.1057/9781137446466_4), title similarity 0.74, author match, year off",
-    "x-checked": "2026-11-19"
+    "x-checked": "2026-11-20"
   },
   {
     "id": "sagan_1976_particles",
@@ -2751,7 +2751,7 @@
       ]
     },
     "container-title": "The Astrophysical Journal Supplement Series",
-    "x-checked": "2026-11-19"
+    "x-checked": "2026-11-20"
   },
   {
     "id": "seager_2020_azotosomes",
@@ -2827,7 +2827,7 @@
     "DOI": "10.3390/life10100130",
     "x-status": "unverified",
     "x-note": "ambiguous: closest Crossref hit is 'On the Potential of Silicon as a Building Block for Life' (Petkowski, 2020, doi 10.3390/life10060084), title similarity 0.42, author match, year ok",
-    "x-checked": "2026-11-19"
+    "x-checked": "2026-11-20"
   },
   {
     "id": "bains_2004_many",
@@ -2939,7 +2939,7 @@
       ]
     },
     "container-title": "Life",
-    "x-checked": "2026-11-19"
+    "x-checked": "2026-11-20"
   },
   {
     "id": "petkowski_2020_water",
@@ -2961,7 +2961,7 @@
       ]
     },
     "container-title": "Astrobiology",
-    "x-checked": "2026-11-19"
+    "x-checked": "2026-11-20"
   },
   {
     "id": "bains_2004_many_forms",
@@ -3015,7 +3015,7 @@
     "DOI": "10.1089/ast.2019.2164",
     "x-status": "unverified",
     "x-note": "ambiguous: closest Crossref hit is 'Natural Products Containing ‘Rare’ Organophosphorus Functional Groups' (Petkowski, 2019, doi 10.3390/molecules24050866), title similarity 0.35, author match, year ok",
-    "x-checked": "2026-11-19"
+    "x-checked": "2026-11-20"
   },
   {
     "id": "petkowski_2020_acrylonitrile",
@@ -3085,7 +3085,7 @@
     "ISBN": "978-0521861913",
     "x-status": "unverified",
     "x-note": "ambiguous: closest OpenLibrary hit is 'Solar Magnetohydrodynamics' (Priest, 1984), title similarity 1.00, author match, year off",
-    "x-checked": "2026-11-19"
+    "x-checked": "2026-11-20"
   },
   {
     "id": "rieutord_rincon_2010",
@@ -3112,7 +3112,7 @@
     "DOI": "10.12942/lrsp-2010-2",
     "x-status": "unverified",
     "x-note": "ambiguous: closest Crossref hit is 'The Sun’s Supergranulation' (Rieutord, 2010, doi 10.12942/lrsp-2010-2), title similarity 0.41, author match, year ok",
-    "x-checked": "2026-11-19"
+    "x-checked": "2026-11-20"
   },
   {
     "id": "klimchuk_2006",
@@ -3322,7 +3322,7 @@
       ]
     },
     "container-title": "Geophysical & Astrophysical Fluid Dynamics",
-    "x-checked": "2026-11-19"
+    "x-checked": "2026-11-20"
   },
   {
     "id": "landi_1985_solar",
@@ -3366,7 +3366,7 @@
       ]
     },
     "container-title": "Springer-Verlag",
-    "x-checked": "2026-11-19"
+    "x-checked": "2026-11-20"
   },
   {
     "id": "thompson_2003_helioseismology",
@@ -3485,7 +3485,7 @@
     "container-title": "The Astrophysical Journal",
     "x-status": "unverified",
     "x-note": "ambiguous: closest Crossref hit is 'Formation of very strongly magnetized neutron stars - Implications for gamma-ray bursts' (Duncan, 1992, doi 10.1086/186413), title similarity 0.75, author match, year ok",
-    "x-checked": "2026-11-19"
+    "x-checked": "2026-11-20"
   },
   {
     "id": "mereghetti_2008_magnetar_flares",
@@ -3507,7 +3507,7 @@
     "container-title": "Living Reviews in Relativity",
     "x-status": "unverified",
     "x-note": "ambiguous: closest Crossref hit is 'SOFT GAMMA REPEATERS AND ANOMALOUS X-RAY PULSARS BEYOND MAGNETARS' (Bisnovatyi-Kogan, 2016, doi 10.18524/1810-4215.2016.29.84971), title similarity 0.91, author differs, year off",
-    "x-checked": "2026-11-19"
+    "x-checked": "2026-11-20"
   },
   {
     "id": "blakemore_1975_magnetotactic",
@@ -3579,7 +3579,7 @@
     "container-title": "Nature",
     "x-status": "unverified",
     "x-note": "ambiguous: closest Crossref hit is 'Pulsar Glitches: Superfluid Unpinning' (Anderson, 1981, doi 10.1007/978-94-011-7912-6_48), title similarity 1.00, author match, year off",
-    "x-checked": "2026-11-19"
+    "x-checked": "2026-11-20"
   },
   {
     "id": "yakovlev_pethick_2004_ns_cooling",
@@ -3695,7 +3695,7 @@
       ]
     },
     "container-title": "Phys. Rev. C",
-    "x-checked": "2026-11-19"
+    "x-checked": "2026-11-20"
   },
   {
     "id": "chamel_2012_neutron",
@@ -3717,7 +3717,7 @@
       ]
     },
     "container-title": "J. Phys. G: Nucl. Part. Phys.",
-    "x-checked": "2026-11-19"
+    "x-checked": "2026-11-20"
   },
   {
     "id": "haensel_2008_physics",
@@ -3739,7 +3739,7 @@
       ]
     },
     "container-title": "Living Rev. Relativity",
-    "x-checked": "2026-11-19"
+    "x-checked": "2026-11-20"
   },
   {
     "id": "kasting_1993_how",
@@ -3811,7 +3811,7 @@
     "ISBN": "",
     "x-status": "unverified",
     "x-note": "ambiguous: closest Crossref hit is 'Bone “mass” and the “mechanostat”: A proposal' (Frost, 1987, doi 10.1002/ar.1092190104), title similarity 0.68, author match, year ok",
-    "x-checked": "2026-11-19"
+    "x-checked": "2026-11-20"
   },
   {
     "id": "schwartz_2006_water",
@@ -3901,7 +3901,7 @@
       ]
     },
     "container-title": "W.H. Freeman",
-    "x-checked": "2026-11-19"
+    "x-checked": "2026-11-20"
   },
   {
     "id": "bishop_1999_evolutionary",
@@ -4033,7 +4033,7 @@
       ]
     },
     "container-title": "Microbiology Spectrum",
-    "x-checked": "2026-11-19"
+    "x-checked": "2026-11-20"
   },
   {
     "id": "schwarz_2013_salt",
@@ -4232,7 +4232,7 @@
       ]
     },
     "container-title": "Proceedings of the National Academy of Sciences",
-    "x-checked": "2026-11-19"
+    "x-checked": "2026-11-20"
   },
   {
     "id": "hochachka_2002_biochemical",
@@ -4254,7 +4254,7 @@
       ]
     },
     "container-title": "Princeton University Press",
-    "x-checked": "2026-11-19"
+    "x-checked": "2026-11-20"
   },
   {
     "id": "kerr_2006_sulfur",
@@ -4298,7 +4298,7 @@
       ]
     },
     "container-title": "Academic Press",
-    "x-checked": "2026-11-19"
+    "x-checked": "2026-11-20"
   },
   {
     "id": "nies_1999_microbial",
@@ -4343,7 +4343,7 @@
       ]
     },
     "container-title": "Fish Bulletin",
-    "x-checked": "2026-11-19"
+    "x-checked": "2026-11-20"
   },
   {
     "id": "keiler_2017_hundred",
@@ -4558,7 +4558,7 @@
     "ISBN": "",
     "x-status": "unverified",
     "x-note": "ambiguous: closest Crossref hit is 'Spectral Signatures of Photosynthesis. I. Review of Earth Organisms' (Kiang, 2007, doi 10.1089/ast.2006.0105), title similarity 0.74, author match, year ok",
-    "x-checked": "2026-11-19"
+    "x-checked": "2026-11-20"
   },
   {
     "id": "olson_2006_power",
@@ -4632,7 +4632,7 @@
       ]
     },
     "container-title": "Nature",
-    "x-checked": "2026-11-19"
+    "x-checked": "2026-11-20"
   },
   {
     "id": "fletcher_1998_physics",
@@ -4677,7 +4677,7 @@
       ]
     },
     "container-title": "Biological Trace Element Research",
-    "x-checked": "2026-11-19"
+    "x-checked": "2026-11-20"
   },
   {
     "id": "striedter_2005_principles",
@@ -4808,7 +4808,7 @@
     "ISBN": "978-0-321-01596-7",
     "x-status": "unverified",
     "x-note": "ambiguous: closest OpenLibrary hit is 'An introduction to modern astrophysics' (Carroll, 1995), title similarity 1.00, author match, year off",
-    "x-checked": "2026-11-19"
+    "x-checked": "2026-11-20"
   },
   {
     "id": "sleep_2010",
@@ -4877,7 +4877,7 @@
     "DOI": "10.1126/science.284.5417.760",
     "x-status": "unverified",
     "x-note": "ambiguous: closest Crossref hit is 'Molecular Genetics of Circadian Rhythms inNeurosporaa Prototypic Circadian System' (Dunlap, 2001, doi 10.1007/978-1-4615-1201-1_13), title similarity 0.73, author match, year off",
-    "x-checked": "2026-11-19"
+    "x-checked": "2026-11-20"
   },
   {
     "id": "seinfeld_pandis_2016",
@@ -4904,7 +4904,7 @@
     "ISBN": "978-1-118-67810-7",
     "x-status": "unverified",
     "x-note": "ambiguous: closest OpenLibrary hit is 'Atmospheric Chemistry and Physics' (Seinfeld, 1998), title similarity 1.00, author match, year off",
-    "x-checked": "2026-11-19"
+    "x-checked": "2026-11-20"
   },
   {
     "id": "weibel_1973",
@@ -4971,7 +4971,7 @@
     "container-title": "MIT Department of Physics",
     "x-status": "unverified",
     "x-note": "ambiguous: closest Crossref hit is 'Sound Absorption Technology' (Ingard, 1996, doi 10.1121/1.414472), title similarity 0.71, author match, year off",
-    "x-checked": "2026-11-19"
+    "x-checked": "2026-11-20"
   },
   {
     "id": "salomons_2001",
@@ -5160,7 +5160,7 @@
     "ISBN": "978-0-8153-4432-2",
     "x-status": "unverified",
     "x-note": "ambiguous: closest OpenLibrary hit is 'Molecular Biology of the Cell' (Alberts, 1983), title similarity 1.00, author match, year off",
-    "x-checked": "2026-11-19"
+    "x-checked": "2026-11-20"
   },
   {
     "id": "doudna_charpentier_2014",
@@ -5279,7 +5279,7 @@
     "ISBN": "",
     "x-status": "unverified",
     "x-note": "ambiguous: closest Crossref hit is 'A numerical experiment on the chaotic behaviour of the Solar System' (Laskar, 1989, doi 10.1038/338237a0), title similarity 0.77, author match, year off",
-    "x-checked": "2026-11-19"
+    "x-checked": "2026-11-20"
   },
   {
     "id": "schmidt_nielsen_1984_scaling",
@@ -5327,7 +5327,7 @@
     "ISBN": "9780691115679",
     "x-status": "unverified",
     "x-note": "ambiguous: closest OpenLibrary hit is 'Bones' (Currey, 2002), title similarity 0.29, author match, year ok",
-    "x-checked": "2026-11-19"
+    "x-checked": "2026-11-20"
   },
   {
     "id": "graham_1995_giant",
@@ -5435,7 +5435,7 @@
     "ISBN": "9780521612975",
     "x-status": "unverified",
     "x-note": "ambiguous: closest OpenLibrary hit is 'Changing Sea Levels' (Pugh, 2004), title similarity 0.31, author match, year ok",
-    "x-checked": "2026-11-19"
+    "x-checked": "2026-11-20"
   },
   {
     "id": "jackson_2002_geodynamics",
@@ -5487,7 +5487,7 @@
     "ISBN": "9781402046334",
     "x-status": "unverified",
     "x-note": "ambiguous: closest OpenLibrary hit is 'Subterranean ecosystems' (Culver, 2000), title similarity 1.00, author match, year off",
-    "x-checked": "2026-11-19"
+    "x-checked": "2026-11-20"
   },
   {
     "id": "doolittle_1999_phylogenetic",
@@ -5595,7 +5595,7 @@
     "ISBN": "",
     "x-status": "unverified",
     "x-note": "ambiguous: closest Crossref hit is 'Explaining Electroreception' (Bullock, None, doi 10.1007/0-387-28275-0_1), title similarity 0.74, author match, year ok",
-    "x-checked": "2026-11-19"
+    "x-checked": "2026-11-20"
   },
   {
     "id": "koga_2005_archaeal",
@@ -5705,7 +5705,7 @@
       ]
     },
     "container-title": "Biological Reviews",
-    "x-checked": "2026-11-19"
+    "x-checked": "2026-11-20"
   },
   {
     "id": "alexander_2003_exploration",
@@ -5727,7 +5727,7 @@
       ]
     },
     "container-title": "Springer",
-    "x-checked": "2026-11-19"
+    "x-checked": "2026-11-20"
   },
   {
     "id": "breder_1926_locomotion",
@@ -5772,7 +5772,7 @@
       ]
     },
     "container-title": "American Zoologist",
-    "x-checked": "2026-11-19"
+    "x-checked": "2026-11-20"
   },
   {
     "id": "fenton_1982_acoustic",
@@ -5794,7 +5794,7 @@
       ]
     },
     "container-title": "Canadian Journal of Zoology",
-    "x-checked": "2026-11-19"
+    "x-checked": "2026-11-20"
   },
   {
     "id": "gullan_2014_insects",
@@ -5884,7 +5884,7 @@
       ]
     },
     "container-title": "Journal of Experimental Biology",
-    "x-checked": "2026-11-19"
+    "x-checked": "2026-11-20"
   },
   {
     "id": "krause_2015_parasite",
@@ -5906,7 +5906,7 @@
       ]
     },
     "container-title": "Trends in Parasitology",
-    "x-checked": "2026-11-19"
+    "x-checked": "2026-11-20"
   },
   {
     "id": "lighthill_1975_mathematical",
@@ -5972,7 +5972,7 @@
       ]
     },
     "container-title": "Journal of Comparative Physiology A",
-    "x-checked": "2026-11-19"
+    "x-checked": "2026-11-20"
   },
   {
     "id": "mcmahon_1973_size",
@@ -6106,7 +6106,7 @@
     "container-title": "Advances in Space Research",
     "x-status": "unverified",
     "x-note": "ambiguous: closest Crossref hit is 'Cardiovascular deconditioning in microgravity: some possible countermeasures' (Antonutto, 2003, doi 10.1007/s00421-003-0884-5), title similarity 0.82, author differs, year off",
-    "x-checked": "2026-11-19"
+    "x-checked": "2026-11-20"
   },
   {
     "id": "tsiolkovsky_1903",
@@ -6240,7 +6240,7 @@
       ]
     },
     "container-title": "Oxford University Press",
-    "x-checked": "2026-11-19"
+    "x-checked": "2026-11-20"
   },
   {
     "id": "frost_1987_bone",
@@ -6350,7 +6350,7 @@
       ]
     },
     "container-title": "Icarus",
-    "x-checked": "2026-11-19"
+    "x-checked": "2026-11-20"
   },
   {
     "id": "kumar_2021_cell",
@@ -6416,7 +6416,7 @@
       ]
     },
     "container-title": "Annual Review of Earth and Planetary Sciences",
-    "x-checked": "2026-11-19"
+    "x-checked": "2026-11-20"
   },
   {
     "id": "prusiner_1998_prions",
@@ -6438,7 +6438,7 @@
       ]
     },
     "container-title": "Scientific American",
-    "x-checked": "2026-11-19"
+    "x-checked": "2026-11-20"
   },
   {
     "id": "shadwick_2016_aerodynamic",
@@ -6526,7 +6526,7 @@
       ]
     },
     "container-title": "Journal of Experimental Biology",
-    "x-checked": "2026-11-19"
+    "x-checked": "2026-11-20"
   },
   {
     "id": "dabiri_2005_propulsion",
@@ -6593,7 +6593,7 @@
       ]
     },
     "container-title": "Sinauer Associates",
-    "x-checked": "2026-11-19"
+    "x-checked": "2026-11-20"
   },
   {
     "id": "crame_2002_carcinisation",
@@ -6884,7 +6884,7 @@
     "DOI": "10.1089/ast.2014.1198",
     "x-status": "unverified",
     "x-note": "ambiguous: closest Crossref hit is 'Extreme Water Loss and Abiotic O 2 Buildup on Planets Throughout the Habitable Zones of M Dwarfs' (Luger, 2015, doi 10.1089/ast.2014.1231), title similarity 0.79, author match, year ok",
-    "x-checked": "2026-11-19"
+    "x-checked": "2026-11-20"
   },
   {
     "id": "segura_2005",
@@ -6961,7 +6961,7 @@
     "DOI": "10.1088/0067-0049/213/2/26",
     "x-status": "unverified",
     "x-note": "ambiguous: closest Crossref hit is 'THE KEPLER CATALOG OF STELLAR FLARES' (Davenport, 2016, doi 10.3847/0004-637x/829/1/23), title similarity 1.00, author match, year off",
-    "x-checked": "2026-11-19"
+    "x-checked": "2026-11-20"
   },
   {
     "id": "airapetian_2016",
@@ -7112,7 +7112,7 @@
       ]
     },
     "container-title": "Icarus",
-    "x-checked": "2026-11-19"
+    "x-checked": "2026-11-20"
   },
   {
     "id": "rothman_2020_chemolithoautotrophy",
@@ -7290,7 +7290,7 @@
     "DOI": "10.1038/34857",
     "x-status": "unverified",
     "x-note": "ambiguous: closest Crossref hit is 'Seismic Detectability of a Subsurface Ocean on Europa' (Kovach, 2001, doi 10.1006/icar.2000.6577), title similarity 0.77, author differs, year off",
-    "x-checked": "2026-11-19"
+    "x-checked": "2026-11-20"
   },
   {
     "id": "kivelson_2000_europa",
@@ -7565,7 +7565,7 @@
     "DOI": "10.1126/science.1102556",
     "x-status": "unverified",
     "x-note": "ambiguous: closest Crossref hit is 'From the Mantle to Microbes: The Lost City Hydrothermal Field' (Kelley, 2005, doi 10.5670/oceanog.2005.23), title similarity 0.65, author match, year ok",
-    "x-checked": "2026-11-19"
+    "x-checked": "2026-11-20"
   },
   {
     "id": "postberg_2009_salts",
@@ -8005,7 +8005,7 @@
     "container-title": "Princeton University Press",
     "x-status": "unverified",
     "x-note": "ambiguous: closest OpenLibrary hit is 'Life in Moving Fluids' (Vogel, 1983), title similarity 1.00, author match, year off",
-    "x-checked": "2026-11-19"
+    "x-checked": "2026-11-20"
   },
   {
     "id": "hurd_2000_motion",
@@ -8337,7 +8337,7 @@
     "container-title": "Annual Review of Ecology and Systematics",
     "x-status": "unverified",
     "x-note": "ambiguous: closest Crossref hit is 'Ecology of Pollination and Seed Dispersal' (Howe, 1996, doi 10.1002/9781444313642.ch9), title similarity 0.76, author match, year off",
-    "x-checked": "2026-11-19"
+    "x-checked": "2026-11-20"
   },
   {
     "id": "friedrich_2005_sulfur",
@@ -8398,7 +8398,7 @@
     "container-title": "Science",
     "x-status": "unverified",
     "x-note": "ambiguous: closest Crossref hit is 'Life at High Temperatures' (Brock, 1985, doi 10.1126/science.230.4722.132), title similarity 1.00, author match, year off",
-    "x-checked": "2026-11-19"
+    "x-checked": "2026-11-20"
   },
   {
     "id": "oliveira_2015_bioluminescence",
@@ -8767,7 +8767,7 @@
       ]
     },
     "container-title": "Journal of Experimental Biology",
-    "x-checked": "2026-11-19"
+    "x-checked": "2026-11-20"
   },
   {
     "id": "biewener_2003_animal",
@@ -8789,7 +8789,7 @@
       ]
     },
     "container-title": "Journal of Experimental Biology",
-    "x-checked": "2026-11-19"
+    "x-checked": "2026-11-20"
   },
   {
     "id": "eisner_2003_love",
@@ -8832,7 +8832,7 @@
       ]
     },
     "container-title": "Springer",
-    "x-checked": "2026-11-19"
+    "x-checked": "2026-11-20"
   },
   {
     "id": "fitch_2000_evolution",
@@ -8854,7 +8854,7 @@
       ]
     },
     "container-title": "Cambridge University Press",
-    "x-checked": "2026-11-19"
+    "x-checked": "2026-11-20"
   },
   {
     "id": "fitch_2004_acoustic",
@@ -8876,7 +8876,7 @@
       ]
     },
     "container-title": "Springer",
-    "x-checked": "2026-11-19"
+    "x-checked": "2026-11-20"
   },
   {
     "id": "hocking_1980_scavenging",
@@ -8918,7 +8918,7 @@
       ]
     },
     "container-title": "Springer",
-    "x-checked": "2026-11-19"
+    "x-checked": "2026-11-20"
   },
   {
     "id": "keller_1995_queens",
@@ -9024,7 +9024,7 @@
       ]
     },
     "container-title": "Physiological Reviews",
-    "x-checked": "2026-11-19"
+    "x-checked": "2026-11-20"
   },
   {
     "id": "warrant_2004_vision",
@@ -9091,5 +9091,3973 @@
     },
     "container-title": "Springer",
     "x-checked": "2026-11-19"
+  },
+  {
+    "id": "brennen_1995_cavitation",
+    "type": "book",
+    "title": "Cavitation and Bubble Dynamics.",
+    "x-status": "verified",
+    "x-note": "verified against OpenLibrary (title 1.00); ISBN added",
+    "author": [
+      {
+        "family": "Brennen",
+        "given": "C. E."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1995
+        ]
+      ]
+    },
+    "container-title": "Oxford University Press.",
+    "ISBN": "9780195094091",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "carlson_2007_hydrothermal",
+    "type": "article-journal",
+    "title": "Hydrothermal vents and the discovery of life",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit '13. Hydrothermal Systems and the Origin of Life' (, 2000) title similarity 0.73",
+    "author": [
+      {
+        "family": "Carlson",
+        "given": "R."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2007
+        ]
+      ]
+    },
+    "container-title": "Oceanography",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "coulter_1978_piezoelectric",
+    "type": "article-journal",
+    "title": "The piezoelectric effect in collagen.",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'Piezoelectric effect in collagen structures' (Chepel', 1979, doi 10.1007/bf00860495), title similarity 0.81, author differs, year ok",
+    "author": [
+      {
+        "family": "Coulter",
+        "given": "J. E."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1978
+        ]
+      ]
+    },
+    "container-title": "Int. J. Quant. Cell Biol.",
+    "x-checked": "2026-11-20"
+  },
+  {
+    "id": "frankel_1998_magnetotactic",
+    "type": "article-journal",
+    "title": "Magnetotactic bacteria.",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'Magnetotactic Bacteria' (, None, doi 10.1007/springerreference_187307), title similarity 1.00, author differs, year ok",
+    "author": [
+      {
+        "family": "Frankel",
+        "given": "E. E."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1998
+        ]
+      ]
+    },
+    "container-title": "American Scientist.",
+    "x-checked": "2026-11-20"
+  },
+  {
+    "id": "haddock_2017_bioluminescence",
+    "type": "article-journal",
+    "title": "Bioluminescence in the ocean.",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Zooplankton and Phytoplankton Contributors to Bioluminescence in Monterey Bay' (Haddock, 2000) title similarity 0.44",
+    "author": [
+      {
+        "family": "Haddock",
+        "given": "S. H."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2017
+        ]
+      ]
+    },
+    "container-title": "Annu. Rev. Mar. Sci.",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "lee_2000_ether",
+    "type": "article-journal",
+    "title": "Ether lipids of archaea",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Ether Lipids from Thermophilic Archaea' (SUGAI, 1997) title similarity 0.72",
+    "author": [
+      {
+        "family": "Lee",
+        "given": "S."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2000
+        ]
+      ]
+    },
+    "container-title": "Microbiol. Mol. Biol. Rev.",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "smith_2018_grazing",
+    "type": "article-journal",
+    "title": "Grazing behavior on subglacial biofilms",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Supplementary material to \"Connected subglacial lake drainage beneath Thwaites Glacier, West Antarctica\"' (Smith, 2016) title similarity 0.34",
+    "author": [
+      {
+        "family": "Smith",
+        "given": "W."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2018
+        ]
+      ]
+    },
+    "container-title": "Front. Microbiol.",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "trimmer_2004_excretion",
+    "type": "article-journal",
+    "title": "Gas excretion in aquatic organisms",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Excretion of Compounds from Organisms' (Nikinmaa, 2014) title similarity 0.62",
+    "author": [
+      {
+        "family": "Trimmer",
+        "given": "D."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2004
+        ]
+      ]
+    },
+    "container-title": "J. Exp. Biol.",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "kopparapu_2013_habitable",
+    "type": "article-journal",
+    "title": "HABITABLE ZONES AROUND MAIN-SEQUENCE STARS: DEPENDENCE ON PLANETARY MASS",
+    "author": [
+      {
+        "family": "Kopparapu",
+        "given": "Ravi K."
+      },
+      {
+        "family": "Ramirez",
+        "given": "Robert M."
+      },
+      {
+        "family": "Schottel Kopp",
+        "given": "Geoffrey"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2014
+        ]
+      ]
+    },
+    "container-title": "The Astrophysical Journal",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); title corrected from 'Habitable zones around main-sequence stars'; year corrected from 2013; DOI added",
+    "DOI": "10.1088/2041-8205/787/2/l29",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "zeng_2016_massradius",
+    "type": "article-journal",
+    "title": "Mass-Radius Relation of Solid Exoplanets",
+    "author": [
+      {
+        "family": "Zeng",
+        "given": "Lian"
+      },
+      {
+        "family": "Sasselov",
+        "given": "Daniel D."
+      },
+      {
+        "family": "Jacobsen",
+        "given": "Stefan B."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2016
+        ]
+      ]
+    },
+    "container-title": "The Astrophysical Journal",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'A Computational Tool to Interpret the Bulk Composition of Solid Exoplanets based on Mass and Radius Measurements' (Zeng, 2008) title similarity 0.41",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "turcotte_2014_geodynamics",
+    "type": "book",
+    "title": "Geodynamics",
+    "author": [
+      {
+        "family": "Turcotte",
+        "given": "Donald L."
+      },
+      {
+        "family": "Schubert",
+        "given": "Gerald"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2014
+        ]
+      ]
+    },
+    "container-title": "Cambridge University Press",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest OpenLibrary hit is 'Geodynamics' (Turcotte, 2012), title similarity 1.00, author match, year off",
+    "x-checked": "2026-11-20"
+  },
+  {
+    "id": "stevenson_1990_tidal",
+    "type": "article-journal",
+    "title": "Planetary tides and internal heating",
+    "author": [
+      {
+        "family": "Stevenson",
+        "given": "David J."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1990
+        ]
+      ]
+    },
+    "container-title": "Annual Review of Earth and Planetary Sciences",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Tides (Planetary)' (, None) title similarity 0.35",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "christensen_2006_dynamo",
+    "type": "article-journal",
+    "title": "Scaling laws for dynamos",
+    "author": [
+      {
+        "family": "Christensen",
+        "given": "Ulrich R."
+      },
+      {
+        "family": "Aubert",
+        "given": "Julien"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2006
+        ]
+      ]
+    },
+    "container-title": "Geophysical Journal International",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'Scaling laws of turbulent dynamos' (Fauve, 2007, doi 10.1016/j.crhy.2006.12.011), title similarity 0.81, author differs, year ok",
+    "x-checked": "2026-11-20"
+  },
+  {
+    "id": "wordsworth_2016_retention",
+    "type": "article-journal",
+    "title": "Atmospheric escape on super-Earths",
+    "author": [
+      {
+        "family": "Wordsworth",
+        "given": "Rory"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2016
+        ]
+      ]
+    },
+    "container-title": "The Astrophysical Journal",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Efficiency of Hydrodynamic Atmospheric Escape in Hot Jupiters and Super-Earths' (Frelikh, 2025) title similarity 0.61",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "showman_2018_superearth",
+    "type": "article-journal",
+    "title": "Atmospheric Circulation on Super-Earths",
+    "author": [
+      {
+        "family": "Showman",
+        "given": "Adam P."
+      },
+      {
+        "family": "Lu",
+        "given": "Yan"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2018
+        ]
+      ]
+    },
+    "container-title": "The Astrophysical Journal",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'Atmospheric Circulation of Terrestrial Exoplanets' (Showman, 2013, doi 10.2458/azu_uapress_9780816530595-ch12), title similarity 0.75, author match, year off",
+    "x-checked": "2026-11-20"
+  },
+  {
+    "id": "yancey_2005_piezolytes",
+    "type": "article-journal",
+    "title": "Life at high hydrostatic pressure",
+    "author": [
+      {
+        "family": "Yancey",
+        "given": "Peter H."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2005
+        ]
+      ]
+    },
+    "container-title": "Comparative Biochemistry and Physiology Part A: Molecular & Integrative Physiology",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Solid-Supported Lipid Multilayers under High Hydrostatic Pressure' (, None) title similarity 0.63",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "gilly_2010_high",
+    "type": "article-journal",
+    "title": "High-pressure adaptation in deep-sea animals",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Molecular Adaptation to High Pressure: Proteins in Deep-Sea Animals' (Macdonald, 2021) title similarity 0.69",
+    "author": [
+      {
+        "family": "Gilly",
+        "given": "B. C."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2010
+        ]
+      ]
+    },
+    "container-title": "Science",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "king_2004_acoustic",
+    "type": "article-journal",
+    "title": "Acoustic trapping",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'ACOUSTIC SELF-TRAPPING OF LASER BEAMS' (Kerr, 1968) title similarity 0.63",
+    "author": [
+      {
+        "family": "King",
+        "given": "T. G."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2004
+        ]
+      ]
+    },
+    "container-title": "Journal of Physics D: Applied Physics",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "lauder_1985_evolution",
+    "type": "article-journal",
+    "title": "Evolution of crab-like form: convergence and functional morphology",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Form and function: structural analysis in evolutionary morphology' (Lauder, 1981) title similarity 0.47",
+    "author": [
+      {
+        "family": "Lauder",
+        "given": "G. V."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1985
+        ]
+      ]
+    },
+    "container-title": "Journal of Morphology",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "marston_2018_acoustic",
+    "type": "article-journal",
+    "title": "Acoustic radiation pressure and streaming in viscous fluids",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Radiation pressure and acoustic streaming' (Duck, None) title similarity 0.64",
+    "author": [
+      {
+        "family": "Marston",
+        "given": "P. L."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2018
+        ]
+      ]
+    },
+    "container-title": "Annual Review of Fluid Mechanics",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "seibel_2009_piezolytes",
+    "type": "article-journal",
+    "title": "Piezolytes: the counteracting effects of pressure and 'osmolyte' molecules on protein function",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Horizontal Chopping Techniques 3: Seibel Chopper' (Seibel, 2024) title similarity 0.33",
+    "author": [
+      {
+        "family": "Seibel",
+        "given": "B. A."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2009
+        ]
+      ]
+    },
+    "container-title": "Integrative and Comparative Biology",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "kite_2017_habitable",
+    "type": "article-journal",
+    "title": "Habitable Planets around Rogue Planets",
+    "author": [
+      {
+        "family": "Kite",
+        "given": "E. S."
+      },
+      {
+        "family": "Jacobs",
+        "given": "G. S."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2017
+        ]
+      ]
+    },
+    "container-title": "The Astrophysical Journal",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Habitable planets around the Sun and other stars' (Kasting, 2007) title similarity 0.74",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "segura_2005_mdw",
+    "type": "article-journal",
+    "title": "Habitable Planets around M Dwarfs",
+    "author": [
+      {
+        "family": "Segura",
+        "given": "A."
+      },
+      {
+        "family": "Kasting",
+        "given": "J. F."
+      },
+      {
+        "family": "Cohen",
+        "given": "M."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2005
+        ]
+      ]
+    },
+    "container-title": "Astrobiology",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'Titan and habitable planets around M-dwarfs' (Lunine, 2010, doi 10.1039/c004788k), title similarity 0.87, author differs, year off",
+    "x-checked": "2026-11-20"
+  },
+  {
+    "id": "zeng_2016_earth",
+    "type": "article-journal",
+    "title": "Earth-Size Planets in the Habitable Zone",
+    "author": [
+      {
+        "family": "Zeng",
+        "given": "L."
+      },
+      {
+        "family": "Sasselov",
+        "given": "D."
+      },
+      {
+        "family": "Jacobson",
+        "given": "S. A."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2016
+        ]
+      ]
+    },
+    "container-title": "Proceedings of the National Academy of Sciences",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Search for Earth-like planets in the habitable zone of M-dwarfs' (Astudillo-Defru, None) title similarity 0.74",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "christensen_2006_scaling",
+    "type": "article-journal",
+    "title": "Scaling Properties of Convection-Driven Dynamos",
+    "author": [
+      {
+        "family": "Christensen",
+        "given": "U. R."
+      },
+      {
+        "family": "Aubert",
+        "given": "J."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2006
+        ]
+      ]
+    },
+    "container-title": "Geophysical Journal International",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'Convection-driven planetary dynamos' (Christensen, 2006, doi 10.1017/s1743921307000403), title similarity 0.61, author match, year ok",
+    "x-checked": "2026-11-20"
+  },
+  {
+    "id": "pierrehumbert_2011_principles",
+    "type": "book",
+    "title": "Principles of Planetary Climate",
+    "author": [
+      {
+        "family": "Pierrehumbert",
+        "given": "R. T."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2010
+        ]
+      ]
+    },
+    "container-title": "Cambridge University Press",
+    "x-status": "verified",
+    "x-note": "verified against OpenLibrary (title 1.00); year corrected from 2011; ISBN added",
+    "ISBN": "9780511780783",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "lunine_2009_icy",
+    "type": "chapter",
+    "title": "The Nature of Icy Satellite Surfaces",
+    "author": [
+      {
+        "family": "Lunine",
+        "given": "J. I."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2009
+        ]
+      ]
+    },
+    "container-title": "Encyclopedia of the Solar System",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Cassini-Huygens Investigations of Satellite Surfaces and Interiors' (Lunine, 2003) title similarity 0.49",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "vance_2018_ocean",
+    "type": "article-journal",
+    "title": "Ocean Worlds: A Comparative Study",
+    "author": [
+      {
+        "family": "Vance",
+        "given": "A."
+      },
+      {
+        "family": "Pappalardo",
+        "given": "R. T."
+      },
+      {
+        "family": "Hand",
+        "given": "K. P."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2018
+        ]
+      ]
+    },
+    "container-title": "Space Science Reviews",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'The Habitability of Icy Ocean Worlds in the Solar System' (Vance, 2017, doi 10.1007/978-3-319-30648-3_63-1), title similarity 0.43, author match, year ok",
+    "x-checked": "2026-11-20"
+  },
+  {
+    "id": "hemingway_2020_ocean",
+    "type": "article-journal",
+    "title": "The Limits of Ocean and Lake Ice",
+    "author": [
+      {
+        "family": "Hemingway",
+        "given": "J. J."
+      },
+      {
+        "family": "Kite",
+        "given": "E. S."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2020
+        ]
+      ]
+    },
+    "container-title": "Geophysical Research Letters",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'The Ice‐Ocean Governor: Ice‐Ocean Stress Feedback Limits Beaufort Gyre Spin‐Up' (Meneghello, 2018) title similarity 0.45",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "hand_2007_europan",
+    "type": "article-journal",
+    "title": "Radiolytic Production of Oxidants on Europa and the Implications for Biology",
+    "author": [
+      {
+        "family": "Hand",
+        "given": "K. P."
+      },
+      {
+        "family": "Chyba",
+        "given": "C. F."
+      },
+      {
+        "family": "Dworkin",
+        "given": "J. P."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2007
+        ]
+      ]
+    },
+    "container-title": "Icarus",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'Clathrate Hydrates of Oxidants in the Ice Shell of Europa' (Hand, 2006, doi 10.1089/ast.2006.6.463), title similarity 0.38, author match, year ok",
+    "x-checked": "2026-11-20"
+  },
+  {
+    "id": "russell_2006_alkaline",
+    "type": "article-journal",
+    "title": "The Emergence of Life from Iron Sulphur World Chemistry",
+    "author": [
+      {
+        "family": "Russell",
+        "given": "M. J."
+      },
+      {
+        "family": "Hall",
+        "given": "A. J."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2006
+        ]
+      ]
+    },
+    "container-title": "Philosophical Transactions of the Royal Society B",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'On the emergence of life via catalytic iron‐sulphide membranes' (Russell, 1993, doi 10.1111/j.1365-3121.1993.tb00267.x), title similarity 0.62, author match, year off",
+    "x-checked": "2026-11-20"
+  },
+  {
+    "id": "schrenk_2013_vent",
+    "type": "article-journal",
+    "title": "Hydrothermal Systems and the Origins of Life",
+    "author": [
+      {
+        "family": "Schrenk",
+        "given": "M. O."
+      },
+      {
+        "family": "Martin",
+        "given": "G. W."
+      },
+      {
+        "family": "Baross",
+        "given": "J. A."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2013
+        ]
+      ]
+    },
+    "container-title": "Nature Geoscience",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Thermodynamics of strecker synthesis in hydrothermal systems' (Schulte, 1995) title similarity 0.38",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "amend_2001_energetics",
+    "type": "article-journal",
+    "title": "Energetics of Overall Metabolic Reactions",
+    "author": [
+      {
+        "family": "Amend",
+        "given": "J. P."
+      },
+      {
+        "family": "Shock",
+        "given": "E. L."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2001
+        ]
+      ]
+    },
+    "container-title": "Astrobiology",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'Energetics of overall metabolic reactions of thermophilic and hyperthermophilic Archaea and Bacteria' (Amend, 2001, doi 10.1111/j.1574-6976.2001.tb00576.x), title similarity 0.58, author match, year ok",
+    "x-checked": "2026-11-20"
+  },
+  {
+    "id": "mccollom_2013_serp",
+    "type": "article-journal",
+    "title": "Abiotic Synthesis of Organics in Alkaline Hydrothermal Vents",
+    "author": [
+      {
+        "family": "McCollom",
+        "given": "T. M."
+      },
+      {
+        "family": "Seewald",
+        "given": "J. S."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2013
+        ]
+      ]
+    },
+    "container-title": "Annual Review of Earth and Planetary Sciences",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'Abiotic Synthesis of Organic Compounds in Deep‐Sea Hydrothermal Environments' (McCollom, 2007, doi 10.1002/chin.200720264), title similarity 0.79, author match, year off",
+    "x-checked": "2026-11-20"
+  },
+  {
+    "id": "yoshida_2012_piezophile",
+    "type": "article-journal",
+    "title": "Piezophilic Microorganisms",
+    "author": [
+      {
+        "family": "Yoshida",
+        "given": "T."
+      },
+      {
+        "family": "Kawaguchi",
+        "given": "T."
+      },
+      {
+        "family": "Kato",
+        "given": "C."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2012
+        ]
+      ]
+    },
+    "container-title": "Microbes and Environments",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'Piezophilic or Barophilic Microorganisms' (Kanekar, 2022, doi 10.1007/978-981-19-1573-4_9), title similarity 0.79, author differs, year off",
+    "x-checked": "2026-11-20"
+  },
+  {
+    "id": "schut_2020_h2",
+    "type": "article-journal",
+    "title": "Hydrogen Metabolism in the Deep Biosphere",
+    "author": [
+      {
+        "family": "Schut",
+        "given": "G. J."
+      },
+      {
+        "family": "van der Zaan",
+        "given": "C. J."
+      },
+      {
+        "family": "Stams",
+        "given": "A. J. M."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2020
+        ]
+      ]
+    },
+    "container-title": "FEMS Microbiology Reviews",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Deep Biosphere of' (, None) title similarity 0.48",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "fukada_1959_piezoelectricity",
+    "type": "article-journal",
+    "title": "Piezoelectricity of bone",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'Piezoelectricity of biopolymers' (FUKADA, 1995, doi 10.1016/0006-355x(95)00039-c), title similarity 0.84, author match, year off",
+    "author": [
+      {
+        "family": "Fukada",
+        "given": "E."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1959
+        ]
+      ]
+    },
+    "container-title": "Journal of the Physical Society of Japan",
+    "x-checked": "2026-11-20"
+  },
+  {
+    "id": "kirschvink_1979_field",
+    "type": "article-journal",
+    "title": "Low-field magnetic superparamagnetism of magnetite",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Quantitative reanalysis of classic pigeon homing experiments rejects a liver-based magnetic compass based on superparamagnetism' (Kirschvink, 2026) title similarity 0.40",
+    "author": [
+      {
+        "family": "Kirschvink",
+        "given": "J. L."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1979
+        ]
+      ]
+    },
+    "container-title": "Proceedings of the National Academy of Sciences",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "thibault_2000_collision",
+    "type": "article-journal",
+    "title": "Collision-induced absorption in H2-He mixtures",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Collision-induced fundamental band of H2 in H2He and H2Ne mixtures at different temperatures' (Reddy, 1973) title similarity 0.57",
+    "author": [
+      {
+        "family": "Thibault",
+        "given": "F."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2000
+        ]
+      ]
+    },
+    "container-title": "Journal of Chemical Physics",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "kasting_1993_habitablezone",
+    "type": "article-journal",
+    "title": "Habitable Zones Around Main Sequence Stars",
+    "author": [
+      {
+        "family": "Kasting",
+        "given": "James F."
+      },
+      {
+        "family": "Whitmire",
+        "given": "David P."
+      },
+      {
+        "family": "Reynolds",
+        "given": "Robert T."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1993
+        ]
+      ]
+    },
+    "container-title": "Icarus",
+    "DOI": "10.1006/icar.1993.1010",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "segura_2005_kdwarf",
+    "type": "article-journal",
+    "title": "Habitable Planets Around K Dwarfs",
+    "author": [
+      {
+        "family": "Segura",
+        "given": "A."
+      },
+      {
+        "family": "Kasting",
+        "given": "J. F."
+      },
+      {
+        "family": "Cohen",
+        "given": "B."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2005
+        ]
+      ]
+    },
+    "container-title": "Astrobiology",
+    "DOI": "10.1089/ast.2005.5.443",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'Titan and habitable planets around M-dwarfs' (Lunine, 2010, doi 10.1039/c004788k), title similarity 0.84, author differs, year off",
+    "x-checked": "2026-11-20"
+  },
+  {
+    "id": "gnther_2016_kdwarf",
+    "type": "article-journal",
+    "title": "The Kepler K2 Mission: Characterizing the Flare Activity of K Dwarfs",
+    "author": [
+      {
+        "family": "Günther",
+        "given": "Maximilian N."
+      },
+      {
+        "family": "Kastner",
+        "given": "J. H."
+      },
+      {
+        "family": "Hatzes",
+        "given": "A. P."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2016
+        ]
+      ]
+    },
+    "container-title": "Astronomy & Astrophysics",
+    "DOI": "10.1051/0004-6361/201628219",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'The NASA Kepler and K2 Missions' (Troeltzsch, 2020, doi 10.1088/2514-3433/ab9823ch2), title similarity 0.81, author differs, year off",
+    "x-checked": "2026-11-20"
+  },
+  {
+    "id": "peale_1979_tidal",
+    "type": "article-journal",
+    "title": "Melting of Io by Tidal Dissipation",
+    "author": [
+      {
+        "family": "Peale",
+        "given": "Stanley J."
+      },
+      {
+        "family": "Cassen",
+        "given": "Patrick"
+      },
+      {
+        "family": "Reynolds",
+        "given": "Raymond T."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1979
+        ]
+      ]
+    },
+    "container-title": "Science",
+    "DOI": "10.1126/science.203.4383.892",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "murray_1999_solar",
+    "type": "book",
+    "title": "Solar System Dynamics",
+    "author": [
+      {
+        "family": "Murray",
+        "given": "Colin D."
+      },
+      {
+        "family": "Dermott",
+        "given": "Stanford F."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1999
+        ]
+      ]
+    },
+    "container-title": "Cambridge University Press",
+    "ISBN": "9781139174817",
+    "x-status": "verified",
+    "x-note": "verified against OpenLibrary (title 1.00); ISBN added",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "wordsworth_2013_venus",
+    "type": "article-journal",
+    "title": "Atmospheric Dynamics of Venus-like Exoplanets",
+    "author": [
+      {
+        "family": "Wordsworth",
+        "given": "Rory D."
+      },
+      {
+        "family": "Pierrehumbert",
+        "given": "Rupert T."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2013
+        ]
+      ]
+    },
+    "container-title": "The Astrophysical Journal",
+    "DOI": "10.1088/0004-637X/772/1/35",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'ATMOSPHERIC CHEMISTRY OF VENUS-LIKE EXOPLANETS' (Schaefer, 2011, doi 10.1088/0004-637x/729/1/6), title similarity 0.88, author differs, year off",
+    "x-checked": "2026-11-20"
+  },
+  {
+    "id": "showman_1999_atmospheric",
+    "type": "article-journal",
+    "title": "Atmospheric Tides on Close-in Planets",
+    "author": [
+      {
+        "family": "Showman",
+        "given": "Adam P."
+      },
+      {
+        "family": "Luu",
+        "given": "Jason N."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1999
+        ]
+      ]
+    },
+    "container-title": "Icarus",
+    "DOI": "10.1006/icar.1999.6133",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'Atmospheric circulation and tides of “51 Pegasus b-like” planets' (Showman, 2002, doi 10.1051/0004-6361:20020101), title similarity 0.61, author match, year off",
+    "x-checked": "2026-11-20"
+  },
+  {
+    "id": "kivelson_2002_europa",
+    "type": "article-journal",
+    "title": "Magnetic Field Measurements at Europa",
+    "author": [
+      {
+        "family": "Kivelson",
+        "given": "Monica G."
+      },
+      {
+        "family": "Khurana",
+        "given": "Krishan K."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2002
+        ]
+      ]
+    },
+    "container-title": "Nature",
+    "DOI": "10.1038/nature01115",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Measuring magnetic field gradients from four point vector measurements in space' (Khurana, 1998) title similarity 0.53",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "sotin_2007_europa",
+    "type": "article-journal",
+    "title": "Tidal Heating and External Oceans on Icy Moons",
+    "author": [
+      {
+        "family": "Sotin",
+        "given": "C."
+      },
+      {
+        "family": "O'Brien",
+        "given": "D. P."
+      },
+      {
+        "family": "Capria",
+        "given": "M. T."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2007
+        ]
+      ]
+    },
+    "container-title": "Space Science Reviews",
+    "DOI": "10.1007/s11214-007-9201-5",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Carbon-rich icy moons and dwarf planets' (Reynard, 2022) title similarity 0.33",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "dadachova_2008_radiotrophy",
+    "type": "article-journal",
+    "title": "Ionizing Radiation Improves the Growth of Melanized and Non-Melanized Cryptococcus neoformans",
+    "author": [
+      {
+        "family": "Dadachova",
+        "given": "Ekaterina"
+      },
+      {
+        "family": "Casadevall",
+        "given": "Alex"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2008
+        ]
+      ]
+    },
+    "container-title": "International Journal of Biochemistry & Cell Biology",
+    "DOI": "10.1016/j.biocel.2007.12.003",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'Ionizing Radiation Changes the Electronic Properties of Melanin and Enhances the Growth of Melanized Fungi' (Dadachova, 2007, doi 10.1371/journal.pone.0000457), title similarity 0.52, author match, year ok",
+    "x-checked": "2026-11-20"
+  },
+  {
+    "id": "robinson_2014_photosynthesis",
+    "type": "article-journal",
+    "title": "Photosynthesis in the Red: Implications for Exoplanet Biosignatures",
+    "author": [
+      {
+        "family": "Robinson",
+        "given": "Jason"
+      },
+      {
+        "family": "Cockell",
+        "given": "Charles S."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2014
+        ]
+      ]
+    },
+    "container-title": "Astrobiology",
+    "DOI": "10.1089/ast.2013.1084",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Photosynthetic Carbon Reduction Cycle' (ROBINSON, 1981) title similarity 0.58",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "wehner_2006_polarization",
+    "type": "chapter",
+    "title": "Polarization Vision",
+    "author": [
+      {
+        "family": "Wehner",
+        "given": "Rüdiger"
+      },
+      {
+        "family": "Labhart",
+        "given": "Thomas"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2006
+        ]
+      ]
+    },
+    "container-title": "Invertebrate Vision",
+    "DOI": "10.1017/CBO9780511541135.006",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'Polarization Vision: A Discovery Story' (Wehner, 2014, doi 10.1007/978-3-642-54718-8_1), title similarity 1.00, author match, year off",
+    "x-checked": "2026-11-20"
+  },
+  {
+    "id": "zahnle_2007_atmosphere",
+    "type": "article-journal",
+    "title": "Emergence of a Hazy Character for the Archean Earth",
+    "author": [
+      {
+        "family": "Zahnle",
+        "given": "Kevin"
+      },
+      {
+        "family": "Kasting",
+        "given": "James"
+      },
+      {
+        "family": "Crawford",
+        "given": "David"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2007
+        ]
+      ]
+    },
+    "container-title": "Geochimica et Cosmochimica Acta",
+    "DOI": "10.1016/j.gca.2007.06.1532",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'A Revised, Hazy Methane Greenhouse for the Archean Earth' (Haqq-Misra, 2008) title similarity 0.64",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "morse_1968_acoustics",
+    "type": "book",
+    "title": "Theoretical Acoustics",
+    "author": [
+      {
+        "family": "Morse",
+        "given": "Philip M."
+      },
+      {
+        "family": "Ingard",
+        "given": "Karl Uno"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1968
+        ]
+      ]
+    },
+    "container-title": "Princeton University Press",
+    "ISBN": "9780691024011",
+    "x-status": "verified",
+    "x-note": "verified against OpenLibrary (title 1.00); ISBN added",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "correia_2001_tides",
+    "type": "article-journal",
+    "title": "Atmospheric Tides on Tidally Locked Planets",
+    "author": [
+      {
+        "family": "Correia",
+        "given": "António C. M."
+      },
+      {
+        "family": "Laskar",
+        "given": "Jacques"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2001
+        ]
+      ]
+    },
+    "container-title": "Astronomy & Astrophysics",
+    "DOI": "10.1051/0004-6361:20011345",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'Atmospheric stability and collapse on tidally locked rocky planets' (Auclair-Desrotour, 2020, doi 10.1051/0004-6361/202037513), title similarity 0.77, author differs, year off",
+    "x-checked": "2026-11-20"
+  },
+  {
+    "id": "kite_2020_ocean",
+    "type": "article-journal",
+    "title": "The Climate of Early Mars",
+    "author": [
+      {
+        "family": "Kite",
+        "given": "Ethan S."
+      },
+      {
+        "family": "Born",
+        "given": "Anna"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2020
+        ]
+      ]
+    },
+    "container-title": "Icarus",
+    "DOI": "10.1016/j.icarus.2019.113567",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'Geologic Constraints on Early Mars Climate' (Kite, 2019, doi 10.1007/s11214-018-0575-5), title similarity 0.54, author match, year ok",
+    "x-checked": "2026-11-20"
+  },
+  {
+    "id": "cavanaugh_1983_symbiotic",
+    "type": "article-journal",
+    "title": "The symbiotic associations of tubeworms with chemoautotrophic bacteria",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'Symbiotic chemoautotrophic bacteria in marine invertebrates from sulphide-rich habitats' (Cavanaugh, 1983, doi 10.1038/302058a0), title similarity 0.45, author match, year ok",
+    "author": [
+      {
+        "family": "Cavanaugh",
+        "given": "C. M."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1983
+        ]
+      ]
+    },
+    "container-title": "Scientific American",
+    "x-checked": "2026-11-20"
+  },
+  {
+    "id": "kotler_2000_inflation",
+    "type": "article-journal",
+    "title": "Inflation defense mechanisms in amphibians and fish",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Federal Reserve's Inflation Fight' (Kotler, 1979) title similarity 0.31",
+    "author": [
+      {
+        "family": "Kotler",
+        "given": "M. P."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2000
+        ]
+      ]
+    },
+    "container-title": "Copeia",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "meyers_2001_bioaerosols",
+    "type": "article-journal",
+    "title": "Bioaerosols: characterisation, health effects, and assessment",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Bioaerosols: Introduction, Retrospect and Prospect' (Hirst, 2020) title similarity 0.58",
+    "author": [
+      {
+        "family": "Meyers",
+        "given": "D."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2001
+        ]
+      ]
+    },
+    "container-title": "Atmospheric Environment",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "pinczowski_2019_melanin",
+    "type": "article-journal",
+    "title": "Melanin as a radiation shield in extremophilic fungi",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Melanin and Resistance to Ionizing Radiation in Fungi' (, None) title similarity 0.57",
+    "author": [
+      {
+        "family": "Pinczowski",
+        "given": "A."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2019
+        ]
+      ]
+    },
+    "container-title": "Scientific Reports",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "poole_1999_infrasound",
+    "type": "article-journal",
+    "title": "Infrasound communication in elephants",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Signals, Gestures, and Behavior of African Elephants' (Poole, 2011) title similarity 0.51",
+    "author": [
+      {
+        "family": "Poole",
+        "given": "J. H."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1999
+        ]
+      ]
+    },
+    "container-title": "Proceedings of the Royal Society B",
+    "x-checked": "2026-11-20"
+  },
+  {
+    "id": "somero_2002_thermal",
+    "type": "article-journal",
+    "title": "Thermal physiology and the limits of adaptation in intertidal organisms",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'Thermal Physiology and Vertical Zonation of Intertidal Animals: Optima, Limits, and Costs of Living' (Somero, 2002, doi 10.1093/icb/42.4.780), title similarity 0.72, author match, year ok",
+    "author": [
+      {
+        "family": "Somero",
+        "given": "G. N."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2002
+        ]
+      ]
+    },
+    "container-title": "Annual Review of Physiology",
+    "x-checked": "2026-11-20"
+  },
+  {
+    "id": "wehner_2003_polarized",
+    "type": "article-journal",
+    "title": "Polarized light navigation in insects",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'Polarized-Light Navigation by Insects' (Wehner, 1976, doi 10.1038/scientificamerican0776-106), title similarity 0.95, author match, year off",
+    "author": [
+      {
+        "family": "Wehner",
+        "given": "R."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2003
+        ]
+      ]
+    },
+    "container-title": "Annual Review of Entomology",
+    "x-checked": "2026-11-20"
+  },
+  {
+    "id": "wilkinson_2016_aerodynamic",
+    "type": "article-journal",
+    "title": "Aerodynamic noise masking in predatory flight",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'Mathematical Modelling of Predatory Prokaryotes' (Wilkinson, None, doi 10.1007/7171_054), title similarity 0.46, author match, year ok",
+    "author": [
+      {
+        "family": "Wilkinson",
+        "given": "M."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2016
+        ]
+      ]
+    },
+    "container-title": "Journal of Experimental Biology",
+    "x-checked": "2026-11-20"
+  },
+  {
+    "id": "yost_2000_piezoelectric",
+    "type": "article-journal",
+    "title": "Piezoelectric properties of collagen and hydroxyapatite in bone",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Biomimetic Bone-Like Composite Hydrogel Scaffolds Composed of Collagen Fibrils and Natural Hydroxyapatite for Promoting Bone Repair' (, None) title similarity 0.52",
+    "author": [
+      {
+        "family": "Yost",
+        "given": "J. C."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2000
+        ]
+      ]
+    },
+    "container-title": "Journal of Materials Science",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "ritz_2000_radical",
+    "type": "article-journal",
+    "title": "A model for photoreceptor-based magnetoreception in birds",
+    "author": [
+      {
+        "family": "Ritz",
+        "given": "T"
+      },
+      {
+        "family": "Adem",
+        "given": "S"
+      },
+      {
+        "family": "Schulten",
+        "given": "K"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2000
+        ]
+      ]
+    },
+    "container-title": "Biophysical Journal",
+    "DOI": "10.1016/s0006-3495(00)76629-x",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "hore_2016_magnetoreception",
+    "type": "article-journal",
+    "title": "The radical-pair mechanism of magnetoreception",
+    "author": [
+      {
+        "family": "Hore",
+        "given": "P. J."
+      },
+      {
+        "family": "Mouritsen",
+        "given": "H."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2016
+        ]
+      ]
+    },
+    "container-title": "Annual Review of Biophysics",
+    "DOI": "10.1146/annurev-biophys-032116-094545",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "stevenson_2010_super",
+    "type": "article-journal",
+    "title": "Planetary Magnetic Fields: Achievements and Prospects",
+    "author": [
+      {
+        "family": "Stevenson",
+        "given": "D. J."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2009
+        ]
+      ]
+    },
+    "container-title": "Space Sciences Series of ISSI",
+    "DOI": "10.1007/978-1-4419-5901-0_20",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); title corrected from 'Planetary magnetic fields'; container-title corrected from 'Earth and Planetary Science Letters'; year corrected from 2010; DOI added",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "linsky_2013_flare",
+    "type": "article-journal",
+    "title": "The UV radiation environment of nearby stars",
+    "author": [
+      {
+        "family": "Linsky",
+        "given": "J. L."
+      },
+      {
+        "family": "Ayres",
+        "given": "T. R."
+      },
+      {
+        "family": "Woods",
+        "given": "T. N."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2013
+        ]
+      ]
+    },
+    "container-title": "The Astrophysical Journal",
+    "DOI": "10.1088/0004-637X/764/2/170",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Photoevaporation of protoplanetary disks by UV photons from nearby massive stars : observations of proplyds and modeling' (Champion, None) title similarity 0.44",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "ritz_2000_model",
+    "type": "article-journal",
+    "title": "A model for photoreceptor-based magnetoreception in birds",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "author": [
+      {
+        "family": "Ritz",
+        "given": "T."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2000
+        ]
+      ]
+    },
+    "container-title": "Biophysical Journal",
+    "DOI": "10.1016/s0006-3495(00)76629-x",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "hore_2016_radical",
+    "type": "article-journal",
+    "title": "The Radical-Pair Mechanism of Magnetoreception",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 0.95); title corrected from 'Radical-pair mechanism of magnetoreception'; DOI added",
+    "author": [
+      {
+        "family": "Hore",
+        "given": "P. J."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2016
+        ]
+      ]
+    },
+    "container-title": "Annual Review of Biophysics",
+    "DOI": "10.1146/annurev-biophys-032116-094545",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "bullock_1982_electroreception",
+    "type": "article-journal",
+    "title": "Electroreception",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'Explaining Electroreception' (Bullock, None, doi 10.1007/0-387-28275-0_1), title similarity 0.74, author match, year ok",
+    "author": [
+      {
+        "family": "Bullock",
+        "given": "T.H."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1982
+        ]
+      ]
+    },
+    "container-title": "Springer-Verlag",
+    "x-checked": "2026-11-20"
+  },
+  {
+    "id": "frankel_1994_magnetic",
+    "type": "article-journal",
+    "title": "Magnetic interaction in magnetotactic bacteria",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'Magnetic properties of magnetotactic bacteria' (Moskowitz, 1988, doi 10.1016/0304-8853(88)90093-5), title similarity 0.81, author differs, year off",
+    "author": [
+      {
+        "family": "Frankel",
+        "given": "E.B."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1994
+        ]
+      ]
+    },
+    "container-title": "Nature",
+    "x-checked": "2026-11-20"
+  },
+  {
+    "id": "hagiwara_1973_electrical",
+    "type": "article-journal",
+    "title": "Electrical properties of electroreceptor organs",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Electroreceptor Organs' (, None) title similarity 0.64",
+    "author": [
+      {
+        "family": "Hagiwara",
+        "given": "S."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1973
+        ]
+      ]
+    },
+    "container-title": "Journal of General Physiology",
+    "x-checked": "2026-11-19"
+  },
+  {
+    "id": "hore_2016_magnetic",
+    "type": "article-journal",
+    "title": "Magnetic compasses in birds and animals",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Magnetic compasses and binnacles' (, None) title similarity 0.73",
+    "author": [
+      {
+        "family": "Hore",
+        "given": "P.J."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2016
+        ]
+      ]
+    },
+    "container-title": "Annual Review of Biophysics",
+    "x-checked": "2026-11-20"
+  },
+  {
+    "id": "thoen_2014_mantis",
+    "type": "article-journal",
+    "title": "A multimodal visual system avoids the redundancy cost",
+    "author": [
+      {
+        "family": "Thoen",
+        "given": "H. H."
+      },
+      {
+        "family": "How",
+        "given": "M. J."
+      },
+      {
+        "family": "Repenning",
+        "given": "S."
+      },
+      {
+        "family": "Zagster",
+        "given": "I."
+      },
+      {
+        "family": "Schnitzler",
+        "given": "J. P."
+      },
+      {
+        "family": "de Ruyter van Steveninck",
+        "given": "R."
+      },
+      {
+        "family": "Marshall",
+        "given": "J. A."
+      },
+      {
+        "family": "Warrant",
+        "given": "E. J."
+      },
+      {
+        "family": "Chiao",
+        "given": "C. C."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2014
+        ]
+      ]
+    },
+    "container-title": "Science",
+    "DOI": "10.1126/science.1252920",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'Colour vision in mantis shrimps: understanding one of the most complex visual systems in the world' (Thoen, None, doi 10.14264/uql.2015.409), title similarity 0.40, author match, year ok",
+    "x-checked": "2026-11-20"
+  },
+  {
+    "id": "gracheva_2010_pit",
+    "type": "article-journal",
+    "title": "Thermosensation in pit viper infrared receptors is mediated by a complex of TRPA1 channel isoforms",
+    "author": [
+      {
+        "family": "Gracheva",
+        "given": "M. O."
+      },
+      {
+        "family": "Tinsley",
+        "given": "J. R."
+      },
+      {
+        "family": "Abrahamsen",
+        "given": "B."
+      },
+      {
+        "family": "Wang",
+        "given": "X."
+      },
+      {
+        "family": "Kim",
+        "given": "K. S."
+      },
+      {
+        "family": "Yao",
+        "given": "H."
+      },
+      {
+        "family": "Buck",
+        "given": "L. B."
+      },
+      {
+        "family": "Cesana",
+        "given": "M."
+      },
+      {
+        "family": "Banghart",
+        "given": "M. R."
+      },
+      {
+        "family": "Wade",
+        "given": "J. T."
+      },
+      {
+        "family": "Stucky",
+        "given": "C. L."
+      },
+      {
+        "family": "Hwang",
+        "given": "R. E."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2010
+        ]
+      ]
+    },
+    "container-title": "Nature",
+    "DOI": "10.1038/nature09373",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Meningeal trigeminovascular reactions mediated by TRPV1 and TRPA1 receptors: effect of adriamycin treatment' (Deák, None) title similarity 0.42",
+    "x-checked": "2026-11-20"
+  },
+  {
+    "id": "davenport_2012_flare",
+    "type": "article-journal",
+    "title": "The occurrence rate of superflares on the Kepler sample of G and K dwarfs",
+    "author": [
+      {
+        "family": "Davenport",
+        "given": "R. J. A."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2012
+        ]
+      ]
+    },
+    "container-title": "Monthly Notices of the Royal Astronomical Society",
+    "DOI": "10.1111/j.1365-2966.2012.21802.x",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'A REVISED ESTIMATE OF THE OCCURRENCE RATE OF TERRESTRIAL PLANETS IN THE HABITABLE ZONES AROUND KEPLER M-DWARFS' (Kopparapu, 2013) title similarity 0.55",
+    "x-checked": "2026-11-20"
+  },
+  {
+    "id": "gray_2005_stellar",
+    "type": "book",
+    "title": "The Observation and Analysis of Stellar Photospheres",
+    "author": [
+      {
+        "family": "Gray",
+        "given": "D. F."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2005
+        ]
+      ]
+    },
+    "container-title": "Cambridge University Press",
+    "ISBN": "9780521851862",
+    "x-status": "verified",
+    "x-note": "verified against OpenLibrary (title 0.96); title corrected from 'Observation and Analysis of Stellar Photospheres'; ISBN added",
+    "x-checked": "2026-11-20"
+  },
+  {
+    "id": "holman_1999_circumbinary",
+    "type": "article-journal",
+    "title": "Long-Term Stability of Planets in Binary Systems",
+    "author": [
+      {
+        "family": "Holman",
+        "given": "M."
+      },
+      {
+        "family": "Wiegert",
+        "given": "P."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1999
+        ]
+      ]
+    },
+    "container-title": "The Astronomical Journal",
+    "DOI": "10.1086/300695",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 0.88); title corrected from 'Stability of Planets in Binary Systems'; container-title corrected from 'Astronomical Journal'; DOI added",
+    "x-checked": "2026-11-20"
+  },
+  {
+    "id": "peale_1979_ion",
+    "type": "article-journal",
+    "title": "Tidal dissipation, tidal torque, and the evolution of Io",
+    "author": [
+      {
+        "family": "Peale",
+        "given": "S. J."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1979
+        ]
+      ]
+    },
+    "container-title": "Geophysical Research Letters",
+    "DOI": "10.1029/GL006i009p00721",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'Tidal dissipation, orbital evolution, and the nature of Saturn's inner satellites' (Peale, 1980, doi 10.1016/0019-1035(80)90088-3), title similarity 0.54, author match, year ok",
+    "x-checked": "2026-11-20"
+  },
+  {
+    "id": "catling_2017_atmospheres",
+    "type": "book",
+    "title": "Atmospheric Evolution on Inhabited and Lifeless Worlds",
+    "author": [
+      {
+        "family": "Catling",
+        "given": "D. C."
+      },
+      {
+        "family": "Kasting",
+        "given": "J. F."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2016
+        ]
+      ]
+    },
+    "container-title": "Cambridge University Press",
+    "ISBN": "9781139020558",
+    "x-status": "verified",
+    "x-note": "verified against OpenLibrary (title 1.00); year corrected from 2017; ISBN added",
+    "x-checked": "2026-11-20"
+  },
+  {
+    "id": "seager_2010_exoplanets",
+    "type": "book",
+    "title": "Exoplanet Atmospheres: Physical Processes",
+    "author": [
+      {
+        "family": "Seager",
+        "given": "S."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2010
+        ]
+      ]
+    },
+    "container-title": "Princeton University Press",
+    "ISBN": "9780691119144",
+    "x-status": "verified",
+    "x-note": "verified against OpenLibrary (title 1.00); ISBN added",
+    "x-checked": "2026-11-20"
+  },
+  {
+    "id": "thoen_2014_different",
+    "type": "article-journal",
+    "title": "A different form of color vision in mantis shrimp",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "author": [
+      {
+        "family": "Thoen",
+        "given": "H. H."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2014
+        ]
+      ]
+    },
+    "container-title": "Science",
+    "DOI": "10.1126/science.1245824",
+    "x-checked": "2026-11-20"
+  },
+  {
+    "id": "gracheva_2010_molecular",
+    "type": "article-journal",
+    "title": "Molecular basis of infrared detection by snakes",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "author": [
+      {
+        "family": "Gracheva",
+        "given": "E. O."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2010
+        ]
+      ]
+    },
+    "container-title": "Nature",
+    "DOI": "10.1038/nature08943",
+    "x-checked": "2026-11-20"
+  },
+  {
+    "id": "thoen_2014_polarization",
+    "type": "article-journal",
+    "title": "UV polarization vision in the mantis shrimp",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'Colour vision in mantis shrimps: understanding one of the most complex visual systems in the world' (Thoen, None, doi 10.14264/uql.2015.409), title similarity 0.73, author match, year ok",
+    "author": [
+      {
+        "family": "Thoen",
+        "given": "J. et al."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2014
+        ]
+      ]
+    },
+    "container-title": "Science",
+    "x-checked": "2026-11-20"
+  },
+  {
+    "id": "dyson_1972_comet",
+    "type": "article-journal",
+    "title": "Life in interstellar space",
+    "author": [
+      {
+        "family": "Dyson",
+        "given": "Freeman"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1972
+        ]
+      ]
+    },
+    "container-title": "Nature",
+    "DOI": "10.1038/236452a0",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'Interstellar Grains' (Dyson, 2020, doi 10.1201/9781003025030-4), title similarity 0.62, author match, year off",
+    "x-checked": "2026-11-20"
+  },
+  {
+    "id": "jonsson_2008_tardigrade",
+    "type": "article-journal",
+    "title": "Tardigrades survive exposure to space in low Earth orbit",
+    "author": [
+      {
+        "family": "Jonsson",
+        "given": "Kristin I."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2008
+        ]
+      ]
+    },
+    "container-title": "Current Biology",
+    "DOI": "10.1016/j.cub.2008.06.048",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "x-checked": "2026-11-20"
+  },
+  {
+    "id": "herbst_van_dishoeck_2009_ism",
+    "type": "article-journal",
+    "title": "Complex organic molecules in the interstellar medium",
+    "author": [
+      {
+        "family": "Herbst",
+        "given": "Eric"
+      },
+      {
+        "family": "van Dishoeck",
+        "given": "Ewine F."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2009
+        ]
+      ]
+    },
+    "container-title": "Annual Review of Astronomy and Astrophysics",
+    "DOI": "10.1146/annurev.astro.46.060407.145208",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'Large Molecules in the Interstellar Medium' (Herbst, 1995, doi 10.1007/978-94-011-0373-2_30), title similarity 0.85, author match, year off",
+    "x-checked": "2026-11-20"
+  },
+  {
+    "id": "mewaldt_2012_cosmic",
+    "type": "article-journal",
+    "title": "Solar and Galactic Cosmic Rays",
+    "author": [
+      {
+        "family": "Mewaldt",
+        "given": "Richard A."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2012
+        ]
+      ]
+    },
+    "container-title": "Space Science Reviews",
+    "DOI": "10.1007/s11214-012-9918-8",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'He-3 in galactic cosmic rays' (Mewaldt, 1986, doi 10.1086/164835), title similarity 0.79, author match, year off",
+    "x-checked": "2026-11-20"
+  },
+  {
+    "id": "schmidt_2016_rosetta",
+    "type": "article-journal",
+    "title": "The surface composition of 67P/Churyumov–Gerasimenko from Rosetta/OSIRIS",
+    "author": [
+      {
+        "family": "Schmidt",
+        "given": "Christian"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2016
+        ]
+      ]
+    },
+    "container-title": "Science",
+    "DOI": "10.1126/science.aaf3021",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Comet 67P/Churyumov-Gerasimenko through the eyes of the Rosetta/OSIRIS cameras' (Güttler, 2018) title similarity 0.63",
+    "x-checked": "2026-11-20"
+  },
+  {
+    "id": "goldstein_2007_trehalose",
+    "type": "article-journal",
+    "title": "Trehalose and the anhydrobiotic state",
+    "author": [
+      {
+        "family": "Goldstein",
+        "given": "Bernard"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2007
+        ]
+      ]
+    },
+    "container-title": "Journal of Experimental Biology",
+    "DOI": "10.1242/jeb.00365",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Review for \"Parallel evolution of trehalose production machinery in anhydrobiotic animals via recurrent gene loss and horizontal transfer\"' (, 2021) title similarity 0.38",
+    "x-checked": "2026-11-20"
+  },
+  {
+    "id": "jonsson_2008_tardigrades",
+    "type": "article-journal",
+    "title": "Tardigrades survive exposure to space in low Earth orbit",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "author": [
+      {
+        "family": "Jonsson",
+        "given": "K. I."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2008
+        ]
+      ]
+    },
+    "container-title": "Current Biology",
+    "DOI": "10.1016/j.cub.2008.06.048",
+    "x-checked": "2026-11-20"
+  },
+  {
+    "id": "dyson_1979_time",
+    "type": "article-journal",
+    "title": "Time without end: physics and biology in an open universe",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "author": [
+      {
+        "family": "Dyson",
+        "given": "F. J."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1979
+        ]
+      ]
+    },
+    "container-title": "Reviews of Modern Physics",
+    "DOI": "10.1103/revmodphys.51.447",
+    "x-checked": "2026-11-20"
+  },
+  {
+    "id": "herbst_2009_complex",
+    "type": "article-journal",
+    "title": "Complex organic interstellar molecules",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "author": [
+      {
+        "family": "Herbst",
+        "given": "E."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2009
+        ]
+      ]
+    },
+    "container-title": "Annual Review of Astronomy and Astrophysics",
+    "DOI": "10.1146/annurev-astro-082708-101654",
+    "x-checked": "2026-11-20"
+  },
+  {
+    "id": "dyson_1979_search",
+    "type": "article-journal",
+    "title": "Search for Artificial Stellar Objects of Universal Origin",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'Search for Artificial Stellar Sources of Infrared Radiation' (Dyson, 1960, doi 10.1126/science.131.3414.1667), title similarity 0.67, author match, year off",
+    "author": [
+      {
+        "family": "Dyson",
+        "given": "F."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1979
+        ]
+      ]
+    },
+    "container-title": "International Journal of Astrobiology",
+    "x-checked": "2026-11-20"
+  },
+  {
+    "id": "jonsson_2008_survival",
+    "type": "article-journal",
+    "title": "Survival of tardigrades to outer space",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Restraining an Arms Race in Outer Space' (Meyer, 2022) title similarity 0.60",
+    "author": [
+      {
+        "family": "Jonsson",
+        "given": "K.G."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2008
+        ]
+      ]
+    },
+    "container-title": "Current Biology",
+    "x-checked": "2026-11-20"
+  },
+  {
+    "id": "adamatzky_2022",
+    "type": "article-journal",
+    "title": "Bio-computing with fungi",
+    "author": [
+      {
+        "family": "Adamatzky",
+        "given": "Andrew"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2022
+        ]
+      ]
+    },
+    "container-title": "Royal Society Open Science",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'Fungi Anaesthesia' (Adamatzky, 2023, doi 10.1007/978-3-031-38336-6_5), title similarity 0.24, author match, year ok",
+    "x-checked": "2026-11-20"
+  },
+  {
+    "id": "karst_2023",
+    "type": "article-journal",
+    "title": "The mycorrhizal symbiosis is not a mutualistic internet",
+    "author": [
+      {
+        "family": "Karst",
+        "given": "Johannes"
+      },
+      {
+        "family": "Babikova",
+        "given": "Zuzana"
+      },
+      {
+        "family": "Bever",
+        "given": "Jane D."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2023
+        ]
+      ]
+    },
+    "container-title": "Nature Ecology & Evolution",
+    "DOI": "10.1038/s41559-023-02068-8",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Root metabolome of plant–arbuscular mycorrhizal symbiosis mirrors the mutualistic or parasitic mycorrhizal phenotype' (Kaur, 2022) title similarity 0.54",
+    "x-checked": "2026-11-20"
+  },
+  {
+    "id": "simard_1997",
+    "type": "article-journal",
+    "title": "Net flow of carbon between individual plants of boreal forest trees and mycorrhizae",
+    "author": [
+      {
+        "family": "Simard",
+        "given": "Suzanne W."
+      },
+      {
+        "family": "Jones",
+        "given": "David E."
+      },
+      {
+        "family": "Myrold",
+        "given": "David D."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1997
+        ]
+      ]
+    },
+    "container-title": "Nature",
+    "DOI": "10.1038/38167",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Estimating the net carbon balance of boreal open woodland afforestation: A case-study in Québec’s closed-crown boreal forest' (Gaboury, 2009) title similarity 0.45",
+    "x-checked": "2026-11-20"
+  },
+  {
+    "id": "ferguson_2003",
+    "type": "article-journal",
+    "title": "A single individual of the fungus covers more than 15 acres",
+    "author": [
+      {
+        "family": "Ferguson",
+        "given": "Bruce A."
+      },
+      {
+        "family": "Huyck",
+        "given": "C. L."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2003
+        ]
+      ]
+    },
+    "container-title": "Mycologia",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Trump charged under Espionage Act – which covers a lot more crimes than just spying' (Ferguson, 2023) title similarity 0.43",
+    "x-checked": "2026-11-20"
+  },
+  {
+    "id": "cox_2000",
+    "type": "book",
+    "title": "Allen's Astrophysical Quantities",
+    "author": [
+      {
+        "family": "Cox",
+        "given": "Alan N."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2001
+        ]
+      ]
+    },
+    "container-title": "Springer",
+    "x-status": "verified",
+    "x-note": "verified against OpenLibrary (title 1.00); year corrected from 2000; ISBN added",
+    "ISBN": "9781461211860",
+    "x-checked": "2026-11-20"
+  },
+  {
+    "id": "catling_2017",
+    "type": "book",
+    "title": "Atmospheric Evolution on Inhabited and Lifeless Worlds",
+    "author": [
+      {
+        "family": "Catling",
+        "given": "David C."
+      },
+      {
+        "family": "Kasting",
+        "given": "Jeffrey F."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2016
+        ]
+      ]
+    },
+    "container-title": "Cambridge University Press",
+    "x-status": "verified",
+    "x-note": "verified against OpenLibrary (title 1.00); year corrected from 2017; ISBN added",
+    "ISBN": "9781139020558",
+    "x-checked": "2026-11-20"
+  },
+  {
+    "id": "white_2001",
+    "type": "book",
+    "title": "Karst Hydrogeology and Geomorphology",
+    "author": [
+      {
+        "family": "White",
+        "given": "Wayne"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2001
+        ]
+      ]
+    },
+    "container-title": "John Wiley & Sons",
+    "x-status": "rejected",
+    "x-note": "no candidate returned by the index",
+    "x-checked": "2026-11-20"
+  },
+  {
+    "id": "simard_1997_transfer",
+    "type": "article-journal",
+    "title": "Net transfer of carbon between ectomycorrhizal tree species in the field",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "author": [
+      {
+        "family": "Simard",
+        "given": "S. W."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1997
+        ]
+      ]
+    },
+    "container-title": "Nature",
+    "DOI": "10.1038/41557",
+    "x-checked": "2026-11-20"
+  },
+  {
+    "id": "karst_2023_positive",
+    "type": "article-journal",
+    "title": "Positive citation bias and overinterpreted results lead to misinformation on common mycorrhizal networks in forests",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); container-title corrected from 'Nature Ecology and Evolution'; DOI added",
+    "author": [
+      {
+        "family": "Karst",
+        "given": "J."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2023
+        ]
+      ]
+    },
+    "container-title": "Nature Ecology &amp; Evolution",
+    "DOI": "10.1038/s41559-023-01986-1",
+    "x-checked": "2026-11-20"
+  },
+  {
+    "id": "adamatzky_2022_language",
+    "type": "article-journal",
+    "title": "Language of fungi derived from their electrical spiking activity",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "author": [
+      {
+        "family": "Adamatzky",
+        "given": "A."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2022
+        ]
+      ]
+    },
+    "container-title": "Royal Society Open Science",
+    "DOI": "10.1098/rsos.211926",
+    "x-checked": "2026-11-20"
+  },
+  {
+    "id": "adamatzky_2022_action",
+    "type": "article-journal",
+    "title": "Action potentials in fungi",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'Action Potential Like Spikes in Oyster Fungi Pleurotus Djamor' (Adamatzky, 2023, doi 10.1007/978-3-031-38336-6_1), title similarity 0.60, author match, year ok",
+    "author": [
+      {
+        "family": "Adamatzky",
+        "given": "A."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2022
+        ]
+      ]
+    },
+    "container-title": "Royal Society Open Science",
+    "x-checked": "2026-11-20"
+  },
+  {
+    "id": "ferguson_2003_clonal",
+    "type": "article-journal",
+    "title": "Clonal size and age of Armillaria ostoyae",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Armillaria ostoyae (armillaria root rot)' (, 2021) title similarity 0.61",
+    "author": [
+      {
+        "family": "Ferguson",
+        "given": "A."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2003
+        ]
+      ]
+    },
+    "container-title": "Mycologia",
+    "x-checked": "2026-11-20"
+  },
+  {
+    "id": "boyajian_2012_stellar",
+    "type": "article-journal",
+    "title": "Stellar Diameters and Temperatures. II. Main-sequence K- and M-stars",
+    "author": [
+      {
+        "family": "Boyajian",
+        "given": "Tabetha S."
+      },
+      {
+        "family": "von Braun",
+        "given": "Kaspar"
+      },
+      {
+        "family": "van Belle",
+        "given": "Gerard"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2012
+        ]
+      ]
+    },
+    "container-title": "The Astrophysical Journal",
+    "DOI": "10.1088/0004-637X/757/2/112",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'Stellar diameters and temperatures along the main sequence' (Boyajian, 2013, doi 10.1051/eas/1364015), title similarity 0.80, author match, year ok",
+    "x-checked": "2026-11-20"
+  },
+  {
+    "id": "catling_kasting_2017",
+    "type": "book",
+    "title": "Atmospheric Evolution on Inhabited and Lifeless Worlds",
+    "author": [
+      {
+        "family": "Catling",
+        "given": "David C."
+      },
+      {
+        "family": "Kasting",
+        "given": "James F."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2016
+        ]
+      ]
+    },
+    "ISBN": "9781139020558",
+    "x-status": "verified",
+    "x-note": "verified against OpenLibrary (title 1.00); year corrected from 2017; ISBN added",
+    "x-checked": "2026-11-20"
+  },
+  {
+    "id": "valencia_2007",
+    "type": "article-journal",
+    "title": "Radius and Structure Models of the First Super‐Earth Planet",
+    "author": [
+      {
+        "family": "Valencia",
+        "given": "Diana"
+      },
+      {
+        "family": "Sasselov",
+        "given": "Dimitar D."
+      },
+      {
+        "family": "O'Connell",
+        "given": "Richard J."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2007
+        ]
+      ]
+    },
+    "container-title": "The Astrophysical Journal",
+    "DOI": "10.1086/509800",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 0.99); title corrected from 'Radius and Structure Models of the First Super-Earth Planet'; DOI added",
+    "x-checked": "2026-11-20"
+  },
+  {
+    "id": "seager_2007",
+    "type": "article-journal",
+    "title": "Mass‐Radius Relationships for Solid Exoplanets",
+    "author": [
+      {
+        "family": "Seager",
+        "given": "Sara"
+      },
+      {
+        "family": "Kuchner",
+        "given": "Marc"
+      },
+      {
+        "family": "Hier-Majumder",
+        "given": "C. A."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2007
+        ]
+      ]
+    },
+    "container-title": "The Astrophysical Journal",
+    "DOI": "10.1086/521346",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 0.99); title corrected from 'Mass-Radius Relationships for Solid Exoplanets'; DOI added",
+    "x-checked": "2026-11-20"
+  },
+  {
+    "id": "lammer_2009",
+    "type": "article-journal",
+    "title": "What makes a planet habitable?",
+    "author": [
+      {
+        "family": "Lammer",
+        "given": "Helmut"
+      },
+      {
+        "family": "Bredehöft",
+        "given": "Jan Hendrik"
+      },
+      {
+        "family": "Coustenis",
+        "given": "Athena"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2009
+        ]
+      ]
+    },
+    "container-title": "The Astronomy and Astrophysics Review",
+    "DOI": "10.1007/s00159-009-0019-z",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'What Makes a Planet Habitable?' (, 2006, doi 10.1142/9781860949210_0029), title similarity 1.00, author differs, year off",
+    "x-checked": "2026-11-20"
+  },
+  {
+    "id": "christensen_2009_dynamo",
+    "type": "article-journal",
+    "title": "Energy flux determines magnetic field strength of planets and stars",
+    "author": [
+      {
+        "family": "Christensen",
+        "given": "Ulrich R."
+      },
+      {
+        "family": "Holzwarth",
+        "given": "Volkmar"
+      },
+      {
+        "family": "Reiners",
+        "given": "Ansgar"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2009
+        ]
+      ]
+    },
+    "container-title": "Nature",
+    "DOI": "10.1038/nature07626",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "x-checked": "2026-11-20"
+  },
+  {
+    "id": "unscear_2000_sources",
+    "type": "report",
+    "title": "Sources and Effects of Ionizing Radiation: UNSCEAR 2000 Report to the General Assembly, Volume I: Sources",
+    "author": [
+      {
+        "family": "United Nations Scientific Committee on the Effects of Atomic Radiation",
+        "given": ""
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2000
+        ]
+      ]
+    },
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'Sources and effects of ionizing radiation' (, None, doi 10.18356/f48d655d-en), title similarity 1.00, author differs, year ok",
+    "x-checked": "2026-11-20"
+  },
+  {
+    "id": "bowman_2009_fire",
+    "type": "article-journal",
+    "title": "Fire in the Earth System",
+    "author": [
+      {
+        "family": "Bowman",
+        "given": "David M. J. S."
+      },
+      {
+        "family": "Balch",
+        "given": "Jennifer K."
+      },
+      {
+        "family": "Artaxo",
+        "given": "Paulo"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2009
+        ]
+      ]
+    },
+    "container-title": "Science",
+    "DOI": "10.1126/science.1163886",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Fire ecology' (Bowman, 2007) title similarity 0.39",
+    "x-checked": "2026-11-20"
+  },
+  {
+    "id": "denny_1993_air_water",
+    "type": "book",
+    "title": "Air and Water: The Biology and Physics of Life's Media",
+    "author": [
+      {
+        "family": "Denny",
+        "given": "Mark W."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1993
+        ]
+      ]
+    },
+    "ISBN": "9780691087344",
+    "x-status": "verified",
+    "x-note": "verified against OpenLibrary (title 1.00); ISBN added",
+    "x-checked": "2026-11-20"
+  },
+  {
+    "id": "vogel_1994_life_fluids",
+    "type": "book",
+    "title": "Life in Moving Fluids: The Physical Biology of Flow",
+    "author": [
+      {
+        "family": "Vogel",
+        "given": "Steven"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1994
+        ]
+      ]
+    },
+    "ISBN": "9780691026350",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest OpenLibrary hit is 'Life in Moving Fluids' (Vogel, 1983), title similarity 1.00, author match, year off",
+    "x-checked": "2026-11-20"
+  },
+  {
+    "id": "bohren_huffman_1983",
+    "type": "book",
+    "title": "Absorption and Scattering of Light by Small Particles",
+    "author": [
+      {
+        "family": "Bohren",
+        "given": "Craig F."
+      },
+      {
+        "family": "Huffman",
+        "given": "Donald R."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1983
+        ]
+      ]
+    },
+    "ISBN": "9780471057727",
+    "x-status": "verified",
+    "x-note": "verified against OpenLibrary (title 1.00); ISBN added",
+    "x-checked": "2026-11-20"
+  },
+  {
+    "id": "christian_2003_lightning",
+    "type": "article-journal",
+    "title": "Global frequency and distribution of lightning as observed from space by the Optical Transient Detector",
+    "author": [
+      {
+        "family": "Christian",
+        "given": "Hugh J."
+      },
+      {
+        "family": "Blakeslee",
+        "given": "Richard J."
+      },
+      {
+        "family": "Boccippio",
+        "given": "Dennis J."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2003
+        ]
+      ]
+    },
+    "container-title": "Journal of Geophysical Research: Atmospheres",
+    "DOI": "10.1029/2002jd002347",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "x-checked": "2026-11-20"
+  },
+  {
+    "id": "rakov_uman_2003",
+    "type": "book",
+    "title": "Lightning: Physics and Effects",
+    "author": [
+      {
+        "family": "Rakov",
+        "given": "Vladimir A."
+      },
+      {
+        "family": "Uman",
+        "given": "Martin A."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2003
+        ]
+      ]
+    },
+    "ISBN": "9780521583275",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest OpenLibrary hit is 'Lightning' (Rakov, 2003), title similarity 0.47, author match, year ok",
+    "x-checked": "2026-11-20"
+  },
+  {
+    "id": "lissmann_1958_electric",
+    "type": "article-journal",
+    "title": "On the function and evolution of electric organs in fish",
+    "author": [
+      {
+        "family": "Lissmann",
+        "given": "Hans W."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1958
+        ]
+      ]
+    },
+    "container-title": "Journal of Experimental Biology",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "DOI": "10.1242/jeb.35.1.156",
+    "x-checked": "2026-11-20"
+  },
+  {
+    "id": "fukada_yasuda_1957",
+    "type": "article-journal",
+    "title": "On the piezoelectric effect of bone",
+    "author": [
+      {
+        "family": "Fukada",
+        "given": "Eiichi"
+      },
+      {
+        "family": "Yasuda",
+        "given": "Iwao"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1957
+        ]
+      ]
+    },
+    "container-title": "Journal of the Physical Society of Japan",
+    "DOI": "10.1143/jpsj.12.1158",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "x-checked": "2026-11-20"
+  },
+  {
+    "id": "turcotte_schubert_2002",
+    "type": "book",
+    "title": "Geodynamics",
+    "author": [
+      {
+        "family": "Turcotte",
+        "given": "Donald L."
+      },
+      {
+        "family": "Schubert",
+        "given": "Gerald"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2002
+        ]
+      ]
+    },
+    "ISBN": "9780521661867",
+    "x-status": "verified",
+    "x-note": "verified against OpenLibrary (title 1.00); ISBN added",
+    "x-checked": "2026-11-20"
+  },
+  {
+    "id": "corliss_1979_vents",
+    "type": "article-journal",
+    "title": "Submarine Thermal Springs on the Galápagos Rift",
+    "author": [
+      {
+        "family": "Corliss",
+        "given": "John B."
+      },
+      {
+        "family": "Dymond",
+        "given": "Jack"
+      },
+      {
+        "family": "Gordon",
+        "given": "Louis I."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1979
+        ]
+      ]
+    },
+    "container-title": "Science",
+    "DOI": "10.1126/science.203.4385.1073",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "x-checked": "2026-11-20"
+  },
+  {
+    "id": "jannasch_mottl_1985",
+    "type": "article-journal",
+    "title": "Geomicrobiology of deep-sea hydrothermal vents",
+    "author": [
+      {
+        "family": "Jannasch",
+        "given": "Holger W."
+      },
+      {
+        "family": "Mottl",
+        "given": "Michael J."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1985
+        ]
+      ]
+    },
+    "container-title": "Science",
+    "DOI": "10.1126/science.229.4715.717",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "x-checked": "2026-11-20"
+  },
+  {
+    "id": "amend_shock_2001",
+    "type": "article-journal",
+    "title": "Energetics of overall metabolic reactions of thermophilic and hyperthermophilic Archaea and Bacteria",
+    "author": [
+      {
+        "family": "Amend",
+        "given": "Jan P."
+      },
+      {
+        "family": "Shock",
+        "given": "Everett L."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2001
+        ]
+      ]
+    },
+    "container-title": "FEMS Microbiology Reviews",
+    "DOI": "10.1111/j.1574-6976.2001.tb00576.x",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "x-checked": "2026-11-20"
+  },
+  {
+    "id": "wachtershauser_1988_surface",
+    "type": "article-journal",
+    "title": "Before enzymes and templates: theory of surface metabolism",
+    "author": [
+      {
+        "family": "Wächtershäuser",
+        "given": "Günter"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1988
+        ]
+      ]
+    },
+    "container-title": "Microbiological Reviews",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "DOI": "10.1128/mr.52.4.452-484.1988",
+    "x-checked": "2026-11-20"
+  },
+  {
+    "id": "nisbet_sleep_2001",
+    "type": "article-journal",
+    "title": "The habitat and nature of early life",
+    "author": [
+      {
+        "family": "Nisbet",
+        "given": "Euan G."
+      },
+      {
+        "family": "Sleep",
+        "given": "Norman H."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2001
+        ]
+      ]
+    },
+    "container-title": "Nature",
+    "DOI": "10.1038/35059210",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "x-checked": "2026-11-20"
+  },
+  {
+    "id": "blankenship_2014",
+    "type": "book",
+    "title": "Molecular Mechanisms of Photosynthesis",
+    "author": [
+      {
+        "family": "Blankenship",
+        "given": "Robert E."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2014
+        ]
+      ]
+    },
+    "ISBN": "9780632043217",
+    "x-status": "verified",
+    "x-note": "verified against OpenLibrary (title 1.00); ISBN added",
+    "x-checked": "2026-11-20"
+  },
+  {
+    "id": "kirk_2010_light",
+    "type": "book",
+    "title": "Light and Photosynthesis in Aquatic Ecosystems",
+    "author": [
+      {
+        "family": "Kirk",
+        "given": "John T. O."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2010
+        ]
+      ]
+    },
+    "ISBN": "9780511930300",
+    "x-status": "verified",
+    "x-note": "verified against OpenLibrary (title 1.00); ISBN added",
+    "x-checked": "2026-11-20"
+  },
+  {
+    "id": "madigan_2015_brock",
+    "type": "book",
+    "title": "Brock Biology of Microorganisms",
+    "author": [
+      {
+        "family": "Madigan",
+        "given": "Michael T."
+      },
+      {
+        "family": "Martinko",
+        "given": "John M."
+      },
+      {
+        "family": "Bender",
+        "given": "Kelly S."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2015
+        ]
+      ]
+    },
+    "ISBN": "9780321897398",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest OpenLibrary hit is 'Brock biology of microorganisms' (Madigan, 1997), title similarity 1.00, author match, year off",
+    "x-checked": "2026-11-20"
+  },
+  {
+    "id": "haddock_2010_biolum",
+    "type": "article-journal",
+    "title": "Bioluminescence in the Sea",
+    "author": [
+      {
+        "family": "Haddock",
+        "given": "Steven H. D."
+      },
+      {
+        "family": "Moline",
+        "given": "Mark A."
+      },
+      {
+        "family": "Case",
+        "given": "James F."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2010
+        ]
+      ]
+    },
+    "container-title": "Annual Review of Marine Science",
+    "DOI": "10.1146/annurev-marine-120308-081028",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Zooplankton and Phytoplankton Contributors to Bioluminescence in Monterey Bay' (Haddock, 2000) title similarity 0.45",
+    "x-checked": "2026-11-20"
+  },
+  {
+    "id": "land_nilsson_2012_eyes",
+    "type": "book",
+    "title": "Animal Eyes",
+    "author": [
+      {
+        "family": "Land",
+        "given": "Michael F."
+      },
+      {
+        "family": "Nilsson",
+        "given": "Dan-Eric"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2012
+        ]
+      ]
+    },
+    "ISBN": "9780199581146",
+    "x-status": "verified",
+    "x-note": "verified against OpenLibrary (title 1.00); ISBN added",
+    "x-checked": "2026-11-20"
+  },
+  {
+    "id": "schmidt_nielsen_1984",
+    "type": "book",
+    "title": "Scaling: Why is Animal Size so Important?",
+    "author": [
+      {
+        "family": "Schmidt-Nielsen",
+        "given": "Knut"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1984
+        ]
+      ]
+    },
+    "ISBN": "9780521319874",
+    "x-status": "rejected",
+    "x-note": "no candidate returned by the index",
+    "x-checked": "2026-11-20"
+  },
+  {
+    "id": "berner_2004_carbon",
+    "type": "book",
+    "title": "The Phanerozoic Carbon Cycle: CO2 and O2",
+    "author": [
+      {
+        "family": "Berner",
+        "given": "Robert A."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2004
+        ]
+      ]
+    },
+    "ISBN": "9780195173338",
+    "x-status": "verified",
+    "x-note": "verified against OpenLibrary (title 1.00); ISBN added",
+    "x-checked": "2026-11-20"
+  },
+  {
+    "id": "casey_2013_bioluminescence",
+    "type": "article-journal",
+    "title": "Bioluminescence in deep-sea organisms",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Reproduction, recruitment and growth of deep-sea organisms' (, 1991) title similarity 0.57",
+    "author": [
+      {
+        "family": "Casey",
+        "given": "J.V."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2013
+        ]
+      ]
+    },
+    "container-title": "Oceanography",
+    "x-checked": "2026-11-20"
+  },
+  {
+    "id": "somero_2010_diversifying",
+    "type": "article-journal",
+    "title": "Diversifying adaptation and environmental sensing in hydrothermal vent animals",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'ADAPTATIONS TO SULFIDE BY HYDROTHERMAL VENT ANIMALS: SITES AND MECHANISMS OF DETOXIFICATION AND METABOLISM' (POWELL, 1986) title similarity 0.65",
+    "author": [
+      {
+        "family": "Somero",
+        "given": "G.N."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2010
+        ]
+      ]
+    },
+    "container-title": "Integrative and Comparative Biology",
+    "x-checked": "2026-11-20"
+  },
+  {
+    "id": "yirka_2015_hydrothermal",
+    "type": "article-journal",
+    "title": "Hydrothermal vent ecology and particle flux",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Hydrothermal Vent Ecology' (Van Dover, 2001) title similarity 0.74",
+    "author": [
+      {
+        "family": "Yirka",
+        "given": "B."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2015
+        ]
+      ]
+    },
+    "container-title": "Nature Geoscience",
+    "x-checked": "2026-11-20"
+  },
+  {
+    "id": "carroll_ostlie_2007",
+    "type": "book",
+    "title": "An Introduction to Modern Astrophysics",
+    "author": [
+      {
+        "family": "Carroll",
+        "given": "Bradley W."
+      },
+      {
+        "family": "Ostlie",
+        "given": "Dale A."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2007
+        ]
+      ]
+    },
+    "container-title": "Pearson Addison-Wesley",
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked"
+  },
+  {
+    "id": "reid_hawley_2005",
+    "type": "book",
+    "title": "New Light on Dark Stars: Red Dwarfs, Low-Mass Stars, Brown Dwarfs",
+    "author": [
+      {
+        "family": "Reid",
+        "given": "I. Neill"
+      },
+      {
+        "family": "Hawley",
+        "given": "Suzanne L."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2005
+        ]
+      ]
+    },
+    "container-title": "Springer-Praxis",
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked"
+  },
+  {
+    "id": "laskar_1993_obliquity",
+    "type": "article-journal",
+    "title": "The chaotic obliquity of the planets",
+    "author": [
+      {
+        "family": "Laskar",
+        "given": "Jacques"
+      },
+      {
+        "family": "Robutel",
+        "given": "Philippe"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1993
+        ]
+      ]
+    },
+    "container-title": "Nature",
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked"
+  },
+  {
+    "id": "laskar_1993_moon",
+    "type": "article-journal",
+    "title": "Stabilization of the Earth's obliquity by the Moon",
+    "author": [
+      {
+        "family": "Laskar",
+        "given": "Jacques"
+      },
+      {
+        "family": "Joutel",
+        "given": "F."
+      },
+      {
+        "family": "Robutel",
+        "given": "Philippe"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1993
+        ]
+      ]
+    },
+    "container-title": "Nature",
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked"
+  },
+  {
+    "id": "kasting_1993_hz",
+    "type": "article-journal",
+    "title": "Habitable zones around main sequence stars",
+    "author": [
+      {
+        "family": "Kasting",
+        "given": "James F."
+      },
+      {
+        "family": "Whitmire",
+        "given": "Daniel P."
+      },
+      {
+        "family": "Reynolds",
+        "given": "Ray T."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1993
+        ]
+      ]
+    },
+    "container-title": "Icarus",
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked"
+  },
+  {
+    "id": "wallace_hobbs_2006",
+    "type": "book",
+    "title": "Atmospheric Science: An Introductory Survey",
+    "author": [
+      {
+        "family": "Wallace",
+        "given": "John M."
+      },
+      {
+        "family": "Hobbs",
+        "given": "Peter V."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2006
+        ]
+      ]
+    },
+    "container-title": "Academic Press",
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked"
+  },
+  {
+    "id": "cooke_1993_desert",
+    "type": "book",
+    "title": "Desert Geomorphology",
+    "author": [
+      {
+        "family": "Cooke",
+        "given": "Ronald U."
+      },
+      {
+        "family": "Warren",
+        "given": "Andrew"
+      },
+      {
+        "family": "Goudie",
+        "given": "Andrew S."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1993
+        ]
+      ]
+    },
+    "container-title": "UCL Press",
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked"
+  },
+  {
+    "id": "warren_2006_evaporites",
+    "type": "book",
+    "title": "Evaporites: Sediments, Resources and Hydrocarbons",
+    "author": [
+      {
+        "family": "Warren",
+        "given": "John K."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2006
+        ]
+      ]
+    },
+    "container-title": "Springer",
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked"
+  },
+  {
+    "id": "gould_1981_kingdoms",
+    "type": "chapter",
+    "title": "Kingdoms Without Wheels",
+    "author": [
+      {
+        "family": "Gould",
+        "given": "Stephen Jay"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1983
+        ]
+      ]
+    },
+    "container-title": "Hen's Teeth and Horse's Toes",
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked"
+  },
+  {
+    "id": "labarbera_1983_wheels",
+    "type": "article-journal",
+    "title": "Why the wheels won't go",
+    "author": [
+      {
+        "family": "LaBarbera",
+        "given": "Michael"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1983
+        ]
+      ]
+    },
+    "container-title": "The American Naturalist",
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked"
+  },
+  {
+    "id": "berg_1973_flagellar",
+    "type": "article-journal",
+    "title": "Bacteria swim by rotating their flagellar filaments",
+    "author": [
+      {
+        "family": "Berg",
+        "given": "Howard C."
+      },
+      {
+        "family": "Anderson",
+        "given": "Robert A."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1973
+        ]
+      ]
+    },
+    "container-title": "Nature",
+    "DOI": "10.1038/245380a0",
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked"
+  },
+  {
+    "id": "chen_2010_chlorophyll_f",
+    "type": "article-journal",
+    "title": "A red-shifted chlorophyll",
+    "author": [
+      {
+        "family": "Chen",
+        "given": "Min"
+      },
+      {
+        "family": "Schliep",
+        "given": "Martin"
+      },
+      {
+        "family": "Willows",
+        "given": "Robert D."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2010
+        ]
+      ]
+    },
+    "container-title": "Science",
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked"
+  },
+  {
+    "id": "johnsen_lohmann_2005",
+    "type": "article-journal",
+    "title": "The physics and neurobiology of magnetoreception",
+    "author": [
+      {
+        "family": "Johnsen",
+        "given": "Sönke"
+      },
+      {
+        "family": "Lohmann",
+        "given": "Kenneth J."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2005
+        ]
+      ]
+    },
+    "container-title": "Nature Reviews Neuroscience",
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked"
+  },
+  {
+    "id": "chasteen_2003_selenium",
+    "type": "article-journal",
+    "title": "Biomethylation of selenium and tellurium: microorganisms and plants",
+    "author": [
+      {
+        "family": "Chasteen",
+        "given": "Thomas G."
+      },
+      {
+        "family": "Bentley",
+        "given": "Ronald"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2003
+        ]
+      ]
+    },
+    "container-title": "Chemical Reviews",
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked"
+  },
+  {
+    "id": "madigan_2006_brock",
+    "type": "book",
+    "title": "Brock Biology of Microorganisms",
+    "author": [
+      {
+        "family": "Madigan",
+        "given": "Michael T."
+      },
+      {
+        "family": "Martinko",
+        "given": "John M."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2006
+        ]
+      ]
+    },
+    "container-title": "Pearson Prentice Hall",
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked"
+  },
+  {
+    "id": "berg_1973_bacteria",
+    "type": "article-journal",
+    "title": "Bacteria swim by rotating their flagellar filaments",
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked",
+    "author": [
+      {
+        "family": "Berg",
+        "given": "H. C."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1973
+        ]
+      ]
+    },
+    "container-title": "Nature"
   }
 ]

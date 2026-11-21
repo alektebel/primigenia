@@ -1,0 +1,345 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "carapaz",
+  "name": {
+    "en": "Carapaz"
+  },
+  "world": "superearth",
+  "kind": "new",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "Volcanic scree slopes, fog belts, shallow shelf edges",
+    "diet": "Opportunistic omnivore; crushes calcified fungi, catches falling fruit, scavenges carrion",
+    "active": "Crepuscular",
+    "predators": []
+  },
+  "body": "Bivalve-convergent lineage. Fused, flattened carapace of chitin-mineral composite. Four lateral walking legs with stiff joints. Massive asymmetrical claws. Visceral mass retracts fully under shield. Copper-veined hemolymph visible through translucent carapace edge.",
+  "chains": [
+    {
+      "id": "carapaz.c1",
+      "trait": "Flattened, reinforced carapace",
+      "links": [
+        "Flattened profile minimizes drag in dense air and lowers center of mass under high gravity",
+        "High density increases drag force; high gravity increases toppling torque",
+        "F8: 10 bar atmosphere, ~12.5 kg/m³ density",
+        "F4: 1.85g surface gravity"
+      ],
+      "roots": [
+        "F8",
+        "F4"
+      ],
+      "skill": {
+        "id": "carapaz.anchor_plate",
+        "name": {
+          "en": "Anchor Plate"
+        },
+        "role": "Defence",
+        "effect": "Locks claws into substrate, reducing incoming damage by 30% and preventing displacement.",
+        "numbers": {}
+      },
+      "weakness": "Slow to right itself if overturned.",
+      "observe": [
+        "Carapaz flattens against rock during gusts.",
+        "Scree shifts under its weight without it tipping.",
+        "Claws bite deep into stone."
+      ],
+      "journal": {
+        "en": "The pressure and gravity demanded a low profile; everything else followed."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "On 1.85 g (F4), a low, wide body lowers the center of mass and cuts overturning torque on scree; in ~10 bar, dense air (F8) raises form drag on tall profiles, favouring a flattened shield. Chitin–mineral composites are a standard way to buy stiffness per unit mass at high structural loads—same scaling logic as exoskeletal armouring on Earth.",
+        "fixes": [
+          "On 1.85 g (F4), a low, wide body lowers the center of mass and cuts overturning torque on scree; in ~10 bar, dense air (F8) raises form drag on tall profiles, favouring a flattened shield. Chitin–mineral composites are a standard way to buy stiffness per unit mass at high structural loads—same scaling logic as exoskeletal armouring on Earth."
+        ],
+        "analogues": [
+          {
+            "organism": "Brachyuran carcinisation (flat, wide carapace); limpets and chitons (profile hugging rock); trilobite/concave dorsal shields for streamlining against flow or wind.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "carapaz.c2",
+      "trait": "Lateral leg joints and sideways gait",
+      "links": [
+        "Sideways gait maximizes stability on steep volcanic scree and allows air-rudder thrust",
+        "Lateral movement avoids leg crossing on shifting scree; dense air provides lateral lift/drag",
+        "F18: Steep volcanic slopes, loose scree",
+        "F8: 10 bar density"
+      ],
+      "roots": [
+        "F18",
+        "F8"
+      ],
+      "skill": {
+        "id": "carapaz.scuttle_dash",
+        "name": {
+          "en": "Scuttle Dash"
+        },
+        "role": "Basic",
+        "effect": "Move 3 meters sideways instantly, ignoring terrain penalties. Dodges frontal attacks.",
+        "numbers": {}
+      },
+      "weakness": "Cannot retreat quickly in forward direction.",
+      "observe": [
+        "Legs never cross the midline while moving.",
+        "Creature pushes off air to steer.",
+        "Stops instantly on loose rock."
+      ],
+      "journal": {
+        "en": "Sideways is the only way; the ground shifts and the wind pushes."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "Keep sideways gait; root it in leg joint geometry, wide stance, and claw purchase on loose scree. Reframe F8 as slight gust buffering or reduced wind heeling on a flat carapace, not “air-rudder thrust.” Scuttle Dash can stay a game ability if described as explosive sideways leg drive, not aerodynamic push.",
+        "fixes": [
+          "Keep sideways gait; root it in leg joint geometry, wide stance, and claw purchase on loose scree. Reframe F8 as slight gust buffering or reduced wind heeling on a flat carapace, not “air-rudder thrust.” Scuttle Dash can stay a game ability if described as explosive sideways leg drive, not aerodynamic push."
+        ],
+        "analogues": [
+          {
+            "organism": "Brachyuran crabs—lateral leg orientation and alternating tetrapod sideways gait on irregular substrate (mechanical stability, not wing-like lift).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "carapaz.c3",
+      "trait": "Massive asymmetrical crushing claws",
+      "links": [
+        "Heavy claws function as ballast, anchors, and instant traps for gravity-accelerated prey",
+        "High drag air demands grip; high gravity increases prey fall velocity",
+        "F8: 10 bar atmosphere",
+        "F4: 1.85g surface gravity"
+      ],
+      "roots": [
+        "F8",
+        "F4"
+      ],
+      "skill": {
+        "id": "carapaz.crush_grip",
+        "name": {
+          "en": "Crush Grip"
+        },
+        "role": "Engage",
+        "effect": "Pins target, dealing 12 damage and reducing target movement by 40% for 2 turns.",
+        "numbers": {}
+      },
+      "weakness": "Claws are heavy; slow recovery time.",
+      "observe": [
+        "Claws catch a falling fruit mid-air.",
+        "Claws act as ballast on steep slope.",
+        "One claw is larger than the other."
+      ],
+      "journal": {
+        "en": "Gravity does the work; the claws just catch."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "Under 1.85 g, perched prey and detritus accelerate faster when dislodged, making ambush at a scree edge or shelf lip selectively favourable. Heavy chelae add anchoring mass and grip on steep volcanic slopes (F18); asymmetry matches a major/minor tool division (crush anchor vs trap) without demanding two equally costly weapons. Cost is metabolic and manoeuvre: heavy distal mass slows strike recovery—consistent with the stated weakness.",
+        "fixes": [
+          "Under 1.85 g, perched prey and detritus accelerate faster when dislodged, making ambush at a scree edge or shelf lip selectively favourable. Heavy chelae add anchoring mass and grip on steep volcanic slopes (F18); asymmetry matches a major/minor tool division (crush anchor vs trap) without demanding two equally costly weapons. Cost is metabolic and manoeuvre: heavy distal mass slows strike recovery—consistent with the stated weakness."
+        ],
+        "analogues": [
+          {
+            "organism": "Stone and coconut crabs (crushing chelae, asymmetry); robber crab holding posture on slopes; general major/minor chela division in decapods.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "carapaz.c4",
+      "trait": "Visceral mass retracts completely under shield",
+      "links": [
+        "Tucked abdomen shields delicate gills from abrasive volcanic ash and conserves heat in fog",
+        "Volcanic activity suspends abrasive particulates; fog reduces temperature and increases humidity",
+        "F18: Effusive volcanism",
+        "F12: Persistent low-altitude fog"
+      ],
+      "roots": [
+        "F18",
+        "F12"
+      ],
+      "skill": {
+        "id": "carapaz.shell_curl",
+        "name": {
+          "en": "Shell Curl"
+        },
+        "role": "Passive",
+        "effect": "Hides from detection. Regenerates health slowly. Vulnerable to high-pitch sound.",
+        "numbers": {}
+      },
+      "weakness": "Cannot breathe fully when curled; slow to emerge.",
+      "observe": [
+        "Visceral mass vanishes into carapace.",
+        "Breathing sound stops.",
+        "Fog triggers curling behavior."
+      ],
+      "journal": {
+        "en": "When the fog comes, the Carapaz becomes a stone."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "Optional honesty tweak: cite closure against ash and abrasion first; mention fog as secondary thermal/humidity trigger. Do not lean on piezolytes for fog curling unless the species routinely experiences large hydrostatic swings.",
+        "fixes": [
+          "Optional honesty tweak: cite closure against ash and abrasion first; mention fog as secondary thermal/humidity trigger. Do not lean on piezolytes for fog curling unless the species routinely experiences large hydrostatic swings."
+        ],
+        "analogues": [
+          {
+            "organism": "Bivalves (adductor-driven shell closure); isopods and some crabs folding into carapace; soldier crabs and horseshoe crabs protecting ventral books/gills.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "Kite-rays",
+      "kind": "cousin",
+      "note": "(council kind 'Predator') High-altitude gliders dive for Carapaz in fog gaps."
+    },
+    {
+      "with": "Vent-vents",
+      "kind": "cousin",
+      "note": "(council kind 'Competitor') Both scavenge volcanic shelves; Carapaz dominates scree, Vents dominate vents."
+    },
+    {
+      "with": "carmesa",
+      "kind": "convergent",
+      "via": "carcinisation",
+      "note": "both converged on the crab body plan from unrelated lineages (Borradaile 1916; Keiler, Wirkner and Richter 2017; Wolfe, Luque and Bracken-Grissom 2021)"
+    },
+    {
+      "with": "laja_tres",
+      "kind": "convergent",
+      "via": "carcinisation",
+      "note": "both converged on the crab body plan from unrelated lineages (Borradaile 1916; Keiler, Wirkner and Richter 2017; Wolfe, Luque and Bracken-Grissom 2021)"
+    },
+    {
+      "with": "salcaran",
+      "kind": "convergent",
+      "via": "carcinisation",
+      "note": "both converged on the crab body plan from unrelated lineages (Borradaile 1916; Keiler, Wirkner and Richter 2017; Wolfe, Luque and Bracken-Grissom 2021)"
+    },
+    {
+      "with": "lombardo",
+      "kind": "convergent",
+      "via": "carcinisation",
+      "note": "both converged on the crab body plan from unrelated lineages (Borradaile 1916; Keiler, Wirkner and Richter 2017; Wolfe, Luque and Bracken-Grissom 2021)"
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-19",
+    "by": [
+      "naturalist/qwen"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-19",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-19"
+    },
+    {
+      "date": "2026-11-19",
+      "who": "autoloop",
+      "what": "carcinisation links to 3 creature(s)"
+    },
+    {
+      "date": "2026-11-19",
+      "who": "autoloop",
+      "what": "removed rejected references from analogues"
+    },
+    {
+      "date": "2026-11-19",
+      "who": "autoloop",
+      "what": "carcinisation links to 1 creature(s)"
+    }
+  ],
+  "carcinised": true,
+  "body_plan": {
+    "symmetry": "bilateral",
+    "arms": 4,
+    "origin": "Modified pedal lobes from bivalve-like ancestor"
+  },
+  "temperament": "Cautious, territorial, anchors deeply; slow to engage but relentless once committed",
+  "secrets": [
+    "Their copper-rich blood neutralizes sulfide toxins from volcanic vents.",
+    "They can detect pressure changes in the air to predict fog fronts hours in advance."
+  ],
+  "moments": [
+    "When the amber fog rolls in, the scree goes silent as a dozen Carapaz lock their claws into the stone and vanish into their shells, leaving only the rhythmic hiss of ventilation and the faint blue glow of their copper blood."
+  ],
+  "journal": [
+    {
+      "en": "They walk sideways because the wind and the scree leave no other way."
+    },
+    {
+      "en": "A wink at carcinisation? No; just the physics of 1.85g and 10 bar squeezing everything flat and lateral."
+    },
+    {
+      "en": "Again."
+    }
+  ]
+}

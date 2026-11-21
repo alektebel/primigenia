@@ -1,0 +1,385 @@
+{
+  "schema": "cpore.world/1",
+  "id": "mycelia",
+  "kind": "fictional",
+  "system": {
+    "star": "K2V Orange Dwarf",
+    "position": "fictional",
+    "distance_ly_from_sol": null
+  },
+  "name": {
+    "en": "Mycelial World",
+    "es": "Mundo Micelial"
+  },
+  "status": "draft",
+  "facts": [
+    {
+      "id": "F1",
+      "group": "star",
+      "claim": "Stellar classification and luminosity",
+      "justification": "K2V dwarfs typically yield 0.35–0.50 L☉; 0.42 L☉ matches late-K spectral energy distribution and provides multi-billion-year main-sequence stability.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 0.42,
+      "unit": "L☉",
+      "consequences": [
+        "Red-shifted peak emission drives deep-red photopigments in symbiotic algae and fungal caps.",
+        "Lower UV flux reduces photodamage, allowing organisms to invest in large surface-area absorbers rather than heavy shielding."
+      ],
+      "refs": [
+        "cox_2000"
+      ]
+    },
+    {
+      "id": "F2",
+      "group": "orbit",
+      "claim": "Orbital period",
+      "justification": "Scales with K2V luminosity (0.42 L☉) and 3% CO₂ greenhouse effect to maintain liquid solvent stability without runaway warming.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 600,
+      "unit": "Earth days",
+      "consequences": [
+        "Extended diurnal cycles allow gradual thermal acclimation in ectothermic fauna.",
+        "Slows circadian rhythms, aligning biological clocks with multi-day network signaling timescales."
+      ],
+      "refs": [
+        "catling_2017"
+      ]
+    },
+    {
+      "id": "F4",
+      "group": "planet",
+      "claim": "Rotation period",
+      "justification": "Ancient tidal damping from a binary companion moon (0.04 M⊕) slowed rotation over billions of years.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 32,
+      "unit": "hours",
+      "consequences": [
+        "Prevents extreme diurnal temperature swings, allowing chemical gradients to persist across soil layers.",
+        "Enables slow convection cells and persistent stratocumulus fog decks rather than violent weather systems."
+      ],
+      "refs": [
+        "cox_2000"
+      ]
+    },
+    {
+      "id": "F5",
+      "group": "planet",
+      "claim": "Axial tilt",
+      "justification": "Orbital stability over geological timescales minimizes seasonal forcing.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 6,
+      "unit": "degrees",
+      "consequences": [
+        "Maintains continuous network activity without seasonal dormancy shocks.",
+        "Favors specialized, stable niches over generalist migration or hibernation strategies."
+      ],
+      "refs": [
+        "cox_2000"
+      ]
+    },
+    {
+      "id": "F12",
+      "group": "geology",
+      "claim": "Geothermal energy flux",
+      "justification": "Active tectonics supply steady heat and chemical gradients (H₂S, Fe²⁺, CH₄) at hydrothermal vent clusters.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 45,
+      "unit": "mW/m²",
+      "consequences": [
+        "Fuels chemolithotrophic base layers independent of stellar output.",
+        "Creates persistent thermal niches that anchor network growth and support bradykinetic fauna."
+      ],
+      "refs": [
+        "cox_2000"
+      ]
+    },
+    {
+      "id": "F3",
+      "group": "planet",
+      "claim": "Surface gravity",
+      "justification": "Derived from 1.5 M⊕ mass and 1.12 R⊕ radius (g ≈ M/R²), providing stable tectonics and moderate load-bearing requirements.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 1.2,
+      "unit": "g",
+      "consequences": [
+        "Favors low, spreading growth forms and dense, load-bearing tissue over tall arboreal structures.",
+        "Reinforces heavy chitinous exoskeletons to prevent structural collapse under constant gravitational and atmospheric load."
+      ],
+      "refs": [
+        "cox_2000"
+      ]
+    },
+    {
+      "id": "F6",
+      "group": "atmosphere",
+      "claim": "Surface pressure",
+      "justification": "Higher gravity retains a thicker volatile envelope from planetary outgassing and fungal transpiration.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 2.0,
+      "unit": "bar",
+      "consequences": [
+        "Increases acoustic impedance, allowing low-frequency sound to carry kilometers with minimal attenuation.",
+        "Compresses gas molecules, lowering spore terminal velocity and favoring vector-mediated dispersal over passive wind drift."
+      ],
+      "refs": [
+        "catling_2017"
+      ]
+    },
+    {
+      "id": "F7",
+      "group": "atmosphere",
+      "claim": "Atmospheric composition",
+      "justification": "Sustained by symbiotic algal mats and long-term organic carbon burial; 20% O₂ yields pO₂ ≈ 0.4 bar, while 3% CO₂ buffers soil pH and fuels chemolithotrophic base layers.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "76% N₂, 20% O₂, 3% CO₂, 1% Ar, 0.5% H₂O",
+      "unit": "volume fraction",
+      "consequences": [
+        "O₂ level supports aerobic fauna but limits burst metabolism, enforcing slow pacing.",
+        "CO₂ availability drives external enzymatic hydrolysis and fungal territorial expansion."
+      ],
+      "refs": [
+        "catling_2017"
+      ]
+    },
+    {
+      "id": "F8",
+      "group": "sky",
+      "claim": "Mean visibility range",
+      "justification": "Dense aerosol/particulate haze and persistent stratocumulus fog scatter short wavelengths via Mie scattering.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 15,
+      "unit": "meters",
+      "consequences": [
+        "Visual range is severely limited, rendering high-fidelity sight useless beyond 15 m.",
+        "Forces reliance on low-frequency acoustic communication and chemical/VOC navigation for survival."
+      ],
+      "refs": [
+        "catling_2017"
+      ]
+    },
+    {
+      "id": "F9",
+      "group": "atmosphere",
+      "claim": "Sound propagation speed",
+      "justification": "High pressure increases acoustic impedance (transmission efficiency), not wave speed; dense medium reduces high-frequency damping.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 340,
+      "unit": "m/s",
+      "consequences": [
+        "Low-frequency hums travel kilometers, enabling long-range coordination and terrain scanning.",
+        "High-pitched sounds cause disorientation and break stealth; combat relies on resonance and frequency matching."
+      ],
+      "refs": [
+        "catling_2017"
+      ]
+    },
+    {
+      "id": "F10",
+      "group": "geology",
+      "claim": "Surface lithology and structure",
+      "justification": "Plate tectonics recycles silicates; fungal chelation and organic acid exudates accelerate limestone weathering and karst formation.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "Basaltic shield volcanism, carbonate karst, pervasive hyphal overburden",
+      "unit": "geological formation",
+      "consequences": [
+        "Provides mineral scaffolds for hyphal anchorage and nutrient leaching.",
+        "Creates isolated thermal/chemical refugia in lava tubes and karst fissures for network nodes and extremophile fauna."
+      ]
+    },
+    {
+      "id": "F11",
+      "group": "ocean",
+      "claim": "Ocean depth and benthic chemistry",
+      "justification": "Shallow seas maximize benthic irradiation and chemical exchange; centuries of fungal exudates increase osmolarity and create anoxic sediments.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 150,
+      "unit": "meters average depth",
+      "consequences": [
+        "Limits marine dominance, keeping photic zones narrow.",
+        "Anoxic benthic layers preserve dead biomass for slow fungal digestion rather than rapid bacterial decay."
+      ],
+      "refs": [
+        "catling_2017"
+      ]
+    },
+    {
+      "id": "F13",
+      "group": "biochemistry",
+      "claim": "Primary structural and metabolic polymers",
+      "justification": "High humidity and stable temps favor polymer synthesis; melanin dissipates excess photon/heat energy; external digestion exploits recalcitrant organics.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "Chitin-glucan composites, melanin, external enzymatic hydrolysis",
+      "unit": "biochemical pathway",
+      "consequences": [
+        "Organisms rely on secreted hydrolytic enzymes to break down complex polymers before absorption.",
+        "Heavy cuticles prevent water loss under constant osmotic pressure and abrasive terrain."
+      ]
+    },
+    {
+      "id": "F14",
+      "group": "biochemistry",
+      "claim": "Network signal propagation speed",
+      "justification": "Dense medium and hyphal membrane resistance limit diffusion; cytoplasmic streaming drives slow chemical fronts, while electrical spikes are highly speculative and macroscopically damped.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "0.01–1 m/h (chemical); <0.1 m/s (electrical, contested)",
+      "unit": "m/h",
+      "consequences": [
+        "Network-wide responses take weeks to years; players must trigger local patches with delayed feedback.",
+        "Instant telepathy is impossible; cognition emerges as slow, territorial matrix responses to chemical/electrical stress."
+      ],
+      "refs": [
+        "adamatzky_2022"
+      ]
+    },
+    {
+      "id": "F15",
+      "group": "biochemistry",
+      "claim": "Network topology and emergent behavior",
+      "justification": "Karst et al. (2023) critique warns against anthropomorphizing mycorrhizal networks; here, it acts as a highly speculative emergent coordination system, not a benevolent internet.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "Branching hyphal fusion with competitive source-sink dynamics",
+      "unit": "ecological interaction",
+      "consequences": [
+        "The world remembers chemical traces for hours; breaking network links severs resource routing.",
+        "Symbiosis is mechanically mandatory; isolation triggers territorial aggression from the local matrix."
+      ]
+    },
+    {
+      "id": "F19",
+      "group": "biochemistry",
+      "claim": "Hyphal signalling timescale table",
+      "justification": "Separates micro-events from macro-resource fronts; aligns with diffusion limits and fungal cargo transport rates.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "Local chemical: hours; Regional resource: days–weeks; Continental: seasons–years",
+      "unit": "temporal scale",
+      "consequences": [
+        "Predictable delay windows allow tactical patch management.",
+        "Prevents real-time planetary cognition; forces reliance on local environmental cues."
+      ]
+    },
+    {
+      "id": "F20",
+      "group": "biochemistry",
+      "claim": "Player–matrix interface",
+      "justification": "Grounds interaction in verifiable biochemical stressors rather than anthropomorphic communication; feedback scales with patch size and network connectivity.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "Local patch enzyme/VOC/electrical perturbation with delayed feedback",
+      "unit": "gameplay mechanic",
+      "consequences": [
+        "Triggers territorial matrix responses after hours to days.",
+        "Rewards incremental chemical manipulation over brute-force clearing."
+      ]
+    },
+    {
+      "id": "F16",
+      "group": "biochemistry",
+      "claim": "Fauna adaptation: Siltfilter",
+      "justification": "Detrital energy poverty, tidal anoxia, and toxin-rich sediments concentrate chemical nutrients in benthic zones; slow metabolism matches low-energy benthic foraging.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "Semi-aquatic benthic grazer with gill rakers and bradykinetic metabolism",
+      "unit": "morphological trait",
+      "consequences": [
+        "Moves slowly, sifting water for dissolved organics and spores.",
+        "Immobilized during ebb tides but highly resistant to pressure changes and chemical fluctuations."
+      ]
+    },
+    {
+      "id": "F17",
+      "group": "biochemistry",
+      "claim": "Fauna adaptation: Lumenmole",
+      "justification": "Persistent fog and low UV limit visual hunting; high soil density favors subsurface foraging over surface exposure; dry karst exhales and sun-lit rock surfaces create rapid desiccation risk.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "Subterranean burrower with heat-pit sensors and reduced eyes",
+      "unit": "morphological trait",
+      "consequences": [
+        "Relies on thermal gradients and VOC plumes for navigation.",
+        "Surface exposure >8 seconds causes rapid desiccation in dry microclimates, forcing burrow-and-ambush tactics."
+      ]
+    },
+    {
+      "id": "F18",
+      "group": "biochemistry",
+      "claim": "Fauna adaptation: Glintwing",
+      "justification": "2.0 bar atmosphere increases lift at low speeds (high Reynolds number regime); patchy food distribution favors efficient aerial transit; iridescence functions only within 15 m visual range.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "Flat, reinforced-patagia glider with iridescent cuticle",
+      "unit": "morphological trait",
+      "consequences": [
+        "Rides warm currents to traverse canyons without stamina cost.",
+        "Fragile in turbulence; sudden wind shear causes fall damage and staggers, requiring precise thermal reading."
+      ]
+    }
+  ],
+  "changelog": [
+    {
+      "date": "2026-11-19",
+      "who": "autoloop",
+      "what": "world canon drafted by the council chair from 20 facts (planet drafts, peer reviews, astrobio referee)"
+    },
+    {
+      "date": "2026-11-19",
+      "who": "autoloop",
+      "what": "removed rejected references; retired real facts left without references"
+    }
+  ]
+}

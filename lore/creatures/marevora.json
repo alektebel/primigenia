@@ -1,0 +1,302 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "marevora",
+  "name": {
+    "en": "Marevora"
+  },
+  "world": "ringmoon",
+  "kind": "new",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "Hydrothermal ridge zones and tidal flat interfaces",
+    "diet": "Chemosynthetic mat biomass and piezo-electric strain energy",
+    "active": "Tidal-cycle burst; eclipse dormancy or mating",
+    "predators": []
+  },
+  "body": "Low-slung carapace with hinged thermal vents and capacitor-joints; six limb-arms for anchoring and filtering; heat-pit sensory array along flanks.",
+  "chains": [
+    {
+      "id": "marevora.c1",
+      "trait": "Capacitor-limbs crackle and assist movement during tidal flex",
+      "links": [
+        "Lithospheric strain from tidal heating",
+        "Organic piezoelectric crystals in joint matrix store charge",
+        "Mechanical stress releases stored ATP and kinetic assist"
+      ],
+      "roots": [
+        "F6"
+      ],
+      "skill": {
+        "id": "marevora.strain_burst",
+        "name": {
+          "en": "Strain Burst"
+        },
+        "role": "Engage",
+        "effect": "Converts environmental tidal stress into a burst of movement speed (150%) and a shock attack dealing 12 damage; drains charge over 5 turns.",
+        "numbers": {}
+      },
+      "weakness": "Discharges quickly in calm water or during thermal tides; immobile without stored strain.",
+      "observe": [
+        "Skin glows faint blue at joints before movement.",
+        "Hunts exclusively near spreading ridges with active flex.",
+        "Joints emit micro-sparks when the giant's gravity peaks."
+      ],
+      "journal": {
+        "en": "It stores the moon's heartbeat in its bones, bursting forward when the tides scream."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "Reframe joints as strain-gated elastic recoil (spring tendons primed by tidal flex) plus weak piezo triggers for timing; drop ‘ATP from charge’ and optional piezo crystals as sensory, not primary motor fuel. Remove ‘piezo-electric strain energy’ from diet—it is not a food.",
+        "fixes": [
+          "Reframe joints as strain-gated elastic recoil (spring tendons primed by tidal flex) plus weak piezo triggers for timing; drop ‘ATP from charge’ and optional piezo crystals as sensory, not primary motor fuel. Remove ‘piezo-electric strain energy’ from diet—it is not a food."
+        ],
+        "analogues": [
+          {
+            "organism": "Teleost lateral line and shark ampullae of Lorenzini detect strain and weak EM fields; tendon–muscle elastic storage in kangaroos and fleas releases stored mechanical work—not piezoelectric capacitors.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "marevora.c2",
+      "trait": "Veins flush carotenoid-symbionts during stellar flare events",
+      "links": [
+        "High-energy proton precipitation from magnetosphere",
+        "Melanin-carotenoid symbionts capture radiolytic electrons",
+        "Radical scavenging prevents DNA breaks and fuels repair"
+      ],
+      "roots": [
+        "F8"
+      ],
+      "skill": {
+        "id": "marevora.rad_sync",
+        "name": {
+          "en": "Rad-Sync"
+        },
+        "role": "Passive",
+        "effect": "Reduces radiation damage by 80% and heals 2 HP per turn during flare events; symbionts shed 5% max HP in clean water.",
+        "numbers": {}
+      },
+      "weakness": "Symbionts die in low-radiation zones; shedding leaves it vulnerable to infection.",
+      "observe": [
+        "Flushing red along vascular ridges before M-class flare alerts.",
+        "Avoids open equator during peak radiation hours.",
+        "Sheds glittering carotenoid scales in safe magnetic valleys."
+      ],
+      "journal": {
+        "en": "A walking shield that eats the storm and glows with borrowed grace."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "Keep symbionts in epidermal or gut microbe layers rather than vascular ‘veins’; scale passive mitigation to partial ROS/DNA repair benefit, not near-immunity.",
+        "fixes": [
+          "Keep symbionts in epidermal or gut microbe layers rather than vascular ‘veins’; scale passive mitigation to partial ROS/DNA repair benefit, not near-immunity."
+        ],
+        "analogues": [
+          {
+            "organism": "Melanized fungi at high-radiation sites (e.g. Cryptococcus-style melanin-mediated electron use, from memory); carotenoids in Deinococcus and many bacteria as radical scavengers; coral dinoflagellate ‘bleaching’ as stress shedding parallel.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "marevora.c3",
+      "trait": "Carapace splits open during eclipse umbra to vent heat",
+      "links": [
+        "Rapid thermal contraction during 40-minute total eclipse",
+        "Shell stress exceeds fracture threshold of hinge joints",
+        "Fissures open to release superheated steam and mating pheromones"
+      ],
+      "roots": [
+        "F12"
+      ],
+      "skill": {
+        "id": "marevora.eclipse_bloom",
+        "name": {
+          "en": "Eclipse Bloom"
+        },
+        "role": "Social",
+        "effect": "At eclipse onset, splits shell to heal 20 HP, release pheromones (befriend all grazers within 50m), and gain 'Heat Shield' (+5 Defence) but is Vulnerable to area attacks for 3 turns.",
+        "numbers": {}
+      },
+      "weakness": "Completely exposed and immobile during the bloom; cannot act until eclipse ends.",
+      "observe": [
+        "Shells crack with audible pops exactly at shadow-line.",
+        "Steam vents erupt from dorsal fissures.",
+        "Herds gather and lock legs during the split phase."
+      ],
+      "journal": {
+        "en": "The world goes dark, and it opens its heart to the giant's shadow."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "Eclipse bloom: hinge opens slightly for pheromone release and mate visibility in twilight, or seals carapace for insulation during chill; steam only after giant returns and rock reheats—or mate during umbra while motionless, with vulnerability window, not heat venting.",
+        "fixes": [
+          "Eclipse bloom: hinge opens slightly for pheromone release and mate visibility in twilight, or seals carapace for insulation during chill; steam only after giant returns and rock reheats—or mate during umbra while motionless, with vulnerability window, not heat venting."
+        ],
+        "analogues": [
+          {
+            "organism": "Intertidal molluscs gap valves to reduce desiccation/cooling stress; coral and palolo worm lunar/spawn synchrony on fixed celestial periods.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "somero_2002_thermal"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "marevora.c4",
+      "trait": "Ciliated ridges filter vent plumes for direct chemosynthetic absorption",
+      "links": [
+        "Hydrothermal effluents rich in H2S and CH4",
+        "Ciliated filtration membranes trap chemolithotrophic biomass",
+        "Enzymatic breakdown provides direct carbon and energy"
+      ],
+      "roots": [
+        "F14"
+      ],
+      "skill": {
+        "id": "marevora.vent_siphon",
+        "name": {
+          "en": "Vent Siphon"
+        },
+        "role": "Basic",
+        "effect": "Target within 30m near a vent; absorbs 8 HP and applies 'Chem-Burn' (2 damage/turn) to target for 4 turns; heals Marevora for 30% of damage dealt.",
+        "numbers": {}
+      },
+      "weakness": "Blind to visual cues; ineffective far from vent plumes.",
+      "observe": [
+        "Drifts suspended near black smoker plumes.",
+        "Cilia vibrate visibly when filtering.",
+        "No external eyes; heat-pit pits line the mouth."
+      ],
+      "journal": {
+        "en": "It reads the world through steam, tasting life where fire meets water."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "None required; optionally note mild chemoautotroph symbionts in gut like vesicomyid clams for efficiency near vents.",
+        "fixes": [
+          "None required; optionally note mild chemoautotroph symbionts in gut like vesicomyid clams for efficiency near vents."
+        ],
+        "analogues": [
+          {
+            "organism": "Riftia tubewave bacterial symbiosis and particle capture (Cavanaugh); vent limpets and worms; pit vipers thermosensory pits for gradients.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "cavanaugh_1983_symbiotic"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-19",
+    "by": [
+      "naturalist/qwen"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-19",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-19"
+    },
+    {
+      "date": "2026-11-19",
+      "who": "autoloop",
+      "what": "removed rejected references from analogues"
+    }
+  ],
+  "body_plan": {
+    "symmetry": "bilateral",
+    "arms": 6,
+    "origin": "Benthic radiation shelter and vent colonization"
+  },
+  "temperament": "Docile grazer unless discharged or eclipsed; defensive piezo-shock on contact.",
+  "secrets": [
+    "Squeezing the capacitor-joints during combat releases a stored EMP burst that stuns mechanical constructs for 2 turns.",
+    "The carotenoid shedding can be harvested to craft temporary radiation-resistant poultices.",
+    "The heat-pit array can detect underground magma flows, revealing safe paths through volcanic rifts."
+  ],
+  "moments": [
+    "During the 40-minute eclipse, the entire herd locks legs and splits their carapaces simultaneously, releasing a thunderous hiss of steam and a cloud of pheromones that turns the tidal flats into a glowing, pulsating cathedral of light and sound."
+  ],
+  "journal": [
+    {
+      "en": "It stores the moon's heartbeat in its bones."
+    },
+    {
+      "en": "The shell cracks at the shadow's edge, and the herd sings in steam."
+    }
+  ]
+}

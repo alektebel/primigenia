@@ -1,0 +1,323 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "el_susurrador_de_hielo",
+  "name": {
+    "en": "El Susurrador de Hielo"
+  },
+  "world": "icemoon",
+  "kind": "new",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "Ice-shell stress fractures and vent-conduit junctions",
+    "diet": "Chemolithotrophic symbionts and electro-captured macro-prey",
+    "active": "Sessile anchor with mobile stinger-tendrils",
+    "predators": []
+  },
+  "body": "Jagged crystalline carapace fused to substrate, with three conductive electro-osmotic tendrils pulsing with bioluminescence",
+  "chains": [
+    {
+      "id": "el_susurrador_de_hielo.c1",
+      "trait": "Crystalline spine harvests tidal flexure",
+      "links": [
+        "Converts ice stress to voltage",
+        "Powers slow metabolism",
+        "Cold pressure slows diffusion"
+      ],
+      "roots": [
+        "F3",
+        "F7",
+        "F24"
+      ],
+      "skill": {
+        "id": "el_susurrador_de_hielo.resonant_charge",
+        "name": {
+          "en": "Resonant Charge"
+        },
+        "role": "Basic",
+        "effect": "Absorbs tidal vibration to fill charge meter. Unlocks abilities. +15% charge rate near stress fractures.",
+        "numbers": {}
+      },
+      "weakness": "Cannot charge if locked to dead ice; must be near stress.",
+      "observe": [
+        "Carapace glints with internal lattice",
+        "Spine vibrates silently in sync with moon",
+        "Tendril tips arc blue sparks"
+      ],
+      "journal": {
+        "en": "It doesn't hunt; it waits for the moon to strike."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "Symbionts supply basal metabolism (chemolithotrophy per F26/F20); piezo spine only tops a slow charge reservoir for Lure Flash and strikes. Anchor only on active fractures (weakness already); label piezo output as highly speculative but sufficient for signaling, not for growth.",
+        "fixes": [
+          "Symbionts supply basal metabolism (chemolithotrophy per F26/F20); piezo spine only tops a slow charge reservoir for Lure Flash and strikes. Anchor only on active fractures (weakness already); label piezo output as highly speculative but sufficient for signaling, not for growth."
+        ],
+        "analogues": [
+          {
+            "organism": "Terrestrial bone and tendon (collagen/apatite piezoelectric response under load; Fukada mechanism) — microvolts–millivolts per physiological strain, not whole-body ATP supply; Riftia-style hosts (F26) farm chemolithotrophs for real energy.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "coulter_1978_piezoelectric",
+              "frankel_1998_magnetotactic"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "el_susurrador_de_hielo.c2",
+      "trait": "Bioluminescence triggered by ionic discharge",
+      "links": [
+        "Voltage excites chemiluminescence",
+        "Dark ocean has no sunlight",
+        "Prey attracted to light"
+      ],
+      "roots": [
+        "F27",
+        "F12",
+        "F3"
+      ],
+      "skill": {
+        "id": "el_susurrador_de_hielo.lure_flash",
+        "name": {
+          "en": "Lure Flash"
+        },
+        "role": "Engage",
+        "effect": "Spends charge to flash bright blue. Draws nearby creatures toward tendrils. 470 nm peak.",
+        "numbers": {}
+      },
+      "weakness": "Flash reveals position to predators and rivals.",
+      "observe": [
+        "Tendril sacs dilate before flash",
+        "Flash is pure blue, 470 nm",
+        "Flash pattern mimics mating pulses of small grazers"
+      ],
+      "journal": {
+        "en": "A heartbeat of light in the eternal dark."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "Describe trigger as depolarization or Ca²⁺-gated luciferase in tendril photocytes, not literal spark discharge through bulk water; keep 470 nm peak as canon.",
+        "fixes": [
+          "Describe trigger as depolarization or Ca²⁺-gated luciferase in tendril photocytes, not literal spark discharge through bulk water; keep 470 nm peak as canon."
+        ],
+        "analogues": [
+          {
+            "organism": "Deep-sea anglerfish esca lure; dinoflagellate bioluminescence on mechanical or electrical stimulation; Hawaiian bobtail squid (Euprymna scolopes) neural control of symbiotic photophores — lure plus controlled emission, not sunlight counter-illumination.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "el_susurrador_de_hielo.c3",
+      "trait": "Electro-osmotic cavitation jet",
+      "links": [
+        "Voltage drives ion pump",
+        "Creates pressure wave",
+        "High pressure causes cavitation bubbles"
+      ],
+      "roots": [
+        "F14",
+        "F3",
+        "F22"
+      ],
+      "skill": {
+        "id": "el_susurrador_de_hielo.cavitation_strike",
+        "name": {
+          "en": "Cavitation Strike"
+        },
+        "role": "Poke",
+        "effect": "Spends charge to fire shockwave. Damages prey and stuns sensitive sensors. Area effect.",
+        "numbers": {}
+      },
+      "weakness": "Overcharge risks rupturing membrane; recharge needed.",
+      "observe": [
+        "Water boils briefly at stinger tip",
+        "Shockwave distorts nearby water column",
+        "Prey convulses from internal vibration"
+      ],
+      "journal": {
+        "en": "A punch of water that hits like rock."
+      },
+      "plausibility": {
+        "verdict": "implausible",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "Rename to electro-osmotic stun jet: rapid salt/ion pumping drives a small-volume water expulsion and low-frequency pressure pulse (F11) that rattles statocysts and lateral-line analogues; reserve true bubble collapse for vent-conduit ambush only, with micro-bubbles from exsolved gas, not boiling. Drop ‘water boils’ observe line in bulk habitat.",
+        "fixes": [
+          "Rename to electro-osmotic stun jet: rapid salt/ion pumping drives a small-volume water expulsion and low-frequency pressure pulse (F11) that rattles statocysts and lateral-line analogues; reserve true bubble collapse for vent-conduit ambush only, with micro-bubbles from exsolved gas, not boiling. Drop ‘water boils’ observe line in bulk habitat."
+        ],
+        "analogues": [
+          {
+            "organism": "Mantis shrimp (Odontodactylus) strike and pistol shrimp (Alpheus) snap cavitation work near 1 bar; nematocyst hydrostatic discharge in cnidarians — fast fluid jet and prey penetration without vapour bubbles at depth.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "brennen_1995_cavitation"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 3,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "el_susurrador_de_hielo.c4",
+      "trait": "Vibration-damping skin matches tidal hum",
+      "links": [
+        "Tidal hum fills acoustic channel",
+        "Matching vibration hides echo",
+        "Predators rely on sonar"
+      ],
+      "roots": [
+        "F11",
+        "F3",
+        "F26"
+      ],
+      "skill": {
+        "id": "el_susurrador_de_hielo.phase_lock",
+        "name": {
+          "en": "Phase Lock"
+        },
+        "role": "Defence",
+        "effect": "Matches background tidal frequency. Hides from sonar-based enemies. Cannot move.",
+        "numbers": {}
+      },
+      "weakness": "Stuck in place; vulnerable to direct strikes.",
+      "observe": [
+        "Skin ripples at exact tidal frequency",
+        "Echo returns flat and featureless",
+        "Creature becomes invisible to echolocation"
+      ],
+      "journal": {
+        "en": "It sings so perfectly, the world forgets it exists."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "Phase Lock masks against low-frequency fracture creaks and current hum (passive listeners, vent competitors), not kHz sonar; for Deep Silencers add weakness that only works when predator uses low-band passive detection, or give predator-behavior that hunts piezo emissions/charge hum in a narrow band. Sessile trade-off (cannot move) stays honest.",
+        "fixes": [
+          "Phase Lock masks against low-frequency fracture creaks and current hum (passive listeners, vent competitors), not kHz sonar; for Deep Silencers add weakness that only works when predator uses low-band passive detection, or give predator-behavior that hunts piezo emissions/charge hum in a narrow band. Sessile trade-off (cannot move) stays honest."
+        ],
+        "analogues": [
+          {
+            "organism": "Moth scales dampening bat call frequencies (experimental acoustic camouflage); settling fish on noisy reefs — exploit masking bandwidth; not the same as matching a 3.55-day mechanical tide to 50 kHz clicks.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "Vessica Grazers",
+      "kind": "cousin",
+      "note": "(council kind 'Predator-Prey') Flashes lure grazers; strikes them before they flee."
+    },
+    {
+      "with": "Vent-Spinners",
+      "kind": "cousin",
+      "note": "(council kind 'Competitor') Both crave stress fractures; fights over anchor points."
+    },
+    {
+      "with": "Deep Silencers",
+      "kind": "cousin",
+      "note": "(council kind 'Predator') Sonar-predators hunt Susurradores; only Phase Lock saves them."
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-19",
+    "by": [
+      "naturalist/qwen"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-19",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-19"
+    },
+    {
+      "date": "2026-11-19",
+      "who": "autoloop",
+      "what": "removed rejected references from analogues"
+    }
+  ],
+  "body_plan": {
+    "symmetry": "asymmetric",
+    "arms": 3,
+    "origin": "Rooted growth from stress fissure"
+  },
+  "temperament": "Patient, resonant, volatile if overcharged",
+  "secrets": [
+    "Overcharge hack: Hitting the spine with a specific frequency can overload the piezo core, stunning the creature.",
+    "Bonding trick: Offering a shard of stressed ice encourages the creature to extend a symbiotic filament, granting passive charge regeneration."
+  ],
+  "moments": [
+    "When the tidal flex peaks, the entire population across the ice shell vibrates in unison, a chorus of clicks and hums that resonates through the player's hull, making the moon itself feel alive."
+  ],
+  "journal": [
+    {
+      "en": "It drinks the moon's heartbeat."
+    },
+    {
+      "en": "A crystal that thinks."
+    }
+  ]
+}

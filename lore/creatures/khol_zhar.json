@@ -1,0 +1,309 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "khol_zhar",
+  "name": {
+    "en": "Khol-zhar"
+  },
+  "world": "superearth",
+  "kind": "new",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "Anticyclone fog-canyons, persistent low-altitude aerosol bands",
+    "diet": "Suspended organic aerosols, dissolved CO₂, NIR photons",
+    "active": "Continuous",
+    "predators": []
+  },
+  "body": "A spherical colony of ~4,000 bilateral zooids spaced 15 cm apart in a rigid lattice, bound by a standing sound wave. Each zooid is a fist-sized gelatinous sac with copper-rich hemolymph, NIR-absorbing chromatophores, and a vocal sac. No central brain; intelligence is distributed in the phase-locking of the hum.",
+  "chains": [
+    {
+      "id": "khol_zhar.c1",
+      "trait": "Zooids float in rigid sphere bound by hum",
+      "links": [
+        "Standing wave radiation pressure counters 1.85g gravity",
+        "10-bar atmosphere provides high acoustic impedance",
+        "F8"
+      ],
+      "roots": [
+        "F8"
+      ],
+      "skill": {
+        "id": "khol_zhar.phase_disrupt",
+        "name": {
+          "en": "Phase Disrupt"
+        },
+        "role": "Poke",
+        "effect": "Emits counter-wave. Scatters colony for 6 seconds.",
+        "numbers": {}
+      },
+      "weakness": "Vulnerable to frequency jamming; scattered zooids cannot fly or filter food and lose cohesion immediately.",
+      "observe": [
+        "A floating sphere that hums",
+        "The sphere shatters when a loud noise occurs",
+        "The individual pieces bleed blue fluid"
+      ],
+      "journal": {
+        "en": "It sings itself into existence. Break the song, and the creature becomes dust."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "Highly speculative cohesion, honest physics: treat 10 bar air as the lift medium—lightened, gas-pocketed or aerosol-laden gelatin with neutral/slight aerostatic buoyancy in anticyclone updrafts (fog-canyon habitat)—and use the hum only to phase-lock zooids into a stiff lattice (spacing, orientation, predator-confusion), not to cancel gravity. Shrink zooids to cm-scale filter units, or hybridize with cheap dense-air gliding between anticyclone cells.",
+        "fixes": [
+          "Highly speculative cohesion, honest physics: treat 10 bar air as the lift medium—lightened, gas-pocketed or aerosol-laden gelatin with neutral/slight aerostatic buoyancy in anticyclone updrafts (fog-canyon habitat)—and use the hum only to phase-lock zooids into a stiff lattice (spacing, orientation, predator-confusion), not to cancel gravity. Shrink zooids to cm-scale filter units, or hybridize with cheap dense-air gliding between anticyclone cells."
+        ],
+        "analogues": [
+          {
+            "organism": "Laboratory ultrasonic levitation moves milligram droplets and beads (Gor’kov-type acoustic trapping); synchronizing oscillators include Photinus firefly flash entrainment and weakly electric fish jamming/phase behavior—not antigravity.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "khol_zhar.c2",
+      "trait": "Colony concentrates food in wave nodes",
+      "links": [
+        "Acoustic standing waves create high-pressure nodes that trap particulates",
+        "High density air amplifies acoustic trapping force",
+        "F8, F10"
+      ],
+      "roots": [
+        "F8",
+        "F10"
+      ],
+      "skill": {
+        "id": "khol_zhar.resonant_harvest",
+        "name": {
+          "en": "Resonant Harvest"
+        },
+        "role": "Basic",
+        "effect": "Mimic the hum. Attract food particles to player or creature for 4s. +20% filter efficiency.",
+        "numbers": {}
+      },
+      "weakness": "Attracts predators that hunt by sound.",
+      "observe": [
+        "Fog particles swirl into the gaps between zooids",
+        "Zooids pulse brighter when food is trapped",
+        "Nodes glow with concentrated aerosols"
+      ],
+      "journal": {
+        "en": "A vacuum cleaner made of light and sound."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "Standing-wave pressure gradients trap low-inertia particles at nodes or antinodes depending on contrast factor; suspended organic aerosols and fog droplets in anticyclone bands match the size regime where acoustic trapping works. Dense air (F8, F10) raises acoustic impedance and can strengthen trapping forces on fine particles for a filter-phototroph niche.",
+        "fixes": [
+          "Standing-wave pressure gradients trap low-inertia particles at nodes or antinodes depending on contrast factor; suspended organic aerosols and fog droplets in anticyclone bands match the size regime where acoustic trapping works. Dense air (F8, F10) raises acoustic impedance and can strengthen trapping forces on fine particles for a filter-phototroph niche."
+        ],
+        "analogues": [
+          {
+            "organism": "Acoustic levitation/trapping of microspheres and aerosols in lab standing waves; convergent filter feeding in sponges, bivalves, and salps on suspended organic matter—mechanical sorting, not sound, but same trophic logic.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "khol_zhar.c3",
+      "trait": "Low-frequency hum (50 Hz) penetrates haze",
+      "links": [
+        "Low frequency minimizes scattering in thick haze",
+        "Amber haze filters high frequencies via Mie scattering",
+        "F11, F19"
+      ],
+      "roots": [
+        "F11",
+        "F19"
+      ],
+      "skill": {
+        "id": "khol_zhar.harmonic_resonance",
+        "name": {
+          "en": "Harmonic Resonance"
+        },
+        "role": "Social",
+        "effect": "Match pitch perfectly. Merge one zooid as a passive helper. Duration: 30s.",
+        "numbers": {}
+      },
+      "weakness": "Requires precise pitch matching; failure causes rejection and stress.",
+      "observe": [
+        "The hum vibrates in the player's teeth",
+        "Fog thins in a perfect ring around the sphere",
+        "Zooids shift phase like gears locking"
+      ],
+      "journal": {
+        "en": "The fog bows to the song."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "In turbid, aerosol-rich air, scattering and absorption rise with frequency; long-wavelength low hums propagate farther than whistles for herd coordination in amber haze (F11) and complement NIR-skewed vision/photosynthesis (F19). Metabolic cost of continuous 50 Hz broadcast in dense air is non-trivial but not ruled out for a social, sound-centric colonial life-history.",
+        "fixes": [
+          "In turbid, aerosol-rich air, scattering and absorption rise with frequency; long-wavelength low hums propagate farther than whistles for herd coordination in amber haze (F11) and complement NIR-skewed vision/photosynthesis (F19). Metabolic cost of continuous 50 Hz broadcast in dense air is non-trivial but not ruled out for a social, sound-centric colonial life-history."
+        ],
+        "analogues": [
+          {
+            "organism": "African elephant infrasound and baleen whale low-frequency calls for long-range contact through obstructed or heterogeneous media—analogue to channel choice, not to colonial levitation.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "khol_zhar.c4",
+      "trait": "Hemolymph is azure-blue copper complex",
+      "links": [
+        "Copper hemocyanin replaces iron hemoglobin",
+        "Iron oxides locked in crustal silicates due to weathering under high pressure",
+        "F21"
+      ],
+      "roots": [
+        "F21"
+      ],
+      "skill": {
+        "id": "khol_zhar.copper_lash",
+        "name": {
+          "en": "Copper Lash"
+        },
+        "role": "Engage",
+        "effect": "Throw blue fluid. Stuns mechanical foes or corrodes rusted gear. Damage: 8-12.",
+        "numbers": {}
+      },
+      "weakness": "Copper blood is less efficient in low-O2 pockets.",
+      "observe": [
+        "Zooids bleed when cut",
+        "Fluid turns clear when exposed to air",
+        "Blue stains persist on rocks"
+      ],
+      "journal": {
+        "en": "Blue blood on a red world."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "World canon F21 specifies copper-based hemocyanin-like O₂ carriers; blue, copper-bearing blood is a known contingent solution on Earth under different selection pressures than iron hemoglobin. F20 piezolytes and high pO₂ (F9) support protein function at pressure; poorer performance in localized low-O₂ pockets is consistent with hemocyanin’s generally lower O₂ affinity/capacity than mammalian hemoglobin in hypoxia.",
+        "fixes": [
+          "World canon F21 specifies copper-based hemocyanin-like O₂ carriers; blue, copper-bearing blood is a known contingent solution on Earth under different selection pressures than iron hemoglobin. F20 piezolytes and high pO₂ (F9) support protein function at pressure; poorer performance in localized low-O₂ pockets is consistent with hemocyanin’s generally lower O₂ affinity/capacity than mammalian hemoglobin in hypoxia."
+        ],
+        "analogues": [
+          {
+            "organism": "Horseshoe crab (Limulus) and cephalopod hemocyanin—blue copper O₂ transport; deep-water and hypoxia-tolerant cephalopod physiology for pressure/O₂ tradeoffs.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "Gale-Strider",
+      "kind": "cousin",
+      "note": "(council kind 'Predator') Gale-Strider hunts by detecting the Khol-zhar hum; the Zharra evolves erratic phase-shifts to confuse it."
+    },
+    {
+      "with": "Fog-Weaver",
+      "kind": "cousin",
+      "note": "(council kind 'Mutualist') Fog-Weaver eats dead zooids that fall out; Zharra provides nutrients to Weaver's web."
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-19",
+    "by": [
+      "naturalist/qwen"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-19",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-19"
+    },
+    {
+      "date": "2026-11-19",
+      "who": "autoloop",
+      "what": "removed rejected references from analogues"
+    },
+    {
+      "date": "2026-11-19",
+      "who": "autoloop",
+      "what": "removed rejected references from analogues"
+    }
+  ],
+  "body_plan": {
+    "symmetry": "spherical",
+    "origin": "Asymmetric zooids coalescing via acoustic phase-lock"
+  },
+  "temperament": "Herding, paranoid about frequency disruption, docile when harmonized",
+  "secrets": [
+    "The 'hum' is a neural handshake. Stopping it kills them. The player must use 'Harmonic Resonance' to merge a zooid as a passive helper, which requires matching the pitch perfectly or the zooid rejects the player.",
+    "Inside the sphere, the acoustic pressure is low enough that delicate biochemical reactions can occur; the sphere is a mobile clean-room."
+  ],
+  "moments": [
+    "You are floating in the fog when a Khol-zhar drifts close. The hum vibrates in your teeth. You realize the sphere isn't a shell; it's a cage of sound. You strike it. The hum dies. The sphere collapses into a wet pile of squirming, blind sacs that flail uselessly in the heavy air, gasping. The song is the only thing keeping them from being a meal."
+  ],
+  "journal": [
+    {
+      "en": "The colony is the organism; the zooids are just cells."
+    },
+    {
+      "en": "If the sound stops, the creature dies."
+    }
+  ]
+}

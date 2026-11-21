@@ -1,0 +1,310 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "cryostrata_lar",
+  "name": {
+    "en": "Cryostrata lar"
+  },
+  "world": "icemoon",
+  "kind": "new",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "2–10 m below ice shell (polar & equatorial zones)",
+    "diet": "Chemoautotrophic biofilms & radiolytic precipitates",
+    "active": "Continuous, peaks during tidal flexure & ice-quakes",
+    "predators": []
+  },
+  "body": "Flat disc with ciliary fringes, ventral rasping mouth, dorsal crystalline plates",
+  "chains": [
+    {
+      "id": "cryostrata_lar.c1",
+      "trait": "Ventral rasping mouth and flattened disc shape",
+      "links": [
+        "Grazes dense ice-underside biofilms",
+        "Needs to cling to vertical ice without sinking in dense water",
+        "Low gravity (1.31 m/s²) plus high water density"
+      ],
+      "roots": [
+        "F5",
+        "F13"
+      ],
+      "skill": {
+        "id": "cryostrata_lar.adhere_scrape",
+        "name": {
+          "en": "Adhere & Scrape"
+        },
+        "role": "Basic",
+        "effect": "Deals 2 damage to biofilm mats and grants +1 mobility on ice.",
+        "numbers": {}
+      },
+      "weakness": "Dislodged by sudden pressure waves that break adhesion.",
+      "observe": [
+        "Ventral adhesion pads",
+        "Flat disc silhouette",
+        "Biofilm trail left behind"
+      ],
+      "journal": {
+        "en": "It wears its food like a coat."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "A flattened, adhering grazer with a ventral radula or rasp matches ice–ocean-interface epiphyte grazing under low g (F5) and high-density brine (F13–F15). Primary production is chemolithoautotrophic (F12, F20); dense microbial mats at redox/oxidant interfaces (F25) can support small macrograzers if turnover is slow (F24)—Riftia-scale giants are ruled out, limpet-scale grazers are not.",
+        "fixes": [
+          "A flattened, adhering grazer with a ventral radula or rasp matches ice–ocean-interface epiphyte grazing under low g (F5) and high-density brine (F13–F15). Primary production is chemolithoautotrophic (F12, F20); dense microbial mats at redox/oxidant interfaces (F25) can support small macrograzers if turnover is slow (F24)—Riftia-scale giants are ruled out, limpet-scale grazers are not."
+        ],
+        "analogues": [
+          {
+            "organism": "Patellid limpets and chitons (radula scraping + firm attachment); subglacial and ice-shelf microbial mats at the water–ice contact (terrestrial analogue communities, not macrofauna at Europan scale).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "cryostrata_lar.c2",
+      "trait": "Lateral electroreceptive pits",
+      "links": [
+        "Navigates complex underside topography",
+        "Detects weak bioelectric fields in conductive brine",
+        "High salinity amplifies ionic currents"
+      ],
+      "roots": [
+        "F15",
+        "F8"
+      ],
+      "skill": {
+        "id": "cryostrata_lar.current_sense",
+        "name": {
+          "en": "Current Sense"
+        },
+        "role": "Poke",
+        "effect": "Reveals hidden vents and prey paths within 15m.",
+        "numbers": {}
+      },
+      "weakness": "Overloaded by thermal plume surges.",
+      "observe": [
+        "Row of sensory pits",
+        "Head tilt tracking motion",
+        "Sudden direction changes"
+      ],
+      "journal": {
+        "en": "It reads the water's heartbeat."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "Cap reliable electroreception at ~1–3 m for prey/mats; let 15 m be Poke for vent conduits and large ionic plumes (chemoelectric + hydrodynamic cues), or rename skill to mixed electro- and rheotaxis.",
+        "fixes": [
+          "Cap reliable electroreception at ~1–3 m for prey/mats; let 15 m be Poke for vent conduits and large ionic plumes (chemoelectric + hydrodynamic cues), or rename skill to mixed electro- and rheotaxis."
+        ],
+        "analogues": [
+          {
+            "organism": "Shark ampullae of Lorenzini (DC/low-frequency fields); paddlefish rostral electrosensory array (bulk plankton in conductive freshwater—still short range).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "cryostrata_lar.c3",
+      "trait": "Dorsal crystalline plates",
+      "links": [
+        "Harvests trapped oxidant precipitates",
+        "Shields internal tissues from abrasive ice contact",
+        "Surface irradiation delivers 5 Sv/day at shallow ice"
+      ],
+      "roots": [
+        "F9",
+        "F10"
+      ],
+      "skill": {
+        "id": "cryostrata_lar.oxidant_cache",
+        "name": {
+          "en": "Oxidant Cache"
+        },
+        "role": "Defence",
+        "effect": "Absorbs 3 damage and heals 2 HP on impact.",
+        "numbers": {}
+      },
+      "weakness": "Plates shatter under direct impact.",
+      "observe": [
+        "Iridescent back plates",
+        "Slow, deliberate movement",
+        "Chemical mist on approach"
+      ],
+      "journal": {
+        "en": "It carries the sky's poison as armor."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "Describe plates as biomineral scutes seeded from ice-underside oxide precipitates; Defence = abrasion/shock dispersal, heal = slow repair from mat grazing not a combat oxidant burst (reserve that for the player secret with 'highly speculative' tag).",
+        "fixes": [
+          "Describe plates as biomineral scutes seeded from ice-underside oxide precipitates; Defence = abrasion/shock dispersal, heal = slow repair from mat grazing not a combat oxidant burst (reserve that for the player secret with 'highly speculative' tag)."
+        ],
+        "analogues": [
+          {
+            "organism": "Mineralized dorsal plates in chitons (iron phosphate/teeth); manganese-encrusting epibionts at redox boundaries—not armor from sky dose, but scavenged interface chemistry.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "cryostrata_lar.c4",
+      "trait": "Pulsating blue ventral glow",
+      "links": [
+        "Signals mates and warns of ice-quakes",
+        "Bioluminescence travels far in total darkness",
+        "No downwelling sunlight to counter-illuminate"
+      ],
+      "roots": [
+        "F27",
+        "F11"
+      ],
+      "skill": {
+        "id": "cryostrata_lar.signal_pulse",
+        "name": {
+          "en": "Signal Pulse"
+        },
+        "role": "Social",
+        "effect": "Calms allies and reveals stealth enemies within 10m.",
+        "numbers": {}
+      },
+      "weakness": "Attracts larger predators.",
+      "observe": [
+        "Rhythmic ventral flashing",
+        "Paired mating posture",
+        "Predator evasion dive"
+      ],
+      "journal": {
+        "en": "A lighthouse in a world without dawn."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "With no photosynthesis (F12), ~470 nm bioluminescence (F27) is appropriate for signalling and mate finding in the ice-proximal zone (F28). Ventral flashing limits silhouette to downward-looking predators with vent or bio light. Cost: attraction to Thermarctus-scale predators is realistic selection pressure.",
+        "fixes": [
+          "With no photosynthesis (F12), ~470 nm bioluminescence (F27) is appropriate for signalling and mate finding in the ice-proximal zone (F28). Ventral flashing limits silhouette to downward-looking predators with vent or bio light. Cost: attraction to Thermarctus-scale predators is realistic selection pressure."
+        ],
+        "analogues": [
+          {
+            "organism": "Ostracod Vargula courtship flashes; flashlight fish ventral photophores; dinoflagellate burglar-alarm flashes.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "stratiforma_velum",
+      "kind": "cousin",
+      "note": "(council kind 'Commensal') Cryostrata grazes on biofilms stirred up by Stratiforma's siphons."
+    },
+    {
+      "with": "Thermarctus ferox",
+      "kind": "cousin",
+      "note": "(council kind 'Prey') Vent-stalkers occasionally snatch them off the ice when plumes rise."
+    },
+    {
+      "with": "stratiforma_velum",
+      "kind": "cousin",
+      "note": "(council kind 'Commensal') Cryostrata grazes on biofilms stirred up by Stratiforma's siphons."
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-19",
+    "by": [
+      "naturalist/qwen"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-19",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-19"
+    },
+    {
+      "date": "2026-11-19",
+      "who": "autoloop",
+      "what": "removed rejected references from analogues"
+    }
+  ],
+  "body_plan": {
+    "symmetry": "bilateral",
+    "origin": "Benthic epiphyte grazer"
+  },
+  "temperament": "Docile, solitary, highly vigilant to pressure waves",
+  "secrets": [
+    "The plates store enough oxidant to temporarily boost the player's metabolism during low-energy zones."
+  ],
+  "moments": [
+    "You watch a colony press their crystalline backs against the ice, flashing in silent unison as a plume of oxidant rain falls from above."
+  ],
+  "journal": [
+    {
+      "en": "It wears the sky's poison as armor."
+    },
+    {
+      "en": "A lighthouse in a world without dawn."
+    }
+  ]
+}

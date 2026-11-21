@@ -1,0 +1,413 @@
+{
+  "schema": "cpore.world/1",
+  "id": "ringmoon",
+  "kind": "fictional",
+  "system": {
+    "star": "K2V Orange Dwarf",
+    "position": "fictional",
+    "distance_ly_from_sol": null
+  },
+  "name": {
+    "en": "Ring-moon of a Gas Giant",
+    "es": "Luna con anillos de un gigante gaseoso"
+  },
+  "status": "draft",
+  "facts": [
+    {
+      "id": "F1",
+      "group": "star",
+      "claim": "Host star is a K2V orange dwarf with 0.38 solar luminosity.",
+      "justification": "K-dwarfs provide a stable habitable zone with reduced UV photodissociation compared to G-types, extending main-sequence lifetime beyond 10 Gyr.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 0.38,
+      "unit": "L☉",
+      "consequences": [
+        "Stable photic window for complex lineages",
+        "Lower UV flux reduces surface DNA damage baseline",
+        "Red-shifted continuum favors long-wavelength photopigments"
+      ],
+      "refs": [
+        "kasting_1993_habitablezone",
+        "segura_2005_kdwarf"
+      ]
+    },
+    {
+      "id": "F2",
+      "group": "star",
+      "claim": "Stellar flare activity is moderate, peaking at GOES M-class flares with recurrence intervals of days to weeks.",
+      "justification": "Mature K-dwarfs enter magnetic quiescence earlier than M-dwarfs, limiting sterilizing proton events while still driving atmospheric chemistry.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "Class M",
+      "consequences": [
+        "Atmospheric ionization drives trace gas production",
+        "Flare-induced mutagenesis selects for robust repair pathways",
+        "Surface life requires eclipse or subsurface refuge during peak events"
+      ]
+    },
+    {
+      "id": "F19",
+      "group": "star",
+      "claim": "The moon orbits its host star at 0.62 AU, receiving a mean insolation of 980 W m⁻².",
+      "justification": "K2V luminosity of 0.38 L☉ places the conservative habitable zone near 0.6 AU; ring albedo and atmospheric greenhouse balance the energy budget.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 980,
+      "unit": "W/m²",
+      "consequences": [
+        "Consistent diurnal heating drives atmospheric circulation",
+        "Insolation levels support liquid water without runaway greenhouse",
+        "Stellar flux sets baseline photic limits for surface phototrophs"
+      ],
+      "refs": [
+        "segura_2005_kdwarf",
+        "kasting_1993_habitablezone"
+      ]
+    },
+    {
+      "id": "F3",
+      "group": "orbit",
+      "claim": "The moon orbits its gas giant at 5.5×10⁵ km with a 58-hour orbital period.",
+      "justification": "Keplerian dynamics around a Jupiter-mass primary yield this period-distance pair, maintaining a stable, near-circular orbit within the giant's magnetosphere.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 58,
+      "unit": "hours",
+      "consequences": [
+        "Predictable daily sky shifts for navigation",
+        "Consistent tidal forcing cycle",
+        "Regular eclipse windows for biological dormancy"
+      ],
+      "refs": [
+        "murray_1999_solar"
+      ]
+    },
+    {
+      "id": "F4",
+      "group": "orbit",
+      "claim": "The moon is tidally locked to the gas giant (1:1 spin-orbit resonance).",
+      "justification": "Long-term tidal dissipation dampens obliquity and synchronizes rotation, fixing the giant's position in the sky and eliminating axial seasons.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 1,
+      "unit": "1:1",
+      "consequences": [
+        "Permanent sub-giant point drives atmospheric tides",
+        "Asymmetric thermal distribution shapes habitat zones",
+        "Predictable sky geometry enables polarized-light navigation"
+      ],
+      "refs": [
+        "murray_1999_solar",
+        "peale_1979_tidal"
+      ]
+    },
+    {
+      "id": "F20",
+      "group": "orbit",
+      "claim": "The moon experiences two distinct diurnal cycles: a 58-hour sub-giant cycle and a ~12-day stellar day.",
+      "justification": "Doubly tidally locked or slow rotation relative to the star creates long stellar days, while the giant's fixed position creates rapid sub-giant tides.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 12,
+      "unit": "days",
+      "consequences": [
+        "Circadian clocks must integrate dual periodicities",
+        "Stellar day length limits photosynthetic integration time",
+        "Sub-giant tides dominate short-term behavioral rhythms"
+      ],
+      "refs": [
+        "murray_1999_solar"
+      ]
+    },
+    {
+      "id": "F5",
+      "group": "planet",
+      "claim": "The moon has a radius of 3,500 km, mass of 0.25 Earth masses, and surface gravity of 0.83 g.",
+      "justification": "This mass-radius ratio yields a silicate-iron composition with sufficient escape velocity to retain a multi-bar atmosphere against hydrodynamic loss.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 0.83,
+      "unit": "g",
+      "consequences": [
+        "Reduced structural load enables membrane-based locomotion",
+        "Lower gravity increases jump height and glide efficiency",
+        "Atmospheric retention requires continuous volcanic outgassing"
+      ]
+    },
+    {
+      "id": "F6",
+      "group": "interior",
+      "claim": "Solid-body tidal flexing generates an internal heat flux of 2.5 times Earth's radiogenic baseline.",
+      "justification": "Eccentricity maintained by Laplace resonance with outer moons drives continuous dissipation, sustaining mantle convection and hydrothermal venting without global plate tectonics.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 2.5,
+      "unit": "x Earth",
+      "consequences": [
+        "Persistent hydrothermal vent networks",
+        "Steep redox gradients at spreading centers",
+        "Geothermal plumes provide localized warmth during eclipses"
+      ],
+      "refs": [
+        "peale_1979_tidal"
+      ]
+    },
+    {
+      "id": "F7",
+      "group": "interior",
+      "claim": "The moon lacks a strong intrinsic dynamo but experiences an induced magnetospheric field from the parent giant.",
+      "justification": "Slow rotation and a partially crystallized core prevent a global dipole, but interaction with the giant's magnetosphere creates localized magnetic valleys that modulate particle precipitation.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "Induced",
+      "consequences": [
+        "Radiation exposure varies sharply with latitude",
+        "Magnetoreception organs track field line density",
+        "Magnetic valleys serve as primary habitable corridors"
+      ]
+    },
+    {
+      "id": "F9",
+      "group": "atmosphere",
+      "claim": "Surface pressure is 2.1 bar with a mean temperature of 285 K, dominated by 78% nitrogen and 18% carbon dioxide.",
+      "justification": "Volcanic outgassing and volatile retention at 0.83 g sustain a dense blanket that maintains liquid water and drives greenhouse warming against ring shadows.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 2.1,
+      "unit": "bar",
+      "consequences": [
+        "High column density dampens turbulence",
+        "CO₂ partial pressure supports chemolithotrophic metabolism",
+        "Reducing atmosphere limits free oxygen accumulation"
+      ],
+      "refs": [
+        "wordsworth_2013_venus"
+      ]
+    },
+    {
+      "id": "F10",
+      "group": "atmosphere",
+      "claim": "Sound travels at approximately 340 m/s with low-frequency attenuation lengths exceeding 5 km.",
+      "justification": "Elevated pressure and CO₂ molecular weight increase acoustic impedance, allowing infrasound to diffract around fog banks and ring-shadow thermal gradients.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 340,
+      "unit": "m/s",
+      "consequences": [
+        "Long-range infrasonic communication",
+        "Predators track prey via ground-coupled vibrations",
+        "High-pitched frequencies attenuate rapidly in dense air"
+      ],
+      "refs": [
+        "morse_1968_acoustics"
+      ]
+    },
+    {
+      "id": "F11",
+      "group": "climate",
+      "claim": "Giant-driven atmospheric tides produce permanent wind shear, though eclipse-driven thermal tides dominate local pressure waves.",
+      "justification": "Diurnal heating from the giant's gravity and ring eclipses forces oscillatory flow, modeled on close-in exoplanet atmospheric dynamics.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "Permanent",
+      "consequences": [
+        "Streamlined morphologies reduce drag",
+        "Burst locomotion aligns with wind surges",
+        "Roosting behavior exploits stable shear layers"
+      ],
+      "refs": [
+        "showman_1999_atmospheric",
+        "correia_2001_tides"
+      ]
+    },
+    {
+      "id": "F12",
+      "group": "sky",
+      "claim": "The gas giant fills 22% of the zenith, casting a ring shadow band daily and causing a 40-minute total eclipse every 58 hours.",
+      "justification": "Equatorial orbit inclination ensures the giant's umbra sweeps the surface each revolution, dropping ambient light to twilight levels and causing rapid thermal contraction.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 40,
+      "unit": "minutes",
+      "consequences": [
+        "Crepuscular retinal architecture tracks luminance drops",
+        "Thermal inertia buffers eclipse cooling",
+        "Dormancy cycles synchronize with shadow timing"
+      ],
+      "refs": [
+        "correia_2001_tides"
+      ]
+    },
+    {
+      "id": "F18",
+      "group": "sky",
+      "claim": "Ring-scattered starlight is highly polarized, providing a stable sky compass during eclipses and heavy haze.",
+      "justification": "Ice and dust ring particles scatter and polarize incident light, enabling visual navigation when ground landmarks vanish or stellar position is obscured.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "Highly polarized",
+      "consequences": [
+        "Polarized-vision organs track sky gradients",
+        "Magnetic map sense complements visual cues",
+        "Navigation fails under thick cloud decks or precipitation"
+      ],
+      "refs": [
+        "wehner_2006_polarization"
+      ]
+    },
+    {
+      "id": "F8",
+      "group": "sky",
+      "claim": "Background ionizing radiation at the surface averages 5 mSv per day at the equator, dropping below 1 mSv/day in magnetic valleys.",
+      "justification": "The 2.1-bar atmosphere attenuates low-energy electrons, but high-energy protons and trapped belt particles require biological shielding or symbiotic mitigation.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 5,
+      "unit": "mSv/day",
+      "consequences": [
+        "Chronic selection for melanin-rich tissues",
+        "Radiation storms trigger rapid DNA repair activation",
+        "Surface life clusters in magnetic valleys or subsurface refuges"
+      ],
+      "refs": [
+        "dadachova_2008_radiotrophy"
+      ]
+    },
+    {
+      "id": "F13",
+      "group": "ocean",
+      "claim": "Water covers 62% of the surface with a mean salinity of 3.6 wt% and average depth of 320 meters.",
+      "justification": "Basalt leaching, hydrothermal mineral injection, and evaporative concentration depress the freezing point and maintain liquid oceans under tidal heating.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 3.6,
+      "unit": "wt%",
+      "consequences": [
+        "Osmotic regulation via specialized bladders",
+        "Buoyancy modulation aids low-gravity locomotion",
+        "High salinity concentrates dissolved redox chemicals"
+      ]
+    },
+    {
+      "id": "F14",
+      "group": "geology",
+      "claim": "Hydrothermal vent networks cover approximately 0.5% of the seafloor, concentrated along tectonic ridge axes.",
+      "justification": "Tidal stress concentrates strain at spreading centers, driving effusive volcanism and fluid circulation that sustains chemosynthetic primary production.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 0.5,
+      "unit": "%",
+      "consequences": [
+        "Sulfur-oxidizing gut symbionts dominate herbivores",
+        "Chemosynthetic mats form base of food web",
+        "Vent plumes provide instant hydration and ATP regeneration"
+      ],
+      "refs": [
+        "peale_1979_tidal"
+      ]
+    },
+    {
+      "id": "F16",
+      "group": "chemistry",
+      "claim": "Free oxygen is limited to <2%, maintained by a reducing atmosphere with trace H₂S and CH₄.",
+      "justification": "Rapid surface oxidation by iron oxides and volcanic sulfur scrubbing prevents aerobic dominance, favoring anaerobic and facultative metabolisms.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 2,
+      "unit": "%",
+      "consequences": [
+        "Hemoglobin-analogues use iron-thiolate complexes",
+        "Aerobic respiration is rare and niche",
+        "Sulfur metabolism provides primary energy yield"
+      ],
+      "refs": [
+        "wordsworth_2013_venus"
+      ]
+    },
+    {
+      "id": "F15",
+      "group": "biochemistry",
+      "claim": "Primary production relies on bacteriochlorophyll-d analogs absorbing 680–750 nm, supplemented by chemolithotrophy.",
+      "justification": "K2V spectral peak and ring-shadow attenuation shift the photic window to near-infrared, selecting for red-shifted pigments over Earth-like chlorophyll-a.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 750,
+      "unit": "nm",
+      "consequences": [
+        "Dorsal photosynthetic sails harvest giant albedo",
+        "Crimson/black pigments maximize NIR capture",
+        "Photosynthesis crashes during prolonged eclipses"
+      ]
+    },
+    {
+      "id": "F17",
+      "group": "biochemistry",
+      "claim": "Life employs homologous recombination and facultative melanin-carotenoid symbionts to manage chronic ionizing stress.",
+      "justification": "Radiolytic water splitting and melanin-mediated electron capture mitigate DNA breaks, mirroring extremophile strategies observed in radiation-rich environments.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "Melanin-carotenoid",
+      "consequences": [
+        "Slow but continuous tissue repair in open belts",
+        "Symbiont grafting provides passive armor",
+        "Radiation spikes risk necrosis if repair outpaced"
+      ],
+      "refs": [
+        "dadachova_2008_radiotrophy"
+      ]
+    }
+  ],
+  "changelog": [
+    {
+      "date": "2026-11-19",
+      "who": "autoloop",
+      "what": "world canon drafted by the council chair from 20 facts (planet drafts, peer reviews, astrobio referee)"
+    },
+    {
+      "date": "2026-11-19",
+      "who": "autoloop",
+      "what": "removed rejected references; retired real facts left without references"
+    }
+  ]
+}

@@ -1,0 +1,325 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "cobrezo",
+  "name": {
+    "en": "Cobrezo"
+  },
+  "world": "magneto",
+  "kind": "new",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "Surface wind-scoured dunes of magnetite sand and Fe-sulfide outcrops",
+    "diet": "Obligate consumer of magnetotactic bacterial mats; supplements with iron-oxidizing chemolithotrophs",
+    "active": "Diurnal crepuscular; avoids peak flare UV by retreating to burrows or using coil-shielding",
+    "predators": []
+  },
+  "body": "Bronze-chitin carapace with four retractable helical coil-appendages along the dorsal flanks; eyes possess radical-pair aligned cryptochromes; gut packed with magnetosome chains",
+  "chains": [
+    {
+      "id": "cobrezo.c1",
+      "trait": "Bronzed helical coils modulate near-field dipole pulses",
+      "links": [
+        "Coils generate modulated B-field for social signaling",
+        "Near-field dipole falls off as 1/r^3; range limited to 12 cm contact-adjacent",
+        "Why beats sound: Dense 2.6 bar atmosphere (F8) creates high acoustic impedance and wind-noise from shifting dunes; magnetic pulses are directional, immune to scattering, and require less energy than shouting in thick air",
+        "Why beats light: K-dwarf flares (F1) cause plasma ionization and auroral glare (F6) that washes out polarization cues; magnetic channel remains clear and safe from UV damage",
+        "Energy cost: 1.8 W peak for a 60 ms pulse; requires high-calorie bacterial diet"
+      ],
+      "roots": [
+        "F5",
+        "F8",
+        "F1",
+        "F6",
+        "F10"
+      ],
+      "skill": {
+        "id": "cobrezo.resonance_lock",
+        "name": {
+          "en": "Resonance Lock"
+        },
+        "role": "Social",
+        "effect": "Establishes a private 12 cm magnetic channel with an ally; ally gains +25% stealth (immune to acoustic detection) and shares heat-dissipation cooldown for 4 turns.",
+        "numbers": {}
+      },
+      "weakness": "Eddy heating: If exposed to external alternating field >1 mT, coils overheat and the Cobrezo takes 1 damage/turn and cannot pulse for 2 turns.",
+      "observe": [
+        "Dorsal coils twitch in rhythmic metallic clicks",
+        "Iron-dust on the sand clumps into fractal patterns near the creature",
+        "Skin shimmers with copper iridescence when excited"
+      ],
+      "journal": {
+        "en": "It whispers to the metal in the wind; a silent language no predator can hear."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "Cap pulse rate; tie 1.8 W to explicit body mass (~200–500 g) or to superconducting-like iron-core coils; keep range at contact–12 cm; frame as highly speculative convergent analog to electric-fish signaling, not a known terrestrial mechanism.",
+        "fixes": [
+          "Cap pulse rate; tie 1.8 W to explicit body mass (~200–500 g) or to superconducting-like iron-core coils; keep range at contact–12 cm; frame as highly speculative convergent analog to electric-fish signaling, not a known terrestrial mechanism."
+        ],
+        "analogues": [
+          {
+            "organism": "Magnetotactic bacteria (aligned magnetosome chains, passive, no pulsed signaling)—Blakemore 1975; weak compass and anomaly use in birds via radical-pair cryptochromes (not active transmitters)—Hore and Mouritsen 2016",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "ritz_2000_model"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "cobrezo.c2",
+      "trait": "Magnetotactic symbionts calibrate internal compass",
+      "links": [
+        "Symbionts provide stable internal reference for heading",
+        "Dietary iron sequestered in magnetosomes prevents Fe toxicity (F11)",
+        "Why beats alternatives: Radical-pair sensors (F12) are susceptible to local field anomalies from crustal deposits; bacterial chains average out noise, allowing reliable navigation through complex magnetite terrain",
+        "Evolutionary link: Symbiosis allows exploitation of iron-rich niche without oxidative stress"
+      ],
+      "roots": [
+        "F13",
+        "F11",
+        "F12",
+        "F10"
+      ],
+      "skill": {
+        "id": "cobrezo.iron_digest",
+        "name": {
+          "en": "Iron Digest"
+        },
+        "role": "Basic",
+        "effect": "Consume magnetotactic bacteria; heal 2 HP and gain 'Magnetic Sense' (+1 to identify magnetic anomalies) for 3 turns.",
+        "numbers": {}
+      },
+      "weakness": "Iron toxicity threshold: If environment exceeds 5 mM free Fe ions (F11), the symbionts die, causing -2 Will and vulnerability to magnetic disruption.",
+      "observe": [
+        "Gut region glows faintly with aligned chains when resting",
+        "Creature scratches its shell against magnetite rocks to feed symbionts",
+        "Compass spins wildly near pure magnetite outcrops"
+      ],
+      "journal": {
+        "en": "Its stomach holds a compass of living iron."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "Internal magnetite chains can supply a stable reference axis that filters local crustal noise on radical-pair heading sensors (F12, F13), and sequestering dietary iron fits Fe toxicity zoning (F11) on magnetite dunes (F10). Gut or pouched magnetotactic symbionts are not a classic Earth headline mutualism, but magnetosome biomineralization and host-associated magnetotactic lineages are real; calibration-by-symbiont is speculative but selection on an iron-obligate forager in a high-field world is coherent.",
+        "fixes": [
+          "Internal magnetite chains can supply a stable reference axis that filters local crustal noise on radical-pair heading sensors (F12, F13), and sequestering dietary iron fits Fe toxicity zoning (F11) on magnetite dunes (F10). Gut or pouched magnetotactic symbionts are not a classic Earth headline mutualism, but magnetosome biomineralization and host-associated magnetotactic lineages are real; calibration-by-symbiont is speculative but selection on an iron-obligate forager in a high-field world is coherent."
+        ],
+        "analogues": [
+          {
+            "organism": "Magnetospirillum and related magnetotactic bacteria (intracellular magnetite chains for alignment)—Blakemore 1975; radical-pair compass in migratory birds—Ritz et al. 2000; Hore and Mouritsen 2016",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "blakemore_1975_magnetotactic"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "cobrezo.c3",
+      "trait": "Coil-shielding behavior during flare events",
+      "links": [
+        "Creature curls coils into a Faraday cage around sensory organs",
+        "Protection against ionizing radiation and induced currents",
+        "Driven by frequent energetic UV/X-ray flares (F1) and auroral precipitation",
+        "Behavioral adaptation to young K-dwarf activity without requiring full armor mass"
+      ],
+      "roots": [
+        "F1",
+        "F17",
+        "F5"
+      ],
+      "skill": {
+        "id": "cobrezo.storm_hunker",
+        "name": {
+          "en": "Storm Hunker"
+        },
+        "role": "Defence",
+        "effect": "Enter defensive posture; negate all radiation damage and magnetic disruption effects for 3 turns, but movement speed halved.",
+        "numbers": {}
+      },
+      "weakness": "During the hunker, the Cobrezo cannot act and is vulnerable to grapple.",
+      "observe": [
+        "Coils snap shut into a bronze sphere",
+        "Creature buries legs in sand, exposing only shielded eyes",
+        "Aura flickers as static charge dissipates"
+      ],
+      "journal": {
+        "en": "When the sky screams, it becomes a statue of safety."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "Storm Hunker: negate magnetic disruption and induced eddy damage; partial UV reduction only when buried; full flare/belt mitigation stays tied to F17 symbionts/repair, not the coil sphere alone.",
+        "fixes": [
+          "Storm Hunker: negate magnetic disruption and induced eddy damage; partial UV reduction only when buried; full flare/belt mitigation stays tied to F17 symbionts/repair, not the coil sphere alone."
+        ],
+        "analogues": [
+          {
+            "organism": "Hibernation/burrow retreat in desert and fossorial taxa during heat or storm stress; radioresistant microbes and melanized fungi under chronic ionizing exposure—selection for DNA repair, not coil Faraday shielding",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "cobrezo.c4",
+      "trait": "Radial-pair cryptochromes aligned to magnetic inclination",
+      "links": [
+        "Eyes contain flavin-tryptophan radical pairs sensitive to field vector",
+        "Allows detection of magnetic anomalies and inclination gradients",
+        "Useful for navigating along crustal anomaly corridors (F18)",
+        "Convergent with F12; provides 'magnetic vision' overlay in the copper sky"
+      ],
+      "roots": [
+        "F12",
+        "F18",
+        "F6"
+      ],
+      "skill": {
+        "id": "cobrezo.auroral_read",
+        "name": {
+          "en": "Auroral Read"
+        },
+        "role": "Passive",
+        "effect": "Perceive magnetic field lines as a visual overlay; reveals hidden corridors, magnetic traps, and weak points in magnetic shielding (+2 to interact with magnetic mechanics).",
+        "numbers": {}
+      },
+      "weakness": "Disorientation: Sudden changes in field intensity (>20% jump) cause stun for 1 turn as radical-pair yields scramble.",
+      "observe": [
+        "Eyes track invisible gradients, tilting head to measure inclination",
+        "Vision seems to double when magnetic activity is high",
+        "Retinal glow matches the copper sky polarization"
+      ],
+      "journal": {
+        "en": "It sees the invisible rivers of the world."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "Reframe Auroral Read as inclination/anomaly heading sense and corridor detection, not a full visual overlay of field lines; keep copper-sky polarization (F6) as a separate visual channel.",
+        "fixes": [
+          "Reframe Auroral Read as inclination/anomaly heading sense and corridor detection, not a full visual overlay of field lines; keep copper-sky polarization (F6) as a separate visual channel."
+        ],
+        "analogues": [
+          {
+            "organism": "European robin and other migrants—cryptochrome radical-pair compass; inclination sensitivity in vertebrate magnetoreception—Hore and Mouritsen 2016",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "ostracilo",
+      "kind": "convergent",
+      "note": "Ostracilo evolved analogous coil-structures in a conductive medium; Cobrezo coils are air-optimized, Ostracilo coils are induction-optimized."
+    },
+    {
+      "with": "ostracilo",
+      "kind": "convergent",
+      "note": "Both use magnetic comms but in different media; Cobrezo uses air for directional pulses, Ostracilo uses induction for contact stealth."
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-19",
+    "by": [
+      "naturalist/qwen"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-19",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-19"
+    },
+    {
+      "date": "2026-11-19",
+      "who": "autoloop",
+      "what": "removed rejected references from analogues"
+    }
+  ],
+  "body_plan": {
+    "symmetry": "bilateral",
+    "arms": 4,
+    "origin": "Surface-dwelling arthropod-analogue diverging from a burrowing ancestor"
+  },
+  "temperament": "Highly cooperative, skittish to acoustic surprise, responsive to magnetic 'touch'",
+  "secrets": [
+    "Coil-reversal: By momentarily reversing polarity, a Cobrezo can induce a mild tetany in a rival's muscles, stunning them at contact range.",
+    "Dietary secret: The creature can voluntarily shed its symbiont chain to become magnetically invisible to predators that track magnetic signatures, but loses compass ability."
+  ],
+  "moments": [
+    "A storm of iron-sand rises, blinding the herd. The Cobrezo leader locks coils, and instantly every individual in the dune halts, their breath syncing to the magnetic pulse, moving as a single bronze ghost through the gale."
+  ],
+  "journal": [
+    {
+      "en": "They do not speak; they resonate."
+    },
+    {
+      "en": "The wind carries noise, but the field carries truth."
+    }
+  ]
+}

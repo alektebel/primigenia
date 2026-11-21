@@ -1,0 +1,307 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "stratiforma_velum",
+  "name": {
+    "en": "Stratiforma velum"
+  },
+  "world": "icemoon",
+  "kind": "new",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "Upper-mid water column, concentrated at the fresher-brine interface",
+    "diet": "Dissolved organics, suspended microbes, chemosynthetic spores",
+    "active": "Tidal-cycle driven (moves with mixing pulses)",
+    "predators": []
+  },
+  "body": "Large, translucent sail-like dorsal fin, trailing siphons, buoyant gas bladder",
+  "chains": [
+    {
+      "id": "stratiforma_velum.c1",
+      "trait": "Translucent sail-fin with chromatophores",
+      "links": [
+        "Blends with light-scattering density boundaries",
+        "Deters silhouette-seeing predators",
+        "High refractive index contrast at halocline"
+      ],
+      "roots": [
+        "F16",
+        "F27"
+      ],
+      "skill": {
+        "id": "stratiforma_velum.refraction_cloak",
+        "name": {
+          "en": "Refraction Cloak"
+        },
+        "role": "Defence",
+        "effect": "Grants +30% dodge chance for 2 turns.",
+        "numbers": {}
+      },
+      "weakness": "Useless in uniform dark water away from strata.",
+      "observe": [
+        "Iridescent shimmer",
+        "Near-still hovering",
+        "Predator confusion dashes"
+      ],
+      "journal": {
+        "en": "It folds itself into the water's seam."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "Tie dodge bonus to positioning on the halocline only; away from F16, trait is mostly passive transparency not chromatophore magic.",
+        "fixes": [
+          "Tie dodge bonus to positioning on the halocline only; away from F16, trait is mostly passive transparency not chromatophore magic."
+        ],
+        "analogues": [
+          {
+            "organism": "Salps and ctenophores (gelatinous transparency); midwater cephalopod counterillumination and dynamic pigmentation where any background light exists.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "stratiforma_velum.c2",
+      "trait": "Trailing chemosensory siphons",
+      "links": [
+        "Concentrates filter-feeding current",
+        "Exploits nutrient-rich halocline shear",
+        "Fresh melt overlies dense brine, slowing macroscopic mixing"
+      ],
+      "roots": [
+        "F16",
+        "F20"
+      ],
+      "skill": {
+        "id": "stratiforma_velum.nutrient_siphon",
+        "name": {
+          "en": "Nutrient Siphon"
+        },
+        "role": "Basic",
+        "effect": "Gains 2 damage/heal over 3 turns.",
+        "numbers": {}
+      },
+      "weakness": "Clogged by falling ice slurry.",
+      "observe": [
+        "Long trailing tubes",
+        "Rhythmic pulsing",
+        "Cloud of suspended particles"
+      ],
+      "journal": {
+        "en": "It drinks the boundary between worlds."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "Slow mixing across the halocline (F16) concentrates dissolved organics and microbes from chemosynthetic production (F20); paired inhalant/exhalant currents with chemoreception match a pelagic filter niche without photosynthesis.",
+        "fixes": [
+          "Slow mixing across the halocline (F16) concentrates dissolved organics and microbes from chemosynthetic production (F20); paired inhalant/exhalant currents with chemoreception match a pelagic filter niche without photosynthesis."
+        ],
+        "analogues": [
+          {
+            "organism": "Salp and appendicularian mucous/filter houses; bivalve paired siphons with osphradia chemoreception.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "stratiforma_velum.c3",
+      "trait": "Hydrogen-filled buoyancy sac",
+      "links": [
+        "Adjusts depth rapidly in stratified water",
+        "Compensates for slow metabolic turnover",
+        "Serpentinisation yields abundant H2"
+      ],
+      "roots": [
+        "F20",
+        "F24"
+      ],
+      "skill": {
+        "id": "stratiforma_velum.buoyancy_surge",
+        "name": {
+          "en": "Buoyancy Surge"
+        },
+        "role": "Control",
+        "effect": "Repositions instantly and grants +5 mobility.",
+        "numbers": {}
+      },
+      "weakness": "Pressure cracks sac if pushed too deep.",
+      "observe": [
+        "Expanding midsection",
+        "Rapid vertical moves",
+        "Gas bubble trails"
+      ],
+      "journal": {
+        "en": "It rides a balloon of vent breath."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "Restrict sac to upper halocline/ice-proximal pressures; refill via symbiotic H₂-oxidising or fermenting symbionts over hours; or rename to low-density lipid vacuole / ammonia-ish osmolyte buoyancy with H₂ only as minor component. 'Instant reposition' = game exaggeration of slow density change.",
+        "fixes": [
+          "Restrict sac to upper halocline/ice-proximal pressures; refill via symbiotic H₂-oxidising or fermenting symbionts over hours; or rename to low-density lipid vacuole / ammonia-ish osmolyte buoyancy with H₂ only as minor component. 'Instant reposition' = game exaggeration of slow density change."
+        ],
+        "analogues": [
+          {
+            "organism": "Gas-vacuole cyanobacteria (microscale buoyancy); fish swim bladder (O₂/CO₂ lift, depth-limited); deep-sea siphonophores with float structures—usually at moderate depths.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "stratiforma_velum.c4",
+      "trait": "Pulsatile bioluminescent rhythm",
+      "links": [
+        "Coordinates colony filter-feeding",
+        "Synchronizes with tidal flexure cycles",
+        "Resonant forcing keeps e from damping, driving periodic stress"
+      ],
+      "roots": [
+        "F2",
+        "F27"
+      ],
+      "skill": {
+        "id": "stratiforma_velum.tidal_sync",
+        "name": {
+          "en": "Tidal Sync"
+        },
+        "role": "Passive",
+        "effect": "Allies gain +2 damage on flexure turn.",
+        "numbers": {}
+      },
+      "weakness": "Predictable pattern makes them easy to ambush.",
+      "observe": [
+        "Group flashing",
+        "Depth changes",
+        "Mechanical hum"
+      ],
+      "journal": {
+        "en": "Its heart beats in orbital time."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "State entrainment via pressure/wave cues during flexure peaks, not literal astronomy in the animal; label tidal Sync passive as highly speculative; ambush weakness stays honest.",
+        "fixes": [
+          "State entrainment via pressure/wave cues during flexure peaks, not literal astronomy in the animal; label tidal Sync passive as highly speculative; ambush weakness stays honest."
+        ],
+        "analogues": [
+          {
+            "organism": "Firefly Photinus synchrony (flash timing); intertidal crabs and limpets with tidal activity rhythms entrained by hydrostatic/ vibratory cues.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "cryostrata_lar",
+      "kind": "cousin",
+      "note": "(council kind 'Commensal') Cryostrata grazes on biofilms stirred up by Stratiforma's siphons."
+    },
+    {
+      "with": "cryostrata_lar",
+      "kind": "cousin",
+      "note": "(council kind 'Commensal') Cryostrata grazes on biofilms stirred up by Stratiforma's siphons."
+    },
+    {
+      "with": "Thermarctus ferox",
+      "kind": "cousin",
+      "note": "(council kind 'Prey') Vent-stalkers sometimes snag drifting colonies near thermal upwellings."
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-19",
+    "by": [
+      "naturalist/qwen"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-19",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-19"
+    },
+    {
+      "date": "2026-11-19",
+      "who": "autoloop",
+      "what": "removed rejected references from analogues"
+    }
+  ],
+  "body_plan": {
+    "symmetry": "biradial",
+    "arms": 2,
+    "origin": "Pelagic filter-feeder"
+  },
+  "temperament": "Passive, colony-like, slow-moving",
+  "secrets": [
+    "Deflating the buoyancy sac mid-combat creates a rapid descent that can pin lighter enemies or reach vent zones."
+  ],
+  "moments": [
+    "A drifting cathedral of flesh and light unfolds across the halocline, filtering centuries of chemical time into a single shimmer."
+  ],
+  "journal": [
+    {
+      "en": "It folds itself into the water's seam."
+    },
+    {
+      "en": "Its heart beats in orbital time."
+    }
+  ]
+}

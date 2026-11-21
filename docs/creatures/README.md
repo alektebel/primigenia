@@ -114,6 +114,30 @@
 | [Hidrazón](hidrazon.md) | new | draft | 4 | 1 fixable, 3 plausible |
 | [Nubezón](nubezon.md) | new | draft | 4 | 3 fixable, 1 plausible |
 
+## Ardent (`icemoon`)
+
+| Creature | Kind | Status | Chains | Verdicts |
+|---|---|---|---|---|
+| [Cryostrata lar](cryostrata_lar.md) | new | draft | 4 | 2 fixable, 2 plausible |
+| [El Susurrador de Hielo](el_susurrador_de_hielo.md) | new | draft | 4 | 2 fixable, 1 implausible, 1 plausible |
+| [Stratiforma velum](stratiforma_velum.md) | new | draft | 4 | 3 fixable, 1 plausible |
+
+## Magnetic World (`magneto`)
+
+| Creature | Kind | Status | Chains | Verdicts |
+|---|---|---|---|---|
+| [Cobrezo](cobrezo.md) | new | draft | 4 | 3 fixable, 1 plausible |
+| [Cromabuceo](cromabuceo.md) | new | draft | 4 | 2 fixable, 2 plausible |
+| [Cromavolante](cromavolante.md) | new | draft | 4 | 3 fixable, 1 plausible |
+| [Ostracilo](ostracilo.md) | new | draft | 4 | 2 fixable, 2 plausible |
+
+## Mycelial World (`mycelia`)
+
+| Creature | Kind | Status | Chains | Verdicts |
+|---|---|---|---|---|
+| [Lombardo](lombardo.md) | new | draft | 4 | 1 fixable, 3 plausible |
+| [Sustrisoma](sustrisoma.md) | new | draft | 4 | 3 fixable, 1 plausible |
+
 ## The Neutron-Star Crust (`neutronstar`)
 
 | Creature | Kind | Status | Chains | Verdicts |
@@ -122,6 +146,15 @@
 | [Cristalino Filar](cristalino_filar.md) | new | draft | 4 | 2 fixable, 1 implausible, 1 plausible |
 | [Tamiz Drip](tamiz_drip.md) | new | draft | 4 | 2 fixable, 2 plausible |
 | [Vibra-Losa](vibra_losa.md) | new | draft | 4 | 4 fixable |
+
+## The Ochre Reach (`oddities`)
+
+| Creature | Kind | Status | Chains | Verdicts |
+|---|---|---|---|---|
+| [Ceniza-Polipo](ceniza_polipo.md) | new | draft | 4 | 3 fixable, 1 plausible |
+| [Centellón](centellon.md) | new | draft | 4 | 3 fixable, 1 plausible |
+| [Sifonera de Pluma](sifonera_de_pluma.md) | new | draft | 4 | 2 fixable, 2 plausible |
+| [Vaelen-tok](vaelen_tok.md) | new | draft | 4 | 3 fixable, 1 plausible |
 
 ## Primigenia (the island world) (`primigenia`)
 
@@ -157,6 +190,24 @@
 | [Salcarán](salcaran.md) | new | draft | 4 | 3 fixable, 1 plausible |
 | [Salinera](salinera.md) | new | draft | 4 | 2 fixable, 2 plausible |
 
+## Ring-moon of a Gas Giant (`ringmoon`)
+
+| Creature | Kind | Status | Chains | Verdicts |
+|---|---|---|---|---|
+| [Anillo-Sangre](anillo_sangre.md) | new | draft | 4 | 3 fixable, 1 plausible |
+| [Marevora](marevora.md) | new | draft | 4 | 2 fixable, 2 plausible |
+| [Nubevolar](nubevolar.md) | new | draft | 4 | 2 fixable, 2 plausible |
+| [Voxmanta](voxmanta.md) | new | draft | 4 | 2 fixable, 2 plausible |
+
+## Rogue Planet Warmed from Inside (`rogue`)
+
+| Creature | Kind | Status | Chains | Verdicts |
+|---|---|---|---|---|
+| [Brumascara](brumascara.md) | new | draft | 4 | 3 fixable, 1 plausible |
+| [Cortezón](cortezon.md) | new | draft | 4 | 2 fixable, 2 plausible |
+| [Cuerda de Hierro](cuerda_de_hierro.md) | new | draft | 4 | 4 fixable |
+| [Velaescura](velaescura.md) | new | draft | 4 | 1 fixable, 3 plausible |
+
 ## Silicon cryogenic world (`silicon_cryo`)
 
 | Creature | Kind | Status | Chains | Verdicts |
@@ -178,6 +229,14 @@
 | [Quemador](quemador.md) | new | draft | 4 | 1 fixable, 3 plausible |
 | [Vidrio-Pulso](vidrio_pulso.md) | new | draft | 4 | 3 fixable, 1 plausible |
 
+## Full-spectrum world (`spectrum`)
+
+| Creature | Kind | Status | Chains | Verdicts |
+|---|---|---|---|---|
+| [Crisol](crisol.md) | new | draft | 4 | 2 fixable, 2 plausible |
+| [Ojolarca](ojolarca.md) | new | draft | 4 | 2 fixable, 2 plausible |
+| [Salaris](salaris.md) | new | draft | 4 | 1 fixable, 3 plausible |
+
 ## The Star World (Photospheres and Coronae) (`starlife`)
 
 | Creature | Kind | Status | Chains | Verdicts |
@@ -186,3 +245,20 @@
 | [Seda Coronal](seda_coronal.md) | new | draft | 4 | 4 fixable |
 | [Trenza de Fuego](trenza_de_fuego.md) | new | draft | 4 | 4 fixable |
 | [Trenza Magnética](trenza_magnetica.md) | new | draft | 4 | 3 fixable, 1 plausible |
+
+## High-Pressure Super-Earth (`superearth`)
+
+| Creature | Kind | Status | Chains | Verdicts |
+|---|---|---|---|---|
+| [Carapaz](carapaz.md) | new | draft | 4 | 1 fixable, 3 plausible |
+| [Khol-zhar](khol_zhar.md) | new | draft | 4 | 1 fixable, 3 plausible |
+| [RastreadorCeniza](rastreadorceniza.md) | new | draft | 4 | 2 fixable, 2 plausible |
+| [SoplilloAlado](soplilloalado.md) | new | draft | 4 | 2 fixable, 2 plausible |
+
+## The Drifting Isles (`void`)
+
+| Creature | Kind | Status | Chains | Verdicts |
+|---|---|---|---|---|
+| [Ceniza Roja](ceniza_roja.md) | new | draft | 4 | 3 fixable, 1 plausible |
+| [Polvorín](polvorin.md) | new | draft | 4 | 2 fixable, 2 plausible |
+| [Velafrío](velafrio.md) | new | draft | 4 | 4 fixable |

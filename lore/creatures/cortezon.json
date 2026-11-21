@@ -1,0 +1,289 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "cortezon",
+  "name": {
+    "en": "Cortezón"
+  },
+  "world": "rogue",
+  "kind": "new",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "10-12 km depth, ice-ocean boundary, fissure zones",
+    "diet": "Chemosynthetic ice-mats, dissolved H2/CH4",
+    "active": "Burst-feeding, then quiescent",
+    "predators": []
+  },
+  "body": "Armored carapace, drill-like rostrum, pressure-resistant shell",
+  "chains": [
+    {
+      "id": "cortezon.c1",
+      "trait": "Rostrum vibrates to fracture ice",
+      "links": [
+        "Precise acoustic resonance breaks brittle ice",
+        "Fast sound transmission amplifies vibration",
+        "Dense hydrogen atmosphere transmits efficiently"
+      ],
+      "roots": [
+        "F10",
+        "F7",
+        "F20"
+      ],
+      "skill": {
+        "id": "cortezon.ice_shatter",
+        "name": {
+          "en": "Ice Shatter"
+        },
+        "role": "Poke",
+        "effect": "Deals 25 impact damage to walls and armor, breaks ice barriers",
+        "numbers": {}
+      },
+      "weakness": "Vibration exposes their position to predators",
+      "observe": [
+        "Chitinous head twitching",
+        "Crackling ice dust",
+        "Focused sound beams"
+      ],
+      "journal": {
+        "en": "They speak in cracks, and the ice answers."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "Limit Ice Shatter to fissure brine channels, warm ice-ocean interface rinds, and competitor carapace; add enzymatic or abrasive rostrum wear plus vibration as fatigue assist. Keep haunting 'cracks' at ceiling-scale fissures, not arbitrary megabarriers.",
+        "fixes": [
+          "Limit Ice Shatter to fissure brine channels, warm ice-ocean interface rinds, and competitor carapace; add enzymatic or abrasive rostrum wear plus vibration as fatigue assist. Keep haunting 'cracks' at ceiling-scale fissures, not arbitrary megabarriers."
+        ],
+        "analogues": [
+          {
+            "organism": "Pistol shrimp cavitation snaps (localized shock) and woodpecker impact drilling—localized material failure, not bulk ice-sheet breaching.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "cortezon.c2",
+      "trait": "Cuticle incorporates antifreeze glycoproteins",
+      "links": [
+        "Prevents intracellular ice nucleation",
+        "Cold-adapted proteins retain flexibility",
+        "Geothermal baseline hovers near freezing"
+      ],
+      "roots": [
+        "F16",
+        "F1",
+        "F11"
+      ],
+      "skill": {
+        "id": "cortezon.cold_resilience",
+        "name": {
+          "en": "Cold Resilience"
+        },
+        "role": "Defence",
+        "effect": "Reduces frostbite and cold damage by 60%",
+        "numbers": {}
+      },
+      "weakness": "Thermal insulation traps metabolic heat in warm zones",
+      "observe": [
+        "Icy sheen on carapace",
+        "Slow, deliberate feeding",
+        "No visible frost on body"
+      ],
+      "journal": {
+        "en": "Frost clings to the world, but not them."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "F16 already posits antifreeze glycoproteins at ~275 K; strong selection at the ice-ocean boundary and in fissure seeps. Overheating in warm vent pockets fits insulating cuticle trade-offs.",
+        "fixes": [
+          "F16 already posits antifreeze glycoproteins at ~275 K; strong selection at the ice-ocean boundary and in fissure seeps. Overheating in warm vent pockets fits insulating cuticle trade-offs."
+        ],
+        "analogues": [
+          {
+            "organism": "Antarctic notothenioid fish antifreeze glycoproteins preventing ice nucleation in tissues (DeVries mechanism).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "cortezon.c3",
+      "trait": "Spiracles draw H2-rich vent vapors",
+      "links": [
+        "Hydrogenotrophic metabolism requires H2",
+        "Serpentinization releases abundant hydrogen",
+        "Radiogenic decay powers vent chemistry"
+      ],
+      "roots": [
+        "F14",
+        "F1",
+        "F13"
+      ],
+      "skill": {
+        "id": "cortezon.gas_digest",
+        "name": {
+          "en": "Gas Digest"
+        },
+        "role": "Engage",
+        "effect": "Converts atmospheric H2 into 30 energy, fuels burst sprints",
+        "numbers": {}
+      },
+      "weakness": "Cannot metabolize oxygen or nitrate efficiently",
+      "observe": [
+        "Spiracles pulsing rhythmically",
+        "Vent-adjacent resting posture",
+        "Charged gas pockets in gut"
+      ],
+      "journal": {
+        "en": "They breathe the fire's ghost."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "Reframe as uptake of dissolved H2/CH4 and microbubbles at ice-ocean fissures (F13); spiracles become high-surface gas-exchange pores at bubble-rich seeps. Gas Digest stamina ties to symbiont or internal hydrogenotrophic symbiosis, not open-air respiration.",
+        "fixes": [
+          "Reframe as uptake of dissolved H2/CH4 and microbubbles at ice-ocean fissures (F13); spiracles become high-surface gas-exchange pores at bubble-rich seeps. Gas Digest stamina ties to symbiont or internal hydrogenotrophic symbiosis, not open-air respiration."
+        ],
+        "analogues": [
+          {
+            "organism": "Riftia and other vent fauna using chemoautotrophic symbionts oxidizing vent-supplied reductants (H2S/H2 pathways) rather than breathing free atmospheric H2.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "cortezon.c4",
+      "trait": "Radial arms anchor to uneven ice",
+      "links": [
+        "High gravity demands low center of mass",
+        "1.53g pulls tissue downward constantly",
+        "Planetary mass compresses interior and surface"
+      ],
+      "roots": [
+        "F4",
+        "F3",
+        "F1"
+      ],
+      "skill": {
+        "id": "cortezon.grip_anchor",
+        "name": {
+          "en": "Grip Anchor"
+        },
+        "role": "Control",
+        "effect": "Immobilizes target for 8 seconds, prevents knockback",
+        "numbers": {}
+      },
+      "weakness": "Requires solid surface to plant arms; fails in water",
+      "observe": [
+        "Multi-jointed appendages splayed",
+        "Heavy stance",
+        "Tension in carapace plates"
+      ],
+      "journal": {
+        "en": "They fight gravity with every joint."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "1.53 g (F4) favors low center of mass and adhesive anchoring on solid substrata; ice ceiling/Fissure-wall gripping at the interface is a credible opposite solution to mid-water Velaescura. Fails in open water is consistent.",
+        "fixes": [
+          "1.53 g (F4) favors low center of mass and adhesive anchoring on solid substrata; ice ceiling/Fissure-wall gripping at the interface is a credible opposite solution to mid-water Velaescura. Fails in open water is consistent."
+        ],
+        "analogues": [
+          {
+            "organism": "Sea-star tube feet on irregular hard substrata (adhesion plus muscle tone), inverted for ceiling attachment as in some cave or ice-associated benthos.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "none",
+      "kind": "cousin",
+      "note": "(council kind 'baseline') No existing fauna yet. This lineage establishes the first trophic tiers."
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-19",
+    "by": [
+      "naturalist/qwen"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-19",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-19"
+    }
+  ],
+  "body_plan": {
+    "symmetry": "radial",
+    "arms": 4,
+    "origin": "benthic ascendant"
+  },
+  "temperament": "Defensive, territorial over thermal vents",
+  "secrets": [
+    "Their spiracles can temporarily reverse flow to inject vent gases into rival carapaces.",
+    "Antifreeze proteins double as electrical insulators, allowing them to ride micro-currents near ice."
+  ],
+  "moments": [
+    "A fissure groans open, bleeding warm vapor into the cold. Cortezón climbs the steam like a pilgrim, shell drinking the heat."
+  ],
+  "journal": [
+    {
+      "en": "They speak in cracks, and the ice answers."
+    },
+    {
+      "en": "Gravity is not an enemy; it is an anchor."
+    }
+  ]
+}

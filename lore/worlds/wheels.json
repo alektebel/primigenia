@@ -1,0 +1,598 @@
+{
+  "schema": "cpore.world/1",
+  "id": "wheels",
+  "kind": "fictional",
+  "system": {
+    "star": "Hearth, a K3V orange dwarf (0.75 M☉, 0.22 L☉, 4,650 K)",
+    "position": "fictional",
+    "distance_ly_from_sol": null
+  },
+  "name": {
+    "en": "The Highway World",
+    "es": "El mundo de las autopistas"
+  },
+  "status": "draft",
+  "facts": [
+    {
+      "id": "F1",
+      "group": "star",
+      "claim": "Hearth is a K3V dwarf of 0.75 solar masses and 0.22 solar luminosities, with a 4,650 K photosphere whose output peaks near 620 nm and is weak in UV-B.",
+      "justification": "A cool, old, quiet main-sequence star buys tens of billions of years of stable irradiation and a red-shifted spectrum, so evolution can be slow and exposed surfaces need less UV shielding than on Earth; the flare rate is highly speculative without an age and rotation model, since K dwarfs quieten as they spin down.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "K3V",
+      "consequences": [
+        "Photosystems must harvest orange-red light, not blue.",
+        "UV-B at the surface is about a third of Earth's, so exposed skin is survivable but not free.",
+        "Flare-driven UV spikes, whatever their true frequency, select for DNA repair pathways."
+      ],
+      "refs": [
+        "reid_hawley_2005",
+        "carroll_ostlie_2007"
+      ]
+    },
+    {
+      "id": "F2",
+      "group": "orbit",
+      "claim": "The planet orbits at 0.52 AU with a 158-day year, receiving 0.81 times Earth's insolation.",
+      "justification": "Flux falls as 1/a², so 0.22 L☉ at 0.52 AU gives 0.81 S and Kepler's third law for 0.75 M☉ fixes the year at 158 days; the 286 K mean is model-dependent, because an albedo of ~0.25 alone yields an equilibrium temperature near 246 K and the rest must come from a CO₂/H₂O greenhouse under 1.5 bar.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 0.81,
+      "unit": "relative insolation",
+      "consequences": [
+        "Seasons are short: a full wet-dry cycle passes in about five months.",
+        "Mean surface temperature sits near 286 K, cool enough to favour large, well-insulated ectotherms.",
+        "Mild insolation plus a 1.5-bar atmosphere keeps liquid water stable without a runaway greenhouse."
+      ],
+      "refs": [
+        "kasting_1993_hz",
+        "carroll_ostlie_2007"
+      ]
+    },
+    {
+      "id": "F3",
+      "group": "orbit",
+      "claim": "The planet has no moon; the only tide is a solar tide of order one metre.",
+      "justification": "At 0.52 AU the Hill sphere is small and any close moon would be tidally braked within a few hundred million years, so the equilibrium solar bulge is a rounding error and cannot explain flooding, migration timing or joint wear.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 1,
+      "unit": "m",
+      "consequences": [
+        "No tidal mixing: coastal and pan flooding comes from seasonal evaporation and rare storms only.",
+        "Nights are moonless and starlit, so half of every 34-hour cycle belongs to hearing and smell.",
+        "Without a stabilising moon the axial tilt is free to wander (see F6)."
+      ],
+      "refs": [
+        "murray_dermott_1999"
+      ]
+    },
+    {
+      "id": "F4",
+      "group": "planet",
+      "claim": "The planet has a radius of 5,900 km, a mass of 0.67 Earth masses, a density of 4.65 g/cm³ and a surface gravity of 7.65 m/s² (0.78 g), with a 9.5 km/s escape velocity.",
+      "justification": "Radius, mass, density, gravity and escape velocity are one self-consistent set derived from a small iron core and a silicate mantle; low gravity is what makes a large rolling body cheap to build and cheap to keep moving.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 7.65,
+      "unit": "m/s²",
+      "consequences": [
+        "Rolling and balling bodies can be large without crushing their own joints.",
+        "Dust settles slowly and hangs for days, so the air is usually dirty.",
+        "Lifting work per kilogram is 22% cheaper than on Earth, which favours gliding and burrowing too."
+      ],
+      "refs": [
+        "carroll_ostlie_2007"
+      ]
+    },
+    {
+      "id": "F5",
+      "group": "planet",
+      "claim": "The day is 34 hours long, and the Coriolis force is about 0.7 times Earth's.",
+      "justification": "Slow rotation gives a weak Coriolis parameter, so weather organises into a few huge, sluggish systems instead of many small ones, and the dominant engine becomes the day-night heating pulse rather than planetary waves.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 34,
+      "unit": "h",
+      "consequences": [
+        "Long dawns and dusks with low, raking light and long shadows.",
+        "One enormous diurnal thermal wind combs the flats clean each rotation.",
+        "Storm systems are rare but continent-sized when they occur."
+      ],
+      "refs": [
+        "wallace_hobbs_2006",
+        "carroll_ostlie_2007"
+      ]
+    },
+    {
+      "id": "F6",
+      "group": "planet",
+      "claim": "Axial tilt is currently about 21° but wanders chaotically between 8° and 38° on a cycle of order 0.4 million years.",
+      "justification": "Without a large moon to damp precession, spin-axis chaos is the default result of Mars/Laskar-class models, but the exact 8–38° amplitude and 0.4 Myr period are highly speculative here because they scale with an unknown precession constant; within a lifetime, a season or a game, tilt is effectively constant.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 21,
+      "unit": "degrees",
+      "consequences": [
+        "Seasonal structure is stable for lifetimes but not for evolution: the road network has a birth and a death date.",
+        "High-obliquity episodes push the subtropical dry belt over the shallow seas, exposing new Lanes.",
+        "Lineages specialised on the Lanes are living on borrowed time, and the fossil record says so."
+      ],
+      "refs": [
+        "laskar_1993_obliquity",
+        "laskar_1993_moon",
+        "murray_dermott_1999"
+      ]
+    },
+    {
+      "id": "F7",
+      "group": "interior",
+      "claim": "A small iron dynamo gives a 0.4 gauss dipole, and cooled magnetite-rich basalt flows carry local remanent anomalies of 50–500 nT, rising to a few microtesla over the richest flows.",
+      "justification": "A small core supports a weak but real field well inside planetary norms, and flood basalt genuinely records that field, but bulk crustal remanence is nT to hundreds of nT — a uniform 0.15 gauss would be a magnetic ore body, not a rock — so the readable map is local and patchy.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 0.4,
+      "unit": "gauss",
+      "consequences": [
+        "Cosmic-ray dose is about 0.8 times Earth's, shielded mainly by the 1.5-bar air column.",
+        "Magnetotactic organs can navigate by rock remanence where landmarks fail.",
+        "A fresh flow erases the local map, so navigation knowledge decays."
+      ],
+      "refs": [
+        "carroll_ostlie_2007"
+      ]
+    },
+    {
+      "id": "F8",
+      "group": "atmosphere",
+      "claim": "Surface pressure is 1.5 bar: 77% N₂, 13% O₂ (0.195 bar), 1.1% CO₂, 5.2% Ar and 0.1-3% H₂O, giving a density of 1.86 kg/m³ and a scale height of 10.5 km.",
+      "justification": "Density follows from pM/RT at 286 K and scale height from RT/Mg at low gravity; O₂ at 0.195 bar is breathable but below Earth's, and argon is a passive tracer from potassium-rich basalt.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 1.5,
+      "unit": "bar",
+      "consequences": [
+        "Fire is possible but sluggish, so combustion is not a dominant hazard.",
+        "Air drag at speed is 1.5 times Earth's, so fast rollers must be streamlined.",
+        "A 1.5-bar column is a decent cosmic-ray shield."
+      ],
+      "refs": [
+        "wallace_hobbs_2006"
+      ]
+    },
+    {
+      "id": "F9",
+      "group": "atmosphere",
+      "claim": "Sound travels at 339 m/s regardless of pressure, and in 1.5-bar air carries modestly farther than on Earth at the same pitch, of order 1.2-1.5× and strongly frequency-dependent.",
+      "justification": "Sound speed is √(γRT/M) and is pressure-independent; pressure only sets attenuation, and because molecular and turbulence losses vary with frequency the range gain is approximate rather than a clean 1.4×.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 339,
+      "unit": "m/s",
+      "consequences": [
+        "Low-frequency calls cross kilometres of flat ground.",
+        "Hearing becomes the primary long-range sense and stealth becomes almost impossible.",
+        "Anything that deafens, such as a sharp whistle above 6 kHz, is a weapon."
+      ],
+      "refs": [
+        "wallace_hobbs_2006"
+      ]
+    },
+    {
+      "id": "F10",
+      "group": "climate",
+      "claim": "Rainfall averages 180 mm a year, and the main weather engine is a diurnal thermal wind of 9 m/s mean with 35 m/s spring gusts.",
+      "justification": "Deep day-night heating over dark rock drives a basin-scale circulation once per 34-hour rotation; with almost no mud and little rain, wind rather than water is the sculptor of the surface.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 180,
+      "unit": "mm/yr",
+      "consequences": [
+        "Scent posts persist for days, making smell a durable information layer.",
+        "Dust storms blind the flats in spring and erase tracks.",
+        "Surfaces are polished rather than eroded into soil, keeping the Lanes hard."
+      ],
+      "refs": [
+        "cooke_1993_desert",
+        "wallace_hobbs_2006"
+      ]
+    },
+    {
+      "id": "F11",
+      "group": "atmosphere",
+      "claim": "Topographically closed, wind-sheltered hollows can pool 5-12% CO₂ overnight, a hypoxic and lethal layer that persists only through the still hour or three around dawn.",
+      "justification": "CO₂ at 44 g/mol is heavier than 29 g/mol air and drains into closed basins, but 5-12% is far above the 1.1% bulk, so it needs local degassing vents or long prior pooling, and the daily thermal wind scours it out by mid-morning.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "5-12",
+      "unit": "% CO₂",
+      "consequences": [
+        "Some hollows are invisible dead zones at dawn and harmless by noon.",
+        "Concentrations above 5% cause headache, confusion and rapid unconsciousness in anything that breathes air.",
+        "Route timing matters as much as route choice."
+      ],
+      "refs": [
+        "wallace_hobbs_2006"
+      ]
+    },
+    {
+      "id": "F12",
+      "group": "ocean",
+      "claim": "Water covers 34% of the surface at a mean depth of 1.8 km, about 0.2 Earth oceans, in one polar sea and two rift seas.",
+      "justification": "The water budget is small enough that most of the planet is dry land with an endorheic interior, the precondition for enormous evaporite pans; a larger ocean would drown the Lanes.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 34,
+      "unit": "% surface",
+      "consequences": [
+        "Fresh water is a scarce resource held by legged species at oases.",
+        "The interior is a closed basin where salts and toxins accumulate.",
+        "Most of the world is desert pavement, not sea."
+      ],
+      "refs": [
+        "carroll_ostlie_2007"
+      ]
+    },
+    {
+      "id": "F13",
+      "group": "geology",
+      "claim": "Relief is extremely low: 90% of land lies within 600 m of sea level and the highest point is 3.1 km, on a stagnant lid with no collisional mountains.",
+      "justification": "Without plate recycling or continental collision nothing builds ranges, so effusive flows and sediment fill dominate and horizons stay open for hundreds of kilometres.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 600,
+      "unit": "m",
+      "consequences": [
+        "Sight lines run to the horizon, so ambush depends on terrain texture and light, not hills.",
+        "Nothing forces water to run off, so basins become evaporite traps.",
+        "Weather systems cross the interior without orographic interruption."
+      ],
+      "refs": [
+        "cooke_1993_desert"
+      ]
+    },
+    {
+      "id": "F14",
+      "group": "geology",
+      "claim": "Six flood-basalt provinces and about 20 million years of evaporite pans form the Lanes: flat, hard, wind-polished surfaces running for hundreds of kilometres with under a metre of relief.",
+      "justification": "Low-viscosity effusive basalt self-levels into sheet flows, endorheic evaporation indurates salt and gypsum crusts, and aeolian abrasion polishes both into pavement that resists burial.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "6 provinces",
+      "consequences": [
+        "Wheeled and balled locomotion is cheap on the Lanes and ruinous off them.",
+        "The Lanes form a connected graph, so geography becomes routing.",
+        "Pans are thin: a crust can hide brine or a void a few centimetres down."
+      ],
+      "refs": [
+        "warren_2006_evaporites",
+        "cooke_1993_desert"
+      ]
+    },
+    {
+      "id": "F15",
+      "group": "chemistry",
+      "claim": "Sea water sits at pH 7.9 while pan brines reach pH 9-10, concentrating selenate and arsenate to roughly 2 mg Se/kg along with fluoride from fresh ash.",
+      "justification": "Evaporative concentration raises ionic strength and pH and collects the soluble oxyanions of selenium and arsenic, as in Death Valley and Salton-type playas; the 2 mg/kg threshold is approximate and depends on the local mineral assemblage, but the direction is certain and makes off-Lane ground chemically hostile as well as rough.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "2",
+      "unit": "mg Se/kg",
+      "consequences": [
+        "Drinking from the wrong pan is lethal; halophiles must detoxify or volatilise.",
+        "Off-road travel is a chemical hazard, not just a traction penalty.",
+        "Salt itself is both resource and poison, depending on dose."
+      ],
+      "refs": [
+        "warren_2006_evaporites",
+        "cooke_1993_desert"
+      ]
+    },
+    {
+      "id": "F16",
+      "group": "chemistry",
+      "claim": "Energy enters the biosphere through far-red photosynthesis using pigments absorbing ~700-750 nm (the chlorophyll f class, near 720 nm) on wet salt and fresh basalt, plus Fe²⁺ and S⁰ chemolithotrophy, with wind and thermal gradients as physical subsidies.",
+      "justification": "An oxidising, iron- and sulphur-rich basaltic surface offers abundant redox couples, and a red star pushes photosynthesis to long wavelengths — the trick chlorophyll f already manages at the edge of the visible — so the food web does not depend on visible-light brightness and follows directly from F1's spectrum.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "700-750",
+      "unit": "nm",
+      "consequences": [
+        "Primary production is patchy and tied to moisture, so grazers must migrate.",
+        "Chemolithotrophic films let life persist under crust and in lava channels.",
+        "Detritivores that eat shed keratin and salt crust close the loop."
+      ],
+      "refs": [
+        "chen_2010_chlorophyll_f",
+        "madigan_2006_brock"
+      ]
+    },
+    {
+      "id": "F17",
+      "group": "biochemistry",
+      "claim": "Wheeled locomotion evolved in four usable steps: whole-body balling, a rolling dispersal cyst, a rotatable foot with a free-spinning dead cap, and finally a driven axle with a moulted tyre.",
+      "justification": "Each step pays for itself alone, which is what an evolutionary intermediate must do; a free axle cannot be fed, cooled or repaired, and the only rotary axle biology has built is the bacterial flagellar motor, which turns a filament inside a membrane and cannot scale into a load-bearing joint. Steps three and four are highly speculative (Gould essay 1981, collected 1983).",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "4 steps",
+      "consequences": [
+        "Balling and cysts are common; true wheels are rare and recent.",
+        "Every wheeled lineage retains the ancestral balling escape.",
+        "Wheel anatomy is a stack of historical compromises, not an engineered design."
+      ],
+      "refs": [
+        "gould_1981_kingdoms",
+        "labarbera_1983_wheels",
+        "berg_1973_flagellar"
+      ]
+    },
+    {
+      "id": "F18",
+      "group": "biochemistry",
+      "claim": "The karrow runs on a dead keratin-mineral tyre mounted on a vascularised collar and driven by friction pads on the tyre's inner rim, giving 3.2 times walking speed on a Lane.",
+      "justification": "If the rotating part is dead there is no vascular problem to solve: it is grown like a hoof or antler, fed through the collar while stationary and replaced by moult, and the living pads press on a dry rim so the motor never crosses the joint; the 'hundreds of kilometres' tyre life is speculative because it depends on an unmeasured abrasion rate.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 3.2,
+      "unit": "× walking speed",
+      "consequences": [
+        "Rolling resistance rises about tenfold in dust or brine, and a 12 cm step stops the animal dead.",
+        "Tyres wear out and must be regrown, so range is set by moult cycle, not fuel.",
+        "Discarded tyres litter the Lanes and attract scavengers and predators that read their residual heat."
+      ],
+      "refs": [
+        "labarbera_1983_wheels",
+        "gould_1981_kingdoms"
+      ]
+    },
+    {
+      "id": "F19",
+      "group": "biochemistry",
+      "claim": "The tucket escapes by curling its whole body into a wheel with no axle at all, reaching twice its running speed downhill but unable to see or steer while rolled.",
+      "justification": "Balling sidesteps the joint problem entirely and is attested on Earth in pangolins, armadillos and the wheel spider, and it pays off where a slope and a hard surface exist together, which is exactly a drying pan.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 2,
+      "unit": "× running speed downhill",
+      "consequences": [
+        "Balling is a defensive and dispersal reflex, not a way of life.",
+        "A rolled animal is committed: it cannot choose where it stops.",
+        "Predators learn to wait at the bottom of the slope."
+      ],
+      "refs": [
+        "gould_1981_kingdoms",
+        "labarbera_1983_wheels"
+      ]
+    },
+    {
+      "id": "F20",
+      "group": "biochemistry",
+      "claim": "A vascular sphincter clamps the axle as a brake and sweat glands dump the heat by evaporation, leaving a hot, scent-marked skid line about 40 m long after a 12 m/s stop.",
+      "justification": "Twelve metres per second of kinetic energy has to go somewhere, and in dry air evaporation is the only heat sink, so a wet, hot, smelly trace is the unavoidable physical residue of stopping at a few metres per second squared.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 40,
+      "unit": "m",
+      "consequences": [
+        "Stopping breaks a chase and simultaneously broadcasts where you stopped.",
+        "Still air causes heat exhaustion, so braking is weather-dependent.",
+        "Skid lines are readable history for anything that can smell."
+      ],
+      "refs": [
+        "labarbera_1983_wheels"
+      ]
+    },
+    {
+      "id": "F21",
+      "group": "biochemistry",
+      "claim": "Steering is passive: the axle trails the limb pivot by about 0.3 wheel radii, giving straight-line stability with a minimum turn radius near 4 m.",
+      "justification": "Caster geometry is a solved mechanical problem needing no neural loop, which matters because a 100 ms reflex at 12 m/s is already 1.2 m of travel; the price is a turning circle wider than a predator's.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 4,
+      "unit": "m",
+      "consequences": [
+        "Rollers run straight without attention and cannot corner tightly.",
+        "Switchbacks and broken ground belong to legged hunters.",
+        "Sharp course changes require shedding speed first."
+      ],
+      "refs": [
+        "labarbera_1983_wheels"
+      ]
+    },
+    {
+      "id": "F22",
+      "group": "biochemistry",
+      "claim": "Wheeled lineages keep two short walking legs and a lifting shoulder, and can stow the wheel and walk in about two seconds.",
+      "justification": "The Lanes are islands separated by dune seas and broken crust, and a wheel in loose sand is a trap rather than a vehicle; retaining legs is cheaper than evolving them twice, so the off-road answer is portage.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 2,
+      "unit": "s",
+      "consequences": [
+        "Crossing 200 m of dune costs roughly eight times the time it takes on a Lane.",
+        "The two-second transition is a real vulnerability window in combat.",
+        "Lane specialists and generalists diverge behaviourally, not just anatomically."
+      ],
+      "refs": [
+        "labarbera_1983_wheels"
+      ]
+    },
+    {
+      "id": "F23",
+      "group": "biochemistry",
+      "claim": "The tyre tread is farmed: a lichen-like symbiont grows the rolling surface and trades micronutrients and moisture with the host, producing a new tyre in about nine days.",
+      "justification": "Keratin wears out and the pans are nutrient-poor, so a tread that pays rent in micronutrients and water is worth feeding — the same loose bargain as algae in sloth fur; the arrangement is highly speculative, the exchange is documented as nutrient/moisture rather than verified nitrogen fixation, and the nine-day regrowth is an unconstrained ecological number.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 9,
+      "unit": "days",
+      "consequences": [
+        "Grooming and feeding the symbiont becomes daily husbandry.",
+        "The symbiont is the vector for a treadworm that lays eggs in dead tread.",
+        "A starved host loses its tyre before it loses its life."
+      ],
+      "refs": [
+        "madigan_2006_brock",
+        "labarbera_1983_wheels"
+      ]
+    },
+    {
+      "id": "F24",
+      "group": "biochemistry",
+      "claim": "Magnetite organs read the remanent anomalies of the basalt flows, giving position to about 0.5-2 km along a stripe and 100-500 m across it without landmarks.",
+      "justification": "A featureless white flat removes every visual cue but the rock underneath carries a weak magnetic map; magnetotaxis is real in bacteria and magnetite-based magnetoreception is documented in animals, so the sense is plausible while the precision follows from F7's nT-to-µT gradients rather than a strong field.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "0.5-2",
+      "unit": "km along stripe",
+      "consequences": [
+        "Navigation is a skill of reading geology, not scenery.",
+        "New flows and deep dust erase the map locally.",
+        "Two animals can disagree about where they are and both be honest."
+      ],
+      "refs": [
+        "blakemore_1975_magnetotactic",
+        "johnsen_lohmann_2005"
+      ]
+    },
+    {
+      "id": "F25",
+      "group": "biochemistry",
+      "claim": "Long-range communication uses 40-90 Hz hums that carry up to about 400 m in calm air, and the same ears are deaf above 6 kHz.",
+      "justification": "Low frequencies barely attenuate in 1.5-bar air and propagate well through hard ground, so the acoustic niche sits at the bottom of the spectrum; 400 m is optimistic and only holds in still air, and the cost is a hearing range that stops far below the whistles and clicks a rival can use.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "40-90",
+      "unit": "Hz",
+      "consequences": [
+        "Herds coordinate over hundreds of metres while staying silent to each other's rivals.",
+        "A sharp high whistle is a disabling weapon against anything with these ears.",
+        "Wind noise, not distance, sets the practical limit."
+      ],
+      "refs": [
+        "wallace_hobbs_2006"
+      ]
+    },
+    {
+      "id": "F26",
+      "group": "biochemistry",
+      "claim": "The glissen skates on the shallow ice of polar and high-latitude rift lakes on stiff legs and a single keratin blade, moving four times faster than a roller for the 20-50 days the ice lasts.",
+      "justification": "Ice has almost no rolling resistance and no traction either, so wheels cannot brake or steer on it while a blade can; only high-latitude, shallow, wind-sheltered lakes freeze long enough at 21° of tilt for a road to exist, which is why the winter road appears at the poles and never on the subtropical flats.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 4,
+      "unit": "× roller speed",
+      "consequences": [
+        "Territory changes hands seasonally without a fight.",
+        "Blades are useless in summer and shatter off ice.",
+        "Ice is a road that expires, so routes must be re-planned."
+      ],
+      "refs": [
+        "wallace_hobbs_2006"
+      ]
+    },
+    {
+      "id": "F27",
+      "group": "biochemistry",
+      "claim": "The Lanes support four exploiter guilds: sumpers tap hollow crust and dig 2 m sinkholes, skirls stoop at 30 m/s from height onto rollers, hub leeches attach to passing bodies, and hitchhiker spores ride the low-pressure boundary layer of anything fast.",
+      "justification": "A road concentrates traffic, and a thin salt crust plus a fast-moving cylinder is a predictable ambush geometry; the 30 m/s figure is a stoop from height, peregrine-class, not a level cruise, and the boundary layer of a rolling body genuinely draws in airborne propagules.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 4,
+      "unit": "guilds",
+      "consequences": [
+        "Infestation reduces rolling efficiency and attracts host-specific predators.",
+        "Sinkholes are cheap to make and expensive to find.",
+        "A grounded flyer is a meal, which is why skirls strike once."
+      ],
+      "refs": [
+        "labarbera_1983_wheels",
+        "gould_1981_kingdoms"
+      ]
+    },
+    {
+      "id": "F28",
+      "group": "biochemistry",
+      "claim": "The lye drinks brine of up to 350 g salt per kg of solution (about 26% w/w), volatilises selenium as dimethyl selenide, and must reach fresh water within about three days.",
+      "justification": "Brine is the only water for a hundred kilometres, and biomethylation of selenium to a volatile gas is a real microbial detoxification route; but above roughly 300 g NaCl per kg of solution a drinker cannot gain net water without excreting a fluid saltier than the pan, so saturated pans are for mining, not drinking, and the three-day limit is ecological, not physical.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 350,
+      "unit": "g salt/kg brine",
+      "consequences": [
+        "Oases are held by legged species, so the fastest animals cannot drink.",
+        "Brine tolerance buys range and costs endurance.",
+        "Selenium breath makes the drinker smell like garlic and gives it away."
+      ],
+      "refs": [
+        "chasteen_2003_selenium",
+        "warren_2006_evaporites"
+      ]
+    }
+  ],
+  "changelog": [
+    {
+      "date": "2026-11-19",
+      "who": "autoloop",
+      "what": "world canon drafted by the council chair from 28 facts (planet drafts, peer reviews, astrobio referee)"
+    }
+  ]
+}

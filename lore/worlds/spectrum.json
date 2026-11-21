@@ -1,0 +1,400 @@
+{
+  "schema": "cpore.world/1",
+  "id": "spectrum",
+  "kind": "fictional",
+  "system": {
+    "star": "F5V + M3V binary",
+    "position": "fictional",
+    "distance_ly_from_sol": null
+  },
+  "name": {
+    "en": "Full-spectrum world",
+    "es": "Mundo de espectro completo"
+  },
+  "status": "draft",
+  "facts": [
+    {
+      "id": "F1",
+      "group": "star",
+      "claim": "F5V main-sequence primary delivers peak irradiance at ~480 nm with bolometric luminosity 1.35 L☉.",
+      "justification": "F-type stellar SEDs peak in the blue with elevated high-energy photon output compared to G-types; UV excess is driven by spectral type and thin O₃ column, not heliocentric distance.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 1.35,
+      "unit": "L☉",
+      "consequences": [
+        "Drives selection for ocular UV-filters and surface-acting photolyases.",
+        "Forces crepuscular activity cycles to limit cumulative DNA damage."
+      ],
+      "refs": [
+        "gray_2005_stellar"
+      ]
+    },
+    {
+      "id": "F2",
+      "group": "star",
+      "claim": "M3V red dwarf companion provides steady thermal baseline with frequent optical/UV flare spikes.",
+      "justification": "M-dwarfs dominate the infrared spectrum; flare activity is common but primarily emits UV/X-ray/optical, not IR pulses. The companion supplies a persistent ~900 nm NIR photon bias that heats surface targets.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 0.013,
+      "unit": "L☉",
+      "consequences": [
+        "Provides constant near-IR background radiation.",
+        "Flare spikes increase mutagenic dose and atmospheric ionization."
+      ]
+    },
+    {
+      "id": "F3",
+      "group": "orbit",
+      "claim": "Circumbinary (P-type) orbit at 1.15 AU with a 387-day period.",
+      "justification": "Kepler’s third law scaled to combined binary mass (~1.35 M☉); dynamically stable only if binary separation is <0.2 AU and eccentricity is low.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 387,
+      "unit": "days",
+      "consequences": [
+        "Predictable seasonal insolation shifts drive migratory timing.",
+        "Binary torque maintains an 18-hour sidereal day via long-term spin-orbit resonance."
+      ],
+      "refs": [
+        "holman_1999_circumbinary"
+      ]
+    },
+    {
+      "id": "F4",
+      "group": "planet",
+      "claim": "Planetary radius 0.92 R⊕ and mass 0.84 M⊕.",
+      "justification": "Silicate-iron differentiation with moderate volatile retention; lower mass reduces atmospheric escape velocity but requires sustained volcanic outgassing.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 0.84,
+      "unit": "M⊕",
+      "consequences": [
+        "Eases vertical locomotion and reduces joint loading.",
+        "Supports powered flight and lighter exoskeletal structures."
+      ],
+      "refs": [
+        "seager_2010_exoplanets"
+      ]
+    },
+    {
+      "id": "F5",
+      "group": "planet",
+      "claim": "Surface gravity 0.99 g.",
+      "justification": "Derived from mass/radius ratio (0.84/0.92²); sufficient to retain 0.65 bar atmosphere without extreme hydrodynamic escape.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 0.99,
+      "unit": "g",
+      "consequences": [
+        "Reduces structural stress on locomotor appendages.",
+        "Enables low wing-loading aerial niches and extended gliding."
+      ],
+      "refs": [
+        "seager_2010_exoplanets"
+      ]
+    },
+    {
+      "id": "F6",
+      "group": "planet",
+      "claim": "Sidereal day 18 hours with axial tilt 12°.",
+      "justification": "Initial angular momentum and tidal dissipation history establish rapid rotation; low tilt yields mild latitudinal seasons without icehouse extremes.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 12,
+      "unit": "degrees",
+      "consequences": [
+        "Compresses diurnal temperature swings.",
+        "Stabilizes predictable photoperiods for circadian and reproductive rhythms."
+      ],
+      "refs": [
+        "catling_2017_atmospheres"
+      ]
+    },
+    {
+      "id": "F7",
+      "group": "interior",
+      "claim": "Surface magnetic dipole ~0.35 G (0.35× Earth).",
+      "justification": "Dynamo offset by lower core convection and slightly higher rotation; sufficient to deflect stellar wind but offers limited UV/X-ray shielding.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 0.35,
+      "unit": "G",
+      "consequences": [
+        "Ionizing particle flux reaches upper atmosphere.",
+        "Drives auroral static and necessitates robust cellular radiation repair."
+      ],
+      "refs": [
+        "catling_2017_atmospheres"
+      ]
+    },
+    {
+      "id": "F8",
+      "group": "atmosphere",
+      "claim": "Surface pressure 0.65 bar, dominated by N₂ (74%) and O₂ (22%), trace CO₂/H₂O.",
+      "justification": "Outgassing balanced against hydrodynamic escape; low H₂O column required to maintain spectral transparency and prevent IR band blocking.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 0.65,
+      "unit": "bar",
+      "consequences": [
+        "Enables liquid water stability via modest greenhouse effect.",
+        "Reduces atmospheric heat capacity, amplifying diurnal convection and wind shear."
+      ],
+      "refs": [
+        "catling_2017_atmospheres"
+      ]
+    },
+    {
+      "id": "F9",
+      "group": "atmosphere",
+      "claim": "Transparent spectral window from 210 nm to 5000 nm.",
+      "justification": "Low aerosol loading, minimal O₃, and desiccated troposphere suppress H₂O rotational bands and Rayleigh scattering at short wavelengths.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "210-5000",
+      "unit": "nm",
+      "consequences": [
+        "Delivers full-spectrum irradiance to ground.",
+        "Forces organisms to manage simultaneous UV damage and IR thermal load."
+      ],
+      "refs": [
+        "catling_2017_atmospheres"
+      ]
+    },
+    {
+      "id": "F10",
+      "group": "climate",
+      "claim": "High-frequency sound attenuates rapidly; low frequencies carry kilometers.",
+      "justification": "Thin gas density increases viscous losses at high frequencies; impedance mismatch at the source suppresses HF coupling, while classical f² attenuation dominates bulk propagation.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 350,
+      "unit": "m/s",
+      "consequences": [
+        "Communication and hunting rely on infrasound and body taps.",
+        "High-pitched signals vanish within dozens of meters."
+      ],
+      "refs": [
+        "catling_2017_atmospheres"
+      ]
+    },
+    {
+      "id": "F11",
+      "group": "sky",
+      "claim": "Strong Rayleigh polarization patterns preserved to ground.",
+      "justification": "Low aerosol scattering prevents depolarization; clear zenith produces predictable polarization vectors.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 0.85,
+      "unit": "contrast_ratio",
+      "consequences": [
+        "Enables polarization-contrast vision for navigation and camouflage detection.",
+        "Reflective surfaces scramble signals, causing disorientation."
+      ],
+      "refs": [
+        "thoen_2014_mantis"
+      ]
+    },
+    {
+      "id": "F12",
+      "group": "geology",
+      "claim": "Silica-rich crust and basaltic plains with active volcanism driven by tidal flexing.",
+      "justification": "Radiogenic heat plus binary tidal flexing (sustained by eccentricity from F19) mantle upwelling; frequent fumaroles create localized redox gradients.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 0.12,
+      "unit": "W/m²",
+      "consequences": [
+        "Supplies geothermal energy for chemosynthetic symbioses.",
+        "Volcanic ash periodically resets surface UV shielding."
+      ],
+      "refs": [
+        "peale_1979_ion"
+      ]
+    },
+    {
+      "id": "F13",
+      "group": "ocean",
+      "claim": "Shallow hypersaline basins and deep equatorial rift trenches cover 68% of surface.",
+      "justification": "High evaporation and limited precipitation concentrate salts; tidal pumping maintains nutrient upwellings.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 68,
+      "unit": "percent_coverage",
+      "consequences": [
+        "Drives osmoregulatory adaptations in aquatic lineages.",
+        "Shallow waters allow deep light/IR penetration for benthic phototrophs."
+      ],
+      "refs": [
+        "seager_2010_exoplanets"
+      ]
+    },
+    {
+      "id": "F14",
+      "group": "chemistry",
+      "claim": "Surface UV-B/C flux ~3.5× Earth baseline, causing rapid thymine dimering.",
+      "justification": "F-star SED plus thin ozone column plus transparent window (F9) drive rapid photolysis; O₂ photolysis cannot fully compensate for the high-energy flux.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 3.5,
+      "unit": "x_earth",
+      "consequences": [
+        "Selects for melanin-analogues, surface mineral plating, and hyper-efficient DNA photolyases.",
+        "Forces crepuscular torpor to limit cumulative mutagenic dose."
+      ],
+      "refs": [
+        "gray_2005_stellar"
+      ]
+    },
+    {
+      "id": "F15",
+      "group": "biochemistry",
+      "claim": "Infrared vision relies on bolometric pit organs sensing ~10 μm thermal differentials, not retinal imaging.",
+      "justification": "900 nm photons (~1.38 eV) lack thermal contrast and cannot drive pit-viper-style thermosensation; pit organs use TRPA1 channels for long-wave IR heat maps of ambient targets.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 10,
+      "unit": "μm",
+      "consequences": [
+        "Drives evolution of vascularized facial heat sensors.",
+        "Limits resolution in uniform solar heating or cold-masking environments."
+      ]
+    },
+    {
+      "id": "F16",
+      "group": "biochemistry",
+      "claim": "Photosynthetic lineages harvest 250–1000 nm via layered canopy symbiosis.",
+      "justification": "Single cells cannot span this band cost-effectively; UV-harvesters form upper canopy layers while IR-harvesters occupy the understory.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "250-1000",
+      "unit": "nm",
+      "consequences": [
+        "Maximizes yield under dual-star spectra.",
+        "Creates trophic tiers where UV-harvesters and IR-harvesters exchange metabolites."
+      ],
+      "refs": [
+        "thoen_2014_mantis"
+      ]
+    },
+    {
+      "id": "F17",
+      "group": "biochemistry",
+      "claim": "Dermal melanin-analogues and sterol-reinforced membranes with rapid photolyase cycling.",
+      "justification": "Cross-linked polymers scatter UV while dissipating heat as IR; enzymatic repair consumes metabolic budget proportional to flare frequency.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 0.95,
+      "unit": "absorption_efficiency",
+      "consequences": [
+        "Provides passive radiation defense.",
+        "Heavy shielding causes thermal overload in IR-rich noon, requiring periodic shedding or shade-seeking."
+      ]
+    },
+    {
+      "id": "F18",
+      "group": "biochemistry",
+      "claim": "Low-frequency vocal sacs and resonating chambers enable long-range coordination.",
+      "justification": "Thin air and low humidity suppress high-frequency propagation; structural resonance amplifies power output.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "20-200",
+      "unit": "Hz",
+      "consequences": [
+        "Enables herd coordination and rival deterrence over kilometers.",
+        "Poorly localized and easily masked by wind shear or static discharge."
+      ],
+      "refs": [
+        "catling_2017_atmospheres"
+      ]
+    },
+    {
+      "id": "F19",
+      "group": "orbit",
+      "claim": "Minimum binary eccentricity ~0.04 required to sustain tidal flexing.",
+      "justification": "Non-zero eccentricity drives periodic stress cycles in the crust, maintaining the 0.12 W/m² heat flow without requiring Io-level dissipation.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 0.04,
+      "unit": "dimensionless",
+      "consequences": [
+        "Prevents geological dormancy.",
+        "Ensures continuous chemosynthetic vent activity and redox gradients."
+      ],
+      "refs": [
+        "peale_1979_ion"
+      ]
+    },
+    {
+      "id": "F20",
+      "group": "climate",
+      "claim": "Hydrologic budget: net evaporation exceeds precipitation by ~15%.",
+      "justification": "Low atmospheric heat capacity and high insolation drive arid continental interiors, concentrating basins while equatorial rifts retain liquid water.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": 15,
+      "unit": "percent",
+      "consequences": [
+        "Enables hypersaline niche partitioning.",
+        "Forces migratory routes to follow transient freshwater lenses."
+      ],
+      "refs": [
+        "catling_2017_atmospheres"
+      ]
+    }
+  ],
+  "changelog": [
+    {
+      "date": "2026-11-19",
+      "who": "autoloop",
+      "what": "world canon drafted by the council chair from 20 facts (planet drafts, peer reviews, astrobio referee)"
+    },
+    {
+      "date": "2026-11-19",
+      "who": "autoloop",
+      "what": "removed rejected references; retired real facts left without references"
+    }
+  ]
+}

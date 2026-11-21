@@ -1,0 +1,304 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "nubevolar",
+  "name": {
+    "en": "Nubevolar"
+  },
+  "world": "ringmoon",
+  "kind": "new",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "Upper canopy and aerosol stratum",
+    "diet": "Atmospheric plankton and vent-derived spores",
+    "active": "Diurnal and ring-shadow active; rests in magnetic valleys during flares",
+    "predators": []
+  },
+  "body": "Delicate bilobed wings with polarization-sensitive leading edges; ciliated filtration nets; multi-lobed eyes with variable aperture for vector detection.",
+  "chains": [
+    {
+      "id": "nubevolar.c1",
+      "trait": "Compound eyes detect ring polarization vectors for navigation",
+      "links": [
+        "Ice and dust ring particles scatter and polarize incident light",
+        "Multi-lobed eyes resolve polarization angles independent of intensity",
+        "Stable sky compass works in heavy haze and eclipse darkness"
+      ],
+      "roots": [
+        "F18"
+      ],
+      "skill": {
+        "id": "nubevolar.polar_lock",
+        "name": {
+          "en": "Polar-Lock"
+        },
+        "role": "Basic",
+        "effect": "Grants 'True Aim' on ranged attacks and allows flight through 'Obscured' terrain without penalty for 4 turns.",
+        "numbers": {}
+      },
+      "weakness": "Confused by smooth water surfaces that depolarize light; cannot navigate in total darkness.",
+      "observe": [
+        "Eyes shift iridescent color as sky polarization changes.",
+        "Flies perfectly within ring-shadow bands.",
+        "Navigation remains precise during heavy haze storms."
+      ],
+      "journal": {
+        "en": "Threads the needle of polarization, dancing the shadow bands like a lover's waltz."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "Weakness on depolarizing water glints is already correct; add failure under overcast without ring scatter visible.",
+        "fixes": [
+          "Weakness on depolarizing water glints is already correct; add failure under overcast without ring scatter visible."
+        ],
+        "analogues": [
+          {
+            "organism": "Desert ants and honeybees skylight polarization compass (Wehner); dung beetle orientation.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "wehner_2003_polarized"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "nubevolar.c2",
+      "trait": "Wing edges harvest ring-shadow thermals for energy-free soaring",
+      "links": [
+        "Ring shadow band creates sharp thermal gradients on surface",
+        "Convection cells rise along shadow boundaries",
+        "Wing morphology optimizes lift in low-velocity thermal columns"
+      ],
+      "roots": [
+        "F12"
+      ],
+      "skill": {
+        "id": "nubevolar.shadow_glide",
+        "name": {
+          "en": "Shadow Glide"
+        },
+        "role": "Basic",
+        "effect": "Moves 50% further per turn without expending movement when in 'Shadow' or 'Thermal' terrain; falls 1 level if forced out of thermal.",
+        "numbers": {}
+      },
+      "weakness": "Cannot soar in uniform lighting or still air; requires thermal contrast.",
+      "observe": [
+        "Hovers motionless in thin shadow bands.",
+        "No wing-beating during extended flight.",
+        "Falls immediately when crossing out of shadow."
+      ],
+      "journal": {
+        "en": "It rides the invisible rivers of heat carved by the giant's shadow."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "Cap lift gain for small body mass—soar on shadow-edge shear and slope winds in canopy, not storm-core thermals.",
+        "fixes": [
+          "Cap lift gain for small body mass—soar on shadow-edge shear and slope winds in canopy, not storm-core thermals."
+        ],
+        "analogues": [
+          {
+            "organism": "Hawks and storks on thermal streets; Pennycuick flight energetics.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "pennycuick_2008_modelling"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "nubevolar.c3",
+      "trait": "Cilia nets deploy to filter aerosol plankton from dense air",
+      "links": [
+        "2.1 bar atmosphere supports stable aerosol layers",
+        "Vent plumes inject spores and organic particulates upward",
+        "Ciliated nets trap particles; ciliary beating moves food to mouth"
+      ],
+      "roots": [
+        "F9"
+      ],
+      "skill": {
+        "id": "nubevolar.aero_feed",
+        "name": {
+          "en": "Aero-Feed"
+        },
+        "role": "Basic",
+        "effect": "Heals 5 HP and removes 1 'Exhaustion' per turn while in air; reduces speed by 30% due to net drag.",
+        "numbers": {}
+      },
+      "weakness": "Cilia clog with dust or heavy particulates; requires grooming.",
+      "observe": [
+        "Nets deploy like lacework when drifting.",
+        "Drifting in stratum above forest canopy.",
+        "Spits dust and debris in regular intervals."
+      ],
+      "journal": {
+        "en": "A living sieve that drinks the sky and weeps the dust."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "Rename diet to vent spores and chemoaerosol mats; clogging weakness stays; keep grooming behavior.",
+        "fixes": [
+          "Rename diet to vent spores and chemoaerosol mats; clogging weakness stays; keep grooming behavior."
+        ],
+        "analogues": [
+          {
+            "organism": "Flamingo and whale baleen/filter feeding on dense suspensions; spiderling ballooning on air currents; bacterial and fungal spore clouds.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "nubevolar.c4",
+      "trait": "Mating flares mimic eclipse light drop to synchronize reproduction",
+      "links": [
+        "Eclipse periodicity creates predictable light signature every 58 hours",
+        "Bioluminescent organs flash in sequence with shadow onset",
+        "Synchronized mating ensures offspring hatch during optimal thermal windows"
+      ],
+      "roots": [
+        "F12"
+      ],
+      "skill": {
+        "id": "nubevolar.eclipse_charm",
+        "name": {
+          "en": "Eclipse-Charm"
+        },
+        "role": "Social",
+        "effect": "At eclipse onset, all Nubevolar in 60m range gain 'Reproduction Ready' (can spawn an ally at end of turn) and attract 'Predator' attention for 2 turns.",
+        "numbers": {}
+      },
+      "weakness": "Mass aggregation during eclipse makes them vulnerable to area predators.",
+      "observe": [
+        "Glows in rhythmic pulses as shadow approaches.",
+        "Gathers in geometric formations at shadow line.",
+        "Predators wait in ambush during the flare."
+      ],
+      "journal": {
+        "en": "They turn the world's darkness into a drumbeat for life."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "Trigger Eclipse-Charm on actual shadow onset and cooling cue, with optional dim bioluminescence for flock alignment—not counterfeit solar eclipse.",
+        "fixes": [
+          "Trigger Eclipse-Charm on actual shadow onset and cooling cue, with optional dim bioluminescence for flock alignment—not counterfeit solar eclipse."
+        ],
+        "analogues": [
+          {
+            "organism": "Firefly Photinus synchrony; coral mass spawning on lunar phase; olive ridley arribadas on tidal cues.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          },
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own",
+            "refs": [
+              "endler_1980_natural"
+            ]
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-19",
+    "by": [
+      "naturalist/qwen"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-19",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-19"
+    },
+    {
+      "date": "2026-11-19",
+      "who": "autoloop",
+      "what": "removed rejected references from analogues"
+    }
+  ],
+  "body_plan": {
+    "symmetry": "bilateral",
+    "origin": "Aerosol stratum colonization and thermal soaring"
+  },
+  "temperament": "Flocking social; evasive and precise; alarm calls trigger mass dispersal.",
+  "secrets": [
+    "The polarization vision can be focused to reveal hidden magnetic valleys, guiding the player to safe radiation zones.",
+    "Cilia nets can be used to filter specific chemical compounds from the air, allowing detection of poison gases or vent emissions.",
+    "The thermal soaring behavior can be mimicked by the player using glider equipment to cross deep canyons efficiently."
+  ],
+  "moments": [
+    "The ring shadow sweeps across the canopy, and suddenly the flock aligns into a perfect geometric array, their wings locking to the polarization plane of the sky. For ten seconds, they are invisible, riding the thermal updrafts of the shadow's edge, before the bioluminescent flare erupts, lighting the darkening world with a synchronized heartbeat."
+  ],
+  "journal": [
+    {
+      "en": "It rides the invisible rivers of heat."
+    },
+    {
+      "en": "They turn the world's darkness into a drumbeat for life."
+    }
+  ]
+}

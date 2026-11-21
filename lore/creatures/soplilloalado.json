@@ -1,0 +1,295 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "soplilloalado",
+  "name": {
+    "en": "SoplilloAlado"
+  },
+  "world": "superearth",
+  "kind": "new",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "Persistent fog banks and anticyclone edges (3-5 km altitude)",
+    "diet": "Aerosolized microbes, spores, and organic condensates",
+    "active": "Diurnal, follows thermal updrafts",
+    "predators": []
+  },
+  "body": "Broad, porous membrane wings; low-mass gas-filled skeleton; ciliated oral grooves",
+  "chains": [
+    {
+      "id": "soplilloalado.c1",
+      "trait": "Porous, lace-like wing membranes",
+      "links": [
+        "High air density allows low-Reynolds flight",
+        "Selects for passive lift over muscular flapping",
+        "Porosity adds surface area for particle capture without drag"
+      ],
+      "roots": [
+        "F8",
+        "F12"
+      ],
+      "skill": {
+        "id": "soplilloalado.sky_weave",
+        "name": {
+          "en": "Sky Weave"
+        },
+        "role": "Passive",
+        "effect": "Drifts on thermal currents, reducing stamina cost by 40% while airborne.",
+        "numbers": {}
+      },
+      "weakness": "Vulnerable to sudden downdrafts in anticyclone edges; forced to land.",
+      "observe": [
+        "Wings shimmer with trapped moisture",
+        "Silent flight over fog ridges",
+        "Pods align perfectly with wind shear"
+      ],
+      "journal": {
+        "en": "They weave the mist into bread, then sail the sky on the crumbs."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "Cap wing porosity to 5–15% specialized zones; keep primary membranes tight. Set primary fog-feeding altitude to 0.5–2.5 km within anticyclone domes, with rare ups to ~3 km only over the highest volcanic shields (F18).",
+        "fixes": [
+          "Cap wing porosity to 5–15% specialized zones; keep primary membranes tight. Set primary fog-feeding altitude to 0.5–2.5 km within anticyclone domes, with rare ups to ~3 km only over the highest volcanic shields (F18)."
+        ],
+        "analogues": [
+          {
+            "organism": "Albatross and frigatebird dynamic soaring/soaring (passive lift on winds); monarch butterflies and gossamer spiders use large light surfaces in dense boundary layers; baleen whales separate 'filter surface' from 'propulsion surface'.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "soplilloalado.c2",
+      "trait": "Ciliated oral grooves for particle capture",
+      "links": [
+        "Dense air suspends organic condensates",
+        "Gravity cannot precipitate fine aerosols quickly",
+        "Cilia sweep particles into digestive tract at low energy cost"
+      ],
+      "roots": [
+        "F8",
+        "F19"
+      ],
+      "skill": {
+        "id": "soplilloalado.mist_strainer",
+        "name": {
+          "en": "Mist Strainer"
+        },
+        "role": "Basic",
+        "effect": "Automatically gathers nutrients while moving, grants +5 stamina regen per turn.",
+        "numbers": {}
+      },
+      "weakness": "Cilia clog instantly in dry, volcanic ash storms; requires grooming cooldown.",
+      "observe": [
+        "Gills pulse rhythmically in mist",
+        "Mouthparts sweep like fine rakes",
+        "Droplets bead and roll into oral ridges"
+      ],
+      "journal": {
+        "en": "Breathing is eating, and eating is flying."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "F8–F9 humidity and F12 persistent fog support long-residence aerosols (spores, condensates, microbial hitchhikers) that fine gravity settling under 1.85 g still won't purge quickly from a turbulent fog layer. Low-energy ciliary transport into a groove is a standard suspension-feeding solution when Reynolds number in the groove is low. F19 haze and NIR-shifted productivity imply particulate and condensate organic flux aloft.",
+        "fixes": [
+          "F8–F9 humidity and F12 persistent fog support long-residence aerosols (spores, condensates, microbial hitchhikers) that fine gravity settling under 1.85 g still won't purge quickly from a turbulent fog layer. Low-energy ciliary transport into a groove is a standard suspension-feeding solution when Reynolds number in the groove is low. F19 haze and NIR-shifted productivity imply particulate and condensate organic flux aloft."
+        ],
+        "analogues": [
+          {
+            "organism": "Sponges (choanocyte collars), mussels and oysters (gill cilia), salps (mucous-net filter), housefly and mosquito labellum sweeping.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "soplilloalado.c3",
+      "trait": "Low-density, gas-filled skeletal chambers",
+      "links": [
+        "1.85g gravity demands lightweight structural support",
+        "Metabolic gases offset skeletal mass",
+        "Internal chambers diffuse atmospheric pressure to equalize load"
+      ],
+      "roots": [
+        "F4",
+        "F8"
+      ],
+      "skill": {
+        "id": "soplilloalado.buoyancy_shell",
+        "name": {
+          "en": "Buoyancy Shell"
+        },
+        "role": "Defence",
+        "effect": "Reduces damage taken while airborne by 30% and negates all fall damage.",
+        "numbers": {}
+      },
+      "weakness": "Rapid pressure changes cause decompression sickness; movement speed halved until stabilized.",
+      "observe": [
+        "Body floats unnaturally still when resting",
+        "Thin bones visible through translucent membrane",
+        "Sigh-like exhalations release warm gas clouds"
+      ],
+      "journal": {
+        "en": "Heavy sky, light bones. They cheat gravity with a lungful of atmosphere."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "Treat chambers as partial buoyancy and shock cushioning (10–30% effective weight reduction aloft), not full neutral buoyancy. Cap body mass to insect–small-vertebrate scale (gram to low kilogram). Tie 'fall immunity' to low terminal velocity from high drag in dense air plus light pneumatization, not true floating at rest.",
+        "fixes": [
+          "Treat chambers as partial buoyancy and shock cushioning (10–30% effective weight reduction aloft), not full neutral buoyancy. Cap body mass to insect–small-vertebrate scale (gram to low kilogram). Tie 'fall immunity' to low terminal velocity from high drag in dense air plus light pneumatization, not true floating at rest."
+        ],
+        "analogues": [
+          {
+            "organism": "Bird pneumatic skeleton (mass reduction, not lighter-than-air); physostome fish swim bladder with duct (pressure equilibration); spider and larval ballooning (external silk, not body buoyancy).",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "soplilloalado.c4",
+      "trait": "Copper-rich hemolymph that turns azure",
+      "links": [
+        "18% O2 at 10 bar fouls iron-based carriers",
+        "Copper complexes bind oxygen efficiently under high pO2",
+        "Vascular exchange uses blue hemolymph for thermal regulation"
+      ],
+      "roots": [
+        "F9",
+        "F21"
+      ],
+      "skill": {
+        "id": "soplilloalado.copper_rush",
+        "name": {
+          "en": "Copper Rush"
+        },
+        "role": "Engage",
+        "effect": "Boosts attack speed by 20% for 3 turns, but overheats if used consecutively.",
+        "numbers": {}
+      },
+      "weakness": "Blood is highly visible in murky fog; predators track the blue gleam.",
+      "observe": [
+        "Underbelly glows faint blue during exertion",
+        "Rapid pulse visible in neck region",
+        "Scales tint teal when agitated"
+      ],
+      "journal": {
+        "en": "Their blood paints the fog blue, a beacon they cannot hide."
+      },
+      "plausibility": {
+        "verdict": "plausible",
+        "judge": "astrobio/autoloop-2026-11-19",
+        "date": "2026-11-19",
+        "summary": "F21 copper-based O₂ carriers fit contingent high-pO₂ biochemistry: at 10 bar with ~18% O₂, inspired partial pressure is far above Earth's; copper hemocyanin-like proteins are well known for O₂ binding in invertebrates and avoid some iron autoxidation pitfalls at high oxygen, though O₂ toxicity still demands compartmentalization and low-permeability barriers. Visible blue under exertion is consistent with oxygenated hemocyanin optics.",
+        "fixes": [
+          "F21 copper-based O₂ carriers fit contingent high-pO₂ biochemistry: at 10 bar with ~18% O₂, inspired partial pressure is far above Earth's; copper hemocyanin-like proteins are well known for O₂ binding in invertebrates and avoid some iron autoxidation pitfalls at high oxygen, though O₂ toxicity still demands compartmentalization and low-permeability barriers. Visible blue under exertion is consistent with oxygenated hemocyanin optics."
+        ],
+        "analogues": [
+          {
+            "organism": "Horseshoe crab and cephalopod hemocyanin (blue oxygenated blood); tarantula and other arthropod hemocyanin.",
+            "mechanism": "as named by the judge; no mechanism or reference recorded"
+          }
+        ],
+        "scores": {
+          "astrobio": 8,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-19",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "rastreadorceniza",
+      "kind": "predation",
+      "note": "Rarely falls prey to ash-plows during sudden updrafts; relies on altitude."
+    },
+    {
+      "with": "Brisacoral",
+      "kind": "cousin",
+      "note": "(council kind 'competition') Both filter the same aerosol layer; SoplilloAlado dominates the upper canopy."
+    },
+    {
+      "with": "rastreadorceniza",
+      "kind": "cousin",
+      "note": "(council kind 'competition') Both harvest ground-level organics; RastreadorCeniza dominates the soil layer."
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-19",
+    "by": [
+      "naturalist/qwen"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-19",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-19"
+    }
+  ],
+  "body_plan": {
+    "symmetry": "bilateral",
+    "arms": 4,
+    "origin": "Evolved from gliding insectoid ancestors that colonized the fog layer"
+  },
+  "temperament": "Docile, nomadic, highly social in drifting pods",
+  "secrets": [
+    "Pods secrete a sticky, sugar-rich mucus that crystallizes in dry winds.",
+    "Their cilia can taste specific chemical signatures of approaching storms."
+  ],
+  "moments": [
+    "At dawn, a thousand azure-silver pods catch the first amber light, dissolving into the fog like breath on glass."
+  ],
+  "journal": [
+    {
+      "en": "They weave the mist into bread, then sail the sky on the crumbs."
+    },
+    {
+      "en": "Heavy sky, light bones. They cheat gravity with a lungful of atmosphere."
+    }
+  ]
+}
