@@ -317,7 +317,7 @@ class Creature {
     for (const l of this.legs) { l.stance = true; l.plant = new THREE.Vector3(); l.lift = new THREE.Vector3(); l.iv = []; l.plants = []; l.w = 0; }
   }
   clearMetrics() {
-    this.m = { n: 0, noStance: 0, kneeBad: 0, cross: 0, below: 0, laneErr: 0, clampN: 0, safetyN: 0, hipMin: 1e9, hipMax: -1e9, pitchMax: 0 };
+    this.m = { n: 0, noStance: 0, kneeBad: 0, cross: 0, below: 0, laneErr: 0, clampN: 0, safetyN: 0, drag: 0, hipMin: 1e9, hipMax: -1e9, pitchMax: 0 };
     for (const l of this.legs) { l.slip = 0; l.stN = 0; l.plants = []; l.plantT = []; }
     this.mT0 = this.time;
   }
@@ -386,17 +386,22 @@ class Creature {
     const body = this.body;
     body.rotation.set(roll, 0, pitch);
     // reach safety: lower the hips until every leg can reach its foot (stance feet never get dragged)
-    let y = y0, lowered = false;
-    for (let it = 0; it < 5; it++) {
+    let y = y0, lowered = false, dragged = 0;
+    for (let it = 0; it < 6; it++) {
       body.position.set(this.x, y, 0); body.updateMatrixWorld(true);
-      let over = 0;
+      let need = 0;
       for (const l of legs) {
         l.hip.set(l.hx, 0, l.hz).applyMatrix4(body.matrixWorld);
-        const d = l.hip.distanceTo(l.foot), lim = 0.985 * l.lt;
-        if (d > lim) over = Math.max(over, (d - lim) * d / Math.max(0.05 * h, l.hip.y - l.foot.y));
+        const lim = 0.985 * l.lt, d = l.hip.distanceTo(l.foot);
+        if (d <= lim) continue;
+        const hx = l.hip.x - l.foot.x, hz = l.hip.z - l.foot.z, h2 = hx * hx + hz * hz;
+        if (h2 < lim * lim * 0.9) need = Math.max(need, l.hip.y - (l.foot.y + Math.sqrt(lim * lim - h2)));
+        else if (it === 5 || y < 0.4 * h) { // out of reach even with the hips low: drag the foot (reported as a drag event)
+          const k = lim * 0.95 / Math.sqrt(h2); l.foot.x = l.hip.x - hx * k; l.foot.z = l.hip.z - hz * k; if (l.stance) l.plant.copy(l.foot); dragged++;
+        } else need = Math.max(need, 0.1 * h);
       }
-      if (over < 1e-7) break;
-      y -= over; lowered = true;
+      if (need <= 1e-9) break;
+      y -= need; lowered = true;
     }
     this.hipY = y;
     // head level, tail counter-sway
@@ -417,6 +422,7 @@ class Creature {
     const m = this.m; m.n++;
     if (nSt === 0) m.noStance++;
     if (lowered) m.safetyN++;
+    m.drag += dragged;
     m.hipMin = Math.min(m.hipMin, y / h); m.hipMax = Math.max(m.hipMax, y / h);
     m.pitchMax = Math.max(m.pitchMax, Math.abs(pitch));
     m.laneErr = Math.max(m.laneErr, Math.abs(body.position.z));
@@ -433,10 +439,10 @@ class Creature {
       if (bad) m.kneeBad++;
       if (l.kneeW.y < 0) m.below++;
     }
-    // same-side feet must keep their order (no crossing)
+    // same-side feet that are both on the ground must keep their order (swing feet may overreach, as in a real gallop)
     for (const side of [-1, 1]) {
       const sl = legs.filter((l) => l.side === side && l.hx !== undefined).sort((a, b) => a.hx - b.hx);
-      for (let i = 1; i < sl.length; i++) if (sl[i].footA.x - sl[i - 1].footA.x < 0.02 * h && sl[i].hx - sl[i - 1].hx > 0.05 * h) m.cross++;
+      for (let i = 1; i < sl.length; i++) if (sl[i].stance && sl[i - 1].stance && sl[i].footA.x - sl[i - 1].footA.x < 0.02 * h) m.cross++;
     }
   }
   setCyl(m, a, b, r) {
@@ -507,11 +513,12 @@ function render() {
   ctx.font = fs + 'px ui-monospace, monospace'; ctx.textBaseline = 'top';
   SIM.creatures.forEach((c, i) => {
     const R = cellRect(i);
+    if (!c.cur) return;
     c.place(R.w / R.h, SIM.t);
     renderer.setViewport(R.x, CH - R.y - R.h, R.w, R.h); renderer.setScissor(R.x, CH - R.y - R.h, R.w, R.h);
     renderer.render(c.scene, c.cam);
     // labels
-    const P = c.cur, air = c.stanceCount === 0;
+    const P = c.cur; if (!P) return; const air = c.stanceCount === 0;
     ctx.fillStyle = 'rgba(0,0,0,.5)'; ctx.fillRect(R.x, R.y, narrow ? 120 : 218, fs * 3.7 + 4);
     ctx.fillStyle = '#e8e6df';
     ctx.fillText(`${c.plan} | ${c.col.name} | h ${c.h.toFixed(2)} m`, R.x + 3, R.y + 2);
@@ -589,6 +596,7 @@ function advance(sec) { let n = Math.max(1, Math.round(sec / DT)); while (n--) S
 
 // ---------------------------------------------------------------- measurement and self-check
 function settleAll(maxSec) {
+  for (const c of SIM.creatures) c.strideSince = 0;
   let n = 0;
   const maxN = maxSec / DT;
   for (; n < maxN; n++) {
@@ -617,7 +625,7 @@ function measure(strides) {
       plan: c.plan, col: c.col.name, h: c.h, v: c.v, fr: c.fr, gait: c.gait, beta: P.beta, betaMeasured: duty,
       stride: P.stride, strideMeasured: cnt ? strideM / cnt : NaN, cadence: c.f, cadenceMeasured: cad / legs.length,
       slipMm: slip * 1000, flight: m.noStance / m.n, flightExpected: flightExp, kneeBad: m.kneeBad, cross: m.cross, below: m.below, lane: m.laneErr,
-      clampN: m.clampN, safetyFrac: m.safetyN / m.n, hipMin: m.hipMin, hipMax: m.hipMax, capped: !!P.capped, lag: P.lag, nLegs: legs.length,
+      clampN: m.clampN, drag: m.drag, safetyFrac: m.safetyN / m.n, hipMin: m.hipMin, hipMax: m.hipMax, capped: !!P.capped, lag: P.lag, nLegs: legs.length,
     };
   });
 }
@@ -638,6 +646,7 @@ function check(rows, name, expectNoFlightClass) {
     if (r.cross) bad.push(`${id}: same-side feet crossed ${r.cross} times`);
     if (r.below) bad.push(`${id}: ${r.below} points below ground`);
     if (r.lane > 1e-3) bad.push(`${id}: left its lane by ${r.lane}`);
+    if (r.drag) bad.push(`${id}: foot dragged ${r.drag} times (out of reach)`);
     if (r.clampN) bad.push(`${id}: IK reach clamped ${r.clampN} times`);
     if (Math.abs(r.strideMeasured - r.stride) / r.stride > 0.03) bad.push(`${id}: measured stride ${r.strideMeasured.toFixed(3)} vs ${r.stride.toFixed(3)}`);
   }
