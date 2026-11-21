@@ -6,7 +6,7 @@ Owner, 2026-11-21. Applies to every world the lore council writes (Primigenia, t
 1. **Fix only a few constraints**, the measured data (for a real exoplanet) or the chosen premise (for a fictional world). Everything else is **derived, not decided**: "I didn't decide that, I derived it".
 2. **Follow the causal chain in order**, and **design the biosphere before the characters.** The playable creatures come out at the end of the chain, after the producers and the food web. They are never the starting point.
    The chain for Erid (worked example):
-   - premise: liquid water is needed
+   - premise: liquid water is needed (Weir's choice because of panspermia; ours is derived per world, see below)
    - close to the star, so high pressure keeps the water liquid: about 200 °C and about 29 atm
    - solar wind strips light gases, so the atmosphere is heavy ammonia, held by strong gravity
    - liquid core plus fast rotation give a strong magnetic field and a flattened planet
@@ -25,6 +25,18 @@ Owner, 2026-11-21. Applies to every world the lore council writes (Primigenia, t
 4. **One declared violation at most.** A world may break known physics in **one** named place (Weir: only at the quantum level, in Astrophage), written in the sheet as `violation: {what, why, where it shows in play}`. Everything else is consistent.
 5. **Internal coherence beats the source data.** If a real measurement is later revised (Weir's starting planet turned out not to exist), the world stays valid as long as the chain is coherent. Record the data's retrieval date; never quietly change a measured input. A revision is a new world version.
 6. **Spreadsheet first, prose second.** The council writes the derivation sheet before any creature text. The prose (journal lines, cards) may only state what the sheet supports.
+
+## Biochemistry is derived too, not assumed (owner, 2026-11-21)
+Weir starts from "life needs liquid water" because his book's life shares an ancestor (panspermia). **We do not use that premise by default.** Water, panspermia and a shared ancestor are allowed only where a world's lore says so (Primigenia's meteor shards, W10; the Hail Mary worlds, A20). Everywhere else the chain starts from the world's temperature, pressure and available elements, and picks the solvent and the backbone that fit:
+| Conditions | Candidate biochemistry (all `speculative`, cite the literature the referee knows) |
+|---|---|
+| Very cold (≈ 70–120 K), liquid N₂ / CH₄ / C₂H₆ | **Silicon: silanes and polysilanes** in cryogenic solvents (stable where cold blocks oxidation); also carbon azotosomes |
+| Hot (≈ 500–1500 K), rocky or lava surfaces | **Silicon: silicones, silicates, siloxane polymers**, crystal-lattice "metabolism" in molten salt or silicate melts |
+| Temperate, ammonia-rich, high pressure | carbon in liquid ammonia |
+| Acid cloud decks (Venus-like) | carbon in concentrated sulphuric acid |
+| Supercritical CO₂ / high-pressure envelopes | carbon or silicon in supercritical fluids |
+| Water ranges | carbon in water: one option among many, not the default |
+Diversity quota per batch: **no more than about 40% water-carbon worlds; at least 20% silicon-based** (cold silanes and hot silicones/silicates both represented), the rest spread across the other solvents. Our existing `silicon_hot` and `silicon_cryo` worlds are the house examples; new silicon worlds must differ from them. Silicon chains must state why silicon wins over carbon there (temperature, the oxygen and silicon abundance, solvent), and what it means in play (crystal bodies, slow metabolism, heat-driven, shatter weakness, mineral diets).
 
 ## How agents use this
 - **Planet stage:** produce the derivation sheet, chain items in order, each item tagged with its confidence level.

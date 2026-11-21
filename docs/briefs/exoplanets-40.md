@@ -14,7 +14,8 @@ Owner request 2026-11-21: "put in the list some 40 different exoplanets discover
   - temperate rocky worlds in the habitable zone (TRAPPIST-1 d/e/f, Proxima Cen b, Teegarden b, LHS 1140 b, Kepler-186f, Kepler-442b, TOI-700 d, K2-18 b, …)
   - super-Earths and sub-Neptunes, including Hycean candidates
   - tidally locked M-dwarf worlds (eyeball, terminator life)
-  - lava and ultra-hot worlds (55 Cnc e, K2-141 b, CoRoT-7b)
+  - lava and ultra-hot worlds (55 Cnc e, K2-141 b, CoRoT-7b): first candidates for hot silicon life
+- very cold worlds with possible liquid nitrogen or methane, candidates for silane life
   - cold or icy worlds (OGLE-2005-BLG-390Lb), with subsurface oceans
   - gas and ice giants with cloud-layer life (WASP-107 b, a temperate Jupiter-mass planet)
   - eccentric orbits (HD 80606 b)
@@ -28,6 +29,7 @@ Owner request 2026-11-21: "put in the list some 40 different exoplanets discover
 ## Step 2 — Codex: exoplanet kind in the pipeline
 - The seed accepts a `real` block (the measured fields above), and the planet stage must start from these values: it may fill gaps but never contradict them.
 - New frame section for `exoplanet`, the forward derivation chain (`lore/rules/derivation.md`). The planet stage writes `lore/worlds/<id>.derivation.json` first; the validator recomputes gravity, equilibrium temperature, scale height, water boiling point at pressure, Jeans escape and the O₂ thresholds, and fails on mismatch. For each world, derive in this order:
+  0. **the biochemistry: solvent and backbone derived from temperature, pressure and elements; not water by default. Silicon-based life included** (quota: no more than about 40% water-carbon worlds, at least 20% silicon worlds, both cold silanes and hot silicones/silicates; `lore/rules/derivation.md`)
   1. the energy source (light spectrum at the surface, tidal heat, chemistry, radiolysis)
   2. the solvent and temperature window
   3. pressure and gravity, and from them body size, posture and limb count
@@ -49,6 +51,7 @@ Owner request 2026-11-21: "put in the list some 40 different exoplanets discover
 - Output `docs/lore/EXOPLANETS.md`: a table with game name, real name, kind, key physics, the 1-line "why life looks like this", species count, and the verdict per world (kept, redo, merged).
 
 ## Acceptance
+- Biochemistry mix meets the quota (at most about 40% water-carbon, at least 8 silicon worlds) and is reported in `EXOPLANETS.md`.
 - 40 worlds with real data cited (retrieval date) and the validator passing.
 - At least 120 species, each trait linked to a planet parameter; zero invented citations (refcheck).
 - `EXOPLANETS.md` written. You review a contact sheet of the 40 worlds plus one creature card per world.
