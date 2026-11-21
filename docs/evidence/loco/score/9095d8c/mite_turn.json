@@ -1,0 +1,86 @@
+{
+  "body": "mite",
+  "fps": 30.0,
+  "frames": 1260,
+  "metrics": {
+    "airborne_frac": 0.494,
+    "back_slope_deg": null,
+    "body_pitch_deg": -4.45,
+    "cadence_hz": 7.314,
+    "duty_factor": {
+      "mean": 0.2542,
+      "per_foot": [
+        0.257,
+        0.2514
+      ]
+    },
+    "foot_penetration_cm": {
+      "max": 0.0,
+      "mean": 0.0,
+      "p95": 0.0
+    },
+    "foot_slip_cm": {
+      "mean": 0.02,
+      "p95": 0.05,
+      "stances": 17
+    },
+    "foot_spacing_ratio": null,
+    "footfall": {
+      "contact": [
+        "10010010",
+        "00000001"
+      ],
+      "dt": 0.03333,
+      "labels": [
+        "L0",
+        "R0"
+      ],
+      "start_frame": 1,
+      "stride_frames": 4
+    },
+    "gait_frac": {
+      "run": 0.9857,
+      "walk": 0.0143
+    },
+    "gait_symmetry": 1.02,
+    "ground_slope_deg": 0.0,
+    "head_pitch_deg": {
+      "mean": 12.41,
+      "p95": 26.32
+    },
+    "head_yaw_vs_body_deg": {
+      "mean": 4.28,
+      "p95": 51.02
+    },
+    "knee_flip_frac": 0.0,
+    "leg_extension": 0.7951,
+    "min_turn_radius_m": 0.23,
+    "moving_frac": 0.9976,
+    "pitch_follow": null,
+    "pivot_frac": 0.0048,
+    "pivot_frac_of_turns": 0.05,
+    "roll_plant_lag": 0.371,
+    "shoulder_hip_ratio": null,
+    "slide_frac": 0.0,
+    "speed_mean_mps": 5.7473,
+    "stall_frac": 0.0,
+    "stall_state_frac": 0.0,
+    "steep_slope_deg": null,
+    "stride_len_m": 0.786,
+    "stuck_frac": 0.0,
+    "torso_bob_cm": 0.34,
+    "torso_bob_frac": null,
+    "torso_roll_deg": 1.06
+  },
+  "reasons": {
+    "back_slope_deg": "one leg pair only: no distinct front and rear limb roots",
+    "foot_spacing_ratio": "one leg pair only: no neighbouring feet",
+    "pitch_follow": "fewer than 10 moving frames on a slope steeper than 0.1: nothing to follow",
+    "shoulder_hip_ratio": "one leg pair only: no distinct front and rear limb roots",
+    "steep_slope_deg": "fewer than 10 moving frames on a slope steeper than 0.1: nothing to follow",
+    "torso_bob_frac": "no distinct front limb roots to take a shoulder height from"
+  },
+  "scenario": "turn",
+  "start_tick": 0,
+  "ticks": 420
+}

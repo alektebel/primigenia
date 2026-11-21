@@ -1,0 +1,98 @@
+{
+  "body": "centipede",
+  "fps": 30.0,
+  "frames": 720,
+  "metrics": {
+    "airborne_frac": 0.0,
+    "back_slope_deg": 6.21,
+    "body_pitch_deg": 3.16,
+    "cadence_hz": 2.826,
+    "duty_factor": {
+      "mean": 0.5119,
+      "per_foot": [
+        0.535,
+        0.4967,
+        0.515,
+        0.505,
+        0.5183,
+        0.5,
+        0.5283,
+        0.4967
+      ]
+    },
+    "foot_penetration_cm": {
+      "max": 131.469,
+      "mean": 0.648,
+      "p95": 0.0
+    },
+    "foot_slip_cm": {
+      "mean": 0.83,
+      "p95": 5.78,
+      "stances": 501
+    },
+    "foot_spacing_ratio": 0.1617,
+    "footfall": {
+      "contact": [
+        "11111000001111100000",
+        "00000111110000011111",
+        "00111110000011111000",
+        "11000001111100000111",
+        "00001111100000111110",
+        "11110000011111000011",
+        "10000011111000011111",
+        "01111100000111100000"
+      ],
+      "dt": 0.03333,
+      "labels": [
+        "L0",
+        "R0",
+        "L1",
+        "R1",
+        "L2",
+        "R2",
+        "L3",
+        "R3"
+      ],
+      "start_frame": 3,
+      "stride_frames": 10
+    },
+    "gait_frac": {
+      "ripple": 1.0
+    },
+    "gait_symmetry": 0.97,
+    "ground_slope_deg": 1.0,
+    "head_pitch_deg": {
+      "mean": 23.15,
+      "p95": 49.89
+    },
+    "head_yaw_vs_body_deg": {
+      "mean": 4.17,
+      "p95": 17.59
+    },
+    "knee_flip_frac": 0.0111,
+    "leg_extension": 0.8381,
+    "min_turn_radius_m": 6.39,
+    "moving_frac": 0.8333,
+    "pitch_follow": 0.706,
+    "pivot_frac": 0.0083,
+    "pivot_frac_of_turns": null,
+    "roll_plant_lag": -0.358,
+    "shoulder_hip_ratio": 1.2605,
+    "slide_frac": 0.0208,
+    "speed_mean_mps": 4.5867,
+    "stall_frac": 0.075,
+    "stall_state_frac": 0.0,
+    "steep_slope_deg": 15.39,
+    "stride_len_m": 1.495,
+    "stuck_frac": 0.075,
+    "torso_bob_cm": 9.38,
+    "torso_bob_frac": 0.1086,
+    "torso_roll_deg": 0.58
+  },
+  "reasons": {
+    "pivot_frac_of_turns": "fewer than 10 frames of turning in this window"
+  },
+  "scenario": "climb",
+  "start_tick": 283,
+  "ticks": 240
+}

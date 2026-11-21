@@ -1,0 +1,88 @@
+{
+  "body": "giant",
+  "fps": 30.0,
+  "frames": 1260,
+  "metrics": {
+    "airborne_frac": 0.0,
+    "back_slope_deg": 7.12,
+    "body_pitch_deg": -0.25,
+    "cadence_hz": 0.864,
+    "duty_factor": {
+      "mean": 0.4712,
+      "per_foot": [
+        0.4722,
+        0.4746,
+        0.4683,
+        0.4698
+      ]
+    },
+    "foot_penetration_cm": {
+      "max": 0.0,
+      "mean": 0.0,
+      "p95": 0.0
+    },
+    "foot_slip_cm": {
+      "mean": 1.16,
+      "p95": 9.94,
+      "stances": 143
+    },
+    "foot_spacing_ratio": 0.7576,
+    "footfall": {
+      "contact": [
+        "1111111111111111000000000000000000111111111111111100000000000000000011",
+        "1000000000000000011111111111111110000000000000000001111111111111111000",
+        "0000000111111111111111100000000000000000011111111111111110000000000000",
+        "1111111000000000000000001111111111111111000000000000000000111111111111"
+      ],
+      "dt": 0.03333,
+      "labels": [
+        "L0",
+        "R0",
+        "L1",
+        "R1"
+      ],
+      "start_frame": 8,
+      "stride_frames": 35
+    },
+    "gait_frac": {
+      "amble": 0.9294,
+      "walk": 0.0706
+    },
+    "gait_symmetry": 0.996,
+    "ground_slope_deg": 0.0,
+    "head_pitch_deg": {
+      "mean": 16.41,
+      "p95": 24.2
+    },
+    "head_yaw_vs_body_deg": {
+      "mean": 6.01,
+      "p95": 32.34
+    },
+    "knee_flip_frac": 0.0,
+    "leg_extension": 0.8804,
+    "min_turn_radius_m": 0.64,
+    "moving_frac": 1.0,
+    "pitch_follow": null,
+    "pivot_frac": 0.0,
+    "pivot_frac_of_turns": 0.0,
+    "roll_plant_lag": 0.02,
+    "shoulder_hip_ratio": 1.1683,
+    "slide_frac": 0.0,
+    "speed_mean_mps": 4.2221,
+    "stall_frac": 0.0,
+    "stall_state_frac": 0.0,
+    "steep_slope_deg": null,
+    "stride_len_m": 4.82,
+    "stuck_frac": 0.0,
+    "torso_bob_cm": 16.35,
+    "torso_bob_frac": 0.0669,
+    "torso_roll_deg": 3.2
+  },
+  "reasons": {
+    "pitch_follow": "fewer than 10 moving frames on a slope steeper than 0.1: nothing to follow",
+    "steep_slope_deg": "fewer than 10 moving frames on a slope steeper than 0.1: nothing to follow"
+  },
+  "scenario": "turn",
+  "start_tick": 0,
+  "ticks": 420
+}

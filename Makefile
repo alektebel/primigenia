@@ -394,6 +394,17 @@ godot-creature-realism-shots:
 godot-loco-test:
 	cd godot && timeout 300 nice -n 10 timeout 600 $(GODOT) --headless --path . --script locomotion/test/run_tests.gd
 
+# L0 locomotion scorecard (docs/briefs/loco-score.md): 7 zoo bodies x 5 scenarios, visual rig sampled every frame, headless (no GPU).
+# Writes docs/evidence/loco/score/<LABEL>/ (LABEL defaults to the short git hash). Compare: python3 tools/loco/compare.py <labelA> <labelB>
+.PHONY: godot-loco-score
+LOCO_LABEL ?= $(shell git rev-parse --short HEAD)
+godot-loco-score: godot
+	@rm -rf docs/evidence/loco/score/$(LOCO_LABEL)
+	@mkdir -p docs/evidence/loco/score/$(LOCO_LABEL)
+	nice -n 10 timeout 600 $(GODOT) --headless --fixed-fps 30 --path godot --script res://devtools/zoo/loco_score.gd -- $(CURDIR)/docs/evidence/loco/score/$(LOCO_LABEL)
+	python3 tools/loco/summary.py docs/evidence/loco/score/$(LOCO_LABEL) > /dev/null
+	python3 tools/loco/footfall_svg.py docs/evidence/loco/score/$(LOCO_LABEL)
+
 # The whole game, headless: main -> menu -> Play -> encounter, rig contract, studio -> save -> Play (godot/game/tests/play_test.gd).
 .PHONY: godot-play-test godot-wire-evidence
 QUALITY ?=

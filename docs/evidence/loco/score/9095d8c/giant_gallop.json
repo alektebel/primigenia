@@ -1,0 +1,87 @@
+{
+  "body": "giant",
+  "fps": 30.0,
+  "frames": 720,
+  "metrics": {
+    "airborne_frac": 0.0,
+    "back_slope_deg": 7.78,
+    "body_pitch_deg": 0.52,
+    "cadence_hz": 2.04,
+    "duty_factor": {
+      "mean": 0.5108,
+      "per_foot": [
+        0.5208,
+        0.5,
+        0.5222,
+        0.5
+      ]
+    },
+    "foot_penetration_cm": {
+      "max": 0.0,
+      "mean": 0.0,
+      "p95": 0.0
+    },
+    "foot_slip_cm": {
+      "mean": 7.28,
+      "p95": 23.24,
+      "stances": 194
+    },
+    "foot_spacing_ratio": 0.5436,
+    "footfall": {
+      "contact": [
+        "111111100000001111111000000111",
+        "000000011111110000000111111000",
+        "100000011111110000000111111100",
+        "111111100000001111111000000111"
+      ],
+      "dt": 0.03333,
+      "labels": [
+        "L0",
+        "R0",
+        "L1",
+        "R1"
+      ],
+      "start_frame": 4,
+      "stride_frames": 15
+    },
+    "gait_frac": {
+      "trot": 1.0
+    },
+    "gait_symmetry": 1.0,
+    "ground_slope_deg": 0.0,
+    "head_pitch_deg": {
+      "mean": 15.64,
+      "p95": 25.23
+    },
+    "head_yaw_vs_body_deg": {
+      "mean": 14.45,
+      "p95": 23.37
+    },
+    "knee_flip_frac": 0.0,
+    "leg_extension": 0.8269,
+    "min_turn_radius_m": 3.37,
+    "moving_frac": 1.0,
+    "pitch_follow": null,
+    "pivot_frac": 0.0,
+    "pivot_frac_of_turns": 0.0,
+    "roll_plant_lag": -0.392,
+    "shoulder_hip_ratio": 1.1998,
+    "slide_frac": 0.0,
+    "speed_mean_mps": 5.2304,
+    "stall_frac": 0.0,
+    "stall_state_frac": 0.0,
+    "steep_slope_deg": null,
+    "stride_len_m": 4.678,
+    "stuck_frac": 0.0,
+    "torso_bob_cm": 33.2,
+    "torso_bob_frac": 0.1436,
+    "torso_roll_deg": 2.83
+  },
+  "reasons": {
+    "pitch_follow": "fewer than 10 moving frames on a slope steeper than 0.1: nothing to follow",
+    "steep_slope_deg": "fewer than 10 moving frames on a slope steeper than 0.1: nothing to follow"
+  },
+  "scenario": "gallop",
+  "start_tick": 40,
+  "ticks": 240
+}

@@ -1,0 +1,5853 @@
+{
+ "label": "9095d8c",
+ "rows": [
+  {
+   "body": "mite",
+   "checks": [
+    {
+     "actual": 0.0,
+     "id": "knee_flip",
+     "metric": "knee_flip_frac",
+     "op": "==",
+     "source": "owner movement canon 2026-11-21: legs never bend the wrong way (knee against its rest bend direction on any stance leg)",
+     "tolerance": null,
+     "value": 0,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 0.0,
+     "id": "foot_penetration",
+     "metric": "foot_penetration_cm.p95",
+     "op": "<",
+     "source": "owner movement canon 2026-11-21: feet and knees do not go through the ground (p95 depth under 1 cm)",
+     "tolerance": null,
+     "value": 1,
+     "verdict": "PASS"
+    },
+    {
+     "actual": null,
+     "id": "foot_slip",
+     "metric": "foot_slip_cm.p95",
+     "op": "<",
+     "reason": "no complete stance (touchdown and lift-off) in this window",
+     "source": "brief loco-score: foot slip p95 under 3 cm",
+     "tolerance": null,
+     "value": 3,
+     "verdict": "N/A"
+    },
+    {
+     "actual": 9.04,
+     "id": "head_pitch",
+     "metric": "head_pitch_deg.mean",
+     "op": "within",
+     "source": "brief loco-score: head pitch within +-12 deg (climb is excluded: the ground itself is tilted)",
+     "tolerance": 12,
+     "value": 0,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 0.0,
+     "id": "pivot",
+     "metric": "pivot_frac",
+     "op": "<",
+     "source": "brief loco-score: pivot_frac under 0.05 while moving",
+     "tolerance": null,
+     "value": 0.05,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 0.5139,
+     "id": "air_walk",
+     "metric": "airborne_frac",
+     "op": "<=",
+     "source": "brief loco-score: no flight phase in a walk",
+     "tolerance": null,
+     "value": 0.005,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 0.7796,
+     "id": "leg_extension",
+     "metric": "leg_extension",
+     "op": ">=",
+     "source": "starting value (hip-to-ankle over leg length of a stance leg; real walkers stay near 0.9); calibrate against the Muybridge sheets, catches crouched legs",
+     "tolerance": null,
+     "value": 0.9,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 11.79,
+     "id": "head_periscope",
+     "metric": "head_yaw_vs_body_deg.p95",
+     "op": "<",
+     "source": "starting value: the head stays within 30 deg of the body heading (periscope neck guard)",
+     "tolerance": null,
+     "value": 30,
+     "verdict": "PASS"
+    }
+   ],
+   "metrics": {
+    "airborne_frac": 0.5139,
+    "back_slope_deg": null,
+    "body_pitch_deg": -6.88,
+    "cadence_hz": 7.306,
+    "duty_factor": {
+     "mean": 0.2431,
+     "per_foot": [
+      0.2361,
+      0.25
+     ]
+    },
+    "foot_penetration_cm": {
+     "max": 0.0,
+     "mean": 0.0,
+     "p95": 0.0
+    },
+    "foot_slip_cm": null,
+    "foot_spacing_ratio": null,
+    "footfall": {
+     "contact": [
+      "10000000",
+      "01001001"
+     ],
+     "dt": 0.03333,
+     "labels": [
+      "L0",
+      "R0"
+     ],
+     "start_frame": 3,
+     "stride_frames": 4
+    },
+    "gait_frac": {
+     "run": 1.0
+    },
+    "gait_symmetry": 0.898,
+    "ground_slope_deg": 0.0,
+    "head_pitch_deg": {
+     "mean": 9.04,
+     "p95": 18.17
+    },
+    "head_yaw_vs_body_deg": {
+     "mean": 4.77,
+     "p95": 11.79
+    },
+    "knee_flip_frac": 0.0,
+    "leg_extension": 0.7796,
+    "min_turn_radius_m": 2.79,
+    "moving_frac": 1.0,
+    "pitch_follow": null,
+    "pivot_frac": 0.0,
+    "pivot_frac_of_turns": 0.0,
+    "roll_plant_lag": 0.355,
+    "shoulder_hip_ratio": null,
+    "slide_frac": 0.0,
+    "speed_mean_mps": 5.8247,
+    "stall_frac": 0.0,
+    "stall_state_frac": 0.0,
+    "steep_slope_deg": null,
+    "stride_len_m": 0.804,
+    "stuck_frac": 0.0,
+    "torso_bob_cm": 0.98,
+    "torso_bob_frac": null,
+    "torso_roll_deg": 2.47
+   },
+   "scenario": "walk"
+  },
+  {
+   "body": "mite",
+   "checks": [
+    {
+     "actual": 0.0,
+     "id": "knee_flip",
+     "metric": "knee_flip_frac",
+     "op": "==",
+     "source": "owner movement canon 2026-11-21: legs never bend the wrong way (knee against its rest bend direction on any stance leg)",
+     "tolerance": null,
+     "value": 0,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 0.0,
+     "id": "foot_penetration",
+     "metric": "foot_penetration_cm.p95",
+     "op": "<",
+     "source": "owner movement canon 2026-11-21: feet and knees do not go through the ground (p95 depth under 1 cm)",
+     "tolerance": null,
+     "value": 1,
+     "verdict": "PASS"
+    },
+    {
+     "actual": null,
+     "id": "foot_slip",
+     "metric": "foot_slip_cm.p95",
+     "op": "<",
+     "reason": "no complete stance (touchdown and lift-off) in this window",
+     "source": "brief loco-score: foot slip p95 under 3 cm",
+     "tolerance": null,
+     "value": 3,
+     "verdict": "N/A"
+    },
+    {
+     "actual": 6.17,
+     "id": "head_pitch",
+     "metric": "head_pitch_deg.mean",
+     "op": "within",
+     "source": "brief loco-score: head pitch within +-12 deg (climb is excluded: the ground itself is tilted)",
+     "tolerance": 12,
+     "value": 0,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 0.0,
+     "id": "pivot",
+     "metric": "pivot_frac",
+     "op": "<",
+     "source": "brief loco-score: pivot_frac under 0.05 while moving",
+     "tolerance": null,
+     "value": 0.05,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 0.5792,
+     "id": "air_gallop",
+     "metric": "airborne_frac",
+     "op": ">",
+     "source": "brief loco-score: a gallop has a flight phase; applied to bodies with 4 legs or fewer (many-legged bodies keep a foot down by design)",
+     "tolerance": null,
+     "value": 0.05,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 0.7845,
+     "id": "leg_extension",
+     "metric": "leg_extension",
+     "op": ">=",
+     "source": "starting value (hip-to-ankle over leg length of a stance leg; real walkers stay near 0.9); calibrate against the Muybridge sheets, catches crouched legs",
+     "tolerance": null,
+     "value": 0.9,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 11.77,
+     "id": "head_periscope",
+     "metric": "head_yaw_vs_body_deg.p95",
+     "op": "<",
+     "source": "starting value: the head stays within 30 deg of the body heading (periscope neck guard)",
+     "tolerance": null,
+     "value": 30,
+     "verdict": "PASS"
+    }
+   ],
+   "metrics": {
+    "airborne_frac": 0.5792,
+    "back_slope_deg": null,
+    "body_pitch_deg": -9.47,
+    "cadence_hz": 6.365,
+    "duty_factor": {
+     "mean": 0.2104,
+     "per_foot": [
+      0.2111,
+      0.2097
+     ]
+    },
+    "foot_penetration_cm": {
+     "max": 2.681,
+     "mean": 0.002,
+     "p95": 0.0
+    },
+    "foot_slip_cm": null,
+    "foot_spacing_ratio": null,
+    "footfall": {
+     "contact": [
+      "1010000100",
+      "0100001010"
+     ],
+     "dt": 0.03333,
+     "labels": [
+      "L0",
+      "R0"
+     ],
+     "start_frame": 6,
+     "stride_frames": 5
+    },
+    "gait_frac": {
+     "run": 1.0
+    },
+    "gait_symmetry": 1.063,
+    "ground_slope_deg": 0.0,
+    "head_pitch_deg": {
+     "mean": 6.17,
+     "p95": 19.72
+    },
+    "head_yaw_vs_body_deg": {
+     "mean": 5.64,
+     "p95": 11.77
+    },
+    "knee_flip_frac": 0.0,
+    "leg_extension": 0.7845,
+    "min_turn_radius_m": 2.91,
+    "moving_frac": 1.0,
+    "pitch_follow": null,
+    "pivot_frac": 0.0,
+    "pivot_frac_of_turns": 0.0,
+    "roll_plant_lag": -0.472,
+    "shoulder_hip_ratio": null,
+    "slide_frac": 0.0,
+    "speed_mean_mps": 6.0182,
+    "stall_frac": 0.0,
+    "stall_state_frac": 0.0,
+    "steep_slope_deg": null,
+    "stride_len_m": 1.702,
+    "stuck_frac": 0.0,
+    "torso_bob_cm": 1.57,
+    "torso_bob_frac": null,
+    "torso_roll_deg": 2.81
+   },
+   "scenario": "gallop"
+  },
+  {
+   "body": "mite",
+   "checks": [
+    {
+     "actual": 0.0,
+     "id": "knee_flip",
+     "metric": "knee_flip_frac",
+     "op": "==",
+     "source": "owner movement canon 2026-11-21: legs never bend the wrong way (knee against its rest bend direction on any stance leg)",
+     "tolerance": null,
+     "value": 0,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 0.0,
+     "id": "foot_penetration",
+     "metric": "foot_penetration_cm.p95",
+     "op": "<",
+     "source": "owner movement canon 2026-11-21: feet and knees do not go through the ground (p95 depth under 1 cm)",
+     "tolerance": null,
+     "value": 1,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 0.05,
+     "id": "foot_slip",
+     "metric": "foot_slip_cm.p95",
+     "op": "<",
+     "source": "brief loco-score: foot slip p95 under 3 cm",
+     "tolerance": null,
+     "value": 3,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 12.41,
+     "id": "head_pitch",
+     "metric": "head_pitch_deg.mean",
+     "op": "within",
+     "source": "brief loco-score: head pitch within +-12 deg (climb is excluded: the ground itself is tilted)",
+     "tolerance": 12,
+     "value": 0,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 0.0048,
+     "id": "pivot",
+     "metric": "pivot_frac",
+     "op": "<",
+     "source": "brief loco-score: pivot_frac under 0.05 while moving",
+     "tolerance": null,
+     "value": 0.05,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 0.05,
+     "id": "pivot_turns",
+     "metric": "pivot_frac_of_turns",
+     "op": "<",
+     "source": "starting value: at most 15% of the turning frames are pivots; checked by the turn scenario (a U-turn is mostly pivot today)",
+     "tolerance": null,
+     "value": 0.15,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 0.7951,
+     "id": "leg_extension",
+     "metric": "leg_extension",
+     "op": ">=",
+     "source": "starting value (hip-to-ankle over leg length of a stance leg; real walkers stay near 0.9); calibrate against the Muybridge sheets, catches crouched legs",
+     "tolerance": null,
+     "value": 0.9,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 51.02,
+     "id": "head_periscope",
+     "metric": "head_yaw_vs_body_deg.p95",
+     "op": "<",
+     "source": "starting value: the head stays within 30 deg of the body heading (periscope neck guard)",
+     "tolerance": null,
+     "value": 30,
+     "verdict": "FAIL"
+    }
+   ],
+   "metrics": {
+    "airborne_frac": 0.494,
+    "back_slope_deg": null,
+    "body_pitch_deg": -4.45,
+    "cadence_hz": 7.314,
+    "duty_factor": {
+     "mean": 0.2542,
+     "per_foot": [
+      0.257,
+      0.2514
+     ]
+    },
+    "foot_penetration_cm": {
+     "max": 0.0,
+     "mean": 0.0,
+     "p95": 0.0
+    },
+    "foot_slip_cm": {
+     "mean": 0.02,
+     "p95": 0.05,
+     "stances": 17
+    },
+    "foot_spacing_ratio": null,
+    "footfall": {
+     "contact": [
+      "10010010",
+      "00000001"
+     ],
+     "dt": 0.03333,
+     "labels": [
+      "L0",
+      "R0"
+     ],
+     "start_frame": 1,
+     "stride_frames": 4
+    },
+    "gait_frac": {
+     "run": 0.9857,
+     "walk": 0.0143
+    },
+    "gait_symmetry": 1.02,
+    "ground_slope_deg": 0.0,
+    "head_pitch_deg": {
+     "mean": 12.41,
+     "p95": 26.32
+    },
+    "head_yaw_vs_body_deg": {
+     "mean": 4.28,
+     "p95": 51.02
+    },
+    "knee_flip_frac": 0.0,
+    "leg_extension": 0.7951,
+    "min_turn_radius_m": 0.23,
+    "moving_frac": 0.9976,
+    "pitch_follow": null,
+    "pivot_frac": 0.0048,
+    "pivot_frac_of_turns": 0.05,
+    "roll_plant_lag": 0.371,
+    "shoulder_hip_ratio": null,
+    "slide_frac": 0.0,
+    "speed_mean_mps": 5.7473,
+    "stall_frac": 0.0,
+    "stall_state_frac": 0.0,
+    "steep_slope_deg": null,
+    "stride_len_m": 0.786,
+    "stuck_frac": 0.0,
+    "torso_bob_cm": 0.34,
+    "torso_bob_frac": null,
+    "torso_roll_deg": 1.06
+   },
+   "scenario": "turn"
+  },
+  {
+   "body": "mite",
+   "checks": [
+    {
+     "actual": 0.0,
+     "id": "knee_flip",
+     "metric": "knee_flip_frac",
+     "op": "==",
+     "source": "owner movement canon 2026-11-21: legs never bend the wrong way (knee against its rest bend direction on any stance leg)",
+     "tolerance": null,
+     "value": 0,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 0.0,
+     "id": "foot_penetration",
+     "metric": "foot_penetration_cm.p95",
+     "op": "<",
+     "source": "owner movement canon 2026-11-21: feet and knees do not go through the ground (p95 depth under 1 cm)",
+     "tolerance": null,
+     "value": 1,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 0.0,
+     "id": "foot_slip",
+     "metric": "foot_slip_cm.p95",
+     "op": "<",
+     "source": "brief loco-score: foot slip p95 under 3 cm",
+     "tolerance": null,
+     "value": 3,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 0.0,
+     "id": "pivot",
+     "metric": "pivot_frac",
+     "op": "<",
+     "source": "brief loco-score: pivot_frac under 0.05 while moving",
+     "tolerance": null,
+     "value": 0.05,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 0.16,
+     "id": "climb_follow",
+     "metric": "pitch_follow",
+     "op": ">=",
+     "source": "starting value: on slopes steeper than 0.1 the body tilts at least 60% of the slope",
+     "tolerance": null,
+     "value": 0.6,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": null,
+     "id": "climb_posture",
+     "metric": "climb_posture_shift_deg",
+     "op": ">=",
+     "reason": "no back slope (one leg pair only) or no walk case",
+     "source": "starting value: the back slope on a climb differs from the walk's by at least 5 deg (derived: |back_slope climb - back_slope walk|)",
+     "tolerance": null,
+     "value": 5,
+     "verdict": "N/A"
+    }
+   ],
+   "metrics": {
+    "airborne_frac": 0.5,
+    "back_slope_deg": null,
+    "body_pitch_deg": -2.56,
+    "cadence_hz": 6.548,
+    "climb_posture_shift_deg": null,
+    "duty_factor": {
+     "mean": 0.25,
+     "per_foot": [
+      0.252,
+      0.248
+     ]
+    },
+    "foot_penetration_cm": {
+     "max": 14.45,
+     "mean": 0.025,
+     "p95": 0.0
+    },
+    "foot_slip_cm": {
+     "mean": 0.0,
+     "p95": 0.0,
+     "stances": 12
+    },
+    "foot_spacing_ratio": null,
+    "footfall": {
+     "contact": [
+      "1001000000",
+      "0000100100"
+     ],
+     "dt": 0.03333,
+     "labels": [
+      "L0",
+      "R0"
+     ],
+     "start_frame": 5,
+     "stride_frames": 5
+    },
+    "gait_frac": {
+     "run": 0.7319,
+     "walk": 0.2681
+    },
+    "gait_symmetry": 0.975,
+    "ground_slope_deg": 1.4,
+    "head_pitch_deg": {
+     "mean": 14.07,
+     "p95": 34.72
+    },
+    "head_yaw_vs_body_deg": {
+     "mean": 10.8,
+     "p95": 59.98
+    },
+    "knee_flip_frac": 0.0,
+    "leg_extension": 0.769,
+    "min_turn_radius_m": 7.9,
+    "moving_frac": 0.7,
+    "pitch_follow": 0.16,
+    "pivot_frac": 0.0,
+    "pivot_frac_of_turns": null,
+    "roll_plant_lag": 0.104,
+    "shoulder_hip_ratio": null,
+    "slide_frac": 0.025,
+    "speed_mean_mps": 5.531,
+    "stall_frac": 0.2125,
+    "stall_state_frac": 0.0,
+    "steep_slope_deg": 14.69,
+    "stride_len_m": 0.716,
+    "stuck_frac": 0.2125,
+    "torso_bob_cm": 1.01,
+    "torso_bob_frac": null,
+    "torso_roll_deg": 0.5
+   },
+   "scenario": "climb"
+  },
+  {
+   "body": "mite",
+   "checks": [
+    {
+     "actual": 0.0,
+     "id": "knee_flip",
+     "metric": "knee_flip_frac",
+     "op": "==",
+     "source": "owner movement canon 2026-11-21: legs never bend the wrong way (knee against its rest bend direction on any stance leg)",
+     "tolerance": null,
+     "value": 0,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 0.0,
+     "id": "foot_penetration",
+     "metric": "foot_penetration_cm.p95",
+     "op": "<",
+     "source": "owner movement canon 2026-11-21: feet and knees do not go through the ground (p95 depth under 1 cm)",
+     "tolerance": null,
+     "value": 1,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 3.8,
+     "id": "foot_slip",
+     "metric": "foot_slip_cm.p95",
+     "op": "<",
+     "source": "brief loco-score: foot slip p95 under 3 cm",
+     "tolerance": null,
+     "value": 3,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 12.6,
+     "id": "head_pitch",
+     "metric": "head_pitch_deg.mean",
+     "op": "within",
+     "source": "brief loco-score: head pitch within +-12 deg (climb is excluded: the ground itself is tilted)",
+     "tolerance": 12,
+     "value": 0,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 0.0348,
+     "id": "pivot",
+     "metric": "pivot_frac",
+     "op": "<",
+     "source": "brief loco-score: pivot_frac under 0.05 while moving",
+     "tolerance": null,
+     "value": 0.05,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 0.1778,
+     "id": "pivot_turns",
+     "metric": "pivot_frac_of_turns",
+     "op": "<",
+     "source": "starting value: at most 15% of the turning frames are pivots; checked by the turn scenario (a U-turn is mostly pivot today)",
+     "tolerance": null,
+     "value": 0.15,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 0.0,
+     "id": "stall_steps",
+     "metric": "stall_frac",
+     "op": "==",
+     "source": "brief loco-score: stall_frac = 0 on steps (stalled state or a go order that has stopped the body)",
+     "tolerance": null,
+     "value": 0,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 0.7959,
+     "id": "leg_extension",
+     "metric": "leg_extension",
+     "op": ">=",
+     "source": "starting value (hip-to-ankle over leg length of a stance leg; real walkers stay near 0.9); calibrate against the Muybridge sheets, catches crouched legs",
+     "tolerance": null,
+     "value": 0.9,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 40.23,
+     "id": "head_periscope",
+     "metric": "head_yaw_vs_body_deg.p95",
+     "op": "<",
+     "source": "starting value: the head stays within 30 deg of the body heading (periscope neck guard)",
+     "tolerance": null,
+     "value": 30,
+     "verdict": "FAIL"
+    }
+   ],
+   "metrics": {
+    "airborne_frac": 0.4912,
+    "back_slope_deg": null,
+    "body_pitch_deg": -4.68,
+    "cadence_hz": 7.214,
+    "duty_factor": {
+     "mean": 0.2574,
+     "per_foot": [
+      0.2625,
+      0.2522
+     ]
+    },
+    "foot_penetration_cm": {
+     "max": 0.0,
+     "mean": 0.0,
+     "p95": 0.0
+    },
+    "foot_slip_cm": {
+     "mean": 0.95,
+     "p95": 3.8,
+     "stances": 12
+    },
+    "foot_spacing_ratio": null,
+    "footfall": {
+     "contact": [
+      "10010010",
+      "00000001"
+     ],
+     "dt": 0.03333,
+     "labels": [
+      "L0",
+      "R0"
+     ],
+     "start_frame": 1,
+     "stride_frames": 4
+    },
+    "gait_frac": {
+     "run": 0.958,
+     "walk": 0.042
+    },
+    "gait_symmetry": 1.0,
+    "ground_slope_deg": 0.0,
+    "head_pitch_deg": {
+     "mean": 12.6,
+     "p95": 33.38
+    },
+    "head_yaw_vs_body_deg": {
+     "mean": 4.58,
+     "p95": 40.23
+    },
+    "knee_flip_frac": 0.0,
+    "leg_extension": 0.7959,
+    "min_turn_radius_m": 0.29,
+    "moving_frac": 0.9826,
+    "pitch_follow": null,
+    "pivot_frac": 0.0348,
+    "pivot_frac_of_turns": 0.1778,
+    "roll_plant_lag": 0.39,
+    "shoulder_hip_ratio": null,
+    "slide_frac": 0.0,
+    "speed_mean_mps": 5.6022,
+    "stall_frac": 0.0,
+    "stall_state_frac": 0.0,
+    "steep_slope_deg": null,
+    "stride_len_m": 0.771,
+    "stuck_frac": 0.0,
+    "torso_bob_cm": 0.45,
+    "torso_bob_frac": null,
+    "torso_roll_deg": 1.52
+   },
+   "scenario": "steps"
+  },
+  {
+   "body": "trotter",
+   "checks": [
+    {
+     "actual": 0.0,
+     "id": "knee_flip",
+     "metric": "knee_flip_frac",
+     "op": "==",
+     "source": "owner movement canon 2026-11-21: legs never bend the wrong way (knee against its rest bend direction on any stance leg)",
+     "tolerance": null,
+     "value": 0,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 0.0,
+     "id": "foot_penetration",
+     "metric": "foot_penetration_cm.p95",
+     "op": "<",
+     "source": "owner movement canon 2026-11-21: feet and knees do not go through the ground (p95 depth under 1 cm)",
+     "tolerance": null,
+     "value": 1,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 7.6,
+     "id": "foot_slip",
+     "metric": "foot_slip_cm.p95",
+     "op": "<",
+     "source": "brief loco-score: foot slip p95 under 3 cm",
+     "tolerance": null,
+     "value": 3,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 18.99,
+     "id": "head_pitch",
+     "metric": "head_pitch_deg.mean",
+     "op": "within",
+     "source": "brief loco-score: head pitch within +-12 deg (climb is excluded: the ground itself is tilted)",
+     "tolerance": 12,
+     "value": 0,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 0.0,
+     "id": "pivot",
+     "metric": "pivot_frac",
+     "op": "<",
+     "source": "brief loco-score: pivot_frac under 0.05 while moving",
+     "tolerance": null,
+     "value": 0.05,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 0.3181,
+     "id": "air_walk",
+     "metric": "airborne_frac",
+     "op": "<=",
+     "source": "brief loco-score: no flight phase in a walk",
+     "tolerance": null,
+     "value": 0.005,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 0.7724,
+     "id": "leg_extension",
+     "metric": "leg_extension",
+     "op": ">=",
+     "source": "starting value (hip-to-ankle over leg length of a stance leg; real walkers stay near 0.9); calibrate against the Muybridge sheets, catches crouched legs",
+     "tolerance": null,
+     "value": 0.9,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 23.04,
+     "id": "head_periscope",
+     "metric": "head_yaw_vs_body_deg.p95",
+     "op": "<",
+     "source": "starting value: the head stays within 30 deg of the body heading (periscope neck guard)",
+     "tolerance": null,
+     "value": 30,
+     "verdict": "PASS"
+    }
+   ],
+   "metrics": {
+    "airborne_frac": 0.3181,
+    "back_slope_deg": 10.47,
+    "body_pitch_deg": 3.2,
+    "cadence_hz": 1.848,
+    "duty_factor": {
+     "mean": 0.2566,
+     "per_foot": [
+      0.2583,
+      0.2583,
+      0.2556,
+      0.2542
+     ]
+    },
+    "foot_penetration_cm": {
+     "max": 0.0,
+     "mean": 0.0,
+     "p95": 0.0
+    },
+    "foot_slip_cm": {
+     "mean": 1.29,
+     "p95": 7.6,
+     "stances": 177
+    },
+    "foot_spacing_ratio": 0.9703,
+    "footfall": {
+     "contact": [
+      "11110000000000001111000000000000",
+      "11000000000000111100000000000011",
+      "00000111100000000000011110000000",
+      "00011110000000000001111000000000"
+     ],
+     "dt": 0.03333,
+     "labels": [
+      "L0",
+      "R0",
+      "L1",
+      "R1"
+     ],
+     "start_frame": 3,
+     "stride_frames": 16
+    },
+    "gait_frac": {
+     "gallop": 1.0
+    },
+    "gait_symmetry": 7.975,
+    "ground_slope_deg": 0.0,
+    "head_pitch_deg": {
+     "mean": 18.99,
+     "p95": 26.25
+    },
+    "head_yaw_vs_body_deg": {
+     "mean": 12.0,
+     "p95": 23.04
+    },
+    "knee_flip_frac": 0.0,
+    "leg_extension": 0.7724,
+    "min_turn_radius_m": 3.18,
+    "moving_frac": 1.0,
+    "pitch_follow": null,
+    "pivot_frac": 0.0,
+    "pivot_frac_of_turns": 0.0,
+    "roll_plant_lag": 0.34,
+    "shoulder_hip_ratio": 1.2907,
+    "slide_frac": 0.0,
+    "speed_mean_mps": 5.6249,
+    "stall_frac": 0.0,
+    "stall_state_frac": 0.0,
+    "steep_slope_deg": null,
+    "stride_len_m": 3.049,
+    "stuck_frac": 0.0,
+    "torso_bob_cm": 13.03,
+    "torso_bob_frac": 0.1512,
+    "torso_roll_deg": 2.54
+   },
+   "scenario": "walk"
+  },
+  {
+   "body": "trotter",
+   "checks": [
+    {
+     "actual": 0.0,
+     "id": "knee_flip",
+     "metric": "knee_flip_frac",
+     "op": "==",
+     "source": "owner movement canon 2026-11-21: legs never bend the wrong way (knee against its rest bend direction on any stance leg)",
+     "tolerance": null,
+     "value": 0,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 0.0,
+     "id": "foot_penetration",
+     "metric": "foot_penetration_cm.p95",
+     "op": "<",
+     "source": "owner movement canon 2026-11-21: feet and knees do not go through the ground (p95 depth under 1 cm)",
+     "tolerance": null,
+     "value": 1,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 4.88,
+     "id": "foot_slip",
+     "metric": "foot_slip_cm.p95",
+     "op": "<",
+     "source": "brief loco-score: foot slip p95 under 3 cm",
+     "tolerance": null,
+     "value": 3,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 21.84,
+     "id": "head_pitch",
+     "metric": "head_pitch_deg.mean",
+     "op": "within",
+     "source": "brief loco-score: head pitch within +-12 deg (climb is excluded: the ground itself is tilted)",
+     "tolerance": 12,
+     "value": 0,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 0.0,
+     "id": "pivot",
+     "metric": "pivot_frac",
+     "op": "<",
+     "source": "brief loco-score: pivot_frac under 0.05 while moving",
+     "tolerance": null,
+     "value": 0.05,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 0.4028,
+     "id": "air_gallop",
+     "metric": "airborne_frac",
+     "op": ">",
+     "source": "brief loco-score: a gallop has a flight phase; applied to bodies with 4 legs or fewer (many-legged bodies keep a foot down by design)",
+     "tolerance": null,
+     "value": 0.05,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 0.7822,
+     "id": "leg_extension",
+     "metric": "leg_extension",
+     "op": ">=",
+     "source": "starting value (hip-to-ankle over leg length of a stance leg; real walkers stay near 0.9); calibrate against the Muybridge sheets, catches crouched legs",
+     "tolerance": null,
+     "value": 0.9,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 19.13,
+     "id": "head_periscope",
+     "metric": "head_yaw_vs_body_deg.p95",
+     "op": "<",
+     "source": "starting value: the head stays within 30 deg of the body heading (periscope neck guard)",
+     "tolerance": null,
+     "value": 30,
+     "verdict": "PASS"
+    }
+   ],
+   "metrics": {
+    "airborne_frac": 0.4028,
+    "back_slope_deg": 12.74,
+    "body_pitch_deg": 5.51,
+    "cadence_hz": 2.376,
+    "duty_factor": {
+     "mean": 0.1882,
+     "per_foot": [
+      0.1875,
+      0.1847,
+      0.1889,
+      0.1917
+     ]
+    },
+    "foot_penetration_cm": {
+     "max": 14.39,
+     "mean": 0.007,
+     "p95": 0.0
+    },
+    "foot_slip_cm": {
+     "mean": 0.61,
+     "p95": 4.88,
+     "stances": 228
+    },
+    "foot_spacing_ratio": 0.9829,
+    "footfall": {
+     "contact": [
+      "11000000000011000000000011",
+      "10000000000110000000000110",
+      "00001100000000001100000000",
+      "00111000000000111000000000"
+     ],
+     "dt": 0.03333,
+     "labels": [
+      "L0",
+      "R0",
+      "L1",
+      "R1"
+     ],
+     "start_frame": 4,
+     "stride_frames": 13
+    },
+    "gait_frac": {
+     "gallop": 1.0
+    },
+    "gait_symmetry": 8.184,
+    "ground_slope_deg": 0.0,
+    "head_pitch_deg": {
+     "mean": 21.84,
+     "p95": 33.71
+    },
+    "head_yaw_vs_body_deg": {
+     "mean": 9.87,
+     "p95": 19.13
+    },
+    "knee_flip_frac": 0.0,
+    "leg_extension": 0.7822,
+    "min_turn_radius_m": 3.19,
+    "moving_frac": 1.0,
+    "pitch_follow": null,
+    "pivot_frac": 0.0,
+    "pivot_frac_of_turns": 0.0,
+    "roll_plant_lag": 0.441,
+    "shoulder_hip_ratio": 1.3603,
+    "slide_frac": 0.0,
+    "speed_mean_mps": 5.8902,
+    "stall_frac": 0.0,
+    "stall_state_frac": 0.0,
+    "steep_slope_deg": null,
+    "stride_len_m": 4.461,
+    "stuck_frac": 0.0,
+    "torso_bob_cm": 11.94,
+    "torso_bob_frac": 0.1342,
+    "torso_roll_deg": 4.59
+   },
+   "scenario": "gallop"
+  },
+  {
+   "body": "trotter",
+   "checks": [
+    {
+     "actual": 0.0,
+     "id": "knee_flip",
+     "metric": "knee_flip_frac",
+     "op": "==",
+     "source": "owner movement canon 2026-11-21: legs never bend the wrong way (knee against its rest bend direction on any stance leg)",
+     "tolerance": null,
+     "value": 0,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 0.0,
+     "id": "foot_penetration",
+     "metric": "foot_penetration_cm.p95",
+     "op": "<",
+     "source": "owner movement canon 2026-11-21: feet and knees do not go through the ground (p95 depth under 1 cm)",
+     "tolerance": null,
+     "value": 1,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 7.44,
+     "id": "foot_slip",
+     "metric": "foot_slip_cm.p95",
+     "op": "<",
+     "source": "brief loco-score: foot slip p95 under 3 cm",
+     "tolerance": null,
+     "value": 3,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 17.67,
+     "id": "head_pitch",
+     "metric": "head_pitch_deg.mean",
+     "op": "within",
+     "source": "brief loco-score: head pitch within +-12 deg (climb is excluded: the ground itself is tilted)",
+     "tolerance": 12,
+     "value": 0,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 0.0286,
+     "id": "pivot",
+     "metric": "pivot_frac",
+     "op": "<",
+     "source": "brief loco-score: pivot_frac under 0.05 while moving",
+     "tolerance": null,
+     "value": 0.05,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 0.3243,
+     "id": "pivot_turns",
+     "metric": "pivot_frac_of_turns",
+     "op": "<",
+     "source": "starting value: at most 15% of the turning frames are pivots; checked by the turn scenario (a U-turn is mostly pivot today)",
+     "tolerance": null,
+     "value": 0.15,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 0.783,
+     "id": "leg_extension",
+     "metric": "leg_extension",
+     "op": ">=",
+     "source": "starting value (hip-to-ankle over leg length of a stance leg; real walkers stay near 0.9); calibrate against the Muybridge sheets, catches crouched legs",
+     "tolerance": null,
+     "value": 0.9,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 31.1,
+     "id": "head_periscope",
+     "metric": "head_yaw_vs_body_deg.p95",
+     "op": "<",
+     "source": "starting value: the head stays within 30 deg of the body heading (periscope neck guard)",
+     "tolerance": null,
+     "value": 30,
+     "verdict": "FAIL"
+    }
+   ],
+   "metrics": {
+    "airborne_frac": 0.2967,
+    "back_slope_deg": 8.04,
+    "body_pitch_deg": 0.66,
+    "cadence_hz": 1.832,
+    "duty_factor": {
+     "mean": 0.2669,
+     "per_foot": [
+      0.2632,
+      0.2747,
+      0.2641,
+      0.2657
+     ]
+    },
+    "foot_penetration_cm": {
+     "max": 0.0,
+     "mean": 0.0,
+     "p95": 0.0
+    },
+    "foot_slip_cm": {
+     "mean": 0.63,
+     "p95": 7.44,
+     "stances": 307
+    },
+    "foot_spacing_ratio": 0.9287,
+    "footfall": {
+     "contact": [
+      "11111000000000000111100000000000",
+      "11100000000000011110000000000001",
+      "00000011110000000000001111000000",
+      "00001111000000000000111100000000"
+     ],
+     "dt": 0.03333,
+     "labels": [
+      "L0",
+      "R0",
+      "L1",
+      "R1"
+     ],
+     "start_frame": 6,
+     "stride_frames": 16
+    },
+    "gait_frac": {
+     "gallop": 0.9063,
+     "trot": 0.0571,
+     "walk": 0.0365
+    },
+    "gait_symmetry": 5.829,
+    "ground_slope_deg": 0.0,
+    "head_pitch_deg": {
+     "mean": 17.67,
+     "p95": 31.45
+    },
+    "head_yaw_vs_body_deg": {
+     "mean": 4.26,
+     "p95": 31.1
+    },
+    "knee_flip_frac": 0.0,
+    "leg_extension": 0.783,
+    "min_turn_radius_m": 0.32,
+    "moving_frac": 0.9738,
+    "pitch_follow": null,
+    "pivot_frac": 0.0286,
+    "pivot_frac_of_turns": 0.3243,
+    "roll_plant_lag": 0.316,
+    "shoulder_hip_ratio": 1.213,
+    "slide_frac": 0.0,
+    "speed_mean_mps": 5.5174,
+    "stall_frac": 0.0,
+    "stall_state_frac": 0.0,
+    "steep_slope_deg": null,
+    "stride_len_m": 2.928,
+    "stuck_frac": 0.0,
+    "torso_bob_cm": 15.8,
+    "torso_bob_frac": 0.1861,
+    "torso_roll_deg": 2.48
+   },
+   "scenario": "turn"
+  },
+  {
+   "body": "trotter",
+   "checks": [
+    {
+     "actual": 0.0,
+     "id": "knee_flip",
+     "metric": "knee_flip_frac",
+     "op": "==",
+     "source": "owner movement canon 2026-11-21: legs never bend the wrong way (knee against its rest bend direction on any stance leg)",
+     "tolerance": null,
+     "value": 0,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 0.0,
+     "id": "foot_penetration",
+     "metric": "foot_penetration_cm.p95",
+     "op": "<",
+     "source": "owner movement canon 2026-11-21: feet and knees do not go through the ground (p95 depth under 1 cm)",
+     "tolerance": null,
+     "value": 1,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 0.0,
+     "id": "foot_slip",
+     "metric": "foot_slip_cm.p95",
+     "op": "<",
+     "source": "brief loco-score: foot slip p95 under 3 cm",
+     "tolerance": null,
+     "value": 3,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 0.0,
+     "id": "pivot",
+     "metric": "pivot_frac",
+     "op": "<",
+     "source": "brief loco-score: pivot_frac under 0.05 while moving",
+     "tolerance": null,
+     "value": 0.05,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 0.658,
+     "id": "climb_follow",
+     "metric": "pitch_follow",
+     "op": ">=",
+     "source": "starting value: on slopes steeper than 0.1 the body tilts at least 60% of the slope",
+     "tolerance": null,
+     "value": 0.6,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 4.04,
+     "id": "climb_posture",
+     "metric": "climb_posture_shift_deg",
+     "op": ">=",
+     "source": "starting value: the back slope on a climb differs from the walk's by at least 5 deg (derived: |back_slope climb - back_slope walk|)",
+     "tolerance": null,
+     "value": 5,
+     "verdict": "FAIL"
+    }
+   ],
+   "metrics": {
+    "airborne_frac": 0.3002,
+    "back_slope_deg": 6.43,
+    "body_pitch_deg": 2.33,
+    "cadence_hz": 2.051,
+    "climb_posture_shift_deg": 4.04,
+    "duty_factor": {
+     "mean": 0.2641,
+     "per_foot": [
+      0.2749,
+      0.2651,
+      0.2573,
+      0.2593
+     ]
+    },
+    "foot_penetration_cm": {
+     "max": 125.933,
+     "mean": 0.936,
+     "p95": 0.0
+    },
+    "foot_slip_cm": {
+     "mean": 0.17,
+     "p95": 0.0,
+     "stances": 144
+    },
+    "foot_spacing_ratio": 0.9447,
+    "footfall": {
+     "contact": [
+      "111110000000000001111000000000",
+      "111000000000000111110000000000",
+      "000000111100000000000011110000",
+      "000111110000000000001111000000"
+     ],
+     "dt": 0.03333,
+     "labels": [
+      "L0",
+      "R0",
+      "L1",
+      "R1"
+     ],
+     "start_frame": 2,
+     "stride_frames": 15
+    },
+    "gait_frac": {
+     "gallop": 0.7083,
+     "trot": 0.0417,
+     "walk": 0.25
+    },
+    "gait_symmetry": 6.319,
+    "ground_slope_deg": 0.63,
+    "head_pitch_deg": {
+     "mean": 24.41,
+     "p95": 61.53
+    },
+    "head_yaw_vs_body_deg": {
+     "mean": 8.41,
+     "p95": 34.74
+    },
+    "knee_flip_frac": 0.0,
+    "leg_extension": 0.7818,
+    "min_turn_radius_m": 7.32,
+    "moving_frac": 0.7125,
+    "pitch_follow": 0.658,
+    "pivot_frac": 0.0,
+    "pivot_frac_of_turns": null,
+    "roll_plant_lag": 0.245,
+    "shoulder_hip_ratio": 1.1699,
+    "slide_frac": 0.0208,
+    "speed_mean_mps": 5.4623,
+    "stall_frac": 0.2083,
+    "stall_state_frac": 0.0,
+    "steep_slope_deg": 16.11,
+    "stride_len_m": 2.582,
+    "stuck_frac": 0.2083,
+    "torso_bob_cm": 19.11,
+    "torso_bob_frac": 0.234,
+    "torso_roll_deg": 1.29
+   },
+   "scenario": "climb"
+  },
+  {
+   "body": "trotter",
+   "checks": [
+    {
+     "actual": 0.0117,
+     "id": "knee_flip",
+     "metric": "knee_flip_frac",
+     "op": "==",
+     "source": "owner movement canon 2026-11-21: legs never bend the wrong way (knee against its rest bend direction on any stance leg)",
+     "tolerance": null,
+     "value": 0,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 0.0,
+     "id": "foot_penetration",
+     "metric": "foot_penetration_cm.p95",
+     "op": "<",
+     "source": "owner movement canon 2026-11-21: feet and knees do not go through the ground (p95 depth under 1 cm)",
+     "tolerance": null,
+     "value": 1,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 7.6,
+     "id": "foot_slip",
+     "metric": "foot_slip_cm.p95",
+     "op": "<",
+     "source": "brief loco-score: foot slip p95 under 3 cm",
+     "tolerance": null,
+     "value": 3,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 19.12,
+     "id": "head_pitch",
+     "metric": "head_pitch_deg.mean",
+     "op": "within",
+     "source": "brief loco-score: head pitch within +-12 deg (climb is excluded: the ground itself is tilted)",
+     "tolerance": 12,
+     "value": 0,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 0.0522,
+     "id": "pivot",
+     "metric": "pivot_frac",
+     "op": "<",
+     "source": "brief loco-score: pivot_frac under 0.05 while moving",
+     "tolerance": null,
+     "value": 0.05,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 0.2353,
+     "id": "pivot_turns",
+     "metric": "pivot_frac_of_turns",
+     "op": "<",
+     "source": "starting value: at most 15% of the turning frames are pivots; checked by the turn scenario (a U-turn is mostly pivot today)",
+     "tolerance": null,
+     "value": 0.15,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 0.0478,
+     "id": "stall_steps",
+     "metric": "stall_frac",
+     "op": "==",
+     "source": "brief loco-score: stall_frac = 0 on steps (stalled state or a go order that has stopped the body)",
+     "tolerance": null,
+     "value": 0,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 0.7697,
+     "id": "leg_extension",
+     "metric": "leg_extension",
+     "op": ">=",
+     "source": "starting value (hip-to-ankle over leg length of a stance leg; real walkers stay near 0.9); calibrate against the Muybridge sheets, catches crouched legs",
+     "tolerance": null,
+     "value": 0.9,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 25.5,
+     "id": "head_periscope",
+     "metric": "head_yaw_vs_body_deg.p95",
+     "op": "<",
+     "source": "starting value: the head stays within 30 deg of the body heading (periscope neck guard)",
+     "tolerance": null,
+     "value": 30,
+     "verdict": "PASS"
+    }
+   ],
+   "metrics": {
+    "airborne_frac": 0.2714,
+    "back_slope_deg": 9.21,
+    "body_pitch_deg": 1.66,
+    "cadence_hz": 1.781,
+    "duty_factor": {
+     "mean": 0.2798,
+     "per_foot": [
+      0.2714,
+      0.2952,
+      0.2841,
+      0.2683
+     ]
+    },
+    "foot_penetration_cm": {
+     "max": 34.58,
+     "mean": 0.16,
+     "p95": 0.0
+    },
+    "foot_slip_cm": {
+     "mean": 0.98,
+     "p95": 7.6,
+     "stances": 163
+    },
+    "foot_spacing_ratio": 0.9034,
+    "footfall": {
+     "contact": [
+      "1111100000000000011110000000000001",
+      "1110000000000001111000000000000111",
+      "0000001111000000000000111100000000",
+      "0000111100000000000011110000000000"
+     ],
+     "dt": 0.03333,
+     "labels": [
+      "L0",
+      "R0",
+      "L1",
+      "R1"
+     ],
+     "start_frame": 6,
+     "stride_frames": 17
+    },
+    "gait_frac": {
+     "gallop": 0.7957,
+     "trot": 0.1101,
+     "walk": 0.0942
+    },
+    "gait_symmetry": 4.562,
+    "ground_slope_deg": 0.06,
+    "head_pitch_deg": {
+     "mean": 19.12,
+     "p95": 36.09
+    },
+    "head_yaw_vs_body_deg": {
+     "mean": 6.16,
+     "p95": 25.5
+    },
+    "knee_flip_frac": 0.0117,
+    "leg_extension": 0.7697,
+    "min_turn_radius_m": 0.32,
+    "moving_frac": 0.913,
+    "pitch_follow": 1.372,
+    "pivot_frac": 0.0522,
+    "pivot_frac_of_turns": 0.2353,
+    "roll_plant_lag": 0.453,
+    "shoulder_hip_ratio": 1.2524,
+    "slide_frac": 0.0,
+    "speed_mean_mps": 5.3233,
+    "stall_frac": 0.0478,
+    "stall_state_frac": 0.0,
+    "steep_slope_deg": 13.06,
+    "stride_len_m": 2.735,
+    "stuck_frac": 0.0478,
+    "torso_bob_cm": 18.26,
+    "torso_bob_frac": 0.2167,
+    "torso_roll_deg": 4.92
+   },
+   "scenario": "steps"
+  },
+  {
+   "body": "hero",
+   "checks": [
+    {
+     "actual": 0.0,
+     "id": "knee_flip",
+     "metric": "knee_flip_frac",
+     "op": "==",
+     "source": "owner movement canon 2026-11-21: legs never bend the wrong way (knee against its rest bend direction on any stance leg)",
+     "tolerance": null,
+     "value": 0,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 0.0,
+     "id": "foot_penetration",
+     "metric": "foot_penetration_cm.p95",
+     "op": "<",
+     "source": "owner movement canon 2026-11-21: feet and knees do not go through the ground (p95 depth under 1 cm)",
+     "tolerance": null,
+     "value": 1,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 17.42,
+     "id": "foot_slip",
+     "metric": "foot_slip_cm.p95",
+     "op": "<",
+     "source": "brief loco-score: foot slip p95 under 3 cm",
+     "tolerance": null,
+     "value": 3,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 16.64,
+     "id": "head_pitch",
+     "metric": "head_pitch_deg.mean",
+     "op": "within",
+     "source": "brief loco-score: head pitch within +-12 deg (climb is excluded: the ground itself is tilted)",
+     "tolerance": 12,
+     "value": 0,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 0.0,
+     "id": "pivot",
+     "metric": "pivot_frac",
+     "op": "<",
+     "source": "brief loco-score: pivot_frac under 0.05 while moving",
+     "tolerance": null,
+     "value": 0.05,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 0.0,
+     "id": "air_walk",
+     "metric": "airborne_frac",
+     "op": "<=",
+     "source": "brief loco-score: no flight phase in a walk",
+     "tolerance": null,
+     "value": 0.005,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 0.8342,
+     "id": "leg_extension",
+     "metric": "leg_extension",
+     "op": ">=",
+     "source": "starting value (hip-to-ankle over leg length of a stance leg; real walkers stay near 0.9); calibrate against the Muybridge sheets, catches crouched legs",
+     "tolerance": null,
+     "value": 0.9,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 26.16,
+     "id": "head_periscope",
+     "metric": "head_yaw_vs_body_deg.p95",
+     "op": "<",
+     "source": "starting value: the head stays within 30 deg of the body heading (periscope neck guard)",
+     "tolerance": null,
+     "value": 30,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 16.64,
+     "id": "gorilla:head_pitch_deg",
+     "metric": "head_pitch_deg.mean",
+     "op": "within",
+     "source": "estimate from frames 2026-11-21, replace with keypoint measurement",
+     "tolerance": 10,
+     "value": 0,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 1.2355,
+     "id": "gorilla:shoulder_hip_ratio",
+     "metric": "shoulder_hip_ratio",
+     "op": "within",
+     "source": "estimate from frames 2026-11-21, replace with keypoint measurement",
+     "tolerance": 0.15,
+     "value": 1.35,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 9.1,
+     "id": "gorilla:back_slope_deg",
+     "metric": "back_slope_deg",
+     "op": "within",
+     "source": "estimate from frames 2026-11-21, replace with keypoint measurement; positive = shoulders higher, back slopes down to the hips",
+     "tolerance": 8,
+     "value": 22,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 3.04,
+     "id": "gorilla:torso_roll_deg",
+     "metric": "torso_roll_deg",
+     "op": "within",
+     "source": "estimate from frames 2026-11-21 (7 deg), replace with keypoint measurement; tolerance tightened from the brief's 4 to 3 so a 3 deg rigid torso fails",
+     "tolerance": 3,
+     "value": 7,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 0.492,
+     "id": "gorilla:roll_plant_lag",
+     "metric": "roll_plant_lag",
+     "op": "within",
+     "source": "estimate from frames 2026-11-21: roll peaks near the front hand plant (0 = at touchdown, fraction of the stride cycle)",
+     "tolerance": 0.15,
+     "value": 0,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 0.2195,
+     "id": "gorilla:torso_bob_frac",
+     "metric": "torso_bob_frac",
+     "op": "within",
+     "source": "estimate from frames 2026-11-21: bob about 4% of shoulder height",
+     "tolerance": 0.03,
+     "value": 0.04,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 17.42,
+     "id": "gorilla:foot_slip_cm",
+     "metric": "foot_slip_cm.p95",
+     "op": "within",
+     "source": "estimate from frames 2026-11-21: planted hands do not slide",
+     "tolerance": 3,
+     "value": 0,
+     "verdict": "FAIL"
+    }
+   ],
+   "metrics": {
+    "airborne_frac": 0.0,
+    "back_slope_deg": 9.1,
+    "body_pitch_deg": 1.82,
+    "cadence_hz": 1.221,
+    "duty_factor": {
+     "mean": 0.4101,
+     "per_foot": [
+      0.4167,
+      0.4042,
+      0.4153,
+      0.4042
+     ]
+    },
+    "foot_penetration_cm": {
+     "max": 0.0,
+     "mean": 0.0,
+     "p95": 0.0
+    },
+    "foot_slip_cm": {
+     "mean": 5.54,
+     "p95": 17.42,
+     "stances": 116
+    },
+    "foot_spacing_ratio": 0.7747,
+    "footfall": {
+     "contact": [
+      "11111111111000000000000001111111111000000000000000",
+      "00000000000001111111111000000000000001111111111000",
+      "00000111111111100000000000000011111111110000000000",
+      "11100000000000000011111111110000000000000011111111"
+     ],
+     "dt": 0.03333,
+     "labels": [
+      "L0",
+      "R0",
+      "L1",
+      "R1"
+     ],
+     "start_frame": 20,
+     "stride_frames": 25
+    },
+    "gait_frac": {
+     "amble": 1.0
+    },
+    "gait_symmetry": 1.003,
+    "ground_slope_deg": 0.0,
+    "head_pitch_deg": {
+     "mean": 16.64,
+     "p95": 21.75
+    },
+    "head_yaw_vs_body_deg": {
+     "mean": 17.78,
+     "p95": 26.16
+    },
+    "knee_flip_frac": 0.0,
+    "leg_extension": 0.8342,
+    "min_turn_radius_m": 3.58,
+    "moving_frac": 1.0,
+    "pitch_follow": null,
+    "pivot_frac": 0.0,
+    "pivot_frac_of_turns": 0.0,
+    "roll_plant_lag": 0.492,
+    "shoulder_hip_ratio": 1.2355,
+    "slide_frac": 0.0,
+    "speed_mean_mps": 5.1236,
+    "stall_frac": 0.0,
+    "stall_state_frac": 0.0,
+    "steep_slope_deg": null,
+    "stride_len_m": 4.199,
+    "stuck_frac": 0.0,
+    "torso_bob_cm": 38.94,
+    "torso_bob_frac": 0.2195,
+    "torso_roll_deg": 3.04
+   },
+   "scenario": "walk"
+  },
+  {
+   "body": "hero",
+   "checks": [
+    {
+     "actual": 0.0,
+     "id": "knee_flip",
+     "metric": "knee_flip_frac",
+     "op": "==",
+     "source": "owner movement canon 2026-11-21: legs never bend the wrong way (knee against its rest bend direction on any stance leg)",
+     "tolerance": null,
+     "value": 0,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 0.0,
+     "id": "foot_penetration",
+     "metric": "foot_penetration_cm.p95",
+     "op": "<",
+     "source": "owner movement canon 2026-11-21: feet and knees do not go through the ground (p95 depth under 1 cm)",
+     "tolerance": null,
+     "value": 1,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 14.74,
+     "id": "foot_slip",
+     "metric": "foot_slip_cm.p95",
+     "op": "<",
+     "source": "brief loco-score: foot slip p95 under 3 cm",
+     "tolerance": null,
+     "value": 3,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 18.82,
+     "id": "head_pitch",
+     "metric": "head_pitch_deg.mean",
+     "op": "within",
+     "source": "brief loco-score: head pitch within +-12 deg (climb is excluded: the ground itself is tilted)",
+     "tolerance": 12,
+     "value": 0,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 0.0,
+     "id": "pivot",
+     "metric": "pivot_frac",
+     "op": "<",
+     "source": "brief loco-score: pivot_frac under 0.05 while moving",
+     "tolerance": null,
+     "value": 0.05,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 0.0,
+     "id": "air_gallop",
+     "metric": "airborne_frac",
+     "op": ">",
+     "source": "brief loco-score: a gallop has a flight phase; applied to bodies with 4 legs or fewer (many-legged bodies keep a foot down by design)",
+     "tolerance": null,
+     "value": 0.05,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 0.8055,
+     "id": "leg_extension",
+     "metric": "leg_extension",
+     "op": ">=",
+     "source": "starting value (hip-to-ankle over leg length of a stance leg; real walkers stay near 0.9); calibrate against the Muybridge sheets, catches crouched legs",
+     "tolerance": null,
+     "value": 0.9,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 22.08,
+     "id": "head_periscope",
+     "metric": "head_yaw_vs_body_deg.p95",
+     "op": "<",
+     "source": "starting value: the head stays within 30 deg of the body heading (periscope neck guard)",
+     "tolerance": null,
+     "value": 30,
+     "verdict": "PASS"
+    }
+   ],
+   "metrics": {
+    "airborne_frac": 0.0,
+    "back_slope_deg": 10.66,
+    "body_pitch_deg": 3.41,
+    "cadence_hz": 2.949,
+    "duty_factor": {
+     "mean": 0.5153,
+     "per_foot": [
+      0.5292,
+      0.5014,
+      0.5319,
+      0.4986
+     ]
+    },
+    "foot_penetration_cm": {
+     "max": 0.001,
+     "mean": 0.0,
+     "p95": 0.0
+    },
+    "foot_slip_cm": {
+     "mean": 3.2,
+     "p95": 14.74,
+     "stances": 281
+    },
+    "foot_spacing_ratio": 0.527,
+    "footfall": {
+     "contact": [
+      "11111000011111100001",
+      "00000111100000111110",
+      "00000111110000111111",
+      "11111000011111000001"
+     ],
+     "dt": 0.03333,
+     "labels": [
+      "L0",
+      "R0",
+      "L1",
+      "R1"
+     ],
+     "start_frame": 7,
+     "stride_frames": 10
+    },
+    "gait_frac": {
+     "trot": 1.0
+    },
+    "gait_symmetry": 1.0,
+    "ground_slope_deg": 0.0,
+    "head_pitch_deg": {
+     "mean": 18.82,
+     "p95": 27.16
+    },
+    "head_yaw_vs_body_deg": {
+     "mean": 12.9,
+     "p95": 22.08
+    },
+    "knee_flip_frac": 0.0,
+    "leg_extension": 0.8055,
+    "min_turn_radius_m": 3.75,
+    "moving_frac": 1.0,
+    "pitch_follow": null,
+    "pivot_frac": 0.0,
+    "pivot_frac_of_turns": 0.0,
+    "roll_plant_lag": -0.39,
+    "shoulder_hip_ratio": 1.2923,
+    "slide_frac": 0.0,
+    "speed_mean_mps": 5.6425,
+    "stall_frac": 0.0,
+    "stall_state_frac": 0.0,
+    "steep_slope_deg": null,
+    "stride_len_m": 3.494,
+    "stuck_frac": 0.0,
+    "torso_bob_cm": 26.46,
+    "torso_bob_frac": 0.1514,
+    "torso_roll_deg": 2.29
+   },
+   "scenario": "gallop"
+  },
+  {
+   "body": "hero",
+   "checks": [
+    {
+     "actual": 0.0,
+     "id": "knee_flip",
+     "metric": "knee_flip_frac",
+     "op": "==",
+     "source": "owner movement canon 2026-11-21: legs never bend the wrong way (knee against its rest bend direction on any stance leg)",
+     "tolerance": null,
+     "value": 0,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 0.0,
+     "id": "foot_penetration",
+     "metric": "foot_penetration_cm.p95",
+     "op": "<",
+     "source": "owner movement canon 2026-11-21: feet and knees do not go through the ground (p95 depth under 1 cm)",
+     "tolerance": null,
+     "value": 1,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 15.12,
+     "id": "foot_slip",
+     "metric": "foot_slip_cm.p95",
+     "op": "<",
+     "source": "brief loco-score: foot slip p95 under 3 cm",
+     "tolerance": null,
+     "value": 3,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 16.6,
+     "id": "head_pitch",
+     "metric": "head_pitch_deg.mean",
+     "op": "within",
+     "source": "brief loco-score: head pitch within +-12 deg (climb is excluded: the ground itself is tilted)",
+     "tolerance": 12,
+     "value": 0,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 0.0405,
+     "id": "pivot",
+     "metric": "pivot_frac",
+     "op": "<",
+     "source": "brief loco-score: pivot_frac under 0.05 while moving",
+     "tolerance": null,
+     "value": 0.05,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 0.4359,
+     "id": "pivot_turns",
+     "metric": "pivot_frac_of_turns",
+     "op": "<",
+     "source": "starting value: at most 15% of the turning frames are pivots; checked by the turn scenario (a U-turn is mostly pivot today)",
+     "tolerance": null,
+     "value": 0.15,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 0.8793,
+     "id": "leg_extension",
+     "metric": "leg_extension",
+     "op": ">=",
+     "source": "starting value (hip-to-ankle over leg length of a stance leg; real walkers stay near 0.9); calibrate against the Muybridge sheets, catches crouched legs",
+     "tolerance": null,
+     "value": 0.9,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 29.77,
+     "id": "head_periscope",
+     "metric": "head_yaw_vs_body_deg.p95",
+     "op": "<",
+     "source": "starting value: the head stays within 30 deg of the body heading (periscope neck guard)",
+     "tolerance": null,
+     "value": 30,
+     "verdict": "PASS"
+    }
+   ],
+   "metrics": {
+    "airborne_frac": 0.0,
+    "back_slope_deg": 7.52,
+    "body_pitch_deg": 0.14,
+    "cadence_hz": 1.226,
+    "duty_factor": {
+     "mean": 0.4152,
+     "per_foot": [
+      0.4089,
+      0.4204,
+      0.4097,
+      0.422
+     ]
+    },
+    "foot_penetration_cm": {
+     "max": 0.0,
+     "mean": 0.0,
+     "p95": 0.0
+    },
+    "foot_slip_cm": {
+     "mean": 1.5,
+     "p95": 15.12,
+     "stances": 204
+    },
+    "foot_spacing_ratio": 0.722,
+    "footfall": {
+     "contact": [
+      "111111111100000000000000111111111100000000000000",
+      "000000000000111111111100000000000000111111111100",
+      "000001111111111000000000000001111111111000000000",
+      "111000000000000001111111111000000000000001111111"
+     ],
+     "dt": 0.03333,
+     "labels": [
+      "L0",
+      "R0",
+      "L1",
+      "R1"
+     ],
+     "start_frame": 24,
+     "stride_frames": 24
+    },
+    "gait_frac": {
+     "amble": 0.9397,
+     "walk": 0.0603
+    },
+    "gait_symmetry": 0.975,
+    "ground_slope_deg": 0.0,
+    "head_pitch_deg": {
+     "mean": 16.6,
+     "p95": 26.44
+    },
+    "head_yaw_vs_body_deg": {
+     "mean": 4.4,
+     "p95": 29.77
+    },
+    "knee_flip_frac": 0.0,
+    "leg_extension": 0.8793,
+    "min_turn_radius_m": 0.4,
+    "moving_frac": 0.9667,
+    "pitch_follow": null,
+    "pivot_frac": 0.0405,
+    "pivot_frac_of_turns": 0.4359,
+    "roll_plant_lag": 0.006,
+    "shoulder_hip_ratio": 1.1785,
+    "slide_frac": 0.0,
+    "speed_mean_mps": 5.0614,
+    "stall_frac": 0.0,
+    "stall_state_frac": 0.0,
+    "steep_slope_deg": null,
+    "stride_len_m": 3.998,
+    "stuck_frac": 0.0,
+    "torso_bob_cm": 10.05,
+    "torso_bob_frac": 0.0544,
+    "torso_roll_deg": 2.61
+   },
+   "scenario": "turn"
+  },
+  {
+   "body": "hero",
+   "checks": [
+    {
+     "actual": 0.0,
+     "id": "knee_flip",
+     "metric": "knee_flip_frac",
+     "op": "==",
+     "source": "owner movement canon 2026-11-21: legs never bend the wrong way (knee against its rest bend direction on any stance leg)",
+     "tolerance": null,
+     "value": 0,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 0.0,
+     "id": "foot_penetration",
+     "metric": "foot_penetration_cm.p95",
+     "op": "<",
+     "source": "owner movement canon 2026-11-21: feet and knees do not go through the ground (p95 depth under 1 cm)",
+     "tolerance": null,
+     "value": 1,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 11.36,
+     "id": "foot_slip",
+     "metric": "foot_slip_cm.p95",
+     "op": "<",
+     "source": "brief loco-score: foot slip p95 under 3 cm",
+     "tolerance": null,
+     "value": 3,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 0.0042,
+     "id": "pivot",
+     "metric": "pivot_frac",
+     "op": "<",
+     "source": "brief loco-score: pivot_frac under 0.05 while moving",
+     "tolerance": null,
+     "value": 0.05,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 0.858,
+     "id": "climb_follow",
+     "metric": "pitch_follow",
+     "op": ">=",
+     "source": "starting value: on slopes steeper than 0.1 the body tilts at least 60% of the slope",
+     "tolerance": null,
+     "value": 0.6,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 2.92,
+     "id": "climb_posture",
+     "metric": "climb_posture_shift_deg",
+     "op": ">=",
+     "source": "starting value: the back slope on a climb differs from the walk's by at least 5 deg (derived: |back_slope climb - back_slope walk|)",
+     "tolerance": null,
+     "value": 5,
+     "verdict": "FAIL"
+    }
+   ],
+   "metrics": {
+    "airborne_frac": 0.0036,
+    "back_slope_deg": 6.18,
+    "body_pitch_deg": 2.05,
+    "cadence_hz": 1.195,
+    "climb_posture_shift_deg": 2.92,
+    "duty_factor": {
+     "mean": 0.4131,
+     "per_foot": [
+      0.4108,
+      0.4036,
+      0.4234,
+      0.4144
+     ]
+    },
+    "foot_penetration_cm": {
+     "max": 222.783,
+     "mean": 0.634,
+     "p95": 0.0
+    },
+    "foot_slip_cm": {
+     "mean": 1.59,
+     "p95": 11.36,
+     "stances": 93
+    },
+    "foot_spacing_ratio": 0.7184,
+    "footfall": {
+     "contact": [
+      "11111111110000000000000011111111110000000000000001",
+      "00000000000011111111110000000000000011111111111000",
+      "00000111111111100000000000000111111111100000000000",
+      "11000000000000000111111111100000000000000111111111"
+     ],
+     "dt": 0.03333,
+     "labels": [
+      "L0",
+      "R0",
+      "L1",
+      "R1"
+     ],
+     "start_frame": 21,
+     "stride_frames": 25
+    },
+    "gait_frac": {
+     "amble": 0.7861,
+     "walk": 0.2139
+    },
+    "gait_symmetry": 0.933,
+    "ground_slope_deg": 2.06,
+    "head_pitch_deg": {
+     "mean": 22.87,
+     "p95": 51.27
+    },
+    "head_yaw_vs_body_deg": {
+     "mean": 5.8,
+     "p95": 32.17
+    },
+    "knee_flip_frac": 0.0,
+    "leg_extension": 0.8623,
+    "min_turn_radius_m": 10.72,
+    "moving_frac": 0.7708,
+    "pitch_follow": 0.858,
+    "pivot_frac": 0.0042,
+    "pivot_frac_of_turns": null,
+    "roll_plant_lag": -0.032,
+    "shoulder_hip_ratio": 1.1468,
+    "slide_frac": 0.0292,
+    "speed_mean_mps": 4.951,
+    "stall_frac": 0.1333,
+    "stall_state_frac": 0.0,
+    "steep_slope_deg": 13.29,
+    "stride_len_m": 3.913,
+    "stuck_frac": 0.1333,
+    "torso_bob_cm": 39.25,
+    "torso_bob_frac": 0.2211,
+    "torso_roll_deg": 2.4
+   },
+   "scenario": "climb"
+  },
+  {
+   "body": "hero",
+   "checks": [
+    {
+     "actual": 0.0,
+     "id": "knee_flip",
+     "metric": "knee_flip_frac",
+     "op": "==",
+     "source": "owner movement canon 2026-11-21: legs never bend the wrong way (knee against its rest bend direction on any stance leg)",
+     "tolerance": null,
+     "value": 0,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 0.0,
+     "id": "foot_penetration",
+     "metric": "foot_penetration_cm.p95",
+     "op": "<",
+     "source": "owner movement canon 2026-11-21: feet and knees do not go through the ground (p95 depth under 1 cm)",
+     "tolerance": null,
+     "value": 1,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 16.69,
+     "id": "foot_slip",
+     "metric": "foot_slip_cm.p95",
+     "op": "<",
+     "source": "brief loco-score: foot slip p95 under 3 cm",
+     "tolerance": null,
+     "value": 3,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 17.47,
+     "id": "head_pitch",
+     "metric": "head_pitch_deg.mean",
+     "op": "within",
+     "source": "brief loco-score: head pitch within +-12 deg (climb is excluded: the ground itself is tilted)",
+     "tolerance": 12,
+     "value": 0,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 0.0522,
+     "id": "pivot",
+     "metric": "pivot_frac",
+     "op": "<",
+     "source": "brief loco-score: pivot_frac under 0.05 while moving",
+     "tolerance": null,
+     "value": 0.05,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 0.2143,
+     "id": "pivot_turns",
+     "metric": "pivot_frac_of_turns",
+     "op": "<",
+     "source": "starting value: at most 15% of the turning frames are pivots; checked by the turn scenario (a U-turn is mostly pivot today)",
+     "tolerance": null,
+     "value": 0.15,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 0.0565,
+     "id": "stall_steps",
+     "metric": "stall_frac",
+     "op": "==",
+     "source": "brief loco-score: stall_frac = 0 on steps (stalled state or a go order that has stopped the body)",
+     "tolerance": null,
+     "value": 0,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 0.8575,
+     "id": "leg_extension",
+     "metric": "leg_extension",
+     "op": ">=",
+     "source": "starting value (hip-to-ankle over leg length of a stance leg; real walkers stay near 0.9); calibrate against the Muybridge sheets, catches crouched legs",
+     "tolerance": null,
+     "value": 0.9,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 24.01,
+     "id": "head_periscope",
+     "metric": "head_yaw_vs_body_deg.p95",
+     "op": "<",
+     "source": "starting value: the head stays within 30 deg of the body heading (periscope neck guard)",
+     "tolerance": null,
+     "value": 30,
+     "verdict": "PASS"
+    }
+   ],
+   "metrics": {
+    "airborne_frac": 0.0,
+    "back_slope_deg": 8.62,
+    "body_pitch_deg": 1.37,
+    "cadence_hz": 1.175,
+    "duty_factor": {
+     "mean": 0.4328,
+     "per_foot": [
+      0.4283,
+      0.4396,
+      0.438,
+      0.4251
+     ]
+    },
+    "foot_penetration_cm": {
+     "max": 55.334,
+     "mean": 0.106,
+     "p95": 0.0
+    },
+    "foot_slip_cm": {
+     "mean": 3.67,
+     "p95": 16.69,
+     "stances": 106
+    },
+    "foot_spacing_ratio": 0.7414,
+    "footfall": {
+     "contact": [
+      "1111111111000000000000001111111111000000000000000111",
+      "0000000000001111111111000000000000001111111111000000",
+      "0000011111111110000000000000011111111110000000000000",
+      "1110000000000000011111111110000000000000011111111110"
+     ],
+     "dt": 0.03333,
+     "labels": [
+      "L0",
+      "R0",
+      "L1",
+      "R1"
+     ],
+     "start_frame": 24,
+     "stride_frames": 26
+    },
+    "gait_frac": {
+     "amble": 0.8551,
+     "walk": 0.1449
+    },
+    "gait_symmetry": 0.985,
+    "ground_slope_deg": 0.05,
+    "head_pitch_deg": {
+     "mean": 17.47,
+     "p95": 35.96
+    },
+    "head_yaw_vs_body_deg": {
+     "mean": 6.28,
+     "p95": 24.01
+    },
+    "knee_flip_frac": 0.0,
+    "leg_extension": 0.8575,
+    "min_turn_radius_m": 0.4,
+    "moving_frac": 0.9,
+    "pitch_follow": 0.631,
+    "pivot_frac": 0.0522,
+    "pivot_frac_of_turns": 0.2143,
+    "roll_plant_lag": 0.428,
+    "shoulder_hip_ratio": 1.2127,
+    "slide_frac": 0.0,
+    "speed_mean_mps": 4.8931,
+    "stall_frac": 0.0565,
+    "stall_state_frac": 0.0,
+    "steep_slope_deg": 14.99,
+    "stride_len_m": 3.75,
+    "stuck_frac": 0.0565,
+    "torso_bob_cm": 30.44,
+    "torso_bob_frac": 0.1668,
+    "torso_roll_deg": 5.72
+   },
+   "scenario": "steps"
+  },
+  {
+   "body": "giant",
+   "checks": [
+    {
+     "actual": 0.0,
+     "id": "knee_flip",
+     "metric": "knee_flip_frac",
+     "op": "==",
+     "source": "owner movement canon 2026-11-21: legs never bend the wrong way (knee against its rest bend direction on any stance leg)",
+     "tolerance": null,
+     "value": 0,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 0.0,
+     "id": "foot_penetration",
+     "metric": "foot_penetration_cm.p95",
+     "op": "<",
+     "source": "owner movement canon 2026-11-21: feet and knees do not go through the ground (p95 depth under 1 cm)",
+     "tolerance": null,
+     "value": 1,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 23.96,
+     "id": "foot_slip",
+     "metric": "foot_slip_cm.p95",
+     "op": "<",
+     "source": "brief loco-score: foot slip p95 under 3 cm",
+     "tolerance": null,
+     "value": 3,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 14.96,
+     "id": "head_pitch",
+     "metric": "head_pitch_deg.mean",
+     "op": "within",
+     "source": "brief loco-score: head pitch within +-12 deg (climb is excluded: the ground itself is tilted)",
+     "tolerance": 12,
+     "value": 0,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 0.0,
+     "id": "pivot",
+     "metric": "pivot_frac",
+     "op": "<",
+     "source": "brief loco-score: pivot_frac under 0.05 while moving",
+     "tolerance": null,
+     "value": 0.05,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 0.0,
+     "id": "air_walk",
+     "metric": "airborne_frac",
+     "op": "<=",
+     "source": "brief loco-score: no flight phase in a walk",
+     "tolerance": null,
+     "value": 0.005,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 0.8346,
+     "id": "leg_extension",
+     "metric": "leg_extension",
+     "op": ">=",
+     "source": "starting value (hip-to-ankle over leg length of a stance leg; real walkers stay near 0.9); calibrate against the Muybridge sheets, catches crouched legs",
+     "tolerance": null,
+     "value": 0.9,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 30.69,
+     "id": "head_periscope",
+     "metric": "head_yaw_vs_body_deg.p95",
+     "op": "<",
+     "source": "starting value: the head stays within 30 deg of the body heading (periscope neck guard)",
+     "tolerance": null,
+     "value": 30,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 14.96,
+     "id": "gorilla:head_pitch_deg",
+     "metric": "head_pitch_deg.mean",
+     "op": "within",
+     "source": "estimate from frames 2026-11-21, replace with keypoint measurement",
+     "tolerance": 10,
+     "value": 0,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 1.2088,
+     "id": "gorilla:shoulder_hip_ratio",
+     "metric": "shoulder_hip_ratio",
+     "op": "within",
+     "source": "estimate from frames 2026-11-21, replace with keypoint measurement",
+     "tolerance": 0.15,
+     "value": 1.35,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 8.12,
+     "id": "gorilla:back_slope_deg",
+     "metric": "back_slope_deg",
+     "op": "within",
+     "source": "estimate from frames 2026-11-21, replace with keypoint measurement; positive = shoulders higher, back slopes down to the hips",
+     "tolerance": 8,
+     "value": 22,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 3.05,
+     "id": "gorilla:torso_roll_deg",
+     "metric": "torso_roll_deg",
+     "op": "within",
+     "source": "estimate from frames 2026-11-21 (7 deg), replace with keypoint measurement; tolerance tightened from the brief's 4 to 3 so a 3 deg rigid torso fails",
+     "tolerance": 3,
+     "value": 7,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": -0.424,
+     "id": "gorilla:roll_plant_lag",
+     "metric": "roll_plant_lag",
+     "op": "within",
+     "source": "estimate from frames 2026-11-21: roll peaks near the front hand plant (0 = at touchdown, fraction of the stride cycle)",
+     "tolerance": 0.15,
+     "value": 0,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 0.2892,
+     "id": "gorilla:torso_bob_frac",
+     "metric": "torso_bob_frac",
+     "op": "within",
+     "source": "estimate from frames 2026-11-21: bob about 4% of shoulder height",
+     "tolerance": 0.03,
+     "value": 0.04,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 23.96,
+     "id": "gorilla:foot_slip_cm",
+     "metric": "foot_slip_cm.p95",
+     "op": "within",
+     "source": "estimate from frames 2026-11-21: planted hands do not slide",
+     "tolerance": 3,
+     "value": 0,
+     "verdict": "FAIL"
+    }
+   ],
+   "metrics": {
+    "airborne_frac": 0.0,
+    "back_slope_deg": 8.12,
+    "body_pitch_deg": 0.8,
+    "cadence_hz": 0.878,
+    "duty_factor": {
+     "mean": 0.4646,
+     "per_foot": [
+      0.4639,
+      0.4681,
+      0.4597,
+      0.4667
+     ]
+    },
+    "foot_penetration_cm": {
+     "max": 0.0,
+     "mean": 0.0,
+     "p95": 0.0
+    },
+    "foot_slip_cm": {
+     "mean": 9.76,
+     "p95": 23.96,
+     "stances": 82
+    },
+    "foot_spacing_ratio": 0.8161,
+    "footfall": {
+     "contact": [
+      "11111111111111111000000000000000000111111111111111000000000000000000",
+      "00000000000000000111111111111111100000000000000000001111111111111110",
+      "00000001111111111111111000000000000000000111111111111111100000000000",
+      "11111110000000000000000011111111111111110000000000000000001111111111"
+     ],
+     "dt": 0.03333,
+     "labels": [
+      "L0",
+      "R0",
+      "L1",
+      "R1"
+     ],
+     "start_frame": 5,
+     "stride_frames": 34
+    },
+    "gait_frac": {
+     "amble": 1.0
+    },
+    "gait_symmetry": 1.006,
+    "ground_slope_deg": 0.0,
+    "head_pitch_deg": {
+     "mean": 14.96,
+     "p95": 20.75
+    },
+    "head_yaw_vs_body_deg": {
+     "mean": 20.76,
+     "p95": 30.69
+    },
+    "knee_flip_frac": 0.0,
+    "leg_extension": 0.8346,
+    "min_turn_radius_m": 3.2,
+    "moving_frac": 1.0,
+    "pitch_follow": null,
+    "pivot_frac": 0.0,
+    "pivot_frac_of_turns": 0.0,
+    "roll_plant_lag": -0.424,
+    "shoulder_hip_ratio": 1.2088,
+    "slide_frac": 0.0,
+    "speed_mean_mps": 4.3734,
+    "stall_frac": 0.0,
+    "stall_state_frac": 0.0,
+    "steep_slope_deg": null,
+    "stride_len_m": 4.914,
+    "stuck_frac": 0.0,
+    "torso_bob_cm": 67.29,
+    "torso_bob_frac": 0.2892,
+    "torso_roll_deg": 3.05
+   },
+   "scenario": "walk"
+  },
+  {
+   "body": "giant",
+   "checks": [
+    {
+     "actual": 0.0,
+     "id": "knee_flip",
+     "metric": "knee_flip_frac",
+     "op": "==",
+     "source": "owner movement canon 2026-11-21: legs never bend the wrong way (knee against its rest bend direction on any stance leg)",
+     "tolerance": null,
+     "value": 0,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 0.0,
+     "id": "foot_penetration",
+     "metric": "foot_penetration_cm.p95",
+     "op": "<",
+     "source": "owner movement canon 2026-11-21: feet and knees do not go through the ground (p95 depth under 1 cm)",
+     "tolerance": null,
+     "value": 1,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 23.24,
+     "id": "foot_slip",
+     "metric": "foot_slip_cm.p95",
+     "op": "<",
+     "source": "brief loco-score: foot slip p95 under 3 cm",
+     "tolerance": null,
+     "value": 3,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 15.64,
+     "id": "head_pitch",
+     "metric": "head_pitch_deg.mean",
+     "op": "within",
+     "source": "brief loco-score: head pitch within +-12 deg (climb is excluded: the ground itself is tilted)",
+     "tolerance": 12,
+     "value": 0,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 0.0,
+     "id": "pivot",
+     "metric": "pivot_frac",
+     "op": "<",
+     "source": "brief loco-score: pivot_frac under 0.05 while moving",
+     "tolerance": null,
+     "value": 0.05,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 0.0,
+     "id": "air_gallop",
+     "metric": "airborne_frac",
+     "op": ">",
+     "source": "brief loco-score: a gallop has a flight phase; applied to bodies with 4 legs or fewer (many-legged bodies keep a foot down by design)",
+     "tolerance": null,
+     "value": 0.05,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 0.8269,
+     "id": "leg_extension",
+     "metric": "leg_extension",
+     "op": ">=",
+     "source": "starting value (hip-to-ankle over leg length of a stance leg; real walkers stay near 0.9); calibrate against the Muybridge sheets, catches crouched legs",
+     "tolerance": null,
+     "value": 0.9,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 23.37,
+     "id": "head_periscope",
+     "metric": "head_yaw_vs_body_deg.p95",
+     "op": "<",
+     "source": "starting value: the head stays within 30 deg of the body heading (periscope neck guard)",
+     "tolerance": null,
+     "value": 30,
+     "verdict": "PASS"
+    }
+   ],
+   "metrics": {
+    "airborne_frac": 0.0,
+    "back_slope_deg": 7.78,
+    "body_pitch_deg": 0.52,
+    "cadence_hz": 2.04,
+    "duty_factor": {
+     "mean": 0.5108,
+     "per_foot": [
+      0.5208,
+      0.5,
+      0.5222,
+      0.5
+     ]
+    },
+    "foot_penetration_cm": {
+     "max": 0.0,
+     "mean": 0.0,
+     "p95": 0.0
+    },
+    "foot_slip_cm": {
+     "mean": 7.28,
+     "p95": 23.24,
+     "stances": 194
+    },
+    "foot_spacing_ratio": 0.5436,
+    "footfall": {
+     "contact": [
+      "111111100000001111111000000111",
+      "000000011111110000000111111000",
+      "100000011111110000000111111100",
+      "111111100000001111111000000111"
+     ],
+     "dt": 0.03333,
+     "labels": [
+      "L0",
+      "R0",
+      "L1",
+      "R1"
+     ],
+     "start_frame": 4,
+     "stride_frames": 15
+    },
+    "gait_frac": {
+     "trot": 1.0
+    },
+    "gait_symmetry": 1.0,
+    "ground_slope_deg": 0.0,
+    "head_pitch_deg": {
+     "mean": 15.64,
+     "p95": 25.23
+    },
+    "head_yaw_vs_body_deg": {
+     "mean": 14.45,
+     "p95": 23.37
+    },
+    "knee_flip_frac": 0.0,
+    "leg_extension": 0.8269,
+    "min_turn_radius_m": 3.37,
+    "moving_frac": 1.0,
+    "pitch_follow": null,
+    "pivot_frac": 0.0,
+    "pivot_frac_of_turns": 0.0,
+    "roll_plant_lag": -0.392,
+    "shoulder_hip_ratio": 1.1998,
+    "slide_frac": 0.0,
+    "speed_mean_mps": 5.2304,
+    "stall_frac": 0.0,
+    "stall_state_frac": 0.0,
+    "steep_slope_deg": null,
+    "stride_len_m": 4.678,
+    "stuck_frac": 0.0,
+    "torso_bob_cm": 33.2,
+    "torso_bob_frac": 0.1436,
+    "torso_roll_deg": 2.83
+   },
+   "scenario": "gallop"
+  },
+  {
+   "body": "giant",
+   "checks": [
+    {
+     "actual": 0.0,
+     "id": "knee_flip",
+     "metric": "knee_flip_frac",
+     "op": "==",
+     "source": "owner movement canon 2026-11-21: legs never bend the wrong way (knee against its rest bend direction on any stance leg)",
+     "tolerance": null,
+     "value": 0,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 0.0,
+     "id": "foot_penetration",
+     "metric": "foot_penetration_cm.p95",
+     "op": "<",
+     "source": "owner movement canon 2026-11-21: feet and knees do not go through the ground (p95 depth under 1 cm)",
+     "tolerance": null,
+     "value": 1,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 9.94,
+     "id": "foot_slip",
+     "metric": "foot_slip_cm.p95",
+     "op": "<",
+     "source": "brief loco-score: foot slip p95 under 3 cm",
+     "tolerance": null,
+     "value": 3,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 16.41,
+     "id": "head_pitch",
+     "metric": "head_pitch_deg.mean",
+     "op": "within",
+     "source": "brief loco-score: head pitch within +-12 deg (climb is excluded: the ground itself is tilted)",
+     "tolerance": 12,
+     "value": 0,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 0.0,
+     "id": "pivot",
+     "metric": "pivot_frac",
+     "op": "<",
+     "source": "brief loco-score: pivot_frac under 0.05 while moving",
+     "tolerance": null,
+     "value": 0.05,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 0.0,
+     "id": "pivot_turns",
+     "metric": "pivot_frac_of_turns",
+     "op": "<",
+     "source": "starting value: at most 15% of the turning frames are pivots; checked by the turn scenario (a U-turn is mostly pivot today)",
+     "tolerance": null,
+     "value": 0.15,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 0.8804,
+     "id": "leg_extension",
+     "metric": "leg_extension",
+     "op": ">=",
+     "source": "starting value (hip-to-ankle over leg length of a stance leg; real walkers stay near 0.9); calibrate against the Muybridge sheets, catches crouched legs",
+     "tolerance": null,
+     "value": 0.9,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 32.34,
+     "id": "head_periscope",
+     "metric": "head_yaw_vs_body_deg.p95",
+     "op": "<",
+     "source": "starting value: the head stays within 30 deg of the body heading (periscope neck guard)",
+     "tolerance": null,
+     "value": 30,
+     "verdict": "FAIL"
+    }
+   ],
+   "metrics": {
+    "airborne_frac": 0.0,
+    "back_slope_deg": 7.12,
+    "body_pitch_deg": -0.25,
+    "cadence_hz": 0.864,
+    "duty_factor": {
+     "mean": 0.4712,
+     "per_foot": [
+      0.4722,
+      0.4746,
+      0.4683,
+      0.4698
+     ]
+    },
+    "foot_penetration_cm": {
+     "max": 0.0,
+     "mean": 0.0,
+     "p95": 0.0
+    },
+    "foot_slip_cm": {
+     "mean": 1.16,
+     "p95": 9.94,
+     "stances": 143
+    },
+    "foot_spacing_ratio": 0.7576,
+    "footfall": {
+     "contact": [
+      "1111111111111111000000000000000000111111111111111100000000000000000011",
+      "1000000000000000011111111111111110000000000000000001111111111111111000",
+      "0000000111111111111111100000000000000000011111111111111110000000000000",
+      "1111111000000000000000001111111111111111000000000000000000111111111111"
+     ],
+     "dt": 0.03333,
+     "labels": [
+      "L0",
+      "R0",
+      "L1",
+      "R1"
+     ],
+     "start_frame": 8,
+     "stride_frames": 35
+    },
+    "gait_frac": {
+     "amble": 0.9294,
+     "walk": 0.0706
+    },
+    "gait_symmetry": 0.996,
+    "ground_slope_deg": 0.0,
+    "head_pitch_deg": {
+     "mean": 16.41,
+     "p95": 24.2
+    },
+    "head_yaw_vs_body_deg": {
+     "mean": 6.01,
+     "p95": 32.34
+    },
+    "knee_flip_frac": 0.0,
+    "leg_extension": 0.8804,
+    "min_turn_radius_m": 0.64,
+    "moving_frac": 1.0,
+    "pitch_follow": null,
+    "pivot_frac": 0.0,
+    "pivot_frac_of_turns": 0.0,
+    "roll_plant_lag": 0.02,
+    "shoulder_hip_ratio": 1.1683,
+    "slide_frac": 0.0,
+    "speed_mean_mps": 4.2221,
+    "stall_frac": 0.0,
+    "stall_state_frac": 0.0,
+    "steep_slope_deg": null,
+    "stride_len_m": 4.82,
+    "stuck_frac": 0.0,
+    "torso_bob_cm": 16.35,
+    "torso_bob_frac": 0.0669,
+    "torso_roll_deg": 3.2
+   },
+   "scenario": "turn"
+  },
+  {
+   "body": "giant",
+   "checks": [
+    {
+     "actual": 0.0,
+     "id": "knee_flip",
+     "metric": "knee_flip_frac",
+     "op": "==",
+     "source": "owner movement canon 2026-11-21: legs never bend the wrong way (knee against its rest bend direction on any stance leg)",
+     "tolerance": null,
+     "value": 0,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 0.0,
+     "id": "foot_penetration",
+     "metric": "foot_penetration_cm.p95",
+     "op": "<",
+     "source": "owner movement canon 2026-11-21: feet and knees do not go through the ground (p95 depth under 1 cm)",
+     "tolerance": null,
+     "value": 1,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 20.25,
+     "id": "foot_slip",
+     "metric": "foot_slip_cm.p95",
+     "op": "<",
+     "source": "brief loco-score: foot slip p95 under 3 cm",
+     "tolerance": null,
+     "value": 3,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 0.0,
+     "id": "pivot",
+     "metric": "pivot_frac",
+     "op": "<",
+     "source": "brief loco-score: pivot_frac under 0.05 while moving",
+     "tolerance": null,
+     "value": 0.05,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 0.974,
+     "id": "climb_follow",
+     "metric": "pitch_follow",
+     "op": ">=",
+     "source": "starting value: on slopes steeper than 0.1 the body tilts at least 60% of the slope",
+     "tolerance": null,
+     "value": 0.6,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 0.13,
+     "id": "climb_posture",
+     "metric": "climb_posture_shift_deg",
+     "op": ">=",
+     "source": "starting value: the back slope on a climb differs from the walk's by at least 5 deg (derived: |back_slope climb - back_slope walk|)",
+     "tolerance": null,
+     "value": 5,
+     "verdict": "FAIL"
+    }
+   ],
+   "metrics": {
+    "airborne_frac": 0.0,
+    "back_slope_deg": 8.25,
+    "body_pitch_deg": 3.51,
+    "cadence_hz": 0.9,
+    "climb_posture_shift_deg": 0.13,
+    "duty_factor": {
+     "mean": 0.4711,
+     "per_foot": [
+      0.483,
+      0.4568,
+      0.4738,
+      0.4707
+     ]
+    },
+    "foot_penetration_cm": {
+     "max": 215.506,
+     "mean": 1.472,
+     "p95": 0.0
+    },
+    "foot_slip_cm": {
+     "mean": 2.93,
+     "p95": 20.25,
+     "stances": 80
+    },
+    "foot_spacing_ratio": 0.7581,
+    "footfall": {
+     "contact": [
+      "111111111111111100000000000000000011111111111111110000000000000000",
+      "000000000000000001111111111111111000000000000000000111111111111111",
+      "000000011111111111111110000000000000000001111111111111111000000000",
+      "111111100000000000000000111111111111111100000000000000000011111111"
+     ],
+     "dt": 0.03333,
+     "labels": [
+      "L0",
+      "R0",
+      "L1",
+      "R1"
+     ],
+     "start_frame": 5,
+     "stride_frames": 33
+    },
+    "gait_frac": {
+     "amble": 0.8889,
+     "walk": 0.1111
+    },
+    "gait_symmetry": 1.017,
+    "ground_slope_deg": 1.64,
+    "head_pitch_deg": {
+     "mean": 24.71,
+     "p95": 52.52
+    },
+    "head_yaw_vs_body_deg": {
+     "mean": 7.73,
+     "p95": 34.25
+    },
+    "knee_flip_frac": 0.0,
+    "leg_extension": 0.8642,
+    "min_turn_radius_m": 11.9,
+    "moving_frac": 0.9,
+    "pitch_follow": 0.974,
+    "pivot_frac": 0.0,
+    "pivot_frac_of_turns": null,
+    "roll_plant_lag": -0.032,
+    "shoulder_hip_ratio": 1.2166,
+    "slide_frac": 0.025,
+    "speed_mean_mps": 4.1956,
+    "stall_frac": 0.0167,
+    "stall_state_frac": 0.0,
+    "steep_slope_deg": 14.39,
+    "stride_len_m": 4.592,
+    "stuck_frac": 0.0167,
+    "torso_bob_cm": 59.97,
+    "torso_bob_frac": 0.2693,
+    "torso_roll_deg": 4.04
+   },
+   "scenario": "climb"
+  },
+  {
+   "body": "giant",
+   "checks": [
+    {
+     "actual": 0.0,
+     "id": "knee_flip",
+     "metric": "knee_flip_frac",
+     "op": "==",
+     "source": "owner movement canon 2026-11-21: legs never bend the wrong way (knee against its rest bend direction on any stance leg)",
+     "tolerance": null,
+     "value": 0,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 0.0,
+     "id": "foot_penetration",
+     "metric": "foot_penetration_cm.p95",
+     "op": "<",
+     "source": "owner movement canon 2026-11-21: feet and knees do not go through the ground (p95 depth under 1 cm)",
+     "tolerance": null,
+     "value": 1,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 20.21,
+     "id": "foot_slip",
+     "metric": "foot_slip_cm.p95",
+     "op": "<",
+     "source": "brief loco-score: foot slip p95 under 3 cm",
+     "tolerance": null,
+     "value": 3,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 16.6,
+     "id": "head_pitch",
+     "metric": "head_pitch_deg.mean",
+     "op": "within",
+     "source": "brief loco-score: head pitch within +-12 deg (climb is excluded: the ground itself is tilted)",
+     "tolerance": 12,
+     "value": 0,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 0.0,
+     "id": "pivot",
+     "metric": "pivot_frac",
+     "op": "<",
+     "source": "brief loco-score: pivot_frac under 0.05 while moving",
+     "tolerance": null,
+     "value": 0.05,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 0.0,
+     "id": "pivot_turns",
+     "metric": "pivot_frac_of_turns",
+     "op": "<",
+     "source": "starting value: at most 15% of the turning frames are pivots; checked by the turn scenario (a U-turn is mostly pivot today)",
+     "tolerance": null,
+     "value": 0.15,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 0.0,
+     "id": "stall_steps",
+     "metric": "stall_frac",
+     "op": "==",
+     "source": "brief loco-score: stall_frac = 0 on steps (stalled state or a go order that has stopped the body)",
+     "tolerance": null,
+     "value": 0,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 0.8693,
+     "id": "leg_extension",
+     "metric": "leg_extension",
+     "op": ">=",
+     "source": "starting value (hip-to-ankle over leg length of a stance leg; real walkers stay near 0.9); calibrate against the Muybridge sheets, catches crouched legs",
+     "tolerance": null,
+     "value": 0.9,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 29.53,
+     "id": "head_periscope",
+     "metric": "head_yaw_vs_body_deg.p95",
+     "op": "<",
+     "source": "starting value: the head stays within 30 deg of the body heading (periscope neck guard)",
+     "tolerance": null,
+     "value": 30,
+     "verdict": "PASS"
+    }
+   ],
+   "metrics": {
+    "airborne_frac": 0.0,
+    "back_slope_deg": 7.23,
+    "body_pitch_deg": -0.18,
+    "cadence_hz": 0.846,
+    "duty_factor": {
+     "mean": 0.4739,
+     "per_foot": [
+      0.4855,
+      0.4783,
+      0.4652,
+      0.4667
+     ]
+    },
+    "foot_penetration_cm": {
+     "max": 0.0,
+     "mean": 0.0,
+     "p95": 0.0
+    },
+    "foot_slip_cm": {
+     "mean": 4.12,
+     "p95": 20.21,
+     "stances": 76
+    },
+    "foot_spacing_ratio": 0.7739,
+    "footfall": {
+     "contact": [
+      "1111111111111111000000000000000001111111111111111000000000000000000111",
+      "0000000000000000111111111111111100000000000000000011111111111111110000",
+      "0000001111111111111111000000000000000000111111111111111100000000000000",
+      "1111110000000000000000011111111111111110000000000000000001111111111111"
+     ],
+     "dt": 0.03333,
+     "labels": [
+      "L0",
+      "R0",
+      "L1",
+      "R1"
+     ],
+     "start_frame": 9,
+     "stride_frames": 35
+    },
+    "gait_frac": {
+     "amble": 0.8681,
+     "walk": 0.1319
+    },
+    "gait_symmetry": 1.013,
+    "ground_slope_deg": 0.0,
+    "head_pitch_deg": {
+     "mean": 16.6,
+     "p95": 26.94
+    },
+    "head_yaw_vs_body_deg": {
+     "mean": 8.51,
+     "p95": 29.53
+    },
+    "knee_flip_frac": 0.0,
+    "leg_extension": 0.8693,
+    "min_turn_radius_m": 0.64,
+    "moving_frac": 1.0,
+    "pitch_follow": null,
+    "pivot_frac": 0.0,
+    "pivot_frac_of_turns": 0.0,
+    "roll_plant_lag": -0.458,
+    "shoulder_hip_ratio": 1.1743,
+    "slide_frac": 0.0,
+    "speed_mean_mps": 4.0378,
+    "stall_frac": 0.0,
+    "stall_state_frac": 0.0,
+    "steep_slope_deg": null,
+    "stride_len_m": 4.669,
+    "stuck_frac": 0.0,
+    "torso_bob_cm": 32.11,
+    "torso_bob_frac": 0.1333,
+    "torso_roll_deg": 4.32
+   },
+   "scenario": "steps"
+  },
+  {
+   "body": "longneck",
+   "checks": [
+    {
+     "actual": 0.0,
+     "id": "knee_flip",
+     "metric": "knee_flip_frac",
+     "op": "==",
+     "source": "owner movement canon 2026-11-21: legs never bend the wrong way (knee against its rest bend direction on any stance leg)",
+     "tolerance": null,
+     "value": 0,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 0.0,
+     "id": "foot_penetration",
+     "metric": "foot_penetration_cm.p95",
+     "op": "<",
+     "source": "owner movement canon 2026-11-21: feet and knees do not go through the ground (p95 depth under 1 cm)",
+     "tolerance": null,
+     "value": 1,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 10.48,
+     "id": "foot_slip",
+     "metric": "foot_slip_cm.p95",
+     "op": "<",
+     "source": "brief loco-score: foot slip p95 under 3 cm",
+     "tolerance": null,
+     "value": 3,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 35.67,
+     "id": "head_pitch",
+     "metric": "head_pitch_deg.mean",
+     "op": "within",
+     "source": "brief loco-score: head pitch within +-12 deg (climb is excluded: the ground itself is tilted)",
+     "tolerance": 12,
+     "value": 0,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 0.0,
+     "id": "pivot",
+     "metric": "pivot_frac",
+     "op": "<",
+     "source": "brief loco-score: pivot_frac under 0.05 while moving",
+     "tolerance": null,
+     "value": 0.05,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 0.0,
+     "id": "air_walk",
+     "metric": "airborne_frac",
+     "op": "<=",
+     "source": "brief loco-score: no flight phase in a walk",
+     "tolerance": null,
+     "value": 0.005,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 0.8472,
+     "id": "leg_extension",
+     "metric": "leg_extension",
+     "op": ">=",
+     "source": "starting value (hip-to-ankle over leg length of a stance leg; real walkers stay near 0.9); calibrate against the Muybridge sheets, catches crouched legs",
+     "tolerance": null,
+     "value": 0.9,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 43.43,
+     "id": "head_periscope",
+     "metric": "head_yaw_vs_body_deg.p95",
+     "op": "<",
+     "source": "starting value: the head stays within 30 deg of the body heading (periscope neck guard)",
+     "tolerance": null,
+     "value": 30,
+     "verdict": "FAIL"
+    }
+   ],
+   "metrics": {
+    "airborne_frac": 0.0,
+    "back_slope_deg": 21.84,
+    "body_pitch_deg": 2.78,
+    "cadence_hz": 2.568,
+    "duty_factor": {
+     "mean": 0.5153,
+     "per_foot": [
+      0.5333,
+      0.4986,
+      0.5292,
+      0.5
+     ]
+    },
+    "foot_penetration_cm": {
+     "max": 0.0,
+     "mean": 0.0,
+     "p95": 0.0
+    },
+    "foot_slip_cm": {
+     "mean": 2.54,
+     "p95": 10.48,
+     "stances": 244
+    },
+    "foot_spacing_ratio": 0.6921,
+    "footfall": {
+     "contact": [
+      "111111100000111111000000",
+      "000000111111000000111111",
+      "100000111111000000111111",
+      "111111000000111111000000"
+     ],
+     "dt": 0.03333,
+     "labels": [
+      "L0",
+      "R0",
+      "L1",
+      "R1"
+     ],
+     "start_frame": 11,
+     "stride_frames": 12
+    },
+    "gait_frac": {
+     "trot": 1.0
+    },
+    "gait_symmetry": 1.001,
+    "ground_slope_deg": 0.0,
+    "head_pitch_deg": {
+     "mean": 35.67,
+     "p95": 44.37
+    },
+    "head_yaw_vs_body_deg": {
+     "mean": 20.22,
+     "p95": 43.43
+    },
+    "knee_flip_frac": 0.0,
+    "leg_extension": 0.8472,
+    "min_turn_radius_m": 2.84,
+    "moving_frac": 1.0,
+    "pitch_follow": null,
+    "pivot_frac": 0.0,
+    "pivot_frac_of_turns": 0.0,
+    "roll_plant_lag": 0.445,
+    "shoulder_hip_ratio": 1.6922,
+    "slide_frac": 0.0,
+    "speed_mean_mps": 5.1347,
+    "stall_frac": 0.0,
+    "stall_state_frac": 0.0,
+    "steep_slope_deg": null,
+    "stride_len_m": 2.035,
+    "stuck_frac": 0.0,
+    "torso_bob_cm": 7.79,
+    "torso_bob_frac": 0.0532,
+    "torso_roll_deg": 2.62
+   },
+   "scenario": "walk"
+  },
+  {
+   "body": "longneck",
+   "checks": [
+    {
+     "actual": 0.0,
+     "id": "knee_flip",
+     "metric": "knee_flip_frac",
+     "op": "==",
+     "source": "owner movement canon 2026-11-21: legs never bend the wrong way (knee against its rest bend direction on any stance leg)",
+     "tolerance": null,
+     "value": 0,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 0.0,
+     "id": "foot_penetration",
+     "metric": "foot_penetration_cm.p95",
+     "op": "<",
+     "source": "owner movement canon 2026-11-21: feet and knees do not go through the ground (p95 depth under 1 cm)",
+     "tolerance": null,
+     "value": 1,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 10.35,
+     "id": "foot_slip",
+     "metric": "foot_slip_cm.p95",
+     "op": "<",
+     "source": "brief loco-score: foot slip p95 under 3 cm",
+     "tolerance": null,
+     "value": 3,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 37.63,
+     "id": "head_pitch",
+     "metric": "head_pitch_deg.mean",
+     "op": "within",
+     "source": "brief loco-score: head pitch within +-12 deg (climb is excluded: the ground itself is tilted)",
+     "tolerance": 12,
+     "value": 0,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 0.0,
+     "id": "pivot",
+     "metric": "pivot_frac",
+     "op": "<",
+     "source": "brief loco-score: pivot_frac under 0.05 while moving",
+     "tolerance": null,
+     "value": 0.05,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 0.0,
+     "id": "air_gallop",
+     "metric": "airborne_frac",
+     "op": ">",
+     "source": "brief loco-score: a gallop has a flight phase; applied to bodies with 4 legs or fewer (many-legged bodies keep a foot down by design)",
+     "tolerance": null,
+     "value": 0.05,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 0.8386,
+     "id": "leg_extension",
+     "metric": "leg_extension",
+     "op": ">=",
+     "source": "starting value (hip-to-ankle over leg length of a stance leg; real walkers stay near 0.9); calibrate against the Muybridge sheets, catches crouched legs",
+     "tolerance": null,
+     "value": 0.9,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 42.72,
+     "id": "head_periscope",
+     "metric": "head_yaw_vs_body_deg.p95",
+     "op": "<",
+     "source": "starting value: the head stays within 30 deg of the body heading (periscope neck guard)",
+     "tolerance": null,
+     "value": 30,
+     "verdict": "FAIL"
+    }
+   ],
+   "metrics": {
+    "airborne_frac": 0.0,
+    "back_slope_deg": 23.01,
+    "body_pitch_deg": 4.09,
+    "cadence_hz": 5.112,
+    "duty_factor": {
+     "mean": 0.5313,
+     "per_foot": [
+      0.5653,
+      0.4972,
+      0.5597,
+      0.5028
+     ]
+    },
+    "foot_penetration_cm": {
+     "max": 2.573,
+     "mean": 0.001,
+     "p95": 0.0
+    },
+    "foot_slip_cm": {
+     "mean": 1.93,
+     "p95": 10.35,
+     "stances": 488
+    },
+    "foot_spacing_ratio": 0.6674,
+    "footfall": {
+     "contact": [
+      "111001110001",
+      "000110001110",
+      "000111001110",
+      "111001110001"
+     ],
+     "dt": 0.03333,
+     "labels": [
+      "L0",
+      "R0",
+      "L1",
+      "R1"
+     ],
+     "start_frame": 1,
+     "stride_frames": 6
+    },
+    "gait_frac": {
+     "trot": 1.0
+    },
+    "gait_symmetry": 1.0,
+    "ground_slope_deg": 0.0,
+    "head_pitch_deg": {
+     "mean": 37.63,
+     "p95": 50.46
+    },
+    "head_yaw_vs_body_deg": {
+     "mean": 16.77,
+     "p95": 42.72
+    },
+    "knee_flip_frac": 0.0,
+    "leg_extension": 0.8386,
+    "min_turn_radius_m": 3.0,
+    "moving_frac": 1.0,
+    "pitch_follow": null,
+    "pivot_frac": 0.0,
+    "pivot_frac_of_turns": 0.0,
+    "roll_plant_lag": 0.373,
+    "shoulder_hip_ratio": 1.7515,
+    "slide_frac": 0.0,
+    "speed_mean_mps": 5.6827,
+    "stall_frac": 0.0,
+    "stall_state_frac": 0.0,
+    "steep_slope_deg": null,
+    "stride_len_m": 2.028,
+    "stuck_frac": 0.0,
+    "torso_bob_cm": 7.29,
+    "torso_bob_frac": 0.0497,
+    "torso_roll_deg": 1.88
+   },
+   "scenario": "gallop"
+  },
+  {
+   "body": "longneck",
+   "checks": [
+    {
+     "actual": 0.0,
+     "id": "knee_flip",
+     "metric": "knee_flip_frac",
+     "op": "==",
+     "source": "owner movement canon 2026-11-21: legs never bend the wrong way (knee against its rest bend direction on any stance leg)",
+     "tolerance": null,
+     "value": 0,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 0.0,
+     "id": "foot_penetration",
+     "metric": "foot_penetration_cm.p95",
+     "op": "<",
+     "source": "owner movement canon 2026-11-21: feet and knees do not go through the ground (p95 depth under 1 cm)",
+     "tolerance": null,
+     "value": 1,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 1.94,
+     "id": "foot_slip",
+     "metric": "foot_slip_cm.p95",
+     "op": "<",
+     "source": "brief loco-score: foot slip p95 under 3 cm",
+     "tolerance": null,
+     "value": 3,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 31.59,
+     "id": "head_pitch",
+     "metric": "head_pitch_deg.mean",
+     "op": "within",
+     "source": "brief loco-score: head pitch within +-12 deg (climb is excluded: the ground itself is tilted)",
+     "tolerance": 12,
+     "value": 0,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 0.031,
+     "id": "pivot",
+     "metric": "pivot_frac",
+     "op": "<",
+     "source": "brief loco-score: pivot_frac under 0.05 while moving",
+     "tolerance": null,
+     "value": 0.05,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 0.4333,
+     "id": "pivot_turns",
+     "metric": "pivot_frac_of_turns",
+     "op": "<",
+     "source": "starting value: at most 15% of the turning frames are pivots; checked by the turn scenario (a U-turn is mostly pivot today)",
+     "tolerance": null,
+     "value": 0.15,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 0.8715,
+     "id": "leg_extension",
+     "metric": "leg_extension",
+     "op": ">=",
+     "source": "starting value (hip-to-ankle over leg length of a stance leg; real walkers stay near 0.9); calibrate against the Muybridge sheets, catches crouched legs",
+     "tolerance": null,
+     "value": 0.9,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 106.56,
+     "id": "head_periscope",
+     "metric": "head_yaw_vs_body_deg.p95",
+     "op": "<",
+     "source": "starting value: the head stays within 30 deg of the body heading (periscope neck guard)",
+     "tolerance": null,
+     "value": 30,
+     "verdict": "FAIL"
+    }
+   ],
+   "metrics": {
+    "airborne_frac": 0.0,
+    "back_slope_deg": 19.87,
+    "body_pitch_deg": 0.56,
+    "cadence_hz": 2.516,
+    "duty_factor": {
+     "mean": 0.5136,
+     "per_foot": [
+      0.5163,
+      0.5106,
+      0.5236,
+      0.5041
+     ]
+    },
+    "foot_penetration_cm": {
+     "max": 10.459,
+     "mean": 0.004,
+     "p95": 0.0
+    },
+    "foot_slip_cm": {
+     "mean": 0.45,
+     "p95": 1.94,
+     "stances": 420
+    },
+    "foot_spacing_ratio": 0.6475,
+    "footfall": {
+     "contact": [
+      "111111000001111110000001",
+      "000000111110000001111110",
+      "000001111111000001111110",
+      "111110000001111110000001"
+     ],
+     "dt": 0.03333,
+     "labels": [
+      "L0",
+      "R0",
+      "L1",
+      "R1"
+     ],
+     "start_frame": 4,
+     "stride_frames": 12
+    },
+    "gait_frac": {
+     "amble": 0.0429,
+     "trot": 0.9206,
+     "walk": 0.0365
+    },
+    "gait_symmetry": 0.984,
+    "ground_slope_deg": 0.0,
+    "head_pitch_deg": {
+     "mean": 31.59,
+     "p95": 47.38
+    },
+    "head_yaw_vs_body_deg": {
+     "mean": 10.59,
+     "p95": 106.56
+    },
+    "knee_flip_frac": 0.0,
+    "leg_extension": 0.8715,
+    "min_turn_radius_m": 0.33,
+    "moving_frac": 0.9762,
+    "pitch_follow": null,
+    "pivot_frac": 0.031,
+    "pivot_frac_of_turns": 0.4333,
+    "roll_plant_lag": 0.137,
+    "shoulder_hip_ratio": 1.5945,
+    "slide_frac": 0.0,
+    "speed_mean_mps": 5.0628,
+    "stall_frac": 0.0,
+    "stall_state_frac": 0.0,
+    "steep_slope_deg": null,
+    "stride_len_m": 1.965,
+    "stuck_frac": 0.0,
+    "torso_bob_cm": 4.35,
+    "torso_bob_frac": 0.0297,
+    "torso_roll_deg": 1.53
+   },
+   "scenario": "turn"
+  },
+  {
+   "body": "longneck",
+   "checks": [
+    {
+     "actual": 0.0028,
+     "id": "knee_flip",
+     "metric": "knee_flip_frac",
+     "op": "==",
+     "source": "owner movement canon 2026-11-21: legs never bend the wrong way (knee against its rest bend direction on any stance leg)",
+     "tolerance": null,
+     "value": 0,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 0.0,
+     "id": "foot_penetration",
+     "metric": "foot_penetration_cm.p95",
+     "op": "<",
+     "source": "owner movement canon 2026-11-21: feet and knees do not go through the ground (p95 depth under 1 cm)",
+     "tolerance": null,
+     "value": 1,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 9.82,
+     "id": "foot_slip",
+     "metric": "foot_slip_cm.p95",
+     "op": "<",
+     "source": "brief loco-score: foot slip p95 under 3 cm",
+     "tolerance": null,
+     "value": 3,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 0.0042,
+     "id": "pivot",
+     "metric": "pivot_frac",
+     "op": "<",
+     "source": "brief loco-score: pivot_frac under 0.05 while moving",
+     "tolerance": null,
+     "value": 0.05,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 0.862,
+     "id": "climb_follow",
+     "metric": "pitch_follow",
+     "op": ">=",
+     "source": "starting value: on slopes steeper than 0.1 the body tilts at least 60% of the slope",
+     "tolerance": null,
+     "value": 0.6,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 3.18,
+     "id": "climb_posture",
+     "metric": "climb_posture_shift_deg",
+     "op": ">=",
+     "source": "starting value: the back slope on a climb differs from the walk's by at least 5 deg (derived: |back_slope climb - back_slope walk|)",
+     "tolerance": null,
+     "value": 5,
+     "verdict": "FAIL"
+    }
+   ],
+   "metrics": {
+    "airborne_frac": 0.0,
+    "back_slope_deg": 18.66,
+    "body_pitch_deg": 1.86,
+    "cadence_hz": 2.326,
+    "climb_posture_shift_deg": 3.18,
+    "duty_factor": {
+     "mean": 0.5101,
+     "per_foot": [
+      0.5211,
+      0.4789,
+      0.5211,
+      0.5193
+     ]
+    },
+    "foot_penetration_cm": {
+     "max": 135.935,
+     "mean": 0.645,
+     "p95": 0.0
+    },
+    "foot_slip_cm": {
+     "mean": 1.3,
+     "p95": 9.82,
+     "stances": 185
+    },
+    "foot_spacing_ratio": 0.6288,
+    "footfall": {
+     "contact": [
+      "11111100000011111100000111",
+      "00000011111100000011111000",
+      "10000011111100000011111100",
+      "11111100000011111100000111"
+     ],
+     "dt": 0.03333,
+     "labels": [
+      "L0",
+      "R0",
+      "L1",
+      "R1"
+     ],
+     "start_frame": 11,
+     "stride_frames": 13
+    },
+    "gait_frac": {
+     "amble": 0.0514,
+     "trot": 0.7472,
+     "walk": 0.2014
+    },
+    "gait_symmetry": 1.001,
+    "ground_slope_deg": 1.32,
+    "head_pitch_deg": {
+     "mean": 33.83,
+     "p95": 58.13
+    },
+    "head_yaw_vs_body_deg": {
+     "mean": 12.74,
+     "p95": 108.11
+    },
+    "knee_flip_frac": 0.0028,
+    "leg_extension": 0.8471,
+    "min_turn_radius_m": 7.13,
+    "moving_frac": 0.7917,
+    "pitch_follow": 0.862,
+    "pivot_frac": 0.0042,
+    "pivot_frac_of_turns": null,
+    "roll_plant_lag": 0.121,
+    "shoulder_hip_ratio": 1.5537,
+    "slide_frac": 0.025,
+    "speed_mean_mps": 4.8837,
+    "stall_frac": 0.1167,
+    "stall_state_frac": 0.0,
+    "steep_slope_deg": 14.85,
+    "stride_len_m": 2.008,
+    "stuck_frac": 0.1167,
+    "torso_bob_cm": 13.05,
+    "torso_bob_frac": 0.0931,
+    "torso_roll_deg": 2.48
+   },
+   "scenario": "climb"
+  },
+  {
+   "body": "longneck",
+   "checks": [
+    {
+     "actual": 0.0058,
+     "id": "knee_flip",
+     "metric": "knee_flip_frac",
+     "op": "==",
+     "source": "owner movement canon 2026-11-21: legs never bend the wrong way (knee against its rest bend direction on any stance leg)",
+     "tolerance": null,
+     "value": 0,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 0.0,
+     "id": "foot_penetration",
+     "metric": "foot_penetration_cm.p95",
+     "op": "<",
+     "source": "owner movement canon 2026-11-21: feet and knees do not go through the ground (p95 depth under 1 cm)",
+     "tolerance": null,
+     "value": 1,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 9.74,
+     "id": "foot_slip",
+     "metric": "foot_slip_cm.p95",
+     "op": "<",
+     "source": "brief loco-score: foot slip p95 under 3 cm",
+     "tolerance": null,
+     "value": 3,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 35.99,
+     "id": "head_pitch",
+     "metric": "head_pitch_deg.mean",
+     "op": "within",
+     "source": "brief loco-score: head pitch within +-12 deg (climb is excluded: the ground itself is tilted)",
+     "tolerance": 12,
+     "value": 0,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 0.0565,
+     "id": "pivot",
+     "metric": "pivot_frac",
+     "op": "<",
+     "source": "brief loco-score: pivot_frac under 0.05 while moving",
+     "tolerance": null,
+     "value": 0.05,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 0.2889,
+     "id": "pivot_turns",
+     "metric": "pivot_frac_of_turns",
+     "op": "<",
+     "source": "starting value: at most 15% of the turning frames are pivots; checked by the turn scenario (a U-turn is mostly pivot today)",
+     "tolerance": null,
+     "value": 0.15,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 0.013,
+     "id": "stall_steps",
+     "metric": "stall_frac",
+     "op": "==",
+     "source": "brief loco-score: stall_frac = 0 on steps (stalled state or a go order that has stopped the body)",
+     "tolerance": null,
+     "value": 0,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 0.8572,
+     "id": "leg_extension",
+     "metric": "leg_extension",
+     "op": ">=",
+     "source": "starting value (hip-to-ankle over leg length of a stance leg; real walkers stay near 0.9); calibrate against the Muybridge sheets, catches crouched legs",
+     "tolerance": null,
+     "value": 0.9,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 28.78,
+     "id": "head_periscope",
+     "metric": "head_yaw_vs_body_deg.p95",
+     "op": "<",
+     "source": "starting value: the head stays within 30 deg of the body heading (periscope neck guard)",
+     "tolerance": null,
+     "value": 30,
+     "verdict": "PASS"
+    }
+   ],
+   "metrics": {
+    "airborne_frac": 0.0,
+    "back_slope_deg": 20.65,
+    "body_pitch_deg": 1.4,
+    "cadence_hz": 2.428,
+    "duty_factor": {
+     "mean": 0.5111,
+     "per_foot": [
+      0.5253,
+      0.4962,
+      0.5453,
+      0.4777
+     ]
+    },
+    "foot_penetration_cm": {
+     "max": 35.492,
+     "mean": 0.016,
+     "p95": 0.0
+    },
+    "foot_slip_cm": {
+     "mean": 0.98,
+     "p95": 9.74,
+     "stances": 219
+    },
+    "foot_spacing_ratio": 0.6579,
+    "footfall": {
+     "contact": [
+      "111111000001111110000001",
+      "000000111110000001111110",
+      "000001111111000001111110",
+      "111110000001111110000001"
+     ],
+     "dt": 0.03333,
+     "labels": [
+      "L0",
+      "R0",
+      "L1",
+      "R1"
+     ],
+     "start_frame": 4,
+     "stride_frames": 12
+    },
+    "gait_frac": {
+     "amble": 0.1014,
+     "trot": 0.8246,
+     "walk": 0.0739
+    },
+    "gait_symmetry": 1.036,
+    "ground_slope_deg": 0.32,
+    "head_pitch_deg": {
+     "mean": 35.99,
+     "p95": 56.89
+    },
+    "head_yaw_vs_body_deg": {
+     "mean": 8.75,
+     "p95": 28.78
+    },
+    "knee_flip_frac": 0.0058,
+    "leg_extension": 0.8572,
+    "min_turn_radius_m": 0.33,
+    "moving_frac": 0.9435,
+    "pitch_follow": 1.52,
+    "pivot_frac": 0.0565,
+    "pivot_frac_of_turns": 0.2889,
+    "roll_plant_lag": 0.339,
+    "shoulder_hip_ratio": 1.6398,
+    "slide_frac": 0.0,
+    "speed_mean_mps": 4.8965,
+    "stall_frac": 0.013,
+    "stall_state_frac": 0.0,
+    "steep_slope_deg": 13.06,
+    "stride_len_m": 1.932,
+    "stuck_frac": 0.013,
+    "torso_bob_cm": 8.53,
+    "torso_bob_frac": 0.0589,
+    "torso_roll_deg": 3.31
+   },
+   "scenario": "steps"
+  },
+  {
+   "body": "centipede",
+   "checks": [
+    {
+     "actual": 0.0,
+     "id": "knee_flip",
+     "metric": "knee_flip_frac",
+     "op": "==",
+     "source": "owner movement canon 2026-11-21: legs never bend the wrong way (knee against its rest bend direction on any stance leg)",
+     "tolerance": null,
+     "value": 0,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 0.0,
+     "id": "foot_penetration",
+     "metric": "foot_penetration_cm.p95",
+     "op": "<",
+     "source": "owner movement canon 2026-11-21: feet and knees do not go through the ground (p95 depth under 1 cm)",
+     "tolerance": null,
+     "value": 1,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 7.86,
+     "id": "foot_slip",
+     "metric": "foot_slip_cm.p95",
+     "op": "<",
+     "source": "brief loco-score: foot slip p95 under 3 cm",
+     "tolerance": null,
+     "value": 3,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 18.26,
+     "id": "head_pitch",
+     "metric": "head_pitch_deg.mean",
+     "op": "within",
+     "source": "brief loco-score: head pitch within +-12 deg (climb is excluded: the ground itself is tilted)",
+     "tolerance": 12,
+     "value": 0,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 0.0,
+     "id": "pivot",
+     "metric": "pivot_frac",
+     "op": "<",
+     "source": "brief loco-score: pivot_frac under 0.05 while moving",
+     "tolerance": null,
+     "value": 0.05,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 0.0,
+     "id": "air_walk",
+     "metric": "airborne_frac",
+     "op": "<=",
+     "source": "brief loco-score: no flight phase in a walk",
+     "tolerance": null,
+     "value": 0.005,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 0.8337,
+     "id": "leg_extension",
+     "metric": "leg_extension",
+     "op": ">=",
+     "source": "starting value (hip-to-ankle over leg length of a stance leg; real walkers stay near 0.9); calibrate against the Muybridge sheets, catches crouched legs",
+     "tolerance": null,
+     "value": 0.9,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 0.1845,
+     "id": "foot_spacing",
+     "metric": "foot_spacing_ratio",
+     "op": ">=",
+     "source": "starting value: neighbouring same-side feet at least 0.3 leg lengths apart; catches bunched centipede legs",
+     "tolerance": null,
+     "value": 0.3,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 17.33,
+     "id": "head_periscope",
+     "metric": "head_yaw_vs_body_deg.p95",
+     "op": "<",
+     "source": "starting value: the head stays within 30 deg of the body heading (periscope neck guard)",
+     "tolerance": null,
+     "value": 30,
+     "verdict": "PASS"
+    }
+   ],
+   "metrics": {
+    "airborne_frac": 0.0,
+    "back_slope_deg": 7.43,
+    "body_pitch_deg": 1.26,
+    "cadence_hz": 3.091,
+    "duty_factor": {
+     "mean": 0.5174,
+     "per_foot": [
+      0.5292,
+      0.5042,
+      0.5375,
+      0.5028,
+      0.5347,
+      0.5,
+      0.5333,
+      0.4972
+     ]
+    },
+    "foot_penetration_cm": {
+     "max": 0.0,
+     "mean": 0.0,
+     "p95": 0.0
+    },
+    "foot_slip_cm": {
+     "mean": 1.38,
+     "p95": 7.86,
+     "stances": 588
+    },
+    "foot_spacing_ratio": 0.1845,
+    "footfall": {
+     "contact": [
+      "11111000001111100000",
+      "00000111110000011111",
+      "00111110000011111000",
+      "11000001111100000111",
+      "00001111100000111110",
+      "11110000011111000011",
+      "10000011111000011111",
+      "01111100000111100000"
+     ],
+     "dt": 0.03333,
+     "labels": [
+      "L0",
+      "R0",
+      "L1",
+      "R1",
+      "L2",
+      "R2",
+      "L3",
+      "R3"
+     ],
+     "start_frame": 3,
+     "stride_frames": 10
+    },
+    "gait_frac": {
+     "ripple": 1.0
+    },
+    "gait_symmetry": 0.995,
+    "ground_slope_deg": 0.0,
+    "head_pitch_deg": {
+     "mean": 18.26,
+     "p95": 22.61
+    },
+    "head_yaw_vs_body_deg": {
+     "mean": 9.5,
+     "p95": 17.33
+    },
+    "knee_flip_frac": 0.0,
+    "leg_extension": 0.8337,
+    "min_turn_radius_m": 2.01,
+    "moving_frac": 1.0,
+    "pitch_follow": null,
+    "pivot_frac": 0.0,
+    "pivot_frac_of_turns": 0.0,
+    "roll_plant_lag": 0.485,
+    "shoulder_hip_ratio": 1.3247,
+    "slide_frac": 0.0,
+    "speed_mean_mps": 4.6365,
+    "stall_frac": 0.0,
+    "stall_state_frac": 0.0,
+    "steep_slope_deg": null,
+    "stride_len_m": 1.501,
+    "stuck_frac": 0.0,
+    "torso_bob_cm": 6.96,
+    "torso_bob_frac": 0.0787,
+    "torso_roll_deg": 1.85
+   },
+   "scenario": "walk"
+  },
+  {
+   "body": "centipede",
+   "checks": [
+    {
+     "actual": 0.0,
+     "id": "knee_flip",
+     "metric": "knee_flip_frac",
+     "op": "==",
+     "source": "owner movement canon 2026-11-21: legs never bend the wrong way (knee against its rest bend direction on any stance leg)",
+     "tolerance": null,
+     "value": 0,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 0.0,
+     "id": "foot_penetration",
+     "metric": "foot_penetration_cm.p95",
+     "op": "<",
+     "source": "owner movement canon 2026-11-21: feet and knees do not go through the ground (p95 depth under 1 cm)",
+     "tolerance": null,
+     "value": 1,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 5.47,
+     "id": "foot_slip",
+     "metric": "foot_slip_cm.p95",
+     "op": "<",
+     "source": "brief loco-score: foot slip p95 under 3 cm",
+     "tolerance": null,
+     "value": 3,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 19.8,
+     "id": "head_pitch",
+     "metric": "head_pitch_deg.mean",
+     "op": "within",
+     "source": "brief loco-score: head pitch within +-12 deg (climb is excluded: the ground itself is tilted)",
+     "tolerance": 12,
+     "value": 0,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 0.0,
+     "id": "pivot",
+     "metric": "pivot_frac",
+     "op": "<",
+     "source": "brief loco-score: pivot_frac under 0.05 while moving",
+     "tolerance": null,
+     "value": 0.05,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 0.7972,
+     "id": "leg_extension",
+     "metric": "leg_extension",
+     "op": ">=",
+     "source": "starting value (hip-to-ankle over leg length of a stance leg; real walkers stay near 0.9); calibrate against the Muybridge sheets, catches crouched legs",
+     "tolerance": null,
+     "value": 0.9,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 0.1866,
+     "id": "foot_spacing",
+     "metric": "foot_spacing_ratio",
+     "op": ">=",
+     "source": "starting value: neighbouring same-side feet at least 0.3 leg lengths apart; catches bunched centipede legs",
+     "tolerance": null,
+     "value": 0.3,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 15.69,
+     "id": "head_periscope",
+     "metric": "head_yaw_vs_body_deg.p95",
+     "op": "<",
+     "source": "starting value: the head stays within 30 deg of the body heading (periscope neck guard)",
+     "tolerance": null,
+     "value": 30,
+     "verdict": "PASS"
+    }
+   ],
+   "metrics": {
+    "airborne_frac": 0.0,
+    "back_slope_deg": 8.91,
+    "body_pitch_deg": 2.81,
+    "cadence_hz": 6.515,
+    "duty_factor": {
+     "mean": 0.5363,
+     "per_foot": [
+      0.5653,
+      0.5056,
+      0.5708,
+      0.4903,
+      0.5778,
+      0.4944,
+      0.5778,
+      0.5083
+     ]
+    },
+    "foot_penetration_cm": {
+     "max": 2.075,
+     "mean": 0.001,
+     "p95": 0.0
+    },
+    "foot_slip_cm": {
+     "mean": 1.22,
+     "p95": 5.47,
+     "stances": 1245
+    },
+    "foot_spacing_ratio": 0.1866,
+    "footfall": {
+     "contact": [
+      "1100110011",
+      "0011001100",
+      "0110011001",
+      "1001100110",
+      "0111011101",
+      "1001100110",
+      "1011001100",
+      "1100110011"
+     ],
+     "dt": 0.03333,
+     "labels": [
+      "L0",
+      "R0",
+      "L1",
+      "R1",
+      "L2",
+      "R2",
+      "L3",
+      "R3"
+     ],
+     "start_frame": 3,
+     "stride_frames": 5
+    },
+    "gait_frac": {
+     "ripple": 1.0
+    },
+    "gait_symmetry": 1.002,
+    "ground_slope_deg": 0.0,
+    "head_pitch_deg": {
+     "mean": 19.8,
+     "p95": 30.11
+    },
+    "head_yaw_vs_body_deg": {
+     "mean": 8.5,
+     "p95": 15.69
+    },
+    "knee_flip_frac": 0.0,
+    "leg_extension": 0.7972,
+    "min_turn_radius_m": 1.93,
+    "moving_frac": 1.0,
+    "pitch_follow": null,
+    "pivot_frac": 0.0,
+    "pivot_frac_of_turns": 0.0,
+    "roll_plant_lag": -0.403,
+    "shoulder_hip_ratio": 1.4256,
+    "slide_frac": 0.0,
+    "speed_mean_mps": 5.4306,
+    "stall_frac": 0.0,
+    "stall_state_frac": 0.0,
+    "steep_slope_deg": null,
+    "stride_len_m": 1.508,
+    "stuck_frac": 0.0,
+    "torso_bob_cm": 5.96,
+    "torso_bob_frac": 0.0686,
+    "torso_roll_deg": 1.28
+   },
+   "scenario": "gallop"
+  },
+  {
+   "body": "centipede",
+   "checks": [
+    {
+     "actual": 0.0,
+     "id": "knee_flip",
+     "metric": "knee_flip_frac",
+     "op": "==",
+     "source": "owner movement canon 2026-11-21: legs never bend the wrong way (knee against its rest bend direction on any stance leg)",
+     "tolerance": null,
+     "value": 0,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 0.0,
+     "id": "foot_penetration",
+     "metric": "foot_penetration_cm.p95",
+     "op": "<",
+     "source": "owner movement canon 2026-11-21: feet and knees do not go through the ground (p95 depth under 1 cm)",
+     "tolerance": null,
+     "value": 1,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 1.11,
+     "id": "foot_slip",
+     "metric": "foot_slip_cm.p95",
+     "op": "<",
+     "source": "brief loco-score: foot slip p95 under 3 cm",
+     "tolerance": null,
+     "value": 3,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 17.42,
+     "id": "head_pitch",
+     "metric": "head_pitch_deg.mean",
+     "op": "within",
+     "source": "brief loco-score: head pitch within +-12 deg (climb is excluded: the ground itself is tilted)",
+     "tolerance": 12,
+     "value": 0,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 0.0262,
+     "id": "pivot",
+     "metric": "pivot_frac",
+     "op": "<",
+     "source": "brief loco-score: pivot_frac under 0.05 while moving",
+     "tolerance": null,
+     "value": 0.05,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 0.44,
+     "id": "pivot_turns",
+     "metric": "pivot_frac_of_turns",
+     "op": "<",
+     "source": "starting value: at most 15% of the turning frames are pivots; checked by the turn scenario (a U-turn is mostly pivot today)",
+     "tolerance": null,
+     "value": 0.15,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 0.8596,
+     "id": "leg_extension",
+     "metric": "leg_extension",
+     "op": ">=",
+     "source": "starting value (hip-to-ankle over leg length of a stance leg; real walkers stay near 0.9); calibrate against the Muybridge sheets, catches crouched legs",
+     "tolerance": null,
+     "value": 0.9,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 0.1642,
+     "id": "foot_spacing",
+     "metric": "foot_spacing_ratio",
+     "op": ">=",
+     "source": "starting value: neighbouring same-side feet at least 0.3 leg lengths apart; catches bunched centipede legs",
+     "tolerance": null,
+     "value": 0.3,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 17.91,
+     "id": "head_periscope",
+     "metric": "head_yaw_vs_body_deg.p95",
+     "op": "<",
+     "source": "starting value: the head stays within 30 deg of the body heading (periscope neck guard)",
+     "tolerance": null,
+     "value": 30,
+     "verdict": "PASS"
+    }
+   ],
+   "metrics": {
+    "airborne_frac": 0.0,
+    "back_slope_deg": 6.78,
+    "body_pitch_deg": 0.59,
+    "cadence_hz": 3.03,
+    "duty_factor": {
+     "mean": 0.5169,
+     "per_foot": [
+      0.5364,
+      0.4943,
+      0.5275,
+      0.5089,
+      0.5235,
+      0.5105,
+      0.5307,
+      0.5032
+     ]
+    },
+    "foot_penetration_cm": {
+     "max": 0.0,
+     "mean": 0.0,
+     "p95": 0.0
+    },
+    "foot_slip_cm": {
+     "mean": 0.3,
+     "p95": 1.11,
+     "stances": 1014
+    },
+    "foot_spacing_ratio": 0.1642,
+    "footfall": {
+     "contact": [
+      "11111000001111100001",
+      "00000111110000011110",
+      "00111110000011111000",
+      "11000001111100001111",
+      "00001111100001111110",
+      "11110000011110000011",
+      "10000011111000011111",
+      "01111100001111100000"
+     ],
+     "dt": 0.03333,
+     "labels": [
+      "L0",
+      "R0",
+      "L1",
+      "R1",
+      "L2",
+      "R2",
+      "L3",
+      "R3"
+     ],
+     "start_frame": 7,
+     "stride_frames": 10
+    },
+    "gait_frac": {
+     "ripple": 1.0
+    },
+    "gait_symmetry": 0.98,
+    "ground_slope_deg": 0.0,
+    "head_pitch_deg": {
+     "mean": 17.42,
+     "p95": 29.02
+    },
+    "head_yaw_vs_body_deg": {
+     "mean": 2.94,
+     "p95": 17.91
+    },
+    "knee_flip_frac": 0.0,
+    "leg_extension": 0.8596,
+    "min_turn_radius_m": 0.3,
+    "moving_frac": 0.981,
+    "pitch_follow": null,
+    "pivot_frac": 0.0262,
+    "pivot_frac_of_turns": 0.44,
+    "roll_plant_lag": -0.249,
+    "shoulder_hip_ratio": 1.283,
+    "slide_frac": 0.0,
+    "speed_mean_mps": 4.5639,
+    "stall_frac": 0.0,
+    "stall_state_frac": 0.0,
+    "steep_slope_deg": null,
+    "stride_len_m": 1.482,
+    "stuck_frac": 0.0,
+    "torso_bob_cm": 2.66,
+    "torso_bob_frac": 0.0297,
+    "torso_roll_deg": 0.85
+   },
+   "scenario": "turn"
+  },
+  {
+   "body": "centipede",
+   "checks": [
+    {
+     "actual": 0.0111,
+     "id": "knee_flip",
+     "metric": "knee_flip_frac",
+     "op": "==",
+     "source": "owner movement canon 2026-11-21: legs never bend the wrong way (knee against its rest bend direction on any stance leg)",
+     "tolerance": null,
+     "value": 0,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 0.0,
+     "id": "foot_penetration",
+     "metric": "foot_penetration_cm.p95",
+     "op": "<",
+     "source": "owner movement canon 2026-11-21: feet and knees do not go through the ground (p95 depth under 1 cm)",
+     "tolerance": null,
+     "value": 1,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 5.78,
+     "id": "foot_slip",
+     "metric": "foot_slip_cm.p95",
+     "op": "<",
+     "source": "brief loco-score: foot slip p95 under 3 cm",
+     "tolerance": null,
+     "value": 3,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 0.0083,
+     "id": "pivot",
+     "metric": "pivot_frac",
+     "op": "<",
+     "source": "brief loco-score: pivot_frac under 0.05 while moving",
+     "tolerance": null,
+     "value": 0.05,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 0.706,
+     "id": "climb_follow",
+     "metric": "pitch_follow",
+     "op": ">=",
+     "source": "starting value: on slopes steeper than 0.1 the body tilts at least 60% of the slope",
+     "tolerance": null,
+     "value": 0.6,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 1.22,
+     "id": "climb_posture",
+     "metric": "climb_posture_shift_deg",
+     "op": ">=",
+     "source": "starting value: the back slope on a climb differs from the walk's by at least 5 deg (derived: |back_slope climb - back_slope walk|)",
+     "tolerance": null,
+     "value": 5,
+     "verdict": "FAIL"
+    }
+   ],
+   "metrics": {
+    "airborne_frac": 0.0,
+    "back_slope_deg": 6.21,
+    "body_pitch_deg": 3.16,
+    "cadence_hz": 2.826,
+    "climb_posture_shift_deg": 1.22,
+    "duty_factor": {
+     "mean": 0.5119,
+     "per_foot": [
+      0.535,
+      0.4967,
+      0.515,
+      0.505,
+      0.5183,
+      0.5,
+      0.5283,
+      0.4967
+     ]
+    },
+    "foot_penetration_cm": {
+     "max": 131.469,
+     "mean": 0.648,
+     "p95": 0.0
+    },
+    "foot_slip_cm": {
+     "mean": 0.83,
+     "p95": 5.78,
+     "stances": 501
+    },
+    "foot_spacing_ratio": 0.1617,
+    "footfall": {
+     "contact": [
+      "11111000001111100000",
+      "00000111110000011111",
+      "00111110000011111000",
+      "11000001111100000111",
+      "00001111100000111110",
+      "11110000011111000011",
+      "10000011111000011111",
+      "01111100000111100000"
+     ],
+     "dt": 0.03333,
+     "labels": [
+      "L0",
+      "R0",
+      "L1",
+      "R1",
+      "L2",
+      "R2",
+      "L3",
+      "R3"
+     ],
+     "start_frame": 3,
+     "stride_frames": 10
+    },
+    "gait_frac": {
+     "ripple": 1.0
+    },
+    "gait_symmetry": 0.97,
+    "ground_slope_deg": 1.0,
+    "head_pitch_deg": {
+     "mean": 23.15,
+     "p95": 49.89
+    },
+    "head_yaw_vs_body_deg": {
+     "mean": 4.17,
+     "p95": 17.59
+    },
+    "knee_flip_frac": 0.0111,
+    "leg_extension": 0.8381,
+    "min_turn_radius_m": 6.39,
+    "moving_frac": 0.8333,
+    "pitch_follow": 0.706,
+    "pivot_frac": 0.0083,
+    "pivot_frac_of_turns": null,
+    "roll_plant_lag": -0.358,
+    "shoulder_hip_ratio": 1.2605,
+    "slide_frac": 0.0208,
+    "speed_mean_mps": 4.5867,
+    "stall_frac": 0.075,
+    "stall_state_frac": 0.0,
+    "steep_slope_deg": 15.39,
+    "stride_len_m": 1.495,
+    "stuck_frac": 0.075,
+    "torso_bob_cm": 9.38,
+    "torso_bob_frac": 0.1086,
+    "torso_roll_deg": 0.58
+   },
+   "scenario": "climb"
+  },
+  {
+   "body": "centipede",
+   "checks": [
+    {
+     "actual": 0.0,
+     "id": "knee_flip",
+     "metric": "knee_flip_frac",
+     "op": "==",
+     "source": "owner movement canon 2026-11-21: legs never bend the wrong way (knee against its rest bend direction on any stance leg)",
+     "tolerance": null,
+     "value": 0,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 0.0,
+     "id": "foot_penetration",
+     "metric": "foot_penetration_cm.p95",
+     "op": "<",
+     "source": "owner movement canon 2026-11-21: feet and knees do not go through the ground (p95 depth under 1 cm)",
+     "tolerance": null,
+     "value": 1,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 4.85,
+     "id": "foot_slip",
+     "metric": "foot_slip_cm.p95",
+     "op": "<",
+     "source": "brief loco-score: foot slip p95 under 3 cm",
+     "tolerance": null,
+     "value": 3,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 18.21,
+     "id": "head_pitch",
+     "metric": "head_pitch_deg.mean",
+     "op": "within",
+     "source": "brief loco-score: head pitch within +-12 deg (climb is excluded: the ground itself is tilted)",
+     "tolerance": 12,
+     "value": 0,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 0.0348,
+     "id": "pivot",
+     "metric": "pivot_frac",
+     "op": "<",
+     "source": "brief loco-score: pivot_frac under 0.05 while moving",
+     "tolerance": null,
+     "value": 0.05,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 0.2581,
+     "id": "pivot_turns",
+     "metric": "pivot_frac_of_turns",
+     "op": "<",
+     "source": "starting value: at most 15% of the turning frames are pivots; checked by the turn scenario (a U-turn is mostly pivot today)",
+     "tolerance": null,
+     "value": 0.15,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 0.0,
+     "id": "stall_steps",
+     "metric": "stall_frac",
+     "op": "==",
+     "source": "brief loco-score: stall_frac = 0 on steps (stalled state or a go order that has stopped the body)",
+     "tolerance": null,
+     "value": 0,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 0.8502,
+     "id": "leg_extension",
+     "metric": "leg_extension",
+     "op": ">=",
+     "source": "starting value (hip-to-ankle over leg length of a stance leg; real walkers stay near 0.9); calibrate against the Muybridge sheets, catches crouched legs",
+     "tolerance": null,
+     "value": 0.9,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 0.1641,
+     "id": "foot_spacing",
+     "metric": "foot_spacing_ratio",
+     "op": ">=",
+     "source": "starting value: neighbouring same-side feet at least 0.3 leg lengths apart; catches bunched centipede legs",
+     "tolerance": null,
+     "value": 0.3,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 19.62,
+     "id": "head_periscope",
+     "metric": "head_yaw_vs_body_deg.p95",
+     "op": "<",
+     "source": "starting value: the head stays within 30 deg of the body heading (periscope neck guard)",
+     "tolerance": null,
+     "value": 30,
+     "verdict": "PASS"
+    }
+   ],
+   "metrics": {
+    "airborne_frac": 0.0,
+    "back_slope_deg": 7.03,
+    "body_pitch_deg": 0.87,
+    "cadence_hz": 3.012,
+    "duty_factor": {
+     "mean": 0.5179,
+     "per_foot": [
+      0.5491,
+      0.4866,
+      0.5417,
+      0.494,
+      0.5372,
+      0.5045,
+      0.5164,
+      0.5134
+     ]
+    },
+    "foot_penetration_cm": {
+     "max": 0.001,
+     "mean": 0.0,
+     "p95": 0.0
+    },
+    "foot_slip_cm": {
+     "mean": 0.52,
+     "p95": 4.85,
+     "stances": 549
+    },
+    "foot_spacing_ratio": 0.1641,
+    "footfall": {
+     "contact": [
+      "11111000001111100001",
+      "00000111110000011110",
+      "00111110000011111000",
+      "11000001111100001111",
+      "00001111100001111110",
+      "11110000011110000011",
+      "10000011111000011111",
+      "01111100001111100000"
+     ],
+     "dt": 0.03333,
+     "labels": [
+      "L0",
+      "R0",
+      "L1",
+      "R1",
+      "L2",
+      "R2",
+      "L3",
+      "R3"
+     ],
+     "start_frame": 7,
+     "stride_frames": 10
+    },
+    "gait_frac": {
+     "ripple": 1.0
+    },
+    "gait_symmetry": 1.007,
+    "ground_slope_deg": 0.0,
+    "head_pitch_deg": {
+     "mean": 18.21,
+     "p95": 32.85
+    },
+    "head_yaw_vs_body_deg": {
+     "mean": 3.91,
+     "p95": 19.62
+    },
+    "knee_flip_frac": 0.0,
+    "leg_extension": 0.8502,
+    "min_turn_radius_m": 0.3,
+    "moving_frac": 0.9739,
+    "pitch_follow": null,
+    "pivot_frac": 0.0348,
+    "pivot_frac_of_turns": 0.2581,
+    "roll_plant_lag": -0.295,
+    "shoulder_hip_ratio": 1.2969,
+    "slide_frac": 0.0,
+    "speed_mean_mps": 4.52,
+    "stall_frac": 0.0,
+    "stall_state_frac": 0.0,
+    "steep_slope_deg": null,
+    "stride_len_m": 1.466,
+    "stuck_frac": 0.0,
+    "torso_bob_cm": 3.84,
+    "torso_bob_frac": 0.0429,
+    "torso_roll_deg": 1.77
+   },
+   "scenario": "steps"
+  },
+  {
+   "body": "hexapod",
+   "checks": [
+    {
+     "actual": 0.0,
+     "id": "knee_flip",
+     "metric": "knee_flip_frac",
+     "op": "==",
+     "source": "owner movement canon 2026-11-21: legs never bend the wrong way (knee against its rest bend direction on any stance leg)",
+     "tolerance": null,
+     "value": 0,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 0.0,
+     "id": "foot_penetration",
+     "metric": "foot_penetration_cm.p95",
+     "op": "<",
+     "source": "owner movement canon 2026-11-21: feet and knees do not go through the ground (p95 depth under 1 cm)",
+     "tolerance": null,
+     "value": 1,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 6.87,
+     "id": "foot_slip",
+     "metric": "foot_slip_cm.p95",
+     "op": "<",
+     "source": "brief loco-score: foot slip p95 under 3 cm",
+     "tolerance": null,
+     "value": 3,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 18.46,
+     "id": "head_pitch",
+     "metric": "head_pitch_deg.mean",
+     "op": "within",
+     "source": "brief loco-score: head pitch within +-12 deg (climb is excluded: the ground itself is tilted)",
+     "tolerance": 12,
+     "value": 0,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 0.0,
+     "id": "pivot",
+     "metric": "pivot_frac",
+     "op": "<",
+     "source": "brief loco-score: pivot_frac under 0.05 while moving",
+     "tolerance": null,
+     "value": 0.05,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 0.0,
+     "id": "air_walk",
+     "metric": "airborne_frac",
+     "op": "<=",
+     "source": "brief loco-score: no flight phase in a walk",
+     "tolerance": null,
+     "value": 0.005,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 0.8423,
+     "id": "leg_extension",
+     "metric": "leg_extension",
+     "op": ">=",
+     "source": "starting value (hip-to-ankle over leg length of a stance leg; real walkers stay near 0.9); calibrate against the Muybridge sheets, catches crouched legs",
+     "tolerance": null,
+     "value": 0.9,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 0.3233,
+     "id": "foot_spacing",
+     "metric": "foot_spacing_ratio",
+     "op": ">=",
+     "source": "starting value: neighbouring same-side feet at least 0.3 leg lengths apart; catches bunched centipede legs",
+     "tolerance": null,
+     "value": 0.3,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 19.32,
+     "id": "head_periscope",
+     "metric": "head_yaw_vs_body_deg.p95",
+     "op": "<",
+     "source": "starting value: the head stays within 30 deg of the body heading (periscope neck guard)",
+     "tolerance": null,
+     "value": 30,
+     "verdict": "PASS"
+    }
+   ],
+   "metrics": {
+    "airborne_frac": 0.0,
+    "back_slope_deg": 6.74,
+    "body_pitch_deg": 1.45,
+    "cadence_hz": 3.538,
+    "duty_factor": {
+     "mean": 0.5125,
+     "per_foot": [
+      0.5389,
+      0.4972,
+      0.5361,
+      0.5028,
+      0.5028,
+      0.4972
+     ]
+    },
+    "foot_penetration_cm": {
+     "max": 0.0,
+     "mean": 0.0,
+     "p95": 0.0
+    },
+    "foot_slip_cm": {
+     "mean": 1.89,
+     "p95": 6.87,
+     "stances": 504
+    },
+    "foot_spacing_ratio": 0.3233,
+    "footfall": {
+     "contact": [
+      "1111100001111000",
+      "0000011110000111",
+      "1000011110000111",
+      "1111100001111000",
+      "1111100001111000",
+      "0000011110000111"
+     ],
+     "dt": 0.03333,
+     "labels": [
+      "L0",
+      "R0",
+      "L1",
+      "R1",
+      "L2",
+      "R2"
+     ],
+     "start_frame": 8,
+     "stride_frames": 8
+    },
+    "gait_frac": {
+     "tripod": 1.0
+    },
+    "gait_symmetry": 1.004,
+    "ground_slope_deg": 0.0,
+    "head_pitch_deg": {
+     "mean": 18.46,
+     "p95": 22.9
+    },
+    "head_yaw_vs_body_deg": {
+     "mean": 9.54,
+     "p95": 19.32
+    },
+    "knee_flip_frac": 0.0,
+    "leg_extension": 0.8423,
+    "min_turn_radius_m": 2.22,
+    "moving_frac": 1.0,
+    "pitch_follow": null,
+    "pivot_frac": 0.0,
+    "pivot_frac_of_turns": 0.0,
+    "roll_plant_lag": 0.443,
+    "shoulder_hip_ratio": 1.2503,
+    "slide_frac": 0.0,
+    "speed_mean_mps": 4.8906,
+    "stall_frac": 0.0,
+    "stall_state_frac": 0.0,
+    "steep_slope_deg": null,
+    "stride_len_m": 1.386,
+    "stuck_frac": 0.0,
+    "torso_bob_cm": 6.01,
+    "torso_bob_frac": 0.0762,
+    "torso_roll_deg": 1.41
+   },
+   "scenario": "walk"
+  },
+  {
+   "body": "hexapod",
+   "checks": [
+    {
+     "actual": 0.0014,
+     "id": "knee_flip",
+     "metric": "knee_flip_frac",
+     "op": "==",
+     "source": "owner movement canon 2026-11-21: legs never bend the wrong way (knee against its rest bend direction on any stance leg)",
+     "tolerance": null,
+     "value": 0,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 0.0,
+     "id": "foot_penetration",
+     "metric": "foot_penetration_cm.p95",
+     "op": "<",
+     "source": "owner movement canon 2026-11-21: feet and knees do not go through the ground (p95 depth under 1 cm)",
+     "tolerance": null,
+     "value": 1,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 6.04,
+     "id": "foot_slip",
+     "metric": "foot_slip_cm.p95",
+     "op": "<",
+     "source": "brief loco-score: foot slip p95 under 3 cm",
+     "tolerance": null,
+     "value": 3,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 19.91,
+     "id": "head_pitch",
+     "metric": "head_pitch_deg.mean",
+     "op": "within",
+     "source": "brief loco-score: head pitch within +-12 deg (climb is excluded: the ground itself is tilted)",
+     "tolerance": 12,
+     "value": 0,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 0.0,
+     "id": "pivot",
+     "metric": "pivot_frac",
+     "op": "<",
+     "source": "brief loco-score: pivot_frac under 0.05 while moving",
+     "tolerance": null,
+     "value": 0.05,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 0.8024,
+     "id": "leg_extension",
+     "metric": "leg_extension",
+     "op": ">=",
+     "source": "starting value (hip-to-ankle over leg length of a stance leg; real walkers stay near 0.9); calibrate against the Muybridge sheets, catches crouched legs",
+     "tolerance": null,
+     "value": 0.9,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 0.3071,
+     "id": "foot_spacing",
+     "metric": "foot_spacing_ratio",
+     "op": ">=",
+     "source": "starting value: neighbouring same-side feet at least 0.3 leg lengths apart; catches bunched centipede legs",
+     "tolerance": null,
+     "value": 0.3,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 16.9,
+     "id": "head_periscope",
+     "metric": "head_yaw_vs_body_deg.p95",
+     "op": "<",
+     "source": "starting value: the head stays within 30 deg of the body heading (periscope neck guard)",
+     "tolerance": null,
+     "value": 30,
+     "verdict": "PASS"
+    }
+   ],
+   "metrics": {
+    "airborne_frac": 0.0,
+    "back_slope_deg": 8.52,
+    "body_pitch_deg": 3.28,
+    "cadence_hz": 7.245,
+    "duty_factor": {
+     "mean": 0.5262,
+     "per_foot": [
+      0.5778,
+      0.5028,
+      0.5833,
+      0.4986,
+      0.4986,
+      0.4958
+     ]
+    },
+    "foot_penetration_cm": {
+     "max": 15.243,
+     "mean": 0.007,
+     "p95": 0.0
+    },
+    "foot_slip_cm": {
+     "mean": 1.2,
+     "p95": 6.04,
+     "stances": 1025
+    },
+    "foot_spacing_ratio": 0.3071,
+    "footfall": {
+     "contact": [
+      "11001101",
+      "00110110",
+      "00110111",
+      "11001001",
+      "11001001",
+      "00110110"
+     ],
+     "dt": 0.03333,
+     "labels": [
+      "L0",
+      "R0",
+      "L1",
+      "R1",
+      "L2",
+      "R2"
+     ],
+     "start_frame": 1,
+     "stride_frames": 4
+    },
+    "gait_frac": {
+     "tripod": 1.0
+    },
+    "gait_symmetry": 1.006,
+    "ground_slope_deg": 0.0,
+    "head_pitch_deg": {
+     "mean": 19.91,
+     "p95": 30.67
+    },
+    "head_yaw_vs_body_deg": {
+     "mean": 8.32,
+     "p95": 16.9
+    },
+    "knee_flip_frac": 0.0014,
+    "leg_extension": 0.8024,
+    "min_turn_radius_m": 2.31,
+    "moving_frac": 1.0,
+    "pitch_follow": null,
+    "pivot_frac": 0.0,
+    "pivot_frac_of_turns": 0.0,
+    "roll_plant_lag": 0.365,
+    "shoulder_hip_ratio": 1.3462,
+    "slide_frac": 0.0,
+    "speed_mean_mps": 5.5692,
+    "stall_frac": 0.0,
+    "stall_state_frac": 0.0,
+    "steep_slope_deg": null,
+    "stride_len_m": 1.391,
+    "stuck_frac": 0.0,
+    "torso_bob_cm": 5.81,
+    "torso_bob_frac": 0.0749,
+    "torso_roll_deg": 1.13
+   },
+   "scenario": "gallop"
+  },
+  {
+   "body": "hexapod",
+   "checks": [
+    {
+     "actual": 0.0,
+     "id": "knee_flip",
+     "metric": "knee_flip_frac",
+     "op": "==",
+     "source": "owner movement canon 2026-11-21: legs never bend the wrong way (knee against its rest bend direction on any stance leg)",
+     "tolerance": null,
+     "value": 0,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 0.0,
+     "id": "foot_penetration",
+     "metric": "foot_penetration_cm.p95",
+     "op": "<",
+     "source": "owner movement canon 2026-11-21: feet and knees do not go through the ground (p95 depth under 1 cm)",
+     "tolerance": null,
+     "value": 1,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 1.85,
+     "id": "foot_slip",
+     "metric": "foot_slip_cm.p95",
+     "op": "<",
+     "source": "brief loco-score: foot slip p95 under 3 cm",
+     "tolerance": null,
+     "value": 3,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 17.66,
+     "id": "head_pitch",
+     "metric": "head_pitch_deg.mean",
+     "op": "within",
+     "source": "brief loco-score: head pitch within +-12 deg (climb is excluded: the ground itself is tilted)",
+     "tolerance": 12,
+     "value": 0,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 0.0238,
+     "id": "pivot",
+     "metric": "pivot_frac",
+     "op": "<",
+     "source": "brief loco-score: pivot_frac under 0.05 while moving",
+     "tolerance": null,
+     "value": 0.05,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 0.4,
+     "id": "pivot_turns",
+     "metric": "pivot_frac_of_turns",
+     "op": "<",
+     "source": "starting value: at most 15% of the turning frames are pivots; checked by the turn scenario (a U-turn is mostly pivot today)",
+     "tolerance": null,
+     "value": 0.15,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 0.8746,
+     "id": "leg_extension",
+     "metric": "leg_extension",
+     "op": ">=",
+     "source": "starting value (hip-to-ankle over leg length of a stance leg; real walkers stay near 0.9); calibrate against the Muybridge sheets, catches crouched legs",
+     "tolerance": null,
+     "value": 0.9,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 0.2832,
+     "id": "foot_spacing",
+     "metric": "foot_spacing_ratio",
+     "op": ">=",
+     "source": "starting value: neighbouring same-side feet at least 0.3 leg lengths apart; catches bunched centipede legs",
+     "tolerance": null,
+     "value": 0.3,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 24.07,
+     "id": "head_periscope",
+     "metric": "head_yaw_vs_body_deg.p95",
+     "op": "<",
+     "source": "starting value: the head stays within 30 deg of the body heading (periscope neck guard)",
+     "tolerance": null,
+     "value": 30,
+     "verdict": "PASS"
+    }
+   ],
+   "metrics": {
+    "airborne_frac": 0.0,
+    "back_slope_deg": 5.82,
+    "body_pitch_deg": 0.51,
+    "cadence_hz": 3.463,
+    "duty_factor": {
+     "mean": 0.5117,
+     "per_foot": [
+      0.5278,
+      0.5044,
+      0.5424,
+      0.4939,
+      0.4948,
+      0.5069
+     ]
+    },
+    "foot_penetration_cm": {
+     "max": 28.266,
+     "mean": 0.004,
+     "p95": 0.0
+    },
+    "foot_slip_cm": {
+     "mean": 0.38,
+     "p95": 1.85,
+     "stances": 869
+    },
+    "foot_spacing_ratio": 0.2832,
+    "footfall": {
+     "contact": [
+      "111110000111100001",
+      "000011111000011110",
+      "100011111000011110",
+      "111100000111100001",
+      "111100000111100001",
+      "000011111000011110"
+     ],
+     "dt": 0.03333,
+     "labels": [
+      "L0",
+      "R0",
+      "L1",
+      "R1",
+      "L2",
+      "R2"
+     ],
+     "start_frame": 4,
+     "stride_frames": 9
+    },
+    "gait_frac": {
+     "tripod": 1.0
+    },
+    "gait_symmetry": 1.002,
+    "ground_slope_deg": 0.0,
+    "head_pitch_deg": {
+     "mean": 17.66,
+     "p95": 27.07
+    },
+    "head_yaw_vs_body_deg": {
+     "mean": 3.45,
+     "p95": 24.07
+    },
+    "knee_flip_frac": 0.0,
+    "leg_extension": 0.8746,
+    "min_turn_radius_m": 0.3,
+    "moving_frac": 0.9833,
+    "pitch_follow": null,
+    "pivot_frac": 0.0238,
+    "pivot_frac_of_turns": 0.4,
+    "roll_plant_lag": 0.311,
+    "shoulder_hip_ratio": 1.205,
+    "slide_frac": 0.0,
+    "speed_mean_mps": 4.8145,
+    "stall_frac": 0.0,
+    "stall_state_frac": 0.0,
+    "steep_slope_deg": null,
+    "stride_len_m": 1.367,
+    "stuck_frac": 0.0,
+    "torso_bob_cm": 3.77,
+    "torso_bob_frac": 0.047,
+    "torso_roll_deg": 0.81
+   },
+   "scenario": "turn"
+  },
+  {
+   "body": "hexapod",
+   "checks": [
+    {
+     "actual": 0.0083,
+     "id": "knee_flip",
+     "metric": "knee_flip_frac",
+     "op": "==",
+     "source": "owner movement canon 2026-11-21: legs never bend the wrong way (knee against its rest bend direction on any stance leg)",
+     "tolerance": null,
+     "value": 0,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 0.0,
+     "id": "foot_penetration",
+     "metric": "foot_penetration_cm.p95",
+     "op": "<",
+     "source": "owner movement canon 2026-11-21: feet and knees do not go through the ground (p95 depth under 1 cm)",
+     "tolerance": null,
+     "value": 1,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 6.2,
+     "id": "foot_slip",
+     "metric": "foot_slip_cm.p95",
+     "op": "<",
+     "source": "brief loco-score: foot slip p95 under 3 cm",
+     "tolerance": null,
+     "value": 3,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 0.0083,
+     "id": "pivot",
+     "metric": "pivot_frac",
+     "op": "<",
+     "source": "brief loco-score: pivot_frac under 0.05 while moving",
+     "tolerance": null,
+     "value": 0.05,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 0.711,
+     "id": "climb_follow",
+     "metric": "pitch_follow",
+     "op": ">=",
+     "source": "starting value: on slopes steeper than 0.1 the body tilts at least 60% of the slope",
+     "tolerance": null,
+     "value": 0.6,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 1.79,
+     "id": "climb_posture",
+     "metric": "climb_posture_shift_deg",
+     "op": ">=",
+     "source": "starting value: the back slope on a climb differs from the walk's by at least 5 deg (derived: |back_slope climb - back_slope walk|)",
+     "tolerance": null,
+     "value": 5,
+     "verdict": "FAIL"
+    }
+   ],
+   "metrics": {
+    "airborne_frac": 0.0,
+    "back_slope_deg": 4.95,
+    "body_pitch_deg": 3.01,
+    "cadence_hz": 3.37,
+    "climb_posture_shift_deg": 1.79,
+    "duty_factor": {
+     "mean": 0.5081,
+     "per_foot": [
+      0.5271,
+      0.4991,
+      0.5305,
+      0.4956,
+      0.4904,
+      0.5061
+     ]
+    },
+    "foot_penetration_cm": {
+     "max": 124.631,
+     "mean": 0.616,
+     "p95": 0.0
+    },
+    "foot_slip_cm": {
+     "mean": 1.11,
+     "p95": 6.2,
+     "stances": 404
+    },
+    "foot_spacing_ratio": 0.2794,
+    "footfall": {
+     "contact": [
+      "111110000111100001",
+      "000001111000011110",
+      "100001111000011111",
+      "111110000111100001",
+      "111110000111100001",
+      "000001111000011110"
+     ],
+     "dt": 0.03333,
+     "labels": [
+      "L0",
+      "R0",
+      "L1",
+      "R1",
+      "L2",
+      "R2"
+     ],
+     "start_frame": 8,
+     "stride_frames": 9
+    },
+    "gait_frac": {
+     "tripod": 1.0
+    },
+    "gait_symmetry": 0.984,
+    "ground_slope_deg": 0.99,
+    "head_pitch_deg": {
+     "mean": 23.32,
+     "p95": 51.56
+    },
+    "head_yaw_vs_body_deg": {
+     "mean": 7.17,
+     "p95": 33.15
+    },
+    "knee_flip_frac": 0.0083,
+    "leg_extension": 0.8533,
+    "min_turn_radius_m": 6.7,
+    "moving_frac": 0.7958,
+    "pitch_follow": 0.711,
+    "pivot_frac": 0.0083,
+    "pivot_frac_of_turns": null,
+    "roll_plant_lag": 0.277,
+    "shoulder_hip_ratio": 1.1763,
+    "slide_frac": 0.0208,
+    "speed_mean_mps": 4.8089,
+    "stall_frac": 0.1125,
+    "stall_state_frac": 0.0,
+    "steep_slope_deg": 15.49,
+    "stride_len_m": 1.384,
+    "stuck_frac": 0.1125,
+    "torso_bob_cm": 6.49,
+    "torso_bob_frac": 0.0847,
+    "torso_roll_deg": 0.59
+   },
+   "scenario": "climb"
+  },
+  {
+   "body": "hexapod",
+   "checks": [
+    {
+     "actual": 0.0,
+     "id": "knee_flip",
+     "metric": "knee_flip_frac",
+     "op": "==",
+     "source": "owner movement canon 2026-11-21: legs never bend the wrong way (knee against its rest bend direction on any stance leg)",
+     "tolerance": null,
+     "value": 0,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 0.0,
+     "id": "foot_penetration",
+     "metric": "foot_penetration_cm.p95",
+     "op": "<",
+     "source": "owner movement canon 2026-11-21: feet and knees do not go through the ground (p95 depth under 1 cm)",
+     "tolerance": null,
+     "value": 1,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 6.65,
+     "id": "foot_slip",
+     "metric": "foot_slip_cm.p95",
+     "op": "<",
+     "source": "brief loco-score: foot slip p95 under 3 cm",
+     "tolerance": null,
+     "value": 3,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 18.67,
+     "id": "head_pitch",
+     "metric": "head_pitch_deg.mean",
+     "op": "within",
+     "source": "brief loco-score: head pitch within +-12 deg (climb is excluded: the ground itself is tilted)",
+     "tolerance": 12,
+     "value": 0,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 0.0435,
+     "id": "pivot",
+     "metric": "pivot_frac",
+     "op": "<",
+     "source": "brief loco-score: pivot_frac under 0.05 while moving",
+     "tolerance": null,
+     "value": 0.05,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 0.2703,
+     "id": "pivot_turns",
+     "metric": "pivot_frac_of_turns",
+     "op": "<",
+     "source": "starting value: at most 15% of the turning frames are pivots; checked by the turn scenario (a U-turn is mostly pivot today)",
+     "tolerance": null,
+     "value": 0.15,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 0.0,
+     "id": "stall_steps",
+     "metric": "stall_frac",
+     "op": "==",
+     "source": "brief loco-score: stall_frac = 0 on steps (stalled state or a go order that has stopped the body)",
+     "tolerance": null,
+     "value": 0,
+     "verdict": "PASS"
+    },
+    {
+     "actual": 0.8558,
+     "id": "leg_extension",
+     "metric": "leg_extension",
+     "op": ">=",
+     "source": "starting value (hip-to-ankle over leg length of a stance leg; real walkers stay near 0.9); calibrate against the Muybridge sheets, catches crouched legs",
+     "tolerance": null,
+     "value": 0.9,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 0.288,
+     "id": "foot_spacing",
+     "metric": "foot_spacing_ratio",
+     "op": ">=",
+     "source": "starting value: neighbouring same-side feet at least 0.3 leg lengths apart; catches bunched centipede legs",
+     "tolerance": null,
+     "value": 0.3,
+     "verdict": "FAIL"
+    },
+    {
+     "actual": 26.97,
+     "id": "head_periscope",
+     "metric": "head_yaw_vs_body_deg.p95",
+     "op": "<",
+     "source": "starting value: the head stays within 30 deg of the body heading (periscope neck guard)",
+     "tolerance": null,
+     "value": 30,
+     "verdict": "PASS"
+    }
+   ],
+   "metrics": {
+    "airborne_frac": 0.0,
+    "back_slope_deg": 6.23,
+    "body_pitch_deg": 1.21,
+    "cadence_hz": 3.37,
+    "duty_factor": {
+     "mean": 0.512,
+     "per_foot": [
+      0.5277,
+      0.5097,
+      0.5411,
+      0.4963,
+      0.4948,
+      0.5022
+     ]
+    },
+    "foot_penetration_cm": {
+     "max": 40.17,
+     "mean": 0.016,
+     "p95": 0.0
+    },
+    "foot_slip_cm": {
+     "mean": 0.9,
+     "p95": 6.65,
+     "stances": 461
+    },
+    "foot_spacing_ratio": 0.288,
+    "footfall": {
+     "contact": [
+      "111110000111100001",
+      "000011111000011110",
+      "100011111000011110",
+      "111100000111100001",
+      "111100000111100001",
+      "000011111000011110"
+     ],
+     "dt": 0.03333,
+     "labels": [
+      "L0",
+      "R0",
+      "L1",
+      "R1",
+      "L2",
+      "R2"
+     ],
+     "start_frame": 4,
+     "stride_frames": 9
+    },
+    "gait_frac": {
+     "tripod": 1.0
+    },
+    "gait_symmetry": 0.997,
+    "ground_slope_deg": 0.33,
+    "head_pitch_deg": {
+     "mean": 18.67,
+     "p95": 34.33
+    },
+    "head_yaw_vs_body_deg": {
+     "mean": 5.33,
+     "p95": 26.97
+    },
+    "knee_flip_frac": 0.0,
+    "leg_extension": 0.8558,
+    "min_turn_radius_m": 0.31,
+    "moving_frac": 0.9696,
+    "pitch_follow": 1.497,
+    "pivot_frac": 0.0435,
+    "pivot_frac_of_turns": 0.2703,
+    "roll_plant_lag": 0.385,
+    "shoulder_hip_ratio": 1.2261,
+    "slide_frac": 0.0,
+    "speed_mean_mps": 4.6954,
+    "stall_frac": 0.0,
+    "stall_state_frac": 0.0,
+    "steep_slope_deg": 12.65,
+    "stride_len_m": 1.349,
+    "stuck_frac": 0.0,
+    "torso_bob_cm": 4.92,
+    "torso_bob_frac": 0.0624,
+    "torso_roll_deg": 1.57
+   },
+   "scenario": "steps"
+  }
+ ]
+}
