@@ -216,21 +216,28 @@ static func _bend_spine(creature, pose: Dictionary, desc: Dictionary) -> void:
 			pt -= pose.neck.pitch * neck_k[b]
 		yaw_abs[b] = yw
 		pit_abs[b] = pt
-	_stabilise_head(creature, pose, sk, yaw_abs, pit_abs, neck_k)
+	if not (desc.leg_ids as Array).is_empty():        # legless bodies keep their natural head carriage (a slug's head rests on the ground)
+		_stabilise_head(creature, pose, sk, yaw_abs, pit_abs, neck_k)
 	var act: Dictionary = pose.get("act", {})        # action layer (godot/actions): local bone deltas added on top
 	# Bones from the first neck bone to the head take their yaw and pitch about the CREATURE's up and lateral axes
 	# (a steep neck's own axes are tilted, so a local yaw would roll it sideways: the longneck periscope flip).
-	var from_creature: int = int(creature.neck_bones[0]) if creature.neck_bones.size() > 0 and creature.neck_bones[0] > int(creature.root_bone) else nb
+	var root_b = creature.get("root_bone")
+	var from_creature: int = nb
+	if root_b != null and sk.has_method("get_bone_global_rest") and creature.neck_bones.size() > 0 and creature.neck_bones[0] > int(root_b):
+		from_creature = int(creature.neck_bones[0])
 	var gpose := {}
 	for b in range(nb):
 		var par: int = sk.get_bone_parent(b)
 		var rest_q: Quaternion = (sk.get_bone_rest(b) as Transform3D).basis.get_rotation_quaternion()
 		var q: Quaternion
 		if b >= from_creature:
-			var g_rest: Quaternion = (sk.get_bone_global_rest(b) as Transform3D).basis.get_rotation_quaternion()
+			# rotation relative to the parent about the creature's axes, applied in the parent's actual frame (so the action
+			# layer's rotations on the parent still carry the child along)
 			var rc := Quaternion(Vector3.UP, yaw_abs[b]) * Quaternion(Vector3.RIGHT, pit_abs[b])
-			var g_want: Quaternion = rc * g_rest
-			q = (gpose[par] as Quaternion).inverse() * g_want
+			var rc_par := Quaternion(Vector3.UP, yaw_abs[par]) * Quaternion(Vector3.RIGHT, pit_abs[par])
+			var rel: Quaternion = rc * rc_par.inverse()
+			var gp: Quaternion = gpose[par]
+			q = gp.inverse() * rel * gp * rest_q
 			if not act.is_empty():
 				q = q * Quaternion(Vector3.UP, act.bone_dy[b]) * Quaternion(Vector3.RIGHT, act.bone_dp[b]) * Quaternion(Vector3.BACK, act.bone_dr[b])
 		else:
@@ -243,7 +250,7 @@ static func _bend_spine(creature, pose: Dictionary, desc: Dictionary) -> void:
 			else:
 				q = rest_q * Quaternion(Vector3.UP, dy) * Quaternion(Vector3.RIGHT, dp)
 		sk.set_bone_pose_rotation(b, q)
-		if b >= int(creature.root_bone):
+		if root_b != null and b >= int(root_b):
 			gpose[b] = (gpose[par] as Quaternion) * q if gpose.has(par) else q
 
 ## Head level (L1, docs/briefs/l1-posture.md). The generated rest mesh itself points the head up (the spine
@@ -252,6 +259,8 @@ static func _bend_spine(creature, pose: Dictionary, desc: Dictionary) -> void:
 ## HEAD_STAB is the share of the body's pitch (and the flex) the head ignores; the rest is the natural nod.
 ## Long steep necks (longneck) are also leaned forward so the head is carried ahead of the shoulders, not above them.
 const HEAD_STAB := 0.9
+const NECK_NOD := 0.2               # share of the controller's neck pitch the head keeps (a nod; the rest is stabilised away)
+const HEAD_RATE := 0.06             # rad per applied frame
 const HEAD_BIAS := 0.05             # rad: slightly nose up of level (the stabilised mean sits ~3 deg low)
 const NECK_RISE_MAX := 0.6          # rad (~34 deg): a neck rising more than this at rest is leaned forward by the excess
 const NECK_LEAN_MAX := 0.7          # rad
@@ -279,8 +288,14 @@ static func _stabilise_head(creature, pose: Dictionary, sk, yaw_abs: PackedFloat
 	var neck_pitch: float = float((pose.neck as Dictionary).pitch)
 	for b in range(hb, nb):
 		pit_abs[b] += lean - neck_pitch * 1.0
-	var x: float = float(pose.get("pitch", 0.0)) + pit_abs[hb]
+	var x: float = float(pose.get("pitch", 0.0)) + pit_abs[hb] + NECK_NOD * neck_pitch      # the neck's own pitch command is only partly cancelled
 	var c: float = rest_up - HEAD_STAB * x - HEAD_BIAS
+	# rate limit per call: a lunge (the action layer pitches the body in a few frames) must not whip the head back at twice the speed
+	if creature is Object and creature.has_method("get_meta"):
+		var prev = creature.get_meta("l1_head_c") if creature.has_meta("l1_head_c") else null
+		if prev != null:
+			c = float(prev) + clampf(c - float(prev), -HEAD_RATE, HEAD_RATE)
+		creature.set_meta("l1_head_c", c)
 	for bn in neck_k:
 		pit_abs[bn] += c * float(neck_k[bn])
 	for b in range(hb, nb):
