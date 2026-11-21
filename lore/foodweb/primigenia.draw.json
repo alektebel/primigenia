@@ -1,0 +1,497 @@
+{
+ "schema": "cpore.foodweb.draw/1",
+ "world": "primigenia",
+ "seed": 20261121,
+ "rng": "python random.Random(seed), see tools/lore/council/foodweb_draw.py",
+ "creature_slots": [
+  {
+   "slot": "S01",
+   "level": "primary_consumer",
+   "role": "grazer",
+   "habitats": [
+    "forest",
+    "meadow"
+   ],
+   "hint": "leaf-eating insect swarm: the missing base for insectivores",
+   "plan": "legs6",
+   "size": "insect",
+   "activity": "dawn_dusk",
+   "rejected": [],
+   "n_rejected": 0
+  },
+  {
+   "slot": "S02",
+   "level": "primary_consumer",
+   "role": "granivore",
+   "habitats": [
+    "meadow"
+   ],
+   "hint": "seed eater of grass and fruit pits",
+   "plan": "legs4",
+   "size": "small",
+   "activity": "night",
+   "rejected": [],
+   "n_rejected": 0
+  },
+  {
+   "slot": "S03",
+   "level": "primary_consumer",
+   "role": "nectarivore",
+   "habitats": [
+    "meadow",
+    "spring"
+   ],
+   "hint": "nectar feeder and pollinator of flowers such as velilla",
+   "plan": "legs2",
+   "size": "small",
+   "activity": "dawn_dusk",
+   "rejected": [],
+   "n_rejected": 0
+  },
+  {
+   "slot": "S04",
+   "level": "primary_consumer",
+   "role": "algae_scraper",
+   "habitats": [
+    "shore"
+   ],
+   "hint": "scrapes algae and crusts off tidal rock",
+   "plan": "legs0",
+   "size": "small",
+   "activity": "night",
+   "rejected": [],
+   "n_rejected": 0
+  },
+  {
+   "slot": "S05",
+   "level": "primary_consumer",
+   "role": "browser",
+   "habitats": [
+    "forest"
+   ],
+   "hint": "canopy leaf and fruit eater",
+   "plan": "legs4",
+   "size": "small",
+   "activity": "night",
+   "rejected": [],
+   "n_rejected": 0
+  },
+  {
+   "slot": "S06",
+   "level": "primary_consumer",
+   "role": "filter_feeder",
+   "habitats": [
+    "shallows"
+   ],
+   "hint": "zooplankton swarm grazing phytoplankton: base of the shallows food web",
+   "plan": "legs0",
+   "size": "insect",
+   "activity": "dawn_dusk",
+   "rejected": [],
+   "n_rejected": 0
+  },
+  {
+   "slot": "S07",
+   "level": "secondary_consumer",
+   "role": "insectivore",
+   "habitats": [
+    "meadow"
+   ],
+   "hint": "hunts insects in the grass",
+   "plan": "legs2",
+   "size": "small",
+   "activity": "dawn_dusk",
+   "rejected": [],
+   "n_rejected": 0
+  },
+  {
+   "slot": "S08",
+   "level": "secondary_consumer",
+   "role": "insectivore",
+   "habitats": [
+    "spring"
+   ],
+   "hint": "hunts insects and larvae at the spring pools",
+   "plan": "legs4",
+   "size": "small",
+   "activity": "dawn_dusk",
+   "rejected": [
+    {
+     "plan": "legs4",
+     "size": "giant",
+     "activity": "tidal",
+     "why": "insect prey (about 1 mg) does not repay hunting by a body above about 1 kg (prey-size scaling, D25)"
+    },
+    {
+     "plan": "legs2",
+     "size": "giant",
+     "activity": "night",
+     "why": "insect prey (about 1 mg) does not repay hunting by a body above about 1 kg (prey-size scaling, D25)"
+    },
+    {
+     "plan": "legs8plus",
+     "size": "giant",
+     "activity": "dawn_dusk",
+     "why": "arthropod gas exchange caps body size at medium even at pO2 0.34 bar (D10)"
+    }
+   ],
+   "n_rejected": 3
+  },
+  {
+   "slot": "S09",
+   "level": "secondary_consumer",
+   "role": "egg_thief",
+   "habitats": [
+    "shore"
+   ],
+   "hint": "raids nests and tide-stranded animals",
+   "plan": "legs4",
+   "size": "small",
+   "activity": "night",
+   "rejected": [],
+   "n_rejected": 0
+  },
+  {
+   "slot": "S10",
+   "level": "secondary_consumer",
+   "role": "small_predator",
+   "habitats": [
+    "caves"
+   ],
+   "hint": "ambush trapper of cave dwellers",
+   "plan": "legs8plus",
+   "size": "small",
+   "activity": "dawn_dusk",
+   "rejected": [],
+   "n_rejected": 0
+  },
+  {
+   "slot": "S11",
+   "level": "tertiary_consumer",
+   "role": "mid_predator",
+   "habitats": [
+    "shallows"
+   ],
+   "hint": "mid predator of the turbid shallows (pressure and electric sense, F20)",
+   "plan": "legs0",
+   "size": "medium",
+   "activity": "dawn_dusk",
+   "rejected": [],
+   "n_rejected": 0
+  },
+  {
+   "slot": "S12",
+   "level": "apex_predator",
+   "role": "apex_predator",
+   "habitats": [
+    "forest",
+    "meadow"
+   ],
+   "hint": "land apex: rare, solitary",
+   "plan": "legs4",
+   "size": "large",
+   "activity": "night",
+   "rejected": [],
+   "n_rejected": 0
+  },
+  {
+   "slot": "S13",
+   "level": "apex_predator",
+   "role": "apex_predator",
+   "habitats": [
+    "shallows",
+    "shore"
+   ],
+   "hint": "sea apex of the shelf",
+   "plan": "legs0",
+   "size": "large",
+   "activity": "tidal",
+   "rejected": [],
+   "n_rejected": 0
+  },
+  {
+   "slot": "S14",
+   "level": "apex_predator",
+   "role": "apex_predator",
+   "habitats": [
+    "highlands"
+   ],
+   "hint": "aerial apex: dense air makes big wings cheap (F4)",
+   "plan": "legs2",
+   "size": "large",
+   "activity": "day",
+   "rejected": [],
+   "n_rejected": 0
+  },
+  {
+   "slot": "S15",
+   "level": "scavenger",
+   "role": "scavenger",
+   "habitats": [
+    "shore"
+   ],
+   "hint": "works the carcass and wrack line (carcasses drift ashore, F20)",
+   "plan": "legs8plus",
+   "size": "small",
+   "activity": "tidal",
+   "rejected": [],
+   "n_rejected": 0
+  },
+  {
+   "slot": "S16",
+   "level": "scavenger",
+   "role": "scavenger",
+   "habitats": [
+    "forest",
+    "meadow"
+   ],
+   "hint": "buries and eats small carcasses",
+   "plan": "legs6",
+   "size": "insect",
+   "activity": "night",
+   "rejected": [],
+   "n_rejected": 0
+  },
+  {
+   "slot": "S17",
+   "level": "scavenger",
+   "role": "scavenger",
+   "habitats": [
+    "highlands"
+   ],
+   "hint": "soaring carrion eater on thermals",
+   "plan": "legs2",
+   "size": "large",
+   "activity": "day",
+   "rejected": [],
+   "n_rejected": 0
+  },
+  {
+   "slot": "S18",
+   "level": "decomposer",
+   "role": "detritivore",
+   "habitats": [
+    "meadow"
+   ],
+   "hint": "dung and dead-grass eater",
+   "plan": "legs6",
+   "size": "insect",
+   "activity": "day",
+   "rejected": [
+    {
+     "plan": "sessile",
+     "size": "medium",
+     "activity": "day",
+     "why": "sessile animals are not consumers of mobile food here"
+    }
+   ],
+   "n_rejected": 1
+  },
+  {
+   "slot": "S19",
+   "level": "decomposer",
+   "role": "detritivore",
+   "habitats": [
+    "forest"
+   ],
+   "hint": "rotting-wood and litter eater",
+   "plan": "legs6",
+   "size": "insect",
+   "activity": "night",
+   "rejected": [],
+   "n_rejected": 0
+  },
+  {
+   "slot": "S20",
+   "level": "decomposer",
+   "role": "detritivore",
+   "habitats": [
+    "shore"
+   ],
+   "hint": "eats rotting wrack",
+   "plan": "legs8plus",
+   "size": "small",
+   "activity": "night",
+   "rejected": [],
+   "n_rejected": 0
+  },
+  {
+   "slot": "S21",
+   "level": "decomposer",
+   "role": "detritivore",
+   "habitats": [
+    "caves"
+   ],
+   "hint": "eats dung and dead matter that falls into dark tubes",
+   "plan": "legs6",
+   "size": "insect",
+   "activity": "night",
+   "rejected": [],
+   "n_rejected": 0
+  },
+  {
+   "slot": "S22",
+   "level": "parasite",
+   "role": "parasite",
+   "habitats": [
+    "meadow"
+   ],
+   "hint": "ectoparasite of herd animals",
+   "plan": "legs8plus",
+   "size": "insect",
+   "activity": "day",
+   "rejected": [],
+   "n_rejected": 0
+  },
+  {
+   "slot": "S23",
+   "level": "parasite",
+   "role": "parasitoid",
+   "habitats": [
+    "forest"
+   ],
+   "hint": "parasitoid of leaf insects",
+   "plan": "legs6",
+   "size": "insect",
+   "activity": "day",
+   "rejected": [],
+   "n_rejected": 0
+  },
+  {
+   "slot": "S24",
+   "level": "parasite",
+   "role": "parasite",
+   "habitats": [
+    "shallows"
+   ],
+   "hint": "gill and skin parasite of fish and jellies",
+   "plan": "legs8plus",
+   "size": "insect",
+   "activity": "night",
+   "rejected": [],
+   "n_rejected": 0
+  },
+  {
+   "slot": "S25",
+   "level": "tertiary_consumer",
+   "role": "cleaner",
+   "habitats": [
+    "shallows"
+   ],
+   "hint": "cleaner of the sea apex and other fish: mutualist",
+   "plan": "legs0",
+   "size": "small",
+   "activity": "day",
+   "rejected": [
+    {
+     "plan": "sessile",
+     "size": "small",
+     "activity": "night",
+     "why": "sessile animals are not consumers of mobile food here"
+    },
+    {
+     "plan": "legs8plus",
+     "size": "giant",
+     "activity": "night",
+     "why": "arthropod gas exchange caps body size at medium even at pO2 0.34 bar (D10)"
+    },
+    {
+     "plan": "legs4",
+     "size": "medium",
+     "activity": "night",
+     "why": "a cleaner is small and works in daylight, where clients can see it"
+    }
+   ],
+   "n_rejected": 3
+  },
+  {
+   "slot": "S26",
+   "level": "secondary_consumer",
+   "role": "cleaner",
+   "habitats": [
+    "meadow",
+    "shore"
+   ],
+   "hint": "bird that cleans parasites off big animals: mutualist",
+   "plan": "legs2",
+   "size": "small",
+   "activity": "day",
+   "rejected": [],
+   "n_rejected": 0
+  }
+ ],
+ "plant_slots": [
+  {
+   "slot": "P01",
+   "level": "producer",
+   "role": "chemosynthetic",
+   "habitats": [
+    "shallows"
+   ],
+   "hint": "mat on submerged vent seeps: sulfide + O2 (D22)"
+  },
+  {
+   "slot": "P02",
+   "level": "producer",
+   "role": "chemosynthetic",
+   "habitats": [
+    "caves"
+   ],
+   "hint": "iron and sulfur film in dark lava tubes (F9, D22)"
+  },
+  {
+   "slot": "P03",
+   "level": "producer",
+   "role": "photosynthetic",
+   "habitats": [
+    "shallows"
+   ],
+   "hint": "phytoplankton in turbid water, red-brown accessory pigments (D24)"
+  },
+  {
+   "slot": "P04",
+   "level": "producer",
+   "role": "photosynthetic",
+   "habitats": [
+    "vents"
+   ],
+   "hint": "black-red thermophile mat on hot-spring terraces below 70 C (F23)"
+  },
+  {
+   "slot": "P05",
+   "level": "producer",
+   "role": "photosynthetic",
+   "habitats": [
+    "highlands"
+   ],
+   "hint": "black UV-screening crust lichen above 1,750 m (F14, D23)"
+  },
+  {
+   "slot": "P06",
+   "level": "parasite",
+   "role": "parasite",
+   "habitats": [
+    "forest"
+   ],
+   "hint": "hemiparasitic mistletoe on fog-forest trees"
+  },
+  {
+   "slot": "P07",
+   "level": "decomposer",
+   "role": "fungal_decomposer",
+   "habitats": [
+    "forest"
+   ],
+   "hint": "bracket fungus rotting dead wood (D28)"
+  },
+  {
+   "slot": "P08",
+   "level": "decomposer",
+   "role": "fungal_decomposer",
+   "habitats": [
+    "caves"
+   ],
+   "hint": "fungus on cave dung and dead matter (D28)"
+  }
+ ]
+}
