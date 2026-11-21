@@ -5,6 +5,9 @@ description: Procedural creature movement in Primigenia (cpore): references to m
 
 # Creature motion work (cpore)
 
+## Canon
+The owner's taste for movement is `docs/canon/MOTION.md` (A34): read it first; its §5 failure table is the review checklist.
+
 ## Goal
 Creatures should move like the reference clips: weight, posture and rhythm, not just feet moving. Owner direction 2026-11-21: "make it look somewhat as these videos in the mechanics".
 
