@@ -55,7 +55,7 @@ def main():
     for t in sorted(set(pa) | set(pb)):
         x, y = pa.get(t, {}).get("frames_ms_median"), pb.get(t, {}).get("frames_ms_median")
         if x and y:
-            print("frame ms median %s: %s -> %s (%s)" % (t, x, y, verdict("min", x, y)))
+            print("frame ms median %s: %s -> %s (%s; software GL on a shared CPU, only a change over 30%% means anything)" % (t, x, y, "unchanged" if abs(y - x) <= 0.3 * x else verdict("min", x, y)))
     print("\n".join(lines))
     if "--side" in sys.argv:
         import sidebyside

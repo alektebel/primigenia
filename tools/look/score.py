@@ -34,7 +34,9 @@ def parse(name):
     p = name.split("_")
     if p[0] == "creature":
         return {"kind": "creature", "tier": "any", "tod": p[1], "shot": "_".join(p[2:]), "creature": p[2], "view": p[3]}
-    return {"kind": "world", "tier": p[0], "tod": p[1], "shot": "_".join(p[2:])}
+    shot = "_".join(p[2:])
+    # creature_dist is a grass-level shot of a tiny creature: only the readability, bloom and blur checks apply to it
+    return {"kind": "dist" if shot == "creature_dist" else "world", "tier": p[0], "tod": p[1], "shot": shot}
 
 
 def pct(hist, q):
