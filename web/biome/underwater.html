@@ -46,6 +46,32 @@ canvas{display:block;position:absolute;inset:0;width:100%;height:100%}
 #loading span{font-size:16px;color:var(--muted)}
 </style>
 <script src="three.min.js"></script>
+<script>
+/* Force WebGL 1 mode.
+ * Under SwiftShader, canvas.getContext("webgl") returns a context that is an
+ * instance of WebGL2RenderingContext, so THREE.js detects isWebGL2=true and
+ * injects GLSL 300 es preamble.  Fix: patch the GL compilation pipeline
+ * to strip GLSL 300 es preamble and conversion defines BEFORE they hit
+ * the shader compiler, so GLSL 100 shaders compile cleanly.         */
+var _origGetCtx = HTMLCanvasElement.prototype.getContext;
+HTMLCanvasElement.prototype.getContext = function(type) {
+  if (type === 'webgl2') return null;
+  var ctx = _origGetCtx.call(this, type);
+  if (ctx) {
+    /* Strip THREE.js r128 chunk content that is injected between
+       our UW_VERT and UW_COMMON / UW_FRAG blocks.                  */
+    var _origShaderSource = ctx.shaderSource.bind(ctx);
+    ctx.shaderSource = function(shader, source) {
+      if (typeof source === 'string') {
+        var idx = source.indexOf('precision mediump float;');
+        if (idx >= 0) source = source.substring(idx);
+      }
+      return _origShaderSource(shader, source);
+    };
+  }
+  return ctx;
+};
+</script>
 <script src="underwater.js"></script>
 </head>
 <body>
@@ -95,11 +121,29 @@ canvas{display:block;position:absolute;inset:0;width:100%;height:100%}
 
   /* ── Three.js setup ─────────────────────────────────────────────── */
   const canvas = document.getElementById("gl");
-  /* Force a WebGL1 context: three's WebGL2 GLSL3 conversion of ShaderMaterial
-     varyings renders garbage (solid red) under SwiftShader in this build. */
-  const gl1 = canvas.getContext("webgl", { antialias: true, alpha: false })
-           || canvas.getContext("experimental-webgl", { antialias: true, alpha: false });
-  const renderer = new THREE.WebGLRenderer({ canvas, context: gl1 });
+
+  /* Force a WebGL 1 context. Under SwiftShader, the WebGL 1 context
+     inherits from WebGL2RenderingContext, so we set isWebGL1Renderer: true
+     to force THREE.js to use GLSL 100 shaders.                              */
+  const gl1 = canvas.getContext("webgl", { antialias: true, alpha: false });
+
+  /* Create renderer using WebGL1Renderer subclass which forces isWebGL1Renderer: true,
+     preventing GLSL 300 es preamble injection under SwiftShader.                   */
+  var renderer;
+  console.log("WEBGL1_RENDERER:", typeof THREE.WebGL1Renderer);
+  if (THREE.WebGL1Renderer) {
+    renderer = new THREE.WebGL1Renderer({ canvas, context: gl1 });
+    console.log("Using WebGL1Renderer, isWebGL1Renderer:", renderer.isWebGL1Renderer);
+  } else {
+    renderer = new THREE.WebGLRenderer({ canvas, context: gl1 });
+    console.log("Using WebGLRenderer (fallback), isWebGL1Renderer:", renderer.isWebGL1Renderer);
+    renderer.isWebGL1Renderer = true;
+    /* Also force the capabilities object. */
+    if (renderer.capabilities) renderer.capabilities.isWebGL2 = false;
+  }
+
+  /* Store patched value for diagnostics. */
+  window.__isWebGL2 = renderer.capabilities ? renderer.capabilities.isWebGL2 : "N/A";
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.outputEncoding = THREE.sRGBEncoding;
@@ -142,6 +186,9 @@ canvas{display:block;position:absolute;inset:0;width:100%;height:100%}
     floorY: -2,
   });
   window.__biome = biome;   /* debug hook */
+  window.__renderer = renderer;
+  window.__scene = scene;
+  window.__camera = camera;
 
   /* ── Camera (swim + orbit) ──────────────────────────────────────── */
   const camState = {

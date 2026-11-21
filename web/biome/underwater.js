@@ -58,7 +58,7 @@ const PAL = {
   particle:     [0.72, 0.82, 0.80],
 };
 
-/* ── GLSL shared chunk (precision + uniforms + exponential underwater fog) ─*/
+/* ── GLSL shared chunk (precision + uniforms + exponential underwater fog) ──*/
 const UW_COMMON = `
 precision mediump float;
 precision mediump int;
@@ -96,10 +96,37 @@ float vn(vec2 p){
 mat3 rotY(float a){ float c = cos(a), s = sin(a); return mat3(c, 0.0, -s, 0.0, 1.0, 0.0, s, 0.0, c); }
 `;
 
+/* GLSL 100 preamble + standard variables for vertex shaders.
+   SwiftShader's WebGL 1 context uses GLSL 1.00 natively.  THREE.js r128
+   normally injects these via chunks but we strip that so we declare
+   them explicitly.                                                       */
+const UW_VERT = `
+precision mediump float;
+precision mediump int;
+
+attribute vec3  position;
+attribute vec3  normal;
+attribute vec2  uv;
+uniform   mat4  modelMatrix;
+uniform   mat4  modelViewMatrix;
+uniform   mat4  projectionMatrix;
+uniform   mat4  viewMatrix;
+uniform   mat3  normalMatrix;
+
+`;
+
+/* GLSL 100 preamble + standard variables for fragment shaders.  (Most
+   fragment shaders don't need modelMatrix etc., but including them is
+   harmless and keeps the preamble identical to the vertex one.)            */
+const UW_FRAG = `
+precision mediump float;
+precision mediump int;
+
+`;
+
 /* ── surface: wavy, seen from below, Snell's window + TIR ────────────── */
 function surfaceShader() {
-  const vertexShader = `
-${UW_COMMON}
+  const vertexShader = UW_VERT + UW_COMMON + `
 varying vec3 vWorldPos;
 varying vec3 vNormal;
 
@@ -126,7 +153,7 @@ void main(){
   gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
 }`;
 
-  const fragmentShader = UW_COMMON + `
+  const fragmentShader = UW_FRAG + UW_COMMON + `
 uniform vec3 uSunGlow;   /* bright sky colour seen through Snell's window */
 uniform vec3 uShaftGlow; /* golden shaft colour for glitter */
 
@@ -189,8 +216,7 @@ void main(){
 
 /* ── sea floor: pale rippled sand, pebbles, shells, animated caustics ── */
 function floorShader() {
-  const vertexShader = `
-${UW_COMMON}
+  const vertexShader = UW_VERT + `
 varying vec3 vWorldPos;
 varying vec3 vNormal;
 void main(){
@@ -199,7 +225,7 @@ void main(){
   gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
 }`;
 
-  const fragmentShader = UW_COMMON + `
+  const fragmentShader = UW_FRAG + UW_COMMON + `
 uniform vec3 uSandColor;
 uniform vec3 uSandBright;
 uniform vec3 uCausticBright;
@@ -259,8 +285,7 @@ void main(){
 
 /* ── kelp: instanced frond with leaves, translucent, swaying ─────────── */
 function kelpShader() {
-  const vertexShader = `
-uniform float uTime;
+  const vertexShader = UW_VERT + UW_COMMON + `
 attribute vec3 kelpOffset;
 attribute float kelpHeight;   /* Y scale (3–8 m) */
 attribute float kelpWidth;    /* XZ scale */
@@ -294,7 +319,7 @@ void main(){
   gl_Position = projectionMatrix * viewMatrix * wp;
 }`;
 
-  const fragmentShader = UW_COMMON + `
+  const fragmentShader = UW_FRAG + UW_COMMON + `
 varying vec3 vColor;
 varying vec3 vWorldPos;
 varying vec3 vN;
@@ -322,7 +347,7 @@ void main(){
 
 /* ── coral: clustered, per-instance colour, sun-lit ──────────────────── */
 function coralShader() {
-  const vertexShader = `
+  const vertexShader = UW_VERT + `
 attribute vec3 instOffset;
 attribute float instScale;
 attribute vec3 instColor;
@@ -337,7 +362,7 @@ void main(){
   gl_Position = projectionMatrix * viewMatrix * wp;
 }`;
 
-  const fragmentShader = UW_COMMON + `
+  const fragmentShader = UW_FRAG + UW_COMMON + `
 varying vec3 vColor;
 varying vec3 vN;
 varying vec3 vWorldPos;
@@ -359,7 +384,7 @@ void main(){
 
 /* ── rocks: dark stone with algae on top ─────────────────────────────── */
 function rockShader() {
-  const vertexShader = `
+  const vertexShader = UW_VERT + `
 attribute vec3 instOffset;
 attribute vec3 instScale;
 varying vec3 vN;
@@ -371,7 +396,7 @@ void main(){
   gl_Position = projectionMatrix * viewMatrix * wp;
 }`;
 
-  const fragmentShader = UW_COMMON + `
+  const fragmentShader = UW_FRAG + UW_COMMON + `
 uniform vec3 uRockColor;
 uniform vec3 uAlgaeColor;
 
@@ -397,8 +422,7 @@ void main(){
 
 /* ── sea grass: thin blades ──────────────────────────────────────────── */
 function seaGrassShader() {
-  const vertexShader = `
-uniform float uTime;
+  const vertexShader = UW_VERT + UW_COMMON + `
 attribute vec3 instOffset;
 attribute float instScale;
 attribute float instPhase;
@@ -416,7 +440,7 @@ void main(){
   gl_Position = projectionMatrix * viewMatrix * wp;
 }`;
 
-  const fragmentShader = UW_COMMON + `
+  const fragmentShader = UW_FRAG + UW_COMMON + `
 varying vec3 vWorldPos;
 varying float vH;
 
@@ -433,8 +457,7 @@ void main(){
 
 /* ── fish: instanced, coherent schools + per-fish drift ──────────────── */
 function fishShader() {
-  const vertexShader = `
-uniform float uTime;
+  const vertexShader = UW_VERT + UW_COMMON + `
 attribute vec3 fishLocal;    /* position relative to the school centre */
 attribute float fishIdx;
 attribute float fishSize;
@@ -483,7 +506,7 @@ void main(){
   gl_Position = projectionMatrix * viewMatrix * wp;
 }`;
 
-  const fragmentShader = UW_COMMON + `
+  const fragmentShader = UW_FRAG + UW_COMMON + `
 varying vec3 vLocal;
 varying vec3 vWorldPos;
 varying float vShade;
@@ -506,7 +529,7 @@ void main(){
 
 /* ── marine snow: floating particles ─────────────────────────────────── */
 function particleShader() {
-  const vertexShader = UW_COMMON + `
+  const vertexShader = UW_VERT + UW_COMMON + `
 attribute float pSize;
 attribute float pSpeed;
 attribute float pPhase;
@@ -530,7 +553,7 @@ void main(){
   vA = (0.35 + 0.65 * fract(pPhase * 6.28)) * (1.0 - smoothstep(18.0, 34.0, dist));
 }`;
 
-  const fragmentShader = `
+  const fragmentShader = UW_FRAG + `
 uniform vec3 uParticleColor;
 varying float vA;
 
@@ -547,14 +570,14 @@ void main(){
 
 /* ── god rays: tapered additive shafts fanning down from the surface ─── */
 function shaftShader() {
-  const vertexShader = `
+  const vertexShader = UW_VERT + `
 varying vec2 vUv;
 void main(){
   vUv = uv;
   gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
 }`;
 
-  const fragmentShader = `
+  const fragmentShader = UW_FRAG + `
 uniform float uTime;
 uniform vec3 uShaftColor;
 uniform float uOpacity;
@@ -574,7 +597,7 @@ void main(){
 
 /* ── shipwreck landmark ──────────────────────────────────────────────── */
 function wreckShader() {
-  const vertexShader = `
+  const vertexShader = UW_VERT + `
 varying vec3 vN;
 varying vec3 vWorldPos;
 void main(){
@@ -584,7 +607,7 @@ void main(){
   gl_Position = projectionMatrix * viewMatrix * wp;
 }`;
 
-  const fragmentShader = UW_COMMON + `
+  const fragmentShader = UW_FRAG + UW_COMMON + `
 uniform vec3 uWreckColor;
 
 varying vec3 vN;
@@ -931,7 +954,7 @@ class UnderwaterBiome {
 
   _material(sh, extraUniforms, opts) {
     const uniforms = Object.assign({}, this._u, extraUniforms || {});
-    const mat = new THREE.ShaderMaterial(Object.assign({ uniforms }, opts || {}));
+    const mat = new THREE.ShaderMaterial(Object.assign({ uniforms }, sh || {}, opts || {}));
     this._mats.push(mat);
     return mat;
   }
