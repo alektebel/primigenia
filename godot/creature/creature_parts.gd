@@ -407,13 +407,13 @@ func _eye(p: Dictionary, off: Vector3, stalk: bool) -> Node3D:
 func _eyeball(e: Node3D, er: float, off: Vector3, pupil := "auto") -> MeshInstance3D:
 	var kind := pupil if pupil != "auto" else str(mats.bio.get("pupil", "round"))
 	_mesh(CreatureGeo.sphere(er, 24, 16), "eye_white", e)
-	_mesh(CreatureGeo.ell(er * .66, er * .66, er * .3, 0, 0, er * .72), mats.iris_for(kind), e)
-	var cor := _mesh(CreatureGeo.ell(er * .74, er * .74, er * .5, 0, 0, er * .62), mats.cornea, e)
+	_mesh(CreatureGeo.ell(er * .74, er * .74, er * .3, 0, 0, er * .78), mats.iris_for(kind), e)
+	var cor := _mesh(CreatureGeo.ell(er * .82, er * .82, er * .5, 0, 0, er * .68), mats.cornea, e)
 	cor.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-	var lid := _mesh(CreatureGeo.sphere(er * 1.13, 18, 10, 0, 6.2832, 0, 1.25).skinify(off, .6), "skin", e)
+	var lid := _mesh(CreatureGeo.sphere(er * 1.13, 18, 10, 0, 6.2832, 0, 1.42).skinify(off, .6), "skin", e)
 	lid.name = "lid"
 	set_euler(lid, -.3, 0, 0)
-	var low := _mesh(CreatureGeo.sphere(er * 1.1, 18, 8, 0, 6.2832, 2.4, PI - 2.4).skinify(off, .3), "skin", e)
+	var low := _mesh(CreatureGeo.sphere(er * 1.1, 18, 8, 0, 6.2832, 2.12, PI - 2.12).skinify(off, .3), "skin", e)
 	low.name = "lid_low"
 	set_euler(low, .12, 0, 0)
 	return lid
@@ -881,8 +881,7 @@ func make_leg(type: String, p: Dictionary, o: Vector3, a: float, b: float) -> Di
 	lo.name = "lower"
 	var ft := Node3D.new()
 	ft.name = "foot"
-	_mesh(CreatureGeo.cylinder(w * 1.5, w * 1.02, a, 14, 4).translate(0, -a / 2, 0).skinify(o, .15), "skin", up)
-	_mesh(CreatureGeo.ell(w * 1.75, a * .42, w * 2, 0, -a * .24, 0).skinify(o, .3), "skin", up)
+	_mesh(_upper_limb(w, a).skinify(o, .15), "skin", up)
 	_mesh(CreatureGeo.cylinder(w, w * .6, b, 14, 4).translate(0, -b / 2, 0).skinify(o, .05), "skin", lo)
 	_mesh(CreatureGeo.ell(w * 1.08, w * 1.08, w * 1.08).skinify(o, .1), "skin", lo)
 	if kind in ["runner", "sucker", "spring", "cloven", "gecko"]:
@@ -904,6 +903,24 @@ func make_leg(type: String, p: Dictionary, o: Vector3, a: float, b: float) -> Di
 			c.position = Vector3(cx * w, w * .3, w * (2.25 - abs(cx) * .4))
 			set_euler(c, 1.85, 0, -cx * .35)
 	return {"up": up, "lo": lo, "ft": ft}
+
+
+## Upper limb as one lathe along -Y: a flared root buried in the body (a fillet where limb meets torso, no ball), a
+## taper to the knee and a mild muscle swell. Replaces the old cylinder + thigh ellipsoid that read as a separate blob.
+static func _upper_limb(w: float, a: float) -> CreatureGeo:
+	var n := 14
+	var pts := []
+	var rad := []
+	for i in n:
+		var u := float(i) / (n - 1)
+		var taper := lerpf(1.3, 1.02, u * u * (3.0 - 2.0 * u))
+		var swell := 1.0 + .08 * sin(PI * clampf(u / .75, 0.0, 1.0))
+		var flare := 1.0 + .4 * exp(-u / .06)
+		pts.append(Vector3(0, -a * u, 0))
+		rad.append(w * taper * swell * flare)
+	var g := CreatureGeo.alloc_tube(n, 14)
+	g.fill_tube(pts, rad, 14, X0, false)
+	return g
 
 
 func _creator_foot(kind: String, w: float, o: Vector3, lo: Node3D, ft: Node3D, b: float) -> void:
