@@ -1,6 +1,6 @@
 # Status
 
-Updated 2026-11-21 (continuity, resources, motion canon A34, autonomy A33, scorecard merged). Rewritten at the end of every session; keep it to one page.
+Updated 2026-11-21 (integration of all WIP + limp fix merged; game relaunched for the owner). Rewritten at the end of every session; keep it to one page.
 
 ## Focus now
 **Procedural creature movement that looks like the references.** Order (research plan `docs/research/procedural-locomotion.md`, tracker stages M0–M6):
@@ -18,23 +18,18 @@ Reference clips: gorilla knuckle-walk (tracker X3, owner's Downloads) and Spore 
 **Canons:** `docs/canon/MOTION.md` (A34), `docs/canon/LOOK.md` (A36). Open with 48 h auto-accept: D-22 (motion refs), D-24 (look refs), D-25 (world day cycle next).
 
 ## Main
-`claude/v0.1-restore` at 6301006. Last suite counts: M0 1138, ui 882, play 237, actions 383, entry 23, menu 33, bridge 42, studio 914 (3 SCRIPT ERROR lines in M0/ui, unverified whether pre-existing).
+`claude/v0.1-restore` at df9585b: integration of 19 branches (`docs/INTEGRATION-2026-11-21.md`) + limp fix (`docs/evidence/loco/limp.md`: hero duty 0.41→0.53, slip 0, bob 23.6→19.4 cm, limp index 1.07). Suites: make test pass, M0 1266/0, ui 972/0, play 237/0, studio 942/0, loco 299/0, creature-fit pass, first-quest e2e 29/0. Loco score vs ffea2c1 unchanged before the limp merge. First quest is A38.
+Launch on the RTX: `__NV_PRIME_RENDER_OFFLOAD=1 __GLX_VENDOR_LIBRARY_NAME=nvidia __VK_LAYER_NV_optimus=NVIDIA_only godot --path godot` (without it the game picks the AMD + compatibility).
 
 ## Branches in flight
-| Branch | Worktree | State | Next step |
-|---|---|---|---|
-| `art/starter-design` | cpore-wt/starter-design | Sonnet subagent: 4 starter candidates (A sturdy, B runner, C armoured sprawler, D knuckle-walker) + today's hero, scorecard + fit + renders; brief `docs/briefs/starter-design.md` | Owner picks in the tracker; Claude switches the default |
-| `anim/limp` | cpore-wt/limp | Codex sol: why the hero limps after L1 (bob per stride vs per step, duty 0.41, broken footfall diagram), limp index metric; brief `docs/briefs/limp.md`; cannot commit | Sonnet/Claude commits, review compare vs ffea2c1 |
-| `integrate/wip-2026-11-21` | cpore-wt/integrate | Sonnet integrator: commits stranded WIP, merges moves → first-quest → species-v8 → cave → 17 older branches, tests after each (owner: "merge all the WIP") | Review `docs/INTEGRATION-2026-11-21.md`, fast-forward main |
-| `c2/moves-recipes` | cpore-wt/c2-moves | WIP b0ed502, main merged, clean | Run godot play, flight, devtools, bridge, menu, moves-recipes, studio; finish MOVES-RECIPES-REPORT table; merge |
-| `c2/first-quest` | cpore-wt/first-quest | WIP ab2cefd, e2e green (chain ends tick 2904), clean | After moves merges: renumber DUG/MOVE_USED after 29, snapshot 10; flame evidence; results table |
-| `c2/species-v8` | cpore-wt/species-v8 | Codex, 34 dirty files | Sonnet commits + integrates; events after first-quest |
-| `art/wl6-cave-mesher` | cpore-wt/wl6-cave | Codex C++ mesher, uncommitted | Sonnet art + integration |
-| `tools/gaitopt` | cpore-wt/gaitopt | Codex, pilot failed (6/10 bodies fall) | Paused; M1b balance spike pending owner (D-02) |
+| Branch | State | Next step |
+|---|---|---|
+| `w11-alpine` | skipped by the integrator (rewrites terrain v4 heights/goldens, drainage unresolved) | Owner: merge or close |
+| `tools/gaitopt` | merged as tooling; pilot failed (6/10 bodies fall) | Paused; D-02 |
 
-**Old unmerged branches (5+ days, need triage: merge, or close):** art-food, art-meteor, art-nest, art-remains, art-species, art-underwater (78 dirty), dem, feel-camera (10 dirty), idol, loco (5 dirty), m-e2e, m-ecology, m-garfio, m-vista, w11-alpine. Run `tools/agents/agents.sh status` for the live list.
+Integration follow-ups (owner): wild slot reserve for cousins (radial animals capped at 23 of 24); Garfio no longer charges before the first evolve; cave mesher not wired into the island; untracked debug files in cpore-wt/art-underwater.
 
-**Lore (after the integration lands `lore/autoloop-2`):** (1) technosphere pass: every world gets its heat-path fact per A37 / `lore/rules/technosphere.md` (council proposes, astrobio referee judges); (2) resume the autoloop for the 4 paused worlds (wheels died mid-run at shutdown; orbital, metallic, deepinterior queued); (3) tech-tree council A30 on top. Fix the 2 validate errors in void/mycelia/oddities.
+**Lore (`lore/autoloop-2` merged):** (1) technosphere pass: every world gets its heat-path fact per A37 / `lore/rules/technosphere.md` (council proposes, astrobio referee judges); (2) resume the autoloop for the 4 paused worlds (wheels died mid-run at shutdown; orbital, metallic, deepinterior queued); (3) tech-tree council A30 on top. Fix the 2 validate errors in void/mycelia/oddities.
 
 ## Background jobs (die on shutdown)
 - Lore autoloop: `tools/agents/agents.sh restart lore` (worktree lore-autoloop2).
