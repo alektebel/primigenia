@@ -290,6 +290,10 @@ godot: $(BUILD)/libcpore.a
 	@mkdir -p godot/.godot
 	@test -s godot/.godot/extension_list.cfg || echo 'res://cpore.gdextension' > godot/.godot/extension_list.cfg
 	nice -n 10 timeout 600 $(GODOT) --headless --path godot --import
+.PHONY: godot-cave-mesh-test
+godot-cave-mesh-test: godot
+	nice -n 10 timeout 120 $(GODOT) --headless --path godot --script res://game/tests/test_cave_mesh.gd
+
 godot-test: godot $(BUILD)/terrain_cli $(BUILD)/world_cli
 	nice -n 10 timeout 900 $(GODOT) --headless --path godot --script res://game/tests/run_m0_tests.gd
 godot-render-test: godot
