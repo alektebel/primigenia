@@ -22,6 +22,10 @@ const FORCE_GAP := 0.0        # s: at most one forced lift-off per gap
 const STRAIGHT := 0.985         # longest a leg is allowed to get, as a share of its length
 const PLANE_CADENCE_K := 3.0    # the hip plane spring is at least this many times the stride frequency
 const CADENCE_MAX_F := 7.0      # stride frequency cap for quadrupeds, in units of the natural frequency 0.25 sqrt(g/h)
+## Gait roll amplitude (rad) per plan: the trunk rolls toward the planted front foot, peaking soon after its touchdown
+## (Spore gorilla knuckle-walk reference ~7 deg, docs/canon/MOTION.md section 1); scaled by gait below.
+const GAIT_ROLL := {&"quadruped": 0.15, &"horizontal_biped": 0.06, &"upright_biped": 0.05, &"multi": 0.04, &"monopod": 0.0, &"legless": 0.0}
+const GAIT_ROLL_K := {&"walk": 1.0, &"amble": 1.0, &"tripod": 1.0, &"ripple": 1.0, &"run": 0.7, &"trot": 0.8, &"hop": 0.5, &"gallop": 0.55}
 const TALL := 1.0               # share of the pendulum rise a bouncing gait still takes (1 = straight stance legs in any gait)
 const ERECT_FLOOR := 1.0        # sprawled legs vault like straight ones (their lateral offset is part of the leg length)
 const REACH_K_QUAD := 0.40      # quadrupeds: stance legs stay within this share of their length from vertical (hips ride high, legs ~0.9+ of full length)
@@ -76,6 +80,7 @@ var _y := Vector2.ZERO          # spring-mass vertical bounce
 var _p := Vector2.ZERO          # spring-mass pitch
 var _lean := Vector2.ZERO       # pitch from acceleration
 var _bank := Vector2.ZERO       # roll from turning
+var _gr := Vector2.ZERO         # roll from the weight moving onto the planted front foot (gorilla-style sway)
 var _neck_p := Vector2.ZERO
 var _neck_y := Vector2.ZERO
 var _tail_p := Vector2.ZERO
@@ -180,7 +185,7 @@ func reset(pos: Vector3, yaw: float) -> void:
 		l.phi = 0.0
 		l.dir = basis.z
 		l.ball = Vector3(f.x, l.g_to, f.z) + basis.z * m.toe
-	for s in ["_flex", "_b", "_c", "_sx", "_sz", "_y", "_p", "_lean", "_bank", "_neck_p", "_neck_y", "_tail_p", "_tail_y"]:
+	for s in ["_flex", "_b", "_c", "_sx", "_sz", "_y", "_p", "_lean", "_bank", "_gr", "_neck_p", "_neck_y", "_tail_p", "_tail_y"]:
 		set(s, Vector2.ZERO)
 	_a = Vector2(_gy(pos.x, pos.z), 0.0)
 	_drop = 0.0
@@ -540,7 +545,7 @@ func _sub(h: float, p: Vector3, yaw: float, v: Vector3, settle: bool) -> void:
 	var wc: float = 0.45 * TAU * max(f_eff, f_nat)
 	# a real bounce is never the same twice: slow, incommensurate modulation of the drive (+-7 %)
 	var irregular := 1.0 + 0.045 * sin(TAU * phase * 0.5 + 1.3) + 0.03 * sin(TAU * phase * 0.31 + 0.4)
-	var drive := bounce * _moving * irregular
+	var drive := bounce * _moving * irregular * (0.5 if morph.graviportal else 1.0)       # heavy bodies bob less (canon: the ground takes the hit, the body does not float)
 	var zc: float = clamp(_zeta * 0.7, 0.4, 1.0)
 	var den := 1.0 + 2.0 * zc * wc * h + wc * wc * h * h
 	# only the fluctuation of the leg forces about their running mean moves the
@@ -571,10 +576,20 @@ func _sub(h: float, p: Vector3, yaw: float, v: Vector3, settle: bool) -> void:
 	var bank_t: float = clamp(-atan(_speed_f * _yawrate / G) * bank_k, -bank_max, bank_max)
 	_lean = _spring(_lean, lean_t, _omega * 0.4, 1.0, h)
 	_bank = _spring(_bank, bank_t, _omega * 0.4, 1.0, h)
+	# gait roll: each front foot, soon after touchdown (stance share 0..0.5), pulls the trunk toward its own side
+	var gr_t := 0.0
+	if not legless and not pivoting:
+		var front_st: int = morph.stations.size() - 1
+		for i in range(_legs.size()):
+			var lg: Dictionary = _legs[i]
+			if morph.legs[i].station == front_st and not lg.swing and morph.legs[i].side != 0:
+				gr_t -= float(morph.legs[i].side) * sin(PI * clampf(lg.s / 0.5, 0.0, 1.0))
+		gr_t *= float(GAIT_ROLL.get(morph.plan, 0.0)) * float(GAIT_ROLL_K.get(gait, 0.6)) * _moving
+	_gr = _spring(_gr, gr_t, maxf(TAU * f_eff * 4.0, _omega), 0.9, h)
 	# --- 13. compose the body transform
 	var slope_b := b_o + _p.x + _lean.x
 	var pitch := -atan(slope_b)                    # rotation about +X (left)
-	var roll := atan(c_o) + _bank.x               # rotation about +Z (forward)
+	var roll := atan(c_o) + _bank.x + _gr.x               # rotation about +Z (forward)
 	var piv := Vector3(0.0, morph.com.y, morph.com.z)
 	var height: float = a_o + b_o * morph.com.z + _y.x - crouch * _ref_h
 	if legless:
