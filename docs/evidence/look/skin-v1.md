@@ -29,3 +29,6 @@ Change: matte dry skin (weak specular fading at grazing angles, clearcoat mostly
 
 ## Regressions (compare baseline skin2, 105 metric x shot)
 Creature shots only; world shots do not move (world shaders untouched). Creature: sat_p95 / sat_over up (the added coloured light), sharp_p99 down 5-10%, crush up at dawn/dusk giant/hero close (0.10 -> 0.15, under 0.25), night/dist hf_noise 3.1 -> 4.9 (rim on a few-pixel creature). Dawn creature_dist sat_over 0.101 -> 0.106.
+
+## Suites (all exit 0)
+godot-test 1138 checks / 0 failures; godot-studio-test web validator cross-check 41 files / 0 failures; godot-creature-test 1554 + realism 64 + radial 278 checks / 0 failures; godot-ui-test 882 / 0; godot-play-test 237 / 0.
