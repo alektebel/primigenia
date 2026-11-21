@@ -9,12 +9,15 @@ Updated 2026-11-21 (continuity, resources, motion canon A34, autonomy A33, score
 
 Reference clips: gorilla knuckle-walk (tracker X3, owner's Downloads) and Spore captures in `~/Desarrollo/cpore-refs/spore-captures/` (never commit). Capture tool: `docs/research/loco_review.gd`.
 
+**Canons:** `docs/canon/MOTION.md` (A34), `docs/canon/LOOK.md` (A36). Open with 48 h auto-accept: D-22 (motion refs), D-24 (look refs).
+
 ## Main
 `claude/v0.1-restore` at 6301006. Last suite counts: M0 1138, ui 882, play 237, actions 383, entry 23, menu 33, bridge 42, studio 914 (3 SCRIPT ERROR lines in M0/ui, unverified whether pre-existing).
 
 ## Branches in flight
 | Branch | Worktree | State | Next step |
 |---|---|---|---|
+| `art/look-score` | cpore-wt/look-score | Sonnet subagent: visual scorecard (4 times of day, low/medium) + three.js look-dev lab, measure only (brief `docs/briefs/look-score.md`), started 2026-11-21 | Review; then first skin improvement brief (A35, canon `docs/canon/LOOK.md`) |
 | `c2/moves-recipes` | cpore-wt/c2-moves | WIP b0ed502, main merged, clean | Run godot play, flight, devtools, bridge, menu, moves-recipes, studio; finish MOVES-RECIPES-REPORT table; merge |
 | `c2/first-quest` | cpore-wt/first-quest | WIP ab2cefd, e2e green (chain ends tick 2904), clean | After moves merges: renumber DUG/MOVE_USED after 29, snapshot 10; flame evidence; results table |
 | `c2/species-v8` | cpore-wt/species-v8 | Codex, 34 dirty files | Sonnet commits + integrates; events after first-quest |
