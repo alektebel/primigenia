@@ -15,6 +15,8 @@ const TODS := {
 	"dusk": {"light": 0.50, "cloud": {"tod": 1.0, "cover": 0.55, "fog": 0.0}},
 	"night": {"light": 0.0, "cloud": {"tod": 1.0, "cover": 0.55, "fog": 0.0}},
 }
+# Chase zoom of the creature-at-distance shot (0 closest .. 1 farthest; the model is replaced by an icon from 0.85, but the hatchling is a few pixels long above 0.6; env LOOK_DIST_ZOOM overrides for experiments).
+var DIST_ZOOM := float(OS.get_environment("LOOK_DIST_ZOOM")) if OS.get_environment("LOOK_DIST_ZOOM") != "" else 0.45
 var tier := ""
 var times := {}
 var cams := []   # {name, pos, look, fov} or {name, chase: zoom}
@@ -90,9 +92,13 @@ func _run() -> void:
 		var m: Vector3 = madre.p
 		add_cam("madre_spring", m + Vector3(40, 0, 20) + Vector3(0, ground(m + Vector3(40, 0, 20)) - m.y + 2.0, 0), m + Vector3(0, 14, 0), 62.0)
 	for tod in TODS:
+		if OS.get_environment("LOOK_TODS") != "" and not tod in OS.get_environment("LOOK_TODS").split(","):
+			continue
 		set_tod(tod)
 		# Player chase view and the creature at strategic distance (zoom 0.8: models still on, grass and shadows off).
-		for zz in [["valley_chase", 0.35], ["creature_dist", 0.8]]:
+		for zz in [["valley_chase", 0.35], ["creature_dist", DIST_ZOOM]]:
+			if OS.get_environment("LOOK_DIST_ONLY") != "" and zz[0] != "creature_dist":
+				continue
 			island.chase_enabled = true
 			island.chase.set_zoom(zz[1], true)
 			await settle(6)
@@ -121,6 +127,8 @@ func _run() -> void:
 				var mask := Image.create_from_data(w, img.get_height(), false, Image.FORMAT_L8, md)
 				mask.save_png(out_dir.path_join(nm + "_mask.png"))
 			print("wrote ", nm)
+		if OS.get_environment("LOOK_DIST_ONLY") != "":
+			continue
 		island.chase_enabled = false
 		for c in cams:
 			island.camera.fov = c.fov
