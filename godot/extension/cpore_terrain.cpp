@@ -2,6 +2,7 @@
 // validates Variants, owns buffers and writes straight into the Packed arrays.
 #include "cpore_terrain.h"
 #include "convert.h"
+#include "cave_mesher.h"
 #include <godot_cpp/variant/packed_byte_array.hpp>
 #include <godot_cpp/variant/packed_float32_array.hpp>
 #include <godot_cpp/variant/vector3.hpp>
@@ -47,6 +48,7 @@ void CporeTerrain::notify(int s, int d, int t, void *user) {
 }
 
 void CporeTerrain::_bind_methods() {
+    ClassDB::bind_static_method("CporeTerrain", D_METHOD("cave_mesh", "params"), &CporeTerrain::cave_mesh);
     ClassDB::bind_static_method("CporeTerrain", D_METHOD("version"), &CporeTerrain::version);
     ClassDB::bind_static_method("CporeTerrain", D_METHOD("defaults"), &CporeTerrain::defaults);
     ClassDB::bind_static_method("CporeTerrain", D_METHOD("validate", "params"), &CporeTerrain::validate);
@@ -396,3 +398,5 @@ PackedByteArray CporeTerrain::sun_visibility(const Dictionary &data, const Vecto
     }
     return out;
 }
+
+Dictionary CporeTerrain::cave_mesh(const Dictionary &params) { return cpore::build_cave_mesh(params); }
