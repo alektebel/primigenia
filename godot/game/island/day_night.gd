@@ -29,6 +29,7 @@ func update_now() -> void:
 		return
 	var warm: Color = Look.CREATURE_SUN_COLOR.lerp(DUSK, (1.0 - k) / 0.65) if k > 0.35 else DUSK.lerp(MOON, 1.0 - k / 0.35)
 	var day := smoothstep(0.0, 0.8, k)
+	RenderingServer.global_shader_parameter_set("moon_k", 1.0 - day)   # creature skins: moonlight fill and rim (skin v1)
 	sun.light_color = warm
 	sun.light_energy = Look.CREATURE_SUN_ENERGY * lerpf(0.12, 1.0, day) * (1.0 - inside)
 	env.ambient_light_color = NIGHT_AMBIENT.lerp(Look.CREATURE_AMBIENT_COLOR, day)

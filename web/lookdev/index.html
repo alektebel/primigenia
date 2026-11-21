@@ -77,8 +77,9 @@ const mix = (a, b, t) => a + (b - a) * t;
 // A variant is { name, note, fragment, emissive?, clearcoat, ccRough }: GLSL spliced into MeshPhysicalMaterial. `fragment` (colour stage) sets
 // `vec3 sk` (albedo), `float bp` (height for the normal) and `float rgh` (roughness); `emissive` (after the normal is known) adds to
 // totalEmissiveRadiance. Add a variant = add an entry.
+const moonU = { value: 0 };
 const SKIN_COMMON = `
-uniform vec3 cA,cB,cC; uniform float uScale,uWet,uPat,uDetail; uniform vec3 uSunDir;
+uniform vec3 cA,cB,cC; uniform float uMoon; uniform float uScale,uWet,uPat,uDetail; uniform vec3 uSunDir;
 varying vec3 vObjP; varying vec3 vObjN;
 float h3(vec3 p){p=fract(p*.3183099+.1);p*=17.;return fract(p.x*p.y*p.z*(p.x+p.y+p.z));}
 float n3(vec3 x){vec3 i=floor(x),f=fract(x);f=f*f*(3.-2.*f);return mix(mix(mix(h3(i),h3(i+vec3(1.,0.,0.)),f.x),mix(h3(i+vec3(0.,1.,0.)),h3(i+vec3(1.,1.,0.)),f.x),f.y),mix(mix(h3(i+vec3(0.,0.,1.)),h3(i+vec3(1.,0.,1.)),f.x),mix(h3(i+vec3(0.,1.,1.)),h3(i+vec3(1.,1.,1.)),f.x),f.y),f.z);}
@@ -125,14 +126,26 @@ const VARIANTS = [
     `, clearcoat: 0.0, ccRough: 0.5 },
 ];
 
+// Variant 2 = skin v1: variant 0 made matte (weak dry specular that fades at grazing angles, clearcoat mostly on wet zones), a ground bounce and
+// sky floor on the shade side, and a moonlight fill + rim at night (uMoon, 0 day .. 1 night). Same numbers as skin_common.gdshaderinc.
+VARIANTS.push({ name: "2  Skin v1 (matte, moonlight, bounce)",
+  note: "Variant 0 with: dry specular 0.03..0.45 by view angle (clearcoat x0.3 off the wet zone), ground bounce + sky floor, night fill + rim in the skin's own colour. Hues untouched.",
+  fragment: VARIANTS[0].fragment.replace("mix(.86,.45,uWet)", "mix(.9,.58,uWet)"),
+  emissive: VARIANTS[0].emissive + `
+      float ny=normal.y*0.; vec3 nw=(vec4(normal,0.)*viewMatrix).xyz; ny=nw.y;
+      float ndv=clamp(dot(normalize(vViewPosition),normal),0.,1.);
+      totalEmissiveRadiance+=sk*.14*smoothstep(.5,-.7,ny)+cA*.035;
+      float moonside=.55+.45*dot(normal,Lw);
+      totalEmissiveRadiance+=uMoon*(sk*.45+cA*.15)+sk*uMoon*1.2*pow(1.-ndv,2.5)*moonside;
+    `, clearcoat: 0.07, ccRough: 0.4, specular: 0.3 });
 function skinMaterial(variantIndex, quality) {
   const V = VARIANTS[variantIndex];
-  const m = new THREE.MeshPhysicalMaterial({ roughness: .6, metalness: 0, clearcoat: V.clearcoat, clearcoatRoughness: V.ccRough });
+  const m = new THREE.MeshPhysicalMaterial({ roughness: .6, metalness: 0, clearcoat: V.clearcoat, clearcoatRoughness: V.ccRough, specularIntensity: V.specular || 1 });
   m.extensions = { derivatives: true };
   m.userData.u = {
     cA: { value: new THREE.Color("#b8523a").convertSRGBToLinear() }, cB: { value: new THREE.Color("#2a1812").convertSRGBToLinear() },
     cC: { value: new THREE.Color("#d8cdb8").convertSRGBToLinear() }, uScale: { value: 7 }, uWet: { value: .2 },
-    uPat: { value: 1 }, uDetail: { value: quality === "low" ? 0.0001 : 1 }, uSunDir: { value: SUN_DIR.clone() },
+    uPat: { value: 1 }, uDetail: { value: quality === "low" ? 0.0001 : 1 }, uSunDir: { value: SUN_DIR.clone() }, uMoon: moonU,
   };
   m.customProgramCacheKey = () => "skin" + variantIndex + quality;
   m.onBeforeCompile = (s) => {
@@ -219,6 +232,7 @@ function applyLight() {
   const k = state.light;
   const warm = k > .35 ? SUN_COLOR.clone().lerp(DUSK, (1 - k) / .65) : DUSK.clone().lerp(MOON, 1 - k / .35);
   const day = smooth(0, .8, k);
+  moonU.value = 1 - day;
   sun.color.copy(warm);
   sun.intensity = SUN_ENERGY * mix(.12, 1, day) * .40;     // Godot energy 4.4 is in its own units (about 2x the three.js studio's 2.2 at the world tone map); scaled to read like the Godot frames
   hemi.color.copy(NIGHT_AMB.clone().lerp(DAY_AMB, day));

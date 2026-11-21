@@ -75,12 +75,12 @@ func _init() -> void:
 	sac.render_priority = 1
 	insect.render_priority = 2
 	bone = _keratin(0.0, "#bfae8a", "#4a3822", "#cdbf9c", .5)
-	tooth = _keratin(1.0, "#f7f1df", "#6d5a3a", "#e6dcc0", .8)
+	tooth = _keratin(1.0, "#f7f1df", "#6d5a3a", "#d9cdae", .8)
 	beak = _keratin(2.0, "#d9952f", "#5a3512", "#d6a04a", .9)
 	# Wet, specular eyes: veined cream sclera, a radial iris (own shader), a glossy cornea bulge over it.
 	if realism:
-		eye_white = phys("#cdbf9f", .12, 1)
-		eye_white.clearcoat_roughness = .03
+		eye_white = phys("#b9ab8c", .35, 1)
+		eye_white.clearcoat_roughness = .12
 		pupil = phys("#030303", .05, 1)
 		pupil.clearcoat_roughness = .02
 	else:

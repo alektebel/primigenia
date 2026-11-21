@@ -7,6 +7,7 @@ uniform vec3 cB : source_color = vec3(0.267);
 uniform vec3 cC : source_color = vec3(0.8);
 uniform float uPat = 1.0;
 uniform float uWet = 0.3;
+global uniform float moon_k;      // 0 day .. 1 night, set by day_night.gd (skin v1: moonlight response)
 uniform float uScale = 7.0;
 uniform float clearcoat_amount = 0.24;
 uniform float clearcoat_rough = 0.4;
@@ -42,6 +43,12 @@ uniform float tube_feet = 0.0;     // radial arms: sucker dots on the undersides
 uniform float gel = 0.0;           // radial jellies (GEL defined by skin_gel.gdshader): translucency, wrap light, rim
 uniform vec4 mounts[6];            // muscle bulges on the body (hips and shoulders): xyz body rest space, w radius
 uniform int n_mounts = 0;
+
+const float BOUNCE = 0.14;
+const float SKY_FLOOR = 0.035;
+const float MOON_FILL = 0.45;
+const float MOON_FLOOR = 0.15;
+const float MOON_RIM = 1.2;
 
 varying vec4 vSkin;
 varying vec2 vUVb;
@@ -192,7 +199,7 @@ void fragment() {
 		// ---- roughness: dry back, damp belly, wet snout and mouth ----
 		float wetm = 0.0;
 		if (snout.w > 0.0) wetm = 1.0 - smoothstep(0.0, 1.0, distance(rp, snout.xyz) / snout.w);
-		float dry = mix(0.86, 0.45, uWet);
+		float dry = mix(0.9, 0.58, uWet);   // skin v1: matte default, wet only where the genome says so
 		float rgh = dry * mix(1.0, 0.78, smoothstep(0.2, -0.6, dd)) * (1.0 - 0.12 * plate * scale_amt) + (pores - 0.5) * 0.12;
 		if (act_mode > 2.5 && act_mode < 3.5) rgh = mix(rgh, 0.36, 0.7);
 		ROUGHNESS = clamp(mix(rgh, 0.12, wetm), 0.07, 1.0);
@@ -208,6 +215,12 @@ void fragment() {
 		vec3 blood = sk * vec3(1.0, 0.52, 0.36) * 1.4 + vec3(0.02, 0.0, 0.0);
 		vec3 em = sk * pow(1.0 - clamp(dot(view, n), 0.0, 1.0), 3.0) * 0.18;
 		em += blood * wrap * sss * (0.25 + 0.75 * thin);
+		// skin v1 moonlight: at night a soft self-fill and a rim on the side facing the moon, always the skin's own colour (no glow, no outline).
+		float moonside = 0.55 + 0.45 * dot(n, Lw);
+		// skin v1: ground bounce on the sides and belly (the dry skin no longer mirrors the sky, so the shade side keeps its colour from the ground).
+		float ny = (INV_VIEW_MATRIX * vec4(n, 0.0)).y;
+		em += sk * BOUNCE * smoothstep(0.5, -0.7, ny) + cA * SKY_FLOOR;
+		em += moon_k * (sk * MOON_FILL + cA * MOON_FLOOR) + sk * moon_k * ( MOON_RIM * pow(1.0 - clamp(dot(view, n), 0.0, 1.0), 2.5) * moonside);
 #ifdef RENDERER_FORWARD_PLUS
 		SSS_STRENGTH = sss * (0.15 + 0.5 * thin);
 #endif
@@ -220,7 +233,8 @@ void fragment() {
 #endif
 		EMISSION = em;
 		METALLIC = 0.0;
-		CLEARCOAT = clamp(clearcoat_amount * (1.0 + 3.0 * wetm), 0.0, 1.0);
+		SPECULAR = mix(mix(0.03, 0.45, smoothstep(0.15, 0.7, dot(view, n))), 0.5, wetm);   // skin v1: dry skin has a weak sheen, the wet snout keeps full specular
+		CLEARCOAT = clamp(clearcoat_amount * (0.3 + 3.0 * wetm), 0.0, 1.0);
 		CLEARCOAT_ROUGHNESS = mix(clearcoat_rough, 0.06, wetm);
 	} else {
 #endif
