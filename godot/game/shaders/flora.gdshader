@@ -81,6 +81,6 @@ void fragment() {
 	ALBEDO = OUTPUT_IS_SRGB ? pow(pigment, vec3(0.64)) : pigment;
 	ROUGHNESS = style > 0.5 ? 0.85 : 0.96;
 	SPECULAR = 0.12;
-	EMISSION = ALBEDO * ambient_color * 22.0;   // night fill for trees and shrubs (the creature stage keeps its own lights)
+	EMISSION = ALBEDO * mix(vec3(dot(ambient_color, vec3(0.2126, 0.7152, 0.0722))), ambient_color, 0.5) * 24.0;   // night fill for trees and shrubs (the creature stage keeps its own lights)
 	BACKLIGHT = style > 0.5 ? ALBEDO * 0.22 : vec3(0.0);
 }
