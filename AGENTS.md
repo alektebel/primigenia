@@ -32,6 +32,11 @@ One tracker test at a time: **brief → agent builds it in its own worktree → 
 - Merge main into your branch before asking for review; run the suites your change touches.
 - Before stopping for any reason, commit work in progress to your branch (`WIP: ...`). Never leave a dirty tree. (Codex's sandbox cannot commit: leave it uncommitted and say so; a Sonnet agent commits it.)
 
+## Make agent work count (owner, 2026-11-21)
+- **Work-in-progress limit:** no new task is launched while more than 3 branches are finished and waiting to merge. Finish before starting.
+- **Merge or close within 48 h:** every finished branch is merged (A33) or closed with the reason written in `docs/STATUS.md`. No branch sits forgotten.
+- **Every task starts from a tracker test:** the brief names the tracker test it advances and the numbers that prove it; otherwise it is not launched.
+
 ## Machine rules (hard)
 - **GPU is the owner's.** Agents render with software GL only: `LIBGL_ALWAYS_SOFTWARE=1`, `xvfb-run -a`, `--rendering-driver opengl3`. Browser captures with SwiftShader, never GPU flags.
 - Godot runs: always `timeout`, `--check-only` first for new scripts, headless or xvfb, `nice -n 10`.
