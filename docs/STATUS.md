@@ -25,10 +25,11 @@ Launch on the RTX: `__NV_PRIME_RENDER_OFFLOAD=1 __GLX_VENDOR_LIBRARY_NAME=nvidia
 | Branch | State | Next step |
 |---|---|---|
 | `w11-alpine` | skipped by the integrator (rewrites terrain v4 heights/goldens, drainage unresolved) | Owner: merge or close |
-| `anim/gait-lab` | **Main line M1, running** (Sonnet): three.js 4×4 lab, 16 mutated bodies, gait by Froude; brief `docs/briefs/gait-lab.md` | Review screenshots/self-check; owner watches the grid |
+| `anim/gait-lab` | **merged fa67103**: lab confirms wrong gait selection at 5.1 m/s; port rules in `docs/evidence/loco/gaitlab.md`. Owner: "2 m/s seems the sweet spot" (noted on D-26) | Port to loco_gait.gd + D-26 speed once the owner confirms |
+| `devtools/options` | **Running** (Sonnet): F10 option mode, then phase 2 in-game notes (Shift+F8 flag, pins); brief `docs/briefs/dev-options.md`; tracker DT-OPT, DT-NOTES | Review, merge |
 | `art/world-light` | **Art lane A1, running** (Sonnet): world light follows the day cycle (D-25); brief `docs/briefs/world-light.md` | Review look-score compare + blind A/B; merge under A33 |
 | `lore/food-web` | **Lore lane, running** (Sonnet + council): Primigenia full food web; brief `docs/briefs/trophic-web.md` | Review validate + contact sheet; owner L-TROPHIC |
-| `lore/exoplanets-40` | **Lore lane, running** (Opus step 1: 40 planets, NASA data, seeds); then Codex step 2 (pipeline), council step 3, Opus review step 4; brief `docs/briefs/exoplanets-40.md` | After step 1: launch Codex in the same worktree |
+| `lore/exoplanets-40` | **Lore lane**: step 1 done abedd69 (Opus: 40 planets, NASA archive 2026-11-21, 13 water-carbon / 11 silicon); **step 2 Codex running** (exoplanet kind, derivation sheet, validator; brief `docs/briefs/exoplanets-step2-codex.md`, log `_agent/codex-lore-exo.log`) | Commit Codex work; run council step 3; Opus review step 4 |
 | `tools/gaitopt` | merged as tooling; pilot failed (6/10 bodies fall) | Paused; D-02 |
 
 Integration follow-ups (owner): wild slot reserve for cousins (radial animals capped at 23 of 24); Garfio no longer charges before the first evolve; cave mesher not wired into the island; untracked debug files in cpore-wt/art-underwater.
