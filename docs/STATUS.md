@@ -25,6 +25,7 @@ Launch on the RTX: `__NV_PRIME_RENDER_OFFLOAD=1 __GLX_VENDOR_LIBRARY_NAME=nvidia
 | Branch | State | Next step |
 |---|---|---|
 | `w11-alpine` | skipped by the integrator (rewrites terrain v4 heights/goldens, drainage unresolved) | Owner: merge or close |
+| `anim/gait-lab` | paused by the owner 2026-11-21; brief only (`docs/briefs/gait-lab.md`, 63115fd): three.js 4×4 lab, 16 mutated bodies walking side by side, gait by Froude | Resume when the owner asks: relaunch a Sonnet agent with the brief |
 | `tools/gaitopt` | merged as tooling; pilot failed (6/10 bodies fall) | Paused; D-02 |
 
 Integration follow-ups (owner): wild slot reserve for cousins (radial animals capped at 23 of 24); Garfio no longer charges before the first evolve; cave mesher not wired into the island; untracked debug files in cpore-wt/art-underwater.
