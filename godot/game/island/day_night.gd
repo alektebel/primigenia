@@ -21,16 +21,16 @@ var _hour := 12.5
 # Wikimedia Commons volcanic-island photos (Galapagos, Hawai'i: warm low sun with long shadows, pale neutral noon, blue-grey moonlit dusk).
 const SUNRISE := 6.0     # the C clock: light 0.5 at 06:00 and 19:00 (stage_secrets.c), noon at 12:30
 const SUNSET := 19.0
-const SUN_MAX_DEG := 52.0
+const SUN_MAX_DEG := 38.0
 const MID_AZ := Vector3(-0.6259115, 0.0, -0.7268649)   # horizontal direction of the sun at noon (the old fixed sun's azimuth)
 # key colours: low sun (dawn, dusk), full day, night. sun_color is the multiplier on the world's linear colour.
-const K_SUN := {"low": Vector3(1.32, 0.80, 0.46), "day": Vector3(1.0, 1.0, 1.0), "night": Vector3(0.30, 0.40, 0.64)}
-const K_ZENITH := {"low": Vector3(0.24, 0.27, 0.55), "day": Vector3(0.13, 0.39, 0.84), "night": Vector3(0.03, 0.05, 0.12)}   # low: slight off-Earth violet
+const K_SUN := {"low": Vector3(1.18, 0.86, 0.58), "day": Vector3(1.0, 1.0, 1.0), "night": Vector3(0.45, 0.56, 0.84)}
+const K_ZENITH := {"low": Vector3(0.30, 0.33, 0.58), "day": Vector3(0.13, 0.39, 0.84), "night": Vector3(0.03, 0.05, 0.12)}   # low: slight off-Earth violet
 const K_MID := {"low": Vector3(0.62, 0.50, 0.66), "day": Vector3(0.52, 0.70, 0.93), "night": Vector3(0.05, 0.08, 0.17)}
-const K_HORIZON := {"low": Vector3(1.0, 0.66, 0.48), "day": Vector3(0.95, 0.84, 0.70), "night": Vector3(0.08, 0.11, 0.20)}
-const K_GLOW := {"low": Vector3(1.0, 0.48, 0.22), "day": Vector3(1.0, 0.62, 0.30), "night": Vector3(0.0, 0.0, 0.0)}
+const K_HORIZON := {"low": Vector3(0.95, 0.72, 0.58), "day": Vector3(0.95, 0.84, 0.70), "night": Vector3(0.08, 0.11, 0.20)}
+const K_GLOW := {"low": Vector3(0.95, 0.55, 0.30), "day": Vector3(1.0, 0.62, 0.30), "night": Vector3(0.0, 0.0, 0.0)}
 const K_FOG := {"low": Vector3(0.72, 0.60, 0.66), "day": Vector3(0.34, 0.58, 0.88), "night": Vector3(0.06, 0.09, 0.17)}
-const K_AMBIENT := {"low": Vector3(0.0, 0.0, 0.0), "day": Vector3(0.0, 0.0, 0.0), "night": Vector3(0.0035, 0.0055, 0.011)}
+const K_AMBIENT := {"low": Vector3(0.0, 0.0, 0.0), "day": Vector3(0.0, 0.0, 0.0), "night": Vector3(0.008, 0.012, 0.024)}
 
 ## Sun elevation in degrees for an hour 0..24 (negative below the horizon).
 static func sun_elevation(hour: float) -> float:
@@ -98,4 +98,4 @@ func update_now() -> void:
 	sun.light_energy = Look.CREATURE_SUN_ENERGY * lerpf(0.12, 1.0, day) * (1.0 - inside)
 	env.ambient_light_color = NIGHT_AMBIENT.lerp(Look.CREATURE_AMBIENT_COLOR, day)
 	env.ambient_light_energy = Look.CREATURE_AMBIENT_ENERGY * lerpf(0.55, 1.0, day) * lerpf(1.0, 0.3, inside)
-	env.tonemap_exposure = Look.TONEMAP_EXPOSURE * lerpf(0.50, 1.0, day) * lerpf(1.0, 0.8, inside)
+	env.tonemap_exposure = Look.TONEMAP_EXPOSURE * lerpf(0.68, 1.0, day) * lerpf(1.0, 0.8, inside)

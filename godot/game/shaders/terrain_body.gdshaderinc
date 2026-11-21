@@ -297,6 +297,8 @@ void fragment() {
 		land *= mix(vec3(1.0), WET_TINT, smoothstep(0.0, 0.4, wet) * 0.6);
 		// River channels: only a faint dark-green trace through the meadow (the hero shows none), not a blue strip.
 		land = mix(land, CHANNEL * landRamp(light), smoothstep(0.4, 0.6, wet) * 0.1);
+		// Ground seen from near: calmer chroma with distance from the camera (forest floor read as oversaturated and busy).
+		land = mix(vec3(dot(land, vec3(0.2126, 0.7152, 0.0722))), land, mix(1.0, 0.7, smoothstep(1.0, 14.0, dist0)));
 		ALBEDO = scene_out(land, wp, CAMERA_POSITION_WORLD);
 		if (lod_debug > 0.5) {
 			ALBEDO = godot_albedo(mix(land, lod_color, 0.7));   // no haze: LOD colours stay readable
