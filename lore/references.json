@@ -12658,5 +12658,406 @@
     },
     "container-title": "Nature Geoscience",
     "x-checked": "2026-11-20"
+  },
+  {
+    "id": "carroll_ostlie_2007",
+    "type": "book",
+    "title": "An Introduction to Modern Astrophysics",
+    "author": [
+      {
+        "family": "Carroll",
+        "given": "Bradley W."
+      },
+      {
+        "family": "Ostlie",
+        "given": "Dale A."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2007
+        ]
+      ]
+    },
+    "container-title": "Pearson Addison-Wesley",
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked"
+  },
+  {
+    "id": "reid_hawley_2005",
+    "type": "book",
+    "title": "New Light on Dark Stars: Red Dwarfs, Low-Mass Stars, Brown Dwarfs",
+    "author": [
+      {
+        "family": "Reid",
+        "given": "I. Neill"
+      },
+      {
+        "family": "Hawley",
+        "given": "Suzanne L."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2005
+        ]
+      ]
+    },
+    "container-title": "Springer-Praxis",
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked"
+  },
+  {
+    "id": "laskar_1993_obliquity",
+    "type": "article-journal",
+    "title": "The chaotic obliquity of the planets",
+    "author": [
+      {
+        "family": "Laskar",
+        "given": "Jacques"
+      },
+      {
+        "family": "Robutel",
+        "given": "Philippe"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1993
+        ]
+      ]
+    },
+    "container-title": "Nature",
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked"
+  },
+  {
+    "id": "laskar_1993_moon",
+    "type": "article-journal",
+    "title": "Stabilization of the Earth's obliquity by the Moon",
+    "author": [
+      {
+        "family": "Laskar",
+        "given": "Jacques"
+      },
+      {
+        "family": "Joutel",
+        "given": "F."
+      },
+      {
+        "family": "Robutel",
+        "given": "Philippe"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1993
+        ]
+      ]
+    },
+    "container-title": "Nature",
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked"
+  },
+  {
+    "id": "kasting_1993_hz",
+    "type": "article-journal",
+    "title": "Habitable zones around main sequence stars",
+    "author": [
+      {
+        "family": "Kasting",
+        "given": "James F."
+      },
+      {
+        "family": "Whitmire",
+        "given": "Daniel P."
+      },
+      {
+        "family": "Reynolds",
+        "given": "Ray T."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1993
+        ]
+      ]
+    },
+    "container-title": "Icarus",
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked"
+  },
+  {
+    "id": "wallace_hobbs_2006",
+    "type": "book",
+    "title": "Atmospheric Science: An Introductory Survey",
+    "author": [
+      {
+        "family": "Wallace",
+        "given": "John M."
+      },
+      {
+        "family": "Hobbs",
+        "given": "Peter V."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2006
+        ]
+      ]
+    },
+    "container-title": "Academic Press",
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked"
+  },
+  {
+    "id": "cooke_1993_desert",
+    "type": "book",
+    "title": "Desert Geomorphology",
+    "author": [
+      {
+        "family": "Cooke",
+        "given": "Ronald U."
+      },
+      {
+        "family": "Warren",
+        "given": "Andrew"
+      },
+      {
+        "family": "Goudie",
+        "given": "Andrew S."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1993
+        ]
+      ]
+    },
+    "container-title": "UCL Press",
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked"
+  },
+  {
+    "id": "warren_2006_evaporites",
+    "type": "book",
+    "title": "Evaporites: Sediments, Resources and Hydrocarbons",
+    "author": [
+      {
+        "family": "Warren",
+        "given": "John K."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2006
+        ]
+      ]
+    },
+    "container-title": "Springer",
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked"
+  },
+  {
+    "id": "gould_1981_kingdoms",
+    "type": "chapter",
+    "title": "Kingdoms Without Wheels",
+    "author": [
+      {
+        "family": "Gould",
+        "given": "Stephen Jay"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1983
+        ]
+      ]
+    },
+    "container-title": "Hen's Teeth and Horse's Toes",
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked"
+  },
+  {
+    "id": "labarbera_1983_wheels",
+    "type": "article-journal",
+    "title": "Why the wheels won't go",
+    "author": [
+      {
+        "family": "LaBarbera",
+        "given": "Michael"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1983
+        ]
+      ]
+    },
+    "container-title": "The American Naturalist",
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked"
+  },
+  {
+    "id": "berg_1973_flagellar",
+    "type": "article-journal",
+    "title": "Bacteria swim by rotating their flagellar filaments",
+    "author": [
+      {
+        "family": "Berg",
+        "given": "Howard C."
+      },
+      {
+        "family": "Anderson",
+        "given": "Robert A."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1973
+        ]
+      ]
+    },
+    "container-title": "Nature",
+    "DOI": "10.1038/245380a0",
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked"
+  },
+  {
+    "id": "chen_2010_chlorophyll_f",
+    "type": "article-journal",
+    "title": "A red-shifted chlorophyll",
+    "author": [
+      {
+        "family": "Chen",
+        "given": "Min"
+      },
+      {
+        "family": "Schliep",
+        "given": "Martin"
+      },
+      {
+        "family": "Willows",
+        "given": "Robert D."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2010
+        ]
+      ]
+    },
+    "container-title": "Science",
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked"
+  },
+  {
+    "id": "johnsen_lohmann_2005",
+    "type": "article-journal",
+    "title": "The physics and neurobiology of magnetoreception",
+    "author": [
+      {
+        "family": "Johnsen",
+        "given": "Sönke"
+      },
+      {
+        "family": "Lohmann",
+        "given": "Kenneth J."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2005
+        ]
+      ]
+    },
+    "container-title": "Nature Reviews Neuroscience",
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked"
+  },
+  {
+    "id": "chasteen_2003_selenium",
+    "type": "article-journal",
+    "title": "Biomethylation of selenium and tellurium: microorganisms and plants",
+    "author": [
+      {
+        "family": "Chasteen",
+        "given": "Thomas G."
+      },
+      {
+        "family": "Bentley",
+        "given": "Ronald"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2003
+        ]
+      ]
+    },
+    "container-title": "Chemical Reviews",
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked"
+  },
+  {
+    "id": "madigan_2006_brock",
+    "type": "book",
+    "title": "Brock Biology of Microorganisms",
+    "author": [
+      {
+        "family": "Madigan",
+        "given": "Michael T."
+      },
+      {
+        "family": "Martinko",
+        "given": "John M."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2006
+        ]
+      ]
+    },
+    "container-title": "Pearson Prentice Hall",
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked"
+  },
+  {
+    "id": "berg_1973_bacteria",
+    "type": "article-journal",
+    "title": "Bacteria swim by rotating their flagellar filaments",
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked",
+    "author": [
+      {
+        "family": "Berg",
+        "given": "H. C."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1973
+        ]
+      ]
+    },
+    "container-title": "Nature"
   }
 ]
