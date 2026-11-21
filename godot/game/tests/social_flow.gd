@@ -76,7 +76,7 @@ func _run() -> void:
 	var species_seen := {}
 	for i in range(1, stage.cur.entities.size()):
 		species_seen[int(stage.cur.entities[i].species)] = true
-	check(species_seen.size() == 6, "all six species are present (C2 secrets added Acechalunas and Babosa)")
+	check(species_seen.size() == 8, "all eight species are present (C2 secrets added Acechalunas and Babosa)")
 	# freeze the wild so the test is about the verbs, and bring a Rondo next to the player
 	stage.debug_now({"op": 6, "a": 2})
 	var rondo := -1

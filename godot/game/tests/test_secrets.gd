@@ -27,6 +27,8 @@ func run(t) -> void:
 	for w in setup.wild:
 		counts[int(w.species)] = int(counts.get(int(w.species), 0)) + 1
 	t.check(int(counts.get(4, 0)) >= 2 and int(counts.get(5, 0)) >= 2, "Acechalunas (%s) and Babosa (%s) herds exist" % [counts.get(4, 0), counts.get(5, 0)])
+	t.eq(int(counts.get(6, 0)), 4, "four real Brujula")
+	t.eq(int(counts.get(7, 0)), 2, "two real Corona")
 	t.check(setup.wild.size() <= 24, "within the 24 creature cap (%d)" % setup.wild.size())
 	t.eq(world.reset(setup), 0, "the C world accepts the island setup")
 	var st: Dictionary = world.state()
@@ -34,13 +36,13 @@ func run(t) -> void:
 	t.eq(int(st.shards.found), 0, "none found yet")
 	t.check(not st.shards.items[0].has("line"), "the story line stays hidden until found")
 	t.check(bool(st.cave.enabled), "state().cave.enabled")
-	t.eq(st.species.size(), 6, "state().species lists six species")
+	t.eq(st.species.size(), 8, "state().species lists eight species")
 	t.eq(String(st.species[4].name), "Acechalunas", "species 4")
 	t.eq(String(st.species[5].name), "Babosa", "species 5")
 	t.eq(String(st.day.phase), "day", "08:00 is day")
 	t.eq(int(st.day.light), 1000, "full light in the morning")
 	var sp: Array = CporeWorld.species()
-	t.eq(sp.size(), 6, "species() has six entries")
+	t.eq(sp.size(), 8, "species() has eight entries")
 	t.check(bool(sp[4].nocturnal) and String(sp[5].activity_name) == "crepuscular", "activity flags")
 	# nocturnal creatures sleep by day: hidden entities are flagged, they come out at night
 	var hidden_day := 0

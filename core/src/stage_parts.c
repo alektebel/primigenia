@@ -76,9 +76,11 @@ static const char *const victim[CP_STAGE_SPECIES_COUNT][6]={
  {"pua","pua","cuerno","placa","fauces","tail_spike"},
  {"fauces","fauces","jaw_nipper","tail_hammer","cuerno","leg_sprinter"},
  {"ojo","ojo","oreja","jaw_nipper","lure_lantern","tail_spike"},          /* Acechalunas: eyes, ears and the belly light */
- {"antena","eye_stalk","sac_spitter","sac_spitter","bulbo","pata"}         /* Babosa */
+ {"antena","eye_stalk","sac_spitter","sac_spitter","bulbo","pata"}         /* Babosa */,
+ {"leg_sucker","leg_sucker","pua","romo","placa","bulbo"},
+ {"frill_fan","frill_fan","antena","romo","bulbo","ojo"}
 };
-static const char *const signature[CP_STAGE_SPECIES_COUNT]={"romo","zanca","pua","fauces","lure_lantern","sac_spitter"};
+static const char *const signature[CP_STAGE_SPECIES_COUNT]={"romo","zanca","pua","fauces","lure_lantern","sac_spitter","leg_sucker","frill_fan"};
 void cp_stage_parts_reset(CpStageWorld *w){
  CpStageParts *p=&w->parts;memset(p,0,sizeof *p);p->eggs=3;p->adult_hp=w->player.profile.hp;
  cp_rng_seed(&p->loot,w->setup.seed^0x4c4f4f54u);cp_rng_seed(&p->fossil,w->setup.seed^0x464f5353u);

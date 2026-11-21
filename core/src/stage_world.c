@@ -43,7 +43,9 @@ const CpStageSpecies CP_STAGE_SPECIES[CP_STAGE_SPECIES_COUNT]={
         "Babosa",2.4f,16,14,0,CP_STAGE_TIMID,{
             0,0,2,0,2,80,100,2.4f,0
         },CP_ACT_CREPUSCULAR
-    }
+    },
+    {"Brujula",2.0f,14,10,0,CP_STAGE_TERRITORIAL,{0,0,0,0,2,70,100,2.0f,0},CP_ACT_DIURNAL},
+    {"Corona",1.4f,10,8,0,CP_STAGE_TIMID,{0,0,1,0,1,50,100,1.4f,0},CP_ACT_CREPUSCULAR}
 };
 static float clamp(float x,float a,float b){
     return x<a?a:x>b?b:x;
@@ -1107,8 +1109,17 @@ static void fight(CpStageWorld *w){
     }
 }
 static void wild_tick(CpStageWorld *w,int skip,int engage){
+    /* Respawn is emitted before AI runs. Keep this clock here so player movement stays independent. */
+    for(uint32_t n=0;n<w->ev_total&&n<CP_STAGE_MAX_EVENTS;n++){
+        const CpStageEvent *ev=&w->events[(w->ev_total-1-n)%CP_STAGE_MAX_EVENTS];
+        if(ev->tick!=w->tick)break;
+        if(ev->type==CP_STAGE_EV_RESPAWN)w->grace_until=w->tick+CP_STAGE_GRACE_TICKS;
+    }
     for(int i=0;i<w->setup.n;i++){
         CpStageCreature *e=&w->wild[i];
+        if(CP_STAGE_SPECIES[e->species].activity==CP_ACT_NOCTURNAL&&!e->dead&&
+           (i==w->active||dist(e,&w->player)<=CP_STAGE_WAKE_RADIUS))
+            w->wake_until[i]=w->tick+CP_STAGE_WAKE_TICKS;
         if(e->dead||i==skip)continue;
         if(w->debug_flags&CP_STAGE_FLAG_AI_OFF){
             /* Debug AI_OFF: the wild neither walk, roam (no RNG draw) nor attack; the player can still start a fight. */
@@ -1155,7 +1166,9 @@ static void wild_tick(CpStageWorld *w,int skip,int engage){
             tx=e->x+(e->x-w->player.x);
             tz=e->z+(e->z-w->player.z);
         }
-        float jog=e->profile.speed*w->motion.wild_k*w->motion.jog_k,espeed=jog;
+        float jog=e->profile.speed*(e->species>=6?1.f:w->motion.wild_k*w->motion.jog_k),espeed=jog;
+        /* A star probes slowly on tube feet, and rows at full speed when driven off or provoked. */
+        if(e->species==6&&!hostile&&!e->returning&&!cp_stage_social_leaving(w,i))espeed=.3f;
         if(length(tx-e->x,tz-e->z)<.4f||(cp_stage_creature_hunkered(w,i)&&!hostile))espeed=0;   /* hunkered: curled up in the noon light */
         walk(w,e,tx-e->x,tz-e->z,espeed,jog);
         if(e->returning&&length(e->x-e->home_x,e->z-e->home_z)<.6f)e->returning=0;
@@ -1490,6 +1503,8 @@ uint64_t cp_stage_hash(const CpStageWorld *w){
         u32(&h,(uint32_t)(w->field_hash>>32));
     }
     if(w->ledger.enabled){uint64_t lh=cp_ledger_hash(&w->ledger);u32(&h,(uint32_t)lh);u32(&h,(uint32_t)(lh>>32));uint64_t ah=cp_stage_ancestry_hash(w);u32(&h,(uint32_t)ah);u32(&h,(uint32_t)(ah>>32));}
+    if(w->grace_until){u32(&h,0x47524143u);u32(&h,w->grace_until);}
+    for(int i=0;i<s->n;i++)if(w->wake_until[i]){u32(&h,0x57414b45u+(uint32_t)i);u32(&h,w->wake_until[i]);}
     return h;
 }
 uint16_t cp_stage_known_moves(const CpStageWorld *w){
@@ -2002,7 +2017,7 @@ uint64_t cp_stage_layout(void){
     LAY(CpStageWorld,debug_flags);LAY(CpStageWorld,reserved);LAY(CpStageWorld,field_hash);LAY(CpStageWorld,path);LAY(CpStageWorld,n_path);LAY(CpStageWorld,path_i);
     LAY(CpStageWorld,blocked_ticks);LAY(CpStageWorld,replans);LAY(CpStageWorld,path_goal_x);LAY(CpStageWorld,path_goal_z);
     LAY(CpStageWorld,blocked_reason);LAY(CpStageWorld,blocked_x);LAY(CpStageWorld,blocked_z);LAY(CpStageWorld,ev_total);
-    LAY(CpStageWorld,ev_acked);LAY(CpStageWorld,events);LAY(CpStageWorld,loadout);LAY(CpStageWorld,social);LAY(CpStageWorld,ledger);LAY(CpStageWorld,ancestry);LAY(CpStageWorld,parts);LAY(CpStageWorld,secrets);LAY(CpStageWorld,field);lay(&h,sizeof(CpStageSecrets));lay(&h,sizeof(CpStageCave));lay(&h,sizeof(CpStageSocial));lay(&h,sizeof(CpStageSocialCreature));lay(&h,sizeof(CpStageEvent));
+    LAY(CpStageWorld,ev_acked);LAY(CpStageWorld,events);LAY(CpStageWorld,loadout);LAY(CpStageWorld,social);LAY(CpStageWorld,ledger);LAY(CpStageWorld,ancestry);LAY(CpStageWorld,parts);LAY(CpStageWorld,secrets);LAY(CpStageWorld,grace_until);LAY(CpStageWorld,wake_until);LAY(CpStageWorld,field);lay(&h,sizeof(CpStageSecrets));lay(&h,sizeof(CpStageCave));lay(&h,sizeof(CpStageSocial));lay(&h,sizeof(CpStageSocialCreature));lay(&h,sizeof(CpStageEvent));
     LAY(CpStageSetup,seed);LAY(CpStageSetup,terrain_seed);LAY(CpStageSetup,terrain);LAY(CpStageSetup,n);
     LAY(CpStageSetup,n_obstacles);LAY(CpStageSetup,nest_x);LAY(CpStageSetup,nest_z);LAY(CpStageSetup,flat_height);
     LAY(CpStageSetup,water_x);LAY(CpStageSetup,water_z);LAY(CpStageSetup,water_radius);LAY(CpStageSetup,player);LAY(CpStageSetup,player_legs);
@@ -2035,6 +2050,7 @@ uint64_t cp_stage_layout(void){
     LAY(CpStageMotion,pivot_max);LAY(CpStageMotion,turn_slow);
     return h;
 }
+#include "stage_snapshot_v7.inc"
 size_t cp_stage_world_size(void){
     return sizeof(CpStageWorld);
 }
@@ -2066,10 +2082,66 @@ int cp_stage_snapshot(const CpStageWorld *w,uint8_t *out,size_t cap){
     memcpy(out+SNAP_HEADER,w,SNAP_PAYLOAD);
     return (int)(SNAP_HEADER+SNAP_PAYLOAD);
 }
+/* Expand the six-species arrays member by member; all other v7 state keeps its exact bytes. */
+static int restore_v7(CpStageWorld *w,const uint8_t *in,size_t len,const CpStageField *field){
+    if(get64(in+16)!=snapshot_v7_layout())return CP_STAGE_SNAP_ERR_LAYOUT;
+    if(get32(in+24)!=offsetof(CpStageWorldV7,field)||get32(in+28)||len!=SNAP_HEADER+offsetof(CpStageWorldV7,field))return CP_STAGE_SNAP_ERR_SIZE;
+    uint64_t fh=get64(in+32);
+    if(fh&&(!field||field->hash!=fh))return CP_STAGE_SNAP_ERR_FIELD;
+    CpStageWorldV7 old;memset(&old,0,sizeof old);memcpy(&old,in+SNAP_HEADER,offsetof(CpStageWorldV7,field));
+    CpStageWorld temp;memset(&temp,0,sizeof temp);
+    memcpy(&temp,&old,offsetof(CpStageWorldV7,social));
+#define COPY_SOC(m) memcpy(&temp.social.m,&old.social.m,sizeof old.social.m)
+    COPY_SOC(rng);
+    COPY_SOC(used);
+    COPY_SOC(dna_total);
+    COPY_SOC(dna_balance);
+    COPY_SOC(items);
+    COPY_SOC(act_verb);
+    COPY_SOC(act_target);
+    COPY_SOC(act_arg);
+    COPY_SOC(act_t);
+    COPY_SOC(act_len);
+    COPY_SOC(act_rhythm);
+    COPY_SOC(act_mult);
+    COPY_SOC(stagger);
+    COPY_SOC(intimidate_cd);
+    COPY_SOC(food);
+    COPY_SOC(diet);
+    COPY_SOC(obs_target);
+    COPY_SOC(obs_ticks);
+    COPY_SOC(obs_need);
+    COPY_SOC(obs_items);
+    COPY_SOC(learned);
+    COPY_SOC(kills);
+    COPY_SOC(latched);
+    COPY_SOC(resolution);
+    COPY_SOC(first_met);
+    COPY_SOC(tested);
+    COPY_SOC(liked);
+    COPY_SOC(dna_by_source);
+    COPY_SOC(n_explored);
+    COPY_SOC(explored);
+    COPY_SOC(species_seen);
+    COPY_SOC(c);
+#undef COPY_SOC
+    memcpy(&temp.parts,&old.parts,offsetof(CpStagePartsV7,dry));
+    memcpy(temp.parts.dry,old.parts.dry,sizeof old.parts.dry);
+    memcpy(temp.parts.ally_paid,old.parts.ally_paid,sizeof old.parts.ally_paid);
+    memcpy(temp.parts.kill_paid,old.parts.kill_paid,sizeof old.parts.kill_paid);
+    memcpy(&temp.parts.used,&old.parts.used,sizeof old.parts - offsetof(CpStagePartsV7,used));
+    temp.secrets=old.secrets;temp.field=fh?field:NULL;
+    /* New AI clocks remain zero until used, preserving the legacy hash for integrity verification. */
+    if(temp.field_hash!=fh||temp.setup.n<0||temp.setup.n>CP_STAGE_MAX_WILD)return CP_STAGE_SNAP_ERR_HASH;
+    for(int i=0;i<temp.setup.n;i++)if(temp.wild[i].species<0||temp.wild[i].species>=6)return CP_STAGE_SNAP_ERR_HASH;
+    if(cp_stage_hash(&temp)!=get64(in+40))return CP_STAGE_SNAP_ERR_HASH;
+    temp.hash=cp_stage_hash(&temp);*w=temp;return CP_STAGE_SNAP_OK;
+}
 int cp_stage_restore(CpStageWorld *w,const uint8_t *in,size_t len,const CpStageField *field){
     if(!w||!in||len<SNAP_HEADER||memcmp(in,"CPSTAGE",8))return CP_STAGE_SNAP_ERR_MAGIC;
-    if(get32(in+8)!=CP_STAGE_SNAPSHOT_VERSION)return CP_STAGE_SNAP_ERR_FORMAT;
+    if(get32(in+8)!=CP_STAGE_SNAPSHOT_VERSION&&get32(in+8)!=7)return CP_STAGE_SNAP_ERR_FORMAT;
     if(get32(in+12)!=CP_STAGE_VERSION)return CP_STAGE_SNAP_ERR_ENGINE;
+    if(get32(in+8)==7)return restore_v7(w,in,len,field);
     if(get64(in+16)!=cp_stage_layout())return CP_STAGE_SNAP_ERR_LAYOUT;
     if(get32(in+24)!=SNAP_PAYLOAD||get32(in+28)!=0||len!=SNAP_HEADER+SNAP_PAYLOAD)return CP_STAGE_SNAP_ERR_SIZE;
     const uint64_t field_hash=get64(in+32);

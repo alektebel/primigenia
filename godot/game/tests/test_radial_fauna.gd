@@ -14,14 +14,27 @@ func run(t) -> void:
 		t.eq(int(lore.body_plan.arms), int(g.plan.fold), "lore body_plan.arms == plan.fold for " + id)
 		t.eq(lore.body_plan.symmetry, "radial", "lore symmetry for " + id)
 		t.eq(g.plan.sym, "radial", id + " is a radial genome")
+	t.eq(Fauna.AMBIENT, ["cuarteta"], "only cuarteta has visual-only copies")
 	var shelves := 0
 	var corona_logged := 0
 	for world_seed in [1, 7, 42]:
 		var d := Terrain.new()
-		d.setup(Cache.get_or_build({"seed": world_seed}).entry, false)
+		var entry: Dictionary = Cache.get_or_build({"seed": world_seed}).entry
+		d.setup(entry, false)
 		var nest := Setup.find_nest(d)
 		var a: Dictionary = Fauna.plan(d, world_seed, nest)
 		var b: Dictionary = Fauna.plan(d, world_seed, nest)
+		var setup := {"wild": []}
+		Setup.add_radial(setup, d, world_seed, nest)
+		t.eq(setup.wild.size(), a.brujula.spots.size() + a.corona.spots.size(), "every land radial spot becomes a C spawn")
+		for w in setup.wild:
+			var id := "brujula" if int(w.species) == 6 else "corona"
+			t.check(a[id].spots.has(Vector2(w.x, w.z)), "C home uses habitat planner")
+			t.eq(int(w.legs), 5 if int(w.species) == 6 else 6, "C steering uses radial fold")
+		var core := CporeWorld.new()
+		core.set_field(entry)
+		t.eq(core.reset({"terrain": 2, "nest": nest, "wild": setup.wild}), 0, "C accepts both radial species")
+		t.eq(core.state().entities.size(), setup.wild.size() + 1, "C actors replace ambient copies")
 		t.eq(hash(a), hash(b), "same seed gives the same radial placement (seed %d)" % world_seed)
 		if world_seed == 1:
 			t.check(hash(a) != hash(Fauna.plan(d, 99, nest)), "a different world seed changes the spots")

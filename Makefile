@@ -616,3 +616,14 @@ godot-journal-nest-evidence: godot
 	for cfg in "1280 720 es" "1024 600 es" "1024 600 en"; do set -- $$cfg; \
 	  LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 600 xvfb-run -a -s "-screen 0 $$1x$$2x24" $(GODOT) --rendering-driver opengl3 --max-fps 15 --resolution $$1x$$2 --path godot \
 	    --script res://game/tests/journal_nest_evidence.gd -- $(CURDIR)/docs/evidence/godot/journal/nest $$3 _$$1x$$2_$$3 || exit 1; done
+
+$(BUILD)/core/src/stage_world.o: core/src/stage_snapshot_v7.inc
+
+$(BUILD)/species-v7.snap: tests/fixtures/species-v7.snap.gz
+	gzip -dc $< > $@
+$(BUILD)/radial_species_test: tests/test_radial_species.c $(HDRS) $(BUILD)/libcpore.a $(BUILD)/species-v7.snap
+	$(CC) $(CFLAGS) $< $(BUILD)/libcpore.a -o $@ $(LDLIBS)
+.PHONY: radial-species-test
+radial-species-test: $(BUILD)/radial_species_test
+	./$(BUILD)/radial_species_test
+test: radial-species-test

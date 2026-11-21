@@ -9,7 +9,10 @@
 #define CP_STAGE_MAX_OBSTACLES 1024
 #define CP_STAGE_DAY_TICKS 12000
 #define CP_STAGE_DT .1f
-#define CP_STAGE_SNAPSHOT_VERSION 7   /* 3: player loadout (A21); 4: social layer (C2); 5: lineage ledger and ancestry; 6: discovery, nest shop and eggs; 7: secrets (shards, cave chamber, day/night) and 6 species */
+#define CP_STAGE_GRACE_TICKS 600 /* 60 seconds at 10 Hz */
+#define CP_STAGE_WAKE_RADIUS 6.f
+#define CP_STAGE_WAKE_TICKS 150 /* 15 seconds since the last approach */
+#define CP_STAGE_SNAPSHOT_VERSION 8   /* 3: player loadout (A21); 4: social layer (C2); 5: lineage ledger and ancestry; 6: discovery, nest shop and eggs; 7: secrets and 6 species; 8: 8 species, grace/wake clocks; reads v7 */
 #define CP_STAGE_MAX_PATH 64      /* waypoints kept by the planner (docs/godot/NAV.md) */
 #define CP_STAGE_MAX_EVENTS 64    /* event ring since the last observe */
 
@@ -57,8 +60,8 @@ enum { CP_DNA_KILL, CP_DNA_BOND, CP_DNA_ALLY, CP_DNA_DOMINATE, CP_DNA_CARCASS, C
 #define CP_SOC_WINDOW 2           /* rhythm window, +- ticks */
 #define CP_SOC_OBSERVE_TICKS 50   /* ticks of unseen watching per revealed clue */
 #define CP_SOC_OBSERVE_RANGE 40.f
-#define CP_SOC_SPECIES 6      /* Rondo, Zanco, Espinodo, Garfio, Acechalunas, Babosa */
-#define CP_STAGE_SPECIES_COUNT 6
+#define CP_SOC_SPECIES 8      /* Rondo, Zanco, Espinodo, Garfio, Acechalunas, Babosa, Brujula, Corona */
+#define CP_STAGE_SPECIES_COUNT 8
 #define CP_SOC_CHAIN_ITEMS 3
 #define CP_SOC_EXPLORE_MAX 40
 enum { CP_STAGE_NONE, CP_STAGE_VICTORY, CP_STAGE_DEATH, CP_STAGE_FLED };
@@ -273,11 +276,12 @@ typedef struct {
     CpStageSocial social;            /* C2: trust, DNA, species progress, observe; hashed once `social.used` */
     CpStageParts parts;
     CpStageSecrets secrets;          /* derived at reset when setup.secrets; hashed only then */
+    uint32_t grace_until,wake_until[CP_STAGE_MAX_WILD]; /* v8 AI clocks; zero keeps legacy hashes */
     const CpStageField *field;       /* not owned, not in the snapshot, set by cp_stage_attach_field */
 } CpStageWorld;
 /* --- C2 secrets (core/src/stage_secrets.c) --- */
 int cp_stage_daylight(const CpStageWorld *w);                /* permille 0 (night) .. 1000 (full day), from the world clock */
-int cp_stage_creature_hidden(const CpStageWorld *w,int index); /* index 0..n-1: a nocturnal creature asleep by day (not perceivable, not targetable) */
+int cp_stage_creature_hidden(const CpStageWorld *w,int index); /* index 0..n-1: asleep by day, unless approached within 6 m or recently awake */
 int cp_stage_creature_hunkered(const CpStageWorld *w,int index); /* a crepuscular creature curled up in the noon light */
 void cp_stage_secrets_reset(CpStageWorld *w);                /* after parts_reset: shards, cave chamber and its fossil node */
 void cp_stage_secrets_step(CpStageWorld *w);

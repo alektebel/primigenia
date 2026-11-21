@@ -453,14 +453,16 @@ func _key_event(code: Key) -> InputEventKey:
 # --- the field journal (G38) -------------------------------------------------------------------------------------------
 
 func _journal_state() -> Dictionary:
-	# the shape of state().species (docs/SECRETS-REPORT.md): six entries, resolution as a word
+	# the shape of state().species (docs/SECRETS-REPORT.md): eight entries, resolution as a word
 	var species_rows := [
 		{"id": 0, "name": "Rondo", "activity": 0, "temperament": 0, "seen": true, "resolution": "open", "bonded": 2, "kills": 0, "observed": 2, "present": true, "hidden_now": false},
 		{"id": 1, "name": "Zanco", "activity": 0, "temperament": 0, "seen": true, "resolution": "ally", "bonded": 3, "kills": 0, "observed": 3, "present": true, "hidden_now": false},
 		{"id": 2, "name": "Espinodo", "activity": 0, "temperament": 1, "seen": false, "resolution": "open", "bonded": 0, "kills": 0, "observed": 0, "present": true, "hidden_now": false},
 		{"id": 3, "name": "Garfio", "activity": 0, "temperament": 2, "seen": true, "resolution": "hunted", "bonded": 0, "kills": 3, "observed": 1, "present": true, "hidden_now": false},
 		{"id": 4, "name": "Acechalunas", "activity": 1, "temperament": 1, "seen": true, "resolution": "open", "bonded": 1, "kills": 0, "observed": 3, "present": true, "hidden_now": true},
-		{"id": 5, "name": "Babosa", "activity": 2, "temperament": 0, "seen": false, "resolution": "open", "bonded": 0, "kills": 0, "observed": 0, "present": true, "hidden_now": false}]
+		{"id": 5, "name": "Babosa", "activity": 2, "temperament": 0, "seen": false, "resolution": "open", "bonded": 0, "kills": 0, "observed": 0, "present": true, "hidden_now": false},
+		{"id": 6, "name": "Brujula", "seen": true, "observed": 3},
+		{"id": 7, "name": "Corona", "seen": true, "observed": 3}]
 	return {"species": species_rows, "social": {"dna_total": 137},
 		"entities": [{"species": 0, "dead": false, "likes": ["sing", "fruit"], "dislikes": ["bone"]}],
 		"parts": {"clues": 1, "recipes": 0, "discovered": [
@@ -485,11 +487,13 @@ func _species_table() -> Array:
 		{"name": "Espinodo", "roam": 24.0, "temperament": 1, "diet": "carnivore", "activity": 0, "nocturnal": false},
 		{"name": "Garfio", "roam": 30.0, "temperament": 2, "diet": "carnivore", "activity": 0, "nocturnal": false},
 		{"name": "Acechalunas", "roam": 28.0, "temperament": 1, "diet": "omnivore", "activity": 1, "nocturnal": true},
-		{"name": "Babosa", "roam": 12.0, "temperament": 0, "diet": "herbivore", "activity": 2, "nocturnal": false}]
+		{"name": "Babosa", "roam": 12.0, "temperament": 0, "diet": "herbivore", "activity": 2, "nocturnal": false},
+		{"name": "Brujula", "roam": 10.0, "temperament": 1, "diet": "omnivore", "activity": 0},
+		{"name": "Corona", "roam": 8.0, "temperament": 0, "diet": "carnivore", "activity": 2}]
 
 func _chains_table() -> Array:
 	var c := []
-	for i in 6:
+	for i in 8:
 		c.append({"observe": ["first clue %d" % i, "second clue %d" % i, "third clue %d" % i]})
 	return c
 
@@ -502,13 +506,14 @@ func test_journal() -> void:
 	# the model: pure functions of the world state
 	var st := _journal_state()
 	var m := JournalModel.build(st, _species_table(), _chains_table(), _catalogue())
-	ok(m.species.size() == 6 and m.species[0].seen and not m.species[2].seen, "journal: six species, seen and unseen")
+	ok(m.species.size() == 8 and m.species[0].seen and not m.species[2].seen, "journal: eight species, seen and unseen")
 	ok(m.species[0].clues == ["first clue 0", "second clue 0"] and m.species[3].clues == ["first clue 3"], "journal: the revealed clues are the first n of the chain")
 	ok(m.species[0].likes == ["sing", "fruit"] and m.species[1].likes.is_empty(), "journal: likes come from a living creature of the species")
 	ok(m.species[1].resolution == 1 and m.species[3].resolution == 2 and m.species[3].kills == 3 and m.species[0].resolution == 0, "journal: the Q43 state of each species (resolution words from state.species)")
 	ok(m.species[2].diet == 1 and m.species[0].diet == 0 and m.species[3].roam == 30 and m.species[4].diet == 2, "journal: diet (a word in the species table) and home range")
 	ok(m.species[4].name == "Acechalunas" and m.species[4].activity == 1 and m.species[4].nocturnal and m.species[4].seen and m.species[4].clues.size() == 3, "journal: Acechalunas is the nocturnal sixth-roster page")
 	ok(m.species[5].name == "Babosa" and m.species[5].activity == 2 and not m.species[5].nocturnal and not m.species[5].seen and m.species[0].activity == 0, "journal: Babosa is crepuscular and unseen until met")
+	ok(m.species[6].name == "Brujula" and m.species[6].diet == 2 and m.species[7].name == "Corona" and m.species[7].activity == 2, "journal: both radial species have pages and lore diets")
 	var old_shape := {"social": {"species": [{"seen": true, "resolution": 2, "kills": 1}]}}
 	ok(JournalModel.build(old_shape, _species_table(), _chains_table(), _catalogue()).species[0].resolution == 2, "journal: state.social.species (numeric resolution) is still read when state.species is missing")
 	ok(m.parts.size() == 46 and m.parts_found == 4 and m.parts_owned == 3, "journal: 46 catalogue parts, 4 found, 3 owned")
@@ -548,13 +553,15 @@ func test_journal() -> void:
 	ui._unhandled_input(_key_event(KEY_J))
 	await process_frame
 	await process_frame
-	ok(jv.open and jv.tab == 0 and jv.page == 0 and jv.page_count() == 3, "journal: J opens on Species, three spreads for six species")
+	ok(jv.open and jv.tab == 0 and jv.page == 0 and jv.page_count() == 4, "journal: J opens on Species, four spreads for eight species")
 	ok(jv.hit_rect("tab", 3).size.x > 0.0 and jv.hit_rect("next").size.x > 0.0 and jv.hit_rect("prev").size.x == 0.0, "journal: tabs and next arrow are drawn, no previous arrow on the first spread")
 	jv.handle_input(_key_event(KEY_RIGHT))
 	ok(jv.page == 1, "journal: Right turns the page")
 	jv.handle_input(_key_event(KEY_RIGHT))
 	jv.handle_input(_key_event(KEY_RIGHT))
-	ok(jv.page == 2, "journal: the last spread stays")
+	jv.handle_input(_key_event(KEY_RIGHT))
+	ok(jv.page == 3, "journal: the last spread stays")
+	jv.handle_input(_key_event(KEY_LEFT))
 	jv.handle_input(_key_event(KEY_LEFT))
 	jv.handle_input(_key_event(KEY_LEFT))
 	ok(jv.page == 0, "journal: Left turns back")
@@ -847,7 +854,7 @@ func test_foundations() -> void:
 			found += 1
 			ok(Strings.clue(en) != en and Strings.clue(en) != "", "clue in Spanish: %s" % en)
 		g.settings["language"] = "en"
-		ok(found == 18 and Strings.CLUES_ES.size() == 18, "18 observe clues found in core and all in the table (%d)" % found)
+		ok(found == 24 and Strings.CLUES_ES.size() == 24, "24 observe clues found in core and all in the table (%d)" % found)
 		ok(Strings.clue("watch it purse its mouth and shoot a thread of sap at a pursuer") == "watch it purse its mouth and shoot a thread of sap at a pursuer", "English clue unchanged")
 	g.settings["language"] = old_lang
 	var old_scale = g.settings.get("ui_scale", 1.0)

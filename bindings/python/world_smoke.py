@@ -28,9 +28,12 @@ def run_episode(seed: int, script):
     hashes = []
     for tick in range(script["ticks"]):
         if tick in script["commands"]:
-            w.step(script["commands"][tick])
-        else:
-            w.step()
+            command = script["commands"][tick]
+            rc = w.command(command)
+            # world_cli records rejections and still steps. During Garfio's grace,
+            # this narrative can end a fight before tick 150, leaving no threat.
+            assert rc == 0 or (command == "flee" and rc == -5), (tick, command, rc)
+        w.step()
         hashes.append(w.hash())
     final = w.hash()
     obs = w.observe()

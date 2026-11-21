@@ -360,7 +360,7 @@ Array CporeWorld::species() {
         d["id"] = i; d["name"] = String(s.name);
         d["activity"] = int(s.activity); d["activity_name"] = String(ACT[s.activity]);
         d["nocturnal"] = s.activity == CP_ACT_NOCTURNAL;
-        d["diet"] = i == 0 || i == 1 || i == 5 ? "herbivore" : i == 4 ? "omnivore" : "carnivore";
+        d["diet"] = i == 0 || i == 1 || i == 5 ? "herbivore" : i == 4 || i == 6 ? "omnivore" : "carnivore";
         d["chain"] = String(CP_STAGE_CHAINS[i].id);
         d["speed"] = double(s.speed); d["sight"] = double(s.sight); d["roam"] = double(s.roam);
         d["hostile"] = double(s.hostile); d["temperament"] = int(s.temperament);

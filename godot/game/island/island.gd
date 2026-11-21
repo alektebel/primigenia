@@ -334,8 +334,8 @@ func load_scenario(parsed: Dictionary) -> String:
 # procedural creature builder and realism layer as the player. The C collision radius is the same 0.6 m for all four
 # (radius_cm 0 in CP_STAGE_SPECIES), so the scale puts each body's footprint width at about that circle: Garfio's is 1.12 m
 # unscaled, Rondo 1.22 x 0.8, Zanco 1.08 x 0.75 (tall: legs and neck), Espinodo 1.72 x 0.65 (its tail hammer sticks out).
-const SPECIES_BODY := ["rondo", "zanco", "espinodo", "garfio", "acechalunas", "babosa"]
-const SPECIES_SCALE := [0.8, 0.75, 0.65, 1.0, 0.8, 0.85]
+const SPECIES_BODY := ["rondo", "zanco", "espinodo", "garfio", "acechalunas", "babosa", "brujula", "corona"]
+const SPECIES_SCALE := [0.8, 0.75, 0.65, 1.0, 0.8, 0.85, 0.6, 0.55]
 static var _body_cache := {}
 
 func _species_body(species: int) -> Dictionary:
