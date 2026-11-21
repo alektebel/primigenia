@@ -1,0 +1,25 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><title>G73 locomotion fixture</title>
+<link rel="icon" href="data:,"><style>body{margin:0;background:#dfded6;color:#292b28;font:15px system-ui}canvas{display:block}#label{position:absolute;top:18px;left:24px;white-space:pre-line}</style>
+<canvas id="gl"></canvas><div id="label"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="../web/studio/vendor/GLTFLoader.js"></script><script src="../web/studio/growth.js"></script>
+<script type="module">
+import {createCreatureRig} from '../web/creature/rig.js';
+import {insideSupport} from '../web/creature/locomotion.js';
+const T=THREE,scene=new T.Scene(),camera=new T.PerspectiveCamera(38,1.5,.1,200);
+const renderer=new T.WebGLRenderer({canvas:document.querySelector('canvas'),antialias:true,preserveDrawingBuffer:true});
+renderer.setSize(720,480);renderer.outputEncoding=T.sRGBEncoding;renderer.toneMapping=T.ACESFilmicToneMapping;
+scene.background=new T.Color('#dfded6');scene.add(new T.HemisphereLight(0xf3f7ff,0x6d6554,1.5));
+const sun=new T.DirectionalLight(0xffe4bf,2);sun.position.set(-5,10,4);scene.add(sun);
+const floor=new T.Mesh(new T.PlaneGeometry(200,200),new T.MeshStandardMaterial({color:0xa6aa92,roughness:1}));floor.rotation.x=-Math.PI/2;floor.position.y=-.015;scene.add(floor);
+const grid=new T.GridHelper(200,200,0x7a826b,0x9ba18a);scene.add(grid);
+const [partTable,partManifest,fixtures]=await Promise.all(['../web/studio/parts.json','../web/studio/parts/manifest.json','fixtures/locomotion/plans.json'].map(p=>fetch(p).then(r=>r.json())));
+const rig=await createCreatureRig({T,scene,SUN:sun.position.clone().normalize(),partTable,partManifest,assetBase:'../web/studio/'});
+const info=renderer.getContext().getExtension('WEBGL_debug_renderer_info');
+window.Loco={rig,fixtures,insideSupport,renderer:info?renderer.getContext().getParameter(info.UNMASKED_RENDERER_WEBGL):'unknown',
+ render(label){
+  const p=rig.creature.position,h=Math.max(...rig.G.nodes.map(n=>n.y+n.r)),span=Math.max(...rig.G.nodes.map(n=>n.z))-Math.min(...rig.G.nodes.map(n=>n.z)),d=Math.max(10,span*2,h*2.6);
+  camera.position.set(p.x+d*.72,p.y+h*.6+d*.22,p.z+d*.72);camera.lookAt(p.x,p.y+h*.42,p.z);
+  document.querySelector('#label').textContent=label;renderer.render(scene,camera);
+ },dispose(){renderer.dispose()},ready:true};
+</script></html>
