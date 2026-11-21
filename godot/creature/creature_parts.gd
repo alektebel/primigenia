@@ -397,7 +397,7 @@ func _eye(p: Dictionary, off: Vector3, stalk: bool) -> Node3D:
 		_mesh(CreatureGeo.curve_tube(func(u): return Vector3(0, L * .35 * u * u, L * u), .09 * p["size"], 10, 10, X0).skinify(off, .3), "skin", g)
 		e.position = Vector3(0, L * .35, L)
 	else:
-		e.position.z = er * .3
+		e.position.z = -er * .3   # sunk in a socket: about a third of the ball is outside the skin, the lids close over the rest
 	g.set_meta("lid", _eyeball(e, er, off, str(p.get("pupil", "auto"))))
 	return g
 
