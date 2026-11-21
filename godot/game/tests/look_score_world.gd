@@ -28,11 +28,11 @@ func set_tod(t: String) -> void:
 	dn.update_now()
 
 func grab(name: String) -> Image:
-	await settle(10)
+	await settle(5)
 	var t0 := Time.get_ticks_usec()
-	for i in 6:
+	for i in 3:
 		await process_frame
-	times[name] = float(Time.get_ticks_usec() - t0) / 6000.0
+	times[name] = float(Time.get_ticks_usec() - t0) / 3000.0
 	await RenderingServer.frame_post_draw
 	var img := root.get_texture().get_image()
 	img.convert(Image.FORMAT_RGB8)
@@ -87,13 +87,13 @@ func _run() -> void:
 		for zz in [["valley_chase", 0.35], ["creature_dist", 0.8]]:
 			island.chase_enabled = true
 			island.chase.set_zoom(zz[1], true)
-			await settle(40)
+			await settle(10)
 			var nm := "%s_%s_%s" % [tier, tod, zz[0]]
 			var img := await grab(nm)
 			img.save_jpg(out_dir.path_join(nm + ".jpg"), 0.92)
 			if zz[0] == "creature_dist":
 				island.hosts[0].visible = false
-				await settle(6)
+				await settle(3)
 				await RenderingServer.frame_post_draw
 				var bg := root.get_texture().get_image()
 				bg.convert(Image.FORMAT_RGB8)

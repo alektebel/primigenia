@@ -662,6 +662,25 @@ godot-world-look: godot
 	LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 1800 xvfb-run -a -s "-screen 0 1280x720x24" $(GODOT) --rendering-driver opengl3 --max-fps 15 --resolution 1280x720 --path godot \
 	  --script res://game/tests/world_look_evidence.gd -- $(WL_OUT) $(WL_QUALITY) base $(WL_SHOTS)
 
+# Visual scorecard (docs/briefs/look-score.md): fixed cameras x dawn/midday/dusk/night x low+medium tier, plus creature close-ups, software GL.
+# The two tiers and the creature stage run in parallel (the island build dominates); --fixed-fps keeps shader TIME deterministic.
+# Writes docs/evidence/look/score/<LABEL>/ (LABEL defaults to the short git hash). Compare: python3 tools/look/compare.py <labelA> <labelB>
+.PHONY: godot-look-score
+LOOK_LABEL ?= $(shell git rev-parse --short HEAD)
+LOOK_DIR = $(CURDIR)/docs/evidence/look/score/$(LOOK_LABEL)
+godot-look-score: godot
+	@rm -rf $(LOOK_DIR)
+	@mkdir -p $(LOOK_DIR)
+	@set -e; pids=""; \
+	for q in low medium; do \
+	  LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 1500 xvfb-run -a -s "-screen 0 1280x720x24" $(GODOT) --rendering-driver opengl3 --fixed-fps 30 --resolution 1280x720 --path godot \
+	    --script res://game/tests/look_score_world.gd -- $(LOOK_DIR) $$q > $(LOOK_DIR)/.log_$$q.txt 2>&1 & pids="$$pids $$!"; sleep 5; done; \
+	LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 900 xvfb-run -a -s "-screen 0 1280x720x24" $(GODOT) --rendering-driver opengl3 --fixed-fps 30 --resolution 1280x720 --path godot \
+	  --script res://creature/tools/look_score_creatures.gd -- $(LOOK_DIR) > $(LOOK_DIR)/.log_creatures.txt 2>&1 & pids="$$pids $$!"; \
+	fail=0; for p in $$pids; do wait $$p || fail=1; done; rm -f $(LOOK_DIR)/.log_*.txt.bak; \
+	test $$fail = 0 || { echo "look-score capture failed (logs in $(LOOK_DIR)/.log_*.txt)"; exit 1; }
+	python3 tools/look/score.py $(LOOK_DIR)
+
 godot-cell2-evidence:
 	@mkdir -p docs/evidence/godot/cell2
 	LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 900 xvfb-run -a $(GODOT) --rendering-driver opengl3 --path godot --script res://cell/tests/cell2_evidence.gd -- $(CURDIR)/docs/evidence/godot/cell2
