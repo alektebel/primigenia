@@ -92,6 +92,7 @@ func update_now() -> void:
 	var pal := palette(force_hour if force_hour >= 0.0 else _hour)
 	for key in pal:
 		RenderingServer.global_shader_parameter_set(key, pal[key])
+	sun.shadow_enabled = float(pal.sun_vis) > 0.5   # moonlight casts no hard shadows: they only crush the night ground
 	sun.transform = Transform3D(Basis.looking_at(-(pal.sun_dir as Vector3), Vector3.UP), Vector3.ZERO)
 	RenderingServer.global_shader_parameter_set("moon_k", 1.0 - day)   # creature skins: moonlight fill and rim (skin v1)
 	sun.light_color = warm
