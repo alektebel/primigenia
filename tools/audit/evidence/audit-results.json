@@ -1,0 +1,45 @@
+{
+  "duration": 60,
+  "url": "http://127.0.0.1:8765/web/stage/",
+  "browser": "158.0.8127.18",
+  "renderer": "SwiftShader software WebGL",
+  "viewportSizes": [
+    "1280x800",
+    "390x844"
+  ],
+  "interactions": [
+    "ground-click-walk",
+    "hold-pointer-follow",
+    "wasd-movement",
+    "shift-sprint",
+    "right-drag-orbit",
+    "middle-drag-orbit",
+    "wheel-zoom",
+    "creature-selection",
+    "move-keys-1-3-q-e",
+    "guard-space",
+    "pause-escape-p",
+    "mobile-touch-walk",
+    "mobile-touch-follow",
+    "mobile-two-finger-orbit",
+    "mobile-combat-buttons",
+    "mobile-pause",
+    "desktop-resize-back",
+    "studio-link"
+  ],
+  "screenshots": 1,
+  "consoleErrors": 0,
+  "pageErrors": 0,
+  "failedRequests": 1,
+  "violations": 1,
+  "violationsList": [
+    {
+      "severity": "MEDIUM",
+      "category": "failed-requests",
+      "detail": "1 failed requests",
+      "context": "",
+      "ts": 1794772743870
+    }
+  ],
+  "frameTimeSamples": 0
+}

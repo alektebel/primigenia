@@ -1,0 +1,9 @@
+[
+  {
+    "severity": "MEDIUM",
+    "category": "failed-requests",
+    "detail": "1 failed requests",
+    "context": "",
+    "ts": 1794772743870
+  }
+]
