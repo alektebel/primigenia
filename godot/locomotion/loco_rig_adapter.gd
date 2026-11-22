@@ -126,7 +126,7 @@ static func loco_describe(creature, unit: float, density := 1000.0) -> Dictionar
 		var anchor: Dictionary = creature.anchor(float(e.get("t", 0.5)), float(e.get("side", 1)) * float(e.get("ang", 0.0)))
 		parts.append({"pos": (anchor.p + Vector3(0.0, go, 0.0)) * unit, "mass": density * kc * size * size * size, "category": cat})
 	var desc := {"spine": spine, "legs": legs, "parts": parts, "density": density, "unit": unit, "leg_ids": leg_ids,
-		"belly_drop": belly_drop(creature) * unit}
+		"belly_drop": belly_drop(creature) * unit, "style_body": str(creature.genome.get("name", "")) if creature.get("genome") != null else ""}
 	# 2. forward is +Z: the head end of the spine is ahead of the tail end
 	if spine.size() >= 2 and spine[-1].pos.z <= spine[0].pos.z:
 		problems.append("2. the head is not in front of the tail along +Z")

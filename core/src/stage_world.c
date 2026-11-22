@@ -834,8 +834,20 @@ static int steep_up(const CpStageWorld *w,const CpStageCreature *c,float x,float
     ground_grad(w,x,z,&gx,&gz,.25f);   /* already on such ground (spawned, slid onto it): only downhill is allowed, the slide takes it from there */
     return length(gx,gz)<=CP_STEER_GRADE_MAX||cp_stage_ground(w,nx,nz)>=cp_stage_ground(w,x,z);
 }
+/* Speed by body size (A39 / D-26): a body walks at a fixed Froude number, v = sqrt(Fr g h), with h its hip height.
+ * The C profile carries no leg length, so h = CP_STAGE_HIP_PER_RADIUS * body radius; the factor is the h / r of the
+ * seven zoo bodies, measured on their rigs (hip 0.306 m at r 0.6 ... 2.250 at r 3.99; hero 1.69 at r 3.0), starting value.
+ * Walk Fr 0.24 puts the hero (h 1.68 m) at 2.0 m/s, the owner's cruise speed. Run Fr is motion.sprint_k (1.5, starting value,
+ * a trot / run with a flight phase; Alexander & Jayes 1983 put the walk-run change near Fr 0.5).
+ * Mass still slows acceleration and turning through steer.c (A29). Plain float maths (sqrtf is exactly rounded), so it is
+ * reproducible like the rest of the stage. */
+#define CP_STAGE_HIP_PER_RADIUS .56f
+#define CP_STAGE_FR_WALK .24f
+static float gait_speed(const CpCombatProfile *p,float fr){
+    return sqrtf(fr*9.81f*CP_STAGE_HIP_PER_RADIUS*cp_combat_body_radius(p));
+}
 const CpStageMotion CP_STAGE_MOTION={
-    1.3f,1.7f,.6f,15.f,20.f,.6f,1.1f,1.5f,4.5f,11.8f,.3f,2.f,7.f,.4f,
+    1.f,1.5f,.6f,15.f,20.f,.6f,.9f,.6f,4.5f,11.8f,.3f,2.f,7.f,.4f,
     1.4f,.35f,.03f,.25f,3.2f,1.5f,.8f,.55f,1.35f,1.4f,1.1f,8.f,.15f
 };
 /* Run intent is latched until release or exhaustion. A held/repeated request cannot bypass the threshold. */
@@ -1335,7 +1347,12 @@ static void wild_tick(CpStageWorld *w,int skip,int engage){
             tx=e->x+(e->x-w->player.x);
             tz=e->z+(e->z-w->player.z);
         }
-        float jog=e->profile.speed*(e->species>=6?1.f:w->motion.wild_k*w->motion.jog_k),espeed=jog;
+        /* species >= 6 (star, slug, radial) keep their own authored speeds; the daytime and night bodies follow the Froude law */
+        const int by_size=e->species<6;
+        const float k=w->motion.wild_k*w->motion.jog_k;
+        float jog=by_size?gait_speed(&e->profile,CP_STAGE_FR_WALK)*k:e->profile.speed,espeed=jog;
+        /* chasing or fleeing is a run; roaming, returning home and hunkering are walks */
+        if(by_size&&!e->returning&&(hostile||cp_stage_social_leaving(w,i)||(s->temperament==CP_STAGE_TIMID&&d<s->sight*.5f)))espeed=gait_speed(&e->profile,w->motion.sprint_k)*k;
         /* A star probes slowly on tube feet, and rows at full speed when driven off or provoked. */
         if(e->species==6&&!hostile&&!e->returning&&!cp_stage_social_leaving(w,i))espeed=.3f;
         if(length(tx-e->x,tz-e->z)<.4f||(cp_stage_creature_hunkered(w,i)&&!hostile))espeed=0;   /* hunkered: curled up in the noon light */
@@ -1488,7 +1505,8 @@ uint64_t cp_stage_step(CpStageWorld *w,const CpStageInput *input){
             }
         }
         int sprint=(a->sprint||a->verb==CP_STAGE_FLEE)&&length(dx,dz)>0&&w->player.stamina>2;
-        float jog=w->player.profile.speed*w->motion.jog_k*(1.f-w->recipes.mineral*.003f),speed=w->running?jog*1.8f:sprint?jog*w->motion.sprint_k:jog,stop=sqrtf(clamp(remaining-.08f,0,10000)*12);
+        const float slow=w->motion.jog_k*(1.f-w->recipes.mineral*.003f);
+        float jog=gait_speed(&w->player.profile,CP_STAGE_FR_WALK)*slow,speed=(w->running||sprint)?gait_speed(&w->player.profile,w->motion.sprint_k)*slow:jog,stop=sqrtf(clamp(remaining-.08f,0,10000)*12);
         if(stop<speed)speed=stop;
         walk(w,&w->player,dx,dz,speed,jog);
         if(w->running&&length(dx,dz)>0&&w->player.speed>.01f){

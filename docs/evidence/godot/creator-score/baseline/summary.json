@@ -1,0 +1,504 @@
+{
+ "label": "baseline",
+ "passed": 16,
+ "total": 56,
+ "score": 0.286,
+ "groups": {
+  "framing": "8/21",
+  "hud": "0/7",
+  "camera": "7/7",
+  "stage": "0/7",
+  "handles": "0/3",
+  "timing": "0/5",
+  "events": "1/6"
+ },
+ "absent_events": [
+  "puff_spawned",
+  "cost_popup_shown",
+  "cost_popup_hidden",
+  "head_target_changed",
+  "handle_shown"
+ ],
+ "gates": {
+  "studio": "pass",
+  "ui": "pass",
+  "first_quest": "fail"
+ },
+ "frame_ms_median": 53.27,
+ "frame_ms_p95": 83.86,
+ "has_probe": false,
+ "checks": [
+  {
+   "id": "start.height_frac",
+   "group": "framing",
+   "value": 0.431,
+   "target": 0.607,
+   "pass": false,
+   "note": ""
+  },
+  {
+   "id": "start.cx",
+   "group": "framing",
+   "value": 0.533,
+   "target": 0.589,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "start.cy",
+   "group": "framing",
+   "value": 0.554,
+   "target": 0.429,
+   "pass": false,
+   "note": ""
+  },
+  {
+   "id": "start.ui_coverage",
+   "group": "hud",
+   "value": 0.415,
+   "target": "<=0.15 (ref 0.13)",
+   "pass": false,
+   "note": ""
+  },
+  {
+   "id": "start.elev_deg",
+   "group": "camera",
+   "value": 8.0,
+   "target": 12,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "start.clutter",
+   "group": "stage",
+   "value": true,
+   "target": false,
+   "pass": false,
+   "note": "grass/rocks between camera and creature"
+  },
+  {
+   "id": "spine_hover.height_frac",
+   "group": "framing",
+   "value": 0.431,
+   "target": 0.607,
+   "pass": false,
+   "note": ""
+  },
+  {
+   "id": "spine_hover.cx",
+   "group": "framing",
+   "value": 0.537,
+   "target": 0.588,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "spine_hover.cy",
+   "group": "framing",
+   "value": 0.554,
+   "target": 0.419,
+   "pass": false,
+   "note": ""
+  },
+  {
+   "id": "spine_hover.ui_coverage",
+   "group": "hud",
+   "value": 0.416,
+   "target": "<=0.15 (ref 0.13)",
+   "pass": false,
+   "note": ""
+  },
+  {
+   "id": "spine_hover.elev_deg",
+   "group": "camera",
+   "value": 8.0,
+   "target": 12,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "spine_hover.clutter",
+   "group": "stage",
+   "value": true,
+   "target": false,
+   "pass": false,
+   "note": "grass/rocks between camera and creature"
+  },
+  {
+   "id": "spine_hover.spheres",
+   "group": "handles",
+   "value": 0,
+   "target": ">=3 (ref 4)",
+   "pass": false,
+   "note": "no creator_probe: spine arrows only"
+  },
+  {
+   "id": "part_picked.height_frac",
+   "group": "framing",
+   "value": 0.431,
+   "target": 0.621,
+   "pass": false,
+   "note": ""
+  },
+  {
+   "id": "part_picked.cx",
+   "group": "framing",
+   "value": 0.536,
+   "target": 0.588,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "part_picked.cy",
+   "group": "framing",
+   "value": 0.554,
+   "target": 0.424,
+   "pass": false,
+   "note": ""
+  },
+  {
+   "id": "part_picked.ui_coverage",
+   "group": "hud",
+   "value": 0.41,
+   "target": "<=0.15 (ref 0.13)",
+   "pass": false,
+   "note": ""
+  },
+  {
+   "id": "part_picked.elev_deg",
+   "group": "camera",
+   "value": 8.0,
+   "target": 12,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "part_picked.clutter",
+   "group": "stage",
+   "value": true,
+   "target": false,
+   "pass": false,
+   "note": "grass/rocks between camera and creature"
+  },
+  {
+   "id": "part_dropped.height_frac",
+   "group": "framing",
+   "value": 0.431,
+   "target": 0.621,
+   "pass": false,
+   "note": ""
+  },
+  {
+   "id": "part_dropped.cx",
+   "group": "framing",
+   "value": 0.536,
+   "target": 0.588,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "part_dropped.cy",
+   "group": "framing",
+   "value": 0.554,
+   "target": 0.424,
+   "pass": false,
+   "note": ""
+  },
+  {
+   "id": "part_dropped.ui_coverage",
+   "group": "hud",
+   "value": 0.417,
+   "target": "<=0.15 (ref 0.13)",
+   "pass": false,
+   "note": ""
+  },
+  {
+   "id": "part_dropped.elev_deg",
+   "group": "camera",
+   "value": 8.0,
+   "target": 12,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "part_dropped.clutter",
+   "group": "stage",
+   "value": true,
+   "target": false,
+   "pass": false,
+   "note": "grass/rocks between camera and creature"
+  },
+  {
+   "id": "spine_drag.height_frac",
+   "group": "framing",
+   "value": 0.458,
+   "target": 0.607,
+   "pass": false,
+   "note": ""
+  },
+  {
+   "id": "spine_drag.cx",
+   "group": "framing",
+   "value": 0.537,
+   "target": 0.588,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "spine_drag.cy",
+   "group": "framing",
+   "value": 0.544,
+   "target": 0.415,
+   "pass": false,
+   "note": ""
+  },
+  {
+   "id": "spine_drag.ui_coverage",
+   "group": "hud",
+   "value": 0.41,
+   "target": "<=0.15 (ref 0.13)",
+   "pass": false,
+   "note": ""
+  },
+  {
+   "id": "spine_drag.elev_deg",
+   "group": "camera",
+   "value": 8.0,
+   "target": 12,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "spine_drag.clutter",
+   "group": "stage",
+   "value": true,
+   "target": false,
+   "pass": false,
+   "note": "grass/rocks between camera and creature"
+  },
+  {
+   "id": "spine_drag.spheres",
+   "group": "handles",
+   "value": 0,
+   "target": ">=2 (ref 3)",
+   "pass": false,
+   "note": "no creator_probe: spine arrows only"
+  },
+  {
+   "id": "part_rotate.height_frac",
+   "group": "framing",
+   "value": 0.493,
+   "target": 0.616,
+   "pass": false,
+   "note": ""
+  },
+  {
+   "id": "part_rotate.cx",
+   "group": "framing",
+   "value": 0.536,
+   "target": 0.59,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "part_rotate.cy",
+   "group": "framing",
+   "value": 0.528,
+   "target": 0.43,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "part_rotate.ui_coverage",
+   "group": "hud",
+   "value": 0.42,
+   "target": "<=0.15 (ref 0.13)",
+   "pass": false,
+   "note": ""
+  },
+  {
+   "id": "part_rotate.elev_deg",
+   "group": "camera",
+   "value": 8.0,
+   "target": 15,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "part_rotate.clutter",
+   "group": "stage",
+   "value": true,
+   "target": false,
+   "pass": false,
+   "note": "grass/rocks between camera and creature"
+  },
+  {
+   "id": "part_rotate.part_ring",
+   "group": "handles",
+   "value": false,
+   "target": true,
+   "pass": false,
+   "note": "no creator_probe: rotation bead only"
+  },
+  {
+   "id": "final.height_frac",
+   "group": "framing",
+   "value": 0.493,
+   "target": 0.497,
+   "pass": false,
+   "note": ""
+  },
+  {
+   "id": "final.cx",
+   "group": "framing",
+   "value": 0.534,
+   "target": 0.577,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "final.cy",
+   "group": "framing",
+   "value": 0.528,
+   "target": 0.367,
+   "pass": false,
+   "note": ""
+  },
+  {
+   "id": "final.ui_coverage",
+   "group": "hud",
+   "value": 0.407,
+   "target": "<=0.15 (ref 0.13)",
+   "pass": false,
+   "note": ""
+  },
+  {
+   "id": "final.elev_deg",
+   "group": "camera",
+   "value": 8.0,
+   "target": 13,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "final.clutter",
+   "group": "stage",
+   "value": true,
+   "target": false,
+   "pass": false,
+   "note": "grass/rocks between camera and creature"
+  },
+  {
+   "id": "drop_to_puff_s",
+   "group": "timing",
+   "value": null,
+   "target": 0.0,
+   "pass": false,
+   "note": "absent"
+  },
+  {
+   "id": "cost_popup_delay_s",
+   "group": "timing",
+   "value": null,
+   "target": 0.29,
+   "pass": false,
+   "note": "absent"
+  },
+  {
+   "id": "cost_popup_life_s",
+   "group": "timing",
+   "value": null,
+   "target": 0.455,
+   "pass": false,
+   "note": "absent"
+  },
+  {
+   "id": "head_react_delay_s",
+   "group": "timing",
+   "value": null,
+   "target": 0.33,
+   "pass": false,
+   "note": "absent"
+  },
+  {
+   "id": "handle_fade_in_s",
+   "group": "timing",
+   "value": null,
+   "target": 0.04,
+   "pass": false,
+   "note": "absent: no vertebra_sphere / part_ring handle event"
+  },
+  {
+   "id": "event.part_placed",
+   "group": "events",
+   "value": true,
+   "target": true,
+   "pass": true,
+   "note": ""
+  },
+  {
+   "id": "event.puff_spawned",
+   "group": "events",
+   "value": false,
+   "target": true,
+   "pass": false,
+   "note": "absent"
+  },
+  {
+   "id": "event.cost_popup_shown",
+   "group": "events",
+   "value": false,
+   "target": true,
+   "pass": false,
+   "note": "absent"
+  },
+  {
+   "id": "event.cost_popup_hidden",
+   "group": "events",
+   "value": false,
+   "target": true,
+   "pass": false,
+   "note": "absent"
+  },
+  {
+   "id": "event.head_target_changed",
+   "group": "events",
+   "value": false,
+   "target": true,
+   "pass": false,
+   "note": "absent"
+  },
+  {
+   "id": "event.handle_shown",
+   "group": "events",
+   "value": false,
+   "target": true,
+   "pass": false,
+   "note": "absent"
+  },
+  {
+   "id": "gate.studio",
+   "group": "gates",
+   "value": "pass",
+   "target": "pass",
+   "pass": true,
+   "note": "gate, not part of the score"
+  },
+  {
+   "id": "gate.ui",
+   "group": "gates",
+   "value": "pass",
+   "target": "pass",
+   "pass": true,
+   "note": "gate, not part of the score"
+  },
+  {
+   "id": "gate.first_quest",
+   "group": "gates",
+   "value": "fail",
+   "target": "pass",
+   "pass": false,
+   "note": "gate, not part of the score"
+  }
+ ]
+}

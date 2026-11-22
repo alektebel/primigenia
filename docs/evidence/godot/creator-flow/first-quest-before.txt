@@ -1,0 +1,73 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+renderer: gl_compatibility (blocked (headless, script, explicit method or already relaunched))
+  ok main boots to the menu
+grass built in 8 ms (3000 blades)
+radial fauna: corona on a tide-pool flat at (-724, -1432), 1457 m from the lowest tidal cave mouth (caves are slope notches)
+island entry (menu): 9438 ms since goto_island; build environment 3, terrain_meshes 79, water 1870, rivers 226, grass 7, camera 0, stage_setup 1599, stage_reset 204, props_flora 1982, nav_warm 1382, creatures 782, ui_and_rest 138, shader_warmup 2, total 8280; cpu_ms={"camera":0.144,"creatures":767.107,"environment":3.62,"grass":7.219,"nav_warm":3383.863,"props_flora":1998.987,"rivers":228.97,"shader_warmup":0.106,"stage_reset":203.111,"stage_setup":1598.939,"terrain_meshes":78.142,"ui_and_rest":106.816,"water":1894.071}; stall_ms={"camera":0.154,"creatures":15.708,"environment":0.239,"grass":0.574,"nav_warm":1362.918,"props_flora":1638.331,"rivers":205.369,"shader_warmup":2.188,"stage_reset":1.084,"stage_setup":0.736,"terrain_meshes":1.094,"ui_and_rest":31.644,"water":1833.107}; slowest_frames=[{"ms":1599.652,"phase":"stage_setup"},{"ms":204.185,"phase":"stage_reset"},{"ms":163.445,"phase":"creatures"},{"ms":79.21,"phase":"terrain_meshes"},{"ms":69.411,"phase":"props_flora"}]
+  ok Play opens the stage
+  ok a new game starts at the first of five tasks
+  ok the task card is on screen
+   player 0.0,0.0 hp 100; 23 creatures; seed 1; nest (0.0, 0.0)
+== 1. hunt: defeat a prey creature
+  ok a Rondo lives in the valley
+  ok task 1 done: a creature was defeated (tick 340)
+  ok within the budget of 4500 ticks (344)
+== 2. friend: befriend a creature of another species
+ERROR: Node origin and target are in the same position, look_at() failed.
+   at: look_at_from_position (scene/3d/node_3d.cpp:1260)
+   GDScript backtrace (most recent call first):
+       [0] _profile__update_camera (res://game/island/island.gd:834)
+       [1] _update_camera (res://game/island/island.gd:804)
+       [2] _profile__process (res://game/island/island.gd:919)
+       [3] _process (res://game/island/island.gd:907)
+ERROR: Node origin and target are in the same position, look_at() failed.
+   at: look_at_from_position (scene/3d/node_3d.cpp:1260)
+   GDScript backtrace (most recent call first):
+       [0] _profile__update_camera (res://game/island/island.gd:834)
+       [1] _update_camera (res://game/island/island.gd:804)
+       [2] _profile__process (res://game/island/island.gd:919)
+       [3] _process (res://game/island/island.gd:907)
+ERROR: Node origin and target are in the same position, look_at() failed.
+   at: look_at_from_position (scene/3d/node_3d.cpp:1260)
+   GDScript backtrace (most recent call first):
+       [0] _profile__update_camera (res://game/island/island.gd:834)
+       [1] _update_camera (res://game/island/island.gd:804)
+       [2] _profile__process (res://game/island/island.gd:919)
+       [3] _process (res://game/island/island.gd:907)
+  ok task 2 done: a creature of another species is a friend (tick 1942)
+  ok within the budget of 5000 ticks (1597)
+== 3. dig: a hole in soft soil
+  ok task 3 done: a hole was dug (tick 2146)
+  ok C holds the hole (1 dug)
+  ok within the budget of 800 ticks (205)
+== 4. wings: the cracked bed
+  ok a wing bed is marked on the island (cues: cracked soil, bone splinters, a faint dust)
+  ok walked to the bed on foot
+  ok task 4 done: the fossil bed gave wing_vane (tick 2709)
+  ok wing_vane and fire_gland are in the journal's parts
+  ok within the budget of 2500 ticks (568)
+== 5. fire: edit the creature, add the gland, use the flamethrower
+  ok the editor opens anywhere (edit anywhere is on)
+  ok the fire gland is on the editor's palette (unlocked by the bed)
+  ok the gland is on the body in the editor
+  ok the editor closed after the evolution
+  ok the flamethrower is a known move (19593)
+FAIL: the flamethrower sits in loadout slot 0
+FAIL: task 5 done: the flamethrower was used (tick -1)
+FAIL: C counted the flame (0)
+  ok within the budget of 2500 ticks (1722)
+FAIL: all five tasks are done
+  ok the whole chain fits in 14000 ticks (4436 used)
+   task completion ticks: { "hunt": 340, "friend": 1942, "dig": 2146, "wings": 2709 }  world hash f2e73a3b039e206b
+e2e final tick=4437 hash=f2e73a3b039e206b tasks={ "hunt": 340, "friend": 1942, "dig": 2146, "wings": 2709 }
+FAIL: no errors during the whole run (3: ["node_3d.cpp:1260 Condition \"p_pos.is_equal_approx(p_target)\" is true. Node origin and target are in the same position, look_at() failed.", "node_3d.cpp:1260 Condition \"p_pos.is_equal_approx(p_target)\" is true. Node origin and target are in the same position, look_at() failed.", "node_3d.cpp:1260 Condition \"p_pos.is_equal_approx(p_target)\" is true. Node origin and target are in the same position, look_at() failed."])
+first quest e2e: 29 checks, 5 failures
+WARNING: 1 RID of type "CanvasItem" was leaked.
+   at: _free_rids (servers/rendering/renderer_canvas_cull.cpp:2733)
+WARNING: 269 ObjectDB instances were leaked at exit (run with `--verbose` for details).
+   at: cleanup (core/object/object.cpp:2536)
+ERROR: 28 resources still in use at exit (run with --verbose for details).
+   at: clear (core/io/resource.cpp:822)
+ERROR: Pages in use exist at exit in PagedAllocator: N12VariantPools12BucketMediumE
+   at: ~PagedAllocator (./core/templates/paged_allocator.h:170)

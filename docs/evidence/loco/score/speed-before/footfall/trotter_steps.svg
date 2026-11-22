@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="696" height="142" font-family="monospace" font-size="11">
+<rect width="100%" height="100%" fill="#ffffff"/>
+<text x="10" y="18" font-weight="bold">trotter steps (dashed = one stride)</text>
+<text x="10" y="32" fill="#555">ours</text>
+<text x="10" y="52">L0</text>
+<rect x="46" y="40" width="640" height="16" fill="#f2f2f2"/>
+<rect x="46.0" y="40" width="80.0" height="16" fill="#2b6cb0"/>
+<rect x="366.0" y="40" width="80.0" height="16" fill="#2b6cb0"/>
+<rect x="646.0" y="40" width="40.0" height="16" fill="#2b6cb0"/>
+<text x="10" y="74">R0</text>
+<rect x="46" y="62" width="640" height="16" fill="#f2f2f2"/>
+<rect x="46.0" y="62" width="40.0" height="16" fill="#2b6cb0"/>
+<rect x="326.0" y="62" width="80.0" height="16" fill="#2b6cb0"/>
+<rect x="606.0" y="62" width="80.0" height="16" fill="#2b6cb0"/>
+<text x="10" y="96">L1</text>
+<rect x="46" y="84" width="640" height="16" fill="#f2f2f2"/>
+<rect x="166.0" y="84" width="80.0" height="16" fill="#2b6cb0"/>
+<rect x="446.0" y="84" width="80.0" height="16" fill="#2b6cb0"/>
+<text x="10" y="118">R1</text>
+<rect x="46" y="106" width="640" height="16" fill="#f2f2f2"/>
+<rect x="126.0" y="106" width="80.0" height="16" fill="#2b6cb0"/>
+<rect x="406.0" y="106" width="80.0" height="16" fill="#2b6cb0"/>
+<line x1="366.0" y1="34" x2="366.0" y2="132" stroke="#c53030" stroke-dasharray="3,3"/>
+</svg>

@@ -1,6 +1,6 @@
 # Status
 
-Updated 2026-11-21 (integration of all WIP + limp fix merged; game relaunched for the owner). Rewritten at the end of every session; keep it to one page.
+Updated 2026-11-22 (creator-flow C1/C2 session; uncommitted Codex changes, no merge). Rewritten at the end of every session; keep it to one page.
 
 ## Focus now
 **Procedural creature movement that looks like the references.** Order (research plan `docs/research/procedural-locomotion.md`, tracker stages M0–M6):
@@ -24,10 +24,12 @@ Owner's machine: the RTX was capped at 15 W (power profile 'balanced'); `powerpr
 ## Branches in flight
 | Branch | State | Next step |
 |---|---|---|
+| `anim/move-styles` | **Built, uncommitted (Codex)**: M1 / D-26 owner comparison; `web/gaitlab/styles.html`, 16 styles × 7 genome/control bodies, stars/copy, local file://. Evidence: `docs/evidence/loco/styles.md`; **336/336 numerical cases PASS** in `styles/table.json`. Chromium capture sandbox-blocked (`setsockopt`, SIGTRAP); browser visuals/interactions not verified | Sonnet commits; run `tools/gaitlab/styles_capture.cjs` outside sandbox, owner stars styles / confirms tracker; no style approved or Godot port yet |
 | `anim/speed-gait` | **Running** (Sonnet): A39 speed by size in C (2 m/s walk, run Fr 1.5) + gait lab port; brief in branch | Review scorecard, winnability, merge |
 | `devtools/owner-questions` | **merged 96b5bfe**: in-game question cards (11 seeded in feedback/questions; loop-01-walk after speed-gait), starter B with pico, seaweeds. winnability_c.gd is stale (4% for every starter, ignores A31 grace) → fix in T8 | Owner answers in game; `questions.py pull-answers` each session |
 | (plan) | **Done**: `docs/plans/creature-loop.md` (beats, loop scorecard, T1–T15, waves) + `docs/plans/creature-loop-questions.json` | Wave 1: T1 after owner-q, T5 after owner-q |
 | `perf/frame-time` | **merged ca8cd1d** (Codex): nest 24 creatures 16.8 → 3.0 ms script/frame, `make godot-frame-bench`; loco scorecards unchanged | Owner confirms fps on the RTX |
+| `ui/creator-flow` | **C1/C2 built, uncommitted (Codex)**: plinth/scenic stage, 55% projected rest bounds, collapsed HUD 8.1%; studio 942/0, interaction 202/0, ui 992/0, nest PASS, web cross-check 45/0. First-quest e2e 24/29 on both unchanged baseline and this branch (same flame loadout + look_at failures). Xvfb blocked; rendered perf unverified; headless scene processing 0.29→0.59 ms | Sonnet commits logical steps; Claude captures/benchmarks outside sandbox; owner votes. C3–C6 deferred. `docs/evidence/godot/creator-flow/NOTES.md` |
 | `ui/verb-target` | **Running** (Sonnet): owner feedback 2026-11-22: verb-first targeting (red arrows attack, green befriend, lock moving targets, auto-pursue), siblings at the nest, edit at the nest with found parts | Review, merge |
 | `perf/load-time` | **merged baa8b20** (Codex): stall log, pipeline warm-up, creature cache, plan once; headless cold 12.6 → 9.4 s, re-entry 8.4 → 6.5 s | Owner measures on the RTX (`docs/evidence/godot/load-time.md`) |
 | `anim/move-styles` | **Running** (Codex): 4×4 move-style picker for one creature, Space cycles creatures, ★ + copy choices; `web/gaitlab/styles.html` | Open for the owner |

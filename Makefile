@@ -725,6 +725,23 @@ godot-look-score: godot
 	python3 tools/look/score.py $(LOOK_DIR)
 	@rm -f $(LOOK_DIR)/.log_*.txt
 
+# Creator editor scorecard (docs/briefs/creator-score.md): scripted replay in the real editor under software GL, mask + UI-only passes,
+# studio/ui/first-quest gates, then tools/creator/score.py against the owner's reference video numbers (reference.json).
+# CREATOR_GATES=quick skips the first-quest e2e. Writes docs/evidence/godot/creator-score/<LABEL>/. Compare: python3 tools/creator/compare.py <baseline> <label>
+.PHONY: godot-creator-score
+CREATOR_LABEL ?= $(shell git rev-parse --short HEAD)
+CREATOR_GATES ?= all
+CREATOR_DIR = $(CURDIR)/docs/evidence/godot/creator-score/$(CREATOR_LABEL)
+godot-creator-score: godot
+	@rm -rf $(CREATOR_DIR)
+	@mkdir -p $(CREATOR_DIR)
+	nice -n 10 timeout 120 $(GODOT) --headless --path godot --check-only --script res://studio/tests/creator_replay.gd
+	LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 600 xvfb-run -a -s "-screen 0 1280x720x24" $(GODOT) --rendering-driver opengl3 --fixed-fps 30 --resolution 1280x720 --path godot \
+	  --script res://studio/tests/creator_replay.gd -- $(CREATOR_DIR) > $(CREATOR_DIR)/.log_replay.txt 2>&1 || { tail -20 $(CREATOR_DIR)/.log_replay.txt; exit 1; }
+	GODOT=$(GODOT) tools/creator/gates.sh $(CREATOR_DIR) $(if $(filter quick,$(CREATOR_GATES)),quick,)
+	python3 tools/creator/score.py $(CREATOR_DIR)
+	@rm -f $(CREATOR_DIR)/.log_replay.txt
+
 godot-cell2-evidence:
 	@mkdir -p docs/evidence/godot/cell2
 	LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 900 xvfb-run -a $(GODOT) --rendering-driver opengl3 --path godot --script res://cell/tests/cell2_evidence.gd -- $(CURDIR)/docs/evidence/godot/cell2
