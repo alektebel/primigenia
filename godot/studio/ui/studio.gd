@@ -35,6 +35,11 @@ signal creator_event(ev_name: String, data: Dictionary)
 func creator_ev(ev_name: String, data := {}) -> void:
 	creator_event.emit(ev_name, data)
 
+## What the player can see this frame (scorecard probe).
+func creator_probe() -> Dictionary:
+	return {"vertebra_spheres": view.sphere_count() if view.has_method("sphere_count") else 0,
+		"part_ring": view.ring_visible() if view.has_method("ring_visible") else false, "popup": false}
+
 var nest_world: RefCounted
 var nest_genome: Dictionary = {}
 var nest_rows: Array = []
@@ -223,6 +228,8 @@ func _build_stage() -> void:
 	if view == null:
 		view = RealView.make_default(parts_db)
 	viewport.add_child(view)
+	if view.has_signal("handle_shown"):
+		view.handle_shown.connect(func(kind: String, fade_ms: float): creator_ev("handle_shown", {"kind": kind, "fade_ms": fade_ms}))
 	overlay = Control.new()
 	overlay.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	overlay.mouse_filter = Control.MOUSE_FILTER_IGNORE
