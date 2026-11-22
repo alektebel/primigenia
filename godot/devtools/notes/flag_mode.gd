@@ -10,6 +10,7 @@ const Palette := preload("res://ui/palette.gd")
 const Style := preload("res://ui/style.gd")
 const Store := preload("res://devtools/notes/note_store.gd")
 const Pick := preload("res://devtools/notes/note_pick.gd")
+const Meta := preload("res://devtools/notes/note_meta.gd")
 const Scenario := preload("res://devtools/scenario.gd")
 
 const PIN_HIT := 16.0
@@ -253,7 +254,8 @@ func save_note(text: String, tags: Array, sev: int, tg: Dictionary, with_images 
 	var dev := get_node_or_null("/root/Dev")
 	var opts: Dictionary = dev.tuning.current_choices() if dev != null and dev.tuning != null else {}
 	var note := Store.make(text, tags, sev, tg, pos, {"tick": tick, "hour": fposmod(tick, DAY_TICKS) / TICKS_PER_HOUR,
-		"camera": cam_pose, "options": opts, "build": Scenario.build_text()})
+		"camera": cam_pose, "options": opts, "build": Scenario.build_text(),
+		"meta": Meta.collect(get_tree()) if is_inside_tree() else {}, "origin": "flag"})
 	var dir := Store.write(store_dir(), note)
 	if dir == "":
 		return "could not write the note under " + store_dir()

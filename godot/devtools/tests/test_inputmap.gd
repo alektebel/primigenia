@@ -5,7 +5,7 @@ const Ring := preload("res://ui/mode_ring.gd")
 const GAME_ACTIONS := ["ability_1", "ability_2", "ability_3", "ability_4", "guard", "dodge_left", "dodge_right",
 	"radial_reopen", "pause_menu", "gift", "gift_cycle", "journal", "family_tree"]
 const DEV_ACTIONS := ["legend_hold", "dev_console", "dev_sites", "dev_bookmark", "dev_tuning", "dev_ab_swap",
-	"dev_quicksave", "dev_quickload", "dev_feedback", "dev_flag", "dev_options", "time_pause", "time_step", "time_slower", "time_faster"]
+	"dev_quicksave", "dev_quickload", "dev_feedback", "dev_flag", "dev_options", "dev_note", "dev_note_quick", "dev_notes_browser", "dev_meta", "time_pause", "time_step", "time_slower", "time_faster"]
 
 static func key(code: Key, ctrl := false) -> InputEventKey:
 	var e := InputEventKey.new()
