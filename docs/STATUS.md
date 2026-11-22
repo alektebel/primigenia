@@ -25,7 +25,7 @@ Owner's machine: the RTX was capped at 15 W (power profile 'balanced'); `powerpr
 | Branch | State | Next step |
 |---|---|---|
 | `anim/speed-gait` | **Running** (Sonnet): A39 speed by size in C (2 m/s walk, run Fr 1.5) + gait lab port; brief in branch | Review scorecard, winnability, merge |
-| `devtools/owner-questions` | **Running** (Sonnet): in-game question cards, starter B (A40), seaweeds on sea (A41) | Review, merge |
+| `devtools/owner-questions` | **merged 96b5bfe**: in-game question cards (11 seeded in feedback/questions; loop-01-walk after speed-gait), starter B with pico, seaweeds. winnability_c.gd is stale (4% for every starter, ignores A31 grace) → fix in T8 | Owner answers in game; `questions.py pull-answers` each session |
 | (plan) | **Done**: `docs/plans/creature-loop.md` (beats, loop scorecard, T1–T15, waves) + `docs/plans/creature-loop-questions.json` | Wave 1: T1 after owner-q, T5 after owner-q |
 | `perf/frame-time` | **Running** (Codex, cannot commit): main thread 99% CPU at the nest on the owner's machine (GPU 42%); profile per system, locomotion LOD, offscreen skip; target ≤ 8 ms script/frame | Commit, review |
 | `ui/verb-target` | **Running** (Sonnet): owner feedback 2026-11-22: verb-first targeting (red arrows attack, green befriend, lock moving targets, auto-pursue), siblings at the nest, edit at the nest with found parts | Review, merge |
