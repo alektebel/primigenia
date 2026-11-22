@@ -157,7 +157,7 @@ function froudeBase(body,gait,Fr){
 function variantStyle(body,gait,variant,Fr){
   if(variant===3){const s=froudeBase(body,gait,Fr);s.beta=clampBeta(body,s);return s;}
   const s=a42Base(body,gait);
-  if(variant===1){s.name+=' · longer, lower';s.k*=1.25;s.height=Math.max(.4,s.height*.8,.5*Math.min(...body.legs.map(l=>l.a+l.b))/(body.h*body.hs));s.bob*=.8;s.lift*=.9;}
+  if(variant===1){s.name+=' · longer, lower';s.k*=1.25;s.height=Math.max(.4,s.height*.8,.5*Math.max(...body.legs.map(l=>l.a+l.b))/(body.h*body.hs));s.bob*=.8;s.lift*=.9;}
   if(variant===2){s.name+=' · bouncier';s.bob=s.bob*1.9+.01;s.lift*=1.5;s.beta-=.07;s.rock*=1.5;s.pitch*=1.3;s.roll*=1.2;}
   s.beta=clampBeta(body,s);
   return s;
