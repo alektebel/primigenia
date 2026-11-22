@@ -1,0 +1,9 @@
+# the reference half: frames from the owner's video, pairs with them, never committed
+ref_frames/
+*/pairs/
+*/contact_with_ref.jpg
+# capture passes used for the numbers (large; the replay regenerates them)
+*/*_mask.png
+*/*_ui.png
+*/.gate_*.log
+*/.log_*.txt
