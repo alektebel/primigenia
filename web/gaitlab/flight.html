@@ -12,7 +12,7 @@ html,body{height:100%}body{display:flex;flex-direction:column}main{display:grid;
 .cell::before{content:"";position:absolute;left:0;right:0;top:0;height:64px;background:linear-gradient(#0c1218d8,#0c121800);pointer-events:none}.cell::after{content:"";position:absolute;left:0;right:0;bottom:0;height:46px;background:linear-gradient(#0c121800,#0c1218cc);pointer-events:none}
 .title,.description,.adapt,.star,.metrics{position:relative;z-index:1}
 .title{display:block;font-size:13.5px;font-weight:650;line-height:1.15;padding-right:22px}.title i{font-style:normal;color:#d7dde2;font-weight:500}.cell[data-row=turn] .title b{color:var(--turn)}.description{display:block;color:#dfe3e6;font-size:10.8px;margin-top:2px;line-height:1.2;max-height:2.45em;overflow:hidden}.adapt{display:block;font-size:10.5px;color:var(--gold);line-height:1.2;margin-top:2px;min-height:1.2em}.star{position:absolute;right:8px;top:3px;font-size:20px;color:var(--gold)}
-.metrics{position:absolute;bottom:4px;left:9px;font:10px/1.28 ui-monospace,monospace;color:#e8eef2;white-space:pre}.cell[hidden]{display:none}
+.mini{position:absolute;right:6px;bottom:6px;z-index:1;border:1px solid #ffffff40;pointer-events:none}.metrics{position:absolute;bottom:4px;left:9px;font:10px/1.28 ui-monospace,monospace;color:#e8eef2;white-space:pre}.cell[hidden]{display:none}
 aside{padding:14px;background:var(--panel);border-left:1px solid var(--line);overflow:auto;min-height:0}h2{font-size:16px;margin:0 0 8px}aside p{font-size:12px;color:var(--dim)}#choices{margin:14px 0}#choices p{margin:10px 0;color:var(--ink)}#choices strong{display:block;color:var(--gold)}#copy-status{min-height:18px}textarea{width:100%;min-height:100px;color:var(--ink);background:var(--bg);border:1px solid var(--line);padding:6px}
 footer{padding:8px 16px;color:var(--dim);font-size:12px}kbd{font:inherit;color:var(--ink)}
 #stage.expanded{position:fixed;inset:0;height:100vh;min-height:0;z-index:10;background:var(--bg)}#stage.expanded #cells{display:block}#stage.expanded .cell{width:100%;height:100%;padding:24px}#stage.expanded .title{font-size:24px}#stage.expanded .description{font-size:14px}#stage.expanded .adapt{font-size:14px}#stage.expanded .metrics{font-size:13px}#close-full{position:absolute;right:15px;bottom:40px;z-index:12}#check.fail{color:#ff998c}#check.pass{color:#a3d4ad}
@@ -26,12 +26,12 @@ footer{padding:8px 16px;color:var(--dim);font-size:12px}kbd{font:inherit;color:v
 <div id="identity"><h1 id="creature-name">starter B</h1><div id="body-note"></div></div>
 <div class="controls"><button id="prev" aria-label="Previous body">←</button><button id="next">Next body</button><button id="other" title="Other page of the same body (G)">Other page (G)</button><span class="hint">Space / Shift+Space</span></div>
 <div class="controls" id="playback" aria-label="Playback"><button data-rate=".25" aria-pressed="false">0.25×</button><button data-rate=".5" aria-pressed="false">0.5×</button><button data-rate="1" aria-pressed="true">1×</button><button id="pause" aria-pressed="false">Pause</button></div>
-<div class="controls"><button id="cam" aria-pressed="false" title="Three-quarter, side or chase camera (T)">Camera (T)</button><button id="runcheck">Run self-check</button></div>
+<div class="controls"><button id="cam" aria-pressed="false" title="Close three-quarter, chase, side or wide camera (T)">Camera (T)</button><button id="runcheck">Run self-check</button></div>
 <span id="check" role="status">20 pages · 10 bodies × 8 rows × 4 variants · self-check not run</span>
 </header>
 <main><div id="stage"><canvas id="gl" aria-label="Flight movement comparisons over a field with trees, four columns per row"></canvas><div id="cells"></div><button id="close-full" hidden>Exit full view · Esc</button></div>
 <aside><h2>Your choices</h2><p>One star per row for each body. Click a cell to star it; click again to clear. Choices survive a reload.</p><div id="choices"></div><button id="copy">Copy choices</button><p id="copy-status" role="status" aria-live="polite"></p><textarea id="copy-fallback" aria-label="Choices to copy manually" hidden readonly></textarea><p>Ten bodies, two pages each. Page 1: takeoff, cruise, turn, landing. Page 2: hover, glide and soar, dive, rough air and loads. Four variants per row; where a body cannot do the variant it shows the believable failure (stall, hop, tumble) instead of being blocked.</p><p>Every cell runs the same point-mass flight model as the game (lift and drag polars, actuator-disk flap thrust, stall) with a scripted pilot. The sea-green dotted line is the flight path of the body, the gold line the wingtip of the right wing, the dark disc the shadow on the ground. Each cell prints beat rate, wing loading, wing area, speed against stall speed, stroke amplitude and the measured glide ratio when the wings are not beating.</p><p>All numbers are lab starting values for the owner comparison. Nothing is selected for the game yet.</p></aside></main>
-<footer><kbd>Space</kbd> next body · <kbd>Shift+Space</kbd> previous · <kbd>G</kbd> other page of this body · <kbd>F</kbd> focus hovered cell · <kbd>Esc</kbd> grid · <kbd>P</kbd> pause · <kbd>T</kbd> camera (three-quarter, side, chase) · Playback changes time only. Insect wings beat too fast for a screen, so the drawn beat is slowed (label says so) and ghost wings show the stroke envelope.</footer>
+<footer><kbd>Space</kbd> next body · <kbd>Shift+Space</kbd> previous · <kbd>G</kbd> other page of this body · <kbd>F</kbd> focus hovered cell · <kbd>Esc</kbd> grid · <kbd>P</kbd> pause · <kbd>T</kbd> camera (close three-quarter, chase, side, wide) · Playback changes time only. Insect wings beat too fast for a screen, so the drawn beat is slowed (label says so) and ghost wings show the stroke envelope.</footer>
 <script>
 'use strict';
 (() => {
@@ -1151,16 +1151,16 @@ function placeProps(C,cam){
 const FOV=34;
 function placeCam(C,cam,aspect,mode,dt){
   const B=C.B,F=C.F;const bw=Math.max(B.b,3.2*B.L);
-  const wantH=clamp(.95*(F.pos.y+bw),2.2*bw,4.4*bw);
+  const wide=mode==='wide';const wantH=wide?clamp(.95*(F.pos.y+bw),2.2*bw,4.4*bw):2.5*bw;
   C.vh+=(wantH-C.vh)*Math.min(1,dt*3+.02);
   const Hv=C.vh,D=(Hv/2)/Math.tan(FOV*D2R/2)*(mode==='side'?1:1.05);
   C.cx+=(F.pos.x-C.cx)*Math.min(1,dt*8+.02);C.cz+=(F.pos.z-C.cz)*Math.min(1,dt*8+.02);
-  const cy=Math.max(.4*Hv,F.pos.y-.05*Hv);
+  const cy=wide?Math.max(.4*Hv,F.pos.y-.05*Hv):F.pos.y+.04*Hv;
   cam.fov=FOV;cam.aspect=aspect;cam.near=D*.02;cam.far=D*400;
   let px,py,pz,tx=C.cx,ty=cy,tz=C.cz;
   if(mode==='side'){px=tx;py=ty;pz=tz+D;}
-  else if(mode==='chase'){const h=F.psiB;const el=.30;px=F.pos.x-Math.cos(h)*D*Math.cos(el);pz=F.pos.z-Math.sin(h)*D*Math.cos(el);py=Math.max(F.pos.y,.3*Hv)+D*Math.sin(el)*.7;tx=F.pos.x+Math.cos(h)*.12*Hv;tz=F.pos.z+Math.sin(h)*.12*Hv;ty=Math.max(F.pos.y*.7,.32*Hv);}
-  else{px=tx+D*.82;py=ty+D*.13;pz=tz+D*.57;}
+  else if(mode==='chase'){const h=F.psiB;const el=.30;px=F.pos.x-Math.cos(h)*D*Math.cos(el);pz=F.pos.z-Math.sin(h)*D*Math.cos(el);py=F.pos.y+D*Math.sin(el)*.8;tx=F.pos.x+Math.cos(h)*.1*Hv;tz=F.pos.z+Math.sin(h)*.1*Hv;ty=F.pos.y;}
+  else{px=tx+D*.82;py=ty+D*(wide?.13:.2);pz=tz+D*.57;}
   cam.position.set(px,py,pz);cam.lookAt(tx,ty,tz);cam.updateProjectionMatrix();
   C.dome.position.copy(cam.position);C.dome.scale.setScalar(cam.far*.8);
   return D;
@@ -1170,7 +1170,7 @@ function placeCam(C,cam,aspect,mode,dt){
 const $=id=>document.getElementById(id);
 const PAGES=[];BODIES.forEach((b,bi)=>[0,1].forEach(h=>PAGES.push({b,bi,half:h,rows:ROWS.slice(4*h,4*h+4)})));
 const KEY='primigenia-flight-styles-v1';
-let pageIndex=0,rate=1,paused=false,cells=[],hovered=0,focused=-1,manual=false,camMode='three-quarter';
+let pageIndex=0,rate=1,paused=false,cells=[],hovered=0,focused=-1,manual=false,camMode='close';
 let choices={};try{choices=JSON.parse(localStorage.getItem(KEY)||'{}');if(!choices||typeof choices!=='object'||Array.isArray(choices))choices={};}catch{choices={};}
 const renderer=new THREE.WebGLRenderer({canvas:$('gl'),antialias:true,preserveDrawingBuffer:true});renderer.setPixelRatio(1);renderer.setClearColor('#cfe2ee');
 let W=1,H=1;
@@ -1191,7 +1191,7 @@ function selectPage(i){
   const P=PAGES[pageIndex],b=P.b;$('cells').style.setProperty('--rows',4);$('cells').replaceChildren();
   P.rows.forEach((rk,r)=>{b.rowVars[rk].forEach((vid,v)=>{
     const el=document.createElement('button');el.className='cell';el.dataset.row=rk;el.setAttribute('aria-pressed','false');
-    el.innerHTML='<span class="title"><b></b> <i></i></span><span class="description"></span><span class="adapt"></span><span class="star" aria-hidden="true"></span><span class="metrics"></span>';
+    el.innerHTML='<span class="title"><b></b> <i></i></span><span class="description"></span><span class="adapt"></span><span class="star" aria-hidden="true"></span><span class="metrics"></span><canvas class="mini" width="104" height="56"></canvas>';
     const idx=r*4+v;el.addEventListener('pointerenter',()=>hovered=idx);el.addEventListener('focus',()=>hovered=idx);el.addEventListener('click',()=>toggle(idx));$('cells').appendChild(el);
     const C=makeCell(P,rk,vid);C.el=el;cells.push(C);
     el.querySelector('b').textContent=ROWLABEL[rk];el.querySelector('i').textContent='· '+VAR[rk][vid][0];el.querySelector('.description').textContent=VAR[rk][vid][1];
@@ -1227,17 +1227,23 @@ function renderAll(dt){
     const D=placeCam(C,C.cam,cw/ch,camMode,dt);placeProps(C,C.cam);updateRig(C.rig,C.B,C.F);
     C.S.fog.near=D*2.2;C.S.fog.far=D*40;
     renderer.setViewport(x,H-y-ch,cw,ch);renderer.setScissor(x,H-y-ch,cw,ch);renderer.render(C.S,C.cam);
-    C.el.querySelector('.metrics').textContent=label(C);
+    C.el.querySelector('.metrics').textContent=label(C);drawMini(C);
     const F=C.F;const ad=C.el.querySelector('.adapt');const oc=F.done?outcomeOf(C.B,C.row,C.vid,F):'';ad.textContent=F.ph+(oc?' · '+oc:'');
   });
 }
+function drawMini(C){const cv=C.el.querySelector('.mini'),x=cv.getContext('2d'),w=104,h=56;x.clearRect(0,0,w,h);x.fillStyle='#0c1218b0';x.fillRect(0,0,w,h);
+  const n=C.pathN,p=C.pathPos;if(n<2)return;let x0=1e9,x1=-1e9,y1=0;for(let i=700-n;i<700;i++){x0=Math.min(x0,p[i*3]);x1=Math.max(x1,p[i*3]);y1=Math.max(y1,p[i*3+1]);}
+  const gy=C.F.env.ground(C.F.pos.x,0);y1=Math.max(y1,gy+1e-6);const sx=(w-10)/Math.max(x1-x0,y1*1.5,1e-9),sy=(h-12)/Math.max(y1,1e-9),s=Math.min(sx,sy);
+  const X=v=>5+(v-x0)*s,Y=v=>h-5-v*s;x.strokeStyle='#8fbf72';x.beginPath();x.moveTo(0,Y(0));x.lineTo(w,Y(0));x.stroke();
+  x.strokeStyle='#5fd0c4';x.beginPath();for(let i=700-n;i<700;i++){const px=X(p[i*3]),py=Y(p[i*3+1]-C.B.hcom);i===700-n?x.moveTo(px,py):x.lineTo(px,py);}x.stroke();
+  x.fillStyle='#edc578';x.beginPath();x.arc(X(C.F.pos.x),Y(C.F.pos.y-C.B.hcom),2.5,0,7);x.fill();}
 function focusCell(i){if(i>=0&&document.fullscreenEnabled&&!document.fullscreenElement)$('stage').requestFullscreen().catch(()=>{});else if(i<0&&document.fullscreenElement)document.exitFullscreen().catch(()=>{});focused=i;$('stage').classList.toggle('expanded',i>=0);$('close-full').hidden=i<0;cells.forEach((C,k)=>C.el.hidden=i>=0&&k!==i);layout();renderAll(0);}
 function setPause(v){paused=v;$('pause').textContent=v?'Play':'Pause';$('pause').setAttribute('aria-pressed',String(v));}
-const CAMS=['three-quarter','side','chase'];
-function setCam(m){camMode=m;$('cam').textContent='Camera: '+m+' (T)';$('cam').setAttribute('aria-pressed',String(m!=='three-quarter'));for(const C of cells)C.vh=C.vh;renderAll(1);}
+const CAMS=['close','chase','side','wide'];
+function setCam(m){camMode=m;$('cam').textContent='Camera: '+m+' (T)';$('cam').setAttribute('aria-pressed',String(m!=='close'));for(const C of cells)C.vh=C.vh;renderAll(1);}
 document.addEventListener('fullscreenchange',()=>{if(!document.fullscreenElement&&focused>=0)focusCell(-1);else layout();});
 const nextBody=d=>{const P=PAGES[pageIndex];selectPage(((P.bi+d+BODIES.length)%BODIES.length)*2+P.half);};
-$('prev').onclick=()=>nextBody(-1);$('next').onclick=()=>nextBody(1);$('close-full').onclick=()=>focusCell(-1);$('pause').onclick=()=>setPause(!paused);$('cam').onclick=()=>setCam(CAMS[(CAMS.indexOf(camMode)+1)%3]);
+$('prev').onclick=()=>nextBody(-1);$('next').onclick=()=>nextBody(1);$('close-full').onclick=()=>focusCell(-1);$('pause').onclick=()=>setPause(!paused);$('cam').onclick=()=>setCam(CAMS[(CAMS.indexOf(camMode)+1)%4]);
 $('other').onclick=()=>{const P=PAGES[pageIndex];selectPage(P.bi*2+(1-P.half));};
 for(const button of document.querySelectorAll('[data-rate]'))button.onclick=()=>{rate=Number(button.dataset.rate);document.querySelectorAll('[data-rate]').forEach(x=>x.setAttribute('aria-pressed',String(x===button)));};
 $('copy').onclick=async()=>{const text=choicesText();if(!text){$('copy-status').textContent='Star a cell first.';return;}try{if(!navigator.clipboard)throw Error('unavailable');await navigator.clipboard.writeText(text);$('copy-status').textContent='Copied. Paste into chat.';$('copy-fallback').hidden=true;}catch{const area=$('copy-fallback');area.hidden=false;area.value=text;area.focus();area.select();let copied=false;try{copied=document.execCommand('copy');}catch{}$('copy-status').textContent=copied?'Copied. Paste into chat.':'Press Ctrl+C / Cmd+C to copy the selected choices.';}};

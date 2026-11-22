@@ -18,7 +18,7 @@ const only=process.env.FLIGHT_PAGES?process.env.FLIGHT_PAGES.split(',').map(Numb
  fs.writeFileSync(path.join(out,'table.json'),JSON.stringify({pass:result.pass,cases:result.cases,passed:result.passed,fails:result.fails,table:result.table},null,1)+'\n');
  console.log(`${result.pass?'PASS':'FAIL'}: ${result.passed}/${result.cases} body x row x variant cases`);for(const f of result.fails.slice(0,40))console.log(f);
  await page.evaluate(()=>STYLELAB.setPause(true));
- const cam=process.env.FLIGHT_CAM||'three-quarter';
+ const cam=process.env.FLIGHT_CAM||'close';
  const pages=await page.evaluate(()=>STYLELAB.PAGES.map(p=>p.b.id+' p'+(p.half+1)));
  for(let i=0;i<pages.length;i++){if(only&&!only.includes(i))continue;
   await page.evaluate(([i,cam])=>{STYLELAB.selectPage(i);STYLELAB.setCam(cam);
@@ -47,10 +47,10 @@ const only=process.env.FLIGHT_PAGES?process.env.FLIGHT_PAGES.split(',').map(Numb
  await page.keyboard.press('g');if(await page.evaluate(()=>STYLELAB.pageIndex)!==1)throw Error('G did not switch page');await page.keyboard.press('g');
  await page.locator('.cell').nth(7).hover();await page.keyboard.press('f');if(!await page.locator('#stage').evaluate(el=>el.classList.contains('expanded')))throw Error('F failed');await page.screenshot({path:path.join(out,'focus_cell.jpg'),type:'jpeg',quality:88});await page.keyboard.press('Escape');
  await page.keyboard.press('p');if(await page.evaluate(()=>STYLELAB.paused))throw Error('Pause key failed to resume');await page.keyboard.press('p');
- const seen=new Set();for(let k=0;k<3;k++){seen.add(await page.evaluate(()=>STYLELAB.camMode));await page.keyboard.press('t');}if(seen.size!==3)throw Error('T did not cycle three cameras');
+ const seen=new Set();for(let k=0;k<4;k++){seen.add(await page.evaluate(()=>STYLELAB.camMode));await page.keyboard.press('t');}if(seen.size!==4)throw Error('T did not cycle four cameras');
  for(const r of ['.25','.5','1']){await page.locator(`[data-rate="${r}"]`).click();if(await page.evaluate(()=>STYLELAB.rate)!==Number(r))throw Error('Playback rate failed');}
  await page.goto(pathToFileURL(path.join(root,'web/gaitlab/flight.html')).href);await page.waitForFunction(()=>window.__ready);if(await page.evaluate(()=>STYLELAB.choicesText())!==text)throw Error('Choices were not persisted');
  await page.setViewportSize({width:1280,height:800});await page.screenshot({path:path.join(out,'laptop.jpg'),type:'jpeg',quality:88});
- if(errors.length)throw Error(errors.join('\n'));console.log('PASS: file://, local assets, one star per row, persistence, copy, Space, Shift+Space, G, F/Esc, P, T (3 cameras), playback');
+ if(errors.length)throw Error(errors.join('\n'));console.log('PASS: file://, local assets, one star per row, persistence, copy, Space, Shift+Space, G, F/Esc, P, T (4 cameras), playback');
  await browser.close();process.exitCode=result.pass?0:1;
  }catch(e){console.error('Capture failed:',e.message);if(browser)await browser.close();process.exitCode=1;}})();
