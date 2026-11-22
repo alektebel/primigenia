@@ -12,7 +12,7 @@ assert lines[0] == "CPORE_WORLD_LOG 2"
 OPS = [
     (50, 5, 0, 3000, 0, 0, 0),         # clock to 3000
     (100, 7, 0, 0, 0, 0, 1.6),         # jog_k 1.6
-    (150, 1, 0, 0, 20, -30, 0),        # teleport the player
+    (120, 1, 0, 0, 20, -30, 0),        # teleport the player (tick 120: at 150 the slower A39 player is already in a fight)
     (200, 2, 0, 3, 40, 40, 0),         # spawn a Garfio
     (300, 4, 0, 0, -1, -1, 0),         # heal to max
     (400, 6, 0, 1, 0, 0, 0),           # god
