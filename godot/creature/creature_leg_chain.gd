@@ -25,6 +25,8 @@ var width := .2               ## w (segment girth; the sole sits w*.6 under the 
 var rest_knee := Vector3()    ## knee offset from hip at rest (rk, side applied)
 var rest_foot := Vector3()    ## ankle offset from hip at rest (rf, side applied)
 var pole := Vector3(0, 0, 1)  ## knee pole direction (creature space)
+var hinge := Vector3()        ## knee hinge axis (creature space, unit): rest foot direction x pole. The knee bends about it, so it never
+                              ## flips when the leg lines up with the pole (a trailing hind leg, A54); zero = fall back to the pole
 var home := Vector3()         ## rest sole point on the ground (creature space, y=0)
 var hang := 0.0               ## sole height above ground at rest (0 for grounded legs)
 var mirrored_mesh := false    ## fitted G48 legs mirror their meshes by side
@@ -35,6 +37,7 @@ var front := false            ## mount in the front half of the leg mounts
 var foot_target := Vector3()  ## GLOBAL point under the sole
 var foot_yaw := 0.0           ## GLOBAL yaw of the foot (rig.js uses the facing)
 var foot_pitch := 0.0         ## toe pitch (rig.js lifts -.5*sin during swing)
+var foot_tilt := Vector2()    ## ground slope under the planted foot: x along the foot's heading (rise per metre), y to its left (A54)
 var allow_stretch := false    ## stretch bones when the target is out of reach (terrain)
 
 ## Outputs of the last solve (creature space).
@@ -91,12 +94,13 @@ func solve() -> float:
 	var to_local := creature.global_transform.affine_inverse() if creature.is_inside_tree() else Transform3D.IDENTITY
 	var target := to_local * foot_target
 	var yaw := foot_yaw - _creature_yaw()
-	return solve_local(target, yaw, foot_pitch)
+	var cb := creature.global_transform.basis.orthonormalized() if creature.is_inside_tree() else Basis()
+	return solve_local(target, yaw, foot_pitch, cb)
 
 
 ## IK in creature space. `sole` is the ground point under the sole,
 ## `yaw_local` the foot yaw relative to the creature.
-func solve_local(sole: Vector3, yaw_local := 0.0, pitch := 0.0) -> float:
+func solve_local(sole: Vector3, yaw_local := 0.0, pitch := 0.0, body_basis := Basis()) -> float:
 	hip = hip_local()
 	var a_pt := sole + Vector3(0, width * .6, 0)
 	var dv := a_pt - hip
@@ -108,26 +112,36 @@ func solve_local(sole: Vector3, yaw_local := 0.0, pitch := 0.0) -> float:
 	d = clampf(d, .08, la + lb - .01)
 	var x := (la * la - lb * lb + d * d) / (2 * d)
 	var h := sqrt(maxf(la * la - x * x, 0.0))
-	var pl := pole - dv * pole.dot(dv)
+	var pl := hinge.cross(dv) if hinge.length_squared() > .5 else pole - dv * pole.dot(dv)
+	if pl.length_squared() < 1e-4:
+		pl = pole - dv * pole.dot(dv)
 	if pl.length_squared() < 1e-4:
 		pl = Vector3(0, 0, 1)
 	pl = pl.normalized()
 	knee = hip + dv * x + pl * h
 	ankle = hip + dv * d
-	_apply(yaw_local, pitch, extension)
+	_apply(yaw_local, pitch, extension, body_basis)
 	return d / (la + lb)
 
 
-func _apply(yaw_local: float, pitch: float, extension: float) -> void:
+func _apply(yaw_local: float, pitch: float, extension: float, body_basis := Basis()) -> void:
 	_update_flex()
 	var sx := float(side) if mirrored_mesh else 1.0
 	upper.position = hip
 	upper.transform.basis = Basis(_arc(DOWN, (knee - hip).normalized())) * Basis.from_scale(Vector3(sx, extension, 1))
 	lower.position = knee
 	lower.transform.basis = Basis(_arc(DOWN, (ankle - knee).normalized())) * Basis.from_scale(Vector3(sx, extension, 1))
-	foot.position = Vector3(ankle.x, ankle.y - width * .6, ankle.z)
 	var y := yaw_local + side * .18
-	foot.transform.basis = Basis(Vector3(0, 1, 0), y) * Basis(Vector3(1, 0, 0), pitch) * Basis.from_scale(Vector3(sx, 1, 1))
+	var fb := Basis(Vector3(0, 1, 0), y) * Basis(Vector3(1, 0, 0), pitch - atan(foot_tilt.x)) * Basis(Vector3(0, 0, 1), atan(foot_tilt.y))
+	# A54: the foot lies on the ground, not on the body: when the body pitches, rolls or rocks (gallop) the foot is expressed in the
+	# creature's frame through the body's own rotation, so the toe does not dig in (1-2.4 cm on starter B's hooves before)
+	if body_basis != Basis():
+		var yaw_c := atan2(body_basis.z.x, body_basis.z.z)
+		fb = body_basis.inverse() * Basis(Vector3(0, 1, 0), yaw_c + y) * (Basis(Vector3(1, 0, 0), pitch - atan(foot_tilt.x)) * Basis(Vector3(0, 0, 1), atan(foot_tilt.y)))
+	# the sole point sits width*.6 under the ankle ALONG THE FOOT'S OWN UP AXIS: with the heel raised the foot pivots about the ankle,
+	# so hanging it straight below (as before A54) sank the toe by width*.6*(1-cos(pitch)) (1.5 cm on starter B at 60 deg of heel-off)
+	foot.position = ankle - fb * Vector3(0, width * .6, 0)
+	foot.transform.basis = fb * Basis.from_scale(Vector3(sx, 1, 1))
 
 
 static func _arc(from: Vector3, to: Vector3) -> Quaternion:

@@ -799,8 +799,10 @@ func _sub(h: float, p: Vector3, yaw: float, v: Vector3, settle: bool) -> void:
 	var foot_pitch := PackedFloat32Array()
 	var contact_point := PackedVector3Array()
 	var foot_dir := PackedVector3Array()
+	var foot_slope := PackedVector2Array()
 	for i in range(_legs.size()):
 		var l: Dictionary = _legs[i]
+		foot_slope.append(_foot_slope(l, morph.legs[i]))
 		feet.append(l.foot if l.swing else _ankle_at(l, morph.legs[i], l.phi))
 		foot_pitch.append(0.0 if l.swing else l.phi)
 		contact_point.append(l.ball)
@@ -808,7 +810,7 @@ func _sub(h: float, p: Vector3, yaw: float, v: Vector3, settle: bool) -> void:
 		contact.append(not l.swing)
 		swing_u.append(l.u if l.swing else 0.0)
 	pose = {
-		"root": root, "feet": feet, "foot_pitch": foot_pitch, "contact_point": contact_point, "foot_dir": foot_dir, "contact": contact, "swing_u": swing_u,
+		"root": root, "feet": feet, "foot_pitch": foot_pitch, "contact_point": contact_point, "foot_dir": foot_dir, "contact": contact, "swing_u": swing_u, "foot_slope": foot_slope,
 		"station_yaw": st_yaw.duplicate(), "station_z": _station_z(), "hips": _hips_world(root), "spine_at": spine_at, "spine_yaw": _yaw_at, "spine_pitch": spine_pitch,"flex": _flex.x,
 		"neck": {"pitch": _neck_p.x, "yaw": _neck_y.x, "roll": -0.8 * roll},
 		"tail": {"pitch": _tail_p.x, "yaw": _tail_y.x},
@@ -817,6 +819,19 @@ func _sub(h: float, p: Vector3, yaw: float, v: Vector3, settle: bool) -> void:
 		"cadence": cadence, "stride": stride, "speed": _speed_f,
 		"pitch": pitch, "roll": roll, "bounce": _y.x,
 	}
+
+## Ground slope under a planted foot (x along the foot's heading, y to its left, rise per metre), so the rig lays the sole on the
+## ground and not on the pitched body (A54). Zero for a foot in the air.
+func _foot_slope(l: Dictionary, m: Dictionary) -> Vector2:
+	if l.swing or not ground.is_valid():
+		return Vector2.ZERO
+	var b: Vector3 = l.ball
+	var d: Vector3 = l.dir
+	var e: float = maxf(0.5 * float(m.toe), 0.01)
+	var lf := Vector3(d.z, 0.0, -d.x)
+	var sf := (_gy(b.x + d.x * e, b.z + d.z * e) - _gy(b.x - d.x * e, b.z - d.z * e)) / (2.0 * e)
+	var sl := (_gy(b.x + lf.x * e, b.z + lf.z * e) - _gy(b.x - lf.x * e, b.z - lf.z * e)) / (2.0 * e)
+	return Vector2(clampf(sf, -1.5, 1.5), clampf(sl, -1.5, 1.5))
 
 func _station_z() -> PackedFloat32Array:
 	var out := PackedFloat32Array()
