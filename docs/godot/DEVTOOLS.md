@@ -15,7 +15,7 @@ Implements `PLAN-devtools.md` and `PLAN-heights.md`. Code: `godot/devtools/`, C:
 
 ## Keys (InputMap actions, physical keycodes; the legend shows the real label)
 F1 legend in all builds: hold = the key sheet (a veil with Alegreya text and outlined key caps, no panel; the menu's "Keys" pins it until Esc). The corner hint is off by default since the diegetic UI (docs/godot/UI-DIEGETIC.md; `legend.corner_visible`, a tap on F1 still toggles it); the onboarding hints replace it in play (D13 is the sheet only). `legend.json` lists `journal` (J) and `family_tree` (T) and the four ring gestures of the `radial` context; the `radial_*` letter actions are gone. Dev builds: console on the key left of 1 or F12; F2 sites picker, Ctrl+B
-bookmark; F3 tuning panel, F4 swap A/B; F5 quick save, F6 scenario picker; F8 feedback; F10 option mode; Shift+F8 flag mode; P pause, `.` step, `[` `]` timescale.
+bookmark; F3 tuning panel, F4 swap A/B; F5 quick save, F6 scenario picker; F8 feedback; F10 option mode; owner-question card keys 1-4 / T / Tab / N / L / Esc (only while a card shows); Shift+F8 flag mode; P pause, `.` step, `[` `]` timescale.
 Reserved, not bound: F7 free camera, F9 scrubber.
 
 ## Formats
@@ -59,6 +59,23 @@ note in `feedback/notes/index.jsonl`. The screenshot is taken with the flag UI h
 Agents: `python3 tools/feedback/notes.py list [--all]`, `show <id>`, `done <id> "<fix commit>"`, `export-md [--all]` (Markdown table for STATUS and the
 tracker); console `notes [all]`, `note show|done|add ...`, `flag [on|off]`; agent socket `{"cmd":"notes","all":false}`, `{"cmd":"note_done","note":..,"fix":..}`,
 `{"cmd":"note_add","text":..,"tags":[..],"severity":2}`.
+
+## Owner questions (DT-Q)
+Questions pop up while playing so the owner answers them in place. Code: `godot/devtools/questions/` (`question_store.gd` the files and the timing
+rules, `question_card.gd` the card and the pause list, `question_commands.gd` the console); `godot/devtools/scrim.gd` the readability helper;
+`tools/feedback/questions.py` for agents.
+Keys while a card is on screen (the card eats them; it never suspends the game): `1`-`4` answer with that option, `T` free text (game input is suspended
+only while typing; Enter saves, Esc backs out), `Tab` shows the thing it asks about (loads `where`: a `scenario`, F10 `opts`, a `pos` [x, z]; Tab again puts the options back),
+`N` attach a note (the Shift+F8 box on the player, pre-filled `[q <id>]`; the answer records the note id), `L` answer later (stays pending), `Esc` dismiss for this session.
+Pause menu "Questions (N)" lists the pending ones; `1`-`9` opens one, Esc goes back. Timing: one card at a time, at most one every 3 minutes
+(`MIN_GAP_SEC`, a starting value) unless `when` is `now`; `after_minutes:N` counts play time of the session; `on_event:<name>` waits for `Game.loop_event`
+(`quest_done:<task id>`, `first_evolve`, `island_ready`; more come with the creature loop).
+Files: `feedback/questions/pending.json` (`{"schema": "primigenia.questions/1", "questions": [...]}`, git-ignored, falls back to `user://feedback/questions`, `--questions-dir=` overrides).
+A question: `id`, `text`, `context`, `options` (2-4 of `{label, desc|description, recommended}`), `allow_free_text`, optional `where`, optional `when`.
+`answers.jsonl`: one line per answer `{id, option (1-based, 0 = free text), label, text, answered, tick, options (active F10 choices), screenshot (shots/<id>.jpg), note}`.
+Agents: `python3 tools/feedback/questions.py add|list|export-md|pull-answers|seed-from-tracker <json>`; console `questions [all]`, `ask <id>`; agent socket `{"cmd":"questions"}`, `{"cmd":"ask","id":..}`.
+Readability: the F10 HUD, its corner line and the cards sit on an ink scrim (78 %) with a 5 px label outline, so they read on a bright sky.
+Evidence: `docs/evidence/godot/owner-questions/` (`devtools/tests/owner_questions_evidence.gd`). Test: `test_questions.gd`.
 
 ## Curated scenarios (`godot/scenarios/creature/`)
 

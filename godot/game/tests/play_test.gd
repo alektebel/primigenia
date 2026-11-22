@@ -86,6 +86,7 @@ func _run() -> void:
 	for a in OS.get_cmdline_user_args():
 		game.settings.quality = a      # make godot-play-test QUALITY=low|medium|high|auto forces the rock tier
 	game.settings.wild = true
+	game.starter_override = "hatchling"     # the combat flow below assumes the hatchling loadout; the creator check expects the starter B
 	await _rig_contract()
 	await _stage()
 	await _studio_and_back()
