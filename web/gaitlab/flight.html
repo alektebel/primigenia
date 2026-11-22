@@ -1,0 +1,1268 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Primigenia · Flight styles</title>
+<style>
+:root{color-scheme:dark;--bg:#16191d;--panel:#20252b;--ink:#efebe2;--dim:#b5babf;--line:#424850;--gold:#edc578;--turn:#9fd3cb}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.4 system-ui,sans-serif}button,input,textarea{font:inherit}button{background:#2c3239;color:var(--ink);border:1px solid var(--line);border-radius:5px;padding:6px 10px;cursor:pointer}button:hover{background:#3a424b}button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid var(--gold);outline-offset:3px}button.pointer:active{transform:scale(.97);transition:transform 160ms ease-out}button[aria-pressed=true]{background:var(--gold);color:#211d16;border-color:var(--gold)}::selection{background:var(--gold);color:#211d16}
+header{display:flex;gap:18px;align-items:center;flex-wrap:wrap;padding:10px 16px;background:var(--panel);border-bottom:1px solid var(--line)}h1{font-size:20px;line-height:1.2;margin:0 0 3px}#identity{min-width:260px;max-width:760px}#body-note,.hint,#check{font-size:12px;color:var(--dim)}.controls{display:flex;align-items:center;gap:7px;flex-wrap:wrap}output,.metrics{font-variant-numeric:tabular-nums}
+html,body{height:100%}body{display:flex;flex-direction:column}main{display:grid;grid-template-columns:minmax(0,1fr) 220px;flex:1;min-height:0}#stage{position:relative;min-width:0;height:100%;min-height:560px}#gl{position:absolute;width:100%;height:100%;display:block}#cells{position:absolute;inset:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));grid-template-rows:repeat(var(--rows,4),1fr)}
+.cell{position:relative;text-align:left;background:transparent;border:1px solid #2b323a;border-radius:0;padding:6px 9px;display:flex;flex-direction:column;justify-content:flex-start;overflow:hidden;min-width:0;text-shadow:0 1px 2px #000b,0 0 6px #0008}.cell:hover{background:#ffffff0a}.cell[aria-pressed=true]{background:transparent;border:2px solid var(--gold);color:var(--ink);padding:5px 8px}
+.cell::before{content:"";position:absolute;left:0;right:0;top:0;height:64px;background:linear-gradient(#0c1218d8,#0c121800);pointer-events:none}.cell::after{content:"";position:absolute;left:0;right:0;bottom:0;height:46px;background:linear-gradient(#0c121800,#0c1218cc);pointer-events:none}
+.title,.description,.adapt,.star,.metrics{position:relative;z-index:1}
+.title{display:block;font-size:13.5px;font-weight:650;line-height:1.15;padding-right:22px}.title i{font-style:normal;color:#d7dde2;font-weight:500}.cell[data-row=turn] .title b{color:var(--turn)}.description{display:block;color:#dfe3e6;font-size:10.8px;margin-top:2px;line-height:1.2;max-height:2.45em;overflow:hidden}.adapt{display:block;font-size:10.5px;color:var(--gold);line-height:1.2;margin-top:2px;min-height:1.2em}.star{position:absolute;right:8px;top:3px;font-size:20px;color:var(--gold)}
+.mini{position:absolute;right:6px;bottom:6px;z-index:1;border:1px solid #ffffff40;pointer-events:none}.metrics{position:absolute;bottom:4px;left:9px;font:10px/1.28 ui-monospace,monospace;color:#e8eef2;white-space:pre}.cell[hidden]{display:none}
+aside{padding:14px;background:var(--panel);border-left:1px solid var(--line);overflow:auto;min-height:0}h2{font-size:16px;margin:0 0 8px}aside p{font-size:12px;color:var(--dim)}#choices{margin:14px 0}#choices p{margin:10px 0;color:var(--ink)}#choices strong{display:block;color:var(--gold)}#copy-status{min-height:18px}textarea{width:100%;min-height:100px;color:var(--ink);background:var(--bg);border:1px solid var(--line);padding:6px}
+footer{padding:8px 16px;color:var(--dim);font-size:12px}kbd{font:inherit;color:var(--ink)}
+#stage.expanded{position:fixed;inset:0;height:100vh;min-height:0;z-index:10;background:var(--bg)}#stage.expanded #cells{display:block}#stage.expanded .cell{width:100%;height:100%;padding:24px}#stage.expanded .title{font-size:24px}#stage.expanded .description{font-size:14px}#stage.expanded .adapt{font-size:14px}#stage.expanded .metrics{font-size:13px}#close-full{position:absolute;right:15px;bottom:40px;z-index:12}#check.fail{color:#ff998c}#check.pass{color:#a3d4ad}
+@media(max-width:1100px){main{grid-template-columns:minmax(0,1fr) 180px}.title{font-size:12px}.cell{padding:6px}.description{font-size:10px}.metrics{font-size:9px;left:6px}#stage{min-height:700px}}
+@media(max-width:760px){body{display:block;height:auto}main{display:block;overflow:auto}#stage{height:1300px;min-width:680px}aside{border-left:0}header{gap:10px}footer{max-width:70ch}}
+</style>
+<script src="../biome/three.min.js"></script>
+</head>
+<body>
+<header>
+<div id="identity"><h1 id="creature-name">starter B</h1><div id="body-note"></div></div>
+<div class="controls"><button id="prev" aria-label="Previous body">←</button><button id="next">Next body</button><button id="other" title="Other page of the same body (G)">Other page (G)</button><span class="hint">Space / Shift+Space</span></div>
+<div class="controls" id="playback" aria-label="Playback"><button data-rate=".25" aria-pressed="false">0.25×</button><button data-rate=".5" aria-pressed="false">0.5×</button><button data-rate="1" aria-pressed="true">1×</button><button id="pause" aria-pressed="false">Pause</button></div>
+<div class="controls"><button id="cam" aria-pressed="false" title="Close three-quarter, chase, side or wide camera (T)">Camera (T)</button><button id="runcheck">Run self-check</button></div>
+<span id="check" role="status">20 pages · 10 bodies × 8 rows × 4 variants · self-check not run</span>
+</header>
+<main><div id="stage"><canvas id="gl" aria-label="Flight movement comparisons over a field with trees, four columns per row"></canvas><div id="cells"></div><button id="close-full" hidden>Exit full view · Esc</button></div>
+<aside><h2>Your choices</h2><p>One star per row for each body. Click a cell to star it; click again to clear. Choices survive a reload.</p><div id="choices"></div><button id="copy">Copy choices</button><p id="copy-status" role="status" aria-live="polite"></p><textarea id="copy-fallback" aria-label="Choices to copy manually" hidden readonly></textarea><p>Ten bodies, two pages each. Page 1: takeoff, cruise, turn, landing. Page 2: hover, glide and soar, dive, rough air and loads. Four variants per row; where a body cannot do the variant it shows the believable failure (stall, hop, tumble) instead of being blocked.</p><p>Every cell runs the same point-mass flight model as the game (lift and drag polars, actuator-disk flap thrust, stall) with a scripted pilot. The sea-green dotted line is the flight path of the body, the gold line the wingtip of the right wing, the dark disc the shadow on the ground. Each cell prints beat rate, wing loading, wing area, speed against stall speed, stroke amplitude and the measured glide ratio when the wings are not beating.</p><p>All numbers are lab starting values for the owner comparison. Nothing is selected for the game yet.</p></aside></main>
+<footer><kbd>Space</kbd> next body · <kbd>Shift+Space</kbd> previous · <kbd>G</kbd> other page of this body · <kbd>F</kbd> focus hovered cell · <kbd>Esc</kbd> grid · <kbd>P</kbd> pause · <kbd>T</kbd> camera (close three-quarter, chase, side, wide) · Playback changes time only. Insect wings beat too fast for a screen, so the drawn beat is slowed (label says so) and ghost wings show the stroke envelope.</footer>
+<script>
+'use strict';
+(() => {
+/*CORE_BEGIN*/
+const TAU=Math.PI*2,PI=Math.PI,G=9.81,RHO=1.225,D2R=PI/180;
+const clamp=(x,a,b)=>x<a?a:x>b?b:x,lerp=(a,b,t)=>a+(b-a)*t,frac=x=>x-Math.floor(x),wrap=a=>{a=(a+PI)%TAU;if(a<0)a+=TAU;return a-PI;};
+const sm=u=>{u=clamp(u,0,1);return u*u*(3-2*u);};
+const hyp=(x,y,z)=>Math.sqrt(x*x+y*y+z*z);
+const ROWS=['takeoff','cruise','turn','landing','hover','glide','dive','rough'];
+const ROWLABEL={takeoff:'Takeoff',cruise:'Cruise',turn:'Turn / bank',landing:'Landing',hover:'Hover',glide:'Glide / soar',dive:'Dive / stoop',rough:'Rough air / load'};
+// ---------------------------------------------------------------- variants (id -> name, one-line rule)
+const VAR={
+ takeoff:{run:['running takeoff','Run-up on the legs while flapping at burst power; rotate when lift plus flap thrust beat the weight. Heavy bodies cannot reach stall speed and hop instead.'],
+  leap:['standing leap + downstroke','Legs throw the body up (vertical impulse), one hard downstroke series carries it out. Documented for birds and flies.'],
+  vertical:['vertical hover-takeoff','No run: flap thrust alone must exceed the weight. Possible only when hover power allows; others strain, then jump.'],
+  cliff:['cliff drop','Walk off an edge, open the wings and pull out of the fall. Needs height equal to the speed gained.'],
+  vault:['quad vault','Forelimbs push the body up and forward (pterosaur, bat), wings open at the top of the vault. Speculative for the numbers.'],
+  treeleap:['tree-trunk leap','Jump from a high trunk, spread the membrane, glide down and out. Documented for flying squirrels.']},
+ cruise:{flap:['continuous flapping','Flap every beat; power set to hold the cruise speed. Legs tucked.'],
+  flapglide:['flap-glide','Flap bursts until fast, glide until slow (intermittent flight, Rayner 1977).'],
+  bound:['flap-bound','Flap bursts, then wings folded to the body for a ballistic arc (finch style). Small fast birds only; others fall.'],
+  soar:['soaring, rare flaps','Wings spread, no beat; rising air carries the body, a short flap burst only when it sinks too low.'],
+  bestglide:['best-glide line','Fixed lift coefficient for the best L/D speed; the path angle comes from the glide ratio.'],
+  minsink:['slow min-sink glide','Slower, nose-high glide at the lowest sink rate; steeper path than best glide.'],
+  steep:['fast steep glide','Dives wings half-folded to the cruise speed times 1.4: steeper path, more speed.']},
+ turn:{bank:['banked coordinated turn','Roll to 40 degrees, the lift tilts and turns the body; tan(bank) = v * turn rate / g.'],
+  yaw:['flat yaw turn','No roll: tail and feet push sideways. Slow wide turn, body skids.'],
+  wingover:['wingover','Zoom climb, roll over the top, dive away on the reverse heading.'],
+  pivot:['tight pivot, asymmetric beats','Slow almost to a stop, one wing beats harder than the other. Hover-capable bodies spin on the spot; others stall.']},
+ landing:{flare:['flare + stall touchdown','Glide in, pitch up near the ground, legs forward, touch at stall speed, short run-out.'],
+  run:['running landing','Come in fast and flat, touch down running; legs absorb the speed or the body tumbles.'],
+  perch:['perch grab','Swoop below the perch, pitch up to bleed speed, feet close on the branch.'],
+  crash:['crash-tumble','Steep fast approach, no flare: touch at speed, skid and roll. What a heavy body does.']},
+ hover:{hover:['true hover','Stroke plane near horizontal, thrust straight up equal to weight. Only if the actuator-disk power fits the muscle.'],
+  wind:['wind hover (kestrel)','Face a headwind equal to the stall speed, hold the ground point with almost no beat. Needs vs under the wind.'],
+  flutter:['ground-effect flutter hop','Low flutter hops; the wing wash under the body adds thrust near the ground.'],
+  stall:['slow down and stall','Pitch up, slow below stall speed with cruise power: sink, nose drops, recover in a dive.']},
+ glide:{thermal:['thermal circling','Circle in a rising column at the bank for min sink, gain height without flapping.'],
+  bestglide:['straight best glide','Straight line at the best L/D speed; the measured ratio is printed.'],
+  minsink:['min-sink circling (no thermal)','Slow tight circle in still air: shows the sink rate cost.'],
+  ridge:['ridge soaring','Fly along a cliff face in the up-draft the slope deflects.']},
+ dive:{stoop:['stoop, wings folded','Fold to a tenth of the area, fall steeply, pull up at the g limit.'],
+  shallow:['shallow glide dive','Half-folded wings, 25 degree path, smoother and slower pull-up.'],
+  powered:['powered dive','Folded and flapping on the way down, pull-up when fast.'],
+  drop:['fold, drop, open late','Wings folded into a free fall, snapped open at the last moment: the clumsy way.']},
+ rough:{'gust-light':['light gusts','Vertical gusts of 1 m/s: small corrections, body pitch and roll wobble.'],
+  'gust-strong':['strong gusts','Gusts near the stall speed: wings tuck against the surge, sink and recover.'],
+  'carry-light':['carry prey 30 %','Swoop on prey on the ground, grab it, climb away with 30 percent more mass.'],
+  'carry-heavy':['carry prey 100 %','Same swoop with a prey as heavy as the body: lifts only if power allows, else drags and drops it.']}
+};
+// ---------------------------------------------------------------- bodies (all numbers are lab starting values; see docs/evidence/loco/flight.md)
+// m kg, L torso length m, hy/hz torso half height / half width, hcom COM-to-feet standing, hb COM-to-belly, b span tip to tip, S total wing area m2,
+// nW flapping wings, ld best L/D, e Oswald, clmax, muscle share, hzc beat constant: f = hzc * m^(-1/3), strokeA total stroke angle (rad), Rw wing length,
+// vc cruise speed, vrun max running speed, vleap vertical leap speed, latMax flat-turn lateral acceleration (g), nmax load factor limit.
+const BODY_DEFS=[
+ {id:'starterB',name:'starter B + wing_vane (the player case)',kind:'vane',note:'lean runner, 36 kg, game wing_vane wings (span 2.4 m a side, breadth 0.3)',color:'#8c6d49',accent:'#3f7f9a',wcol:'#e5d3a1',
+  m:36,L:1.45,hy:.28,hz:.22,hcom:.78,hb:.28,b:5.3,S:2.7,nW:2,ld:11,e:.8,clmax:1.5,muscle:.18,hzc:4.8,strokeA:1.75,Rw:2.4,vc:16,hc:17,vrun:2.9,aRun:1.6,vleap:3.4,vleapx:1.5,latMax:.05,nmax:2.5,vyOK:3.2,
+  sh:{x:.25,y:.12},flapper:true,gameHz:4.5/Math.pow(36,1/6),grid:2,tree:9,legs:4,
+  takeoff:['run','leap','vertical','cliff'],cruise:['flap','flapglide','bound','soar']},
+ {id:'hatchling',name:'hatchling + wing_vane',kind:'vane',note:'the older default: 30 kg, 1 m, same wing family at size 0.85',color:'#a98a5a',accent:'#6e9a4a',wcol:'#e8d9ac',
+  m:30,L:1.0,hy:.30,hz:.26,hcom:.60,hb:.30,b:4.3,S:2.05,nW:2,ld:11,e:.8,clmax:1.5,muscle:.18,hzc:4.8,strokeA:1.75,Rw:2.0,vc:15,hc:14,vrun:2.2,aRun:1.4,vleap:3.0,vleapx:1.2,latMax:.05,nmax:2.5,vyOK:2.8,
+  sh:{x:.2,y:.12},flapper:true,gameHz:4.5/Math.pow(30,1/6),grid:2,tree:8,legs:2,
+  takeoff:['run','leap','vertical','cliff'],cruise:['flap','flapglide','bound','soar']},
+ {id:'bird',name:'bird-like (feathered, 2 wings)',kind:'bird',note:'kestrel / pigeon size: 0.3 kg, span 0.72 m',color:'#8a6a4a',accent:'#d9a85a',wcol:'#7b5a3c',
+  m:.3,L:.30,hy:.065,hz:.055,hcom:.13,hb:.065,b:.72,S:.075,nW:2,ld:10,e:.85,clmax:1.8,muscle:.2,hzc:4.8,strokeA:1.65,Rw:.33,vc:9,hc:2.6,vrun:4,aRun:7,vleap:2.8,vleapx:1.5,latMax:.12,nmax:4,vyOK:1.7,
+  sh:{x:.04,y:.03},flapper:true,grid:.5,tree:6,legs:2,
+  takeoff:['run','leap','vertical','cliff'],cruise:['flap','flapglide','bound','soar']},
+ {id:'bat',name:'bat-like (membrane, fingers)',kind:'bat',note:'fruit bat: 0.12 kg, span 0.55 m, deep flexible stroke',color:'#5b4638',accent:'#c9a37a',wcol:'#4b3a30',
+  m:.12,L:.17,hy:.05,hz:.045,hcom:.09,hb:.05,b:.55,S:.045,nW:2,ld:7,e:.7,clmax:2.0,muscle:.18,hzc:4.3,strokeA:2.05,Rw:.26,vc:6,hc:2.2,vrun:1.6,aRun:4,vleap:2.4,vleapx:1.2,latMax:.2,nmax:3.5,vyOK:1.4,
+  sh:{x:.03,y:.02},flapper:true,grid:.5,tree:5,legs:2,
+  takeoff:['run','vault','vertical','cliff'],cruise:['flap','flapglide','bound','soar']},
+ {id:'fly',name:'insect, 2 wings (fly)',kind:'fly',note:'housefly: 12 mg, 14 mm span, figure-8 stroke',color:'#34393d',accent:'#a33',wcol:'#cfd8dc',
+  m:1.2e-5,L:.0065,hy:.0014,hz:.0013,hcom:.0035,hb:.0014,b:.0145,S:2.8e-5,nW:2,ld:2.5,e:.6,clmax:1.5,muscle:.2,hzc:4.8,strokeA:2.35,Rw:.0063,vc:1.6,hc:.14,vrun:.25,aRun:2,vleap:.5,vleapx:.3,latMax:.3,nmax:3,vyOK:6,
+  sh:{x:.0008,y:.0008},flapper:true,insect:true,planeH:.7,grid:.02,tree:.5,legs:6,
+  takeoff:['run','leap','vertical','cliff'],cruise:['flap','flapglide','bound','soar']},
+ {id:'dragonfly',name:'insect, 4 wings (dragonfly)',kind:'dragonfly',note:'0.8 g, 9 cm span, fore and hind wings out of phase',color:'#2f7f6f',accent:'#6bc5d2',wcol:'#d7e6ea',
+  m:8e-4,L:.055,hy:.006,hz:.005,hcom:.016,hb:.006,b:.09,S:.0016,nW:4,ld:6,e:.7,clmax:1.6,muscle:.28,hzc:2.2,strokeA:1.5,Rw:.042,vc:4,hc:.9,vrun:.3,aRun:2,vleap:.6,vleapx:.3,latMax:.25,nmax:4,vyOK:6,
+  sh:{x:.01,y:.003},flapper:true,insect:true,planeH:.45,grid:.1,tree:1.6,legs:6,
+  takeoff:['run','leap','vertical','cliff'],cruise:['flap','flapglide','bound','soar']},
+ {id:'beetle',name:'beetle (elytra + flying hindwings)',kind:'beetle',note:'1.2 g, 5 cm span, hard elytra lift first, clumsy',color:'#2b3a22',accent:'#8e6a2f',wcol:'#cfc3a8',
+  m:1.2e-3,L:.028,hy:.0095,hz:.0095,hcom:.012,hb:.0095,b:.05,S:6e-4,nW:2,ld:3.5,e:.55,clmax:1.4,muscle:.16,hzc:4,strokeA:2.2,Rw:.026,vc:2.4,hc:.5,vrun:.2,aRun:1.5,vleap:.35,vleapx:.2,latMax:.15,nmax:2.5,vyOK:6,
+  sh:{x:.004,y:.004},flapper:true,insect:true,planeH:.55,grid:.05,tree:1,legs:6,
+  takeoff:['run','leap','vertical','cliff'],cruise:['flap','flapglide','bound','soar']},
+ {id:'ptero',name:'pterosaur-like (large soarer)',kind:'ptero',note:'Pteranodon-ish: 25 kg, span 5.6 m, membrane to the hind leg',color:'#8a6f4f',accent:'#c4503d',wcol:'#a4856a',
+  m:25,L:1.05,hy:.17,hz:.14,hcom:.85,hb:.17,b:5.6,S:3.9,nW:2,ld:14,e:.85,clmax:1.6,muscle:.14,hzc:4,strokeA:1.2,Rw:2.55,vc:13,hc:18,vrun:3.2,aRun:1.5,vleap:4.6,vleapx:3,latMax:.04,nmax:2.5,vyOK:3.4,
+  sh:{x:.18,y:.07},flapper:true,grid:2,tree:12,legs:4,
+  takeoff:['run','vault','cliff','vertical'],cruise:['flap','flapglide','soar','bound']},
+ {id:'glider',name:'membrane glider (no powered flight)',kind:'glider',note:'flying squirrel / Draco: 0.13 kg, patagium between the limbs, no beat',color:'#8b7a66',accent:'#e0c9a6',wcol:'#a8957b',
+  m:.13,L:.17,hy:.04,hz:.035,hcom:.075,hb:.04,b:.3,S:.04,nW:2,ld:2.6,e:.7,clmax:1.4,muscle:.1,hzc:0,strokeA:0,Rw:.14,vc:7,hc:36,vrun:4,aRun:6,vleap:3.8,vleapx:3,latMax:.1,nmax:3,vyOK:4.2,
+  sh:{x:.04,y:.0},flapper:false,grid:.5,tree:14,legs:4,
+  takeoff:['run','leap','treeleap','cliff'],cruise:['bestglide','minsink','steep','flap']},
+ {id:'heavy',name:'heavy creature, small wings',kind:'heavy',note:'30 kg body, 1.2 m2 of wing, power for hops only',color:'#6d5a4a',accent:'#a85f3a',wcol:'#8f7b62',
+  m:30,L:1.2,hy:.30,hz:.26,hcom:.62,hb:.30,b:3.0,S:1.2,nW:2,ld:6,e:.7,clmax:1.4,muscle:.25,hzc:4,strokeA:1.3,Rw:1.2,vc:15,hc:7,vrun:3.4,aRun:1.6,vleap:3.6,vleapx:1.6,latMax:.04,nmax:2,vyOK:2.6,
+  sh:{x:.2,y:.12},flapper:true,grid:1,tree:8,legs:4,
+  takeoff:['run','leap','vertical','cliff'],cruise:['flap','flapglide','bound','soar']}
+];
+const DEFAULT_VARS={turn:['bank','yaw','wingover','pivot'],landing:['flare','run','perch','crash'],hover:['hover','wind','flutter','stall'],glide:['thermal','bestglide','minsink','ridge'],dive:['stoop','shallow','powered','drop'],rough:['gust-light','gust-strong','carry-light','carry-heavy']};
+function derive(B){
+  B.rowVars=Object.assign({},DEFAULT_VARS);B.rowVars.takeoff=B.takeoff;B.rowVars.cruise=B.cruise;
+  B.W=B.m*G;B.AR=B.b*B.b/B.S;B.k=1/(PI*B.e*B.AR);B.cd0=1/(4*B.ld*B.ld*B.k);B.WL=B.W/B.S;
+  B.vs=Math.sqrt(2*B.W/(RHO*B.S*B.clmax));B.clBG=Math.min(Math.sqrt(B.cd0/B.k),B.clmax);B.vbg=Math.max(Math.sqrt(2*B.W/(RHO*B.S*B.clBG)),1.08*B.vs);
+  B.fb=B.flapper?B.hzc*Math.pow(B.m,-1/3):0;B.Pa=B.flapper?B.muscle*B.m*150:0;
+  B.Ad=Math.pow(B.nW/2,.8)*B.Rw*B.Rw*Math.max(B.strokeA,.1);B.fp=B.insect?1.5:2;B.eta=.7;
+  B.Tstat=P=>Math.pow(Math.max(P,0)/B.fp,2/3)*Math.pow(2*RHO*B.Ad,1/3);
+  B.Phover=B.fp*Math.pow(B.W,1.5)/Math.sqrt(2*RHO*B.Ad);
+  B.hoverSust=B.flapper&&B.Pa>=B.Phover;B.hoverBurst=B.flapper&&2*B.Pa>=B.Phover;
+  B.legKeep=3*B.vrun+.6*B.vs;B.aBrake=.5*G;B.aRoll=.25*G;B.vne=2.2*B.vs;
+  B.wingR=B.Rw;B.hcb=B.hcom;
+  // wing planform helpers (visual and geometry)
+  B.hmin=B.hy;
+  return B;
+}
+const BODIES=BODY_DEFS.map(derive);
+// level-flight drag at speed v (N), cl from weight
+function dragLevel(B,m,v){const q=.5*RHO*v*v,cl=Math.min(m*G/(q*B.S),B.clmax*1.2);return q*(B.S*(B.cd0+B.k*cl*cl)+.25*B.S*B.cd0*0);}
+function sinkRate(B,v){const q=.5*RHO*v*v,cl=B.W/(q*B.S);if(cl>B.clmax)return NaN;const D=q*B.S*(B.cd0+B.k*cl*cl);return D*v/B.W;}
+function ldAt(B,v){const q=.5*RHO*v*v,cl=B.W/(q*B.S);if(cl>B.clmax*1.001)return NaN;return cl/(B.cd0+B.k*cl*cl);}
+
+// ---------------------------------------------------------------- environment of one cell
+function makeEnv(B,row,vid){
+  const E={wv:{x:0,y:0,z:0},cliff:null,thermal:null,ridge:null,gust:null,perch:null,prey:null,windX:0,slope:null,updraftWave:null};
+  E.ground=(x,z)=>E.cliff?(x<E.cliff.xc?E.cliff.H:0):E.ridge?(x<E.ridge.xr?E.ridge.H:0):0;
+  E.windAt=(p,t,o)=>{
+    let x=E.windX,y=0,z=0;
+    if(E.gust){const g=E.gust,a=g.A*(Math.sin(TAU*t/g.T1)+.6*Math.sin(TAU*t/g.T2+1.3));y+=a;x+=.35*g.A*Math.sin(TAU*t/g.T2+.4);z+=.25*g.A*Math.sin(TAU*t/g.T1+2.1);}
+    if(E.thermal){const th=E.thermal,dx=p.x-th.x,dz=p.z-th.z,r2=(dx*dx+dz*dz)/(th.R*th.R);if(r2<9)y+=th.w*Math.exp(-r2)*(p.y<th.top?1:Math.max(0,1-(p.y-th.top)/th.top));}
+    if(E.ridge){const r=E.ridge,dx=p.x-r.xr;const f=dx>=0?Math.exp(-dx/(.9*r.H)):1;const hy=Math.max(0,p.y-r.H),f2=p.y>r.H?Math.exp(-hy/(1.1*r.H)):1;y+=r.w*f*f2;}
+    if(E.updraftWave){const w=E.updraftWave;y+=w.A*Math.sin(TAU*p.x/w.lam);}
+    o.x=x;o.y=y;o.z=z;return o;};
+  return E;
+}
+// ---------------------------------------------------------------- the flyer: point mass with the game's lift/drag polars, flap thrust from an actuator disk, a ground model,
+// and the eased wing channels that drive the wing meshes. Scripts (generators) set the inputs each tick.
+const LEGN=[null,null,2,null,4,null,6];
+class Flyer{
+  constructor(B,env,row,vid){
+    this.B=B;this.env=env;this.row=row;this.vid=vid;this.t=0;this.m=B.m;this.prey=0;this.preyOn=false;this.preyPos=null;
+    this.pos={x:0,y:B.hcom,z:0};this.vel={x:0,y:0,z:0};this.psi=0;this.psiB=0;this.phi=0;this.pitch=0;this.rollOsc=0;this.tumble=0;
+    this.state='ground';this.alt=0;this.V=0;this.Vh=0;this.sp=0;this.cl=0;this.stalled=false;this.stam=1;this.uE=0;this.phE=0;
+    this.ampE=0;this.foldE=0;this.diveE=0;this.flareE=0;this.hovE=0;this.legsE=1;this.legFwd=0;this.prepE=0;this.vph=0;this.bob=0;this.tailSpread=.2;this.tailYaw=0;this.asymE=0;this.cupE=0;
+    this.wv={x:0,y:0,z:0};this.ph='';this.done=false;this.doneT=0;this.overbank=false;this.omega=0;this.psiPrev=0;this.omegaS=0;
+    this.defaults();this.stats={maxAlt:0,leftGround:false,airT:0,landed:false,landT:-1,stopT:-1,touchY:0,minFeet:1e9,minBelly:1e9,wingGround:1e9,wingBody:1e9,bankErr:[],glideSamples:[],hoverSamples:[],headErr:0,maxV:0,maxG:0,vyTouch:0,tumbled:false,drift:0,nan:false,minAltAfterTO:1e9,sink:[],perchOK:false,preyHeld:false,stallT:0,maxAltGain:0};
+    this.feet=null;this.trace=[];this.tipTr=[];this.sc=null;this.glideHist=[];this.ldMeas=NaN;this.sinkMeas=NaN;this.outcome='';this.landedFlag=false;this.stopPos=null;
+  }
+  defaults(){this.u=0;this.fold=0;this.dive=0;this.brake=0;this.mixUp=null;this.gamCmd=null;this.clCmd=null;this.phiCmd=null;this.latAcc=0;this.legsT=null;this.runAcc=0;this.legBrake=false;this.flare=0;this.asym=0;this.pivotRate=null;this.rotate=true;this.legFwdT=null;this.slip=0;this.prepT=null;this.hovFlap=false;this.tailT=null;this.hold=false;this.flail=0;this.kgam=2.2;}
+  get lastLiftV(){return this.lastLift||0;}
+  // ---- helpers for scripts
+  thrust(u,sp,alt,mix){if(mix===undefined)mix=0;const B=this.B;if(u<=0||!B.flapper)return 0;const P=B.Pa*u*(this.m/B.m>1.001?1:1);const ge=1+.25*Math.exp(-Math.max(alt,0)/(.4*B.b));const Ts=B.Tstat(P)*ge;return 1/(1/Math.max(Ts,1e-12)+(1-mix)*sp/(B.eta*P));}
+  uTrim(v){ // flap power fraction that gives the level-flight thrust at speed v (bisection on the thrust model)
+    const B=this.B;if(!B.flapper)return 0;const q=.5*RHO*v*v,W=this.m*G;let cl;
+    if(B.insect){const Tn=W*.9;let lo=0,hi=2;for(let i=0;i<14;i++){const mid=(lo+hi)/2;if(this.thrust(mid,v,9)>=Tn)hi=mid;else lo=mid;}return hi;}
+    cl=Math.min(W/(q*B.S),B.clmax);const D=q*B.S*(B.cd0+B.k*cl*cl);let lo=0,hi=2;for(let i=0;i<14;i++){const mid=(lo+hi)/2;if(this.thrust(mid,v,9)>=D)hi=mid;else lo=mid;}return hi;}
+  uForThrust(Tn,sp,mix){let lo=0,hi=2.2;for(let i=0;i<16;i++){const mid=(lo+hi)/2;if(this.thrust(mid,sp||0,this.alt,mix===undefined?1:mix)>=Tn)hi=mid;else lo=mid;}return hi;}
+  uHover(){const B=this.B,W=this.m*G;let lo=0,hi=2.2;for(let i=0;i<16;i++){const mid=(lo+hi)/2;if(this.thrust(mid,0,this.alt)>=W)hi=mid;else lo=mid;}return hi;}
+  altHold(hT,vzMax){const e=hT-this.alt;const vz=clamp(.5*e,-vzMax,vzMax);const V=Math.max(this.V,.5);this.gamCmd=Math.asin(clamp(vz/V,-.7,.7));}
+  trimCl(v){const q=.5*RHO*v*v;return this.m*G/(q*this.B.S);}
+  heading(){return this.Vh>.4?this.psi:this.psiB;}
+  airborne(){return this.state==='air';}
+  leap(vy,vx){if(this.state==='air')return;this.state='air';const h=this.psiB;this.vel.y=vy;this.vel.x+=Math.cos(h)*vx;this.vel.z+=Math.sin(h)*vx;this.psi=h;this.stats.leftGround=true;}
+  setPrey(on,mass){if(on){this.prey=mass;this.m=this.B.m+mass;this.preyOn=true;}else{this.prey=0;this.m=this.B.m;this.preyOn=false;}}
+  // ---- one tick
+  step(dt){
+    this.defaults();
+    if(this.sc&&!this.done){const r=this.sc.next();if(r.done){this.done=true;this.doneT=this.t;}}
+    if(!this.done&&this.t>this.T+10){this.done=true;this.doneT=this.t;}
+    this.physics(dt);this.visual(dt);this.record(dt);
+    {const d=wrap(this.psi-(this.psiLast===undefined?this.psi:this.psiLast));this.psiCum=(this.psiCum||0)+d;this.psiLast=this.psi;}
+    this.t+=dt;
+  }
+  physics(dt){
+    const B=this.B,E=this.env;E.windAt(this.pos,this.t,this.wv);
+    if(this.state==='air')this.physAir(dt,E);else if(this.state==='capture')this.physCapture(dt);else if(this.state==='perched'){this.vel.x=this.vel.y=this.vel.z=0;}else this.physGround(dt,E);
+    const gy=E.ground(this.pos.x,this.pos.z),he=this.hEff();
+    this.alt=this.pos.y-B.hcom-gy;this.clear=this.pos.y-gy;this.V=hyp(this.vel.x,this.vel.y,this.vel.z);this.Vh=Math.hypot(this.vel.x,this.vel.z);
+    if(this.Vh>.4){this.psi=Math.atan2(this.vel.z,this.vel.x);}
+    if(!(this.pos.x===this.pos.x)||!(this.vel.x===this.vel.x))this.stats.nan=true;
+  }
+  hEff(){const B=this.B;return this.state==='skid'||this.state==='tumble'||this.state==='lie'||this.state==='skidstop'?B.hb:lerp(B.hb,B.hcom,clamp(this.legsE,0,1));}
+  aero(sp,dx,dy,dz,alt){ // returns {lift,drag,cl,lv,side}
+    return null;}
+  physAir(dt,E){
+    const B=this.B,p=this.pos,v=this.vel,m=this.m,W=m*G;
+    const ax=v.x-this.wv.x,ay=v.y-this.wv.y,az=v.z-this.wv.z;let sp=hyp(ax,ay,az);const spm=Math.max(sp,.05);
+    let dx=ax/spm,dy=ay/spm,dz=az/spm;if(sp<.3){dx=Math.cos(this.psiB);dy=0;dz=Math.sin(this.psiB);}
+    this.sp=sp;const q=.5*RHO*sp*sp;
+    // eased wing channels that physics uses
+    const Seff=B.S*(1-.88*this.foldE)*(1-.6*this.diveE);
+    const flapping=this.uE>.05&&B.flapper;
+    const clmaxE=B.clmax*(1+.2*this.flareE)*(B.insect&&flapping?2:1);
+    const cphi=Math.cos(this.phi),sphi=Math.sin(this.phi);
+    const gam=Math.asin(clamp(v.y/Math.max(this.V,.05),-1,1));
+    let cl;
+    const qS=Math.max(q*Seff,1e-12);
+    if(this.clCmd!=null)cl=this.clCmd;
+    else{const gc=this.gamCmd==null?gam:this.gamCmd;const an=this.kgam*(gc-gam)*Math.max(this.V,1);cl=m*(G*Math.cos(gam)+an)/(qS*Math.max(cphi,.3));}
+    const clN=B.nmax*W/(qS*Math.max(cphi,.3));
+    cl=clamp(cl,-.2,Math.min(clmaxE,clN));
+    const vsE=Math.sqrt(2*W/(RHO*Math.max(Seff,1e-9)*clmaxE*Math.max(cphi,.3)));
+    this.overbank=false;
+    if(!B.insect&&this.clCmd==null&&Math.abs(this.phi)>.05&&m*(G*Math.cos(gam))/(qS*cphi)>clmaxE*1.0)this.overbank=true;
+    if(!(B.insect&&flapping)&&!(flapping&&this.uE>.5)){if(!this.stalled&&this.foldE<.4&&sp<.93*vsE&&cl>=.97*clmaxE&&this.y0init)this.stalled=true;else if(this.stalled&&(sp>1.12*vsE||cl<.55*clmaxE||this.foldE>.5))this.stalled=false;}else this.stalled=false;
+    if(this.overbank||this.stalled)this.stats.sagT=(this.stats.sagT||0)+dt;
+    if(!this.y0init)this.y0init=true;
+    if(this.stalled)cl*=.55;
+    this.cl=cl;
+    const lift=q*Seff*cl;this.lastLift=lift*cphi;
+    const Ab=.25*B.S*B.cd0*this.foldE*1.6+(B.insect?.25*B.S*B.cd0*.5:0);
+    const drag=q*(Seff*(B.cd0+B.k*cl*cl)+Ab+this.brake*.5*B.S)+0;
+    // thrust
+    this.stamUpdate(dt);
+    let ueff=this.uE*(this.stam<=0?Math.min(1,.5/Math.max(this.uE,.01)):1);if(this.uE>.001)ueff=Math.min(this.uE,this.stam>0?2:.6);
+    let mix=this.mixUp;if(mix==null)mix=B.insect?.86:clamp(1.05-sp/(.95*B.vs),0,1);
+    this.mixAct=mix;const T=this.thrust(ueff,sp,this.alt,mix);
+
+    // lift direction in the bank plane
+    let lvx=-dx*dy,lvy=1-dy*dy,lvz=-dz*dy;const ll=hyp(lvx,lvy,lvz);if(ll>1e-3){lvx/=ll;lvy/=ll;lvz/=ll;}else{lvx=0;lvy=1;lvz=0;}
+    const sl=Math.hypot(dx,dz);let sx,sz;if(sl>1e-3){sx=-dz/sl;sz=dx/sl;}else{sx=-Math.sin(this.psiB);sz=Math.cos(this.psiB);}
+    const lx=lvx*cphi+sx*sphi,ly=lvy*cphi,lz=lvz*cphi+sz*sphi;
+    let tdx=(1-mix)*dx,tdy=mix*cphi+(1-mix)*dy,tdz=(1-mix)*dz;tdx+=mix*sphi*sx;tdz+=mix*sphi*sz;
+    const lat=this.latAcc*G*m;
+    const fx=lx*lift-dx*drag+tdx*T+sx*lat,fy=ly*lift-dy*drag+tdy*T,fz=lz*lift-dz*drag+tdz*T+sz*lat;
+    let hx=0,hz=0;if(this.hold){const k=1.4;hx=-k*(v.x-this.wv.x);hz=-k*(v.z-this.wv.z);const hm=Math.hypot(hx,hz),cap=.3*T/m+.05*G;if(hm>cap){hx*=cap/hm;hz*=cap/hm;}}
+    v.x+=(fx/m+hx)*dt;v.y+=(fy/m-G)*dt;v.z+=(fz/m+hz)*dt;
+    if(this.prey>0&&this.preyOn)this.hmm=0;
+    p.x+=v.x*dt;p.y+=v.y*dt;p.z+=v.z*dt;
+    // roll
+    let pc=this.phiCmd;const Vh=Math.max(Math.hypot(ax,az),.1);
+    if(pc==null)pc=0;
+    pc=clamp(pc,-88*D2R,88*D2R);const tau=.1+.2*Math.sqrt(B.b)*(B.insect?.6:1);
+    this.phi+=clamp((pc-this.phi)/tau,-2.6/Math.sqrt(1+B.b),2.6/Math.sqrt(1+B.b))*dt;
+    // yaw of the body
+    const Vhg=Math.hypot(v.x,v.z);
+    if(this.pivotRate!=null&&Vhg<.9*Math.max(B.vs*.4,.3)){this.psiB+=this.pivotRate*dt;}
+    else if(Vhg>.4){const target=Math.atan2(v.z,v.x)+this.slip;this.psiB+=wrap(target-this.psiB)*Math.min(1,dt*8);}
+    // contact with the ground or a perch
+    const gy=E.ground(p.x,p.z),he=this.hEff();
+    if(E.perch&&this.perchArmed)this.tryPerch(E);
+    if(this.state==='air'&&p.y-he<=gy&&v.y<=0){
+      if(p.y-he<gy-.5*B.hcom&&false){}
+      this.touchdown(gy,he);
+    }
+  }
+  stamUpdate(dt){if(this.uE>1.05)this.stam=Math.max(0,this.stam-(this.uE-.9)*dt/14);else if(this.uE<.6)this.stam=Math.min(1,this.stam+dt/8);}
+  tryPerch(E){
+    const pr=E.perch,B=this.B,p=this.pos,v=this.vel;const feetY=p.y-B.hcom*clamp(this.legsE,0,1),d=hyp(p.x-pr.x,feetY-pr.y,p.z-pr.z);
+    const tol=Math.max(.6*B.L,.25*B.b)*(B.insect?2:1);
+    if(d<tol&&this.V<1.7*B.vs){this.state='capture';this.capT=0;this.capFrom={x:p.x,y:p.y,z:p.z};this.capTo={x:pr.x,y:pr.y+B.hcom,z:pr.z};this.capV={x:v.x,y:v.y,z:v.z};this.stats.landed=true;}
+  }
+  physCapture(dt){const p=this.pos;this.capT+=dt;const T=.22,u=clamp(this.capT/T,0,1),s=sm(u);
+    p.x=lerp(this.capFrom.x,this.capTo.x,s);p.y=lerp(this.capFrom.y,this.capTo.y,s);p.z=lerp(this.capFrom.z,this.capTo.z,s);
+    const k=1-s;this.vel.x=this.capV.x*k;this.vel.y=this.capV.y*k;this.vel.z=this.capV.z*k;if(u>=1){this.state='perched';this.vel.x=this.vel.y=this.vel.z=0;this.stats.perchOK=true;this.stats.stopT=this.t;this.stopPos={x:p.x,y:p.y,z:p.z};}}
+  touchdown(gy,he){
+    const B=this.B,v=this.vel,p=this.pos;const vy=v.y,vh=Math.hypot(v.x,v.z);
+    this.stats.landed=true;if(this.stats.landT<0){this.stats.landT=this.t;this.stats.touchX=p.x;}this.stats.vyTouch=vy;this.stats.touchV=vh;
+    const legs=this.legsE>.6;let st;
+    if(vy<-B.vyOK||!legs&&!B.insect&&vy<-.25*B.vyOK){st='tumble';}
+    else if(!legs){st=B.insect?'run':'skid';}
+    else if(vh>B.legKeep&&!(this.legBrake&&vh<1.2*B.legKeep)){st='tumble';}
+    else st='run';
+    if(st==='tumble')this.stats.tumbled=true;
+    this.state=st;v.y=0;p.y=gy+(st==='run'?B.hcom:B.hb);if(st==='run'){this.pitch=0;this.phi=0;}
+  }
+  physGround(dt,E){
+    const B=this.B,p=this.pos,v=this.vel;let s=Math.hypot(v.x,v.z);const h=s>.05?Math.atan2(v.z,v.x):this.psiB;const hx=Math.cos(h),hz=Math.sin(h);
+    const st=this.state;let a=0;
+    const sp=Math.hypot(v.x-this.wv.x,v.z-this.wv.z);
+    if(st==='ground'||st==='run'||st==='stand'){
+      if(this.runAcc>0&&s<B.vrun)a=Math.min(this.runAcc,B.aRun);
+      else if(this.legBrake)a=-B.aBrake;
+      else if(this.runAcc<=0)a=-(s>B.vrun?.5:1)*B.aRoll*(s>.01?1:0);
+      else a=-B.aRoll*.5;
+      if(s>B.vrun&&this.runAcc>0)a=-.5*B.aRoll; // cannot outrun its legs
+    }else if(st==='skid')a=-.6*G;else if(st==='tumble')a=-.7*G;
+    // flapping on the ground
+    this.stamUpdate(dt);
+    const flapping=this.uE>.05&&B.flapper;
+    const ueff=Math.min(this.uE,this.stam>0?2:.6);const alt=0;
+    let mix=this.mixUp;if(mix==null)mix=B.insect?.86:clamp(1.05-sp/(.95*B.vs),0,1);const T=this.thrust(ueff,sp,alt,mix);
+    const aeroMix=this.rotate?.85:.2;const q=.5*RHO*sp*sp;const L=q*B.S*B.clmax*aeroMix*(1-.88*this.foldE);
+    if(st==='ground'||st==='run'||st==='stand'){a+=T*(1-mix)/this.m;}
+    const newS=Math.max(0,s+a*dt);
+    if(s<.05&&a<=0){v.x=v.y=v.z=0;}else{const hh=s>.05?h:this.psiB;v.x=Math.cos(hh)*newS;v.z=Math.sin(hh)*newS;}
+    v.y=0;
+    p.x+=v.x*dt;p.z+=v.z*dt;
+    if(Math.hypot(v.x,v.z)<.02&&a<=0){v.x=v.z=0;if(st==='run'||st==='skid'||st==='tumble'){this.state=st==='run'?'stand':st==='skid'?'skidstop':'lie';if(this.stats.stopT<0){this.stats.stopT=this.t;this.stopPos={x:p.x,y:p.y,z:p.z};}}}
+    const gy=E.ground(p.x,p.z);const he=this.state==='skid'||this.state==='tumble'||this.state==='skidstop'||this.state==='lie'?B.hb:B.hcom;
+    const foot=p.y-he;
+    if(gy<foot-.03&&(st==='ground'||st==='run'||st==='stand')){this.state='air';this.stats.leftGround=true;p.y=p.y;this.vel.y=0;return;}
+    p.y=gy+he;
+    if((st==='ground'||st==='run'||st==='stand')){
+      if(this.state!=='stand'||s>.02){}
+      // lift-off: lift plus the vertical part of the flap thrust beat the weight
+      const Fy=L+T*mix*(1+.0)-this.m*G;
+      if(Fy>0&&this.t>.05&&flapping||Fy>0&&L>this.m*G){this.state='air';this.stats.leftGround=true;v.y=.2;}
+    }
+    if(this.state==='ground'&&s>.05&&st==='ground')this.state='run';
+  }
+  plantFeet(land){const B=this.B;if(!land)return;this.feet=null;}
+  // ---- visual channels: all eased, all shared by the render and the self-check
+  visual(dt){
+    const B=this.B,k=x=>1-Math.exp(-dt/x);
+    this.uE+=(this.u-this.uE)*k(.08);
+    const flapNow=(this.uE>.05||this.hovFlap)&&B.flapper;
+    this.ampE+=((flapNow?1:0)-this.ampE)*k(.1);
+    this.foldE+=(this.fold-this.foldE)*k(.12);this.diveE+=(this.dive-this.diveE)*k(.1);
+    this.flareE+=(this.flare-this.flareE)*k(.1);
+    let prepT=this.prepT;
+    if(B.kind==='beetle'){if(prepT==null)prepT=(this.state==='air'||this.uE>.05||this.hovFlap)?1:0;this.prepE+=(prepT-this.prepE)*k(.2);
+      if(this.state==='ground'||this.state==='stand'||this.state==='lie'||this.state==='skidstop'){if(this.prepE<.95&&(this.uE>.05||this.hovFlap)&&this.t>0){this.foldE=Math.max(this.foldE,1-this.prepE);}}
+    }
+    const hovTarget=B.flapper?clamp(this.state==='air'?(this.mixAct==null?0:this.mixAct):(this.uE>.05?.6:0),0,1):0;
+    this.hovE+=(hovTarget-this.hovE)*k(.2);
+    const fv=B.fb>9?9+1.5*Math.log2(B.fb/9):B.fb;this.fvis=fv;
+    if(flapNow)this.vph=frac(this.vph+fv*(1+.1*Math.max(0,this.uE-1))*dt);
+    // legs
+    let lt=this.legsT;
+    if(lt==null){if(this.state!=='air'&&this.state!=='capture')lt=1;else if(this.state==='capture'||this.state==='perched')lt=1;else lt=(this.flare>.5||this.alt<.55*B.L&&this.vel.y<0.3)?1:B.insect?.0:.12;}
+    this.legsE+=(clamp(lt,0,1)-this.legsE)*k(B.insect?.08:.14);
+    const lf=this.legFwdT==null?(this.flare>.5?1:0):this.legFwdT;this.legFwd+=(lf-this.legFwd)*k(.12);
+    const gnd=this.state==='run'||this.state==='ground'||this.state==='stand';
+    {const sp=Math.hypot(this.vel.x,this.vel.z);const Ls0=Math.max(.9*B.hcom,.001);this.Lsg=Math.max(Ls0,sp*.6/9);
+     if(gnd){if(sp>.02)this.gph=frac((this.gph||0)+sp*.6/this.Lsg*dt);else{const m=(this.gph||0)%.5;if(m>.1)this.gph=frac(this.gph+6*dt);}}}
+    this.flailE=(this.flailE||0)+(this.flail-(this.flailE||0))*k(.15);
+    if(this.state==='tumble'||this.state==='lie'||this.state==='skid'||this.state==='skidstop')this.foldE+=(.7-this.foldE)*k(.2);
+    // attitude
+    const V=this.V,gam=Math.asin(clamp(this.vel.y/Math.max(V,.05),-1,1));
+    let pt;
+    if(this.state==='air'){const al=lerp(.04,.30,clamp(this.cl/Math.max(B.clmax,.1),0,1))*(B.insect?.5:1);pt=gam+al;
+      const mixv=this.mixAct==null?0:this.mixAct;pt=lerp(pt,B.hovPitch||(B.insect?.75:1.0),clamp(mixv,0,1)*(B.insect?.6:1)*(1-clamp(V/(1.4*B.vs+.01),0,1)*(B.insect?0:1)));
+      if(this.stalled)pt-=.28;if(this.flare>.5)pt=Math.max(pt,.45);if(this.dive>.4)pt=Math.min(pt,gam-.02);}
+    else if(this.state==='tumble'){this.tumble+=Math.hypot(this.vel.x,this.vel.z)/Math.max(B.hy,.001)*dt*.5;pt=this.tumble;}
+    else pt=0;
+    if(this.state==='run'||this.state==='ground'||this.state==='stand'){this.pitch=0;this.phi=0;}else this.pitch+=(pt-this.pitch)*k(.14);
+    if(this.state!=='tumble'&&this.tumble>0)this.tumble*=.9;
+    // bob opposite the wing stroke, tail and rudder
+    const ws=this.ampE>.01?Math.cos(TAU*(this.vph<.58?.5*this.vph/.58:.5+.5*(this.vph-.58)/.42)):0;
+    this.bob=-.03*B.b*(B.insect?.35:1)*this.ampE*Math.min(1,.4+this.uE)*ws*(this.state==='air'?1:.4);
+    const ts=clamp(.18+(this.flareE>.3?.7:0)+.5*Math.abs(this.phi)+(this.state==='air'&&V<1.15*B.vs?.35:0),.1,1);this.tailSpread+=(ts-this.tailSpread)*k(.15);
+    this.tailYaw=clamp(this.phiCmd==null?this.latAcc*3:this.phi*.6,-.5,.5);
+    this.asymE+=(this.asym-this.asymE)*k(.1);
+    // yaw rate and measured values
+    const dpsi=wrap(this.psi-this.psiPrev);this.psiPrev=this.psi;if(dt>0&&this.Vh>.5)this.omega+=((dpsi/dt)-this.omega)*k(.1);else this.omega*=.9;
+    // roll visual: bank plus a small wing-asymmetry roll
+    this.rollOsc=-.02*ws*this.ampE*(this.state==='air'?1:0);
+  }
+  rollVis(){return this.phi+(this.state==='tumble'?this.tumble*.5:0);}
+  record(dt){
+    const st=this.stats,B=this.B,p=this.pos;const gy=this.env.ground(p.x,p.z);
+    if(this.ph&&(this.ph.indexOf('hover')===0||this.ph.indexOf('cannot hover')===0)){const h=this.hoverS||(this.hoverS=[]);h.push({t:this.t,alt:this.alt,vy:this.vel.y,st:this.stalled});if(h.length>1200)h.shift();}
+    st.maxAlt=Math.max(st.maxAlt,this.alt);st.maxV=Math.max(st.maxV,this.V);
+    if(this.state==='air'){st.airT+=dt;}
+    if(this.state!=='air'&&this.state!=='capture'&&this.state!=='perched'){st.minFeet=Math.min(st.minFeet,p.y-this.hEff()-gy);}
+    if(this.state==='air'||this.state==='capture'){st.minBelly=Math.min(st.minBelly,p.y-B.hb-gy);}
+    // glide ratio window: unpowered, not banking hard, not stalled
+    if(this.state==='air'&&this.ldOK&&Math.hypot(this.wv.x,this.wv.y,this.wv.z)<.01){const g=this.glideHist;g.push({t:this.t,x:p.x,z:p.z,y:p.y,sp:this.V,pw:this.uE<.03&&this.foldE<.05&&this.diveE<.05&&!this.stalled&&Math.abs(this.phi)<.12});if(g.length>260)g.shift();
+      if(g.length>=250&&g.every(e=>e.pw)&&Math.abs(g[g.length-1].sp-g[0].sp)<.03*g[0].sp){const a=g[0],b=g[g.length-1],dh=a.y-b.y,dxy=Math.hypot(b.x-a.x,b.z-a.z);if(dh>.01*dxy&&dh>.002*B.b){this.ldMeas=dxy/dh;this.sinkMeas=dh/(b.t-a.t);}}
+      else if(g.length>=250&&!g[g.length-1].pw){}}
+  }
+}
+
+// ---------------------------------------------------------------- scenario scripts (generators: every yield is one 1/120 s tick)
+function makeK(B){
+  const vs2=B.vs*B.vs/(2*G);
+  const K={vc:B.vc,hc:B.hc,T:12,tTO:11,b:B.b,L:B.L};
+  K.cliffH=Math.max(3*B.L,2.1*vs2+2*B.L);K.treeH=Math.max(6,2.3*K.cliffH);
+  K.hL=Math.max(3*B.b,12*B.L);K.hH=2.2*B.b;K.hDive=Math.max(8*B.b+.8*B.vc*B.vc/(2*G),12*B.L);
+  K.vne=B.vne;K.UW=Math.min(12,1.12*B.vs);
+  const rt=(v,phi)=>v*v/(G*Math.tan(phi));K.rc=rt(Math.max(1.15*B.vs,.8*B.vbg),35*D2R);K.Rth=Math.max(1.5*K.rc,3*B.b);
+  K.Hr=Math.max(6*B.b,12*B.L);
+  if(!B.flapper){K.hL=8;K.hDive=22;K.Hr=9;}
+  return K;
+}
+const AIRMODE=B=>B.insect?'flap':'flap';
+function airStart(F,alt,v,heading){const B=F.B,E=F.env;const gy=E.ground(F.pos.x,F.pos.z);F.pos.y=gy+alt+B.hcom;F.vel.x=Math.cos(heading||0)*v;F.vel.z=Math.sin(heading||0)*v;F.vel.y=0;F.psi=F.psiB=heading||0;F.state='air';F.legsE=B.insect?.0:.1;F.stats.leftGround=true;
+  F.ampE=B.flapper?1:0;F.uE=B.flapper?F.uTrim(v):0;F.alt=alt;F.V=v;F.Vh=v;F.stam=1;F.preInit=true;}
+function* wait(F,T,fn){const t0=F.t;while(F.t-t0<T){if(fn)fn(F.t-t0);yield;}}
+function* waitUntil(F,pred,tmax,fn){const t0=F.t;while(!pred()&&F.t-t0<tmax){if(fn)fn(F.t-t0);yield;}}
+// ---- cruise primitives
+function cruiseStep(F,hT,vT,mode,st){
+  const B=F.B;
+  if(B.insect)return insectCruise(F,hT,vT,mode,st);
+  if(!B.flapper){F.ph=mode==='steep'?'steep glide':'glide';
+    if(mode==='steep'){F.fold=.45;F.clCmd=F.trimCl(vT)*1.0;}else F.clCmd=F.trimCl(vT);
+    if(mode==='flail'){F.hovFlap=false;}return;}
+  const uff=F.uTrim(vT);
+  if(mode==='soar'){
+    const dh=1.6*B.b+B.L;if(st.on===undefined)st.on=false;
+    if(!st.on&&(F.alt<hT-dh||F.V<1.08*B.vs))st.on=true;else if(st.on&&F.alt>hT-.2*dh&&F.V>1.2*B.vs)st.on=false;
+    if(st.on){F.ph='rare flap burst';F.altHold(hT+dh*.2,.3*vT);F.u=1.5;}else{F.ph='soaring, wings spread';F.clCmd=F.trimCl(Math.max(1.12*B.vs,.9*B.vbg));}
+    return;}
+  F.altHold(hT,.3*vT);
+  if(mode==='flap'){F.ph='flapping';F.u=clamp(uff+2.5*(vT-F.V)/vT,0,1);}
+  else if(mode==='flapglide'){if(st.on===undefined)st.on=true;if(st.on&&F.V>vT*1.07)st.on=false;else if(!st.on&&F.V<vT*.93)st.on=true;
+    F.ph=st.on?'flap burst':'glide';F.u=st.on?clamp(2.2*uff+.25,.5,1.6):0;}
+  else if(mode==='bound'){if(st.on===undefined){st.on=true;st.t0=F.t;}const per=1/Math.max(B.fb,.5);
+    if(st.on&&F.t-st.t0>3.5*per){st.on=false;st.t0=F.t;}else if(!st.on&&F.t-st.t0>1.3*per){st.on=true;st.t0=F.t;}
+    if(st.on){F.ph='flap burst';F.u=clamp(2*uff+.3,.6,1.8);}else{F.ph='bound, wings folded';F.u=0;F.fold=1;F.clCmd=.25;F.gamCmd=null;}}
+}
+function insectCruise(F,hT,vT,mode,st){
+  const B=F.B,uh=F.uHover(),eA=hT-F.alt,sc=.25*hT+.002;
+  const lift=()=>clamp(uh*(1+.6*clamp(eA/sc,-1,1)-.35*F.vel.y/(.25*vT+.05)),0,2.2);
+  const fwd=()=>clamp(.9-.8*(vT-F.V)/vT,.55,.97);
+  if(mode==='flap'){F.ph='flapping, figure-8';F.u=lift();F.mixUp=fwd();return;}
+  const tb=.35*Math.sqrt(B.L/.1)+.02;
+  if(mode==='flapglide'||mode==='soar'){const dh=(mode==='soar'?.35:.12)*hT+.003;if(st.on===undefined)st.on=true;
+    if(st.on&&F.alt>hT+.2*dh)st.on=false;else if(!st.on&&F.alt<hT-dh)st.on=true;
+    if(st.on){F.ph='flap burst';F.u=lift()*1.15;F.mixUp=fwd();}else{F.ph=mode==='soar'?'glide on spread wings':'glide';F.clCmd=F.trimCl(Math.max(vT,B.vs*.9));}return;}
+  if(mode==='bound'){if(st.on===undefined){st.on=true;st.t0=F.t;}
+    if(st.on&&F.t-st.t0>3*tb){st.on=false;st.t0=F.t;}else if(!st.on&&F.t-st.t0>tb){st.on=true;st.t0=F.t;}
+    if(st.on){F.ph='flap burst';F.u=lift()*1.25;F.mixUp=fwd();}else{F.ph='wings folded: falls';F.u=0;F.fold=1;F.clCmd=.2;}}
+}
+function* cruiseFor(F,T,hT,vT,mode,fn){const st={};const t0=F.t;while(F.t-t0<T){cruiseStep(F,hT,vT,mode,st);if(fn)fn(F.t-t0);yield;}}
+// ---- takeoff
+function climbCtl(F,hT){const B=F.B;
+  if(B.insect){insectCruise(F,hT,Math.max(.4*B.vc,.3),'flap',{});F.u=Math.max(F.u,F.uHover()*1.25);return;}
+  if(!B.flapper){F.clCmd=F.trimCl(1.15*B.vs);return;}
+  F.u=2;F.gamCmd=.32;if(F.alt>hT){F.altHold(hT,.3*F.K.vc);F.u=clamp(F.uTrim(F.K.vc)*1.3+.2,.3,1.4);}}
+function* launchLoop(F,T,variant){
+  const B=F.B,K=F.K;let leaped=0,tTry=0,tLand=-9,hold=0;const hTO=Math.min(K.hc,2.2*B.b+4*B.L);
+  while(F.t<T){
+    if(F.state==='air'||F.state==='capture'){
+      F.ph=F.alt<.8*B.L+.01?'leaving the ground':F.alt<hTO*.7?'climbing out':'cruise after takeoff';
+      if(F.alt<hTO*.7||F.V<1.0*B.vs&&!B.insect&&F.stats.maxAlt<hTO)climbCtl(F,hTO);else cruiseStep(F,hTO,Math.min(K.vc,Math.max(F.V,1.15*B.vs)),'flap',F.stT||(F.stT={}));
+      if(!B.flapper){F.clCmd=F.trimCl(1.1*B.vs);}
+      tTry=0;
+    }else{
+      const gnd=F.state==='ground'||F.state==='run'||F.state==='stand';
+      F.legsT=1;F.rotate=true;
+      if(!gnd){F.ph='landed: rest';F.u=0;}
+      else if(variant==='run'||variant==='cliff'){
+        F.ph='run-up, flapping';F.runAcc=B.aRun;F.u=B.flapper?2:0;F.mixUp=F.Vh<.8*B.vs?.1:.6;
+        if(F.t>2.2&&F.t-tLand>2.0&&F.Vh>=.97*B.vrun&&F.Vh<.8*B.vs){F.ph='hop attempt at top run speed';F.leap(B.vleap*.8,.3);tLand=F.t;}
+      }
+      else if(variant==='leap'||variant==='vault'||variant==='treeleap'){
+        F.ph=variant==='vault'?'quad vault':'standing leap';tTry+=1/120;
+        if(tTry>.25&&F.t-tLand>.5){F.leap(B.vleap*(variant==='vault'?1.1:1),B.vleapx);F.u=B.flapper?2:0;tLand=F.t;F.mixUp=null;}
+        else{F.u=B.flapper?1.2:0;F.mixUp=.9;}
+      }else if(variant==='vertical'){
+        F.ph='vertical: thrust only';F.u=B.flapper?2:0;F.mixUp=1;F.rotate=false;tTry+=1/120;
+        if(B.insect&&F.state==='ground'){F.u=Math.min(2,F.uHover()*1.5);}
+        if(!B.insect&&tTry>1.6){F.ph='thrust too low: jump';F.leap(B.vleap*.9,.5);F.mixUp=null;tTry=0;}
+        if(B.insect&&tTry>2.4){F.leap(B.vleap,.1);tTry=0;}
+      }
+    }
+    yield;}
+}
+function glideFlare(F){const B=F.B;if(F.alt<5*B.L+.15&&F.vel.y<0){F.flare=1;F.legsT=1;F.clCmd=B.clmax*.95;F.brake=.5;F.ph='flare for the landing';return true;}return false;}
+function* toCliff(F,T){
+  const B=F.B,K=F.K;let phase='walk',hOut=0,tl=0;
+  while(F.t<T){
+    if(F.state==='air'&&phase==='walk'){phase='fall';}
+    if(phase==='walk'){F.ph='walking to the edge';F.runAcc=B.aRun*.8;F.legsT=1;F.u=0;F.fold=B.kind==='beetle'?1:0;if(F.pos.x>F.env.cliff.xc-.6*B.L&&F.state!=='air'){F.ph='step off';}}
+    else if(F.state==='air'){
+      F.ph=F.stats.touched?'':'wings open, pulling out';
+      if(!B.flapper){F.clCmd=null;F.gamCmd=-.05;if(F.alt<1.3*K.cliffH&&F.V>1.0*B.vs&&F.vel.y>-.2){F.gamCmd=.0;F.clCmd=F.trimCl(1.15*B.vs);}glideFlare(F);}
+      else{ if(F.V<1.1*B.vs&&!B.insect){F.gamCmd=0;F.u=1.6;F.mixUp=.2;F.ph='falling, flapping to gain speed';}
+            else if(hOut===0&&(F.vel.y>-.4&&F.V>1.05*B.vs||B.insect&&F.vel.y>-.2)){hOut=Math.max(F.alt,.5*B.b);F.ph='levelled off';}
+            if(hOut===0){F.gamCmd=B.insect?null:0;F.u=B.insect?F.uHover()*1.2:1.2;if(B.insect){insectCruise(F,Math.max(F.alt,.1),.5*B.vc,'flap',{});}}
+            else cruiseStep(F,hOut,Math.min(K.vc,Math.max(1.2*B.vs,F.V)),'flap',F.stT||(F.stT={}));}
+    }else{F.ph='landed';F.u=0;F.legBrake=true;}
+    yield;}
+}
+// ---- landing
+function* finalLand(F,vapp,flareAlt,flareAmt,tail){
+  const B=F.B;
+  while(F.state==='air'){
+    const sinkGoal=-Math.sqrt(Math.max(B.L,.002))*(.3+1.2*clamp(F.alt/flareAlt,0,1));
+    F.legsT=1;F.flare=flareAmt;F.ph=flareAmt>.5?'flare, legs forward':'flat run-in';
+    const gc=Math.asin(clamp(sinkGoal/Math.max(F.V,.5),-.6,.2));
+    if(B.insect){const vyT=-clamp(1.4*F.alt+.03,.04,.4*Math.sqrt(B.L/.05+.01));const a=clamp(5*(vyT-F.vel.y),-.5*G,.5*G);F.mixUp=clamp(.97-.5*F.Vh/Math.max(B.vc,.3),.55,.97);F.hold=true;F.u=F.uForThrust(Math.max(0,F.m*(G+a)-.9*F.lastLiftV),F.sp,F.mixUp);F.flare=0;}
+    else{F.gamCmd=gc;F.brake=flareAmt>.5?1:.3;if(B.flapper)F.u=flareAmt>.5?.55:.3;}
+    yield;}
+  yield* afterTouch(F,tail===undefined?2:tail);
+}
+function* afterTouch(F,tail){
+  const t0=F.t;let stopped=-1;
+  while(F.t-t0<12&&(stopped<0||F.t-stopped<tail)){F.legBrake=true;F.u=0;F.legsT=1;F.ph=F.state==='tumble'?'tumbling':F.state==='skid'?'skidding':F.state==='run'?'running out':'stopped, feet planted';if((F.state==='stand'||F.state==='lie'||F.state==='skidstop'||F.state==='perched')&&stopped<0)stopped=F.t;yield;}
+}
+function* approach(F,x0,Lx,hL,gamA,vapp,flareAlt,opts){
+  const B=F.B;opts=opts||{};
+  while(F.state==='air'&&F.alt>flareAlt&&F.pos.x<Lx+200*B.b){
+    const x=F.pos.x,yd=Math.max(0,(Lx-x)*Math.tan(gamA));const e=yd-F.alt;
+    F.ph='glide-slope approach';
+    if(B.insect){insectCruise(F,clamp(yd,.0003,1e9),Math.max(vapp,.3),'flap',{});F.mixUp=clamp(.9-.6*(vapp-F.Vh)/Math.max(vapp,.1),.5,.97);yield;continue;}
+    F.gamCmd=-gamA+clamp(e/(4*B.b+8*B.L),-.35,.35);
+    const ve=F.V-vapp;if(!B.flapper){F.clCmd=null;F.brake=clamp(ve/(.25*vapp),0,1);F.gamCmd=-gamA+clamp(e/(4*B.b+8*B.L),-.35,.35);}
+    else if(ve>.03*vapp){F.u=0;F.brake=clamp(ve/(.25*vapp),0,1);}else F.u=clamp(F.uTrim(vapp)+2*(vapp-F.V)/vapp,0,1);
+    F.legsT=F.alt<2.5*flareAlt?1:null;
+    yield;}
+}
+function* landing(F,variant){
+  const B=F.B,K=F.K,E=F.env;
+  const vs=B.vs;const hL=K.hL;
+  if(variant==='perch'){yield* perchLand(F);return;}
+  const vapp=B.insect?Math.max(.25,.45*B.vc):variant==='flare'?1.3*vs:variant==='run'?1.15*vs:1.5*vs;
+  const gamA=B.insect?.35:variant==='crash'?15*D2R:7*D2R;
+  const tA=B.insect?.6:2.0;
+  yield* wait(F,tA,()=>{cruiseStep(F,hL,B.vc,'flap',F.stA||(F.stA={}));});
+  const x0=F.pos.x,D=hL/Math.tan(gamA),Lx=x0+D;
+  const flareAlt=variant==='crash'?.0:2.2*B.L+.04*B.b;
+  yield* approach(F,x0,Lx,hL,gamA,vapp,flareAlt);
+  if(variant==='crash'){while(F.state==='air'){F.ph='no flare';F.gamCmd=-gamA;F.legsT=.3;F.u=0;yield;}yield* afterTouch(F,2);return;}
+  yield* finalLand(F,vapp,Math.max(flareAlt,.03),variant==='flare'?1:.25,2);
+}
+function* perchLand(F){
+  const B=F.B,K=F.K,E=F.env,vs=B.vs;
+  const vapp=B.insect?Math.max(.25,.3*B.vc):1.3*vs;
+  const Hs=B.insect?.0:.9*(vapp*vapp-(.9*vs)*(.9*vs))/(2*G);
+  const yp=E.perch.y,xp=E.perch.x;
+  yield* wait(F,1.6,()=>{cruiseStep(F,K.hL+yp,B.vc,'flap',F.stA||(F.stA={}));});
+  // stage 1: glide to a point below and short of the perch, stage 2: pull up onto it
+  const Dp=Math.max(8*Hs,4*B.b+8*B.L),x1=xp-Dp,y1=Math.max(yp-Hs,.1*B.b);
+  F.perchArmed=true;
+  while(F.state==='air'&&F.pos.x<xp+4*Dp){
+    const x=F.pos.x;
+    if(B.insect){F.ph='slow approach';const yt=yp+B.hcom*.5;insectCruise(F,Math.max(yt+Math.max(0,(xp-x)*.25),yt),Math.max(.25,.5*vapp+.4*clamp((xp-x)/(2*B.b),0,1)),'flap',{});F.mixUp=clamp(.9-.6*(vapp-F.Vh)/Math.max(vapp,.1),.5,.97);F.legsT=1;yield;continue;}
+    if(x<x1&&F.alt>y1-.2*B.b){F.ph='glide-slope approach';const yd=y1+(x1-x)*Math.tan(6*D2R);F.gamCmd=-6*D2R+clamp((yd-F.alt-0)/(4*B.b+8*B.L),-.3,.3);
+      if(B.flapper){const ve=F.V-vapp;if(ve>.03*vapp){F.u=0;F.brake=clamp(ve/(.25*vapp),0,1);}else F.u=clamp(F.uTrim(vapp)+2*(vapp-F.V)/vapp,0,1);}else{F.brake=clamp((F.V-vapp)/(.25*vapp),0,1);}
+    }else{F.ph='pull up to the perch';const dx=Math.max(xp-x,.02),dy=yp+B.hcom-F.pos.y;F.gamCmd=Math.atan2(dy,dx)*1.25+.04;F.legsT=1;F.flare=.8;F.brake=clamp((F.V-1.05*vs)/(.35*vs),0,1);F.u=F.V<1.1*vs&&B.flapper?.8:0;}
+    yield;}
+  if(F.state==='air'){yield* finalLand(F,vapp,1.5*B.L+.02*B.b,1,2);return;}
+  F.ph='perched';yield* wait(F,2.2,()=>{F.ph='perched, feet closed';F.legsT=1;});
+}
+// ---- turns
+function* turnScript(F,variant){
+  const B=F.B,K=F.K;const vT=B.vc,hT=variant==='wingover'?F.alt:B.hc;
+  const mode=B.flapper?(B.kind==='ptero'?'flapglide':'flap'):'glide';
+  const st={};const cr=()=>cruiseStep(F,hT,vT,mode,st);
+  yield* wait(F,1.4,cr);
+  const psi0=F.psi;const dir=1;const cum0=F.psiCum||0;const turned=()=>Math.abs((F.psiCum||0)-cum0);
+  if(variant==='bank'){
+    const ph=40*D2R;let t=0;
+    while(turned()<(B.insect?540:200)*D2R&&F.t<K.T+2){cr();F.phiCmd=ph*dir;F.ph='bank '+(F.phi/D2R).toFixed(0)+'°, coordinated turn';yield;}
+    yield* wait(F,2.2,()=>{cr();F.phiCmd=0;F.ph='roll out';});
+  }else if(variant==='yaw'){
+    while(turned()<80*D2R&&F.t<K.T){cr();F.latAcc=B.latMax*dir;F.phiCmd=0;F.slip=.3*dir;F.ph='flat yaw turn, tail pushes sideways';yield;}
+    yield* wait(F,1.5,()=>{cr();});
+  }else if(variant==='wingover'){
+    const psiA=F.psi;let t1=F.t;
+    while(F.V<1.3*vT&&F.t-t1<1.6&&F.state==='air'){F.gamCmd=-.3;F.u=B.flapper?1.6:0;F.fold=0;F.ph='build speed';if(B.insect){F.u=F.uHover()*1.2;F.mixUp=.55;F.gamCmd=null;}yield;}
+    t1=F.t;
+    while(F.V>.6*vT&&F.vel.y>-.1&&F.t-t1<3&&F.state==='air'){F.gamCmd=1.1;F.u=B.flapper?.3:0;F.ph='zoom pull-up';if(B.insect){F.u=F.uHover()*1.2;F.mixUp=.75;}yield;}
+    const psiB0=F.psi;t1=F.t;
+    while(Math.abs(wrap(F.psi-psiB0))<165*D2R&&F.t-t1<4.5&&F.state==='air'){F.phiCmd=85*D2R*dir;F.u=B.flapper&&!B.insect?0:0;F.gamCmd=null;F.clCmd=B.clmax*.92;F.ph='roll over the top';if(B.insect){F.u=F.uHover()*.9;F.mixUp=.9;F.clCmd=null;}yield;}
+    t1=F.t;
+    while(F.state==='air'&&F.t-t1<5&&(F.V<.95*vT||F.vel.y<-.6)){F.phiCmd=0;F.u=B.flapper?1:0;F.ph='dive away on the new heading';F.gamCmd=(F.V<.9*vT&&F.alt>.4*hT)?-.45:0;if(F.gamCmd===0)F.ph='pull out';yield;}
+    yield* wait(F,1.2,()=>{cruiseStep(F,Math.max(F.alt,.5*hT),vT,mode,F.stW||(F.stW={}));});
+  }else if(variant==='pivot'){
+    const vp=.38*B.vs;let rot0=F.psiB,ang=0;
+    yield* waitUntil(F,()=>F.V<vp+.2||F.alt<.35*hT,4,()=>{slowCtl(F,hT);});
+    const capable=B.hoverBurst;const spin=B.insect?5:B.kind==='bird'||B.kind==='bat'?3:1.2;let t=0;
+    while(Math.abs(wrap(F.psiB-rot0))<Math.PI*.95&&t<4.5&&F.state==='air'){t+=1/120;F.pivotRate=spin*dir;F.asym=.4;F.ph=capable?'pivot: asymmetric beats':'pivot attempt: loses speed';F.slip=.2;
+      F.flare=.6;F.hold=true;
+      if(capable){const uh=F.uHover();F.mixUp=1;F.u=clamp(uh*(1+.5*clamp((hT-F.alt)/(.3*hT),-1,1)),0,2);F.clCmd=.2;}else{F.u=B.flapper?1.2:0;F.clCmd=B.clmax;}
+      yield;}
+    F.stats.pivotYaw=Math.abs(wrap(F.psiB-rot0));
+    yield* wait(F,2,()=>{F.gamCmd=-.3;F.u=B.flapper?1.6:0;F.ph='accelerate away';F.mixUp=null;if(B.insect){insectCruise(F,Math.max(F.alt,hT*.5),vT,'flap',{});}});
+  }
+}
+// ---- hover
+function hoverCtl(F,hT,hold){
+  const B=F.B,uh=F.uHover(),e=hT-F.alt;
+  F.mixUp=1;const aC=clamp(1.2*e-1.8*F.vel.y,-.6*G,.6*G);F.u=F.uForThrust(Math.max(0,F.m*(G+aC)-.9*F.lastLiftV),F.sp,1);F.clCmd=.15;F.hold=hold;F.flare=B.insect?0:.5;F.brake=.2;
+}
+function slowCtl(F,hT){const B=F.B;hoverCtl(F,hT,true);F.brake=.9;F.flare=1;F.clCmd=B.clmax;F.ph='slowing down, wings cupped';}
+function* hoverScript(F,variant){
+  const B=F.B,K=F.K,hH=Math.max((variant==='stall'?4*B.b+4*B.L:2.2*B.b+2*B.L)*(B.flapper?1:2.2),B.insect?25*B.L:0),vT=B.vc;
+  if(variant==='hover'){
+    yield* wait(F,1.4,()=>cruiseStep(F,hH,vT,'flap',F.stA||(F.stA={})));
+    F.ph='decelerating';
+    yield* waitUntil(F,()=>F.V<.25*B.vs+.15,4,()=>{slowCtl(F,hH);});
+    const t0=F.t;
+    while(F.t-t0<5.5&&F.state==='air'){hoverCtl(F,hH,true);F.ph=B.hoverBurst?'hover':'cannot hover: mush and sink';yield;}
+    if(F.state==='air')yield* wait(F,2.2,(t)=>{F.gamCmd=.12;F.u=1.8;F.mixUp=clamp(1-t/1.8,.1,1);F.ph='fly away';if(B.insect){insectCruise(F,hH,vT*.6,'flap',{});}});
+  }else if(variant==='wind'){
+    F.env.windX=-K.UW;const x0=F.pos.x;F.vel.x=0;F.vel.y=0;
+    const hh=hH;airStart(F,hh,0.01,0);F.vel.x=0;
+    const t0=F.t;
+    while(F.t-t0<9&&F.state==='air'){const vA=clamp(K.UW-1.0*(F.pos.x-x0)-1.4*F.vel.x,.1,2*K.UW);F.mixUp=null;
+      if(B.insect){insectCruise(F,hh,vA,'flap',{});F.mixUp=clamp(.9-.8*(vA-(F.V))/Math.max(vA,.1),.55,.97);}
+      else{F.altHold(hh,.3*vA);F.u=clamp(F.uTrim(Math.max(vA,K.UW*.9))+2.5*(vA-F.sp)/Math.max(vA,.5),0,B.hoverBurst?1.4:1);}
+      F.ph=B.vs<=K.UW?'holding ground point in the wind':'wind below stall speed: blown back';
+      yield;}
+  }else if(variant==='flutter'){
+    const t0=F.t;let tl=0;F.state='ground';F.pos.y=B.hcom;F.vel.x=F.vel.y=F.vel.z=0;F.legsE=1;
+    while(F.t-t0<K.T-1){
+      if(F.state==='air'||F.state==='capture'){const hl=.5*B.b+3*B.L;hoverCtl(F,hl,true);F.u=clamp(F.u,0,B.flapper?2:0);F.ph=B.hoverBurst?'low hover, ground effect':'flutter hop';}
+      else{F.legsT=1;F.ph='hop off';F.u=2;F.mixUp=1;F.rotate=false;tl+=1/120;if(tl>.4){F.leap(B.vleap*.9,0);tl=0;}}
+      yield;}
+  }else if(variant==='stall'){
+    yield* wait(F,1.2,()=>cruiseStep(F,hH,vT,'flap',F.stA||(F.stA={})));
+    let ts=-1;
+    while(F.t<K.T+3&&F.state==='air'){
+      if(F.stalled&&ts<0)ts=F.t;
+      if(ts>=0&&F.t-ts>.7){F.gamCmd=-.55;F.u=B.flapper?1:0;F.clCmd=null;F.ph='nose down: recover in a dive';if(F.V>1.3*B.vs&&F.vel.y<0)ts=-2;}
+      else{F.ph=F.stalled?'STALL: lift gone, nose drops':'pitching up, slowing';F.u=B.flapper?clamp(F.uTrim(vT)*.5,0,.5):0;F.clCmd=B.clmax*1.05;F.mixUp=B.insect?.9:null;F.brake=.3;if(B.insect){F.u=F.uHover()*.45;}}
+      if(ts===-2&&F.vel.y>-.5){F.gamCmd=0;F.clCmd=null;F.u=B.flapper?1:0;}
+      yield;}
+  }
+}
+// ---- glide / soar
+function orbit(F,cx,cz,rc,dir,vms,extra){
+  const dx=F.pos.x-cx,dz=F.pos.z-cz,d=Math.hypot(dx,dz)+1e-6;const ang=Math.atan2(dz,dx);
+  const tang=ang+dir*Math.PI/2;const corr=Math.atan(clamp((d-rc)/rc,-1.2,1.2)*1.1);const want=tang-dir*corr;
+  const err=wrap(want-F.psi);const om=clamp(dir*F.Vh/rc+1.6*err,-2.2,2.2);const phi=Math.atan(F.Vh*om/G);
+  F.phiCmd=clamp(phi,-50*D2R,50*D2R);const cph=Math.cos(F.phiCmd);F.clCmd=Math.min(F.trimCl(vms)/cph,F.B.clmax*.95);
+}
+function* glideScript(F,variant){
+  const B=F.B,K=F.K,E=F.env;const vms=Math.max(1.15*B.vs,.8*B.vbg);
+  if(variant==='bestglide'){yield* wait(F,K.T,()=>{F.clCmd=F.trimCl(B.vbg);F.ph='best-L/D glide';});}
+  else if(variant==='thermal'){
+    const th=E.thermal;let phase='in';const tk=F.t;
+    while(F.t<K.T+4&&F.state==='air'){
+      const d=Math.hypot(F.pos.x-th.x,F.pos.z-th.z);
+      if(phase==='in'){F.clCmd=F.trimCl(B.vbg);F.ph='glide to the thermal';if(d<1.15*K.rc+.1*th.R)phase='circle';}
+      if(phase==='circle'){orbit(F,th.x,th.z,K.rc,1,vms);F.ph='circling in the rising column';if(F.alt>th.top*.9)phase='out';}
+      if(phase==='out'){F.clCmd=F.trimCl(B.vbg);F.phiCmd=0;F.ph='leave the thermal, glide on';}
+      yield;}
+  }else if(variant==='minsink'){
+    const cx=F.pos.x,cz=F.pos.z+K.rc;
+    yield* wait(F,K.T,()=>{orbit(F,cx,cz,K.rc,1,vms);F.ph='min-sink circle, still air';});
+  }else if(variant==='ridge'){
+    const r=E.ridge;let dirZ=1;let turning=false;const xd=r.xr+.7*r.H;
+    while(F.t<K.T+3&&F.state==='air'){
+      const zEnd=6*K.rc;F.clCmd=F.trimCl(Math.max(1.1*B.vs,.9*B.vbg)*1.0);
+      const psiT=dirZ>0?Math.PI/2:-Math.PI/2;let psiW=psiT-clamp((F.pos.x-xd)/(1.5*r.H),-.4,.4)*dirZ;
+      if(!turning&&(dirZ>0?F.pos.z>zEnd:F.pos.z<-zEnd)){turning=true;dirZ=-dirZ;}
+      if(turning&&Math.abs(wrap(F.psi-(dirZ>0?Math.PI/2:-Math.PI/2)))<12*D2R)turning=false;
+      const err=turning?(dirZ>0?wrap(Math.PI/2-F.psi):wrap(-Math.PI/2-F.psi)):wrap(psiW-F.psi);
+      const turnDir=turning?(dirZ>0?1:-1):0;const e2=turning?turnDir*Math.abs(err):err;
+      const om=clamp(1.4*e2,-.8,.8);F.phiCmd=clamp(Math.atan(F.Vh*om/G),-45*D2R,45*D2R);F.clCmd=Math.min(F.clCmd/Math.cos(F.phiCmd),B.clmax*.95);
+      F.ph='ridge soaring, up-draft off the face';
+      if(!B.flapper&&F.alt<.2*r.H)F.ph='sinks below the up-draft';
+      yield;}
+  }
+}
+// ---- dive
+function* diveScript(F,variant){
+  const B=F.B,K=F.K;const vT=B.vc;
+  yield* wait(F,1.2,()=>cruiseStep(F,F.alt>0?K.hDive:K.hDive,vT,B.flapper?'flap':'glide',F.stA||(F.stA={})));
+  const nPull=variant==='drop'?.55*B.nmax:B.nmax*.8;
+  const gdive=variant==='shallow'?-25*D2R:-65*D2R;
+  let phase='dive';const t0=F.t;
+  while(F.t<K.T&&F.state==='air'){
+    const g=Math.asin(clamp(F.vel.y/Math.max(F.V,.1),-1,1));const R=F.V*F.V/(G*Math.max(nPull-1,.3));const need=R*(1-Math.cos(Math.min(-g,1.5)))+.6*B.b+2*B.L;
+    if(phase==='dive'){
+      F.fold=variant==='shallow'?.45:1;F.dive=0;
+      if(variant==='drop'){F.clCmd=0;}else F.gamCmd=gdive;
+      F.u=variant==='powered'&&B.flapper?1.4:0;F.ph=variant==='drop'?'folded free fall':variant==='powered'?'powered dive, wings folded':variant==='shallow'?'shallow glide dive':'stoop';
+      if(B.insect&&F.fold>.9)F.clCmd=.15;
+      if(F.alt<need*(variant==='drop'?1.25:1.9)||F.V>1.05*K.vne)phase='pull';
+    }else if(phase==='pull'){
+      F.fold=0;F.u=B.flapper?(B.insect?F.uHover()*1.2:1.2):0;F.gamCmd=.0;F.ph='pull up at the load limit';
+      if(B.insect){F.mixUp=.9;}
+      if(F.vel.y>=-.2&&F.alt>.3*B.b)phase='climb';
+    }else{F.gamCmd=.3;F.u=B.flapper?1.2:0;F.ph='zoom climb with the speed';if(B.insect){insectCruise(F,F.alt+.1,vT,'flap',{});}if(F.V<1.1*B.vs||F.vel.y<=0)phase='out';
+      if(phase==='out')F.gamCmd=0;}
+    if(phase==='out'){F.fold=0;F.ph='level off';if(B.flapper)cruiseStep(F,F.alt,Math.max(vT*.8,1.2*B.vs),'flap',F.stB||(F.stB={}));else F.clCmd=F.trimCl(B.vbg);}
+    yield;}
+}
+// ---- rough air and carried loads
+function* roughScript(F,variant){
+  const B=F.B,K=F.K;const vT=B.vc,hT=B.hc;
+  if(variant==='gust-light'||variant==='gust-strong'){
+    const mode=B.flapper?'flap':'glide';const st={};
+    yield* wait(F,K.T,()=>{cruiseStep(F,hT,vT,mode,st);F.ph=(variant==='gust-strong'?'strong gusts ':'light gusts ')+(F.stalled?'· stall':'');
+      if(variant==='gust-strong'&&F.stalled){F.fold=.3;}
+      if(F.alt<.25*hT&&F.vel.y<0){F.gamCmd=0;F.u=B.flapper?1.5:0;}});
+  }else{
+    const heavy=variant==='carry-heavy',mass=B.m*(heavy?1:.3),xp=E_preyX(F);
+    const E=F.env;E.prey={x:xp,z:0,mass};
+    yield* wait(F,1.0,()=>cruiseStep(F,hT,vT,B.flapper?'flap':'glide',F.stA||(F.stA={})));
+    let phase='swoop',tg=0,drop=false;
+    const x0=F.pos.x,hP=.5*B.hcom;
+    while(F.t<K.T+4){
+      if(phase==='swoop'){
+        const x=F.pos.x,dxp=xp-x,gam=.14;const yd=Math.max(.7*hP,dxp*Math.tan(gam)*.9+.7*hP);F.gamCmd=Math.asin(clamp((-F.V*Math.tan(gam)+(yd-F.alt)/.45)/Math.max(F.V,.5),-.5,.3));
+        F.kgam=5;F.legsT=F.alt<10*B.L+.5*B.b?1:null;F.ph='swoop on the prey';F.fold=0;F.u=B.flapper?clamp(F.uTrim(vT)*.8,0,1):0;if(B.insect){insectCruise(F,Math.max(yd,.0005),vT,'flap',{});}
+        if(dxp<1.3*B.L+.04*B.b&&F.alt<1.3*B.hcom+.02*B.b){F.setPrey(true,mass);phase='climb';tg=F.t;F.stats.preyHeld=true;E.prey.taken=true;E.prey.heldAt=F.t;}
+        if(F.state!=='air'){phase='ground';}
+      }else if(phase==='climb'){
+        F.legsT=1;F.ph='lifting the prey';F.u=B.flapper?2:0;F.gamCmd=.25;if(B.insect){insectCruise(F,hT*.6,vT*.6,'flap',{});F.u=Math.min(2.2,F.uHover()*1.1+.4);}
+        if(F.alt>.6*hT||F.t-tg>6)phase='cruise';
+        if(F.t-tg>2.2&&F.alt<.4*B.hcom&&!drop){F.ph='too heavy: prey dropped';F.setPrey(false);E.prey.dropped=true;E.prey.x=F.pos.x;E.prey.heldAt=-1;drop=true;phase='free';}
+        if(F.state!=='air'){F.ph='dragging the prey';phase='ground';}
+      }else if(phase==='cruise'){cruiseStep(F,hT*.8,vT*.9,B.flapper?'flap':'glide',F.stC||(F.stC={}));F.ph='cruising with the prey';}
+      else if(phase==='ground'){F.legsT=1;F.u=B.flapper?2:0;F.runAcc=B.aRun;F.mixUp=.15;F.ph=F.preyOn?'dragging prey: runs and flaps':'on the ground';
+        if(F.state==='air')phase=F.preyOn?'climb':'free';
+        if(F.t-tg>5&&F.preyOn){F.setPrey(false);E.prey.dropped=true;E.prey.x=F.pos.x;drop=true;F.ph='prey dropped';phase='free';}
+        if(!F.preyOn&&F.t>K.T-1)break;}
+      else{F.ph='free of the load';cruiseStep(F,Math.max(F.alt,hT*.4),vT,B.flapper?'flap':'glide',F.stD||(F.stD={}));}
+      if(phase==='ground'&&!tg)tg=F.t;
+      yield;}
+  }
+}
+function E_preyX(F){const B=F.B;return B.vc*1.0+Math.max(4*B.b,B.vc*.5)*3.2;}
+// ---------------------------------------------------------------- scenario assembly
+function buildCell(B,row,vid){
+  const env=makeEnv(B,row,vid);const F=new Flyer(B,env,row,vid);const K=F.K=makeK(B);
+  F.pos={x:0,y:B.hcom,z:0};F.state='ground';F.legsE=1;
+  const soarA=1.1*Math.max(sinkRate(B,Math.max(B.vbg,1.0*B.vs))||.5,.3);
+  if(row==='takeoff'){
+    if(vid==='cliff'||vid==='treeleap'){env.cliff={xc:vid==='treeleap'?4*B.b+4*B.L:5*B.b+5*B.L,H:vid==='treeleap'?K.treeH:K.cliffH};F.pos.y=env.cliff.H+B.hcom;F.pos.x=env.cliff.xc-(vid==='treeleap'?4*B.b+4*B.L:5*B.b+5*B.L)*.9;
+      F.sc=vid==='treeleap'?treeLeapScript(F):toCliff(F,K.T+2);}
+    else F.sc=launchLoop(F,K.tTO,vid);
+    F.T=K.tTO;
+  }else if(row==='cruise'){airStart(F,K.hc,B.vc,0);if(vid==='soar')env.updraftWave={A:soarA,lam:Math.max(40*B.b,10*B.L*B.vc)};
+    if((vid==='bestglide'||vid==='minsink'||vid==='steep')&&!B.flapper){F.vel.y=-B.vc/Math.max(B.ld,1);}
+    F.sc=(function*(){const mode=vid==='bestglide'||vid==='minsink'||vid==='steep'||vid==='flap'&&!B.flapper?(vid==='flap'?'steep':vid):vid;
+      const vT=vid==='minsink'?1.15*B.vs:vid==='steep'?1.4*B.vbg:vid==='bestglide'?B.vbg:B.vc;
+      const st={};
+      yield* wait(F,K.T,()=>{if(!B.flapper&&vid==='flap'){F.clCmd=F.trimCl(B.vc);F.ph='no powered flight: limbs flail, glides on';F.flail=1;}else cruiseStep(F,K.hc,vT,mode,st);});})();
+    F.T=K.T;
+  }else if(row==='turn'){airStart(F,vid==='wingover'?K.hc+.6*B.vc*B.vc/(2*G)+2*B.b:K.hc,B.vc,0);F.sc=turnScript(F,vid);F.T=K.T+4;}
+  else if(row==='landing'){airStart(F,K.hL,B.vc,0);
+    if(vid==='perch'){const Hs=B.insect?0:.9*((1.3*B.vs)**2-(.9*B.vs)**2)/(2*G);const yp=Math.max(Hs+2*B.b+3*B.L,3*B.L);const xp=B.vc*1.6+Math.max(8*Hs,4*B.b+8*B.L)+B.vc*1.5;
+      env.perch={x:xp,y:yp,z:0};airStart(F,K.hL+yp,B.vc,0);}
+    F.sc=landing(F,vid);F.T=K.T+4;}
+  else if(row==='hover'){airStart(F,Math.max((vid==='stall'?4*B.b+4*B.L:2.2*B.b+2*B.L)*(B.flapper?1:2.2),B.insect?25*B.L:0),B.vc,0);if(vid==='flutter'){F.pos.y=B.hcom;F.state='ground';}F.sc=hoverScript(F,vid);F.T=K.T+3;}
+  else if(row==='glide'){
+    if(vid==='thermal'){const xT=Math.max(2.5*K.Rth,3*B.vbg);const sk=sinkRate(B,B.vbg)||B.vbg/Math.max(B.ld,1);const hs=Math.max(K.hc,1.5*sk*xT/B.vbg+2*B.b);airStart(F,hs,B.vbg,0);env.thermal={x:xT,z:K.rc*1.2,R:K.Rth,w:2.4*(B.insect?.4:1),top:3*K.hc+4*K.Rth};}
+    else if(vid==='ridge'){env.ridge={xr:0,H:K.Hr,w:Math.max(2.3*Math.max(1,B.vs/6),2.2)*(B.insect?.35:1)};airStart(F,K.Hr*1.15,Math.max(B.vbg,1.1*B.vs),Math.PI/2);F.pos.x=.7*K.Hr;F.pos.y=K.Hr*1.15+B.hcom;F.psi=F.psiB=Math.PI/2;F.vel.x=0;F.vel.z=Math.max(B.vbg,1.1*B.vs);}
+    else{const sk=sinkRate(B,B.vbg)||B.vbg/Math.max(B.ld,1);const v0=vid==='bestglide'?B.vbg:Math.max(1.15*B.vs,.8*B.vbg);airStart(F,Math.max(K.hc,1.15*sk*K.T+2*B.b),v0,0);if(vid==='bestglide'){F.vel.y=-v0/B.ld;}}
+    F.sc=glideScript(F,vid);F.T=K.T+4;}
+  else if(row==='dive'){airStart(F,K.hDive,B.vc,0);F.sc=diveScript(F,vid);F.T=K.T+6;}
+  else if(row==='rough'){airStart(F,K.hc,B.vc,0);
+    if(vid.startsWith('gust')){const A=(vid==='gust-strong'?.42:.18)*B.vs;env.gust={A,T1:.9+1.6*Math.sqrt(B.b),T2:.55+.9*Math.sqrt(B.b)};}
+    F.sc=roughScript(F,vid);F.T=K.T+4;}
+  F.ldOK=(row==='glide'&&vid==='bestglide')||(row==='cruise'&&(vid==='bestglide'||vid==='minsink'||vid==='steep'||vid==='flap'&&!B.flapper));
+  return F;
+}
+function* treeLeapScript(F){const B=F.B,K=F.K;let tr=0,phase='wait',hOut=0;
+  while(F.t<K.T+2){
+    if(phase==='wait'){F.ph='on the trunk, crouch';F.legsT=1;tr+=1/120;F.fold=1;if(tr>.35){F.leap(B.vleap,B.vleapx);phase='glide';}}
+    else if(F.state==='air'){F.fold=0;F.ph='membrane spread, glide';F.flail=0;
+      if(F.alt<K.treeH*.35&&F.V>B.vs*.95){F.clCmd=F.trimCl(Math.max(B.vs*1.1,B.vbg*.9))*1.25;F.ph='pull out of the glide';}
+      else F.clCmd=F.trimCl(Math.max(1.2*B.vs,B.vbg));
+      glideFlare(F);if(!F.flare)F.legsT=.2;}
+    else{F.ph='landed';F.legBrake=true;F.legsT=1;}
+    yield;}
+}
+
+// ---------------------------------------------------------------- wing geometry (shared by the render and the self-check), in the body frame: x forward, y up, z right
+const NU=12,NV=4;
+// per-kind wing parameters. A total stroke (rad), mid centre angle, dih glide dihedral, uw wrist station, flex wrist flexion on the upstroke (rad of sweep),
+// lag spanwise phase lag (cycles), camber, inc0 incidence (+ leading edge up), twist tip pitch swing, rot supination swing, plane = base share of a horizontal stroke plane
+const WK={
+ vane:{A:1.75,mid:.10,dih:.20,uw:.45,flex:.7,lag:.12,camber:.08,inc0:.05,twist:.30,rot:0,plane:0,foldSw:1.2,foldR:.55,foldAng:-.25,diveSw:1.15,shape:u=>1.15-.6*u,fingers:5,opa:.95,opaUp:.6},
+ bird:{A:1.65,mid:.08,dih:.15,uw:.42,flex:1.0,lag:.12,camber:.10,inc0:.06,twist:.35,rot:0,plane:0,foldSw:1.25,foldR:.5,foldAng:-.3,diveSw:1.1,shape:u=>1.05-.55*u+.2*Math.sin(Math.PI*Math.min(1,u*1.2)),fingers:7,opa:.97,opaUp:.55},
+ bat:{A:2.05,mid:.0,dih:.20,uw:.38,flex:1.35,lag:.10,camber:.22,inc0:.05,twist:.25,rot:0,plane:0,foldSw:1.35,foldR:.4,foldAng:-.4,diveSw:1.0,shape:u=>1.12-.35*u,fingers:4,opa:.82,opaUp:.82},
+ fly:{A:2.35,mid:0,dih:.25,uw:1,flex:0,lag:.02,camber:.03,inc0:.1,twist:0,rot:.85,plane:.7,foldSw:1.1,foldR:.9,foldAng:.35,diveSw:.6,shape:u=>.25+Math.sin(Math.PI*(.12+.8*u)),fingers:0,opa:.4,opaUp:.4},
+ dragon:{A:1.5,mid:.05,dih:.15,uw:1,flex:0,lag:.03,camber:.04,inc0:.08,twist:0,rot:.6,plane:.45,foldSw:.5,foldR:1,foldAng:.15,diveSw:.4,shape:u=>.55+.55*Math.sin(Math.PI*u)*(1-.2*u),fingers:0,opa:.42,opaUp:.42},
+ beetleW:{A:2.2,mid:0,dih:.1,uw:.5,flex:.6,lag:.03,camber:.04,inc0:.1,twist:0,rot:.7,plane:.55,foldSw:1.4,foldR:.3,foldAng:-.1,diveSw:.5,shape:u=>.5+.55*Math.sin(Math.PI*(.1+.8*u)),fingers:0,opa:.55,opaUp:.55},
+ ptero:{A:1.2,mid:.10,dih:.15,uw:.35,flex:.6,lag:.14,camber:.12,inc0:.05,twist:.3,rot:0,plane:0,foldSw:1.1,foldR:.55,foldAng:-.2,diveSw:1.1,shape:u=>1.15-.8*u,fingers:1,opa:.88,opaUp:.88},
+ patch:{A:0,mid:0,dih:-.02,uw:1,flex:0,lag:0,camber:.14,inc0:.04,twist:0,rot:0,plane:0,foldSw:1.3,foldR:.28,foldAng:-.9,diveSw:.6,shape:u=>1-.35*u,fingers:0,opa:.9,opaUp:.9},
+ heavy:{A:1.3,mid:.12,dih:.15,uw:.45,flex:.4,lag:.08,camber:.06,inc0:.05,twist:.2,rot:0,plane:0,foldSw:1.2,foldR:.55,foldAng:-.25,diveSw:1.0,shape:u=>1.1-.5*u,fingers:5,opa:.95,opaUp:.8},
+ elytra:{A:0,mid:0,dih:0,uw:1,flex:0,lag:0,camber:.18,inc0:0,twist:0,rot:0,plane:0,foldSw:0,foldR:1,foldAng:0,diveSw:0,shape:u=>.9+.2*Math.sin(Math.PI*u),fingers:0,opa:1,opaUp:1}
+};
+function shapeMean(f){let s=0;for(let i=0;i<=20;i++)s+=f(i/20);return s/21;}
+function wingSpecs(B){
+  const k=B.kind,out=[];
+  const torso={a:B.L/2,hy:B.hy,hz:B.hz};
+  const mk=(kk,side,xs,ys,R,S1,o)=>{const P=Object.assign({},WK[kk],o||{});P.kind=kk;P.side=side;P.R=R;P.cm=S1/R/shapeMean(P.shape);P.xs=xs;P.ys=ys;
+    const e=1-Math.pow(xs/torso.a,2)-Math.pow(ys/torso.hy,2);P.zs=torso.hz*1.05;P.shapeMean=shapeMean(P.shape);return P;};
+  const sx=B.sh.x,sy=B.sh.y;
+  if(k==='dragonfly'){const Rr=B.Rw;for(const side of [1,-1]){out.push(mk('dragon',side,sx,sy,Rr,B.S/4*1.0,{ph0:0,fore:true}));out.push(mk('dragon',side,sx-.0045,sy-.0003,Rr*.97,B.S/4*1.1,{ph0:.5,hind:true,dragon:true,shape:u=>.45+.8*Math.sin(Math.PI*u)*(1-.25*u)}));}}
+  else if(k==='beetle'){for(const side of [1,-1]){out.push(mk('beetleW',side,sx-.004,sy,B.Rw,B.S/2,{ph0:0}));out.push(mk('elytra',side,sx+.003,B.hy*.8,B.L*.55,B.L*.55*B.hz*1.8,{ph0:0,elytra:true,shape:u=>.95+.1*Math.sin(Math.PI*u)}));}}
+  else if(k==='glider'){for(const side of [1,-1])out.push(mk('patch',side,sx,sy,B.Rw,B.S/2,{ph0:0}));}
+  else{const kk=k==='starterB'||k==='hatchling'?'vane':WK[k]?k:k==='vane'?'vane':'bird';for(const side of [1,-1])out.push(mk(kk,side,sx,sy,B.Rw,B.S/2,{ph0:0}));}
+  return out;
+}
+for(const B of BODIES){B.wings=wingSpecs(B);}
+function strokeS(p){p=p-Math.floor(p);const ds=.58;return p<ds?.5*p/ds:.5+.5*(p-ds)/(1-ds);}
+const _LE={x:new Float64Array(NU+1),y:new Float64Array(NU+1),z:new Float64Array(NU+1),cx:new Float64Array(NU+1),cy:new Float64Array(NU+1),cz:new Float64Array(NU+1),nx:new Float64Array(NU+1),ny:new Float64Array(NU+1),nz:new Float64Array(NU+1),ch:new Float64Array(NU+1)};
+// out: Float32Array((NU+1)*(NV+1)*3); returns the leading-edge tip in the body frame. phOff shifts the beat phase (motion-blur ghosts).
+function wingGrid(B,F,W,out,leOnly,phOff){
+  const side=W.side,L=_LE;
+  if(W.elytra){return elytraGrid(B,F,W,out,leOnly);}
+  let ph0=W.ph0||0;if(W.dragon&&W.hind)ph0=lerp(.5,.25,F.hovE);
+  const ph=F.vph+ph0+(phOff||0);
+  const asy=1+(side>0?F.asymE:-F.asymE);
+  const amp=B.flapper?F.ampE:(F.flail?.25*(F.flailE||0):0);
+  const pw=Math.min(F.uE,1.3);
+  const A=W.A*(.5+.5*Math.min(1,pw))*asy;
+  const hov=B.insect?lerp(W.plane||0,1,F.hovE):(W.plane||0)+F.hovE*.6;
+  const foldE=F.foldE,dE=F.diveE,cup=F.flareE;
+  const prep=B.kind==='beetle'?F.prepE:1;
+  const foldB=B.kind==='beetle'?Math.max(foldE,1-prep):foldE;
+  let x=0,y=0,z=0;
+  const R=W.R,uw=W.uw;
+  // per-station angles
+  const ang=[],swp=[],pit=[],cs=[];const clear=F.clear===undefined?1e9:F.clear;const aMin=-Math.asin(clamp((clear-.05*R)/(R*Math.max(.35,lerp(1,W.foldR,foldB))),0,1));
+  for(let iu=0;iu<=NU;iu++){const u=iu/NU,s=strokeS(ph-W.lag*u),c=Math.cos(TAU*s);cs.push(c);
+    const hw=u>=1?1:sm((u-uw)/.14+.5);
+    let a=W.dih*(1-amp)+(W.mid+A*.5*c)*amp;
+    let sw=0;
+    if(hov>0){a=a*(1-.8*hov)+hov*.3*A*Math.sin(2*TAU*s)*amp;sw=-hov*.5*A*c*amp+hov*.2*amp;}
+    const fx=W.flex*Math.max(0,Math.sin(TAU*(s-.5)))*amp*(1-hov*.8);
+    a+=hw*(-.5*fx);sw+=hw*1.05*fx;
+    a=lerp(a,W.foldAng,foldB);sw=lerp(sw,W.foldSw*(.55+.45*hw*0+0),foldB)+(foldB>0?hw*.55*foldB:0);
+    sw+=W.diveSw*dE*(1-foldB)*(.4+.6*u);a=lerp(a,-.12,dE*(1-foldB));
+    a+=.45*cup*(.4+.6*u);sw-=.1*cup;
+    ang.push(Math.max(a,aMin));swp.push(sw);
+    let p=W.inc0+W.twist*u*(-c)*amp+W.rot*Math.cos(TAU*s)*amp-.7*cup*(.5+.5*u);
+    pit.push(p);}
+  const rs=lerp(1,W.foldR,foldB)*(1-.5*dE*(1-foldB));
+  let lx=0,ly=0,lz=0;
+  for(let iu=0;iu<=NU;iu++){
+    if(iu>0){const u=(iu-.5)/NU,a=.5*(ang[iu]+ang[iu-1]),sw=.5*(swp[iu]+swp[iu-1]);
+      const hw=u>=1?1:sm((u-uw)/.14+.5);const fxs=W.flex*Math.max(0,Math.sin(TAU*(strokeS(ph-W.lag*u)-.5)))*amp*(1-hov*.8);
+      const seg=R/NU*rs*(1-.3*hw*fxs/Math.max(W.flex,.01)*(W.flex>0?1:0));
+      const ca=Math.cos(sw);lx+=-Math.sin(sw)*seg;ly+=ca*Math.sin(a)*seg;lz+=ca*Math.cos(a)*seg;}
+    L.x[iu]=lx;L.y[iu]=ly;L.z[iu]=lz;
+    // tangent
+    const a2=ang[Math.min(iu,NU)],sw2=swp[Math.min(iu,NU)],ca2=Math.cos(sw2);
+    const tx=-Math.sin(sw2),ty=ca2*Math.sin(a2),tz=ca2*Math.cos(a2);
+    // chord: parallel to the body axis (sheared planform), pitched about the span: + = leading edge up
+    const p=pit[iu],cp=Math.cos(p),sp=Math.sin(p);
+    L.cx[iu]=-cp;L.cy[iu]=-sp;L.cz[iu]=0;L.nx[iu]=-sp;L.ny[iu]=cp;L.nz[iu]=0;
+    const u=iu/NU;L.ch[iu]=W.cm*W.shape(u)*(1-.55*foldB)*(1-.25*dE);
+  }
+  const zs=W.zs,xs=W.xs,ys=W.ys;
+  const tip={x:xs+L.x[NU],y:ys+L.y[NU],z:side*(zs+L.z[NU])};
+  if(leOnly)return tip;
+  let k=0;const cam=W.camber*(1+.5*Math.max(0,F.cl||0)/Math.max(B.clmax,.5));
+  for(let iu=0;iu<=NU;iu++){const c=cs[iu];const bulge=cam*(c<0?1:.45)*(1-.5*foldB);
+    for(let iv=0;iv<=NV;iv++){const v=iv/NV,t=v*L.ch[iu],b=bulge*L.ch[iu]*Math.sin(Math.PI*v);
+      const px=L.x[iu]+L.cx[iu]*t+L.nx[iu]*b,py=L.y[iu]+L.cy[iu]*t+L.ny[iu]*b,pz=L.z[iu]+L.cz[iu]*t+L.nz[iu]*b;
+      let X=xs+px,Y=ys+py,Z=side*(zs+pz);
+      // collision resolution: the body pushes the wing out (lateral), the ground pushes it up
+      {const a=B.L/2,e=(X/a)*(X/a)+(Y/B.hy)*(Y/B.hy);if(e<1){const zmin=B.hz*Math.sqrt(1-e)*1.012;if(Math.abs(Z)<zmin){const d=zmin-Math.abs(Z);if(d>_push.max)_push.max=d;Z=side*zmin;}}}
+      if(F.clear!==undefined&&F.clear<R*1.3+B.hcom+.5&&F.state!=='tumble'&&F.state!=='lie'&&F.state!=='skid'&&F.state!=='skidstop'){rotBody(F,X,Y,Z,_rw);const gy=F.env.ground(F.pos.x+_rw.x,F.pos.z+_rw.z),wy=F.pos.y+_rw.y-gy-.004;if(wy<0){const d=-wy;if(d>_push.gmax)_push.gmax=d;const cr=Math.cos(F.rollVis()),sr=Math.sin(F.rollVis()),cp=Math.cos(F.pitch),sp=Math.sin(F.pitch);X+=sp*d;Y+=cp*cr*d;Z-=cp*sr*d;}}
+      out[k++]=X;out[k++]=Y;out[k++]=Z;}}
+  return tip;
+}
+const _push={max:0,gmax:0},_rw={x:0,y:0,z:0};
+// elytra: two rigid shells hinged along the midline of the back, lifted while the hindwings beat
+function elytraGrid(B,F,W,out,leOnly){
+  const side=W.side,prep=F.prepE||0,lam=.04+.95*prep,cl=Math.cos(lam),sl=Math.sin(lam),a=B.L/2,hy=B.hy,hz=B.hz,yh=hy*.97;
+  const tip={x:-.95*a,y:yh,z:side*.02*hz};if(leOnly)return tip;
+  let k=0;
+  for(let iu=0;iu<=NU;iu++){const u=iu/NU,x=lerp(.5*a,-.95*a,u),wf=Math.sqrt(Math.max(0,1-Math.pow(x/a*1.0,2)))*.5+.5;
+    for(let iv=0;iv<=NV;iv++){const v=iv/NV,zz=v*hz*1.07*wf,yy=yh-(yh-.1*hy)*v*v;
+      const ry=yy-yh,rz=zz;const ry2=ry*cl+rz*sl,rz2=rz*cl-ry*sl;
+      out[k++]=x;out[k++]=yh+ry2;out[k++]=side*(rz2+.02*hz);}}
+  return tip;
+}
+// ---------------------------------------------------------------- legs (hip, knee, foot) with phase-locked stance: a planted foot does not move in the world
+function legLayout(B){
+  const n=B.legs,a=B.L/2,out=[];
+  const xs=n===2?[.12*a,.12*a]:n===4?[.55*a,.55*a,-.5*a,-.5*a]:[.55*a,.55*a,0,0,-.55*a,-.55*a];
+  const gr=n===2?[0,.5]:n===4?[0,.5,.5,0]:[0,.5,.5,0,0,.5];
+  for(let i=0;i<n;i++){const side=i%2===0?1:-1;out.push({side,xr:xs[i],g:gr[i]});}
+  return out;
+}
+for(const B of BODIES)B.legL=legLayout(B);
+function legPose(B,F,out){
+  const a=B.L/2,hz=B.hz,hy=B.hy,hcom=B.hcom,e=clamp(F.legsE,0,1),ground=F.state==='run'||F.state==='ground'||F.state==='stand'||F.state==='perched'||F.state==='capture';
+  const lay=B.legL,Ls=Math.max(.9*hcom,.001),duty=.6;
+  const sp=Math.hypot(F.vel.x,F.vel.z);
+  for(let i=0;i<lay.length;i++){const lg=lay[i],o=out[i]||(out[i]={hip:{x:0,y:0,z:0},knee:{x:0,y:0,z:0},foot:{x:0,y:0,z:0},lift:0});
+    const hx=lg.xr,hyy=-.55*hy,hzz=lg.side*.8*hz;
+    let ph=frac((F.gph||0)+lg.g),fx=0,fl=0;
+    if(ground&&e>.5){if(ph<duty){fx=Ls*(.5-ph/duty);}else{const q=(ph-duty)/(1-duty);fx=Ls*(-.5+q);fl=Math.sin(Math.PI*q)*.25*hcom;}}
+    const ext={x:lg.xr+fx+F.legFwd*.3*a,y:-hcom+fl,z:lg.side*(hz+.12*hcom)};
+    const tuck={x:lg.xr-.45*a,y:-.9*hy,z:lg.side*.55*hz};
+    const fx2=lerp(tuck.x,ext.x,e),fy2=lerp(tuck.y,ext.y,e),fz2=lerp(tuck.z,ext.z,e);
+    o.hip.x=hx;o.hip.y=hyy;o.hip.z=hzz;o.foot.x=fx2;o.foot.y=fy2;o.foot.z=fz2;o.lift=fl;
+    const dx=fx2-hx,dy=fy2-hyy,dz=fz2-hzz,d=Math.hypot(dx,dy,dz)||1e-6;const l=Math.max(.62*Math.hypot(0,hcom-.55*hy,hz*.5),d*.56);
+    const hh=Math.sqrt(Math.max(l*l-d*d/4,0));let bx=1,by=.2,bz=lg.side*.3;const ux=dx/d,uy=dy/d,uz=dz/d,bd=bx*ux+by*uy+bz*uz;bx-=ux*bd;by-=uy*bd;bz-=uz*bd;const bl=Math.hypot(bx,by,bz)||1;
+    o.knee.x=hx+dx/2+bx/bl*hh;o.knee.y=hyy+dy/2+by/bl*hh;o.knee.z=hzz+dz/2+bz/bl*hh;}
+  return out;
+}
+// ---------------------------------------------------------------- body to world
+function rotBody(F,x,y,z,o){
+  const cr=Math.cos(F.rollVis()),sr=Math.sin(F.rollVis()),cp=Math.cos(F.pitch),sp=Math.sin(F.pitch),cy=Math.cos(F.psiB),sy=Math.sin(F.psiB);
+  let y1=y*cr-z*sr,z1=y*sr+z*cr,x1=x;
+  const x2=x1*cp-y1*sp,y2=x1*sp+y1*cp,z2=z1;
+  o.x=x2*cy-z2*sy;o.y=y2;o.z=x2*sy+z2*cy;return o;
+}
+
+// ---------------------------------------------------------------- self-check
+const HEAD_STAB=.85;
+function headPose(F){return {roll:-HEAD_STAB*F.rollVis(),pitch:-.5*(F.pitch-Math.asin(clamp(F.vel.y/Math.max(F.V,.05),-1,1)))*(F.state==='air'?1:0)};}
+const _w={},_v=[];
+function ellipVal(B,x,y,z){const a=B.L/2;return (x/a)*(x/a)+(y/B.hy)*(y/B.hy)+(z/B.hz)*(z/B.hz);}
+function simCell(B,row,vid,opt){
+  opt=opt||{};const F=buildCell(B,row,vid),dt=1/120;const st=F.stats;const E=F.env;
+  const buf=new Float32Array((NU+1)*(NV+1)*3);const W=B.wings;
+  _push.max=0;_push.gmax=0;let n=0,minEll=1e9,wingGround=1e9,maxHead=0,afterStop=0,drift=0,omegaS=[],bankErr=[],hoverS=[],feetMin=1e9,tipLog=opt.trace?[]:null;
+  const pw=[];let stopRef=null;
+  while(!F.done&&F.t<F.T+12){
+    F.step(dt);n++;
+    if(n%3===0){
+      for(let wi=0;wi<W.length;wi++){const w=W[wi];if(w.elytra)continue;wingGrid(B,F,w,buf,false);
+        for(let i=0;i<buf.length;i+=3){const x=buf[i],y=buf[i+1],z=buf[i+2];const e=ellipVal(B,x,y,z);if(i>=2*(NV+1)*3&&e<minEll){minEll=e;if(opt.dbg&&e<.9)opt.dbg.push([F.t,wi,i/3|0,e]);}
+          if(F.state==='air'||F.state==='run'||F.state==='stand'||F.state==='ground'||F.state==='capture'||F.state==='perched'){rotBody(F,x,y,z,_w);const gy=E.ground(F.pos.x+_w.x,F.pos.z+_w.z);const wy=F.pos.y+_w.y-gy;if(wy<wingGround)wingGround=wy;}}}
+      const hp=headPose(F);const rr=Math.abs(F.rollVis());if(rr>.02){const res=Math.abs(F.rollVis()+hp.roll);maxHead=Math.max(maxHead,res/rr);}
+    }
+    if(F.state==='stand'||F.state==='perched'||F.state==='lie'||F.state==='skidstop'){if(!stopRef)stopRef={x:F.pos.x,z:F.pos.z,y:F.pos.y};else drift=Math.max(drift,Math.hypot(F.pos.x-stopRef.x,F.pos.z-stopRef.z,F.pos.y-stopRef.y));}
+    // legs: lowest foot over the ground states
+    if(F.state==='run'||F.state==='stand'||F.state==='ground'){const lp=legPose(B,F,F._lp||(F._lp=[]));for(const l of lp){rotBody(F,l.foot.x,l.foot.y,l.foot.z,_w);const gy=E.ground(F.pos.x+_w.x,F.pos.z+_w.z);const fy=F.pos.y+_w.y-gy;if(fy<feetMin)feetMin=fy;}}
+    // bank vs coordinated: measured turn rate from the heading
+    if(F.state==='air'&&F.phiCmd!=null&&Math.abs(F.phi)>.08&&!F.stalled&&!F.overbank&&Math.abs(F.vel.y)<.7*F.V&&F.Vh>.5*F.V&&Math.abs(F.phi-F.phiCmd)<.05){
+      const ph=F.phHist||(F.phHist=[]);ph.push({t:F.t,psi:F.psi,vy:F.vel.y});while(ph.length>1&&F.t-ph[0].t>.25)ph.shift();
+      if(ph.length>25){const om=wrap(ph[ph.length-1].psi-ph[0].psi)/(ph[ph.length-1].t-ph[0].t);const aY=(ph[ph.length-1].vy-ph[0].vy)/(ph[ph.length-1].t-ph[0].t);const want=Math.atan(F.Vh*om/(G+aY));bankErr.push(Math.abs(want-F.phi)/D2R);}}
+    else if(F.phHist)F.phHist.length=0;
+  }
+  hoverS=F.hoverS||[];const res={B,row,vid,F,push:_push.max/B.hz,gpush:_push.gmax/Math.max(B.Rw,1e-6),minEll,wingGround,maxHead,drift,feetMin,bankErr,hoverS};
+  return res;
+}
+function pct(a,p){if(!a.length)return 0;const b=a.slice().sort((x,y)=>x-y);return b[Math.min(b.length-1,Math.floor(p*b.length))];}
+function outcome(r){return outcomeOf(r.B,r.row,r.vid,r.F);}
+function outcomeOf(B,row,vid,F){
+  const s=F.stats;const r={hoverS:F.hoverS||[],F};const m=x=>x>=1?x.toFixed(1)+' m':(x*100).toFixed(x<.1?1:0)+' cm';
+  if(row==='takeoff'){if(!s.leftGround)return 'cannot leave the ground';const up=F.state==='air'||F.state==='capture';
+    if(vid==='cliff'||vid==='treeleap')return up?'pulls out of the drop and flies on':s.tumbled?'crashes below the edge':'glides down and lands';
+    return up&&F.alt>.6*B.b?'flies: airborne, '+m(s.maxAlt)+' up':s.maxAlt>0?'hops '+m(s.maxAlt)+' and lands again':'stays down';}
+  if(row==='landing'){if(s.perchOK)return 'perched';if(!s.landed)return 'no touchdown';return s.tumbled?'tumbles to rest':'touches down and stops in '+m(Math.abs(((r.F.stopPos||F.pos).x)-(s.touchX||0)))+'';}
+  if(row==='hover'){const h=r.hoverS;if(h.length>150){const tail=h.slice(-240);const dv=Math.abs(tail[tail.length-1].alt-tail[0].alt),stall=tail.some(e=>e.st);return B.hoverBurst&&dv<.35*Math.max(tail[0].alt,.01)+.05?'holds position':stall||dv>.2?'sinks, cannot hover':'sinks slowly';}return vid==='stall'?'stalls and recovers':vid==='flutter'?(s.maxAlt>0?'low hops '+m(s.maxAlt):'stays down'):vid==='wind'?(B.vs<=12*1.0?'holds in wind':'blown back'):'';}
+  if(row==='glide'){return isNaN(F.ldMeas)?'':'measured L/D '+F.ldMeas.toFixed(1)+' (spec '+B.ld+')';}
+  if(row==='dive'){return 'peak speed '+s.maxV.toFixed(1)+' m/s'+(s.tumbled?', hits the ground':'');}
+  if(row==='rough'){return s.preyHeld?(F.preyOn?'carrying the prey':'prey dropped'):s.tumbled?'goes down':'';}
+  if(row==='turn'&&vid==='bank'){return '';}
+  return '';
+}
+function checkCell(B,row,vid){
+  const r=simCell(B,row,vid),F=r.F,s=F.stats,fails=[],tag=B.id+' | '+row+' | '+vid;
+  if(s.nan)fails.push(tag+': NaN in the state');
+  if(r.minEll<.995)fails.push(tag+': a wing vertex is inside the torso (ellipsoid value '+r.minEll.toFixed(3)+')');
+  if(r.push>.6)fails.push(tag+': wing pushed out of the torso by '+(r.push*100).toFixed(0)+' % of the body half width (pose too deep)');
+  if(r.gpush>.8)fails.push(tag+': wing pushed up by the ground by '+(r.gpush*100).toFixed(0)+' % of its length');
+  if(r.wingGround<-.006*Math.max(.1,B.b))fails.push(tag+': wing goes through the ground ('+(r.wingGround*100).toFixed(1)+' cm)');
+  if(r.maxHead>.2)fails.push(tag+': head not stabilised ('+r.maxHead.toFixed(2)+' of the body roll left)');
+  if(s.minFeet<-.002)fails.push(tag+': body sinks into the ground ('+(s.minFeet*1000).toFixed(1)+' mm)');
+  if(r.feetMin<-.002)fails.push(tag+': a foot goes through the ground ('+(r.feetMin*1000).toFixed(1)+' mm)');
+  if(row==='takeoff'&&!s.leftGround)fails.push(tag+': takeoff never leaves the ground');
+  if(row==='landing'&&vid!=='crash'){if(!s.landed)fails.push(tag+': no touchdown');else if(s.tumbled&&vid!=='perch'&&false)fails.push(tag+': tumbled');
+    if(r.drift>.02)fails.push(tag+': drifts '+(r.drift*100).toFixed(1)+' cm after touchdown');}
+  if(row==='landing'&&vid==='crash'&&r.drift>.02)fails.push(tag+': slides after coming to rest ('+(r.drift*100).toFixed(1)+' cm)');
+  if((row==='turn'&&vid==='bank'||row==='glide'&&(vid==='thermal'||vid==='minsink'))){const b=pct(r.bankErr,.8);if(r.bankErr.length<20){if(!((s.sagT||0)>.8||s.tumbled))fails.push(tag+': no steady banked turn to measure');}else if(b>10)fails.push(tag+': bank angle off the coordinated value by '+b.toFixed(1)+' deg');}
+  if(row==='hover'&&vid==='hover'){const h=r.hoverS;if(h.length>150){const tail=h.slice(-240);const meanVy=tail.reduce((a,e)=>a+e.vy,0)/tail.length,drop=tail[0].alt-tail[tail.length-1].alt;
+      if(B.hoverBurst){if(Math.abs(meanVy)>.6||drop>.3*Math.max(tail[0].alt,.02))fails.push(tag+': hover-capable body does not hold (mean vy '+meanVy.toFixed(2)+')');}
+      else{if(!(drop>.3*Math.max(tail[0].alt,.02)||tail.some(e=>e.st)||meanVy<-.4))fails.push(tag+': body that cannot hover appears to hover');}}else if(B.hoverBurst)fails.push(tag+': no hover window recorded');}
+  if(row==='glide'&&vid==='bestglide'&&B.flapper!==undefined){const ld=F.ldMeas;if(isNaN(ld))fails.push(tag+': no steady glide measured');else {const ex=ldAt(B,B.vbg);if(ld<.78*ex||ld>1.1*ex)fails.push(tag+': glide ratio '+ld.toFixed(1)+' vs polar '+ex.toFixed(1)+' (spec '+B.ld+')');}}
+  if(!isNaN(F.ldMeas)&&F.ldMeas>1.15*Math.max(B.ld,ldAt(B,B.vbg)))fails.push(tag+': glide ratio '+F.ldMeas.toFixed(1)+' beats the polar ('+B.ld+')');
+  if(s.maxV>3.5*Math.max(B.vne,B.vc))fails.push(tag+': speed '+s.maxV.toFixed(1)+' m/s is not sane');
+  return {fails,row:{body:B.id,row,variant:vid,leftGround:s.leftGround,maxAlt:+s.maxAlt.toFixed(3),maxV:+s.maxV.toFixed(2),landed:s.landed,tumbled:s.tumbled,ld:isNaN(F.ldMeas)?null:+F.ldMeas.toFixed(2),minEll:+r.minEll.toFixed(3),bank80:+pct(r.bankErr,.8).toFixed(2),drift:+(r.drift*1000).toFixed(2),headRes:+r.maxHead.toFixed(3),outcome:outcome(r),simT:+F.t.toFixed(1)}};
+}
+function runCheck(filter){const res={pass:true,cases:0,passed:0,fails:[],table:[]};
+  for(const B of BODIES){if(filter&&!filter(B))continue;for(const row of ROWS)for(const vid of B.rowVars[row]){const r=checkCell(B,row,vid);res.cases++;if(!r.fails.length)res.passed++;else res.fails.push(...r.fails);res.table.push(r.row);}}
+  res.pass=res.fails.length===0;return res;}
+
+/*CORE_END*/
+// ---------------------------------------------------------------- visuals (THREE r128, one scene, one group per cell, each group scaled so the creature is about one unit wide)
+const SPH=new THREE.SphereGeometry(1,14,10),CYL=new THREE.CylinderGeometry(1,1,1,7,1),CONE=new THREE.ConeGeometry(1,1,8,1);
+const lam=(c,x)=>new THREE.MeshLambertMaterial(Object.assign({color:c},x||{}));
+const SKY_TOP=new THREE.Color('#4f86c6'),SKY_HOR=new THREE.Color('#cfe2ee');
+function groundTex(){const c=document.createElement('canvas');c.width=c.height=64;const x=c.getContext('2d');x.fillStyle='#6c8f55';x.fillRect(0,0,64,64);x.fillStyle='#648849';x.fillRect(0,0,32,32);x.fillRect(32,32,32,32);x.strokeStyle='#7aa062';x.lineWidth=1.5;x.strokeRect(.5,.5,63,63);const t=new THREE.CanvasTexture(c);t.wrapS=t.wrapT=THREE.RepeatWrapping;t.anisotropy=4;return t;}
+let GTEX=null;
+function ell(mat,r,p){const m=new THREE.Mesh(SPH,mat);m.scale.set(r[0],r[1],r[2]);m.position.set(p[0],p[1],p[2]);return m;}
+function seg(mesh,a,b,r){const dx=b.x-a.x,dy=b.y-a.y,dz=b.z-a.z,l=Math.hypot(dx,dy,dz)||1e-6;mesh.position.set((a.x+b.x)/2,(a.y+b.y)/2,(a.z+b.z)/2);mesh.scale.set(r,l,r);mesh.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),new THREE.Vector3(dx/l,dy/l,dz/l));}
+function buildRig(B){
+  const R={root:new THREE.Group(),legs:[],wings:[],mats:{}};const K=B.kind,a=B.L/2,hy=B.hy,hz=B.hz;
+  const skin=lam(B.color),acc=lam(B.accent),dark=lam('#1b1b1b'),belly=lam(new THREE.Color(B.color).offsetHSL(0,-.05,.12));
+  R.mats={skin,acc,dark};
+  R.root.add(ell(skin,[a,hy,hz],[0,0,0]));
+  R.head=new THREE.Group();R.root.add(R.head);R.tail=new THREE.Group();R.root.add(R.tail);R.neck=null;
+  const eye=(s,x,y,z)=>R.head.add(ell(dark,[s,s,s],[x,y,z]));
+  if(K==='bird'||K==='vane'||K==='starterB'||K==='hatchling'||K==='ptero'||K==='heavy'){
+    const long=K==='ptero'||K==='starterB';const nl=long?a*.8:a*.35;
+    R.head.position.set(a*.92,hy*.55,0);
+    const hs=Math.max(hy*.8,hz*.9);
+    R.head.add(ell(skin,[hs*1.05,hs*.9,hs*.85],[nl,hs*.25,0]));
+    const nk=ell(skin,[nl*.6,hy*.5,hz*.6],[nl*.45,0,0]);R.head.add(nk);
+    const bk=new THREE.Mesh(CONE,acc);bk.scale.set(hs*.35,hs*(K==='ptero'?2.6:.9),hs*.35);bk.rotation.z=-Math.PI/2;bk.position.set(nl+hs*(K==='ptero'?1.9:1.0),hs*.2,0);R.head.add(bk);
+    if(K==='ptero'){const cr=new THREE.Mesh(CONE,acc);cr.scale.set(hs*.3,hs*1.8,hs*.12);cr.rotation.z=Math.PI/2+.2;cr.position.set(nl-hs*1.4,hs*.5,0);R.head.add(cr);}
+    eye(hs*.16,nl+hs*.5,hs*.45,hs*.62);eye(hs*.16,nl+hs*.5,hs*.45,-hs*.62);
+    R.tail.position.set(-a*.9,0,0);
+    if(K==='bird'||K==='vane'||K==='hatchling'){R.fan=[];for(let i=-2;i<=2;i++){const f=new THREE.Mesh(CONE,acc);f.scale.set(hz*.55,a*.9,hz*.1);f.rotation.z=Math.PI/2;f.position.set(-a*.45,0,0);const g=new THREE.Group();g.add(f);g.rotation.y=0;R.tail.add(g);R.fan.push({g,i});}}
+    else{R.tail.add(ell(skin,[a*.55,hy*.6,hz*.6],[-a*.5,0,0]));R.tail.add(ell(skin,[a*.5,hy*.35,hz*.4],[-a*1.2,-hy*.1,0]));}
+  }else if(K==='bat'){
+    R.head.position.set(a*.9,hy*.4,0);const hs=hz*1.1;R.head.add(ell(skin,[hs*1.2,hs,hs],[hs*.5,0,0]));R.head.add(ell(skin,[hs*.7,hs*.55,hs*.55],[hs*1.5,-hs*.2,0]));
+    for(const s of [1,-1]){const e=new THREE.Mesh(CONE,skin);e.scale.set(hs*.35,hs*.95,hs*.2);e.position.set(hs*.2,hs*.95,s*hs*.6);R.head.add(e);}
+    eye(hs*.2,hs*1.0,hs*.35,hs*.55);eye(hs*.2,hs*1.0,hs*.35,-hs*.55);R.tail.position.set(-a*.9,0,0);R.tail.add(ell(skin,[a*.3,hy*.3,hz*.3],[-a*.2,0,0]));
+  }else if(K==='fly'){
+    R.root.children[0].scale.set(a*.55,hy*1.1,hz*1.1);R.root.children[0].position.set(a*.2,0,0);R.root.add(ell(belly,[a*.6,hy*.95,hz*.9],[-a*.55,-hy*.1,0]));
+    R.head.position.set(a*.75,hy*.1,0);R.head.add(ell(skin,[hz*.7,hz*.9,hz*.9],[hz*.2,0,0]));for(const s of [1,-1])R.head.add(ell(acc,[hz*.6,hz*.7,hz*.55],[hz*.45,hz*.1,s*hz*.65]));R.tail.position.set(-a,0,0);
+  }else if(K==='dragonfly'){
+    R.root.children[0].scale.set(a*.3,hy*1.2,hz*1.3);R.root.children[0].position.set(a*.55,0,0);
+    for(let i=0;i<5;i++)R.root.add(ell(i%2?skin:acc,[a*.17,hy*.45,hz*.4],[-a*(.05+.38*i)+.1*a,0,0]));
+    R.head.position.set(a*.88,hy*.1,0);R.head.add(ell(skin,[hz*1.1,hz*1.1,hz*1.2],[hz*.3,0,0]));for(const s of [1,-1])R.head.add(ell(acc,[hz*.9,hz*1.1,hz*.8],[hz*.5,hz*.2,s*hz*.8]));R.tail.position.set(-a,0,0);
+  }else if(K==='beetle'){
+    R.root.children[0].scale.set(a*.55,hy*.8,hz*.95);R.root.children[0].position.set(-a*.2,-hy*.1,0);
+    R.head.position.set(a*.65,0,0);R.head.add(ell(skin,[hz*.55,hz*.55,hz*.65],[hz*.3,0,0]));R.head.add(ell(acc,[hz*.4,hz*.12,hz*.12],[hz*.9,0,0]));R.tail.position.set(-a,0,0);
+    R.root.add(ell(belly,[a*.5,hy*.5,hz*.8],[a*.4,hy*.25,0]));
+  }else if(K==='glider'){
+    R.head.position.set(a*.9,hy*.3,0);const hs=hz*1.15;R.head.add(ell(skin,[hs*1.1,hs,hs],[hs*.4,0,0]));R.head.add(ell(skin,[hs*.5,hs*.5,hs*.5],[hs*1.3,-hs*.15,0]));
+    for(const s of [1,-1]){const e=ell(skin,[hs*.25,hs*.4,hs*.12],[hs*.1,hs*.9,s*hs*.6]);R.head.add(e);}
+    eye(hs*.2,hs*.9,hs*.35,hs*.7);eye(hs*.2,hs*.9,hs*.35,-hs*.7);R.tail.position.set(-a*.95,0,0);R.tail.add(ell(acc,[a*1.1,hy*.2,hz*1.0],[-a*.9,0,0]));
+  }
+  // belly paint
+  if(K!=='fly'&&K!=='dragonfly'&&K!=='beetle'&&K!=='bat')R.root.add(ell(belly,[a*.8,hy*.55,hz*.8],[0,-hy*.5,0]));
+  // legs
+  const lr=Math.max(B.hcom*.045,hz*.12);R.legR=lr;
+  for(let i=0;i<B.legs;i++){const l1=new THREE.Mesh(CYL,skin),l2=new THREE.Mesh(CYL,skin),ft=new THREE.Mesh(SPH,dark);R.root.add(l1,l2,ft);R.legs.push({l1,l2,ft});}
+  // wings
+  const idx=[];for(let iu=0;iu<NU;iu++)for(let iv=0;iv<NV;iv++){const a0=iu*(NV+1)+iv,b0=a0+1,c0=a0+(NV+1),d0=c0+1;idx.push(a0,c0,b0,b0,c0,d0);}
+  for(const W of B.wings){
+    const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(new Float32Array((NU+1)*(NV+1)*3),3));g.setIndex(idx);
+    const col=W.elytra?B.color:B.wcol;const mat=new THREE.MeshLambertMaterial({color:col,side:THREE.DoubleSide,transparent:W.opa<.99,opacity:W.opa,depthWrite:W.opa>.7});
+    const m=new THREE.Mesh(g,mat);m.frustumCulled=false;R.root.add(m);
+    const nl=W.fingers>0?W.fingers:0;const lg=new THREE.BufferGeometry();const lc=(NU)+nl*2+(W.elytra?0:0);lg.setAttribute('position',new THREE.BufferAttribute(new Float32Array(lc*2*3),3));
+    const ls=new THREE.LineSegments(lg,new THREE.LineBasicMaterial({color:new THREE.Color(col).offsetHSL(0,0,-.28)}));ls.frustumCulled=false;if(W.elytra)ls.visible=false;R.root.add(ls);
+    const ghosts=[];if(B.insect&&!W.elytra){for(const po of [-.1,-.05,.05,.1]){const gg=new THREE.BufferGeometry();gg.setAttribute('position',new THREE.BufferAttribute(new Float32Array((NU+1)*(NV+1)*3),3));gg.setIndex(idx);const gm=new THREE.Mesh(gg,new THREE.MeshBasicMaterial({color:col,side:THREE.DoubleSide,transparent:true,opacity:.1,depthWrite:false}));gm.frustumCulled=false;R.root.add(gm);ghosts.push({m:gm,po});}}
+    R.wings.push({W,m,ls,ghosts,buf:new Float32Array((NU+1)*(NV+1)*3),mat});
+  }
+  return R;
+}
+function updateRig(R,B,F){
+  const root=R.root;root.position.set(F.pos.x,F.pos.y+F.bob,F.pos.z);
+  root.rotation.order='YZX';root.rotation.set(F.rollVis(),-F.psiB,F.pitch);
+  // head: gaze stabilisation
+  const hp=headPose(F);R.head.rotation.set(hp.roll,0,hp.pitch);
+  // tail: rudder, spread, elevator in the flare
+  R.tail.rotation.set(0,F.tailYaw,.35*F.flareE+(F.state==='air'?-.05:0));
+  if(R.fan){for(const f of R.fan)f.g.rotation.y=f.i*.28*F.tailSpread*2.2;R.tail.scale.set(1,1,1);}
+  // wings
+  const up=F.vph>.58;const buf=null;
+  for(const w of R.wings){
+    wingGrid(B,F,w.W,w.buf,false);const pa=w.m.geometry.attributes.position;pa.array.set(w.buf);pa.needsUpdate=true;w.m.geometry.computeVertexNormals();
+    if(w.W.opa<.99||w.W.opaUp<w.W.opa){const f=F.ampE>.3&&up?w.W.opaUp:w.W.opa;w.mat.opacity=f;w.mat.transparent=true;}
+    // spars / feather shafts
+    const lp=w.ls.geometry.attributes.position.array;let k=0;const V=(iu,iv,o)=>{const i=(iu*(NV+1)+iv)*3;lp[o]=w.buf[i];lp[o+1]=w.buf[i+1];lp[o+2]=w.buf[i+2];};
+    for(let iu=0;iu<NU;iu++){V(iu,0,k);V(iu+1,0,k+3);k+=6;}
+    const nf=w.W.fingers;if(nf>0){const iw=Math.round(w.W.uw*NU);for(let j=0;j<nf;j++){const ik=Math.min(NU,Math.round(iw+(NU-iw)*(j+.5)/nf+(w.W.kind==='bird'||w.W.kind==='vane'?0:0)));if(w.W.kind==='bat'||w.W.kind==='ptero'){V(iw,0,k);V(ik,NV,k+3);}else{V(ik,0,k);V(ik,NV,k+3);}k+=6;}}
+    w.ls.geometry.attributes.position.needsUpdate=true;w.ls.geometry.setDrawRange(0,k/3);
+    for(const gh of w.ghosts){wingGrid(B,F,w.W,gh.m.geometry.attributes.position.array,false,gh.po);gh.m.geometry.attributes.position.needsUpdate=true;gh.m.visible=F.ampE>.4&&B.fb>40;}
+  }
+  // legs
+  const lp2=legPose(B,F,R._lp||(R._lp=[]));const r=R.legR;
+  for(let i=0;i<R.legs.length;i++){const L=R.legs[i],p=lp2[i];seg(L.l1,p.hip,p.knee,r);seg(L.l2,p.knee,p.foot,r*.8);L.ft.position.set(p.foot.x,p.foot.y+r*.2,p.foot.z);L.ft.scale.set(r*2.2,r*1,r*1.6);}
+}
+// ---------------------------------------------------------------- scenery of one cell
+function hashf(i){let h=Math.imul(i^0x9e3779b9,0x85ebca6b);h^=h>>>13;h=Math.imul(h,0xc2b2ae35);h^=h>>>16;return (h>>>0)/4294967296;}
+function buildScenery(C){
+  const B=C.B,F=C.F,E=F.env,S=new THREE.Group();C.scene=S;
+  if(!GTEX)GTEX=groundTex();
+  const gt=GTEX.clone();gt.needsUpdate=true;gt.wrapS=gt.wrapT=THREE.RepeatWrapping;C.gtex=gt;
+  const gp=new THREE.PlaneGeometry(1,1);gp.rotateX(-Math.PI/2);C.ground=new THREE.Mesh(gp,new THREE.MeshLambertMaterial({map:gt,fog:true}));S.add(C.ground);
+  C.gsize=Math.max(B.grid*400,B.b*3000);
+  // sky dome
+  const dg=new THREE.SphereGeometry(1,16,10);const cols=[];const pos=dg.attributes.position;for(let i=0;i<pos.count;i++){const y=pos.getY(i);const t=clamp((y+.05)/.7,0,1);const c=SKY_HOR.clone().lerp(SKY_TOP,Math.pow(t,.7));cols.push(c.r,c.g,c.b);}dg.setAttribute('color',new THREE.Float32BufferAttribute(cols,3));
+  C.dome=new THREE.Mesh(dg,new THREE.MeshBasicMaterial({vertexColors:true,side:THREE.BackSide,fog:false,depthWrite:false}));C.dome.renderOrder=-10;S.add(C.dome);
+  // trees and clouds are pooled and re-placed on a lattice around the camera
+  const th=B.tree;C.trees=[];const trunk=lam('#6b4a2f'),leaf=lam('#3f7a3a'),leaf2=lam('#4d8c44');
+  for(let i=0;i<22;i++){const g=new THREE.Group();const t=new THREE.Mesh(CYL,trunk);const c1=new THREE.Mesh(SPH,i%2?leaf:leaf2),c2=new THREE.Mesh(SPH,i%2?leaf2:leaf);g.add(t,c1,c2);S.add(g);C.trees.push({g,t,c1,c2});}
+  C.clouds=[];const cm=new THREE.MeshLambertMaterial({color:'#ffffff',transparent:true,opacity:.92,fog:false});
+  for(let i=0;i<10;i++){const g=new THREE.Group();for(let j=0;j<4;j++){const m=new THREE.Mesh(SPH,cm);m.position.set((j-1.5)*.7,(j%2)*.15,(hashf(i*7+j)-.5)*.5);m.scale.set(.6+.2*hashf(i+j),.28,.35);g.add(m);}S.add(g);C.clouds.push(g);}
+  // props from the environment
+  C.props=new THREE.Group();S.add(C.props);const rock=lam('#a89f92'),rock2=lam('#8a8174');
+  const cl=E.cliff||(E.ridge?{xc:E.ridge.xr,H:E.ridge.H}:null);
+  if(cl){const Wd=Math.max(300*B.b,300*B.L,60*B.grid);const top=new THREE.Mesh(new THREE.BoxGeometry(Wd,cl.H,Wd),rock);top.position.set(cl.xc-Wd/2,cl.H/2,0);C.props.add(top);
+    const cap=new THREE.Mesh(new THREE.BoxGeometry(Wd,cl.H*.02+.0005,Wd),lam('#6c8f55'));cap.position.set(cl.xc-Wd/2,cl.H+cl.H*.01,0);C.props.add(cap);
+    for(let i=1;i<6;i++){const st=new THREE.Mesh(new THREE.BoxGeometry(cl.H*.01,cl.H*.012,Wd),rock2);st.position.set(cl.xc+cl.H*.004,cl.H*i/6,0);C.props.add(st);}}
+  if(E.perch){const p=E.perch;const tr=new THREE.Mesh(CYL,lam('#6b4a2f'));tr.scale.set(.06*B.b,p.y,.06*B.b);tr.position.set(p.x+.5*B.b,p.y/2,0);C.props.add(tr);
+    const br=new THREE.Mesh(CYL,lam('#7a5636'));br.scale.set(.025*B.b+.004,B.b*1.1,.025*B.b+.004);br.rotation.x=Math.PI/2;br.position.set(p.x+.05*B.b,p.y-.02*B.b,0);C.props.add(br);
+    const lf=new THREE.Mesh(SPH,lam('#3f7a3a'));lf.scale.set(.7*B.b,.28*B.b,.7*B.b);lf.position.set(p.x+.5*B.b,p.y+.1*B.b,0);C.props.add(lf);}
+  if(E.thermal){const th2=E.thermal;const h=th2.top;const cy=new THREE.Mesh(new THREE.CylinderGeometry(th2.R,th2.R*.8,h,24,1,true),new THREE.MeshBasicMaterial({color:'#ffd7a0',transparent:true,opacity:.14,side:THREE.DoubleSide,depthWrite:false,fog:false}));cy.position.set(th2.x,h/2,th2.z);C.props.add(cy);
+    C.thDots=[];const dg2=new THREE.BufferGeometry();dg2.setAttribute('position',new THREE.BufferAttribute(new Float32Array(60*3),3));C.thPts=new THREE.Points(dg2,new THREE.PointsMaterial({color:'#ffb866',size:3,sizeAttenuation:false,fog:false}));C.thPts.frustumCulled=false;C.props.add(C.thPts);}
+  if(E.ridge){const r=E.ridge;C.ridgeDots=new THREE.BufferGeometry();C.ridgeDots.setAttribute('position',new THREE.BufferAttribute(new Float32Array(80*3),3));C.ridgePts=new THREE.Points(C.ridgeDots,new THREE.PointsMaterial({color:'#ffb866',size:3,sizeAttenuation:false,fog:false}));C.ridgePts.frustumCulled=false;C.props.add(C.ridgePts);}
+  if(E.prey){C.prey=new THREE.Mesh(SPH,lam('#c95b4a'));const rp=Math.cbrt(E.prey.mass/B.m)*B.hy*1.1+B.hy*.25;C.prey.scale.set(rp*1.3,rp*.8,rp);C.prey.userData.rp=rp;S.add(C.prey);}
+  if(E.windX){C.streaks=[];for(let i=0;i<16;i++){const s=new THREE.Mesh(new THREE.BoxGeometry(1,.01,.01),new THREE.MeshBasicMaterial({color:'#ffffff',transparent:true,opacity:.5,fog:false}));S.add(s);C.streaks.push(s);}}
+  // shadow
+  C.shadow=new THREE.Mesh(new THREE.CircleGeometry(1,20),new THREE.MeshBasicMaterial({color:'#000',transparent:true,opacity:.35,depthWrite:false,fog:true}));C.shadow.rotation.x=-Math.PI/2;S.add(C.shadow);
+  // creature
+  C.rig=buildRig(B);S.add(C.rig.root);
+  // trails: flight path (dotted) and wingtip ghosts
+  C.pathN=0;C.pathPos=new Float32Array(700*3);const pg=new THREE.BufferGeometry();pg.setAttribute('position',new THREE.BufferAttribute(C.pathPos,3));pg.setDrawRange(0,0);C.pathGeo=pg;
+  C.pathLine=new THREE.Line(pg,new THREE.LineBasicMaterial({color:'#2f8f86'}));C.pathLine.frustumCulled=false;S.add(C.pathLine);
+  C.pathPts=new THREE.Points(pg,new THREE.PointsMaterial({color:'#2f8f86',size:2.5,sizeAttenuation:false}));C.pathPts.frustumCulled=false;S.add(C.pathPts);
+  C.tips=[];const tipW=B.wings.map((w,i)=>({w,i})).filter(o=>!o.w.elytra&&o.w.side>0);
+  for(const o of tipW){const n=140,g2=new THREE.BufferGeometry();const p=new Float32Array(n*3),c=new Float32Array(n*3);g2.setAttribute('position',new THREE.BufferAttribute(p,3));g2.setAttribute('color',new THREE.BufferAttribute(c,3));g2.setDrawRange(0,0);const l=new THREE.Line(g2,new THREE.LineBasicMaterial({vertexColors:true,fog:false}));l.frustumCulled=false;S.add(l);C.tips.push({wi:o.i,geo:g2,p,c,n:0,N:n,line:l,t:0});}
+  C.vh=B.b*5.5;C.cx=F.pos.x;C.cz=F.pos.z;C.cy=0;C.pathT=0;
+  return S;
+}
+function pushTrail(C){const F=C.F,B=C.B;
+  for(const T of C.tips){const w=B.wings[T.wi];const tip=wingGrid(B,F,w,null,true);rotBody(F,tip.x,tip.y,tip.z,_t1);const px=F.pos.x+_t1.x,py=F.pos.y+_t1.y,pz=F.pos.z+_t1.z;
+    T.p.copyWithin(0,3);const k=(T.N-1)*3;T.p[k]=px;T.p[k+1]=py;T.p[k+2]=pz;if(T.n<T.N)T.n++;
+    for(let i=0;i<T.N;i++){const f=clamp((i-(T.N-T.n))/Math.max(T.n,1),0,1);const c=lerp(SKY_HOR.r,1,f),d=lerp(SKY_HOR.g,.78,f),e=lerp(SKY_HOR.b,.35,f);T.c[i*3]=c;T.c[i*3+1]=d;T.c[i*3+2]=e;}
+    T.geo.setDrawRange(T.N-T.n,T.n);T.geo.attributes.position.needsUpdate=true;T.geo.attributes.color.needsUpdate=true;}
+}
+const _t1={x:0,y:0,z:0};
+function pushPath(C){const p=C.pathPos,F=C.F;if(C.pathN<700)C.pathN++;p.copyWithin(0,3);const k=699*3;p[k]=F.pos.x;p[k+1]=F.pos.y;p[k+2]=F.pos.z;C.pathGeo.setDrawRange(700-C.pathN,C.pathN);C.pathGeo.attributes.position.needsUpdate=true;}
+function placeProps(C,cam){
+  const B=C.B,F=C.F,E=F.env,sc=C.scene;
+  const cx=C.cx,cz=C.cz,g=B.grid;
+  // ground follows the camera, texture locked to the world
+  const per=2*g;C.ground.scale.set(C.gsize,1,C.gsize);const gx=Math.floor(cx/per)*per,gz=Math.floor(cz/per)*per;C.ground.position.set(gx,0,gz);
+  const rep=C.gsize/per;C.gtex.repeat.set(rep,rep);const off=(1-((rep/2)%1))%1;C.gtex.offset.set(off,off);
+  // trees on a lattice behind and in front of the lane
+  const sp=B.tree*2.6,i0=Math.floor(cx/sp);
+  for(let i=0;i<C.trees.length;i++){const T=C.trees[i];const k=i0+Math.floor(i/2)-5,front=i%2;const h=B.tree*(.7+.6*hashf(k*3+front));const x=(k+.5+.4*(hashf(k*5+front)-.5))*sp;const z=(front?1:-1)*B.tree*(front?(2.2+3*hashf(k+9)):(1.8+4.5*hashf(k+4)));
+    const gy=E.ground(x,z);T.g.position.set(x,gy,z);T.t.scale.set(h*.035,h*.5,h*.035);T.t.position.set(0,h*.25,0);T.c1.scale.set(h*.2,h*.22,h*.2);T.c1.position.set(0,h*.62,0);T.c2.scale.set(h*.14,h*.16,h*.14);T.c2.position.set(h*.05,h*.82,0);
+    T.g.visible=!(E.cliff&&x>E.cliff.xc-.5&&x<E.cliff.xc+.5)&&!(E.ridge&&x<E.ridge.xr+.5&&x>E.ridge.xr-.5);if(E.cliff||E.ridge){const xc=(E.cliff||E.ridge).xc!==undefined?(E.cliff||E.ridge).xc:(E.ridge.xr);T.g.position.y=x<xc?(E.cliff||E.ridge).H:0;}}
+  const csp=Math.max(B.b*14,B.hc*3,B.vc*.9);const c0=Math.floor(cx/csp);
+  for(let i=0;i<C.clouds.length;i++){const k=c0+i-5;const cl=C.clouds[i];const y=Math.max(B.hc*2.2,B.b*4.2)*(.8+.7*hashf(k*11)),sz=Math.max(B.b*2.6,csp*.22)*(.8+.6*hashf(k*13));cl.position.set((k+.3*hashf(k*17))*csp,y,(hashf(k*19)-.5)*B.b*40-B.tree*3);cl.scale.set(sz,sz*.8,sz);}
+  // shadow
+  const gy=E.ground(F.pos.x,F.pos.z);const rs=Math.max(B.b*.34,B.L*.5)*(1+.4*clamp(F.alt/(B.b*3),0,1));C.shadow.position.set(F.pos.x,gy+B.b*.002+.0002,F.pos.z);C.shadow.scale.set(rs,rs*.8,rs);C.shadow.material.opacity=clamp(.4/(1+F.alt/(B.b*1.2)),.04,.4);
+  // rising air dots
+  if(C.thPts){const th=E.thermal,p=C.thPts.geometry.attributes.position.array;for(let i=0;i<60;i++){const a=hashf(i*3)*TAU,r=th.R*.9*Math.sqrt(hashf(i*5+1));const h=((hashf(i*7+2)*th.top+F.t*th.w*.9)%th.top);p[i*3]=th.x+Math.cos(a)*r;p[i*3+1]=h;p[i*3+2]=th.z+Math.sin(a)*r;}C.thPts.geometry.attributes.position.needsUpdate=true;}
+  if(C.ridgePts){const r=E.ridge,p=C.ridgePts.geometry.attributes.position.array;for(let i=0;i<80;i++){const f=hashf(i*3+1),x=r.xr+f*f*2.5*r.H,hh=r.H*(.1+1.6*hashf(i*5+2));const y=r.H*.05+((hh+F.t*r.w*.7*(1-.4*f))%(2.2*r.H));p[i*3]=x;p[i*3+1]=y;p[i*3+2]=(hashf(i*7+3)-.5)*14*B.b*3+F.pos.z;}C.ridgePts.geometry.attributes.position.needsUpdate=true;}
+  if(C.streaks){const U=-E.windX;for(let i=0;i<C.streaks.length;i++){const s=C.streaks[i],per2=B.b*30;const x=cx-per2/2+((hashf(i*3)*per2+F.t*U*1.0)%per2);s.position.set(cx+per2/2-((F.t*U+hashf(i*3)*per2)%per2),B.hc*0+Math.max(B.b*.3,.2*C.vh)+hashf(i*5)*C.vh*.7,F.pos.z+(hashf(i*7)-.5)*B.b*4);s.scale.set(B.b*1.5,B.b*.01,B.b*.01);}}
+  if(C.prey){const pr=E.prey;const rp=C.prey.userData.rp;if(F.preyOn){C.prey.position.set(F.pos.x,F.pos.y-B.hcom*.9-rp*.4,F.pos.z);}else if(pr.dropped){C.prey.position.set(pr.x,rp*.8,0);}else C.prey.position.set(pr.x,rp*.8,pr.z);}
+}
+// ---------------------------------------------------------------- camera per cell
+const FOV=34;
+function placeCam(C,cam,aspect,mode,dt){
+  const B=C.B,F=C.F;const bw=Math.max(B.b,3.2*B.L);
+  const wide=mode==='wide';const wantH=wide?clamp(.95*(F.pos.y+bw),2.2*bw,4.4*bw):2.5*bw;
+  C.vh+=(wantH-C.vh)*Math.min(1,dt*3+.02);
+  const Hv=C.vh,D=(Hv/2)/Math.tan(FOV*D2R/2)*(mode==='side'?1:1.05);
+  C.cx+=(F.pos.x-C.cx)*Math.min(1,dt*8+.02);C.cz+=(F.pos.z-C.cz)*Math.min(1,dt*8+.02);
+  const cy=wide?Math.max(.4*Hv,F.pos.y-.05*Hv):F.pos.y+.04*Hv;
+  cam.fov=FOV;cam.aspect=aspect;cam.near=D*.02;cam.far=D*400;
+  let px,py,pz,tx=C.cx,ty=cy,tz=C.cz;
+  if(mode==='side'){px=tx;py=ty;pz=tz+D;}
+  else if(mode==='chase'){const h=F.psiB;const el=.30;px=F.pos.x-Math.cos(h)*D*Math.cos(el);pz=F.pos.z-Math.sin(h)*D*Math.cos(el);py=F.pos.y+D*Math.sin(el)*.8;tx=F.pos.x+Math.cos(h)*.1*Hv;tz=F.pos.z+Math.sin(h)*.1*Hv;ty=F.pos.y;}
+  else{px=tx+D*.82;py=ty+D*(wide?.13:.2);pz=tz+D*.57;}
+  cam.position.set(px,py,pz);cam.lookAt(tx,ty,tz);cam.updateProjectionMatrix();
+  C.dome.position.copy(cam.position);C.dome.scale.setScalar(cam.far*.8);
+  return D;
+}
+
+// ---------------------------------------------------------------- state and UI
+const $=id=>document.getElementById(id);
+const PAGES=[];BODIES.forEach((b,bi)=>[0,1].forEach(h=>PAGES.push({b,bi,half:h,rows:ROWS.slice(4*h,4*h+4)})));
+const KEY='primigenia-flight-styles-v1';
+let pageIndex=0,rate=1,paused=false,cells=[],hovered=0,focused=-1,manual=false,camMode='close';
+let choices={};try{choices=JSON.parse(localStorage.getItem(KEY)||'{}');if(!choices||typeof choices!=='object'||Array.isArray(choices))choices={};}catch{choices={};}
+const renderer=new THREE.WebGLRenderer({canvas:$('gl'),antialias:true,preserveDrawingBuffer:true});renderer.setPixelRatio(1);renderer.setClearColor('#cfe2ee');
+let W=1,H=1;
+function layout(){const r=$('stage').getBoundingClientRect();W=Math.max(1,Math.round(r.width));H=Math.max(1,Math.round(r.height));renderer.setSize(W,H,false);}
+const fmt=(x,d)=>x>=100?x.toFixed(0):x>=10?x.toFixed(d>1?1:0):x>=1?x.toFixed(d):x>=.1?x.toFixed(2):x>=.001?x.toFixed(3):x.toExponential(1);
+const unitM=x=>x>=1?x.toFixed(x>=10?0:1)+' m':x>=.01?(x*100).toFixed(x>=.1?0:1)+' cm':(x*1000).toFixed(1)+' mm';
+function makeCell(P,rk,vid){
+  const B=P.b,F=buildCell(B,rk,vid);const C={B,F,row:rk,vid,holdT:0,steps:0};
+  C.cam=new THREE.PerspectiveCamera(FOV,1.5,.01,1000);
+  const sc=buildScenery(C);const S=new THREE.Scene();C.S=S;S.add(sc);
+  S.add(new THREE.HemisphereLight('#dfeaff','#6b7f55',.82));const dl=new THREE.DirectionalLight('#fff4de',.85);dl.position.set(3,6,4);S.add(dl);
+  S.fog=new THREE.Fog(SKY_HOR.getHex(),1,100);
+  return C;
+}
+function disposeCell(C){C.S.traverse(o=>{if(o.geometry&&o.geometry!==SPH&&o.geometry!==CYL&&o.geometry!==CONE)o.geometry.dispose();});}
+function selectPage(i){
+  pageIndex=(i+PAGES.length)%PAGES.length;cells.forEach(disposeCell);cells=[];
+  const P=PAGES[pageIndex],b=P.b;$('cells').style.setProperty('--rows',4);$('cells').replaceChildren();
+  P.rows.forEach((rk,r)=>{b.rowVars[rk].forEach((vid,v)=>{
+    const el=document.createElement('button');el.className='cell';el.dataset.row=rk;el.setAttribute('aria-pressed','false');
+    el.innerHTML='<span class="title"><b></b> <i></i></span><span class="description"></span><span class="adapt"></span><span class="star" aria-hidden="true"></span><span class="metrics"></span><canvas class="mini" width="104" height="56"></canvas>';
+    const idx=r*4+v;el.addEventListener('pointerenter',()=>hovered=idx);el.addEventListener('focus',()=>hovered=idx);el.addEventListener('click',()=>toggle(idx));$('cells').appendChild(el);
+    const C=makeCell(P,rk,vid);C.el=el;cells.push(C);
+    el.querySelector('b').textContent=ROWLABEL[rk];el.querySelector('i').textContent='· '+VAR[rk][vid][0];el.querySelector('.description').textContent=VAR[rk][vid][1];
+  });});
+  $('creature-name').textContent=b.name;
+  const fb=b.insect&&b.fb>30?` (shown at ${b.fb>9?(9+1.5*Math.log2(b.fb/9)).toFixed(0):b.fb.toFixed(0)} Hz)`:'';
+  $('body-note').textContent=`${b.note} · ${b.m>=1?b.m.toFixed(0)+' kg':b.m>=1e-3?(b.m*1e3).toFixed(1)+' g':(b.m*1e6).toFixed(0)+' mg'} · wing loading ${b.WL.toFixed(0)} N/m² · stall ${b.vs.toFixed(1)} m/s · beat ${b.fb?b.fb.toFixed(b.fb>20?0:1)+' Hz'+fb:'none'} · hover ${b.hoverSust?'sustained':b.hoverBurst?'burst only':'impossible'} · page ${P.half+1}/2 of this body · body ${P.bi+1}/${BODIES.length}`;
+  updateChoices();setCam(camMode);
+  for(const C of cells)advanceCell(C,.05);
+}
+const selected=(name,rk)=>{const c=choices[name];return c&&typeof c[rk]==='string'?c[rk]:null;};
+function toggle(idx){const P=PAGES[pageIndex],b=P.b,rk=P.rows[idx>>2],vid=b.rowVars[rk][idx&3];const c=choices[b.id]=choices[b.id]||{};if(c[rk]===vid)delete c[rk];else c[rk]=vid;if(!Object.keys(c).length)delete choices[b.id];
+  try{localStorage.setItem(KEY,JSON.stringify(choices));}catch{$('copy-status').textContent='Storage unavailable. Copy choices before closing.';}updateChoices();}
+function lineFor(b){const parts=ROWS.map(r=>{const v=selected(b.id,r);return r+'='+(v||'-');});return parts.some(p=>!p.endsWith('=-'))?`${b.id}: ${parts.join('; ')}`:'';}
+const choicesText=()=>BODIES.map(lineFor).filter(Boolean).join('\n');
+function updateChoices(){const P=PAGES[pageIndex],b=P.b;cells.forEach((C,k)=>{const on=selected(b.id,C.row)===C.vid;C.el.setAttribute('aria-pressed',String(on));C.el.querySelector('.star').textContent=on?'★':'';C.el.setAttribute('aria-label',`${ROWLABEL[C.row]}, ${VAR[C.row][C.vid][0]}`);});
+  $('choices').replaceChildren();for(const bd of BODIES){const t=lineFor(bd);if(!t)continue;const p=document.createElement('p'),st=document.createElement('strong');st.textContent=bd.id;p.append(st,document.createTextNode(t.slice(bd.id.length+2)));$('choices').appendChild(p);}
+  if(!$('choices').children.length)$('choices').textContent='No stars yet. Pick the flight pattern that feels right in each row.';}
+function label(C){const F=C.F,B=C.B,W0=B.wings[0];
+  const A=B.flapper?W0.A*(.5+.5*Math.min(1,F.uE))*F.ampE*57.3:0;
+  const gl=!isNaN(F.ldMeas)?` · L/D ${F.ldMeas.toFixed(1)} (spec ${B.ld})`:'';
+  const st=F.state==='air'?(F.stalled?'STALL':F.hovE>.7&&F.V<.4*B.vs+.2?'HOVER':'AIR'):F.state==='perched'?'PERCHED':F.state==='tumble'?'TUMBLE':F.state==='lie'||F.state==='skidstop'||F.state==='stand'?'STOPPED':F.state==='skid'?'SKID':'GROUND';
+  const l1=`${B.flapper?`beat ${B.fb.toFixed(B.fb>20?0:1)} Hz${B.fb>9&&B.insect?' (slowed)':''}`:'no beat'} · ${B.WL.toFixed(0)} N/m² · ${(B.S>=.01?B.S.toFixed(2):B.S.toExponential(1))} m²`;
+  const l2=`v ${F.V.toFixed(F.V<10?1:0)} m/s (stall ${B.vs.toFixed(1)}) · amp ${A.toFixed(0)}°${gl}`;
+  return l1+'\n'+l2+'\n'+st+' · alt '+unitM(Math.max(0,F.alt))+(B.flapper?' · power '+(F.uE*100).toFixed(0)+'%':'');}
+function stepCell(C,dt){const F=C.F;if(F.done)return;F.step(dt);C.steps++;if(C.steps%2===0){pushTrail(C);}if(C.steps%5===0)pushPath(C);}
+function advanceCell(C,sec){for(let t=0;t<sec-1e-9;t+=1/120)stepCell(C,Math.min(1/120,sec-t));}
+function resetCell(i){const old=cells[i],P=PAGES[pageIndex];disposeCell(old);const n=makeCell(P,old.row,old.vid);n.el=old.el;cells[i]=n;}
+function renderAll(dt){
+  renderer.setScissorTest(true);const P=PAGES[pageIndex];
+  cells.forEach((C,i)=>{if(focused>=0&&i!==focused)return;
+    const cols=focused>=0?1:4,rows=focused>=0?1:4,x=focused>=0?0:(i%4)*W/4,y=focused>=0?0:Math.floor(i/4)*H/4,cw=W/cols,ch=H/rows;
+    const D=placeCam(C,C.cam,cw/ch,camMode,dt);placeProps(C,C.cam);updateRig(C.rig,C.B,C.F);
+    C.S.fog.near=D*2.2;C.S.fog.far=D*40;
+    renderer.setViewport(x,H-y-ch,cw,ch);renderer.setScissor(x,H-y-ch,cw,ch);renderer.render(C.S,C.cam);
+    C.el.querySelector('.metrics').textContent=label(C);drawMini(C);
+    const F=C.F;const ad=C.el.querySelector('.adapt');const oc=F.done?outcomeOf(C.B,C.row,C.vid,F):'';ad.textContent=F.ph+(oc?' · '+oc:'');
+  });
+}
+function drawMini(C){const cv=C.el.querySelector('.mini'),x=cv.getContext('2d'),w=104,h=56;x.clearRect(0,0,w,h);x.fillStyle='#0c1218b0';x.fillRect(0,0,w,h);
+  const n=C.pathN,p=C.pathPos;if(n<2)return;let x0=1e9,x1=-1e9,y1=0;for(let i=700-n;i<700;i++){x0=Math.min(x0,p[i*3]);x1=Math.max(x1,p[i*3]);y1=Math.max(y1,p[i*3+1]);}
+  const gy=C.F.env.ground(C.F.pos.x,0);y1=Math.max(y1,gy+1e-6);const sx=(w-10)/Math.max(x1-x0,y1*1.5,1e-9),sy=(h-12)/Math.max(y1,1e-9),s=Math.min(sx,sy);
+  const X=v=>5+(v-x0)*s,Y=v=>h-5-v*s;x.strokeStyle='#8fbf72';x.beginPath();x.moveTo(0,Y(0));x.lineTo(w,Y(0));x.stroke();
+  x.strokeStyle='#5fd0c4';x.beginPath();for(let i=700-n;i<700;i++){const px=X(p[i*3]),py=Y(p[i*3+1]-C.B.hcom);i===700-n?x.moveTo(px,py):x.lineTo(px,py);}x.stroke();
+  x.fillStyle='#edc578';x.beginPath();x.arc(X(C.F.pos.x),Y(C.F.pos.y-C.B.hcom),2.5,0,7);x.fill();}
+function focusCell(i){if(i>=0&&document.fullscreenEnabled&&!document.fullscreenElement)$('stage').requestFullscreen().catch(()=>{});else if(i<0&&document.fullscreenElement)document.exitFullscreen().catch(()=>{});focused=i;$('stage').classList.toggle('expanded',i>=0);$('close-full').hidden=i<0;cells.forEach((C,k)=>C.el.hidden=i>=0&&k!==i);layout();renderAll(0);}
+function setPause(v){paused=v;$('pause').textContent=v?'Play':'Pause';$('pause').setAttribute('aria-pressed',String(v));}
+const CAMS=['close','chase','side','wide'];
+function setCam(m){camMode=m;$('cam').textContent='Camera: '+m+' (T)';$('cam').setAttribute('aria-pressed',String(m!=='close'));for(const C of cells)C.vh=C.vh;renderAll(1);}
+document.addEventListener('fullscreenchange',()=>{if(!document.fullscreenElement&&focused>=0)focusCell(-1);else layout();});
+const nextBody=d=>{const P=PAGES[pageIndex];selectPage(((P.bi+d+BODIES.length)%BODIES.length)*2+P.half);};
+$('prev').onclick=()=>nextBody(-1);$('next').onclick=()=>nextBody(1);$('close-full').onclick=()=>focusCell(-1);$('pause').onclick=()=>setPause(!paused);$('cam').onclick=()=>setCam(CAMS[(CAMS.indexOf(camMode)+1)%4]);
+$('other').onclick=()=>{const P=PAGES[pageIndex];selectPage(P.bi*2+(1-P.half));};
+for(const button of document.querySelectorAll('[data-rate]'))button.onclick=()=>{rate=Number(button.dataset.rate);document.querySelectorAll('[data-rate]').forEach(x=>x.setAttribute('aria-pressed',String(x===button)));};
+$('copy').onclick=async()=>{const text=choicesText();if(!text){$('copy-status').textContent='Star a cell first.';return;}try{if(!navigator.clipboard)throw Error('unavailable');await navigator.clipboard.writeText(text);$('copy-status').textContent='Copied. Paste into chat.';$('copy-fallback').hidden=true;}catch{const area=$('copy-fallback');area.hidden=false;area.value=text;area.focus();area.select();let copied=false;try{copied=document.execCommand('copy');}catch{}$('copy-status').textContent=copied?'Copied. Paste into chat.':'Press Ctrl+C / Cmd+C to copy the selected choices.';}};
+document.addEventListener('pointerdown',e=>{const b=e.target.closest('button');if(b)b.classList.add('pointer');});document.addEventListener('pointerup',()=>document.querySelectorAll('.pointer').forEach(b=>b.classList.remove('pointer')));
+document.addEventListener('keydown',e=>{document.querySelectorAll('.pointer').forEach(b=>b.classList.remove('pointer'));if(e.target.matches('input,textarea,select')||e.ctrlKey||e.metaKey||e.altKey)return;
+  const k=e.key.toLowerCase();if(e.code==='Space'&&!e.repeat){e.preventDefault();nextBody(e.shiftKey?-1:1);}else if(k==='p'&&!e.repeat){e.preventDefault();setPause(!paused);}else if(k==='f'&&!e.repeat){e.preventDefault();focusCell(focused<0?hovered:-1);}else if(k==='t'&&!e.repeat){e.preventDefault();$('cam').onclick();}else if(k==='g'&&!e.repeat){e.preventDefault();$('other').onclick();}else if(e.key==='Escape')focusCell(-1);});
+// Self-check (the same code as tools/gaitlab/flight_check.cjs), chunked per body so the page stays responsive.
+function showCheck(r){window.__stylesCheck=r;$('check').textContent=r.pass?`Self-check PASS · ${r.passed}/${r.cases} body × row × variant cases`:`Self-check FAIL · ${r.passed}/${r.cases} cases pass, ${r.fails.length} failures`;$('check').className=r.pass?'pass':'fail';}
+function runChunked(){return new Promise(res=>{const all={pass:true,cases:0,passed:0,fails:[],table:[]};let i=0;const next=()=>{if(i>=BODIES.length){all.pass=!all.fails.length;showCheck(all);res(all);return;}const r=runCheck(b=>b===BODIES[i]);all.cases+=r.cases;all.passed+=r.passed;all.fails.push(...r.fails);all.table.push(...r.table);$('check').textContent=`Self-check running ${++i}/${BODIES.length}…`;setTimeout(next,0);};next();});}
+$('runcheck').onclick=()=>{runChunked();};
+window.STYLELAB={stepCell,BODIES,PAGES,ROWS,runCheck:()=>runCheck(),advance:sec=>{for(const C of cells)advanceCell(C,sec);},render:()=>renderAll(1),selectPage,choicesText,focusCell,setPause,setCam,resetAll:()=>selectPage(pageIndex),
+  get cells(){return cells;},get pageIndex(){return pageIndex;},get rate(){return rate;},get paused(){return paused;},get camMode(){return camMode;},get focused(){return focused;}};
+layout();selectPage(0);window.addEventListener('resize',()=>{layout();renderAll(0);});
+if(new URLSearchParams(location.search).get('test')==='1'){manual=true;showCheck(runCheck());manual=false;}
+window.__ready=true;let last=performance.now();
+function frame(now){const dt=Math.min(.05,(now-last)/1000);last=now;
+  if(!manual&&!paused){const n=Math.round(dt*rate*120);cells.forEach((C,i)=>{for(let k=0;k<n;k++)stepCell(C,1/120);if(C.F.done){C.holdT+=dt*rate;if(C.holdT>1.8)resetCell(i);}});}
+  renderAll(dt);requestAnimationFrame(frame);}
+requestAnimationFrame(frame);
+
+})();
+</script></body></html>
