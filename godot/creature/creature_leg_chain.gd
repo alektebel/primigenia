@@ -102,7 +102,10 @@ func solve() -> float:
 ## `yaw_local` the foot yaw relative to the creature.
 func solve_local(sole: Vector3, yaw_local := 0.0, pitch := 0.0, body_basis := Basis()) -> float:
 	hip = hip_local()
-	var a_pt := sole + Vector3(0, width * .6, 0)
+	# the ankle sits width*.6 above the sole along WORLD up (A54: it used to be the body's up, which tilts with the body's pitch and roll;
+	# the foot is now laid on the ground, not on the body, so the two must agree or the planted sole slides as the body rocks)
+	var up_local := body_basis.inverse() * Vector3(0, 1, 0) if body_basis != Basis() else Vector3(0, 1, 0)
+	var a_pt := sole + up_local * (width * .6)
 	var dv := a_pt - hip
 	var d := dv.length()
 	dv = dv / d if d > 1e-6 else DOWN
