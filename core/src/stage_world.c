@@ -847,7 +847,7 @@ static float gait_speed(const CpCombatProfile *p,float fr){
     return sqrtf(fr*9.81f*CP_STAGE_HIP_PER_RADIUS*cp_combat_body_radius(p));
 }
 const CpStageMotion CP_STAGE_MOTION={
-    1.f,1.5f,.8f,15.f,20.f,.6f,.7f,.6f,4.5f,11.8f,.3f,2.f,7.f,.4f,
+    1.f,1.5f,.8f,15.f,20.f,.6f,.9f,.6f,4.5f,11.8f,.3f,2.f,7.f,.4f,
     1.4f,.35f,.03f,.25f,3.2f,1.5f,.8f,.55f,1.35f,1.4f,1.1f,8.f,.15f
 };
 /* Run intent is latched until release or exhaustion. A held/repeated request cannot bypass the threshold. */
