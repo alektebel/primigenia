@@ -1,0 +1,56 @@
+{"schema":"primigenia.questions/1","questions":[
+{"id":"loop-01-walk","text":"How does the walking speed feel?","context":"Calm walk ~2 m/s, run (Shift) at Fr 1.5 (A39). Seed only after anim/speed-gait merges.","when":"after_minutes:3","where":{"opts":{"gait":"froude"}},"allow_free_text":true,"options":[
+ {"label":"Right","description":"Keep walk and run as they are","recommended":true},
+ {"label":"Walk too slow","description":"Raise the walk toward 2.5 m/s"},
+ {"label":"Run feels wrong","description":"Run speed or gait looks off"},
+ {"label":"Too fast","description":"Lower both"}]},
+{"id":"loop-02-clunky","text":"What feels most clunky right now?","context":"Picks what gets fixed first.","when":"after_minutes:5","allow_free_text":true,"options":[
+ {"label":"Starting and stopping","description":"Delay or slide when pressing or releasing a key"},
+ {"label":"Turning","description":"Spinning on the spot or wide arcs"},
+ {"label":"Camera","description":"Hidden behind things, jumps, wrong distance"},
+ {"label":"Click to walk","description":"Path, marker, or stopping short"}]},
+{"id":"loop-03-view","text":"Which default camera distance?","context":"Tab previews the selected view.","when":"after_minutes:8","where":{"opts":{"view":"mid"}},"allow_free_text":false,"options":[
+ {"label":"Close","description":"See the creature in detail"},
+ {"label":"Mid","description":"Creature plus surroundings","recommended":true},
+ {"label":"Far","description":"More of the island, small creature"}]},
+{"id":"loop-04-buggy","text":"Where does the creature look buggy?","context":"Answer, then flag the exact spot with a note.","when":"after_minutes:4","allow_free_text":true,"options":[
+ {"label":"Legs and feet","description":"Sliding, bent wrong, through the ground"},
+ {"label":"Body and turning","description":"Stiff torso, pivoting, floating"},
+ {"label":"Parts fit","description":"Eyes, horns, teeth, gland out of place"},
+ {"label":"Skin and light","description":"Shiny, dark at night, pattern stretched"}]},
+{"id":"loop-05-hunt","text":"The hunt: how was it?","context":"First kill done.","when":"on_event:quest_done:hunt","allow_free_text":true,"options":[
+ {"label":"Right","description":"Keep it","recommended":true},
+ {"label":"Too easy","description":"Prey should flee or fight back more"},
+ {"label":"Too hard","description":"Could not catch or beat it"},
+ {"label":"Unclear","description":"Did not know what to do or where to go"}]},
+{"id":"loop-06-friend","text":"Befriending with the rhythm keys:","context":"Keys 1-4 in time with the beat, G gift, trust 60.","when":"on_event:quest_done:friend","allow_free_text":true,"options":[
+ {"label":"Fun","description":"Keep it"},
+ {"label":"Too fiddly","description":"Wider timing window","recommended":true},
+ {"label":"Too long","description":"Fewer beats to a bond"},
+ {"label":"Did not understand it","description":"Needs a clearer cue"}]},
+{"id":"loop-07-wings","text":"After finding the wings, what should happen?","context":"Today the wing only becomes a part to add; there is no fly step.","when":"on_event:quest_done:wings","allow_free_text":true,"options":[
+ {"label":"Add a 'fly' step","description":"Edit the wings on and glide from a height before fire","recommended":true},
+ {"label":"Keep as is","description":"Wings are optional; go straight to fire"},
+ {"label":"Glide only","description":"Wings give a glide now, full flight later"}]},
+{"id":"loop-08-cousins","text":"How many cousins (your old forms) should live on the island at once?","context":"Today only 1 fits; more needs a roster change in C.","when":"on_event:first_evolve","allow_free_text":false,"options":[
+ {"label":"3","description":"The last three forms; cheap","recommended":true},
+ {"label":"5","description":"More family, more slots"},
+ {"label":"All generations","description":"Up to 16; heavier on performance"}]},
+{"id":"loop-09-after-fire","text":"The first chain is done. What should come next?","context":"Nothing follows the fire step today.","when":"on_event:quest_done:fire","allow_free_text":true,"options":[
+ {"label":"Chain 2: resolve species","description":"Befriend or dominate 3 of a species (Q43) and evolve again, with a stage progress bar","recommended":true},
+ {"label":"Free play + progress bar","description":"No tasks; the bar fills from species resolved"},
+ {"label":"End card, then free play","description":"'End of the first hour' summary for testers"}]},
+{"id":"loop-10-load","text":"Was the wait to enter the island acceptable?","context":"The time is printed on the card; agents cannot measure your GPU.","when":"on_event:island_ready","allow_free_text":true,"options":[
+ {"label":"Fine","description":"No change needed"},
+ {"label":"Under 15 s","description":"Target for a cold start","recommended":true},
+ {"label":"Under 5 s","description":"Even from cold; may cost look on first frames"}]},
+{"id":"loop-11-species","text":"More species: which first?","context":"From the food web (36 new); weights from the energy pyramid.","when":"on_event:new_species_seen","allow_free_text":true,"options":[
+ {"label":"Small life everywhere","description":"Insects, birds, shore crawlers; visual only, cheap","recommended":true},
+ {"label":"New prey and friends","description":"Llorona, Bello-pico in the meadow"},
+ {"label":"A rare night apex","description":"Cazanoche, a threat after evolving"},
+ {"label":"Shore and shallows life","description":"Garra marea, Lengua de marea, Morrudo"}]},
+{"id":"loop-12-creator","text":"Should a new game open the creator first?","context":"A25 says a few parts and a small budget at the start; today a new game starts as starter B.","when":"on_event:first_edit_open","allow_free_text":true,"options":[
+ {"label":"Pick a starter, edit later","description":"Choose from 4 starter cards, edit at the nest","recommended":true},
+ {"label":"Creator first","description":"Build from basic parts with a small budget"},
+ {"label":"Starter B only","description":"No choice at the start"}]}
+]}
