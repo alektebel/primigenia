@@ -1,0 +1,835 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Primigenia · Move styles</title>
+<style>
+:root{color-scheme:dark;--bg:#16191d;--panel:#20252b;--ink:#efebe2;--dim:#b5babf;--line:#424850;--gold:#edc578}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.4 system-ui,sans-serif}button,input,textarea{font:inherit}button{background:#2c3239;color:var(--ink);border:1px solid var(--line);border-radius:5px;padding:6px 10px;cursor:pointer}button:hover{background:#3a424b}button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid var(--gold);outline-offset:3px}button.pointer:active{transform:scale(.97);transition:transform 160ms ease-out}button[aria-pressed=true]{background:var(--gold);color:#211d16;border-color:var(--gold)}::selection{background:var(--gold);color:#211d16}header{display:flex;gap:18px;align-items:center;flex-wrap:wrap;padding:12px 16px;background:var(--panel);border-bottom:1px solid var(--line)}h1{font-size:20px;line-height:1.2;margin:0 0 3px}#identity{min-width:235px}#body-note,.hint,#check{font-size:12px;color:var(--dim)}.controls{display:flex;align-items:center;gap:7px;flex-wrap:wrap}input[type=range]{width:145px;accent-color:var(--gold)}output,.metrics{font-variant-numeric:tabular-nums}main{display:grid;grid-template-columns:minmax(0,1fr) 210px}#stage{position:relative;min-width:0;height:calc(100vh - 116px);min-height:720px}#gl{position:absolute;width:100%;height:100%;display:block}#cells{position:absolute;inset:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));grid-template-rows:repeat(4,1fr)}.cell{position:relative;text-align:left;background:transparent;border:1px solid #424850;border-radius:0;padding:10px 12px;display:flex;flex-direction:column;justify-content:flex-start;overflow:hidden;min-width:0}.cell:hover{background:#ffffff05}.cell[aria-pressed=true]{background:transparent;border:2px solid var(--gold);color:var(--ink);padding:9px 11px}.title{display:block;font-size:16px;font-weight:650;line-height:1.15;padding-right:22px}.description{display:block;color:#d1d1cb;font-size:12px;margin-top:4px;line-height:1.25}.adapt{display:block;font-size:11px;color:var(--gold);line-height:1.2;margin-top:3px}.star{position:absolute;right:9px;top:6px;font-size:21px;color:var(--gold)}.metrics{position:absolute;bottom:9px;left:12px;font:11px/1.3 ui-monospace,monospace;color:#bec6cb}.strip{position:absolute;bottom:10px;right:10px;width:78px;height:18px;background:#e2e2d7}.cell[hidden]{display:none}aside{padding:16px;background:var(--panel);border-left:1px solid var(--line);overflow:auto;max-height:calc(100vh - 90px)}h2{font-size:16px;margin:0 0 8px}aside p{font-size:12px;color:var(--dim)}#choices{margin:16px 0}#choices p{margin:12px 0;color:var(--ink)}#choices strong{display:block;color:var(--gold)}#copy-status{min-height:18px}textarea{width:100%;min-height:100px;color:var(--ink);background:var(--bg);border:1px solid var(--line);padding:6px}footer{padding:8px 16px;color:var(--dim);font-size:12px}kbd{font:inherit;color:var(--ink)}#stage.expanded{position:fixed;inset:0;height:100vh;min-height:0;z-index:10;background:var(--bg)}#stage.expanded #cells{display:block}#stage.expanded .cell{width:100%;height:100%;padding:24px}#stage.expanded .title{font-size:26px}#close-full{position:absolute;right:15px;bottom:40px;z-index:12}#check.fail{color:#ff998c}#check.pass{color:#a3d4ad}@media(max-width:1100px){main{grid-template-columns:minmax(0,1fr) 175px}.title{font-size:14px}.cell{padding:8px}.description{font-size:11px}.metrics{font-size:10px;left:8px}.strip{width:48px}#stage{min-height:760px}}@media(max-width:760px){main{display:block}#stage{height:1080px;min-width:640px}main{overflow:auto}aside{max-height:none;border-left:0}header{gap:10px}.title{font-size:13px}.description{font-size:11px}footer{max-width:70ch}}
+</style>
+<script src="../biome/three.min.js"></script>
+</head>
+<body>
+<header>
+<div id="identity"><h1 id="creature-name">starter B</h1><div id="body-note"></div></div>
+<div class="controls"><button id="prev" aria-label="Previous creature">←</button><button id="next">Next creature</button><span class="hint">Space / Shift+Space</span></div>
+<div class="controls"><label for="speed">Speed</label><input id="speed" type="range" min="1" max="6" step=".1" value="2"><output id="speed-value" for="speed">2.0 m/s</output></div>
+<div class="controls" id="playback" aria-label="Playback"><button data-rate=".25" aria-pressed="false">0.25×</button><button data-rate=".5" aria-pressed="false">0.5×</button><button data-rate="1" aria-pressed="true">1×</button><button id="pause" aria-pressed="false">Pause</button></div>
+<span id="check" role="status">16 styles · same body, same speed</span>
+</header>
+<main><div id="stage"><canvas id="gl" aria-label="Sixteen creature movement comparisons"></canvas><div id="cells"></div><button id="close-full" hidden>Exit full view · Esc</button></div>
+<aside><h2>Your choices</h2><p>Click a style to star it. Choices stay with each creature, including when you reload.</p><div id="choices"></div><button id="copy">Copy choices</button><p id="copy-status" role="status" aria-live="polite"></p><textarea id="copy-fallback" aria-label="Choices to copy manually" hidden readonly></textarea><p>Near limbs are light; far limbs are dark. Gold marks show touchdown. Strips show each foot’s contact over two strides.</p><p>All style numbers are starting values for the M1 owner comparison. No style is selected for the game yet.</p></aside></main>
+<footer><kbd>Space</kbd> next creature · <kbd>Shift+Space</kbd> previous · <kbd>F</kbd> focus hovered cell · <kbd>Esc</kbd> grid · <kbd>P</kbd> pause · Playback changes time only. Ground ticks are 0.25 m apart.</footer>
+<script>
+'use strict';
+(() => {
+/* GENOMES_BEGIN: generated by tools/gaitlab/styles_extract.cjs */
+const BODIES = [
+  {
+    "name": "starter B",
+    "source": "godot/game/data/starters/b_runner.json",
+    "color": "#b98f5a",
+    "accent": "#eadfc4",
+    "nodes": [
+      [
+        -0.7,
+        0.58,
+        0.03
+      ],
+      [
+        -0.52,
+        0.6,
+        0.046
+      ],
+      [
+        -0.32,
+        0.63,
+        0.092
+      ],
+      [
+        -0.1,
+        0.66,
+        0.12
+      ],
+      [
+        0.12,
+        0.68,
+        0.115
+      ],
+      [
+        0.3,
+        0.72,
+        0.087
+      ],
+      [
+        0.44,
+        0.88,
+        0.06
+      ],
+      [
+        0.58,
+        0.98,
+        0.087
+      ]
+    ],
+    "legs": [
+      {
+        "x": -0.199889,
+        "y": 0.59685,
+        "z": 0.094763,
+        "a": 0.317017,
+        "b": 0.340588,
+        "width": 0.05,
+        "footZ": 0.07,
+        "restK": [
+          0.05,
+          -0.28,
+          0.14
+        ],
+        "restF": [
+          0.07,
+          -0.58,
+          -0.02
+        ]
+      },
+      {
+        "x": 0.190918,
+        "y": 0.63914,
+        "z": 0.092489,
+        "a": 0.326956,
+        "b": 0.349857,
+        "width": 0.05,
+        "footZ": 0.07,
+        "restK": [
+          0.05,
+          -0.3,
+          -0.12
+        ],
+        "restF": [
+          0.07,
+          -0.62,
+          0.02
+        ]
+      }
+    ],
+    "hipHeight": 0.617995,
+    "bodyLength": 0.62,
+    "neckLength": 0.382099,
+    "headRadius": 0.087,
+    "tailLength": 0.38,
+    "mouth": "pico",
+    "armour": [],
+    "arms": false
+  },
+  {
+    "name": "hatchling",
+    "source": "godot/game/data/hatchling.json",
+    "color": "#b0553a",
+    "accent": "#e6cfa0",
+    "nodes": [
+      [
+        -0.544,
+        0.256,
+        0.03
+      ],
+      [
+        -0.396,
+        0.272,
+        0.033
+      ],
+      [
+        -0.247,
+        0.296,
+        0.066
+      ],
+      [
+        -0.099,
+        0.32,
+        0.115
+      ],
+      [
+        0.066,
+        0.328,
+        0.135
+      ],
+      [
+        0.215,
+        0.344,
+        0.107
+      ],
+      [
+        0.33,
+        0.4,
+        0.11
+      ],
+      [
+        0.446,
+        0.44,
+        0.134
+      ]
+    ],
+    "legs": [
+      {
+        "x": -0.081992,
+        "y": 0.267845,
+        "z": 0.10162,
+        "a": 0.123033,
+        "b": 0.152171,
+        "width": 0.05,
+        "footZ": 0.066,
+        "restK": [
+          0.05,
+          -0.091,
+          0.066
+        ],
+        "restF": [
+          0.066,
+          -0.223,
+          -0.008
+        ]
+      },
+      {
+        "x": 0.211882,
+        "y": 0.29242,
+        "z": 0.093883,
+        "a": 0.131932,
+        "b": 0.137946,
+        "width": 0.05,
+        "footZ": 0.058,
+        "restK": [
+          0.041,
+          -0.115,
+          -0.05
+        ],
+        "restF": [
+          0.058,
+          -0.239,
+          0.008
+        ]
+      }
+    ],
+    "hipHeight": 0.280133,
+    "bodyLength": 0.462,
+    "neckLength": 0.250154,
+    "headRadius": 0.134,
+    "tailLength": 0.297,
+    "mouth": "pico",
+    "armour": [],
+    "arms": false
+  },
+  {
+    "name": "starter A",
+    "source": "godot/game/data/starters/a_grazer.json",
+    "color": "#7a5a3a",
+    "accent": "#d2bf98",
+    "nodes": [
+      [
+        -0.51,
+        0.52,
+        0.03
+      ],
+      [
+        -0.374,
+        0.54,
+        0.044
+      ],
+      [
+        -0.221,
+        0.57,
+        0.088
+      ],
+      [
+        -0.043,
+        0.6,
+        0.129
+      ],
+      [
+        0.136,
+        0.62,
+        0.136
+      ],
+      [
+        0.297,
+        0.64,
+        0.109
+      ],
+      [
+        0.425,
+        0.7,
+        0.078
+      ],
+      [
+        0.544,
+        0.72,
+        0.095
+      ]
+    ],
+    "legs": [
+      {
+        "x": -0.121407,
+        "y": 0.536227,
+        "z": 0.096426,
+        "a": 0.259733,
+        "b": 0.299473,
+        "width": 0.07,
+        "footZ": 0.09,
+        "restK": [
+          0.07,
+          -0.22,
+          0.119
+        ],
+        "restF": [
+          0.09,
+          -0.49,
+          -0.009
+        ]
+      },
+      {
+        "x": 0.26924,
+        "y": 0.580132,
+        "z": 0.100565,
+        "a": 0.294795,
+        "b": 0.301863,
+        "width": 0.07,
+        "footZ": 0.08,
+        "restK": [
+          0.06,
+          -0.27,
+          -0.102
+        ],
+        "restF": [
+          0.08,
+          -0.55,
+          0.009
+        ]
+      }
+    ],
+    "hipHeight": 0.55818,
+    "bodyLength": 0.518,
+    "neckLength": 0.259632,
+    "headRadius": 0.095,
+    "tailLength": 0.289,
+    "mouth": "romo",
+    "armour": [],
+    "arms": false
+  },
+  {
+    "name": "starter C",
+    "source": "godot/game/data/starters/c_sprawler.json",
+    "color": "#5f6650",
+    "accent": "#b9b08a",
+    "nodes": [
+      [
+        -0.55,
+        0.26,
+        0.03
+      ],
+      [
+        -0.4,
+        0.3,
+        0.056
+      ],
+      [
+        -0.22,
+        0.34,
+        0.105
+      ],
+      [
+        -0.02,
+        0.36,
+        0.136
+      ],
+      [
+        0.18,
+        0.36,
+        0.136
+      ],
+      [
+        0.34,
+        0.36,
+        0.105
+      ],
+      [
+        0.48,
+        0.36,
+        0.074
+      ],
+      [
+        0.62,
+        0.36,
+        0.081
+      ]
+    ],
+    "legs": [
+      {
+        "x": -0.083957,
+        "y": 0.297283,
+        "z": 0.110873,
+        "a": 0.192094,
+        "b": 0.268701,
+        "width": 0.06,
+        "footZ": 0.17,
+        "restK": [
+          0.1,
+          -0.13,
+          0.1
+        ],
+        "restF": [
+          0.17,
+          -0.36,
+          -0.02
+        ]
+      },
+      {
+        "x": 0.32499,
+        "y": 0.31082,
+        "z": 0.093433,
+        "a": 0.182483,
+        "b": 0.260384,
+        "width": 0.06,
+        "footZ": 0.17,
+        "restK": [
+          0.1,
+          -0.13,
+          -0.08
+        ],
+        "restF": [
+          0.17,
+          -0.36,
+          0.02
+        ]
+      }
+    ],
+    "hipHeight": 0.304052,
+    "bodyLength": 0.56,
+    "neckLength": 0.28,
+    "headRadius": 0.081,
+    "tailLength": 0.33,
+    "mouth": "romo",
+    "armour": [
+      0.38,
+      0.56
+    ],
+    "arms": false
+  },
+  {
+    "name": "starter D",
+    "source": "godot/game/data/starters/d_knuckle.json",
+    "color": "#4a4036",
+    "accent": "#8c7a62",
+    "nodes": [
+      [
+        -0.425,
+        0.52,
+        0.03
+      ],
+      [
+        -0.306,
+        0.54,
+        0.058
+      ],
+      [
+        -0.17,
+        0.58,
+        0.108
+      ],
+      [
+        -0.017,
+        0.64,
+        0.137
+      ],
+      [
+        0.145,
+        0.72,
+        0.151
+      ],
+      [
+        0.289,
+        0.8,
+        0.13
+      ],
+      [
+        0.408,
+        0.84,
+        0.086
+      ],
+      [
+        0.51,
+        0.84,
+        0.101
+      ]
+    ],
+    "legs": [
+      {
+        "x": -0.138473,
+        "y": 0.537207,
+        "z": 0.096522,
+        "a": 0.22685,
+        "b": 0.259415,
+        "width": 0.065,
+        "footZ": 0.09,
+        "restK": [
+          0.07,
+          -0.18,
+          0.119
+        ],
+        "restF": [
+          0.09,
+          -0.4,
+          -0.017
+        ]
+      },
+      {
+        "x": 0.268898,
+        "y": 0.716894,
+        "z": 0.121908,
+        "a": 0.311045,
+        "b": 0.341608,
+        "width": 0.065,
+        "footZ": 0.09,
+        "restK": [
+          0.07,
+          -0.3,
+          -0.043
+        ],
+        "restF": [
+          0.09,
+          -0.63,
+          0.043
+        ]
+      }
+    ],
+    "hipHeight": 0.627051,
+    "bodyLength": 0.459,
+    "neckLength": 0.224591,
+    "headRadius": 0.101,
+    "tailLength": 0.255,
+    "mouth": "romo",
+    "armour": [],
+    "arms": true
+  },
+  {
+    "name": "generic quadruped",
+    "source": "starting values: M1 move-style comparison",
+    "color": "#b79b72",
+    "accent": "#e7d6b7",
+    "nodes": [
+      [
+        -0.95,
+        0.7,
+        0.025
+      ],
+      [
+        -0.72,
+        0.72,
+        0.045
+      ],
+      [
+        -0.48,
+        0.74,
+        0.13
+      ],
+      [
+        -0.2,
+        0.76,
+        0.18
+      ],
+      [
+        0.18,
+        0.78,
+        0.19
+      ],
+      [
+        0.42,
+        0.8,
+        0.13
+      ],
+      [
+        0.58,
+        1,
+        0.08
+      ],
+      [
+        0.76,
+        1.12,
+        0.12
+      ]
+    ],
+    "legs": [
+      {
+        "x": -0.36,
+        "y": 0.72,
+        "z": 0.14,
+        "a": 0.44,
+        "b": 0.43,
+        "width": 0.055,
+        "footZ": 0.06,
+        "restK": [
+          0.04,
+          -0.4,
+          0.12
+        ],
+        "restF": [
+          0.06,
+          -0.75,
+          0
+        ]
+      },
+      {
+        "x": 0.36,
+        "y": 0.76,
+        "z": 0.14,
+        "a": 0.44,
+        "b": 0.43,
+        "width": 0.055,
+        "footZ": 0.06,
+        "restK": [
+          0.04,
+          -0.4,
+          0.12
+        ],
+        "restF": [
+          0.06,
+          -0.75,
+          0
+        ]
+      }
+    ],
+    "hipHeight": 0.74,
+    "bodyLength": 0.9,
+    "neckLength": 0.46,
+    "headRadius": 0.12,
+    "tailLength": 0.47,
+    "mouth": "romo",
+    "armour": [],
+    "arms": false
+  },
+  {
+    "name": "generic biped",
+    "source": "starting values: M1 move-style comparison",
+    "color": "#75a6a0",
+    "accent": "#e7d6b7",
+    "nodes": [
+      [
+        -0.95,
+        0.7,
+        0.025
+      ],
+      [
+        -0.72,
+        0.72,
+        0.045
+      ],
+      [
+        -0.48,
+        0.74,
+        0.13
+      ],
+      [
+        -0.2,
+        0.76,
+        0.18
+      ],
+      [
+        0.18,
+        0.78,
+        0.19
+      ],
+      [
+        0.42,
+        0.8,
+        0.13
+      ],
+      [
+        0.58,
+        1,
+        0.08
+      ],
+      [
+        0.76,
+        1.12,
+        0.12
+      ]
+    ],
+    "legs": [
+      {
+        "x": -0.12,
+        "y": 0.72,
+        "z": 0.14,
+        "a": 0.44,
+        "b": 0.43,
+        "width": 0.055,
+        "footZ": 0.06,
+        "restK": [
+          0.04,
+          -0.4,
+          0.12
+        ],
+        "restF": [
+          0.06,
+          -0.75,
+          0
+        ]
+      }
+    ],
+    "hipHeight": 0.74,
+    "bodyLength": 0.9,
+    "neckLength": 0.46,
+    "headRadius": 0.12,
+    "tailLength": 0.47,
+    "mouth": "pico",
+    "armour": [],
+    "arms": false
+  }
+];
+/* GENOMES_END */
+const TAU=Math.PI*2, frac=x=>x-Math.floor(x), clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
+const $=id=>document.getElementById(id);
+// LH RH LF RF. All numeric tuning below is a STARTING VALUE for M1 owner voting.
+// Sequence vocabulary: Hildebrand, as cited by index.html; mechanics: cpore-motion.
+// beta=duty; stride=relative stride multiplier; bob,height,lift in hip-height units;
+// roll,pitch,rock,spine,head in radians; bobPhase in cycles. See styles.md.
+const STYLES=[
+ ['lateral-sequence walk','even four-beat, easy weight transfer',[0,.5,.25,.75],.66,1,.025,0,.04,0,.015, .90,.015,.025,.12,false],
+ ['diagonal walk / sprawl','low body, diagonal steps, spine wave',[0,.5,.75,.25],.70,.95,.025,0,.06,0,.02, .64,.16,.025,.12,false],
+ ['amble / rack','smooth four-beat, quick flowing reach',[0,.5,.18,.68],.56,1.15,.012,0,.025,0,.01, .90,.02,.015,.13,false],
+ ['knuckle-walk','front struts, weight rolls onto each hand',[0,.5,.3,.8],.70,1.05,.025,0,.122,.09,.025, .90,.025,.02,.10,false],
+ ['trot','diagonal pairs, even elastic bounce',[0,.5,.5,0],.40,1.30,.085,.5,.025,-.025,.02, .88,.025,.025,.20,true],
+ ['pace','same-side pairs, rolling shoulders',[0,.5,0,.5],.42,1.25,.05,.5,.10,-.02,.025, .88,.04,.03,.18,true],
+ ['canter','three beats, long rocking reach',[0,.32,.32,.66],.29,1.35,.07,.5,.035,-.02,.095, .86,.045,.03,.22,true],
+ ['rotary gallop','rotating footfalls, clear suspension',[0,.12,.62,.5],.25,1.55,.10,.5,.035,-.04,.07, .86,.08,.035,.24,true],
+ ['heavy','long slow steps, low bob, always grounded',[0,.5,.35,.85],.65,1.22,.012,0,.055,.015,.015, .87,.02,.015,.07,false],
+ ['nervous small','short quick steps, sudden head checks',[0,.5,.25,.75],.60,.50,.04,0,.045,-.02,.025, .88,.025,.15,.16,false],
+ ['slinky stalk','low, smooth, long reach, quiet feet',[0,.5,.26,.76],.74,1.20,.012,0,.025,-.015,.015, .60,.075,.025,.07,false],
+ ['springy','high feet, buoyant, soft landings',[0,.5,.5,0],.39,1.25,.15,.5,.025,.015,.055, .82,.035,.035,.32,true],
+ ['biped run','rear legs drive, tail counterbalances',[0,.5,.5,0],.38,1.40,.09,.5,.045,.22,.04, .84,.035,.025,.23,true],
+ ['bound / hop','all feet together, gather then spring',[0,0,0,0],.40,1.35,.14,.5,.015,-.015,.10, .80,.06,.035,.27,true],
+ ['salamander wiggle','spine wave leads the sprawling legs',[0,.5,.75,.25],.72,1.10,.02,0,.045,0,.025, .61,.28,.035,.12,false],
+ ['crouch-creep','very low, careful reach, soft feet',[0,.5,.3,.8],.70,1.10,.012,0,.025,-.02,.012, .54,.055,.025,.055,false]
+].map((r,i)=>{const [name,description,offsets,beta,stride,bob,bobPhase,roll,pitch,rock,height,spine,head,lift,flight]=r;return {id:i,name,description,offsets,beta,stride,bob,bobPhase,roll,pitch,rock,height,spine,head,lift,flight};});
+const V=()=>new THREE.Vector3(), Y=new THREE.Vector3(0,1,0), temp=V();
+// Analytic 2-bone solver reused from the original gait lab. Fixed pole, no flips.
+function ik(P,T,a,b,pole,out){const d=temp.copy(T).sub(P);let dist=d.length();const reach=a+b-1e-4,minr=Math.abs(a-b)+1e-4;out.clamped=dist>reach||dist<minr;dist=clamp(dist,minr,reach);const u=d.normalize(),along=(a*a-b*b+dist*dist)/(2*dist),hgt=Math.sqrt(Math.max(0,a*a-along*along));const pd=pole.clone().addScaledVector(u,-pole.dot(u));if(pd.lengthSq()<1e-8)pd.set(0,0,1).addScaledVector(u,-u.z);pd.normalize();out.knee.copy(P).addScaledVector(u,along).addScaledVector(pd,hgt);out.foot.copy(P).addScaledVector(u,dist);out.pole=pd;}
+const GEO={sphere:new THREE.SphereGeometry(1,12,8),cylinder:new THREE.CylinderGeometry(1,1,1,8),box:new THREE.BoxGeometry(1,1,1)};
+const material=color=>new THREE.MeshLambertMaterial({color});
+const MAT={near:material('#e2d6ba'),far:material('#696f77'),joint:material('#dfae58'),foot:material('#89b7b7'),ground:material('#2d343c'),tick:new THREE.MeshBasicMaterial({color:'#747d85'}),mark:new THREE.MeshBasicMaterial({color:'#edc578'}),eye:material('#151b1c')};
+function mesh(parent,geo,mat,scale,pos){const m=new THREE.Mesh(geo,mat);m.scale.set(...scale);m.position.set(...pos);parent.add(m);return m;}
+function cylinder(m,a,b,r){const d=b.clone().sub(a),len=d.length();m.position.copy(a).addScaledVector(d,.5);m.quaternion.setFromUnitVectors(Y,d.normalize());m.scale.set(r,len,r);}
+class Walker{
+ constructor(body,style,visual=true){this.b=body;this.s=style;this.h=body.hipHeight;this.visual=visual;this.time=0;this.x=0;this.phase=.123;this.lastPhase=.123;this.marks=[];
+  this.rearUp=style.id===12&&body.legs.length>1;
+  this.active=body.legs.flatMap((l,station)=>[-1,1].map((side,j)=>({...l,station,side,offset:style.offsets[station*2+j]??j*.5,active:!this.rearUp||station===0,hip:V(),target:V(),out:{knee:V(),foot:V()},plant:V(),touches:[],slip:0,stance:false,prevCycle:null})));
+  if(body.legs.length===1)this.active.forEach((l,i)=>l.offset=style.id===13?0:i*.5);
+  if(body.legs.length===1&&!style.flight)this.beta=Math.max(.56,style.beta);else this.beta=style.beta;
+  // Spine root at hind station for rear-up; otherwise centre between the hips.
+  this.cx=this.rearUp?body.legs[0].x:body.legs.reduce((sum,l)=>sum+l.x,0)/body.legs.length;
+  this.cy=this.rearUp?body.legs[0].y:this.h;
+  this.active.forEach(l=>{l.local=new THREE.Vector3(l.x-this.cx,l.y-this.cy,l.side*l.z);});
+  // Only constrain overlapping stance intervals. The old unconditional
+  // station-spacing cap would turn a long-stride walk into a tiny shuffle.
+  this.crossLimit=Infinity;
+  if(!this.rearUp&&body.legs.length>1)for(const side of [-1,1]){
+   const pair=this.active.filter(l=>l.side===side);
+   for(let k=1;k<pair.length;k++){const back=pair[k-1],front=pair[k],gap=front.x-back.x;
+    for(let j=0;j<720;j++){const qb=frac(j/720-back.offset),qf=frac(j/720-front.offset);
+     if(qb<this.beta-1e-8&&qf<this.beta-1e-8&&qb-qf< -1e-8)this.crossLimit=Math.min(this.crossLimit,.96*gap/(qf-qb));}
+   }
+  }
+  this.resetMetrics();if(visual)this.build();
+ }
+ params(speed){
+  const s=this.s,h=this.h, fr=speed*speed/(9.81*h);
+  // Alexander law reused from gaitlab; style scale is a starting value. Cap
+  // duty travel to real limb reach and same-side station separation.
+  let stride=2.3*Math.pow(Math.min(fr,.65),.3)*h*s.stride;
+  const grounded=this.active.filter(l=>l.active), minReach=Math.min(...grounded.map(l=>l.a+l.b));
+  stride=Math.min(stride,1.22*minReach/this.beta);
+  stride=Math.min(stride,this.crossLimit);
+  this.stride=stride;this.f=speed/stride;this.speed=speed;return stride;
+ }
+ resetMetrics(){this.m={n:0,flight:0,slipMm:0,kneeBad:0,cross:0,below:0,clampN:0,drag:0,lane:0,stance:0,hipMin:Infinity,hipMax:-Infinity};this.active.forEach(l=>{l.touches=[];l.stN=0;l.slip=0;});}
+ build(){const b=this.b;this.scene=new THREE.Scene();this.scene.background=new THREE.Color('#1b2026');this.scene.add(new THREE.AmbientLight('#ffffff',.8));const light=new THREE.DirectionalLight('#ffffff',.85);light.position.set(-2,4,6);this.scene.add(light);this.cam=new THREE.OrthographicCamera(-2,2,2,-1,.01,100);this.root=new THREE.Group();this.scene.add(this.root);this.skin=material(b.color);this.accent=material(b.accent);
+  this.sections=[];b.nodes.forEach((n,i)=>{const group=new THREE.Group();this.root.add(group);group.position.set(n[0]-this.cx,n[1]-this.cy,0);const radius=n[2];mesh(group,GEO.sphere,i===7?this.accent:this.skin,[radius*1.3,radius,radius],[0,0,0]);this.sections.push(group);});
+  this.links=[];for(let i=1;i<b.nodes.length;i++){const m=mesh(this.root,GEO.cylinder,this.skin,[1,1,1],[0,0,0]);this.links.push(m);}
+  this.head=this.sections[7];mesh(this.head,GEO.sphere,this.skin,[b.headRadius*(b.mouth==='pico'?1.3:.8),b.headRadius*.45,b.headRadius*.7],[b.headRadius*.9,0,0]);for(const side of [-1,1])mesh(this.head,GEO.sphere,MAT.eye,[b.headRadius*.19,b.headRadius*.19,b.headRadius*.12],[b.headRadius*.25,b.headRadius*.3,side*b.headRadius*.88]);
+  b.armour.forEach(t=>{const i=Math.round(t*7);mesh(this.sections[i],GEO.sphere,this.accent,[b.nodes[i][2]*1.1,.055,b.nodes[i][2]*1.15],[0,b.nodes[i][2]*.8,0]);});
+  // D's decorative graspers remain arms, distinct from its four walking legs.
+  if(b.arms)for(const side of [-1,1])mesh(this.sections[5],GEO.sphere,this.skin,[.045,.15,.045],[.02,-.10,side*.18]);
+  for(const l of this.active){const mat=l.side>0?MAT.near:MAT.far;l.upper=mesh(this.scene,GEO.cylinder,mat,[1,1,1],[0,0,0]);l.lower=mesh(this.scene,GEO.cylinder,mat,[1,1,1],[0,0,0]);l.knee=mesh(this.scene,GEO.sphere,MAT.joint,[.018,.018,.018],[0,0,0]);l.toe=mesh(this.scene,GEO.sphere,MAT.foot,[l.width*.65,l.width*.3,l.width*.55],[0,0,0]);}
+  this.ground=mesh(this.scene,GEO.box,MAT.ground,[20,.6,6],[0,-.32,0]);this.ticks=new THREE.Group();this.scene.add(this.ticks);for(let i=-28;i<=28;i++)mesh(this.ticks,GEO.box,MAT.tick,[.008,.15,.012],[i*.25,-.095,1.8]);for(let i=0;i<32;i++)this.marks.push(mesh(this.scene,GEO.box,MAT.mark,[.012,.045,.014],[0,-100,1.82]));this.markIndex=0;
+ }
+ step(dt,speed){this.params(speed);this.time+=dt;this.x+=speed*dt;this.phase+=this.f*dt;this.pose();}
+ pose(){const s=this.s,h=this.h,beta=this.beta,phase=frac(this.phase),theta=TAU*phase;let wR=0,wL=0,wMax=0,nSt=0;
+  for(const l of this.active){const cycle=Math.floor(this.phase-l.offset),q=frac(this.phase-l.offset),st=l.active&&q<beta;
+   // Exact phase-based world-space touchdown; the previous gaitlab's pinning
+   // and cosine swing, without frame-quantised landing error.
+   const land=this.x-speedSafe(this)*(q/this.f)+l.local.x+this.stride*beta/2;
+   const z=l.side*(l.z+l.footZ+(s.id===1||s.id===14?.18*h:0));
+   if(st){if(l.prevCycle!==cycle)l.plant.set(land,0,z);l.target.copy(l.plant);const w=Math.sin(Math.PI*q/beta);wMax=Math.max(wMax,w);if(l.side>0)wR=Math.max(wR,w);else wL=Math.max(wL,w);nSt++;l.stN++;
+    if(l.prevCycle!==cycle){l.touches.push([this.time,land]);if(l.touches.length>12)l.touches.shift();if(this.visual){const mark=this.marks[this.markIndex++%this.marks.length];mark.position.set(land,-.045,1.82);}l.prevCycle=cycle;}
+   }else if(l.active){const u=(q-beta)/(1-beta),e=.5-.5*Math.cos(Math.PI*u);if(l.prevCycle===null)l.plant.set(land,0,z);const nextLand=this.x+l.local.x+this.stride*beta/2+this.speed*(1-q)/this.f;l.target.set(l.plant.x+(nextLand-l.plant.x)*e,h*s.lift*Math.sin(Math.PI*u),z);}
+   l.stance=st;
+  }
+  this.stanceCount=nSt;
+  const roll=s.roll*(wR-wL), pitch=s.pitch+s.rock*Math.sin(theta), wave=Math.sin(theta+TAU*s.bobPhase);
+  let y=h*(s.height+s.bob*(s.flight?1-wMax:wave));
+  const quat=new THREE.Quaternion().setFromEuler(new THREE.Euler(roll,0,pitch));
+  const displace=l=>new THREE.Vector3(0,0,h*s.spine*Math.sin(theta+(l.local.x/h)*1.7));
+  // Reach safety from gaitlab: lower the hips, never move a planted foot.
+  for(let iter=0;iter<8;iter++){let need=0;for(const l of this.active.filter(l=>l.active)){l.hip.copy(l.local).add(displace(l)).applyQuaternion(quat).add(new THREE.Vector3(this.x,y,0));const lim=(l.a+l.b)*.985,dx=l.hip.x-l.target.x,dz=l.hip.z-l.target.z,hor=dx*dx+dz*dz;if(hor<lim*lim)need=Math.max(need,l.hip.y-l.target.y-Math.sqrt(lim*lim-hor));else need=Math.max(need,.1*h);}if(need<=1e-10)break;y-=need;}
+  this.hipY=y;this.pitch=pitch;this.roll=roll;
+  if(this.visual){this.root.position.set(this.x,y,0);this.root.quaternion.copy(quat);this.sections.forEach((group,i)=>{const n=this.b.nodes[i],x=n[0]-this.cx;group.position.set(x,n[1]-this.cy,h*s.spine*Math.sin(theta+(x/h)*1.7));if(i<2){const pivot=this.b.nodes[2],dx=n[0]-pivot[0],counter=-pitch*.65+.06*Math.sin(theta);group.position.x=pivot[0]-this.cx+dx*Math.cos(counter);group.position.y=pivot[1]-this.cy+dx*Math.sin(counter)+(n[1]-pivot[1]);}});
+   for(let i=0;i<this.links.length;i++)cylinder(this.links[i],this.sections[i].position,this.sections[i+1].position,Math.min(bRadius(this,i),bRadius(this,i+1))*.84);
+   const headTurn=s.id===9?s.head*Math.tanh(7*Math.sin(theta*.5)) : s.head*Math.sin(theta);this.head.rotation.set(-roll,headTurn,-pitch+Math.min(.10,s.head*.4)*Math.sin(theta));this.sections[0].rotation.set(0,-s.spine*Math.sin(theta),-pitch*.6);
+  }
+  const m=this.m;m.n++;if(!nSt)m.flight++;m.hipMin=Math.min(m.hipMin,y/h);m.hipMax=Math.max(m.hipMax,y/h);
+  for(const l of this.active){l.hip.copy(l.local).add(displace(l)).applyQuaternion(quat).add(new THREE.Vector3(this.x,y,0));
+   if(!l.active){l.target.copy(l.hip).add(new THREE.Vector3(.12*h,-.35*(l.a+l.b),l.side*.07));}
+   const sprawled=s.height<.65;const pole=(sprawled?new THREE.Vector3(0,1,l.side*.8):new THREE.Vector3(-1,0,l.side*.12)).applyQuaternion(quat);ik(l.hip,l.target,l.a,l.b,pole,l.out);
+   if(l.out.clamped)m.clampN++;if(l.stance){m.stance++;const slip=l.out.foot.distanceTo(l.plant)*1000;m.slipMm=Math.max(m.slipMm,slip);if(l.wasStance&&l.lastPlant)m.slipMm=Math.max(m.slipMm,l.out.foot.distanceTo(l.lastPlant)*1000);l.lastPlant=l.out.foot.clone();}
+   l.wasStance=l.stance;
+   const chord=l.out.foot.clone().sub(l.hip).normalize(),off=l.out.knee.clone().sub(l.hip).addScaledVector(chord,-l.out.knee.clone().sub(l.hip).dot(chord));if(off.dot(l.out.pole)<-1e-8)m.kneeBad++;
+   if(l.out.foot.y< -1e-6||l.out.knee.y< -1e-6)m.below++;
+   if(this.visual){cylinder(l.upper,l.hip,l.out.knee,l.width*.32);cylinder(l.lower,l.out.knee,l.out.foot,l.width*.25);l.knee.position.copy(l.out.knee);l.toe.position.copy(l.out.foot);l.toe.position.y+=l.width*.3;}
+  }
+  for(const side of [-1,1]){const legs=this.active.filter(l=>l.side===side&&l.active);for(let i=1;i<legs.length;i++)if(legs[i].stance&&legs[i-1].stance&&legs[i].out.foot.x-legs[i-1].out.foot.x<.01*h)m.cross++;}
+ }
+ place(aspect){const nodes=this.b.nodes,width=Math.max(1.9,(nodes[7][0]-nodes[0][0]+.5)*1.5),viewW=Math.max(width,2.2*aspect),viewH=viewW/aspect;this.cam.left=-viewW/2;this.cam.right=viewW/2;this.cam.top=viewH*.68;this.cam.bottom=-viewH*.32;this.cam.position.set(this.x+2,1.8,12);this.cam.lookAt(this.x,0,0);this.cam.updateProjectionMatrix();this.ground.position.x=this.x;this.ticks.position.x=Math.round(this.x/.5)*.5;}
+ dispose(){this.skin.dispose();this.accent.dispose();}
+}
+function speedSafe(w){return w.speed||2;}function bRadius(w,i){return w.b.nodes[i][2];}
+let bodyIndex=0,speed=2,rate=1,paused=false,walkers=[],hovered=0,focused=-1,manual=false,acc=0;
+let choices={};try{choices=JSON.parse(localStorage.getItem('primigenia-move-styles-v1')||'{}');if(!choices||typeof choices!=='object'||Array.isArray(choices))choices={};}catch{}
+const cells=STYLES.map(s=>{const el=document.createElement('button');el.className='cell';el.setAttribute('aria-pressed','false');el.innerHTML='<span class="title"></span><span class="description"></span><span class="adapt"></span><span class="star" aria-hidden="true"></span><span class="metrics"></span><canvas class="strip" width="156" height="36" aria-hidden="true"></canvas>';el.querySelector('.title').textContent=s.name;el.querySelector('.description').textContent=s.description;el.addEventListener('pointerenter',()=>hovered=s.id);el.addEventListener('focus',()=>hovered=s.id);el.addEventListener('click',()=>toggle(s.id));$('cells').appendChild(el);return el;});
+const renderer=new THREE.WebGLRenderer({canvas:$('gl'),antialias:true,preserveDrawingBuffer:true});renderer.setPixelRatio(1);let W=1,H=1;
+function layout(){const r=$('stage').getBoundingClientRect();W=Math.round(r.width);H=Math.round(r.height);renderer.setSize(W,H,false);}
+function adaptation(w){if(w.rearUp)return 'rear-up variant · forefeet held clear';if(w.b.legs.length===1&&w.s.id!==12&&w.s.id!==13)return '2-leg adaptation · '+(w.s.flight?'alternating run':'alternating walk');if(w.s.id===3)return 'foreleg struts · genome lengths preserved';return '';}
+function selectBody(i){bodyIndex=(i+BODIES.length)%BODIES.length;walkers.forEach(w=>w.dispose());walkers=STYLES.map(s=>new Walker(BODIES[bodyIndex],s));for(let n=0;n<300;n++)walkers.forEach(w=>w.step(1/240,speed));$('creature-name').textContent=BODIES[bodyIndex].name;$('body-note').textContent=`${BODIES[bodyIndex].legs.length*2} legs · hip ${BODIES[bodyIndex].hipHeight.toFixed(2)} m · ${bodyIndex+1} / ${BODIES.length}`;cells.forEach((el,i)=>el.querySelector('.adapt').textContent=adaptation(walkers[i]));updateChoices();}
+function selected(name){return Array.isArray(choices[name])?choices[name].filter(i=>Number.isInteger(i)&&i>=0&&i<16):[];}
+function toggle(i){const name=BODIES[bodyIndex].name,set=new Set(selected(name));set.has(i)?set.delete(i):set.add(i);choices[name]=[...set].sort((a,b)=>a-b);try{localStorage.setItem('primigenia-move-styles-v1',JSON.stringify(choices));}catch{$('copy-status').textContent='Storage unavailable. Copy choices before closing.';}updateChoices();}
+function choicesText(){return BODIES.map(b=>{const ids=selected(b.name);return ids.length?`${b.name}: ★ ${ids.map(i=>STYLES[i].name).join(', ')}`:'';}).filter(Boolean).join('; ');}
+function updateChoices(){const current=selected(BODIES[bodyIndex].name);cells.forEach((el,i)=>{el.setAttribute('aria-pressed',String(current.includes(i)));el.querySelector('.star').textContent=current.includes(i)?'★':'';el.setAttribute('aria-label',`${STYLES[i].name}: ${STYLES[i].description}${adaptation(walkers[i])?'; '+adaptation(walkers[i]):''}`);});$('choices').replaceChildren();for(const b of BODIES){const ids=selected(b.name);if(!ids.length)continue;const p=document.createElement('p'),strong=document.createElement('strong');strong.textContent=b.name;p.append(strong,document.createTextNode(ids.map(i=>'★ '+STYLES[i].name).join(', ')));$('choices').appendChild(p);}if(!$('choices').children.length)$('choices').textContent='No stars yet. Start with the movement that feels right.';}
+function render(){renderer.setScissorTest(true);walkers.forEach((w,i)=>{if(focused>=0&&i!==focused)return;const cols=focused>=0?1:4,rows=focused>=0?1:4,x=focused>=0?0:(i%4)*W/4,y=focused>=0?0:Math.floor(i/4)*H/4,cw=W/cols,ch=H/rows;w.place(cw/ch);renderer.setViewport(x,H-y-ch,cw,ch);renderer.setScissor(x,H-y-ch,cw,ch);renderer.render(w.scene,w.cam);cells[i].querySelector('.metrics').textContent=`${w.f.toFixed(2)} Hz · ${w.stride.toFixed(2)} m${w.stanceCount===0?' · AIR':''}`;const ctx=cells[i].querySelector('.strip').getContext('2d');ctx.clearRect(0,0,156,36);ctx.fillStyle='#283038';w.active.filter(l=>l.active).forEach((l,j)=>{for(let x=0;x<156;x++)if(frac(w.phase-2+x/78-l.offset)<w.beta)ctx.fillRect(x,j*8+2,1,6);});});}
+function advance(seconds){for(let t=0;t<seconds-1e-9;t+=1/240)walkers.forEach(w=>w.step(Math.min(1/240,seconds-t),speed));}
+function focusCell(i){if(i>=0&&document.fullscreenEnabled&&!document.fullscreenElement)$('stage').requestFullscreen().catch(()=>{});else if(i<0&&document.fullscreenElement)document.exitFullscreen().catch(()=>{});focused=i;$('stage').classList.toggle('expanded',i>=0);$('close-full').hidden=i<0;cells.forEach((el,k)=>el.hidden=i>=0&&k!==i);layout();render();}
+function setPause(value){paused=value;$('pause').textContent=value?'Play':'Pause';$('pause').setAttribute('aria-pressed',String(value));}
+document.addEventListener('fullscreenchange',()=>{if(!document.fullscreenElement&&focused>=0)focusCell(-1);else layout();});
+$('prev').onclick=()=>selectBody(bodyIndex-1);$('next').onclick=()=>selectBody(bodyIndex+1);$('close-full').onclick=()=>focusCell(-1);$('pause').onclick=()=>setPause(!paused);
+$('speed').oninput=e=>{speed=Number(e.target.value);$('speed-value').textContent=speed.toFixed(1)+' m/s';};
+for(const button of document.querySelectorAll('[data-rate]'))button.onclick=()=>{rate=Number(button.dataset.rate);document.querySelectorAll('[data-rate]').forEach(b=>b.setAttribute('aria-pressed',String(b===button)));};
+$('copy').onclick=async()=>{const text=choicesText();if(!text){$('copy-status').textContent='Star a style first.';return;}try{if(!navigator.clipboard)throw Error('unavailable');await navigator.clipboard.writeText(text);$('copy-status').textContent='Copied. Paste into chat.';$('copy-fallback').hidden=true;}catch{const area=$('copy-fallback');area.hidden=false;area.value=text;area.focus();area.select();let copied=false;try{copied=document.execCommand('copy');}catch{}$('copy-status').textContent=copied?'Copied. Paste into chat.':'Press Ctrl+C / Cmd+C to copy the selected choices.';}};
+// Pointer-only press feedback; keyboard actions have no CSS animation.
+document.addEventListener('pointerdown',e=>{const b=e.target.closest('button');if(b)b.classList.add('pointer');});document.addEventListener('pointerup',()=>document.querySelectorAll('.pointer').forEach(b=>b.classList.remove('pointer')));
+document.addEventListener('keydown',e=>{document.querySelectorAll('.pointer').forEach(b=>b.classList.remove('pointer'));if(e.target.matches('input,textarea,select')||e.ctrlKey||e.metaKey||e.altKey)return;if(e.code==='Space'&&!e.repeat){e.preventDefault();selectBody(bodyIndex+(e.shiftKey?-1:1));}else if(e.key.toLowerCase()==='p'&&!e.repeat){e.preventDefault();setPause(!paused);}else if(e.key.toLowerCase()==='f'&&!e.repeat){e.preventDefault();focusCell(focused<0?hovered:-1);}else if(e.key==='Escape')focusCell(-1);});
+// Self-check: 3 settling strides, 4 measured strides, every style × body ×
+// speed. Same metrics/thresholds as index.html, computed on actual IK output.
+function runCheck(speeds=[1,2,6]){const table=[],fails=[];for(const b of BODIES)for(const s of STYLES)for(const v of speeds){const w=new Walker(b,s,false);w.params(v);const dt=1/(w.f*360),stepCount=7*360;for(let n=0;n<stepCount;n++){if(n===3*360)w.resetMetrics();w.step(dt,v);}const m=w.m,active=w.active.filter(l=>l.active),duty=active.reduce((sum,l)=>sum+l.stN/m.n,0)/active.length;let dist=0,count=0;for(const l of active)for(let i=1;i<l.touches.length;i++){dist+=l.touches[i][1]-l.touches[i-1][1];count++;}let missing=0;for(let n=0;n<3600;n++)if(!active.some(l=>frac(n/3600-l.offset)<w.beta))missing++;const expected=missing/3600,flight=m.flight/m.n;
+ const r={creature:b.name,style:s.name,speed:v,duty:w.beta,dutyMeasured:duty,stride:w.stride,strideMeasured:count?dist/count:null,cadence:w.f,flight,flightExpected:expected,...m};r.flight=flight;table.push(r);const id=`${b.name}/${s.name}/${v} m/s`;
+ if(m.slipMm>=1)fails.push(id+': stance slip '+m.slipMm+' mm');if(Math.abs(duty-w.beta)>.02)fails.push(id+': duty mismatch');if(Math.abs(flight-expected)>.02)fails.push(id+': analytic flight mismatch');if(!s.flight&&flight>0)fails.push(id+': unexpected flight');if(s.flight&&flight<.02)fails.push(id+': missing flight');for(const key of ['kneeBad','cross','below','clampN','drag'])if(m[key])fails.push(id+': '+key+' '+m[key]);if(!count||Math.abs(dist/count-w.stride)/w.stride>.03)fails.push(id+': stride mismatch');if(Math.abs(w.f*w.stride-v)>1e-9)fails.push(id+': speed law mismatch');}
+ return {pass:!fails.length,fails,table};}
+window.STYLELAB={BODIES,STYLES,runCheck,advance,render,selectBody,choicesText,focusCell,setPause,get walkers(){return walkers;},get bodyIndex(){return bodyIndex;},get speed(){return speed;},get rate(){return rate;},get paused(){return paused;}};
+layout();selectBody(0);window.addEventListener('resize',()=>{layout();render();});
+if(new URLSearchParams(location.search).get('test')==='1'){manual=true;const result=runCheck();window.__stylesCheck=result;$('check').textContent=result.pass?`Self-check PASS · ${result.table.length} cases`:`Self-check FAIL · ${result.fails.length} failures`;$('check').className=result.pass?'pass':'fail';manual=false;}
+window.__ready=true;let last=performance.now();function frame(now){const dt=Math.min(.05,(now-last)/1000);last=now;if(!manual&&!paused){acc+=dt*rate;while(acc>=1/240){walkers.forEach(w=>w.step(1/240,speed));acc-=1/240;}}render();requestAnimationFrame(frame);}requestAnimationFrame(frame);
+})();
+</script></body></html>
