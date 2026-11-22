@@ -3,6 +3,9 @@ extends Node
 # Public surface is documented in docs/godot/M0.md.
 
 signal island_ready
+## Shared game events for the creature loop and the owner questions: quest_done:<id>, first_evolve, island_ready {ms}; T1 adds the rest.
+signal loop_event(name: String, data: Dictionary)
+var evolved_once := false
 signal world_ticked(state: Dictionary)
 signal combat_events(events: Array)
 signal creature_clicked(id: int, world_pos: Vector3)
@@ -307,7 +310,7 @@ func goto_studio() -> void:
 		push_warning("studio module not present")
 
 # The starter body: ONE LINE to switch it (docs/evidence/godot/starter/README.md). Values: hatchling (today), a_grazer, b_runner, c_sprawler, d_knuckle.
-const STARTER := "hatchling"
+const STARTER := "b_runner"
 const STARTER_FILES := {"hatchling": "res://game/data/hatchling.json", "a_grazer": "res://game/data/starters/a_grazer.json", "b_runner": "res://game/data/starters/b_runner.json", "c_sprawler": "res://game/data/starters/c_sprawler.json", "d_knuckle": "res://game/data/starters/d_knuckle.json"}
 
 # Player genome source: --genome=<path> after "--", else the newest studio_dir/*.json (user://studio) that

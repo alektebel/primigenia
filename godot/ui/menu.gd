@@ -20,6 +20,7 @@ signal family_tree_requested
 signal nest_requested
 signal loadout_requested
 signal keys_requested
+signal questions_requested
 signal hints_reset_requested
 signal setting_changed(key: String, value)
 
@@ -39,6 +40,7 @@ const ITEMS := [
 	["nest_edit", "nest_edit", ""],
 	["settings", "settings", ""],
 	["keys", "keys", "F1"],
+	["questions", "questions", ""],
 	["save", "save", ""],
 	["load", "load", ""],
 	["main_menu", "main_menu", ""],
@@ -97,9 +99,16 @@ func item_enabled(id: String) -> bool:
 			return loadout_available
 		"nest_edit":
 			return nest_edit_available
+		"questions":
+			return question_count() > 0
 		"family_tree", "journal", "keys":
 			return true
 	return true
+
+## Pending owner questions (dev tools only; 0 in builds without them).
+func question_count() -> int:
+	var dev = get_node_or_null("/root/Dev")
+	return dev.questions.pending_count() if dev != null and dev.enabled and dev.questions != null else 0
 
 func item_ids() -> Array:
 	return ITEMS.map(func(r): return r[0])
@@ -184,6 +193,8 @@ func activate(id: String) -> void:
 			row_focus = 0
 		"keys":
 			keys_requested.emit()
+		"questions":
+			questions_requested.emit()
 		"save":
 			save_requested.emit()
 		"load":
@@ -363,6 +374,8 @@ func _draw() -> void:
 			Style.line(self, Vector2(Style.u(LIST_X - 22.0), y - Style.u(7.0)), Vector2(Style.u(LIST_X - 8.0), y - Style.u(7.0)), Color(Palette.COPPER, _alpha), Style.u(2.0))
 		Style.text(self, fm if focused else f, Vector2(Style.u(LIST_X), y), Strings.t(ITEMS[i][1]), s, col)
 		var kh: String = ITEMS[i][2]
+		if id == "questions":
+			kh = "(%d)" % question_count()
 		if kh != "":
 			Style.text(self, f, Vector2(Style.u(KEY_X), y), kh, Style.u(13.5), Color(Palette.FOG, a))
 		if not on and id == "loadout":

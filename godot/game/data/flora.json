@@ -211,7 +211,7 @@
       2
     ],
     "habitat": "tidal",
-    "chance": 0,
+    "chance": 0.3,
     "colour": "6f6a46",
     "spread": 0.6,
     "angle": 0,
@@ -224,8 +224,7 @@
     "lore": {
       "en": "Rusty clouds in the turbid shallows. The sediment hides where they hang.",
       "es": "Nubes rojizas en el bajío turbio. El sedimento esconde dónde cuelgan."
-    },
-    "note": "Shallows alga: density 0 until test_flora allows sea-cell roots for ids other than cinta_de_marea (owner decision)."
+    }
   },
   {
     "id": "grama_de_ceniza",
@@ -559,7 +558,7 @@
       2
     ],
     "habitat": "tidal",
-    "chance": 0,
+    "chance": 0.3,
     "colour": "7a7f4a",
     "spread": 0.5,
     "angle": 0,
@@ -572,8 +571,7 @@
     "lore": {
       "en": "A soft olive gel that breathes vent gas. Bubbles rise from it.",
       "es": "Un gel oliváceo y blando que respira gas de fumarola. De él suben burbujas."
-    },
-    "note": "Shallows alga: density 0 until test_flora allows sea-cell roots for ids other than cinta_de_marea (owner decision)."
+    }
   },
   {
     "id": "rodela_de_nieve",

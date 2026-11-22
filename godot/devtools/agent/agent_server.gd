@@ -8,6 +8,7 @@ extends Node
 const WorldLog := preload("res://game/stage/world_log.gd")
 const Scenario := preload("res://devtools/scenario.gd")
 const Feedback := preload("res://devtools/feedback.gd")
+const QuestionStore := preload("res://devtools/questions/question_store.gd")
 const NoteStore := preload("res://devtools/notes/note_store.gd")
 const NoteCommands := preload("res://devtools/notes/note_commands.gd")
 
@@ -155,6 +156,13 @@ func _dispatch(req: Dictionary) -> Dictionary:
 		"notes":
 			var all_notes: Array = NoteStore.list(Dev.flag.store_dir(), not bool(req.get("all", false)))
 			return {"ok": true, "notes": all_notes.map(func(n): return NoteStore.index_row(n))}
+		"questions":
+			Dev.questions.reload()
+			return {"ok": true, "questions": Dev.questions.pending().map(func(q): return {"id": q.id, "text": q.text, "when": q.when}),
+				"answered": QuestionStore.load_answers(Dev.questions.store_dir()).size()}
+		"ask":
+			var qe: String = Dev.questions.ask(str(req.get("id", "")))
+			return {"ok": qe == "", "error": qe}
 		"note_done":
 			var ne: String = NoteStore.mark_done(Dev.flag.store_dir(), str(req.get("note", "")), str(req.get("fix", "")))
 			Dev.flag.reload()

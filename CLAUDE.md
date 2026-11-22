@@ -5,8 +5,9 @@
 ## Start of every session
 1. Read `docs/STATUS.md`.
 2. Read the tracker: `ArtifactData list` on collections `tests` and `decisions` of https://claude.ai/artifact/AVN2K7HLTX7c8fzZPgAvuR. Copy every newly decided row into `docs/DESIGN.md` (with date and tracker id) and set its `recorded_in`. A test marked Failed reopens its task.
-3. Run `tools/agents/agents.sh status` and restart jobs the shutdown killed (`tools/agents/agents.sh restart <job>`), only the ones STATUS.md lists as running.
-4. Tell the owner in a few lines: what changed since last session, what waits on them.
+3. Read the owner's in-game feedback: `python3 tools/feedback/questions.py pull-answers` (copy decisions to the tracker/DESIGN.md) and `python3 tools/feedback/notes.py list` (each open note becomes a task or a tracker row).
+4. Run `tools/agents/agents.sh status` and restart jobs the shutdown killed (`tools/agents/agents.sh restart <job>`), only the ones STATUS.md lists as running.
+5. Tell the owner in a few lines: what changed since last session, what waits on them.
 
 ## End of every session ("wrap up")
 1. Every running agent commits WIP to its branch.
