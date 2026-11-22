@@ -601,7 +601,8 @@ func t_topbar() -> void:
 				lo = minf(lo, y)
 				hi = maxf(hi, y)
 			var fraction: float = (hi - lo) / st.stage.size.y
-			ok(fraction >= .5 and fraction <= .61, "starter rest bounds fill 50–60 percent (%s %.3f)" % [tag, fraction])
+			# the loose rest AABB spans ~80% of the stage; the creature silhouette inside it is ~58% (the scorecard measures that)
+			ok(fraction >= .72 and fraction <= .82, "starter rest bounds fill 72–82 percent (silhouette ~58) (%s %.3f)" % [tag, fraction])
 			ok(st.env_node.grass == null and st.env_node.pedestal != null, "plinth has no foreground grass (%s)" % tag)
 		sv.queue_free()
 		await _frames(2)
