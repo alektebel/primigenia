@@ -308,7 +308,7 @@ func _friend() -> void:
 				_key(KEY_B)
 				sui.lock_target(target)             # the pursuit was cancelled (a fight, a move key): lock it again
 			var act: Dictionary = state().social.action
-			if int(act.verb) == 0 and int(state().order.verb) not in [11, 12]:
+			if int(act.verb) == 0 and int(state().order.verb) not in [11, 12] and dist_to(target) < 8.0:     # the pursuit walks up; the beat keys are for when it is near
 				var trust := int(en.trust)
 				if trust == last_trust:
 					stuck += 1
