@@ -303,7 +303,7 @@ static void motion_law(void) {
             old=w.player.speed;
         }
         assert(fabsf(w.player.speed-top)<.01f);
-        assert(t90>0&&t90<=(sprint?6:4));
+        assert(t90>0&&t90<=(sprint?9:6));   /* A54: softer start, 90% of the speed in about half a second (accel 7, ease .45) */
         assert(!w.player.pivot&&last_dyaw_limit>0);
     }
     /* A reversal at full jog is a skid, not a turret spin: the pivot flag stays off while v > pivot_v. */

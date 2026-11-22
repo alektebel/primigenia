@@ -40,12 +40,10 @@ func _schedule(scen: String) -> Dictionary:
 			s[100] = {"verb": 1}
 		"turnspot":
 			s[0] = {"verb": 1}
-			s[10] = {"verb": 3, "hx": f, "hz": 0, "sprint": 0}
-			s[20] = {"verb": 1}
-			s[36] = {"verb": 3, "hx": -f, "hz": 0, "sprint": 0}
-			s[46] = {"verb": 1}
-			s[62] = {"verb": 3, "hx": 0, "hz": -f, "sprint": 0}
-			s[72] = {"verb": 1}
+			s[10] = {"verb": 3, "hx": 0, "hz": -f, "sprint": 0}     # turn round from rest: the creature pivots (C: back turn below pivot speed)
+			s[34] = {"verb": 1}
+			s[40] = {"verb": 3, "hx": 0, "hz": f, "sprint": 0}
+			s[64] = {"verb": 1}
 		"slope":
 			s[0] = {"verb": 1}
 			s[6] = {"verb": 3, "hx": 0, "hz": f, "sprint": 0}
@@ -83,7 +81,7 @@ func _run() -> void:
 	_body_len = r.host.height()
 	if log_path != "":
 		_log = FileAccess.open(log_path, FileAccess.WRITE)
-		_log.store_line("frame,tick,c_speed,vis_speed,gait,slip_ms,sole_min_cm,sole_max_stance_cm,knee_jump_deg,knee_jump_ext60,foot_v_max,ext_min,ext_min_stance,toe_min_stance_cm,roots")
+		_log.store_line("frame,tick,c_speed,vis_speed,gait,slip_ms,sole_min_cm,sole_max_stance_cm,knee_jump_deg,knee_jump_ext60,foot_v_max,ext_min,ext_min_stance,toe_min_stance_cm,pitch_deg,yaw_deg,roots")
 	_cam = Camera3D.new()
 	_cam.fov = 48.0
 	_cam.near = 0.05
@@ -95,7 +93,7 @@ func _run() -> void:
 	tick.owner_clip = self
 	tick.process_priority = 100
 	root.add_child(tick)
-	_secs = {"startstop": 6.5, "gallop": 5.0, "turnspot": 3.5, "slope": 6.0}.get(_scen, 6.0)
+	_secs = {"startstop": 6.5, "gallop": 5.0, "turnspot": 3.6, "slope": 6.0}.get(_scen, 6.0)
 	for i in int(_secs * 30.0) + 10:
 		await process_frame
 	if _log:
@@ -144,6 +142,8 @@ func place_camera() -> void:
 			pass
 	# side view, follows the body
 	var yaw := float(s.get("yaw", 0.0)) + 1.5708
+	if _scen == "turnspot":
+		yaw = 0.7           # the camera does not turn with the creature, so the turn on the spot shows
 	tgt.y += 0.45
 	var dist := 3.2
 	_cam.position = tgt + Vector3(sin(yaw) * dist, 0.5, cos(yaw) * dist)
@@ -230,7 +230,7 @@ func _process(_d: float) -> bool:
 			_prev_knee[i] = kn
 		else:
 			_prev_knee.erase(i)
-	if OS.get_environment("LC_DEBUG") != "" and _frame >= 20 and _frame <= 40 and not pose.is_empty():
+	if OS.get_environment("LC_DEBUG") != "" and _frame >= int(OS.get_environment("LC_F0")) and _frame <= int(OS.get_environment("LC_F1")) and not pose.is_empty():
 		var parts := []
 		for i in legs.size():
 			var l2 = legs[i]
@@ -238,5 +238,5 @@ func _process(_d: float) -> bool:
 			_dbg_prev[i] = pose.feet[i]
 		print("F%d spd %.2f fr %.2f cad %.2f stride %.2f theta | %s" % [_frame, vis, float(pose.get("froude", 0.0)), float(pose.get("cadence", 0.0)), float(pose.get("stride", 0.0)), " | ".join(parts)])
 	_frame += 1
-	_log.store_line("%d,%d,%.3f,%.3f,%s,%.3f,%.2f,%.2f,%.1f,%.1f,%.2f,%.2f,%.2f,%.2f,%s" % [_frame, int(r.sw.cur.tick), float(e.speed), vis, gait, slip, miny * 100.0 if miny < 1e8 else 0.0, stance_max * 100.0 if stance_max > -1e8 else 0.0, kjump, kj60, fvmax, extmin, extst, toemin * 100.0 if toemin < 8.0 else 0.0, roots])
+	_log.store_line("%d,%d,%.3f,%.3f,%s,%.3f,%.2f,%.2f,%.1f,%.1f,%.2f,%.2f,%.2f,%.2f,%.2f,%.1f,%s" % [_frame, int(r.sw.cur.tick), float(e.speed), vis, gait, slip, miny * 100.0 if miny < 1e8 else 0.0, stance_max * 100.0 if stance_max > -1e8 else 0.0, kjump, kj60, fvmax, extmin, extst, toemin * 100.0 if toemin < 8.0 else 0.0, rad_to_deg(float(pose.get("pitch", 0.0))), rad_to_deg(float(s.get("yaw", 0.0))), roots])
 	return false

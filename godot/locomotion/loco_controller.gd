@@ -19,6 +19,9 @@ const G := 9.81
 const MAX_DT := 1.0 / 90.0
 const BANK_K := {&"quadruped": 0.35, &"horizontal_biped": 0.5, &"upright_biped": 0.6, &"multi": 0.2, &"legless": 0.0, &"monopod": 0.4}
 const BANK_MAX := {&"quadruped": 0.20, &"multi": 0.20, &"horizontal_biped": 0.30, &"upright_biped": 0.30, &"monopod": 0.30, &"legless": 0.0}
+const LAUNCH_K := 0.5           # A54: a quadruped leans into its first steps (nose down) with this share of the acceleration lean it used to show nose up
+const LEAN_ZETA := 0.55         # A54: the acceleration/braking lean is underdamped, so a stop dips and rocks back once instead of freezing
+const STRIDE_ATTACK := 0.04     # s: the stride length follows a rising target this fast (it used to lag 0.15 s, so the first steps shuffled at 2.6 Hz)
 const GAIT_DWELL := 0.3         # s: shortest time between gait changes
 const FORCE_GAP := 0.0        # s: at most one forced lift-off per gap
 const STRAIGHT := 0.985         # longest a leg is allowed to get, as a share of its length
@@ -372,7 +375,7 @@ func _sub(h: float, p: Vector3, yaw: float, v: Vector3, settle: bool) -> void:
 	duty = lerpf(duty, duty_t, kg)
 	bounce = lerpf(bounce, bounce_t, kg)
 	crouch = lerpf(crouch, crouch_t, kg)
-	stride = stride_t if settle else lerpf(stride, stride_t, _lp(0.15, h))
+	stride = stride_t if settle else lerpf(stride, stride_t, _lp(STRIDE_ATTACK if stride_t > stride else 0.15, h))
 	cadence = (maxf(_speed_f, v_rot) if pivoting else _speed_f) / max(stride, 1e-4)
 	if Gait.froude_mode:
 		# rule 8: the footfall offsets blend (circularly) to the new gait's over about one stride of phase
@@ -655,13 +658,14 @@ func _sub(h: float, p: Vector3, yaw: float, v: Vector3, settle: bool) -> void:
 			var wb: float = max(morph.body_length * 0.5, 0.1)
 			if morph.stations.size() >= 2:
 				wb = max(morph.stations[-1].z - morph.stations[0].z, 0.1)
-			lean_t = 0.6 * a_fwd * morph.com.y / (G * wb)
+			# braking dips the nose (weight onto the front legs); launching leans into the stride (nose down too, less)
+			lean_t = -(LAUNCH_K if a_fwd > 0.0 else 0.6) * absf(a_fwd) * morph.com.y / (G * wb)
 	lean_t -= Gait.run_lean(morph.plan, gait, fr) * _moving
 	lean_t = clamp(lean_t, -0.3, 0.25)
 	var bank_k: float = float(BANK_K.get(morph.plan, 0.35)) * bank_gain / 0.7
 	var bank_max: float = float(BANK_MAX.get(morph.plan, 0.2))
 	var bank_t: float = clamp(-atan(_speed_f * _yawrate / G) * bank_k, -bank_max, bank_max)
-	_lean = _spring(_lean, lean_t, _omega * 0.4, 1.0, h)
+	_lean = _spring(_lean, lean_t, _omega * 0.4, LEAN_ZETA if morph.plan == &"quadruped" else 1.0, h)
 	_bank = _spring(_bank, bank_t, _omega * 0.4, 1.0, h)
 	# gait roll: each front foot, soon after touchdown (stance share 0..0.5), pulls the trunk toward its own side
 	var gr_t := 0.0

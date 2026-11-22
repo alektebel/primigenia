@@ -468,7 +468,7 @@ func test_body_dynamics() -> void:
 		s2.run(6.0, func(_t): return v, func(_t): return -0.8)
 		check(_mean(s2.frames, "roll", func(f): return f.t > 3.0) > 0.02, "%s banks the other way in a right turn" % name)
 		table[name + " bank deg at 0.8 rad/s"] = r(rad_to_deg(roll), 2)
-	# acceleration: bipeds lean forward, quadrupeds squat at the back
+	# acceleration: bipeds lean forward; quadrupeds lean into the first steps too (A54: nose down; it used to squat at the back, nose up)
 	var b = Sim.new(Bodies.get_body("biped"))
 	b.run(1.0, func(_t): return 0.0)
 	b.frames.clear()
@@ -480,8 +480,8 @@ func test_body_dynamics() -> void:
 	qa.frames.clear()
 	qa.run(1.0, func(t): return 3.0 * (t - 1.0))
 	var squat := _mean(qa.frames, "pitch", func(f): return f.t > 1.4)
-	check(squat < -0.01, "quadruped squats at the back when accelerating at 3 m/s2 (nose up %.1f degrees)" % rad_to_deg(-squat))
-	table["accel pitch deg"] = {"biped (forward lean +)": r(rad_to_deg(lean), 2), "light_quadruped (nose up -)": r(rad_to_deg(squat), 2)}
+	check(squat > 0.01, "quadruped leans into the first steps when accelerating at 3 m/s2 (nose down %.1f degrees)" % rad_to_deg(squat))
+	table["accel pitch deg"] = {"biped (forward lean +)": r(rad_to_deg(lean), 2), "light_quadruped (forward lean +, A54)": r(rad_to_deg(squat), 2)}
 	# slopes: body pitches with the terrain, stride shortens uphill
 	for name in ["light_quadruped", "heavy_quadruped", "hexapod", "biped"]:
 		var flat = Sim.new(Bodies.get_body(name))

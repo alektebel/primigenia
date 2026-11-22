@@ -847,7 +847,7 @@ static float gait_speed(const CpCombatProfile *p,float fr){
     return sqrtf(fr*9.81f*CP_STAGE_HIP_PER_RADIUS*cp_combat_body_radius(p));
 }
 const CpStageMotion CP_STAGE_MOTION={
-    1.f,1.5f,.6f,15.f,20.f,.6f,.9f,.6f,4.5f,11.8f,.3f,2.f,7.f,.4f,
+    1.f,1.5f,.6f,7.f,7.f,.45f,.9f,.6f,4.5f,11.8f,.3f,1.2f,7.f,.4f,
     1.4f,.35f,.03f,.25f,3.2f,1.5f,.8f,.55f,1.35f,1.4f,1.1f,8.f,.15f,
     CP_STAGE_FR_WALK
 };
@@ -984,7 +984,8 @@ static void walk(CpStageWorld *w,CpStageCreature *c,float dx,float dz,float spee
         if(!steep_up(w,c,c->x,c->z,nx,c->z)&&cp_stage_can_walk(w,c->x,c->z,nx,c->z,r))c->x=nx;
         if(!steep_up(w,c,c->x,c->z,c->x,nz)&&cp_stage_can_walk(w,c->x,c->z,c->x,nz,r))c->z=nz;
     }
-    if(c==&w->player&&step>.02f&&length(c->x-ox,c->z-oz)<step*.5f&&!w->blocked_reason){
+    /* A54: .01 not .02: a softer start (and the slow creep down to a shore, wanted speed x .4) must still count as pushing against a wall */
+    if(c==&w->player&&step>.01f&&length(c->x-ox,c->z-oz)<step*.5f&&!w->blocked_reason){
         w->blocked_reason=block_reason(w,ox,oz,nx,nz,r);
         w->blocked_x=nx;
         w->blocked_z=nz;
