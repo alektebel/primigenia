@@ -80,6 +80,10 @@ static func _overlays(reg, console_registry) -> void:
 		{"desc": "the creature legend corner hint (key list)."})
 
 static func _movement(reg) -> void:
+	reg.add_choice("style", "movement", ["owner styles", "froude default"], "owner styles",
+		func(): return "owner styles" if Gait.style_mode == "owner" else "froude default",
+		func(v): Gait.style_mode = "owner" if v == "owner styles" else "froude", false,
+		{"desc": "starter B's move styles (A42): diagonal walk / sprawl, slinky stalk, canter, rotary gallop; every other body keeps the Froude gaits."})
 	reg.add_choice("gait", "movement", ["today", "froude"], "froude",
 		func(): return "froude" if Gait.froude_mode else "today",
 		func(v): Gait.froude_mode = (v == "froude"), false,

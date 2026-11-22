@@ -1,0 +1,208 @@
+{
+  "body": "giant",
+  "fps": 30.0,
+  "frames": 720,
+  "metrics": {
+    "airborne_frac": 0.0,
+    "back_slope_deg": 6.12,
+    "body_pitch_deg": -1.17,
+    "cadence_hz": 3.055,
+    "duty_factor": {
+      "mean": 0.5177,
+      "per_foot": [
+        0.5361,
+        0.4972,
+        0.5347,
+        0.5028
+      ]
+    },
+    "foot_penetration_cm": {
+      "max": 0.0,
+      "mean": 0.0,
+      "p95": 0.0
+    },
+    "foot_slip_cm": {
+      "mean": 1.33,
+      "p95": 7.45,
+      "stances": 290
+    },
+    "foot_spacing_ratio": 0.7114,
+    "footfall": {
+      "contact": [
+        [
+          true,
+          true,
+          true,
+          true,
+          true,
+          false,
+          false,
+          false,
+          false,
+          true,
+          true,
+          true,
+          true,
+          true,
+          false,
+          false,
+          false,
+          false,
+          true,
+          true
+        ],
+        [
+          false,
+          false,
+          false,
+          false,
+          false,
+          true,
+          true,
+          true,
+          true,
+          false,
+          false,
+          false,
+          false,
+          false,
+          true,
+          true,
+          true,
+          true,
+          false,
+          false
+        ],
+        [
+          false,
+          false,
+          false,
+          false,
+          false,
+          true,
+          true,
+          true,
+          true,
+          false,
+          false,
+          false,
+          false,
+          false,
+          true,
+          true,
+          true,
+          true,
+          true,
+          false
+        ],
+        [
+          true,
+          true,
+          true,
+          true,
+          true,
+          false,
+          false,
+          false,
+          false,
+          true,
+          true,
+          true,
+          true,
+          true,
+          false,
+          false,
+          false,
+          false,
+          true,
+          true
+        ]
+      ],
+      "dt": 0.03333,
+      "labels": [
+        "L0",
+        "R0",
+        "L1",
+        "R1"
+      ],
+      "start_frame": 3,
+      "stride_frames": 10
+    },
+    "gait_frac": {
+      "trot": 1.0
+    },
+    "gait_symmetry": 1.0,
+    "ground_slope_deg": 0.0,
+    "head_pitch_deg": {
+      "mean": -4.5,
+      "p95": -0.64
+    },
+    "head_yaw_vs_body_deg": {
+      "mean": 10.83,
+      "p95": 17.5
+    },
+    "knee_flip_frac": 0.0,
+    "leg_extension": 0.8755,
+    "limp": {
+      "drop_ratio": 1.1136,
+      "index": 1.6022,
+      "paired": 2,
+      "per_foot": [
+        {
+          "drop_cm": 16.293,
+          "pair": 0,
+          "roll_deg": 0.298,
+          "samples": 71,
+          "side": 1
+        },
+        {
+          "drop_cm": 14.631,
+          "pair": 0,
+          "roll_deg": 0.186,
+          "samples": 71,
+          "side": -1
+        },
+        {
+          "drop_cm": 14.631,
+          "pair": 1,
+          "roll_deg": 3.053,
+          "samples": 71,
+          "side": 1
+        },
+        {
+          "drop_cm": 16.293,
+          "pair": 1,
+          "roll_deg": 2.897,
+          "samples": 71,
+          "side": -1
+        }
+      ],
+      "roll_ratio": 1.6022
+    },
+    "limp_index": 1.6022,
+    "min_turn_radius_m": 3.37,
+    "moving_frac": 1.0,
+    "pitch_follow": null,
+    "pivot_frac": 0.0,
+    "pivot_frac_of_turns": 0.0,
+    "roll_plant_lag": 0.2,
+    "shoulder_hip_ratio": 1.1407,
+    "slide_frac": 0.0,
+    "speed_mean_mps": 5.2304,
+    "stall_frac": 0.0,
+    "stall_state_frac": 0.0,
+    "steep_slope_deg": null,
+    "stride_len_m": 3.128,
+    "stuck_frac": 0.0,
+    "torso_bob_cm": 23.77,
+    "torso_bob_frac": 0.0968,
+    "torso_roll_deg": 4.16
+  },
+  "reasons": {
+    "pitch_follow": "fewer than 10 moving frames on a slope steeper than 0.1: nothing to follow",
+    "steep_slope_deg": "fewer than 10 moving frames on a slope steeper than 0.1: nothing to follow"
+  },
+  "scenario": "gallop",
+  "start_tick": 40,
+  "ticks": 240
+}

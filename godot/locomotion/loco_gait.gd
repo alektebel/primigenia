@@ -238,3 +238,53 @@ static func lean_lab(gait: StringName, fr: float) -> float:
 	if gait == &"run" or gait == &"trot" or gait == &"gallop":
 		return 0.12 * smoothstep(0.4, 3.0, fr)
 	return 0.0
+
+
+# --- Owner move styles for starter B (DESIGN A42, docs/evidence/loco/styles.md, web/gaitlab/styles.html) -------------------
+## F10 option `style`: "owner" applies the four picked styles to starter B only; "froude" keeps the Froude defaults everywhere.
+static var style_mode := "owner"
+## Fr at which starter B changes style (starting values, hysteresis HYST_LAB): below STALK_FR it creeps (slinky stalk: there is no
+## "sneaking" state in the C sim, so the creep is the slowest band), then the sprawl walk, the canter in the middle band where other
+## bodies trot, and the rotary gallop from GALLOP_FR (full chase or flee).
+const STALK_FR := 0.10
+const CANTER_FR := 0.50
+const GALLOP_FR := 1.20
+## Offsets are in the lab's order LH, RH, LF, RF. k and the stride boost lengthen the stride (cadence = v / stride, owner 2026-11-22:
+## a walk of 0.8-1.0 Hz at 2 m/s, so the picker's k 0.95 / 1.75 Hz is not copied).
+const STYLES := {
+	&"sprawl": {"gait": &"walk", "off": [0.0, 0.5, 0.75, 0.25], "duty": 0.70, "k": 0.95, "boost": 1.9, "bob": 0.025, "bob_phase": 0.0, "roll": 0.06,
+		"pitch": 0.0, "rock": 0.02, "height": 0.64, "spine": 0.16, "head": 0.025, "lift": 0.12, "flight": false},
+	&"stalk": {"gait": &"walk", "off": [0.0, 0.5, 0.26, 0.76], "duty": 0.74, "k": 1.2, "boost": 1.5, "bob": 0.012, "bob_phase": 0.0, "roll": 0.025,
+		"pitch": -0.015, "rock": 0.015, "height": 0.60, "spine": 0.075, "head": 0.025, "lift": 0.07, "flight": false},
+	&"canter": {"gait": &"trot", "off": [0.0, 0.32, 0.32, 0.66], "duty": 0.29, "k": 1.35, "boost": 1.3, "bob": 0.07, "bob_phase": 0.5, "roll": 0.035,
+		"pitch": -0.02, "rock": 0.095, "height": 0.86, "spine": 0.045, "head": 0.03, "lift": 0.22, "flight": true},
+	&"gallop": {"gait": &"gallop", "off": [0.0, 0.12, 0.62, 0.5], "duty": 0.25, "k": 1.55, "boost": 1.3, "bob": 0.10, "bob_phase": 0.5, "roll": 0.035,
+		"pitch": -0.04, "rock": 0.07, "height": 0.86, "spine": 0.08, "head": 0.035, "lift": 0.24, "flight": true},
+}
+const STYLE_NAMES := [&"stalk", &"sprawl", &"canter", &"gallop"]
+const STYLE_FR := [STALK_FR, CANTER_FR, GALLOP_FR]    # the change between names[i] and names[i + 1]
+const REST_HEIGHT := 0.9                              # the pickers' plain styles stand at 0.9 h
+
+static func is_style_body(morph) -> bool:
+	return style_mode == "owner" and froude_mode and morph.plan == &"quadruped" and (str(morph.style_body).begins_with("Starter B") or str(morph.style_body).begins_with("startB"))
+
+static func style_select(prev: StringName, fr: float) -> StringName:
+	var k: int = max(STYLE_NAMES.find(prev), 0)
+	while k < STYLE_FR.size() and fr > STYLE_FR[k] + HYST_LAB:
+		k += 1
+	while k > 0 and fr < STYLE_FR[k - 1] - HYST_LAB:
+		k -= 1
+	return STYLE_NAMES[k]
+
+## Touchdown offsets mapped by station and side (LH = rear left, RH = rear right, LF = front left, RF = front right).
+static func style_offsets(style: StringName, morph) -> PackedFloat32Array:
+	var o: Array = STYLES[style].off
+	var out := PackedFloat32Array()
+	out.resize(morph.legs.size())
+	var front: int = morph.stations.size() - 1
+	for i in range(morph.legs.size()):
+		var l: Dictionary = morph.legs[i]
+		var hind: bool = l.station < front
+		var left: bool = l.side >= 0
+		out[i] = float(o[(0 if left else 1) + (0 if hind else 2)])
+	return out

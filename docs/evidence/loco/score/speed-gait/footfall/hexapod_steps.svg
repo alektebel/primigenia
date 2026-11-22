@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="696" height="186" font-family="monospace" font-size="11">
+<rect width="100%" height="100%" fill="#ffffff"/>
+<text x="10" y="18" font-weight="bold">hexapod steps (dashed = one stride)</text>
+<text x="10" y="32" fill="#555">ours</text>
+<text x="10" y="52">L0</text>
+<rect x="46" y="40" width="640" height="16" fill="#f2f2f2"/>
+<rect x="46.0" y="40" width="203.6" height="16" fill="#2b6cb0"/>
+<rect x="366.0" y="40" width="203.6" height="16" fill="#2b6cb0"/>
+<text x="10" y="74">R0</text>
+<rect x="46" y="62" width="640" height="16" fill="#f2f2f2"/>
+<rect x="46.0" y="62" width="43.6" height="16" fill="#2b6cb0"/>
+<rect x="206.0" y="62" width="203.6" height="16" fill="#2b6cb0"/>
+<rect x="540.5" y="62" width="145.5" height="16" fill="#2b6cb0"/>
+<text x="10" y="96">L1</text>
+<rect x="46" y="84" width="640" height="16" fill="#f2f2f2"/>
+<rect x="46.0" y="84" width="14.5" height="16" fill="#2b6cb0"/>
+<rect x="206.0" y="84" width="203.6" height="16" fill="#2b6cb0"/>
+<rect x="540.5" y="84" width="145.5" height="16" fill="#2b6cb0"/>
+<text x="10" y="118">R1</text>
+<rect x="46" y="106" width="640" height="16" fill="#f2f2f2"/>
+<rect x="46.0" y="106" width="189.1" height="16" fill="#2b6cb0"/>
+<rect x="366.0" y="106" width="203.6" height="16" fill="#2b6cb0"/>
+<text x="10" y="140">L2</text>
+<rect x="46" y="128" width="640" height="16" fill="#f2f2f2"/>
+<rect x="60.5" y="128" width="189.1" height="16" fill="#2b6cb0"/>
+<rect x="380.5" y="128" width="189.1" height="16" fill="#2b6cb0"/>
+<text x="10" y="162">R2</text>
+<rect x="46" y="150" width="640" height="16" fill="#f2f2f2"/>
+<rect x="46.0" y="150" width="43.6" height="16" fill="#2b6cb0"/>
+<rect x="220.5" y="150" width="189.1" height="16" fill="#2b6cb0"/>
+<rect x="540.5" y="150" width="145.5" height="16" fill="#2b6cb0"/>
+<line x1="366.0" y1="34" x2="366.0" y2="176" stroke="#c53030" stroke-dasharray="3,3"/>
+</svg>

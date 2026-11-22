@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="696" height="230" font-family="monospace" font-size="11">
+<rect width="100%" height="100%" fill="#ffffff"/>
+<text x="10" y="18" font-weight="bold">centipede walk (dashed = one stride)</text>
+<text x="10" y="32" fill="#555">ours</text>
+<text x="10" y="52">L0</text>
+<rect x="46" y="40" width="640" height="16" fill="#f2f2f2"/>
+<rect x="46.0" y="40" width="220.0" height="16" fill="#2b6cb0"/>
+<rect x="386.0" y="40" width="220.0" height="16" fill="#2b6cb0"/>
+<text x="10" y="74">R0</text>
+<rect x="46" y="62" width="640" height="16" fill="#f2f2f2"/>
+<rect x="46.0" y="62" width="60.0" height="16" fill="#2b6cb0"/>
+<rect x="226.0" y="62" width="220.0" height="16" fill="#2b6cb0"/>
+<rect x="566.0" y="62" width="120.0" height="16" fill="#2b6cb0"/>
+<text x="10" y="96">L1</text>
+<rect x="46" y="84" width="640" height="16" fill="#f2f2f2"/>
+<rect x="106.0" y="84" width="220.0" height="16" fill="#2b6cb0"/>
+<rect x="446.0" y="84" width="220.0" height="16" fill="#2b6cb0"/>
+<text x="10" y="118">R1</text>
+<rect x="46" y="106" width="640" height="16" fill="#f2f2f2"/>
+<rect x="46.0" y="106" width="100.0" height="16" fill="#2b6cb0"/>
+<rect x="266.0" y="106" width="220.0" height="16" fill="#2b6cb0"/>
+<rect x="606.0" y="106" width="80.0" height="16" fill="#2b6cb0"/>
+<text x="10" y="140">L2</text>
+<rect x="46" y="128" width="640" height="16" fill="#f2f2f2"/>
+<rect x="146.0" y="128" width="220.0" height="16" fill="#2b6cb0"/>
+<rect x="486.0" y="128" width="200.0" height="16" fill="#2b6cb0"/>
+<text x="10" y="162">R2</text>
+<rect x="46" y="150" width="640" height="16" fill="#f2f2f2"/>
+<rect x="46.0" y="150" width="160.0" height="16" fill="#2b6cb0"/>
+<rect x="326.0" y="150" width="220.0" height="16" fill="#2b6cb0"/>
+<rect x="666.0" y="150" width="20.0" height="16" fill="#2b6cb0"/>
+<text x="10" y="184">L3</text>
+<rect x="46" y="172" width="640" height="16" fill="#f2f2f2"/>
+<rect x="46.0" y="172" width="40.0" height="16" fill="#2b6cb0"/>
+<rect x="206.0" y="172" width="220.0" height="16" fill="#2b6cb0"/>
+<rect x="546.0" y="172" width="140.0" height="16" fill="#2b6cb0"/>
+<text x="10" y="206">R3</text>
+<rect x="46" y="194" width="640" height="16" fill="#f2f2f2"/>
+<rect x="46.0" y="194" width="220.0" height="16" fill="#2b6cb0"/>
+<rect x="386.0" y="194" width="200.0" height="16" fill="#2b6cb0"/>
+<line x1="366.0" y1="34" x2="366.0" y2="220" stroke="#c53030" stroke-dasharray="3,3"/>
+</svg>
