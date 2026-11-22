@@ -90,7 +90,34 @@ Each species has 1–2 **favourite gestures**. Using them raises befriend progre
 
 Each move: 3–4 versions shown large → owner pick → port to the game → loop scorecard check.
 
-## Open questions for the owner
-- Are the starting 4 OK: peck/bite, pounce, dodge, roar?
-- Should skills (unlocks through play) be in v1, or only organs plus recipes?
-- Favourite gestures per species: yes or no?
+## Owner answers (2026-11-23)
+- **Starting 4:** add **acid spit** in place of one move. Proposal: **dodge becomes a universal action on its own key** (always available, takes no slot), which frees a slot. The starting 4 become **peck/bite (basic), pounce (engage), acid spit (poke), roar (control)**. Starter B needs a small spit gland, as the old loadout's spit implied.
+- **Skills unlocked through play:** undecided. Proposal (48 h auto-accept): v1 uses organs plus recipes only; skills come in a later version.
+- **Befriending per species:** yes, and more than gestures. Each species has a favourite gesture plus a **befriend condition**:
+  - only at night
+  - bring it food it likes
+  - defend it against a raid (predators attack its group, and you fight them off)
+  - approach slowly without running
+  - repeat its call
+  - groom its young
+  These show up in the field note after observing (O).
+
+## Signature attacks: cool and biologically real (proposal)
+Each is unlocked by an organ, usually as a recipe (G50), and is rarer and stronger than basic moves.
+
+| Attack | Real animal | Organ / recipe | Effect | Animation |
+|---|---|---|---|---|
+| **Flamethrower** (exists, A38) | none on Earth; the island's vent-cooked fire gland | fire gland, ≥ 16 % O₂ (D-28) | cone, burn | neck rears, cone breath, embers |
+| **Boiling spray** | bombardier beetle (hot chemical spray from the abdomen) | rear gland + armour | short-range burn and fear | abdomen swings, pulsed spray with pops |
+| **Sonic snap** | pistol shrimp (cavitation bubble stun) | big claw; strongest underwater | stun at range in water | claw snaps, shockwave ring, bubbles |
+| **Blinding spit** | spitting cobra (venom aimed at the eyes) | spit gland + fangs | blind (accuracy down) | hood flares, twin jets |
+| **Smash punch** | mantis shrimp (club strike) | club arm (smasher) | heavy hit, breaks shells and guard | coil, blur-fast punch, flash |
+| **Electric discharge** | electric eel (chain shock, stronger in water) | electric organ | stun, chains to a second target | body glows, arcs jump |
+| **Tongue snatch** | chameleon (ballistic tongue) | long tongue | pulls small prey or items to you | eyes lock, tongue shoots and reels in |
+| **Water jet** | archerfish (knocks prey off branches) | spit gland, near water | knockdown at range | aim, jet, and the target falls |
+| **Stink cloud** | skunk (sprayed musk) | scent gland | area fear; enemies flee | tail up, back turned, cloud |
+| **Blood squirt** | horned lizard (squirts blood from the eyes) | head crest + armour | scares predators | crouch, head jerk, squirt |
+| **Quill storm** | porcupine (quills released when brushed) | back spines | thorns: hurts attackers in melee | quills raise and rattle |
+| **Ground-pound shockwave** | elephant-scale stomp, exaggerated | heavy legs | knockdown ring | rear up, slam, dust ring |
+| **Death roll** | crocodile (grab and spin) | jaws + heavy tail | big damage while holding | grab, the whole body rolls |
+| **Ink cloud** | octopus and squid | ink sac (water) | blind and escape | jet back, ink bloom |
