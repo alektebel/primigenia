@@ -1,0 +1,30 @@
+{
+	"display": "headless",
+	"moments": [
+		{
+			"bounds_height_ratio": 0.264672639634874,
+			"moment": "01-start",
+			"ui_area_ratio": 0.348250868055556
+		},
+		{
+			"bounds_height_ratio": 0.304874971177843,
+			"moment": "02-add-part",
+			"ui_area_ratio": 0.348250868055556
+		},
+		{
+			"bounds_height_ratio": 0.352793227301704,
+			"moment": "03-stretch-spine",
+			"ui_area_ratio": 0.348250868055556
+		},
+		{
+			"bounds_height_ratio": 0.352787187364366,
+			"moment": "04-final",
+			"ui_area_ratio": 0.348250868055556
+		}
+	],
+	"process_mean_ms": 0.293655555555554,
+	"process_p95_ms": 0.372,
+	"size": "1280x720",
+	"timing_note": "Headless wall time is not rendered GPU frame time; compare identical commands.",
+	"wall_ms_per_frame": 6.9004
+}

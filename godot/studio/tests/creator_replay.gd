@@ -138,7 +138,9 @@ func _shot(moment: String) -> void:
 	await _frames(2)
 	var vs := root.get_visible_rect().size
 	_save(root.get_texture().get_image(), moment, true)
-	var info := {"t": _t(), "frame": frame, "pitch_deg": snappedf(rad_to_deg(ui._pitch), 0.1), "yaw_deg": snappedf(rad_to_deg(ui._yaw), 0.1),
+	var cam_f: Vector3 = -ui.camera.global_transform.basis.z
+	var cre_f: Vector3 = ui.view.global_transform.basis * Vector3(0, 0, 1)   # the head is at +Z in view space
+	var info := {"facing_deg": snappedf(rad_to_deg(cam_f.angle_to(cre_f)), 0.1), "t": _t(), "frame": frame, "pitch_deg": snappedf(rad_to_deg(ui._pitch), 0.1), "yaw_deg": snappedf(rad_to_deg(ui._yaw), 0.1),
 		"dist": snappedf(ui._dist, 0.01), "probe": _probe(), "parts": m.doc["parts"].size(), "nodes": m.doc["nodes"].size(), "dna": ui.dna_value(),
 		"viewport": [int(vs.x), int(vs.y)], "grass_visible": ui.env_node.grass != null and ui.env_node.grass.visible,
 		"rocks_visible": ui.env_node.rocks != null and ui.env_node.rocks.visible}

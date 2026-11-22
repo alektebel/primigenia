@@ -32,6 +32,33 @@ var _sel_group: Node3D                # selection rings, rotation bead, leg hand
 var _rings: Array = []
 var _rot_bead: MeshInstance3D
 var _bead_hot := false
+signal handle_shown(kind: String, fade_ms: float)
+signal head_target_changed(part: int)
+const BREATH_PERIOD := 3.4            # s per breath
+const LOOK_DELAY := .3                # s between a part landing and the head starting to turn (the reference shows ~0.33 s)
+const LOOK_HOLD := 2.6                # s the head stays on the part before it relaxes
+const POSE_GAP := 3.0                 # one-shot pose at most once per 3 s
+const YAW_MAX := .6                   # rad, head turn clamp
+var _alive_t := 0.0
+var _look_part := -1
+var _look_wait := -1.0                # >=0 while waiting LOOK_DELAY
+var _look_hold := 0.0
+var _yaw := 0.0
+var _yaw_goal := 0.0
+var _pose_t := -1.0                   # >=0 while the one-shot pose plays (0..POSE_LEN)
+var _last_pose := -100.0
+const POSE_LEN := .55
+const HANDLE_FADE := .12              # s, handles reach full opacity in 120 ms (linear: it is only an opacity ramp)
+const SPHERE_PX := 11.0               # vertebra sphere radius on screen, constant at any camera distance
+var _sphere_group: Node3D
+var _spheres: Array = []              # MeshInstance3D per vertebra
+var _sphere_mat: StandardMaterial3D
+var _sphere_hot_mat: StandardMaterial3D
+var _sphere_alpha := 0.0
+var _ring_green: MeshInstance3D
+var _ring_mat: StandardMaterial3D
+var _ring_alpha := 0.0
+var _ring_part := -1
 var _leg_group: Node3D
 var _hover_leg := -1
 var _hidden_part := -1
@@ -83,6 +110,23 @@ func _init(_db: RefCounted = null) -> void:
 	_cord_mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 	_cord_mat.no_depth_test = true
 	_cord_mat.render_priority = 14
+	_sphere_group = Node3D.new()
+	_sphere_group.name = "VertebraSpheres"
+	add_child(_sphere_group)
+	_sphere_mat = _handle_mat(Color("3d8bff"))
+	_sphere_hot_mat = _handle_mat(Color("ffd23f"))
+	_ring_mat = _handle_mat(Color("6fe05a"))
+	_ring_green = MeshInstance3D.new()
+	var tm := TorusMesh.new()
+	tm.inner_radius = .93
+	tm.outer_radius = 1.0
+	tm.rings = 48
+	tm.ring_segments = 6
+	_ring_green.mesh = tm
+	_ring_green.material_override = _ring_mat
+	_ring_green.visible = false
+	_ring_green.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	add_child(_ring_green)
 	_sel_group = Node3D.new()
 	_sel_group.name = "SelectionHandles"
 	add_child(_sel_group)
@@ -243,10 +287,35 @@ func _place() -> void:
 func _vert_radius(i: int) -> float:
 	return .06 + float(genome.nodes[i].r) * .24
 
+func _handle_mat(c: Color) -> StandardMaterial3D:
+	var m := StandardMaterial3D.new()
+	m.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	m.albedo_color = Color(c, 0.0)
+	m.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	m.no_depth_test = true
+	m.render_priority = 24
+	return m
+
 func _build_handles() -> void:
 	for c in _handles.get_children():
 		c.queue_free()
 	_verts.clear()
+	for c in _sphere_group.get_children():
+		c.queue_free()
+	_spheres.clear()
+	for nd in genome.get("nodes", []):
+		var sm := SphereMesh.new()
+		sm.radius = 1.0
+		sm.height = 2.0
+		sm.radial_segments = 20
+		sm.rings = 10
+		var mi := MeshInstance3D.new()
+		mi.mesh = sm
+		mi.material_override = _sphere_mat
+		mi.position = Vector3(0, float(nd.y), float(nd.z))
+		mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		_sphere_group.add_child(mi)
+		_spheres.append(mi)
 	var N: Array = genome.get("nodes", [])
 	for i in N.size():
 		var n = N[i]
@@ -424,6 +493,8 @@ func _process(dt: float) -> void:
 	if _playing and _ctl != null:
 		_loco_step(minf(dt, 0.1))
 	_tick_spine(dt)
+	_tick_handles(dt)
+	_tick_alive(dt)
 	_tick_selection(dt)
 	_tick_pulses(dt)
 
@@ -444,6 +515,118 @@ func _tick_spine(dt: float) -> void:
 		var target := 1.3 if (i == _hover_node or i == _active_node) else 1.0
 		var g: Node3D = _verts[i]
 		g.scale = g.scale.lerp(Vector3.ONE * target, 1.0 - pow(.001, dt))
+
+## Blue vertebra spheres (yellow when hovered or dragged) and the green part ring: fade in 120 ms, constant screen size.
+func _tick_handles(dt: float) -> void:
+	var cam := get_viewport().get_camera_3d() if is_inside_tree() else null
+	var want := 1.0 if ((_spine_on and not _playing) or _active_node >= 0) else 0.0
+	if want > 0.0 and _sphere_alpha <= .01:
+		handle_shown.emit("vertebra_sphere", HANDLE_FADE * 1000.0)
+	_sphere_alpha = move_toward(_sphere_alpha, want, dt / HANDLE_FADE)
+	_sphere_mat.albedo_color.a = _sphere_alpha
+	_sphere_hot_mat.albedo_color.a = _sphere_alpha
+	_sphere_group.visible = _sphere_alpha > .01
+	if _sphere_group.visible and cam != null:
+		var px := 2.0 * tan(deg_to_rad(cam.fov) / 2.0) / maxf(get_viewport().get_visible_rect().size.y, 1.0) * SPHERE_PX
+		for i in _spheres.size():
+			var sp: MeshInstance3D = _spheres[i]
+			var hot := i == _hover_node or i == _active_node
+			sp.material_override = _sphere_hot_mat if hot else _sphere_mat
+			var d := cam.global_position.distance_to(sp.global_position)
+			sp.scale = Vector3.ONE * d * px * (1.3 if hot else 1.0)
+	var rp := _hover_part if _hover_part >= 0 else _selected
+	var want_ring := 1.0 if (rp >= 0 and rp < genome.get("parts", []).size() and not _playing) else 0.0
+	if want_ring > 0.0 and _ring_alpha <= .01:
+		handle_shown.emit("part_ring", HANDLE_FADE * 1000.0)
+	_ring_alpha = move_toward(_ring_alpha, want_ring, dt / HANDLE_FADE)
+	_ring_mat.albedo_color.a = _ring_alpha * .95
+	if want_ring > 0.0:
+		_ring_part = rp
+	_ring_green.visible = _ring_alpha > .01 and _ring_part >= 0 and _ring_part < genome.get("parts", []).size()
+	if _ring_green.visible and cam != null:
+		var ax := surface_axes(_ring_part)
+		if ax.is_empty():
+			_ring_green.visible = false
+		else:
+			var p: Dictionary = genome.parts[_ring_part]
+			var rad: float = float(p.get("w", .2)) * 2.6 if _is_leg(p.type) else .42 * float(p.get("size", 1.0))
+			var pos: Vector3 = ax.p + ax.n * .03
+			var toc: Vector3 = (cam.global_position - to_global(pos)).normalized()
+			var b := Basis.looking_at(-toc, Vector3.UP)   # torus lies in XZ: rotate so its axis faces the camera
+			b = b * Basis(Vector3.RIGHT, PI / 2)
+			_ring_green.transform = Transform3D(b.scaled(Vector3.ONE * rad), pos)
+
+## The head turns to the part that was just placed (after a short reaction delay) and the creature flexes once.
+func look_at_part(i: int) -> void:
+	_look_part = i
+	_look_wait = LOOK_DELAY
+
+## Idle breathing, head turn and one-shot pose. Visual only (bone poses on the editor skeleton); the sim never sees it.
+func _tick_alive(dt: float) -> void:
+	if creature == null or _playing:
+		_yaw = 0.0
+		return
+	_alive_t += dt
+	var br := sin(TAU * _alive_t / BREATH_PERIOD)
+	creature.scale = Vector3(1.0 + .004 * br, 1.0 + .009 * br, 1.0 + .004 * br)
+	if _look_wait >= 0.0:
+		_look_wait -= dt
+		if _look_wait < 0.0:
+			_look_hold = LOOK_HOLD
+			var goal := _look_goal()
+			_yaw_goal = goal
+			head_target_changed.emit(_look_part)
+			if _alive_t - _last_pose >= POSE_GAP:
+				_pose_t = 0.0
+				_last_pose = _alive_t
+	elif _look_hold > 0.0:
+		_look_hold -= dt
+		if _look_hold <= 0.0:
+			_yaw_goal = 0.0
+	_yaw = lerpf(_yaw, _yaw_goal, 1.0 - exp(-dt / .09))
+	var pitch := 0.0
+	if _pose_t >= 0.0:
+		_pose_t += dt
+		if _pose_t >= POSE_LEN:
+			_pose_t = -1.0
+		else:
+			pitch = -.28 * sin(PI * _pose_t / POSE_LEN)
+	var sk: Skeleton3D = creature.get("skeleton")
+	var hb: int = int(creature.get("head_bone")) if creature.get("head_bone") != null else -1
+	var neck = creature.get("neck_bones")
+	if sk == null or hb < 0 or hb >= sk.get_bone_count() or neck == null:
+		return
+	var chain: Array = []
+	for b in neck:
+		chain.append(int(b))
+	chain.append(hb)
+	var share := 1.0 / float(chain.size())
+	for b in chain:
+		if b < 0 or b >= sk.get_bone_count():
+			continue
+		var rest := sk.get_bone_rest(b)
+		var q := Basis(Vector3.UP, _yaw * share) * Basis(Vector3.RIGHT, pitch * share)
+		sk.set_bone_pose(b, Transform3D(rest.basis * q, rest.origin))
+
+## Yaw (clamped) from the head's rest direction to the part, in the head bone's own frame.
+func _look_goal() -> float:
+	var sk: Skeleton3D = creature.get("skeleton")
+	var hb: int = int(creature.get("head_bone")) if creature.get("head_bone") != null else -1
+	if sk == null or hb < 0 or _look_part < 0 or _look_part >= genome.get("parts", []).size():
+		return 0.0
+	var ax := surface_axes(_look_part)
+	if ax.is_empty():
+		return 0.0
+	var gr := sk.get_bone_global_rest(hb)
+	var dir: Vector3 = gr.basis.inverse() * ((ax.p as Vector3) - gr.origin)
+	return clampf(atan2(dir.x, dir.z), -YAW_MAX, YAW_MAX)
+
+## Probe for the scorecard.
+func sphere_count() -> int:
+	return _spheres.size() if _sphere_alpha > .5 else 0
+
+func ring_visible() -> bool:
+	return _ring_green.visible and _ring_alpha > .5
 
 func spine_alpha() -> float:
 	return _spine_alpha

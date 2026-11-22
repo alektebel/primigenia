@@ -95,6 +95,7 @@ func _init() -> void:
 	await t_ring()
 	await t_no_other_actuation_path()
 	await t_topbar()
+	await t_nest_drawer()
 	print("studio interaction tests: %d checks, %d failures" % [checks, fails])
 	quit(1 if fails > 0 else 0)
 
@@ -554,15 +555,12 @@ func _walk(n: Node, out: Array) -> void:
 			out.append(c.name)
 		_walk(c, out)
 
-# ------------------------------------------------------------------ 6 top bar layout
-## The three top clusters (file, modes, play+language) never overlap, stay inside the window and keep the modes centred,
-## at the three sizes the owner uses, in both languages. Each size gets its own studio in a SubViewport of exactly that
-## size (the project stretches the root window to 1280 logical px, which would hide the narrow case).
+# ------------------------------------------------------------------ 6 compact HUD and stage
+## Same public controls remain reachable at the owner's three window sizes, in both languages.
 func t_topbar() -> void:
 	for sz in [Vector2i(1024, 600), Vector2i(1280, 720), Vector2i(1920, 1080)]:
 		var sv := SubViewport.new()
 		sv.size = sz
-		sv.render_target_update_mode = SubViewport.UPDATE_ALWAYS
 		root.add_child(sv)
 		var st = Studio.new()
 		sv.add_child(st)
@@ -571,22 +569,74 @@ func t_topbar() -> void:
 			st.set_lang(lg)
 			await _frames(5)
 			var tag := "%dx%d %s" % [sz.x, sz.y, lg]
-			ok(st.hud.size.x == float(sz.x), "the HUD fills the window (%s: %s)" % [tag, st.hud.size])
-			var rects := {}
-			for n in ["TopFile", "TopModes", "TopPlay"]:
-				var c: Control = st.top_bar.find_child(n, true, false)
-				rects[n] = c.get_global_rect()
-				ok(Rect2(Vector2.ZERO, Vector2(sz)).encloses(rects[n]), "%s stays inside the window (%s: %s)" % [n, tag, rects[n]])
-			ok(not rects["TopFile"].intersects(rects["TopModes"]), "file cluster and modes do not overlap (%s: %s %s)" % [tag, rects["TopFile"], rects["TopModes"]])
-			ok(not rects["TopModes"].intersects(rects["TopPlay"]), "modes and play cluster do not overlap (%s)" % tag)
-			ok(not rects["TopFile"].intersects(rects["TopPlay"]), "file and play clusters do not overlap (%s)" % tag)
-			ok(rects["TopFile"].end.x + 8.0 <= rects["TopModes"].position.x and rects["TopModes"].end.x + 8.0 <= rects["TopPlay"].position.x, "at least 8 px between clusters (%s)" % tag)
-			ok(is_equal_approx(rects["TopFile"].position.y, rects["TopModes"].position.y) and is_equal_approx(rects["TopModes"].position.y, rects["TopPlay"].position.y), "the three clusters share one top line (%s)" % tag)
-			var pb: Button = st.play_creature_btn
-			ok(pb != null and rects["TopPlay"].encloses(pb.get_global_rect()), "the play button is inside its cluster (%s)" % tag)
-			if sz.x >= 1280:
-				ok(absf(rects["TopModes"].get_center().x - sz.x / 2.0) < 2.0, "the modes are centred (%s: %.1f)" % [tag, rects["TopModes"].get_center().x])
-			var ne: LineEdit = st.name_edit
-			ok(ne.size.x >= 100.0 and rects["TopFile"].encloses(ne.get_global_rect()), "the name field keeps room to type (%s: %.0f px)" % [tag, ne.size.x])
+			var screen := Rect2(Vector2.ZERO, Vector2(sz))
+			var modes: Rect2 = st.hud.get_node("TopModes").get_global_rect()
+			var dna: Rect2 = st.hud.get_node("DnaCard").get_global_rect()
+			ok(screen.encloses(modes) and screen.encloses(dna), "mode icons and budget fit (%s)" % tag)
+			ok(not modes.intersects(dna), "mode icons and budget never overlap (%s)" % tag)
+			ok(not st.right_card.visible and not st.palette_body.visible, "drawers start closed (%s)" % tag)
+			var area: float = modes.get_area() + dna.get_area() + st.palette_card.get_global_rect().get_area()
+			ok(area / screen.get_area() <= .15, "closed HUD covers at most 15 percent (%s: %.3f)" % [tag, area / screen.get_area()])
+			for mode in ["build", "paint", "test"]:
+				var b: Button = st.mode_buttons[mode]
+				ok(b.text == "" and b.icon != null and b.tooltip_text != "", "mode has an icon and localised accessible tooltip (%s %s)" % [tag, mode])
+			ok(st.play_creature_btn != null and modes.encloses(st.play_creature_btn.get_global_rect()), "play remains reachable (%s)" % tag)
+			st.set_details_open(true)
+			await _frames(3)
+			ok(st.right_card.visible and screen.encloses(st.right_card.get_global_rect()), "Details opens inside the viewport (%s)" % tag)
+			ok(st.name_edit.size.x >= 100 and st.name_edit.is_visible_in_tree(), "name remains editable in Details (%s)" % tag)
+			st.set_details_open(false)
+			st.set_palette_open(true)
+			await _frames(3)
+			ok(st.palette_body.visible and st.palette_card.size.x > 250, "parts expand on demand (%s)" % tag)
+			st.set_palette_open(false)
+			await _frames(3)
+			ok(st.palette_card.size.x <= 64, "parts collapse back to an icon strip (%s)" % tag)
+			st.frame_creature()
+			var box: AABB = st.creature_bounds()
+			var lo := INF
+			var hi := -INF
+			for i in 8:
+				var y: float = st.camera.unproject_position(box.get_endpoint(i)).y
+				lo = minf(lo, y)
+				hi = maxf(hi, y)
+			var fraction: float = (hi - lo) / st.stage.size.y
+			ok(fraction >= .5 and fraction <= .61, "starter rest bounds fill 50–60 percent (%s %.3f)" % [tag, fraction])
+			ok(st.env_node.grass == null and st.env_node.pedestal != null, "plinth has no foreground grass (%s)" % tag)
 		sv.queue_free()
 		await _frames(2)
+
+func t_nest_drawer() -> void:
+	var w := CporeWorld.new()
+	var setup := CporeWorld.default_setup(42)
+	setup.terrain = 1
+	setup.wild = []
+	setup.obstacles = []
+	ok(w.reset(setup) == 0, "nest drawer fixture resets")
+	var doc_model = preload("../model.gd").new(preload("../parts_db.gd").new())
+	doc_model.new_from_seed("Hatchling")
+	var sv := SubViewport.new()
+	sv.size = Vector2i(1024, 600)
+	root.add_child(sv)
+	var st = Studio.new()
+	st.nest_world = w
+	st.nest_genome = doc_model.doc
+	sv.add_child(st)
+	await _frames(5)
+	ok(not st.nest_panel.is_visible_in_tree(), "nest editing also starts with a quiet HUD")
+	st.set_details_open(true)
+	await _frames(3)
+	ok(st.nest_panel.is_visible_in_tree(), "Details reveals the existing nest controls")
+	ok(st.right_card.is_ancestor_of(st.nest_apply_button) and st.right_card.is_ancestor_of(st.nest_evolve_button), "Apply and Evolve remain in the scrollable drawer")
+	var scroll: ScrollContainer = st.drawer_content.get_parent()
+	scroll.ensure_control_visible(st.nest_evolve_button)
+	await _frames(3)
+	ok(st.nest_evolve_button.get_global_rect().intersects(st.right_card.get_global_rect()), "Evolve can be scrolled into view at 1024x600")
+	st.set_details_open(false)
+	await _frames(3)
+	ok(not st.nest_panel.is_visible_in_tree(), "closing Details hides all nest controls")
+	st.set_lang("en")
+	await _frames(3)
+	ok(not st.right_card.visible and st.nest_actions.size() == 3, "language rebuild preserves closed nest drawer and its actions")
+	sv.queue_free()
+	await _frames(2)

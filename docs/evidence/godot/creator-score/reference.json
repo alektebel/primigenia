@@ -33,6 +33,7 @@
    "vertebra_spheres": 0,
    "part_ring": false,
    "camera_elev_deg": 12,
+   "facing_deg": 130,
    "clutter": false,
    "note": "editor first frame, dashed spine outline, 53/255"
   },
@@ -52,6 +53,7 @@
    "vertebra_spheres": 4,
    "part_ring": false,
    "camera_elev_deg": 12,
+   "facing_deg": 130,
    "clutter": false,
    "note": "4 blue/yellow spheres appear on the spine in one frame"
   },
@@ -71,6 +73,7 @@
    "vertebra_spheres": 0,
    "part_ring": true,
    "camera_elev_deg": 12,
+   "facing_deg": 130,
    "clutter": false,
    "note": "part dragged to the body: small pale rings on the target, pink floor marker"
   },
@@ -90,6 +93,7 @@
    "vertebra_spheres": 0,
    "part_ring": true,
    "camera_elev_deg": 12,
+   "facing_deg": 130,
    "clutter": false,
    "note": "part attached 2 frames earlier, 'Sell For' tooltip, counter 55/255"
   },
@@ -109,6 +113,7 @@
    "vertebra_spheres": 3,
    "part_ring": false,
    "camera_elev_deg": 12,
+   "facing_deg": 130,
    "clutter": false,
    "note": "one yellow (active) and two blue spheres, creature posture changed"
   },
@@ -128,6 +133,7 @@
    "vertebra_spheres": 0,
    "part_ring": true,
    "camera_elev_deg": 15,
+   "facing_deg": 130,
    "clutter": false,
    "note": "big blue/white rotate gizmo ring around the part"
   },
@@ -147,6 +153,7 @@
    "vertebra_spheres": 2,
    "part_ring": false,
    "camera_elev_deg": 13,
+   "facing_deg": 140,
    "clutter": false,
    "note": "last editor frame, 118/255, creature smaller after many adds"
   }
@@ -225,6 +232,10 @@
   "ui_coverage": {
    "max": 0.15,
    "note": "brief acceptance: <= 15% with the drawer closed"
+  },
+  "facing_deg": {
+   "tol": 20.0,
+   "how": "angle between the camera forward vector and the creature forward vector (head direction). 90 = pure side view, 180 = head straight at the camera. By eye from the reference frames: the head is turned toward the viewer about 40-50 degrees off the side view, so 130 on frames 1-6 and 140 on the final frame; accepted band 120-150 (ours default 135)."
   },
   "camera_elev_deg": {
    "tol": 8.0,
