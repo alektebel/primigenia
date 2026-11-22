@@ -76,7 +76,7 @@ var current_category := "mouths"
 var lang := "es"
 
 var _yaw := 2.2                       # web studio defaults (camYaw 2.2, camPitch .14)
-var _pitch := .14
+var _pitch := .21
 var _dist := 13.0
 var _dist_goal := 13.0
 var _target := Vector3(0, 2.0, 0)     # smoothed camera target
@@ -124,6 +124,7 @@ var palette_open := false
 var details_open := false
 var details_button: Button
 var _drawer_tween: Tween
+var _paint_more := false
 var _palette_timer: Timer
 var dna_label: Label
 var dna_fill: ColorRect
@@ -310,7 +311,7 @@ func frame_creature(snap := true) -> void:
 	var old_target := _target
 	var old_dist := _dist
 	_target = _target_goal
-	_dist = maxf(.6, box.size.y / (2.0 * tan(deg_to_rad(camera.fov) / 2.0) * .55))
+	_dist = maxf(.6, box.size.y / (2.0 * tan(deg_to_rad(camera.fov) / 2.0) * .72))
 	# Perspective depth changes apparent size: solve from all eight rest-bound corners.
 	for i in 8:
 		_place_camera()
@@ -320,7 +321,7 @@ func frame_creature(snap := true) -> void:
 			var p := camera.unproject_position(box.get_endpoint(j))
 			lo = lo.min(p)
 			hi = hi.max(p)
-		var ratio := maxf((hi.y - lo.y) / (stage.size.y * .55), (hi.x - lo.x) / (free_viewport().size.x * .9))
+		var ratio := maxf((hi.y - lo.y) / (stage.size.y * .74), (hi.x - lo.x) / (free_viewport().size.x * 1.12))
 		_dist = clampf(_dist * ratio, DIST_MIN, DIST_MAX)
 	_dist_goal = _dist
 	if env_node.has_method("set_extent"):
@@ -870,6 +871,24 @@ func _rebuild_panel() -> void:
 		"test": _panel_test()
 	_sync_history()
 	_wire_presses(panel_box)
+	_fit_drawer.call_deferred()
+
+## Paint mode keeps the drawer only as tall as its compact content; every other mode uses the full-height drawer.
+func _fit_drawer() -> void:
+	if right_card == null or drawer_content == null:
+		return
+	var scroll := drawer_content.get_parent() as ScrollContainer
+	name_edit.visible = model.mode != "paint"
+	drawer_content.get_child(1).visible = model.mode != "paint"
+	if model.mode == "paint":
+		var h := drawer_content.get_combined_minimum_size().y + 20.0
+		scroll.custom_minimum_size.y = h
+		right_card.anchor_bottom = 0.0
+		right_card.offset_bottom = right_card.offset_top + h
+	else:
+		scroll.custom_minimum_size.y = 0.0
+		right_card.anchor_bottom = 1.0
+		right_card.offset_bottom = -16.0
 
 ## A24: skeleton per body, actuation per limb. Readout "Actuación: <class> - <why>" for the body and for every limb,
 ## the count of actuation types (informational: the cost is a
@@ -1138,21 +1157,32 @@ func _panel_paint() -> void:
 		cb.popup_closed.connect(func(): if _slider_tx: _slider_tx = false; model.end())
 		cols.add_child(cb)
 	panel_box.add_child(cols)
-	panel_box.add_child(_slider_row(T("Escama"), s["scale"], 3, 14, .5, func(v): model.set_skin("scale", v)))
-	panel_box.add_child(_slider_row(T("Brillo"), s["wet"], 0, 1, .01, func(v): model.set_skin("wet", v)))
+	var more_btn := Button.new()
+	more_btn.name = "PaintMore"
+	more_btn.toggle_mode = true
+	more_btn.button_pressed = _paint_more
+	more_btn.text = T("Más")
+	more_btn.pressed.connect(func(): _paint_more = more_btn.button_pressed; _queue_rebuild())
+	panel_box.add_child(more_btn)
+	var more := VBoxContainer.new()
+	more.name = "PaintMoreBox"
+	more.visible = _paint_more
+	panel_box.add_child(more)
+	more.add_child(_slider_row(T("Escama"), s["scale"], 3, 14, .5, func(v): model.set_skin("scale", v)))
+	more.add_child(_slider_row(T("Brillo"), s["wet"], 0, 1, .01, func(v): model.set_skin("wet", v)))
 	# Realism pilot controls (optional genome keys, previewed live): countershading and pattern tuning.
-	panel_box.add_child(_note(T("Biología")))
-	panel_box.add_child(_slider_row(T("Contrasombreado"), s.get("cs", .5), 0, 1, .01, func(v): model.set_skin("cs", v)))
+	more.add_child(_note(T("Biología")))
+	more.add_child(_slider_row(T("Contrasombreado"), s.get("cs", .5), 0, 1, .01, func(v): model.set_skin("cs", v)))
 	if int(s["pat"]) > 0:
-		panel_box.add_child(_slider_row(T("Tamaño del dibujo"), s.get("ps", 1.0), .5, 2, .05, func(v): model.set_skin("ps", v)))
-		panel_box.add_child(_slider_row(T("Contraste del dibujo"), s.get("pc", 1.0), 0, 1, .01, func(v): model.set_skin("pc", v)))
+		more.add_child(_slider_row(T("Tamaño del dibujo"), s.get("ps", 1.0), .5, 2, .05, func(v): model.set_skin("ps", v)))
+		more.add_child(_slider_row(T("Contraste del dibujo"), s.get("pc", 1.0), 0, 1, .01, func(v): model.set_skin("pc", v)))
 	if int(s["pat"]) == 2:
 		var ros := CheckBox.new()
 		ros.text = T("Rosetas")
 		ros.name = "Rosettes"
 		ros.button_pressed = int(s.get("ros", 0)) == 1
 		ros.toggled.connect(func(on): model.set_skin("ros", 1 if on else 0))
-		panel_box.add_child(ros)
+		more.add_child(ros)
 	panel_box.add_child(HSeparator.new())
 	panel_box.add_child(_h2(T("Combinaciones")))
 	var chips := HFlowContainer.new()
@@ -1227,7 +1257,7 @@ func set_mode(m: String) -> void:
 		mode_buttons[k].set_pressed_no_signal(k == m)
 	_set_hint("")
 	if palette_card != null:               # the palette only works while building
-		palette_card.modulate = Color.WHITE if m == "build" else Color(1, 1, 1, .4)
+		palette_card.modulate = Color.WHITE if m == "build" else Color(1, 1, 1, 0.0)
 		palette_card.mouse_filter = Control.MOUSE_FILTER_STOP if m == "build" else Control.MOUSE_FILTER_IGNORE
 	set_palette_open(false)
 	set_details_open(m != "build")

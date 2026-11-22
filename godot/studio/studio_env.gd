@@ -37,7 +37,7 @@ func _init(_blade_count := 0) -> void:
 	e.sky = sky
 	e.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
 	e.ambient_light_color = Color("c1d4df")
-	e.ambient_light_energy = .65
+	e.ambient_light_energy = .32
 	e.tonemap_mode = Environment.TONE_MAPPER_FILMIC
 	e.fog_enabled = true
 	e.fog_mode = Environment.FOG_MODE_DEPTH
@@ -49,7 +49,7 @@ func _init(_blade_count := 0) -> void:
 	sun = DirectionalLight3D.new()
 	sun.rotation_degrees = Vector3(-38, -35, 0)
 	sun.light_color = Color("fff0d7")
-	sun.light_energy = 1.05
+	sun.light_energy = .72
 	sun.shadow_enabled = true
 	sun.directional_shadow_max_distance = 35.0
 	sun.directional_shadow_blend_splits = true
@@ -57,21 +57,21 @@ func _init(_blade_count := 0) -> void:
 	var rim := DirectionalLight3D.new()
 	rim.rotation_degrees = Vector3(-25, 145, 0)
 	rim.light_color = Color("c7e2ed")
-	rim.light_energy = .65
+	rim.light_energy = .4
 	add_child(rim)
 	ground = MeshInstance3D.new()
 	var plane := PlaneMesh.new()
 	plane.size = Vector2(1500, 1500)
 	ground.mesh = plane
-	ground.material_override = _mat(Color("71816a"))
+	ground.material_override = _mat(Color("55603f"))
 	ground.position.y = -.38
 	add_child(ground)
 	pedestal = Node3D.new()
 	pedestal.name = "Pedestal"
 	add_child(pedestal)
-	_disc(1.0, .16, -.08, Color("b5b9af"))
-	_disc(1.04, .09, -.205, Color("88978e"))
-	_disc(1.09, .12, -.31, Color("a0aaa0"))
+	_disc(1.0, .16, -.08, Color("7d7f78"))
+	_disc(1.04, .09, -.205, Color("5f6862"))
+	_disc(1.09, .12, -.31, Color("72786f"))
 	_build_mountains()
 	_build_trees()
 
