@@ -232,12 +232,13 @@ func _hunt() -> void:
 		if target < 0:
 			break
 		var e: Dictionary = ent(target)
-		say("walk to creature #%d at %.0f m" % [target, dist_to(target)])
-		await walk_to(Vector2(float(e.x), float(e.z)), 7.0, 1500, func(): return int(state().active) >= 0)
-		if int(state().active) < 0:
-			sui.select_id(target)
-			ui.set_mode(&"attack")
-			ui._press(0)                          # key 1: the move in slot 1 (bite); the stage re-sends it every tick
+		say("lock creature #%d at %.0f m" % [target, dist_to(target)])
+		# verb first, then the creature: F arms Attack, a click locks it; the stage pursues and starts the fight by itself
+		_key(KEY_F)
+		if int(state().active) < 0 and not sui.lock_target(target):
+			say("could not lock #%d" % target)
+		var p0 := tick()
+		await until(func(): return int(state().active) >= 0 or bool(ent(target).dead) or tick() - p0 > 1500 or task_ticks.has("hunt"), 20000)
 		# fight until it ends
 		var f0 := tick()
 		while tick() - f0 < 700 and not task_ticks.has("hunt"):
@@ -289,14 +290,13 @@ func _friend() -> void:
 		if target < 0:
 			break
 		var e: Dictionary = ent(target)
-		say("walk to #%d (species %d) at %.0f m" % [target, int(e.species), dist_to(target)])
-		await walk_to(Vector2(float(e.x), float(e.z)), 9.0, 1800, func(): return task_ticks.has("friend") or int(state().active) >= 0)
+		say("lock #%d (species %d) at %.0f m" % [target, int(e.species), dist_to(target)])
 		if int(state().active) >= 0:
 			# something started a fight: finish it with the bite, then carry on
 			await _fight_out(t0)
 			continue
-		sui.select_id(target)
-		ui.set_mode(&"befriend")
+		_key(KEY_B)                               # B arms Befriend; the click locks the creature and the stage walks up to it
+		sui.lock_target(target)
 		var step := 0
 		var last_trust := -1
 		var stuck := 0
@@ -304,20 +304,20 @@ func _friend() -> void:
 			var en: Dictionary = ent(target)
 			if bool(en.dead):
 				break
-			var d := dist_to(target)
-			if d > 14.0:
-				island.player_input.set_destination(Vector2(float(en.x), float(en.z)))
+			if sui.locked_id != target:
+				_key(KEY_B)
+				sui.lock_target(target)             # the pursuit was cancelled (a fight, a move key): lock it again
 			var act: Dictionary = state().social.action
-			if int(act.verb) == 0 and int(state().order.verb) not in [11, 12]:
+			if int(act.verb) == 0 and int(state().order.verb) not in [11, 12] and dist_to(target) < 8.0:     # the pursuit walks up; the beat keys are for when it is near
 				var trust := int(en.trust)
 				if trust == last_trust:
 					stuck += 1
 				else:
 					stuck = 0
 				last_trust = trust
-				if sui.selected_id != target:
-					sui.select_id(target)
-					ui.set_mode(&"befriend")
+				if sui.selected_id != target or ui.mode != &"befriend":
+					_key(KEY_B)
+					sui.lock_target(target)
 				# give a gift now and then (the body keeps two leaves and two fruits), else a skill on the beat
 				if int(en.beat_in) <= 1:
 					var k := step % 4
@@ -434,11 +434,25 @@ func _fire() -> void:
 			added = true
 	check(added, "the gland is on the body in the editor")
 	await _shot("task5_editor_gland")
+	var cost_txt: String = editor.nest_cost.text
+	var cost_n := 0
+	for tok in cost_txt.split(" "):
+		if tok.is_valid_int():
+			cost_n = int(tok)
+			break
+	var dna_pre := int(state().social.dna_balance)
 	editor.nest_evolve_button.pressed.emit()                  # Evolve (confirm)
 	await frames(30)
+	check(int(state().social.dna_balance) == dna_pre - cost_n, "the evolve spent exactly its price: %d DNA of %d ('%s')" % [cost_n, dna_pre, cost_txt])
 	check(editor == null or not is_instance_valid(editor) or editor.is_queued_for_deletion() or _editor() == null, "the editor closed after the evolution")
 	check(int(state().loadout.known) & (1 << 14) != 0, "the flamethrower is a known move (%d)" % int(state().loadout.known))
 	var slot := int(state().loadout.slots.find(14))
+	if slot < 0:
+		# a starter with four moves already (starter B) keeps them: the player puts the flame in slot 4 at the nest, as the loadout panel does
+		await walk_to(island._nest, 6.0, 2500)       # the loadout is only editable at the nest
+		sui.assign_loadout(3, 14)
+		await ticks(5)
+		slot = int(state().loadout.slots.find(14))
 	check(slot >= 0, "the flamethrower sits in loadout slot %d" % (slot + 1))
 	await _shot("task5_after_evolve")
 	# use it: a creature to burn, then key 3 (its slot)
@@ -458,10 +472,11 @@ func _fire() -> void:
 		if target < 0:
 			break
 		var e2: Dictionary = ent(target)
-		say("walk to #%d for the flame" % target)
-		await walk_to(Vector2(float(e2.x), float(e2.z)), 4.0, 1500, func(): return int(state().active) >= 0)
-		sui.select_id(target)
-		ui.set_mode(&"attack")
+		say("lock #%d for the flame" % target)
+		_key(KEY_F)
+		sui.lock_target(target)
+		var pf := tick()
+		await until(func(): return int(state().active) >= 0 or dist_to(target) < 5.0 or tick() - pf > 1500, 20000)
 		var f0 := tick()
 		var flame_shot := false
 		while tick() - f0 < 160 and not task_ticks.has("fire"):

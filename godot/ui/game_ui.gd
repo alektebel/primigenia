@@ -25,6 +25,9 @@ const Onboarding := preload("res://ui/onboarding.gd")
 const LoadoutSheet := preload("res://ui/loadout_sheet.gd")
 const QuestCard := preload("res://ui/quest_card.gd")
 const DigChip := preload("res://ui/dig_chip.gd")
+const VerbBar := preload("res://ui/verb_bar.gd")
+const TargetMarker := preload("res://ui/target_marker.gd")
+const NestPrompt := preload("res://ui/nest_prompt.gd")
 
 signal mode_changed(mode: StringName)
 signal ability_pressed(index: int, ability: Dictionary)
@@ -43,6 +46,8 @@ signal family_tree_requested
 signal nest_requested
 signal loadout_requested             # key L / the panel's own close: the stage decides whether the nest allows it
 signal loadout_assign(slot: int, move: int)   # slot 0..3, move id or -1
+signal verb_armed(mode: StringName)  # the verb bar or its key: pick this verb, then a creature
+signal verb_cancelled                 # Esc: drop the armed verb and the locked target
 
 ## No mode until the player chooses one on the ring (a fight starts in Attack).
 var mode: StringName = Modes.NONE
@@ -67,6 +72,9 @@ var journal
 var onboarding
 var loadout_panel
 var dig_chip                        # DigChip: the dig entry at the player's feet
+var verb_bar                        # VerbBar: Attack, Befriend, Eat, Observe, Intimidate (verb first, then the creature)
+var marker                          # TargetMarker: red or green arrows on the locked creature
+var nest_prompt                     # NestPrompt: "E: Edit creature" while inside the nest radius
 signal dig_pressed
 var quest_card                      # QuestCard: the task note, top-left (first-quest)
 var loadout_abilities: Array = []   # the 4 hotbar entries of Attack mode once the stage knows the loadout
@@ -79,6 +87,8 @@ var anchor_fn := Callable():
 		anchor_fn = v
 		if bars != null:
 			bars.anchor_fn = v
+		if marker != null:
+			marker.anchor_fn = v
 var fight := false
 var player_name := ""
 var dying := false
@@ -122,6 +132,18 @@ func _ready() -> void:
 	root.add_child(bars)
 	bars.anchor_fn = anchor_fn
 	bars.camera = camera
+	marker = TargetMarker.new()
+	root.add_child(marker)
+	marker.camera = camera
+	marker.anchor_fn = anchor_fn
+	nest_prompt = NestPrompt.new()
+	root.add_child(nest_prompt)
+	nest_prompt.pressed.connect(func() -> void: nest_requested.emit())
+	verb_bar = VerbBar.new()
+	root.add_child(verb_bar)
+	verb_bar.verb_chosen.connect(func(m: StringName) -> void:
+		ui_click.emit()
+		verb_armed.emit(m))
 	words = Words.new()
 	root.add_child(words)
 	motes = Motes.new()
@@ -179,6 +201,8 @@ func set_camera(cam: Camera3D) -> void:
 	ring_fx.camera = cam
 	if bars != null:
 		bars.camera = cam
+	if marker != null:
+		marker.camera = cam
 
 func set_ground_marks(gm) -> void:
 	ground_marks = gm
@@ -486,6 +510,13 @@ func _profile__process(dt: float) -> void:
 	var book: float = journal.modulate.a if journal.visible else 0.0     # the signs and the map step back behind the open book
 	signs.fade_all = maxf(veil.death, book)
 	minimap.modulate.a = 1.0 - book
+	marker.label_dx = (petals.petal_radius() / maxf(Style.u(1.0), 0.001) + 26.0) if petals.visible else 22.0
+	note.modulate.a = 0.0 if marker.locked_id >= 0 else 1.0      # the marker carries the name and relation of a locked target
+	var calm: bool = not (paused or journal.visible or stub.open or dying or loadout_panel.visible_open)
+	verb_bar.visible = calm
+	nest_prompt.want = calm and loadout_available and not fight and not dying
+	nest_prompt.modulate.a = 1.0 if calm else 0.0
+	marker.visible = calm
 	quest_card.hide_now = paused or journal.visible or stub.open or dying or loadout_panel.visible_open
 	if not selected.is_empty():
 		_track_ring()
@@ -540,13 +571,15 @@ func _unhandled_input(e: InputEvent) -> void:
 			get_viewport().set_input_as_handled()
 		return
 	if e is InputEventMouseButton or e is InputEventMouseMotion:
-		if dig_chip.handle_input(e) or signs.handle_input(e) or ring.handle_input(e) or petals.handle_input(e) or defence.handle_input(e):
+		if nest_prompt.handle_input(e) or verb_bar.handle_input(e) or dig_chip.handle_input(e) or signs.handle_input(e) or ring.handle_input(e) or petals.handle_input(e) or defence.handle_input(e):
 			get_viewport().set_input_as_handled()
 		return
 	if not (e is InputEventKey) or not e.pressed or e.echo:
 		return
 	if e.is_action_pressed("pause_menu"):
-		if ring.visible:
+		if verb_bar.armed != Modes.NONE or marker.locked_id >= 0:
+			verb_cancelled.emit()      # Esc drops the armed verb and the locked target first
+		elif ring.visible:
 			ring.close()               # Esc closes the ring first (the selection stays)
 		elif not selected.is_empty():
 			clear_selection()          # then deselects; a third Esc opens the menu
@@ -554,6 +587,11 @@ func _unhandled_input(e: InputEvent) -> void:
 			set_paused(true)
 		get_viewport().set_input_as_handled()
 		return
+	for slot in VerbBar.SLOTS:
+		if e.is_action_pressed(slot.action):
+			verb_armed.emit(slot.mode)         # a key press arms at once: no animation on keyboard actions
+			get_viewport().set_input_as_handled()
+			return
 	if e.is_action_pressed("quest_card"):
 		quest_card.toggle()        # a key press folds it at once: no animation on keyboard-triggered actions
 		return
@@ -580,6 +618,8 @@ func _unhandled_input(e: InputEvent) -> void:
 	if e.is_action_pressed("guard"):
 		onboarding.notify("guard")
 		guard_pressed.emit()
+	elif e.is_action_pressed("dodge_right") and loadout_available and not fight:
+		nest_requested.emit()          # E at the nest: edit the creature (nothing to dodge here)
 	elif e.is_action_pressed("dodge_left"):
 		onboarding.notify("guard")
 		dodge_pressed.emit(-1)
