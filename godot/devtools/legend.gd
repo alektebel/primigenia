@@ -97,13 +97,13 @@ static func rows(context: StringName, dev_enabled: bool) -> Array:
 		out.append({"label": e.label, "keys": keys, "group": e.group, "action": a,
 			"corner": context in e.get("corner", []), "dev": bool(e.get("dev", false)), "fixed": false})
 	for f in s.get("fixed", []):
-		if context in f.get("contexts", []):
-			out.append({"label": f.label, "keys": f.keys, "group": f.group, "action": "", "corner": false, "dev": false, "fixed": true})
+		if context in f.get("contexts", []) and not (bool(f.get("dev", false)) and not dev_enabled):
+			out.append({"label": f.label, "keys": f.keys, "group": f.group, "action": "", "corner": false, "dev": bool(f.get("dev", false)), "fixed": true})
 	# Mouse gestures: not InputMap actions (drag thresholds, wheel, double click), listed from the spec.
 	for g in s.get("gestures", []):
-		if context in g.get("contexts", []):
+		if context in g.get("contexts", []) and not (bool(g.get("dev", false)) and not dev_enabled):
 			out.append({"label": g.label, "keys": g.keys, "group": g.group, "action": "", "corner": context in g.get("corner", []),
-				"dev": false, "fixed": false, "gesture": true})
+				"dev": bool(g.get("dev", false)), "fixed": false, "gesture": true})
 	return out
 
 static func corner_rows(context: StringName, dev_enabled: bool) -> Array:

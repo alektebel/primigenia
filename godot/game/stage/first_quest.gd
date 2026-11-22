@@ -120,6 +120,7 @@ func _complete(id: String, state: Dictionary) -> void:
 		_pending.append(Strings.t("quest_done_whisper"))
 	ui.show_moment(Strings.t("quest_task_done", [quest.text_of(step.title, lang)]), "journal")
 	task_done.emit(id)
+	Game.loop_event.emit("quest_done:" + id, {})
 
 ## The journal's Tareas page: [{title, hint, done, status: done|now|later, reward}] in chain order.
 func task_rows() -> Array:

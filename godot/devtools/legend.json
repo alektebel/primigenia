@@ -60,7 +60,11 @@
     {"label": "Observe (north of the ring)", "keys": "Click north", "group": "Menus", "contexts": ["radial"], "corner": ["radial"]},
     {"label": "Befriend (west half of the ring)", "keys": "Click west", "group": "Menus", "contexts": ["radial"], "corner": ["radial"]},
     {"label": "Intimidate (south of the ring)", "keys": "Click south", "group": "Menus", "contexts": ["radial"], "corner": ["radial"]},
-    {"label": "Attack / Eat (east half of the ring)", "keys": "Click east", "group": "Menus", "contexts": ["radial"], "corner": ["radial"]}
+    {"label": "Attack / Eat (east half of the ring)", "keys": "Click east", "group": "Menus", "contexts": ["radial"], "corner": ["radial"]},
+    {"label": "Owner question card: answer (a card is on screen)", "keys": "1-4 (card)", "group": "Dev tools", "dev": true, "contexts": ["walk", "fight"]},
+    {"label": "Owner question: free text (Enter saves)", "keys": "T (card)", "group": "Dev tools", "dev": true, "contexts": ["walk", "fight"]},
+    {"label": "Owner question: show the thing it asks about (again puts it back)", "keys": "Tab (card)", "group": "Dev tools", "dev": true, "contexts": ["walk", "fight"]},
+    {"label": "Owner question: add a note / answer later / dismiss for this session", "keys": "N / L / Esc (card)", "group": "Dev tools", "dev": true, "contexts": ["walk", "fight"]}
   ],
   "fixed": [
     {"label": "Undo", "keys": "Ctrl+Z", "group": "Studio", "contexts": ["studio"]},
