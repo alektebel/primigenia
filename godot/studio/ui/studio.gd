@@ -28,6 +28,12 @@ var nest_apply_button: Button
 var play_creature_btn: Button
 var nest_evolve_button: Button
 signal exit_requested
+## Test hook for the creator scorecard (tools/creator, studio/tests/creator_replay.gd): the editor reports what the player can see.
+## Names: part_placed, drop_ring, handle_shown {kind}, puff_spawned, cost_popup_shown, cost_popup_hidden, head_target_changed.
+## Only part_placed, drop_ring and handle_shown (spine arrows) exist today; the creator-flow branch emits the rest through creator_ev().
+signal creator_event(ev_name: String, data: Dictionary)
+func creator_ev(ev_name: String, data := {}) -> void:
+	creator_event.emit(ev_name, data)
 
 var nest_world: RefCounted
 var nest_genome: Dictionary = {}
@@ -1454,6 +1460,8 @@ func _finish_new_drag(pos: Vector2) -> void:
 func _dropped(idx: int, point: Vector3) -> void:
 	view.pulse_part(idx)
 	_drop_fx = {"point": point, "t": 0.0}
+	creator_ev("part_placed", {"idx": idx})
+	creator_ev("drop_ring", {"idx": idx})
 	_click()
 
 func _over_hud(global_pos: Vector2) -> bool:
@@ -1651,7 +1659,10 @@ func _stage_motion(e: InputEventMouseMotion) -> void:
 				view.set_bead_hot(bead)
 				_arrow_hot = arrow
 				# the arrows sit just beyond the body: stay in "spine hover" while travelling to them
+				var was_hover := _spine_hover
 				_spine_hover = over_body or arrow != "" or (_spine_hover and _arrow_at(pos, ARROW_NEAR_PX) != "")
+				if _spine_hover and not was_hover:
+					creator_ev("handle_shown", {"kind": "spine_arrows"})
 				view.set_spine_visible(_spine_hover)
 				if _pending_type != "":
 					stage.mouse_default_cursor_shape = Control.CURSOR_CAN_DROP if not view.hit_body(r[0], r[1]).is_empty() else Control.CURSOR_FORBIDDEN
