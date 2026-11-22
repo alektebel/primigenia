@@ -28,12 +28,12 @@ func run(t) -> void:
 	t.eq(z.runners.size(), 2, "two runners")
 	var max_w := [0.0, 0.0]
 	var min_r := [1e9, 1e9]
-	for tick in 700:
+	for tick in 1800:    # A39: a 2 m/s walk needs longer than the old 5 m/s jog
 		z.step_ticks(1)
 		for i in 2:
 			var s: Dictionary = z.stats(i)
 			max_w[i] = maxf(max_w[i], absf(s.omega))
-			if s.speed > 3.0 and absf(s.omega) > 0.5:
+			if s.speed > 0.6 and absf(s.omega) > 0.2:
 				min_r[i] = minf(min_r[i], s.turn_radius)
 	t.check(max_w[0] > max_w[1] + 0.3, "the mite turns faster than the giant (%.2f vs %.2f rad/s)" % [max_w[0], max_w[1]])
 	t.check(min_r[1] > min_r[0], "the giant's tightest turn radius is wider (%.1f vs %.1f m)" % [min_r[1], min_r[0]])
@@ -74,7 +74,7 @@ func run(t) -> void:
 	zs.build()
 	var sw_walk = zw.runners[0].sw
 	var sw_run = zs.runners[0].sw
-	for tick in 120:
+	for tick in 50:      # a short straight start: the figure eight loops back at higher speeds
 		zw.step_ticks(1)
 		zs.step_ticks(1)
 	var d_walk: float = Vector2(zw.stats(0).x - Course.lane_x(0, 1), zw.stats(0).z - Course.START_Z).length()

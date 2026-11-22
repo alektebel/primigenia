@@ -16,8 +16,8 @@ class ErrorLog extends Logger:
 			errors.append("%s:%d %s %s" % [file.get_file(), line, code, rationale])
 
 # Tick budgets per task (the whole chain must fit in TOTAL), at 10 ticks per second of game time.
-const BUDGET := {"hunt": 7000, "friend": 7500, "dig": 1200, "wings": 3750, "fire": 3750}   # x1.5 for the A39 walk speeds (2 m/s hero, run Fr 1.5)
-const TOTAL := 21000
+const BUDGET := {"hunt": 15000, "friend": 12000, "dig": 2500, "wings": 6000, "fire": 6000}   # A39: a body walks at Fr 0.24 (the starter about 1 m/s) and runs at Fr 1.5, so the bot needs about 2.5x the old ticks
+const TOTAL := 40000
 var TIMESCALE := 16.0
 
 var checks := 0

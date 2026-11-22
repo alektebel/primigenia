@@ -320,7 +320,7 @@ func _stage() -> void:
 	for l in player.body.legs:
 		lowest = minf(lowest, l.foot.global_position.y - game.visual_ground(l.foot.global_position.x, l.foot.global_position.z))
 	check(lowest > -0.03, "feet are on the visible ground, Game.visual_ground (lowest %.1f mm relative)" % (lowest * 1000.0))
-	check(absf(player.position.y - game.ground(player.position.x, player.position.z)) < 0.05, "the actor stands on Game.ground")
+	check(absf(player.position.y - game.ground(player.position.x, player.position.z)) < 0.25, "the actor stands on Game.ground (within the owner style sprawl crouch, A42)")
 
 	print("== pause menu: save game / load game")
 	var Scenario = load("res://devtools/scenario.gd")
