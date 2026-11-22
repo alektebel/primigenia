@@ -26,7 +26,8 @@ Owner's machine: the RTX was capped at 15 W (power profile 'balanced'); `powerpr
 |---|---|---|
 | `anim/speed-gait` | **Running** (Sonnet): A39 speed by size in C (2 m/s walk, run Fr 1.5) + gait lab port; brief in branch | Review scorecard, winnability, merge |
 | `devtools/owner-questions` | **Running** (Sonnet): in-game question cards, starter B (A40), seaweeds on sea (A41) | Review, merge |
-| (Opus plan) | **Running**: creature-stage loop beat-by-beat, loop scorecard, tuning backlog, first owner questions | Turn into briefs |
+| (plan) | **Done**: `docs/plans/creature-loop.md` (beats, loop scorecard, T1–T15, waves) + `docs/plans/creature-loop-questions.json` | Wave 1: T1 after owner-q, T5 after owner-q |
+| `perf/load-time` | **T2 running** (Codex, cannot commit): honest stall log, shader warm-up under the veil, one build per species, plan once, nav overlap | Commit, review; owner measures on the RTX |
 | `w11-alpine` | **closed 2026-11-22 (owner, A41)**: drainage unfinished, rewrote terrain v4; branch kept for reference | — |
 | `anim/gait-lab` | **merged fa67103**: lab confirms wrong gait selection at 5.1 m/s; port rules in `docs/evidence/loco/gaitlab.md`. Owner: "2 m/s seems the sweet spot" (noted on D-26) | Port to loco_gait.gd + D-26 speed once the owner confirms |
 | `devtools/options` | **merged d6162ea**: F10 option mode + Shift+F8 notes (`tools/feedback/notes.py list`); devtools 1084/0. Follow-up: HUD text hard to read on bright backgrounds | Owner tries DT-OPT, DT-NOTES |
