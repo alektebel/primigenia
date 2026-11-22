@@ -444,6 +444,12 @@ func _fire() -> void:
 	check(editor == null or not is_instance_valid(editor) or editor.is_queued_for_deletion() or _editor() == null, "the editor closed after the evolution")
 	check(int(state().loadout.known) & (1 << 14) != 0, "the flamethrower is a known move (%d)" % int(state().loadout.known))
 	var slot := int(state().loadout.slots.find(14))
+	if slot < 0:
+		# a starter with four moves already (starter B) keeps them: the player puts the flame in slot 4 at the nest, as the loadout panel does
+		await walk_to(island._nest, 6.0, 2500)       # the loadout is only editable at the nest
+		sui.assign_loadout(3, 14)
+		await ticks(5)
+		slot = int(state().loadout.slots.find(14))
 	check(slot >= 0, "the flamethrower sits in loadout slot %d" % (slot + 1))
 	await _shot("task5_after_evolve")
 	# use it: a creature to burn, then key 3 (its slot)

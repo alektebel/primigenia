@@ -35,7 +35,7 @@ func run(t) -> void:
 	var bar = VerbBar.new()
 	bar.size = Vector2(1280, 720)
 	t.eq(VerbBar.SLOTS.map(func(s): return s.mode), [Modes.ATTACK, Modes.BEFRIEND, Modes.EAT, Modes.OBSERVE, Modes.INTIMIDATE], "bar: Attack, Befriend, Eat, Observe, Intimidate")
-	t.check(bar.slot_pos(2).distance_to(Vector2(640, bar.slot_pos(2).y)) < 1.0, "bar: the middle circle is centred")
+	t.check(bar.slot_pos(0).x == bar.slot_pos(4).x and bar.slot_pos(0).x < 100.0 and bar.slot_pos(4).y > bar.slot_pos(0).y, "bar: a column on the left edge")
 	for i in 5:
 		t.eq(bar.slot_at(bar.slot_pos(i)), i, "bar: circle %d is hit at its centre" % i)
 	t.eq(bar.slot_at(Vector2(10, 10)), -1, "bar: a click elsewhere is a world click")
