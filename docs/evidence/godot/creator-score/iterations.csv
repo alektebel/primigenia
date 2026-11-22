@@ -1,0 +1,2 @@
+date,label,change,score_pass,score_total,gate_studio,gate_ui,gate_first_quest,frame_ms_median,decision,note
+2026-11-22,baseline,"main (claude/v0.1-restore base) + test hooks only",16,56,pass,pass,fail,53.3,baseline,"first-quest e2e already fails 5/29 checks on main here (flamethrower slot, canvas polygon errors): gate baseline is fail, so only pass->fail of the other gates counts as a regression"
