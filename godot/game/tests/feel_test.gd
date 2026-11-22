@@ -489,14 +489,14 @@ class Gates:
 		var j: Dictionary = c.jog
 		var sp: Dictionary = c.sprint
 		# S2: the C motion rule
-		t.check(absf(j.top_speed - 5.2) <= 0.05, "jog top speed 5.2 m/s (%.3f)" % j.top_speed)
-		t.check(absf(sp.top_speed - 8.84) <= 0.05, "sprint top speed 8.84 m/s (%.3f)" % sp.top_speed)
+		t.check(absf(j.top_speed - 1.989) <= 0.05, "jog top speed 1.99 m/s (A39: Fr 0.24, hero h 1.68 m) (%.3f)" % j.top_speed)
+		t.check(absf(sp.top_speed - 4.972) <= 0.05, "sprint top speed 4.97 m/s (A39: Fr 1.5) (%.3f)" % sp.top_speed)
 		t.check(j.t90 <= 0.4 + 1e-6, "jog t90 <= 0.4 s (%.2f)" % j.t90)
 		t.check(sp.t90 <= 0.6 + 1e-6, "sprint t90 <= 0.6 s (%.2f)" % sp.t90)
 		t.check(j.peak_accel <= 15.01 and sp.peak_accel <= 15.01, "peak acceleration <= 15 m/s2 (%.2f, %.2f)" % [j.peak_accel, sp.peak_accel])
 		t.check(j.turn90_time <= 1.0 + 1e-6, "90 degree turn at jog <= 1.0 s (yaw inertia, was 0.8) (%.2f)" % j.turn90_time)
-		t.check(j.circle_radius >= 1.5, "tightest circle at jog >= 1.5 m (%.2f)" % j.circle_radius)
-		t.check(sp.circle_radius >= 2.5, "tightest circle at sprint >= 2.5 m (%.2f)" % sp.circle_radius)
+		t.check(j.circle_radius >= 0.5, "tightest circle at jog >= 0.5 m (a 2 m/s walk turns tighter than the old 5.2 m/s jog, A39) (%.2f)" % j.circle_radius)
+		t.check(sp.circle_radius >= 1.0, "tightest circle at sprint >= 1.0 m (%.2f)" % sp.circle_radius)
 		t.check(j.reverse_face_time <= 1.2 + 1e-6 and j.reverse_back90_time <= 1.3 + 1e-6, "reversal at jog: facing %.1f s, 90 %% speed back %.1f s" % [j.reverse_face_time, j.reverse_back90_time])
 		t.check(j.reverse_overshoot <= 0.6, "reversal overshoot <= 0.6 m (%.2f)" % j.reverse_overshoot)
 		t.check(j.stop_time <= 0.8 and j.stop_distance <= 0.6, "stop from jog <= 0.8 s and 0.6 m (%.2f s, %.2f m)" % [j.stop_time, j.stop_distance])
@@ -528,4 +528,4 @@ class Gates:
 			t.check(sc[k].cam_yaw_acc_max <= 6.0 + 0.05, "%s: camera yaw acceleration %.2f rad/s2 <= 6" % [k, sc[k].cam_yaw_acc_max])
 			t.check(sc[k].cam_lag_max <= 1.0, "%s: camera target lag %.2f m <= 1.0 even in transients" % [k, sc[k].cam_lag_max])
 		t.check(sc.S.cam_yaw_travel_deg <= 200.0, "S held: camera yaw travel %.0f deg <= 200" % sc.S.cam_yaw_travel_deg)
-		t.check(sc.sprint.max_speed >= 8.7 and sc.sprint.cam_lag_steady <= 0.5, "sprint %.2f m/s: steady camera lag %.3f m <= 0.5" % [sc.sprint.max_speed, sc.sprint.cam_lag_steady])
+		t.check(sc.sprint.max_speed >= 4.9 and sc.sprint.cam_lag_steady <= 0.5, "sprint %.2f m/s: steady camera lag %.3f m <= 0.5" % [sc.sprint.max_speed, sc.sprint.cam_lag_steady])

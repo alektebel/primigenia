@@ -105,7 +105,7 @@ int main(int argc,char **argv){
         sum+=ms;
         const int wps=world.n_path;
         int ticks=0;
-        while(ticks<12000&&world.order.verb==CP_STAGE_GO){
+        while(ticks<120000&&world.order.verb==CP_STAGE_GO){
             cp_stage_step(&world,NULL);
             ticks++;
         }

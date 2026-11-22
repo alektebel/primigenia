@@ -287,11 +287,13 @@ static CpStageInput heading_to(float x,float z,int sprint){
     a.verb=CP_STAGE_HEADING;a.hx=(int16_t)lroundf(x/s*32767);a.hz=(int16_t)lroundf(z/s*32767);a.sprint=sprint;
     return a;
 }
+/* speed by body size (A39): v = sqrt(Fr g h), h = 0.56 * body radius */
+static float law_speed(float fr,const CpCombatProfile *p){return sqrtf(fr*9.81f*.56f*cp_combat_body_radius(p));}
 static void motion_law(void) {
     const CpStageMotion *m=&CP_STAGE_MOTION;
     for(int sprint=0;sprint<2;sprint++) {
         reset();setup.n=0;setup.player.radius_cm=340;assert(cp_stage_reset(&w,&setup)==0);
-        float jog=setup.player.speed*m->jog_k,top=sprint?jog*m->sprint_k:jog,old=0,last_dyaw_limit=.7f;
+        float jog=law_speed(.24f,&setup.player)*m->jog_k,top=sprint?law_speed(m->sprint_k,&setup.player)*m->jog_k:jog,old=0,last_dyaw_limit=.7f;
         int t90=-1;
         CpStageInput a=heading_to(w.player.fx,w.player.fz,sprint);
         for(int i=1;i<=40;i++) {
@@ -306,7 +308,7 @@ static void motion_law(void) {
     }
     /* A reversal at full jog is a skid, not a turret spin: the pivot flag stays off while v > pivot_v. */
     reset();setup.n=0;setup.player.radius_cm=340;assert(cp_stage_reset(&w,&setup)==0);
-    float jog=setup.player.speed*m->jog_k;
+    float jog=law_speed(.24f,&setup.player)*m->jog_k;
     CpStageInput a=heading_to(w.player.fx,w.player.fz,0);
     for(int i=0;i<30;i++)cp_stage_step(&w,&a);
     float fx0=w.player.fx,fz0=w.player.fz;
@@ -334,7 +336,8 @@ static void motion_law(void) {
     for(int i=0;i<ticks;i++)cp_stage_step(&w,&a);
     ok=w.player.fx*fx0+w.player.fz*fz0<-.98f;
     assert(ok);
-    /* Radius of a held heading 90 degrees off, at jog, radius_cm 340: at least 1.4 m. */
+    /* Radius of a held heading 90 degrees off, at jog, radius_cm 340. The radius is v / yaw rate, and v is now the hero's 2 m/s walk
+     * (Fr 0.24, A39) instead of 5.2 m/s, so it fell from 1.4 m to ~0.6 m: a walking body turns tighter than a running one. At least 0.5 m. */
     reset();setup.n=0;setup.player.radius_cm=340;assert(cp_stage_reset(&w,&setup)==0);
     a=heading_to(w.player.fx,w.player.fz,0);
     for(int i=0;i<30;i++)cp_stage_step(&w,&a);
@@ -345,8 +348,8 @@ static void motion_law(void) {
         cp_stage_step(&w,&a);
         if(i>=20){rate+=acosf(fminf(1,fmaxf(-1,fx*w.player.fx+fz*w.player.fz)))/.1f/10;sp+=w.player.speed/10;}
     }
-    assert(sp/rate>=1.4f);
-    printf("world motion law: jog %.2f sprint %.2f, circle radius %.2f m\n",jog,jog*m->sprint_k,sp/rate);
+    assert(sp/rate>=.5f);
+    printf("world motion law: jog %.2f sprint %.2f, circle radius %.2f m\n",jog,law_speed(m->sprint_k,&setup.player)*m->jog_k,sp/rate);
 }
 /* ---- golden logs + snapshot / restore (PLAN-devtools step 3) ---- */
 #define GOLDEN_TICKS 3000
@@ -588,7 +591,7 @@ static void field_mode(void){
     field_build(1);
     field_world(40,-20,0);
     float before=w.player.z;
-    walk_dist(0,32767,120);   /* straight into the wall band at z ~ 34 */
+    walk_dist(0,32767,420);   /* straight into the wall band at z ~ 34 (the default 0.6 m body walks 0.9 m/s now, A39) */
     assert(w.player.z>before+30&&w.player.z<cc(40)&&cp_stage_ground(&w,w.player.x,w.player.z)<13); /* nibbles at the foot of the ramp, never climbs the 60 degree face */
     assert(!cp_stage_can_walk(&w,40,cc(39),40,cc(41),.6f));
     assert(cp_stage_can_walk(&w,40,-20,40,0,.6f));
@@ -1020,8 +1023,9 @@ static void double_ko_is_consistent(void) {
 }
 static void approach_in_fight(void){
     /* during a fight, approach on another creature is in_fight (-14), like befriend/observe/gift */
+    /* close enough that the 0.9 m/s walk of the default body reaches #1 before it can run off (A39) */
     CpStageSetup su;cp_stage_setup_default(&su,4);su.terrain=CP_STAGE_FLAT;su.n_obstacles=0;su.n=3;
-    for(int i=0;i<3;i++){su.wild[i].profile=CP_STAGE_SPECIES[0].profile;su.wild[i].species=0;su.wild[i].x=su.nest_x+6+i*4;su.wild[i].z=su.nest_z+6;su.wild[i].home_x=su.wild[i].x;su.wild[i].home_z=su.wild[i].z;}
+    for(int i=0;i<3;i++){su.wild[i].profile=CP_STAGE_SPECIES[0].profile;su.wild[i].species=0;su.wild[i].x=su.nest_x+3+i*4;su.wild[i].z=su.nest_z+3;su.wild[i].home_x=su.wild[i].x;su.wild[i].home_z=su.wild[i].z;}
     assert(cp_stage_reset(&w,&su)==0);
     assert(cp_stage_command(&w,"attack #1 bite")==0);
     for(int i=0;i<400&&w.active<0;i++)cp_stage_step(&w,NULL);
@@ -1053,7 +1057,7 @@ int main(void) {
     a.verb=CP_STAGE_HEADING;
     a.hx=32767;
     a.sprint=1;
-    for(int i=0;i<10;i++)cp_stage_step(&w,&a);
+    for(int i=0;i<30;i++)cp_stage_step(&w,&a);   /* 30 ticks: the default body sprints at 2.2 m/s now (A39) */
     assert(w.player.x>4 && w.player.stamina<100);
     reset();
     setup.n_obstacles=1;
@@ -1071,7 +1075,7 @@ int main(void) {
     a.verb=CP_STAGE_GO;
     a.x=5;
     a.z=6;
-    for(int i=0;i<70;i++)cp_stage_step(&w,i==0?&a:NULL);
+    for(int i=0;i<200;i++)cp_stage_step(&w,i==0?&a:NULL);   /* 7.8 m at the default body's 0.9 m/s walk (A39) */
     assert(sqrtf((w.player.x-5)*(w.player.x-5)+(w.player.z-6)*(w.player.z-6))<.25f);
     reset();
     uint64_t h=cp_stage_hash(&w);

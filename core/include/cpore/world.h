@@ -84,7 +84,8 @@ typedef struct {
     int32_t activity;   /* CP_ACT_*; 0 for the four daytime species */
 } CpStageSpecies;
 extern const CpStageSpecies CP_STAGE_SPECIES[CP_STAGE_SPECIES_COUNT];
-/* Stage locomotion (PLAN-feel, version 2). jog = profile.speed*jog_k, sprint = jog*sprint_k, wild = speed*wild_k*jog_k. */
+/* Stage locomotion (PLAN-feel, version 2; speed by body size A39). jog = sqrt(Fr_walk g h)*jog_k, run/sprint = sqrt(sprint_k g h)*jog_k
+ * (sprint_k is the run Froude number, 1.5), wild = the same times wild_k; h = 0.56 * body radius. See stage_world.c. */
 typedef struct {
     float jog_k,sprint_k,wild_k;
     float accel,brake;               /* m/s2 caps on the per-tick speed change */

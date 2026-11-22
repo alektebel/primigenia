@@ -87,11 +87,9 @@ static int test_turns(void){
         last=t.extent;
     }
     CHECK(run_turn(400,4,0,120).extent>run_turn(60,4,0,120).extent+1.5f);
-    const Turn slow=run_turn(300,2.5f,0,90),fast=run_turn(300,8,0,90);
-    printf("  r=3 m 90 degrees: extent %.2f m at speed 2.5, %.2f m at speed 8\n",slow.extent,fast.extent);
-    CHECK(fast.extent>slow.extent+1.f);
+    /* speed is no longer a profile input (A39: v = sqrt(Fr g h) from the body), so the 'faster body' check is the size check above */
     /* grip: more legs turn tighter */
-    CHECK(run_turn(300,4,8,90).extent<run_turn(300,4,2,90).extent);
+    CHECK(run_turn(300,4,8,90).extent<=run_turn(300,4,2,90).extent);   /* at the 2 m/s walk the grip limit rarely binds (A39), so equal is allowed */
     return 0;
 }
 static int test_no_snap(void){
@@ -198,7 +196,7 @@ static int test_slopes(void){
     for(int g=0;g<4;g++){
         make_field(grades[g],0);
         field_world(&w,4,60,10,0);                 /* the ramp starts at x = 20 and is 6 m high */
-        walk_heading_in(&w,1,0,45,24,20+6/grades[g]-2,&steady,&x_end);   /* mean speed on the ramp */
+        walk_heading_in(&w,1,0,200,24,20+6/grades[g]-2,&steady,&x_end);   /* mean speed on the ramp */
         printf("  4 legs up grade %.3f: %.2f m/s, x %.1f\n",grades[g],steady,x_end);
         CHECK(steady<last+.001f);
         last=steady;
@@ -206,22 +204,22 @@ static int test_slopes(void){
     CHECK(last<flat*.7f);
     make_field(.176f,0);
     field_world(&w,4,60,20+6/.176f+4,0);          /* on the plateau at the top, walking down */
-    walk_heading_in(&w,-1,0,60,24,20+6/.176f-2,&steady,&x_end);
+    walk_heading_in(&w,-1,0,300,24,20+6/.176f-2,&steady,&x_end);
     printf("  4 legs down grade 0.176: %.2f m/s\n",steady);
     CHECK(steady>flat*1.02f);
     make_field(.839f,0);
     field_world(&w,4,60,20+6/.839f+4,0);
-    walk_heading_in(&w,-1,0,60,23,20+6/.839f-1,&steady,&x_end);
+    walk_heading_in(&w,-1,0,300,23,20+6/.839f-1,&steady,&x_end);
     printf("  4 legs down grade 0.839: %.2f m/s\n",steady);
     CHECK(steady<flat*.8f);
     /* Legs set the climb limit: 8 legs cross; direct 2-leg input repeatedly slides back off it. */
     make_field(.839f,0);
     field_world(&w,8,60,10,0);
-    walk_heading(&w,1,0,200,&steady,&x_end);
+    walk_heading(&w,1,0,800,&steady,&x_end);
     CHECK(x_end>45);
     float stall_x;
     field_world(&w,2,60,10,0);
-    walk_heading(&w,1,0,200,&steady,&stall_x);
+    walk_heading(&w,1,0,800,&steady,&stall_x);
     printf("  40 degrees: 8 legs reach x %.1f, 2 legs stop at x %.1f (speed %.2f)\n",x_end,stall_x,steady);
     CHECK(stall_x<x_end-15);
     int fell=0;for(unsigned i=0;i<w.ev_total&&i<CP_STAGE_MAX_EVENTS;i++)fell|=w.events[i].type==CP_STAGE_EV_FELL;
