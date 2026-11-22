@@ -17,6 +17,15 @@ static func q(id: String, when := "", extra := {}) -> Dictionary:
 func run(t) -> void:
 	var base := ProjectSettings.globalize_path(DIR)
 	_wipe(base)
+	# --- test isolation: under the harness the stores never resolve to the owner's repo-root feedback/
+	var Iso = load("res://devtools/test_isolation.gd")
+	t.check(Iso.active(), "the harness is detected (--script entry)")
+	var repo_fb := ProjectSettings.globalize_path("res://").path_join("../feedback").simplify_path()
+	t.check(not Store.questions_dir().begins_with(repo_fb), "questions_dir is not the repo feedback/ under the harness")
+	t.check(Store.questions_dir().contains("test-feedback"), "questions_dir is the isolated test dir")
+	t.check(not load("res://devtools/notes/note_store.gd").notes_dir().begins_with(repo_fb), "notes_dir is isolated under the harness")
+	t.check(not load("res://devtools/feedback.gd").output_dir("x").begins_with(repo_fb), "feedback output_dir is isolated under the harness")
+	t.eq(Store.load_pending(Store.questions_dir()), [], "the isolated queue is empty whatever the owner has pending")
 	# --- normalize and load
 	t.eq(Store.normalize({"id": "a", "text": "t", "options": [{"label": "x"}]}), {}, "one option and no free text is unusable")
 	t.check(not Store.normalize({"id": "a", "text": "t", "options": [], "allow_free_text": true}).is_empty(), "free text alone is a question")

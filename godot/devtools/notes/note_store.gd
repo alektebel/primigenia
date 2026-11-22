@@ -1,4 +1,5 @@
 extends RefCounted
+const TestIsolation := preload("res://devtools/test_isolation.gd")
 ## In-game notes on flagged things (DT-NOTE, docs/briefs/dev-options.md phase 2). One folder per note under
 ## <repo>/feedback/notes/ (git-ignored) or user://feedback/notes/: note.json (primigenia.note/1), screenshot.jpg, crop.jpg, the scenario
 ## of that moment (scenario.json/.cpstate/.log), and one line per note in index.jsonl next to the folders.
@@ -13,6 +14,8 @@ static func notes_dir() -> String:
 	for a in OS.get_cmdline_user_args():
 		if a.begins_with("--notes-dir="):
 			return a.substr(12)
+	if TestIsolation.active():
+		return TestIsolation.dir_for("notes")
 	var repo := ProjectSettings.globalize_path("res://").path_join("../feedback/notes").simplify_path()
 	if OS.is_debug_build() and not OS.has_feature("template"):
 		if DirAccess.make_dir_recursive_absolute(repo) == OK and FileAccess.open(repo.path_join(".w"), FileAccess.WRITE) != null:

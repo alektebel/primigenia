@@ -1,4 +1,5 @@
 extends RefCounted
+const TestIsolation := preload("res://devtools/test_isolation.gd")
 ## Owner questions inside the game (docs/briefs/owner-questions.md). The queue is <repo>/feedback/questions/pending.json
 ## (git-ignored; falls back to user://feedback/questions; `--questions-dir=<path>` overrides) as {"schema": "primigenia.questions/1", "questions": [...]} ("format" is read too);
 ## the answers are appended to answers.jsonl next to it. Pure file and rule functions: no scene needed, tools/feedback/questions.py
@@ -16,6 +17,8 @@ static func questions_dir() -> String:
 	for a in OS.get_cmdline_user_args():
 		if a.begins_with("--questions-dir="):
 			return a.substr(16)
+	if TestIsolation.active():
+		return TestIsolation.dir_for("questions")
 	var repo := ProjectSettings.globalize_path("res://").path_join("../feedback/questions").simplify_path()
 	if OS.is_debug_build() and not OS.has_feature("template"):
 		if DirAccess.make_dir_recursive_absolute(repo) == OK and FileAccess.open(repo.path_join(".w"), FileAccess.WRITE) != null:
