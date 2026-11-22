@@ -14,6 +14,7 @@ const PlaceholderView := preload("../placeholder/placeholder_view.gd")
 const RealView := preload("../creature_view_real.gd")
 const Env := preload("../studio_env.gd")
 const Baker := preload("../thumb_baker.gd")
+const FlowIcons := preload("flow_icons.gd")
 const Ring := preload("actuator_ring.gd")
 
 signal creature_saved(path: String)
@@ -33,7 +34,7 @@ var nest_genome: Dictionary = {}
 var nest_rows: Array = []
 var nest_status: Label
 var nest_panel: PanelContainer
-var right_card: PanelContainer        # the part/stats column; the nest panel stacks above it, never over it
+var right_card: PanelContainer        # hidden Details drawer; nest controls stack above its stats
 var nest_choice: OptionButton
 var nest_actions: Array = []
 
@@ -54,6 +55,7 @@ var stage: SubViewportContainer
 var overlay: Control
 var hud: Control
 var hint_label: Label
+var drawer_content: VBoxContainer
 var panel_box: VBoxContainer
 var name_edit: LineEdit
 var undo_btn: Button
@@ -73,12 +75,14 @@ var _dist := 13.0
 var _dist_goal := 13.0
 var _target := Vector3(0, 2.0, 0)     # smoothed camera target
 var _target_goal := Vector3(0, 2.0, 0)
+var _framed_bounds := AABB()
+var _frame_pending := false
 var _spine_mid := Vector3(0, 2.0, 0)
 var _theta := 0.0                     # heading of the creature on the Test path (camera follows)
 var _idle := 0.0                      # seconds since the last user input
 const IDLE_ROTATE_AFTER := 6.0
 const IDLE_ROTATE_SPEED := .18
-const DIST_MIN := 3.0
+const DIST_MIN := .6
 const DIST_MAX := 60.0
 var _drag := {}
 var _pending_type := ""
@@ -109,6 +113,12 @@ var _drop_fx := {}                    # {point: Vector3 (view space), t: seconds
 var _flash_dna := 0.0
 var _girth_fx := 0.0
 var palette_card: PanelContainer
+var palette_body: VBoxContainer
+var palette_open := false
+var details_open := false
+var details_button: Button
+var _drawer_tween: Tween
+var _palette_timer: Timer
 var dna_label: Label
 var dna_fill: ColorRect
 var dna_track: Control
@@ -187,6 +197,7 @@ func _process(dt: float) -> void:
 func _build_stage() -> void:
 	stage = SubViewportContainer.new()
 	stage.stretch = true
+	stage.resized.connect(_schedule_frame)
 	stage.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	stage.mouse_filter = Control.MOUSE_FILTER_STOP
 	stage.gui_input.connect(_stage_input)
@@ -251,52 +262,67 @@ func _on_exit() -> void:
 	if game != null and game.has_method("goto_menu"):
 		game.goto_menu()
 
-## The part of the stage not covered by the side panels (A31): both spine arrows must be grabbable there.
+## The stage available around the collapsed palette and the optional Details drawer.
 func free_viewport() -> Rect2:
-	var left_edge := 276.0
-	var right_edge: float = stage.size.x - 290.0
-	return Rect2(left_edge, 70.0, maxf(right_edge - left_edge, 200.0), maxf(stage.size.y - 70.0 - 90.0, 200.0))
+	var left_edge := 322.0 if palette_open else 88.0
+	var right_edge: float = stage.size.x - (300.0 if details_open else 24.0)
+	return Rect2(left_edge, 78.0, maxf(right_edge - left_edge, 200.0), maxf(stage.size.y - 110.0, 200.0))
 
-func frame_creature() -> void:
-	var pts: PackedVector3Array = view.spine_node_positions()
-	if pts.size() >= 2:
-		_spine_mid = pts[pts.size() >> 1]
-		_dist_goal = clampf(5.0 + pts[0].distance_to(pts[pts.size() - 1]) * 1.15, 6.0, 40.0)
+## Rest bounds include legs, wings and placed parts, rather than spine length alone.
+func creature_bounds() -> AABB:
+	if "creature" in view and view.creature != null:
+		return view.creature.transform * view.creature.rest_aabb()
+	var box := AABB()
+	var first := true
+	for n in model.doc.nodes:
+		var r := Vector3.ONE * float(n.r)
+		var p := Vector3(0, n.y, n.z)
+		var nb := AABB(p - r, r * 2)
+		box = nb if first else box.merge(nb)
+		first = false
+	return box
+
+func _schedule_frame() -> void:
+	if _frame_pending:
+		return
+	_frame_pending = true
+	_auto_frame.call_deferred()
+
+func _auto_frame() -> void:
+	_frame_pending = false
+	if view == null or model == null or not _drag.is_empty() or _wheel_open:
+		return
+	frame_creature(false)
+
+func frame_creature(snap := true) -> void:
+	if stage.size.y < 1 or stage.size.x < 1:
+		return
+	var box := creature_bounds()
+	_framed_bounds = box
+	_spine_mid = box.get_center()
 	_target_goal = _spine_mid
+	var old_target := _target
+	var old_dist := _dist
 	_target = _target_goal
-	_dist = _dist_goal
-	_place_camera()
-	_fit_arrows()
-
-## Centre the spine arrows in the free viewport and move the camera back until both sit inside it with a margin.
-func _fit_arrows() -> void:
-	var free := free_viewport().grow(-34.0)
-	for it in 30:
-		var arr := spine_arrows()
-		if arr.size() < 2:
-			return
-		var lo := Vector2(1e9, 1e9)
-		var hi := Vector2(-1e9, -1e9)
-		for k in arr:
-			lo = lo.min(arr[k]["pos"])
-			hi = hi.max(arr[k]["pos"])
-		var inside: bool = lo.x >= free.position.x and hi.x <= free.end.x and lo.y >= free.position.y and hi.y <= free.end.y
-		var mid := (lo + hi) / 2.0
-		var want := free.get_center()
-		if inside and mid.distance_to(want) < 14.0:
-			break
-		if not inside and (hi.x - lo.x > free.size.x or hi.y - lo.y > free.size.y):
-			_dist = minf(_dist * 1.08, DIST_MAX)
-		else:
-			# slide the view target sideways/up so the arrows' midpoint lands on the centre of the free area
-			var per_px: float = 2.0 * tan(deg_to_rad(camera.fov) / 2.0) * _dist / maxf(stage.size.y, 1.0)
-			var right := camera.global_transform.basis.x
-			var up := camera.global_transform.basis.y
-			var shift := mid - want
-			_target += right * shift.x * per_px - up * shift.y * per_px
-		_dist_goal = _dist
-		_target_goal = _target
+	_dist = maxf(.6, box.size.y / (2.0 * tan(deg_to_rad(camera.fov) / 2.0) * .55))
+	# Perspective depth changes apparent size: solve from all eight rest-bound corners.
+	for i in 8:
 		_place_camera()
+		var lo := Vector2(INF, INF)
+		var hi := Vector2(-INF, -INF)
+		for j in 8:
+			var p := camera.unproject_position(box.get_endpoint(j))
+			lo = lo.min(p)
+			hi = hi.max(p)
+		var ratio := maxf((hi.y - lo.y) / (stage.size.y * .55), (hi.x - lo.x) / (free_viewport().size.x * .9))
+		_dist = clampf(_dist * ratio, DIST_MIN, DIST_MAX)
+	_dist_goal = _dist
+	if env_node.has_method("set_extent"):
+		env_node.set_extent(box)
+	if not snap:
+		_target = old_target
+		_dist = old_dist
+	_place_camera()
 
 func _place_camera() -> void:
 	var cp := cos(_pitch)
@@ -331,6 +357,8 @@ func _on_model_changed(live: bool) -> void:
 		name_edit.text = str(model.doc.get("name", ""))
 	if not live:
 		_queue_rebuild()
+		if creature_bounds() != _framed_bounds:
+			_schedule_frame()
 
 func _on_selection_changed() -> void:
 	if overlay:
@@ -351,6 +379,8 @@ func _queue_rebuild() -> void:
 
 # =================================================================== HUD
 func _build_hud() -> void:
+	if _drawer_tween != null and _drawer_tween.is_valid(): _drawer_tween.kill()
+	nest_panel = null
 	if hud:
 		hud.queue_free()
 		hud = null
@@ -361,10 +391,11 @@ func _build_hud() -> void:
 	_build_top_bar()
 	_build_palette()
 	_build_right_panel()
+	_wire_presses(hud)
 	hint_label = Label.new()
-	hint_label.set_anchors_preset(Control.PRESET_BOTTOM_WIDE)   # between the DNA card and the right panel
+	hint_label.set_anchors_preset(Control.PRESET_BOTTOM_WIDE)   # contextual feedback only; persistent instructions live on Help
 	hint_label.grow_vertical = Control.GROW_DIRECTION_BEGIN
-	hint_label.offset_left = 276; hint_label.offset_right = -290
+	hint_label.offset_left = 88; hint_label.offset_right = -88
 	hint_label.offset_bottom = -16
 	hint_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	hint_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -378,89 +409,50 @@ func _build_hud() -> void:
 func T(s: String) -> String:
 	return i18n.tr_(s)
 
-## The top row: three clusters on one line, the modes centred, "Jugar" the primary action on the right.
-## Left: Menú, name, Archivo. Centre: Construir/Pintar/Probar + undo/redo. Right: Jugar con esta criatura, language.
-## The two outer clusters share the free width equally, so the modes stay centred, and nothing can overlap: on narrow
-## windows the wordy labels shorten (see _fit_top_bar) before anything is squeezed.
+## Compact mode and utility icons; names, language and stats live in Details.
+func _icon_button(id: String, label: String) -> Button:
+	var b := Button.new()
+	b.icon = FlowIcons.make(id)
+	b.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	b.tooltip_text = label
+	b.custom_minimum_size = Vector2(40, 40)
+	return b
+
 func _build_top_bar() -> void:
-	var top := HBoxContainer.new()
-	top.name = "TopBar"
-	top.set_anchors_preset(Control.PRESET_TOP_WIDE)
-	top.offset_left = 14; top.offset_right = -14; top.offset_top = 14
-	top.add_theme_constant_override("separation", 10)
-	top.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	hud.add_child(top)
-	top_bar = top
-	var left_slot := HBoxContainer.new()
-	left_slot.name = "TopLeft"
-	left_slot.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	left_slot.size_flags_stretch_ratio = 1.0
-	left_slot.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	left_slot.alignment = BoxContainer.ALIGNMENT_BEGIN
-	top.add_child(left_slot)
 	var bar := PanelContainer.new()
 	bar.name = "TopModes"
-	bar.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
-	top.add_child(bar)
-	var right_slot := HBoxContainer.new()
-	right_slot.name = "TopRight"
-	right_slot.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	right_slot.size_flags_stretch_ratio = 1.0
-	right_slot.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	right_slot.alignment = BoxContainer.ALIGNMENT_END
-	top.add_child(right_slot)
+	bar.position = Vector2(14, 14)
+	hud.add_child(bar)
 	var row := HBoxContainer.new()
-	row.add_theme_constant_override("separation", 6)
+	row.add_theme_constant_override("separation", 4)
 	bar.add_child(row)
+	top_bar = row
+	var back := _icon_button("back", T("Menú"))
+	back.pressed.connect(_on_exit)
+	row.add_child(back)
 	mode_buttons.clear()
 	var group := ButtonGroup.new()
 	for m in [["build", "Construir"], ["paint", "Pintar"], ["test", "Probar"]]:
-		var b := Button.new()
-		b.text = T(m[1])
+		var b := _icon_button(m[0], T(m[1]))
 		b.toggle_mode = true
 		b.button_group = group
 		b.button_pressed = model.mode == m[0]
-		b.custom_minimum_size = Vector2(88, 34)
 		b.pressed.connect(set_mode.bind(m[0]))
 		row.add_child(b)
 		mode_buttons[m[0]] = b
 	row.add_child(VSeparator.new())
-	undo_btn = Button.new()
+	undo_btn = _icon_button("undo", T("Deshacer") + " · Ctrl+Z")
 	undo_btn.name = "UndoButton"
-	undo_btn.text = "↶ " + T("Deshacer")
-	undo_btn.tooltip_text = T("Deshacer")
 	undo_btn.pressed.connect(on_undo)
 	row.add_child(undo_btn)
-	redo_btn = Button.new()
+	redo_btn = _icon_button("redo", T("Rehacer") + " · Ctrl+Y")
 	redo_btn.name = "RedoButton"
-	redo_btn.text = "↷ " + T("Rehacer")
-	redo_btn.tooltip_text = T("Rehacer")
 	redo_btn.pressed.connect(on_redo)
 	row.add_child(redo_btn)
-	# left cluster: back to the menu, the name, the file menu
-	var left := PanelContainer.new()
-	left.name = "TopFile"
-	left.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
-	left_slot.add_child(left)
-	var lrow := HBoxContainer.new()
-	lrow.add_theme_constant_override("separation", 6)
-	left.add_child(lrow)
-	var menu_btn := Button.new()
-	menu_btn.text = "← " + T("Menú")
-	menu_btn.tooltip_text = T("Guarda con Ctrl+S; Jugar usa la última criatura guardada")
-	menu_btn.pressed.connect(_on_exit)
-	lrow.add_child(menu_btn)
-	name_edit = LineEdit.new()
-	name_edit.custom_minimum_size = Vector2(110, 0)
-	name_edit.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	name_edit.placeholder_text = T("Ponle nombre")
-	name_edit.text = str(model.doc.get("name", ""))
-	name_edit.max_length = 80
-	name_edit.text_submitted.connect(func(t): model.set_name_(t); name_edit.release_focus())
-	name_edit.focus_exited.connect(func(): if name_edit.text != model.doc.get("name", ""): model.set_name_(name_edit.text))
-	lrow.add_child(name_edit)
 	var file_btn := MenuButton.new()
-	file_btn.text = T("Archivo")
+	file_btn.icon = FlowIcons.make("file")
+	file_btn.tooltip_text = T("Archivo")
+	file_btn.custom_minimum_size = Vector2(40, 40)
 	_file_menu = file_btn.get_popup()
 	_file_menu.add_item(T("Nueva"), 0)
 	_file_menu.add_item(T("Guardar") + "  Ctrl+S", 1)
@@ -473,70 +465,99 @@ func _build_top_bar() -> void:
 	_file_menu.add_item(T("Importar JSON"), 3)
 	_file_menu.add_item(T("Exportar JSON"), 4)
 	_file_menu.id_pressed.connect(_on_file_menu)
-	lrow.add_child(file_btn)
-	# right cluster: the primary action, then the language
-	var right := PanelContainer.new()
-	right.name = "TopPlay"
-	right.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
-	right_slot.add_child(right)
-	var lrow2 := HBoxContainer.new()
-	lrow2.add_theme_constant_override("separation", 6)
-	right.add_child(lrow2)
+	row.add_child(file_btn)
+	var help := _icon_button("help", T("Rueda sobre una pieza para escalarla · arrastra una articulación o las flechas de la columna · clic en una pata para elegir su actuador"))
+	help.tooltip_text += "\n" + ("Botón derecho: orbitar · rueda en vacío: zoom · Ctrl+S: guardar" if lang == "es" else "Right-drag: orbit · wheel on empty space: zoom · Ctrl+S: save")
+	help.pressed.connect(func(): _flash(help.tooltip_text))
+	row.add_child(help)
 	if nest_world == null:
-		play_creature_btn = Button.new()
+		play_creature_btn = _icon_button("test", T("Jugar con esta criatura"))
 		play_creature_btn.name = "PlayCreatureButton"
-		play_creature_btn.text = "▶ " + T("Jugar con esta criatura")
-		play_creature_btn.tooltip_text = T("Jugar con esta criatura")
 		play_creature_btn.pressed.connect(play_with_creature)
-		var acc := ThemeFactory.MOSS
-		play_creature_btn.add_theme_stylebox_override("normal", ThemeFactory.box(Color(acc.r, acc.g, acc.b, .22), acc, 10, 1))
-		play_creature_btn.add_theme_stylebox_override("hover", ThemeFactory.box(Color(acc.r, acc.g, acc.b, .34), acc, 10, 1))
-		play_creature_btn.add_theme_stylebox_override("pressed", ThemeFactory.box(Color(acc.r, acc.g, acc.b, .45), acc, 10, 2))
-		lrow2.add_child(play_creature_btn)
-		lrow2.add_child(VSeparator.new())
-	for l in ["es", "en"]:
-		var b := Button.new()
-		b.text = l.to_upper()
-		b.toggle_mode = true
-		b.button_pressed = lang == l
-		b.pressed.connect(set_lang.bind(l))
-		lrow2.add_child(b)
-	hud.resized.connect(_fit_top_bar)
-	_fit_top_bar.call_deferred()
+		row.add_child(play_creature_btn)
 
-## Wordy labels give way before anything can collide: undo/redo to their arrows, "Jugar con esta criatura" to "Jugar".
-func _fit_top_bar() -> void:
-	if top_bar == null or not is_instance_valid(top_bar) or hud == null:
-		return
-	var w: float = hud.size.x
-	var wordy := w >= 1240.0
-	undo_btn.text = ("↶ " + T("Deshacer")) if w >= 1160.0 else "↶"
-	redo_btn.text = ("↷ " + T("Rehacer")) if w >= 1160.0 else "↷"
-	if play_creature_btn != null:
-		play_creature_btn.text = "▶ " + (T("Jugar con esta criatura") if wordy else T("Jugar"))
+## Mouse presses only: keyboard activation never scales or slides a control.
+func _wire_presses(node: Node) -> void:
+	if node is Button and not node.has_meta("flow_press"):
+		node.set_meta("flow_press", true)
+		node.gui_input.connect(func(e: InputEvent):
+			if e is InputEventMouseButton and e.button_index == MOUSE_BUTTON_LEFT:
+				node.pivot_offset = node.size / 2
+				var prev = node.get_meta("flow_tween", null)
+				if prev is Tween and prev.is_valid(): prev.kill()
+				var tw := node.create_tween().set_trans(Tween.TRANS_EXPO).set_ease(Tween.EASE_OUT)
+				node.set_meta("flow_tween", tw)
+				tw.tween_property(node, "scale", Vector2.ONE * (.97 if e.pressed else 1.0), .12))
+	for child in node.get_children():
+		_wire_presses(child)
+
+func set_details_open(on: bool, animate := false) -> void:
+	details_open = on
+	if details_button != null: details_button.set_pressed_no_signal(on)
+	if _drawer_tween != null and _drawer_tween.is_valid(): _drawer_tween.kill()
+	var right := -14.0 if on else 286.0
+	if on: right_card.show()
+	if animate:
+		_drawer_tween = create_tween().set_trans(Tween.TRANS_EXPO).set_ease(Tween.EASE_OUT)
+		_drawer_tween.set_parallel(true)
+		_drawer_tween.tween_property(right_card, "offset_left", right - 268, .2)
+		_drawer_tween.tween_property(right_card, "offset_right", right, .2)
+		if not on: _drawer_tween.chain().tween_callback(right_card.hide)
+	else:
+		right_card.offset_left = right - 268
+		right_card.offset_right = right
+		right_card.visible = on
+
+func set_palette_open(on: bool) -> void:
+	palette_open = on
+	palette_body.visible = on
+	palette_card.offset_right = 314 if on else 76
+	if on and _palette_timer != null: _palette_timer.stop()
+
+func _maybe_close_palette() -> void:
+	if not is_instance_valid(palette_card) or not _drag.is_empty(): return
+	var focus := get_viewport().gui_get_focus_owner()
+	if focus != null and palette_card.is_ancestor_of(focus): return
+	if not palette_card.get_global_rect().has_point(get_viewport().get_mouse_position()):
+		set_palette_open(false)
 
 func _build_palette() -> void:
 	var card := PanelContainer.new()
-	card.offset_left = 14; card.offset_top = 66
-	card.offset_right = 262
+	card.offset_left = 14; card.offset_top = 82
+	card.offset_right = 76
 	card.set_anchors_preset(Control.PRESET_LEFT_WIDE)
-	card.offset_bottom = -92
+	card.offset_bottom = -16
 	card.name = "PaletteCard"
 	palette_card = card
 	hud.add_child(card)
 	_build_dna_card()
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", 8)
+	card.add_child(row)
+	var tab_scroll := ScrollContainer.new()
+	tab_scroll.custom_minimum_size.x = 42
+	tab_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	tab_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	row.add_child(tab_scroll)
+	var tabs := VBoxContainer.new()
+	tabs.add_theme_constant_override("separation", 4)
+	tab_scroll.add_child(tabs)
 	var col := VBoxContainer.new()
+	palette_body = col
+	col.custom_minimum_size.x = 224
 	col.add_theme_constant_override("separation", 6)
-	card.add_child(col)
-	var tabs := GridContainer.new()
-	tabs.columns = 5
-	tabs.add_theme_constant_override("h_separation", 5)
-	tabs.add_theme_constant_override("v_separation", 5)
-	col.add_child(tabs)
+	row.add_child(col)
 	cat_title = Label.new()
 	cat_title.name = "CategoryTitle"
 	cat_title.add_theme_font_size_override("font_size", 20)
 	col.add_child(cat_title)
+	_palette_timer = Timer.new()
+	_palette_timer.one_shot = true
+	_palette_timer.wait_time = .18
+	_palette_timer.timeout.connect(_maybe_close_palette)
+	card.add_child(_palette_timer)
+	card.mouse_exited.connect(func(): _palette_timer.start())
+	card.mouse_entered.connect(func(): if model.mode == "build": set_palette_open(true))
 	category_tabs.clear()
 	category_grids.clear()
 	palette_buttons.clear()
@@ -564,7 +585,9 @@ func _build_palette() -> void:
 		tb.add_theme_stylebox_override("hover", ThemeFactory.box(Color(1, 1, 1, .16), Color(0, 0, 0, 0), 19))
 		tb.add_theme_stylebox_override("pressed", ThemeFactory.box(Color(ThemeFactory.AMBER, .18), ThemeFactory.AMBER, 19, 2))
 		tb.add_theme_stylebox_override("hover_pressed", ThemeFactory.box(Color(ThemeFactory.AMBER, .26), ThemeFactory.AMBER, 19, 2))
-		tb.pressed.connect(select_category.bind(c))
+		tb.pressed.connect(func(): select_category(c); set_palette_open(true))
+		tb.mouse_entered.connect(func(): if model.mode == "build": select_category(c); set_palette_open(true))
+		tb.focus_entered.connect(func(): if model.mode == "build": select_category(c); set_palette_open(true))
 		tabs.add_child(tb)
 		category_tabs[c] = tb
 		var grid := GridContainer.new()
@@ -578,14 +601,15 @@ func _build_palette() -> void:
 			grid.add_child(_make_part_button(id, c))
 	cat_title.text = i18n.category(current_category)
 	_request_category(current_category)
+	set_palette_open(false)
 
-## DNA budget card under the palette (web #dna / #meter): "129 / 320" and a bar that flashes red when over budget.
+## Compact top-right DNA budget: "129 / 320" and a bar that flashes red when over budget.
 func _build_dna_card() -> void:
 	var card := PanelContainer.new()
 	card.name = "DnaCard"
-	card.set_anchors_preset(Control.PRESET_BOTTOM_LEFT)
-	card.offset_left = 14; card.offset_right = 262
-	card.offset_top = -84; card.offset_bottom = -16
+	card.set_anchors_preset(Control.PRESET_TOP_RIGHT)
+	card.offset_left = -224; card.offset_right = -14
+	card.offset_top = 14; card.offset_bottom = 68
 	card.grow_vertical = Control.GROW_DIRECTION_BEGIN
 	hud.add_child(card)
 	var col := VBoxContainer.new()
@@ -600,8 +624,19 @@ func _build_dna_card() -> void:
 	dna_label.name = "DnaLabel"
 	dna_label.add_theme_font_size_override("font_size", 17)
 	row.add_child(dna_label)
+	details_button = _icon_button("details", "Detalles" if lang == "es" else "Details")
+	details_button.toggle_mode = true
+	details_button.gui_input.connect(func(e: InputEvent):
+		if e is InputEventMouseButton and e.pressed:
+			details_button.set_meta("mouse", true)
+		elif e is InputEventKey:
+			details_button.set_meta("mouse", false))
+	details_button.pressed.connect(func():
+		set_details_open(not details_open, bool(details_button.get_meta("mouse", false)))
+		details_button.set_meta("mouse", false))
+	row.add_child(details_button)
 	dna_track = Control.new()
-	dna_track.custom_minimum_size = Vector2(0, 10)
+	dna_track.custom_minimum_size = Vector2(0, 3)
 	var bg := ColorRect.new()
 	bg.color = Color(1, 1, 1, .12)
 	bg.set_anchors_preset(Control.PRESET_FULL_RECT)
@@ -693,14 +728,11 @@ func _make_part_button(id: String, category: String) -> Button:
 	part_thumbs[id] = tex
 	return b
 
-## Hover: the thumbnail turns live (spinning) and the button grows a little, as in the web palette.
+## Hover: the thumbnail turns live (spinning). Press feedback is shared by all buttons.
 func _palette_hover(id: String, on: bool) -> void:
 	var b: Button = palette_buttons.get(id)
 	if b == null:
 		return
-	b.pivot_offset = b.size / 2.0
-	var tw := b.create_tween()
-	tw.tween_property(b, "scale", Vector2.ONE * (1.06 if on else 1.0), .12)
 	if on:
 		_hover_part_id = id
 		if baker != null:
@@ -740,7 +772,7 @@ func category_count() -> int:
 	return category_tabs.size()
 
 func mode_button_text(m: String) -> String:
-	return mode_buttons[m].text
+	return mode_buttons[m].tooltip_text
 
 func select_category(c: String) -> void:
 	current_category = c
@@ -756,16 +788,37 @@ func _build_right_panel() -> void:
 	var card := PanelContainer.new()
 	card.set_anchors_preset(Control.PRESET_RIGHT_WIDE)
 	card.offset_left = -282; card.offset_right = -14
-	card.offset_top = 66; card.offset_bottom = -52
+	card.offset_top = 82; card.offset_bottom = -16
 	right_card = card
 	hud.add_child(card)
 	var scroll := ScrollContainer.new()
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	card.add_child(scroll)
+	var content := VBoxContainer.new()
+	drawer_content = content
+	content.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	scroll.add_child(content)
+	name_edit = LineEdit.new()
+	name_edit.placeholder_text = T("Ponle nombre")
+	name_edit.text = str(model.doc.get("name", ""))
+	name_edit.max_length = 80
+	name_edit.text_submitted.connect(func(t): model.set_name_(t); name_edit.release_focus())
+	name_edit.focus_exited.connect(func(): if name_edit.text != model.doc.get("name", ""): model.set_name_(name_edit.text))
+	content.add_child(name_edit)
+	var languages := HBoxContainer.new()
+	for l in ["es", "en"]:
+		var button := Button.new()
+		button.text = l.to_upper()
+		button.toggle_mode = true
+		button.button_pressed = lang == l
+		button.pressed.connect(set_lang.bind(l))
+		languages.add_child(button)
+	content.add_child(languages)
 	panel_box = VBoxContainer.new()
 	panel_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	panel_box.add_theme_constant_override("separation", 8)
-	scroll.add_child(panel_box)
+	content.add_child(panel_box)
+	set_details_open(false)
 
 func _h2(text: String) -> Label:
 	var l := Label.new()
@@ -810,6 +863,7 @@ func _rebuild_panel() -> void:
 		"paint": _panel_paint()
 		"test": _panel_test()
 	_sync_history()
+	_wire_presses(panel_box)
 
 ## A24: skeleton per body, actuation per limb. Readout "Actuación: <class> - <why>" for the body and for every limb,
 ## the count of actuation types (informational: the cost is a
@@ -1160,6 +1214,8 @@ func set_mode(m: String) -> void:
 	_cancel_drag()
 	_pending_type = ""
 	model.set_mode(m)
+	if env_node.has_method("set_test_mode"):
+		env_node.set_test_mode(m == "test")
 	overlay.queue_redraw()
 	for k in mode_buttons:
 		mode_buttons[k].set_pressed_no_signal(k == m)
@@ -1167,6 +1223,8 @@ func set_mode(m: String) -> void:
 	if palette_card != null:               # the palette only works while building
 		palette_card.modulate = Color.WHITE if m == "build" else Color(1, 1, 1, .4)
 		palette_card.mouse_filter = Control.MOUSE_FILTER_STOP if m == "build" else Control.MOUSE_FILTER_IGNORE
+	set_palette_open(false)
+	set_details_open(m != "build")
 	_queue_rebuild()
 
 func set_lang(l: String) -> void:
@@ -1255,15 +1313,12 @@ func _open_dialog(kind: String) -> void:
 func _set_hint(t: String) -> void:
 	if hint_label == null:
 		return
-	if t == "":
-		match model.mode:
-			"build": t = "Rueda sobre una pieza para escalarla · arrastra una articulación o las flechas de la columna · clic en una pata para elegir su actuador"
-			"paint": t = "Arrastra para girar la cámara"
-			"test": t = "Tu criatura camina sola: nada está animado a mano"
 	hint_label.text = T(t)
+	hint_label.visible = t != ""
 
 func _flash(t: String) -> void:
 	hint_label.text = t
+	hint_label.show()
 	_flash_timer = 2.6
 
 # =================================================================== input
@@ -1392,6 +1447,7 @@ func _finish_new_drag(pos: Vector2) -> void:
 		elif d["tx"]:
 			model.cancel()
 		_set_hint("")
+	set_palette_open(false)
 	overlay.queue_redraw()
 
 ## Drop feedback: the part pops, a ring spreads on the surface, a click.
@@ -1402,7 +1458,7 @@ func _dropped(idx: int, point: Vector3) -> void:
 
 func _over_hud(global_pos: Vector2) -> bool:
 	for c in hud.get_children():
-		if c is PanelContainer and c.get_global_rect().has_point(global_pos):
+		if c is PanelContainer and c.is_visible_in_tree() and c.get_global_rect().has_point(global_pos):
 			return true
 	return false
 
@@ -1486,7 +1542,8 @@ func spine_arrows() -> Dictionary:
 		var i: int = pts.size() - 1 if head else 0
 		var j: int = i - 1 if head else 1
 		var d3 := (pts[i] - pts[j]).normalized()
-		var off3 := d3 * (maxf(float(N[i]["r"]), .15) + .7)
+		var pixel_world := 2.0 * _dist * tan(deg_to_rad(camera.fov) / 2.0) / maxf(stage.size.y, 1.0)
+		var off3 := d3 * (float(N[i]["r"]) + pixel_world * 34.0)
 		if camera.is_position_behind(pts[i] + off3):
 			continue
 		var sp := camera.unproject_position(pts[i])
@@ -1722,6 +1779,7 @@ func _close_wheel_tx() -> void:
 	if _wheel_open:
 		_wheel_open = false
 		model.end()
+		_schedule_frame()
 
 # =================================================================== actuator ring
 ## A click (not a drag) on a limb opens the ring of actuators around it.
@@ -1830,19 +1888,10 @@ func _draw_overlay() -> void:
 func _build_nest_shop() -> void:
 	nest_actions = []
 	var panel := PanelContainer.new()
-	panel.set_anchors_preset(Control.PRESET_TOP_RIGHT)
-	panel.offset_left = -282                  # the width of the stats column under it
-	panel.offset_right = -14
-	panel.offset_top = 66
 	nest_panel = panel
-	var solid := StyleBoxFlat.new()          # opaque: it sits over the stats column
-	solid.bg_color = Color(0.06, 0.09, 0.12, 0.97)
-	solid.border_color = Color(0.9, 0.7, 0.3, 0.5)
-	solid.set_border_width_all(1)
-	solid.set_corner_radius_all(10)
-	solid.set_content_margin_all(10)
-	panel.add_theme_stylebox_override("panel", solid)
-	hud.add_child(panel)
+	panel.add_theme_stylebox_override("panel", StyleBoxEmpty.new())
+	drawer_content.add_child(panel)
+	drawer_content.move_child(panel, panel_box.get_index())
 	var rows := VBoxContainer.new()
 	panel.add_child(rows)
 	nest_status = Label.new()
@@ -1874,14 +1923,8 @@ func _build_nest_shop() -> void:
 	for b in [nest_apply_button, nest_evolve_button] + nest_actions:
 		b.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART      # long Spanish labels wrap inside the column instead of widening it
 	_nest_refresh()
-	nest_choice.grab_focus.call_deferred()                    # the keyboard works at once: arrows move between the controls
-	_stack_right_column.call_deferred()
+	_wire_presses(nest_panel)
 
-## The nest panel and the stats column share the right edge: the column starts under the panel (it scrolls, so it can shrink).
-func _stack_right_column() -> void:
-	if nest_panel == null or not is_instance_valid(nest_panel) or right_card == null or not is_instance_valid(right_card):
-		return
-	right_card.offset_top = nest_panel.offset_top + nest_panel.get_combined_minimum_size().y + 8.0
 
 func _nest_row(id: String) -> Dictionary:
 	for row in nest_rows:
@@ -1959,7 +2002,6 @@ func _nest_labels() -> void:
 	nest_actions[2].text = ("%s (probar)" if lang == "es" else "%s (try)") % row.next_form.capitalize()
 	nest_actions[2].visible = nest_tiers_on
 	nest_actions[2].disabled = not row.owned or want.tier >= 2 or row.hits < row.need_hits or row.fights < row.need_fights
-	_stack_right_column.call_deferred()
 
 func _nest_try(kind: int) -> void:
 	var row: Dictionary = nest_rows[nest_choice.selected]

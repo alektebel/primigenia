@@ -9,6 +9,7 @@ Project skills that turn the "use" and "trial" items into procedures: `.claude/s
 |---|---|---|---|
 | G1 | game-design skill (MCP Market, https://app.mcpmarket.com/dratencia/skills/game-design) | use; connected via the MCP Market connector (`mcp__claude_ai_MCP_Market_Hub__skill_game_design`). Adoption as the brief template = decision D-19 | 5-part filter: Clarity, Motivation, Response, Satisfaction, Fit; numbers must cite a source or be a starting value with a test |
 | G2 | Godot / art skills: godot-shaders, godot-3d-essentials, game-feel, create-game-assets (gamedev-skills, Apache-2.0); godot-particles, godot-3d-lighting, godot-3d-materials (gd-agentic-skills, LGPL-3.0); godot (haxqer, MIT); texture-workflow, procedural-modeling (arjun988/blender-skills, MIT) | installed 2026-11-20 in `~/.claude/skills/` (user level; provenance in `~/.claude/skills/.game-skills-provenance.txt`). godot-agent-vision skipped: it captures the host screen | |
+| — | Owner creator-flow reference video, `~/Desarrollo/cpore-refs/videos/creator-flow-2026-11-22.mp4` (77 s, 576×1280) | use as visual/interaction reference; never commit footage or derived frames | C1/C2 stage/HUD direction, `docs/briefs/creator-flow.md`; local reference frames in `/tmp/creator-flow-reference/` |
 | V2 | FFmpeg (https://github.com/FFmpeg/FFmpeg) | use; installed (`/usr/bin/ffmpeg`) | frame sheets, side-by-side clips: `cpore-media` skill |
 | — | Blender MCP bridge (in repo) | in use for assets | `tools/blender-mcp/`, `docs/BLENDER_MCP.md`, `make blender` |
 

@@ -75,3 +75,10 @@ Owner request (2026-11-22): "can we make the creature stage flow edition more si
 - Studio suite, ui suite and first-quest e2e (which opens the editor) all pass.
 - Frame time in the studio is no worse than today.
 - Owner vote on the captures.
+
+## Run notes (Codex)
+- Start with C1 and C2. Then do C3, C4, C5 and C6 if time allows. Keep one change per logical step.
+- You cannot commit. Leave the work uncommitted, and write a list of the steps you did in `docs/evidence/godot/creator-flow/NOTES.md`.
+- `ui/verb-target` has not touched `godot/studio/` so far. Don't change the nest's entry into the editor.
+- For Godot runs: always use `timeout`, run `--check-only` first, use headless (software GL), and prefix with `nice -n 10`. If Xvfb is blocked in your sandbox, say so; Claude runs the captures.
+- Suites: studio, ui, first-quest e2e (see the Makefile).
