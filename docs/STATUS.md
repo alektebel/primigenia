@@ -1,6 +1,6 @@
 # Status
 
-Updated 2026-11-21 (integration of all WIP + limp fix merged; game relaunched for the owner). Rewritten at the end of every session; keep it to one page.
+Updated 2026-11-22 (move-style picker lab session; no game changes or merge). Rewritten at the end of every session; keep it to one page.
 
 ## Focus now
 **Procedural creature movement that looks like the references.** Order (research plan `docs/research/procedural-locomotion.md`, tracker stages M0–M6):
@@ -24,6 +24,7 @@ Owner's machine: the RTX was capped at 15 W (power profile 'balanced'); `powerpr
 ## Branches in flight
 | Branch | State | Next step |
 |---|---|---|
+| `anim/move-styles` | **Built, uncommitted (Codex)**: M1 / D-26 owner comparison; `web/gaitlab/styles.html`, 16 styles × 7 genome/control bodies, stars/copy, local file://. Evidence: `docs/evidence/loco/styles.md`; **336/336 numerical cases PASS** in `styles/table.json`. Chromium capture sandbox-blocked (`setsockopt`, SIGTRAP); browser visuals/interactions not verified | Sonnet commits; run `tools/gaitlab/styles_capture.cjs` outside sandbox, owner stars styles / confirms tracker; no style approved or Godot port yet |
 | `anim/speed-gait` | **Running** (Sonnet): A39 speed by size in C (2 m/s walk, run Fr 1.5) + gait lab port; brief in branch | Review scorecard, winnability, merge |
 | `devtools/owner-questions` | **merged 96b5bfe**: in-game question cards (11 seeded in feedback/questions; loop-01-walk after speed-gait), starter B with pico, seaweeds. winnability_c.gd is stale (4% for every starter, ignores A31 grace) → fix in T8 | Owner answers in game; `questions.py pull-answers` each session |
 | (plan) | **Done**: `docs/plans/creature-loop.md` (beats, loop scorecard, T1–T15, waves) + `docs/plans/creature-loop-questions.json` | Wave 1: T1 after owner-q, T5 after owner-q |

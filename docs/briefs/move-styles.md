@@ -1,6 +1,8 @@
 # Brief: move-style picker, a 4×4 grid of how *this* creature could move (three.js lab)
 
 Worktree `/home/diego/Desarrollo/cpore-wt/move-styles`, branch `anim/move-styles`. Owner, 2026-11-22: "generate a 4x4 grid testing different move types in order to assess how we want this creature to move exactly; with Space we can iterate between creatures." Earlier owner feedback: "the legs move too fast"; "2 m/s seems the sweet spot".
+Tracker test: **M1 gait comparison / D-26 speed**, advanced by this owner-requested style picker. Evidence: 7 bodies × 16 styles × 3 speeds; <1 mm stance slip, zero flips/crossings/clamps, duty ±.02, stride ±3%, analytic flight ±.02; owner stars the preferred styles before approval.
+
 Read first:
 - `AGENTS.md`
 - `docs/canon/MOTION.md`
