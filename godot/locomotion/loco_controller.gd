@@ -67,6 +67,7 @@ var girdle_gain := 0.085         # girdle yaw per radian of leading-foot offset
 var _legs: Array = []
 var _off := PackedFloat32Array()
 var _off_cur := PackedFloat32Array()   # footfall offsets in use: they blend to _off over one stride (rule 8)
+var _sd := {}                           # parameters of the style in use (Gait.style_params)
 var _style: StringName = &""          # the owner move style in use (starter B only, Gait.STYLES), or empty
 var _spacing := 1e9                    # shortest distance between neighbouring hips of one side (rule 3 spacing cap)
 var _ready_ok := false
@@ -280,19 +281,22 @@ func _sub(h: float, p: Vector3, yaw: float, v: Vector3, settle: bool) -> void:
 	# --- 3. gait and timing
 	var g := Gait.select(morph, gait, 0.0 if pivoting else fr)
 	var sty: Dictionary = {}
-	if Gait.is_style_body(morph) and not pivoting:
-		var sn := Gait.style_select(_style, fr)
+	if Gait.uses_styles(morph):
+		var cls := Gait.style_class(morph)
+		var names := Gait.style_names(cls, Gait.is_starter_b(morph))
+		var sn := Gait.style_select(_style, fr, names)
 		if sn != _style and (time - _gait_t >= GAIT_DWELL or _style == &""):
 			_style = sn
-			Gait.fr_hint = fr_g
-			_off = Gait.style_offsets(_style, morph)
-			gait = Gait.STYLES[_style].gait
+			_sd = Gait.style_params(cls, _style, Gait.variant_for(cls))
+			_off = Gait.style_offsets(_sd, morph)
+			gait = _sd.gait
 			_gait_t = time
 		if _style != &"":
-			sty = Gait.STYLES[_style]
+			sty = _sd
 			g = sty.gait
 	elif _style != &"":
 		_style = &""
+		_sd = {}
 		_off = Gait.offsets(g, morph)
 	if g != gait and time - _gait_t >= GAIT_DWELL:
 		var old := gait
@@ -301,7 +305,7 @@ func _sub(h: float, p: Vector3, yaw: float, v: Vector3, settle: bool) -> void:
 		Gait.fr_hint = fr_g
 		_off = Gait.offsets(gait, morph)
 		gait_changed.emit(old, gait, fr)
-	if Gait.froude_mode and gait == &"ripple":
+	if Gait.froude_mode and gait == &"ripple" and _style == &"":
 		# the metachronal lag falls with Fr (rule 4): recompute the target offsets; they blend in over a stride
 		Gait.fr_hint = fr_g
 		_off = Gait.offsets(gait, morph)
@@ -309,9 +313,12 @@ func _sub(h: float, p: Vector3, yaw: float, v: Vector3, settle: bool) -> void:
 	var f_nat_c := 0.25 * sqrt(G / _ref_h)
 	var duty_t := Gait.duty(gait, fr_g, Gait.heavy(morph), morph.stations.size() >= 4)
 	var stride_t := Gait.stride_length(gait, fr_g, _ref_h) * _stride_mult
+	if _style != &"":
+		duty_t = _sd.duty
+		stride_t = Gait.style_stride(_sd, fr_g, _ref_h) * _stride_mult
 	if Gait.froude_mode and not pivoting:
 		# turning on a long stance drags the feet sideways: shorten the stride with the path curvature (starting value)
-		stride_t /= 1.0 + 1.0 * minf(absf(_yawrate) / maxf(_speed_f, 0.5), 1.5) * morph.track_width
+		stride_t /= 1.0 + 1.5 * minf(absf(_yawrate) / maxf(_speed_f, 0.5), 1.5) * morph.track_width
 	if Gait.froude_mode and _legs.size() > 4 and _spacing < 1e8:
 		# rule 3: stance travel (stride x duty) stays under 0.9 x the spacing of neighbouring legs, so grounded feet never cross
 		stride_t = minf(stride_t, 0.9 * _spacing / maxf(duty_t, 0.3))
@@ -320,9 +327,7 @@ func _sub(h: float, p: Vector3, yaw: float, v: Vector3, settle: bool) -> void:
 	var bounce_t := Gait.bounce(gait)
 	var style_drop := 0.0
 	if not sty.is_empty():
-		# owner style (A42): its duty, a longer stride (k x boost), flight styles bounce, a lower body in the walks
-		duty_t = sty.duty
-		stride_t *= float(sty.k) * float(sty.boost)
+		# owner style (A42/A43): flight styles bounce, a lower body in the sprawl walks
 		bounce_t = 1.0 if sty.flight else 0.0
 		style_drop = maxf(1.0 - float(sty.height) / Gait.REST_HEIGHT, 0.0)
 	var guard := duty_t >= 0.5          # walking gaits keep at least half the legs down
@@ -464,7 +469,7 @@ func _sub(h: float, p: Vector3, yaw: float, v: Vector3, settle: bool) -> void:
 			var dist := Vector2(target.x - l.from.x, target.z - l.from.z).length()
 			var base_h: float = (0.05 + 0.09 * min(1.0, fr / 1.5)) * m.rest_h * m.lift
 			if Gait.froude_mode:
-				base_h = (float(Gait.STYLES[_style].lift) if _style != &"" else Gait.lift_share(gait, fr)) * m.rest_h * m.lift
+				base_h = (float(_sd.lift) if _style != &"" else Gait.lift_share(gait, fr)) * m.rest_h * m.lift
 			base_h *= clamp(dist / (0.25 * m.rest_h), 0.0, 1.0)
 			if l.lift == 0.0:
 				var need_h := 0.0
@@ -632,7 +637,7 @@ func _sub(h: float, p: Vector3, yaw: float, v: Vector3, settle: bool) -> void:
 		var ba: Vector2 = Gait.bob_coeffs(gait)
 		var y_t: float = (ba.x + ba.y * wmax - 1.0) * _ref_h * _moving
 		if _style != &"":
-			y_t = float(Gait.STYLES[_style].bob) * (0.5 - wmax) * _ref_h * _moving
+			y_t = float(_sd.bob) * (0.5 - wmax) * _ref_h * _moving
 		_y = _spring(_y, y_t, maxf(TAU * f_eff * 5.0, 8.0), 0.8, h)
 	else:
 		_y.y = (_y.y + h * (drive * G * (f_sum - _f_avg) - wc * wc * _y.x)) / den
@@ -669,14 +674,14 @@ func _sub(h: float, p: Vector3, yaw: float, v: Vector3, settle: bool) -> void:
 				# plant, independently of its longer contact (scorecard roll lag).
 				var pulse: float = lg.s * duty / 0.20 if gait == &"amble" else lg.s / 0.5
 				gr_t -= float(morph.legs[i].side) * sin(PI * clampf(pulse, 0.0, 1.0))
-		gr_t *= (float(Gait.STYLES[_style].roll) if _style != &"" else float(GAIT_ROLL.get(morph.plan, 0.0)) * float(GAIT_ROLL_K.get(gait, 0.6))) * _moving
+		gr_t *= (float(_sd.roll) if _style != &"" else float(GAIT_ROLL.get(morph.plan, 0.0)) * float(GAIT_ROLL_K.get(gait, 0.6))) * _moving
 	# the gait roll plus the turning bank never exceed the plan's bank limit (the roll is one-sided only while banking hard)
 	var bmax: float = float(BANK_MAX.get(morph.plan, 0.2))
 	_gr = _spring(_gr, clampf(gr_t, -bmax - _bank.x, bmax - _bank.x), maxf(TAU * f_eff * 4.0, _omega), 0.9, h)
 	# --- 13. compose the body transform
 	var slope_b := b_o + _p.x + _lean.x
 	if _style != &"":
-		var sd: Dictionary = Gait.STYLES[_style]
+		var sd: Dictionary = _sd
 		slope_b += tan(float(sd.pitch) + float(sd.rock) * sin(TAU * phase)) * _moving
 	var pitch := -atan(slope_b)                    # rotation about +X (left)
 	var roll := atan(c_o) + _bank.x + _gr.x               # rotation about +Z (forward)
@@ -710,7 +715,7 @@ func _sub(h: float, p: Vector3, yaw: float, v: Vector3, settle: bool) -> void:
 			yw += clamp(0.25 * d_int, -0.3, 0.3) * (float(st.z) - morph.com.z) / (0.5 * max(morph.body_length, 0.1))
 		if _style != &"":
 			# the travelling lateral spine wave (lab: spine x h of lateral displacement), one wave per stride
-			var sdy: Dictionary = Gait.STYLES[_style]
+			var sdy: Dictionary = _sd
 			var half: float = maxf(0.5 * morph.body_length, 0.2)
 			yw += clampf(float(sdy.spine) * _ref_h / half, 0.0, 0.3) * sin(TAU * phase - 2.0 * (float(st.z) - morph.com.z) / half) * _moving
 		_st_yaw[k] = lerpf(_st_yaw[k], yw, _lp(0.04, h))
@@ -777,7 +782,7 @@ func _sub(h: float, p: Vector3, yaw: float, v: Vector3, settle: bool) -> void:
 	var wn: float = clamp(2.2 * sqrt(G / nk), 4.0, 30.0)
 	var stretch: float = -0.25 * min(1.0, fr / 2.0) if morph.plan != &"upright_biped" else 0.0
 	_neck_p = _spring(_neck_p, clamp(-(0.9 if Gait.froude_mode else 0.7) * (slope_b - bt * 0.5) - 0.8 * vy / (nk * wn) + stretch, -0.8, 0.8), wn, 0.7, h)
-	_neck_y = _spring(_neck_y, clamp(0.35 * _yawrate, -0.6, 0.6) + (float(Gait.STYLES[_style].head) * sin(TAU * phase + 0.7) * _moving if _style != &"" else 0.0) + (clamp(0.6 * d_int, -0.6, 0.6) if intent_yaw != null else 0.0), wn, 0.8, h)
+	_neck_y = _spring(_neck_y, clamp(0.35 * _yawrate, -0.6, 0.6) + (float(_sd.head) * sin(TAU * phase + 0.7) * _moving if _style != &"" else 0.0) + (clamp(0.6 * d_int, -0.6, 0.6) if intent_yaw != null else 0.0), wn, 0.8, h)
 	# --- 16. undulation for legless bodies
 	var wave_amp := 0.0
 	if legless:

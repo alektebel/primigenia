@@ -12,8 +12,8 @@ func _initialize() -> void:
 
 func _run() -> void:
 	var Core = load("res://devtools/zoo/loco_score_core.gd")
-	if OS.get_environment("LOCO_STYLE") == "froude":     # A/B: starter B without its owner styles (F10 option style: froude default)
-		load("res://locomotion/loco_gait.gd").style_mode = "froude"
+	if OS.get_environment("LOCO_STYLE") in ["froude", "longer"]:     # A/B: starter B without its owner styles (F10 option style: froude default)
+		load("res://locomotion/loco_gait.gd").style_mode = OS.get_environment("LOCO_STYLE")
 	if OS.get_environment("LOCO_GAIT") == "today":     # A/B: the pre-port gait rules (F10 option gait: today)
 		load("res://locomotion/loco_gait.gd").froude_mode = false
 	var args := OS.get_cmdline_user_args()

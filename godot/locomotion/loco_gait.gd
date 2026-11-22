@@ -240,51 +240,152 @@ static func lean_lab(gait: StringName, fr: float) -> float:
 	return 0.0
 
 
-# --- Owner move styles for starter B (DESIGN A42, docs/evidence/loco/styles.md, web/gaitlab/styles.html) -------------------
-## F10 option `style`: "owner" applies the four picked styles to starter B only; "froude" keeps the Froude defaults everywhere.
-static var style_mode := "owner"
-## Fr at which starter B changes style (starting values, hysteresis HYST_LAB): below STALK_FR it creeps (slinky stalk: there is no
-## "sneaking" state in the C sim, so the creep is the slowest band), then the sprawl walk, the canter in the middle band where other
-## bodies trot, and the rotary gallop from GALLOP_FR (full chase or flee).
+# --- Owner move styles (DESIGN A42 / A43; docs/evidence/loco/styles.md, styles2.md; web/gaitlab/styles2.html) --------------------
+## F10 option `style`: "a42" = the A42 port presets (default), "longer" = longer-and-lower variant, "froude" = the Froude gaits
+## alone. Bipeds always take the "bouncier" variant (A43); asymmetric (three-legged) bodies take A42 as it is.
+static var style_mode := "a42"
+## Fr at which a body changes style (starting values, HYST_LAB hysteresis): below STALK_FR starter B creeps (slinky stalk: the C sim
+## has no "sneaking" state, so the creep is the slowest band), then the walk, the canter in the middle band where other bodies
+## trot, and the gallop from GALLOP_FR (full chase or flee).
 const STALK_FR := 0.10
 const CANTER_FR := 0.50
 const GALLOP_FR := 1.20
-## Offsets are in the lab's order LH, RH, LF, RF. k and the stride boost lengthen the stride (cadence = v / stride, owner 2026-11-22:
-## a walk of 0.8-1.0 Hz at 2 m/s, so the picker's k 0.95 / 1.75 Hz is not copied).
-const STYLES := {
-	&"sprawl": {"gait": &"walk", "off": [0.0, 0.5, 0.75, 0.25], "duty": 0.70, "k": 0.95, "boost": 1.9, "bob": 0.025, "bob_phase": 0.0, "roll": 0.06,
-		"pitch": 0.0, "rock": 0.02, "height": 0.64, "spine": 0.16, "head": 0.025, "lift": 0.12, "flight": false},
-	&"stalk": {"gait": &"walk", "off": [0.0, 0.5, 0.26, 0.76], "duty": 0.74, "k": 1.2, "boost": 1.5, "bob": 0.012, "bob_phase": 0.0, "roll": 0.025,
-		"pitch": -0.015, "rock": 0.015, "height": 0.60, "spine": 0.075, "head": 0.025, "lift": 0.07, "flight": false},
-	&"canter": {"gait": &"trot", "off": [0.0, 0.32, 0.32, 0.66], "duty": 0.29, "k": 1.35, "boost": 1.3, "bob": 0.07, "bob_phase": 0.5, "roll": 0.035,
-		"pitch": -0.02, "rock": 0.095, "height": 0.86, "spine": 0.045, "head": 0.03, "lift": 0.22, "flight": true},
-	&"gallop": {"gait": &"gallop", "off": [0.0, 0.12, 0.62, 0.5], "duty": 0.25, "k": 1.55, "boost": 1.3, "bob": 0.10, "bob_phase": 0.5, "roll": 0.035,
-		"pitch": -0.04, "rock": 0.07, "height": 0.86, "spine": 0.08, "head": 0.035, "lift": 0.24, "flight": true},
-}
-const STYLE_NAMES := [&"stalk", &"sprawl", &"canter", &"gallop"]
-const STYLE_FR := [STALK_FR, CANTER_FR, GALLOP_FR]    # the change between names[i] and names[i + 1]
-const REST_HEIGHT := 0.9                              # the pickers' plain styles stand at 0.9 h
+const REST_HEIGHT := 0.9        # the pickers' plain styles stand at 0.9 h
+const CAN_FLY := {"canter": true, "gallop": true}
 
-static func is_style_body(morph) -> bool:
-	return style_mode == "owner" and froude_mode and morph.plan == &"quadruped" and (str(morph.style_body).begins_with("Starter B") or str(morph.style_body).begins_with("startB"))
+## Quadruped offsets are in the lab's order LH, RH, LF, RF; k multiplies the stride law (cadence = v / stride, never a fixed rate).
+static func _q(off: Array, duty: float, k: float, bob: float, roll: float, pitch: float, rock: float, height: float, spine: float,
+		head: float, lift: float, flight: bool, gait: StringName) -> Dictionary:
+	return {"kind": "quad", "off": off, "duty": duty, "k": k, "bob": bob, "roll": roll, "pitch": pitch, "rock": rock, "height": height,
+		"spine": spine, "head": head, "lift": lift, "flight": flight, "gait": gait}
 
-static func style_select(prev: StringName, fr: float) -> StringName:
-	var k: int = max(STYLE_NAMES.find(prev), 0)
-	while k < STYLE_FR.size() and fr > STYLE_FR[k] + HYST_LAB:
+static func _d(kind: String, duty: float, k: float, gait: StringName, extra := {}) -> Dictionary:
+	var d := {"kind": kind, "off": [], "duty": duty, "k": k, "bob": 0.02, "roll": 0.04, "pitch": 0.0, "rock": 0.02, "height": 0.9, "spine": 0.02,
+		"head": 0.025, "lift": 0.12, "flight": false, "gait": gait, "lag": 0.0}
+	d.merge(extra, true)
+	return d
+
+static func _table(cls: String) -> Dictionary:
+	match cls:
+		"quad":
+			return {"stalk": _q([0.0, 0.5, 0.26, 0.76], 0.74, 1.2, 0.012, 0.025, -0.015, 0.015, 0.60, 0.075, 0.025, 0.07, false, &"walk"),
+				"walk": _q([0.0, 0.5, 0.75, 0.25], 0.70, 0.95, 0.025, 0.06, 0.0, 0.02, 0.64, 0.16, 0.025, 0.12, false, &"walk"),
+				"canter": _q([0.0, 0.32, 0.32, 0.66], 0.29, 1.35, 0.07, 0.035, -0.02, 0.095, 0.86, 0.045, 0.03, 0.22, true, &"trot"),
+				"gallop": _q([0.0, 0.12, 0.62, 0.5], 0.25, 1.55, 0.10, 0.035, -0.04, 0.07, 0.86, 0.08, 0.035, 0.24, true, &"gallop")}
+		"columnar":   # heavy and long-legged bodies do not sprawl; no flight anywhere (duty floor 0.5)
+			return {"walk": _q([0.0, 0.5, 0.75, 0.25], 0.70, 0.95, 0.025, 0.055, 0.0, 0.015, 0.92, 0.03, 0.015, 0.07, false, &"walk"),
+				"canter": _q([0.0, 0.5, 0.18, 0.68], 0.62, 1.22, 0.012, 0.055, 0.015, 0.015, 0.87, 0.02, 0.015, 0.07, false, &"amble"),
+				"gallop": _q([0.0, 0.5, 0.18, 0.68], 0.54, 1.3, 0.02, 0.055, 0.015, 0.02, 0.87, 0.02, 0.015, 0.09, false, &"amble")}
+		"biped":      # bird: a walk, a run with flight, a fast run leaning forward (the bouncier variant is applied on top)
+			return {"walk": _d("alt", 0.62, 1.0, &"walk", {"bob": 0.03, "roll": 0.045, "head": 0.06, "lift": 0.12}),
+				"canter": _d("alt", 0.40, 1.3, &"run", {"bob": 0.09, "roll": 0.045, "pitch": 0.1, "rock": 0.04, "lift": 0.23, "flight": true}),
+				"gallop": _d("alt", 0.30, 1.4, &"run", {"bob": 0.10, "roll": 0.045, "pitch": 0.2, "rock": 0.04, "lift": 0.25, "flight": true})}
+		"hex":         # tripod: low, then faster tripods; no flight (duty stays above 0.5)
+			return {"walk": _d("tripod", 0.66, 1.0, &"tripod", {"height": 0.8}),
+				"canter": _d("tripod", 0.54, 1.0, &"tripod", {"height": 0.8}),
+				"gallop": _d("tripod", 0.50, 1.0, &"tripod", {"height": 0.8})}
+		"octo":        # metachronal waves, faster = shorter lag
+			return {"walk": _d("lag", 0.68, 1.0, &"ripple", {"lag": 0.12}),
+				"canter": _d("lag", 0.60, 1.0, &"ripple", {"lag": 0.10}),
+				"gallop": _d("lag", 0.56, 1.0, &"ripple", {"lag": 0.085})}
+		"centi":       # body wave: the spine wave shares the legs' phase gradient
+			return {"walk": _d("lag", 0.70, 1.0, &"ripple", {"lag": 0.075, "spine": 0.12}),
+				"canter": _d("lag", 0.62, 1.0, &"ripple", {"lag": 0.06, "spine": 0.12}),
+				"gallop": _d("lag", 0.56, 1.0, &"ripple", {"lag": 0.05, "spine": 0.12})}
+		"tri":         # three legs: a clumsy tripod, never a gap above a third of a cycle
+			return {"walk": _d("tri", 0.62, 1.0, &"walk", {"off": [0.0, 0.37, 0.72], "roll": 0.08, "head": 0.08}),
+				"canter": _d("tri", 0.50, 1.0, &"walk", {"off": [0.0, 0.37, 0.72], "roll": 0.08, "head": 0.08}),
+				"gallop": _d("tri", 0.42, 1.0, &"walk", {"off": [0.0, 0.37, 0.72], "roll": 0.08, "head": 0.08})}
+	return {}
+
+static var _cache := {}
+
+## Body class for the style tables, or "" when the body keeps the Froude gaits (monopod, legless, radial).
+static func style_class(morph) -> String:
+	var n: int = morph.legs.size()
+	match morph.plan:
+		&"quadruped": return "columnar" if morph.graviportal else "quad"
+		&"upright_biped", &"horizontal_biped": return "biped"
+		&"multi":
+			if n == 3: return "tri"
+			if n == 6: return "hex"
+			if n == 8: return "octo"
+			if n > 8: return "centi"
+	return ""
+
+static func uses_styles(morph) -> bool:
+	return style_mode != "froude" and froude_mode and style_class(morph) != ""
+
+## The variant for this body: bipeds are always bouncier (A43); three-legged bodies keep A42 as it is; the rest follow the option.
+static func variant_for(cls: String) -> String:
+	if cls == "biped":
+		return "bouncier"
+	if cls == "tri":
+		return "a42"
+	return style_mode
+
+## Style parameters, with the variant applied. `shortest` = the shortest leg's length / hip height (floor for the lowered body).
+static func style_params(cls: String, name: StringName, variant: String) -> Dictionary:
+	var key := "%s/%s/%s" % [cls, name, variant]
+	if _cache.has(key):
+		return _cache[key]
+	var t := _table(cls)
+	if not t.has(name):
+		name = &"walk"
+	var d: Dictionary = (t[name] as Dictionary).duplicate(true)
+	if variant == "longer":
+		d.k *= 1.25
+		d.height = maxf(float(d.height) * 0.8, 0.45)
+		d.bob *= 0.8
+		d.lift *= 0.9
+	elif variant == "bouncier":
+		d.bob = float(d.bob) * 1.9 + 0.01
+		d.lift *= 1.5
+		d.duty = maxf(float(d.duty) - 0.07, 0.5 if not d.flight else 0.2)
+		d.rock *= 1.5
+		d.pitch *= 1.3
+		d.roll *= 1.2
+	_cache[key] = d
+	return d
+
+static func style_names(cls: String, starter_b: bool) -> Array:
+	return [&"stalk", &"walk", &"canter", &"gallop"] if (cls == "quad" and starter_b) else [&"walk", &"canter", &"gallop"]
+
+static func style_select(prev: StringName, fr: float, names: Array) -> StringName:
+	var lims: Array = [STALK_FR, CANTER_FR, GALLOP_FR] if names.size() == 4 else [CANTER_FR, GALLOP_FR]
+	var k: int = max(names.find(prev), 0)
+	while k < lims.size() and fr > lims[k] + HYST_LAB:
 		k += 1
-	while k > 0 and fr < STYLE_FR[k - 1] - HYST_LAB:
+	while k > 0 and fr < lims[k - 1] - HYST_LAB:
 		k -= 1
-	return STYLE_NAMES[k]
+	return names[k]
 
-## Touchdown offsets mapped by station and side (LH = rear left, RH = rear right, LF = front left, RF = front right).
-static func style_offsets(style: StringName, morph) -> PackedFloat32Array:
-	var o: Array = STYLES[style].off
+static func is_starter_b(morph) -> bool:
+	return str(morph.style_body).begins_with("Starter B") or str(morph.style_body).begins_with("startB")
+
+## Touchdown offsets of a style, by station and side.
+static func style_offsets(d: Dictionary, morph) -> PackedFloat32Array:
 	var out := PackedFloat32Array()
-	out.resize(morph.legs.size())
+	var n: int = morph.legs.size()
+	out.resize(n)
 	var front: int = morph.stations.size() - 1
-	for i in range(morph.legs.size()):
+	for i in range(n):
 		var l: Dictionary = morph.legs[i]
-		var hind: bool = l.station < front
 		var left: bool = l.side >= 0
-		out[i] = float(o[(0 if left else 1) + (0 if hind else 2)])
+		match d.kind:
+			"quad":
+				var o: Array = d.off
+				out[i] = float(o[(0 if left else 1) + (0 if l.station < front else 2)])
+			"alt":
+				out[i] = 0.0 if left else 0.5
+			"tripod":
+				out[i] = 0.5 * float((l.station + (0 if left else 1)) % 2)
+			"lag":
+				out[i] = fposmod(float(l.station) * float(d.lag) + (0.0 if left else 0.5), 1.0)
+			"tri":
+				out[i] = float((d.off as Array)[i % 3])
 	return out
+
+## Stride of a style (round 1 law: 2.3 min(Fr, .65)^.3 h k; cadence = v / stride stays the caller's rule).
+static func style_stride(d: Dictionary, fr: float, hip_height: float) -> float:
+	return 2.3 * pow(clampf(fr, 1e-4, 0.65), 0.3) * hip_height * float(d.k)

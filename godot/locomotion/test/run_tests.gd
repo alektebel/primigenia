@@ -33,6 +33,7 @@ func check(ok: bool, what: String) -> void:
 
 func _init() -> void:
 	var t0 := Time.get_ticks_msec()
+	Gait.style_mode = "froude"      # the Froude rules are what the legacy checks measure; the A42/A43 styles have their own test
 	test_morphology()
 	test_gait_tables()
 	test_foot_slide()
@@ -49,6 +50,7 @@ func _init() -> void:
 	test_quality()
 	test_adapter()
 	test_radial()
+	test_styles()
 	out["checks"] = checks
 	out["failures"] = fails
 	var path := ProjectSettings.globalize_path("res://").path_join("../docs/evidence/godot/locomotion/measurements.json")
@@ -900,3 +902,29 @@ func test_radial() -> void:
 		cil.step(1.0 / 60.0, Vector3.ZERO, 0.0, Vector3.ZERO)
 	check(cil.mode == &"cilia" and cil.pose.axis.collapse > 0.9, "cilia bodies collapse at slack tide while hunkered (%.2f)" % cil.pose.axis.collapse)
 	out["radial"] = {"row_footfalls": 1}
+
+# ---------------------------------------------------------------- A42 / A43 move styles
+func test_styles() -> void:
+	print("move styles (A42 / A43)")
+	Gait.style_mode = "a42"
+	for name in ["light_quadruped", "biped", "hexapod", "octopod"]:
+		var s = Sim.new(Bodies.get_body(name))
+		s.keep_frames = true
+		var cls: String = Gait.style_class(s.morph)
+		check(cls != "", "%s takes a style class (%s)" % [name, cls])
+		s.run(10.0, func(_t): return s.speed_for_froude(0.3))
+		var d: Dictionary = Gait.style_params(cls, &"walk", Gait.variant_for(cls))
+		var ff: Dictionary = s.footfalls(4.0)
+		var worst := 0.0
+		for i in range(ff.duty.size()):
+			worst = max(worst, abs(ff.duty[i] - d.duty))
+		check(worst < 0.05 and s.max_slide() < SLIDE_LIMIT, "%s walk style: duty %.2f measured within %.3f, slide %.2f mm" % [name, d.duty, worst, s.max_slide() * 1000.0])
+	var q = Sim.new(Bodies.get_body("light_quadruped"))
+	var cq: Dictionary = Gait.style_params("quad", &"canter", "a42")
+	check(cq.flight and cq.duty < 0.5, "the quadruped canter has a flight phase (duty %.2f)" % cq.duty)
+	var bb: Dictionary = Gait.style_params("biped", &"canter", "bouncier")
+	var ba: Dictionary = Gait.style_params("biped", &"canter", "a42")
+	check(bb.bob > ba.bob and bb.lift > ba.lift, "bipeds are bouncier (bob %.3f > %.3f)" % [bb.bob, ba.bob])
+	var ll: Dictionary = Gait.style_params("quad", &"walk", "longer")
+	check(ll.k > 1.2 * Gait.style_params("quad", &"walk", "a42").k and ll.height < 0.64, "longer-lower: stride k x1.25, lower body")
+	Gait.style_mode = "froude"
