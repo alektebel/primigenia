@@ -322,11 +322,15 @@ func _schedule_frame() -> void:
 
 func _auto_frame() -> void:
 	_frame_pending = false
+	if not is_inside_tree() or camera == null or not camera.is_inside_tree():
+		return          # the deferred reframe outlived the editor (left the tree): nothing to frame
 	if view == null or model == null or not _drag.is_empty() or _wheel_open:
 		return
 	frame_creature(false)
 
 func frame_creature(snap := true) -> void:
+	if camera == null or not camera.is_inside_tree():
+		return
 	if stage.size.y < 1 or stage.size.x < 1:
 		return
 	var box := creature_bounds()
