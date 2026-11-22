@@ -737,7 +737,7 @@ static void debug_ops(void){
     dbg_op(CP_STAGE_DBG_FLAGS,0,3,0,0,0,0);
     assert(w.debug_flags==3);
     dbg_op(CP_STAGE_DBG_FLAGS,0,0,0,0,0,0);
-    assert(CP_STAGE_PARAM_COUNT==27&&!strcmp(CP_STAGE_PARAMS[0].name,"jog_k"));
+    assert(CP_STAGE_PARAM_COUNT==28&&!strcmp(CP_STAGE_PARAMS[0].name,"jog_k"));
     for(int i=0;i<CP_STAGE_PARAM_COUNT;i++){
         const float def=*(const float *)((const char *)&CP_STAGE_MOTION+CP_STAGE_PARAMS[i].offset);
         assert(def>=CP_STAGE_PARAMS[i].min&&def<=CP_STAGE_PARAMS[i].max&&!strcmp(CP_STAGE_PARAMS[i].group,"movement"));

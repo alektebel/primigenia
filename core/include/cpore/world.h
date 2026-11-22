@@ -105,6 +105,7 @@ typedef struct {
     float stall_mul;                 /* it cannot walk up a grade above climb*stall_mul (speed falls to 0 there) */
     float slide_mul,slide_k;         /* above grade stall*slide_mul it slides down at slide_k*(excess)+0.4 m/s */
     float down_gain;                 /* extra speed on a mild downhill (share, at grade 0.2) */
+    float walk_fr;                   /* walk Froude number (default .24, A39); player and wild walkers: v = sqrt(walk_fr g h)*jog_k */
 } CpStageMotion;
 extern const CpStageMotion CP_STAGE_MOTION;
 typedef struct {

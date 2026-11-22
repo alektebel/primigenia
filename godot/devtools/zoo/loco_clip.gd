@@ -15,6 +15,10 @@ func _run() -> void:
 	var body: String = args[0] if args.size() > 0 else "hero"
 	var scen: String = args[1] if args.size() > 1 else "walk"
 	var secs: float = float(args[2]) if args.size() > 2 else 6.0
+	var look: String = args[3] if args.size() > 3 else ""          # optional gallop look: bold | natural | subtle
+	var near: float = float(args[4]) if args.size() > 4 else 1.0   # camera distance multiplier (0.5 = twice as close)
+	if look != "":
+		load("res://locomotion/loco_gait.gd").gallop_look = look
 	var Core = load("res://devtools/zoo/loco_score_core.gd")
 	var Zoo = load("res://devtools/zoo/zoo.gd")
 	var cfg: Dictionary = Core.SCEN[scen]
@@ -28,7 +32,7 @@ func _run() -> void:
 	_zoo.step_ticks(int(cfg.skip))
 	var r = _zoo.runners[0]
 	var h: float = r.host.height()
-	_zoo.cam_dist = clampf(h * 3.2 + 2.0, 4.0, 25.0)
+	_zoo.cam_dist = clampf((h * 3.2 + 2.0) * near, 2.5, 25.0)
 	_cam = Camera3D.new()
 	_cam.fov = 48.0
 	_cam.near = 0.3

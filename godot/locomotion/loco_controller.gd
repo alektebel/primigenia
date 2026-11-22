@@ -720,6 +720,9 @@ func _sub(h: float, p: Vector3, yaw: float, v: Vector3, settle: bool) -> void:
 			yw += clampf(float(sdy.spine) * _ref_h / half, 0.0, 0.3) * sin(TAU * phase - 2.0 * (float(st.z) - morph.com.z) / half) * _moving
 		_st_yaw[k] = lerpf(_st_yaw[k], yw, _lp(0.04, h))
 	var flex_t: float = Gait.spine_flex(gait, phase, fr) * _moving
+	if _style != &"" and float(_sd.get("flex", 0.0)) > 0.0:
+		# the gallop look: a bold gallop or canter gathers and extends the spine (the canter's gait is a trot, so it asks for the gallop curve)
+		flex_t = Gait.spine_flex(&"gallop", phase, maxf(fr, 1.2), float(_sd.flex)) * _moving
 	_flex = _spring(_flex, flex_t, 45.0, 0.8, h)
 	for k in range(morph.stations.size()):
 		_st_x[k] = _spine_x(morph.stations[k].z)

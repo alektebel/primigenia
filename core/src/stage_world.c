@@ -842,13 +842,14 @@ static int steep_up(const CpStageWorld *w,const CpStageCreature *c,float x,float
  * Mass still slows acceleration and turning through steer.c (A29). Plain float maths (sqrtf is exactly rounded), so it is
  * reproducible like the rest of the stage. */
 #define CP_STAGE_HIP_PER_RADIUS .56f
-#define CP_STAGE_FR_WALK .24f
+#define CP_STAGE_FR_WALK .24f   /* default of motion.walk_fr */
 static float gait_speed(const CpCombatProfile *p,float fr){
     return sqrtf(fr*9.81f*CP_STAGE_HIP_PER_RADIUS*cp_combat_body_radius(p));
 }
 const CpStageMotion CP_STAGE_MOTION={
     1.f,1.5f,.6f,15.f,20.f,.6f,.9f,.6f,4.5f,11.8f,.3f,2.f,7.f,.4f,
-    1.4f,.35f,.03f,.25f,3.2f,1.5f,.8f,.55f,1.35f,1.4f,1.1f,8.f,.15f
+    1.4f,.35f,.03f,.25f,3.2f,1.5f,.8f,.55f,1.35f,1.4f,1.1f,8.f,.15f,
+    CP_STAGE_FR_WALK
 };
 /* Run intent is latched until release or exhaustion. A held/repeated request cannot bypass the threshold. */
 void cp_stage_set_run(CpStageWorld *w,int on){
@@ -1350,7 +1351,7 @@ static void wild_tick(CpStageWorld *w,int skip,int engage){
         /* species >= 6 (star, slug, radial) keep their own authored speeds; the daytime and night bodies follow the Froude law */
         const int by_size=e->species<6;
         const float k=w->motion.wild_k*w->motion.jog_k;
-        float jog=by_size?gait_speed(&e->profile,CP_STAGE_FR_WALK)*k:e->profile.speed,espeed=jog;
+        float jog=by_size?gait_speed(&e->profile,w->motion.walk_fr)*k:e->profile.speed,espeed=jog;
         /* chasing or fleeing is a run; roaming, returning home and hunkering are walks */
         if(by_size&&!e->returning&&(hostile||cp_stage_social_leaving(w,i)||(s->temperament==CP_STAGE_TIMID&&d<s->sight*.5f)))espeed=gait_speed(&e->profile,w->motion.sprint_k)*k;
         /* A star probes slowly on tube feet, and rows at full speed when driven off or provoked. */
@@ -1506,7 +1507,7 @@ uint64_t cp_stage_step(CpStageWorld *w,const CpStageInput *input){
         }
         int sprint=(a->sprint||a->verb==CP_STAGE_FLEE)&&length(dx,dz)>0&&w->player.stamina>2;
         const float slow=w->motion.jog_k*(1.f-w->recipes.mineral*.003f);
-        float jog=gait_speed(&w->player.profile,CP_STAGE_FR_WALK)*slow,speed=(w->running||sprint)?gait_speed(&w->player.profile,w->motion.sprint_k)*slow:jog,stop=sqrtf(clamp(remaining-.08f,0,10000)*12);
+        float jog=gait_speed(&w->player.profile,w->motion.walk_fr)*slow,speed=(w->running||sprint)?gait_speed(&w->player.profile,w->motion.sprint_k)*slow:jog,stop=sqrtf(clamp(remaining-.08f,0,10000)*12);
         if(stop<speed)speed=stop;
         walk(w,&w->player,dx,dz,speed,jog);
         if(w->running&&length(dx,dz)>0&&w->player.speed>.01f){
@@ -1674,7 +1675,8 @@ uint64_t cp_stage_hash(const CpStageWorld *w){
      * every analytic/flat run keep their hashes. */
     if(memcmp(&w->motion,&CP_STAGE_MOTION,sizeof w->motion)){
         const float *m=(const float *)&w->motion;
-        for(unsigned i=0;i<sizeof w->motion/sizeof *m;i++)fl(&h,m[i]);
+        for(unsigned i=0;i<offsetof(CpStageMotion,walk_fr)/sizeof *m;i++)fl(&h,m[i]);
+        if(w->motion.walk_fr!=CP_STAGE_MOTION.walk_fr)fl(&h,w->motion.walk_fr);   /* newer than the goldens: folded only when tuned */
     }
     if(w->debug_flags)u32(&h,(uint32_t)w->debug_flags);
     if(!cp_combat_loadout_is_default(&w->loadout,&w->player.profile)){
@@ -2128,7 +2130,7 @@ const CpStageParam CP_STAGE_PARAMS[]={
     MOTION_PARAM(ang_k,.1f,5.f),MOTION_PARAM(grip_mass,0.f,2.f),MOTION_PARAM(acc_mass,0.f,2.f),
     MOTION_PARAM(creep,0.f,1.f),MOTION_PARAM(pivot_r,0.f,5.f),MOTION_PARAM(look_min,.2f,10.f),
     MOTION_PARAM(look_k,0.f,3.f),MOTION_PARAM(climb_base,.1f,2.f),MOTION_PARAM(climb_legs,0.f,3.f),MOTION_PARAM(stall_mul,1.f,3.f),
-    MOTION_PARAM(slide_mul,1.f,3.f),MOTION_PARAM(slide_k,0.f,30.f),MOTION_PARAM(down_gain,0.f,1.f)
+    MOTION_PARAM(slide_mul,1.f,3.f),MOTION_PARAM(slide_k,0.f,30.f),MOTION_PARAM(down_gain,0.f,1.f),MOTION_PARAM(walk_fr,.1f,1.5f)
 };
 const int CP_STAGE_PARAM_COUNT=(int)(sizeof CP_STAGE_PARAMS/sizeof *CP_STAGE_PARAMS);
 static int spot_ok(const CpStageWorld *w,float x,float z,float radius){
@@ -2285,7 +2287,7 @@ uint64_t cp_stage_layout(void){
     LAY(CpStageMotion,jog_k);LAY(CpStageMotion,sprint_k);LAY(CpStageMotion,wild_k);LAY(CpStageMotion,accel);
     LAY(CpStageMotion,brake);LAY(CpStageMotion,ease);LAY(CpStageMotion,turn_k);LAY(CpStageMotion,turn_min);
     LAY(CpStageMotion,turn_max);LAY(CpStageMotion,grip);LAY(CpStageMotion,pivot_k);LAY(CpStageMotion,pivot_mul);
-    LAY(CpStageMotion,pivot_max);LAY(CpStageMotion,turn_slow);
+    LAY(CpStageMotion,pivot_max);LAY(CpStageMotion,turn_slow);LAY(CpStageMotion,walk_fr);
     return h;
 }
 size_t cp_stage_world_size(void){
