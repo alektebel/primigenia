@@ -16,8 +16,8 @@ class ErrorLog extends Logger:
 			errors.append("%s:%d %s %s" % [file.get_file(), line, code, rationale])
 
 # Tick budgets per task (the whole chain must fit in TOTAL), at 10 ticks per second of game time.
-const BUDGET := {"hunt": 4500, "friend": 5000, "dig": 800, "wings": 2500, "fire": 2500}
-const TOTAL := 14000
+const BUDGET := {"hunt": 15000, "friend": 12000, "dig": 2500, "wings": 6000, "fire": 6000}   # A39: a body walks at Fr 0.24 (the starter about 1 m/s) and runs at Fr 1.5, so the bot needs about 2.5x the old ticks
+const TOTAL := 40000
 var TIMESCALE := 16.0
 
 var checks := 0
@@ -142,10 +142,13 @@ func _run() -> void:
 	print("   player %.1f,%.1f hp %.0f; %d creatures; seed %d; nest %s" % [st.entities[0].x, st.entities[0].z, st.entities[0].hp, st.entities.size() - 1, seed_n, str(island._nest)])
 	await _shot("start")
 	var t_start := tick()
+	# A39: bodies walk at Fr 0.24 and prey runs at Fr 1.5 when it flees, so the bot sprints between fights
+	island.player_input.keys_override = {"forward": false, "back": false, "left": false, "right": false, "sprint": true, "run": true}
 	await _hunt()
 	await _friend()
 	await _dig()
 	await _wings()
+	island.player_input.keys_override = null
 	await _fire()
 	check(fq.quest.finished(), "all five tasks are done")
 	check(tick() - t_start <= TOTAL, "the whole chain fits in %d ticks (%d used)" % [TOTAL, tick() - t_start])

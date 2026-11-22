@@ -34,6 +34,8 @@ const TALL := 1.0               # share of the pendulum rise a bouncing gait sti
 const ERECT_FLOOR := 1.0        # sprawled legs vault like straight ones (their lateral offset is part of the leg length)
 const REACH_K_QUAD := 0.60      # quadrupeds: stance legs stay within this share of their length from vertical (hips ride high, legs ~0.9+ of full length)
 const REACH_K_OTHER := 0.6
+const REACH_K_FLIGHT := 0.78    # froude rules, gaits with a flight phase (starting value; checked by slip, leg extension and knee flips in the scorecard)
+const CROUCH_MAX_FROUDE := 0.14  # gait lab rule 3 + owner 2026-11-22: when the reach caps the stride, lower the body (and lengthen the flight) instead of raising the cadence
 const CROUCH_MAX_QUAD := 0.03   # quadrupeds hardly crouch (size rule, docs/canon/MOTION.md section 2): the stride is clipped instead
 
 signal footfall(leg: int, position: Vector3)
@@ -64,6 +66,10 @@ var girdle_gain := 0.085         # girdle yaw per radian of leading-foot offset
 
 var _legs: Array = []
 var _off := PackedFloat32Array()
+var _off_cur := PackedFloat32Array()   # footfall offsets in use: they blend to _off over one stride (rule 8)
+var _sd := {}                           # parameters of the style in use (Gait.style_params)
+var _style: StringName = &""          # the owner move style in use (starter B only, Gait.STYLES), or empty
+var _spacing := 1e9                    # shortest distance between neighbouring hips of one side (rule 3 spacing cap)
 var _ready_ok := false
 var _pos := Vector3.ZERO
 var _yaw := 0.0
@@ -125,6 +131,7 @@ func setup(morphology, ground_fn: Callable = Callable()) -> void:
 	_stride_mult = clamp(pow(rob, 0.06), 0.9, 1.15)
 	gait = Gait.base_gait(morph)
 	_off = Gait.offsets(gait, morph)
+	_off_cur = _off.duplicate()
 	duty = Gait.duty(gait, 0.0)
 	bounce = 0.0
 	_legs = []
@@ -132,13 +139,20 @@ func setup(morphology, ground_fn: Callable = Callable()) -> void:
 		_legs.append({"theta": -float(_off[i]), "swing": false, "th0": 0.0, "th1": 1.0,
 			"foot": Vector3.ZERO, "from": Vector3.ZERO, "target": Vector3.ZERO, "g_to": 0.0,
 			"lift": 0.0, "load": 1.0, "s": 0.5, "u": 0.0, "force": false, "err": 0.0, "rate": 0.0, "t_td": 0.0,
-			"phi": 0.0, "dir": Vector3.BACK * -1.0, "ball": Vector3.ZERO})
+			"phi": 0.0, "dir": Vector3.BACK * -1.0, "ball": Vector3.ZERO, "miss": 0})
 	_hip_loc = []
 	_r_feet = 0.0
 	for m in morph.legs:
 		_hip_loc.append(m.hip)
 		_r_feet += Vector2(m.home.x - morph.com.x, m.home.z - morph.com.z).length()
 	_r_feet = _r_feet / max(float(morph.legs.size()), 1.0)
+	_spacing = 1e9
+	for a in range(morph.legs.size()):
+		for b in range(a + 1, morph.legs.size()):
+			var la: Dictionary = morph.legs[a]
+			var lb2: Dictionary = morph.legs[b]
+			if la.side == lb2.side and la.station != lb2.station:
+				_spacing = minf(_spacing, absf(la.hip.z - lb2.hip.z))
 	_gait_t = -1.0
 	_st_yaw = PackedFloat32Array()
 	_st_x = PackedFloat32Array()
@@ -266,26 +280,63 @@ func _sub(h: float, p: Vector3, yaw: float, v: Vector3, settle: bool) -> void:
 	var grade := _slope_f * dir.dot(fwd) + _slope_l * dir.dot(left)
 	# --- 3. gait and timing
 	var g := Gait.select(morph, gait, 0.0 if pivoting else fr)
+	var sty: Dictionary = {}
+	if Gait.uses_styles(morph):
+		var cls := Gait.style_class(morph)
+		var names := Gait.style_names(cls, Gait.is_starter_b(morph))
+		var sn := Gait.style_select(_style, fr, names)
+		if sn != _style and (time - _gait_t >= GAIT_DWELL or _style == &""):
+			_style = sn
+			_sd = Gait.style_params(cls, _style, Gait.variant_for(cls))
+			_off = Gait.style_offsets(_sd, morph)
+			gait = _sd.gait
+			_gait_t = time
+		if _style != &"":
+			sty = _sd
+			g = sty.gait
+	elif _style != &"":
+		_style = &""
+		_sd = {}
+		_off = Gait.offsets(g, morph)
 	if g != gait and time - _gait_t >= GAIT_DWELL:
 		var old := gait
 		gait = g
 		_gait_t = time
+		Gait.fr_hint = fr_g
 		_off = Gait.offsets(gait, morph)
 		gait_changed.emit(old, gait, fr)
+	if Gait.froude_mode and gait == &"ripple" and _style == &"":
+		# the metachronal lag falls with Fr (rule 4): recompute the target offsets; they blend in over a stride
+		Gait.fr_hint = fr_g
+		_off = Gait.offsets(gait, morph)
 	var legless: bool = _legs.is_empty()
 	var f_nat_c := 0.25 * sqrt(G / _ref_h)
-	var duty_t := Gait.duty(gait, fr_g, morph.graviportal)
+	var duty_t := Gait.duty(gait, fr_g, Gait.heavy(morph), morph.stations.size() >= 4)
 	var stride_t := Gait.stride_length(gait, fr_g, _ref_h) * _stride_mult
+	if _style != &"":
+		duty_t = _sd.duty
+		stride_t = Gait.style_stride(_sd, fr_g, _ref_h) * _stride_mult
+	if Gait.froude_mode and not pivoting:
+		# turning on a long stance drags the feet sideways: shorten the stride with the path curvature (starting value)
+		stride_t /= 1.0 + 1.5 * minf(absf(_yawrate) / maxf(_speed_f, 0.5), 1.5) * morph.track_width
+	if Gait.froude_mode and _legs.size() > 4 and _spacing < 1e8:
+		# rule 3: stance travel (stride x duty) stays under 0.9 x the spacing of neighbouring legs, so grounded feet never cross
+		stride_t = minf(stride_t, 0.9 * _spacing / maxf(duty_t, 0.3))
 	# slopes: shorter strides uphill (more) and downhill (less)
 	stride_t *= 1.0 / (1.0 + 1.6 * grade) if grade > 0.0 else 1.0 / (1.0 - 0.6 * grade)
 	var bounce_t := Gait.bounce(gait)
+	var style_drop := 0.0
+	if not sty.is_empty():
+		# owner style (A42/A43): flight styles bounce, a lower body in the sprawl walks
+		bounce_t = 1.0 if sty.flight else 0.0
+		style_drop = maxf(1.0 - float(sty.height) / Gait.REST_HEIGHT, 0.0)
 	var guard := duty_t >= 0.5          # walking gaits keep at least half the legs down
 	var need_stance := maxi(1, int(ceil(_legs.size() / 2.0)))
 	# Reach. A walking leg stays straight and the hip vaults over it (step 8),
 	# so only the leg angle limits the stride. A bouncing gait needs the hips
 	# low enough for a straight leg to reach touchdown and lift-off: crouch,
 	# then clip the stride to what the legs allow.
-	var crouch_max := CROUCH_MAX_QUAD if morph.plan == &"quadruped" else 0.18
+	var crouch_max := (CROUCH_MAX_FROUDE if Gait.froude_mode else CROUCH_MAX_QUAD) if morph.plan == &"quadruped" else (0.2 if Gait.froude_mode else 0.18)
 	var crouch_t := 0.0
 	_y_amp = max(abs(_y.x), _y_amp * exp(-h * max(cadence, f_nat_c)))
 	for i in range(_legs.size()):
@@ -295,6 +346,8 @@ func _sub(h: float, p: Vector3, yaw: float, v: Vector3, settle: bool) -> void:
 		var off_x: float = abs(m.home.x - m.hip.x)     # sprawl
 		var off: float = abs(m.home.z - m.hip.z)       # feet carried ahead of or behind the hip
 		var reach_k: float = REACH_K_QUAD if morph.plan == &"quadruped" else REACH_K_OTHER
+		if Gait.froude_mode and duty_t < 0.5:
+			reach_k = REACH_K_FLIGHT      # a running leg swings through a wider arc: lengthen the stride, not the cadence (owner 2026-11-22)
 		var d_lim: float = sqrt(max(reach_k * reach_k * lr * lr - off_x * off_x, 0.0)) - off
 		var d_half: float = 0.5 * duty_t * stride_t / 0.92
 		if d_half > d_lim:
@@ -311,8 +364,9 @@ func _sub(h: float, p: Vector3, yaw: float, v: Vector3, settle: bool) -> void:
 		crouch_t = max(crouch_t, need)
 	if morph.plan == &"quadruped":
 		stride_t = maxf(stride_t, (_speed_f / (CADENCE_MAX_F * f_nat_c)))      # never faster than a few natural frequencies: a frantic scurry is worse than a bent leg
+	crouch_t = maxf(crouch_t, style_drop)
 	if pivoting:
-		crouch_t = min(crouch_t + 0.05, crouch_max)
+		crouch_t = min(crouch_t + 0.05, maxf(crouch_max, style_drop))
 	var f_nat := f_nat_c
 	var kg := 1.0 if settle else _lp(0.35 / max(cadence, f_nat), h)
 	duty = lerpf(duty, duty_t, kg)
@@ -320,10 +374,15 @@ func _sub(h: float, p: Vector3, yaw: float, v: Vector3, settle: bool) -> void:
 	crouch = lerpf(crouch, crouch_t, kg)
 	stride = stride_t if settle else lerpf(stride, stride_t, _lp(0.15, h))
 	cadence = (maxf(_speed_f, v_rot) if pivoting else _speed_f) / max(stride, 1e-4)
+	if Gait.froude_mode:
+		# rule 8: the footfall offsets blend (circularly) to the new gait's over about one stride of phase
+		var kb: float = 1.0 if settle else clampf(f_eff_pre(cadence, f_nat) * h * 2.5, 0.0, 1.0)
+		for i in range(_off_cur.size()):
+			_off_cur[i] = fposmod(_off_cur[i] + _wrap(_off[i] - _off_cur[i]) * kb, 1.0)
 	# --- 4. clock: keep stepping while a foot is in the air or out of place
 	var need_fix := false
 	for l in _legs:
-		if l.swing or l.err > 0.12 * _ref_h:
+		if l.swing or (l.err > 0.12 * _ref_h and (l.miss < 2 or not Gait.froude_mode)):
 			need_fix = true
 	var f_eff: float = cadence if moving else (max(f_nat, cadence) if need_fix else 0.0)
 	phase += f_eff * h
@@ -333,7 +392,7 @@ func _sub(h: float, p: Vector3, yaw: float, v: Vector3, settle: bool) -> void:
 	for i in range(_legs.size()):
 		var l: Dictionary = _legs[i]
 		var m: Dictionary = morph.legs[i]
-		var rate: float = f_eff * clamp(1.0 + 3.0 * _wrap(phase - _off[i] - l.theta), 0.5, 1.8)
+		var rate: float = f_eff * clamp(1.0 + 3.0 * _wrap(phase - _off_cur[i] - l.theta), 0.5, 1.8)
 		l.theta += rate * h
 		l.rate = rate
 		var home_l := Vector3(m.home.x, 0.0, m.home.z)
@@ -344,7 +403,7 @@ func _sub(h: float, p: Vector3, yaw: float, v: Vector3, settle: bool) -> void:
 		if not l.swing:
 			l.err = Vector2(l.foot.x - home_now.x, l.foot.z - home_now.z).length()
 			var in_window: bool = frac >= duty and frac < duty + 0.4 * (1.0 - duty)
-			var want: bool = moving or l.err > 0.12 * _ref_h
+			var want: bool = moving or (l.err > 0.12 * _ref_h and (l.miss < 2 or not Gait.froude_mode))
 			var forced := false
 			if l.force and (moving or l.err > 0.05 * _ref_h):
 				if time - _force_t >= FORCE_GAP:
@@ -409,6 +468,8 @@ func _sub(h: float, p: Vector3, yaw: float, v: Vector3, settle: bool) -> void:
 			# swing arc: grows with speed, with step length and with what is in the way
 			var dist := Vector2(target.x - l.from.x, target.z - l.from.z).length()
 			var base_h: float = (0.05 + 0.09 * min(1.0, fr / 1.5)) * m.rest_h * m.lift
+			if Gait.froude_mode:
+				base_h = (float(_sd.lift) if _style != &"" else Gait.lift_share(gait, fr)) * m.rest_h * m.lift
 			base_h *= clamp(dist / (0.25 * m.rest_h), 0.0, 1.0)
 			if l.lift == 0.0:
 				var need_h := 0.0
@@ -428,6 +489,8 @@ func _sub(h: float, p: Vector3, yaw: float, v: Vector3, settle: bool) -> void:
 			if u >= 1.0:
 				l.swing = false
 				l.foot = target
+				# a foot that lands more than the tolerance from home twice in a row (the reach cannot do better) stops asking for fixes
+				l.miss = l.miss + 1 if (not moving and Vector2(target.x - home_now.x, target.z - home_now.z).length() > 0.12 * _ref_h) else 0
 				l.err = 0.0
 				l.phi = 0.0
 				l.dir = Vector3(basis.z.x, 0.0, basis.z.z)
@@ -557,7 +620,7 @@ func _sub(h: float, p: Vector3, yaw: float, v: Vector3, settle: bool) -> void:
 	var wc: float = 0.45 * TAU * max(f_eff, f_nat)
 	# a real bounce is never the same twice: slow, incommensurate modulation of the drive (+-7 %)
 	var irregular := 1.0 + 0.045 * sin(TAU * phase * 0.5 + 1.3) + 0.03 * sin(TAU * phase * 0.31 + 0.4)
-	var drive := bounce * _moving * irregular * (0.5 if morph.graviportal else 1.0)       # heavy bodies bob less (canon: the ground takes the hit, the body does not float)
+	var drive := bounce * _moving * irregular * (0.5 if Gait.heavy(morph) else 1.0)       # heavy bodies bob less (canon: the ground takes the hit, the body does not float)
 	var zc: float = clamp(_zeta * 0.7, 0.4, 1.0)
 	var den := 1.0 + 2.0 * zc * wc * h + wc * wc * h * h
 	# only the fluctuation of the leg forces about their running mean moves the
@@ -565,8 +628,20 @@ func _sub(h: float, p: Vector3, yaw: float, v: Vector3, settle: bool) -> void:
 	var kf := _lp(1.0 / max(f_eff, f_nat), h)
 	_f_avg = lerpf(_f_avg, f_sum, kf)
 	_t_avg = lerpf(_t_avg, tq, kf)
-	_y.y = (_y.y + h * (drive * G * (f_sum - _f_avg) - wc * wc * _y.x)) / den
-	_y.x = clamp(_y.x + _y.y * h, -0.3 * _ref_h, 0.3 * _ref_h)
+	if Gait.froude_mode and bounce > 0.5:
+		# rule 6: hip height = h (a0 + a1 W), W = the highest sin(pi x stance progress) of the grounded legs (flight: W = 0)
+		var wmax := 0.0
+		for lg in _legs:
+			if not lg.swing:
+				wmax = maxf(wmax, sin(PI * lg.s))
+		var ba: Vector2 = Gait.bob_coeffs(gait)
+		var y_t: float = (ba.x + ba.y * wmax - 1.0) * _ref_h * _moving
+		if _style != &"":
+			y_t = float(_sd.bob) * (0.5 - wmax) * _ref_h * _moving
+		_y = _spring(_y, y_t, maxf(TAU * f_eff * 5.0, 8.0), 0.8, h)
+	else:
+		_y.y = (_y.y + h * (drive * G * (f_sum - _f_avg) - wc * wc * _y.x)) / den
+		_y.x = clamp(_y.x + _y.y * h, -0.3 * _ref_h, 0.3 * _ref_h)
 	_p.y = (_p.y + h * (drive * leg_axis_torque * morph.mass * G * (tq - _t_avg) / morph.inertia.x - wc * wc * _p.x)) / den
 	_p.x = clamp(_p.x + _p.y * h, -0.22, 0.22)
 	# --- 12. lean from acceleration, bank from turning
@@ -599,12 +674,15 @@ func _sub(h: float, p: Vector3, yaw: float, v: Vector3, settle: bool) -> void:
 				# plant, independently of its longer contact (scorecard roll lag).
 				var pulse: float = lg.s * duty / 0.20 if gait == &"amble" else lg.s / 0.5
 				gr_t -= float(morph.legs[i].side) * sin(PI * clampf(pulse, 0.0, 1.0))
-		gr_t *= float(GAIT_ROLL.get(morph.plan, 0.0)) * float(GAIT_ROLL_K.get(gait, 0.6)) * _moving
+		gr_t *= (float(_sd.roll) if _style != &"" else float(GAIT_ROLL.get(morph.plan, 0.0)) * float(GAIT_ROLL_K.get(gait, 0.6))) * _moving
 	# the gait roll plus the turning bank never exceed the plan's bank limit (the roll is one-sided only while banking hard)
 	var bmax: float = float(BANK_MAX.get(morph.plan, 0.2))
 	_gr = _spring(_gr, clampf(gr_t, -bmax - _bank.x, bmax - _bank.x), maxf(TAU * f_eff * 4.0, _omega), 0.9, h)
 	# --- 13. compose the body transform
 	var slope_b := b_o + _p.x + _lean.x
+	if _style != &"":
+		var sd: Dictionary = _sd
+		slope_b += tan(float(sd.pitch) + float(sd.rock) * sin(TAU * phase)) * _moving
 	var pitch := -atan(slope_b)                    # rotation about +X (left)
 	var roll := atan(c_o) + _bank.x + _gr.x               # rotation about +Z (forward)
 	var piv := Vector3(0.0, morph.com.y, morph.com.z)
@@ -635,6 +713,11 @@ func _sub(h: float, p: Vector3, yaw: float, v: Vector3, settle: bool) -> void:
 		yw += clamp(kappa * (float(st.z) - morph.com.z), -0.35, 0.35)
 		if intent_yaw != null and float(st.z) > morph.com.z:
 			yw += clamp(0.25 * d_int, -0.3, 0.3) * (float(st.z) - morph.com.z) / (0.5 * max(morph.body_length, 0.1))
+		if _style != &"":
+			# the travelling lateral spine wave (lab: spine x h of lateral displacement), one wave per stride
+			var sdy: Dictionary = _sd
+			var half: float = maxf(0.5 * morph.body_length, 0.2)
+			yw += clampf(float(sdy.spine) * _ref_h / half, 0.0, 0.3) * sin(TAU * phase - 2.0 * (float(st.z) - morph.com.z) / half) * _moving
 		_st_yaw[k] = lerpf(_st_yaw[k], yw, _lp(0.04, h))
 	var flex_t: float = Gait.spine_flex(gait, phase, fr) * _moving
 	_flex = _spring(_flex, flex_t, 45.0, 0.8, h)
@@ -658,7 +741,7 @@ func _sub(h: float, p: Vector3, yaw: float, v: Vector3, settle: bool) -> void:
 		var phi_need := 0.0
 		# The amble keeps its sole planted; reach is resolved by body drop.
 		# Heel rotation here adds a second contact motion and reads as a hitch.
-		if gait != &"amble" and hw.distance_to(_ankle_at(l, m, 0.0)) > lmax:
+		if gait != &"amble" and not (Gait.froude_mode and morph.plan == &"quadruped" and duty >= 0.5) and hw.distance_to(_ankle_at(l, m, 0.0)) > lmax:
 			var lo := 0.0
 			var hi := deg_to_rad(60.0)
 			if hw.distance_to(_ankle_at(l, m, hi)) > lmax:
@@ -698,8 +781,8 @@ func _sub(h: float, p: Vector3, yaw: float, v: Vector3, settle: bool) -> void:
 	var nk: float = max(morph.neck.length, 0.05)
 	var wn: float = clamp(2.2 * sqrt(G / nk), 4.0, 30.0)
 	var stretch: float = -0.25 * min(1.0, fr / 2.0) if morph.plan != &"upright_biped" else 0.0
-	_neck_p = _spring(_neck_p, clamp(-0.7 * (slope_b - bt * 0.5) - 0.8 * vy / (nk * wn) + stretch, -0.8, 0.8), wn, 0.7, h)
-	_neck_y = _spring(_neck_y, clamp(0.35 * _yawrate, -0.6, 0.6) + (clamp(0.6 * d_int, -0.6, 0.6) if intent_yaw != null else 0.0), wn, 0.8, h)
+	_neck_p = _spring(_neck_p, clamp(-(0.9 if Gait.froude_mode else 0.7) * (slope_b - bt * 0.5) - 0.8 * vy / (nk * wn) + stretch, -0.8, 0.8), wn, 0.7, h)
+	_neck_y = _spring(_neck_y, clamp(0.35 * _yawrate, -0.6, 0.6) + (float(_sd.head) * sin(TAU * phase + 0.7) * _moving if _style != &"" else 0.0) + (clamp(0.6 * d_int, -0.6, 0.6) if intent_yaw != null else 0.0), wn, 0.8, h)
 	# --- 16. undulation for legless bodies
 	var wave_amp := 0.0
 	if legless:
@@ -828,3 +911,6 @@ func wave_offset(u: float) -> float:
 	if w.is_empty() or w.amp <= 0.0:
 		return 0.0
 	return w.amp * (0.4 + 0.6 * (1.0 - u)) * sin(TAU * (w.waves * u + w.phase))
+
+static func f_eff_pre(cad: float, f_nat: float) -> float:
+	return maxf(cad, f_nat)

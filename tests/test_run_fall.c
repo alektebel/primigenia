@@ -28,7 +28,7 @@ int main(void){
     reset(0);for(int i=0;i<30;i++)cp_stage_step(&w,&east);float walk=w.player.speed;
     cp_stage_set_run(&w,1);assert(w.running);
     for(int i=0;i<30;i++)cp_stage_step(&w,&east);
-    assert(fabsf(w.player.speed/walk-1.8f)<.005f);assert(w.run_stamina<1000);
+    assert(fabsf(w.player.speed/walk-sqrtf(w.motion.sprint_k/.24f))<.005f);   /* run Fr / walk Fr (A39) */assert(w.run_stamina<1000);
     cp_stage_set_run(&w,0);int stamina=w.run_stamina;
     CpStageInput wait={.verb=CP_STAGE_WAIT};for(int i=0;i<20;i++)cp_stage_step(&w,&wait);
     assert(w.run_stamina>stamina);
@@ -53,7 +53,9 @@ int main(void){
     w.player.x=0;w.player.legs=8;cp_stage_step(&w,&contour);assert(!w.falling);
     /* Entering an uphill steep facet slides too; direct input has no slope wall exemption. */
     reset(0);for(int j=0;j<256;j++)for(int i=0;i<256;i++)heights[j*256+i]=i<128?0:6;
-    int slid=0;for(int i=0;i<40;i++){cp_stage_step(&w,&east);slid|=w.falling;}
+    /* a hero-size body at its run (5 m/s, about the old jog); a slow walker stops at the foot of the facet instead (A39) */
+    w.player.profile.radius_cm=300;CpStageInput east_run=east;east_run.sprint=1;
+    int slid=0;for(int i=0;i<80;i++){cp_stage_step(&w,&east_run);slid|=w.falling;}
     assert(slid);
     /* The confirmed body's actual bone lengths determine safe drop. */
     reset(0);w.ancestry.count=1;

@@ -312,7 +312,7 @@ func _stage() -> void:
 	island.player_input.keys_override = {"forward": false, "back": false, "left": false, "right": false, "sprint": false}
 	var moved := Vector2(island.player_pos.x - start.x, island.player_pos.z - start.z).length()
 	check(game.stage.cur.tick - t0 >= 60, "6 s of game time passed (%d ticks)" % (game.stage.cur.tick - t0))
-	check(moved > 8.0, "the player walked %.1f m" % moved)
+	check(moved > 3.0, "the player walked %.1f m (A39: a body walks at Fr 0.24, the starter about 1 m/s)" % moved)
 	check(footfalls >= 6, "locomotion produced %d foot contacts" % footfalls)
 	var played1: int = int(root.get_node("Audio").played.get("step-0", 0)) + int(root.get_node("Audio").played.get("step-1", 0)) + int(root.get_node("Audio").played.get("step-2", 0))
 	check(played1 > played0, "footstep sounds played (%d)" % (played1 - played0))
@@ -320,7 +320,7 @@ func _stage() -> void:
 	for l in player.body.legs:
 		lowest = minf(lowest, l.foot.global_position.y - game.visual_ground(l.foot.global_position.x, l.foot.global_position.z))
 	check(lowest > -0.03, "feet are on the visible ground, Game.visual_ground (lowest %.1f mm relative)" % (lowest * 1000.0))
-	check(absf(player.position.y - game.ground(player.position.x, player.position.z)) < 0.05, "the actor stands on Game.ground")
+	check(absf(player.position.y - game.ground(player.position.x, player.position.z)) < 0.25, "the actor stands on Game.ground (within the owner style sprawl crouch, A42)")
 
 	print("== pause menu: save game / load game")
 	var Scenario = load("res://devtools/scenario.gd")
@@ -419,7 +419,7 @@ func _stage() -> void:
 	check(ui.abilities.size() == 4 and ui.abilities[0].id == "bite", "keys 1-4 carry the attack moves")
 	# species-v8 (A31): Garfio takes no initiative during its grace minute and until the first evolution, so the player starts the fight
 	ui._press(0)
-	check(await until(func(): return game.stage.cur.active >= 0, 2400), "an encounter starts (active = %d)" % game.stage.cur.active)
+	check(await until(func(): return game.stage.cur.active >= 0, 7200), "an encounter starts (active = %d)" % game.stage.cur.active)
 	await sim_ticks(2)
 	ui.clear_selection()
 	sui._fight_prev = false           # as if the fight had just started with nothing selected
