@@ -1,0 +1,670 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Primigenia · Octopus underwater study</title>
+<style>
+:root{color-scheme:dark;--bg:#0d1d24;--panel:#12272f;--ink:#eaf3f0;--dim:#a9c2c6;--line:#2f5560;--gold:#edc578;--turn:#9fd3cb}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.4 system-ui,sans-serif}button,input,textarea{font:inherit}button{background:#1c3c46;color:var(--ink);border:1px solid var(--line);border-radius:5px;padding:6px 10px;cursor:pointer}button:hover{background:#27505c}button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid var(--gold);outline-offset:3px}button.pointer:active{transform:scale(.97);transition:transform 160ms ease-out}button[aria-pressed=true]{background:var(--gold);color:#211d16;border-color:var(--gold)}::selection{background:var(--gold);color:#211d16}
+header{display:flex;gap:18px;align-items:center;flex-wrap:wrap;padding:10px 16px;background:var(--panel);border-bottom:1px solid var(--line)}h1{font-size:20px;line-height:1.2;margin:0 0 3px}#identity{min-width:260px}#body-note,.hint,#check{font-size:12px;color:var(--dim)}.controls{display:flex;align-items:center;gap:7px;flex-wrap:wrap}output,.metrics{font-variant-numeric:tabular-nums}
+html,body{height:100%}body{display:flex;flex-direction:column}main{display:grid;grid-template-columns:minmax(0,1fr) 220px;flex:1;min-height:0}#stage{position:relative;min-width:0;height:100%;min-height:560px}#gl{position:absolute;width:100%;height:100%;display:block}#cells{position:absolute;inset:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));grid-template-rows:repeat(4,1fr)}
+.cell{position:relative;text-align:left;background:transparent;border:1px solid #2a5560;border-radius:0;padding:8px 10px;display:flex;flex-direction:column;justify-content:flex-start;overflow:hidden;min-width:0;text-shadow:0 1px 3px #000,0 0 6px #000a}.cell:hover{background:#ffffff08}.cell[aria-pressed=true]{background:transparent;border:2px solid var(--gold);color:var(--ink);padding:7px 9px}
+.title{display:block;font-size:14px;font-weight:650;line-height:1.15;padding-right:22px}.title i{font-style:normal;color:#d5e6e6;font-weight:500}.cell[data-row=turn] .title b{color:var(--turn)}.description{display:block;color:#e2ecea;font-size:11.5px;margin-top:3px;line-height:1.2}.adapt{display:block;font-size:10.5px;color:var(--gold);line-height:1.2;margin-top:2px}.adapt.spec{color:#ffb4a0}.star{position:absolute;right:8px;top:6px;color:var(--gold);font-size:20px;line-height:1}
+.metrics{position:absolute;bottom:7px;left:10px;font:10.5px/1.3 ui-monospace,monospace;color:#d3e4e6;white-space:pre}.cell[hidden]{display:none}
+aside{padding:14px;background:var(--panel);border-left:1px solid var(--line);overflow:auto;min-height:0}h2{font-size:16px;margin:0 0 8px}aside p{font-size:12px;color:var(--dim)}#choices{margin:14px 0}#choices p{margin:10px 0;color:var(--ink)}#choices strong{display:block;color:var(--gold)}#copy-status{min-height:18px}textarea{width:100%;min-height:100px;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:5px}
+footer{padding:8px 16px;color:var(--dim);font-size:12px}kbd{font:inherit;color:var(--ink)}
+#stage.expanded{position:fixed;inset:0;height:100vh;min-height:0;z-index:10;background:var(--bg)}#stage.expanded #cells{display:block}#stage.expanded .cell{width:100%;height:100%;padding:24px}#stage.expanded .title{font-size:24px}#close-full{position:absolute;right:15px;bottom:40px;z-index:12}#check.fail{color:#ff998c}#check.pass{color:#a3d4ad}
+@media(max-width:1100px){main{grid-template-columns:minmax(0,1fr) 180px}.title{font-size:12px}.cell{padding:6px}.description{font-size:10.5px}.metrics{font-size:9.5px;left:6px}#stage{min-height:700px}}
+@media(max-width:760px){body{display:block;height:auto}main{display:block;overflow:auto}#stage{height:1200px;min-width:680px}aside{border-left:0}header{gap:10px}footer{max-width:70ch}}
+</style>
+<script src="../biome/three.min.js"></script>
+</head>
+<body>
+<header>
+<div id="identity"><h1 id="creature-name">Octopus, underwater study</h1><div id="body-note"></div></div>
+<div class="controls"><button id="prev" aria-label="Previous page">←</button><button id="next">Next page</button><span class="hint">Space / Shift+Space</span></div>
+<div class="controls" id="playback" aria-label="Playback"><button data-rate=".25" aria-pressed="false">0.25×</button><button data-rate=".5" aria-pressed="false">0.5×</button><button data-rate="1" aria-pressed="true">1×</button><button id="pause" aria-pressed="false">Pause</button></div>
+<div class="controls"><button id="cam" aria-pressed="false" title="Three-quarter, top-down or side camera (T)">Camera (T)</button><button id="runcheck">Run self-check</button></div>
+<span id="check" role="status">3 pages · 7 real movement modes · self-check not run</span>
+</header>
+<main><div id="stage"><canvas id="gl" aria-label="Octopus movement comparisons underwater, four columns per row"></canvas><div id="cells"></div><button id="close-full" hidden>Exit full view · Esc</button></div>
+<aside><h2>Your choices</h2><p>One star per row. Click a cell to star it; click again to clear. Choices survive a reload and span all three pages.</p><div id="choices"></div><button id="copy">Copy choices</button><p id="copy-status" role="status" aria-live="polite"></p><textarea id="copy-fallback" aria-label="Choices to copy manually" hidden readonly></textarea><p>Rows are cruise, fast / escape, turn and manoeuvre, terrain. Columns are the movement modes real octopuses use, each with a variation. Each cell says which animal does it and whether the motion is documented or speculative. Pale gold dots mark suckers that are stuck to the ground; they do not slide.</p><p>Sizes: mantle 20 cm, arms 55 cm (cirrate 42 cm), metres and seconds. Starting values for the owner comparison, not measured data. Nothing is selected for the game yet.</p></aside></main>
+<footer><kbd>Space</kbd> next page · <kbd>Shift+Space</kbd> previous · <kbd>F</kbd> focus hovered cell · <kbd>Esc</kbd> grid · <kbd>P</kbd> pause · <kbd>T</kbd> camera (three-quarter, top-down, side) · Playback changes time only. Teal line = path of the body. Pale ghosts = where the mantle was 0.12 s apart. Specks are plankton: they show the water moving.</footer>
+<script>
+'use strict';
+(() => {
+/*CORE_BEGIN*/
+const TAU=Math.PI*2,PI=Math.PI,NS=24,NA=8,DT=1/120;
+const clamp=(x,a,b)=>x<a?a:x>b?b:x,lerp=(a,b,u)=>a+(b-a)*u,frac=x=>x-Math.floor(x);
+const sm=u=>{u=clamp(u,0,1);return u*u*(3-2*u);};
+const wrapA=a=>{a=(a+PI)%TAU;if(a<0)a+=TAU;return a-PI;};
+function rng(seed){let s=(seed>>>0)||1;return()=>{s=(Math.imul(s,1664525)+1013904223)>>>0;return s/4294967296;};}
+const TAN25=Math.tan(25*PI/180);
+// ------------------------------------------------------------------ world (deterministic heightfield, metres)
+function makeWorld(kind,gapw,land,seed){
+  const R=rng(seed||5),rocks=[],buckets=new Map(),CS=.5;
+  const reg=r=>{const x0=Math.floor((r.x-r.ax)/CS),x1=Math.floor((r.x+r.ax)/CS),z0=Math.floor((r.z-r.az)/CS),z1=Math.floor((r.z+r.az)/CS);for(let i=x0;i<=x1;i++)for(let j=z0;j<=z1;j++){const k=i*8192+j;let b=buckets.get(k);if(!b){b=[];buckets.set(k,b);}b.push(r);}rocks.push(r);};
+  const add=(x,z,ax,az,H,w,pw)=>reg({x,z,ax,az,H,w:w||.2,pw:pw||2});
+  for(let i=0;i<70;i++)add(-2.5+R()*12,(R()*2-1)*1.9,.025+R()*.04,.025+R()*.04,.012+R()*.02,.6);
+  if(kind==='rocks'){for(let i=0;i<24;i++){const rr=.08+R()*.14;add(1.0+R()*3.6,(R()*2-1)*1.35,rr*(.8+R()*.6),rr*(.8+R()*.6),.09+R()*.22,.3);}}
+  if(kind==='prey'){for(let i=0;i<6;i++){const rr=.1+R()*.1;add(.2+R()*2.4,(R()>.5?1:-1)*(.5+R()*.8),rr,rr*1.2,.08+R()*.14,.3);}}
+  if(kind==='gap'){const g=gapw||.09;add(1.95,g/2+1.0,.4,1.0,.5,.03,8);add(1.95,-g/2-1.0,.4,1.0,.5,.03,8);}
+  const Fr=u=>u<=0?0:u>=1?u-.5:u*u*u-u*u*u*u/2,ramp=(x,x0,Hr,w)=>{const x1=x0+Hr/TAN25;return TAN25*w*(Fr((x-x0)/w)-Fr((x-x1)/w));};
+  const o={kind,land,rocks,gapw:gapw||.09,prey:kind==='prey'?{x:1.45,z:0,r:.055,y:.05}:null};
+  o.base=(x,z)=>land?.006*Math.sin(x*11+z*5)+.004*Math.sin(z*17+x*3):.012*Math.sin(x*9+1.5*Math.sin(z*3))+.007*Math.sin(z*8+x*2.2)+.004*Math.sin(x*21+z*13);
+  o.rockH=(x,z)=>{const b=buckets.get(Math.floor(x/CS)*8192+Math.floor(z/CS));let m=0;if(b)for(const r of b){const dx=(x-r.x)/r.ax,dz=(z-r.z)/r.az,d=r.pw===2?Math.sqrt(dx*dx+dz*dz):Math.pow(Math.pow(Math.abs(dx),r.pw)+Math.pow(Math.abs(dz),r.pw),1/r.pw);if(d<1){const u=(1-d)/r.w,h=r.H*(u>=1?1:sm(u));if(h>m)m=h;}}return m;};
+  o.h=(x,z)=>{let y=o.base(x,z);const rh=o.rockH(x,z);if(rh>y)y=rh+.3*(y>0?y:0);
+    if(kind==='slope')y+=ramp(x,1.3,.55,.1);
+    if(land)y+=-.32*(1-sm(x/.95));
+    return y;};
+  o.rockW=(x,z)=>{const b=buckets.get(Math.floor(x/CS)*8192+Math.floor(z/CS));if(b)for(const r of b){if(r.H<.06)continue;const dx=(x-r.x)/r.ax,dz=(z-r.z)/r.az,d=r.pw===2?Math.sqrt(dx*dx+dz*dz):Math.pow(Math.pow(Math.abs(dx),r.pw)+Math.pow(Math.abs(dz),r.pw),1/r.pw);if(d<1.03)return 1;}return 0;};
+  return o;
+}
+// ------------------------------------------------------------------ path / heading
+const TURN_STEPS=[[1.6,1.7],[5.5,-2.3],[9.2,.8]];
+function pathTheta(sp,t){const P=sp.p;if(sp.row!=='turn')return 0;
+  if(P.path==='reverse')return t<4.5?0:PI*sm((t-4.5)/.5);
+  if(P.path==='circle')return clamp(t-1,0,99)*.8;
+  const w=P.turnW||1.4;let th=0;for(const [t0,d] of TURN_STEPS)th+=d*sm((t-t0)/w);return th;}
+// ------------------------------------------------------------------ spec defaults per mode
+const DEF={
+ crawl:{v:.2,minPlant:4,maxSwing:3,swingT:.42,lift:.07,theta:48,clr:.085,reachBase:.34,reachFwd:.42,thr:.62,chMax:1.4,yaw:false,turnRate:3.5,patch:.022,tEnd:14},
+ bipd:{v:.26,minPlant:1,maxSwing:1,swingT:.5,lift:.13,theta:68,clr:.31,reachBase:.3,reachFwd:.3,thr:.62,chMax:1.12,yaw:true,turnRate:1.4,patch:.022,tEnd:14,walkers:[3,5]},
+ jet:{Tp:1.5,dv:.75,k:1.5,wmax:1.1,armKind:'bundle',alt:.5,ink:false,tEnd:14,v0:.2},
+ medu:{Tp:1.7,dv:.6,k:1.3,wmax:.9,armKind:'bell',alt:.5,tEnd:14,v0:.1,open:1.0,openA1:-.55,closedA0:.12,webF:.62},
+ cirr:{f:1.3,vt:.3,wmax:.7,alt:.5,tEnd:14,v0:.1,webF:.72,L0:.42},
+ para:{tEnd:9.5,L0:.55}
+};
+DEF.land=Object.assign({},DEF.crawl,{v:.1,theta:34,clr:.075,lift:.05,tEnd:18});
+// ------------------------------------------------------------------ the octopus
+const SAMPLE_DIRS=(()=>{const d=[];for(const [x,y,z] of [[1,0,0],[-1,0,0],[0,1,0],[0,-1,0],[0,0,1],[0,0,-1],[.7,.7,0],[.7,-.7,0],[-.7,-.7,0],[-.7,.7,0],[0,.7,.7],[0,-.7,.7],[0,-.7,-.7],[0,.7,-.7]])d.push([x,y,z]);return d;})();
+class Octo{
+ constructor(spec){
+  this.sp=spec;this.mode=spec.mode;this.P=Object.assign({},DEF[spec.mode],spec.p);this.L0=this.P.L0||.55;if(spec.row==='terrain'&&(spec.mode==='crawl'||spec.mode==='bipd'||spec.mode==='land')&&!(spec.p&&spec.p.tEnd))this.P.tEnd=spec.mode==='land'?34:26;if(spec.row==='fast'&&(spec.mode==='crawl'||spec.mode==='bipd'))this.P.tEnd=9;this.r0=.03*(this.L0/.55);
+  this.W=makeWorld(spec.scene||'open',this.P.gapw,spec.mode==='land'||spec.land?1:0,spec.seed);
+  this.rn=rng((spec.seed||3)+17);this.isLand=this.W.land?1:0;
+  this.arms=Array.from({length:NA},(_,i)=>({i,nodes:new Float32Array(NS*3),prev:new Float32Array(NS*3),rest:new Float32Array(NS*3),st:'plant',vf:1,len:this.L0,reveal:1,planted:true,anc:{x:0,y:0,z:0},pd:{x:1,z:0},thr:.6,var:(i*.37%1-.5)*.04,tSw:0,from:{x:0,y:0,z:0},to:{x:0,y:0,z:0},Ts:.4}));
+  this.base=Array.from({length:NA},()=>({x:0,y:0,z:0}));
+  this.C={x:0,y:0,z:0};this.A={x:1,y:0,z:0};this.S={x:0,y:0,z:-1};this.N={x:0,y:1,z:0};this.fun={x:-1,y:0,z:0};
+  this.reset();
+ }
+ ground(x,z){return this.W.h(x,z);}
+ reset(){
+  const P=this.P,m=this.mode;this.t=0;this.done=false;this.cyc=0;this.cycN=0;this.sw=1;this.sa=1;this.sh=1;this.Vn=0;this.roll=0;this.spd=0;this.exp=0;this.pulses=0;this.vel={x:0,y:0,z:0};
+  this.stat={drift:0,pen:0,penWhat:'',minPlant:99,maxStretch:0,minStretch:9,selfBad:0,frames:0,volErr:0,vmin:1,vmax:0,intake:0,expelled:0,vnMin:9,vnMax:-9,swMin:9,swMax:0,maxSpeed:0,x0:0,pass:null,cycErr:0,sqMin:9};
+  this.phase=0;this.armP={a0:-.06,a1:0,wig:.04,lat:0};this.inkQ=0;this.ghost=[];this.gt=0;this.steer=0;this.prevVn=0;this.alt=.5;this.pitch=0;
+  const x0=P.x0!==undefined?P.x0:(this.isLand?.5:(m==='crawl'||m==='bipd')?.2:-.4);this.C.x=x0;this.C.z=0;this.stat.x0=x0;
+  for(const a of this.arms){a.st='plant';a.planted=true;a.reveal=1;a.vf=1;}
+  if(m==='crawl'||m==='bipd'||m==='land')this.initCrawl();else if(m==='para')this.initPara();else this.initSwim();
+ }
+ // ---------- frame
+ frame(){const A=this.A,up=[0,1,0];let sx=up[1]*A.z-up[2]*A.y,sy=up[2]*A.x-up[0]*A.z,sz=up[0]*A.y-up[1]*A.x;let l=Math.hypot(sx,sy,sz);if(l<.05){sx=0;sy=0;sz=-1;l=1;}sx/=l;sy/=l;sz/=l;
+  let nx=A.y*sz-A.z*sy,ny=A.z*sx-A.x*sz,nz=A.x*sy-A.y*sx;const c=Math.cos(this.roll),s=Math.sin(this.roll);
+  this.S={x:sx*c+nx*s,y:sy*c+ny*s,z:sz*c+nz*s};this.N={x:nx*c-sx*s,y:ny*c-sy*s,z:nz*c-sz*s};}
+ ringAng(i){return this.hAng+this.arms[i].phi;}
+ setBases(){const C=this.C,A=this.A,S=this.S,N=this.N,rr=.05*(this.ring==='ground'?this.sw:1);
+  for(let i=0;i<NA;i++){const a=this.arms[i],b=this.base[i];
+   if(this.ring==='ground'){const g=this.hAng+a.phi;b.x=C.x+Math.cos(g)*rr;b.y=C.y-.012;b.z=C.z+Math.sin(g)*rr;a.rad={x:Math.cos(g),y:0,z:Math.sin(g)};}
+   else{const c=Math.cos(a.phi),s=Math.sin(a.phi);const rx=S.x*c+N.x*s,ry=S.y*c+N.y*s,rz=S.z*c+N.z*s;a.rad={x:rx,y:ry,z:rz};b.x=C.x+rx*rr-A.x*.015;b.y=C.y+ry*rr*(this.sh)-A.y*.015;b.z=C.z+rz*rr-A.z*.015;}}}
+ // ---------- mantle sample points (for collision)
+ bodyMin(out){const C=this.C,A=this.A,S=this.S,N=this.N;let worst=1e9,wx=0,wz=0;
+  const test=(cx,cy,cz,rs,rn,ra)=>{for(const d of SAMPLE_DIRS){const px=cx+S.x*d[0]*rs+N.x*d[1]*rn+A.x*d[2]*ra,py=cy+S.y*d[0]*rs+N.y*d[1]*rn+A.y*d[2]*ra,pz=cz+S.z*d[0]*rs+N.z*d[1]*rn+A.z*d[2]*ra;const c=py-this.ground(px,pz);if(c<worst){worst=c;wx=px;wz=pz;}}};
+  const mc={x:C.x+A.x*.12*this.sa,y:C.y+A.y*.12*this.sa,z:C.z+A.z*.12*this.sa};
+  test(mc.x,mc.y,mc.z,.075*this.sw,.075*this.sh,.125*this.sa);test(C.x+A.x*.015,C.y+A.y*.015,C.z+A.z*.015,.06*Math.max(this.sw,.5),.06,.06);
+  return worst;}
+ // ---------- arm geometry helpers
+ armRad(a,j){const s=j/(NS-1);return this.r0*(.14+.86*Math.pow(1-s,1.3))*a.vf;}
+ pushArm(a,keepFrom){ // keep nodes above ground and out of the prey; light smoothing, push applied last
+  const W=this.W,pr=W.prey,n=a.nodes;
+  for(let pass=0;pass<(this._smooth||2);pass++){
+   for(let j=2;j<NS-1;j++){if(j>=keepFrom-1)continue;const o=j*3;for(let k=0;k<3;k++)n[o+k]=.25*n[o-3+k]+.5*n[o+k]+.25*n[o+3+k];}
+   for(let j=1;j<NS;j++){const o=j*3;const r=this.armRad(a,j),gh=W.h(n[o],n[o+2])+r*.9;if(n[o+1]<gh)n[o+1]=gh;
+    if(pr&&j<keepFrom){const dx=n[o]-pr.x,dy=n[o+1]-pr.y,dz=n[o+2]-pr.z,d=Math.hypot(dx,dy,dz),rr=pr.r+r;if(d<rr&&d>1e-5){n[o]=pr.x+dx/d*rr;n[o+1]=pr.y+dy/d*rr;n[o+2]=pr.z+dz/d*rr;}}}}}
+ // polyline -> NS nodes by arc length
+ resample(pts,np,a){let tot=0;const cum=this._cum||(this._cum=new Float32Array(64));cum[0]=0;for(let i=1;i<np;i++){tot+=Math.hypot(pts[i*3]-pts[i*3-3],pts[i*3+1]-pts[i*3-2],pts[i*3+2]-pts[i*3-1]);cum[i]=tot;}
+  const n=a.nodes;let k=1;for(let j=0;j<NS;j++){const d=tot*j/(NS-1);while(k<np-1&&cum[k]<d)k++;const seg=cum[k]-cum[k-1]||1e-9,u=clamp((d-cum[k-1])/seg,0,1);for(let c=0;c<3;c++)n[j*3+c]=pts[(k-1)*3+c]*(1-u)+pts[k*3+c]*u;}
+  a.len=tot;return tot;}
+ // sine-bulge curve of arc length Lt from B to E, bulging along `up`
+ bulge(B,E,Lt,ux,uy,uz,out,m,side){const cx=E.x-B.x,cy=E.y-B.y,cz=E.z-B.z,d=Math.hypot(cx,cy,cz)||1e-9;const ix=cx/d,iy=cy/d,iz=cz/d;
+  let nx=ux-ix*(ux*ix+uy*iy+uz*iz),ny=uy-iy*(ux*ix+uy*iy+uz*iz),nz=uz-iz*(ux*ix+uy*iy+uz*iz);let nl=Math.hypot(nx,ny,nz);if(nl<.25){nx=-iz;ny=0;nz=ix;nl=Math.hypot(nx,ny,nz)||1;}nx/=nl;ny/=nl;nz/=nl;
+  const arc=b=>{let L=0,px=0,py=0,pz=0;for(let i=1;i<=14;i++){const s=i/14,w=Math.sin(PI*s)*b,qx=cx*s+nx*w,qy=cy*s+ny*w,qz=cz*s+nz*w;L+=Math.hypot(qx-px,qy-py,qz-pz);px=qx;py=qy;pz=qz;}return L;};
+  let lo=0,hi=Math.max(.02,Lt),b=0;if(Lt>d*1.002){for(let it=0;it<11;it++){b=(lo+hi)/2;if(arc(b)<Lt)lo=b;else hi=b;}b=(lo+hi)/2;}
+  // sideways bias so planted arms are not planar
+  const sx=ny*iz-nz*iy,sy=nz*ix-nx*iz,sz=nx*iy-ny*ix;
+  for(let i=0;i<m;i++){const s=i/(m-1),w=Math.sin(PI*s)*b,w2=Math.sin(2*PI*s)*b*(side||0);out[i*3]=B.x+cx*s+nx*w+sx*w2;out[i*3+1]=B.y+cy*s+ny*w+sy*w2;out[i*3+2]=B.z+cz*s+nz*w+sz*w2;}
+  return b;}
+ // ============================================================== CRAWL (benthic, bipedal, land)
+ initCrawl(){const P=this.P,C=this.C;this.ring='ground';this.hAng=P.yaw0||0;this.tdir={x:1,z:0};this.thetaNow=P.theta*PI/180;this.sagNow=0;this.walkers=this.mode==='bipd'?P.walkers:null;this.armsActive=0;
+  this.arms.forEach((a,i)=>{a.phi=TAU*i/NA+.19;});
+  C.y=this.ground(C.x,C.z)+P.clr;this.setPose(0);this.setBases();
+  this.arms.forEach((a,i)=>{
+   if(this.walkers&&!this.walkers.includes(i)){a.st='coil';a.planted=false;a.coilDir=1;return;}
+   a.planted=true;a.st='plant';
+   let ax,az;
+   if(this.walkers){ax=C.x+(i===this.walkers[0]?.18:-.2);az=C.z+(i===this.walkers[0]?.07:-.07);}
+   else{const g=this.ringAng(i),r=this.L0*(.36+.07*(i%3));ax=C.x+Math.cos(g)*r;az=C.z+Math.sin(g)*r;}
+   a.anc={x:ax,y:this.ground(ax,az)+.004,z:az};const dl=Math.hypot(C.x-ax,C.z-az)||1;a.pd={x:(C.x-ax)/dl,z:(C.z-az)/dl};a.reveal=1;a.thr=P.thr*(.85+.3*this.rn());});
+ }
+ setPose(sagF){const P=this.P,hd={x:Math.cos(this.hAng),z:Math.sin(this.hAng)},th=this.thetaNow,A=this.A;A.x=-hd.x*Math.cos(th);A.y=Math.sin(th);A.z=-hd.z*Math.cos(th);this.frame();}
+ footGround(){const C=this.C,hd={x:Math.cos(this.hAng),z:Math.sin(this.hAng)},pp={x:-hd.z,z:hd.x},hw=.075*this.sw+.004;let g=-9;
+  for(const f of [-.05,.04,.1,.17])for(const l of [-1,0,1]){const x=C.x-hd.x*f+pp.x*l*hw,z=C.z-hd.z*f+pp.z*l*hw;const h=this.ground(x,z);if(h>g)g=h;}return g;}
+ gapWidth(){const C=this.C,td=this.tdir,px=-td.z,pz=td.x;let best=9;
+  const hx=Math.cos(this.hAng),hz=Math.sin(this.hAng);
+  for(const d of [-.3,-.2,-.1,.1,.28,.46]){const dv=d>0?td:{x:hx,z:hz},cx=C.x+dv.x*d,cz=C.z+dv.z*d;let L=.45,Rr=.45;for(let o=.015;o<=.45;o+=.01){if(L>=.45&&this.ground(cx+px*o,cz+pz*o)>C.y-.03)L=o;if(Rr>=.45&&this.ground(cx-px*o,cz-pz*o)>C.y-.03)Rr=o;}if(L+Rr<best)best=L+Rr;}
+  return best;}
+ stepCrawl(dt){
+  const P=this.P,L0=this.L0,t=this.t,C=this.C,W=this.W,td=this.tdir;
+  // path direction (limited turn rate: the mantle heading is separate)
+  const th=pathTheta(this.sp,t);let cur=Math.atan2(td.z,td.x);cur+=clamp(wrapA(th-cur),-P.turnRate*dt,P.turnRate*dt);td.x=Math.cos(cur);td.z=Math.sin(cur);
+  if(P.yaw)this.hAng+=clamp(wrapA(cur-this.hAng),-1.4*dt,1.4*dt);
+  // land sag factor
+  const lf=this.isLand?sm((C.x-.6)/.6):0;this.lf=lf;
+  // count planted and arm chords
+  let nPl=0,maxCh=0,pushers=0,nSw=0;
+  for(let i=0;i<NA;i++){const a=this.arms[i];if(a.st==='plant'){nPl++;const b=this.base[i],p=this.prox(a);const ch=Math.hypot(b.x-p.x,b.y-p.y,b.z-p.z);a.ch=ch;if(ch>maxCh)maxCh=ch;if((C.x-a.anc.x)*td.x+(C.z-a.anc.z)*td.z>.25*L0)pushers++;}else if(a.st==='swing')nSw++;}
+  this.nPl=nPl;this.nSw=nSw;
+  const act=this.walkers?this.walkers.length:NA;
+  let gate=nPl>=P.minPlant?1:.1;gate*=clamp((P.chMax*L0-maxCh)/(.14*L0),0,1);
+  const vt=P.v*(1-.55*lf)*gate*(this.walkers?1:(.7+.1*Math.min(pushers,4)));
+  const k=1-Math.exp(-dt*3);this.vel.x+=(td.x*vt-this.vel.x)*k;this.vel.z+=(td.z*vt-this.vel.z)*k;this.spd=Math.hypot(this.vel.x,this.vel.z);
+  // gap squeeze
+  let swT=1;if(W.kind==='gap'){const gw=this.gapWidth();swT=clamp((gw-.032)/.15,.4,1);}
+  this.sw+=(swT-this.sw)*Math.min(1,dt*(swT<this.sw?14:3));const shT=Math.pow(this.sw,-.3)*(1-.28*lf);this.sh+=(shT-this.sh)*Math.min(1,dt*4);this.sa=1/(this.sw*this.sh);
+  C.x+=this.vel.x*dt;C.z+=this.vel.z*dt;
+  // pose
+  const sq=1-this.sw;let th0=lerp(P.theta,12,clamp(sq*2.2,0,1));th0=lerp(th0,P.theta*.55,lf*.6);this.thetaNow=th0*PI/180;
+  if(this.walkers){const w=2*PI*this.t/(2*P.swingT*2.2);this.roll=.1*Math.sin(w);}
+  this.setPose();
+  const clr=P.clr*(1-.55*lf)*(1-.45*Math.max(0,sq*1.2)),yT=this.footGround()+clr+(this.walkers?.012*Math.sin(2*PI*this.t/(P.swingT*4.4)):0);
+  C.y+=(yT-C.y)*Math.min(1,dt*7);
+  let wb=this.bodyMin();if(wb<.007){C.y+=.007-wb;}
+  this.setBases();
+  // arms
+  for(let i=0;i<NA;i++){const a=this.arms[i];if(a.st==='coil')continue;this.crawlArm(a,dt,nPl,nSw,lf);}
+  this.armsActive=act;
+ }
+ prox(a){const sp=this.P.patch,r=3*a.reveal*sp,x=a.anc.x+a.pd.x*r,z=a.anc.z+a.pd.z*r;return {x,y:this.ground(x,z)+.004,z};}
+ pickTarget(a,out,remain){
+  const P=this.P,L0=this.L0,C=this.C,td=this.tdir,hd=this.walkers?null:null;
+  let dx,dz,reach;
+  if(this.walkers){const side=a.i===this.walkers[0]?1:-1,px=-td.z,pz=td.x;reach=L0*(P.reachBase+P.reachFwd*.9)*(1-.45*this.lf);dx=td.x*1+px*side*.22;dz=td.z*1+pz*side*.22;}
+  else{const g=this.ringAng(a.i),rx=Math.cos(g),rz=Math.sin(g),fw=rx*td.x+rz*td.z,f=Math.max(0,fw);dx=rx+td.x*f*.75;dz=rz+td.z*f*.75;reach=L0*(P.reachBase+P.reachFwd*f)*(1-.4*this.lf);}
+  let dl=Math.hypot(dx,dz)||1;dx/=dl;dz/=dl;
+  let ok=false,gx=0,gz=0;for(let tr=0;tr<4&&!ok;tr++){const rr=reach*(1-.3*tr);gx=C.x+dx*rr+this.vel.x*remain;gz=C.z+dz*rr+this.vel.z*remain;ok=this.ground(gx,gz)<C.y+.1;if(ok){for(let q=1;q<=4;q++){const u=q/5;if(this.ground(C.x+(gx-C.x)*u,C.z+(gz-C.z)*u)>C.y+.2){ok=false;break;}}}
+   if(!ok&&tr===2){const s=(dx*td.x+dz*td.z)>=0?1:-1;dx=td.x*s;dz=td.z*s;}}
+  if(!ok){gx=C.x;gz=C.z;}
+  // keep landing points apart from the other arms' anchors and targets
+  for(let tr=0;tr<5;tr++){let hit=null;for(const b of this.arms){if(b===a||b.st==='coil')continue;const q=b.st==='plant'?b.anc:b.to;const d=Math.hypot(q.x-gx,q.z-gz);if(d<.075){hit=q;break;}}
+   if(!hit)break;const ax=gx-hit.x,az=gz-hit.z,al=Math.hypot(ax,az);if(al<1e-4){gx+=.05;continue;}gx+=ax/al*(.08-al)*.9+(-az/al)*.01;gz+=az/al*(.08-al)*.9;}
+  out.x=gx;out.z=gz;out.y=this.ground(gx,gz)+.004;}
+ crawlArm(a,dt,nPl,nSw,lf){
+  const P=this.P,L0=this.L0,C=this.C,td=this.tdir;
+  if(a.st==='plant'){
+   const behind=(C.x-a.anc.x)*td.x+(C.z-a.anc.z)*td.z,ch=a.ch||0;
+   const want=behind>a.thr*L0||ch>P.chMax*.96*L0;
+   const lim=this.walkers?this.nPl>=2:this.nPl>P.minPlant;
+   a.tPl=(a.tPl||0)+dt;
+   if((want&&lim&&this.nSw<P.maxSwing&&a.tPl>.5)||ch>P.chMax*L0){this.nPl--;a.st='swing';a.planted=false;a.tSw=0;a.Ts=P.swingT*(.8+.45*this.rn())*(1+.5*lf);a.from={x:a.anc.x,y:a.anc.y,z:a.anc.z};a.reveal=1;this.nSw++;this.releases=(this.releases||0)+1;}
+  }else if(a.st==='swing'){
+   a.tSw+=dt;const u=clamp(a.tSw/a.Ts,0,1);this.pickTarget(a,a.to,a.Ts*(1-u));
+   if(u>=1){a.st='plant';a.planted=true;a.anc={x:a.to.x,y:a.to.y,z:a.to.z};const dl=Math.hypot(C.x-a.anc.x,C.z-a.anc.z)||1;a.pd={x:(C.x-a.anc.x)/dl,z:(C.z-a.anc.z)/dl};a.reveal=0;a.tPl=0;a.thr=P.thr*(.78+.4*this.rn());a.chPrev=0;}
+  }
+  if(a.st==='plant'&&a.reveal<1)a.reveal=Math.min(1,a.reveal+dt/.18);
+ }
+ // arm shape for crawl modes
+ crawlShape(a){
+  const P=this.P,L0=this.L0,B=this.base[a.i],lf=this.lf||0,sag=1-.85*lf;const pts=this._pts||(this._pts=new Float32Array(80*3));const m=20;
+  if(a.st==='coil'){this.coilShape(a);return;}
+  let np;
+  if(a.st==='plant'){const pr=this.prox(a),sp=P.patch,ch=Math.hypot(B.x-pr.x,B.y-pr.y,B.z-pr.z);
+   const full=3*a.reveal,patchLen=full*sp;const Lf=Math.max(ch*1.02,.62*L0-patchLen);
+   this.bulge(B,pr,Lf,0,1,0,pts,m,.1);let k=m;
+   for(let q=Math.ceil(full)-1;q>=0;q--){const x=a.anc.x+a.pd.x*sp*q,z=a.anc.z+a.pd.z*sp*q;pts[k*3]=x;pts[k*3+1]=this.ground(x,z)+.004;pts[k*3+2]=z;k++;}
+   np=k;
+  }else{const to={x:a.from.x,y:0,z:0},u=clamp(a.tSw/a.Ts,0,1),e=sm(u);const tx=lerp(a.from.x,a.to.x,e),tz=lerp(a.from.z,a.to.z,e);const lift=P.lift*(1-.55*lf)*Math.sin(PI*u);const ty=Math.max(lerp(a.from.y,a.to.y,e)+lift,this.ground(tx,tz)+.006);
+   const tip={x:tx,y:ty,z:tz};const ch=Math.hypot(B.x-tx,B.y-ty,B.z-tz);const Lf=Math.max(ch*1.05,.6*L0);this.bulge(B,tip,Lf,0,1,0,pts,m,.12);np=m;a.tipNow=tip;}
+  this.resample(pts,np,a);
+  const tot=a.len;a.vf=clamp(Math.sqrt(L0/tot),.78,1.3);
+  const lowOnly=a.st==='plant'?Math.max(1,NS-1-Math.ceil((3*a.reveal*P.patch/Math.max(tot,1e-6))*(NS-1))):NS;
+  this._smooth=4;this.pushArm(a,a.st==='plant'?lowOnly:NS);this._smooth=2;
+  if(a.st==='plant'){// enforce exact tip at the anchor
+   const o=(NS-1)*3;a.nodes[o]=a.anc.x;a.nodes[o+1]=a.anc.y;a.nodes[o+2]=a.anc.z;}
+ }
+ coilShape(a){ // soft helical roll under the body (A. marginatus camouflage)
+  const B=this.base[a.i],A=this.A,rad=a.rad,pts=this._pts,m=44,sg=a.coilDir;
+  const cx=B.x+rad.x*.03-A.x*.03,cy=B.y+rad.y*.03-A.y*.03,cz=B.z+rad.z*.03-A.z*.03;
+  const ox=B.x-cx,oy=B.y-cy,oz=B.z-cz;const r0=Math.hypot(ox,oy,oz);const ux=ox/r0,uy=oy/r0,uz=oz/r0;
+  let vx=rad.y*uz-rad.z*uy,vy=rad.z*ux-rad.x*uz,vz=rad.x*uy-rad.y*ux;const vl=Math.hypot(vx,vy,vz)||1;vx/=vl;vy/=vl;vz/=vl;
+  // axis of the helix = u x v
+  let wx=uy*vz-uz*vy,wy=uz*vx-ux*vz,wz=ux*vy-uy*vx;const wob=Math.sin(this.t*1.7+a.i)*.1;
+  for(let q=0;q<m;q++){const u=q/(m-1),rho=r0*Math.pow(1-u,.8)+.004,ps=sg*TAU*(3.0+wob)*u,c=Math.cos(ps),s=Math.sin(ps),h=.035*u;pts[q*3]=cx+(ux*c+vx*s)*rho+wx*h;pts[q*3+1]=cy+(uy*c+vy*s)*rho+wy*h;pts[q*3+2]=cz+(uz*c+vz*s)*rho+wz*h;}
+  this.resample(pts,m,a);a.vf=clamp(Math.sqrt(this.L0/a.len),.75,1.2);this._smooth=2;this.pushArm(a,NS);
+ }
+ // ============================================================== SWIMMING (jet, medusoid, cirrate)
+ initSwim(){const P=this.P,C=this.C;this.ring='axis';this.hAng=0;this.arms.forEach((a,i)=>{a.phi=TAU*i/NA+.2;a.st='swim';a.planted=false;});
+  this.alt=P.alt;C.y=this.alt;C.z=0;this.A={x:1,y:0,z:0};this.spd=P.v0||.1;this.yawv=0;this.frame();this.setBases();
+  this.restShape();for(const a of this.arms){a.nodes.set(a.rest);a.prev.set(a.rest);}}
+ pulseWave(ph){ // returns Vn in 0..1 for a pulse cycle (slow fill, fast squeeze, short rest)
+  const fill=.58,sq=.25;if(ph<fill)return sm(ph/fill);if(ph<fill+sq)return 1-sm((ph-fill)/sq);return 0;}
+ armParams(){const P=this.P,m=this.mode,ph=this.phase,t=this.t;let a0=-.06,a1=0,wig=.05,lat=0,stiff=1;const kind=P.armKind||(m==='jet'?'bundle':'bell');
+  if(m==='jet'){const c=this.Vn;if(kind==='bundle'){const sq=this.exp>0?1:0;a0=-.03+.09*c-.01*sq;a1=.03+.1*c;wig=.28+.1*c;stiff=1;}
+   else if(kind==='fan'){a0=.28+.12*Math.sin(t*2.3);a1=-.2;wig=.12;stiff=.55;}
+   else if(kind==='rudder'){a0=-.07;a1=0;lat=this.steer*.9;wig=.04;}
+   else if(kind==='flare'){const f=this.flare||0;a0=-.07+.9*f;a1=-.45*f;wig=.05;stiff=.8;}}
+  else if(m==='medu'){const c=this.Vn; // c=1 means umbrella open (filled), 0 closed
+   const op=c;a0=lerp(P.closedA0,P.open,op);a1=lerp(0,P.openA1,op);wig=.04;stiff=.9;}
+  else if(m==='cirr'){const op=.5+.5*Math.sin(TAU*this.phase);a0=lerp(.42,.75,op*.8+.1);a1=lerp(-.25,-.5,op);wig=.05;stiff=1.1;}
+  return {a0,a1,wig,lat,stiff};}
+ restShape(){const L=this.L0,dl=L/(NS-1),pr=this.armP=this.armParams(),A=this.A;const t=this.t;
+  for(const a of this.arms){const B=this.base[a.i],rad=a.rad,o=a.rest;let ax=0,rd=0;const vr=a.var;
+   for(let j=0;j<NS;j++){const s=j/(NS-1);o[j*3]=B.x-A.x*ax+rad.x*rd+this.S.x*pr.lat*s*s*.3;o[j*3+1]=B.y-A.y*ax+rad.y*rd+this.S.y*pr.lat*s*s*.3;o[j*3+2]=B.z-A.z*ax+rad.z*rd+this.S.z*pr.lat*s*s*.3;
+    const ang=pr.a0+vr+pr.a1*s+pr.wig*Math.sin(t*5.5-s*4+a.i*.5)*s;ax+=Math.cos(ang)*dl;rd+=Math.sin(ang)*dl;}}}
+ verletArms(dt,scaleK){const pr=this.armP,W=this.W,dl=this.L0/(NS-1);const damp=.93;
+  for(const a of this.arms){const n=a.nodes,p=a.prev,r=a.rest,B=this.base[a.i];
+   n[0]=B.x;n[1]=B.y;n[2]=B.z;p[0]=B.x;p[1]=B.y;p[2]=B.z;
+   for(let j=1;j<NS;j++){const o=j*3,s=j/(NS-1),k=Math.min(.9,lerp(.14,.0025,Math.pow(s,.7))*pr.stiff*(scaleK||1));
+    for(let c=0;c<3;c++){const v=(n[o+c]-p[o+c])*damp;p[o+c]=n[o+c];n[o+c]+=v+(r[o+c]-n[o+c])*k;}}
+   for(let j=1;j<NS;j++){const o=j*3;let dx=n[o]-n[o-3],dy=n[o+1]-n[o-2],dz=n[o+2]-n[o-1];const l=Math.hypot(dx,dy,dz)||1e-9;const f=dl/l;n[o]=n[o-3]+dx*f;n[o+1]=n[o-2]+dy*f;n[o+2]=n[o-1]+dz*f;}
+   a.vf=1;
+   if(this.C.y<1.1||W.prey)this.pushArm(a,NS);}
+ }
+ stepSwim(dt){
+  const P=this.P,m=this.mode,C=this.C,A=this.A,t=this.t,W=this.W;
+  const prevPh=this.phase;
+  if(m==='cirr'){this.phase=frac(this.phase+dt*P.f);this.Vn=.5+.5*Math.sin(TAU*this.phase);this.exp=0;}
+  else{this.phase=frac(this.phase+dt/P.Tp);this.Vn=this.pulseWave(this.phase);}
+  const dV=this.Vn-this.prevVn;this.prevVn=this.Vn;if(prevPh>this.phase){const e=Math.abs((this.cyc||0));if(this.cycN>0&&e>this.stat.cycErr)this.stat.cycErr=e;this.cyc=0;this.cycN=(this.cycN||0)+1;}this.cyc=(this.cyc||0)+dV;this.exp=m==='cirr'?0:Math.max(-dV/dt,0);
+  if(dV>0)this.stat.intake+=dV;else this.stat.expelled-=dV;
+  // thrust
+    if(m==='cirr'){const target=P.vt*(.85+.3*Math.sin(TAU*this.phase-.8));this.spd+=(target-this.spd)*Math.min(1,dt*2.2);}
+  else{const acc=P.dv*this.exp;this.spd+=(acc-P.k*this.spd)*dt;if(this.spd<0)this.spd=0;
+   if(prevPh>this.phase)this.pulses++;}
+  // heading: desired direction from path and altitude control
+  const th=pathTheta(this.sp,t),row=this.sp.row;
+  let altT=P.alt;const sc=this.sp.scene;
+  if(sc==='open'&&row==='terrain')altT=.35+1.0*sm((t-2)/4)-.6*sm((t-8.5)/3.5);
+  // look ahead for rocks
+  let gA=-9,lat=0;const cdx=A.x,cdz=A.z,hl=Math.hypot(cdx,cdz)||1;
+  for(let d=0;d<=1.0;d+=.1){const x=C.x+cdx/hl*d,z=C.z+cdz/hl*d;const g=this.ground(x,z);if(g>gA)gA=g;
+   if(d>.1){const l=this.ground(x-cdz/hl*.25,z+cdx/hl*.25),r=this.ground(x+cdz/hl*.25,z-cdx/hl*.25);lat+=(l-r)*(1.05-d);}}
+  const ground0=this.ground(C.x,C.z);let yT=Math.max(altT,gA+.3,ground0+.2);
+  const tz=clamp((yT-C.y)*1.6,-.6,.6);
+  let dir={x:Math.cos(th),y:0,z:Math.sin(th)};
+  // avoid rocks laterally (repulsion from the taller side)
+  if(sc==='rocks'||sc==='prey'||sc==='gap'){const pxh=-dir.z,pzh=dir.x;const lt=clamp(lat*-2.5,-.6,.6);dir.x+=pxh*lt;dir.z+=pzh*lt;}
+  const dl=Math.hypot(dir.x,dir.z);dir.x/=dl;dir.z/=dl;
+  const want={x:dir.x*Math.cos(Math.atan(tz)),y:Math.sin(Math.atan(tz)),z:dir.z*Math.cos(Math.atan(tz))};
+  // rotate A toward want (siphon-steered, limited rate)
+  const cs=A.x*want.x+A.y*want.y+A.z*want.z,ang=Math.acos(clamp(cs,-1,1));
+  const wm=(P.wmax||1)*(.35+.65*Math.min(1,(this.spd+.1)/.35));const step=Math.min(ang,wm*dt*Math.min(1,ang*2.2+.05));
+  if(ang>1e-5){let ax=A.y*want.z-A.z*want.y,ay=A.z*want.x-A.x*want.z,az=A.x*want.y-A.y*want.x;const al=Math.hypot(ax,ay,az);
+   if(al>1e-6){ax/=al;ay/=al;az/=al;const c=Math.cos(step),s=Math.sin(step),dd=ax*A.x+ay*A.y+az*A.z;
+    const nx=A.x*c+(ay*A.z-az*A.y)*s+ax*dd*(1-c),ny=A.y*c+(az*A.x-ax*A.z)*s+ay*dd*(1-c),nz=A.z*c+(ax*A.y-ay*A.x)*s+az*dd*(1-c);const nl=Math.hypot(nx,ny,nz);A.x=nx/nl;A.y=ny/nl;A.z=nz/nl;}}
+  // roll and steering indicator (signed turn about up)
+  const yawRate=(A.x*want.z-A.z*want.x)/Math.max(.2,Math.hypot(A.x,A.z));this.steer+=(clamp(yawRate*2.5,-1,1)-this.steer)*Math.min(1,dt*6);
+  this.roll+=(clamp(-this.steer*.5,-.5,.5)*Math.min(1,this.spd/.5)-this.roll)*Math.min(1,dt*3);
+  this.frame();
+  C.x+=A.x*this.spd*dt;C.y+=A.y*this.spd*dt;C.z+=A.z*this.spd*dt;
+  // hover bob for slow cruisers
+  // mantle shape from cavity
+  if(m==='jet'){this.sw=lerp(.88,1.24,this.Vn);this.sh=this.sw;this.sa=lerp(1.04,.92,this.Vn);}
+  else if(m==='cirr'){this.sw=1+.03*this.Vn;this.sh=this.sw;this.sa=1/(this.sw*this.sh);}
+  else{this.sw=1;this.sh=1;this.sa=1;}
+  // clamp body above ground
+  let wb=this.bodyMin();if(wb<.008){C.y+=.008-wb;}
+  this.setBases();this.restShape();this.verletArms(dt);
+  this.fun={x:-A.x-this.S.x*this.steer*.6,y:-A.y-this.S.y*this.steer*.6,z:-A.z-this.S.z*this.steer*.6};const fl=Math.hypot(this.fun.x,this.fun.y,this.fun.z);this.fun.x/=fl;this.fun.y/=fl;this.fun.z/=fl;
+  if(P.ink&&this.exp>0&&!(this.prevExp>0)&&this.pulses%3===0)this.inkQ++;this.prevExp=this.exp;
+  if(P.armKind==='flare'){this.flare=(this.flare||0)+(this.exp>0?-1:(this.Vn<.2?1:0))*dt*3;this.flare=clamp(this.flare,0,1);}
+ }
+ // ============================================================== PARACHUTE POUNCE (scripted)
+ initPara(){const C=this.C,P=this.P;this.ring='axis';this.arms.forEach((a,i)=>{a.phi=TAU*i/NA+.2;a.st='swim';a.planted=false;});
+  C.x=0;C.y=.5;C.z=0;this.A={x:1,y:0,z:0};this.spd=.2;this.frame();this.setBases();this.restShape();for(const a of this.arms){a.nodes.set(a.rest);a.prev.set(a.rest);}}
+ stepPara(dt){const t=this.t,C=this.C,W=this.W,pr=W.prey||{x:1.45,z:0};const P=this.P;
+  const tx=pr.x,ty=.5;
+  let x,y;const ap=clamp(t/3.0,0,1);
+  x=-.1+(tx+.1)*(ap*ap*(3-2*ap));y=.5+.04*Math.sin(t*2);
+  const flareU=sm((t-2.2)/1.0),dropU=sm((t-3.4)/1.8),holdU=sm((t-5.4)/1.1);
+  y=lerp(y,.58+.06*Math.sin(t*3.1),flareU);y=lerp(y,.23,dropU);x=x;
+  // vertical pose: A from +x to +y (mantle up, arms down)
+  const tilt=sm((t-2.0)/1.3)*PI/2;this.A={x:Math.cos(tilt),y:Math.sin(tilt),z:0};
+  const mass=this.exp;
+  C.x=x;C.y=y;C.z=0;
+  const sp=Math.hypot(x-(this._px||x),y-(this._py||y))/dt;this.spd=sp;this._px=x;this._py=y;
+  this.phase=frac(this.phase+dt/1.0);this.Vn=t<2.2?this.pulseWave(frac(t/1.5)):0;this.exp=0;
+  this.sw=1;this.sh=1;this.sa=1;this.roll=0;this.frame();
+  if(t<2.2){this.armKindNow='bundle';}
+  this.setBases();
+  // arm rest: bundle -> umbrella -> wrap
+  let a0=-.07,a1=0;
+  const open=sm((t-2.2)/.9);a0=lerp(-.07,1.0,open);a1=lerp(0,-.5,open);
+  const flutter=.1*Math.sin(t*5)*(1-holdU)*open;a0+=flutter;
+  const wrap=holdU;a0=lerp(a0,.5,wrap);a1=lerp(a1,-1.0,wrap);
+  this.armP={a0,a1,wig:.05+.08*open*(1-holdU),lat:0,stiff:.8+.8*holdU};
+  const L=this.L0,dl=L/(NS-1);
+  for(const a of this.arms){const B=this.base[a.i],rad=a.rad,o=a.rest;let ax=0,rd=0;
+   for(let j=0;j<NS;j++){const s=j/(NS-1);o[j*3]=B.x-this.A.x*ax+rad.x*rd;o[j*3+1]=B.y-this.A.y*ax+rad.y*rd;o[j*3+2]=B.z-this.A.z*ax+rad.z*rd;
+    const ang=a0+a.var+a1*s+this.armP.wig*Math.sin(t*5.5-s*4+a.i*.5)*s;ax+=Math.cos(ang)*dl;rd+=Math.sin(ang)*dl;}}
+  this.verletArms(dt,1);
+  if(t>=P.tEnd-.01)this.done=true;
+ }
+ // ============================================================== top-level
+ step(dt){
+  this.t+=dt;const m=this.mode;
+  if(m==='crawl'||m==='bipd'||m==='land')this.stepCrawl(dt);else if(m==='para')this.stepPara(dt);else this.stepSwim(dt);
+  if(this.t>=this.P.tEnd)this.done=true;
+  if(this.spd>this.stat.maxSpeed)this.stat.maxSpeed=this.spd;
+  
+ }
+ shapeArms(){if(this.mode==='crawl'||this.mode==='bipd'||this.mode==='land')for(const a of this.arms)this.crawlShape(a);}
+ // ---------- statistics (called by the checker every ~1/30 s after shapeArms)
+ sample(){
+  const S=this.stat,m=this.mode;S.frames++;
+  // collision
+  const wb=this.bodyMin();if(wb<S.pen){S.pen=wb;S.penWhat='body';}
+  let pl=0;
+  for(const a of this.arms){
+   for(let j=1;j<NS;j++){const o=j*3,n=a.nodes,r=this.armRad(a,j),c=n[o+1]-r*.55-this.W.h(n[o],n[o+2]);if(c<S.pen){S.pen=c;S.penWhat='arm '+a.i+' node '+j;}
+    const pr=this.W.prey;if(pr){const d=Math.hypot(n[o]-pr.x,n[o+1]-pr.y,n[o+2]-pr.z)-pr.r-r*.9;if(d<S.pen){S.pen=d;S.penWhat='prey';}}}
+   if(a.st==='plant'&&a.reveal>=1){pl++;
+    const o=(NS-1)*3,dx=a.nodes[o]-a.anc.x,dy=a.nodes[o+1]-a.anc.y,dz=a.nodes[o+2]-a.anc.z;let dr=Math.hypot(dx,dy,dz);
+    // patch nodes: distance to the fixed patch segment
+    const sp=this.P.patch;for(let j=NS-1;j>=NS-3;j--){const o2=j*3;const px=a.nodes[o2],pz=a.nodes[o2+2];
+     // project onto patch line (anchor + pd*u, u in [0,3sp])
+     const ux=px-a.anc.x,uz=pz-a.anc.z,u=clamp(ux*a.pd.x+uz*a.pd.z,0,3*sp),qx=a.anc.x+a.pd.x*u,qz=a.anc.z+a.pd.z*u;const lat=Math.hypot(px-qx,pz-qz);
+     if(j===NS-1){}else if(a.len>0&&(NS-1-j)/(NS-1)*a.len<3*sp*.9){if(lat>dr)dr=lat;}}
+    if(!a.dr0&&a.dr0!==0)a.dr0=0;if(dr>S.drift)S.drift=dr;
+    const st=a.len/this.L0;if(st>S.maxStretch)S.maxStretch=st;if(st<S.minStretch)S.minStretch=st;}
+   else if(m==='crawl'||m==='bipd'||m==='land'){/* swinging arms: stretch measured too */const st=a.len/this.L0;if(a.st!=='coil'){if(st>S.maxStretch)S.maxStretch=st;if(st<S.minStretch)S.minStretch=st;}}}
+  if(m==='crawl'||m==='bipd'||m==='land'){const act=this.walkers?this.walkers.length:NA;let np=0;for(const a of this.arms)if(a.st==='plant')np++;if(np<S.minPlant)S.minPlant=np;}
+  // volume of the visible mantle tissue/cavity
+  if(this.sw<S.sqMin)S.sqMin=this.sw;
+  const vol=this.sw*this.sh*this.sa;if(m!=='jet'&&m!=='para'){const e=Math.abs(vol-1);if(e>S.volErr)S.volErr=e;}
+  if(m==='jet'||m==='medu'||m==='cirr'){if(this.Vn<S.vnMin)S.vnMin=this.Vn;if(this.Vn>S.vnMax)S.vnMax=this.Vn;if(this.sw<S.swMin)S.swMin=this.sw;if(this.sw>S.swMax)S.swMax=this.sw;}
+  // arm self intersection (neighbouring arms, distal 3/4)
+  let bad=0;for(let i=0;i<NA;i++){const a=this.arms[i],b=this.arms[(i+1)%NA];for(let j=7;j<NS;j+=1){const o=j*3;for(let k=Math.max(7,j-2);k<=Math.min(NS-1,j+2);k++){const q=k*3,d=Math.hypot(a.nodes[o]-b.nodes[q],a.nodes[o+1]-b.nodes[q+1],a.nodes[o+2]-b.nodes[q+2]);if(d<.35*(this.armRad(a,j)+this.armRad(b,k))){bad++;break;}}}}
+  if(bad>0)S.selfBad++;S.selfMax=Math.max(S.selfMax||0,bad);
+ }
+}
+
+// ------------------------------------------------------------------ self-check
+function checkCase(spec){
+  const o=new Octo(spec),tag=`${spec.row} | ${spec.name}`,fails=[],tEnd=o.P.tEnd;let n=0;
+  while(o.t<tEnd){o.step(DT);if(++n%4===0){o.shapeArms();o.sample();}}
+  const s=o.stat,m=spec.mode,frames=s.frames;
+  if(s.drift>.02)fails.push(`${tag}: attached arm tip/patch moved ${(s.drift*100).toFixed(2)} cm`);
+  if(s.pen<-.004)fails.push(`${tag}: ${(-s.pen*1000).toFixed(1)} mm through rock/seafloor (${s.penWhat})`);
+  if((m==='crawl'||m==='bipd'||m==='land')){if(s.maxStretch>1.6)fails.push(`${tag}: arm stretch ${s.maxStretch.toFixed(2)}`);if(s.minStretch<.5)fails.push(`${tag}: arm shortens to ${s.minStretch.toFixed(2)}`);
+   const need=m==='bipd'?1:3;if(s.minPlant<need)fails.push(`${tag}: only ${s.minPlant} arms attached at worst`);
+   if(s.volErr>.03)fails.push(`${tag}: mantle volume changed ${(s.volErr*100).toFixed(1)}%`);
+   const dx=o.C.x-s.x0;if(dx<(spec.row==='turn'?-9:.25))fails.push(`${tag}: travelled only ${dx.toFixed(2)} m`);
+   if(spec.scene==='gap'){if(o.C.x<2.8)fails.push(`${tag}: did not get through the gap (x ${o.C.x.toFixed(2)})`);if(s.sqMin>.7)fails.push(`${tag}: mantle never narrowed (min width ${s.sqMin.toFixed(2)})`);}
+   if(spec.scene==='slope'&&spec.mode!=='land'&&o.C.y<.3)fails.push(`${tag}: did not climb the slope (y ${o.C.y.toFixed(2)})`);}
+  if(m==='jet'){if(s.vnMax-s.vnMin<.9)fails.push(`${tag}: no inflate/contract cycle`);if(s.swMax/s.swMin<1.2)fails.push(`${tag}: mantle does not visibly inflate`);if(s.cycErr>.03)fails.push(`${tag}: intake and expelled water differ by ${s.cycErr.toFixed(3)} per cycle`);if(s.maxSpeed<.3)fails.push(`${tag}: jet too slow ${s.maxSpeed.toFixed(2)}`);}
+  if(frames>0&&s.selfBad/frames>.25)fails.push(`${tag}: arms interpenetrate in ${(100*s.selfBad/frames).toFixed(0)}% of frames (max ${s.selfMax} nodes)`);
+  if(m==='para'&&s.maxSpeed<.05)fails.push(`${tag}: no motion`);
+  return {fails,row:{row:spec.row,name:spec.name,mode:m,driftCm:+(s.drift*100).toFixed(2),penMm:+(s.pen*1000).toFixed(2),minPlant:s.minPlant,maxStretch:+s.maxStretch.toFixed(2),minStretch:+s.minStretch.toFixed(2),selfBadPct:+(100*s.selfBad/Math.max(1,frames)).toFixed(1),volErrPct:+(100*s.volErr).toFixed(2),swRatio:+(s.swMax/(s.swMin||1)).toFixed(2),minWidth:+s.sqMin.toFixed(2),cycErr:+s.cycErr.toFixed(4),maxSpeed:+s.maxSpeed.toFixed(2),x:+o.C.x.toFixed(2),y:+o.C.y.toFixed(2),simSeconds:+o.t.toFixed(1)}};
+}
+function runCheck(specs,filter){const res={pass:true,cases:0,passed:0,fails:[],table:[]};for(const s of specs){if(filter&&!filter(s))continue;const r=checkCase(s);res.cases++;if(!r.fails.length)res.passed++;else res.fails.push(...r.fails);res.table.push(r.row);}res.pass=res.fails.length===0;return res;}
+
+// ------------------------------------------------------------------ candidate table: 3 pages x 4 rows x 4 columns
+const ROWS=['cruise','fast','turn','terrain'];
+const ROWLABEL={cruise:'Cruise',fast:'Fast / escape',turn:'Turn and manoeuvre',terrain:'Terrain'};
+const DOC='Documented',SPEC='Speculative',PART='Partly documented';
+const K=(row,name,mode,p,scene,status,who,desc)=>({row,name,mode,p:p||{},scene:scene||'open',status,who,desc});
+const SPECS=[
+[
+ [K('cruise','benthic crawl','crawl',{v:.2},'open',DOC,'Octopus vulgaris, O. bimaculoides (Levy 2015)','Arms elongate against the sand and push; any arm leads; the mantle keeps facing one way.'),
+  K('cruise','jet pulses','jet',{Tp:1.5,dv:.75,k:1.5,alt:.55},'open',DOC,'most octopuses swimming','Mantle fills, squeezes water out of the siphon, travels mantle-first, arms trail as a bundle.'),
+  K('cruise','web pulse','medu',{Tp:1.9,dv:.6,k:1.3,alt:.6},'open',PART,'incirrates; the pure jellyfish-like beat is rarer','Arms and web open like an umbrella, then snap shut; the body glides between beats.'),
+  K('cruise','fin flap (cirrate)','cirr',{f:1.2,vt:.3,alt:.6},'open',DOC,'Grimpoteuthis "dumbo" octopus','Two ear fins flap in a wave, webbed arms hang as a soft bell; slow steady cruise.')],
+ [K('fast','fast crawl','crawl',{v:.5,swingT:.28,lift:.05,theta:40,clr:.07,thr:.55},'open',PART,'Abdopus and others (fast crawling on arm tips)','Arms land and push in quick overlapping steps; still no body turning.'),
+  K('fast','jet burst + ink','jet',{Tp:.75,dv:1.5,k:1.25,wmax:2.3,ink:true,alt:.55,v0:.4},'open',DOC,'most octopuses escaping','Hard mantle squeezes, arms in a tight bundle, ink cloud left behind as a decoy.'),
+  K('fast','web snap','medu',{Tp:.95,dv:1.0,k:1.2,alt:.6,open:1.15,v0:.3},'open',PART,'arm-web flare seen in several species','Arms and web flare wide, then slam shut to throw the body forward.'),
+  K('fast','fast flap (cirrate)','cirr',{f:2.3,vt:.55,alt:.6},'open',PART,'cirrate fins; the faster beat is a guess','Faster fin beats, bell pulled in tighter.')],
+ [K('turn','crawl, no yaw','crawl',{v:.2},'open',DOC,'Octopus crawling (Levy 2015)','Direction changes at once; the mantle and eyes keep facing the same way.'),
+  K('turn','siphon steering','jet',{Tp:1.4,dv:.85,k:1.3,wmax:1.5,alt:.6},'open',DOC,'jetting octopus','The funnel bends to steer; the body arcs and banks, arms trail.'),
+  K('turn','asymmetric web','medu',{Tp:1.5,dv:.7,k:1.3,wmax:1.3,alt:.6},'open',SPEC,'speculative','Umbrella pulses while the heading changes between beats.'),
+  K('turn','differential fins','cirr',{f:1.2,vt:.3,wmax:1.1,alt:.6},'open',PART,'cirrate fins can be driven separately','Slow banked turn on fin beats.')],
+ [K('terrain','clamber rocks','crawl',{v:.17,theta:50},'rocks',DOC,'octopus moving over reef rock','Arms flow over and around rocks; the body climbs.'),
+  K('terrain','gap squeeze','crawl',{v:.15,gapw:.09,theta:50},'gap',DOC,'octopus through crevices (only the beak is hard)','The mantle flattens and stretches to pass a gap narrower than itself; volume stays constant.'),
+  K('terrain','slope crawl 25 deg','crawl',{v:.17},'slope',DOC,'ordinary crawling','Same crawl, arms reach up the slope, body follows the ground.'),
+  K('terrain','open-water climb','jet',{Tp:1.5,dv:.75,k:1.4,alt:.5},'open',DOC,'octopus swimming up from the bottom','Jet pulses with the body pitched up; the seafloor drops away.')]
+],
+[
+ [K('cruise','tiptoe crawl','crawl',{v:.13,theta:62,clr:.14,swingT:.6,lift:.1,chMax:1.3},'open',SPEC,'resembles the stilted gait in Abdopus','Mantle held high on arm tips, slow careful steps.'),
+  K('cruise','jet and glide','jet',{Tp:2.4,dv:1.0,k:.95,alt:.6},'open',DOC,'octopus long-range jetting','Longer glide between strong pulses; arms stay bundled.'),
+  K('cruise','jet, loose arms','jet',{Tp:1.6,dv:.7,k:1.4,armKind:'fan',alt:.6},'open',SPEC,'speculative','Arms fan out behind and flutter like a drogue.'),
+  K('cruise','two-arm walk','bipd',{v:.24},'open',DOC,'Amphioctopus marginatus (Huffard 2005)','Walks on two arms, the other six rolled up as camouflage.')],
+ [K('fast','tight jet, no ink','jet',{Tp:.7,dv:1.6,k:1.3,wmax:2,alt:.6,v0:.4},'open',DOC,'jet escape','Streamlined: arms pulled into one bundle, quick pulses.'),
+  K('fast','jet + arm flare','jet',{Tp:.85,dv:1.3,k:1.2,armKind:'flare',wmax:1.8,alt:.6,v0:.4},'open',SPEC,'speculative','Arms flare during the refill to brake, then close for the next pulse.'),
+  K('fast','two-arm run','bipd',{v:.42,swingT:.32,lift:.1,clr:.28},'open',DOC,'A. marginatus runs bipedally when disturbed','Faster two-arm strides, the rolled arms bounce along.'),
+  K('fast','arm skitter','crawl',{v:.6,swingT:.22,lift:.04,minPlant:3,thr:.5,theta:36,clr:.06},'open',SPEC,'speculative','Very short arm steps, body low.')],
+ [K('turn','crawl with yaw','crawl',{v:.2,yaw:true,turnRate:1.8},'open',SPEC,'contrast case, not how octopuses crawl','The body turns to face the path like an ordinary animal.'),
+  K('turn','jet, arm rudder','jet',{Tp:1.4,dv:.85,k:1.3,wmax:1.6,armKind:'rudder',alt:.6},'open',SPEC,'speculative; arms do help steer','The arm bundle swings sideways as a rudder while the siphon steers.'),
+  K('turn','two-arm walk, turn','bipd',{v:.24},'open',PART,'A. marginatus','Walks and pivots; the rolled arms ride along.'),
+  K('turn','tight web pivot','medu',{Tp:1.2,dv:.5,k:1.5,wmax:2.2,alt:.6},'open',SPEC,'speculative','Fast umbrella beats while turning in place.')],
+ [K('terrain','jet over rocks','jet',{Tp:1.5,dv:.8,k:1.4,alt:.5},'rocks',DOC,'swimming octopus avoiding obstacles','Steers around and over rocks, never touching them.'),
+  K('terrain','web climb','medu',{Tp:1.9,dv:.7,k:1.3,alt:.4},'open',PART,'arm and web swimming','Umbrella pulses carry the body up through open water.'),
+  K('terrain','cirrate over rocks','cirr',{f:1.2,vt:.25,alt:.4},'rocks',PART,'Grimpoteuthis hovers just above the bottom','Slow fin flaps, low over rocks.'),
+  K('terrain','two-arm walk, slope','bipd',{v:.22},'slope',PART,'A. marginatus on gentle ground','Two-arm walk over a 25 degree rise.')]
+],
+[
+ [K('cruise','land excursion','land',{v:.1},'open',DOC,'Abdopus aculeatus between tide pools','Out of the water: slow, sagging, dragging.'),
+  K('cruise','cirrate hover','cirr',{f:.8,vt:.12,alt:.6},'open',PART,'cirrates hover and drift','Almost still, gentle fin ripple.'),
+  K('cruise','lazy umbrella','medu',{Tp:2.6,dv:.4,k:1.1,alt:.7},'open',SPEC,'speculative','Slow big beats, arms wide open between.'),
+  K('cruise','low belly crawl','crawl',{v:.15,theta:22,clr:.05,reachBase:.5,reachFwd:.4},'open',SPEC,'speculative','Mantle laid low, arms spread flat.')],
+ [K('fast','land scuttle','land',{v:.16},'open',PART,'Abdopus scurries when exposed','Quicker but still heavy and dragging.'),
+  K('fast','parachute pounce','para',{},'prey',DOC,'common octopus on crabs','Spreads the web, drops over the prey and wraps it.'),
+  K('fast','double pulse','jet',{Tp:.5,dv:1.1,k:1.0,wmax:1.8,alt:.55,v0:.4},'open',SPEC,'speculative','Two quick pulses then a long glide.'),
+  K('fast','jet then brake','jet',{Tp:.9,dv:1.4,k:1.3,armKind:'flare',alt:.6,v0:.4},'open',SPEC,'speculative','Arms flare as a brake after the squeeze.')],
+ [K('turn','slow circle','crawl',{v:.08,path:'circle',yaw:true,turnRate:1.2},'open',SPEC,'speculative','Slow circle, mantle leading.'),
+  K('turn','land turn','land',{v:.1},'open',DOC,'Abdopus aculeatus','Out of water, turns by dragging.'),
+  K('turn','jet U-turn','jet',{Tp:1.2,dv:.8,k:1.3,wmax:2.4,alt:.6,path:'reverse'},'open',SPEC,'speculative','Strong siphon steer reverses the heading.'),
+  K('turn','crawl reversal','crawl',{v:.2,path:'reverse'},'open',DOC,'Levy 2015','Reverses direction without turning the mantle.')],
+ [K('terrain','land over rocks','land',{v:.1},'rocks',DOC,'Abdopus aculeatus','Out of the pool across rock: sags between rocks.'),
+  K('terrain','pounce among rocks','para',{},'prey',DOC,'common octopus on crabs','Drops onto prey beside rocks.'),
+  K('terrain','tight squeeze','crawl',{v:.14,gapw:.07,theta:50},'gap',DOC,'octopus through crevices','Gap just over half the body width.'),
+  K('terrain','land slope','land',{v:.1},'slope',DOC,'Abdopus aculeatus','Climbs out on a slope.')]
+]];
+const CELLS=[];SPECS.forEach((pg,pi)=>pg.forEach((row,ri)=>row.forEach((s,ci)=>{s.page=pi;s.ri=ri;s.ci=ci;s.id=pi*16+ri*4+ci;CELLS.push(s);})));
+/*CORE_END*/
+const $=id=>document.getElementById(id);
+const PAGES=SPECS.map((pg,pi)=>({pi,cells:pg.flat()}));
+// ---------------------------------------------------------------- visuals
+const lam=(color,extra)=>new THREE.MeshLambertMaterial({color,...(extra||{})});
+const GEO={sphere:new THREE.SphereGeometry(1,18,12),cone:new THREE.CylinderGeometry(.6,1,1,10,1,true)};
+function canvasTex(w,h,draw,rep){const c=document.createElement('canvas');c.width=w;c.height=h;draw(c.getContext('2d'),w,h);const t=new THREE.CanvasTexture(c);t.wrapS=t.wrapT=THREE.RepeatWrapping;if(rep)t.repeat.set(rep[0],rep[1]);t.anisotropy=2;return t;}
+const rn0=rng(99);
+const PUFF=canvasTex(64,64,(x,w,h)=>{const g=x.createRadialGradient(32,32,2,32,32,31);g.addColorStop(0,'rgba(255,255,255,1)');g.addColorStop(.55,'rgba(255,255,255,.7)');g.addColorStop(1,'rgba(255,255,255,0)');x.fillStyle=g;x.fillRect(0,0,w,h);});
+const SKINTEX=canvasTex(128,128,(x,w,h)=>{x.fillStyle='#d8d0cc';x.fillRect(0,0,w,h);for(let i=0;i<260;i++){const a=rn0(),b=rn0();x.fillStyle=`rgba(${60+rn0()*40|0},${30+rn0()*30|0},${25+rn0()*25|0},${.12+rn0()*.2})`;x.beginPath();x.arc(a*w,b*h,2+rn0()*7,0,TAU);x.fill();}for(let i=0;i<70;i++){x.fillStyle=`rgba(255,235,220,${.15+rn0()*.2})`;x.beginPath();x.arc(rn0()*w,rn0()*h,.8+rn0()*1.6,0,TAU);x.fill();}});
+const SANDTEX=canvasTex(128,128,(x,w,h)=>{x.fillStyle='#e6e1d0';x.fillRect(0,0,w,h);for(let i=0;i<900;i++){const v=200+rn0()*55|0;x.fillStyle=`rgba(${v},${v-8},${v-30},${.25+rn0()*.3})`;x.fillRect(rn0()*w,rn0()*h,1+rn0()*2,1+rn0()*2);}for(let i=0;i<120;i++){x.fillStyle=`rgba(90,80,60,${.12+rn0()*.15})`;x.fillRect(rn0()*w,rn0()*h,1,1);}});
+const MAT={eye:lam('#10181a'),eyeW:lam('#c9a24a'),dot:new THREE.MeshBasicMaterial({color:'#f4d98a',transparent:true,opacity:.9}),sucker:lam('#a97766')};
+const SKIN='#b9644d',BELLY='#e0a08a';
+const SIDES=9,NSK=16,TN=52,TRAIL=240,GHN=5,NPART=130,NINK=24;
+const tubeIndex=(()=>{const idx=[];for(let s=0;s<NS-1;s++)for(let k=0;k<SIDES;k++){const a=s*(SIDES+1)+k,b=a+1,c=(s+1)*(SIDES+1)+k,d=c+1;idx.push(a,c,b,b,c,d);}return idx;})();
+function makeTube(mat){const g=new THREE.BufferGeometry(),n=NS*(SIDES+1);g.setAttribute('position',new THREE.BufferAttribute(new Float32Array(n*3),3));g.setAttribute('normal',new THREE.BufferAttribute(new Float32Array(n*3),3));g.setAttribute('color',new THREE.BufferAttribute(new Float32Array(n*3),3));
+  const uv=new Float32Array(n*2);for(let s=0;s<NS;s++)for(let k=0;k<=SIDES;k++){uv[(s*(SIDES+1)+k)*2]=k/SIDES*.6;uv[(s*(SIDES+1)+k)*2+1]=s/NS*3;}g.setAttribute('uv',new THREE.BufferAttribute(uv,2));g.setIndex(tubeIndex);const m=new THREE.Mesh(g,mat);m.frustumCulled=false;return m;}
+const cTop=new THREE.Color(SKIN),cBel=new THREE.Color(BELLY),cTmp=new THREE.Color();
+const _t={x:0,y:0,z:0};
+function updateTube(V,A,a,i){const m=V.tubes[i],pos=m.geometry.attributes.position.array,nor=m.geometry.attributes.normal.array,col=m.geometry.attributes.color.array,n=a.nodes;
+  let ix,iy,iz;if(a.st==='plant'||a.st==='swing'){ix=0;iy=-1;iz=0;}else{ix=-a.rad.x;iy=-a.rad.y;iz=-a.rad.z;}
+  let nx=ix,ny=iy,nz=iz;const T=new Float32Array(3);
+  for(let s=0;s<NS;s++){const j0=Math.max(0,s-1)*3,j1=Math.min(NS-1,s+1)*3;let tx=n[j1]-n[j0],ty=n[j1+1]-n[j0+1],tz=n[j1+2]-n[j0+2];const tl=Math.hypot(tx,ty,tz)||1;tx/=tl;ty/=tl;tz/=tl;
+   const d=nx*tx+ny*ty+nz*tz;nx-=tx*d;ny-=ty*d;nz-=tz*d;let nl=Math.hypot(nx,ny,nz);if(nl<1e-4){nx=ix;ny=iy;nz=iz;const d2=nx*tx+ny*ty+nz*tz;nx-=tx*d2;ny-=ty*d2;nz-=tz*d2;nl=Math.hypot(nx,ny,nz)||1;}nx/=nl;ny/=nl;nz/=nl;
+   const bx=ty*nz-tz*ny,by=tz*nx-tx*nz,bz=tx*ny-ty*nx,r=A.armRad(a,s);
+   for(let k=0;k<=SIDES;k++){const an=TAU*k/SIDES,c=Math.cos(an),sn=Math.sin(an),q=(s*(SIDES+1)+k)*3;const ox=nx*c+bx*sn,oy=ny*c+by*sn,oz=nz*c+bz*sn;nor[q]=ox;nor[q+1]=oy;nor[q+2]=oz;pos[q]=n[s*3]+ox*r;pos[q+1]=n[s*3+1]+oy*r;pos[q+2]=n[s*3+2]+oz*r;
+    const u=clamp(.5+.5*c,0,1)*(.55+.45*clamp(s/6,0,1));col[q]=lerp(cTop.r,cBel.r,u);col[q+1]=lerp(cTop.g,cBel.g,u);col[q+2]=lerp(cTop.b,cBel.b,u);}}
+  m.geometry.attributes.position.needsUpdate=true;m.geometry.attributes.normal.needsUpdate=true;m.geometry.attributes.color.needsUpdate=true;
+  // suckers on the inner (belly) side
+  const sk=V.suck,dum=V.dum;
+  for(let q=0;q<NSK;q++){const s=.1+.84*q/(NSK-1),f=s*(NS-1),j=Math.min(NS-2,Math.floor(f)),u=f-j,o=j*3;const px=n[o]*(1-u)+n[o+3]*u,py=n[o+1]*(1-u)+n[o+4]*u,pz=n[o+2]*(1-u)+n[o+5]*u;
+   const r=A.armRad(a,Math.round(f));// inner direction at this sample (recompute from frame stored in nor of ring k=0 at s)
+   const q0=(Math.round(f)*(SIDES+1))*3;const attach=a.planted&&q>=NSK-4;
+   dum.position.set(px+nor[q0]*r*.96,py+nor[q0+1]*r*.96,pz+nor[q0+2]*r*.96);const sc=r*(attach?.42:.3);dum.scale.set(sc,sc,sc);dum.updateMatrix();sk.setMatrixAt(i*NSK+q,dum.matrix);}
+  sk.instanceMatrix.needsUpdate=true;
+}
+function buildWeb(A){const nwF=A.P.webF!==undefined?A.P.webF:({crawl:.2,land:.18,bipd:.2,jet:.18,medu:.62,cirr:.72,para:.5})[A.mode];const r=rng(7);const per=[];let tot=0;
+  for(let i=0;i<NA;i++){const nw=Math.max(2,Math.round(nwF*(NS-1)*(.82+.36*r())));per.push(nw);tot+=nw*6;}
+  const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(new Float32Array(NA*NS*3),3));const idx=[];
+  for(let i=0;i<NA;i++){const i1=(i+1)%NA;for(let j=0;j<per[i];j++){const a=i*NS+j,b=i1*NS+j,c=i*NS+j+1,d=i1*NS+j+1;idx.push(a,b,c,b,d,c);}}
+  g.setIndex(idx);const m=new THREE.Mesh(g,lam('#cf8672',{transparent:true,opacity:.72,side:THREE.DoubleSide,flatShading:false}));m.frustumCulled=false;return m;}
+function updateWeb(V,A){const p=V.web.geometry.attributes.position.array;for(let i=0;i<NA;i++){const n=A.arms[i].nodes;for(let j=0;j<NS;j++){p[(i*NS+j)*3]=n[j*3];p[(i*NS+j)*3+1]=n[j*3+1]+.002;p[(i*NS+j)*3+2]=n[j*3+2];}}V.web.geometry.attributes.position.needsUpdate=true;V.web.geometry.computeVertexNormals();}
+function buildFin(){const nr=5,nt=14,g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(new Float32Array((nr*nt+1)*3),3));const idx=[];for(let r=0;r<nr;r++)for(let t=0;t<nt;t++){const a=r*nt+t+1,b=r*nt+(t+1)%nt+1,c=(r+1)*nt+t+1,d=(r+1)*nt+(t+1)%nt+1;if(r===0){idx.push(0,a,b);}else{}}
+  // rings 1..nr
+  const idx2=[];for(let t=0;t<nt;t++){idx2.push(0,1+t,1+(t+1)%nt);}for(let r=1;r<nr;r++)for(let t=0;t<nt;t++){const a=1+(r-1)*nt+t,b=1+(r-1)*nt+(t+1)%nt,c=1+r*nt+t,d=1+r*nt+(t+1)%nt;idx2.push(a,c,b,b,c,d);}
+  g.setIndex(idx2);const m=new THREE.Mesh(g,lam('#f0a9a0',{side:THREE.DoubleSide,transparent:true,opacity:.86}));m.frustumCulled=false;m.userData={nr,nt};return m;}
+function updateFin(V,A,sgn,mesh){const p=mesh.geometry.attributes.position.array,{nr,nt}=mesh.userData,S=A.S,N=A.N,Ax=A.A;const C=A.C;const mc={x:C.x+Ax.x*.12,y:C.y+Ax.y*.12,z:C.z+Ax.z*.12};
+  const hw=.075*A.sw+.004,R=.1;const flap=TAU*A.phase;const set=(i,ox,oz)=>{ // ox outward (along sgn*S), oz along A, in local metres
+   const out=ox,ang=.35*Math.sin(flap-out*18)+.12,cs=Math.cos(ang),sn=Math.sin(ang)*sgn*0+Math.sin(ang);
+   const px=mc.x+S.x*sgn*(hw+out*cs)+N.x*out*sn+Ax.x*oz,py=mc.y+S.y*sgn*(hw+out*cs)+N.y*out*sn+Ax.y*oz,pz=mc.z+S.z*sgn*(hw+out*cs)+N.z*out*sn+Ax.z*oz;p[i*3]=px;p[i*3+1]=py;p[i*3+2]=pz;};
+  set(0,.02,-.0);
+  for(let r=1;r<=nr;r++)for(let t=0;t<nt;t++){const th=TAU*t/nt,u=r/nr;const ox=R*(1+Math.sin(th)*u)*.95+.0,oz=R*.75*Math.cos(th)*u-.02;set(1+(r-1)*nt+t,ox*.9,oz);}
+  mesh.geometry.attributes.position.needsUpdate=true;mesh.geometry.computeVertexNormals();}
+function buildVisual(A,cellIdx){
+  const V=A.vis={};const land=A.isLand,sc=V.scene=new THREE.Scene();
+  const sky=new THREE.Color('#a9d3e6'),deep=new THREE.Color('#0a3a4a');
+  if(land){sc.background=sky;sc.add(new THREE.AmbientLight('#ffffff',.95));const d=new THREE.DirectionalLight('#fff4dc',.85);d.position.set(-2,5,3);sc.add(d);}
+  else{sc.background=new THREE.Color('#0b3f4d');sc.fog=new THREE.Fog('#0b3f4d',198.5,209);sc.add(new THREE.AmbientLight('#8fbfc6',.74));const d=new THREE.DirectionalLight('#cdeff5',.7);d.position.set(-1.2,5,2.5);sc.add(d);V.dir=d;}
+  V.cam=new THREE.OrthographicCamera(-2,2,2,-1,.01,500);
+  V.skin=new THREE.MeshLambertMaterial({color:'#ffffff',map:SKINTEX,vertexColors:true});V.body=new THREE.MeshLambertMaterial({color:SKIN,map:SKINTEX});V.bodyB=new THREE.MeshLambertMaterial({color:'#e49a82',map:SKINTEX});
+  const tn=A.W.kind==='gap'?140:TN;V.tsize=A.W.kind==='gap'?1.2:2.6;const pg=new THREE.PlaneGeometry(1,1,tn,tn);pg.rotateX(-PI/2);pg.setAttribute('color',new THREE.BufferAttribute(new Float32Array((tn+1)*(tn+1)*3),3));V.tgeo=pg;
+  const sandmap=SANDTEX.clone();sandmap.needsUpdate=true;sandmap.repeat.set(1,1);
+  V.tmesh=new THREE.Mesh(pg,new THREE.MeshLambertMaterial({map:SANDTEX,vertexColors:true,flatShading:true}));sc.add(V.tmesh);
+  if(land){const w=new THREE.Mesh(new THREE.PlaneGeometry(40,40),new THREE.MeshLambertMaterial({color:'#2f89a8',transparent:true,opacity:.6}));w.rotation.x=-PI/2;w.position.set(-19.4,-.03,0);V.water=w;sc.add(w);}
+  if(A.W.prey){const pr=A.W.prey;const g=new THREE.Group();const b=new THREE.Mesh(GEO.sphere,lam('#7a3c2c'));b.scale.set(.065,.04,.055);g.add(b);for(let k=0;k<6;k++){const l=new THREE.Mesh(GEO.sphere,lam('#6a3226'));const sg=k<3?1:-1,ang=(k%3-1)*.7;l.scale.set(.03,.008,.008);l.position.set(Math.sin(ang)*.07,-.02,sg*.06);l.rotation.y=ang;g.add(l);}g.position.set(pr.x,pr.y-.005,pr.z);sc.add(g);V.preyG=g;}
+  // body
+  V.root=new THREE.Group();sc.add(V.root);
+  V.head=new THREE.Mesh(GEO.sphere,V.body);V.mantle=new THREE.Mesh(GEO.sphere,V.body);V.root.add(V.head,V.mantle);
+  V.eyes=[1,-1].map(s=>{const g=new THREE.Group(),e=new THREE.Mesh(GEO.sphere,MAT.eyeW);e.scale.set(.024,.024,.024);const p=new THREE.Mesh(GEO.sphere,MAT.eye);p.scale.set(.016,.007,.012);p.position.set(0,.0,.019);g.add(e,p);V.root.add(g);return g;});
+  V.fun=new THREE.Mesh(GEO.cone,V.bodyB);V.root.add(V.fun);
+  if(A.mode==='cirr'){V.finL=buildFin();V.finR=buildFin();sc.add(V.finL,V.finR);}
+  // arms
+  V.tubes=A.arms.map(()=>{const m=makeTube(V.skin);sc.add(m);return m;});
+  V.suck=new THREE.InstancedMesh(GEO.sphere,MAT.sucker,NA*NSK);V.suck.frustumCulled=false;sc.add(V.suck);V.dum=new THREE.Object3D();
+  V.web=buildWeb(A);sc.add(V.web);
+  V.dots=A.arms.map(()=>{const m=new THREE.Mesh(GEO.sphere,MAT.dot);m.scale.set(.011,.011,.011);m.visible=false;sc.add(m);return m;});
+  // ghosts
+  V.ghosts=Array.from({length:GHN},(_,k)=>{const m=new THREE.Mesh(GEO.sphere,new THREE.MeshBasicMaterial({color:'#f4c8b4',transparent:true,opacity:.26*(1-k/GHN),depthWrite:false}));m.visible=false;sc.add(m);return m;});V.ghHist=[];V.ghT=0;
+  // plankton
+  const pp=new Float32Array(NPART*3),pv=new Float32Array(NPART*3),r=rng(1234+cellIdx);for(let i=0;i<NPART*3;i+=3){pp[i]=(r()*2-1)*1.6;pp[i+1]=r()*1.6;pp[i+2]=(r()*2-1)*1.6;}
+  V.pp=pp;V.pv=pv;V.pg=new THREE.BufferGeometry();V.pg.setAttribute('position',new THREE.BufferAttribute(new Float32Array(NPART*3),3));V.points=new THREE.Points(V.pg,new THREE.PointsMaterial({color:'#d8f2f2',size:2.4,sizeAttenuation:false,transparent:true,opacity:.65,depthWrite:false}));V.points.frustumCulled=false;V.points.visible=!land;sc.add(V.points);V.pcx=A.C.x;V.pcy=A.C.y;V.pcz=A.C.z;
+  // ink
+  V.ink=Array.from({length:NINK},()=>{const m=new THREE.Sprite(new THREE.SpriteMaterial({map:PUFF,color:'#1a1226',transparent:true,opacity:0,depthWrite:false}));m.visible=false;sc.add(m);return {m,x:0,y:0,z:0,vx:0,vy:0,vz:0,age:9,s:.05};});V.inkSeen=0;V.inkI=0;
+  // trail and tip
+  V.trailPos=new Float32Array(TRAIL*3);V.trailN=0;V.trailT=0;const tg=new THREE.BufferGeometry();tg.setAttribute('position',new THREE.BufferAttribute(V.trailPos,3));tg.setDrawRange(0,0);V.trailGeo=tg;const line=new THREE.Line(tg,new THREE.LineBasicMaterial({color:'#5fe0d0'}));line.frustumCulled=false;sc.add(line);
+  V.camT={x:A.C.x,y:A.C.y,z:A.C.z};V.time=0;
+}
+const CAMW=(A)=>{const P=A.P,m=A.mode;if(P.camW)return P.camW;const f=A.sp.row==='fast';if(m==='jet'||m==='medu')return f?3.0:1.8;if(m==='cirr')return 1.6;if(m==='para')return 1.7;if(m==='crawl')return f?1.9:1.55;if(m==='bipd')return 1.5;return 1.5;};
+function placeCam(A,aspect,mode){const V=A.vis,C=A.C;const Wd=CAMW(A),Hd=Wd/aspect;
+  const k=.1;V.camT.x+=(C.x-V.camT.x)*k;V.camT.y+=(C.y-V.camT.y)*k;V.camT.z+=(C.z-V.camT.z)*k;
+  V.cam.left=-Wd/2;V.cam.right=Wd/2;let dir;if(mode==='top'){dir=new THREE.Vector3(0,1,.001);V.cam.up.set(0,0,-1);V.cam.top=Hd*.5;V.cam.bottom=-Hd*.5;}
+  else{dir=mode==='side'?new THREE.Vector3(.0,.12,1):(A.W.kind==='gap'?new THREE.Vector3(0,1.5,.38):new THREE.Vector3(.32,.7,1));V.cam.up.set(0,1,0);V.cam.top=Hd*.52;V.cam.bottom=-Hd*.48;}
+  const tgt=new THREE.Vector3(V.camT.x,V.camT.y,V.camT.z);if(mode!=='top'&&(A.mode==='crawl'||A.mode==='bipd'||A.mode==='land'))tgt.y=V.camT.y-.04;dir.normalize();V.cam.position.copy(tgt).addScaledVector(dir,200);V.cam.lookAt(tgt);V.cam.updateProjectionMatrix();
+  // terrain follows the camera target (heights, colours, caustics)
+  const size=Math.max(Wd,Hd)*V.tsize,col=V.tgeo.attributes.color,p=V.tgeo.attributes.position,uv=V.tgeo.attributes.uv;V.tmesh.position.set(Math.round(V.camT.x*10)/10*0,0,0);
+  const cx=V.camT.x,cz=V.camT.z;V.tmesh.position.set(cx,0,cz);V.tmesh.scale.set(size,1,size);const W=A.W,land=A.isLand,tt=V.time;
+  for(let i=0;i<p.count;i++){const wx=cx+p.getX(i)*size,wz=cz+p.getZ(i)*size,hy=W.h(wx,wz);p.setY(i,hy);uv.setXY(i,wx/.9,wz/.9);
+   const rk=W.kind==='slope'?(hy>.03?1:0):W.rockW(wx,wz);let r,g,b;
+   if(land){const wet=clamp(-hy*6+.5,0,1);r=rk?.52:.82;g=rk?.5:.76;b=rk?.46:.6;r*=1-.3*wet;g*=1-.2*wet;b*=1-.1*wet;}
+   else{const ca=Math.pow(Math.abs(Math.sin(wx*13.3+Math.sin(wz*9.1+tt*.9)*1.6+tt*.6)*Math.sin(wz*11.7+Math.sin(wx*8.3-tt*.8)*1.7-tt*.5)),.35),cau=.76+.32*(1-ca);
+    const sh=rk?clamp(.6+hy*1.3,.5,1.0):1;r=(rk?.44:.78)*sh*cau;g=(rk?.5:.72)*sh*cau;b=(rk?.5:.54)*sh*cau;}
+   col.setXYZ(i,r,g,b);}
+  col.needsUpdate=true;p.needsUpdate=true;uv.needsUpdate=true;V.tgeo.computeBoundingSphere();
+  if(V.water){V.water.position.x=-19.4+0;}
+}
+const _m4=new THREE.Matrix4(),_a=new THREE.Vector3(),_b=new THREE.Vector3(),_c=new THREE.Vector3();
+function placeEllipsoid(mesh,Cx,Cy,Cz,S,N,Ax,rs,rn,ra){_a.set(S.x,S.y,S.z);_b.set(N.x,N.y,N.z);_c.set(Ax.x,Ax.y,Ax.z);_m4.makeBasis(_a,_b,_c);mesh.quaternion.setFromRotationMatrix(_m4);mesh.position.set(Cx,Cy,Cz);mesh.scale.set(rs,rn,ra);}
+function stepVis(A,dt){const V=A.vis;if(!V)return;V.time+=dt;
+  // plankton drift, jet wake
+  const pp=V.pp,pv=V.pv,C=A.C,cur=[.02,.004,.012];const jx=A.exp>0&&A.mode!=='cirr',F=A.fun;
+  for(let i=0;i<NPART*3;i+=3){let x=V.pcx+pp[i],y=V.pcy+pp[i+1],z=V.pcz+pp[i+2];
+   if(jx){const dx=x-(C.x+F.x*.18),dy=y-(C.y+F.y*.18),dz=z-(C.z+F.z*.18),d2=dx*dx+dy*dy+dz*dz;if(d2<.09){const w=(1-d2/.09)*A.exp*dt*1.6;pv[i]+=F.x*w;pv[i+1]+=F.y*w;pv[i+2]+=F.z*w;}}
+   // body displaces water around it
+   {const dx=x-C.x,dy=y-C.y,dz=z-C.z,d2=dx*dx+dy*dy+dz*dz;if(d2<.04&&d2>1e-5){const d=Math.sqrt(d2),w=(.2-d)*dt*2;pv[i]+=dx/d*w;pv[i+1]+=dy/d*w;pv[i+2]+=dz/d*w;}}
+   pv[i]*=1-dt*1.2;pv[i+1]*=1-dt*1.2;pv[i+2]*=1-dt*1.2;
+   pp[i]+=(pv[i]+cur[0]+.01*Math.sin(V.time*.7+i))*dt;pp[i+1]+=(pv[i+1]+cur[1]+.008*Math.sin(V.time*.9+i*1.3))*dt;pp[i+2]+=(pv[i+2]+cur[2])*dt;}
+  // ghost samples
+  V.ghT+=dt;if(V.ghT>=.12){V.ghT=0;V.ghHist.unshift({C:{...C},S:{...A.S},N:{...A.N},A:{...A.A},sw:A.sw,sh:A.sh,sa:A.sa,spd:A.spd});if(V.ghHist.length>GHN)V.ghHist.pop();}
+  // ink
+  if(A.inkQ>V.inkSeen){V.inkSeen=A.inkQ;for(let k=0;k<12;k++){const p=V.ink[V.inkI++%NINK];p.x=C.x+F.x*.12;p.y=C.y+F.y*.12;p.z=C.z+F.z*.12;const sp=.5+.5*Math.random();p.vx=F.x*sp*.5+(Math.random()-.5)*.35;p.vy=F.y*sp*.5+(Math.random()-.5)*.35;p.vz=F.z*sp*.5+(Math.random()-.5)*.35;p.age=0;p.s=.04;p.sz=.7+Math.random()*.7;}}
+  for(const p of V.ink){if(p.age>=6)continue;p.age+=dt;p.x+=p.vx*dt;p.y+=p.vy*dt;p.z+=p.vz*dt;const dr=1-dt*1.1;p.vx*=dr;p.vy*=dr;p.vz*=dr;p.s=(.05+.2*(1-Math.exp(-p.age*1.1)))*(p.sz||1);}
+  // trail
+  V.trailT+=dt;if(V.trailT>=.05){V.trailT=0;const p=V.trailPos;if(V.trailN<TRAIL)V.trailN++;p.copyWithin(0,3);const k=(TRAIL-1)*3;p[k]=C.x;p[k+1]=A.W.h(C.x,C.z)+.012;p[k+2]=C.z;V.trailGeo.setDrawRange(TRAIL-V.trailN,V.trailN);V.trailGeo.attributes.position.needsUpdate=true;}
+}
+function drawActor(A,seconds){const V=A.vis,C=A.C,S=A.S,N=A.N,Ax=A.A;A.shapeArms();
+  // wrap plankton box around the animal
+  const pp=V.pp;for(let i=0;i<NPART*3;i+=3){for(let k=0;k<3;k++){const c=[V.pcx,V.pcy,V.pcz][k],ce=[C.x,C.y,C.z][k],lim=k===1?.9:1.6,mid=k===1?.7:0;let q=pp[i+k]+c;const lo=ce-lim+(k===1?.5:0),hi=ce+lim+(k===1?.5:0);while(q<lo)q+=2*lim;while(q>hi)q-=2*lim;pp[i+k]=q-c;}}
+  const pa=V.pg.attributes.position.array;for(let i=0;i<NPART*3;i+=3){pa[i]=V.pcx+pp[i];pa[i+1]=V.pcy+pp[i+1];pa[i+2]=V.pcz+pp[i+2];}V.pg.attributes.position.needsUpdate=true;
+  // body
+  const sw=A.sw,sh=A.sh,sa=A.sa;
+  placeEllipsoid(V.mantle,C.x+Ax.x*.12*sa,C.y+Ax.y*.12*sa,C.z+Ax.z*.12*sa,S,N,Ax,.075*sw,.075*sh,.125*sa);
+  placeEllipsoid(V.head,C.x+Ax.x*.015,C.y+Ax.y*.015,C.z+Ax.z*.015,S,N,Ax,.06*Math.max(sw,.5),.058,.06);
+  V.eyes.forEach((g,k)=>{const sg=k?-1:1,ex=C.x+S.x*sg*.056*Math.max(sw,.5)+N.x*.026+Ax.x*.03,ey=C.y+S.y*sg*.056*Math.max(sw,.5)+N.y*.026+Ax.y*.03,ez=C.z+S.z*sg*.056*Math.max(sw,.5)+N.z*.026+Ax.z*.03;g.position.set(ex,ey,ez);_a.set(S.x*sg+Ax.x*-.6,S.y*sg-Ax.y*.6,S.z*sg-Ax.z*.6);g.lookAt(ex+S.x*sg*1.0-Ax.x*.5,ey+S.y*sg*1-Ax.y*.5+.0,ez+S.z*sg-Ax.z*.5);});
+  {const F=A.fun,len=.045;V.fun.position.set(C.x+F.x*len*.35-N.x*.012+Ax.x*.0,C.y+F.y*len*.35-N.y*.012,C.z+F.z*len*.35-N.z*.012);V.fun.scale.set(.016,len,.016);_a.set(0,1,0);_b.set(F.x,F.y,F.z);V.fun.quaternion.setFromUnitVectors(_a,_b);V.fun.visible=A.mode==='jet'||A.mode==='medu'||A.mode==='para';}
+  if(V.finL){updateFin(V,A,1,V.finL);updateFin(V,A,-1,V.finR);}
+  for(let i=0;i<NA;i++){updateTube(V,A,A.arms[i],i);const d=V.dots[i];if(A.arms[i].planted&&A.arms[i].st==='plant'&&(A.mode==='crawl'||A.mode==='land'||A.mode==='bipd')){d.visible=true;d.position.set(A.arms[i].anc.x,A.arms[i].anc.y+.006,A.arms[i].anc.z);}else d.visible=false;}
+  V.suck.count=NA*NSK;updateWeb(V,A);
+  // ghosts
+  const show=A.spd>.35&&A.mode!=='crawl';V.ghosts.forEach((m,k)=>{const h=V.ghHist[k+1];if(show&&h){m.visible=true;placeEllipsoid(m,h.C.x+h.A.x*.12*h.sa,h.C.y+h.A.y*.12*h.sa,h.C.z+h.A.z*.12*h.sa,h.S,h.N,h.A,.075*h.sw,.075*h.sh,.125*h.sa);}else m.visible=false;});
+  // ink
+  for(const p of V.ink){if(p.age>=6){p.m.visible=false;continue;}p.m.visible=true;p.m.position.set(p.x,p.y,p.z);p.m.scale.set(p.s*2.4,p.s*2.4,1);p.m.material.opacity=.9*Math.max(0,1-p.age/6)*Math.min(1,p.age*5);}
+}
+function disposeVisual(A){const V=A.vis;if(!V)return;V.scene.traverse(o=>{if(o.geometry&&o.geometry!==GEO.sphere&&o.geometry!==GEO.cone)o.geometry.dispose();});if(V.suck)V.suck.dispose();}
+// ---------------------------------------------------------------- state and UI
+const KEY='primigenia-octopus-water-v1';
+let pageIndex=0,rate=1,paused=false,walkers=[],hovered=0,focused=-1,manual=false,acc=0,camMode='view';
+let choices={};try{choices=JSON.parse(localStorage.getItem(KEY)||'{}');if(!choices||typeof choices!=='object'||Array.isArray(choices))choices={};}catch{choices={};}
+const cells=[];
+const renderer=new THREE.WebGLRenderer({canvas:$('gl'),antialias:true,preserveDrawingBuffer:true});renderer.setPixelRatio(1);let W=1,H=1;
+function layout(){const r=$('stage').getBoundingClientRect();W=Math.round(r.width);H=Math.round(r.height);renderer.setSize(W,H,false);}
+const NAMEOF=Object.fromEntries(CELLS.map(s=>[s.row+':'+s.id,s.name]));
+function selected(row){const v=choices[row];return typeof v==='number'&&v>=0&&v<CELLS.length&&CELLS[v].row===row?v:-1;}
+function selectPage(i){
+  pageIndex=(i+PAGES.length)%PAGES.length;walkers.forEach(w=>disposeVisual(w));const P=PAGES[pageIndex];
+  $('cells').replaceChildren();cells.length=0;walkers=[];
+  P.cells.forEach((spec,idx)=>{const el=document.createElement('button');el.className='cell';el.dataset.row=spec.row;el.setAttribute('aria-pressed','false');
+    el.innerHTML='<span class="title"><b></b> <i></i></span><span class="description"></span><span class="adapt"></span><span class="star" aria-hidden="true"></span><span class="metrics"></span>';
+    el.addEventListener('pointerenter',()=>hovered=idx);el.addEventListener('focus',()=>hovered=idx);el.addEventListener('click',()=>toggle(idx));$('cells').appendChild(el);cells.push(el);
+    const A=new Octo(spec);buildVisual(A,spec.id);walkers.push(A);
+    el.querySelector('b').textContent=ROWLABEL[spec.row];el.querySelector('i').textContent='· '+spec.name;el.querySelector('.description').textContent=spec.desc;
+    const ad=el.querySelector('.adapt');ad.textContent=spec.status+' · '+spec.who;ad.classList.toggle('spec',spec.status===SPEC);});
+  for(const A of walkers)for(let n=0;n<120;n++){A.step(DT);}
+  $('creature-name').textContent='Octopus, underwater study';$('body-note').textContent=`page ${pageIndex+1} / ${PAGES.length} · ${['core modes: crawl, jet, web pulse, cirrate fins','variations: tiptoe, glide, two-arm walk, flare, rudder','special cases: land, parachute, squeeze, reversal'][pageIndex]}`;
+  setCam(camMode);updateChoices();
+}
+function toggle(idx){const spec=PAGES[pageIndex].cells[idx];if(choices[spec.row]===spec.id)delete choices[spec.row];else choices[spec.row]=spec.id;
+  try{localStorage.setItem(KEY,JSON.stringify(choices));}catch{$('copy-status').textContent='Storage unavailable. Copy choices before closing.';}updateChoices();}
+function choicesText(){const parts=ROWS.map(r=>{const v=selected(r);return r+'='+(v<0?'-':CELLS[v].name);});return parts.some(p=>!p.endsWith('=-'))?`octopus (underwater): ${parts.join('; ')}`:'';}
+function updateChoices(){const P=PAGES[pageIndex];cells.forEach((el,k)=>{const spec=P.cells[k],on=selected(spec.row)===spec.id;el.setAttribute('aria-pressed',String(on));el.querySelector('.star').textContent=on?'★':'';el.setAttribute('aria-label',`${ROWLABEL[spec.row]}, ${spec.name}: ${spec.status}`);});
+  $('choices').replaceChildren();const t=choicesText();if(t){for(const r of ROWS){const v=selected(r);if(v<0)continue;const p=document.createElement('p'),st=document.createElement('strong');st.textContent=ROWLABEL[r];p.append(st,document.createTextNode(CELLS[v].name));$('choices').appendChild(p);}}
+  else $('choices').textContent='No stars yet. Pick the movement that feels right in each row.';}
+function label(A){const m=A.mode;if(m==='crawl'||m==='land'||m==='bipd')return `v ${A.spd.toFixed(2)} m/s · attached ${A.nPl||0}/${A.walkers?2:8}${A.sw<.95?` · squeeze ${(A.sw*100).toFixed(0)}%`:''}`;
+  if(m==='para')return `t ${A.t.toFixed(1)} s · ${A.t<2.2?'approach':A.t<3.4?'flare':A.t<5.4?'drop':'wrap'}`;
+  if(m==='cirr')return `v ${A.spd.toFixed(2)} m/s · fin phase ${A.phase.toFixed(2)}`;
+  return `v ${A.spd.toFixed(2)} m/s · ${A.exp>0?'SQUEEZE':A.Vn>.1?'filling':'glide'} · mantle ${(A.Vn*100).toFixed(0)}%`;}
+function render(){renderer.setScissorTest(true);
+  walkers.forEach((A,i)=>{if(focused>=0&&i!==focused)return;const cols=focused>=0?1:4,rows=focused>=0?1:4,x=focused>=0?0:(i%4)*W/4,y=focused>=0?0:Math.floor(i/4)*H/4,cw=W/cols,ch=H/rows;
+    placeCam(A,cw/ch,camMode);drawActor(A);renderer.setViewport(x,H-y-ch,cw,ch);renderer.setScissor(x,H-y-ch,cw,ch);renderer.render(A.vis.scene,A.vis.cam);cells[i].querySelector('.metrics').textContent=label(A);});}
+function stepAll(dt){for(const A of walkers){A.step(dt);stepVis(A,dt);if(A.done){A.reset();const V=A.vis;V.trailN=0;V.camT={...A.C};V.ghHist.length=0;V.inkSeen=A.inkQ;}}}
+function advance(seconds){const n=Math.round(seconds/DT);for(let k=0;k<n;k++)walkers.forEach(A=>{A.step(DT);stepVis(A,DT);});}
+function focusCell(i){if(i>=0&&document.fullscreenEnabled&&!document.fullscreenElement)$('stage').requestFullscreen().catch(()=>{});else if(i<0&&document.fullscreenElement)document.exitFullscreen().catch(()=>{});focused=i;$('stage').classList.toggle('expanded',i>=0);$('close-full').hidden=i<0;cells.forEach((el,k)=>el.hidden=i>=0&&k!==i);layout();render();}
+function setPause(v){paused=v;$('pause').textContent=v?'Play':'Pause';$('pause').setAttribute('aria-pressed',String(v));}
+const CAMS=['view','top','side'],CAMNAME={view:'three-quarter',top:'top-down',side:'side'};
+function setCam(m){camMode=m;$('cam').textContent='Camera: '+CAMNAME[m]+' (T)';$('cam').setAttribute('aria-pressed',String(m!=='view'));render();}
+document.addEventListener('fullscreenchange',()=>{if(!document.fullscreenElement&&focused>=0)focusCell(-1);else layout();});
+$('prev').onclick=()=>selectPage(pageIndex-1);$('next').onclick=()=>selectPage(pageIndex+1);$('close-full').onclick=()=>focusCell(-1);$('pause').onclick=()=>setPause(!paused);$('cam').onclick=()=>setCam(CAMS[(CAMS.indexOf(camMode)+1)%3]);
+for(const button of document.querySelectorAll('[data-rate]'))button.onclick=()=>{rate=Number(button.dataset.rate);document.querySelectorAll('[data-rate]').forEach(x=>x.setAttribute('aria-pressed',String(x===button)));};
+$('copy').onclick=async()=>{const text=choicesText();if(!text){$('copy-status').textContent='Star a cell first.';return;}try{if(!navigator.clipboard)throw Error('unavailable');await navigator.clipboard.writeText(text);$('copy-status').textContent='Copied. Paste into chat.';$('copy-fallback').hidden=true;}catch{const area=$('copy-fallback');area.hidden=false;area.value=text;area.focus();area.select();let copied=false;try{copied=document.execCommand('copy');}catch{}$('copy-status').textContent=copied?'Copied. Paste into chat.':'Press Ctrl+C / Cmd+C to copy the selected choices.';}};
+document.addEventListener('pointerdown',e=>{const b=e.target.closest('button');if(b)b.classList.add('pointer');});document.addEventListener('pointerup',()=>document.querySelectorAll('.pointer').forEach(b=>b.classList.remove('pointer')));
+document.addEventListener('keydown',e=>{document.querySelectorAll('.pointer').forEach(b=>b.classList.remove('pointer'));if(e.target.matches('input,textarea,select')||e.ctrlKey||e.metaKey||e.altKey)return;
+  const k=e.key.toLowerCase();if(e.code==='Space'&&!e.repeat){e.preventDefault();selectPage(pageIndex+(e.shiftKey?-1:1));}else if(k==='p'&&!e.repeat){e.preventDefault();setPause(!paused);}else if(k==='f'&&!e.repeat){e.preventDefault();focusCell(focused<0?hovered:-1);}else if(k==='t'&&!e.repeat){e.preventDefault();$('cam').onclick();}else if(e.key==='Escape')focusCell(-1);});
+function showCheck(r){window.__stylesCheck=r;$('check').textContent=r.pass?`Self-check PASS · ${r.passed}/${r.cases} cells`:`Self-check FAIL · ${r.passed}/${r.cases} cells pass, ${r.fails.length} failures`;$('check').className=r.pass?'pass':'fail';}
+function runChunked(){return new Promise(res=>{const all={pass:true,cases:0,passed:0,fails:[],table:[]};let i=0;const next=()=>{if(i>=CELLS.length){all.pass=!all.fails.length;showCheck(all);res(all);return;}const r=runCheck(CELLS,s=>s===CELLS[i]);all.cases+=r.cases;all.passed+=r.passed;all.fails.push(...r.fails);all.table.push(...r.table);i++;$('check').textContent=`Self-check running ${i}/${CELLS.length}…`;setTimeout(next,0);};next();});}
+$('runcheck').onclick=()=>{runChunked();};
+window.STYLELAB={stepVis,CELLS,PAGES,runCheck:()=>runCheck(CELLS),advance,render,selectPage,choicesText,focusCell,setPause,setCam,get walkers(){return walkers;},get pageIndex(){return pageIndex;},get rate(){return rate;},get paused(){return paused;},get camMode(){return camMode;}};
+layout();selectPage(0);window.addEventListener('resize',()=>{layout();render();});
+if(new URLSearchParams(location.search).get('test')==='1'){manual=true;showCheck(runCheck(CELLS));manual=false;}
+window.__ready=true;let last=performance.now();function frame(now){const dt=Math.min(.05,(now-last)/1000);last=now;if(!manual&&!paused){acc+=dt*rate;let n=0;while(acc>=DT&&n<12){stepAll(DT);acc-=DT;n++;}if(n>=12)acc=0;}render();requestAnimationFrame(frame);}requestAnimationFrame(frame);
+})();
+</script></body></html>
