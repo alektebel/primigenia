@@ -263,7 +263,17 @@ func _build_stage() -> void:
 		# the creator) every part stays, and the C world is told the player owns them (debug op GRANT, logged), so the nest checks accept it.
 		var keep_all: bool = FlightMode._dev_on()
 		if not keep_all:
-			genome.parts = genome.parts.filter(func(p): return p.type in ["pico", "pata", "ojo"])
+			var keep: Array = ["pico", "pata", "ojo"]
+			# the starter's own legs and details are its identity (B: hooves, ears, crest); mouths and weapons still come from the nest
+			var starter: Dictionary = Game._read_genome(Game.STARTER_FILES[Game.STARTER])
+			if str(genome.get("name", "")) == str(starter.get("name", "?")):
+				var cat := {}
+				for mp in manifest.get("parts", []):
+					cat[str(mp.id)] = str(mp.get("category", ""))
+				for sp in starter.get("parts", []):
+					if not cat.get(str(sp.type), "") in ["mouths", "weapons"] and not keep.has(sp.type):
+						keep.append(sp.type)
+			genome.parts = genome.parts.filter(func(p): return p.type in keep)
 		if not genome.parts.any(func(p): return p.type == "pico") and not keep_all:
 			genome.parts.append({"type": "pico", "t": 1.0, "ang": 0.0, "size": 1.0, "level": 1, "tier": 0})
 		genome.schema = "cpore.creature/5"
