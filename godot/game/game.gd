@@ -95,19 +95,21 @@ func legend_context() -> StringName:
 		return &"studio"
 	return &"walk"
 
+var creature_cache := preload("res://creature/creature_cache.gd").new()
+
 var entry_t0 := 0                          # ticks (ms) when the last goto_island began
 var entry_log: Array = []                  # [{from, ms (scene change + build), phases}] of every island entry (tests read it)
 var entry_from := ""
 
 # The island prints its per-phase build times here (brief creature-fixes 5).
-func report_entry(phases: Dictionary) -> void:
+func report_entry(phases: Dictionary, cpu_ms: Dictionary = {}, stall_ms: Dictionary = {}, slowest_frames: Array = []) -> void:
 	var total := Time.get_ticks_msec() - entry_t0 if entry_t0 > 0 else int(phases.get("total", 0))
-	var row := {"from": entry_from, "ms": total, "phases": phases.duplicate()}
+	var row := {"from": entry_from, "ms": total, "phases": phases.duplicate(), "cpu_ms": cpu_ms.duplicate(), "stall_ms": stall_ms.duplicate(), "slowest_frames": slowest_frames.duplicate(true)}
 	entry_log.append(row)
 	var parts: PackedStringArray = []
 	for k in phases:
 		parts.append("%s %d" % [k, int(phases[k])])
-	print("island entry (%s): %d ms since goto_island; build %s" % [entry_from, total, ", ".join(parts)])
+	print("island entry (%s): %d ms since goto_island; build %s; cpu_ms=%s; stall_ms=%s; slowest_frames=%s" % [entry_from, total, ", ".join(parts), JSON.stringify(cpu_ms), JSON.stringify(stall_ms), JSON.stringify(slowest_frames)])
 	if phases.has("kit_reused"):
 		last_kit_entry_ms = total
 	_entry_finished()

@@ -1,6 +1,6 @@
 # Status
 
-Updated 2026-11-21 (integration of all WIP + limp fix merged; game relaunched for the owner). Rewritten at the end of every session; keep it to one page.
+Updated 2026-11-22 (T2 load-time implementation and headless validation; rendered/RTX acceptance pending). Rewritten at the end of every session; keep it to one page.
 
 ## Focus now
 **Procedural creature movement that looks like the references.** Order (research plan `docs/research/procedural-locomotion.md`, tracker stages M0–M6):
@@ -26,7 +26,8 @@ Owner's machine: the RTX was capped at 15 W (power profile 'balanced'); `powerpr
 |---|---|---|
 | `anim/speed-gait` | **Running** (Sonnet): A39 speed by size in C (2 m/s walk, run Fr 1.5) + gait lab port; brief in branch | Review scorecard, winnability, merge |
 | `devtools/owner-questions` | **Running** (Sonnet): in-game question cards, starter B (A40), seaweeds on sea (A41) | Review, merge |
-| (Opus plan) | **Running**: creature-stage loop beat-by-beat, loop scorecard, tuning backlog, first owner questions | Turn into briefs |
+| (plan) | **Done**: `docs/plans/creature-loop.md` (beats, loop scorecard, T1–T15, waves) + `docs/plans/creature-loop-questions.json` | Wave 1: T1 after owner-q, T5 after owner-q |
+| `perf/load-time` | **T2 implemented, uncommitted** (Codex): CPU/stall/frame log, under-veil pipeline samples, cached rigs, single habitat plan, nav/flora overlap. Four suites report 0 failed checks; headless cold 12.60→9.40 s, menu 8.39→6.47 s. Evidence: `docs/evidence/godot/load-time.md`. Xvfb socket binds blocked; rendered parity and RTX targets unverified. | Main merge/commit blocked by read-only Git metadata; Claude review, software-GL comparison and owner RTX/tracker T2 pending |
 | `w11-alpine` | **closed 2026-11-22 (owner, A41)**: drainage unfinished, rewrote terrain v4; branch kept for reference | — |
 | `anim/gait-lab` | **merged fa67103**: lab confirms wrong gait selection at 5.1 m/s; port rules in `docs/evidence/loco/gaitlab.md`. Owner: "2 m/s seems the sweet spot" (noted on D-26) | Port to loco_gait.gd + D-26 speed once the owner confirms |
 | `devtools/options` | **merged d6162ea**: F10 option mode + Shift+F8 notes (`tools/feedback/notes.py list`); devtools 1084/0. Follow-up: HUD text hard to read on bright backgrounds | Owner tries DT-OPT, DT-NOTES |

@@ -267,7 +267,7 @@ static func _coast_distance(d, p: Vector2) -> float:
 
 ## `plan_in`: the placement when already computed off the main thread (`plan`, see island.gd); a frame passes between creatures
 ## while a loading screen is up.
-func setup(d, world_seed: int, nest: Vector2, ground: Callable, camera_fn: Callable = Callable(), plan_in = null) -> void:
+func setup(d, world_seed: int, nest: Vector2, ground: Callable, camera_fn: Callable = Callable(), plan_in = null, slice: Callable = Callable(), cache = null) -> void:
 	_ground = ground
 	_cam = camera_fn
 	placement = plan(d, world_seed, nest) if plan_in == null else plan_in
@@ -276,18 +276,24 @@ func setup(d, world_seed: int, nest: Vector2, ground: Callable, camera_fn: Calla
 	for id in AMBIENT:
 		var spots: Array = placement[id].spots
 		for i in spots.size():
-			_spawn(id, i, spots[i], world_seed)
+			_spawn(id, i, spots[i], world_seed, cache)
 			if Game.veil != null and is_instance_valid(Game.veil):
-				await get_tree().process_frame
+				if slice.is_valid():
+					await slice.call()
+				else:
+					await get_tree().process_frame
 
 
 static func _genome(id: String) -> Dictionary:
 	return JSON.parse_string(FileAccess.get_file_as_string("res://game/data/%s.json" % id))
 
 
-func _spawn(id: String, i: int, home: Vector2, world_seed: int) -> void:
-	var c := Creature.new()
-	var res: Dictionary = c.load_genome(_genome(id))
+func _spawn(id: String, i: int, home: Vector2, world_seed: int, cache = null) -> void:
+	var c: Creature = cache.instantiate(_genome(id)) if cache != null else Creature.new()
+	if c == null:
+		push_warning("radial fauna %s rejected by creature cache" % id)
+		return
+	var res: Dictionary = {"ok": true} if cache != null else c.load_genome(_genome(id))
 	if not res["ok"]:
 		push_warning("radial fauna %s rejected: %s" % [id, res["error"]])
 		c.free()

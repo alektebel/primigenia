@@ -18,11 +18,13 @@ var _height := 1.0
 
 signal footfall(entity_id: int, position: Vector3, speed: float)
 
-func setup(genome: Dictionary, id: int, prof: Dictionary, ground: Callable) -> void:
+func setup(genome: Dictionary, id: int, prof: Dictionary, ground: Callable, cache = null) -> void:
 	entity_id = id
 	profile = prof
 	driver = Driver.new()
-	body = _try_module(genome)
+	body = cache.instantiate(genome) if cache != null and module_path == CREATURE_MODULE else _try_module(genome)
+	if body != null and body.has_method("set_sun_direction"):
+		body.set_sun_direction(Look.sun_dir())
 	if body == null:
 		var ph := Placeholder.new()
 		ph.build(genome)
