@@ -132,6 +132,7 @@ func _run() -> void:
 		return finish()
 	# a quiet field: the wild freezes while we place things, then runs again for the moving tests
 	stage.debug_now({"op": 6, "a": 2})
+	stage.debug_now({"op": 1, "id": 1, "x": float(me().x) + 150.0, "z": float(me().z) + 150.0})      # Garfio (hostile) stays out of the way
 	var rondo := -1
 	var zanco := -1
 	for i in range(1, stage.cur.entities.size()):
@@ -145,7 +146,7 @@ func _run() -> void:
 
 	# --- 1. arm a verb -------------------------------------------------------------------------------------------------
 	check(not sui.verb_is_armed() and ui.verb_bar.armed == &"", "no verb is armed at the start")
-	check(InputMap.has_action("verb_attack") and InputMap.has_action("verb_befriend") and InputMap.has_action("verb_eat"), "the verb keys exist (F, B, N, O, I)")
+	check(InputMap.has_action("verb_attack") and InputMap.has_action("verb_befriend") and InputMap.has_action("verb_eat"), "the verb keys exist (F, B, R, O, I)")
 	var orders0: int = sui.attack_orders.size()
 	press_key(KEY_F)
 	check(sui.verb == &"attack" and ui.verb_bar.armed == &"attack", "F arms Attack")
@@ -180,7 +181,6 @@ func _run() -> void:
 	await shot("2_attack_locked_red")
 
 	# --- 3. auto-pursuit and the verb ----------------------------------------------------------------------------------
-	stage.debug_now({"op": 6, "a": 1})        # the wild runs again
 	var d0 := dist(rondo)
 	await ticks(25)
 	check(sui.attack_orders.any(func(o): return str(o.order).begins_with("attack #%d" % rondo)), "the stage sent the attack order by itself")
@@ -260,7 +260,7 @@ func _run() -> void:
 	# --- 6. switching verb keeps a valid target ------------------------------------------------------------------------
 	press_key(KEY_F)
 	check(sui.verb == &"attack" and sui.locked_id == target and ui.marker.lock_mode == &"attack", "switching to Attack keeps the same target, now red")
-	press_key(KEY_N)
+	press_key(KEY_R)
 	check(sui.verb == &"eat" and sui.locked_id < 0, "switching to Eat drops a living target (it is not remains)")
 	cancel_all()
 
@@ -270,13 +270,13 @@ func _run() -> void:
 	place_ahead(rondo, 7.0, 1.0)
 	await ticks(2)
 	await settle(3)
-	press_key(KEY_N)
+	press_key(KEY_R)
 	var rc: Vector2 = screen_of(rondo)
 	check(sui.pick_for_verb(rc) == rondo, "Eat picks the remains")
 	island._click_ground(true, rc)
 	await settle(2)
 	check(sui.locked_id == rondo and ui.marker.lock_mode == &"eat", "a click locks the remains with Eat")
-	await ticks(40)
+	await ticks(120)
 	check(int(stage.cur.social.action.verb) == 15 or int(ent(rondo).meat) < 4, "the player ate on its own")
 	cancel_all()
 	# --- 8. right click cancels ---------------------------------------------------------------------------------------

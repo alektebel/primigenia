@@ -1,6 +1,6 @@
 extends Control
 ## The verb bar (docs/briefs/verb-target.md): pick WHAT to do first, then the creature. Five hairline circles in a column on the
-## left edge, each a glyph with its key cap: Attack (F), Befriend (B), Eat (N), Observe (O), Intimidate (I). One verb is armed at
+## left edge, each a glyph with its key cap: Attack (F), Befriend (B), Eat (R), Observe (O), Intimidate (I). One verb is armed at
 ## a time; pressing its key again or the bar's circle keeps it armed (Esc or a right click cancels, the stage does that).
 ## Not modal: a click outside a circle is a normal world click. Fades 180 ms ease-out, never from scale 0; keys animate nothing.
 
@@ -16,7 +16,7 @@ signal verb_chosen(mode: StringName)
 const SLOTS := [
 	{"mode": Modes.ATTACK, "glyph": "attack", "key": "F", "action": "verb_attack"},
 	{"mode": Modes.BEFRIEND, "glyph": "befriend", "key": "B", "action": "verb_befriend"},
-	{"mode": Modes.EAT, "glyph": "eat", "key": "N", "action": "verb_eat"},
+	{"mode": Modes.EAT, "glyph": "eat", "key": "R", "action": "verb_eat"},
 	{"mode": Modes.OBSERVE, "glyph": "observe", "key": "O", "action": "verb_observe"},
 	{"mode": Modes.INTIMIDATE, "glyph": "intimidate", "key": "I", "action": "verb_intimidate"},
 ]
