@@ -8,7 +8,7 @@ const TICKS_PER_HOUR := 500.0      # a day is 12000 ticks (console `time`)
 const LIGHT_HOURS := {"dawn": 6.8, "day": 12.5, "dusk": 18.2, "night": 0.0}
 const CAMERA_Z := {"close": 0.0, "mid": 0.15, "far": 0.40, "tactical": 0.70}
 const STARTERS := ["hatchling", "a_grazer", "b_runner", "c_sprawler", "d_knuckle"]
-const GAIT_NOTE := "after the gait port"
+const Gait := preload("res://locomotion/loco_gait.gd")
 
 static func register(reg, island, console_registry = null) -> void:
 	_creature(reg, island)
@@ -80,5 +80,7 @@ static func _overlays(reg, console_registry) -> void:
 		{"desc": "the creature legend corner hint (key list)."})
 
 static func _movement(reg) -> void:
-	reg.add_choice("gait", "movement", ["today", "froude"], "today", Callable(), func(_v): pass, false,
-		{"desc": "gait selection rule.", "disabled": {"froude": GAIT_NOTE}})
+	reg.add_choice("gait", "movement", ["today", "froude"], "froude",
+		func(): return "froude" if Gait.froude_mode else "today",
+		func(v): Gait.froude_mode = (v == "froude"), false,
+		{"desc": "gait rules: froude = the gait lab's 9 rules (gait from Fr, duty curves, stride law, footfalls, bob, blends); today = the pre-port rules. Creatures already built keep their gait state, the new rules apply to every step."})

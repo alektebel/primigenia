@@ -517,7 +517,7 @@ class Gates:
 		for k in sc:
 			t.check(sc[k].slide_mm < 20.0, "%s: planted-sole slide %.1f mm < 20" % [k, sc[k].slide_mm])
 			t.check(sc[k].max_roll_deg <= 12.5, "%s: roll %.1f deg <= 12.5 (quadruped bank limit 11.5 plus slope)" % [k, sc[k].max_roll_deg])
-			t.check(sc[k].frames_no_contact == 0, "%s: a foot is always in contact" % k)
+			t.check(sc[k].frames_no_contact == 0 or k == "sprint", "%s: a foot is always in contact (the sprint, Fr 1.5, has a flight phase: A39)" % k)
 		for k in ["S", "click_behind"]:
 			t.check(sc[k].frames_no_planted_foot <= 8, "%s: frames without a flat planted foot %d <= 8 (was 55 and 25 on the base commit)" % [k, sc[k].frames_no_planted_foot])
 		t.check(sc.fig8.gait_changes <= 4, "figure eight: gait changes %d <= 2 per lobe" % sc.fig8.gait_changes)

@@ -12,6 +12,8 @@ func _initialize() -> void:
 
 func _run() -> void:
 	var Core = load("res://devtools/zoo/loco_score_core.gd")
+	if OS.get_environment("LOCO_GAIT") == "today":     # A/B: the pre-port gait rules (F10 option gait: today)
+		load("res://locomotion/loco_gait.gd").froude_mode = false
 	var args := OS.get_cmdline_user_args()
 	var out_dir: String = args[0] if args.size() > 0 else "/tmp/loco-score"
 	DirAccess.make_dir_recursive_absolute(out_dir)
