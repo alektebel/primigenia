@@ -9,6 +9,7 @@ import sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from client import GodotAgent  # noqa: E402
 
+os.environ["CPORE_TEST"] = "1"  # the stores resolve to an isolated dir (godot/devtools/test_isolation.gd)
 failures = 0
 
 

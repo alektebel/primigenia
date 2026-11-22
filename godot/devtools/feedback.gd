@@ -1,4 +1,5 @@
 extends CanvasLayer
+const TestIsolation := preload("res://devtools/test_isolation.gd")
 ## D5 F8 feedback: freezes input, asks for a note (Enter saves, Shift+Enter is a new line, Esc cancels) and writes a
 ## folder an agent can open: screenshot, the scenario of this moment, a replay that reproduces the last ~minute,
 ## both tuning slots, meta and the last 200 engine log lines.
@@ -34,6 +35,8 @@ static func output_dir(stamp: String) -> String:
 	for a in OS.get_cmdline_user_args():
 		if a.begins_with("--feedback-dir="):
 			return a.substr(15).path_join(stamp)
+	if TestIsolation.active():
+		return TestIsolation.dir_for("bundles").path_join(stamp)
 	var repo := ProjectSettings.globalize_path("res://").path_join("../" + "feedback").simplify_path()
 	if OS.is_debug_build() and not OS.has_feature("template"):
 		var real := repo.path_join(stamp)
