@@ -12,6 +12,12 @@ extends RefCounted
 const FlightTest := preload("res://game/player/flight_test.gd")
 const LocoWing := preload("res://locomotion/loco_wing.gd")
 const Strings := preload("res://ui/strings.gd")
+## Owner picks (A56 starter B, A57 hatchling; lab web/gaitlab/flight.html): cruise = flap-glide (hold Space: bursts until fast, glide
+## until slow); turn = wingover (double-tap A or D at speed: dive in, zoom climb, roll over the top, dive away on the reverse
+## heading; Ctrl or the opposite key cuts it short); landing = flare + stall touchdown (starter B, default) or running landing
+## (hatchling). Takeoff keeps today's behaviour (Space on the ground).
+const LANDING_BY_BODY := {"Hatchling": "run"}     # genome name -> landing style; everything else flares
+const DOUBLE_TAP_S := 0.35
 const DBG_TELEPORT := 1
 const HUD_FADE := 4.0
 
@@ -27,6 +33,12 @@ var teleports_rejected := 0
 var teleports_sent := 0
 var message := ""
 var message_t := 0.0
+var cruise_style := "flapglide"     # "flapglide" (A56 default) or "continuous" (hold Space = flap all the time)
+var landing_override := ""          # "" = by body (LANDING_BY_BODY), or "flare" / "run" (console `fly landing`, tests, clips)
+var _tap_dir := 0                   # double-tap detector of A / D
+var _tap_t := -1.0
+var _turn_prev := 0.0
+var _clock := 0.0
 var _space_edge := false
 var _mouse_dx := 0.0           # pixels moved since the last tick (flying, no button held)
 var _mouse_dy := 0.0
@@ -109,9 +121,26 @@ func _ensure_model() -> bool:
 	model.lift_mul = lift_gain()
 	model.power_mul = _power_mul
 	model.cd0_mul = _cd0_mul
+	model.cruise_style = cruise_style
+	model.landing_style = landing_style()
 	wing = LocoWing.new(float(morph.mass), infos[0] if not infos.is_empty() else {})
 	return model.valid()
 
+
+## The landing style of the player's body (A56 flare for starter B, A57 running landing for the hatchling).
+func landing_style() -> String:
+	if landing_override != "":
+		return landing_override
+	return str(LANDING_BY_BODY.get(str(Game.player_genome().get("name", "")), "flare"))
+
+## Wingbeat rate now (Hz) of the player's wings, by the scaling option (LocoWing.scaling).
+func beat_hz() -> float:
+	return wing.hz if wing != null else 0.0
+
+## F10 option "wingbeat": the beat rate follows the new law at once.
+func rescale_wingbeat() -> void:
+	if wing != null and model != null and model.valid():
+		wing.set_mass(float(model.spec.mass))
 
 func has_wings() -> bool:
 	return _ensure_model()
@@ -152,8 +181,11 @@ func tick(dt: float) -> void:
 			_hud.visible = false
 		_space_edge = false
 		return
+	_clock += dt
 	var k := _keys()
 	var base: Dictionary = stage.sample(0)
+	model.cruise_style = cruise_style
+	model.landing_style = landing_style()
 	if model.mode == "ground":
 		if _space_edge and stage.cur.active < 0 and not Game.movement_blocked():
 			var yaw := float(base.yaw)
@@ -169,6 +201,7 @@ func tick(dt: float) -> void:
 			if _space_edge:
 				model.press_flap()
 			var turn := float(k.get("turn", 0.0))
+			_wingover_trigger(turn, int(k.get("wingover", 0)))
 			var pitch := float(k.get("pitch", 0.0))
 			if keys_override == null and dt > 0.0:
 				# the mouse commands like the keys: sideways movement is the roll rate (right = D), up / down is the pitch (up = W)
@@ -189,10 +222,35 @@ func tick(dt: float) -> void:
 	_update_hud()
 
 
+## Double-tap A / D (or `wingover` in the test keys) starts the wingover over that wing.
+func _wingover_trigger(turn: float, forced: int) -> void:
+	var dir := forced
+	var key_dir := 0 if absf(turn) < 0.5 else (1 if turn > 0.0 else -1)
+	var prev_dir := 0 if absf(_turn_prev) < 0.5 else (1 if _turn_prev > 0.0 else -1)
+	if dir == 0 and key_dir != 0 and prev_dir == 0:
+		if key_dir == _tap_dir and _clock - _tap_t <= DOUBLE_TAP_S:
+			dir = key_dir
+			_tap_dir = 0
+		else:
+			_tap_dir = key_dir
+			_tap_t = _clock
+	_turn_prev = turn
+	if dir == 0 or model.wo_phase != "":
+		return
+	var r := model.start_wingover(dir, Callable(Game, "visual_ground"))
+	if r.ok:
+		_say("wingover to the %s" % ("right" if dir > 0 else "left"))
+		print("flight: wingover to the %s" % ("right" if dir > 0 else "left"))
+	else:
+		_say(r.reason)
+
+
 func _begin_flight(note: String) -> void:
 	island.player_input.suspended = true
 	island.player_input.clear_destination()
 	wing.deploy = maxf(wing.deploy, 0.0)
+	model.fg_on = true
+	model.wo_phase = ""
 	_say("take off%s: stall %.1f m/s, loading %.0f N/m2" % [note, model.stall_speed(), model.wing_loading()])
 	print("flight: take off%s" % note)
 	_wing_active = true
@@ -202,7 +260,7 @@ func _begin_flight(note: String) -> void:
 func _touchdown(ev: Dictionary) -> void:
 	landings += 1
 	last_landing = {"vy": ev.impact_vy, "h_eq": ev.h_eq, "damage": ev.damage, "speed": ev.speed, "tick": int(stage.cur.tick)}
-	var line := "landed at %.1f m/s, sink %.1f m/s (equivalent drop %.1f m): %s" % [ev.speed, -ev.impact_vy, ev.h_eq, "no damage" if ev.damage <= 0.0 else "%.0f damage" % ev.damage]
+	var line := "%s landing: " % model.landing_style + "landed at %.1f m/s, sink %.1f m/s (equivalent drop %.1f m): %s" % [ev.speed, -ev.impact_vy, ev.h_eq, "no damage" if ev.damage <= 0.0 else "%.0f damage" % ev.damage]
 	_say(line)
 	print("flight: " + line)
 
@@ -302,9 +360,11 @@ func sample(base: Dictionary) -> Dictionary:
 		var hv := Vector3(model.vel.x, 0.0, model.vel.z)
 		return {"pos": origin, "yaw": yaw, "speed": hv.length(), "speed_c": hv.length(), "vel": hv}
 	var r := model.orientation()
-	var origin2 := model.pos - r * com_local
+	var bob := Vector3(0.0, wing.bob() if wing != null else 0.0, 0.0)      # visual only: the body rises on the downstroke
+	var origin2 := model.pos + bob - r * com_local
 	return {"pos": origin2, "yaw": yaw, "speed": model.vel.length(), "speed_c": model.vel.length(), "vel": model.vel,
-		"flight": {"basis": r, "com": model.pos, "mode": model.mode, "bank": model.bank_t, "head_roll": model.head_roll()}}
+		"flight": {"basis": r, "com": model.pos + bob, "mode": model.mode, "bank": model.bank_t, "head_roll": model.head_roll(),
+		"legs_tuck": model.legs_tuck, "legs_fwd": model.legs_fwd}}
 
 ## Altitude of the flyer above the ground below it (0 on the ground), for the chase camera.
 func altitude() -> float:
@@ -353,7 +413,7 @@ func _set_mul(which: String, v: float) -> void:
 		model.cd0_mul = _cd0_mul
 
 func register_console(r) -> void:
-	r.register("fly", "[on|off|report|land]", "flight test: toggle it, print the wing numbers, or end a flight", func(a):
+	r.register("fly", "[on|off|report|land|wingover [l|r]|cruise flapglide|continuous|landing flare|run|auto]", "flight test: toggle it, print the wing numbers, or end a flight", func(a):
 		var sub: String = a[0] if a.size() > 0 else ""
 		if sub == "off":
 			if active():
@@ -368,11 +428,21 @@ func register_console(r) -> void:
 		if sub == "land" and active():
 			_abort("flight ended")
 			return r.ok("landed")
+		if sub == "wingover" and active():
+			var dir := -1 if a.size() > 1 and str(a[1]) == "l" else 1
+			var wr := model.start_wingover(dir, Callable(Game, "visual_ground"))
+			return r.ok("wingover started") if wr.ok else r.fail(wr.reason)
+		if sub == "cruise" and a.size() > 1 and a[1] in ["flapglide", "continuous"]:
+			cruise_style = a[1]
+			return r.ok("cruise style: " + cruise_style)
+		if sub == "landing" and a.size() > 1 and a[1] in ["flare", "run", "auto"]:
+			landing_override = "" if a[1] == "auto" else a[1]
+			return r.ok("landing style: " + landing_style())
 		if sub == "report":
 			if not has_wings():
 				return r.fail("the player has no wings")
 			var rep := model.report()
-			return r.ok("mass %.1f kg, wings %.2f m2 (span %.2f m, AR %.1f), loading %.0f N/m2, stall %.1f m/s, best L/D %.1f, power %.0f W (needs %.0f W), beat %.1f Hz: %s" %
-				[float(model.spec.mass), rep.area, rep.span, rep.ar, rep.wing_loading, rep.stall, rep.ld, rep.power, rep.p_req if rep.p_req < INF else -1.0, rep.beat_hz, str(rep.capability).to_upper()])
+			return r.ok("mass %.1f kg, wings %.2f m2 (span %.2f m, AR %.1f), loading %.0f N/m2, stall %.1f m/s, best L/D %.1f, power %.0f W (needs %.0f W), beat %.1f Hz (%s), cruise %s, landing %s: %s" %
+				[float(model.spec.mass), rep.area, rep.span, rep.ar, rep.wing_loading, rep.stall, rep.ld, rep.power, rep.p_req if rep.p_req < INF else -1.0, model.beat_hz(), LocoWing.scaling, cruise_style, landing_style(), str(rep.capability).to_upper()])
 		return r.fail("usage: fly [on|off|report|land]"),
 		{"changes_sim": true})
