@@ -12,7 +12,7 @@ var distance: float
 var orbit_pitch := 0.0
 var manual := 0.0
 # One zoom parameter (docs/godot/CAMERA-ZOOM.md section 2): 0 = close-up ... 1 = strategic island map.
-const Z_CHASE := 0.15            # the default gameplay view
+const Z_CHASE := 0.0             # the default gameplay view: the close band (owner 2026-11-22, loop-03 "Close"; A54). It was 0.15 (4 body heights).
 const Z_KEYS := [0.0, 0.15, 0.40, 0.70, 1.0]
 const KEY_DIST_H := [1.8, 4.0, 12.0]       # body heights, for z 0, 0.15, 0.40
 const MIN_DISTANCE := 1.6                  # m: the closest view never gets nearer than this, whatever the body (a 0.65 m hatchling)

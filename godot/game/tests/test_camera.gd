@@ -13,11 +13,11 @@ func run(t) -> void:
 	var r: Dictionary = {}
 	for i in 100:
 		r = cam.update(player, null, false, 0.05)
-	# CAMERA-ZOOM s2 changes the default view from 6h / 0.24 rad to the chase band: z 0.15 = 4h, 15 deg.
-	t.check(absf(cam.distance - 4.0 * h) < 1e-9, "default distance is 4h (z 0.15)")
-	t.check(absf(cam.pitch - deg_to_rad(15.0)) < 1e-9, "default pitch is 15 deg")
+	# A54: the default view is the close band (z 0 = 1.8h, 8 deg), the owner's pick; it was the chase band z 0.15 = 4h, 15 deg.
+	t.check(absf(cam.distance - 1.8 * h) < 1e-9, "default distance is 1.8h (z 0, the close view)")
+	t.check(absf(cam.pitch - deg_to_rad(8.0)) < 1e-9, "default pitch is 8 deg")
 	t.check(absf(r.target.y - (10.0 + 1.5 * h)) < 0.01, "look-at is ground + 1.5h after settling")
-	t.check(absf(r.actual_distance - 4.0 * h) < 0.3, "boom settles at 4h")
+	t.check(absf(r.actual_distance - 1.8 * h) < 0.3, "boom settles at 1.8h")
 	# Horizon in the upper third for a 1280x720 viewport (fov 48 vertical).
 	var fwd = (r.target - r.position).normalized()
 	var up = Vector3.UP
@@ -29,7 +29,7 @@ func run(t) -> void:
 	var y = rel.dot(cam_up)
 	var ndc_y = (y / z) / tan(deg_to_rad(24.0))
 	var screen_y = (1.0 - ndc_y) * 0.5   # 0 top, 1 bottom
-	t.check(screen_y < 1.0 / 3.0, "the horizon sits in the upper third (%.2f of the height from the top)" % screen_y)
+	t.check(screen_y < 0.4, "the horizon sits in the upper two fifths at the close default view (%.2f of the height from the top)" % screen_y)
 	t.check(screen_y > 0.1, "and is not at the very top (%.2f)" % screen_y)
 
 	# Auto-follow (PLAN-feel S6): a rate cap, an acceleration cap, an engage delay, no swing towards the camera.
@@ -123,6 +123,7 @@ func run(t) -> void:
 	# A ridge between target and camera shortens the boom; the camera stays above ground.
 	var ridge = func(x: float, zz: float) -> float: return 10.0 + (30.0 if (zz > 4.0 and zz < 9.0) else 0.0)
 	var c5 = ChaseCamera.new(h, 0.0, ridge)
+	c5.set_zoom(0.15, true)      # the ridge sits at the chase band's boom (4h); the close default is shorter than that
 	var r5 = {}
 	for i in 80:
 		r5 = c5.update(player, null, false, 0.05)
