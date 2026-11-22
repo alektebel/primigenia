@@ -89,6 +89,13 @@ func _init(creature_height: float, start_yaw: float, ground_fn: Callable) -> voi
 	max_distance = curve_distance(1.0)
 	distance = curve_distance(z)
 
+# Height of the look-at point in body heights: 1.5 from the chase band up; lowered towards the close band (A54) so the legs and feet stay in
+# frame (at z 0 the view is 1.8 h away and only +-0.8 h tall, so looking at 1.5 h cropped everything under the shoulders).
+const LOOK_H := 1.5
+const LOOK_H_CLOSE := 0.7
+func look_height() -> float:
+	return lerpf(LOOK_H_CLOSE, LOOK_H, clampf(z / Z_KEYS[1], 0.0, 1.0))
+
 # ---- the zoom curve (pure functions of z) ---------------------------------------------------------
 func _key_distances() -> Array:
 	var d: Array = [maxf(MIN_DISTANCE, height * KEY_DIST_H[0]), height * KEY_DIST_H[1], height * KEY_DIST_H[2], maxf(TACTICAL_DISTANCE, height * KEY_DIST_H[2] * 1.5), 0.0]
@@ -188,7 +195,7 @@ func update(player: Dictionary, enemy, fighting: bool, dt: float, aspect: float 
 	_air_k = lerpf(_air_k, 1.0 if air_on else 0.0, 1.0 - exp(-dt / (0.3 if air_on else 0.17)) if dt > 0.0 else 1.0)
 	_air_dive_k = lerpf(_air_dive_k, 1.0 if (air_on and air_dive) else 0.0, 1.0 - exp(-dt / 0.25) if dt > 0.0 else 1.0)
 	var ground_y: float = ground.call(player.x, player.z)
-	var tgt := Vector3(player.x + _vel_s.x * lead, lerpf(ground_y + h * 1.5, maxf(air_y, ground_y) + h * 0.8, _air_k), player.z + _vel_s.y * lead)
+	var tgt := Vector3(player.x + _vel_s.x * lead, lerpf(ground_y + h * look_height(), maxf(air_y, ground_y) + h * 0.8, _air_k), player.z + _vel_s.y * lead)
 	if mb > 0.0:
 		tgt.x = lerpf(tgt.x, map_center.x, mb)
 		tgt.z = lerpf(tgt.z, map_center.y, mb)

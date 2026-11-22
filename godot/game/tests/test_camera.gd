@@ -16,7 +16,13 @@ func run(t) -> void:
 	# A54: the default view is the close band (z 0 = 1.8h, 8 deg), the owner's pick; it was the chase band z 0.15 = 4h, 15 deg.
 	t.check(absf(cam.distance - 1.8 * h) < 1e-9, "default distance is 1.8h (z 0, the close view)")
 	t.check(absf(cam.pitch - deg_to_rad(8.0)) < 1e-9, "default pitch is 8 deg")
-	t.check(absf(r.target.y - (10.0 + 1.5 * h)) < 0.01, "look-at is ground + 1.5h after settling")
+	t.check(absf(r.target.y - (10.0 + 0.7 * h)) < 0.01, "look-at is ground + 0.7h in the close view (A54: the legs stay in frame), 1.5h from the chase band up")
+	var c1 = ChaseCamera.new(h, PI, flat)
+	c1.set_zoom(0.15, true)
+	var r1: Dictionary = {}
+	for i in 100:
+		r1 = c1.update(player, null, false, 0.05)
+	t.check(absf(r1.target.y - (10.0 + 1.5 * h)) < 0.01, "look-at is ground + 1.5h in the chase band")
 	t.check(absf(r.actual_distance - 1.8 * h) < 0.3, "boom settles at 1.8h")
 	# Horizon in the upper third for a 1280x720 viewport (fov 48 vertical).
 	var fwd = (r.target - r.position).normalized()
