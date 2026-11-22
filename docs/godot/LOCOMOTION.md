@@ -185,7 +185,7 @@ the step). The sim is authoritative; this module only follows it.
   shortcuts), plus a cost per unit grade; a GO whose only route is too steep is refused (-4). Walking against a wall too steep
   to climb reports `cliff` and replans, giving up after four tries.
 - **Tuning.** 13 new `CP_STAGE_PARAMS` (ang_k, grip_mass, acc_mass, creep, pivot_r, look_min, look_k, climb_base, climb_legs,
-  stall_mul, slide_mul, slide_k, down_gain), live in the tuning panel. walk_fr (walk Froude number, default .24, range .1-1.5) sets the walking speed of the player and wild walkers; F10 options `walk speed` and `run speed` (sprint_k) pick it; F10 `gallop look` (bold, natural, subtle) shapes the quadruped gallop and canter.
+  stall_mul, slide_mul, slide_k, down_gain), live in the tuning panel. walk_fr (walk Froude number, default .24, range .1-1.5) sets the walking speed of the player and wild walkers; F10 options `walk speed` and `run speed` (sprint_k, default 2.2 since A54, was 1.5: starter B runs about 3.2 m/s; choices 1.5 / 2.2 / 3.0) pick it; F10 `gallop look` (bold, natural, subtle) shapes the quadruped gallop and canter.
 - **Visuals.** The rig already pitches and rolls to the hip plane fitted to the feet on the ground, banks with `v * omega` and
   leans with acceleration (section 1); nothing new was needed on slopes beyond the sim's stalls and slides.
 - **Evidence:** `docs/evidence/godot/steering/`: `retarget120_before_after.png` (top-down 120 degree retarget, small / hero / giant,

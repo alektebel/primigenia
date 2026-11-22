@@ -20,8 +20,11 @@ const MAX_DT := 1.0 / 90.0
 const BANK_K := {&"quadruped": 0.35, &"horizontal_biped": 0.5, &"upright_biped": 0.6, &"multi": 0.2, &"legless": 0.0, &"monopod": 0.4}
 const BANK_MAX := {&"quadruped": 0.20, &"multi": 0.20, &"horizontal_biped": 0.30, &"upright_biped": 0.30, &"monopod": 0.30, &"legless": 0.0}
 const LAUNCH_K := 0.5           # A54: a quadruped leans into its first steps (nose down) with this share of the acceleration lean it used to show nose up
+const GALLOP_LEAN := 0.10       # A54: extra forward lean (rad, nose down) of the bold gallop at Fr >= 2.4, on top of the lab's run lean
 const LEAN_ZETA := 0.55         # A54: the acceleration/braking lean is underdamped, so a stop dips and rocks back once instead of freezing
 const STRIDE_ATTACK := 0.04     # s: the stride length follows a rising target this fast (it used to lag 0.15 s, so the first steps shuffled at 2.6 Hz)
+const SWING_VMAX_SPEED := 2.0   # A54: a swinging foot moves at most this many times the body speed...
+const SWING_VMAX_BASE := 3.5    # ...plus this many times sqrt(g h) (m/s); steady gallops peak near 9 m/s at 2.8 m/s, the start of a run was 24
 const GAIT_DWELL := 0.3         # s: shortest time between gait changes
 const FORCE_GAP := 0.0        # s: at most one forced lift-off per gap
 const STRAIGHT := 0.985         # longest a leg is allowed to get, as a share of its length
@@ -396,6 +399,16 @@ func _sub(h: float, p: Vector3, yaw: float, v: Vector3, settle: bool) -> void:
 		var l: Dictionary = _legs[i]
 		var m: Dictionary = morph.legs[i]
 		var rate: float = f_eff * clamp(1.0 + 3.0 * _wrap(phase - _off_cur[i] - l.theta), 0.5, 1.8)
+		if l.swing and Gait.froude_mode:
+			# A54: a foot left far behind (a leg held down while the body took off) used to cross a metre in two frames when it finally
+			# swung (24 m/s, a 105 degree knee swing at the start of a gallop): a swing that would be faster than the legs can
+			# move takes longer instead and lands a little late.
+			var u_s: float = clamp((l.theta - l.th0) / max(l.th1 - l.th0, 1e-5), 0.0, 1.0)
+			var d_e: float = 30.0 * u_s * u_s * (1.0 - u_s) * (1.0 - u_s)
+			var need_v: float = (l.target - l.from).length() * maxf(d_e, 0.3) * rate / maxf(l.th1 - l.th0, 1e-3)
+			var v_cap: float = SWING_VMAX_SPEED * _speed_f + SWING_VMAX_BASE * sqrt(G * _ref_h)
+			if need_v > v_cap:
+				rate *= v_cap / need_v
 		l.theta += rate * h
 		l.rate = rate
 		var home_l := Vector3(m.home.x, 0.0, m.home.z)
@@ -431,6 +444,7 @@ func _sub(h: float, p: Vector3, yaw: float, v: Vector3, settle: bool) -> void:
 				l.th0 = l.theta
 				l.th1 = floor(l.theta) + 1.0
 				l.from = _ankle_at(l, m, l.phi)
+				l.tgt_ok = false
 				l.foot = l.from
 				l.phi = 0.0
 				l.lift = 0.0
@@ -465,8 +479,17 @@ func _sub(h: float, p: Vector3, yaw: float, v: Vector3, settle: bool) -> void:
 			l.g_to = _gy(target.x, target.z)
 			target.y = l.g_to + m.ankle
 			l.target = target
+			# A54: the touchdown target jumps when the stride, duty or offsets change (the gait changes while a run starts), and the
+			# swing used to chase it in one frame (24 m/s foot, 105 degree knee swing): the swing follows a smoothed target that
+			# converges on the real one over the last quarter of the swing, so the foot always lands exactly on `target`.
+			if not l.get("tgt_ok", false):
+				l.tgt_f = target
+				l.tgt_ok = true
+			else:
+				l.tgt_f = (l.tgt_f as Vector3).lerp(target, _lp(0.06, h))
+			var tgt_use: Vector3 = (l.tgt_f as Vector3).lerp(target, smoothstep(0.7, 1.0, u))
 			var e := u * u * u * (10.0 - 15.0 * u + 6.0 * u * u)   # minimum jerk
-			var q: Vector3 = l.from.lerp(target, e)
+			var q: Vector3 = l.from.lerp(tgt_use, e)
 			var gq: float = _gy(q.x, q.z) + m.ankle
 			# swing arc: grows with speed, with step length and with what is in the way
 			var dist := Vector2(target.x - l.from.x, target.z - l.from.z).length()
@@ -661,6 +684,8 @@ func _sub(h: float, p: Vector3, yaw: float, v: Vector3, settle: bool) -> void:
 			# braking dips the nose (weight onto the front legs); launching leans into the stride (nose down too, less)
 			lean_t = -(LAUNCH_K if a_fwd > 0.0 else 0.6) * absf(a_fwd) * morph.com.y / (G * wb)
 	lean_t -= Gait.run_lean(morph.plan, gait, fr) * _moving
+	if _style != &"" and gait == &"gallop" and float(_sd.get("flex", 0.0)) > 0.0:
+		lean_t -= GALLOP_LEAN * smoothstep(0.8, 2.4, fr) * _moving      # A54: the bold gallop leans into the stride
 	lean_t = clamp(lean_t, -0.3, 0.25)
 	var bank_k: float = float(BANK_K.get(morph.plan, 0.35)) * bank_gain / 0.7
 	var bank_max: float = float(BANK_MAX.get(morph.plan, 0.2))

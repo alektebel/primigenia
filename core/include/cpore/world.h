@@ -85,7 +85,7 @@ typedef struct {
 } CpStageSpecies;
 extern const CpStageSpecies CP_STAGE_SPECIES[CP_STAGE_SPECIES_COUNT];
 /* Stage locomotion (PLAN-feel, version 2; speed by body size A39). jog = sqrt(Fr_walk g h)*jog_k, run/sprint = sqrt(sprint_k g h)*jog_k
- * (sprint_k is the run Froude number, 1.5), wild = the same times wild_k; h = 0.56 * body radius. See stage_world.c. */
+ * (sprint_k is the run Froude number, 2.2 since A54: starter B runs about 3.2 m/s), wild = the same times wild_k; h = 0.56 * body radius. See stage_world.c. */
 typedef struct {
     float jog_k,sprint_k,wild_k;
     float accel,brake;               /* m/s2 caps on the per-tick speed change */

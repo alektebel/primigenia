@@ -98,6 +98,7 @@ func run(t) -> void:
 	t.check(worst <= 1.75, "reversal: camera yaw rate <= 100 deg/s (max %.1f deg/s)" % rad_to_deg(worst))
 	# The look-at point leads the creature: no steady lag at sprint speed.
 	var c2f = ChaseCamera.new(h, PI, flat)
+	c2f.kick = false             # the speed cues (A54) add a deliberate follow lag at a gallop; this checks the plain follow
 	var run = {"x": 0.0, "z": 0.0, "yaw": 0.0, "speed": 8.84, "vx": 0.0, "vz": 8.84}
 	var lag := 0.0
 	for i in 240:
@@ -105,6 +106,16 @@ func run(t) -> void:
 		var rr: Dictionary = c2f.update(run, null, false, 1.0 / 60.0)
 		lag = Vector2(rr.target.x - run.x, rr.target.z - run.z).length()
 	t.check(lag < 0.05, "steady target lag at 8.84 m/s is %.3f m (< 0.05)" % lag)
+	# A54: at a gallop the speed cues are on by default: a little follow lag (KICK_LAG x speed), a wider fov and a longer boom
+	var c2k = ChaseCamera.new(h, PI, flat)
+	var runk = {"x": 0.0, "z": 0.0, "yaw": 0.0, "speed": 8.84, "vx": 0.0, "vz": 8.84}
+	var rk: Dictionary = {}
+	for i in 240:
+		runk.z += 8.84 / 60.0
+		rk = c2k.update(runk, null, false, 1.0 / 60.0)
+	var lag_k := Vector2(rk.target.x - runk.x, rk.target.z - runk.z).length()
+	t.check(c2k.kick and absf(lag_k - ChaseCamera.KICK_LAG * 8.84) < 0.1, "gallop: a deliberate follow lag of about KICK_LAG x speed (%.2f m)" % lag_k)
+	t.check(absf(float(rk.fov_add) - ChaseCamera.KICK_FOV) < 0.2, "gallop: the field of view widens by KICK_FOV (%.2f deg)" % float(rk.fov_add))
 	# Orbit gives a manual grace during which auto-follow is off.
 	var c3 = ChaseCamera.new(h, 0.0, flat)
 	c3.orbit(10.0, 0.0)

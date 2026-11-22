@@ -58,7 +58,7 @@ var AWAY_MAX := 1.9199       # rad (110 deg): follow only when running away from
 var PIVOT_RATE := 2.5        # rad/s: no swing while the creature pivots
 var ENGAGE_TIME := 0.25      # s: the heading must have been steady (within 20 deg) over this time
 var ENGAGE_TOL := 0.3491     # rad (20 deg)
-var kick := false              # optional speed cues (settings camera/kick): wider fov and boom near sprint speed
+var kick := true               # speed cues (settings camera/kick, on by default since A54): wider fov, longer boom and a little follow lag at a gallop
 var top_speed := 8.84
 var fov_add := 0.0
 # Flight (F1): the island sets `air_y` (world height of the flyer) and `air_on`; the camera pulls back x1.6, rises with the
@@ -79,6 +79,9 @@ var _ring: Array = []          # [time, player yaw] over the last 0.3 s
 var _last_player_yaw = null
 var _player_rate := 0.0
 var _kick_k := 0.0
+const KICK_FOV := 4.0          # degrees of extra field of view at a gallop (A54, subtle; was 5, off by default)
+const KICK_BOOM := 0.05        # share of extra boom length at a gallop
+const KICK_LAG := 0.07         # s: the look-at point follows this much slower at a gallop (the creature pulls ahead of the frame a little)
 
 func _init(creature_height: float, start_yaw: float, ground_fn: Callable) -> void:
 	height = maxf(0.5, creature_height)
@@ -205,8 +208,8 @@ func update(player: Dictionary, enemy, fighting: bool, dt: float, aspect: float 
 	var desired := distance * (1.25 if aspect < 0.7 else 1.0)
 	var kick_goal := clampf((float(player.speed) - 0.8 * top_speed) / (0.2 * top_speed), 0.0, 1.0) if kick else 0.0
 	_kick_k = lerpf(_kick_k, kick_goal, 1.0 - exp(-dt / 0.3) if dt > 0.0 else 1.0)
-	fov_add = 5.0 * _kick_k - 8.0 * smoothstep(0.7, 1.0, z)       # a flatter, map-like view at the far end
-	desired *= 1.0 + 0.06 * _kick_k
+	fov_add = KICK_FOV * _kick_k - 8.0 * smoothstep(0.7, 1.0, z)       # a flatter, map-like view at the far end
+	desired *= 1.0 + KICK_BOOM * _kick_k
 	desired *= 1.0 + 0.6 * _air_k
 	fov_add += 8.0 * _air_dive_k
 	if fighting and enemy != null:
@@ -216,7 +219,7 @@ func update(player: Dictionary, enemy, fighting: bool, dt: float, aspect: float 
 		var sep := Vector2(player.x - enemy.x, player.z - enemy.z).length()
 		var half_fov := atan(tan(deg_to_rad(24.0)) * minf(1.0, aspect))
 		desired = maxf(desired + sep * 0.6, (sep / 2.0 + h * 1.5) / sin(half_fov * 0.85))
-	var ease_t := 1.0 - exp(-dt / POS_TAU) if dt > 0.0 else 1.0
+	var ease_t := 1.0 - exp(-dt / (POS_TAU + KICK_LAG * _kick_k)) if dt > 0.0 else 1.0      # the lead above uses the base tau, so the extra tau is a real lag
 	if target == null:
 		target = tgt
 	target = (target as Vector3).lerp(tgt, ease_t)

@@ -837,8 +837,8 @@ static int steep_up(const CpStageWorld *w,const CpStageCreature *c,float x,float
 /* Speed by body size (A39 / D-26): a body walks at a fixed Froude number, v = sqrt(Fr g h), with h its hip height.
  * The C profile carries no leg length, so h = CP_STAGE_HIP_PER_RADIUS * body radius; the factor is the h / r of the
  * seven zoo bodies, measured on their rigs (hip 0.306 m at r 0.6 ... 2.250 at r 3.99; hero 1.69 at r 3.0), starting value.
- * Walk Fr 0.24 puts the hero (h 1.68 m) at 2.0 m/s, the owner's cruise speed. Run Fr is motion.sprint_k (1.5, starting value,
- * a trot / run with a flight phase; Alexander & Jayes 1983 put the walk-run change near Fr 0.5).
+ * Walk Fr 0.24 puts the hero (h 1.68 m) at 2.0 m/s, the owner's cruise speed. Run Fr is motion.sprint_k (2.2 since A54, starting value
+ * checked by the owner's play: 1.5 felt slow; a gallop with a long flight phase; Alexander & Jayes 1983 put the walk-run change near Fr 0.5).
  * Mass still slows acceleration and turning through steer.c (A29). Plain float maths (sqrtf is exactly rounded), so it is
  * reproducible like the rest of the stage. */
 #define CP_STAGE_HIP_PER_RADIUS .56f
@@ -847,7 +847,7 @@ static float gait_speed(const CpCombatProfile *p,float fr){
     return sqrtf(fr*9.81f*CP_STAGE_HIP_PER_RADIUS*cp_combat_body_radius(p));
 }
 const CpStageMotion CP_STAGE_MOTION={
-    1.f,1.5f,.6f,7.f,7.f,.45f,.9f,.6f,4.5f,11.8f,.3f,1.2f,7.f,.4f,
+    1.f,2.2f,.6f,7.f,7.f,.45f,.9f,.6f,4.5f,11.8f,.3f,1.2f,7.f,.4f,
     1.4f,.35f,.03f,.25f,3.2f,1.5f,.8f,.55f,1.35f,1.4f,1.1f,8.f,.15f,
     CP_STAGE_FR_WALK
 };

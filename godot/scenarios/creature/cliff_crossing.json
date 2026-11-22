@@ -1,6 +1,6 @@
 {
 	"camera": {},
-	"created": "2026-11-22T21:33:24",
+	"created": "2026-11-23T00:42:09",
 	"engine": {
 		"build": "unknown",
 		"layout": "eb6a4645f6d90d4f",
@@ -138,7 +138,7 @@
 			"wet": 0.3
 		}
 	},
-	"hash": "94212b50c8d2a3b4",
+	"hash": "c8a9feb61dfd3009",
 	"island": {
 		"seed": 1,
 		"terrain_hash": "7137e3ea79830ad7",

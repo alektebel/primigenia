@@ -18,6 +18,7 @@ var _prev_knee := {}
 var _prev_ank := {}
 var _prev_ex := {}
 var _vcache := {}
+var _flat_start := {}
 var _dbg_prev := {}
 var _body_len := 1.0
 
@@ -78,10 +79,15 @@ func _run() -> void:
 	if _scen == "slope":
 		# start at the foot of the 20 degree ramp (course "ramps" lane 0), facing +z
 		r.sw.debug_now({"op": 1, "id": 0, "x": r.x0 + Course.ramp_x(1), "z": Course.RAMP_Z0 - 2.0})
+	if OS.get_environment("LC_SPRINT_K") != "":
+		# the run Froude number through the logged PARAM debug op (7), e.g. 1.5 for the pre-A54 gallop
+		for p in CporeWorld.params():
+			if p.name == "sprint_k":
+				r.sw.debug_now({"op": 7, "a": int(p.index), "v": float(OS.get_environment("LC_SPRINT_K"))})
 	_body_len = r.host.height()
 	if log_path != "":
 		_log = FileAccess.open(log_path, FileAccess.WRITE)
-		_log.store_line("frame,tick,c_speed,vis_speed,gait,slip_ms,sole_min_cm,sole_max_stance_cm,knee_jump_deg,knee_jump_ext60,foot_v_max,ext_min,ext_min_stance,toe_min_stance_cm,pitch_deg,yaw_deg,roots")
+		_log.store_line("frame,tick,c_speed,vis_speed,gait,slip_ms,sole_min_cm,sole_max_stance_cm,knee_jump_deg,knee_jump_ext60,foot_v_max,ext_min,ext_min_stance,toe_min_stance_cm,pitch_deg,yaw_deg,node_slide_mm,roots")
 	_cam = Camera3D.new()
 	_cam.fov = 48.0
 	_cam.near = 0.05
@@ -179,6 +185,7 @@ func _process(_d: float) -> bool:
 		var rt: Transform3D = pose.root
 		roots = "%.3f" % rt.origin.y
 	var stance_max := -1e9
+	var nslide := 0.0
 	var kjump := 0.0
 	var fvmax := 0.0
 	var kj60 := 0.0
@@ -205,6 +212,16 @@ func _process(_d: float) -> bool:
 					for v in (_vcache[m] as PackedVector3Array):
 						var wv: Vector3 = xf * v
 						toemin = minf(toemin, wv.y - float(r.ground.call(wv.x, wv.z)))
+		if not pose.is_empty() and bool(pose.contact[i]) and float(pose.foot_pitch[i]) < 0.01:
+			var gp: Vector3 = l.foot.global_position
+			if _flat_start.has(i):
+				nslide = maxf(nslide, Vector2(gp.x - _flat_start[i].x, gp.z - _flat_start[i].z).length() * 1000.0)
+				if OS.get_environment("LC_DBG3") != "" and Vector2(gp.x - _flat_start[i].x, gp.z - _flat_start[i].z).length() > 0.02:
+					print("SL f%d leg %d d %.3f pitch %.3f tilt %s ankle_c %s foot_c %s feet %s" % [_frame, i, Vector2(gp.x - _flat_start[i].x, gp.z - _flat_start[i].z).length(), float(pose.foot_pitch[i]), str(l.foot_tilt), str(l.ankle), str(l.foot.position), str(pose.feet[i]) + " ankle_w-foot_w " + str(l.creature.global_transform * l.ankle - l.foot.global_position) + " w " + str(l.width) + " target " + str(l.foot_target) + " ankle_w " + str(l.creature.global_transform * l.ankle) + " scale " + str(l.creature.global_transform.basis.get_scale())])
+			else:
+				_flat_start[i] = gp
+		else:
+			_flat_start.erase(i)
 		var ex: float = (ank - hip).length() / l.total_length()
 		extmin = minf(extmin, ex)
 		if not pose.is_empty() and bool(pose.contact[i]):
@@ -238,5 +255,5 @@ func _process(_d: float) -> bool:
 			_dbg_prev[i] = pose.feet[i]
 		print("F%d spd %.2f fr %.2f cad %.2f stride %.2f theta | %s" % [_frame, vis, float(pose.get("froude", 0.0)), float(pose.get("cadence", 0.0)), float(pose.get("stride", 0.0)), " | ".join(parts)])
 	_frame += 1
-	_log.store_line("%d,%d,%.3f,%.3f,%s,%.3f,%.2f,%.2f,%.1f,%.1f,%.2f,%.2f,%.2f,%.2f,%.2f,%.1f,%s" % [_frame, int(r.sw.cur.tick), float(e.speed), vis, gait, slip, miny * 100.0 if miny < 1e8 else 0.0, stance_max * 100.0 if stance_max > -1e8 else 0.0, kjump, kj60, fvmax, extmin, extst, toemin * 100.0 if toemin < 8.0 else 0.0, rad_to_deg(float(pose.get("pitch", 0.0))), rad_to_deg(float(s.get("yaw", 0.0))), roots])
+	_log.store_line("%d,%d,%.3f,%.3f,%s,%.3f,%.2f,%.2f,%.1f,%.1f,%.2f,%.2f,%.2f,%.2f,%.2f,%.1f,%.1f,%s" % [_frame, int(r.sw.cur.tick), float(e.speed), vis, gait, slip, miny * 100.0 if miny < 1e8 else 0.0, stance_max * 100.0 if stance_max > -1e8 else 0.0, kjump, kj60, fvmax, extmin, extst, toemin * 100.0 if toemin < 8.0 else 0.0, rad_to_deg(float(pose.get("pitch", 0.0))), rad_to_deg(float(s.get("yaw", 0.0))), nslide, roots])
 	return false
