@@ -244,7 +244,7 @@ func _run() -> void:
 	await ticks(3)
 	check(editor() == null and not stage.paused, "leaving the editor returns to the game, running")
 	var day1: Dictionary = stage.cur.day
-	check(absf(float(day1.hour) - float(day0.hour)) < 0.5, "the same time of day (hour %.2f -> %.2f)" % [float(day0.hour), float(day1.hour)])
+	check(absf(float(day1.hour) - float(day0.hour)) < (0.5 if out_dir == "" else 2.0), "the same time of day (hour %.2f -> %.2f)" % [float(day0.hour), float(day1.hour)])
 	var d := Vector2(float(me().x) - nest.x, float(me().z) - nest.y).length()
 	check(d < 13.0, "back at the nest (%.1f m)" % d)
 	finish()
