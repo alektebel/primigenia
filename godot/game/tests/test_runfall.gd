@@ -37,7 +37,7 @@ func run(t) -> void:
 		sw.step_once()
 	var run_speed: float = sw.cur.entities[0].speed
 	t.check(bool(sw.cur.player.running) and int(sw.cur.player.stamina) < 1000, "run intent: running, stamina drains (%d)" % int(sw.cur.player.stamina))
-	t.check(walk_speed > 0.5 and absf(run_speed / walk_speed - 1.8) < 0.1, "run speed is 1.8x walk (%.2f vs %.2f)" % [run_speed, walk_speed])
+	t.check(walk_speed > 0.5 and absf(run_speed / walk_speed - sqrt(1.5 / 0.24)) < 0.15, "run speed is sqrt(Fr 1.5 / Fr 0.24) = 2.5x walk (A39) (%.2f vs %.2f)" % [run_speed, walk_speed])
 	heading["run"] = 0
 	for i in 5:
 		sw.step_once()

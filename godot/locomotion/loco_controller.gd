@@ -283,6 +283,9 @@ func _sub(h: float, p: Vector3, yaw: float, v: Vector3, settle: bool) -> void:
 	var f_nat_c := 0.25 * sqrt(G / _ref_h)
 	var duty_t := Gait.duty(gait, fr_g, Gait.heavy(morph), morph.stations.size() >= 4)
 	var stride_t := Gait.stride_length(gait, fr_g, _ref_h) * _stride_mult
+	if Gait.froude_mode and not pivoting:
+		# turning on a long stance drags the feet sideways: shorten the stride with the path curvature (starting value)
+		stride_t /= 1.0 + 1.5 * minf(absf(_yawrate) / maxf(_speed_f, 0.5), 1.5) * morph.track_width
 	if Gait.froude_mode and _legs.size() > 4 and _spacing < 1e8:
 		# rule 3: stance travel (stride x duty) stays under 0.9 x the spacing of neighbouring legs, so grounded feet never cross
 		stride_t = minf(stride_t, 0.9 * _spacing / maxf(duty_t, 0.3))

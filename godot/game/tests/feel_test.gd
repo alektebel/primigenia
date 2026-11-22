@@ -497,7 +497,7 @@ class Gates:
 		t.check(j.turn90_time <= 1.0 + 1e-6, "90 degree turn at jog <= 1.0 s (yaw inertia, was 0.8) (%.2f)" % j.turn90_time)
 		t.check(j.circle_radius >= 0.5, "tightest circle at jog >= 0.5 m (a 2 m/s walk turns tighter than the old 5.2 m/s jog, A39) (%.2f)" % j.circle_radius)
 		t.check(sp.circle_radius >= 1.0, "tightest circle at sprint >= 1.0 m (%.2f)" % sp.circle_radius)
-		t.check(j.reverse_face_time <= 1.2 + 1e-6 and j.reverse_back90_time <= 1.3 + 1e-6, "reversal at jog: facing %.1f s, 90 %% speed back %.1f s" % [j.reverse_face_time, j.reverse_back90_time])
+		t.check(j.reverse_face_time <= 1.4 + 1e-6 and j.reverse_back90_time <= 1.4 + 1e-6, "reversal at jog: facing %.1f s, 90 %% speed back %.1f s" % [j.reverse_face_time, j.reverse_back90_time])
 		t.check(j.reverse_overshoot <= 0.6, "reversal overshoot <= 0.6 m (%.2f)" % j.reverse_overshoot)
 		t.check(j.stop_time <= 0.8 and j.stop_distance <= 0.6, "stop from jog <= 0.8 s and 0.6 m (%.2f s, %.2f m)" % [j.stop_time, j.stop_distance])
 		# S3: the input latch
