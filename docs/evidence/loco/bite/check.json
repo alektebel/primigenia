@@ -1,0 +1,106 @@
+{
+ "pass": true,
+ "fails": [],
+ "rows": [
+  {
+   "id": "peck",
+   "name": "Peck-snap",
+   "contactDist": -0.0069521169064460375,
+   "reachErr": 0,
+   "pause": 70,
+   "pauseDrift": 0,
+   "feetDrift": 1.415262216750919e-16,
+   "minY": -8.326672684688674e-17,
+   "maxReach": 0,
+   "maxStretch": 1.0098970143566168,
+   "tipSpeed": 11.874229913857505,
+   "knockCos": 1,
+   "knock": 0.11803229379279356,
+   "preyMinY": 0.0833969800729708,
+   "timing": {
+    "antic": 200,
+    "hold": 350,
+    "strike": 110,
+    "pause": 70,
+    "cling": 250,
+    "follow": 120,
+    "recovery": 350
+   }
+  },
+  {
+   "id": "lunge",
+   "name": "Lunge-bite",
+   "contactDist": -0.006952116906446093,
+   "reachErr": 0,
+   "pause": 80,
+   "pauseDrift": 0,
+   "feetDrift": 1.442222014787673e-16,
+   "minY": -8.326672684688674e-17,
+   "maxReach": 0,
+   "maxStretch": 1.18,
+   "tipSpeed": 10.712813417911134,
+   "knockCos": 1,
+   "knock": 0.25967104634414584,
+   "preyMinY": 0.07628140010424406,
+   "timing": {
+    "antic": 270,
+    "hold": 300,
+    "strike": 150,
+    "pause": 80,
+    "cling": 250,
+    "follow": 170,
+    "recovery": 530
+   }
+  },
+  {
+   "id": "grab",
+   "name": "Grab-shake",
+   "contactDist": -0.0069521169064461485,
+   "reachErr": 0,
+   "pause": 80,
+   "pauseDrift": 0,
+   "feetDrift": 1.415262216750919e-16,
+   "minY": -8.326672684688674e-17,
+   "maxReach": 0.003436960481976392,
+   "maxStretch": 1.25,
+   "tipSpeed": 24.60681634550555,
+   "knockCos": 1,
+   "knock": 0.07560450681249357,
+   "preyMinY": 0.09040000000000015,
+   "timing": {
+    "antic": 220,
+    "hold": 350,
+    "strike": 110,
+    "pause": 80,
+    "cling": 0,
+    "follow": 760,
+    "recovery": 470
+   }
+  },
+  {
+   "id": "pounce",
+   "name": "Hop-pounce bite",
+   "contactDist": -0.0069521169064461485,
+   "reachErr": 0,
+   "pause": 80,
+   "pauseDrift": 0,
+   "feetDrift": 1.3877787807814457e-16,
+   "minY": -0.0003303068909964735,
+   "maxReach": 0.004332858085250968,
+   "maxStretch": 1.2338601711338448,
+   "tipSpeed": 45.07366044662303,
+   "knockCos": 1,
+   "knock": 0.054041544797711616,
+   "preyMinY": 0.09999999999999998,
+   "timing": {
+    "antic": 250,
+    "hold": 350,
+    "strike": 170,
+    "pause": 80,
+    "cling": 250,
+    "follow": 180,
+    "recovery": 440
+   }
+  }
+ ]
+}
