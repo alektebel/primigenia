@@ -1,0 +1,278 @@
+{
+	"build": "unknown",
+	"camera": {
+		"angle_deg": [
+			-15.0,
+			-157.5
+		],
+		"distance": 4.59199571609497,
+		"fov": 48.0,
+		"orbit_pitch": 0.0,
+		"pitch": 0.261799387799149,
+		"pos": [
+			-1.7,
+			44.04,
+			-4.1
+		],
+		"yaw": -2.74889355458867,
+		"z_target": 0.15
+	},
+	"created": "2026-11-22T21:58:08",
+	"fix": "",
+	"format": "primigenia.note/1",
+	"hour": 0.37,
+	"id": "ef083f",
+	"meta": {
+		"build": {
+			"commit": "2e549b5",
+			"dirty": true,
+			"text": "unknown"
+		},
+		"camera": {
+			"angle_deg": [
+				-15.0,
+				-157.5
+			],
+			"distance": 4.59199571609497,
+			"fov": 48.0,
+			"orbit_pitch": 0.0,
+			"pitch": 0.261799387799149,
+			"pos": [
+				-1.7,
+				44.04,
+				-4.1
+			],
+			"yaw": -2.74889355458867,
+			"z_target": 0.15
+		},
+		"creature": {
+			"diet": 2,
+			"dna": {
+				"balance": 4,
+				"total": 4
+			},
+			"food": 67,
+			"genome": {
+				"name": "Starter B: Lean runner",
+				"nodes": [
+					{
+						"r": 0.03,
+						"y": 0.58,
+						"z": -0.7
+					},
+					{
+						"r": 0.046,
+						"y": 0.6,
+						"z": -0.52
+					},
+					{
+						"r": 0.092,
+						"y": 0.63,
+						"z": -0.32
+					},
+					{
+						"r": 0.12,
+						"y": 0.66,
+						"z": -0.1
+					},
+					{
+						"r": 0.115,
+						"y": 0.68,
+						"z": 0.12
+					},
+					{
+						"r": 0.087,
+						"y": 0.72,
+						"z": 0.3
+					},
+					{
+						"r": 0.06,
+						"y": 0.88,
+						"z": 0.44
+					},
+					{
+						"r": 0.087,
+						"y": 0.98,
+						"z": 0.58
+					}
+				],
+				"parts": [
+					{
+						"ang": 0.0,
+						"level": 1,
+						"size": 0.2,
+						"t": 1.0,
+						"tier": 0,
+						"type": "pico"
+					},
+					{
+						"ang": 1.0,
+						"level": 1,
+						"size": 0.26,
+						"t": 0.9,
+						"tier": 0,
+						"type": "ojo"
+					},
+					{
+						"ang": 0.5,
+						"level": 1,
+						"size": 0.14,
+						"t": 0.88,
+						"tier": 0,
+						"type": "oreja"
+					},
+					{
+						"ang": 2.1,
+						"f": [
+							0.07,
+							-0.58,
+							-0.02
+						],
+						"k": [
+							0.05,
+							-0.28,
+							0.14
+						],
+						"level": 1,
+						"t": 0.36,
+						"tier": 0,
+						"type": "pezuna",
+						"w": 0.05
+					},
+					{
+						"ang": 2.1,
+						"f": [
+							0.07,
+							-0.62,
+							0.02
+						],
+						"k": [
+							0.05,
+							-0.3,
+							-0.12
+						],
+						"level": 1,
+						"t": 0.62,
+						"tier": 0,
+						"type": "pezuna",
+						"w": 0.05
+					},
+					{
+						"ang": 0.0,
+						"level": 1,
+						"size": 0.1,
+						"t": 0.8,
+						"tier": 0,
+						"type": "cresta"
+					}
+				],
+				"regions": [],
+				"schema": "cpore.creature/5",
+				"skin": {
+					"cA": "#b98f5a",
+					"cB": "#5a4026",
+					"cC": "#eadfc4",
+					"pat": 2.0,
+					"scale": 8.0,
+					"wet": 0.08
+				}
+			},
+			"name": "Starter B: Lean runner",
+			"nodes": 8,
+			"parts": [
+				"pico",
+				"ojo",
+				"oreja",
+				"pezuna",
+				"pezuna",
+				"cresta"
+			]
+		},
+		"hour": 0.37,
+		"mode": "nest",
+		"nearby": [
+			{
+				"dist": 15.8,
+				"hp": 80.0,
+				"hp_max": 80.0,
+				"id": 24,
+				"species": "Garfio",
+				"state": "moving",
+				"temperament": "aggressive"
+			}
+		],
+		"options": {},
+		"paused": false,
+		"perf": {
+			"fps": 9.4,
+			"frame_ms_avg": 106.51,
+			"frame_ms_p95": 146.55,
+			"samples": 240
+		},
+		"player": {
+			"falling": false,
+			"gait": "walk",
+			"heading_deg": 0.0,
+			"hp": 100.0,
+			"hp_max": 100.0,
+			"pos": [
+				0.0,
+				41.13,
+				0.0
+			],
+			"running": false,
+			"speed": 0.0,
+			"stamina": 100.0,
+			"stamina_max": 100.0,
+			"style": "a42 port"
+		},
+		"quest": {
+			"chain": "first",
+			"finished": false,
+			"step": 0,
+			"task": "hunt",
+			"total": 5
+		},
+		"render": {
+			"driver": "opengl3",
+			"gpu": "llvmpipe (LLVM 23.1.4, 256 bits)",
+			"renderer": "gl_compatibility",
+			"vendor": "Mesa"
+		},
+		"scenario": "scenario.json",
+		"scene": "res://game/island/island.tscn",
+		"schema": "primigenia.note.meta/1",
+		"seed": 1,
+		"tick": 186,
+		"time": "2026-11-22T21:56:34",
+		"timescale": 1.0,
+		"window": [
+			1280,
+			720
+		]
+	},
+	"options": {},
+	"origin": "n",
+	"pos": [
+		2.14,
+		41.01,
+		16.67
+	],
+	"severity": 2,
+	"stamp": "20261122-215808",
+	"status": "open",
+	"tags": [
+		"movement",
+		"look"
+	],
+	"target": {
+		"id": -1,
+		"kind": "terrain",
+		"name": "ground (2, 17)",
+		"part": "",
+		"species": ""
+	},
+	"text": "legs cross when it turns toward the water",
+	"tick": 186,
+	"unix_ms": 1795381088381
+}
