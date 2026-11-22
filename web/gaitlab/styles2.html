@@ -1,0 +1,466 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Primigenia · Move styles, round 2</title>
+<style>
+:root{color-scheme:dark;--bg:#16191d;--panel:#20252b;--ink:#efebe2;--dim:#b5babf;--line:#424850;--gold:#edc578;--turn:#9fd3cb}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.4 system-ui,sans-serif}button,input,textarea{font:inherit}button{background:#2c3239;color:var(--ink);border:1px solid var(--line);border-radius:5px;padding:6px 10px;cursor:pointer}button:hover{background:#3a424b}button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid var(--gold);outline-offset:3px}button.pointer:active{transform:scale(.97);transition:transform 160ms ease-out}button[aria-pressed=true]{background:var(--gold);color:#211d16;border-color:var(--gold)}::selection{background:var(--gold);color:#211d16}
+header{display:flex;gap:18px;align-items:center;flex-wrap:wrap;padding:10px 16px;background:var(--panel);border-bottom:1px solid var(--line)}h1{font-size:20px;line-height:1.2;margin:0 0 3px}#identity{min-width:260px}#body-note,.hint,#check{font-size:12px;color:var(--dim)}.controls{display:flex;align-items:center;gap:7px;flex-wrap:wrap}output,.metrics{font-variant-numeric:tabular-nums}
+main{display:grid;grid-template-columns:minmax(0,1fr) 220px}#stage{position:relative;min-width:0;height:calc(100vh - 106px);min-height:760px}#gl{position:absolute;width:100%;height:100%;display:block}#cells{position:absolute;inset:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));grid-template-rows:repeat(4,1fr)}
+.cell{position:relative;text-align:left;background:transparent;border:1px solid #424850;border-radius:0;padding:8px 10px;display:flex;flex-direction:column;justify-content:flex-start;overflow:hidden;min-width:0}.cell:hover{background:#ffffff05}.cell[aria-pressed=true]{background:transparent;border:2px solid var(--gold);color:var(--ink);padding:7px 9px}
+.title{display:block;font-size:14px;font-weight:650;line-height:1.15;padding-right:22px}.title i{font-style:normal;color:var(--dim);font-weight:500}.cell[data-row=turn] .title b{color:var(--turn)}.description{display:block;color:#d1d1cb;font-size:11.5px;margin-top:3px;line-height:1.2}.adapt{display:block;font-size:10.5px;color:var(--gold);line-height:1.2;margin-top:2px}.star{position:absolute;right:8px;top:4px;font-size:20px;color:var(--gold)}
+.metrics{position:absolute;bottom:7px;left:10px;font:10.5px/1.3 ui-monospace,monospace;color:#bec6cb;white-space:pre}.strip{position:absolute;bottom:8px;right:8px;width:78px;height:18px;background:#e2e2d7}.cell[hidden]{display:none}
+aside{padding:14px;background:var(--panel);border-left:1px solid var(--line);overflow:auto;max-height:calc(100vh - 106px)}h2{font-size:16px;margin:0 0 8px}aside p{font-size:12px;color:var(--dim)}#choices{margin:14px 0}#choices p{margin:10px 0;color:var(--ink)}#choices strong{display:block;color:var(--gold)}#copy-status{min-height:18px}textarea{width:100%;min-height:100px;color:var(--ink);background:var(--bg);border:1px solid var(--line);padding:6px}
+footer{padding:8px 16px;color:var(--dim);font-size:12px}kbd{font:inherit;color:var(--ink)}
+#stage.expanded{position:fixed;inset:0;height:100vh;min-height:0;z-index:10;background:var(--bg)}#stage.expanded #cells{display:block}#stage.expanded .cell{width:100%;height:100%;padding:24px}#stage.expanded .title{font-size:24px}#close-full{position:absolute;right:15px;bottom:40px;z-index:12}#check.fail{color:#ff998c}#check.pass{color:#a3d4ad}
+@media(max-width:1100px){main{grid-template-columns:minmax(0,1fr) 180px}.title{font-size:12px}.cell{padding:6px}.description{font-size:10.5px}.metrics{font-size:9.5px;left:6px}.strip{width:48px}#stage{min-height:800px}}
+@media(max-width:760px){main{display:block}#stage{height:1200px;min-width:680px}main{overflow:auto}aside{max-height:none;border-left:0}header{gap:10px}footer{max-width:70ch}}
+</style>
+<script src="../biome/three.min.js"></script>
+</head>
+<body>
+<header>
+<div id="identity"><h1 id="creature-name">starter B</h1><div id="body-note"></div></div>
+<div class="controls"><button id="prev" aria-label="Previous creature">←</button><button id="next">Next creature</button><span class="hint">Space / Shift+Space</span></div>
+<div class="controls" id="playback" aria-label="Playback"><button data-rate=".25" aria-pressed="false">0.25×</button><button data-rate=".5" aria-pressed="false">0.5×</button><button data-rate="1" aria-pressed="true">1×</button><button id="pause" aria-pressed="false">Pause</button></div>
+<div class="controls"><button id="cam" aria-pressed="false" title="Turn row camera: high three-quarter or straight down (T)">Turn camera: 3/4 (T)</button><button id="runcheck">Run self-check</button></div>
+<span id="check" role="status">64 cells per 4 bodies · 240 cells in all · self-check not run</span>
+</header>
+<main><div id="stage"><canvas id="gl" aria-label="Sixteen creature movement comparisons, rows walk, turn, canter, gallop"></canvas><div id="cells"></div><button id="close-full" hidden>Exit full view · Esc</button></div>
+<aside><h2>Your choices</h2><p>One star per row (walk, turn, canter, gallop) for each creature. Click a cell to star it; click again to clear. Choices survive a reload.</p><div id="choices"></div><button id="copy">Copy choices</button><p id="copy-status" role="status" aria-live="polite"></p><textarea id="copy-fallback" aria-label="Choices to copy manually" hidden readonly></textarea><p>Near limbs are light, far limbs dark. Gold dots mark touchdown, the small strip shows each foot's contact over two strides (black = down). Every row runs at the body's own Froude speed, v = sqrt(Fr g h).</p><p>All numbers are starting values for the owner comparison. Nothing is selected for the game yet.</p></aside></main>
+<footer><kbd>Space</kbd> next creature · <kbd>Shift+Space</kbd> previous · <kbd>F</kbd> focus hovered cell · <kbd>Esc</kbd> grid · <kbd>P</kbd> pause · <kbd>T</kbd> turn-row camera (3/4 or top-down) · Playback changes time only. Ground dots are about a quarter body length apart.</footer>
+<script>
+'use strict';
+(() => {
+const STARTERS = [{"name":"starter B","source":"godot/game/data/starters/b_runner.json","color":"#b98f5a","accent":"#eadfc4","nodes":[[-0.7,0.58,0.03],[-0.52,0.6,0.046],[-0.32,0.63,0.092],[-0.1,0.66,0.12],[0.12,0.68,0.115],[0.3,0.72,0.087],[0.44,0.88,0.06],[0.58,0.98,0.087]],"legs":[{"x":-0.1999,"y":0.5969,"z":0.0948,"a":0.317,"b":0.3406,"w":0.05,"fz":0.07},{"x":0.1909,"y":0.6391,"z":0.0925,"a":0.327,"b":0.3499,"w":0.05,"fz":0.07}],"h":0.618,"bodyLength":0.62,"mouth":"pico","armour":[],"arms":false},{"name":"hatchling","source":"godot/game/data/hatchling.json","color":"#b0553a","accent":"#e6cfa0","nodes":[[-0.544,0.256,0.03],[-0.396,0.272,0.033],[-0.247,0.296,0.066],[-0.099,0.32,0.115],[0.066,0.328,0.135],[0.215,0.344,0.107],[0.33,0.4,0.11],[0.446,0.44,0.134]],"legs":[{"x":-0.082,"y":0.2678,"z":0.1016,"a":0.123,"b":0.1522,"w":0.05,"fz":0.066},{"x":0.2119,"y":0.2924,"z":0.0939,"a":0.1319,"b":0.1379,"w":0.05,"fz":0.058}],"h":0.2801,"bodyLength":0.462,"mouth":"pico","armour":[],"arms":false},{"name":"starter A","source":"godot/game/data/starters/a_grazer.json","color":"#7a5a3a","accent":"#d2bf98","nodes":[[-0.51,0.52,0.03],[-0.374,0.54,0.044],[-0.221,0.57,0.088],[-0.043,0.6,0.129],[0.136,0.62,0.136],[0.297,0.64,0.109],[0.425,0.7,0.078],[0.544,0.72,0.095]],"legs":[{"x":-0.1214,"y":0.5362,"z":0.0964,"a":0.2597,"b":0.2995,"w":0.07,"fz":0.09},{"x":0.2692,"y":0.5801,"z":0.1006,"a":0.2948,"b":0.3019,"w":0.07,"fz":0.08}],"h":0.5582,"bodyLength":0.518,"mouth":"romo","armour":[],"arms":false},{"name":"starter C","source":"godot/game/data/starters/c_sprawler.json","color":"#5f6650","accent":"#b9b08a","nodes":[[-0.55,0.26,0.03],[-0.4,0.3,0.056],[-0.22,0.34,0.105],[-0.02,0.36,0.136],[0.18,0.36,0.136],[0.34,0.36,0.105],[0.48,0.36,0.074],[0.62,0.36,0.081]],"legs":[{"x":-0.084,"y":0.2973,"z":0.1109,"a":0.1921,"b":0.2687,"w":0.06,"fz":0.17},{"x":0.325,"y":0.3108,"z":0.0934,"a":0.1825,"b":0.2604,"w":0.06,"fz":0.17}],"h":0.3041,"bodyLength":0.56,"mouth":"romo","armour":[0.38,0.56],"arms":false},{"name":"starter D","source":"godot/game/data/starters/d_knuckle.json","color":"#4a4036","accent":"#8c7a62","nodes":[[-0.425,0.52,0.03],[-0.306,0.54,0.058],[-0.17,0.58,0.108],[-0.017,0.64,0.137],[0.145,0.72,0.151],[0.289,0.8,0.13],[0.408,0.84,0.086],[0.51,0.84,0.101]],"legs":[{"x":-0.1385,"y":0.5372,"z":0.0965,"a":0.2269,"b":0.2594,"w":0.065,"fz":0.09},{"x":0.2689,"y":0.7169,"z":0.1219,"a":0.311,"b":0.3416,"w":0.065,"fz":0.09}],"h":0.6271,"bodyLength":0.459,"mouth":"romo","armour":[],"arms":true}];
+/*CORE_BEGIN*/
+const TAU=Math.PI*2,G=9.81,frac=x=>x-Math.floor(x),clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
+const V=()=>new THREE.Vector3(),Yax=new THREE.Vector3(0,1,0),temp=V();
+const ROWS=['walk','turn','canter','gallop'];
+const VARIANTS=[['A42 port','longer-lower','bouncier','Froude default'],['A42 lean','wide arc','stop-and-pivot','Froude default']];
+const vname=(row,v)=>VARIANTS[row==='turn'?1:0][v];
+// ---------------------------------------------------------------- bodies
+// Leg: {x,y,z(abs),fz(foot lateral beyond hip),fx(foot rest x beyond hip),a,b,w,side,station}
+function mkLegs(stations,y,z,a,b,w,fz,fxs,aList,bList){const legs=[];stations.forEach((x,st)=>{for(const side of [-1,1])legs.push({x,y:Array.isArray(y)?y[st]:y,z,fz,fx:fxs?fxs[st]:0,a:aList?aList[st]:a,b:bList?bList[st]:b,w,side,station:st});});return legs;}
+function finish(b){
+  b.legs.forEach((l,i)=>{l.i=i;l.fx=l.fx||0;});
+  const st=[...new Set(b.legs.map(l=>l.x))].sort((p,q)=>p-q);b.legs.forEach(l=>{if(b.family!=='three')l.station=st.indexOf(l.x);});
+  b.nStations=Math.max(...b.legs.map(l=>l.station))+1;
+  b.tailN=b.tailN??2;b.hs=b.hs||1;b.extras=b.extras||[];b.armour=b.armour||[];
+  const n=b.nodes,head=n[n.length-1];b.span=head[0]-n[0][0]+head[2];b.bodyLen=head[0]+head[2]-n[b.tailN][0];
+  b.height=Math.max(...n.map(p=>p[1]+p[2]));b.elev=b.elev||.2;b.fr=b.fr||[.66,1.6,3.2];b.pole=b.pole||[-1,0,.12];b.lateral=Math.max(...b.legs.map(l=>l.z+l.fz));
+  b.rest=b.legs.map(l=>[l.x+l.fx-(b.legs.reduce((s,k)=>s+k.x,0)/b.legs.length),l.side*(l.z+l.fz)]);
+  b.nLegs=b.legs.length;return b;
+}
+function starter(s,family){
+  const legs=[];s.legs.forEach((l,st)=>{for(const side of [-1,1])legs.push({x:l.x,y:l.y,z:l.z,fz:l.fz,fx:0,a:l.a,b:l.b,w:l.w,side,station:st});});
+  return finish({elev:s.name==='starter C'?.4:.2,name:s.name,source:s.source,family:'quad',color:s.color,accent:s.accent,nodes:s.nodes,legs,h:s.h,mouth:s.mouth,armour:s.armour,arms:s.arms,tailN:2,
+    note:'Genome from '+s.source.replace('godot/game/data/','')});
+}
+function buildBodies(STARTERS){
+  const B=STARTERS.map(s=>starter(s));
+  B.push(finish({name:'heavy quadruped',family:'quad',color:'#8d8f93',accent:'#d8d4c8',note:'elephant-like, long columnar legs, slow',mouth:'romo',noFlight:true,h:1.25,
+    nodes:[[-1.5,.95,.035],[-1.25,1.12,.06],[-.95,1.3,.24],[-.4,1.42,.56],[.2,1.45,.6],[.8,1.4,.5],[1.2,1.38,.36],[1.5,1.3,.3]],
+    columnar:true,legs:mkLegs([-.55,.65],1.2,.32,.72,.76,.38,0),fr:[.3,.6,1],extras:[[7,[.04,.26,.22],[-.1,.05,.3]],[7,[.04,.26,.22],[-.1,.05,-.3]],[7,[.08,.3,.08],[.3,-.3,0]]]}));
+  B.push(finish({name:'small fast quadruped',family:'quad',color:'#a98c6a',accent:'#e8d9bd',note:'rodent-like, short legs, long spine flex',mouth:'romo',h:.12,spineMul:1.7,
+    nodes:[[-.62,.1,.008],[-.45,.1,.012],[-.3,.12,.03],[-.12,.13,.065],[.05,.14,.075],[.2,.15,.06],[.3,.16,.045],[.38,.17,.04]],
+    legs:mkLegs([-.14,.17],.12,.05,.09,.1,.02,.012),extras:[[7,[.015,.03,.02],[-.02,.04,.035]],[7,[.015,.03,.02],[-.02,.04,-.035]]]}));
+  B.push(finish({name:'sprawling lizard',family:'quad',color:'#6f8f4e',accent:'#d8c77a',note:'short legs, belly low, whole-body wave',mouth:'romo',noFlight:true,h:.12,hs:1.45,pole:[0,.7,1],
+    nodes:[[-.95,.07,.01],[-.7,.08,.03],[-.4,.1,.06],[-.1,.115,.085],[.2,.125,.09],[.45,.13,.075],[.62,.13,.06],[.78,.14,.055]],tailN:3,
+    elev:.75,legs:mkLegs([-.1,.42],.12,.09,.15,.15,.05,.14),fr:[.45,1,1.8]}));
+  B.push(finish({name:'long-necked quadruped',family:'quad',color:'#b79d5f',accent:'#6e4b2a',note:'long neck and long tail, giraffe/sauropod blend',mouth:'romo',h:.95,
+    nodes:[[-2.4,.65,.03],[-1.9,.75,.07],[-1.3,.95,.2],[-.6,1.2,.42],[.1,1.25,.48],[.7,1.2,.4],[1.0,1.5,.2],[1.3,1.95,.15],[1.55,2.35,.13],[1.8,2.5,.12]],tailN:3,
+    columnar:true,legs:mkLegs([-.5,.55],.95,.3,.5,.52,.16,0),fr:[.55,1.2,2.2],headMul:3}));
+  B.push(finish({name:'tall biped',family:'biped',color:'#c7a27a',accent:'#f0e2c0',note:'bird-like, long legs, head pump',mouth:'pico',h:1,pump:true,
+    nodes:[[-.55,1.05,.04],[-.35,1.1,.1],[-.1,1.12,.28],[.15,1.15,.32],[.3,1.35,.2],[.4,1.65,.1],[.48,1.95,.075],[.62,2.05,.085]],
+    columnar:true,legs:mkLegs([0],1,.13,.5,.55,.1,0),pole:[-1,0,0]}));
+  B.push(finish({name:'hopping biped',family:'hop',color:'#b58a5a',accent:'#e8d3b0',note:'kangaroo-like, big hind legs, heavy tail',mouth:'romo',h:.95,
+    nodes:[[-1.25,.37,.034],[-.9,.42,.08],[-.5,.55,.15],[-.15,.9,.25],[.1,1.12,.24],[.25,1.35,.17],[.38,1.58,.1],[.5,1.72,.085]],tailN:3,
+    legs:mkLegs([-.05],.95,.14,.5,.52,.14,0),pole:[-1,0,.05],arms:true}));
+  B.push(finish({name:'hexapod',family:'hex',color:'#4f6b3a',accent:'#d9c36a',note:'insect, tripod gait',mouth:'romo',h:.2,elev:.55,pole:[-.2,1,.5],
+    nodes:[[-.4,.2,.07],[-.3,.22,.1],[-.15,.22,.1],[0,.2,.08],[.12,.2,.075],[.25,.21,.07],[.34,.22,.07],[.42,.22,.06]],tailN:1,
+    legs:mkLegs([-.12,0,.12],.2,.07,.2,.26,.025,.2,[-.12,0,.12]),fr:[.5,1.2,2.4]}));
+  B.push(finish({name:'octopod',family:'oct',color:'#3d3636',accent:'#c25b3a',note:'spider, metachronal wave',mouth:'romo',h:.24,elev:.5,pole:[0,1,.3],
+    nodes:[[-.45,.3,.07],[-.3,.32,.17],[-.14,.31,.2],[0,.29,.13],[.14,.27,.11],[.26,.26,.1],[.33,.26,.08],[.4,.26,.075]],tailN:1,
+    legs:mkLegs([-.1,-.03,.04,.11],.25,.08,.3,.42,.03,.42,[-.3,-.12,.12,.3]),fr:[.4,.9,1.6]}));
+  const cn=[];for(let i=0;i<14;i++)cn.push([-.9+i*.13,.1,i===13?.065:.055]);
+  B.push(finish({name:'centipede',family:'myria',color:'#a5532f',accent:'#e0b04a',note:'seven leg pairs, metachronal wave',mouth:'romo',h:.1,elev:.85,pole:[0,1,.5],nodes:cn,tailN:0,
+    legs:mkLegs([-.42,-.28,-.14,0,.14,.28,.42],.09,.04,.07,.11,.03,.11),fr:[.4,.8,1.4],spineMul:1.3}));
+  B.push(finish({name:'three-legged oddity',family:'three',color:'#7a5a8a',accent:'#e6c3a0',note:'one long leg, two short; clumsy but never stuck',mouth:'pico',h:.5,roll0:-.22,lurch:.35,
+    nodes:[[-.55,.5,.03],[-.4,.55,.09],[-.2,.6,.21],[.1,.62,.23],[.35,.6,.15],[.5,.7,.1],[.62,.85,.08],[.74,.9,.09]],
+    pole:[-.6,1,.12],legs:[{x:.3,y:.5,z:.2,fz:0,a:.22,b:.25,w:.09,side:-1,station:2},{x:-.3,y:.5,z:.2,fz:0,a:.28,b:.3,w:.09,side:-1,station:0},{x:0,y:.5,z:.22,fz:0,a:.4,b:.45,w:.11,side:1,station:1}],fr:[.4,.8,1.3]}));
+  return B;
+}
+// ---------------------------------------------------------------- styles
+// Offsets order for quads: LH RH LF RF (left = side -1). All numbers are STARTING VALUES.
+// beta duty, k stride multiplier, bob/height/lift fractions of hip height h, roll/pitch/rock/spine/head radians.
+const Q=(name,pat,o)=>({name,pat,off:null,lag:0,gap:0,beta:.6,k:1,bob:.02,bobPhase:0,bob2:false,roll:.02,pitch:0,rock:.01,height:.95,spine:.02,head:.02,pump:0,lift:.12,wide:0,law:'a42',bank:0,bend:0,lead:0,lurch:0,...o});
+const A42={ // owner's picks (docs/DESIGN.md A42) ported per body plan
+ 'quad.walk':Q('diagonal sprawl walk','quad',{off:[0,.5,.75,.25],beta:.70,k:.95,bob:.025,roll:.06,rock:.02,height:.64,spine:.16,lift:.12,wide:.18}),
+ 'quad.canter':Q('canter (three-beat)','quad',{off:[0,.32,.32,.66],beta:.29,k:1.35,bob:.07,bobPhase:.5,roll:.035,pitch:-.02,rock:.095,height:.86,spine:.045,head:.03,lift:.22}),
+ 'quad.gallop':Q('rotary gallop','quad',{off:[0,.12,.62,.5],beta:.25,k:1.55,bob:.10,bobPhase:.5,roll:.035,pitch:-.04,rock:.07,height:.86,spine:.08,head:.035,lift:.24}),
+ 'biped.walk':Q('bird walk','biped',{beta:.62,k:1,bob:.03,bob2:true,roll:.03,pitch:.03,rock:.015,height:.95,spine:.01,head:.03,pump:.06,lift:.15}),
+ 'biped.canter':Q('bird run','biped',{beta:.40,k:1.3,bob:.08,bobPhase:.5,bob2:true,roll:.03,pitch:.12,rock:.03,height:.92,spine:.01,head:.02,pump:.04,lift:.24}),
+ 'biped.gallop':Q('fast run','biped',{beta:.30,k:1.5,bob:.10,bobPhase:.5,bob2:true,roll:.03,pitch:.2,rock:.04,height:.9,spine:.01,head:.02,pump:.02,lift:.28}),
+ 'hop.walk':Q('gather-hop shuffle','hop',{gap:.06,beta:.56,k:.75,bob:.07,bobPhase:.5,roll:.01,pitch:.06,rock:.09,height:.82,spine:.03,head:.03,lift:.12}),
+ 'hop.canter':Q('hop','hop',{gap:.03,beta:.46,k:1.1,bob:.12,bobPhase:.5,roll:.01,pitch:.04,rock:.1,height:.8,spine:.04,head:.03,lift:.2}),
+ 'hop.gallop':Q('long hop','hop',{gap:0,beta:.36,k:1.4,bob:.16,bobPhase:.5,roll:.01,pitch:.02,rock:.12,height:.78,spine:.05,head:.035,lift:.26}),
+ 'hex.walk':Q('low tripod walk','tripod',{beta:.66,k:.9,bob:.01,bob2:true,roll:.02,rock:.01,height:.8,spine:.04,head:.01,lift:.14,wide:0}),
+ 'hex.canter':Q('fast tripod','tripod',{beta:.54,k:1.1,bob:.015,bob2:true,roll:.025,rock:.01,height:.88,spine:.04,head:.01,lift:.16}),
+ 'hex.gallop':Q('sprint tripod','tripod',{beta:.5,k:1.2,bob:.02,bob2:true,roll:.03,rock:.01,height:.9,spine:.04,head:.01,lift:.16}),
+ 'oct.walk':Q('metachronal wave','wave',{lag:.12,beta:.68,k:.85,bob:.008,bob2:true,roll:.015,height:.85,spine:.01,head:.01,lift:.12}),
+ 'oct.canter':Q('quick wave','wave',{lag:.10,beta:.6,k:1,bob:.01,bob2:true,roll:.02,height:.88,spine:.01,head:.01,lift:.14}),
+ 'oct.gallop':Q('fast wave','wave',{lag:.085,beta:.56,k:1.1,bob:.012,bob2:true,roll:.02,height:.9,spine:.01,head:.01,lift:.14}),
+ 'myria.walk':Q('slow body wave','wave',{lag:.075,beta:.7,k:.8,bob:.006,bob2:true,roll:.01,height:.9,spine:.12,head:.01,lift:.1}),
+ 'myria.canter':Q('quick body wave','wave',{lag:.06,beta:.62,k:.95,bob:.008,bob2:true,roll:.01,height:.92,spine:.12,head:.01,lift:.12}),
+ 'myria.gallop':Q('fast body wave','wave',{lag:.05,beta:.56,k:1.1,bob:.01,bob2:true,roll:.01,height:.94,spine:.1,head:.01,lift:.12}),
+ 'three.walk':Q('lurching tripod','three',{off:[0,.37,.72],beta:.62,k:.8,bob:.05,roll:.08,pitch:.03,rock:.05,height:.9,spine:.03,head:.08,lift:.2,lurch:.35}),
+ 'three.canter':Q('scramble','three',{off:[0,.37,.72],beta:.5,k:.95,bob:.07,bobPhase:.3,roll:.1,pitch:.04,rock:.06,height:.9,spine:.04,head:.08,lift:.22,lurch:.4}),
+ 'three.gallop':Q('hurried hobble','three',{off:[0,.37,.72],beta:.42,k:1.05,bob:.09,bobPhase:.3,roll:.1,pitch:.05,rock:.07,height:.9,spine:.05,head:.08,lift:.24,lurch:.45})
+};
+// Per-body overrides: gaits a body plan cannot do are replaced by its own faster version.
+const AMBLE=(name,beta,k)=>Q(name,'quad',{off:[0,.5,.18,.68],beta,k,bob:.015,roll:.05,rock:.015,height:.92,spine:.02,head:.015,lift:.09});
+const SCURRY=(name,beta,k,spine)=>Q(name,'quad',{off:[0,.5,.75,.25],beta,k,bob:.012,roll:.04,rock:.015,height:.64,spine,head:.03,lift:.1,wide:.18});
+function a42Base(body,gait){
+  let s={...A42[body.family+'.'+gait]};
+  if(body.family==='quad'){
+    if(body.columnar&&gait==='walk')s={...s,name:body.name==='heavy quadruped'?'heavy diagonal walk (no sprawl)':'diagonal walk (no sprawl)',height:.92,spine:.03,roll:.04,wide:0,lift:.1};
+    if(body.name==='heavy quadruped'&&gait!=='walk')s=gait==='canter'?AMBLE('heavy amble (no flight)',.62,1.1):AMBLE('heavy fast rack (no flight)',.54,1.2);
+    if(body.name==='sprawling lizard')s=gait==='walk'?{...s,name:'salamander wiggle',spine:.28,height:.64,roll:.04}:gait==='canter'?SCURRY('lizard scurry',.6,1.15,.3):SCURRY('fast scurry',.52,1.25,.24);
+    if(body.name==='small fast quadruped'&&gait==='gallop')s={...s,name:'bounding gallop',off:[0,.06,.5,.56],spine:.16,beta:.28};
+    if(body.name==='small fast quadruped'&&gait==='canter')s={...s,spine:.1};
+    if(body.name==='hatchling'||body.name==='long-necked quadruped')s={...s,head:Math.max(s.head,.07)};
+  }
+  return Q(s.name,s.pat,s);
+}
+const clampBeta=(body,s)=>{const f=body.family,lo=body.noFlight||f==='hex'||f==='oct'||f==='myria'?.5:f==='three'?.38:.18;return clamp(s.beta,lo,.9);};
+// Froude default = gait lab rules (docs/evidence/loco/gaitlab.md "Rules to port").
+function froudeBase(body,gait,Fr){
+  const f=body.family,fl=1;let s;
+  const noAir=body.noFlight;
+  if(f==='quad'||f==='three'){
+    if(gait==='walk'||noAir){s=Q('lateral-sequence walk',f==='quad'?'quad':'three',{off:f==='quad'?[.5,0,.75,.25]:[0,1/3,2/3],beta:clamp(.78-.46*Math.min(Fr,.5),.55,.78),law:'walk',bob:.02,height:.965,roll:.02,rock:.01,spine:.02,head:.02,lift:.12});}
+    else if(gait==='canter'){s=Q('trot',f==='quad'?'quad':'three',{off:f==='quad'?[0,.5,.5,0]:[0,1/3,2/3],beta:clamp(.48*Math.pow(Fr/.5,-.25),.28,.48),law:'trot',bob:.09,height:.94,roll:.025,rock:.02,spine:.025,head:.025,lift:.2});}
+    else {s=Q('gallop',f==='quad'?'quad':'three',{off:f==='quad'?[0,.1,.5,.6]:[0,1/3,2/3],beta:clamp(.32*Math.pow(Fr/2.5,-.3),.2,.32),law:'gallop',bob:.10,bobPhase:.5,height:.93,roll:.03,pitch:-.03,rock:.07,spine:.045*Math.pow(Fr/2.5,.3),head:.03,lift:.24});}
+    if(f==='three'){s.name='Froude '+s.name+' (tripod offsets)';s.beta=Math.max(s.beta,.5);}
+  }else if(f==='biped'||f==='hop'){
+    if(gait==='walk')s=Q('walk','biped',{beta:clamp(.78-.46*Math.min(Fr,.5),.55,.78),law:'walk',bob:.02,bob2:true,height:.965,roll:.02,spine:.01,head:.02,lift:.12});
+    else s=Q(gait==='canter'?'run':'fast run','biped',{beta:clamp(.48*Math.pow(Fr/.5,-.3),.22,.48),law:gait==='canter'?'trot':'gallop',bob:gait==='canter'?.09:.10,bobPhase:.5,bob2:true,height:.92,pitch:.12*clamp((Fr-.4)/2.6,0,1),roll:.025,rock:.03,spine:.01,head:.02,lift:gait==='canter'?.2:.24});
+  }else if(f==='hex'){
+    s=Q('tripod','tripod',{beta:clamp(.62-.05*Fr,.52,.62),law:gait==='gallop'?'gallop':'trot',bob:.008,bob2:true,height:.95,roll:.015,spine:.01,head:.01,lift:.12});
+  }else{ // oct and myria: metachronal wave
+    s=Q('metachronal wave','wave',{lag:Math.max(.08,.22*Math.pow(Fr/.05,-.23)),beta:clamp(.7-.08*Math.log10(Fr/.05),.55,.75),law:gait==='gallop'?'gallop':'trot',bob:.006,bob2:true,height:.95,roll:.01,spine:f==='myria'?.06:.01,head:.01,lift:.12});
+  }
+  s.k=1;if(body.noFlight)s.beta=Math.max(s.beta,.5);return s;
+}
+function variantStyle(body,gait,variant,Fr){
+  if(variant===3){const s=froudeBase(body,gait,Fr);s.beta=clampBeta(body,s);return s;}
+  const s=a42Base(body,gait);
+  if(variant===1){s.name+=' · longer, lower';s.k*=1.25;s.height=Math.max(.4,s.height*.8,.5*Math.min(...body.legs.map(l=>l.a+l.b))/(body.h*body.hs));s.bob*=.8;s.lift*=.9;}
+  if(variant===2){s.name+=' · bouncier';s.bob=s.bob*1.9+.01;s.lift*=1.5;s.beta-=.07;s.rock*=1.5;s.pitch*=1.3;s.roll*=1.2;}
+  s.beta=clampBeta(body,s);
+  return s;
+}
+// Row speeds are Froude scaled: v = sqrt(Fr g h).
+function rowSpeed(body,gait){const Fr=body.fr[gait==='walk'?0:gait==='canter'?1:2];return {Fr,v:Math.sqrt(Fr*G*body.h)};}
+const RULES={
+ quad:{walk:'4-leg: diagonal sprawl walk',canter:'4-leg: three-beat canter',gallop:'4-leg: rotary gallop'},
+ biped:{walk:'2-leg: alternating walk, head pump',canter:'2-leg: run (flight)',gallop:'2-leg: fast run, not a quadruped gallop'},
+ hop:{walk:'2-leg: gather-hop, feet nearly together',canter:'2-leg: hop',gallop:'2-leg: long hop, never alternating'},
+ hex:{walk:'6-leg: low tripod',canter:'6-leg: fast tripod, not a gallop',gallop:'6-leg: sprint tripod, not a gallop'},
+ oct:{walk:'8-leg: metachronal wave',canter:'8-leg: quicker wave',gallop:'8-leg: fastest wave, not a gallop'},
+ myria:{walk:'14-leg: body wave',canter:'14-leg: quicker wave',gallop:'14-leg: fastest wave, not a gallop'},
+ three:{walk:'3-leg: lurching tripod, always moving',canter:'3-leg: scramble',gallop:'3-leg: hurried hobble'}};
+const BODY_RULES={'heavy quadruped':'no flight: fast = amble / rack','sprawling lizard':'no flight: fast = scurry, more body wave','small fast quadruped':'gallop = bound with big spine flex'};
+// ---------------------------------------------------------------- motion plan
+// Pieces: line (len,v0,v1), arc (signed ang, R, v0, v1), pivot (signed ang, w). +ang = left turn.
+function buildPlan(body,row,variant,v){
+  if(row!=='turn')return {pieces:[{k:'line',len:v*4,v0:v,v1:v}],radius:null,sharp:null};
+  const BL=body.bodyLen,R=3*BL,pieces=[],P=Math.PI/180;
+  const wp=clamp(.28*Math.sqrt(G/body.h),.6,3);
+  const arcs=(dir)=>({k:'arc',ang:dir*120*P,R,v0:v,v1:v,main:true});
+  const sharp=dir=>{
+    if(variant===0)return [{k:'arc',ang:dir*150*P,R:BL,v0:v,v1:.6*v,sharp:true},{k:'line',len:.5*BL,v0:.6*v,v1:v}];
+    if(variant===1)return [{k:'arc',ang:dir*150*P,R:2*BL,v0:v,v1:v,sharp:true},{k:'line',len:.3*BL,v0:v,v1:v}];
+    if(variant===2){const T=.9;return [{k:'line',len:.5*v*T,v0:v,v1:0},{k:'pivot',ang:dir*150*P,w:wp,sharp:true},{k:'line',len:.5*v*T,v0:0,v1:v}];}
+    return [{k:'arc',ang:dir*150*P,R:1.2*BL,v0:v,v1:.75*v,sharp:true},{k:'line',len:.5*BL,v0:.75*v,v1:v}];
+  };
+  pieces.push(arcs(1),{k:'line',len:.8*BL,v0:v,v1:v},...sharp(-1),arcs(-1),{k:'line',len:.8*BL,v0:v,v1:v},...sharp(1));
+  return {pieces,radius:R,sharp:150};
+}
+function pieceDur(p){if(p.k==='line')return p.len/((p.v0+p.v1)/2);if(p.k==='arc')return Math.abs(p.ang)*p.R/((p.v0+p.v1)/2);return Math.abs(p.ang)/p.w+.5;}
+class Path{
+  constructor(plan,rests,w){
+    this.dtt=1/480;let total=0;const ps=plan.pieces.map(p=>({...p,T:pieceDur(p)}));ps.forEach(p=>{p.t0=total;total+=p.T;});
+    const N=Math.max(4,Math.round(total/this.dtt));this.N=N;this.dtt=total/N;this.P=total;
+    const X=new Float64Array(N+1),Z=new Float64Array(N+1),Ps=new Float64Array(N+1),Ph=new Float64Array(N+1),S=new Float32Array(N+1),F=new Float32Array(N+1),Vv=new Float32Array(N+1),Wv=new Float32Array(N+1);
+    let x=0,z=0,psi=0,phi=0,pi=0;this.phi0=3.2;this.arcs=[];
+    const state=(i)=>{const t=Math.min(i*this.dtt,total-1e-9);while(pi<ps.length-1&&t>=ps[pi].t0+ps[pi].T)pi++;const p=ps[pi],u=(t-p.t0)/p.T;let v=0,om=0;
+      if(p.k==='line'){v=p.v0+(p.v1-p.v0)*u;}
+      else if(p.k==='arc'){v=p.v0+(p.v1-p.v0)*u;om=Math.sign(p.ang)*v/p.R;}
+      else{const Tr=.5,tau=t-p.t0,e=Math.min(1,tau/Tr,(p.T-tau)/Tr);om=Math.sign(p.ang)*p.w*clamp(e,0,1);}
+      return [v,om,pi];};
+    const piece0=new Array(N+1);
+    for(let i=0;i<=N;i++){
+      const [v,om,idx]=state(i);X[i]=x;Z[i]=z;Ps[i]=psi;Ph[i]=phi;piece0[i]=idx;Vv[i]=v;Wv[i]=om;
+      // effective foot speed: fastest foot rest point (outer feet reach further on arcs, pivot steps on the spot)
+      let veff=0;for(const [rx,rz] of rests){veff=Math.max(veff,Math.hypot(v+om*rz,om*rx));}
+      veff=Math.max(veff,.15*w.vnom);const st=w.strideFor(veff);S[i]=st;F[i]=veff/st;
+      if(i<N){const dt=this.dtt;const m=psi+om*dt/2;x+=v*Math.cos(m)*dt;z-=v*Math.sin(m)*dt;psi+=om*dt;phi+=F[i]*dt;}
+    }
+    this.X=X;this.Z=Z;this.Psi=Ps;this.Phi=Ph;this.S=S;this.F=F;this.V=Vv;this.W=Wv;this.piece=piece0;this.pieces=ps;this.Phi_P=Ph[N];
+    this.bases=[{x:0,z:0,psi:0}];
+    this.endX=X[N];this.endZ=Z[N];this.endPsi=Ps[N];
+  }
+  base(k){while(this.bases.length<=k){const b=this.bases[this.bases.length-1],c=Math.cos(b.psi),s=Math.sin(b.psi);this.bases.push({x:b.x+this.endX*c+this.endZ*s,z:b.z-this.endX*s+this.endZ*c,psi:b.psi+this.endPsi});}return this.bases[k];}
+  sample(t,out){
+    const k=Math.floor(t/this.P),tau=t-k*this.P;let f=tau/this.dtt;let i=Math.floor(f);if(i>=this.N){i=this.N-1;}const u=f-i;
+    const lx=this.X[i]+(this.X[i+1]-this.X[i])*u,lz=this.Z[i]+(this.Z[i+1]-this.Z[i])*u,lp=this.Psi[i]+(this.Psi[i+1]-this.Psi[i])*u;
+    const b=this.base(k),c=Math.cos(b.psi),s=Math.sin(b.psi);
+    out.x=b.x+lx*c+lz*s;out.z=b.z-lx*s+lz*c;out.psi=b.psi+lp;
+    out.phi=this.phi0+k*this.Phi_P+this.Phi[i]+(this.Phi[i+1]-this.Phi[i])*u;
+    out.v=this.V[i];out.w=this.W[i];out.f=this.F[i];out.stride=this.S[i];out.piece=this.piece[i];out.k=k;return out;
+  }
+  timeOfPhi(phi){
+    const rel=phi-this.phi0;let k=Math.floor(rel/this.Phi_P);if(k<0)return 0;
+    const target=rel-k*this.Phi_P;let lo=0,hi=this.N;while(hi-lo>1){const m=(lo+hi)>>1;if(this.Phi[m]<=target)lo=m;else hi=m;}
+    const d=this.Phi[hi]-this.Phi[lo],u=d>1e-12?(target-this.Phi[lo])/d:0;return k*this.P+(lo+u)*this.dtt;
+  }
+}
+// ---------------------------------------------------------------- IK
+function ik(P,T,a,b,pole,out){const d=temp.copy(T).sub(P);let dist=d.length();const reach=a+b-1e-4,minr=Math.abs(a-b)+1e-4;out.clamped=dist>reach||dist<minr;dist=clamp(dist,minr,reach);const u=d.normalize(),along=(a*a-b*b+dist*dist)/(2*dist),hgt=Math.sqrt(Math.max(0,a*a-along*along));const pd=pole.clone().addScaledVector(u,-pole.dot(u));if(pd.lengthSq()<1e-8)pd.set(0,0,1).addScaledVector(u,-u.z);pd.normalize();out.knee.copy(P).addScaledVector(u,along).addScaledVector(pd,hgt);out.foot.copy(P).addScaledVector(u,dist);out.pole=pd;}
+// ---------------------------------------------------------------- walker
+function legOffsets(body,s){
+  return body.legs.map((l,i)=>{switch(s.pat){
+    case 'quad':return s.off[l.station*2+(l.side>0?1:0)];
+    case 'biped':return l.side>0?.5:0;
+    case 'hop':return l.side>0?s.gap:0;
+    case 'tripod':return ((l.station+(l.side>0?1:0))%2)*.5;
+    case 'wave':return frac(l.station*s.lag+(l.side>0?.5:0));
+    default:return s.off[i];}});
+}
+class Walker{
+  constructor(body,row,variant,visual=false){
+    this.b=body;this.row=row;this.variant=variant;this.visual=visual;this.t=0;this.h=body.h;
+    const gait=row==='turn'?'walk':row;this.gait=gait;const sp=rowSpeed(body,gait);this.vnom=sp.v;this.Fr=sp.Fr;
+    let s=variantStyle(body,gait,row==='turn'?(variant===3?3:0):variant,sp.Fr);
+    if(row==='turn'){ // turn variants share the walk gait; the path and body language differ
+      if(variant===0){s.bank=.8;s.bend=.9;s.lead=1;s.name+=' · leans, head leads';}
+      if(variant===1)s.name+=' · wide arc';
+      if(variant===2)s.name+=' · pivots on the spot';
+      if(variant===3)s.name+=' · plain';
+    }
+    this.s=s;this.beta=s.beta;
+    const cxs=body.legs.reduce((a,l)=>a+l.x,0)/body.legs.length,cys=body.legs.reduce((a,l)=>a+l.y,0)/body.legs.length;this.cx=cxs;this.cy=cys;
+    this.legs=body.legs.map((l,i)=>{const o={...l,i,off:0,hip:V(),target:V(),plant:V(),out:{knee:V(),foot:V()},cyc:null,nextCyc:null,next:V(),stance:false,wasStance:false,lastFoot:V(),touches:[]};
+      o.rx=l.x+l.fx-cxs;o.rz=l.side*(l.z+l.fz+s.wide*body.h);o.local=new THREE.Vector3(l.x-cxs,l.y-cys,l.side*l.z);return o;});
+    const offs=legOffsets(body,s);this.legs.forEach((l,i)=>l.off=offs[i]);
+    // analytic flight: part of the cycle with no foot down
+    let air=0;for(let n=0;n<3600;n++)if(!this.legs.some(l=>frac(n/3600-l.off)<this.beta))air++;this.flightFrac=air/3600;this.flight=this.flightFrac>.005;
+    // caps: reach (stance travel) and neighbour crossing
+    const lim0=.985*.96;let minHalf=Infinity;const hy0=body.h*Math.min(1,s.height*body.hs);
+    for(const l of this.legs){const L=(l.a+l.b)*lim0,dz=l.fz+s.wide*body.h,hy=Math.min(l.y-cys+hy0,.8*Math.sqrt(Math.max(0,L*L-dz*dz)));const half=Math.sqrt(Math.max(0,L*L-dz*dz-hy*hy))-Math.abs(l.fx);minHalf=Math.min(minHalf,Math.max(half,.08*L));}
+    this.capReach=1.85*minHalf/this.beta;
+    this.crossLimit=Infinity;
+    for(const side of [-1,1]){const pair=this.legs.filter(l=>l.side===side).sort((p,q)=>p.rx-q.rx);
+      for(let k=1;k<pair.length;k++){const back=pair[k-1],front=pair[k],gap=front.rx-back.rx;
+        for(let j=0;j<720;j++){const qb=frac(j/720-back.off),qf=frac(j/720-front.off);if(qb<this.beta-1e-8&&qf<this.beta-1e-8&&qb-qf<-1e-8)this.crossLimit=Math.min(this.crossLimit,.96*gap/(qf-qb));}}}
+    this.plan=buildPlan(body,row,variant,sp.v);
+    this.path=new Path(this.plan,this.legs.map(l=>[l.rx,l.rz]),this);
+    this.cur={};this.tmp={};this.resetMetrics();this.mask=0;this.stanceCount=0;this.hist=new Uint32Array(2048);this.hn=0;
+    if(visual&&this.build)this.build();
+  }
+  strideFor(veff){const s=this.s,h=this.h,Fr=veff*veff/(G*h);let st;
+    switch(s.law){case 'walk':st=2.3*Math.pow(Math.min(Fr,.5),.3)*h;break;case 'trot':st=2.3*Math.pow(Math.min(Fr,6),.3)*h;break;case 'gallop':st=1.9*Math.pow(Math.min(Fr,6),.4)*h;break;default:st=2.3*Math.pow(Math.min(Fr,.65),.3)*h*s.k;}
+    return Math.max(.05*h,Math.min(st,this.capReach,this.crossLimit));}
+  resetMetrics(){this.m={n:0,air:0,slip:0,kneeBad:0,cross:0,below:0,clamp:0,float:0,stN:0,hipMin:Infinity,hipMax:-Infinity};this.legs.forEach(l=>{l.slipMax=0;});}
+  plantFor(l,cyc,out){const phiMid=cyc+l.off+this.beta/2,t=Math.max(0,this.path.timeOfPhi(phiMid)),S=this.path.sample(t,this.tmp),c=Math.cos(S.psi),sn=Math.sin(S.psi);
+    out.set(S.x+l.rx*c+l.rz*sn,0,S.z-l.rx*sn+l.rz*c);return out;}
+  step(dt){this.t+=dt;this.pose();}
+  pose(){
+    const s=this.s,h=this.h,beta=this.beta,S=this.path.sample(this.t,this.cur),phi=S.phi,theta=TAU*phi,body=this.b;
+    this.S=S;let wR=0,wL=0,wMax=0,nSt=0;let mask=0;
+    for(const l of this.legs){const cyc=Math.floor(phi-l.off),q=phi-l.off-cyc,st=q<beta;
+      if(l.cyc===null||cyc<l.cyc){this.plantFor(l,cyc,l.plant);l.cyc=cyc;l.nextCyc=null;}
+      if(st){if(l.cyc!==cyc){this.plantFor(l,cyc,l.plant);l.cyc=cyc;l.nextCyc=null;l.touches.push([this.t,l.plant.x,l.plant.z]);if(l.touches.length>8)l.touches.shift();if(this.visual&&this.mark)this.mark(l);}
+        l.target.copy(l.plant);const w=Math.sin(Math.PI*q/beta);wMax=Math.max(wMax,w);if(l.side>0)wR=Math.max(wR,w);else wL=Math.max(wL,w);nSt++;mask|=1<<l.i;}
+      else{if(l.nextCyc!==cyc+1){this.plantFor(l,cyc+1,l.next);l.nextCyc=cyc+1;}
+        const u=(q-beta)/(1-beta),e=.5-.5*Math.cos(Math.PI*u);l.target.set(l.plant.x+(l.next.x-l.plant.x)*e,h*s.lift*Math.sin(Math.PI*u),l.plant.z+(l.next.z-l.plant.z)*e);}
+      l.stance=st;}
+    this.stanceCount=nSt;this.mask=mask;
+    const bob2=s.bob2?2:1,wave=Math.sin(bob2*theta+TAU*s.bobPhase);
+    const lurch=1+s.lurch*Math.sin(theta*1.5+1);
+    const roll=(body.roll0||0)+s.roll*(wR-wL)*(body.family==='three'?lurch:1)-s.bank*S.v*S.w/G;
+    const pitch=s.pitch+s.rock*Math.sin(theta);
+    const hs=body.hs;let y=h*Math.min(1.02,s.height*hs)+h*s.bob*(this.flight?(1-wMax):wave)*(body.family==='three'?lurch:1);
+    const qt=new THREE.Quaternion().setFromEuler(new THREE.Euler(roll,0,pitch)),qy=new THREE.Quaternion().setFromAxisAngle(Yax,S.psi),quat=qy.clone().multiply(qt);
+    const waveK=(body.family==='myria'?TAU*s.lag/.14:1.7/h*1.0);const amp=h*s.spine*(body.spineMul||1);
+    const displace=l=>new THREE.Vector3(0,0,amp*Math.sin(theta+waveK*l.local.x));
+    const root=new THREE.Vector3(S.x,0,S.z);
+    for(let iter=0;iter<10;iter++){let need=0;for(const l of this.legs){l.hip.copy(l.local).add(displace(l)).applyQuaternion(quat).add(root);l.hip.y+=y;const L=(l.a+l.b)*.985,dx=l.hip.x-l.target.x,dz=l.hip.z-l.target.z,hor=dx*dx+dz*dz;
+      if(hor<L*L)need=Math.max(need,l.hip.y-l.target.y-Math.sqrt(L*L-hor));else need=Math.max(need,.1*h);}
+      if(need<=1e-10)break;y-=need;}
+    this.hipY=y;this.pitch=pitch;this.roll=roll;this.theta=theta;this.quat=quat;this.rootY=y;this.amp=amp;this.waveK=waveK;
+    const m=this.m;m.n++;if(!nSt)m.air++;if(!nSt&&!this.flight)m.float++;m.hipMin=Math.min(m.hipMin,y/h);m.hipMax=Math.max(m.hipMax,y/h);m.stN+=nSt;
+    for(const l of this.legs){l.hip.copy(l.local).add(displace(l)).applyQuaternion(quat).add(root);l.hip.y+=y;
+      const pv=body.family==='quad'&&body.pole[0]===-1&&s.height*hs<.65?[0,1,.8]:body.pole;
+      const pole=new THREE.Vector3(pv[0],pv[1],pv[2]*l.side).applyQuaternion(quat);ik(l.hip,l.target,l.a,l.b,pole,l.out);
+      if(l.out.clamped)m.clamp++;
+      if(l.stance){const d=l.out.foot.distanceTo(l.plant)*100;l.slipMax=Math.max(l.slipMax,d);m.slip=Math.max(m.slip,d);if(l.wasStance){const d2=l.out.foot.distanceTo(l.lastFoot)*100;m.slip=Math.max(m.slip,d2);}l.lastFoot.copy(l.out.foot);}
+      l.wasStance=l.stance;
+      const chord=l.out.foot.clone().sub(l.hip).normalize(),kv=l.out.knee.clone().sub(l.hip),off=kv.clone().addScaledVector(chord,-kv.dot(chord));if(off.dot(l.out.pole)<-1e-8)m.kneeBad++;
+      if(l.out.foot.y<-1e-6||l.out.knee.y<-1e-6)m.below++;}
+    for(const side of [-1,1]){const lg=this.legs.filter(l=>l.side===side).sort((p,q)=>p.rx-q.rx);for(let i=1;i<lg.length;i++){if(lg[i].stance&&lg[i-1].stance){const c=Math.cos(S.psi),sn=Math.sin(S.psi);const dx=(lg[i].out.foot.x-lg[i-1].out.foot.x)*c-(lg[i].out.foot.z-lg[i-1].out.foot.z)*sn;if(dx<.01*h)m.cross++;}}}
+    this.hist[this.hn++%2048]=mask;
+    if(this.visual&&this.draw)this.draw();
+  }
+}
+
+// ---------------------------------------------------------------- self-check
+// Every body x row x variant. Kinematic checks on the actual IK output (not a dynamics or taste score).
+function circumR(a,b,c){const ab=Math.hypot(b[0]-a[0],b[1]-a[1]),bc=Math.hypot(c[0]-b[0],c[1]-b[1]),ca=Math.hypot(a[0]-c[0],a[1]-c[1]);const area=Math.abs((b[0]-a[0])*(c[1]-a[1])-(c[0]-a[0])*(b[1]-a[1]))/2;return area<1e-9?Infinity:ab*bc*ca/(4*area);}
+function checkWalker(w){
+  const fails=[],dt=1/240,P=w.path.P;const straight=w.row!=='turn';
+  const settle=straight?2:P*1.0,measure=straight?4:P;
+  for(let t=0;t<settle;t+=dt)w.step(dt);w.resetMetrics();
+  for(let t=0;t<measure;t+=dt)w.step(dt);
+  const m=w.m,r={body:w.b.name,row:w.row,variant:vname(w.row,w.variant),gait:w.s.name,beta:w.beta,flightAnalytic:w.flightFrac,flightMeasured:m.air/m.n,slipCm:m.slip,kneeBad:m.kneeBad,float:m.float,below:m.below,clamp:m.clamp,cross:m.cross,hipMin:m.hipMin,hipMax:m.hipMax,hz:w.path.F[0],stride:w.path.S[0],Fr:w.Fr,v:w.vnom};
+  if(m.slip>2)fails.push('stance foot drift '+m.slip.toFixed(2)+' cm');
+  if(m.kneeBad)fails.push('reversed knee frames '+m.kneeBad);
+  if(m.float)fails.push('floating frames '+m.float);
+  if(m.below)fails.push('joint below ground '+m.below);
+  if(m.clamp)fails.push('IK clamp '+m.clamp);
+  if(Math.abs(m.air/m.n-w.flightFrac)>.03)fails.push('flight '+(m.air/m.n).toFixed(3)+' vs analytic '+w.flightFrac.toFixed(3));
+  if(straight&&m.cross)fails.push('same-side feet crossed '+m.cross);
+  if(!straight){
+    const pa=w.path,arcs=pa.pieces.filter(p=>p.main),sh=pa.pieces.filter(p=>p.sharp);r.radii=[];r.sharpDeg=[];
+    for(const p of arcs){const i0=Math.round(p.t0/pa.dtt),i1=Math.min(pa.N,Math.round((p.t0+p.T)/pa.dtt)),im=(i0+i1)>>1;const R=circumR([pa.X[i0],pa.Z[i0]],[pa.X[im],pa.Z[im]],[pa.X[i1],pa.Z[i1]]);r.radii.push(R);if(Math.abs(R-pa.pieces[0].R)/pa.pieces[0].R>.03)fails.push('turn radius '+R.toFixed(2)+' vs '+pa.pieces[0].R.toFixed(2));}
+    for(const p of sh){const i0=Math.round(p.t0/pa.dtt),i1=Math.min(pa.N,Math.round((p.t0+p.T)/pa.dtt));const d=Math.abs(pa.Psi[i1]-pa.Psi[i0])*180/Math.PI;r.sharpDeg.push(d);if(d<145)fails.push('sharp turn only '+d.toFixed(0)+' deg');
+      if(w.variant===2){const mv=Math.hypot(pa.X[i1]-pa.X[i0],pa.Z[i1]-pa.Z[i0]);if(mv>.15*w.b.bodyLen)fails.push('pivot drifted '+mv.toFixed(2)+' m');}}
+    r.arcRadiusSpec=pa.pieces[0].R;
+  }
+  r.fails=fails;return r;
+}
+function runCheck(BODIES,filter){
+  const table=[],fails=[];
+  for(const b of BODIES){if(filter&&!filter(b))continue;for(const row of ROWS)for(let v=0;v<4;v++){const w=new Walker(b,row,v,false),r=checkWalker(w);table.push(r);for(const f of r.fails)fails.push(`${b.name}/${row}/${r.variant}: ${f}`);}}
+  const bad=new Set(fails.map(f=>f.split(':')[0]));
+  return {pass:!fails.length,cases:table.length,passed:table.length-bad.size,fails,table};
+}
+/*CORE_END*/
+const BODIES=buildBodies(STARTERS);
+const $=id=>document.getElementById(id);
+// ---------------------------------------------------------------- visuals
+const GEO={sphere:new THREE.SphereGeometry(1,12,8),cylinder:new THREE.CylinderGeometry(1,1,1,8),box:new THREE.BoxGeometry(1,1,1)};
+const lam=color=>new THREE.MeshLambertMaterial({color});
+const MAT={near:lam('#e2d6ba'),far:lam('#696f77'),joint:lam('#dfae58'),foot:lam('#89b7b7'),ground:lam('#2d343c'),eye:lam('#151b1c')};
+function mesh(parent,geo,mat,scale,pos){const m=new THREE.Mesh(geo,mat);m.scale.set(...scale);m.position.set(...pos);parent.add(m);return m;}
+function cylinder(m,a,b,r){const d=b.clone().sub(a),len=d.length();m.position.copy(a).addScaledVector(d,.5);m.quaternion.setFromUnitVectors(Yax,d.normalize());m.scale.set(r,len,r);}
+function niceStep(raw){const c=[.01,.02,.05,.1,.25,.5,1,2];return c.reduce((a,b)=>Math.abs(Math.log(b/raw))<Math.abs(Math.log(a/raw))?b:a);}
+const MARKS=6,TRAIL=200;
+Walker.prototype.build=function(){
+  const b=this.b,h=this.h;this.scene=new THREE.Scene();this.scene.background=new THREE.Color('#1b2026');
+  this.scene.add(new THREE.AmbientLight('#ffffff',.8));const light=new THREE.DirectionalLight('#ffffff',.85);light.position.set(-2,4,6);this.scene.add(light);
+  this.cam=new THREE.OrthographicCamera(-2,2,2,-1,.01,500);this.root=new THREE.Group();this.scene.add(this.root);
+  this.skin=lam(b.color);this.accent=lam(b.accent);this.sections=[];const nN=b.nodes.length;
+  b.nodes.forEach((n,i)=>{const g=new THREE.Group();this.root.add(g);const r=n[2];mesh(g,GEO.sphere,i===nN-1?this.accent:this.skin,[r*1.3,r,r],[0,0,0]);this.sections.push(g);});
+  this.links=[];for(let i=1;i<nN;i++)this.links.push(mesh(this.root,GEO.cylinder,this.skin,[1,1,1],[0,0,0]));
+  this.head=this.sections[nN-1];const hr=b.nodes[nN-1][2];
+  mesh(this.head,GEO.sphere,this.skin,[hr*(b.mouth==='pico'?1.3:.8),hr*.45,hr*.7],[hr*.9,0,0]);
+  for(const side of [-1,1])mesh(this.head,GEO.sphere,MAT.eye,[hr*.19,hr*.19,hr*.12],[hr*.25,hr*.3,side*hr*.88]);
+  for(const e of b.extras)mesh(this.sections[e[0]],GEO.sphere,e[0]===nN-1?this.skin:this.accent,e[1],e[2]);
+  if(b.arms)for(const side of [-1,1])mesh(this.sections[5],GEO.sphere,this.skin,[.045,.15,.045],[.02,-.10,side*.18]);
+  b.armour.forEach(t=>{const i=Math.round(t*7);mesh(this.sections[i],GEO.sphere,this.accent,[b.nodes[i][2]*1.1,.055,b.nodes[i][2]*1.15],[0,b.nodes[i][2]*.8,0]);});
+  const kr=Math.max(.008,h*.03);
+  for(const l of this.legs){const mat=l.side>0?MAT.near:MAT.far;l.upper=mesh(this.scene,GEO.cylinder,mat,[1,1,1],[0,0,0]);l.lower=mesh(this.scene,GEO.cylinder,mat,[1,1,1],[0,0,0]);l.knee=mesh(this.scene,GEO.sphere,MAT.joint,[kr,kr,kr],[0,0,0]);l.toe=mesh(this.scene,GEO.sphere,MAT.foot,[l.w*.65,l.w*.3,l.w*.55],[0,0,0]);}
+  this.ground=mesh(this.scene,GEO.box,MAT.ground,[1,1,1],[0,-.5,0]);
+  const sp=niceStep(b.bodyLen/4);this.sp=sp;const N=41,NZ=this.row==='turn'?41:9,pos=new Float32Array(N*NZ*3);let k=0;for(let i=0;i<N;i++)for(let j=0;j<NZ;j++){pos[k++]=(i-20)*sp;pos[k++]=.001;pos[k++]=(j-(NZ-1)/2)*sp;}
+  const gg=new THREE.BufferGeometry();gg.setAttribute('position',new THREE.BufferAttribute(pos,3));this.dots=new THREE.Points(gg,new THREE.PointsMaterial({color:'#7c868e',size:2.5,sizeAttenuation:false}));this.scene.add(this.dots);
+  this.ground.scale.set(sp*60,.4,this.row==='turn'?sp*60:sp*(NZ+1));
+  const mp=new Float32Array(this.legs.length*MARKS*3).fill(-100);this.markPos=mp;this.markIdx=this.legs.map(()=>0);
+  const mg=new THREE.BufferGeometry();mg.setAttribute('position',new THREE.BufferAttribute(mp,3));this.markGeo=mg;this.scene.add(new THREE.Points(mg,new THREE.PointsMaterial({color:'#edc578',size:5,sizeAttenuation:false})));
+  if(this.row==='turn'){this.trailPos=new Float32Array(TRAIL*3);this.trailN=0;this.trailT=0;const tg=new THREE.BufferGeometry();tg.setAttribute('position',new THREE.BufferAttribute(this.trailPos,3));tg.setDrawRange(0,0);this.trailGeo=tg;const line=new THREE.Line(tg,new THREE.LineBasicMaterial({color:'#5fb3a8'}));line.frustumCulled=false;this.scene.add(line);}
+};
+Walker.prototype.mark=function(l){const idx=l.i*MARKS+(this.markIdx[l.i]++%MARKS);this.markPos[idx*3]=l.plant.x;this.markPos[idx*3+1]=.004;this.markPos[idx*3+2]=l.plant.z;this.markGeo.attributes.position.needsUpdate=true;};
+Walker.prototype.draw=function(){
+  const S=this.S,b=this.b,s=this.s,h=this.h,theta=this.theta,pitch=this.pitch,roll=this.roll,nN=b.nodes.length;
+  this.root.position.set(S.x,this.rootY,S.z);this.root.quaternion.copy(this.quat);
+  const kappa=S.w/Math.max(S.v,.35*this.vnom),bendMax=.35*b.bodyLen;
+  const pivotN=b.nodes[b.tailN],counter=-pitch*.65+.06*Math.sin(theta);
+  const pump=b.pump?s.pump*h*Math.sin(2*theta-.6):0;
+  this.sections.forEach((g,i)=>{const n=b.nodes[i],x=n[0]-this.cx;let y=n[1]-this.cy,px=x;
+    if(i<b.tailN){const dx=n[0]-pivotN[0];px=pivotN[0]-this.cx+dx*Math.cos(counter);y=pivotN[1]-this.cy+dx*Math.sin(counter)+(n[1]-pivotN[1]);}
+    if(b.pump&&i>=nN-3)px+=pump*(i===nN-1?1:.5);
+    const wz=this.amp*Math.sin(theta+this.waveK*x),bz=-clamp(s.bend*kappa*x*x/2,-bendMax,bendMax);
+    g.position.set(px,y,wz+bz);});
+  for(let i=0;i<this.links.length;i++)cylinder(this.links[i],this.sections[i].position,this.sections[i+1].position,Math.min(b.nodes[i][2],b.nodes[i+1][2])*.84);
+  const lead=s.lead?s.lead*clamp(S.w*.35,-.6,.6):0;
+  this.head.rotation.set(-roll,s.head*(b.headMul||1)*Math.sin(theta)+lead,-pitch+Math.min(.10,s.head*.4)*Math.sin(theta));
+  this.sections[0].rotation.set(0,-s.spine*Math.sin(theta),-pitch*.6);
+  for(const l of this.legs){cylinder(l.upper,l.hip,l.out.knee,l.w*.32);cylinder(l.lower,l.out.knee,l.out.foot,l.w*.25);l.knee.position.copy(l.out.knee);l.toe.position.copy(l.out.foot);l.toe.position.y+=l.w*.3;}
+  if(this.trailGeo){this.trailT+=1/240;if(this.trailT>=.05){this.trailT=0;const p=this.trailPos;if(this.trailN<TRAIL)this.trailN++;p.copyWithin(0,3);const k=(TRAIL-1)*3;p[k]=S.x;p[k+1]=.01;p[k+2]=S.z;this.trailGeo.setDrawRange(TRAIL-this.trailN,this.trailN);this.trailGeo.attributes.position.needsUpdate=true;}}
+};
+Walker.prototype.place=function(aspect,turnCam){
+  const b=this.b,S=this.S||{x:0,z:0},sp=this.sp;let W,dir,tgt;
+  this.dots.position.set(Math.round(S.x/sp)*sp,0,this.row==='turn'?Math.round(S.z/sp)*sp:0);this.ground.position.set(S.x,-.2,this.row==='turn'?S.z:0);
+  if(this.row==='turn'){W=Math.max(3.6*b.bodyLen,2.6*b.h,2.4*b.height);dir=turnCam==='top'?new THREE.Vector3(0,1,.001):new THREE.Vector3(0,1.15,.8);tgt=new THREE.Vector3(S.x,0,S.z);
+    const H=W/aspect;this.cam.left=-W/2;this.cam.right=W/2;this.cam.top=H*(turnCam==='top'?.56:.7);this.cam.bottom=-H*(turnCam==='top'?.44:.5);this.cam.up.set(0,turnCam==='top'?0:1,turnCam==='top'?-1:0);}
+  else{W=Math.max(1.7*b.span,2.1*b.height);dir=new THREE.Vector3(.1,b.elev,1);tgt=new THREE.Vector3(S.x,0,S.z);const H=W/aspect;this.cam.left=-W/2;this.cam.right=W/2;const tp=.78-.35*(b.elev-.2);this.cam.top=H*tp;this.cam.bottom=-H*(1-tp);this.cam.up.set(0,1,0);}
+  dir.normalize();this.cam.position.copy(tgt).addScaledVector(dir,200);this.cam.lookAt(tgt);this.cam.updateProjectionMatrix();
+};
+Walker.prototype.dispose=function(){this.skin.dispose();this.accent.dispose();};
+// ---------------------------------------------------------------- state and UI
+const KEY='primigenia-move-styles2-v1';
+let bodyIndex=0,rate=1,paused=false,walkers=[],hovered=0,focused=-1,manual=false,acc=0,turnCam='tq';
+let choices={};try{choices=JSON.parse(localStorage.getItem(KEY)||'{}');if(!choices||typeof choices!=='object'||Array.isArray(choices))choices={};}catch{choices={};}
+const ROWNAME={walk:'Walk',turn:'Turn',canter:'Canter',gallop:'Gallop'};
+const cells=[];ROWS.forEach((row,r)=>{for(let v=0;v<4;v++){const el=document.createElement('button');el.className='cell';el.dataset.row=row;el.setAttribute('aria-pressed','false');
+  el.innerHTML='<span class="title"><b></b> <i></i></span><span class="description"></span><span class="adapt"></span><span class="star" aria-hidden="true"></span><span class="metrics"></span><canvas class="strip" width="156" height="36" aria-hidden="true"></canvas>';
+  el.querySelector('b').textContent=ROWNAME[row];el.querySelector('i').textContent='· '+vname(row,v);const idx=r*4+v;
+  el.addEventListener('pointerenter',()=>hovered=idx);el.addEventListener('focus',()=>hovered=idx);el.addEventListener('click',()=>toggle(idx));$('cells').appendChild(el);cells.push(el);}});
+const renderer=new THREE.WebGLRenderer({canvas:$('gl'),antialias:true,preserveDrawingBuffer:true});renderer.setPixelRatio(1);let W=1,H=1;
+function layout(){const r=$('stage').getBoundingClientRect();W=Math.round(r.width);H=Math.round(r.height);renderer.setSize(W,H,false);}
+function describe(w,i){const row=ROWS[i>>2],b=w.b;let note=i%4===3&&row!=='turn'?'gait-lab Froude rules, no owner style':row==='turn'?`radius R = 3 body lengths = ${(3*b.bodyLen).toFixed(2)} m · one ${w.plan.sharp}° sharp turn`:RULES[b.family][row]+(BODY_RULES[b.name]&&row!=='walk'?' · '+BODY_RULES[b.name]:'')+(b.columnar&&row==='walk'?' · columnar legs: no sprawl':'');return {desc:w.s.name+(w.flight?' · flight':''),note};}
+function selectBody(i){
+  bodyIndex=(i+BODIES.length)%BODIES.length;walkers.forEach(w=>w.dispose());const b=BODIES[bodyIndex];
+  walkers=[];for(const row of ROWS)for(let v=0;v<4;v++)walkers.push(new Walker(b,row,v,true));
+  walkers.forEach(w=>w.pose());for(let n=0;n<150;n++)walkers.forEach(w=>w.step(1/240));
+  $('creature-name').textContent=b.name;$('body-note').textContent=`${b.nLegs} legs · hip ${b.h.toFixed(2)} m · ${b.note} · ${bodyIndex+1} / ${BODIES.length}`;
+  cells.forEach((el,k)=>{const d=describe(walkers[k],k);el.querySelector('.description').textContent=d.desc;el.querySelector('.adapt').textContent=d.note;});updateChoices();
+}
+function selected(name,row){const c=choices[name];return c&&Number.isInteger(c[row])&&c[row]>=0&&c[row]<4?c[row]:-1;}
+function toggle(idx){const name=BODIES[bodyIndex].name,row=ROWS[idx>>2],v=idx&3;const c=choices[name]=choices[name]||{};if(c[row]===v)delete c[row];else c[row]=v;if(!Object.keys(c).length)delete choices[name];
+  try{localStorage.setItem(KEY,JSON.stringify(choices));}catch{$('copy-status').textContent='Storage unavailable. Copy choices before closing.';}updateChoices();}
+function lineFor(b){const parts=ROWS.map(r=>{const v=selected(b.name,r);return r+'='+(v<0?'-':vname(r,v));});return parts.some(p=>!p.endsWith('=-'))?`${b.name}: ${parts.join('; ')}`:'';}
+function choicesText(){return BODIES.map(lineFor).filter(Boolean).join('\n');}
+function updateChoices(){const b=BODIES[bodyIndex];cells.forEach((el,k)=>{const on=selected(b.name,ROWS[k>>2])===(k&3);el.setAttribute('aria-pressed',String(on));el.querySelector('.star').textContent=on?'★':'';el.setAttribute('aria-label',`${ROWNAME[ROWS[k>>2]]}, ${vname(ROWS[k>>2],k&3)}: ${walkers[k]?walkers[k].s.name:''}`);});
+  $('choices').replaceChildren();for(const bd of BODIES){const t=lineFor(bd);if(!t)continue;const p=document.createElement('p'),st=document.createElement('strong');st.textContent=bd.name;p.append(st,document.createTextNode(t.slice(bd.name.length+2)));$('choices').appendChild(p);}
+  if(!$('choices').children.length)$('choices').textContent='No stars yet. Pick the movement that feels right in each row.';}
+function render(){renderer.setScissorTest(true);
+  walkers.forEach((w,i)=>{if(focused>=0&&i!==focused)return;const cols=focused>=0?1:4,rows=focused>=0?1:4,x=focused>=0?0:(i%4)*W/4,y=focused>=0?0:Math.floor(i/4)*H/4,cw=W/cols,ch=H/rows;
+    w.place(cw/ch,turnCam);renderer.setViewport(x,H-y-ch,cw,ch);renderer.setScissor(x,H-y-ch,cw,ch);renderer.render(w.scene,w.cam);
+    const S=w.S,fr=w.Fr,el=cells[i];el.querySelector('.metrics').textContent=`${S.f.toFixed(2)} Hz · ${S.stride.toFixed(2)} m · Fr ${fr.toFixed(2)} · duty ${w.beta.toFixed(2)}\n${w.vnom.toFixed(2)} m/s${w.row==='turn'?' · v now '+S.v.toFixed(2):''}${w.stanceCount===0?' · AIR':''}`;
+    const ctx=el.querySelector('.strip').getContext('2d');ctx.clearRect(0,0,156,36);ctx.fillStyle='#283038';const n=w.legs.length,rh=Math.min(8,Math.max(1.5,34/n)),win=clamp(2/Math.max(S.f,.2),.4,7)*240;
+    for(let x=0;x<156;x++){const idx=w.hn-1-Math.round((1-x/156)*win);if(idx<0||w.hn-idx>2000)continue;const mask=w.hist[((idx%2048)+2048)%2048];for(let j=0;j<n;j++)if(mask&(1<<j))ctx.fillRect(x,1+j*(34/n),1,Math.max(1,rh-.5));}});}
+function advance(seconds){for(let t=0;t<seconds-1e-9;t+=1/240)walkers.forEach(w=>w.step(Math.min(1/240,seconds-t)));}
+function focusCell(i){if(i>=0&&document.fullscreenEnabled&&!document.fullscreenElement)$('stage').requestFullscreen().catch(()=>{});else if(i<0&&document.fullscreenElement)document.exitFullscreen().catch(()=>{});focused=i;$('stage').classList.toggle('expanded',i>=0);$('close-full').hidden=i<0;cells.forEach((el,k)=>el.hidden=i>=0&&k!==i);layout();render();}
+function setPause(v){paused=v;$('pause').textContent=v?'Play':'Pause';$('pause').setAttribute('aria-pressed',String(v));}
+function setCam(m){turnCam=m;$('cam').textContent='Turn camera: '+(m==='top'?'top-down':'3/4')+' (T)';$('cam').setAttribute('aria-pressed',String(m==='top'));render();}
+document.addEventListener('fullscreenchange',()=>{if(!document.fullscreenElement&&focused>=0)focusCell(-1);else layout();});
+$('prev').onclick=()=>selectBody(bodyIndex-1);$('next').onclick=()=>selectBody(bodyIndex+1);$('close-full').onclick=()=>focusCell(-1);$('pause').onclick=()=>setPause(!paused);$('cam').onclick=()=>setCam(turnCam==='tq'?'top':'tq');
+for(const button of document.querySelectorAll('[data-rate]'))button.onclick=()=>{rate=Number(button.dataset.rate);document.querySelectorAll('[data-rate]').forEach(x=>x.setAttribute('aria-pressed',String(x===button)));};
+$('copy').onclick=async()=>{const text=choicesText();if(!text){$('copy-status').textContent='Star a cell first.';return;}try{if(!navigator.clipboard)throw Error('unavailable');await navigator.clipboard.writeText(text);$('copy-status').textContent='Copied. Paste into chat.';$('copy-fallback').hidden=true;}catch{const area=$('copy-fallback');area.hidden=false;area.value=text;area.focus();area.select();let copied=false;try{copied=document.execCommand('copy');}catch{}$('copy-status').textContent=copied?'Copied. Paste into chat.':'Press Ctrl+C / Cmd+C to copy the selected choices.';}};
+document.addEventListener('pointerdown',e=>{const b=e.target.closest('button');if(b)b.classList.add('pointer');});document.addEventListener('pointerup',()=>document.querySelectorAll('.pointer').forEach(b=>b.classList.remove('pointer')));
+document.addEventListener('keydown',e=>{document.querySelectorAll('.pointer').forEach(b=>b.classList.remove('pointer'));if(e.target.matches('input,textarea,select')||e.ctrlKey||e.metaKey||e.altKey)return;
+  if(e.code==='Space'&&!e.repeat){e.preventDefault();selectBody(bodyIndex+(e.shiftKey?-1:1));}else if(e.key.toLowerCase()==='p'&&!e.repeat){e.preventDefault();setPause(!paused);}else if(e.key.toLowerCase()==='f'&&!e.repeat){e.preventDefault();focusCell(focused<0?hovered:-1);}else if(e.key.toLowerCase()==='t'&&!e.repeat){e.preventDefault();setCam(turnCam==='tq'?'top':'tq');}else if(e.key==='Escape')focusCell(-1);});
+// Self-check (same code as tools/gaitlab/styles2_check.cjs). Chunked per body so the page stays responsive.
+function showCheck(r){window.__stylesCheck=r;$('check').textContent=r.pass?`Self-check PASS · ${r.passed}/${r.cases} body × row × variant cases`:`Self-check FAIL · ${r.passed}/${r.cases} cases pass, ${r.fails.length} failures`;$('check').className=r.pass?'pass':'fail';}
+function runChunked(){return new Promise(res=>{const all={pass:true,cases:0,passed:0,fails:[],table:[]};let i=0;const next=()=>{if(i>=BODIES.length){all.pass=!all.fails.length;showCheck(all);res(all);return;}const r=runCheck(BODIES,b=>b===BODIES[i]);all.cases+=r.cases;all.passed+=r.passed;all.fails.push(...r.fails);all.table.push(...r.table);$('check').textContent=`Self-check running ${++i}/${BODIES.length}…`;setTimeout(next,0);};next();});}
+$('runcheck').onclick=()=>{runChunked();};
+window.STYLELAB={BODIES,ROWS,VARIANTS,runCheck:()=>runCheck(BODIES),advance,render,selectBody,choicesText,focusCell,setPause,setCam,get walkers(){return walkers;},get bodyIndex(){return bodyIndex;},get rate(){return rate;},get paused(){return paused;},get turnCam(){return turnCam;}};
+layout();selectBody(0);window.addEventListener('resize',()=>{layout();render();});
+if(new URLSearchParams(location.search).get('test')==='1'){manual=true;showCheck(runCheck(BODIES));manual=false;}
+window.__ready=true;let last=performance.now();function frame(now){const dt=Math.min(.05,(now-last)/1000);last=now;if(!manual&&!paused){acc+=dt*rate;let n=0;while(acc>=1/240&&n<24){walkers.forEach(w=>w.step(1/240));acc-=1/240;n++;}if(n>=24)acc=0;}render();requestAnimationFrame(frame);}requestAnimationFrame(frame);
+})();
+</script></body></html>
