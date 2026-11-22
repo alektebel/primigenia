@@ -37,6 +37,7 @@ var _hint: Label
 var _title: Label
 var _pin_layer: Control
 var _pin_tip := ""
+var _q_hold := false             # the box was opened by a question card and holds Game.options_open
 
 func _init() -> void:
 	layer = 33
@@ -205,7 +206,25 @@ func open_box(tg: Dictionary, existing := {}) -> void:
 		_panel.position = Vector2(clampf(m.x + 24.0, 12.0, maxf(12.0, vs.x - 450.0)), clampf(m.y + 24.0, 12.0, maxf(12.0, vs.y - 110.0)))
 	_edit.grab_focus()
 
+## The note box on the player's creature, pre-filled with "[q <id>] " (the owner-question card's N key). Game input is suspended until it closes.
+func open_question_note(qid: String) -> void:
+	var st = Game.stage
+	if st == null:
+		return
+	var p: Dictionary = st.cur.entities[0]
+	var tg := {"kind": "creature", "id": 0, "species": "player", "part": "", "name": "player #0",
+		"pos": Vector3(float(p.x), float(Game.visual_ground(float(p.x), float(p.z))), float(p.z))}
+	open_box(tg)
+	_edit.text = "[q %s] " % qid
+	_edit.caret_column = _edit.text.length()
+	if not Game.options_open:
+		Game.options_open = true
+		_q_hold = true
+
 func close_box() -> void:
+	if _q_hold:
+		_q_hold = false
+		Game.options_open = (Dev.options_hud != null and Dev.options_hud.is_open) or active
 	box_open = false
 	editing = {}
 	_panel.visible = false

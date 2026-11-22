@@ -182,6 +182,7 @@ func _ready() -> void:
 		set_paused(false)
 		loadout_requested.emit())
 	menu.keys_requested.connect(show_keys)
+	menu.questions_requested.connect(show_questions)
 	menu.setting_changed.connect(_on_setting)
 	menu.hints_reset_requested.connect(func() -> void: onboarding.reset())
 	stub.closed.connect(func() -> void: veil.set_flat(0.62 if paused else 0.0))
@@ -436,6 +437,19 @@ func close_view() -> void:
 	veil.set_flat(0.62 if paused else 0.0)
 
 ## The key sheet (F1 held shows it too): pinned open from the menu until Esc.
+## The pause menu's "Questions": the pending list on the dev card layer; the menu steps aside until it closes.
+func show_questions() -> void:
+	var dev = get_node_or_null("/root/Dev")
+	if dev == null or dev.questions == null:
+		return
+	menu.modulate.a = 0.0
+	if not dev.questions.list_closed.is_connected(_on_questions_closed):
+		dev.questions.list_closed.connect(_on_questions_closed)
+	dev.questions.open_list()
+
+func _on_questions_closed() -> void:
+	menu.modulate.a = 1.0
+
 func show_keys() -> void:
 	var dev = get_node_or_null("/root/Dev")
 	if dev != null and dev.legend != null:

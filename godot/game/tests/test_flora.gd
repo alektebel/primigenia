@@ -137,7 +137,7 @@ func run(t) -> void:
 		var p: Vector3 = obj.p
 		var k := d.cell_index(p.x, p.z)
 		var normal := Placement.facet(d, Vector2(p.x, p.z))
-		if d.is_pond(k) or d.is_river(k) or p.y < -0.65 or (d.is_sea(k) and obj.id != "cinta_de_marea"):
+		if d.is_pond(k) or d.is_river(k) or p.y < -0.65 or (d.is_sea(k) and not (obj.id in ["cinta_de_marea", "drifting_ash", "pozo_de_agua"])):
 			violations += 1
 		if absf(p.y - d.visual_ground(p.x, p.z)) > 0.0002 or normal.y < 1 / sqrt(1 + 1.26 * 1.26):
 			violations += 1

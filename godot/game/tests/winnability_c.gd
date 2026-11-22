@@ -22,7 +22,11 @@ func _initialize() -> void:
 		for starter in [true]:
 			var g: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(path))
 			if not full:
-				g.parts = g.parts.filter(func(p): return p.type in ["pico", "pata", "ojo"])   # the in-game starter loadout (island.gd)
+				var cat := {}
+				for mp in manifest.parts:
+					cat[str(mp.id)] = str(mp.category)
+				# the in-game starter loadout (island.gd): pico/pata/ojo plus the starter's own legs and details (mouths and weapons come from the nest)
+				g.parts = g.parts.filter(func(p): return p.type in ["pico", "pata", "ojo"] or not cat.get(str(p.type), "") in ["mouths", "weapons"])
 				if not g.parts.any(func(p): return p.type == "pico"):
 					g.parts.append({"type": "pico", "t": 1.0, "ang": 0.0, "size": 1.0, "level": 1, "tier": 0})
 			for p in g.parts: p["level"] = 1; p["tier"] = 0
