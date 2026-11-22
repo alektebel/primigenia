@@ -1,0 +1,547 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Primigenia · Move styles, round 3</title>
+<style>
+:root{color-scheme:dark;--bg:#16191d;--panel:#20252b;--ink:#efebe2;--dim:#b5babf;--line:#424850;--gold:#edc578;--turn:#9fd3cb}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.4 system-ui,sans-serif}button,input,textarea{font:inherit}button{background:#2c3239;color:var(--ink);border:1px solid var(--line);border-radius:5px;padding:6px 10px;cursor:pointer}button:hover{background:#3a424b}button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid var(--gold);outline-offset:3px}button.pointer:active{transform:scale(.97);transition:transform 160ms ease-out}button[aria-pressed=true]{background:var(--gold);color:#211d16;border-color:var(--gold)}::selection{background:var(--gold);color:#211d16}
+header{display:flex;gap:18px;align-items:center;flex-wrap:wrap;padding:10px 16px;background:var(--panel);border-bottom:1px solid var(--line)}h1{font-size:20px;line-height:1.2;margin:0 0 3px}#identity{min-width:260px}#body-note,.hint,#check{font-size:12px;color:var(--dim)}.controls{display:flex;align-items:center;gap:7px;flex-wrap:wrap}output,.metrics{font-variant-numeric:tabular-nums}
+main{display:grid;grid-template-columns:minmax(0,1fr) 220px}#stage{position:relative;min-width:0;height:calc(100vh - 106px);min-height:760px}#gl{position:absolute;width:100%;height:100%;display:block}#cells{position:absolute;inset:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));grid-template-rows:repeat(4,1fr)}
+.cell{position:relative;text-align:left;background:transparent;border:1px solid #424850;border-radius:0;padding:8px 10px;display:flex;flex-direction:column;justify-content:flex-start;overflow:hidden;min-width:0}.cell:hover{background:#ffffff05}.cell[aria-pressed=true]{background:transparent;border:2px solid var(--gold);color:var(--ink);padding:7px 9px}
+.title{display:block;font-size:14px;font-weight:650;line-height:1.15;padding-right:22px}.title i{font-style:normal;color:var(--dim);font-weight:500}.cell[data-row=turn] .title b{color:var(--turn)}.description{display:block;color:#d1d1cb;font-size:11.5px;margin-top:3px;line-height:1.2}.adapt{display:block;font-size:10.5px;color:var(--gold);line-height:1.2;margin-top:2px}.star{position:absolute;right:8px;top:4px;font-size:20px;color:var(--gold)}
+.metrics{position:absolute;bottom:7px;left:10px;font:10.5px/1.3 ui-monospace,monospace;color:#bec6cb;white-space:pre}.strip{position:absolute;bottom:8px;right:8px;width:78px;height:18px;background:#e2e2d7}.cell[hidden]{display:none}
+aside{padding:14px;background:var(--panel);border-left:1px solid var(--line);overflow:auto;max-height:calc(100vh - 106px)}h2{font-size:16px;margin:0 0 8px}aside p{font-size:12px;color:var(--dim)}#choices{margin:14px 0}#choices p{margin:10px 0;color:var(--ink)}#choices strong{display:block;color:var(--gold)}#copy-status{min-height:18px}textarea{width:100%;min-height:100px;color:var(--ink);background:var(--bg);border:1px solid var(--line);padding:6px}
+footer{padding:8px 16px;color:var(--dim);font-size:12px}kbd{font:inherit;color:var(--ink)}
+#stage.expanded{position:fixed;inset:0;height:100vh;min-height:0;z-index:10;background:var(--bg)}#stage.expanded #cells{display:block}#stage.expanded .cell{width:100%;height:100%;padding:24px}#stage.expanded .title{font-size:24px}#close-full{position:absolute;right:15px;bottom:40px;z-index:12}#check.fail{color:#ff998c}#check.pass{color:#a3d4ad}
+@media(max-width:1100px){main{grid-template-columns:minmax(0,1fr) 180px}.title{font-size:12px}.cell{padding:6px}.description{font-size:10.5px}.metrics{font-size:9.5px;left:6px}.strip{width:48px}#stage{min-height:800px}}
+@media(max-width:760px){main{display:block}#stage{height:1200px;min-width:680px}main{overflow:auto}aside{max-height:none;border-left:0}header{gap:10px}footer{max-width:70ch}}
+</style>
+<script src="../biome/three.min.js"></script>
+</head>
+<body>
+<header>
+<div id="identity"><h1 id="creature-name">radial 5 (starfish)</h1><div id="body-note"></div></div>
+<div class="controls"><button id="prev" aria-label="Previous creature">←</button><button id="next">Next creature</button><span class="hint">Space / Shift+Space</span></div>
+<div class="controls" id="playback" aria-label="Playback"><button data-rate=".25" aria-pressed="false">0.25×</button><button data-rate=".5" aria-pressed="false">0.5×</button><button data-rate="1" aria-pressed="true">1×</button><button id="pause" aria-pressed="false">Pause</button></div>
+<div class="controls"><button id="cam" aria-pressed="false" title="Top-down or side / three-quarter camera (T). Limbless bodies start top-down.">Camera (T)</button><button id="runcheck">Run self-check</button></div>
+<span id="check" role="status">64 cells per body · 176 cells in all · self-check not run</span>
+</header>
+<main><div id="stage"><canvas id="gl" aria-label="Sixteen creature movement comparisons, rows walk or slow crawl, turn, fast, rough ground"></canvas><div id="cells"></div><button id="close-full" hidden>Exit full view · Esc</button></div>
+<aside><h2>Your choices</h2><p>One star per row for each creature. Click a cell to star it; click again to clear. Choices survive a reload.</p><div id="choices"></div><button id="copy">Copy choices</button><p id="copy-status" role="status" aria-live="polite"></p><textarea id="copy-fallback" aria-label="Choices to copy manually" hidden readonly></textarea><p>Four columns are four movement patterns for the same body; the cell subtitle says what each one is. Rows: walk (slow crawl for limbless), turn (arcs of 3 body lengths and a sharp turn), fast, rough ground (bumps). Gold dots are static contact points: a planted foot or an anchored body part. Nothing static slides. Legged cells print Hz, stride, Froude number; limbless cells print Hz, wavelength or stride, body lengths per second.</p><p>All numbers are starting values for the owner comparison. Nothing is selected for the game yet.</p></aside></main>
+<footer><kbd>Space</kbd> next creature · <kbd>Shift+Space</kbd> previous · <kbd>F</kbd> focus hovered cell · <kbd>Esc</kbd> grid · <kbd>P</kbd> pause · <kbd>T</kbd> top-down or side camera · Playback changes time only. Ground dots are about a quarter body length apart. Teal line = path of the body centre.</footer>
+<script>
+'use strict';
+(() => {
+/*CORE_BEGIN*/
+const TAU=Math.PI*2,PI=Math.PI,G=9.81,frac=x=>x-Math.floor(x),clamp=(x,a,b)=>Math.max(a,Math.min(b,x)),ease=u=>.5-.5*Math.cos(PI*clamp(u,0,1));
+const V=()=>new THREE.Vector3(),Yax=new THREE.Vector3(0,1,0),temp=V();
+const ROWS=['walk','turn','fast','rough'];
+const seq=(n,f)=>Array.from({length:n},(_,i)=>f(i));
+// Rough ground: smooth bumps, slope below about 12 degrees. Same function for the check and the picture.
+const mkTerrain=(amp,lam)=>amp?((x,z)=>amp*(.65*Math.sin(TAU*.9*x/lam+1.3)*Math.cos(TAU*.7*z/lam+.4)+.35*Math.sin(TAU*.5*(x+2*z)/lam))):(()=>0);
+// ---------------------------------------------------------------- bodies
+// Legged body frame: x forward, y up, z left; hip y is absolute, blobs are relative to the hip-mean height.
+function ring(n,rr,hy,a,b,w,rho,pole){return seq(n,i=>{const ang=TAU*i/n,c=Math.cos(ang),s=Math.sin(ang);return {hx:rr*c,hy,hz:rr*s,a,b,w,ang,rest:[rho*c,rho*s],pole:pole?pole(c,s):[.3*c,1,.3*s],side:s>=-1e-9?1:-1};});}
+function mirrorLegs(){const L=[];for(const x of [-.32,0,.32])for(const side of [-1,1])L.push({hx:x,hy:.28,hz:side*.1,a:.19,b:.21,w:.05,ang:side>0?PI/2:-PI/2,rest:[x,side*.2],pole:[-.6,1,side*.35],side});return L;}
+function chiralLegs(v){const rr=.07;return seq(8,k=>{const x=-.42+.12*k;
+  if(v===0){const f=k*PI/2;return {hx:x,hy:.3-rr*Math.cos(f),hz:rr*Math.sin(f),a:.17,b:.2,w:.04,ang:f,rest:[x,0],pole:[-.8,-.6*Math.cos(f),.6*Math.sin(f)],side:Math.sin(f)>=-1e-9?1:-1};}
+  const a=[-.8,-.27,.27,.8][k%4],sd=a>0?1:-1;return {hx:x,hy:.3-rr*Math.cos(a),hz:rr*Math.sin(a),a:.17,b:.2,w:.04,ang:a,rest:[x,sd*.1],pole:[-.8,.4,.3*sd],side:sd};});}
+function finishLegged(b){
+  b.kind='legged';b.eyes=b.eyes||[];b.blobs=b.blobs||[];b.legs=b.legsFor?b.legsFor(0):b.legs;b.cy=b.legs.reduce((a,l)=>a+l.hy,0)/b.legs.length;b.nLegs=b.legs.length;return b;}
+function sincInv(ratio){if(ratio>=.9999)return 0;let lo=1e-4,hi=PI-1e-4;for(let i=0;i<30;i++){const m=(lo+hi)/2;if(Math.sin(m)/m>ratio)lo=m;else hi=m;}return (lo+hi)/2;}
+function finishLimbless(b){b.kind='limbless';b.bodyLen=b.L;b.span=b.L;b.N=b.N||32;b.h=b.h||b.L*.05;b.height=b.L*.08;b.nLegs=b.hybrid?2:0;return b;}
+function buildBodies(){
+  const B=[];
+  B.push(finishLegged({name:'radial 5 (starfish)',family:'radial5',color:'#d9743f',accent:'#f4d9a2',h:.1,bodyLen:.72,span:.75,height:.2,fr:[.25,.7],
+    blobs:[{p:[0,0,0],r:[.085,.04,.085],m:'skin'},{p:[.03,.04,0],r:[.02,.015,.02],m:'accent'}],legs:ring(5,.06,.1,.16,.17,.05,.3),
+    note:'five arms, no head; round disc',names:['leading arm','rotating lead','tube-foot glide','cartwheel'],
+    notes:['one arm points forward and probes, the other four push','body keeps its heading; the lead arm is whichever points where it goes','slow ripple, arms hugging the ground, small steps','rolls on its arm tips, a rolling pentagon (no tip slides)']}));
+  B.push(finishLegged({name:'radial 8 (octopus)',family:'radial8',color:'#a8434f',accent:'#f0c9a8',h:.2,bodyLen:1.1,span:1.15,height:.45,fr:[.3,.8],
+    blobs:[{p:[0,0,0],r:[.12,.06,.12],m:'skin'},{p:[-.04,.1,0],r:[.1,.11,.09],m:'skin'}],eyes:[[.07,.12,.06,.022],[.07,.12,-.06,.022]],legs:ring(8,.08,.2,.24,.26,.04,.42),
+    note:'eight arms, mantle and eyes on one side',names:['two-arm bipedal walk','all-arm crawl','jet-scoot hop','rolling'],
+    notes:['two rear arms walk upright, six arms curled (coconut octopus)','all eight arms ripple around the ring, body low','all arms push together, then trail behind in the air','curls into an eight-spoke wheel, tips never slide']}));
+  B.push(finishLegged({name:'trilateral (3-fold)',family:'tri',color:'#4f8f9a',accent:'#f1e1a0',h:.3,bodyLen:.8,span:.85,height:.4,fr:[.3,.7],
+    blobs:[{p:[0,0,0],r:[.1,.06,.1],m:'skin'},{p:[0,.05,0],r:[.04,.03,.04],m:'accent'}],legs:ring(3,.08,.3,.24,.26,.05,.3),
+    note:'three legs at 120 degrees, no front',names:['tripod rotation','lead-leg switch','spin-walk','tumble'],
+    notes:['legs lift in rotation 0, 1/3, 2/3; body faces its path','body keeps its heading; the lead leg switches as the path turns','body spins slowly while it walks any direction','rolls over its three legs, a rolling triangle']}));
+  B.push(finishLegged({name:'two-headed mirror',family:'mirror',color:'#7a6b9a',accent:'#f0dcc0',h:.28,bodyLen:1.2,span:1.3,height:.5,fr:[.4,.9],cross:true,
+    blobs:seq(8,i=>({p:[-.55+i*.157,0,0],r:[.1,[.06,.075,.09,.1,.1,.09,.075,.06][i],[.06,.075,.09,.1,.1,.09,.075,.06][i]],m:i===0||i===7?'accent':'skin'})),chain:true,
+    eyes:[[.66,.03,.05,.02],[.66,.03,-.05,.02],[-.66,.03,.05,.02],[-.66,.03,-.05,.02]],legs:mirrorLegs(),
+    note:'a head at each end, six legs, no tail',names:['reverse without turning','push-me-pull-you','fold','caterpillar wave'],
+    notes:['walks backward along its own path instead of turning (the other head leads)','front legs step together, rear legs step opposite; the body breathes in length','body arches like a hinge, legs step in pairs','legs step in a wave rear to front with a body wave']}));
+  B.push(finishLegged({name:'chiral helix body',family:'chiral',color:'#5a8a5a',accent:'#e6d890',h:.3,bodyLen:1,span:1.1,height:.45,fr:[.3,.8],
+    blobs:seq(7,i=>({p:[-.45+i*.15,0,0],r:[.12,.075,.075],m:'skin'})).concat([{p:[.52,0,0],r:[.1,.08,.08],m:'accent'}]),chain:true,eyes:[[.58,.03,.05,.02],[.58,.03,-.05,.02]],
+    legsFor:chiralLegs,note:'eight limbs set in a helix, a quarter turn apart',names:['screw-roll','wave, rear to front','wave, front to rear','double wave'],
+    notes:['body rolls about its axis, limbs plant in turn like a screw thread','limbs set low on alternating sides, wave runs rear to front','same limbs, wave runs front to rear','two wave crests along the body at once']}));
+  // limbless
+  const taper=(p,a,b)=>a*(1-b*Math.pow(clamp((p-.55)/.45,0,1),1.4));
+  B.push(finishLimbless({name:'snake',family:'snake',L:1.4,N:36,color:'#5f7f3f',accent:'#cdb85a',sp:[.2,.6],rad:p=>taper(p,.04*(p<.06?.85+p*2.5:1),.82)+.005,
+    note:'long, limbless, belly scales',names:['serpentine','sidewinding','concertina','rectilinear'],
+    notes:['lateral undulation: the whole body follows the head track, S-bends push on pegs and bumps','body sections lift, only static patches touch; moves across its own axis','rear anchors in bends while the front extends, then the front anchors','belly-scale waves, body straight; slow and quiet']}));
+  B.push(finishLimbless({name:'earthworm',family:'worm',L:.8,N:36,color:'#c46a66',accent:'#e8aaa0',sp:[.12,.3],rad:p=>.022*(p<.04?.7+p*7.5:1)*(1-.3*Math.pow(clamp((p-.8)/.2,0,1),2))*(Math.abs(p-.28)<.04?1.12:1),
+    note:'segmented, setae anchor the thick segments',names:['1 wave','2 waves','3 waves','burrow-dive'],
+    notes:['one contraction wave on the body, runs head to tail while the body goes forward','two waves: shorter steps, faster cadence','three waves: smallest steps, fastest cadence','two waves, and the front dives into soil and surfaces again (buried parts shaded)']}));
+  B.push(finishLimbless({name:'inchworm',family:'loop',L:.6,N:30,color:'#8fb04a',accent:'#e3e8a0',sp:[.12,.3],rad:p=>.016*(p<.05?1.15:1)*(p>.95?1.1:1),
+    note:'looper, claspers at both ends',names:['loop-step','fast looper','pole-vault flip','deep loop'],
+    notes:['tail clasper comes to the head, then the head extends and anchors','shallow loops at a quick cadence','the head end vaults up on the tail clasper and falls forward','very deep arch, long step, slow']}));
+  B.push(finishLimbless({name:'slug',family:'slug',L:.5,N:28,color:'#8b6f4e',accent:'#d8c8a0',sp:[.1,.22],rad:p=>.04*(p<.1?.5+p*5:1)*(1-.65*Math.pow(clamp((p-.55)/.45,0,1),1.6))+.004,
+    note:'pedal sole on a slime trail; the dorsal body glides smoothly',names:['direct waves','retrograde waves','loping (arching)','five short waves'],
+    notes:['sole waves run the same way as the slug; sole between waves is stuck (static)','sole waves run against the motion','arches its back like a looper, slime anchors at both ends','direct waves, five of them, tiny steps']}));
+  B.push(finishLimbless({name:'eel on land',family:'eel',L:1.1,N:34,color:'#3e5864',accent:'#cfd8d0',sp:[.22,.6],rad:p=>.028*(p<.05?.8+p*4:1)*(1-.8*Math.pow(clamp((p-.65)/.35,0,1),1.5))+.004,
+    note:'thin, long, no belly scales, no push points of its own',names:['wide S-wave','narrow fast S','flop crawl','jump'],
+    notes:['wide undulation, the body follows the head track','narrow, quick S-wave','body flips side to side, only the belly mid-section holds the ground','coils, then springs forward in a hop']}));
+  B.push(finishLimbless({name:'snake with two legs',family:'hybrid',L:1,N:32,color:'#6f8c4a',accent:'#e0b868',sp:[.2,.5],hybrid:true,rad:p=>taper(p,.034*(p<.06?.85+p*2.5:1),.8)+.005,
+    note:'serpent body, one small pair of legs behind the head',names:['legs assist','legs lead','legs tucked','legs brace'],
+    notes:['legs plant at the bend apexes and push, body undulates','small body wave, legs do most of the stepping (lizard-like)','legs folded back, pure serpentine as a control','long stride with legs braced high over bumps']}));
+  const by=f=>B.find(b=>b.family===f);
+  by('snake').zoom=2.3;by('worm').zoom=1.5;by('loop').zoom=1.7;by('loop').camDefault='view';by('loop').viewDir=[0,.5,1];by('slug').zoom=2;by('eel').zoom=2.2;by('hybrid').zoom=2.3;
+  return B;
+}
+// ---------------------------------------------------------------- styles
+function LS(o){return {name:'',off:[],beta:.6,minBeta:.5,k:1,law:'a42',fix:0,height:.8,bob:.01,bobPhase:0,bob2:false,roll:.02,pitch:0,rock:.01,lift:.2,roll0:0,yaw:{c1:1,c2:0,c0:0},swing:null,curl:null,curlPt:null,rest:null,disp:null,screw:false,wheel:0,vmul:1,lead:null,reverse:false,betaL:null,...o};}
+function wheelStyle(b,name){const n=b.legs.length,L=b.legs[0].a+b.legs[0].b-.002;return LS({name,wheel:n,off:seq(n,i=>i/n),beta:1/n+1e-9,minBeta:0,law:'fix',fix:n*2*L*Math.sin(PI/n),rest:seq(n,()=>[0,0]),roll0:PI/2,height:1,bob:0,roll:0,rock:0,lift:0});}
+function leggedStyle(b,row,v){
+  const fast=row==='fast';let s;
+  switch(b.family){
+  case 'radial5':{if(v===3)return wheelStyle(b,'cartwheel, rolling pentagon');const o5=[0,.4,.8,.2,.6];
+    if(v===0)s=LS({name:'lead arm probes, four push',off:o5,beta:.62,betaL:[.42,.62,.62,.62,.62],k:2,height:.5,lift:.4,lead:'fix0'});
+    else if(v===1)s=LS({name:'rotating lead, heading fixed',off:o5,beta:.62,k:2,height:.5,lift:.4,yaw:{c1:0,c2:0,c0:0},lead:'near'});
+    else s=LS({name:'tube-foot ripple glide',off:seq(5,i=>i/5),beta:.84,minBeta:.7,k:.9,height:.5,lift:.12,vmul:.5,roll:.01});break;}
+  case 'radial8':{if(v===3)return wheelStyle(b,'rolling eight-spoke wheel');
+    if(v===0){const cu=new Set([0,1,2,4,6,7]);s=LS({name:'two-arm walk, six arms curled',off:seq(8,i=>i===5?.5:0),beta:.62,k:.9,height:.92,lift:.3,curl:cu,curlPt:l=>[.05*Math.cos(l.ang),.15,.05*Math.sin(l.ang)],rest:seq(8,i=>i===3?[-.07,.13]:i===5?[-.07,-.13]:null)});}
+    else if(v===1)s=LS({name:'all-arm ring crawl',off:seq(8,i=>i/8),beta:.74,minBeta:.6,k:1.1,height:.5,lift:.18});
+    else s=LS({name:'jet-scoot: arms push, then trail',off:seq(8,()=>0),beta:.34,minBeta:.22,k:2.2,height:.8,bob:.6,lift:.5,swing:{amt:.95,alt:'trail'}});break;}
+  case 'tri':{if(v===3)return wheelStyle(b,'tumble, rolling triangle');const o3=[0,1/3,2/3];
+    if(v===0)s=LS({name:'tripod rotation',off:o3,beta:.68,k:1.2,height:.85,lift:.35});
+    else if(v===1)s=LS({name:'lead-leg switch, heading fixed',off:o3,beta:.68,k:1.2,height:.85,lift:.35,yaw:{c1:0,c2:0,c0:0},lead:'near'});
+    else s=LS({name:'spin-walk (1.3 rad/s)',off:o3,beta:.68,k:1.1,height:.85,lift:.35,yaw:{c1:0,c2:1.3,c0:0}});break;}
+  case 'mirror':
+    if(v===0)s=LS({name:'reverse, no turn',off:seq(6,i=>((i>>1)+(i&1))%2*.5),beta:.62,k:1.1,height:.9,lift:.3,reverse:true});
+    else if(v===1)s=LS({name:'push-me-pull-you shuffle',off:seq(6,i=>[.5,.25,0][i>>1]),beta:.55,k:.9,height:.9,lift:.25,disp:(x,th)=>[x>.15?.045*Math.sin(th):x<-.15?-.045*Math.sin(th):0,0,0]});
+    else if(v===2)s=LS({name:'hinge fold',off:seq(6,i=>[0,.25,.5][i>>1]),beta:.55,k:.9,height:.9,lift:.25,disp:(x,th)=>[0,.05*(1-Math.abs(x)/.65)*(.5-.5*Math.cos(th)),0]});
+    else s=LS({name:'caterpillar wave',off:seq(6,i=>(i>>1)*.18),beta:.72,k:1,height:.9,lift:.25,disp:(x,th)=>[0,.035*Math.sin(th-TAU*(x+.32)/.9),0]});break;
+  case 'chiral':
+    if(v===0)s=LS({name:'screw-roll, limbs plant in turn',off:seq(8,k=>frac(k*.25-.125)),beta:.25,minBeta:.25,k:2,height:1,lift:.3,screw:true,roll:0,swing:{amt:.9,alt:'radial'}});
+    else if(v===1)s=LS({name:'wave rear to front',off:seq(8,k=>frac(k*.125)),beta:.62,k:1.1,height:.95,lift:.3});
+    else if(v===2)s=LS({name:'wave front to rear',off:seq(8,k=>frac(-k*.125)),beta:.62,k:1.1,height:.95,lift:.3});
+    else s=LS({name:'double wave, two crests',off:seq(8,k=>frac(k*.25)),beta:.62,k:1.1,height:.95,lift:.3});break;
+  }
+  if(!s.wheel){s.beta=Math.max(s.minBeta,s.beta-(fast?.08:0));if(fast)s.k*=1.15;}
+  return s;
+}
+function limbStyle(b,row,v){
+  const L=b.L,fast=row==='fast',SM=bt=>(PI/2)/(1-bt);let s;
+  const stairFix=o=>{const sm=SM(o.beta);o.D=o.dl*L/Math.abs(o.lag);o.cb=o.axis==='fwd'?1-(sm-1)*o.dl:Math.sqrt(Math.max(.25,1-Math.pow((sm-1)*o.dl,2)));o.cb=Math.max(.3,o.cb);if(o.S2)o.cb*=.82;o.stairMax=sm;return o;};
+  const base={vmul:1,rs:1,H:.01};
+  switch(b.family){
+  case 'snake':
+    if(v===0)s={...base,type:'track',name:'lateral undulation',A:(fast?.05:.085)*L,lam:(fast?.75:.5)*L,ph:0,pegs:true};
+    else if(v===1)s=stairFix({...base,type:'stair',axis:'lat',name:'sidewinding, static patches',lag:fast?1.3:1.1,beta:.4,dl:.2,H:.035,S2:.1});
+    else if(v===2)s=stairFix({...base,type:'stair',axis:'fwd',name:'concertina, anchor and extend',lag:.5,beta:.5,dl:.15,H:.01,zig:true,vmul:.6});
+    else s=stairFix({...base,type:'stair',axis:'fwd',name:'rectilinear belly waves',lag:1.5,beta:.6,dl:.1,H:.004,vmul:.3});break;
+  case 'worm':{const n=v===3?2:v+1;s=stairFix({...base,type:'stair',axis:'fwd',name:(v===3?'burrow-dive, 2 waves':n+(n===1?' contraction wave':' contraction waves')),lag:n,beta:.5,dl:.12,H:.004,rad:true});
+    if(v===3)s.dive={depth:.22*L,lam:4*L};break;}
+  case 'loop':
+    if(v===0)s={...base,type:'loop',name:'loop-step',cmin:.35};
+    else if(v===1)s={...base,type:'loop',name:'fast looper, shallow',cmin:.6,vmul:1.6};
+    else if(v===2)s={...base,type:'loop',name:'pole-vault flip',cmin:.3,vault:1.0};
+    else s={...base,type:'loop',name:'deep loop, slow',cmin:.2,vmul:.7};
+    s.D=(1-s.cmin)*L;break;
+  case 'slug':
+    if(v===2){s={...base,type:'loop',name:'loping, arched back',cmin:.55,slug:true};s.D=(1-s.cmin)*L;}
+    else s=stairFix({...base,type:'stair',axis:'fwd',name:v===0?'direct pedal waves':v===1?'retrograde pedal waves':'five short direct waves',lag:v===1?3:v===0?-3:-5,beta:.5,dl:.12,H:.012,sole:true});break;
+  case 'eel':
+    if(v===0)s={...base,type:'track',name:'wide S-wave',A:.12*L,lam:.9*L,ph:0};
+    else if(v===1)s={...base,type:'track',name:'narrow fast S-wave',A:.06*L,lam:.5*L,ph:0,vmul:1.5};
+    else if(v===2){s={...base,type:'flop',name:'side-flop crawl',beta:.45,Af:.22,Hf:.07};s.D=.25*L;}
+    else{s={...base,type:'jump',name:'coil and jump',beta:.55,cbc:.55,Ac:.12,Hj:.2};s.D=.5*L;s.hop=true;}break;
+  case 'hybrid':{const lg={jn:Math.round(.2*(b.N-1)),a:.1,b:.11,rl:.12,w:.04};
+    if(v===0)s={...base,type:'track',name:'legs assist the S-bends',A:.075*L,lam:.55*L,ph:0,legs:{...lg,beta:.6,tuck:0,lift:.4},D:.14*L};
+    else if(v===1)s={...base,type:'track',name:'legs lead, small wave',A:.03*L,lam:.8*L,ph:0,legs:{...lg,beta:.6,tuck:0,lift:.5},D:.2*L,vmul:.7};
+    else if(v===2)s={...base,type:'track',name:'legs folded, pure slither',A:(fast?.05:.085)*L,lam:(fast?.75:.5)*L,ph:0,legs:{...lg,beta:.6,tuck:1,lift:.3},D:.14*L};
+    else s={...base,type:'track',name:'legs braced high',A:.065*L,lam:.6*L,ph:0,legs:{...lg,beta:.66,tuck:0,lift:.9},D:.16*L};break;}
+  }
+  if(s.type==='track'&&!s.D)s.D=s.lam;
+  return s;
+}
+// ---------------------------------------------------------------- plan and path
+function buildPlan(BL,v,row,reverse){
+  const R=3*BL,P=PI/180,ramp=(a,b)=>({k:'line',len:Math.abs(a+b)/2*.5,v0:a,v1:b}),ln=(len,s)=>({k:'line',len,v0:s*v,v1:s*v});
+  if(row!=='turn'&&!reverse)return {pieces:[{k:'line',len:v*4,v0:v,v1:v}],radius:null,sharp:null};
+  if(reverse){
+    if(row!=='turn')return {pieces:[ln(3*v,1),ramp(v,0),ramp(0,-v),ln(3*v,-1),ramp(-v,0),ramp(0,v)],radius:null,sharp:null};
+    const arc=(dir,s)=>({k:'arc',ang:dir*120*P,R,v0:s*v,v1:s*v,main:true});
+    return {pieces:[arc(1,1),ln(.8*BL,1),ramp(v,0),ramp(0,-v),ln(.8*BL,-1),arc(1,-1),ramp(-v,0),ramp(0,v),arc(-1,1),ln(.8*BL,1),ramp(v,0),ramp(0,-v),ln(.8*BL,-1),arc(-1,-1),ramp(-v,0),ramp(0,v)],radius:R,sharp:null};
+  }
+  const arcs=dir=>({k:'arc',ang:dir*120*P,R,v0:v,v1:v,main:true});
+  const sharp=dir=>[{k:'arc',ang:dir*150*P,R:BL,v0:v,v1:.6*v,sharp:true},{k:'line',len:.5*BL,v0:.6*v,v1:v}];
+  return {pieces:[arcs(1),{k:'line',len:.8*BL,v0:v,v1:v},...sharp(-1),arcs(-1),{k:'line',len:.8*BL,v0:v,v1:v},...sharp(1)],radius:R,sharp:150};
+}
+function pieceDur(p){if(p.k==='line')return Math.abs(p.len/((p.v0+p.v1)/2));if(p.k==='arc')return Math.abs(p.ang)*p.R/Math.abs((p.v0+p.v1)/2);return Math.abs(p.ang)/p.w+.5;}
+class Path{
+  constructor(plan,rests,w){
+    this.dtt=1/480;let total=0;const ps=plan.pieces.map(p=>({...p,T:pieceDur(p)}));ps.forEach(p=>{p.t0=total;total+=p.T;});
+    const N=Math.max(4,Math.round(total/this.dtt));this.N=N;this.dtt=total/N;this.P=total;this.yaw=w.yaw||{c1:1,c2:0,c0:0};const yw=this.yaw;
+    const X=new Float64Array(N+1),Z=new Float64Array(N+1),Ps=new Float64Array(N+1),Ph=new Float64Array(N+1),Ar=new Float64Array(N+1),S=new Float32Array(N+1),F=new Float32Array(N+1),Vv=new Float32Array(N+1),Wv=new Float32Array(N+1);
+    let x=0,z=0,psi=0,phi=0,arc=0,pi=0;this.phi0=3.2;
+    const state=i=>{const t=Math.min(i*this.dtt,total-1e-9);while(pi<ps.length-1&&t>=ps[pi].t0+ps[pi].T)pi++;const p=ps[pi],u=(t-p.t0)/p.T;let v=0,om=0;
+      if(p.k==='line'){v=p.v0+(p.v1-p.v0)*u;}else if(p.k==='arc'){v=p.v0+(p.v1-p.v0)*u;om=Math.sign(p.ang)*v/p.R;}
+      else{const Tr=.5,tau=t-p.t0,e=Math.min(1,tau/Tr,(p.T-tau)/Tr);om=Math.sign(p.ang)*p.w*clamp(e,0,1);}
+      return [v,om,pi];};
+    const piece0=new Array(N+1);
+    for(let i=0;i<=N;i++){
+      const [v,om,idx]=state(i);X[i]=x;Z[i]=z;Ps[i]=psi;Ph[i]=phi;Ar[i]=arc;piece0[i]=idx;Vv[i]=v;Wv[i]=om;
+      const tt=i*this.dtt,pb=yw.c1*psi+yw.c2*tt+yw.c0,ob=yw.c1*om+yw.c2,cb=Math.cos(pb),sb=Math.sin(pb),cp=Math.cos(psi),sp=Math.sin(psi);
+      let veff=0;for(const [rx,rz] of rests){const dx=rx*cb+rz*sb,dz=-rx*sb+rz*cb,vx=v*cp+ob*dz,vz=-v*sp-ob*dx;veff=Math.max(veff,Math.hypot(vx,vz));}
+      veff=Math.max(veff,.15*w.vnom);const st=w.strideFor(veff);S[i]=st;F[i]=veff/st;
+      if(i<N){const dt=this.dtt,m=psi+om*dt/2;x+=v*Math.cos(m)*dt;z-=v*Math.sin(m)*dt;psi+=om*dt;phi+=F[i]*dt;arc+=Math.abs(v)*dt;}
+    }
+    this.X=X;this.Z=Z;this.Psi=Ps;this.Phi=Ph;this.Arc=Ar;this.S=S;this.F=F;this.V=Vv;this.W=Wv;this.piece=piece0;this.pieces=ps;this.Phi_P=Ph[N];this.ArcP=Ar[N];
+    this.bases=[{x:0,z:0,psi:0}];this.endX=X[N];this.endZ=Z[N];this.endPsi=Ps[N];
+  }
+  base(k){while(this.bases.length<=k){const b=this.bases[this.bases.length-1],c=Math.cos(b.psi),s=Math.sin(b.psi);this.bases.push({x:b.x+this.endX*c+this.endZ*s,z:b.z-this.endX*s+this.endZ*c,psi:b.psi+this.endPsi});}return this.bases[k];}
+  sample(t,out){
+    const k=Math.floor(t/this.P),tau=t-k*this.P;let f=tau/this.dtt,i=Math.floor(f);if(i>=this.N)i=this.N-1;const u=f-i;
+    const lx=this.X[i]+(this.X[i+1]-this.X[i])*u,lz=this.Z[i]+(this.Z[i+1]-this.Z[i])*u,lp=this.Psi[i]+(this.Psi[i+1]-this.Psi[i])*u;
+    const b=this.base(k),c=Math.cos(b.psi),s=Math.sin(b.psi);
+    out.x=b.x+lx*c+lz*s;out.z=b.z-lx*s+lz*c;out.psi=b.psi+lp;out.yaw=this.yaw.c1*out.psi+this.yaw.c2*t+this.yaw.c0;
+    out.phi=this.phi0+k*this.Phi_P+this.Phi[i]+(this.Phi[i+1]-this.Phi[i])*u;out.arc=k*this.ArcP+this.Arc[i]+(this.Arc[i+1]-this.Arc[i])*u;
+    out.v=this.V[i];out.w=this.W[i];out.f=this.F[i];out.stride=this.S[i];out.piece=this.piece[i];out.k=k;return out;
+  }
+  atArc(a,out){ // centre line at arc length a (straight extension behind the start)
+    if(a<=0){out.x=a;out.z=0;out.psi=0;return out;}
+    const AP=this.ArcP,k=Math.floor(a/AP),la=a-k*AP;let lo=0,hi=this.N;while(hi-lo>1){const m=(lo+hi)>>1;if(this.Arc[m]<=la)lo=m;else hi=m;}
+    const d=this.Arc[hi]-this.Arc[lo],u=d>1e-12?(la-this.Arc[lo])/d:0,lx=this.X[lo]+(this.X[hi]-this.X[lo])*u,lz=this.Z[lo]+(this.Z[hi]-this.Z[lo])*u,lp=this.Psi[lo]+(this.Psi[hi]-this.Psi[lo])*u;
+    const b=this.base(k),c=Math.cos(b.psi),s=Math.sin(b.psi);out.x=b.x+lx*c+lz*s;out.z=b.z-lx*s+lz*c;out.psi=b.psi+lp;return out;
+  }
+  timeOfPhi(phi){
+    const rel=phi-this.phi0;let k=Math.floor(rel/this.Phi_P);if(k<0)return 0;
+    const target=rel-k*this.Phi_P;let lo=0,hi=this.N;while(hi-lo>1){const m=(lo+hi)>>1;if(this.Phi[m]<=target)lo=m;else hi=m;}
+    const d=this.Phi[hi]-this.Phi[lo],u=d>1e-12?(target-this.Phi[lo])/d:0;return k*this.P+(lo+u)*this.dtt;
+  }
+}
+function ik(P,T,a,b,pole,out){const d=temp.copy(T).sub(P);let dist=d.length();const reach=a+b-1e-4,minr=Math.abs(a-b)+1e-4;out.clamped=dist>reach||dist<minr;dist=clamp(dist,minr,reach);const u=d.normalize(),along=(a*a-b*b+dist*dist)/(2*dist),hgt=Math.sqrt(Math.max(0,a*a-along*along));const pd=pole.clone().addScaledVector(u,-pole.dot(u));if(pd.lengthSq()<1e-8)pd.set(0,0,1).addScaledVector(u,-u.z);pd.normalize();out.knee.copy(P).addScaledVector(u,along).addScaledVector(pd,hgt);out.foot.copy(P).addScaledVector(u,dist);out.pole=pd;}
+// ---------------------------------------------------------------- legged walker (round 2 engine, generalised to rings, spin, wheels, screws)
+class Legged{
+  constructor(body,row,variant,visual=false){
+    this.b=body;this.row=row;this.variant=variant;this.visual=visual;this.t=0;this.kind='legged';this.h=body.h;
+    const Fr=body.fr[row==='fast'?1:0];this.Fr=Fr;const s=this.s=leggedStyle(body,row,variant);
+    this.vnom=Math.sqrt(Fr*G*body.h)*s.vmul;this.terr=mkTerrain(row==='rough'?.4*body.h*(s.wheel?.5:1):0,2.2*body.bodyLen);
+    const legsDef=body.legsFor?body.legsFor(variant):body.legs,cys=body.cy;this.yaw=s.yaw;
+    this.legs=legsDef.map((l,i)=>{const rs=s.rest&&s.rest[i]?s.rest[i]:l.rest;const o={...l,i,off:s.off[i],beta:s.betaL&&s.betaL[i]!=null?s.betaL[i]:s.beta,hip:V(),target:V(),plant:V(),next:V(),out:{knee:V(),foot:V()},polev:V(),cyc:null,nextCyc:null,stance:false,wasStance:false,lastFoot:V(),touches:[],swW:0,curl:!!(s.curl&&s.curl.has(i))};
+      o.rx=rs[0];o.rz=rs[1];o.local=new THREE.Vector3(l.hx,l.hy-cys,l.hz);return o;});
+    this.active=this.legs.filter(l=>!l.curl);
+    let air=0;for(let n=0;n<3600;n++)if(!this.active.some(l=>frac(n/3600-l.off)<l.beta))air++;this.flightFrac=air/3600;this.flight=this.flightFrac>.005;
+    const lim0=.985*.96;let minHalf=Infinity;const hy0=body.h*Math.min(1,s.height);
+    for(const l of this.active){const Ls=(l.a+l.b)*lim0,dx=l.rx-l.local.x,d0=Math.hypot(dx,l.rz-l.local.z),hy=Math.min(l.local.y+hy0,.8*Math.sqrt(Math.max(0,Ls*Ls-d0*d0))),Rh2=Math.max(0,Ls*Ls-hy*hy);
+      let half;if(s.yaw.c1===1&&s.yaw.c2===0){const dc=Math.sqrt(Math.max(0,dx*dx-d0*d0+Rh2));half=Math.min(-dx+dc,dx+dc);}else half=Math.sqrt(Rh2)-d0;minHalf=Math.min(minHalf,Math.max(half,.08*Ls));}
+    this.capReach=1.85*minHalf/Math.max(...this.active.map(l=>l.beta));this.crossLimit=Infinity;
+    if(body.cross)for(const side of [-1,1]){const pair=this.legs.filter(l=>l.side===side).sort((p,q)=>p.rx-q.rx);
+      for(let k=1;k<pair.length;k++){const back=pair[k-1],front=pair[k],gap=front.rx-back.rx;
+        for(let j=0;j<720;j++){const qb=frac(j/720-back.off),qf=frac(j/720-front.off);if(qb<back.beta-1e-8&&qf<front.beta-1e-8&&qb-qf<-1e-8)this.crossLimit=Math.min(this.crossLimit,.96*gap/(qf-qb));}}}
+    this.plan=buildPlan(body.bodyLen,this.vnom,row,s.reverse);
+    this.path=new Path(this.plan,this.active.map(l=>[l.rx,l.rz]),this);
+    this.cur={};this.tmp={};this.resetMetrics();this.mask=0;this.stanceCount=0;this.hist=new Uint32Array(2048);this.hn=0;
+    if(visual&&this.build)this.build();
+  }
+  strideFor(veff){const s=this.s,h=this.h;if(s.law==='fix')return s.fix;const Fr=veff*veff/(G*h);return Math.max(.05*h,Math.min(2.3*Math.pow(Math.min(Fr,.65),.3)*h*s.k,this.capReach,this.crossLimit));}
+  resetMetrics(){this.m={n:0,air:0,slip:0,kneeBad:0,cross:0,below:0,clamp:0,float:0,stN:0};}
+  plantFor(l,cyc,out){const phiMid=cyc+l.off+l.beta/2,t=Math.max(0,this.path.timeOfPhi(phiMid)),S=this.path.sample(t,this.tmp),c=Math.cos(S.yaw),sn=Math.sin(S.yaw);
+    const x=S.x+l.rx*c+l.rz*sn,z=S.z-l.rx*sn+l.rz*c;out.set(x,this.terr(x,z),z);return out;}
+  step(dt){this.t+=dt;this.pose();}
+  pose(){
+    const s=this.s,h=this.h,S=this.path.sample(this.t,this.cur),phi=S.phi,theta=TAU*phi;this.S=S;let wR=0,wL=0,wMax=0,nSt=0,mask=0;
+    for(const l of this.legs){
+      if(l.curl){l.stance=false;continue;}
+      const beta=l.beta,cyc=Math.floor(phi-l.off),q=phi-l.off-cyc,st=q<beta;
+      if(l.cyc===null||cyc<l.cyc){this.plantFor(l,cyc,l.plant);l.cyc=cyc;l.nextCyc=null;}
+      if(st){if(l.cyc!==cyc){this.plantFor(l,cyc,l.plant);l.cyc=cyc;l.nextCyc=null;l.touches.push([this.t,l.plant.x,l.plant.z]);if(l.touches.length>8)l.touches.shift();if(this.visual&&this.mark)this.mark(l);}
+        l.target.copy(l.plant);const w=Math.sin(PI*q/beta);wMax=Math.max(wMax,w);if(l.side>0)wR=Math.max(wR,w);else wL=Math.max(wL,w);nSt++;mask|=1<<l.i;l.swW=0;}
+      else{if(l.nextCyc!==cyc+1){this.plantFor(l,cyc+1,l.next);l.nextCyc=cyc+1;}
+        const u=(q-beta)/(1-beta),e=ease(u),gx=l.plant.x+(l.next.x-l.plant.x)*e,gz=l.plant.z+(l.next.z-l.plant.z)*e;l.target.set(gx,this.terr(gx,gz)+h*s.lift*Math.sin(PI*u),gz);l.swW=s.swing?s.swing.amt*Math.pow(Math.sin(PI*u),.4):0;}
+      l.stance=st;}
+    this.stanceCount=nSt;this.mask=mask;
+    if(s.wheel)this.solveWheel(S);else this.solveBody(S,phi,theta,wR,wL,wMax);
+    this.finish(S,nSt);
+  }
+  solveBody(S,phi,theta,wR,wL,wMax){
+    const s=this.s,h=this.h,b=this.b,bob2=s.bob2?2:1,wave=Math.sin(bob2*theta+TAU*s.bobPhase);
+    const roll=s.roll0+(s.screw?TAU*phi:0)+s.roll*(wR-wL),pitch=s.pitch+s.rock*Math.sin(theta);
+    const root=new THREE.Vector3(S.x,0,S.z);let y=this.terr(S.x,S.z)+h*Math.min(1.02,s.height)+h*s.bob*(this.flight?(1-wMax):wave);
+    const qt=new THREE.Quaternion().setFromEuler(new THREE.Euler(roll,0,pitch)),qy=new THREE.Quaternion().setFromAxisAngle(Yax,S.yaw),quat=qy.clone().multiply(qt);
+    const dsp=l=>s.disp?s.disp(l.local.x,theta):null,place=l=>{l.hip.copy(l.local);const d=dsp(l);if(d)l.hip.add(temp.set(d[0],d[1],d[2]));l.hip.applyQuaternion(quat).add(root);l.hip.y+=y;};
+    for(let iter=0;iter<10;iter++){let need=0;for(const l of this.legs){if(l.curl||l.swW>.6)continue;place(l);const L=(l.a+l.b)*.985,dx=l.hip.x-l.target.x,dz=l.hip.z-l.target.z,hor=dx*dx+dz*dz;
+      if(hor<L*L)need=Math.max(need,l.hip.y-l.target.y-Math.sqrt(L*L-hor));else need=Math.max(need,.1*h);}
+      if(need<=1e-10)break;y-=need;}
+    this.rootY=y;this.pitch=pitch;this.roll=roll;this.theta=theta;this.quat=quat;this.root0=root;
+    for(const l of this.legs){place(l);l.polev.set(l.pole[0],l.pole[1],l.pole[2]).applyQuaternion(quat);
+      if(l.curl){const c=s.curlPt(l);l.target.set(c[0],c[1],c[2]).applyQuaternion(quat).add(l.hip);}
+      else if(l.swW>0){const L=l.a+l.b;let al;if(s.swing.alt==='trail')al=temp.set(-.75*L,.12*L,.35*L*Math.sin(l.ang)).applyQuaternion(quat).add(l.hip);else al=temp.set(0,-Math.cos(l.ang),Math.sin(l.ang)).multiplyScalar(.85*L).applyQuaternion(quat).add(l.hip);l.target.lerp(al,l.swW);const g=this.terr(l.target.x,l.target.z)+.004;if(!l.stance&&l.target.y<g)l.target.y=g;}}
+  }
+  solveWheel(S){ // rolling polygon: stance spoke planted, hub height from straight-spoke geometry, other spokes rotated by 2*pi*m/n about the lateral axis
+    const n=this.legs.length,L=this.legs[0].a+this.legs[0].b-.002;let si=0;for(const l of this.legs)if(l.stance){si=l.i;break;}
+    const tip=this.legs[si].plant,dh=Math.hypot(tip.x-S.x,tip.z-S.z),hubY=tip.y+Math.sqrt(Math.max(1e-6,L*L-dh*dh)),hub=new THREE.Vector3(S.x,hubY,S.z);
+    const dirS=tip.clone().sub(hub).normalize(),el=new THREE.Vector3(Math.sin(S.yaw),0,Math.cos(S.yaw)),qr=new THREE.Quaternion();
+    for(const l of this.legs){const m=((l.i-si)%n+n)%n;qr.setFromAxisAngle(el,TAU*m/n);l.hip.copy(hub);l.polev.set(0,0,1);
+      if(l.i===si)l.target.copy(tip);else{l.target.copy(dirS).applyQuaternion(qr).multiplyScalar(L).add(hub);const g=this.terr(l.target.x,l.target.z)+.002;if(l.target.y<g)l.target.y=g;}}
+    const qt=new THREE.Quaternion().setFromEuler(new THREE.Euler(PI/2,0,0)),qy=new THREE.Quaternion().setFromAxisAngle(Yax,S.yaw);
+    this.quat=qy.multiply(qt);this.rootY=hubY;this.pitch=0;this.roll=0;this.theta=TAU*S.phi;this.root0=new THREE.Vector3(S.x,0,S.z);
+  }
+  finish(S,nSt){
+    const m=this.m,s=this.s,h=this.h;m.n++;if(!nSt)m.air++;if(!nSt&&!this.flight)m.float++;m.stN+=nSt;
+    for(const l of this.legs){ik(l.hip,l.target,l.a,l.b,l.polev,l.out);if(l.out.clamped)m.clamp++;
+      if(l.stance){const d=l.out.foot.distanceTo(l.plant)*100;m.slip=Math.max(m.slip,d);if(l.wasStance)m.slip=Math.max(m.slip,l.out.foot.distanceTo(l.lastFoot)*100);l.lastFoot.copy(l.out.foot);}
+      l.wasStance=l.stance;
+      if(!s.wheel&&!l.curl){const chord=l.out.foot.clone().sub(l.hip).normalize(),kv=l.out.knee.clone().sub(l.hip),off=kv.clone().addScaledVector(chord,-kv.dot(chord));if(off.dot(l.out.pole)<-1e-8)m.kneeBad++;}
+      if(l.out.foot.y<this.terr(l.out.foot.x,l.out.foot.z)-1e-6||l.out.knee.y<this.terr(l.out.knee.x,l.out.knee.z)-1e-6)m.below++;}
+    if(this.b.cross)for(const side of [-1,1]){const lg=this.legs.filter(l=>l.side===side).sort((p,q)=>p.rx-q.rx);for(let i=1;i<lg.length;i++){if(lg[i].stance&&lg[i-1].stance){const c=Math.cos(S.yaw),sn=Math.sin(S.yaw);const dx=(lg[i].out.foot.x-lg[i-1].out.foot.x)*c-(lg[i].out.foot.z-lg[i-1].out.foot.z)*sn;if(dx<.01*h)m.cross++;}}}
+    let mk=0;for(const l of this.legs)if(l.stance)mk|=1<<l.i;this.hist[this.hn++%2048]=mk;
+    if(this.visual&&this.draw)this.draw();
+  }
+}
+// ---------------------------------------------------------------- limbless
+class Limbless{
+  constructor(body,row,variant,visual=false){
+    this.b=body;this.row=row;this.variant=variant;this.visual=visual;this.t=0;this.kind='limbless';this.h=body.h;this.Fr=null;
+    const s=this.s=limbStyle(body,row,variant),N=body.N,L=body.L;this.N=N;
+    this.vnom=body.sp[row==='fast'?1:0]*(row==='rough'?.9:1)*L*s.vmul;this.terr=mkTerrain(row==='rough'?.06*L:0,1.1*L);this.yaw=null;
+    this.flightFrac=0;if(s.type==='jump'){let c=0;for(let n=0;n<3600;n++){const u=(n/3600-s.beta)/(1-s.beta);if(u>0&&s.Hj*L*4*u*(1-u)>.012)c++;}this.flightFrac=c/3600;}this.flight=!!s.hop;
+    const mk=()=>new Float64Array(N);this.o={a:mk(),l:mk(),u:mk(),r:mk(),p:mk(),f:mk(),x:mk(),y:mk(),z:mk(),g:mk(),psi:mk(),dep:mk(),anc:new Uint8Array(N),sa:mk(),sl:mk(),su:mk(),sx:mk(),sz:mk(),sy:mk(),cx:mk(),cz:mk(),sp:mk()};
+    this.tmpC={x:0,z:0,psi:0};this.plan=buildPlan(L,this.vnom,row,false);this.path=new Path(this.plan,[[0,0]],this);this.cur={};this.tmp={};
+    this.hl=s.legs?[-1,1].map(side=>({...s.legs,side,i:side>0?1:0,off:side>0?.5:0,hip:V(),target:V(),plant:V(),next:V(),out:{knee:V(),foot:V()},polev:V(),cyc:null,nextCyc:null,stance:false,wasStance:false,lastFoot:V(),swW:0})):[];
+    this.o2={};for(const k of Object.keys(this.o))this.o2[k]=this.o[k] instanceof Uint8Array?new Uint8Array(N):new Float64Array(N);
+    this.anchStart=new Array(N).fill(null);this.resetMetrics();this.prev=null;this.dt=1/240;this.hist=new Uint32Array(2048);this.hn=0;this.mask=0;this.stanceCount=0;
+    if(visual&&this.build)this.build();
+  }
+  strideFor(veff){return this.s.D;}
+  resetMetrics(){this.m={n:0,air:0,slip:0,kneeBad:0,cross:0,below:0,clamp:0,float:0,stN:0,seg:0,side:0,minUp:0};this.anchStart.fill(null);this.prev=null;}
+  step(dt){this.t+=dt;this.dt=dt;this.pose();}
+  shape(S,o){
+    const b=this.b,s=this.s,N=b.N,L=b.L,phi=S.phi,arc=S.arc,dp=1/(N-1);let sole=false;
+    for(let j=0;j<N;j++){const p=j*dp;o.p[j]=p;o.r[j]=b.rad(p)*s.rs;o.u[j]=0;o.anc[j]=0;o.l[j]=0;o.dep[j]=0;o.f[j]=0;o.su[j]=0;}
+    if(s.type==='track'){const kap=1+.25*Math.pow(s.A*TAU/s.lam,2);for(let j=0;j<N;j++){const a=arc+(L/2-o.p[j]*L)/kap;o.a[j]=a;o.l[j]=s.A*Math.sin(TAU*a/s.lam+s.ph);}}
+    else if(s.type==='stair'){const {D,beta,lag,cb}=s,fwd=s.axis==='fwd',ds=L/(N-1);
+      for(let j=0;j<N;j++){const p=o.p[j],x=L/2-p*L,g=phi-lag*p,fl=Math.floor(g),q=g-fl,air=q>=beta,st=fl+(air?ease((q-beta)/(1-beta)):0),fd=D*(st-g);
+        o.f[j]=fwd?cb*x+fd:fd+(s.S2?s.S2*L*Math.sin(TAU*1.1*p+.6):0);o.l[j]=fwd?0:cb*(p-.5)*L;o.u[j]=air?s.H*L*Math.sin(PI*(q-beta)/(1-beta)):0;o.anc[j]=air?0:1;}
+      if(fwd){let sum=0;for(let j=0;j<N-1;j++){o.sp[j]=o.f[j]-o.f[j+1];sum+=o.sp[j];}o.sp[N-1]=o.sp[N-2];const mean=sum/(N-1);
+        for(let j=0;j<N;j++){if(s.zig){const e=clamp(o.sp[j]/ds,0,1.2);o.l[j]=(3/PI)*ds*1.3*Math.sqrt(Math.max(0,1-e*e))*Math.sin(j*PI/3);}
+          if(s.rad)o.r[j]*=clamp(Math.sqrt(mean/Math.max(1e-4,o.sp[j])),.72,1.5);}}
+      if(s.sole){sole=true;for(let j=0;j<N;j++){o.sa[j]=arc+o.f[j];o.sl[j]=0;o.su[j]=o.u[j];o.a[j]=arc+(L/2-o.p[j]*L);o.u[j]=0;}}
+      else for(let j=0;j<N;j++)o.a[j]=arc+o.f[j];
+      if(s.dive)for(let j=0;j<N;j++){const a=o.a[j];o.dep[j]=a>0?s.dive.depth*Math.pow(Math.sin(PI*a/s.dive.lam),2):0;}}
+    else if(s.type==='loop'){const cmin=s.cmin*L,D=L-cmin,n=Math.floor(phi),q=phi-n;let Tu,Hu,Hy=0,c,ph=0,hA=0,tA=0;
+      if(q<.5){const e=ease(q/.5);Hu=D*n;c=L-D*e;Tu=Hu-c;hA=1;}else{const e=ease((q-.5)/.5);c=cmin+D*e;Tu=D*n-cmin;if(s.vault)ph=s.vault*Math.sin(PI*e);Hu=Tu+c*Math.cos(ph);Hy=c*Math.sin(ph);tA=1;}
+      const th=sincInv(c/L),R=th>1e-3?L/(2*th):1e9,cs=Math.cos(ph),sn=Math.sin(ph),mu=(Tu+Hu)/2,my=Hy/2;
+      for(let j=0;j<N;j++){const p=o.p[j];let uu,vv;if(th>1e-3){const al=th*(1-2*p);uu=R*Math.sin(al);vv=R*(Math.cos(al)-Math.cos(th));}else{uu=(.5-p)*c;vv=0;}
+        const X=mu+uu*cs-vv*sn,Y=my+uu*sn+vv*cs;o.f[j]=X-D*phi+L/2;o.u[j]=Y;o.a[j]=arc+o.f[j];}
+      o.anc[0]=hA;o.anc[N-1]=tA;}
+    else if(s.type==='flop'){const {D,beta}=s,g=phi,fl=Math.floor(g),q=g-fl,air=q>=beta,st=fl+(air?ease((q-beta)/(1-beta)):0),fd=D*(st-g),ph=TAU*phi;
+      for(let j=0;j<N;j++){const p=o.p[j],x=L/2-p*L,d=Math.abs(p-.5)*2,env=Math.pow(Math.max(0,(d-.22)/.78),1.1);o.f[j]=x+fd;o.l[j]=s.Af*L*env*env*Math.sin(ph);o.u[j]=s.Hf*L*env*(.5-.5*Math.cos(2*ph));o.a[j]=arc+o.f[j];o.anc[j]=(!air&&d<.22)?1:0;}}
+    else if(s.type==='jump'){const {D,beta}=s,g=phi,fl=Math.floor(g),q=g-fl,air=q>=beta,u=air?(q-beta)/(1-beta):0,st=fl+(air?ease(u):0),fd=D*(st-g),e=air?Math.pow(Math.sin(PI*u),2):0,cbj=s.cbc+(1-s.cbc)*e,Ac=s.Ac*L*(1-e);
+      for(let j=0;j<N;j++){const p=o.p[j],x=L/2-p*L;o.f[j]=cbj*x+fd;o.l[j]=Ac*Math.sin(TAU*1.25*p);o.u[j]=air?s.Hj*L*4*u*(1-u):0;o.a[j]=arc+o.f[j];o.anc[j]=air?0:1;}}
+    o.sole=sole;
+  }
+  placeNode(o,j){this.path.atArc(o.a[j],this.tmpC);const c=this.tmpC,sn=Math.sin(c.psi),cs=Math.cos(c.psi),x=c.x+o.l[j]*sn,z=c.z+o.l[j]*cs,g=this.terr(x,z);o.x[j]=x;o.z[j]=z;o.g[j]=g;o.y[j]=g+o.r[j]+o.u[j]-o.dep[j];o.psi[j]=c.psi;
+    if(o.sole){this.path.atArc(o.sa[j],this.tmpC);const c2=this.tmpC,x2=c2.x+o.sl[j]*Math.sin(c2.psi),z2=c2.z+o.sl[j]*Math.cos(c2.psi),g2=this.terr(x2,z2);o.sx[j]=x2;o.sz[j]=z2;o.sy[j]=g2+.006+o.su[j];}}
+  nodeAt(o,j,out){this.placeNode(o,j);out.set(o.x[j],o.y[j],o.z[j]);return out;}
+  legPlant(l,cyc,out){const s=this.s,phiMid=cyc+l.off+l.beta/2,t=Math.max(0,this.path.timeOfPhi(phiMid)),S=this.path.sample(t,this.tmp);this.shape(S,this.o2);const o=this.o2,j=l.jn;
+    for(const k of [j-1,j,j+1])this.placeNode(o,k);let fx=o.x[j-1]-o.x[j+1],fz=o.z[j-1]-o.z[j+1];const n=Math.hypot(fx,fz)||1;fx/=n;fz/=n;
+    const x=o.x[j]+(-fz)*l.side*l.rl+fx*.015,z=o.z[j]+fx*l.side*l.rl+fz*.015;out.set(x,this.terr(x,z),z);return out;}
+  pose(){
+    const b=this.b,s=this.s,N=b.N,o=this.o,S=this.path.sample(this.t,this.cur);this.S=S;this.shape(S,o);
+    for(let j=0;j<N;j++)this.placeNode(o,j);
+    const m=this.m,ds=b.L/(N-1);let minClear=1e9,seg=0;m.n++;let nA=0,mask=0;
+    for(let j=0;j<N;j++){const cl=o.y[j]-o.r[j]-o.g[j]+o.dep[j];minClear=Math.min(minClear,cl);if(cl<-.002)m.below++;if(j<N-1){const d=Math.hypot(o.x[j]-o.x[j+1],o.z[j]-o.z[j+1],o.y[j]-o.y[j+1]);seg=Math.max(seg,Math.abs(d/ds-1));}}
+    m.seg=Math.max(m.seg,seg);
+    const sole=o.sole;for(let j=0;j<N;j++){o.cx[j]=sole?o.sx[j]:o.x[j];o.cz[j]=sole?o.sz[j]:o.z[j];if(o.anc[j]){nA++;if(j*12/N<12)mask|=1<<Math.floor(j*12/N);if(this.anchStart[j])m.slip=Math.max(m.slip,Math.hypot(o.cx[j]-this.anchStart[j][0],o.cz[j]-this.anchStart[j][1])*100);else this.anchStart[j]=[o.cx[j],o.cz[j]];}else this.anchStart[j]=null;}
+    if(s.type==='track'&&this.prev){for(let j=2;j<N-2;j++){const vx=(o.x[j]-this.prev[0][j])/this.dt,vz=(o.z[j]-this.prev[1][j])/this.dt,sp=Math.hypot(vx,vz);if(sp<.2*this.vnom)continue;const tx=o.x[j-1]-o.x[j+1],tz=o.z[j-1]-o.z[j+1],tn=Math.hypot(tx,tz)||1;m.side=Math.max(m.side,Math.abs(vx*tz-vz*tx)/tn/sp);}}
+    this.prev=[Float64Array.from(o.x),Float64Array.from(o.z)];
+    let legTouch=0;
+    if(this.hl.length){const phi=S.phi,jn=s.legs.jn,hh=V();
+      for(const l of this.hl){const beta=l.beta,cyc=Math.floor(phi-l.off),q=phi-l.off-cyc,st=q<beta&&!s.legs.tuck;
+        if(l.cyc===null||cyc<l.cyc){this.legPlant(l,cyc,l.plant);l.cyc=cyc;l.nextCyc=null;}
+        const hip=this.nodeAt(o,jn,hh);l.hip.copy(hip);
+        if(s.legs.tuck){const c=this.tmpC,fx=o.x[jn-1]-o.x[jn+1],fz=o.z[jn-1]-o.z[jn+1],n=Math.hypot(fx,fz)||1;l.target.set(o.x[jn]-fx/n*.09*b.L-fz/n*l.side*.02*b.L*-1,o.g[jn]+.012,o.z[jn]-fz/n*.09*b.L+fx/n*l.side*.02*b.L*-1);l.stance=false;}
+        else if(st){if(l.cyc!==cyc){this.legPlant(l,cyc,l.plant);l.cyc=cyc;l.nextCyc=null;}l.target.copy(l.plant);l.stance=true;legTouch++;}
+        else{if(l.nextCyc!==cyc+1){this.legPlant(l,cyc+1,l.next);l.nextCyc=cyc+1;}const u=(q-beta)/(1-beta),e=ease(u),gx=l.plant.x+(l.next.x-l.plant.x)*e,gz=l.plant.z+(l.next.z-l.plant.z)*e;l.target.set(gx,this.terr(gx,gz)+b.L*.04*s.legs.lift*Math.sin(PI*u),gz);l.stance=false;}
+        const fx=o.x[jn-1]-o.x[jn+1],fz=o.z[jn-1]-o.z[jn+1],n=Math.hypot(fx,fz)||1;l.polev.set(-fz/n*l.side*.5,1,fx/n*l.side*.5);
+        ik(l.hip,l.target,l.a,l.b,l.polev,l.out);if(l.out.clamped)m.clamp++;
+        if(l.stance){const d=l.out.foot.distanceTo(l.plant)*100;m.slip=Math.max(m.slip,d);if(l.wasStance)m.slip=Math.max(m.slip,l.out.foot.distanceTo(l.lastFoot)*100);l.lastFoot.copy(l.out.foot);mask|=1<<(12+l.i);}
+        l.wasStance=l.stance;
+        const chord=l.out.foot.clone().sub(l.hip).normalize(),kv=l.out.knee.clone().sub(l.hip),off=kv.clone().addScaledVector(chord,-kv.dot(chord));if(off.dot(l.out.pole)<-1e-8)m.kneeBad++;
+        if(l.out.foot.y<this.terr(l.out.foot.x,l.out.foot.z)-1e-6||l.out.knee.y<this.terr(l.out.knee.x,l.out.knee.z)-1e-6)m.below++;}}
+    const touching=minClear<.012;this.stanceCount=nA+legTouch;this.mask=mask;this.airNow=!touching&&!legTouch;if(this.airNow){m.air++;if(!this.flight)m.float++;}
+    this.hist[this.hn++%2048]=mask;
+    if(this.visual&&this.draw)this.draw();
+  }
+}
+const makeActor=(b,row,v,visual)=>b.kind==='legged'?new Legged(b,row,v,visual):new Limbless(b,row,v,visual);
+// ---------------------------------------------------------------- self-check
+function circumR(a,b,c){const ab=Math.hypot(b[0]-a[0],b[1]-a[1]),bc=Math.hypot(c[0]-b[0],c[1]-b[1]),ca=Math.hypot(a[0]-c[0],a[1]-c[1]);const area=Math.abs((b[0]-a[0])*(c[1]-a[1])-(c[0]-a[0])*(b[1]-a[1]))/2;return area<1e-9?Infinity:ab*bc*ca/(4*area);}
+function checkActor(w){
+  const fails=[],P=w.path.P,straight=w.row!=='turn',dt=straight?1/240:1/120;
+  const settle=straight?2:Math.min(P,8),measure=straight?4:P;
+  for(let t=0;t<settle;t+=dt)w.step(dt);w.resetMetrics();
+  for(let t=0;t<measure;t+=dt)w.step(dt);
+  const m=w.m,r={body:w.b.name,row:w.row,variant:w.b.names[w.variant],gait:w.s.name,kind:w.kind,flightAnalytic:w.flightFrac,flightMeasured:m.air/m.n,slipCm:m.slip,kneeBad:m.kneeBad,float:m.float,below:m.below,clamp:m.clamp,cross:m.cross,seg:m.seg||0,side:m.side||0,Fr:w.Fr,v:w.vnom,hz:w.path.F[0],stride:w.path.S[0],beta:w.beta||w.s.beta||0};
+  if(m.slip>2)fails.push('static contact drift '+m.slip.toFixed(2)+' cm');
+  if(m.kneeBad)fails.push('reversed knee frames '+m.kneeBad);
+  if(m.float)fails.push('floating frames '+m.float);
+  if(m.below)fails.push('joint below ground '+m.below);
+  if(m.clamp)fails.push('IK clamp '+m.clamp);
+  if(Math.abs(m.air/m.n-w.flightFrac)>Math.max(.03,.25/Math.max(1,w.path.F[0]*measure)))fails.push('air '+(m.air/m.n).toFixed(3)+' vs analytic '+w.flightFrac.toFixed(3));
+  if(straight&&m.cross)fails.push('same-side feet crossed '+m.cross);
+  if(w.kind==='limbless'){if(m.side>.15)fails.push('lateral slip along track '+m.side.toFixed(2));if(m.seg>.7)fails.push('segment length error '+m.seg.toFixed(2));}
+  if(!straight){
+    const pa=w.path,arcs=pa.pieces.filter(p=>p.main),sh=pa.pieces.filter(p=>p.sharp);r.radii=[];r.sharpDeg=[];
+    for(const p of arcs){const i0=Math.round(p.t0/pa.dtt),i1=Math.min(pa.N,Math.round((p.t0+p.T)/pa.dtt)),im=(i0+i1)>>1;const R=circumR([pa.X[i0],pa.Z[i0]],[pa.X[im],pa.Z[im]],[pa.X[i1],pa.Z[i1]]);r.radii.push(R);if(Math.abs(R-pa.pieces[0].R)/pa.pieces[0].R>.03)fails.push('turn radius '+R.toFixed(2)+' vs '+pa.pieces[0].R.toFixed(2));}
+    for(const p of sh){const i0=Math.round(p.t0/pa.dtt),i1=Math.min(pa.N,Math.round((p.t0+p.T)/pa.dtt)),d=Math.abs(pa.Psi[i1]-pa.Psi[i0])*180/PI;r.sharpDeg.push(d);if(d<145)fails.push('sharp turn only '+d.toFixed(0)+' deg');}
+  }
+  r.fails=fails;return r;
+}
+function runCheck(BODIES,filter){
+  const table=[],fails=[];
+  for(const b of BODIES){if(filter&&!filter(b))continue;for(const row of ROWS)for(let v=0;v<4;v++){const w=makeActor(b,row,v,false),r=checkActor(w);table.push(r);for(const f of r.fails)fails.push(`${b.name}/${row}/${r.variant}: ${f}`);}}
+  const bad=new Set(fails.map(f=>f.split(':')[0]));
+  return {pass:!fails.length,cases:table.length,passed:table.length-bad.size,fails,table};
+}
+/*CORE_END*/
+const BODIES=buildBodies();
+const $=id=>document.getElementById(id);
+// ---------------------------------------------------------------- visuals
+const GEO={sphere:new THREE.SphereGeometry(1,12,8),cylinder:new THREE.CylinderGeometry(1,1,1,8),box:new THREE.BoxGeometry(1,1,1)};
+const lam=(color,extra)=>new THREE.MeshLambertMaterial({color,...(extra||{})});
+const MAT={groundGlass:lam('#2d343c',{transparent:true,opacity:.42}),joint:lam('#dfae58'),foot:lam('#89b7b7'),ground:lam('#2d343c'),terrain:lam('#ffffff',{flatShading:true,vertexColors:true}),eye:lam('#151b1c'),peg:lam('#9a8f7a')};
+function mesh(parent,geo,mat,scale,pos){const m=new THREE.Mesh(geo,mat);m.scale.set(...scale);m.position.set(...pos);parent.add(m);return m;}
+function cylinder(m,a,b,r){const d=b.clone().sub(a),len=d.length();m.position.copy(a).addScaledVector(d,.5);if(len>1e-9)m.quaternion.setFromUnitVectors(Yax,d.normalize());m.scale.set(r,Math.max(len,1e-6),r);}
+function niceStep(raw){const c=[.01,.02,.05,.1,.25,.5,1,2];return c.reduce((a,b)=>Math.abs(Math.log(b/raw))<Math.abs(Math.log(a/raw))?b:a);}
+const MARKS=6,TRAIL=200,TN=40;
+function buildBase(){
+  const b=this.b;this.scene=new THREE.Scene();this.scene.background=new THREE.Color('#1b2026');
+  this.scene.add(new THREE.AmbientLight('#ffffff',.8));const light=new THREE.DirectionalLight('#ffffff',.85);light.position.set(-2,4,6);this.scene.add(light);
+  this.cam=new THREE.OrthographicCamera(-2,2,2,-1,.01,500);this.root=new THREE.Group();this.scene.add(this.root);
+  this.skin=lam(b.color);this.accent=lam(b.accent);const c=new THREE.Color(b.color);this.near=lam('#'+c.clone().offsetHSL(0,0,.12).getHexString());this.far=lam('#'+c.clone().offsetHSL(0,-.05,-.14).getHexString());
+  const limb=this.kind==='limbless',turn=this.row==='turn',sp=niceStep(b.bodyLen/4);this.sp=sp;
+  const N=41,mkDots=NZ=>{const pos=new Float32Array(N*NZ*3);let k=0;for(let i=0;i<N;i++)for(let j=0;j<NZ;j++){pos[k++]=(i-20)*sp;pos[k++]=.001;pos[k++]=(j-(NZ-1)/2)*sp;}
+    const gg=new THREE.BufferGeometry();gg.setAttribute('position',new THREE.BufferAttribute(pos,3));const p=new THREE.Points(gg,new THREE.PointsMaterial({color:'#7c868e',size:2.5,sizeAttenuation:false}));this.scene.add(p);return p;};
+  this.dotsW=mkDots(41);this.dotsN=(turn||limb)?null:mkDots(9);this.dots=this.dotsW;
+  if(this.row==='rough'){const pg=new THREE.PlaneGeometry(1,1,TN,TN);pg.rotateX(-Math.PI/2);pg.setAttribute('color',new THREE.BufferAttribute(new Float32Array((TN+1)*(TN+1)*3),3));this.tgeo=pg;this.tmesh=new THREE.Mesh(pg,MAT.terrain);this.scene.add(this.tmesh);}
+  else{this.ground=mesh(this.scene,GEO.box,(this.s&&this.s.dive)?MAT.groundGlass:MAT.ground,[sp*60,.4,sp*60],[0,-.2,0]);}
+  const mp=new Float32Array(Math.max(this.legs?this.legs.length:0,b.N||0)*MARKS*3+3).fill(-100);this.markPos=mp;this.markIdx=(this.legs||[]).map(()=>0);
+  const mg=new THREE.BufferGeometry();mg.setAttribute('position',new THREE.BufferAttribute(mp,3));this.markGeo=mg;this.scene.add(new THREE.Points(mg,new THREE.PointsMaterial({color:'#edc578',size:5,sizeAttenuation:false})));
+  if(turn||limb){this.trailPos=new Float32Array(TRAIL*3);this.trailN=0;this.trailT=0;const tg=new THREE.BufferGeometry();tg.setAttribute('position',new THREE.BufferAttribute(this.trailPos,3));tg.setDrawRange(0,0);this.trailGeo=tg;const line=new THREE.Line(tg,new THREE.LineBasicMaterial({color:'#5fb3a8'}));line.frustumCulled=false;this.scene.add(line);}
+}
+function drawTrail(S){if(!this.trailGeo)return;this.trailT+=1/240;if(this.trailT>=.05){this.trailT=0;const p=this.trailPos;if(this.trailN<TRAIL)this.trailN++;p.copyWithin(0,3);const k=(TRAIL-1)*3;p[k]=S.x;p[k+1]=this.terr(S.x,S.z)+.01;p[k+2]=S.z;this.trailGeo.setDrawRange(TRAIL-this.trailN,this.trailN);this.trailGeo.attributes.position.needsUpdate=true;}}
+function placeCam(aspect,mode){
+  const b=this.b,S=this.S||{x:0,z:0},sp=this.sp,limb=this.kind==='limbless',turn=this.row==='turn',top=mode==='top';let W,dir;const tgt=new THREE.Vector3(S.x,0,S.z);
+  const hh=(this.s&&this.s.wheel)?2*(this.legs[0].a+this.legs[0].b):b.height;if(limb)W=turn?3.2*b.L:(b.zoom||1.9)*b.L;else W=turn?Math.max(3.6*b.bodyLen,2.6*b.h,2.4*hh):Math.max(1.7*b.span,2.1*hh);
+  const H=W/aspect;this.cam.left=-W/2;this.cam.right=W/2;
+  if(top){dir=new THREE.Vector3(0,1,.001);this.cam.top=H*.56;this.cam.bottom=-H*.44;this.cam.up.set(0,0,-1);}
+  else if(limb||turn){const vd=b.viewDir||[0,1.15,.8];dir=new THREE.Vector3(vd[0],vd[1],vd[2]);this.cam.top=H*.7;this.cam.bottom=-H*.5;this.cam.up.set(0,1,0);}
+  else{dir=new THREE.Vector3(.1,b.elev||.2,1);const tp=.78-.35*((b.elev||.2)-.2);this.cam.top=H*tp;this.cam.bottom=-H*(1-tp);this.cam.up.set(0,1,0);}
+  const wide=turn||limb||top,gx=Math.round(S.x/sp)*sp,gz=wide?Math.round(S.z/sp)*sp:0;this.dots=wide?this.dotsW:this.dotsN;this.dotsW.visible=wide;if(this.dotsN)this.dotsN.visible=!wide;this.dots.position.set(gx,0,gz);
+  if(this.ground)this.ground.position.set(S.x,-.2,wide?S.z:0);
+  if(this.tmesh){const size=Math.max(W,H)*2.4,cx=S.x,cz=S.z;this.tmesh.position.set(cx,0,cz);this.tmesh.scale.set(size,1,size);const p=this.tgeo.attributes.position;const col=this.tgeo.attributes.color,amp=this.amp||.05;for(let i=0;i<p.count;i++){const y=this.terr(cx+p.getX(i)*size,cz+p.getZ(i)*size),t=clamp(y/amp*.5+.5,0,1);p.setY(i,y);col.setXYZ(i,.14+.26*t,.17+.28*t,.2+.3*t);}p.needsUpdate=true;col.needsUpdate=true;
+    const dp=this.dots.geometry.attributes.position;for(let i=0;i<dp.count;i++)dp.setY(i,this.terr(dp.getX(i)+gx,dp.getZ(i)+gz)+.004);dp.needsUpdate=true;}
+  dir.normalize();this.cam.position.copy(tgt).addScaledVector(dir,200);this.cam.lookAt(tgt);this.cam.updateProjectionMatrix();
+}
+function markFn(l){const idx=l.i*MARKS+(this.markIdx[l.i]++%MARKS);this.markPos[idx*3]=l.plant.x;this.markPos[idx*3+1]=l.plant.y+.004;this.markPos[idx*3+2]=l.plant.z;this.markGeo.attributes.position.needsUpdate=true;}
+for(const C of [Legged,Limbless]){C.prototype.place=placeCam;C.prototype.dispose=function(){this.skin.dispose();this.accent.dispose();this.near.dispose();this.far.dispose();if(this.tgeo)this.tgeo.dispose();};}
+Legged.prototype.mark=markFn;
+Legged.prototype.build=function(){
+  buildBase.call(this);const b=this.b,h=this.h;this.amp=.4*h;this.blobMeshes=b.blobs.map(k=>mesh(this.root,GEO.sphere,k.m==='accent'?this.accent:this.skin,k.r,k.p));
+  this.links=[];if(b.chain)for(let i=1;i<b.blobs.length;i++)this.links.push(mesh(this.root,GEO.cylinder,this.skin,[1,1,1],[0,0,0]));
+  for(const e of b.eyes)mesh(this.root,GEO.sphere,MAT.eye,[e[3],e[3],e[3]],[e[0],e[1],e[2]]);
+  const kr=Math.max(.008,h*.03);
+  for(const l of this.legs){const mat=l.side>0?this.near:this.far,w=l.w;l.mat=mat;l.upper=mesh(this.scene,GEO.cylinder,mat,[1,1,1],[0,0,0]);l.lower=mesh(this.scene,GEO.cylinder,mat,[1,1,1],[0,0,0]);l.kneeM=mesh(this.scene,GEO.sphere,MAT.joint,[kr,kr,kr],[0,0,0]);l.toe=mesh(this.scene,GEO.sphere,MAT.foot,[w*.65,w*.3,w*.55],[0,0,0]);l.baseM=mesh(this.scene,GEO.sphere,this.accent,[w*.5,w*.5,w*.5],[0,0,0]);}
+};
+Legged.prototype.draw=function(){
+  const S=this.S,b=this.b,s=this.s,h=this.h,theta=this.theta;this.root.position.set(this.root0.x,this.rootY,this.root0.z);this.root.quaternion.copy(this.quat);
+  const bp=b.blobs.map((k,i)=>{const d=s.disp?s.disp(k.p[0],theta):[0,0,0];this.blobMeshes[i].position.set(k.p[0]+d[0],k.p[1]+d[1],k.p[2]+d[2]);return this.blobMeshes[i].position;});
+  this.links.forEach((m,i)=>cylinder(m,bp[i],bp[i+1],Math.min(b.blobs[i].r[2],b.blobs[i+1].r[2])*.8));
+  let lead=-1;if(s.lead==='fix0')lead=0;else if(s.lead==='near'){let best=-9;const c=Math.cos(S.yaw),sn=Math.sin(S.yaw),hx=Math.cos(S.psi),hz=-Math.sin(S.psi);for(const l of this.legs){const wx=Math.cos(l.ang)*c+Math.sin(l.ang)*sn,wz=-Math.cos(l.ang)*sn+Math.sin(l.ang)*c,d=wx*hx+wz*hz;if(d>best){best=d;lead=l.i;}}}
+  for(const l of this.legs){const mat=l.i===lead?this.accent:l.mat;l.upper.material=mat;l.lower.material=mat;cylinder(l.upper,l.hip,l.out.knee,l.w*.34);cylinder(l.lower,l.out.knee,l.out.foot,l.w*.26);l.kneeM.position.copy(l.out.knee);l.toe.position.copy(l.out.foot);l.toe.position.y+=l.w*.3;l.baseM.position.copy(l.hip);}
+  drawTrail.call(this,S);
+};
+Limbless.prototype.mark=null;
+Limbless.prototype.build=function(){
+  buildBase.call(this);const b=this.b,s=this.s,N=b.N;const ghost=b.family==='slug'?{transparent:true,opacity:.62,depthWrite:false}:{};
+  const base=lam(b.color,ghost),band=lam('#'+new THREE.Color(b.color).offsetHSL(0,0,-.1).getHexString(),ghost);this.ancM=lam('#edc578');this.soleMat=lam(b.accent);
+  this.nodeM=[];this.mats=[];this.baseMat=[];for(let j=0;j<N;j++){const m=s.dive?lam(b.color):(Math.floor(j/3)%2===0?base:band);if(s.dive)this.mats.push(m);this.baseMat.push(m);this.nodeM.push(mesh(this.scene,GEO.sphere,m,[1,1,1],[0,0,0]));}
+  this.linkM=[];for(let j=0;j<N-1;j++)this.linkM.push(mesh(this.scene,GEO.cylinder,this.baseMat[j],[1,1,1],[0,0,0]));
+  this.eyeM=[1,-1].map(()=>mesh(this.scene,GEO.sphere,MAT.eye,[1,1,1],[0,0,0]));
+  if(s.sole)this.soleM=Array.from({length:N},()=>mesh(this.scene,GEO.sphere,this.soleMat,[1,1,1],[0,-5,0]));
+  if(s.pegs)this.pegM=Array.from({length:16},()=>mesh(this.scene,GEO.sphere,MAT.peg,[1,1,1],[0,-5,0]));
+  this.legM=this.hl.map(l=>({u:mesh(this.scene,GEO.cylinder,this.near,[1,1,1],[0,0,0]),d:mesh(this.scene,GEO.cylinder,this.near,[1,1,1],[0,0,0]),k:mesh(this.scene,GEO.sphere,MAT.joint,[.008,.008,.008],[0,0,0]),t:mesh(this.scene,GEO.sphere,MAT.foot,[.02,.01,.018],[0,0,0])}));
+  this.amp=.06*b.L;
+};
+const SOIL=new THREE.Color('#2a2118');
+Limbless.prototype.draw=function(){
+  const b=this.b,s=this.s,o=this.o,N=b.N,S=this.S,P=[];for(let j=0;j<N;j++){const m=this.nodeM[j],r=o.r[j];m.position.set(o.x[j],o.y[j],o.z[j]);m.scale.set(r,r,r);P.push(m.position);m.material=(o.anc[j]&&!s.dive&&!o.sole)?this.ancM:this.baseMat[j];
+    if(s.dive){this.mats[j].color.set(b.color).lerp(SOIL,clamp(o.dep[j]/(s.dive.depth*.9),0,.85));}}
+  for(let j=0;j<N-1;j++)cylinder(this.linkM[j],P[j],P[j+1],Math.min(o.r[j],o.r[j+1])*.94);
+  const t=P[0].clone().sub(P[1]).normalize(),lat=new THREE.Vector3(-t.z,0,t.x),r0=o.r[0];
+  this.eyeM.forEach((e,i)=>{const sg=i?-1:1;e.position.copy(P[0]).addScaledVector(t,r0*.55).addScaledVector(lat,sg*r0*.58);e.position.y+=r0*.45;e.scale.set(r0*.24,r0*.24,r0*.24);});
+  if(this.soleM)for(let j=0;j<N;j++){const m=this.soleM[j];m.position.set(o.sx[j],o.sy[j],o.sz[j]);const w=o.r[j]*1.1;m.scale.set(w*1.1,.006,w);m.material=o.anc[j]?this.ancM:this.soleMat;}
+  if(this.pegM){const k0=Math.ceil((S.arc-b.L*1.1)*2/s.lam),c=this.tmpC;let n=0;for(let k=k0;n<16&&k<k0+16;k++){const a=(k+.5)*s.lam/2;if(a>S.arc+b.L*.8)break;this.path.atArc(a,c);const side=(Math.sin(TAU*a/s.lam)>0?1:-1),off=(s.A+b.rad(.4)+.01)*side,x=c.x+off*Math.sin(c.psi),z=c.z+off*Math.cos(c.psi),pr=b.rad(.4)*.7;this.pegM[n].position.set(x,this.terr(x,z)+pr*.6,z);this.pegM[n].scale.set(pr,pr*1.2,pr);n++;}for(;n<16;n++)this.pegM[n].position.y=-5;}
+  this.hl.forEach((l,i)=>{const lm=this.legM[i];cylinder(lm.u,l.hip,l.out.knee,s.legs.w*.9);cylinder(lm.d,l.out.knee,l.out.foot,s.legs.w*.7);lm.k.position.copy(l.out.knee);lm.t.position.copy(l.out.foot);lm.t.position.y+=.006;});
+  drawTrail.call(this,{x:o.x[N>>1],z:o.z[N>>1]});
+};
+// ---------------------------------------------------------------- state and UI
+const KEY='primigenia-move-styles3-v1';
+let bodyIndex=0,rate=1,paused=false,walkers=[],hovered=0,focused=-1,manual=false,acc=0,camMode='view';
+let choices={};try{choices=JSON.parse(localStorage.getItem(KEY)||'{}');if(!choices||typeof choices!=='object'||Array.isArray(choices))choices={};}catch{choices={};}
+const rowKey=(b,r)=>r==='walk'&&b.kind==='limbless'?'crawl':r;
+const ROWLABEL=(b,r)=>({walk:b.kind==='limbless'?'Slow crawl':'Walk',turn:'Turn',fast:'Fast',rough:b.kind==='limbless'?'Rough ground':'Rough ground'})[r];
+const cells=[];ROWS.forEach((row,r)=>{for(let v=0;v<4;v++){const el=document.createElement('button');el.className='cell';el.dataset.row=row;el.setAttribute('aria-pressed','false');
+  el.innerHTML='<span class="title"><b></b> <i></i></span><span class="description"></span><span class="adapt"></span><span class="star" aria-hidden="true"></span><span class="metrics"></span><canvas class="strip" width="156" height="36" aria-hidden="true"></canvas>';
+  const idx=r*4+v;el.addEventListener('pointerenter',()=>hovered=idx);el.addEventListener('focus',()=>hovered=idx);el.addEventListener('click',()=>toggle(idx));$('cells').appendChild(el);cells.push(el);}});
+const renderer=new THREE.WebGLRenderer({canvas:$('gl'),antialias:true,preserveDrawingBuffer:true});renderer.setPixelRatio(1);let W=1,H=1;
+function layout(){const r=$('stage').getBoundingClientRect();W=Math.round(r.width);H=Math.round(r.height);renderer.setSize(W,H,false);}
+const ROWNOTE=(w)=>{const b=w.b,row=w.row;if(row==='turn')return `R = 3 body lengths = ${(3*b.bodyLen).toFixed(2)} m`+(w.plan.sharp?` · one ${w.plan.sharp}° sharp turn`:' · turns by reversing');if(row==='rough')return `bumps ${(w.terr?(b.kind==='legged'?.4*b.h*(w.s.wheel?.5:1):.06*b.L):0).toFixed(3)} m high, slope under 12°`;if(row==='fast')return b.kind==='legged'?`Fr ${w.Fr.toFixed(2)}`:`${(w.vnom/b.L).toFixed(2)} body lengths per second`;return b.kind==='legged'?`Fr ${w.Fr.toFixed(2)}`:`${(w.vnom/b.L).toFixed(2)} body lengths per second`;};
+function selectBody(i){
+  bodyIndex=(i+BODIES.length)%BODIES.length;walkers.forEach(w=>w.dispose());const b=BODIES[bodyIndex];camMode=b.camDefault||(b.kind==='limbless'?'top':'view');
+  walkers=[];for(const row of ROWS)for(let v=0;v<4;v++)walkers.push(makeActor(b,row,v,true));
+  walkers.forEach(w=>w.pose());for(let n=0;n<150;n++)walkers.forEach(w=>w.step(1/240));
+  $('creature-name').textContent=b.name;$('body-note').textContent=`${b.kind==='limbless'?'limbless':b.nLegs+' legs'} · ${b.note} · ${bodyIndex+1} / ${BODIES.length}`;
+  cells.forEach((el,k)=>{const w=walkers[k],row=ROWS[k>>2],v=k&3;el.querySelector('b').textContent=ROWLABEL(b,row);el.querySelector('i').textContent='· '+b.names[v];el.querySelector('.description').textContent=b.notes[v];el.querySelector('.adapt').textContent=w.s.name+(w.flight?' · air phase':'')+' · '+ROWNOTE(w);});
+  setCam(camMode);updateChoices();
+}
+function selected(name,row){const c=choices[name];return c&&Number.isInteger(c[row])&&c[row]>=0&&c[row]<4?c[row]:-1;}
+function toggle(idx){const b=BODIES[bodyIndex],row=ROWS[idx>>2],v=idx&3;const c=choices[b.name]=choices[b.name]||{};if(c[row]===v)delete c[row];else c[row]=v;if(!Object.keys(c).length)delete choices[b.name];
+  try{localStorage.setItem(KEY,JSON.stringify(choices));}catch{$('copy-status').textContent='Storage unavailable. Copy choices before closing.';}updateChoices();}
+function lineFor(b){const parts=ROWS.map(r=>{const v=selected(b.name,r);return rowKey(b,r)+'='+(v<0?'-':b.names[v]);});return parts.some(p=>!p.endsWith('=-'))?`${b.name}: ${parts.join('; ')}`:'';}
+function choicesText(){return BODIES.map(lineFor).filter(Boolean).join('\n');}
+function updateChoices(){const b=BODIES[bodyIndex];cells.forEach((el,k)=>{const on=selected(b.name,ROWS[k>>2])===(k&3);el.setAttribute('aria-pressed',String(on));el.querySelector('.star').textContent=on?'★':'';el.setAttribute('aria-label',`${ROWLABEL(b,ROWS[k>>2])}, ${b.names[k&3]}: ${walkers[k]?walkers[k].s.name:''}`);});
+  $('choices').replaceChildren();for(const bd of BODIES){const t=lineFor(bd);if(!t)continue;const p=document.createElement('p'),st=document.createElement('strong');st.textContent=bd.name;p.append(st,document.createTextNode(t.slice(bd.name.length+2)));$('choices').appendChild(p);}
+  if(!$('choices').children.length)$('choices').textContent='No stars yet. Pick the movement that feels right in each row.';}
+function label(w){const S=w.S,b=w.b;if(b.kind==='legged')return `${S.f.toFixed(2)} Hz · ${S.stride.toFixed(2)} m · Fr ${w.Fr.toFixed(2)} · duty ${w.s.beta.toFixed(2)}\n${w.vnom.toFixed(2)} m/s${w.row==='turn'?' · v now '+Math.abs(S.v).toFixed(2):''}${w.stanceCount===0?' · AIR':''}`;
+  const s=w.s,wl=s.type==='track'?`λ ${s.lam.toFixed(2)} m`:`st ${s.D.toFixed(2)} m`;return `${S.f.toFixed(2)} Hz · ${wl} · ${(w.vnom/b.L).toFixed(2)} BL/s\n${w.vnom.toFixed(2)} m/s${w.row==='turn'?' · v now '+Math.abs(S.v).toFixed(2):''}${w.airNow?' · AIR':''}`;}
+function render(){renderer.setScissorTest(true);
+  walkers.forEach((w,i)=>{if(focused>=0&&i!==focused)return;const cols=focused>=0?1:4,rows=focused>=0?1:4,x=focused>=0?0:(i%4)*W/4,y=focused>=0?0:Math.floor(i/4)*H/4,cw=W/cols,ch=H/rows;
+    w.place(cw/ch,camMode);renderer.setViewport(x,H-y-ch,cw,ch);renderer.setScissor(x,H-y-ch,cw,ch);renderer.render(w.scene,w.cam);
+    const el=cells[i];el.querySelector('.metrics').textContent=label(w);
+    const ctx=el.querySelector('.strip').getContext('2d');ctx.clearRect(0,0,156,36);ctx.fillStyle='#283038';const S=w.S,n=w.kind==='legged'?w.legs.length:(w.hl.length?14:12),rh=Math.min(8,Math.max(1.5,34/n)),win=clamp(2/Math.max(S.f,.2),.4,7)*240;
+    for(let x2=0;x2<156;x2++){const idx=w.hn-1-Math.round((1-x2/156)*win);if(idx<0||w.hn-idx>2000)continue;const mask=w.hist[((idx%2048)+2048)%2048];for(let j=0;j<n;j++)if(mask&(1<<j))ctx.fillRect(x2,1+j*(34/n),1,Math.max(1,rh-.5));}});}
+function advance(seconds){for(let t=0;t<seconds-1e-9;t+=1/240)walkers.forEach(w=>w.step(Math.min(1/240,seconds-t)));}
+function focusCell(i){if(i>=0&&document.fullscreenEnabled&&!document.fullscreenElement)$('stage').requestFullscreen().catch(()=>{});else if(i<0&&document.fullscreenElement)document.exitFullscreen().catch(()=>{});focused=i;$('stage').classList.toggle('expanded',i>=0);$('close-full').hidden=i<0;cells.forEach((el,k)=>el.hidden=i>=0&&k!==i);layout();render();}
+function setPause(v){paused=v;$('pause').textContent=v?'Play':'Pause';$('pause').setAttribute('aria-pressed',String(v));}
+function setCam(m){camMode=m;$('cam').textContent='Camera: '+(m==='top'?'top-down':'side / 3/4')+' (T)';$('cam').setAttribute('aria-pressed',String(m==='top'));render();}
+document.addEventListener('fullscreenchange',()=>{if(!document.fullscreenElement&&focused>=0)focusCell(-1);else layout();});
+$('prev').onclick=()=>selectBody(bodyIndex-1);$('next').onclick=()=>selectBody(bodyIndex+1);$('close-full').onclick=()=>focusCell(-1);$('pause').onclick=()=>setPause(!paused);$('cam').onclick=()=>setCam(camMode==='top'?'view':'top');
+for(const button of document.querySelectorAll('[data-rate]'))button.onclick=()=>{rate=Number(button.dataset.rate);document.querySelectorAll('[data-rate]').forEach(x=>x.setAttribute('aria-pressed',String(x===button)));};
+$('copy').onclick=async()=>{const text=choicesText();if(!text){$('copy-status').textContent='Star a cell first.';return;}try{if(!navigator.clipboard)throw Error('unavailable');await navigator.clipboard.writeText(text);$('copy-status').textContent='Copied. Paste into chat.';$('copy-fallback').hidden=true;}catch{const area=$('copy-fallback');area.hidden=false;area.value=text;area.focus();area.select();let copied=false;try{copied=document.execCommand('copy');}catch{}$('copy-status').textContent=copied?'Copied. Paste into chat.':'Press Ctrl+C / Cmd+C to copy the selected choices.';}};
+document.addEventListener('pointerdown',e=>{const b=e.target.closest('button');if(b)b.classList.add('pointer');});document.addEventListener('pointerup',()=>document.querySelectorAll('.pointer').forEach(b=>b.classList.remove('pointer')));
+document.addEventListener('keydown',e=>{document.querySelectorAll('.pointer').forEach(b=>b.classList.remove('pointer'));if(e.target.matches('input,textarea,select')||e.ctrlKey||e.metaKey||e.altKey)return;
+  if(e.code==='Space'&&!e.repeat){e.preventDefault();selectBody(bodyIndex+(e.shiftKey?-1:1));}else if(e.key.toLowerCase()==='p'&&!e.repeat){e.preventDefault();setPause(!paused);}else if(e.key.toLowerCase()==='f'&&!e.repeat){e.preventDefault();focusCell(focused<0?hovered:-1);}else if(e.key.toLowerCase()==='t'&&!e.repeat){e.preventDefault();setCam(camMode==='top'?'view':'top');}else if(e.key==='Escape')focusCell(-1);});
+// Self-check (same code as tools/gaitlab/styles3_check.cjs). Chunked per body so the page stays responsive.
+function showCheck(r){window.__stylesCheck=r;$('check').textContent=r.pass?`Self-check PASS · ${r.passed}/${r.cases} body × row × variant cases`:`Self-check FAIL · ${r.passed}/${r.cases} cases pass, ${r.fails.length} failures`;$('check').className=r.pass?'pass':'fail';}
+function runChunked(){return new Promise(res=>{const all={pass:true,cases:0,passed:0,fails:[],table:[]};let i=0;const next=()=>{if(i>=BODIES.length){all.pass=!all.fails.length;showCheck(all);res(all);return;}const r=runCheck(BODIES,b=>b===BODIES[i]);all.cases+=r.cases;all.passed+=r.passed;all.fails.push(...r.fails);all.table.push(...r.table);$('check').textContent=`Self-check running ${++i}/${BODIES.length}…`;setTimeout(next,0);};next();});}
+$('runcheck').onclick=()=>{runChunked();};
+window.STYLELAB={BODIES,ROWS,runCheck:()=>runCheck(BODIES),advance,render,selectBody,choicesText,focusCell,setPause,setCam,get walkers(){return walkers;},get bodyIndex(){return bodyIndex;},get rate(){return rate;},get paused(){return paused;},get camMode(){return camMode;}};
+layout();selectBody(0);window.addEventListener('resize',()=>{layout();render();});
+if(new URLSearchParams(location.search).get('test')==='1'){manual=true;showCheck(runCheck(BODIES));manual=false;}
+window.__ready=true;let last=performance.now();function frame(now){const dt=Math.min(.05,(now-last)/1000);last=now;if(!manual&&!paused){acc+=dt*rate;let n=0;while(acc>=1/240&&n<24){walkers.forEach(w=>w.step(1/240));acc-=1/240;n++;}if(n>=24)acc=0;}render();requestAnimationFrame(frame);}requestAnimationFrame(frame);
+})();
+</script></body></html>
