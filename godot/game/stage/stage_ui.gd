@@ -15,9 +15,12 @@ const Modes := preload("res://ui/modes.gd")
 const Palette := preload("res://ui/palette.gd")
 const Strings := preload("res://ui/strings.gd")
 const Glyphs := preload("res://ui/glyphs.gd")
+const Style := preload("res://ui/style.gd")
+const Pointer := preload("res://game/player/pointer.gd")
 const Profile := preload("res://game/stage/profile.gd")
 const JournalModel := preload("res://ui/journal_model.gd")
 const V_WAIT := 1
+const V_APPROACH := 4
 const V_ATTACK := 5
 const V_GUARD := 8
 const V_DODGE := 9
@@ -37,6 +40,12 @@ var selected_id := -1
 var attack_orders: Array = []        # log of orders sent, for tests: {tick, text|input}
 var last_outcome := 0
 var _pending_attack = null           # {target, move}
+# Verb-first targeting (docs/briefs/verb-target.md): `verb` is the armed verb (Modes.*, NONE when nothing is armed), `locked_id` the
+# creature the player clicked with it (0 or less: none). The marker follows it; C does the pursuit and the verb.
+var verb: StringName = Modes.NONE
+var locked_id := -1
+var hover_id := -1
+var _pursuit = null                  # {id, stop, then}: walk up to a creature (APPROACH) before the keys or the observe take over
 var _pending_social = null           # {verb, target, move, sent}: a C2 social order (befriend, gift, observe, intimidate, eat)
 var _chains: Array = []               # CporeWorld.chains(): the observe clues per species
 var _gift := 1                        # the gift item (Modes.ITEMS index) of the G key
@@ -83,7 +92,11 @@ func setup(island_node: Node3D, name_text: String) -> void:
 		_send({"verb": V_DODGE, "dir": DODGE_LEFT if d < 0 else DODGE_RIGHT}, "dodge"))
 	ui.selection_changed.connect(func(id) -> void:
 		selected_id = -1 if id == null else int(id)
-		island.selected_id = selected_id)
+		island.selected_id = selected_id
+		if locked_id > 0 and (id == null or int(id) != locked_id):
+			_drop_lock())
+	ui.verb_armed.connect(arm_verb)
+	ui.verb_cancelled.connect(cancel_verb)
 	ui.loadout_panel.setup(_moves)
 	ui.loadout_panel.assign.connect(assign_loadout)
 	ui.loadout_requested.connect(toggle_loadout_panel)
@@ -110,6 +123,157 @@ func setup(island_node: Node3D, name_text: String) -> void:
 func _send(input: Dictionary, label: String) -> void:
 	_oneshot = input
 	attack_orders.append({"tick": stage.cur.tick, "order": label})
+
+# --- verb first, then the creature ---------------------------------------------------
+
+# Arm a verb (the bar or its key). A locked target that is still valid for the new verb stays locked and the order is
+# re-sent for the new verb; otherwise the lock goes and the player picks again.
+func arm_verb(mode: StringName) -> void:
+	if not Modes.is_mode(mode) or mode == Modes.NONE:
+		return
+	verb = mode
+	ui.verb_bar.arm(mode)
+	if locked_id > 0 and _valid_for(mode, locked_id):
+		ui.set_mode(mode)
+		_engage()
+		_sync_marker()
+	elif locked_id > 0:
+		_drop_lock()
+		ui.clear_selection()
+
+# Esc or a right click: the verb, the lock, the pursuit and the selection all go; the creature stops where it is.
+func cancel_verb() -> void:
+	var had := verb != Modes.NONE or locked_id > 0
+	verb = Modes.NONE
+	ui.verb_bar.arm(Modes.NONE)
+	_pending_attack = null
+	_pending_social = null
+	_pursuit = null
+	hover_id = -1
+	ui.marker.set_hover(-1, Modes.NONE, "")
+	_drop_lock()
+	if had and not ui.selected.is_empty():
+		ui.clear_selection()
+	if had and int(stage.cur.order.verb) != V_WAIT:
+		_send({"verb": V_WAIT}, "cancel")
+
+func verb_is_armed() -> bool:
+	return verb != Modes.NONE
+
+# The creature can be the target of this verb: Eat needs remains with meat, the others a living creature.
+func _valid_for(mode: StringName, id: int) -> bool:
+	var ents: Array = stage.cur.entities
+	if id <= 0 or id >= ents.size():
+		return false
+	var e: Dictionary = ents[id]
+	if bool(e.get("hidden", false)):
+		return false
+	if mode == Modes.EAT:
+		return bool(e.get("dead", false)) and int(e.get("meat", 0)) > 0
+	return not bool(e.get("dead", false))
+
+# The click / hover pick of an armed verb: the nearest valid creature to the mouse in screen space, generous radius.
+func pick_for_verb(mouse: Vector2, mode: StringName = Modes.NONE) -> int:
+	var m := verb if mode == Modes.NONE else mode
+	if m == Modes.NONE or Game.camera == null or stage.cur.is_empty():
+		return -1
+	var cam: Camera3D = Game.camera
+	var p: Dictionary = stage.cur.entities[0]
+	var cands: Array = []
+	for id in range(1, stage.cur.entities.size()):
+		if not _valid_for(m, id):
+			continue
+		var e: Dictionary = stage.cur.entities[id]
+		if Vector2(float(e.x) - float(p.x), float(e.z) - float(p.z)).length() > 160.0:
+			continue
+		var a := _anchor(id)
+		if a.is_empty():
+			var gp := Vector3(float(e.x), Game.ground(float(e.x), float(e.z)), float(e.z))
+			a = {"pos": gp, "height": 1.2}
+		cands.append({"id": id, "feet": a.pos, "height": a.height})
+	var project := func(w: Vector3) -> Variant:
+		return null if cam.is_position_behind(w) else cam.unproject_position(w)
+	return Pointer.pick_screen(mouse, cands, project, Style.u(44.0))
+
+# The click on a creature with a verb armed: lock it, select it, and start the verb (pursuit and all).
+func lock_target(id: int) -> bool:
+	if verb == Modes.NONE or not _valid_for(verb, id):
+		return false
+	ui.select(info_for(id), false)
+	locked_id = id
+	ui.set_mode(verb)
+	_engage()
+	_sync_marker()
+	return true
+
+func _drop_lock() -> void:
+	locked_id = -1
+	_pursuit = null
+	ui.marker.clear_lock()
+
+# What C is told for the armed verb on the locked target. Attack and Eat are whole orders (C walks up and does them);
+# Befriend, Observe and Intimidate first walk up (APPROACH), then the keys 1-4 do the verb (Observe starts on its own).
+func _engage() -> void:
+	if locked_id <= 0:
+		return
+	_pending_attack = null
+	_pending_social = null
+	_pursuit = null
+	player_input.clear_destination()
+	match verb:
+		Modes.ATTACK:
+			for i in ui.abilities.size():
+				_attack(i)
+				if _pending_attack != null:
+					break
+		Modes.EAT:
+			social_order("eat", locked_id, 0)
+		Modes.OBSERVE:
+			_pursuit = {"id": locked_id, "stop": 7.0, "then": "observe"}
+		Modes.BEFRIEND:
+			_pursuit = {"id": locked_id, "stop": 4.5, "then": ""}
+		Modes.INTIMIDATE:
+			_pursuit = {"id": locked_id, "stop": 9.0, "then": ""}
+
+func relation_of(id: int) -> String:
+	var e: Dictionary = stage.cur.entities[id]
+	if bool(e.get("dead", false)):
+		return Strings.t("remains")
+	if bool(e.get("hostile", false)):
+		return Strings.t("rel_hostile")
+	if int(e.get("relationship", 0)) >= 2 or bool(e.get("bonded", false)):
+		return Strings.t("rel_friendly")
+	var sp: Dictionary = species[e.species] if e.species >= 0 and e.species < species.size() else {}
+	if JournalModel.diet_of(sp, int(e.species)) == 0:
+		return Strings.t("rel_prey")
+	return Strings.t("rel_neutral_mark")
+
+func _hint_of(mode: StringName) -> String:
+	match mode:
+		Modes.BEFRIEND:
+			return Strings.t("hint_beat")
+		Modes.OBSERVE:
+			return Strings.t("hint_observe")
+		Modes.INTIMIDATE:
+			return Strings.t("hint_intimidate")
+	return ""
+
+func _sync_marker() -> void:
+	if locked_id <= 0 or locked_id >= stage.cur.entities.size():
+		return
+	ui.marker.set_lock(locked_id, verb, str(ui.selected.get("name", "")), relation_of(locked_id), _hint_of(verb))
+
+func _verb_hover() -> void:
+	if ui == null or stage == null or stage.cur.is_empty():
+		return
+	var want := -1
+	if verb != Modes.NONE and not Game.movement_blocked() and not ui.paused:
+		want = pick_for_verb(get_viewport().get_mouse_position())
+	hover_id = want
+	if hover_id > 0 and hover_id != locked_id:
+		ui.marker.set_hover(hover_id, verb, str(info_for(hover_id).name))
+	else:
+		ui.marker.set_hover(-1, Modes.NONE, "")
 
 # Select first, then choose: picking a mode only changes the hotbar; nothing is ordered until an ability key (1-4) is pressed.
 func _on_mode(mode: StringName) -> void:
@@ -262,6 +426,21 @@ func provide() -> Dictionary:
 			_pending_attack = null
 		else:
 			return {"verb": V_ATTACK, "target": tgt, "move": _pending_attack.move}
+	if _pursuit != null:
+		var pu: Dictionary = _pursuit
+		var pid: int = pu.id
+		if s.verb == 3 or s.verb == 2 or active or not _valid_for(verb, pid):
+			_pursuit = null                 # keys, a click-walk or a fight cancel the pursuit (the lock stays)
+		else:
+			var pe: Dictionary = st.entities[pid]
+			var me: Dictionary = st.entities[0]
+			var dist := Vector2(float(pe.x) - float(me.x), float(pe.z) - float(me.z)).length() - float(pe.get("radius_cm", 60)) * 0.01
+			if dist <= float(pu.stop):
+				_pursuit = null
+				if pu.then == "observe":
+					social_order("observe", pid, 0)
+				return s
+			return {"verb": V_APPROACH, "target": pid}
 	return s
 
 # --- selection ------------------------------------------------------------------
@@ -274,7 +453,7 @@ func _anchor(id: int) -> Dictionary:
 	var p: Vector3 = h.global_position
 	p.y = Game.ground(p.x, p.z)
 	var ent: Dictionary = stage.cur.entities[id] if id < stage.cur.entities.size() else {}
-	return {"pos": p, "height": h.height() * (0.45 if bool(ent.get("dead", false)) else 1.0)}
+	return {"pos": p, "height": h.height() * (0.45 if bool(ent.get("dead", false)) else 1.0), "radius": maxf(0.6, float(ent.get("radius_cm", 60)) * 0.01) * 1.25}
 
 func info_for(id: int) -> Dictionary:
 	var st: Dictionary = stage.cur
@@ -367,12 +546,14 @@ func _on_tick(state: Dictionary) -> void:
 		if bool(e.dead) and int(ui.selected.get("carcass_meat", -1)) < 0:
 			ui.clear_selection()             # the one you selected fell: its ring breaks; the carcass can be selected next
 			island.ground_marks.break_ring()
-		elif (e.dead and int(e.get("meat", 0)) <= 0) or Vector2(float(e.x) - float(p.x), float(e.z) - float(p.z)).length() > 60.0:
+		elif (e.dead and int(e.get("meat", 0)) <= 0) or Vector2(float(e.x) - float(p.x), float(e.z) - float(p.z)).length() > (160.0 if selected_id == locked_id else 60.0):
 			ui.clear_selection()
 		else:
 			var inf := info_for(selected_id)
 			inf.erase("id")
 			ui.update_target(inf)
+			if selected_id == locked_id:
+				_sync_marker()
 	# the enemy's wind-up tell
 	var tell := -1.0
 	var label := ""
@@ -465,6 +646,7 @@ func _on_pause(paused: bool) -> void:
 # --- per frame ------------------------------------------------------------------
 
 func _process(dt: float) -> void:
+	_verb_hover()
 	if _dying:
 		_death_clock += dt
 		if _death_clock > 2.6:
@@ -700,7 +882,10 @@ func _social_event(ev: Dictionary, state: Dictionary) -> void:
 	if int(ev.type) == 21:
 		for part in state.get("parts", {}).get("discovered", []):
 			if int(part.index) == int(ev.target):
-				ui.show_message(Strings.t("part_found", [part.id]), "info")
+				var pname := str(part.id).replace("_", " ")
+				ui.show_message(Strings.t("nest_new_part", [pname]), "info")       # a short hint back to the nest
+				if not ui.nest_prompt.new_parts.has(pname):
+					ui.nest_prompt.new_parts.append(pname)
 		return
 	if int(ev.type) == 25:       # shard_found: the story line, one whisper (en/es), the shard's name as the moment
 		var items: Array = state.get("shards", {}).get("items", [])
@@ -791,6 +976,7 @@ func open_nest_editor() -> void:
 	if not bool(stage.world.state().get("parts", {}).get("can_edit", false)):
 		_refuse(-13)
 		return
+	ui.nest_prompt.new_parts.clear()
 	var editor = preload("res://studio/ui/studio.gd").new()
 	editor.nest_world = stage.world
 	editor.nest_genome = island._genome
@@ -824,7 +1010,6 @@ func _lineage_ended() -> void:
 	_lineage_end = CanvasLayer.new()
 	_lineage_end.layer = 40
 	island.add_child(_lineage_end)
-	var Style := preload("res://ui/style.gd")
 	var dim := ColorRect.new()              # the fog closing in: a veil, as in the menu
 	dim.color = Color(0.094, 0.133, 0.122, 0.86)
 	dim.set_anchors_preset(Control.PRESET_FULL_RECT)

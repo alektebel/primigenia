@@ -78,6 +78,7 @@ var _mid_travel := 0.0
 var _far := false
 var _sun_shadows_ok := true    # the sun draws a shadow map on this tier (WorldLight); low does not
 var _nest := Vector2.ZERO
+var family: Node3D                  # Family: the siblings at the nest (visual only, no C slots)
 var _den = null
 var _den_seen := false
 var action_feed := ActionFeed.new()   # C state -> action signals (read only)
@@ -334,6 +335,11 @@ func _build_stage() -> void:
 	add_child(player_host)
 	player_host.setup(genome, 0, setup.player, ground)
 	hosts[0] = player_host
+	family = preload("res://game/island/family.gd").new()
+	family.name = "Family"
+	add_child(family)
+	family.setup(genome, int(Game.settings.seed), setup.nest, ground, func() -> Vector3: return player_pos,
+		func(p: Vector2) -> bool: return walk_blocked(Vector3(p.x, 0.0, p.y)))
 	await _slice()
 	for i in setup.wild.size():
 		var h := ActorHost.new()
@@ -854,6 +860,8 @@ func _on_button(e: InputEventMouseButton) -> void:
 			chase.orbit_active = _orbit_btn != 0
 			if e.button_index == MOUSE_BUTTON_MIDDLE and _mid_travel < Gesture.DRAG_PX:
 				chase.reset_behind()
+			elif e.button_index == MOUSE_BUTTON_RIGHT and _mid_travel < Gesture.DRAG_PX and stage_ui != null and (stage_ui.verb_is_armed() or stage_ui.locked_id > 0):
+				stage_ui.cancel_verb()          # a right click that was not an orbit drag cancels the verb and the lock
 
 func _on_motion(e: InputEventMouseMotion) -> void:
 	gesture.motion(e.position)           # a left drag is classified (and then ignored): the left button never moves the camera
@@ -878,15 +886,24 @@ func _click(pos: Vector2, _double: bool) -> void:
 
 func _click_ground(allow_pick: bool, mouse: Vector2, follow: bool = false) -> void:
 	var ground := Callable(Game, "visual_ground")
-	if allow_pick:
+	var verb_first: bool = allow_pick and stage_ui != null and stage_ui.verb_is_armed()
+	if verb_first:
+		# verb first, then the creature: the nearest valid creature to the click in screen space (generous radius) is locked
+		var vid: int = stage_ui.pick_for_verb(mouse)
+		if vid > 0 and stage_ui.lock_target(vid):
+			player_input.clear_destination()
+			last_click = mouse
+			ground_marks.clear_move(false)
+			return
+	elif allow_pick:
 		var picked := Pointer.pick_entity(camera.project_ray_origin(mouse), camera.project_ray_normal(mouse), stage.cur.entities, ground)
 		if not picked.is_empty():
 			player_input.clear_destination()
 			last_click = mouse
 			Game.creature_clicked.emit(picked.id, picked.pos)
 			return
-	if allow_pick and stage_ui != null and selected_id > 0:
-		stage_ui.ui.clear_selection()       # a click on empty ground deselects (and walks there)
+	if allow_pick and not verb_first and stage_ui != null and selected_id > 0:
+		stage_ui.ui.clear_selection()       # a click on empty ground deselects (and walks there); an armed verb keeps its lock
 	var hit = Pointer.ground_hit(camera, mouse, ground, maxf(900.0, chase.distance * 2.0))
 	if hit != null:
 		if walk_blocked(hit):

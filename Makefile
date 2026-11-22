@@ -423,6 +423,23 @@ godot-loco-score: godot
 	python3 tools/loco/footfall_svg.py docs/evidence/loco/score/$(LOCO_LABEL)
 
 # The whole game, headless: main -> menu -> Play -> encounter, rig contract, studio -> save -> Play (godot/game/tests/play_test.gd).
+# Verb-first targeting through the real island (docs/briefs/verb-target.md); EVIDENCE=dir also writes the screenshots (software GL).
+.PHONY: godot-verb-target-test godot-verb-target-evidence
+godot-verb-target-test: godot
+	nice -n 10 timeout 900 $(GODOT) --headless --fixed-fps 60 --path godot --script res://game/tests/verb_target_test.gd
+godot-verb-target-evidence: godot
+	@mkdir -p docs/evidence/godot/verb-target
+	LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 900 xvfb-run -a -s "-screen 0 1280x720x24" \
+	  $(GODOT) --rendering-driver opengl3 --max-fps 15 --resolution 1280x720 --path godot \
+	  --script res://game/tests/verb_target_test.gd -- $(CURDIR)/docs/evidence/godot/verb-target
+.PHONY: godot-nest-family-test godot-nest-family-evidence
+godot-nest-family-test: godot
+	nice -n 10 timeout 900 $(GODOT) --headless --fixed-fps 60 --path godot --script res://game/tests/nest_family_test.gd
+godot-nest-family-evidence: godot
+	@mkdir -p docs/evidence/godot/verb-target
+	LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 900 xvfb-run -a -s "-screen 0 1280x720x24" \
+	  $(GODOT) --rendering-driver opengl3 --max-fps 15 --resolution 1280x720 --path godot \
+	  --script res://game/tests/nest_family_test.gd -- $(CURDIR)/docs/evidence/godot/verb-target
 .PHONY: godot-play-test godot-wire-evidence
 QUALITY ?=
 godot-play-test: godot
