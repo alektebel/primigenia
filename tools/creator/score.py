@@ -114,6 +114,9 @@ def moment_checks(name, m, rep, ref, d):
     out.append(check(name + ".ui_coverage", "hud", u, "<=%s (ref %s)" % (tol["ui_coverage"]["max"], R["ui_coverage"]), u <= tol["ui_coverage"]["max"]))
     el = m["pitch_deg"]
     out.append(check(name + ".elev_deg", "camera", el, R["camera_elev_deg"], abs(el - R["camera_elev_deg"]) <= tol["camera_elev_deg"]["tol"]))
+    fa = m.get("facing_deg")
+    ft = tol["facing_deg"]["tol"]
+    out.append(check(name + ".facing_deg", "camera", fa, R["facing_deg"], fa is not None and abs(fa - R["facing_deg"]) <= ft, "" if fa is not None else "replay has no facing_deg"))
     cl = bool(m.get("grass_visible") or m.get("rocks_visible"))
     out.append(check(name + ".clutter", "stage", cl, False, not cl, "grass/rocks between camera and creature" if cl else ""))
     pr = m.get("probe", {})

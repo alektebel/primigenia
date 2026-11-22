@@ -93,7 +93,7 @@ var thumbnails := {}                  # part id -> Texture2D
 var current_category := "mouths"
 var lang := "es"
 
-var _yaw := 2.2                       # web studio defaults (camYaw 2.2, camPitch .14)
+var _yaw := .785                      # front three-quarter: head toward the camera, 135 deg between camera and creature forward
 var _pitch := .21
 var _dist := 13.0
 var _dist_goal := 13.0
@@ -331,7 +331,7 @@ func frame_creature(snap := true) -> void:
 		return
 	var box := creature_bounds()
 	_framed_bounds = box
-	_spine_mid = box.get_center() - Vector3(0, box.size.y * .14, 0)   # creature sits in the upper-middle, like the reference
+	_spine_mid = box.get_center() - Vector3(0, box.size.y * .19, 0)   # creature sits in the upper-middle, like the reference
 	_target_goal = _spine_mid
 	var old_target := _target
 	var old_dist := _dist
@@ -360,9 +360,11 @@ func _place_camera() -> void:
 	var cp := cos(_pitch)
 	var a := _yaw - _theta
 	var floor_y: float = view.floor_y()
-	camera.position = _target + Vector3(sin(a) * cp, sin(_pitch), cos(a) * cp) * _dist
+	# The reference keeps the creature right of centre (its parts shelf is on the left): slide the view target sideways.
+	var look := _target - Vector3(cos(a), 0, -sin(a)) * _dist * .17
+	camera.position = look + Vector3(sin(a) * cp, sin(_pitch), cos(a) * cp) * _dist
 	camera.position.y = maxf(camera.position.y, floor_y + .3)
-	camera.look_at(_target, Vector3.UP)
+	camera.look_at(look, Vector3.UP)
 	if overlay:
 		overlay.queue_redraw()
 
