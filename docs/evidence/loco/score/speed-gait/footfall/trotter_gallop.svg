@@ -4,21 +4,22 @@
 <text x="10" y="32" fill="#555">ours</text>
 <text x="10" y="52">L0</text>
 <rect x="46" y="40" width="640" height="16" fill="#f2f2f2"/>
-<rect x="46.0" y="40" width="64.0" height="16" fill="#2b6cb0"/>
-<rect x="323.3" y="40" width="64.0" height="16" fill="#2b6cb0"/>
-<rect x="579.3" y="40" width="85.3" height="16" fill="#2b6cb0"/>
+<rect x="46.0" y="40" width="75.3" height="16" fill="#2b6cb0"/>
+<rect x="290.7" y="40" width="75.3" height="16" fill="#2b6cb0"/>
+<rect x="535.4" y="40" width="56.5" height="16" fill="#2b6cb0"/>
 <text x="10" y="74">R0</text>
 <rect x="46" y="62" width="640" height="16" fill="#f2f2f2"/>
-<rect x="67.3" y="62" width="85.3" height="16" fill="#2b6cb0"/>
-<rect x="344.7" y="62" width="64.0" height="16" fill="#2b6cb0"/>
-<rect x="622.0" y="62" width="64.0" height="16" fill="#2b6cb0"/>
+<rect x="83.6" y="62" width="75.3" height="16" fill="#2b6cb0"/>
+<rect x="328.4" y="62" width="56.5" height="16" fill="#2b6cb0"/>
+<rect x="554.2" y="62" width="56.5" height="16" fill="#2b6cb0"/>
 <text x="10" y="96">L1</text>
 <rect x="46" y="84" width="640" height="16" fill="#f2f2f2"/>
-<rect x="174.0" y="84" width="85.3" height="16" fill="#2b6cb0"/>
-<rect x="451.3" y="84" width="64.0" height="16" fill="#2b6cb0"/>
+<rect x="215.4" y="84" width="56.5" height="16" fill="#2b6cb0"/>
+<rect x="441.3" y="84" width="56.5" height="16" fill="#2b6cb0"/>
 <text x="10" y="118">R1</text>
 <rect x="46" y="106" width="640" height="16" fill="#f2f2f2"/>
-<rect x="216.7" y="106" width="64.0" height="16" fill="#2b6cb0"/>
-<rect x="472.7" y="106" width="85.3" height="16" fill="#2b6cb0"/>
+<rect x="177.8" y="106" width="56.5" height="16" fill="#2b6cb0"/>
+<rect x="422.5" y="106" width="56.5" height="16" fill="#2b6cb0"/>
+<rect x="648.4" y="106" width="37.6" height="16" fill="#2b6cb0"/>
 <line x1="366.0" y1="34" x2="366.0" y2="132" stroke="#c53030" stroke-dasharray="3,3"/>
 </svg>

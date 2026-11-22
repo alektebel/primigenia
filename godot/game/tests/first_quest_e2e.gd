@@ -143,11 +143,12 @@ func _run() -> void:
 	await _shot("start")
 	var t_start := tick()
 	# A39: bodies walk at Fr 0.24 and prey runs at Fr 1.5 when it flees, so the bot sprints between fights
-	island.player_input.keys_override = {"forward": false, "back": false, "left": false, "right": false, "sprint": true, "run": false}
+	island.player_input.keys_override = {"forward": false, "back": false, "left": false, "right": false, "sprint": true, "run": true}
 	await _hunt()
 	await _friend()
 	await _dig()
 	await _wings()
+	island.player_input.keys_override = null
 	await _fire()
 	check(fq.quest.finished(), "all five tasks are done")
 	check(tick() - t_start <= TOTAL, "the whole chain fits in %d ticks (%d used)" % [TOTAL, tick() - t_start])

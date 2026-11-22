@@ -4,18 +4,18 @@
   "frames": 1260,
   "metrics": {
     "airborne_frac": 0.0,
-    "back_slope_deg": 5.38,
-    "body_pitch_deg": 0.07,
-    "cadence_hz": 1.337,
+    "back_slope_deg": 5.35,
+    "body_pitch_deg": 0.04,
+    "cadence_hz": 1.453,
     "duty_factor": {
-      "mean": 0.6069,
+      "mean": 0.6599,
       "per_foot": [
-        0.6087,
-        0.6048,
-        0.6056,
-        0.6079,
-        0.6095,
-        0.6048
+        0.6611,
+        0.6587,
+        0.6587,
+        0.6611,
+        0.6611,
+        0.6587
       ]
     },
     "foot_penetration_cm": {
@@ -26,9 +26,9 @@
     "foot_slip_cm": {
       "mean": 0.0,
       "p95": 0.0,
-      "stances": 333
+      "stances": 363
     },
-    "foot_spacing_ratio": 0.4017,
+    "foot_spacing_ratio": 0.4185,
     "footfall": {
       "contact": [
         [
@@ -53,8 +53,6 @@
           false,
           false,
           false,
-          false,
-          false,
           true,
           true,
           true,
@@ -75,7 +73,7 @@
           false,
           false,
           false,
-          false
+          true
         ],
         [
           true,
@@ -88,7 +86,6 @@
           false,
           false,
           false,
-          false,
           true,
           true,
           true,
@@ -110,8 +107,7 @@
           false,
           false,
           false,
-          false,
-          false,
+          true,
           true,
           true,
           true,
@@ -126,8 +122,7 @@
         [
           true,
           true,
-          false,
-          false,
+          true,
           false,
           false,
           false,
@@ -156,8 +151,7 @@
           false,
           false,
           false,
-          false,
-          false,
+          true,
           true,
           true,
           true,
@@ -191,8 +185,6 @@
           false,
           false,
           false,
-          false,
-          false,
           true,
           true,
           true,
@@ -213,10 +205,9 @@
           false,
           false,
           false,
-          false
+          true
         ],
         [
-          false,
           true,
           true,
           true,
@@ -230,8 +221,7 @@
           true,
           true,
           true,
-          false,
-          false,
+          true,
           false,
           false,
           false,
@@ -259,7 +249,7 @@
           false,
           false,
           false,
-          false
+          true
         ],
         [
           true,
@@ -272,8 +262,6 @@
           false,
           false,
           false,
-          false,
-          false,
           true,
           true,
           true,
@@ -287,8 +275,7 @@
           true,
           true,
           true,
-          false,
-          false,
+          true,
           false,
           false,
           false,
@@ -296,6 +283,7 @@
           false,
           false,
           false,
+          true,
           true,
           true,
           true,
@@ -317,92 +305,92 @@
         "L2",
         "R2"
       ],
-      "start_frame": 19,
-      "stride_frames": 22
+      "start_frame": 16,
+      "stride_frames": 21
     },
     "gait_frac": {
       "tripod": 1.0
     },
-    "gait_symmetry": 1.003,
+    "gait_symmetry": 1.001,
     "ground_slope_deg": 0.0,
     "head_pitch_deg": {
-      "mean": 0.07,
-      "p95": 2.49
+      "mean": 0.11,
+      "p95": 2.63
     },
     "head_yaw_vs_body_deg": {
-      "mean": 3.11,
-      "p95": 26.56
+      "mean": 3.22,
+      "p95": 29.55
     },
     "knee_flip_frac": 0.0,
-    "leg_extension": 0.8903,
+    "leg_extension": 0.8312,
     "limp": {
-      "drop_ratio": 1.0033,
-      "index": 1.0033,
+      "drop_ratio": 1.3682,
+      "index": 1.3682,
       "paired": 3,
       "per_foot": [
         {
-          "drop_cm": 3.382,
+          "drop_cm": 1.624,
           "pair": 0,
-          "roll_deg": 2.105,
-          "samples": 54,
+          "roll_deg": 1.997,
+          "samples": 59,
           "side": 1
         },
         {
-          "drop_cm": 3.371,
+          "drop_cm": 1.187,
           "pair": 0,
-          "roll_deg": 2.104,
-          "samples": 54,
+          "roll_deg": 1.997,
+          "samples": 59,
           "side": -1
         },
         {
-          "drop_cm": 3.371,
+          "drop_cm": 1.187,
           "pair": 1,
           "roll_deg": 0.0,
-          "samples": 54,
+          "samples": 59,
           "side": 1
         },
         {
-          "drop_cm": 3.382,
+          "drop_cm": 1.624,
           "pair": 1,
           "roll_deg": 0.0,
-          "samples": 54,
+          "samples": 59,
           "side": -1
         },
         {
-          "drop_cm": 3.382,
+          "drop_cm": 1.624,
           "pair": 2,
-          "roll_deg": 2.105,
-          "samples": 54,
+          "roll_deg": 1.997,
+          "samples": 59,
           "side": 1
         },
         {
-          "drop_cm": 3.371,
+          "drop_cm": 1.187,
           "pair": 2,
-          "roll_deg": 2.104,
-          "samples": 54,
+          "roll_deg": 1.997,
+          "samples": 59,
           "side": -1
         }
       ],
-      "roll_ratio": 1.0005
+      "roll_ratio": 1.0
     },
-    "limp_index": 1.0033,
+    "limp_index": 1.3682,
     "min_turn_radius_m": null,
     "moving_frac": 1.0,
     "pitch_follow": null,
     "pivot_frac": 0.0,
     "pivot_frac_of_turns": null,
-    "roll_plant_lag": 0.191,
-    "shoulder_hip_ratio": 1.1808,
+    "roll_plant_lag": 0.201,
+    "shoulder_hip_ratio": 1.1943,
     "slide_frac": 0.0,
     "speed_mean_mps": 1.2889,
     "stall_frac": 0.0,
     "stall_state_frac": 0.0,
     "steep_slope_deg": null,
-    "stride_len_m": 0.964,
+    "stride_len_m": 0.887,
     "stuck_frac": 0.0,
-    "torso_bob_cm": 3.44,
-    "torso_bob_frac": 0.0417,
-    "torso_roll_deg": 2.1
+    "torso_bob_cm": 1.69,
+    "torso_bob_frac": 0.022,
+    "torso_roll_deg": 2.0
   },
   "reasons": {
     "min_turn_radius_m": "no frames with speed > 1 m/s and yaw rate > 0.1 rad/s (no turn in this scenario)",

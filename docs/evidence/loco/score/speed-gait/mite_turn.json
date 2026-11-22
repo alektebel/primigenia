@@ -6,12 +6,12 @@
     "airborne_frac": 0.0,
     "back_slope_deg": null,
     "body_pitch_deg": 0.01,
-    "cadence_hz": 4.417,
+    "cadence_hz": 3.687,
     "duty_factor": {
-      "mean": 0.6583,
+      "mean": 0.5516,
       "per_foot": [
-        0.6579,
-        0.6587
+        0.5524,
+        0.5508
       ]
     },
     "foot_penetration_cm": {
@@ -22,7 +22,7 @@
     "foot_slip_cm": {
       "mean": 0.0,
       "p95": 0.0,
-      "stances": 370
+      "stances": 309
     },
     "foot_spacing_ratio": null,
     "footfall": {
@@ -35,23 +35,27 @@
           false,
           false,
           false,
+          false,
           true,
           true,
           true,
           true,
+          false,
           false,
           false,
           false
         ],
         [
-          true,
+          false,
+          false,
           false,
           false,
           true,
           true,
           true,
           true,
-          true,
+          false,
+          false,
           false,
           false,
           true,
@@ -65,64 +69,64 @@
         "L0",
         "R0"
       ],
-      "start_frame": 5,
-      "stride_frames": 7
+      "start_frame": 2,
+      "stride_frames": 8
     },
     "gait_frac": {
       "walk": 1.0
     },
-    "gait_symmetry": 0.997,
+    "gait_symmetry": 1.001,
     "ground_slope_deg": 0.0,
     "head_pitch_deg": {
-      "mean": -0.65,
-      "p95": 2.37
+      "mean": -0.64,
+      "p95": 2.58
     },
     "head_yaw_vs_body_deg": {
-      "mean": 4.44,
-      "p95": 56.76
+      "mean": 4.55,
+      "p95": 56.97
     },
     "knee_flip_frac": 0.0,
-    "leg_extension": 0.8445,
+    "leg_extension": 0.8427,
     "limp": {
-      "drop_ratio": 1.0029,
-      "index": 1.0029,
+      "drop_ratio": 1.0039,
+      "index": 1.0039,
       "paired": 1,
       "per_foot": [
         {
-          "drop_cm": 0.344,
+          "drop_cm": 0.776,
           "pair": 0,
-          "roll_deg": 2.736,
-          "samples": 183,
+          "roll_deg": 2.471,
+          "samples": 153,
           "side": 1
         },
         {
-          "drop_cm": 0.345,
+          "drop_cm": 0.779,
           "pair": 0,
-          "roll_deg": 2.736,
-          "samples": 183,
+          "roll_deg": 2.47,
+          "samples": 152,
           "side": -1
         }
       ],
-      "roll_ratio": 1.0
+      "roll_ratio": 1.0004
     },
-    "limp_index": 1.0029,
+    "limp_index": 1.0039,
     "min_turn_radius_m": null,
     "moving_frac": 1.0,
     "pitch_follow": null,
     "pivot_frac": 0.0,
     "pivot_frac_of_turns": null,
-    "roll_plant_lag": 0.141,
+    "roll_plant_lag": 0.131,
     "shoulder_hip_ratio": null,
     "slide_frac": 0.0,
     "speed_mean_mps": 0.8894,
     "stall_frac": 0.0,
     "stall_state_frac": 0.0,
     "steep_slope_deg": null,
-    "stride_len_m": 0.201,
+    "stride_len_m": 0.241,
     "stuck_frac": 0.0,
-    "torso_bob_cm": 0.36,
+    "torso_bob_cm": 0.79,
     "torso_bob_frac": null,
-    "torso_roll_deg": 2.92
+    "torso_roll_deg": 2.62
   },
   "reasons": {
     "back_slope_deg": "one leg pair only: no distinct front and rear limb roots",
