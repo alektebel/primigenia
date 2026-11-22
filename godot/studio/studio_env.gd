@@ -69,9 +69,9 @@ func _init(_blade_count := 0) -> void:
 	pedestal = Node3D.new()
 	pedestal.name = "Pedestal"
 	add_child(pedestal)
-	_disc(1.0, .16, -.08, Color("7d7f78"))
-	_disc(1.04, .09, -.205, Color("5f6862"))
-	_disc(1.09, .12, -.31, Color("72786f"))
+	_disc(1.0, .16, -.08, Color("66685f"))
+	_disc(1.04, .09, -.205, Color("4d5650"))
+	_disc(1.09, .12, -.31, Color("5b6159"))
 	_build_mountains()
 	_build_trees()
 
