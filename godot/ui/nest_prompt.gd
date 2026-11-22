@@ -21,12 +21,13 @@ func _ready() -> void:
 func shown() -> bool:
 	return _a > 0.5
 
+## Bottom left, above the health and stamina lines: clear of the player's own ring and of the verb bar column.
 func centre() -> Vector2:
-	return Vector2(size.x * 0.5, size.y - Style.u(158.0))
+	return Vector2(Style.u(34.0) + Style.u(70.0), size.y - Style.u(104.0))
 
 func hit(p: Vector2) -> bool:
 	var c := centre()
-	return _a > 0.5 and absf(p.x - c.x) < Style.u(110.0) and absf(p.y - c.y) < Style.u(24.0)
+	return _a > 0.5 and absf(p.x - c.x) < Style.u(90.0) and absf(p.y - c.y) < Style.u(24.0)
 
 func handle_input(e: InputEvent) -> bool:
 	if e is InputEventMouseButton and e.pressed and e.button_index == MOUSE_BUTTON_LEFT and hit(e.position):

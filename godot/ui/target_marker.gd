@@ -117,9 +117,11 @@ func _draw() -> void:
 	var hp := head_point(locked_id)
 	if hp == Vector2.INF:
 		return
+	var feet_s := camera.unproject_position(feet) if not camera.is_position_behind(feet) else hp + Vector2(0, 80)
+	var sc := clampf(absf(feet_s.y - hp.y) / 90.0, 1.0, 1.8)      # bigger arrows on a bigger (nearer) creature
 	for i in 3:
-		var tip := hp + Vector2(0, -Style.u(8.0) - Style.u(15.0) * i + bob)
-		_chevron(tip, Vector2.DOWN, Color(col, (1.0 - 0.28 * i) * k), Style.u(15.0), Style.u(12.0))
+		var tip := hp + Vector2(0, -Style.u(8.0) - Style.u(15.0) * sc * i + bob)
+		_chevron(tip, Vector2.DOWN, Color(col, (1.0 - 0.28 * i) * k), Style.u(15.0) * sc, Style.u(12.0) * sc)
 	var f := Style.font_sans(true)
 	var x := hp.x + Style.u(label_dx)
 	var y := hp.y - Style.u(36.0)

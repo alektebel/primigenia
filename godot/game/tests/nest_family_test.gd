@@ -110,7 +110,7 @@ func _run() -> void:
 	sui = island.stage_ui
 	ui = sui.ui
 	stage = game.stage
-	stage.timescale = 1.0
+	stage.timescale = 1.0 if out_dir == "" else 4.0
 	stage.debug_now({"op": 6, "a": 2})        # the wild stands still: nothing interrupts the nest tests
 
 	# --- pure parts -------------------------------------------------------------------------------------------------------

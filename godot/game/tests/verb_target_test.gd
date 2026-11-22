@@ -127,7 +127,7 @@ func _run() -> void:
 	sui = island.stage_ui
 	ui = sui.ui
 	stage = game.stage
-	stage.timescale = 1.0
+	stage.timescale = 1.0 if out_dir == "" else 4.0        # software GL renders slowly: the evidence run keeps the clock quick
 	if not check(sui != null and ui.verb_bar != null and ui.marker != null, "the stage has the verb bar and the target marker"):
 		return finish()
 	# a quiet field: the wild freezes while we place things, then runs again for the moving tests
