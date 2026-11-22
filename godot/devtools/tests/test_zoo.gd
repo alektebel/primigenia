@@ -44,7 +44,7 @@ func run(t) -> void:
 	var h2: String = z.runners[1].sw.hashes[-1]
 	z.queue_free()
 	var z2 = _zoo(["mite", "giant"], "uturn", host)
-	for tick in 700:
+	for tick in 1800:
 		z2.step_ticks(1)
 	t.check(z2.runners[0].sw.hashes[-1] == h1 and z2.runners[1].sw.hashes[-1] == h2, "the same zoo run twice gives the same hashes")
 	z2.queue_free()

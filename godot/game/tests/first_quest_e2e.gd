@@ -142,6 +142,8 @@ func _run() -> void:
 	print("   player %.1f,%.1f hp %.0f; %d creatures; seed %d; nest %s" % [st.entities[0].x, st.entities[0].z, st.entities[0].hp, st.entities.size() - 1, seed_n, str(island._nest)])
 	await _shot("start")
 	var t_start := tick()
+	# A39: bodies walk at Fr 0.24 and prey runs at Fr 1.5 when it flees, so the bot sprints between fights
+	island.player_input.keys_override = {"forward": false, "back": false, "left": false, "right": false, "sprint": true, "run": false}
 	await _hunt()
 	await _friend()
 	await _dig()
