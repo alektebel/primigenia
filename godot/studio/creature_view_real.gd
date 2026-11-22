@@ -33,6 +33,21 @@ var _rings: Array = []
 var _rot_bead: MeshInstance3D
 var _bead_hot := false
 signal handle_shown(kind: String, fade_ms: float)
+signal head_target_changed(part: int)
+const BREATH_PERIOD := 3.4            # s per breath
+const LOOK_DELAY := .3                # s between a part landing and the head starting to turn (the reference shows ~0.33 s)
+const LOOK_HOLD := 2.6                # s the head stays on the part before it relaxes
+const POSE_GAP := 3.0                 # one-shot pose at most once per 3 s
+const YAW_MAX := .6                   # rad, head turn clamp
+var _alive_t := 0.0
+var _look_part := -1
+var _look_wait := -1.0                # >=0 while waiting LOOK_DELAY
+var _look_hold := 0.0
+var _yaw := 0.0
+var _yaw_goal := 0.0
+var _pose_t := -1.0                   # >=0 while the one-shot pose plays (0..POSE_LEN)
+var _last_pose := -100.0
+const POSE_LEN := .55
 const HANDLE_FADE := .12              # s, handles reach full opacity in 120 ms (linear: it is only an opacity ramp)
 const SPHERE_PX := 11.0               # vertebra sphere radius on screen, constant at any camera distance
 var _sphere_group: Node3D
@@ -479,6 +494,7 @@ func _process(dt: float) -> void:
 		_loco_step(minf(dt, 0.1))
 	_tick_spine(dt)
 	_tick_handles(dt)
+	_tick_alive(dt)
 	_tick_selection(dt)
 	_tick_pulses(dt)
 
@@ -539,6 +555,71 @@ func _tick_handles(dt: float) -> void:
 			var b := Basis.looking_at(-toc, Vector3.UP)   # torus lies in XZ: rotate so its axis faces the camera
 			b = b * Basis(Vector3.RIGHT, PI / 2)
 			_ring_green.transform = Transform3D(b.scaled(Vector3.ONE * rad), pos)
+
+## The head turns to the part that was just placed (after a short reaction delay) and the creature flexes once.
+func look_at_part(i: int) -> void:
+	_look_part = i
+	_look_wait = LOOK_DELAY
+
+## Idle breathing, head turn and one-shot pose. Visual only (bone poses on the editor skeleton); the sim never sees it.
+func _tick_alive(dt: float) -> void:
+	if creature == null or _playing:
+		_yaw = 0.0
+		return
+	_alive_t += dt
+	var br := sin(TAU * _alive_t / BREATH_PERIOD)
+	creature.scale = Vector3(1.0 + .004 * br, 1.0 + .009 * br, 1.0 + .004 * br)
+	if _look_wait >= 0.0:
+		_look_wait -= dt
+		if _look_wait < 0.0:
+			_look_hold = LOOK_HOLD
+			var goal := _look_goal()
+			_yaw_goal = goal
+			head_target_changed.emit(_look_part)
+			if _alive_t - _last_pose >= POSE_GAP:
+				_pose_t = 0.0
+				_last_pose = _alive_t
+	elif _look_hold > 0.0:
+		_look_hold -= dt
+		if _look_hold <= 0.0:
+			_yaw_goal = 0.0
+	_yaw = lerpf(_yaw, _yaw_goal, 1.0 - exp(-dt / .09))
+	var pitch := 0.0
+	if _pose_t >= 0.0:
+		_pose_t += dt
+		if _pose_t >= POSE_LEN:
+			_pose_t = -1.0
+		else:
+			pitch = -.28 * sin(PI * _pose_t / POSE_LEN)
+	var sk: Skeleton3D = creature.get("skeleton")
+	var hb: int = int(creature.get("head_bone")) if creature.get("head_bone") != null else -1
+	var neck = creature.get("neck_bones")
+	if sk == null or hb < 0 or hb >= sk.get_bone_count() or neck == null:
+		return
+	var chain: Array = []
+	for b in neck:
+		chain.append(int(b))
+	chain.append(hb)
+	var share := 1.0 / float(chain.size())
+	for b in chain:
+		if b < 0 or b >= sk.get_bone_count():
+			continue
+		var rest := sk.get_bone_rest(b)
+		var q := Basis(Vector3.UP, _yaw * share) * Basis(Vector3.RIGHT, pitch * share)
+		sk.set_bone_pose(b, Transform3D(rest.basis * q, rest.origin))
+
+## Yaw (clamped) from the head's rest direction to the part, in the head bone's own frame.
+func _look_goal() -> float:
+	var sk: Skeleton3D = creature.get("skeleton")
+	var hb: int = int(creature.get("head_bone")) if creature.get("head_bone") != null else -1
+	if sk == null or hb < 0 or _look_part < 0 or _look_part >= genome.get("parts", []).size():
+		return 0.0
+	var ax := surface_axes(_look_part)
+	if ax.is_empty():
+		return 0.0
+	var gr := sk.get_bone_global_rest(hb)
+	var dir: Vector3 = gr.basis.inverse() * ((ax.p as Vector3) - gr.origin)
+	return clampf(atan2(dir.x, dir.z), -YAW_MAX, YAW_MAX)
 
 ## Probe for the scorecard.
 func sphere_count() -> int:

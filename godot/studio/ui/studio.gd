@@ -38,7 +38,20 @@ func creator_ev(ev_name: String, data := {}) -> void:
 ## What the player can see this frame (scorecard probe).
 func creator_probe() -> Dictionary:
 	return {"vertebra_spheres": view.sphere_count() if view.has_method("sphere_count") else 0,
-		"part_ring": view.ring_visible() if view.has_method("ring_visible") else false, "popup": false}
+		"part_ring": view.ring_visible() if view.has_method("ring_visible") else false, "popup": _popup != null}
+
+# ---- drop feedback state (C4): puff, floating +N cost, counter tick, can't-fit shake
+const PUFF_LEN := .35
+const POPUP_DELAY := .3
+const POPUP_LIFE := .45
+const POPUP_RISE := 34.0
+var _puff_fx := {}
+var _popup_wait := {}
+var _popup: Label
+var _popup_t := 0.0
+var _popup_point := Vector3.ZERO
+var _dna_ref := 0
+var _fx_tween: Tween
 
 var nest_world: RefCounted
 var nest_genome: Dictionary = {}
@@ -178,6 +191,9 @@ func _process(dt: float) -> void:
 		if _flash_timer <= 0.0:
 			_set_hint("")
 	_idle += dt
+	_tick_drop_fx(dt)
+	if _drag.get("kind", "") != "new":
+		_dna_ref = dna_value()
 	if not _drop_fx.is_empty():
 		_drop_fx["t"] += dt
 		if _drop_fx["t"] > .5:
@@ -230,6 +246,8 @@ func _build_stage() -> void:
 	viewport.add_child(view)
 	if view.has_signal("handle_shown"):
 		view.handle_shown.connect(func(kind: String, fade_ms: float): creator_ev("handle_shown", {"kind": kind, "fade_ms": fade_ms}))
+	if view.has_signal("head_target_changed"):
+		view.head_target_changed.connect(func(part: int): creator_ev("head_target_changed", {"part": part}))
 	overlay = Control.new()
 	overlay.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	overlay.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -1500,6 +1518,77 @@ func _dropped(idx: int, point: Vector3) -> void:
 	creator_ev("part_placed", {"idx": idx})
 	creator_ev("drop_ring", {"idx": idx})
 	_click()
+	_puff_fx = {"point": point, "t": 0.0}
+	creator_ev("puff_spawned", {"idx": idx})
+	_popup_wait = {"t": 0.0, "cost": maxi(0, dna_value() - _dna_ref), "point": point}
+	_tick_counter(dna_value() > DNA_BUDGET)
+	if view.has_method("look_at_part"):
+		view.look_at_part(idx)
+	if dna_value() > DNA_BUDGET:
+		_flash(T("No cabe: supera el presupuesto de ADN"))
+
+func _dna_panel() -> Control:
+	var n: Node = dna_label
+	while n != null and not (n is PanelContainer):
+		n = n.get_parent()
+	return n as Control
+
+## Counter tick: a short press-style pulse (1 -> 1.06 -> 1, ease-out); a red shake when the part does not fit.
+func _tick_counter(over: bool) -> void:
+	var panel := _dna_panel()
+	if panel == null:
+		return
+	if _fx_tween != null and _fx_tween.is_valid():
+		_fx_tween.kill()
+	panel.pivot_offset = panel.size / 2.0
+	_fx_tween = create_tween().set_trans(Tween.TRANS_EXPO).set_ease(Tween.EASE_OUT)
+	if over:
+		panel.modulate = Color(1.0, .55, .5)
+		for k in 4:
+			_fx_tween.tween_property(panel, "rotation_degrees", (3.0 if k % 2 == 0 else -3.0) * (1.0 - float(k) / 4.0), .045)
+		_fx_tween.tween_property(panel, "rotation_degrees", 0.0, .05)
+		_fx_tween.tween_property(panel, "modulate", Color.WHITE, .2)
+	else:
+		_fx_tween.tween_property(panel, "scale", Vector2.ONE * 1.06, .08)
+		_fx_tween.tween_property(panel, "scale", Vector2.ONE, .16)
+
+## Floating "+N": appears ~0.3 s after the drop beside the part, rises and fades over 0.45 s (ease-out), then is gone.
+func _tick_drop_fx(dt: float) -> void:
+	if not _puff_fx.is_empty():
+		_puff_fx["t"] += dt
+		if _puff_fx["t"] > PUFF_LEN:
+			_puff_fx = {}
+	if not _popup_wait.is_empty():
+		_popup_wait["t"] += dt
+		if _popup_wait["t"] >= POPUP_DELAY:
+			_popup_point = _popup_wait["point"]
+			_popup_t = 0.0
+			if _popup != null:
+				_popup.queue_free()
+			_popup = Label.new()
+			_popup.name = "CostPopup"
+			_popup.text = "+%d" % int(_popup_wait["cost"])
+			_popup.add_theme_font_size_override("font_size", 24)
+			_popup.add_theme_color_override("font_color", Color("8fe36a"))
+			_popup.add_theme_color_override("font_outline_color", Color(0, 0, 0, .75))
+			_popup.add_theme_constant_override("outline_size", 5)
+			_popup.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			overlay.add_child(_popup)
+			_popup_wait = {}
+			creator_ev("cost_popup_shown", {"cost": int(_popup.text.substr(1))})
+	if _popup != null:
+		_popup_t += dt
+		var k := clampf(_popup_t / POPUP_LIFE, 0.0, 1.0)
+		var e := 1.0 - pow(1.0 - k, 3.0)
+		var off := stage.global_position - overlay.global_position
+		if camera != null and not camera.is_position_behind(_popup_point):
+			_popup.position = camera.unproject_position(_popup_point) + off + Vector2(10, -18 - POPUP_RISE * e)
+		_popup.modulate.a = 1.0 if k < .4 else 1.0 - (k - .4) / .6
+		if k >= 1.0:
+			var c := int(_popup.text.substr(1))
+			_popup.queue_free()
+			_popup = null
+			creator_ev("cost_popup_hidden", {"cost": c})
 
 func _over_hud(global_pos: Vector2) -> bool:
 	for c in hud.get_children():
@@ -1921,6 +2010,13 @@ func _draw_overlay() -> void:
 		if t < .5 and not camera.is_position_behind(p3):
 			var sp2 := camera.unproject_position(p3) + off
 			overlay.draw_arc(sp2, 10 + t * 70.0, 0, TAU, 40, Color(ThemeFactory.AMBER, 1.0 - t / .5), 3.0, true)
+	if not _puff_fx.is_empty() and not camera.is_position_behind(_puff_fx["point"]):
+		var pk: float = float(_puff_fx["t"]) / PUFF_LEN
+		var pe := 1.0 - pow(1.0 - pk, 3.0)
+		var pc := camera.unproject_position(_puff_fx["point"]) + off
+		for i in 9:
+			var a := float(i) / 9.0 * TAU + .4
+			overlay.draw_circle(pc + Vector2(cos(a), sin(a) * .7) * (8.0 + 30.0 * pe), 4.0 + 6.0 * pe, Color(.96, .94, .88, .55 * (1.0 - pk)))
 	if _girth_fx > 0.0 and _hover_node >= 0:
 		var pts: PackedVector3Array = view.spine_node_positions()
 		if _hover_node < pts.size() and not camera.is_position_behind(pts[_hover_node]):
