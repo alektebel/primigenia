@@ -1,4 +1,6 @@
 extends Node3D
+
+const FrameProfile := preload("res://devtools/frame_profile.gd")
 # Habitat planner for all three radial species; only cuarteta is spawned here as ambient fauna.
 # Brujula and Corona use these spots in StageSetup and live as C entities. Placement is deterministic.
 # Each animal wanders a tiny seeded random walk around its home, driven by loco_radial.gd through the rig adapter.
@@ -267,7 +269,7 @@ static func _coast_distance(d, p: Vector2) -> float:
 
 ## `plan_in`: the placement when already computed off the main thread (`plan`, see island.gd); a frame passes between creatures
 ## while a loading screen is up.
-func setup(d, world_seed: int, nest: Vector2, ground: Callable, camera_fn: Callable = Callable(), plan_in = null) -> void:
+func setup(d, world_seed: int, nest: Vector2, ground: Callable, camera_fn: Callable = Callable(), plan_in = null, slice: Callable = Callable(), cache = null) -> void:
 	_ground = ground
 	_cam = camera_fn
 	placement = plan(d, world_seed, nest) if plan_in == null else plan_in
@@ -276,18 +278,24 @@ func setup(d, world_seed: int, nest: Vector2, ground: Callable, camera_fn: Calla
 	for id in AMBIENT:
 		var spots: Array = placement[id].spots
 		for i in spots.size():
-			_spawn(id, i, spots[i], world_seed)
+			_spawn(id, i, spots[i], world_seed, cache)
 			if Game.veil != null and is_instance_valid(Game.veil):
-				await get_tree().process_frame
+				if slice.is_valid():
+					await slice.call()
+				else:
+					await get_tree().process_frame
 
 
 static func _genome(id: String) -> Dictionary:
 	return JSON.parse_string(FileAccess.get_file_as_string("res://game/data/%s.json" % id))
 
 
-func _spawn(id: String, i: int, home: Vector2, world_seed: int) -> void:
-	var c := Creature.new()
-	var res: Dictionary = c.load_genome(_genome(id))
+func _spawn(id: String, i: int, home: Vector2, world_seed: int, cache = null) -> void:
+	var c: Creature = cache.instantiate(_genome(id)) if cache != null else Creature.new()
+	if c == null:
+		push_warning("radial fauna %s rejected by creature cache" % id)
+		return
+	var res: Dictionary = {"ok": true} if cache != null else c.load_genome(_genome(id))
 	if not res["ok"]:
 		push_warning("radial fauna %s rejected: %s" % [id, res["error"]])
 		c.free()
@@ -320,6 +328,14 @@ func _spawn(id: String, i: int, home: Vector2, world_seed: int) -> void:
 
 
 func _process(delta: float) -> void:
+	if not FrameProfile.enabled:
+		_profile__process(delta)
+		return
+	FrameProfile.begin()
+	_profile__process(delta)
+	FrameProfile.end(&"ambient radial fauna")
+
+func _profile__process(delta: float) -> void:
 	var cam := Vector3.INF
 	if _cam.is_valid():
 		cam = _cam.call()

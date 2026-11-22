@@ -1,4 +1,6 @@
 extends Node
+
+const FrameProfile := preload("res://devtools/frame_profile.gd")
 # The 10 Hz bridge: a fixed-step accumulator over one CporeWorld, with interpolation samples and
 # a replayable CPORE_WORLD_LOG of the exact inputs fed to the C world. Presentation state (camera,
 # interpolation, grass) never flows back into C; only the player's intent does.
@@ -219,6 +221,14 @@ func alpha() -> float:
 	return clampf(acc / DT, 0.0, 1.0)
 
 func _process(delta: float) -> void:
+	if not FrameProfile.enabled:
+		_profile__process(delta)
+		return
+	FrameProfile.begin()
+	_profile__process(delta)
+	FrameProfile.end(&"world advance + HUD signals")
+
+func _profile__process(delta: float) -> void:
 	advance(delta)
 
 func _entity(state: Dictionary, id: int) -> Dictionary:
@@ -232,6 +242,14 @@ const JUMP := 2.5            # metres per tick: more than this is a teleport (re
 # ticks and the velocity is continuous. Yaw tangents use the Fritsch-Carlson limiter (no overshoot when
 # C snaps to the target heading); teleports and fight start/finish fall back to a straight line.
 func sample(id: int, a: float = -1.0) -> Dictionary:
+	if not FrameProfile.enabled:
+		return _profile_sample(id, a)
+	FrameProfile.begin()
+	var result = _profile_sample(id, a)
+	FrameProfile.end(&"world sampling")
+	return result
+
+func _profile_sample(id: int, a: float = -1.0) -> Dictionary:
 	if a < 0.0:
 		a = alpha()
 	var p := _entity(prev, id)

@@ -164,7 +164,7 @@ func _creature_wings(t) -> void:
 		dev.enabled = true
 		t.eq(fm.lift_gain(), 60.0, "dev builds: lift_mul applies")
 		dev.enabled = was
-		fm.free()
+		fm = null # FlightMode is RefCounted.
 	c.free()
 	# the same wing at the starter's body: the vane test creature, in numbers
 	var g: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://game/data/flyer.json"))

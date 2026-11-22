@@ -1,0 +1,216 @@
+{
+  "cases": 35,
+  "all_equal": true,
+  "results": [
+    {
+      "case": "centipede_climb",
+      "equal": true,
+      "before_sha256": "a85433fcc5cf8385404903b048e8e9a35f60a517fa4bc95f8f156e84a79cbd6b",
+      "after_sha256": "a85433fcc5cf8385404903b048e8e9a35f60a517fa4bc95f8f156e84a79cbd6b"
+    },
+    {
+      "case": "centipede_gallop",
+      "equal": true,
+      "before_sha256": "4b58d7e138eb5df55311b49fe1ab46c974563cb91c5802863a17f6b2c5ec2a9a",
+      "after_sha256": "4b58d7e138eb5df55311b49fe1ab46c974563cb91c5802863a17f6b2c5ec2a9a"
+    },
+    {
+      "case": "centipede_steps",
+      "equal": true,
+      "before_sha256": "9d18779a30c77685227e13158f3d6e9df43c31d2533f31b22b6dc2b3f5fcfa18",
+      "after_sha256": "9d18779a30c77685227e13158f3d6e9df43c31d2533f31b22b6dc2b3f5fcfa18"
+    },
+    {
+      "case": "centipede_turn",
+      "equal": true,
+      "before_sha256": "48d89e627819c09465a0b2e2e1ec10f06d46b53ffbedec3b0acff73103c7a126",
+      "after_sha256": "48d89e627819c09465a0b2e2e1ec10f06d46b53ffbedec3b0acff73103c7a126"
+    },
+    {
+      "case": "centipede_walk",
+      "equal": true,
+      "before_sha256": "7ff948ce138f494e2f90b78f72c69ec7b05e6cde3380711d5a0ada687e979213",
+      "after_sha256": "7ff948ce138f494e2f90b78f72c69ec7b05e6cde3380711d5a0ada687e979213"
+    },
+    {
+      "case": "giant_climb",
+      "equal": true,
+      "before_sha256": "d83d6824836b6d777fddeb8236c5629723191765981ac517cd2abd9cc80143b2",
+      "after_sha256": "d83d6824836b6d777fddeb8236c5629723191765981ac517cd2abd9cc80143b2"
+    },
+    {
+      "case": "giant_gallop",
+      "equal": true,
+      "before_sha256": "b9f180e48525006fb7ee32d0e584e9678673ffec931b07536cb9413de45a8095",
+      "after_sha256": "b9f180e48525006fb7ee32d0e584e9678673ffec931b07536cb9413de45a8095"
+    },
+    {
+      "case": "giant_steps",
+      "equal": true,
+      "before_sha256": "203b1ba9c0e279f9f2884a15e0b1022d83c0376d9a236d9ca7e4a231168008de",
+      "after_sha256": "203b1ba9c0e279f9f2884a15e0b1022d83c0376d9a236d9ca7e4a231168008de"
+    },
+    {
+      "case": "giant_turn",
+      "equal": true,
+      "before_sha256": "9551fbcd3b10fa32828da1565962fbb3faf6e33298268b6080ef3fa3d09468e0",
+      "after_sha256": "9551fbcd3b10fa32828da1565962fbb3faf6e33298268b6080ef3fa3d09468e0"
+    },
+    {
+      "case": "giant_walk",
+      "equal": true,
+      "before_sha256": "b85397d669e2cdd31bb78a45c854d9ecd106d0a6cb6570b27b4c25231471334b",
+      "after_sha256": "b85397d669e2cdd31bb78a45c854d9ecd106d0a6cb6570b27b4c25231471334b"
+    },
+    {
+      "case": "hero_climb",
+      "equal": true,
+      "before_sha256": "b40e8fd0a55f9cb3c0ca8dea46225ce23a0d0c5c66c3ef950455f60e6534edc7",
+      "after_sha256": "b40e8fd0a55f9cb3c0ca8dea46225ce23a0d0c5c66c3ef950455f60e6534edc7"
+    },
+    {
+      "case": "hero_gallop",
+      "equal": true,
+      "before_sha256": "ed9e918473a59bf97f19fc0eacce30c100a09139d9dff87d85339e4f03756590",
+      "after_sha256": "ed9e918473a59bf97f19fc0eacce30c100a09139d9dff87d85339e4f03756590"
+    },
+    {
+      "case": "hero_steps",
+      "equal": true,
+      "before_sha256": "e5df90577dee36a2cbe90d5c170dbf568262ee51b846d997e7831d899d3c5f06",
+      "after_sha256": "e5df90577dee36a2cbe90d5c170dbf568262ee51b846d997e7831d899d3c5f06"
+    },
+    {
+      "case": "hero_turn",
+      "equal": true,
+      "before_sha256": "73bf1a64cfa8e7fbb1f0a889f2de7a99dc429585b10a257f1c3b72e90a414a26",
+      "after_sha256": "73bf1a64cfa8e7fbb1f0a889f2de7a99dc429585b10a257f1c3b72e90a414a26"
+    },
+    {
+      "case": "hero_walk",
+      "equal": true,
+      "before_sha256": "2c700591c6dea7bedc08a3a27c24d4d3e84960043c2e55e1e66d9fb34bf2df37",
+      "after_sha256": "2c700591c6dea7bedc08a3a27c24d4d3e84960043c2e55e1e66d9fb34bf2df37"
+    },
+    {
+      "case": "hexapod_climb",
+      "equal": true,
+      "before_sha256": "c864e71e3c4348d54fc0804cc5907ee1a49a8873f2023e3ed25c370c84e05a49",
+      "after_sha256": "c864e71e3c4348d54fc0804cc5907ee1a49a8873f2023e3ed25c370c84e05a49"
+    },
+    {
+      "case": "hexapod_gallop",
+      "equal": true,
+      "before_sha256": "7686a61d86a531a329a154b55319d69188f77344fbc4380d724555fd43976765",
+      "after_sha256": "7686a61d86a531a329a154b55319d69188f77344fbc4380d724555fd43976765"
+    },
+    {
+      "case": "hexapod_steps",
+      "equal": true,
+      "before_sha256": "3b513b5fee0eced714d814c2740793dce976be4d4aa64836f4556a787b994210",
+      "after_sha256": "3b513b5fee0eced714d814c2740793dce976be4d4aa64836f4556a787b994210"
+    },
+    {
+      "case": "hexapod_turn",
+      "equal": true,
+      "before_sha256": "e1a41b7812d2abd47cf932c0a385bb829378f359870c676be5d6836f808d0a2a",
+      "after_sha256": "e1a41b7812d2abd47cf932c0a385bb829378f359870c676be5d6836f808d0a2a"
+    },
+    {
+      "case": "hexapod_walk",
+      "equal": true,
+      "before_sha256": "6534f00d32d55d392ea43789b3104d420001f0d9d953d262ad9f50ab447a6f84",
+      "after_sha256": "6534f00d32d55d392ea43789b3104d420001f0d9d953d262ad9f50ab447a6f84"
+    },
+    {
+      "case": "longneck_climb",
+      "equal": true,
+      "before_sha256": "910f3b6a557b28dcf28af6866ac15a09d2abea08301523432ddae46b59b1f567",
+      "after_sha256": "910f3b6a557b28dcf28af6866ac15a09d2abea08301523432ddae46b59b1f567"
+    },
+    {
+      "case": "longneck_gallop",
+      "equal": true,
+      "before_sha256": "9925b8a5c0748460bd4e1207f2e502cf3e2d7a92dc34d1cffc73c17130e44641",
+      "after_sha256": "9925b8a5c0748460bd4e1207f2e502cf3e2d7a92dc34d1cffc73c17130e44641"
+    },
+    {
+      "case": "longneck_steps",
+      "equal": true,
+      "before_sha256": "43051d930101440ce7429d42d66673f7e85e075343e4b2cf49b2bd096d977cdf",
+      "after_sha256": "43051d930101440ce7429d42d66673f7e85e075343e4b2cf49b2bd096d977cdf"
+    },
+    {
+      "case": "longneck_turn",
+      "equal": true,
+      "before_sha256": "d61a79e2367438ace932e5f75f126cd5f2ecdb211502276493a3792ac1105e1f",
+      "after_sha256": "d61a79e2367438ace932e5f75f126cd5f2ecdb211502276493a3792ac1105e1f"
+    },
+    {
+      "case": "longneck_walk",
+      "equal": true,
+      "before_sha256": "71f8930d9f6fa1e8d70455eca89356fb63b7eba26446a991315f9c9db7565626",
+      "after_sha256": "71f8930d9f6fa1e8d70455eca89356fb63b7eba26446a991315f9c9db7565626"
+    },
+    {
+      "case": "mite_climb",
+      "equal": true,
+      "before_sha256": "a903dba58b47d64619ef7b3adc604a532b63eddab1a875cfee1dac6a703af8c7",
+      "after_sha256": "a903dba58b47d64619ef7b3adc604a532b63eddab1a875cfee1dac6a703af8c7"
+    },
+    {
+      "case": "mite_gallop",
+      "equal": true,
+      "before_sha256": "cc60f9ae6b949fb0d0c71009fe9be06247cf629e72912b07adbb562325f559c4",
+      "after_sha256": "cc60f9ae6b949fb0d0c71009fe9be06247cf629e72912b07adbb562325f559c4"
+    },
+    {
+      "case": "mite_steps",
+      "equal": true,
+      "before_sha256": "dfb59ebc041733b321ccf45ed2da09ec8ac43331bcd20a84251e58cd98dc7230",
+      "after_sha256": "dfb59ebc041733b321ccf45ed2da09ec8ac43331bcd20a84251e58cd98dc7230"
+    },
+    {
+      "case": "mite_turn",
+      "equal": true,
+      "before_sha256": "6d269bd9dbc6d62fb9449421ee941020d875f954372bdc7425ad4a57e97ddf55",
+      "after_sha256": "6d269bd9dbc6d62fb9449421ee941020d875f954372bdc7425ad4a57e97ddf55"
+    },
+    {
+      "case": "mite_walk",
+      "equal": true,
+      "before_sha256": "e8558af30244c4fe551e1f8edaa1013ec37590cde22de378f71bfac5672e9269",
+      "after_sha256": "e8558af30244c4fe551e1f8edaa1013ec37590cde22de378f71bfac5672e9269"
+    },
+    {
+      "case": "trotter_climb",
+      "equal": true,
+      "before_sha256": "31e24d8a081f355fd4cafa9ecaeabecede3b391509b37d13e71d119a4b3e64f3",
+      "after_sha256": "31e24d8a081f355fd4cafa9ecaeabecede3b391509b37d13e71d119a4b3e64f3"
+    },
+    {
+      "case": "trotter_gallop",
+      "equal": true,
+      "before_sha256": "d7e6ce02ef3b552f8f6af902303ea7439205da792e3028178f84e79675b365f0",
+      "after_sha256": "d7e6ce02ef3b552f8f6af902303ea7439205da792e3028178f84e79675b365f0"
+    },
+    {
+      "case": "trotter_steps",
+      "equal": true,
+      "before_sha256": "c3ae11195b8a565b1c7dcfad0a3728bee0f5170891db349e45d4e11bf1c6bfb0",
+      "after_sha256": "c3ae11195b8a565b1c7dcfad0a3728bee0f5170891db349e45d4e11bf1c6bfb0"
+    },
+    {
+      "case": "trotter_turn",
+      "equal": true,
+      "before_sha256": "63748ac7bf4d9fdcb6373c97a5f098bcfb5a985005fcd897f9c94b5dda20ff67",
+      "after_sha256": "63748ac7bf4d9fdcb6373c97a5f098bcfb5a985005fcd897f9c94b5dda20ff67"
+    },
+    {
+      "case": "trotter_walk",
+      "equal": true,
+      "before_sha256": "2fc74d99d2299586340efad29b703e707c279e4de0367b1e756d421e7e4c463b",
+      "after_sha256": "2fc74d99d2299586340efad29b703e707c279e4de0367b1e756d421e7e4c463b"
+    }
+  ]
+}

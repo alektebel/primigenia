@@ -1,4 +1,6 @@
 extends Node3D
+
+const FrameProfile := preload("res://devtools/frame_profile.gd")
 # The island scene: sky/environment, sun, terrain chunks, water, grass, the 10 Hz stage world,
 # creatures, chase camera and controls. Built in code from Game.data (set by the boot flow).
 
@@ -117,7 +119,7 @@ func _place_props(setup: Dictionary, records_in = null) -> void:
 	_nest = setup.nest
 	grass.material.set_shader_parameter("nest_center", _nest)
 	props.nest_scale = _nest_scale()
-	await props.build(Game.data, setup, int(Game.terrain.seed), _props_tier(), Game.settings, records_in)
+	await props.build(Game.data, setup, int(Game.terrain.seed), _props_tier(), Game.settings, records_in, _slice)
 
 func data_for_shadows():
 	return Game.data
@@ -125,6 +127,13 @@ func data_for_shadows():
 var kit_reused := false            # terrain, water, rivers, grass and props came from Game's kit instead of being built
 var build_ms := {}                # phase -> milliseconds of the last build (brief creature-fixes 5; printed once per entry)
 var _phase_t := 0
+var build_cpu_ms := {}
+var build_stall_ms := {}
+var slowest_frames: Array = []
+var _phase_wait_us := 0
+var _phase_worker_us := 0
+var _frame_t := 0
+var _frame_phase := "environment"
 var _stage_was_paused := false
 
 # The pieces that only depend on the terrain and the quality settings: Game parks them across a scene change.
@@ -132,8 +141,12 @@ func kit_nodes() -> Dictionary:
 	return {"terrain": terrain_chunks, "water": water, "rivers": rivers, "grass": grass, "props": props}
 
 func _phase(name: String) -> void:
-	var now := Time.get_ticks_msec()
-	build_ms[name] = now - _phase_t
+	var now := Time.get_ticks_usec()
+	build_ms[name] = (now - _phase_t) / 1000.0
+	build_stall_ms[name] = _phase_wait_us / 1000.0
+	build_cpu_ms[name] = (now - _phase_t - _phase_wait_us + _phase_worker_us) / 1000.0
+	_phase_wait_us = 0
+	_phase_worker_us = 0
 	_phase_t = now
 	Game.entry_phase(name)
 
@@ -142,33 +155,52 @@ var _building := false             # the island is being built across frames (a 
 ## With a loading screen up, the build yields a frame between its phases so the screen animates; without one it never suspends.
 func _slice() -> void:
 	if Game.veil != null and is_instance_valid(Game.veil):
+		var t := Time.get_ticks_usec()
 		await get_tree().process_frame
+		_phase_wait_us += Time.get_ticks_usec() - t
+
+func _entry_frame() -> void:
+	var now := Time.get_ticks_usec()
+	if _frame_t > 0:
+		slowest_frames.append({"phase": _frame_phase, "ms": (now - _frame_t) / 1000.0})
+		slowest_frames.sort_custom(func(a, b): return a.ms > b.ms)
+		slowest_frames.resize(mini(5, slowest_frames.size()))
+	_frame_t = now
 
 ## A pure-data computation on a worker thread while the screen animates (only when the loading screen is up).
 func _offload(fn: Callable) -> Variant:
 	if Game.veil == null or not is_instance_valid(Game.veil):
 		return fn.call()
 	var th := Thread.new()
-	th.start(fn)
+	var work := {"us": 0}
+	th.start(func():
+		var started := Time.get_ticks_usec()
+		var result = fn.call()
+		work.us = Time.get_ticks_usec() - started
+		return result)
 	while th.is_alive():
-		await get_tree().process_frame
-	return th.wait_to_finish()
+		await _slice()
+	var result = th.wait_to_finish()
+	_phase_worker_us += work.us
+	return result
 
 func build() -> void:
 	var data = Game.data
 	_building = true
-	var rest_phases := ["camera", "stage_setup", "props_flora", "stage_reset", "nav_warm", "creatures", "ui_and_rest"]
+	var rest_phases := ["camera", "stage_setup", "stage_reset", "props_flora", "nav_warm", "creatures", "ui_and_rest", "shader_warmup"]
 	Game.entry_plan((["environment", "kit_reused"] if Game.peek_kit() else ["environment", "terrain_meshes", "water", "rivers", "grass"]) + rest_phases)
-	_phase_t = Time.get_ticks_msec()
+	_phase_t = Time.get_ticks_usec()
 	var t_start := _phase_t
+	get_tree().process_frame.connect(_entry_frame)
 	Clouds.apply(Game.settings.get("weather", ""))
 	world_env = WorldEnvironment.new()
 	world_env.environment = EnvironmentFactory.make_environment()
 	add_child(world_env)
 	sun = EnvironmentFactory.make_sun()
 	add_child(sun)
-	_phase("environment")
+	_frame_phase = "environment"
 	await _slice()
+	_phase("environment")
 	var kit: Dictionary = Game.take_kit()
 	if not kit.is_empty():
 		# the terrain, water, rivers, grass and flora of the last island are still built: take them back (see Game.park_island)
@@ -181,39 +213,49 @@ func build() -> void:
 		for n in [terrain_chunks, water, rivers, grass]:
 			add_child(n)
 		kit_reused = true
-		_phase("kit_reused")
+		_frame_phase = "kit_reused"
 		await _slice()
+		_phase("kit_reused")
 	else:
+		_frame_phase = "terrain_meshes"
 		terrain_chunks = TerrainChunks.new()
 		terrain_chunks.name = "Terrain"
 		add_child(terrain_chunks)
 		terrain_chunks.build(data)
-		_phase("terrain_meshes")
 		var tier0: int = terrain_chunks.tier
+		_frame_phase = "terrain_meshes"
 		await _slice()
+		_phase("terrain_meshes")
+		_frame_phase = "water"
 		water = Water.new()
 		water.tier = tier0
 		water.name = "Water"
 		add_child(water)
 		water.build(data, await _offload(func() -> Dictionary: return Water.lake_arrays(data)))
-		_phase("water")
+		_frame_phase = "water"
 		await _slice()
+		_phase("water")
+		_frame_phase = "rivers"
 		rivers = Rivers.new()
 		rivers.tier = tier0
 		rivers.name = "Rivers"
 		add_child(rivers)
 		rivers.build(data, await _offload(func() -> Array: return Rivers.chains(data)))
-		_phase("rivers")
+		_frame_phase = "rivers"
 		await _slice()
+		_phase("rivers")
+		_frame_phase = "grass"
 		var t0 := Time.get_ticks_msec()
 		grass = Grass.new()
 		grass.tier = tier0
 		grass.name = "Grass"
 		add_child(grass)
 		grass.build(data, int(Game.settings.grass))
-		_phase("grass")
+		_frame_phase = "grass"
 		await _slice()
+		_phase("grass")
 		print("grass built in %d ms (%d blades)" % [Time.get_ticks_msec() - t0, int(Game.settings.grass)])
+	_frame_phase = "camera"
 	var wl_tier: int = terrain_chunks.tier
 	WorldLight.configure_sun(sun, wl_tier)   # shadow reach and cascades per tier; low draws none
 	_sun_shadows_ok = WorldLight.lit(wl_tier)
@@ -230,18 +272,24 @@ func build() -> void:
 	camera.far = 12000.0
 	add_child(camera)
 	camera.current = true
+	# Submit island geometry together in the warm-up viewport, rather than
+	# compiling a new pipeline on every creature/flora build frame.
+	if Game.veil != null and is_instance_valid(Game.veil):
+		camera.cull_mask = 0
 	debug_camera = camera
 	Game.camera = camera
-	_phase("camera")
+	_frame_phase = "camera"
 	await _slice()
+	_phase("camera")
 	await _build_stage()
-	build_ms["total"] = Time.get_ticks_msec() - t_start
+	build_ms["total"] = (Time.get_ticks_usec() - t_start) / 1000.0
 	_building = false
 	if stage != null:
 		stage.paused = _stage_was_paused
 	if not Game.applied_legacy.is_empty():      # the whisper starts when the loading screen hands over, not while it is up
 		stage_ui.ui.show_message(Strings.t("legacy_whisper", [Strings.t("legacy_cell_" + str(Game.applied_legacy.diet)), Strings.t("legacy_def_" + str(Game.applied_legacy.defense))]))
-	Game.report_entry(build_ms)
+	get_tree().process_frame.disconnect(_entry_frame)
+	Game.report_entry(build_ms, build_cpu_ms, build_stall_ms, slowest_frames)
 	set_process(true)
 	Game.island_ready.emit()
 	Game.loop_event.emit("island_ready", {"ms": int(Game.entry_log[-1].ms) if not Game.entry_log.is_empty() else build_ms})
@@ -257,6 +305,7 @@ func _grant_genome_parts(genome: Dictionary) -> void:
 			stage.debug_now({"op": 8, "id": 0, "a": id})
 
 func _build_stage() -> void:
+	_frame_phase = "stage_setup"
 	var manifest := Profile.load_json("res://game/data/parts.json")
 	var genome: Dictionary = Game.player_genome().duplicate(true)
 	if Game.pending_scenario.is_empty():
@@ -301,20 +350,17 @@ func _build_stage() -> void:
 		push_error("the island field was rejected: %s" % stage.world.last_error())
 		return
 	stage.world.reset({"terrain": 2})     # a probe state so StageSetup can ask the C walk rule
-	var setup := StageSetup.build(Game.data, int(Game.settings.seed), pr.profile, garfio_profile, bool(Game.settings.wild), stage.world, bool(Game.settings.get("herds", true)), bool(Game.settings.get("secrets", true)))
+	var radial_plan := {}
+	var setup := StageSetup.build(Game.data, int(Game.settings.seed), pr.profile, garfio_profile, bool(Game.settings.wild), stage.world, bool(Game.settings.get("herds", true)), bool(Game.settings.get("secrets", true)), radial_plan)
 	stage.edit_anywhere = bool(Game.settings.get("edit_anywhere", true))
 	stage.process_priority = -10     # the world ticks before the actors read it (action timing, G77)
 	add_child(stage)
 	_stage_was_paused = stage.paused
 	stage.paused = true            # nothing ticks while the build is spread over frames
+	_frame_phase = "stage_setup"
+	await _slice()
 	_phase("stage_setup")
-	await _slice()
-	props.name = "IslandProps"
-	add_child(props)
-	var rec = await _offload(func() -> Array: return props.records_for(Game.data, setup, int(Game.terrain.seed), _props_tier(), Game.settings))
-	await _place_props(setup, rec)
-	_phase("props_flora")
-	await _slice()
+	_frame_phase = "stage_reset"
 	_den = Vector2(setup.wild[0].home_x, setup.wild[0].home_z) if setup.wild.size() > 0 else null
 	var ground := Callable(Game, "visual_ground")
 	stage.ground_fn = ground
@@ -331,20 +377,39 @@ func _build_stage() -> void:
 		var lrc: int = stage.apply_legacy(CellLegacy.diet_for(Game.applied_legacy), CellLegacy.part_for(Game.applied_legacy))
 		if lrc != 0:
 			push_error("the cell legacy was rejected by the C world (%d)" % lrc)
+	_frame_phase = "stage_reset"
+	await _slice()
 	_phase("stage_reset")
+	# The stage is paused. No world reset, tick, debug or path query until join.
+	var nav_job := {"us": 0}
+	var nav_world = stage.world # hold the RefCounted world through the worker
+	var nav_task := WorkerThreadPool.add_task(func() -> void:
+		var started := Time.get_ticks_usec()
+		nav_world.nav_warm()
+		nav_job.us = Time.get_ticks_usec() - started)
+	_frame_phase = "props_flora"
+	props.name = "IslandProps"
+	add_child(props)
+	var rec = await _offload(func() -> Array: return props.records_for(Game.data, setup, int(Game.terrain.seed), _props_tier(), Game.settings))
+	await _place_props(setup, rec)
+	_frame_phase = "props_flora"
 	await _slice()
-	await _offload(func() -> int:
-		stage.world.nav_warm()    # fill the GO walk grid now, so no click pays for it later (a worker thread under the loading screen)
-		return 0)
+	_phase("props_flora")
+	_frame_phase = "nav_warm"
+	while not WorkerThreadPool.is_task_completed(nav_task):
+		await _slice()
+	WorkerThreadPool.wait_for_task_completion(nav_task)
+	await _slice()
 	_phase("nav_warm")
-	await _slice()
+	build_cpu_ms["nav_warm"] += nav_job.us / 1000.0
 	stage.ticked.connect(func(state: Dictionary) -> void: Game.world_ticked.emit(state))
 	stage.combat_events.connect(func(events: Array) -> void: Game.combat_events.emit(events))
 	Game.stage = stage
+	_frame_phase = "creatures"
 	var player_host := ActorHost.new()
 	player_host.name = "Player"
 	add_child(player_host)
-	player_host.setup(genome, 0, setup.player, ground)
+	player_host.setup(genome, 0, setup.player, ground, Game.creature_cache)
 	hosts[0] = player_host
 	family = preload("res://game/island/family.gd").new()
 	family.name = "Family"
@@ -356,12 +421,14 @@ func _build_stage() -> void:
 		var h := ActorHost.new()
 		h.name = "Wild%d" % (i + 1)
 		add_child(h)
-		h.setup(_species_body(int(setup.wild[i].species)), i + 1, setup.wild[i].profile, ground)
+		h.setup(_species_body(int(setup.wild[i].species)), i + 1, setup.wild[i].profile, ground, Game.creature_cache)
 		h.set_meta("base_scale", _species_scale(int(setup.wild[i].species)))
 		hosts[i + 1] = h
 		await _slice()
-	_phase("creatures")
+	_frame_phase = "creatures"
 	await _slice()
+	_phase("creatures")
+	_frame_phase = "ui_and_rest"
 	var yaw := PI
 	if setup.wild.size() > 0:
 		yaw = atan2(setup.nest.x - setup.wild[0].home_x, setup.nest.y - setup.wild[0].home_z)
@@ -392,8 +459,10 @@ func _build_stage() -> void:
 		var radial_fauna := preload("res://game/island/radial_fauna.gd").new()
 		radial_fauna.name = "RadialFauna"
 		add_child(radial_fauna)
-		var plan = await _offload(func() -> Dictionary: return preload("res://game/island/radial_fauna.gd").plan(Game.data, int(Game.settings.seed), setup.nest))
-		await radial_fauna.setup(Game.data, int(Game.settings.seed), setup.nest, ground, func() -> Vector3: return camera.global_position, plan)
+		var plan: Dictionary = radial_plan
+		if plan.is_empty():
+			plan = await _offload(func() -> Dictionary: return preload("res://game/island/radial_fauna.gd").plan(Game.data, int(Game.settings.seed), setup.nest))
+		await radial_fauna.setup(Game.data, int(Game.settings.seed), setup.nest, ground, func() -> Vector3: return camera.global_position, plan, _slice, Game.creature_cache)
 	await _slice()
 	_build_secrets(ground)      # before the part nodes: the cave fossil stands on the chamber floor, not on the rock above it
 	await _slice()
@@ -422,8 +491,14 @@ func _build_stage() -> void:
 	_update_actors(0.0)
 	await _slice()
 	_update_camera(0.0)
-	_phase("ui_and_rest")
+	_frame_phase = "ui_and_rest"
 	await _slice()
+	_phase("ui_and_rest")
+	_frame_phase = "shader_warmup"
+	await preload("res://game/loading/pipeline_warmup.gd").new().render(self, _slice)
+	camera.cull_mask = 0xFFFFF
+	await _slice()
+	_phase("shader_warmup")
 	if not Game.pending_scenario.is_empty():
 		var parsed: Dictionary = Game.pending_scenario
 		Game.pending_scenario = {}
@@ -550,7 +625,7 @@ func _sync_hosts() -> void:
 		add_child(h)
 		var body: Dictionary = _species_body(int(es[i].species)) if cousin.is_empty() else JSON.parse_string(cousin.body_json)
 		var profile: Dictionary = _garfio_profile if cousin.is_empty() else stage.world.get_setup().wild[i - 1].profile
-		h.setup(body, i, profile, Callable(Game, "visual_ground"))
+		h.setup(body, i, profile, Callable(Game, "visual_ground"), Game.creature_cache)
 		h.set_meta("base_scale", _species_scale(int(es[i].species)))
 		if not cousin.is_empty():
 			h.set_meta("lineage_body", str(cousin.body_json))
@@ -628,19 +703,31 @@ func _eat_ctx() -> Dictionary:
 	return {"mode": "act", "t": int(act.get("t", 0)), "target": tid, "kind": "carcass", "pos": food + toward * r + Vector3.UP * r * 0.8}
 
 func _update_actors(dt: float) -> void:
+	if not FrameProfile.enabled:
+		_profile__update_actors(dt)
+		return
+	FrameProfile.begin()
+	_profile__update_actors(dt)
+	FrameProfile.end(&"actors/context/occluders")
+
+func _profile__update_actors(dt: float) -> void:
 	_sync_hosts()
 	if flight != null:
 		flight.tick(dt)
 	action_signals = action_feed.read(stage.prev, stage.cur, stage.alpha())
 	var tick: int = int(stage.cur.combat.tick)
 	var alpha: float = stage.alpha()
-	var p0: Vector3 = player_sample().pos
+	var player_pose := player_sample()
+	var samples := {0: player_pose}
+	var p0: Vector3 = player_pose.pos
 	_hidden.clear()
 	for e in stage.cur.entities:
 		if bool(e.get("hidden", false)):
 			_hidden[int(e.id)] = true
 	for id in hosts:
-		var sm: Dictionary = stage.sample(id) if id != 0 else player_sample()
+		if not samples.has(id):
+			samples[id] = stage.sample(id)
+		var sm: Dictionary = samples[id]
 		if id == 0:
 			sm["falling"] = bool(stage.cur.get("player", {}).get("falling", false))
 			sm["intent"] = player_input.intent_yaw()      # head and shoulders lead the body
@@ -652,7 +739,9 @@ func _update_actors(dt: float) -> void:
 			tid = selected_id
 		if tid >= 0 and hosts.has(tid) and tid != id:
 			var th: Node3D = hosts[tid]
-			var ts: Dictionary = stage.sample(tid)
+			if not samples.has(tid):
+				samples[tid] = stage.sample(tid)
+			var ts: Dictionary = samples[tid]
 			var ent: Dictionary = stage.cur.entities[tid]
 			ctx["target"] = {"id": tid, "pos": ts.pos, "radius": float(ent.get("radius_cm", 60)) * 0.01, "height": th.height(), "spheres": th.occluders() if d < 40.0 else []}
 		if id == 0:
@@ -667,7 +756,7 @@ func _update_actors(dt: float) -> void:
 					ctx["target"] = {"id": int(eat.target), "pos": stage.sample(int(eat.target)).pos, "radius": 0.5, "height": th2.height(), "spheres": []}
 		elif ui_mode == &"befriend" and id == selected_id and not bool(sig.get("in_fight", false)) and d < 12.0:
 			ctx["attend"] = true
-		hosts[id].update(dt, sm, ctx)
+		hosts[id].update_visual(dt, sm, ctx, hosts[id].visual_interval(camera, d), Engine.get_process_frames())
 		if id > 0:
 			# the driver sets the host basis (yaw) every frame, so the size goes on after it: a species' size, and a carcass
 			# shrinks as it is eaten (4 bites)
@@ -682,11 +771,14 @@ func _update_actors(dt: float) -> void:
 				hosts[id].scale = Vector3.ONE * base
 	if flight != null:
 		flight.post_update(dt)
-	var p: Dictionary = player_sample()
+	var p: Dictionary = player_sample() if flight != null else player_pose
 	player_pos = p.pos
 	var occ := []
 	if occluders_enabled:
 		for id in hosts:
+			# Only the first twelve spheres reach the shaders; avoid constructing the discarded tail.
+			if occ.size() >= 12:
+				break
 			if id == 0 or (hosts[id].global_position - player_pos).length() < 40.0:
 				occ.append_array(hosts[id].occluders())
 	while occ.size() > 12:
@@ -714,6 +806,14 @@ func _landing_shake(dt: float) -> Vector3:
 	return Vector3(0.0, sin(_shake_clock * 38.0), 0.0) * _shake_amp + camera.global_transform.basis.x * (sin(_shake_clock * 31.0) * _shake_amp * 0.5)
 
 func _update_camera(dt: float) -> void:
+	if not FrameProfile.enabled:
+		_profile__update_camera(dt)
+		return
+	FrameProfile.begin()
+	_profile__update_camera(dt)
+	FrameProfile.end(&"camera")
+
+func _profile__update_camera(dt: float) -> void:
 	if not chase_enabled or chase == null:
 		_apply_zoom_budget(chase.z if chase != null else 0.0)    # creature visibility (hidden sleepers) must not depend on the chase camera
 		return
@@ -809,6 +909,14 @@ func _sync_controls() -> void:
 		player_input.position = Vector2(e.x, e.z)
 
 func _process(delta: float) -> void:
+	if not FrameProfile.enabled:
+		_profile__process(delta)
+		return
+	FrameProfile.begin()
+	_profile__process(delta)
+	FrameProfile.end(&"island other")
+
+func _profile__process(delta: float) -> void:
 	Clouds.set_time(Time.get_ticks_msec() * 0.001)
 	if stage == null or _building:
 		return
@@ -953,6 +1061,14 @@ func _update_move_marker() -> void:
 # Observing plants: the pointer resting on a plant for PlantGaze.DWELL seconds writes it into the journal. Creatures come first
 # (a hovered creature, a fight, a held button or an open book never count), so this never competes with the radial.
 func _update_plants(dt: float) -> void:
+	if not FrameProfile.enabled:
+		_profile__update_plants(dt)
+		return
+	FrameProfile.begin()
+	_profile__update_plants(dt)
+	FrameProfile.end(&"flora")
+
+func _profile__update_plants(dt: float) -> void:
 	if camera == null or stage == null or stage_ui == null:
 		return
 	_gaze_poll += dt
