@@ -201,10 +201,10 @@ static func offsets(gait: StringName, morph) -> PackedFloat32Array:
 
 ## Spine flexion in a gallop (rad of arch: + brings head and tail down, - lifts them) over the stride phase.
 ## Gathered after the hind push (flexion) and stretched in the flight (extension), as in a bounding mammal.
-static func spine_flex(gait: StringName, phase: float, fr: float) -> float:
+static func spine_flex(gait: StringName, phase: float, fr: float, scale := 1.0) -> float:
 	if gait != &"gallop":
 		return 0.0
-	var amp: float = clamp(0.045 * pow(max(fr, 0.1) / 2.5, 0.3), 0.0, 0.11)
+	var amp: float = clamp(0.045 * pow(max(fr, 0.1) / 2.5, 0.3), 0.0, 0.11) * scale
 	return amp * sin(TAU * (phase - 0.15))
 
 ## Forward lean of the body in a run (rad, nose down), from the Froude number.
@@ -298,6 +298,10 @@ static func _table(cls: String) -> Dictionary:
 				"gallop": _d("tri", 0.42, 1.0, &"walk", {"off": [0.0, 0.37, 0.72], "roll": 0.08, "head": 0.08})}
 	return {}
 
+## F10 option `gallop look` (owner 2026-11-22: "the gallop much more noticeable"): "bold" exaggerates the quadruped gallop (about a third
+## of the cycle in the air, two clear leg pairs, body rock x2, spine gather/extend, bigger bob, head counter-motion; the canter a milder
+## version), "natural" = the A42 table as it was, "subtle" = calmer. Starting values; stance feet stay pinned and the reach clip applies.
+static var gallop_look := "bold"
 static var _cache := {}
 
 ## Body class for the style tables, or "" when the body keeps the Froude gaits (monopod, legless, radial).
@@ -326,7 +330,7 @@ static func variant_for(cls: String) -> String:
 
 ## Style parameters, with the variant applied. `shortest` = the shortest leg's length / hip height (floor for the lowered body).
 static func style_params(cls: String, name: StringName, variant: String) -> Dictionary:
-	var key := "%s/%s/%s" % [cls, name, variant]
+	var key := "%s/%s/%s/%s" % [cls, name, variant, gallop_look]
 	if _cache.has(key):
 		return _cache[key]
 	var t := _table(cls)
@@ -345,8 +349,37 @@ static func style_params(cls: String, name: StringName, variant: String) -> Dict
 		d.rock *= 1.5
 		d.pitch *= 1.3
 		d.roll *= 1.2
+	d["flex"] = 0.0
+	if cls == "quad" and (name == &"gallop" or name == &"canter") and gallop_look != "natural":
+		_gallop_look(d, name == &"gallop", gallop_look == "bold")
 	_cache[key] = d
 	return d
+
+## Applies the gallop look to a copy of a quad gallop (full) or canter (milder) style. `flex` scales Gait.spine_flex (rad of gather/extend).
+static func _gallop_look(d: Dictionary, full: bool, bold: bool) -> void:
+	if not bold:   # subtle
+		d.k = float(d.k) * 0.92
+		d.bob = float(d.bob) * 0.7
+		d.rock = float(d.rock) * 0.6
+		d.head = float(d.head) * 0.6
+		d.lift = float(d.lift) * 0.85
+		return
+	if full:
+		d.off = [0.0, 0.08, 0.58, 0.5]       # hind pair together, then the front pair: a rotary gallop with a long flight between
+		d.duty = 0.25                         # two pairs of 0.25 + 0.08 leave about 34% of the cycle airborne
+		d.k = float(d.k) * 1.2
+		d.bob = float(d.bob) * 1.6
+		d.rock = float(d.rock) * 2.0
+		d.head = float(d.head) * 2.0
+		d.lift = float(d.lift) * 1.25
+		d.flex = 2.2
+	else:
+		d.k = float(d.k) * 1.1
+		d.bob = float(d.bob) * 1.3
+		d.rock = float(d.rock) * 1.4
+		d.head = float(d.head) * 1.4
+		d.lift = float(d.lift) * 1.1
+		d.flex = 1.0
 
 static func style_names(cls: String, starter_b: bool) -> Array:
 	return [&"stalk", &"walk", &"canter", &"gallop"] if (cls == "quad" and starter_b) else [&"walk", &"canter", &"gallop"]

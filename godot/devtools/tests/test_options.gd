@@ -47,6 +47,14 @@ func run(t) -> void:
 	var applied := []
 	var sw = _world()
 	var tn = _registry(sw, applied)
+	# --- speed knobs: walk_fr and sprint_k are motion parameters and the Froude numbers map to m/s
+	t.check(absf(Defs.speed_ms(0.24, 0.85) - 1.06) < 0.01 and absf(Defs.speed_ms(0.86, 0.85) - 2.0) < 0.01, "walk Froude -> m/s for starter B (1.06, and 0.86 gives 2 m/s)")
+	var sw2 = _world()
+	var wi: int = Defs._param_index("walk_fr")
+	t.check(wi >= 0 and absf(sw2.world.param(wi) - 0.24) < 1e-6, "walk_fr is a motion parameter, default 0.24")
+	sw2.debug_now({"op": Defs.DBG_PARAM, "a": wi, "v": 0.8})
+	t.check(absf(sw2.world.param(wi) - 0.8) < 1e-6, "walk_fr set through the PARAM debug op")
+	sw2.free()
 	# --- choice add, cycle, wrap, disabled values, reset
 	t.eq(tn.choice_value("gait"), "today", "a choice starts at its default")
 	t.eq(tn.current_values(), {}, "no change yet")

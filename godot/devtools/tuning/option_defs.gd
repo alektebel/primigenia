@@ -18,6 +18,7 @@ static func register(reg, island, console_registry = null) -> void:
 	_world(reg)
 	_overlays(reg, console_registry)
 	_movement(reg)
+	_speed(reg)
 
 ## Starter body: respawns the player with that genome through the existing evolve path (lineage_form, logged by the stage).
 static func _creature(reg, island) -> void:
@@ -88,3 +89,56 @@ static func _movement(reg) -> void:
 		func(): return "froude" if Gait.froude_mode else "today",
 		func(v): Gait.froude_mode = (v == "froude"), false,
 		{"desc": "gait rules: froude = the gait lab's 9 rules (gait from Fr, duty curves, stride law, footfalls, bob, blends); today = the pre-port rules. Creatures already built keep their gait state, the new rules apply to every step."})
+	reg.add_choice("gallop look", "movement", ["bold (default for now)", "natural", "subtle"], "bold (default for now)",
+		func(): return {"bold": "bold (default for now)", "natural": "natural", "subtle": "subtle"}[Gait.gallop_look],
+		func(v): Gait.gallop_look = str(v).split(" ")[0], false,
+		{"desc": "quadruped gallop and canter: bold = 34% of the cycle in the air, two clear leg pairs, body rock x2, spine gather/extend, bigger bob, head counter-motion (canter milder); natural = the A42 table; subtle = calmer. Applies when the style next changes."})
+
+## Speed knobs (owner 2026-11-22, "the creature moves too slow"): C motion parameters walk_fr (walk Froude number, default .24) and
+## sprint_k (run Froude number, default 1.5); both go through the logged PARAM debug op, so a session with them replays bit for bit.
+## v = sqrt(Fr g h) with h = 0.56 * body radius (core/src/stage_world.c gait_speed). The choice description shows the m/s of the
+## current player body.
+const DBG_PARAM := 7
+const HIP_PER_RADIUS := 0.56
+const WALK_CHOICES := {"physics 0.24 (B ~1.1 m/s)": 0.24, "brisk 0.45 (B ~1.4 m/s)": 0.45, "fast 0.8 (B ~1.9 m/s)": 0.8, "2 m/s for B (~0.86)": 0.86}
+const RUN_CHOICES := {"1.5 (default)": 1.5, "2.2": 2.2, "3.0": 3.0}
+
+## Speed in m/s of a body of radius r (m) at Froude number fr.
+static func speed_ms(fr: float, radius: float) -> float:
+	return sqrt(fr * 9.81 * HIP_PER_RADIUS * radius)
+
+static func _player_radius() -> float:
+	var st = Game.stage
+	if st == null or st.cur == null or st.cur.entities.is_empty():
+		return 0.85
+	return maxf(0.6, float(st.cur.entities[0].get("radius_cm", 60)) * 0.01)
+
+static func _param_index(name: String) -> int:
+	for p in CporeWorld.params():
+		if p.name == name:
+			return int(p.index)
+	return -1
+
+static func _set_param(name: String, v: float) -> void:
+	var st = Game.stage
+	var idx := _param_index(name)
+	if st != null and idx >= 0:
+		st.debug_now({"op": DBG_PARAM, "a": idx, "v": v})
+
+static func _speed_desc(walk_fr: float, run_fr: float) -> String:
+	var r := _player_radius()
+	return "your creature (r %.2f m): walks %.1f m/s, runs %.1f m/s. " % [r, speed_ms(walk_fr, r), speed_ms(run_fr, r)]
+
+static func _speed(reg) -> void:
+	var cur_walk := [0.24]
+	var cur_run := [1.5]
+	reg.add_choice("walk speed", "movement", WALK_CHOICES.keys(), WALK_CHOICES.keys()[0], Callable(), func(v):
+		cur_walk[0] = float(WALK_CHOICES[v])
+		_set_param("walk_fr", cur_walk[0])
+		reg.choices["walk speed"].desc = _speed_desc(cur_walk[0], cur_run[0]) + "walk Froude number (motion parameter walk_fr); player and wild walkers; the legs follow the speed.",
+		true, {"desc": _speed_desc(0.24, 1.5) + "walk Froude number (motion parameter walk_fr); player and wild walkers; the legs follow the speed."})
+	reg.add_choice("run speed", "movement", RUN_CHOICES.keys(), RUN_CHOICES.keys()[0], Callable(), func(v):
+		cur_run[0] = float(RUN_CHOICES[v])
+		_set_param("sprint_k", cur_run[0])
+		reg.choices["run speed"].desc = _speed_desc(cur_walk[0], cur_run[0]) + "run Froude number (motion parameter sprint_k), Shift or Ctrl.",
+		true, {"desc": _speed_desc(0.24, 1.5) + "run Froude number (motion parameter sprint_k), Shift or Ctrl."})
