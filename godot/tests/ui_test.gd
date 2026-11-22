@@ -283,7 +283,7 @@ func test_signs_and_words() -> void:
 	ok(not s.run_visible, "the run line is hidden at full")
 	ui.set_run(400, true)
 	s._process(0.1)
-	ok(s.run_visible and absf(s.run_frac - 0.4) < 0.001 and s.running, "the run line shows while running, at 40 % (%.2f)" % s.run_frac)
+	ok(s.run_visible and absf(s.run_frac - 0.4) < 0.001 and s.running, "the run line shows while running, at 40 %% (%.2f)" % s.run_frac)
 	ui.set_run(1000, false)
 	for k in 6:
 		s._process(0.5)

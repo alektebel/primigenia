@@ -1,0 +1,39 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+renderer: gl_compatibility (blocked (headless, script, explicit method or already relaunched))
+grass built in 13 ms (3000 blades)
+radial fauna: corona on a tide-pool flat at (-724, -1432), 1457 m from the lowest tidal cave mouth (caves are slope notches)
+island entry (): 11145 ms since goto_island; build environment 3, terrain_meshes 87, water 1611, rivers 232, grass 13, camera 0, stage_setup 1695, props_flora 1471, stage_reset 215, nav_warm 2933, creatures 1083, ui_and_rest 537, total 11145
+FRAME BENCH crowd renderer=headless creatures=6 radial=5 frames=600
+| System (exclusive) | ms/frame | calls/frame |
+|---|---:|---:|
+| world advance + HUD signals | 0.220 | 1.00 |
+| dev monitors | 0.009 | 1.00 |
+| legend | 0.018 | 1.00 |
+| options HUD | 0.055 | 1.00 |
+| world sampling | 0.177 | 9.00 |
+| locomotion gait/support | 3.402 | 6.00 |
+| locomotion IK/rig | 2.188 | 6.00 |
+| actor driver/actions | 1.910 | 6.00 |
+| grass uniforms | 0.004 | 1.00 |
+| actors/context/occluders | 0.342 | 1.00 |
+| camera | 0.264 | 1.00 |
+| flora | 0.048 | 1.00 |
+| island other | 0.039 | 1.00 |
+| terrain LOD | 0.002 | 1.00 |
+| stage UI/audio | 0.048 | 1.00 |
+| HUD animation | 0.056 | 1.00 |
+| minimap | 0.003 | 1.00 |
+| ambient radial fauna | 0.017 | 1.00 |
+| day/night uniforms | 0.056 | 1.00 |
+| minimap draw | 0.100 | 1.00 |
+| Instrumented script total | 8.960 | |
+Performance process=15.524 ms physics=0.413 ms nodes=4273 objects=11085 frame_p95=14.036 ms
+WARNING: 1 RID of type "CanvasItem" was leaked.
+   at: _free_rids (servers/rendering/renderer_canvas_cull.cpp:2733)
+WARNING: 231 ObjectDB instances were leaked at exit (run with `--verbose` for details).
+   at: cleanup (core/object/object.cpp:2536)
+ERROR: 27 resources still in use at exit (run with --verbose for details).
+   at: clear (core/io/resource.cpp:822)
+ERROR: Pages in use exist at exit in PagedAllocator: N12VariantPools12BucketMediumE
+   at: ~PagedAllocator (./core/templates/paged_allocator.h:170)

@@ -1,6 +1,6 @@
 # Status
 
-Updated 2026-11-21 (integration of all WIP + limp fix merged; game relaunched for the owner). Rewritten at the end of every session; keep it to one page.
+Updated 2026-11-22 (T15 frame-time pass measured; owner acceptance pending). Rewritten at the end of every session; keep it to one page.
 
 ## Focus now
 **Procedural creature movement that looks like the references.** Order (research plan `docs/research/procedural-locomotion.md`, tracker stages M0–M6):
@@ -19,7 +19,7 @@ Reference clips: gorilla knuckle-walk (tracker X3, owner's Downloads) and Spore 
 
 ## Main
 `claude/v0.1-restore` at df9585b: integration of 19 branches (`docs/INTEGRATION-2026-11-21.md`) + limp fix (`docs/evidence/loco/limp.md`: hero duty 0.41→0.53, slip 0, bob 23.6→19.4 cm, limp index 1.07). Suites: make test pass, M0 1266/0, ui 972/0, play 237/0, studio 942/0, loco 299/0, creature-fit pass, first-quest e2e 29/0. Loco score vs ffea2c1 unchanged before the limp merge. First quest is A38.
-Owner's machine: the RTX was capped at 15 W (power profile 'balanced'); `powerprofilesctl set performance` fixes it. Launch on the RTX: `__NV_PRIME_RENDER_OFFLOAD=1 __GLX_VENDOR_LIBRARY_NAME=nvidia __VK_LAYER_NV_optimus=NVIDIA_only godot --path godot` (without it the game picks the AMD + compatibility).
+Owner's machine: the RTX was capped at 15 W (power profile 'balanced'); `powerprofilesctl set performance` (set 2026-11-22: 35 W; nvidia-powerd inactive, `sudo systemctl enable --now nvidia-powerd` for up to 45 W). Then the game is CPU-bound on the main thread (99%). Launch on the RTX: `__NV_PRIME_RENDER_OFFLOAD=1 __GLX_VENDOR_LIBRARY_NAME=nvidia __VK_LAYER_NV_optimus=NVIDIA_only godot --path godot` (without it the game picks the AMD + compatibility).
 
 ## Branches in flight
 | Branch | State | Next step |
@@ -27,6 +27,8 @@ Owner's machine: the RTX was capped at 15 W (power profile 'balanced'); `powerpr
 | `anim/speed-gait` | **Running** (Sonnet): A39 speed by size in C (2 m/s walk, run Fr 1.5) + gait lab port; brief in branch | Review scorecard, winnability, merge |
 | `devtools/owner-questions` | **Running** (Sonnet): in-game question cards, starter B (A40), seaweeds on sea (A41) | Review, merge |
 | (plan) | **Done**: `docs/plans/creature-loop.md` (beats, loop scorecard, T1–T15, waves) + `docs/plans/creature-loop-questions.json` | Wave 1: T1 after owner-q, T5 after owner-q |
+| `perf/frame-time` | **Built, uncommitted** (Codex): 24-creature nest script 16.84→2.99 ms headless; all five suites pass, 35/35 loco scorecards identical. `make godot-frame-bench`; evidence `docs/evidence/godot/frame-time.md` | Merge main + commit (Git metadata read-only); review; owner T15 frame/FPS. Rendered software GL blocked by sandbox X11 sockets |
+| `ui/verb-target` | **Running** (Sonnet): owner feedback 2026-11-22: verb-first targeting (red arrows attack, green befriend, lock moving targets, auto-pursue), siblings at the nest, edit at the nest with found parts | Review, merge |
 | `perf/load-time` | **T2 running** (Codex, cannot commit): honest stall log, shader warm-up under the veil, one build per species, plan once, nav overlap | Commit, review; owner measures on the RTX |
 | `w11-alpine` | **closed 2026-11-22 (owner, A41)**: drainage unfinished, rewrote terrain v4; branch kept for reference | — |
 | `anim/gait-lab` | **merged fa67103**: lab confirms wrong gait selection at 5.1 m/s; port rules in `docs/evidence/loco/gaitlab.md`. Owner: "2 m/s seems the sweet spot" (noted on D-26) | Port to loco_gait.gd + D-26 speed once the owner confirms |

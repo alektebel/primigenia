@@ -41,7 +41,7 @@ func run(t) -> void:
 	ri.keys_override = rk
 	var rs: Dictionary = ri.sample()
 	t.eq([rs.verb, rs.sprint, rs.run], [3, 0, 1], "Shift is run, not the legacy sprint")
-	ri.after_tick({"player": {"running": true, "stamina": 5}})
+	ri.after_tick({"player": {"running": true, "stamina": 5}, "order": {"verb": 3}})
 	ri.after_tick({"player": {"running": false, "stamina": 0}, "order": {"verb": 3}})
 	t.eq(ri.sample().run, 0, "exhausted with Shift held: run stays off")
 	ri.keys_override = {"forward": true, "back": false, "left": false, "right": false, "sprint": false, "run": false}

@@ -1,4 +1,6 @@
 extends CanvasLayer
+
+const FrameProfile := preload("res://devtools/frame_profile.gd")
 ## F10 option mode (docs/briefs/dev-options.md): a small corner HUD, no panel, same style as the F1 sheet.
 ##   1-9 pick a group, Up/Down an option, Left/Right cycle the value (instant, no animation; numeric: one step, Shift x10),
 ##   Backspace resets the option, Ctrl+Backspace resets all, Ctrl+1-4 saves a preset, Alt+1-4 recalls it, Esc / F10 closes.
@@ -23,6 +25,7 @@ var _root: Control
 var _hud: VBoxContainer
 var _line: Label
 var _sig := ""
+var _last_choices: Dictionary = {}
 
 func _init() -> void:
 	layer = 31
@@ -208,6 +211,7 @@ func _refresh() -> void:
 	_line.text = line
 	_line.visible = line != "" and not is_open
 	_sig = line
+	_last_choices = tuning.current_choices() if tuning != null else {}
 	for c in _hud.get_children():
 		c.queue_free()
 		_hud.remove_child(c)
@@ -242,7 +246,15 @@ func _refresh() -> void:
 		_hud.add_child(_label(message, Palette.COPPER, 13, true))
 
 func _process(_dt: float) -> void:
-	if tuning != null and tuning.choices_line() != _sig:
+	if not FrameProfile.enabled:
+		_profile__process(_dt)
+		return
+	FrameProfile.begin()
+	_profile__process(_dt)
+	FrameProfile.end(&"options HUD")
+
+func _profile__process(_dt: float) -> void:
+	if tuning != null and tuning.current_choices() != _last_choices:
 		_refresh()
 
 func _input(e: InputEvent) -> void:

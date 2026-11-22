@@ -1,4 +1,6 @@
 extends Node3D
+
+const FrameProfile := preload("res://devtools/frame_profile.gd")
 # The island scene: sky/environment, sun, terrain chunks, water, grass, the 10 Hz stage world,
 # creatures, chase camera and controls. Built in code from Game.data (set by the boot flow).
 
@@ -611,19 +613,31 @@ func _eat_ctx() -> Dictionary:
 	return {"mode": "act", "t": int(act.get("t", 0)), "target": tid, "kind": "carcass", "pos": food + toward * r + Vector3.UP * r * 0.8}
 
 func _update_actors(dt: float) -> void:
+	if not FrameProfile.enabled:
+		_profile__update_actors(dt)
+		return
+	FrameProfile.begin()
+	_profile__update_actors(dt)
+	FrameProfile.end(&"actors/context/occluders")
+
+func _profile__update_actors(dt: float) -> void:
 	_sync_hosts()
 	if flight != null:
 		flight.tick(dt)
 	action_signals = action_feed.read(stage.prev, stage.cur, stage.alpha())
 	var tick: int = int(stage.cur.combat.tick)
 	var alpha: float = stage.alpha()
-	var p0: Vector3 = player_sample().pos
+	var player_pose := player_sample()
+	var samples := {0: player_pose}
+	var p0: Vector3 = player_pose.pos
 	_hidden.clear()
 	for e in stage.cur.entities:
 		if bool(e.get("hidden", false)):
 			_hidden[int(e.id)] = true
 	for id in hosts:
-		var sm: Dictionary = stage.sample(id) if id != 0 else player_sample()
+		if not samples.has(id):
+			samples[id] = stage.sample(id)
+		var sm: Dictionary = samples[id]
 		if id == 0:
 			sm["falling"] = bool(stage.cur.get("player", {}).get("falling", false))
 			sm["intent"] = player_input.intent_yaw()      # head and shoulders lead the body
@@ -635,7 +649,9 @@ func _update_actors(dt: float) -> void:
 			tid = selected_id
 		if tid >= 0 and hosts.has(tid) and tid != id:
 			var th: Node3D = hosts[tid]
-			var ts: Dictionary = stage.sample(tid)
+			if not samples.has(tid):
+				samples[tid] = stage.sample(tid)
+			var ts: Dictionary = samples[tid]
 			var ent: Dictionary = stage.cur.entities[tid]
 			ctx["target"] = {"id": tid, "pos": ts.pos, "radius": float(ent.get("radius_cm", 60)) * 0.01, "height": th.height(), "spheres": th.occluders() if d < 40.0 else []}
 		if id == 0:
@@ -650,7 +666,7 @@ func _update_actors(dt: float) -> void:
 					ctx["target"] = {"id": int(eat.target), "pos": stage.sample(int(eat.target)).pos, "radius": 0.5, "height": th2.height(), "spheres": []}
 		elif ui_mode == &"befriend" and id == selected_id and not bool(sig.get("in_fight", false)) and d < 12.0:
 			ctx["attend"] = true
-		hosts[id].update(dt, sm, ctx)
+		hosts[id].update_visual(dt, sm, ctx, hosts[id].visual_interval(camera, d), Engine.get_process_frames())
 		if id > 0:
 			# the driver sets the host basis (yaw) every frame, so the size goes on after it: a species' size, and a carcass
 			# shrinks as it is eaten (4 bites)
@@ -665,11 +681,14 @@ func _update_actors(dt: float) -> void:
 				hosts[id].scale = Vector3.ONE * base
 	if flight != null:
 		flight.post_update(dt)
-	var p: Dictionary = player_sample()
+	var p: Dictionary = player_sample() if flight != null else player_pose
 	player_pos = p.pos
 	var occ := []
 	if occluders_enabled:
 		for id in hosts:
+			# Only the first twelve spheres reach the shaders; avoid constructing the discarded tail.
+			if occ.size() >= 12:
+				break
 			if id == 0 or (hosts[id].global_position - player_pos).length() < 40.0:
 				occ.append_array(hosts[id].occluders())
 	while occ.size() > 12:
@@ -697,6 +716,14 @@ func _landing_shake(dt: float) -> Vector3:
 	return Vector3(0.0, sin(_shake_clock * 38.0), 0.0) * _shake_amp + camera.global_transform.basis.x * (sin(_shake_clock * 31.0) * _shake_amp * 0.5)
 
 func _update_camera(dt: float) -> void:
+	if not FrameProfile.enabled:
+		_profile__update_camera(dt)
+		return
+	FrameProfile.begin()
+	_profile__update_camera(dt)
+	FrameProfile.end(&"camera")
+
+func _profile__update_camera(dt: float) -> void:
 	if not chase_enabled or chase == null:
 		_apply_zoom_budget(chase.z if chase != null else 0.0)    # creature visibility (hidden sleepers) must not depend on the chase camera
 		return
@@ -792,6 +819,14 @@ func _sync_controls() -> void:
 		player_input.position = Vector2(e.x, e.z)
 
 func _process(delta: float) -> void:
+	if not FrameProfile.enabled:
+		_profile__process(delta)
+		return
+	FrameProfile.begin()
+	_profile__process(delta)
+	FrameProfile.end(&"island other")
+
+func _profile__process(delta: float) -> void:
 	Clouds.set_time(Time.get_ticks_msec() * 0.001)
 	if stage == null or _building:
 		return
@@ -925,6 +960,14 @@ func _update_move_marker() -> void:
 # Observing plants: the pointer resting on a plant for PlantGaze.DWELL seconds writes it into the journal. Creatures come first
 # (a hovered creature, a fight, a held button or an open book never count), so this never competes with the radial.
 func _update_plants(dt: float) -> void:
+	if not FrameProfile.enabled:
+		_profile__update_plants(dt)
+		return
+	FrameProfile.begin()
+	_profile__update_plants(dt)
+	FrameProfile.end(&"flora")
+
+func _profile__update_plants(dt: float) -> void:
 	if camera == null or stage == null or stage_ui == null:
 		return
 	_gaze_poll += dt
