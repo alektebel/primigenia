@@ -24,7 +24,7 @@
 		{
 			"id": "dig",
 			"title": {"en": "Dig", "es": "Excava"},
-			"hint": {"en": "Find soft soil and dig (X), standing still for two seconds.", "es": "Busca tierra blanda y excava (X), quieto durante dos segundos."},
+			"hint": {"en": "Press X to dig, anywhere. Soft soil is quickest; hard ground and rock take longer.", "es": "Pulsa X para excavar, donde sea. La tierra blanda es lo más rápido; el suelo duro y la roca tardan más."},
 			"done": {"en": "The soil gives. Under it, more soil, and sometimes something else.", "es": "La tierra cede. Debajo hay más tierra, y a veces algo más."},
 			"cond": {"type": "dug", "count": 1},
 			"marker": "",

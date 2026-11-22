@@ -352,28 +352,22 @@ func _key(code: Key) -> void:
 		e.pressed = pressed
 		root.push_input(e)
 
-## X: the dig key, then wait for C to finish (2 s standing still). Returns whether a hole was made.
+## X: the dig key, then wait for C to finish (2 s standing still on soft soil, up to 5 s on rock). Returns whether a hole was made.
 func dig_here() -> bool:
 	var dug0 := int(state().dig.dug)
 	_key(KEY_X)
 	var t0 := tick()
-	while tick() - t0 < 60 and int(state().dig.dug) == dug0:
+	while tick() - t0 < 70 and int(state().dig.dug) == dug0:
 		await process_frame
 	return int(state().dig.dug) > dug0
 
 func _dig() -> void:
-	print("== 3. dig: a hole in soft soil")
+	print("== 3. dig: X digs anywhere (A54); harder ground only takes longer")
 	var t0 := tick()
 	var tries := 0
-	while not task_ticks.has("dig") and tick() - t0 < BUDGET.dig and tries < 30:
+	while not task_ticks.has("dig") and tick() - t0 < BUDGET.dig and tries < 6:
 		tries += 1
-		say("soft here? %s (%.0f, %.0f)" % [state().dig.soft, float(me().x), float(me().z)])
-		if not bool(state().dig.soft):
-			# not soft here: walk a few metres and look again
-			var here := Vector2(float(me().x), float(me().z))
-			var home: Vector2 = island._nest
-			await walk_to(here + (home - here).normalized() * 12.0, 1.5, 200)
-			continue
+		say("digging at (%.0f, %.0f), hardness %d, %d ticks" % [float(me().x), float(me().z), int(state().dig.hardness), int(state().dig.ticks)])
 		await dig_here()
 	check(await wait_task("dig", 30), "task 3 done: a hole was dug (tick %d)" % int(task_ticks.get("dig", -1)))
 	check(int(state().dig.dug) >= 1 and state().dig.holes.size() >= 1, "C holds the hole (%d dug)" % int(state().dig.dug))
