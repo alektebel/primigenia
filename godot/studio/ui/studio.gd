@@ -306,12 +306,12 @@ func frame_creature(snap := true) -> void:
 		return
 	var box := creature_bounds()
 	_framed_bounds = box
-	_spine_mid = box.get_center()
+	_spine_mid = box.get_center() - Vector3(0, box.size.y * .14, 0)   # creature sits in the upper-middle, like the reference
 	_target_goal = _spine_mid
 	var old_target := _target
 	var old_dist := _dist
 	_target = _target_goal
-	_dist = maxf(.6, box.size.y / (2.0 * tan(deg_to_rad(camera.fov) / 2.0) * .72))
+	_dist = maxf(.6, box.size.y / (2.0 * tan(deg_to_rad(camera.fov) / 2.0) * .8))
 	# Perspective depth changes apparent size: solve from all eight rest-bound corners.
 	for i in 8:
 		_place_camera()
@@ -321,7 +321,7 @@ func frame_creature(snap := true) -> void:
 			var p := camera.unproject_position(box.get_endpoint(j))
 			lo = lo.min(p)
 			hi = hi.max(p)
-		var ratio := maxf((hi.y - lo.y) / (stage.size.y * .74), (hi.x - lo.x) / (free_viewport().size.x * 1.12))
+		var ratio := maxf((hi.y - lo.y) / (stage.size.y * .8), (hi.x - lo.x) / (free_viewport().size.x * 1.12))
 		_dist = clampf(_dist * ratio, DIST_MIN, DIST_MAX)
 	_dist_goal = _dist
 	if env_node.has_method("set_extent"):
