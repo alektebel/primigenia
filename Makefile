@@ -757,3 +757,19 @@ $(BUILD)/radial_species_test: tests/test_radial_species.c $(HDRS) $(BUILD)/libcp
 radial-species-test: $(BUILD)/radial_species_test
 	./$(BUILD)/radial_species_test
 test: radial-species-test
+
+# T15 visual CPU frame buckets. Software/headless only; startup/warmup excluded.
+# FRAME_MODE=baseline replays the old full-rate/yaw+unused-integral paths for comparison.
+.PHONY: godot-frame-bench godot-frame-test
+FRAME_MODE ?= optimized
+FRAME_FRAMES ?= 600
+FRAME_USER_DIR ?= /tmp/cpore-frame-bench
+FRAME_GODOT_ENV = XDG_CONFIG_HOME=$(FRAME_USER_DIR)/config XDG_DATA_HOME=$(FRAME_USER_DIR)/data LIBGL_ALWAYS_SOFTWARE=1
+godot-frame-bench: godot
+	$(FRAME_GODOT_ENV) nice -n 10 timeout 60 $(GODOT) --headless --rendering-driver opengl3 --path godot --check-only --script res://game/tests/frame_bench.gd
+	@set -e; for scenario in nest_start crowd nest_all; do \
+	  $(FRAME_GODOT_ENV) nice -n 10 timeout 180 $(GODOT) --headless --rendering-driver opengl3 --fixed-fps 60 --path godot \
+	  --script res://game/tests/frame_bench.gd -- scenario=$$scenario frames=$(FRAME_FRAMES) $(FRAME_MODE); done
+godot-frame-test:
+	$(FRAME_GODOT_ENV) nice -n 10 timeout 60 $(GODOT) --headless --rendering-driver opengl3 --path godot --check-only --script res://game/tests/test_frame_lod.gd
+	$(FRAME_GODOT_ENV) nice -n 10 timeout 60 $(GODOT) --headless --rendering-driver opengl3 --path godot --script res://game/tests/test_frame_lod.gd

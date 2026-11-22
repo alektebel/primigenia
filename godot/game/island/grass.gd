@@ -1,4 +1,6 @@
 extends MultiMeshInstance3D
+
+const FrameProfile := preload("res://devtools/frame_profile.gd")
 # World-anchored grass: one MultiMesh of identity-transform blades; the vertex shader places each
 # blade from its stored offset (INSTANCE_CUSTOM) wrapped around `center`. Visual only.
 
@@ -100,5 +102,13 @@ func set_center(p: Vector3) -> void:
 	material.set_shader_parameter("center", p)
 
 func apply_occluders(center: Vector3, occ: Array) -> void:
+	if not FrameProfile.enabled:
+		_profile_apply_occluders(center, occ)
+		return
+	FrameProfile.begin()
+	_profile_apply_occluders(center, occ)
+	FrameProfile.end(&"grass uniforms")
+
+func _profile_apply_occluders(center: Vector3, occ: Array) -> void:
 	material.set_shader_parameter("occ", occ)
 	material.set_shader_parameter("occ_center", center)

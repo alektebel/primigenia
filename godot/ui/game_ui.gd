@@ -1,4 +1,6 @@
 extends CanvasLayer
+
+const FrameProfile := preload("res://devtools/frame_profile.gd")
 ## Facade for the stage: the mode ring, the field note, the signs, the menu. Documented in docs/godot/UI.md and
 ## docs/godot/UI-DIEGETIC.md. Add as a child of the stage; connect signals.
 
@@ -471,6 +473,14 @@ func _track_ring(fallback: Vector2 = Vector2.ZERO) -> void:
 		ring.centre = root.size * 0.5
 
 func _process(dt: float) -> void:
+	if not FrameProfile.enabled:
+		_profile__process(dt)
+		return
+	FrameProfile.begin()
+	_profile__process(dt)
+	FrameProfile.end(&"HUD animation")
+
+func _profile__process(dt: float) -> void:
 	_onboard(dt)
 	veil.death = move_toward(veil.death, 1.0 if dying else 0.0, dt / 1.2)
 	var book: float = journal.modulate.a if journal.visible else 0.0     # the signs and the map step back behind the open book

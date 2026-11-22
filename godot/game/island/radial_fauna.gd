@@ -1,4 +1,6 @@
 extends Node3D
+
+const FrameProfile := preload("res://devtools/frame_profile.gd")
 # Habitat planner for all three radial species; only cuarteta is spawned here as ambient fauna.
 # Brujula and Corona use these spots in StageSetup and live as C entities. Placement is deterministic.
 # Each animal wanders a tiny seeded random walk around its home, driven by loco_radial.gd through the rig adapter.
@@ -326,6 +328,14 @@ func _spawn(id: String, i: int, home: Vector2, world_seed: int, cache = null) ->
 
 
 func _process(delta: float) -> void:
+	if not FrameProfile.enabled:
+		_profile__process(delta)
+		return
+	FrameProfile.begin()
+	_profile__process(delta)
+	FrameProfile.end(&"ambient radial fauna")
+
+func _profile__process(delta: float) -> void:
 	var cam := Vector3.INF
 	if _cam.is_valid():
 		cam = _cam.call()

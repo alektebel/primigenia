@@ -15,6 +15,46 @@ var driver
 var body: Node3D
 var uses_module := false
 var _height := 1.0
+var screen_notifier: VisibleOnScreenNotifier3D
+static var visual_lod_enabled := true # benchmark reference path
+var _visual_dt := 0.0
+var _visual_skipped := false
+
+# Starting LOD distances for T15: near/player always full; benchmark and owner review tune these.
+func visual_interval(camera: Camera3D, player_distance: float) -> int:
+	if not visual_lod_enabled or entity_id == 0:
+		return 1
+	if not is_visible_in_tree():
+		return 0
+	if player_distance < 40.0 or camera.global_position.distance_to(global_position) < 40.0:
+		return 1
+	var on_screen := screen_notifier.is_on_screen() if screen_notifier != null else true
+	# The headless renderer never emits visibility signals. Use the same camera's frustum there.
+	if DisplayServer.get_name() == "headless":
+		on_screen = camera.is_position_in_frustum(global_position + Vector3.UP * _height * 0.5)
+	if not on_screen:
+		return 0
+	return 2 if camera.global_position.distance_to(global_position) < 80.0 else 4
+
+## Root motion always follows C. Invisible time is discarded; resume resets feet at the current root.
+func update_visual(dt: float, s: Dictionary, ctx: Dictionary, interval: int, frame: int) -> void:
+	if interval == 0:
+		position = s.pos
+		rotation = Vector3(0, s.yaw, 0)
+		_visual_dt = 0.0
+		_visual_skipped = true
+		return
+	if _visual_skipped:
+		driver.rebase()
+		_visual_skipped = false
+	_visual_dt += dt
+	if interval > 1 and posmod(frame + entity_id, interval) != 0:
+		# Rig poses use world space, so leave the last solved pose until its next update.
+		position = s.pos
+		rotation = Vector3(0, s.yaw, 0)
+		return
+	update(_visual_dt, s, ctx)
+	_visual_dt = 0.0
 
 signal footfall(entity_id: int, position: Vector3, speed: float)
 
@@ -35,6 +75,11 @@ func setup(genome: Dictionary, id: int, prof: Dictionary, ground: Callable, cach
 		uses_module = true
 		_height = maxf(0.5, (body.rest_aabb() as AABB).size.y)
 	add_child(body)
+	screen_notifier = VisibleOnScreenNotifier3D.new()
+	# Rest bounds include the entire body; a generous margin covers gait and action excursions.
+	var bounds: AABB = body.rest_aabb()
+	screen_notifier.aabb = bounds.grow(maxf(_height, 2.0))
+	add_child(screen_notifier)
 	driver.setup(self, body, not uses_module, ground)
 	driver.footfall.connect(func(_leg: int, pos: Vector3) -> void: footfall.emit(entity_id, pos, _speed))
 

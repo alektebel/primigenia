@@ -1,4 +1,6 @@
 extends Node
+
+const FrameProfile := preload("res://devtools/frame_profile.gd")
 ## Autoload "Dev": the dev tools root (PLAN-devtools.md). The key legend is always on; everything else
 ## is created here only when `enabled`.
 ##
@@ -133,6 +135,14 @@ func tuning_state() -> Dictionary:
 	return tuning.state() if tuning != null else {}
 
 func _process(_dt: float) -> void:
+	if not FrameProfile.enabled:
+		_profile__process(_dt)
+		return
+	FrameProfile.begin()
+	_profile__process(_dt)
+	FrameProfile.end(&"dev monitors")
+
+func _profile__process(_dt: float) -> void:
 	if enabled and tuning != null and legend != null:
 		legend.header_extra = tuning.chip()
 

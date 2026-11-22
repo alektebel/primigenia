@@ -1,4 +1,8 @@
 extends RefCounted
+
+static var yaw_only := true # benchmark reference path
+
+const FrameProfile := preload("res://devtools/frame_profile.gd")
 ## Adapter between the creature rig (branch g-creature, `Creature` and
 ## `CreatureLegChain`) and the locomotion controller. Pure static functions;
 ## the rig is passed as a Variant, so this file does not depend on
@@ -143,6 +147,14 @@ static func _yaw_of(v: Vector3) -> float:
 ## Writes a LocoController pose into the rig and solves the legs.
 ## Returns {max_sole_error} (metres) for the planted legs when `ground` is given.
 static func loco_apply(creature, pose: Dictionary, desc: Dictionary, ground: Callable = Callable()) -> Dictionary:
+	if not FrameProfile.enabled:
+		return _profile_loco_apply(creature, pose, desc, ground)
+	FrameProfile.begin()
+	var result = _profile_loco_apply(creature, pose, desc, ground)
+	FrameProfile.end(&"locomotion IK/rig")
+	return result
+
+static func _profile_loco_apply(creature, pose: Dictionary, desc: Dictionary, ground: Callable = Callable()) -> Dictionary:
 	if desc.has("radial"):
 		return radial_apply(creature, pose, desc)
 	var unit: float = desc.unit
@@ -194,11 +206,12 @@ static func _bend_spine(creature, pose: Dictionary, desc: Dictionary) -> void:
 	for a in range(creature.neck_bones.size()):
 		neck_k[creature.neck_bones[a]] = float(a + 1) / max(creature.neck_bones.size(), 1)
 	var spine_at: Callable = pose.spine_at
+	var spine_yaw: Callable = pose.get("spine_yaw", Callable())
 	var wave: Dictionary = pose.get("wave", {})
 	var wl: float = max(float(desc.get("spine", [{}])[-1].get("pos", Vector3.ZERO).z - desc.get("spine", [{}])[0].get("pos", Vector3.ZERO).z), 1e-3)
 	for b in range(nb):
 		var z: float = (creature.bone_rest_global(b) as Transform3D).origin.z * unit
-		var yw: float = spine_at.call(z).yaw
+		var yw: float = spine_yaw.call(z) if yaw_only and spine_yaw.is_valid() else spine_at.call(z).yaw
 		if not wave.is_empty() and wave.get("amp", 0.0) > 0.0:
 			var u := clampf((z - desc.spine[0].pos.z) / wl, 0.0, 1.0)
 			var du := 0.01
