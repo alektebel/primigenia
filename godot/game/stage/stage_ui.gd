@@ -1,4 +1,6 @@
 extends Node
+
+const FrameProfile := preload("res://devtools/frame_profile.gd")
 # Glue between the stage (C world bridge, island, actors) and the g-ui / g-audio modules (docs/godot/UI.md).
 #
 #   world tick   -> vitals, selection card, wind-up tell, damage numbers, flashes, combat sounds
@@ -465,6 +467,14 @@ func _on_pause(paused: bool) -> void:
 # --- per frame ------------------------------------------------------------------
 
 func _process(dt: float) -> void:
+	if not FrameProfile.enabled:
+		_profile__process(dt)
+		return
+	FrameProfile.begin()
+	_profile__process(dt)
+	FrameProfile.end(&"stage UI/audio")
+
+func _profile__process(dt: float) -> void:
 	if _dying:
 		_death_clock += dt
 		if _death_clock > 2.6:

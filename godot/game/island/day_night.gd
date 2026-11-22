@@ -1,4 +1,6 @@
 extends Node
+
+const FrameProfile := preload("res://devtools/frame_profile.gd")
 ## Day and night (W8). The C world owns the clock (state().day.light, 0 night .. 1000 full day; 500 ticks an hour); this only
 ## dresses it: the sun's energy and colour, the ambient light and the exposure follow the light, smoothly. Inside the hidden
 ## cave the sun is off and the ambient nearly so; the cave's own cold lights do the rest.
@@ -79,6 +81,14 @@ func apply_state(state: Dictionary) -> void:
 	_hour = float(state.get("day", {}).get("hour", 12.5))
 
 func _process(delta: float) -> void:
+	if not FrameProfile.enabled:
+		_profile__process(delta)
+		return
+	FrameProfile.begin()
+	_profile__process(delta)
+	FrameProfile.end(&"day/night uniforms")
+
+func _profile__process(delta: float) -> void:
 	var target := _light if force_light < 0.0 else force_light
 	k = lerpf(k, target, clampf(delta * 3.0, 0.0, 1.0))
 	inside = lerpf(inside, _inside, clampf(delta * 5.0, 0.0, 1.0))

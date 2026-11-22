@@ -1,4 +1,6 @@
 extends Control
+
+const FrameProfile := preload("res://devtools/frame_profile.gd")
 ## The small round map, top-right (the owner's answer 3; replaces the design's compass strip). North-up, centred on you,
 ## about 420 m from its centre to its edge: the coastline as a thin bone line, the nest, the selected creature, your heading, and
 ## discovered `?` places when the game has any. Quiet: a thin bone ring with a halo and low opacity at rest. The zoomed-out
@@ -80,6 +82,14 @@ func poke() -> void:
 	_act = 0.0
 
 func _process(dt: float) -> void:
+	if not FrameProfile.enabled:
+		_profile__process(dt)
+		return
+	FrameProfile.begin()
+	_profile__process(dt)
+	FrameProfile.end(&"minimap")
+
+func _profile__process(dt: float) -> void:
 	_act += dt
 	_ping_t += dt
 	if _act > Style.REST:
@@ -87,6 +97,14 @@ func _process(dt: float) -> void:
 	queue_redraw()
 
 func _draw() -> void:
+	if not FrameProfile.enabled:
+		_profile__draw()
+		return
+	FrameProfile.begin()
+	_profile__draw()
+	FrameProfile.end(&"minimap draw")
+
+func _profile__draw() -> void:
 	if not enabled or fade >= 0.999:
 		return
 	var c := map_centre()

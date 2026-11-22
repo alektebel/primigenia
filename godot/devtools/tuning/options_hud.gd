@@ -1,4 +1,6 @@
 extends CanvasLayer
+
+const FrameProfile := preload("res://devtools/frame_profile.gd")
 ## F10 option mode (docs/briefs/dev-options.md): a small corner HUD, no panel, same style as the F1 sheet.
 ##   1-9 pick a group, Up/Down an option, Left/Right cycle the value (instant, no animation; numeric: one step, Shift x10),
 ##   Backspace resets the option, Ctrl+Backspace resets all, Ctrl+1-4 saves a preset, Alt+1-4 recalls it, Esc / F10 closes.
@@ -9,6 +11,7 @@ extends CanvasLayer
 
 const Palette := preload("res://ui/palette.gd")
 const Style := preload("res://ui/style.gd")
+const Scrim := preload("res://devtools/scrim.gd")
 
 const GROUPS := ["Movement", "Creature", "Look", "Light", "Camera", "World", "Overlays", "Tuning", "Presets"]
 ## Numeric entries (registry.order) go to a group by key prefix; "Tuning" lists all of them.
@@ -21,8 +24,11 @@ var row := 0                    # selected option inside the group
 var message := ""               # last result ("preset 2 saved", an error sentence)
 var _root: Control
 var _hud: VBoxContainer
+var _scrim: PanelContainer           # dark scrim behind the HUD: readable on a bright sky
+var _line_scrim: PanelContainer
 var _line: Label
 var _sig := ""
+var _last_choices: Dictionary = {}
 
 func _init() -> void:
 	layer = 31
@@ -33,23 +39,31 @@ func _ready() -> void:
 	_root.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_root.theme = Palette.make_diegetic_theme()
 	add_child(_root)
+	_scrim = PanelContainer.new()
+	_scrim.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_scrim.add_theme_stylebox_override("panel", Scrim.box(10, 10))
+	_scrim.position = Vector2(12, 184)    # below the task card
+	_scrim.visible = false
+	_root.add_child(_scrim)
 	_hud = VBoxContainer.new()
 	_hud.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_hud.add_theme_constant_override("separation", 2)
-	_hud.position = Vector2(18, 190)    # below the task card
-	_hud.visible = false
-	_root.add_child(_hud)
-	_line = Label.new()
+	_scrim.add_child(_hud)
+	_line_scrim = PanelContainer.new()
+	_line_scrim.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_line_scrim.add_theme_stylebox_override("panel", Scrim.box(8, 4))
+	_line_scrim.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_RIGHT)
+	_line_scrim.grow_horizontal = Control.GROW_DIRECTION_BEGIN
+	_line_scrim.grow_vertical = Control.GROW_DIRECTION_BEGIN
+	_line_scrim.offset_right = -12
+	_line_scrim.offset_bottom = -8
+	_root.add_child(_line_scrim)
+	_line = Scrim.readable(Label.new())
 	_line.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_line.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_RIGHT)
-	_line.grow_horizontal = Control.GROW_DIRECTION_BEGIN
-	_line.grow_vertical = Control.GROW_DIRECTION_BEGIN
-	_line.offset_right = -16
-	_line.offset_bottom = -12
 	_line.add_theme_color_override("font_color", Palette.LICHEN)
 	_line.add_theme_font_size_override("font_size", 13)
 	_line.add_theme_font_override("font", Style.font_italic())
-	_root.add_child(_line)
+	_line_scrim.add_child(_line)
 	_refresh()
 
 # --- model (pure on the registry) ---------------------------------------------------------------------
@@ -191,7 +205,7 @@ func describe(k: String) -> String:
 	return "%s%s" % [(c.desc + "  ") if c.desc != "" else "", " / ".join(parts)]
 
 func _label(text: String, color: Color, size := 15, italic := false) -> Label:
-	var l := Label.new()
+	var l := Scrim.readable(Label.new())
 	l.text = text
 	l.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	l.add_theme_color_override("font_color", color)
@@ -203,11 +217,12 @@ func _label(text: String, color: Color, size := 15, italic := false) -> Label:
 func _refresh() -> void:
 	if _hud == null:
 		return
-	_hud.visible = is_open
+	_scrim.visible = is_open
 	var line: String = tuning.choices_line() if tuning != null else ""
 	_line.text = line
-	_line.visible = line != "" and not is_open
+	_line_scrim.visible = line != "" and not is_open
 	_sig = line
+	_last_choices = tuning.current_choices() if tuning != null else {}
 	for c in _hud.get_children():
 		c.queue_free()
 		_hud.remove_child(c)
@@ -242,7 +257,15 @@ func _refresh() -> void:
 		_hud.add_child(_label(message, Palette.COPPER, 13, true))
 
 func _process(_dt: float) -> void:
-	if tuning != null and tuning.choices_line() != _sig:
+	if not FrameProfile.enabled:
+		_profile__process(_dt)
+		return
+	FrameProfile.begin()
+	_profile__process(_dt)
+	FrameProfile.end(&"options HUD")
+
+func _profile__process(_dt: float) -> void:
+	if tuning != null and tuning.current_choices() != _last_choices:
 		_refresh()
 
 func _input(e: InputEvent) -> void:

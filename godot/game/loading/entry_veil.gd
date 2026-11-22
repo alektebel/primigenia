@@ -21,10 +21,10 @@ const TIP_S := 4.5
 const TERRAIN_SHARE := 0.3
 ## Milliseconds of each island phase (measured, docs/godot/EAT-LOADING.md): the weights of the bar.
 const PHASE_MS := {"environment": 5, "kit_reused": 400, "terrain_meshes": 107, "water": 2118, "rivers": 375, "grass": 105, "camera": 1,
-	"stage_setup": 57, "props_flora": 1574, "stage_reset": 124, "nav_warm": 4432, "creatures": 1282, "ui_and_rest": 731}
+	"stage_setup": 57, "props_flora": 1574, "stage_reset": 124, "nav_warm": 4432, "creatures": 1282, "ui_and_rest": 731, "shader_warmup": 50}
 const PHASE_TEXT := {"environment": "load_island", "kit_reused": "load_island", "terrain_meshes": "load_island", "water": "load_water",
 	"rivers": "load_water", "grass": "load_flora", "camera": "load_flora", "stage_setup": "load_flora", "props_flora": "load_world",
-	"stage_reset": "load_world", "nav_warm": "load_creatures", "creatures": "load_creatures", "ui_and_rest": "load_ready"}
+	"stage_reset": "load_world", "nav_warm": "load_creatures", "creatures": "load_creatures", "ui_and_rest": "load_ready", "shader_warmup": "load_creatures"}
 
 var shown := 0.0                      # the displayed fraction (monotonic, < 1 until the island is ready)
 var target := 0.0                     # the real fraction of the finished phases

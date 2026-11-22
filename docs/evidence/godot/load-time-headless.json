@@ -1,0 +1,398 @@
+{
+  "renderer": "headless dummy (NOT software GL)",
+  "engine": "4.7.2.stable.official.ed1daf0bf",
+  "baseline": "264b823 with timing instrumentation and completed-entry predicate only",
+  "runs": {
+    "baseline": [
+      {
+        "from": "cold",
+        "ms": 12596,
+        "cpu_ms": {
+          "camera": 0.14,
+          "creatures": 1152.22,
+          "environment": 9.153,
+          "grass": 34.764,
+          "nav_warm": 3361.865,
+          "props_flora": 1790.359,
+          "rivers": 268.651,
+          "stage_reset": 249.88,
+          "stage_setup": 2154.048,
+          "terrain_meshes": 169.736,
+          "ui_and_rest": 575.922,
+          "water": 1930.775
+        },
+        "stall_ms": {
+          "camera": 1.336,
+          "creatures": 13.063,
+          "environment": 0.215,
+          "grass": 0.713,
+          "nav_warm": 3366.453,
+          "props_flora": 1575.866,
+          "rivers": 235.244,
+          "stage_reset": 0.416,
+          "stage_setup": 0.382,
+          "terrain_meshes": 3.113,
+          "ui_and_rest": 417.096,
+          "water": 1922.464
+        },
+        "slowest_frames": [
+          {
+            "ms": 2154.424,
+            "phase": "stage_setup"
+          },
+          {
+            "ms": 323.328,
+            "phase": "creatures"
+          },
+          {
+            "ms": 250.295,
+            "phase": "stage_reset"
+          },
+          {
+            "ms": 172.834,
+            "phase": "terrain_meshes"
+          },
+          {
+            "ms": 90.113,
+            "phase": "creatures"
+          }
+        ],
+        "phases": {
+          "environment": 9.0,
+          "terrain_meshes": 172.0,
+          "water": 1935.0,
+          "rivers": 275.0,
+          "grass": 35.0,
+          "camera": 1.0,
+          "stage_setup": 2154.0,
+          "props_flora": 1794.0,
+          "stage_reset": 250.0,
+          "nav_warm": 3369.0,
+          "creatures": 1165.0,
+          "ui_and_rest": 619.0,
+          "total": 11784.0
+        }
+      },
+      {
+        "from": "menu again",
+        "ms": 8390,
+        "cpu_ms": {
+          "camera": 0.133,
+          "creatures": 719.138,
+          "environment": 2.828,
+          "kit_reused": 0.488,
+          "nav_warm": 3273.991,
+          "props_flora": 1186.197,
+          "stage_reset": 284.066,
+          "stage_setup": 2290.1,
+          "ui_and_rest": 507.619
+        },
+        "stall_ms": {
+          "camera": 5.85,
+          "creatures": 16.043,
+          "environment": 1.702,
+          "kit_reused": 7.323,
+          "nav_warm": 3282.016,
+          "props_flora": 1195.265,
+          "stage_reset": 0.582,
+          "stage_setup": 1.626,
+          "ui_and_rest": 424.882
+        },
+        "slowest_frames": [
+          {
+            "ms": 2291.722,
+            "phase": "stage_setup"
+          },
+          {
+            "ms": 284.62,
+            "phase": "stage_reset"
+          },
+          {
+            "ms": 56.624,
+            "phase": "creatures"
+          },
+          {
+            "ms": 50.968,
+            "phase": "creatures"
+          },
+          {
+            "ms": 46.62,
+            "phase": "creatures"
+          }
+        ],
+        "phases": {
+          "environment": 4.0,
+          "kit_reused": 7.0,
+          "camera": 5.0,
+          "stage_setup": 2291.0,
+          "props_flora": 1199.0,
+          "stage_reset": 284.0,
+          "nav_warm": 3284.0,
+          "creatures": 735.0,
+          "ui_and_rest": 552.0,
+          "total": 8366.0
+        }
+      },
+      {
+        "from": "studio",
+        "ms": 8173,
+        "cpu_ms": {
+          "camera": 0.087,
+          "creatures": 809.26,
+          "environment": 0.151,
+          "kit_reused": 3.14,
+          "nav_warm": 3662.467,
+          "props_flora": 1214.597,
+          "stage_reset": 176.454,
+          "stage_setup": 1651.598,
+          "ui_and_rest": 518.907
+        },
+        "stall_ms": {
+          "camera": 3.346,
+          "creatures": 13.667,
+          "environment": 5.262,
+          "kit_reused": 0.597,
+          "nav_warm": 3668.124,
+          "props_flora": 1218.693,
+          "stage_reset": 0.426,
+          "stage_setup": 0.815,
+          "ui_and_rest": 367.573
+        },
+        "slowest_frames": [
+          {
+            "ms": 1652.392,
+            "phase": "stage_setup"
+          },
+          {
+            "ms": 176.899,
+            "phase": "stage_reset"
+          },
+          {
+            "ms": 84.864,
+            "phase": "creatures"
+          },
+          {
+            "ms": 58.564,
+            "phase": "creatures"
+          },
+          {
+            "ms": 51.027,
+            "phase": "creatures"
+          }
+        ],
+        "phases": {
+          "environment": 5.0,
+          "kit_reused": 3.0,
+          "camera": 3.0,
+          "stage_setup": 1652.0,
+          "props_flora": 1222.0,
+          "stage_reset": 176.0,
+          "nav_warm": 3670.0,
+          "creatures": 822.0,
+          "ui_and_rest": 555.0,
+          "total": 8113.0
+        }
+      }
+    ],
+    "after": [
+      {
+        "from": "cold",
+        "ms": 9398,
+        "cpu_ms": {
+          "camera": 0.136,
+          "creatures": 581.911,
+          "environment": 8.935,
+          "grass": 34.031,
+          "nav_warm": 3489.253,
+          "props_flora": 1842.087,
+          "rivers": 325.729,
+          "shader_warmup": 0.062,
+          "stage_reset": 217.998,
+          "stage_setup": 1714.634,
+          "terrain_meshes": 199.522,
+          "ui_and_rest": 178.46,
+          "water": 1673.588
+        },
+        "stall_ms": {
+          "camera": 0.203,
+          "creatures": 17.352,
+          "environment": 1.379,
+          "grass": 0.789,
+          "nav_warm": 1647.809,
+          "props_flora": 1601.628,
+          "rivers": 290.957,
+          "shader_warmup": 2.831,
+          "stage_reset": 1.029,
+          "stage_setup": 0.437,
+          "terrain_meshes": 1.199,
+          "ui_and_rest": 82.674,
+          "water": 1660.761
+        },
+        "slowest_frames": [
+          {
+            "ms": 1715.064,
+            "phase": "stage_setup"
+          },
+          {
+            "ms": 219.009,
+            "phase": "stage_reset"
+          },
+          {
+            "ms": 200.702,
+            "phase": "terrain_meshes"
+          },
+          {
+            "ms": 118.319,
+            "phase": "creatures"
+          },
+          {
+            "ms": 78.551,
+            "phase": "ui_and_rest"
+          }
+        ],
+        "phases": {
+          "environment": 10.0,
+          "terrain_meshes": 200.0,
+          "water": 1675.0,
+          "rivers": 333.0,
+          "grass": 34.0,
+          "camera": 0.0,
+          "stage_setup": 1715.0,
+          "stage_reset": 219.0,
+          "props_flora": 1850.0,
+          "nav_warm": 1648.0,
+          "creatures": 599.0,
+          "ui_and_rest": 261.0,
+          "shader_warmup": 2.0,
+          "total": 8551.0
+        }
+      },
+      {
+        "from": "menu again",
+        "ms": 6471,
+        "cpu_ms": {
+          "camera": 0.076,
+          "creatures": 179.657,
+          "environment": 0.134,
+          "kit_reused": 0.286,
+          "nav_warm": 4102.083,
+          "props_flora": 1893.638,
+          "shader_warmup": 0.039,
+          "stage_reset": 155.439,
+          "stage_setup": 1853.555,
+          "ui_and_rest": 47.257
+        },
+        "stall_ms": {
+          "camera": 7.207,
+          "creatures": 27.723,
+          "environment": 4.755,
+          "kit_reused": 6.591,
+          "nav_warm": 2206.444,
+          "props_flora": 1898.263,
+          "shader_warmup": 6.072,
+          "stage_reset": 0.592,
+          "stage_setup": 0.549,
+          "ui_and_rest": 57.391
+        },
+        "slowest_frames": [
+          {
+            "ms": 1854.106,
+            "phase": "stage_setup"
+          },
+          {
+            "ms": 156.031,
+            "phase": "stage_reset"
+          },
+          {
+            "ms": 16.4,
+            "phase": "props_flora"
+          },
+          {
+            "ms": 14.69,
+            "phase": "props_flora"
+          },
+          {
+            "ms": 13.833,
+            "phase": "ui_and_rest"
+          }
+        ],
+        "phases": {
+          "environment": 4.0,
+          "kit_reused": 6.0,
+          "camera": 7.0,
+          "stage_setup": 1854.0,
+          "stage_reset": 156.0,
+          "props_flora": 1901.0,
+          "nav_warm": 2208.0,
+          "creatures": 207.0,
+          "ui_and_rest": 104.0,
+          "shader_warmup": 6.0,
+          "total": 6456.0
+        }
+      },
+      {
+        "from": "studio",
+        "ms": 6461,
+        "cpu_ms": {
+          "camera": 0.069,
+          "creatures": 137.8,
+          "environment": 0.21,
+          "kit_reused": 0.346,
+          "nav_warm": 3711.285,
+          "props_flora": 1705.423,
+          "shader_warmup": 0.046,
+          "stage_reset": 229.876,
+          "stage_setup": 2144.653,
+          "ui_and_rest": 57.736
+        },
+        "stall_ms": {
+          "camera": 6.227,
+          "creatures": 36.424,
+          "environment": 6.372,
+          "kit_reused": 0.671,
+          "nav_warm": 2006.236,
+          "props_flora": 1705.593,
+          "shader_warmup": 5.511,
+          "stage_reset": 0.999,
+          "stage_setup": 0.549,
+          "ui_and_rest": 51.864
+        },
+        "slowest_frames": [
+          {
+            "ms": 2145.191,
+            "phase": "stage_setup"
+          },
+          {
+            "ms": 230.878,
+            "phase": "stage_reset"
+          },
+          {
+            "ms": 18.511,
+            "phase": "ui_and_rest"
+          },
+          {
+            "ms": 12.945,
+            "phase": "ui_and_rest"
+          },
+          {
+            "ms": 10.665,
+            "phase": "creatures"
+          }
+        ],
+        "phases": {
+          "environment": 6.0,
+          "kit_reused": 1.0,
+          "camera": 6.0,
+          "stage_setup": 2145.0,
+          "stage_reset": 230.0,
+          "props_flora": 1711.0,
+          "nav_warm": 2007.0,
+          "creatures": 174.0,
+          "ui_and_rest": 109.0,
+          "shader_warmup": 5.0,
+          "total": 6398.0
+        }
+      }
+    ]
+  }
+}

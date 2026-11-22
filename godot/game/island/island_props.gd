@@ -85,7 +85,7 @@ func records_for(d, setup: Dictionary, world_seed: int, quality: int, settings: 
 	return Placement.generate(d, setup, world_seed, density, Placement.recipes())
 
 ## `records_in`: the flora records when already generated off the main thread (records_for, island.gd).
-func build(d, setup: Dictionary, world_seed: int, quality: int, settings: Dictionary, records_in = null) -> void:
+func build(d, setup: Dictionary, world_seed: int, quality: int, settings: Dictionary, records_in = null, slice: Callable = Callable()) -> void:
 	var signature := [setup.nest, world_seed, quality, settings.get("flora_density", -1), settings.get("flora_lod_scale", 1)]
 	for w in setup.wild:
 		signature.append(Vector2(w.x, w.z))
@@ -117,7 +117,10 @@ func build(d, setup: Dictionary, world_seed: int, quality: int, settings: Dictio
 	var slice_t := Time.get_ticks_msec()
 	for key in groups:
 		if Game.veil != null and is_instance_valid(Game.veil) and Time.get_ticks_msec() - slice_t > 24:
-			await get_tree().process_frame          # a loading screen is up: one frame between batches of meshes
+			if slice.is_valid():
+				await slice.call()
+			else:
+				await get_tree().process_frame          # a loading screen is up: one frame between batches of meshes
 			slice_t = Time.get_ticks_msec()
 		var tall: bool = key[1] in ["outcrop","boulder"] or recipe.get(key[1], {}).get("form","") in ["tree","shrub","vine"]
 		batch(groups[key], true, tall)

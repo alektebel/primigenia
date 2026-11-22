@@ -1,4 +1,6 @@
 extends RefCounted
+
+const FrameProfile := preload("res://devtools/frame_profile.gd")
 ## Locomotion controller (G73): the visual and physical interpretation of the
 ## C world's position, heading and speed for one creature.
 ##
@@ -217,6 +219,14 @@ func reset(pos: Vector3, yaw: float) -> void:
 ## ignored: height comes from the ground function), `yaw` the heading in
 ## radians, `vel` the world velocity (derived from positions when omitted).
 func step(dt: float, pos: Vector3, yaw: float, vel = null) -> Dictionary:
+	if not FrameProfile.enabled:
+		return _profile_step(dt, pos, yaw, vel)
+	FrameProfile.begin()
+	var result = _profile_step(dt, pos, yaw, vel)
+	FrameProfile.end(&"locomotion gait/support")
+	return result
+
+func _profile_step(dt: float, pos: Vector3, yaw: float, vel = null) -> Dictionary:
 	if not _ready_ok or Vector2(pos.x - _pos.x, pos.z - _pos.z).length() > 4.0 * max(morph.body_length, _ref_h) + 12.0 * dt:
 		reset(pos, yaw)
 		return pose
@@ -757,7 +767,7 @@ func _sub(h: float, p: Vector3, yaw: float, v: Vector3, settle: bool) -> void:
 		swing_u.append(l.u if l.swing else 0.0)
 	pose = {
 		"root": root, "feet": feet, "foot_pitch": foot_pitch, "contact_point": contact_point, "foot_dir": foot_dir, "contact": contact, "swing_u": swing_u,
-		"station_yaw": st_yaw.duplicate(), "station_z": _station_z(), "hips": _hips_world(root), "spine_at": spine_at, "spine_pitch": spine_pitch,"flex": _flex.x,
+		"station_yaw": st_yaw.duplicate(), "station_z": _station_z(), "hips": _hips_world(root), "spine_at": spine_at, "spine_yaw": _yaw_at, "spine_pitch": spine_pitch,"flex": _flex.x,
 		"neck": {"pitch": _neck_p.x, "yaw": _neck_y.x, "roll": -0.8 * roll},
 		"tail": {"pitch": _tail_p.x, "yaw": _tail_y.x},
 		"wave": {"amp": wave_amp, "phase": _wave_phase, "waves": 1.5},

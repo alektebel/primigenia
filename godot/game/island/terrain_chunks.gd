@@ -1,4 +1,6 @@
 extends Node3D
+
+const FrameProfile := preload("res://devtools/frame_profile.gd")
 # GPU-displaced geomipmapped terrain: 5 shared flat grid meshes (LOD 0..4, step 1/2/4/8/16 cells)
 # instanced in a cps x cps grid of 64-cell chunks. The vertex shader reads the height texture.
 
@@ -217,6 +219,14 @@ func update_lods(cam_pos: Vector3, force: bool = false) -> void:
 			c.node.mesh = lod_meshes[lod]
 
 func _process(delta: float) -> void:
+	if not FrameProfile.enabled:
+		_profile__process(delta)
+		return
+	FrameProfile.begin()
+	_profile__process(delta)
+	FrameProfile.end(&"terrain LOD")
+
+func _profile__process(delta: float) -> void:
 	_timer += delta
 	if _timer < UPDATE_PERIOD:
 		return

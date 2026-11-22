@@ -1,4 +1,6 @@
 extends Node
+
+const FrameProfile := preload("res://devtools/frame_profile.gd")
 ## Autoload "Dev": the dev tools root (PLAN-devtools.md). The key legend is always on; everything else
 ## is created here only when `enabled`.
 ##
@@ -17,6 +19,8 @@ const PathOverlay := preload("res://devtools/path_overlay.gd")
 const OptionsHud := preload("res://devtools/tuning/options_hud.gd")
 const FlagMode := preload("res://devtools/notes/flag_mode.gd")
 const NoteCommands := preload("res://devtools/notes/note_commands.gd")
+const QuestionCard := preload("res://devtools/questions/question_card.gd")
+const QuestionCommands := preload("res://devtools/questions/question_commands.gd")
 const OptionDefs := preload("res://devtools/tuning/option_defs.gd")
 
 ## 1. Dev tools ON in every debug build (the editor and `godot --path godot`); `--dev` forces on in any
@@ -40,6 +44,7 @@ var tuning                    # TuningRegistry (entries appear when the island i
 var tuning_panel: CanvasLayer
 var options_hud: CanvasLayer  # F10 option mode
 var flag: CanvasLayer         # flag mode and in-game notes (Shift+F8)
+var questions: CanvasLayer    # owner question cards and the pause-menu list
 var sites                     # Sites for the running island (built when it is ready)
 var console: CanvasLayer     # console.console.registry is the command registry (also used by the agent socket)
 
@@ -84,11 +89,16 @@ func _ready() -> void:
 		flag.name = "FlagMode"
 		add_child(flag)
 		NoteCommands.register(console.registry, flag)
+		questions = QuestionCard.new()
+		questions.name = "Questions"
+		add_child(questions)
+		QuestionCommands.register(console.registry, questions)
 		if "--agent" in OS.get_cmdline_user_args():
 			agent = AgentServer.new()
 			agent.name = "AgentServer"
 			add_child(agent)
 		Game.island_ready.connect(_on_island_ready)
+		Game.loop_event.connect(func(n: String, _d: Dictionary) -> void: question_event(n))
 
 func _on_island_ready() -> void:
 	if Game.data == null or Game.stage == null:
@@ -125,5 +135,18 @@ func tuning_state() -> Dictionary:
 	return tuning.state() if tuning != null else {}
 
 func _process(_dt: float) -> void:
+	if not FrameProfile.enabled:
+		_profile__process(_dt)
+		return
+	FrameProfile.begin()
+	_profile__process(_dt)
+	FrameProfile.end(&"dev monitors")
+
+func _profile__process(_dt: float) -> void:
 	if enabled and tuning != null and legend != null:
 		legend.header_extra = tuning.chip()
+
+## Game events the owner questions wait for (`when: on_event:<name>`): first_evolve, quest_done:<task id>.
+func question_event(name: String) -> void:
+	if questions != null:
+		questions.notify_event(name)

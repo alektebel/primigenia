@@ -55,7 +55,9 @@ static func phys(hex: String, rough: float, cc: float) -> StandardMaterial3D:
 	return m
 
 
-func _init() -> void:
+func _init(create: bool = true) -> void:
+	if not create:
+		return
 	skin = _skin_mat("skin", 1.0, .94)
 	skin_body = _skin_mat("skin", 1.0, .94)
 	skin_body.set_shader_parameter("use_uv", 1.0)

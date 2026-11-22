@@ -1,4 +1,6 @@
 extends RefCounted
+
+const FrameProfile := preload("res://devtools/frame_profile.gd")
 # Chooses how a creature node follows the C world's pose. With a real creature (g-creature) and
 # g-loco it drives the G73 controller through the rig adapter: the controller gets the interpolated
 # world position, heading and velocity, and the adapter writes the Creature's transform, legs and
@@ -205,6 +207,14 @@ func _eat_fallback(dt: float) -> void:
 # s: StageWorld.sample() -> {pos, yaw, speed, vel}, optionally intent (the world yaw the player asks for)
 # ctx (optional): what the action layer reads, see actions/action_layer.gd
 func update(dt: float, s: Dictionary, ctx: Dictionary = {}) -> void:
+	if not FrameProfile.enabled:
+		_profile_update(dt, s, ctx)
+		return
+	FrameProfile.begin()
+	_profile_update(dt, s, ctx)
+	FrameProfile.end(&"actor driver/actions")
+
+func _profile_update(dt: float, s: Dictionary, ctx: Dictionary = {}) -> void:
 	host.position = s.pos
 	host.basis = Basis(Vector3.UP, s.yaw) * _fall_pose(dt, bool(s.get("falling", false)))
 	_eat_fallback(dt)

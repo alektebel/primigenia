@@ -12,7 +12,7 @@ const CLOCK_START := 4000          # world clock at tick 0: 08:00 (500 ticks an 
 
 # data: TerrainData. player_profile / garfio_profile: CporeWorld profile dictionaries.
 # probe: a CporeWorld with the field attached and reset into terrain 2, so Garfio's path is also checked with the C walk rule.
-static func build(data, seed: int, player_profile: Dictionary, garfio_profile: Dictionary, with_wild: bool = true, probe = null, herds: bool = false, secrets: bool = true) -> Dictionary:
+static func build(data, seed: int, player_profile: Dictionary, garfio_profile: Dictionary, with_wild: bool = true, probe = null, herds: bool = false, secrets: bool = true, radial_plan_out: Dictionary = {}) -> Dictionary:
 	var setup: Dictionary = CporeWorld.default_setup(seed)
 	setup.terrain = 2
 	var nest := find_nest(data)
@@ -37,7 +37,7 @@ static func build(data, seed: int, player_profile: Dictionary, garfio_profile: D
 		if herds:
 			add_herds(setup, data, nest, probe)
 			add_night_and_slug(setup, data, nest, probe)
-			add_radial(setup, data, seed, nest)
+			radial_plan_out.merge(add_radial(setup, data, seed, nest), true)
 	return setup
 
 # C2 (docs/P4.md 2.2): the valley holds more than Garfio so the Q43 loop has something to resolve. Rondo, Zanco and Espinodo
@@ -187,7 +187,7 @@ static func add_night_and_slug(setup: Dictionary, data, nest: Vector2, probe = n
 		n += 1
 
 # The same habitat planner used by ambient fauna; only cuarteta remains ambient.
-static func add_radial(setup: Dictionary, data, seed: int, nest: Vector2) -> void:
+static func add_radial(setup: Dictionary, data, seed: int, nest: Vector2) -> Dictionary:
 	var placement := RadialFauna.plan(data, seed, nest)
 	var species: Array = CporeWorld.species()
 	for id in ["corona", "brujula"]:   # corona first: the cap trims a Brujula (4 -> 3), both Corona stay
@@ -199,3 +199,5 @@ static func add_radial(setup: Dictionary, data, seed: int, nest: Vector2) -> voi
 			# Each animal keeps its coastal microhabitat as its home.
 			setup.wild.append({"x": p.x, "z": p.y, "home_x": p.x, "home_z": p.y,
 				"species": sp, "bot": -1, "legs": 5 if sp == 6 else 6, "profile": species[sp].profile})
+
+	return placement

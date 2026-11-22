@@ -32,7 +32,13 @@ static func install(stage, genome: Dictionary, evolve: bool = false) -> String:
 		return "Evolution refused: finish the fight, leave room for a cousin, or start a new lineage when its history is full."
 	# A body change starts a snapshot-backed replay segment. The immutable snapshot
 	# embeds every older generation and ledger entry; later inputs replay from it.
-	return "" if stage.restore_from(stage.world.snapshot()) == 0 else "Cannot start lineage replay segment."
+	if stage.restore_from(stage.world.snapshot()) != 0:
+		return "Cannot start lineage replay segment."
+	var game = Engine.get_main_loop().root.get_node_or_null("Game") if Engine.get_main_loop() is SceneTree else null
+	if evolve and game != null and not game.evolved_once:
+		game.evolved_once = true
+		game.loop_event.emit("first_evolve", {})
+	return ""
 
 static func evolve_file(island, path: String) -> String:
 	if not FileAccess.file_exists(path):
