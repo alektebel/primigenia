@@ -30,7 +30,7 @@ Owner's machine: the RTX was capped at 15 W (power profile 'balanced'); `powerpr
 | `perf/frame-time` | **merged ca8cd1d** (Codex): nest 24 creatures 16.8 → 3.0 ms script/frame, `make godot-frame-bench`; loco scorecards unchanged | Owner confirms fps on the RTX |
 | `ui/verb-target` | **Running** (Sonnet): owner feedback 2026-11-22: verb-first targeting (red arrows attack, green befriend, lock moving targets, auto-pursue), siblings at the nest, edit at the nest with found parts | Review, merge |
 | `perf/load-time` | **merged baa8b20** (Codex): stall log, pipeline warm-up, creature cache, plan once; headless cold 12.6 → 9.4 s, re-entry 8.4 → 6.5 s | Owner measures on the RTX (`docs/evidence/godot/load-time.md`) |
-| `fix/test-isolation` | **Running** (Sonnet): tests read the owner's live question queue (a card ate key 1 in play test) → isolate feedback dirs under tests | Merge |
+| `fix/test-isolation` | **merged**: tests use isolated feedback dirs (`godot/devtools/test_isolation.gd`) | — |
 | `w11-alpine` | **closed 2026-11-22 (owner, A41)**: drainage unfinished, rewrote terrain v4; branch kept for reference | — |
 | `anim/gait-lab` | **merged fa67103**: lab confirms wrong gait selection at 5.1 m/s; port rules in `docs/evidence/loco/gaitlab.md`. Owner: "2 m/s seems the sweet spot" (noted on D-26) | Port to loco_gait.gd + D-26 speed once the owner confirms |
 | `devtools/options` | **merged d6162ea**: F10 option mode + Shift+F8 notes (`tools/feedback/notes.py list`); devtools 1084/0. Follow-up: HUD text hard to read on bright backgrounds | Owner tries DT-OPT, DT-NOTES |
