@@ -24,7 +24,7 @@ Launch on the RTX: `__NV_PRIME_RENDER_OFFLOAD=1 __GLX_VENDOR_LIBRARY_NAME=nvidia
 ## Branches in flight
 | Branch | State | Next step |
 |---|---|---|
-| `w11-alpine` | skipped by the integrator (rewrites terrain v4 heights/goldens, drainage unresolved) | Owner: merge or close |
+| `w11-alpine` | **closed 2026-11-22 (owner, A41)**: drainage unfinished, rewrote terrain v4; branch kept for reference | — |
 | `anim/gait-lab` | **merged fa67103**: lab confirms wrong gait selection at 5.1 m/s; port rules in `docs/evidence/loco/gaitlab.md`. Owner: "2 m/s seems the sweet spot" (noted on D-26) | Port to loco_gait.gd + D-26 speed once the owner confirms |
 | `devtools/options` | **merged d6162ea**: F10 option mode + Shift+F8 notes (`tools/feedback/notes.py list`); devtools 1084/0. Follow-up: HUD text hard to read on bright backgrounds | Owner tries DT-OPT, DT-NOTES |
 | `lore/food-web` | **merged 9eed94f**: 36 new species, every trophic level; contact sheet `docs/evidence/lore/food-web-contact-sheet.jpg` | Owner L-TROPHIC |
