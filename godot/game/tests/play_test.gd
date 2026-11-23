@@ -322,6 +322,50 @@ func _stage() -> void:
 	check(lowest > -0.03, "feet are on the visible ground, Game.visual_ground (lowest %.1f mm relative)" % (lowest * 1000.0))
 	check(absf(player.position.y - game.ground(player.position.x, player.position.z)) < 0.25, "the actor stands on Game.ground (within the owner style sprawl crouch, A42)")
 
+	print("== jump (Space): up, down, no damage, a running jump goes further")
+	await sim_ticks(8)
+	var hp_j: float = float(game.stage.cur.entities[0].hp)
+	var y_ground: float = float(game.stage.cur.player.y)
+	var jx0: Vector3 = island.player_pos
+	var press := {"forward": false, "back": false, "left": false, "right": false, "sprint": false, "jump": true}
+	island.player_input.keys_override = press
+	var peak := 0.0
+	var air_ticks := 0
+	var seen_jumping := false
+	var seen_pose_lift := false
+	for i in 40:
+		await process_frame
+		var pl: Dictionary = game.stage.cur.player
+		if bool(pl.get("jumping", false)):
+			seen_jumping = true
+			air_ticks += 1
+			peak = maxf(peak, float(pl.y) - y_ground)
+			var lift_now: float = island.player_pos.y - y_ground
+			seen_pose_lift = seen_pose_lift or lift_now > 0.1
+		if seen_jumping and not bool(pl.get("falling", false)):
+			break
+	island.player_input.keys_override = {"forward": false, "back": false, "left": false, "right": false, "sprint": false}
+	check(seen_jumping, "Space makes the player airborne by a jump (C: player.jumping)")
+	check(peak > 0.25 and peak < 0.7, "the hop of starter B reaches %.2f m (about 0.8 x hip height)" % peak)
+	check(seen_pose_lift, "the actor rises with the jump")
+	await sim_ticks(8)
+	check(not bool(game.stage.cur.player.falling) and absf(float(game.stage.cur.player.y) - y_ground) < 0.3, "and lands")
+	check(is_equal_approx(float(game.stage.cur.entities[0].hp), hp_j), "a jump on flat ground does no damage")
+	check(Vector2(island.player_pos.x - jx0.x, island.player_pos.z - jx0.z).length() < 0.5, "a standing jump stays in place")
+	island.player_input.keys_override = {"forward": true, "back": false, "left": false, "right": false, "sprint": true, "run": false}
+	await sim_ticks(15)
+	island.player_input.keys_override = {"forward": true, "back": false, "left": false, "right": false, "sprint": true, "jump": true}
+	await sim_ticks(1)
+	island.player_input.keys_override = {"forward": true, "back": false, "left": false, "right": false, "sprint": true}
+	await until(func() -> bool: return bool(game.stage.cur.player.get("jumping", false)), 60)
+	var air_start: Vector2 = Vector2(island.player_pos.x, island.player_pos.z)
+	await until(func() -> bool: return not bool(game.stage.cur.player.get("falling", false)), 120)
+	var air_dist := Vector2(island.player_pos.x - air_start.x, island.player_pos.z - air_start.y).length()
+	check(air_dist > 0.5, "a running jump carries its speed: %.1f m through the air" % air_dist)
+	island.player_input.keys_override = {"forward": false, "back": false, "left": false, "right": false, "sprint": false}
+	await sim_ticks(10)
+	check(is_equal_approx(float(game.stage.cur.entities[0].hp), hp_j), "a running jump on flat ground does no damage either")
+
 	print("== pause menu: save game / load game")
 	var Scenario = load("res://devtools/scenario.gd")
 	Scenario.save_dir = "user://play-test/saves"

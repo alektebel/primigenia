@@ -5,7 +5,7 @@ extends RefCounted
 ## While the player flies, the island feeds the C world a WAIT order and a debug teleport to the flyer's ground point every tick
 ## (logged like every debug op, so the session replays and wild AI keeps seeing the player). Landing hands the creature back to C.
 ##
-## Controls (decision D6): Space tap = one beat, hold = flap, release = glide; Ctrl = dive; S / W = pitch (slower and floatier /
+## Controls (decision D6; Space on the ground is a jump, for every creature: a winged one presses Space again in the air to take off): Space tap = one beat, hold = flap, release = glide; Ctrl = dive; S / W = pitch (slower and floatier /
 ## faster); A / D = roll left / right (the bank builds while held, the
 ## heading follows from the tilted lift, release rolls out); the mouse does the same (sideways = bank, up / down = pitch). Space on the ground takes off (a run helps; the HUD says why a body cannot).
 
@@ -125,13 +125,21 @@ func active() -> bool:
 func handle_input(event: InputEvent) -> bool:
 	if not available() or not has_wings():
 		return false
-	if event is InputEventKey and event.keycode == KEY_SPACE and event.pressed and not event.echo:
-		_space_edge = true
-		return true
+	if event is InputEventKey and event.physical_keycode == KEY_SPACE and event.pressed and not event.echo:
+		# Space on the ground is a jump (the island's input, C owns it). Only a press while flying (a beat) or while the jump is in the
+		# air (takeoff: the second Space) is a flight key; a ground press is left for the jump.
+		if model != null and model.active() or _c_airborne_by_jump():
+			_space_edge = true
+			return true
+		return false
 	if event is InputEventMouseMotion and model != null and model.airborne() and event.button_mask == 0:
 		_mouse_dx += event.relative.x
 		_mouse_dy += event.relative.y
 	return false
+
+func _c_airborne_by_jump() -> bool:
+	var pl: Dictionary = stage.cur.get("player", {}) if stage != null else {}
+	return bool(pl.get("jumping", false))
 
 func press_space() -> void:
 	_space_edge = true

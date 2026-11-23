@@ -315,6 +315,8 @@ void CporeWorld::_bind_methods() {
     ClassDB::bind_method(D_METHOD("nest_edit", "body"), &CporeWorld::nest_edit);
     ClassDB::bind_method(D_METHOD("nest_apply", "body"), &CporeWorld::nest_apply);
     ClassDB::bind_method(D_METHOD("set_run", "on"), &CporeWorld::set_run);
+    ClassDB::bind_method(D_METHOD("jump"), &CporeWorld::jump);
+    ClassDB::bind_method(D_METHOD("jump_height"), &CporeWorld::jump_height);
     ClassDB::bind_method(D_METHOD("quest_award", "step", "dna"), &CporeWorld::quest_award);
     ClassDB::bind_method(D_METHOD("set_tiers", "on"), &CporeWorld::set_tiers);
     ClassDB::bind_method(D_METHOD("set_edit_anywhere", "on"), &CporeWorld::set_edit_anywhere);
@@ -471,6 +473,8 @@ int CporeWorld::order(const Dictionary &input) {
 String CporeWorld::order_error(int code) { return String(cp_stage_order_error(code)); }
 
 void CporeWorld::set_run(bool on) { cp_stage_set_run(world.get(), on); }
+int CporeWorld::jump() { return cp_stage_jump(world.get()); }
+double CporeWorld::jump_height() const { return cp_stage_jump_height(world.get()); }
 int CporeWorld::quest_award(int step, int dna) { return cp_stage_quest_award(world.get(), step, dna); }
 
 Dictionary CporeWorld::state() const {
@@ -485,6 +489,7 @@ Dictionary CporeWorld::state() const {
     Dictionary player;
     player["running"] = w.running != 0; player["stamina"] = int(w.run_stamina);
     player["falling"] = w.falling != 0;
+    player["jumping"] = w.jumping != 0; player["jump_cd"] = int(w.jump_cd);
     player["y"] = w.falling ? w.fall_y_mm * .001 : cp_stage_ground(&w, w.player.x, w.player.z);
     player["vertical_velocity"] = w.fall_v_mm_s * .001;
     d["player"] = player;

@@ -174,6 +174,8 @@ func step_once() -> void:
 		input = input_provider.call()
 	if input.has("run"):
 		world.set_run(int(input.run) != 0)       # before the step, so it is part of that tick; the C log has no setter record
+	if int(input.get("jump", 0)) != 0:
+		world.jump()                             # likewise (log v5: bit 1 of the run column); a refusal changes nothing
 	var h := world.step(input)
 	if h == "":
 		push_error("stage: the C world rejected an input: %s" % [input])

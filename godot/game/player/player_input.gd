@@ -26,6 +26,11 @@ var suspended := false       # flight test: the creature flies, C is told to wai
 var _tank_yaw = null
 var run_locked := false       # exhausted while Shift was held: Shift must be released before running starts again
 var _was_running := false
+# Jump (Space on the ground, every creature): the key press latches a request for JUMP_BUFFER ticks (a tap between two 10 Hz ticks is
+# not lost, and a press just before landing still jumps); the C world accepts or refuses it (cp_stage_jump) and the latch clears once
+# the player is airborne by a jump.
+const JUMP_BUFFER := 2
+var jump_buf := 0
 const TANK_TURN := 2.2       # rad/s
 const K_FWD := 1
 const K_BACK := 2
@@ -50,6 +55,20 @@ func _read_keys() -> Dictionary:
 		"left": Input.is_action_pressed("move_left"), "right": Input.is_action_pressed("move_right"),
 		"sprint": Input.is_action_pressed("sprint"), "run": Input.is_action_pressed("run"),
 	}
+
+func request_jump() -> void:
+	jump_buf = JUMP_BUFFER
+
+func _jump_want(k: Dictionary, is_blocked: bool) -> int:
+	if bool(k.get("jump", false)):
+		jump_buf = JUMP_BUFFER
+		if keys_override != null:
+			k["jump"] = false              # a test's jump is one press, not a held key
+	if is_blocked or jump_buf <= 0:
+		jump_buf = 0 if is_blocked else jump_buf
+		return 0
+	jump_buf -= 1
+	return 1
 
 func set_destination(p: Vector2) -> void:
 	destination = Vector2(clampf(p.x, -limit, limit), clampf(p.y, -limit, limit))
@@ -114,6 +133,7 @@ func sample() -> Dictionary:
 	var k := _read_keys()
 	var is_blocked: bool = blocked.is_valid() and blocked.call()
 	var run := _run_want(k, is_blocked)
+	var jump := _jump_want(k, is_blocked)
 	var a := _axes(k, is_blocked)
 	var sprint := 1 if (bool(k.sprint) and not is_blocked) else 0
 	var mask := 0 if is_blocked else _mask(k)
@@ -135,12 +155,18 @@ func sample() -> Dictionary:
 			dir = camera_relative(a.x, a.y, frame_yaw if (strafe_latch and frame_yaw != null) else view_yaw)
 		_last_keys = mask
 		var h := heading(dir)
-		return {"verb": VERB_HEADING, "hx": h.x, "hz": h.y, "sprint": sprint, "run": run}
+		return _with_jump({"verb": VERB_HEADING, "hx": h.x, "hz": h.y, "sprint": sprint, "run": run}, jump)
 	_last_keys = mask
 	if destination != null:
 		var d: Vector2 = destination
-		return {"verb": VERB_GO, "x": d.x, "z": d.y, "sprint": int(bool(k.sprint)), "run": run}
-	return {"verb": VERB_WAIT, "run": run}
+		return _with_jump({"verb": VERB_GO, "x": d.x, "z": d.y, "sprint": int(bool(k.sprint)), "run": run}, jump)
+	return _with_jump({"verb": VERB_WAIT, "run": run}, jump)
+
+# The jump column exists only on the ticks that ask for one, so inputs (and the log) of a game without jumps are unchanged.
+static func _with_jump(o: Dictionary, jump: int) -> Dictionary:
+	if jump != 0:
+		o["jump"] = 1
+	return o
 
 # Web: the destination is cleared once the world's standing order is no longer GO.
 func after_tick(state: Dictionary) -> void:
@@ -148,5 +174,7 @@ func after_tick(state: Dictionary) -> void:
 	if _was_running and not running and bool(_read_keys().get("run", false)) and int(state.get("player", {}).get("stamina", 1000)) < 150:
 		run_locked = true         # ran out: no stuttering restart while Shift stays down
 	_was_running = running
+	if bool(state.get("player", {}).get("jumping", false)):
+		jump_buf = 0
 	if state.order.verb != VERB_GO:
 		destination = null

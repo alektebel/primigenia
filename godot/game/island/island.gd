@@ -724,6 +724,7 @@ func _profile__update_actors(dt: float) -> void:
 		var sm: Dictionary = samples[id]
 		if id == 0:
 			sm["falling"] = bool(stage.cur.get("player", {}).get("falling", false))
+			sm["jumping"] = bool(stage.cur.get("player", {}).get("jumping", false)) or (bool(stage.prev.get("player", {}).get("jumping", false)) and stage.alpha() < 1.0)
 			sm["intent"] = player_input.intent_yaw()      # head and shoulders lead the body
 		var d: float = (sm.pos as Vector3).distance_to(p0)
 		var sig: Dictionary = action_signals.get(id, {})
@@ -937,6 +938,13 @@ func _unhandled_input(event: InputEvent) -> void:
 	if stage == null or chase == null or _building:
 		return
 	if flight != null and flight.handle_input(event):
+		get_viewport().set_input_as_handled()
+		return
+	if event is InputEventKey and event.physical_keycode == KEY_SPACE and event.pressed and not event.echo:
+		# Space = jump on the ground, for every creature (a winged one flies if Space is pressed again in the air). In a fight Space keeps
+		# its combat meaning (guard, stage_ui.gd), so no jump is requested then.
+		if int(stage.cur.active) < 0:
+			player_input.request_jump()
 		get_viewport().set_input_as_handled()
 		return
 	if event is InputEventMouseMotion:
