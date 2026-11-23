@@ -129,11 +129,11 @@ static int spaced_attack(CpBot *b, const CpCombatWorld *w, int self, int foe, in
         if (p.gap < mv->reach * 0.85f) {
             if (away_wall || room <= rad) {
                 if (me->stamina >= cp_combat_move_stamina(&me->prof, CB_DODGE)) {
-                    *out = (CpCombatAction){CB_V_DODGE, 0, 0, (int8_t)dodge_dir(w, self), 0, 0};
+                    *out = (CpCombatAction){CB_V_DODGE, 0, 0, (int8_t)dodge_dir(w, self), 0, 0, 0};
                     return 1;
                 }
             } else {
-                *out = (CpCombatAction){CB_V_FLEE, 0, (int8_t)foe, 0, 0, 0 };
+                *out = (CpCombatAction){CB_V_FLEE, 0, (int8_t)foe, 0, 0, 0, 0 };
                 return 1;
             }
         }

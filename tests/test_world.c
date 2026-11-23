@@ -885,6 +885,35 @@ static void nav_contract(void) {
 static int cmd(CpStageWorld *x,const char *text){
     return cp_stage_command(x,text);
 }
+/* A72/A74: a pressed bite on a target 5-20 m away starts the fight at once as the far charge; a held spit carries its hold to C. */
+static void context_attack_stage(void){
+    reset();
+    setup.wild[0].profile.speed=2;      /* a slow target, so the run-in is the thing measured */
+    assert(cp_stage_reset(&w,&setup)==0);
+    assert(cmd(&w,"attack #1 bite")==0);
+    int started=-1;
+    for(int i=0;i<40&&started<0;i++){
+        cp_stage_step(&w,NULL);
+        if(w.active>=0)started=i;
+    }
+    cp_stage_step(&w,NULL);                                          /* the first fight tick gives the order to C */
+    assert(started>=0&&started<=2);                                  /* 18 m away: the fight starts at once, not at 5.5 m */
+    assert(w.combat.c[0].ctx_on&&w.combat.c[0].vctx==CB_CTX_FAR);     /* and the bite is the charge */
+    int hit=0;
+    for(int i=0;i<60&&!hit;i++){
+        cp_stage_step(&w,NULL);
+        for(int k=0;k<w.combat.n_ev;k++)if(w.combat.ev[k].type==CB_EV_HIT&&w.combat.ev[k].a==0)hit=1;
+    }
+    assert(hit);
+    /* the hold rides in `dir` of the order and reaches C */
+    reset();
+    assert(cmd(&w,"attack #1 spit hold")==0&&w.order.verb==CP_STAGE_ATTACK&&w.order.dir==1);
+    for(int i=0;i<4;i++)cp_stage_step(&w,NULL);
+    assert(w.active>=0&&w.combat.c[0].vhold==1&&w.combat.c[0].vctx==CB_CTX_FAR);
+    reset();
+    assert(cmd(&w,"attack #1 spit")==0&&w.order.dir==0);
+    puts("PASS context attacks: far band starts the fight, far bite is the charge, hold reaches C");
+}
 static void loadout_contract(void){
     reset();
     const uint64_t h0=cp_stage_hash(&w);
@@ -1069,6 +1098,7 @@ int main(void) {
     debug_ops();
     nav_contract();
     loadout_contract();
+    context_attack_stage();
     double_ko_is_consistent();
     approach_in_fight();
     reset();

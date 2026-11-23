@@ -840,10 +840,200 @@ static void galloping_peck(void)
     CHECK(fabsf(w.c[0].x - xj) < 0.01f && jab_dmg > 0.0f && jab_dmg < 10.0f && w.c[0].cd[CB_PECK] == 0, "the jab hits for reduced damage in place and keeps the cooldown free");
 }
 
+/* ---- A72/A74 context attacks: bands, momentum, projectiles, roar ---- */
+static CpCombatWorld ctxpair(float dist, float speed)
+{
+    CpCombatWorld w = pair(dist);
+    w.c[0].prof.extra[2] = 2;           /* legs: pounce */
+    w.c[0].prof.extra[4] = 2;           /* throat: roar */
+    cp_combat_loadout_starter(&w.c[0].lo, &w.c[0].prof);
+    cp_combat_ctx_enable(&w, 0, speed);
+    return w;
+}
+static float hit_amount(const CpCombatWorld *w, int move)
+{
+    for (int e = 0; e < w->n_ev; e++) if (w->ev[e].type == CB_EV_HIT && w->ev[e].move == move && w->ev[e].a == 0) return w->ev[e].amount;
+    return 0.0f;
+}
+static void context_attacks(void)
+{
+    cp_combat_test_hit_variance(1);
+    /* the starting loadout (A62): bite, pounce, spit, roar, with no dodge slot */
+    CpCombatWorld w = ctxpair(2.0f, 0.0f);
+    CHECK(w.c[0].lo.slot[0] == CB_BITE && w.c[0].lo.slot[1] == CB_POUNCE && w.c[0].lo.slot[2] == CB_SPIT && w.c[0].lo.slot[3] == CB_ROAR,
+          "the starter loadout is bite, pounce, spit, roar");
+    CHECK(cp_combat_loadout_slot_of(&w.c[0].lo, CB_DODGE) < 0, "dodge is a universal key, not a slot");
+
+    /* bands and speed pick the context: close/mid standing, walking, galloping (>= canter band), far */
+    float canter = cp_combat_canter_speed(&w.c[0]);
+    CHECK(canter > 1.0f && canter < 2.0f, "canter band of the default body is about 1.3 m/s");
+    CHECK(cp_combat_band(2.9f) == CB_BAND_CLOSE && cp_combat_band(3.0f) == CB_BAND_MID && cp_combat_band(4.9f) == CB_BAND_MID && cp_combat_band(5.0f) == CB_BAND_FAR,
+          "bands: close < 3 m, mid 3-5 m, far from 5 m");
+    CHECK(cp_combat_pick_ctx(&w, 0, 1) == CB_CTX_STAND, "standing close picks the standing variant");
+    w.c[0].spd = 0.8f;  CHECK(cp_combat_pick_ctx(&w, 0, 1) == CB_CTX_WALK, "slow movement picks the walking variant");
+    w.c[0].spd = canter + 0.01f; CHECK(cp_combat_pick_ctx(&w, 0, 1) == CB_CTX_GALLOP, "speed at the canter band picks the gallop variant");
+    w = ctxpair(4.6f, 0.0f);   /* gap 4.0: mid band, still the speed variant */
+    CHECK(cp_combat_pick_ctx(&w, 0, 1) == CB_CTX_STAND, "the mid band keeps the speed variant");
+    w = ctxpair(9.0f, 3.0f);
+    CHECK(cp_combat_pick_ctx(&w, 0, 1) == CB_CTX_FAR, "the far band wins over speed");
+
+    /* momentum: a bite on the run hits harder and knocks back further than the standing bite, keeps moving, and overshoots */
+    CpCombatWorld st = ctxpair(2.2f, 0.0f), rn = ctxpair(2.4f, 3.5f);
+    cp_combat_attack(&st, 0, 1, CB_BITE); cp_combat_attack(&rn, 0, 1, CB_BITE);
+    CHECK(rn.c[0].vctx == CB_CTX_GALLOP && st.c[0].vctx == CB_CTX_STAND, "the order stores the picked context");
+    float xs = st.c[0].x, xr = rn.c[0].x, dst = 0, drn = 0, kbr = 0, kbs = 0;
+    int moved_in_move = 0;
+    for (int t = 0; t < 8; t++) {
+        cp_combat_step(&st); cp_combat_step(&rn);
+        if (hit_amount(&st, CB_BITE) > 0) { dst = hit_amount(&st, CB_BITE); kbs = st.c[1].kbx; }
+        if (hit_amount(&rn, CB_BITE) > 0) { drn = hit_amount(&rn, CB_BITE); kbr = rn.c[1].kbx; }
+        if (rn.c[0].move == CB_BITE && rn.c[0].x - xr > 0.4f) moved_in_move = 1;
+    }
+    CHECK(dst > 0 && drn > dst * 1.2f, "a bite at speed deals at least 20% more (momentum)");
+    CHECK(kbr > kbs && kbs > 0 && kbr <= CB_KB_MAX + 0.01f, "knockback grows with the closing speed and is capped");
+    CHECK(moved_in_move, "a moving bite keeps the body moving while it plays");
+    CHECK(fabsf(st.c[0].x - xs) < 0.01f, "a standing bite does not move the body");
+    {   /* overshoot after a moving hit, and a longer exposure after a miss (the target steps out of reach once the bite has started) */
+        CpCombatWorld hit = ctxpair(2.4f, 3.5f), miss = ctxpair(2.4f, 3.5f);
+        cp_combat_attack(&hit, 0, 1, CB_BITE); cp_combat_attack(&miss, 0, 1, CB_BITE);
+        int over_hit = 0, over_miss = 0, moved = 0;
+        for (int t = 0; t < 16; t++) {
+            cp_combat_step(&hit); cp_combat_step(&miss);
+            if (!moved && miss.c[0].move == CB_BITE) { moved = 1; miss.c[1].x += 6.0f; }
+            if (hit.c[0].over_t > over_hit) over_hit = hit.c[0].over_t;
+            if (miss.c[0].over_t > over_miss) over_miss = miss.c[0].over_t;
+        }
+        CHECK(hit.c[0].hits == 1 && miss.c[0].hits == 0, "the bite connects in one run and misses in the other");
+        CHECK(over_hit >= CB_OVER_HIT - 1 && over_hit <= CB_OVER_HIT, "a moving bite that connects overshoots for about CB_OVER_HIT ticks");
+        CHECK(over_miss >= CB_OVER_MISS - 1 && over_miss > over_hit, "a miss on the run leaves the creature exposed longer");
+    }
+    {   /* the wide turn: with overshoot the turn per tick is half */
+        CpCombatWorld a = ctxpair(2.0f, 0.0f);
+        a.c[0].fx = 1; a.c[0].fy = 0;
+        a.c[0].over_t = 5; a.c[0].verb = CB_V_IDLE;
+        float tx = 0.0f, ty = 1.0f;
+        CpCombatWorld b = a; b.c[0].over_t = 0;
+        (void)tx; (void)ty;
+        cp_combat_order(&a, 0, &(CpCombatAction){ CB_V_MOVE, 0, 0, 6, 0, 0, 0 });
+        cp_combat_order(&b, 0, &(CpCombatAction){ CB_V_MOVE, 0, 0, 6, 0, 0, 0 });
+        cp_combat_step(&a); cp_combat_step(&b);
+        CHECK(a.c[0].fy > 0 && a.c[0].fy < b.c[0].fy * 0.6f, "the wide turn after a moving attack is slower than the normal turn");
+    }
+
+    /* far bite = charge: a run-in at 1.25x walk speed, the hit carries the momentum, both recoil */
+    w = ctxpair(10.0f, 0.0f);
+    cp_combat_attack(&w, 0, 1, CB_BITE);
+    CHECK(w.c[0].vctx == CB_CTX_FAR, "a bite from far is the charge");
+    float maxv = 0, charge_dmg = 0, recoil = 0;
+    for (int t = 0; t < 40; t++) {
+        cp_combat_attack(&w, 0, 1, CB_BITE);
+        cp_combat_step(&w);
+        if (w.c[0].spd > maxv) maxv = w.c[0].spd;
+        if (hit_amount(&w, CB_BITE) > 0) { charge_dmg = hit_amount(&w, CB_BITE); recoil = w.c[0].kbx; break; }
+    }
+    CHECK(maxv > w.c[0].prof.speed * 1.2f && maxv < w.c[0].prof.speed * 1.3f, "the charge run-in is a burst (x1.25 walk speed)");
+    CHECK(charge_dmg > dst * 1.25f, "the charge hits with the run-up momentum");
+    CHECK(recoil < 0 && w.c[1].kbx > 0, "the charge recoils both bodies");
+
+    /* spit: damage lands when the projectile arrives, not at the press; the shot leads a moving target */
+    w = ctxpair(7.0f, 0.0f);
+    float hp0 = w.c[1].hp;
+    cp_combat_attack(&w, 0, 1, CB_SPIT);
+    CHECK(w.c[0].vctx == CB_CTX_FAR, "spit from 6.4 m gap picks the far lob");
+    int fired = -1, landed = -1, flight = 0;
+    for (int t = 0; t < 60 && landed < 0; t++) {
+        cp_combat_attack(&w, 0, 1, CB_SPIT);
+        cp_combat_step(&w);
+        if (fired < 0 && event(&w, CB_EV_PROJECTILE)) { fired = t; for (int e = 0; e < w.n_ev; e++) if (w.ev[e].type == CB_EV_PROJECTILE) flight = (int)w.ev[e].amount; }
+        if (landed < 0 && w.c[1].hp < hp0) landed = t;
+    }
+    CHECK(fired >= 0 && landed == fired + flight && flight == 11, "the lob lands exactly its flight time (11 ticks) after it is fired");
+    {
+        CpCombatWorld m = ctxpair(5.5f, 0.0f);   /* gap 4.9: close/mid, the cobra jet */
+        float hpm = m.c[1].hp;
+        m.c[1].verb = CB_V_MOVE; m.c[1].verb_dir = -1; m.c[1].heading_y = 1; m.c[1].heading_x = 0;
+        cp_combat_attack(&m, 0, 1, CB_SPIT);
+        CHECK(m.c[0].vctx == CB_CTX_STAND, "a jet from the mid band standing");
+        float ty0 = m.c[1].y, aim_y = 0;
+        int fire = -1, hit = -1;
+        for (int t = 0; t < 40 && hit < 0; t++) {
+            cp_combat_attack(&m, 0, 1, CB_SPIT);
+            cp_combat_step(&m);
+            if (fire < 0 && event(&m, CB_EV_PROJECTILE)) { fire = t; for (int k = 0; k < CB_MAX_PROJ; k++) if (m.proj[k].alive) aim_y = m.proj[k].y; }
+            if (m.c[1].hp < hpm) hit = t;
+        }
+        CHECK(fire >= 0 && aim_y > m.c[1].y - 4.0f && aim_y > ty0 + 0.3f, "the shot aims ahead of a target that is walking away sideways (leading)");
+        CHECK(hit > fire, "the shot hits the moving target on arrival");
+    }
+    {   /* a dodge in time avoids the arriving shot; hold = the charged glob hits harder */
+        CpCombatWorld j = ctxpair(4.0f, 0.0f), g = ctxpair(4.0f, 0.0f);
+        cp_combat_attack(&j, 0, 1, CB_SPIT);
+        cp_combat_attack_hold(&g, 0, 1, CB_SPIT, 1);
+        float dj = 0, dg = 0;
+        for (int t = 0; t < 40; t++) {
+            cp_combat_step(&j); cp_combat_step(&g);
+            if (hit_amount(&j, CB_SPIT) > 0) dj = hit_amount(&j, CB_SPIT);
+            if (hit_amount(&g, CB_SPIT) > 0) dg = hit_amount(&g, CB_SPIT);
+        }
+        CHECK(dj > 0 && dg > dj * 1.6f, "the held spit is a glob that hits about 1.8x harder");
+        CHECK(g.c[1].slow_t >= j.c[1].slow_t, "the glob slows at least as long");
+    }
+
+    /* pounce: the gather shortens as the body already moves */
+    w = ctxpair(4.0f, 3.5f);
+    cp_combat_attack(&w, 0, 1, CB_POUNCE);
+    for (int t = 0; t < 6 && w.c[0].move != CB_POUNCE; t++) cp_combat_step(&w);
+    CHECK(w.c[0].move == CB_POUNCE && w.c[0].plen == 3, "a leap from the gallop gathers for 3 ticks");
+    w = ctxpair(4.0f, 0.0f);
+    cp_combat_attack(&w, 0, 1, CB_POUNCE);
+    for (int t = 0; t < 6 && w.c[0].move != CB_POUNCE; t++) cp_combat_step(&w);
+    CHECK(w.c[0].move == CB_POUNCE && w.c[0].plen == CP_COMBAT_MOVES[CB_POUNCE].windup, "the standing cat pounce keeps the full gather");
+
+    /* roar: fear in the radius, none outside; far = run in then plant */
+    w = ctxpair(3.6f, 0.0f);   /* gap 3.0 */
+    cp_combat_attack(&w, 0, 1, CB_ROAR);
+    {
+        CpCombatWorld r = ctxpair(3.6f, 0.0f);
+        cp_combat_attack(&r, 0, 1, CB_ROAR);
+        int feared = 0;
+        for (int t = 0; t < 14; t++) { cp_combat_step(&r); if (r.c[1].fear_t > 0) feared = 1; }
+        CHECK(feared, "a roar frightens a target inside its 4 m radius");
+        CpCombatWorld f = ctxpair(10.0f, 0.0f);
+        cp_combat_attack(&f, 0, 1, CB_ROAR);
+        CHECK(f.c[0].vctx == CB_CTX_FAR, "a roar from far runs in");
+        int fear_far = 0, planted = 0; float x0 = f.c[0].x;
+        for (int t = 0; t < 40; t++) {
+            cp_combat_attack(&f, 0, 1, CB_ROAR);
+            cp_combat_step(&f);
+            if (f.c[1].fear_t > 0) fear_far = 1;
+            if (f.c[0].move == CB_ROAR && f.c[0].spd < 0.01f) planted = 1;
+        }
+        CHECK(fear_far && planted && f.c[0].x - x0 > 3.0f, "far roar: run in, plant, rear, the target is afraid");
+        /* a wildcard counter still holds: out of the radius nobody is afraid */
+        CpCombatWorld o = ctxpair(3.6f, 0.0f);
+        o.c[1].x += 3.0f;
+        phase(&o.c[0], CB_ROAR, CB_PH_ACTIVE);
+        cp_combat_step(&o);
+        CHECK(o.c[1].fear_t == 0, "outside the 4 m radius there is no fear");
+    }
+
+    /* deterministic: the same orders give the same hashes, with the new state hashed */
+    CpCombatWorld a = ctxpair(10.0f, 0.0f), b = ctxpair(10.0f, 0.0f);
+    uint64_t ha = 0, hb = 0;
+    for (int t = 0; t < 60; t++) { cp_combat_attack_hold(&a, 0, 1, CB_SPIT, t > 5); cp_combat_attack_hold(&b, 0, 1, CB_SPIT, t > 5); ha = cp_combat_step(&a); hb = cp_combat_step(&b); }
+    CHECK(ha == hb && ha != 0, "context attacks are deterministic");
+    /* opt-in: a plain creature is untouched (no variant, no knockback) */
+    w = pair(2.0f);
+    cp_combat_attack(&w, 0, 1, CB_BITE);
+    steps(&w, 8);
+    CHECK(w.c[0].vctx == 0 && w.c[1].kbx == 0.0f, "without ctx_on nothing changes");
+    cp_combat_test_hit_variance(0);
+}
+
 int main(void)
 {
     puts("cpore combat tests");
-    directional_movement(); counters(); ripostes(); spacing(); ranged_exchanges(); simultaneous(); bot_counters(); defensive_policies(); edges_and_verbs(); geometry_and_setup(); body_radius(); loadout_and_cooldowns(); galloping_peck(); determinism(); canaries();
+    directional_movement(); counters(); ripostes(); spacing(); ranged_exchanges(); simultaneous(); bot_counters(); defensive_policies(); edges_and_verbs(); geometry_and_setup(); body_radius(); loadout_and_cooldowns(); galloping_peck(); context_attacks(); determinism(); canaries();
     printf("combat: %d failure(s)\n", fails);
     return fails ? 1 : 0;
 }
