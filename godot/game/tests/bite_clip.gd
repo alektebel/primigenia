@@ -65,12 +65,15 @@ func _run() -> void:
 	stage.debug_now({"op": 6, "a": 3})            # god mode, wild AI off: the Rondo stands and takes the bites
 	# the nearest living Rondo
 	var rondo := -1
+	var best := 1e9
+	var p0: Dictionary = st().entities[0]
 	for i in range(1, st().entities.size()):
 		var e: Dictionary = st().entities[i]
 		var sp: Dictionary = sui.species[int(e.species)] if int(e.species) >= 0 and int(e.species) < sui.species.size() else {}
-		if str(sp.get("name", "")) == "Rondo" and not bool(e.dead):
+		var dd := Vector2(float(e.x) - float(p0.x), float(e.z) - float(p0.z)).length()
+		if str(sp.get("name", "")) == "Rondo" and not bool(e.dead) and dd < best:
+			best = dd
 			rondo = i
-			break
 	print("rondo #", rondo, " loadout ", st().loadout.slots, " player radius ", st().entities[0].radius_cm)
 	var w: Dictionary = st().entities[rondo]
 	var n: Vector2 = stage.world.get_setup().nest
@@ -112,14 +115,15 @@ func _run() -> void:
 			sui._pending_attack = {"target": rondo, "move": 7, "chain": true, "tick": int(st().tick)}   # what the bite key sends inside the chain window
 		var pl = island.hosts[0].layer() if island.hosts.has(0) else null
 		_camera(rondo, yaw_deg)
-		rows.append("%d,%d,%d,%d,%d,%.1f,%d,%d" % [frame, int(s.combat.tick), int(f.get("move", -9)), int(f.get("phase", -9)), int(f.get("phase_tick", -9)),
-			float(s.entities[rondo].hp), 1 if (pl != null and pl.paused()) else 0, 1 if hit_frame == frame else 0])
+		var dpl := Vector2(float(s.entities[0].x) - float(s.entities[rondo].x), float(s.entities[0].z) - float(s.entities[rondo].z)).length()
+		rows.append("%d,%d,%d,%d,%d,%.1f,%d,%d,%.2f,%s" % [frame, int(s.combat.tick), int(f.get("move", -9)), int(f.get("phase", -9)), int(f.get("phase_tick", -9)),
+			float(s.entities[rondo].hp), 1 if (pl != null and pl.paused()) else 0, 1 if hit_frame == frame else 0, dpl, str(s.combat.events.map(func(e): return "%d:%d>%d" % [int(e.type), int(e.a), int(e.b)]))])
 		if frame % 30 == 0:
 			stage.debug_now({"op": 4, "id": rondo, "x": 100.0, "z": -1.0})   # keep the Rondo healthy
 		frame += 1
 		await process_frame
 	var fa := FileAccess.open(csv_path, FileAccess.WRITE)
-	fa.store_line("frame,tick,move,phase,ptick,wild_hp,paused,hit")
+	fa.store_line("frame,tick,move,phase,ptick,wild_hp,paused,hit,dist,events")
 	for r in rows:
 		fa.store_line(r)
 	fa.close()
