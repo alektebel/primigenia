@@ -25,7 +25,7 @@ var _meadow: AudioStreamPlayer
 var _rustle: AudioStreamPlayer3D
 var sound_dir := SOUND_DIR
 
-func _init(settings_path: String = "user://settings.cfg") -> void:
+func _init(settings_path: String = "") -> void:
 	settings = Settings.new(settings_path)
 
 func _ready() -> void:
