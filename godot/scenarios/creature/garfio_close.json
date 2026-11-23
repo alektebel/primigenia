@@ -1,9 +1,9 @@
 {
 	"camera": {},
-	"created": "2026-11-23T00:40:34",
+	"created": "2026-11-23T03:58:24",
 	"engine": {
 		"build": "unknown",
-		"layout": "eb6a4645f6d90d4f",
+		"layout": "2f9797d54fedfa47",
 		"snapshot_version": 3,
 		"stage_version": 3
 	},
@@ -138,7 +138,7 @@
 			"wet": 0.3
 		}
 	},
-	"hash": "567b4b2531f98890",
+	"hash": "1f997161cde65848",
 	"island": {
 		"seed": 1,
 		"terrain_hash": "7137e3ea79830ad7",
@@ -255,6 +255,9 @@
 				0
 			],
 			"fire": 0,
+			"grip_deg": 51.5999984741211,
+			"grip_legs": 4,
+			"grip_traits": 0,
 			"guard": 0,
 			"hp": 100.0,
 			"mouth": 2,
@@ -295,6 +298,9 @@
 						0
 					],
 					"fire": 0,
+					"grip_deg": 51.5999984741211,
+					"grip_legs": 4,
+					"grip_traits": 0,
 					"guard": 0,
 					"hp": 90.0,
 					"mouth": 2,

@@ -1,5 +1,8 @@
 // Stage world glue: Variant <-> C structs only. The simulation is cp_stage_*.
 #include "cpore_world.h"
+extern "C" {
+#include "cpore/steer.h"
+}
 #include "convert.h"
 #include <godot_cpp/variant/vector2.hpp>
 #include <godot_cpp/variant/vector3.hpp>
@@ -19,6 +22,8 @@ Dictionary profile_to_dict(const CpCombatProfile &p) {
     d["tail"] = int(p.tail); d["guard"] = int(p.guard); d["fire"] = int(p.fire);
     d["hp"] = double(p.hp); d["stamina"] = double(p.stamina); d["speed"] = double(p.speed);
     d["radius_cm"] = int(p.radius_cm);
+    d["grip_traits"] = int(p.grip_traits); d["grip_legs"] = int(p.grip_legs);
+    d["grip_deg"] = double(cp_stage_grip_deg(&p,4));
     Array extra;for(int k=0;k<8;k++)extra.append(int(p.extra[k]));d["extra"]=extra;d["carnivore"]=int(p.carnivore);
     return d;
 }
@@ -48,6 +53,8 @@ bool profile_from_dict(const Variant &v, CpCombatProfile &p) {
         if (!cpore::to_int(d["radius_cm"], 0, 65535, n)) return false;
         p.radius_cm = uint16_t(n);
     }
+    if(d.has("grip_traits")){int64_t n;if(!cpore::to_int(d["grip_traits"],0,63,n))return false;p.grip_traits=uint16_t(n);}
+    if(d.has("grip_legs")){int64_t n;if(!cpore::to_int(d["grip_legs"],0,255,n))return false;p.grip_legs=uint8_t(n);}
     return true;
 }
 
@@ -144,7 +151,7 @@ bool setup_from_dict(const Dictionary &d, CpStageSetup &s) {
             if (w.has("species")) { if (!cpore::to_int(w["species"], -2147483648LL, 2147483647LL, n)) return false; c.species = int(n); }
             if (w.has("legs")) { if (!cpore::to_int(w["legs"], 0, 8, n)) return false; c.legs = int(n); }
             if (w.has("bot")) { if (!cpore::to_int(w["bot"], -2147483648LL, 2147483647LL, n)) return false; c.bot = int(n); }
-            if (c.species >= 0 && c.species < CP_STAGE_SPECIES_COUNT) c.profile = CP_STAGE_SPECIES[c.species].profile;
+            if (c.species >= 0 && c.species < CP_STAGE_SPECIES_DEFINED) c.profile = CP_STAGE_SPECIES[c.species].profile;
             if (w.has("profile") && !profile_from_dict(w["profile"], c.profile)) return false;
             s.wild[i] = c;
         }
@@ -222,6 +229,7 @@ bool input_from_dict(const Dictionary &d, CpStageInput &in) {
 Dictionary entity(const CpStageCreature &c, int id) {
     Dictionary d;
     d["id"] = id;
+    d["falling"] = c.slip_air != 0; d["y"] = c.slip_y * .001;
     d["x"] = double(c.x); d["z"] = double(c.z); d["fx"] = double(c.fx); d["fz"] = double(c.fz);
     d["hp"] = double(c.hp); d["stamina"] = double(c.stamina);
     d["speed"] = double(c.speed); d["acceleration"] = double(c.acceleration); d["turn_rate"] = double(c.turn_rate);
@@ -232,6 +240,7 @@ Dictionary entity(const CpStageCreature &c, int id) {
     d["returning"] = bool(c.returning); d["roam_ticks"] = int(c.roam_ticks);
     d["hp_max"] = double(c.profile.hp); d["stamina_max"] = double(c.profile.stamina);
     d["radius_cm"] = int(c.profile.radius_cm);
+    d["grip_deg"] = double(cp_stage_grip_deg(&c.profile,c.legs));
     return d;
 }
 
@@ -268,7 +277,7 @@ Dictionary social_to_dict(const CpStageWorld &w) {
     d["items"] = items;
     d["resolved"] = cp_stage_social_species_resolved(&w); d["resolved_total"] = cp_stage_social_species_present(&w);
     Array sp;
-    for (int k = 0; k < CP_SOC_SPECIES; ++k) {
+    for (int k = 0; k < CP_STAGE_SPECIES_DEFINED; ++k) {
         Dictionary e;
         e["bonded"] = s.latched[k]; e["kills"] = s.kills[k]; e["resolution"] = s.resolution[k];
         e["observed"] = s.obs_items[k]; e["seen"] = (s.species_seen & (1u << k)) != 0;
@@ -296,6 +305,7 @@ CporeWorld::CporeWorld() {
 }
 
 void CporeWorld::_bind_methods() {
+    ClassDB::bind_static_method("CporeWorld", D_METHOD("grip_profile", "genome"), &CporeWorld::grip_profile);
     ClassDB::bind_static_method("CporeWorld", D_METHOD("version"), &CporeWorld::version);
     ClassDB::bind_static_method("CporeWorld", D_METHOD("default_setup", "seed"), &CporeWorld::default_setup);
     ClassDB::bind_static_method("CporeWorld", D_METHOD("default_profile"), &CporeWorld::default_profile);
@@ -365,7 +375,7 @@ Dictionary CporeWorld::default_profile() {
 Array CporeWorld::species() {
     Array a;
     static const char *const ACT[] = {"diurnal", "nocturnal", "crepuscular"};
-    for (int i = 0; i < CP_STAGE_SPECIES_COUNT; ++i) {
+    for (int i = 0; i < CP_STAGE_SPECIES_DEFINED; ++i) {
         const CpStageSpecies &s = CP_STAGE_SPECIES[i];
         Dictionary d;
         d["id"] = i; d["name"] = String(s.name);
@@ -383,7 +393,7 @@ Array CporeWorld::species() {
 
 Array CporeWorld::chains() {
     Array a;
-    for (int i = 0; i < CP_SOC_SPECIES; ++i) {
+    for (int i = 0; i < CP_STAGE_SPECIES_DEFINED; ++i) {
         const CpStageChain &c = CP_STAGE_CHAINS[i];
         Dictionary d;
         d["species"] = i; d["id"] = String(c.id); d["trait"] = String(c.trait); d["move"] = c.move;
@@ -485,6 +495,8 @@ Dictionary CporeWorld::state() const {
     Dictionary player;
     player["running"] = w.running != 0; player["stamina"] = int(w.run_stamina);
     player["falling"] = w.falling != 0;
+    player["sliding"] = w.player.sliding != 0;
+    player["grip_deg"] = double(cp_stage_grip_deg(&w.player.profile,w.player.legs));
     player["y"] = w.falling ? w.fall_y_mm * .001 : cp_stage_ground(&w, w.player.x, w.player.z);
     player["vertical_velocity"] = w.fall_v_mm_s * .001;
     d["player"] = player;
@@ -539,7 +551,7 @@ Dictionary CporeWorld::state() const {
         }
         static const char *const RES[] = {"open", "ally", "hunted"};
         Array roster;
-        for (int k = 0; k < CP_SOC_SPECIES; ++k) {
+        for (int k = 0; k < CP_STAGE_SPECIES_DEFINED; ++k) {
             Dictionary e;
             const CpStageSpecies &sp = CP_STAGE_SPECIES[k];
             e["id"] = k; e["name"] = String(sp.name); e["activity"] = int(sp.activity);
@@ -767,7 +779,7 @@ int CporeWorld::lineage_form(const String &body,const Dictionary &profile,const 
     memcpy(form.body,text.get_data(),text.length());memcpy(form.name,label.get_data(),label.length());
     if(!profile_from_dict(profile,form.profile))return -1;
     CpLineageForm projected={};
-    if(!cp_stage_genome_form(text.get_data(),&projected)){memcpy(form.profile.extra,projected.profile.extra,8);form.profile.carnivore=projected.profile.carnivore;}
+    if(!cp_stage_genome_form(text.get_data(),&projected)){memcpy(form.profile.extra,projected.profile.extra,8);form.profile.carnivore=projected.profile.carnivore;form.profile.grip_traits=projected.profile.grip_traits;form.profile.grip_legs=projected.profile.grip_legs;}
     for(int i=0;i<CP_LINEAGE_PARTS;i++){int64_t n;if(!cpore::to_int(parts[i],0,65535,n))return -1;form.parts[i]=uint16_t(n);}
     return cp_stage_lineage_form(world.get(),&form,evolve?1:0);
 }
@@ -778,3 +790,11 @@ int CporeWorld::nest_edit(const String &body){CharString text=body.utf8();return
 int CporeWorld::nest_apply(const String &body){CharString text=body.utf8();return cp_stage_apply(world.get(),text.get_data());}
 void CporeWorld::set_tiers(bool on){cp_stage_set_tiers(world.get(),on?1:0);}
 void CporeWorld::set_edit_anywhere(bool on){cp_stage_set_edit_anywhere(world.get(),on?1:0);}
+
+Dictionary CporeWorld::grip_profile(const String &genome){
+    CpCombatProfile p={};CpLineageForm form={};CharString text=genome.utf8();
+    if(!cp_stage_genome_form(text.get_data(),&form))p=form.profile;
+    else if(cp_stage_grip_project(text.get_data(),&p))return Dictionary();
+    Dictionary d;d["grip_traits"]=int(p.grip_traits);d["grip_legs"]=int(p.grip_legs);
+    d["grip_deg"]=double(cp_stage_grip_deg(&p,4));return d;
+}

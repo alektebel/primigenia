@@ -12,6 +12,7 @@ const Gait := preload("res://locomotion/loco_gait.gd")
 
 static func register(reg, island, console_registry = null) -> void:
 	_creature(reg, island)
+	_wingbeat(reg, island)
 	_look(reg)
 	_light(reg)
 	_camera(reg, island)
@@ -29,6 +30,26 @@ static func _creature(reg, island) -> void:
 			if err != "":
 				push_warning("option starter %s: %s" % [v, err]),
 		true, {"desc": "respawns the player body with that genome (a debug path: the old body stays as a cousin)."})
+
+## Wingbeat scaling (A56 open question, owner decides): the game's Pennycuick-style 4.5 m^-1/6 against the flight lab's geometric
+## similarity 4.8 m^-1/3. Masses are the lab table's (starter B 36 kg, hatchling 30 kg); the live player's own rate is in `fly report`.
+const BEAT_GAME := "game m^-1/6"
+const BEAT_LAB := "lab m^-1/3"
+static func _beat_desc() -> String:
+	var Wing := preload("res://locomotion/loco_wing.gd")
+	return "wingbeat rate law. B (36 kg): game %.1f Hz, lab %.1f Hz; hatchling (30 kg): game %.1f Hz, lab %.1f Hz; a 0.4 kg bird: game %.1f, lab %.1f. Applies to the wings at once (`fly report` shows the live rate)." % [
+		Wing.beat_hz(36.0, "game"), Wing.beat_hz(36.0, "lab"), Wing.beat_hz(30.0, "game"), Wing.beat_hz(30.0, "lab"), Wing.beat_hz(0.4, "game"), Wing.beat_hz(0.4, "lab")]
+
+static func _wingbeat(reg, island) -> void:
+	var Wing := preload("res://locomotion/loco_wing.gd")
+	reg.add_choice("wingbeat", "creature", [BEAT_GAME, BEAT_LAB], BEAT_GAME,
+		func(): return BEAT_LAB if Wing.scaling == "lab" else BEAT_GAME,
+		func(v):
+			Wing.scaling = "lab" if v == BEAT_LAB else "game"
+			var fl = island.get("flight") if island != null else null
+			if fl != null:
+				fl.rescale_wingbeat(),
+		false, {"desc": _beat_desc()})
 
 static func _look(reg) -> void:
 	reg.add_choice("skin", "look", ["v1", "pre-v1"], "v1",

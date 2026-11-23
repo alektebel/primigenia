@@ -437,6 +437,9 @@ func _stage() -> void:
 	_key(KEY_1)
 	await sim_ticks(40)
 	var p_now: Dictionary = game.stage.cur.entities[0]
+	check(p_now.has("grip_deg") and p_now.has("sliding"), "A59 exposes grip and slipping to animation")
+	var gp: Dictionary = CporeWorld.grip_profile(JSON.stringify({"nodes": [{"y": 0, "z": 0, "r": 1}], "parts": [{"type": "leg_sucker"}]}))
+	check(int(gp.get("grip_deg", 0)) == 75, "A59 sucker preview clings at 75 degrees")
 	var e_now: Dictionary = game.stage.cur.entities[1]
 	check(events_seen > 0, "combat events reached the stage (%d)" % events_seen)
 	check(windup_seen, "the wind-up tell was shown for an enemy wind-up")

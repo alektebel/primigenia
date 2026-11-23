@@ -44,7 +44,7 @@ static int valid_form(const CpLineageForm *f){
  const CpCombatProfile *p=&f->profile;
  for(int k=0;k<8;k++)if(p->extra[k]>5)return 0;
  if(p->carnivore>1)return 0;
- return p->mouth<=5&&p->charge<=5&&p->spit<=5&&p->tail<=5&&p->guard<=5&&p->fire<=5&&isfinite(p->hp)&&p->hp>0&&p->hp<=100000&&isfinite(p->stamina)&&p->stamina>0&&p->stamina<=100000&&isfinite(p->speed)&&p->speed>0&&p->speed<=100&&(!p->radius_cm||(p->radius_cm>=40&&p->radius_cm<=400));
+ return p->grip_traits<=63&&p->mouth<=5&&p->charge<=5&&p->spit<=5&&p->tail<=5&&p->guard<=5&&p->fire<=5&&isfinite(p->hp)&&p->hp>0&&p->hp<=100000&&isfinite(p->stamina)&&p->stamina>0&&p->stamina<=100000&&isfinite(p->speed)&&p->speed>0&&p->speed<=100&&(!p->radius_cm||(p->radius_cm>=40&&p->radius_cm<=400));
 }
 static void copy_form(CpLineageForm *out,const CpLineageForm *in){
  memset(out,0,sizeof *out);
@@ -52,7 +52,7 @@ static void copy_form(CpLineageForm *out,const CpLineageForm *in){
  memcpy(out->parts,in->parts,sizeof out->parts);
  const CpCombatProfile *p=&in->profile;CpCombatProfile *q=&out->profile;
  q->mouth=p->mouth;q->charge=p->charge;q->spit=p->spit;q->tail=p->tail;q->guard=p->guard;q->fire=p->fire;
- memcpy(q->extra,p->extra,sizeof q->extra);q->carnivore=p->carnivore;
+ memcpy(q->extra,p->extra,sizeof q->extra);q->carnivore=p->carnivore;q->grip_traits=p->grip_traits;q->grip_legs=p->grip_legs;
  q->hp=p->hp;q->stamina=p->stamina;q->speed=p->speed;q->radius_cm=p->radius_cm;
 }
 int cp_stage_lineage_form(CpStageWorld *w,const CpLineageForm *f,int evolve){
@@ -80,12 +80,17 @@ int cp_stage_evolve(CpStageWorld *w,const CpLineageForm *f){
  int diet=old->form.profile.mouth>=2?1:old->form.profile.mouth==1?2:0;
  int base=temper==2?3:temper==1?2:0;
  CpStageDebug d={.op=CP_STAGE_DBG_SPAWN,.a=base,.x=hx/100.f,.z=hz/100.f};
- static const int offsets[8][2]={{3200,0},{0,3200},{-3200,0},{0,-3200},{2400,2400},{-2400,2400},{2400,-2400},{-2400,-2400}};
+ /* Cousins live near the nest (T9: at most CP_STAGE_COUSIN_MAX_DIST from it). The ring is anchored on the longest residence when that
+  * is within 8 m of the nest, else on the nest itself; 24 m ring for the first eight cousins, 30 m for the later ones (anchor+ring <= 38 m). */
+ {float nx=w->setup.nest_x*100.f,nz=w->setup.nest_z*100.f,ax=hx-nx,az=hz-nz;
+  if(ax*ax+az*az>800.f*800.f){hx=(int32_t)nx;hz=(int32_t)nz;}}
+ static const int offsets[8][2]={{100,0},{0,100},{-100,0},{0,-100},{71,71},{-71,71},{71,-71},{-71,-71}};
  int spawned=0;
  for(int k=0;k<8;k++){
   int candidate=(k+(int)w->ancestry.count-1)%8;
-  int scale=w->ancestry.count>8?3:2;
-  d.x=(hx+offsets[candidate][0]*scale/2)/100.f;d.z=(hz+offsets[candidate][1]*scale/2)/100.f;
+  int ring=w->ancestry.count>8?3000:2400;
+  d.x=(hx+offsets[candidate][0]*ring/100)/100.f;d.z=(hz+offsets[candidate][1]*ring/100)/100.f;
+  if(hypotf(d.x-w->setup.nest_x,d.z-w->setup.nest_z)>CP_STAGE_COUSIN_MAX_DIST)continue;
   /* Validate the old body's full radius, not just the AI template's radius. */
   int blocked=0;float radius=cp_combat_body_radius(&old->form.profile);
   for(int j=0;j<w->setup.n_obstacles;j++){
@@ -128,7 +133,7 @@ uint64_t cp_stage_ancestry_hash(const CpStageWorld *w){
  for(unsigned i=0;i<a->count;i++){const CpLineageGeneration *g=&a->forms[i];ah_text(&h,g->form.body);ah_text(&h,g->form.name);
   for(int k=0;k<CP_LINEAGE_PARTS;k++)ah_u32(&h,g->form.parts[k]);
   const CpCombatProfile *p=&g->form.profile;int ex=p->carnivore;for(int k=0;k<8;k++)ex|=p->extra[k];if(ex){ah_u32(&h,0x43324c47);for(int k=0;k<8;k++)ah_u32(&h,p->extra[k]);ah_u32(&h,p->carnivore);}
-  ah_u32(&h,p->mouth);ah_u32(&h,p->charge);ah_u32(&h,p->spit);ah_u32(&h,p->tail);ah_u32(&h,p->guard);if(p->fire)ah_u32(&h,0x46495245u+p->fire);ah_u32(&h,p->radius_cm);ah_float(&h,p->hp);ah_float(&h,p->stamina);ah_float(&h,p->speed);
+  ah_u32(&h,p->mouth);ah_u32(&h,p->charge);ah_u32(&h,p->spit);ah_u32(&h,p->tail);ah_u32(&h,p->guard);if(p->fire)ah_u32(&h,0x46495245u+p->fire);if(p->grip_traits||p->grip_legs){ah_u32(&h,0x47524950);ah_u32(&h,p->grip_traits);ah_u32(&h,p->grip_legs);}ah_u32(&h,p->radius_cm);ah_float(&h,p->hp);ah_float(&h,p->stamina);ah_float(&h,p->speed);
   ah_u32(&h,g->generation);ah_u32(&h,g->traits);for(int k=0;k<CP_DEED_COUNT;k++)ah_u32(&h,g->deeds[k]);
   ah_u32(&h,g->cousin_id);ah_u32(&h,g->home_x);ah_u32(&h,g->home_z);ah_u32(&h,g->temperament);ah_u32(&h,g->diet);ah_u32(&h,g->trust_bonus);ah_u32(&h,g->type);
  }return h;

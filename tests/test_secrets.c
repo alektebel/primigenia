@@ -191,7 +191,7 @@ static void flat(int clock,int n,const int *species){
     assert(!cp_stage_reset(&w,&fs));
 }
 static void flat_tests(void){
-    assert(CP_STAGE_SPECIES_COUNT==8&&!strcmp(CP_STAGE_SPECIES[4].name,"Acechalunas")&&!strcmp(CP_STAGE_SPECIES[5].name,"Babosa"));
+    assert(CP_STAGE_SPECIES_DEFINED==8&&!strcmp(CP_STAGE_SPECIES[4].name,"Acechalunas")&&!strcmp(CP_STAGE_SPECIES[5].name,"Babosa"));
     assert(CP_STAGE_SPECIES[4].activity==CP_ACT_NOCTURNAL&&CP_STAGE_SPECIES[5].activity==CP_ACT_CREPUSCULAR);
     for(int i=0;i<4;i++)assert(CP_STAGE_SPECIES[i].activity==CP_ACT_DIURNAL);
     PASS("eight species, with their daily rhythm");

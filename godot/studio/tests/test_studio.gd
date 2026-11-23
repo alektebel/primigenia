@@ -26,7 +26,7 @@ func fixture(name: String) -> String:
 	return FileAccess.get_file_as_string(root_dir.path_join("tests/fixtures/studio/" + name))
 
 func _init() -> void:
-	root_dir = ProjectSettings.globalize_path("res://").path_join("../..").simplify_path()
+	root_dir = ProjectSettings.globalize_path(get_script().resource_path.get_base_dir()).path_join("../../..").simplify_path()
 	db = PartsDB.new()
 	test_parts_table()
 	test_fixtures_and_migrations()
@@ -468,6 +468,7 @@ func test_parity_panels() -> void:
 	if has_caps:
 		await process_frame
 		ok(ui.panel_box.find_child("Pips_vel", true, false) != null, "capabilities pips in the build panel")
+		ok(ui.panel_box.find_child("GripLimit", true, false) != null, "A59 grip degrees in abilities panel")
 	ok(ui.panel_box.find_child("AddRegion", true, false) != null, "regions panel in build mode")
 	ui.panel_box.find_child("AddRegion", true, false).pressed.emit()
 	await process_frame

@@ -259,14 +259,14 @@ static int test_slopes(void){
 /* The player must obey the same full-gradient ceiling as wildlife, even when
  * walking along a contour (zero directional grade). */
 static int test_player_ceiling(void){
-    make_field(1.35f,0);
-    field_world(&w,8,60,23,0);
+    make_field(1.8f,0); /* 8 legs hold 59.6 degrees (A59), so the old 1.35 now holds */
+    field_world(&w,8,60,22,0);
     CpStageInput wait={.verb=CP_STAGE_WAIT};
     int slid=0;
     for(int i=0;i<30;i++){cp_stage_step(&w,&wait);slid|=w.player.sliding;}
     CHECK(slid);
-    field_world(&w,8,60,23,0);
-    CpStageInput contour={.verb=CP_STAGE_GO,.x=23,.z=30};
+    field_world(&w,8,60,22,0);
+    CpStageInput contour={.verb=CP_STAGE_GO,.x=22,.z=30};
     CHECK(cp_stage_order(&w,&contour)==-4);
     return 0;
 }

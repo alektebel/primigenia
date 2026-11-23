@@ -12,6 +12,9 @@ extends RefCounted
 ## Hinge only: today's rigid sails flap as a unit; vanes also fan open and closed (W1 will bring the articulated chain).
 
 const BEAT_HZ_1KG := 4.5            # f = 4.5 (m / 1 kg)^(-1/6) Hz (Pennycuick 1996, adopted in the plan)
+const BEAT_C_LAB := 4.8             # lab law f = 4.8 m^(-1/3) Hz (geometric similarity, web/gaitlab/flight.html; unchecked, from memory)
+## Wingbeat scaling, an F10 option (owner to decide, A56): "game" = 4.5 m^-1/6 (2.5 Hz at 36 kg), "lab" = 4.8 m^-1/3 (1.5 Hz at 36 kg).
+static var scaling := "game"
 const DOWNSTROKE := 0.58            # share of the beat spent on the downstroke
 const TAU_DEPLOY := 0.16            # s, first-order time constants of the channels (UI motion rule: <= 250 ms to settle)
 const TAU_AMP := 0.10
@@ -23,6 +26,7 @@ const GROUND_SWEEP := 0.32
 const GLIDE_FLAP := 0.20            # dihedral
 const GLIDE_SWEEP := 0.05
 const GLIDE_INC := -0.12            # leading edge up a little
+const BOB_SPAN := 0.02              # share of the span (lab: 0.03; the camera follows the body, so a little less)
 const DIVE_SWEEP := 1.15
 const DIVE_FLAP := -0.15
 const DIVE_SPAN := 0.4              # the same 40 % of the area the flight model uses
@@ -31,6 +35,7 @@ const FLARE_INC := -0.7
 const FLARE_SWEEP := -0.1
 
 var info: Dictionary = {}
+var mass := 1.0
 var hz := 3.0
 var mode := "ground"
 var phase := 0.0            # beat phase 0..1, 0 = top of the stroke
@@ -43,11 +48,28 @@ var bank := 0.0             # -1..1 share of the sharpest bank, + = banked left 
 var pitch := 0.0            # +1 = nose up input (more incidence), -1 = nose down
 
 
-static func beat_hz(mass_kg: float) -> float:
-	return BEAT_HZ_1KG * pow(maxf(mass_kg, 0.05), -1.0 / 6.0)
+static func beat_hz(mass_kg: float, law: String = "") -> float:
+	var m := maxf(mass_kg, 0.05)
+	if (law if law != "" else scaling) == "lab":
+		return BEAT_C_LAB * pow(m, -1.0 / 3.0)
+	return BEAT_HZ_1KG * pow(m, -1.0 / 6.0)
+
+
+## Re-reads the scaling option (live change from F10): the beat rate of this wing follows the new law.
+func set_mass(mass_kg: float) -> void:
+	mass = mass_kg
+	hz = beat_hz(mass_kg)
+
+## Body bob in metres: the body rises as the wings go down (the reaction to the downstroke), falls on the upstroke. Visual only.
+func bob() -> float:
+	if amp < 0.01:
+		return 0.0
+	var x := 0.5 * phase / DOWNSTROKE if phase < DOWNSTROKE else 0.5 + 0.5 * (phase - DOWNSTROKE) / (1.0 - DOWNSTROKE)
+	return -BOB_SPAN * 2.0 * float(info.get("span", 1.0)) * amp * cos(TAU * x)
 
 
 func _init(mass_kg: float = 1.0, wing_info: Dictionary = {}) -> void:
+	mass = mass_kg
 	hz = beat_hz(mass_kg)
 	info = wing_info
 
@@ -105,11 +127,11 @@ func channels() -> Dictionary:
 	# flight pose: glide values, with the stroke blended in by `amp`
 	var inc_glide := GLIDE_INC - 0.25 * pitch
 	var flap_f: float = lerpf(GLIDE_FLAP, GLIDE_FLAP + b.wave, amp)
-	var sweep_f: float = GLIDE_SWEEP + amp * 0.15 * b.up
+	var sweep_f: float = GLIDE_SWEEP + amp * 0.30 * b.up      # upstroke: the wrist flexes, the tip trails (recovery fold)
 	var inc_dn := -0.5 if reverse else -0.2       # sails reverse their pitch between the strokes
 	var inc_up := 0.5 if reverse else 0.12
 	var inc_f: float = inc_glide + amp * (inc_dn * b.down + inc_up * b.up)
-	var span_f: float = 1.0 - amp * retract * b.up
+	var span_f: float = 1.0 + amp * 0.04 * b.down - amp * retract * b.up      # downstroke: full reach, the power stroke
 	var spread_f: float = 1.0 - 0.45 * amp * b.up
 	# dive: swept back and down, folded to 40 % of the span
 	flap_f = lerpf(flap_f, DIVE_FLAP, fold)
