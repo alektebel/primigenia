@@ -30,3 +30,35 @@ Contact: closed beak tip within 3 cm of the prey hitbox at the contact frame; hi
 
 ## Known weak points
 Lunge and pounce look alike in the hold (both low coils); the neck is long and thin (starter B data) and stretches up to 1.25x at the strike; front-leg splay as counterbalance is not modelled because feet stay planted.
+
+# Round 2: lunge refinements (A63)
+
+Open [bite2.html](../../../web/gaitlab/bite2.html) (maths in `bite2_core.js`; same controls as round 1). Capture: `tools/gaitlab/bite2_capture.cjs` writes `docs/evidence/loco/bite2/` (`grid_contact_{game,side,front}.jpg`, `strip_{lunge,boom,hybrid,chain}.jpg`, `focus_chain_peck.jpg`, `check.json`, `freeplay.json`, `freeplay_a/b.jpg`).
+
+## The four versions (anim ms; each hit-pause freezes the animation)
+| Version | wind-up | hold | strike | pause | hold on | pull out | recovery | beak speed (tip, peak) | prey knock | neck stretch | front-leg lean at contact |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| 1 Lunge (round 1, unchanged) | 270 | 300 | 150 | 80 | 250 | 170 | 530 | 10.7 m/s | 26 cm | 1.18 | 45 deg |
+| 2 Explosive lunge | 320 | 300 | 110 | 80 | 200 | 170 | 580 | 15.3 m/s | 32 cm | 1.00 | 39 deg |
+| 3 Lunge + peck hybrid | 310 | 310 | 140 | 80 | 230 | 160 | 550 | 15.4 m/s | 30 cm | 1.04 | 32 deg |
+| 4 Lunge, then peck-snap | 240 | 300 | 130 + 85 | 80 + 60 | 90 + 60 | cock 130 | 425 | 7.2 m/s | 10 + 10 cm | 1.00 | 32 / 41 deg |
+
+- **2 Explosive:** hips drop 34 cm (round 1: 24), body drives 46 cm in 110 ms, tail counter-lifts 0.72 rad (round 1: 0.4) after a deeper tail tuck, prey knocked 32 cm with a bigger hop, squash and tilt, dust kicked from both hind feet at drive-off, front feet skid forward 20 cm.
+- **3 Hybrid:** the neck stays cocked in an S and carried low (head 10 cm below rest) through the hold and the body drive, then the head whips forward the last 15 cm in 50 ms (cubic ease) while the jaws open; lunge body drive is a little shorter (43 cm), front feet skid 16 cm.
+- **4 Chain:** lunge-bite, a 90 ms hold on, then the head cocks back (130 ms) and a light peck (85 ms) hits the prey that was knocked loose (second hit-pause 60 ms, second flinch). The peck follow-up from cock to recovery plus its pause is 760 ms (limit 800).
+
+## Fixes to round-1 weak spots
+- Neck stretch capped at 1.08 (checked on versions 2 to 4, they peak at 1.00 to 1.04): the body moves more (bx up to 0.5 m) and the contact point sits on the prey's low rear (flatter beak angle), so the neck folds instead of stretching. Round 1 stays as the reference at 1.18.
+- Neck carriage: contact is lower and flatter, the neck no longer rises like a giraffe at the hit (side-camera grid); the rest and recovery pose is still the long starter B neck.
+- Front-leg splay: front feet skid forward 12 to 22 cm during the drive (dust, gold ring turns dim while swinging) and stay put, then return in recovery; lean at contact drops from 45 to 32 to 39 deg. Hind feet stay planted (checked: zero slide, drift 0).
+
+## Self-check (`window.__stylesCheck`): pass
+Per hit: beak within 3 cm of the hitbox (all about -0.5 cm), hit-pause 60 to 90 ms clean freeze, knockback along the beak velocity (cos 1.0), no reach error. Per version: planted hind feet never move, nothing below ground, strike 80 to 150 ms, hold 300 to 600 ms, neck stretch at most 1.08 (not applied to the round-1 reference), chain peck follow-up at most 800 ms, prey state finite for every integer animation ms.
+
+## Free-play check (the round-1 freeze lesson): pass
+`freeplay.json`: page loaded WITHOUT `?test=1` in headless Chromium (SwiftShader) for 4.7 s, zero page errors, the frame counter and the animation clock advance, and two screenshots (`freeplay_a.jpg` at 433 ms, `freeplay_b.jpg` at 1650 ms) show different poses. Also fixed a negative first frame dt in the tick loop.
+
+## Weakest
+- In the hold of versions 1, 2 and 4 the head is tucked low behind the shoulders and is partly hidden in the game camera; the lock-on gaze reads best in version 3 (cocked S neck, head visible).
+- Versions 2, 3 and 4 look alike in the single contact still (same body, same prey): they differ in motion (depth of coil, dust, the head whip, the second hit), so judge them in play or in the strips.
+- The chain's peck is a light dip on a prey that slides only 10 cm; a bigger second target move would show the follow-up more clearly.
