@@ -1,4 +1,5 @@
 #include "cpore/world.h"
+#include "cpore/steer.h"
 #include <assert.h>
 #include <math.h>
 #include <stdio.h>
@@ -56,7 +57,41 @@ int main(void){
     /* a hero-size body at its run (5 m/s, about the old jog); a slow walker stops at the foot of the facet instead (A39) */
     w.player.profile.radius_cm=300;CpStageInput east_run=east;east_run.sprint=1;
     int slid=0;for(int i=0;i<80;i++){cp_stage_step(&w,&east_run);slid|=w.falling;}
-    assert(slid);
+    assert(slid||w.player.x<0);
+    /* A59: low sprawling plain body: 40; digging claws: 50. Same 50-degree slope. */
+    for(int adapted=0;adapted<3;adapted++){
+        reset(0);float grade=adapted==2?3.7320508f:1.1917536f;
+        for(int j=0;j<256;j++)for(int i=0;i<256;i++)heights[j*256+i]=100+grade*(i*.5f-64);
+        w.player.x=0;w.player.profile.grip_traits=CP_GRIP_LOW;
+        if(adapted==1)w.player.profile.grip_traits|=CP_GRIP_CLAW;
+        if(adapted==2)w.player.profile.grip_traits=CP_GRIP_CLING;
+        cp_stage_step(&w,&wait);
+        if(!adapted)assert(w.player.sliding&&w.player.x<0);
+        else {printf("grip case %d: x=%f slide=%d fall=%d limit=%f\n",adapted,w.player.x,w.player.sliding,w.falling,cp_stage_grip_grade(&w.player.profile,w.player.legs));assert(!w.player.sliding&&!w.falling&&w.player.x==0);}
+    }
+    /* A slide carries the player across a cliff and through A31 landing damage. */
+    reset(0);
+    for(int j=0;j<256;j++)for(int i=0;i<256;i++)heights[j*256+i]=i<120?0:12+1.2f*(i*.5f-60);
+    w.player.x=0;w.player.hp=w.player.profile.hp;int saw_slide=0,saw_damage=0;
+    for(int i=0;i<160&&!saw_damage;i++){
+        cp_stage_step(&w,&wait);saw_slide|=w.player.sliding;
+        for(unsigned k=0;k<w.ev_total&&k<CP_STAGE_MAX_EVENTS;k++)if(w.events[k].type==CP_STAGE_EV_FELL&&w.events[k].value>0)saw_damage=1;
+    }
+    assert(saw_slide&&saw_damage);
+    /* Wildlife slides and takes the same capped A31 damage after leaving the slope. */
+    reset(0);
+    for(int j=0;j<256;j++)for(int i=0;i<256;i++)heights[j*256+i]=i<120?0:12+1.2f*(i*.5f-60);
+    w.setup.n=1;w.wild[0]=w.player;w.wild[0].x=0;w.wild[0].home_x=0;w.player.x=30;
+    float wild_hp=w.wild[0].hp;int wild_slide=0;
+    for(int i=0;i<160&&w.wild[0].hp==wild_hp;i++){cp_stage_step(&w,&wait);wild_slide|=w.wild[0].sliding;}
+    assert(wild_slide&&w.wild[0].hp<wild_hp);
+    /* A nearby hostile cannot capture a sliding body into a flat combat arena. */
+    reset(0);
+    for(int j=0;j<256;j++)for(int i=0;i<256;i++)heights[j*256+i]=100+1.2f*(i*.5f-64);
+    w.player.profile.grip_traits=CP_GRIP_CLING;w.player.x=2;
+    w.setup.n=1;w.wild[0]=w.player;w.wild[0].profile.grip_traits=0;w.wild[0].species=3;w.wild[0].x=0;
+    cp_stage_step(&w,&wait);assert(w.wild[0].slip_air&&w.active<0);
+
     /* The confirmed body's actual bone lengths determine safe drop. */
     reset(0);w.ancestry.count=1;
     strcpy(w.ancestry.forms[0].form.body,"{\"parts\":[{\"type\":\"pata\",\"k\":[0,-1,0],\"f\":[0,-2,0]}]}");

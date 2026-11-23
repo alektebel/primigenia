@@ -363,6 +363,7 @@ uint64_t cp_combat_hash(const CpCombatWorld *w)
             fu8(&f, (uint8_t)(c->prof.radius_cm >> 8));
         }
         ff(&f, c->x); ff(&f, c->y); ff(&f, c->fx); ff(&f, c->fy);
+        if(c->prof.grip_traits||c->prof.grip_legs){fu32(&f,0x47524950);fu32(&f,c->prof.grip_traits);fu8(&f,c->prof.grip_legs);}
         if (c->prof.fire) { fu32(&f, 0x46495245); fu8(&f, c->prof.fire); }
         if (c->burn_t) { fu32(&f, 0x4255524e); fu8(&f, c->burn_t); fu8(&f, (uint8_t)c->burn_src); }
         ff(&f, c->hp); ff(&f, c->stamina);

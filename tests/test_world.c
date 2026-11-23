@@ -584,7 +584,7 @@ static void field_mode(void){
     float up=walk_dist(0,32767,30);
     /* the steady speed is the jog times the steer.c slope factor for a 10 degree grade (4 legs, the default body) */
     CpSteerBody body;
-    cp_steer_body(&w.motion,cp_combat_body_radius(&w.player.profile),w.player.legs,&body);
+    cp_steer_creature(&w.motion,&w.player,&body);
     const float predicted=cp_steer_slope(&w.motion,&body,.17632698f);
     assert(up<flat&&fabsf(up/flat-predicted)<.015f);
     /* wall, pond, sea */
@@ -1034,7 +1034,28 @@ static void approach_in_fight(void){
     assert(cp_stage_command(&w,"approach #999")==-2);
     assert(cp_stage_command(&w,"approach #1")==0);
 }
+static void grip_profile(void){
+    reset();assert(cp_stage_grip_deg(&w.player.profile,4)==35);
+    w.player.profile.grip_traits=CP_GRIP_CLAW|CP_GRIP_LOW;
+    assert(cp_stage_grip_deg(&w.player.profile,4)==50);
+    uint64_t h=cp_stage_hash(&w);w.player.profile.grip_traits=CP_GRIP_CLING;
+    assert(cp_stage_hash(&w)!=h&&cp_stage_grip_deg(&w.player.profile,4)==75);
+    assert(cp_stage_grip_deg(&w.player.profile,8)==75);
+    w.player.profile.grip_traits=63;
+    assert(cp_stage_grip_deg(&w.player.profile,8)==80);
+    w.player.profile.grip_traits=CP_GRIP_HOOF;
+    assert(cp_stage_grip_deg(&w.player.profile,4)==30);
+    w.player.profile.radius_cm=300;assert(cp_stage_grip_deg(&w.player.profile,4)==25);
+    CpCombatProfile p={0};
+    const char *base="{\"nodes\":[{\"y\":0,\"r\":1}],\"parts\":[{\"type\":\"wing_glider\"},{\"type\":\"aleta\"}]}";
+    assert(!cp_stage_grip_project(base,&p)&&cp_stage_grip_deg(&p,4)==35);
+    assert(!cp_stage_grip_project("{\"nodes\":[{\"y\":0,\"r\":1}],\"parts\":[{\"type\":\"leg_sucker\"}]}",&p));
+    assert(cp_stage_grip_deg(&p,4)==75);
+    assert(cp_stage_grip_project("{}",&p)<0);
+    puts("PASS A59 profile limits and canonical hash");
+}
 int main(void) {
+    grip_profile();
     validation();
     motion_law();
     terrain_and_hash();

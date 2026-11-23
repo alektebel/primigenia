@@ -55,7 +55,7 @@ float cp_steer_slope(const CpStageMotion *m,const CpSteerBody *b,float grade){
     return maxf_(1+m->down_gain-(d-.2f)*(1+m->down_gain)*1.25f,.4f);
 }
 float cp_steer_slide(const CpStageMotion *m,const CpSteerBody *b,float g){
-    return g>b->slide?minf_(m->slide_k*(g-b->slide)+.4f,5):0;
+    return g>b->slide+.0001f?minf_(m->slide_k*(g-b->slide)+.4f,5):0;
 }
 float cp_steer_tick(const CpStageMotion *m,const CpSteerBody *b,CpSteer *s,float dx,float dz,float wanted,float jog,float slope){
     const float n=sqrtf(dx*dx+dz*dz),old=s->speed;
@@ -131,4 +131,39 @@ void cp_steer_carrot(const float (*path)[2],int n,int first,float px,float pz,fl
     }
     *ox=ax;
     *oz=az;
+}
+
+/* A59 starting values; validation and rationale: docs/evidence/sim/slope-grip.md.
+ * Adhesion establishes a 75-degree floor; all bonuses are presence-only. */
+float cp_stage_grip_deg(const CpCombatProfile *p,int legs){
+    unsigned t=p->grip_traits;
+    if(p->grip_legs)legs=p->grip_legs;
+    float d=35;
+    if(t&CP_GRIP_CLAW)d+=10;
+    if(t&CP_GRIP_ARM)d+=8;
+    if(t&CP_GRIP_CLING)d+=20;
+    if(legs>=6)d+=8;
+    if(t&CP_GRIP_LOW)d+=5;
+    if(t&CP_GRIP_TAIL)d+=5;
+    if(cp_combat_body_radius(p)>2)d-=5;
+    /* Conservative rock traction on every terrain until a substrate map exists. */
+    if(t&CP_GRIP_HOOF)d-=5;
+    if(t&CP_GRIP_CLING){if(d<75)d=75;if(d>80)d=80;}
+    else if(d>70)d=70;
+    return d;
+}
+float cp_stage_grip_grade(const CpCombatProfile *p,int legs){
+    float d=cp_stage_grip_deg(p,legs);
+    /* Fixed polynomial sin/cos, no platform trig. Preserve the old exact grade at 51.6 degrees. */
+    if(d==51.6f)return CP_STEER_GRADE_MAX;
+    float x=d*.017453292519943295f,x2=x*x;
+    float si=x*(1+x2*(-1.f/6+x2*(1.f/120+x2*(-1.f/5040+x2/362880))));
+    float co=1+x2*(-1.f/2+x2*(1.f/24+x2*(-1.f/720+x2*(1.f/40320-x2/3628800))));
+    return si/co;
+}
+void cp_steer_creature(const CpStageMotion *m,const CpStageCreature *c,CpSteerBody *b){
+    cp_steer_body(m,cp_combat_body_radius(&c->profile),c->legs,b);
+    b->slide=cp_stage_grip_grade(&c->profile,c->legs);
+    if(b->climb>b->slide)b->climb=b->slide;
+    if(b->stall>b->slide)b->stall=b->slide;
 }

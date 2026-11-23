@@ -1,6 +1,6 @@
 # Status
 
-Updated 2026-11-22 (creator-flow C1/C2 session; uncommitted Codex changes, no merge). Rewritten at the end of every session; keep it to one page.
+Updated 2026-11-23 (A59 slope grip; uncommitted Codex changes, no merge). Rewritten at the end of every session; keep it to one page.
 
 ## Focus now
 **Procedural creature movement that looks like the references.** Order (research plan `docs/research/procedural-locomotion.md`, tracker stages M0–M6):
@@ -22,6 +22,8 @@ Reference clips: gorilla knuckle-walk (tracker X3, owner's Downloads) and Spore 
 Owner's machine: the RTX was capped at 15 W (power profile 'balanced'); `powerprofilesctl set performance` (set 2026-11-22: 35 W; nvidia-powerd inactive, `sudo systemctl enable --now nvidia-powerd` for up to 45 W). Then the game is CPU-bound on the main thread (99%). Launch on the RTX: `__NV_PRIME_RENDER_OFFLOAD=1 __GLX_VENDOR_LIBRARY_NAME=nvidia __VK_LAYER_NV_optimus=NVIDIA_only godot --path godot` (without it the game picks the AMD + compatibility).
 
 ## Branches in flight
+
+A59: `sim/slope-grip` is built, uncommitted. C grip by genome, fall-line sliding/A31 damage for player and wildlife, grip-aware nav/AI, Godot/studio limits and first-slip hint. Evidence: `docs/evidence/sim/slope-grip.md`. Run/fall/world/steer/nav PASS; Godot play 239/0, studio 932/0, bridge 0 failures. **make test PASS**, including all three full route matrices (864/864 reached; every trajectory replayed identically). Xvfb sockets blocked: no rendered evidence or L0 visual scorecard. Owner tracker A59 confirmation and Claude merge remain pending. Main `2d70fde` is an ancestor. Coordinate snapshot 12/fall code with `feat/jump`; no jump input changes.
 | Branch | State | Next step |
 |---|---|---|
 | `anim/move-styles` | **Built, uncommitted (Codex)**: M1 / D-26 owner comparison; `web/gaitlab/styles.html`, 16 styles × 7 genome/control bodies, stars/copy, local file://. Evidence: `docs/evidence/loco/styles.md`; **336/336 numerical cases PASS** in `styles/table.json`. Chromium capture sandbox-blocked (`setsockopt`, SIGTRAP); browser visuals/interactions not verified | Sonnet commits; run `tools/gaitlab/styles_capture.cjs` outside sandbox, owner stars styles / confirms tracker; no style approved or Godot port yet |
@@ -54,7 +56,7 @@ Integration follow-ups (owner): wild slot reserve for cousins (radial animals ca
 
 ## Next free ids
 - C events: next free **32** (moves FELL 27, RECIPE 28, VOLLEY 29; first-quest DUG 30, MOVE_USED 31; integration branch).
-- Snapshot version: integration branch = 11 → next **12**.
+- Snapshot version: main = 11; A59 `sim/slope-grip` reserves **12** → next **13** (coordinate with parallel `feat/jump`).
 
 ## Waiting on the owner (tracker)
 - Decisions D-02 … D-20 (D-12 arms reach rule, D-19 game-design skill as brief template, D-20 Blender props trial).

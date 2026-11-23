@@ -3,6 +3,7 @@
  * 20 seeded far targets must be reached (>= 18), the planner time is reported, and the same orders replay to the
  * same hashes (also through cp_stage_replay_ex and a snapshot taken while a path is being followed). */
 #include "cpore/world.h"
+#include "cpore/steer.h"
 #include "cpore/terrain.h"
 #include <assert.h>
 #include <inttypes.h>
@@ -39,6 +40,8 @@ static void fresh(float nx,float nz){
     cp_stage_setup_default(&setup,5);
     setup.terrain=CP_STAGE_FIELD;
     setup.n=0;
+    /* Long-distance connectivity fixture uses adapted feet; plain reachability is tested in test_steer. */
+    setup.player.grip_traits=CP_GRIP_CLAW|CP_GRIP_ARM;
     setup.nest_x=nx;
     setup.nest_z=nz;
     assert(cp_stage_reset(&world,&setup)==0);

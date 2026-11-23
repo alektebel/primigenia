@@ -154,6 +154,8 @@ typedef struct {
     /* The fire gland level (0 = none). Last member, written to the hash only when nonzero, so positional
      * initialisers and every existing hash stay as they were. */
     uint8_t fire;
+    uint16_t grip_traits; /* A59: genome-derived contact adaptations */
+    uint8_t grip_legs;    /* actual ground contacts; 0 uses stage legs */
 } CpCombatProfile;
 
 /* Resolved metres. Default values return the CB_RADIUS literal. */
