@@ -4,11 +4,12 @@ extends RefCounted
 const DEFAULTS := {"master": 0.7, "music": 0.4, "sfx": 0.75, "ambience": 0.5, "mute": false}
 const BUSES: Array[String] = ["master", "music", "sfx", "ambience"]
 
-var path := "user://settings.cfg"
+const TestIsolation := preload("res://devtools/test_isolation.gd")
+var path := TestIsolation.user("settings.cfg")
 var values: Dictionary = DEFAULTS.duplicate()
 
-func _init(p: String = "user://settings.cfg") -> void:
-	path = p
+func _init(p: String = "") -> void:
+	path = p if p != "" else TestIsolation.user("settings.cfg")
 	load_file()
 
 func load_file() -> void:
