@@ -35,8 +35,8 @@ func _camera(rondo: int, side_deg: float) -> void:
 	d.y = 0.0
 	var dir := d.normalized() if d.length() > 0.01 else Vector3.FORWARD
 	var side := dir.cross(Vector3.UP).normalized().rotated(Vector3.UP, deg_to_rad(side_deg - 55.0) * 0.0)
-	island.camera.fov = 38.0
-	island.camera.position = mid + side * 2.6 + Vector3.UP * 0.5 - dir * 0.4 + island._landing_shake(1.0 / 30.0)
+	island.camera.fov = 42.0
+	island.camera.position = mid + side * 5.0 + Vector3.UP * 0.9 - dir * 0.4 + island._landing_shake(1.0 / 30.0)
 	island.camera.look_at(mid)
 
 func _run() -> void:

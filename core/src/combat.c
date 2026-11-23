@@ -1227,6 +1227,12 @@ uint64_t cp_combat_step(CpCombatWorld *w)
         if (!(m->flags & CB_F_DASH)) continue;
         if (!(m->flags & CB_F_SWEEP) && c->hit_mask && !(m->flags & CB_F_SELF)) continue; /* dash ends on contact */
         if (standing_peck(c)) continue;
+        if (c->move == CB_PECK && c->verb_target >= 0 && c->verb_target < w->n && w->c[(int)c->verb_target].alive) {
+            /* the gallop homes on its target (A65): the run-up is straight but the last metres follow the target, so it does not run past */
+            const CpCombatCreature *t = &w->c[(int)c->verb_target];
+            float hx = t->x - c->x, hy = t->y - c->y, hl = sqrtf(hx * hx + hy * hy);
+            if (hl > 1e-4f) { c->dash_x = hx / hl; c->dash_y = hy / hl; c->fx = c->dash_x; c->fy = c->dash_y; }
+        }
         float step = m->reach / (float)m->active;
         if (c->medium == CB_WATER) step *= 0.5f;
         disp[i].dx += c->dash_x * step;
