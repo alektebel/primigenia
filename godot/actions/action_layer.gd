@@ -35,6 +35,8 @@ var idle_on := true          # tests switch the idle layer (breathing, look-arou
 var rng := RandomNumberGenerator.new()
 var _pending: Array = []     # cosmetic triggers waiting for the next tick boundary
 var _last_tick := -1
+var _fear_prev := 0
+var _last_proj_kind := 0     # A69: kind of the last shot this creature fired (0 jet, 1 glob, 2 lob, 3 charged lob), for the hit effect
 var _dt_hint := 0.016
 var _alt := 0
 var _ctx: Dictionary = {}
@@ -318,6 +320,11 @@ func _handle_state(dt: float, sig: Dictionary, ctx: Dictionary) -> void:
 	elif not _find_id("death").is_empty() or _death_present():
 		clear()
 		return
+	# A74: a roar that frightens this creature: it cowers for a moment (C owns the flight, this is the pose)
+	var fear := int(sig.get("fear", 0))
+	if fear > 0 and _fear_prev == 0 and actions.has("fear_cower") and _find_id("fear_cower").is_empty():
+		_start_oneshot("fear_cower")
+	_fear_prev = fear
 	# marks
 	for m in marks:
 		if m == "cancel" and not cm.is_empty():
@@ -338,6 +345,9 @@ func _handle_state(dt: float, sig: Dictionary, ctx: Dictionary) -> void:
 	var mv: int = sig.get("move", -1)
 	if mv >= 0 and sig.get("e", 0) > 0:
 		var name: String = Clock.MOVE_NAMES.get(mv, "")
+		if mv == 0 or mv == 3 or mv == 8 or mv == 10:
+			# A74/A75: the context the press picked (stand, walk, gallop, far) and the hold choose the variant file
+			name = Clock.variant_id(mv, int(sig.get("ctx", 0)), bool(sig.get("hold", false)), actions, Clock.attack_set == "b")
 		if name == "peck" and actions.has("peck_chain") and int(ctx.get("tick", 0)) - _bite_hit_tick <= CHAIN_TICKS:
 			name = "peck_chain"           # A64: the quick peck right after our own bite
 		if cm.is_empty() or cm.move != mv or "start" in marks:
@@ -408,8 +418,14 @@ func _on_event(ev: Dictionary, ctx: Dictionary) -> void:
 					cm.hit_tau = cm.tau
 					if melee:
 						cm.tau = maxf(cm.tau, cm.act.w)       # the contact pose is the one the pause holds
-				if int(ev.move) == 1:
-					_start_oneshot("strike")      # the charge lands: squash and rebound of the attacker
+				if int(ev.move) == 3:
+					# A69: the shot lands, the acid sizzles on the target (and a charged glob leaves a puddle)
+					var pt: Variant = _goal_point("target_surface", {"root": Transform3D(Basis.IDENTITY, _ctx.get("pos", Vector3.ZERO))}) if not tgt.is_empty() else null
+					action_event.emit("acid_hit", {"entity": entity_id, "pos": pt if pt != null else (tgt.pos if not tgt.is_empty() else _ctx.get("pos", Vector3.ZERO)),
+						"kind": _last_proj_kind, "size": map.height, "victim_size": other_h, "amount": float(ev.amount)})
+					action_event.emit("impact", {"id": "acid", "entity": entity_id, "tau": 0.0, "arrival": true})   # the shot's impact is its landing, not the release
+				if int(ev.move) == 1 or (int(ev.move) == 0 and cm_ctx_far(cm)):
+					_start_oneshot("strike")      # the charge lands: squash and rebound of the attacker (A74: also the far bite, the embestida)
 				if int(ev.move) == 0:
 					_bite_hit_tick = int(ctx.get("tick", 0))
 				_force_impact()
@@ -426,6 +442,18 @@ func _on_event(ev: Dictionary, ctx: Dictionary) -> void:
 				for o in inst:
 					if o.kind == "cosmetic":
 						_fade(o, 0.08)
+		10:     # PROJECTILE (A69): a fired a shot at b; the aim point and the flight time come from the state
+			if ev.a == me:
+				var sg: Dictionary = ctx.get("sig", {})
+				var best: Dictionary = {}
+				for p in sg.get("projectiles", []):
+					if int(p.owner) == int(sg.get("fighter", -1)) and (best.is_empty() or int(p.ticks) > int(best.ticks)):
+						best = p
+				if not best.is_empty():
+					_last_proj_kind = int(best.kind)
+					var gy: float = float(tgt.pos.y) if not tgt.is_empty() and tgt.has("pos") else float(_ctx.get("pos", Vector3.ZERO).y)
+					action_event.emit("projectile", {"entity": entity_id, "from": _mouth_world, "to": Vector3(float(best.x), gy + 0.5 * float(tgt.get("height", map.height)), float(best.z)),
+						"ticks": int(ev.amount), "kind": int(best.kind), "size": map.height})
 		2:      # BLOCKED
 			if ev.b == me:
 				react("block", dir_local, ev.amount)
@@ -456,6 +484,10 @@ func _emit_hit_fx(ev: Dictionary, tgt: Dictionary, other_h: float) -> void:
 
 ## C says this creature hit something. Normally the instance reaches tau = W in the same frame; when C cancelled the
 ## move in the very tick it hit (a clash), the impact is still delivered, once, to whatever instance has not fired it.
+## True when the running bite is the far one (the charge).
+func cm_ctx_far(cm: Dictionary) -> bool:
+	return not cm.is_empty() and str(cm.id) == "bite_far"
+
 func _force_impact() -> void:
 	for k in range(inst.size() - 1, -1, -1):
 		var i: Dictionary = inst[k]

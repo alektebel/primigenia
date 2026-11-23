@@ -22,7 +22,7 @@
 #define CP_STAGE_GRACE_TICKS 600 /* 60 seconds at 10 Hz */
 #define CP_STAGE_WAKE_RADIUS 6.f
 #define CP_STAGE_WAKE_TICKS 150 /* 15 seconds since the last approach */
-#define CP_STAGE_SNAPSHOT_VERSION 13   /* 3: player loadout (A21); 4: social layer (C2); 5: lineage ledger and ancestry; 6: discovery, nest shop and eggs; 7: secrets (shards, cave chamber, day/night) and 6 species; 8: run and fixed-point fall state; 9: + recipes, calcium, mineral, stones (C2 moves/recipes); 10: digging (holes, fossil beds) and the fire gland (first-quest); 11: 8 species (brujula, corona), Garfio grace and Acechalunas wake clocks (species-v8); 12: roster v9, 32 wild slots and 12 species capacity (8 defined, 4 reserved for the food web and flying species, A59); 13: A59 slope grip traits and wildlife fall state */
+#define CP_STAGE_SNAPSHOT_VERSION 15   /* 3: player loadout (A21); 4: social layer (C2); 5: lineage ledger and ancestry; 6: discovery, nest shop and eggs; 7: secrets (shards, cave chamber, day/night) and 6 species; 8: run and fixed-point fall state; 9: + recipes, calcium, mineral, stones (C2 moves/recipes); 10: digging (holes, fossil beds) and the fire gland (first-quest); 11: 8 species (brujula, corona), Garfio grace and Acechalunas wake clocks (species-v8); 12: roster v9, 32 wild slots and 12 species capacity (8 defined, 4 reserved for the food web and flying species, A59); 13: A59 slope grip traits and wildlife fall state; 15: A72/A74 context attacks (variant, momentum, knockback, projectiles, hold; 14 belongs to feat/jump) */
 /* A31 fall damage: 10 HP per metre beyond the safe drop, capped at 60 % of max HP unless the fall is free (air above 2x the safe drop). */
 #define CP_FALL_CAP_PERMILLE 600
 #define CP_FALL_FREE_X 2
@@ -147,7 +147,7 @@ typedef struct {
     int32_t verb,target,move,dir,sprint;
     int16_t hx,hz;
     float x,z;
-} CpStageInput;
+} CpStageInput;   /* ATTACK: `dir` 1 = the key was held (A74: spit throws the charged glob, or the charged lob from far); the logs carry it as is */
 typedef struct {
     float x,z,fx,fz,hp,stamina,speed,acceleration,turn_rate;
     float home_x,home_z,goal_x,goal_z;
