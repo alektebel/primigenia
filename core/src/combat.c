@@ -946,7 +946,10 @@ static void plan(CpCombatWorld *w, int i, Disp *d)
                 else { turn_toward(c, ux, uy); ev_add(w, CB_EV_NO_STAMINA, i, i, mv, 0.0f); }
                 return;
             }
-            if (c->stamina >= move_cost(c, mv)) begin_move(c, mv);
+            if (c->stamina >= move_cost(c, mv)) {
+                begin_move(c, mv);
+                if (layered(c)) { walk(w, i, d, c->fx, c->fy, c->mspd); c->mspd *= CB_MOM_DECAY; }   /* no stop on the launch tick */
+            }
             else { turn_toward(c, ux, uy); ev_add(w, CB_EV_NO_STAMINA, i, i, mv, 0.0f); }
             return;
         }

@@ -892,6 +892,13 @@ static void context_attacks(void)
     CHECK(dst > 0 && drn > dst * 1.2f, "a bite at speed deals at least 20% more (momentum)");
     CHECK(kbr > kbs && kbs > 0 && kbr <= CB_KB_MAX + 0.01f, "knockback grows with the closing speed and is capped");
     CHECK(moved_in_move, "a moving bite keeps the body moving while it plays");
+    {   /* no stutter: the launch tick of a moving attack keeps the body moving */
+        CpCombatWorld m = ctxpair(4.2f, 2.5f);
+        cp_combat_attack(&m, 0, 1, CB_BITE);
+        float minspd = 99.0f;
+        for (int t = 0; t < 12; t++) { cp_combat_step(&m); if (m.c[0].move == CB_BITE && m.c[0].spd < minspd) minspd = m.c[0].spd; }
+        CHECK(minspd > 1.5f, "a moving attack does not stop on its launch tick");
+    }
     CHECK(fabsf(st.c[0].x - xs) < 0.01f, "a standing bite does not move the body");
     {   /* overshoot after a moving hit, and a longer exposure after a miss (the target steps out of reach once the bite has started) */
         CpCombatWorld hit = ctxpair(2.4f, 3.5f), miss = ctxpair(2.4f, 3.5f);

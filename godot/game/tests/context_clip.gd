@@ -134,7 +134,7 @@ func _run_clip() -> void:
 		for ev in s.combat.events:
 			if int(ev.type) == 1 and int(ev.a) == 0 and hit_frame < 0:
 				hit_frame = frame
-		if hit_frame < 0 or frame < hit_frame + 2:
+		if int(s.active) < 0:
 			stage.debug_now({"op": 1, "id": rondo, "x": hold_pos.x, "z": hold_pos.y})     # the prey stands its ground until the hit lands
 		_camera(rondo, ctx == "gallop" or ctx == "far")
 		rows.append("%d,%d,%d,%d,%d,%d,%.2f,%.2f,%.1f,%s" % [frame, int(s.combat.tick), int(f.get("move", -9)), int(f.get("phase", -9)), int(f.get("ctx", -9)),
