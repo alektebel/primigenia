@@ -5,14 +5,24 @@
 #include "cpore/ledger.h"
 #include "cpore/creature_types.h"
 #define CP_STAGE_VERSION 3
-#define CP_STAGE_MAX_WILD 24
+/* Roster v9 (T9, docs/plans/creature-loop.md): 32 wild slots. The island setup fills at most CP_STAGE_ROSTER_CAP of them; the rest are
+ * reserved so evolving always finds a free slot for the cousin and the nest family can later be backed by C slots (godot/game/island/family.gd).
+ * It is a budget, not fixed indices (cp_stage_evolve and the debug spawn take the next free index, setup.n):
+ *   ROSTER_CAP (24)   slots the island setup may fill (radial animals, night and slug species)
+ *   RESERVE_COUSIN 4  kept free for cousins, one per evolve (the 3 evolves of a chain leave 3 cousins)
+ *   RESERVE_FAMILY 4  kept free for the nest family, not wired yet: the family is still visual only */
+#define CP_STAGE_MAX_WILD 32
+#define CP_STAGE_RESERVE_COUSIN 4
+#define CP_STAGE_RESERVE_FAMILY 4
+#define CP_STAGE_ROSTER_CAP (CP_STAGE_MAX_WILD-CP_STAGE_RESERVE_COUSIN-CP_STAGE_RESERVE_FAMILY)
+#define CP_STAGE_COUSIN_MAX_DIST 40.f /* a cousin spawns at most this far (m) from the nest */
 #define CP_STAGE_MAX_OBSTACLES 1024
 #define CP_STAGE_DAY_TICKS 12000
 #define CP_STAGE_DT .1f
 #define CP_STAGE_GRACE_TICKS 600 /* 60 seconds at 10 Hz */
 #define CP_STAGE_WAKE_RADIUS 6.f
 #define CP_STAGE_WAKE_TICKS 150 /* 15 seconds since the last approach */
-#define CP_STAGE_SNAPSHOT_VERSION 12   /* 3: player loadout (A21); 4: social layer (C2); 5: lineage ledger and ancestry; 6: discovery, nest shop and eggs; 7: secrets (shards, cave chamber, day/night) and 6 species; 8: run and fixed-point fall state; 9: + recipes, calcium, mineral, stones (C2 moves/recipes); 10: digging (holes, fossil beds) and the fire gland (first-quest); 11: 8 species (brujula, corona), Garfio grace and Acechalunas wake clocks (species-v8); 12: jump (jumping flag, landing cooldown) */
+#define CP_STAGE_SNAPSHOT_VERSION 14   /* 3: player loadout (A21); 4: social layer (C2); 5: lineage ledger and ancestry; 6: discovery, nest shop and eggs; 7: secrets (shards, cave chamber, day/night) and 6 species; 8: run and fixed-point fall state; 9: + recipes, calcium, mineral, stones (C2 moves/recipes); 10: digging (holes, fossil beds) and the fire gland (first-quest); 11: 8 species (brujula, corona), Garfio grace and Acechalunas wake clocks (species-v8); 12: roster v9, 32 wild slots and 12 species capacity (8 defined, 4 reserved for the food web and flying species, A59); 13: slope grip (sim/slope-grip); 14: jump (jumping flag, landing cooldown) */
 /* A31 fall damage: 10 HP per metre beyond the safe drop, capped at 60 % of max HP unless the fall is free (air above 2x the safe drop). */
 #define CP_FALL_CAP_PERMILLE 600
 #define CP_FALL_FREE_X 2
@@ -33,7 +43,7 @@ enum { CP_STAGE_CONTINUE, CP_STAGE_WAIT, CP_STAGE_GO, CP_STAGE_HEADING,
        CP_STAGE_BEFRIEND, CP_STAGE_GIFT, CP_STAGE_OBSERVE, CP_STAGE_INTIMIDATE,
        CP_STAGE_EAT, CP_STAGE_INSPECT, CP_STAGE_BUY_PART, CP_STAGE_BUY_LEVEL, CP_STAGE_BUY_TIER,
        CP_STAGE_DIG,
-       CP_STAGE_QUEST };   /* QUEST: target = task step, move = DNA; instant, once per step (stage_dig.c); a logged input so replays agree */   /* DIG: no target; digs where the player stands (soft soil only), takes CP_DIG_TICKS standing still, costs stamina (first-quest, stage_dig.c) */   /* EAT: target = a carcass; bites every 10 ticks until it is gone, the player is full, or another order cancels it */
+       CP_STAGE_QUEST };   /* QUEST: target = task step, move = DNA; instant, once per step (stage_dig.c); a logged input so replays agree */   /* DIG: no target; digs where the player stands (anywhere dry; harder ground takes longer, A54), takes CP_DIG_TICKS standing still, costs stamina (first-quest, stage_dig.c) */   /* EAT: target = a carcass; bites every 10 ticks until it is gone, the player is full, or another order cancels it */
 #define CP_STAGE_NEST_RADIUS 12.f   /* metres from the nest within which the loadout can be changed (tunable) */
 /* Stage order codes added by A21 (-1..-6 are older): the loadout and move errors share the combat numbers. */
 enum { CP_STAGE_ERR_ON_COOLDOWN=-8, CP_STAGE_ERR_NOT_EQUIPPED=-9, CP_STAGE_ERR_BAD_SLOT=-10,
@@ -49,7 +59,7 @@ enum { CP_STAGE_ERR_ON_COOLDOWN=-8, CP_STAGE_ERR_NOT_EQUIPPED=-9, CP_STAGE_ERR_B
        CP_STAGE_ERR_FULL=-22,
        CP_STAGE_ERR_NEEDS_EVOLVE=-23, /* nest apply: the change alters parts, levels or tiers; it needs Evolve */
        CP_STAGE_ERR_NO_DNA=-24,
-       CP_STAGE_ERR_HARD_GROUND=-27,  /* dig: not soft soil (rock, steep ground, water, cave) */
+       CP_STAGE_ERR_HARD_GROUND=-27,  /* dig: water or outside the island (any dry ground can be dug, A54) */
        CP_STAGE_ERR_ALREADY_DUG=-28 };  /* dig: there is a hole here already */    /* nest evolve: the DNA balance does not cover the purchases */      /* eat: the food meter is full */
 enum { CP_DIET_HERBIVORE, CP_DIET_CARNIVORE, CP_DIET_OMNIVORE };
 #define CP_SOC_CARCASS_BITES 4    /* bites in a carcass */
@@ -69,8 +79,9 @@ enum { CP_DNA_KILL, CP_DNA_BOND, CP_DNA_ALLY, CP_DNA_DOMINATE, CP_DNA_CARCASS, C
 #define CP_SOC_WINDOW 2           /* rhythm window, +- ticks */
 #define CP_SOC_OBSERVE_TICKS 50   /* ticks of unseen watching per revealed clue */
 #define CP_SOC_OBSERVE_RANGE 40.f
-#define CP_SOC_SPECIES 8      /* Rondo, Zanco, Espinodo, Garfio, Acechalunas, Babosa, Brujula, Corona */
-#define CP_STAGE_SPECIES_COUNT 8
+#define CP_SOC_SPECIES 12     /* capacity; defined: Rondo, Zanco, Espinodo, Garfio, Acechalunas, Babosa, Brujula, Corona. 8..11 are reserved (T11 food web, A59 flying) */
+#define CP_STAGE_SPECIES_COUNT 12   /* table capacity */
+#define CP_STAGE_SPECIES_DEFINED 8  /* species 0..7 exist; spawning or listing 8..11 is refused until their rows are written */
 #define CP_SOC_CHAIN_ITEMS 3
 #define CP_SOC_EXPLORE_MAX 40
 enum { CP_STAGE_NONE, CP_STAGE_VICTORY, CP_STAGE_DEATH, CP_STAGE_FLED };
@@ -87,7 +98,7 @@ typedef struct {
 } CpStageSpecies;
 extern const CpStageSpecies CP_STAGE_SPECIES[CP_STAGE_SPECIES_COUNT];
 /* Stage locomotion (PLAN-feel, version 2; speed by body size A39). jog = sqrt(Fr_walk g h)*jog_k, run/sprint = sqrt(sprint_k g h)*jog_k
- * (sprint_k is the run Froude number, 1.5), wild = the same times wild_k; h = 0.56 * body radius. See stage_world.c. */
+ * (sprint_k is the run Froude number, 2.2 since A54: starter B runs about 3.2 m/s), wild = the same times wild_k; h = 0.56 * body radius. See stage_world.c. */
 typedef struct {
     float jog_k,sprint_k,wild_k;
     float accel,brake;               /* m/s2 caps on the per-tick speed change */
@@ -107,6 +118,7 @@ typedef struct {
     float stall_mul;                 /* it cannot walk up a grade above climb*stall_mul (speed falls to 0 there) */
     float slide_mul,slide_k;         /* above grade stall*slide_mul it slides down at slide_k*(excess)+0.4 m/s */
     float down_gain;                 /* extra speed on a mild downhill (share, at grade 0.2) */
+    float walk_fr;                   /* walk Froude number (default .24, A39); player and wild walkers: v = sqrt(walk_fr g h)*jog_k */
 } CpStageMotion;
 extern const CpStageMotion CP_STAGE_MOTION;
 typedef struct {
@@ -273,7 +285,9 @@ typedef struct {
  * integer or + - * /, derived from the seed and the field, and hashed only once a dig was accepted (`used`). */
 #define CP_STAGE_BEDS 4
 #define CP_STAGE_HOLES 16
-#define CP_DIG_TICKS 20          /* 2 s standing still */
+#define CP_DIG_TICKS 20          /* 2 s standing still on soft soil */
+#define CP_DIG_TICKS_HARD 35     /* 3.5 s on hard ground (steep, shore sand) */
+#define CP_DIG_TICKS_ROCK 50     /* 5 s on rock (cliffs, caves) */
 #define CP_DIG_STAMINA 12.f
 #define CP_BED_RADIUS 3.f
 enum { CP_BED_WING, CP_BED_BONE };
@@ -337,7 +351,9 @@ int cp_stage_dig_order(CpStageWorld *w,const CpStageInput *a);
 void cp_stage_dig_step(CpStageWorld *w);
 int cp_stage_quest_award(CpStageWorld *w,int step,int dna);   /* pays a task step's DNA once; 0, or -1 when invalid or already paid */
 void cp_stage_dig_flame(CpStageWorld *w);                      /* the player started the flamethrower */
-int cp_stage_soft_soil(const CpStageWorld *w,float x,float z); /* diggable here: dry, gentle, outside the cave */
+int cp_stage_soft_soil(const CpStageWorld *w,float x,float z); /* soft soil here: dry, gentle, outside the cave (fossil beds sit on it, the dig is fastest on it) */
+int cp_stage_dig_hardness(const CpStageWorld *w,float x,float z); /* 0 soft, 1 hard, 2 rock, -1 cannot dig (water, outside); A54 */
+int cp_stage_dig_ticks(const CpStageWorld *w,float x,float z);    /* standing-still ticks the dig takes here: 20, 35 or 50 */
 uint64_t cp_stage_dig_hash(const CpStageWorld *w);
 int cp_stage_dig_json(const CpStageWorld *w,char *out,size_t cap);
 int cp_stage_dig_observe(const CpStageWorld *w,char *out,size_t cap);   /* the agent's view: progress, holes, and the cue of any bed within 30 m (no coordinates of the far ones) */

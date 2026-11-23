@@ -54,7 +54,7 @@ static void validation(void) {
     assert(cp_stage_command(&w,"attack #1 0")==0);
     assert(cp_stage_command(&w,"attack #1 bite")==0);
     const CpStageSetup valid=setup;
-    setup.n=25;
+    setup.n=CP_STAGE_MAX_WILD+1;
     assert(cp_stage_reset(&w,&setup)<0);
     setup=valid;
     setup.n_obstacles=1025;
@@ -66,7 +66,7 @@ static void validation(void) {
     setup.nest_x=INFINITY;
     assert(cp_stage_reset(&w,&setup)<0);
     setup=valid;
-    setup.wild[0].species=CP_STAGE_SPECIES_COUNT;
+    setup.wild[0].species=CP_STAGE_SPECIES_DEFINED;
     assert(cp_stage_reset(&w,&setup)<0);
     setup=valid;
     setup.wild[0].bot=6;
@@ -247,7 +247,7 @@ static void numeric_boundaries(void) {
         setup=valid;setup.player.stamina=bad[i];assert(cp_stage_reset(&w,&setup)<0);
         setup=valid;setup.player.speed=bad[i];assert(cp_stage_reset(&w,&setup)<0);
     }
-    const int bad_counts[]={-1,25};
+    const int bad_counts[]={-1,CP_STAGE_MAX_WILD+1};
     for(int i=0;i<2;i++){setup=valid;setup.n=bad_counts[i];assert(cp_stage_reset(&w,&setup)<0);}
     setup=valid;setup.terrain=-1;assert(cp_stage_reset(&w,&setup)<0);
     setup=valid;setup.nest_x=10001;assert(cp_stage_reset(&w,&setup)<0);
@@ -298,12 +298,12 @@ static void motion_law(void) {
         CpStageInput a=heading_to(w.player.fx,w.player.fz,sprint);
         for(int i=1;i<=40;i++) {
             cp_stage_step(&w,&a);
-            assert(w.player.speed-old<=m->accel*.1f+1e-3f);
+            assert(w.player.speed-old<=m->accel*1.7f*.1f+1e-3f);   /* A54: a run bursts at 1.7x the cap */
             if(t90<0&&w.player.speed>=.9f*top)t90=i;
             old=w.player.speed;
         }
         assert(fabsf(w.player.speed-top)<.01f);
-        assert(t90>0&&t90<=(sprint?6:4));
+        assert(t90>0&&t90<=(sprint?12:6));   /* A54: softer start, 90% of the speed in about half a second (accel 7, ease .45) */
         assert(!w.player.pivot&&last_dyaw_limit>0);
     }
     /* A reversal at full jog is a skid, not a turret spin: the pivot flag stays off while v > pivot_v. */
@@ -714,15 +714,15 @@ static void debug_ops(void){
     dbg_op(CP_STAGE_DBG_SPAWN,0,3,10,10,0,0);
     assert(w.setup.n==2&&w.wild[1].species==3&&w.wild[1].home_x==10&&w.wild[1].roam_ticks==40&&w.setup.wild[1].bot==-1);
     assert(!memcmp(&spawn_before,&w.spawn_rng,sizeof spawn_before)&&!memcmp(&roam_before,&w.roam_rng,sizeof roam_before));
-    dbg_op(CP_STAGE_DBG_SPAWN,0,CP_STAGE_SPECIES_COUNT,10,10,0,-1);
+    dbg_op(CP_STAGE_DBG_SPAWN,0,CP_STAGE_SPECIES_DEFINED,10,10,0,-1);
     dbg_op(CP_STAGE_DBG_SPAWN,0,0,1000,0,0,-4);
-    while(w.setup.n<CP_STAGE_MAX_WILD)dbg_op(CP_STAGE_DBG_SPAWN,0,0,-100,-100,0,0);
+    while(w.setup.n<CP_STAGE_MAX_WILD)dbg_op(CP_STAGE_DBG_SPAWN,0,0,-100-4.f*(float)(w.setup.n%8),-100-4.f*(float)(w.setup.n/8),0,0);   /* spaced: 32 slots no longer fit one spot */
     dbg_op(CP_STAGE_DBG_SPAWN,0,0,-100,-100,0,-3);
     /* kill, heal, clock, flags, param */
     dbg_op(CP_STAGE_DBG_KILL,2,0,0,0,0,0);
     assert(w.wild[1].dead);
     dbg_op(CP_STAGE_DBG_KILL,0,0,0,0,0,-1);
-    dbg_op(CP_STAGE_DBG_KILL,25,0,0,0,0,-1);
+    dbg_op(CP_STAGE_DBG_KILL,CP_STAGE_MAX_WILD+1,0,0,0,0,-1);
     w.player.hp=10;w.player.stamina=3;
     dbg_op(CP_STAGE_DBG_HEAL,0,0,50,-1,0,0);
     assert(w.player.hp==50&&w.player.stamina==w.player.profile.stamina);
@@ -737,7 +737,7 @@ static void debug_ops(void){
     dbg_op(CP_STAGE_DBG_FLAGS,0,3,0,0,0,0);
     assert(w.debug_flags==3);
     dbg_op(CP_STAGE_DBG_FLAGS,0,0,0,0,0,0);
-    assert(CP_STAGE_PARAM_COUNT==27&&!strcmp(CP_STAGE_PARAMS[0].name,"jog_k"));
+    assert(CP_STAGE_PARAM_COUNT==28&&!strcmp(CP_STAGE_PARAMS[0].name,"jog_k"));
     for(int i=0;i<CP_STAGE_PARAM_COUNT;i++){
         const float def=*(const float *)((const char *)&CP_STAGE_MOTION+CP_STAGE_PARAMS[i].offset);
         assert(def>=CP_STAGE_PARAMS[i].min&&def<=CP_STAGE_PARAMS[i].max&&!strcmp(CP_STAGE_PARAMS[i].group,"movement"));

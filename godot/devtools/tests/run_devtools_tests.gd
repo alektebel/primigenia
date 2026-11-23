@@ -14,11 +14,13 @@ const TESTS := [
 	"res://devtools/tests/test_tuning.gd",
 	"res://devtools/tests/test_options.gd",
 	"res://devtools/tests/test_notes.gd",
+	"res://devtools/tests/test_note_card.gd",
 	"res://devtools/tests/test_questions.gd",
 	"res://devtools/tests/test_feedback.gd",
 	"res://devtools/tests/test_curated.gd",
 	"res://devtools/tests/test_zoo.gd",
 	"res://devtools/tests/test_loco_score.gd",
+	"res://devtools/tests/test_loop.gd",
 ]
 
 var checks := 0

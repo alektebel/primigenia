@@ -107,7 +107,8 @@ static func loco_describe(creature, unit: float, density := 1000.0) -> Dictionar
 		# 3. the controller's ankle is ankle_fraction * foot_size above the ground;
 		# the rig's sole is SOLE * width under the ankle: make them the same height
 		var foot_size: float = SOLE * w / fi.ankle
-		legs.append({"hip": hip, "upper": l.upper_length * unit * reach_k, "lower": l.lower_length * unit * reach_k, "radius": w * 0.5,
+		var toe := _mesh_toe(l) * unit
+		legs.append({"toe": toe, "hip": hip, "upper": l.upper_length * unit * reach_k, "lower": l.lower_length * unit * reach_k, "radius": w * 0.5,
 			"foot": kind, "foot_size": foot_size, "foot_rest": l.home * unit, "side": l.side})
 		leg_ids.append(k)
 		# 2. axes: side +1 is +X (left); a mirrored mesh would show up here
@@ -141,6 +142,20 @@ static func loco_describe(creature, unit: float, density := 1000.0) -> Dictionar
 	desc["problems"] = problems
 	return desc
 
+## How far the foot mesh reaches ahead of the ankle (rig units): the controller pitches the foot about the ball, so the ball has to be
+## the mesh's front edge or the toe sinks into the ground whenever the heel lifts (A54: up to 2.4 cm on starter B's hooves).
+## 0 = unknown (the controller keeps its own estimate).
+static func _mesh_toe(l) -> float:
+	var f = l.get("foot")
+	if f == null:
+		return 0.0
+	var zmax := 0.0
+	for ch in f.get_children():
+		if ch is MeshInstance3D and ch.mesh != null:
+			var ab: AABB = (ch as MeshInstance3D).transform * (ch as MeshInstance3D).mesh.get_aabb()
+			zmax = maxf(zmax, ab.end.z)
+	return zmax
+
 static func _yaw_of(v: Vector3) -> float:
 	return atan2(v.x, v.z)
 
@@ -169,9 +184,11 @@ static func _profile_loco_apply(creature, pose: Dictionary, desc: Dictionary, gr
 		l.foot_target = (pose.feet[j] as Vector3) - Vector3.UP * up
 		if contact:
 			l.foot_pitch = pose.foot_pitch[j]             # heel raised = toe down = +X rotation
+			l.foot_tilt = pose.foot_slope[j] if pose.has("foot_slope") else Vector2.ZERO
 			l.foot_yaw = _yaw_of(pose.foot_dir[j])
 		else:
 			l.foot_pitch = -0.5 * sin(PI * pose.swing_u[j])  # rig.js: toe up during swing
+			l.foot_tilt = Vector2.ZERO
 			l.foot_yaw = heading
 	_bend_spine(creature, pose, desc)
 	creature.solve_legs()

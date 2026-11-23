@@ -60,7 +60,7 @@ func _snapshots(t) -> void:
 	t.eq(b.hash(), a.hash(), "a failed restore keeps the state")
 	t.check(b.layout().length() == 16, "layout fingerprint is 16 hex digits")
 	var params: Array = CporeWorld.params()
-	t.eq(params.size(), 27, "27 motion parameters")
+	t.eq(params.size(), 28, "28 motion parameters")
 	t.eq(params[0].name, "jog_k", "first parameter")
 	t.check(absf(a.param(0) - params[0].default) < 1e-6, "param(0) is its default")
 	t.eq(a.debug({"op": 7, "a": 0, "v": 2.0}), 0, "PARAM debug op accepted")

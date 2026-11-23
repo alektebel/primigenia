@@ -18,9 +18,15 @@ const SitePicker := preload("res://devtools/site_picker.gd")
 const PathOverlay := preload("res://devtools/path_overlay.gd")
 const OptionsHud := preload("res://devtools/tuning/options_hud.gd")
 const FlagMode := preload("res://devtools/notes/flag_mode.gd")
+const NoteCard := preload("res://devtools/notes/note_card.gd")
+const NotesBrowser := preload("res://devtools/notes/notes_browser.gd")
+const MetaOverlay := preload("res://devtools/notes/meta_overlay.gd")
+const NoteMeta := preload("res://devtools/notes/note_meta.gd")
 const NoteCommands := preload("res://devtools/notes/note_commands.gd")
 const QuestionCard := preload("res://devtools/questions/question_card.gd")
 const QuestionCommands := preload("res://devtools/questions/question_commands.gd")
+const LoopRecorder := preload("res://devtools/loop/loop_recorder.gd")
+const LoopCommands := preload("res://devtools/loop/loop_commands.gd")
 const OptionDefs := preload("res://devtools/tuning/option_defs.gd")
 
 ## 1. Dev tools ON in every debug build (the editor and `godot --path godot`); `--dev` forces on in any
@@ -44,6 +50,10 @@ var tuning                    # TuningRegistry (entries appear when the island i
 var tuning_panel: CanvasLayer
 var options_hud: CanvasLayer  # F10 option mode
 var flag: CanvasLayer         # flag mode and in-game notes (Shift+F8)
+var note_card: CanvasLayer    # the N note card (Ctrl+N quick note)
+var browser: CanvasLayer      # the notes browser (Shift+N)
+var meta_overlay: CanvasLayer # the live metadata overlay (F11)
+var loop: Node                # LoopRecorder: the creature-loop JSONL (always on in play and in tests, not only with dev tools)
 var questions: CanvasLayer    # owner question cards and the pause-menu list
 var sites                     # Sites for the running island (built when it is ready)
 var console: CanvasLayer     # console.console.registry is the command registry (also used by the agent socket)
@@ -57,6 +67,9 @@ static func compute_enabled(args: PackedStringArray, debug_build: bool) -> bool:
 
 func _ready() -> void:
 	enabled = compute_enabled(OS.get_cmdline_user_args(), OS.is_debug_build())
+	loop = LoopRecorder.new()
+	loop.name = "LoopRecorder"
+	add_child(loop)
 	legend = Legend.new()
 	legend.name = "Legend"
 	add_child(legend)
@@ -88,11 +101,21 @@ func _ready() -> void:
 		flag = FlagMode.new()
 		flag.name = "FlagMode"
 		add_child(flag)
+		note_card = NoteCard.new()
+		note_card.name = "NoteCard"
+		add_child(note_card)
+		browser = NotesBrowser.new()
+		browser.name = "NotesBrowser"
+		add_child(browser)
+		meta_overlay = MetaOverlay.new()
+		meta_overlay.name = "MetaOverlay"
+		add_child(meta_overlay)
 		NoteCommands.register(console.registry, flag)
 		questions = QuestionCard.new()
 		questions.name = "Questions"
 		add_child(questions)
 		QuestionCommands.register(console.registry, questions)
+		LoopCommands.register(console.registry, loop)
 		if "--agent" in OS.get_cmdline_user_args():
 			agent = AgentServer.new()
 			agent.name = "AgentServer"
@@ -143,6 +166,8 @@ func _process(_dt: float) -> void:
 	FrameProfile.end(&"dev monitors")
 
 func _profile__process(_dt: float) -> void:
+	if enabled:
+		NoteMeta.sample(_dt)
 	if enabled and tuning != null and legend != null:
 		legend.header_extra = tuning.chip()
 

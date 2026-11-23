@@ -1,0 +1,13 @@
+{
+ "errors": [],
+ "frames": [
+  10,
+  23
+ ],
+ "T": [
+  649.7999999999993,
+  1866.3999999999996
+ ],
+ "screenshotsDiffer": true,
+ "pass": true
+}

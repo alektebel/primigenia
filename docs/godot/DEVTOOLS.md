@@ -15,7 +15,7 @@ Implements `PLAN-devtools.md` and `PLAN-heights.md`. Code: `godot/devtools/`, C:
 
 ## Keys (InputMap actions, physical keycodes; the legend shows the real label)
 F1 legend in all builds: hold = the key sheet (a veil with Alegreya text and outlined key caps, no panel; the menu's "Keys" pins it until Esc). The corner hint is off by default since the diegetic UI (docs/godot/UI-DIEGETIC.md; `legend.corner_visible`, a tap on F1 still toggles it); the onboarding hints replace it in play (D13 is the sheet only). `legend.json` lists `journal` (J) and `family_tree` (T) and the four ring gestures of the `radial` context; the `radial_*` letter actions are gone. Dev builds: console on the key left of 1 or F12; F2 sites picker, Ctrl+B
-bookmark; F3 tuning panel, F4 swap A/B; F5 quick save, F6 scenario picker; F8 feedback; F10 option mode; owner-question card keys 1-4 / T / Tab / N / L / Esc (only while a card shows); Shift+F8 flag mode; P pause, `.` step, `[` `]` timescale.
+bookmark; F3 tuning panel, F4 swap A/B; F5 quick save, F6 scenario picker; F8 feedback; F10 option mode; F11 metadata overlay; N note card, Ctrl+N instant note, Shift+N notes browser; owner-question card keys 1-4 / T / Tab / N / L / Esc (only while a card shows); Shift+F8 flag mode; P pause, `.` step, `[` `]` timescale.
 Reserved, not bound: F7 free camera, F9 scrubber.
 
 ## Formats
@@ -59,6 +59,32 @@ note in `feedback/notes/index.jsonl`. The screenshot is taken with the flag UI h
 Agents: `python3 tools/feedback/notes.py list [--all]`, `show <id>`, `done <id> "<fix commit>"`, `export-md [--all]` (Markdown table for STATUS and the
 tracker); console `notes [all]`, `note show|done|add ...`, `flag [on|off]`; agent socket `{"cmd":"notes","all":false}`, `{"cmd":"note_done","note":..,"fix":..}`,
 `{"cmd":"note_add","text":..,"tags":[..],"severity":2}`.
+
+## N notes, metadata overlay and notes browser (DT-NOTE-N)
+Make a note on the current state at any moment (island, nest, studio, cell, flight, combat). Code: `devtools/notes/` (`note_card.gd` N and Ctrl+N,
+`note_meta.gd` the metadata collector, `meta_overlay.gd` F11, `notes_browser.gd` Shift+N); `tools/feedback/notes.py` for agents. Test: `test_note_card.gd`;
+evidence: `docs/evidence/godot/n-notes/` (`devtools/tests/n_notes_evidence.gd`).
+* **N** grabs the frame that is on screen (before the card exists), pauses the sim (it is unpaused when the card closes; a sim that was already paused stays paused),
+  suspends the game keys and opens a compact card: a text box (Enter saves, Shift+Enter new line, Esc cancels with no file), quick tags `bug movement look ui idea balance`
+  (click or Ctrl+1-6) and "Pin to entity" (Ctrl+P, then click a creature, plant, prop or spot; Esc backs out). Default is a state note (`target.kind` `state`). The card
+  appears and closes instantly (keyboard action); buttons press at 0.97 and the saved toast fades out in 200 ms ease-out.
+* **Ctrl+N** saves a note at once: screenshot and metadata, no text, no card, no pause (rapid capture). It lists as `(no text)`.
+* N does nothing while a text field has focus, the console or the F8 dialog is open, an owner-question card is showing (the card's own N still attaches a note), flag mode
+  is active or the F10 HUD is open.
+* **F11** toggles the live overlay (top left): mode, tick, seed, commit (+dirty), position, heading, speed, gait, style, HP, stamina, creature and DNA, quest step, camera,
+  fps and frame-time p95, renderer/GPU, window, the F10 choices, the creatures near you. A line follows the cursor for the entity it points at (species, distance, state,
+  temperament, HP). Console: `meta [on|off]`, `meta now`.
+* **Shift+N** opens the notes browser: rows with thumbnail, text, tags and time (newest first); click or Up/Down selects; the right side shows the screenshot and the metadata;
+  `L` / "Load this moment" reloads that note's scenario into the island, `D` marks it done, `A` also shows done notes, Esc closes (the sim pauses while it is open).
+  Console: `nquick`, `nbrowse`.
+* **Shift+F8** flag mode is unchanged (its notes now carry `meta` and `origin: flag` too).
+Storage is the flag-mode folder (`feedback/notes/<stamp>-<id>/`, isolated under tests): `note.json` stays `primigenia.note/1` with three additive keys: `origin` (`n`, `quick`,
+`flag`), `unix_ms` (orders notes saved in the same second) and `meta` (`primigenia.note.meta/1`): `build {commit, dirty, text}`, `time`, `mode`, `scene`, `tick`, `hour`, `seed`,
+`paused`, `timescale`, `player {pos, heading_deg, speed, gait, style, hp, hp_max, stamina, stamina_max, running, falling}`, `creature {name, parts[], dna {total, balance}, diet, food, genome}`,
+`quest {chain, step, total, finished, task}`, `nearby[<=8] {id, species, dist, state, temperament, hp, hp_max}`, `camera {yaw, pitch, distance, ..., pos, angle_deg, fov}`, `options` (F10 choices),
+`perf {fps, frame_ms_avg, frame_ms_p95, samples}` (last 240 frames), `render {renderer, driver, gpu, vendor}`, `window [w, h]`, `scenario` (`scenario.json`, written next to the note;
+absent outside the island). Tags added: movement, ui, balance (the Shift+F8 box keeps its five).
+`python3 tools/feedback/notes.py show <id>` prints the note and its meta laid out (`--json` for the raw file); `list`, `done`, `export-md` handle quick and state notes.
 
 ## Owner questions (DT-Q)
 Questions pop up while playing so the owner answers them in place. Code: `godot/devtools/questions/` (`question_store.gd` the files and the timing

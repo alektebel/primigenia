@@ -12,7 +12,7 @@ var distance: float
 var orbit_pitch := 0.0
 var manual := 0.0
 # One zoom parameter (docs/godot/CAMERA-ZOOM.md section 2): 0 = close-up ... 1 = strategic island map.
-const Z_CHASE := 0.15            # the default gameplay view
+const Z_CHASE := 0.0             # the default gameplay view: the close band (owner 2026-11-22, loop-03 "Close"; A54). It was 0.15 (4 body heights).
 const Z_KEYS := [0.0, 0.15, 0.40, 0.70, 1.0]
 const KEY_DIST_H := [1.8, 4.0, 12.0]       # body heights, for z 0, 0.15, 0.40
 const MIN_DISTANCE := 1.6                  # m: the closest view never gets nearer than this, whatever the body (a 0.65 m hatchling)
@@ -58,7 +58,7 @@ var AWAY_MAX := 1.9199       # rad (110 deg): follow only when running away from
 var PIVOT_RATE := 2.5        # rad/s: no swing while the creature pivots
 var ENGAGE_TIME := 0.25      # s: the heading must have been steady (within 20 deg) over this time
 var ENGAGE_TOL := 0.3491     # rad (20 deg)
-var kick := false              # optional speed cues (settings camera/kick): wider fov and boom near sprint speed
+var kick := true               # speed cues (settings camera/kick, on by default since A54): wider fov, longer boom and a little follow lag at a gallop
 var top_speed := 8.84
 var fov_add := 0.0
 # Flight (F1): the island sets `air_y` (world height of the flyer) and `air_on`; the camera pulls back x1.6, rises with the
@@ -79,6 +79,13 @@ var _ring: Array = []          # [time, player yaw] over the last 0.3 s
 var _last_player_yaw = null
 var _player_rate := 0.0
 var _kick_k := 0.0
+var _burst_k := 0.0           # A54: a run burst (hard acceleration): a quick extra fov kick and follow lag that fade as the speed settles
+var _prev_speed := 0.0
+const BURST_FOV := 3.0
+const BURST_LAG := 0.06
+const KICK_FOV := 4.0          # degrees of extra field of view at a gallop (A54, subtle; was 5, off by default)
+const KICK_BOOM := 0.05        # share of extra boom length at a gallop
+const KICK_LAG := 0.07         # s: the look-at point follows this much slower at a gallop (the creature pulls ahead of the frame a little)
 
 func _init(creature_height: float, start_yaw: float, ground_fn: Callable) -> void:
 	height = maxf(0.5, creature_height)
@@ -88,6 +95,13 @@ func _init(creature_height: float, start_yaw: float, ground_fn: Callable) -> voi
 	min_distance = curve_distance(0.0)
 	max_distance = curve_distance(1.0)
 	distance = curve_distance(z)
+
+# Height of the look-at point in body heights: 1.5 from the chase band up; lowered towards the close band (A54) so the legs and feet stay in
+# frame (at z 0 the view is 1.8 h away and only +-0.8 h tall, so looking at 1.5 h cropped everything under the shoulders).
+const LOOK_H := 1.5
+const LOOK_H_CLOSE := 0.7
+func look_height() -> float:
+	return lerpf(LOOK_H_CLOSE, LOOK_H, clampf(z / Z_KEYS[1], 0.0, 1.0))
 
 # ---- the zoom curve (pure functions of z) ---------------------------------------------------------
 func _key_distances() -> Array:
@@ -188,7 +202,7 @@ func update(player: Dictionary, enemy, fighting: bool, dt: float, aspect: float 
 	_air_k = lerpf(_air_k, 1.0 if air_on else 0.0, 1.0 - exp(-dt / (0.3 if air_on else 0.17)) if dt > 0.0 else 1.0)
 	_air_dive_k = lerpf(_air_dive_k, 1.0 if (air_on and air_dive) else 0.0, 1.0 - exp(-dt / 0.25) if dt > 0.0 else 1.0)
 	var ground_y: float = ground.call(player.x, player.z)
-	var tgt := Vector3(player.x + _vel_s.x * lead, lerpf(ground_y + h * 1.5, maxf(air_y, ground_y) + h * 0.8, _air_k), player.z + _vel_s.y * lead)
+	var tgt := Vector3(player.x + _vel_s.x * lead, lerpf(ground_y + h * look_height(), maxf(air_y, ground_y) + h * 0.8, _air_k), player.z + _vel_s.y * lead)
 	if mb > 0.0:
 		tgt.x = lerpf(tgt.x, map_center.x, mb)
 		tgt.z = lerpf(tgt.z, map_center.y, mb)
@@ -198,8 +212,11 @@ func update(player: Dictionary, enemy, fighting: bool, dt: float, aspect: float 
 	var desired := distance * (1.25 if aspect < 0.7 else 1.0)
 	var kick_goal := clampf((float(player.speed) - 0.8 * top_speed) / (0.2 * top_speed), 0.0, 1.0) if kick else 0.0
 	_kick_k = lerpf(_kick_k, kick_goal, 1.0 - exp(-dt / 0.3) if dt > 0.0 else 1.0)
-	fov_add = 5.0 * _kick_k - 8.0 * smoothstep(0.7, 1.0, z)       # a flatter, map-like view at the far end
-	desired *= 1.0 + 0.06 * _kick_k
+	var accel_p: float = (float(player.speed) - _prev_speed) / dt if dt > 0.0 else 0.0
+	_prev_speed = float(player.speed)
+	_burst_k = lerpf(_burst_k, clampf((accel_p - 1.5) / 3.0, 0.0, 1.0) if kick else 0.0, 1.0 - exp(-dt / 0.15) if dt > 0.0 else 1.0)
+	fov_add = KICK_FOV * _kick_k + BURST_FOV * _burst_k - 8.0 * smoothstep(0.7, 1.0, z)       # a flatter, map-like view at the far end
+	desired *= 1.0 + KICK_BOOM * _kick_k
 	desired *= 1.0 + 0.6 * _air_k
 	fov_add += 8.0 * _air_dive_k
 	if fighting and enemy != null:
@@ -209,7 +226,7 @@ func update(player: Dictionary, enemy, fighting: bool, dt: float, aspect: float 
 		var sep := Vector2(player.x - enemy.x, player.z - enemy.z).length()
 		var half_fov := atan(tan(deg_to_rad(24.0)) * minf(1.0, aspect))
 		desired = maxf(desired + sep * 0.6, (sep / 2.0 + h * 1.5) / sin(half_fov * 0.85))
-	var ease_t := 1.0 - exp(-dt / POS_TAU) if dt > 0.0 else 1.0
+	var ease_t := 1.0 - exp(-dt / (POS_TAU + KICK_LAG * _kick_k + BURST_LAG * _burst_k)) if dt > 0.0 else 1.0      # the lead above uses the base tau, so the extra tau is a real lag
 	if target == null:
 		target = tgt
 	target = (target as Vector3).lerp(tgt, ease_t)
