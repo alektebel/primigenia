@@ -1,8 +1,9 @@
 # Gallop (A54): faster and punchier
 
 Run Froude number `sprint_k` 1.5 -> 2.2 (v = sqrt(Fr g h), h = 0.56 r): starter B (r 0.85 m) runs 2.65 -> 3.2 m/s (the zoo body, r 0.64 m:
-2.30 -> 2.78 m/s); the hero (r 3.4 m) 5.3 -> 6.4 m/s. Walk is unchanged (Fr 0.24). Wild fleeing and hunting creatures use the same
-parameter times `wild_k`, so the player-to-prey speed ratio does not change. F10 `run speed`: 1.5 / **2.2 (default)** / 3.0.
+2.30 -> 2.78 m/s); the hero (r 3.4 m) 5.3 -> 6.4 m/s. Walk is unchanged (Fr 0.24). Wild fleeing and hunting creatures keep their speeds (a fixed
+run Froude number 1.5, `CP_STAGE_WILD_RUN_FR`): had they followed sprint_k, a timid creature would flee faster than the player can walk
+up to it and the first-quest befriend task could not finish (e2e). The player's run advantage over prey is 47% larger. F10 `run speed`: 1.5 / **2.2 (default)** / 3.0.
 
 Animation (bold gallop, starter B, `gallop_*` jpg: before = Fr 1.5 run, after = Fr 2.2; side camera every 8th frame and a
 close camera `*_close.jpg` every 18th frame):

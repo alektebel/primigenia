@@ -843,6 +843,8 @@ static int steep_up(const CpStageWorld *w,const CpStageCreature *c,float x,float
  * reproducible like the rest of the stage. */
 #define CP_STAGE_HIP_PER_RADIUS .56f
 #define CP_STAGE_FR_WALK .24f   /* default of motion.walk_fr */
+#define CP_STAGE_WILD_RUN_FR 1.5f /* wild chase / flee Froude number, fixed (A54): the player's run Fr (motion.sprint_k) went 1.5 -> 2.2, but prey and hunters keep
+                                   * their speeds, or a timid creature would flee faster than the player can walk up to it (the befriend task could not finish) */
 static float gait_speed(const CpCombatProfile *p,float fr){
     return sqrtf(fr*9.81f*CP_STAGE_HIP_PER_RADIUS*cp_combat_body_radius(p));
 }
@@ -1354,7 +1356,7 @@ static void wild_tick(CpStageWorld *w,int skip,int engage){
         const float k=w->motion.wild_k*w->motion.jog_k;
         float jog=by_size?gait_speed(&e->profile,w->motion.walk_fr)*k:e->profile.speed,espeed=jog;
         /* chasing or fleeing is a run; roaming, returning home and hunkering are walks */
-        if(by_size&&!e->returning&&(hostile||cp_stage_social_leaving(w,i)||(s->temperament==CP_STAGE_TIMID&&d<s->sight*.5f)))espeed=gait_speed(&e->profile,w->motion.sprint_k)*k;
+        if(by_size&&!e->returning&&(hostile||cp_stage_social_leaving(w,i)||(s->temperament==CP_STAGE_TIMID&&d<s->sight*.5f)))espeed=gait_speed(&e->profile,CP_STAGE_WILD_RUN_FR)*k;
         /* A star probes slowly on tube feet, and rows at full speed when driven off or provoked. */
         if(e->species==6&&!hostile&&!e->returning&&!cp_stage_social_leaving(w,i))espeed=.3f;
         if(length(tx-e->x,tz-e->z)<.4f||(cp_stage_creature_hunkered(w,i)&&!hostile))espeed=0;   /* hunkered: curled up in the noon light */
