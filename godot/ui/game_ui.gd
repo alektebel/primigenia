@@ -226,6 +226,8 @@ func set_run(stamina_1000: int, running: bool) -> void:
 ## body_pos, height, radius_m, fight). Shows the field note and the ground ring and opens the mode ring (no mode is chosen
 ## yet) unless open_menu is false; `info.fight` with open_menu false goes straight to Attack (a fight started).
 func select(info: Dictionary, open_menu: bool = true, menu_pos: Variant = null) -> void:
+	if int(info.get("id", -1)) != int(selected.get("id", -2)):
+		Game.loop_event.emit("select", {"id": int(info.get("id", -1)), "open_menu": open_menu})
 	selected = info
 	selections += 1
 	onboarding.notify("select")

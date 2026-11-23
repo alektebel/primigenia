@@ -116,13 +116,13 @@ static func _movement(reg) -> void:
 		{"desc": "quadruped gallop and canter: bold = 34% of the cycle in the air, two clear leg pairs, body rock x2, spine gather/extend, bigger bob, head counter-motion (canter milder); natural = the A42 table; subtle = calmer. Applies when the style next changes."})
 
 ## Speed knobs (owner 2026-11-22, "the creature moves too slow"): C motion parameters walk_fr (walk Froude number, default .24) and
-## sprint_k (run Froude number, default 1.5); both go through the logged PARAM debug op, so a session with them replays bit for bit.
+## sprint_k (run Froude number, default 2.2 since A54; it was 1.5); both go through the logged PARAM debug op, so a session with them replays bit for bit.
 ## v = sqrt(Fr g h) with h = 0.56 * body radius (core/src/stage_world.c gait_speed). The choice description shows the m/s of the
 ## current player body.
 const DBG_PARAM := 7
 const HIP_PER_RADIUS := 0.56
 const WALK_CHOICES := {"physics 0.24 (B ~1.1 m/s)": 0.24, "brisk 0.45 (B ~1.4 m/s)": 0.45, "fast 0.8 (B ~1.9 m/s)": 0.8, "2 m/s for B (~0.86)": 0.86}
-const RUN_CHOICES := {"1.5 (default)": 1.5, "2.2": 2.2, "3.0": 3.0}
+const RUN_CHOICES := {"1.5": 1.5, "2.2 (default)": 2.2, "3.0": 3.0}
 
 ## Speed in m/s of a body of radius r (m) at Froude number fr.
 static func speed_ms(fr: float, radius: float) -> float:
@@ -152,14 +152,14 @@ static func _speed_desc(walk_fr: float, run_fr: float) -> String:
 
 static func _speed(reg) -> void:
 	var cur_walk := [0.24]
-	var cur_run := [1.5]
+	var cur_run := [2.2]
 	reg.add_choice("walk speed", "movement", WALK_CHOICES.keys(), WALK_CHOICES.keys()[0], Callable(), func(v):
 		cur_walk[0] = float(WALK_CHOICES[v])
 		_set_param("walk_fr", cur_walk[0])
 		reg.choices["walk speed"].desc = _speed_desc(cur_walk[0], cur_run[0]) + "walk Froude number (motion parameter walk_fr); player and wild walkers; the legs follow the speed.",
-		true, {"desc": _speed_desc(0.24, 1.5) + "walk Froude number (motion parameter walk_fr); player and wild walkers; the legs follow the speed."})
-	reg.add_choice("run speed", "movement", RUN_CHOICES.keys(), RUN_CHOICES.keys()[0], Callable(), func(v):
+		true, {"desc": _speed_desc(0.24, 2.2) + "walk Froude number (motion parameter walk_fr); player and wild walkers; the legs follow the speed."})
+	reg.add_choice("run speed", "movement", RUN_CHOICES.keys(), "2.2 (default)", Callable(), func(v):
 		cur_run[0] = float(RUN_CHOICES[v])
 		_set_param("sprint_k", cur_run[0])
 		reg.choices["run speed"].desc = _speed_desc(cur_walk[0], cur_run[0]) + "run Froude number (motion parameter sprint_k), Shift or Ctrl.",
-		true, {"desc": _speed_desc(0.24, 1.5) + "run Froude number (motion parameter sprint_k), Shift or Ctrl."})
+		true, {"desc": _speed_desc(0.24, 2.2) + "run Froude number (motion parameter sprint_k), Shift or Ctrl."})

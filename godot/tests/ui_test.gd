@@ -976,16 +976,17 @@ func test_first_quest_ui() -> void:
 	var chip = DigChip.new()
 	root.add_child(chip)
 	chip.centre = Vector2(400, 300)
-	chip._a = 1.0
-	var got := [0]
-	chip.pressed.connect(func(): got[0] += 1)
+	await process_frame
+	ok(not chip.visible, "dig ring: nothing on screen while not digging (A54: no dig button or prompt)")
+	chip.digging = 0.5
+	for _i in 20:
+		chip._process(0.05)
+	ok(chip.visible, "dig ring: the progress ring shows while digging")
 	var click := InputEventMouseButton.new()
 	click.button_index = MOUSE_BUTTON_LEFT
 	click.pressed = true
 	click.position = Vector2(405, 302)
-	ok(chip.handle_input(click) and got[0] == 1, "dig chip: a click on the ring digs")
-	click.position = Vector2(700, 300)
-	ok(not chip.handle_input(click) and got[0] == 1, "dig chip: a click elsewhere is the world's")
+	ok(not chip.handle_input(click), "dig ring: it takes no clicks, the world keeps them")
 	chip.free()
 	var mm = preload("res://ui/minimap.gd").new()
 	root.add_child(mm)

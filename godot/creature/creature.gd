@@ -578,6 +578,7 @@ func _layout_legs() -> void:
 		if pole.length() < .03:
 			pole = Vector3(0, 0, 1)
 		l.pole = pole.normalized()
+		l.hinge = fd.cross(l.pole).normalized() if pole.length() >= .03 and fd.length() > 1e-4 else Vector3()
 		l.home = Vector3(hp.x + l.rest_foot.x, 0, hp.z + l.rest_foot.z)
 		l.hang = max(0.0, sole + ground_offset)
 		var L: float = l.total_length()

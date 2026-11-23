@@ -62,7 +62,42 @@ func _try_loco() -> void:
 		push_warning("loco rig contract: %s" % [problems])
 	controller = ctl_script.new(morph_script.analyse(desc), _ground)
 	controller.footfall.connect(func(leg: int, pos: Vector3) -> void: footfall.emit(leg, pos))
+	controller.push_off.connect(_dust_kick)
 	_try_actions()
+
+## A54: a small dust kick where a hind foot pushes off in a run burst (strength 0..1). Visual only; a short one-shot puff in the world.
+func _dust_kick(pos: Vector3, strength: float) -> void:
+	if host == null or not host.is_inside_tree():
+		return
+	var p := CPUParticles3D.new()
+	p.amount = 10
+	p.lifetime = 0.5
+	p.one_shot = true
+	p.explosiveness = 0.9
+	p.direction = Vector3(0, 1, 0)
+	p.spread = 55.0
+	p.initial_velocity_min = 0.4 + 0.6 * strength
+	p.initial_velocity_max = 1.0 + 1.0 * strength
+	p.gravity = Vector3(0, -2.5, 0)
+	p.scale_amount_min = 0.5
+	p.scale_amount_max = 1.0
+	var q := QuadMesh.new()
+	q.size = Vector2(0.16, 0.16)
+	var m := StandardMaterial3D.new()
+	m.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	m.billboard_mode = BaseMaterial3D.BILLBOARD_ENABLED
+	m.vertex_color_use_as_albedo = true
+	m.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	q.material = m
+	p.mesh = q
+	var g := Gradient.new()
+	g.offsets = PackedFloat32Array([0.0, 1.0])
+	g.colors = PackedColorArray([Color(0.62, 0.55, 0.42, 0.55), Color(0.62, 0.55, 0.42, 0.0)])
+	p.color_ramp = g
+	host.get_parent().add_child(p)
+	p.global_position = pos + Vector3(0, 0.03, 0)
+	p.emitting = true
+	host.get_tree().create_timer(1.0).timeout.connect(p.queue_free)
 
 func _try_radial() -> void:
 	adapter = load(LOCO_PATHS[2])

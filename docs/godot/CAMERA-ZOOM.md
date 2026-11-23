@@ -25,8 +25,8 @@ of view and what gets drawn:
 
 | z | Band | Distance | Pitch | What you see |
 |---|---|---|---|---|
-| 0.00 | close | 1.8 × body height | ~8° (almost level) | face and parts up close; good for photo mode and befriending |
-| 0.15 | **chase (default)** | ~4 h | ~15° | today's gameplay view, horizon visible |
+| 0.00 | **close (default, A54)** | 1.8 × body height | ~8° (almost level) | the gameplay view since the owner picked "Close" (2026-11-22); face and parts up close, befriending |
+| 0.15 | chase | ~4 h | ~15° | the earlier default, horizon visible |
 | 0.40 | high | ~12 h | ~35° | fights with several creatures, the pack later |
 | 0.70 | tactical | ~150 m | ~55° | the area around you: dens, nests, paths; creature icons begin to fade in |
 | 1.00 | **strategic** | whole island (~3 km) | ~70° | the island as a map: icons for your nest, species dens, `?` for undiscovered places, meteor shards found, your position. Terrain shown cheaply (LOD/imposters), grass and small props off |

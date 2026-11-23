@@ -742,6 +742,30 @@ godot-creator-score: godot
 	python3 tools/creator/score.py $(CREATOR_DIR)
 	@rm -f $(CREATOR_DIR)/.log_replay.txt
 
+# Creature-loop scorecard (docs/plans/creature-loop.md T1): the first-quest bot plays the whole chain on 3 seeds, headless, and every
+# beat is recorded by devtools/loop (Game.loop_event -> JSONL). tools/loop/score.py turns the files into time-to-beat, deaths, fights per
+# kill, befriend tries, dead time, DNA, novelty, species and the plan's pass/fail. LOOP_STRICT=1 makes failing targets fail the make.
+# Writes docs/evidence/loop/score/<LABEL>/ (LABEL defaults to the short git hash). Compare: python3 tools/loop/compare.py <baseline> <label>
+# A real play session scores the same way: python3 tools/loop/score.py --session ~/.local/share/godot/app_userdata/<project>/loop/<stamp>.jsonl
+.PHONY: godot-loop-score godot-loop-test
+LOOP_LABEL ?= $(shell git rev-parse --short HEAD)
+LOOP_SEEDS ?= 1 7 42
+LOOP_DIR = $(CURDIR)/docs/evidence/loop/score/$(LOOP_LABEL)
+godot-loop-score: godot
+	@rm -rf $(LOOP_DIR)
+	@mkdir -p $(LOOP_DIR)
+	@set -e; pids=""; for s in $(LOOP_SEEDS); do \
+	  CPORE_TEST=1 CPORE_LOOP_FILE=$(LOOP_DIR)/seed$$s.jsonl nice -n 10 timeout 900 $(GODOT) --headless --fixed-fps 60 --path godot \
+	    --script res://game/tests/first_quest_e2e.gd -- seed=$$s > $(LOOP_DIR)/.log_seed$$s.txt 2>&1 & pids="$$pids $$!"; sleep 3; done; \
+	fail=0; for p in $$pids; do wait $$p || fail=1; done; \
+	for s in $(LOOP_SEEDS); do grep -q "^e2e final" $(LOOP_DIR)/.log_seed$$s.txt || { echo "seed $$s: the bot did not finish (log: $(LOOP_DIR)/.log_seed$$s.txt)"; fail=1; }; done; \
+	python3 tools/loop/score.py $(LOOP_DIR); \
+	if [ $$fail != 0 ]; then echo "loop-score: a bot run failed its own e2e checks (the scorecard above still counts what it recorded; logs: $(LOOP_DIR)/.log_seed*.txt)"; test "$$LOOP_STRICT" != 1 || exit 1; fi
+	@rm -f $(LOOP_DIR)/.log_seed*.txt
+godot-loop-test: godot
+	nice -n 10 timeout 300 $(GODOT) --headless --path godot --script res://devtools/tests/run_devtools_tests.gd
+	python3 tools/loop/test_score.py
+
 godot-cell2-evidence:
 	@mkdir -p docs/evidence/godot/cell2
 	LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 900 xvfb-run -a $(GODOT) --rendering-driver opengl3 --path godot --script res://cell/tests/cell2_evidence.gd -- $(CURDIR)/docs/evidence/godot/cell2

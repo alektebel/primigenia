@@ -928,6 +928,15 @@ static func _upper_limb(w: float, a: float) -> CreatureGeo:
 	var n := 14
 	var pts := []
 	var rad := []
+	# A54: the root is closed with a dome that sits behind the hip, inside the torso. The old open tube ended exactly at the
+	# hip on the skin, so on a thin chest its rim stuck out as a flat sail ("shoulders detached", owner note e165fe).
+	var r0: float = w * 1.3 * 1.4
+	var e0: float = w * 0.9                      # straight run behind the hip before the dome starts
+	var cap_n := 6
+	for j in cap_n:
+		var ph := 1.36 * float(cap_n - j) / float(cap_n)     # tip first; the pole itself (90 deg) is drawn at 78 deg
+		pts.append(Vector3(0, e0 + r0 * sin(ph), 0))
+		rad.append(r0 * cos(ph))
 	for i in n:
 		var u := float(i) / (n - 1)
 		var taper := lerpf(1.3, 1.02, u * u * (3.0 - 2.0 * u))
@@ -935,7 +944,7 @@ static func _upper_limb(w: float, a: float) -> CreatureGeo:
 		var flare := 1.0 + .4 * exp(-u / .06)
 		pts.append(Vector3(0, -a * u, 0))
 		rad.append(w * taper * swell * flare)
-	var g := CreatureGeo.alloc_tube(n, 14)
+	var g := CreatureGeo.alloc_tube(n + cap_n, 14)
 	g.fill_tube(pts, rad, 14, X0, false)
 	return g
 

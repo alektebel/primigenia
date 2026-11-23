@@ -292,7 +292,8 @@ func build() -> void:
 	Game.report_entry(build_ms, build_cpu_ms, build_stall_ms, slowest_frames)
 	set_process(true)
 	Game.island_ready.emit()
-	Game.loop_event.emit("island_ready", {"ms": int(Game.entry_log[-1].ms) if not Game.entry_log.is_empty() else build_ms})
+	Game.loop_event.emit("island_ready", {"ms": int(Game.entry_log[-1].ms) if not Game.entry_log.is_empty() else int(build_ms.get("total", 0)),
+		"phases": Game.entry_log[-1].phases if not Game.entry_log.is_empty() else build_ms, "entry": Game.entry_log.size()})
 
 ## Dev builds: the player owns every part of the creature it brought (C debug op GRANT, part ids = the manifest order).
 func _grant_genome_parts(genome: Dictionary) -> void:
@@ -797,6 +798,21 @@ const SHAKE_DECAY := 5.0
 const SHAKE_MAX := 0.12                # metres at the full strength
 func land_impact(impact: float) -> void:
 	_shake_amp = maxf(_shake_amp, SHAKE_MAX * clampf(impact, 0.15, 1.0))
+var _sprint_idx := -2
+## The player's run speed (m/s), v = sqrt(Fr g h) with h = 0.56 x body radius and Fr = the C motion parameter sprint_k: the camera's speed
+## cues (wider fov, a little follow lag) start at 80% of it (A54).
+func _run_top_speed() -> float:
+	if stage == null or stage.cur == null or stage.cur.entities.is_empty():
+		return chase.top_speed
+	if _sprint_idx == -2:
+		_sprint_idx = -1
+		for p in CporeWorld.params():
+			if p.name == "sprint_k":
+				_sprint_idx = int(p.index)
+	var k: float = stage.world.param(_sprint_idx) if _sprint_idx >= 0 else 2.2
+	var r: float = maxf(0.6, float(stage.cur.entities[0].get("radius_cm", 60)) * 0.01)
+	return sqrt(k * 9.81 * 0.56 * r)
+
 func _landing_shake(dt: float) -> Vector3:
 	if _shake_amp < 0.001 or Game.settings.get("camera/shake", true) == false:
 		_shake_amp = 0.0
@@ -830,7 +846,8 @@ func _profile__update_camera(dt: float) -> void:
 		var e: Dictionary = state.entities[state.active + 1]
 		enemy = {"x": e.x, "z": e.z}
 	var vp := get_viewport().get_visible_rect().size
-	chase.kick = bool(Game.settings.get("camera/kick", false))
+	chase.kick = bool(Game.settings.get("camera/kick", true))
+	chase.top_speed = _run_top_speed()
 	chase.mouse_walk = player_input.destination != null      # walking to a click or following the mouse: the camera does not turn for it
 	var r: Dictionary = chase.update({"x": p.pos.x, "z": p.pos.z, "yaw": p.yaw, "speed": p.speed, "vx": p.vel.x, "vz": p.vel.z}, enemy, fighting, dt, vp.x / maxf(vp.y, 1.0))
 	camera.fov = 48.0 + float(r.fov_add)

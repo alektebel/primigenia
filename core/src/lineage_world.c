@@ -80,12 +80,17 @@ int cp_stage_evolve(CpStageWorld *w,const CpLineageForm *f){
  int diet=old->form.profile.mouth>=2?1:old->form.profile.mouth==1?2:0;
  int base=temper==2?3:temper==1?2:0;
  CpStageDebug d={.op=CP_STAGE_DBG_SPAWN,.a=base,.x=hx/100.f,.z=hz/100.f};
- static const int offsets[8][2]={{3200,0},{0,3200},{-3200,0},{0,-3200},{2400,2400},{-2400,2400},{2400,-2400},{-2400,-2400}};
+ /* Cousins live near the nest (T9: at most CP_STAGE_COUSIN_MAX_DIST from it). The ring is anchored on the longest residence when that
+  * is within 8 m of the nest, else on the nest itself; 24 m ring for the first eight cousins, 30 m for the later ones (anchor+ring <= 38 m). */
+ {float nx=w->setup.nest_x*100.f,nz=w->setup.nest_z*100.f,ax=hx-nx,az=hz-nz;
+  if(ax*ax+az*az>800.f*800.f){hx=(int32_t)nx;hz=(int32_t)nz;}}
+ static const int offsets[8][2]={{100,0},{0,100},{-100,0},{0,-100},{71,71},{-71,71},{71,-71},{-71,-71}};
  int spawned=0;
  for(int k=0;k<8;k++){
   int candidate=(k+(int)w->ancestry.count-1)%8;
-  int scale=w->ancestry.count>8?3:2;
-  d.x=(hx+offsets[candidate][0]*scale/2)/100.f;d.z=(hz+offsets[candidate][1]*scale/2)/100.f;
+  int ring=w->ancestry.count>8?3000:2400;
+  d.x=(hx+offsets[candidate][0]*ring/100)/100.f;d.z=(hz+offsets[candidate][1]*ring/100)/100.f;
+  if(hypotf(d.x-w->setup.nest_x,d.z-w->setup.nest_z)>CP_STAGE_COUSIN_MAX_DIST)continue;
   /* Validate the old body's full radius, not just the AI template's radius. */
   int blocked=0;float radius=cp_combat_body_radius(&old->form.profile);
   for(int j=0;j<w->setup.n_obstacles;j++){
