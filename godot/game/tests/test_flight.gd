@@ -559,6 +559,18 @@ func _picks(t) -> void:
 	t.check(switches >= 4, "and they alternate (%d switches in 15 s)" % switches)
 	t.check(vmin > 0.8 * fg.cruise_speed() and vmax < 1.3 * fg.cruise_speed(), "the speed stays around cruise %.1f m/s (%.1f .. %.1f)" % [fg.cruise_speed(), vmin, vmax])
 	t.check(fg.stamina > cont.stamina + 0.15, "flap-glide costs much less stamina than continuous flapping (%.2f vs %.2f after 20 s)" % [fg.stamina, cont.stamina])
+	# the held energy follows the pilot's pitch: nose up (S) climbs on bursts, hands-off holds the height
+	var hold := _starter_b()
+	hold.cruise_style = "flapglide"
+	_level(hold, hold.cruise_speed(), 500.0)
+	var up := _starter_b()
+	up.cruise_style = "flapglide"
+	_level(up, up.cruise_speed(), 500.0)
+	for i in int(15.0 / dt):
+		hold.step(dt, {"flap": true}, flat)
+		up.step(dt, {"flap": true, "pitch": 0.4}, flat)
+	t.check(absf(hold.pos.y - 500.0 - float(hold.spec.com_h)) < 6.0, "flap-glide hands-off holds the height (%.1f m drift in 15 s)" % (hold.pos.y - 500.0 - float(hold.spec.com_h)))
+	t.check(up.pos.y > hold.pos.y + 10.0, "with the nose up it climbs on bursts (%.1f m above the hands-off flight)" % (up.pos.y - hold.pos.y))
 	# a tap is never gated: one beat, whatever the speed
 	var tap := _starter_b()
 	tap.cruise_style = "flapglide"

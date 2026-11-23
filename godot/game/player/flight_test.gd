@@ -40,8 +40,10 @@ const CL_CLIMB := 1.2                 # CL while climbing out or flapping near t
 const SUBSTEP := 1.0 / 120.0
 # Starter B / hatchling picks (A56, A57; lab web/gaitlab/flight.html). Lab starting values, not measured animal data.
 const FG_CRUISE := 1.3                # flap-glide cruise speed, in stall speeds (B: lab vc 16 m/s against vs 11.9 = 1.34)
-const FG_HIGH := 1.07                 # flap bursts stop above this share of the cruise speed (lab: vT * 1.07)...
-const FG_LOW := 0.93                  # ...and start again below this one (lab: vT * 0.93)
+const FG_HIGH := 1.07                 # the speed ceiling (x1.1 here: flap bursts never push past it; the lab ended bursts at vT * 1.07)...
+const FG_LOW := 0.93                  # ...and the floor (x0.95 here: the lab restarted bursts below vT * 0.93)
+const FG_BAND := 0.1                  # half the energy band, in cruise-speed heads (vc^2 / 2g): bursts on below ref - band, off above ref + band
+const FG_CLIMB := 2.5                 # m/s the held energy rises with full pitch-up
 const FG_DAMP := 0.12                 # flight-path damping gain (CL per m/s of climb rate) while the flap-glide gates the wings
 const WO_MIN_SPEED := 1.2             # stall speeds: slower than this a wingover cannot start (build speed first, a dive)
 const WO_BUILD_SPEED := 1.85          # stall speeds the dive-in builds up to (lab: 1.3 x cruise)
@@ -81,6 +83,7 @@ var stalled := false
 var cruise_style := "continuous"   # "flapglide" (A56: flap bursts until fast, glide until slow; flight_mode sets it) or "continuous" (hold = flap)
 var landing_style := "flare"      # "flare" (flare + stall touchdown, A56) or "run" (running landing, A57)
 var _fg_gated := false
+var fg_e_ref := 0.0           # energy height (m) the flap-glide holds
 var _wo_w := 0.0              # wingover roll rate (rad/s)
 var fg_on := true             # the flap-glide burst state (hysteresis)
 var wo_phase := ""            # wingover: "" (off), "build", "zoom", "roll", "recover"
@@ -357,9 +360,18 @@ func _fly(dt: float, input: Dictionary, ground: Callable, ev: Dictionary) -> voi
 	if flap_in and cruise_style == "flapglide" and flap_timer <= 0.0 and climb_out <= 0.0 and alt >= flare_alt and not wo.on:
 		fg_gated = true
 		var vc := cruise_speed()
-		if fg_on and speed > vc * FG_HIGH:
+		# Bursts hold the total energy (height + speed^2 / 2g) around the level the pattern started at, so the body flaps until
+		# it is fast (and has regained its height) and glides until it has bled that energy again, slow or lower. A speed floor
+		# and ceiling keep it near the cruise speed; the pilot's pitch moves the reference (S = more energy: a climb).
+		var e_now := pos.y + v2 / (2.0 * G)
+		if not _fg_gated:
+			fg_e_ref = e_now
+			fg_on = speed < vc
+		fg_e_ref += FG_CLIMB * clampf(float(input.get("pitch", 0.0)), -1.0, 1.0) * dt
+		var band := FG_BAND * vc * vc / (2.0 * G)
+		if speed > vc * FG_HIGH * 1.1 or e_now > fg_e_ref + band:
 			fg_on = false
-		elif not fg_on and speed < vc * FG_LOW:
+		elif speed < vc * FG_LOW * 0.95 or e_now < fg_e_ref - band:
 			fg_on = true
 		flap_in = fg_on
 	else:

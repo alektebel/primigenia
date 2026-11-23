@@ -1,7 +1,7 @@
 extends SceneTree
 ## Close three-quarter clips of the player's winged creature flying the owner's picks (A56, A57): flap-glide cruise, wingover,
 ## flare landing, running landing. Scripted keys on the real island (scenario creature/flight_cliff), software GL only:
-##   LIBGL_ALWAYS_SOFTWARE=1 xvfb-run -a godot --rendering-driver opengl3 --resolution 960x540 --fixed-fps 30 --write-movie out.avi \
+##   LIBGL_ALWAYS_SOFTWARE=1 xvfb-run -a godot --rendering-driver opengl3 --resolution 640x360 --fixed-fps 24 --write-movie out.avi \
 ##     --path godot --script res://devtools/zoo/flight_clip.gd -- <flapglide|wingover|land_flare|land_run> [seconds] [cam_scale]
 ## Writes <name>.csv (t, mode, phase, speed, alt, bank, legs, bob) next to the movie when a CSV path is the 4th argument.
 
@@ -27,8 +27,8 @@ func _keys(mode: String, t: float, f) -> Dictionary:
 		"flapglide":
 			k.flap = true
 		"wingover":
-			k.flap = t < 9.2 or t > 16.0
-			if t >= 9.0 and t < 9.1:
+			k.flap = t < 2.6 or t > 11.0
+			if t >= 3.6 and t < 3.7:
 				k.wingover = 1
 		"land_flare", "land_run":
 			k.flap = t < 2.4
@@ -40,9 +40,9 @@ func _run() -> void:
 	var secs: float = float(args[1]) if args.size() > 1 else 16.0
 	scale_k = float(args[2]) if args.size() > 2 else 1.0
 	csv_path = args[3] if args.size() > 3 else ""
-	root.size = Vector2i(960, 540)
 	game = root.get_node("Game")
-	game.settings.grass = 3000
+	game.settings.grass = 0
+	game.settings.quality = "low"      # software GL: the clip is about the creature, the world only has to be there
 	var entry := TerrainCache.load_entry({"seed": 1})
 	if entry.is_empty():
 		entry = TerrainCache.build({"seed": 1}, CporeTerrain.new())
@@ -69,12 +69,24 @@ func _run() -> void:
 	pos_s = bs.pos
 	yaw_s = float(bs.yaw)
 	var t := 0.0
-	var dt := 1.0 / 30.0
+	var dt := 1.0 / 24.0
 	f.keys_override = {"flap": false, "dive": false, "pitch": 0.0, "turn": 0.0}
 	f.press_space()
 	var landed_t := -1.0
+	var placed := false
 	while t < secs:
 		f.keys_override = _keys(mode, t, f)
+		if not placed and t >= 2.6 and f.model.airborne() and mode != "flapglide":
+			# the clip starts the manoeuvre from a set-up state (the island's cliff is tens of metres up): a wingover from 45 m at cruise
+			# speed, a landing approach from 9 m at 1.3 x stall speed, both along the current heading
+			placed = true
+			var m0 = f.model
+			var h0: Vector2 = Vector2(m0.vel.x, m0.vel.z).normalized()
+			var gy: float = game.visual_ground(m0.pos.x, m0.pos.z)
+			var sp: float = 1.3 * m0.stall_speed()
+			m0.pos.y = gy + float(m0.spec.com_h) + (45.0 if mode == "wingover" else 9.0)
+			m0.vel = Vector3(h0.x * sp, 0.0, h0.y * sp)
+			m0.bank_t = 0.0
 		await process_frame
 		t += dt
 		_place_camera(dt, f)
@@ -102,7 +114,7 @@ func _place_camera(dt: float, f) -> void:
 	var yaw := float(p.yaw)
 	var k := 1.0 - exp(-dt / 0.35)
 	yaw_s = lerp_angle(yaw_s, yaw, k)
-	look_s = look_s.lerp(target, 1.0 - exp(-dt / 0.12)) if look_s != Vector3.ZERO else target
+	look_s = look_s.lerp(target, 1.0 - exp(-dt / 0.05)) if look_s != Vector3.ZERO else target
 	var d := span * 1.55 * scale_k
 	var fwd := Vector3(sin(yaw_s), 0, cos(yaw_s))
 	var right := Vector3(-fwd.z, 0, fwd.x) * -1.0
