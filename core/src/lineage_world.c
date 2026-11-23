@@ -63,7 +63,7 @@ int cp_stage_lineage_form(CpStageWorld *w,const CpLineageForm *f,int evolve){
  copy_form(&w->ancestry.forms[0].form,f);w->ancestry.forms[0].generation=1;
  w->ancestry.forms[0].type=-1;
  w->player.profile=w->setup.player=w->ancestry.forms[0].form.profile;w->player.hp=f->profile.hp;w->player.stamina=f->profile.stamina;
- cp_combat_loadout_default(&w->loadout,&f->profile);
+ cp_combat_loadout_starter(&w->loadout,&f->profile);
  w->hash=cp_stage_hash(w);return 0;
 }
 int cp_stage_evolve(CpStageWorld *w,const CpLineageForm *f){
@@ -120,7 +120,7 @@ int cp_stage_evolve(CpStageWorld *w,const CpLineageForm *f){
  CpLineageGeneration *next=&w->ancestry.forms[w->ancestry.count++];copy_form(&next->form,f);next->generation=w->ledger.generation;next->type=-1;
  memset(w->ancestry.residence,0,sizeof w->ancestry.residence);w->ancestry.n_residence=0;memset(w->ancestry.perk_serial,0,sizeof w->ancestry.perk_serial);
  w->player.profile=next->form.profile;w->player.hp=f->profile.hp;w->player.stamina=f->profile.stamina;
- w->setup.player=next->form.profile;cp_combat_loadout_default(&w->loadout,&f->profile);
+ w->setup.player=next->form.profile;cp_combat_loadout_starter(&w->loadout,&f->profile);
  w->hash=cp_stage_hash(w);return 0;
 }
 static void ah_u32(uint64_t *h,uint32_t v){for(int i=0;i<4;i++){*h^=(uint8_t)(v>>(i*8));*h*=1099511628211ULL;}}
