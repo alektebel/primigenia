@@ -60,8 +60,9 @@ const WO_TURN_DONE := 2.6             # rad (150 deg) of heading change ends the
 const WO_ROLL_MAX_S := 4.5
 const WO_RECOVER_MAX_S := 5.0
 const WO_MIN_ALT_K := 0.085           # m of altitude per (m/s)^2 of stall speed: 12 m for starter B (vs 11.9)
-const CD_FLARE := 0.25                # extra drag coefficient of the cupped wings in a flare landing (the brake of the stall touchdown)
+const CD_FLARE := 0.3                 # extra drag coefficient of the cupped wings in a flare landing (the brake of the stall touchdown)
 const RUN_DECEL := 6.0                # m/s2 after a running landing (legs absorb the speed over a few metres; the lab brakes at 0.5 g)
+const FLARE_STYLE_K := 1.45             # the flare + stall touchdown starts higher (2.2 body lengths, lab: 2.2 L) than the running landing
 const LEG_TAU := 0.14                 # s, legs tuck and extend (lab: 0.14)
 
 # global tuning (the F3 panel, flight/*): the owner's "fun" knobs, never per creature
@@ -392,10 +393,10 @@ func _fly(dt: float, input: Dictionary, ground: Callable, ev: Dictionary) -> voi
 	elif climbing and pitch <= 0.0:
 		cl = maxf(cl, minf(CL_CLIMB, CL_MAX))     # climb-friendly lift near the ground; the flare stays off
 		mode = "glide"
-	elif alt < flare_alt and vel.y < 0.0:
+	elif alt < flare_alt * (FLARE_STYLE_K if landing_style == "flare" else 1.0) and vel.y < 0.0:
 		flaring = true
 		mode = "flare"
-		var vy_goal := -(0.3 + 1.2 * clampf(alt / flare_alt, 0.0, 1.0))
+		var vy_goal := -(0.3 + 1.2 * clampf(alt / (flare_alt * (FLARE_STYLE_K if landing_style == "flare" else 1.0)), 0.0, 1.0))
 		var a_cmd := (vy_goal - vel.y) / 0.4
 		var l_need := m * (G + a_cmd) / maxf(cos_phi, 0.3)
 		cl = clampf(l_need / maxf(q * s_full * lift_mul, 1e-6), CL_MIN, CL_MAX)

@@ -82,8 +82,16 @@ func _run() -> void:
 			placed = true
 			var m0 = f.model
 			var h0: Vector2 = Vector2(m0.vel.x, m0.vel.z).normalized()
-			var gy: float = game.visual_ground(m0.pos.x, m0.pos.z)
 			var sp: float = 1.3 * m0.stall_speed()
+			var from := Vector2(m0.pos.x, m0.pos.z)
+			if mode != "wingover":
+				var spot := _flat_run(from, h0)
+				from = spot.p
+				h0 = spot.dir
+				m0.pos.x = from.x
+				m0.pos.z = from.y
+				m0.yaw_dir = h0
+			var gy: float = game.visual_ground(from.x, from.y)
 			m0.pos.y = gy + float(m0.spec.com_h) + (45.0 if mode == "wingover" else 9.0)
 			m0.vel = Vector3(h0.x * sp, 0.0, h0.y * sp)
 			m0.bank_t = 0.0
@@ -102,6 +110,25 @@ func _run() -> void:
 		fc.store_string("\n".join(rows) + "\n")
 		fc.close()
 	quit(0)
+
+# A flat stretch for the landing clips: the first start point (rings of 60 m out to 700 m, 12 headings) whose next 120 m of ground
+# stays within 1.2 m of height and above the water line, so the flare has a level run-out. Falls back to the current spot.
+func _flat_run(p0: Vector2, dir0: Vector2) -> Dictionary:
+	for d in range(0, 700, 40):
+		for k in 12:
+			var a := TAU * float(k) / 12.0 + atan2(dir0.x, dir0.y)
+			var dir := Vector2(sin(a), cos(a))
+			var p := p0 + dir * float(d)
+			var lo := 1e9
+			var hi := -1e9
+			for i in 13:
+				var q := p + dir * 10.0 * float(i)
+				var h: float = game.visual_ground(q.x, q.y)
+				lo = minf(lo, h)
+				hi = maxf(hi, h)
+			if hi - lo < 1.2 and lo > 3.0:
+				return {"p": p, "dir": dir}
+	return {"p": p0, "dir": dir0}
 
 # Close three-quarter view from the creature's right-front, framing about 2.5 spans; follows heading with a lag so a wingover reads.
 func _place_camera(dt: float, f) -> void:
