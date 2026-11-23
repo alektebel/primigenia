@@ -35,6 +35,8 @@ static func install(stage, genome: Dictionary, evolve: bool = false) -> String:
 	if stage.restore_from(stage.world.snapshot()) != 0:
 		return "Cannot start lineage replay segment."
 	var game = Engine.get_main_loop().root.get_node_or_null("Game") if Engine.get_main_loop() is SceneTree else null
+	if evolve and game != null:
+		game.loop_event.emit("generation_evolve", {"generation": generations(stage.world).size(), "dna": int(stage.cur.get("social", {}).get("dna_balance", 0))})
 	if evolve and game != null and not game.evolved_once:
 		game.evolved_once = true
 		game.loop_event.emit("first_evolve", {})
