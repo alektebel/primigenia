@@ -1329,6 +1329,14 @@ func _t_context() -> void:
 		hh.free_all()
 	check(played_ok, "context: every one of the 19 cells plays its own file")
 	check(fast < 25.0, "context: the bone speed gate holds in all cells (%.1f rad/s)" % fast)
+	# set B: the second options (A75)
+	Clock.attack_set = "b"
+	check(Clock.variant_id(0, 2, false, h.layer.actions, true) == "bite_walk_b" and Clock.variant_id(0, 4, false, h.layer.actions, true) == "bite_far_b"
+		and Clock.variant_id(8, 1, false, h.layer.actions, true) == "pounce_b" and Clock.variant_id(8, 2, false, h.layer.actions, true) == "pounce_walk_b",
+		"context: set B picks the slow-step, the run-up snap, the quick spring and the leap off the stride")
+	check(Clock.variant_id(0, 3, false, h.layer.actions, true) == "bite_gallop" and Clock.variant_id(3, 1, false, h.layer.actions, true) == "spit",
+		"context: the cells set B does not change keep the A74 file")
+	Clock.attack_set = "a"
 	# projectile and acid hit events
 	var shots := []
 	var acid := []

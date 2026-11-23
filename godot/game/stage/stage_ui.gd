@@ -471,11 +471,13 @@ func provide() -> Dictionary:
 				_pending_attack.chain = false
 			var order := {"verb": V_ATTACK, "target": tgt, "move": _pending_attack.move}
 			if int(_pending_attack.move) == MOVE_SPIT:
-				# A74/A69: tap = the jet (the lob from far), hold the key = the charged glob (the charged lob).
+				# A74/A69: tap = the jet (the lob from far), hold the key = the charged glob (the charged lob). Set B (A75): the glob without holding.
 				if not _pending_attack.has("hold"):
 					var held := Time.get_ticks_msec() - int(_pending_attack.get("t0", 0))
 					var down: bool = Input.is_action_pressed(str(_pending_attack.get("key", "ability_1")))
-					if down and held < HOLD_MS:
+					if ActionClock.attack_set == "b":
+						_pending_attack["hold"] = 1
+					elif down and held < HOLD_MS:
 						return {"verb": 0}            # still charging
 					else:
 						_pending_attack["hold"] = 1 if (down and held >= HOLD_MS) else 0
