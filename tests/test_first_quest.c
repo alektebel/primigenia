@@ -59,15 +59,17 @@ static void tp(CpStageWorld *world,float x,float z){
 }
 static int part_known(const CpStageWorld *world,const char *id){return (world->parts.discovered>>cp_stage_part_id(id))&1;}
 /* the dig order, then ticks of nothing (CONTINUE) until it ends; returns the DUG event's find or -99 when no event came */
+static int dug_ticks;      /* the ticks the last dig_here took (A54: 20 on soft soil, 35 hard, 50 rock) */
 static int dig_here(CpStageWorld *world,int *bed_out){
     const uint32_t from=world->ev_total;
     CpStageInput in={.verb=CP_STAGE_DIG};
     const int rc=cp_stage_order(world,&in);
     if(rc)return rc-1000;
-    for(int k=0;k<CP_DIG_TICKS+3;k++){
+    const int budget=cp_stage_dig_ticks(world,world->player.x,world->player.z)+3;
+    for(int k=0;k<budget;k++){
         cp_stage_step(world,NULL);
         CpStageEvent ev;
-        if(event_since(world,from,CP_STAGE_EV_DUG,&ev)){if(bed_out)*bed_out=(int)ev.value;return ev.move;}
+        if(event_since(world,from,CP_STAGE_EV_DUG,&ev)){dug_ticks=k+1;if(bed_out)*bed_out=(int)ev.value;return ev.move;}
     }
     return -99;
 }
@@ -104,7 +106,7 @@ static void field_tests(unsigned seed){
     printf("  seed %u: walked %d ticks, dug in %d ticks\n",seed,walked,CP_DIG_TICKS);
     OK(dig_here(&w,NULL)==CP_STAGE_ERR_ALREADY_DUG-1000,"the same spot cannot be dug twice");
     PASS("the wing bed is walked to, dug in 2 s, and gives wing_vane + fire_gland + DNA");
-    /* 3. refusals: water, steep ground, no stamina, interruption (the stamina is spent) */
+    /* 3. refusals: water, no stamina, interruption (the stamina is spent). Steep ground is no longer refused: it takes longer (A54) */
     {
         float wx=0,wz=0,sx=0,sz=0;int gw=0,gs=0;
         for(float x=-300;x<=300&&!(gw&&gs);x+=7)for(float z=-300;z<=300&&!(gw&&gs);z+=7){
@@ -115,7 +117,14 @@ static void field_tests(unsigned seed){
         }
         OK(gw&&gs,"the island has water and steep ground to test with");
         tp(&w,wx,wz);OK(dig_here(&w,NULL)==CP_STAGE_ERR_HARD_GROUND-1000,"water cannot be dug");
-        tp(&w,sx,sz);OK(dig_here(&w,NULL)==CP_STAGE_ERR_HARD_GROUND-1000,"steep ground cannot be dug");
+        OK(cp_stage_dig_hardness(&w,sx,sz)==2&&cp_stage_dig_ticks(&w,sx,sz)==CP_DIG_TICKS_ROCK,"steep ground is rock: 5 s");
+        tp(&w,sx,sz);{const int r=dig_here(&w,NULL);OK(r>=0&&r!=CP_FIND_WING_FOSSIL&&r!=CP_FIND_BONE_FOSSIL&&dug_ticks>=CP_DIG_TICKS_ROCK,"steep ground can be dug, slowly, and holds nothing special");}
+        {   /* hard ground (a gentle-but-not-soft cell) takes 3.5 s; every dry cell can be dug, only water refuses */
+            int hard=0;
+            for(float x=-300;x<=300&&!hard;x+=5)for(float z=-300;z<=300&&!hard;z+=5)if(cp_stage_dig_hardness(&w,x,z)==1){tp(&w,x,z);w.player.stamina=100;const int r=dig_here(&w,NULL);hard=r>=0?1:-1;OK(hard>0&&dug_ticks==CP_DIG_TICKS_HARD,"hard ground takes 3.5 s");}
+            OK(hard>0,"the island has hard (not rock) ground to test with");
+        }
+        w.player.stamina=100;
     }
     reset(&w,&su);
     OK(go(&w,bx,bz,6000)>=0,"walk to the bed again");
@@ -133,7 +142,7 @@ static void field_tests(unsigned seed){
         CpStageEvent ev;
         OK(event_since(&w,from,CP_STAGE_EV_DUG,&ev)&&ev.move==-1&&w.dig.act_t==0&&w.dig.n_holes==0&&!w.dig.bed[0].dug,"walking away interrupts the dig, leaving no hole");
     }
-    PASS("water, steep ground, tiredness and interruption refuse or cancel the dig");
+    PASS("water refuses; steep and hard ground dig slowly (5 s, 3.5 s); tiredness and interruption cancel the dig");
     /* 4. ordinary soil: grubs and pebbles at low rates, deterministic; the hash covers the dig block; snapshot and replay agree */
     reset(&w,&su);reset(&w2,&su);
     int grubs=0,pebbles=0,nothing=0,spots=0;

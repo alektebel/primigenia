@@ -1001,6 +1001,8 @@ func open_nest_editor() -> void:
 	layer.layer = 30
 	island.add_child(layer)
 	layer.add_child(editor)
+	Game.loop_event.emit("editor_open", {"dna": int(stage.cur.get("social", {}).get("dna_balance", 0))})
+	layer.tree_exited.connect(func() -> void: Game.loop_event.emit("editor_close", {"dna": int(Game.stage.cur.get("social", {}).get("dna_balance", 0)) if Game.stage != null else -1}))
 	var reload := func(genome: Dictionary) -> void:
 		stage.paused = false                 # the scenario records the time state: save it running
 		var built = preload("res://devtools/scenario.gd").build(stage, island.scenario_ctx(), "save", "nest edit", "", false)

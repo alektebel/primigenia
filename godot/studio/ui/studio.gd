@@ -2201,6 +2201,7 @@ func _nest_confirm() -> void:
 		else:
 			nest_status.text = "Edición rechazada (%d). Revisa las piezas, hitos y el espacio para un primo." % rc if lang == "es" else "Evolution refused (%d). Check parts, milestones and room for a cousin." % rc
 		return
+	Game.loop_event.emit("evolve", {"parts": doc.get("parts", []).size(), "dna": int(nest_world.state().social.dna_balance)})     # the DNA already paid: the balance after
 	nest_confirmed.emit(doc)
 
 func _draw_arrows(off: Vector2) -> void:

@@ -46,6 +46,7 @@ const CpStageSpecies CP_STAGE_SPECIES[CP_STAGE_SPECIES_COUNT]={
     },
     {"Brujula",2.0f,14,10,0,CP_STAGE_TERRITORIAL,{0,0,0,0,2,70,100,2.0f,0},CP_ACT_DIURNAL},
     {"Corona",1.4f,10,8,0,CP_STAGE_TIMID,{0,0,1,0,1,50,100,1.4f,0},CP_ACT_CREPUSCULAR}
+    /* 8..11: reserved capacity (zero rows) for the food-web species (T11) and flying species (A59); never spawned (CP_STAGE_SPECIES_DEFINED) */
 };
 static float clamp(float x,float a,float b){
     return x<a?a:x>b?b:x;
@@ -698,7 +699,7 @@ int cp_stage_reset(CpStageWorld *w,const CpStageSetup *s){
     if(s->water_radius<0||ab(s->nest_x)>bound||ab(s->nest_z)>bound)return -1;
     for(int i=0;i<s->n;i++){
         const CpStageSpawn *c=&s->wild[i];
-        if(c->species<0||c->species>=CP_STAGE_SPECIES_COUNT||c->bot< -1||c->bot>=BOT_KIND_COUNT||!profile_valid(&c->profile)||!isfinite(c->x)||!isfinite(c->z)||!isfinite(c->home_x)||!isfinite(c->home_z)||ab(c->x)>bound||ab(c->z)>bound||ab(c->home_x)>bound||ab(c->home_z)>bound)return -1;
+        if(c->species<0||c->species>=CP_STAGE_SPECIES_DEFINED||c->bot< -1||c->bot>=BOT_KIND_COUNT||!profile_valid(&c->profile)||!isfinite(c->x)||!isfinite(c->z)||!isfinite(c->home_x)||!isfinite(c->home_z)||ab(c->x)>bound||ab(c->z)>bound||ab(c->home_x)>bound||ab(c->home_z)>bound)return -1;
     }
     for(int i=0;i<s->n_obstacles;i++){
         const CpStageObstacle *o=&s->obstacles[i];
@@ -840,17 +841,19 @@ static int steep_up(const CpStageWorld *w,const CpStageCreature *c,float x,float
 /* Speed by body size (A39 / D-26): a body walks at a fixed Froude number, v = sqrt(Fr g h), with h its hip height.
  * The C profile carries no leg length, so h = CP_STAGE_HIP_PER_RADIUS * body radius; the factor is the h / r of the
  * seven zoo bodies, measured on their rigs (hip 0.306 m at r 0.6 ... 2.250 at r 3.99; hero 1.69 at r 3.0), starting value.
- * Walk Fr 0.24 puts the hero (h 1.68 m) at 2.0 m/s, the owner's cruise speed. Run Fr is motion.sprint_k (1.5, starting value,
- * a trot / run with a flight phase; Alexander & Jayes 1983 put the walk-run change near Fr 0.5).
+ * Walk Fr 0.24 puts the hero (h 1.68 m) at 2.0 m/s, the owner's cruise speed. Run Fr is motion.sprint_k (2.2 since A54, starting value
+ * checked by the owner's play: 1.5 felt slow; a gallop with a long flight phase; Alexander & Jayes 1983 put the walk-run change near Fr 0.5).
  * Mass still slows acceleration and turning through steer.c (A29). Plain float maths (sqrtf is exactly rounded), so it is
  * reproducible like the rest of the stage. */
 #define CP_STAGE_HIP_PER_RADIUS .56f
 #define CP_STAGE_FR_WALK .24f   /* default of motion.walk_fr */
+#define CP_STAGE_WILD_RUN_FR 1.5f /* wild chase / flee Froude number, fixed (A54): the player's run Fr (motion.sprint_k) went 1.5 -> 2.2, but prey and hunters keep
+                                   * their speeds, or a timid creature would flee faster than the player can walk up to it (the befriend task could not finish) */
 static float gait_speed(const CpCombatProfile *p,float fr){
     return sqrtf(fr*9.81f*CP_STAGE_HIP_PER_RADIUS*cp_combat_body_radius(p));
 }
 const CpStageMotion CP_STAGE_MOTION={
-    1.f,1.5f,.6f,15.f,20.f,.6f,.9f,.6f,4.5f,11.8f,.3f,2.f,7.f,.4f,
+    1.f,2.2f,.6f,7.f,7.f,.45f,.9f,.6f,4.5f,11.8f,.3f,1.2f,7.f,.4f,
     1.4f,.35f,.03f,.25f,3.2f,1.5f,.8f,.55f,1.35f,1.4f,1.1f,8.f,.15f,
     CP_STAGE_FR_WALK
 };
@@ -1026,7 +1029,8 @@ static void walk(CpStageWorld *w,CpStageCreature *c,float dx,float dz,float spee
         if(!steep_up(w,c,c->x,c->z,nx,c->z)&&cp_stage_can_walk(w,c->x,c->z,nx,c->z,r))c->x=nx;
         if(!steep_up(w,c,c->x,c->z,c->x,nz)&&cp_stage_can_walk(w,c->x,c->z,c->x,nz,r))c->z=nz;
     }
-    if(c==&w->player&&step>.02f&&length(c->x-ox,c->z-oz)<step*.5f&&!w->blocked_reason){
+    /* A54: .01 not .02: a softer start (and the slow creep down to a shore, wanted speed x .4) must still count as pushing against a wall */
+    if(c==&w->player&&step>.01f&&length(c->x-ox,c->z-oz)<step*.5f&&!w->blocked_reason){
         w->blocked_reason=block_reason(w,ox,oz,nx,nz,r);
         w->blocked_x=nx;
         w->blocked_z=nz;
@@ -1395,7 +1399,7 @@ static void wild_tick(CpStageWorld *w,int skip,int engage){
         const float k=w->motion.wild_k*w->motion.jog_k;
         float jog=by_size?gait_speed(&e->profile,w->motion.walk_fr)*k:e->profile.speed,espeed=jog;
         /* chasing or fleeing is a run; roaming, returning home and hunkering are walks */
-        if(by_size&&!e->returning&&(hostile||cp_stage_social_leaving(w,i)||(s->temperament==CP_STAGE_TIMID&&d<s->sight*.5f)))espeed=gait_speed(&e->profile,w->motion.sprint_k)*k;
+        if(by_size&&!e->returning&&(hostile||cp_stage_social_leaving(w,i)||(s->temperament==CP_STAGE_TIMID&&d<s->sight*.5f)))espeed=gait_speed(&e->profile,CP_STAGE_WILD_RUN_FR)*k;
         /* A star probes slowly on tube feet, and rows at full speed when driven off or provoked. */
         if(e->species==6&&!hostile&&!e->returning&&!cp_stage_social_leaving(w,i))espeed=.3f;
         if(length(tx-e->x,tz-e->z)<.4f||(cp_stage_creature_hunkered(w,i)&&!hostile))espeed=0;   /* hunkered: curled up in the noon light */
@@ -2217,7 +2221,7 @@ int cp_stage_debug(CpStageWorld *w,const CpStageDebug *d){
             break;
         }
         case CP_STAGE_DBG_SPAWN:{
-            if(d->a<0||d->a>=CP_STAGE_SPECIES_COUNT||!isfinite(d->x)||!isfinite(d->z))return -1;
+            if(d->a<0||d->a>=CP_STAGE_SPECIES_DEFINED||!isfinite(d->x)||!isfinite(d->z))return -1;
             if(w->setup.n>=CP_STAGE_MAX_WILD)return -3;
             const CpStageSpecies *sp=&CP_STAGE_SPECIES[d->a];
             if(!spot_ok(w,d->x,d->z,cp_combat_body_radius(&sp->profile)))return -4;

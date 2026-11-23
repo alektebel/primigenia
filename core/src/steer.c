@@ -2,6 +2,8 @@
 #include "cpore/steer.h"
 #include <math.h>
 #define DT .1f
+#define RUN_BURST_ACC 1.7f
+#define RUN_BURST_EASE 1.2f
 static float clampf_(float x,float a,float b){
     return x<a?a:x>b?b:x;
 }
@@ -80,8 +82,11 @@ float cp_steer_tick(const CpStageMotion *m,const CpSteerBody *b,CpSteer *s,float
         wt*=f;
     }
     wt*=slope;
-    float dv=(wt-old)*m->ease;
-    dv=clampf_(dv,-b->brk*DT,b->acc*DT);
+    /* A54: a run (wanted well above the jog) bursts: the acceleration cap and the ease are raised so a creature reaches its gallop speed in
+     * about half a second from a walk or a standstill (starting values; measured in docs/evidence/loco/creature-feedback/gallop.md). */
+    const int burst=has&&wanted>1.25f*jog&&wt>old;
+    float dv=(wt-old)*(burst?minf_(1.f,m->ease*RUN_BURST_EASE):m->ease);
+    dv=clampf_(dv,-b->brk*DT,b->acc*(burst?RUN_BURST_ACC:1.f)*DT);
     float v=old+dv;
     if(v<.015f&&wt<.015f)v=0;
     /* yaw: angular acceleration towards a yaw rate that brakes in time for the remaining angle */

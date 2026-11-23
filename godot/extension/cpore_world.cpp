@@ -151,7 +151,7 @@ bool setup_from_dict(const Dictionary &d, CpStageSetup &s) {
             if (w.has("species")) { if (!cpore::to_int(w["species"], -2147483648LL, 2147483647LL, n)) return false; c.species = int(n); }
             if (w.has("legs")) { if (!cpore::to_int(w["legs"], 0, 8, n)) return false; c.legs = int(n); }
             if (w.has("bot")) { if (!cpore::to_int(w["bot"], -2147483648LL, 2147483647LL, n)) return false; c.bot = int(n); }
-            if (c.species >= 0 && c.species < CP_STAGE_SPECIES_COUNT) c.profile = CP_STAGE_SPECIES[c.species].profile;
+            if (c.species >= 0 && c.species < CP_STAGE_SPECIES_DEFINED) c.profile = CP_STAGE_SPECIES[c.species].profile;
             if (w.has("profile") && !profile_from_dict(w["profile"], c.profile)) return false;
             s.wild[i] = c;
         }
@@ -277,7 +277,7 @@ Dictionary social_to_dict(const CpStageWorld &w) {
     d["items"] = items;
     d["resolved"] = cp_stage_social_species_resolved(&w); d["resolved_total"] = cp_stage_social_species_present(&w);
     Array sp;
-    for (int k = 0; k < CP_SOC_SPECIES; ++k) {
+    for (int k = 0; k < CP_STAGE_SPECIES_DEFINED; ++k) {
         Dictionary e;
         e["bonded"] = s.latched[k]; e["kills"] = s.kills[k]; e["resolution"] = s.resolution[k];
         e["observed"] = s.obs_items[k]; e["seen"] = (s.species_seen & (1u << k)) != 0;
@@ -375,7 +375,7 @@ Dictionary CporeWorld::default_profile() {
 Array CporeWorld::species() {
     Array a;
     static const char *const ACT[] = {"diurnal", "nocturnal", "crepuscular"};
-    for (int i = 0; i < CP_STAGE_SPECIES_COUNT; ++i) {
+    for (int i = 0; i < CP_STAGE_SPECIES_DEFINED; ++i) {
         const CpStageSpecies &s = CP_STAGE_SPECIES[i];
         Dictionary d;
         d["id"] = i; d["name"] = String(s.name);
@@ -393,7 +393,7 @@ Array CporeWorld::species() {
 
 Array CporeWorld::chains() {
     Array a;
-    for (int i = 0; i < CP_SOC_SPECIES; ++i) {
+    for (int i = 0; i < CP_STAGE_SPECIES_DEFINED; ++i) {
         const CpStageChain &c = CP_STAGE_CHAINS[i];
         Dictionary d;
         d["species"] = i; d["id"] = String(c.id); d["trait"] = String(c.trait); d["move"] = c.move;
@@ -551,7 +551,7 @@ Dictionary CporeWorld::state() const {
         }
         static const char *const RES[] = {"open", "ally", "hunted"};
         Array roster;
-        for (int k = 0; k < CP_SOC_SPECIES; ++k) {
+        for (int k = 0; k < CP_STAGE_SPECIES_DEFINED; ++k) {
             Dictionary e;
             const CpStageSpecies &sp = CP_STAGE_SPECIES[k];
             e["id"] = k; e["name"] = String(sp.name); e["activity"] = int(sp.activity);
