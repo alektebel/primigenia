@@ -295,7 +295,7 @@ const TABLE := {
 	"stall": ["stall", "pérdida"],
 	"fl_flight": ["FLIGHT", "VUELO"],
 	"fl_speed": ["V {0} m/s   alt {1} m   sink {2} m/s   stamina {3}%", "V {0} m/s   alt {1} m   descenso {2} m/s   aguante {3}%"],
-	"fl_controls": ["Space flap, Ctrl dive, W/S pitch, A/D or mouse: bank + pitch", "Espacio aletea, Ctrl pica, W/S cabeceo, A/D o ratón: alabeo + cabeceo"],
+	"fl_controls": ["Space flap-glide, Ctrl dive, W/S pitch, A/D or mouse: bank, A A / D D: wingover", "Espacio aletea y planea, Ctrl pica, W/S cabeceo, A/D o ratón: alabeo, A A / D D: vuelta de campana"],
 	"fl_overbank": ["BANK TOO STEEP: sinking", "DEMASIADO INCLINADO: cae"],
 	"fl_stalling": ["STALLING", "EN PÉRDIDA"],
 	"fl_test": ["Flight test: Space takes off.", "Prueba de vuelo: Espacio despega."],

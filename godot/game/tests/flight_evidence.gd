@@ -132,7 +132,9 @@ func _run() -> void:
 	check(f.model.mode in ["glide", "flare"], "released Space: gliding (%s)" % f.model.mode)
 	var alt_glide0: float = f.altitude()
 	# ---- flap for 5 s, then dive, then glide down, flare and land
+	f.cruise_style = "continuous"        # the owner's default is flap-glide (A56): at speed the wings rest; this stretch wants the wing work
 	await fly(5.0, {"flap": true, "dive": false, "pitch": 0.0, "turn": 0.0}, 0.8, flap)
+	f.cruise_style = "flapglide"
 	check(f.model.mode == "flap" or f.model.mode == "glide", "flapping (%s)" % f.model.mode)
 	check(f.model.stamina < 0.8, "flapping costs stamina (%.2f)" % f.model.stamina)
 	await fly(1.5, {"flap": false, "dive": true, "pitch": 0.0, "turn": 0.0}, 0.5, glide)
