@@ -64,6 +64,7 @@ static func from_studio(creature: Dictionary, manifest: Dictionary) -> Dictionar
 				break
 	result.hp += result.guard * 5
 	result["radius_cm"] = body_radius_cm(creature.get("nodes"))
+	result.merge(CporeWorld.grip_profile(JSON.stringify(creature)), true)
 	return {"ok": true, "profile": result}
 
 static func load_json(path: String) -> Dictionary:

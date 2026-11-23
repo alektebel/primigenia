@@ -160,6 +160,8 @@ func rebase() -> void:
 func _update_flight(_dt: float, s: Dictionary) -> void:
 	var f: Dictionary = s.flight
 	var r: Basis = f.basis
+	var tuck: float = float(f.get("legs_tuck", 1.0))
+	var fwd: float = float(f.get("legs_fwd", 0.0))
 	var com_local: Vector3 = controller.morph.com
 	var pose: Dictionary = controller.pose.duplicate()
 	if pose.is_empty():
@@ -175,7 +177,8 @@ func _update_flight(_dt: float, s: Dictionary) -> void:
 		var reach: float = float(leg.upper) + float(leg.lower)
 		var hip: Vector3 = root * (leg.hip as Vector3)
 		hips.append(hip)
-		feet.append(hip + r * Vector3(0.0, -0.4 * reach, -0.28 * reach))     # tucked: knees up, feet under the belly
+		# tucked in cruise: knees up, feet under the belly; extended for the landing and, in a flare, swung forward
+		feet.append(hip + r * Vector3(0.0, lerpf(-0.95, -0.4, tuck) * reach, lerpf(0.0, -0.28, tuck) * reach + 0.45 * fwd * reach))
 		contact.append(false)
 		swing.append(0.5)
 	pose["feet"] = feet

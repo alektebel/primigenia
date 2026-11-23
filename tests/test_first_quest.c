@@ -113,7 +113,7 @@ static void field_tests(unsigned seed){
             if(!gw&&cp_stage_water_depth(&w,x,z)>1.f){wx=x;wz=z;gw=1;}
             const float h=cp_stage_ground(&w,x,z);
             const float gx=(cp_stage_ground(&w,x+1,z)-cp_stage_ground(&w,x-1,z))*.5f,gz=(cp_stage_ground(&w,x,z+1)-cp_stage_ground(&w,x,z-1))*.5f;
-            if(!gs&&h>5.f&&gx*gx+gz*gz>.8f*.8f&&cp_stage_water_depth(&w,x,z)==0.f){sx=x;sz=z;gs=1;}
+            if(!gs&&h>5.f&&gx*gx+gz*gz>.8f*.8f&&gx*gx+gz*gz<1.1f*1.1f&&cp_stage_water_depth(&w,x,z)==0.f){sx=x;sz=z;gs=1;}
         }
         OK(gw&&gs,"the island has water and steep ground to test with");
         tp(&w,wx,wz);OK(dig_here(&w,NULL)==CP_STAGE_ERR_HARD_GROUND-1000,"water cannot be dug");

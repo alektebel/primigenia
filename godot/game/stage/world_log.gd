@@ -50,8 +50,16 @@ static func write(setup: Dictionary, inputs: Array, opts: Dictionary = {}) -> St
 		any_run = any_run or int(i.get("run", 0)) != 0
 		any_jump = any_jump or int(i.get("jump", 0)) != 0
 	any_run = any_run or any_jump
-	var v3 := any_run or not debug.is_empty() or snapshot != "" or not field.is_empty() or any_legs or any_secrets
+	var any_grip := int(setup.player.get("grip_traits", 0)) != 0 or int(setup.player.get("grip_legs", 0)) != 0
+	for w in setup.wild:
+		any_grip = any_grip or int(w.profile.get("grip_traits", 0)) != 0 or int(w.profile.get("grip_legs", 0)) != 0
+	var v3 := any_grip or any_run or not debug.is_empty() or snapshot != "" or not field.is_empty() or any_legs or any_secrets
 	lines.append("%s %d" % [MAGIC, 5 if any_jump else (4 if any_run else (3 if v3 else VERSION))])
+	if any_grip:
+		var g := "grip %d" % setup.wild.size()
+		for p in [setup.player] + setup.wild.map(func(w): return w.profile):
+			g += " %d %d" % [int(p.get("grip_traits", 0)), int(p.get("grip_legs", 0))]
+		lines.append(g)
 	if snapshot != "":
 		lines.append("snapshot " + snapshot)
 	if any_legs:
@@ -106,7 +114,8 @@ static func parse(text: String) -> Dictionary:
 	var field := {}
 	var legs: Array = []
 	var secrets: Array = []
-	while version >= 3 and cur[0] + 1 < tok.size() and (tok[cur[0]] == "snapshot" or tok[cur[0]] == "field" or tok[cur[0]] == "legs" or tok[cur[0]] == "secrets"):
+	var grips: Array = []
+	while version >= 3 and cur[0] + 1 < tok.size() and (tok[cur[0]] == "snapshot" or tok[cur[0]] == "field" or tok[cur[0]] == "legs" or tok[cur[0]] == "secrets" or tok[cur[0]] == "grip"):
 		if tok[cur[0]] == "snapshot":
 			snapshot = tok[cur[0] + 1]
 			cur[0] += 2
@@ -117,6 +126,13 @@ static func parse(text: String) -> Dictionary:
 			for k in 7:
 				secrets.append(tok[cur[0] + 4 + k].to_float())
 			cur[0] += 11
+		elif tok[cur[0]] == "grip":
+			var cnt: int = tok[cur[0] + 1].to_int()
+			if cnt < 0 or cnt > 24 or cur[0] + 3 + 2 * cnt >= tok.size():
+				return fail.call("bad grip line")
+			for k in cnt + 1:
+				grips.append([tok[cur[0] + 2 + 2*k].to_int(), tok[cur[0] + 3 + 2*k].to_int()])
+			cur[0] += 4 + 2 * cnt
 		elif tok[cur[0]] == "legs":
 			var cnt: int = tok[cur[0] + 1].to_int()
 			if cur[0] + 2 + cnt >= tok.size():
@@ -168,6 +184,13 @@ static func parse(text: String) -> Dictionary:
 		w.profile = read_profile.call()
 		wild.append(w)
 	setup.wild = wild
+	if not grips.is_empty():
+		if grips.size() != n_wild + 1:
+			return fail.call("grip count mismatch")
+		for k in grips.size():
+			var p: Dictionary = setup.player if k == 0 else wild[k-1].profile
+			p.grip_traits = grips[k][0]
+			p.grip_legs = grips[k][1]
 	if legs.size() == n_wild + 1:
 		setup.player_legs = legs[0]
 		for i in n_wild:
