@@ -26,6 +26,12 @@ typedef struct {
     int32_t can_pivot; /* small bodies turn on the spot, big ones take a slow U-turn */
 } CpSteerBody;
 
+enum { CP_GRIP_CLAW=1, CP_GRIP_ARM=2, CP_GRIP_CLING=4, CP_GRIP_LOW=8,
+       CP_GRIP_TAIL=16, CP_GRIP_HOOF=32 };
+float cp_stage_grip_deg(const CpCombatProfile *p,int legs);
+float cp_stage_grip_grade(const CpCombatProfile *p,int legs);
+int cp_stage_grip_project(const char *json,CpCombatProfile *p);
+void cp_steer_creature(const CpStageMotion *m,const CpStageCreature *c,CpSteerBody *b);
 void cp_steer_body(const CpStageMotion *m,float radius,int legs,CpSteerBody *b);
 /* Speed multiplier for walking along `grade` (rise / run, + uphill): 1 flat, 0 at the climb limit, a little above 1 on a
  * mild downhill, braked on a steep one. */
@@ -36,7 +42,7 @@ float cp_steer_slope(const CpStageMotion *m,const CpSteerBody *b,float grade);
 float cp_steer_tick(const CpStageMotion *m,const CpSteerBody *b,CpSteer *s,float dx,float dz,float wanted,float jog,float slope);
 /* Pure pursuit: the point `look` metres ahead along the polyline (px,pz) -> path[first] -> ... -> path[n-1]. */
 void cp_steer_carrot(const float (*path)[2],int n,int first,float px,float pz,float look,float *ox,float *oz);
-/* Steepest ground gradient (rise/run) any body may end a tick on: tan(51.6 deg), under the 52 degree ceiling the Godot heights test enforces. */
+/* Legacy tan(51.6 deg), retained for cost normalization and exact compatibility. A59 bodies use their own grip grade. */
 #define CP_STEER_GRADE_MAX 1.26f
 /* Downhill slide speed (m/s) for a ground gradient magnitude `g`; 0 below the body's slide grade. */
 float cp_steer_slide(const CpStageMotion *m,const CpSteerBody *b,float g);

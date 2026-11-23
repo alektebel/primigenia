@@ -52,7 +52,7 @@ static const struct { int8_t skill[CP_SOC_COUNT],gift[CP_ITEM_COUNT]; } PREF[CP_
     {{4,4,8,12},{2,0,14,8}}, /* Brujula: detritus and carrion, territorial pool */
     {{8,2,12,4},{-4,0,14,8}} /* Corona: passive benthic filter feeder */     /* Babosa, slow herbivore: charmed by soft approach, eats litter and fruit */
 };
-static const uint8_t HERBIVORE[CP_SOC_SPECIES]={1,1,0,0,0,1,0,0};
+static const uint8_t HERBIVORE[CP_SOC_SPECIES]={1,1,0,0,0,1,0,0};   /* 8..11 reserved: zero rows */
 static const uint8_t HECKLER[CP_SOC_SPECIES]={0,0,0,1,0,0,0,0};
 /* One A22 chain per species: three things to watch, then the move it teaches. Moves are combat move ids that exist in
  * CP_COMBAT_MOVES (a lore chain that names a move the table does not have is simply not listed here). */

@@ -173,13 +173,16 @@ func _walk_check(name: String, c, desc: Dictionary, m) -> void:
 			var sole: Vector3 = l.foot.global_position
 			lowest = minf(lowest, sole.y)
 			if ctl.pose.contact[j]:
-				worst_reach = maxf(worst_reach, (sole - l.foot_target).length())
-				if ctl.pose.foot_pitch[j] < 0.01:
+				# A54: the foot pivots about the ankle (on its own up axis), so with the heel raised its origin is no longer the target;
+				# the IK is checked where it acts: the ankle sits a sole-height above the target along world up
+				var ankle_w: Vector3 = l.creature.global_transform * l.ankle
+				worst_reach = maxf(worst_reach, (ankle_w - (l.foot_target + Vector3.UP * (l.width * 0.6))).length())
+				if ctl.pose.foot_pitch[j] < 0.003:
 					worst_flat = maxf(worst_flat, absf(sole.y))
 			else:
 				swing_feet += 1
 	if not desc.leg_ids.is_empty():
-		check(worst_reach < 0.002, "%s: point 3, the IK reaches the planted soles (%.2f mm)" % [name, worst_reach * 1000.0])
+		check(worst_reach < 0.002, "%s: point 3, the IK reaches the planted ankles (%.2f mm)" % [name, worst_reach * 1000.0])
 		check(worst_flat < Adapter.SOLE_TOLERANCE + 0.001, "%s: point 3, flat-footed soles on the ground (%.2f mm)" % [name, worst_flat * 1000.0])
 		check(lowest > -0.01, "%s: no foot below the ground (%.1f mm)" % [name, lowest * 1000.0])
 		check(swing_feet > 0, "%s: feet really swing" % name)
@@ -434,6 +437,9 @@ func _stage() -> void:
 	_key(KEY_1)
 	await sim_ticks(40)
 	var p_now: Dictionary = game.stage.cur.entities[0]
+	check(p_now.has("grip_deg") and p_now.has("sliding"), "A59 exposes grip and slipping to animation")
+	var gp: Dictionary = CporeWorld.grip_profile(JSON.stringify({"nodes": [{"y": 0, "z": 0, "r": 1}], "parts": [{"type": "leg_sucker"}]}))
+	check(int(gp.get("grip_deg", 0)) == 75, "A59 sucker preview clings at 75 degrees")
 	var e_now: Dictionary = game.stage.cur.entities[1]
 	check(events_seen > 0, "combat events reached the stage (%d)" % events_seen)
 	check(windup_seen, "the wind-up tell was shown for an enemy wind-up")
@@ -498,6 +504,9 @@ func _actions_begin(island) -> Dictionary:
 				f1 = f
 		if f1 == null or int(f1.phase) != 1 or int(f1.move) < 0:
 			st.wind.n = 0
+			return
+		if w.driver.layer.paused():
+			st.wind.n = 0            # A64 hit-pause: the layer clock stands still, so the fade-in restarts after it
 			return
 		st.wind.n += 1
 		st.wind.seen += 1

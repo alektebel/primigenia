@@ -28,6 +28,7 @@ protected:
 public:
     CporeWorld();
     static int version();
+    static godot::Dictionary grip_profile(const godot::String &genome);
     static godot::Dictionary default_setup(int64_t seed);
     static godot::Dictionary default_profile();
     static godot::Array species();

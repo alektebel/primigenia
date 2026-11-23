@@ -175,13 +175,31 @@ func dist_to(id: int) -> float:
 func walk_to(p: Vector2, radius: float, budget: int, stop: Callable = Callable()) -> bool:
 	var t0 := tick()
 	var next_send := -1
+	var still_from := tick()
+	var still_pos := Vector2(float(me().x), float(me().z))
 	while tick() - t0 < budget:
-		var d := Vector2(float(me().x), float(me().z)).distance_to(p)
+		var here := Vector2(float(me().x), float(me().z))
+		var d := here.distance_to(p)
 		if d <= radius:
 			island.player_input.clear_destination()
 			return true
 		if stop.is_valid() and stop.call():
 			return true
+		if here.distance_to(still_pos) > 1.0:
+			still_pos = here
+			still_from = tick()
+		if tick() - still_from > 200:
+			# A54: a click-walk (GO) is refused from a pocket the planner does not know (the bot chased a creature into one); a player would
+			# take the keys: walk straight at the goal for 4 s with a heading order, then click again
+			island.player_input.clear_destination()
+			var h := (p - here).normalized()
+			for k in 40:
+				game.stage.queue_order({"verb": 3, "hx": int(round(h.x * 32767.0)), "hz": int(round(h.y * 32767.0)), "sprint": 0})
+				await ticks(1)
+			still_from = tick()
+			still_pos = Vector2(float(me().x), float(me().z))
+			next_send = -1
+			continue
 		if tick() >= next_send:
 			island.player_input.set_destination(p)
 			next_send = tick() + 40
@@ -298,6 +316,8 @@ func _friend() -> void:
 		_key(KEY_B)                               # B arms Befriend; the click locks the creature and the stage walks up to it
 		sui.lock_target(target)
 		var step := 0
+		var last_say := -1000
+		var last_run_tick := -1
 		var last_trust := -1
 		var stuck := 0
 		while not task_ticks.has("friend") and tick() - t0 < BUDGET.friend and int(state().active) < 0:
@@ -307,7 +327,15 @@ func _friend() -> void:
 			if sui.locked_id != target:
 				_key(KEY_B)
 				sui.lock_target(target)             # the pursuit was cancelled (a fight, a move key): lock it again
+			if tick() - last_say >= 300:
+				last_say = tick()
+				say("friend pursuit: me %.0f,%.0f d %.1f order %d blocked %s speed %.2f" % [float(me().x), float(me().z), dist_to(target), int(state().order.verb), str(state().get("blocked", "")), float(me().speed)])
 			var act: Dictionary = state().social.action
+			if tick() != last_run_tick and dist_to(target) > 9.0 and int(act.verb) == 0:
+				# A54: a timid creature flees at its run speed from 12 m, faster than the starter walks (the UI's pursuit walks); the bot runs the
+				# gap down (an approach order with sprint) and the pursuit takes over for the last metres, like a player holding Shift
+				last_run_tick = tick()
+				game.stage.queue_order({"verb": 4, "target": target, "sprint": 1})
 			if int(act.verb) == 0 and int(state().order.verb) not in [11, 12] and dist_to(target) < 8.0:     # the pursuit walks up; the beat keys are for when it is near
 				var trust := int(en.trust)
 				if trust == last_trust:
@@ -352,28 +380,22 @@ func _key(code: Key) -> void:
 		e.pressed = pressed
 		root.push_input(e)
 
-## X: the dig key, then wait for C to finish (2 s standing still). Returns whether a hole was made.
+## X: the dig key, then wait for C to finish (2 s standing still on soft soil, up to 5 s on rock). Returns whether a hole was made.
 func dig_here() -> bool:
 	var dug0 := int(state().dig.dug)
 	_key(KEY_X)
 	var t0 := tick()
-	while tick() - t0 < 60 and int(state().dig.dug) == dug0:
+	while tick() - t0 < 70 and int(state().dig.dug) == dug0:
 		await process_frame
 	return int(state().dig.dug) > dug0
 
 func _dig() -> void:
-	print("== 3. dig: a hole in soft soil")
+	print("== 3. dig: X digs anywhere (A54); harder ground only takes longer")
 	var t0 := tick()
 	var tries := 0
-	while not task_ticks.has("dig") and tick() - t0 < BUDGET.dig and tries < 30:
+	while not task_ticks.has("dig") and tick() - t0 < BUDGET.dig and tries < 6:
 		tries += 1
-		say("soft here? %s (%.0f, %.0f)" % [state().dig.soft, float(me().x), float(me().z)])
-		if not bool(state().dig.soft):
-			# not soft here: walk a few metres and look again
-			var here := Vector2(float(me().x), float(me().z))
-			var home: Vector2 = island._nest
-			await walk_to(here + (home - here).normalized() * 12.0, 1.5, 200)
-			continue
+		say("digging at (%.0f, %.0f), hardness %d, %d ticks" % [float(me().x), float(me().z), int(state().dig.hardness), int(state().dig.ticks)])
 		await dig_here()
 	check(await wait_task("dig", 30), "task 3 done: a hole was dug (tick %d)" % int(task_ticks.get("dig", -1)))
 	check(int(state().dig.dug) >= 1 and state().dig.holes.size() >= 1, "C holds the hole (%d dug)" % int(state().dig.dug))

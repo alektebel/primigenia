@@ -4,10 +4,14 @@ extends Node3D
 ## near the nest. They wander on a seeded walk, come back when they drift, follow the player a little when he is near and stop to
 ## look at him when he comes close (a greeting).
 ##
-## VISUAL ONLY, no C slots (the roster holds 23 of 24 wild slots, docs/plans/creature-loop.md finding 2): they are ActorHost
-## bodies moved by this script, not entities of the C world. So they cannot be picked, fought, befriended or hurt, and they do
-## not exist in snapshots or replays. A real C version (the same genome as wild slots with a family flag, a social state of
-## their own, cousins that grow into them) needs the T9 roster work: MAX_WILD 32, SPECIES 12, a snapshot bump.
+## VISUAL ONLY for now, no C slots: they are ActorHost bodies moved by this script, not entities of the C world. So they cannot be
+## picked, fought, befriended or hurt, and they do not exist in snapshots or replays.
+## HOOK for the C version (roster v9, T9, is merged in the core): the world has 32 wild slots and the island setup fills at most 24
+## (CP_STAGE_ROSTER_CAP); CP_STAGE_RESERVE_FAMILY = 4 of the rest are kept free for the nest family and 4 for cousins
+## (CP_STAGE_RESERVE_COUSIN). To back a sibling by a slot: append it to the wild roster at reset (or with a debug SPAWN op) using the
+## player's species genome, a home on the nest, and a family flag in the slot's social state; evolve already takes the next free
+## index (setup.n) for the cousin, so the family slots must be filled after the roster and before any evolve. That needs a new
+## snapshot bump only for the family flag; the slots themselves already exist in layout 12.
 ## Placement and wandering are deterministic from the world seed and the number of frames the game has run, never from the C RNG.
 
 const ActorHost := preload("res://game/actors/actor_host.gd")

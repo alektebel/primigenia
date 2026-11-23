@@ -2,6 +2,7 @@
  * Reads godot/creature/tests/parity/plan_cases.json (one case per line: {"name":..,"error":..,"genome":{..}}),
  * the same table the Godot creature, Godot studio and web validators run. C only reports accept/reject. */
 #include "cpore/world.h"
+#include "cpore/steer.h"
 #include <assert.h>
 #include <stdio.h>
 #include <string.h>
@@ -24,10 +25,12 @@ int main(int argc,char **argv){
   int expect_ok=strstr(line,"\"error\":null")!=NULL;
   int rc=cp_stage_genome_form(genome,&form);
   if((rc==0)!=expect_ok){bad++;fprintf(stderr,"FAIL case %.60s: expected %s\n",name,expect_ok?"accept":"reject");}
-  /* A valid radial genome has the same profile as the same genome without `plan` (replicas are free, v1 rule). */
+  /* Radial replicas remain free and preserve combat stats. A59 adhesive limbs may change grip. */
   if(rc==0&&strstr(genome,"\"sym\":\"radial\"")){
    char *w=without_plan(genome);assert(!cp_stage_genome_form(w,&plain));free(w);
-   assert(!memcmp(&form.profile,&plain.profile,sizeof form.profile));
+   assert(form.profile.grip_traits==plain.profile.grip_traits || (form.profile.grip_traits^plain.profile.grip_traits)==CP_GRIP_CLING);
+   CpCombatProfile combat=form.profile;combat.grip_traits=plain.profile.grip_traits;
+   assert(!memcmp(&combat,&plain.profile,sizeof combat));
    assert(!memcmp(form.parts,plain.parts,sizeof form.parts));
    assert(strstr(form.body,"\"plan\""));            /* the body keeps the plan verbatim */
   }

@@ -204,8 +204,10 @@ static func offsets(gait: StringName, morph) -> PackedFloat32Array:
 static func spine_flex(gait: StringName, phase: float, fr: float, scale := 1.0) -> float:
 	if gait != &"gallop":
 		return 0.0
-	var amp: float = clamp(0.045 * pow(max(fr, 0.1) / 2.5, 0.3), 0.0, 0.11) * scale
-	return amp * sin(TAU * (phase - 0.15))
+	var amp: float = clamp(0.045 * pow(max(fr, 0.1) / 2.5, 0.3), 0.0, 0.14) * scale
+	# A54: a sharper stroke than a pure sine: the second harmonic makes the gather quick and the extension a held stretch
+	var a := TAU * (phase - 0.15)
+	return amp * (sin(a) + 0.22 * sin(2.0 * a + 0.5))
 
 ## Forward lean of the body in a run (rad, nose down), from the Froude number.
 static func run_lean(plan: StringName, gait: StringName, fr: float) -> float:
@@ -367,12 +369,12 @@ static func _gallop_look(d: Dictionary, full: bool, bold: bool) -> void:
 	if full:
 		d.off = [0.0, 0.08, 0.58, 0.5]       # hind pair together, then the front pair: a rotary gallop with a long flight between
 		d.duty = 0.25                         # two pairs of 0.25 + 0.08 leave about 34% of the cycle airborne
-		d.k = float(d.k) * 1.2
-		d.bob = float(d.bob) * 1.6
-		d.rock = float(d.rock) * 2.0
+		d.k = float(d.k) * 1.3                # A54: a longer bound...
+		d.bob = float(d.bob) * 2.0            # ...with a stronger push-off (the body rises further out of each stance)
+		d.rock = float(d.rock) * 2.6          # ...and the shoulders and hips rock more
 		d.head = float(d.head) * 2.0
-		d.lift = float(d.lift) * 1.25
-		d.flex = 2.2
+		d.lift = float(d.lift) * 1.35
+		d.flex = 3.0                          # gather and extend of the spine, about 1.4x the earlier amplitude
 	else:
 		d.k = float(d.k) * 1.1
 		d.bob = float(d.bob) * 1.3

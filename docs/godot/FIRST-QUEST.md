@@ -20,8 +20,10 @@ ping, never a route. Each completion is a whisper and a moment line, and pays DN
    of the ring), press 1 (bite) until it falls. The hatchling beats them. Garfio (60 m, aggressive) is the one to avoid.
 2. **Haz un amigo / Make a friend.** Befriend a creature of another species than the one you killed: choose Befriend (west of
    the ring), then keys 1-4 (sing, dance, charm, pose) in time with its beat, or G for a gift. A bond is trust 60.
-3. **Excava / Dig.** Stand on soft soil (a hairline ring with a shovel appears at your feet) and press **X**, or click the ring.
-   Stand still for two seconds. It costs 12 stamina. Rock, steep ground, water and the cave refuse.
+3. **Excava / Dig.** Press **X** anywhere dry (A54: no button stays on screen; a one-time hint "X: dig" shows the first time). Stand
+   still: 2 s on soft soil, 3.5 s on hard ground (steep, shore sand), 5 s on rock (cliffs, caves). A hairline ring fills at your feet
+   while you dig. It costs 12 stamina. Only water refuses. Fossil beds (cracked dry soil) still decide the finds; elsewhere it is
+   soil, a grub or a pebble.
 4. **Alas del pasado / Wings of the past.** The wing bed is 22 to 62 m from the nest, always on a walkable line: cracked dry soil,
    a paler grass, bone splinters and black glassy flecks sticking out, a faint dust puff now and then, and a key label within
    7 m. Digging it unearths a winged ancestor (`wing_vane`) and, in the same seam of burnt rock, a scorched throat gland
@@ -34,8 +36,10 @@ Console (backtick): `quest status | skip | reset` (skip completes the current ta
 
 ## What is in C (`core/src/stage_dig.c`, combat.c, stage_parts.c; snapshot 10)
 
-* **Verb `CP_STAGE_DIG` (20)**, text `dig`. Soft soil = dry, outside the cave, ground at least 0.3 m, slope at most 0.35 (rock and
-  cliffs are steep). `CP_DIG_TICKS` 20 standing still (a move or any order but CONTINUE cancels it; the stamina, 12, is gone),
+* **Verb `CP_STAGE_DIG` (20)**, text `dig`. Digs anywhere dry (A54; A38 allowed soft soil only). `cp_stage_dig_hardness`: soft soil
+  (dry, outside the cave, ground at least 0.3 m, slope at most 0.35) 0, hard ground 1, rock (slope over 0.8, caves) 2, water -1 (the
+  only refusal, error -27). The time is a pure function of the position: `CP_DIG_TICKS` 20 (soft), `CP_DIG_TICKS_HARD` 35, `CP_DIG_TICKS_ROCK` 50,
+  standing still (a move or any order but CONTINUE cancels it; the stamina, 12, is gone),
   hole list of 16 (ring), events `CP_STAGE_EV_DUG` (target = hole, move = find, -1 = interrupted, value = bed) and
   `CP_STAGE_EV_MOVE_USED`. Errors `-27` hard ground and `-28` already dug; events DUG=30, MOVE_USED=31; flame is move 14.
 * **Beds** are derived at reset from the seed and the field with their own RNG stream (no other stream is touched): bed 0 is the

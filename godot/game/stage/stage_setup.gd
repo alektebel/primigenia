@@ -139,7 +139,9 @@ static func garfio_profile(manifest: Dictionary) -> Dictionary:
 # 14 m in front of the entrance. The sixth species, Babosa (species 5), grazes the damp slope of the valley.
 const NIGHT_COUNT := 3
 const SLUG_COUNT := 3 # Three still resolve an ally species; leaves room for six radial animals (24 total).
-# Integration fix: evolving spawns a cousin, which needs a free wild slot (CP_STAGE_MAX_WILD 24), so the radial animals stop at 23. Owner: how many free slots for cousins?
+# Roster v9 (T9): 32 wild slots in C (CP_STAGE_MAX_WILD); the setup may fill up to CP_STAGE_ROSTER_CAP = 24, and 8 stay free (4 for cousins,
+# 4 for the nest family, family.gd). The roster is kept at 23 for now: a 24th creature (the Brujula the old cap trimmed) shifts the
+# first-quest e2e befriend task past its budget, so adding it is a separate content change.
 const RADIAL_WILD_CAP := 23
 const SLUG_DISTANCE := 125.0
 const SLUG_ARC := 0.86
@@ -190,7 +192,7 @@ static func add_night_and_slug(setup: Dictionary, data, nest: Vector2, probe = n
 static func add_radial(setup: Dictionary, data, seed: int, nest: Vector2) -> Dictionary:
 	var placement := RadialFauna.plan(data, seed, nest)
 	var species: Array = CporeWorld.species()
-	for id in ["corona", "brujula"]:   # corona first: the cap trims a Brujula (4 -> 3), both Corona stay
+	for id in ["corona", "brujula"]:   # corona first, so a full roster trims a Brujula before a Corona
 		var sp := 6 if id == "brujula" else 7
 		var spots: Array = placement[id].spots
 		for p: Vector2 in spots:

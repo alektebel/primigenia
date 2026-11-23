@@ -62,7 +62,42 @@ func _try_loco() -> void:
 		push_warning("loco rig contract: %s" % [problems])
 	controller = ctl_script.new(morph_script.analyse(desc), _ground)
 	controller.footfall.connect(func(leg: int, pos: Vector3) -> void: footfall.emit(leg, pos))
+	controller.push_off.connect(_dust_kick)
 	_try_actions()
+
+## A54: a small dust kick where a hind foot pushes off in a run burst (strength 0..1). Visual only; a short one-shot puff in the world.
+func _dust_kick(pos: Vector3, strength: float) -> void:
+	if host == null or not host.is_inside_tree():
+		return
+	var p := CPUParticles3D.new()
+	p.amount = 10
+	p.lifetime = 0.5
+	p.one_shot = true
+	p.explosiveness = 0.9
+	p.direction = Vector3(0, 1, 0)
+	p.spread = 55.0
+	p.initial_velocity_min = 0.4 + 0.6 * strength
+	p.initial_velocity_max = 1.0 + 1.0 * strength
+	p.gravity = Vector3(0, -2.5, 0)
+	p.scale_amount_min = 0.5
+	p.scale_amount_max = 1.0
+	var q := QuadMesh.new()
+	q.size = Vector2(0.16, 0.16)
+	var m := StandardMaterial3D.new()
+	m.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	m.billboard_mode = BaseMaterial3D.BILLBOARD_ENABLED
+	m.vertex_color_use_as_albedo = true
+	m.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	q.material = m
+	p.mesh = q
+	var g := Gradient.new()
+	g.offsets = PackedFloat32Array([0.0, 1.0])
+	g.colors = PackedColorArray([Color(0.62, 0.55, 0.42, 0.55), Color(0.62, 0.55, 0.42, 0.0)])
+	p.color_ramp = g
+	host.get_parent().add_child(p)
+	p.global_position = pos + Vector3(0, 0.03, 0)
+	p.emitting = true
+	host.get_tree().create_timer(1.0).timeout.connect(p.queue_free)
 
 func _try_radial() -> void:
 	adapter = load(LOCO_PATHS[2])
@@ -88,8 +123,21 @@ func _try_actions() -> void:
 	layer.action_event.connect(_on_action_event)
 
 const _flame_script := preload("res://game/actors/flame_fx.gd")
+const _impact_script := preload("res://actions/impact_fx.gd")
 
 func _on_action_event(ev: String, data: Dictionary) -> void:
+	if ev == "hit_fx" and host != null and host.is_inside_tree():
+		# A64: the shared melee contact: dust and sparks here, the camera shake and the like on the island
+		var parent := host.get_parent()
+		_impact_script.contact(parent, data)
+		if parent != null and parent.has_method("melee_impact"):
+			parent.melee_impact(data)
+		return
+	if ev == "drive" and layer != null and host != null and host.is_inside_tree() and map != null:
+		# the lunge pushes off: dust from the hind feet
+		var back := -Vector3(sin(host.rotation.y), 0.0, cos(host.rotation.y))
+		_dust_kick(host.global_position + back * 0.25 * map.height, 0.8)
+		return
 	if ev == "cry" and data.get("id", "") == "roar" and layer != null and host.is_inside_tree() and map != null:
 		_fx_script.roar_ring(host.get_parent(), host.global_position, 1.6 * map.height + 0.8)
 		return
@@ -125,6 +173,8 @@ func rebase() -> void:
 func _update_flight(_dt: float, s: Dictionary) -> void:
 	var f: Dictionary = s.flight
 	var r: Basis = f.basis
+	var tuck: float = float(f.get("legs_tuck", 1.0))
+	var fwd: float = float(f.get("legs_fwd", 0.0))
 	var com_local: Vector3 = controller.morph.com
 	var pose: Dictionary = controller.pose.duplicate()
 	if pose.is_empty():
@@ -140,7 +190,8 @@ func _update_flight(_dt: float, s: Dictionary) -> void:
 		var reach: float = float(leg.upper) + float(leg.lower)
 		var hip: Vector3 = root * (leg.hip as Vector3)
 		hips.append(hip)
-		feet.append(hip + r * Vector3(0.0, -0.4 * reach, -0.28 * reach))     # tucked: knees up, feet under the belly
+		# tucked in cruise: knees up, feet under the belly; extended for the landing and, in a flare, swung forward
+		feet.append(hip + r * Vector3(0.0, lerpf(-0.95, -0.4, tuck) * reach, lerpf(0.0, -0.28, tuck) * reach + 0.45 * fwd * reach))
 		contact.append(false)
 		swing.append(0.5)
 	pose["feet"] = feet
@@ -244,8 +295,10 @@ func _profile_update(dt: float, s: Dictionary, ctx: Dictionary = {}) -> void:
 		adapter.loco_apply(body, controller.pose, desc)
 		if acting:
 			_rig_script.apply_parts(body, controller.pose.act)
+			_impact_script.apply_flash(body, layer.flash)
 		elif layer != null and _acting_before:
 			_rig_script.reset(body)
+			_impact_script.apply_flash(body, 0.0)
 		_acting_before = acting
 		return
 	# Rest-pose glide: plant each foot under its rest sole and solve the legs.

@@ -5,8 +5,8 @@ extends RefCounted
 
 const DT := 0.1
 ## Wind-up, active, recovery ticks of the C moves (core/src/combat.c); the observed phase_length wins.
-const TICKS := {0: [3, 1, 2], 1: [10, 5, 2], 2: [1, 14, 2], 3: [6, 1, 4], 4: [3, 2, 4], 5: [1, 3, 2], 6: [6, 6, 5]}
-const MOVE_NAMES := {0: "bite", 1: "charge", 2: "guard", 3: "spit", 4: "tail_strike", 5: "dodge", 6: "flame"}
+const TICKS := {0: [3, 1, 2], 1: [10, 5, 2], 2: [1, 14, 2], 3: [6, 1, 4], 4: [3, 2, 4], 5: [1, 3, 2], 6: [6, 6, 5], 7: [3, 3, 3]}
+const MOVE_NAMES := {0: "bite", 1: "charge", 2: "guard", 3: "spit", 4: "tail_strike", 5: "dodge", 6: "flame", 7: "peck"}
 const SEGS := ["w", "a", "r", "s"]
 
 ## phase: 1 wind-up, 2 active, 3 recovery; ptick as in the C state.
