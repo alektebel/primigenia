@@ -25,6 +25,9 @@ const LEAN_ZETA := 0.55         # A54: the acceleration/braking lean is underdam
 const STRIDE_ATTACK := 0.04     # s: the stride length follows a rising target this fast (it used to lag 0.15 s, so the first steps shuffled at 2.6 Hz)
 const SWING_VMAX_SPEED := 2.0   # A54: a swinging foot moves at most this many times the body speed...
 const SWING_VMAX_BASE := 3.5    # ...plus this many times sqrt(g h) (m/s); steady gallops peak near 9 m/s at 2.8 m/s, the start of a run was 24
+const BURST_ACC := 2.2          # A54: m/s2 of forward acceleration (smoothed) that makes a run burst
+const BURST_LEAN := 0.07        # rad of extra nose-down lean at full burst
+const BURST_CROUCH := 0.10      # share of hip height the body gathers down at full burst (the push-off crouch)
 const GAIT_DWELL := 0.3         # s: shortest time between gait changes
 const FORCE_GAP := 0.0        # s: at most one forced lift-off per gap
 const STRAIGHT := 0.985         # longest a leg is allowed to get, as a share of its length
@@ -44,6 +47,7 @@ const REACH_K_FLIGHT := 0.78    # froude rules, gaits with a flight phase (start
 const CROUCH_MAX_FROUDE := 0.14  # gait lab rule 3 + owner 2026-11-22: when the reach caps the stride, lower the body (and lengthen the flight) instead of raising the cadence
 const CROUCH_MAX_QUAD := 0.03   # quadrupeds hardly crouch (size rule, docs/canon/MOTION.md section 2): the stride is clipped instead
 
+signal push_off(position: Vector3, strength: float)   # A54: a hind foot leaves the ground in a burst (dust)
 signal footfall(leg: int, position: Vector3)
 signal liftoff(leg: int, position: Vector3)
 signal gait_changed(from: StringName, to: StringName, froude: float)
@@ -70,6 +74,7 @@ var bank_gain := 0.7            # scale of the per-plan bank_k (0.7 = the table 
 var stability_gain := 0.9
 var girdle_gain := 0.085         # girdle yaw per radian of leading-foot offset
 
+var _burst := 0.0               # 0..1: a run burst (hard forward acceleration into a gallop)
 var _legs: Array = []
 var _off := PackedFloat32Array()
 var _off_cur := PackedFloat32Array()   # footfall offsets in use: they blend to _off over one stride (rule 8)
@@ -290,8 +295,13 @@ func _sub(h: float, p: Vector3, yaw: float, v: Vector3, settle: bool) -> void:
 	if Gait.uses_styles(morph):
 		var cls := Gait.style_class(morph)
 		var names := Gait.style_names(cls, Gait.is_starter_b(morph))
-		var sn := Gait.style_select(_style, fr, names)
-		if sn != _style and (time - _gait_t >= GAIT_DWELL or _style == &""):
+		# A54: a burst goes walk -> gallop in one or two launch strides: the style follows the speed the creature is about to have
+		var a_f := _acc.dot(fwd)
+		var burst_now: bool = cls == "quad" and a_f > BURST_ACC
+		_burst = lerpf(_burst, clampf((a_f - 1.0) / 3.0, 0.0, 1.0) if cls == "quad" else 0.0, _lp(0.12, h))
+		var fr_sel := maxf(fr, Gait.froude(speed + 0.4 * a_f, _ref_h)) if burst_now else fr
+		var sn := Gait.style_select(_style, fr_sel, names)
+		if sn != _style and (time - _gait_t >= GAIT_DWELL or _style == &"" or (burst_now and sn == &"gallop")):
 			_style = sn
 			_sd = Gait.style_params(cls, _style, Gait.variant_for(cls))
 			_off = Gait.style_offsets(_sd, morph)
@@ -370,7 +380,7 @@ func _sub(h: float, p: Vector3, yaw: float, v: Vector3, settle: bool) -> void:
 		crouch_t = max(crouch_t, need)
 	if morph.plan == &"quadruped":
 		stride_t = maxf(stride_t, (_speed_f / (CADENCE_MAX_F * f_nat_c)))      # never faster than a few natural frequencies: a frantic scurry is worse than a bent leg
-	crouch_t = maxf(crouch_t, style_drop)
+	crouch_t = maxf(crouch_t, style_drop) + BURST_CROUCH * _burst
 	if pivoting:
 		crouch_t = min(crouch_t + 0.05, maxf(crouch_max, style_drop))
 	var f_nat := f_nat_c
@@ -450,6 +460,8 @@ func _sub(h: float, p: Vector3, yaw: float, v: Vector3, settle: bool) -> void:
 				l.lift = 0.0
 				l.u = 0.0
 				liftoff.emit(i, l.foot)
+				if _burst > 0.35 and morph.legs[i].station == 0:
+					push_off.emit(l.foot, _burst)
 		if l.swing:
 			var u: float = clamp((l.theta - l.th0) / max(l.th1 - l.th0, 1e-5), 0.0, 1.0)
 			l.u = u
@@ -683,7 +695,7 @@ func _sub(h: float, p: Vector3, yaw: float, v: Vector3, settle: bool) -> void:
 				wb = max(morph.stations[-1].z - morph.stations[0].z, 0.1)
 			# braking dips the nose (weight onto the front legs); launching leans into the stride (nose down too, less)
 			lean_t = -(LAUNCH_K if a_fwd > 0.0 else 0.6) * absf(a_fwd) * morph.com.y / (G * wb)
-	lean_t -= Gait.run_lean(morph.plan, gait, fr) * _moving
+	lean_t -= Gait.run_lean(morph.plan, gait, fr) * _moving + BURST_LEAN * _burst
 	if _style != &"" and gait == &"gallop" and float(_sd.get("flex", 0.0)) > 0.0:
 		lean_t -= GALLOP_LEAN * smoothstep(0.8, 2.4, fr) * _moving      # A54: the bold gallop leans into the stride
 	lean_t = clamp(lean_t, -0.3, 0.25)

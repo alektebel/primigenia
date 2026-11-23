@@ -298,7 +298,7 @@ static void motion_law(void) {
         CpStageInput a=heading_to(w.player.fx,w.player.fz,sprint);
         for(int i=1;i<=40;i++) {
             cp_stage_step(&w,&a);
-            assert(w.player.speed-old<=m->accel*.1f+1e-3f);
+            assert(w.player.speed-old<=m->accel*1.7f*.1f+1e-3f);   /* A54: a run bursts at 1.7x the cap */
             if(t90<0&&w.player.speed>=.9f*top)t90=i;
             old=w.player.speed;
         }

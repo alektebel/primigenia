@@ -35,6 +35,10 @@ func _schedule(scen: String) -> Dictionary:
 			s[96] = {"verb": 1}                                     # stop from a run
 			s[120] = {"verb": 3, "hx": f, "hz": 0, "sprint": 0}     # turn on the spot, then walk
 			s[150] = {"verb": 1}
+		"burst":
+			s[0] = {"verb": 1}
+			s[10] = {"verb": 3, "hx": 0, "hz": f, "sprint": 1}      # Shift pressed at a standstill
+			s[60] = {"verb": 1}
 		"gallop":
 			s[0] = {"verb": 1}
 			s[6] = {"verb": 3, "hx": 0, "hz": f, "sprint": 1}
@@ -99,7 +103,7 @@ func _run() -> void:
 	tick.owner_clip = self
 	tick.process_priority = 100
 	root.add_child(tick)
-	_secs = {"startstop": 6.5, "gallop": 5.0, "turnspot": 3.6, "slope": 6.0}.get(_scen, 6.0)
+	_secs = {"startstop": 6.5, "gallop": 5.0, "turnspot": 3.6, "burst": 3.6, "slope": 6.0}.get(_scen, 6.0)
 	for i in int(_secs * 30.0) + 10:
 		await process_frame
 	if _log:
