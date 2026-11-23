@@ -292,7 +292,8 @@ func build() -> void:
 	Game.report_entry(build_ms, build_cpu_ms, build_stall_ms, slowest_frames)
 	set_process(true)
 	Game.island_ready.emit()
-	Game.loop_event.emit("island_ready", {"ms": int(Game.entry_log[-1].ms) if not Game.entry_log.is_empty() else build_ms})
+	Game.loop_event.emit("island_ready", {"ms": int(Game.entry_log[-1].ms) if not Game.entry_log.is_empty() else int(build_ms.get("total", 0)),
+		"phases": Game.entry_log[-1].phases if not Game.entry_log.is_empty() else build_ms, "entry": Game.entry_log.size()})
 
 ## Dev builds: the player owns every part of the creature it brought (C debug op GRANT, part ids = the manifest order).
 func _grant_genome_parts(genome: Dictionary) -> void:
