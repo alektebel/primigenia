@@ -123,8 +123,21 @@ func _try_actions() -> void:
 	layer.action_event.connect(_on_action_event)
 
 const _flame_script := preload("res://game/actors/flame_fx.gd")
+const _impact_script := preload("res://actions/impact_fx.gd")
 
 func _on_action_event(ev: String, data: Dictionary) -> void:
+	if ev == "hit_fx" and host != null and host.is_inside_tree():
+		# A64: the shared melee contact: dust and sparks here, the camera shake and the like on the island
+		var parent := host.get_parent()
+		_impact_script.contact(parent, data)
+		if parent != null and parent.has_method("melee_impact"):
+			parent.melee_impact(data)
+		return
+	if ev == "drive" and layer != null and host != null and host.is_inside_tree() and map != null:
+		# the lunge pushes off: dust from the hind feet
+		var back := -Vector3(sin(host.rotation.y), 0.0, cos(host.rotation.y))
+		_dust_kick(host.global_position + back * 0.25 * map.height, 0.8)
+		return
 	if ev == "cry" and data.get("id", "") == "roar" and layer != null and host.is_inside_tree() and map != null:
 		_fx_script.roar_ring(host.get_parent(), host.global_position, 1.6 * map.height + 0.8)
 		return
@@ -282,8 +295,10 @@ func _profile_update(dt: float, s: Dictionary, ctx: Dictionary = {}) -> void:
 		adapter.loco_apply(body, controller.pose, desc)
 		if acting:
 			_rig_script.apply_parts(body, controller.pose.act)
+			_impact_script.apply_flash(body, layer.flash)
 		elif layer != null and _acting_before:
 			_rig_script.reset(body)
+			_impact_script.apply_flash(body, 0.0)
 		_acting_before = acting
 		return
 	# Rest-pose glide: plant each foot under its rest sole and solve the legs.

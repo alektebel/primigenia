@@ -41,7 +41,14 @@ var player_name := "Merodeador"
 var selected_id := -1
 var attack_orders: Array = []        # log of orders sent, for tests: {tick, text|input}
 var last_outcome := 0
-var _pending_attack = null           # {target, move}
+var _pending_attack = null           # {target, move, chain?}
+## A64 chain: pressing bite again within CHAIN_TICKS of our own bite landing sends the quick peck instead (C has no new
+## concept: it is a normal peck order, so it is validated, logged and replayed like any other); the standing attack then
+## goes back to bite. The animation plays the chained peck for any peck that starts inside the same window (action_layer.CHAIN_TICKS).
+const MOVE_BITE := 0
+const MOVE_PECK := 7
+const CHAIN_TICKS := 7
+var _bite_hit_tick := -1000
 # Verb-first targeting (docs/briefs/verb-target.md): `verb` is the armed verb (Modes.*, NONE when nothing is armed), `locked_id` the
 # creature the player clicked with it (0 or less: none). The marker follows it; C does the pursuit and the verb.
 var verb: StringName = Modes.NONE
@@ -174,6 +181,10 @@ func _valid_for(mode: StringName, id: int) -> bool:
 		return bool(e.get("dead", false)) and int(e.get("meat", 0)) > 0
 	return not bool(e.get("dead", false))
 
+## A65: a body the player can eat by clicking it: remains with meat, and a diet that takes meat (C refuses herbivores).
+func _edible(id: int) -> bool:
+	return _valid_for(Modes.EAT, id) and int(stage.cur.get("social", {}).get("diet", 2)) != 0
+
 # The click / hover pick of an armed verb: the nearest valid creature to the mouse in screen space, generous radius.
 func pick_for_verb(mouse: Vector2, mode: StringName = Modes.NONE) -> int:
 	var m := verb if mode == Modes.NONE else mode
@@ -269,13 +280,24 @@ func _verb_hover() -> void:
 	if ui == null or stage == null or stage.cur.is_empty():
 		return
 	var want := -1
+	var hover_verb: StringName = verb
 	if verb != Modes.NONE and not Game.movement_blocked() and not ui.paused:
 		want = pick_for_verb(get_viewport().get_mouse_position())
+	elif verb == Modes.NONE and not Game.movement_blocked() and not ui.paused:
+		# A65: with no verb armed, an edible body under the mouse offers "eat" (a click walks there and eats)
+		want = pick_for_verb(get_viewport().get_mouse_position(), Modes.EAT)
+		if want > 0 and not _edible(want):
+			want = -1
+		hover_verb = Modes.EAT
 	hover_id = want
 	if hover_id > 0 and hover_id != locked_id:
-		ui.marker.set_hover(hover_id, verb, str(info_for(hover_id).name))
+		ui.marker.set_hover(hover_id, hover_verb, str(info_for(hover_id).name))
+		if verb == Modes.NONE:
+			Input.set_default_cursor_shape(Input.CURSOR_POINTING_HAND)
 	else:
 		ui.marker.set_hover(-1, Modes.NONE, "")
+		if verb == Modes.NONE:
+			Input.set_default_cursor_shape(Input.CURSOR_ARROW)
 
 # Select first, then choose: picking a mode only changes the hotbar; nothing is ordered until an ability key (1-4) is pressed.
 func _on_mode(mode: StringName) -> void:
@@ -336,9 +358,23 @@ func _attack(index: int) -> void:
 	var ent: Dictionary = stage.cur.entities[selected_id] if selected_id < stage.cur.entities.size() else {}
 	if ent.is_empty() or ent.dead:
 		return
-	_pending_attack = {"target": selected_id, "move": move}
+	var chain := false
+	if move == MOVE_BITE and chain_open():
+		move = MOVE_PECK
+		move_id = MOVE_IDS[MOVE_PECK]
+		chain = true
+	_pending_attack = {"target": selected_id, "move": move, "chain": chain, "tick": int(stage.cur.tick)}
 	player_input.clear_destination()
 	attack_orders.append({"tick": stage.cur.tick, "order": "attack #%d %s" % [selected_id, move_id]})
+
+## True when our bite connected within the last CHAIN_TICKS ticks and the peck is in the loadout.
+func chain_open() -> bool:
+	if int(stage.cur.tick) - _bite_hit_tick > CHAIN_TICKS:
+		return false
+	for a in ui.abilities:
+		if int(a.get("move", -1)) == MOVE_PECK and not bool(a.get("empty", false)):
+			return true
+	return false
 
 # --- loadout (A21) --------------------------------------------------------------
 
@@ -427,6 +463,9 @@ func provide() -> Dictionary:
 		if tgt >= st.entities.size() or st.entities[tgt].dead or (active and st.active + 1 != tgt):
 			_pending_attack = null
 		else:
+			if _pending_attack.get("chain", false) and int(st.tick) - int(_pending_attack.get("tick", 0)) > CHAIN_TICKS + 4:
+				_pending_attack.move = MOVE_BITE          # the chained peck was never thrown: back to the bite
+				_pending_attack.chain = false
 			return {"verb": V_ATTACK, "target": tgt, "move": _pending_attack.move}
 	if _pursuit != null:
 		var pu: Dictionary = _pursuit
@@ -482,6 +521,12 @@ func info_for(id: int) -> Dictionary:
 
 func _on_clicked(id: int, _pos: Vector3) -> void:
 	if id <= 0 or id >= stage.cur.entities.size():
+		return
+	if verb == Modes.NONE and int(stage.cur.active) < 0 and _edible(id):
+		# A65 click to eat: no verb armed and an edible body: the creature walks or runs there and eats (the order verb R sends)
+		ui.select(info_for(id), false)
+		ui.set_mode(Modes.EAT)
+		social_order("eat", id, 0)
 		return
 	if int(stage.cur.active) >= 0 and id == int(stage.cur.active) + 1:
 		var inf := info_for(id)         # clicking the one you are fighting keeps Attack (no ring in the middle of a fight)
@@ -600,6 +645,12 @@ func _on_events(events: Array) -> void:
 		var vid: int = 0 if ev.b == 0 else int(state.active) + 1
 		if vid < state.entities.size():
 			radius = float(state.entities[vid].get("radius_cm", 60))
+		if int(ev.type) == 1 and int(ev.a) == 0:
+			if int(ev.move) == MOVE_BITE:
+				_bite_hit_tick = int(state.tick)
+			elif int(ev.move) == MOVE_PECK and _pending_attack != null and _pending_attack.get("chain", false):
+				_pending_attack.move = MOVE_BITE          # the chain is done: the standing attack goes back to the bite
+				_pending_attack.chain = false
 		match int(ev.type):
 			1:
 				ui.show_damage(at + Vector3(0, 2.2, 0), ev.amount, ev.b == 0)

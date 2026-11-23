@@ -505,6 +505,9 @@ func _actions_begin(island) -> Dictionary:
 		if f1 == null or int(f1.phase) != 1 or int(f1.move) < 0:
 			st.wind.n = 0
 			return
+		if w.driver.layer.paused():
+			st.wind.n = 0            # A64 hit-pause: the layer clock stands still, so the fade-in restarts after it
+			return
 		st.wind.n += 1
 		st.wind.seen += 1
 		if st.wind.n > 4 and w.driver.layer.weight_of(names[int(f1.move)]) < 0.99:
