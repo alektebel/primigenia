@@ -1,0 +1,366 @@
+{
+  "actions": {
+    "drop": 3.233,
+    "final": 8.433,
+    "hover_body": 1.533,
+    "hover_start": 1.133,
+    "open": 0.8,
+    "over_body": 2.767,
+    "pick": 2.4,
+    "rotate_start": 6.533,
+    "scale": 7.1,
+    "spine_press": 5.267,
+    "spine_release": 5.867
+  },
+  "events": [
+    {
+      "data": {
+        "fade_ms": 120.0,
+        "kind": "part_ring"
+      },
+      "frame": 41,
+      "name": "handle_shown",
+      "t": 1.367
+    },
+    {
+      "data": {
+        "kind": "spine_arrows"
+      },
+      "frame": 42,
+      "name": "handle_shown",
+      "t": 1.4
+    },
+    {
+      "data": {
+        "fade_ms": 120.0,
+        "kind": "vertebra_sphere"
+      },
+      "frame": 42,
+      "name": "handle_shown",
+      "t": 1.4
+    },
+    {
+      "data": {
+        "fade_ms": 120.0,
+        "kind": "part_ring"
+      },
+      "frame": 82,
+      "name": "handle_shown",
+      "t": 2.733
+    },
+    {
+      "data": {
+        "idx": 8
+      },
+      "frame": 97,
+      "name": "part_placed",
+      "t": 3.233
+    },
+    {
+      "data": {
+        "idx": 8
+      },
+      "frame": 97,
+      "name": "drop_ring",
+      "t": 3.233
+    },
+    {
+      "data": {
+        "idx": 8
+      },
+      "frame": 97,
+      "name": "puff_spawned",
+      "t": 3.233
+    },
+    {
+      "data": {
+        "cost": 10
+      },
+      "frame": 105,
+      "name": "cost_popup_shown",
+      "t": 3.5
+    },
+    {
+      "data": {
+        "part": 8
+      },
+      "frame": 106,
+      "name": "head_target_changed",
+      "t": 3.533
+    },
+    {
+      "data": {
+        "cost": 10
+      },
+      "frame": 118,
+      "name": "cost_popup_hidden",
+      "t": 3.933
+    },
+    {
+      "data": {
+        "kind": "spine_arrows"
+      },
+      "frame": 150,
+      "name": "handle_shown",
+      "t": 5.0
+    },
+    {
+      "data": {
+        "fade_ms": 120.0,
+        "kind": "vertebra_sphere"
+      },
+      "frame": 150,
+      "name": "handle_shown",
+      "t": 5.0
+    }
+  ],
+  "fps": 30.0,
+  "frame_ms_median": 44.94,
+  "frame_ms_p95": 76.1,
+  "frames": 262,
+  "has_probe": true,
+  "moments": {
+    "final": {
+      "dist": 10.52,
+      "dna": 139,
+      "facing_deg": 133.8,
+      "frame": 255,
+      "grass_visible": false,
+      "nodes": 8,
+      "parts": 9,
+      "pitch_deg": 12.0,
+      "probe": {
+        "part_ring": false,
+        "popup": false,
+        "vertebra_spheres": 0
+      },
+      "rocks_visible": false,
+      "t": 8.5,
+      "viewport": [
+        1280,
+        720
+      ],
+      "yaw_deg": 45.0
+    },
+    "part_dropped": {
+      "dist": 9.73,
+      "dna": 139,
+      "facing_deg": 133.8,
+      "frame": 102,
+      "grass_visible": false,
+      "nodes": 8,
+      "parts": 9,
+      "pitch_deg": 12.0,
+      "probe": {
+        "part_ring": true,
+        "popup": false,
+        "vertebra_spheres": 0
+      },
+      "rocks_visible": false,
+      "t": 3.4,
+      "viewport": [
+        1280,
+        720
+      ],
+      "yaw_deg": 45.0
+    },
+    "part_picked": {
+      "dist": 9.75,
+      "dna": 139,
+      "facing_deg": 133.8,
+      "frame": 89,
+      "grass_visible": false,
+      "nodes": 8,
+      "parts": 9,
+      "pitch_deg": 12.0,
+      "probe": {
+        "part_ring": true,
+        "popup": false,
+        "vertebra_spheres": 0
+      },
+      "rocks_visible": false,
+      "t": 2.967,
+      "viewport": [
+        1280,
+        720
+      ],
+      "yaw_deg": 45.0
+    },
+    "part_rotate": {
+      "dist": 10.15,
+      "dna": 139,
+      "facing_deg": 133.8,
+      "frame": 225,
+      "grass_visible": false,
+      "nodes": 8,
+      "parts": 9,
+      "pitch_deg": 12.0,
+      "probe": {
+        "part_ring": true,
+        "popup": false,
+        "vertebra_spheres": 8
+      },
+      "rocks_visible": false,
+      "t": 7.5,
+      "viewport": [
+        1280,
+        720
+      ],
+      "yaw_deg": 45.0
+    },
+    "spine_drag": {
+      "dist": 9.72,
+      "dna": 139,
+      "facing_deg": 133.8,
+      "frame": 165,
+      "grass_visible": false,
+      "nodes": 8,
+      "parts": 9,
+      "pitch_deg": 12.0,
+      "probe": {
+        "part_ring": true,
+        "popup": false,
+        "vertebra_spheres": 8
+      },
+      "rocks_visible": false,
+      "t": 5.5,
+      "viewport": [
+        1280,
+        720
+      ],
+      "yaw_deg": 45.0
+    },
+    "spine_hover": {
+      "dist": 9.75,
+      "dna": 129,
+      "facing_deg": 133.8,
+      "frame": 62,
+      "grass_visible": false,
+      "nodes": 8,
+      "parts": 8,
+      "pitch_deg": 12.0,
+      "probe": {
+        "part_ring": false,
+        "popup": false,
+        "vertebra_spheres": 8
+      },
+      "rocks_visible": false,
+      "t": 2.067,
+      "viewport": [
+        1280,
+        720
+      ],
+      "yaw_deg": 45.0
+    },
+    "start": {
+      "dist": 9.75,
+      "dna": 129,
+      "facing_deg": 133.8,
+      "frame": 26,
+      "grass_visible": false,
+      "nodes": 8,
+      "parts": 8,
+      "pitch_deg": 12.0,
+      "probe": {
+        "part_ring": false,
+        "popup": false,
+        "vertebra_spheres": 0
+      },
+      "rocks_visible": false,
+      "t": 0.867,
+      "viewport": [
+        1280,
+        720
+      ],
+      "yaw_deg": 45.0
+    }
+  },
+  "part": "placa",
+  "probe_log": [
+    [
+      1,
+      {
+        "part_ring": false,
+        "popup": false,
+        "vertebra_spheres": 0
+      }
+    ],
+    [
+      43,
+      {
+        "part_ring": true,
+        "popup": false,
+        "vertebra_spheres": 0
+      }
+    ],
+    [
+      44,
+      {
+        "part_ring": false,
+        "popup": false,
+        "vertebra_spheres": 8
+      }
+    ],
+    [
+      67,
+      {
+        "part_ring": false,
+        "popup": false,
+        "vertebra_spheres": 0
+      }
+    ],
+    [
+      84,
+      {
+        "part_ring": true,
+        "popup": false,
+        "vertebra_spheres": 0
+      }
+    ],
+    [
+      106,
+      {
+        "part_ring": true,
+        "popup": true,
+        "vertebra_spheres": 0
+      }
+    ],
+    [
+      119,
+      {
+        "part_ring": true,
+        "popup": false,
+        "vertebra_spheres": 0
+      }
+    ],
+    [
+      152,
+      {
+        "part_ring": true,
+        "popup": false,
+        "vertebra_spheres": 8
+      }
+    ],
+    [
+      230,
+      {
+        "part_ring": true,
+        "popup": false,
+        "vertebra_spheres": 0
+      }
+    ],
+    [
+      235,
+      {
+        "part_ring": false,
+        "popup": false,
+        "vertebra_spheres": 0
+      }
+    ]
+  ],
+  "starter": "Merodeador",
+  "viewport": [
+    1280,
+    720
+  ]
+}

@@ -123,7 +123,7 @@ func t_wheel() -> void:
 	ok(ui._scale_fx["limit"], "readout flags the limit")
 	for i in 120:
 		wheel(p, false)
-	ok(is_equal_approx(m.doc["parts"][eye]["size"], .5), "size clamps at the minimum 0.5")
+	ok(m.doc["parts"][eye]["size"] < .5 and m.doc["parts"][eye]["size"] >= .1, "the wheel now shrinks a part below the old .5 floor, down to the genome minimum .1 (A73)")
 	ok(m.validate()["ok"], "genome stays valid after scaling")
 	ui._close_wheel_tx()
 	ok(m.can_undo(), "scaling is one undoable edit")
