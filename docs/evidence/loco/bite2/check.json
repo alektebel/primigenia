@@ -1,0 +1,160 @@
+{
+ "pass": true,
+ "fails": [],
+ "rows": [
+  {
+   "id": "lunge",
+   "name": "Lunge-bite (round 1)",
+   "hits": [
+    {
+     "contactDist": -0.006952116906446093,
+     "reachErr": 0,
+     "pause": 80,
+     "pauseDrift": 0,
+     "knockCos": 1,
+     "knock": 0.25967104634414584,
+     "tipSpeed": 10.369027943993405,
+     "foreLean": 45.20680443543845,
+     "neckStretch": 1.18
+    }
+   ],
+   "feetDrift": 1.442222014787673e-16,
+   "minY": -8.326672684688674e-17,
+   "maxReach": 0,
+   "maxStretch": 1.18,
+   "tipSpeed": 10.712813417911134,
+   "hindSlide": 0,
+   "preyMinY": 0.07600000000000001,
+   "timing": {
+    "wind-up": 270,
+    "hold": 300,
+    "strike": 150,
+    "hold on": 250,
+    "pull out": 170,
+    "recovery": 530
+   },
+   "strikeMs": [
+    150
+   ]
+  },
+  {
+   "id": "boom",
+   "name": "Explosive lunge",
+   "hits": [
+    {
+     "contactDist": -0.005367158500687863,
+     "reachErr": 0,
+     "pause": 80,
+     "pauseDrift": 0,
+     "knockCos": 1,
+     "knock": 0.32424926878627014,
+     "tipSpeed": 14.622696298580456,
+     "foreLean": 39.17878266291176,
+     "neckStretch": 1
+    }
+   ],
+   "feetDrift": 1.415262216750919e-16,
+   "minY": -8.326672684688674e-17,
+   "maxReach": 0,
+   "maxStretch": 1,
+   "tipSpeed": 15.325247288320965,
+   "hindSlide": 0,
+   "preyMinY": 0.061600000000000044,
+   "timing": {
+    "wind-up": 320,
+    "hold": 300,
+    "strike": 110,
+    "hold on": 200,
+    "pull out": 170,
+    "recovery": 580
+   },
+   "strikeMs": [
+    110
+   ]
+  },
+  {
+   "id": "hybrid",
+   "name": "Lunge + peck hybrid",
+   "hits": [
+    {
+     "contactDist": -0.006000000000000061,
+     "reachErr": 0,
+     "pause": 80,
+     "pauseDrift": 0,
+     "knockCos": 1,
+     "knock": 0.2950807344819839,
+     "tipSpeed": 13.891615013972608,
+     "foreLean": 32.11986249431846,
+     "neckStretch": 1.04
+    }
+   ],
+   "feetDrift": 1.415262216750919e-16,
+   "minY": -8.326672684688674e-17,
+   "maxReach": 0,
+   "maxStretch": 1.04,
+   "tipSpeed": 15.386020009475603,
+   "hindSlide": 0,
+   "preyMinY": 0.06880000000000008,
+   "timing": {
+    "wind-up": 310,
+    "hold": 310,
+    "strike": 140,
+    "hold on": 230,
+    "pull out": 160,
+    "recovery": 550
+   },
+   "strikeMs": [
+    140
+   ]
+  },
+  {
+   "id": "chain",
+   "name": "Lunge, then peck-snap",
+   "hits": [
+    {
+     "contactDist": -0.005367158500688307,
+     "reachErr": 0,
+     "pause": 80,
+     "pauseDrift": 0,
+     "knockCos": 0.9999999999999999,
+     "knock": 0.10261673151106332,
+     "tipSpeed": 6.968926536225352,
+     "foreLean": 31.555900026759417,
+     "neckStretch": 1
+    },
+    {
+     "contactDist": -0.006938869461868502,
+     "reachErr": 0,
+     "pause": 60,
+     "pauseDrift": 0,
+     "knockCos": 1,
+     "knock": 0.09940008615979279,
+     "tipSpeed": 3.3834035066225634,
+     "foreLean": 40.56557214866829,
+     "neckStretch": 1
+    }
+   ],
+   "feetDrift": 1.415262216750919e-16,
+   "minY": -8.326672684688674e-17,
+   "maxReach": 0,
+   "maxStretch": 1,
+   "tipSpeed": 7.234701585416579,
+   "hindSlide": 0,
+   "preyMinY": 0.07600000000000001,
+   "timing": {
+    "wind-up": 240,
+    "hold": 300,
+    "lunge strike": 130,
+    "hold on": 60,
+    "cock": 130,
+    "peck strike": 85,
+    "recovery": 425
+   },
+   "strikeMs": [
+    130,
+    85
+   ],
+   "peckTotal": 760
+  }
+ ]
+}
