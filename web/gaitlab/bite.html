@@ -158,7 +158,7 @@ function applyCell(c){
   const inPause=tr>=ver.tc&&tr<ver.tc+ver.pause,since=tr-ver.tc;
   const flash=inPause?.32:(since>=ver.pause&&since<ver.pause+110?.32*(1-(since-ver.pause)/110):0);
   const jit=inPause?.007*Math.sin(tr*1.1):0,eyeBig=since>=0?Math.max(0,1-(since-ver.pause)/500):0;
-  updatePrey(c.prey,ver.preyS[Math.min(ver.preyS.length-1,a)],flash,jit,since>=0?Math.min(1,eyeBig+(inPause?1:0)):0);
+  updatePrey(c.prey,ver.preyS[Math.max(0,Math.min(ver.preyS.length-1,Math.floor(a)||0))],flash,jit,since>=0?Math.min(1,eyeBig+(inPause?1:0)):0);
   c.rings.forEach((r,i)=>{const f=P.feet[i];r.position.x=f.W[0];r.position.z=f.W[1];r.material.opacity=f.w>.02?.18:.85;});
   c.mark.visible=tr>=ver.tc;c.burst.visible=since>=0&&since<ver.pause+190;
   if(c.burst.visible){const k=Math.min(1,since/(ver.pause+190));c.burst.children.forEach(m=>m.scale.set(.04+.2*Math.sqrt(k),1-.7*k,1-.7*k));}
