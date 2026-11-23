@@ -36,6 +36,10 @@ void cp_combat_test_hit_variance(int enabled) { test_fixed_variance = enabled; }
 #define CB_GUARD_LEVEL_K  0.15f
 #define CB_LEVEL_DAMAGE   0.20f
 #define CB_LEVEL_STAMINA  0.10f
+#define CB_PECK_MIN_RUN   2.5f    /* surface gap (m) below which a peck has no run-up                  */
+#define CB_PECK_JAB_REACH 1.8f    /* reach of the standing jab                                          */
+#define CB_PECK_JAB_K     0.5f    /* damage of the standing jab, against the galloping peck             */
+#define CB_CHAIN_TICKS    7       /* a connected move within this many ticks makes the peck a jab (A64 chain) */
 /* facing turns by this much per tick: cos/sin(0.8 rad), as literals */
 #define CB_TURN_COS       0.69670671f
 #define CB_TURN_SIN       0.71735609f
@@ -57,7 +61,11 @@ const CpCombatMove CP_COMBAT_MOVES[CB_MOVE_COUNT] = {
   { "tail_strike", 3, 2, 4,  2.2f, 1.60f, 10.0f, 17.0f, CB_ST_SLOW,  15, CB_F_SWEEP,                              CB_PART_TAIL, CB_ROLE_CONTROL, 0, 0, 0 },
   { "dodge",       1, 3, 2,  2.2f, 0.00f, 20.0f,  0.0f, CB_ST_NONE,   0, CB_F_SELF | CB_F_DASH | CB_F_DIR | CB_F_EVADE, CB_PART_NONE, CB_ROLE_DEFENCE, 0, 0, 0 },
   { "claw_swipe", 3,1,3, 1.8f,1.4f,9,11, CB_ST_BLEED,8,0, CB_PART_CLAW,CB_ROLE_BASIC,0,0,0 },
-  { "peck", 2,1,2, 1.6f,.7f,7,9, CB_ST_NONE,0,0, CB_PART_BEAK,CB_ROLE_BASIC,0,0,0 },
+  /* A65: the peck is a galloping strike (dash like charge and pounce): 3 ticks to gather, 3 ticks to run 4.5 m, ends on contact. A strong
+   * opener, not a spam move: 14 damage (was 9) and a 6 s cooldown (starting values; combat_test checks the shape). Inside CB_PECK_MIN_RUN
+   * of the target there is no run-up, and the order becomes the standing bite; right after a connected move (the A64 chain) it is a
+   * standing jab at half damage (dash vector 0). */
+  { "peck", 3,3,3, 4.5f,.7f,8,14, CB_ST_NONE,0,CB_F_DASH|CB_F_NO_WATER, CB_PART_BEAK,CB_ROLE_ENGAGE,0,0,60 },
   { "pounce", 8,4,4, 4.8f,.7f,18,25, CB_ST_STUN,4,CB_F_DASH|CB_F_NO_WATER, CB_PART_LEGS,CB_ROLE_ENGAGE,0,0,30 },
   { "quill_volley", 6,1,5, 6,.3f,13,13, CB_ST_BLEED,8,CB_F_RANGED, CB_PART_QUILL,CB_ROLE_POKE,0,0,15 },
   { "roar", 6,1,6, 4,6.28318531f,18,14, CB_ST_FEAR,12,CB_F_SWEEP, CB_PART_THROAT,CB_ROLE_CONTROL,0,0,12 },
@@ -684,6 +692,9 @@ static float walk_speed(const CpCombatCreature *c)
     return s;
 }
 
+/* the peck as a standing jab: no dash vector */
+static int standing_peck(const CpCombatCreature *c){return c->move==CB_PECK&&c->dash_x==0.0f&&c->dash_y==0.0f;}
+
 static void begin_move(CpCombatCreature *c, int move)
 {
     const CpCombatMove *m = &CP_COMBAT_MOVES[move];
@@ -805,6 +816,16 @@ static void plan(CpCombatWorld *w, int i, Disp *d)
             if (!aligned) { turn_toward(c, ux, uy); return; }
             if (c->cd[mv]) { turn_toward(c, ux, uy); return; }   /* recharging: hold the standing order */
             if(c->calcium < CP_COMBAT_MOVES[mv].meter_cost){ev_add(w,CB_EV_NO_METER,i,i,mv,0);c->verb=CB_V_IDLE;return;}
+            if (mv == CB_PECK && gap < CB_PECK_MIN_RUN) {      /* no run-up */
+                int jab = c->hit_mask && c->since_spend <= CB_CHAIN_TICKS;
+                if (!jab && cp_combat_move_available(c, CB_BITE) && cp_combat_move_equipped(c, CB_BITE) && !c->cd[CB_BITE]) mv = CB_BITE;
+                if (c->stamina >= move_cost(c, mv)) {
+                    begin_move(c, mv);
+                    if (mv == CB_PECK) { c->dash_x = c->dash_y = 0.0f; c->cd[CB_PECK] = 0; }    /* the jab does not spend the opener's cooldown */
+                }
+                else { turn_toward(c, ux, uy); ev_add(w, CB_EV_NO_STAMINA, i, i, mv, 0.0f); }
+                return;
+            }
             if (c->stamina >= move_cost(c, mv)) begin_move(c, mv);
             else { turn_toward(c, ux, uy); ev_add(w, CB_EV_NO_STAMINA, i, i, mv, 0.0f); }
             return;
@@ -983,7 +1004,9 @@ static int gather_hits(const CpCombatWorld *w, Hit *hits)
             float dist = dir_to(a, t, &ux, &uy);
             float gap = dist - cp_combat_body_radius(&t->prof);
             int ok;
-            if (m->flags & CB_F_DASH)
+            if (standing_peck(a))
+                ok = gap <= CB_PECK_JAB_REACH;
+            else if (m->flags & CB_F_DASH)
                 ok = dist - (cp_combat_body_radius(&a->prof) + cp_combat_body_radius(&t->prof)) <= CB_CONTACT_GAP;
             else
                 ok = gap <= m->reach;
@@ -1064,7 +1087,7 @@ static void resolve_hits(CpCombatWorld *w)
 #ifdef CP_COMBAT_TEST
         if (test_fixed_variance) var = 1.0f;
 #endif
-        float base = move_damage(a, h->move) * h->ev.flank * h->ev.height * var;
+        float base = move_damage(a, h->move) * (h->move == CB_PECK && standing_peck(a) ? CB_PECK_JAB_K : 1.0f) * h->ev.flank * h->ev.height * var;
         h->damage = base;
         float *pool = &stamina[h->def];
         const CpCombatCounter *r = h->ev.rule;
@@ -1203,6 +1226,7 @@ uint64_t cp_combat_step(CpCombatWorld *w)
         const CpCombatMove *m = &CP_COMBAT_MOVES[c->move];
         if (!(m->flags & CB_F_DASH)) continue;
         if (!(m->flags & CB_F_SWEEP) && c->hit_mask && !(m->flags & CB_F_SELF)) continue; /* dash ends on contact */
+        if (standing_peck(c)) continue;
         float step = m->reach / (float)m->active;
         if (c->medium == CB_WATER) step *= 0.5f;
         disp[i].dx += c->dash_x * step;

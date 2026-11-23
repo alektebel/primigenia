@@ -7,9 +7,9 @@
   "move": 7
  },
  "ticks": {
-  "w": 2,
-  "a": 1,
-  "r": 2
+  "w": 3,
+  "a": 3,
+  "r": 3
  },
  "settle": 0.45,
  "priority": 60,
@@ -20,7 +20,7 @@
  },
  "legs": "plant",
  "side": "target",
- "note": "A64 chain (lab version 4): the quick peck after a connecting bite. The layer plays it instead of `peck` when the C peck starts within 7 ticks of the creature's own bite hit. Starts from the bite's hold-on pose, cocks the head back (w 0..0.65), pecks the prey that was knocked loose (a:0), holds on briefly, recovers in the settle.",
+ "note": "A64 chain jab (lab version 4): the standing peck right after a connecting bite (C: a peck order inside CB_CHAIN_TICKS of a connected move with no run-up, half damage, no dash). Starts from the bite's hold-on pose, cocks the head back, pecks the prey knocked loose at a:0, holds on, recovers in the settle.",
  "tracks": [
   {
    "ch": "head.reach",
@@ -44,13 +44,13 @@
     ],
     [
      "a",
-     0,
+     0.0,
      1.0,
      "in"
     ],
     [
      "a",
-     1,
+     0.3333,
      0.9
     ],
     [
@@ -82,7 +82,7 @@
     ],
     [
      "a",
-     0,
+     0.0,
      -0.1,
      "in"
     ],
@@ -115,13 +115,13 @@
     ],
     [
      "a",
-     0,
+     0.0,
      0.7,
      "in"
     ],
     [
      "a",
-     1,
+     0.3333,
      0.65
     ],
     [
@@ -147,7 +147,7 @@
     ],
     [
      "a",
-     0,
+     0.0,
      -0.08,
      "in"
     ],
@@ -173,7 +173,7 @@
     ],
     [
      "a",
-     0,
+     0.0,
      -0.14,
      "in"
     ],
@@ -201,12 +201,12 @@
     ],
     [
      "a",
-     0,
+     0.0,
      1.0
     ],
     [
      "a",
-     0.25,
+     0.0833,
      0.03,
      "snap"
     ],
@@ -233,7 +233,7 @@
     ],
     [
      "a",
-     0,
+     0.0,
      0.4,
      "in"
     ],
@@ -256,12 +256,12 @@
     ],
     [
      "a",
-     0,
+     0.0,
      0
     ],
     [
      "a",
-     1,
+     0.3333,
      0
     ],
     [
@@ -289,7 +289,7 @@
    "keys": [
     [
      "a",
-     0,
+     0.0,
      0
     ],
     [

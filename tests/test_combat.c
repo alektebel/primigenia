@@ -789,10 +789,61 @@ static void loadout_and_cooldowns(void)
     CHECK(ha[0] == ha[1], "the same loadout changes and orders replay to the same hash");
 }
 
+/* A65: the peck is a galloping strike with a run-up; inside the run-up distance it is the standing bite; right after a connected
+ * move it is a standing jab (the A64 chain). Strong opener: a cooldown. */
+static CpCombatWorld beaked(float dist)
+{
+    CpCombatWorld w = pair(dist);
+    w.c[0].prof.extra[1] = 2;
+    cp_combat_loadout_default(&w.c[0].lo, &w.c[0].prof);
+    cp_combat_loadout_set(&w.c[0].lo, 2, CB_PECK);
+    return w;
+}
+static void galloping_peck(void)
+{
+    cp_combat_test_hit_variance(1);
+    CpCombatWorld w = beaked(4.2f);
+    CHECK(CP_COMBAT_MOVES[CB_PECK].flags & CB_F_DASH, "peck is a dash move");
+    float x0 = w.c[0].x, hp0 = w.c[1].hp;
+    CHECK(cp_combat_attack(&w, 0, 1, CB_PECK) == 0, "peck order accepted");
+    int hit_tick = -1;
+    for (int t = 0; t < 30 && hit_tick < 0; t++) {
+        cp_combat_attack(&w, 0, 1, CB_PECK);
+        cp_combat_step(&w);
+        if (w.c[1].hp < hp0) hit_tick = t;
+    }
+    CHECK(hit_tick >= 0 && w.c[0].move == CB_PECK, "peck from range closes the distance and hits");
+    CHECK(w.c[0].x - x0 > 1.0f, "the galloping peck moved the attacker");
+    CHECK(hp0 - w.c[1].hp > 10.0f, "the galloping peck is a strong opener (14 damage)");
+    CHECK(w.c[0].cd[CB_PECK] > 0, "the galloping peck starts its cooldown");
+    w = beaked(1.6f);
+    cp_combat_attack(&w, 0, 1, CB_PECK);
+    cp_combat_step(&w);
+    CHECK(w.c[0].move == CB_BITE, "inside the run-up distance the peck order becomes the standing bite");
+    /* chain: a connected bite, then the peck order within the window is a standing jab at half damage and spends no cooldown */
+    w = beaked(1.6f);
+    cp_combat_attack(&w, 0, 1, CB_BITE);
+    steps(&w, CP_COMBAT_MOVES[CB_BITE].windup + CP_COMBAT_MOVES[CB_BITE].active);
+    float hp1 = w.c[1].hp;
+    steps(&w, CP_COMBAT_MOVES[CB_BITE].recovery);
+    cp_combat_attack(&w, 0, 1, CB_PECK);
+    float xj = w.c[0].x;
+    int jab = 0;
+    float jab_dmg = 0.0f;
+    for (int t = 0; t < 12; t++) {
+        cp_combat_attack(&w, 0, 1, CB_PECK);
+        cp_combat_step(&w);
+        if (w.c[0].move == CB_PECK && w.c[0].dash_x == 0.0f) jab = 1;
+        for (int e = 0; e < w.n_ev; e++) if (w.ev[e].type == CB_EV_HIT && w.ev[e].move == CB_PECK) jab_dmg = w.ev[e].amount;
+    }
+    CHECK(jab, "a peck right after a connected bite is a standing jab (no dash)");
+    CHECK(fabsf(w.c[0].x - xj) < 0.01f && jab_dmg > 0.0f && jab_dmg < 10.0f && w.c[0].cd[CB_PECK] == 0, "the jab hits for reduced damage in place and keeps the cooldown free");
+}
+
 int main(void)
 {
     puts("cpore combat tests");
-    directional_movement(); counters(); ripostes(); spacing(); ranged_exchanges(); simultaneous(); bot_counters(); defensive_policies(); edges_and_verbs(); geometry_and_setup(); body_radius(); loadout_and_cooldowns(); determinism(); canaries();
+    directional_movement(); counters(); ripostes(); spacing(); ranged_exchanges(); simultaneous(); bot_counters(); defensive_policies(); edges_and_verbs(); geometry_and_setup(); body_radius(); loadout_and_cooldowns(); galloping_peck(); determinism(); canaries();
     printf("combat: %d failure(s)\n", fails);
     return fails ? 1 : 0;
 }

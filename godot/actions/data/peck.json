@@ -7,9 +7,9 @@
   "move": 7
  },
  "ticks": {
-  "w": 2,
-  "a": 1,
-  "r": 2
+  "w": 3,
+  "a": 3,
+  "r": 3
  },
  "settle": 0.3,
  "priority": 60,
@@ -18,9 +18,9 @@
   "out": 0.12,
   "cancel": 0.08
  },
- "legs": "plant",
+ "legs": "free",
  "side": "target",
- "note": "A64: the quick peck (lab version 1, peck-snap). Cock the neck (head up and back, body a little taller), then one fast stab at a:0; a short hold on a hit. peck_chain is the same move after a bite.",
+ "note": "A65 galloping strike: gather (w: crouch, neck cocked, jaws open), run (a: C moves the body 4.5 m, the loco gallops, the head reaches out and the body leans in), a beak lunge right at contact (the hit tracks), recover (r). The C hit can land on any active tick; the hit flag is set from C's HIT event and the layer forces the impact then.",
  "tracks": [
   {
    "ch": "head.reach",
@@ -33,25 +33,31 @@
     ],
     [
      "w",
-     0.6,
-     -0.6,
+     0.5,
+     -0.4,
      "out"
     ],
     [
      "w",
-     0.78,
-     -0.6
+     1,
+     -0.4
     ],
     [
      "a",
      0,
-     1.0,
+     0.2,
      "in"
     ],
     [
      "a",
+     0.5,
+     0.8,
+     "out"
+    ],
+    [
+     "a",
      1,
-     0.9
+     0.8
     ],
     [
      "r",
@@ -71,14 +77,14 @@
     ],
     [
      "w",
-     0.6,
-     0.3,
+     0.5,
+     0.25,
      "out"
     ],
     [
      "w",
-     0.78,
-     0.3
+     1,
+     0.25
     ],
     [
      "a",
@@ -104,20 +110,25 @@
     ],
     [
      "w",
-     0.6,
-     -0.1,
+     0.5,
+     -0.3,
      "out"
     ],
     [
      "w",
-     0.78,
-     -0.1
+     1,
+     -0.3
     ],
     [
      "a",
      0,
-     0.4,
+     0.1,
      "in"
+    ],
+    [
+     "a",
+     1,
+     0.2
     ],
     [
      "r",
@@ -137,14 +148,14 @@
     ],
     [
      "w",
-     0.6,
-     0.04,
+     0.5,
+     -0.1,
      "out"
     ],
     [
      "w",
-     0.78,
-     0.04
+     1,
+     -0.1
     ],
     [
      "a",
@@ -153,9 +164,15 @@
      "in"
     ],
     [
+     "a",
+     1,
+     -0.03
+    ],
+    [
      "r",
      1,
-     0
+     0,
+     "inout"
     ]
    ]
   },
@@ -169,15 +186,25 @@
     ],
     [
      "w",
-     0.6,
-     0.04,
+     0.5,
+     0.06,
      "out"
+    ],
+    [
+     "w",
+     1,
+     0.06
     ],
     [
      "a",
      0,
-     -0.07,
+     -0.14,
      "in"
+    ],
+    [
+     "a",
+     1,
+     -0.14
     ],
     [
      "r",
@@ -197,18 +224,18 @@
     ],
     [
      "w",
-     0.55,
+     0.6,
      1.0,
      "out"
     ],
     [
      "a",
-     0,
+     1,
      1.0
     ],
     [
-     "a",
-     0.25,
+     "r",
+     0.3,
      0.03,
      "snap"
     ],
@@ -229,15 +256,26 @@
      0
     ],
     [
+     "w",
+     1,
+     -0.1
+    ],
+    [
      "a",
      0,
-     0.35,
+     0.4,
      "in"
+    ],
+    [
+     "a",
+     1,
+     0.4
     ],
     [
      "r",
      1,
-     0
+     0,
+     "inout"
     ]
    ]
   },
@@ -258,23 +296,56 @@
     ],
     [
      "a",
+     0.35,
+     0.3,
+     "out"
+    ],
+    [
+     "a",
      1,
-     0
+     0.3
+    ],
+    [
+     "r",
+     0.6,
+     0.2
     ],
     [
      "r",
      1,
-     0.9,
+     0,
      "inout"
+    ]
+   ]
+  },
+  {
+   "ch": "root.lunge",
+   "if": "hit",
+   "keys": [
+    [
+     "w",
+     0,
+     0
     ],
     [
-     "s",
-     0.2,
-     0.9
+     "a",
+     0,
+     0
     ],
     [
-     "s",
-     0.6,
+     "a",
+     0.35,
+     0.25,
+     "out"
+    ],
+    [
+     "a",
+     1,
+     0.25
+    ],
+    [
+     "r",
+     1,
      0,
      "inout"
     ]
@@ -290,18 +361,18 @@
      0
     ],
     [
-     "r",
+     "a",
      1,
      0
     ],
     [
-     "s",
-     0.2,
+     "r",
+     0.6,
      0
     ],
     [
      "s",
-     0.5,
+     0.3,
      0.3,
      "out"
     ],
@@ -318,7 +389,7 @@
   {
    "at": [
     "a",
-    0
+    1
    ],
    "emit": "impact"
   }
