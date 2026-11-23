@@ -61,6 +61,10 @@ func _run_clip() -> void:
 	var ctx: String = args[1] if args.size() > 1 else "stand"
 	var csv_path: String = args[2] if args.size() > 2 else "/tmp/context_clip.csv"
 	_hold = args.has("hold")
+	var target_name := "Rondo"
+	for a in args:
+		if str(a).begins_with("target="):
+			target_name = str(a).substr(7)
 	ActionClock.attack_set = "b" if args.has("set_b") else "a"
 	root.size = Vector2i(960, 540)
 	game = root.get_node("Game")
@@ -88,13 +92,13 @@ func _run_clip() -> void:
 		var e: Dictionary = st().entities[i]
 		var sp: Dictionary = sui.species[int(e.species)] if int(e.species) >= 0 and int(e.species) < sui.species.size() else {}
 		var dd := Vector2(float(e.x) - float(p0.x), float(e.z) - float(p0.z)).length()
-		if str(sp.get("name", "")) == "Rondo" and not bool(e.dead) and dd < best:
+		if str(sp.get("name", "")) == target_name and not bool(e.dead) and dd < best:
 			best = dd
 			rondo = i
 	_target = rondo
 	print("rondo #", rondo, " loadout ", st().loadout.slots, " known ", st().loadout.known)
 	var w: Dictionary = st().entities[rondo]
-	var start_gap: float = {"stand": 1.9, "walk": 9.0, "gallop": 9.0, "far": 11.0}[ctx]
+	var start_gap: float = {"stand": {"bite": 1.9, "pounce": 3.4, "spit": 4.2, "roar": 2.8}[_attack], "walk": 5.0, "gallop": 6.5, "far": 11.0}[ctx]
 	var rc := -1
 	var base_ang := 0.0
 	for ang in [0.0, 1.0, 2.0, 3.0, 4.0, 5.0]:
@@ -111,7 +115,7 @@ func _run_clip() -> void:
 	stage.paused = false
 	await settle(20)
 	var frame := 0
-	var press_gap: float = {"stand": 99.0, "walk": 3.2, "gallop": 3.6, "far": 99.0}[ctx]
+	var press_gap: float = {"stand": 99.0, "walk": 3.4, "gallop": 3.6, "far": 99.0}[ctx]
 	var pressed_frame := -1
 	var hit_frame := -1
 	var hold_pos := Vector2(float(st().entities[rondo].x), float(st().entities[rondo].z))
@@ -124,7 +128,7 @@ func _run_clip() -> void:
 		if pressed_frame < 0:
 			if ctx == "walk" or ctx == "gallop":
 				_heading = (Vector2(float(re.x), float(re.z)) - Vector2(float(pe.x), float(pe.z))).normalized()
-				if gap <= press_gap and float(pe.speed) > (0.5 if ctx == "walk" else 1.4):
+				if gap <= press_gap and float(pe.speed) > (0.45 if ctx == "walk" else 1.4):
 					pressed_frame = frame
 					_attack_now = true
 			elif frame >= 10:
@@ -137,8 +141,8 @@ func _run_clip() -> void:
 		if int(s.active) < 0:
 			stage.debug_now({"op": 1, "id": rondo, "x": hold_pos.x, "z": hold_pos.y})     # the prey stands its ground until the hit lands
 		_camera(rondo, ctx == "gallop" or ctx == "far")
-		rows.append("%d,%d,%d,%d,%d,%d,%.2f,%.2f,%.1f,%s" % [frame, int(s.combat.tick), int(f.get("move", -9)), int(f.get("phase", -9)), int(f.get("ctx", -9)),
-			1 if hit_frame == frame else 0, float(pe.speed), gap, float(re.hp), str(s.combat.events.map(func(e): return "%d:%d>%d" % [int(e.type), int(e.a), int(e.b)]))])
+		rows.append("%d,%d,%d,%d,%d,%d,%.2f,%.2f,%.1f,o%d/e%d/a%d,p%.2f;%.2f f%.2f;%.2f w%.2f;%.2f,%s" % [frame, int(s.combat.tick), int(f.get("move", -9)), int(f.get("phase", -9)), int(f.get("ctx", -9)),
+			1 if hit_frame == frame else 0, float(pe.speed), gap, float(re.hp), int(s.order.verb), int(s.get("error", 0)), int(s.active), float(pe.x), float(pe.z), float(pe.fx), float(pe.fz), float(re.x), float(re.z), str(s.combat.events.map(func(e): return "%d:%d>%d" % [int(e.type), int(e.a), int(e.b)]))])
 		if frame % 30 == 0:
 			stage.debug_now({"op": 4, "id": rondo, "x": 100.0, "z": -1.0})
 		if pressed_frame >= 0 and frame > pressed_frame + 60 and f.get("move", -1) == -1 and (s.combat.fighters.size() == 0 or int(f.get("phase", 0)) == 0) and frame > pressed_frame + 90:
@@ -146,7 +150,7 @@ func _run_clip() -> void:
 		frame += 1
 		await process_frame
 	var fa := FileAccess.open(csv_path, FileAccess.WRITE)
-	fa.store_line("frame,tick,move,phase,ctx,hit,player_speed,gap,rondo_hp,events")
+	fa.store_line("frame,tick,move,phase,ctx,hit,player_speed,gap,rondo_hp,order_err_active,events")
 	for r in rows:
 		fa.store_line(r)
 	fa.close()
