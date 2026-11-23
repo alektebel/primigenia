@@ -114,6 +114,17 @@ func _run() -> void:
 # A flat stretch for the landing clips: the first start point (rings of 60 m out to 700 m, 12 headings) whose next 120 m of ground
 # stays within 1.2 m of height and above the water line, so the flare has a level run-out. Falls back to the current spot.
 func _flat_run(p0: Vector2, dir0: Vector2) -> Dictionary:
+	# seed 1: a 140 m stretch of the valley floor within 0.7 m of height (found with a grid scan of the heightfield)
+	var known := Vector2(21.2, -161.9)
+	var kd := Vector2(-0.70711, 0.70711)
+	var lo0 := 1e9
+	var hi0 := -1e9
+	for i in 15:
+		var h0: float = game.visual_ground(known.x + kd.x * 10.0 * i, known.y + kd.y * 10.0 * i)
+		lo0 = minf(lo0, h0)
+		hi0 = maxf(hi0, h0)
+	if hi0 - lo0 < 1.5:
+		return {"p": known, "dir": kd}
 	for d in range(0, 700, 40):
 		for k in 12:
 			var a := TAU * float(k) / 12.0 + atan2(dir0.x, dir0.y)
