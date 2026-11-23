@@ -181,6 +181,10 @@ func _valid_for(mode: StringName, id: int) -> bool:
 		return bool(e.get("dead", false)) and int(e.get("meat", 0)) > 0
 	return not bool(e.get("dead", false))
 
+## A65: a body the player can eat by clicking it: remains with meat, and a diet that takes meat (C refuses herbivores).
+func _edible(id: int) -> bool:
+	return _valid_for(Modes.EAT, id) and int(stage.cur.get("social", {}).get("diet", 2)) != 0
+
 # The click / hover pick of an armed verb: the nearest valid creature to the mouse in screen space, generous radius.
 func pick_for_verb(mouse: Vector2, mode: StringName = Modes.NONE) -> int:
 	var m := verb if mode == Modes.NONE else mode
@@ -276,13 +280,24 @@ func _verb_hover() -> void:
 	if ui == null or stage == null or stage.cur.is_empty():
 		return
 	var want := -1
+	var hover_verb: StringName = verb
 	if verb != Modes.NONE and not Game.movement_blocked() and not ui.paused:
 		want = pick_for_verb(get_viewport().get_mouse_position())
+	elif verb == Modes.NONE and not Game.movement_blocked() and not ui.paused:
+		# A65: with no verb armed, an edible body under the mouse offers "eat" (a click walks there and eats)
+		want = pick_for_verb(get_viewport().get_mouse_position(), Modes.EAT)
+		if want > 0 and not _edible(want):
+			want = -1
+		hover_verb = Modes.EAT
 	hover_id = want
 	if hover_id > 0 and hover_id != locked_id:
-		ui.marker.set_hover(hover_id, verb, str(info_for(hover_id).name))
+		ui.marker.set_hover(hover_id, hover_verb, str(info_for(hover_id).name))
+		if verb == Modes.NONE:
+			Input.set_default_cursor_shape(Input.CURSOR_POINTING_HAND)
 	else:
 		ui.marker.set_hover(-1, Modes.NONE, "")
+		if verb == Modes.NONE:
+			Input.set_default_cursor_shape(Input.CURSOR_ARROW)
 
 # Select first, then choose: picking a mode only changes the hotbar; nothing is ordered until an ability key (1-4) is pressed.
 func _on_mode(mode: StringName) -> void:
@@ -506,6 +521,12 @@ func info_for(id: int) -> Dictionary:
 
 func _on_clicked(id: int, _pos: Vector3) -> void:
 	if id <= 0 or id >= stage.cur.entities.size():
+		return
+	if verb == Modes.NONE and int(stage.cur.active) < 0 and _edible(id):
+		# A65 click to eat: no verb armed and an edible body: the creature walks or runs there and eats (the order verb R sends)
+		ui.select(info_for(id), false)
+		ui.set_mode(Modes.EAT)
+		social_order("eat", id, 0)
 		return
 	if int(stage.cur.active) >= 0 and id == int(stage.cur.active) + 1:
 		var inf := info_for(id)         # clicking the one you are fighting keeps Attack (no ring in the middle of a fight)
