@@ -121,3 +121,15 @@ Each is unlocked by an organ, usually as a recipe (G50), and is rarer and strong
 | **Ground-pound shockwave** | elephant-scale stomp, exaggerated | heavy legs | knockdown ring | rear up, slam, dust ring |
 | **Death roll** | crocodile (grab and spin) | jaws + heavy tail | big damage while holding | grab, the whole body rolls |
 | **Ink cloud** | octopus and squid | ink sac (water) | blind and escape | jet back, ink bloom |
+
+## Social evolution: befriend actions grow with organs (proposal, owner 2026-11-23)
+Each social action has tiers. A better organ makes the gesture bigger, adds a variant, and raises befriend progress per beat. Pose needs a display organ (A77).
+
+| Action | Tier 1 (starting) | Tier 2 | Tier 3 | Signature |
+|---|---|---|---|---|
+| **Sing** | trill (throat) | **throat sac**: deep boom with an inflating pouch | **resonating crest or chamber**: low call heard far away; attracts from range | **duet**: call-and-answer with the target species' own call (needs to have observed it) |
+| **Dance** | bob-and-weave (legs) | longer or more legs: stomp and hop combos | tail or plumes: sweeping display dance | **group dance**: your pack or family joins in |
+| **Charm** | preen/show-off | **arms/hands**: offer food, groom | **gift**: carry and give the species' favourite food (befriend condition) | **nest invite**: lead it to your nest |
+| **Pose** *(needs a display organ)* | **crest** display | **frill or extensible crest**: flare and hold | **sail or wing display**: spread and shimmer | **colour-change skin**: pulsing colour waves (octopus-like) |
+
+Different bodies perform the same action in their own way: arms wave and clap, wings spread, tentacles flash colour and wave, snakes sway and flare a hood. Each species' favourite gesture and its befriend condition (A62) decide which works best.
