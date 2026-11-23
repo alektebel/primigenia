@@ -133,3 +133,29 @@ Each social action has tiers. A better organ makes the gesture bigger, adds a va
 | **Pose** *(needs a display organ)* | **crest** display | **frill or extensible crest**: flare and hold | **sail or wing display**: spread and shimmer | **colour-change skin**: pulsing colour waves (octopus-like) |
 
 Different bodies perform the same action in their own way: arms wave and clap, wings spread, tentacles flash colour and wave, snakes sway and flare a hood. Each species' favourite gesture and its befriend condition (A62) decide which works best.
+
+## Social duel: befriending as deep as combat (owner approved 2026-11-23, A78)
+| Combat | Befriending |
+|---|---|
+| Distance bands | **far:** call to get noticed · **approach:** slow walk, lowered posture, head turned (running scares) · **close:** groom, offer food, nuzzle |
+| The target fights back | **Target mood:** wary → curious → trusting → bonded, a reaction every beat (ears, posture, a step closer or away, an alarm call). Sudden moves, roars or nearby predators knock it back. |
+| Combos | **Call-and-answer chains:** the target performs a sequence and you answer in kind. Right = combo bonus, wrong = trust loss. |
+| Roles | **opener** (get noticed) · **build** (raise trust) · **calm** (counters fear) · **signature** (big surge, organ-unlocked) |
+| Momentum | **Patience:** stillness and slow moves build trust; rushing backfires |
+| Tactics with brain growth | read emotions (mood bar visible) · mimic any call · befriend a herd **leader** and the herd follows · trade food for help · ask allies to fight or scout |
+| Rewards | DNA plus allies that fight, guide to parts and bring food |
+
+### Special charms for intelligent species (brain-gated)
+Highly intelligent species (big brain organ or species trait) ignore simple charms and respond to:
+- **Play:** a game of tag or fetch with an object, or a puzzle such as rolling a stone so they can reach fruit
+- **Teaching:** show them a skill (dig, crack a nut on a rock) and they copy it; that bond is strong
+- **Gift of a tool or rare object:** a shiny stone, a fossil, a shell
+- **Shared language:** learn their call vocabulary by observing; each "word" opens a response
+- **Mirror and recognition:** they recognise you after a first meeting and remember how you treated them (a fight → hostile, a gift → friendly)
+
+### Easter eggs: hidden befriend conditions (A62)
+Some species only bond under a secret condition, found by observing, by field-note hints or by accident:
+- **Only in the dark** (nocturnal shy species, glow-signal species)
+- **A special fruit** (a rare plant from the food web; carry it to them)
+- **Defend it from a raid** (predators attack its group; fight them off and it bonds instantly)
+- Others to design: approach from downwind; befriend its young first; sing its own call back at dawn; meet it in rain; return a lost egg to its nest
