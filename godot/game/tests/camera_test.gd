@@ -18,6 +18,8 @@ const MIN_FRAMES := 3000
 const LEG_FRAMES := 2400
 const MAX_FRAMES := 14000
 const WARMUP := 90
+const CIRCLE_DX := 4.0             # px of drag per frame (about 1.4 degrees per frame, a quick drag)
+const CIRCLE_FRAMES := 270         # one full turn and a bit
 
 var checks := 0
 var failures := 0
@@ -31,6 +33,11 @@ var shots_dir := ""
 var shot_ids := {}
 var meas                          # CameraOccluders for measuring (always built, also in legacy mode)
 var route: Array = []
+var circle := true                 # nocircle: skip the full-turn orbit next to a prop
+var orbit_stress := false         # the player also swings the camera by hand (right-drag) while walking: it ends up behind trees and rocks
+var trace_lo := -1
+var trace_hi := -1
+var max_frames := MAX_FRAMES
 var verbose := OS.get_environment("CAM_VERBOSE") != ""
 
 var frames_n := 0
@@ -72,6 +79,16 @@ func _initialize() -> void:
 			zoom = float(a.substr(2))
 		elif a == "legacy":
 			legacy = true
+		elif a.begins_with("max="):
+			max_frames = int(a.substr(4))
+		elif a == "nocircle":
+			circle = false
+		elif a == "orbit":
+			orbit_stress = true
+		elif a.begins_with("trace="):
+			trace_lo = int(a.substr(6).split("-")[0])
+			trace_hi = int(a.substr(6).split("-")[1])
+			max_frames = trace_hi + 5
 		elif a.begins_with("out="):
 			out_path = a.substr(4)
 		elif a.begins_with("shots="):
@@ -111,6 +128,8 @@ func _run() -> void:
 	for i in 5:
 		await process_frame
 	game.stage.timescale = 1.0
+	if shots_dir != "":
+		RenderingServer.render_loop_enabled = false
 	var chase = island.chase
 	chase.legacy = legacy
 	if legacy:
@@ -124,7 +143,7 @@ func _run() -> void:
 	print("  route: ", route.map(func(w): return "%s (%.0f,%.0f)" % [w.kind, w.p.x, w.p.y]))
 	island.player_input.keys_override = {"forward": false, "back": false, "left": false, "right": false, "sprint": true, "run": true}
 	for w in route:
-		if frames_n >= MAX_FRAMES:
+		if frames_n >= max_frames:
 			break
 		await _leg(w)
 	island.player_input.keys_override = null
@@ -203,12 +222,15 @@ func _plan_route() -> Array:
 	# order by a short tour from the nest
 	var tour: Array = []
 	var here := nest
+	out.sort_custom(func(a, b): return (0 if not String(a.kind).begins_with("slope") else 1) < (0 if not String(b.kind).begins_with("slope") else 1))
 	var left := out.duplicate()
-	while not left.is_empty():
-		left.sort_custom(func(a, b): return a.p.distance_to(here) < b.p.distance_to(here))
-		var w: Dictionary = left.pop_front()
-		tour.append(w)
-		here = w.p
+	for phase in 2:
+		var group: Array = left.filter(func(w): return (1 if String(w.kind).begins_with("slope") else 0) == phase)
+		while not group.is_empty():
+			group.sort_custom(func(a, b): return a.p.distance_to(here) < b.p.distance_to(here))
+			var w: Dictionary = group.pop_front()
+			tour.append(w)
+			here = w.p
 	return tour
 
 # the spot nearest to `c` that is not inside a trunk or rock proxy
@@ -224,12 +246,14 @@ func _clear_spot(c: Vector2) -> Vector2:
 func _leg(w: Dictionary) -> void:
 	cur_leg = w.kind
 	var t0 := frames_n
+	var arrived := false
 	var stuck_ref := _me()
 	var stuck_at := frames_n
 	var last_send := -1000
-	while frames_n - t0 < LEG_FRAMES and frames_n < MAX_FRAMES:
+	while frames_n - t0 < LEG_FRAMES and frames_n < max_frames:
 		var me := _me()
 		if me.distance_to(w.p) < 4.0:
+			arrived = true
 			break
 		if frames_n - last_send > 90:
 			island.player_input.set_destination(w.p)
@@ -239,11 +263,71 @@ func _leg(w: Dictionary) -> void:
 				break                    # not getting anywhere (water, a cliff): next leg
 			stuck_ref = me
 			stuck_at = frames_n
+		if orbit_stress:
+			_orbit_by_hand()
 		await process_frame
-		_measure()
+		await _measure()
 		if verbose and frames_n % 300 == 0:
 			print("   f%d leg %s me %s dest %s cam %s boom %.2f lift %.2f" % [frames_n, cur_leg, _me(), w.p, island.camera.global_position, island.chase.boom, island.chase.lift])
 	island.player_input.clear_destination()
+	if circle and (w.kind == "forest" or w.kind == "rocks") and frames_n < max_frames:
+		await _circle(w)
+
+# The hard case: stand right next to the nearest trunk or rock and swing the camera a full turn by hand, so it passes behind the prop.
+func _circle(w: Dictionary) -> void:
+	cur_leg = "circle " + String(w.kind)
+	var best := -1
+	var bd := 1e9
+	for i in meas.count:
+		var o: int = i * 8
+		if meas.rows[o + 7] - meas.rows[o + 6] < 0.8:
+			continue
+		var d := Vector2(meas.rows[o], meas.rows[o + 1]).distance_to(_me())
+		if d < bd:
+			bd = d
+			best = i
+	if best < 0 or bd > 60.0:
+		return
+	var o := best * 8
+	var obj := Vector2(meas.rows[o], meas.rows[o + 1])
+	var rad := maxf(1.0 / meas.rows[o + 2], 1.0 / meas.rows[o + 3])
+	var me := _me()
+	var spot := obj + (me - obj).normalized() * (rad + 1.3)
+	var t0 := frames_n
+	island.player_input.set_destination(spot)
+	while frames_n - t0 < 1200 and frames_n < max_frames and _me().distance_to(spot) > 0.9:
+		await process_frame
+		await _measure()
+	island.player_input.clear_destination()
+	for i in 40:
+		await process_frame
+		await _measure()
+	if true:
+		print("   circle: obj %s r %.2f top %.2f me %s dist %.2f cam %s" % [obj, rad, meas.rows[o + 7] - meas.rows[o + 6], _me(), _me().distance_to(obj), island.camera.global_position])
+	var close := 0
+	for i in CIRCLE_FRAMES:
+		island.chase.orbit(CIRCLE_DX, 0.0)
+		await process_frame
+		await _measure()
+		var cp: Vector3 = island.camera.global_position
+		var a2 := Vector2(cp.x, cp.z)
+		var b2 := _me()
+		var ab := b2 - a2
+		var tt := clampf((obj - a2).dot(ab) / maxf(ab.length_squared(), 1e-6), 0.0, 1.0)
+		if (a2 + ab * tt).distance_to(obj) < rad:
+			close += 1
+	if true:
+		print("   circle: frames with the camera line through the footprint: %d, occluded so far %d" % [close, occluded])
+	for i in 40:
+		await process_frame
+		await _measure()
+
+# A hand orbit: 70 frames of drag (about 25 degrees), then 170 frames of rest, alternating sides; the vertical drag nudges the pitch.
+func _orbit_by_hand() -> void:
+	var ph := frames_n % 240
+	if ph < 70:
+		var dir := 1.0 if (frames_n / 240) % 2 == 0 else -1.0
+		island.chase.orbit(dir * 10.0, 0.0 if ph > 5 else (3.0 if (frames_n / 240) % 3 == 0 else -2.0))
 
 # ---- measuring -----------------------------------------------------------------------------------------------------
 
@@ -270,13 +354,15 @@ func _measure() -> void:
 	var cave_on: bool = island.cave_site != null and island.cave_site.on and island.cave_site.zone(p.x, p.y) != 0
 	var fid := frames_n
 	frames_n += 1
+	if fid >= trace_lo and fid <= trace_hi:
+		print("TRACE f%d cam %s pl %s boom %.2f cap %.2f lift %.3f act %.2f yaw %.3f" % [fid, cam, pl, chase.boom, chase._cap, chase.lift, (cam - chase.target).length(), chase.view_yaw])
 	if frames_n < WARMUP:
 		prev_cam = cam
 		prev_fwd = fwd
 		prev_pl = pl
 		return
 	if shot_ids.has(fid) and shots_dir != "":
-		_shot(fid)
+		await _shot(fid)
 	if prev_cam != null:
 		var rel: float = ((cam - prev_cam) - (pl - prev_pl)).length()
 		var deg: float = rad_to_deg(fwd.angle_to(prev_fwd))
@@ -320,10 +406,14 @@ func _measure() -> void:
 		_run_start = -1
 
 func _shot(fid: int) -> void:
+	RenderingServer.render_loop_enabled = true
+	await process_frame
+	await process_frame
 	await RenderingServer.frame_post_draw
 	var img := root.get_texture().get_image()
 	DirAccess.make_dir_recursive_absolute(shots_dir)
 	img.save_jpg("%s/%s_%05d.jpg" % [shots_dir, "before" if legacy else "after", fid], 0.88)
+	RenderingServer.render_loop_enabled = false       # only the photographed frames are drawn (software GL is slow)
 
 func _pct(a: Array, q: float) -> float:
 	if a.is_empty():

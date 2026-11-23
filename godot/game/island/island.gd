@@ -66,6 +66,8 @@ var player_pos := Vector3.INF
 var flight                         # FlightMode: the dev-flag flight test (null before the stage is built)
 var last_click := Vector2.ZERO     # screen position of the last click that picked a creature (the radial opens there)
 var occluders_enabled := true
+var _cam_prev_player = null     # Vector2: where the player was at the last camera update
+const CAM_CUT_M := 25.0          # a player move this big in one frame is a teleport: the camera cuts
 var icons: CanvasLayer
 var pois_fn: Callable            # sites hook for the strategic map (see strategic_icons.gd; D2 registry plugs in here)
 var _mouse_held := false
@@ -867,6 +869,11 @@ func _profile__update_camera(dt: float) -> void:
 	chase.kick = bool(Game.settings.get("camera/kick", true))
 	chase.top_speed = _run_top_speed()
 	chase.mouse_walk = player_input.destination != null      # walking to a click or following the mouse: the camera does not turn for it
+	# An explicit cut (a teleport, a respawn, a return from the editor): the eased camera state restarts instead of gliding across the map.
+	var here := Vector2(p.pos.x, p.pos.z)
+	if _cam_prev_player != null and here.distance_to(_cam_prev_player) > CAM_CUT_M:
+		chase.cut()
+	_cam_prev_player = here
 	var r: Dictionary = chase.update({"x": p.pos.x, "z": p.pos.z, "yaw": p.yaw, "speed": p.speed, "vx": p.vel.x, "vz": p.vel.z}, enemy, fighting, dt, vp.x / maxf(vp.y, 1.0))
 	camera.fov = 48.0 + float(r.fov_add)
 	camera.near = clampf(float(r.distance) * 0.012, 0.05, 40.0)       # keep the depth buffer precise at 3 km

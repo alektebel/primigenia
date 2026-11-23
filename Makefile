@@ -449,6 +449,13 @@ godot-wire-evidence: godot
 	LIBGL_ALWAYS_SOFTWARE=1 nice -n 10 timeout 1200 xvfb-run -a $(GODOT) --rendering-driver opengl3 --max-fps 15 --resolution 1280x720 --path godot \
 	  --script res://game/tests/wire_evidence.gd -- $(CURDIR)/docs/evidence/godot/wire
 
+# Camera occlusion and snaps (creature-loop T4): a bot walks forest, rock and slope routes on the real island; gates < 2% of frames
+# occluded (body centre or head hidden from the camera), 0 snaps. CAM_ARGS e.g. "seed=2 z=0.15", or "legacy" for the before numbers.
+.PHONY: godot-camera-test
+CAM_ARGS ?=
+godot-camera-test: godot
+	nice -n 10 timeout 1500 $(GODOT) --headless --fixed-fps 60 --path godot --script res://game/tests/camera_test.gd -- $(CAM_ARGS)
+
 # CAMERA-ZOOM s4 evidence: the z = 0..1 strip and frame times on the real island (software GL).
 .PHONY: godot-camera-evidence
 godot-camera-evidence: godot

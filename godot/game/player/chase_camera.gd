@@ -54,7 +54,8 @@ var _cap_hold := 0.0
 var _lift_hold := 0.0
 const CAM_R := 0.35            # m: radius of the sphere swept from the creature to the camera
 const CAST_MAX := 60.0         # m: beyond this boom the camera is high above everything but the terrain
-const CAP_IN_TAU := 0.07       # s: the boom shortens this fast when something moves into the line
+const CAP_IN_TAU := 0.11       # s: the boom shortens this fast when something moves into the line
+const CAP_IN_MAX := 14.0       # m/s: ...and never faster than this (0.23 m per frame at 60 fps), whatever the boom
 const CAP_OUT_TAU := 0.45      # s: and lengthens this slowly...
 const CAP_HOLD := 0.35         # s: ...after the way has been clear for this long
 const LIFT_STEPS := [0.12, 0.25, 0.4, 0.58, 0.8]   # rad of extra elevation tried, smallest first
@@ -288,7 +289,7 @@ func update(player: Dictionary, enemy, fighting: bool, dt: float, aspect: float 
 	if _cap == null or dt <= 0.0 or legacy:
 		_cap = raw
 	elif raw < float(_cap):
-		_cap = lerpf(float(_cap), raw, 1.0 - exp(-dt / CAP_IN_TAU))
+		_cap = maxf(lerpf(float(_cap), raw, 1.0 - exp(-dt / CAP_IN_TAU)), float(_cap) - CAP_IN_MAX * dt)       # eased, and never faster than CAP_IN_MAX (no snap)
 		_cap_hold = CAP_HOLD
 	elif _cap_hold > 0.0:
 		_cap_hold -= dt
