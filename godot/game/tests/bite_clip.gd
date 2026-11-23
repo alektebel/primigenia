@@ -79,7 +79,7 @@ func _run() -> void:
 	var n: Vector2 = stage.world.get_setup().nest
 	var rc := -1
 	for ang in [0.0, 1.0, 2.0, 3.0, 4.0, 5.0]:
-		rc = stage.debug_now({"op": 1, "id": 0, "x": float(w.x) + cos(ang) * (4.0 if mode == "peck" else 1.9), "z": float(w.z) + sin(ang) * (4.0 if mode == "peck" else 1.9)})
+		rc = stage.debug_now({"op": 1, "id": 0, "x": float(w.x) + cos(ang) * (3.3 if mode == "peck" else 1.9), "z": float(w.z) + sin(ang) * (3.3 if mode == "peck" else 1.9)})
 		if rc == 0:
 			break
 	print("teleport rc ", rc)
