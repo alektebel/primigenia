@@ -8,12 +8,15 @@ extends RefCounted
 ## C is the only authority for combat: the layer mirrors its state and never decides a hit or a cancel.
 
 signal action_event(name: String, data: Dictionary)
+## A64 chain: a peck that starts within this many C ticks of the creature's own bite hit plays as the chained peck.
+const CHAIN_TICKS := 7
 
 const Clock := preload("action_clock.gd")
 const Data := preload("action_data.gd")
 const Springs := preload("action_springs.gd")
 const Solver := preload("action_solver.gd")
 const Rig := preload("action_rig.gd")
+const Impact := preload("impact_fx.gd")
 const G := 9.81
 
 var map
@@ -47,8 +50,12 @@ var _last_hit_dir := 1.0
 var _last_hit_amount := 12.0
 var _pull := {}               # visual grip of a bite on THIS creature: {t, len, dir (body frame), amp}; C owns positions
 var _mouth_world := Vector3.ZERO
+var _extra_prev := {}         # last follow-through (held through a hit-pause)
 var _out := {}               # last channel result
 var last_act: Dictionary = {}
+var flash := 0.0              # 0..1: the pale flash of a creature that was just hit (the driver writes it on the meshes)
+var _pause_left := 0.0        # seconds of hit-pause left: the layer's own clock stands still (C ticks go on)
+var _bite_hit_tick := -1000   # C tick of this creature's last bite that connected (the chain window opens here)
 
 func setup(body_map, raw: Dictionary, c, id: int) -> void:
 	map = body_map
@@ -88,8 +95,8 @@ func trigger(id: String, args := {}) -> bool:
 	return true
 
 ## Impulse reactions (2.2): dir = unit vector from the attacker to this creature in its body frame (x left, z forward).
-func react(kind: String, dir: Vector3, amount: float, move := -1) -> void:
-	var m := clampf(amount / 20.0, 0.3, 1.5)
+func react(kind: String, dir: Vector3, amount: float, move := -1, knock := 1.0) -> void:
+	var m := clampf(amount / 20.0, 0.3, 1.5) * knock
 	match kind:
 		"hit":
 			# a clear hit reaction, scaled by damage: the body recoils away from the hit, the head snaps back,
@@ -137,6 +144,16 @@ func clear() -> void:
 	solver.rdp.fill(0.0)
 	solver.extra_lunge = 0.0
 	_start_base()
+
+## Hit-pause (impact_fx.gd): the layer holds every instance where it is for `seconds` of real time. C keeps ticking; when
+## the pause ends the instances jump to C's tau (the keys right after a contact are flat, so the catch-up does not show).
+func hit_pause(seconds: float) -> void:
+	_pause_left = maxf(_pause_left, seconds)
+	for i in inst:
+		i["ftau"] = i.tau
+
+func paused() -> bool:
+	return _pause_left > 0.0
 
 # ---------------------------------------------------------------------------------------------
 # instances
@@ -237,6 +254,17 @@ func update(dt: float, ctx: Dictionary) -> void:
 	var tick_changed := tick != _last_tick
 	_last_tick = tick
 	_handle_state(dt, sig, ctx)
+	var frozen := _pause_left > 0.0
+	var fdt := 0.0 if frozen else dt
+	if frozen:
+		for fi in inst:
+			if fi.has("ftau"):
+				fi.tau = fi.ftau
+		_pause_left = maxf(0.0, _pause_left - dt)
+	else:
+		for fi in inst:
+			fi.erase("ftau")
+		flash = maxf(0.0, flash - dt / Impact.FLASH_LIFE)
 	if tick_changed and not _pending.is_empty():
 		for p in _pending:
 			_start_cosmetic(p[0], p[1], tick, ctx)
@@ -246,14 +274,14 @@ func update(dt: float, ctx: Dictionary) -> void:
 	_idle_update(dt, sig)
 	# advance
 	if not _pull.is_empty():
-		_pull.t += dt
+		_pull.t += fdt
 		if _pull.t >= _pull.len:
 			_pull = {}
 	var keep: Array = []
 	for i in inst:
-		i.age += dt
+		i.age += fdt
 		if i.fading:
-			i.fade_t += dt
+			i.fade_t += fdt
 			if i.fade_t >= i.fade_len:
 				i.removed = true
 		if i.kind == "c_move" and not i.ending:
@@ -261,7 +289,7 @@ func update(dt: float, ctx: Dictionary) -> void:
 		elif i.get("slaved", false):
 			pass          # the eat meal: tau is set from the C eat action every frame (_handle_eat)
 		elif i.id != "idle_base" and i.kind != "stance":
-			i.tau += dt / Clock.DT / i.tscale
+			i.tau += fdt / Clock.DT / i.tscale
 			if not i.act.hold:
 				var l: Dictionary = Clock.locate(i.tau, i.act.w, i.act.a, i.act.r, i.act.settle)
 				if l.done and not i.fading:
@@ -310,6 +338,8 @@ func _handle_state(dt: float, sig: Dictionary, ctx: Dictionary) -> void:
 	var mv: int = sig.get("move", -1)
 	if mv >= 0 and sig.get("e", 0) > 0:
 		var name: String = Clock.MOVE_NAMES.get(mv, "")
+		if name == "peck" and actions.has("peck_chain") and int(ctx.get("tick", 0)) - _bite_hit_tick <= CHAIN_TICKS:
+			name = "peck_chain"           # A64: the quick peck right after our own bite
 		if cm.is_empty() or cm.move != mv or "start" in marks:
 			if not cm.is_empty():
 				_fade(cm, _fade_len(cm, "cancel", 0.08))
@@ -369,18 +399,30 @@ func _on_event(ev: Dictionary, ctx: Dictionary) -> void:
 	var me := entity_id
 	match int(ev.type):
 		1:      # HIT: a damaged b
+			var melee := Impact.is_melee(int(ev.move))
+			var other_h: float = float(tgt.get("height", map.height))
 			if ev.a == me:
 				var cm := _find("c_move")
 				if not cm.is_empty():
 					cm.hit = true
 					cm.hit_tau = cm.tau
+					if melee:
+						cm.tau = maxf(cm.tau, cm.act.w)       # the contact pose is the one the pause holds
 				if int(ev.move) == 1:
 					_start_oneshot("strike")      # the charge lands: squash and rebound of the attacker
+				if int(ev.move) == 0:
+					_bite_hit_tick = int(ctx.get("tick", 0))
 				_force_impact()
+				if melee:
+					hit_pause(Impact.pause_seconds(map.height, other_h))
+					_emit_hit_fx(ev, tgt, other_h)
 			if ev.b == me:
 				_last_hit_dir = -signf(dir_local.x) if dir_local.x != 0.0 else 1.0
 				_last_hit_amount = float(ev.amount)
-				react("hit", dir_local, ev.amount, int(ev.move))
+				react("hit", dir_local, ev.amount, int(ev.move), Impact.knock_scale(other_h, map.height) if melee else 1.0)
+				if melee:
+					flash = Impact.flash_strength(float(ev.amount))
+					hit_pause(Impact.pause_seconds(map.height, other_h))
 				for o in inst:
 					if o.kind == "cosmetic":
 						_fade(o, 0.08)
@@ -394,6 +436,23 @@ func _on_event(ev: Dictionary, ctx: Dictionary) -> void:
 			if ev.b == me and actions.has("stun"):
 				var s := _new_inst(actions.stun, "c_state")
 				inst.append(s)
+
+## The contact effect of a melee hit this creature dealt: where (the target's surface nearest the mouth), which way (attacker to
+## victim, horizontal), how hard and how big. The driver spawns the dust and sparks, the island shakes the camera.
+func _emit_hit_fx(ev: Dictionary, tgt: Dictionary, other_h: float) -> void:
+	var pos: Vector3 = _ctx.get("pos", Vector3.ZERO)
+	var at: Vector3 = pos + Vector3.UP * map.height * 0.5
+	var dir := Vector3(sin(float(_ctx.get("yaw", 0.0))), 0.0, cos(float(_ctx.get("yaw", 0.0))))
+	if not tgt.is_empty():
+		var p = _goal_point("target_surface", {"root": Transform3D(Basis.IDENTITY, pos)})
+		if p != null:
+			at = p
+		var d: Vector3 = (tgt.pos as Vector3) - pos
+		d.y = 0.0
+		if d.length() > 0.05:
+			dir = d.normalized()
+	action_event.emit("hit_fx", {"entity": entity_id, "pos": at, "dir": dir, "amount": float(ev.amount), "move": int(ev.move),
+		"size": map.height, "victim_size": other_h, "attacker": entity_id, "victim": int(ev.b)})
 
 ## C says this creature hit something. Normally the instance reaches tau = W in the same frame; when C cancelled the
 ## move in the very tick it hit (a clash), the impact is still delivered, once, to whatever instance has not fired it.
@@ -696,14 +755,15 @@ func apply(pose: Dictionary, dt: float) -> void:
 	if ks > 0.01:
 		stiff = lerpf(1.0, ch["tail.stiff"] / ks, clampf(ks, 0.0, 1.0))
 	var w_tail_s := clampf(w_tail * sqrt(maxf(stiff, 0.05)), 5.0, 60.0)
-	var extra := _follow_through(ch, dt, w_head, w_tail_s, head_len, tail_len)
+	var dt_a := 0.0001 if _pause_left > 0.0 else dt          # hit-pause: springs and solver stand still
+	var extra := _follow_through(ch, dt_a, w_head, w_tail_s, head_len, tail_len)
 	var out := ch.duplicate()
 	var specs := {
 		"root.lunge": [16.0, 1.0], "root.side": [16.0, 1.0], "root.lift": [18.0, 1.0], "root.pitch": [16.0, 1.0], "root.roll": [16.0, 1.0], "root.yaw": [16.0, 1.0],
 		"head.pitch": [w_head, 0.8], "head.yaw": [w_head, 0.8], "tail.pitch": [w_tail_s, 0.45], "tail.yaw": [w_tail_s, 0.45], "tail.curl": [w_tail_s, 0.45],
 		"display": [17.0, 0.5], "arms": [17.0, 0.6]}
 	for k in specs:
-		out[k] = springs.step(k, ch[k], kin.get(k, 0.0), specs[k][0], specs[k][1], extra.get(k, 0.0), dt)
+		out[k] = springs.step(k, ch[k], kin.get(k, 0.0), specs[k][0], specs[k][1], extra.get(k, 0.0), dt_a)
 	_out = out
 	# loco masks: the action replaces part of the loco head and tail motion while it runs
 	var neck: Dictionary = pose.neck
@@ -721,7 +781,7 @@ func apply(pose: Dictionary, dt: float) -> void:
 	if light:
 		out["head.reach"] = 0.0
 		out["head.aim"] = 0.0
-	var solved: Dictionary = solver.apply(pose, out, goals, dt, e.moving * e.plant_w, 1.0)
+	var solved: Dictionary = solver.apply(pose, out, goals, dt_a, e.moving * e.plant_w, 1.0)
 	if solver.debug.has("mouth"):
 		_mouth_world = (pose.root as Transform3D) * ((solver.debug.mouth as Vector3) + Vector3(0.0, solver.go, 0.0))
 	var parts := {"jaw": clampf(out["jaw.open"], -0.3, 1.3), "tremble": out["jaw.tremble"], "lids": out["lids"], "sacs": out["sacs"],
@@ -734,6 +794,10 @@ func apply(pose: Dictionary, dt: float) -> void:
 func _follow_through(ch: Dictionary, dt: float, w_head: float, w_tail: float, head_len: float, tail_len: float) -> Dictionary:
 	# acceleration of the action's own root translation (metres) in body space
 	var off := Vector3(ch["root.side"] * map.side_cap, ch["root.lift"] * map.height, ch["root.lunge"] * map.lunge_cap)
+	if dt <= 0.001:          # hit-pause: nothing moves, so nothing follows through (and no spike when the clock restarts)
+		_off_prev = off
+		_vel_prev = Vector3.ZERO
+		return _extra_prev
 	var vel := (off - _off_prev) / maxf(dt, 1e-4)
 	var acc := (vel - _vel_prev) / maxf(dt, 1e-4)
 	_off_prev = off
@@ -748,6 +812,7 @@ func _follow_through(ch: Dictionary, dt: float, w_head: float, w_tail: float, he
 	out["tail.pitch"] = clampf(-c * a.y / (maxf(tail_len, 0.05) * w_tail * w_tail) / th, -0.6, 0.6)
 	out["head.yaw"] = clampf(-c * a.x / (maxf(head_len, 0.05) * w_head * w_head) / hh, -0.6, 0.6)
 	out["head.pitch"] = clampf(-c * a.y / (maxf(head_len, 0.05) * w_head * w_head) / hh, -0.6, 0.6)
+	_extra_prev = out
 	return out
 
 func _fire_events() -> void:

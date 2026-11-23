@@ -798,6 +798,18 @@ const SHAKE_DECAY := 5.0
 const SHAKE_MAX := 0.12                # metres at the full strength
 func land_impact(impact: float) -> void:
 	_shake_amp = maxf(_shake_amp, SHAKE_MAX * clampf(impact, 0.15, 1.0))
+## A64 shared melee impact (actions/impact_fx.gd): the camera takes a small knock, scaled by the attacker's size and the damage, and
+## fading with the distance from the camera. Dust, sparks and the flash are spawned by the creatures themselves.
+const ImpactFx := preload("res://actions/impact_fx.gd")
+func melee_impact(data: Dictionary) -> void:
+	var strength: float = ImpactFx.shake_strength(float(data.size), float(data.amount))
+	var near: float = 1.0
+	if camera != null:
+		near = clampf(1.0 - (camera.global_position.distance_to(data.pos) - 4.0) / 24.0, 0.0, 1.0)
+	var mine: bool = int(data.attacker) == 0 or int(data.victim) == 0
+	if near <= 0.0:
+		return
+	land_impact(strength * near * (1.0 if mine else 0.5))
 var _sprint_idx := -2
 ## The player's run speed (m/s), v = sqrt(Fr g h) with h = 0.56 x body radius and Fr = the C motion parameter sprint_k: the camera's speed
 ## cues (wider fov, a little follow lag) start at 80% of it (A54).

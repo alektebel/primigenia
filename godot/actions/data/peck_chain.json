@@ -1,0 +1,343 @@
+{
+ "schema": "cpore.action/1",
+ "id": "peck_chain",
+ "class": "combat",
+ "driver": {
+  "kind": "c_move",
+  "move": 7
+ },
+ "ticks": {
+  "w": 2,
+  "a": 1,
+  "r": 2
+ },
+ "settle": 0.45,
+ "priority": 60,
+ "fade": {
+  "in": 0.05,
+  "out": 0.15,
+  "cancel": 0.08
+ },
+ "legs": "plant",
+ "side": "target",
+ "note": "A64 chain (lab version 4): the quick peck after a connecting bite. The layer plays it instead of `peck` when the C peck starts within 7 ticks of the creature's own bite hit. Starts from the bite's hold-on pose, cocks the head back (w 0..0.65), pecks the prey that was knocked loose (a:0), holds on briefly, recovers in the settle.",
+ "tracks": [
+  {
+   "ch": "head.reach",
+   "goal": "target_surface",
+   "keys": [
+    [
+     "w",
+     0,
+     0.9
+    ],
+    [
+     "w",
+     0.65,
+     -0.3,
+     "inout"
+    ],
+    [
+     "w",
+     0.8,
+     -0.3
+    ],
+    [
+     "a",
+     0,
+     1.0,
+     "in"
+    ],
+    [
+     "a",
+     1,
+     0.9
+    ],
+    [
+     "r",
+     1,
+     0,
+     "inout"
+    ]
+   ]
+  },
+  {
+   "ch": "head.pitch",
+   "keys": [
+    [
+     "w",
+     0,
+     0
+    ],
+    [
+     "w",
+     0.65,
+     0.35,
+     "inout"
+    ],
+    [
+     "w",
+     0.8,
+     0.35
+    ],
+    [
+     "a",
+     0,
+     -0.1,
+     "in"
+    ],
+    [
+     "r",
+     1,
+     0,
+     "inout"
+    ]
+   ]
+  },
+  {
+   "ch": "root.lunge",
+   "keys": [
+    [
+     "w",
+     0,
+     0.5
+    ],
+    [
+     "w",
+     0.65,
+     0.35,
+     "inout"
+    ],
+    [
+     "w",
+     0.8,
+     0.35
+    ],
+    [
+     "a",
+     0,
+     0.7,
+     "in"
+    ],
+    [
+     "a",
+     1,
+     0.65
+    ],
+    [
+     "r",
+     1,
+     0,
+     "inout"
+    ]
+   ]
+  },
+  {
+   "ch": "root.lift",
+   "keys": [
+    [
+     "w",
+     0,
+     -0.04
+    ],
+    [
+     "w",
+     0.65,
+     -0.06
+    ],
+    [
+     "a",
+     0,
+     -0.08,
+     "in"
+    ],
+    [
+     "r",
+     1,
+     0
+    ]
+   ]
+  },
+  {
+   "ch": "root.pitch",
+   "keys": [
+    [
+     "w",
+     0,
+     -0.06
+    ],
+    [
+     "w",
+     0.65,
+     -0.02
+    ],
+    [
+     "a",
+     0,
+     -0.14,
+     "in"
+    ],
+    [
+     "r",
+     1,
+     0,
+     "inout"
+    ]
+   ]
+  },
+  {
+   "ch": "jaw.open",
+   "keys": [
+    [
+     "w",
+     0,
+     0.1
+    ],
+    [
+     "w",
+     0.5,
+     1.0,
+     "out"
+    ],
+    [
+     "a",
+     0,
+     1.0
+    ],
+    [
+     "a",
+     0.25,
+     0.03,
+     "snap"
+    ],
+    [
+     "r",
+     1,
+     0.1
+    ]
+   ]
+  },
+  {
+   "ch": "tail.pitch",
+   "kin": 0,
+   "keys": [
+    [
+     "w",
+     0,
+     0.3
+    ],
+    [
+     "w",
+     0.65,
+     0.2
+    ],
+    [
+     "a",
+     0,
+     0.4,
+     "in"
+    ],
+    [
+     "r",
+     1,
+     0
+    ]
+   ]
+  },
+  {
+   "ch": "head.reach",
+   "goal": "target_surface",
+   "if": "hit",
+   "keys": [
+    [
+     "w",
+     0,
+     0
+    ],
+    [
+     "a",
+     0,
+     0
+    ],
+    [
+     "a",
+     1,
+     0
+    ],
+    [
+     "r",
+     1,
+     0.9,
+     "inout"
+    ],
+    [
+     "s",
+     0.15,
+     0.9
+    ],
+    [
+     "s",
+     0.5,
+     0,
+     "inout"
+    ]
+   ]
+  },
+  {
+   "ch": "jaw.open",
+   "if": "hit",
+   "keys": [
+    [
+     "a",
+     0,
+     0
+    ],
+    [
+     "r",
+     1,
+     0
+    ],
+    [
+     "s",
+     0.2,
+     0
+    ],
+    [
+     "s",
+     0.5,
+     0.3,
+     "out"
+    ],
+    [
+     "s",
+     0.9,
+     0,
+     "inout"
+    ]
+   ]
+  }
+ ],
+ "events": [
+  {
+   "at": [
+    "a",
+    0
+   ],
+   "emit": "impact"
+  }
+ ],
+ "variants": [
+  {
+   "when": {
+    "lacks": [
+     "jaw",
+     "pinch"
+    ]
+   },
+   "set": [],
+   "drop": [
+    "jaw.open"
+   ]
+  }
+ ]
+}

@@ -148,3 +148,15 @@ What still looks weak:
   these four actions (the bone-speed gate of 25 rad/s is still asserted by the all-actions test).
 * The charge dash in the strip is 10 m/s fed by the harness, not the C world; in the game the same displacement arrives
   from the C positions.
+
+## A64 bite port (combat/bite-port): the lunge+peck hybrid, the chain and the shared melee impact
+
+Source: `web/gaitlab/bite2.html` version 3 (the bite) and 4 (the chain), `docs/evidence/loco/bite.md` round 2.
+
+**C timing was NOT changed.** The lab contact is at 760 ms (310 coil + 310 hold + 140 strike); C's bite is 3/1/2 ticks (contact at 300 ms). Retiming the bite to about 7/1/6 failed 25 checks in `combat_test` (the counter-matrix reaction windows, the one-fast-move riposte, the telegraph budget), the stage goldens, `world_test` and `social_test`, and would collide with the four C branches in flight. So `bite.json` compresses the hybrid into C's 3 wind-up ticks: coil with the neck cocked in an S and the jaws opening (w 0..0.35), a locked-on hold (0.35..0.62), body drive (0.62..1, ease-in) and the head whip over the last 50 ms (0.83..1); beak contact = a:0 = the C hit tick. Post-contact numbers are the lab's: the 80 ms hit-pause sits in the active tick, hold-on through the recovery, the pull-out in a 0.5 s settle. The 760 ms pre-contact timing needs a C change for the owner to decide (see the report of this branch).
+
+**Chain.** No C change. Pressing bite within 7 ticks (`CHAIN_TICKS`) of our own bite landing sends a PECK order (stage_ui.gd `chain_open`, needs the peck in the loadout; the standing attack returns to bite afterwards). The layer plays any peck that starts within 7 combat ticks of its own bite hit as `peck_chain` (`data/peck_chain.json`, starts from the hold-on pose), otherwise the plain `peck.json`. Peck's own numbers are the reduced damage (7 against 9, 1.6 stamina).
+
+**Shared melee impact** (`actions/impact_fx.gd`, every melee move: bite, charge, tail strike, claw, peck, pounce, stomp):
+hit-pause 60 ms (small) to 90 ms (big) freezing both layers (`action_layer.hit_pause`, C keeps ticking); victim flinch and knockback along the hit direction scaled by attacker/victim height; dust puff and sparks at the beak contact point (`hit_fx` event, never blood); camera shake `island.melee_impact` scaled by size and damage and by distance; victim flash (`layer.flash`, a material overlay); `audio.hit` pitched and weighted by body size.
+Tests: `make godot-actions-test` (414 checks, new section `impact (A64)`); clip: `godot/game/tests/bite_clip.gd`.
