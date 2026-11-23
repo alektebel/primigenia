@@ -1,0 +1,150 @@
+{
+ "pass": true,
+ "fails": [],
+ "rows": [
+  {
+   "body": "armed",
+   "act": "sing",
+   "slide": 1.1102230246251565e-16,
+   "ground": -8.326672684688674e-17,
+   "legErr": 0,
+   "beatErr": 0,
+   "reacts": true
+  },
+  {
+   "body": "armed",
+   "act": "dance",
+   "slide": 0.001422939480882679,
+   "ground": -8.326672684688674e-17,
+   "legErr": 0,
+   "beatErr": 0,
+   "reacts": true
+  },
+  {
+   "body": "armed",
+   "act": "charm",
+   "slide": 1.1102230246251565e-16,
+   "ground": -8.326672684688674e-17,
+   "legErr": 0,
+   "beatErr": -2,
+   "reacts": true
+  },
+  {
+   "body": "armed",
+   "act": "pose",
+   "slide": 1.1102230246251565e-16,
+   "ground": -8.326672684688674e-17,
+   "legErr": 0,
+   "beatErr": 2,
+   "reacts": true
+  },
+  {
+   "body": "bird",
+   "act": "sing",
+   "slide": 1.1102230246251565e-16,
+   "ground": 0.009999999999999915,
+   "legErr": 0,
+   "beatErr": 0,
+   "reacts": true
+  },
+  {
+   "body": "bird",
+   "act": "dance",
+   "slide": 1.1102230246251565e-16,
+   "ground": 0.009999999999999915,
+   "legErr": 0,
+   "beatErr": -4,
+   "reacts": true
+  },
+  {
+   "body": "bird",
+   "act": "charm",
+   "slide": 1.1107649934270853e-16,
+   "ground": 0.009999999999999915,
+   "legErr": 0,
+   "beatErr": 2,
+   "reacts": true
+  },
+  {
+   "body": "bird",
+   "act": "pose",
+   "slide": 1.1107649934270853e-16,
+   "ground": 0.009999999999999915,
+   "legErr": 0,
+   "beatErr": 2,
+   "reacts": true
+  },
+  {
+   "body": "octo",
+   "act": "sing",
+   "slide": 0,
+   "ground": 0.006995974448465169,
+   "legErr": 0,
+   "beatErr": 0,
+   "reacts": true
+  },
+  {
+   "body": "octo",
+   "act": "dance",
+   "slide": 0,
+   "ground": 0.006995974448465169,
+   "legErr": 0,
+   "beatErr": 0,
+   "reacts": true
+  },
+  {
+   "body": "octo",
+   "act": "charm",
+   "slide": 0,
+   "ground": 0.006995974448465169,
+   "legErr": 0,
+   "beatErr": -2,
+   "reacts": true
+  },
+  {
+   "body": "octo",
+   "act": "pose",
+   "slide": 0,
+   "ground": 0.006995974448465169,
+   "legErr": 0,
+   "beatErr": 2,
+   "reacts": true
+  },
+  {
+   "body": "snake",
+   "act": "sing",
+   "slide": 0,
+   "ground": 0.002999999999999999,
+   "legErr": 0,
+   "beatErr": 0,
+   "reacts": true
+  },
+  {
+   "body": "snake",
+   "act": "dance",
+   "slide": 0,
+   "ground": 0.002999999999999999,
+   "legErr": 0,
+   "beatErr": 0,
+   "reacts": true
+  },
+  {
+   "body": "snake",
+   "act": "charm",
+   "slide": 0,
+   "ground": 0.002999999999999999,
+   "legErr": 0,
+   "beatErr": -2,
+   "reacts": true
+  },
+  {
+   "body": "snake",
+   "act": "pose",
+   "slide": 0,
+   "ground": 0.002999999999999999,
+   "legErr": 0,
+   "beatErr": 2,
+   "reacts": true
+  }
+ ]
+}

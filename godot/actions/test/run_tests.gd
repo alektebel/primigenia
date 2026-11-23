@@ -60,6 +60,7 @@ func _run() -> void:
 	await _t_cosmetic()
 	await _t_eat()
 	await _t_impact()
+	await _t_context()
 	_t_readonly()
 	check(log.errors.is_empty(), "no engine errors (%d)" % log.errors.size())
 	for e in log.errors.slice(0, 5):
@@ -1279,6 +1280,99 @@ func _t_impact() -> void:
 	v.free_all()
 	await process_frame
 
+
+## A72/A74/A75: the context variants. Every cell plays its own file, keeps the bone speed gate, the legs of the moving ones are not planted,
+## the C ticks of the pounce follow the context, a spit shot comes out as a `projectile` event with C's flight time, and the hit as `acid_hit`.
+func _t_context() -> void:
+	print("-- context attacks (A74)")
+	var cells := [
+		[0, 1, false, "bite"], [0, 2, false, "bite_walk"], [0, 3, false, "bite_gallop"], [0, 4, false, "bite_far"],
+		[8, 1, false, "pounce"], [8, 2, false, "pounce_walk"], [8, 3, false, "pounce_gallop"], [8, 4, false, "pounce_far"],
+		[3, 1, false, "spit"], [3, 2, false, "spit_walk"], [3, 3, false, "spit_gallop"], [3, 4, false, "spit_far"],
+		[3, 1, true, "spit_glob"], [3, 2, true, "spit_glob_walk"], [3, 4, true, "spit_far_charged"],
+		[10, 1, false, "roar_move"], [10, 2, false, "roar_move_walk"], [10, 3, false, "roar_move_gallop"], [10, 4, false, "roar_move_far"]]
+	var h = _build("starters/b_runner")
+	h.layer.idle_on = false
+	h.run(0.6)
+	for c in cells:
+		check(h.layer.actions.has(c[3]), "context: the file %s is loaded" % c[3])
+		check(Clock.variant_id(c[0], c[1], c[2], h.layer.actions) == c[3], "context: move %d ctx %d hold %s plays %s" % [c[0], c[1], c[2], c[3]])
+	check(Clock.ticks_for(8, 2) == [6, 4, 4] and Clock.ticks_for(8, 3) == [3, 4, 4] and Clock.ticks_for(8, 4) == [3, 4, 4] and Clock.ticks_for(8, 1) == [8, 4, 4],
+		"context: the pounce gather is 8 / 6 / 3 / 3 ticks standing / walking / gallop / far")
+	var moving_free := true
+	for id in ["bite_walk", "bite_gallop", "bite_far", "pounce_walk", "pounce_gallop", "pounce_far", "spit_walk", "spit_gallop", "spit_glob_walk", "roar_move_walk", "roar_move_gallop"]:
+		moving_free = moving_free and h.layer.actions[id].legs == "free"
+	check(moving_free, "context: the moving variants leave the legs to the gait")
+	check(h.layer.actions.bite.legs == "plant" and h.layer.actions.roar_move.legs == "plant" and h.layer.actions.spit_far.legs == "plant", "context: the standing and planted ones plant")
+	var fast := 0.0
+	var played_ok := true
+	for c in cells:
+		var hh = _build("starters/b_runner")
+		hh.layer.idle_on = false
+		hh.run(0.5)
+		var prev := hh.bone_rotations()
+		hh.sf.begin(0, c[0], c[1], c[2])
+		var seen := false
+		var n := int(((Clock.ticks_for(c[0], c[1])[0] + 8) * 0.1 + 0.9) * 60.0)
+		for i in n:
+			hh.frame(1.0 / 60.0)
+			for ins in hh.layer.inst:
+				if ins.id == c[3]:
+					seen = true
+			var now := hh.bone_rotations()
+			for b in now.size():
+				if prev.size() == now.size():
+					var ang: float = (prev[b] as Quaternion).angle_to(now[b] as Quaternion) * 60.0
+					fast = maxf(fast, ang)
+			prev = now
+		played_ok = played_ok and seen
+		hh.free_all()
+	check(played_ok, "context: every one of the 19 cells plays its own file")
+	check(fast < 25.0, "context: the bone speed gate holds in all cells (%.1f rad/s)" % fast)
+	# set B: the second options (A75)
+	Clock.attack_set = "b"
+	check(Clock.variant_id(0, 2, false, h.layer.actions, true) == "bite_walk_b" and Clock.variant_id(0, 4, false, h.layer.actions, true) == "bite_far_b"
+		and Clock.variant_id(8, 1, false, h.layer.actions, true) == "pounce_b" and Clock.variant_id(8, 2, false, h.layer.actions, true) == "pounce_walk_b",
+		"context: set B picks the slow-step, the run-up snap, the quick spring and the leap off the stride")
+	check(Clock.variant_id(0, 3, false, h.layer.actions, true) == "bite_gallop" and Clock.variant_id(3, 1, false, h.layer.actions, true) == "spit",
+		"context: the cells set B does not change keep the A74 file")
+	Clock.attack_set = "a"
+	# projectile and acid hit events
+	var shots := []
+	var acid := []
+	h.layer.action_event.connect(func(n: String, d: Dictionary) -> void:
+		if n == "projectile":
+			shots.append(d)
+		elif n == "acid_hit":
+			acid.append(d))
+	h.sf.begin(0, 3, 4, true)
+	for i in 8:
+		h.frame(1.0 / 60.0)
+	h.sf.projectiles = [{"owner": 0, "kind": 3, "ticks": 14, "x": 6.0, "z": 0.0}]
+	h.sf.event(10, 0, 1, 3, 13.0)
+	for i in 8:
+		h.frame(1.0 / 60.0)
+	check(shots.size() == 1 and int(shots[0].ticks) == 13 and int(shots[0].kind) == 3 and (shots[0].to as Vector3).x > 5.5,
+		"context: the C projectile event becomes one shot with C's flight time (13 ticks) and the aim point")
+	h.sf.projectiles = []
+	h.sf.event(1, 0, 1, 3, 23.0)
+	for i in 8:
+		h.frame(1.0 / 60.0)
+	check(acid.size() == 1 and int(acid[0].kind) == 3, "context: the arrival of a charged lob is an acid_hit with the glob kind (puddle)")
+	# fear: a frightened creature cowers
+	var v = _build("Babosa")
+	v.layer.idle_on = false
+	v.run(0.4)
+	v.sf.fighters[0].fear = 5
+	for i in 12:
+		v.frame(1.0 / 60.0)
+	var cowered := false
+	for ins in v.layer.inst:
+		if ins.id == "fear_cower":
+			cowered = true
+	check(cowered, "context: a roar's fear makes the victim cower")
+	v.free_all()
+	h.free_all()
 
 func _t_readonly() -> void:
 	print("-- read only")

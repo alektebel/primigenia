@@ -29,7 +29,8 @@ func read(prev: Dictionary, cur: Dictionary, alpha: float) -> Dictionary:
 	for id in ents.size():
 		var ent: Dictionary = ents[id]
 		var s := {"move": -1, "phase": 0, "e": 0, "plen": 0, "tau": 0.0, "fighter": -1, "events": [], "dead": bool(ent.get("dead", false)),
-			"target_id": -1, "in_fight": false, "marks": [], "stagger": false, "stagger_len": 0, "w": 0, "a": 0, "r": 0, "alpha": alpha}
+			"target_id": -1, "in_fight": false, "marks": [], "stagger": false, "stagger_len": 0, "w": 0, "a": 0, "r": 0, "alpha": alpha,
+			"ctx": 0, "hold": false, "over": 0, "fear": 0, "spd": 0.0, "projectiles": []}
 		out[id] = s
 	for k in fighters.size():
 		var f: Dictionary = fighters[k]
@@ -43,8 +44,13 @@ func read(prev: Dictionary, cur: Dictionary, alpha: float) -> Dictionary:
 		s.move = int(f.move)
 		s.phase = int(f.phase)
 		s.plen = int(f.phase_length)
+		s.ctx = int(f.get("ctx", 0))          # A74: the context the press picked (1 stand, 2 walk, 3 gallop, 4 far)
+		s.hold = int(f.get("hold", 0)) != 0
+		s.over = int(f.get("over", 0))
+		s.fear = int(f.get("fear", 0))
+		s.spd = float(f.get("spd", 0.0))
 		if s.move >= 0 and s.phase > 0:
-			var t: Array = Clock.TICKS.get(s.move, [3, 1, 2])
+			var t: Array = Clock.ticks_for(s.move, s.ctx)
 			s.w = t[0]; s.a = t[1]; s.r = t[2]
 			s.e = Clock.elapsed(s.move, s.phase, int(f.phase_tick), s.w, s.a)
 			s.tau = Clock.tau(s.e, alpha)
@@ -52,6 +58,10 @@ func read(prev: Dictionary, cur: Dictionary, alpha: float) -> Dictionary:
 			s.stagger = true
 			s.stagger_len = s.plen
 			s.tau = float(int(f.phase_tick)) + alpha
+	var projs: Array = combat.get("projectiles", [])
+	if not projs.is_empty():
+		for id in out:
+			out[id].projectiles = projs          # the shots in flight (aim point in world metres, ticks left), for the shooter's visuals
 	if fresh:
 		for ev in evs:
 			var a_id := fighter_entity(cur, int(ev.a))

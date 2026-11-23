@@ -1,6 +1,8 @@
 extends Node
 
 const FrameProfile := preload("res://devtools/frame_profile.gd")
+const ActionClock := preload("res://actions/action_clock.gd")
+const HOLD_MS := 450      # A74/A69: a spit key held this long throws the charged glob (the charged lob from far)
 # Glue between the stage (C world bridge, island, actors) and the g-ui / g-audio modules (docs/godot/UI.md).
 #
 #   world tick   -> vitals, selection card, wind-up tell, damage numbers, flashes, combat sounds
@@ -46,6 +48,7 @@ var _pending_attack = null           # {target, move, chain?}
 ## concept: it is a normal peck order, so it is validated, logged and replayed like any other); the standing attack then
 ## goes back to bite. The animation plays the chained peck for any peck that starts inside the same window (action_layer.CHAIN_TICKS).
 const MOVE_BITE := 0
+const MOVE_SPIT := 3
 const MOVE_PECK := 7
 const CHAIN_TICKS := 7
 var _bite_hit_tick := -1000
@@ -363,7 +366,7 @@ func _attack(index: int) -> void:
 		move = MOVE_PECK
 		move_id = MOVE_IDS[MOVE_PECK]
 		chain = true
-	_pending_attack = {"target": selected_id, "move": move, "chain": chain, "tick": int(stage.cur.tick)}
+	_pending_attack = {"target": selected_id, "move": move, "chain": chain, "tick": int(stage.cur.tick), "t0": Time.get_ticks_msec(), "key": "ability_%d" % (index + 1)}
 	player_input.clear_destination()
 	attack_orders.append({"tick": stage.cur.tick, "order": "attack #%d %s" % [selected_id, move_id]})
 
@@ -466,7 +469,20 @@ func provide() -> Dictionary:
 			if _pending_attack.get("chain", false) and int(st.tick) - int(_pending_attack.get("tick", 0)) > CHAIN_TICKS + 4:
 				_pending_attack.move = MOVE_BITE          # the chained peck was never thrown: back to the bite
 				_pending_attack.chain = false
-			return {"verb": V_ATTACK, "target": tgt, "move": _pending_attack.move}
+			var order := {"verb": V_ATTACK, "target": tgt, "move": _pending_attack.move}
+			if int(_pending_attack.move) == MOVE_SPIT:
+				# A74/A69: tap = the jet (the lob from far), hold the key = the charged glob (the charged lob). Set B (A75): the glob without holding.
+				if not _pending_attack.has("hold"):
+					var held := Time.get_ticks_msec() - int(_pending_attack.get("t0", 0))
+					var down: bool = Input.is_action_pressed(str(_pending_attack.get("key", "ability_1")))
+					if ActionClock.attack_set == "b":
+						_pending_attack["hold"] = 1
+					elif down and held < HOLD_MS:
+						return {"verb": 0}            # still charging
+					else:
+						_pending_attack["hold"] = 1 if (down and held >= HOLD_MS) else 0
+				order["dir"] = int(_pending_attack["hold"])      # ATTACK carries the hold in `dir` (logged as is)
+			return order
 	if _pursuit != null:
 		var pu: Dictionary = _pursuit
 		var pid: int = pu.id
@@ -1059,8 +1075,11 @@ func open_nest_editor() -> void:
 		var built = preload("res://devtools/scenario.gd").build(stage, island.scenario_ctx(), "save", "nest edit", "", false)
 		built.json.genome = genome
 		layer.queue_free()
+		var changed: bool = JSON.stringify(genome) != JSON.stringify(island._genome)
 		island.load_scenario({"dict": built.json, "state": built.state, "recipe": ""})
 		stage.paused = false                 # a loaded scenario starts paused; the nest edit resumes play
+		if changed:
+			play_hatch()
 	editor.exit_requested.connect(func() -> void:
 		if not editor.applied_genome.is_empty():
 			reload.call(editor.applied_genome)       # free repaint/rearrange kept on leaving
@@ -1069,6 +1088,23 @@ func open_nest_editor() -> void:
 		stage.paused = false
 		layer.queue_free())
 	editor.nest_confirmed.connect(func(genome: Dictionary) -> void: reload.call(genome))
+
+## A73: the new body hatches from an egg at the nest. Purely visual: the C change is already done; the sim waits (stage.paused) while
+## it plays and resumes when it ends or is skipped. Headless runs skip it unless `force`.
+var hatch: Node3D
+func play_hatch(force := false) -> void:
+	if hatch != null and is_instance_valid(hatch):
+		return
+	hatch = preload("res://game/stage/hatch_sequence.gd").new()
+	stage.paused = true
+	var was_visible: bool = ui.visible
+	hatch.finished.connect(func() -> void:
+		ui.visible = was_visible
+		stage.paused = false
+		hatch = null)
+	hatch.start(island, force)
+	if hatch != null and not hatch.done:
+		ui.visible = false               # a clean frame: no game HUD while the egg hatches (the dev time-control tag, dev builds only, stays)
 
 # A25: no eggs left. The stage is frozen by C; show the end of the lineage and return to the last save.
 var _lineage_end: CanvasLayer

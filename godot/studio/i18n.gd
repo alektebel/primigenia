@@ -5,6 +5,9 @@ var lang := "es"
 var parts: RefCounted
 
 const EN := {
+	"Hecho · volver al nido": "Done · back to the nest", "Hecho": "Done", "Cancelar": "Cancel", "¿Descartar los cambios?": "Discard your changes?",
+	"Seguir editando": "Keep editing", "Descartar y salir": "Discard and leave", "Evolucionar": "Evolve",
+	"Evolucionar cuesta %d ADN y tienes %d.": "Evolving costs %d DNA and you have %d.", "Evolucionar por %d ADN y volver al nido": "Evolve for %d DNA and go back to the nest",
 	"Jugar con esta criatura": "Play with this creature", "Jugar": "Play", "No se pudo guardar": "Could not save", "Modo": "Mode", "Construir": "Build", "Pintar": "Paint", "Probar": "Test", "Deshacer": "Undo", "Rehacer": "Redo",
 	"Pieza": "Part", "Más": "More", "No cabe: supera el presupuesto de ADN": "Does not fit: over the DNA budget", "Piel": "Skin", "Dibujo": "Pattern", "Colores": "Colours", "Escama": "Scales", "Brillo": "Gloss", "Biología": "Biology", "Contrasombreado": "Countershading", "Tamaño del dibujo": "Pattern size", "Contraste del dibujo": "Pattern contrast", "Rosetas": "Rosettes", "Actuación": "Actuation", "Automática": "Automatic", "músculo": "muscle", "hidráulica": "hydraulic",
 	"Sin patas: esqueleto hidrostático, avanza por ondas de músculo": "no legs: hydrostatic skeleton, moves by waves of muscle", "Placas duras: músculo dentro de un exoesqueleto": "hard plates: muscle inside an exoskeleton", "Muchas patas finas: patas hidráulicas a presión": "many thin legs: pressurised hydraulic legs", "Patas gruesas: músculo sobre esqueleto interno": "thick legs: muscle on an internal skeleton",

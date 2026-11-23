@@ -1,0 +1,20 @@
+{
+ "errors": [],
+ "frames": [
+  11,
+  62
+ ],
+ "simT": [
+  0.5666666666666668,
+  4.466666666666656
+ ],
+ "xMoved": [
+  0,
+  2.4666666666666677
+ ],
+ "pressedActs": 2,
+ "firstAct": "sing",
+ "brainAfterB": 2,
+ "screenshotsDiffer": true,
+ "pass": true
+}

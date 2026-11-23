@@ -167,3 +167,60 @@ Tests: `make godot-actions-test` (414 checks, new section `impact (A64)`); clip:
 * **Godot.** `peck.json` is the gallop (gather, run with the head reaching out, a short beak lunge on a hit), `peck_chain.json` the jab; the layer plays `peck_chain` when the peck starts within 7 ticks of its own bite hit. The loco gallops from the C displacement (burst start as merged on main). The A64 impact effects apply to it like to every melee move.
 * **Click to eat.** `stage_ui._on_clicked`: no verb armed, not in a fight, and the body is edible (`_edible`: remains with meat and a diet that takes meat) sends the same `eat` order as R and walks or runs there; the hover shows the eat marker and a hand cursor. A living creature is still selected with its ring. Only carcasses are edible bodies in the C eat flow today; fruit and plants have no eat order yet.
 * **Play tests:** `godot/game/tests/click_peck_test.gd` (xvfb, software GL): click a carcass and it is eaten; a living Rondo is only selected; the peck from 4 m gallops, closes the distance and hits for 14.5; the bite fallback inside the run-up is in combat_test.
+
+## A72/A74 context attacks (combat/context-port), P1: the C core
+
+Source: `web/gaitlab/attack_context*.js`, `docs/evidence/loco/attack_context.md` (porting notes), DESIGN A72 and A74. **Snapshot 15** (14 belongs to `feat/jump`);
+`world-*.hashes` and the nine curated scenarios were regenerated once. Everything below is a starting value, checked by `combat_test` (`context_attacks`).
+
+**Opt-in.** `CpCombatCreature.ctx_on` (set by the stage for the player in `start()`, `cp_combat_ctx_enable`) turns the system on. Without it the arena duels,
+the tourney, the bots and their goldens are bit-for-bit what they were. New state is hashed only when it is nonzero (`CTX1` tag, projectiles `PROJ` tag).
+
+**One press, one variant.** `cp_combat_order(ATTACK)` calls `cp_combat_pick_ctx`: surface gap to the target >= 5 m is **FAR** (5 to 20 m, `CB_BAND_*`); otherwise
+the creature's last speed (`spd`, derived from the displacement every tick, not hashed) at or above the canter band (`CB_CANTER_FR` 0.5, the loco constant, with the
+stage's hip height 0.56 r: 1.28 m/s for r 0.6) is **GALLOP**, above 0.25 m/s **WALK**, else **STAND**. The context rides with the move (`mctx`, `mhold`) and is
+exposed in the state (`combat.fighters[].ctx|hold|over|spd|mspd`). The stage starts the fight at once for a pressed bite, pounce, spit or roar within 20 m
+(`engage_range`; other moves and wild aggression keep 5.5 m), and seeds the combat speed from the player's walk speed.
+
+| move | stand | walk | gallop | far (5 to 20 m) |
+|---|---|---|---|---|
+| bite 3/1/2 | lunge+peck, stops | layered: keeps walking | layered: snap in passing | **charge**: run-in at 1.25 x walk, layered, both recoil |
+| pounce 8/4/4 | cat pounce | gather 6 ticks, leap | gather 3, leap from the gallop | run-in, gather 3, leap |
+| spit 6/1/4 | cobra jet | layered | layered (parting shot) | llama lob from 11 m, standing |
+| roar 6/1/6 | rear-up, stops | layered bellow | layered bellow | run-in at 1.25 x, plant, rear-up |
+
+**Momentum** (a layered or run-in attack carries `mspd`, its speed at launch, decaying x0.95 per tick): damage x (1 + 0.35 x min(1, mspd / (2 x canter speed)));
+knockback velocity on the victim = 2.5 + 0.5 x mspd m/s, capped 4.5, x0.4 per tick; a far bite also recoils the attacker at half that. After a moving attack at
+speed (>= half the canter speed) the body overshoots (speed x0.85 per tick) with a wide turn (0.4 rad per tick instead of 0.8) for 7 ticks after a hit and 12
+after a **miss** (the exposure; bite and pounce only).
+
+**Spit** (A69). A context spit spawns a projectile (`CpCombatWorld.proj`, `CB_EV_PROJECTILE`) on its active tick; the damage lands on arrival through the same
+counter rules (a dodge in time avoids it). Flight: jet `ceil(distance / 2.6)` ticks (26 m/s), glob 8, lob 11, charged lob 13. Leading: the aim point is the target's
+predicted position after the flight, 4 fixed-point passes over its last velocity. A hit needs the aim point within body radius + 0.6 m. **Hold** (`CpCombatAction.hold`,
+`CpStageInput.dir`, text order `attack #N spit hold`): glob (damage x1.8, slow x2) or, from far, the charged lob.
+
+**Loadout.** `cp_combat_loadout_starter` (A62): bite, pounce, spit, roar for bodies that can pounce and roar (parts 10, 27, 40 and 18, 33, 36); every other body keeps the old
+table order. Dodge stays the universal key (`ui.dodge_pressed`, unchanged).
+
+### P2: the animations (action layers over the gait)
+
+The C context (`combat.fighters[].ctx` 1 stand, 2 walk, 3 gallop, 4 far; `hold`) reaches the layer through the feed (`sig.ctx`, `sig.hold`, `sig.over`, `sig.fear`,
+`sig.projectiles`). `Clock.variant_id(move, ctx, hold, actions, set_b)` picks the file; `Clock.ticks_for` gives the pounce gather by context (8 / 6 / 3 / 3).
+New C moves in the layer: pounce (8, `Clock.TICKS` 8/4/4) and the C roar (10, file family `roar_move`, apart from the cosmetic `roar`).
+The 27 new files are generated by `tools/actions/gen_context_actions.py` from `bite`, `charge`, `spit` and `roar` (the moving ones scale the lunge to 0.4 walking and
+0.15 galloping and the dip to 0.3, as the lab; `legs: free` leaves the legs to the gait, `plant` for the standing and planted ones).
+
+| cell | file | notes |
+|---|---|---|
+| bite stand / walk / gallop / far | `bite`, `bite_walk`, `bite_gallop`, `bite_far` | far = the charge look (head low, stretch, slam, `strike` squash on the hit) in the bite's 3/1/2 ticks |
+| pounce stand / walk / gallop / far | `pounce`, `pounce_walk`, `pounce_gallop`, `pounce_far` | crouch freeze, arc (root.lift), pin on a hit; hit-pause 80 ms through `impact_fx` |
+| spit stand / walk / gallop / far | `spit`, `spit_walk`, `spit_gallop`, `spit_far` | gallop = sideways parting shot (head yaw signed by the target side); far = llama lob |
+| spit held | `spit_glob`, `spit_glob_walk`, `spit_far_charged` | bigger sacs charge; C damage x1.8 |
+| roar stand / walk / gallop / far | `roar_move`, `roar_move_walk`, `roar_move_gallop`, `roar_move_far` | rear-up / bellow; the cry draws a 4 m ring (C fear radius) and dust |
+| set B (A75) | `bite_walk_b`, `bite_far_b`, `pounce_b`, `pounce_walk_b` | F10 `attack set` B; the spit glob without holding is the C hold sent by the UI |
+| fear | `fear_cower` | the victim cowers when `fear` rises |
+
+Projectiles: the C `CB_EV_PROJECTILE` becomes the layer event `projectile` (from the mouth to the C aim point, in C's flight time, arc by kind) and the arrival
+(`HIT` with the spit) the event `acid_hit`: green sizzle, and a puddle for the glob and the charged lob (`action_fx.gd`: `shot`, `acid_sizzle`, `acid_puddle`).
+Hold: `stage_ui` waits up to 450 ms while an ability key that holds a spit is down; held = `dir` 1 on the attack order.
+Tests: `godot-actions-test` section `context attacks (A74)`; clips: `godot/game/tests/context_clip.gd`.

@@ -266,6 +266,40 @@ func test_spine() -> void:
 	m.set_node_radius(2, 99.0)
 	ok(m.doc["nodes"][2]["r"] <= 1.7, "radius clamped")
 
+## A73: a new part starts in proportion to the creature at its attach point, in every category, on a small and a big body.
+func test_default_size_scales() -> void:
+	var cats := {}
+	for p in db.parts:
+		cats[p["category"]] = p["id"] if not cats.has(p["category"]) else cats[p["category"]]
+	var sizes := {}
+	for seed_name in ["Hatchling", "Starter B", "Merodeador"]:
+		var m := Model.new(db)
+		m.new_from_seed(seed_name)
+		var tot := 0.0
+		for cat in cats:
+			var id: String = cats[cat]
+			var i := m.add_part(id, db.defaults(id)["t"], db.defaults(id)["ang"])
+			var part: Dictionary = m.doc["parts"][i]
+			ok(m.validate()["ok"], "%s: %s placed on %s stays valid" % [id, cat, seed_name])
+			if db.is_leg(id):
+				var reach := Vector3(part["f"][0], part["f"][1], part["f"][2]).length()
+				ok(reach >= .15 and reach <= 6.0 and part["w"] >= .05, "%s: leg reach %.2f in range on %s" % [id, reach, seed_name])
+				tot += reach
+			else:
+				ok(part["size"] >= .1 and part["size"] <= 2.2, "%s: size %.2f in range on %s" % [id, part["size"], seed_name])
+				tot += part["size"]
+			if cat == "senses" and id == "ojo":
+				sizes[seed_name] = part["size"]
+	ok(sizes["Hatchling"] < .45 and sizes["Starter B"] < .45, "an eye on a starter or the hatchling is small (%.2f, %.2f)" % [sizes["Hatchling"], sizes["Starter B"]])
+	ok(sizes["Merodeador"] > sizes["Starter B"] * 2.0, "the same eye on a big body is bigger (%.2f vs %.2f)" % [sizes["Merodeador"], sizes["Starter B"]])
+	var sb := Model.new(db)
+	sb.new_from_seed("Starter B")
+	ok(absf(sizes["Starter B"] - float(sb.doc["parts"][1]["size"])) < .15, "the default eye matches the starter's own hand-tuned eye (%.2f vs %.2f)" % [sizes["Starter B"], sb.doc["parts"][1]["size"]])
+	var w := Model.new(db)
+	w.new_from_seed("Starter B")
+	var wi := w.add_part("ojo", .9, 1.0, {"size": 1.0})
+	ok(is_equal_approx(w.doc["parts"][wi]["size"], 1.0), "explicit params still win")
+
 func test_direct_manipulation() -> void:
 	var m := Model.new(db)
 	m.new_from_seed("Merodeador")
@@ -276,7 +310,7 @@ func test_direct_manipulation() -> void:
 	r = m.scale_part(eye, 100.0)
 	ok(is_equal_approx(m.doc["parts"][eye]["size"], 2.2) and r["at_limit"], "scale_part clamps at the maximum")
 	r = m.scale_part(eye, .0001)
-	ok(is_equal_approx(m.doc["parts"][eye]["size"], .5) and r["at_limit"], "scale_part clamps at the minimum")
+	ok(is_equal_approx(m.doc["parts"][eye]["size"], PartsDB.RANGES["size"][0]) and r["at_limit"], "scale_part clamps at the minimum (A73: .1, the genome limit)")
 	ok(m.validate()["ok"], "scaled genome validates")
 	ok(m.scale_part(99, 1.1).is_empty(), "scale_part ignores a bad index")
 	var leg := 3
