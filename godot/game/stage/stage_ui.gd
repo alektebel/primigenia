@@ -511,7 +511,12 @@ func _fight_selection(state: Dictionary) -> void:
 	ui.set_fight(active)
 
 
+var _slip_hint_shown := false
+
 func _on_tick(state: Dictionary) -> void:
+	if not _slip_hint_shown and bool(state.get("player", {}).get("sliding", false)):
+		_slip_hint_shown = true
+		ui.show_message("Too steep for your feet — claws or suckers would help", "warn")
 	if bool(state.get("parts", {}).get("lost", false)):
 		_lineage_ended()
 	var lo: Dictionary = state.get("loadout", {"slots": [0, 1, 3, 4], "known": 0, "can_edit": false})
@@ -905,7 +910,8 @@ func _social_event(ev: Dictionary, state: Dictionary) -> void:
 			ui.show_moment(Strings.t("shard_found", [Strings.t("shard_%d" % k), int(ev.value)]), "journal")
 		return
 	if int(ev.type) == EV_FELL:  # landing after a fall: move = drop in cm, value = damage in HP
-		_landed(float(ev.move) * 0.01, float(ev.value), state)
+		if int(ev.by) == 0:
+			_landed(float(ev.move) * 0.01, float(ev.value), state)
 		return
 	if int(ev.type) == 26:       # the cave: the passage, then the chamber
 		ui.show_message(Strings.t("cave_chamber" if int(ev.move) == 2 else "cave_passage"), "info")
