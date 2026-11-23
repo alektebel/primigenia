@@ -423,6 +423,7 @@ func _on_event(ev: Dictionary, ctx: Dictionary) -> void:
 					var pt: Variant = _goal_point("target_surface", {"root": Transform3D(Basis.IDENTITY, _ctx.get("pos", Vector3.ZERO))}) if not tgt.is_empty() else null
 					action_event.emit("acid_hit", {"entity": entity_id, "pos": pt if pt != null else (tgt.pos if not tgt.is_empty() else _ctx.get("pos", Vector3.ZERO)),
 						"kind": _last_proj_kind, "size": map.height, "victim_size": other_h, "amount": float(ev.amount)})
+					action_event.emit("impact", {"id": "acid", "entity": entity_id, "tau": 0.0, "arrival": true})   # the shot's impact is its landing, not the release
 				if int(ev.move) == 1 or (int(ev.move) == 0 and cm_ctx_far(cm)):
 					_start_oneshot("strike")      # the charge lands: squash and rebound of the attacker (A74: also the far bite, the embestida)
 				if int(ev.move) == 0:
