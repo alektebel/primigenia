@@ -1,0 +1,177 @@
+{
+ "pass": true,
+ "fails": [],
+ "R": {
+  "windows": [
+   [
+    0,
+    true,
+    0
+   ],
+   [
+    190,
+    true,
+    190
+   ],
+   [
+    -190,
+    true,
+    -190
+   ],
+   [
+    210,
+    false,
+    210
+   ],
+   [
+    -210,
+    false,
+    -210
+   ],
+   [
+    600,
+    false,
+    -600
+   ]
+  ],
+  "runFear": {
+   "run": -0.25,
+   "walk": 0,
+   "sneak": 0.05
+  },
+  "runFlee": 1.1166666666666676,
+  "charmX": [
+   -0.33,
+   -0.151,
+   0.049,
+   0.267,
+   0.491
+  ],
+  "charmY": [
+   -0.156,
+   -0.314,
+   -0.474,
+   -0.637,
+   -0.801
+  ],
+  "arrow": [
+   0.14,
+   -0.16,
+   1
+  ],
+  "good": {
+   "1": {
+    "bonded": true,
+    "t": 24,
+    "stats": {
+     "beats": 10,
+     "combos": 2,
+     "maxStreak": 5,
+     "mistakes": 0,
+     "hits": 5,
+     "flees": 0,
+     "chainsWon": 1,
+     "chainsLost": 0
+    },
+    "x": 0.83,
+    "y": -0.65
+   },
+   "2": {
+    "bonded": true,
+    "t": 27.6,
+    "stats": {
+     "beats": 13,
+     "combos": 3,
+     "maxStreak": 7,
+     "mistakes": 0,
+     "hits": 7,
+     "flees": 0,
+     "chainsWon": 1,
+     "chainsLost": 0
+    },
+    "x": 1,
+    "y": -0.8
+   },
+   "3": {
+    "bonded": true,
+    "t": 31.2,
+    "stats": {
+     "beats": 16,
+     "combos": 4,
+     "maxStreak": 9,
+     "mistakes": 0,
+     "hits": 9,
+     "flees": 0,
+     "chainsWon": 1,
+     "chainsLost": 0
+    },
+    "x": 1,
+    "y": -0.87
+   }
+  },
+  "gate1": {
+   "bonded": false,
+   "x": 0.1,
+   "hint": true
+  },
+  "run1": {
+   "flees": 8,
+   "bonded": false
+  },
+  "run2": {
+   "flees": 8,
+   "bonded": false
+  },
+  "run3": {
+   "flees": 8,
+   "bonded": false
+  },
+  "timing": {
+   "goodX": 0.84,
+   "offX": 0.11,
+   "offMistakes": 6
+  },
+  "chain": {
+   "won": 1,
+   "lostWrong": 1,
+   "mistakesWrong": 2
+  },
+  "chainTrust": {
+   "right": 0.369,
+   "wrong": -0.006
+  },
+  "eggs": {
+   "nightDay": false,
+   "nightDark": true,
+   "fruitWithout": false,
+   "fruitWith": true,
+   "raidDefendEgg": {
+    "bonded": true,
+    "defended": true,
+    "why": "raid",
+    "x": 0.6,
+    "t": 6.5
+   },
+   "raidIdleEgg": {
+    "bonded": false,
+    "defended": false,
+    "x": -0.9,
+    "t": 14.4
+   },
+   "raidDefendNoEgg": {
+    "bonded": false,
+    "defended": true,
+    "x": -0.48,
+    "t": 14.4
+   }
+  },
+  "pass": {
+   "dx": -0.32
+  },
+  "notes": [
+   "Favourite gesture: dance (it brightens: x1.4 trust).",
+   "Easy herbivore. Charm calms it (down), dance and pose excite it (up). Ears up = alert, ears low and sideways = calm.",
+   "It keeps sniffing the air towards the thorn patch: a rare yellow fruit lies there. Perhaps a gift."
+  ]
+ }
+}
