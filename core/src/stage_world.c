@@ -46,6 +46,7 @@ const CpStageSpecies CP_STAGE_SPECIES[CP_STAGE_SPECIES_COUNT]={
     },
     {"Brujula",2.0f,14,10,0,CP_STAGE_TERRITORIAL,{0,0,0,0,2,70,100,2.0f,0},CP_ACT_DIURNAL},
     {"Corona",1.4f,10,8,0,CP_STAGE_TIMID,{0,0,1,0,1,50,100,1.4f,0},CP_ACT_CREPUSCULAR}
+    /* 8..11: reserved capacity (zero rows) for the food-web species (T11) and flying species (A59); never spawned (CP_STAGE_SPECIES_DEFINED) */
 };
 static float clamp(float x,float a,float b){
     return x<a?a:x>b?b:x;
@@ -696,7 +697,7 @@ int cp_stage_reset(CpStageWorld *w,const CpStageSetup *s){
     if(s->water_radius<0||ab(s->nest_x)>bound||ab(s->nest_z)>bound)return -1;
     for(int i=0;i<s->n;i++){
         const CpStageSpawn *c=&s->wild[i];
-        if(c->species<0||c->species>=CP_STAGE_SPECIES_COUNT||c->bot< -1||c->bot>=BOT_KIND_COUNT||!profile_valid(&c->profile)||!isfinite(c->x)||!isfinite(c->z)||!isfinite(c->home_x)||!isfinite(c->home_z)||ab(c->x)>bound||ab(c->z)>bound||ab(c->home_x)>bound||ab(c->home_z)>bound)return -1;
+        if(c->species<0||c->species>=CP_STAGE_SPECIES_DEFINED||c->bot< -1||c->bot>=BOT_KIND_COUNT||!profile_valid(&c->profile)||!isfinite(c->x)||!isfinite(c->z)||!isfinite(c->home_x)||!isfinite(c->home_z)||ab(c->x)>bound||ab(c->z)>bound||ab(c->home_x)>bound||ab(c->home_z)>bound)return -1;
     }
     for(int i=0;i<s->n_obstacles;i++){
         const CpStageObstacle *o=&s->obstacles[i];
@@ -2168,7 +2169,7 @@ int cp_stage_debug(CpStageWorld *w,const CpStageDebug *d){
             break;
         }
         case CP_STAGE_DBG_SPAWN:{
-            if(d->a<0||d->a>=CP_STAGE_SPECIES_COUNT||!isfinite(d->x)||!isfinite(d->z))return -1;
+            if(d->a<0||d->a>=CP_STAGE_SPECIES_DEFINED||!isfinite(d->x)||!isfinite(d->z))return -1;
             if(w->setup.n>=CP_STAGE_MAX_WILD)return -3;
             const CpStageSpecies *sp=&CP_STAGE_SPECIES[d->a];
             if(!spot_ok(w,d->x,d->z,cp_combat_body_radius(&sp->profile)))return -4;

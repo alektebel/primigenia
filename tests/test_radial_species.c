@@ -21,7 +21,7 @@ static void social(int sp){
  reset(sp,2);w.debug_flags=CP_STAGE_FLAG_AI_OFF;w.social.items[CP_ITEM_BONE]=1;a=(CpStageInput){.verb=CP_STAGE_GIFT,.target=1,.move=CP_ITEM_BONE};assert(!cp_stage_order(&w,&a));step(100);assert(w.social.tested&(1ULL<<(sp*8+7)));
 }
 int main(void){
- assert(CP_STAGE_SPECIES_COUNT==8&&CP_SOC_SPECIES==8);
+ assert(CP_STAGE_SPECIES_DEFINED==8&&CP_STAGE_SPECIES_COUNT>=CP_STAGE_SPECIES_DEFINED+2&&CP_SOC_SPECIES==CP_STAGE_SPECIES_COUNT&&CP_STAGE_MAX_WILD==32);
  assert(CP_STAGE_SPECIES[6].speed==2.f&&CP_STAGE_SPECIES[6].sight==14&&CP_STAGE_SPECIES[6].roam==10);
  assert(CP_STAGE_SPECIES[7].speed==1.4f&&CP_STAGE_SPECIES[7].sight==10&&CP_STAGE_SPECIES[7].roam==8);
  assert(CP_STAGE_SPECIES[6].temperament==CP_STAGE_TERRITORIAL&&CP_STAGE_SPECIES[7].temperament==CP_STAGE_TIMID);

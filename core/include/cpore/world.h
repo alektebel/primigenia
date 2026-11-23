@@ -5,14 +5,24 @@
 #include "cpore/ledger.h"
 #include "cpore/creature_types.h"
 #define CP_STAGE_VERSION 3
-#define CP_STAGE_MAX_WILD 24
+/* Roster v9 (T9, docs/plans/creature-loop.md): 32 wild slots. The island setup fills at most CP_STAGE_ROSTER_CAP of them; the rest are
+ * reserved so evolving always finds a free slot for the cousin and the nest family can later be backed by C slots (godot/game/island/family.gd).
+ * It is a budget, not fixed indices (cp_stage_evolve and the debug spawn take the next free index, setup.n):
+ *   ROSTER_CAP (24)   slots the island setup may fill (radial animals, night and slug species)
+ *   RESERVE_COUSIN 4  kept free for cousins, one per evolve (the 3 evolves of a chain leave 3 cousins)
+ *   RESERVE_FAMILY 4  kept free for the nest family, not wired yet: the family is still visual only */
+#define CP_STAGE_MAX_WILD 32
+#define CP_STAGE_RESERVE_COUSIN 4
+#define CP_STAGE_RESERVE_FAMILY 4
+#define CP_STAGE_ROSTER_CAP (CP_STAGE_MAX_WILD-CP_STAGE_RESERVE_COUSIN-CP_STAGE_RESERVE_FAMILY)
+#define CP_STAGE_COUSIN_MAX_DIST 40.f /* a cousin spawns at most this far (m) from the nest */
 #define CP_STAGE_MAX_OBSTACLES 1024
 #define CP_STAGE_DAY_TICKS 12000
 #define CP_STAGE_DT .1f
 #define CP_STAGE_GRACE_TICKS 600 /* 60 seconds at 10 Hz */
 #define CP_STAGE_WAKE_RADIUS 6.f
 #define CP_STAGE_WAKE_TICKS 150 /* 15 seconds since the last approach */
-#define CP_STAGE_SNAPSHOT_VERSION 11   /* 3: player loadout (A21); 4: social layer (C2); 5: lineage ledger and ancestry; 6: discovery, nest shop and eggs; 7: secrets (shards, cave chamber, day/night) and 6 species; 8: run and fixed-point fall state; 9: + recipes, calcium, mineral, stones (C2 moves/recipes); 10: digging (holes, fossil beds) and the fire gland (first-quest); 11: 8 species (brujula, corona), Garfio grace and Acechalunas wake clocks (species-v8) */
+#define CP_STAGE_SNAPSHOT_VERSION 12   /* 3: player loadout (A21); 4: social layer (C2); 5: lineage ledger and ancestry; 6: discovery, nest shop and eggs; 7: secrets (shards, cave chamber, day/night) and 6 species; 8: run and fixed-point fall state; 9: + recipes, calcium, mineral, stones (C2 moves/recipes); 10: digging (holes, fossil beds) and the fire gland (first-quest); 11: 8 species (brujula, corona), Garfio grace and Acechalunas wake clocks (species-v8); 12: roster v9, 32 wild slots and 12 species capacity (8 defined, 4 reserved for the food web and flying species, A59) */
 /* A31 fall damage: 10 HP per metre beyond the safe drop, capped at 60 % of max HP unless the fall is free (air above 2x the safe drop). */
 #define CP_FALL_CAP_PERMILLE 600
 #define CP_FALL_FREE_X 2
@@ -67,8 +77,9 @@ enum { CP_DNA_KILL, CP_DNA_BOND, CP_DNA_ALLY, CP_DNA_DOMINATE, CP_DNA_CARCASS, C
 #define CP_SOC_WINDOW 2           /* rhythm window, +- ticks */
 #define CP_SOC_OBSERVE_TICKS 50   /* ticks of unseen watching per revealed clue */
 #define CP_SOC_OBSERVE_RANGE 40.f
-#define CP_SOC_SPECIES 8      /* Rondo, Zanco, Espinodo, Garfio, Acechalunas, Babosa, Brujula, Corona */
-#define CP_STAGE_SPECIES_COUNT 8
+#define CP_SOC_SPECIES 12     /* capacity; defined: Rondo, Zanco, Espinodo, Garfio, Acechalunas, Babosa, Brujula, Corona. 8..11 are reserved (T11 food web, A59 flying) */
+#define CP_STAGE_SPECIES_COUNT 12   /* table capacity */
+#define CP_STAGE_SPECIES_DEFINED 8  /* species 0..7 exist; spawning or listing 8..11 is refused until their rows are written */
 #define CP_SOC_CHAIN_ITEMS 3
 #define CP_SOC_EXPLORE_MAX 40
 enum { CP_STAGE_NONE, CP_STAGE_VICTORY, CP_STAGE_DEATH, CP_STAGE_FLED };

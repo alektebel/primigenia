@@ -54,7 +54,7 @@ Integration follow-ups (owner): wild slot reserve for cousins (radial animals ca
 
 ## Next free ids
 - C events: next free **32** (moves FELL 27, RECIPE 28, VOLLEY 29; first-quest DUG 30, MOVE_USED 31; integration branch).
-- Snapshot version: integration branch = 11 → next **12**.
+- Snapshot version: sim/roster-v9 takes **12** (roster v9: 32 wild slots, 12 species capacity, 8 defined, 4 reserved for the food web and flying species A59) → next free is **13**. World goldens unchanged (kill_paid hashes only slots >= 24 when set); 10 curated scenarios regenerated.
 
 ## Waiting on the owner (tracker)
 - Decisions D-02 … D-20 (D-12 arms reach rule, D-19 game-design skill as brief template, D-20 Blender props trial).
