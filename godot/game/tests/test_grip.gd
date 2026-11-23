@@ -9,7 +9,7 @@ func check(value: bool, label: String) -> void:
 		printerr("FAIL A59: ", label)
 func _initialize() -> void:
 	var manifest: Dictionary = Profile.load_json("res://game/data/parts.json")
-	for row in [["a_grazer", 30], ["b_runner", 30], ["c_sprawler", 40], ["d_knuckle", 35]]:
+	for row in [["a_grazer", 51], ["b_runner", 51], ["c_sprawler", 56], ["d_knuckle", 51]]:
 		var g: Dictionary = Profile.load_json("res://game/data/starters/%s.json" % row[0])
 		var p: Dictionary = Profile.from_studio(g, manifest).profile
 		print("A59 starter ", row[0], " grip=", p.grip_deg)

@@ -984,7 +984,7 @@ func _caps_section() -> void:
 		row.add_child(pips)
 		panel_box.add_child(row)
 	var grip: Dictionary = CporeWorld.grip_profile(JSON.stringify(model.doc))
-	var grip_label := _note("Grip: %d°" % int(grip.get("grip_deg", 35)))
+	var grip_label := _note("Grip: %d°" % roundi(float(grip.get("grip_deg", 51.6))))
 	grip_label.name = "GripLimit"
 	panel_box.add_child(grip_label)
 	_actuation_section()

@@ -335,7 +335,7 @@ static int nav_ready(const CpStageWorld *w){
     sig_fl(&h,radius);
     CpSteerBody body;
     cp_steer_creature(&w->motion,&w->player,&body);
-    sig_fl(&h,body.climb);sig_fl(&h,body.slide);
+    sig_fl(&h,body.climb);sig_fl(&h,cp_stage_grip_grade(&w->player.profile,w->player.legs));
     sig_fl(&h,w->motion.stall_mul);
     sig_fl(&h,w->motion.slide_mul);
     /* the carved cave changes the walkable ground (stage_secrets.c), so it is part of the signature */
@@ -357,7 +357,7 @@ static int nav_ready(const CpStageWorld *w){
     nav.cs=2*bound/dim;
     nav.bound=bound;
     nav.radius=radius;
-    nav.climb=body.climb;nav.grip=body.slide;
+    nav.climb=body.climb;nav.grip=cp_stage_grip_grade(&w->player.profile,w->player.legs);   /* the creature's own grip: nav cost and holding limit */
     nav.valid=1;
     memset(nav_mask,0,(size_t)dim*dim*sizeof *nav_mask);
     memset(nav_gr,0xFF,(size_t)dim*dim*sizeof *nav_gr);
@@ -885,7 +885,7 @@ static void fall_tick(CpStageWorld *w){
     CpStageCreature *c=&w->player;
     float gx,gz;ground_grad(w,c->x,c->z,&gx,&gz,.25f);
     CpSteerBody b;cp_steer_creature(&w->motion,c,&b);
-    float limit=b.slide,g=length(gx,gz);
+    float limit=w->order.verb==CP_STAGE_HEADING?b.climb:b.slide,g=length(gx,gz);   /* steered by hand: the climb limit (raised by adaptations, steer.c); otherwise the planner's grip */
     c->sliding=g>limit+.0001f;
     if(c->sliding){
         float v=clamp(.4f+w->motion.slide_k*(g-limit),.4f,5);
@@ -989,7 +989,7 @@ static void walk(CpStageWorld *w,CpStageCreature *c,float dx,float dz,float spee
 
     if(c==&w->player){
         float gx,gz;ground_grad(w,c->x,c->z,&gx,&gz,.25f);
-        float limit=body.slide;
+        float limit=w->order.verb==CP_STAGE_HEADING?body.climb:body.slide;
         if(length(gx,gz)>limit+.0001f){
             w->falling=1;w->running=0;w->fall_y_mm=w->fall_start_mm=ground_mm(w,ox,oz);
             w->fall_v_mm_s=0;w->fall_dx_mm=w->fall_dz_mm=0;
@@ -999,7 +999,7 @@ static void walk(CpStageWorld *w,CpStageCreature *c,float dx,float dz,float spee
     const float grade=cp_stage_ground(w,c->x+c->fx,c->z+c->fz)-cp_stage_ground(w,c->x,c->z);
     CpSteer st={c->fx,c->fz,c->speed,c->omega,c->pivot};
     const int direct=c==&w->player&&w->order.verb==CP_STAGE_HEADING;
-    const float limit=body.slide;
+    const float limit=body.climb;
     const float sf=cp_steer_slope(m,&body,direct&&grade>limit?limit:grade);
     const float v=cp_steer_tick(m,&body,&st,dx,dz,speed,jog,sf);
     c->fx=st.fx;
@@ -1010,7 +1010,7 @@ static void walk(CpStageWorld *w,CpStageCreature *c,float dx,float dz,float spee
     const float step=v*.1f,nx=c->x+c->fx*step,nz=c->z+c->fz*step;
     if(direct){
         float gx,gz;ground_grad(w,nx,nz,&gx,&gz,.25f);
-        float limit=body.slide;
+        float limit=body.climb;
         float h=cp_stage_ground(w,ox,oz),nh=cp_stage_ground(w,nx,nz);
         if(fall_clear(w,ox,oz,nx,nz,r)&&step>0&&nh<=h&&(length(gx,gz)>limit+.0001f||(h-nh>limit*step+.04f))){
             w->falling=1;w->running=0;w->fall_y_mm=w->fall_start_mm=ground_mm(w,ox,oz);w->fall_v_mm_s=0;

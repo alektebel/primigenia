@@ -304,7 +304,7 @@ func _profile_sample(id: int, a: float = -1.0) -> Dictionary:
 		y = float(c.get("y", y))
 	return {"pos": Vector3(pos2.x, y, pos2.y), "yaw": wrapf(yaw, -PI, PI), "speed": vel2.length(), "speed_c": c.speed,
 		"vel": Vector3(vel2.x, 0.0, vel2.y), "sliding": bool(c.get("sliding", false)),
-		"grip_deg": float(c.get("grip_deg", 35.0))}
+		"grip_deg": float(c.get("grip_deg", 51.6))}
 
 # The v3 text log of the session. `snapshot_name` is written as the `snapshot` line when the session started
 # from a snapshot (the caller saves start_snapshot next to the log under that name).

@@ -24,8 +24,6 @@ static void reset(float x,float z,int legs,int radius){
     CpStageSetup s;cp_stage_setup_default(&s,5);s.terrain=CP_STAGE_FIELD;s.n=0;
     s.nest_x=x;s.nest_z=z;s.player_legs=legs;
     s.player=(CpCombatProfile){2,4,0,0,0,100,100,4,(uint16_t)radius,0};
-    /* A59 connectivity certificate uses adapted feet; low-grip rejection is covered in steer. */
-    s.player.grip_traits=CP_GRIP_CLAW|CP_GRIP_ARM|CP_GRIP_LOW;
     /* the hidden cave chamber is part of the walkable world (C2 secrets); shard placement is off here (it walks the whole island) */
     s.secrets=CP_SECRETS_CAVE;
     if(t.cave_count>0)s.cave=(CpStageCave){1,t.caves[0].x_m,t.caves[0].y_m,t.caves[0].facing_x,t.caves[0].facing_y,0,0,0,0};

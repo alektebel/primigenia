@@ -211,7 +211,7 @@ static int test_slopes(void){
     field_world(&w,4,60,20+6/.839f+4,0);
     walk_heading_in(&w,-1,0,300,23,20+6/.839f-1,&steady,&x_end);
     printf("  4 legs down grade 0.839: %.2f m/s\n",steady);
-    CHECK(steady>flat); /* beyond plain grip: downhill slide adds motion */
+    CHECK(steady<flat*.8f);
     /* Legs set the climb limit: 8 legs cross; direct 2-leg input repeatedly slides back off it. */
     make_field(.839f,0);
     field_world(&w,8,60,10,0);
@@ -223,9 +223,9 @@ static int test_slopes(void){
     printf("  40 degrees: 8 legs reach x %.1f, 2 legs stop at x %.1f (speed %.2f)\n",x_end,stall_x,steady);
     CHECK(stall_x<x_end-15);
     int fell=0;for(unsigned i=0;i<w.ev_total&&i<CP_STAGE_MAX_EVENTS;i++)fell|=w.events[i].type==CP_STAGE_EV_FELL;
-    CHECK(fell||steady<.01f);
+    CHECK(fell);
     /* sliding: beyond the slide grade a body goes down the fall line without being asked; a body that holds does not */
-    make_field(.8f,0);
+    make_field(1.19f,0);
     field_world(&w,2,60,23,0);
     CpStageInput wait={.verb=CP_STAGE_WAIT};
     const float x0=w.player.x;
@@ -259,14 +259,14 @@ static int test_slopes(void){
 /* The player must obey the same full-gradient ceiling as wildlife, even when
  * walking along a contour (zero directional grade). */
 static int test_player_ceiling(void){
-    make_field(1.35f,0);
-    field_world(&w,8,60,23,0);
+    make_field(1.8f,0); /* 8 legs hold 59.6 degrees (A59), so the old 1.35 now holds */
+    field_world(&w,8,60,22,0);
     CpStageInput wait={.verb=CP_STAGE_WAIT};
     int slid=0;
     for(int i=0;i<30;i++){cp_stage_step(&w,&wait);slid|=w.player.sliding;}
     CHECK(slid);
-    field_world(&w,8,60,23,0);
-    CpStageInput contour={.verb=CP_STAGE_GO,.x=23,.z=30};
+    field_world(&w,8,60,22,0);
+    CpStageInput contour={.verb=CP_STAGE_GO,.x=22,.z=30};
     CHECK(cp_stage_order(&w,&contour)==-4);
     return 0;
 }
