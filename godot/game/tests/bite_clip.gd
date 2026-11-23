@@ -98,6 +98,8 @@ func _run() -> void:
 	await settle(30)
 	var t0 := Time.get_ticks_msec()
 	var frame := 0
+	var hold_x := float(st().entities[rondo].x)
+	var hold_z := float(st().entities[rondo].z)
 	var hit_frame := -1
 	var chained := false
 	var bit := false
@@ -114,6 +116,8 @@ func _run() -> void:
 			chained = true
 			sui._pending_attack = {"target": rondo, "move": 7, "chain": true, "tick": int(st().tick)}   # what the bite key sends inside the chain window
 		var pl = island.hosts[0].layer() if island.hosts.has(0) else null
+		if mode == "peck" and hit_frame < 0:
+			stage.debug_now({"op": 1, "id": rondo, "x": hold_x, "z": hold_z})     # the prey stands its ground until the peck lands (it would walk away from the gallop)
 		_camera(rondo, yaw_deg)
 		var dpl := Vector2(float(s.entities[0].x) - float(s.entities[rondo].x), float(s.entities[0].z) - float(s.entities[rondo].z)).length()
 		rows.append("%d,%d,%d,%d,%d,%.1f,%d,%d,%.2f,%s" % [frame, int(s.combat.tick), int(f.get("move", -9)), int(f.get("phase", -9)), int(f.get("phase_tick", -9)),
