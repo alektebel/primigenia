@@ -13,7 +13,11 @@ extends RefCounted
 ##   size     the cell's growth tier: 0-1 small, 2-3 medium, 4-5 large.
 
 const VERSION := 1
-const PATH := "user://cell_legacy.json"
+const TestIsolation := preload("res://devtools/test_isolation.gd")
+const PATH := "user://cell_legacy.json"   # the real game's path; use default_path() (isolated under tests)
+
+static func default_path() -> String:
+	return TestIsolation.user("cell_legacy.json")
 const WASTE_SHARE := 0.25
 
 ## defense -> the starter part (catalogue id); owned, equipped and a starter in the C world.
@@ -85,7 +89,9 @@ static func derive(sheet: Dictionary, colony: Dictionary = {}, source: String = 
 		"stats": {"atp_min": int(sheet.get("atp_min", 0)), "mem": int(sheet.get("mem", 0)), "tier": tier, "colony_cells": int(colony.get("cells", 1))},
 		"tally": {"waste_share": snappedf(waste, 0.01), "spines": spines, "plates": plates}}
 
-static func save(d: Dictionary, path: String = PATH) -> bool:
+static func save(d: Dictionary, path: String = "") -> bool:
+	if path == "":
+		path = default_path()
 	var f := FileAccess.open(path, FileAccess.WRITE)
 	if f == null:
 		return false
@@ -94,7 +100,9 @@ static func save(d: Dictionary, path: String = PATH) -> bool:
 	return true
 
 ## {} when the file is missing, not JSON, from another version or with unknown values.
-static func read(path: String = PATH) -> Dictionary:
+static func read(path: String = "") -> Dictionary:
+	if path == "":
+		path = default_path()
 	if not FileAccess.file_exists(path):
 		return {}
 	var j := JSON.new()

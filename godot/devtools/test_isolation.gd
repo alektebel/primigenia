@@ -19,3 +19,15 @@ static func active() -> bool:
 
 static func dir_for(kind: String) -> String:
 	return OS.get_user_data_dir().path_join("test-feedback").path_join(str(OS.get_process_id())).path_join(kind)
+
+## The owner's per-user state (settings.cfg, studio saves, tuning presets, scenarios, saves, bookmarks, legacy sheet, console
+## history) must never leak into a test: a studio creature or a changed setting steers the first-quest e2e (the "friend" step
+## fails with the owner's lean-runner body). Under a harness every such path resolves to user://test-user/<pid>/<rel>, a fresh
+## empty folder per process; in the real game it is plain user://<rel>. Shared, content-addressed caches (terrain, shaders) are
+## deliberately not routed through here.
+static func user(rel: String) -> String:
+	if not active():
+		return "user://" + rel
+	var p := "user://test-user/%d/%s" % [OS.get_process_id(), rel]
+	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(p).get_base_dir())
+	return p
