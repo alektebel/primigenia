@@ -142,16 +142,14 @@ func _run() -> void:
 
 	print("-- 3b. inside the run-up it is the standing bite")
 	await settle(10)
-	stage.debug_now({"op": 4, "id": live, "x": 1000.0, "z": -1.0})
-	stage.queue_order({"verb": 0})       # WAIT: the standing peck order goes
-	stage.step_ticks(80)                 # the fight ends and the peck cooldown runs
-	stage.debug_now({"op": 1, "id": 0, "x": float(st().entities[0].x) + 12.0, "z": float(st().entities[0].z)})
-	stage.step_ticks(30)
+	var fresh := nearest_rondo([dead_id, live])      # a Rondo nobody has fought: a fresh fight, no peck cooldown or standing order
+	check(fresh > 0, "a third Rondo exists")
+	stage.paused = true
+	place_near(fresh, 1.6)
 	var used_bite := false
 	var used_peck := false
-	place_near(live, 1.6)
-	sui.selected_id = live
-	sui._pending_attack = {"target": live, "move": 7, "chain": false, "tick": int(st().tick)}
+	sui.selected_id = fresh
+	sui._pending_attack = {"target": fresh, "move": 7, "chain": false, "tick": int(st().tick)}
 	stage.paused = false
 	for t in 200:
 		await process_frame
