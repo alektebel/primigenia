@@ -1,5 +1,5 @@
-/* First quest: digging (docs/godot/FIRST-QUEST.md). The player stands still on soft soil for CP_DIG_TICKS ticks and leaves a
- * hole; what it holds is decided here, deterministically.
+/* First quest: digging (docs/godot/FIRST-QUEST.md). The player stands still for CP_DIG_TICKS ticks (soft soil; harder ground takes
+ * longer, A54) and leaves a hole; what it holds is decided here, deterministically.
  *
  * Fossil beds. A few spots, derived at reset from the seed and the field (never from the other RNG streams), each with a
  * cue the Godot side draws (cracked dry soil, bone splinters, a different grass, a dust puff). Bed 0 is the wing bed and is
@@ -29,6 +29,21 @@ int cp_stage_soft_soil(const CpStageWorld *w,float x,float z){
     if(w->setup.terrain==CP_STAGE_FIELD&&h<.3f)return 0;                 /* the shore sand is not soil */
     const float gx=(cp_stage_ground(w,x+1.f,z)-cp_stage_ground(w,x-1.f,z))*.5f,gz=(cp_stage_ground(w,x,z+1.f)-cp_stage_ground(w,x,z-1.f))*.5f;
     return gx*gx+gz*gz<=.35f*.35f;                                       /* rock and cliffs are steep */
+}
+
+/* A54: X digs anywhere dry. Ground hardness only changes the time: 0 soft soil, 1 hard (steep ground, shore sand), 2 rock (cliffs,
+ * caves). -1 = cannot dig (water, outside the island). A pure function of the position, so the dig needs no state of its own. */
+int cp_stage_dig_hardness(const CpStageWorld *w,float x,float z){
+    if(!isfinite(x)||!isfinite(z)||fabs_(x)>cp_stage_bound(w)||fabs_(z)>cp_stage_bound(w))return -1;
+    if(cp_stage_water_depth(w,x,z)>0.f)return -1;
+    if(cp_stage_soft_soil(w,x,z))return 0;
+    if(cp_stage_in_cave(w,x,z))return 2;
+    const float gx=(cp_stage_ground(w,x+1.f,z)-cp_stage_ground(w,x-1.f,z))*.5f,gz=(cp_stage_ground(w,x,z+1.f)-cp_stage_ground(w,x,z-1.f))*.5f;
+    return gx*gx+gz*gz>.8f*.8f?2:1;
+}
+int cp_stage_dig_ticks(const CpStageWorld *w,float x,float z){
+    const int h=cp_stage_dig_hardness(w,x,z);
+    return h>=2?CP_DIG_TICKS_ROCK:h==1?CP_DIG_TICKS_HARD:CP_DIG_TICKS;
 }
 
 /* 16 unit directions at 22.5 degree steps (literals: the core uses no libm trigonometry). */
@@ -79,7 +94,7 @@ int cp_stage_dig_order(CpStageWorld *w,const CpStageInput *a){
     (void)a;
     CpStageDig *d=&w->dig;
     if(w->active>=0||w->respawn_ticks||w->parts.lost||w->falling)return CP_STAGE_ERR_IN_FIGHT;
-    if(!cp_stage_soft_soil(w,w->player.x,w->player.z))return CP_STAGE_ERR_HARD_GROUND;
+    if(cp_stage_dig_hardness(w,w->player.x,w->player.z)<0)return CP_STAGE_ERR_HARD_GROUND;      /* only water (or outside the island) refuses */
     for(int i=0;i<d->n_holes&&i<CP_STAGE_HOLES;i++)if(len2(w->player.x-d->hole[i].x,w->player.z-d->hole[i].z)<1.2f)return CP_STAGE_ERR_ALREADY_DUG;
     if(d->act_t)return 0;                                  /* already digging: the same order again is a no-op */
     if(w->player.stamina<CP_DIG_STAMINA)return CP_STAGE_ERR_NO_STAMINA;
@@ -101,7 +116,7 @@ void cp_stage_dig_step(CpStageWorld *w){
     if(w->active>=0||w->respawn_ticks||w->falling||w->order.verb!=CP_STAGE_WAIT||len2(w->player.x-d->act_x,w->player.z-d->act_z)>.8f){
         event(w,CP_STAGE_EV_DUG,-1,-1,-1.f,w->player.x,w->player.z);d->act_t=0;return;   /* interrupted: the stamina is gone */
     }
-    if(++d->act_t<=CP_DIG_TICKS)return;
+    if(++d->act_t<=cp_stage_dig_ticks(w,d->act_x,d->act_z))return;
     d->act_t=0;
     const int bed=bed_at(w,d->act_x,d->act_z);
     const unsigned roll=cp_rng_u32(&d->rng)%100u,pick=cp_rng_u32(&d->rng);
@@ -151,7 +166,8 @@ uint64_t cp_stage_dig_hash(const CpStageWorld *w){
 int cp_stage_dig_json(const CpStageWorld *w,char *out,size_t cap){
     const CpStageDig *d=&w->dig;size_t n=0;
 #define ADD(...) do{int k=snprintf(out+n,cap>n?cap-n:0,__VA_ARGS__);if(k<0||(size_t)k>=cap-n)return -1;n+=(size_t)k;}while(0)
-    ADD("{\"digging\":%d,\"ticks\":%d,\"dug\":%d,\"flames\":%d,\"wing_found\":%s,\"fire_found\":%s,\"soft\":%s,\"beds\":[",d->act_t,CP_DIG_TICKS,d->dug_total,d->flames,
+    ADD("{\"digging\":%d,\"ticks\":%d,\"hardness\":%d,\"dug\":%d,\"flames\":%d,\"wing_found\":%s,\"fire_found\":%s,\"soft\":%s,\"beds\":[",d->act_t,
+        d->act_t?cp_stage_dig_ticks(w,d->act_x,d->act_z):cp_stage_dig_ticks(w,w->player.x,w->player.z),cp_stage_dig_hardness(w,w->player.x,w->player.z),d->dug_total,d->flames,
         d->wing_found?"true":"false",d->fire_found?"true":"false",cp_stage_soft_soil(w,w->player.x,w->player.z)?"true":"false");
     for(int i=0;i<d->n_beds;i++)ADD("%s{\"id\":%d,\"x\":%.3f,\"z\":%.3f,\"r\":%.2f,\"kind\":%d,\"dug\":%s}",i?",":"",i,d->bed[i].x,d->bed[i].z,d->bed[i].r,d->bed[i].kind,d->bed[i].dug?"true":"false");
     ADD("],\"holes\":[");
@@ -168,7 +184,7 @@ int cp_stage_dig_json(const CpStageWorld *w,char *out,size_t cap){
 int cp_stage_dig_observe(const CpStageWorld *w,char *out,size_t cap){
     const CpStageDig *d=&w->dig;size_t n=0;
 #define ADD(...) do{int k=snprintf(out+n,cap>n?cap-n:0,__VA_ARGS__);if(k<0||(size_t)k>=cap-n)return -1;n+=(size_t)k;}while(0)
-    ADD("{\"digging\":%d,\"dug\":%d,\"soft_here\":%s,\"clues\":[",d->act_t,d->dug_total,cp_stage_soft_soil(w,w->player.x,w->player.z)?"true":"false");
+    ADD("{\"digging\":%d,\"dug\":%d,\"soft_here\":%s,\"hardness_here\":%d,\"clues\":[",d->act_t,d->dug_total,cp_stage_soft_soil(w,w->player.x,w->player.z)?"true":"false",cp_stage_dig_hardness(w,w->player.x,w->player.z));
     int comma=0;
     for(int i=0;i<d->n_beds;i++){
         const CpStageBed *b=&d->bed[i];const float dist=len2(b->x-w->player.x,b->z-w->player.z);

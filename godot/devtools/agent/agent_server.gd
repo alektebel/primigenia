@@ -8,6 +8,7 @@ extends Node
 const WorldLog := preload("res://game/stage/world_log.gd")
 const Scenario := preload("res://devtools/scenario.gd")
 const Feedback := preload("res://devtools/feedback.gd")
+const LoopCommands := preload("res://devtools/loop/loop_commands.gd")
 const QuestionStore := preload("res://devtools/questions/question_store.gd")
 const NoteStore := preload("res://devtools/notes/note_store.gd")
 const NoteCommands := preload("res://devtools/notes/note_commands.gd")
@@ -160,6 +161,9 @@ func _dispatch(req: Dictionary) -> Dictionary:
 			Dev.questions.reload()
 			return {"ok": true, "questions": Dev.questions.pending().map(func(q): return {"id": q.id, "text": q.text, "when": q.when}),
 				"answered": QuestionStore.load_answers(Dev.questions.store_dir()).size()}
+		"loop":
+			var largs: Array = ["dump", int(req.get("dump", 30))] if req.has("dump") else (["path"] if bool(req.get("path", false)) else [])
+			return {"ok": true, "text": LoopCommands.run(Dev.loop, largs), "path": Dev.loop.path}
 		"ask":
 			var qe: String = Dev.questions.ask(str(req.get("id", "")))
 			return {"ok": qe == "", "error": qe}

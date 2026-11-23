@@ -298,12 +298,12 @@ static void motion_law(void) {
         CpStageInput a=heading_to(w.player.fx,w.player.fz,sprint);
         for(int i=1;i<=40;i++) {
             cp_stage_step(&w,&a);
-            assert(w.player.speed-old<=m->accel*.1f+1e-3f);
+            assert(w.player.speed-old<=m->accel*1.7f*.1f+1e-3f);   /* A54: a run bursts at 1.7x the cap */
             if(t90<0&&w.player.speed>=.9f*top)t90=i;
             old=w.player.speed;
         }
         assert(fabsf(w.player.speed-top)<.01f);
-        assert(t90>0&&t90<=(sprint?6:4));
+        assert(t90>0&&t90<=(sprint?12:6));   /* A54: softer start, 90% of the speed in about half a second (accel 7, ease .45) */
         assert(!w.player.pivot&&last_dyaw_limit>0);
     }
     /* A reversal at full jog is a skid, not a turret spin: the pivot flag stays off while v > pivot_v. */
