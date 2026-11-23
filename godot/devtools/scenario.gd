@@ -15,9 +15,10 @@ const WorldLog := preload("res://game/stage/world_log.gd")
 const FORMAT := "primigenia.scenario/1"
 const FORMAT_READS := 1
 const DEV_DIR := "res://scenarios"
-const USER_DIR := "user://scenarios"
+const TestIsolation := preload("res://devtools/test_isolation.gd")
+static var USER_DIR := TestIsolation.user("scenarios")
 ## Where game saves go; tests point it elsewhere so they never touch the owner's slot.
-static var save_dir := "user://saves"
+static var save_dir := TestIsolation.user("saves")
 const SAVE_SLOT := "slot1"
 ## Species with a body, by entity id, recorded so a load can dress restored entities.
 const BODY_PATHS := {3: "res://game/data/garfio.json"}

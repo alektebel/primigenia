@@ -17,7 +17,8 @@ extends RefCounted
 ## A hybrid laptop whose GL context sits on the integrated GPU stays on Compatibility until the setting is forced.
 ## Not verified on a GPU here (no Vulkan in the build environment); make godot-play-hq is the manual route.
 
-const SETTINGS_PATH := "user://settings.cfg"
+const TestIsolation := preload("res://devtools/test_isolation.gd")
+static var SETTINGS_PATH := TestIsolation.user("settings.cfg")
 const SOFTWARE := ["llvmpipe", "softpipe", "swiftshader", "software", "microsoft basic"]
 const DISCRETE := ["nvidia", "geforce", "rtx", "gtx", "radeon rx", "radeon pro", "radeon vii", "arc(tm)", "intel(r) arc", "arc a", "arc b"]
 

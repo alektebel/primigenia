@@ -1075,8 +1075,11 @@ func open_nest_editor() -> void:
 		var built = preload("res://devtools/scenario.gd").build(stage, island.scenario_ctx(), "save", "nest edit", "", false)
 		built.json.genome = genome
 		layer.queue_free()
+		var changed: bool = JSON.stringify(genome) != JSON.stringify(island._genome)
 		island.load_scenario({"dict": built.json, "state": built.state, "recipe": ""})
 		stage.paused = false                 # a loaded scenario starts paused; the nest edit resumes play
+		if changed:
+			play_hatch()
 	editor.exit_requested.connect(func() -> void:
 		if not editor.applied_genome.is_empty():
 			reload.call(editor.applied_genome)       # free repaint/rearrange kept on leaving
@@ -1085,6 +1088,23 @@ func open_nest_editor() -> void:
 		stage.paused = false
 		layer.queue_free())
 	editor.nest_confirmed.connect(func(genome: Dictionary) -> void: reload.call(genome))
+
+## A73: the new body hatches from an egg at the nest. Purely visual: the C change is already done; the sim waits (stage.paused) while
+## it plays and resumes when it ends or is skipped. Headless runs skip it unless `force`.
+var hatch: Node3D
+func play_hatch(force := false) -> void:
+	if hatch != null and is_instance_valid(hatch):
+		return
+	hatch = preload("res://game/stage/hatch_sequence.gd").new()
+	stage.paused = true
+	var was_visible: bool = ui.visible
+	hatch.finished.connect(func() -> void:
+		ui.visible = was_visible
+		stage.paused = false
+		hatch = null)
+	hatch.start(island, force)
+	if hatch != null and not hatch.done:
+		ui.visible = false               # a clean frame: no game HUD while the egg hatches (the dev time-control tag, dev builds only, stays)
 
 # A25: no eggs left. The stage is frozen by C; show the end of the lineage and return to the last save.
 var _lineage_end: CanvasLayer
