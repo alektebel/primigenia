@@ -40,7 +40,7 @@ One tracker test at a time: **brief → agent builds it in its own worktree → 
 ## Machine rules (hard)
 - **GPU is the owner's.** Agents render with software GL only: `LIBGL_ALWAYS_SOFTWARE=1`, `xvfb-run -a`, `--rendering-driver opengl3`. Browser captures with SwiftShader, never GPU flags.
 - Godot runs: always `timeout`, `--check-only` first for new scripts, headless or xvfb, `nice -n 10`.
-- Kill only processes you started, by pid. **Never `pkill -f`.** Leaked Godot pid 265493 is the owner's to kill.
+- Kill only processes you started, **by the pid you recorded when you started them** (`$!`, or a pid file). **Never use `pkill`, `pkill -f`, `pkill -x`, `killall`, or `kill $(pgrep …)`**: they match by name or pattern and also hit the owner's running game and other agents' runs. That happened three times on 2026-11-23. `pgrep -f <pattern>` also matches your own shell. Leaked Godot pid 265493 is the owner's to kill.
 - No installs, no pushes, no emsdk without asking.
 - Codex in the background needs `< /dev/null`.
 
