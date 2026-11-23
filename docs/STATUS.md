@@ -1,6 +1,6 @@
 # Status
 
-Updated 2026-11-23, ~01:30. Session: creature-stage loop tuning with owner playtests. Rewritten at the end of every session; keep it to one page. **Resume rule:** the owner asked to stop at 92% of the weekly Claude quota and resume from this file.
+Updated 2026-11-23, ~01:30. Session: creature-stage loop tuning with owner playtests. Rewritten at the end of every session; keep it to one page. **Resume rule:** the owner asked to stop at 93% of the weekly Claude quota and resume from this file.
 
 ## Focus now
 Tune and perfect the **creature-stage loop**, start to finish (plan: `docs/plans/creature-loop.md`). The owner plays, leaves notes (N, F11, Shift+N) and answers question cards. Pull them every session with `python3 tools/feedback/notes.py list` and `python3 tools/feedback/questions.py pull-answers`.
