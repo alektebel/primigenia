@@ -86,6 +86,7 @@ func _on_tick(state: Dictionary) -> void:
 	if digging > 0 and _was_digging == 0 and island.hosts.has(0) and island.hosts[0].layer() != null:
 		island.hosts[0].layer().trigger("eat")     # the head goes down to the soil
 	_was_digging = digging
+	_dig_hint(state)
 	_refresh(state)
 	_burn_fx(state)
 	_announce_clock = maxf(_announce_clock - 0.1, 0.0)
@@ -93,6 +94,18 @@ func _on_tick(state: Dictionary) -> void:
 		var line: String = _pending.pop_front()
 		ui.show_message(line, "info")
 		_announce_clock = 2.4
+
+## The only dig prompt (A54): "X: dig", once per profile, the first time the dig task is the one in front of the player.
+func _dig_hint(state: Dictionary) -> void:
+	if bool(Game.settings.get("hint_dig_seen", false)):
+		return
+	var seen := int(state.get("dig", {}).get("dug", 0)) > 0
+	if not seen and enabled and not quest.finished() and String(quest.current().get("id", "")) == "dig" and not stage.paused and not ui.paused:
+		ui.show_message(Strings.t("dig_hint"), "info")
+		seen = true
+	if seen:
+		Game.settings["hint_dig_seen"] = true
+		Game.save_settings()
 
 func _part_index(state: Dictionary, id: String) -> int:
 	for p in state.get("parts", {}).get("discovered", []):
@@ -149,10 +162,8 @@ func _refresh(state: Dictionary) -> void:
 		m.parts = parts
 	ui.quest_card.set_model(m)
 	ui.minimap.quest_ping = quest.marker(state) if enabled else Vector2.INF
-	# the dig chip: soft soil under you, free, nothing selected
+	# the dig ring: only the progress while digging; no button or prompt (A54)
 	var dig_state: Dictionary = state.get("dig", {})
-	var free := int(state.active) < 0 and not bool(state.get("player", {}).get("falling", false)) and int(state.respawn_ticks) == 0
-	ui.dig_chip.want = bool(dig_state.get("soft", false)) and free and ui.selected.is_empty() and int(dig_state.get("digging", 0)) == 0
 	ui.dig_chip.digging = float(int(dig_state.get("digging", 0))) / float(maxi(int(dig_state.get("ticks", 20)), 1))
 	var cam: Camera3D = Game.camera
 	if cam != null and island.hosts.has(0):
