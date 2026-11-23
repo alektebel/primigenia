@@ -1,0 +1,98 @@
+[
+  {
+    "body": "Starter B",
+    "mode": "before",
+    "sizes": {
+      "aleta": 1.0,
+      "arm_grasper": 1.0,
+      "cresta": 1.0,
+      "cuerno": 1.0,
+      "excavadora": 1.0,
+      "fauces": 1.0,
+      "ojo": 1.0,
+      "pata": 1.45,
+      "placa": 1.0,
+      "wing_glider": 1.0
+    }
+  },
+  {
+    "body": "Starter B",
+    "mode": "after",
+    "sizes": {
+      "aleta": 0.3,
+      "arm_grasper": 0.3,
+      "cresta": 0.24,
+      "cuerno": 0.21,
+      "excavadora": 0.35,
+      "fauces": 0.27,
+      "ojo": 0.21,
+      "pata": 0.55,
+      "placa": 0.24,
+      "wing_glider": 0.28
+    }
+  },
+  {
+    "body": "Hatchling",
+    "mode": "before",
+    "sizes": {
+      "aleta": 1.0,
+      "arm_grasper": 1.0,
+      "cresta": 1.0,
+      "cuerno": 1.0,
+      "excavadora": 1.0,
+      "fauces": 1.0,
+      "ojo": 1.0,
+      "pata": 1.45,
+      "placa": 1.0,
+      "wing_glider": 1.0
+    }
+  },
+  {
+    "body": "Hatchling",
+    "mode": "after",
+    "sizes": {
+      "aleta": 0.22,
+      "arm_grasper": 0.35,
+      "cresta": 0.28,
+      "cuerno": 0.33,
+      "excavadora": 0.36,
+      "fauces": 0.39,
+      "ojo": 0.34,
+      "pata": 0.27,
+      "placa": 0.22,
+      "wing_glider": 0.34
+    }
+  },
+  {
+    "body": "Merodeador",
+    "mode": "before",
+    "sizes": {
+      "aleta": 1.0,
+      "arm_grasper": 1.0,
+      "cresta": 1.0,
+      "cuerno": 1.0,
+      "excavadora": 1.0,
+      "fauces": 1.0,
+      "ojo": 1.0,
+      "pata": 1.45,
+      "placa": 1.0,
+      "wing_glider": 1.0
+    }
+  },
+  {
+    "body": "Merodeador",
+    "mode": "after",
+    "sizes": {
+      "aleta": 1.02,
+      "arm_grasper": 1.56,
+      "cresta": 1.23,
+      "cuerno": 1.2,
+      "excavadora": 1.66,
+      "fauces": 1.33,
+      "ojo": 1.16,
+      "pata": 1.66,
+      "placa": 1.01,
+      "wing_glider": 1.52
+    }
+  }
+]

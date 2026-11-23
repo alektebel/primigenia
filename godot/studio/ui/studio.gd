@@ -21,6 +21,10 @@ signal creature_saved(path: String)
 signal nest_confirmed(genome: Dictionary)
 signal nest_applied(genome: Dictionary)
 var applied_genome: Dictionary = {}
+var _baseline := ""                  # canonical doc at open (A73): leaving with the doc equal to it is "no changes"
+var done_button: Button              # primary "Done / Back to the nest" (A73), bottom right
+var cancel_button: Button
+var _confirm: Control                # in-game confirm panel, never a browser or OS dialog
 var nest_plan: Dictionary = {}
 var nest_tiers_on := false
 var nest_cost: Label
@@ -184,6 +188,7 @@ func _ready() -> void:
 	if nest_world != null:
 		model.import_doc(nest_genome)
 		_build_nest_shop()
+	_baseline = model.snapshot()
 
 func _process(dt: float) -> void:
 	if _flash_timer > 0.0:
@@ -284,6 +289,166 @@ func play_with_creature() -> void:
 	if game != null and game.has_method("enter_island_now"):
 		exit_requested.emit()
 		game.enter_island_now("studio")
+
+# =================================================================== A73: the way back
+## Anything to lose by leaving: in the nest, the doc differs from the one the editor opened with or a level plan is pending;
+## standalone, the doc is unsaved.
+func has_changes() -> bool:
+	if nest_world != null:
+		return model.snapshot() != _baseline or nest_pending_cost() > 0
+	return model.dirty
+
+func _exit_label() -> String:
+	return T("Hecho · volver al nido") if nest_world != null else T("Hecho")
+
+func _build_exit_bar() -> void:
+	var bar := HBoxContainer.new()
+	bar.name = "ExitBar"
+	bar.set_anchors_preset(Control.PRESET_BOTTOM_RIGHT)
+	bar.grow_horizontal = Control.GROW_DIRECTION_BEGIN
+	bar.grow_vertical = Control.GROW_DIRECTION_BEGIN
+	bar.offset_right = -14; bar.offset_bottom = -14
+	bar.add_theme_constant_override("separation", 10)
+	hud.add_child(bar)
+	cancel_button = Button.new()
+	cancel_button.name = "CancelButton"
+	cancel_button.text = T("Cancelar")
+	cancel_button.tooltip_text = "Esc"
+	cancel_button.custom_minimum_size = Vector2(112, 52)
+	cancel_button.add_theme_font_size_override("font_size", 16)
+	cancel_button.pressed.connect(func() -> void: request_cancel(true))
+	bar.add_child(cancel_button)
+	done_button = Button.new()
+	done_button.name = "DoneButton"
+	done_button.text = _exit_label()
+	done_button.tooltip_text = "Enter"
+	done_button.custom_minimum_size = Vector2(0, 52)
+	done_button.add_theme_font_size_override("font_size", 19)
+	_style_primary(done_button)
+	done_button.pressed.connect(func() -> void: request_done(true))
+	bar.add_child(done_button)
+
+static func _style_primary(b: Button) -> void:
+	var base := ThemeFactory.AMBER
+	for st in [["normal", base], ["hover", base.lightened(.18)], ["pressed", base.darkened(.12)], ["hover_pressed", base.darkened(.12)]]:
+		var box := ThemeFactory.box(st[1], Color(0, 0, 0, 0), 12)
+		box.content_margin_left = 22; box.content_margin_right = 22
+		b.add_theme_stylebox_override(st[0], box)
+	var dis := ThemeFactory.box(Color(base, .3), Color(0, 0, 0, 0), 12)
+	b.add_theme_stylebox_override("disabled", dis)
+	for c in ["font_color", "font_hover_color", "font_pressed_color", "font_hover_pressed_color", "font_focus_color"]:
+		b.add_theme_color_override(c, ThemeFactory.INK)
+
+## Done: accept the edit and go back. At the nest the free changes (paint, layout) are applied; changes that need Evolve ask first.
+## Standalone it saves and goes to the menu.
+func request_done(from_mouse := false) -> void:
+	if _confirm != null:
+		return
+	creator_ev("exit", {"kind": "done", "changes": has_changes()})
+	_cancel_drag()
+	_pending_type = ""
+	if nest_world == null:
+		if model.dirty:
+			if save_current() == "":
+				_flash(T("No se pudo guardar"))
+				return
+		_on_exit()
+		return
+	if not has_changes():
+		_on_exit()
+		return
+	var rc := _nest_apply()
+	if rc == 0:
+		_on_exit()                       # applied_genome is set: the world reloads it and plays the hatch
+		return
+	if rc != -23:
+		_flash(nest_status.text)
+		return
+	var cost := nest_pending_cost()
+	var have := int(nest_world.state().social.dna_balance)
+	if cost > have:
+		_show_confirm(T("Evolucionar cuesta %d ADN y tienes %d.") % [cost, have], [[T("Seguir editando"), Callable(), true], [T("Descartar y salir"), _discard_and_leave, false]], from_mouse)
+	else:
+		_show_confirm((T("Evolucionar por %d ADN y volver al nido") % cost), [[T("Evolucionar") + " · %d ADN" % cost, _nest_confirm, true], [T("Seguir editando"), Callable(), false], [T("Descartar y salir"), _discard_and_leave, false]], from_mouse)
+
+## Cancel / Esc: leave without changes; with unsaved changes an in-game panel asks first.
+func request_cancel(from_mouse := false) -> void:
+	if _confirm != null:
+		return
+	creator_ev("exit", {"kind": "cancel", "changes": has_changes()})
+	_cancel_drag()
+	if not has_changes():
+		_on_exit()
+		return
+	_show_confirm(T("¿Descartar los cambios?"), [[T("Seguir editando"), Callable(), true], [T("Descartar y salir"), _discard_and_leave, false]], from_mouse)
+
+func _discard_and_leave() -> void:
+	_on_exit()
+
+## rows: [label, callable (empty = just close), is_default]. Enter presses the default row, Esc always means "keep editing".
+func _show_confirm(text: String, rows: Array, animate: bool) -> void:
+	_close_confirm()
+	var root := Control.new()
+	root.name = "ConfirmPanel"
+	root.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	root.mouse_filter = Control.MOUSE_FILTER_STOP
+	root.z_index = 80
+	var dim := ColorRect.new()
+	dim.color = Color(ThemeFactory.INK, .55)
+	dim.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	dim.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	root.add_child(dim)
+	var panel := PanelContainer.new()
+	panel.set_anchors_preset(Control.PRESET_CENTER)
+	panel.grow_horizontal = Control.GROW_DIRECTION_BOTH
+	panel.grow_vertical = Control.GROW_DIRECTION_BOTH
+	root.add_child(panel)
+	var col := VBoxContainer.new()
+	col.add_theme_constant_override("separation", 14)
+	panel.add_child(col)
+	var l := Label.new()
+	l.text = text
+	l.custom_minimum_size.x = 380
+	l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	l.add_theme_font_size_override("font_size", 18)
+	col.add_child(l)
+	var first_default: Button = null
+	for r in rows:
+		var b := Button.new()
+		b.text = r[0]
+		b.custom_minimum_size = Vector2(0, 46)
+		b.add_theme_font_size_override("font_size", 16)
+		if r[2]:
+			_style_primary(b)
+			if first_default == null:
+				first_default = b
+			b.name = "ConfirmPrimary"
+		else:
+			b.name = "ConfirmSecondary"
+		var fn: Callable = r[1]
+		b.pressed.connect(func() -> void:
+			_close_confirm()
+			if fn.is_valid():
+				fn.call())
+		col.add_child(b)
+	add_child(root)
+	_confirm = root
+	_wire_presses(root)
+	if first_default != null:
+		first_default.call_deferred("grab_focus")
+	if animate:                          # keyboard actions never animate; a click fades the veil in (opacity only, no scale)
+		root.modulate.a = 0.0
+		var tw := root.create_tween().set_trans(Tween.TRANS_EXPO).set_ease(Tween.EASE_OUT)
+		tw.tween_property(root, "modulate:a", 1.0, .15)
+
+func _close_confirm() -> void:
+	if _confirm != null and is_instance_valid(_confirm):
+		_confirm.queue_free()
+	_confirm = null
+
+func confirm_open() -> bool:
+	return _confirm != null
 
 func _on_exit() -> void:
 	if nest_world != null:
@@ -429,11 +594,12 @@ func _build_hud() -> void:
 	_build_top_bar()
 	_build_palette()
 	_build_right_panel()
+	_build_exit_bar()
 	_wire_presses(hud)
 	hint_label = Label.new()
 	hint_label.set_anchors_preset(Control.PRESET_BOTTOM_WIDE)   # contextual feedback only; persistent instructions live on Help
 	hint_label.grow_vertical = Control.GROW_DIRECTION_BEGIN
-	hint_label.offset_left = 88; hint_label.offset_right = -88
+	hint_label.offset_left = 88; hint_label.offset_right = -400
 	hint_label.offset_bottom = -16
 	hint_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	hint_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -466,7 +632,7 @@ func _build_top_bar() -> void:
 	bar.add_child(row)
 	top_bar = row
 	var back := _icon_button("back", T("Menú"))
-	back.pressed.connect(_on_exit)
+	back.pressed.connect(func() -> void: request_cancel(true))
 	row.add_child(back)
 	mode_buttons.clear()
 	var group := ButtonGroup.new()
@@ -826,7 +992,7 @@ func _build_right_panel() -> void:
 	var card := PanelContainer.new()
 	card.set_anchors_preset(Control.PRESET_RIGHT_WIDE)
 	card.offset_left = -282; card.offset_right = -14
-	card.offset_top = 82; card.offset_bottom = -16
+	card.offset_top = 82; card.offset_bottom = -84
 	right_card = card
 	hud.add_child(card)
 	var scroll := ScrollContainer.new()
@@ -919,7 +1085,7 @@ func _fit_drawer() -> void:
 	else:
 		scroll.custom_minimum_size.y = 0.0
 		right_card.anchor_bottom = 1.0
-		right_card.offset_bottom = -16.0
+		right_card.offset_bottom = -84.0          # clear of the Done bar
 
 ## A24: skeleton per body, actuation per limb. Readout "Actuación: <class> - <why>" for the body and for every limb,
 ## the count of actuation types (informational: the cost is a
@@ -1412,7 +1578,21 @@ func _unhandled_key_input(e: InputEvent) -> void:
 	if focus is LineEdit or focus is TextEdit:
 		return
 	var ctrl: bool = e.ctrl_pressed or e.meta_pressed
+	if _confirm != null:                   # the confirm panel owns the keyboard: Enter = its default, Esc = keep editing
+		if e.keycode == KEY_ESCAPE:
+			_close_confirm()
+			get_viewport().set_input_as_handled()
+		elif e.keycode == KEY_ENTER or e.keycode == KEY_KP_ENTER:
+			var d := _confirm.find_child("ConfirmPrimary", true, false) as Button
+			if d != null:
+				d.pressed.emit()
+			get_viewport().set_input_as_handled()
+		return
 	match e.keycode:
+		KEY_ENTER, KEY_KP_ENTER:
+			if not e.echo and _drag.is_empty() and _pending_type == "":
+				request_done()
+				get_viewport().set_input_as_handled()
 		KEY_ESCAPE:
 			var busy: bool = not _drag.is_empty() or _pending_type != ""
 			_cancel_drag()
@@ -1421,7 +1601,7 @@ func _unhandled_key_input(e: InputEvent) -> void:
 			if nest_world != null:
 				get_viewport().set_input_as_handled()      # never reaches the game menu behind the overlay
 				if not busy:
-					_on_exit()             # in the nest, Esc with nothing in hand cancels the edit and leaves (the same as the Menu button)
+					request_cancel()       # in the nest, Esc with nothing in hand cancels the edit and leaves (confirm if there are changes)
 		KEY_Z:
 			if ctrl:
 				if e.shift_pressed: on_redo()
@@ -1494,6 +1674,7 @@ func _update_new_drag(gpos: Vector2) -> void:
 			d["idx"] = model.add_part(d["type"], h["t"], h["ang"])
 		else:
 			model.place_part(d["idx"], h["t"], h["ang"])
+			model.refit_part(d["idx"])           # A73: the part keeps its proportion to the body under the cursor
 		d["point"] = h["point"]
 	elif d["idx"] >= 0:
 		model.remove_part(d["idx"])
@@ -2066,7 +2247,7 @@ func _build_nest_shop() -> void:
 	rows.add_child(nest_cost)
 	nest_apply_button = Button.new()
 	nest_apply_button.custom_minimum_size.y = 44
-	nest_apply_button.pressed.connect(_nest_apply)
+	nest_apply_button.pressed.connect(func() -> void: _nest_apply())
 	rows.add_child(nest_apply_button)
 	nest_evolve_button = Button.new()
 	nest_evolve_button.custom_minimum_size.y = 44
@@ -2179,23 +2360,25 @@ func _nest_doc() -> Dictionary:
 		part["tier"] = want.tier if nest_tiers_on else 0
 	return doc
 
-func _nest_apply() -> void:
+func _nest_apply() -> int:
 	var doc := _nest_doc()
 	var rc: int = nest_world.nest_apply(JSON.stringify(doc))
 	if rc == -23:
 		nest_status.text = "Este cambio altera piezas o niveles: usa Evolucionar." if lang == "es" else "This change alters parts or levels: use Evolve."
-		return
+		return rc
 	if rc != 0:
 		nest_status.text = "Cambio rechazado (%d)." % rc if lang == "es" else "Change refused (%d)." % rc
-		return
+		return rc
 	applied_genome = doc
 	nest_status.text = "Aplicado: misma generación, sin coste." if lang == "es" else "Applied: same generation, no cost."
 	nest_applied.emit(doc)
+	return 0
 
 func _nest_confirm() -> void:
 	var doc := _nest_doc()
 	var rc: int = nest_world.nest_edit(JSON.stringify(doc))
 	if rc != 0:
+		call_deferred("_flash", "Edición rechazada (%d)." % rc if lang == "es" else "Evolution refused (%d)." % rc)
 		if rc == -24:
 			nest_status.text = "Edición rechazada: ADN insuficiente." if lang == "es" else "Evolution refused: not enough DNA."
 		else:
