@@ -1,0 +1,268 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "polvovela",
+  "name": {
+    "en": "Polvovela"
+  },
+  "world": "orbital",
+  "kind": "new",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "Dense ring bands (optical depth ~1), grazing ice and dust",
+    "diet": "Water ice sublimation, silicate dust, peroxide frost",
+    "active": "Circadian synchronized to 6.5-12.7 h orbital lap; naps during eclipses",
+    "predators": []
+  },
+  "body": "Bilateral, flat discoid body with radial sail array, ventral ice-grabbers, and clathrate shell",
+  "chains": [
+    {
+      "id": "polvovela.c1",
+      "trait": "Broad photonic sail membrane",
+      "links": [
+        "Sails capture solar photons",
+        "Radiation pressure pushes outward at ~1 mm/s²",
+        "Organism must burn ice to counter drift and stay in ring",
+        "Reaction mass conservation in vacuum requires ejected mass"
+      ],
+      "roots": [
+        "F10",
+        "F2",
+        "F9"
+      ],
+      "skill": {
+        "id": "polvovela.sail_burn",
+        "name": {
+          "en": "Sail Burn"
+        },
+        "role": "Basic",
+        "effect": "Consumes 5% mass to gain 0.2 km/s delta-v inward or outward",
+        "numbers": {}
+      },
+      "weakness": "Mass depletion; prolonged sail use starves sublimation reserves",
+      "observe": [
+        "Sail shimmering with reflected starlight",
+        "Thin plume of water vapor during thrust",
+        "Drift correction against ambient flow"
+      ],
+      "journal": {
+        "en": "It rides the light, paying for its position in ice."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-24",
+        "date": "2026-11-24",
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 3
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-24",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "polvovela.c2",
+      "trait": "Ventral ice-crushing mandibles",
+      "links": [
+        "Mandibles grind ring ice and dust",
+        "Sublimation of water provides reaction mass",
+        "Vacuum physics demands momentum conservation for movement",
+        "Grazing and travel share one reservoir"
+      ],
+      "roots": [
+        "F5",
+        "F9"
+      ],
+      "skill": {
+        "id": "polvovela.grind_ice",
+        "name": {
+          "en": "Grind Ice"
+        },
+        "role": "Engage",
+        "effect": "Consumes ice to heal 10 mass and recharge Sail Burn",
+        "numbers": {}
+      },
+      "weakness": "Slow feed rate; unable to keep pace in high-shear lanes",
+      "observe": [
+        "Mandibles grinding against ice grains",
+        "Spray of sublimating vapor",
+        "Mass regeneration visible in shell opacity"
+      ],
+      "journal": {
+        "en": "The ring is food and fuel, ground to one."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-24",
+        "date": "2026-11-24",
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 5
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-24",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "polvovela.c3",
+      "trait": "Silicate-trap filtration nets",
+      "links": [
+        "Nets catch silicate and organic dust",
+        "Silicates polymerize into clathrate skin",
+        "Skin shields against 0.5-5 Gy/day radiation",
+        "Weak planetary field leaves ring exposed to cosmic rays"
+      ],
+      "roots": [
+        "F18",
+        "F13",
+        "F4"
+      ],
+      "skill": {
+        "id": "polvovela.weave_shell",
+        "name": {
+          "en": "Weave Shell"
+        },
+        "role": "Defence",
+        "effect": "Increases radiation resistance by 40% for 2 laps; costs 15% mass",
+        "numbers": {}
+      },
+      "weakness": "Slow build time; vulnerable during net extension",
+      "observe": [
+        "Nets unfurling to catch dust",
+        "Shell thickening with silicate grit",
+        "Radiation dose meter dropping"
+      ],
+      "journal": {
+        "en": "The dust builds the armor that holds the breath."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-24",
+        "date": "2026-11-24",
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 2
+        },
+        "analogues": [
+          {
+            "organism": "real biology behind this chain",
+            "mechanism": "see the cited works; chain wording is the council's own"
+          }
+        ]
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-24",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "polvovela.c4",
+      "trait": "Peroxide-detox gut flora",
+      "links": [
+        "Flora metabolizes hydrogen peroxide",
+        "Peroxide serves as oxidant for electron transport",
+        "Ring radiolysis produces H₂O₂ frost",
+        "Same chemistry stocks the larder and the toxin"
+      ],
+      "roots": [
+        "F22",
+        "F18"
+      ],
+      "skill": {
+        "id": "polvovela.peroxide_surge",
+        "name": {
+          "en": "Peroxide Surge"
+        },
+        "role": "Signature",
+        "effect": "Converts peroxide to 200% thrust burst; risk of overdose if ice-poor",
+        "numbers": {}
+      },
+      "weakness": "Overdose risk; peroxide >10 mM damages gut flora",
+      "observe": [
+        "Glowing internal peroxide reservoir",
+        "Crystalline frost on mouthparts",
+        "Sudden thrust spike"
+      ],
+      "journal": {
+        "en": "Poison is just fuel misunderstood."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-24",
+        "date": "2026-11-24",
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 5
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-24",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "cintillo",
+      "kind": "cousin",
+      "note": "(council kind 'Competitor') Cintillo targets Polvovela spores and grazes in the same shear zones"
+    },
+    {
+      "with": "cintillo",
+      "kind": "cousin",
+      "note": "(council kind 'Competitor') Cintillo targets Polvovela spores and grazes in the same shear zones"
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-24",
+    "by": [
+      "naturalist/qwen"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-24",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-24"
+    },
+    {
+      "date": "2026-11-24",
+      "who": "autoloop",
+      "what": "removed rejected references from analogues"
+    }
+  ],
+  "body_plan": {
+    "symmetry": "bilateral",
+    "arms": 4,
+    "origin": "Descended from impact-ejected grazer lineages; shell forms from ring silicates"
+  },
+  "temperament": "Docile drift, skittish shear, communal phasing",
+  "secrets": [
+    "Sails can be folded to hide thermal signature from predators.",
+    "Spore shells can survive Kessler cascades if buried in silicate.",
+    "Orbital phasing can sync gamete meeting across lanes."
+  ],
+  "moments": [
+    "A swarm of Polvovela aligns their sails to create a momentary, perfect reflection of the star, signaling a mass spawning event before scattering into the dark like a shattered mirror."
+  ],
+  "journal": [
+    {
+      "en": "The ring is not silent; it sings in ice-thrust and light."
+    },
+    {
+      "en": "To graze is to burn oneself to stay in place."
+    }
+  ]
+}

@@ -1,0 +1,277 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "crang_lira",
+  "name": {
+    "en": "Crang-lira"
+  },
+  "world": "orbital",
+  "kind": "new",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "Dust-dense lanes of the Verrin ring, mid-shear zones",
+    "diet": "Ice grains, peroxide frost, clathrate scraps, micro-organisms",
+    "active": "Continuous grazer; enters clathrate tun during eclipses and cascade alarms",
+    "predators": []
+  },
+  "body": "Flattened silicate-ice carapace, lateral claws, tucked brood-chamber, reaction-mass siphons",
+  "chains": [
+    {
+      "id": "crang_lira.c1",
+      "trait": "Flattened silicate-ice carapace shields internal organs",
+      "links": [
+        "Armor absorbs micrometeoroid kinetic energy",
+        "Prevents sterilizing radiation and impact vaporization",
+        "Driven by constant hypervelocity debris flux"
+      ],
+      "roots": [
+        "F19",
+        "F13"
+      ],
+      "skill": {
+        "id": "crang_lira.shell_lock",
+        "name": {
+          "en": "Shell Lock"
+        },
+        "role": "Defence",
+        "effect": "Reduces damage by 80% for 2 laps, costs 5% mass.",
+        "numbers": {}
+      },
+      "weakness": "Immobile while locked, heavy mass drains delta-v.",
+      "observe": [
+        "Glittering carapace",
+        "Impact craters filled with regrowth ice",
+        "Hides abdomen when flares hit"
+      ],
+      "journal": {
+        "en": ""
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-24",
+        "date": "2026-11-24",
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 3
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-24",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "crang_lira.c2",
+      "trait": "Sideways skittering gait conserves orbital energy",
+      "links": [
+        "Lateral movement avoids costly radial orbital changes",
+        "Low profile minimizes cross-section to vertical impacts",
+        "Claws optimized for rowing through dust shear"
+      ],
+      "roots": [
+        "F8",
+        "F19"
+      ],
+      "skill": {
+        "id": "crang_lira.skitter",
+        "name": {
+          "en": "Skitter"
+        },
+        "role": "Basic",
+        "effect": "Moves 15 m/s sideways relative to ring, silent and stable.",
+        "numbers": {}
+      },
+      "weakness": "Cannot move radially quickly, easy target for phasing.",
+      "observe": [
+        "Legs move laterally",
+        "Body aligns with ring plane",
+        "Leaves no trail in vacuum"
+      ],
+      "journal": {
+        "en": ""
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-24",
+        "date": "2026-11-24",
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 2
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-24",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "crang_lira.c3",
+      "trait": "Crushing claws fracture ice for sublimation propulsion",
+      "links": [
+        "Sublimation provides reaction mass for orbit keeping",
+        "Cracks ice and harvests peroxide fuel",
+        "Requires high force to break ring grains"
+      ],
+      "roots": [
+        "F9",
+        "F22"
+      ],
+      "skill": {
+        "id": "crang_lira.ice_crack",
+        "name": {
+          "en": "Ice Crack"
+        },
+        "role": "Engage",
+        "effect": "Breaks ice grain, gains +10 delta-v and heals 5% mass.",
+        "numbers": {}
+      },
+      "weakness": "Cracking requires proximity, risks exposure to plasma.",
+      "observe": [
+        "Claws churning ice",
+        "Vapor jet flickers",
+        "Peroxide frost glows magenta on mouthparts"
+      ],
+      "journal": {
+        "en": ""
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-24",
+        "date": "2026-11-24",
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-24",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "crang_lira.c4",
+      "trait": "Tucked abdomen seals brood during radiation spikes",
+      "links": [
+        "Clathrate cap protects spores from kilogray doses",
+        "Tucked mass stabilizes rotational inertia for maneuvers",
+        "Brood uses parent's reaction mass for launch"
+      ],
+      "roots": [
+        "F23",
+        "F20"
+      ],
+      "skill": {
+        "id": "crang_lira.brood_seal",
+        "name": {
+          "en": "Brood Seal"
+        },
+        "role": "Control",
+        "effect": "Protects 3 offspring for 20 laps, reduces mobility.",
+        "numbers": {}
+      },
+      "weakness": "Sealed brood emits no heat, invisible to radar, but slow to escape.",
+      "observe": [
+        "Abdomen vanishes under carapace",
+        "Cap glows with clathrate crystal",
+        "Offspring vibrate inside shell"
+      ],
+      "journal": {
+        "en": ""
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-24",
+        "date": "2026-11-24",
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 4
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-24",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-24",
+    "by": [
+      "naturalist/qwen"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-24",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-24"
+    },
+    {
+      "date": "2026-11-24",
+      "who": "autoloop",
+      "what": "carcinisation links to 5 creature(s)"
+    }
+  ],
+  "carcinised": true,
+  "body_plan": {
+    "symmetry": "bilateral",
+    "arms": 10,
+    "origin": "Modified annulated spore-worm"
+  },
+  "temperament": "Cautious, herd-bound, defensive",
+  "secrets": [
+    "During a Kessler cascade, crabs release clathrate spores that drift outward, escaping the debris zone.",
+    "The carapace silicate can be harvested to craft shield upgrades.",
+    "Crang-lira herds can coordinate magnetic braking by linking claws."
+  ],
+  "moments": [
+    "A swarm of crang-lira suddenly skitters sideways, tucking their abdomens to form a shimmering wall of armor that deflects a Kessler cascade, drifting unharmed while the ring burns around them."
+  ],
+  "journal": [
+    {
+      "en": "Carcinisation is just nature's way of building a tank out of a worm."
+    },
+    {
+      "en": "Again."
+    }
+  ],
+  "relations": [
+    {
+      "with": "carapaz",
+      "kind": "convergent",
+      "via": "carcinisation",
+      "note": "both converged on the crab body plan from unrelated lineages (Borradaile 1916; Keiler, Wirkner and Richter 2017; Wolfe, Luque and Bracken-Grissom 2021)"
+    },
+    {
+      "with": "carmesa",
+      "kind": "convergent",
+      "via": "carcinisation",
+      "note": "both converged on the crab body plan from unrelated lineages (Borradaile 1916; Keiler, Wirkner and Richter 2017; Wolfe, Luque and Bracken-Grissom 2021)"
+    },
+    {
+      "with": "laja_tres",
+      "kind": "convergent",
+      "via": "carcinisation",
+      "note": "both converged on the crab body plan from unrelated lineages (Borradaile 1916; Keiler, Wirkner and Richter 2017; Wolfe, Luque and Bracken-Grissom 2021)"
+    },
+    {
+      "with": "lombardo",
+      "kind": "convergent",
+      "via": "carcinisation",
+      "note": "both converged on the crab body plan from unrelated lineages (Borradaile 1916; Keiler, Wirkner and Richter 2017; Wolfe, Luque and Bracken-Grissom 2021)"
+    },
+    {
+      "with": "salcaran",
+      "kind": "convergent",
+      "via": "carcinisation",
+      "note": "both converged on the crab body plan from unrelated lineages (Borradaile 1916; Keiler, Wirkner and Richter 2017; Wolfe, Luque and Bracken-Grissom 2021)"
+    }
+  ]
+}

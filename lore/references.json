@@ -12765,8 +12765,10 @@
       ]
     },
     "container-title": "Nature",
-    "x-status": "unverified",
-    "x-note": "cited by a council model from memory; not yet checked"
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "DOI": "10.1038/361615a0",
+    "x-checked": "2026-11-24"
   },
   {
     "id": "kasting_1993_hz",
@@ -13126,6 +13128,522 @@
       ]
     },
     "container-title": "Journal of Arachnology",
+    "x-checked": "2026-11-24"
+  },
+  {
+    "id": "melosh_1988_panspermia",
+    "type": "article-journal",
+    "title": "The rocky road to panspermia",
+    "author": [
+      {
+        "family": "Melosh",
+        "given": "H. J."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1988
+        ]
+      ]
+    },
+    "container-title": "Nature",
+    "DOI": "10.1038/332687a0",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "x-checked": "2026-11-24"
+  },
+  {
+    "id": "mileikowsky_2000_transfer",
+    "type": "article-journal",
+    "title": "Natural transfer of viable microbes in space",
+    "author": [
+      {
+        "family": "Mileikowsky",
+        "given": "C."
+      },
+      {
+        "family": "Cucinotta",
+        "given": "F. A."
+      },
+      {
+        "family": "Wilson",
+        "given": "J. W."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2000
+        ]
+      ]
+    },
+    "container-title": "Icarus",
+    "DOI": "10.1006/icar.2000.6397",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'Natural Transfer of Viable Microbes in Space 1. From Mars to Earth and Earth to Mars' (Mileikowsky, 2000, doi 10.1006/icar.1999.6317), title similarity 0.69, author match, year ok",
+    "x-checked": "2026-11-24"
+  },
+  {
+    "id": "gladman_1996_exchange",
+    "type": "article-journal",
+    "title": "The exchange of impact ejecta between terrestrial planets",
+    "author": [
+      {
+        "family": "Gladman",
+        "given": "B. J."
+      },
+      {
+        "family": "Burns",
+        "given": "J. A."
+      },
+      {
+        "family": "Duncan",
+        "given": "M."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1996
+        ]
+      ]
+    },
+    "container-title": "Science",
+    "DOI": "10.1126/science.271.5254.1387",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "x-checked": "2026-11-24"
+  },
+  {
+    "id": "kessler_1978_collision",
+    "type": "article-journal",
+    "title": "Collision frequency of artificial satellites: The creation of a debris belt",
+    "author": [
+      {
+        "family": "Kessler",
+        "given": "Donald J."
+      },
+      {
+        "family": "Cour-Palais",
+        "given": "Burton G."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1978
+        ]
+      ]
+    },
+    "container-title": "Journal of Geophysical Research: Space Physics",
+    "DOI": "10.1029/ja083ia06p02637",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); container-title corrected from 'Journal of Geophysical Research'; DOI added",
+    "x-checked": "2026-11-24"
+  },
+  {
+    "id": "horneck_2010_space",
+    "type": "article-journal",
+    "title": "Space microbiology",
+    "author": [
+      {
+        "family": "Horneck",
+        "given": "Gerda"
+      },
+      {
+        "family": "Klaus",
+        "given": "David M."
+      },
+      {
+        "family": "Mancinelli",
+        "given": "Rocco L."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2010
+        ]
+      ]
+    },
+    "container-title": "Microbiology and Molecular Biology Reviews",
+    "DOI": "10.1128/mmbr.00016-09",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "x-checked": "2026-11-24"
+  },
+  {
+    "id": "murray_1999_dynamics",
+    "type": "book",
+    "title": "Solar System Dynamics",
+    "author": [
+      {
+        "family": "Murray",
+        "given": "Carl D."
+      },
+      {
+        "family": "Dermott",
+        "given": "Stanley F."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1999
+        ]
+      ]
+    },
+    "ISBN": "9781139174817",
+    "x-status": "verified",
+    "x-note": "verified against OpenLibrary (title 1.00); ISBN added",
+    "x-checked": "2026-11-24"
+  },
+  {
+    "id": "canup_2010_rings",
+    "type": "article-journal",
+    "title": "Origin of Saturn’s rings and inner moons by mass removal from a lost Titan-sized satellite",
+    "author": [
+      {
+        "family": "Canup",
+        "given": "Robin M."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2010
+        ]
+      ]
+    },
+    "container-title": "Nature",
+    "DOI": "10.1038/nature09661",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 0.99); title corrected from 'Origin of Saturn's rings and inner moons by mass removal from a lost Titan-sized satellite'; DOI added",
+    "x-checked": "2026-11-24"
+  },
+  {
+    "id": "cuzzi_2010_rings",
+    "type": "article-journal",
+    "title": "An evolving view of Saturn's dynamic rings",
+    "author": [
+      {
+        "family": "Cuzzi",
+        "given": "J. N."
+      },
+      {
+        "family": "Burns",
+        "given": "J. A."
+      },
+      {
+        "family": "Charnoz",
+        "given": "S."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2010
+        ]
+      ]
+    },
+    "container-title": "Science",
+    "DOI": "10.1126/science.1179118",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'The Rings of Saturn' (Cuzzi, None, doi 10.1017/9781316286791.003), title similarity 0.46, author match, year ok",
+    "x-checked": "2026-11-24"
+  },
+  {
+    "id": "carlson_1999_peroxide",
+    "type": "article-journal",
+    "title": "Hydrogen peroxide on the surface of Europa",
+    "author": [
+      {
+        "family": "Carlson",
+        "given": "R. W."
+      },
+      {
+        "family": "Anderson",
+        "given": "M. S."
+      },
+      {
+        "family": "Johnson",
+        "given": "R. E."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1999
+        ]
+      ]
+    },
+    "container-title": "Science",
+    "DOI": "10.1126/science.283.5410.2062",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "x-checked": "2026-11-24"
+  },
+  {
+    "id": "johnson_1997_radiolysis",
+    "type": "article-journal",
+    "title": "Photolysis and radiolysis of water ice on outer solar system bodies",
+    "author": [
+      {
+        "family": "Johnson",
+        "given": "R. E."
+      },
+      {
+        "family": "Quickenden",
+        "given": "T. I."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1997
+        ]
+      ]
+    },
+    "container-title": "Journal of Geophysical Research: Planets",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); container-title corrected from 'Journal of Geophysical Research'; DOI added",
+    "DOI": "10.1029/97je00068",
+    "x-checked": "2026-11-24"
+  },
+  {
+    "id": "kargel_1992_ammonia",
+    "type": "article-journal",
+    "title": "Ammonia-water volcanism on icy satellites: Phase relations at 1 atmosphere",
+    "author": [
+      {
+        "family": "Kargel",
+        "given": "J. S."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1992
+        ]
+      ]
+    },
+    "container-title": "Icarus",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "DOI": "10.1016/0019-1035(92)90118-q",
+    "x-checked": "2026-11-24"
+  },
+  {
+    "id": "nimmo_2016_ocean",
+    "type": "article-journal",
+    "title": "Ocean worlds in the outer solar system",
+    "author": [
+      {
+        "family": "Nimmo",
+        "given": "F."
+      },
+      {
+        "family": "Pappalardo",
+        "given": "R. T."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2016
+        ]
+      ]
+    },
+    "container-title": "Journal of Geophysical Research: Planets",
+    "DOI": "10.1002/2016je005081",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "x-checked": "2026-11-24"
+  },
+  {
+    "id": "waite_2006_enceladus",
+    "type": "article-journal",
+    "title": "Cassini ion and neutral mass spectrometer: Enceladus plume composition and structure",
+    "author": [
+      {
+        "family": "Waite",
+        "given": "J. H."
+      },
+      {
+        "family": "Combi",
+        "given": "M. R."
+      },
+      {
+        "family": "Ip",
+        "given": "W.-H."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2006
+        ]
+      ]
+    },
+    "container-title": "Science",
+    "DOI": "10.1126/science.1121290",
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked"
+  },
+  {
+    "id": "roth_2014_europa",
+    "type": "article-journal",
+    "title": "Transient Water Vapor at Europa’s South Pole",
+    "author": [
+      {
+        "family": "Roth",
+        "given": "L."
+      },
+      {
+        "family": "Saur",
+        "given": "J."
+      },
+      {
+        "family": "Retherford",
+        "given": "K. D."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2014
+        ]
+      ]
+    },
+    "container-title": "Science",
+    "DOI": "10.1126/science.1247051",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 0.99); title corrected from 'Transient water vapor at Europa's south pole'; DOI added",
+    "x-checked": "2026-11-24"
+  },
+  {
+    "id": "beja_2000_rhodopsin",
+    "type": "article-journal",
+    "title": "Bacterial rhodopsin: evidence for a new type of phototrophy in the sea",
+    "author": [
+      {
+        "family": "Béjà",
+        "given": "O."
+      },
+      {
+        "family": "Aravind",
+        "given": "L."
+      },
+      {
+        "family": "Koonin",
+        "given": "E. V."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2000
+        ]
+      ]
+    },
+    "container-title": "Science",
+    "DOI": "10.1126/science.289.5486.1902",
+    "x-status": "unverified",
+    "x-note": "cited by a council model from memory; not yet checked"
+  },
+  {
+    "id": "fray_2009_sublimation",
+    "type": "article-journal",
+    "title": "Sublimation of ices of astrophysical interest: A bibliographic review",
+    "author": [
+      {
+        "family": "Fray",
+        "given": "N."
+      },
+      {
+        "family": "Schmitt",
+        "given": "B."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2009
+        ]
+      ]
+    },
+    "container-title": "Planetary and Space Science",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "DOI": "10.1016/j.pss.2009.09.011",
+    "x-checked": "2026-11-24"
+  },
+  {
+    "id": "melosh_1988_rocky",
+    "type": "article-journal",
+    "title": "The rocky road to panspermia",
+    "x-status": "verified",
+    "x-note": "verified against Crossref (title 1.00); DOI added",
+    "author": [
+      {
+        "family": "Melosh",
+        "given": "H. J."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1988
+        ]
+      ]
+    },
+    "container-title": "Nature",
+    "DOI": "10.1038/332687a0",
+    "x-checked": "2026-11-24"
+  },
+  {
+    "id": "mileikowsky_2000_natural",
+    "type": "article-journal",
+    "title": "Natural transfer of viable microbes in space",
+    "x-status": "unverified",
+    "x-note": "ambiguous: closest Crossref hit is 'Natural Transfer of Viable Microbes in Space 1. From Mars to Earth and Earth to Mars' (Mileikowsky, 2000, doi 10.1006/icar.1999.6317), title similarity 0.69, author match, year ok",
+    "author": [
+      {
+        "family": "Mileikowsky",
+        "given": "C."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2000
+        ]
+      ]
+    },
+    "container-title": "Icarus",
+    "x-checked": "2026-11-24"
+  },
+  {
+    "id": "melosh_1988_ejecta",
+    "type": "article-journal",
+    "title": "Ejecta, impact craters, and the transport of life",
+    "x-status": "rejected",
+    "x-note": "nothing plausible; closest hit 'Ejecta Flow Features' (, 2025) title similarity 0.36",
+    "author": [
+      {
+        "family": "Melosh",
+        "given": "H. J."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1988
+        ]
+      ]
+    },
+    "container-title": "Nature",
     "x-checked": "2026-11-24"
   }
 ]

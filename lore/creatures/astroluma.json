@@ -1,0 +1,258 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "astroluma",
+  "name": {
+    "en": "Astroluma"
+  },
+  "world": "orbital",
+  "kind": "new",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "Mid-ring lanes, 1.4–1.8 R_V; avoids chaotic Kessler zones",
+    "diet": "Water ice, hydrogen peroxide frost, silicate-organic dust",
+    "active": "Continuous; phototropic, phases with traffic",
+    "predators": []
+  },
+  "body": "Bilateral body with a foldable, mirror-polished sail membrane; sublimation nozzles; ammonia-brine core encased in electrostatic ice clump armor",
+  "chains": [
+    {
+      "id": "astroluma.c1",
+      "trait": "Broad silver sail catches starlight and thrusts outward",
+      "links": [
+        "High-albedo sail reflects 1360 W/m² flux",
+        "Radiation pressure (9 uPa) exerts continuous thrust",
+        "Thrust offsets drag and sublimation mass loss",
+        "No reaction mass needed for station-keeping; spirals outward"
+      ],
+      "roots": [
+        "F10",
+        "F5",
+        "F18"
+      ],
+      "skill": {
+        "id": "astroluma.sail_catch",
+        "name": {
+          "en": "Sail Catch"
+        },
+        "role": "Basic",
+        "effect": "Catch radiation pressure to gain 50 m altitude and reduce inward drift.",
+        "numbers": {}
+      },
+      "weakness": "Eclipse Drift: In Verrin's shadow, thrust vanishes and orbital decay accelerates.",
+      "observe": [
+        "Sail glints like a mirror at low sun angles",
+        "Spirals outward steadily without ejecting mass",
+        "Drops altitude rapidly when entering planet shadow"
+      ],
+      "journal": {
+        "en": "It rides the star's push like a kite, paying no fuel for the sky."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-24",
+        "date": "2026-11-24",
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 5
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-24",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "astroluma.c2",
+      "trait": "Sublimation nozzles spray steam to brake and phasing",
+      "links": [
+        "Ring lanes have km/s shear; rendezvous needs precise delta-v",
+        "Loose gas provides no traction; reaction mass is required",
+        "Sublimates ingested ice into vapor",
+        "Throws vapor to adjust relative velocity and orbital phase"
+      ],
+      "roots": [
+        "F9",
+        "F8",
+        "F18"
+      ],
+      "skill": {
+        "id": "astroluma.steam_brake",
+        "name": {
+          "en": "Steam Brake"
+        },
+        "role": "Engage",
+        "effect": "Eject ice to shed 0.5 m/s relative velocity and dock safely.",
+        "numbers": {}
+      },
+      "weakness": "Fuel Debt: Using ice for thrust consumes food and armor reserves.",
+      "observe": [
+        "Sprays translucent vapor jets when altering course",
+        "Slows instantly against traffic shear",
+        "Grazes ice to refill vapor reserves"
+      ],
+      "journal": {
+        "en": "Every metre per second is bought with a mouthful of ice."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-24",
+        "date": "2026-11-24",
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 5
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-24",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "astroluma.c3",
+      "trait": "Spore shells bloom as reflective discs to drift and mate",
+      "links": [
+        "Microgravity prevents sedimentation; gametes must be aimed",
+        "Budding releases spore encased in hard shell",
+        "Shell expands into sail-disc to catch radiation pressure",
+        "Drifts on resonant orbit to phase with mates in L-edge swarms"
+      ],
+      "roots": [
+        "F23",
+        "F10",
+        "F7"
+      ],
+      "skill": {
+        "id": "astroluma.shell_drift",
+        "name": {
+          "en": "Shell Drift"
+        },
+        "role": "Social",
+        "effect": "Release spore shell to drift and link with a mate at 10 m range.",
+        "numbers": {}
+      },
+      "weakness": "Sail Snag: Spore cannot steer if sail is punctured; drifts uncontrollably.",
+      "observe": [
+        "Pop open hard shell and snap out silver disc",
+        "Disc catches light and drifts away on its own",
+        "Follows curved path matching orbital phasing"
+      ],
+      "journal": {
+        "en": "The egg is not a cradle, but a sail waiting for the wind."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-24",
+        "date": "2026-11-24",
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 3
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-24",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "astroluma.c4",
+      "trait": "Ice clump armor shields core from radiation and impacts",
+      "links": [
+        "Ring flux delivers 0.5–5 Gy/day; radiation kills metabolism",
+        "Ionizing electrons stop within centimetres of water",
+        "Core encapsulated in electrostatic ice/silicate clumps",
+        "Armor absorbs dose and stops micrometeoroid fragments"
+      ],
+      "roots": [
+        "F13",
+        "F6",
+        "F19"
+      ],
+      "skill": {
+        "id": "astroluma.ice_armor",
+        "name": {
+          "en": "Ice Armor"
+        },
+        "role": "Defence",
+        "effect": "Harden ice shell to reduce incoming damage by 40%.",
+        "numbers": {}
+      },
+      "weakness": "Overheat: Temperatures above 260 K breach clathrate skin and kill the cell.",
+      "observe": [
+        "Rocky, clumpy exterior gleams in shadow",
+        "Absorbs impact without damage to core",
+        "Melts and shrinks if exposed to high heat"
+      ],
+      "journal": {
+        "en": "It wears the ring's ice like a tank, hiding the soft truth inside."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-24",
+        "date": "2026-11-24",
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-24",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "Kessler Drifter",
+      "kind": "cousin",
+      "note": "(council kind 'Competition') Astroluma avoids saturated Kessler lanes where Drifters graze debris; Drifters trigger cascades that scatter Astroluma's phasing windows."
+    },
+    {
+      "with": "Coth Plume Moth",
+      "kind": "cousin",
+      "note": "(council kind 'Commensal') Astroluma's shed ice clumps, rich in radiolytic organics, fall toward Coth and feed Plume Moths on their descent."
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-24",
+    "by": [
+      "naturalist/qwen"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-24",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-24"
+    }
+  ],
+  "body_plan": {
+    "symmetry": "bilateral",
+    "origin": "Ring-adapted descendant of Coth surface grazers lifted by impact ejecta"
+  },
+  "temperament": "Drifting, opportunistic, phasing-obsessed, cautious of shear",
+  "secrets": [
+    "The sail is not passive: it contains bacteriorhodopsin that converts reflected light to chemical energy, supplementing the ice diet.",
+    "The spore can modulate albedo to vanish from ground view, but this costs energy and halts outward thrust.",
+    "The sail can be folded to become a dark sphere, making the creature invisible to ground observers, but this risks orbital decay."
+  ],
+  "moments": [
+    "On the dark side of Coth, as the star sinks behind Verrin's rim, a shell pops. The disc snaps open, silver as a mirror, and catches the dying light. For a minute, it is a second moon, a silver egg drifting on the star's push, until the planet swallows it and the light dies."
+  ],
+  "journal": [
+    {
+      "en": "The night-sky egg: a satellite that breathes ice and rides light."
+    },
+    {
+      "en": "From the ground it is a moving star; in the ring, a grazer with a sail."
+    }
+  ]
+}

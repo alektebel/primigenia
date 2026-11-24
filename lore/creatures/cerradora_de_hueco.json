@@ -1,0 +1,256 @@
+{
+  "schema": "cpore.creature/1",
+  "id": "cerradora_de_hueco",
+  "name": {
+    "en": "Cerradora de Hueco"
+  },
+  "world": "orbital",
+  "kind": "new",
+  "status": "draft",
+  "stage": "space",
+  "niche": {
+    "habitat": "Verrin's Ring Shear-Lanes (1.4–1.6 Rv), preferring density waves and resonance edges where orbital shear is highest.",
+    "diet": "Water ice, hydrogen peroxide frost, grazers, reaction-mass exhaust plumes.",
+    "active": "Continuous diurnal activity; hunting peaks during Kessler cascade events when debris density spikes.",
+    "predators": []
+  },
+  "body": "Asymmetric body: central clathrate-brain core protected by 1 mm skin; magenta-hinged reflective sail on port side for radiation pressure; starboard cluster of sublimation nozzles; shifted-amber photoreceptor array for Doppler sensing; fine debris-tracking filaments extendable from flanks.",
+  "chains": [
+    {
+      "id": "cerradora_de_hueco.c1",
+      "trait": "Doppler-shifted amber photoreceptors",
+      "links": [
+        "Orbital intercept requires precise phasing",
+        "Phasing requires knowing prey's orbital period",
+        "Period shifts reflected light frequency via Doppler effect",
+        "Eyes evolved shifted-amber photoreceptors to read spectral shift"
+      ],
+      "roots": [
+        "F8",
+        "F12",
+        "F21"
+      ],
+      "skill": {
+        "id": "cerradora_de_hueco.phase_lock",
+        "name": {
+          "en": "Phase Lock"
+        },
+        "role": "Engage",
+        "effect": "Locks onto prey's orbital period, predicting position for 5 turns. +50% hit chance on predicted intercept.",
+        "numbers": {}
+      },
+      "weakness": "Blind to optical phasing during eclipse; sensors rely on reflected light.",
+      "observe": [
+        "Amber eyes glow with shifted spectrum when targeting",
+        "Tracking movements anticipate prey's future position",
+        "Lock beam points ahead of prey velocity vector"
+      ],
+      "journal": {
+        "en": "It doesn't see where you are; it sees where you'll be."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-24",
+        "date": "2026-11-24",
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 4
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-24",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "cerradora_de_hueco.c2",
+      "trait": "Peroxide-catalyzed sublimation bladders",
+      "links": [
+        "Delta-v requires ejected mass for orbit changes",
+        "Mass must be recovered from environment",
+        "Peroxide-ice reaction yields high impulse",
+        "Catalyst bladders evolved to maximize exhaust velocity"
+      ],
+      "roots": [
+        "F9",
+        "F18",
+        "F21"
+      ],
+      "skill": {
+        "id": "cerradora_de_hueco.impulse_burn",
+        "name": {
+          "en": "Impulse Burn"
+        },
+        "role": "Basic",
+        "effect": "Burns ice and peroxide, delivering 15 m/s delta-v. Can change semi-major axis for Hohmann transfers.",
+        "numbers": {}
+      },
+      "weakness": "High peroxide use risks internal poisoning; 10% chance of self-damage if burn exceeds capacity.",
+      "observe": [
+        "Nozzle clusters vent white gas with visible heat haze",
+        "Body color deepens with peroxide load",
+        "Mass gauge drops visibly with each maneuver"
+      ],
+      "journal": {
+        "en": "It eats poison to buy speed."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-24",
+        "date": "2026-11-24",
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 3
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-24",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "cerradora_de_hueco.c3",
+      "trait": "Hinged reflective sail",
+      "links": [
+        "Radiation pressure provides outward thrust",
+        "Thrust can be harvested for free altitude gain",
+        "Hinge allows sail to catch radiation without blocking nozzles",
+        "Hinged sail evolved to balance lift and thrust vectoring"
+      ],
+      "roots": [
+        "F10",
+        "F5"
+      ],
+      "skill": {
+        "id": "cerradora_de_hueco.spiral_assist",
+        "name": {
+          "en": "Spiral Assist"
+        },
+        "role": "Control",
+        "effect": "Uses radiation pressure to gain 0.5 altitude without mass cost. Reduces energy cost of outbound transfers.",
+        "numbers": {}
+      },
+      "weakness": "Sail blocks retro-thrust; cannot burn inward while sail is active.",
+      "observe": [
+        "Magenta sail catches starlight and shimmers",
+        "Sail hinge clicks when adjusting angle",
+        "Outward spiral path visible during idle drift"
+      ],
+      "journal": {
+        "en": "The star pushes it up; gravity pays the debt."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-24",
+        "date": "2026-11-24",
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 6
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-24",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    },
+    {
+      "id": "cerradora_de_hueco.c4",
+      "trait": "Debris-exhaust tracking filaments",
+      "links": [
+        "Kessler cascade creates chaotic debris field",
+        "Debris forces prey to expend reaction mass to survive",
+        "Reaction mass exhaust plumes reveal prey position",
+        "Filaments evolved to detect and track exhaust plumes"
+      ],
+      "roots": [
+        "F19",
+        "F9"
+      ],
+      "skill": {
+        "id": "cerradora_de_hueco.cascade_hunt",
+        "name": {
+          "en": "Cascade Hunt"
+        },
+        "role": "Signature",
+        "effect": "In debris fields, detects panic burns of prey. +75% capture chance; reveals hidden grazers.",
+        "numbers": {}
+      },
+      "weakness": "Filaments can snag on large debris fragments; movement restricted in dense debris.",
+      "observe": [
+        "Filaments extend into debris cloud like sensory hairs",
+        "Filaments glow near exhaust plumes",
+        "Predator ignores open ice to focus on debris lanes"
+      ],
+      "journal": {
+        "en": "In the storm of broken ice, the predator watches the sparks."
+      },
+      "plausibility": {
+        "verdict": "fixable",
+        "judge": "astrobio/autoloop-2026-11-24",
+        "date": "2026-11-24",
+        "scores": {
+          "astrobio": 6,
+          "skeptic": 4
+        }
+      },
+      "provenance": {
+        "council_run": "autoloop-2026-11-24",
+        "by": [
+          "naturalist/qwen"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "with": "Ring Grazer",
+      "kind": "cousin",
+      "note": "(council kind 'Predator-Prey') Specialist hunter of grazers; uses Kessler cascades to flush prey and force mass expenditure, leaving them vulnerable to phasing strikes."
+    }
+  ],
+  "provenance": {
+    "council_run": "autoloop-2026-11-24",
+    "by": [
+      "naturalist/qwen"
+    ]
+  },
+  "changelog": [
+    {
+      "date": "2026-11-24",
+      "who": "import_got",
+      "what": "imported from council run autoloop-2026-11-24"
+    }
+  ],
+  "body_plan": {
+    "symmetry": "asymmetric",
+    "origin": "Ejecta descendant (F17)"
+  },
+  "temperament": "Calculating patience broken by explosive action during debris events.",
+  "secrets": [
+    "Can trigger micro-cascades by venting superheated gas onto slow-moving ice chunks to create cover and flush prey.",
+    "Sail pigment is magenta bacteriorhodopsin, allowing limited photosynthesis during the sail's outward drift."
+  ],
+  "moments": [
+    "The ring goes dark as a cascade erupts; ice shards scream past. The Cerradora folds its sail, vents a controlled plume of white gas, and dives into the chaos where the grazers' panicked thrusts betray them. It emerges only when the debris clears, heavy with the bloated form of a grazer caught in the shear."
+  ],
+  "journal": [
+    {
+      "en": "It lives in the gaps between orbits."
+    },
+    {
+      "en": "A shadow that moves by breaking physics."
+    },
+    {
+      "en": "The Kessler storm is its hunting ground."
+    },
+    {
+      "en": "It waits for the universe to break so it can strike."
+    }
+  ]
+}

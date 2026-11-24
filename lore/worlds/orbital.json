@@ -1,0 +1,464 @@
+{
+  "schema": "cpore.world/1",
+  "id": "orbital",
+  "kind": "fictional",
+  "system": {
+    "star": "Iora (K2V)",
+    "position": "fictional",
+    "distance_ly_from_sol": null
+  },
+  "name": {
+    "en": "The Verrin Sill",
+    "es": "El Umbral de Verrin"
+  },
+  "status": "draft",
+  "facts": [
+    {
+      "id": "F1",
+      "group": "star",
+      "claim": "Iora is a K2V dwarf, 0.82 M_sun, 0.33 L_sun, 4,950 K, 3.9 Gyr, rotating every 34 d, with no superflare in 2 Gyr.",
+      "justification": "Orbital life has no atmosphere to hide under, so a flare star would sterilise it; at equal flux a 4,950 K photosphere also gives about a fifth of Earth's UV.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "0.33",
+      "unit": "L_sun",
+      "consequences": [
+        "Pigments absorb amber light peaked near 585 nm, so the biosphere reads magenta-black.",
+        "Exposed vacuum life persists for gigayears without atmospheric shielding."
+      ]
+    },
+    {
+      "id": "F2",
+      "group": "orbit",
+      "claim": "Verrin orbits at 0.575 AU with e = 0.03 and 1.5 degrees inclination: a 176-day year and 1,360 W/m2 at the ring.",
+      "justification": "a = sqrt(L) puts Earth-equivalent flux around a 0.33 L_sun star; Kepler with 0.82 M_sun then gives 176 d.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "176",
+      "unit": "d",
+      "consequences": [
+        "Water chemistry is possible only because the flux matches Earth's.",
+        "The 176-day year fixes two eclipse seasons."
+      ],
+      "refs": [
+        "murray_1999_dynamics"
+      ]
+    },
+    {
+      "id": "F3",
+      "group": "planet",
+      "claim": "Verrin is a 0.30 M_J Saturn-class giant, 0.84 R_J, density 0.63 g/cm3, gravity 1.05 g, escape velocity 36 km/s.",
+      "justification": "Mass and radius are chosen together to keep density in the Saturn range; 0.95 R_J at this mass would be an impossible 0.43 g/cm3.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "0.30",
+      "unit": "M_J",
+      "consequences": [
+        "The well binds ring material and makes ring escape expensive.",
+        "Saturn-class density puts the ice Roche limit just outside the ring edge."
+      ]
+    },
+    {
+      "id": "F4",
+      "group": "planet",
+      "claim": "Verrin spins in 10.5 h with 26.7 degrees obliquity and a 0.4 G equatorial dipole, ten times weaker than Jupiter's.",
+      "justification": "Fast rotation runs the dynamo; the weak dipole is deliberate, since a Jovian field would make the belts lethal.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "10.5",
+      "unit": "h",
+      "consequences": [
+        "Belt flux pulses on a 10.5 h radiation forecast.",
+        "The tilt sweeps the ring plane through shadow twice per year."
+      ]
+    },
+    {
+      "id": "F5",
+      "group": "orbit",
+      "claim": "The ring spans 1.35-2.1 R_V, inside the ~2.17 R_V fluid Roche limit for 0.9 g/cm3 ice, with optical depth 1.2 and 20 m thickness.",
+      "justification": "A ring inside Roche is a body that failed to accrete, so its existence is derived, not asserted.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "1.35-2.1",
+      "unit": "R_V",
+      "consequences": [
+        "The habitat is a 20 m sheet: a two-dimensional world.",
+        "Crossing orbits meet at km/s; co-orbital neighbours touch gently."
+      ],
+      "refs": [
+        "canup_2010_rings",
+        "cuzzi_2010_rings",
+        "murray_1999_dynamics"
+      ]
+    },
+    {
+      "id": "F6",
+      "group": "planet",
+      "claim": "Coth is a rocky moon, 2,300 km radius, 0.31 g, 4.7 g/cm3, at 20 R_V every 16 d on e = 0.015 held by a 3:2 resonance.",
+      "justification": "Rock density is the only way to get 0.31 g at 2,300 km; the forced eccentricity dissipates of order 10^11 W, enough for a regional brine ocean.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "2300",
+      "unit": "km",
+      "consequences": [
+        "Coth is the system's only solid viewpoint and only water source.",
+        "Tidal heat sustains a brine ocean under ice for gigayears."
+      ],
+      "refs": [
+        "nimmo_2016_ocean"
+      ]
+    },
+    {
+      "id": "F7",
+      "group": "orbit",
+      "claim": "The Ledge, Coth's L4/L5 swarm, is a co-orbital graveyard of captured ice bodies; L4 is a potential maximum where trapping is by Coriolis force.",
+      "justification": "The Lagrange points contain nothing themselves; what accumulates there is dead ice, not a nutrient cloud.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "consequences": [
+        "The Ledge is loot, not a larder: arrival means mining.",
+        "Trojan orbits are predictable decades ahead."
+      ],
+      "refs": [
+        "murray_1999_dynamics"
+      ]
+    },
+    {
+      "id": "F8",
+      "group": "orbit",
+      "claim": "Ring orbital speed is 21.6 km/s inner and 17.4 km/s outer, so crossing orbits close at km/s while co-orbital neighbours drift at cm/s.",
+      "justification": "v = sqrt(GM/r) for a 0.30 M_J primary; the shear makes every rendezvous a braking problem.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "17-22",
+      "unit": "km/s",
+      "consequences": [
+        "An 8 km/s encounter vaporises both parties; safe contact is below 1 m/s.",
+        "Predation needs a phase change, not a chase."
+      ],
+      "refs": [
+        "murray_1999_dynamics",
+        "cuzzi_2010_rings"
+      ]
+    },
+    {
+      "id": "F9",
+      "group": "orbit",
+      "claim": "Locomotion is reaction mass: an organism sublimates the ice it eats and throws it, so grazing and travel share one reservoir.",
+      "justification": "Momentum conservation in vacuum means every delta-v is paid with ejected mass; nothing supplies km/s for free.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "consequences": [
+        "Delta-v is the stamina bar and every approach is a braking problem.",
+        "Range is a function of appetite."
+      ]
+    },
+    {
+      "id": "F10",
+      "group": "orbit",
+      "claim": "Radiation pressure at 0.575 AU is 9 micropascals on a reflector; a 10 g/m2 living sail accelerates near 1 mm/s2, enough to spiral outward, never inward.",
+      "justification": "P = 2I/c at 1,360 W/m2, and the thrust always points away from the star.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "9",
+      "unit": "uPa",
+      "consequences": [
+        "Sails are one-way tickets outward or a way to hold station.",
+        "A sail is a large reflector and advertises its owner."
+      ]
+    },
+    {
+      "id": "F11",
+      "group": "atmosphere",
+      "claim": "The medium is granular vacuum near 10^-6 Pa with a mean free path of metres; sound is attenuated within metres.",
+      "justification": "At ring temperature the remaining gas is collisionless at organism scale, so pressure waves never reach a receiver.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "1e-6",
+      "unit": "Pa",
+      "consequences": [
+        "Communication is optical, electrical or tactile; nothing you kill makes a sound.",
+        "Scent is a ballistic grain that arrives late and can be dodged."
+      ],
+      "refs": [
+        "fray_2009_sublimation"
+      ]
+    },
+    {
+      "id": "F12",
+      "group": "atmosphere",
+      "claim": "Sunlight is 1,360 W/m2, zero in eclipse; Verrin-shine on Coth's night is 1.7 W/m2 at albedo 0.5.",
+      "justification": "Planet-shine scales as albedo times (R/d)^2, about a thousand full moons: dim but enough to see by.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "1.7",
+      "unit": "W/m2",
+      "consequences": [
+        "Night is dim, not blind; hunting by planet-light works.",
+        "Silhouetting against ringshine is the standard detection trick."
+      ]
+    },
+    {
+      "id": "F13",
+      "group": "climate",
+      "claim": "Belt dose at Coth's surface is 0.5-5 Gy/day, and 10 cm of ice cuts it roughly a thousandfold.",
+      "justification": "A weak dipole at 20 R_V gives about a tenth of Europa's dose, and MeV electrons stop within centimetres of water.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "0.5-5",
+      "unit": "Gy/day",
+      "consequences": [
+        "Burrow 20 cm and live, or stay sail-thin and die young.",
+        "Exposure can be timed to the 10.5 h spin."
+      ],
+      "refs": [
+        "cooper_2001_irradiation"
+      ]
+    },
+    {
+      "id": "F14",
+      "group": "climate",
+      "claim": "A ring organism sees a 1.7-2.0 h eclipse once per 6.5-12.7 h lap; the ring plane crosses the shadow twice per 176-day year.",
+      "justification": "At 1.35-2.1 R_V the planet subtends 96-57 degrees, so shadow is a sixth to a tenth of each lap.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "1.7-2.0",
+      "unit": "h",
+      "consequences": [
+        "The thermal problem is dumping heat, not storing light.",
+        "Predators wait at shadow edges where prey must slow to cool."
+      ],
+      "refs": [
+        "murray_1999_dynamics"
+      ]
+    },
+    {
+      "id": "F15",
+      "group": "ocean",
+      "claim": "Coth's ocean is water with 8% ammonia and salts at 180-230 K, pH 9, sealed by a clathrate-hydrate lid.",
+      "justification": "The ammonia-water eutectic at 176 K is the common antifreeze that keeps water liquid here; a clathrate skin holds about 1 bar of vapour.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "8",
+      "unit": "% NH3",
+      "consequences": [
+        "Cells stay liquid near 200 K without freezing.",
+        "A puncture reseals as clathrate, so repair is chemistry."
+      ],
+      "refs": [
+        "kargel_1992_ammonia",
+        "nimmo_2016_ocean"
+      ]
+    },
+    {
+      "id": "F16",
+      "group": "geology",
+      "claim": "Cryovolcanic plumes leave Coth at 300 m/s and 100-1,000 kg/s, feeding a dust-and-plasma torus at 20 R_V.",
+      "justification": "Plume speeds are Enceladus-like and cannot reach Coth's 3.7 km/s escape velocity, so they feed a torus but never ring speed.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "300",
+      "unit": "m/s",
+      "consequences": [
+        "The torus is a refuelling station, not a launch ramp.",
+        "Plume phases are a calendar: water arrives on schedule."
+      ],
+      "refs": [
+        "waite_2006_enceladus",
+        "roth_2014_europa"
+      ]
+    },
+    {
+      "id": "F17",
+      "group": "geology",
+      "claim": "Ring life arrived as impact ejecta: a 1 km impactor about every million years throws brine above Coth's escape while a fraction stays below sterilising shock; dust spirals in over 10,000-100,000 years.",
+      "justification": "Lithopanspermia is the only route that pays the km/s bill; electrostatic lofting lifts grains metres, so the ring is a colony, not a cradle, and ring abiogenesis is refused.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "1e6",
+      "unit": "yr",
+      "consequences": [
+        "Every lineage descends from a launch event, not local chemistry.",
+        "Spores, not adults, are the dispersal stage."
+      ],
+      "refs": [
+        "melosh_1988_panspermia",
+        "mileikowsky_2000_transfer",
+        "gladman_1996_exchange"
+      ]
+    },
+    {
+      "id": "F18",
+      "group": "chemistry",
+      "claim": "The ring is 92% water ice and 8% silicate plus organics; at 221 K ice sublimes, and belt electrons radiolyse the top millimetre into hydrogen peroxide and hydrogen.",
+      "justification": "A warm ice ring loses mass to sublimation and is replenished by Coth's plumes; the peroxide frost makes food and poison the same material.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "92",
+      "unit": "% ice",
+      "consequences": [
+        "Peroxide above about 10 mM poisons; below it, it powers metabolism.",
+        "Grain rims differ chemically from cores, so milling depth matters."
+      ],
+      "refs": [
+        "carlson_1999_peroxide",
+        "johnson_1997_radiolysis"
+      ]
+    },
+    {
+      "id": "F19",
+      "group": "geology",
+      "claim": "Micrometeoroids strike at 10-40 km/s, and once a ring lane saturates its fragments become projectiles: the Kessler cascade.",
+      "justification": "Fragments are themselves projectiles, so one breakup can close a lane for years.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "10-40",
+      "unit": "km/s",
+      "consequences": [
+        "A cascade is a disaster and a windfall of free matter at once.",
+        "Lane closure is a strategic map change lasting years."
+      ],
+      "refs": [
+        "kessler_1978_collision"
+      ]
+    },
+    {
+      "id": "F20",
+      "group": "chemistry",
+      "claim": "The intracellular solvent is an ammonia-water eutectic brine at 176 K, held by a 1 mm clathrate skin resisting about 1 bar of vapour pressure.",
+      "justification": "Eutectic chemistry is real and matches ring temperature; the skin is the pressure vessel that allows a liquid cell in vacuum.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "176",
+      "unit": "K",
+      "consequences": [
+        "Metabolism near 200 K is slow and long-lived.",
+        "Freezing is survivable; boiling is not."
+      ],
+      "refs": [
+        "kargel_1992_ammonia"
+      ]
+    },
+    {
+      "id": "F21",
+      "group": "biochemistry",
+      "claim": "Primary production uses amber-light photosynthesis with magenta bacteriorhodopsin-like pigments peaked near 585 nm, the hydrogen/peroxide couple at about -340 kJ/mol, and direct electron capture from the torus.",
+      "justification": "A 4,950 K star peaks in the yellow, where retinal-based pigments outcompete chlorophyll, and peroxide frost supplies the oxidant.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "-340",
+      "unit": "kJ/mol",
+      "consequences": [
+        "Three metabolisms coexist: light, peroxide redox and electrotrophy.",
+        "Colour is magenta-black and advertises diet."
+      ],
+      "refs": [
+        "beja_2000_rhodopsin",
+        "carlson_1999_peroxide"
+      ]
+    },
+    {
+      "id": "F22",
+      "group": "biochemistry",
+      "claim": "Food is ice, peroxide frost, UV-processed organics such as formaldehyde and methanol, and other organisms; poisons are peroxide above 10 mM, free oxygen, heat above 260 K, ammonia above 20% and impact plasma.",
+      "justification": "The same radiolysis that stocks the larder stocks the toxin, so every meal is a dose calculation.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "260",
+      "unit": "K",
+      "consequences": [
+        "Overeating peroxide is self-poisoning: a resource with a hard cap.",
+        "The warm inner ring is acid, not comfortable."
+      ],
+      "refs": [
+        "carlson_1999_peroxide",
+        "johnson_1997_radiolysis"
+      ]
+    },
+    {
+      "id": "F23",
+      "group": "biochemistry",
+      "claim": "Reproduction is budding plus spring-loaded spore shells; tuns survive vacuum and kilogray doses, and gamete meeting in free fall must be aimed by orbital phasing, not by falling.",
+      "justification": "There is no sedimentation in microgravity, so gametes must be delivered; tardigrade tuns show the survival is measured biology.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "consequences": [
+        "Spore release is an aiming problem measured in metres per second.",
+        "Dormancy is the default stage; adulthood is the risky one."
+      ],
+      "refs": [
+        "jonsson_2008_tardigrades",
+        "horneck_2010_space"
+      ]
+    },
+    {
+      "id": "F24",
+      "group": "sky",
+      "claim": "From Coth the ring appears edge-on as a line spanning roughly 8-12 degrees, and ring organisms cross it at 17-22 km/s as moving lights: the night-sky egg.",
+      "justification": "At 20 R_V the ring's 1.35-2.1 R_V radius subtends that angle, and a lit body at ring speed crosses the line in tens of seconds to minutes.",
+      "status": "active",
+      "provenance": {
+        "council": "planet drafts + peer reviews + astrobio referee, merged by the chair (deepseek skeptic)"
+      },
+      "value": "8-12",
+      "unit": "deg",
+      "consequences": [
+        "Surface mythologies read the orbital biosphere as wandering stars.",
+        "The sky is a calendar and a warning system: a cascade is visible before it arrives."
+      ]
+    }
+  ],
+  "changelog": [
+    {
+      "date": "2026-11-24",
+      "who": "autoloop",
+      "what": "world canon drafted by the council chair from 24 facts (planet drafts, peer reviews, astrobio referee)"
+    }
+  ]
+}

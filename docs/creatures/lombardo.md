@@ -107,6 +107,7 @@ Trait ← Manipulates dense chitin-glucan fungal biomass ← Cracks carbonate mi
 | carmesa | convergent | carcinisation | both converged on the crab body plan from unrelated lineages (Borradaile 1916; Keiler, Wirkner and Richter 2017; Wolfe, Luque and Bracken-Grissom 2021) |
 | laja_tres | convergent | carcinisation | both converged on the crab body plan from unrelated lineages (Borradaile 1916; Keiler, Wirkner and Richter 2017; Wolfe, Luque and Bracken-Grissom 2021) |
 | salcaran | convergent | carcinisation | both converged on the crab body plan from unrelated lineages (Borradaile 1916; Keiler, Wirkner and Richter 2017; Wolfe, Luque and Bracken-Grissom 2021) |
+| crang_lira | convergent | carcinisation | both converged on the crab body plan from unrelated lineages (Borradaile 1916; Keiler, Wirkner and Richter 2017; Wolfe, Luque and Bracken-Grissom 2021) |
 
 ## Journal
 
@@ -132,3 +133,4 @@ council run `autoloop-2026-11-19`; by naturalist/qwen
 
 - 2026-11-20 import_got: imported from council run autoloop-2026-11-19
 - 2026-11-19 autoloop: carcinisation links to 4 creature(s)
+- 2026-11-24 autoloop: carcinisation links to 1 creature(s)

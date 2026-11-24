@@ -156,6 +156,16 @@
 | [Sifonera de Pluma](sifonera_de_pluma.md) | new | draft | 4 | 2 fixable, 2 plausible |
 | [Vaelen-tok](vaelen_tok.md) | new | draft | 4 | 3 fixable, 1 plausible |
 
+## The Verrin Sill (`orbital`)
+
+| Creature | Kind | Status | Chains | Verdicts |
+|---|---|---|---|---|
+| [Astroluma](astroluma.md) | new | draft | 4 | 4 fixable |
+| [Cerradora de Hueco](cerradora_de_hueco.md) | new | draft | 4 | 4 fixable |
+| [Cintillo](cintillo.md) | new | draft | 4 | 4 fixable |
+| [Crang-lira](crang_lira.md) | new | draft | 4 | 4 fixable |
+| [Polvovela](polvovela.md) | new | draft | 4 | 4 fixable |
+
 ## Primigenia (the island world) (`primigenia`)
 
 | Creature | Kind | Status | Chains | Verdicts |
