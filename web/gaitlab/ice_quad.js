@@ -85,8 +85,8 @@ function drawQuad(o,P){
     place(l.up,hip,r.knee);place(l.lo,r.knee,r.foot);l.kn.position.copy(r.knee);l.ft.position.copy(r.foot);l.ft.position.y+=.0;
     const lf=P.legFrost||0;l.boot.visible=lf>.02;if(l.boot.visible){l.boot.position.copy(r.foot);l.boot.position.y+=.012;l.boot.scale.set(.09+.05*lf,.04+.08*lf,.07+.05*lf);}});
   // colour: rime tint (white-blue) and cold tint
-  const fr=P.frost||0,cold=P.cold||0,fl=P.flash||0;o.mats.forEach((m,i)=>{m.color.copy(o.base[i]).lerp(new T.Color(COLD),cold*.55).lerp(new T.Color(FROST),fr*.4);m.emissive.setRGB(fl,fl,fl);});
-  const nR=o.rime.length;o.rime.forEach(r=>{const k=clamp(fr*14-r.i*1.1,0,1),g=sm(k);r.m.visible=g>.02;r.m.scale.set(r.r*.95*g,r.r*.36*g,r.r*.75*g);});
+  const fr=P.frost||0,cold=P.cold||0,fl=P.flash||0;o.mats.forEach((m,i)=>{m.color.copy(o.base[i]).lerp(new T.Color(COLD),cold*.32).lerp(new T.Color(FROST),fr*.22);m.emissive.setRGB(fl,fl,fl);});
+  const nR=o.rime.length;o.rime.forEach(r=>{const k=clamp(fr*14-r.i*1.1,0,1),g=sm(k);r.m.visible=g>.02;r.m.scale.set(r.r*.8*g,r.r*.3*g,r.r*.62*g);});
   o.spot.visible=(P.spot||0)>.02;o.spot.scale.setScalar(Math.max(.01,(P.spot||0)));
   o.shadow.position.set(P.x||0,.003,P.z||0);o.shadow.scale.set(1.5*s,.9*s,1);o.shadow.rotation.z=-(P.yaw||0);
 }

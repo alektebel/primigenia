@@ -30,7 +30,7 @@ function makeBridge(def){
   rig.clock=CK;
   rig.build=scene=>{const S=riverScene(scene);S.perf=IC.buildQuad(scene,'cryo');S.objs=[];
     for(let i=0;i<def.n;i++){const g=IC.iceSolid(def.geo(i),def.op||.62,{core:.2});g.visible=false;scene.add(g);const cr=new T.Mesh(new T.PlaneGeometry(1,1),new T.MeshBasicMaterial({map:IC.TEX.crack,transparent:true,opacity:0,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-2,polygonOffsetUnits:-2}));cr.rotation.x=-Math.PI/2;cr.position.y=.5;g.add(cr);S.objs.push({g,cr});}
-    S.pposeAt=t=>{const p=path(t);return IC.perfBase(t,Object.assign({x:p.x,y:p.y+floorY(p.x,t)*0,D:p.D,amp:p.amp,frost:.3},def.perf(t,p)));};return S;};
+    S.pposeAt=t=>{const p=path(t),e=def.perf(t,p),P=IC.perfBase(t,Object.assign({y:p.y,D:p.D,amp:p.amp,frost:.3},e));P.x=p.x+(e.x||0);return P;};return S;};
   const floorY=x=>0;
   rig.cam=(u)=>{const S=rig.inst;const xc=S?path(u).x:1;return {cx:lerp(3.7,xc,.3),cy:.1,span:9.4,v:2.6};};
   rig.frame=(S,u)=>{

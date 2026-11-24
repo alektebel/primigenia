@@ -14,7 +14,7 @@ IC.perfBase=perfBase;IC.tgtBase=tgtBase;
 function reaction(w,t,hits,frostK){
   const R={};let fl=0,last=-1e9;for(const h of hits)if(t>=h&&h>last){last=h;}for(const h of hits)if(t>=h)fl+=Math.exp(-(t-h)/260);fl=Math.min(1.4,fl);
   const since=t-(hits.length?hits[0]:1e9),chill=since<0?0:sm(since/260)*(1-sm((since-3300)/2800));
-  Object.assign(R,{fl,chill,x:w.x+.1*fl,crouch:Math.min(.5,.28*fl+.16*chill),pitch:.08*fl*0+.1*fl,neckA:.45*fl-.1*chill,headA:.2*fl,jaw:Math.min(1,fl*.7),squint:Math.min(1,fl*1.2),stiff:chill,cold:chill*.9,frost:chill*(frostK===undefined?.6:frostK),legFrost:chill,shiver:chill*.8+fl*.6,flash:Math.min(.7,Math.max(0,hits.reduce((a,h)=>a+(t>=h?.7*Math.exp(-(t-h)/120):0),0)))});
+  Object.assign(R,{fl,chill,x:w.x+.1*fl,crouch:Math.min(.5,.28*fl+.16*chill),pitch:.08*fl*0+.1*fl,neckA:.45*fl-.1*chill,headA:.2*fl,jaw:Math.min(1,fl*.7),squint:Math.min(1,fl*1.2),stiff:chill,cold:chill*.9,frost:chill*(frostK===undefined?.6:frostK),legFrost:chill,shiver:chill*.8+fl*.6,flash:Math.min(.38,Math.max(0,hits.reduce((a,h)=>a+(t>=h?.4*Math.exp(-(t-h)/90):0),0)))});
   return R;}
 IC.reaction=reaction;
 function makeSpike(def){
@@ -40,7 +40,7 @@ function makeSpike(def){
     return {hud:`<div><span class="k">Target speed</span> <b>${u<hit0?100:Math.round(100*(1-.88*R.chill))}%</b> ${R.chill>.1?'<span class="ice">slowed</span>':''}</div><div class="mt"><div style="width:${100*R.chill}%"></div></div><div><span class="k">Slow</span> <b class="ice">${R.chill>.02?(R.chill*100|0)+'%':'none'}</b></div><div><span class="k">Damage</span> ${u>=hit0?'<b class="bad">-'+def.dmg+' HP</b>':'-'}</div>`,
       banner:u>=hit0&&u<hit0+260?'HIT':'',bannerK:1-(u-hit0)/260,shake:R.fl>.4?R.fl:0};
   };
-  rig.cam=(u,ctx)=>{const tx=u>0?(rig.inst?rig.inst.w.at(u).x:5):5;const fz=def.camZoom?def.camZoom(u):0;return {cx:(tx-.25)/2,cy:.5,span:Math.max(4.8,tx+2.4-fz),v:1.8};};
+  rig.cam=(u,ctx)=>{const tx=u>0?(rig.inst?rig.inst.w.at(u).x:5):5;const fz=def.camZoom?def.camZoom(u):0;return {cx:(tx-.35)/2,cy:.5,span:Math.max(5.0,tx+2.7-fz),v:1.9};};
   IC.rigs.spike.push(rig);return rig;}
 // -------------------------------------------------- shared bits for the four versions
 // the target's chest in the world at time t
@@ -110,7 +110,7 @@ const volley=makeSpike({id:'volley',label:'Shard volley',name:'Pump, shake, spra
   }});
 // ================= V3: spike from the ground ====================================================
 const GX=5.7-.95*2.5;   // target ground position at the strike (2500 ms)
-const SPK=[[0,0,1.1,.17,0],[.34,.18,.7,.11,60],[-.3,.22,.62,.1,100],[.12,-.36,.55,.09,140],[-.12,.42,.45,.085,180]];
+const SPK=[[0,0,1.5,.2,0],[.34,.18,.95,.13,60],[-.3,.22,.85,.12,100],[.12,-.36,.7,.1,140],[-.12,.42,.6,.095,180]];
 const eruption=makeSpike({id:'eruption',label:'Ground spike',name:'Stomp, frost line, eruption',org:'a crack of frost races along the ground; spikes burst up under the target',len:6800,
   tag:'The head drops, the sac glows through the throat, a foreleg lifts and stamps. A line of rime shoots across the ground ahead, fern-like, and ice spikes erupt under the target a beat later, one tall and four short, kicking it up and back. The spikes stand for a moment, then crack and fall apart into shards while the frost on the ground fades slowly.',
   hits:[2500],dmg:20,lift:t=>.2*pls(t,2610,150)*(t>2500?1:0),spot:t=>.9*ramp(t,2520,3000)*(1-sm((t-5200)/1800)),frostK:.6,
@@ -141,7 +141,7 @@ const lance=makeSpike({id:'lance',label:'Breath lance',name:'Breath condenses, h
   ph:[['approach',800,'#5d6d78'],['exhale + condense',1100,'#6fb4d8'],['draw back',430,'#a6b1ff'],['flick + throw',320,'#e0925c'],['hit',700,'#d9576b'],['slowed, recovers',3450,'#7f8c96']],
   perf:t=>{
     const ex=ramp(t,900,1300)*(1-sm((t-2000)/200)),dr=ramp(t,1950,2300),fl=sm((t-LR+30)/70)*(1-sm((t-LR-70)/300)),aft=ramp(t,LR,LR+200)*(1-sm((t-LR-500)/1300));
-    return {sac:.15+.85*ramp(t,900,1500)*(1-sm((t-2000)/300)),glow:.1+.9*ramp(t,900,1400)*(1-ramp(t,2250,3000)),pulse:.4*ex*Math.sin(t/70),neckA:.35*ex*(1-dr)+.55*dr*(1-fl)-.16*fl-.08*aft,neckE:.5*ex*(1-dr)-.4*dr*(1-fl)+.7*fl,headA:.2*ex-.1*fl,jaw:.7*ex+.1*dr*(1-fl)+.6*fl*(t<LR+120?1:0),
+    return {sac:.15+.85*ramp(t,900,1500)*(1-sm((t-2000)/300)),glow:.1+.9*ramp(t,900,1400)*(1-ramp(t,2250,3000)),pulse:.4*ex*Math.sin(t/70),neckA:.1*ex*(1-dr)+.32*dr*(1-fl)-.16*fl-.08*aft,neckE:.5*ex*(1-dr)-.4*dr*(1-fl)+.7*fl,headA:.2*ex-.1*fl,jaw:.7*ex+.1*dr*(1-fl)+.6*fl*(t<LR+120?1:0),
       crouch:.2*dr*(1-fl),pitch:.1*dr*(1-fl)-.1*fl-.04*aft,squint:.5*ex,x:.22*fl-.04*dr,tw:.3*fl,legFrost:.2+.3*ex};},
   fx:(fx,u,E)=>{const {S}=E;
     // the exhale: a stream of vapour out of the open mouth, condensing

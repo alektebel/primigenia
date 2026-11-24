@@ -10,20 +10,20 @@ function makeBreath(def){
   const walk=sa=>{const sh=sa!=null&&sa>FREEZE+GROW*.6,endIce=sh?sa:THAW+THAWMS;
     return IC.makeWalker({x0:X0,v0:V0,dir:-1,t0:0,len:LEN,growMs:GROW,freezeAt:FREEZE,thawAt:THAW,thawMs:THAWMS,shatterAt:sa,flinches:sh?[sa]:[],chill:t=>t<TE?0:(t<endIce?.85*sm((t-TE)/1500):.85*(1-sm((t-endIce)/3500)))});};
   rig.build=scene=>{const S=IC.stage(scene,{bg:'#1d2b35'});S.walkers={};S.wk=sa=>{const k=sa==null?'n':sa|0;return S.walkers[k]||(S.walkers[k]=walk(sa));};
-    S.rock=new T.Mesh(IC.GEO.rock,new T.MeshPhongMaterial({color:'#8d8478',flatShading:true,shininess:10,transparent:true}));S.rock.scale.set(.3,.26,.28);S.rock.visible=false;scene.add(S.rock);
+    S.rock=new T.Mesh(IC.GEO.rock,new T.MeshPhongMaterial({color:'#8d8478',flatShading:true,shininess:10,transparent:true}));S.rock.scale.set(.24,.2,.22);S.rock.visible=false;scene.add(S.rock);
     S.pposeAt=t=>IC.perfBase(t,def.perf(t));S.tcache={};return S;};
-  rig.cam=(u,ctx)=>{const S=rig.inst;const tx=S?S.wk(shAt(ctx)).at(u).x:5;return {cx:(tx-.25)/2,cy:.5,span:Math.max(4.8,tx+2.4),v:1.8};};
+  rig.cam=(u,ctx)=>{const S=rig.inst;const tx=S?S.wk(shAt(ctx)).at(u).x:5;return {cx:(tx-.3)/2,cy:.5,span:Math.max(5.0,tx+2.6),v:1.9};};
   const shAt=ctx=>ctx.shatter?(ctx.hitT!==null&&ctx.hitT!==undefined?ctx.hitT:SHDEF):null;
   rig.frame=(S,u,ctx)=>{
     const fx=S.fx;fx.reset();const sa=shAt(ctx),W=S.wk(sa),w=W.at(u),sh=w.shatter,tposeAt=(t)=>{const ww=W.at(t);return tpose(ww,t);};
     const chillOf=(ww,t)=>t<TE?0:(ww.frozen||(ww.grow>0&&ww.thaw<1&&!ww.gone)?.85:(ww.thaw>0||t>(sh?sa:THAW+THAWMS)?.85*(1-sm((t-(sh?sa:THAW+THAWMS))/3500)):.85*sm((t-TE)/1500)));
     function tpose(ww,t){const c=chillOf(ww,t),fz=ww.frozen||ww.grow>0&&!ww.gone&&ww.thaw<1?1:0,flv=ww.fl;
-      return IC.tgtBase(t,ww,{x:ww.x+.09*flv,crouch:.12*c+.3*Math.min(1,flv),pitch:.1*Math.min(1,flv),neckA:-.15*c+.4*Math.min(1,flv),headA:.2*Math.min(1,flv),jaw:Math.min(1,flv*.8),squint:Math.min(1,c*.8+flv),stiff:c,cold:c,frost:Math.min(1,c*.8+(fz?.15:0))*(sh&&ww.gone?Math.max(0,1-ww.sAge/1500):1),legFrost:c,shiver:fz?0:c*.9+.4*Math.min(1,flv),flash:ww.gone&&ww.sAge<140?.8*(1-ww.sAge/140):0,c,ww});}
+      return IC.tgtBase(t,ww,{x:ww.x+.09*flv,crouch:.12*c+.3*Math.min(1,flv),pitch:.1*Math.min(1,flv),neckA:-.15*c+.4*Math.min(1,flv),headA:.2*Math.min(1,flv),jaw:Math.min(1,flv*.8),squint:Math.min(1,c*.8+flv),stiff:c,cold:c,frost:Math.min(1,c*.8+(fz?.15:0))*(sh&&ww.gone?Math.max(0,1-ww.sAge/1500):1),legFrost:c,shiver:fz?0:c*.9+.4*Math.min(1,flv),flash:ww.gone&&ww.sAge<140?.5*(1-ww.sAge/140):0,c,ww});}
     const tp=tposeAt(u,w),pp=S.pposeAt(u),psk=skel(pp),tsk=skel(tp);S.tposeAt=tposeAt;
     IC.drawQuad(S.perf,pp);IC.drawQuad(S.tgt,tp);
     const grow=w.grow,thaw=w.thaw,crack=sh&&u>=sa?0:Math.max(ramp(u,THAW-300,THAW+800)*(sh?0:1),sh&&u>=sa-120?1:0);
     // heavy hit: boulder drops onto the block (shatter ending)
-    let impact=0;if(sh){const a=u-(sa-260);S.rock.visible=a>=0&&a<1500;if(S.rock.visible){if(a<260){const e=a/260;S.rock.position.set(w.x+.05,lerp(3.4,.7,e*e),.0);S.rock.rotation.set(a/200,a/260,0);S.rock.material.opacity=1;}else{const b=(a-260)/1000;S.rock.position.set(w.x+.05+.6*b,.3+.5*Math.abs(Math.sin(b*3.6))*Math.exp(-b*2)+(.35-.3)*0,.1+.2*b);S.rock.rotation.set(a/90,a/110,0);S.rock.material.opacity=1-sm((a-760)/500);}}impact=u>=sa&&u<sa+300?1-(u-sa)/300:0;}else S.rock.visible=false;
+    let impact=0;if(sh){const a=u-(sa-260);S.rock.visible=a>=0&&a<1500;if(S.rock.visible){if(a<260){const e=a/260;S.rock.position.set(w.x+.05,lerp(3.4,.7,e*e),.0);S.rock.rotation.set(a/200,a/260,0);S.rock.material.opacity=1;}else{const b=(a-260)/1000;S.rock.position.set(w.x+.05+1.6*b,.3+.7*Math.abs(Math.sin(b*3.6))*Math.exp(-b*1.6),.25+.9*b);S.rock.rotation.set(a/90,a/110,0);S.rock.material.opacity=1-sm((a-560)/400);}}impact=u>=sa&&u<sa+300?1-(u-sa)/300:0;}else S.rock.visible=false;
     const shake=impact?impact:0;
     IC.drawShell(S.shell,{x:tp.x,y:0,z:0,yaw:Math.PI,s:.92,t:u},sh&&u>=sa?0:grow,sh?0:thaw,crack,(u<FREEZE+GROW+300&&u>=FREEZE?1:0)+(sh&&u>=sa-300&&u<sa?.6:0));
     // idle vapour
@@ -88,7 +88,7 @@ makeBreath({id:'cloud',label:'Hanging cloud',name:'A puff that stays and freezes
     // the hanging cloud: many large soft puffs orbiting slowly around its centre, building 1400..2200, held, thinning 4700..6300
     const buil=ramp(u,1350,2300),thin=1-sm((u-4700)/1600),k=buil*thin;
     for(let i=0;i<30;i++){const a0=hash(i,1)*TAU,rr=.25+.9*hash(i,2)*Math.sqrt(buil),sp=.35+.3*hash(i,3),aa=a0+u/1000*sp,yy=.12+.85*hash(i,4)*(.7+.3*buil)+.05*Math.sin(u/700+i),dx=Math.cos(aa)*rr*1.05,dz=Math.sin(aa)*rr*.55;
-      fx.spr('puff',V(CLX+dx,yy,dz),(.55+.55*hash(i,5))*(.4+.6*buil),.3*k*(i<24?1:.6),i%3?'#c6e1f0':'#e6f4fb',aa);}
+      fx.spr('puff',V(CLX+dx,yy,dz),(.8+.8*hash(i,5))*(.4+.6*buil),.34*k*(i<24?1:.6),i%3?'#c6e1f0':'#e6f4fb',aa);}
     for(let i=0;i<14;i++){const a0=hash(i,11)*TAU,aa=a0+u/700,rr=.2+.9*hash(i,12);fx.spr('spark',V(CLX+Math.cos(aa)*rr,.1+.9*hash(i,13)+.08*Math.sin(u/300+i),Math.sin(aa)*rr*.5),.08+.05*Math.sin(u/200+i*2),.9*k*(.5+.5*Math.sin(u/190+i*3)),'#ffffff',u/300);}
     for(let k2=0;k2<6;k2++){const t0=1500+k2*280,g=ease((u-t0)/800),a=hash(k2,31)*TAU,rr=k2?.55*hash(k2,32)*1.2:0;if(u>t0)fx.frost(CLX+Math.cos(a)*rr,Math.sin(a)*rr*.6,.55+.35*g,.9*Math.min(1,g*2)*(1-sm((u-5800-k2*120)/2400)),hash(k2,33)*6);}
   }});
